@@ -1,0 +1,57 @@
+{
+	"name": "recoverage",
+	"version": "0.0.0",
+	"license": "MIT",
+	"author": {
+		"name": "Jeremy Banka",
+		"email": "hello@jeremybanka.com"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeremybanka/wayforge.git",
+		"directory": "packages/recoverage"
+	},
+	"type": "module",
+	"files": [
+		"dist",
+		"src"
+	],
+	"main": "dist/recoverage.js",
+	"bin": {
+		"recoverage": "dist/recoverage.x.js"
+	},
+	"scripts": {
+		"build": "tsup-node",
+		"lint:biome": "biome check -- .",
+		"lint:eslint": "eslint -- .",
+		"lint:types": "tsc --noEmit",
+		"lint:types:watch": "tsc --watch --noEmit",
+		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
+		"test": "vitest",
+		"test:once": "echo no tests yet",
+		"test:coverage": "echo no test coverage yet",
+		"postversion": "biome format --write package.json"
+	},
+	"devDependencies": {
+		"@types/diff": "7.0.1",
+		"@types/istanbul-lib-coverage": "2.0.6",
+		"@types/tmp": "0.2.6",
+		"bun-types": "1.2.2",
+		"concurrently": "9.1.2",
+		"eslint": "9.20.0",
+		"simple-git": "3.27.0",
+		"tmp": "0.2.3",
+		"tsup": "8.3.6",
+		"vitest": "3.0.5",
+		"yalc": "1.0.0-pre.53"
+	},
+	"dependencies": {
+		"colors": "1.4.0",
+		"diff": "7.0.0",
+		"istanbul-lib-coverage": "3.2.2",
+		"nyc": "17.1.0"
+	}
+}

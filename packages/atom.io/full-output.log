@@ -1,0 +1,1813 @@
+
+ RUN  v3.0.5 /Users/jem/dojo/wayforge/packages/atom.io
+      Coverage enabled with v8
+
+ ✓ __tests__/experimental/immortal/immortal.test.ts (5 tests) 29ms
+stdout | __tests__/private/junction.test.ts > Junction with external storage > accepts external storage methods
+{
+  relationMap: Map(4) {
+    [32m'Lounge'[39m => Set(1) { [32m'Gertrude'[39m },
+    [32m'Gertrude'[39m => Set(1) { [32m'Lounge'[39m },
+    [32m'Shrine'[39m => Set(1) { [32m'Adelaide'[39m },
+    [32m'Adelaide'[39m => Set(1) { [32m'Shrine'[39m }
+  }
+}
+{
+  contentMap: Map(2) {
+    [32m'Lounge:Gertrude'[39m => { joinedAt: [33mNaN[39m },
+    [32m'Shrine:Adelaide'[39m => { joinedAt: [33m162[39m }
+  }
+}
+Junction {
+  a: [32m'room'[39m,
+  b: [32m'player'[39m,
+  cardinality: [32m'1:n'[39m,
+  relations: Map(0) {},
+  contents: Map(0) {},
+  isAType: [36m[Function: isAType][39m,
+  isBType: [36m[Function: isBType][39m,
+  isContent: [36m[Function: isContent][39m,
+  makeContentKey: [36m[Function: makeContentKey][39m,
+  warn: [90mundefined[39m,
+  has: [36m[Function (anonymous)][39m,
+  addRelation: [36m[Function (anonymous)][39m,
+  deleteRelation: [36m[Function (anonymous)][39m,
+  replaceRelationsSafely: [36m[Function (anonymous)][39m,
+  replaceRelationsUnsafely: [36m[Function (anonymous)][39m,
+  getRelatedKeys: [36m[Function (anonymous)][39m,
+  getContentInternal: [36m[Function (anonymous)][39m,
+  setContent: [36m[Function (anonymous)][39m,
+  deleteContent: [36m[Function (anonymous)][39m
+}
+
+ ✓ __tests__/public/timeline.test.ts (9 tests) 26ms
+ ✓ __tests__/private/junction.test.ts (23 tests) 9ms
+ ✓ __tests__/public/atom-selector.test.ts (11 tests) 11ms
+ ✓ __tests__/public/mutability/mutable-atom.test.ts (8 tests) 25ms
+ ✓ __tests__/public/transaction.test.ts (16 tests) 32ms
+ ✓ __tests__/public/eslint-plugin/synchronous-selector-dependencies.test.ts (21 tests) 120ms
+stdout | __tests__/public/data/join.test.ts > advanced performance tests > setting many relations at once with iteration
+┌─────────┬───────┬────────┬──────────────┬───────────────┐
+│ (index) │ count │ basic  │ safe         │ unsafe        │
+├─────────┼───────┼────────┼──────────────┼───────────────┤
+│ 0       │ [33m2[39m     │ [32m'❌ 3'[39m │ [32m'❌ 2'[39m       │ [32m'✅ (0.42ms)'[39m │
+│ 1       │ [33m4[39m     │ [32m'❌ 1'[39m │ [32m'❌ 1'[39m       │ [32m'✅ (0.38ms)'[39m │
+│ 2       │ [33m8[39m     │ [32m'❌ 1'[39m │ [32m'❌ 2'[39m       │ [32m'✅ (0.63ms)'[39m │
+│ 3       │ [33m16[39m    │ [32m'❌ 1'[39m │ [32m'❌ 1'[39m       │ [32m'✅ (0.89ms)'[39m │
+│ 4       │ [33m32[39m    │ [32m'❌ 2'[39m │ [32m'✅ (1.7ms)'[39m │ [32m'❌ 1'[39m        │
+│ 5       │ [33m64[39m    │ [32m'❌ 4'[39m │ [32m'❌ 2'[39m       │ [32m'✅ (2.9ms)'[39m  │
+│ 6       │ [33m128[39m   │ [32m'❌ 2'[39m │ [32m'❌ 2'[39m       │ [32m'✅ (5.5ms)'[39m  │
+│ 7       │ [33m256[39m   │ [32m'❌ 2'[39m │ [32m'❌ 3'[39m       │ [32m'✅ (11ms)'[39m   │
+│ 8       │ [33m512[39m   │ [32m'❌ 2'[39m │ [32m'❌ 6'[39m       │ [32m'✅ (22ms)'[39m   │
+└─────────┴───────┴────────┴──────────────┴───────────────┘
+
+ ✓ __tests__/public/data/join.test.ts (10 tests) 379ms
+   ✓ advanced performance tests > setting many relations at once with iteration 327ms
+stdout | __tests__/public/mutability/transceiver.test.ts > SetRTX > undo > should recover a clear
+[33m0[39m []
+[33m1[39m []
+[33m2[39m []
+SetRTX(0) [Set] {
+  mode: [32m'record'[39m,
+  subject: Subject {
+    Subscriber: [90mundefined[39m,
+    subscribers: Map(1) { [32m'TEST'[39m => [36m[Function (anonymous)][39m }
+  },
+  cacheLimit: [33m0[39m,
+  cache: [],
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m2[39m,
+  parent: [90mundefined[39m,
+  child: [1mnull[22m,
+  transactionUpdates: [1mnull[22m
+} 2=clear:["x","y"]
+[1mnull[22m
+
+stdout | __tests__/private/introspection/AtomIODevtools.test.tsx > working with timelines > basic timeline
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<span[39m
+      [33mdata-css[39m=[32m"atom_io_devtools_zone"[39m
+      [33mstyle[39m=[32m"position: fixed; top: 0px; left: 0px; right: 0px; bottom: 0px; pointer-events: none;"[39m
+    [36m/>[39m
+    [36m<main[39m
+      [33mdata-css[39m=[32m"atom_io_devtools"[39m
+      [33mdraggable[39m=[32m"false"[39m
+      [33mstyle[39m=[32m"user-select: none; touch-action: none;"[39m
+    [36m>[39m
+      [36m<header>[39m
+        [36m<h1>[39m
+          [0matom.io[0m
+        [36m</h1>[39m
+        [36m<nav>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m""[39m
+            [33mdata-testid[39m=[32m"view-atoms"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0matoms[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m""[39m
+            [33mdata-testid[39m=[32m"view-selectors"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0mselectors[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m""[39m
+            [33mdata-testid[39m=[32m"view-transactions"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0mtransactions[0m
+          [36m</button>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"active"[39m
+            [33mdata-testid[39m=[32m"view-timelines"[39m
+            [33mdisabled[39m=[32m""[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [0mtimelines[0m
+          [36m</button>[39m
+        [36m</nav>[39m
+      [36m</header>[39m
+      [36m<main>[39m
+        [36m<article[39m
+          [33mclass[39m=[32m"index timeline_index"[39m
+          [33mdata-testid[39m=[32m"timeline-index"[39m
+        [36m>[39m
+          [36m<section[39m
+            [33mclass[39m=[32m"node timeline_log"[39m
+            [33mdata-testid[39m=[32m"timeline-countTL"[39m
+          [36m>[39m
+            [36m<header>[39m
+              [36m<button[39m
+                [33mclass[39m=[32m"carat open"[39m
+                [33mdata-testid[39m=[32m"open-close-timeline-countTL"[39m
+                [33mtype[39m=[32m"button"[39m
+              [36m>[39m
+                [0m▶[0m
+              [36m</button>[39m
+              [36m<main>[39m
+                [36m<h2>[39m
+                  [0mcountTL[0m
+                [36m</h2>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"detail length"[39m
+                [36m>[39m
+                  [0m([0m
+                  [0m3[0m
+                  [0m/[0m
+                  [0m3[0m
+                  [0m)[0m
+                [36m</span>[39m
+                [36m<span[39m
+                  [33mclass[39m=[32m"gap"[39m
+                [36m/>[39m
+                [36m<nav>[39m
+                  [36m<button[39m
+                    [33mtype[39m=[32m"button"[39m
+                  [36m>[39m
+                    [0mundo[0m
+                  [36m</button>[39m
+                  [36m<button[39m
+                    [33mdisabled[39m=[32m""[39m
+                    [33mtype[39m=[32m"button"[39m
+                  [36m>[39m
+                    [0mredo[0m
+                  [36m</button>[39m
+                [36m</nav>[39m
+              [36m</main>[39m
+            [36m</header>[39m
+            [36m<main>[39m
+              [36m<article[39m
+                [33mclass[39m=[32m"node timeline_update"[39m
+                [33mdata-testid[39m=[32m"timeline-update-count-0"[39m
+              [36m>[39m
+                [36m<header>[39m
+                  [36m<h4>[39m
+                    [0m1739311997133[0m
+                    [0m: [0m
+                    [0matom_update[0m
+                    [0m ([0m
+                    [0mcount[0m
+                    [0m)[0m
+                  [36m</h4>[39m
+                [36m</header>[39m
+                [36m<main>[39m
+                  [36m<article[39m
+                    [33mclass[39m=[32m"node atom_update"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"detail"[39m
+                    [36m>[39m
+                      [0mcount[0m
+                      [0m: [0m
+                    [36m</span>[39m
+                    [36m<span>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"summary"[39m
+                      [36m>[39m
+                        [0m+1 (0 → 1)[0m
+                      [36m</span>[39m
+                    [36m</span>[39m
+                  [36m</article>[39m
+                [36m</main>[39m
+              [36m</article>[39m
+              [36m<article[39m
+                [33mclass[39m=[32m"node timeline_update"[39m
+                [33mdata-testid[39m=[32m"timeline-update-double-1"[39m
+              [36m>[39m
+                [36m<header>[39m
+                  [36m<h4>[39m
+                    [0m1739311997136[0m
+                    [0m: [0m
+                    [0mselector_update[0m
+                    [0m ([0m
+                    [0mdouble[0m
+                    [0m)[0m
+                  [36m</h4>[39m
+                [36m</header>[39m
+                [36m<main>[39m
+                  [36m<article[39m
+                    [33mclass[39m=[32m"node atom_update"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"detail"[39m
+                    [36m>[39m
+                      [0mcount[0m
+                      [0m: [0m
+                    [36m</span>[39m
+                    [36m<span>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"summary"[39m
+                      [36m>[39m
+                        [0mNo Change[0m
+                      [36m</span>[39m
+                    [36m</span>[39m
+                  [36m</article>[39m
+                [36m</main>[39m
+              [36m</article>[39m
+              [36m<article[39m
+                [33mclass[39m=[32m"node timeline_update"[39m
+                [33mdata-testid[39m=[32m"timeline-update-tripleAndDecrement-2"[39m
+              [36m>[39m
+                [36m<header>[39m
+                  [36m<h4>[39m
+                    [0m1739311997140[0m
+                    [0m: [0m
+                    [0mtransaction_update[0m
+                    [0m ([0m
+                    [0mtripleAndDecrement[0m
+                    [0m)[0m
+                  [36m</h4>[39m
+                [36m</header>[39m
+                [36m<main>[39m
+                  [36m<article[39m
+                    [33mclass[39m=[32m"node atom_update"[39m
+                  [36m>[39m
+                    [36m<span[39m
+                      [33mclass[39m=[32m"detail"[39m
+                    [36m>[39m
+                      [0mcount[0m
+                      [0m: [0m
+                    [36m</span>[39m
+                    [36m<span>[39m
+                      [36m<span[39m
+                        [33mclass[39m=[32m"summary"[39m
+                      [36m>[39m
+                        [0m+2 (1 → 3)[0m
+                      [36m</span>[39m
+                    [36m</span>[39m
+                  [36m</article>[39m
+                  [36m<article[39m
+                    [33mclass[39m=[32m"node transaction_update"[39m
+                    [33mdata-testid[39m=[32m"transaction-update-reset-1"[39m
+                  [36m>[39m
+                    [36m<header>[39m
+                      [36m<h4>[39m
+                        [0m1[0m
+                      [36m</h4>[39m
+                    [36m</header>[39m
+                    [36m<main>[39m
+                      [36m<section[39m
+                        [33mclass[39m=[32m"transaction_params"[39m
+                      [36m>[39m
+                        [36m<span[39m
+                          [33mclass[39m=[32m"detail"[39m
+                        [36m>[39m
+                          [0mparams: [0m
+                        [36m</span>[39m
+                      [36m</section>[39m
+                      [36m<section[39m
+                        [33mclass[39m=[32m"node transaction_output"[39m
+                      [36m>[39m
+                        [36m<span[39m
+                          [33mclass[39m=[32m"detail"[39m
+                        [36m>[39m
+                          [0moutput: [0m
+                        [36m</span>[39m
+                        [36m<span[39m
+                          [33mclass[39m=[32m"detail"[39m
+                        [36m>[39m
+                          [0mundefined[0m
+                        [36m</span>[39m
+                      [36m</section>[39m
+                      [36m<section[39m
+                        [33mclass[39m=[32m"transaction_impact"[39m
+                      [36m>[39m
+                        [36m<span[39m
+                          [33mclass[39m=[32m"detail"[39m
+                        [36m>[39m
+                          [0mimpact: [0m
+                        [36m</span>[39m
+                        [36m<article[39m
+                          [33mclass[39m=[32m"node atom_update"[39m
+                        [36m>[39m
+                          [36m<span[39m
+                            [33mclass[39m=[32m"detail"[39m
+                          [36m>[39m
+                            [0mcount[0m
+                            [0m: [0m
+                          [36m</span>[39m
+                          [36m<span>[39m
+                            [36m<span[39m
+                              [33mclass[39m=[32m"summary"[39m
+                            [36m>[39m
+                              [0m-1 (3 → 2)[0m
+                            [36m</span>[39m
+                          [36m</span>[39m
+                        [36m</article>[39m
+                      [36m</section>[39m
+                    [36m</main>[39m
+                  [36m</article>[39m
+                [36m</main>[39m
+              [36m</article>[39m
+              [36m<span[39m
+                [33mclass[39m=[32m"you_are_here"[39m
+              [36m>[39m
+                [0myou are here[0m
+              [36m</span>[39m
+            [36m</main>[39m
+          [36m</section>[39m
+        [36m</article>[39m
+      [36m</main>[39m
+      [36m<footer>[39m
+        [36m<button[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [0m🔍[0m
+        [36m</button>[39m
+      [36m</footer>[39m
+    [36m</main>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+stdout | __tests__/public/mutability/transceiver.test.ts > SetRTX > rollback > should quickly undo false history
+[33m0[39m [ [32m'0=add:1'[39m, [90m<9 empty items>[39m ]
+[33m1[39m [ [32m'0=add:1'[39m, [32m'1=add:2'[39m, [90m<8 empty items>[39m ]
+[33m2[39m [ [32m'0=add:1'[39m, [32m'1=add:2'[39m, [32m'2=add:3'[39m, [90m<7 empty items>[39m ]
+{
+  set: SetRTX(3) [Set] {
+    [33m1[39m,
+    [33m2[39m,
+    [33m3[39m,
+    mode: [32m'record'[39m,
+    subject: Subject { Subscriber: [90mundefined[39m, subscribers: [36m[Map][39m },
+    cacheLimit: [33m10[39m,
+    cache: [ [32m'0=add:1'[39m, [32m'1=add:2'[39m, [32m'2=add:3'[39m, [90m<7 empty items>[39m ],
+    cacheIdx: [33m2[39m,
+    cacheUpdateNumber: [33m2[39m,
+    parent: [90mundefined[39m,
+    child: [1mnull[22m,
+    transactionUpdates: [1mnull[22m
+  }
+}
+{
+  set: SetRTX(1) [Set] {
+    [33m0[39m,
+    mode: [32m'record'[39m,
+    subject: Subject { Subscriber: [90mundefined[39m, subscribers: [36m[Map][39m },
+    cacheLimit: [33m10[39m,
+    cache: [ [32m'0=add:0'[39m, [32m'1=add:2'[39m, [32m'2=add:3'[39m, [90m<7 empty items>[39m ],
+    cacheIdx: [33m0[39m,
+    cacheUpdateNumber: [33m0[39m,
+    parent: [90mundefined[39m,
+    child: [1mnull[22m,
+    transactionUpdates: [1mnull[22m
+  },
+  res: [1mnull[22m
+}
+
+stdout | __tests__/private/grace.test.ts > graceful handling of improper usage > giving an atom to multiple timelines is a violation > if a family is tracked by a timeline, a member of that family cannot be tracked by another timeline
+{
+  key: [32m'counts("a")'[39m,
+  default: [33m0[39m,
+  type: [32m'atom'[39m,
+  install: [36m[Function: install][39m,
+  subject: Subject {
+    Subscriber: [90mundefined[39m,
+    subscribers: Map(1) { [32m'timeline'[39m => [36m[Function (anonymous)][39m }
+  },
+  family: { key: [32m'counts'[39m, subKey: [32m'"a"'[39m }
+}
+[
+  {
+    type: [32m'state_creation'[39m,
+    token: { key: [32m'counts("a")'[39m, type: [32m'atom'[39m, family: [36m[Object][39m },
+    timestamp: [33m1739311997159[39m
+  },
+  {
+    type: [32m'atom_update'[39m,
+    timestamp: [33m1739311997159[39m,
+    key: [32m'counts("a")'[39m,
+    oldValue: [33m0[39m,
+    newValue: [33m1[39m,
+    family: { key: [32m'counts'[39m, subKey: [32m'"a"'[39m }
+  }
+]
+
+ ✓ __tests__/public/mutability/transceiver.test.ts (22 tests) 12ms
+stdout | __tests__/experimental/immortal/allocate.test.ts > allocate > the Hierarchy + allocate + claim pattern
+Map(2) {
+  [32m'"root"'[39m => Molecule {
+    type: [32m'molecule'[39m,
+    stringKey: [32m'"root"'[39m,
+    family: [90mundefined[39m,
+    _dependsOn: [90mundefined[39m,
+    subject: Subject { Subscriber: [90mundefined[39m, subscribers: Map(0) {} },
+    tokens: Map(0) {},
+    above: Map(0) {},
+    below: Map(1) { [32m'"user::yyy"'[39m => [36m[Molecule][39m },
+    joins: Map(0) {},
+    instance: [90mundefined[39m,
+    key: [32m'root'[39m
+  },
+  [32m'"user::yyy"'[39m => Molecule {
+    type: [32m'molecule'[39m,
+    stringKey: [32m'"user::yyy"'[39m,
+    family: [90mundefined[39m,
+    _dependsOn: [32m'all'[39m,
+    subject: Subject { Subscriber: [90mundefined[39m, subscribers: Map(0) {} },
+    tokens: Map(0) {},
+    above: Map(1) { [32m'"root"'[39m => [36m[Molecule][39m },
+    below: Map(0) {},
+    joins: Map(0) {},
+    instance: [90mundefined[39m,
+    key: [32m'user::yyy'[39m
+  }
+}
+
+ ✓ __tests__/private/grace.test.ts (9 tests) 23ms
+ ✓ __tests__/private/introspection/AtomIODevtools.test.tsx (14 tests) 231ms
+ ✓ __tests__/experimental/immortal/allocate.test.ts (2 tests) 19ms
+stdout | __tests__/public/async-state.test.ts > async atom > cancels an evicted cached pending Future
+resolving
+
+ ✓ __tests__/public/async-state.test.ts (4 tests) 30ms
+ ✓ __tests__/public/react-hooks.test.tsx (3 tests) 34ms
+ ✓ __tests__/private/async-data.test.ts (1 test) 39ms
+ ✓ __tests__/public/eslint-plugin/lifespan.test.ts (19 tests) 83ms
+ ✓ __tests__/public/disposal.test.ts (6 tests) 12ms
+ ✓ __tests__/private/transaction-internal.test.ts (2 tests) 8ms
+stdout | __tests__/experimental/realtime/realtime-continuity.test.tsx > synchronizing transactions > client 1 -> server -> client 2
+jane-1 connected on vKxqB7VvUlMGzGBHAAAC
+
+ ✓ __tests__/public/families.test.ts (4 tests) 7ms
+ ✓ __tests__/private/tracker.test.ts (4 tests) 9ms
+stdout | __tests__/experimental/realtime/realtime-continuity.test.tsx > synchronizing transactions > client 1 -> server -> client 2
+dave-1 connected on _tiY3zMoQhDh6giqAAAD
+
+ ✓ __tests__/experimental/immortal/molecule.test.ts (2 tests) 18ms
+stdout | __tests__/experimental/realtime/realtime-continuity.test.tsx > synchronizing transactions > client 1 -> server -> client 2
+null disconnected
+null disconnected
+
+stdout | __tests__/experimental/realtime/realtime-continuity.test.tsx > synchronizing transactions > rollback
+jane-2 connected on x3WGmEZuKCrB__plAAAG
+
+stdout | __tests__/experimental/realtime/realtime-continuity.test.tsx > synchronizing transactions > rollback
+dave-2 connected on DbLAHEpY3mjqKy3OAAAH
+
+stdout | __tests__/experimental/realtime/realtime-continuity.test.tsx > synchronizing transactions > rollback
+null disconnected
+
+stdout | __tests__/experimental/realtime/realtime-continuity.test.tsx > synchronizing transactions > rollback
+dave-2 connected on ZFX6nMTTax-BHurXAAAJ
+
+stdout | __tests__/experimental/realtime/realtime-continuity.test.tsx > synchronizing transactions > rollback
+null disconnected
+null disconnected
+
+stdout | __tests__/experimental/realtime/realtime-continuity.test.tsx > mutable atoms in continuity > mutable initialization
+CLIENT-3 connected on iDTJeYnOGcZJTHHCAAAL
+
+stdout | __tests__/experimental/realtime/realtime-continuity.test.tsx > mutable atoms in continuity > mutable initialization
+📡  >> CLIENT get:application
+CLIENT ⭕ atom mySocketId__INTERNAL operation start in store "CLIENT"
+CLIENT 📖 atom mySocketId__INTERNAL reading cached value
+CLIENT 📝 atom mySocketId__INTERNAL set to iDTJeYnOGcZJTHHCAAAL
+CLIENT 🧹 atom mySocketId__INTERNAL evicting 1 states downstream: Set(1) { [32m'mySocketId'[39m }
+CLIENT 🧹 atom mySocketId__INTERNAL [ mySocketId__INTERNAL ] already done
+CLIENT 🗑 state mySocketId evicted
+CLIENT 📢 atom mySocketId__INTERNAL went ( [90mundefined[39m -> iDTJeYnOGcZJTHHCAAAL ) subscribers: Map(0) {}
+CLIENT 🔴 atom mySocketId__INTERNAL operation done in store "CLIENT"
+
+stdout | __tests__/experimental/realtime/realtime-continuity.test.tsx > mutable atoms in continuity > mutable initialization
+📡  CLIENT continuity-init:application [33m-1[39m [
+  { type: [32m'selector'[39m, key: [32m'myList:JSON'[39m },
+  {
+    members: [],
+    cache: [],
+    cacheLimit: [33m0[39m,
+    cacheIdx: [33m-1[39m,
+    cacheUpdateNumber: [33m-1[39m
+  }
+]
+CLIENT ⭕ selector myList:JSON operation start in store "CLIENT"
+CLIENT 📖 mutable_atom myList reading cached value
+CLIENT 🔌 selector myList:JSON registers dependency ( "myList" = SetRTX(0) [Set] {
+  mode: [32m'record'[39m,
+  subject: Subject {
+    Subscriber: [90mundefined[39m,
+    subscribers: Map(1) { [32m'tracker:CLIENT:main:myList'[39m => [36m[Function (anonymous)][39m }
+  },
+  cacheLimit: [33m0[39m,
+  cache: [],
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m-1[39m,
+  parent: [90mundefined[39m,
+  child: [1mnull[22m,
+  transactionUpdates: [1mnull[22m
+} )
+CLIENT 🔍 selector myList:JSON discovers root atom "myList"
+CLIENT 📝 selector myList:JSON set ( {
+  members: [],
+  cache: [],
+  cacheLimit: [33m0[39m,
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m-1[39m
+} -> {
+  members: [],
+  cache: [],
+  cacheLimit: [33m0[39m,
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m-1[39m
+} )
+CLIENT 📖 mutable_atom myList reading cached value
+CLIENT 📝 atom myList set to SetRTX(0) [Set] {
+  mode: [32m'record'[39m,
+  subject: Subject { Subscriber: [90mundefined[39m, subscribers: Map(0) {} },
+  cacheLimit: [33m0[39m,
+  cache: [],
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m-1[39m,
+  parent: [90mundefined[39m,
+  child: [1mnull[22m,
+  transactionUpdates: [1mnull[22m
+}
+CLIENT 🧹 mutable_atom myList evicting 1 states downstream: Set(1) { [32m'myList:JSON'[39m }
+CLIENT 🧹 mutable_atom myList [ myList:JSON, myList ] already done
+CLIENT 📢 mutable_atom myList is now ( SetRTX(0) [Set] {
+  mode: [32m'record'[39m,
+  subject: Subject { Subscriber: [90mundefined[39m, subscribers: Map(0) {} },
+  cacheLimit: [33m0[39m,
+  cache: [],
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m-1[39m,
+  parent: [90mundefined[39m,
+  child: [1mnull[22m,
+  transactionUpdates: [1mnull[22m
+} ) subscribers: Map(2) {
+  [32m'tracker:CLIENT:main:myList'[39m => [36m[Function: safelyHandleUpdate][39m,
+  [32m'selector:myList:JSON'[39m => [36m[Function (anonymous)][39m
+}
+CLIENT 📢 selector myList:JSON root myList went SetRTX(0) [Set] {
+  mode: [32m'record'[39m,
+  subject: Subject {
+    Subscriber: [90mundefined[39m,
+    subscribers: Map(1) { [32m'tracker:CLIENT:main:myList'[39m => [36m[Function (anonymous)][39m }
+  },
+  cacheLimit: [33m0[39m,
+  cache: [],
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m-1[39m,
+  parent: [90mundefined[39m,
+  child: [1mnull[22m,
+  transactionUpdates: [1mnull[22m
+} -> SetRTX(0) [Set] {
+  mode: [32m'record'[39m,
+  subject: Subject { Subscriber: [90mundefined[39m, subscribers: Map(0) {} },
+  cacheLimit: [33m0[39m,
+  cache: [],
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m-1[39m,
+  parent: [90mundefined[39m,
+  child: [1mnull[22m,
+  transactionUpdates: [1mnull[22m
+}
+CLIENT 📖 selector myList:JSON reading cached value
+CLIENT ✨ selector myList:JSON went [90mundefined[39m -> {
+  members: [],
+  cache: [],
+  cacheLimit: [33m0[39m,
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m-1[39m
+}
+CLIENT 🔴 selector myList:JSON operation done in store "CLIENT"
+CLIENT 📖 selector myList:JSON reading cached value
+
+stdout | __tests__/experimental/realtime/realtime-continuity.test.tsx > mutable atoms in continuity > mutable initialization
+CLIENT 📖 selector myList:JSON reading cached value
+CLIENT 📖 selector myList:JSON reading cached value
+CLIENT 🙈 selector myList:JSON Removing subscription "use-o::r4:"
+CLIENT 👀 selector myList:JSON Adding subscription "use-o::r4:"
+CLIENT 📖 selector myList:JSON reading cached value
+
+stdout | __tests__/experimental/realtime/realtime-continuity.test.tsx > mutable atoms in continuity > mutable initialization
+📡  CLIENT tx-new:application {
+  type: [32m'transaction_update'[39m,
+  key: [32m'addItem'[39m,
+  id: [32m'xui0i9ermu'[39m,
+  epoch: [33m0[39m,
+  updates: [
+    {
+      type: [32m'atom_update'[39m,
+      key: [32m'*myList'[39m,
+      oldValue: [1mnull[22m,
+      newValue: [32m'0=add:"hello"'[39m
+    }
+  ],
+  params: [ [32m'hello'[39m ]
+}
+CLIENT 🧑‍⚖️ continuity application integrating confirmed update {
+  confirmedUpdate: {
+    type: [32m'transaction_update'[39m,
+    key: [32m'addItem'[39m,
+    id: [32m'xui0i9ermu'[39m,
+    epoch: [33m0[39m,
+    updates: [ [36m[Object][39m ],
+    params: [ [32m'hello'[39m ]
+  },
+  confirmedUpdates: [],
+  optimisticUpdates: []
+}
+CLIENT 🧑‍⚖️ continuity application has no optimistic updates to deal with
+CLIENT ✅ continuity application integrating update #0 (addItem xui0i9ermu)
+CLIENT ⭕ atom *myList operation start in store "CLIENT"
+CLIENT 📖 atom *myList reading cached value
+CLIENT 📝 atom *myList set to 0=add:"hello"
+CLIENT 🧹 atom *myList no downstream states to evict
+CLIENT 📢 atom *myList went ( [1mnull[22m -> 0=add:"hello" ) subscribers: Map(1) {
+  [32m'tracker:CLIENT:main:myList'[39m => [36m[Function: safelyHandleUpdate][39m
+}
+CLIENT 🔴 atom *myList operation done in store "CLIENT"
+CLIENT 📖 mutable_atom myList reading cached value
+CLIENT ⭕ mutable_atom myList operation start in store "CLIENT"
+CLIENT 📖 mutable_atom myList reading cached value
+CLIENT 📝 atom myList set to SetRTX(1) [Set] {
+  [32m'hello'[39m,
+  mode: [32m'record'[39m,
+  subject: Subject {
+    Subscriber: [90mundefined[39m,
+    subscribers: Map(1) { [32m'tracker:CLIENT:main:myList'[39m => [36m[Function (anonymous)][39m }
+  },
+  cacheLimit: [33m0[39m,
+  cache: [],
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m0[39m,
+  parent: [90mundefined[39m,
+  child: [1mnull[22m,
+  transactionUpdates: [1mnull[22m
+}
+CLIENT 🧹 mutable_atom myList evicting 1 states downstream: Set(1) { [32m'myList:JSON'[39m }
+CLIENT 🧹 mutable_atom myList [ myList ] already done
+CLIENT 🗑 state myList:JSON evicted
+CLIENT 📢 mutable_atom myList is now ( SetRTX(1) [Set] {
+  [32m'hello'[39m,
+  mode: [32m'record'[39m,
+  subject: Subject {
+    Subscriber: [90mundefined[39m,
+    subscribers: Map(1) { [32m'tracker:CLIENT:main:myList'[39m => [36m[Function (anonymous)][39m }
+  },
+  cacheLimit: [33m0[39m,
+  cache: [],
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m0[39m,
+  parent: [90mundefined[39m,
+  child: [1mnull[22m,
+  transactionUpdates: [1mnull[22m
+} ) subscribers: Map(2) {
+  [32m'tracker:CLIENT:main:myList'[39m => [36m[Function: safelyHandleUpdate][39m,
+  [32m'selector:myList:JSON'[39m => [36m[Function (anonymous)][39m
+}
+CLIENT 📢 selector myList:JSON root myList went SetRTX(1) [Set] {
+  [32m'hello'[39m,
+  mode: [32m'record'[39m,
+  subject: Subject {
+    Subscriber: [90mundefined[39m,
+    subscribers: Map(1) { [32m'tracker:CLIENT:main:myList'[39m => [36m[Function (anonymous)][39m }
+  },
+  cacheLimit: [33m0[39m,
+  cache: [],
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m0[39m,
+  parent: [90mundefined[39m,
+  child: [1mnull[22m,
+  transactionUpdates: [1mnull[22m
+} -> SetRTX(1) [Set] {
+  [32m'hello'[39m,
+  mode: [32m'record'[39m,
+  subject: Subject {
+    Subscriber: [90mundefined[39m,
+    subscribers: Map(1) { [32m'tracker:CLIENT:main:myList'[39m => [36m[Function (anonymous)][39m }
+  },
+  cacheLimit: [33m0[39m,
+  cache: [],
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m0[39m,
+  parent: [90mundefined[39m,
+  child: [1mnull[22m,
+  transactionUpdates: [1mnull[22m
+}
+CLIENT 🧮 selector myList:JSON computing value
+CLIENT 📖 mutable_atom myList reading cached value
+CLIENT 🔌 selector myList:JSON registers dependency ( "myList" = SetRTX(1) [Set] {
+  [32m'hello'[39m,
+  mode: [32m'record'[39m,
+  subject: Subject {
+    Subscriber: [90mundefined[39m,
+    subscribers: Map(1) { [32m'tracker:CLIENT:main:myList'[39m => [36m[Function (anonymous)][39m }
+  },
+  cacheLimit: [33m0[39m,
+  cache: [],
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m0[39m,
+  parent: [90mundefined[39m,
+  child: [1mnull[22m,
+  transactionUpdates: [1mnull[22m
+} )
+CLIENT 🔍 selector myList:JSON discovers root atom "myList"
+CLIENT ✨ selector myList:JSON went {
+  members: [],
+  cache: [],
+  cacheLimit: [33m0[39m,
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m-1[39m
+} -> {
+  members: [ [32m'hello'[39m ],
+  cache: [],
+  cacheLimit: [33m0[39m,
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m0[39m
+}
+CLIENT 🔴 mutable_atom myList operation done in store "CLIENT"
+CLIENT 📖 selector myList:JSON reading cached value
+📡  >> CLIENT ack:application [33m0[39m
+CLIENT 📖 selector myList:JSON reading cached value
+CLIENT 📖 selector myList:JSON reading cached value
+CLIENT 🙈 selector myList:JSON Removing subscription "use-o::r4:"
+CLIENT 👀 selector myList:JSON Adding subscription "use-o::r4:"
+CLIENT 📖 selector myList:JSON reading cached value
+
+stdout | __tests__/experimental/realtime/realtime-continuity.test.tsx > mutable atoms in continuity > mutable initialization
+CLIENT 🛫 transaction addItem Building transaction with params: [ [32m'world'[39m ]
+CLIENT ⭕ mutable_atom myList operation start in store "CLIENT" building "addItem"
+CLIENT 📖 mutable_atom myList reading cached value
+CLIENT 📃 atom myList copying
+CLIENT 🔨 atom *myList creating in store "CLIENT"
+CLIENT 📖 mutable_atom myList reading cached value
+CLIENT 👀 mutable_atom myList Adding subscription "tracker:CLIENT:addItem:myList"
+CLIENT 👀 atom *myList Adding subscription "tracker:CLIENT:addItem:myList"
+CLIENT ❗ atom *myList deferring setState at T-1595.448042 until setState for "myList" is done
+CLIENT 📝 atom myList set to SetRTX(2) [Set] {
+  [32m'hello'[39m,
+  [32m'world'[39m,
+  mode: [32m'record'[39m,
+  subject: Subject {
+    Subscriber: [90mundefined[39m,
+    subscribers: Map(1) {
+      [32m'tracker:CLIENT:addItem:myList'[39m => [36m[Function (anonymous)][39m
+    }
+  },
+  cacheLimit: [33m0[39m,
+  cache: [],
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m1[39m,
+  parent: [90mundefined[39m,
+  child: [1mnull[22m,
+  transactionUpdates: [1mnull[22m
+}
+CLIENT 🧹 mutable_atom myList evicting 1 states downstream: Set(1) { [32m'myList:JSON'[39m }
+CLIENT 🧹 mutable_atom myList [ myList ] already done
+CLIENT 🗑 state myList:JSON evicted
+CLIENT 🔴 mutable_atom myList operation done in store "CLIENT"
+CLIENT 🟢 atom *myList resuming deferred setState from T-1595.448042
+CLIENT ⭕ atom *myList operation start in store "CLIENT" building "addItem"
+CLIENT 📖 atom *myList reading cached value
+CLIENT 📝 atom *myList set to 1=add:"world"
+CLIENT 🧹 atom *myList no downstream states to evict
+CLIENT 📁 atom *myList stowed ( 0=add:"hello" -> 1=add:"world" )
+CLIENT 🔴 atom *myList operation done in store "CLIENT"
+CLIENT 🛄 transaction addItem Applying transaction with 1 updates: [
+  {
+    type: [32m'atom_update'[39m,
+    key: [32m'*myList'[39m,
+    oldValue: [32m'0=add:"hello"'[39m,
+    newValue: [32m'1=add:"world"'[39m
+  }
+]
+CLIENT ⭕ atom *myList operation start in store "CLIENT"
+CLIENT 📖 atom *myList reading cached value
+CLIENT 📝 atom *myList set to 1=add:"world"
+CLIENT 🧹 atom *myList no downstream states to evict
+CLIENT 📢 atom *myList went ( 0=add:"hello" -> 1=add:"world" ) subscribers: Map(1) {
+  [32m'tracker:CLIENT:main:myList'[39m => [36m[Function: safelyHandleUpdate][39m
+}
+CLIENT 🔴 atom *myList operation done in store "CLIENT"
+CLIENT 📖 mutable_atom myList reading cached value
+CLIENT ⭕ mutable_atom myList operation start in store "CLIENT"
+CLIENT 📖 mutable_atom myList reading cached value
+CLIENT 📝 atom myList set to SetRTX(2) [Set] {
+  [32m'hello'[39m,
+  [32m'world'[39m,
+  mode: [32m'record'[39m,
+  subject: Subject {
+    Subscriber: [90mundefined[39m,
+    subscribers: Map(1) { [32m'tracker:CLIENT:main:myList'[39m => [36m[Function (anonymous)][39m }
+  },
+  cacheLimit: [33m0[39m,
+  cache: [],
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m1[39m,
+  parent: [90mundefined[39m,
+  child: [1mnull[22m,
+  transactionUpdates: [1mnull[22m
+}
+CLIENT 🧹 mutable_atom myList evicting 1 states downstream: Set(1) { [32m'myList:JSON'[39m }
+CLIENT 🧹 mutable_atom myList [ myList ] already done
+CLIENT 🗑 state myList:JSON evicted
+CLIENT 📢 mutable_atom myList is now ( SetRTX(2) [Set] {
+  [32m'hello'[39m,
+  [32m'world'[39m,
+  mode: [32m'record'[39m,
+  subject: Subject {
+    Subscriber: [90mundefined[39m,
+    subscribers: Map(1) { [32m'tracker:CLIENT:main:myList'[39m => [36m[Function (anonymous)][39m }
+  },
+  cacheLimit: [33m0[39m,
+  cache: [],
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m1[39m,
+  parent: [90mundefined[39m,
+  child: [1mnull[22m,
+  transactionUpdates: [1mnull[22m
+} ) subscribers: Map(3) {
+  [32m'tracker:CLIENT:main:myList'[39m => [36m[Function: safelyHandleUpdate][39m,
+  [32m'selector:myList:JSON'[39m => [36m[Function (anonymous)][39m,
+  [32m'tracker:CLIENT:addItem:myList'[39m => [36m[Function: safelyHandleUpdate][39m
+}
+CLIENT 📢 selector myList:JSON root myList went SetRTX(2) [Set] {
+  [32m'hello'[39m,
+  [32m'world'[39m,
+  mode: [32m'record'[39m,
+  subject: Subject {
+    Subscriber: [90mundefined[39m,
+    subscribers: Map(1) { [32m'tracker:CLIENT:main:myList'[39m => [36m[Function (anonymous)][39m }
+  },
+  cacheLimit: [33m0[39m,
+  cache: [],
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m1[39m,
+  parent: [90mundefined[39m,
+  child: [1mnull[22m,
+  transactionUpdates: [1mnull[22m
+} -> SetRTX(2) [Set] {
+  [32m'hello'[39m,
+  [32m'world'[39m,
+  mode: [32m'record'[39m,
+  subject: Subject {
+    Subscriber: [90mundefined[39m,
+    subscribers: Map(1) { [32m'tracker:CLIENT:main:myList'[39m => [36m[Function (anonymous)][39m }
+  },
+  cacheLimit: [33m0[39m,
+  cache: [],
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m1[39m,
+  parent: [90mundefined[39m,
+  child: [1mnull[22m,
+  transactionUpdates: [1mnull[22m
+}
+CLIENT 🧮 selector myList:JSON computing value
+CLIENT 📖 mutable_atom myList reading cached value
+CLIENT 🔌 selector myList:JSON registers dependency ( "myList" = SetRTX(2) [Set] {
+  [32m'hello'[39m,
+  [32m'world'[39m,
+  mode: [32m'record'[39m,
+  subject: Subject {
+    Subscriber: [90mundefined[39m,
+    subscribers: Map(1) { [32m'tracker:CLIENT:main:myList'[39m => [36m[Function (anonymous)][39m }
+  },
+  cacheLimit: [33m0[39m,
+  cache: [],
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m1[39m,
+  parent: [90mundefined[39m,
+  child: [1mnull[22m,
+  transactionUpdates: [1mnull[22m
+} )
+CLIENT 🔍 selector myList:JSON discovers root atom "myList"
+CLIENT ✨ selector myList:JSON went {
+  members: [ [32m'hello'[39m ],
+  cache: [],
+  cacheLimit: [33m0[39m,
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m0[39m
+} -> {
+  members: [ [32m'hello'[39m, [32m'world'[39m ],
+  cache: [],
+  cacheLimit: [33m0[39m,
+  cacheIdx: [33m-1[39m,
+  cacheUpdateNumber: [33m1[39m
+}
+CLIENT 🔴 mutable_atom myList operation done in store "CLIENT"
+CLIENT 📖 selector myList:JSON reading cached value
+CLIENT 🤞 continuity application enqueuing optimistic update
+CLIENT 🤞 continuity application enqueuing new optimistic update
+CLIENT ⭕ atom updateQueue operation start in store "CLIENT"
+CLIENT 📖 atom updateQueue reading cached value
+CLIENT 📝 atom updateQueue set to [
+  {
+    type: [32m'transaction_update'[39m,
+    key: [32m'addItem'[39m,
+    id: [32m'1aly7ovkwmp'[39m,
+    epoch: [33m1[39m,
+    updates: [ [36m[Object][39m ],
+    params: [ [32m'world'[39m ],
+    output: [90mundefined[39m
+  }
+]
+CLIENT 🧹 atom updateQueue no downstream states to evict
+CLIENT 📢 atom updateQueue went ( [
+  {
+    type: [32m'transaction_update'[39m,
+    key: [32m'addItem'[39m,
+    id: [32m'1aly7ovkwmp'[39m,
+    epoch: [33m1[39m,
+    updates: [ [36m[Object][39m ],
+    params: [ [32m'world'[39m ],
+    output: [90mundefined[39m
+  }
+] -> [
+  {
+    type: [32m'transaction_update'[39m,
+    key: [32m'addItem'[39m,
+    id: [32m'1aly7ovkwmp'[39m,
+    epoch: [33m1[39m,
+    updates: [ [36m[Object][39m ],
+    params: [ [32m'world'[39m ],
+    output: [90mundefined[39m
+  }
+] ) subscribers: Map(0) {}
+CLIENT 🔴 atom updateQueue operation done in store "CLIENT"
+📡  >> CLIENT tx-run:application { id: [32m'1aly7ovkwmp'[39m, key: [32m'addItem'[39m, params: [ [32m'world'[39m ] }
+CLIENT 🛬 transaction addItem Finished applying transaction.
+CLIENT 📖 selector myList:JSON reading cached value
+CLIENT 📖 selector myList:JSON reading cached value
+CLIENT 🙈 selector myList:JSON Removing subscription "use-o::r4:"
+CLIENT 👀 selector myList:JSON Adding subscription "use-o::r4:"
+CLIENT 📖 selector myList:JSON reading cached value
+
+stdout | __tests__/experimental/realtime/realtime-continuity.test.tsx > mutable atoms in continuity > mutable initialization
+📝 took 1.7642909999999574ms
+null disconnected
+
+stdout | __tests__/experimental/realtime/realtime-continuity.test.tsx > mutable atoms in continuity > mutable initialization
+CLIENT 🙈 transaction addItem Removing subscription "tx-run:application"
+CLIENT 🙈 selector myList:JSON Removing subscription "use-o::r4:"
+CLIENT ⭕ atom mySocketId__INTERNAL operation start in store "CLIENT"
+CLIENT 📖 atom mySocketId__INTERNAL reading cached value
+CLIENT 📝 atom mySocketId__INTERNAL set to [90mundefined[39m
+CLIENT 🧹 atom mySocketId__INTERNAL evicting 1 states downstream: Set(1) { [32m'mySocketId'[39m }
+CLIENT 🧹 atom mySocketId__INTERNAL [ mySocketId__INTERNAL ] already done
+CLIENT 🗑 state mySocketId evicted
+CLIENT 📢 atom mySocketId__INTERNAL went ( iDTJeYnOGcZJTHHCAAAL -> [90mundefined[39m ) subscribers: Map(0) {}
+CLIENT 🔴 atom mySocketId__INTERNAL operation done in store "CLIENT"
+
+ ✓ __tests__/experimental/realtime/realtime-continuity.test.tsx (3 tests) 336ms
+stdout | __tests__/experimental/stateless/missing-values.test.ts > stateless data persistence strategies > effect strategy > manual implementation
+waiting for promise...
+
+stdout | __tests__/experimental/stateless/missing-values.test.ts > stateless data persistence strategies > effect strategy > manual implementation
+waiting for promise...
+
+stdout | __tests__/experimental/stateless/missing-values.test.ts > stateless data persistence strategies > effect strategy > manual implementation
+waiting for promise...
+
+stdout | __tests__/experimental/stateless/missing-values.test.ts > stateless data persistence strategies > effect strategy > manual implementation
+waiting for promise...
+
+stdout | __tests__/experimental/stateless/missing-values.test.ts > stateless data persistence strategies > effect strategy > manual implementation
+waiting for promise...
+
+stdout | __tests__/experimental/stateless/missing-values.test.ts > stateless data persistence strategies > effect strategy > manual implementation
+waiting for promise...
+
+stdout | __tests__/experimental/stateless/missing-values.test.ts > stateless data persistence strategies > effect strategy > manual implementation
+waiting for promise...
+
+stdout | __tests__/experimental/stateless/missing-values.test.ts > stateless data persistence strategies > effect strategy > manual implementation
+waiting for promise...
+
+stdout | __tests__/experimental/stateless/missing-values.test.ts > stateless data persistence strategies > effect strategy > manual implementation
+waiting for promise...
+
+stdout | __tests__/experimental/stateless/missing-values.test.ts > stateless data persistence strategies > effect strategy > manual implementation
+waiting for promise...
+
+stdout | __tests__/experimental/stateless/missing-values.test.ts > stateless data persistence strategies > effect strategy > manual implementation
+waiting for promise...
+
+ ✓ __tests__/experimental/stateless/missing-values.test.ts (1 test) 19ms
+stdout | __tests__/experimental/realtime/realtime-pull-regular-atom-family.test.tsx > running transactions > client 1 -> server -> client 2
+{ numbers: [ [33m0[39m ], sum: [33m0[39m }
+
+stdout | __tests__/experimental/realtime/realtime-pull-regular-atom-family.test.tsx > running transactions > client 1 -> server -> client 2
+jane-1 connected on 6923BBWRVSFvvFDTAAAC
+
+stdout | __tests__/experimental/realtime/realtime-pull-regular-atom-family.test.tsx > running transactions > client 1 -> server -> client 2
+dave-1 connected on dfu6vEDRXOyryF95AAAD
+
+stdout | __tests__/experimental/realtime/realtime-pull-regular-atom-family.test.tsx > running transactions > client 1 -> server -> client 2
+{ numbers: [ [33m0[39m ], sum: [33m0[39m }
+
+stdout | __tests__/experimental/realtime/realtime-pull-regular-atom-family.test.tsx > running transactions > client 1 -> server -> client 2
+{ numbers: [ [33m0[39m, [33m1[39m ], sum: [33m1[39m }
+
+ ✓ __tests__/public/silo.test.ts (2 tests) 9ms
+stdout | __tests__/experimental/realtime/realtime-pull-regular-atom-family.test.tsx > running transactions > client 1 -> server -> client 2
+null disconnected
+null disconnected
+
+ ✓ __tests__/experimental/realtime/realtime-pull-regular-atom-family.test.tsx (1 test) 102ms
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts
+[Server 6261] Server starting...
+
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts
+[Server 6262] Server starting...
+
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts
+[Server 6260] Server starting...
+
+
+ ✓ __tests__/private/lazy.test.ts (3 tests) 9ms
+ ✓ __tests__/private/introspection/cast-json.test.ts (1 test) 4ms
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts
+[Server 6262] Server started on port 6262
+
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts
+[Server 6260] Server started on port 6260
+
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts
+[Server 6261] Server started on port 6261
+
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts > multiple-instance > runs several instances of the same server
+Creating sample tables
+
+ ✓ __tests__/public/eslint-plugin/explicit-state-types.test.ts (10 tests) 96ms
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts > multiple-instance > runs several instances of the same server
+[Server 6260] GET /hello-world
+
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts > multiple-instance > runs several instances of the same server
+{ text: [32m'Hello from server on port 6260!'[39m }
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts > multiple-instance > runs several instances of the same server
+Dropping sample tables
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts > multiple-instance > gets countries
+Creating sample tables
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts > multiple-instance > gets countries
+[Server 6261] GET /countries
+
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts > multiple-instance > gets countries
+Dropping sample tables
+
+ ✓ __tests__/public/atom-effects.test.ts (3 tests) 12ms
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts > multiple-instance > gets cities
+Creating sample tables
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts > multiple-instance > gets cities
+[Server 6262] GET /cities
+
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts > multiple-instance > gets cities
+Dropping sample tables
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts > multiple-instance > inserts a country
+Creating sample tables
+
+stdout | __tests__/experimental/realtime/realtime-pull-writable-selector.test.tsx > pull atom, observe selector > receive atomic update; derive selector update
+CLIENT-1 connected on ieH_HWQjNunjpmLVAAAB
+
+ ✓ __tests__/experimental/immortal/react-immortal.test.tsx (2 tests) 25ms
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts > multiple-instance > inserts a country
+[Server 6260] POST /countries
+{
+  json: {
+    name: "Brazil",
+  },
+}
+
+
+stdout | __tests__/experimental/realtime/realtime-pull-writable-selector.test.tsx > pull atom, observe selector > receive atomic update; derive selector update
+null disconnected
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts > multiple-instance > inserts a country
+[Server 6262] Received notification: countries,4
+
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts > multiple-instance > inserts a country
+[Server 6260] {
+  rows: [
+    {
+      id: 4,
+      name: "Brazil",
+    }
+  ],
+}
+Received notification: countries,4
+
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts > multiple-instance > inserts a country
+[Server 6261] Received notification: countries,4
+
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts > multiple-instance > inserts a country
+Dropping sample tables
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts > multiple-instance > inserts a city
+Creating sample tables
+
+stdout | __tests__/experimental/realtime/realtime-pull-writable-selector.test.tsx > pull selector, observe atom > receive selector update; derive atomic update
+CLIENT-2 connected on dzvAroPaUkBDmTbcAAAD
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts > multiple-instance > inserts a city
+[Server 6261] POST /cities
+{
+  json: {
+    name: "Portland",
+    countryId: 1,
+  },
+}
+
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts > multiple-instance > inserts a city
+[Server 6261] {
+  rows: [
+    {
+      id: 10,
+      name: "Portland",
+      countryId: 1,
+      popularity: null,
+    }
+  ],
+}
+
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts > multiple-instance > inserts a city
+Dropping sample tables
+
+stdout | __tests__/experimental/realtime-ipc/game-servers.test.tsx > multi-process realtime server > cleans up rooms that were left open on teardown
+Creating sample tables
+
+ ✓ __tests__/private/store-observation.test.ts (4 tests) 5ms
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts
+Server 6260 exited with code null
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts
+Server 6262 exited with code null
+
+stdout | __tests__/experimental/stateless/multiple-instance.test.ts
+Server 6261 exited with code null
+
+stdout | __tests__/experimental/realtime/realtime-pull-writable-selector.test.tsx > pull selector, observe atom > receive selector update; derive atomic update
+null disconnected
+
+stdout | __tests__/experimental/realtime/realtime-mutable-family.test.tsx > running transactions > client 1 -> server -> client 2
+jane-1 connected on O0oIHj3bCZtgIgS5AAAC
+
+stdout | __tests__/experimental/realtime/realtime-mutable-family.test.tsx > running transactions > client 1 -> server -> client 2
+dave-1 connected on j-xSlj5tZA-hky7JAAAD
+
+stdout | __tests__/experimental/realtime/realtime-transaction.test.tsx > running transactions > client 1 -> server -> client 2
+jane-1 connected on fDTh6H_CmRjc6m0DAAAC
+
+stdout | __tests__/experimental/realtime/realtime-transaction.test.tsx > running transactions > client 1 -> server -> client 2
+dave-1 connected on IUtaJQm_9mPWLQtNAAAD
+
+stdout | __tests__/experimental/realtime/realtime-mutable-family.test.tsx > running transactions > client 1 -> server -> client 2
+null disconnected
+null disconnected
+
+ ✓ __tests__/experimental/realtime/realtime-pull-writable-selector.test.tsx (2 tests) 149ms
+stdout | __tests__/experimental/realtime-ipc/game-servers.test.tsx > multi-process realtime server > cleans up rooms that were left open on teardown
+CLIENT-1 connected on iL0BkZULy6Zn5sIqAAAB
+
+stdout | __tests__/experimental/realtime/realtime-transaction.test.tsx > running transactions > client 1 -> server -> client 2
+null disconnected
+null disconnected
+
+ ✓ __tests__/experimental/realtime/realtime-mutable-family.test.tsx (1 test) 132ms
+stdout | __tests__/experimental/realtime/realtime-transaction.test.tsx > running transactions > client 2 disconnects/reconnects, gets update
+dave-2 connected on V8xIINb5UPffOQ7CAAAH
+
+stdout | __tests__/experimental/realtime/realtime-transaction.test.tsx > running transactions > client 2 disconnects/reconnects, gets update
+jane-2 connected on DiwzvA8iIMJu3RceAAAI
+
+stdout | __tests__/experimental/realtime/realtime-transaction.test.tsx > running transactions > client 2 disconnects/reconnects, gets update
+null disconnected
+null disconnected
+
+stdout | __tests__/experimental/realtime/realtime-transaction.test.tsx > running transactions > client 1 disconnects, makes update, reconnects
+dave-3 connected on SywtVqwWCgc4cwp7AAAM
+
+stdout | __tests__/experimental/realtime/realtime-transaction.test.tsx > running transactions > client 1 disconnects, makes update, reconnects
+jane-3 connected on KxSPcmKbMe1hZlfpAAAN
+
+ ✓ __tests__/experimental/stateless/multiple-instance.test.ts (5 tests) 1380ms
+stdout | __tests__/experimental/realtime/realtime-transaction.test.tsx > running transactions > client 1 disconnects, makes update, reconnects
+null disconnected
+null disconnected
+
+stdout | __tests__/experimental/realtime-ipc/game-servers.test.tsx > multi-process realtime server > cleans up rooms that were left open on teardown
+🥋 DISCONNECT RECEIVED
+null disconnected
+
+stdout | __tests__/experimental/realtime-ipc/game-servers.test.tsx > multi-process realtime server > cleans up rooms that were left open on teardown
+18418 room-1 This is just fyi
+18418 room-1 🔗 running relay method
+18418 room-1 🔥 18418 exited with code 0
+
+stdout | __tests__/experimental/realtime-ipc/game-servers.test.tsx > multi-process realtime server > cleans up rooms that were left open on teardown
+18409 room-1 This is just fyi
+18409 room-1 🔗 running relay method
+
+stdout | __tests__/experimental/realtime-ipc/game-servers.test.tsx > multi-process realtime server > permits manual creation and deletion of rooms
+Creating sample tables
+
+stdout | __tests__/experimental/realtime/realtime-mutable.test.tsx > running transactions > client 1 -> server -> client 2
+retrieving...
+
+ ✓ __tests__/experimental/realtime/realtime-transaction.test.tsx (3 tests) 212ms
+stdout | __tests__/experimental/realtime/realtime-mutable.test.tsx > running transactions > client 1 -> server -> client 2
+jane-1 connected on 9_HBijexJrfTGEo3AAAC
+
+ ✓ __tests__/private/introspection/auditor.test.ts (3 tests) 12ms
+stdout | __tests__/experimental/realtime/realtime-mutable.test.tsx > running transactions > client 1 -> server -> client 2
+dave-1 connected on sTGDasqDxkLYIhAQAAAD
+
+stdout | __tests__/experimental/realtime-ipc/game-servers.test.tsx > multi-process realtime server > permits manual creation and deletion of rooms
+CLIENT-2 connected on cVu8ZvaptXfGNOtnAAAD
+
+stdout | __tests__/experimental/realtime/realtime-mutable.test.tsx > running transactions > client 1 -> server -> client 2
+retrieving...
+
+stdout | __tests__/experimental/realtime/realtime-mutable.test.tsx > running transactions > client 1 -> server -> client 2
+retrieving...
+
+stdout | __tests__/experimental/realtime/realtime-mutable.test.tsx > running transactions > client 1 -> server -> client 2
+null disconnected
+null disconnected
+
+ ✓ __tests__/experimental/realtime/realtime-mutable.test.tsx (1 test) 176ms
+stdout | __tests__/experimental/realtime-ipc/game-servers.test.tsx > multi-process realtime server > permits manual creation and deletion of rooms
+18443 room-1 This is just fyi
+18443 room-1 🔗 running relay method
+
+stdout | __tests__/experimental/realtime-ipc/game-servers.test.tsx > multi-process realtime server > permits manual creation and deletion of rooms
+🥋 DISCONNECT RECEIVED
+null disconnected
+
+stdout | __tests__/experimental/realtime-ipc/game-servers.test.tsx > multi-process realtime server > permits manual creation and deletion of rooms
+18443 room-1 🎰 received [ [32m'exit'[39m, [32m'CLIENT-2'[39m ]
+18443 room-1 🔥 18443 received "exit"
+18443 room-1 🔥 18443 exited with code 0
+
+stdout | __tests__/experimental/realtime-ipc/game-servers.test.tsx > multi-process realtime server > permits manual creation and deletion of rooms
+18434 room-1 This is just fyi
+18434 room-1 🔗 running relay method
+
+ ✓ __tests__/private/future-internal.test.ts (6 tests) 12ms
+stdout | __tests__/experimental/realtime-ipc/game-servers.test.tsx > multi-process realtime server > permits join and leave
+Creating sample tables
+
+ ✓ __tests__/public/validators.test.ts (4 tests) 4ms
+stdout | __tests__/experimental/realtime-ipc/game-servers.test.tsx > multi-process realtime server > permits join and leave
+CLIENT-3 connected on -VPayo3cDE8xLysPAAAF
+
+stdout | __tests__/experimental/realtime-ipc/game-servers.test.tsx > multi-process realtime server > permits join and leave
+🥋 JOIN ROOM CLICKED [36m<ref *1>[39m Socket {
+  connected: [33mtrue[39m,
+  recovered: [90mundefined[39m,
+  receiveBuffer: [],
+  sendBuffer: [],
+  _queue: [],
+  _queueSeq: [33m0[39m,
+  ids: [33m0[39m,
+  acks: {},
+  flags: {},
+  io: Manager {
+    nsps: { [32m'/'[39m: [36m[Circular *1][39m },
+    subs: [
+      [36m[Function: subDestroy][39m,
+      [36m[Function: subDestroy][39m,
+      [36m[Function: subDestroy][39m,
+      [36m[Function: subDestroy][39m,
+      [36m[Function: subDestroy][39m
+    ],
+    opts: {
+      auth: [36m[Object][39m,
+      path: [32m'/socket.io'[39m,
+      transports: [36m[Array][39m,
+      hostname: [32m'localhost'[39m,
+      secure: [33mfalse[39m,
+      port: [32m'6362'[39m
+    },
+    setTimeoutFn: [36m[Function: bound setTimeout][39m,
+    clearTimeoutFn: [36m[Function: bound clearTimeout][39m,
+    _reconnection: [33mtrue[39m,
+    _reconnectionAttempts: [33mInfinity[39m,
+    _reconnectionDelay: [33m1000[39m,
+    _reconnectionDelayMax: [33m5000[39m,
+    _randomizationFactor: [33m0.5[39m,
+    backoff: Backoff {
+      ms: [33m1000[39m,
+      max: [33m5000[39m,
+      factor: [33m2[39m,
+      jitter: [33m0.5[39m,
+      attempts: [33m0[39m
+    },
+    _timeout: [33m20000[39m,
+    _readyState: [32m'open'[39m,
+    uri: [32m'http://localhost:6362/'[39m,
+    encoder: Encoder { replacer: [90mundefined[39m },
+    decoder: Decoder { reviver: [90mundefined[39m, _callbacks: [36m[Object][39m },
+    _autoConnect: [33mtrue[39m,
+    engine: Socket {
+      binaryType: [32m'nodebuffer'[39m,
+      writeBuffer: [],
+      _prevBufferLen: [33m0[39m,
+      _pingInterval: [33m25000[39m,
+      _pingTimeout: [33m20000[39m,
+      _maxPayload: [33m1000000[39m,
+      _pingTimeoutTime: [33m1739312044940[39m,
+      setTimeoutFn: [36m[Function: bound setTimeout][39m,
+      clearTimeoutFn: [36m[Function: bound clearTimeout][39m,
+      secure: [33mfalse[39m,
+      hostname: [32m'localhost'[39m,
+      port: [32m'6362'[39m,
+      transports: [36m[Array][39m,
+      _transportsByName: [36m[Object][39m,
+      opts: [36m[Object][39m,
+      readyState: [32m'open'[39m,
+      transport: [36m[WS][39m,
+      _upgrades: [36m[Array][39m,
+      _callbacks: [36m[Object][39m,
+      id: [32m'Snw3RDdrpBMVaTCiAAAE'[39m,
+      _pingTimeoutTimer: Timeout {
+        _idleTimeout: [33m45000[39m,
+        _idlePrev: [36m[TimersList][39m,
+        _idleNext: [36m[TimersList][39m,
+        _idleStart: [33m1997[39m,
+        _onTimeout: [36m[Function (anonymous)][39m,
+        _timerArgs: [90mundefined[39m,
+        _repeat: [1mnull[22m,
+        _destroyed: [33mfalse[39m,
+        [[32mSymbol(refed)[39m]: [33mtrue[39m,
+        [[32mSymbol(kHasPrimitive)[39m]: [33mfalse[39m,
+        [[32mSymbol(asyncId)[39m]: [33m4869[39m,
+        [[32mSymbol(triggerId)[39m]: [33m4857[39m,
+        [[32mSymbol(kAsyncContextFrame)[39m]: [90mundefined[39m
+      },
+      upgrading: [33mfalse[39m
+    },
+    skipReconnect: [33mfalse[39m,
+    _callbacks: {
+      [32m'$open'[39m: [36m[Array][39m,
+      [32m'$packet'[39m: [36m[Array][39m,
+      [32m'$error'[39m: [36m[Array][39m,
+      [32m'$close'[39m: [36m[Array][39m
+    }
+  },
+  nsp: [32m'/'[39m,
+  auth: { token: [32m'test'[39m, username: [32m'CLIENT-3'[39m },
+  _opts: {
+    auth: { token: [32m'test'[39m, username: [32m'CLIENT-3'[39m },
+    path: [32m'/socket.io'[39m,
+    transports: [
+      [36m[class XHR extends BaseXHR][39m,
+      [36m[class WS extends BaseWS][39m,
+      [36m[class WT extends Transport][39m
+    ],
+    hostname: [32m'localhost'[39m,
+    secure: [33mfalse[39m,
+    port: [32m'6362'[39m
+  },
+  subs: [
+    [36m[Function: subDestroy][39m,
+    [36m[Function: subDestroy][39m,
+    [36m[Function: subDestroy][39m,
+    [36m[Function: subDestroy][39m
+  ],
+  _callbacks: {
+    [32m'$connect'[39m: [ [36m[Function (anonymous)][39m ],
+    [32m'$disconnect'[39m: [ [36m[Function (anonymous)][39m ],
+    [32m'$init:roomIndex'[39m: [ [36m[Function (anonymous)][39m ],
+    [32m'$next:roomIndex'[39m: [ [36m[Function (anonymous)][39m ],
+    [32m'$init:usersInRooms/relatedKeys("CLIENT-3")'[39m: [ [36m[Function (anonymous)][39m ],
+    [32m'$next:usersInRooms/relatedKeys("CLIENT-3")'[39m: [ [36m[Function (anonymous)][39m ]
+  },
+  id: [32m'-VPayo3cDE8xLysPAAAF'[39m,
+  _pid: [90mundefined[39m
+}
+
+ ✓ __tests__/public/data/struct.test.ts (2 tests) 5ms
+ ✓ __tests__/private/introspection/differ.test.ts (10 tests) 4ms
+stdout | __tests__/experimental/realtime-ipc/game-servers.test.tsx > multi-process realtime server > permits join and leave
+18459 room-1 This is just fyi
+18459 room-1 🔗 running relay method
+
+stdout | __tests__/experimental/realtime-ipc/game-servers.test.tsx > multi-process realtime server > permits join and leave
+18468 room-1 This is just fyi
+18468 room-1 🔗 running relay method
+
+stdout | __tests__/experimental/realtime-ipc/game-servers.test.tsx > multi-process realtime server > permits join and leave
+18468 room-1 🎰 received [ [32m'user-joins'[39m, [32m'CLIENT-3'[39m ]
+18468 room-1 👤 user CLIENT-3 joined
+18468 room-1 🔗 attaching services: [0]
+
+stdout | __tests__/experimental/realtime-ipc/game-servers.test.tsx > multi-process realtime server > permits join and leave
+🥋 LEAVE ROOM RECEIVED
+
+stdout | __tests__/experimental/realtime-ipc/game-servers.test.tsx > multi-process realtime server > permits join and leave
+18468 room-1 🎰 received [ [32m'user:CLIENT-3'[39m, [32m'leave-room'[39m ]
+
+stdout | __tests__/experimental/realtime-ipc/game-servers.test.tsx > multi-process realtime server > permits join and leave
+🥋 DISCONNECT RECEIVED
+null disconnected
+
+stdout | __tests__/experimental/realtime-ipc/game-servers.test.tsx > multi-process realtime server > permits join and leave
+18468 room-1 🔥 18468 exited with code 0
+
+ ✓ __tests__/private/lazy-map-internal.test.ts (5 tests) 3ms
+ ✓ __tests__/private/introspection/refinery.test.ts (11 tests) 3ms
+stdout | __tests__/experimental/realtime/realtime-push-regular-atom.test.tsx > pushing state > client 1 -> server -> client 2
+jane-1 connected on 4zfkhfJ5BaBFahIBAAAC
+
+stdout | __tests__/experimental/realtime/realtime-push-regular-atom.test.tsx > pushing state > client 1 -> server -> client 2
+dave-1 connected on VqaoH5ZugTkXqe64AAAD
+
+stdout | __tests__/experimental/realtime/realtime-push-regular-atom.test.tsx > pushing state > client 1 -> server -> client 2
+null disconnected
+null disconnected
+
+ ✓ __tests__/experimental/realtime/realtime-push-regular-atom.test.tsx (1 test) 110ms
+ ✓ __tests__/experimental/realtime-ipc/game-servers.test.tsx (3 tests) 1317ms
+   ✓ multi-process realtime server > permits manual creation and deletion of rooms 340ms
+   ✓ multi-process realtime server > permits join and leave 375ms
+stdout | __tests__/experimental/realtime/realtime-timeline.test.tsx > undo/redo > server update; server undo; server redo
+CLIENT-1 connected on 8yGaLzKSqlpJUVPdAAAB
+
+ ✓ __tests__/public/data/dict.test.ts (1 test) 4ms
+stdout | __tests__/public/logger.test.ts > setLogLevel > allows logging at the preferred level
+🔨 atom count creating in store "IMPLICIT_STORE"
+
+stdout | __tests__/experimental/realtime/realtime-setup-multiple.test.tsx > multi-client scenario > both clients respond to changes on the server
+jim-1 connected on k_gmE2yEAGTIhXVzAAAC
+
+ ✓ __tests__/public/logger.test.ts (1 test) 4ms
+stdout | __tests__/experimental/realtime/realtime-timeline.test.tsx > undo/redo > server update; server undo; server redo
+null disconnected
+
+stdout | __tests__/experimental/realtime/realtime-setup-multiple.test.tsx > multi-client scenario > both clients respond to changes on the server
+lee-1 connected on _n2zfMSvocAjHwevAAAD
+
+stdout | __tests__/experimental/realtime/realtime-setup-multiple.test.tsx > multi-client scenario > both clients respond to changes on the server
+null disconnected
+null disconnected
+
+ ✓ __tests__/experimental/realtime/realtime-timeline.test.tsx (1 test) 187ms
+ ✓ __tests__/experimental/realtime/realtime-setup-multiple.test.tsx (1 test) 96ms
+ ✓ __tests__/public/json/is-json.test.ts (1 test) 2ms
+stdout | __tests__/experimental/realtime/realtime-setup-single.test.tsx > single-client scenario > responds to changes on the server
+CLIENT-1 connected on sH_nIAfznk-uzrj2AAAB
+
+stdout | __tests__/experimental/realtime/realtime-setup-single.test.tsx > single-client scenario > responds to changes on the server
+null disconnected
+
+ ✓ __tests__/experimental/realtime/realtime-setup-single.test.tsx (1 test) 119ms
+ ✓ __tests__/private/circular-buffer.test.ts (1 test) 2ms
+ ✓ __tests__/private/introspection/sprawl.test.ts (1 test) 3ms
+ ✓ __tests__/private/introspection/ReactErrorBoundary.test.tsx (1 test) 30ms
+ ✓ __tests__/public/json/entries.test.ts (1 test) 1ms
+ ✓ __tests__/private/join-internal.test.ts (1 test) 2ms
+ ✓ __tests__/public/data/until.test.ts (1 test) 1ms
+ ✓ __tests__/private/introspection/introspection.test.ts (1 test) 4ms
+ALIVE ✓ __tests__/experimental/realtime/ipc-socket.test.tsx (1 test) 2ms
+
+ Test Files  59 passed (59)
+      Tests  296 passed (296)
+   Start at  14:13:15
+   Duration  6.28s (transform 1.84s, setup 0ms, collect 17.97s, tests 5.75s, environment 11.76s, prepare 4.10s)
+
+ % Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   92.87 |     92.7 |   89.29 |   92.87 |                   
+ data/src          |     100 |      100 |   98.63 |     100 |                   
+  dict.ts          |     100 |      100 |     100 |     100 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  join.ts          |     100 |      100 |   98.41 |     100 |                   
+  struct-family.ts |     100 |      100 |     100 |     100 |                   
+  struct.ts        |     100 |      100 |     100 |     100 |                   
+  until.ts         |     100 |      100 |     100 |     100 |                   
+ ephemeral/src     |     100 |      100 |     100 |     100 |                   
+  find-state.ts    |     100 |      100 |     100 |     100 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+ eslint-plugin/src |     100 |      100 |     100 |     100 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  walk.ts          |     100 |      100 |     100 |     100 |                   
+ ...ugin/src/rules |     100 |      100 |     100 |     100 |                   
+  ...tate-types.ts |     100 |      100 |     100 |     100 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  lifespan.ts      |     100 |      100 |     100 |     100 |                   
+  ...pendencies.ts |     100 |      100 |     100 |     100 |                   
+ immortal/src      |     100 |      100 |     100 |     100 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  seek-state.ts    |     100 |      100 |     100 |     100 |                   
+ internal/src      |     100 |      100 |     100 |     100 |                   
+  arbitrary.ts     |     100 |      100 |     100 |     100 |                   
+  caching.ts       |     100 |      100 |     100 |     100 |                   
+  future.ts        |     100 |      100 |     100 |     100 |                   
+  ...nment-data.ts |     100 |      100 |     100 |     100 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  junction.ts      |     100 |      100 |     100 |     100 |                   
+  keys.ts          |     100 |      100 |     100 |     100 |                   
+  lazy-map.ts      |     100 |      100 |     100 |     100 |                   
+  lineage.ts       |     100 |      100 |     100 |     100 |                   
+  ...ound-error.ts |     100 |      100 |     100 |     100 |                   
+  operation.ts     |     100 |      100 |     100 |     100 |                   
+  pretty-print.ts  |     100 |      100 |     100 |     100 |                   
+  subject.ts       |     100 |      100 |     100 |     100 |                   
+  utility-types.ts |       0 |        0 |       0 |       0 |                   
+ internal/src/atom |     100 |      100 |     100 |     100 |                   
+  ...gular-atom.ts |     100 |      100 |     100 |     100 |                   
+  ...alone-atom.ts |     100 |      100 |     100 |     100 |                   
+  dispose-atom.ts  |     100 |      100 |     100 |     100 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  is-default.ts    |     100 |      100 |     100 |     100 |                   
+ ...l/src/families |     100 |      100 |   73.07 |     100 |                   
+  ...tom-family.ts |     100 |      100 |     100 |     100 |                   
+  ...tor-family.ts |     100 |      100 |    62.5 |     100 |                   
+  ...tom-family.ts |     100 |      100 |     100 |     100 |                   
+  ...tor-family.ts |     100 |      100 |     100 |     100 |                   
+  ...tor-family.ts |     100 |      100 |      50 |     100 |                   
+  ...from-store.ts |     100 |      100 |     100 |     100 |                   
+  find-in-store.ts |     100 |      100 |     100 |     100 |                   
+  ...y-of-token.ts |     100 |      100 |     100 |     100 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  ...ily-member.ts |     100 |      100 |     100 |     100 |                   
+  seek-in-store.ts |     100 |      100 |     100 |     100 |                   
+ .../src/get-state |     100 |    97.87 |     100 |     100 |                   
+  ...from-store.ts |     100 |    97.05 |     100 |     100 | 72                
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  ...pute-value.ts |     100 |      100 |     100 |     100 |                   
+ ...ingest-updates |   99.52 |    97.56 |     100 |   99.52 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  ...tom-update.ts |     100 |      100 |     100 |     100 |                   
+  ...n-disposal.ts |     100 |      100 |     100 |     100 |                   
+  ...tor-update.ts |   92.85 |    66.66 |     100 |   92.85 | 12                
+  ...ion-update.ts |     100 |      100 |     100 |     100 |                   
+ ...l/src/molecule |      97 |    96.22 |   61.11 |      97 |                   
+  ...ule-family.ts |     100 |      100 |     100 |     100 |                   
+  ...e-molecule.ts |   98.41 |    91.66 |     100 |   98.41 | 56                
+  ...e-in-store.ts |     100 |      100 |     100 |     100 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  ...e-in-store.ts |   94.96 |    96.29 |   46.15 |   94.96 | ...,81-82,108-109 
+  ...e-internal.ts |     100 |      100 |     100 |     100 |                   
+ ...al/src/mutable |   98.09 |    97.01 |   95.45 |   98.09 |                   
+  ...tom-family.ts |     100 |      100 |     100 |     100 |                   
+  ...table-atom.ts |     100 |      100 |     100 |     100 |                   
+  ...son-family.ts |     100 |      100 |     100 |     100 |                   
+  ...json-token.ts |     100 |      100 |     100 |     100 |                   
+  ...ate-family.ts |     100 |      100 |     100 |     100 |                   
+  ...date-token.ts |     100 |      100 |     100 |     100 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  ...ker-family.ts |   95.74 |       80 |     100 |   95.74 | 58-59             
+  tracker.ts       |   96.07 |    96.66 |   83.33 |   96.07 | 80-81,176-179     
+  transceiver.ts   |     100 |      100 |     100 |     100 |                   
+ ...l/src/selector |   98.96 |    95.38 |   94.73 |   98.96 |                   
+  ...y-selector.ts |     100 |      100 |     100 |     100 |                   
+  ...e-selector.ts |     100 |      100 |     100 |     100 |                   
+  ...e-selector.ts |     100 |      100 |     100 |     100 |                   
+  ...e-selector.ts |     100 |      100 |     100 |     100 |                   
+  ...dency-keys.ts |     100 |      100 |     100 |     100 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  ...r-selector.ts |   95.69 |    84.21 |   83.33 |   95.69 | 46,112,114-115    
+  ...ctor-atoms.ts |     100 |      100 |     100 |     100 |                   
+  ...ctor-atoms.ts |     100 |      100 |     100 |     100 |                   
+ .../src/set-state |   96.38 |    93.84 |     100 |   96.38 |                   
+  become.ts        |     100 |      100 |     100 |     100 |                   
+  ...-if-needed.ts |     100 |    83.33 |     100 |     100 | 15                
+  emit-update.ts   |     100 |      100 |     100 |     100 |                   
+  ...downstream.ts |     100 |      100 |     100 |     100 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  ...r-selector.ts |     100 |      100 |     100 |     100 |                   
+  set-atom.ts      |     100 |      100 |     100 |     100 |                   
+  ...into-store.ts |     100 |    93.33 |     100 |     100 | 43                
+  stow-update.ts   |   80.76 |    86.66 |     100 |   80.76 | 16-17,29-36       
+ ...rnal/src/store |     100 |      100 |     100 |     100 |                   
+  ...lar-buffer.ts |     100 |      100 |     100 |     100 |                   
+  counterfeit.ts   |     100 |      100 |     100 |     100 |                   
+  deposit.ts       |     100 |      100 |     100 |     100 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  store.ts         |     100 |      100 |     100 |     100 |                   
+  withdraw.ts      |     100 |      100 |     100 |     100 |                   
+ .../src/subscribe |   97.79 |    96.66 |     100 |   97.79 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  recall-state.ts  |     100 |      100 |     100 |     100 |                   
+  ...e-in-store.ts |     100 |      100 |     100 |     100 |                   
+  ...root-atoms.ts |   91.83 |       75 |     100 |   91.83 | 17-20             
+  ...e-to-state.ts |     100 |      100 |     100 |     100 |                   
+  ...o-timeline.ts |     100 |      100 |     100 |     100 |                   
+  ...ransaction.ts |     100 |      100 |     100 |     100 |                   
+ ...l/src/timeline |   94.46 |     90.9 |     100 |   94.46 |                   
+  ...e-timeline.ts |   95.12 |    89.21 |     100 |   95.12 | ...95,301-302,428 
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  time-travel.ts   |   90.47 |    96.66 |     100 |   90.47 | 27-34             
+ ...rc/transaction |   89.87 |    82.92 |      92 |   89.87 |                   
+  ...ransaction.ts |    61.9 |       50 |     100 |    61.9 | 8-15              
+  ...upon-store.ts |   93.33 |       75 |     100 |   93.33 | 18                
+  ...ransaction.ts |   86.44 |       75 |     100 |   86.44 | 20-27             
+  ...continuity.ts |    87.5 |    66.66 |     100 |    87.5 | 11-12             
+  ...ransaction.ts |     100 |      100 |    90.9 |     100 |                   
+  ...ransaction.ts |     100 |      100 |     100 |     100 |                   
+  ...och-number.ts |   69.44 |    66.66 |   66.66 |   69.44 | 5-13,23,34        
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  is-root-store.ts |     100 |      100 |     100 |     100 |                   
+  ...och-number.ts |    92.3 |       75 |     100 |    92.3 | 22-23             
+ introspection/src |   96.06 |    92.12 |   96.22 |   96.06 |                   
+  ...atom-index.ts |   95.23 |       90 |     100 |   95.23 | 65-66,82-83       
+  ...ion-states.ts |     100 |      100 |     100 |     100 |                   
+  ...ctor-index.ts |   95.69 |    85.71 |     100 |   95.69 | 71-72,92-93       
+  ...ine-family.ts |   73.17 |     87.5 |      80 |   73.17 | 19-29             
+  ...line-index.ts |   93.54 |      100 |     100 |   93.54 | 23-24             
+  ...tion-index.ts |   93.54 |      100 |     100 |   93.54 | 23-24             
+  ...ction-logs.ts |     100 |      100 |     100 |     100 |                   
+  ...-selectors.ts |     100 |      100 |     100 |     100 |                   
+  auditor.ts       |     100 |      100 |     100 |     100 |                   
+  differ.ts        |     100 |    96.96 |   88.88 |     100 | 15                
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  refinery.ts      |     100 |    95.65 |     100 |     100 | 55                
+  sprawl.ts        |   86.66 |    64.28 |     100 |   86.66 | 26-27,36-37       
+ json/src          |   84.37 |    88.46 |     100 |   84.37 |                   
+  entries.ts       |     100 |      100 |     100 |     100 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  ...son-family.ts |   70.58 |    78.57 |     100 |   70.58 | 58-60,62-63,74-88 
+  select-json.ts   |     100 |      100 |     100 |     100 |                   
+ ...t-devtools/src |   93.22 |    81.25 |   65.71 |   93.22 |                   
+  ...ODevtools.tsx |   96.26 |      100 |      50 |   96.26 | 112-115           
+  Button.tsx       |     100 |      100 |     100 |     100 |                   
+  StateEditor.tsx  |     100 |      100 |      80 |     100 |                   
+  StateIndex.tsx   |   93.63 |    82.35 |   66.66 |   93.63 | 43-44,46-47,55-57 
+  ...lineIndex.tsx |   94.56 |    84.61 |      60 |   94.56 | 46-47,55-56,82    
+  ...tionIndex.tsx |     100 |      100 |     100 |     100 |                   
+  Updates.tsx      |   86.39 |    65.38 |   42.85 |   86.39 | ...14-119,193,196 
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  store.ts         |   92.15 |    33.33 |     100 |   92.15 | 32,41,50,59       
+ .../elastic-input |   74.39 |     40.9 |   68.75 |   74.39 |                   
+  ElasticInput.tsx |   87.71 |       50 |     100 |   87.71 | 33-36,45-47       
+  NumberInput.tsx  |   68.87 |     37.5 |   66.66 |   68.87 | ...53-156,184-195 
+  TextInput.tsx    |   74.28 |       50 |   66.66 |   74.28 | 38-46             
+  index.ts         |     100 |      100 |     100 |     100 |                   
+ ...error-boundary |     100 |    66.66 |     100 |     100 |                   
+  ...tFallback.tsx |     100 |    33.33 |     100 |     100 | 11                
+  ...rBoundary.tsx |     100 |    83.33 |     100 |     100 | 39                
+  index.ts         |     100 |      100 |     100 |     100 |                   
+ ...rc/json-editor |   94.73 |    85.29 |   80.95 |   94.73 |                   
+  ...omponents.tsx |   88.23 |      100 |   83.33 |   88.23 | 61-63,92-94       
+  ...interface.tsx |     100 |      100 |     100 |     100 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  ...-internal.tsx |   94.68 |    73.68 |   66.66 |   94.68 | 63-65,84,109      
+ ...ditors-by-type |   90.19 |       90 |   61.11 |   90.19 |                   
+  array-editor.tsx |     100 |      100 |   33.33 |     100 |                   
+  non-json.tsx     |     100 |      100 |     100 |     100 |                   
+  ...ct-editor.tsx |   79.78 |    83.33 |      50 |   79.78 | 26-43,112-114     
+  ...e-editors.tsx |   98.36 |    88.88 |      75 |   98.36 | 45                
+ ...type/utilities |     100 |       96 |     100 |     100 |                   
+  ...y-elements.ts |     100 |      100 |     100 |     100 |                   
+  cast-json.ts     |     100 |    86.66 |     100 |     100 | 19,41             
+  cast-to-json.ts  |     100 |      100 |     100 |     100 |                   
+  ...properties.ts |     100 |      100 |     100 |     100 |                   
+ react/src         |     100 |      100 |     100 |     100 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  ...-overloads.ts |     100 |      100 |     100 |     100 |                   
+  ...e-context.tsx |     100 |      100 |     100 |     100 |                   
+  use-i.ts         |     100 |      100 |     100 |     100 |                   
+  use-json.ts      |     100 |      100 |     100 |     100 |                   
+  use-o.ts         |     100 |      100 |     100 |     100 |                   
+  use-tl.ts        |     100 |      100 |     100 |     100 |                   
+ ...ime-client/src |   74.31 |    77.19 |   81.25 |   74.31 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  ...ily-member.ts |   86.36 |       75 |      50 |   86.36 | 15-17             
+  pull-atom.ts     |     100 |      100 |     100 |     100 |                   
+  ...ily-member.ts |      90 |       80 |      50 |      90 | 19-21             
+  ...table-atom.ts |     100 |      100 |     100 |     100 |                   
+  ...ily-member.ts |   78.37 |       40 |     100 |   78.37 | 16-18,25-26,33-35 
+  pull-selector.ts |   93.93 |       80 |     100 |   93.93 | 19-20             
+  push-state.ts    |     100 |      100 |     100 |     100 |                   
+  server-action.ts |     100 |      100 |     100 |     100 |                   
+  ...continuity.ts |   62.98 |       72 |      80 |   62.98 | ...36-339,351-369 
+ ...-client-stores |   96.87 |       50 |     100 |   96.87 |                   
+  ...main-store.ts |   94.44 |       50 |     100 |   94.44 | 18                
+  ...sync-store.ts |     100 |      100 |     100 |     100 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+ ...time-react/src |   92.85 |       90 |   92.85 |   92.85 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  on-mount.ts      |     100 |      100 |     100 |     100 |                   
+  ...e-context.tsx |     100 |      100 |     100 |     100 |                   
+  ...ily-member.ts |     100 |      100 |     100 |     100 |                   
+  use-pull-atom.ts |     100 |      100 |     100 |     100 |                   
+  ...table-atom.ts |     100 |      100 |     100 |     100 |                   
+  ...ily-member.ts |     100 |      100 |     100 |     100 |                   
+  ...ily-member.ts |     100 |      100 |     100 |     100 |                   
+  ...l-selector.ts |     100 |      100 |     100 |     100 |                   
+  use-push.ts      |     100 |      100 |     100 |     100 |                   
+  ...me-service.ts |   96.42 |       60 |     100 |   96.42 | 15                
+  ...ver-action.ts |     100 |      100 |     100 |     100 |                   
+  ...gle-effect.ts |   46.15 |       50 |      50 |   46.15 | 6,13-25           
+  ...continuity.ts |     100 |      100 |     100 |     100 |                   
+ ...ime-server/src |   82.23 |      100 |    87.5 |   82.23 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  ...n-receiver.ts |   93.33 |      100 |     100 |   93.33 | 34-35             
+  ...y-provider.ts |   88.23 |      100 |     100 |   88.23 | 62-68             
+  ...y-provider.ts |   74.07 |      100 |      75 |   74.07 | 34-40,61,71-76    
+  ...e-provider.ts |   91.17 |      100 |     100 |   91.17 | 50-52             
+  ...e-provider.ts |   68.42 |      100 |      75 |   68.42 | 30-35,43-48       
+  ...e-receiver.ts |   76.92 |      100 |      80 |   76.92 | 20-22,31-33       
+ ...src/continuity |    72.6 |    74.07 |     100 |    72.6 |                   
+  ...al-payload.ts |      55 |    57.14 |     100 |      55 | 29-46,50          
+  ...on-request.ts |   79.16 |    66.66 |     100 |   79.16 | 28-37             
+  ...continuity.ts |   89.07 |       80 |     100 |   89.07 | 38-45,139-143     
+  ...wledgement.ts |     100 |      100 |     100 |     100 |                   
+  ...ty-actions.ts |   71.26 |    85.71 |     100 |   71.26 | 43-57,89-98       
+  ...erpectives.ts |   24.48 |       50 |     100 |   24.48 | 22-58             
+ ...rc/ipc-sockets |   56.47 |    66.66 |   52.17 |   56.47 |                   
+  child-socket.ts  |   79.16 |    63.63 |   85.71 |   79.16 | ...09-113,136-140 
+  custom-socket.ts |    64.4 |    66.66 |   66.66 |    64.4 | ...55,68-80,83-85 
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  parent-socket.ts |   35.44 |      100 |      20 |   35.44 | ...75-180,187-191 
+ ...-server-stores |   94.51 |    80.76 |   72.22 |   94.51 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  ...al-actions.ts |     100 |       90 |     100 |     100 | 19                
+  ...rnal-store.ts |     100 |      100 |     100 |     100 |                   
+  ...sync-store.ts |   79.06 |       50 |   66.66 |   79.06 | 22-27,38,40,42    
+  ...user-store.ts |     100 |      100 |      50 |     100 |                   
+ ...me-testing/src |   89.52 |     87.5 |   70.58 |   89.52 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  ...time-test.tsx |   89.47 |     87.5 |   70.58 |   89.47 | ...44-157,216-217 
+ realtime/src      |    93.8 |      100 |   68.75 |    93.8 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  ...continuity.ts |   97.14 |      100 |   85.71 |   97.14 | 32-33             
+  ...room-store.ts |    87.8 |      100 |   55.55 |    87.8 | 47-51             
+ src               |   98.42 |    95.95 |     100 |   98.42 |                   
+  allocate.ts      |   95.59 |       95 |     100 |   95.59 | 123-126,129-131   
+  atom.ts          |     100 |      100 |     100 |     100 |                   
+  dispose-state.ts |     100 |      100 |     100 |     100 |                   
+  get-state.ts     |     100 |      100 |     100 |     100 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  logger.ts        |     100 |     87.5 |     100 |     100 | 108,119           
+  molecule.ts      |     100 |      100 |     100 |     100 |                   
+  selector.ts      |     100 |      100 |     100 |     100 |                   
+  set-state.ts     |     100 |      100 |     100 |     100 |                   
+  silo.ts          |     100 |      100 |     100 |     100 |                   
+  subscribe.ts     |     100 |      100 |     100 |     100 |                   
+  timeline.ts      |     100 |      100 |     100 |     100 |                   
+  transaction.ts   |     100 |      100 |     100 |     100 |                   
+  validators.ts    |     100 |      100 |     100 |     100 |                   
+ ...rs/set-rtx/src |     100 |      100 |     100 |     100 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  set-rtx.ts       |     100 |      100 |     100 |     100 |                   
+ web/src           |   82.35 |       80 |     100 |   82.35 |                   
+  index.ts         |     100 |      100 |     100 |     100 |                   
+  persist-sync.ts  |   81.25 |       80 |     100 |   81.25 | 20-22             
+-------------------|---------|----------|---------|---------|-------------------

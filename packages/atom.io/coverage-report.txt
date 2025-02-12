@@ -1,0 +1,281 @@
+---------------------------------------|---------|----------|---------|---------|-------------------
+File                                   | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+---------------------------------------|---------|----------|---------|---------|-------------------
+All files                              |   92.94 |    92.78 |   89.71 |   92.94 |                   
+ data/src                              |     100 |      100 |   98.63 |     100 |                   
+  dict.ts                              |     100 |      100 |     100 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  join.ts                              |     100 |      100 |   98.41 |     100 |                   
+  struct-family.ts                     |     100 |      100 |     100 |     100 |                   
+  struct.ts                            |     100 |      100 |     100 |     100 |                   
+  until.ts                             |     100 |      100 |     100 |     100 |                   
+ ephemeral/src                         |     100 |      100 |     100 |     100 |                   
+  find-state.ts                        |     100 |      100 |     100 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+ eslint-plugin/src                     |     100 |      100 |     100 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  walk.ts                              |     100 |      100 |     100 |     100 |                   
+ eslint-plugin/src/rules               |     100 |      100 |     100 |     100 |                   
+  explicit-state-types.ts              |     100 |      100 |     100 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  lifespan.ts                          |     100 |      100 |     100 |     100 |                   
+  synchronous-selector-dependencies.ts |     100 |      100 |     100 |     100 |                   
+ immortal/src                          |     100 |      100 |     100 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  seek-state.ts                        |     100 |      100 |     100 |     100 |                   
+ internal/src                          |     100 |      100 |     100 |     100 |                   
+  arbitrary.ts                         |     100 |      100 |     100 |     100 |                   
+  caching.ts                           |     100 |      100 |     100 |     100 |                   
+  future.ts                            |     100 |      100 |     100 |     100 |                   
+  get-environment-data.ts              |     100 |      100 |     100 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  junction.ts                          |     100 |      100 |     100 |     100 |                   
+  keys.ts                              |     100 |      100 |     100 |     100 |                   
+  lazy-map.ts                          |     100 |      100 |     100 |     100 |                   
+  lineage.ts                           |     100 |      100 |     100 |     100 |                   
+  not-found-error.ts                   |     100 |      100 |     100 |     100 |                   
+  operation.ts                         |     100 |      100 |     100 |     100 |                   
+  pretty-print.ts                      |     100 |      100 |     100 |     100 |                   
+  subject.ts                           |     100 |      100 |     100 |     100 |                   
+  utility-types.ts                     |       0 |        0 |       0 |       0 |                   
+ internal/src/atom                     |     100 |      100 |     100 |     100 |                   
+  create-regular-atom.ts               |     100 |      100 |     100 |     100 |                   
+  create-standalone-atom.ts            |     100 |      100 |     100 |     100 |                   
+  dispose-atom.ts                      |     100 |      100 |     100 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  is-default.ts                        |     100 |      100 |     100 |     100 |                   
+ internal/src/families                 |     100 |      100 |   73.07 |     100 |                   
+  create-atom-family.ts                |     100 |      100 |     100 |     100 |                   
+  create-readonly-selector-family.ts   |     100 |      100 |    62.5 |     100 |                   
+  create-regular-atom-family.ts        |     100 |      100 |     100 |     100 |                   
+  create-selector-family.ts            |     100 |      100 |     100 |     100 |                   
+  create-writable-selector-family.ts   |     100 |      100 |      50 |     100 |                   
+  dispose-from-store.ts                |     100 |      100 |     100 |     100 |                   
+  find-in-store.ts                     |     100 |      100 |     100 |     100 |                   
+  get-family-of-token.ts               |     100 |      100 |     100 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  init-family-member.ts                |     100 |      100 |     100 |     100 |                   
+  seek-in-store.ts                     |     100 |      100 |     100 |     100 |                   
+ internal/src/get-state                |     100 |    97.87 |     100 |     100 |                   
+  get-from-store.ts                    |     100 |    97.05 |     100 |     100 | 72                
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  read-or-compute-value.ts             |     100 |      100 |     100 |     100 |                   
+ internal/src/ingest-updates           |   99.52 |    97.56 |     100 |   99.52 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  ingest-atom-update.ts                |     100 |      100 |     100 |     100 |                   
+  ingest-creation-disposal.ts          |     100 |      100 |     100 |     100 |                   
+  ingest-selector-update.ts            |   92.85 |    66.66 |     100 |   92.85 | 12                
+  ingest-transaction-update.ts         |     100 |      100 |     100 |     100 |                   
+ internal/src/molecule                 |      97 |    96.22 |   61.11 |      97 |                   
+  create-molecule-family.ts            |     100 |      100 |     100 |     100 |                   
+  dispose-molecule.ts                  |   98.41 |    91.66 |     100 |   98.41 | 56                
+  grow-molecule-in-store.ts            |     100 |      100 |     100 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  make-molecule-in-store.ts            |   94.96 |    96.29 |   46.15 |   94.96 | ...,81-82,108-109 
+  molecule-internal.ts                 |     100 |      100 |     100 |     100 |                   
+ internal/src/mutable                  |   98.09 |    97.01 |   95.45 |   98.09 |                   
+  create-mutable-atom-family.ts        |     100 |      100 |     100 |     100 |                   
+  create-mutable-atom.ts               |     100 |      100 |     100 |     100 |                   
+  get-json-family.ts                   |     100 |      100 |     100 |     100 |                   
+  get-json-token.ts                    |     100 |      100 |     100 |     100 |                   
+  get-update-family.ts                 |     100 |      100 |     100 |     100 |                   
+  get-update-token.ts                  |     100 |      100 |     100 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  tracker-family.ts                    |   95.74 |       80 |     100 |   95.74 | 58-59             
+  tracker.ts                           |   96.07 |    96.66 |   83.33 |   96.07 | 80-81,176-179     
+  transceiver.ts                       |     100 |      100 |     100 |     100 |                   
+ internal/src/selector                 |   98.96 |    95.38 |   94.73 |   98.96 |                   
+  create-readonly-selector.ts          |     100 |      100 |     100 |     100 |                   
+  create-standalone-selector.ts        |     100 |      100 |     100 |     100 |                   
+  create-writable-selector.ts          |     100 |      100 |     100 |     100 |                   
+  dispose-selector.ts                  |     100 |      100 |     100 |     100 |                   
+  get-selector-dependency-keys.ts      |     100 |      100 |     100 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  register-selector.ts                 |   95.69 |    84.21 |   83.33 |   95.69 | 46,112,114-115    
+  trace-selector-atoms.ts              |     100 |      100 |     100 |     100 |                   
+  update-selector-atoms.ts             |     100 |      100 |     100 |     100 |                   
+ internal/src/set-state                |   96.38 |    93.84 |     100 |   96.38 |                   
+  become.ts                            |     100 |      100 |     100 |     100 |                   
+  copy-mutable-if-needed.ts            |     100 |    83.33 |     100 |     100 | 15                
+  emit-update.ts                       |     100 |      100 |     100 |     100 |                   
+  evict-downstream.ts                  |     100 |      100 |     100 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  set-atom-or-selector.ts              |     100 |      100 |     100 |     100 |                   
+  set-atom.ts                          |     100 |      100 |     100 |     100 |                   
+  set-into-store.ts                    |     100 |    93.33 |     100 |     100 | 43                
+  stow-update.ts                       |   80.76 |    86.66 |     100 |   80.76 | 16-17,29-36       
+ internal/src/store                    |     100 |      100 |     100 |     100 |                   
+  circular-buffer.ts                   |     100 |      100 |     100 |     100 |                   
+  counterfeit.ts                       |     100 |      100 |     100 |     100 |                   
+  deposit.ts                           |     100 |      100 |     100 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  store.ts                             |     100 |      100 |     100 |     100 |                   
+  withdraw.ts                          |     100 |      100 |     100 |     100 |                   
+ internal/src/subscribe                |   97.79 |    96.66 |     100 |   97.79 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  recall-state.ts                      |     100 |      100 |     100 |     100 |                   
+  subscribe-in-store.ts                |     100 |      100 |     100 |     100 |                   
+  subscribe-to-root-atoms.ts           |   91.83 |       75 |     100 |   91.83 | 17-20             
+  subscribe-to-state.ts                |     100 |      100 |     100 |     100 |                   
+  subscribe-to-timeline.ts             |     100 |      100 |     100 |     100 |                   
+  subscribe-to-transaction.ts          |     100 |      100 |     100 |     100 |                   
+ internal/src/timeline                 |   94.46 |     90.9 |     100 |   94.46 |                   
+  create-timeline.ts                   |   95.12 |    89.21 |     100 |   95.12 | ...95,301-302,428 
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  time-travel.ts                       |   90.47 |    96.66 |     100 |   90.47 | 27-34             
+ internal/src/transaction              |   89.87 |    82.92 |      92 |   89.87 |                   
+  abort-transaction.ts                 |    61.9 |       50 |     100 |    61.9 | 8-15              
+  act-upon-store.ts                    |   93.33 |       75 |     100 |   93.33 | 18                
+  apply-transaction.ts                 |   86.44 |       75 |     100 |   86.44 | 20-27             
+  assign-transaction-to-continuity.ts  |    87.5 |    66.66 |     100 |    87.5 | 11-12             
+  build-transaction.ts                 |     100 |      100 |    90.9 |     100 |                   
+  create-transaction.ts                |     100 |      100 |     100 |     100 |                   
+  get-epoch-number.ts                  |   69.44 |    66.66 |   66.66 |   69.44 | 5-13,23,34        
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  is-root-store.ts                     |     100 |      100 |     100 |     100 |                   
+  set-epoch-number.ts                  |    92.3 |       75 |     100 |    92.3 | 22-23             
+ introspection/src                     |   96.06 |    92.12 |   96.22 |   96.06 |                   
+  attach-atom-index.ts                 |   95.23 |       90 |     100 |   95.23 | 65-66,82-83       
+  attach-introspection-states.ts       |     100 |      100 |     100 |     100 |                   
+  attach-selector-index.ts             |   95.69 |    85.71 |     100 |   95.69 | 71-72,92-93       
+  attach-timeline-family.ts            |   73.17 |     87.5 |      80 |   73.17 | 19-29             
+  attach-timeline-index.ts             |   93.54 |      100 |     100 |   93.54 | 23-24             
+  attach-transaction-index.ts          |   93.54 |      100 |     100 |   93.54 | 23-24             
+  attach-transaction-logs.ts           |     100 |      100 |     100 |     100 |                   
+  attach-type-selectors.ts             |     100 |      100 |     100 |     100 |                   
+  auditor.ts                           |     100 |      100 |     100 |     100 |                   
+  differ.ts                            |     100 |    96.96 |   88.88 |     100 | 15                
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  refinery.ts                          |     100 |    95.65 |     100 |     100 | 55                
+  sprawl.ts                            |   86.66 |    64.28 |     100 |   86.66 | 26-27,36-37       
+ json/src                              |   84.37 |    88.46 |     100 |   84.37 |                   
+  entries.ts                           |     100 |      100 |     100 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  select-json-family.ts                |   70.58 |    78.57 |     100 |   70.58 | 58-60,62-63,74-88 
+  select-json.ts                       |     100 |      100 |     100 |     100 |                   
+ react-devtools/src                    |   93.22 |    81.25 |   65.71 |   93.22 |                   
+  AtomIODevtools.tsx                   |   96.26 |      100 |      50 |   96.26 | 112-115           
+  Button.tsx                           |     100 |      100 |     100 |     100 |                   
+  StateEditor.tsx                      |     100 |      100 |      80 |     100 |                   
+  StateIndex.tsx                       |   93.63 |    82.35 |   66.66 |   93.63 | 43-44,46-47,55-57 
+  TimelineIndex.tsx                    |   94.56 |    84.61 |      60 |   94.56 | 46-47,55-56,82    
+  TransactionIndex.tsx                 |     100 |      100 |     100 |     100 |                   
+  Updates.tsx                          |   86.39 |    65.38 |   42.85 |   86.39 | ...14-119,193,196 
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  store.ts                             |   92.15 |    33.33 |     100 |   92.15 | 32,41,50,59       
+ react-devtools/src/elastic-input      |   74.39 |     40.9 |   68.75 |   74.39 |                   
+  ElasticInput.tsx                     |   87.71 |       50 |     100 |   87.71 | 33-36,45-47       
+  NumberInput.tsx                      |   68.87 |     37.5 |   66.66 |   68.87 | ...53-156,184-195 
+  TextInput.tsx                        |   74.28 |       50 |   66.66 |   74.28 | 38-46             
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+ react-devtools/src/error-boundary     |     100 |    66.66 |     100 |     100 |                   
+  DefaultFallback.tsx                  |     100 |    33.33 |     100 |     100 | 11                
+  ReactErrorBoundary.tsx               |     100 |    83.33 |     100 |     100 | 39                
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+ react-devtools/src/json-editor        |   94.73 |    85.29 |   80.95 |   94.73 |                   
+  default-components.tsx               |   88.23 |      100 |   83.33 |   88.23 | 61-63,92-94       
+  developer-interface.tsx              |     100 |      100 |     100 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  json-editor-internal.tsx             |   94.68 |    73.68 |   66.66 |   94.68 | 63-65,84,109      
+ ...ls/src/json-editor/editors-by-type |   90.19 |       90 |   61.11 |   90.19 |                   
+  array-editor.tsx                     |     100 |      100 |   33.33 |     100 |                   
+  non-json.tsx                         |     100 |      100 |     100 |     100 |                   
+  object-editor.tsx                    |   79.78 |    83.33 |      50 |   79.78 | 26-43,112-114     
+  primitive-editors.tsx                |   98.36 |    88.88 |      75 |   98.36 | 45                
+ ...n-editor/editors-by-type/utilities |     100 |       96 |     100 |     100 |                   
+  array-elements.ts                    |     100 |      100 |     100 |     100 |                   
+  cast-json.ts                         |     100 |    86.66 |     100 |     100 | 19,41             
+  cast-to-json.ts                      |     100 |      100 |     100 |     100 |                   
+  object-properties.ts                 |     100 |      100 |     100 |     100 |                   
+ react/src                             |     100 |      100 |     100 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  parse-state-overloads.ts             |     100 |      100 |     100 |     100 |                   
+  store-context.tsx                    |     100 |      100 |     100 |     100 |                   
+  use-i.ts                             |     100 |      100 |     100 |     100 |                   
+  use-json.ts                          |     100 |      100 |     100 |     100 |                   
+  use-o.ts                             |     100 |      100 |     100 |     100 |                   
+  use-tl.ts                            |     100 |      100 |     100 |     100 |                   
+ realtime-client/src                   |   74.31 |    77.19 |   81.25 |   74.31 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  pull-atom-family-member.ts           |   86.36 |       75 |      50 |   86.36 | 15-17             
+  pull-atom.ts                         |     100 |      100 |     100 |     100 |                   
+  pull-mutable-atom-family-member.ts   |      90 |       80 |      50 |      90 | 19-21             
+  pull-mutable-atom.ts                 |     100 |      100 |     100 |     100 |                   
+  pull-selector-family-member.ts       |   78.37 |       40 |     100 |   78.37 | 16-18,25-26,33-35 
+  pull-selector.ts                     |   93.93 |       80 |     100 |   93.93 | 19-20             
+  push-state.ts                        |     100 |      100 |     100 |     100 |                   
+  server-action.ts                     |     100 |      100 |     100 |     100 |                   
+  sync-continuity.ts                   |   62.98 |       72 |      80 |   62.98 | ...36-339,351-369 
+ ...-client/src/realtime-client-stores |   96.87 |       50 |     100 |   96.87 |                   
+  client-main-store.ts                 |   94.44 |       50 |     100 |   94.44 | 18                
+  client-sync-store.ts                 |     100 |      100 |     100 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+ realtime-react/src                    |   92.85 |       90 |   92.85 |   92.85 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  on-mount.ts                          |     100 |      100 |     100 |     100 |                   
+  realtime-context.tsx                 |     100 |      100 |     100 |     100 |                   
+  use-pull-atom-family-member.ts       |     100 |      100 |     100 |     100 |                   
+  use-pull-atom.ts                     |     100 |      100 |     100 |     100 |                   
+  use-pull-mutable-atom.ts             |     100 |      100 |     100 |     100 |                   
+  use-pull-mutable-family-member.ts    |     100 |      100 |     100 |     100 |                   
+  use-pull-selector-family-member.ts   |     100 |      100 |     100 |     100 |                   
+  use-pull-selector.ts                 |     100 |      100 |     100 |     100 |                   
+  use-push.ts                          |     100 |      100 |     100 |     100 |                   
+  use-realtime-service.ts              |   96.42 |       60 |     100 |   96.42 | 15                
+  use-server-action.ts                 |     100 |      100 |     100 |     100 |                   
+  use-single-effect.ts                 |   46.15 |       50 |      50 |   46.15 | 6,13-25           
+  use-sync-continuity.ts               |     100 |      100 |     100 |     100 |                   
+ realtime-server/src                   |   82.23 |      100 |    87.5 |   82.23 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  realtime-action-receiver.ts          |   93.33 |      100 |     100 |   93.33 | 34-35             
+  realtime-family-provider.ts          |   88.23 |      100 |     100 |   88.23 | 62-68             
+  realtime-mutable-family-provider.ts  |   74.07 |      100 |      75 |   74.07 | 34-40,61,71-76    
+  realtime-mutable-provider.ts         |   91.17 |      100 |     100 |   91.17 | 50-52             
+  realtime-state-provider.ts           |   68.42 |      100 |      75 |   68.42 | 30-35,43-48       
+  realtime-state-receiver.ts           |   76.92 |      100 |      80 |   76.92 | 20-22,31-33       
+ realtime-server/src/continuity        |    72.6 |    74.07 |     100 |    72.6 |                   
+  prepare-to-send-initial-payload.ts   |      55 |    57.14 |     100 |      55 | 29-46,50          
+  ...e-to-serve-transaction-request.ts |   79.16 |    66.66 |     100 |   79.16 | 28-37             
+  ...re-to-sync-realtime-continuity.ts |   89.07 |       80 |     100 |   89.07 | 38-45,139-143     
+  ...o-track-client-acknowledgement.ts |     100 |      100 |     100 |     100 |                   
+  subscribe-to-continuity-actions.ts   |   71.26 |    85.71 |     100 |   71.26 | 43-57,89-98       
+  ...ribe-to-continuity-perpectives.ts |   24.48 |       50 |     100 |   24.48 | 22-58             
+ realtime-server/src/ipc-sockets       |   56.47 |    66.66 |   52.17 |   56.47 |                   
+  child-socket.ts                      |   79.16 |    63.63 |   85.71 |   79.16 | ...09-113,136-140 
+  custom-socket.ts                     |    64.4 |    66.66 |   66.66 |    64.4 | ...55,68-80,83-85 
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  parent-socket.ts                     |   35.44 |      100 |      20 |   35.44 | ...75-180,187-191 
+ ...-server/src/realtime-server-stores |   94.51 |    80.76 |   72.22 |   94.51 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  server-room-external-actions.ts      |     100 |       90 |     100 |     100 | 19                
+  server-room-external-store.ts        |     100 |      100 |     100 |     100 |                   
+  server-sync-store.ts                 |   79.06 |       50 |   66.66 |   79.06 | 22-27,38,40,42    
+  server-user-store.ts                 |     100 |      100 |      50 |     100 |                   
+ realtime-testing/src                  |     100 |      100 |     100 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+ realtime/src                          |    93.8 |      100 |   68.75 |    93.8 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  realtime-continuity.ts               |   97.14 |      100 |   85.71 |   97.14 | 32-33             
+  shared-room-store.ts                 |    87.8 |      100 |   55.55 |    87.8 | 47-51             
+ src                                   |   98.42 |    95.95 |     100 |   98.42 |                   
+  allocate.ts                          |   95.59 |       95 |     100 |   95.59 | 123-126,129-131   
+  atom.ts                              |     100 |      100 |     100 |     100 |                   
+  dispose-state.ts                     |     100 |      100 |     100 |     100 |                   
+  get-state.ts                         |     100 |      100 |     100 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  logger.ts                            |     100 |     87.5 |     100 |     100 | 108,119           
+  molecule.ts                          |     100 |      100 |     100 |     100 |                   
+  selector.ts                          |     100 |      100 |     100 |     100 |                   
+  set-state.ts                         |     100 |      100 |     100 |     100 |                   
+  silo.ts                              |     100 |      100 |     100 |     100 |                   
+  subscribe.ts                         |     100 |      100 |     100 |     100 |                   
+  timeline.ts                          |     100 |      100 |     100 |     100 |                   
+  transaction.ts                       |     100 |      100 |     100 |     100 |                   
+  validators.ts                        |     100 |      100 |     100 |     100 |                   
+ transceivers/set-rtx/src              |     100 |      100 |     100 |     100 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  set-rtx.ts                           |     100 |      100 |     100 |     100 |                   
+ web/src                               |   82.35 |       80 |     100 |   82.35 |                   
+  index.ts                             |     100 |      100 |     100 |     100 |                   
+  persist-sync.ts                      |   81.25 |       80 |     100 |   81.25 | 20-22             
+---------------------------------------|---------|----------|---------|---------|-------------------
