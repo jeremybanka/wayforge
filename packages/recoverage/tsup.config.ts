@@ -12,7 +12,7 @@ export const OPTIONS = {
 	tsconfig: `tsconfig.json`,
 	dts: true,
 	format: [`esm`],
-	entry: [`src/recoverage.x.ts`],
+	entry: [`src/recoverage.ts`, `src/recoverage.x.ts`],
 	metafile: false,
 	outDir: `dist`,
 } satisfies Options
