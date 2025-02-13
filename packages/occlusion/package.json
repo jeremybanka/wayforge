@@ -14,7 +14,6 @@
 		"lint:types:watch": "tsc --watch --noEmit",
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
 		"test": "vitest",
-		"test:coverage": "echo no test coverage yet",
 		"test:once": "vitest run",
 		"postversion": "biome format --write package.json"
 	},

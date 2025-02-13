@@ -4,6 +4,7 @@
 		"enabled": false
 	},
 	"files": {
+		"maxSize": 200000000,
 		"ignoreUnknown": true,
 		"ignore": [
 			"**/metafile-*",

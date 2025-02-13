@@ -8,7 +8,6 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"test": "echo no tests yet",
-		"test:coverage": "echo no test coverage yet",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
 		"lint:types": "tsc --noEmit",

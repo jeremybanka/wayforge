@@ -12,7 +12,6 @@
 		"bundle": "bun build ./src/index.tsx --outdir ./bin --external fastly:*",
 		"build": "bun gen && bun bundle && js-compute-runtime bin/index.js bin/main.wasm",
 		"test": "hurl ./__tests__/*",
-		"test:coverage": "echo no test coverage yet",
 		"test:once": "echo no tests yet",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "bun run gen && eslint -- .",

@@ -71,13 +71,23 @@ describe(`options and positional args from cli`, () => {
 		},
 	})
 	test(`happy: all options and positional args`, () => {
-		const { inputs } = testCli([`--foo=hello`, `--`, `yo`])
+		const { inputs } = testCli([
+			`/some-random-path/my-cli`,
+			`--foo=hello`,
+			`--`,
+			`yo`,
+		])
 		expect(inputs.case).toEqual(`yo`)
 		expect(inputs.opts).toEqual({ foo: `hello` })
 		expect(inputs.path).toEqual([`yo`])
 	})
 	test(`happy: including optional options and missing optional positional args`, () => {
-		const { inputs } = testCli([`--foo=hello`, `--`])
+		const { inputs } = testCli([
+			`/usr/bin/env/node`,
+			`/some-random-path/my-cli`,
+			`--foo=hello`,
+			`--`,
+		])
 		expect(inputs.case).toEqual(``)
 		expect(inputs.opts).toEqual({ foo: `hello` })
 		expect(inputs.path).toEqual([])
