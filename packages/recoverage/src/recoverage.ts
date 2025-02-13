@@ -87,12 +87,7 @@ function useMarks({ inline = false }: { inline?: boolean } = {}) {
 }
 
 async function setupDatabase(mark?: (text: string) => void): Promise<Database> {
-	console.log(
-		Object.entries(env).map(
-			([key, value]) =>
-				`${key}: ${typeof value === `string` && value ? `present` : `missing`}`,
-		),
-	)
+	let sql: { db: Database } | undefined
 	if (env.R2_ACCESS_KEY_ID && env.R2_SECRET_ACCESS_KEY && env.R2_URL) {
 		Bun.s3 = new S3Client({
 			accessKeyId: env.R2_ACCESS_KEY_ID,
@@ -103,11 +98,19 @@ async function setupDatabase(mark?: (text: string) => void): Promise<Database> {
 		})
 		mark?.(`downloading coverage database from R2`)
 		const remote = Bun.s3.file(`coverage.sqlite`)
-		await write(`./coverage.sqlite`, remote)
-		mark?.(`downloaded coverage database from R2`)
+		try {
+			await write(`./coverage.sqlite`, remote)
+			mark?.(`downloaded coverage database from R2`)
+		} catch (error) {
+			console.error(error)
+			mark?.(`downloading coverage database from R2 failed`)
+			sql = { db: new Database(`./coverage.sqlite`) }
+			remote.write(Bun.file(`coverage.sqlite`))
+			mark?.(`uploaded coverage database from R2`)
+		}
 	}
 
-	const db = new Database(`./coverage.sqlite`)
+	const db = sql?.db ?? new Database(`./coverage.sqlite`)
 	db.run(`create table if not exists coverage (git_ref text, coverage text);`)
 
 	return db
