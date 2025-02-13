@@ -28,7 +28,7 @@
 		"comline": "workspace:*",
 		"cron": "3.5.0",
 		"safedeposit": "workspace:*",
-		"zod": "3.24.1"
+		"zod": "3.24.2"
 	},
 	"scripts": {
 		"gen": "bun ./__scripts__/gen.bun.ts",
