@@ -1,13 +1,15 @@
 import { createHash } from "node:crypto"
 
-import { $, file, main, write } from "bun"
-import type { Statement } from "bun:sqlite"
+import type { S3File } from "bun"
+import { $, file, S3Client, write } from "bun"
 import { Database } from "bun:sqlite"
 import colors from "colors"
 import * as Diff from "diff"
 import { createCoverageMap } from "istanbul-lib-coverage"
 import simpleGit from "simple-git"
 import tmp from "tmp"
+
+import { env } from "./recoverage.env"
 
 const COLUMNS = String(120)
 const DEFAULT_BRANCH = `main`
@@ -84,15 +86,34 @@ function useMarks({ inline = false }: { inline?: boolean } = {}) {
 	return { mark, logMarks }
 }
 
-function setupDatabase(): {
-	db: Database
-} {
-	const db = new Database(`./coverage.sqlite`)
+async function setupDatabase(mark?: (text: string) => void): Promise<Database> {
+	let sql: { db: Database } | undefined
+	if (env.R2_ACCESS_KEY_ID && env.R2_SECRET_ACCESS_KEY && env.R2_URL) {
+		Bun.s3 = new S3Client({
+			accessKeyId: env.R2_ACCESS_KEY_ID,
+			secretAccessKey: env.R2_SECRET_ACCESS_KEY,
+			region: `auto`,
+			endpoint: env.R2_URL,
+			bucket: `atomio-coverage`,
+		})
+		mark?.(`downloading coverage database from R2`)
+		const remote = Bun.s3.file(`coverage.sqlite`)
+		try {
+			await write(`./coverage.sqlite`, remote)
+			mark?.(`downloaded coverage database from R2`)
+		} catch (error) {
+			console.error(error)
+			mark?.(`downloading coverage database from R2 failed`)
+			sql = { db: new Database(`./coverage.sqlite`) }
+			await remote.write(Bun.file(`coverage.sqlite`))
+			mark?.(`uploaded coverage database from R2`)
+		}
+	}
+
+	const db = sql?.db ?? new Database(`./coverage.sqlite`)
 	db.run(`create table if not exists coverage (git_ref text, coverage text);`)
 
-	return {
-		db,
-	}
+	return db
 }
 
 export async function capture(): Promise<void> {
@@ -133,7 +154,7 @@ export async function capture(): Promise<void> {
 
 	mark?.(`coverage map created`)
 
-	const { db } = setupDatabase()
+	const db = await setupDatabase(mark)
 
 	mark?.(`setup database`)
 	const coverageFile = file(`./coverage/coverage-final.json`)
@@ -152,6 +173,12 @@ export async function capture(): Promise<void> {
 	})
 	mark?.(`inserted coverage`)
 	console.log(`updated coverage for`, currentGitRef)
+	if (env.R2_ACCESS_KEY_ID && env.R2_SECRET_ACCESS_KEY && env.R2_URL) {
+		const sqliteFile = Bun.s3.file(`coverage.sqlite`)
+		mark?.(`uploading coverage database to R2`)
+		await sqliteFile.write(Bun.file(`coverage.sqlite`))
+		mark?.(`uploaded coverage database to R2`)
+	}
 	logMarks?.()
 	process.exit(0)
 }
@@ -195,7 +222,7 @@ export async function diff(): Promise<void> {
 
 	mark?.(`coverage map created`)
 
-	const { db } = setupDatabase()
+	const db = await setupDatabase()
 	mark?.(`setup database`)
 	const getCoverage = db
 		.query<BranchCoverage, [string]>(

@@ -45,10 +45,12 @@
 		"yalc": "1.0.0-pre.53"
 	},
 	"dependencies": {
+		"@t3-oss/env-core": "0.12.0",
 		"colors": "1.4.0",
 		"comline": "workspace:*",
 		"diff": "7.0.0",
 		"istanbul-lib-coverage": "3.2.2",
-		"nyc": "17.1.0"
+		"nyc": "17.1.0",
+		"zod": "3.24.2"
 	}
 }
