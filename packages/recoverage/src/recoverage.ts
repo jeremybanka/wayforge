@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto"
 
-import { $, file, write } from "bun"
+import { $, file, main, write } from "bun"
+import type { Statement } from "bun:sqlite"
 import { Database } from "bun:sqlite"
 import colors from "colors"
 import * as Diff from "diff"
@@ -15,6 +16,25 @@ const VERBOSE = true
 class BranchCoverage {
 	public git_ref: string
 	public coverage: string
+}
+
+type CoverageEval = {
+	total: number
+	covered: number
+	skipped: number
+	pct: number
+}
+
+type JsonSummary = {
+	branches: CoverageEval
+	functions: CoverageEval
+	lines: CoverageEval
+	statements: CoverageEval
+}
+type JsonSummaryReport = {
+	[key: string]: JsonSummary | undefined
+} & {
+	total: JsonSummary
 }
 
 const logger = {
@@ -64,7 +84,18 @@ function useMarks({ inline = false }: { inline?: boolean } = {}) {
 	return { mark, logMarks }
 }
 
-export async function recoverage(): Promise<void> {
+function setupDatabase(): {
+	db: Database
+} {
+	const db = new Database(`./coverage.sqlite`)
+	db.run(`create table if not exists coverage (git_ref text, coverage text);`)
+
+	return {
+		db,
+	}
+}
+
+export async function capture(): Promise<void> {
 	let mark: ReturnType<typeof useMarks>[`mark`] | undefined
 	let logMarks: ReturnType<typeof useMarks>[`logMarks`] | undefined
 	if (VERBOSE) {
@@ -72,7 +103,7 @@ export async function recoverage(): Promise<void> {
 		mark = mark_
 		logMarks = logMarks_
 	}
-
+	console.log(`recoverage capture`)
 	mark?.(`recoverage`)
 
 	const git = simpleGit(import.meta.dir)
@@ -101,62 +132,102 @@ export async function recoverage(): Promise<void> {
 		mark?.(`git status hash created`)
 	}
 
+	mark?.(`coverage map created`)
+
+	const { db } = setupDatabase()
+
+	mark?.(`setup database`)
 	const coverageFile = file(`./coverage/coverage-final.json`)
 	const coverageJson = await coverageFile.json()
 	const coverageMap = createCoverageMap(coverageJson)
-
-	mark?.(`coverage map created`)
-
-	const db = new Database(`./coverage.sqlite`)
-	function setupDatabase() {
-		return db.run(
-			`create table if not exists coverage (git_ref text, coverage text);`,
-		)
-	}
-	mark?.(`setup database`)
-	setupDatabase()
-	const insertCoverage = db.prepare(
-		`insert into coverage (git_ref, coverage) values ($git_ref, $coverage)`,
-	)
-	const getCoverage = db
-		.query(`SELECT * FROM coverage WHERE git_ref = $git_ref`)
-		.as(BranchCoverage)
-	mark?.(`queries prepared`)
-
+	const insertCoverage = db.prepare<
+		BranchCoverage,
+		{
+			$git_ref: string
+			$coverage: string
+		}
+	>(`insert into coverage (git_ref, coverage) values ($git_ref, $coverage)`)
 	insertCoverage.run({
 		$git_ref: currentGitRef,
 		$coverage: JSON.stringify(coverageMap),
 	})
 	mark?.(`inserted coverage`)
 
-	const [mainCoverage] = getCoverage.all(mainGitRef)
-	const [currentCoverage] = getCoverage.all(currentGitRef)
-
-	mark?.(`got coverage`)
-
 	if (mainGitRef === currentGitRef) {
 		console.log(`updated main coverage`)
 		logMarks?.()
 		process.exit(0)
 	}
-
-	type CoverageEval = {
-		total: number
-		covered: number
-		skipped: number
-		pct: number
+	console.log(`updated coverage for`, currentGitRef)
+	logMarks?.()
+	process.exit(0)
+}
+export async function diff(): Promise<void> {
+	let mark: ReturnType<typeof useMarks>[`mark`] | undefined
+	let logMarks: ReturnType<typeof useMarks>[`logMarks`] | undefined
+	if (VERBOSE) {
+		const { mark: mark_, logMarks: logMarks_ } = useMarks({ inline: true })
+		mark = mark_
+		logMarks = logMarks_
 	}
 
-	type JsonSummary = {
-		branches: CoverageEval
-		functions: CoverageEval
-		lines: CoverageEval
-		statements: CoverageEval
+	console.log(`recoverage diff`)
+	mark?.(`recoverage`)
+
+	const git = simpleGit(import.meta.dir)
+	mark?.(`spawn git`)
+	const { current: currentGitBranch, branches } = await git.branch()
+	mark?.(`git branch`)
+	const gitStatus = await git.status()
+	mark?.(`git status`)
+	const mainGitRef = branches[DEFAULT_BRANCH].commit
+	const gitIsClean = gitStatus.isClean()
+	mark?.(`git status is clean`)
+	let currentGitRef = branches[currentGitBranch].commit
+	if (!gitIsClean) {
+		const gitDiff = await git.diff()
+		mark?.(`git diff`)
+		const gitStatusHash = createHash(`sha256`).update(gitDiff)
+		const untrackedFileData = await Promise.all(
+			gitStatus.files
+				.filter((f) => f.index === `?`)
+				.map(async (f) => `UNTRACKED: ${await file(f.path).text()}`),
+		)
+		for (const fileData of untrackedFileData) {
+			gitStatusHash.update(fileData)
+		}
+		currentGitRef = `${currentGitRef}-${gitStatusHash.digest(`hex`)}`
+		mark?.(`git status hash created`)
 	}
-	type JsonSummaryReport = {
-		[key: string]: JsonSummary | undefined
-	} & {
-		total: JsonSummary
+
+	mark?.(`coverage map created`)
+
+	const { db } = setupDatabase()
+	mark?.(`setup database`)
+	const getCoverage = db
+		.query<BranchCoverage, [string]>(
+			`SELECT * FROM coverage WHERE git_ref = $git_ref`,
+		)
+		.as(BranchCoverage)
+
+	const [mainCoverage] = getCoverage.all(mainGitRef)
+	const [currentCoverage] = getCoverage.all(currentGitRef)
+
+	mark?.(`got coverage`)
+	if (!mainCoverage) {
+		console.log(`no coverage found for the target branch`)
+		logMarks?.()
+		process.exit(0)
+	}
+	if (!currentCoverage) {
+		console.log(`no coverage found for the current ref`)
+		logMarks?.()
+		process.exit(0)
+	}
+	if (mainGitRef === currentGitRef) {
+		console.log(`you're already on the target branch`)
+		logMarks?.()
+		process.exit(0)
 	}
 
 	async function getCoverageJsonSummary(branchCoverage: BranchCoverage) {
@@ -205,16 +276,16 @@ export async function recoverage(): Promise<void> {
 
 	function logDiff() {
 		console.log(`coverage diff between ${mainGitRef} and ${currentGitRef}:`)
-		const diff = Diff.diffLines(
+		const coverageDiffLines = Diff.diffLines(
 			mainCoverageTextReport,
 			currentCoverageTextReport,
 		)
-		for (const part of diff) {
-			const text = part.added
-				? colors.bgGreen(part.value)
-				: part.removed
-					? colors.bgRed(part.value)
-					: part.value
+		for (const line of coverageDiffLines) {
+			const text = line.added
+				? colors.bgGreen(line.value)
+				: line.removed
+					? colors.bgRed(line.value)
+					: line.value
 			process.stdout.write(text)
 		}
 	}

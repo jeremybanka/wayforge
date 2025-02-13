@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process"
-import { readdirSync } from "node:fs"
+import { readdirSync, readFileSync } from "node:fs"
 import { copyFile, readdir } from "node:fs/promises"
 import * as path from "node:path"
 
@@ -64,8 +64,11 @@ async function loadSample(packageName: string) {
 }
 
 describe(`recoverage`, () => {
-	it(`shows a coverage improvement [sample-package-01]`, async () => {
+	it(`approves a coverage improvement [sample-package-01]`, async () => {
 		await loadSample(`sample-package-01`)
+
+		const git = simpleGit(tmpDir.name)
+		await git.init().add(`.`).commit(`initial commit`)
 
 		const test = spawn(`bun`, [`test:coverage`], {
 			stdio: `inherit`,
@@ -73,9 +76,6 @@ describe(`recoverage`, () => {
 		})
 		await new Promise((resolve) => test.on(`exit`, resolve))
 		expect(test.exitCode).toBe(0)
-
-		const git = simpleGit(tmpDir.name)
-		await git.init().add(`.`).commit(`initial commit`)
 
 		const coverage = spawn(`bun`, [`coverage:status`], {
 			stdio: `inherit`,
@@ -103,8 +103,11 @@ describe(`recoverage`, () => {
 		expect(coverage2.exitCode).toBe(0)
 	}, 20_000)
 
-	it(`shows a coverage decrease [sample-package-02]`, async () => {
+	it(`fails a coverage decrease [sample-package-02]`, async () => {
 		await loadSample(`sample-package-02`)
+
+		const git = simpleGit(tmpDir.name)
+		await git.init().add(`.`).commit(`initial commit`)
 
 		const test = spawn(`bun`, [`test:coverage`], {
 			stdio: `inherit`,
@@ -112,9 +115,6 @@ describe(`recoverage`, () => {
 		})
 		await new Promise((resolve) => test.on(`exit`, resolve))
 		expect(test.exitCode).toBe(0)
-
-		const git = simpleGit(tmpDir.name)
-		await git.init().add(`.`).commit(`initial commit`)
 
 		const coverage = spawn(`bun`, [`coverage:status`], {
 			stdio: `inherit`,

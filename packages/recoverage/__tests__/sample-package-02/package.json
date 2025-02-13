@@ -5,7 +5,7 @@
 		"vitest": "3.0.5"
 	},
 	"scripts": {
-		"test:coverage": "vitest run --coverage",
-		"coverage:status": "recoverage"
+		"test:coverage": "vitest run --coverage && recoverage capture",
+		"coverage:status": "recoverage diff"
 	}
 }

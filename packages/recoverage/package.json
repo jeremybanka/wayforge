@@ -47,6 +47,7 @@
 	},
 	"dependencies": {
 		"colors": "1.4.0",
+		"comline": "workspace:*",
 		"diff": "7.0.0",
 		"istanbul-lib-coverage": "3.2.2",
 		"nyc": "17.1.0"
