@@ -1,5 +1,12 @@
 # varmint
 
+## 0.4.1
+
+### Patch Changes
+
+- Updated dependencies [6771243]
+  - comline@0.1.8
+
 ## 0.4.0
 
 ### Minor Changes
