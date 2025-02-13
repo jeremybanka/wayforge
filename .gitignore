@@ -17,3 +17,4 @@ pkg
 heap.json
 !**/break-check/__tests__/fixtures/**/*.js
 *.tsdoc.json
+coverage.sqlite

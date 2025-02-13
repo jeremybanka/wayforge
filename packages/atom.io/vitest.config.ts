@@ -39,7 +39,7 @@ export default defineConfig({
 		globals: true,
 		environment: `happy-dom`,
 		coverage: {
-			reporter: [`text`, `lcov`, `html`],
+			reporter: [`text`, `lcov`, `html`, `json`],
 			include: [`**/src`],
 			exclude: [`__unstable__`],
 		},

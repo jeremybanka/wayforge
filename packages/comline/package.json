@@ -34,7 +34,6 @@
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
 		"test": "vitest",
 		"test:once": "vitest run",
-		"test:coverage": "echo no test coverage yet",
 		"postversion": "biome format --write package.json"
 	},
 	"devDependencies": {
