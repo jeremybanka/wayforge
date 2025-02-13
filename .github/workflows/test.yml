@@ -69,6 +69,8 @@ jobs:
           --health-cmd pg_isready --health-interval 1s --health-timeout 0.5s --health-retries 30
     steps:
       - uses: actions/checkout@v4.2.2
+        with:
+          fetch-depth: 2
       - uses: ./.github/actions/setup
       - uses: actions/download-artifact@v4.1.8
         continue-on-error: true
