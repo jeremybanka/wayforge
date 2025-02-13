@@ -8,11 +8,17 @@ export function retrievePositionalArgs<PositionalArgTree extends Tree>(
 	path: TreePath<PositionalArgTree>
 	route: Join<TreePathName<PositionalArgTree>>
 } {
+	const cliInvocationIndex = passed.findIndex((arg) => arg.includes(cliName))
 	const endOfOptionsDelimiterIndex = passed.indexOf(`--`)
-	const positionalArgs =
-		endOfOptionsDelimiterIndex === -1
-			? undefined
-			: passed.slice(endOfOptionsDelimiterIndex + 1)
+	let positionalArgs: string[] | undefined
+	if (endOfOptionsDelimiterIndex === -1) {
+		if (cliInvocationIndex !== -1) {
+			const allArgs = passed.slice(cliInvocationIndex + 1)
+			positionalArgs = allArgs.filter((arg) => !arg.startsWith(`-`))
+		}
+	} else {
+		positionalArgs = passed.slice(endOfOptionsDelimiterIndex + 1)
+	}
 
 	const namedPositionalArgs: string[] = []
 	const validPositionalArgs: string[] = []
