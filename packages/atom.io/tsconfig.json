@@ -4,7 +4,7 @@
 		"target": "ES2023",
 		"jsx": "react-jsx",
 		"jsxImportSource": "react",
-		"types": ["vitest/globals", "bun-types"],
+		"types": ["vitest/globals"],
 		"noEmit": true,
 		"declaration": true
 	},
