@@ -70,7 +70,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: ./.github/actions/setup
-      - uses: actions/download-artifact@v3.1.8
+      - uses: actions/download-artifact@v4.1.8
         with:
           name: Coverage Data
           path: packages/atom.io/coverage.sqlite
@@ -80,6 +80,9 @@ jobs:
           name: Coverage Data
           path: packages/atom.io/coverage.sqlite
           retention-days: 90
+      - uses: coverallsapp/github-action@v2.3.6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
   BreakCheck:
     name: Break Check
