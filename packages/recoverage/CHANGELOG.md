@@ -1,5 +1,11 @@
 # treetrunks
 
+## 0.0.2
+
+### Patch Changes
+
+- 780567b: ✨ Use recoverage with an S3-compatible backend.
+
 ## 0.0.1
 
 ### Patch Changes
