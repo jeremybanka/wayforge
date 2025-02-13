@@ -109,15 +109,9 @@ export async function capture(): Promise<void> {
 	const git = simpleGit(import.meta.dir)
 	mark?.(`spawn git`)
 	const { current: currentGitBranch, branches } = await git.branch()
-	if (DEFAULT_BRANCH in branches === false) {
-		await git.fetch([`origin`, `${DEFAULT_BRANCH}:${DEFAULT_BRANCH}`])
-	}
-	console.log(branches)
 	mark?.(`git branch`)
 	const gitStatus = await git.status()
 	mark?.(`git status`)
-	const mainGitRef = await git.revparse([`origin/${DEFAULT_BRANCH}`, `--short`])
-	console.log({ mainGitRef })
 	const gitIsClean = gitStatus.isClean()
 	mark?.(`git status is clean`)
 	let currentGitRef = branches[currentGitBranch].commit
@@ -157,12 +151,6 @@ export async function capture(): Promise<void> {
 		$coverage: JSON.stringify(coverageMap),
 	})
 	mark?.(`inserted coverage`)
-
-	if (mainGitRef === currentGitRef) {
-		console.log(`updated main coverage`)
-		logMarks?.()
-		process.exit(0)
-	}
 	console.log(`updated coverage for`, currentGitRef)
 	logMarks?.()
 	process.exit(0)
