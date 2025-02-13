@@ -121,7 +121,7 @@ export async function capture(): Promise<void> {
 	mark?.(`git branch`)
 	const gitStatus = await git.status()
 	mark?.(`git status`)
-	const mainGitRef = branches[DEFAULT_BRANCH].commit
+	const mainGitRef = branches[def].commit
 	const gitIsClean = gitStatus.isClean()
 	mark?.(`git status is clean`)
 	let currentGitRef = branches[currentGitBranch].commit
