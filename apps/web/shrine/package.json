@@ -10,7 +10,7 @@
 	},
 	"dependencies": {
 		"fp-ts": "2.16.9",
-		"phaser": "3.87.0",
+		"phaser": "3.88.1",
 		"socket.io-client": "4.8.1"
 	},
 	"devDependencies": {
