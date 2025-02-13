@@ -75,8 +75,6 @@ jobs:
         with:
           name: Coverage Data
           path: packages/atom.io/coverage.sqlite
-      - run: pnpm build
-      - run: pnpm install --frozen-lockfile
       - run: pnpm test:coverage
       - uses: actions/upload-artifact@v4.6.0
         with:
