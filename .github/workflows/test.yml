@@ -81,6 +81,7 @@ jobs:
           name: Coverage Data
           path: packages/atom.io/coverage.sqlite
           retention-days: 90
+          overwrite: true
       # - uses: coverallsapp/github-action@v2.3.6
       #   with:
       #     github-token: ${{ secrets.GITHUB_TOKEN }}
