@@ -70,12 +70,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: ./.github/actions/setup
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v3.1.8
         with:
           name: Coverage Data
           path: packages/atom.io/coverage.sqlite
       - run: pnpm test:coverage
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4.6.0
         with:
           name: Coverage Data
           path: packages/atom.io/coverage.sqlite
