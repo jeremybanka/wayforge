@@ -40,7 +40,6 @@
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
 		"test": "bun test --watch -- **/*.test.ts",
 		"test:once": "bun test -- **/*.test.ts",
-		"test:coverage": "echo no test coverage yet",
 		"postversion": "biome format --write package.json"
 	},
 	"devDependencies": {
