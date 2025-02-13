@@ -75,7 +75,6 @@ jobs:
         with:
           name: Coverage Data
           path: packages/atom.io/coverage.sqlite
-      - run: cd packages/atom.io && bun install
       - run: pnpm test:coverage
       - uses: actions/upload-artifact@v4.6.0
         with:

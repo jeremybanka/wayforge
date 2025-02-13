@@ -39,7 +39,7 @@
 			]
 		},
 		"test:coverage": {
-			"outputs": ["coverage/**", "**/coverage/**"],
+			"outputs": ["coverage/**", "**/coverage/**", "recoverage#build"],
 			"inputs": [
 				"**/package.json",
 				"src/**/*",
