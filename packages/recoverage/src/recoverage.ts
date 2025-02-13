@@ -109,19 +109,14 @@ export async function capture(): Promise<void> {
 	const git = simpleGit(import.meta.dir)
 	mark?.(`spawn git`)
 	const { current: currentGitBranch, branches } = await git.branch()
-	let def = DEFAULT_BRANCH
-	if (
-		DEFAULT_BRANCH in branches === false &&
-		`remotes/origin/${DEFAULT_BRANCH}` in branches
-	) {
-		console.log(`changing default branch to main`)
-		def = `remotes/origin/${DEFAULT_BRANCH}`
+	if (DEFAULT_BRANCH in branches === false) {
+		await git.fetch([`origin`, `${DEFAULT_BRANCH}:${DEFAULT_BRANCH}`])
 	}
 	console.log(branches)
 	mark?.(`git branch`)
 	const gitStatus = await git.status()
 	mark?.(`git status`)
-	const mainGitRef = branches[def].commit
+	const mainGitRef = branches[DEFAULT_BRANCH].commit
 	const gitIsClean = gitStatus.isClean()
 	mark?.(`git status is clean`)
 	let currentGitRef = branches[currentGitBranch].commit
