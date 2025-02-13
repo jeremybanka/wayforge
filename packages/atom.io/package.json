@@ -43,7 +43,7 @@
 		"lint:types:watch": "tsc --watch --noEmit",
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
 		"test": "vitest",
-		"test:coverage": "vitest run --coverage && recoverage capture",
+		"test:coverage": "vitest run --coverage && bun recoverage capture",
 		"cov": "recoverage diff",
 		"test:build": "bun run test:manifest && cross-env IMPORT=dist vitest run",
 		"test:once": "echo tested built code",
