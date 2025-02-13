@@ -105,7 +105,7 @@ async function setupDatabase(mark?: (text: string) => void): Promise<Database> {
 			console.error(error)
 			mark?.(`downloading coverage database from R2 failed`)
 			sql = { db: new Database(`./coverage.sqlite`) }
-			remote.write(Bun.file(`coverage.sqlite`))
+			await remote.write(Bun.file(`coverage.sqlite`))
 			mark?.(`uploaded coverage database from R2`)
 		}
 	}
