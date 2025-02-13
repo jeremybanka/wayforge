@@ -14,10 +14,6 @@ env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
   TURBO_TEAM: ${{ vars.TURBO_TEAM }}
   NEXT_PUBLIC_REMOTE_ORIGIN: ${{ secrets.NEXT_PUBLIC_REMOTE_ORIGIN }}
-  R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
-  R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-  R2_TOKEN_VALUE: ${{ secrets.R2_TOKEN_VALUE }}
-  R2_URL: ${{ secrets.R2_URL }}
 
 defaults:
   run:
@@ -74,6 +70,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: ./.github/actions/setup
+      - run: printenv > packages/atom.io/.env
+        env:
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_TOKEN_VALUE: ${{ secrets.R2_TOKEN_VALUE }}
+          R2_URL: ${{ secrets.R2_URL }}
       - run: pnpm test:coverage
       # - uses: coverallsapp/github-action@v2.3.6
       #   with:
