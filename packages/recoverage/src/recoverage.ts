@@ -101,10 +101,10 @@ async function setupDatabase(mark?: (text: string) => void): Promise<Database> {
 			endpoint: env.R2_URL,
 			bucket: `atomio-coverage`,
 		})
-		mark?.(`downloading coverage database from ${env.R2_URL}`)
+		mark?.(`downloading coverage database from R2`)
 		const remote = Bun.s3.file(`coverage.sqlite`)
 		await write(`./coverage.sqlite`, remote)
-		mark?.(`downloaded coverage database from ${env.R2_URL}`)
+		mark?.(`downloaded coverage database from R2`)
 	}
 
 	const db = new Database(`./coverage.sqlite`)
@@ -172,9 +172,9 @@ export async function capture(): Promise<void> {
 	console.log(`updated coverage for`, currentGitRef)
 	if (env.R2_ACCESS_KEY_ID && env.R2_SECRET_ACCESS_KEY && env.R2_URL) {
 		const sqliteFile = Bun.s3.file(`coverage.sqlite`)
-		mark?.(`uploading coverage database to ${env.R2_URL}`)
+		mark?.(`uploading coverage database to R2`)
 		await sqliteFile.write(Bun.file(`coverage.sqlite`))
-		mark?.(`uploaded coverage database to ${env.R2_URL}`)
+		mark?.(`uploaded coverage database to R2`)
 	}
 	logMarks?.()
 	process.exit(0)
