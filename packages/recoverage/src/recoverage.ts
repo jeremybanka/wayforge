@@ -86,9 +86,8 @@ function useMarks({ inline = false }: { inline?: boolean } = {}) {
 	return { mark, logMarks }
 }
 
-async function setupDatabase(): Promise<Database> {
+async function setupDatabase(mark?: (text: string) => void): Promise<Database> {
 	if (env.R2_ACCESS_KEY_ID && env.R2_SECRET_ACCESS_KEY && env.R2_URL) {
-		console.log(`Downloading coverage database from ${env.R2_URL}`)
 		Bun.s3 = new S3Client({
 			accessKeyId: env.R2_ACCESS_KEY_ID,
 			secretAccessKey: env.R2_SECRET_ACCESS_KEY,
@@ -96,9 +95,10 @@ async function setupDatabase(): Promise<Database> {
 			endpoint: env.R2_URL,
 			bucket: `atomio-coverage`,
 		})
+		mark?.(`downloading coverage database from ${env.R2_URL}`)
 		const remote = Bun.s3.file(`coverage.sqlite`)
 		await write(`./coverage.sqlite`, remote)
-		console.log(`Downloaded coverage database from ${env.R2_URL}`)
+		mark?.(`downloaded coverage database from ${env.R2_URL}`)
 	}
 
 	const db = new Database(`./coverage.sqlite`)
@@ -145,7 +145,7 @@ export async function capture(): Promise<void> {
 
 	mark?.(`coverage map created`)
 
-	const db = await setupDatabase()
+	const db = await setupDatabase(mark)
 
 	mark?.(`setup database`)
 	const coverageFile = file(`./coverage/coverage-final.json`)
@@ -165,10 +165,10 @@ export async function capture(): Promise<void> {
 	mark?.(`inserted coverage`)
 	console.log(`updated coverage for`, currentGitRef)
 	if (env.R2_ACCESS_KEY_ID && env.R2_SECRET_ACCESS_KEY && env.R2_URL) {
-		console.log(`Uploading coverage database to ${env.R2_URL}`)
 		const sqliteFile = Bun.s3.file(`coverage.sqlite`)
+		mark?.(`uploading coverage database to ${env.R2_URL}`)
 		await sqliteFile.write(Bun.file(`coverage.sqlite`))
-		console.log(`Uploaded coverage database to ${env.R2_URL}`)
+		mark?.(`uploaded coverage database to ${env.R2_URL}`)
 	}
 	logMarks?.()
 	process.exit(0)
