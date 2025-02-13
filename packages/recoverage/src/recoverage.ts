@@ -116,7 +116,7 @@ export async function capture(): Promise<void> {
 	mark?.(`git branch`)
 	const gitStatus = await git.status()
 	mark?.(`git status`)
-	const mainGitRef = await git.revparse([`--short`, `origin/HEAD`])
+	const mainGitRef = await git.revparse([`origin/${DEFAULT_BRANCH}`, `--short`])
 	console.log({ mainGitRef })
 	const gitIsClean = gitStatus.isClean()
 	mark?.(`git status is clean`)
