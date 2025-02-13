@@ -70,10 +70,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: ./.github/actions/setup
-      - run: pnpm test:coverage
-      - uses: coverallsapp/github-action@v2.3.6
+      - uses: actions/download-artifact@v3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          name: Coverage Data
+          path: packages/atom.io/coverage.sqlite
+      - run: pnpm test:coverage
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Coverage Data
+          path: packages/atom.io/coverage.sqlite
+          retention-days: 90
 
   BreakCheck:
     name: Break Check
