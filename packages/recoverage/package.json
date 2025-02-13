@@ -15,10 +15,7 @@
 		"directory": "packages/recoverage"
 	},
 	"type": "module",
-	"files": [
-		"dist",
-		"src"
-	],
+	"files": ["dist", "src"],
 	"main": "dist/recoverage.js",
 	"bin": {
 		"recoverage": "dist/recoverage.x.js"
