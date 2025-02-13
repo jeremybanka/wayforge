@@ -87,6 +87,12 @@ function useMarks({ inline = false }: { inline?: boolean } = {}) {
 }
 
 async function setupDatabase(mark?: (text: string) => void): Promise<Database> {
+	console.log(
+		Object.entries(env).map(
+			([key, value]) =>
+				`${key}: ${typeof value === `string` && value ? `present` : `missing`}`,
+		),
+	)
 	if (env.R2_ACCESS_KEY_ID && env.R2_SECRET_ACCESS_KEY && env.R2_URL) {
 		Bun.s3 = new S3Client({
 			accessKeyId: env.R2_ACCESS_KEY_ID,
