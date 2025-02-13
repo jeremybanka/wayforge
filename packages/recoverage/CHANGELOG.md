@@ -1,5 +1,13 @@
 # treetrunks
 
+## 0.0.1
+
+### Patch Changes
+
+- 6771243: ♻️ Simplify design of `recoverage capture`.
+- Updated dependencies [6771243]
+  - comline@0.1.8
+
 ## 0.0.4
 
 ### Patch Changes
