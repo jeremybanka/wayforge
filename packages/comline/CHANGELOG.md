@@ -1,5 +1,11 @@
 # comline
 
+## 0.1.8
+
+### Patch Changes
+
+- 6771243: ✨ No longer require a `--` separator before positional arguments. So, instead of `my-cli -- do-thing` you can now do `my-cli do-thing`.
+
 ## 0.1.7
 
 ### Patch Changes
