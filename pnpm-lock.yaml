@@ -730,9 +730,6 @@ importers:
       '@types/http-proxy':
         specifier: 1.17.16
         version: 1.17.16
-      '@types/istanbul-lib-coverage':
-        specifier: 2.0.6
-        version: 2.0.6
       '@types/npmlog':
         specifier: 7.0.0
         version: 7.0.0
@@ -778,18 +775,12 @@ importers:
       http-proxy:
         specifier: 1.18.1
         version: 1.18.1
-      istanbul-lib-coverage:
-        specifier: 3.2.2
-        version: 3.2.2
       motion:
         specifier: 12.4.2
         version: 12.4.2(@emotion/is-prop-valid@1.3.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       npmlog:
         specifier: 7.0.1
         version: 7.0.1
-      nyc:
-        specifier: 17.1.0
-        version: 17.1.0
       postgres:
         specifier: 3.4.5
         version: 3.4.5
@@ -805,6 +796,9 @@ importers:
       react-router-dom:
         specifier: 7.1.5
         version: 7.1.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      recoverage:
+        specifier: workspace:*
+        version: link:../recoverage
       socket.io:
         specifier: 4.8.1
         version: 4.8.1
@@ -1171,6 +1165,9 @@ importers:
       colors:
         specifier: 1.4.0
         version: 1.4.0
+      comline:
+        specifier: workspace:*
+        version: link:../comline
       diff:
         specifier: 7.0.0
         version: 7.0.0
