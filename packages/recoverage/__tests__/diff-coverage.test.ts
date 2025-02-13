@@ -1,8 +1,9 @@
+import type { ChildProcess } from "node:child_process"
 import { spawn } from "node:child_process"
-import { readdirSync, readFileSync } from "node:fs"
 import { copyFile, readdir } from "node:fs/promises"
 import * as path from "node:path"
 
+import type { SimpleGit } from "simple-git"
 import simpleGit from "simple-git"
 import tmp from "tmp"
 import * as Yalc from "yalc"
@@ -19,10 +20,12 @@ beforeAll(async () => {
 
 let phase = 0
 let tmpDir: tmp.DirResult
+let git: SimpleGit
 
 beforeEach(() => {
 	phase = 0
 	tmpDir = tmp.dirSync({ unsafeCleanup: true })
+	git = simpleGit(tmpDir.name)
 	process.chdir(tmpDir.name)
 	console.log(`created tmpDir ${tmpDir.name}`)
 })
@@ -31,6 +34,15 @@ afterEach(() => {
 	tmpDir.removeCallback()
 	console.log(`removed tmpDir ${tmpDir.name}`)
 })
+
+async function runScript(...args: string[]): Promise<ChildProcess> {
+	const proc = spawn(`bun`, args, {
+		stdio: `inherit`,
+		env: { ...process.env, FORCE_COLOR: `1` },
+	})
+	await new Promise((resolve) => proc.on(`exit`, resolve))
+	return proc
+}
 
 async function loadSample(packageName: string) {
 	await readdir(path.resolve(__dirname, packageName)).then((fileNames) =>
@@ -52,12 +64,7 @@ async function loadSample(packageName: string) {
 	if (phase === 0) {
 		await Yalc.addPackages([`recoverage`], { workingDir: `.` })
 
-		const install = spawn(`bun`, [`install`], {
-			stdio: `inherit`,
-
-			env: { ...process.env, FORCE_COLOR: `1` },
-		})
-		await new Promise((resolve) => install.on(`exit`, resolve))
+		const install = await runScript(`install`)
 		expect(install.exitCode).toBe(0)
 	}
 	phase++
@@ -67,76 +74,42 @@ describe(`recoverage`, () => {
 	it(`approves a coverage improvement [sample-package-01]`, async () => {
 		await loadSample(`sample-package-01`)
 
-		const git = simpleGit(tmpDir.name)
 		await git.init().add(`.`).commit(`initial commit`)
 
-		const test = spawn(`bun`, [`test:coverage`], {
-			stdio: `inherit`,
-			env: { ...process.env, FORCE_COLOR: `1` },
-		})
-		await new Promise((resolve) => test.on(`exit`, resolve))
+		const test = await runScript(`test:coverage`)
 		expect(test.exitCode).toBe(0)
 
-		const coverage = spawn(`bun`, [`coverage:status`], {
-			stdio: `inherit`,
-			env: { ...process.env, FORCE_COLOR: `1` },
-		})
-		await new Promise((resolve) => coverage.on(`exit`, resolve))
+		const coverage = await runScript(`coverage:status`)
 		expect(coverage.exitCode).toBe(0)
 
 		await git.checkout([`-b`, `test`])
 
 		await loadSample(`sample-package-01`)
 
-		const test2 = spawn(`bun`, [`test:coverage`], {
-			stdio: `inherit`,
-			env: { ...process.env, FORCE_COLOR: `1` },
-		})
-		await new Promise((resolve) => test2.on(`exit`, resolve))
+		const test2 = await runScript(`test:coverage`)
 		expect(test2.exitCode).toBe(0)
 
-		const coverage2 = spawn(`bun`, [`coverage:status`], {
-			stdio: `inherit`,
-			env: { ...process.env, FORCE_COLOR: `1` },
-		})
-		await new Promise((resolve) => coverage2.on(`exit`, resolve))
+		const coverage2 = await runScript(`coverage:status`)
 		expect(coverage2.exitCode).toBe(0)
 	}, 20_000)
 
 	it(`fails a coverage decrease [sample-package-02]`, async () => {
 		await loadSample(`sample-package-02`)
 
-		const git = simpleGit(tmpDir.name)
 		await git.init().add(`.`).commit(`initial commit`)
 
-		const test = spawn(`bun`, [`test:coverage`], {
-			stdio: `inherit`,
-			env: { ...process.env, FORCE_COLOR: `1` },
-		})
-		await new Promise((resolve) => test.on(`exit`, resolve))
+		const test = await runScript(`test:coverage`)
 		expect(test.exitCode).toBe(0)
 
-		const coverage = spawn(`bun`, [`coverage:status`], {
-			stdio: `inherit`,
-			env: { ...process.env, FORCE_COLOR: `1` },
-		})
-		await new Promise((resolve) => coverage.on(`exit`, resolve))
+		const coverage = await runScript(`coverage:status`)
 		expect(coverage.exitCode).toBe(0)
 
 		await loadSample(`sample-package-02`)
 
-		const test2 = spawn(`bun`, [`test:coverage`], {
-			stdio: `inherit`,
-			env: { ...process.env, FORCE_COLOR: `1` },
-		})
-		await new Promise((resolve) => test2.on(`exit`, resolve))
+		const test2 = await runScript(`test:coverage`)
 		expect(test2.exitCode).toBe(0)
 
-		const coverage2 = spawn(`bun`, [`coverage:status`], {
-			stdio: `inherit`,
-			env: { ...process.env, FORCE_COLOR: `1` },
-		})
-		await new Promise((resolve) => coverage2.on(`exit`, resolve))
+		const coverage2 = await runScript(`coverage:status`)
 		expect(coverage2.exitCode).toBe(1)
 	}, 20_000)
 })
