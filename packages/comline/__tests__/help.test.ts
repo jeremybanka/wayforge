@@ -1,8 +1,8 @@
 import { z } from "zod"
 
-import type { OptionsGroup } from "../src/cli"
 import {
 	cli,
+	noOptions,
 	optional,
 	parseNumberOption,
 	parseStringOption,
@@ -10,17 +10,6 @@ import {
 } from "../src/cli"
 import type { CellFormat } from "../src/help"
 import { help, helpOption, renderTable } from "../src/help"
-
-function noOptions(description?: string): OptionsGroup<Record<string, never>> {
-	const optionsGroup: OptionsGroup<Record<string, never>> = {
-		optionsSchema: z.object({}),
-		options: {},
-	}
-	if (description) {
-		Object.assign(optionsGroup, { description })
-	}
-	return optionsGroup
-}
 
 test(`renderTable`, () => {
 	console.log(

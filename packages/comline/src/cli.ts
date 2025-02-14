@@ -242,3 +242,16 @@ export function cli<
 		{ definition },
 	)
 }
+
+export function noOptions(
+	description?: string,
+): OptionsGroup<Record<string, never>> {
+	const optionsGroup: OptionsGroup<Record<string, never>> = {
+		optionsSchema: z.object({}),
+		options: {},
+	}
+	if (description) {
+		Object.assign(optionsGroup, { description })
+	}
+	return optionsGroup
+}
