@@ -55,6 +55,6 @@
 		"vitest": "3.0.5"
 	},
 	"pnpm": {
-		"onlyBuiltDependencies": ["@vercel/speed-insights"]
+		"onlyBuiltDependencies": ["@vercel/speed-insights", "esbuild"]
 	}
 }
