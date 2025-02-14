@@ -1,7 +1,8 @@
 import * as color from "colors"
-import type { CommandLineInterface, OptionsGroup } from "comline"
-import { parseBooleanOption } from "comline"
 import { z } from "zod"
+
+import type { CommandLineInterface, OptionsGroup } from "./cli"
+import { parseBooleanOption } from "./option-parsers"
 
 const capitalize = <T extends string>(str: T): Capitalize<T> =>
 	(str[0].toUpperCase() + str.slice(1)) as Capitalize<T>
