@@ -835,6 +835,9 @@ importers:
 
   packages/break-check:
     dependencies:
+      comline:
+        specifier: workspace:*
+        version: link:../comline
       minimatch:
         specifier: 10.0.1
         version: 10.0.1
