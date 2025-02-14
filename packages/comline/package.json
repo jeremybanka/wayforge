@@ -15,10 +15,14 @@
 		"directory": "packages/comline"
 	},
 	"type": "module",
-	"files": ["dist", "src"],
+	"files": [
+		"dist",
+		"src"
+	],
 	"main": "dist/cli.js",
 	"types": "dist/cli.d.ts",
 	"dependencies": {
+		"colors": "1.4.0",
 		"treetrunks": "workspace:*",
 		"zod": "3.24.2",
 		"zod-to-json-schema": "3.24.1"

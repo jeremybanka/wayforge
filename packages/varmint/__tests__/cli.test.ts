@@ -30,9 +30,17 @@ describe(`cli`, () => {
 		await new Promise((resolve) => install.on(`exit`, resolve))
 		expect(install.exitCode).toBe(0)
 
+		const help = spawn(
+			`./node_modules/varmint/dist/varmint.bin.js`,
+			[`--help`],
+			{ stdio: `inherit` },
+		)
+		const helpCode = await new Promise((resolve) => help.on(`exit`, resolve))
+		expect(helpCode).toBe(0)
+
 		const track = spawn(
 			`./node_modules/varmint/dist/varmint.bin.js`,
-			[`--`, `track`],
+			[`track`],
 			{ stdio: `inherit` },
 		)
 		const trackCode = await new Promise((resolve) => track.on(`exit`, resolve))
@@ -40,7 +48,7 @@ describe(`cli`, () => {
 
 		const clean = spawn(
 			`./node_modules/varmint/dist/varmint.bin.js`,
-			[`--ci-flag=CI`, `--`, `clean`],
+			[`clean`, `--ci-flag=CI`],
 			{ stdio: `inherit`, env: { ...process.env, CI: `true` } },
 		)
 		const cleanCode = await new Promise((resolve) => clean.on(`exit`, resolve))
