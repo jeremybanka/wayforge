@@ -496,8 +496,8 @@ importers:
         specifier: 2.16.9
         version: 2.16.9
       phaser:
-        specifier: 3.88.1
-        version: 3.88.1
+        specifier: 3.88.2
+        version: 3.88.2
       socket.io-client:
         specifier: 4.8.1
         version: 4.8.1
@@ -7031,8 +7031,8 @@ packages:
   pend@1.2.0:
     resolution: {integrity: sha512-F3asv42UuXchdzt+xXqfW1OGlVBe+mxa2mqI0pg5yAHZPvFmY3Y6drSf/GQ1A86WgWEN9Kzh/WrgKa6iGcHXLg==}
 
-  phaser@3.88.1:
-    resolution: {integrity: sha512-SNvD5rzZ4dODBR1f4DKidYg3E0EI6dWwYBjIiLNIpH1rSDuxWt/FfyAsyS9DgmHg0n+H5+SivIpJWE+9Iiz6OQ==}
+  phaser@3.88.2:
+    resolution: {integrity: sha512-UBgd2sAFuRJbF2xKaQ5jpMWB8oETncChLnymLGHcrnT53vaqiGrQWbUKUDBawKLm24sghjKo4Bf+/xfv8espZQ==}
 
   picocolors@1.1.1:
     resolution: {integrity: sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==}
@@ -14770,7 +14770,7 @@ snapshots:
 
   pend@1.2.0: {}
 
-  phaser@3.88.1:
+  phaser@3.88.2:
     dependencies:
       eventemitter3: 5.0.1
 
