@@ -28,7 +28,7 @@
 		"fp-ts": "2.16.9"
 	},
 	"devDependencies": {
-		"@types/node": "22.13.2",
+		"@types/node": "22.13.4",
 		"@types/tmp": "0.2.6",
 		"atom.io": "workspace:*",
 		"eslint": "9.20.1",
