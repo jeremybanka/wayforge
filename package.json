@@ -34,7 +34,9 @@
 		"nuke": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && rm pnpm-lock.yaml",
 		"nv": "fnm use $(pnpm list -w --json | jq -r '.[0].path')"
 	},
-	"trustedDependencies": ["@biomejs/biome"],
+	"trustedDependencies": [
+		"@biomejs/biome"
+	],
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@changesets/cli": "2.27.12",
@@ -55,6 +57,9 @@
 		"vitest": "3.0.5"
 	},
 	"pnpm": {
-		"onlyBuiltDependencies": ["@vercel/speed-insights"]
+		"onlyBuiltDependencies": [
+			"@vercel/speed-insights",
+			"esbuild"
+		]
 	}
 }
