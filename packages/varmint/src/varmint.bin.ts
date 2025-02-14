@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { cli, required } from "comline"
+import { cli, help, helpOption, noOptions, required } from "comline"
 import { z } from "zod"
 
 import { varmintWorkspaceManager } from "./varmint-workspace-manager"
@@ -9,12 +9,17 @@ const parse = cli(
 	{
 		cliName: `varmint`,
 		routes: required({
+			"": null,
 			track: null,
 			clean: null,
 		}),
 		routeOptions: {
-			track: { options: {}, optionsSchema: z.record(z.never()) },
+			"": helpOption(),
+			track: noOptions(
+				`start tracking your workspace; see what varmint-managed files are touched`,
+			),
 			clean: {
+				description: `clean all files that varmint has tracked`,
 				options: {
 					"ci-flag": {
 						flag: `c`,
@@ -35,6 +40,9 @@ const parse = cli(
 const { inputs } = parse(process.argv)
 
 switch (inputs.case) {
+	case ``:
+		console.log(help(parse.definition))
+		break
 	case `track`: {
 		varmintWorkspaceManager.startGlobalTracking()
 		break
