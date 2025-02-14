@@ -7,12 +7,12 @@ import { z } from "zod"
 import { zodToJsonSchema } from "zod-to-json-schema"
 
 import type { Flag } from "./flag"
-import { help } from "./help"
 import { parseStringOption } from "./option-parsers"
 import { retrievePositionalArgs } from "./retrieve-positional-args"
 
 export * from "./encapsulate"
 export type * from "./flag"
+export * from "./help"
 export * from "./option-parsers"
 export * from "treetrunks"
 

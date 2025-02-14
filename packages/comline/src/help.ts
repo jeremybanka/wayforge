@@ -1,6 +1,7 @@
 import * as color from "colors"
-import type { CommandLineInterface } from "comline"
-import type { z } from "zod"
+import type { CommandLineInterface, OptionsGroup } from "comline"
+import { parseBooleanOption } from "comline"
+import { z } from "zod"
 
 const capitalize = <T extends string>(str: T): Capitalize<T> =>
 	(str[0].toUpperCase() + str.slice(1)) as Capitalize<T>
@@ -124,7 +125,7 @@ export function help(cli: CommandLineInterface<any>): string {
 					.split(`/`)
 					.map((s) => (s.includes(`$`) ? `<${s.replaceAll(`$`, ``)}>` : s))
 					.join(` `)
-				rows.push([`$`, `${cli.cliName}`, prettyRoute, value?.description ?? ``])
+				rows.push([`$`, cli.cliName, prettyRoute, value?.description ?? ``])
 				if (value?.options) {
 					rows.push(
 						...Object.entries(value.options).map(([key, option]) => {
@@ -159,7 +160,7 @@ export function help(cli: CommandLineInterface<any>): string {
 						(x < xMax && row[1] === cli.cliName) || cell.startsWith(`-`),
 						{ foregroundColor: `magenta` },
 					],
-					[x > 1 && x < xMax, { fill: `.` }],
+					[x > 1 && x < xMax && Boolean(row[x + 1]), { fill: `.` }],
 				)
 			},
 		),
@@ -174,4 +175,24 @@ function assemble<T extends Object>(
 		(acc, [cond, ext]) => (cond ? Object.assign(acc, ext) : acc),
 		base,
 	)
+}
+
+export function helpOption(
+	description = ``,
+): OptionsGroup<{ help?: boolean | undefined }> {
+	return {
+		optionsSchema: z.object({
+			help: z.boolean().optional(),
+		}),
+		options: {
+			help: {
+				description: `show this help text`,
+				example: `--help`,
+				flag: `h`,
+				parse: parseBooleanOption,
+				required: false,
+			},
+		},
+		description,
+	}
 }

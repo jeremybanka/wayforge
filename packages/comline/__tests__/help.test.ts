@@ -9,7 +9,7 @@ import {
 	required,
 } from "../src/cli"
 import type { CellFormat } from "../src/help"
-import { help, renderTable } from "../src/help"
+import { help, helpOption, renderTable } from "../src/help"
 
 function noOptions(description?: string): OptionsGroup<Record<string, never>> {
 	const optionsGroup: OptionsGroup<Record<string, never>> = {
@@ -58,7 +58,7 @@ describe(`help`, () => {
 			}),
 		}),
 		routeOptions: {
-			"": noOptions(`rub your greasy hands together`),
+			"": helpOption(`rub your greasy hands together`),
 			"apply-more-grease": {
 				description: `put grease on your hands`,
 				optionsSchema: z.object({
@@ -94,6 +94,7 @@ describe(`help`, () => {
 				`\n` +
 				`USAGE\n` +
 				`\x1B[35m$\x1B[39m \x1B[35mgreasy-hands\x1B[39m \x1B[35m...........................\x1B[39m rub your greasy hands together                 \n` +
+				`               \x1B[35m-h, --help ................\x1B[39m boolean: show this help text                   \n` +
 				`\x1B[35m$\x1B[39m \x1B[35mgreasy-hands\x1B[39m \x1B[35mapply-more-grease .........\x1B[39m put grease on your hands                       \n` +
 				`               \x1B[35m-t, --grease-type=motor-oil\x1B[39m string (required): the type of grease to apply \n` +
 				`               \x1B[35m-m, --amount=1 ............\x1B[39m number: the amount of grease to apply          \n` +
