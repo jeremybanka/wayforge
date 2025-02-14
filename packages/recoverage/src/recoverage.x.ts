@@ -1,12 +1,12 @@
 #!/usr/bin/env bun
 
-import { cli, help, helpOption, noOptions, required } from "comline"
+import { cli, help, helpOption, noOptions, optional } from "comline"
 
 import * as Recoverage from "./recoverage"
 
 const parse = cli({
 	cliName: `recoverage`,
-	routes: required({
+	routes: optional({
 		"": null,
 		capture: null,
 		diff: null,
