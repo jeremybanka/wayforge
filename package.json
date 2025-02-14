@@ -10,7 +10,7 @@
 	"packageManager": "pnpm@10.3.0",
 	"engines": {
 		"bun": "1.2.1",
-		"node": "23.7.0"
+		"node": "23.8.0"
 	},
 	"scripts": {
 		"dev": "tsc --watch",
