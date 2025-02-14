@@ -23,7 +23,7 @@
 		"@vercel/analytics": "1.5.0",
 		"corners": "0.2.0",
 		"motion": "12.4.3",
-		"nanoid": "5.0.9",
+		"nanoid": "5.1.0",
 		"next": "15.1.7",
 		"react": "19.0.0",
 		"react-dom": "19.0.0",
