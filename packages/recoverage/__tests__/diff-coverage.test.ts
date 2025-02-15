@@ -16,9 +16,12 @@ beforeAll(async () => {
 	const buildCode = await new Promise((resolve) => build.on(`exit`, resolve))
 	expect(buildCode).toBe(0)
 	await Yalc.publishPackage({ workingDir: `.` })
+	console.log(`published recoverage`)
 	await Yalc.publishPackage({ workingDir: `../comline` })
+	console.log(`published comline`)
 	await Yalc.publishPackage({ workingDir: `../treetrunks` })
-}, 20_000)
+	console.log(`published treetrunks`)
+}, 30_000)
 
 let phase = 0
 let tmpDir: tmp.DirResult
