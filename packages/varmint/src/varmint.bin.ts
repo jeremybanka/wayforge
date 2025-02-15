@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { cli, help, helpOption, noOptions, required } from "comline"
+import { cli, help, helpOption, noOptions, optional } from "comline"
 import { z } from "zod"
 
 import { varmintWorkspaceManager } from "./varmint-workspace-manager"
@@ -8,7 +8,7 @@ import { varmintWorkspaceManager } from "./varmint-workspace-manager"
 const parse = cli(
 	{
 		cliName: `varmint`,
-		routes: required({
+		routes: optional({
 			"": null,
 			track: null,
 			clean: null,
