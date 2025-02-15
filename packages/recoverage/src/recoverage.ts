@@ -146,8 +146,8 @@ async function hashRepoState(
 		for (const fileData of untrackedFileData) {
 			gitStatusHash.update(fileData)
 		}
-		const hash9Char = gitStatusHash.digest(`hex`).slice(0, 9)
-		currentGitRef = `${currentGitRef}--${hash9Char}`
+		const hash9Char = gitStatusHash.digest(`hex`).slice(0, currentGitRef.length)
+		currentGitRef = `${currentGitRef}+${hash9Char}`
 
 		mark?.(`git status hash created`)
 	}
@@ -162,7 +162,6 @@ export async function capture(): Promise<void> {
 		mark = mark_
 		logMarks = logMarks_
 	}
-	console.log(`recoverage capture`)
 	mark?.(`recoverage`)
 
 	const git = simpleGit(import.meta.dir)
@@ -186,8 +185,7 @@ export async function capture(): Promise<void> {
 		$git_ref: currentGitRef,
 		$coverage: JSON.stringify(coverageMap),
 	})
-	mark?.(`inserted coverage`)
-	console.log(`updated coverage for`, currentGitRef)
+	mark?.(`updated coverage for ${currentGitRef}`)
 	if (env.R2_ACCESS_KEY_ID && env.R2_SECRET_ACCESS_KEY && env.R2_URL) {
 		const sqliteFile = Bun.s3.file(`coverage.sqlite`)
 		mark?.(`uploading coverage database to R2`)
@@ -206,7 +204,6 @@ export async function diff(): Promise<void> {
 		logMarks = logMarks_
 	}
 
-	console.log(`recoverage diff`)
 	mark?.(`recoverage`)
 
 	const git = simpleGit(import.meta.dir)
@@ -227,19 +224,18 @@ export async function diff(): Promise<void> {
 	const [mainCoverage] = getCoverage.all(mainGitRef)
 	const [currentCoverage] = getCoverage.all(currentGitRef)
 
-	mark?.(`got coverage`)
 	if (!mainCoverage) {
-		console.log(`no coverage found for the target branch`)
+		mark?.(`no coverage found for the target branch`)
 		logMarks?.()
-		process.exit(0)
+		process.exit(1)
 	}
 	if (!currentCoverage) {
-		console.log(`no coverage found for the current ref`)
+		mark?.(`no coverage found for the current ref`)
 		logMarks?.()
-		process.exit(0)
+		process.exit(1)
 	}
 	if (mainGitRef === currentGitRef) {
-		console.log(`you're already on the target branch`)
+		mark?.(`you're already on the target branch`)
 		logMarks?.()
 		process.exit(0)
 	}
@@ -279,7 +275,7 @@ export async function diff(): Promise<void> {
 			process.exit(1)
 		}
 		tempDir.removeCallback()
-		console.log(branchCoverage.git_ref)
+		mark?.(`coverage for ${branchCoverage.git_ref}`)
 		console.log(textReport)
 		return textReport
 	}
@@ -296,14 +292,12 @@ export async function diff(): Promise<void> {
 		getCoverageTextReport(currentCoverage),
 	])
 
-	mark?.(`coverage summaries produced`)
-
 	const coverageDifference =
 		currentCoverageJsonSummary.total.statements.pct -
 		mainCoverageJsonSummary.total.statements.pct
 
 	function logDiff() {
-		console.log(`coverage diff between ${mainGitRef} and ${currentGitRef}:`)
+		mark?.(`coverage diff between ${mainGitRef} and ${currentGitRef}:`)
 		const coverageDiffLines = Diff.diffLines(
 			mainCoverageTextReport,
 			currentCoverageTextReport,
@@ -319,21 +313,22 @@ export async function diff(): Promise<void> {
 	}
 
 	if (coverageDifference === 0) {
-		console.log(`coverage is the same`)
+		mark?.(`coverage is the same`)
+		logMarks?.()
 		process.exit(0)
 	}
 
 	if (coverageDifference < 0) {
 		logDiff()
+		mark?.(`coverage decreased by ${+coverageDifference}%`)
 		logMarks?.()
-		console.log(`coverage decreased by ${+coverageDifference}%`)
 		process.exit(1)
 	}
 
 	if (coverageDifference > 0) {
 		logDiff()
+		mark?.(`coverage increased by ${+coverageDifference}%`)
 		logMarks?.()
-		console.log(`coverage increased by ${+coverageDifference}%`)
 		process.exit(0)
 	}
 }
