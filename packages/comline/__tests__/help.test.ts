@@ -1,3 +1,4 @@
+import { Chalk } from "chalk"
 import { z } from "zod"
 
 import {
@@ -32,6 +33,7 @@ test(`renderTable`, () => {
 				}
 				return base
 			},
+			new Chalk(),
 		),
 	)
 })
@@ -75,7 +77,7 @@ describe(`help`, () => {
 		},
 	})
 	it(`represents the help text for a cli`, () => {
-		const manual = help(testCli.definition)
+		const manual = help(testCli.definition, { forceColor: true })
 		console.log(manual)
 		expect(manual).toMatchInlineSnapshot(
 			`"` +

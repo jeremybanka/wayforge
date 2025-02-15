@@ -875,9 +875,9 @@ importers:
 
   packages/comline:
     dependencies:
-      colors:
-        specifier: 1.4.0
-        version: 1.4.0
+      chalk:
+        specifier: 5.4.1
+        version: 5.4.1
       treetrunks:
         specifier: workspace:*
         version: link:../treetrunks

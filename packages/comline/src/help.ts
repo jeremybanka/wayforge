@@ -1,4 +1,4 @@
-import * as color from "colors"
+import { Chalk } from "chalk"
 import { z } from "zod"
 
 import type { CommandLineInterface, OptionsGroup } from "./cli"
@@ -40,7 +40,11 @@ export type CellContext = {
 }
 export type FormatCell = (ctx: CellContext) => CellFormat
 
-export function renderTable(table: string[][], format: FormatCell): string {
+export function renderTable(
+	table: string[][],
+	format: FormatCell,
+	chalk: InstanceType<typeof Chalk>,
+): string {
 	const longestRow = table.reduce(
 		(acc, row) => (acc.length > row.length ? acc : row),
 		table[0],
@@ -94,10 +98,10 @@ export function renderTable(table: string[][], format: FormatCell): string {
 				}
 			}
 			if (cellFormat.foregroundColor) {
-				cellText = color[cellFormat.foregroundColor](cellText ?? ``)
+				cellText = chalk[cellFormat.foregroundColor](cellText ?? ``)
 			}
 			if (cellFormat.backgroundColor) {
-				cellText = color[`bg${capitalize(cellFormat.backgroundColor)}`](cellText)
+				cellText = chalk[`bg${capitalize(cellFormat.backgroundColor)}`](cellText)
 			}
 			cellText = `${padLeft}${cellText}${padRight}`
 
@@ -107,16 +111,27 @@ export function renderTable(table: string[][], format: FormatCell): string {
 	}, ``)
 }
 
-export function help(cli: CommandLineInterface<any>): string {
+export type HelpOptions = {
+	forceColor?: boolean
+}
+
+export function help(
+	cli: CommandLineInterface<any>,
+	options?: HelpOptions,
+): string {
+	const chalk = new Chalk(options?.forceColor ? { level: 1 } : undefined)
 	return [
-		renderTable([[cli.cliName, cli.cliDescription ?? `cli`]], ({ x }) =>
-			assemble<CellFormat>(
-				{
-					align: `left`,
-					padRight: ` `,
-				},
-				[x === 0, { foregroundColor: `bold` }],
-			),
+		renderTable(
+			[[cli.cliName, cli.cliDescription ?? `cli`]],
+			({ x }) =>
+				assemble<CellFormat>(
+					{
+						align: `left`,
+						padRight: ` `,
+					},
+					[x === 0, { foregroundColor: `bold` }],
+				),
+			chalk,
 		),
 		`USAGE`,
 		renderTable(
@@ -164,6 +179,8 @@ export function help(cli: CommandLineInterface<any>): string {
 					[x > 1 && x < xMax && Boolean(row[x + 1]), { fill: `.` }],
 				)
 			},
+
+			chalk,
 		),
 	].join(`\n`)
 }
