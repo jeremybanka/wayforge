@@ -31,18 +31,8 @@
 		"test:once": "echo no tests yet",
 		"postversion": "biome format --write package.json"
 	},
-	"devDependencies": {
-		"@types/diff": "7.0.1",
-		"@types/istanbul-lib-coverage": "2.0.6",
-		"@types/tmp": "0.2.6",
-		"bun-types": "1.2.2",
-		"concurrently": "9.1.2",
-		"eslint": "9.20.1",
-		"simple-git": "3.27.0",
-		"tmp": "0.2.3",
-		"tsup": "8.3.6",
-		"vitest": "3.0.5",
-		"yalc": "1.0.0-pre.53"
+	"peerDependencies": {
+		"nyc": "^17.1.0"
 	},
 	"dependencies": {
 		"@t3-oss/env-core": "0.12.0",
@@ -50,7 +40,20 @@
 		"comline": "workspace:*",
 		"diff": "7.0.0",
 		"istanbul-lib-coverage": "3.2.2",
-		"nyc": "17.1.0",
 		"zod": "3.24.2"
+	},
+	"devDependencies": {
+		"@types/diff": "7.0.1",
+		"@types/istanbul-lib-coverage": "2.0.6",
+		"@types/tmp": "0.2.6",
+		"bun-types": "1.2.2",
+		"concurrently": "9.1.2",
+		"eslint": "9.20.1",
+		"nyc": "17.1.0",
+		"simple-git": "3.27.0",
+		"tmp": "0.2.3",
+		"tsup": "8.3.6",
+		"vitest": "3.0.5",
+		"yalc": "1.0.0-pre.53"
 	}
 }
