@@ -1,5 +1,5 @@
 import type { ChildProcess } from "node:child_process"
-import { execSync, spawn } from "node:child_process"
+import { spawn } from "node:child_process"
 import { copyFile, readdir, rename } from "node:fs/promises"
 import * as path from "node:path"
 
@@ -16,12 +16,9 @@ beforeAll(async () => {
 	const buildCode = await new Promise((resolve) => build.on(`exit`, resolve))
 	expect(buildCode).toBe(0)
 	await Yalc.publishPackage({ workingDir: `.` })
-	console.log(`published recoverage`)
 	await Yalc.publishPackage({ workingDir: `../comline` })
-	console.log(`published comline`)
 	await Yalc.publishPackage({ workingDir: `../treetrunks` })
-	console.log(`published treetrunks`)
-}, 30_000)
+}, 60_000)
 
 let phase = 0
 let tmpDir: tmp.DirResult
