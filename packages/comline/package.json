@@ -15,10 +15,7 @@
 		"directory": "packages/comline"
 	},
 	"type": "module",
-	"files": [
-		"dist",
-		"src"
-	],
+	"files": ["dist", "src"],
 	"main": "dist/cli.js",
 	"types": "dist/cli.d.ts",
 	"dependencies": {
