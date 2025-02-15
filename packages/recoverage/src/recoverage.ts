@@ -1,11 +1,14 @@
 import { createHash } from "node:crypto"
+import path from "node:path"
 
 import type { S3File } from "bun"
+import type { ShellError } from "bun"
 import { $, file, S3Client, write } from "bun"
 import { Database } from "bun:sqlite"
 import colors from "colors"
 import * as Diff from "diff"
 import { createCoverageMap } from "istanbul-lib-coverage"
+import type { SimpleGit } from "simple-git"
 import simpleGit from "simple-git"
 import tmp from "tmp"
 
@@ -116,6 +119,42 @@ async function setupDatabase(mark?: (text: string) => void): Promise<Database> {
 	return db
 }
 
+async function hashDirtyRepoState(
+	git: SimpleGit,
+	mark?: (text: string) => void,
+): Promise<string> {
+	const { current: currentGitBranch, branches } = await git.branch()
+	mark?.(`git branch`)
+	const gitStatus = await git.status()
+	mark?.(`git status`)
+	const gitIsClean = gitStatus.isClean()
+	mark?.(`git status is clean`)
+	let currentGitRef = branches[currentGitBranch].commit
+	if (!gitIsClean) {
+		const gitDiff = await git.diff()
+		mark?.(`git diff`)
+		const gitRootFolder = await git.revparse(`--show-toplevel`)
+		const gitStatusHash = createHash(`sha256`).update(gitDiff)
+		const untrackedFileData = await Promise.all(
+			gitStatus.files
+				.filter((f) => f.index === `?`)
+				.map(async (f) => {
+					const fullPath = path.resolve(gitRootFolder, f.path)
+					const fileText = await file(fullPath).text()
+					return `UNTRACKED: ${fileText}`
+				}),
+		)
+		for (const fileData of untrackedFileData) {
+			gitStatusHash.update(fileData)
+		}
+		const hash7Char = gitStatusHash.digest(`hex`).slice(0, 7)
+		currentGitRef = `${currentGitRef}--${hash7Char}`
+
+		mark?.(`git status hash created`)
+	}
+	return currentGitRef
+}
+
 export async function capture(): Promise<void> {
 	let mark: ReturnType<typeof useMarks>[`mark`] | undefined
 	let logMarks: ReturnType<typeof useMarks>[`logMarks`] | undefined
@@ -129,31 +168,8 @@ export async function capture(): Promise<void> {
 
 	const git = simpleGit(import.meta.dir)
 	mark?.(`spawn git`)
-	const { current: currentGitBranch, branches } = await git.branch()
-	mark?.(`git branch`)
-	const gitStatus = await git.status()
-	mark?.(`git status`)
-	const gitIsClean = gitStatus.isClean()
-	mark?.(`git status is clean`)
-	let currentGitRef = branches[currentGitBranch].commit
-	if (!gitIsClean) {
-		const gitDiff = await git.diff()
-		mark?.(`git diff`)
-		const gitStatusHash = createHash(`sha256`).update(gitDiff)
-		const untrackedFileData = await Promise.all(
-			gitStatus.files
-				.filter((f) => f.index === `?`)
-				.map(async (f) => `UNTRACKED: ${await file(f.path).text()}`),
-		)
-		for (const fileData of untrackedFileData) {
-			gitStatusHash.update(fileData)
-		}
-		currentGitRef = `${currentGitRef}-${gitStatusHash.digest(`hex`)}`
-		mark?.(`git status hash created`)
-	}
-
-	mark?.(`coverage map created`)
-
+	const currentGitRef = await hashDirtyRepoState(git, mark)
+	mark?.(`git ref retrieved`)
 	const db = await setupDatabase(mark)
 
 	mark?.(`setup database`)
@@ -196,31 +212,10 @@ export async function diff(): Promise<void> {
 
 	const git = simpleGit(import.meta.dir)
 	mark?.(`spawn git`)
-	const { current: currentGitBranch, branches } = await git.branch()
-	mark?.(`git branch`)
-	const gitStatus = await git.status()
-	mark?.(`git status`)
+	const { branches } = await git.branch()
 	const mainGitRef = branches[DEFAULT_BRANCH].commit
-	const gitIsClean = gitStatus.isClean()
-	mark?.(`git status is clean`)
-	let currentGitRef = branches[currentGitBranch].commit
-	if (!gitIsClean) {
-		const gitDiff = await git.diff()
-		mark?.(`git diff`)
-		const gitStatusHash = createHash(`sha256`).update(gitDiff)
-		const untrackedFileData = await Promise.all(
-			gitStatus.files
-				.filter((f) => f.index === `?`)
-				.map(async (f) => `UNTRACKED: ${await file(f.path).text()}`),
-		)
-		for (const fileData of untrackedFileData) {
-			gitStatusHash.update(fileData)
-		}
-		currentGitRef = `${currentGitRef}-${gitStatusHash.digest(`hex`)}`
-		mark?.(`git status hash created`)
-	}
-
-	mark?.(`coverage map created`)
+	mark?.(`retrieved main git branch`)
+	const currentGitRef = await hashDirtyRepoState(git, mark)
 
 	const db = await setupDatabase()
 	mark?.(`setup database`)
