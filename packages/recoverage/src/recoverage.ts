@@ -118,7 +118,7 @@ async function setupDatabase(mark?: (text: string) => void): Promise<Database> {
 	return db
 }
 
-async function hashDirtyRepoState(
+async function hashRepoState(
 	git: SimpleGit,
 	mark?: (text: string) => void,
 ): Promise<string> {
@@ -167,7 +167,7 @@ export async function capture(): Promise<void> {
 
 	const git = simpleGit(import.meta.dir)
 	mark?.(`spawn git`)
-	const currentGitRef = await hashDirtyRepoState(git, mark)
+	const currentGitRef = await hashRepoState(git, mark)
 	mark?.(`git ref retrieved`)
 	const db = await setupDatabase(mark)
 
@@ -214,7 +214,7 @@ export async function diff(): Promise<void> {
 	const { branches } = await git.branch()
 	const mainGitRef = branches[DEFAULT_BRANCH].commit
 	mark?.(`retrieved main git branch`)
-	const currentGitRef = await hashDirtyRepoState(git, mark)
+	const currentGitRef = await hashRepoState(git, mark)
 
 	const db = await setupDatabase()
 	mark?.(`setup database`)
