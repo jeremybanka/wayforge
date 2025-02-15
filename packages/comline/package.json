@@ -19,6 +19,7 @@
 	"main": "dist/cli.js",
 	"types": "dist/cli.d.ts",
 	"dependencies": {
+		"chalk": "5.4.1",
 		"treetrunks": "workspace:*",
 		"zod": "3.24.2",
 		"zod-to-json-schema": "3.24.1"
