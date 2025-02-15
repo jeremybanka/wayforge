@@ -1,7 +1,6 @@
 import { createHash } from "node:crypto"
 import path from "node:path"
 
-import type { S3File } from "bun"
 import type { ShellError } from "bun"
 import { $, file, S3Client, write } from "bun"
 import { Database } from "bun:sqlite"
