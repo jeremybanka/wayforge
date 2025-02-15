@@ -781,6 +781,9 @@ importers:
       npmlog:
         specifier: 7.0.1
         version: 7.0.1
+      nyc:
+        specifier: 17.1.0
+        version: 17.1.0
       postgres:
         specifier: 3.4.5
         version: 3.4.5
@@ -1177,9 +1180,6 @@ importers:
       istanbul-lib-coverage:
         specifier: 3.2.2
         version: 3.2.2
-      nyc:
-        specifier: 17.1.0
-        version: 17.1.0
       zod:
         specifier: 3.24.2
         version: 3.24.2
@@ -1202,6 +1202,9 @@ importers:
       eslint:
         specifier: 9.20.1
         version: 9.20.1(jiti@2.4.2)
+      nyc:
+        specifier: 17.1.0
+        version: 17.1.0
       simple-git:
         specifier: 3.27.0
         version: 3.27.0

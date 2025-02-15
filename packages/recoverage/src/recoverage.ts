@@ -1,11 +1,13 @@
 import { createHash } from "node:crypto"
+import path from "node:path"
 
-import type { S3File } from "bun"
+import type { ShellError } from "bun"
 import { $, file, S3Client, write } from "bun"
 import { Database } from "bun:sqlite"
 import colors from "colors"
 import * as Diff from "diff"
 import { createCoverageMap } from "istanbul-lib-coverage"
+import type { SimpleGit } from "simple-git"
 import simpleGit from "simple-git"
 import tmp from "tmp"
 
@@ -116,19 +118,10 @@ async function setupDatabase(mark?: (text: string) => void): Promise<Database> {
 	return db
 }
 
-export async function capture(): Promise<void> {
-	let mark: ReturnType<typeof useMarks>[`mark`] | undefined
-	let logMarks: ReturnType<typeof useMarks>[`logMarks`] | undefined
-	if (VERBOSE) {
-		const { mark: mark_, logMarks: logMarks_ } = useMarks({ inline: true })
-		mark = mark_
-		logMarks = logMarks_
-	}
-	console.log(`recoverage capture`)
-	mark?.(`recoverage`)
-
-	const git = simpleGit(import.meta.dir)
-	mark?.(`spawn git`)
+async function hashRepoState(
+	git: SimpleGit,
+	mark?: (text: string) => void,
+): Promise<string> {
 	const { current: currentGitBranch, branches } = await git.branch()
 	mark?.(`git branch`)
 	const gitStatus = await git.status()
@@ -139,21 +132,42 @@ export async function capture(): Promise<void> {
 	if (!gitIsClean) {
 		const gitDiff = await git.diff()
 		mark?.(`git diff`)
+		const gitRootFolder = await git.revparse(`--show-toplevel`)
 		const gitStatusHash = createHash(`sha256`).update(gitDiff)
 		const untrackedFileData = await Promise.all(
 			gitStatus.files
 				.filter((f) => f.index === `?`)
-				.map(async (f) => `UNTRACKED: ${await file(f.path).text()}`),
+				.map(async (f) => {
+					const fullPath = path.resolve(gitRootFolder, f.path)
+					const fileText = await file(fullPath).text()
+					return `UNTRACKED: ${fileText}`
+				}),
 		)
 		for (const fileData of untrackedFileData) {
 			gitStatusHash.update(fileData)
 		}
-		currentGitRef = `${currentGitRef}-${gitStatusHash.digest(`hex`)}`
+		const hash9Char = gitStatusHash.digest(`hex`).slice(0, currentGitRef.length)
+		currentGitRef = `${currentGitRef}+${hash9Char}`
+
 		mark?.(`git status hash created`)
 	}
+	return currentGitRef
+}
 
-	mark?.(`coverage map created`)
+export async function capture(): Promise<void> {
+	let mark: ReturnType<typeof useMarks>[`mark`] | undefined
+	let logMarks: ReturnType<typeof useMarks>[`logMarks`] | undefined
+	if (VERBOSE) {
+		const { mark: mark_, logMarks: logMarks_ } = useMarks({ inline: true })
+		mark = mark_
+		logMarks = logMarks_
+	}
+	mark?.(`recoverage`)
 
+	const git = simpleGit(import.meta.dir)
+	mark?.(`spawn git`)
+	const currentGitRef = await hashRepoState(git, mark)
+	mark?.(`git ref retrieved`)
 	const db = await setupDatabase(mark)
 
 	mark?.(`setup database`)
@@ -171,8 +185,7 @@ export async function capture(): Promise<void> {
 		$git_ref: currentGitRef,
 		$coverage: JSON.stringify(coverageMap),
 	})
-	mark?.(`inserted coverage`)
-	console.log(`updated coverage for`, currentGitRef)
+	mark?.(`updated coverage for ${currentGitRef}`)
 	if (env.R2_ACCESS_KEY_ID && env.R2_SECRET_ACCESS_KEY && env.R2_URL) {
 		const sqliteFile = Bun.s3.file(`coverage.sqlite`)
 		mark?.(`uploading coverage database to R2`)
@@ -191,36 +204,14 @@ export async function diff(): Promise<void> {
 		logMarks = logMarks_
 	}
 
-	console.log(`recoverage diff`)
 	mark?.(`recoverage`)
 
 	const git = simpleGit(import.meta.dir)
 	mark?.(`spawn git`)
-	const { current: currentGitBranch, branches } = await git.branch()
-	mark?.(`git branch`)
-	const gitStatus = await git.status()
-	mark?.(`git status`)
+	const { branches } = await git.branch()
 	const mainGitRef = branches[DEFAULT_BRANCH].commit
-	const gitIsClean = gitStatus.isClean()
-	mark?.(`git status is clean`)
-	let currentGitRef = branches[currentGitBranch].commit
-	if (!gitIsClean) {
-		const gitDiff = await git.diff()
-		mark?.(`git diff`)
-		const gitStatusHash = createHash(`sha256`).update(gitDiff)
-		const untrackedFileData = await Promise.all(
-			gitStatus.files
-				.filter((f) => f.index === `?`)
-				.map(async (f) => `UNTRACKED: ${await file(f.path).text()}`),
-		)
-		for (const fileData of untrackedFileData) {
-			gitStatusHash.update(fileData)
-		}
-		currentGitRef = `${currentGitRef}-${gitStatusHash.digest(`hex`)}`
-		mark?.(`git status hash created`)
-	}
-
-	mark?.(`coverage map created`)
+	mark?.(`retrieved main git branch`)
+	const currentGitRef = await hashRepoState(git, mark)
 
 	const db = await setupDatabase()
 	mark?.(`setup database`)
@@ -233,19 +224,18 @@ export async function diff(): Promise<void> {
 	const [mainCoverage] = getCoverage.all(mainGitRef)
 	const [currentCoverage] = getCoverage.all(currentGitRef)
 
-	mark?.(`got coverage`)
 	if (!mainCoverage) {
-		console.log(`no coverage found for the target branch`)
+		mark?.(`no coverage found for the target branch`)
 		logMarks?.()
-		process.exit(0)
+		process.exit(1)
 	}
 	if (!currentCoverage) {
-		console.log(`no coverage found for the current ref`)
+		mark?.(`no coverage found for the current ref`)
 		logMarks?.()
-		process.exit(0)
+		process.exit(1)
 	}
 	if (mainGitRef === currentGitRef) {
-		console.log(`you're already on the target branch`)
+		mark?.(`you're already on the target branch`)
 		logMarks?.()
 		process.exit(0)
 	}
@@ -254,7 +244,14 @@ export async function diff(): Promise<void> {
 		const { coverage } = branchCoverage
 		const tempDir = tmp.dirSync({ unsafeCleanup: true })
 		await write(`${tempDir.name}/out.json`, coverage)
-		await $`nyc report --reporter=json-summary --temp-dir=${tempDir.name} --report-dir=${tempDir.name}/coverage`.text()
+		try {
+			await $`nyc report --reporter=json-summary --temp-dir=${tempDir.name} --report-dir=${tempDir.name}/coverage`.text()
+		} catch (thrown) {
+			const caught = thrown as ShellError
+			console.log(caught.stdout.toString())
+			console.error(caught.stderr.toString())
+			process.exit(1)
+		}
 		const jsonReport = (await file(
 			`${tempDir.name}/coverage/coverage-summary.json`,
 		).json()) as JsonSummaryReport
@@ -265,13 +262,20 @@ export async function diff(): Promise<void> {
 		const { coverage } = branchCoverage
 		const tempDir = tmp.dirSync({ unsafeCleanup: true })
 		await write(`${tempDir.name}/out.json`, coverage)
-
-		const textReport =
-			await $`nyc report --reporter=text --color=0 --temp-dir=${tempDir.name}`
-				.env({ ...process.env, COLUMNS })
-				.text()
+		let textReport: string
+		try {
+			textReport =
+				await $`nyc report --reporter=text --color=0 --temp-dir=${tempDir.name}`
+					.env({ ...process.env, COLUMNS })
+					.text()
+		} catch (thrown) {
+			const caught = thrown as ShellError
+			console.log(caught.stdout.toString())
+			console.error(caught.stderr.toString())
+			process.exit(1)
+		}
 		tempDir.removeCallback()
-		console.log(branchCoverage.git_ref)
+		mark?.(`coverage for ${branchCoverage.git_ref}`)
 		console.log(textReport)
 		return textReport
 	}
@@ -288,14 +292,12 @@ export async function diff(): Promise<void> {
 		getCoverageTextReport(currentCoverage),
 	])
 
-	mark?.(`coverage summaries produced`)
-
 	const coverageDifference =
 		currentCoverageJsonSummary.total.statements.pct -
 		mainCoverageJsonSummary.total.statements.pct
 
 	function logDiff() {
-		console.log(`coverage diff between ${mainGitRef} and ${currentGitRef}:`)
+		mark?.(`coverage diff between ${mainGitRef} and ${currentGitRef}:`)
 		const coverageDiffLines = Diff.diffLines(
 			mainCoverageTextReport,
 			currentCoverageTextReport,
@@ -311,21 +313,22 @@ export async function diff(): Promise<void> {
 	}
 
 	if (coverageDifference === 0) {
-		console.log(`coverage is the same`)
+		mark?.(`coverage is the same`)
+		logMarks?.()
 		process.exit(0)
 	}
 
 	if (coverageDifference < 0) {
 		logDiff()
+		mark?.(`coverage decreased by ${+coverageDifference}%`)
 		logMarks?.()
-		console.log(`coverage decreased by ${+coverageDifference}%`)
 		process.exit(1)
 	}
 
 	if (coverageDifference > 0) {
 		logDiff()
+		mark?.(`coverage increased by ${+coverageDifference}%`)
 		logMarks?.()
-		console.log(`coverage increased by ${+coverageDifference}%`)
 		process.exit(0)
 	}
 }
