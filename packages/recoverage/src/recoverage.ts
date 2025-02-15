@@ -146,8 +146,8 @@ async function hashRepoState(
 		for (const fileData of untrackedFileData) {
 			gitStatusHash.update(fileData)
 		}
-		const hash7Char = gitStatusHash.digest(`hex`).slice(0, 7)
-		currentGitRef = `${currentGitRef}--${hash7Char}`
+		const hash9Char = gitStatusHash.digest(`hex`).slice(0, 9)
+		currentGitRef = `${currentGitRef}--${hash9Char}`
 
 		mark?.(`git status hash created`)
 	}
