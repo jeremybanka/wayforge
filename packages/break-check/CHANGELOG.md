@@ -1,5 +1,15 @@
 # break-check
 
+## 0.6.6
+
+### Patch Changes
+
+- 2743527: ✨ Add a `--help` page to the CLI.
+- Updated dependencies [2743527]
+- Updated dependencies [2743527]
+- Updated dependencies [2743527]
+  - comline@0.1.9
+
 ## 0.6.5
 
 ### Patch Changes
