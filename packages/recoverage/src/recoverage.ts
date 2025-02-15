@@ -254,7 +254,14 @@ export async function diff(): Promise<void> {
 		const { coverage } = branchCoverage
 		const tempDir = tmp.dirSync({ unsafeCleanup: true })
 		await write(`${tempDir.name}/out.json`, coverage)
-		await $`nyc report --reporter=json-summary --temp-dir=${tempDir.name} --report-dir=${tempDir.name}/coverage`.text()
+		try {
+			await $`nyc report --reporter=json-summary --temp-dir=${tempDir.name} --report-dir=${tempDir.name}/coverage`.text()
+		} catch (thrown) {
+			const caught = thrown as ShellError
+			console.log(caught.stdout.toString())
+			console.error(caught.stderr.toString())
+			process.exit(1)
+		}
 		const jsonReport = (await file(
 			`${tempDir.name}/coverage/coverage-summary.json`,
 		).json()) as JsonSummaryReport
@@ -265,11 +272,18 @@ export async function diff(): Promise<void> {
 		const { coverage } = branchCoverage
 		const tempDir = tmp.dirSync({ unsafeCleanup: true })
 		await write(`${tempDir.name}/out.json`, coverage)
-
-		const textReport =
-			await $`nyc report --reporter=text --color=0 --temp-dir=${tempDir.name}`
-				.env({ ...process.env, COLUMNS })
-				.text()
+		let textReport: string
+		try {
+			textReport =
+				await $`nyc report --reporter=text --color=0 --temp-dir=${tempDir.name}`
+					.env({ ...process.env, COLUMNS })
+					.text()
+		} catch (thrown) {
+			const caught = thrown as ShellError
+			console.log(caught.stdout.toString())
+			console.error(caught.stderr.toString())
+			process.exit(1)
+		}
 		tempDir.removeCallback()
 		console.log(branchCoverage.git_ref)
 		console.log(textReport)
