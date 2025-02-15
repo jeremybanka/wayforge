@@ -18,7 +18,7 @@ beforeAll(async () => {
 	await Yalc.publishPackage({ workingDir: `.` })
 	await Yalc.publishPackage({ workingDir: `../comline` })
 	await Yalc.publishPackage({ workingDir: `../treetrunks` })
-})
+}, 20_000)
 
 let phase = 0
 let tmpDir: tmp.DirResult
