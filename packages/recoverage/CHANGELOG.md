@@ -1,5 +1,13 @@
 # treetrunks
 
+## 0.0.3
+
+### Patch Changes
+
+- 238d521: ➕ Add `nyc` as a peer dependency. Recoverage currently relies on its executable being present in the project.
+- 238d521: 🔊 If `nyc` fails to create coverage reports, log an error explaining what happened.
+- 238d521: 🐛 Fix bug where, if recoverage was run from a diectory in a repo other than the root itself, when that repo was dirty, it would fail to compute the hash representing the repo's dirty state.
+
 ## 0.0.2
 
 ### Patch Changes
