@@ -1,5 +1,13 @@
 # comline
 
+## 0.1.9
+
+### Patch Changes
+
+- 2743527: ✨ Add `help` function for printing a `CommandLineInterface` to the console.
+- 2743527: ✨ Include a new property `definition` on the `parse` function returned from `cli`. This preserves the original `CommandLineInterface` that created the parser.
+- 2743527: ✨ Export new functions `helpOptions` and `noOptions`, a time saver for the two most common options patterns.
+
 ## 0.1.8
 
 ### Patch Changes
