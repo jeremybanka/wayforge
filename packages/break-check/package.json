@@ -22,6 +22,7 @@
 		"break-check": "./bin/break-check.x.js"
 	},
 	"dependencies": {
+		"comline": "workspace:*",
 		"minimatch": "10.0.1",
 		"npmlog": "7.0.1",
 		"simple-git": "3.27.0",

@@ -29,7 +29,7 @@
 			]
 		},
 		"test:once": {
-			"dependsOn": ["test:build"],
+			"dependsOn": ["test:build", "^build"],
 			"inputs": [
 				"**/package.json",
 				"src/**",
@@ -51,6 +51,7 @@
 			]
 		},
 		"test:semver": {
+			"dependsOn": ["^build"],
 			"inputs": [
 				"../../.changeset/**",
 				"../../packages/break-check/src/**/*.ts",

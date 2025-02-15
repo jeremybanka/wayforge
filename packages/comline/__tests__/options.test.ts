@@ -8,6 +8,7 @@ describe(`options from cli`, () => {
 		cliName: `my-cli`,
 		routeOptions: {
 			"": {
+				description: `description`,
 				optionsSchema: z.object({
 					foo: z.string(),
 					bar: z.number().optional(),
@@ -39,7 +40,7 @@ describe(`options from cli`, () => {
 		})
 	})
 	test(`happy: missing optional options`, () => {
-		const { inputs } = testCli([`--foo=hello`, `-bb`])
+		const { inputs } = testCli([`--foo=hello`, `-bb`, `--help`])
 		expect(inputs.opts).toEqual({
 			foo: `hello`,
 			bar: 2,

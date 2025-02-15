@@ -1,6 +1,6 @@
 import type { ChildProcess } from "node:child_process"
 import { spawn } from "node:child_process"
-import { copyFile, readdir } from "node:fs/promises"
+import { copyFile, readdir, rename } from "node:fs/promises"
 import * as path from "node:path"
 
 import type { SimpleGit } from "simple-git"
@@ -15,8 +15,10 @@ beforeAll(async () => {
 	})
 	const buildCode = await new Promise((resolve) => build.on(`exit`, resolve))
 	expect(buildCode).toBe(0)
-	await Yalc.publishPackage({ workingDir: `.`, workspaceResolve: true })
-})
+	await Yalc.publishPackage({ workingDir: `.` })
+	await Yalc.publishPackage({ workingDir: `../comline` })
+	await Yalc.publishPackage({ workingDir: `../treetrunks` })
+}, 60_000)
 
 let phase = 0
 let tmpDir: tmp.DirResult
@@ -62,8 +64,10 @@ async function loadSample(packageName: string) {
 		),
 	)
 	if (phase === 0) {
-		await Yalc.addPackages([`recoverage`], { workingDir: `.` })
-
+		await Yalc.addPackages([`recoverage`, `comline`, `treetrunks`], {
+			workingDir: `.`,
+		})
+		await rename(`.yalc`, `packages`)
 		const install = await runScript(`install`)
 		expect(install.exitCode).toBe(0)
 	}

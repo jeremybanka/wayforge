@@ -5,19 +5,31 @@ import * as path from "node:path"
 import type { BreakCheckOptions } from "break-check"
 import { breakCheck } from "break-check"
 import type { OptionsGroup } from "comline"
-import { cli, encapsulate, optional, parseBooleanOption } from "comline"
+import {
+	cli,
+	encapsulate,
+	help,
+	helpOption,
+	optional,
+	parseBooleanOption,
+} from "comline"
 import logger from "npmlog"
 import { z } from "zod"
 
+const helper = helpOption()
+
 const BREAK_CHECK_MANUAL = {
+	description: `Check for breaking changes in a package.`,
 	optionsSchema: z.object({
 		tagPattern: z.string().optional(),
 		testPattern: z.string(),
 		testCommand: z.string(),
 		certifyCommand: z.string(),
 		verbose: z.boolean().optional(),
+		help: z.boolean().optional(),
 	}),
 	options: {
+		...helper.options,
 		tagPattern: {
 			flag: `v`,
 			required: false,
@@ -50,7 +62,7 @@ const BREAK_CHECK_MANUAL = {
 			parse: parseBooleanOption,
 		},
 	},
-} satisfies OptionsGroup<BreakCheckOptions>
+} satisfies OptionsGroup<BreakCheckOptions & { help?: boolean | undefined }>
 
 const SCHEMA_MANUAL = {
 	optionsSchema: z.object({
@@ -98,6 +110,10 @@ switch (inputs.case) {
 		break
 	case ``:
 	case `$configPath`: {
+		if (inputs.opts.help) {
+			console.log(help(parse.definition))
+		}
+
 		const { returnValue } = await encapsulate(() => breakCheck(inputs.opts), {
 			console: true,
 			stdout: true,
