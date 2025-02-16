@@ -29,7 +29,6 @@ afterAll(async () => {
 		},
 	})
 	await db.drizzle.delete(banishedIps)
-	gpt4Gen.squirrel.flush()
 })
 
 describe(`tribunal`, () => {
