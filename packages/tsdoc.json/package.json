@@ -51,7 +51,7 @@
 	},
 	"devDependencies": {
 		"@types/npmlog": "7.0.0",
-		"@types/react": "19.0.8",
+		"@types/react": "19.0.9",
 		"bun-types": "1.2.2",
 		"concurrently": "9.1.2",
 		"eslint": "9.20.1",
