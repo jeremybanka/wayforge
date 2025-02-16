@@ -334,7 +334,7 @@ export async function diff(): Promise<void> {
 }
 
 export async function getDefaultBranchHashRef(): Promise<string> {
-	const defaultBranch = DEFAULT_BRANCH
+	// const defaultBranch = DEFAULT_BRANCH
 	let mark: ReturnType<typeof useMarks>[`mark`] | undefined
 	let logMarks: ReturnType<typeof useMarks>[`logMarks`] | undefined
 	if (VERBOSE) {
@@ -345,7 +345,28 @@ export async function getDefaultBranchHashRef(): Promise<string> {
 	mark?.(`startup`)
 	const git = simpleGit(import.meta.dir)
 	mark?.(`spawn git`)
-	const refOfDefaultBranch = await git.raw([`rev-parse`, `--abbrev-ref`, `HEAD`])
-	mark?.(`refOfDefaultBranch: ${refOfDefaultBranch}`)
-	return refOfDefaultBranch
+	// const refOfDefaultBranch = await git.raw([`rev-parse`, `--abbrev-ref`, `HEAD`])
+	// mark?.(`refOfDefaultBranch: ${refOfDefaultBranch}`)
+	// return refOfDefaultBranch
+	// Get the remote references to determine the default branch (usually 'origin/HEAD' points to it)
+	const remoteResult = await git.raw([
+		`symbolic-ref`,
+		`refs/remotes/origin/HEAD`,
+	])
+	const defaultBranchRef = remoteResult.trim() // e.g., 'refs/remotes/origin/main'
+
+	const defaultBranch = defaultBranchRef.replace(`refs/remotes/origin/`, ``) // Extract 'main' from 'refs/remotes/origin/main'
+	//  core.info(`Default branch is: ${defaultBranch}`);
+
+	// Fetch the latest commit SHA from the default branch
+	const log = await git.log([defaultBranch])
+	const sha = log.latest?.hash
+	console.log({
+		remoteResult,
+		defaultBranchRef,
+		defaultBranch,
+		log,
+		sha,
+	})
+	return sha ?? `??`
 }
