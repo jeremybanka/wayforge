@@ -1,4 +1,5 @@
 import { createEnv } from "@t3-oss/env-core"
+import { $ } from "bun"
 import { z } from "zod"
 
 export const env = createEnv({
@@ -7,7 +8,10 @@ export const env = createEnv({
 		R2_SECRET_ACCESS_KEY: z.string().optional(),
 		R2_TOKEN_VALUE: z.string().optional(),
 		R2_URL: z.string().optional(),
-		CI: z.boolean().optional(),
+		CI: z
+			.string()
+			.optional()
+			.transform((v) => Boolean(v) && v !== `false` && v !== `0`),
 	},
 	runtimeEnv: import.meta.env,
 	emptyStringAsUndefined: true,
