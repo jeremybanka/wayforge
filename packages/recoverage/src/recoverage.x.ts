@@ -60,8 +60,7 @@ switch (inputs.case) {
 					inputs.opts[`default-branch`] ?? `main`,
 				)
 				if (diffCode === 1) {
-					// process.exit(1)
-					console.log(`❗ temporarily disabled exit 1`)
+					process.exit(1)
 				}
 			} catch (thrown) {
 				console.error(thrown)
