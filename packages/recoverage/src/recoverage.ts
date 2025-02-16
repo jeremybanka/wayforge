@@ -374,26 +374,21 @@ export async function getDefaultBranchHashRef(): Promise<string> {
 	// const sha = log.latest?.hash
 	// Fetch all remote branches to ensure we have the latest info
 	await git.fetch()
-	console.log(`fetched`)
+	mark?.(`fetched`)
 
 	// Get the default branch by listing remote branches and checking the HEAD
 	const branchSummary = await git.branch([`-r`])
-	console.log({
-		branchSummary,
-	})
+	mark?.(`branchSummary`)
+	console.log(branchSummary)
 	const defaultBranch = Object.keys(branchSummary.branches)
 		.find((branch) => branch.includes(`origin/`) && !branch.includes(`HEAD`))
 		?.replace(`origin/`, ``)
-	console.log({
-		defaultBranch,
-	})
+	mark?.(`defaultBranch ${defaultBranch}`)
 	if (!defaultBranch) {
 		throw new Error(`Could not determine the default branch.`)
 	}
 	// Get the SHA of the latest commit on the default branch
 	const sha = await git.revparse([defaultBranch])
-	console.log({
-		sha,
-	})
+	mark?.(`sha ${sha.slice(0, 7)}`)
 	return sha ?? `??`
 }
