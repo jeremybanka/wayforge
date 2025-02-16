@@ -40,7 +40,7 @@ afterEach(() => {
 async function runScript(...args: string[]): Promise<ChildProcess> {
 	const proc = spawn(`bun`, args, {
 		stdio: `inherit`,
-		env: { ...process.env, FORCE_COLOR: `1` },
+		env: { ...process.env, FORCE_COLOR: `1`, CI: `false` },
 	})
 	await new Promise((resolve) => proc.on(`exit`, resolve))
 	return proc
