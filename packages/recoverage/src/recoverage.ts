@@ -349,34 +349,44 @@ export async function getDefaultBranchHashRef(): Promise<string> {
 	// mark?.(`refOfDefaultBranch: ${refOfDefaultBranch}`)
 	// return refOfDefaultBranch
 	// Get the remote references to determine the default branch (usually 'origin/HEAD' points to it)
-	const remoteResult = await git.raw([
-		`symbolic-ref`,
-		`refs/remotes/origin/HEAD`,
-	])
-	console.log({
-		remoteResult,
-	})
-	const defaultBranchRef = remoteResult.trim() // e.g., 'refs/remotes/origin/main'
-	console.log({
-		defaultBranchRef,
-	})
+	// const remoteResult = await git.raw([
+	// 	`symbolic-ref`,
+	// 	`refs/remotes/origin/HEAD`,
+	// ])
+	// console.log({
+	// 	remoteResult,
+	// })
+	// const defaultBranchRef = remoteResult.trim() // e.g., 'refs/remotes/origin/main'
+	// console.log({
+	// 	defaultBranchRef,
+	// })
 
-	const defaultBranch = defaultBranchRef.replace(`refs/remotes/origin/`, ``) // Extract 'main' from 'refs/remotes/origin/main'
-	console.log({
-		defaultBranch,
-	})
+	// const defaultBranch = defaultBranchRef.replace(`refs/remotes/origin/`, ``) // Extract 'main' from 'refs/remotes/origin/main'
+	// console.log({
+	// 	defaultBranch,
+	// })
 
-	// Fetch the latest commit SHA from the default branch
-	const log = await git.log([defaultBranch])
+	// // Fetch the latest commit SHA from the default branch
+	// const log = await git.log([defaultBranch])
+	// console.log({
+	// 	log,
+	// })
+	// const sha = log.latest?.hash
+	// Fetch all remote branches to ensure we have the latest info
+	await git.fetch()
+
+	// Get the default branch by listing remote branches and checking the HEAD
+	const branchSummary = await git.branch([`-r`])
+	const defaultBranch = Object.keys(branchSummary.branches)
+		.find((branch) => branch.includes(`origin/`) && !branch.includes(`HEAD`))
+		?.replace(`origin/`, ``)
+
+	if (!defaultBranch) {
+		throw new Error(`Could not determine the default branch.`)
+	}
+	// Get the SHA of the latest commit on the default branch
+	const sha = await git.revparse([defaultBranch])
 	console.log({
-		log,
-	})
-	const sha = log.latest?.hash
-	console.log({
-		remoteResult,
-		defaultBranchRef,
-		defaultBranch,
-		// log,
 		sha,
 	})
 	return sha ?? `??`
