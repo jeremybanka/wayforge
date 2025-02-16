@@ -8,7 +8,7 @@ import type * as OpenAICore from "openai/core"
 import type OpenAIResources from "openai/resources/index"
 import { z } from "zod"
 
-import { Squirrel } from "../src"
+import { Squirrel, Squirreled } from "../src"
 
 export type Agenda = {
 	[key: string]: boolean | string | null
@@ -194,7 +194,7 @@ export type Agent<State = null, Update = null> = {
 export class Grunt<State extends Agenda>
 	implements Agent<State, Partial<State>>
 {
-	private completions = squirrel.add(this.testId ?? this.id, aiComplete)
+	private completions: Squirreled<typeof aiComplete>
 	public constructor(
 		public id: string,
 		role: string,
@@ -215,6 +215,7 @@ export class Grunt<State extends Agenda>
 		if (initialState) {
 			setState(findState(agendaAtoms, id), initialState)
 		}
+		this.completions = squirrel.add(this.testId ?? this.id, aiComplete)
 	}
 
 	public get conversation(): Loadable<
