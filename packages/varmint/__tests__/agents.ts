@@ -8,7 +8,8 @@ import type * as OpenAICore from "openai/core"
 import type OpenAIResources from "openai/resources/index"
 import { z } from "zod"
 
-import { Squirrel, Squirreled } from "../src"
+import type { Squirreled } from "../src"
+import { Squirrel } from "../src"
 
 export type Agenda = {
 	[key: string]: boolean | string | null
