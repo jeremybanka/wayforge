@@ -56,6 +56,13 @@
 		"vitest": "3.0.5"
 	},
 	"pnpm": {
-		"onlyBuiltDependencies": ["@vercel/speed-insights", "esbuild"]
+		"onlyBuiltDependencies": [
+			"@biomejs/biome",
+			"@parcel/watcher",
+			"@swc/core",
+			"@vercel/speed-insights",
+			"esbuild",
+			"sharp"
+		]
 	}
 }
