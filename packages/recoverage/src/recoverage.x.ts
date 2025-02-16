@@ -10,11 +10,13 @@ const parse = cli({
 		"": null,
 		capture: null,
 		diff: null,
+		check: null, // REMOVE
 	}),
 	routeOptions: {
 		"": helpOption(),
 		capture: noOptions(`capture the current state of your coverage.`),
 		diff: noOptions(`diff the current state of your coverage.`),
+		check: noOptions(`check the default branch hash ref.`),
 	},
 })
 
@@ -29,5 +31,8 @@ switch (inputs.case) {
 		break
 	case `diff`:
 		await Recoverage.diff()
+		break
+	case `check`:
+		console.log(`cli: check`, await Recoverage.getDefaultBranchHashRef())
 		break
 }

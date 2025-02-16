@@ -332,3 +332,20 @@ export async function diff(): Promise<void> {
 		process.exit(0)
 	}
 }
+
+export async function getDefaultBranchHashRef(): Promise<string> {
+	const defaultBranch = DEFAULT_BRANCH
+	let mark: ReturnType<typeof useMarks>[`mark`] | undefined
+	let logMarks: ReturnType<typeof useMarks>[`logMarks`] | undefined
+	if (VERBOSE) {
+		const { mark: mark_, logMarks: logMarks_ } = useMarks({ inline: true })
+		mark = mark_
+		logMarks = logMarks_
+	}
+	mark?.(`startup`)
+	const git = simpleGit(import.meta.dir)
+	mark?.(`spawn git`)
+	const refOfDefaultBranch = await git.raw([`rev-parse`, `--abbrev-ref`, `HEAD`])
+	mark?.(`refOfDefaultBranch: ${refOfDefaultBranch}`)
+	return refOfDefaultBranch
+}
