@@ -345,50 +345,21 @@ export async function getDefaultBranchHashRef(): Promise<string> {
 	mark?.(`startup`)
 	const git = simpleGit(import.meta.dir)
 	mark?.(`spawn git`)
-	// const refOfDefaultBranch = await git.raw([`rev-parse`, `--abbrev-ref`, `HEAD`])
-	// mark?.(`refOfDefaultBranch: ${refOfDefaultBranch}`)
-	// return refOfDefaultBranch
-	// Get the remote references to determine the default branch (usually 'origin/HEAD' points to it)
-	// const remoteResult = await git.raw([
-	// 	`symbolic-ref`,
-	// 	`refs/remotes/origin/HEAD`,
-	// ])
-	// console.log({
-	// 	remoteResult,
-	// })
-	// const defaultBranchRef = remoteResult.trim() // e.g., 'refs/remotes/origin/main'
-	// console.log({
-	// 	defaultBranchRef,
-	// })
-
-	// const defaultBranch = defaultBranchRef.replace(`refs/remotes/origin/`, ``) // Extract 'main' from 'refs/remotes/origin/main'
-	// console.log({
-	// 	defaultBranch,
-	// })
-
-	// // Fetch the latest commit SHA from the default branch
-	// const log = await git.log([defaultBranch])
-	// console.log({
-	// 	log,
-	// })
-	// const sha = log.latest?.hash
-	// Fetch all remote branches to ensure we have the latest info
 	await git.fetch()
 	mark?.(`fetched`)
 
-	// Get the default branch by listing remote branches and checking the HEAD
+	await git.fetch(`origin`, `main`) // Fetch only the target branch
+	mark?.(`fetched origin/main`)
+
 	const branchSummary = await git.branch([`-r`])
 	mark?.(`branchSummary`)
 	console.log(branchSummary)
-	const defaultBranch = Object.keys(branchSummary.branches)
-		.find((branch) => branch.includes(`origin/`) && !branch.includes(`HEAD`))
+	const branch = Object.keys(branchSummary.branches)
+		.find((b) => b.includes(`origin/`) && !b.includes(`HEAD`))
 		?.replace(`origin/`, ``)
-	mark?.(`defaultBranch ${defaultBranch}`)
-	if (!defaultBranch) {
-		throw new Error(`Could not determine the default branch.`)
-	}
-	// Get the SHA of the latest commit on the default branch
-	const sha = await git.revparse([defaultBranch])
+	mark?.(`branch ${branch}`)
+	// Get the SHA of the latest commit on origin/<branch>
+	const sha = await git.revparse([`origin/${branch}`])
 	mark?.(`sha ${sha.slice(0, 7)}`)
 	return sha ?? `??`
 }
