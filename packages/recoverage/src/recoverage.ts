@@ -345,15 +345,8 @@ export async function getDefaultBranchHashRef(): Promise<string> {
 	mark?.(`startup`)
 	const git = simpleGit(import.meta.dir)
 	mark?.(`spawn git`)
-	await git.fetch(`origin`, `main`) // Fetch only the target branch
-	mark?.(`fetched origin/main`)
-
-	// const branchSummary = await git.branch([`-r`])
-	// mark?.(`branchSummary`)
-	// console.log(branchSummary)
-	// const branch = branchSummary.all
-	// mark?.(`branch ${branch}`)
-	// Get the SHA of the latest commit on origin/<branch>
+	await git.fetch(`origin`, DEFAULT_BRANCH, { "--depth": `1` })
+	mark?.(`fetched origin/${DEFAULT_BRANCH}`)
 	const sha = await git.revparse([`origin/${DEFAULT_BRANCH}`])
 	mark?.(`sha ${sha.slice(0, 7)}`)
 	return sha ?? `??`
