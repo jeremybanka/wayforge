@@ -14,7 +14,6 @@ import tmp from "tmp"
 import { env } from "./recoverage.env"
 
 const COLUMNS = String(120)
-const DEFAULT_BRANCH = `main`
 const VERBOSE = true
 
 class BranchCoverage {
@@ -205,7 +204,7 @@ export async function diff(defaultBranch: string): Promise<void> {
 
 	const git = simpleGit(import.meta.dir)
 	mark?.(`spawn git`)
-	const mainGitRef = await getDefaultBranchHashRef(git, mark)
+	const mainGitRef = await getDefaultBranchHashRef(git, defaultBranch, mark)
 	mark?.(`main git ref: ${mainGitRef}`)
 	const currentGitRef = await hashRepoState(git, mark)
 	mark?.(`current git ref: ${currentGitRef}`)
@@ -331,18 +330,19 @@ export async function diff(defaultBranch: string): Promise<void> {
 
 export async function getDefaultBranchHashRef(
 	git: SimpleGit,
+	defaultBranch: string,
 	mark?: (text: string) => void,
 ): Promise<string> {
 	if (env.CI) {
 		await git.fetch(
 			`origin`,
-			DEFAULT_BRANCH,
+			defaultBranch,
 			env.CI ? { "--depth": `1` } : undefined,
 		)
-		mark?.(`fetched origin/${DEFAULT_BRANCH}`)
-		const sha = await git.revparse([`origin/${DEFAULT_BRANCH}`])
+		mark?.(`fetched origin/${defaultBranch}`)
+		const sha = await git.revparse([`origin/${defaultBranch}`])
 		return sha.slice(0, 7)
 	}
-	const sha = await git.revparse([DEFAULT_BRANCH])
+	const sha = await git.revparse([defaultBranch])
 	return sha.slice(0, 7)
 }
