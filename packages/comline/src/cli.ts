@@ -245,8 +245,8 @@ export function cli<
 
 export function noOptions(
 	description?: string,
-): OptionsGroup<Record<string, never>> {
-	const optionsGroup: OptionsGroup<Record<string, never>> = {
+): OptionsGroup<Record<never, never>> {
+	const optionsGroup: OptionsGroup<Record<never, never>> = {
 		optionsSchema: z.object({}),
 		options: {},
 	}

@@ -7,6 +7,7 @@ export const env = createEnv({
 		R2_SECRET_ACCESS_KEY: z.string().optional(),
 		R2_TOKEN_VALUE: z.string().optional(),
 		R2_URL: z.string().optional(),
+		CI: z.boolean().optional(),
 	},
 	runtimeEnv: import.meta.env,
 	emptyStringAsUndefined: true,

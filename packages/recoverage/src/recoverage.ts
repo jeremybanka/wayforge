@@ -126,7 +126,6 @@ async function hashRepoState(
 	const gitStatus = await git.status()
 	const gitIsClean = gitStatus.isClean()
 	mark?.(`git status is clean: ${gitIsClean}`)
-	console.log(branches[current])
 	let currentGitRef = branches[current].commit.slice(0, 7)
 	if (!gitIsClean) {
 		const gitDiff = await git.diff()
@@ -193,7 +192,7 @@ export async function capture(): Promise<void> {
 	logMarks?.()
 	process.exit(0)
 }
-export async function diff(): Promise<void> {
+export async function diff(defaultBranch: string): Promise<void> {
 	let mark: ReturnType<typeof useMarks>[`mark`] | undefined
 	let logMarks: ReturnType<typeof useMarks>[`logMarks`] | undefined
 	if (VERBOSE) {
@@ -206,10 +205,10 @@ export async function diff(): Promise<void> {
 
 	const git = simpleGit(import.meta.dir)
 	mark?.(`spawn git`)
-	const mainGitRef = await getDefaultBranchHashRef(true, mark)
-	mark?.(`mainGitRef: ${mainGitRef}`)
+	const mainGitRef = await getDefaultBranchHashRef(git, mark)
+	mark?.(`main git ref: ${mainGitRef}`)
 	const currentGitRef = await hashRepoState(git, mark)
-	mark?.(`currentGitRef: ${currentGitRef}`)
+	mark?.(`current git ref: ${currentGitRef}`)
 	const db = await setupDatabase()
 	mark?.(`setup database`)
 	const getCoverage = db
@@ -331,18 +330,19 @@ export async function diff(): Promise<void> {
 }
 
 export async function getDefaultBranchHashRef(
-	isCI = false,
+	git: SimpleGit,
 	mark?: (text: string) => void,
 ): Promise<string> {
-	mark?.(`startup`)
-	const git = simpleGit(import.meta.dir)
-	mark?.(`spawn git`)
-	await git.fetch(
-		`origin`,
-		DEFAULT_BRANCH,
-		isCI ? { "--depth": `1` } : undefined,
-	)
-	mark?.(`fetched origin/${DEFAULT_BRANCH}`)
-	const sha = await git.revparse([`origin/${DEFAULT_BRANCH}`])
+	if (env.CI) {
+		await git.fetch(
+			`origin`,
+			DEFAULT_BRANCH,
+			env.CI ? { "--depth": `1` } : undefined,
+		)
+		mark?.(`fetched origin/${DEFAULT_BRANCH}`)
+		const sha = await git.revparse([`origin/${DEFAULT_BRANCH}`])
+		return sha.slice(0, 7)
+	}
+	const sha = await git.revparse([DEFAULT_BRANCH])
 	return sha.slice(0, 7)
 }
