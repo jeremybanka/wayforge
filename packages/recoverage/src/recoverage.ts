@@ -191,6 +191,7 @@ export async function capture(): Promise<0 | 1> {
 	logMarks?.()
 	return 0
 }
+
 export async function diff(defaultBranch: string): Promise<0 | 1> {
 	let mark: ReturnType<typeof useMarks>[`mark`] | undefined
 	let logMarks: ReturnType<typeof useMarks>[`logMarks`] | undefined
