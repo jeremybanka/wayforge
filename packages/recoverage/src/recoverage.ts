@@ -122,16 +122,14 @@ async function hashRepoState(
 	git: SimpleGit,
 	mark?: (text: string) => void,
 ): Promise<string> {
-	const { current: currentGitBranch, branches } = await git.branch()
-	mark?.(`git branch`)
+	const { current, branches } = await git.branch()
 	const gitStatus = await git.status()
-	mark?.(`git status`)
 	const gitIsClean = gitStatus.isClean()
-	mark?.(`git status is clean`)
-	let currentGitRef = branches[currentGitBranch].commit
+	mark?.(`git status is clean: ${gitIsClean}`)
+	console.log(branches[current])
+	let currentGitRef = branches[current].commit.slice(0, 7)
 	if (!gitIsClean) {
 		const gitDiff = await git.diff()
-		mark?.(`git diff`)
 		const gitRootFolder = await git.revparse(`--show-toplevel`)
 		const gitStatusHash = createHash(`sha256`).update(gitDiff)
 		const untrackedFileData = await Promise.all(
@@ -146,10 +144,10 @@ async function hashRepoState(
 		for (const fileData of untrackedFileData) {
 			gitStatusHash.update(fileData)
 		}
-		const hash9Char = gitStatusHash.digest(`hex`).slice(0, currentGitRef.length)
-		currentGitRef = `${currentGitRef}+${hash9Char}`
+		const diffHash = gitStatusHash.digest(`hex`).slice(0, currentGitRef.length)
+		currentGitRef = `${currentGitRef}+${diffHash}`
 
-		mark?.(`git status hash created`)
+		mark?.(`git status hash created: ${diffHash}`)
 	}
 	return currentGitRef
 }
@@ -208,11 +206,10 @@ export async function diff(): Promise<void> {
 
 	const git = simpleGit(import.meta.dir)
 	mark?.(`spawn git`)
-	const { branches } = await git.branch()
-	const mainGitRef = branches[DEFAULT_BRANCH].commit
-	mark?.(`retrieved main git branch`)
+	const mainGitRef = await getDefaultBranchHashRef(true, mark)
+	mark?.(`mainGitRef: ${mainGitRef}`)
 	const currentGitRef = await hashRepoState(git, mark)
-
+	mark?.(`currentGitRef: ${currentGitRef}`)
 	const db = await setupDatabase()
 	mark?.(`setup database`)
 	const getCoverage = db
@@ -333,21 +330,19 @@ export async function diff(): Promise<void> {
 	}
 }
 
-export async function getDefaultBranchHashRef(): Promise<string> {
-	// const defaultBranch = DEFAULT_BRANCH
-	let mark: ReturnType<typeof useMarks>[`mark`] | undefined
-	let logMarks: ReturnType<typeof useMarks>[`logMarks`] | undefined
-	if (VERBOSE) {
-		const { mark: mark_, logMarks: logMarks_ } = useMarks({ inline: true })
-		mark = mark_
-		logMarks = logMarks_
-	}
+export async function getDefaultBranchHashRef(
+	isCI = false,
+	mark?: (text: string) => void,
+): Promise<string> {
 	mark?.(`startup`)
 	const git = simpleGit(import.meta.dir)
 	mark?.(`spawn git`)
-	await git.fetch(`origin`, DEFAULT_BRANCH, { "--depth": `1` })
+	await git.fetch(
+		`origin`,
+		DEFAULT_BRANCH,
+		isCI ? { "--depth": `1` } : undefined,
+	)
 	mark?.(`fetched origin/${DEFAULT_BRANCH}`)
 	const sha = await git.revparse([`origin/${DEFAULT_BRANCH}`])
-	mark?.(`sha ${sha.slice(0, 7)}`)
-	return sha ?? `??`
+	return sha.slice(0, 7)
 }

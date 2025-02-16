@@ -33,6 +33,6 @@ switch (inputs.case) {
 		await Recoverage.diff()
 		break
 	case `check`:
-		console.log(`cli: check`, await Recoverage.getDefaultBranchHashRef())
+		await Recoverage.getDefaultBranchHashRef(Boolean(process.env.CI))
 		break
 }
