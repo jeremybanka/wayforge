@@ -26,7 +26,7 @@ async function editJsonFile(filePath: string, edit: (json: any) => void) {
 
 describe(`cli`, () => {
 	it(`builds and runs`, async () => {
-		const build = spawn(`bun`, [`build.bun.ts`], { stdio: `inherit` })
+		const build = spawn(`bun`, [`run`, `build`], { stdio: `inherit` })
 		const buildCode = await new Promise((resolve) => build.on(`exit`, resolve))
 		expect(buildCode).toBe(0)
 		await Yalc.publishPackage({ workingDir: `.` })
@@ -50,30 +50,24 @@ describe(`cli`, () => {
 		await new Promise((resolve) => install.on(`exit`, resolve))
 		expect(install.exitCode).toBe(0)
 
-		const help = spawn(
-			`bun`,
-			[`./.yalc/varmint/dist/varmint.bin.js`, `--help`],
-			{
-				stdio: `inherit`,
-			},
-		)
+		const help = spawn(`bun`, [`./.yalc/varmint/bin/varmint.bin.js`, `--help`], {
+			stdio: `inherit`,
+		})
 		const helpCode = await new Promise((resolve) => help.on(`exit`, resolve))
 		if (helpCode !== 0) {
 			console.log(help.stderr)
 		}
 		expect(helpCode).toBe(0)
 
-		const track = spawn(
-			`bun`,
-			[`./.yalc/varmint/dist/varmint.bin.js`, `track`],
-			{ stdio: `inherit` },
-		)
+		const track = spawn(`bun`, [`./.yalc/varmint/bin/varmint.bin.js`, `track`], {
+			stdio: `inherit`,
+		})
 		const trackCode = await new Promise((resolve) => track.on(`exit`, resolve))
 		expect(trackCode).toBe(0)
 
 		const clean = spawn(
 			`bun`,
-			[`./.yalc/varmint/dist/varmint.bin.js`, `clean`, `--ci-flag=CI`],
+			[`./.yalc/varmint/bin/varmint.bin.js`, `clean`, `--ci-flag=CI`],
 			{ stdio: `inherit`, env: { ...process.env, CI: `true` } },
 		)
 		const cleanCode = await new Promise((resolve) => clean.on(`exit`, resolve))

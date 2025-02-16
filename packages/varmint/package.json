@@ -31,7 +31,7 @@
 		"lint:types:watch": "tsc --watch --noEmit",
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
 		"test": "vitest",
-		"test:once": "./dist/varmint.bin.js -- track && vitest run && bun ./dist/varmint.bin.js --ci-flag=CI -- clean",
+		"test:once": "./bin/varmint.bin.js track && vitest run && ./bin/varmint.bin.js clean --ci-flag=CI",
 		"postversion": "biome format --write package.json"
 	},
 	"dependencies": {
