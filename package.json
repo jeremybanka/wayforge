@@ -12,6 +12,7 @@
 		"bun": "1.2.1",
 		"node": "23.8.0"
 	},
+	"workspaces": ["apps/*", "packages/*"],
 	"scripts": {
 		"dev": "tsc --watch",
 		"gen": "turbo run gen",

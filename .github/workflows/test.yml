@@ -100,3 +100,18 @@ jobs:
       - uses: actions/checkout@v4.2.2
       - uses: ./.github/actions/setup
       - run: pnpm test:semver
+
+  # Recoverage:
+  #   name: Recoverage
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 9
+  #   steps:
+  #     - uses: actions/checkout@v4.2.2
+  #     - name: Set up Bun
+  #       uses: oven-sh/setup-bun@v2.0.1
+  #       with:
+  #         bun-version-file: .bun-version
+  #     - run: bun i
+  #     - run: bun --bun pnpm i
+  #     - run: bun pnpm run build --filter recoverage
+  #     - run: ./packages/recoverage/src/recoverage.x.ts check

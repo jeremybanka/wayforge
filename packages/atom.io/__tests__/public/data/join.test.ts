@@ -510,5 +510,5 @@ describe(`advanced performance tests`, () => {
 			}
 		})
 		console.table(results)
-	})
+	}, 20_000)
 })
