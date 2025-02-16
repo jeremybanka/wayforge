@@ -44,8 +44,6 @@
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
 		"test": "vitest",
 		"test:coverage": "vitest run --coverage && ../recoverage/src/recoverage.x.ts",
-		"cov": "../recoverage/src/recoverage.x.ts",
-		"cov:diff": "recoverage diff",
 		"test:build": "bun run test:manifest && cross-env IMPORT=dist vitest run",
 		"test:once": "echo tested built code",
 		"test:once:public": "cross-env IMPORT=dist vitest run public",
