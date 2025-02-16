@@ -123,7 +123,6 @@ jobs:
         with:
           bun-version-file: .bun-version
       - run: bun i
-      - run: bun i -DE pnpm
       - run: bun --bun pnpm i
       - run: bun pnpm run build --filter recoverage
-      - run: ./packages/recoverage/src/recoverage.x.ts capture
+      - run: ./packages/recoverage/src/recoverage.x.ts check
