@@ -14,7 +14,6 @@ import tmp from "tmp"
 import { env } from "./recoverage.env"
 
 const COLUMNS = String(120)
-const DEFAULT_BRANCH = `main`
 const VERBOSE = true
 
 class BranchCoverage {
@@ -122,16 +121,13 @@ async function hashRepoState(
 	git: SimpleGit,
 	mark?: (text: string) => void,
 ): Promise<string> {
-	const { current: currentGitBranch, branches } = await git.branch()
-	mark?.(`git branch`)
+	const { current, branches } = await git.branch()
 	const gitStatus = await git.status()
-	mark?.(`git status`)
 	const gitIsClean = gitStatus.isClean()
-	mark?.(`git status is clean`)
-	let currentGitRef = branches[currentGitBranch].commit
+	mark?.(`git status is clean: ${gitIsClean}`)
+	let currentGitRef = branches[current].commit.slice(0, 7)
 	if (!gitIsClean) {
 		const gitDiff = await git.diff()
-		mark?.(`git diff`)
 		const gitRootFolder = await git.revparse(`--show-toplevel`)
 		const gitStatusHash = createHash(`sha256`).update(gitDiff)
 		const untrackedFileData = await Promise.all(
@@ -146,15 +142,15 @@ async function hashRepoState(
 		for (const fileData of untrackedFileData) {
 			gitStatusHash.update(fileData)
 		}
-		const hash9Char = gitStatusHash.digest(`hex`).slice(0, currentGitRef.length)
-		currentGitRef = `${currentGitRef}+${hash9Char}`
+		const diffHash = gitStatusHash.digest(`hex`).slice(0, currentGitRef.length)
+		currentGitRef = `${currentGitRef}+${diffHash}`
 
-		mark?.(`git status hash created`)
+		mark?.(`git status hash created: ${diffHash}`)
 	}
 	return currentGitRef
 }
 
-export async function capture(): Promise<void> {
+export async function capture(): Promise<0 | 1> {
 	let mark: ReturnType<typeof useMarks>[`mark`] | undefined
 	let logMarks: ReturnType<typeof useMarks>[`logMarks`] | undefined
 	if (VERBOSE) {
@@ -193,9 +189,9 @@ export async function capture(): Promise<void> {
 		mark?.(`uploaded coverage database to R2`)
 	}
 	logMarks?.()
-	process.exit(0)
+	return 0
 }
-export async function diff(): Promise<void> {
+export async function diff(defaultBranch: string): Promise<0 | 1> {
 	let mark: ReturnType<typeof useMarks>[`mark`] | undefined
 	let logMarks: ReturnType<typeof useMarks>[`logMarks`] | undefined
 	if (VERBOSE) {
@@ -208,11 +204,10 @@ export async function diff(): Promise<void> {
 
 	const git = simpleGit(import.meta.dir)
 	mark?.(`spawn git`)
-	const { branches } = await git.branch()
-	const mainGitRef = branches[DEFAULT_BRANCH].commit
-	mark?.(`retrieved main git branch`)
+	const mainGitRef = await getDefaultBranchHashRef(git, defaultBranch, mark)
+	mark?.(`main git ref: ${mainGitRef}`)
 	const currentGitRef = await hashRepoState(git, mark)
-
+	mark?.(`current git ref: ${currentGitRef}`)
 	const db = await setupDatabase()
 	mark?.(`setup database`)
 	const getCoverage = db
@@ -227,17 +222,17 @@ export async function diff(): Promise<void> {
 	if (!mainCoverage) {
 		mark?.(`no coverage found for the target branch`)
 		logMarks?.()
-		process.exit(1)
+		return 1
 	}
 	if (!currentCoverage) {
 		mark?.(`no coverage found for the current ref`)
 		logMarks?.()
-		process.exit(1)
+		return 1
 	}
 	if (mainGitRef === currentGitRef) {
 		mark?.(`you're already on the target branch`)
 		logMarks?.()
-		process.exit(0)
+		return 0
 	}
 
 	async function getCoverageJsonSummary(branchCoverage: BranchCoverage) {
@@ -250,7 +245,7 @@ export async function diff(): Promise<void> {
 			const caught = thrown as ShellError
 			console.log(caught.stdout.toString())
 			console.error(caught.stderr.toString())
-			process.exit(1)
+			throw new Error(`failed to generate coverage summary`)
 		}
 		const jsonReport = (await file(
 			`${tempDir.name}/coverage/coverage-summary.json`,
@@ -272,7 +267,7 @@ export async function diff(): Promise<void> {
 			const caught = thrown as ShellError
 			console.log(caught.stdout.toString())
 			console.error(caught.stderr.toString())
-			process.exit(1)
+			throw new Error(`failed to generate coverage text report`)
 		}
 		tempDir.removeCallback()
 		mark?.(`coverage for ${branchCoverage.git_ref}`)
@@ -312,23 +307,39 @@ export async function diff(): Promise<void> {
 		}
 	}
 
-	if (coverageDifference === 0) {
-		mark?.(`coverage is the same`)
-		logMarks?.()
-		process.exit(0)
-	}
-
 	if (coverageDifference < 0) {
 		logDiff()
 		mark?.(`coverage decreased by ${+coverageDifference}%`)
 		logMarks?.()
-		process.exit(1)
+		return 1
 	}
 
 	if (coverageDifference > 0) {
 		logDiff()
 		mark?.(`coverage increased by ${+coverageDifference}%`)
 		logMarks?.()
-		process.exit(0)
+		return 0
 	}
+	mark?.(`coverage is the same`)
+	logMarks?.()
+	return 0
+}
+
+export async function getDefaultBranchHashRef(
+	git: SimpleGit,
+	defaultBranch: string,
+	mark?: (text: string) => void,
+): Promise<string> {
+	if (env.CI) {
+		await git.fetch(
+			`origin`,
+			defaultBranch,
+			env.CI ? { "--depth": `1` } : undefined,
+		)
+		mark?.(`fetched origin/${defaultBranch}`)
+		const sha = await git.revparse([`origin/${defaultBranch}`])
+		return sha.slice(0, 7)
+	}
+	const sha = await git.revparse([defaultBranch])
+	return sha.slice(0, 7)
 }

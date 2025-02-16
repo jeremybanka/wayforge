@@ -39,7 +39,7 @@
 			]
 		},
 		"test:coverage": {
-			"dependsOn": ["recoverage#build"],
+			"dependsOn": ["^build"],
 			"outputs": ["coverage/**", "**/coverage/**"],
 			"inputs": [
 				"../../.github/workflows/test.yml",
