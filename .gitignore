@@ -1,12 +1,12 @@
 *.js
 *.js.map
 *.wasm
+!*.bin.js
 .DS_STORE
 .env
 .turbo
 coverage
 dist
-bin
 node_modules
 package-lock.json
 projects

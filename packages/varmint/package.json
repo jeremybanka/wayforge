@@ -19,13 +19,11 @@
 	"types": "dist/index.d.ts",
 	"module": "dist/index.js",
 	"bin": {
-		"varmint": "dist/varmint.bin.js"
+		"varmint": "bin/varmint.bin.js"
 	},
 	"files": ["dist", "src", "CHANGELOG.md"],
 	"scripts": {
-		"build:js": "./build.bun.ts",
-		"build:dts": "tsup",
-		"build": "bun run clean:build && concurrently \"bun:build:*\"",
+		"build": "tsup-node && rm -f dist/*.x.d.ts",
 		"clean:build": "rm -rf dist",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",

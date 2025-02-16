@@ -18,9 +18,7 @@
 	"files": ["dist", "src", "CHANGELOG.md"],
 	"main": "dist/safedeposit.js",
 	"scripts": {
-		"build:js": "bun build --outdir dist --target node -- src/safedeposit.ts",
-		"build:dts": "tsup",
-		"build": "rimraf dist && concurrently \"bun:build:*\"",
+		"build": "tsup-node",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
 		"lint:types": "tsc --noEmit",

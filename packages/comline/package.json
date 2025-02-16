@@ -25,9 +25,7 @@
 		"zod-to-json-schema": "3.24.1"
 	},
 	"scripts": {
-		"build:js": "bun build --outdir dist --target node --external zod --external zod-to-json-schema -- src/cli.ts",
-		"build:dts": "tsup",
-		"build": "concurrently \"bun:build:*\"",
+		"build": "tsup-node",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
 		"lint:types": "tsc --noEmit",
