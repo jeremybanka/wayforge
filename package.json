@@ -12,10 +12,7 @@
 		"bun": "1.2.1",
 		"node": "23.8.0"
 	},
-	"workspaces": [
-		"apps/*",
-		"packages/*"
-	],
+	"workspaces": ["apps/*", "packages/*"],
 	"scripts": {
 		"dev": "tsc --watch",
 		"gen": "turbo run gen",
@@ -38,9 +35,7 @@
 		"nuke": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && rm pnpm-lock.yaml",
 		"nv": "fnm use $(pnpm list -w --json | jq -r '.[0].path')"
 	},
-	"trustedDependencies": [
-		"@biomejs/biome"
-	],
+	"trustedDependencies": ["@biomejs/biome"],
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@changesets/cli": "2.27.12",
@@ -55,16 +50,12 @@
 		"eslint-plugin-import-x": "4.6.1",
 		"eslint-plugin-simple-import-sort": "12.1.1",
 		"jiti": "2.4.2",
-		"pnpm": "10.4.0",
 		"turbo": "2.4.2",
 		"typescript": "5.7.3",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.0.5"
 	},
 	"pnpm": {
-		"onlyBuiltDependencies": [
-			"@vercel/speed-insights",
-			"esbuild"
-		]
+		"onlyBuiltDependencies": ["@vercel/speed-insights", "esbuild"]
 	}
 }
