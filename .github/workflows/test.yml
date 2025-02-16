@@ -122,5 +122,5 @@ jobs:
         uses: oven-sh/setup-bun@v2.0.1
         with:
           bun-version-file: .bun-version
-      - run: cd packagesrecoverage && bun i
+      - run: cd packages/recoverage && bun i
       - run: ./packages/recoverage/src/recoverage.x.ts capture
