@@ -353,19 +353,30 @@ export async function getDefaultBranchHashRef(): Promise<string> {
 		`symbolic-ref`,
 		`refs/remotes/origin/HEAD`,
 	])
+	console.log({
+		remoteResult,
+	})
 	const defaultBranchRef = remoteResult.trim() // e.g., 'refs/remotes/origin/main'
+	console.log({
+		defaultBranchRef,
+	})
 
 	const defaultBranch = defaultBranchRef.replace(`refs/remotes/origin/`, ``) // Extract 'main' from 'refs/remotes/origin/main'
-	//  core.info(`Default branch is: ${defaultBranch}`);
+	console.log({
+		defaultBranch,
+	})
 
 	// Fetch the latest commit SHA from the default branch
 	const log = await git.log([defaultBranch])
+	console.log({
+		log,
+	})
 	const sha = log.latest?.hash
 	console.log({
 		remoteResult,
 		defaultBranchRef,
 		defaultBranch,
-		log,
+		// log,
 		sha,
 	})
 	return sha ?? `??`
