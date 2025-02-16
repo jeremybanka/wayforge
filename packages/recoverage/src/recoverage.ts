@@ -150,7 +150,7 @@ async function hashRepoState(
 	return currentGitRef
 }
 
-export async function capture(): Promise<void> {
+export async function capture(): Promise<0 | 1> {
 	let mark: ReturnType<typeof useMarks>[`mark`] | undefined
 	let logMarks: ReturnType<typeof useMarks>[`logMarks`] | undefined
 	if (VERBOSE) {
@@ -189,9 +189,9 @@ export async function capture(): Promise<void> {
 		mark?.(`uploaded coverage database to R2`)
 	}
 	logMarks?.()
-	process.exit(0)
+	return 0
 }
-export async function diff(defaultBranch: string): Promise<void> {
+export async function diff(defaultBranch: string): Promise<0 | 1> {
 	let mark: ReturnType<typeof useMarks>[`mark`] | undefined
 	let logMarks: ReturnType<typeof useMarks>[`logMarks`] | undefined
 	if (VERBOSE) {
@@ -222,17 +222,17 @@ export async function diff(defaultBranch: string): Promise<void> {
 	if (!mainCoverage) {
 		mark?.(`no coverage found for the target branch`)
 		logMarks?.()
-		process.exit(1)
+		return 1
 	}
 	if (!currentCoverage) {
 		mark?.(`no coverage found for the current ref`)
 		logMarks?.()
-		process.exit(1)
+		return 1
 	}
 	if (mainGitRef === currentGitRef) {
 		mark?.(`you're already on the target branch`)
 		logMarks?.()
-		process.exit(0)
+		return 0
 	}
 
 	async function getCoverageJsonSummary(branchCoverage: BranchCoverage) {
@@ -245,7 +245,7 @@ export async function diff(defaultBranch: string): Promise<void> {
 			const caught = thrown as ShellError
 			console.log(caught.stdout.toString())
 			console.error(caught.stderr.toString())
-			process.exit(1)
+			throw new Error(`failed to generate coverage summary`)
 		}
 		const jsonReport = (await file(
 			`${tempDir.name}/coverage/coverage-summary.json`,
@@ -267,7 +267,7 @@ export async function diff(defaultBranch: string): Promise<void> {
 			const caught = thrown as ShellError
 			console.log(caught.stdout.toString())
 			console.error(caught.stderr.toString())
-			process.exit(1)
+			throw new Error(`failed to generate coverage text report`)
 		}
 		tempDir.removeCallback()
 		mark?.(`coverage for ${branchCoverage.git_ref}`)
@@ -307,25 +307,22 @@ export async function diff(defaultBranch: string): Promise<void> {
 		}
 	}
 
-	if (coverageDifference === 0) {
-		mark?.(`coverage is the same`)
-		logMarks?.()
-		process.exit(0)
-	}
-
 	if (coverageDifference < 0) {
 		logDiff()
 		mark?.(`coverage decreased by ${+coverageDifference}%`)
 		logMarks?.()
-		process.exit(1)
+		return 1
 	}
 
 	if (coverageDifference > 0) {
 		logDiff()
 		mark?.(`coverage increased by ${+coverageDifference}%`)
 		logMarks?.()
-		process.exit(0)
+		return 0
 	}
+	mark?.(`coverage is the same`)
+	logMarks?.()
+	return 0
 }
 
 export async function getDefaultBranchHashRef(

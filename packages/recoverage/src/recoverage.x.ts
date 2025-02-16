@@ -48,20 +48,45 @@ const parse = cli({
 })
 
 const { inputs } = parse(process.argv)
+console.log(inputs)
 switch (inputs.case) {
 	case ``:
-		await Recoverage.capture()
-		try {
-			await Recoverage.diff(inputs.opts[`default-branch`] ?? `main`)
-		} catch (thrown) {
-			console.error(thrown)
+		{
+			const captureCode = await Recoverage.capture()
+			if (captureCode === 1) {
+				process.exit(1)
+			}
+			try {
+				const diffCode = await Recoverage.diff(
+					inputs.opts[`default-branch`] ?? `main`,
+				)
+				if (diffCode === 1) {
+					process.exit(1)
+				}
+			} catch (thrown) {
+				console.error(thrown)
+			}
 		}
 		break
 	case `capture`:
-		await Recoverage.capture()
+		{
+			const captureCode = await Recoverage.capture()
+			if (captureCode === 1) {
+				process.exit(1)
+			}
+		}
 		break
 	case `diff`:
-		await Recoverage.diff(inputs.opts[`default-branch`] ?? `main`)
+		try {
+			const diffCode = await Recoverage.diff(
+				inputs.opts[`default-branch`] ?? `main`,
+			)
+			if (diffCode === 1) {
+				process.exit(1)
+			}
+		} catch (thrown) {
+			console.error(thrown)
+		}
 		break
 	case `help`:
 		console.log(help(parse.definition))
