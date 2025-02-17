@@ -18,7 +18,6 @@
 			"luum": ["packages/luum/src"],
 			"rel8": ["packages/rel8/types/src"],
 			"rel8/*": ["packages/rel8/*/src"],
-			"treetrunks": ["./packages/treetrunks/src/treetrunks.ts"],
 			"tsdoc.json": ["packages/tsdoc.json/src"],
 			"tsdoc.json/*": ["packages/tsdoc.json/*/src"],
 			"varmint": ["./packages/varmint/src/index.ts"],
