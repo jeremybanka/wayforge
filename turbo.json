@@ -93,7 +93,7 @@
 				"__scripts__/**"
 			]
 		},
-		"lint:types:watch": {
+		"watch:types": {
 			"persistent": true,
 			"dependsOn": ["gen", "^build", "^gen"],
 			"inputs": [
