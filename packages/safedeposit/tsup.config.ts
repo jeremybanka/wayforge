@@ -2,20 +2,16 @@ import type { Options } from "tsup"
 import { defineConfig } from "tsup"
 
 export const OPTIONS = {
-	esbuildOptions: (options) => {
-		options.chunkNames = `dist/[name]-[hash]`
-		options.assetNames = `dist/[name]-[hash]`
-	},
-	sourcemap: true,
-	treeshake: true,
 	clean: true,
-	tsconfig: `tsconfig.json`,
 	dts: true,
-	platform: `node`,
-	format: [`esm`],
 	entry: [`src/safedeposit.ts`],
+	format: [`esm`],
 	metafile: false,
 	outDir: `dist`,
+	platform: `node`,
+	sourcemap: true,
+	treeshake: true,
+	tsconfig: `tsconfig.json`,
 } satisfies Options
 
 export default defineConfig(OPTIONS)
