@@ -1,5 +1,12 @@
 # treetrunks
 
+## 0.0.5
+
+### Patch Changes
+
+- 747ea66: ✨ Add the simple invocation, `recoverage`. This invocation runs both `recoverage capture`, placing your current coverage state into your coverage database, and `recoverage diff`, comparing the current coverage state of your package to its coverage state on your repo's default branch.
+- 747ea66: ✨ Pass `default-branch` as an option to `recoverage` and `recoverage diff`.
+
 ## 0.0.4
 
 ### Patch Changes
