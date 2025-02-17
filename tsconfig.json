@@ -15,7 +15,6 @@
 			"break-check": ["./packages/break-check/src/break-check.ts"],
 			"flightdeck": ["packages/flightdeck/src/lib.ts"],
 			"hamr/*": ["./packages/hamr/*/src"],
-			"luum": ["packages/luum/src"],
 			"rel8": ["packages/rel8/types/src"],
 			"rel8/*": ["packages/rel8/*/src"],
 			"tsdoc.json": ["packages/tsdoc.json/src"],
