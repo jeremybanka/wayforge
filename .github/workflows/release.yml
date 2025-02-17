@@ -57,7 +57,7 @@ jobs:
       - name: Klaxon
         if: steps.changesets.outputs.hasChangesets == 'false'
         run: |
-          bun ./packages/flightdeck/src/klaxon.bin.ts \
+          bun ./packages/flightdeck/src/klaxon.x.ts \
           --packageConfig='{"tempest.games":{"endpoint":"https://flightdeck.tempest.games/"}}' \
           --secretsConfig='${{ secrets.FLIGHTDECK_SECRETS }}' \
           --publishedPackages='${{ steps.changesets.outputs.publishedPackages }}' \
