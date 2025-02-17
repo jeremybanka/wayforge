@@ -19,7 +19,6 @@
 			"rel8/*": ["packages/rel8/*/src"],
 			"tsdoc.json": ["packages/tsdoc.json/src"],
 			"tsdoc.json/*": ["packages/tsdoc.json/*/src"],
-			"varmint": ["./packages/varmint/src/index.ts"],
 			"wayfarer.quest/*": ["./apps/wayfarer.quest/src/*"],
 			"~/*": ["./*"]
 		},
