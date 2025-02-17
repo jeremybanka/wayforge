@@ -1,11 +1,11 @@
 import { mkdir } from "node:fs/promises"
 
-import type { BreakCheckOutcome } from "break-check"
-import { breakCheck } from "break-check"
 import { afterEach, beforeEach, describe, expect, it } from "bun:test"
 import simpleGit from "simple-git"
 import tmp from "tmp"
 
+import type { BreakCheckOutcome } from "../src/break-check"
+import { breakCheck } from "../src/break-check"
 import { bunCopyFile } from "./utilities"
 
 let tempDir: tmp.DirResult

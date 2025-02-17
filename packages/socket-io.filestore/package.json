@@ -7,8 +7,16 @@
 	"publishConfig": {
 		"access": "public"
 	},
+	"exports": {
+		"./package.json": "./package.json",
+		"./socket-filestore-node": {
+			"import": "./dist/socket-filestore-node.js",
+			"require": "./dist/socket-filestore-node.cjs",
+			"types": "./dist/socket-filestore-node.d.ts"
+		}
+	},
 	"scripts": {
-		"build": "tsup --entry src/socket-filestore-node.ts --entry src/socket-filestore-atom-cli.ts --format cjs,esm --dts --external atom.io,react,socket.io,socket.io-client",
+		"build": "tsup-node --entry src/socket-filestore-node.ts --entry src/socket-filestore-atom-cli.ts --format cjs,esm --dts",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
 		"lint:types": "tsc --noEmit",

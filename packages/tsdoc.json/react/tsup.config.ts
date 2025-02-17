@@ -1,5 +1,5 @@
 import { defineConfig } from "tsup"
 
-import { DTS_OPTIONS } from "~/packages/tsdoc.json/tsup.config"
+import { DTS_OPTIONS } from "../tsup.config"
 
 export default defineConfig(DTS_OPTIONS)

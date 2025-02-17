@@ -2,8 +2,6 @@
 
 import * as path from "node:path"
 
-import type { BreakCheckOptions } from "break-check"
-import { breakCheck } from "break-check"
 import type { OptionsGroup } from "comline"
 import {
 	cli,
@@ -15,6 +13,9 @@ import {
 } from "comline"
 import logger from "npmlog"
 import { z } from "zod"
+
+import type { BreakCheckOptions } from "./break-check"
+import { breakCheck } from "./break-check"
 
 const helper = helpOption()
 

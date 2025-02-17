@@ -1,10 +1,11 @@
 #!/usr/bin/env bun
 
-import { existsSync, mkdirSync, writeFileSync } from "node:fs"
+import { existsSync, mkdirSync } from "node:fs"
 import { resolve } from "node:path"
 
 import { Biome, Distribution } from "@biomejs/js-api"
 import type { Json } from "atom.io/json"
+import { write } from "bun"
 import jsonSchemaToZod from "json-schema-to-zod"
 import { Squirrel } from "varmint"
 
@@ -61,4 +62,4 @@ biome.printDiagnostics(result.diagnostics, {
 if (!existsSync(GEN_DIR_PATH)) {
 	mkdirSync(GEN_DIR_PATH, { recursive: true })
 }
-writeFileSync(LNAV_FORMAT_SCHEMA_PATH, result.content)
+await write(LNAV_FORMAT_SCHEMA_PATH, result.content)

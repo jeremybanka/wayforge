@@ -1,5 +1,5 @@
-import type { Join, ToPath, TreeMap, TreePath } from "treetrunks"
-import { optional, required } from "treetrunks"
+import type { Join, ToPath, TreeMap, TreePath } from "../src/treetrunks"
+import { optional, required } from "../src/treetrunks"
 
 type MySplit = ToPath<`hello/$world/good/morning`, `/`>
 

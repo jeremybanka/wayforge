@@ -32,7 +32,7 @@
 	},
 	"scripts": {
 		"gen": "bun ./__scripts__/gen.bun.ts",
-		"build": "tsup-node && rm -f dist/*.x.d.ts",
+		"build": "tsup-node && rm -f dist/*.x.d.ts && bun ./__scripts__/build-lnav.bun.ts",
 		"schema:flightdeck": "bun ./src/flightdeck.bin.ts --outdir=dist -- schema",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",

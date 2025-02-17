@@ -1,4 +1,4 @@
-import type { Json } from "rel8"
+import type { Json } from "atom.io/json"
 
 import { pipe } from "../function"
 import type { Identified } from "../id/identified"
