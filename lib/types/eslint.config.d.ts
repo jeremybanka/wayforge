@@ -6,6 +6,13 @@ declare module "eslint-plugin-import-x" {
 	export = plugin
 }
 // eslint-disable-next-line quotes
+declare module "eslint-plugin-simple-import-sort" {
+	import type { ESLint } from "eslint"
+
+	const plugin: ESLint.Plugin
+	export = plugin
+}
+// eslint-disable-next-line quotes
 declare module "@next/eslint-plugin-next" {
 	import type { ESLint, Linter } from "eslint"
 
