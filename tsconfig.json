@@ -17,8 +17,6 @@
 			"hamr/*": ["./packages/hamr/*/src"],
 			"rel8": ["packages/rel8/types/src"],
 			"rel8/*": ["packages/rel8/*/src"],
-			"tsdoc.json": ["packages/tsdoc.json/src"],
-			"tsdoc.json/*": ["packages/tsdoc.json/*/src"],
 			"wayfarer.quest/*": ["./apps/wayfarer.quest/src/*"],
 			"~/*": ["./*"]
 		},
