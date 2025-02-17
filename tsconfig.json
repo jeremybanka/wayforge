@@ -12,7 +12,6 @@
 			"anvl/*": ["./packages/anvl/src/*"],
 			"atom.io": ["./packages/atom.io/src"],
 			"atom.io/*": ["./packages/atom.io/*/src"],
-			"flightdeck": ["packages/flightdeck/src/lib.ts"],
 			"hamr/*": ["./packages/hamr/*/src"],
 			"wayfarer.quest/*": ["./apps/wayfarer.quest/src/*"],
 			"~/*": ["./*"]
