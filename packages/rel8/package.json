@@ -30,8 +30,8 @@
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
 		"lint:types": "tsc --noEmit",
-		"lint:types:watch": "tsc --watch --noEmit",
-		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types",
+		"watch:types": "tsc --watch --noEmit",
+		"lint": "concurrently \"bun:lint:*\"",
 		"test": "echo 'no tests yet'",
 		"test:once": "echo 'no tests yet'",
 		"postversion": "biome format --write package.json"
