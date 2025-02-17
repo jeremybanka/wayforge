@@ -866,6 +866,9 @@ importers:
       '@types/npmlog':
         specifier: 7.0.0
         version: 7.0.0
+      '@types/tmp':
+        specifier: 0.2.6
+        version: 0.2.6
       bun-types:
         specifier: 1.2.2
         version: 1.2.2
