@@ -4,3 +4,4 @@ tribunal.cache.json
 !.env.defaults
 cert.pem
 key.pem
+storage

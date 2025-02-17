@@ -18,9 +18,7 @@
 	"files": ["dist", "src"],
 	"main": "dist/treetrunks.js",
 	"scripts": {
-		"build:js": "bun build --outdir dist -- src/treetrunks.ts",
-		"build:dts": "tsup",
-		"build": "rimraf dist && concurrently \"bun:build:*\"",
+		"build": "tsup-node",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
 		"lint:types": "tsc --noEmit",

@@ -754,6 +754,9 @@ importers:
       '@vitest/ui':
         specifier: 3.0.5
         version: 3.0.5(vitest@3.0.5)
+      break-check:
+        specifier: workspace:*
+        version: link:../break-check
       bun-types:
         specifier: 1.2.2
         version: 1.2.2

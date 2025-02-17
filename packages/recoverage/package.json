@@ -15,13 +15,13 @@
 		"directory": "packages/recoverage"
 	},
 	"type": "module",
-	"files": ["dist", "src"],
+	"files": ["bin", "dist", "src"],
 	"main": "dist/recoverage.js",
 	"bin": {
-		"recoverage": "dist/recoverage.x.js"
+		"recoverage": "bin/recoverage.bin.js"
 	},
 	"scripts": {
-		"build": "tsup-node",
+		"build": "tsup-node && rm -f dist/*.x.d.ts",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
 		"lint:types": "tsc --noEmit",

@@ -2,16 +2,13 @@ import type { Options } from "tsup"
 import { defineConfig } from "tsup"
 
 export const OPTIONS = {
-	esbuildOptions: (options) => {
-		options.chunkNames = `dist/[name]-[hash]`
-		options.assetNames = `dist/[name]-[hash]`
-	},
 	sourcemap: true,
 	treeshake: true,
+	clean: true,
 	tsconfig: `tsconfig.json`,
-	dts: { only: true },
+	dts: true,
 	format: [`esm`],
-	entry: [`src/index.ts`],
+	entry: [`src/index.ts`, `src/varmint.x.ts`],
 	metafile: false,
 	outDir: `dist`,
 } satisfies Options
