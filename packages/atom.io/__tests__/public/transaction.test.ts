@@ -1,16 +1,9 @@
-import type {
-	CtorToolkit,
-	Logger,
-	MoleculeToken,
-	MoleculeType,
-	TransactionUpdate,
-} from "atom.io"
+import type { Logger, MoleculeToken, TransactionUpdate } from "atom.io"
 import {
 	atom,
 	atomFamily,
 	getState,
 	makeRootMoleculeInStore,
-	moleculeFamily,
 	runTransaction,
 	selector,
 	selectorFamily,
@@ -484,122 +477,5 @@ describe(`reversibility of transactions`, () => {
 		}
 		expect(caught).toBeInstanceOf(Error)
 		expect(seekState(countStates, `my-key`)).toBeDefined()
-	})
-})
-
-describe(`transaction.make`, () => {
-	function setup() {
-		const hpAtoms = atomFamily<number, string>({
-			key: `hp`,
-			default: 0,
-		})
-		const unitIds = new Set<string>()
-		const unitMolecules = moleculeFamily({
-			key: `unit`,
-			new: class Unit {
-				public constructor(
-					public tools: CtorToolkit<string>,
-					public key: string,
-					public hp: number,
-					public hpState = tools.bond(hpAtoms),
-				) {
-					setState(this.hpState, this.hp)
-				}
-			},
-		})
-		type Unit = MoleculeType<typeof unitMolecules>
-		const world = makeRootMoleculeInStore(`world`)
-
-		const spawnUnitsTX = transaction<
-			(willThrow: boolean, ...args: number[]) => MoleculeToken<Unit>[]
-		>({
-			key: `spawnUnits`,
-			do: ({ make }, willThrow: boolean, ...args: number[]) => {
-				const units = args.map((hp) =>
-					make(world, unitMolecules, Internal.arbitrary(), hp),
-				)
-				for (const unit of units) {
-					unitIds.add(unit.key)
-				}
-				if (willThrow) {
-					throw new Error(`fail`)
-				}
-				return units
-			},
-		})
-		const destroyUnitTX = transaction<(id: string, willThrow: boolean) => void>({
-			key: `destroyUnit`,
-			do: ({ get, seek, dispose }, id, willThrow) => {
-				const unit = seek(unitMolecules, id)
-				const hpState = seek(hpAtoms, id)
-				if (unit && hpState) {
-					const hp = get(hpState)
-					if (hp === 0) {
-						dispose(unit)
-						unitIds.delete(id)
-					}
-				}
-				if (willThrow) {
-					throw new Error(`fail`)
-				}
-			},
-		})
-		return {
-			spawnUnitsTX,
-			destroyUnitTX,
-			hpAtoms,
-			unitMolecules,
-			world,
-			unitIds,
-		}
-	}
-
-	test(`a transaction that passes creates a molecule`, () => {
-		const { spawnUnitsTX } = setup()
-
-		runTransaction(spawnUnitsTX)(false, 1, 2, 3)
-
-		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(4)
-	})
-
-	test(`a transaction that fails does not create a molecule`, () => {
-		const { spawnUnitsTX } = setup()
-		let caught: unknown
-		try {
-			runTransaction(spawnUnitsTX)(true, 1, 23)
-		} catch (thrown) {
-			caught = thrown
-		}
-		expect(caught).toBeInstanceOf(Error)
-		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(1)
-	})
-
-	test(`a transaction that passes may dispose of a molecule`, () => {
-		const { spawnUnitsTX, destroyUnitTX, unitIds } = setup()
-
-		runTransaction(spawnUnitsTX)(false, 0, 0, 0)
-
-		for (const id of unitIds) {
-			runTransaction(destroyUnitTX)(id, false)
-		}
-
-		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(1)
-	})
-
-	test(`a transaction that fails will not dispose of a molecule`, () => {
-		const { spawnUnitsTX, destroyUnitTX, unitIds } = setup()
-
-		runTransaction(spawnUnitsTX)(false, 0, 0, 0)
-
-		let caught: unknown
-		try {
-			for (const id of unitIds) {
-				runTransaction(destroyUnitTX)(id, true)
-			}
-		} catch (thrown) {
-			caught = thrown
-		}
-		expect(caught).toBeInstanceOf(Error)
-		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(4)
 	})
 })

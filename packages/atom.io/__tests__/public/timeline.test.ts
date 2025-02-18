@@ -1,17 +1,10 @@
-import type {
-	CtorToolkit,
-	Logger,
-	RegularAtomToken,
-	WritableToken,
-} from "atom.io"
+import type { Logger, RegularAtomToken, WritableToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
 	disposeState,
 	getState,
-	makeMolecule,
 	makeRootMoleculeInStore,
-	moleculeFamily,
 	redo,
 	runTransaction,
 	selector,
@@ -354,90 +347,5 @@ describe(`timeline state lifecycle`, () => {
 		})
 		redo(countsTL)
 		redo(countsTL)
-	})
-	test(`molecules may be disposed via undo/redo`, () => {
-		const hpAtoms = atomFamily<number, string>({
-			key: `hp`,
-			default: 0,
-		})
-		const unitMolecules = moleculeFamily({
-			key: `unit`,
-			new: class Unit {
-				public constructor(
-					public tools: CtorToolkit<string>,
-					public hpState = this.tools.bond(hpAtoms),
-				) {}
-			},
-		})
-		const gameTL = timeline({
-			key: `game`,
-			scope: [unitMolecules],
-		})
-		const game = makeRootMoleculeInStore(`world`)
-		makeMolecule(game, unitMolecules, `captain`)
-		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(2)
-		expect(Internal.IMPLICIT.STORE.atoms.size).toBe(0)
-		undo(gameTL)
-		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(1)
-		expect(Internal.IMPLICIT.STORE.atoms.size).toBe(0)
-	})
-	test(`molecules created in a transaction may be disposed via undo/redo`, () => {
-		const hpAtoms = atomFamily<number, string>({
-			key: `hp`,
-			default: 0,
-		})
-		const armorAtoms = atomFamily<number, string>({
-			key: `armor`,
-			default: 0,
-		})
-		const unitMolecules = moleculeFamily({
-			key: `unit`,
-			new: class Unit {
-				public armorState: RegularAtomToken<number> | undefined
-				public constructor(
-					public tools: CtorToolkit<string>,
-					public key: string,
-					public hpState = tools.bond(hpAtoms),
-				) {}
-				public addArmor = transaction<(armor: number) => void>({
-					key: `addArmor`,
-					do: ({ set }, armor) => {
-						this.armorState = this.tools.bond(armorAtoms)
-						set(this.armorState, armor)
-					},
-				})
-			},
-		})
-		const gameTL = timeline({
-			key: `game`,
-			scope: [unitMolecules],
-		})
-		const game = makeRootMoleculeInStore(`world`)
-		const tx = transaction<(key: string) => void>({
-			key: `create unit`,
-			do: ({ get, make, run }, key) => {
-				const unitToken = make(game, unitMolecules, key)
-				const unit = get(unitToken)
-				if (!unit) throw new Error(`unit not found`)
-				run(unit.addArmor)(10)
-			},
-		})
-		runTransaction(tx)(`captain`)
-		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(2)
-		expect(Internal.IMPLICIT.STORE.atoms.size).toBe(2)
-		// biome-ignore lint/style/noNonNullAssertion: we just created it
-		const captainMolecule = seekState(unitMolecules, `captain`)!
-		disposeState(captainMolecule)
-		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(1)
-		expect(Internal.IMPLICIT.STORE.atoms.size).toBe(0)
-		undo(gameTL)
-		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(2)
-		expect(Internal.IMPLICIT.STORE.atoms.size).toBe(2)
-		undo(gameTL)
-		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(1)
-		expect(Internal.IMPLICIT.STORE.atoms.size).toBe(0)
-		redo(gameTL)
-		expect(Internal.IMPLICIT.STORE.molecules.size).toBe(2)
-		expect(Internal.IMPLICIT.STORE.atoms.size).toBe(2)
 	})
 })
