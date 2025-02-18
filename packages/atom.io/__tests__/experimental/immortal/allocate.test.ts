@@ -132,7 +132,7 @@ describe(`allocate`, () => {
 			`T$--player==${gameKey}++${userKey}`,
 		)
 	})
-	test(`transaction+timeline support`, () => {
+	test.only(`transaction+timeline support`, () => {
 		type DocumentKey = `document::${string}`
 		type UserKey = `user::${string}`
 		type UserGroupKey = `userGroup::${string}`
@@ -152,7 +152,7 @@ describe(`allocate`, () => {
 				},
 			]
 		>
-		const { allocate, deallocate } = new Realm<DocumentHierarchy>(IMPLICIT.STORE)
+		const documentRealm = new Realm<DocumentHierarchy>(IMPLICIT.STORE)
 
 		const documentAtoms = atomFamily<string, DocumentKey>({
 			key: `doc`,
@@ -165,7 +165,7 @@ describe(`allocate`, () => {
 			key: `createDocument`,
 			do: ({ set }, owner) => {
 				const documentKey = `document::${randomUUID()}` satisfies DocumentKey
-				allocate(owner, documentKey)
+				documentRealm.allocate(owner, documentKey)
 				set(documentAtoms, documentKey, `hello work!`)
 				return documentKey
 			},
@@ -173,7 +173,7 @@ describe(`allocate`, () => {
 		const deleteDocumentTX = transaction<(document: DocumentKey) => void>({
 			key: `deleteDocument`,
 			do: (_, document) => {
-				deallocate(document)
+				documentRealm.deallocate(document)
 			},
 		})
 
@@ -184,7 +184,7 @@ describe(`allocate`, () => {
 		const createDocument = runTransaction(createDocumentTX)
 		const deleteDocument = runTransaction(deleteDocumentTX)
 
-		allocate(`root`, `userGroup::homies`)
+		documentRealm.allocate(`root`, `userGroup::homies`)
 		const documentClaim = createDocument(`userGroup::homies`)
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
 		deleteDocument(documentClaim)

@@ -77,7 +77,7 @@ export function allocateIntoStore<
 				above.push(provenanceMolecule)
 			}
 		}
-
+		// if (key.startsWith(`document::`)) debugger
 		const molecule = new Molecule(above, key)
 		molecule._dependsOn = allocationAttachmentStyle
 

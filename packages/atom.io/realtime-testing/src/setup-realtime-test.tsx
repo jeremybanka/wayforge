@@ -3,7 +3,6 @@ import * as http from "node:http"
 import type { RenderResult } from "@testing-library/react"
 import { prettyDOM, render } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import { realm } from "atom.io"
 import { editRelationsInStore, findRelationsInStore } from "atom.io/data"
 import type { Store } from "atom.io/internal"
 import {
@@ -105,7 +104,7 @@ export const setupRealtimeTestServer = (
 		},
 		IMPLICIT.STORE,
 	)
-	const socketRealm = realm<RTS.SocketSystemHierarchy>(silo.store)
+	const socketRealm = new AtomIO.Realm<RTS.SocketSystemHierarchy>(silo.store)
 
 	const httpServer = http.createServer((_, res) => res.end(`Hello World!`))
 	const address = httpServer.listen(options.port).address()

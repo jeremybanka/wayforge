@@ -203,126 +203,129 @@ function addAtomToTimeline(
 
 	tl.subscriptions.set(
 		atom.key,
-		atom.subject.subscribe(`timeline`, (update) => {
-			const target = newest(store)
-			const currentSelectorKey =
-				store.operation.open && store.operation.token.type === `selector`
-					? store.operation.token.key
-					: null
-			const currentSelectorTime =
-				store.operation.open && store.operation.token.type === `selector`
-					? store.operation.time
-					: null
+		atom.subject.subscribe(
+			`timeline`,
+			function timelineCapturesAtomUpdate(update) {
+				const target = newest(store)
+				const currentSelectorKey =
+					store.operation.open && store.operation.token.type === `selector`
+						? store.operation.token.key
+						: null
+				const currentSelectorTime =
+					store.operation.open && store.operation.token.type === `selector`
+						? store.operation.time
+						: null
 
-			const txUpdateInProgress = target.on.transactionApplying.state?.update
+				const txUpdateInProgress = target.on.transactionApplying.state?.update
 
-			store.logger.info(
-				`⏳`,
-				`timeline`,
-				tl.key,
-				`atom`,
-				atomToken.key,
-				`went`,
-				update.oldValue,
-				`->`,
-				update.newValue,
-				txUpdateInProgress
-					? `in transaction "${txUpdateInProgress.key}"`
-					: currentSelectorKey
-						? `in selector "${currentSelectorKey}"`
-						: ``,
-			)
-			if (tl.timeTraveling === null) {
-				if (txUpdateInProgress) {
-					joinTransaction(tl, txUpdateInProgress, store)
-				} else if (currentSelectorKey && currentSelectorTime) {
-					let latestUpdate: TimelineUpdate<any> | undefined = tl.history.at(-1)
+				store.logger.info(
+					`⏳`,
+					`timeline`,
+					tl.key,
+					`atom`,
+					atomToken.key,
+					`went`,
+					update.oldValue,
+					`->`,
+					update.newValue,
+					txUpdateInProgress
+						? `in transaction "${txUpdateInProgress.key}"`
+						: currentSelectorKey
+							? `in selector "${currentSelectorKey}"`
+							: ``,
+				)
+				if (tl.timeTraveling === null) {
+					if (txUpdateInProgress) {
+						joinTransaction(tl, txUpdateInProgress, store)
+					} else if (currentSelectorKey && currentSelectorTime) {
+						let latestUpdate: TimelineUpdate<any> | undefined = tl.history.at(-1)
 
-					if (currentSelectorTime !== tl.selectorTime) {
-						latestUpdate = {
-							type: `selector_update`,
-							timestamp: currentSelectorTime,
-							key: currentSelectorKey,
-							atomUpdates: [],
-						}
-						latestUpdate.atomUpdates.push({
-							key: atom.key,
-							type: `atom_update`,
-							...update,
-						})
-						if (tl.at !== tl.history.length) {
-							tl.history.splice(tl.at)
-						}
-
-						tl.history.push(latestUpdate)
-
-						store.logger.info(
-							`⌛`,
-							`timeline`,
-							tl.key,
-							`got a selector_update "${currentSelectorKey}" with`,
-							latestUpdate.atomUpdates.map((atomUpdate) => atomUpdate.key),
-						)
-
-						tl.at = tl.history.length
-						tl.selectorTime = currentSelectorTime
-					} else {
-						if (latestUpdate?.type === `selector_update`) {
+						if (currentSelectorTime !== tl.selectorTime) {
+							latestUpdate = {
+								type: `selector_update`,
+								timestamp: currentSelectorTime,
+								key: currentSelectorKey,
+								atomUpdates: [],
+							}
 							latestUpdate.atomUpdates.push({
 								key: atom.key,
 								type: `atom_update`,
 								...update,
 							})
+							if (tl.at !== tl.history.length) {
+								tl.history.splice(tl.at)
+							}
+
+							tl.history.push(latestUpdate)
+
 							store.logger.info(
 								`⌛`,
 								`timeline`,
 								tl.key,
-								`set selector_update "${currentSelectorKey}" to`,
-								latestUpdate?.atomUpdates.map((atomUpdate) => atomUpdate.key),
+								`got a selector_update "${currentSelectorKey}" with`,
+								latestUpdate.atomUpdates.map((atomUpdate) => atomUpdate.key),
 							)
-						}
-					}
-					if (latestUpdate) {
-						const willCaptureSelectorUpdate =
-							tl.shouldCapture?.(latestUpdate, tl) ?? true
-						if (willCaptureSelectorUpdate) {
-							tl.subject.next(latestUpdate)
-						} else {
-							tl.history.pop()
+
 							tl.at = tl.history.length
+							tl.selectorTime = currentSelectorTime
+						} else {
+							if (latestUpdate?.type === `selector_update`) {
+								latestUpdate.atomUpdates.push({
+									key: atom.key,
+									type: `atom_update`,
+									...update,
+								})
+								store.logger.info(
+									`⌛`,
+									`timeline`,
+									tl.key,
+									`set selector_update "${currentSelectorKey}" to`,
+									latestUpdate?.atomUpdates.map((atomUpdate) => atomUpdate.key),
+								)
+							}
 						}
-					}
-				} else {
-					const timestamp = Date.now()
-					tl.selectorTime = null
-					if (tl.at !== tl.history.length) {
-						tl.history.splice(tl.at)
-					}
-					const atomUpdate: TimelineAtomUpdate<any> = {
-						type: `atom_update`,
-						timestamp,
-						key: atom.key,
-						oldValue: update.oldValue,
-						newValue: update.newValue,
-					}
-					if (atom.family) {
-						atomUpdate.family = atom.family
-					}
-					const willCapture = tl.shouldCapture?.(atomUpdate, tl) ?? true
-					store.logger.info(
-						`⌛`,
-						`timeline`,
-						tl.key,
-						`got an atom_update to "${atom.key}"`,
-					)
-					if (willCapture) {
-						tl.history.push(atomUpdate)
-						tl.at = tl.history.length
-						tl.subject.next(atomUpdate)
+						if (latestUpdate) {
+							const willCaptureSelectorUpdate =
+								tl.shouldCapture?.(latestUpdate, tl) ?? true
+							if (willCaptureSelectorUpdate) {
+								tl.subject.next(latestUpdate)
+							} else {
+								tl.history.pop()
+								tl.at = tl.history.length
+							}
+						}
+					} else {
+						const timestamp = Date.now()
+						tl.selectorTime = null
+						if (tl.at !== tl.history.length) {
+							tl.history.splice(tl.at)
+						}
+						const atomUpdate: TimelineAtomUpdate<any> = {
+							type: `atom_update`,
+							timestamp,
+							key: atom.key,
+							oldValue: update.oldValue,
+							newValue: update.newValue,
+						}
+						if (atom.family) {
+							atomUpdate.family = atom.family
+						}
+						const willCapture = tl.shouldCapture?.(atomUpdate, tl) ?? true
+						store.logger.info(
+							`⌛`,
+							`timeline`,
+							tl.key,
+							`got an atom_update to "${atom.key}"`,
+						)
+						if (willCapture) {
+							tl.history.push(atomUpdate)
+							tl.at = tl.history.length
+							tl.subject.next(atomUpdate)
+						}
 					}
 				}
-			}
-		}),
+			},
+		),
 	)
 }
 
@@ -338,9 +341,12 @@ function addAtomFamilyToTimeline(
 	)
 	tl.subscriptions.set(
 		family.key,
-		family.subject.subscribe(`timeline`, (creationOrDisposal) => {
-			handleStateLifecycleEvent(creationOrDisposal, tl, store)
-		}),
+		family.subject.subscribe(
+			`timeline`,
+			function timelineCapturesStateLifecycleEvent(creationOrDisposal) {
+				handleStateLifecycleEvent(creationOrDisposal, tl, store)
+			},
+		),
 	)
 	for (const atom of store.atoms.values()) {
 		if (atom.family?.key === family.key) {
