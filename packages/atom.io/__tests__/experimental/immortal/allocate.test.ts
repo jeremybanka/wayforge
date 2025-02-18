@@ -5,7 +5,7 @@ import {
 	atomFamily,
 	disposeState,
 	getState,
-	realm,
+	Realm,
 	redo,
 	runTransaction,
 	setState,
@@ -98,7 +98,7 @@ describe(`allocate`, () => {
 		expect(logger.error).toHaveBeenCalledTimes(6)
 		expect(myItemDurability).toBe(0)
 
-		const gameRealm = realm<GameHierarchy>(IMPLICIT.STORE)
+		const gameRealm = new Realm<GameHierarchy>(IMPLICIT.STORE)
 
 		const gameClaim = gameRealm.allocate(`root`, gameKey)
 		const userClaim = gameRealm.allocate(`root`, userKey)
@@ -152,7 +152,7 @@ describe(`allocate`, () => {
 				},
 			]
 		>
-		const { allocate, deallocate } = realm<DocumentHierarchy>(IMPLICIT.STORE)
+		const { allocate, deallocate } = new Realm<DocumentHierarchy>(IMPLICIT.STORE)
 
 		const documentAtoms = atomFamily<string, DocumentKey>({
 			key: `doc`,

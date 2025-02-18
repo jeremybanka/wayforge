@@ -144,7 +144,7 @@ describe(`join with content`, () => {
 			newValue: [`lobby`, { joinedAt }],
 		})
 	})
-	test.only(`supports n:n relations`, () => {
+	test(`supports n:n relations`, () => {
 		const roomPlayers = join(
 			{
 				key: `playersInRooms`,

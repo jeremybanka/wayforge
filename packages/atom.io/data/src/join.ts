@@ -44,7 +44,7 @@ import {
 	seekInStore,
 	setIntoStore,
 } from "atom.io/internal"
-import type { Json } from "atom.io/json"
+import { type Json, stringifyJson } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
@@ -248,6 +248,8 @@ export class Join<
 
 		this.store.miscResources.set(`join:${options.key}`, this)
 
+		this.realm.allocate(`root`, options.key)
+
 		// this.retrieve = ((
 		// 	token: ReadableFamilyToken<any, any>,
 		// 	key: Json.Serializable,
@@ -433,6 +435,8 @@ export class Join<
 		const baseExternalStoreConfiguration: BaseExternalStoreConfiguration = {
 			getRelatedKeys: (key) => getRelatedKeys(this.toolkit, key),
 			addRelation: (a, b) => {
+				this.realm.allocate(options.key, a)
+				this.realm.allocate(options.key, b)
 				addRelation(this.toolkit, a, b)
 			},
 			deleteRelation: (a, b) => {
@@ -495,13 +499,7 @@ export class Join<
 				setContent: (contentKey: ContentKey, content: Content) => {
 					setContent(this.toolkit, contentKey, content)
 				},
-				deleteContent: (
-					contentKey: Claim<
-						JoinHierarchy<AType, BType>,
-						Vassal<JoinHierarchy<AType, BType>>,
-						any
-					>,
-				) => {
+				deleteContent: (contentKey: ContentKey) => {
 					console.log(store.molecules)
 					this.realm.deallocate(contentKey)
 				},
@@ -521,15 +519,19 @@ export class Join<
 				isAType: options.isAType,
 				isBType: options.isBType,
 				makeContentKey: (...args) => {
-					const sorted = args.sort() as Above<
-						Vassal<JoinHierarchy<AType, BType>>,
-						JoinHierarchy<AType, BType>
-					>
+					const [a, b] = args
+					const sorted = args.sort()
 					const compositeKey = `${sorted[0]}:${sorted[1]}`
-					this.realm.allocate(
-						sorted,
-						compositeKey as Vassal<JoinHierarchy<AType, BType>>,
-					)
+					const aMolecule = store.molecules.get(stringifyJson(a))
+					const bMolecule = store.molecules.get(stringifyJson(b))
+					if (!aMolecule) {
+						this.realm.allocate(options.key, a)
+					}
+					if (!bMolecule) {
+						this.realm.allocate(options.key, b)
+					}
+					this.realm.allocate(a, compositeKey)
+					this.realm.claim(b, compositeKey)
 					return compositeKey
 				},
 			},

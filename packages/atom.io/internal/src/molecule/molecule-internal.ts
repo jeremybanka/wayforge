@@ -26,6 +26,7 @@ export class Molecule<K extends Canonical> implements MoleculeToken<K> {
 	public below = new Map<string, Molecule<any>>()
 	public joins = new Map<string, Join<any, any, any, any, any, any>>()
 	public constructor(ctx: Molecule<any>[] | undefined, key: K) {
+		this.key = key
 		this.stringKey = stringifyJson(key)
 		if (ctx) {
 			for (const molecule of ctx) {

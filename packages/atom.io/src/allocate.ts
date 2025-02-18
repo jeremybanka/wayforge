@@ -26,7 +26,12 @@ export function allocateIntoStore<
 	H extends Hierarchy,
 	V extends Vassal<H>,
 	A extends Above<V, H>,
->(store: Store, provenance: A, key: V): Claim<H, V, A> {
+>(
+	store: Store,
+	provenance: A,
+	key: V,
+	attachmentStyle?: `all` | `any`,
+): Claim<H, V, A> {
 	const stringKey = stringifyJson(key)
 	try {
 		const above: Molecule<any>[] = []
@@ -61,7 +66,7 @@ export function allocateIntoStore<
 					above.push(provenanceMolecule)
 				}
 			} else {
-				allocationAttachmentStyle = `any`
+				allocationAttachmentStyle = attachmentStyle ?? `any`
 				const provenanceKey = stringifyJson(provenance as Canonical)
 				const provenanceMolecule = store.molecules.get(provenanceKey)
 				if (!provenanceMolecule) {
@@ -81,7 +86,6 @@ export function allocateIntoStore<
 		for (const aboveMolecule of above) {
 			aboveMolecule.below.set(molecule.stringKey, molecule)
 		}
-
 		const creationEvent: MoleculeCreation = {
 			type: `molecule_creation`,
 			subType: `modern`,
@@ -179,6 +183,42 @@ export function deallocateFromStore<
 		parent.below.delete(molecule.stringKey)
 	}
 }
+export function claimWithinStore<
+	H extends Hierarchy,
+	V extends Exclude<Vassal<H>, CompoundTypedKey>,
+	A extends Above<V, H>,
+>(
+	store: Store,
+	newProvenance: A,
+	claim: Claim<H, V, any>,
+	exclusive?: `exclusive`,
+): Claim<H, V, A> {
+	const stringKey = stringifyJson(claim)
+	const molecule = store.molecules.get(stringKey)
+	if (!molecule) {
+		throw new Error(
+			`Molecule ${stringKey} not found in store "${store.config.name}"`,
+		)
+	}
+
+	const newProvenanceKey = stringifyJson(newProvenance as Canonical)
+	const newProvenanceMolecule = store.molecules.get(newProvenanceKey)
+	if (!newProvenanceMolecule) {
+		throw new Error(
+			`Molecule ${newProvenanceKey} not found in store "${store.config.name}"`,
+		)
+	}
+	newProvenanceMolecule.below.set(stringKey, molecule)
+	molecule.above.set(stringKey, newProvenanceMolecule)
+	if (exclusive) {
+		const oldProvenance = molecule.above.get(stringKey)
+		if (oldProvenance) {
+			oldProvenance.below.delete(stringKey)
+			molecule.above.delete(stringKey)
+		}
+	}
+	return claim as Claim<H, V, A>
+}
 
 export class Realm<H extends Hierarchy> {
 	public store: Store
@@ -190,13 +230,24 @@ export class Realm<H extends Hierarchy> {
 	public allocate<V extends Vassal<H>, A extends Above<V, H>>(
 		provenance: A,
 		key: V,
+		attachmentStyle?: `all` | `any`,
 	): Claim<H, V, A> {
-		return allocateIntoStore(this.store, provenance, key)
+		return allocateIntoStore(this.store, provenance, key, attachmentStyle)
 	}
 	public deallocate<V extends Vassal<H>, A extends Above<V, H>>(
 		claim: Claim<H, V, A>,
 	): void {
 		deallocateFromStore(this.store, claim)
+	}
+	public claim<
+		V extends Exclude<Vassal<H>, CompoundTypedKey>,
+		A extends Above<V, H>,
+	>(
+		newProvenance: A,
+		claim: Claim<H, V, any>,
+		exclusive?: `exclusive`,
+	): Claim<H, V, A> {
+		return claimWithinStore(this.store, newProvenance, claim, exclusive)
 	}
 }
 
