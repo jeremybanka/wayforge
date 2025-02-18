@@ -21,10 +21,8 @@ export function disposeFromStore(
 		| [token: ReadableToken<any>]
 ): void {
 	let token: ReadableToken<any>
-	let fullKey: string
 	if (params.length === 1) {
 		token = params[0]
-		fullKey = token.key
 	} else {
 		const family = params[0]
 		const key = params[1]
@@ -34,7 +32,6 @@ export function disposeFromStore(
 	try {
 		withdraw(token, store)
 	} catch (thrown) {
-		console.log(`❗`, thrown)
 		const disposal = store.disposalTraces.buffer.find(
 			(item) => item?.key === token.key,
 		)

@@ -160,7 +160,6 @@ export function deallocateFromStore<
 	}
 
 	for (const state of molecule.tokens.values()) {
-		console.log(molecule.tokens)
 		disposeFromStore(store, state)
 	}
 	for (const child of molecule.below.values()) {

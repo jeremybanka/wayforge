@@ -44,7 +44,9 @@ export function ingestDisposalEvent(
 		}
 		case `oldValue`: {
 			createInStore(update, store)
-			store.valueMap.set(update.token.key, update.value)
+			if (update.subType === `atom`) {
+				store.valueMap.set(update.token.key, update.value)
+			}
 			break
 		}
 	}

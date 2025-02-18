@@ -1,6 +1,4 @@
 import type {
-	Above,
-	Claim,
 	CompoundTypedKey,
 	disposeState,
 	getState,
@@ -13,10 +11,9 @@ import type {
 	setState,
 	SetterToolkit,
 	SingularTypedKey,
-	Vassal,
 	Write,
 } from "atom.io"
-import { ReadableFamilyToken, ReadableToken, Realm } from "atom.io"
+import { Realm } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
 import type { seekState } from "atom.io/immortal"
 import type {
@@ -250,25 +247,6 @@ export class Join<
 
 		this.realm.allocate(`root`, options.key)
 
-		// this.retrieve = ((
-		// 	token: ReadableFamilyToken<any, any>,
-		// 	key: Json.Serializable,
-		// ): ReadableToken<any> => {
-		// 	// const maybeToken = this.toolkit.seek(token, key)
-		// 	// if (maybeToken) {
-		// 	// 	return maybeToken
-		// 	// }
-		// 	// const molecule = this.store.molecules.get(stringifyJson(key))
-		// 	// if (molecule) {
-		// 	// 	const family = withdraw(token, store)
-		// 	// 	return growMoleculeInStore(molecule, family, store)
-		// 	// }
-		// 	// if (store.config.lifespan === `immortal`) {
-		// 	// 	throw new NotFoundError(token, key, store)
-		// 	// }
-		// 	// return initFamilyMemberInStore(store, token, key)
-		// 	return this.toolkit.find(token, key)
-		// }) as typeof findState
 		this.toolkit = {
 			get: ((...ps: Parameters<typeof getState>) =>
 				getFromStore(store, ...ps)) as typeof getState,
@@ -452,11 +430,7 @@ export class Join<
 		}
 		let externalStore: ExternalStoreConfiguration<Content>
 		let contentAtoms: RegularAtomFamilyToken<Content, string>
-		// let contentMolecules: MoleculeFamilyToken<
-		// 	new (
-		// 		..._: any[]
-		// 	) => { key: string }
-		// >
+
 		if (defaultContent) {
 			contentAtoms = createRegularAtomFamily<Content, ContentKey>(
 				store,
@@ -466,15 +440,7 @@ export class Join<
 				},
 				[`join`, `content`],
 			)
-			// contentMolecules = createMoleculeFamily(store, {
-			// 	key: `${options.key}/content-molecules`,
-			// 	new: class ContentMolecule {
-			// 		public constructor(
-			// 			_: CtorToolkit<string>,
-			// 			public key: string,
-			// 		) {}
-			// 	},
-			// })
+
 			const getContent: Read<(key: string) => Content | null> = ({ get }, key) =>
 				get(this.toolkit.find(contentAtoms, key))
 			const setContent: Write<(key: string, content: Content) => void> = (
@@ -484,13 +450,7 @@ export class Join<
 			) => {
 				set(this.toolkit.find(contentAtoms, key), content)
 			}
-			// const deleteContent: Write<(compositeKey: ContentKey) => void> = (
-			// 	_,
-			// 	compositeKey,
-			// ) => {
-			// 	this.realm.deallocate(compositeKey)
-			// 	this.molecules.delete(`"${compositeKey}"`)
-			// }
+
 			const externalStoreWithContentConfiguration = {
 				getContent: (contentKey: ContentKey) => {
 					const content = getContent(this.toolkit, contentKey)
@@ -500,7 +460,6 @@ export class Join<
 					setContent(this.toolkit, contentKey, content)
 				},
 				deleteContent: (contentKey: ContentKey) => {
-					console.log(store.molecules)
 					this.realm.deallocate(contentKey)
 				},
 			}

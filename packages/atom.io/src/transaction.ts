@@ -29,11 +29,20 @@ export type StateCreation<Token extends ReadableToken<any>> = {
 	type: `state_creation`
 	token: Token
 }
-export type StateDisposal<Token extends ReadableToken<any>> = {
+export type AtomDisposal<Token extends ReadableToken<any>> = {
 	type: `state_disposal`
+	subType: `atom`
 	token: Token
 	value: TokenType<Token>
 }
+export type SelectorDisposal<Token extends ReadableToken<any>> = {
+	type: `state_disposal`
+	subType: `selector`
+	token: Token
+}
+export type StateDisposal<Token extends ReadableToken<any>> =
+	| AtomDisposal<Token>
+	| SelectorDisposal<Token>
 
 export type MoleculeCreation = {
 	type: `molecule_creation`
