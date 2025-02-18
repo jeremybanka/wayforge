@@ -54,9 +54,9 @@ function capitalize<S extends string>(string: S): Capitalize<S> {
 
 export interface JoinOptions<
 	ASide extends string,
-	AType extends SingularTypedKey<ASide>,
+	AType extends string,
 	BSide extends string,
-	BType extends SingularTypedKey<BSide>,
+	BType extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
 > extends JunctionSchemaBase<ASide, BSide>,
@@ -167,9 +167,9 @@ export type JoinHierarchy<
 
 export class Join<
 	const ASide extends string,
-	const AType extends SingularTypedKey<ASide>,
+	const AType extends string,
 	const BSide extends string,
-	const BType extends SingularTypedKey<BSide>,
+	const BType extends string,
 	const Cardinality extends `1:1` | `1:n` | `n:n`,
 	const Content extends Json.Object | null = null,
 	const ContentKey extends CompoundTypedKey<
@@ -749,9 +749,9 @@ export type JoinToken<
 
 export function join<
 	const ASide extends string,
-	const AType extends SingularTypedKey<ASide>,
+	const AType extends string,
 	const BSide extends string,
-	const BType extends SingularTypedKey<BSide>,
+	const BType extends string,
 	const Cardinality extends `1:1` | `1:n` | `n:n`,
 >(
 	options: JoinOptions<ASide, AType, BSide, BType, Cardinality, null>,
@@ -760,9 +760,9 @@ export function join<
 ): JoinToken<ASide, AType, BSide, BType, Cardinality, null>
 export function join<
 	const ASide extends string,
-	const AType extends SingularTypedKey<ASide>,
+	const AType extends string,
 	const BSide extends string,
-	const BType extends SingularTypedKey<BSide>,
+	const BType extends string,
 	const Cardinality extends `1:1` | `1:n` | `n:n`,
 	const Content extends Json.Object,
 >(
@@ -772,9 +772,9 @@ export function join<
 ): JoinToken<ASide, AType, BSide, BType, Cardinality, Content>
 export function join<
 	ASide extends string,
-	AType extends SingularTypedKey<ASide>,
+	AType extends string,
 	BSide extends string,
-	BType extends SingularTypedKey<BSide>,
+	BType extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object,
 >(
@@ -806,9 +806,9 @@ export function getJoinMap(
 }
 export function getJoin<
 	ASide extends string,
-	AType extends SingularTypedKey<ASide>,
+	AType extends string,
 	BSide extends string,
-	BType extends SingularTypedKey<BSide>,
+	BType extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
 >(
@@ -913,9 +913,9 @@ export type JoinStates<
 
 export function findRelationsInStore<
 	ASide extends string,
-	AType extends SingularTypedKey<ASide>,
+	AType extends string,
 	BSide extends string,
-	BType extends SingularTypedKey<BSide>,
+	BType extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
 >(
@@ -1030,9 +1030,9 @@ export function findRelationsInStore<
 
 export function findRelations<
 	ASide extends string,
-	AType extends SingularTypedKey<ASide>,
+	AType extends string,
 	BSide extends string,
-	BType extends SingularTypedKey<BSide>,
+	BType extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
 >(
@@ -1044,9 +1044,9 @@ export function findRelations<
 
 export function editRelationsInStore<
 	ASide extends string,
-	AType extends SingularTypedKey<ASide>,
+	AType extends string,
 	BSide extends string,
-	BType extends SingularTypedKey<BSide>,
+	BType extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
 >(
@@ -1068,9 +1068,9 @@ export function editRelationsInStore<
 
 export function editRelations<
 	ASide extends string,
-	AType extends SingularTypedKey<ASide>,
+	AType extends string,
 	BSide extends string,
-	BType extends SingularTypedKey<BSide>,
+	BType extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
 >(
@@ -1091,9 +1091,9 @@ export function getInternalRelationsFromStore(
 
 export function getInternalRelations<
 	ASide extends string,
-	AType extends SingularTypedKey<ASide>,
+	AType extends string,
 	BSide extends string,
-	BType extends SingularTypedKey<BSide>,
+	BType extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
 >(
