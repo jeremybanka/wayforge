@@ -1,6 +1,5 @@
 import type {
 	CompoundTypedKey,
-	disposeState,
 	getState,
 	Hierarchy,
 	MutableAtomFamilyToken,
@@ -29,7 +28,6 @@ import {
 	createMutableAtomFamily,
 	createReadonlySelectorFamily,
 	createRegularAtomFamily,
-	disposeFromStore,
 	findInStore,
 	getFromStore,
 	getJsonFamily,
@@ -177,7 +175,7 @@ export class Join<
 > {
 	private options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>
 	private defaultContent: Content | undefined
-	private toolkit: SetterToolkit & { dispose: typeof disposeState }
+	private toolkit: SetterToolkit
 	public molecules: Map<string, Molecule<any>> = new Map()
 	public relations: Junction<ASide, AType, BSide, BType, Content>
 	public states: JoinStateFamilies<
@@ -189,14 +187,14 @@ export class Join<
 		Content
 	>
 	public core: {
-		findRelatedKeysState: MutableAtomFamilyToken<
+		relatedKeysAtoms: MutableAtomFamilyToken<
 			SetRTX<string>,
 			SetRTXJson<string>,
 			string
 		>
 	}
 	public transact(
-		toolkit: SetterToolkit & { dispose: typeof disposeState },
+		toolkit: SetterToolkit,
 		run: (join: Join<ASide, AType, BSide, BType, Cardinality, Content>) => void,
 	): void {
 		const originalToolkit = this.toolkit
@@ -258,9 +256,6 @@ export class Join<
 			seek: ((...ps: Parameters<typeof seekState>) =>
 				seekInStore(store, ...ps)) as typeof seekState,
 			json: (token) => getJsonToken(store, token),
-			dispose: ((...ps: Parameters<typeof disposeState>) => {
-				disposeFromStore(store, ...ps)
-			}) as typeof disposeState,
 		}
 
 		const aSide: ASide = options.between[0]
@@ -280,62 +275,44 @@ export class Join<
 			},
 			[`join`, `relations`],
 		)
-		this.core = { findRelatedKeysState: relatedKeysAtoms }
+		this.core = { relatedKeysAtoms }
 		const getRelatedKeys: Read<
 			(key: string) => SetRTX<AType> | SetRTX<BType>
 		> = ({ get }, key) => get(relatedKeysAtoms, key) as any
 		const addRelation: Write<(a: string, b: string) => void> = (
-			toolkit,
+			{ set },
 			a,
 			b,
 		) => {
-			const { set } = toolkit
-			const aKeysState = this.toolkit.find(relatedKeysAtoms, a)
-			const bKeysState = this.toolkit.find(relatedKeysAtoms, b)
-			set(aKeysState, (aKeys) => aKeys.add(b))
-			set(bKeysState, (bKeys) => bKeys.add(a))
+			set(relatedKeysAtoms, a, (aKeys) => aKeys.add(b))
+			set(relatedKeysAtoms, b, (bKeys) => bKeys.add(a))
 		}
 		const deleteRelation: Write<(a: string, b: string) => void> = (
-			toolkit,
+			{ set },
 			a,
 			b,
 		) => {
-			const { set } = toolkit
-			const aKeysState = this.toolkit.find(relatedKeysAtoms, a)
-			const bKeysState = this.toolkit.find(relatedKeysAtoms, b)
-			let stringA: string | undefined
-			let stringB: string | undefined
-			set(aKeysState, (aKeys) => {
+			set(relatedKeysAtoms, a, (aKeys) => {
 				aKeys.delete(b)
-				if (aKeys.size === 0) {
-					stringA = `"${a}"`
-				}
 				return aKeys
 			})
-			set(bKeysState, (bKeys) => {
+			set(relatedKeysAtoms, b, (bKeys) => {
 				bKeys.delete(a)
-				if (bKeys.size === 0) {
-					stringB = `"${b}"`
-				}
 				return bKeys
 			})
 		}
 		const replaceRelationsSafely: Write<
 			(a: string, newRelationsOfA: string[]) => void
 		> = (toolkit, a, newRelationsOfA) => {
-			const { get, set } = toolkit
-			const relationsOfAState = this.toolkit.find(relatedKeysAtoms, a)
-			const currentRelationsOfA = get(relationsOfAState)
+			const { find, get, set } = toolkit
+			const relationsOfAState = find(relatedKeysAtoms, a)
+			const currentRelationsOfA = get(relatedKeysAtoms, a)
 			for (const currentRelationB of currentRelationsOfA) {
 				const remainsRelated = newRelationsOfA.includes(currentRelationB)
 				if (remainsRelated) {
 					continue
 				}
-				const relationsOfBState = this.toolkit.find(
-					relatedKeysAtoms,
-					currentRelationB,
-				)
-				set(relationsOfBState, (relationsOfB) => {
+				set(relatedKeysAtoms, currentRelationB, (relationsOfB) => {
 					relationsOfB.delete(a)
 					return relationsOfB
 				})
@@ -384,8 +361,7 @@ export class Join<
 			(a: string, newRelationsOfA: string[]) => void
 		> = (toolkit, a, newRelationsOfA) => {
 			const { set } = toolkit
-			const relationsOfAState = this.toolkit.find(relatedKeysAtoms, a)
-			set(relationsOfAState, (relationsOfA) => {
+			set(relatedKeysAtoms, a, (relationsOfA) => {
 				relationsOfA.transaction((nextRelationsOfA) => {
 					for (const newRelationB of newRelationsOfA) {
 						nextRelationsOfA.add(newRelationB)
@@ -395,11 +371,7 @@ export class Join<
 				return relationsOfA
 			})
 			for (const newRelationB of newRelationsOfA) {
-				const newRelationsBState = this.toolkit.find(
-					relatedKeysAtoms,
-					newRelationB,
-				)
-				set(newRelationsBState, (newRelationsB) => {
+				set(relatedKeysAtoms, newRelationB, (newRelationsB) => {
 					newRelationsB.add(a)
 					return newRelationsB
 				})
@@ -442,13 +414,13 @@ export class Join<
 			)
 
 			const getContent: Read<(key: string) => Content | null> = ({ get }, key) =>
-				get(this.toolkit.find(contentAtoms, key))
+				get(contentAtoms, key)
 			const setContent: Write<(key: string, content: Content) => void> = (
 				{ set },
 				key,
 				content,
 			) => {
-				set(this.toolkit.find(contentAtoms, key), content)
+				set(contentAtoms, key, content)
 			}
 
 			const externalStoreWithContentConfiguration = {
@@ -496,7 +468,7 @@ export class Join<
 			},
 		)
 
-		const createSingleKeyStateFamily = () =>
+		const createSingleKeySelectorFamily = () =>
 			createReadonlySelectorFamily<string | null, string>(
 				store,
 				{
@@ -504,8 +476,7 @@ export class Join<
 					get:
 						(key) =>
 						({ get }) => {
-							const relatedKeysState = this.toolkit.find(relatedKeysAtoms, key)
-							const relatedKeys = get(relatedKeysState)
+							const relatedKeys = get(relatedKeysAtoms, key)
 							for (const relatedKey of relatedKeys) {
 								return relatedKey
 							}
@@ -514,7 +485,7 @@ export class Join<
 				},
 				[`join`, `keys`],
 			)
-		const getMultipleKeyStateFamily = () => {
+		const getMultipleKeySelectorFamily = () => {
 			return createReadonlySelectorFamily<string[], string>(
 				store,
 				{
@@ -523,15 +494,14 @@ export class Join<
 						(key) =>
 						({ get }) => {
 							const jsonFamily = getJsonFamily(relatedKeysAtoms, store)
-							const jsonState = this.toolkit.find(jsonFamily, key)
-							const json = get(jsonState)
+							const json = get(jsonFamily, key)
 							return json.members
 						},
 				},
 				[`join`, `keys`],
 			)
 		}
-		const createSingleEntryStateFamily = () =>
+		const createSingleEntrySelectorFamily = () =>
 			createReadonlySelectorFamily<[string, Content] | null, string>(
 				store,
 				{
@@ -539,16 +509,14 @@ export class Join<
 					get:
 						(x) =>
 						({ get }) => {
-							const relatedKeysState = this.toolkit.find(relatedKeysAtoms, x)
-							const relatedKeys = get(relatedKeysState)
+							const relatedKeys = get(relatedKeysAtoms, x)
 							for (const y of relatedKeys) {
 								let a = relations.isAType?.(x) ? x : undefined
 								let b = a === undefined ? (x as BType) : undefined
 								a ??= y as AType
 								b ??= y as BType
 								const contentKey = relations.makeContentKey(a, b)
-								const contentState = this.toolkit.find(contentAtoms, contentKey)
-								const content = get(contentState)
+								const content = get(contentAtoms, contentKey)
 								return [y, content]
 							}
 							return null
@@ -556,7 +524,7 @@ export class Join<
 				},
 				[`join`, `entries`],
 			)
-		const getMultipleEntryStateFamily = () =>
+		const getMultipleEntrySelectorFamily = () =>
 			createReadonlySelectorFamily<[string, Content][], string>(
 				store,
 				{
@@ -565,16 +533,14 @@ export class Join<
 						(x) =>
 						({ get }) => {
 							const jsonFamily = getJsonFamily(relatedKeysAtoms, store)
-							const jsonState = this.toolkit.find(jsonFamily, x)
-							const json = get(jsonState)
+							const json = get(jsonFamily, x)
 							return json.members.map((y) => {
 								let a = relations.isAType?.(x) ? x : undefined
 								let b = a === undefined ? (x as BType) : undefined
 								a ??= y as AType
 								b ??= y as BType
 								const contentKey = relations.makeContentKey(a, b)
-								const contentState = this.toolkit.find(contentAtoms, contentKey)
-								const content = get(contentState)
+								const content = get(contentAtoms, contentKey)
 								return [y, content]
 							})
 						},
@@ -584,12 +550,12 @@ export class Join<
 
 		switch (options.cardinality) {
 			case `1:1`: {
-				const findSingleRelatedKeyState = createSingleKeyStateFamily()
+				const singleRelatedKeySelectors = createSingleKeySelectorFamily()
 				const stateKeyA = `${aSide}KeyOf${capitalize(bSide)}` as const
 				const stateKeyB = `${bSide}KeyOf${capitalize(aSide)}` as const
 				const baseStates = {
-					[stateKeyA]: findSingleRelatedKeyState,
-					[stateKeyB]: findSingleRelatedKeyState,
+					[stateKeyA]: singleRelatedKeySelectors,
+					[stateKeyB]: singleRelatedKeySelectors,
 				} as JoinStateFamilies<ASide, AType, BSide, BType, Cardinality, Content>
 				let states: JoinStateFamilies<
 					ASide,
@@ -600,12 +566,12 @@ export class Join<
 					Content
 				>
 				if (defaultContent) {
-					const findSingleRelatedEntryState = createSingleEntryStateFamily()
+					const singleEntrySelectors = createSingleEntrySelectorFamily()
 					const entriesStateKeyA = `${aSide}EntryOf${capitalize(bSide)}` as const
 					const entriesStateKeyB = `${bSide}EntryOf${capitalize(aSide)}` as const
 					const contentStates = {
-						[entriesStateKeyA]: findSingleRelatedEntryState,
-						[entriesStateKeyB]: findSingleRelatedEntryState,
+						[entriesStateKeyA]: singleEntrySelectors,
+						[entriesStateKeyB]: singleEntrySelectors,
 					}
 					states = Object.assign(baseStates, contentStates)
 				} else {
@@ -616,13 +582,13 @@ export class Join<
 				break
 			}
 			case `1:n`: {
-				const findSingleRelatedKeyState = createSingleKeyStateFamily()
-				const findMultipleRelatedKeysState = getMultipleKeyStateFamily()
+				const singleRelatedKeySelectors = createSingleKeySelectorFamily()
+				const multipleRelatedKeysSelectors = getMultipleKeySelectorFamily()
 				const stateKeyA = `${aSide}KeyOf${capitalize(bSide)}` as const
 				const stateKeyB = `${bSide}KeysOf${capitalize(aSide)}` as const
 				const baseStates = {
-					[stateKeyA]: findSingleRelatedKeyState,
-					[stateKeyB]: findMultipleRelatedKeysState,
+					[stateKeyA]: singleRelatedKeySelectors,
+					[stateKeyB]: multipleRelatedKeysSelectors,
 				} as JoinStateFamilies<ASide, AType, BSide, BType, Cardinality, Content>
 				let states: JoinStateFamilies<
 					ASide,
@@ -633,15 +599,16 @@ export class Join<
 					Content
 				>
 				if (defaultContent) {
-					const findSingleRelatedEntryState = createSingleEntryStateFamily()
-					const findMultipleRelatedEntriesState = getMultipleEntryStateFamily()
+					const singleRelatedEntrySelectors = createSingleEntrySelectorFamily()
+					const multipleRelatedEntriesSelectors =
+						getMultipleEntrySelectorFamily()
 					const entriesStateKeyA = `${aSide}EntryOf${capitalize(bSide)}` as const
 					const entriesStateKeyB = `${bSide}EntriesOf${capitalize(
 						aSide,
 					)}` as const
 					const contentStates = {
-						[entriesStateKeyA]: findSingleRelatedEntryState,
-						[entriesStateKeyB]: findMultipleRelatedEntriesState,
+						[entriesStateKeyA]: singleRelatedEntrySelectors,
+						[entriesStateKeyB]: multipleRelatedEntriesSelectors,
 					}
 					states = Object.assign(baseStates, contentStates)
 				} else {
@@ -652,12 +619,12 @@ export class Join<
 				break
 			}
 			default: {
-				const findMultipleRelatedKeysState = getMultipleKeyStateFamily()
+				const multipleRelatedKeysSelectors = getMultipleKeySelectorFamily()
 				const stateKeyA = `${aSide}KeysOf${capitalize(bSide)}` as const
 				const stateKeyB = `${bSide}KeysOf${capitalize(aSide)}` as const
 				const baseStates = {
-					[stateKeyA]: findMultipleRelatedKeysState,
-					[stateKeyB]: findMultipleRelatedKeysState,
+					[stateKeyA]: multipleRelatedKeysSelectors,
+					[stateKeyB]: multipleRelatedKeysSelectors,
 				} as JoinStateFamilies<ASide, AType, BSide, BType, Cardinality, Content>
 				let states: JoinStateFamilies<
 					ASide,
@@ -668,7 +635,8 @@ export class Join<
 					Content
 				>
 				if (defaultContent) {
-					const findMultipleRelatedEntriesState = getMultipleEntryStateFamily()
+					const multipleRelatedEntriesSelectors =
+						getMultipleEntrySelectorFamily()
 					const entriesStateKeyA = `${aSide}EntriesOf${capitalize(
 						bSide,
 					)}` as const
@@ -676,8 +644,8 @@ export class Join<
 						aSide,
 					)}` as const
 					const contentStates = {
-						[entriesStateKeyA]: findMultipleRelatedEntriesState,
-						[entriesStateKeyB]: findMultipleRelatedEntriesState,
+						[entriesStateKeyA]: multipleRelatedEntriesSelectors,
+						[entriesStateKeyB]: multipleRelatedEntriesSelectors,
 					}
 					states = Object.assign(baseStates, contentStates)
 				} else {
@@ -1046,7 +1014,7 @@ export function getInternalRelationsFromStore(
 	store: Store,
 ): MutableAtomFamilyToken<SetRTX<string>, SetRTXJson<string>, string> {
 	const myJoin = getJoin(token, store)
-	const family = myJoin.core.findRelatedKeysState
+	const family = myJoin.core.relatedKeysAtoms
 	return family
 }
 
