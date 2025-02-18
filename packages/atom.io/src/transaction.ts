@@ -32,7 +32,7 @@ export type StateCreation<Token extends ReadableToken<any>> = {
 export type StateDisposal<Token extends ReadableToken<any>> = {
 	type: `state_disposal`
 	token: Token
-	value?: TokenType<Token>
+	value: TokenType<Token>
 }
 
 export type MoleculeCreation = {

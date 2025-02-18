@@ -38,6 +38,7 @@ export const applyTransaction = <F extends Func>(
 		updates,
 	)
 
+	if (child.transactionMeta.update.key === `deleteDocument`) debugger
 	ingestTransactionUpdate(`newValue`, child.transactionMeta.update, parent)
 
 	if (isRootStore(parent)) {

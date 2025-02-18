@@ -34,4 +34,11 @@ export class Molecule<K extends Canonical> implements MoleculeToken<K> {
 			}
 		}
 	}
+	public copy(): Molecule<K> {
+		const copy = new Molecule([], this.key)
+		copy.above = new Map(this.above)
+		copy.below = new Map(this.below)
+		copy.tokens = new Map(this.tokens)
+		return copy
+	}
 }

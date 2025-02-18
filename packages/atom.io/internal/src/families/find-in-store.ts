@@ -97,5 +97,8 @@ export function findInStore(
 		return fakeToken
 	}
 	state = initFamilyMemberInStore(store, token, key)
+	if (molecule) {
+		molecule.tokens.set(token.key, state)
+	}
 	return state
 }

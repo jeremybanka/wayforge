@@ -132,7 +132,7 @@ describe(`allocate`, () => {
 			`T$--player==${gameKey}++${userKey}`,
 		)
 	})
-	test.only(`transaction+timeline support`, () => {
+	test(`transaction+timeline support`, () => {
 		type DocumentKey = `document::${string}`
 		type UserKey = `user::${string}`
 		type UserGroupKey = `userGroup::${string}`
@@ -160,11 +160,11 @@ describe(`allocate`, () => {
 		})
 
 		const createDocumentTX = transaction<
-			(owner: UserGroupKey | UserKey) => DocumentKey
+			(owner: UserGroupKey | UserKey, id: string) => DocumentKey
 		>({
 			key: `createDocument`,
-			do: ({ set }, owner) => {
-				const documentKey = `document::${randomUUID()}` satisfies DocumentKey
+			do: ({ set }, owner, id) => {
+				const documentKey = `document::${id}` satisfies DocumentKey
 				documentRealm.allocate(owner, documentKey)
 				set(documentAtoms, documentKey, `hello work!`)
 				return documentKey
@@ -185,17 +185,71 @@ describe(`allocate`, () => {
 		const deleteDocument = runTransaction(deleteDocumentTX)
 
 		documentRealm.allocate(`root`, `userGroup::homies`)
-		const documentClaim = createDocument(`userGroup::homies`)
+		const documentClaim = createDocument(`userGroup::homies`, `1`)
+		console.log(`DOCUMENT CREATED --------------------------------------------`)
+		expect(IMPLICIT.STORE.molecules.get(`"document::1"`)?.tokens).toEqual(
+			new Map([
+				[
+					`doc`,
+					{
+						key: `doc("document::1")`,
+						type: `atom`,
+						family: { key: `doc`, subKey: `"document::1"` },
+					},
+				],
+			]),
+		)
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
+		// console.log(IMPLICIT.STORE.timelines.get(`documentTimeline`)?.history)
+		// console.log(
+		// 	IMPLICIT.STORE.timelines.get(`documentTimeline`)?.history[0].updates,
+		// )
+		console.log(IMPLICIT.STORE.valueMap)
 		deleteDocument(documentClaim)
+		console.log(`DOCUMENT DELETED --------------------------------------------`)
+		console.log(IMPLICIT.STORE.valueMap)
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
+
+		console.log(
+			`UNDO DOCUMENT DELETE --------------------------------------------`,
+		)
+		const at = IMPLICIT.STORE.timelines.get(`documentTimeline`)?.at
+		if (at) {
+			console.log(
+				at,
+				IMPLICIT.STORE.timelines.get(`documentTimeline`)?.history.length,
+				IMPLICIT.STORE.timelines.get(`documentTimeline`)?.history[at - 1],
+			)
+		}
 		undo(documentTimeline)
+		console.log(IMPLICIT.STORE.valueMap)
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
+		console.log(
+			`UNDOING DOCUMENT CREATE --------------------------------------------`,
+		)
 		undo(documentTimeline)
+		console.log(
+			`UNDID DOCUMENT CREATE --------------------------------------------`,
+		)
+		console.log(IMPLICIT.STORE.valueMap)
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
+		console.log(
+			`REDOING DOCUMENT CREATE --------------------------------------------`,
+		)
 		redo(documentTimeline)
+		console.log(
+			`REDID DOCUMENT CREATE --------------------------------------------`,
+		)
+		console.log(IMPLICIT.STORE.valueMap)
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
+		console.log(
+			`REDO DOCUMENT DELETE --------------------------------------------`,
+		)
 		redo(documentTimeline)
+		console.log(
+			`REDID DOCUMENT DELETE --------------------------------------------`,
+		)
+		console.log(IMPLICIT.STORE.valueMap)
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
 	})
 })

@@ -77,7 +77,6 @@ export function allocateIntoStore<
 				above.push(provenanceMolecule)
 			}
 		}
-		// if (key.startsWith(`document::`)) debugger
 		const molecule = new Molecule(above, key)
 		molecule._dependsOn = allocationAttachmentStyle
 
@@ -141,6 +140,19 @@ export function deallocateFromStore<
 		provenance = [...molecule.above.values()].map(({ key }) => key)
 	}
 	const values: [string, any][] = []
+	const disposalEvent: MoleculeDisposal = {
+		type: `molecule_disposal`,
+		subType: `modern`,
+		key: molecule.key,
+		values,
+		provenance,
+	}
+	const target = newest(store)
+	const isTransaction =
+		isChildStore(target) && target.transactionMeta.phase === `building`
+	if (isTransaction) {
+		target.transactionMeta.update.updates.push(disposalEvent)
+	}
 	for (const stateToken of molecule.tokens.values()) {
 		// biome-ignore lint/style/noNonNullAssertion: tokens of molecules must have a family
 		const tokenFamily = stateToken.family!
@@ -148,6 +160,7 @@ export function deallocateFromStore<
 	}
 
 	for (const state of molecule.tokens.values()) {
+		console.log(molecule.tokens)
 		disposeFromStore(store, state)
 	}
 	for (const child of molecule.below.values()) {
@@ -162,19 +175,7 @@ export function deallocateFromStore<
 	}
 	molecule.below.clear()
 
-	const disposalEvent: MoleculeDisposal = {
-		type: `molecule_disposal`,
-		subType: `modern`,
-		key: molecule.key,
-		values,
-		provenance,
-	}
-	const target = newest(store)
-	const isTransaction =
-		isChildStore(target) && target.transactionMeta.phase === `building`
-	if (isTransaction) {
-		target.transactionMeta.update.updates.push(disposalEvent)
-	} else {
+	if (!isTransaction) {
 		target.on.moleculeDisposal.next(disposalEvent)
 	}
 	target.molecules.delete(molecule.stringKey)

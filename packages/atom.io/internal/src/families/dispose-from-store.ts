@@ -34,6 +34,7 @@ export function disposeFromStore(
 	try {
 		withdraw(token, store)
 	} catch (thrown) {
+		console.log(`❗`, thrown)
 		const disposal = store.disposalTraces.buffer.find(
 			(item) => item?.key === token.key,
 		)
@@ -61,7 +62,7 @@ export function disposeFromStore(
 
 	const { stack } = new Error()
 	if (stack) {
-		const trace = stack?.split(`\n`)?.slice(3)?.join(`\n`)
+		const trace = stack?.split(`\n`)?.slice(1)?.join(`\n`)
 		store.disposalTraces.add({ key: token.key, trace })
 	}
 }
