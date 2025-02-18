@@ -1,10 +1,6 @@
 import type {
 	AtomFamilyToken,
 	AtomToken,
-	MoleculeConstructor,
-	MoleculeFamilyToken,
-	MoleculeKey,
-	MoleculeToken,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
 	ReadableFamilyToken,
@@ -81,17 +77,11 @@ export function seekInStore<T, K extends Canonical, Key extends K>(
 	key: Key,
 ): ReadableToken<T, K> | undefined
 
-export function seekInStore<M extends MoleculeConstructor>(
-	store: Store,
-	token: MoleculeFamilyToken<M>,
-	key: MoleculeKey<M>,
-): MoleculeKey<M> | undefined
-
 export function seekInStore(
 	store: Store,
-	token: MoleculeFamilyToken<any> | ReadableFamilyToken<any, any>,
+	token: ReadableFamilyToken<any, any>,
 	key: Canonical,
-): MoleculeToken<any> | ReadableToken<any> | undefined {
+): ReadableToken<any> | undefined {
 	const subKey = stringifyJson(key)
 	const fullKey = `${token.key}(${subKey})`
 	const target = newest(store)
@@ -107,8 +97,6 @@ export function seekInStore(
 		case `readonly_selector_family`:
 			state = target.readonlySelectors.get(fullKey)
 			break
-		case `molecule_family`:
-			state = target.molecules.get(stringifyJson(key))
 	}
 	if (state) {
 		return deposit(state)

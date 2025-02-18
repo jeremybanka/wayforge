@@ -18,7 +18,6 @@ import type {
 } from "atom.io"
 import { type Canonical, type Json, stringifyJson } from "atom.io/json"
 
-import { growMoleculeInStore } from "../molecule"
 import type { Transceiver } from "../mutable"
 import { counterfeit, type Store } from "../store"
 import { initFamilyMemberInStore } from "./init-family-member"
@@ -87,10 +86,7 @@ export function findInStore(
 		return state
 	}
 	const molecule = store.molecules.get(stringifyJson(key))
-	if (molecule) {
-		return growMoleculeInStore(molecule, token, store)
-	}
-	if (store.config.lifespan === `immortal`) {
+	if (!molecule && store.config.lifespan === `immortal`) {
 		const fakeToken = counterfeit(token, key)
 		store.logger.error(
 			`❌`,

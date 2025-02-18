@@ -9,7 +9,6 @@ import { getFromStore } from "../get-state"
 import { Junction } from "../junction"
 import { LazyMap } from "../lazy-map"
 import { newest } from "../lineage"
-import { makeMoleculeInStore } from "../molecule"
 import { getJsonToken } from "../mutable"
 import { setIntoStore } from "../set-state"
 import type { Store } from "../store"
@@ -50,8 +49,6 @@ export const buildTransaction = (
 		defaults: parent.defaults,
 		disposalTraces: store.disposalTraces.copy(),
 		molecules: new LazyMap(parent.molecules),
-		moleculeFamilies: new LazyMap(parent.moleculeFamilies),
-		moleculeInProgress: parent.moleculeInProgress,
 		miscResources: new LazyMap(parent.miscResources),
 	}
 	const epoch = getEpochNumberOfAction(key, store)
@@ -77,8 +74,6 @@ export const buildTransaction = (
 			find: ((token, k) => findInStore(child, token, k)) as typeof findState,
 			seek: ((token, k) => seekInStore(child, token, k)) as typeof seekState,
 			json: (token) => getJsonToken(child, token),
-			make: (context, family, k, ...args) =>
-				makeMoleculeInStore(child, context, family, k, ...args),
 			dispose: ((...ps: Parameters<typeof disposeState>) => {
 				disposeFromStore(child, ...ps)
 			}) as typeof disposeState,

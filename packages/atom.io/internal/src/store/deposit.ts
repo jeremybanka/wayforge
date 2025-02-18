@@ -1,9 +1,6 @@
 import type {
 	AtomFamilyToken,
 	AtomToken,
-	MoleculeConstructor,
-	MoleculeFamily,
-	MoleculeFamilyToken,
 	MoleculeToken,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
@@ -82,12 +79,9 @@ export function deposit<T>(
 	state: ReadableFamily<T, any>,
 ): ReadableFamilyToken<T, any>
 
-export function deposit<M extends MoleculeConstructor>(
-	state: MoleculeFamily<M>,
-): MoleculeFamilyToken<M>
-export function deposit<M extends MoleculeConstructor>(
-	state: Molecule<M>,
-): MoleculeToken<M>
+export function deposit<K extends Canonical>(
+	state: Molecule<K>,
+): MoleculeToken<K>
 
 export function deposit<T extends Func>(
 	state: Transaction<T>,
@@ -100,12 +94,10 @@ export function deposit(
 export function deposit(
 	state:
 		| Molecule<any>
-		| MoleculeFamily<any>
 		| ReadableFamily<any, any>
 		| ReadableState<any>
 		| Transaction<Func>,
 ):
-	| MoleculeFamilyToken<any>
 	| MoleculeToken<any>
 	| ReadableFamilyToken<any, any>
 	| ReadableToken<any>
@@ -114,12 +106,10 @@ export function deposit(
 export function deposit(
 	state:
 		| Molecule<any>
-		| MoleculeFamily<any>
 		| ReadableFamily<any, any>
 		| ReadableState<any>
 		| Transaction<Func>,
 ):
-	| MoleculeFamilyToken<any>
 	| MoleculeToken<any>
 	| ReadableFamilyToken<any, any>
 	| ReadableToken<any>

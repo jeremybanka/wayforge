@@ -1,7 +1,4 @@
 import type {
-	MoleculeConstructor,
-	MoleculeFamilyToken,
-	MoleculeToken,
 	ReadableFamilyToken,
 	ReadableToken,
 	setState,
@@ -14,7 +11,6 @@ import type { seekState } from "atom.io/immortal"
 import type { Json } from "atom.io/json"
 
 import { findInStore, seekInStore } from "../families"
-import { getFromStore } from "../get-state"
 import { readOrComputeValue } from "../get-state/read-or-compute-value"
 import { newest } from "../lineage"
 import { getJsonToken } from "../mutable"
@@ -31,37 +27,26 @@ export const registerSelector = (
 ): SetterToolkit => ({
 	get: (
 		...params:
-			| [MoleculeFamilyToken<any>, Json.Serializable]
-			| [MoleculeToken<MoleculeConstructor>]
 			| [ReadableFamilyToken<any, any>, Json.Serializable]
 			| [ReadableToken<any>]
 	) => {
 		const target = newest(store)
-		let dependency: MoleculeToken<MoleculeConstructor> | ReadableToken<any>
+		let dependency: ReadableToken<any>
 
 		if (params.length === 2) {
 			const [family, key] = params
-			switch (family.type) {
-				case `molecule_family`:
-					return getFromStore(store, family, key)
-				default:
-					if (store.config.lifespan === `ephemeral`) {
-						dependency = findInStore(store, family, key)
-					} else {
-						const maybeDependency = seekInStore(store, family, key)
-						if (maybeDependency) {
-							dependency = maybeDependency
-						} else {
-							throw new NotFoundError(family, key, store)
-						}
-					}
+			if (store.config.lifespan === `ephemeral`) {
+				dependency = findInStore(store, family, key)
+			} else {
+				const maybeDependency = seekInStore(store, family, key)
+				if (maybeDependency) {
+					dependency = maybeDependency
+				} else {
+					throw new NotFoundError(family, key, store)
+				}
 			}
 		} else {
 			;[dependency] = params
-		}
-
-		if (dependency.type === `molecule`) {
-			return getFromStore(store, dependency)
 		}
 
 		const dependencyState = withdraw(dependency, store)

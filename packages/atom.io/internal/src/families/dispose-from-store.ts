@@ -1,24 +1,12 @@
-import type {
-	MoleculeConstructor,
-	MoleculeFamilyToken,
-	MoleculeKey,
-	MoleculeToken,
-	ReadableFamilyToken,
-	ReadableToken,
-} from "atom.io"
+import type { ReadableFamilyToken, ReadableToken } from "atom.io"
 import type { Canonical } from "atom.io/json"
 
 import { disposeAtom } from "../atom"
-import { disposeMolecule } from "../molecule/dispose-molecule"
 import { disposeSelector } from "../selector"
-import { counterfeit, type Store, withdraw } from "../store"
+import { type Store, withdraw } from "../store"
 import { findInStore } from "./find-in-store"
-import { seekInStore } from "./seek-in-store"
 
-export function disposeFromStore(
-	store: Store,
-	token: MoleculeToken<any> | ReadableToken<any>,
-): void
+export function disposeFromStore(store: Store, token: ReadableToken<any>): void
 
 export function disposeFromStore<K extends Canonical>(
 	store: Store,
@@ -26,20 +14,13 @@ export function disposeFromStore<K extends Canonical>(
 	key: K,
 ): void
 
-export function disposeFromStore<M extends MoleculeConstructor>(
-	store: Store,
-	token: MoleculeFamilyToken<M>,
-	key: MoleculeKey<M>,
-): void
-
 export function disposeFromStore(
 	store: Store,
 	...params:
-		| [token: MoleculeFamilyToken<any>, key: MoleculeKey<any>]
-		| [token: MoleculeToken<any> | ReadableToken<any>]
 		| [token: ReadableFamilyToken<any, any>, key: Canonical]
+		| [token: ReadableToken<any>]
 ): void {
-	let token: MoleculeToken<any> | ReadableToken<any>
+	let token: ReadableToken<any>
 	let fullKey: string
 	if (params.length === 1) {
 		token = params[0]
@@ -47,10 +28,7 @@ export function disposeFromStore(
 	} else {
 		const family = params[0]
 		const key = params[1]
-		const maybeToken =
-			family.type === `molecule_family`
-				? (seekInStore(store, family, key) ?? counterfeit(family, key))
-				: findInStore(store, family, key)
+		const maybeToken = findInStore(store, family, key)
 		token = maybeToken
 	}
 	try {
@@ -78,9 +56,6 @@ export function disposeFromStore(
 		case `selector`:
 		case `readonly_selector`:
 			disposeSelector(token, store)
-			break
-		case `molecule`:
-			disposeMolecule(token, store)
 			break
 	}
 

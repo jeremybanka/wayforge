@@ -1,10 +1,8 @@
 import type {
 	AtomToken,
 	Logger,
-	MoleculeCreationModern,
-	MoleculeDisposalModern,
-	MoleculeFamily,
-	MoleculeToken,
+	MoleculeCreation,
+	MoleculeDisposal,
 	ReadonlySelectorToken,
 	TimelineToken,
 	TransactionToken,
@@ -102,8 +100,6 @@ export class Store implements Lineage {
 	public disposalTraces = new CircularBuffer<{ key: string; trace: string }>(100)
 
 	public molecules = new Map<string, Molecule<any>>()
-	public moleculeFamilies = new Map<string, MoleculeFamily<any>>()
-	public moleculeInProgress: string | null = null
 	public miscResources = new Map<string, Disposable>()
 
 	public on = {
@@ -121,11 +117,8 @@ export class Store implements Lineage {
 			null,
 		),
 		operationClose: new Subject<OperationProgress>(),
-		moleculeCreationStart: new Subject<
-			MoleculeCreationModern | MoleculeToken<any>
-		>(),
-		moleculeCreationDone: new Subject<MoleculeToken<any>>(),
-		moleculeDisposal: new Subject<MoleculeDisposalModern | MoleculeToken<any>>(),
+		moleculeCreation: new Subject<MoleculeCreation>(),
+		moleculeDisposal: new Subject<MoleculeDisposal>(),
 	}
 	public operation: OperationProgress = { open: false }
 

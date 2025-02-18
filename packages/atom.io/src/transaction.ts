@@ -1,12 +1,4 @@
-import type {
-	getState,
-	makeMolecule,
-	MoleculeConstructor,
-	MoleculeFamilyToken,
-	MoleculeParams,
-	MoleculeToken,
-	setState,
-} from "atom.io"
+import type { getState, setState } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
 import type { seekState } from "atom.io/immortal"
 import type { EnvironmentData, Func, Transceiver } from "atom.io/internal"
@@ -43,43 +35,24 @@ export type StateDisposal<Token extends ReadableToken<any>> = {
 	value?: TokenType<Token>
 }
 
-export type MoleculeCreationClassic<M extends MoleculeConstructor> = {
-	type: `molecule_creation`
-	subType: `classic`
-	token: MoleculeToken<M>
-	family: MoleculeFamilyToken<M>
-	context: MoleculeToken<any>[]
-	params: MoleculeParams<M>
-}
-export type MoleculeCreationModern = {
+export type MoleculeCreation = {
 	type: `molecule_creation`
 	subType: `modern`
 	key: Canonical
 	provenance: Canonical
 }
-export type MoleculeCreation<M extends MoleculeConstructor> =
-	| MoleculeCreationClassic<M>
-	| MoleculeCreationModern
-export type MoleculeDisposalClassic = {
-	type: `molecule_disposal`
-	subType: `classic`
-	token: MoleculeToken<any>
-	family: MoleculeFamilyToken<any>
-	context: MoleculeToken<any>[]
-	values: [key: string, value: any][]
-}
-export type MoleculeDisposalModern = {
+
+export type MoleculeDisposal = {
 	type: `molecule_disposal`
 	subType: `modern`
 	key: Canonical
 	provenance: Canonical
 	values: [key: string, value: any][]
 }
-export type MoleculeDisposal = MoleculeDisposalClassic | MoleculeDisposalModern
 
 export type TransactionUpdateContent =
 	| KeyedStateUpdate<unknown>
-	| MoleculeCreation<any>
+	| MoleculeCreation
 	| MoleculeDisposal
 	| StateCreation<ReadableToken<unknown>>
 	| StateDisposal<ReadableToken<unknown>>
@@ -113,7 +86,6 @@ export type ActorToolkit = Readonly<{
 	json: <T extends Transceiver<any>, J extends Json.Serializable>(
 		state: MutableAtomToken<T, J>,
 	) => WritableSelectorToken<J>
-	make: typeof makeMolecule
 	dispose: typeof disposeState
 	run: typeof runTransaction
 	env: () => EnvironmentData

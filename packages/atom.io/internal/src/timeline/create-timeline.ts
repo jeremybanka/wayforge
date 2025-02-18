@@ -2,10 +2,8 @@ import type {
 	AtomFamilyToken,
 	AtomToken,
 	FamilyMetadata,
-	MoleculeConstructor,
 	MoleculeCreation,
 	MoleculeDisposal,
-	MoleculeFamilyToken,
 	ReadableToken,
 	StateCreation,
 	StateDisposal,
@@ -55,8 +53,8 @@ export type TimelineStateCreation<T extends ReadableToken<any>> = Flat<
 export type TimelineStateDisposal<T extends ReadableToken<any>> = Flat<
 	StateDisposal<T> & { timestamp: number }
 >
-export type TimelineMoleculeCreation<M extends MoleculeConstructor> = Flat<
-	MoleculeCreation<M> & { timestamp: number }
+export type TimelineMoleculeCreation = Flat<
+	MoleculeCreation & { timestamp: number }
 >
 export type TimelineMoleculeDisposal = Flat<
 	MoleculeDisposal & { timestamp: number }
@@ -157,24 +155,24 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 				}
 				break
 
-			case `molecule_family`:
-				{
-					const familyToken: MoleculeFamilyToken<any> = initialTopic
-					const familyKey = familyToken.key
-					const existingTimelineKey =
-						target.timelineTopics.getRelatedKey(familyKey)
-					if (existingTimelineKey) {
-						store.logger.error(
-							`❌`,
-							`timeline`,
-							options.key,
-							`Failed to add molecule family "${familyKey}" because it already belongs to timeline "${existingTimelineKey}"`,
-						)
-						continue
-					}
-					addMoleculeFamilyToTimeline(familyToken, tl, store)
-				}
-				break
+			// case `molecule_family`:
+			// 	{
+			// 		const familyToken: MoleculeFamilyToken<any> = initialTopic
+			// 		const familyKey = familyToken.key
+			// 		const existingTimelineKey =
+			// 			target.timelineTopics.getRelatedKey(familyKey)
+			// 		if (existingTimelineKey) {
+			// 			store.logger.error(
+			// 				`❌`,
+			// 				`timeline`,
+			// 				options.key,
+			// 				`Failed to add molecule family "${familyKey}" because it already belongs to timeline "${existingTimelineKey}"`,
+			// 			)
+			// 			continue
+			// 		}
+			// 		addMoleculeFamilyToTimeline(familyToken, tl, store)
+			// 	}
+			// 	break
 		}
 	}
 
@@ -351,107 +349,107 @@ function addAtomFamilyToTimeline(
 	}
 }
 
-function addMoleculeFamilyToTimeline(
-	familyToken: MoleculeFamilyToken<any>,
-	tl: Timeline<any>,
-	store: Store,
-): void {
-	store.timelineTopics.set(
-		{ topicKey: familyToken.key, timelineKey: tl.key },
-		{ topicType: `molecule_family` },
-	)
-	const family = store.moleculeFamilies.get(familyToken.key)
-	if (family) {
-		tl.subscriptions.set(
-			familyToken.key,
-			family.subject.subscribe(`timeline:${tl.key}`, (creationOrDisposal) => {
-				store.logger.info(
-					`🐞`,
-					`timeline`,
-					tl.key,
-					`got a molecule creation or disposal`,
-					creationOrDisposal,
-				)
-				if (creationOrDisposal.subType === `classic`) {
-					switch (creationOrDisposal.type) {
-						case `molecule_creation`:
-							{
-								store.timelineTopics.set(
-									{
-										topicKey: creationOrDisposal.token.key,
-										timelineKey: tl.key,
-									},
-									{ topicType: `molecule` },
-								)
-								const txUpdateInProgress =
-									newest(store).on.transactionApplying.state?.update
-								if (txUpdateInProgress) {
-									joinTransaction(tl, txUpdateInProgress, store)
-								} else if (tl.timeTraveling === null) {
-									const event = Object.assign(creationOrDisposal, {
-										timestamp: Date.now(),
-									})
-									tl.history.push(event)
-									tl.at = tl.history.length
-									tl.subject.next(event)
-								}
-								const molecule = withdraw(creationOrDisposal.token, store)
+// function addMoleculeFamilyToTimeline(
+// 	familyToken: MoleculeFamilyToken<any>,
+// 	tl: Timeline<any>,
+// 	store: Store,
+// ): void {
+// 	store.timelineTopics.set(
+// 		{ topicKey: familyToken.key, timelineKey: tl.key },
+// 		{ topicType: `molecule_family` },
+// 	)
+// 	const family = store.moleculeFamilies.get(familyToken.key)
+// 	if (family) {
+// 		tl.subscriptions.set(
+// 			familyToken.key,
+// 			family.subject.subscribe(`timeline:${tl.key}`, (creationOrDisposal) => {
+// 				store.logger.info(
+// 					`🐞`,
+// 					`timeline`,
+// 					tl.key,
+// 					`got a molecule creation or disposal`,
+// 					creationOrDisposal,
+// 				)
+// 				if (creationOrDisposal.subType === `classic`) {
+// 					switch (creationOrDisposal.type) {
+// 						case `molecule_creation`:
+// 							{
+// 								store.timelineTopics.set(
+// 									{
+// 										topicKey: creationOrDisposal.token.key,
+// 										timelineKey: tl.key,
+// 									},
+// 									{ topicType: `molecule` },
+// 								)
+// 								const txUpdateInProgress =
+// 									newest(store).on.transactionApplying.state?.update
+// 								if (txUpdateInProgress) {
+// 									joinTransaction(tl, txUpdateInProgress, store)
+// 								} else if (tl.timeTraveling === null) {
+// 									const event = Object.assign(creationOrDisposal, {
+// 										timestamp: Date.now(),
+// 									})
+// 									tl.history.push(event)
+// 									tl.at = tl.history.length
+// 									tl.subject.next(event)
+// 								}
+// 								const molecule = withdraw(creationOrDisposal.token, store)
 
-								for (const token of molecule.tokens.values()) {
-									switch (token.type) {
-										case `atom`:
-										case `mutable_atom`:
-											addAtomToTimeline(token, tl, store)
-											break
-									}
-								}
-								tl.subscriptions.set(
-									molecule.key,
-									molecule.subject.subscribe(
-										`timeline:${tl.key}`,
-										(stateCreationOrDisposal) => {
-											handleStateLifecycleEvent(
-												stateCreationOrDisposal,
-												tl,
-												store,
-											)
-										},
-									),
-								)
-							}
-							break
-						case `molecule_disposal`:
-							{
-								const txUpdateInProgress =
-									newest(store).on.transactionApplying.state?.update
-								if (txUpdateInProgress) {
-									joinTransaction(tl, txUpdateInProgress, store)
-								} else if (tl.timeTraveling === null) {
-									const event = Object.assign(creationOrDisposal, {
-										timestamp: Date.now(),
-									})
-									tl.history.push(event)
-									tl.at = tl.history.length
-									tl.subject.next(event)
-								}
-								const moleculeKey = stringifyJson(creationOrDisposal.token.key)
+// 								for (const token of molecule.tokens.values()) {
+// 									switch (token.type) {
+// 										case `atom`:
+// 										case `mutable_atom`:
+// 											addAtomToTimeline(token, tl, store)
+// 											break
+// 									}
+// 								}
+// 								tl.subscriptions.set(
+// 									molecule.key,
+// 									molecule.subject.subscribe(
+// 										`timeline:${tl.key}`,
+// 										(stateCreationOrDisposal) => {
+// 											handleStateLifecycleEvent(
+// 												stateCreationOrDisposal,
+// 												tl,
+// 												store,
+// 											)
+// 										},
+// 									),
+// 								)
+// 							}
+// 							break
+// 						case `molecule_disposal`:
+// 							{
+// 								const txUpdateInProgress =
+// 									newest(store).on.transactionApplying.state?.update
+// 								if (txUpdateInProgress) {
+// 									joinTransaction(tl, txUpdateInProgress, store)
+// 								} else if (tl.timeTraveling === null) {
+// 									const event = Object.assign(creationOrDisposal, {
+// 										timestamp: Date.now(),
+// 									})
+// 									tl.history.push(event)
+// 									tl.at = tl.history.length
+// 									tl.subject.next(event)
+// 								}
+// 								const moleculeKey = stringifyJson(creationOrDisposal.token.key)
 
-								tl.subscriptions.get(moleculeKey)?.()
-								tl.subscriptions.delete(moleculeKey)
-								for (const [familyKey] of creationOrDisposal.values) {
-									const stateKey = `${familyKey}(${stringifyJson(moleculeKey)})`
-									tl.subscriptions.get(stateKey)?.()
-									tl.subscriptions.delete(stateKey)
-									store.timelineTopics.delete(stateKey)
-								}
-							}
-							break
-					}
-				}
-			}),
-		)
-	}
-}
+// 								tl.subscriptions.get(moleculeKey)?.()
+// 								tl.subscriptions.delete(moleculeKey)
+// 								for (const [familyKey] of creationOrDisposal.values) {
+// 									const stateKey = `${familyKey}(${stringifyJson(moleculeKey)})`
+// 									tl.subscriptions.get(stateKey)?.()
+// 									tl.subscriptions.delete(stateKey)
+// 									store.timelineTopics.delete(stateKey)
+// 								}
+// 							}
+// 							break
+// 					}
+// 				}
+// 			}),
+// 		)
+// 	}
+// }
 
 function joinTransaction(
 	tl: Timeline<any>,
@@ -523,14 +521,7 @@ function filterTransactionUpdates(
 					break
 				case `molecule_creation`:
 				case `molecule_disposal`:
-					switch (updateFromTx.subType) {
-						case `classic`:
-							key = updateFromTx.token.key
-							break
-						case `modern`:
-							return true // always include
-					}
-					break
+					return true // always include
 				default:
 					key = updateFromTx.key
 					familyKey = updateFromTx.family?.key

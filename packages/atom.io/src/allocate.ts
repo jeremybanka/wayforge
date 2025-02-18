@@ -9,10 +9,7 @@ import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import { makeRootMoleculeInStore } from "./molecule"
-import type {
-	MoleculeCreationModern,
-	MoleculeDisposalModern,
-} from "./transaction"
+import type { MoleculeCreation, MoleculeDisposal } from "./transaction"
 
 export const $provenance = Symbol(`provenance`)
 export type Claim<
@@ -83,7 +80,7 @@ export function allocateIntoStore<
 			aboveMolecule.below.set(molecule.stringKey, molecule)
 		}
 
-		const creationEvent: MoleculeCreationModern = {
+		const creationEvent: MoleculeCreation = {
 			type: `molecule_creation`,
 			subType: `modern`,
 			key: molecule.key,
@@ -95,7 +92,7 @@ export function allocateIntoStore<
 		if (isTransaction) {
 			target.transactionMeta.update.updates.push(creationEvent)
 		} else {
-			target.on.moleculeCreationStart.next(creationEvent)
+			target.on.moleculeCreation.next(creationEvent)
 		}
 	} catch (thrown) {
 		if (thrown instanceof Error) {
@@ -159,7 +156,7 @@ export function deallocateFromStore<
 	}
 	molecule.below.clear()
 
-	const disposalEvent: MoleculeDisposalModern = {
+	const disposalEvent: MoleculeDisposal = {
 		type: `molecule_disposal`,
 		subType: `modern`,
 		key: molecule.key,

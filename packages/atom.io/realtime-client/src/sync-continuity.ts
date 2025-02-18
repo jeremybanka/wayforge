@@ -7,7 +7,6 @@ import {
 	getEpochNumberOfContinuity,
 	getFromStore,
 	getJsonToken,
-	growMoleculeInStore,
 	ingestTransactionUpdate,
 	initFamilyMemberInStore,
 	isRootStore,
@@ -325,7 +324,7 @@ export function syncContinuity<F extends Func>(
 				k = x
 			} else {
 				v = x
-				upsertState(k, v, store)
+				upsertState(store, continuityKey, k, v)
 			}
 			i++
 		}
@@ -350,6 +349,7 @@ export function syncContinuity<F extends Func>(
 
 function upsertState<T>(
 	store: Store,
+	continuityKey: string,
 	token: AtomIO.WritableToken<T>,
 	value: T,
 ): void {
@@ -357,10 +357,14 @@ function upsertState<T>(
 		const family = store.families.get(token.family.key)
 		if (family) {
 			const molecule = store.molecules.get(token.family.subKey)
-			if (molecule) {
-				growMoleculeInStore(molecule, family, store)
-			} else if (store.config.lifespan === `immortal`) {
-				throw new Error(`No molecule found for key "${token.family.subKey}"`)
+			if (!molecule && store.config.lifespan === `immortal`) {
+				store.logger.error(
+					`❌`,
+					`continuity`,
+					continuityKey,
+					`No molecule found for key "${token.family.subKey}"`,
+				)
+				return
 			}
 			initFamilyMemberInStore(store, family, parseJson(token.family.subKey))
 		}
