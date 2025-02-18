@@ -1,6 +1,7 @@
 import type { Each, Store } from "atom.io/internal"
 import {
 	disposeFromStore,
+	IMPLICIT,
 	isChildStore,
 	Molecule,
 	newest,
@@ -8,6 +9,7 @@ import {
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
+import type { MoleculeToken } from "./molecule"
 import { makeRootMoleculeInStore } from "./molecule"
 import type { MoleculeCreation, MoleculeDisposal } from "./transaction"
 
@@ -178,22 +180,23 @@ export function deallocateFromStore<
 	}
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export function realm<H extends Hierarchy>(store: Store) {
-	const root = makeRootMoleculeInStore(`root`, store)
-	return {
-		root,
-		allocate: <V extends Vassal<H>, A extends Above<V, H>>(
-			provenance: A,
-			key: V,
-		): Claim<H, V, A> => {
-			return allocateIntoStore(store, provenance, key)
-		},
-		deallocate: <V extends Vassal<H>, A extends Above<V, H>>(
-			claim: Claim<H, V, A>,
-		): void => {
-			deallocateFromStore(store, claim)
-		},
+export class Realm<H extends Hierarchy> {
+	public store: Store
+	public root: MoleculeToken<`root`>
+	public constructor(store: Store = IMPLICIT.STORE) {
+		this.store = store
+		this.root = makeRootMoleculeInStore(`root`, store)
+	}
+	public allocate<V extends Vassal<H>, A extends Above<V, H>>(
+		provenance: A,
+		key: V,
+	): Claim<H, V, A> {
+		return allocateIntoStore(this.store, provenance, key)
+	}
+	public deallocate<V extends Vassal<H>, A extends Above<V, H>>(
+		claim: Claim<H, V, A>,
+	): void {
+		deallocateFromStore(this.store, claim)
 	}
 }
 
