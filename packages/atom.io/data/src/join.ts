@@ -39,7 +39,8 @@ import {
 	seekInStore,
 	setIntoStore,
 } from "atom.io/internal"
-import { type Json, stringifyJson } from "atom.io/json"
+import type { Canonical, Json, stringified } from "atom.io/json"
+import { stringifyJson } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
@@ -388,8 +389,14 @@ export class Join<
 		const baseExternalStoreConfiguration: BaseExternalStoreConfiguration = {
 			getRelatedKeys: (key) => getRelatedKeys(this.toolkit, key),
 			addRelation: (a, b) => {
-				this.realm.allocate(options.key, a)
-				this.realm.allocate(options.key, b)
+				this.store.moleculeJoins.set(
+					a as stringified<Canonical> /* 💥 RECONCILE */,
+					options.key,
+				)
+				this.store.moleculeJoins.set(
+					b as stringified<Canonical> /* 💥 RECONCILE */,
+					options.key,
+				)
 				addRelation(this.toolkit, a, b)
 			},
 			deleteRelation: (a, b) => {
@@ -464,8 +471,9 @@ export class Join<
 					if (!bMolecule) {
 						this.realm.allocate(options.key, b)
 					}
-					this.realm.allocate(a, compositeKey)
+					this.realm.allocate(a, compositeKey, `all`)
 					this.realm.claim(b, compositeKey)
+					this.store.moleculeJoins.set(compositeKey, options.key)
 					return compositeKey
 				},
 			},

@@ -2,6 +2,7 @@ import type { ReadableFamilyToken, ReadableToken } from "atom.io"
 import type { Canonical } from "atom.io/json"
 
 import { disposeAtom } from "../atom"
+import { getTrace } from "../get-trace"
 import { disposeSelector } from "../selector"
 import { type Store, withdraw } from "../store"
 import { findInStore } from "./find-in-store"
@@ -57,9 +58,6 @@ export function disposeFromStore(
 			break
 	}
 
-	const { stack } = new Error()
-	if (stack) {
-		const trace = stack?.split(`\n`)?.slice(1)?.join(`\n`)
-		store.disposalTraces.add({ key: token.key, trace })
-	}
+	const trace = getTrace(new Error())
+	store.disposalTraces.add({ key: token.key, trace })
 }

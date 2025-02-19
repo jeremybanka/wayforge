@@ -34,6 +34,7 @@ export const buildTransaction = (
 		atoms: new LazyMap(parent.atoms),
 		atomsThatAreDefault: new Set(parent.atomsThatAreDefault),
 		families: new LazyMap(parent.families),
+		joins: new LazyMap(parent.joins),
 		operation: { open: false },
 		readonlySelectors: new LazyMap(parent.readonlySelectors),
 		timelines: new LazyMap(parent.timelines),
@@ -49,6 +50,15 @@ export const buildTransaction = (
 		defaults: parent.defaults,
 		disposalTraces: store.disposalTraces.copy(),
 		molecules: new LazyMap(parent.molecules),
+		moleculeGraph: new Junction(parent.moleculeGraph.toJSON(), {
+			makeContentKey: parent.moleculeGraph.makeContentKey,
+		}),
+		moleculeData: new Junction(parent.moleculeData.toJSON(), {
+			makeContentKey: parent.moleculeData.makeContentKey,
+		}),
+		moleculeJoins: new Junction(parent.moleculeJoins.toJSON(), {
+			makeContentKey: parent.moleculeJoins.makeContentKey,
+		}),
 		miscResources: new LazyMap(parent.miscResources),
 	}
 	const epoch = getEpochNumberOfAction(key, store)

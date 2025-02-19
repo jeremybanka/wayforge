@@ -184,20 +184,21 @@ describe(`allocate`, () => {
 
 		documentRealm.allocate(`root`, `userGroup::homies`)
 		const documentClaim = createDocument(`userGroup::homies`, `1`)
-		expect(IMPLICIT.STORE.molecules.get(`"document::1"`)?.tokens).toEqual(
-			new Map([
-				[
-					`doc`,
-					{
-						key: `doc("document::1")`,
-						type: `atom`,
-						family: { key: `doc`, subKey: `"document::1"` },
-					},
-				],
-			]),
-		)
+		// expect(IMPLICIT.STORE.molecules.get(`"document::1"`)?.tokens).toEqual(
+		// 	new Map([
+		// 		[
+		// 			`doc`,
+		// 			{
+		// 				key: `doc("document::1")`,
+		// 				type: `atom`,
+		// 				family: { key: `doc`, subKey: `"document::1"` },
+		// 			},
+		// 		],
+		// 	]),
+		// )
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
 		deleteDocument(documentClaim)
+
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
 		undo(documentTimeline)
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
@@ -223,22 +224,27 @@ describe(`allocate`, () => {
 		const anarchy = new Anarchy()
 		anarchy.allocate(`root`, `joshua`)
 		anarchy.allocate(`root`, `lobby`)
-		console.log(`after allocations`)
-		console.log(IMPLICIT.STORE.molecules)
-		console.log(IMPLICIT.STORE.valueMap)
-		const lobbyPlayerState = findRelations(roomPlayers, `lobby`).playerKeyOfRoom
+
+		expect([...IMPLICIT.STORE.molecules.keys()]).toEqual([
+			`"root"`,
+			`"roomPlayers"`,
+			`"joshua"`,
+			`"lobby"`,
+		])
+		expect(IMPLICIT.STORE.valueMap.size).toBe(0)
+
 		editRelations(roomPlayers, (relations) => {
 			relations.set(
 				{ player: `joshua`, room: `lobby` },
 				{ joinedAt: Date.now() },
 			)
 		})
-		console.log(`after editRelations`)
-		console.log(IMPLICIT.STORE.molecules)
-		console.log(IMPLICIT.STORE.valueMap)
+		expect(IMPLICIT.STORE.molecules.size).toBe(5)
+		expect(IMPLICIT.STORE.moleculeGraph.relations.size).toBe(5)
+		expect(IMPLICIT.STORE.valueMap.size).toBe(5)
 		anarchy.deallocate(`lobby`)
-		console.log(`after deallocate`)
-		console.log(IMPLICIT.STORE.molecules)
-		console.log(IMPLICIT.STORE.valueMap)
+		expect(IMPLICIT.STORE.molecules.size).toBe(3)
+		expect(IMPLICIT.STORE.moleculeGraph.relations.size).toBe(3)
+		expect(IMPLICIT.STORE.valueMap.size).toBe(2)
 	})
 })

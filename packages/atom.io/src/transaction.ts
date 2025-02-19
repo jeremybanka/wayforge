@@ -55,7 +55,7 @@ export type MoleculeDisposal = {
 	type: `molecule_disposal`
 	subType: `modern`
 	key: Canonical
-	provenance: Canonical
+	provenance: Canonical[]
 	values: [key: string, value: any][]
 }
 

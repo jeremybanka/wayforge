@@ -12,7 +12,7 @@ export function makeRootMoleculeInStore<K extends Canonical>(
 	key: K,
 	store: Store = IMPLICIT.STORE,
 ): MoleculeToken<K> {
-	const molecule = new Molecule(undefined, key)
+	const molecule = new Molecule(store, undefined, key, `any`)
 	store.molecules.set(stringifyJson(key), molecule)
 	return {
 		key,

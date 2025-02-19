@@ -9,6 +9,7 @@ import { parseJson, stringifyJson } from "atom.io/json"
 
 import {
 	allocateIntoStore,
+	claimWithinStore,
 	deallocateFromStore,
 } from "~/packages/atom.io/src/allocate"
 
@@ -91,14 +92,24 @@ export function ingestMoleculeDisposalEvent(
 			break
 
 		case `oldValue`:
-			// TODO: Handle classic vs modern molecules
-			allocateIntoStore<any, any, any>(store, update.provenance, update.key)
-			for (const [familyKey, value] of update.values) {
-				const family = store.families.get(familyKey)
-				if (family) {
-					findInStore(store, family, update.key)
-					const memberKey = `${familyKey}(${stringifyJson(update.key)})`
-					store.valueMap.set(memberKey, value)
+			{
+				let first = true
+				for (const owner of update.provenance) {
+					if (first) {
+						first = false
+						allocateIntoStore<any, any, any>(store, owner, update.key)
+						continue
+					}
+
+					claimWithinStore<any, any, any>(store, owner, update.key)
+				}
+				for (const [familyKey, value] of update.values) {
+					const family = store.families.get(familyKey)
+					if (family) {
+						findInStore(store, family, update.key)
+						const memberKey = `${familyKey}(${stringifyJson(update.key)})`
+						store.valueMap.set(memberKey, value)
+					}
 				}
 			}
 			break

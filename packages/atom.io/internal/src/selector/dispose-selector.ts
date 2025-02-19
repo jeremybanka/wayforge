@@ -20,7 +20,7 @@ export function disposeSelector(
 	} else {
 		const molecule = target.molecules.get(selector.family.subKey)
 		if (molecule) {
-			molecule.tokens.delete(key)
+			target.moleculeData.delete(selector.family.subKey, selector.family.key)
 		}
 		switch (selectorToken.type) {
 			case `selector`:

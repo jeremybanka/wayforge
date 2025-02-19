@@ -24,15 +24,16 @@ export function disposeAtom(atomToken: AtomToken<unknown>, store: Store): void {
 		atomFamily.subject.next(disposal)
 
 		const isChild = isChildStore(target)
-		let molecule = target.molecules.get(family.subKey)
-		if (molecule && isChild) {
-			const parentMolecule = target.parent.molecules.get(family.subKey)
-			if (parentMolecule === molecule) {
-				molecule = parentMolecule.copy()
-				target.molecules.set(family.subKey, molecule)
-			}
-		}
-		molecule?.tokens.delete(family.key)
+		// let molecule = target.molecules.get(family.subKey)
+		// if (molecule && isChild) {
+		// 	const parentMolecule = target.parent.molecules.get(family.subKey)
+		// 	if (parentMolecule === molecule) {
+		// 		molecule = parentMolecule.copy()
+		// 		target.molecules.set(family.subKey, molecule)
+		// 	}
+		// }
+		// molecule?.tokens.delete(family.key)
+
 		target.atoms.delete(key)
 		target.valueMap.delete(key)
 		target.selectorAtoms.delete(key)

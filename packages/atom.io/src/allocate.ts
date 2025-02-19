@@ -1,13 +1,14 @@
 import type { Each, Store } from "atom.io/internal"
 import {
 	disposeFromStore,
+	findInStore,
 	IMPLICIT,
 	isChildStore,
 	Molecule,
 	newest,
 } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
-import { stringifyJson } from "atom.io/json"
+import { parseJson, stringifyJson } from "atom.io/json"
 
 import type { MoleculeToken } from "./molecule"
 import { makeRootMoleculeInStore } from "./molecule"
@@ -26,12 +27,7 @@ export function allocateIntoStore<
 	H extends Hierarchy,
 	V extends Vassal<H>,
 	A extends Above<V, H>,
->(
-	store: Store,
-	provenance: A,
-	key: V,
-	attachmentStyle?: `all` | `any`,
-): Claim<H, V, A> {
+>(store: Store, provenance: A, key: V, attachmentStyle?: `all` | `any`): V {
 	const stringKey = stringifyJson(key)
 	try {
 		const above: Molecule<any>[] = []
@@ -77,21 +73,19 @@ export function allocateIntoStore<
 				above.push(provenanceMolecule)
 			}
 		}
-		const molecule = new Molecule(above, key)
-		molecule._dependsOn = allocationAttachmentStyle
-
+		const target = newest(store)
+		const molecule = new Molecule(target, above, key, allocationAttachmentStyle)
 		store.molecules.set(stringKey, molecule)
 
-		for (const aboveMolecule of above) {
-			aboveMolecule.below.set(molecule.stringKey, molecule)
-		}
+		// for (const aboveMolecule of above) {
+		// 	aboveMolecule.below.set(molecule.stringKey, molecule)
+		// }
 		const creationEvent: MoleculeCreation = {
 			type: `molecule_creation`,
 			subType: `modern`,
 			key: molecule.key,
 			provenance: provenance as Canonical,
 		}
-		const target = newest(store)
 		const isTransaction =
 			isChildStore(target) && target.transactionMeta.phase === `building`
 		if (isTransaction) {
@@ -127,18 +121,22 @@ export function deallocateFromStore<
 		)
 	}
 
-	for (const join of molecule.joins.values()) {
-		join.relations.delete(molecule.key)
-		join.molecules.delete(molecule.stringKey)
+	const joinKeys = store.moleculeJoins.getRelatedKeys(
+		molecule.key as string /* 💥 RECONCILE */,
+	)
+	if (joinKeys) {
+		for (const joinKey of joinKeys) {
+			const join = store.joins.get(joinKey)
+			if (join) {
+				join.relations.delete(molecule.key)
+				join.molecules.delete(molecule.stringKey) // get rid of
+			}
+		}
 	}
+	store.moleculeJoins.delete(molecule.stringKey)
 
-	let provenance: Canonical
-	if (molecule.above.size === 1) {
-		const above = molecule.above.values().next().value
-		provenance = above.key
-	} else {
-		provenance = [...molecule.above.values()].map(({ key }) => key)
-	}
+	const provenance: Canonical[] = []
+
 	const values: [string, any][] = []
 	const disposalEvent: MoleculeDisposal = {
 		type: `molecule_disposal`,
@@ -153,35 +151,42 @@ export function deallocateFromStore<
 	if (isTransaction) {
 		target.transactionMeta.update.updates.push(disposalEvent)
 	}
-	for (const stateToken of molecule.tokens.values()) {
-		// biome-ignore lint/style/noNonNullAssertion: tokens of molecules must have a family
-		const tokenFamily = stateToken.family!
-		values.push([tokenFamily.key, store.valueMap.get(stateToken.key)])
-	}
-
-	for (const state of molecule.tokens.values()) {
-		disposeFromStore(store, state)
-	}
-	for (const child of molecule.below.values()) {
-		if (child.dependsOn === `all`) {
-			deallocateFromStore<any, any, any>(store, child.key)
-		} else {
-			child.above.delete(molecule.stringKey)
-			if (child.above.size === 0) {
-				deallocateFromStore<any, any, any>(store, child.key)
+	const relatedMolecules = store.moleculeGraph.getRelationEntries({
+		downstreamMoleculeKey: molecule.stringKey,
+	})
+	if (relatedMolecules) {
+		for (const [relatedStringKey, { source }] of relatedMolecules) {
+			if (source === `root`) {
+				provenance.push(relatedStringKey)
+				continue
+			}
+			if (source === molecule.stringKey) {
+				const relatedKey = parseJson(relatedStringKey)
+				deallocateFromStore<any, any, any>(store, relatedKey)
+			} else {
+				provenance.push(source)
 			}
 		}
 	}
-	molecule.below.clear()
+	const familyKeys = target.moleculeData.getRelatedKeys(molecule.stringKey)
+	if (familyKeys) {
+		for (const familyKey of familyKeys) {
+			// biome-ignore lint/style/noNonNullAssertion: tokens of molecules must have a family
+			const family = target.families.get(familyKey)!
+			const token = findInStore(store, family, molecule.key)
+			values.push([family.key, token])
+			disposeFromStore(store, token)
+		}
+	}
+
+	target.moleculeGraph.delete(molecule.stringKey)
+	target.moleculeJoins.delete(molecule.stringKey)
+	target.moleculeData.delete(molecule.stringKey)
 
 	if (!isTransaction) {
 		target.on.moleculeDisposal.next(disposalEvent)
 	}
 	target.molecules.delete(molecule.stringKey)
-
-	for (const parent of molecule.above.values()) {
-		parent.below.delete(molecule.stringKey)
-	}
 }
 export function claimWithinStore<
 	H extends Hierarchy,
@@ -194,7 +199,8 @@ export function claimWithinStore<
 	exclusive?: `exclusive`,
 ): Claim<H, V, A> {
 	const stringKey = stringifyJson(claim)
-	const molecule = store.molecules.get(stringKey)
+	const target = newest(store)
+	const molecule = target.molecules.get(stringKey)
 	if (!molecule) {
 		throw new Error(
 			`Molecule ${stringKey} not found in store "${store.config.name}"`,
@@ -202,21 +208,25 @@ export function claimWithinStore<
 	}
 
 	const newProvenanceKey = stringifyJson(newProvenance as Canonical)
-	const newProvenanceMolecule = store.molecules.get(newProvenanceKey)
+	const newProvenanceMolecule = target.molecules.get(newProvenanceKey)
 	if (!newProvenanceMolecule) {
 		throw new Error(
 			`Molecule ${newProvenanceKey} not found in store "${store.config.name}"`,
 		)
 	}
-	newProvenanceMolecule.below.set(stringKey, molecule)
-	molecule.above.set(stringKey, newProvenanceMolecule)
+
 	if (exclusive) {
-		const oldProvenance = molecule.above.get(stringKey)
-		if (oldProvenance) {
-			oldProvenance.below.delete(stringKey)
-			molecule.above.delete(stringKey)
-		}
+		target.moleculeJoins.delete(stringKey)
 	}
+	target.moleculeGraph.set(
+		{
+			upstreamMoleculeKey: newProvenanceMolecule.stringKey,
+			downstreamMoleculeKey: molecule.stringKey,
+		},
+		{
+			source: newProvenanceMolecule.stringKey,
+		},
+	)
 	return claim as Claim<H, V, A>
 }
 
@@ -231,8 +241,13 @@ export class Realm<H extends Hierarchy> {
 		provenance: A,
 		key: V,
 		attachmentStyle?: `all` | `any`,
-	): Claim<H, V, A> {
-		return allocateIntoStore(this.store, provenance, key, attachmentStyle)
+	): V {
+		return allocateIntoStore<H, V, A>(
+			this.store,
+			provenance,
+			key,
+			attachmentStyle,
+		)
 	}
 	public deallocate<V extends Vassal<H>, A extends Above<V, H>>(
 		claim: Claim<H, V, A>,
