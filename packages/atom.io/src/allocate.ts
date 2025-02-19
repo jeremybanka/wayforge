@@ -326,3 +326,38 @@ export type Mutuals<TK extends TypedKey | TypedKey[], H extends Hierarchy> = {
 			: never
 		: never
 }[keyof H]
+
+export class Anarchy {
+	public store: Store
+	public realm: Realm<any>
+
+	public constructor(store: Store = IMPLICIT.STORE) {
+		this.store = store
+		this.realm = new Realm(store)
+	}
+
+	public allocate(
+		provenance: Canonical,
+		key: Canonical,
+		attachmentStyle?: `all` | `any`,
+	): void {
+		allocateIntoStore<any, any, any>(
+			this.store,
+			provenance,
+			key,
+			attachmentStyle,
+		)
+	}
+
+	public deallocate(key: Canonical): void {
+		deallocateFromStore<any, any, any>(this.store, key)
+	}
+
+	public claim(
+		newProvenance: Canonical,
+		key: Canonical,
+		exclusive?: `exclusive`,
+	): void {
+		claimWithinStore<any, any, any>(this.store, newProvenance, key, exclusive)
+	}
+}

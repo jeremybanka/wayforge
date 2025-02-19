@@ -8,7 +8,6 @@ import {
 } from "atom.io/data"
 import * as Internal from "atom.io/internal"
 import { vitest } from "vitest"
-import { number } from "zod"
 
 import * as Utils from "../../__util__"
 

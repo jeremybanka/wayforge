@@ -12,7 +12,7 @@ import type {
 	SingularTypedKey,
 	Write,
 } from "atom.io"
-import { Realm } from "atom.io"
+import { Anarchy, Realm } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
 import type { seekState } from "atom.io/immortal"
 import type {
@@ -204,7 +204,7 @@ export class Join<
 	}
 
 	public store: Store
-	public realm: Realm<any>
+	public realm: Anarchy
 	public alternates: Map<
 		string,
 		Join<ASide, AType, BSide, BType, Cardinality, Content>
@@ -235,7 +235,7 @@ export class Join<
 		type AnyKey = AType & BType
 
 		this.store = store
-		this.realm = new Realm(store)
+		this.realm = new Anarchy(store)
 		this.options = options
 		this.defaultContent = defaultContent
 		this.alternates = new Map()
@@ -284,6 +284,9 @@ export class Join<
 			a,
 			b,
 		) => {
+			if (!this.store.molecules.has(stringifyJson(a))) {
+				this.realm.allocate(options.key, a)
+			}
 			set(relatedKeysAtoms, a, (aKeys) => aKeys.add(b))
 			set(relatedKeysAtoms, b, (bKeys) => bKeys.add(a))
 		}

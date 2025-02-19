@@ -1,7 +1,7 @@
-import { randomUUID } from "node:crypto"
-
 import type { Above, Below, Hierarchy, Logger, Mutuals, Vassal } from "atom.io"
 import {
+	allocateIntoStore,
+	Anarchy,
 	atomFamily,
 	disposeState,
 	getState,
@@ -9,11 +9,11 @@ import {
 	redo,
 	runTransaction,
 	setState,
-	T$,
 	timeline,
 	transaction,
 	undo,
 } from "atom.io"
+import { editRelations, findRelations, join } from "atom.io/data"
 import { clearStore, IMPLICIT } from "atom.io/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
@@ -123,8 +123,6 @@ describe(`allocate`, () => {
 
 		gameRealm.deallocate(gameClaim)
 
-		console.log(IMPLICIT.STORE.molecules)
-
 		gameRealm.allocate(playerClaim, `item::aaa`)
 		gameRealm.allocate(gameClaim, `item::aaa`)
 		gameRealm.allocate(
@@ -186,7 +184,6 @@ describe(`allocate`, () => {
 
 		documentRealm.allocate(`root`, `userGroup::homies`)
 		const documentClaim = createDocument(`userGroup::homies`, `1`)
-		console.log(`DOCUMENT CREATED --------------------------------------------`)
 		expect(IMPLICIT.STORE.molecules.get(`"document::1"`)?.tokens).toEqual(
 			new Map([
 				[
@@ -200,56 +197,48 @@ describe(`allocate`, () => {
 			]),
 		)
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
-		// console.log(IMPLICIT.STORE.timelines.get(`documentTimeline`)?.history)
-		// console.log(
-		// 	IMPLICIT.STORE.timelines.get(`documentTimeline`)?.history[0].updates,
-		// )
-		console.log(IMPLICIT.STORE.valueMap)
 		deleteDocument(documentClaim)
-		console.log(`DOCUMENT DELETED --------------------------------------------`)
-		console.log(IMPLICIT.STORE.valueMap)
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
-
-		console.log(
-			`UNDO DOCUMENT DELETE --------------------------------------------`,
+		undo(documentTimeline)
+		expect(IMPLICIT.STORE.molecules.size).toBe(3)
+		undo(documentTimeline)
+		expect(IMPLICIT.STORE.molecules.size).toBe(2)
+		redo(documentTimeline)
+		expect(IMPLICIT.STORE.molecules.size).toBe(3)
+		redo(documentTimeline)
+		expect(IMPLICIT.STORE.molecules.size).toBe(2)
+	})
+	test(`join`, () => {
+		const roomPlayers = join(
+			{
+				key: `roomPlayers`,
+				between: [`room`, `player`],
+				cardinality: `1:1`,
+				isAType: (input): input is `arena` | `lobby` =>
+					[`lobby`, `arena`].includes(input),
+				isBType: (input): input is `joshua` => input === `joshua`,
+			},
+			{ joinedAt: Number.NaN },
 		)
-		const at = IMPLICIT.STORE.timelines.get(`documentTimeline`)?.at
-		if (at) {
-			console.log(
-				at,
-				IMPLICIT.STORE.timelines.get(`documentTimeline`)?.history.length,
-				IMPLICIT.STORE.timelines.get(`documentTimeline`)?.history[at - 1],
+		const anarchy = new Anarchy()
+		anarchy.allocate(`root`, `joshua`)
+		anarchy.allocate(`root`, `lobby`)
+		console.log(`after allocations`)
+		console.log(IMPLICIT.STORE.molecules)
+		console.log(IMPLICIT.STORE.valueMap)
+		const lobbyPlayerState = findRelations(roomPlayers, `lobby`).playerKeyOfRoom
+		editRelations(roomPlayers, (relations) => {
+			relations.set(
+				{ player: `joshua`, room: `lobby` },
+				{ joinedAt: Date.now() },
 			)
-		}
-		undo(documentTimeline)
+		})
+		console.log(`after editRelations`)
+		console.log(IMPLICIT.STORE.molecules)
 		console.log(IMPLICIT.STORE.valueMap)
-		expect(IMPLICIT.STORE.molecules.size).toBe(3)
-		console.log(
-			`UNDOING DOCUMENT CREATE --------------------------------------------`,
-		)
-		undo(documentTimeline)
-		console.log(
-			`UNDID DOCUMENT CREATE --------------------------------------------`,
-		)
+		anarchy.deallocate(`lobby`)
+		console.log(`after deallocate`)
+		console.log(IMPLICIT.STORE.molecules)
 		console.log(IMPLICIT.STORE.valueMap)
-		expect(IMPLICIT.STORE.molecules.size).toBe(2)
-		console.log(
-			`REDOING DOCUMENT CREATE --------------------------------------------`,
-		)
-		redo(documentTimeline)
-		console.log(
-			`REDID DOCUMENT CREATE --------------------------------------------`,
-		)
-		console.log(IMPLICIT.STORE.valueMap)
-		expect(IMPLICIT.STORE.molecules.size).toBe(3)
-		console.log(
-			`REDO DOCUMENT DELETE --------------------------------------------`,
-		)
-		redo(documentTimeline)
-		console.log(
-			`REDID DOCUMENT DELETE --------------------------------------------`,
-		)
-		console.log(IMPLICIT.STORE.valueMap)
-		expect(IMPLICIT.STORE.molecules.size).toBe(2)
 	})
 })
