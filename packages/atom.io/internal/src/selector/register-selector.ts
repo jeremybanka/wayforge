@@ -35,16 +35,7 @@ export const registerSelector = (
 
 		if (params.length === 2) {
 			const [family, key] = params
-			if (store.config.lifespan === `ephemeral`) {
-				dependency = findInStore(store, family, key)
-			} else {
-				const maybeDependency = seekInStore(store, family, key)
-				if (maybeDependency) {
-					dependency = maybeDependency
-				} else {
-					throw new NotFoundError(family, key, store)
-				}
-			}
+			dependency = findInStore(store, family, key)
 		} else {
 			;[dependency] = params
 		}
