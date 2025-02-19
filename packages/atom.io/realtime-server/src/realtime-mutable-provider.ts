@@ -32,7 +32,8 @@ export function realtimeMutableProvider({
 		}
 
 		const fillSubRequest = () => {
-			socket.emit(`init:${token.key}`, getFromStore(store, jsonToken))
+			const jsonValue = getFromStore(store, jsonToken)
+			socket.emit(`init:${token.key}`, jsonValue)
 			unsubscribeFromStateUpdates = subscribeToState(
 				trackerToken,
 				({ newValue }) => {
@@ -52,3 +53,5 @@ export function realtimeMutableProvider({
 		}
 	}
 }
+// perspectiveAliases/relatedKeys("T$--perspective==__jane-1__++user::__jane-1__")
+// perspectiveAliases/relatedKeys("T$--perspective==__jane-1__++user::__jane-1__")

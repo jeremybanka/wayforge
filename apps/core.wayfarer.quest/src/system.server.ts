@@ -28,7 +28,7 @@ pipe(
 				const socketKey = `socket::${socket.id}` satisfies RTS.SocketKey
 				const socketState = findState(RTS.socketAtoms, socketKey)
 				setState(socketState, socket)
-				const userKey = `user::${username}` satisfies RTS.UserKey
+				const userKey = `user::__${username}__` satisfies RTS.UserKey<RT.Actual>
 				editRelations(RTS.usersOfSockets, (relations) => {
 					relations.set(userKey, socketKey)
 				})

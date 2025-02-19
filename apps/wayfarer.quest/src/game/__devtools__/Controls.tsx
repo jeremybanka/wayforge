@@ -7,10 +7,9 @@ import { button } from "wayfarer.quest/components/<button>"
 import comic from "wayfarer.quest/components/comic.module.scss"
 import { myRoomKeyState } from "wayfarer.quest/services/store/my-room"
 
-import {
-	spawnClassicDeckTX,
-	spawnHandTX,
-} from "~/apps/core.wayfarer.quest/src/store/game"
+import { spawnClassicDeckTX } from "~/apps/core.wayfarer.quest/src/store/game/card-game-actions/spawn-classic-deck"
+import { spawnHandTX } from "~/apps/core.wayfarer.quest/src/store/game/card-game-actions/spawn-hand"
+import type { CardKey } from "~/apps/core.wayfarer.quest/src/store/game/card-game-stores/cards-store"
 
 import scss from "./Controls.module.scss"
 
@@ -25,7 +24,7 @@ export const Controls: FC = () => {
 				<button.curledLeft
 					className={comic.class}
 					onClick={() => {
-						const groupId = nanoid(5)
+						const groupId = `card_group:hand::${nanoid(5)}` as const
 						spawnHand(myId, groupId)
 					}}
 				>
@@ -36,8 +35,10 @@ export const Controls: FC = () => {
 				className={comic.class}
 				onClick={() => {
 					if (myRoomId) {
-						const deckId = nanoid(5)
-						const cardIds = Array.from({ length: 52 }).map(() => nanoid(5))
+						const deckId = `card_group:deck::${nanoid(5)}` as const
+						const cardIds = Array.from({ length: 52 }).map<CardKey>(
+							() => `card::$$${nanoid(5)}$$`,
+						)
 						spawnClassicDeck(deckId, cardIds)
 					} else {
 						console.error(`Tried to spawn a deck without being in a room.`)

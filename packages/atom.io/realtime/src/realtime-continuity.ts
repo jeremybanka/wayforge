@@ -1,18 +1,34 @@
 import type {
 	AtomFamilyToken,
 	AtomToken,
+	Compound,
+	MutableAtomFamilyToken,
+	MutableAtomToken,
 	ReadableFamilyToken,
 	ReadableToken,
-	TokenType,
+	ReadonlySelectorFamilyToken,
+	RegularAtomFamilyToken,
+	RegularAtomToken,
+	Tag,
 	TransactionToken,
 } from "atom.io"
+import type { Transceiver } from "atom.io/internal"
 import {
 	assignTransactionToContinuity,
+	getUpdateFamily,
 	IMPLICIT,
 	setEpochNumberOfContinuity,
 } from "atom.io/internal"
-import type { Canonical } from "atom.io/json"
+import type { Json, JsonIO } from "atom.io/json"
+import { fromEntries } from "atom.io/json"
 import type { UserKey } from "atom.io/realtime-server"
+
+import type {
+	Actual,
+	AnyAliasKey,
+	MaskKey,
+	ToActual,
+} from "./realtime-occlusion-store"
 
 /* eslint-disable no-console */
 
@@ -33,93 +49,328 @@ export class InvariantMap<K, V> extends Map<K, V> {
 	}
 }
 
-export type PerspectiveToken<F extends AtomFamilyToken<any>> = {
-	type: `realtime_perspective`
-	resourceAtoms: F
-	viewAtoms: ReadableFamilyToken<ReadableToken<TokenType<F>>[], UserKey>
-}
-
 export type ContinuityToken = {
 	readonly type: `continuity`
 	readonly key: string
-	readonly globals: AtomToken<any>[]
-	readonly actions: TransactionToken<any>[]
-	readonly perspectives: PerspectiveToken<AtomFamilyToken<any, Canonical>>[]
+	readonly actions: TransactionToken<JsonIO>[]
+	readonly singletonStates: AtomToken<any, any>[]
+	readonly singletonStatesMasked: MaskedSingletonResourceToken[]
+	readonly dynamicStates: DynamicToken<any>[]
+	readonly dynamicStatesMasked: MaskedDynamicToken<any>[]
+	readonly perspectives: PerspectiveToken<AnyAliasKey>[]
+	readonly masksPerFamily: { [key: string]: MaskData }
 }
 
-export class SyncGroup {
+export type MutableMaskToken<
+	K extends AnyAliasKey,
+	J extends Json.Serializable = Json.Serializable,
+	S extends Json.Serializable = Json.Serializable,
+	BaseStates extends MutableAtomFamilyToken<
+		Transceiver<S>,
+		J,
+		string
+	> = MutableAtomFamilyToken<Transceiver<S>, J, string>,
+	MaskedStates extends ReadonlySelectorFamilyToken<
+		any,
+		string
+	> = ReadonlySelectorFamilyToken<any, string>,
+	SignalMaskedStates extends ReadonlySelectorFamilyToken<
+		any,
+		string
+	> = ReadonlySelectorFamilyToken<any, string>,
+> = [
+	baseStates: BaseStates extends MutableAtomFamilyToken<
+		Transceiver<S>,
+		J,
+		infer BaseKey
+	>
+		? ToActual<K> extends BaseKey
+			? BaseStates
+			: never
+		: never,
+	jsonMask: MaskedStates extends ReadonlySelectorFamilyToken<any, infer JsonKey>
+		? MaskKey<ToActual<K>> extends JsonKey
+			? MaskedStates
+			: never
+		: never,
+	signalMask: SignalMaskedStates extends ReadonlySelectorFamilyToken<
+		any,
+		infer SignalKey
+	>
+		? MaskKey<ToActual<K>> extends SignalKey
+			? SignalMaskedStates
+			: never
+		: never,
+]
+export type RegularMaskToken<
+	K extends AnyAliasKey,
+	BaseStates extends RegularAtomFamilyToken<
+		any,
+		K | ToActual<K>
+	> = RegularAtomFamilyToken<any, K | ToActual<K>>,
+	MaskedStates extends ReadonlySelectorFamilyToken<
+		any,
+		string
+	> = ReadonlySelectorFamilyToken<
+		any,
+		Compound<Tag<`mask`>, UserKey<Actual>, ToActual<K>>
+	>,
+> = [
+	baseStates: BaseStates extends RegularAtomFamilyToken<any, infer BaseKey>
+		? ToActual<K> extends BaseKey
+			? BaseStates
+			: never
+		: never,
+	maskStates: MaskedStates extends ReadonlySelectorFamilyToken<any, infer Masked>
+		? MaskKey<ToActual<K>> extends Masked
+			? MaskedStates
+			: never
+		: never,
+]
+
+export type AnyMaskToken<K extends AnyAliasKey> =
+	| MutableMaskToken<K>
+	| RegularMaskToken<K>
+export type MaskData =
+	| {
+			type: `mutable`
+			mask: ReadonlySelectorFamilyToken<any, string>
+			signal: ReadonlySelectorFamilyToken<any, string>
+	  }
+	| {
+			type: `regular`
+			mask: ReadonlySelectorFamilyToken<any, string>
+	  }
+
+export type PerspectiveToken<K extends AnyAliasKey> = {
+	type: `realtime_perspective`
+	resourceFamilies: AnyMaskToken<K>[]
+	userViewAtoms: ReadableFamilyToken<
+		Iterable<[actual: ToActual<K>, alias: K]>,
+		UserKey
+	>
+}
+
+export type MaskedSingletonTokensMutable<
+	J extends Json.Serializable,
+	S extends Json.Serializable,
+> = {
+	base: MutableAtomToken<Transceiver<S>, J>
+	jsonMask: ReadonlySelectorFamilyToken<NoInfer<J>, UserKey<Actual>>
+	signalMask: ReadonlySelectorFamilyToken<NoInfer<S>, UserKey<Actual>>
+}
+export type MaskedSingletonTokensRegular = {
+	base: RegularAtomToken<any>
+	mask: ReadonlySelectorFamilyToken<any, UserKey<Actual>>
+}
+export type MaskedSingletonResourceToken =
+	| MaskedSingletonTokensMutable<any, any>
+	| MaskedSingletonTokensRegular
+
+export type MaskedDynamicResourceTokensMutable<
+	K extends string,
+	J extends Json.Serializable,
+	S extends Json.Serializable,
+> = {
+	base: MutableAtomFamilyToken<Transceiver<S>, J, K>
+	jsonMask: ReadonlySelectorFamilyToken<NoInfer<J>, MaskKey<K>>
+	signalMask: ReadonlySelectorFamilyToken<NoInfer<S>, MaskKey<K>>
+}
+export type MaskedDynamicResourceTokensRegular<K extends string> = {
+	base: RegularAtomFamilyToken<any, K>
+	mask: ReadonlySelectorFamilyToken<any, MaskKey<K>>
+}
+export type MaskedDynamicResourceToken<K extends string> =
+	| MaskedDynamicResourceTokensMutable<K, any, any>
+	| MaskedDynamicResourceTokensRegular<K>
+
+export type MaskedDynamicToken<K extends string> = {
+	type: `realtime_dynamic_masked`
+	globalIndexToken: ReadableToken<Iterable<K>>
+	dynamicResources: MaskedDynamicResourceToken<K>[]
+}
+
+export type DynamicToken<K extends string> = {
+	type: `realtime_dynamic`
+	globalIndexToken: ReadableToken<Iterable<K>>
+	dynamicResources: AtomFamilyToken<any, K>[]
+}
+
+export class Continuity {
 	public type = `continuity` as const
 
-	protected globals: AtomToken<any>[] = []
-	protected actions: TransactionToken<any>[] = []
-	protected perspectives: PerspectiveToken<any>[] = []
+	protected _actions: TransactionToken<any>[] = []
+	protected _singletons: AtomToken<any, any>[] = []
+	protected _singletonsMasked: MaskedSingletonResourceToken[] = []
+	protected _dynamics: DynamicToken<any>[] = []
+	protected _dynamicsMasked: MaskedDynamicToken<any>[] = []
+	protected _perspectives: PerspectiveToken<any>[] = []
 
 	protected constructor(protected readonly key: string) {}
 
 	public static existing: InvariantMap<string, ContinuityToken> =
 		new InvariantMap()
+
+	// public masks: InvariantMap<string
 	public static create(
 		key: string,
-		builder: (group: SyncGroup) => SyncGroup,
+		builder: (group: Continuity) => Continuity,
 	): ContinuityToken {
-		const group = new SyncGroup(key)
-		const { type, globals, actions, perspectives } = builder(group)
-		const token = { type, key, globals, actions, perspectives }
-		SyncGroup.existing.set(key, token)
+		const group = new Continuity(key)
+		const {
+			type,
+			_actions: actions,
+			_singletons: singletonStates,
+			_singletonsMasked: singletonStatesMasked,
+			_dynamics: dynamicStates,
+			_dynamicsMasked: dynamicStatesMasked,
+			_perspectives: perspectives,
+		} = builder(group)
+		const masksPerFamily = Object.assign(
+			fromEntries(
+				singletonStatesMasked.map(
+					(singletonResourceToken): [string, MaskData] => {
+						if (`jsonMask` in singletonResourceToken) {
+							return [
+								singletonResourceToken.base.key,
+								{
+									type: `mutable`,
+									mask: singletonResourceToken.jsonMask,
+									signal: singletonResourceToken.signalMask,
+								},
+							]
+						}
+						return [
+							singletonResourceToken.base.key,
+							{ type: `regular`, mask: singletonResourceToken.mask },
+						]
+					},
+				),
+			),
+			fromEntries(
+				dynamicStatesMasked.flatMap((maskedDynamicResourceToken) => {
+					const { dynamicResources } = maskedDynamicResourceToken
+					return dynamicResources.map(
+						(dynamicResourceToken): [string, MaskData] => {
+							if (`jsonMask` in dynamicResourceToken) {
+								const updateToken = getUpdateFamily(
+									IMPLICIT.STORE,
+									dynamicResourceToken.base,
+								)
+								return [
+									updateToken.key,
+									{
+										type: `mutable`,
+										mask: dynamicResourceToken.jsonMask,
+										signal: dynamicResourceToken.signalMask,
+									},
+								]
+							}
+							return [
+								dynamicResourceToken.base.key,
+								{ type: `regular`, mask: dynamicResourceToken.mask },
+							]
+						},
+					)
+				}),
+			),
+			fromEntries(
+				perspectives.flatMap((perspective): [string, MaskData][] => {
+					const { resourceFamilies } = perspective
+					return resourceFamilies.map(
+						([baseFamily, maskFamily, signalFamily]): [string, MaskData] => {
+							if (signalFamily && baseFamily.type === `mutable_atom_family`) {
+								const updateToken = getUpdateFamily(IMPLICIT.STORE, baseFamily)
+								return [
+									updateToken.key,
+									{ type: `mutable`, mask: maskFamily, signal: signalFamily },
+								]
+							}
+							return [baseFamily.key, { type: `regular`, mask: maskFamily }]
+						},
+					)
+				}),
+			),
+		)
+		const token: ContinuityToken = {
+			type,
+			key,
+			actions,
+			singletonStates,
+			singletonStatesMasked,
+			dynamicStates,
+			dynamicStatesMasked,
+			perspectives,
+			masksPerFamily,
+		}
+		Continuity.existing.set(key, token)
 		return token
 	}
 
-	public add(...atoms: AtomToken<any>[]): SyncGroup
-	public add(...args: TransactionToken<any>[]): SyncGroup
-	public add<
-		F extends AtomFamilyToken<any>,
-		T extends F extends AtomFamilyToken<infer U> ? U : never,
-	>(
-		family: AtomFamilyToken<T, any>,
-		index: ReadableFamilyToken<Iterable<AtomToken<T>>, string>,
-	): SyncGroup
-	public add(
-		...args:
-			| readonly AtomToken<any>[]
-			| readonly TransactionToken<any>[]
-			| [AtomFamilyToken<any, any>, ReadableFamilyToken<Iterable<any>, string>]
+	public actions(
+		...txTokens: readonly TransactionToken<
+			(userKey: UserKey<Actual>, ...rest: Json.Array) => any
+		>[]
 	): this {
-		const zeroth = args[0]
-		switch (zeroth.type) {
-			case `atom`:
-			case `mutable_atom`:
-				this.globals.push(...(args as AtomToken<any>[]))
-				break
-			case `transaction`:
-				this.actions.push(...(args as TransactionToken<any>[]))
-				break
-			case `atom_family`:
-				{
-					const [family, index] = args as [
-						AtomFamilyToken<any, any>,
-						ReadableFamilyToken<ReadableToken<any>[], UserKey>,
-					]
-					this.perspectives.push({
-						type: `realtime_perspective`,
-						resourceAtoms: family,
-						viewAtoms: index,
-					})
-				}
-				break
-		}
+		this._actions.push(...txTokens)
+		return this
+	}
 
+	public globals(...atoms: AtomToken<any>[]): this {
+		this._singletons.push(...atoms)
+		return this
+	}
+
+	public dynamic<K extends string>(
+		globalIndexToken: ReadableToken<Iterable<K>>,
+		...families: AtomFamilyToken<any, K>[]
+	): this {
+		this._dynamics.push({
+			type: `realtime_dynamic`,
+			globalIndexToken,
+			dynamicResources: families,
+		})
+
+		return this
+	}
+
+	public maskedDynamic<K extends string>(
+		globalIndexToken: ReadableToken<Iterable<K>>,
+		...families: MaskedDynamicResourceToken<K>[]
+	): this {
+		this._dynamicsMasked.push({
+			type: `realtime_dynamic_masked`,
+			globalIndexToken,
+			dynamicResources: families,
+		})
+
+		return this
+	}
+
+	public perspective<K extends AnyAliasKey>(
+		index: ReadableFamilyToken<
+			Iterable<[actual: ToActual<K>, alias: K]>,
+			UserKey
+		>,
+		...maskedFamilies: AnyMaskToken<NoInfer<K>>[]
+	): this {
+		this._perspectives.push({
+			type: `realtime_perspective`,
+			resourceFamilies: maskedFamilies,
+			userViewAtoms: index,
+		})
 		return this
 	}
 }
 
 export type ContinuityOptions = {
 	key: string
-	config: (group: SyncGroup) => SyncGroup
+	config: (group: Continuity) => Continuity
 }
 
 export function continuity(options: ContinuityOptions): ContinuityToken {
 	const { key, config } = options
-	const token = SyncGroup.create(key, config)
+	const token = Continuity.create(key, config)
 	const { actions } = token
 	for (const action of actions) {
 		assignTransactionToContinuity(key, action.key, IMPLICIT.STORE)

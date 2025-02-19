@@ -8,7 +8,7 @@ export type JunctionEntriesBase<
 	Content extends Json.Object | null,
 > = {
 	readonly relations: ([AType, BType[]] | [BType, AType[]])[]
-	readonly contents: [string, Content][]
+	readonly contents: [`${AType}:${BType}`, Content][]
 }
 export interface JunctionEntries<
 	AType extends string,
@@ -25,13 +25,16 @@ export interface JunctionSchema<ASide extends string, BSide extends string>
 	extends Json.Object,
 		JunctionSchemaBase<ASide, BSide> {}
 
-export type BaseExternalStoreConfiguration = {
-	addRelation: (a: string, b: string) => void
-	deleteRelation: (a: string, b: string) => void
-	replaceRelationsSafely: (a: string, bs: string[]) => void
-	replaceRelationsUnsafely: (a: string, bs: string[]) => void
-	getRelatedKeys(key: string): Set<string> | undefined
-	has: (a: string, b?: string) => boolean
+export type BaseExternalStoreConfiguration<
+	AType extends string,
+	BType extends string,
+> = {
+	addRelation: (a: AType | BType, b: AType | BType) => void
+	deleteRelation: (a: AType | BType, b: AType | BType) => void
+	replaceRelationsSafely: (a: AType | BType, bs: AType[]) => void
+	replaceRelationsUnsafely: (a: AType | BType, bs: AType[]) => void
+	getRelatedKeys(key: AType | BType): Set<AType | BType> | undefined
+	has: (a: AType, b?: BType) => boolean
 }
 
 export type ExternalStoreWithContentConfiguration<Content extends Json.Object> =
@@ -45,12 +48,15 @@ export type Empty<Obj extends object> = {
 	[Key in keyof Obj]?: undefined
 }
 
-export type ExternalStoreConfiguration<Content extends Json.Object | null> =
-	Content extends Json.Object
-		? BaseExternalStoreConfiguration &
-				ExternalStoreWithContentConfiguration<Content>
-		: BaseExternalStoreConfiguration &
-				Empty<ExternalStoreWithContentConfiguration<Json.Object>>
+export type ExternalStoreConfiguration<
+	AType extends string,
+	BType extends string,
+	Content extends Json.Object | null,
+> = Content extends Json.Object
+	? BaseExternalStoreConfiguration<AType, BType> &
+			ExternalStoreWithContentConfiguration<Content>
+	: BaseExternalStoreConfiguration<AType, BType> &
+			Empty<ExternalStoreWithContentConfiguration<Json.Object>>
 
 export type JunctionAdvancedConfiguration<
 	AType extends string,
@@ -58,11 +64,11 @@ export type JunctionAdvancedConfiguration<
 	Content extends Json.Object | null,
 > = {
 	warn?: (...args: any[]) => void
-	externalStore?: ExternalStoreConfiguration<Content>
+	externalStore?: ExternalStoreConfiguration<AType, BType, Content>
 	isAType?: Refinement<string, AType>
 	isBType?: Refinement<string, BType>
 	isContent?: Refinement<unknown, Content>
-	makeContentKey?: (a: AType, b: BType) => string
+	makeContentKey?: (a: AType, b: BType) => `${AType}:${BType}`
 }
 
 export type JunctionJSON<
@@ -84,12 +90,12 @@ export class Junction<
 	public readonly b: BSide
 	public readonly cardinality: `1:1` | `1:n` | `n:n`
 	public readonly relations = new Map<AType | BType, Set<AType> | Set<BType>>()
-	public readonly contents = new Map<string, Content>()
+	public readonly contents = new Map<`${AType}:${BType}`, Content>()
 
 	public isAType?: Refinement<string, AType> | null
 	public isBType?: Refinement<string, BType> | null
 	public isContent: Refinement<unknown, Content> | null
-	public makeContentKey = (a: AType, b: BType): string => `${a}:${b}`
+	public makeContentKey = (a: AType, b: BType) => `${a}:${b}` as const
 
 	public warn?: (...args: any[]) => void
 
@@ -182,13 +188,15 @@ export class Junction<
 		}
 	}
 
-	protected getContentInternal(contentKey: string): Content | undefined {
+	protected getContentInternal(
+		contentKey: `${AType}:${BType}`,
+	): Content | undefined {
 		return this.contents.get(contentKey)
 	}
-	protected setContent(contentKey: string, content: Content): void {
+	protected setContent(contentKey: `${AType}:${BType}`, content: Content): void {
 		this.contents.set(contentKey, content)
 	}
-	protected deleteContent(contentKey: string): void {
+	protected deleteContent(contentKey: `${AType}:${BType}`): void {
 		this.contents.delete(contentKey)
 	}
 
@@ -212,6 +220,8 @@ export class Junction<
 		this.isContent = config?.isContent ?? null
 		if (config?.makeContentKey) {
 			this.makeContentKey = config.makeContentKey
+		} else if (!config?.isAType && !config?.isBType) {
+			this.makeContentKey = (...keys) => keys.sort().join(`:`) as any
 		}
 		if (config?.externalStore) {
 			const externalStore = config.externalStore
@@ -318,22 +328,41 @@ export class Junction<
 			| { [Key in ASide]: AType }
 			| { [Key in BSide]: BType }
 			| ({ [Key in ASide]: AType } & { [Key in BSide]: BType }),
-		b?: undefined,
 	): this
 	public delete(
-		x:
-			| AType
-			| BType
-			| Record<ASide | BSide, string>
-			| Record<ASide, string>
-			| Record<BSide, string>,
-		b?: AType | BType,
+		...[x, y]:
+			| [
+					| { [Key in ASide]: AType }
+					| { [Key in BSide]: BType }
+					| ({ [Key in ASide]: AType } & { [Key in BSide]: BType }),
+			  ]
+			| [a: AType, b?: BType | undefined]
+			| [a: AType]
+			| [b: BType, a?: AType | undefined]
+			| [b: BType]
 	): this {
-		// @ts-expect-error we deduce that this.b may index x
-		b = typeof b === `string` ? (b as BType) : (x[this.b] as BType | undefined)
-		const a =
-			// @ts-expect-error we deduce that this.a may index x
-			typeof x === `string` ? (x as AType) : (x[this.a] as AType | undefined)
+		let a: AType | undefined
+		let b: BType | undefined
+
+		if (x instanceof Object) {
+			if (this.a in x) {
+				a = (x as Record<ASide, string>)[this.a] as AType | undefined
+			}
+			if (this.b in x) {
+				b = (x as Record<BSide, string>)[this.b] as BType | undefined
+			}
+		} else {
+			if (this.isAType?.(x)) {
+				a = x
+				b = y as BType
+			} else if (this.isBType?.(x)) {
+				b = x
+				a = y as AType
+			} else {
+				a = x as AType
+				b = y as BType
+			}
+		}
 
 		if (a === undefined && typeof b === `string`) {
 			const bRelations = this.getRelatedKeys(b) as Set<AType>
@@ -409,7 +438,28 @@ export class Junction<
 		}
 		if (hasContent) {
 			for (const y of ys) {
-				const contentKey = this.makeContentKey(x as any, y as any) // sort XY to AB ❗
+				let a: AType
+				let b: BType
+				if (this.isAType) {
+					if (this.isAType(x)) {
+						a = x
+						b = y as any
+					} else {
+						a = y as any
+						b = x as any
+					}
+				} else if (this.isBType) {
+					if (this.isBType(y)) {
+						a = x as any
+						b = y
+					} else {
+						a = y as any
+						b = x as any
+					}
+				} else {
+					;[a, b] = [x, y].sort() as any[]
+				}
+				const contentKey = this.makeContentKey(a, b)
 				const content = (relations as Record<YType, Content>)[y]
 				this.setContent(contentKey, content)
 			}

@@ -82,6 +82,7 @@ export function createWritableSelectorFamily<T, K extends Canonical>(
 				find: ((token, k) => findInStore(store, token, k)) as typeof findState,
 				seek: ((token, k) => seekInStore(store, token, k)) as typeof seekState,
 				json: (token) => getJsonToken(store, token),
+				env: () => ({ store }),
 			})
 		},
 	}) satisfies WritableSelectorFamily<T, K>

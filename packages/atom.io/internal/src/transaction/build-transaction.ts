@@ -42,9 +42,7 @@ export const buildTransaction = (
 		trackers: new Map(),
 		transactions: new LazyMap(parent.transactions),
 		selectorAtoms: new Junction(parent.selectorAtoms.toJSON()),
-		selectorGraph: new Junction(parent.selectorGraph.toJSON(), {
-			makeContentKey: (...keys) => keys.sort().join(`:`),
-		}),
+		selectorGraph: new Junction(parent.selectorGraph.toJSON()),
 		selectors: new LazyMap(parent.selectors),
 		valueMap: new LazyMap(parent.valueMap),
 		defaults: parent.defaults,

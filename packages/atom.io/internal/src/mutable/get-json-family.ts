@@ -11,8 +11,8 @@ export const getJsonFamily = <
 	SerializableCore extends Json.Serializable,
 	Key extends Canonical,
 >(
-	mutableAtomFamily: MutableAtomFamilyToken<Core, SerializableCore, Key>,
 	store: Store,
+	mutableAtomFamily: MutableAtomFamilyToken<Core, SerializableCore, Key>,
 ): WritableSelectorFamily<SerializableCore, Key> => {
 	const target = newest(store)
 	const key = `${mutableAtomFamily.key}:JSON`

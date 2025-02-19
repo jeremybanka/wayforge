@@ -14,6 +14,7 @@ import {
 	setIntoStore,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
+import type { Actual } from "atom.io/realtime"
 import type { SocketKey, UserKey } from "atom.io/realtime-server"
 import {
 	prepareToExposeRealtimeContinuity,
@@ -281,7 +282,7 @@ new WebSocketServer(httpServer, {
 			next(new Error(`No auth header provided`))
 			return
 		}
-		const userKey = `user::${username}` satisfies UserKey
+		const userKey = `user::__${username}__` satisfies UserKey<Actual>
 		const socketKey = `socket::${socket.id}` satisfies SocketKey
 
 		const userSessions = userSessionMap.get(username)

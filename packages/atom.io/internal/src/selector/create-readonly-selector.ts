@@ -24,8 +24,9 @@ export const createReadonlySelector = <T>(
 		covered,
 		target,
 	)
+	const env = () => ({ store })
 	const getSelf = () => {
-		const value = options.get({ get, find, seek, json })
+		const value = options.get({ get, find, seek, json, env })
 		cacheValue(options.key, value, subject, newest(store))
 		covered.clear()
 		return value

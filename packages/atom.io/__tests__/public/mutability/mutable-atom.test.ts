@@ -134,6 +134,32 @@ describe(`mutable atomic state`, () => {
 		})
 	})
 
+	it(`can be initialized from the json selector`, () => {
+		const myMutableAtoms = atomFamily<
+			SetRTX<string>,
+			SetRTXJson<string>,
+			string
+		>({
+			key: `myMutableAtoms`,
+			default: () => new SetRTX(),
+			mutable: true,
+			toJson: (s) => s.toJSON(),
+			fromJson: (json) => SetRTX.fromJSON(json),
+		})
+		setState(
+			Internal.getJsonFamily(Internal.IMPLICIT.STORE, myMutableAtoms),
+			`myMutableState`,
+			{
+				members: [`a`],
+				cache: [],
+				cacheLimit: 0,
+				cacheUpdateNumber: 0,
+				cacheIdx: -1,
+			},
+		)
+		expect(getState(myMutableAtoms, `myMutableState`)).toEqual(new SetRTX([`a`]))
+	})
+
 	it(`can recover from a failed transaction`, () => {
 		const myMutableState = atom<SetRTX<string>, string[]>({
 			key: `my::mutable`,

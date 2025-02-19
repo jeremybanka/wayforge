@@ -9,17 +9,16 @@ import { myRoomKeyState } from "wayfarer.quest/services/store/my-room"
 import { publicDeckIndex } from "wayfarer.quest/services/store/public-deck-index"
 import { useDOMRect } from "wayfarer.quest/services/use-dimensions"
 
-import {
-	dealCardsTX,
-	groupsOfCards,
-} from "~/apps/core.wayfarer.quest/src/store/game"
+import { dealCardsTX } from "~/apps/core.wayfarer.quest/src/store/game/card-game-actions/deal-cards"
+import type { HandKey } from "~/apps/core.wayfarer.quest/src/store/game/card-game-stores/card-groups-store"
+import { groupsOfCards } from "~/apps/core.wayfarer.quest/src/store/game/card-game-stores/card-groups-store"
 import { setCssVars } from "~/packages/hamr/react-css-vars/src"
 
 import { Count } from "../labels/Count"
 import { CardBack, CardFace, CardSlot } from "./Card"
 import scss from "./Hand.module.scss"
 
-export const Hand = memoize<{ id: string; detailed?: boolean }>(
+export const Hand = memoize<{ id: HandKey; detailed?: boolean }>(
 	`Hand`,
 	({ id: handId, detailed }) => {
 		const myRoomId = useO(myRoomKeyState)

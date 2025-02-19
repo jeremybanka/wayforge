@@ -1,19 +1,25 @@
 import { transaction } from "atom.io"
 import { editRelations } from "atom.io/data"
+import type { Actual } from "atom.io/realtime"
+import type { UserKey } from "atom.io/realtime-server"
 
 import * as CardGroups from "../card-game-stores/card-groups-store"
 import {
 	cardValueIndex,
 	valuesOfCards,
 } from "../card-game-stores/card-values-store"
-import { cardAtoms, cardIndex } from "../card-game-stores/cards-store"
+import { cardIndex, type CardKey } from "../card-game-stores/cards-store"
 import { CARD_VALUES } from "../playing-card-data"
 
 export const spawnClassicDeckTX = transaction<
-	(deckId: string, cardIds: string[]) => void
+	(
+		userKey: UserKey<Actual>,
+		deckKey: CardGroups.DeckKey,
+		cardKeys: CardKey[],
+	) => void
 >({
 	key: `spawnClassicDeck`,
-	do: (transactors, deckId, cardIds) => {
+	do: (transactors, _, deckId, cardIds) => {
 		if (cardIds.length !== 52) {
 			throw new Error(`${cardIds.length} cards were provided. 3 were expected`)
 		}
@@ -29,7 +35,10 @@ export const spawnClassicDeckTX = transaction<
 		editRelations(valuesOfCards, (relations) => {
 			let idx = 0
 			for (const cardId of cardIds) {
-				relations.set({ card: cardId, value: CARD_VALUES[idx].id })
+				relations.set({
+					card: cardId,
+					value: CARD_VALUES[idx].id,
+				})
 				idx++
 			}
 		})

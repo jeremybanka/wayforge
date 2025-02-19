@@ -5,7 +5,7 @@ import { memoize } from "wayfarer.quest/components/memoize"
 import { useRadial } from "wayfarer.quest/services/peripherals/radial"
 import { useDOMRect } from "wayfarer.quest/services/use-dimensions"
 
-import { trickContentsStates } from "~/apps/core.wayfarer.quest/src/store/game"
+import { trickContentsStates } from "~/apps/core.wayfarer.quest/src/store/game/card-game-stores/trick-store"
 import { setCssVars } from "~/packages/hamr/react-css-vars/src"
 
 import { Count } from "../labels/Count"

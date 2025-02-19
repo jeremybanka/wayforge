@@ -10,7 +10,9 @@ export function actUponStore<F extends Func>(
 	id: string,
 	store: Store,
 ): (...parameters: Parameters<F>) => ReturnType<F> {
-	return (...parameters: Parameters<F>): ReturnType<F> => {
+	return function withdrawAndRunTransaction(
+		...parameters: Parameters<F>
+	): ReturnType<F> {
 		const tx = withdraw(token, store)
 		if (tx) {
 			return tx.run(parameters, id)
