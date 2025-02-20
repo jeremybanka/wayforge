@@ -1,7 +1,6 @@
 import type {
 	AtomFamilyToken,
 	AtomToken,
-	MoleculeToken,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
 	ReadableFamilyToken,
@@ -24,7 +23,6 @@ import type {
 	Atom,
 	AtomFamily,
 	Func,
-	Molecule,
 	MutableAtom,
 	MutableAtomFamily,
 	ReadableFamily,
@@ -79,41 +77,19 @@ export function deposit<T>(
 	state: ReadableFamily<T, any>,
 ): ReadableFamilyToken<T, any>
 
-export function deposit<K extends Canonical>(
-	state: Molecule<K>,
-): MoleculeToken<K>
-
 export function deposit<T extends Func>(
 	state: Transaction<T>,
 ): TransactionToken<T>
 
-export function deposit(
-	state: Molecule<any> | ReadableState<any>,
-): MoleculeToken<any> | ReadableToken<any>
+export function deposit(state: ReadableState<any>): ReadableToken<any>
 
 export function deposit(
-	state:
-		| Molecule<any>
-		| ReadableFamily<any, any>
-		| ReadableState<any>
-		| Transaction<Func>,
-):
-	| MoleculeToken<any>
-	| ReadableFamilyToken<any, any>
-	| ReadableToken<any>
-	| TransactionToken<Func>
+	state: ReadableFamily<any, any> | ReadableState<any> | Transaction<Func>,
+): ReadableFamilyToken<any, any> | ReadableToken<any> | TransactionToken<Func>
 
 export function deposit(
-	state:
-		| Molecule<any>
-		| ReadableFamily<any, any>
-		| ReadableState<any>
-		| Transaction<Func>,
-):
-	| MoleculeToken<any>
-	| ReadableFamilyToken<any, any>
-	| ReadableToken<any>
-	| TransactionToken<Func> {
+	state: ReadableFamily<any, any> | ReadableState<any> | Transaction<Func>,
+): ReadableFamilyToken<any, any> | ReadableToken<any> | TransactionToken<Func> {
 	const token = {
 		key: state.key,
 		type: state.type,

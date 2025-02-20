@@ -1,9 +1,8 @@
-import type { Logger, MoleculeToken, TransactionUpdate } from "atom.io"
+import type { Logger, TransactionUpdate } from "atom.io"
 import {
 	atom,
 	atomFamily,
 	getState,
-	makeRootMoleculeInStore,
 	runTransaction,
 	selector,
 	selectorFamily,

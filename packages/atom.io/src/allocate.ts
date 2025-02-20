@@ -1,4 +1,4 @@
-import type { Each, Molecule, Store } from "atom.io/internal"
+import type { Each, Store } from "atom.io/internal"
 import {
 	disposeFromStore,
 	findInStore,
@@ -10,7 +10,6 @@ import {
 import type { Canonical, stringified } from "atom.io/json"
 import { parseJson, stringifyJson } from "atom.io/json"
 
-import type { MoleculeToken } from "./molecule"
 import { makeRootMoleculeInStore } from "./molecule"
 import type { MoleculeCreation, MoleculeDisposal } from "./transaction"
 
@@ -38,22 +37,16 @@ export function allocateIntoStore<
 			const claimString = stringifyJson(formerClaim)
 			const claim = target.molecules.get(claimString)
 			if (claim) {
-				store.moleculeGraph.set(
-					{ upstreamMoleculeKey: claimString, downstreamMoleculeKey: stringKey },
-					{ source: claimString },
-				)
+				store.moleculeGraph.set(claimString, stringKey, { source: claimString })
 			} else {
 				invalidKeys.push(claimString)
 			}
 		}
 	} else {
-		const claimString = stringifyJson(provenance as Canonical)
+		const claimString = stringifyJson(origin)
 		const claim = target.molecules.get(claimString)
 		if (claim) {
-			store.moleculeGraph.set(
-				{ upstreamMoleculeKey: claimString, downstreamMoleculeKey: stringKey },
-				{ source: claimString },
-			)
+			store.moleculeGraph.set(claimString, stringKey, { source: claimString })
 		} else {
 			invalidKeys.push(claimString)
 		}
@@ -73,12 +66,18 @@ export function allocateIntoStore<
 	}
 
 	for (const claim of invalidKeys) {
+		const disposal = store.disposalTraces.buffer.find(
+			(item) => item?.key === claim,
+		)
 		store.logger.error(
 			`❌`,
 			`molecule`,
-			stringKey,
+			key,
 			`allocation failed:`,
-			`Could not find claim "${claim}" in store "${store.config.name}"`,
+			`Could not allocate to ${claim} in store "${store.config.name}".`,
+			disposal
+				? `\n   ${claim} was most recently disposed\n${disposal.trace}`
+				: `No previous disposal trace for ${claim} was found.`,
 		)
 	}
 
@@ -117,9 +116,20 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 
 	const molecule = store.molecules.get(stringKey)
 	if (!molecule) {
-		throw new Error(
-			`Molecule ${stringKey} not found in store "${store.config.name}"`,
+		const disposal = store.disposalTraces.buffer.find(
+			(item) => item?.key === stringKey,
 		)
+		store.logger.error(
+			`❌`,
+			`molecule`,
+			claim,
+			`deallocation failed:`,
+			`Could not find allocation for ${stringKey} in store "${store.config.name}".`,
+			disposal
+				? `\n   This state was most recently deallocated\n${disposal.trace}`
+				: `No previous disposal trace for ${stringKey} was found.`,
+		)
+		return
 	}
 
 	const joinKeys = store.moleculeJoins.getRelatedKeys(
@@ -155,13 +165,7 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 		downstreamMoleculeKey: molecule.stringKey,
 	})
 	if (relatedMolecules) {
-		console.log(relatedMolecules)
 		for (const [relatedStringKey, { source }] of relatedMolecules) {
-			if (source === `root`) {
-				provenance.push(relatedStringKey)
-				continue
-			}
-
 			if (source === molecule.stringKey) {
 				const relatedKey = parseJson(relatedStringKey)
 				deallocateFromStore<any, any>(store, relatedKey)
@@ -189,11 +193,9 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 		target.on.moleculeDisposal.next(disposalEvent)
 	}
 	target.molecules.delete(molecule.stringKey)
-	// const disposal = store.disposalTraces.buffer.find(
-	// (item) => item?.key === token.key,)
 
-	// const trace = getTrace(new Error())
-	// store.disposalTraces.add({ key: token.key, trace })
+	const trace = getTrace(new Error())
+	store.disposalTraces.add({ key: stringKey, trace })
 }
 export function claimWithinStore<
 	H extends Hierarchy,
@@ -239,10 +241,9 @@ export function claimWithinStore<
 
 export class Realm<H extends Hierarchy> {
 	public store: Store
-	public root: MoleculeToken<`root`>
 	public constructor(store: Store = IMPLICIT.STORE) {
 		this.store = store
-		this.root = makeRootMoleculeInStore(`root`, store)
+		makeRootMoleculeInStore(`root`, store)
 	}
 	public allocate<V extends Vassal<H>, A extends Above<V, H>>(
 		provenance: A,

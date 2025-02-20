@@ -131,6 +131,16 @@ describe(`allocate + claim + deallocate`, () => {
 		expect(logger.error).toHaveBeenCalledTimes(6)
 		expect(myItemDurability).toBe(0)
 	})
+	test(`all other errors`, () => {
+		const anarchy = new Anarchy()
+		anarchy.allocate(`me`, `myPet`)
+		anarchy.allocate(`root`, `me`)
+		anarchy.deallocate(`myself`)
+		anarchy.deallocate(`me`)
+		anarchy.deallocate(`me`)
+		anarchy.allocate(`me`, `myPet`)
+		anarchy.allocate([`me`, `myself`], `myPet`)
+	})
 })
 describe(`integrations`, () => {
 	test(`transaction+timeline support`, () => {
@@ -239,5 +249,4 @@ describe(`integrations`, () => {
 		expect(IMPLICIT.STORE.moleculeGraph.relations.size).toBe(3)
 		expect(IMPLICIT.STORE.valueMap.size).toBe(2)
 	})
-	test(``, () => {})
 })

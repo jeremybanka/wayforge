@@ -35,7 +35,7 @@ export function getFromStore(
 		family = store.families.get(token.family.key)!
 		const subKey = token.family.subKey
 		const disposal = store.disposalTraces.buffer.find(
-			(item) => item?.key === token.key,
+			(item) => item?.key === subKey,
 		)
 		store.logger.error(
 			`❌`,
