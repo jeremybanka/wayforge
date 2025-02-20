@@ -57,10 +57,18 @@ export type MoleculeDisposal = {
 	values: [key: string, value: any][]
 }
 
+export type MoleculeTransfer = {
+	type: `molecule_transfer`
+	key: Canonical
+	from: stringified<Canonical>[]
+	to: stringified<Canonical>[]
+}
+
 export type TransactionUpdateContent =
 	| KeyedStateUpdate<unknown>
 	| MoleculeCreation
 	| MoleculeDisposal
+	| MoleculeTransfer
 	| StateCreation<ReadableToken<unknown>>
 	| StateDisposal<ReadableToken<unknown>>
 	| TransactionUpdate<Func>
