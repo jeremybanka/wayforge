@@ -7,7 +7,6 @@ import type {
 
 import { type RegularAtom, setIntoStore } from ".."
 import { cacheValue } from "../caching"
-import { getTrace } from "../get-trace"
 import { newest } from "../lineage"
 import type { Store } from "../store"
 import { deposit } from "../store"
@@ -34,7 +33,6 @@ export function createRegularAtom<T>(
 			`atom`,
 			options.key,
 			`Tried to create atom, but it already exists in the store.`,
-			getTrace(new Error()),
 		)
 		return deposit(existing)
 	}

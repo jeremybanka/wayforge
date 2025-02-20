@@ -46,14 +46,12 @@ export type StateDisposal<Token extends ReadableToken<any>> =
 
 export type MoleculeCreation = {
 	type: `molecule_creation`
-	subType: `modern`
 	key: Canonical
 	provenance: Canonical
 }
 
 export type MoleculeDisposal = {
 	type: `molecule_disposal`
-	subType: `modern`
 	key: Canonical
 	provenance: stringified<Canonical>[]
 	values: [key: string, value: any][]

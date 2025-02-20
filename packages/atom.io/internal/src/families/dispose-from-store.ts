@@ -33,17 +33,17 @@ export function disposeFromStore(
 	try {
 		withdraw(token, store)
 	} catch (thrown) {
-		const disposal = store.disposalTraces.buffer.find(
-			(item) => item?.key === token.key,
-		)
+		// const disposal = store.disposalTraces.buffer.find(
+		// 	(item) => item?.key === token.key,
+		// )
 		store.logger.error(
 			`❌`,
 			token.type,
 			token.key,
 			`could not be disposed because it was not found in the store "${store.config.name}".`,
-			disposal
-				? `\n   This state was most recently disposed\n${disposal.trace}`
-				: `No previous disposal trace was found.`,
+			// disposal
+			// 	? `\n   This state was most recently disposed\n${disposal.trace}`
+			// 	: `No previous disposal trace was found.`,
 		)
 		return
 	}
@@ -58,6 +58,6 @@ export function disposeFromStore(
 			break
 	}
 
-	const trace = getTrace(new Error())
-	store.disposalTraces.add({ key: token.key, trace })
+	// const trace = getTrace(new Error())
+	// store.disposalTraces.add({ key: token.key, trace })
 }

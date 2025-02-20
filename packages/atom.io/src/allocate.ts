@@ -1,10 +1,10 @@
-import type { Each, Store } from "atom.io/internal"
+import type { Each, Molecule, Store } from "atom.io/internal"
 import {
 	disposeFromStore,
 	findInStore,
+	getTrace,
 	IMPLICIT,
 	isChildStore,
-	Molecule,
 	newest,
 } from "atom.io/internal"
 import type { Canonical, stringified } from "atom.io/json"
@@ -15,14 +15,6 @@ import { makeRootMoleculeInStore } from "./molecule"
 import type { MoleculeCreation, MoleculeDisposal } from "./transaction"
 
 export const $claim = Symbol(`claim`)
-export const $provenance = Symbol(`provenance`)
-// export type Claim<
-// 	H extends Hierarchy,
-// 	V extends Vassal<H>,
-// 	A extends Above<V, H>,
-// > = V & {
-// 	[$provenance]?: A
-// }
 export type Claim<K extends Canonical> = K & { [$claim]?: true }
 
 export function allocateIntoStore<
@@ -33,85 +25,61 @@ export function allocateIntoStore<
 	store: Store,
 	provenance: A,
 	key: V,
-	attachmentStyle?: `all` | `any`,
+	dependsOn: `all` | `any` = `any`,
 ): Claim<V> {
+	const origin = provenance as Canonical | [Canonical, Canonical]
 	const stringKey = stringifyJson(key)
-	try {
-		const above: Molecule<any>[] = []
+	const invalidKeys: stringified<Canonical>[] = []
+	const target = newest(store)
 
-		const target = newest(store)
-
-		let allocationAttachmentStyle: `all` | `any`
-		if (provenance === `root`) {
-			// biome-ignore lint/style/noNonNullAssertion: let's assume we made the root molecule to get here
-			above.push(target.molecules.get(`"root"`)!)
-			allocationAttachmentStyle = `all`
-		} else if (typeof provenance === `string` && provenance.startsWith(T$)) {
-			allocationAttachmentStyle = `any`
-			const provenanceKey = stringifyJson(provenance as Canonical)
-			const provenanceMolecule = target.molecules.get(provenanceKey)
-			if (!provenanceMolecule) {
-				throw new Error(
-					`Molecule ${provenanceKey} not found in store "${store.config.name}"`,
+	target.molecules.set(stringKey, { key, stringKey, dependsOn })
+	if (Array.isArray(origin)) {
+		for (const formerClaim of origin) {
+			const claimString = stringifyJson(formerClaim)
+			const claim = target.molecules.get(claimString)
+			if (claim) {
+				store.moleculeGraph.set(
+					{ upstreamMoleculeKey: claimString, downstreamMoleculeKey: stringKey },
+					{ source: claimString },
 				)
-			}
-			above.push(provenanceMolecule)
-		} else {
-			const allocationIsCompound = key.startsWith(`T$--`)
-			if (allocationIsCompound) {
-				allocationAttachmentStyle = `all`
-				for (const claim of provenance as SingularTypedKey[]) {
-					const provenanceKey = stringifyJson(claim)
-					const provenanceMolecule = target.molecules.get(provenanceKey)
-					if (!provenanceMolecule) {
-						throw new Error(
-							`Molecule ${provenanceKey} not found in store "${target.config.name}"`,
-						)
-					}
-					above.push(provenanceMolecule)
-				}
 			} else {
-				allocationAttachmentStyle = attachmentStyle ?? `any`
-				const provenanceKey = stringifyJson(provenance as Canonical)
-				const provenanceMolecule = target.molecules.get(provenanceKey)
-				if (!provenanceMolecule) {
-					throw new Error(
-						`Molecule ${provenanceKey} not found in store "${target.config.name}"`,
-					)
-				}
-				above.push(provenanceMolecule)
+				invalidKeys.push(claimString)
 			}
 		}
-		const molecule = new Molecule(target, above, key, allocationAttachmentStyle)
-		target.molecules.set(stringKey, molecule)
-
-		// for (const aboveMolecule of above) {
-		// 	aboveMolecule.below.set(molecule.stringKey, molecule)
-		// }
-		const creationEvent: MoleculeCreation = {
-			type: `molecule_creation`,
-			subType: `modern`,
-			key: molecule.key,
-			provenance: provenance as Canonical,
-		}
-		const isTransaction =
-			isChildStore(target) && target.transactionMeta.phase === `building`
-		if (isTransaction) {
-			target.transactionMeta.update.updates.push(creationEvent)
-		} else {
-			target.on.moleculeCreation.next(creationEvent)
-		}
-	} catch (thrown) {
-		if (thrown instanceof Error) {
-			store.logger.error(
-				`❌`,
-				`molecule`,
-				stringKey,
-				`allocation failed:`,
-				thrown.message,
-				thrown.stack,
+	} else {
+		const claimString = stringifyJson(provenance as Canonical)
+		const claim = target.molecules.get(claimString)
+		if (claim) {
+			store.moleculeGraph.set(
+				{ upstreamMoleculeKey: claimString, downstreamMoleculeKey: stringKey },
+				{ source: claimString },
 			)
+		} else {
+			invalidKeys.push(claimString)
 		}
+	}
+
+	const creationEvent: MoleculeCreation = {
+		type: `molecule_creation`,
+		key,
+		provenance: origin,
+	}
+	const isTransaction =
+		isChildStore(target) && target.transactionMeta.phase === `building`
+	if (isTransaction) {
+		target.transactionMeta.update.updates.push(creationEvent)
+	} else {
+		target.on.moleculeCreation.next(creationEvent)
+	}
+
+	for (const claim of invalidKeys) {
+		store.logger.error(
+			`❌`,
+			`molecule`,
+			stringKey,
+			`allocation failed:`,
+			`Could not find claim "${claim}" in store "${store.config.name}"`,
+		)
 	}
 
 	return key as Claim<V>
@@ -146,9 +114,7 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 	claim: Claim<V>,
 ): void {
 	const stringKey = stringifyJson(claim)
-	// if (stringKey.startsWith(`"item`)) {
-	// 	console.log(IMPLICIT.STORE.molecules)
-	// }
+
 	const molecule = store.molecules.get(stringKey)
 	if (!molecule) {
 		throw new Error(
@@ -175,7 +141,6 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 	const values: [string, any][] = []
 	const disposalEvent: MoleculeDisposal = {
 		type: `molecule_disposal`,
-		subType: `modern`,
 		key: molecule.key,
 		values,
 		provenance,
@@ -190,24 +155,13 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 		downstreamMoleculeKey: molecule.stringKey,
 	})
 	if (relatedMolecules) {
-		// if (molecule.stringKey.startsWith(`"game`)) {
-		// 	console.log(relatedMolecules)
-		// 	console.log(store.molecules)
-		// }
+		console.log(relatedMolecules)
 		for (const [relatedStringKey, { source }] of relatedMolecules) {
 			if (source === `root`) {
 				provenance.push(relatedStringKey)
 				continue
 			}
-			// if (molecule.stringKey.startsWith(`"game`)) {
-			// 	console.log(
-			// 		source,
-			// 		`===`,
-			// 		molecule.stringKey,
-			// 		`=`,
-			// 		source === molecule.stringKey,
-			// 	)
-			// }
+
 			if (source === molecule.stringKey) {
 				const relatedKey = parseJson(relatedStringKey)
 				deallocateFromStore<any, any>(store, relatedKey)
@@ -235,6 +189,11 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 		target.on.moleculeDisposal.next(disposalEvent)
 	}
 	target.molecules.delete(molecule.stringKey)
+	// const disposal = store.disposalTraces.buffer.find(
+	// (item) => item?.key === token.key,)
+
+	// const trace = getTrace(new Error())
+	// store.disposalTraces.add({ key: token.key, trace })
 }
 export function claimWithinStore<
 	H extends Hierarchy,
