@@ -174,9 +174,9 @@ export class Join<
 		BSide
 	> = CompoundTypedKey<`content`, ASide, BSide>,
 > {
-	private options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>
-	private defaultContent: Content | undefined
 	private toolkit: SetterToolkit
+	public options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>
+	public defaultContent: Content | undefined
 	public molecules: Map<string, Molecule<any>> = new Map()
 	public relations: Junction<ASide, AType, BSide, BType, Content>
 	public states: JoinStateFamilies<
@@ -206,27 +206,8 @@ export class Join<
 
 	public store: Store
 	public realm: Anarchy
-	public alternates: Map<
-		string,
-		Join<ASide, AType, BSide, BType, Cardinality, Content>
-	>
-	public [Symbol.dispose](): void {
-		this.alternates.delete(this.store.config.name)
-	}
 
-	public in(
-		store: Store,
-	): Join<ASide, AType, BSide, BType, Cardinality, Content> {
-		const key = store.config.name
-		const alternate = this.alternates.get(key)
-		if (alternate) {
-			return alternate
-		}
-		const join = new Join(this.options, this.defaultContent, store)
-		this.alternates.set(key, join)
-		join.alternates = this.alternates
-		return join
-	}
+	public [Symbol.dispose](): void {}
 
 	public constructor(
 		options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>,
@@ -239,8 +220,6 @@ export class Join<
 		this.realm = new Anarchy(store)
 		this.options = options
 		this.defaultContent = defaultContent
-		this.alternates = new Map()
-		this.alternates.set(store.config.name, this)
 
 		this.store.miscResources.set(`join:${options.key}`, this)
 
@@ -310,7 +289,7 @@ export class Join<
 		> = (toolkit, a, newRelationsOfA) => {
 			const { find, get, set } = toolkit
 			const relationsOfAState = find(relatedKeysAtoms, a)
-			const currentRelationsOfA = get(relatedKeysAtoms, a)
+			const currentRelationsOfA = get(relationsOfAState)
 			for (const currentRelationB of currentRelationsOfA) {
 				const remainsRelated = newRelationsOfA.includes(currentRelationB)
 				if (remainsRelated) {
@@ -722,8 +701,7 @@ export function join<
 	defaultContent: Content | undefined,
 	store: Store = IMPLICIT.STORE,
 ): JoinToken<ASide, AType, BSide, BType, Cardinality, Content> {
-	const joins = getJoinMap(store)
-	joins.set(options.key, new Join(options, defaultContent, store))
+	store.joins.set(options.key, new Join(options, defaultContent, store))
 	const token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content> = {
 		key: options.key,
 		type: `join`,
@@ -734,16 +712,6 @@ export function join<
 	return token
 }
 
-export function getJoinMap(
-	store: Store & { joins?: Map<string, Join<any, any, any, any, any, any>> },
-): Map<string, Join<any, any, any, any, any, any>> {
-	if (`joins` in store && store.joins instanceof Map) {
-		return store.joins
-	}
-	const joins = new Map<string, Join<any, any, any, any, any, any>>()
-	store.joins = joins
-	return joins
-}
 export function getJoin<
 	ASide extends string,
 	AType extends string,
@@ -755,17 +723,17 @@ export function getJoin<
 	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
 	store: Store,
 ): Join<ASide, AType, BSide, BType, Cardinality, Content> {
-	const joinMap = getJoinMap(store)
-	let myJoin = joinMap.get(token.key)
+	let myJoin = store.joins.get(token.key)
 	if (myJoin === undefined) {
-		const rootJoinMap = getJoinMap(IMPLICIT.STORE)
-		myJoin = rootJoinMap.get(token.key)?.in(store)
-		if (myJoin === undefined) {
+		const rootJoinMap = IMPLICIT.STORE.joins
+		const rootJoin = rootJoinMap.get(token.key)
+		if (rootJoin === undefined) {
 			throw new Error(
 				`Join "${token.key}" not found in store "${store.config.name}"`,
 			)
 		}
-		joinMap.set(token.key, myJoin)
+		myJoin = new Join(rootJoin.options, rootJoin.defaultContent, store)
+		store.joins.set(token.key, myJoin)
 	}
 	return myJoin
 }
