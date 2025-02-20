@@ -39,7 +39,7 @@ export class Molecule<K extends Canonical> implements MoleculeToken<K> {
 						downstreamMoleculeKey: this.stringKey,
 					},
 					{
-						source: molecule.key,
+						source: molecule.stringKey,
 					},
 				)
 			}

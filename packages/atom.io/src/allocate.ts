@@ -7,40 +7,49 @@ import {
 	Molecule,
 	newest,
 } from "atom.io/internal"
-import type { Canonical } from "atom.io/json"
+import type { Canonical, stringified } from "atom.io/json"
 import { parseJson, stringifyJson } from "atom.io/json"
 
 import type { MoleculeToken } from "./molecule"
 import { makeRootMoleculeInStore } from "./molecule"
 import type { MoleculeCreation, MoleculeDisposal } from "./transaction"
 
+export const $claim = Symbol(`claim`)
 export const $provenance = Symbol(`provenance`)
-export type Claim<
-	H extends Hierarchy,
-	V extends Vassal<H>,
-	A extends Above<V, H>,
-> = V & {
-	[$provenance]?: A
-}
+// export type Claim<
+// 	H extends Hierarchy,
+// 	V extends Vassal<H>,
+// 	A extends Above<V, H>,
+// > = V & {
+// 	[$provenance]?: A
+// }
+export type Claim<K extends Canonical> = K & { [$claim]?: true }
 
 export function allocateIntoStore<
 	H extends Hierarchy,
 	V extends Vassal<H>,
 	A extends Above<V, H>,
->(store: Store, provenance: A, key: V, attachmentStyle?: `all` | `any`): V {
+>(
+	store: Store,
+	provenance: A,
+	key: V,
+	attachmentStyle?: `all` | `any`,
+): Claim<V> {
 	const stringKey = stringifyJson(key)
 	try {
 		const above: Molecule<any>[] = []
 
+		const target = newest(store)
+
 		let allocationAttachmentStyle: `all` | `any`
 		if (provenance === `root`) {
 			// biome-ignore lint/style/noNonNullAssertion: let's assume we made the root molecule to get here
-			above.push(store.molecules.get(`"root"`)!)
+			above.push(target.molecules.get(`"root"`)!)
 			allocationAttachmentStyle = `all`
 		} else if (typeof provenance === `string` && provenance.startsWith(T$)) {
 			allocationAttachmentStyle = `any`
 			const provenanceKey = stringifyJson(provenance as Canonical)
-			const provenanceMolecule = store.molecules.get(provenanceKey)
+			const provenanceMolecule = target.molecules.get(provenanceKey)
 			if (!provenanceMolecule) {
 				throw new Error(
 					`Molecule ${provenanceKey} not found in store "${store.config.name}"`,
@@ -53,10 +62,10 @@ export function allocateIntoStore<
 				allocationAttachmentStyle = `all`
 				for (const claim of provenance as SingularTypedKey[]) {
 					const provenanceKey = stringifyJson(claim)
-					const provenanceMolecule = store.molecules.get(provenanceKey)
+					const provenanceMolecule = target.molecules.get(provenanceKey)
 					if (!provenanceMolecule) {
 						throw new Error(
-							`Molecule ${provenanceKey} not found in store "${store.config.name}"`,
+							`Molecule ${provenanceKey} not found in store "${target.config.name}"`,
 						)
 					}
 					above.push(provenanceMolecule)
@@ -64,18 +73,17 @@ export function allocateIntoStore<
 			} else {
 				allocationAttachmentStyle = attachmentStyle ?? `any`
 				const provenanceKey = stringifyJson(provenance as Canonical)
-				const provenanceMolecule = store.molecules.get(provenanceKey)
+				const provenanceMolecule = target.molecules.get(provenanceKey)
 				if (!provenanceMolecule) {
 					throw new Error(
-						`Molecule ${provenanceKey} not found in store "${store.config.name}"`,
+						`Molecule ${provenanceKey} not found in store "${target.config.name}"`,
 					)
 				}
 				above.push(provenanceMolecule)
 			}
 		}
-		const target = newest(store)
 		const molecule = new Molecule(target, above, key, allocationAttachmentStyle)
-		store.molecules.set(stringKey, molecule)
+		target.molecules.set(stringKey, molecule)
 
 		// for (const aboveMolecule of above) {
 		// 	aboveMolecule.below.set(molecule.stringKey, molecule)
@@ -101,19 +109,46 @@ export function allocateIntoStore<
 				stringKey,
 				`allocation failed:`,
 				thrown.message,
+				thrown.stack,
 			)
 		}
 	}
 
-	return key as Claim<H, V, A>
+	return key as Claim<V>
 }
 
-export function deallocateFromStore<
+export function fuseWithinStore<
 	H extends Hierarchy,
-	V extends Vassal<H>,
-	A extends Above<V, H>,
->(store: Store, claim: Claim<H, V, A>): void {
+	C extends CompoundFrom<H>,
+	T extends C extends CompoundTypedKey<infer t, any, any> ? t : never,
+	A extends C extends CompoundTypedKey<any, infer a, any> ? a : never,
+	B extends C extends CompoundTypedKey<any, any, infer b> ? b : never,
+>(
+	store: Store,
+	type: T,
+	sideA: SingularTypedKey<A>,
+	sideB: SingularTypedKey<B>,
+): Claim<CompoundTypedKey<T, A, B>> {
+	const compoundKey: CompoundTypedKey<T, A, B> =
+		`T$--${type}==${sideA}++${sideB}`
+	const above = [sideA, sideB] as Above<Vassal<H>, H>
+	allocateIntoStore<H, Vassal<H>, Above<Vassal<H>, H>>(
+		store,
+		above,
+		compoundKey as Vassal<H>,
+		`all`,
+	)
+	return compoundKey
+}
+
+export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
+	store: Store,
+	claim: Claim<V>,
+): void {
 	const stringKey = stringifyJson(claim)
+	// if (stringKey.startsWith(`"item`)) {
+	// 	console.log(IMPLICIT.STORE.molecules)
+	// }
 	const molecule = store.molecules.get(stringKey)
 	if (!molecule) {
 		throw new Error(
@@ -135,7 +170,7 @@ export function deallocateFromStore<
 	}
 	store.moleculeJoins.delete(molecule.stringKey)
 
-	const provenance: Canonical[] = []
+	const provenance: stringified<Canonical>[] = []
 
 	const values: [string, any][] = []
 	const disposalEvent: MoleculeDisposal = {
@@ -155,14 +190,27 @@ export function deallocateFromStore<
 		downstreamMoleculeKey: molecule.stringKey,
 	})
 	if (relatedMolecules) {
+		// if (molecule.stringKey.startsWith(`"game`)) {
+		// 	console.log(relatedMolecules)
+		// 	console.log(store.molecules)
+		// }
 		for (const [relatedStringKey, { source }] of relatedMolecules) {
 			if (source === `root`) {
 				provenance.push(relatedStringKey)
 				continue
 			}
+			// if (molecule.stringKey.startsWith(`"game`)) {
+			// 	console.log(
+			// 		source,
+			// 		`===`,
+			// 		molecule.stringKey,
+			// 		`=`,
+			// 		source === molecule.stringKey,
+			// 	)
+			// }
 			if (source === molecule.stringKey) {
 				const relatedKey = parseJson(relatedStringKey)
-				deallocateFromStore<any, any, any>(store, relatedKey)
+				deallocateFromStore<any, any>(store, relatedKey)
 			} else {
 				provenance.push(source)
 			}
@@ -195,9 +243,9 @@ export function claimWithinStore<
 >(
 	store: Store,
 	newProvenance: A,
-	claim: Claim<H, V, any>,
+	claim: Claim<V>,
 	exclusive?: `exclusive`,
-): Claim<H, V, A> {
+): Claim<V> {
 	const stringKey = stringifyJson(claim)
 	const target = newest(store)
 	const molecule = target.molecules.get(stringKey)
@@ -216,7 +264,7 @@ export function claimWithinStore<
 	}
 
 	if (exclusive) {
-		target.moleculeJoins.delete(stringKey)
+		target.moleculeGraph.delete(stringKey)
 	}
 	target.moleculeGraph.set(
 		{
@@ -227,7 +275,7 @@ export function claimWithinStore<
 			source: newProvenanceMolecule.stringKey,
 		},
 	)
-	return claim as Claim<H, V, A>
+	return claim
 }
 
 export class Realm<H extends Hierarchy> {
@@ -241,7 +289,7 @@ export class Realm<H extends Hierarchy> {
 		provenance: A,
 		key: V,
 		attachmentStyle?: `all` | `any`,
-	): V {
+	): Claim<V> {
 		return allocateIntoStore<H, V, A>(
 			this.store,
 			provenance,
@@ -249,20 +297,27 @@ export class Realm<H extends Hierarchy> {
 			attachmentStyle,
 		)
 	}
-	public deallocate<V extends Vassal<H>, A extends Above<V, H>>(
-		claim: Claim<H, V, A>,
-	): void {
-		deallocateFromStore(this.store, claim)
+	public fuse<
+		C extends CompoundFrom<H>,
+		T extends C extends CompoundTypedKey<infer t, any, any> ? t : never,
+		A extends C extends CompoundTypedKey<any, infer v, any> ? v : never,
+		B extends C extends CompoundTypedKey<any, any, infer m> ? m : never,
+	>(
+		type: T,
+		reagentA: SingularTypedKey<A>,
+		reagentB: SingularTypedKey<B>,
+	): Claim<CompoundTypedKey<T, A, B>> {
+		return fuseWithinStore<H, C, T, A, B>(this.store, type, reagentA, reagentB)
+	}
+
+	public deallocate<V extends Vassal<H>>(claim: Claim<V>): void {
+		deallocateFromStore<H, V>(this.store, claim)
 	}
 	public claim<
 		V extends Exclude<Vassal<H>, CompoundTypedKey>,
 		A extends Above<V, H>,
-	>(
-		newProvenance: A,
-		claim: Claim<H, V, any>,
-		exclusive?: `exclusive`,
-	): Claim<H, V, A> {
-		return claimWithinStore(this.store, newProvenance, claim, exclusive)
+	>(newProvenance: A, claim: Claim<V>, exclusive?: `exclusive`): Claim<V> {
+		return claimWithinStore<H, V, A>(this.store, newProvenance, claim, exclusive)
 	}
 }
 
@@ -284,7 +339,6 @@ type Scope = SingularTypedKey[]
 type MutualFealty = {
 	above: Scope
 	below: CompoundTypedKey
-	style: `all` | `any`
 }
 type ExclusiveFealty = {
 	above: TypedKey | `root`
@@ -342,6 +396,10 @@ export type Mutuals<TK extends TypedKey | TypedKey[], H extends Hierarchy> = {
 		: never
 }[keyof H]
 
+export type CompoundFrom<H extends Hierarchy> = {
+	[K in keyof H]: H[K] extends MutualFealty ? H[K][`below`] : never
+}[keyof H]
+
 export class Anarchy {
 	public store: Store
 	public realm: Realm<any>
@@ -365,7 +423,7 @@ export class Anarchy {
 	}
 
 	public deallocate(key: Canonical): void {
-		deallocateFromStore<any, any, any>(this.store, key)
+		deallocateFromStore<any, any>(this.store, key)
 	}
 
 	public claim(

@@ -8,7 +8,7 @@ import {
 	createTransaction,
 	IMPLICIT,
 } from "atom.io/internal"
-import type { Canonical, Json } from "atom.io/json"
+import type { Canonical, Json, stringified } from "atom.io/json"
 
 import type {
 	disposeState,
@@ -55,7 +55,7 @@ export type MoleculeDisposal = {
 	type: `molecule_disposal`
 	subType: `modern`
 	key: Canonical
-	provenance: Canonical[]
+	provenance: stringified<Canonical>[]
 	values: [key: string, value: any][]
 }
 

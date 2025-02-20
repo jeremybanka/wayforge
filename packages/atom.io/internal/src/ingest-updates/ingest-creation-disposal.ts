@@ -77,7 +77,7 @@ export function ingestMoleculeCreationEvent(
 			break
 
 		case `oldValue`:
-			deallocateFromStore<any, any, any>(store, update.key)
+			deallocateFromStore<any, any>(store, update.key)
 			break
 	}
 }
@@ -88,13 +88,14 @@ export function ingestMoleculeDisposalEvent(
 ): void {
 	switch (applying) {
 		case `newValue`:
-			deallocateFromStore<any, any, any>(store, update.key)
+			deallocateFromStore<any, any>(store, update.key)
 			break
 
 		case `oldValue`:
 			{
 				let first = true
-				for (const owner of update.provenance) {
+				for (const ownerString of update.provenance) {
+					const owner = parseJson(ownerString)
 					if (first) {
 						first = false
 						allocateIntoStore<any, any, any>(store, owner, update.key)
