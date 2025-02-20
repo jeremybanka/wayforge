@@ -131,15 +131,50 @@ describe(`allocate + claim + deallocate`, () => {
 		expect(logger.error).toHaveBeenCalledTimes(6)
 		expect(myItemDurability).toBe(0)
 	})
-	test(`all other errors`, () => {
+})
+describe(`errors`, () => {
+	test(`allocating under a non-existent claim`, () => {
 		const anarchy = new Anarchy()
 		anarchy.allocate(`me`, `myPet`)
-		anarchy.allocate(`root`, `me`)
+		expect(IMPLICIT.STORE.molecules.size).toBe(1)
+		expect(logger.error).toHaveBeenCalledTimes(1)
+	})
+	test(`allocating under a previously disposed claim`, () => {
+		const anarchy = new Anarchy()
+		anarchy.allocate(`root`, `myself`)
 		anarchy.deallocate(`myself`)
+		anarchy.allocate(`myself`, `myPet`)
+		expect(IMPLICIT.STORE.molecules.size).toBe(1)
+		expect(logger.error).toHaveBeenCalledTimes(1)
+	})
+	test(`deallocating a non-existent claim`, () => {
+		const anarchy = new Anarchy()
+		anarchy.deallocate(`myself`)
+		expect(IMPLICIT.STORE.molecules.size).toBe(1)
+		expect(logger.error).toHaveBeenCalledTimes(1)
+	})
+	test(`deallocating a previously disposed claim`, () => {
+		const anarchy = new Anarchy()
+		anarchy.allocate(`root`, `me`)
 		anarchy.deallocate(`me`)
 		anarchy.deallocate(`me`)
-		anarchy.allocate(`me`, `myPet`)
-		anarchy.allocate([`me`, `myself`], `myPet`)
+		expect(logger.error).toHaveBeenCalledTimes(1)
+	})
+	test(`claiming a non-existent claim`, () => {
+		const anarchy = new Anarchy()
+		anarchy.allocate(`root`, `myself`)
+		anarchy.claim(`myself`, `myPet`)
+		expect(IMPLICIT.STORE.molecules.size).toBe(2)
+		expect(logger.error).toHaveBeenCalledTimes(1)
+	})
+	test(`claiming a a real claim under a previously disposed claim`, () => {
+		const anarchy = new Anarchy()
+		anarchy.allocate(`root`, `myself`)
+		anarchy.deallocate(`myself`)
+		anarchy.allocate(`root`, `myPet`)
+		anarchy.claim(`myself`, `myPet`)
+		expect(IMPLICIT.STORE.molecules.size).toBe(2)
+		expect(logger.error).toHaveBeenCalledTimes(1)
 	})
 })
 describe(`integrations`, () => {
@@ -187,6 +222,21 @@ describe(`integrations`, () => {
 				documentRealm.deallocate(document)
 			},
 		})
+		function identity<T>(x: T): T {
+			return x
+		}
+		const transferDocumentTX = transaction<
+			(opts: {
+				to: UserGroupKey
+				document: DocumentKey
+			}) => void
+		>({
+			key: `transferDocument`,
+			do: ({ set }, { to, document }) => {
+				documentRealm.claim(to, document, `exclusive`)
+				set(documentAtoms, document, identity) // TODO -- possible to avoid "bumping" a state to get picked up by a timeline?
+			},
+		})
 
 		const documentTimeline = timeline({
 			key: `documentTimeline`,
@@ -194,6 +244,7 @@ describe(`integrations`, () => {
 		})
 		const createDocument = runTransaction(createDocumentTX)
 		const deleteDocument = runTransaction(deleteDocumentTX)
+		const transferDocument = runTransaction(transferDocumentTX)
 
 		documentRealm.allocate(`root`, `userGroup::homies`)
 		const documentClaim = createDocument(`userGroup::homies`, `1`)
@@ -210,6 +261,32 @@ describe(`integrations`, () => {
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
 		redo(documentTimeline)
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
+		documentRealm.allocate(`root`, `userGroup::workPals`)
+		expect(IMPLICIT.STORE.molecules.size).toBe(3)
+		documentRealm.allocate(`userGroup::homies`, `document::work`)
+		expect(IMPLICIT.STORE.molecules.size).toBe(4)
+		const homiesConfiguration = new Map([
+			[
+				`"document::work":"userGroup::homies"`,
+				{ source: `"userGroup::homies"` },
+			],
+			[`"root":"userGroup::homies"`, { source: `"root"` }],
+			[`"root":"userGroup::workPals"`, { source: `"root"` }],
+		])
+		expect(IMPLICIT.STORE.moleculeGraph.contents).toEqual(homiesConfiguration)
+		transferDocument({ to: `userGroup::workPals`, document: `document::work` })
+		const workPalsConfiguration = new Map([
+			[
+				`"document::work":"userGroup::workPals"`,
+				{ source: `"userGroup::workPals"` },
+			],
+
+			[`"root":"userGroup::homies"`, { source: `"root"` }],
+			[`"root":"userGroup::workPals"`, { source: `"root"` }],
+		])
+		expect(IMPLICIT.STORE.moleculeGraph.contents).toEqual(workPalsConfiguration)
+		undo(documentTimeline)
+		expect(IMPLICIT.STORE.moleculeGraph.contents).toEqual(homiesConfiguration)
 	})
 	test(`join supports allocation pattern`, () => {
 		const roomPlayers = join(

@@ -11,7 +11,11 @@ import type { Canonical, stringified } from "atom.io/json"
 import { parseJson, stringifyJson } from "atom.io/json"
 
 import { makeRootMoleculeInStore } from "./molecule"
-import type { MoleculeCreation, MoleculeDisposal } from "./transaction"
+import type {
+	MoleculeCreation,
+	MoleculeDisposal,
+	MoleculeTransfer,
+} from "./transaction"
 
 export const $claim = Symbol(`claim`)
 export type Claim<K extends Canonical> = K & { [$claim]?: true }
@@ -31,7 +35,6 @@ export function allocateIntoStore<
 	const invalidKeys: stringified<Canonical>[] = []
 	const target = newest(store)
 
-	target.molecules.set(stringKey, { key, stringKey, dependsOn })
 	if (Array.isArray(origin)) {
 		for (const formerClaim of origin) {
 			const claimString = stringifyJson(formerClaim)
@@ -50,6 +53,9 @@ export function allocateIntoStore<
 		} else {
 			invalidKeys.push(claimString)
 		}
+	}
+	if (invalidKeys.length === 0) {
+		target.molecules.set(stringKey, { key, stringKey, dependsOn })
 	}
 
 	const creationEvent: MoleculeCreation = {
@@ -156,6 +162,7 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 		provenance,
 	}
 	const target = newest(store)
+	target.molecules.delete(stringKey)
 	const isTransaction =
 		isChildStore(target) && target.transactionMeta.phase === `building`
 	if (isTransaction) {
@@ -211,19 +218,47 @@ export function claimWithinStore<
 	const target = newest(store)
 	const molecule = target.molecules.get(stringKey)
 	if (!molecule) {
-		throw new Error(
-			`Molecule ${stringKey} not found in store "${store.config.name}"`,
+		const disposal = store.disposalTraces.buffer.find(
+			(item) => item?.key === stringKey,
 		)
+		store.logger.error(
+			`❌`,
+			`molecule`,
+			claim,
+			`claim failed:`,
+			`Could not allocate to ${stringKey} in store "${store.config.name}".`,
+			disposal
+				? `\n   ${stringKey} was most recently disposed\n${disposal.trace}`
+				: `No previous disposal trace for ${stringKey} was found.`,
+		)
+		return claim
 	}
 
 	const newProvenanceKey = stringifyJson(newProvenance as Canonical)
 	const newProvenanceMolecule = target.molecules.get(newProvenanceKey)
 	if (!newProvenanceMolecule) {
-		throw new Error(
-			`Molecule ${newProvenanceKey} not found in store "${store.config.name}"`,
+		const disposal = store.disposalTraces.buffer.find(
+			(item) => item?.key === newProvenanceKey,
 		)
+		store.logger.error(
+			`❌`,
+			`molecule`,
+			claim,
+			`claim failed:`,
+			`Could not allocate to ${newProvenanceKey} in store "${store.config.name}".`,
+			disposal
+				? `\n   ${newProvenanceKey} was most recently disposed\n${disposal.trace}`
+				: `No previous disposal trace for ${newProvenanceKey} was found.`,
+		)
+		return claim
 	}
 
+	const priorProvenance = store.moleculeGraph
+		.getRelationEntries({
+			downstreamMoleculeKey: molecule.stringKey,
+		})
+		.filter(([, { source }]) => source !== stringKey)
+		.map(([key]) => parseJson(key))
 	if (exclusive) {
 		target.moleculeGraph.delete(stringKey)
 	}
@@ -236,6 +271,18 @@ export function claimWithinStore<
 			source: newProvenanceMolecule.stringKey,
 		},
 	)
+	const transferEvent: MoleculeTransfer = {
+		type: `molecule_transfer`,
+		key: molecule.key,
+		from: priorProvenance,
+		to: [newProvenanceMolecule.key],
+	}
+	const isTransaction =
+		isChildStore(target) && target.transactionMeta.phase === `building`
+	if (isTransaction) {
+		target.transactionMeta.update.updates.push(transferEvent)
+	}
+
 	return claim
 }
 

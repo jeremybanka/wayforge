@@ -60,8 +60,8 @@ export type MoleculeDisposal = {
 export type MoleculeTransfer = {
 	type: `molecule_transfer`
 	key: Canonical
-	from: stringified<Canonical>[]
-	to: stringified<Canonical>[]
+	from: Canonical[]
+	to: Canonical[]
 }
 
 export type TransactionUpdateContent =

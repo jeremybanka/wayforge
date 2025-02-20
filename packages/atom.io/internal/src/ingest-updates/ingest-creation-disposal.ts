@@ -1,6 +1,7 @@
 import type {
 	MoleculeCreation,
 	MoleculeDisposal,
+	MoleculeTransfer,
 	ReadableToken,
 	StateCreation,
 	StateDisposal,
@@ -93,17 +94,20 @@ export function ingestMoleculeDisposalEvent(
 
 		case `oldValue`:
 			{
-				let first = true
-				for (const ownerString of update.provenance) {
-					const owner = parseJson(ownerString)
-					if (first) {
-						first = false
-						allocateIntoStore<any, any, any>(store, owner, update.key)
-						continue
-					}
+				// let first = t rue
+				// for (const ownerString of update.provenance) {
+				// 	// const owner = parseJson(ownerString)
+				// 	// if (first) {
+				// 	// 	first = false
+				// 	// 	allocateIntoStore<any, any, any>(store, owner, update.key)
+				// 	// 	continue
+				// 	// }
 
-					claimWithinStore<any, any, any>(store, owner, update.key)
-				}
+				// 	// claimWithinStore<any, any, any>(store, owner, update.key)
+
+				// }
+				const provenanceJson = update.provenance.map(parseJson)
+				allocateIntoStore<any, any, any>(store, provenanceJson, update.key)
 				for (const [familyKey, value] of update.values) {
 					const family = store.families.get(familyKey)
 					if (family) {
@@ -112,6 +116,37 @@ export function ingestMoleculeDisposalEvent(
 						store.valueMap.set(memberKey, value)
 					}
 				}
+			}
+			break
+	}
+}
+export function ingestMoleculeTransferEvent(
+	update: MoleculeTransfer,
+	applying: `newValue` | `oldValue`,
+	store: Store,
+): void {
+	switch (applying) {
+		case `newValue`:
+			{
+				const provenance = update.to.length === 1 ? update.to[0] : update.to
+				claimWithinStore<any, any, any>(
+					store,
+					provenance,
+					update.key,
+					`exclusive`,
+				)
+			}
+			break
+		case `oldValue`:
+			{
+				const provenance =
+					update.from.length === 1 ? update.from[0] : update.from
+				claimWithinStore<any, any, any>(
+					store,
+					provenance,
+					update.key,
+					`exclusive`,
+				)
 			}
 			break
 	}
