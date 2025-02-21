@@ -1,5 +1,11 @@
 # tsdoc.json
 
+## 0.6.5
+
+### Patch Changes
+
+- 91f259e: 🐛 Support `TypeParameter` in class declarations.
+
 ## 0.6.4
 
 ### Patch Changes
