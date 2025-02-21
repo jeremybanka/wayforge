@@ -138,6 +138,7 @@ describe(`errors`, () => {
 		anarchy.allocate(`me`, `myPet`)
 		expect(IMPLICIT.STORE.molecules.size).toBe(1)
 		expect(logger.error).toHaveBeenCalledTimes(1)
+		anarchy.allocate([`me`, `you`], `myPet`)
 	})
 	test(`allocating under a previously disposed claim`, () => {
 		const anarchy = new Anarchy()
@@ -163,6 +164,22 @@ describe(`errors`, () => {
 	test(`claiming a non-existent claim`, () => {
 		const anarchy = new Anarchy()
 		anarchy.allocate(`root`, `myself`)
+		anarchy.claim(`myself`, `myPet`)
+		expect(IMPLICIT.STORE.molecules.size).toBe(2)
+		expect(logger.error).toHaveBeenCalledTimes(1)
+	})
+	test(`claiming a previously disposed claim`, () => {
+		const anarchy = new Anarchy()
+		anarchy.allocate(`root`, `myself`)
+		anarchy.allocate(`root`, `myPet`)
+		anarchy.deallocate(`myPet`)
+		anarchy.claim(`myself`, `myPet`)
+		expect(IMPLICIT.STORE.molecules.size).toBe(2)
+		expect(logger.error).toHaveBeenCalledTimes(1)
+	})
+	test(`claiming a real claim under a non-existent claim`, () => {
+		const anarchy = new Anarchy()
+		anarchy.allocate(`root`, `myPet`)
 		anarchy.claim(`myself`, `myPet`)
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
 		expect(logger.error).toHaveBeenCalledTimes(1)

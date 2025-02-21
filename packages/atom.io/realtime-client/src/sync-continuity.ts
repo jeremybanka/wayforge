@@ -1,20 +1,13 @@
-import type * as AtomIO from "atom.io"
-import type { Func, Store } from "atom.io/internal"
+import type { Store } from "atom.io/internal"
 import {
-	actUponStore,
 	assignTransactionToContinuity,
-	disposeAtom,
-	getEpochNumberOfContinuity,
 	getFromStore,
 	getJsonToken,
-	ingestTransactionUpdate,
-	initFamilyMemberInStore,
-	isRootStore,
 	setEpochNumberOfContinuity,
 	setIntoStore,
 	subscribeToTransaction,
 } from "atom.io/internal"
-import { type Json, parseJson } from "atom.io/json"
+import type { Json } from "atom.io/json"
 import type { ContinuityToken } from "atom.io/realtime"
 import {
 	confirmedUpdateQueue,
@@ -22,7 +15,11 @@ import {
 } from "atom.io/realtime-client"
 import type { Socket } from "socket.io-client"
 
-export function syncContinuity<F extends Func>(
+import { useRegisterAndAttemptConfirmedUpdate } from "./continuity/register-and-attempt-confirmed-update"
+import { useConcealState } from "./continuity/use-conceal-state"
+import { useRevealState } from "./continuity/use-reveal-state"
+
+export function syncContinuity(
 	continuity: ContinuityToken,
 	socket: Socket,
 	store: Store,
@@ -53,215 +50,13 @@ export function syncContinuity<F extends Func>(
 	socket.off(`continuity-init:${continuityKey}`)
 	socket.on(`continuity-init:${continuityKey}`, initializeContinuity)
 
-	const registerAndAttemptConfirmedUpdate = (
-		confirmed: AtomIO.TransactionUpdate<F>,
-	) => {
-		function reconcileEpoch(
-			optimisticUpdate: AtomIO.TransactionUpdate<any>,
-			confirmedUpdate: AtomIO.TransactionUpdate<any>,
-		): void {
-			store.logger.info(
-				`🧑‍⚖️`,
-				`continuity`,
-				continuityKey,
-				`reconciling updates`,
-			)
-			setIntoStore(store, optimisticUpdateQueue, (queue) => {
-				queue.shift()
-				return queue
-			})
-			if (optimisticUpdate.id === confirmedUpdate.id) {
-				const clientResult = JSON.stringify(optimisticUpdate.updates)
-				const serverResult = JSON.stringify(confirmedUpdate.updates)
-				if (clientResult === serverResult) {
-					store.logger.info(
-						`✅`,
-						`continuity`,
-						continuityKey,
-						`results for ${optimisticUpdate.id} match between client and server`,
-					)
-					socket.emit(`ack:${continuityKey}`, confirmedUpdate.epoch)
-					return
-				}
-			} else {
-				// id mismatch
-				store.logger.info(
-					`❌`,
-					`continuity`,
-					continuityKey,
-					`thought update #${confirmedUpdate.epoch} was ${optimisticUpdate.key}:${optimisticUpdate.id}, but it was actually ${confirmedUpdate.key}:${confirmedUpdate.id}`,
-				)
-			}
-			store.logger.info(
-				`🧑‍⚖️`,
-				`continuity`,
-				continuityKey,
-				`updates do not match`,
-				optimisticUpdate,
-				confirmedUpdate,
-			)
-			const reversedOptimisticUpdates = optimisticUpdates.toReversed()
-			for (const subsequentOptimistic of reversedOptimisticUpdates) {
-				ingestTransactionUpdate(`oldValue`, subsequentOptimistic, store)
-			}
-			store.logger.info(
-				`⏪`,
-				`continuity`,
-				continuityKey,
-				`undid optimistic updates:`,
-				reversedOptimisticUpdates,
-			)
-			ingestTransactionUpdate(`oldValue`, optimisticUpdate, store)
-			store.logger.info(
-				`⏪`,
-				`continuity`,
-				continuityKey,
-				`undid zeroth optimistic update`,
-				optimisticUpdate,
-			)
-			ingestTransactionUpdate(`newValue`, confirmedUpdate, store)
-			store.logger.info(
-				`⏩`,
-				`continuity`,
-				continuityKey,
-				`applied confirmed update`,
-				confirmedUpdate,
-			)
-			socket.emit(`ack:${continuityKey}`, confirmedUpdate.epoch)
-
-			for (const subsequentOptimistic of optimisticUpdates) {
-				const token = {
-					type: `transaction`,
-					key: subsequentOptimistic.key,
-				} as const
-				const { id, params } = subsequentOptimistic
-				actUponStore(token, id, store)(...params)
-			}
-			store.logger.info(
-				`⏩`,
-				`continuity`,
-				continuityKey,
-				`reapplied subsequent optimistic updates:`,
-				optimisticUpdates,
-			)
-		}
-
-		store.logger.info(
-			`🧑‍⚖️`,
-			`continuity`,
-			continuityKey,
-			`integrating confirmed update`,
-			{ confirmedUpdate: confirmed, confirmedUpdates, optimisticUpdates },
-		)
-		const zerothOptimisticUpdate = optimisticUpdates[0]
-		if (zerothOptimisticUpdate) {
-			store.logger.info(
-				`🧑‍⚖️`,
-				`continuity`,
-				continuityKey,
-				`has optimistic updates to reconcile`,
-			)
-			if (confirmed.epoch === zerothOptimisticUpdate.epoch) {
-				store.logger.info(
-					`🧑‍⚖️`,
-					`continuity`,
-					continuityKey,
-					`epoch of confirmed update #${confirmed.epoch} matches zeroth optimistic update`,
-				)
-				reconcileEpoch(zerothOptimisticUpdate, confirmed)
-				for (const nextConfirmed of confirmedUpdates) {
-					const nextOptimistic = optimisticUpdates[0]
-					if (nextConfirmed.epoch === nextOptimistic?.epoch) {
-						reconcileEpoch(nextOptimistic, nextConfirmed)
-					} else {
-						break
-					}
-				}
-			} else {
-				// epoch mismatch
-				store.logger.info(
-					`🧑‍⚖️`,
-					`continuity`,
-					continuityKey,
-					`epoch of confirmed update #${confirmed.epoch} does not match zeroth optimistic update #${zerothOptimisticUpdate.epoch}`,
-				)
-				const confirmedUpdateIsAlreadyEnqueued = confirmedUpdates.some(
-					(update) => update.epoch === confirmed.epoch,
-				)
-				if (!confirmedUpdateIsAlreadyEnqueued) {
-					store.logger.info(
-						`👈`,
-						`continuity`,
-						continuityKey,
-						`pushing confirmed update to queue`,
-						confirmed,
-					)
-					setIntoStore(store, confirmedUpdateQueue, (queue) => {
-						queue.push(confirmed)
-						queue.sort((a, b) => a.epoch - b.epoch)
-						return queue
-					})
-				}
-			}
-		} else {
-			store.logger.info(
-				`🧑‍⚖️`,
-				`continuity`,
-				continuityKey,
-				`has no optimistic updates to deal with`,
-			)
-			const continuityEpoch = getEpochNumberOfContinuity(continuityKey, store)
-			const isRoot = isRootStore(store)
-
-			if (isRoot && continuityEpoch === confirmed.epoch - 1) {
-				store.logger.info(
-					`✅`,
-					`continuity`,
-					continuityKey,
-					`integrating update #${confirmed.epoch} (${confirmed.key} ${confirmed.id})`,
-				)
-				ingestTransactionUpdate(`newValue`, confirmed, store)
-				socket.emit(`ack:${continuityKey}`, confirmed.epoch)
-				setEpochNumberOfContinuity(continuityKey, confirmed.epoch, store)
-			} else if (isRoot && continuityEpoch !== undefined) {
-				store.logger.info(
-					`🧑‍⚖️`,
-					`continuity`,
-					continuityKey,
-					`received update #${confirmed.epoch} but still waiting for update #${
-						continuityEpoch + 1
-					}`,
-					{
-						clientEpoch: continuityEpoch,
-						serverEpoch: confirmed.epoch,
-					},
-				)
-				const confirmedUpdateIsAlreadyEnqueued = confirmedUpdates.some(
-					(update) => update.epoch === confirmed.epoch,
-				)
-				if (confirmedUpdateIsAlreadyEnqueued) {
-					store.logger.info(
-						`👍`,
-						`continuity`,
-						continuityKey,
-						`confirmed update #${confirmed.epoch} is already enqueued`,
-					)
-				} else {
-					store.logger.info(
-						`👈`,
-						`continuity`,
-						continuityKey,
-						`pushing confirmed update #${confirmed.epoch} to queue`,
-					)
-					setIntoStore(store, confirmedUpdateQueue, (queue) => {
-						queue.push(confirmed)
-						queue.sort((a, b) => a.epoch - b.epoch)
-						return queue
-					})
-				}
-			}
-		}
-	}
+	const registerAndAttemptConfirmedUpdate = useRegisterAndAttemptConfirmedUpdate(
+		store,
+		continuityKey,
+		socket,
+		optimisticUpdates,
+		confirmedUpdates,
+	)
 	socket.off(`tx-new:${continuityKey}`)
 	socket.on(`tx-new:${continuityKey}`, registerAndAttemptConfirmedUpdate)
 
@@ -315,28 +110,10 @@ export function syncContinuity<F extends Func>(
 		return unsubscribeFromTransactionUpdates
 	})
 
-	socket.on(`reveal:${continuityKey}`, (revealed: Json.Array) => {
-		let i = 0
-		let k: any
-		let v: any
-		for (const x of revealed) {
-			if (i % 2 === 0) {
-				k = x
-			} else {
-				v = x
-				upsertState(store, continuityKey, k, v)
-			}
-			i++
-		}
-	})
-	socket.on(
-		`conceal:${continuityKey}`,
-		(concealed: AtomIO.AtomToken<unknown>[]) => {
-			for (const token of concealed) {
-				disposeAtom(token, store)
-			}
-		},
-	)
+	const revealState = useRevealState(store, continuityKey)
+	const concealState = useConcealState(store)
+	socket.on(`reveal:${continuityKey}`, revealState)
+	socket.on(`conceal:${continuityKey}`, concealState)
 
 	socket.emit(`get:${continuityKey}`)
 	return () => {
@@ -345,29 +122,4 @@ export function syncContinuity<F extends Func>(
 		for (const unsubscribe of unsubscribeFunctions) unsubscribe()
 		// socket.emit(`unsub:${continuityKey}`)
 	}
-}
-
-function upsertState<T>(
-	store: Store,
-	continuityKey: string,
-	token: AtomIO.WritableToken<T>,
-	value: T,
-): void {
-	if (token.family) {
-		const family = store.families.get(token.family.key)
-		if (family) {
-			const molecule = store.molecules.get(token.family.subKey)
-			if (!molecule && store.config.lifespan === `immortal`) {
-				store.logger.error(
-					`❌`,
-					`continuity`,
-					continuityKey,
-					`No molecule found for key "${token.family.subKey}"`,
-				)
-				return
-			}
-			initFamilyMemberInStore(store, family, parseJson(token.family.subKey))
-		}
-	}
-	setIntoStore(store, token, value)
 }
