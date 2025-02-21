@@ -260,10 +260,9 @@ export async function diff(defaultBranch: string): Promise<0 | 1> {
 		await write(`${tempDir.name}/out.json`, coverage)
 		let textReport: string
 		try {
-			textReport =
-				await $`nyc report --reporter=text --color=0 --temp-dir=${tempDir.name}`
-					.env({ ...process.env, COLUMNS })
-					.text()
+			textReport = await $`nyc report --reporter=text --temp-dir=${tempDir.name}`
+				.env({ ...process.env, COLUMNS, FORCE_COLOR: `0` })
+				.text()
 		} catch (thrown) {
 			const caught = thrown as ShellError
 			console.log(caught.stdout.toString())
