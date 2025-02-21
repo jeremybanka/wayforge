@@ -1,16 +1,10 @@
 import type * as AtomIO from "atom.io"
 import type { Store, Transceiver } from "atom.io/internal"
-import {
-	growMoleculeInStore,
-	IMPLICIT,
-	initFamilyMemberInStore,
-	seekInStore,
-	withdraw,
-} from "atom.io/internal"
+import { IMPLICIT, seekInStore, withdraw } from "atom.io/internal"
 
 import { createWritableSelectorFamily } from "../../internal/src/families/create-writable-selector-family"
 import type { Canonical, Json, JsonInterface } from "."
-import { parseJson, stringifyJson } from "."
+import { parseJson } from "."
 
 export function selectJsonFamily<
 	T extends Transceiver<any>,
@@ -47,45 +41,14 @@ export function selectJsonFamily<
 			key: `${atomFamilyToken.key}:JSON`,
 			get:
 				(key) =>
-				({ seek, get }) => {
-					const existingState = seek(atomFamilyToken, key)
-					if (existingState) {
-						return transform.toJson(get(existingState))
-					}
-					const stringKey = stringifyJson(key)
-					const molecule = store.molecules.get(stringKey)
-					if (molecule) {
-						const atom = growMoleculeInStore(molecule, atomFamilyToken, store)
-						return transform.toJson(get(atom))
-					}
-					if (store.config.lifespan === `immortal`) {
-						throw new Error(`No molecule found for key "${stringKey}"`)
-					}
-					const newToken = initFamilyMemberInStore(store, atomFamilyToken, key)
-					return transform.toJson(get(newToken))
+				({ get }) => {
+					const baseState = get(atomFamilyToken, key)
+					return transform.toJson(baseState)
 				},
 			set:
 				(key) =>
-				({ seek, set }, newValue) => {
-					const existingState = seek(atomFamilyToken, key)
-					if (existingState) {
-						set(existingState, transform.fromJson(newValue))
-					} else {
-						const stringKey = stringifyJson(key)
-						const molecule = store.molecules.get(stringKey)
-						if (molecule) {
-							const atom = growMoleculeInStore(molecule, atomFamilyToken, store)
-							set(atom, transform.fromJson(newValue))
-						} else {
-							if (store.config.lifespan === `immortal`) {
-								throw new Error(`No molecule found for key "${stringKey}"`)
-							}
-							set(
-								initFamilyMemberInStore(store, atomFamilyToken, key),
-								transform.fromJson(newValue),
-							)
-						}
-					}
+				({ set }, newValue) => {
+					set(atomFamilyToken, key, transform.fromJson(newValue))
 				},
 		},
 		[`mutable`, `json`],

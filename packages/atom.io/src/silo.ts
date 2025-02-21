@@ -3,7 +3,6 @@ import {
 	actUponStore,
 	arbitrary,
 	createAtomFamily,
-	createMoleculeFamily,
 	createSelectorFamily,
 	createStandaloneAtom,
 	createStandaloneSelector,
@@ -12,7 +11,6 @@ import {
 	disposeFromStore,
 	findInStore,
 	getFromStore,
-	makeMoleculeInStore,
 	setIntoStore,
 	Store,
 	subscribeInStore,
@@ -22,8 +20,6 @@ import {
 import type {
 	disposeState,
 	getState,
-	makeMolecule,
-	moleculeFamily,
 	redo,
 	setState,
 	subscribe,
@@ -49,8 +45,7 @@ export class Silo {
 	public subscribe: typeof subscribe
 	public undo: typeof undo
 	public redo: typeof redo
-	public moleculeFamily: typeof moleculeFamily
-	public makeMolecule: typeof makeMolecule
+
 	public runTransaction: typeof runTransaction
 	public constructor(config: Store[`config`], fromStore: Store | null = null) {
 		const s = new Store(config, fromStore)
@@ -82,12 +77,6 @@ export class Silo {
 		}
 		this.redo = (token) => {
 			timeTravel(s, `redo`, token)
-		}
-		this.moleculeFamily = ((options: Parameters<typeof moleculeFamily>[0]) => {
-			return createMoleculeFamily(s, options)
-		}) as typeof moleculeFamily
-		this.makeMolecule = (...params: Parameters<typeof makeMolecule>) => {
-			return makeMoleculeInStore(s, ...params)
 		}
 		this.runTransaction = (token, id = arbitrary()) => actUponStore(token, id, s)
 	}

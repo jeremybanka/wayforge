@@ -1,26 +1,12 @@
-import type {
-	MoleculeConstructor,
-	MoleculeFamilyToken,
-	MoleculeKey,
-	MoleculeToken,
-	ReadableFamilyToken,
-	ReadableToken,
-} from "atom.io"
-import { type Canonical, parseJson } from "atom.io/json"
+import type { ReadableFamilyToken, ReadableToken } from "atom.io"
+import type { Canonical } from "atom.io/json"
 
-import { findInStore, seekInStore } from "../families"
-import { getFamilyOfToken } from "../families/get-family-of-token"
-import { NotFoundError } from "../not-found-error"
+import { findInStore } from "../families"
 import type { Store } from "../store"
-import { counterfeit, withdraw } from "../store"
+import { withdraw } from "../store"
 import { readOrComputeValue } from "./read-or-compute-value"
 
 export function getFromStore<T>(store: Store, token: ReadableToken<T>): T
-
-export function getFromStore<M extends MoleculeConstructor>(
-	store: Store,
-	token: MoleculeToken<M>,
-): InstanceType<M>
 
 export function getFromStore<T, K extends Canonical>(
 	store: Store,
@@ -28,71 +14,28 @@ export function getFromStore<T, K extends Canonical>(
 	key: K,
 ): T
 
-export function getFromStore<M extends MoleculeConstructor>(
-	store: Store,
-	token: MoleculeFamilyToken<M>,
-	key: MoleculeKey<M>,
-): InstanceType<M>
-
-export function getFromStore(
-	store: Store,
-	token: MoleculeToken<any> | ReadableToken<any>,
-): any
-
-export function getFromStore(
-	store: Store,
-	token: MoleculeFamilyToken<any> | ReadableFamilyToken<any, any>,
-	key: Canonical,
-): any
-
 export function getFromStore(
 	store: Store,
 	...params:
-		| [
-				token: MoleculeFamilyToken<any> | ReadableFamilyToken<any, any>,
-				key: Canonical,
-		  ]
-		| [token: MoleculeFamilyToken<any>, key: MoleculeKey<any>]
-		| [token: MoleculeToken<any> | ReadableToken<any>]
-		| [token: MoleculeToken<any>]
 		| [token: ReadableFamilyToken<any, any>, key: Canonical]
 		| [token: ReadableToken<any>]
 ): any {
-	let token: MoleculeToken<any> | ReadableToken<any>
-	let family:
-		| MoleculeFamilyToken<any>
-		| ReadableFamilyToken<any, Canonical>
-		| null
+	let token: ReadableToken<any>
+	let family: ReadableFamilyToken<any, Canonical> | null
 	let key: Canonical | null
 	if (params.length === 1) {
 		token = params[0]
-		if (token.type !== `molecule`) {
-			family = getFamilyOfToken(store, token) ?? null
-			if (family) {
-				key = token.family ? parseJson(token.family.subKey) : null
-				token = findInStore(store, family, key)
-			}
-		}
 	} else {
 		family = params[0]
 		key = params[1]
-		let maybeToken: MoleculeToken<any> | ReadableToken<any>
-		if (family.type === `molecule_family`) {
-			maybeToken = seekInStore(store, family, key) ?? counterfeit(family, key)
-		} else {
-			maybeToken = findInStore(store, family, key)
-		}
-		token = maybeToken
+		token = findInStore(store, family, key)
 	}
 	if (`counterfeit` in token && `family` in token) {
-		family =
-			token.type === `molecule`
-				? withdraw(token.family, store)
-				: // biome-ignore lint/style/noNonNullAssertion: family must be present
-					store.families.get(token.family.key)!
-		const subKey = token.type === `molecule` ? token.key : token.family.subKey
+		// biome-ignore lint/style/noNonNullAssertion: family must be present
+		family = store.families.get(token.family.key)!
+		const subKey = token.family.subKey
 		const disposal = store.disposalTraces.buffer.find(
-			(item) => item?.key === token.key,
+			(item) => item?.key === subKey,
 		)
 		store.logger.error(
 			`❌`,
@@ -116,17 +59,8 @@ export function getFromStore(
 				store.defaults.set(family.key, defaultValue)
 				return defaultValue
 			}
-			case `molecule_family`:
-				throw new NotFoundError(family, subKey, store)
 		}
 	}
-	switch (token.type) {
-		case `atom`:
-		case `mutable_atom`:
-		case `selector`:
-		case `readonly_selector`:
-			return readOrComputeValue(withdraw(token, store), store)
-		case `molecule`:
-			return withdraw(token, store).instance
-	}
+
+	return readOrComputeValue(withdraw(token, store), store)
 }

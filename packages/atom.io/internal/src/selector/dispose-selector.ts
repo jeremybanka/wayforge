@@ -20,7 +20,7 @@ export function disposeSelector(
 	} else {
 		const molecule = target.molecules.get(selector.family.subKey)
 		if (molecule) {
-			molecule.tokens.delete(key)
+			target.moleculeData.delete(selector.family.subKey, selector.family.key)
 		}
 		switch (selectorToken.type) {
 			case `selector`:
@@ -30,10 +30,6 @@ export function disposeSelector(
 						{ key: selector.family.key, type: `selector_family` },
 						store,
 					)
-					family.subject.next({
-						type: `state_disposal`,
-						token: selectorToken,
-					})
 				}
 				break
 			case `readonly_selector`:
@@ -45,6 +41,7 @@ export function disposeSelector(
 					)
 					family.subject.next({
 						type: `state_disposal`,
+						subType: `selector`,
 						token: selectorToken,
 					})
 				}
@@ -57,6 +54,7 @@ export function disposeSelector(
 		if (isChildStore(target) && target.transactionMeta.phase === `building`) {
 			target.transactionMeta.update.updates.push({
 				type: `state_disposal`,
+				subType: `selector`,
 				token: selectorToken,
 			})
 		} else {

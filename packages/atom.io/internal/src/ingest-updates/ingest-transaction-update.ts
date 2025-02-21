@@ -7,6 +7,7 @@ import {
 	ingestDisposalEvent,
 	ingestMoleculeCreationEvent,
 	ingestMoleculeDisposalEvent,
+	ingestMoleculeTransferEvent,
 } from "./ingest-creation-disposal"
 
 export function ingestTransactionUpdate(
@@ -35,6 +36,9 @@ export function ingestTransactionUpdate(
 				break
 			case `molecule_disposal`:
 				ingestMoleculeDisposalEvent(updateFromTransaction, applying, store)
+				break
+			case `molecule_transfer`:
+				ingestMoleculeTransferEvent(updateFromTransaction, applying, store)
 				break
 			case `transaction_update`:
 				ingestTransactionUpdate(applying, updateFromTransaction, store)

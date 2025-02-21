@@ -1,4 +1,8 @@
-import type { RegularAtomFamilyOptions, RegularAtomOptions } from "atom.io"
+import type {
+	ReadonlySelectorFamilyOptions,
+	RegularAtomFamilyOptions,
+	RegularAtomOptions,
+} from "atom.io"
 import { getState, Silo } from "atom.io"
 
 const hasImplicitStoreBeenCreated = () =>
@@ -55,6 +59,16 @@ describe(`silo`, () => {
 				key: `counts`,
 				default: 0,
 			}
+		const DEFAULT_DOUBLE_COUNT_SELECTORS_CONFIG: ReadonlySelectorFamilyOptions<
+			number,
+			string
+		> = {
+			key: `doubleCounts`,
+			get:
+				(key) =>
+				({ get }) =>
+					get(countAtoms__Uno, key) * 2,
+		}
 
 		const countAtoms__Uno = Uno.atomFamily<number, string>(
 			DEFAULT_COUNT_ATOMS_CONFIG,
@@ -62,21 +76,33 @@ describe(`silo`, () => {
 		const countAtoms__Dos = Dos.atomFamily<number, string>(
 			DEFAULT_COUNT_ATOMS_CONFIG,
 		)
+		const doubleCountSelectors__Uno = Uno.selectorFamily<number, string>(
+			DEFAULT_DOUBLE_COUNT_SELECTORS_CONFIG,
+		)
+		const doubleCountSelectors__Dos = Dos.selectorFamily<number, string>(
+			DEFAULT_DOUBLE_COUNT_SELECTORS_CONFIG,
+		)
 
 		const countState__Uno = Uno.findState(countAtoms__Uno, `a`)
 		const countState__Dos = Dos.findState(countAtoms__Dos, `b`)
 
 		const UnoCountValue = Uno.getState(countState__Uno)
 		const DosCountValue = Dos.getState(countState__Dos)
+		const UnoDoubleCountValue = Uno.getState(doubleCountSelectors__Uno, `a`)
+		const DosDoubleCountValue = Dos.getState(doubleCountSelectors__Dos, `b`)
 
 		expect(UnoCountValue).toBe(0)
 		expect(DosCountValue).toBe(0)
+		expect(UnoDoubleCountValue).toBe(0)
+		expect(DosDoubleCountValue).toBe(0)
 
 		Uno.setState(countState__Uno, 1)
 		Dos.setState(countState__Dos, 2)
 
 		expect(Uno.getState(countState__Uno)).toBe(1)
 		expect(Dos.getState(countState__Dos)).toBe(2)
+		expect(Uno.getState(doubleCountSelectors__Uno, `a`)).toBe(2)
+		expect(Dos.getState(doubleCountSelectors__Dos, `b`)).toBe(4)
 
 		Uno.disposeState(countState__Uno)
 		Dos.disposeState(countState__Dos)

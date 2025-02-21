@@ -1,8 +1,4 @@
 import type {
-	MoleculeConstructor,
-	MoleculeFamilyToken,
-	MoleculeKey,
-	MoleculeToken,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
 	ReadableFamilyToken,
@@ -55,18 +51,10 @@ export function seekState<T, K extends Canonical, Key extends K>(
 	key: Key,
 ): ReadableToken<T, K> | undefined
 
-export function seekState<M extends MoleculeConstructor>(
-	token: MoleculeFamilyToken<M>,
-	key: MoleculeKey<M>,
-): MoleculeToken<M> | undefined
-
 export function seekState(
-	token: MoleculeFamilyToken<any> | ReadableFamilyToken<any, any>,
+	token: ReadableFamilyToken<any, any>,
 	key: Canonical,
-): MoleculeToken<any> | ReadableToken<any> | undefined {
-	if (token.type === `molecule_family`) {
-		return seekInStore(IMPLICIT.STORE, token, key)
-	}
+): ReadableToken<any> | undefined {
 	const state = seekInStore(IMPLICIT.STORE, token, key)
 	return state
 }

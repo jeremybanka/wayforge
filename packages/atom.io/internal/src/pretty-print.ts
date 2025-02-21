@@ -1,6 +1,4 @@
 import type {
-	MoleculeFamilyToken,
-	MoleculeToken,
 	ReadableFamilyToken,
 	ReadableToken,
 	TimelineToken,
@@ -10,8 +8,6 @@ import type {
 const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1)
 
 export type AtomIOToken =
-	| MoleculeFamilyToken<any>
-	| MoleculeToken<any>
 	| ReadableFamilyToken<any, any>
 	| ReadableToken<any>
 	| TimelineToken<any>

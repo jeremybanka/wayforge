@@ -1,19 +1,18 @@
 import type {
-	CtorToolkit,
-	disposeState,
+	CompoundTypedKey,
 	getState,
-	MoleculeFamilyToken,
+	Hierarchy,
 	MutableAtomFamilyToken,
 	Read,
-	ReadableFamilyToken,
-	ReadableToken,
 	ReadonlySelectorFamilyToken,
 	ReadonlySelectorToken,
 	RegularAtomFamilyToken,
 	setState,
 	SetterToolkit,
+	SingularTypedKey,
 	Write,
 } from "atom.io"
+import { Anarchy, Realm } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
 import type { seekState } from "atom.io/immortal"
 import type {
@@ -26,27 +25,21 @@ import type {
 	Store,
 } from "atom.io/internal"
 import {
-	createMoleculeFamily,
 	createMutableAtomFamily,
 	createReadonlySelectorFamily,
 	createRegularAtomFamily,
-	disposeFromStore,
+	findInStore,
 	getFromStore,
 	getJsonFamily,
 	getJsonToken,
-	growMoleculeInStore,
 	IMPLICIT,
-	initFamilyMemberInStore,
 	isChildStore,
 	Junction,
-	makeMoleculeInStore,
 	newest,
-	NotFoundError,
 	seekInStore,
 	setIntoStore,
-	withdraw,
 } from "atom.io/internal"
-import type { Json } from "atom.io/json"
+import type { Canonical, Json, stringified } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
@@ -151,6 +144,23 @@ export type JoinStateFamilies<
 				}
 			: never
 
+export type JoinHierarchy<
+	AType extends SingularTypedKey,
+	BType extends SingularTypedKey,
+> = Hierarchy<
+	[
+		{
+			above: `root`
+			below: [AType, BType]
+		},
+		{
+			above: [AType, BType]
+			style: `all`
+			below: CompoundTypedKey<`content`, AType, BType>
+		},
+	]
+>
+
 export class Join<
 	const ASide extends string,
 	const AType extends string,
@@ -158,11 +168,15 @@ export class Join<
 	const BType extends string,
 	const Cardinality extends `1:1` | `1:n` | `n:n`,
 	const Content extends Json.Object | null = null,
+	const ContentKey extends CompoundTypedKey<
+		`content`,
+		ASide,
+		BSide
+	> = CompoundTypedKey<`content`, ASide, BSide>,
 > {
-	private options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>
-	private defaultContent: Content | undefined
-	private toolkit: SetterToolkit & { dispose: typeof disposeState }
-	public retrieve: typeof findState
+	private toolkit: SetterToolkit
+	public options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>
+	public defaultContent: Content | undefined
 	public molecules: Map<string, Molecule<any>> = new Map()
 	public relations: Junction<ASide, AType, BSide, BType, Content>
 	public states: JoinStateFamilies<
@@ -174,14 +188,14 @@ export class Join<
 		Content
 	>
 	public core: {
-		findRelatedKeysState: MutableAtomFamilyToken<
+		relatedKeysAtoms: MutableAtomFamilyToken<
 			SetRTX<string>,
 			SetRTXJson<string>,
 			string
 		>
 	}
 	public transact(
-		toolkit: SetterToolkit & { dispose: typeof disposeState },
+		toolkit: SetterToolkit,
 		run: (join: Join<ASide, AType, BSide, BType, Cardinality, Content>) => void,
 	): void {
 		const originalToolkit = this.toolkit
@@ -191,27 +205,9 @@ export class Join<
 	}
 
 	public store: Store
-	public alternates: Map<
-		string,
-		Join<ASide, AType, BSide, BType, Cardinality, Content>
-	>
-	public [Symbol.dispose](): void {
-		this.alternates.delete(this.store.config.name)
-	}
+	public realm: Anarchy
 
-	public in(
-		store: Store,
-	): Join<ASide, AType, BSide, BType, Cardinality, Content> {
-		const key = store.config.name
-		const alternate = this.alternates.get(key)
-		if (alternate) {
-			return alternate
-		}
-		const join = new Join(this.options, this.defaultContent, store)
-		this.alternates.set(key, join)
-		join.alternates = this.alternates
-		return join
-	}
+	public [Symbol.dispose](): void {}
 
 	public constructor(
 		options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>,
@@ -221,44 +217,25 @@ export class Join<
 		type AnyKey = AType & BType
 
 		this.store = store
+		this.realm = new Anarchy(store)
 		this.options = options
 		this.defaultContent = defaultContent
-		this.alternates = new Map()
-		this.alternates.set(store.config.name, this)
 
 		this.store.miscResources.set(`join:${options.key}`, this)
 
-		this.retrieve = ((
-			token: ReadableFamilyToken<any, any>,
-			key: Json.Serializable,
-		): ReadableToken<any> => {
-			const maybeToken = this.toolkit.seek(token, key)
-			if (maybeToken) {
-				return maybeToken
-			}
-			const molecule = this.store.molecules.get(stringifyJson(key))
-			if (molecule) {
-				const family = withdraw(token, store)
-				return growMoleculeInStore(molecule, family, store)
-			}
-			if (store.config.lifespan === `immortal`) {
-				throw new NotFoundError(token, key, store)
-			}
-			return initFamilyMemberInStore(store, token, key)
-		}) as typeof findState
+		this.realm.allocate(`root`, options.key)
+
 		this.toolkit = {
 			get: ((...ps: Parameters<typeof getState>) =>
 				getFromStore(store, ...ps)) as typeof getState,
 			set: ((...ps: Parameters<typeof setState>) => {
 				setIntoStore(store, ...ps)
 			}) as typeof setState,
-			find: this.retrieve,
+			find: ((...ps: Parameters<typeof findState>) =>
+				findInStore(store, ...ps)) as typeof findState,
 			seek: ((...ps: Parameters<typeof seekState>) =>
 				seekInStore(store, ...ps)) as typeof seekState,
 			json: (token) => getJsonToken(store, token),
-			dispose: ((...ps: Parameters<typeof disposeState>) => {
-				disposeFromStore(store, ...ps)
-			}) as typeof disposeState,
 		}
 
 		const aSide: ASide = options.between[0]
@@ -278,62 +255,47 @@ export class Join<
 			},
 			[`join`, `relations`],
 		)
-		this.core = { findRelatedKeysState: relatedKeysAtoms }
+		this.core = { relatedKeysAtoms }
 		const getRelatedKeys: Read<
 			(key: string) => SetRTX<AType> | SetRTX<BType>
-		> = ({ get }, key) => get(this.retrieve(relatedKeysAtoms, key) as any)
+		> = ({ get }, key) => get(relatedKeysAtoms, key) as any
 		const addRelation: Write<(a: string, b: string) => void> = (
-			toolkit,
+			{ set },
 			a,
 			b,
 		) => {
-			const { set } = toolkit
-			const aKeysState = this.retrieve(relatedKeysAtoms, a)
-			const bKeysState = this.retrieve(relatedKeysAtoms, b)
-			set(aKeysState, (aKeys) => aKeys.add(b))
-			set(bKeysState, (bKeys) => bKeys.add(a))
+			if (!this.store.molecules.has(stringifyJson(a))) {
+				this.realm.allocate(options.key, a)
+			}
+			set(relatedKeysAtoms, a, (aKeys) => aKeys.add(b))
+			set(relatedKeysAtoms, b, (bKeys) => bKeys.add(a))
 		}
 		const deleteRelation: Write<(a: string, b: string) => void> = (
-			toolkit,
+			{ set },
 			a,
 			b,
 		) => {
-			const { set } = toolkit
-			const aKeysState = this.retrieve(relatedKeysAtoms, a)
-			const bKeysState = this.retrieve(relatedKeysAtoms, b)
-			let stringA: string | undefined
-			let stringB: string | undefined
-			set(aKeysState, (aKeys) => {
+			set(relatedKeysAtoms, a, (aKeys) => {
 				aKeys.delete(b)
-				if (aKeys.size === 0) {
-					stringA = `"${a}"`
-				}
 				return aKeys
 			})
-			set(bKeysState, (bKeys) => {
+			set(relatedKeysAtoms, b, (bKeys) => {
 				bKeys.delete(a)
-				if (bKeys.size === 0) {
-					stringB = `"${b}"`
-				}
 				return bKeys
 			})
 		}
 		const replaceRelationsSafely: Write<
 			(a: string, newRelationsOfA: string[]) => void
 		> = (toolkit, a, newRelationsOfA) => {
-			const { get, set } = toolkit
-			const relationsOfAState = this.retrieve(relatedKeysAtoms, a)
+			const { find, get, set } = toolkit
+			const relationsOfAState = find(relatedKeysAtoms, a)
 			const currentRelationsOfA = get(relationsOfAState)
 			for (const currentRelationB of currentRelationsOfA) {
 				const remainsRelated = newRelationsOfA.includes(currentRelationB)
 				if (remainsRelated) {
 					continue
 				}
-				const relationsOfBState = this.retrieve(
-					relatedKeysAtoms,
-					currentRelationB,
-				)
-				set(relationsOfBState, (relationsOfB) => {
+				set(relatedKeysAtoms, currentRelationB, (relationsOfB) => {
 					relationsOfB.delete(a)
 					return relationsOfB
 				})
@@ -382,8 +344,7 @@ export class Join<
 			(a: string, newRelationsOfA: string[]) => void
 		> = (toolkit, a, newRelationsOfA) => {
 			const { set } = toolkit
-			const relationsOfAState = this.retrieve(relatedKeysAtoms, a)
-			set(relationsOfAState, (relationsOfA) => {
+			set(relatedKeysAtoms, a, (relationsOfA) => {
 				relationsOfA.transaction((nextRelationsOfA) => {
 					for (const newRelationB of newRelationsOfA) {
 						nextRelationsOfA.add(newRelationB)
@@ -393,8 +354,7 @@ export class Join<
 				return relationsOfA
 			})
 			for (const newRelationB of newRelationsOfA) {
-				const newRelationsBState = this.retrieve(relatedKeysAtoms, newRelationB)
-				set(newRelationsBState, (newRelationsB) => {
+				set(relatedKeysAtoms, newRelationB, (newRelationsB) => {
 					newRelationsB.add(a)
 					return newRelationsB
 				})
@@ -408,6 +368,14 @@ export class Join<
 		const baseExternalStoreConfiguration: BaseExternalStoreConfiguration = {
 			getRelatedKeys: (key) => getRelatedKeys(this.toolkit, key),
 			addRelation: (a, b) => {
+				this.store.moleculeJoins.set(
+					a as stringified<Canonical> /* 💥 RECONCILE */,
+					options.key,
+				)
+				this.store.moleculeJoins.set(
+					b as stringified<Canonical> /* 💥 RECONCILE */,
+					options.key,
+				)
 				addRelation(this.toolkit, a, b)
 			},
 			deleteRelation: (a, b) => {
@@ -423,13 +391,9 @@ export class Join<
 		}
 		let externalStore: ExternalStoreConfiguration<Content>
 		let contentAtoms: RegularAtomFamilyToken<Content, string>
-		let contentMolecules: MoleculeFamilyToken<
-			new (
-				..._: any[]
-			) => { key: string }
-		>
+
 		if (defaultContent) {
-			contentAtoms = createRegularAtomFamily<Content, string>(
+			contentAtoms = createRegularAtomFamily<Content, ContentKey>(
 				store,
 				{
 					key: `${options.key}/content`,
@@ -437,44 +401,27 @@ export class Join<
 				},
 				[`join`, `content`],
 			)
-			contentMolecules = createMoleculeFamily(store, {
-				key: `${options.key}/content-molecules`,
-				new: class ContentMolecule {
-					public constructor(
-						_: CtorToolkit<string>,
-						public key: string,
-					) {}
-				},
-			})
+
 			const getContent: Read<(key: string) => Content | null> = ({ get }, key) =>
-				get(this.retrieve(contentAtoms, key))
+				get(contentAtoms, key)
 			const setContent: Write<(key: string, content: Content) => void> = (
 				{ set },
 				key,
 				content,
 			) => {
-				set(this.retrieve(contentAtoms, key), content)
+				set(contentAtoms, key, content)
 			}
-			const deleteContent: Write<(compositeKey: string) => void> = (
-				_,
-				compositeKey,
-			) => {
-				const contentMolecule = store.molecules.get(`"${compositeKey}"`)
-				if (contentMolecule) {
-					this.toolkit.dispose(contentMolecule)
-					this.molecules.delete(`"${compositeKey}"`)
-				}
-			}
+
 			const externalStoreWithContentConfiguration = {
-				getContent: (contentKey: string) => {
+				getContent: (contentKey: ContentKey) => {
 					const content = getContent(this.toolkit, contentKey)
 					return content
 				},
-				setContent: (contentKey: string, content: Content) => {
+				setContent: (contentKey: ContentKey, content: Content) => {
 					setContent(this.toolkit, contentKey, content)
 				},
-				deleteContent: (contentKey: string) => {
-					deleteContent(this.toolkit, contentKey)
+				deleteContent: (contentKey: ContentKey) => {
+					this.realm.deallocate(contentKey)
 				},
 			}
 			externalStore = Object.assign(
@@ -492,30 +439,26 @@ export class Join<
 				isAType: options.isAType,
 				isBType: options.isBType,
 				makeContentKey: (...args) => {
+					const [a, b] = args
 					const sorted = args.sort()
 					const compositeKey = `${sorted[0]}:${sorted[1]}`
-					const [m0, m1] = sorted.map((key) =>
-						this.molecules.get(stringifyJson(key)),
-					)
-					if (store.config.lifespan === `immortal` && m0 && m1) {
-						const target = newest(store)
-						const moleculeToken = makeMoleculeInStore(
-							target,
-							[m0, m1],
-							contentMolecules,
-							compositeKey,
-						)
-						this.molecules.set(
-							`"${compositeKey}"`,
-							withdraw(moleculeToken, target),
-						)
+					const aMolecule = store.molecules.get(stringifyJson(a))
+					const bMolecule = store.molecules.get(stringifyJson(b))
+					if (!aMolecule) {
+						this.realm.allocate(options.key, a)
 					}
+					if (!bMolecule) {
+						this.realm.allocate(options.key, b)
+					}
+					this.realm.allocate(a, compositeKey, `all`)
+					this.realm.claim(b, compositeKey)
+					this.store.moleculeJoins.set(compositeKey, options.key)
 					return compositeKey
 				},
 			},
 		)
 
-		const createSingleKeyStateFamily = () =>
+		const createSingleKeySelectorFamily = () =>
 			createReadonlySelectorFamily<string | null, string>(
 				store,
 				{
@@ -523,8 +466,7 @@ export class Join<
 					get:
 						(key) =>
 						({ get }) => {
-							const relatedKeysState = this.retrieve(relatedKeysAtoms, key)
-							const relatedKeys = get(relatedKeysState)
+							const relatedKeys = get(relatedKeysAtoms, key)
 							for (const relatedKey of relatedKeys) {
 								return relatedKey
 							}
@@ -533,7 +475,7 @@ export class Join<
 				},
 				[`join`, `keys`],
 			)
-		const getMultipleKeyStateFamily = () => {
+		const getMultipleKeySelectorFamily = () => {
 			return createReadonlySelectorFamily<string[], string>(
 				store,
 				{
@@ -542,15 +484,14 @@ export class Join<
 						(key) =>
 						({ get }) => {
 							const jsonFamily = getJsonFamily(relatedKeysAtoms, store)
-							const jsonState = this.retrieve(jsonFamily, key)
-							const json = get(jsonState)
+							const json = get(jsonFamily, key)
 							return json.members
 						},
 				},
 				[`join`, `keys`],
 			)
 		}
-		const createSingleEntryStateFamily = () =>
+		const createSingleEntrySelectorFamily = () =>
 			createReadonlySelectorFamily<[string, Content] | null, string>(
 				store,
 				{
@@ -558,16 +499,14 @@ export class Join<
 					get:
 						(x) =>
 						({ get }) => {
-							const relatedKeysState = this.retrieve(relatedKeysAtoms, x)
-							const relatedKeys = get(relatedKeysState)
+							const relatedKeys = get(relatedKeysAtoms, x)
 							for (const y of relatedKeys) {
 								let a = relations.isAType?.(x) ? x : undefined
 								let b = a === undefined ? (x as BType) : undefined
 								a ??= y as AType
 								b ??= y as BType
 								const contentKey = relations.makeContentKey(a, b)
-								const contentState = this.retrieve(contentAtoms, contentKey)
-								const content = get(contentState)
+								const content = get(contentAtoms, contentKey)
 								return [y, content]
 							}
 							return null
@@ -575,7 +514,7 @@ export class Join<
 				},
 				[`join`, `entries`],
 			)
-		const getMultipleEntryStateFamily = () =>
+		const getMultipleEntrySelectorFamily = () =>
 			createReadonlySelectorFamily<[string, Content][], string>(
 				store,
 				{
@@ -584,16 +523,14 @@ export class Join<
 						(x) =>
 						({ get }) => {
 							const jsonFamily = getJsonFamily(relatedKeysAtoms, store)
-							const jsonState = this.retrieve(jsonFamily, x)
-							const json = get(jsonState)
+							const json = get(jsonFamily, x)
 							return json.members.map((y) => {
 								let a = relations.isAType?.(x) ? x : undefined
 								let b = a === undefined ? (x as BType) : undefined
 								a ??= y as AType
 								b ??= y as BType
 								const contentKey = relations.makeContentKey(a, b)
-								const contentState = this.retrieve(contentAtoms, contentKey)
-								const content = get(contentState)
+								const content = get(contentAtoms, contentKey)
 								return [y, content]
 							})
 						},
@@ -603,12 +540,12 @@ export class Join<
 
 		switch (options.cardinality) {
 			case `1:1`: {
-				const findSingleRelatedKeyState = createSingleKeyStateFamily()
+				const singleRelatedKeySelectors = createSingleKeySelectorFamily()
 				const stateKeyA = `${aSide}KeyOf${capitalize(bSide)}` as const
 				const stateKeyB = `${bSide}KeyOf${capitalize(aSide)}` as const
 				const baseStates = {
-					[stateKeyA]: findSingleRelatedKeyState,
-					[stateKeyB]: findSingleRelatedKeyState,
+					[stateKeyA]: singleRelatedKeySelectors,
+					[stateKeyB]: singleRelatedKeySelectors,
 				} as JoinStateFamilies<ASide, AType, BSide, BType, Cardinality, Content>
 				let states: JoinStateFamilies<
 					ASide,
@@ -619,12 +556,12 @@ export class Join<
 					Content
 				>
 				if (defaultContent) {
-					const findSingleRelatedEntryState = createSingleEntryStateFamily()
+					const singleEntrySelectors = createSingleEntrySelectorFamily()
 					const entriesStateKeyA = `${aSide}EntryOf${capitalize(bSide)}` as const
 					const entriesStateKeyB = `${bSide}EntryOf${capitalize(aSide)}` as const
 					const contentStates = {
-						[entriesStateKeyA]: findSingleRelatedEntryState,
-						[entriesStateKeyB]: findSingleRelatedEntryState,
+						[entriesStateKeyA]: singleEntrySelectors,
+						[entriesStateKeyB]: singleEntrySelectors,
 					}
 					states = Object.assign(baseStates, contentStates)
 				} else {
@@ -635,13 +572,13 @@ export class Join<
 				break
 			}
 			case `1:n`: {
-				const findSingleRelatedKeyState = createSingleKeyStateFamily()
-				const findMultipleRelatedKeysState = getMultipleKeyStateFamily()
+				const singleRelatedKeySelectors = createSingleKeySelectorFamily()
+				const multipleRelatedKeysSelectors = getMultipleKeySelectorFamily()
 				const stateKeyA = `${aSide}KeyOf${capitalize(bSide)}` as const
 				const stateKeyB = `${bSide}KeysOf${capitalize(aSide)}` as const
 				const baseStates = {
-					[stateKeyA]: findSingleRelatedKeyState,
-					[stateKeyB]: findMultipleRelatedKeysState,
+					[stateKeyA]: singleRelatedKeySelectors,
+					[stateKeyB]: multipleRelatedKeysSelectors,
 				} as JoinStateFamilies<ASide, AType, BSide, BType, Cardinality, Content>
 				let states: JoinStateFamilies<
 					ASide,
@@ -652,15 +589,16 @@ export class Join<
 					Content
 				>
 				if (defaultContent) {
-					const findSingleRelatedEntryState = createSingleEntryStateFamily()
-					const findMultipleRelatedEntriesState = getMultipleEntryStateFamily()
+					const singleRelatedEntrySelectors = createSingleEntrySelectorFamily()
+					const multipleRelatedEntriesSelectors =
+						getMultipleEntrySelectorFamily()
 					const entriesStateKeyA = `${aSide}EntryOf${capitalize(bSide)}` as const
 					const entriesStateKeyB = `${bSide}EntriesOf${capitalize(
 						aSide,
 					)}` as const
 					const contentStates = {
-						[entriesStateKeyA]: findSingleRelatedEntryState,
-						[entriesStateKeyB]: findMultipleRelatedEntriesState,
+						[entriesStateKeyA]: singleRelatedEntrySelectors,
+						[entriesStateKeyB]: multipleRelatedEntriesSelectors,
 					}
 					states = Object.assign(baseStates, contentStates)
 				} else {
@@ -671,12 +609,12 @@ export class Join<
 				break
 			}
 			default: {
-				const findMultipleRelatedKeysState = getMultipleKeyStateFamily()
+				const multipleRelatedKeysSelectors = getMultipleKeySelectorFamily()
 				const stateKeyA = `${aSide}KeysOf${capitalize(bSide)}` as const
 				const stateKeyB = `${bSide}KeysOf${capitalize(aSide)}` as const
 				const baseStates = {
-					[stateKeyA]: findMultipleRelatedKeysState,
-					[stateKeyB]: findMultipleRelatedKeysState,
+					[stateKeyA]: multipleRelatedKeysSelectors,
+					[stateKeyB]: multipleRelatedKeysSelectors,
 				} as JoinStateFamilies<ASide, AType, BSide, BType, Cardinality, Content>
 				let states: JoinStateFamilies<
 					ASide,
@@ -687,7 +625,8 @@ export class Join<
 					Content
 				>
 				if (defaultContent) {
-					const findMultipleRelatedEntriesState = getMultipleEntryStateFamily()
+					const multipleRelatedEntriesSelectors =
+						getMultipleEntrySelectorFamily()
 					const entriesStateKeyA = `${aSide}EntriesOf${capitalize(
 						bSide,
 					)}` as const
@@ -695,8 +634,8 @@ export class Join<
 						aSide,
 					)}` as const
 					const contentStates = {
-						[entriesStateKeyA]: findMultipleRelatedEntriesState,
-						[entriesStateKeyB]: findMultipleRelatedEntriesState,
+						[entriesStateKeyA]: multipleRelatedEntriesSelectors,
+						[entriesStateKeyB]: multipleRelatedEntriesSelectors,
 					}
 					states = Object.assign(baseStates, contentStates)
 				} else {
@@ -762,8 +701,7 @@ export function join<
 	defaultContent: Content | undefined,
 	store: Store = IMPLICIT.STORE,
 ): JoinToken<ASide, AType, BSide, BType, Cardinality, Content> {
-	const joins = getJoinMap(store)
-	joins.set(options.key, new Join(options, defaultContent, store))
+	store.joins.set(options.key, new Join(options, defaultContent, store))
 	const token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content> = {
 		key: options.key,
 		type: `join`,
@@ -774,16 +712,6 @@ export function join<
 	return token
 }
 
-export function getJoinMap(
-	store: Store & { joins?: Map<string, Join<any, any, any, any, any, any>> },
-): Map<string, Join<any, any, any, any, any, any>> {
-	if (`joins` in store && store.joins instanceof Map) {
-		return store.joins
-	}
-	const joins = new Map<string, Join<any, any, any, any, any, any>>()
-	store.joins = joins
-	return joins
-}
 export function getJoin<
 	ASide extends string,
 	AType extends string,
@@ -795,17 +723,17 @@ export function getJoin<
 	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
 	store: Store,
 ): Join<ASide, AType, BSide, BType, Cardinality, Content> {
-	const joinMap = getJoinMap(store)
-	let myJoin = joinMap.get(token.key)
+	let myJoin = store.joins.get(token.key)
 	if (myJoin === undefined) {
-		const rootJoinMap = getJoinMap(IMPLICIT.STORE)
-		myJoin = rootJoinMap.get(token.key)?.in(store)
-		if (myJoin === undefined) {
+		const rootJoinMap = IMPLICIT.STORE.joins
+		const rootJoin = rootJoinMap.get(token.key)
+		if (rootJoin === undefined) {
 			throw new Error(
 				`Join "${token.key}" not found in store "${store.config.name}"`,
 			)
 		}
-		joinMap.set(token.key, myJoin)
+		myJoin = new Join(rootJoin.options, rootJoin.defaultContent, store)
+		store.joins.set(token.key, myJoin)
 	}
 	return myJoin
 }
@@ -912,12 +840,12 @@ export function findRelationsInStore<
 			relations = {
 				get [keyAB]() {
 					const familyAB = myJoin.states[keyAB as any]
-					const state = myJoin.retrieve(familyAB, key)
+					const state = findInStore(store, familyAB, key)
 					return state
 				},
 				get [keyBA]() {
 					const familyBA = myJoin.states[keyBA as any]
-					const state = myJoin.retrieve(familyBA, key)
+					const state = findInStore(store, familyBA, key)
 					return state
 				},
 			} as JoinStates<ASide, AType, BSide, BType, Cardinality, Content>
@@ -927,12 +855,12 @@ export function findRelationsInStore<
 				Object.assign(relations, {
 					get [entryAB]() {
 						const familyAB = myJoin.states[entryAB as any]
-						const state = myJoin.retrieve(familyAB, key)
+						const state = findInStore(store, familyAB, key)
 						return state
 					},
 					get [entryBA]() {
 						const familyBA = myJoin.states[entryBA as any]
-						const state = myJoin.retrieve(familyBA, key)
+						const state = findInStore(store, familyBA, key)
 						return state
 					},
 				})
@@ -945,12 +873,12 @@ export function findRelationsInStore<
 			relations = {
 				get [keyAB]() {
 					const familyAB = myJoin.states[keyAB as any]
-					const state = myJoin.retrieve(familyAB, key)
+					const state = findInStore(store, familyAB, key)
 					return state
 				},
 				get [keysBA]() {
 					const familyBA = myJoin.states[keysBA as any]
-					const state = myJoin.retrieve(familyBA, key)
+					const state = findInStore(store, familyBA, key)
 					return state
 				},
 			} as JoinStates<ASide, AType, BSide, BType, Cardinality, Content>
@@ -960,12 +888,12 @@ export function findRelationsInStore<
 				Object.assign(relations, {
 					get [entryAB]() {
 						const familyAB = myJoin.states[entryAB as any]
-						const state = myJoin.retrieve(familyAB, key)
+						const state = findInStore(store, familyAB, key)
 						return state
 					},
 					get [entriesBA]() {
 						const familyBA = myJoin.states[entriesBA as any]
-						const state = myJoin.retrieve(familyBA, key)
+						const state = findInStore(store, familyBA, key)
 						return state
 					},
 				})
@@ -978,12 +906,12 @@ export function findRelationsInStore<
 			relations = {
 				get [keysAB]() {
 					const familyAB = myJoin.states[keysAB as any]
-					const state = myJoin.retrieve(familyAB, key)
+					const state = findInStore(store, familyAB, key)
 					return state
 				},
 				get [keysBA]() {
 					const familyBA = myJoin.states[keysBA as any]
-					const state = myJoin.retrieve(familyBA, key)
+					const state = findInStore(store, familyBA, key)
 					return state
 				},
 			} as JoinStates<ASide, AType, BSide, BType, Cardinality, Content>
@@ -993,12 +921,12 @@ export function findRelationsInStore<
 				Object.assign(relations, {
 					get [entriesAB]() {
 						const familyAB = myJoin.states[entriesAB as any]
-						const state = myJoin.retrieve(familyAB, key)
+						const state = findInStore(store, familyAB, key)
 						return state
 					},
 					get [entriesBA]() {
 						const familyBA = myJoin.states[entriesBA as any]
-						const state = myJoin.retrieve(familyBA, key)
+						const state = findInStore(store, familyBA, key)
 						return state
 					},
 				})
@@ -1065,7 +993,7 @@ export function getInternalRelationsFromStore(
 	store: Store,
 ): MutableAtomFamilyToken<SetRTX<string>, SetRTXJson<string>, string> {
 	const myJoin = getJoin(token, store)
-	const family = myJoin.core.findRelatedKeysState
+	const family = myJoin.core.relatedKeysAtoms
 	return family
 }
 

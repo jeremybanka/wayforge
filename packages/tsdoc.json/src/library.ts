@@ -601,6 +601,10 @@ function assembleJsonDocForResource(
 				}
 				break
 
+			case TS.SyntaxKind.TypeParameter:
+				doc = documentAtomicResource(resourceName, `type`, comment)
+				break
+
 			default:
 				throw new Error(`Unknown doc type: ${TS.SyntaxKind[docType]}`)
 		}

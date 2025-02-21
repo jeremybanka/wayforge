@@ -1,16 +1,16 @@
 import type {
 	AtomToken,
 	Logger,
-	MoleculeCreationModern,
-	MoleculeDisposalModern,
-	MoleculeFamily,
-	MoleculeToken,
+	MoleculeCreation,
+	MoleculeDisposal,
 	ReadonlySelectorToken,
 	TimelineToken,
 	TransactionToken,
 	WritableSelectorToken,
 } from "atom.io"
 import { AtomIOLogger } from "atom.io"
+import type { Join } from "atom.io/data"
+import type { Canonical, stringified } from "atom.io/json"
 
 import type {
 	Atom,
@@ -77,6 +77,7 @@ export class Store implements Lineage {
 		| RegularAtomFamily<any, any>
 		| WritableSelectorFamily<any, any>
 	>()
+	public joins = new Map<string, Join<any, any, any, any, any, any>>()
 
 	public transactions = new Map<string, Transaction<Func>>()
 	public transactionMeta: TransactionEpoch | TransactionProgress<Func> = {
@@ -101,9 +102,50 @@ export class Store implements Lineage {
 
 	public disposalTraces = new CircularBuffer<{ key: string; trace: string }>(100)
 
-	public molecules = new Map<string, Molecule<any>>()
-	public moleculeFamilies = new Map<string, MoleculeFamily<any>>()
-	public moleculeInProgress: string | null = null
+	public molecules = new Map<string, Molecule<Canonical>>()
+	public moleculeJoins = new Junction<
+		`moleculeKey`,
+		stringified<Canonical>,
+		`joinKey`,
+		string
+	>(
+		{
+			between: [`moleculeKey`, `joinKey`],
+			cardinality: `n:n`,
+		},
+		{
+			makeContentKey: (...keys) => keys.sort().join(`:`),
+		},
+	)
+	public moleculeGraph = new Junction<
+		`upstreamMoleculeKey`,
+		stringified<Canonical> | `root`,
+		`downstreamMoleculeKey`,
+		stringified<Canonical>,
+		{ source: stringified<Canonical> }
+	>(
+		{
+			between: [`upstreamMoleculeKey`, `downstreamMoleculeKey`],
+			cardinality: `n:n`,
+		},
+		{
+			makeContentKey: (...keys) => keys.sort().join(`:`),
+		},
+	)
+	public moleculeData = new Junction<
+		`moleculeKey`,
+		stringified<Canonical>,
+		`stateFamilyKey`,
+		string
+	>(
+		{
+			between: [`moleculeKey`, `stateFamilyKey`],
+			cardinality: `n:n`,
+		},
+		{
+			makeContentKey: (...keys) => keys.sort().join(`:`),
+		},
+	)
 	public miscResources = new Map<string, Disposable>()
 
 	public on = {
@@ -121,11 +163,8 @@ export class Store implements Lineage {
 			null,
 		),
 		operationClose: new Subject<OperationProgress>(),
-		moleculeCreationStart: new Subject<
-			MoleculeCreationModern | MoleculeToken<any>
-		>(),
-		moleculeCreationDone: new Subject<MoleculeToken<any>>(),
-		moleculeDisposal: new Subject<MoleculeDisposalModern | MoleculeToken<any>>(),
+		moleculeCreation: new Subject<MoleculeCreation>(),
+		moleculeDisposal: new Subject<MoleculeDisposal>(),
 	}
 	public operation: OperationProgress = { open: false }
 

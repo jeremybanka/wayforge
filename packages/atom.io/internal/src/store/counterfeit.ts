@@ -1,10 +1,6 @@
 import type {
 	AtomFamilyToken,
 	AtomToken,
-	MoleculeConstructor,
-	MoleculeFamilyToken,
-	MoleculeKey,
-	MoleculeToken,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
 	ReadableFamilyToken,
@@ -75,35 +71,25 @@ export function counterfeit<T, K extends Canonical, Key extends K>(
 	key: Key,
 ): ReadableToken<T>
 
-export function counterfeit<M extends MoleculeConstructor>(
-	token: MoleculeFamilyToken<M>,
-	key: MoleculeKey<M>,
-): MoleculeKey<M>
-
 export function counterfeit(
-	token: MoleculeFamilyToken<any> | ReadableFamilyToken<any, any>,
+	token: ReadableFamilyToken<any, any>,
 	key: Canonical,
-): MoleculeToken<any> | ReadableToken<any> {
+): ReadableToken<any> {
 	const subKey = stringifyJson(key)
 	const fullKey = `${token.key}(${subKey})`
 	const type = FAMILY_MEMBER_TOKEN_TYPES[token.type]
 	const stateToken = {
 		key: fullKey,
 		type,
-	} satisfies MoleculeToken<any> | ReadableToken<any>
-	if (type === `molecule`) {
-		Object.assign(stateToken, {
-			key,
-			family: token,
-		})
-	} else {
-		Object.assign(stateToken, {
-			family: {
-				key: token.key,
-				subKey,
-			},
-		})
-	}
+	} satisfies ReadableToken<any>
+
+	Object.assign(stateToken, {
+		family: {
+			key: token.key,
+			subKey,
+		},
+	})
+
 	Object.assign(stateToken, { counterfeit: true })
 	return stateToken
 }

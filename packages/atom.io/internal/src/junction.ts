@@ -280,18 +280,57 @@ export class Junction<
 		...rest: Content extends null ? [] | [void?: undefined] : [content: Content]
 	): this
 	public set(
-		a: AType | ({ [Key in ASide]: AType } & { [Key in BSide]: BType }),
-		...rest: Content extends null
-			? [] | [b?: BType | undefined]
-			: [b: BType, content: Content] | [content: Content]
+		// a: AType | ({ [Key in ASide]: AType } & { [Key in BSide]: BType }),
+		// ...rest: Content extends null
+		// 	? [] | [b?: BType | undefined]
+		// 	: [b: BType, content: Content] | [content: Content]
+		...params:
+			| [
+					a: AType,
+					...rest: Content extends null
+						? [b: BType]
+						: [b: BType, content: Content],
+			  ]
+			| [
+					relation: { [Key in ASide]: AType } & { [Key in BSide]: BType },
+					...rest: Content extends null
+						? [] | [void?: undefined]
+						: [content: Content],
+			  ]
+		// | [{ [Key in ASide]: AType } & { [Key in BSide]: BType }, content: Content]
+		// | [{ [Key in ASide]: AType } & { [Key in BSide]: BType }]
+		// | [a: AType, b: BType, content: Content]
+		// | [a: AType, b: BType]
 	): this {
-		const b: BType =
-			typeof rest[0] === `string`
-				? rest[0]
-				: (a[this.b as keyof typeof a] as BType)
-		const content: Content | undefined =
-			(rest[1] ?? typeof rest[0] === `string`) ? undefined : (rest[0] as Content)
-		a = typeof a === `string` ? a : a[this.a]
+		let a: AType
+		let b: BType
+		let content: Content | undefined
+		switch (params.length) {
+			case 1: {
+				const relation = params[0] as Record<ASide, AType> & Record<BSide, BType>
+				a = relation[this.a]
+				b = relation[this.b]
+				content = undefined
+				break
+			}
+			case 2: {
+				const zeroth = params[0]
+				if (typeof zeroth === `string`) {
+					;[a, b] = params as unknown as [AType, BType]
+				} else {
+					a = zeroth[this.a]
+					b = zeroth[this.b]
+					content = params[1] as Content
+				}
+				break
+			}
+			default: {
+				a = params[0] as AType
+				b = params[1] as BType
+				content = params[2] as Content
+				break
+			}
+		}
 		switch (this.cardinality) {
 			// biome-ignore lint/suspicious/noFallthroughSwitchClause: perfect here
 			case `1:1`: {

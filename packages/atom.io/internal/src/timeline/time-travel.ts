@@ -76,14 +76,7 @@ export const timeTravel = (
 			ingestDisposalEvent(update, applying, store)
 			break
 		}
-		case `molecule_creation`: {
-			ingestMoleculeCreationEvent(update, applying, store)
-			break
-		}
-		case `molecule_disposal`: {
-			ingestMoleculeDisposalEvent(update, applying, store)
-			break
-		}
+		// consider adding molecule events
 	}
 
 	if (action === `redo`) {

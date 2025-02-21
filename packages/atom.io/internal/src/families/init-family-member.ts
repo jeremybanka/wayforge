@@ -88,7 +88,7 @@ export function initFamilyMemberInStore(
 	}
 	const state = family(key)
 	const target = newest(store)
-	if (state.family && target.moleculeInProgress === null) {
+	if (state.family) {
 		if (isRootStore(target)) {
 			switch (state.type) {
 				case `atom`:

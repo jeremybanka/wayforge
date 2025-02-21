@@ -12,7 +12,7 @@ export * from "./realtime-state-provider"
 export * from "./realtime-state-receiver"
 
 export type Socket = {
-	id: string
+	id: string | undefined
 	on: (event: string, listener: (...args: Json.Serializable[]) => void) => void
 	onAny: (
 		listener: (event: string, ...args: Json.Serializable[]) => void,

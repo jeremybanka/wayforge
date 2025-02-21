@@ -5,8 +5,8 @@ import type {
 	WritableToken,
 } from "atom.io"
 import type { Store } from "atom.io/internal"
-import { findInStore, NotFoundError, seekInStore } from "atom.io/internal"
-import type { Canonical, Json } from "atom.io/json"
+import { findInStore } from "atom.io/internal"
+import type { Canonical } from "atom.io/json"
 
 export function parseStateOverloads<T, K extends Canonical>(
 	store: Store,
@@ -27,15 +27,7 @@ export function parseStateOverloads<T, K extends Canonical>(
 		const family = rest[0]
 		const key = rest[1]
 
-		if (store.config.lifespan === `immortal`) {
-			const maybeToken = seekInStore(store, family, key)
-			if (!maybeToken) {
-				throw new NotFoundError(family, key, store)
-			}
-			token = maybeToken
-		} else {
-			token = findInStore(store, family, key)
-		}
+		token = findInStore(store, family, key)
 	} else {
 		token = rest[0]
 	}

@@ -1,11 +1,9 @@
-import type { AtomToken, CtorToolkit, Logger } from "atom.io"
+import type { AtomToken, Logger } from "atom.io"
 import {
 	atom,
 	atomFamily,
 	getState,
-	makeMolecule,
 	makeRootMoleculeInStore,
-	moleculeFamily,
 	selector,
 	selectorFamily,
 	setState,
@@ -223,44 +221,6 @@ describe(`selector`, () => {
 		unsubscribe()
 		setState(countAtom, 2)
 		expect(Utils.stdout0).toHaveBeenCalledTimes(3)
-	})
-	it(`may get molecules`, () => {
-		const root = makeRootMoleculeInStore(`root`)
-		const countAtoms = atomFamily<number, string>({
-			key: `count`,
-			default: 0,
-		})
-		const counterMolecules = moleculeFamily({
-			key: `counter`,
-			new: class Molecule {
-				public count: AtomToken<number>
-				public constructor(tools: CtorToolkit<string>) {
-					this.count = tools.bond(countAtoms)
-				}
-			},
-		})
-
-		const doubles = selectorFamily<number, string>({
-			key: `doubles`,
-			get:
-				(key) =>
-				({ get, seek }) => {
-					const counterMolecule = seek(counterMolecules, key)
-					if (!counterMolecule) {
-						return 0
-					}
-					const counter = get(counterMolecule)
-					if (!counter) {
-						return 0
-					}
-					const count = get(counter.count)
-					return count * 2
-				},
-		})
-
-		makeMolecule(root, counterMolecules, `root`)
-
-		expect(getState(findState(doubles, `root`))).toBe(0)
 	})
 	it(`(covers "covered" in trace-selector-atoms) won't trace the same node twice`, () => {
 		const countSelector = atom<number>({
