@@ -1,5 +1,11 @@
 # treetrunks
 
+## 0.0.6
+
+### Patch Changes
+
+- 4fb17ab: 💄 Recoverage output is much more beautiful and resembles vitest diffs. It also now renders properly in github actions.
+
 ## 0.0.5
 
 ### Patch Changes
