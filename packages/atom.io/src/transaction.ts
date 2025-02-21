@@ -1,12 +1,4 @@
-import type {
-	getState,
-	makeMolecule,
-	MoleculeConstructor,
-	MoleculeFamilyToken,
-	MoleculeParams,
-	MoleculeToken,
-	setState,
-} from "atom.io"
+import type { getState, setState } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
 import type { seekState } from "atom.io/immortal"
 import type { EnvironmentData, Func, Transceiver } from "atom.io/internal"
@@ -16,7 +8,7 @@ import {
 	createTransaction,
 	IMPLICIT,
 } from "atom.io/internal"
-import type { Canonical, Json } from "atom.io/json"
+import type { Canonical, Json, stringified } from "atom.io/json"
 
 import type {
 	disposeState,
@@ -37,50 +29,46 @@ export type StateCreation<Token extends ReadableToken<any>> = {
 	type: `state_creation`
 	token: Token
 }
-export type StateDisposal<Token extends ReadableToken<any>> = {
+export type AtomDisposal<Token extends ReadableToken<any>> = {
 	type: `state_disposal`
+	subType: `atom`
 	token: Token
-	value?: TokenType<Token>
+	value: TokenType<Token>
+}
+export type SelectorDisposal<Token extends ReadableToken<any>> = {
+	type: `state_disposal`
+	subType: `selector`
+	token: Token
+}
+export type StateDisposal<Token extends ReadableToken<any>> =
+	| AtomDisposal<Token>
+	| SelectorDisposal<Token>
+
+export type MoleculeCreation = {
+	type: `molecule_creation`
+	key: Canonical
+	provenance: Canonical
 }
 
-export type MoleculeCreationClassic<M extends MoleculeConstructor> = {
-	type: `molecule_creation`
-	subType: `classic`
-	token: MoleculeToken<M>
-	family: MoleculeFamilyToken<M>
-	context: MoleculeToken<any>[]
-	params: MoleculeParams<M>
-}
-export type MoleculeCreationModern = {
-	type: `molecule_creation`
-	subType: `modern`
-	key: Canonical
-	provenance: Canonical
-}
-export type MoleculeCreation<M extends MoleculeConstructor> =
-	| MoleculeCreationClassic<M>
-	| MoleculeCreationModern
-export type MoleculeDisposalClassic = {
+export type MoleculeDisposal = {
 	type: `molecule_disposal`
-	subType: `classic`
-	token: MoleculeToken<any>
-	family: MoleculeFamilyToken<any>
-	context: MoleculeToken<any>[]
+	key: Canonical
+	provenance: stringified<Canonical>[]
 	values: [key: string, value: any][]
 }
-export type MoleculeDisposalModern = {
-	type: `molecule_disposal`
-	subType: `modern`
+
+export type MoleculeTransfer = {
+	type: `molecule_transfer`
 	key: Canonical
-	provenance: Canonical
-	values: [key: string, value: any][]
+	from: Canonical[]
+	to: Canonical[]
 }
-export type MoleculeDisposal = MoleculeDisposalClassic | MoleculeDisposalModern
 
 export type TransactionUpdateContent =
 	| KeyedStateUpdate<unknown>
-	| MoleculeCreation<any>
+	| MoleculeCreation
 	| MoleculeDisposal
+	| MoleculeTransfer
 	| StateCreation<ReadableToken<unknown>>
 	| StateDisposal<ReadableToken<unknown>>
 	| TransactionUpdate<Func>
@@ -113,7 +101,6 @@ export type ActorToolkit = Readonly<{
 	json: <T extends Transceiver<any>, J extends Json.Serializable>(
 		state: MutableAtomToken<T, J>,
 	) => WritableSelectorToken<J>
-	make: typeof makeMolecule
 	dispose: typeof disposeState
 	run: typeof runTransaction
 	env: () => EnvironmentData

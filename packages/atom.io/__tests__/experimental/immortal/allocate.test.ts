@@ -1,19 +1,18 @@
-import { randomUUID } from "node:crypto"
-
 import type { Above, Below, Hierarchy, Logger, Mutuals, Vassal } from "atom.io"
 import {
+	Anarchy,
 	atomFamily,
 	disposeState,
 	getState,
-	realm,
+	Realm,
 	redo,
 	runTransaction,
 	setState,
-	T$,
 	timeline,
 	transaction,
 	undo,
 } from "atom.io"
+import { editRelations, join } from "atom.io/data"
 import { clearStore, IMPLICIT } from "atom.io/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
@@ -30,63 +29,97 @@ beforeEach(() => {
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
 })
-describe(`allocate`, () => {
-	test(`the Hierarchy + allocate + claim pattern`, () => {
-		type GameKey = `game::${string}`
-		type UserKey = `user::${string}`
-		type PlayerKey = `T$--player==${GameKey}++${UserKey}`
-		type ItemKey = `item::${string}`
+describe(`allocate + claim + deallocate`, () => {
+	type GameKey = `game::${string}`
+	type UserKey = `user::${string}`
+	type PlayerKey = `T$--player==${GameKey}++${UserKey}`
+	type ItemKey = `item::${string}`
 
-		type GameHierarchy = Hierarchy<
-			[
-				{
-					above: `root`
-					below: [GameKey, UserKey]
-				},
-				{
-					above: [GameKey, UserKey]
-					style: `all`
-					below: PlayerKey
-				},
-				{
-					above: GameKey
-					below: [ItemKey]
-				},
-				{
-					above: PlayerKey
-					below: [ItemKey]
-				},
-			]
-		>
+	type GameHierarchy = Hierarchy<
+		[
+			{
+				above: `root`
+				below: [GameKey, UserKey]
+			},
+			{
+				above: [GameKey, UserKey]
+				below: PlayerKey
+			},
+			{
+				above: GameKey
+				below: [ItemKey]
+			},
+			{
+				above: PlayerKey
+				below: [ItemKey]
+			},
+		]
+	>
 
-		type GameVassal = Vassal<GameHierarchy>
+	type GameVassal = Vassal<GameHierarchy>
 
-		type AboveGame = Above<GameKey, GameHierarchy>
-		type AboveUser = Above<UserKey, GameHierarchy>
-		type AbovePlayer = Above<PlayerKey, GameHierarchy>
-		type AboveItem = Above<ItemKey, GameHierarchy>
+	type AboveGame = Above<GameKey, GameHierarchy>
+	type AboveUser = Above<UserKey, GameHierarchy>
+	type AbovePlayer = Above<PlayerKey, GameHierarchy>
+	type AboveItem = Above<ItemKey, GameHierarchy>
 
-		type BelowGame = Below<GameKey, GameHierarchy>
-		type BelowUser = Below<UserKey, GameHierarchy>
-		type BelowGameUser = Below<[GameKey, UserKey], GameHierarchy>
-		type BelowPlayer = Below<PlayerKey, GameHierarchy>
-		type BelowItem = Below<ItemKey, GameHierarchy>
+	type BelowGame = Below<GameKey, GameHierarchy>
+	type BelowUser = Below<UserKey, GameHierarchy>
+	type BelowGameUser = Below<[GameKey, UserKey], GameHierarchy>
+	type BelowPlayer = Below<PlayerKey, GameHierarchy>
+	type BelowItem = Below<ItemKey, GameHierarchy>
 
-		type GameMutuals = Mutuals<GameKey, GameHierarchy>
-		type UserMutuals = Mutuals<UserKey, GameHierarchy>
-		type PlayerMutuals = Mutuals<PlayerKey, GameHierarchy>
-		type ItemMutuals = Mutuals<ItemKey, GameHierarchy>
+	type GameMutuals = Mutuals<GameKey, GameHierarchy>
+	type UserMutuals = Mutuals<UserKey, GameHierarchy>
+	type PlayerMutuals = Mutuals<PlayerKey, GameHierarchy>
+	type ItemMutuals = Mutuals<ItemKey, GameHierarchy>
+	const gameXKey = `game::xxx` satisfies GameKey
+	const userAKey = `user::aaa` satisfies UserKey
+	const userBKey = `user::bbb` satisfies UserKey
+	const swordKey = `item::sword` satisfies ItemKey
+	const shieldKey = `item::shield` satisfies ItemKey
 
-		const durabilityAtoms = atomFamily<number, ItemKey>({
+	test(`happy path`, () => {
+		const attackPowerAtoms = atomFamily<number, ItemKey>({
 			key: `durability`,
 			default: 0,
 		})
 
-		const gameKey = `game::xxx` satisfies GameKey
-		const userKey = `user::yyy` satisfies UserKey
-		const playerKey = `T$--player==${gameKey}++${userKey}` satisfies PlayerKey
-		const swordKey = `item::sword` satisfies ItemKey
-		const shieldKey = `item::shield` satisfies ItemKey
+		const gameRealm = new Realm<GameHierarchy>(IMPLICIT.STORE)
+
+		const gameXClaim = gameRealm.allocate(`root`, `game::xxx`)
+		const userAClaim = gameRealm.allocate(`root`, userAKey)
+		const userBClaim = gameRealm.allocate(`root`, userBKey)
+		const playerXAClaim = gameRealm.fuse(`player`, gameXClaim, userAClaim)
+		const playerXBClaim = gameRealm.fuse(`player`, gameXClaim, userBClaim)
+		const swordClaim = gameRealm.allocate(playerXAClaim, swordKey)
+		const shieldClaim = gameRealm.allocate(gameXClaim, shieldKey)
+
+		let swordAttackPower: number
+		swordAttackPower = getState(attackPowerAtoms, swordClaim)
+		expect(swordAttackPower).toBe(0)
+		setState(attackPowerAtoms, swordClaim, 35)
+
+		swordAttackPower = getState(attackPowerAtoms, swordClaim)
+		expect(swordAttackPower).toBe(35)
+
+		disposeState(attackPowerAtoms, swordClaim)
+
+		swordAttackPower = getState(attackPowerAtoms, swordClaim)
+		expect(swordAttackPower).toBe(0)
+
+		gameRealm.claim(playerXBClaim, swordClaim, `exclusive`)
+		gameRealm.claim(playerXBClaim, shieldClaim, `exclusive`)
+
+		gameRealm.deallocate(gameXClaim)
+
+		expect(logger.error).toHaveBeenCalledTimes(0)
+	})
+	test(`unhappy path`, () => {
+		const durabilityAtoms = atomFamily<number, ItemKey>({
+			key: `durability`,
+			default: 0,
+		})
 
 		expect(logger.error).toHaveBeenCalledTimes(0)
 		let myItemDurability = getState(durabilityAtoms, swordKey)
@@ -97,41 +130,71 @@ describe(`allocate`, () => {
 		myItemDurability = getState(durabilityAtoms, swordKey)
 		expect(logger.error).toHaveBeenCalledTimes(6)
 		expect(myItemDurability).toBe(0)
-
-		const gameRealm = realm<GameHierarchy>(IMPLICIT.STORE)
-
-		const gameClaim = gameRealm.allocate(`root`, gameKey)
-		const userClaim = gameRealm.allocate(`root`, userKey)
-		const playerClaim = gameRealm.allocate([gameClaim, userClaim], playerKey)
-		const swordClaim = gameRealm.allocate(playerClaim, swordKey)
-		const shieldClaim = gameRealm.allocate(gameClaim, shieldKey)
-
-		myItemDurability = getState(durabilityAtoms, swordClaim)
-		expect(logger.error).toHaveBeenCalledTimes(6)
-		expect(myItemDurability).toBe(0)
-		setState(durabilityAtoms, swordClaim, 35)
-
-		myItemDurability = getState(durabilityAtoms, swordClaim)
-		expect(logger.error).toHaveBeenCalledTimes(6)
-		expect(myItemDurability).toBe(35)
-
-		disposeState(durabilityAtoms, swordClaim)
-
-		myItemDurability = getState(durabilityAtoms, swordClaim)
-		expect(logger.error).toHaveBeenCalledTimes(6)
-		expect(myItemDurability).toBe(0)
-
-		gameRealm.deallocate(gameClaim)
-
-		console.log(IMPLICIT.STORE.molecules)
-
-		gameRealm.allocate(playerClaim, `item::aaa`)
-		gameRealm.allocate(gameClaim, `item::aaa`)
-		gameRealm.allocate(
-			[gameClaim, userClaim],
-			`T$--player==${gameKey}++${userKey}`,
-		)
 	})
+})
+describe(`errors`, () => {
+	test(`allocating under a non-existent claim`, () => {
+		const anarchy = new Anarchy()
+		anarchy.allocate(`me`, `myPet`)
+		expect(IMPLICIT.STORE.molecules.size).toBe(1)
+		expect(logger.error).toHaveBeenCalledTimes(1)
+		anarchy.allocate([`me`, `you`], `myPet`)
+	})
+	test(`allocating under a previously disposed claim`, () => {
+		const anarchy = new Anarchy()
+		anarchy.allocate(`root`, `myself`)
+		anarchy.deallocate(`myself`)
+		anarchy.allocate(`myself`, `myPet`)
+		expect(IMPLICIT.STORE.molecules.size).toBe(1)
+		expect(logger.error).toHaveBeenCalledTimes(1)
+	})
+	test(`deallocating a non-existent claim`, () => {
+		const anarchy = new Anarchy()
+		anarchy.deallocate(`myself`)
+		expect(IMPLICIT.STORE.molecules.size).toBe(1)
+		expect(logger.error).toHaveBeenCalledTimes(1)
+	})
+	test(`deallocating a previously disposed claim`, () => {
+		const anarchy = new Anarchy()
+		anarchy.allocate(`root`, `me`)
+		anarchy.deallocate(`me`)
+		anarchy.deallocate(`me`)
+		expect(logger.error).toHaveBeenCalledTimes(1)
+	})
+	test(`claiming a non-existent claim`, () => {
+		const anarchy = new Anarchy()
+		anarchy.allocate(`root`, `myself`)
+		anarchy.claim(`myself`, `myPet`)
+		expect(IMPLICIT.STORE.molecules.size).toBe(2)
+		expect(logger.error).toHaveBeenCalledTimes(1)
+	})
+	test(`claiming a previously disposed claim`, () => {
+		const anarchy = new Anarchy()
+		anarchy.allocate(`root`, `myself`)
+		anarchy.allocate(`root`, `myPet`)
+		anarchy.deallocate(`myPet`)
+		anarchy.claim(`myself`, `myPet`)
+		expect(IMPLICIT.STORE.molecules.size).toBe(2)
+		expect(logger.error).toHaveBeenCalledTimes(1)
+	})
+	test(`claiming a real claim under a non-existent claim`, () => {
+		const anarchy = new Anarchy()
+		anarchy.allocate(`root`, `myPet`)
+		anarchy.claim(`myself`, `myPet`)
+		expect(IMPLICIT.STORE.molecules.size).toBe(2)
+		expect(logger.error).toHaveBeenCalledTimes(1)
+	})
+	test(`claiming a a real claim under a previously disposed claim`, () => {
+		const anarchy = new Anarchy()
+		anarchy.allocate(`root`, `myself`)
+		anarchy.deallocate(`myself`)
+		anarchy.allocate(`root`, `myPet`)
+		anarchy.claim(`myself`, `myPet`)
+		expect(IMPLICIT.STORE.molecules.size).toBe(2)
+		expect(logger.error).toHaveBeenCalledTimes(1)
+	})
+})
+describe(`integrations`, () => {
 	test(`transaction+timeline support`, () => {
 		type DocumentKey = `document::${string}`
 		type UserKey = `user::${string}`
@@ -152,7 +215,7 @@ describe(`allocate`, () => {
 				},
 			]
 		>
-		const { allocate, deallocate } = realm<DocumentHierarchy>(IMPLICIT.STORE)
+		const documentRealm = new Realm<DocumentHierarchy>(IMPLICIT.STORE)
 
 		const documentAtoms = atomFamily<string, DocumentKey>({
 			key: `doc`,
@@ -160,12 +223,12 @@ describe(`allocate`, () => {
 		})
 
 		const createDocumentTX = transaction<
-			(owner: UserGroupKey | UserKey) => DocumentKey
+			(owner: UserGroupKey | UserKey, id: string) => DocumentKey
 		>({
 			key: `createDocument`,
-			do: ({ set }, owner) => {
-				const documentKey = `document::${randomUUID()}` satisfies DocumentKey
-				allocate(owner, documentKey)
+			do: ({ set }, owner, id) => {
+				const documentKey = `document::${id}` satisfies DocumentKey
+				documentRealm.allocate(owner, documentKey)
 				set(documentAtoms, documentKey, `hello work!`)
 				return documentKey
 			},
@@ -173,7 +236,22 @@ describe(`allocate`, () => {
 		const deleteDocumentTX = transaction<(document: DocumentKey) => void>({
 			key: `deleteDocument`,
 			do: (_, document) => {
-				deallocate(document)
+				documentRealm.deallocate(document)
+			},
+		})
+		function identity<T>(x: T): T {
+			return x
+		}
+		const transferDocumentTX = transaction<
+			(opts: {
+				to: UserGroupKey
+				document: DocumentKey
+			}) => void
+		>({
+			key: `transferDocument`,
+			do: ({ set }, { to, document }) => {
+				documentRealm.claim(to, document, `exclusive`)
+				set(documentAtoms, document, identity) // TODO -- possible to avoid "bumping" a state to get picked up by a timeline?
 			},
 		})
 
@@ -183,11 +261,14 @@ describe(`allocate`, () => {
 		})
 		const createDocument = runTransaction(createDocumentTX)
 		const deleteDocument = runTransaction(deleteDocumentTX)
+		const transferDocument = runTransaction(transferDocumentTX)
 
-		allocate(`root`, `userGroup::homies`)
-		const documentClaim = createDocument(`userGroup::homies`)
+		documentRealm.allocate(`root`, `userGroup::homies`)
+		const documentClaim = createDocument(`userGroup::homies`, `1`)
+
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
 		deleteDocument(documentClaim)
+
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
 		undo(documentTimeline)
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
@@ -197,5 +278,69 @@ describe(`allocate`, () => {
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
 		redo(documentTimeline)
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
+		documentRealm.allocate(`root`, `userGroup::workPals`)
+		expect(IMPLICIT.STORE.molecules.size).toBe(3)
+		documentRealm.allocate(`userGroup::homies`, `document::work`)
+		expect(IMPLICIT.STORE.molecules.size).toBe(4)
+		const homiesConfiguration = new Map([
+			[
+				`"document::work":"userGroup::homies"`,
+				{ source: `"userGroup::homies"` },
+			],
+			[`"root":"userGroup::homies"`, { source: `"root"` }],
+			[`"root":"userGroup::workPals"`, { source: `"root"` }],
+		])
+		expect(IMPLICIT.STORE.moleculeGraph.contents).toEqual(homiesConfiguration)
+		transferDocument({ to: `userGroup::workPals`, document: `document::work` })
+		const workPalsConfiguration = new Map([
+			[
+				`"document::work":"userGroup::workPals"`,
+				{ source: `"userGroup::workPals"` },
+			],
+
+			[`"root":"userGroup::homies"`, { source: `"root"` }],
+			[`"root":"userGroup::workPals"`, { source: `"root"` }],
+		])
+		expect(IMPLICIT.STORE.moleculeGraph.contents).toEqual(workPalsConfiguration)
+		undo(documentTimeline)
+		expect(IMPLICIT.STORE.moleculeGraph.contents).toEqual(homiesConfiguration)
+	})
+	test(`join supports allocation pattern`, () => {
+		const roomPlayers = join(
+			{
+				key: `roomPlayers`,
+				between: [`room`, `player`],
+				cardinality: `1:1`,
+				isAType: (input): input is `arena` | `lobby` =>
+					[`lobby`, `arena`].includes(input),
+				isBType: (input): input is `joshua` => input === `joshua`,
+			},
+			{ joinedAt: Number.NaN },
+		)
+		const anarchy = new Anarchy()
+		anarchy.allocate(`root`, `joshua`)
+		anarchy.allocate(`root`, `lobby`)
+
+		expect([...IMPLICIT.STORE.molecules.keys()]).toEqual([
+			`"root"`,
+			`"roomPlayers"`,
+			`"joshua"`,
+			`"lobby"`,
+		])
+		expect(IMPLICIT.STORE.valueMap.size).toBe(0)
+
+		editRelations(roomPlayers, (relations) => {
+			relations.set(
+				{ player: `joshua`, room: `lobby` },
+				{ joinedAt: Date.now() },
+			)
+		})
+		expect(IMPLICIT.STORE.molecules.size).toBe(5)
+		expect(IMPLICIT.STORE.moleculeGraph.relations.size).toBe(5)
+		expect(IMPLICIT.STORE.valueMap.size).toBe(5)
+		anarchy.deallocate(`lobby`)
+		expect(IMPLICIT.STORE.molecules.size).toBe(3)
+		expect(IMPLICIT.STORE.moleculeGraph.relations.size).toBe(3)
+		expect(IMPLICIT.STORE.valueMap.size).toBe(2)
 	})
 })

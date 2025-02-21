@@ -1,4 +1,3 @@
-import type { MoleculeFamilyToken } from "atom.io"
 import type {
 	Timeline,
 	TimelineAtomUpdate,
@@ -31,7 +30,7 @@ export type TimelineToken<M> = {
 
 export type TimelineOptions<ManagedAtom extends TimelineManageable> = {
 	key: string
-	scope: (ManagedAtom | MoleculeFamilyToken<any>)[]
+	scope: ManagedAtom[]
 	shouldCapture?: (
 		update: TimelineUpdate<ManagedAtom>,
 		timeline: Timeline<TimelineManageable>,
@@ -40,7 +39,7 @@ export type TimelineOptions<ManagedAtom extends TimelineManageable> = {
 
 export type TimelineUpdate<ManagedAtom extends TimelineManageable> =
 	| TimelineAtomUpdate<ManagedAtom>
-	| TimelineMoleculeCreation<any>
+	| TimelineMoleculeCreation
 	| TimelineMoleculeDisposal
 	| TimelineSelectorUpdate<ManagedAtom>
 	| TimelineStateCreation<AtomOnly<ManagedAtom>>

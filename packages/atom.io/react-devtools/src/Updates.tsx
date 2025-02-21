@@ -95,6 +95,7 @@ const TransactionUpdateFC: React.FC<{
 							(token) =>
 								token.type !== `molecule_creation` &&
 								token.type !== `molecule_disposal` &&
+								token.type !== `molecule_transfer` &&
 								token.type !== `state_creation` &&
 								token.type !== `state_disposal` &&
 								!token.key.startsWith(`👁‍🗨`),
@@ -148,6 +149,7 @@ export const TimelineUpdateFC: React.FC<{
 							(token) =>
 								token.type !== `molecule_creation` &&
 								token.type !== `molecule_disposal` &&
+								token.type !== `molecule_transfer` &&
 								token.type !== `state_creation` &&
 								token.type !== `state_disposal` &&
 								!token.key.startsWith(`👁‍🗨`),

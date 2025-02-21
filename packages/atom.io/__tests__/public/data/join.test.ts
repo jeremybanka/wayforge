@@ -8,7 +8,6 @@ import {
 } from "atom.io/data"
 import * as Internal from "atom.io/internal"
 import { vitest } from "vitest"
-import { number } from "zod"
 
 import * as Utils from "../../__util__"
 
@@ -150,9 +149,9 @@ describe(`join with content`, () => {
 				key: `playersInRooms`,
 				between: [`room`, `player`],
 				cardinality: `n:n`,
-				isAType: (input): input is `arena` | `lobby` =>
+				isAType: (input): input is `room::arena` | `room::lobby` =>
 					[`lobby`, `arena`].includes(input),
-				isBType: (input): input is `josh` | `joshua` =>
+				isBType: (input): input is `player::josh` | `player::joshua` =>
 					[`josh`, `joshua`].includes(input),
 			},
 			{ joinedAt: Number.NaN },
@@ -160,19 +159,19 @@ describe(`join with content`, () => {
 
 		const lobbyPlayersState = findRelations(
 			roomPlayers,
-			`lobby`,
+			`room::lobby`,
 		).playerKeysOfRoom
 		const joshuaRoomsState = findRelations(
 			roomPlayers,
-			`joshua`,
+			`player::joshua`,
 		).roomKeysOfPlayer
 		const lobbyPlayerEntriesState = findRelations(
 			roomPlayers,
-			`lobby`,
+			`room::lobby`,
 		).playerEntriesOfRoom
 		const joshuaRoomsEntriesState = findRelations(
 			roomPlayers,
-			`joshua`,
+			`player::joshua`,
 		).roomEntriesOfPlayer
 
 		subscribe(lobbyPlayersState, Utils.stdout0)
@@ -182,35 +181,38 @@ describe(`join with content`, () => {
 
 		const joinedAt = Date.now()
 		editRelations(roomPlayers, (relations) => {
-			relations.set({ player: `joshua`, room: `lobby` }, { joinedAt })
-			expect(relations.has(`josh`)).toBe(false)
-			expect(relations.has(`josh`, `lobby`)).toBe(false)
-			expect(relations.has(`joshua`)).toBe(true)
-			expect(relations.has(`joshua`, `lobby`)).toBe(true)
-			expect(relations.getContent(`lobby`, `joshua`)).toEqual({
+			relations.set(
+				{ room: `room::lobby`, player: `player::joshua` },
+				{ joinedAt },
+			)
+			expect(relations.has(`player::josh`)).toBe(false)
+			expect(relations.has(`player::josh`, `room::lobby`)).toBe(false)
+			expect(relations.has(`player::joshua`)).toBe(true)
+			expect(relations.has(`player::joshua`, `room::lobby`)).toBe(true)
+			expect(relations.getContent(`room::lobby`, `player::joshua`)).toEqual({
 				joinedAt,
 			})
 		})
 
 		expect(Utils.stdout0).toHaveBeenCalledWith({
 			oldValue: [],
-			newValue: [`joshua`],
+			newValue: [`player::joshua`],
 		})
 		expect(Utils.stdout1).toHaveBeenCalledWith({
 			oldValue: [],
-			newValue: [`lobby`],
+			newValue: [`room::lobby`],
 		})
 		expect(Utils.stdout2).toHaveBeenCalledWith({
 			oldValue: [],
-			newValue: [[`joshua`, { joinedAt }]],
+			newValue: [[`player::joshua`, { joinedAt }]],
 		})
 		expect(Utils.stdout3).toHaveBeenCalledWith({
 			oldValue: [],
-			newValue: [[`lobby`, { joinedAt }]],
+			newValue: [[`room::lobby`, { joinedAt }]],
 		})
 
 		editRelations(roomPlayers, (relations) => {
-			relations.delete({ player: `joshua`, room: `lobby` })
+			relations.delete(`room::lobby`, `player::joshua`)
 		})
 
 		expect(getState(lobbyPlayersState)).toEqual([])

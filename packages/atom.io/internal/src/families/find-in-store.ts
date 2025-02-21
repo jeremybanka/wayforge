@@ -16,9 +16,14 @@ import type {
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
-import { type Canonical, type Json, stringifyJson } from "atom.io/json"
+import {
+	type Canonical,
+	type Json,
+	stringified,
+	stringifyJson,
+} from "atom.io/json"
 
-import { growMoleculeInStore } from "../molecule"
+import { newest } from "../lineage"
 import type { Transceiver } from "../mutable"
 import { counterfeit, type Store } from "../store"
 import { initFamilyMemberInStore } from "./init-family-member"
@@ -80,17 +85,15 @@ export function findInStore<T, K extends Canonical, Key extends K>(
 export function findInStore(
 	store: Store,
 	token: ReadableFamilyToken<any, any>,
-	key: Json.Serializable,
+	key: Canonical,
 ): ReadableToken<any> {
 	let state = seekInStore(store, token, key)
 	if (state) {
 		return state
 	}
-	const molecule = store.molecules.get(stringifyJson(key))
-	if (molecule) {
-		return growMoleculeInStore(molecule, token, store)
-	}
-	if (store.config.lifespan === `immortal`) {
+	const stringKey = stringifyJson(key)
+	const molecule = store.molecules.get(stringKey)
+	if (!molecule && store.config.lifespan === `immortal`) {
 		const fakeToken = counterfeit(token, key)
 		store.logger.error(
 			`❌`,
@@ -101,5 +104,9 @@ export function findInStore(
 		return fakeToken
 	}
 	state = initFamilyMemberInStore(store, token, key)
+	if (molecule) {
+		const target = newest(store)
+		target.moleculeData.set(stringKey, token.key)
+	}
 	return state
 }

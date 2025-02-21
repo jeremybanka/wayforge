@@ -1,4 +1,4 @@
-import type { CtorToolkit, Logger } from "atom.io"
+import type { Logger } from "atom.io"
 import {
 	atomFamily,
 	getState,
@@ -95,47 +95,5 @@ describe(`selector families`, () => {
 				},
 		})
 		expect(getState(lengthSelectors, `hi`)).toBe(0)
-	})
-	it(`won't implicitly create in an immortal store`, () => {
-		const $ = new Silo({ name: `IMMORTAL`, lifespan: `immortal` })
-		const arrayAtoms = $.atomFamily<number[], string>({
-			key: `array`,
-			default: [],
-		})
-		const lengthSelectors = $.selectorFamily<number, string>({
-			key: `length`,
-			get:
-				(key) =>
-				({ get }) => {
-					const array = get(arrayAtoms, key)
-					return array.length
-				},
-		})
-		const root = makeRootMoleculeInStore(`root`, $.store)
-		const myMoleculeFamily = $.moleculeFamily({
-			key: `myMoleculeFamily`,
-			new: class MyMolecule {
-				public constructor(
-					tools: CtorToolkit<string>,
-					public key: string,
-					bondAtom: boolean,
-				) {
-					if (bondAtom) {
-						tools.bond(arrayAtoms)
-					}
-					tools.bond(lengthSelectors)
-				}
-			},
-		})
-
-		expect(() =>
-			$.makeMolecule(root, myMoleculeFamily, `hi`, false),
-		).toThrowError(
-			`Atom Family "array" member "hi" not found in store "IMMORTAL".`,
-		)
-
-		expect(() =>
-			$.makeMolecule(root, myMoleculeFamily, `hi`, true),
-		).not.toThrowError()
 	})
 })

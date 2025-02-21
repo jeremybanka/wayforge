@@ -50,9 +50,10 @@ export function setIntoStore<T, New extends T>(
 		token = findInStore(store, family, key)
 	}
 
-	if (`counterfeit` in token) {
+	if (`counterfeit` in token && `family` in token) {
+		const subKey = token.family.subKey
 		const disposal = store.disposalTraces.buffer.find(
-			(item) => item?.key === token.key,
+			(item) => item?.key === subKey,
 		)
 		store.logger.error(
 			`❌`,
