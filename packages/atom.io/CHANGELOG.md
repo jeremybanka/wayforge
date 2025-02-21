@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.31.0
+
+### Minor Changes
+
+- 91f259e: 💥 BREAKING CHANGE: `moleculeFamily` has been replaced with the new `allocate`, `deallocate`, `claim`, and `fuse` functions for immortal stores.
+
 ## 0.30.7
 
 ### Patch Changes
