@@ -1,9 +1,7 @@
-import type { Store } from "atom.io/internal"
+import { setIntoStore, type Store } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
-import { upsertState } from "./upsert-state"
-
-export function useRevealState(store: Store, continuityKey: string) {
+export function useRevealState(store: Store) {
 	return (revealed: Json.Array): void => {
 		let i = 0
 		let k: any
@@ -13,7 +11,7 @@ export function useRevealState(store: Store, continuityKey: string) {
 				k = x
 			} else {
 				v = x
-				upsertState(store, continuityKey, k, v)
+				setIntoStore(store, k, v)
 			}
 			i++
 		}

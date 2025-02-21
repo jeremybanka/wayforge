@@ -110,7 +110,7 @@ export function syncContinuity(
 		return unsubscribeFromTransactionUpdates
 	})
 
-	const revealState = useRevealState(store, continuityKey)
+	const revealState = useRevealState(store)
 	const concealState = useConcealState(store)
 	socket.on(`reveal:${continuityKey}`, revealState)
 	socket.on(`conceal:${continuityKey}`, concealState)

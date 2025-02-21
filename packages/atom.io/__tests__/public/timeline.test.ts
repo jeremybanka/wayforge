@@ -349,3 +349,10 @@ describe(`timeline state lifecycle`, () => {
 		redo(countsTL)
 	})
 })
+
+describe(`errors`, () => {
+	test(`what if the timeline isn't initialized`, () => {
+		undo({ key: `my-timeline`, type: `timeline` })
+		expect(logger.error).toHaveBeenCalledTimes(1)
+	})
+})
