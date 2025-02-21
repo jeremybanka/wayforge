@@ -260,10 +260,9 @@ export async function diff(defaultBranch: string): Promise<0 | 1> {
 		await write(`${tempDir.name}/out.json`, coverage)
 		let textReport: string
 		try {
-			textReport =
-				await $`nyc report --reporter=text --color=0 --temp-dir=${tempDir.name}`
-					.env({ ...process.env, COLUMNS })
-					.text()
+			textReport = await $`nyc report --reporter=text --temp-dir=${tempDir.name}`
+				.env({ ...process.env, COLUMNS, FORCE_COLOR: `0` })
+				.text()
 		} catch (thrown) {
 			const caught = thrown as ShellError
 			console.log(caught.stdout.toString())
@@ -298,12 +297,28 @@ export async function diff(defaultBranch: string): Promise<0 | 1> {
 			mainCoverageTextReport,
 			currentCoverageTextReport,
 		)
-		for (const line of coverageDiffLines) {
-			const text = line.added
-				? colors.bgGreen(line.value)
-				: line.removed
-					? colors.bgRed(line.value)
-					: line.value
+		for (const chunk of coverageDiffLines) {
+			const split = chunk.value.split(`\n`)
+			const text = split
+				.map((line, i) => {
+					if (line.startsWith(`---`)) {
+						return `--${line}`
+					}
+					if (line.startsWith(`File  `)) {
+						return line.replace(`File`, `File  `)
+					}
+					if (i === split.length - 1) {
+						return ``
+					}
+					if (chunk.added) {
+						return env.CI ? colors.green(`+ ${line}`) : colors.green(`+ ${line}`)
+					}
+					if (chunk.removed) {
+						return env.CI ? colors.red(`- ${line}`) : colors.red(`- ${line}`)
+					}
+					return `  ${line}`
+				})
+				.join(`\n`)
 			process.stdout.write(text)
 		}
 	}
