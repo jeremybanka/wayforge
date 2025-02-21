@@ -16,12 +16,7 @@ import type {
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
-import {
-	type Canonical,
-	type Json,
-	stringified,
-	stringifyJson,
-} from "atom.io/json"
+import { type Canonical, type Json, stringifyJson } from "atom.io/json"
 
 import { newest } from "../lineage"
 import type { Transceiver } from "../mutable"
