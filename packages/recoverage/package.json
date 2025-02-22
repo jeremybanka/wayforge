@@ -40,6 +40,8 @@
 		"comline": "workspace:*",
 		"diff": "7.0.0",
 		"istanbul-lib-coverage": "3.2.2",
+		"simple-git": "3.27.0",
+		"tmp": "0.2.3",
 		"zod": "3.24.2"
 	},
 	"devDependencies": {
@@ -50,8 +52,6 @@
 		"concurrently": "9.1.2",
 		"eslint": "9.21.0",
 		"nyc": "17.1.0",
-		"simple-git": "3.27.0",
-		"tmp": "0.2.3",
 		"tsup": "8.3.6",
 		"vitest": "3.0.6",
 		"yalc": "1.0.0-pre.53"
