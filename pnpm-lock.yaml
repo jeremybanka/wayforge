@@ -1201,6 +1201,12 @@ importers:
       istanbul-lib-coverage:
         specifier: 3.2.2
         version: 3.2.2
+      simple-git:
+        specifier: 3.27.0
+        version: 3.27.0
+      tmp:
+        specifier: 0.2.3
+        version: 0.2.3
       zod:
         specifier: 3.24.2
         version: 3.24.2
@@ -1226,12 +1232,6 @@ importers:
       nyc:
         specifier: 17.1.0
         version: 17.1.0
-      simple-git:
-        specifier: 3.27.0
-        version: 3.27.0
-      tmp:
-        specifier: 0.2.3
-        version: 0.2.3
       tsup:
         specifier: 8.3.6
         version: 8.3.6(@microsoft/api-extractor@7.49.2(@types/node@22.13.5))(@swc/core@1.10.15(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.2)(tsx@4.19.3)(typescript@5.7.3)
