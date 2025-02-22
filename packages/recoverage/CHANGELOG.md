@@ -1,5 +1,11 @@
 # treetrunks
 
+## 0.0.7
+
+### Patch Changes
+
+- 027b09d: ➕ Add dependencies `tmp` and `simple-git` (which were already necessary but declared as dev dependencies).
+
 ## 0.0.6
 
 ### Patch Changes
