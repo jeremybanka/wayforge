@@ -48,7 +48,7 @@
 		"@biomejs/wasm-nodejs": "1.9.4",
 		"@types/node": "22.13.5",
 		"@types/tmp": "0.2.6",
-		"bun-types": "1.2.2",
+		"bun-types": "1.2.3",
 		"concurrently": "9.1.2",
 		"eslint": "9.21.0",
 		"json-schema-to-zod": "2.6.0",
