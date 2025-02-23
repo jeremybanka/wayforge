@@ -102,14 +102,14 @@ T extends Transceiver<any>,
 J extends Json.Serializable,
 K extends Canonical,
 > = 
-& JsonInterface<T, J>
-& MutableAtomFamilyToken<T, J, K>
-& {
-		(key: K): MutableAtomToken<T, J>
-		subject: Subject<StateCreation<MutableAtomToken<T, J>> | StateDisposal<MutableAtomToken<T, J>>>
-		install: (store: Store) => void
-		internalRoles: string[] | undefined
-	}
+	& JsonInterface<T, J>
+	& MutableAtomFamilyToken<T, J, K>
+	& {
+			(key: K): MutableAtomToken<T, J>
+			subject: Subject<StateCreation<MutableAtomToken<T, J>> | StateDisposal<MutableAtomToken<T, J>>>
+			install: (store: Store) => void
+			internalRoles: string[] | undefined
+		}
 
 export type AtomFamily<T, K extends Canonical = Canonical> =
 	| MutableAtomFamily<T extends Transceiver<any> ? T : never, any, K>
