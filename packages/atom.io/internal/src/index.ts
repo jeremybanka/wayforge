@@ -17,6 +17,8 @@ import type { Canonical, Json, JsonInterface } from "atom.io/json"
 import type { Transceiver } from "./mutable"
 import type { Store } from "./store"
 import type { Subject } from "./subject"
+import type { Timeline } from "./timeline"
+import type { Transaction } from "./transaction"
 
 export * from "./arbitrary"
 export * from "./atom"
@@ -145,3 +147,9 @@ export type WritableFamily<T, K extends Canonical> =
 export type ReadableFamily<T, K extends Canonical> =
 	| AtomFamily<T, K>
 	| SelectorFamily<T, K>
+
+export type AtomIOInternalResource =
+	| ReadableFamily<any, any>
+	| ReadableState<any>
+	| Timeline<any>
+	| Transaction<any>

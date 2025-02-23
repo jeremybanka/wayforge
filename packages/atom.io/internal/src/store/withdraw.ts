@@ -1,5 +1,6 @@
 import type {
 	AtomFamilyToken,
+	AtomIOToken,
 	AtomToken,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
@@ -24,8 +25,8 @@ import type { Canonical, Json } from "atom.io/json"
 import type {
 	Atom,
 	AtomFamily,
+	AtomIOInternalResource,
 	Func,
-	Molecule,
 	MutableAtom,
 	MutableAtomFamily,
 	ReadableFamily,
@@ -46,27 +47,6 @@ import { NotFoundError } from ".."
 import type { Timeline } from "../timeline"
 import type { Transaction } from "../transaction"
 import type { Store } from "./store"
-
-export type Withdrawable =
-	| Atom<any>
-	| AtomFamily<any, any>
-	| Molecule<any>
-	| MutableAtom<any, any>
-	| MutableAtomFamily<any, any, any>
-	| ReadableFamily<any, any>
-	| ReadableState<any>
-	| ReadonlySelector<any>
-	| ReadonlySelectorFamily<any, any>
-	| RegularAtom<any>
-	| RegularAtomFamily<any, any>
-	| Selector<any>
-	| SelectorFamily<any, any>
-	| Timeline<any>
-	| Transaction<any>
-	| WritableFamily<any, any>
-	| WritableSelector<any>
-	| WritableSelectorFamily<any, any>
-	| WritableState<any>
 
 export function withdraw<T>(
 	token: RegularAtomToken<T>,
@@ -142,23 +122,24 @@ export function withdraw<T>(
 ): Timeline<T extends TimelineManageable ? T : never>
 
 export function withdraw<T>(
+	token: WritableToken<T>,
+	store: Store,
+): WritableState<T>
+export function withdraw<T>(
 	token: ReadableToken<T>,
 	store: Store,
 ): ReadableState<T>
 
 export function withdraw(
-	token:
-		| MutableAtomFamilyToken<any, any, any>
-		| MutableAtomToken<any, any>
-		| RegularAtomFamilyToken<any, any>
-		| RegularAtomToken<any>
-		| SelectorFamilyToken<any, any>
-		| SelectorToken<any>
-		| TimelineToken<any>
-		| TransactionToken<any>,
+	token: AtomIOToken,
 	store: Store,
-): Withdrawable {
-	let withdrawn: Withdrawable | undefined
+): AtomIOInternalResource
+
+export function withdraw(
+	token: AtomIOToken,
+	store: Store,
+): AtomIOInternalResource {
+	let withdrawn: AtomIOInternalResource | undefined
 	let target: Store | null = store
 	while (target !== null) {
 		switch (token.type) {

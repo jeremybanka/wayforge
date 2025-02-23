@@ -6,6 +6,8 @@ import type {
 	SelectorFamilyToken,
 	WritableSelectorFamilyToken,
 } from "./selector"
+import type { TimelineToken } from "./timeline"
+import type { TransactionToken } from "./transaction"
 
 export * from "./allocate"
 export * from "./atom"
@@ -20,6 +22,12 @@ export * from "./subscribe"
 export * from "./timeline"
 export * from "./transaction"
 export * from "./validators"
+
+export type AtomIOToken =
+	| ReadableFamilyToken<any, any>
+	| ReadableToken<any>
+	| TimelineToken<any>
+	| TransactionToken<any>
 
 export type RegularAtomToken<T, K extends Canonical = any> = {
 	key: string

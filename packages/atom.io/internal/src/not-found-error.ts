@@ -1,6 +1,6 @@
+import type { AtomIOToken } from "atom.io"
 import { type Json, stringifyJson } from "atom.io/json"
 
-import type { AtomIOToken } from "./pretty-print"
 import { prettyPrintTokenType } from "./pretty-print"
 import type { Store } from "./store"
 
