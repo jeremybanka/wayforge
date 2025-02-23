@@ -1,5 +1,6 @@
 import type {
 	AtomFamilyToken,
+	AtomIOToken,
 	AtomToken,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
@@ -11,6 +12,8 @@ import type {
 	RegularAtomToken,
 	SelectorFamilyToken,
 	SelectorToken,
+	TimelineManageable,
+	TimelineToken,
 	TransactionToken,
 	WritableFamilyToken,
 	WritableSelectorFamilyToken,
@@ -22,6 +25,7 @@ import type { Canonical, Json } from "atom.io/json"
 import type {
 	Atom,
 	AtomFamily,
+	AtomIOInternalResource,
 	Func,
 	MutableAtom,
 	MutableAtomFamily,
@@ -33,6 +37,7 @@ import type {
 	RegularAtomFamily,
 	Selector,
 	SelectorFamily,
+	Timeline,
 	Transceiver,
 	WritableFamily,
 	WritableSelector,
@@ -80,16 +85,13 @@ export function deposit<T>(
 export function deposit<T extends Func>(
 	state: Transaction<T>,
 ): TransactionToken<T>
+export function deposit<M extends TimelineManageable>(
+	state: Timeline<M>,
+): TimelineToken<M>
 
-export function deposit(state: ReadableState<any>): ReadableToken<any>
+export function deposit(resource: AtomIOInternalResource): AtomIOToken
 
-export function deposit(
-	state: ReadableFamily<any, any> | ReadableState<any> | Transaction<Func>,
-): ReadableFamilyToken<any, any> | ReadableToken<any> | TransactionToken<Func>
-
-export function deposit(
-	state: ReadableFamily<any, any> | ReadableState<any> | Transaction<Func>,
-): ReadableFamilyToken<any, any> | ReadableToken<any> | TransactionToken<Func> {
+export function deposit(state: AtomIOInternalResource): AtomIOToken {
 	const token = {
 		key: state.key,
 		type: state.type,
