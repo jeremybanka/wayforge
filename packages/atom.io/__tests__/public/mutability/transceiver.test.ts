@@ -1,6 +1,13 @@
 import type { NumberedSetUpdate } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
+beforeEach(() => {
+	console.warn = () => undefined
+	vitest.spyOn(console, `warn`)
+})
+
+const DEBUG_LOGS = false
+
 describe(`SetRTX`, () => {
 	describe(`constructor`, () => {
 		it(`accepts nothing`, () => {
@@ -75,17 +82,17 @@ describe(`SetRTX`, () => {
 			let lastUpdate: NumberedSetUpdate | null = null
 			set.subscribe(`TEST`, (u) => (lastUpdate = u))
 			set.add(`x`)
-			console.log(set.cacheUpdateNumber, set.cache)
+			if (DEBUG_LOGS) console.log(set.cacheUpdateNumber, set.cache)
 			set.add(`y`)
-			console.log(set.cacheUpdateNumber, set.cache)
+			if (DEBUG_LOGS) console.log(set.cacheUpdateNumber, set.cache)
 			expect(set.size).toBe(2)
 			set.clear()
-			console.log(set.cacheUpdateNumber, set.cache)
+			if (DEBUG_LOGS) console.log(set.cacheUpdateNumber, set.cache)
 			expect(set.size).toBe(0)
-			console.log(set, lastUpdate)
+			if (DEBUG_LOGS) console.log(set, lastUpdate)
 			let res: number | null = null
 			if (lastUpdate) res = set.undo(lastUpdate)
-			console.log(res)
+			if (DEBUG_LOGS) console.log(res)
 			expect(set.size).toBe(2)
 		})
 	})
@@ -158,6 +165,7 @@ describe(`SetRTX`, () => {
 					caught = thrown
 				}
 			}
+			expect(console.warn).toHaveBeenCalledTimes(1)
 			expect(fn).toHaveBeenCalledTimes(0)
 			expect(caught?.message).toBe(`test`)
 		})
@@ -166,14 +174,14 @@ describe(`SetRTX`, () => {
 		it(`should quickly undo false history`, () => {
 			const set = new SetRTX(undefined, 10)
 			set.add(1)
-			console.log(set.cacheUpdateNumber, set.cache)
+			if (DEBUG_LOGS) console.log(set.cacheUpdateNumber, set.cache)
 			set.add(2)
-			console.log(set.cacheUpdateNumber, set.cache)
+			if (DEBUG_LOGS) console.log(set.cacheUpdateNumber, set.cache)
 			set.add(3)
-			console.log(set.cacheUpdateNumber, set.cache)
-			console.log({ set })
+			if (DEBUG_LOGS) console.log(set.cacheUpdateNumber, set.cache)
+			if (DEBUG_LOGS) console.log({ set })
 			const res = set.do(`0=add:0`)
-			console.log({ set, res })
+			if (DEBUG_LOGS) console.log({ set, res })
 			expect(set.size).toBe(1)
 		})
 		it(`should return the anticipated update number when a wrong update number is provided`, () => {

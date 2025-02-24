@@ -39,7 +39,6 @@ function RealtimeDisplay(): React.ReactNode {
 	RTR.usePullSelectorFamilyMember(findCollectionSumState, `foo`)
 	const numbers = AR.useO(numberCollectionAtoms, `foo`)
 	const sum = AR.useO(findCollectionSumState, `foo`)
-	console.log({ numbers, sum })
 	return (
 		<>
 			{numbers.map((n) => (

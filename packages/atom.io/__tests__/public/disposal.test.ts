@@ -11,6 +11,8 @@ import {
 import { findState } from "atom.io/ephemeral"
 import * as Internal from "atom.io/internal"
 
+import * as Utils from "../__util__"
+
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
 
@@ -19,7 +21,7 @@ let logger: Logger
 beforeEach(() => {
 	Internal.clearStore(Internal.IMPLICIT.STORE)
 	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = Internal.IMPLICIT.STORE.logger
+	logger = Internal.IMPLICIT.STORE.logger = Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -33,6 +35,7 @@ describe(`disposeState`, () => {
 		})
 		expect(countState.key).toEqual(`count`)
 		disposeState(countState)
+		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).toHaveBeenCalledTimes(1)
 		expect(logger.error).toHaveBeenCalledWith(
 			`❌`,
@@ -51,6 +54,8 @@ describe(`disposeState`, () => {
 		expect(logger.error).toHaveBeenCalledTimes(0)
 		expect(Internal.IMPLICIT.STORE.atoms.has(countState.key)).toBe(false)
 		expect(Internal.IMPLICIT.STORE.valueMap.has(countState.key)).toBe(false)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
 	})
 	it(`does not delete downstream selectors from atom`, () => {
 		const countIndex = atom<string[]>({
@@ -93,6 +98,9 @@ describe(`disposeState`, () => {
 			false,
 		)
 		expect(getState(doubleSelector)).toBe(4)
+
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
 	})
 	it(`logs an error if the atom is not in the store`, () => {
 		const countAtoms = atomFamily<number, string>({
@@ -115,6 +123,7 @@ describe(`disposeState`, () => {
 			get: ({ get }) => get(countState),
 		})
 		disposeState(doubledState)
+		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).toHaveBeenCalledTimes(1)
 		expect(logger.error).toHaveBeenCalledWith(
 			`❌`,
@@ -141,5 +150,7 @@ describe(`disposeState`, () => {
 		expect(logger.error).toHaveBeenCalledTimes(0)
 		expect(Internal.IMPLICIT.STORE.selectors.has(doubledState.key)).toBe(false)
 		expect(Internal.IMPLICIT.STORE.valueMap.has(doubledState.key)).toBe(false)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
 	})
 })

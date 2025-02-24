@@ -3,7 +3,7 @@ import * as Internal from "atom.io/internal"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
-const logger = { ...console }
+const logger = new AtomIOLogger(LOG_LEVELS[CHOOSE])
 Internal.IMPLICIT.STORE.loggers = [
 	new AtomIOLogger(LOG_LEVELS[CHOOSE], () => true, logger),
 ]

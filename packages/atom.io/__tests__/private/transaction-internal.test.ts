@@ -13,14 +13,14 @@ import { vitest } from "vitest"
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 0
+const CHOOSE = 2
 
 let logger: Logger
 
 beforeEach(() => {
 	Internal.clearStore(Internal.IMPLICIT.STORE)
 	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = Internal.IMPLICIT.STORE.logger
+	logger = Internal.IMPLICIT.STORE.logger = Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -121,51 +121,8 @@ describe(`transaction implementation specifics`, () => {
 		expect(getState(countState)).toEqual(3)
 		expect(getState(pluralState)).toEqual(`children`)
 		expect(getState(nounState)).toEqual(`child`)
-	})
-	it(`does not emit updates until the end of the transaction`, () => {
-		const countState = atom<number>({
-			key: `count`,
-			default: 2,
-		})
-		const doubleState = selector<number>({
-			key: `double`,
-			get: ({ get }) => get(countState) * 2,
-			set: ({ set }, newValue) => {
-				set(countState, newValue / 2)
-			},
-		})
-		const doublePlusOneState = selector<number>({
-			key: `doublePlusOne`,
-			get: ({ get }) => get(doubleState) + 1,
-			set: ({ set }, newValue) => {
-				set(doubleState, newValue - 1)
-			},
-		})
-		const tripleState = selector<number>({
-			key: `triple`,
-			get: ({ get }) => get(countState) * 3,
-			set: ({ set }, newValue) => {
-				set(countState, newValue / 3)
-			},
-		})
-		const triplePlusOneState = selector<number>({
-			key: `triplePlusOne`,
-			get: ({ get }) => get(tripleState) + 1,
-			set: ({ set }, newValue) => {
-				set(tripleState, newValue - 1)
-			},
-		})
-		const doublePlusOnePlusTriplePlusOneState = selector<number>({
-			key: `doublePlusOnePlusTriplePlusOne`,
-			get: ({ get }) => get(doublePlusOneState) + get(triplePlusOneState),
-			set: ({ set }, newValue) => {
-				const newValueMinusTwo = newValue - 2
-				const count = newValueMinusTwo / 5
-				set(doublePlusOneState, count * 2 + 1)
-				set(triplePlusOneState, count * 3 + 1)
-			},
-		})
 
-		vitest.spyOn(Utils, `stdout`)
+		expect(logger.warn).toBeCalledTimes(1)
+		expect(logger.error).not.toHaveBeenCalled()
 	})
 })

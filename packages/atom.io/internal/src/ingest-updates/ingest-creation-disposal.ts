@@ -8,13 +8,12 @@ import type {
 } from "atom.io"
 import { parseJson, stringifyJson } from "atom.io/json"
 
+import { disposeFromStore, findInStore } from "../families"
 import {
 	allocateIntoStore,
 	claimWithinStore,
 	deallocateFromStore,
-} from "~/packages/atom.io/src/allocate"
-
-import { disposeFromStore, findInStore } from "../families"
+} from "../molecule"
 import type { Store } from "../store"
 
 export function ingestCreationEvent(

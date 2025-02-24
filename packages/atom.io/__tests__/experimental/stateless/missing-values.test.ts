@@ -9,8 +9,10 @@ import { vitest } from "vitest"
 
 import * as Utils from "../../__util__"
 
+const DEBUG_LOGS = false
+
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 0
+const CHOOSE = 2
 
 let logger: Logger
 let tmpDir: tmp.DirResult
@@ -21,11 +23,11 @@ function clearValueMap() {
 
 async function waitForQueuedUpdate<T>(token: RegularAtomToken<T>, newValue: T) {
 	while (!(getState(token) instanceof Promise)) {
-		console.log(`waiting for promise...`)
+		if (DEBUG_LOGS) console.log(`waiting for promise...`)
 		await new Promise((resolve) => setImmediate(resolve))
 	}
 	while ((await getState(token)) !== newValue) {
-		console.log(`waiting for state update...`)
+		if (DEBUG_LOGS) console.log(`waiting for state update...`)
 		await new Promise((resolve) => setImmediate(resolve))
 	}
 }
@@ -33,7 +35,7 @@ async function waitForQueuedUpdate<T>(token: RegularAtomToken<T>, newValue: T) {
 beforeEach(() => {
 	Internal.clearStore(Internal.IMPLICIT.STORE)
 	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = Internal.IMPLICIT.STORE.logger
+	logger = Internal.IMPLICIT.STORE.logger = Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -116,6 +118,8 @@ describe(`stateless data persistence strategies`, () => {
 			await waitForQueuedUpdate(count, 2)
 			clearValueMap()
 			expect(await getState(count)).toBe(2)
+			expect(logger.warn).not.toHaveBeenCalled()
+			expect(logger.error).not.toHaveBeenCalled()
 		})
 	})
 })

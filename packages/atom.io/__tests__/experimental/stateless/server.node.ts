@@ -6,7 +6,9 @@ import postgres from "postgres"
 
 import { cities, countries } from "./schema.node"
 
-console.log(`Server starting...`)
+const LOGGING = false
+
+if (LOGGING) console.log(`Server starting...`)
 
 const PORT = process.env.PORT ?? 8080
 const ORIGIN = `http://localhost:${PORT}`
@@ -27,7 +29,7 @@ const main = async () => {
 	})
 
 	await sql.listen(`table_update`, (message) => {
-		console.log(`Received notification: ${message}`)
+		if (LOGGING) console.log(`Received notification: ${message}`)
 	})
 
 	const db = drizzle(sql)
@@ -43,7 +45,7 @@ const main = async () => {
 					try {
 						if (typeof req.url !== `string`) throw 418
 						const url = new URL(req.url, ORIGIN)
-						console.log(req.method, url.pathname)
+						if (LOGGING) console.log(req.method, url.pathname)
 						switch (req.method) {
 							case `GET`:
 								switch (url.pathname) {
@@ -75,7 +77,7 @@ const main = async () => {
 								{
 									const text = Buffer.concat(data).toString()
 									const json: Json.Serializable = JSON.parse(text)
-									console.log({ json })
+									if (LOGGING) console.log({ json })
 									switch (url.pathname) {
 										case `/countries`: {
 											if (
@@ -92,7 +94,7 @@ const main = async () => {
 												res.writeHead(200, {
 													"Content-Type": `application/json`,
 												})
-												console.log({ rows })
+												if (LOGGING) console.log({ rows })
 												res.end(JSON.stringify(rows))
 												break
 											}
@@ -115,7 +117,7 @@ const main = async () => {
 												res.writeHead(200, {
 													"Content-Type": `application/json`,
 												})
-												console.log({ rows })
+												if (LOGGING) console.log({ rows })
 												res.end(JSON.stringify(rows))
 												break
 											}
@@ -130,7 +132,7 @@ const main = async () => {
 								throw 405
 						}
 					} catch (thrown) {
-						console.error(thrown)
+						if (LOGGING) console.error(thrown)
 						if (typeof thrown === `number`) {
 							res.writeHead(thrown)
 							res.end()

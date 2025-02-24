@@ -1,5 +1,4 @@
 import type { ChildProcessWithoutNullStreams } from "node:child_process"
-import type { Console } from "node:console"
 
 import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"

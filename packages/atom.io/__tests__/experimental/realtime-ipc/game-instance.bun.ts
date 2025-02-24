@@ -7,6 +7,8 @@ import * as RTS from "atom.io/realtime-server"
 
 import { gameContinuity, letterAtoms } from "./game-store"
 
+const LOGGING = false
+
 const parentSocket = new RTS.ParentSocket()
 const ipcLog = {
 	info: (...args) => {
@@ -43,9 +45,9 @@ const letter0State = findState(letterAtoms, 0)
 
 setState(letter0State, `A`)
 
-ipcLog.info(`This is just fyi`)
-ipcLog.warn(`This is a warning`)
-ipcLog.error(`This is an error`)
+if (LOGGING) ipcLog.info(`This is just fyi`)
+if (LOGGING) ipcLog.warn(`This is a warning`)
+if (LOGGING) ipcLog.error(`This is an error`)
 
 setInterval(() => {
 	ipcLog.info(`letterAtoms`, letterAtoms)

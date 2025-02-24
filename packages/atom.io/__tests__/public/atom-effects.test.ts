@@ -18,7 +18,7 @@ let tmpDir: tmp.DirResult
 beforeEach(() => {
 	Internal.clearStore(Internal.IMPLICIT.STORE)
 	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = Internal.IMPLICIT.STORE.logger
+	logger = Internal.IMPLICIT.STORE.logger = Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -46,6 +46,8 @@ describe(`atom effects`, () => {
 			newValue: { x: 1, y: 1 },
 			oldValue: { x: 0, y: 0 },
 		})
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
 	})
 	it(`sets itself from the file-system, then writes to the file-system onSet`, () => {
 		const nameState = atom<string>({
@@ -64,6 +66,8 @@ describe(`atom effects`, () => {
 		expect(getState(nameState)).toBe(`Mavis`)
 		setState(nameState, `Mavis2`)
 		expect(readFileSync(`${tmpDir.name}/name.txt`, `utf8`)).toBe(`Mavis2`)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
 	})
 })
 
@@ -90,5 +94,7 @@ describe(`atom effect cleanup`, () => {
 		})
 		disposeState(findState(coordinateStates, `a`))
 		expect(Utils.stdout).toHaveBeenCalledWith(`cleanup`, `a`)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
 	})
 })

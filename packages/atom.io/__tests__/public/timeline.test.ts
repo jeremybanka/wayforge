@@ -1,10 +1,9 @@
-import type { Logger, RegularAtomToken, WritableToken } from "atom.io"
+import type { Logger, WritableToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
 	disposeState,
 	getState,
-	makeRootMoleculeInStore,
 	redo,
 	runTransaction,
 	selector,
@@ -29,7 +28,7 @@ let logger: Logger
 beforeEach(() => {
 	Internal.clearStore(Internal.IMPLICIT.STORE)
 	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = Internal.IMPLICIT.STORE.logger
+	logger = Internal.IMPLICIT.STORE.logger = Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
