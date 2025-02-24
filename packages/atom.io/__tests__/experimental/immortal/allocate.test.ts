@@ -15,6 +15,8 @@ import {
 import { editRelations, join } from "atom.io/data"
 import { clearStore, IMPLICIT } from "atom.io/internal"
 
+import * as Utils from "../../__util__"
+
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
 
@@ -24,7 +26,7 @@ beforeEach(() => {
 	clearStore(IMPLICIT.STORE)
 	IMPLICIT.STORE.config.lifespan = `immortal`
 	IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = IMPLICIT.STORE.logger
+	logger = IMPLICIT.STORE.logger = Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -113,7 +115,8 @@ describe(`allocate + claim + deallocate`, () => {
 
 		gameRealm.deallocate(gameXClaim)
 
-		expect(logger.error).toHaveBeenCalledTimes(0)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
 	})
 	test(`unhappy path`, () => {
 		const durabilityAtoms = atomFamily<number, ItemKey>({

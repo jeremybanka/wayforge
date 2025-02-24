@@ -19,7 +19,7 @@ let logger: Logger
 beforeEach(() => {
 	Internal.clearStore(Internal.IMPLICIT.STORE)
 	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = Internal.IMPLICIT.STORE.logger
+	logger = Internal.IMPLICIT.STORE.logger = Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -31,6 +31,10 @@ beforeEach(() => {
 })
 
 describe(`join with content`, () => {
+	afterEach(() => {
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
+	})
 	test(`supports 1:1 relations`, () => {
 		const roomPlayers = join(
 			{

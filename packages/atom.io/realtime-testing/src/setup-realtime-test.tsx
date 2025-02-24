@@ -130,7 +130,7 @@ export const setupRealtimeTestServer = (
 			setIntoStore(silo.store, RTS.socketIndex, (index) =>
 				index.add(socketClaim),
 			)
-			console.log(`${username} connected on ${socket.id}`)
+			// console.log(`${username} connected on ${socket.id}`)
 			next()
 		} else {
 			next(new Error(`Authentication error`))
@@ -153,11 +153,11 @@ export const setupRealtimeTestServer = (
 			socket.onAnyOutgoing((event, ...args) => {
 				console.log(`🛰  >>`, userKey, event, ...args)
 			})
+			socket.on(`disconnect`, () => {
+				console.log(`${userKey} disconnected`)
+			})
 		}
 		options.server({ socket, enableLogging, silo })
-		socket.on(`disconnect`, () => {
-			console.log(`${userKey} disconnected`)
-		})
 	})
 
 	const dispose = async () => {

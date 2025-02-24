@@ -28,7 +28,7 @@ let logger: Logger
 beforeEach(() => {
 	Internal.clearStore(Internal.IMPLICIT.STORE)
 	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = Internal.IMPLICIT.STORE.logger
+	logger = Internal.IMPLICIT.STORE.logger = Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -80,6 +80,8 @@ describe(`mutable atomic state`, () => {
 			newValue: `0=add:"a"`,
 			oldValue: null,
 		})
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
 	})
 
 	it(`has its own family function for ease of use`, () => {
@@ -132,6 +134,8 @@ describe(`mutable atomic state`, () => {
 			newValue: `0=add:"a"`,
 			oldValue: null,
 		})
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
 	})
 
 	it(`can recover from a failed transaction`, () => {
@@ -182,6 +186,10 @@ describe(`mutable atomic state`, () => {
 })
 
 describe(`mutable time traveling`, () => {
+	afterEach(() => {
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
+	})
 	it(`can travel back and forward in time`, () => {
 		const myMutableStates = atomFamily<
 			SetRTX<string>,
@@ -267,6 +275,10 @@ describe(`mutable time traveling`, () => {
 })
 
 describe(`mutable atom effects`, () => {
+	afterEach(() => {
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
+	})
 	it(`runs a callback when the atom is set`, () => {
 		let setSize = 0
 		const myMutableAtoms = atomFamily<
@@ -340,6 +352,7 @@ describe(`graceful handling of hmr/duplicate atom keys`, () => {
 			toJson: (s) => s.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})
+		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).toHaveBeenCalledTimes(1)
 		expect(logger.error).toHaveBeenCalledWith(
 			`❌`,

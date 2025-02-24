@@ -9,7 +9,7 @@ import { SetRTX } from "atom.io/transceivers/set-rtx"
 import * as Utils from "../../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 0
+const CHOOSE = 2
 
 let i = 0
 let $: Silo
@@ -20,13 +20,18 @@ beforeEach(() => {
 	if (willClearLocalStorage) localStorage.clear()
 	$ = new Silo({ name: `react-store-${i}`, lifespan: `ephemeral` })
 	$.store.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = $.store.logger
+	logger = $.store.logger = Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
 	vitest.spyOn(Utils, `stdout`)
 	i++
 	willClearLocalStorage = true
+})
+
+afterEach(() => {
+	expect(logger.warn).not.toHaveBeenCalled()
+	expect(logger.error).not.toHaveBeenCalled()
 })
 
 const scenario = () =>
@@ -61,6 +66,8 @@ describe(`editing primitive atoms of a variety of types`, () => {
 		})
 
 		expect($.getState(numberAtom)).toBe(1)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
 	})
 
 	test(`boolean`, () => {
@@ -179,6 +186,8 @@ describe(`editing an array atom`, () => {
 		})
 
 		expect($.getState(arrayAtom)).toEqual([`B`])
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
 	})
 })
 
@@ -189,6 +198,8 @@ describe(`displaying non-JSON`, () => {
 		const { getByTestId } = scenario()
 
 		getByTestId(`myUndefined-state-editor-undefined`)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
 	})
 })
 
@@ -347,7 +358,7 @@ describe(`working with timelines`, () => {
 
 		await waitFor(() => getByTestId(`timeline-update-tripleAndDecrement-2`))
 
-		debug()
+		// debug()
 	})
 })
 
@@ -373,6 +384,8 @@ describe(`miscellaneous tool behavior`, () => {
 			}
 			throw new Error(`Expected element to not be found`)
 		})
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
 	})
 	test(`stays closed between reloads`, async () => {
 		$.atom<boolean>({ key: `example`, default: true })

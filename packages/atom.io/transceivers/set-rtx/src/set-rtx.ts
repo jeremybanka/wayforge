@@ -111,7 +111,10 @@ export class SetRTX<P extends primitive>
 			}
 		} catch (thrown) {
 			/* eslint-disable-next-line no-console */
-			console.error(`Failed to apply transaction to SetRTX:`, thrown)
+			console.warn(
+				`Did not apply transaction to SetRTX; this error was thrown:`,
+				thrown,
+			)
 			throw thrown
 		} finally {
 			unsubscribe()
