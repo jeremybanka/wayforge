@@ -8,6 +8,36 @@ import type { Canonical, Json, JsonInterface } from "atom.io/json"
 
 import type { AtomToken, MutableAtomToken, RegularAtomToken, Setter } from "."
 
+/**
+ * @public
+ * Create a mutable atom, a global reactive variable in the implicit store
+ *
+ * The value of a mutable atom must be some kind of {@link Transceiver}.
+ *
+ * @param options - {@link MutableAtomOptions}.
+ * @returns
+ * A reference to the atom created: a {@link MutableAtomToken}
+ * @overload Mutable
+ */
+export function atom<T extends Transceiver<any>, J extends Json.Serializable>(
+	options: MutableAtomOptions<T, J>,
+): MutableAtomToken<T, J>
+
+/**
+ * @public
+ * Create a regular atom, a global reactive variable in the implicit store
+ * @param options - {@link RegularAtomOptions}.
+ * @returns
+ * A reference to the atom created: a {@link RegularAtomToken}
+ * @overload Regular
+ */
+export function atom<T>(options: RegularAtomOptions<T>): RegularAtomToken<T>
+export function atom(
+	options: MutableAtomOptions<any, any> | RegularAtomOptions<any>,
+): AtomToken<any> {
+	return createStandaloneAtom(IMPLICIT.STORE, options)
+}
+
 /** @public */
 export type Effectors<T> = {
 	/**
@@ -45,36 +75,6 @@ export type MutableAtomOptions<T extends Transceiver<any>, J extends Json.Serial
 			default: ()	=> T
 			mutable: true
 		}
-
-/**
- * @public
- * Create a mutable atom, a global reactive variable in the implicit store
- *
- * The value of a mutable atom must be some kind of {@link Transceiver}.
- *
- * @param options - {@link MutableAtomOptions}.
- * @returns
- * A reference to the atom created: a {@link MutableAtomToken}
- * @overload Mutable
- */
-export function atom<T extends Transceiver<any>, J extends Json.Serializable>(
-	options: MutableAtomOptions<T, J>,
-): MutableAtomToken<T, J>
-
-/**
- * @public
- * Create a regular atom, a global reactive variable in the implicit store
- * @param options - {@link RegularAtomOptions}.
- * @returns
- * A reference to the atom created: a {@link RegularAtomToken}
- * @overload Regular
- */
-export function atom<T>(options: RegularAtomOptions<T>): RegularAtomToken<T>
-export function atom(
-	options: MutableAtomOptions<any, any> | RegularAtomOptions<any>,
-): AtomToken<any> {
-	return createStandaloneAtom(IMPLICIT.STORE, options)
-}
 
 /** @public */
 export type RegularAtomFamilyOptions<T, K extends Canonical> = {

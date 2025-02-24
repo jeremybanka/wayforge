@@ -1,8 +1,6 @@
 import { atom, AtomIOLogger, timeline, undo } from "atom.io"
 import * as Internal from "atom.io/internal"
 
-import * as Utils from "../__util__"
-
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
 const logger = new AtomIOLogger(LOG_LEVELS[CHOOSE])

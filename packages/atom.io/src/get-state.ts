@@ -6,7 +6,7 @@ import type { ReadableFamilyToken, ReadableToken } from "."
 /**
  * @public
  * Get the current value of a state
- * @param token - The unique identifier of the state to get
+ * @param token - The token of the state to get
  * @return The current value of the state
  * @overload Default
  * @default
@@ -16,8 +16,8 @@ export function getState<T>(token: ReadableToken<T>): T
 /**
  * @public
  * Get the current value of a state family
- * @param token - The unique identifier of a state family
- * @param key - The key of the state to get
+ * @param token - The token of a state family
+ * @param key - The unique key of the state to get
  * @return The current value of the state
  * @overload Streamlined
  */

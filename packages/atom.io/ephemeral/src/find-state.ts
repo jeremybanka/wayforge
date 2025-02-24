@@ -18,11 +18,11 @@ import type { Canonical, Json } from "atom.io/json"
 
 /**
  * @public
- * Finds a {@link MutableAtomToken} in the store.
- * @param token - A {@link MutableAtomFamilyToken}.
- * @param key - The key of the state.
+ * Finds a {@link MutableAtomToken} in the store
+ * @param token - A {@link MutableAtomFamilyToken}
+ * @param key - The key of the state
  * @returns
- * The current value of the state.
+ * The current value of the state
  * @overload Mutable Atom
  */
 export function findState<
@@ -33,11 +33,11 @@ export function findState<
 >(token: MutableAtomFamilyToken<T, J, K>, key: Key): MutableAtomToken<T, J, K>
 /**
  * @public
- * Finds a state in the store.
- * @param token - The token of the state family.
- * @param key - The key of the state.
+ * Finds a state in the store
+ * @param token - The token of the state family
+ * @param key - The key of the state
  * @returns
- * The current value of the state.
+ * The current value of the state
  * @overload Regular Atom
  */
 export function findState<T, K extends Canonical, Key extends K>(
@@ -46,11 +46,11 @@ export function findState<T, K extends Canonical, Key extends K>(
 ): RegularAtomToken<T, K>
 /**
  * @public
- * Finds a state in the store.
- * @param token - The token of the state family.
- * @param key - The key of the state.
+ * Finds a state in the store
+ * @param token - The token of the state family
+ * @param key - The key of the state
  * @returns
- * The current value of the state.
+ * The current value of the state
  * @overload Writable Selector
  */
 export function findState<T, K extends Canonical, Key extends K>(
@@ -59,11 +59,11 @@ export function findState<T, K extends Canonical, Key extends K>(
 ): WritableSelectorToken<T, K>
 /**
  * @public
- * Finds a state in the store.
- * @param token - The token of the state family.
- * @param key - The key of the state.
+ * Finds a state in the store
+ * @param token - The token of the state family
+ * @param key - The key of the state
  * @returns
- * The current value of the state.
+ * The current value of the state
  * @overload Readonly Selector
  */
 export function findState<T, K extends Canonical, Key extends K>(
@@ -72,11 +72,11 @@ export function findState<T, K extends Canonical, Key extends K>(
 ): ReadonlySelectorToken<T, K>
 /**
  * @public
- * Finds a state in the store.
- * @param token - The token of the state family.
- * @param key - The key of the state.
+ * Finds a state in the store
+ * @param token - The token of the state family
+ * @param key - The key of the state
  * @returns
- * The current value of the state.
+ * The current value of the state
  * @overload Writable State
  */
 export function findState<T, K extends Canonical, Key extends K>(
@@ -85,11 +85,11 @@ export function findState<T, K extends Canonical, Key extends K>(
 ): WritableToken<T, K>
 /**
  * @public
- * Finds a {@link ReadableToken} in the store.
- * @param token - A {@link ReadableFamilyToken}.
- * @param key - The key of the state.
+ * Finds a {@link ReadableToken} in the store
+ * @param token - A {@link ReadableFamilyToken}
+ * @param key - The key of the state
  * @returns
- * The current value of the state.
+ * The current value of the state
  * @overload Unknown
  * @default
  */

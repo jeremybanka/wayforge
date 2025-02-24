@@ -15,12 +15,11 @@ import type {
 	TransactionToken,
 } from "./transaction"
 
-export * from "./allocate"
 export * from "./atom"
 export * from "./dispose-state"
 export * from "./get-state"
 export * from "./logger"
-export * from "./molecule"
+export * from "./realm"
 export * from "./selector"
 export * from "./set-state"
 export * from "./silo"
