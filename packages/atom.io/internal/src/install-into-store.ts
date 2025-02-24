@@ -1,13 +1,21 @@
 import type { AtomIOToken } from "atom.io"
 
 import { newest } from "./lineage"
-import { type Store, withdraw } from "./store"
+import { IMPLICIT, type Store, withdraw } from "./store"
 import { isChildStore } from "./transaction"
 
+/**
+ * @public
+ * Install the given tokens into the target store
+ * @param tokens - States, families, transactions, and timelines to install into the target store
+ * @param target - The store to install the tokens into
+ * @param source - The store to install the tokens from
+ *
+ */
 export function installIntoStore(
-	source: Store,
-	target: Store,
 	tokens: AtomIOToken[],
+	target: Store,
+	source: Store,
 ): void {
 	const sourceNewest = newest(source)
 	if (isChildStore(sourceNewest)) {
