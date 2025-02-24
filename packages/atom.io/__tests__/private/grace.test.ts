@@ -64,6 +64,19 @@ describe(`Internal.NotFoundError is thrown`, () => {
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
 	})
+	test(`when attempting to find a state in a nonexistent family`, () => {
+		let caught: Error | undefined
+		try {
+			findState({ key: `a`, type: `atom_family` }, `b`)
+		} catch (thrown) {
+			if (thrown instanceof Error) {
+				caught = thrown
+			}
+		}
+		expect(caught).toBeInstanceOf(Internal.NotFoundError)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
+	})
 })
 
 describe(`nested setState withing a setState callback`, () => {

@@ -82,14 +82,7 @@ export const registerSelector = (
 			const family = params[0]
 			const key = params[1]
 			value = params[2]
-			const maybeToken =
-				store.config.lifespan === `ephemeral`
-					? findInStore(store, family, key)
-					: seekInStore(store, family, key)
-			if (!maybeToken) {
-				throw new NotFoundError(family, key, store)
-			}
-			token = maybeToken
+			token = findInStore(store, family, key)
 		}
 		const target = newest(store)
 		const state = withdraw(token, target)

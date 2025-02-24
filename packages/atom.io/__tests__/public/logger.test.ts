@@ -5,7 +5,7 @@ import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
-const logger = Utils.createNullLogger()
+const logger = new AtomIOLogger(LOG_LEVELS[CHOOSE])
 Internal.IMPLICIT.STORE.loggers = [
 	new AtomIOLogger(LOG_LEVELS[CHOOSE], () => true, logger),
 ]

@@ -1,7 +1,7 @@
 import type { AtomIOToken } from "atom.io"
 
 import { newest } from "./lineage"
-import { IMPLICIT, type Store, withdraw } from "./store"
+import { type Store, withdraw } from "./store"
 import { isChildStore } from "./transaction"
 
 /**
