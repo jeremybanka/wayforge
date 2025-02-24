@@ -11,13 +11,16 @@ import {
 	disposeFromStore,
 	findInStore,
 	getFromStore,
+	IMPLICIT,
 	setIntoStore,
 	Store,
 	subscribeInStore,
 	timeTravel,
 } from "atom.io/internal"
 
+import { installIntoStore } from "../internal/src/install-into-store"
 import type {
+	AtomIOToken,
 	disposeState,
 	getState,
 	redo,
@@ -45,11 +48,11 @@ export class Silo {
 	public subscribe: typeof subscribe
 	public undo: typeof undo
 	public redo: typeof redo
-
 	public runTransaction: typeof runTransaction
+	public install: (tokens: AtomIOToken[], store?: Store) => void
+
 	public constructor(config: Store[`config`], fromStore: Store | null = null) {
-		const s = new Store(config, fromStore)
-		this.store = s
+		const s = (this.store = new Store(config, fromStore))
 		this.atom = ((options: Parameters<typeof atom>[0]) =>
 			createStandaloneAtom(s, options)) as typeof atom
 		this.atomFamily = ((options: Parameters<typeof atomFamily>[0]) =>
@@ -79,5 +82,8 @@ export class Silo {
 			timeTravel(s, `redo`, token)
 		}
 		this.runTransaction = (token, id = arbitrary()) => actUponStore(token, id, s)
+		this.install = (tokens, source = IMPLICIT.STORE) => {
+			installIntoStore(tokens, s, source)
+		}
 	}
 }

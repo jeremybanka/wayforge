@@ -5,39 +5,47 @@ import type { WritableFamilyToken, WritableToken } from "."
 
 /**
  * @public
+ * A function that sets the value of a state.
+ * @param oldValue - The current value of the state.
+ * @returns
+ * The new value of the state.
+ */
+export type Setter<T, New extends T> = (oldValue: T) => New
+
+/**
+ * @public
  * Set the value of a state into the implicit store.
- * @param token - The unique identifier of the state to set.
+ * @param token - An atom or writable selector token.
  * @param value - The new value of the state.
  * @overload Default
  * @default
  */
 export function setState<T, New extends T>(
 	token: WritableToken<T>,
-	value: New | ((oldValue: T) => New),
+	value: New | Setter<T, New>,
 ): void
 
 /**
  * @public
  * Set the value of a state into the implicit store.
- * @param token - The unique identifier of a state family.
- * @param key - The key of the state to set.
+ * @param token - An atom family or writable selector family token.
+ * @param key - The unique key of the state to set.
  * @param value - The new value of the state.
  * @overload Streamlined
  */
 export function setState<T, K extends Canonical, New extends T, Key extends K>(
 	token: WritableFamilyToken<T, K>,
 	key: Key,
-	value: New | ((oldValue: T) => New),
+	value: New | Setter<T, New>,
 ): void
-
 export function setState<T, New extends T>(
 	...params:
 		| [
 				token: WritableFamilyToken<T, Canonical>,
 				key: Canonical,
-				value: New | ((oldValue: T) => New),
+				value: New | Setter<T, New>,
 		  ]
-		| [token: WritableToken<T>, value: New | ((oldValue: T) => New)]
+		| [token: WritableToken<T>, value: New | Setter<T, New>]
 ): void {
 	if (params.length === 2) {
 		Internal.setIntoStore(Internal.IMPLICIT.STORE, ...params)

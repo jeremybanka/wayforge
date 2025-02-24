@@ -6,18 +6,35 @@ import {
 } from "atom.io/internal"
 import type { Canonical, Json, JsonInterface } from "atom.io/json"
 
-import type { AtomToken, MutableAtomToken, RegularAtomToken } from "."
+import type { AtomToken, MutableAtomToken, RegularAtomToken, Setter } from "."
 
+/** @public */
 export type Effectors<T> = {
-	setSelf: <V extends T>(next: V | ((oldValue: T) => V)) => void
+	/**
+	 * Set the value of the atom
+	 * @param next - The new value of the atom, or a setter function
+	 */
+	setSelf: <New extends T>(next: New | Setter<T, New>) => void
+	/** Subscribe to changes to the atom */
 	onSet: (callback: (options: { newValue: T; oldValue: T }) => void) => void
 }
 
+/**
+ * @public
+ * A function that runs side effects when the atom is set
+ * @param tools - {@link Effectors} that can be used to run side effects
+ * @returns
+ * Optionally, a cleanup function that will be called when the atom is disposed
+ */
 export type AtomEffect<T> = (tools: Effectors<T>) => (() => void) | void
 
+/** @public */
 export type RegularAtomOptions<T> = {
+	/** The unique identifier of the atom */
 	key: string
+	/** The starting value of the atom */
 	default: T | (() => T)
+	/** Hooks used to run side effects when the atom is set */
 	effects?: AtomEffect<T>[]
 }
 // biome-ignore format: complex intersection
@@ -31,34 +48,41 @@ export type MutableAtomOptions<T extends Transceiver<any>, J extends Json.Serial
 
 /**
  * @public
- * Declare a mutable global reactive variable.
- * @param options - Configuration for this mutable atom.
+ * Create a mutable atom, a global reactive variable in the implicit store
+ *
+ * The value of a mutable atom must be some kind of {@link Transceiver}.
+ *
+ * @param options - {@link MutableAtomOptions}.
  * @returns
- * The token for your mutable atom.
+ * A reference to the atom created: a {@link MutableAtomToken}
  * @overload Mutable
  */
 export function atom<T extends Transceiver<any>, J extends Json.Serializable>(
 	options: MutableAtomOptions<T, J>,
 ): MutableAtomToken<T, J>
+
 /**
  * @public
- * Declare a regular global reactive variable.
- * @param options - Configuration for this regular atom.
+ * Create a regular atom, a global reactive variable in the implicit store
+ * @param options - {@link RegularAtomOptions}.
  * @returns
- * The token for your regular atom.
+ * A reference to the atom created: a {@link RegularAtomToken}
  * @overload Regular
  */
 export function atom<T>(options: RegularAtomOptions<T>): RegularAtomToken<T>
-
 export function atom(
 	options: MutableAtomOptions<any, any> | RegularAtomOptions<any>,
 ): AtomToken<any> {
 	return createStandaloneAtom(IMPLICIT.STORE, options)
 }
 
+/** @public */
 export type RegularAtomFamilyOptions<T, K extends Canonical> = {
+	/** The unique identifier of the atom family */
 	key: string
+	/** The starting value of the atom family */
 	default: T | ((key: K) => T)
+	/** Hooks used to run side effects when an atom in the family is set  */
 	effects?: (key: K) => AtomEffect<T>[]
 }
 

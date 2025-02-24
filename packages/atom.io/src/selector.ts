@@ -18,9 +18,29 @@ export type ReadonlySelectorOptions<T> = {
 	get: Read<() => T>
 }
 
+/**
+ * @public
+ * Declare a selector. The value of a selector should depend
+ * on the value of atoms or other selectors in the store.
+ *
+ * A writable selector can be "set" to a new value.
+ * It is advised to set its dependencies to values
+ * that would produce the new value of the selector.
+ * @param options - {@link WritableSelectorOptions}.
+ * @returns
+ * The token for your selector.
+ * @overload Writable
+ */
 export function selector<T>(
 	options: WritableSelectorOptions<T>,
 ): WritableSelectorToken<T>
+
+/**
+ * @public
+ * Declare a selector. The value of a selector should depend
+ * on the value of atoms or other selectors in the store.
+ * @param options - {@link ReadonlySelectorOptions}.
+ */
 export function selector<T>(
 	options: ReadonlySelectorOptions<T>,
 ): ReadonlySelectorToken<T>
