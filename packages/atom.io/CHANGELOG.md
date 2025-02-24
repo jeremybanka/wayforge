@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.31.1
+
+### Patch Changes
+
+- a9d139b: ✨ Silo adds the new `install()` method, allowing for the transfer of states from another store into the Silo. Good for applications with a frontend and backend store with some shared models.
+
 ## 0.31.0
 
 ### Minor Changes
