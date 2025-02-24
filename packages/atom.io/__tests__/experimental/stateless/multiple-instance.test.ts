@@ -7,6 +7,10 @@ import httpProxy from "http-proxy"
 
 import { DatabaseManager } from "./database.node"
 
+console.log = () => undefined
+console.warn = () => undefined
+console.error = () => undefined
+
 const childProcesses: ChildProcess[] = []
 const dbManager = new DatabaseManager()
 

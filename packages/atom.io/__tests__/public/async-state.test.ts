@@ -65,7 +65,6 @@ describe(`async atom`, async () => {
 				const count = get(countState)
 				return new Promise((resolve) => {
 					resolveAtAnInconvenientTime = () => {
-						console.log(`resolving`)
 						resolve(count * 2)
 					}
 				})

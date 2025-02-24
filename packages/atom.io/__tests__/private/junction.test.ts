@@ -520,9 +520,6 @@ describe(`Junction with external storage`, () => {
 		const player = `Adelaide`
 		const joinedAt = 162
 		playersInRooms.set({ player, room }, { joinedAt })
-		console.log({ relationMap })
-		console.log({ contentMap })
-		console.log(playersInRooms)
 		expect(playersInRooms.has(room)).toBe(true)
 		expect(playersInRooms.getRelatedKeys(player)).toEqual(new Set([room]))
 		expect(playersInRooms.getContent(room, player)).toEqual({ joinedAt })

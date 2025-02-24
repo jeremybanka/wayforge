@@ -7,6 +7,10 @@ import { BrowserGame } from "./BrowserGame"
 import { DatabaseManager } from "./database.node"
 import { SystemServer } from "./system-server.node"
 
+console.info = () => undefined
+console.log = () => undefined
+console.warn = () => undefined
+console.error = () => undefined
 const dbManager = new DatabaseManager()
 
 beforeAll(async () => {

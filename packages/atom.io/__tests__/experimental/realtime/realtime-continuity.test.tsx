@@ -1,6 +1,6 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import { actUponStore, arbitrary, IMPLICIT } from "atom.io/internal"
+import { actUponStore, arbitrary, clearStore, IMPLICIT } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
 import * as RTR from "atom.io/realtime-react"
@@ -10,10 +10,14 @@ import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import * as React from "react"
 
-import { throwUntil } from "../../__util__/waiting"
+import * as Utils from "../../__util__"
+
+console.warn = () => undefined
+console.error = () => undefined
+const DEBUG_LOGGING = false
 
 describe(`synchronizing transactions`, () => {
-	const scenario = () => {
+	const runScenario = () => {
 		const countState = AtomIO.atom<number>({ key: `count`, default: 0 })
 		const userActionCountServerState = AtomIO.atom<number>({
 			key: `server:userActionCount`,
@@ -85,32 +89,61 @@ describe(`synchronizing transactions`, () => {
 			{ countState, incrementTX },
 		)
 	}
+
+	let scenario: ReturnType<typeof runScenario>
+	let dave: RTTest.RealtimeTestClient
+	let jane: RTTest.RealtimeTestClient
+	let server: RTTest.RealtimeTestServer
+	let teardown: () => Promise<void>
+
+	beforeEach(() => {
+		scenario = runScenario()
+		dave = scenario.clients.dave.init()
+		jane = scenario.clients.jane.init()
+		server = scenario.server
+		teardown = scenario.teardown
+		dave.silo.store.logger = Utils.createNullLogger()
+		jane.silo.store.logger = Utils.createNullLogger()
+		server.silo.store.logger = Utils.createNullLogger()
+
+		vitest.spyOn(dave.silo.store.logger, `error`)
+		vitest.spyOn(dave.silo.store.logger, `warn`)
+		vitest.spyOn(dave.silo.store.logger, `info`)
+		vitest.spyOn(jane.silo.store.logger, `error`)
+		vitest.spyOn(jane.silo.store.logger, `warn`)
+		vitest.spyOn(jane.silo.store.logger, `info`)
+		vitest.spyOn(server.silo.store.logger, `error`)
+		vitest.spyOn(server.silo.store.logger, `warn`)
+		vitest.spyOn(server.silo.store.logger, `info`)
+		vitest.spyOn(Utils, `stdout`)
+	})
+
+	afterEach(async () => {
+		expect(dave.silo.store.logger.warn).not.toHaveBeenCalled()
+		expect(dave.silo.store.logger.error).not.toHaveBeenCalled()
+		expect(jane.silo.store.logger.warn).not.toHaveBeenCalled()
+		expect(jane.silo.store.logger.error).not.toHaveBeenCalled()
+
+		await teardown()
+	})
+
 	test(`client 1 -> server -> client 2`, async () => {
-		const { clients, teardown } = scenario()
-
-		const jane = clients.jane.init()
-		const dave = clients.dave.init()
-
 		jane.renderResult.getByTestId(`0`)
 		act(() => {
 			dave.renderResult.getByTestId(`increment`).click()
 		})
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
-		await teardown()
 	})
 	test(`rollback`, async () => {
-		const { server, clients, teardown, countState } = scenario()
-
-		const jane = clients.jane.init()
-		const dave = clients.dave.init()
+		const { countState } = scenario
 
 		// dave.enableLogging()
 
 		await waitFor(() => {
-			throwUntil(jane.socket.connected)
+			Utils.throwUntil(jane.socket.connected)
 		})
 		await waitFor(() => {
-			throwUntil(dave.socket.connected)
+			Utils.throwUntil(dave.socket.connected)
 		})
 
 		dave.socket.disconnect()
@@ -129,13 +162,11 @@ describe(`synchronizing transactions`, () => {
 
 		dave.socket.connect()
 		await waitFor(() => {
-			throwUntil(dave.socket.connected)
+			Utils.throwUntil(dave.socket.connected)
 		})
 
 		await waitFor(() => jane.renderResult.getByTestId(`2`))
 		await waitFor(() => dave.renderResult.getByTestId(`2`), { timeout: 30000 })
-
-		await teardown()
 	})
 })
 
@@ -185,9 +216,9 @@ describe(`mutable atoms in continuity`, () => {
 	test(`mutable initialization`, async () => {
 		const { client, server, teardown, addItemTX, myListAtom } = scenario()
 		const clientApp = client.init()
-		clientApp.enableLogging()
+		// clientApp.enableLogging()
 		await waitFor(() => {
-			throwUntil(clientApp.socket.connected)
+			Utils.throwUntil(clientApp.socket.connected)
 		})
 		const clientState = clientApp.renderResult.getByTestId(`state`)
 		expect(clientState.textContent).toBe(`0`)
@@ -203,38 +234,8 @@ describe(`mutable atoms in continuity`, () => {
 			clientApp.silo.runTransaction(addItemTX)(`world`)
 		})
 		await waitFor(() => {
-			throwUntil(() => server.silo.getState(myListAtom).has(`world`))
+			Utils.throwUntil(() => server.silo.getState(myListAtom).has(`world`))
 		})
-		console.log(`📝 took ${performance.now() - time}ms`)
-		await teardown()
+		if (DEBUG_LOGGING) console.log(`📝 took ${performance.now() - time}ms`)
 	})
 })
-
-// describe(`join in perspective`, () => {
-// 	const scenario = () => {
-// 		const countState = AtomIO.atom<number>({ key: `count`, default: 0 })
-// 		const userActionCountServerState = AtomIO.atom<number>({
-// 			key: `server:userActionCount`,
-// 			default: 0,
-// 		})
-
-// 		const incrementTX = AtomIO.transaction({
-// 			key: `increment`,
-// 			do: ({ set, env }) => {
-// 				const { name } = env().store.config
-// 				if (name === `SERVER`) {
-// 					set(userActionCountServerState, (c) => c + 1)
-// 				}
-// 				set(countState, (c) => c + 1)
-// 			},
-// 		})
-// 		const countContinuity = RT.continuity({
-// 			key: `count`,
-// 			config: (group) => group.add(countState).add(incrementTX),
-// 		})
-
-// 		return RTTest.multiClient({
-// 			port: 5485,
-// 			server: ({ socket, silo: { store } }) => {}
-// 		})
-// })

@@ -42,7 +42,6 @@ function Lobby(): React.ReactNode {
 							type="button"
 							data-testid={`join-${roomKey}`}
 							onClick={() => {
-								console.log(`🥋 JOIN ROOM CLICKED`, socket)
 								socket?.emit(`join-room`, roomKey)
 							}}
 						/>
