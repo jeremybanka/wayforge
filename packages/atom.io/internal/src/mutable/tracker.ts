@@ -160,7 +160,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 	public mutableState: MutableAtomToken<Mutable, Json.Serializable>
 	public latestUpdateState: RegularAtomToken<typeof this.Update | null>
 
-	public dispose: () => void
+	public [Symbol.dispose]: () => void
 
 	public constructor(
 		mutableState: MutableAtomToken<Mutable, Json.Serializable>,
@@ -172,7 +172,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		this.observeCore(mutableState, this.latestUpdateState, target)
 		this.updateCore(mutableState, this.latestUpdateState, target)
 		target.trackers.set(mutableState.key, this)
-		this.dispose = () => {
+		this[Symbol.dispose] = () => {
 			this.unsubscribeFromInnerValue()
 			this.unsubscribeFromState()
 			target.trackers.delete(mutableState.key)
