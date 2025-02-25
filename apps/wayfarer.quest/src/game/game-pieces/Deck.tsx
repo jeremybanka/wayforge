@@ -1,5 +1,5 @@
 import { runTransaction } from "atom.io"
-import { findRelations } from "atom.io/data"
+import { findRelations } from "atom.io"
 import { useO } from "atom.io/react"
 import { AnimatePresence, motion } from "motion/react"
 import { memoize } from "wayfarer.quest/components/memoize"

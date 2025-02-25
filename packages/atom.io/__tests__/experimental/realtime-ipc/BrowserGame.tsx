@@ -1,4 +1,4 @@
-import { findRelationsInStore } from "atom.io/data"
+import { findRelationsInStore } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
 import * as RTC from "atom.io/realtime-client"

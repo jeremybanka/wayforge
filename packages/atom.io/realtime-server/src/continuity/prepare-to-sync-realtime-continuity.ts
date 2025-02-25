@@ -1,6 +1,6 @@
-import { findRelationsInStore } from "atom.io/data"
 import {
 	findInStore,
+	findRelationsInStore,
 	getFromStore,
 	IMPLICIT,
 	subscribeToState,

@@ -1,6 +1,6 @@
 "use client"
 
-import { findRelations, getInternalRelations } from "atom.io/data"
+import { findRelations, getInternalRelations } from "atom.io"
 import { findState } from "atom.io/ephemeral"
 import { useI, useO } from "atom.io/react"
 import { usersInRooms } from "atom.io/realtime"

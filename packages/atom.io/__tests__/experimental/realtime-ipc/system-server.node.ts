@@ -2,14 +2,12 @@ import path from "node:path"
 
 import type { Silo } from "atom.io"
 import {
-	findRelationsInStore,
-	getInternalRelationsFromStore,
-} from "atom.io/data"
-import {
 	actUponStore,
 	arbitrary,
 	findInStore,
+	findRelationsInStore,
 	getFromStore,
+	getInternalRelationsFromStore,
 	setIntoStore,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"

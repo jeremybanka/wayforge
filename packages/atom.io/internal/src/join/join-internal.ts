@@ -1,67 +1,41 @@
 import type {
 	CompoundTypedKey,
 	getState,
-	Hierarchy,
+	JoinOptions,
 	MutableAtomFamilyToken,
 	Read,
 	ReadonlySelectorFamilyToken,
-	ReadonlySelectorToken,
 	RegularAtomFamilyToken,
 	setState,
 	SetterToolkit,
-	SingularTypedKey,
 	Write,
 } from "atom.io"
-import { Anarchy, Realm } from "atom.io"
+import { Anarchy } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
 import type { seekState } from "atom.io/immortal"
-import type {
-	BaseExternalStoreConfiguration,
-	ExternalStoreConfiguration,
-	JunctionEntriesBase,
-	JunctionSchemaBase,
-	Molecule,
-	Refinement,
-	Store,
-} from "atom.io/internal"
-import {
-	createMutableAtomFamily,
-	createReadonlySelectorFamily,
-	createRegularAtomFamily,
-	findInStore,
-	getFromStore,
-	getJsonFamily,
-	getJsonToken,
-	IMPLICIT,
-	isChildStore,
-	Junction,
-	newest,
-	seekInStore,
-	setIntoStore,
-} from "atom.io/internal"
 import type { Canonical, Json, stringified } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
-function capitalize<S extends string>(string: S): Capitalize<S> {
-	return (string[0].toUpperCase() + string.slice(1)) as Capitalize<S>
-}
-
-export interface JoinOptions<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
-	Cardinality extends `1:1` | `1:n` | `n:n`,
-	Content extends Json.Object | null,
-> extends JunctionSchemaBase<ASide, BSide>,
-		Partial<JunctionEntriesBase<AType, BType, Content>> {
-	readonly key: string
-	readonly cardinality: Cardinality
-	readonly isAType: Refinement<string, AType>
-	readonly isBType: Refinement<string, BType>
-}
+import { capitalize } from "../capitalize"
+import {
+	createReadonlySelectorFamily,
+	createRegularAtomFamily,
+	findInStore,
+	seekInStore,
+} from "../families"
+import { getFromStore } from "../get-state"
+import type {
+	BaseExternalStoreConfiguration,
+	ExternalStoreConfiguration,
+} from "../junction"
+import { Junction } from "../junction"
+import type { Molecule } from "../molecule"
+import { createMutableAtomFamily, getJsonFamily, getJsonToken } from "../mutable"
+import { setIntoStore } from "../set-state"
+import type { Store } from "../store"
+import { IMPLICIT } from "../store"
 
 export type JoinStateFamilies<
 	ASide extends string,
@@ -143,23 +117,6 @@ export type JoinStateFamilies<
 					>
 				}
 			: never
-
-export type JoinHierarchy<
-	AType extends SingularTypedKey,
-	BType extends SingularTypedKey,
-> = Hierarchy<
-	[
-		{
-			above: `root`
-			below: [AType, BType]
-		},
-		{
-			above: [AType, BType]
-			style: `all`
-			below: CompoundTypedKey<`content`, AType, BType>
-		},
-	]
->
 
 export class Join<
 	const ASide extends string,
@@ -646,366 +603,4 @@ export class Join<
 			}
 		}
 	}
-}
-
-export type JoinToken<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
-	Cardinality extends `1:1` | `1:n` | `n:n`,
-	Content extends Json.Object | null = null,
-> = {
-	key: string
-	type: `join`
-	cardinality: Cardinality
-	a: ASide
-	b: BSide
-	__aType?: AType
-	__bType?: BType
-	__content?: Content
-}
-
-export function join<
-	const ASide extends string,
-	const AType extends string,
-	const BSide extends string,
-	const BType extends string,
-	const Cardinality extends `1:1` | `1:n` | `n:n`,
->(
-	options: JoinOptions<ASide, AType, BSide, BType, Cardinality, null>,
-	defaultContent?: undefined,
-	store?: Store,
-): JoinToken<ASide, AType, BSide, BType, Cardinality, null>
-export function join<
-	const ASide extends string,
-	const AType extends string,
-	const BSide extends string,
-	const BType extends string,
-	const Cardinality extends `1:1` | `1:n` | `n:n`,
-	const Content extends Json.Object,
->(
-	options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>,
-	defaultContent: Content,
-	store?: Store,
-): JoinToken<ASide, AType, BSide, BType, Cardinality, Content>
-export function join<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
-	Cardinality extends `1:1` | `1:n` | `n:n`,
-	Content extends Json.Object,
->(
-	options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>,
-	defaultContent: Content | undefined,
-	store: Store = IMPLICIT.STORE,
-): JoinToken<ASide, AType, BSide, BType, Cardinality, Content> {
-	store.joins.set(options.key, new Join(options, defaultContent, store))
-	const token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content> = {
-		key: options.key,
-		type: `join`,
-		a: options.between[0],
-		b: options.between[1],
-		cardinality: options.cardinality,
-	}
-	return token
-}
-
-export function getJoin<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
-	Cardinality extends `1:1` | `1:n` | `n:n`,
-	Content extends Json.Object | null,
->(
-	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
-	store: Store,
-): Join<ASide, AType, BSide, BType, Cardinality, Content> {
-	let myJoin = store.joins.get(token.key)
-	if (myJoin === undefined) {
-		const rootJoinMap = IMPLICIT.STORE.joins
-		const rootJoin = rootJoinMap.get(token.key)
-		if (rootJoin === undefined) {
-			throw new Error(
-				`Join "${token.key}" not found in store "${store.config.name}"`,
-			)
-		}
-		myJoin = new Join(rootJoin.options, rootJoin.defaultContent, store)
-		store.joins.set(token.key, myJoin)
-	}
-	return myJoin
-}
-
-export type JoinStates<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
-	Cardinality extends `1:1` | `1:n` | `n:n`,
-	Content extends Json.Object | null,
-> = Cardinality extends `1:1`
-	? (Content extends Json.Object
-			? {
-					readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlySelectorToken<
-						[AType, Content] | null,
-						BType
-					>
-				} & {
-					readonly [B in BSide as `${B}EntryOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
-						[BType, Content] | null,
-						AType
-					>
-				}
-			: {}) & {
-			readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlySelectorToken<
-				AType | null,
-				BType
-			>
-		} & {
-			readonly [B in BSide as `${B}KeyOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
-				BType | null,
-				AType
-			>
-		}
-	: Cardinality extends `1:n`
-		? (Content extends Json.Object
-				? {
-						readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlySelectorToken<
-							[AType, Content] | null,
-							BType
-						>
-					} & {
-						readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
-							[BType, Content][],
-							AType
-						>
-					}
-				: {}) & {
-				readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlySelectorToken<
-					AType | null,
-					BType
-				>
-			} & {
-				readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
-					BType[],
-					AType
-				>
-			}
-		: Cardinality extends `n:n`
-			? (Content extends Json.Object
-					? {
-							readonly [A in ASide as `${A}EntriesOf${Capitalize<BSide>}`]: ReadonlySelectorToken<
-								[AType, Content][],
-								BType
-							>
-						} & {
-							readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
-								[BType, Content][],
-								AType
-							>
-						}
-					: {}) & {
-					readonly [A in ASide as `${A}KeysOf${Capitalize<BSide>}`]: ReadonlySelectorToken<
-						AType[],
-						BType
-					>
-				} & {
-					readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
-						BType[],
-						AType
-					>
-				}
-			: never
-
-export function findRelationsInStore<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
-	Cardinality extends `1:1` | `1:n` | `n:n`,
-	Content extends Json.Object | null,
->(
-	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
-	key: AType | BType,
-	store: Store,
-): JoinStates<ASide, AType, BSide, BType, Cardinality, Content> {
-	const myJoin = getJoin(token, store)
-	let relations: JoinStates<ASide, AType, BSide, BType, Cardinality, Content>
-	switch (token.cardinality satisfies `1:1` | `1:n` | `n:n`) {
-		case `1:1`: {
-			const keyAB = `${token.a}KeyOf${capitalize(token.b)}`
-			const keyBA = `${token.b}KeyOf${capitalize(token.a)}`
-			relations = {
-				get [keyAB]() {
-					const familyAB = myJoin.states[keyAB as any]
-					const state = findInStore(store, familyAB, key)
-					return state
-				},
-				get [keyBA]() {
-					const familyBA = myJoin.states[keyBA as any]
-					const state = findInStore(store, familyBA, key)
-					return state
-				},
-			} as JoinStates<ASide, AType, BSide, BType, Cardinality, Content>
-			const entryAB = `${token.a}EntryOf${capitalize(token.b)}`
-			if (entryAB in myJoin.states) {
-				const entryBA = `${token.b}EntryOf${capitalize(token.a)}`
-				Object.assign(relations, {
-					get [entryAB]() {
-						const familyAB = myJoin.states[entryAB as any]
-						const state = findInStore(store, familyAB, key)
-						return state
-					},
-					get [entryBA]() {
-						const familyBA = myJoin.states[entryBA as any]
-						const state = findInStore(store, familyBA, key)
-						return state
-					},
-				})
-			}
-			break
-		}
-		case `1:n`: {
-			const keyAB = `${token.a}KeyOf${capitalize(token.b)}`
-			const keysBA = `${token.b}KeysOf${capitalize(token.a)}`
-			relations = {
-				get [keyAB]() {
-					const familyAB = myJoin.states[keyAB as any]
-					const state = findInStore(store, familyAB, key)
-					return state
-				},
-				get [keysBA]() {
-					const familyBA = myJoin.states[keysBA as any]
-					const state = findInStore(store, familyBA, key)
-					return state
-				},
-			} as JoinStates<ASide, AType, BSide, BType, Cardinality, Content>
-			const entryAB = `${token.a}EntryOf${capitalize(token.b)}`
-			if (entryAB in myJoin.states) {
-				const entriesBA = `${token.b}EntriesOf${capitalize(token.a)}`
-				Object.assign(relations, {
-					get [entryAB]() {
-						const familyAB = myJoin.states[entryAB as any]
-						const state = findInStore(store, familyAB, key)
-						return state
-					},
-					get [entriesBA]() {
-						const familyBA = myJoin.states[entriesBA as any]
-						const state = findInStore(store, familyBA, key)
-						return state
-					},
-				})
-			}
-			break
-		}
-		case `n:n`: {
-			const keysAB = `${token.a}KeysOf${capitalize(token.b)}`
-			const keysBA = `${token.b}KeysOf${capitalize(token.a)}`
-			relations = {
-				get [keysAB]() {
-					const familyAB = myJoin.states[keysAB as any]
-					const state = findInStore(store, familyAB, key)
-					return state
-				},
-				get [keysBA]() {
-					const familyBA = myJoin.states[keysBA as any]
-					const state = findInStore(store, familyBA, key)
-					return state
-				},
-			} as JoinStates<ASide, AType, BSide, BType, Cardinality, Content>
-			const entriesAB = `${token.a}EntriesOf${capitalize(token.b)}`
-			if (entriesAB in myJoin.states) {
-				const entriesBA = `${token.b}EntriesOf${capitalize(token.a)}`
-				Object.assign(relations, {
-					get [entriesAB]() {
-						const familyAB = myJoin.states[entriesAB as any]
-						const state = findInStore(store, familyAB, key)
-						return state
-					},
-					get [entriesBA]() {
-						const familyBA = myJoin.states[entriesBA as any]
-						const state = findInStore(store, familyBA, key)
-						return state
-					},
-				})
-			}
-		}
-	}
-	return relations
-}
-
-export function findRelations<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
-	Cardinality extends `1:1` | `1:n` | `n:n`,
-	Content extends Json.Object | null,
->(
-	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
-	key: AType | BType,
-): JoinStates<ASide, AType, BSide, BType, Cardinality, Content> {
-	return findRelationsInStore(token, key, IMPLICIT.STORE)
-}
-
-export function editRelationsInStore<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
-	Cardinality extends `1:1` | `1:n` | `n:n`,
-	Content extends Json.Object | null,
->(
-	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
-	change: (relations: Junction<ASide, AType, BSide, BType, Content>) => void,
-	store: Store,
-): void {
-	const myJoin = getJoin(token, store)
-	const target = newest(store)
-	if (isChildStore(target)) {
-		const { toolkit } = target.transactionMeta
-		myJoin.transact(toolkit, ({ relations }) => {
-			change(relations)
-		})
-	} else {
-		change(myJoin.relations)
-	}
-}
-
-export function editRelations<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
-	Cardinality extends `1:1` | `1:n` | `n:n`,
-	Content extends Json.Object | null,
->(
-	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
-	change: (relations: Junction<ASide, AType, BSide, BType, Content>) => void,
-): void {
-	editRelationsInStore(token, change, IMPLICIT.STORE)
-}
-
-export function getInternalRelationsFromStore(
-	token: JoinToken<any, any, any, any, any, any>,
-	store: Store,
-): MutableAtomFamilyToken<SetRTX<string>, SetRTXJson<string>, string> {
-	const myJoin = getJoin(token, store)
-	const family = myJoin.core.relatedKeysAtoms
-	return family
-}
-
-export function getInternalRelations<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
-	Cardinality extends `1:1` | `1:n` | `n:n`,
-	Content extends Json.Object | null,
->(
-	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
-): MutableAtomFamilyToken<SetRTX<string>, SetRTXJson<string>, string> {
-	return getInternalRelationsFromStore(token, IMPLICIT.STORE)
 }

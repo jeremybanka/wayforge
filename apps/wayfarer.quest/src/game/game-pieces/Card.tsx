@@ -1,4 +1,4 @@
-import { findRelations } from "atom.io/data"
+import { findRelations } from "atom.io"
 import { useO } from "atom.io/react"
 import { AnimatePresence } from "motion/react"
 import Image from "next/image"

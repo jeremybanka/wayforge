@@ -18,6 +18,7 @@ import type {
 export * from "./atom"
 export * from "./dispose-state"
 export * from "./get-state"
+export * from "./join"
 export * from "./logger"
 export * from "./realm"
 export * from "./selector"

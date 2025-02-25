@@ -3,7 +3,9 @@ import {
 	Anarchy,
 	atomFamily,
 	disposeState,
+	editRelations,
 	getState,
+	join,
 	Realm,
 	redo,
 	runTransaction,
@@ -12,7 +14,6 @@ import {
 	transaction,
 	undo,
 } from "atom.io"
-import { editRelations, join } from "atom.io/data"
 import { clearStore, IMPLICIT } from "atom.io/internal"
 
 import * as Utils from "../../__util__"
