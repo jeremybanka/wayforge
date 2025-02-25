@@ -1,5 +1,14 @@
 # atom.io
 
+## 0.32.0
+
+### Minor Changes
+
+- 6734921: 💥 BREAKING CHANGE: `join` and related functions are now exported directly from `atom.io`, instead of `atom.io/data`.
+- 6734921: 💥 BREAKING CHANGE: `Loadable` now is exported from `atom.io`, not `atom.io/data`.
+- 6734921: 💥 BREAKING CHANGE: The eslint rule atom.io/lifespan has been removed. It is no longer necessary to use seekState.
+- 6734921: 💥 BREAKING CHANGE: `atom.io/immortal` and `atom.io/ephemeral` have been removed. Instead of importing `seekState` or `findState` from them respectively, instead prefer to import `findState` from `atom.io` when strictly necessary. Generally prefer streamlined get/set.
+
 ## 0.31.1
 
 ### Patch Changes
