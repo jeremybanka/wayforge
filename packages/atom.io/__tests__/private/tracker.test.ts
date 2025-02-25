@@ -2,12 +2,12 @@ import type { Logger } from "atom.io"
 import {
 	atom,
 	atomFamily,
+	findState,
 	getState,
 	runTransaction,
 	setState,
 	transaction,
 } from "atom.io"
-import { findState } from "atom.io/ephemeral"
 import * as Internal from "atom.io/internal"
 import { FamilyTracker, Tracker } from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"

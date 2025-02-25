@@ -1,7 +1,7 @@
 import http from "node:http"
 
+import type { Loadable } from "atom.io"
 import { atom, getState } from "atom.io"
-import type { Loadable } from "atom.io/data"
 
 const server = http.createServer((req, res) => {
 	let data: Uint8Array[] = []

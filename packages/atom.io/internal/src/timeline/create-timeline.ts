@@ -17,7 +17,6 @@ import type {
 	TransactionUpdate,
 	TransactionUpdateContent,
 } from "atom.io"
-import { stringifyJson } from "atom.io/json"
 
 import { newest } from "../lineage"
 import { getUpdateToken } from "../mutable"
@@ -78,8 +77,8 @@ export type Timeline<ManagedAtom extends TimelineManageable> = {
 }
 
 export function createTimeline<ManagedAtom extends TimelineManageable>(
-	options: TimelineOptions<ManagedAtom>,
 	store: Store,
+	options: TimelineOptions<ManagedAtom>,
 	data?: Timeline<ManagedAtom>,
 ): TimelineToken<ManagedAtom> {
 	const tl: Timeline<ManagedAtom> = {
@@ -92,7 +91,7 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 		transactionKey: null,
 		...data,
 		history: data?.history.map((update) => ({ ...update })) ?? [],
-		install: (s) => createTimeline(options, s, tl),
+		install: (s) => createTimeline(s, options, tl),
 		subject: new Subject(),
 		subscriptions: new Map(),
 	}
@@ -131,7 +130,7 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 						)
 						continue
 					}
-					addAtomToTimeline(atomToken, tl, store)
+					addAtomToTimeline(store, atomToken, tl)
 				}
 				break
 
@@ -151,28 +150,9 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 						)
 						continue
 					}
-					addAtomFamilyToTimeline(familyToken, tl, store)
+					addAtomFamilyToTimeline(store, familyToken, tl)
 				}
 				break
-
-			// case `molecule_family`:
-			// 	{
-			// 		const familyToken: MoleculeFamilyToken<any> = initialTopic
-			// 		const familyKey = familyToken.key
-			// 		const existingTimelineKey =
-			// 			target.timelineTopics.getRelatedKey(familyKey)
-			// 		if (existingTimelineKey) {
-			// 			store.logger.error(
-			// 				`❌`,
-			// 				`timeline`,
-			// 				options.key,
-			// 				`Failed to add molecule family "${familyKey}" because it already belongs to timeline "${existingTimelineKey}"`,
-			// 			)
-			// 			continue
-			// 		}
-			// 		addMoleculeFamilyToTimeline(familyToken, tl, store)
-			// 	}
-			// 	break
 		}
 	}
 
@@ -186,14 +166,14 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 }
 
 function addAtomToTimeline(
+	store: Store,
 	atomToken: AtomToken<any>,
 	tl: Timeline<any>,
-	store: Store,
 ): void {
-	let maybeAtom = withdraw(atomToken, store)
+	let maybeAtom = withdraw(store, atomToken)
 	if (maybeAtom.type === `mutable_atom`) {
 		const updateToken = getUpdateToken(maybeAtom)
-		maybeAtom = withdraw(updateToken, store)
+		maybeAtom = withdraw(store, updateToken)
 	}
 	const atom = maybeAtom
 	store.timelineTopics.set(
@@ -236,7 +216,7 @@ function addAtomToTimeline(
 				)
 				if (tl.timeTraveling === null) {
 					if (txUpdateInProgress) {
-						joinTransaction(tl, txUpdateInProgress, store)
+						joinTransaction(store, tl, txUpdateInProgress)
 					} else if (currentSelectorKey && currentSelectorTime) {
 						let latestUpdate: TimelineUpdate<any> | undefined = tl.history.at(-1)
 
@@ -330,11 +310,11 @@ function addAtomToTimeline(
 }
 
 function addAtomFamilyToTimeline(
+	store: Store,
 	atomFamilyToken: AtomFamilyToken<any, any>,
 	tl: Timeline<any>,
-	store: Store,
 ): void {
-	const family = withdraw(atomFamilyToken, store)
+	const family = withdraw(store, atomFamilyToken)
 	store.timelineTopics.set(
 		{ topicKey: family.key, timelineKey: tl.key },
 		{ topicType: `atom_family` },
@@ -344,21 +324,21 @@ function addAtomFamilyToTimeline(
 		family.subject.subscribe(
 			`timeline`,
 			function timelineCapturesStateLifecycleEvent(creationOrDisposal) {
-				handleStateLifecycleEvent(creationOrDisposal, tl, store)
+				handleStateLifecycleEvent(store, creationOrDisposal, tl)
 			},
 		),
 	)
 	for (const atom of store.atoms.values()) {
 		if (atom.family?.key === family.key) {
-			addAtomToTimeline(atom, tl, store)
+			addAtomToTimeline(store, atom, tl)
 		}
 	}
 }
 
 function joinTransaction(
+	store: Store,
 	tl: Timeline<any>,
 	txUpdateInProgress: TransactionUpdate<Func>,
-	store: Store,
 ) {
 	const currentTxKey = txUpdateInProgress.key
 	const currentTxInstanceId = txUpdateInProgress.id
@@ -366,7 +346,7 @@ function joinTransaction(
 		key: currentTxKey,
 		type: `transaction`,
 	}
-	const currentTransaction = withdraw(currentTxToken, store)
+	const currentTransaction = withdraw(store, currentTxToken)
 	if (currentTxKey && tl.transactionKey === null) {
 		tl.transactionKey = currentTxKey
 		const unsubscribe = currentTransaction.subject.subscribe(
@@ -453,9 +433,9 @@ function filterTransactionUpdates(
 }
 
 function handleStateLifecycleEvent(
+	store: Store,
 	event: StateCreation<any> | StateDisposal<any>,
 	tl: Timeline<any>,
-	store: Store,
 ): void {
 	const timestamp = Date.now()
 	const timelineEvent = Object.assign(event, {
@@ -468,7 +448,7 @@ function handleStateLifecycleEvent(
 		} else {
 			const txUpdateInProgress = target.on.transactionApplying.state
 			if (txUpdateInProgress) {
-				joinTransaction(tl, txUpdateInProgress.update, store)
+				joinTransaction(store, tl, txUpdateInProgress.update)
 			} else {
 				tl.history.push(timelineEvent)
 				tl.at = tl.history.length
@@ -478,7 +458,7 @@ function handleStateLifecycleEvent(
 	}
 	switch (event.type) {
 		case `state_creation`:
-			addAtomToTimeline(event.token, tl, store)
+			addAtomToTimeline(store, event.token, tl)
 			break
 		case `state_disposal`:
 			tl.subscriptions.get(event.token.key)?.()

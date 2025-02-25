@@ -2,8 +2,8 @@ import type { Store } from "../store"
 import { isRootStore } from "./is-root-store"
 
 export function getContinuityKey(
-	transactionKey: string,
 	store: Store,
+	transactionKey: string,
 ): string | undefined {
 	const isRoot = isRootStore(store)
 	const continuity = isRoot
@@ -13,8 +13,8 @@ export function getContinuityKey(
 }
 
 export function getEpochNumberOfContinuity(
-	continuityKey: string,
 	store: Store,
+	continuityKey: string,
 ): number | undefined {
 	const isRoot = isRootStore(store)
 	const epoch =
@@ -25,8 +25,8 @@ export function getEpochNumberOfContinuity(
 }
 
 export function getEpochNumberOfAction(
-	transactionKey: string,
 	store: Store,
+	transactionKey: string,
 ): number | undefined {
 	const isRoot = isRootStore(store)
 	const continuity = isRoot

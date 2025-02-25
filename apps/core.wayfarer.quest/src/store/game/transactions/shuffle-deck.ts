@@ -1,5 +1,4 @@
-import { transaction } from "atom.io"
-import { editRelations, findRelations } from "atom.io/data"
+import { editRelations, findRelations, transaction } from "atom.io"
 
 import { deckIndices, groupsOfCards } from "../card-groups"
 

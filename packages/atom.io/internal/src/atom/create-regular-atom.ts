@@ -59,8 +59,8 @@ export function createRegularAtom<T>(
 		initialValue = options.default()
 	}
 	target.atoms.set(newAtom.key, newAtom)
-	markAtomAsDefault(options.key, store)
-	cacheValue(options.key, initialValue, subject, target)
+	markAtomAsDefault(store, options.key)
+	cacheValue(target, options.key, initialValue, subject)
 	const token = deposit(newAtom)
 	if (options.effects) {
 		let effectIndex = 0
@@ -71,7 +71,7 @@ export function createRegularAtom<T>(
 					setIntoStore(store, token, next)
 				},
 				onSet: (handle: UpdateHandler<T>) =>
-					subscribeToState(token, handle, `effect[${effectIndex}]`, store),
+					subscribeToState(store, token, `effect[${effectIndex}]`, handle),
 			})
 			if (cleanup) {
 				cleanupFunctions.push(cleanup)

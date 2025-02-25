@@ -42,7 +42,7 @@ export function installIntoStore(
 		return
 	}
 	for (const token of tokens) {
-		const resource = withdraw(token, source)
+		const resource = withdraw(source, token)
 		resource.install(target)
 	}
 }

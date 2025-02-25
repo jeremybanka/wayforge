@@ -10,9 +10,9 @@
 	"exports": {
 		"./package.json": "./package.json",
 		"./socket-filestore-node": {
+			"types": "./dist/socket-filestore-node.d.ts",
 			"import": "./dist/socket-filestore-node.js",
-			"require": "./dist/socket-filestore-node.cjs",
-			"types": "./dist/socket-filestore-node.d.ts"
+			"require": "./dist/socket-filestore-node.cjs"
 		}
 	},
 	"scripts": {

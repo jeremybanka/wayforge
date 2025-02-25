@@ -15,6 +15,6 @@ export const getSelectorDependencyKeys = (
 		.selectorGraph.getRelationEntries({ downstreamSelectorKey: key })
 		.filter(([_, { source }]) => source !== key)
 		.map(([_, { source }]) => source)
-		.filter((source) => isStateKey(source, store))
+		.filter((source) => isStateKey(store, source))
 	return sources
 }

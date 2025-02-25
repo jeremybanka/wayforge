@@ -1,11 +1,11 @@
 import type * as AtomIO from "atom.io"
 import {
+	capitalize,
 	createRegularAtomFamily,
 	createSelectorFamily,
 	IMPLICIT,
 } from "atom.io/internal"
 
-const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1)
 const nameFamily = (topKey: string, subKey: string) =>
 	`find` + capitalize(topKey) + capitalize(subKey) + `State`
 

@@ -1,5 +1,5 @@
 import * as AtomIO from "atom.io"
-import { findRelations } from "atom.io/data"
+import { findRelations } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import { myUsernameState } from "atom.io/realtime-client"
 

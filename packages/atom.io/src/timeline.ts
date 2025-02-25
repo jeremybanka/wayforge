@@ -49,7 +49,7 @@ export type TimelineUpdate<ManagedAtom extends TimelineManageable> =
 export const timeline = <ManagedAtom extends TimelineManageable>(
 	options: TimelineOptions<ManagedAtom>,
 ): TimelineToken<ManagedAtom> => {
-	return createTimeline(options, IMPLICIT.STORE)
+	return createTimeline(IMPLICIT.STORE, options)
 }
 
 export const redo = (tl: TimelineToken<any>): void => {

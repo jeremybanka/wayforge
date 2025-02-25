@@ -6,8 +6,8 @@ import type { Store } from "../store"
 import { recallState } from "./recall-state"
 
 export const subscribeToRootAtoms = <T>(
-	selector: Selector<T>,
 	store: Store,
+	selector: Selector<T>,
 ): (() => void)[] => {
 	const target = newest(store)
 	const dependencySubscriptions = traceAllSelectorAtoms(selector, store).map(
@@ -32,8 +32,8 @@ export const subscribeToRootAtoms = <T>(
 						`->`,
 						atomChange.newValue,
 					)
-					const oldValue = recallState(selector, target)
-					const newValue = readOrComputeValue(selector, target)
+					const oldValue = recallState(target, selector)
+					const newValue = readOrComputeValue(target, selector)
 					store.logger.info(
 						`✨`,
 						selector.type,

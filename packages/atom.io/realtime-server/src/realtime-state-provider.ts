@@ -18,12 +18,12 @@ export function realtimeStateProvider({
 			socket.emit(`serve:${token.key}`, getFromStore(store, token))
 
 			unsubscribeFromStateUpdates = subscribeToState(
+				store,
 				token,
+				`expose-single:${socket.id}`,
 				({ newValue }) => {
 					socket.emit(`serve:${token.key}`, newValue)
 				},
-				`expose-single:${socket.id}`,
-				store,
 			)
 
 			const fillUnsubRequest = () => {

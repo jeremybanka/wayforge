@@ -1,6 +1,4 @@
-import type { getState, setState } from "atom.io"
-import type { findState } from "atom.io/ephemeral"
-import type { seekState } from "atom.io/immortal"
+import type { findState, getState, setState } from "atom.io"
 import type { EnvironmentData, Func, Transceiver } from "atom.io/internal"
 import {
 	actUponStore,
@@ -83,12 +81,11 @@ export type TransactionUpdate<F extends Func> = {
 	output: ReturnType<F>
 }
 
-export type GetterToolkit = Pick<SetterToolkit, `find` | `get` | `json` | `seek`>
+export type GetterToolkit = Pick<SetterToolkit, `find` | `get` | `json`>
 export type SetterToolkit = Readonly<{
 	get: typeof getState
 	set: typeof setState
 	find: typeof findState
-	seek: typeof seekState
 	json: <T extends Transceiver<any>, J extends Json.Serializable>(
 		state: MutableAtomToken<T, J>,
 	) => WritableSelectorToken<J>
@@ -97,7 +94,6 @@ export type ActorToolkit = Readonly<{
 	get: typeof getState
 	set: typeof setState
 	find: typeof findState
-	seek: typeof seekState
 	json: <T extends Transceiver<any>, J extends Json.Serializable>(
 		state: MutableAtomToken<T, J>,
 	) => WritableSelectorToken<J>
@@ -132,12 +128,12 @@ export type TransactionIO<Token extends TransactionToken<any>> =
 export function transaction<F extends Func>(
 	options: TransactionOptions<F>,
 ): TransactionToken<F> {
-	return createTransaction(options, IMPLICIT.STORE)
+	return createTransaction(IMPLICIT.STORE, options)
 }
 
 export function runTransaction<F extends Func>(
 	token: TransactionToken<F>,
 	id = arbitrary(),
 ): (...parameters: Parameters<F>) => ReturnType<F> {
-	return actUponStore(token, id, IMPLICIT.STORE)
+	return actUponStore(IMPLICIT.STORE, token, id)
 }

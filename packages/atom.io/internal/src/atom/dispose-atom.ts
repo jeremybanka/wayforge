@@ -3,16 +3,16 @@ import type { AtomDisposal, AtomToken } from "atom.io"
 import type { Store } from ".."
 import { getUpdateToken, isChildStore, newest, withdraw } from ".."
 
-export function disposeAtom(atomToken: AtomToken<unknown>, store: Store): void {
+export function disposeAtom(store: Store, atomToken: AtomToken<unknown>): void {
 	const target = newest(store)
 	const { key, family } = atomToken
-	const atom = withdraw(atomToken, target)
+	const atom = withdraw(target, atomToken)
 	if (!family) {
 		store.logger.error(`❌`, `atom`, key, `Standalone atoms cannot be disposed.`)
 	} else {
 		atom.cleanup?.()
 		const lastValue = store.valueMap.get(atom.key)
-		const atomFamily = withdraw({ key: family.key, type: `atom_family` }, store)
+		const atomFamily = withdraw(store, { key: family.key, type: `atom_family` })
 
 		const disposal: AtomDisposal<AtomToken<unknown>> = {
 			type: `state_disposal`,
@@ -24,15 +24,6 @@ export function disposeAtom(atomToken: AtomToken<unknown>, store: Store): void {
 		atomFamily.subject.next(disposal)
 
 		const isChild = isChildStore(target)
-		// let molecule = target.molecules.get(family.subKey)
-		// if (molecule && isChild) {
-		// 	const parentMolecule = target.parent.molecules.get(family.subKey)
-		// 	if (parentMolecule === molecule) {
-		// 		molecule = parentMolecule.copy()
-		// 		target.molecules.set(family.subKey, molecule)
-		// 	}
-		// }
-		// molecule?.tokens.delete(family.key)
 
 		target.atoms.delete(key)
 		target.valueMap.delete(key)
@@ -42,7 +33,7 @@ export function disposeAtom(atomToken: AtomToken<unknown>, store: Store): void {
 
 		if (atomToken.type === `mutable_atom`) {
 			const updateToken = getUpdateToken(atomToken)
-			disposeAtom(updateToken, store)
+			disposeAtom(store, updateToken)
 			store.trackers.delete(key)
 		}
 		store.logger.info(`🔥`, `atom`, key, `deleted`)

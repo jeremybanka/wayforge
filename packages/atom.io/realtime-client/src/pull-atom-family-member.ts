@@ -7,9 +7,9 @@ import type { Socket } from "socket.io-client"
 /* eslint-disable no-console */
 
 export function pullAtomFamilyMember<J extends Json.Serializable>(
-	token: AtomIO.RegularAtomToken<J>,
-	socket: Socket,
 	store: Store,
+	socket: Socket,
+	token: AtomIO.RegularAtomToken<J>,
 ): () => void {
 	if (!(`family` in token)) {
 		console.error(`Token is not a family member:`, token)

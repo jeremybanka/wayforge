@@ -6,9 +6,9 @@ import { pullAtom } from "./pull-atom"
 import { pullMutableAtom } from "./pull-mutable-atom"
 
 export function pullSelector<T>(
-	token: AtomIO.SelectorToken<T>,
-	socket: Socket,
 	store: Store,
+	socket: Socket,
+	token: AtomIO.SelectorToken<T>,
 ): () => void {
 	const atomKeys = store.selectorAtoms.getRelatedKeys(token.key)
 	const unsubscribes: Array<() => void> = []
@@ -20,11 +20,11 @@ export function pullSelector<T>(
 			}
 			switch (atom.type) {
 				case `atom`: {
-					unsubscribes.push(pullAtom(atom, socket, store))
+					unsubscribes.push(pullAtom(store, socket, atom))
 					break
 				}
 				case `mutable_atom`: {
-					unsubscribes.push(pullMutableAtom(atom, socket, store))
+					unsubscribes.push(pullMutableAtom(store, socket, atom))
 					break
 				}
 			}

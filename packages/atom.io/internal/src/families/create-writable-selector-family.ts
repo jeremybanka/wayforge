@@ -1,5 +1,6 @@
 import type {
 	FamilyMetadata,
+	findState,
 	getState,
 	StateCreation,
 	StateDisposal,
@@ -7,8 +8,6 @@ import type {
 	WritableSelectorFamilyToken,
 	WritableSelectorToken,
 } from "atom.io"
-import type { findState } from "atom.io/ephemeral"
-import type { seekState } from "atom.io/immortal"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
@@ -17,7 +16,6 @@ import {
 	getFromStore,
 	getJsonToken,
 	prettyPrintTokenType,
-	seekInStore,
 	type WritableSelectorFamily,
 } from ".."
 import { newest } from "../lineage"
@@ -80,7 +78,6 @@ export function createWritableSelectorFamily<T, K extends Canonical>(
 			return getFn({
 				get: ((...ps: [any]) => getFromStore(store, ...ps)) as typeof getState,
 				find: ((token, k) => findInStore(store, token, k)) as typeof findState,
-				seek: ((token, k) => seekInStore(store, token, k)) as typeof seekState,
 				json: (token) => getJsonToken(store, token),
 			})
 		},

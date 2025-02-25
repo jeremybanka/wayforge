@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/require-await */
 import * as http from "node:http"
 
+import type { Loadable } from "atom.io"
 import * as AtomIO from "atom.io"
-import type { Loadable } from "atom.io/data"
 import * as Internal from "atom.io/internal"
 import { parseJson } from "atom.io/json"
 

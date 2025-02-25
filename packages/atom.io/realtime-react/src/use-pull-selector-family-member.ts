@@ -15,7 +15,7 @@ export function usePullSelectorFamilyMember<
 	const store = React.useContext(StoreContext)
 	const token = findInStore(store, familyToken, key)
 	useRealtimeService(`pull:${token.key}`, (socket) =>
-		RTC.pullSelectorFamilyMember(token, socket, store),
+		RTC.pullSelectorFamilyMember(store, socket, token),
 	)
 	return useO(token)
 }

@@ -3,6 +3,7 @@ import {
 	atom,
 	atomFamily,
 	disposeState,
+	findState,
 	getState,
 	redo,
 	runTransaction,
@@ -13,8 +14,6 @@ import {
 	transaction,
 	undo,
 } from "atom.io"
-import { findState } from "atom.io/ephemeral"
-import { seekState } from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
 import { vitest } from "vitest"
 
@@ -334,9 +333,13 @@ describe(`timeline state lifecycle`, () => {
 		undo(countsTL)
 		undo(countsTL)
 		undo(countsTL)
-		expect(seekState(countStates, `my-key`)).toBe(undefined)
+		expect(
+			Internal.seekInStore(Internal.IMPLICIT.STORE, countStates, `my-key`),
+		).toBe(undefined)
 		redo(countsTL)
-		expect(seekState(countStates, `my-key`)).toEqual({
+		expect(
+			Internal.seekInStore(Internal.IMPLICIT.STORE, countStates, `my-key`),
+		).toEqual({
 			family: {
 				key: `count`,
 				subKey: `"my-key"`,

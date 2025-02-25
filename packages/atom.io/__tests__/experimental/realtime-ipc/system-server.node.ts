@@ -2,14 +2,12 @@ import path from "node:path"
 
 import type { Silo } from "atom.io"
 import {
-	findRelationsInStore,
-	getInternalRelationsFromStore,
-} from "atom.io/data"
-import {
 	actUponStore,
 	arbitrary,
 	findInStore,
+	findRelationsInStore,
 	getFromStore,
+	getInternalRelationsFromStore,
 	setIntoStore,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
@@ -47,7 +45,7 @@ export const SystemServer = ({
 	exposeMutable(findInStore(store, usersInRoomsAtoms, username))
 
 	socket.on(`create-room`, async (roomId) => {
-		await actUponStore(RTS.createRoomTX, arbitrary(), store)(roomId, `bun`, [
+		await actUponStore(store, RTS.createRoomTX, arbitrary())(roomId, `bun`, [
 			path.join(__dirname, `game-instance.bun.ts`),
 		])
 	})
@@ -72,7 +70,7 @@ export const SystemServer = ({
 		}
 		socket.onAny(forward)
 
-		actUponStore(RTS.joinRoomTX, arbitrary(), store)(roomId, username, 0)
+		actUponStore(store, RTS.joinRoomTX, arbitrary())(roomId, username, 0)
 
 		const roomSocketState = findInStore(store, RTS.roomSelectors, roomId)
 		const roomSocket = await getFromStore(store, roomSocketState)
@@ -90,7 +88,7 @@ export const SystemServer = ({
 		roomSocket.process.on(`close`, (code) => {
 			console.info(`[${shortId}]:${username}`, `room "${roomId}" closing`)
 			socket.emit(`room-close`, roomId, code)
-			actUponStore(RTS.destroyRoomTX, arbitrary(), store)(roomId)
+			actUponStore(store, RTS.destroyRoomTX, arbitrary())(roomId)
 		})
 		const leaveRoom = () => {
 			// console.log(`🥋 LEAVE ROOM RECEIVED`)
@@ -98,7 +96,7 @@ export const SystemServer = ({
 			socket.offAny(forward)
 			// roomSocket.dispose() IMPLEMENT ❗
 			toRoom([`user-leaves`])
-			actUponStore(RTS.leaveRoomTX, arbitrary(), store)(roomId, username)
+			actUponStore(store, RTS.leaveRoomTX, arbitrary())(roomId, username)
 		}
 
 		socket.on(`leave-room`, leaveRoom)
@@ -119,7 +117,7 @@ export const SystemServer = ({
 		const roomSocketState = findInStore(store, RTS.roomSelectors, roomKey)
 		const roomSocket = await getFromStore(store, roomSocketState)
 		roomSocket?.emit(`leave-room`, username)
-		actUponStore(RTS.leaveRoomTX, arbitrary(), store)(`*`, username)
+		actUponStore(store, RTS.leaveRoomTX, arbitrary())(`*`, username)
 		console.info(`[${shortId}]:${username}`, `disconnected`)
 	}
 	socket.on(`disconnect`, handleDisconnect)

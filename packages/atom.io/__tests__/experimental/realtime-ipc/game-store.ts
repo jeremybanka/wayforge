@@ -1,6 +1,5 @@
 import type { RegularAtomToken } from "atom.io"
-import { atomFamily } from "atom.io"
-import { findState } from "atom.io/ephemeral"
+import { atomFamily, findState } from "atom.io"
 import { continuity } from "atom.io/realtime"
 
 export const letterAtoms = atomFamily<string | null, number>({

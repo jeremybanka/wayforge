@@ -1,4 +1,4 @@
-import { getInternalRelations } from "atom.io/data"
+import { getInternalRelations } from "atom.io"
 import { usersInRooms } from "atom.io/realtime"
 import { usePullMutableAtomFamilyMember } from "atom.io/realtime-react"
 import { setCssVars } from "hamr/react-css-vars"

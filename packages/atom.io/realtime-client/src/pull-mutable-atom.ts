@@ -8,9 +8,9 @@ export function pullMutableAtom<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
 >(
-	token: AtomIO.MutableAtomToken<T, J>,
-	socket: Socket,
 	store: Store,
+	socket: Socket,
+	token: AtomIO.MutableAtomToken<T, J>,
 ): () => void {
 	const jsonToken = getJsonToken(store, token)
 	const updateToken = getUpdateToken(token)

@@ -8,6 +8,6 @@ import { useRealtimeService } from "./use-realtime-service"
 export function useSyncContinuity(token: ContinuityToken): void {
 	const store = React.useContext(StoreContext)
 	useRealtimeService(`tx-sync:${token.key}`, (socket) => {
-		return syncContinuity(token, socket, store)
+		return syncContinuity(store, socket, token)
 	})
 }

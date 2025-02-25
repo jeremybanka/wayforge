@@ -3,11 +3,12 @@ import * as http from "node:http"
 import type { RenderResult } from "@testing-library/react"
 import { prettyDOM, render } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import { editRelationsInStore, findRelationsInStore } from "atom.io/data"
 import type { Store } from "atom.io/internal"
 import {
 	clearStore,
+	editRelationsInStore,
 	findInStore,
+	findRelationsInStore,
 	getFromStore,
 	IMPLICIT,
 	setIntoStore,

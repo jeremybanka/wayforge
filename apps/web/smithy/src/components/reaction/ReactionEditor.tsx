@@ -24,7 +24,7 @@ import {
 import { SVG_EnergyIcon } from "../energy/EnergyIcon"
 import { RecoverableErrorBoundary } from "../RecoverableErrorBoundary"
 import { Json } from "atom.io/json"
-import { findState } from "atom.io/ephemeral"
+import { findState } from "atom.io"
 
 export const energySelectState = selector<{ value: string; text: string }[]>({
 	key: `energyCatalog`,

@@ -6,12 +6,12 @@ import { withdraw } from "../store"
 import type { Func } from "../utility-types"
 
 export function actUponStore<F extends Func>(
+	store: Store,
 	token: TransactionToken<F>,
 	id: string,
-	store: Store,
 ): (...parameters: Parameters<F>) => ReturnType<F> {
 	return (...parameters: Parameters<F>): ReturnType<F> => {
-		const tx = withdraw(token, store)
+		const tx = withdraw(store, token)
 		if (tx) {
 			return tx.run(parameters, id)
 		}

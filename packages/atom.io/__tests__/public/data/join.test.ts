@@ -1,11 +1,14 @@
 import type { Logger } from "atom.io"
-import { getState, runTransaction, subscribe, transaction } from "atom.io"
 import {
 	editRelations,
 	findRelations,
 	getInternalRelations,
+	getState,
 	join,
-} from "atom.io/data"
+	runTransaction,
+	subscribe,
+	transaction,
+} from "atom.io"
 import * as Internal from "atom.io/internal"
 import { vitest } from "vitest"
 

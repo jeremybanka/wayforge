@@ -40,12 +40,12 @@ export function realtimeAtomFamilyProvider({
 					const token = findInStore(store, family, subKey)
 					socket.emit(`serve:${token.key}`, getFromStore(store, token))
 					const unsubscribe = subscribeToState(
+						store,
 						token,
+						`expose-family:${family.key}:${socket.id}`,
 						({ newValue }) => {
 							socket.emit(`serve:${token.key}`, newValue)
 						},
-						`expose-family:${family.key}:${socket.id}`,
-						store,
 					)
 					unsubCallbacksByKey.set(token.key, unsubscribe)
 					socket.on(`unsub:${token.key}`, () => {

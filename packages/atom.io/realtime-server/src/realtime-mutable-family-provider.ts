@@ -49,12 +49,12 @@ export function realtimeMutableFamilyProvider({
 					const updateToken = getUpdateToken(token)
 					socket.emit(`init:${token.key}`, getFromStore(store, jsonToken))
 					const unsubscribe = subscribeToState(
+						store,
 						updateToken,
+						`expose-family:${family.key}:${socket.id}`,
 						({ newValue }) => {
 							socket.emit(`next:${token.key}`, newValue)
 						},
-						`expose-family:${family.key}:${socket.id}`,
-						store,
 					)
 					unsubCallbacksByKey.set(token.key, unsubscribe)
 					socket.on(`unsub:${token.key}`, () => {

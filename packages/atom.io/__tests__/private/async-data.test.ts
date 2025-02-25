@@ -1,7 +1,7 @@
 import * as http from "node:http"
 
 import * as AtomIO from "atom.io"
-import { dict, type Loadable } from "atom.io/data"
+import { dict } from "atom.io/data"
 import * as Internal from "atom.io/internal"
 import { vitest } from "vitest"
 
@@ -72,7 +72,7 @@ describe(`complex async setup`, () => {
 	server.listen(PORT)
 
 	test(`complex chain of async selectors`, async () => {
-		const urlState = AtomIO.atom<Loadable<URL>>({
+		const urlState = AtomIO.atom<AtomIO.Loadable<URL>>({
 			key: `url`,
 			default: () =>
 				new Promise((resolve) => {
@@ -82,7 +82,9 @@ describe(`complex async setup`, () => {
 					}, 10)
 				}),
 		})
-		const proposalResultState = AtomIO.selector<Loadable<{ designId: string }>>({
+		const proposalResultState = AtomIO.selector<
+			AtomIO.Loadable<{ designId: string }>
+		>({
 			key: `proposalResult`,
 			get: async ({ get }) => {
 				const url = await get(urlState)
@@ -91,7 +93,9 @@ describe(`complex async setup`, () => {
 				return json
 			},
 		})
-		const designResultState = AtomIO.selector<Loadable<{ design: Design }>>({
+		const designResultState = AtomIO.selector<
+			AtomIO.Loadable<{ design: Design }>
+		>({
 			key: `designResult`,
 			get: async ({ get }) => {
 				const proposalResult = await get(proposalResultState)
@@ -145,7 +149,7 @@ describe(`complex async setup`, () => {
 				AtomIO.setState(findStatusState, key, value)
 			}
 		})
-		const designDeltaState = AtomIO.selector<Loadable<Partial<Design>>>({
+		const designDeltaState = AtomIO.selector<AtomIO.Loadable<Partial<Design>>>({
 			key: `designDelta`,
 			get: async ({ get }) => {
 				const {

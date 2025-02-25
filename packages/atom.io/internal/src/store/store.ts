@@ -9,7 +9,6 @@ import type {
 	WritableSelectorToken,
 } from "atom.io"
 import { AtomIOLogger } from "atom.io"
-import type { Join } from "atom.io/data"
 import type { Canonical, stringified } from "atom.io/json"
 
 import type {
@@ -21,6 +20,7 @@ import type {
 	WritableSelector,
 	WritableSelectorFamily,
 } from ".."
+import type { Join } from "../join"
 import { Junction } from "../junction"
 import type { Lineage } from "../lineage"
 import type { Molecule } from "../molecule"

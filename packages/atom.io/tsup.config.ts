@@ -1,28 +1,11 @@
 import type { Options } from "tsup"
 import { defineConfig } from "tsup"
 
-import discoverSubmodules from "./__scripts__/discover-submodules"
-
-export const BUNDLE_EXCLUDE_LIST = [
-	`atom.io`,
-	...discoverSubmodules().map((submodule) => `atom.io/${submodule}`),
-	`socket.io`,
-	`socket.io-client`,
-	`react`,
-	`@types/react`,
-	`@typescript-eslint/utils`,
-	`@testing-library/react`,
-	`@floating-ui/react`,
-	`motion`,
-	`happy-dom`,
-]
-
 export const BASE_OPTIONS: Options = {
 	esbuildOptions: (options) => {
 		options.chunkNames = `dist/[name]-[hash]`
 		options.assetNames = `dist/[name]-[hash]`
 	},
-	external: BUNDLE_EXCLUDE_LIST,
 	format: [`esm`],
 	jsxFactory: `React.createElement`,
 	loader: { ".scss": `css` },
@@ -39,9 +22,7 @@ export const JS_OPTIONS: Options = {
 	entry: {
 		"dist/index": `src/index.ts`,
 		"data/dist/index": `data/src/index.ts`,
-		"ephemeral/dist/index": `ephemeral/src/index.ts`,
 		"eslint-plugin/dist/index": `eslint-plugin/src/index.ts`,
-		"immortal/dist/index": `immortal/src/index.ts`,
 		"internal/dist/index": `internal/src/index.ts`,
 		"introspection/dist/index": `introspection/src/index.ts`,
 		"json/dist/index": `json/src/index.ts`,
@@ -69,8 +50,5 @@ export const DTS_OPTIONS: Options = {
 
 export default defineConfig((options) => {
 	console.log(options)
-	const using = options.dts ? DTS_OPTIONS : JS_OPTIONS
-	console.log({ using })
-	console.log(`bundle exclude list: ${discoverSubmodules().join(`, `)}`)
-	return using
+	return options.dts ? DTS_OPTIONS : JS_OPTIONS
 })

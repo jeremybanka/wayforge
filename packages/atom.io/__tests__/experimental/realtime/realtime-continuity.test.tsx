@@ -55,7 +55,7 @@ describe(`synchronizing transactions`, () => {
 						RTR.useSyncContinuity(countContinuity)
 						const count = AR.useO(countState)
 						const store = React.useContext(AR.StoreContext)
-						const increment = actUponStore(incrementTX, arbitrary(), store)
+						const increment = actUponStore(store, incrementTX, arbitrary())
 
 						return (
 							<>
@@ -72,7 +72,7 @@ describe(`synchronizing transactions`, () => {
 						RTR.useSyncContinuity(countContinuity)
 						const count = AR.useO(countState)
 						const store = React.useContext(AR.StoreContext)
-						const increment = actUponStore(incrementTX, arbitrary(), store)
+						const increment = actUponStore(store, incrementTX, arbitrary())
 						return (
 							<>
 								<button

@@ -2,9 +2,9 @@ import type { Store } from "../store"
 import { isRootStore } from "./is-root-store"
 
 export function setEpochNumberOfContinuity(
+	store: Store,
 	continuityKey: string,
 	newEpoch: number,
-	store: Store,
 ): void {
 	const isRoot = isRootStore(store)
 	if (isRoot && continuityKey) {
@@ -13,9 +13,9 @@ export function setEpochNumberOfContinuity(
 }
 
 export function setEpochNumberOfAction(
+	store: Store,
 	transactionKey: string,
 	newEpoch: number,
-	store: Store,
 ): void {
 	const isRoot = isRootStore(store)
 	if (!isRoot) {

@@ -102,7 +102,7 @@ export const useRegisterAndAttemptConfirmedUpdate =
 					key: subsequentOptimistic.key,
 				} as const
 				const { id, params } = subsequentOptimistic
-				actUponStore(token, id, store)(...params)
+				actUponStore(store, token, id)(...params)
 			}
 			store.logger.info(
 				`⏩`,
@@ -177,7 +177,7 @@ export const useRegisterAndAttemptConfirmedUpdate =
 				continuityKey,
 				`has no optimistic updates to deal with`,
 			)
-			const continuityEpoch = getEpochNumberOfContinuity(continuityKey, store)
+			const continuityEpoch = getEpochNumberOfContinuity(store, continuityKey)
 			const isRoot = isRootStore(store)
 
 			if (isRoot && continuityEpoch === confirmed.epoch - 1) {
@@ -189,7 +189,7 @@ export const useRegisterAndAttemptConfirmedUpdate =
 				)
 				ingestTransactionUpdate(`newValue`, confirmed, store)
 				socket.emit(`ack:${continuityKey}`, confirmed.epoch)
-				setEpochNumberOfContinuity(continuityKey, confirmed.epoch, store)
+				setEpochNumberOfContinuity(store, continuityKey, confirmed.epoch)
 			} else if (isRoot && continuityEpoch !== undefined) {
 				store.logger.info(
 					`🧑‍⚖️`,

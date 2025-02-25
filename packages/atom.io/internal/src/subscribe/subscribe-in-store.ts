@@ -53,10 +53,10 @@ export function subscribeInStore(
 		case `mutable_atom`:
 		case `readonly_selector`:
 		case `selector`:
-			return subscribeToState(token, handleUpdate, key, store)
+			return subscribeToState(store, token, key, handleUpdate)
 		case `transaction`:
-			return subscribeToTransaction(token, handleUpdate, key, store)
+			return subscribeToTransaction(store, token, key, handleUpdate)
 		case `timeline`:
-			return subscribeToTimeline(token, handleUpdate, key, store)
+			return subscribeToTimeline(store, token, key, handleUpdate)
 	}
 }

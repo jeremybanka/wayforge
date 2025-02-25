@@ -1,5 +1,4 @@
-import { atom, atomFamily } from "atom.io"
-import { join } from "atom.io/data"
+import { atom, atomFamily, join } from "atom.io"
 import { createMutableAtom, IMPLICIT } from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"

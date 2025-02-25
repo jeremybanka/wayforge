@@ -11,9 +11,9 @@ export function pullMutableAtomFamilyMember<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
 >(
-	token: AtomIO.MutableAtomToken<T, J>,
-	socket: Socket,
 	store: Store,
+	socket: Socket,
+	token: AtomIO.MutableAtomToken<T, J>,
 ): () => void {
 	if (!(`family` in token)) {
 		console.error(`Token is not a family member:`, token)

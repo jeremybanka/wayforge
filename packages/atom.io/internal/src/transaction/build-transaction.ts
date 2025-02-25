@@ -1,9 +1,7 @@
-import type { disposeState, getState, setState } from "atom.io"
-import type { findState } from "atom.io/ephemeral"
-import type { seekState } from "atom.io/immortal"
+import type { disposeState, findState, getState, setState } from "atom.io"
 
 import { arbitrary } from "../arbitrary"
-import { disposeFromStore, findInStore, seekInStore } from "../families"
+import { disposeFromStore, findInStore } from "../families"
 import { getEnvironmentData } from "../get-environment-data"
 import { getFromStore } from "../get-state"
 import { Junction } from "../junction"
@@ -18,9 +16,9 @@ import { actUponStore, getEpochNumberOfAction } from "."
 import type { ChildStore, RootStore } from "./is-root-store"
 
 export const buildTransaction = (
+	store: Store,
 	key: string,
 	params: any[],
-	store: Store,
 	id: string,
 ): ChildStore => {
 	const parent = newest(store) as ChildStore | RootStore
@@ -61,7 +59,7 @@ export const buildTransaction = (
 		}),
 		miscResources: new LazyMap(parent.miscResources),
 	}
-	const epoch = getEpochNumberOfAction(key, store)
+	const epoch = getEpochNumberOfAction(store, key)
 	const transactionMeta: TransactionProgress<Func> = {
 		phase: `building`,
 		update: {
@@ -80,9 +78,8 @@ export const buildTransaction = (
 				setIntoStore(child, ...ps)
 			}) as typeof setState,
 			run: (token, identifier = arbitrary()) =>
-				actUponStore(token, identifier, child),
+				actUponStore(child, token, identifier),
 			find: ((token, k) => findInStore(child, token, k)) as typeof findState,
-			seek: ((token, k) => seekInStore(child, token, k)) as typeof seekState,
 			json: (token) => getJsonToken(child, token),
 			dispose: ((...ps: Parameters<typeof disposeState>) => {
 				disposeFromStore(child, ...ps)

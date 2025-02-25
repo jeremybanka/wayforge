@@ -1,4 +1,4 @@
-import { getInternalRelations } from "atom.io/data"
+import { getInternalRelations } from "atom.io"
 import { continuity, usersInThisRoomIndex } from "atom.io/realtime"
 
 import {

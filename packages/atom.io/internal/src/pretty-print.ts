@@ -1,6 +1,6 @@
 import type { AtomIOToken } from "atom.io"
 
-const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1)
+import { capitalize } from "./capitalize"
 
 export function prettyPrintTokenType(token: AtomIOToken): string {
 	return token.type.split(`_`).map(capitalize).join(` `)

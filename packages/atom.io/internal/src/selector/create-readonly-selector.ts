@@ -19,14 +19,10 @@ export const createReadonlySelector = <T>(
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const covered = new Set<string>()
-	const { get, find, seek, json } = registerSelector(
-		options.key,
-		covered,
-		target,
-	)
+	const { get, find, json } = registerSelector(options.key, covered, target)
 	const getSelf = () => {
-		const value = options.get({ get, find, seek, json })
-		cacheValue(options.key, value, subject, newest(store))
+		const value = options.get({ get, find, json })
+		cacheValue(newest(store), options.key, value, subject)
 		covered.clear()
 		return value
 	}

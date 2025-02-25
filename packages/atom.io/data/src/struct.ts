@@ -1,12 +1,11 @@
 import type * as AtomIO from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
+	capitalize,
 	createRegularAtom,
 	createStandaloneSelector,
 	IMPLICIT,
 } from "atom.io/internal"
-
-const capitalize = (str: string) => str[0].toUpperCase() + str.slice(1)
 
 export function struct<
 	Struct extends { [key: string]: unknown },

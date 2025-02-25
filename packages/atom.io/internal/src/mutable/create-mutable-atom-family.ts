@@ -80,7 +80,7 @@ export function createMutableAtomFamily<
 	}) satisfies MutableAtomFamily<T, J, K>
 
 	store.families.set(options.key, atomFamily)
-	selectJsonFamily(atomFamily, options, store)
+	selectJsonFamily(store, atomFamily, options)
 	new FamilyTracker(atomFamily, store)
 	return familyToken
 }

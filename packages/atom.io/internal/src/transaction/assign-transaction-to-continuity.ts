@@ -2,9 +2,9 @@ import type { Store } from "../store"
 import { isRootStore } from "./is-root-store"
 
 export function assignTransactionToContinuity(
+	store: Store,
 	continuityKey: string,
 	transactionKey: string,
-	store: Store,
 ): void {
 	const isRoot = isRootStore(store)
 	if (!isRoot) {

@@ -8,20 +8,22 @@ main[data-css="atom_io_devtools"] {
     --bg-color: #ddd;
     --bg-tint1: #e3e3e3;
   }
-  box-sizing: border-box;
-  color: var(--fg-color);
-  background-color: var(--bg-color);
-  border: 2px solid var(--fg-color);
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  height: 100%;
-  display: flex;
-  flex-flow: column;
-  max-height: 800px;
-  width: 100%;
-  max-width: 500px;
-  overflow-y: scroll;
+  & {
+    box-sizing: border-box;
+    color: var(--fg-color);
+    background-color: var(--bg-color);
+    border: 2px solid var(--fg-color);
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    display: flex;
+    flex-flow: column;
+    max-height: 800px;
+    width: 100%;
+    max-width: 500px;
+    overflow-y: scroll;
+  }
   * {
     font-size: 16px;
     font-family: theia, monospace;

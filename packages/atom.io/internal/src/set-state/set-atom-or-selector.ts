@@ -3,9 +3,9 @@ import type { Store } from "../store"
 import { setAtom } from "./set-atom"
 
 export const setAtomOrSelector = <T>(
+	store: Store,
 	state: WritableState<T>,
 	value: T | ((oldValue: T) => T),
-	store: Store,
 ): void => {
 	switch (state.type) {
 		case `atom`:

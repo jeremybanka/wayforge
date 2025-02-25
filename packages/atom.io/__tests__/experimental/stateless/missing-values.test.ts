@@ -1,8 +1,7 @@
 import fsp from "node:fs/promises"
 
-import type { Logger, RegularAtomToken } from "atom.io"
+import type { Loadable, Logger, RegularAtomToken } from "atom.io"
 import { atom, getState, setState } from "atom.io"
-import type { Loadable } from "atom.io/data"
 import * as Internal from "atom.io/internal"
 import tmp from "tmp"
 import { vitest } from "vitest"

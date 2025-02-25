@@ -5,10 +5,10 @@ import { withdraw } from "../store"
 import { subscribeToRootAtoms } from "./subscribe-to-root-atoms"
 
 export function subscribeToState<T>(
-	token: ReadableToken<T>,
-	handleUpdate: UpdateHandler<T>,
-	key: string,
 	store: Store,
+	token: ReadableToken<T>,
+	key: string,
+	handleUpdate: UpdateHandler<T>,
 ): () => void {
 	function safelyHandleUpdate(update: StateUpdate<any>): void {
 		if (store.operation.open) {
@@ -23,18 +23,18 @@ export function subscribeToState<T>(
 			handleUpdate(update)
 		}
 	}
-	const state = withdraw(token, store)
+	const state = withdraw(store, token)
 	store.logger.info(`👀`, state.type, state.key, `Adding subscription "${key}"`)
 	const isSelector =
 		state.type === `selector` || state.type === `readonly_selector`
 	let dependencyUnsubFunctions: (() => void)[] | null = null
 	let updateHandler: UpdateHandler<T> = safelyHandleUpdate
 	if (isSelector) {
-		dependencyUnsubFunctions = subscribeToRootAtoms(state, store)
+		dependencyUnsubFunctions = subscribeToRootAtoms(store, state)
 		updateHandler = (update) => {
 			if (dependencyUnsubFunctions) {
 				dependencyUnsubFunctions.length = 0
-				dependencyUnsubFunctions.push(...subscribeToRootAtoms(state, store))
+				dependencyUnsubFunctions.push(...subscribeToRootAtoms(store, state))
 			}
 			safelyHandleUpdate(update)
 		}

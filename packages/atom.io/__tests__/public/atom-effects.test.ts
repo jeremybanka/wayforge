@@ -1,8 +1,14 @@
 import { readFileSync, writeFileSync } from "node:fs"
 
 import type { Logger } from "atom.io"
-import { atom, atomFamily, disposeState, getState, setState } from "atom.io"
-import { findState } from "atom.io/ephemeral"
+import {
+	atom,
+	atomFamily,
+	disposeState,
+	findState,
+	getState,
+	setState,
+} from "atom.io"
 import * as Internal from "atom.io/internal"
 import tmp from "tmp"
 import { vitest } from "vitest"

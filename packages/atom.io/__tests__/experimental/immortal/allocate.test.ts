@@ -1,18 +1,21 @@
 import type { Above, Below, Hierarchy, Logger, Mutuals, Vassal } from "atom.io"
 import {
 	Anarchy,
+	atom,
 	atomFamily,
 	disposeState,
+	editRelations,
 	getState,
+	join,
 	Realm,
 	redo,
 	runTransaction,
+	selectorFamily,
 	setState,
 	timeline,
 	transaction,
 	undo,
 } from "atom.io"
-import { editRelations, join } from "atom.io/data"
 import { clearStore, IMPLICIT } from "atom.io/internal"
 
 import * as Utils from "../../__util__"
@@ -82,9 +85,23 @@ describe(`allocate + claim + deallocate`, () => {
 	const shieldKey = `item::shield` satisfies ItemKey
 
 	test(`happy path`, () => {
+		const dampeningAtom = atom<number>({
+			key: `dampening`,
+			default: 10,
+		})
 		const attackPowerAtoms = atomFamily<number, ItemKey>({
-			key: `durability`,
+			key: `attackPower`,
 			default: 0,
+		})
+		const dampenedAttackPowerSelectors = selectorFamily<number, ItemKey>({
+			key: `dampenedAttackPower`,
+			get:
+				(key) =>
+				({ get }) => {
+					const attackPower = get(attackPowerAtoms, key)
+					const dampening = get(dampeningAtom)
+					return Math.max(0, attackPower - dampening)
+				},
 		})
 
 		const gameRealm = new Realm<GameHierarchy>(IMPLICIT.STORE)
@@ -104,6 +121,7 @@ describe(`allocate + claim + deallocate`, () => {
 
 		swordAttackPower = getState(attackPowerAtoms, swordClaim)
 		expect(swordAttackPower).toBe(35)
+		expect(getState(dampenedAttackPowerSelectors, swordClaim)).toBe(25)
 
 		disposeState(attackPowerAtoms, swordClaim)
 
@@ -123,6 +141,21 @@ describe(`allocate + claim + deallocate`, () => {
 			key: `durability`,
 			default: 0,
 		})
+		const dampeningAtom = atom<number>({
+			key: `dampening`,
+			default: 10,
+		})
+		const dampenedDurabilitySelectors = selectorFamily<number, ItemKey>({
+			key: `dampenedDurability`,
+			get:
+				(key) =>
+				({ find, get }) => {
+					const durabilityAtom = find(durabilityAtoms, key)
+					const durability = get(durabilityAtom)
+					const dampening = get(dampeningAtom)
+					return Math.max(1, durability - dampening)
+				},
+		})
 
 		expect(logger.error).toHaveBeenCalledTimes(0)
 		let myItemDurability = getState(durabilityAtoms, swordKey)
@@ -133,6 +166,9 @@ describe(`allocate + claim + deallocate`, () => {
 		myItemDurability = getState(durabilityAtoms, swordKey)
 		expect(logger.error).toHaveBeenCalledTimes(6)
 		expect(myItemDurability).toBe(0)
+		const myDampenedDurability = getState(dampenedDurabilitySelectors, swordKey)
+		expect(myDampenedDurability).toBe(1)
+		expect(logger.error).toHaveBeenCalledTimes(10)
 	})
 })
 describe(`errors`, () => {

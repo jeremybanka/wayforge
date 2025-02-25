@@ -12,7 +12,7 @@ export function usePullSelector<J extends Json.Serializable>(
 ): J {
 	const store = React.useContext(StoreContext)
 	useRealtimeService(`pull:${token.key}`, (socket) =>
-		RTC.pullSelector(token, socket, store),
+		RTC.pullSelector(store, socket, token),
 	)
 	return useO(token)
 }

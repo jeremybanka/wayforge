@@ -20,9 +20,9 @@ import { useConcealState } from "./continuity/use-conceal-state"
 import { useRevealState } from "./continuity/use-reveal-state"
 
 export function syncContinuity(
-	continuity: ContinuityToken,
-	socket: Socket,
 	store: Store,
+	socket: Socket,
+	continuity: ContinuityToken,
 ): () => void {
 	const continuityKey = continuity.key
 	const optimisticUpdates = getFromStore(store, optimisticUpdateQueue)
@@ -45,7 +45,7 @@ export function syncContinuity(
 			}
 			i++
 		}
-		setEpochNumberOfContinuity(continuityKey, epoch, store)
+		setEpochNumberOfContinuity(store, continuityKey, epoch)
 	}
 	socket.off(`continuity-init:${continuityKey}`)
 	socket.on(`continuity-init:${continuityKey}`, initializeContinuity)
@@ -61,9 +61,11 @@ export function syncContinuity(
 	socket.on(`tx-new:${continuityKey}`, registerAndAttemptConfirmedUpdate)
 
 	const unsubscribeFunctions = continuity.actions.map((transaction) => {
-		assignTransactionToContinuity(continuityKey, transaction.key, store)
+		assignTransactionToContinuity(store, continuityKey, transaction.key)
 		const unsubscribeFromTransactionUpdates = subscribeToTransaction(
+			store,
 			transaction,
+			`tx-run:${continuityKey}`,
 			(clientUpdate) => {
 				store.logger.info(
 					`🤞`,
@@ -104,8 +106,6 @@ export function syncContinuity(
 					params: clientUpdate.params,
 				})
 			},
-			`tx-run:${continuityKey}`,
-			store,
 		)
 		return unsubscribeFromTransactionUpdates
 	})

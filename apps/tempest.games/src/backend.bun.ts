@@ -6,9 +6,10 @@ import { createServer as createHttpServer } from "node:http"
 import { createServer as createSecureServer } from "node:https"
 
 import { AtomIOLogger } from "atom.io"
-import { editRelationsInStore, findRelationsInStore } from "atom.io/data"
 import {
+	editRelationsInStore,
 	findInStore,
+	findRelationsInStore,
 	getFromStore,
 	IMPLICIT,
 	setIntoStore,
