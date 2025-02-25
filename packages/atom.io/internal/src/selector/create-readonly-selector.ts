@@ -22,7 +22,7 @@ export const createReadonlySelector = <T>(
 	const { get, find, json } = registerSelector(options.key, covered, target)
 	const getSelf = () => {
 		const value = options.get({ get, find, json })
-		cacheValue(options.key, value, subject, newest(store))
+		cacheValue(newest(store), options.key, value, subject)
 		covered.clear()
 		return value
 	}

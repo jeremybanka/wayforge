@@ -13,7 +13,7 @@ export function useServerAction<F extends Func>(
 	const store = React.useContext(StoreContext)
 
 	useRealtimeService(`tx:${token.key}`, (socket) =>
-		RTC.serverAction(token, socket, store),
+		RTC.serverAction(store, socket, token),
 	)
-	return actUponStore(token, arbitrary(), store)
+	return actUponStore(store, token, arbitrary())
 }

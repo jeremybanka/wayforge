@@ -70,7 +70,9 @@ export class Tracker<Mutable extends Transceiver<any>> {
 			},
 		)
 		this.unsubscribeFromState = subscribeToState(
+			target,
 			mutableState,
+			subscriptionKey,
 			(update) => {
 				if (update.newValue !== update.oldValue) {
 					this.unsubscribeFromInnerValue()
@@ -82,8 +84,6 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					)
 				}
 			},
-			subscriptionKey,
-			target,
 		)
 	}
 
@@ -96,7 +96,9 @@ export class Tracker<Mutable extends Transceiver<any>> {
 			isChildStore(target) ? target.transactionMeta.update.key : `main`
 		}:${mutableState.key}`
 		subscribeToState(
+			target,
 			latestUpdateState,
+			subscriptionKey,
 			({ newValue, oldValue }) => {
 				const timelineId = target.timelineTopics.getRelatedKey(
 					latestUpdateState.key,
@@ -106,7 +108,9 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					const timelineData = target.timelines.get(timelineId)
 					if (timelineData?.timeTraveling) {
 						const unsubscribe = subscribeToTimeline(
+							target,
 							{ key: timelineId, type: `timeline` },
+							subscriptionKey,
 							(update) => {
 								unsubscribe()
 								setIntoStore(target, mutableState, (transceiver) => {
@@ -118,8 +122,6 @@ export class Tracker<Mutable extends Transceiver<any>> {
 									return transceiver
 								})
 							},
-							subscriptionKey,
-							target,
 						)
 						return
 					}
@@ -152,8 +154,6 @@ export class Tracker<Mutable extends Transceiver<any>> {
 					},
 				)
 			},
-			subscriptionKey,
-			target,
 		)
 	}
 

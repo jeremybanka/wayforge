@@ -28,7 +28,9 @@ export function subscribeToContinuityActions(
 
 	for (const transaction of continuity.actions) {
 		const unsubscribeFromTransaction = subscribeToTransaction(
+			store,
 			transaction,
+			`sync-continuity:${continuityKey}:${userKey}`,
 			(update) => {
 				try {
 					const visibleKeys = continuity.globals
@@ -97,8 +99,6 @@ export function subscribeToContinuityActions(
 					}
 				}
 			},
-			`sync-continuity:${continuityKey}:${userKey}`,
-			store,
 		)
 		unsubscribeFunctions.push(unsubscribeFromTransaction)
 	}

@@ -11,7 +11,7 @@ export function usePullAtom<J extends Json.Serializable>(
 ): J {
 	const store = React.useContext(StoreContext)
 	useRealtimeService(`pull:${token.key}`, (socket) =>
-		RTC.pullAtom(token, socket, store),
+		RTC.pullAtom(store, socket, token),
 	)
 	return useO(token)
 }

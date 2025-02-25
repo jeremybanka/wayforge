@@ -42,14 +42,14 @@ export const applyTransaction = <F extends Func>(
 
 	if (isRootStore(parent)) {
 		setEpochNumberOfAction(
+			parent,
 			child.transactionMeta.update.key,
 			child.transactionMeta.update.epoch,
-			parent,
 		)
-		const myTransaction = withdraw<F>(
-			{ key: child.transactionMeta.update.key, type: `transaction` },
-			store,
-		)
+		const myTransaction = withdraw<F>(store, {
+			key: child.transactionMeta.update.key,
+			type: `transaction`,
+		})
 		myTransaction?.subject.next(child.transactionMeta.update)
 		store.logger.info(
 			`🛬`,

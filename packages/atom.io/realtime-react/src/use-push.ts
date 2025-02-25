@@ -11,7 +11,7 @@ export function usePush<J extends Json.Serializable>(
 ): <New extends J>(next: New | ((old: J) => New)) => void {
 	const store = React.useContext(StoreContext)
 	useRealtimeService(`push:${token.key}`, (socket) =>
-		RTC.pushState(token, socket, store),
+		RTC.pushState(store, socket, token),
 	)
 	return useI(token)
 }

@@ -13,7 +13,7 @@ export function usePullMutable<
 >(token: AtomIO.MutableAtomToken<T, J>): T {
 	const store = React.useContext(StoreContext)
 	useRealtimeService(`pull:${token.key}`, (socket) =>
-		RTC.pullMutableAtom(token, socket, store),
+		RTC.pullMutableAtom(store, socket, token),
 	)
 	return useO(token)
 }

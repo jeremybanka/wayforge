@@ -122,9 +122,9 @@ export function continuity(options: ContinuityOptions): ContinuityToken {
 	const token = SyncGroup.create(key, config)
 	const { actions } = token
 	for (const action of actions) {
-		assignTransactionToContinuity(key, action.key, IMPLICIT.STORE)
+		assignTransactionToContinuity(IMPLICIT.STORE, key, action.key)
 	}
-	setEpochNumberOfContinuity(key, -1, IMPLICIT.STORE)
+	setEpochNumberOfContinuity(IMPLICIT.STORE, key, -1)
 	return token
 }
 

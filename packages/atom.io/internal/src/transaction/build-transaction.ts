@@ -16,9 +16,9 @@ import { actUponStore, getEpochNumberOfAction } from "."
 import type { ChildStore, RootStore } from "./is-root-store"
 
 export const buildTransaction = (
+	store: Store,
 	key: string,
 	params: any[],
-	store: Store,
 	id: string,
 ): ChildStore => {
 	const parent = newest(store) as ChildStore | RootStore
@@ -59,7 +59,7 @@ export const buildTransaction = (
 		}),
 		miscResources: new LazyMap(parent.miscResources),
 	}
-	const epoch = getEpochNumberOfAction(key, store)
+	const epoch = getEpochNumberOfAction(store, key)
 	const transactionMeta: TransactionProgress<Func> = {
 		phase: `building`,
 		update: {
@@ -78,7 +78,7 @@ export const buildTransaction = (
 				setIntoStore(child, ...ps)
 			}) as typeof setState,
 			run: (token, identifier = arbitrary()) =>
-				actUponStore(token, identifier, child),
+				actUponStore(child, token, identifier),
 			find: ((token, k) => findInStore(child, token, k)) as typeof findState,
 			json: (token) => getJsonToken(child, token),
 			dispose: ((...ps: Parameters<typeof disposeState>) => {

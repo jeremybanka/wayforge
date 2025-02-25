@@ -28,7 +28,7 @@ export const createWritableSelector = <T>(
 
 	const getSelf = (getFn = options.get, innerTarget = newest(store)): T => {
 		const value = getFn(getterToolkit)
-		cacheValue(options.key, value, subject, innerTarget)
+		cacheValue(innerTarget, options.key, value, subject)
 		covered.clear()
 		return value
 	}
@@ -47,7 +47,7 @@ export const createWritableSelector = <T>(
 			newValue,
 			`)`,
 		)
-		cacheValue(options.key, newValue, subject, innerTarget)
+		cacheValue(innerTarget, options.key, newValue, subject)
 		markDone(innerTarget, options.key)
 		if (isRootStore(innerTarget)) {
 			subject.next({ newValue, oldValue })

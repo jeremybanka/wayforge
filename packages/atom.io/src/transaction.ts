@@ -128,12 +128,12 @@ export type TransactionIO<Token extends TransactionToken<any>> =
 export function transaction<F extends Func>(
 	options: TransactionOptions<F>,
 ): TransactionToken<F> {
-	return createTransaction(options, IMPLICIT.STORE)
+	return createTransaction(IMPLICIT.STORE, options)
 }
 
 export function runTransaction<F extends Func>(
 	token: TransactionToken<F>,
 	id = arbitrary(),
 ): (...parameters: Parameters<F>) => ReturnType<F> {
-	return actUponStore(token, id, IMPLICIT.STORE)
+	return actUponStore(IMPLICIT.STORE, token, id)
 }

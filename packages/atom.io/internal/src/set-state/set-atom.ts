@@ -17,38 +17,38 @@ export const setAtom = <T>(
 	next: T | ((oldValue: T) => T),
 	target: Store,
 ): void => {
-	const oldValue = readOrComputeValue(atom, target)
+	const oldValue = readOrComputeValue(target, atom)
 	let newValue = oldValue
 	if (atom.type === `mutable_atom` && isChildStore(target)) {
 		const { parent } = target
-		const copiedValue = copyMutableIfNeeded(atom, parent, target)
+		const copiedValue = copyMutableIfNeeded(target, atom, parent)
 		newValue = copiedValue
 	}
 	newValue = become(next)(newValue)
 	target.logger.info(`📝`, `atom`, atom.key, `set to`, newValue)
-	newValue = cacheValue(atom.key, newValue, atom.subject, target)
-	if (isAtomDefault(atom.key, target)) {
-		markAtomAsNotDefault(atom.key, target)
+	newValue = cacheValue(target, atom.key, newValue, atom.subject)
+	if (isAtomDefault(target, atom.key)) {
+		markAtomAsNotDefault(target, atom.key)
 	}
 	markDone(target, atom.key)
-	evictDownStream(atom, target)
+	evictDownStream(target, atom)
 	const update = { oldValue, newValue }
 	if (isRootStore(target)) {
-		emitUpdate(atom, update, target)
+		emitUpdate(target, atom, update)
 	} else if (target.parent) {
 		if (target.on.transactionApplying.state === null) {
-			stowUpdate(atom, update, target)
+			stowUpdate(target, atom, update)
 		} else if (atom.key.startsWith(`*`)) {
 			const mutableKey = atom.key.slice(1)
 			const mutableAtom = target.atoms.get(mutableKey) as Atom<any>
 			let transceiver: Transceiver<any> = target.valueMap.get(mutableKey)
 			if (mutableAtom.type === `mutable_atom` && isChildStore(target)) {
 				const { parent } = target
-				const copiedValue = copyMutableIfNeeded(mutableAtom, parent, target)
+				const copiedValue = copyMutableIfNeeded(target, mutableAtom, parent)
 				transceiver = copiedValue
 			}
 			const accepted = transceiver.do(update.newValue) === null
-			if (accepted) evictDownStream(mutableAtom, target)
+			if (accepted) evictDownStream(target, mutableAtom)
 		}
 	}
 }

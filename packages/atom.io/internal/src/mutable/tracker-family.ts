@@ -37,7 +37,7 @@ export class FamilyTracker<
 			},
 			[`mutable`, `updates`],
 		)
-		this.latestUpdateAtoms = withdraw(updateAtoms, store)
+		this.latestUpdateAtoms = withdraw(store, updateAtoms)
 		this.mutableAtoms = mutableAtoms
 		this.mutableAtoms.subject.subscribe(
 			`store=${store.config.name}::tracker-atom-family`,

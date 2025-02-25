@@ -20,9 +20,9 @@ export function prepareToServeTransactionRequest(
 		performance.mark(performanceKeyStart)
 		try {
 			actUponStore(
+				store,
 				{ type: `transaction`, key: transactionKey },
 				updateId,
-				store,
 			)(...update.params)
 		} catch (thrown) {
 			if (thrown instanceof Error) {

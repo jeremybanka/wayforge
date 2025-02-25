@@ -27,7 +27,7 @@ export const getJsonToken = <
 			key: jsonFamilyKey,
 			type: `selector_family`,
 		}
-		const family = withdraw(jsonFamilyToken, target)
+		const family = withdraw(target, jsonFamilyToken)
 		const subKey = JSON.parse(mutableAtomToken.family.subKey)
 		const jsonToken = findInStore(store, family, subKey)
 		return jsonToken

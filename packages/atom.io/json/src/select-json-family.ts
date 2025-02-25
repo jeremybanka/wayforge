@@ -1,6 +1,5 @@
 import type * as AtomIO from "atom.io"
 import type { Store, Transceiver } from "atom.io/internal"
-import { IMPLICIT } from "atom.io/internal"
 
 import { createWritableSelectorFamily } from "../../internal/src/families/create-writable-selector-family"
 import type { Canonical, Json, JsonInterface } from "."
@@ -10,29 +9,29 @@ export function selectJsonFamily<
 	J extends Json.Serializable,
 	K extends Canonical,
 >(
+	store: Store,
 	atomFamilyToken: AtomIO.MutableAtomFamilyToken<T, J, K>,
 	transform: JsonInterface<T, J>,
-	store: Store,
 ): AtomIO.WritableSelectorFamilyToken<J, K>
 export function selectJsonFamily<
 	T,
 	J extends Json.Serializable,
 	K extends Canonical,
 >(
+	store: Store,
 	atomFamilyToken: AtomIO.RegularAtomFamilyToken<T, K>,
 	transform: JsonInterface<T, J>,
-	store: Store,
 ): AtomIO.WritableSelectorFamilyToken<J, K>
 export function selectJsonFamily<
 	T,
 	J extends Json.Serializable,
 	K extends Canonical,
 >(
+	store: Store,
 	atomFamilyToken:
 		| AtomIO.MutableAtomFamilyToken<T extends Transceiver<any> ? T : never, J, K>
 		| AtomIO.RegularAtomFamilyToken<T, K>,
 	transform: JsonInterface<T, J>,
-	store: Store = IMPLICIT.STORE,
 ): AtomIO.WritableSelectorFamilyToken<J, K> {
 	const jsonFamily = createWritableSelectorFamily<J, K>(
 		store,

@@ -84,7 +84,7 @@ export function setIntoStore<T, New extends T>(
 		)
 		return
 	}
-	const state = withdraw(token, store)
-	setAtomOrSelector(state, value, store)
+	const state = withdraw(store, token)
+	setAtomOrSelector(store, state, value)
 	closeOperation(store)
 }

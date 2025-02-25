@@ -4,12 +4,12 @@ import type { Store } from ".."
 import { isChildStore, newest, withdraw } from ".."
 
 export function disposeSelector(
-	selectorToken: ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>,
 	store: Store,
+	selectorToken: ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>,
 ): void {
 	const target = newest(store)
 	const { key } = selectorToken
-	const selector = withdraw(selectorToken, target)
+	const selector = withdraw(target, selectorToken)
 	if (!selector.family) {
 		store.logger.error(
 			`❌`,
@@ -26,19 +26,19 @@ export function disposeSelector(
 			case `selector`:
 				{
 					target.selectors.delete(key)
-					const family = withdraw(
-						{ key: selector.family.key, type: `selector_family` },
-						store,
-					)
+					const family = withdraw(store, {
+						key: selector.family.key,
+						type: `selector_family`,
+					})
 				}
 				break
 			case `readonly_selector`:
 				{
 					target.readonlySelectors.delete(key)
-					const family = withdraw(
-						{ key: selector.family.key, type: `readonly_selector_family` },
-						store,
-					)
+					const family = withdraw(store, {
+						key: selector.family.key,
+						type: `readonly_selector_family`,
+					})
 					family.subject.next({
 						type: `state_disposal`,
 						subType: `selector`,

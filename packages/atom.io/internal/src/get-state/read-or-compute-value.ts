@@ -3,8 +3,8 @@ import { readCachedValue } from "../caching"
 import type { Store } from "../store"
 
 export const readOrComputeValue = <T>(
-	state: ReadableState<T>,
 	target: Store,
+	state: ReadableState<T>,
 ): T => {
 	if (target.valueMap.has(state.key)) {
 		target.logger.info(`📖`, state.type, state.key, `reading cached value`)

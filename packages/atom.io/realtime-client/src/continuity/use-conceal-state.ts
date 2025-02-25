@@ -5,7 +5,7 @@ import { disposeAtom } from "atom.io/internal"
 export function useConcealState(store: Store) {
 	return (concealed: AtomToken<unknown>[]): void => {
 		for (const token of concealed) {
-			disposeAtom(token, store)
+			disposeAtom(store, token)
 		}
 	}
 }

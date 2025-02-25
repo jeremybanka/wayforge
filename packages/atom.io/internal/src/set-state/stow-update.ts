@@ -19,9 +19,9 @@ function shouldUpdateBeStowed(key: string, update: StateUpdate<any>): boolean {
 }
 
 export const stowUpdate = <T>(
+	store: Store,
 	state: Atom<T>,
 	update: StateUpdate<T>,
-	store: Store,
 ): void => {
 	const { key } = state
 	const target = newest(store)

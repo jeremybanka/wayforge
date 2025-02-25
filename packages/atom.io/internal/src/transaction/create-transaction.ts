@@ -22,14 +22,14 @@ export type Transaction<F extends Func> = {
 }
 
 export function createTransaction<F extends Func>(
-	options: TransactionOptions<F>,
 	store: Store,
+	options: TransactionOptions<F>,
 ): TransactionToken<F> {
 	const newTransaction: Transaction<F> = {
 		key: options.key,
 		type: `transaction`,
 		run: (params: Parameters<F>, id: string) => {
-			const childStore = buildTransaction(options.key, params, store, id)
+			const childStore = buildTransaction(store, options.key, params, id)
 			try {
 				const target = newest(store)
 				const { toolkit } = childStore.transactionMeta
@@ -42,7 +42,7 @@ export function createTransaction<F extends Func>(
 				throw thrown
 			}
 		},
-		install: (s) => createTransaction(options, s),
+		install: (s) => createTransaction(s, options),
 		subject: new Subject(),
 	}
 	const target = newest(store)
