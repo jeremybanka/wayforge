@@ -1,5 +1,5 @@
 import * as AtomIO from "atom.io"
-import { editRelations } from "atom.io/data"
+import { editRelations } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import * as RT from "atom.io/realtime"
 import * as RTS from "atom.io/realtime-server"

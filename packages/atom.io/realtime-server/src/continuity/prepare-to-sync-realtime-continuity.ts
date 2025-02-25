@@ -1,6 +1,6 @@
-import { findRelationsInStore } from "atom.io/data"
 import {
 	findInStore,
+	findRelationsInStore,
 	getFromStore,
 	IMPLICIT,
 	subscribeToState,
@@ -50,7 +50,9 @@ export function prepareToExposeRealtimeContinuity({
 			store,
 		).socketKeyOfUser
 		const unsubscribeFromSocketTracking = subscribeToState(
+			store,
 			socketKeyState,
+			`sync-continuity:${continuityKey}:${userKey}`,
 			({ newValue: newSocketKey }) => {
 				store.logger.info(
 					`👋`,
@@ -77,8 +79,6 @@ export function prepareToExposeRealtimeContinuity({
 					)
 				}
 			},
-			`sync-continuity:${continuityKey}:${userKey}`,
-			store,
 		)
 
 		const userUnacknowledgedUpdates = getFromStore(

@@ -1,6 +1,5 @@
 import type { TransactionIO } from "atom.io"
-import { atom, atomFamily, selector, transaction } from "atom.io"
-import { join } from "atom.io/data"
+import { atom, atomFamily, join, selector, transaction } from "atom.io"
 import { createMutableAtom, IMPLICIT } from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"

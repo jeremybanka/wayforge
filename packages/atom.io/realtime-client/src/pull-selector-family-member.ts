@@ -8,9 +8,9 @@ import { pullMutableAtomFamilyMember } from "./pull-mutable-atom-family-member"
 /* eslint-disable no-console */
 
 export function pullSelectorFamilyMember<T>(
-	token: AtomIO.SelectorToken<T>,
-	socket: Socket,
 	store: Store,
+	socket: Socket,
+	token: AtomIO.SelectorToken<T>,
 ): () => void {
 	if (!(`family` in token)) {
 		console.error(`Token is not a family member:`, token)
@@ -26,11 +26,11 @@ export function pullSelectorFamilyMember<T>(
 			}
 			switch (atom.type) {
 				case `atom`: {
-					unsubscribes.push(pullAtomFamilyMember(atom, socket, store))
+					unsubscribes.push(pullAtomFamilyMember(store, socket, atom))
 					break
 				}
 				case `mutable_atom`: {
-					unsubscribes.push(pullMutableAtomFamilyMember(atom, socket, store))
+					unsubscribes.push(pullMutableAtomFamilyMember(store, socket, atom))
 					break
 				}
 			}

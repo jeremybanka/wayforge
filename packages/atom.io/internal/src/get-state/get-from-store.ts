@@ -55,12 +55,12 @@ export function getFromStore(
 				if (store.defaults.has(family.key)) {
 					return store.defaults.get(token.family.key)
 				}
-				const defaultValue = withdraw(family, store).default(subKey)
+				const defaultValue = withdraw(store, family).default(subKey)
 				store.defaults.set(family.key, defaultValue)
 				return defaultValue
 			}
 		}
 	}
 
-	return readOrComputeValue(withdraw(token, store), store)
+	return readOrComputeValue(store, withdraw(store, token))
 }

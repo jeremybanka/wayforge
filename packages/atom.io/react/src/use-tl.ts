@@ -15,7 +15,7 @@ export type TimelineMeta = {
 export function useTL(token: TimelineToken<any>): TimelineMeta {
 	const store = React.useContext(StoreContext)
 	const id = React.useId()
-	const timeline = withdraw(token, store)
+	const timeline = withdraw(store, token)
 	const tokenRef = React.useRef(token)
 	const rebuildMeta = () => {
 		return {
@@ -42,7 +42,7 @@ export function useTL(token: TimelineToken<any>): TimelineMeta {
 		return meta.current
 	}
 	return React.useSyncExternalStore<TimelineMeta>(
-		(dispatch) => subscribeToTimeline(token, dispatch, `use-tl:${id}`, store),
+		(dispatch) => subscribeToTimeline(store, token, `use-tl:${id}`, dispatch),
 		retrieve,
 		retrieve,
 	)

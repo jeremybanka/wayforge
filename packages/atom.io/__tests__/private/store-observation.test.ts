@@ -1,6 +1,11 @@
 import type { Logger } from "atom.io"
-import { atomFamily, selectorFamily, timeline, transaction } from "atom.io"
-import { findState } from "atom.io/ephemeral"
+import {
+	atomFamily,
+	findState,
+	selectorFamily,
+	timeline,
+	transaction,
+} from "atom.io"
 import * as Internal from "atom.io/internal"
 import { vitest } from "vitest"
 

@@ -1,5 +1,4 @@
-import { runTransaction } from "atom.io"
-import { findRelations } from "atom.io/data"
+import { findRelations, runTransaction } from "atom.io"
 import { useO } from "atom.io/react"
 import { usersInRooms } from "atom.io/realtime"
 import { myUsernameState } from "atom.io/realtime-client"

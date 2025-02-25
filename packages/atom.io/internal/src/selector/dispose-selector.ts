@@ -1,15 +1,15 @@
-import type { ReadonlySelectorToken, WritableSelectorToken } from "atom.io"
+import type { SelectorFamilyToken, SelectorToken } from "atom.io"
 
 import type { Store } from ".."
 import { isChildStore, newest, withdraw } from ".."
 
 export function disposeSelector(
-	selectorToken: ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>,
 	store: Store,
+	selectorToken: SelectorToken<unknown>,
 ): void {
 	const target = newest(store)
 	const { key } = selectorToken
-	const selector = withdraw(selectorToken, target)
+	const selector = withdraw(target, selectorToken)
 	if (!selector.family) {
 		store.logger.error(
 			`❌`,
@@ -22,23 +22,31 @@ export function disposeSelector(
 		if (molecule) {
 			target.moleculeData.delete(selector.family.subKey, selector.family.key)
 		}
+		let familyToken: SelectorFamilyToken<any, any>
 		switch (selectorToken.type) {
 			case `selector`:
 				{
 					target.selectors.delete(key)
-					const family = withdraw(
-						{ key: selector.family.key, type: `selector_family` },
-						store,
-					)
+					familyToken = {
+						key: selector.family.key,
+						type: `selector_family`,
+					}
+					const family = withdraw(store, familyToken)
+					family.subject.next({
+						type: `state_disposal`,
+						subType: `selector`,
+						token: selectorToken,
+					})
 				}
 				break
 			case `readonly_selector`:
 				{
 					target.readonlySelectors.delete(key)
-					const family = withdraw(
-						{ key: selector.family.key, type: `readonly_selector_family` },
-						store,
-					)
+					familyToken = {
+						key: selector.family.key,
+						type: `readonly_selector_family`,
+					}
+					const family = withdraw(store, familyToken)
 					family.subject.next({
 						type: `state_disposal`,
 						subType: `selector`,
@@ -47,6 +55,7 @@ export function disposeSelector(
 				}
 				break
 		}
+
 		target.valueMap.delete(key)
 		target.selectorAtoms.delete(key)
 		target.selectorGraph.delete(key)

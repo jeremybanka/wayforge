@@ -8,22 +8,22 @@ import type { Store } from "./store"
 import type { Subject } from "./subject"
 
 export function cacheValue<T>(
+	store: Store,
 	key: string,
 	value: T,
 	subject: Subject<StateUpdate<unknown>>,
-	store: Store,
 ): T
 export function cacheValue<T extends Promise<any>>(
+	store: Store,
 	key: string,
 	value: T,
 	subject: Subject<StateUpdate<unknown>>,
-	store: Store,
 ): Future<T>
 export function cacheValue<T>(
+	target: Store,
 	key: string,
 	value: T,
 	subject: Subject<StateUpdate<unknown>>,
-	target: Store,
 ): Future<T> | T {
 	const currentValue = target.valueMap.get(key)
 	if (currentValue instanceof Future) {
@@ -35,7 +35,7 @@ export function cacheValue<T>(
 		target.valueMap.set(key, future)
 		future
 			.then((resolved) => {
-				cacheValue(key, resolved, subject, target)
+				cacheValue(target, key, resolved, subject)
 				subject.next({ newValue: resolved, oldValue: future })
 			})
 			.catch((thrown) => {
@@ -54,7 +54,7 @@ export const readCachedValue = <T>(
 	let value = target.valueMap.get(token.key) as T
 	if (token.type === `mutable_atom` && isChildStore(target)) {
 		const { parent } = target
-		const copiedValue = copyMutableIfNeeded(token, parent, target)
+		const copiedValue = copyMutableIfNeeded(target, token, parent)
 		value = copiedValue
 	}
 	return value

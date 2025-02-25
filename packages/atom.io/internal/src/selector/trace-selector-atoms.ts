@@ -22,7 +22,7 @@ export const traceSelectorAtoms = (
 		}
 		covered.add(indirectDependencyKey)
 
-		if (!isAtomKey(indirectDependencyKey, store)) {
+		if (!isAtomKey(store, indirectDependencyKey)) {
 			indirectDependencyKeys.push(
 				...getSelectorDependencyKeys(indirectDependencyKey, store),
 			)
@@ -42,7 +42,7 @@ export const traceAllSelectorAtoms = (
 	const directDependencyKeys = getSelectorDependencyKeys(selectorKey, store)
 	const covered = new Set<string>()
 	return directDependencyKeys.flatMap((depKey) =>
-		isAtomKey(depKey, store)
+		isAtomKey(store, depKey)
 			? depKey
 			: traceSelectorAtoms(depKey, covered, store),
 	)

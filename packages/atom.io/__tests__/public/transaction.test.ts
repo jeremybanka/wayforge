@@ -2,6 +2,7 @@ import type { Logger, TransactionUpdate } from "atom.io"
 import {
 	atom,
 	atomFamily,
+	findState,
 	getState,
 	runTransaction,
 	selector,
@@ -10,8 +11,6 @@ import {
 	subscribe,
 	transaction,
 } from "atom.io"
-import { findState } from "atom.io/ephemeral"
-import { seekState } from "atom.io/immortal"
 import * as Internal from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
@@ -150,8 +149,12 @@ describe(`transaction`, () => {
 		findState(countStates, `my-key`)
 		findState(doubleStates, `my-key`)
 		runTransaction(incrementTX)()
-		expect(seekState(countStates, `my-key`)).toBeUndefined()
-		expect(seekState(doubleStates, `my-key`)).toBeUndefined()
+		expect(
+			Internal.seekInStore(Internal.IMPLICIT.STORE, countStates, `my-key`),
+		).toBeUndefined()
+		expect(
+			Internal.seekInStore(Internal.IMPLICIT.STORE, doubleStates, `my-key`),
+		).toBeUndefined()
 	})
 	test(`run transaction throws if the transaction doesn't exist`, () => {
 		expect(runTransaction({ key: `nonexistent`, type: `transaction` })).toThrow()
@@ -356,9 +359,9 @@ describe(`reversibility of transactions`, () => {
 			caught = thrown
 		}
 		expect(caught).toBeInstanceOf(Error)
-		expect(Internal.IMPLICIT.STORE.valueMap.get(`count("my-key")`)).toBe(
-			undefined,
-		)
+		expect(
+			Internal.seekInStore(Internal.IMPLICIT.STORE, countStates, `my-key`),
+		).toBeUndefined()
 	})
 	test(`a transaction that fails does does not dispose of a state`, () => {
 		const countStates = atomFamily<number, string>({
@@ -381,6 +384,8 @@ describe(`reversibility of transactions`, () => {
 			caught = thrown
 		}
 		expect(caught).toBeInstanceOf(Error)
-		expect(seekState(countStates, `my-key`)).toBeDefined()
+		expect(
+			Internal.seekInStore(Internal.IMPLICIT.STORE, countStates, `my-key`),
+		).toBeDefined()
 	})
 })

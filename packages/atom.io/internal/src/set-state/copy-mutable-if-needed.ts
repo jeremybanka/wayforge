@@ -3,9 +3,9 @@ import { Tracker } from "../mutable"
 import type { Store } from "../store"
 
 export function copyMutableIfNeeded<T extends Transceiver<any>>(
+	target: Store,
 	atom: MutableAtom<T, any>,
 	origin: Store,
-	target: Store,
 ): T {
 	const originValue = origin.valueMap.get(atom.key)
 	const targetValue = target.valueMap.get(atom.key)

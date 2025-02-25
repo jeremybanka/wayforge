@@ -1,4 +1,4 @@
-import type { findState } from "atom.io/ephemeral"
+import type { findState } from "atom.io"
 import {
 	actUponStore,
 	arbitrary,
@@ -61,8 +61,8 @@ export class Silo {
 			createStandaloneSelector(s, options)) as typeof selector
 		this.selectorFamily = ((options: Parameters<typeof selectorFamily>[0]) =>
 			createSelectorFamily(s, options)) as typeof selectorFamily
-		this.transaction = (options) => createTransaction(options, s)
-		this.timeline = (options) => createTimeline(options, s)
+		this.transaction = (options) => createTransaction(s, options)
+		this.timeline = (options) => createTimeline(s, options)
 		this.findState = ((...params: Parameters<typeof findState>) =>
 			findInStore(s, ...params)) as typeof findState
 		this.getState = ((...params: Parameters<typeof getState>) =>
@@ -81,7 +81,7 @@ export class Silo {
 		this.redo = (token) => {
 			timeTravel(s, `redo`, token)
 		}
-		this.runTransaction = (token, id = arbitrary()) => actUponStore(token, id, s)
+		this.runTransaction = (token, id = arbitrary()) => actUponStore(s, token, id)
 		this.install = (tokens, source = IMPLICIT.STORE) => {
 			installIntoStore(tokens, s, source)
 		}

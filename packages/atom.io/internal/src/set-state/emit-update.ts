@@ -3,9 +3,9 @@ import type { StateUpdate } from "atom.io"
 import type { Atom, Selector, Store } from ".."
 
 export const emitUpdate = <T>(
+	store: Store,
 	state: Atom<T> | Selector<T>,
 	update: StateUpdate<T>,
-	store: Store,
 ): void => {
 	switch (state.type) {
 		case `mutable_atom`:

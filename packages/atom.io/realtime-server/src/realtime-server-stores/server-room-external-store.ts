@@ -1,8 +1,8 @@
 import type { ChildProcessWithoutNullStreams } from "node:child_process"
 import { spawn } from "node:child_process"
 
+import type { Loadable } from "atom.io"
 import { atomFamily, selectorFamily } from "atom.io"
-import type { Loadable } from "atom.io/data"
 
 import { ChildSocket } from "../ipc-sockets"
 

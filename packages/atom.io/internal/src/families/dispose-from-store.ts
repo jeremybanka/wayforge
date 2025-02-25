@@ -2,7 +2,6 @@ import type { ReadableFamilyToken, ReadableToken } from "atom.io"
 import type { Canonical } from "atom.io/json"
 
 import { disposeAtom } from "../atom"
-import { getTrace } from "../get-trace"
 import { disposeSelector } from "../selector"
 import { type Store, withdraw } from "../store"
 import { findInStore } from "./find-in-store"
@@ -31,33 +30,24 @@ export function disposeFromStore(
 		token = maybeToken
 	}
 	try {
-		withdraw(token, store)
+		withdraw(store, token)
 	} catch (thrown) {
-		// const disposal = store.disposalTraces.buffer.find(
-		// 	(item) => item?.key === token.key,
-		// )
 		store.logger.error(
 			`❌`,
 			token.type,
 			token.key,
 			`could not be disposed because it was not found in the store "${store.config.name}".`,
-			// disposal
-			// 	? `\n   This state was most recently disposed\n${disposal.trace}`
-			// 	: `No previous disposal trace was found.`,
 		)
 		return
 	}
 	switch (token.type) {
 		case `atom`:
 		case `mutable_atom`:
-			disposeAtom(token, store)
+			disposeAtom(store, token)
 			break
 		case `selector`:
 		case `readonly_selector`:
-			disposeSelector(token, store)
+			disposeSelector(store, token)
 			break
 	}
-
-	// const trace = getTrace(new Error())
-	// store.disposalTraces.add({ key: token.key, trace })
 }

@@ -4,12 +4,12 @@ import type { Func, Store } from ".."
 import { withdraw } from ".."
 
 export const subscribeToTransaction = <F extends Func>(
-	token: TransactionToken<F>,
-	handleUpdate: TransactionUpdateHandler<F>,
-	key: string,
 	store: Store,
+	token: TransactionToken<F>,
+	key: string,
+	handleUpdate: TransactionUpdateHandler<F>,
 ): (() => void) => {
-	const tx = withdraw(token, store)
+	const tx = withdraw(store, token)
 	store.logger.info(
 		`👀`,
 		`transaction`,

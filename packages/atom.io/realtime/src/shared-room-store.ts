@@ -1,6 +1,5 @@
 import type { MutableAtomToken } from "atom.io"
-import { atom, selectorFamily } from "atom.io"
-import { getInternalRelations, join } from "atom.io/data"
+import { atom, getInternalRelations, join, selectorFamily } from "atom.io"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 

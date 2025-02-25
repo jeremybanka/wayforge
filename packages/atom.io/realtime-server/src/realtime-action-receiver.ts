@@ -19,7 +19,7 @@ export function realtimeActionReceiver({
 			const performanceKeyStart = `${performanceKey}:start`
 			const performanceKeyEnd = `${performanceKey}:end`
 			performance.mark(performanceKeyStart)
-			actUponStore<F>(tx, update.id, store)(...update.params)
+			actUponStore<F>(store, tx, update.id)(...update.params)
 			performance.mark(performanceKeyEnd)
 			const metric = performance.measure(
 				performanceKey,

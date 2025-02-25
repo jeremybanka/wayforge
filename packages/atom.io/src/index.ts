@@ -17,7 +17,9 @@ import type {
 
 export * from "./atom"
 export * from "./dispose-state"
+export * from "./find-state"
 export * from "./get-state"
+export * from "./join"
 export * from "./logger"
 export * from "./realm"
 export * from "./selector"
@@ -146,3 +148,5 @@ export type FamilyMetadata<K extends Canonical = any> = {
 	/** The family member's unique identifier, in the form of a string. */
 	subKey: stringified<K>
 }
+
+export type Loadable<T> = Promise<T> | T

@@ -1,14 +1,15 @@
 import type { Logger } from "atom.io"
 import {
+	Anarchy,
 	atom,
 	atomFamily,
 	disposeState,
+	findState,
 	getState,
 	selector,
 	selectorFamily,
 	setState,
 } from "atom.io"
-import { findState } from "atom.io/ephemeral"
 import * as Internal from "atom.io/internal"
 
 import * as Utils from "../__util__"
@@ -133,7 +134,7 @@ describe(`disposeState`, () => {
 		)
 	})
 
-	it(`deletes selectors that belong to a family`, () => {
+	it(`deletes readonly selectors that belong to a family`, () => {
 		const countAtoms = atomFamily<number, string>({
 			key: `count`,
 			default: 0,
@@ -150,6 +151,58 @@ describe(`disposeState`, () => {
 		expect(logger.error).toHaveBeenCalledTimes(0)
 		expect(Internal.IMPLICIT.STORE.selectors.has(doubledState.key)).toBe(false)
 		expect(Internal.IMPLICIT.STORE.valueMap.has(doubledState.key)).toBe(false)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
+	})
+	it(`deletes writable selectors that belong to a family`, () => {
+		const countAtoms = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		const tripledSelectors = selectorFamily<number, string>({
+			key: `tripled`,
+			get:
+				(id) =>
+				({ get }) =>
+					get(countAtoms, id) * 3,
+			set:
+				(id) =>
+				({ set }, newValue) => {
+					set(countAtoms, id, newValue / 3)
+				},
+		})
+		const tripledState = findState(tripledSelectors, `my-key`)
+		disposeState(tripledState)
+		expect(logger.error).toHaveBeenCalledTimes(0)
+		expect(Internal.IMPLICIT.STORE.selectors.has(tripledState.key)).toBe(false)
+		expect(Internal.IMPLICIT.STORE.valueMap.has(tripledState.key)).toBe(false)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
+	})
+	it(`disconnects selectors that have been allocated to a molecule`, () => {
+		const countAtoms = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		const tripledSelectors = selectorFamily<number, string>({
+			key: `tripled`,
+			get:
+				(id) =>
+				({ find, get }) =>
+					get(find(countAtoms, id)) * 3,
+		})
+		Internal.IMPLICIT.STORE.config.lifespan = `immortal`
+		const anarchy = new Anarchy()
+		anarchy.allocate(`root`, `hi`)
+		setState(countAtoms, `hi`, 1)
+		const triple = getState(tripledSelectors, `hi`)
+		expect(triple).toBe(3)
+		disposeState(tripledSelectors, `hi`)
+
+		expect(Internal.IMPLICIT.STORE.selectors.has(tripledSelectors.key)).toBe(
+			false,
+		)
+
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
 	})

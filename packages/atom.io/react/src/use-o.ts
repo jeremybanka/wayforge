@@ -20,7 +20,7 @@ export function useO<T, K extends Canonical>(
 	const token = parseStateOverloads(store, ...params)
 	const id = React.useId()
 	return React.useSyncExternalStore<T>(
-		(dispatch) => subscribeToState(token, dispatch, `use-o:${id}`, store),
+		(dispatch) => subscribeToState(store, token, `use-o:${id}`, dispatch),
 		() => getFromStore(store, token),
 		() => getFromStore(store, token),
 	)
