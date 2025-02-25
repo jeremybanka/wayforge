@@ -22,7 +22,6 @@
 		"build:main": "tsup-node",
 		"build:types": "tsup-node --dts",
 		"build:data": "cd data && tsup-node",
-		"build:ephemeral": "cd ephemeral && tsup-node",
 		"build:eslint-plugin": "cd eslint-plugin && tsup-node",
 		"build:internal": "cd internal && tsup-node",
 		"build:introspection": "cd introspection && tsup-node",
@@ -135,9 +134,6 @@
 		"data/dist",
 		"data/package.json",
 		"data/src",
-		"ephemeral/dist",
-		"ephemeral/package.json",
-		"ephemeral/src",
 		"eslint-plugin/dist",
 		"eslint-plugin/package.json",
 		"eslint-plugin/src",
@@ -188,11 +184,6 @@
 		"./data": {
 			"import": "./data/dist/index.js",
 			"types": "./data/dist/index.d.ts"
-		},
-		"./ephemeral/package.json": "./ephemeral/package.json",
-		"./ephemeral": {
-			"import": "./ephemeral/dist/index.js",
-			"types": "./ephemeral/dist/index.d.ts"
 		},
 		"./eslint-plugin/package.json": "./eslint-plugin/package.json",
 		"./eslint-plugin": {

@@ -1,5 +1,6 @@
 import type {
 	CompoundTypedKey,
+	findState,
 	getState,
 	JoinOptions,
 	MutableAtomFamilyToken,
@@ -11,7 +12,6 @@ import type {
 	Write,
 } from "atom.io"
 import { Anarchy } from "atom.io"
-import type { findState } from "atom.io/ephemeral"
 import type { Canonical, Json, stringified } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"

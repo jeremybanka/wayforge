@@ -1,10 +1,8 @@
 "use client"
 
-import { findRelations, getInternalRelations } from "atom.io"
-import { findState } from "atom.io/ephemeral"
+import { findRelations, findState, getInternalRelations } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import { usersInRooms } from "atom.io/realtime"
-import { myUsernameState } from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import { Id } from "hamr/react-id"
 import { Radial } from "hamr/react-radial"

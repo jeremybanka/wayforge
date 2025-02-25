@@ -1,6 +1,5 @@
 import type { LoggerIcon, TokenDenomination } from "atom.io"
-import { AtomIOLogger, editRelations, setState } from "atom.io"
-import { findState } from "atom.io/ephemeral"
+import { AtomIOLogger, editRelations, findState, setState } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import * as RTS from "atom.io/realtime-server"
 

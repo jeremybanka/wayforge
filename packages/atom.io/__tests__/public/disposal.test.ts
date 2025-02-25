@@ -3,12 +3,12 @@ import {
 	atom,
 	atomFamily,
 	disposeState,
+	findState,
 	getState,
 	selector,
 	selectorFamily,
 	setState,
 } from "atom.io"
-import { findState } from "atom.io/ephemeral"
 import * as Internal from "atom.io/internal"
 
 import * as Utils from "../__util__"

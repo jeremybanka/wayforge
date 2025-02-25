@@ -20,7 +20,7 @@ ruleTester.run(
 			{
 				name: `import from ephemeral with no option set`,
 				code: `
-        import * as Ephemeral from "atom.io/ephemeral"
+        import * as Ephemeral from "atom.io"
       `,
 			},
 			{
@@ -33,7 +33,7 @@ ruleTester.run(
 				name: `import from ephemeral with ephemeral option set`,
 				options: [`ephemeral`],
 				code: `
-        import * as Ephemeral from "atom.io/ephemeral"
+        import * as Ephemeral from "atom.io"
       `,
 			},
 			{
@@ -56,7 +56,7 @@ ruleTester.run(
 				name: `import from ephemeral with immortal option set`,
 				options: [`immortal`],
 				code: `
-        import * as Ephemeral from "atom.io/ephemeral"
+        import * as Ephemeral from "atom.io"
       `,
 				errors: 1,
 			},

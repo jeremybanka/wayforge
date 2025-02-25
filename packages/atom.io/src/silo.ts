@@ -1,4 +1,4 @@
-import type { findState } from "atom.io/ephemeral"
+import type { findState } from "atom.io"
 import {
 	actUponStore,
 	arbitrary,

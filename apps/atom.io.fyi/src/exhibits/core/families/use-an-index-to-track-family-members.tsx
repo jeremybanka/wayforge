@@ -1,5 +1,4 @@
-import { atom } from "atom.io"
-import { findState } from "atom.io/ephemeral"
+import { atom, findState } from "atom.io"
 import { useO } from "atom.io/react"
 import * as React from "react"
 

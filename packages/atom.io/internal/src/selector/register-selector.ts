@@ -1,4 +1,5 @@
 import type {
+	findState,
 	ReadableFamilyToken,
 	ReadableToken,
 	setState,
@@ -6,7 +7,6 @@ import type {
 	WritableFamilyToken,
 	WritableToken,
 } from "atom.io"
-import type { findState } from "atom.io/ephemeral"
 import type { Json } from "atom.io/json"
 
 import { findInStore } from "../families"

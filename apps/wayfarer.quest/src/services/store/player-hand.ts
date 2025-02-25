@@ -1,5 +1,4 @@
-import { selectorFamily } from "atom.io"
-import { findRelations } from "atom.io"
+import { findRelations, selectorFamily } from "atom.io"
 
 import { ownersOfGroups } from "~/apps/core.wayfarer.quest/src/store/game"
 

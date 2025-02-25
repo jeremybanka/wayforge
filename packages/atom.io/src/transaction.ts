@@ -1,5 +1,4 @@
-import type { getState, setState } from "atom.io"
-import type { findState } from "atom.io/ephemeral"
+import type { findState, getState, setState } from "atom.io"
 import type { EnvironmentData, Func, Transceiver } from "atom.io/internal"
 import {
 	actUponStore,

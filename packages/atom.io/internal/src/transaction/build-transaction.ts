@@ -1,5 +1,4 @@
-import type { disposeState, getState, setState } from "atom.io"
-import type { findState } from "atom.io/ephemeral"
+import type { disposeState, findState, getState, setState } from "atom.io"
 
 import { arbitrary } from "../arbitrary"
 import { disposeFromStore, findInStore } from "../families"

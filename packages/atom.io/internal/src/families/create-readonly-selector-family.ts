@@ -1,5 +1,6 @@
 import type {
 	FamilyMetadata,
+	findState,
 	getState,
 	ReadonlySelectorFamilyOptions,
 	ReadonlySelectorFamilyToken,
@@ -7,7 +8,6 @@ import type {
 	StateCreation,
 	StateDisposal,
 } from "atom.io"
-import type { findState } from "atom.io/ephemeral"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 

@@ -1,5 +1,4 @@
-import { atomFamily, selectorFamily } from "atom.io"
-import { join } from "atom.io"
+import { atomFamily, join, selectorFamily } from "atom.io"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
