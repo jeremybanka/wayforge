@@ -12,7 +12,6 @@ import type {
 } from "atom.io"
 import { Anarchy } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
-import type { seekState } from "atom.io/immortal"
 import type { Canonical, Json, stringified } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
@@ -23,7 +22,6 @@ import {
 	createReadonlySelectorFamily,
 	createRegularAtomFamily,
 	findInStore,
-	seekInStore,
 } from "../families"
 import { getFromStore } from "../get-state"
 import type {
@@ -190,8 +188,6 @@ export class Join<
 			}) as typeof setState,
 			find: ((...ps: Parameters<typeof findState>) =>
 				findInStore(store, ...ps)) as typeof findState,
-			seek: ((...ps: Parameters<typeof seekState>) =>
-				seekInStore(store, ...ps)) as typeof seekState,
 			json: (token) => getJsonToken(store, token),
 		}
 

@@ -1,9 +1,8 @@
 import type { disposeState, getState, setState } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
-import type { seekState } from "atom.io/immortal"
 
 import { arbitrary } from "../arbitrary"
-import { disposeFromStore, findInStore, seekInStore } from "../families"
+import { disposeFromStore, findInStore } from "../families"
 import { getEnvironmentData } from "../get-environment-data"
 import { getFromStore } from "../get-state"
 import { Junction } from "../junction"
@@ -82,7 +81,6 @@ export const buildTransaction = (
 			run: (token, identifier = arbitrary()) =>
 				actUponStore(token, identifier, child),
 			find: ((token, k) => findInStore(child, token, k)) as typeof findState,
-			seek: ((token, k) => seekInStore(child, token, k)) as typeof seekState,
 			json: (token) => getJsonToken(child, token),
 			dispose: ((...ps: Parameters<typeof disposeState>) => {
 				disposeFromStore(child, ...ps)

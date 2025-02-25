@@ -7,14 +7,12 @@ import type {
 	WritableToken,
 } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
-import type { seekState } from "atom.io/immortal"
 import type { Json } from "atom.io/json"
 
-import { findInStore, seekInStore } from "../families"
+import { findInStore } from "../families"
 import { readOrComputeValue } from "../get-state/read-or-compute-value"
 import { newest } from "../lineage"
 import { getJsonToken } from "../mutable"
-import { NotFoundError } from "../not-found-error"
 import { setAtomOrSelector } from "../set-state"
 import type { Store } from "../store"
 import { withdraw } from "../store"
@@ -89,6 +87,5 @@ export const registerSelector = (
 		setAtomOrSelector(state, value, target)
 	}) as typeof setState,
 	find: ((token, key) => findInStore(store, token, key)) as typeof findState,
-	seek: ((token, key) => seekInStore(store, token, key)) as typeof seekState,
 	json: (token) => getJsonToken(store, token),
 })

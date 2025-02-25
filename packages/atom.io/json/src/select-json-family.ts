@@ -1,10 +1,9 @@
 import type * as AtomIO from "atom.io"
 import type { Store, Transceiver } from "atom.io/internal"
-import { IMPLICIT, seekInStore, withdraw } from "atom.io/internal"
+import { IMPLICIT } from "atom.io/internal"
 
 import { createWritableSelectorFamily } from "../../internal/src/families/create-writable-selector-family"
 import type { Canonical, Json, JsonInterface } from "."
-import { parseJson } from "."
 
 export function selectJsonFamily<
 	T extends Transceiver<any>,
@@ -52,15 +51,6 @@ export function selectJsonFamily<
 				},
 		},
 		[`mutable`, `json`],
-	)
-	const atomFamily = withdraw(atomFamilyToken, store)
-	atomFamily.subject.subscribe(
-		`store=${store.config.name}::json-selector-family`,
-		(event) => {
-			if (event.token.family) {
-				seekInStore(store, jsonFamily, parseJson(event.token.family.subKey) as K)
-			}
-		},
 	)
 	return jsonFamily
 }

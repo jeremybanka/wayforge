@@ -8,7 +8,6 @@ import type {
 	StateDisposal,
 } from "atom.io"
 import type { findState } from "atom.io/ephemeral"
-import type { seekState } from "atom.io/immortal"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
@@ -18,7 +17,6 @@ import {
 	getJsonToken,
 	prettyPrintTokenType,
 	type ReadonlySelectorFamily,
-	seekInStore,
 } from ".."
 import { newest } from "../lineage"
 import { createReadonlySelector } from "../selector"
@@ -78,9 +76,10 @@ export function createReadonlySelectorFamily<T, K extends Canonical>(
 		default: (key: K) => {
 			const getFn = options.get(key)
 			return getFn({
-				get: ((...ps: [any]) => getFromStore(store, ...ps)) as typeof getState,
-				find: ((token, k) => findInStore(store, token, k)) as typeof findState,
-				seek: ((token, k) => seekInStore(store, token, k)) as typeof seekState,
+				get: ((...args: Parameters<typeof getState>) =>
+					getFromStore(store, ...args)) as typeof getState,
+				find: ((...args: Parameters<typeof findState>) =>
+					findInStore(store, ...args)) as typeof findState,
 				json: (token) => getJsonToken(store, token),
 			})
 		},
