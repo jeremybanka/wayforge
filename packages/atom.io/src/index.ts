@@ -147,3 +147,5 @@ export type FamilyMetadata<K extends Canonical = any> = {
 	/** The family member's unique identifier, in the form of a string. */
 	subKey: stringified<K>
 }
+
+export type Loadable<T> = Promise<T> | T

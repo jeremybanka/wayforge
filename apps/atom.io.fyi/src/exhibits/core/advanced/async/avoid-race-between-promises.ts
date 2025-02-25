@@ -1,5 +1,5 @@
+import type { Loadable } from "atom.io"
 import { atom, getState, setState } from "atom.io"
-import type { Loadable } from "atom.io/data"
 
 export const nameState = atom<Loadable<string>>({
 	key: `name`,

@@ -1,5 +1,5 @@
+import type { Loadable } from "atom.io"
 import * as AtomIO from "atom.io"
-import type { Loadable } from "atom.io/data"
 import { editRelationsInStore } from "atom.io/internal"
 import type { UserInRoomMeta } from "atom.io/realtime"
 import { roomIndex, usersInRooms } from "atom.io/realtime"
