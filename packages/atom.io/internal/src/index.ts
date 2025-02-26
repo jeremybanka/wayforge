@@ -68,7 +68,7 @@ export type MutableAtom<
 > = AtomIOState &
 	JsonInterface<T, J> & {
 		type: `mutable_atom`
-		default: T | (() => T)
+		default: () => T
 		cleanup?: () => void
 	}
 export type Atom<T> =
