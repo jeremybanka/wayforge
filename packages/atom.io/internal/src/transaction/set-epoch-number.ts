@@ -1,4 +1,5 @@
 import type { Store } from "../store"
+import { getContinuityKey } from "./get-epoch-number"
 import { isRootStore } from "./is-root-store"
 
 export function setEpochNumberOfContinuity(
@@ -21,8 +22,7 @@ export function setEpochNumberOfAction(
 	if (!isRoot) {
 		return
 	}
-	const continuityKey =
-		store.transactionMeta.actionContinuities.getRelatedKey(transactionKey)
+	const continuityKey = getContinuityKey(store, transactionKey)
 
 	if (continuityKey !== undefined) {
 		store.transactionMeta.epoch.set(continuityKey, newEpoch)

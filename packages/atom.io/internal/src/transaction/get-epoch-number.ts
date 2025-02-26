@@ -1,26 +1,22 @@
 import type { Store } from "../store"
+import type { RootStore } from "./is-root-store"
 import { isRootStore } from "./is-root-store"
 
 export function getContinuityKey(
-	store: Store,
+	store: RootStore,
 	transactionKey: string,
 ): string | undefined {
-	const isRoot = isRootStore(store)
-	const continuity = isRoot
-		? store.transactionMeta.actionContinuities.getRelatedKey(transactionKey)
-		: undefined
+	const continuity =
+		store.transactionMeta.actionContinuities.getRelatedKey(transactionKey)
+
 	return continuity
 }
 
 export function getEpochNumberOfContinuity(
-	store: Store,
+	store: RootStore,
 	continuityKey: string,
 ): number | undefined {
-	const isRoot = isRootStore(store)
-	const epoch =
-		isRoot && continuityKey
-			? store.transactionMeta.epoch.get(continuityKey)
-			: undefined
+	const epoch = store.transactionMeta.epoch.get(continuityKey)
 	return epoch
 }
 
@@ -29,12 +25,12 @@ export function getEpochNumberOfAction(
 	transactionKey: string,
 ): number | undefined {
 	const isRoot = isRootStore(store)
-	const continuity = isRoot
-		? store.transactionMeta.actionContinuities.getRelatedKey(transactionKey)
-		: undefined
-	const epoch =
-		isRoot && continuity !== undefined
-			? store.transactionMeta.epoch.get(continuity)
-			: undefined
-	return epoch
+	if (!isRoot) {
+		return undefined
+	}
+	const continuityKey = getContinuityKey(store, transactionKey)
+	if (continuityKey === undefined) {
+		return undefined
+	}
+	return getEpochNumberOfContinuity(store, continuityKey)
 }
