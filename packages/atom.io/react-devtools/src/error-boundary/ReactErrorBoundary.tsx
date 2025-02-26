@@ -1,5 +1,5 @@
 import type { ErrorInfo, FC, ReactNode } from "react"
-import { Component, useState } from "react"
+import { Component } from "react"
 
 import type { FallbackProps } from "./DefaultFallback"
 import { DefaultFallback } from "./DefaultFallback"
