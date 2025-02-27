@@ -172,6 +172,12 @@ importers:
 
   apps/edge/recoverage-server:
     dependencies:
+      drizzle-kit:
+        specifier: 0.30.5
+        version: 0.30.5
+      drizzle-orm:
+        specifier: 0.40.0
+        version: 0.40.0(@cloudflare/workers-types@4.20250224.0)(bun-types@1.2.4)(gel@2.0.0)(postgres@3.4.5)
       hono:
         specifier: 4.7.2
         version: 4.7.2

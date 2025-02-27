@@ -8,6 +8,8 @@
 		"deploy": "pnpm run build && wrangler pages deploy"
 	},
 	"dependencies": {
+		"drizzle-kit": "0.30.5",
+		"drizzle-orm": "0.40.0",
 		"hono": "4.7.2"
 	},
 	"devDependencies": {
