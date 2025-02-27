@@ -59,7 +59,9 @@ export const pathnameAtom = atom<Pathname | (string & {})>({
 					case `/sign_up`: {
 						const auth = getState(authAtom)
 						if (auth) resolve(`/game`)
+						break
 					}
+					default:
 				}
 			}
 			redirect(window.location.pathname)

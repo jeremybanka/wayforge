@@ -144,100 +144,109 @@ const httpServer = createServer((req, res) => {
 									res.end(RESPONSE_DICTIONARY[201])
 								}
 								break
-							case `/login-${asUUID(`login`)}`: {
-								let successful = false
-								let userId: string | null = null
-								try {
-									const tenMinutesAgo = new Date(+now - 1000 * 60 * 10)
-									logger.info(`🔑 ten minutes ago`, {
-										tenMinutesAgo,
-										now,
-									})
-									const recentLoginHistory =
-										await db.drizzle.query.loginHistory.findMany({
-											columns: {
-												userId: true,
-												successful: true,
-											},
-											where: and(
-												eq(loginHistory.ipAddress, ipAddress),
-												eq(loginHistory.successful, false),
-												gt(loginHistory.loginTime, tenMinutesAgo),
-											),
-											limit: 10,
+							case `/login-${asUUID(`login`)}`:
+								{
+									let successful = false
+									let userId: string | null = null
+									try {
+										const tenMinutesAgo = new Date(+now - 1000 * 60 * 10)
+										logger.info(`🔑 ten minutes ago`, {
+											tenMinutesAgo,
+											now,
 										})
+										const recentLoginHistory =
+											await db.drizzle.query.loginHistory.findMany({
+												columns: {
+													userId: true,
+													successful: true,
+												},
+												where: and(
+													eq(loginHistory.ipAddress, ipAddress),
+													eq(loginHistory.successful, false),
+													gt(loginHistory.loginTime, tenMinutesAgo),
+												),
+												limit: 10,
+											})
 
-									logger.info(
-										`🔑 ${recentLoginHistory.length}/10 recent failed logins from ${ipAddress}`,
-									)
-
-									const attemptsRemaining = 10 - recentLoginHistory.length
-									if (attemptsRemaining < 1) {
 										logger.info(
-											`🔑 too many recent failed logins from ${ipAddress}`,
+											`🔑 ${recentLoginHistory.length}/10 recent failed logins from ${ipAddress}`,
 										)
-										await db.drizzle.insert(banishedIps).values({
-											ip: ipAddress,
-											reason: `Too many recent login attempts.`,
-											banishedAt: now,
-											banishedUntil: new Date(+now + 1000 * 60 * 60 * 24),
-										})
-										throw [429, `Too many recent login attempts.`]
-									}
 
-									const text = Buffer.concat(data).toString()
-									const json: Json.Serializable = JSON.parse(text)
-									const zodParsed = credentialsSchema.safeParse(json)
-									if (!zodParsed.success) {
-										logger.warn(`login parsed`, zodParsed.error.issues)
-										throw [400, `${attemptsRemaining} attempts remaining.`]
-									}
-									const { username, password } = zodParsed.data
-									const maybeUser = await db.drizzle.query.users.findFirst({
-										columns: {
-											id: true,
-											hash: true,
-											salt: true,
-										},
-										where: eq(users.username, username),
-									})
-									logger.info(`🔑 login attempt as user`, username)
-									if (!maybeUser) {
-										logger.info(`🔑 user ${username} does not exist`)
-										throw [400, `${attemptsRemaining} attempts remaining.`]
-									}
-									const { hash: trueHash, salt } = maybeUser
-									userId = maybeUser.id
-									const hash = createHash(`sha256`)
-										.update(password + salt)
-										.digest(`hex`)
-									if (hash === trueHash) {
-										const sessionKey = crypto.randomUUID()
-										let userSessions = userSessionMap.get(username)
-										if (!userSessions) {
-											userSessions = new Map()
-											userSessionMap.set(username, userSessions)
+										const attemptsRemaining = 10 - recentLoginHistory.length
+										if (attemptsRemaining < 1) {
+											logger.info(
+												`🔑 too many recent failed logins from ${ipAddress}`,
+											)
+											await db.drizzle.insert(banishedIps).values({
+												ip: ipAddress,
+												reason: `Too many recent login attempts.`,
+												banishedAt: now,
+												banishedUntil: new Date(+now + 1000 * 60 * 60 * 24),
+											})
+											throw [429, `Too many recent login attempts.`]
 										}
-										userSessions.set(sessionKey, Number(now))
-										successful = true
-										logger.info(`🔑 login successful as`, username)
-										res.writeHead(200, {
-											"Content-Type": `text/plain`,
-											"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
+
+										const text = Buffer.concat(data).toString()
+										const json: Json.Serializable = JSON.parse(text)
+										const zodParsed = credentialsSchema.safeParse(json)
+										if (!zodParsed.success) {
+											logger.warn(`login parsed`, zodParsed.error.issues)
+											throw [400, `${attemptsRemaining} attempts remaining.`]
+										}
+										const { username, password } = zodParsed.data
+										const maybeUser = await db.drizzle.query.users.findFirst({
+											columns: {
+												id: true,
+												hash: true,
+												salt: true,
+											},
+											where: eq(users.username, username),
 										})
-										res.end(`${username} ${sessionKey}`)
+										logger.info(`🔑 login attempt as user`, username)
+										if (!maybeUser) {
+											logger.info(`🔑 user ${username} does not exist`)
+											throw [400, `${attemptsRemaining} attempts remaining.`]
+										}
+										const { hash: trueHash, salt } = maybeUser
+										userId = maybeUser.id
+										const hash = createHash(`sha256`)
+											.update(password + salt)
+											.digest(`hex`)
+										if (hash === trueHash) {
+											const sessionKey = crypto.randomUUID()
+											let userSessions = userSessionMap.get(username)
+											if (!userSessions) {
+												userSessions = new Map()
+												userSessionMap.set(username, userSessions)
+											}
+											userSessions.set(sessionKey, Number(now))
+											successful = true
+											logger.info(`🔑 login successful as`, username)
+											res.writeHead(200, {
+												"Content-Type": `text/plain`,
+												"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
+											})
+											res.end(`${username} ${sessionKey}`)
+										}
+									} finally {
+										await db.drizzle.insert(loginHistory).values({
+											userId,
+											successful,
+											ipAddress,
+											userAgent: req.headers[`user-agent`] ?? `Withheld`,
+										})
+										logger.info(`🔑 recorded login attempt from ${ipAddress}`)
 									}
-								} finally {
-									await db.drizzle.insert(loginHistory).values({
-										userId,
-										successful,
-										ipAddress,
-										userAgent: req.headers[`user-agent`] ?? `Withheld`,
-									})
-									logger.info(`🔑 recorded login attempt from ${ipAddress}`)
 								}
-							}
+								break
+							default:
+								throw [404, `Not found`]
 						}
+						break
+					case undefined:
+						throw [400, `No Method`]
+					default:
+						throw [405, `Method not allowed`]
 				}
 			} catch (thrown) {
 				const result = serverIssueSchema.safeParse(thrown)

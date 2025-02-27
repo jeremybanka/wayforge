@@ -121,7 +121,8 @@ switch (inputs.case) {
 			writeJsonSchema(outdir ?? `.`)
 		}
 		break
-	default: {
+	case ``:
+	case `$configPath`: {
 		const flightDeck = new FlightDeck(inputs.opts)
 		process.on(`close`, async () => {
 			await flightDeck.stopAllServices()
