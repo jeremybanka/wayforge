@@ -138,7 +138,8 @@ describe(`async selector`, () => {
 							}
 							break
 						}
-
+						case undefined:
+							throw 418
 						default:
 							throw 405
 					}

@@ -122,5 +122,10 @@ switch (lastArgument) {
 			})
 		}
 		buildAll()
+		break
 	}
+	default:
+		throw new Error(
+			`Unknown argument "${lastArgument}"; expected "watch" or "once"`,
+		)
 }

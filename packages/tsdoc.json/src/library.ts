@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/switch-exhaustiveness-check */
 import * as os from "node:os"
 import * as path from "node:path"
 

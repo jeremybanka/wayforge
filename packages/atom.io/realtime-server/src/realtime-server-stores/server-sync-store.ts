@@ -25,7 +25,13 @@ export function redactTransactionUpdateContent(
 					)
 					return { ...update, updates: redacted }
 				}
-				default:
+				case `atom_update`:
+				case `selector_update`:
+				case `molecule_creation`:
+				case `molecule_disposal`:
+				case `molecule_transfer`:
+				case `state_creation`:
+				case `state_disposal`:
 					return update
 			}
 		})
@@ -35,10 +41,12 @@ export function redactTransactionUpdateContent(
 				case `selector_update`:
 					return visibleStateKeys.includes(update.key)
 				case `state_creation`:
+				case `state_disposal`:
 					return visibleStateKeys.includes(update.token.key)
 				case `molecule_creation`:
-					return true
 				case `transaction_update`:
+				case `molecule_disposal`:
+				case `molecule_transfer`:
 					return true
 			}
 		})

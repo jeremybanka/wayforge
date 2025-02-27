@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/switch-exhaustiveness-check */
 import type * as ESTree from "estree"
 
 export function walk(
