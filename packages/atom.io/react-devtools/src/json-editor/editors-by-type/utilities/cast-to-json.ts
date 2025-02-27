@@ -130,7 +130,8 @@ export const castToJson = (
 				},
 			}
 		}
-		default: {
+		case `null`:
+		case undefined: {
 			return {
 				get array() {
 					return Cast.nullToArray()

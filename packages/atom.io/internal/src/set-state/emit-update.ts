@@ -19,7 +19,9 @@ export const emitUpdate = <T>(
 				state.subject.subscribers,
 			)
 			break
-		default:
+		case `atom`:
+		case `selector`:
+		case `readonly_selector`:
 			store.logger.info(
 				`📢`,
 				state.type,

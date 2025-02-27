@@ -94,6 +94,7 @@ export class SyncGroup {
 				this.actions.push(...(args as TransactionToken<any>[]))
 				break
 			case `atom_family`:
+			case `mutable_atom_family`:
 				{
 					const [family, index] = args as [
 						AtomFamilyToken<any, any>,

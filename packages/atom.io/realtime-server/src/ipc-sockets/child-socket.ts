@@ -36,6 +36,8 @@ export class ChildSocket<
 				case `e`:
 					this.logger.error(...rest)
 					break
+				default:
+					return
 			}
 		}
 	}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/switch-exhaustiveness-check */
 import type { ReactNode } from "react"
 import type { TSD } from "tsdoc.json"
 

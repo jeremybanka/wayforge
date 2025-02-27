@@ -337,10 +337,13 @@ export class Junction<
 				const bPrev = this.getRelatedKey(a)
 				if (bPrev && bPrev !== b) this.delete(a, bPrev)
 			}
-			case `1:n`: {
-				const aPrev = this.getRelatedKey(b)
-				if (aPrev && aPrev !== a) this.delete(aPrev, b)
-			}
+			case `1:n`:
+				{
+					const aPrev = this.getRelatedKey(b)
+					if (aPrev && aPrev !== a) this.delete(aPrev, b)
+				}
+				break
+			case `n:n`: // do nothing
 		}
 		if (content) {
 			const contentKey = this.makeContentKey(a, b)

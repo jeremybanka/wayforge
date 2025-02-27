@@ -407,7 +407,8 @@ function filterTransactionUpdates(
 				case `molecule_disposal`:
 				case `molecule_transfer`:
 					return true // always include
-				default:
+				case `atom_update`:
+				case `selector_update`:
 					key = updateFromTx.key
 					familyKey = updateFromTx.family?.key
 					break

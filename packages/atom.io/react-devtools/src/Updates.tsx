@@ -119,6 +119,12 @@ const TransactionUpdateFC: React.FC<{
 											transactionUpdate={update}
 										/>
 									)
+								case `molecule_creation`:
+								case `molecule_disposal`:
+								case `molecule_transfer`:
+								case `state_creation`:
+								case `state_disposal`:
+									return null
 							}
 						})}
 				</section>
@@ -173,6 +179,12 @@ export const TimelineUpdateFC: React.FC<{
 											transactionUpdate={update}
 										/>
 									)
+								case `molecule_creation`:
+								case `molecule_disposal`:
+								case `molecule_transfer`:
+								case `state_creation`:
+								case `state_disposal`:
+									return null
 							}
 						})
 				) : timelineUpdate.type === `selector_update` ? (

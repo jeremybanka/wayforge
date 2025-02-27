@@ -3,11 +3,8 @@ import { Subject } from "atom.io/internal"
 import type { Json, primitive } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-export type SetUpdate =
-	| `add:${string}`
-	| `clear:${string}`
-	| `del:${string}`
-	| `tx:${string}`
+export type SetUpdateType = `add` | `clear` | `del` | `tx`
+export type SetUpdate = `${SetUpdateType}:${string}`
 export type NumberedSetUpdate = `${number}=${SetUpdate}`
 
 export interface SetRTXJson<P extends primitive> extends Json.Object {
@@ -145,7 +142,7 @@ export class SetRTX<P extends primitive>
 
 	private doStep(update: SetUpdate): void {
 		const typeValueBreak = update.indexOf(`:`)
-		const type = update.substring(0, typeValueBreak)
+		const type = update.substring(0, typeValueBreak) as SetUpdateType
 		const value = update.substring(typeValueBreak + 1)
 		switch (type) {
 			case `add`:
@@ -214,7 +211,7 @@ export class SetRTX<P extends primitive>
 
 	public undoStep(update: SetUpdate): void {
 		const breakpoint = update.indexOf(`:`)
-		const type = update.substring(0, breakpoint)
+		const type = update.substring(0, breakpoint) as SetUpdateType
 		const value = update.substring(breakpoint + 1)
 		switch (type) {
 			case `add`:

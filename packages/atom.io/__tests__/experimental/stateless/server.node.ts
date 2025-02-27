@@ -128,6 +128,8 @@ const main = async () => {
 									}
 								}
 								break
+							case undefined:
+								throw 418
 							default:
 								throw 405
 						}
