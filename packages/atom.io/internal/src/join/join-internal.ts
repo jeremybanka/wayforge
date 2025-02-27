@@ -561,7 +561,7 @@ export class Join<
 				this.states = states
 				break
 			}
-			default: {
+			case `n:n`: {
 				const multipleRelatedKeysSelectors = getMultipleKeySelectorFamily()
 				const stateKeyA = `${aSide}KeysOf${capitalize(bSide)}` as const
 				const stateKeyB = `${bSide}KeysOf${capitalize(aSide)}` as const

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/switch-exhaustiveness-check */
 import type { Rule } from "eslint"
 import type * as ESTree from "estree"
 

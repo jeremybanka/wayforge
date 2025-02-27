@@ -135,7 +135,10 @@ const commonRules = {
 	"@typescript-eslint/return-await": ERROR,
 	"@typescript-eslint/sort-type-constituents": ERROR,
 	"@typescript-eslint/strict-boolean-expressions": 0,
-	"@typescript-eslint/switch-exhaustiveness-check": 0,
+	"@typescript-eslint/switch-exhaustiveness-check": [
+		ERROR,
+		{ requireDefaultForNonUnion: true },
+	],
 	"@typescript-eslint/triple-slash-reference": ERROR,
 	"@typescript-eslint/typedef": 0,
 	"@typescript-eslint/unbound-method": 0,
