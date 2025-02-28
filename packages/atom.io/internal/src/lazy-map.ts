@@ -1,8 +1,10 @@
 export class LazyMap<K, V> extends Map<K, V> {
 	public deleted = new Set<K>()
+	protected readonly source: Map<K, V>
 
-	public constructor(protected readonly source: Map<K, V>) {
+	public constructor(source: Map<K, V>) {
 		super()
+		this.source = source
 	}
 
 	public get(key: K): V | undefined {

@@ -35,13 +35,18 @@ export class CustomSocket<I extends Events, O extends Events> implements Socket 
 	}
 
 	public id = `no_id_retrieved`
+	public emit: <Event extends keyof I>(
+		event: Event,
+		...args: I[Event]
+	) => CustomSocket<I, O>
 
 	public constructor(
-		public emit: <Event extends keyof I>(
+		emit: <Event extends keyof I>(
 			event: Event,
 			...args: I[Event]
 		) => CustomSocket<I, O>,
 	) {
+		this.emit = emit
 		this.listeners = new Map()
 		this.globalListeners = new Set()
 	}
