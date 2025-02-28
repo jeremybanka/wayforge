@@ -79,6 +79,7 @@
 		"tsdoc",
 		"tsup",
 		"unsub",
+		"Vitest",
 		"wayforge",
 		"yalc",
 		"zustand"
