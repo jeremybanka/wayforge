@@ -177,7 +177,7 @@ importers:
         version: 3.32.2
       preact-render-to-string:
         specifier: 6.5.13
-        version: 6.5.13(preact@10.26.3)
+        version: 6.5.13(preact@10.26.4)
       zod:
         specifier: 3.24.2
         version: 3.24.2
@@ -210,8 +210,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       preact:
-        specifier: 10.26.3
-        version: 10.26.3
+        specifier: 10.26.4
+        version: 10.26.4
       typed-htmx:
         specifier: 0.3.1
         version: 0.3.1
@@ -607,13 +607,13 @@ importers:
     dependencies:
       '@emotion/styled':
         specifier: 11.14.0
-        version: 11.14.0(@emotion/react@11.14.0(@preact/compat@18.3.1(preact@10.26.3))(@types/react@19.0.10))(@preact/compat@18.3.1(preact@10.26.3))(@types/react@19.0.10)
+        version: 11.14.0(@emotion/react@11.14.0(@preact/compat@18.3.1(preact@10.26.4))(@types/react@19.0.10))(@preact/compat@18.3.1(preact@10.26.4))(@types/react@19.0.10)
       '@floating-ui/dom':
         specifier: 1.6.13
         version: 1.6.13
       '@floating-ui/react':
         specifier: 0.27.5
-        version: 0.27.5(@preact/compat@18.3.1(preact@10.26.3))(@preact/compat@18.3.1(preact@10.26.3))
+        version: 0.27.5(@preact/compat@18.3.1(preact@10.26.4))(@preact/compat@18.3.1(preact@10.26.4))
       '@t3-oss/env-core':
         specifier: 0.12.0
         version: 0.12.0(typescript@5.8.2)(zod@3.24.2)
@@ -622,28 +622,28 @@ importers:
         version: 1.17.1(babel-plugin-macros@3.1.0)
       corners:
         specifier: 0.2.0
-        version: 0.2.0(@preact/compat@18.3.1(preact@10.26.3))(@preact/compat@18.3.1(preact@10.26.3))
+        version: 0.2.0(@preact/compat@18.3.1(preact@10.26.4))(@preact/compat@18.3.1(preact@10.26.4))
       fp-ts:
         specifier: 2.16.9
         version: 2.16.9
       motion:
         specifier: 12.4.7
-        version: 12.4.7(@emotion/is-prop-valid@1.3.1)(@preact/compat@18.3.1(preact@10.26.3))(@preact/compat@18.3.1(preact@10.26.3))
+        version: 12.4.7(@emotion/is-prop-valid@1.3.1)(@preact/compat@18.3.1(preact@10.26.4))(@preact/compat@18.3.1(preact@10.26.4))
       nanoid:
         specifier: 5.1.2
         version: 5.1.2
       preact:
-        specifier: 10.26.3
-        version: 10.26.3
+        specifier: 10.26.4
+        version: 10.26.4
       react:
         specifier: npm:@preact/compat
-        version: '@preact/compat@18.3.1(preact@10.26.3)'
+        version: '@preact/compat@18.3.1(preact@10.26.4)'
       react-dom:
         specifier: npm:@preact/compat
-        version: '@preact/compat@18.3.1(preact@10.26.3)'
+        version: '@preact/compat@18.3.1(preact@10.26.4)'
       react-router-dom:
         specifier: 7.2.0
-        version: 7.2.0(@preact/compat@18.3.1(preact@10.26.3))(@preact/compat@18.3.1(preact@10.26.3))
+        version: 7.2.0(@preact/compat@18.3.1(preact@10.26.4))(@preact/compat@18.3.1(preact@10.26.4))
       socket.io-client:
         specifier: 4.8.1
         version: 4.8.1
@@ -656,13 +656,13 @@ importers:
         version: 7.25.9(@babel/core@7.26.7)
       '@preact/preset-vite':
         specifier: 2.10.1
-        version: 2.10.1(@babel/core@7.26.7)(preact@10.26.3)(vite@6.2.0(@types/node@22.13.5)(jiti@2.4.2)(lightningcss@1.29.1)(sass-embedded@1.85.1)(sass@1.85.1)(terser@5.37.0)(tsx@4.19.3))
+        version: 2.10.1(@babel/core@7.26.7)(preact@10.26.4)(vite@6.2.0(@types/node@22.13.5)(jiti@2.4.2)(lightningcss@1.29.1)(sass-embedded@1.85.1)(sass@1.85.1)(terser@5.37.0)(tsx@4.19.3))
       '@testing-library/jest-dom':
         specifier: 6.6.3
         version: 6.6.3
       '@testing-library/react':
         specifier: 16.2.0
-        version: 16.2.0(@preact/compat@18.3.1(preact@10.26.3))(@preact/compat@18.3.1(preact@10.26.3))(@testing-library/dom@10.4.0)(@types/react-dom@19.0.4(@types/react@19.0.10))(@types/react@19.0.10)
+        version: 16.2.0(@preact/compat@18.3.1(preact@10.26.4))(@preact/compat@18.3.1(preact@10.26.4))(@testing-library/dom@10.4.0)(@types/react-dom@19.0.4(@types/react@19.0.10))(@types/react@19.0.10)
       '@types/react':
         specifier: 19.0.10
         version: 19.0.10
@@ -800,8 +800,8 @@ importers:
         specifier: 3.4.5
         version: 3.4.5
       preact:
-        specifier: 10.26.3
-        version: 10.26.3
+        specifier: 10.26.4
+        version: 10.26.4
       react:
         specifier: 19.0.0
         version: 19.0.0
@@ -1044,8 +1044,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       preact:
-        specifier: 10.26.3
-        version: 10.26.3
+        specifier: 10.26.4
+        version: 10.26.4
       react:
         specifier: 19.0.0
         version: 19.0.0
@@ -7064,8 +7064,8 @@ packages:
     peerDependencies:
       preact: '>=10'
 
-  preact@10.26.3:
-    resolution: {integrity: sha512-OJCfNTdttkOTCbTN+gCnXn/woDqz1dIjvP+gdCoYGP2kKuX6w79FAP8qgY/r7jgAunvqHVVmEOKzKOFWzrXZdw==}
+  preact@10.26.4:
+    resolution: {integrity: sha512-KJhO7LBFTjP71d83trW+Ilnjbo+ySsaAgCfXOXUlmGzJ4ygYPWmysm77yg4emwfmoz3b22yvH5IsVFHbhUaH5w==}
 
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
@@ -9610,17 +9610,17 @@ snapshots:
 
   '@emotion/memoize@0.9.0': {}
 
-  '@emotion/react@11.14.0(@preact/compat@18.3.1(preact@10.26.3))(@types/react@19.0.10)':
+  '@emotion/react@11.14.0(@preact/compat@18.3.1(preact@10.26.4))(@types/react@19.0.10)':
     dependencies:
       '@babel/runtime': 7.26.7
       '@emotion/babel-plugin': 11.13.5
       '@emotion/cache': 11.14.0
       '@emotion/serialize': 1.3.3
-      '@emotion/use-insertion-effect-with-fallbacks': 1.2.0(@preact/compat@18.3.1(preact@10.26.3))
+      '@emotion/use-insertion-effect-with-fallbacks': 1.2.0(@preact/compat@18.3.1(preact@10.26.4))
       '@emotion/utils': 1.4.2
       '@emotion/weak-memoize': 0.4.0
       hoist-non-react-statics: 3.3.2
-      react: '@preact/compat@18.3.1(preact@10.26.3)'
+      react: '@preact/compat@18.3.1(preact@10.26.4)'
     optionalDependencies:
       '@types/react': 19.0.10
     transitivePeerDependencies:
@@ -9652,16 +9652,16 @@ snapshots:
 
   '@emotion/sheet@1.4.0': {}
 
-  '@emotion/styled@11.14.0(@emotion/react@11.14.0(@preact/compat@18.3.1(preact@10.26.3))(@types/react@19.0.10))(@preact/compat@18.3.1(preact@10.26.3))(@types/react@19.0.10)':
+  '@emotion/styled@11.14.0(@emotion/react@11.14.0(@preact/compat@18.3.1(preact@10.26.4))(@types/react@19.0.10))(@preact/compat@18.3.1(preact@10.26.4))(@types/react@19.0.10)':
     dependencies:
       '@babel/runtime': 7.26.7
       '@emotion/babel-plugin': 11.13.5
       '@emotion/is-prop-valid': 1.3.1
-      '@emotion/react': 11.14.0(@preact/compat@18.3.1(preact@10.26.3))(@types/react@19.0.10)
+      '@emotion/react': 11.14.0(@preact/compat@18.3.1(preact@10.26.4))(@types/react@19.0.10)
       '@emotion/serialize': 1.3.3
-      '@emotion/use-insertion-effect-with-fallbacks': 1.2.0(@preact/compat@18.3.1(preact@10.26.3))
+      '@emotion/use-insertion-effect-with-fallbacks': 1.2.0(@preact/compat@18.3.1(preact@10.26.4))
       '@emotion/utils': 1.4.2
-      react: '@preact/compat@18.3.1(preact@10.26.3)'
+      react: '@preact/compat@18.3.1(preact@10.26.4)'
     optionalDependencies:
       '@types/react': 19.0.10
     transitivePeerDependencies:
@@ -9688,9 +9688,9 @@ snapshots:
 
   '@emotion/unitless@0.7.5': {}
 
-  '@emotion/use-insertion-effect-with-fallbacks@1.2.0(@preact/compat@18.3.1(preact@10.26.3))':
+  '@emotion/use-insertion-effect-with-fallbacks@1.2.0(@preact/compat@18.3.1(preact@10.26.4))':
     dependencies:
-      react: '@preact/compat@18.3.1(preact@10.26.3)'
+      react: '@preact/compat@18.3.1(preact@10.26.4)'
 
   '@emotion/use-insertion-effect-with-fallbacks@1.2.0(react@19.0.0)':
     dependencies:
@@ -9995,11 +9995,11 @@ snapshots:
       '@floating-ui/core': 1.6.9
       '@floating-ui/utils': 0.2.9
 
-  '@floating-ui/react-dom@2.1.2(@preact/compat@18.3.1(preact@10.26.3))(@preact/compat@18.3.1(preact@10.26.3))':
+  '@floating-ui/react-dom@2.1.2(@preact/compat@18.3.1(preact@10.26.4))(@preact/compat@18.3.1(preact@10.26.4))':
     dependencies:
       '@floating-ui/dom': 1.6.13
-      react: '@preact/compat@18.3.1(preact@10.26.3)'
-      react-dom: '@preact/compat@18.3.1(preact@10.26.3)'
+      react: '@preact/compat@18.3.1(preact@10.26.4)'
+      react-dom: '@preact/compat@18.3.1(preact@10.26.4)'
 
   '@floating-ui/react-dom@2.1.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
@@ -10015,12 +10015,12 @@ snapshots:
       react-dom: 19.0.0(react@19.0.0)
       tabbable: 6.2.0
 
-  '@floating-ui/react@0.27.5(@preact/compat@18.3.1(preact@10.26.3))(@preact/compat@18.3.1(preact@10.26.3))':
+  '@floating-ui/react@0.27.5(@preact/compat@18.3.1(preact@10.26.4))(@preact/compat@18.3.1(preact@10.26.4))':
     dependencies:
-      '@floating-ui/react-dom': 2.1.2(@preact/compat@18.3.1(preact@10.26.3))(@preact/compat@18.3.1(preact@10.26.3))
+      '@floating-ui/react-dom': 2.1.2(@preact/compat@18.3.1(preact@10.26.4))(@preact/compat@18.3.1(preact@10.26.4))
       '@floating-ui/utils': 0.2.9
-      react: '@preact/compat@18.3.1(preact@10.26.3)'
-      react-dom: '@preact/compat@18.3.1(preact@10.26.3)'
+      react: '@preact/compat@18.3.1(preact@10.26.4)'
+      react-dom: '@preact/compat@18.3.1(preact@10.26.4)'
       tabbable: 6.2.0
 
   '@floating-ui/react@0.27.5(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
@@ -10501,16 +10501,16 @@ snapshots:
 
   '@polka/url@1.0.0-next.28': {}
 
-  '@preact/compat@18.3.1(preact@10.26.3)':
+  '@preact/compat@18.3.1(preact@10.26.4)':
     dependencies:
-      preact: 10.26.3
+      preact: 10.26.4
 
-  '@preact/preset-vite@2.10.1(@babel/core@7.26.7)(preact@10.26.3)(vite@6.2.0(@types/node@22.13.5)(jiti@2.4.2)(lightningcss@1.29.1)(sass-embedded@1.85.1)(sass@1.85.1)(terser@5.37.0)(tsx@4.19.3))':
+  '@preact/preset-vite@2.10.1(@babel/core@7.26.7)(preact@10.26.4)(vite@6.2.0(@types/node@22.13.5)(jiti@2.4.2)(lightningcss@1.29.1)(sass-embedded@1.85.1)(sass@1.85.1)(terser@5.37.0)(tsx@4.19.3))':
     dependencies:
       '@babel/core': 7.26.7
       '@babel/plugin-transform-react-jsx': 7.25.9(@babel/core@7.26.7)
       '@babel/plugin-transform-react-jsx-development': 7.25.9(@babel/core@7.26.7)
-      '@prefresh/vite': 2.4.7(preact@10.26.3)(vite@6.2.0(@types/node@22.13.5)(jiti@2.4.2)(lightningcss@1.29.1)(sass-embedded@1.85.1)(sass@1.85.1)(terser@5.37.0)(tsx@4.19.3))
+      '@prefresh/vite': 2.4.7(preact@10.26.4)(vite@6.2.0(@types/node@22.13.5)(jiti@2.4.2)(lightningcss@1.29.1)(sass-embedded@1.85.1)(sass@1.85.1)(terser@5.37.0)(tsx@4.19.3))
       '@rollup/pluginutils': 4.2.1
       babel-plugin-transform-hook-names: 1.0.2(@babel/core@7.26.7)
       debug: 4.4.0(supports-color@5.5.0)
@@ -10523,46 +10523,46 @@ snapshots:
 
   '@prefresh/babel-plugin@0.5.1': {}
 
-  '@prefresh/core@1.5.3(preact@10.26.3)':
+  '@prefresh/core@1.5.3(preact@10.26.4)':
     dependencies:
-      preact: 10.26.3
+      preact: 10.26.4
 
   '@prefresh/utils@1.2.0': {}
 
-  '@prefresh/vite@2.4.7(preact@10.26.3)(vite@6.2.0(@types/node@22.13.5)(jiti@2.4.2)(lightningcss@1.29.1)(sass-embedded@1.85.1)(sass@1.85.1)(terser@5.37.0)(tsx@4.19.3))':
+  '@prefresh/vite@2.4.7(preact@10.26.4)(vite@6.2.0(@types/node@22.13.5)(jiti@2.4.2)(lightningcss@1.29.1)(sass-embedded@1.85.1)(sass@1.85.1)(terser@5.37.0)(tsx@4.19.3))':
     dependencies:
       '@babel/core': 7.26.7
       '@prefresh/babel-plugin': 0.5.1
-      '@prefresh/core': 1.5.3(preact@10.26.3)
+      '@prefresh/core': 1.5.3(preact@10.26.4)
       '@prefresh/utils': 1.2.0
       '@rollup/pluginutils': 4.2.1
-      preact: 10.26.3
+      preact: 10.26.4
       vite: 6.2.0(@types/node@22.13.5)(jiti@2.4.2)(lightningcss@1.29.1)(sass-embedded@1.85.1)(sass@1.85.1)(terser@5.37.0)(tsx@4.19.3)
     transitivePeerDependencies:
       - supports-color
 
-  '@react-hook/latest@1.0.3(@preact/compat@18.3.1(preact@10.26.3))':
+  '@react-hook/latest@1.0.3(@preact/compat@18.3.1(preact@10.26.4))':
     dependencies:
-      react: '@preact/compat@18.3.1(preact@10.26.3)'
+      react: '@preact/compat@18.3.1(preact@10.26.4)'
 
   '@react-hook/latest@1.0.3(react@19.0.0)':
     dependencies:
       react: 19.0.0
 
-  '@react-hook/passive-layout-effect@1.2.1(@preact/compat@18.3.1(preact@10.26.3))':
+  '@react-hook/passive-layout-effect@1.2.1(@preact/compat@18.3.1(preact@10.26.4))':
     dependencies:
-      react: '@preact/compat@18.3.1(preact@10.26.3)'
+      react: '@preact/compat@18.3.1(preact@10.26.4)'
 
   '@react-hook/passive-layout-effect@1.2.1(react@19.0.0)':
     dependencies:
       react: 19.0.0
 
-  '@react-hook/resize-observer@1.2.6(@preact/compat@18.3.1(preact@10.26.3))':
+  '@react-hook/resize-observer@1.2.6(@preact/compat@18.3.1(preact@10.26.4))':
     dependencies:
       '@juggle/resize-observer': 3.4.0
-      '@react-hook/latest': 1.0.3(@preact/compat@18.3.1(preact@10.26.3))
-      '@react-hook/passive-layout-effect': 1.2.1(@preact/compat@18.3.1(preact@10.26.3))
-      react: '@preact/compat@18.3.1(preact@10.26.3)'
+      '@react-hook/latest': 1.0.3(@preact/compat@18.3.1(preact@10.26.4))
+      '@react-hook/passive-layout-effect': 1.2.1(@preact/compat@18.3.1(preact@10.26.4))
+      react: '@preact/compat@18.3.1(preact@10.26.4)'
 
   '@react-hook/resize-observer@1.2.6(react@19.0.0)':
     dependencies:
@@ -10921,12 +10921,12 @@ snapshots:
       lodash: 4.17.21
       redent: 3.0.0
 
-  '@testing-library/react@16.2.0(@preact/compat@18.3.1(preact@10.26.3))(@preact/compat@18.3.1(preact@10.26.3))(@testing-library/dom@10.4.0)(@types/react-dom@19.0.4(@types/react@19.0.10))(@types/react@19.0.10)':
+  '@testing-library/react@16.2.0(@preact/compat@18.3.1(preact@10.26.4))(@preact/compat@18.3.1(preact@10.26.4))(@testing-library/dom@10.4.0)(@types/react-dom@19.0.4(@types/react@19.0.10))(@types/react@19.0.10)':
     dependencies:
       '@babel/runtime': 7.26.7
       '@testing-library/dom': 10.4.0
-      react: '@preact/compat@18.3.1(preact@10.26.3)'
-      react-dom: '@preact/compat@18.3.1(preact@10.26.3)'
+      react: '@preact/compat@18.3.1(preact@10.26.4)'
+      react-dom: '@preact/compat@18.3.1(preact@10.26.4)'
     optionalDependencies:
       '@types/react': 19.0.10
       '@types/react-dom': 19.0.4(@types/react@19.0.10)
@@ -11976,11 +11976,11 @@ snapshots:
 
   core-util-is@1.0.3: {}
 
-  corners@0.2.0(@preact/compat@18.3.1(preact@10.26.3))(@preact/compat@18.3.1(preact@10.26.3)):
+  corners@0.2.0(@preact/compat@18.3.1(preact@10.26.4))(@preact/compat@18.3.1(preact@10.26.4)):
     dependencies:
-      '@react-hook/resize-observer': 1.2.6(@preact/compat@18.3.1(preact@10.26.3))
-      react: '@preact/compat@18.3.1(preact@10.26.3)'
-      react-dom: '@preact/compat@18.3.1(preact@10.26.3)'
+      '@react-hook/resize-observer': 1.2.6(@preact/compat@18.3.1(preact@10.26.4))
+      react: '@preact/compat@18.3.1(preact@10.26.4)'
+      react-dom: '@preact/compat@18.3.1(preact@10.26.4)'
 
   corners@0.2.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
@@ -12564,8 +12564,8 @@ snapshots:
       '@typescript-eslint/parser': 8.25.0(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2)
       eslint: 9.21.0(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.7.0(eslint-plugin-import-x@4.6.1(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.25.0(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint@9.21.0(jiti@2.4.2)))(eslint@9.21.0(jiti@2.4.2))
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.25.0(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import-x@4.6.1(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.25.0(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint@9.21.0(jiti@2.4.2)))(eslint@9.21.0(jiti@2.4.2)))(eslint@9.21.0(jiti@2.4.2))
+      eslint-import-resolver-typescript: 3.7.0(eslint-plugin-import-x@4.6.1(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint-plugin-import@2.31.0)(eslint@9.21.0(jiti@2.4.2))
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.25.0(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint-import-resolver-typescript@3.7.0)(eslint@9.21.0(jiti@2.4.2))
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.21.0(jiti@2.4.2))
       eslint-plugin-react: 7.37.4(eslint@9.21.0(jiti@2.4.2))
       eslint-plugin-react-hooks: 5.1.0(eslint@9.21.0(jiti@2.4.2))
@@ -12584,7 +12584,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.7.0(eslint-plugin-import-x@4.6.1(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.25.0(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint@9.21.0(jiti@2.4.2)))(eslint@9.21.0(jiti@2.4.2)):
+  eslint-import-resolver-typescript@3.7.0(eslint-plugin-import-x@4.6.1(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint-plugin-import@2.31.0)(eslint@9.21.0(jiti@2.4.2)):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.0(supports-color@5.5.0)
@@ -12596,19 +12596,19 @@ snapshots:
       is-glob: 4.0.3
       stable-hash: 0.0.4
     optionalDependencies:
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.25.0(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import-x@4.6.1(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.25.0(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint@9.21.0(jiti@2.4.2)))(eslint@9.21.0(jiti@2.4.2)))(eslint@9.21.0(jiti@2.4.2))
+      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.25.0(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint-import-resolver-typescript@3.7.0)(eslint@9.21.0(jiti@2.4.2))
       eslint-plugin-import-x: 4.6.1(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2)
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.25.0(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import-x@4.6.1(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.25.0(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint@9.21.0(jiti@2.4.2)))(eslint@9.21.0(jiti@2.4.2)))(eslint@9.21.0(jiti@2.4.2)):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.25.0(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0)(eslint@9.21.0(jiti@2.4.2)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 8.25.0(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2)
       eslint: 9.21.0(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
-      eslint-import-resolver-typescript: 3.7.0(eslint-plugin-import-x@4.6.1(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.25.0(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint@9.21.0(jiti@2.4.2)))(eslint@9.21.0(jiti@2.4.2))
+      eslint-import-resolver-typescript: 3.7.0(eslint-plugin-import-x@4.6.1(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint-plugin-import@2.31.0)(eslint@9.21.0(jiti@2.4.2))
     transitivePeerDependencies:
       - supports-color
 
@@ -12632,7 +12632,7 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.25.0(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import-x@4.6.1(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.25.0(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint@9.21.0(jiti@2.4.2)))(eslint@9.21.0(jiti@2.4.2)))(eslint@9.21.0(jiti@2.4.2)):
+  eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.25.0(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint-import-resolver-typescript@3.7.0)(eslint@9.21.0(jiti@2.4.2)):
     dependencies:
       '@rtsao/scc': 1.1.0
       array-includes: 3.1.8
@@ -12643,7 +12643,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 9.21.0(jiti@2.4.2)
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.25.0(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import-x@4.6.1(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.25.0(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint@9.21.0(jiti@2.4.2)))(eslint@9.21.0(jiti@2.4.2)))(eslint@9.21.0(jiti@2.4.2))
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.25.0(eslint@9.21.0(jiti@2.4.2))(typescript@5.8.2))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0)(eslint@9.21.0(jiti@2.4.2))
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -13010,15 +13010,15 @@ snapshots:
 
   fp-ts@2.16.9: {}
 
-  framer-motion@12.4.7(@emotion/is-prop-valid@1.3.1)(@preact/compat@18.3.1(preact@10.26.3))(@preact/compat@18.3.1(preact@10.26.3)):
+  framer-motion@12.4.7(@emotion/is-prop-valid@1.3.1)(@preact/compat@18.3.1(preact@10.26.4))(@preact/compat@18.3.1(preact@10.26.4)):
     dependencies:
       motion-dom: 12.4.5
       motion-utils: 12.0.0
       tslib: 2.8.1
     optionalDependencies:
       '@emotion/is-prop-valid': 1.3.1
-      react: '@preact/compat@18.3.1(preact@10.26.3)'
-      react-dom: '@preact/compat@18.3.1(preact@10.26.3)'
+      react: '@preact/compat@18.3.1(preact@10.26.4)'
+      react-dom: '@preact/compat@18.3.1(preact@10.26.4)'
 
   framer-motion@12.4.7(@emotion/is-prop-valid@1.3.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
@@ -14283,14 +14283,14 @@ snapshots:
 
   motion-utils@12.0.0: {}
 
-  motion@12.4.7(@emotion/is-prop-valid@1.3.1)(@preact/compat@18.3.1(preact@10.26.3))(@preact/compat@18.3.1(preact@10.26.3)):
+  motion@12.4.7(@emotion/is-prop-valid@1.3.1)(@preact/compat@18.3.1(preact@10.26.4))(@preact/compat@18.3.1(preact@10.26.4)):
     dependencies:
-      framer-motion: 12.4.7(@emotion/is-prop-valid@1.3.1)(@preact/compat@18.3.1(preact@10.26.3))(@preact/compat@18.3.1(preact@10.26.3))
+      framer-motion: 12.4.7(@emotion/is-prop-valid@1.3.1)(@preact/compat@18.3.1(preact@10.26.4))(@preact/compat@18.3.1(preact@10.26.4))
       tslib: 2.8.1
     optionalDependencies:
       '@emotion/is-prop-valid': 1.3.1
-      react: '@preact/compat@18.3.1(preact@10.26.3)'
-      react-dom: '@preact/compat@18.3.1(preact@10.26.3)'
+      react: '@preact/compat@18.3.1(preact@10.26.4)'
+      react-dom: '@preact/compat@18.3.1(preact@10.26.4)'
 
   motion@12.4.7(@emotion/is-prop-valid@1.3.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
@@ -14698,11 +14698,11 @@ snapshots:
 
   postgres@3.4.5: {}
 
-  preact-render-to-string@6.5.13(preact@10.26.3):
+  preact-render-to-string@6.5.13(preact@10.26.4):
     dependencies:
-      preact: 10.26.3
+      preact: 10.26.4
 
-  preact@10.26.3: {}
+  preact@10.26.4: {}
 
   prelude-ls@1.2.1: {}
 
@@ -14785,11 +14785,11 @@ snapshots:
 
   react-refresh@0.14.2: {}
 
-  react-router-dom@7.2.0(@preact/compat@18.3.1(preact@10.26.3))(@preact/compat@18.3.1(preact@10.26.3)):
+  react-router-dom@7.2.0(@preact/compat@18.3.1(preact@10.26.4))(@preact/compat@18.3.1(preact@10.26.4)):
     dependencies:
-      react: '@preact/compat@18.3.1(preact@10.26.3)'
-      react-dom: '@preact/compat@18.3.1(preact@10.26.3)'
-      react-router: 7.2.0(@preact/compat@18.3.1(preact@10.26.3))(@preact/compat@18.3.1(preact@10.26.3))
+      react: '@preact/compat@18.3.1(preact@10.26.4)'
+      react-dom: '@preact/compat@18.3.1(preact@10.26.4)'
+      react-router: 7.2.0(@preact/compat@18.3.1(preact@10.26.4))(@preact/compat@18.3.1(preact@10.26.4))
 
   react-router-dom@7.2.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
@@ -14797,15 +14797,15 @@ snapshots:
       react-dom: 19.0.0(react@19.0.0)
       react-router: 7.2.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
 
-  react-router@7.2.0(@preact/compat@18.3.1(preact@10.26.3))(@preact/compat@18.3.1(preact@10.26.3)):
+  react-router@7.2.0(@preact/compat@18.3.1(preact@10.26.4))(@preact/compat@18.3.1(preact@10.26.4)):
     dependencies:
       '@types/cookie': 0.6.0
       cookie: 1.0.2
-      react: '@preact/compat@18.3.1(preact@10.26.3)'
+      react: '@preact/compat@18.3.1(preact@10.26.4)'
       set-cookie-parser: 2.7.1
       turbo-stream: 2.4.0
     optionalDependencies:
-      react-dom: '@preact/compat@18.3.1(preact@10.26.3)'
+      react-dom: '@preact/compat@18.3.1(preact@10.26.4)'
 
   react-router@7.2.0(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
