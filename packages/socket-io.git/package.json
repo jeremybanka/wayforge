@@ -7,9 +7,9 @@
 	"exports": {
 		"./package.json": "./package.json",
 		"./socket-git-node": {
+			"types": "./dist/socket-git-node.d.ts",
 			"import": "./dist/socket-git-node.js",
-			"require": "./dist/socket-git-node.cjs",
-			"types": "./dist/socket-git-node.d.ts"
+			"require": "./dist/socket-git-node.cjs"
 		}
 	},
 	"scripts": {
@@ -43,7 +43,7 @@
 		"socket.io-client": "4.8.1",
 		"tmp": "0.2.3",
 		"tsup": "8.4.0",
-		"typescript": "5.7.3",
+		"typescript": "5.8.2",
 		"vite": "6.2.0",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.0.7"
