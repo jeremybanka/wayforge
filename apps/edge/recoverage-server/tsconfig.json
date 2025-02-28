@@ -8,9 +8,10 @@
 		"skipLibCheck": true,
 		"lib": ["ESNext"],
 		"types": [
-			"@cloudflare/workers-types/2023-07-01",
 			"vite/client",
-			"vitest/globals"
+			"vitest/globals",
+			"@cloudflare/workers-types/experimental",
+			"@cloudflare/vitest-pool-workers"
 		],
 		"jsx": "react-jsx",
 		"jsxImportSource": "hono/jsx"
