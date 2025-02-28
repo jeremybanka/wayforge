@@ -5,7 +5,8 @@
 		"dev": "vite",
 		"build": "vite build",
 		"preview": "wrangler pages dev",
-		"deploy": "pnpm run build && wrangler pages deploy"
+		"deploy": "pnpm run build && wrangler pages deploy",
+		"test": "vitest"
 	},
 	"dependencies": {
 		"drizzle-kit": "0.30.5",
@@ -13,10 +14,14 @@
 		"hono": "4.7.2"
 	},
 	"devDependencies": {
+		"@cloudflare/vitest-pool-workers": "0.7.4",
 		"@cloudflare/workers-types": "4.20250224.0",
 		"@hono/vite-build": "1.3.0",
 		"@hono/vite-dev-server": "0.18.2",
+		"cloudflare": "4.1.0",
+		"eslint": "9.21.0",
 		"vite": "6.2.0",
+		"vitest": "3.0.7",
 		"wrangler": "3.111.0"
 	}
 }
