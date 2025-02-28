@@ -44,6 +44,7 @@ export type FlightDeckOptions<S extends string = string> = {
 }
 
 export class FlightDeck<S extends string = string> {
+	public readonly options: FlightDeckOptions<S>
 	protected safety = 0
 
 	protected storage: FilesystemStorage<{
@@ -77,7 +78,8 @@ export class FlightDeck<S extends string = string> {
 
 	protected restartTimes: number[] = []
 
-	public constructor(public readonly options: FlightDeckOptions<S>) {
+	public constructor(options: FlightDeckOptions<S>) {
+		this.options = options
 		const { FLIGHTDECK_SECRET } = env
 		const { flightdeckRootDir = resolve(homedir(), `.flightdeck`) } = options
 		const port = options.port ?? 8080

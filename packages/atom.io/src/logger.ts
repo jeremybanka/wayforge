@@ -98,11 +98,19 @@ export const simpleLogger: Logger = {
 }
 
 export class AtomIOLogger implements Logger {
+	public logLevel: `error` | `info` | `warn` | null
+	private readonly filter: LogFilter | undefined
+	private readonly logger: Logger
+
 	public constructor(
-		public logLevel: `error` | `info` | `warn` | null,
-		private readonly filter?: LogFilter,
-		private readonly logger: Logger = simpleLogger,
-	) {}
+		logLevel: `error` | `info` | `warn` | null,
+		filter?: LogFilter,
+		logger: Logger = simpleLogger,
+	) {
+		this.logLevel = logLevel
+		this.filter = filter
+		this.logger = logger
+	}
 
 	public error: LogFn = (...args) => {
 		if ((this.filter?.(...args) ?? true) && this.logLevel !== null) {
