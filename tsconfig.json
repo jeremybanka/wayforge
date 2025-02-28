@@ -25,7 +25,8 @@
 		"exactOptionalPropertyTypes": true,
 		"useUnknownInCatchVariables": true,
 		"noUnusedParameters": true,
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"erasableSyntaxOnly": true
 	},
 	"include": [
 		"**/*.ts",

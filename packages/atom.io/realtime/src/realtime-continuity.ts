@@ -53,8 +53,11 @@ export class SyncGroup {
 	protected globals: AtomToken<any>[] = []
 	protected actions: TransactionToken<any>[] = []
 	protected perspectives: PerspectiveToken<any>[] = []
+	protected readonly key: string
 
-	protected constructor(protected readonly key: string) {}
+	protected constructor(key: string) {
+		this.key = key
+	}
 
 	public static existing: InvariantMap<string, ContinuityToken> =
 		new InvariantMap()

@@ -23,6 +23,7 @@ export type ListResourcesParam = {
  * @experimental
  */
 export class Auditor {
+	public readonly store: Internal.Store
 	public auditorCreatedAt: number = performance.now()
 	public statesCreatedAt: Map<string, number> = new Map()
 	public readonly atomIndex: ReadonlySelectorToken<AtomTokenIndex>
@@ -37,9 +38,8 @@ export class Auditor {
 	/**
 	 * @param {Store} store - The store to audit.
 	 */
-	public constructor(
-		public readonly store: Internal.Store = Internal.IMPLICIT.STORE,
-	) {
+	public constructor(store: Internal.Store = Internal.IMPLICIT.STORE) {
+		this.store = store
 		this.atomIndex = attachAtomIndex(this.store)
 		this.selectorIndex = attachSelectorIndex(this.store)
 		this.unsubscribeFromAtomCreation = this.store.on.atomCreation.subscribe(

@@ -200,14 +200,18 @@ export type Agent<State = null, Update = null> = {
 export class Grunt<State extends Agenda>
 	implements Agent<State, Partial<State>>
 {
+	public id: string
+	public testId: string | undefined
 	private completions: Squirreled<typeof aiComplete>
 	public constructor(
-		public id: string,
+		id: string,
 		role: string,
 		initialState?: State,
 		initialConversation?: Message[],
-		public testId?: string,
+		testId?: string,
 	) {
+		this.id = id
+		this.testId = testId
 		setState(findState(orientationAtoms, this.id), role)
 		if (initialConversation) {
 			const messageIds: string[] = []
