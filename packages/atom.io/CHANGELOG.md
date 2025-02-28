@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.32.2
+
+### Patch Changes
+
+- bf686e6: ✨ Support `erasableSyntaxOnly`. Opens a path to import source code directly in later versions..
+
 ## 0.32.1
 
 ### Patch Changes
