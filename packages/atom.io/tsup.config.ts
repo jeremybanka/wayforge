@@ -1,11 +1,19 @@
 import type { Options } from "tsup"
 import { defineConfig } from "tsup"
 
+import discoverSubmodules from "./__scripts__/discover-submodules"
+
+export const ALL_SUBMODULES = [
+	`atom.io`,
+	...discoverSubmodules().map((submodule) => `atom.io/${submodule}`),
+]
+
 export const BASE_OPTIONS: Options = {
 	esbuildOptions: (options) => {
 		options.chunkNames = `dist/[name]-[hash]`
 		options.assetNames = `dist/[name]-[hash]`
 	},
+	external: ALL_SUBMODULES,
 	format: [`esm`],
 	jsxFactory: `React.createElement`,
 	loader: { ".scss": `css` },
