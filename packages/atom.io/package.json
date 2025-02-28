@@ -34,7 +34,7 @@
 		"build:realtime-server": "cd realtime-server && tsup-node",
 		"build:realtime-testing": "cd realtime-testing && tsup-node",
 		"build:transceivers:set-rtx": "cd transceivers/set-rtx && tsup-node",
-		"build:web": "cd web && tsup",
+		"build:web": "cd web && tsup-node",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
 		"lint:types": "tsc --noEmit",
