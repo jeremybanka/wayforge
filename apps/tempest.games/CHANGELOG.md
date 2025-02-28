@@ -1,5 +1,12 @@
 # tempest.games
 
+## 0.1.34
+
+### Patch Changes
+
+- Updated dependencies [bf686e6]
+  - atom.io@0.32.2
+
 ## 0.1.33
 
 ### Patch Changes
