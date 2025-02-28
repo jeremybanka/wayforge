@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.32.1
+
+### Patch Changes
+
+- aca8fc3: 🚀 Make `atom.io`'s bundle size much smaller.
+
 ## 0.32.0
 
 ### Minor Changes
