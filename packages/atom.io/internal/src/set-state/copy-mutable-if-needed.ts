@@ -10,17 +10,18 @@ export function copyMutableIfNeeded<T extends Transceiver<any>>(
 	const originValue = origin.valueMap.get(atom.key)
 	const targetValue = target.valueMap.get(atom.key)
 
-	if (originValue === targetValue) {
-		if (originValue === undefined) {
-			return typeof atom.default === `function` ? atom.default() : atom.default
-		}
-
-		origin.logger.info(`📃`, `atom`, atom.key, `copying`)
-		const jsonValue = atom.toJson(originValue)
-		const copiedValue = atom.fromJson(jsonValue)
-		target.valueMap.set(atom.key, copiedValue)
-		new Tracker(atom, origin)
-		return copiedValue
+	if (originValue !== targetValue) {
+		return targetValue
 	}
-	return targetValue
+
+	if (originValue === undefined) {
+		return atom.default()
+	}
+
+	origin.logger.info(`📃`, `atom`, atom.key, `copying`)
+	const jsonValue = atom.toJson(originValue)
+	const copiedValue = atom.fromJson(jsonValue)
+	target.valueMap.set(atom.key, copiedValue)
+	new Tracker(atom, origin)
+	return copiedValue
 }

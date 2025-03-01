@@ -10,7 +10,7 @@ export const setAtomOrSelector = <T>(
 	switch (state.type) {
 		case `atom`:
 		case `mutable_atom`:
-			setAtom(state, value, store)
+			setAtom(store, state, value)
 			break
 		case `selector`:
 			state.set(value)

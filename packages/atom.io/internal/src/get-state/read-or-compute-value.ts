@@ -10,18 +10,28 @@ export const readOrComputeValue = <T>(
 		target.logger.info(`📖`, state.type, state.key, `reading cached value`)
 		return readCachedValue(state, target)
 	}
-	if (state.type === `selector` || state.type === `readonly_selector`) {
-		target.logger.info(`🧮`, state.type, state.key, `computing value`)
-		return state.get()
+	switch (state.type) {
+		case `selector`:
+		case `readonly_selector`:
+			target.logger.info(`🧮`, state.type, state.key, `computing value`)
+			return state.get()
+		case `atom`:
+		case `mutable_atom`: {
+			const def = state.default
+			let fallback: T
+			if (def instanceof Function) {
+				fallback = def()
+			} else {
+				fallback = def
+			}
+			target.logger.info(
+				`💁`,
+				`atom`,
+				state.key,
+				`could not find cached value; using default`,
+				fallback,
+			)
+			return fallback
+		}
 	}
-	const fallback =
-		state.default instanceof Function ? state.default() : state.default
-	target.logger.info(
-		`💁`,
-		`atom`,
-		state.key,
-		`could not find cached value; using default`,
-		fallback,
-	)
-	return state.default instanceof Function ? state.default() : state.default
 }

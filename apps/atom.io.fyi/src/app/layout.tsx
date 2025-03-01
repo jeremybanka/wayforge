@@ -6,11 +6,13 @@ import fs from "node:fs"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import type { Metadata } from "next"
+import dynamic from "next/dynamic"
 import Link from "next/link"
 import * as React from "react"
 
 import { ATOM_IO_ROOT } from "~/packages/atom.io/__scripts__/constants"
 
+import { AtomIODevtools } from "../components/DevTools"
 import scss from "./layout.module.scss"
 import { Theme } from "./Theme"
 
@@ -55,6 +57,7 @@ export default function RootLayout({
 					</span>
 					<span>♥️ jeremybanka</span>
 				</footer>
+				<AtomIODevtools />
 				<Analytics />
 				<SpeedInsights />
 			</body>

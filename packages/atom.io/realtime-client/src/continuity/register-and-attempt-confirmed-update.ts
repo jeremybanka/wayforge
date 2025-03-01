@@ -177,10 +177,13 @@ export const useRegisterAndAttemptConfirmedUpdate =
 				continuityKey,
 				`has no optimistic updates to deal with`,
 			)
-			const continuityEpoch = getEpochNumberOfContinuity(store, continuityKey)
 			const isRoot = isRootStore(store)
+			let continuityEpoch: number | undefined
+			if (isRoot) {
+				continuityEpoch = getEpochNumberOfContinuity(store, continuityKey)
+			}
 
-			if (isRoot && continuityEpoch === confirmed.epoch - 1) {
+			if (continuityEpoch === confirmed.epoch - 1) {
 				store.logger.info(
 					`✅`,
 					`continuity`,

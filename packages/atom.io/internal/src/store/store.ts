@@ -20,6 +20,7 @@ import type {
 	WritableSelector,
 	WritableSelectorFamily,
 } from ".."
+import { isReservedIntrospectionKey } from ".."
 import type { Join } from "../join"
 import { Junction } from "../junction"
 import type { Lineage } from "../lineage"
@@ -177,7 +178,7 @@ export class Store implements Lineage {
 	}
 
 	public loggers: AtomIOLogger[] = [
-		new AtomIOLogger(`warn`, (_, __, key) => !key.includes(`🔍`)),
+		new AtomIOLogger(`warn`, (_, __, key) => !isReservedIntrospectionKey(key)),
 	]
 	public logger: Logger = {
 		error: (...messages) => {

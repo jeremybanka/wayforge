@@ -156,6 +156,25 @@ describe(`allocate + claim + deallocate`, () => {
 					return Math.max(1, durability - dampening)
 				},
 		})
+		const doubleDurabilitySelectors = selectorFamily<number, ItemKey>({
+			key: `doubleDurability`,
+			get:
+				(key) =>
+				({ find, get }) => {
+					const durabilityAtom = find(durabilityAtoms, key)
+					const durability = get(durabilityAtom)
+					const doubled = durability * 2
+					return doubled
+				},
+			set:
+				(key) =>
+				({ find, get, set }) => {
+					const durabilityAtom = find(durabilityAtoms, key)
+					const durability = get(durabilityAtom)
+					const halved = durability / 2
+					set(durabilityAtom, halved)
+				},
+		})
 
 		expect(logger.error).toHaveBeenCalledTimes(0)
 		let myItemDurability = getState(durabilityAtoms, swordKey)
@@ -169,6 +188,9 @@ describe(`allocate + claim + deallocate`, () => {
 		const myDampenedDurability = getState(dampenedDurabilitySelectors, swordKey)
 		expect(myDampenedDurability).toBe(1)
 		expect(logger.error).toHaveBeenCalledTimes(10)
+		const myDoubledDurability = getState(doubleDurabilitySelectors, swordKey)
+		expect(myDoubledDurability).toBe(0)
+		expect(logger.error).toHaveBeenCalledTimes(14)
 	})
 })
 describe(`errors`, () => {
@@ -231,6 +253,26 @@ describe(`errors`, () => {
 		anarchy.claim(`myself`, `myPet`)
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
 		expect(logger.error).toHaveBeenCalledTimes(1)
+	})
+	test(`getting a disposed claim`, () => {
+		const countStates = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		const sqrtState = selectorFamily<number, string>({
+			key: `sqrt`,
+			get:
+				(key) =>
+				({ get }) =>
+					Math.sqrt(get(countStates, key)),
+		})
+		const anarchy = new Anarchy()
+		anarchy.allocate(`root`, `myself`)
+		anarchy.deallocate(`myself`)
+		getState(sqrtState, `myself`)
+		expect(logger.error).toHaveBeenCalledTimes(4)
+		getState(sqrtState, `myself`)
+		expect(logger.error).toHaveBeenCalledTimes(6)
 	})
 })
 describe(`integrations`, () => {
