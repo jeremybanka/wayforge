@@ -93,18 +93,6 @@ export function ingestMoleculeDisposalEvent(
 
 		case `oldValue`:
 			{
-				// let first = t rue
-				// for (const ownerString of update.provenance) {
-				// 	// const owner = parseJson(ownerString)
-				// 	// if (first) {
-				// 	// 	first = false
-				// 	// 	allocateIntoStore<any, any, any>(store, owner, update.key)
-				// 	// 	continue
-				// 	// }
-
-				// 	// claimWithinStore<any, any, any>(store, owner, update.key)
-
-				// }
 				const provenanceJson = update.provenance.map(parseJson)
 				allocateIntoStore<any, any, any>(store, provenanceJson, update.key)
 				for (const [familyKey, value] of update.values) {

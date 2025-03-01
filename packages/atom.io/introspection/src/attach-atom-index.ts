@@ -4,6 +4,7 @@ import {
 	createRegularAtom,
 	createStandaloneSelector,
 	deposit,
+	isReservedIntrospectionKey,
 } from "atom.io/internal"
 
 import type { WritableTokenIndex } from "."
@@ -20,21 +21,22 @@ export const attachAtomIndex = (
 			default: () => {
 				const base: AtomTokenIndex = new Map()
 				for (const [key, val] of store.atoms) {
-					if (!key.includes(`🔍`)) {
-						const token = deposit(val)
-						if (val.family) {
-							let familyNode = base.get(val.family.key)
-							if (!familyNode || !(`familyMembers` in familyNode)) {
-								familyNode = {
-									key: val.family.key,
-									familyMembers: new Map(),
-								}
-								base.set(val.family.key, familyNode)
+					if (isReservedIntrospectionKey(key)) {
+						continue
+					}
+					const token = deposit(val)
+					if (val.family) {
+						let familyNode = base.get(val.family.key)
+						if (!familyNode || !(`familyMembers` in familyNode)) {
+							familyNode = {
+								key: val.family.key,
+								familyMembers: new Map(),
 							}
-							familyNode.familyMembers.set(val.family.subKey, token)
-						} else {
-							base.set(key, token)
+							base.set(val.family.key, familyNode)
 						}
+						familyNode.familyMembers.set(val.family.subKey, token)
+					} else {
+						base.set(key, token)
 					}
 				}
 				return base
@@ -42,7 +44,7 @@ export const attachAtomIndex = (
 			effects: [
 				({ setSelf }) => {
 					store.on.atomCreation.subscribe(`introspection`, (atomToken) => {
-						if (atomToken.key.includes(`🔍`)) {
+						if (isReservedIntrospectionKey(atomToken.key)) {
 							return
 						}
 

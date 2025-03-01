@@ -38,7 +38,15 @@ const AtomIODevtoolsInternal = (): React.ReactNode => {
 	const mouseHasMoved = useRef(false)
 
 	return (
-		<>
+		<span
+			style={{
+				position: `fixed`,
+				top: 0,
+				left: 0,
+				right: 0,
+				bottom: 0,
+			}}
+		>
 			<motion.span
 				ref={constraintsRef}
 				data-css="atom_io_devtools_zone"
@@ -118,6 +126,6 @@ const AtomIODevtoolsInternal = (): React.ReactNode => {
 					</button>
 				</footer>
 			</motion.main>
-		</>
+		</span>
 	)
 }

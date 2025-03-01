@@ -40,6 +40,7 @@ export * from "./mutable"
 export * from "./not-found-error"
 export * from "./operation"
 export * from "./pretty-print"
+export * from "./reserved-keys"
 export * from "./selector"
 export * from "./set-state"
 export * from "./store"
@@ -67,7 +68,7 @@ export type MutableAtom<
 > = AtomIOState &
 	JsonInterface<T, J> & {
 		type: `mutable_atom`
-		default: T | (() => T)
+		default: () => T
 		cleanup?: () => void
 	}
 export type Atom<T> =
