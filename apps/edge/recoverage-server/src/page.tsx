@@ -1,0 +1,78 @@
+import { css, Style } from "hono/css"
+import type { PropsWithChildren } from "hono/jsx"
+
+import { GITHUB_CALLBACK_ENDPOINT } from "./app"
+import * as Script from "./scripts.gen"
+
+export function Page(props: PropsWithChildren): JSX.Element {
+	return (
+		<html lang="en">
+			<head>
+				<meta charset="UTF-8" />
+				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+				<link rel="preload" href="/noise.svg" as="image" type="image/svg+xml" />
+				<script
+					// biome-ignore lint/security/noDangerouslySetInnerHtml: This is a trusted script
+					dangerouslySetInnerHTML={{ __html: JSON.parse(Script.htmxMinJS) }}
+				/>
+				<title>Recoverage</title>
+				<Style />
+			</head>
+			<body
+				className={css`
+					background-color: #fcfcfc;
+					display: flex;
+					margin: 0;
+					padding: 10px;
+					box-sizing: border-box;
+					flex-direction: column;
+					min-height: 100svh;
+					font-family: sans-serif;
+					justify-items: center;
+        `}
+			>
+				<main
+					className={css`
+						border: 1px solid black;
+						padding: 40 20px 20px;
+						flex-grow: 0;
+						display: flex;
+						position: relative;
+						flex-direction: column;
+						max-width: 630px;
+						width: 100%;
+						margin: auto;
+						min-height: 500px;
+						box-shadow: 0 4px 0 -2px #0003;
+      		`}
+				>
+					{props.children}
+				</main>
+			</body>
+		</html>
+	)
+}
+
+export type SplashPageProps = {
+	githubClientId: string
+	currentUrl: URL
+}
+export function SplashPage({
+	githubClientId,
+	currentUrl,
+}: SplashPageProps): JSX.Element {
+	const { host } = currentUrl
+	const callbackUrl = new URL(GITHUB_CALLBACK_ENDPOINT, host)
+	return (
+		<Page>
+			<h1>Recoverage</h1>
+			<p>A micro-platform for storing your coverage reports.</p>
+			<div className={css`flex-grow: 1;`} />
+			<a
+				href={`https://github.com/login/oauth/authorize?client_id=${githubClientId}&redirect_uri=${callbackUrl}&scope=user`}
+			>
+				Login with GitHub
+			</a>
+		</Page>
+	)
+}

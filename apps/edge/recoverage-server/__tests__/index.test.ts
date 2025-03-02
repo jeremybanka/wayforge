@@ -1,6 +1,6 @@
 import { env } from "cloudflare:test"
 
-import app from "../src"
+import app from "../src/app"
 
 console.log(env)
 

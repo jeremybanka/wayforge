@@ -1,0 +1,8 @@
+{
+	"name": "Recoverage",
+	"short_name": "Recoverage",
+	"description": "A microplatform for storing your coverage reports.",
+	"start_url": "/",
+	"display": "minimal-ui",
+	"background_color": "#ccc"
+}
