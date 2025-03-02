@@ -5,9 +5,9 @@ import app from "../src"
 console.log(env)
 
 describe(`Example`, () => {
-	it(`Should return 200 response`, async () => {
+	it(`Should return 401 response`, async () => {
 		const res = await app.request(
-			`/api/report`,
+			`/api/report/12345`,
 			{
 				method: `GET`,
 				headers: {
@@ -17,12 +17,12 @@ describe(`Example`, () => {
 			env,
 		)
 
-		console.log(res)
-		console.log(await res.json())
-		expect(res.status).toBe(200)
-		expect(await res.json()).toEqual({
-			hello: `world`,
-			var: `my variable`,
+		const { status } = res
+		const json = await res.json()
+		console.log({ status, json })
+		expect(status).toBe(401)
+		expect(await json).toEqual({
+			error: `Token not found`,
 		})
 	})
 })

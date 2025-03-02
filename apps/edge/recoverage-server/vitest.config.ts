@@ -15,6 +15,7 @@ export default defineWorkersProject(async () => {
 			globals: true,
 			poolOptions: {
 				workers: {
+					main: `./src/index.tsx`,
 					wrangler: { configPath: `./wrangler.jsonc` },
 					miniflare: {
 						// Add a test-only binding for migrations, so we can apply them in a
