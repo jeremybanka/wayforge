@@ -3,21 +3,16 @@ import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core"
 
 export const users = sqliteTable(`users`, {
 	id: integer().primaryKey(),
-	githubId: integer().unique(),
-	createdAt: integer({ mode: `timestamp` })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
+	createdAt: text().notNull().default(sql`(current_timestamp)`),
 })
 
 export const tokens = sqliteTable(`tokens`, {
 	selector: text().primaryKey(),
-	userId: integer()
-		.references(() => users.id)
+	projectId: integer()
+		.references(() => projects.id)
 		.notNull(),
 	verifierHash: text().notNull(), // Hashed portion of the token for security
-	createdAt: integer({ mode: `timestamp` })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
+	createdAt: text().notNull().default(sql`(current_timestamp)`),
 })
 
 export const projects = sqliteTable(`projects`, {
@@ -26,6 +21,7 @@ export const projects = sqliteTable(`projects`, {
 		.references(() => users.id)
 		.notNull(),
 	name: text().notNull(),
+	createdAt: text().notNull().default(sql`(current_timestamp)`),
 })
 
 export const reports = sqliteTable(`reports`, {
@@ -34,7 +30,5 @@ export const reports = sqliteTable(`reports`, {
 		.references(() => projects.id)
 		.notNull(),
 	data: text().notNull(),
-	createdAt: integer({ mode: `timestamp` })
-		.default(sql`CURRENT_TIMESTAMP`)
-		.notNull(),
+	createdAt: text().notNull().default(sql`(current_timestamp)`),
 })

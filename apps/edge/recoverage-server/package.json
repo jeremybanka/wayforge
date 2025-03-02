@@ -7,11 +7,14 @@
 		"preview": "wrangler pages dev",
 		"deploy": "pnpm run build && wrangler pages deploy",
 		"test": "vitest",
-		"db:gen": "drizzle-kit generate"
+		"db:gen": "drizzle-kit generate",
+		"db:up": "na wrangler d1 migrations apply recoverage-beta"
 	},
 	"dependencies": {
 		"drizzle-orm": "0.40.0",
-		"hono": "4.7.2"
+		"hono": "4.7.2",
+		"nanoid": "5.1.2",
+		"octokit": "4.1.2"
 	},
 	"devDependencies": {
 		"@cloudflare/vitest-pool-workers": "0.7.4",

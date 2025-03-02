@@ -22,9 +22,9 @@
 	"d1_databases": [
 		{
 			"binding": "DB",
-			"database_name": "recoverage",
-			"database_id": "",
-			"migrations_dir": "migrations"
+			"database_name": "recoverage-beta",
+			"database_id": "403dfcc6-ba62-42f6-b897-ed78085ca619",
+			"migrations_dir": "drizzle"
 		}
 	]
 	// "ai": {
