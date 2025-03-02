@@ -13,6 +13,7 @@ import { Hono } from "hono"
 import { getCookie, setCookie } from "hono/cookie"
 import { css, Style } from "hono/css"
 
+import { Html } from "./html"
 import { renderer } from "./renderer"
 import * as Schema from "./schema"
 
@@ -85,25 +86,10 @@ app.get(`/`, (c) => {
 	}
 
 	return c.html(
-		<html lang="en">
-			<head>
-				<Style />
-			</head>
-			<body
+		<Html>
+			<main
 				className={css`
-					display: flex;
-					margin: 0;
-					padding: 10px;
-					box-sizing: border-box;
-					flex-direction: column;
-					min-height: 100svh;
-					font-family: sans-serif;
-					justify-items: center;
-				`}
-			>
-				<main
-					className={css`
-					border: 1px solid black;
+						border: 1px solid black;
 						padding: 20px;
 						flex-grow: 0;
 						display: flex;
@@ -113,18 +99,17 @@ app.get(`/`, (c) => {
 						margin: auto;
 						min-height: 500px;
 					`}
+			>
+				<h1>Recoverage</h1>
+				<p>A microplatform for storing your coverage reports.</p>
+				<div className={css`flex-grow: 1;`} />
+				<a
+					href={`https://github.com/login/oauth/authorize?client_id=${c.env.GITHUB_CLIENT_ID}&redirect_uri=http://${url.host}/oauth/github/callback&scope=user`}
 				>
-					<h1>Recoverage</h1>
-					<p>A microplatform for storing your coverage reports.</p>
-					<div className={css`flex-grow: 1;`} />
-					<a
-						href={`https://github.com/login/oauth/authorize?client_id=${c.env.GITHUB_CLIENT_ID}&redirect_uri=http://${url.host}/oauth/github/callback&scope=user`}
-					>
-						Login with GitHub
-					</a>
-				</main>
-			</body>
-		</html>,
+					Login with GitHub
+				</a>
+			</main>
+		</Html>,
 	)
 })
 

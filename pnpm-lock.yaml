@@ -194,6 +194,9 @@ importers:
       arktype:
         specifier: 2.1.2
         version: 2.1.2
+      bun-types:
+        specifier: 1.2.4
+        version: 1.2.4
       cloudflare:
         specifier: 4.1.0
         version: 4.1.0
@@ -203,6 +206,9 @@ importers:
       eslint:
         specifier: 9.21.0
         version: 9.21.0(jiti@2.4.2)
+      htmx.org:
+        specifier: 2.0.4
+        version: 2.0.4
       vite:
         specifier: 6.2.0
         version: 6.2.0(@types/node@22.13.9)(jiti@2.4.2)(lightningcss@1.29.1)(sass-embedded@1.85.1)(sass@1.85.1)(terser@5.37.0)(tsx@4.19.3)
