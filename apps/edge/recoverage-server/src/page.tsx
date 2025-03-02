@@ -1,7 +1,7 @@
 import { css, Style } from "hono/css"
 import type { PropsWithChildren } from "hono/jsx"
 
-import { GITHUB_CALLBACK_ENDPOINT } from "./app"
+import { GITHUB_CALLBACK_ENDPOINT } from "."
 import * as Script from "./scripts.gen"
 
 export function Page(props: PropsWithChildren): JSX.Element {
@@ -10,7 +10,7 @@ export function Page(props: PropsWithChildren): JSX.Element {
 			<head>
 				<meta charset="UTF-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-				<link rel="preload" href="/noise.svg" as="image" type="image/svg+xml" />
+				{/* <link rel="preload" href="/noise.svg" as="image" type="image/svg+xml" /> */}
 				<script
 					// biome-ignore lint/security/noDangerouslySetInnerHtml: This is a trusted script
 					dangerouslySetInnerHTML={{ __html: JSON.parse(Script.htmxMinJS) }}
@@ -61,8 +61,9 @@ export function SplashPage({
 	githubClientId,
 	currentUrl,
 }: SplashPageProps): JSX.Element {
-	const { host } = currentUrl
-	const callbackUrl = new URL(GITHUB_CALLBACK_ENDPOINT, host)
+	const { origin } = currentUrl
+	console.log(currentUrl)
+	const callbackUrl = new URL(GITHUB_CALLBACK_ENDPOINT, origin)
 	return (
 		<Page>
 			<h1>Recoverage</h1>
