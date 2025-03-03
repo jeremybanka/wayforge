@@ -66,8 +66,8 @@ uiRoutes.get(`/project`, uiAuth, async (c) => {
 			tokens: true,
 		},
 	})
-	console.log(`User`, user)
-	console.log(`Projects`, projects)
+	// console.log(`User`, user)
+	// console.log(`Projects`, projects)
 
 	return c.html(
 		<>

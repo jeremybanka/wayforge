@@ -130,13 +130,6 @@ app.get(GITHUB_CALLBACK_ENDPOINT, async (c) => {
 		},
 	)
 
-	const signedCookie = await getSignedCookie(
-		c,
-		c.env.COOKIE_SECRET,
-		`github-access-token`,
-	)
-	console.log({ signedCookie })
-
 	return c.redirect(`/`)
 })
 

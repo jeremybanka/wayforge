@@ -65,7 +65,6 @@ export function SplashPage({
 	currentUrl,
 }: SplashPageProps): JSX.Element {
 	const { origin } = currentUrl
-	console.log(currentUrl)
 	const callbackUrl = new URL(GITHUB_CALLBACK_ENDPOINT, origin)
 	return (
 		<Page>
