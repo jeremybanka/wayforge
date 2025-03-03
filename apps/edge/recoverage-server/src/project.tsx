@@ -1,5 +1,6 @@
 import { css } from "hono/css"
 
+import * as button from "./button"
 import * as form from "./form"
 import * as h4 from "./h4"
 
@@ -17,19 +18,9 @@ export function Project(props: DivProjectProps): JSX.Element {
 	switch (props.mode) {
 		case `button`: {
 			return (
-				<form hx-post="/ui/project" hx-swap="beforebegin">
-					<button
-						class={css`
-							background: #fff;
-							box-shadow: 0 3px 0 -2px #0003;
-							border: 1px solid black;
-							padding: 10px;
-						`}
-						type="submit"
-					>
-						+ New project
-					</button>
-				</form>
+				<button.create hx-post="/ui/project" hx-swap="beforebegin">
+					+ New project
+				</button.create>
 			)
 		}
 		case `creator`: {
@@ -68,23 +59,13 @@ export function Project(props: DivProjectProps): JSX.Element {
 						>
 							{name}
 						</h3>
-						<button
-							type="button"
+						<button.x
 							hx-delete={`/ui/project/${id}`}
 							hx-target={`#project-${id}`}
 							hx-swap="outerHTML"
 							hx-confirm={`Delete project "${name}"?`}
-							class={css`
-								background: #fff;
-								box-shadow: 0 3px 0 -2px #0003;
-								border: 1px solid black;
-								padding: 10px;
-								margin-left: auto;
-						`}
 							disabled={mode === `deleted`}
-						>
-							x
-						</button>
+						/>
 					</header>
 					<section
 						class={css`
@@ -137,7 +118,11 @@ export function Project(props: DivProjectProps): JSX.Element {
 						{tokens.map((token) => (
 							<ProjectToken key={token.id} {...token} />
 						))}
-						<ProjectToken mode="button" projectId={id} />
+						<ProjectToken
+							mode="button"
+							projectId={id}
+							disabled={mode === `deleted`}
+						/>
 						{/* <ProjectToken mode="creator" projectId={id} />
 						<ProjectToken
 							mode="existing"
@@ -169,12 +154,13 @@ export type DivProjectTokenProps =
 	  }
 	| {
 			mode: `button` | `creator`
+			disabled?: boolean
 			projectId: string
 	  }
 export function ProjectToken(props: DivProjectTokenProps): JSX.Element {
 	switch (props.mode) {
 		case `button`: {
-			const { projectId } = props
+			const { projectId, disabled } = props
 			return (
 				<form
 					class={css`
@@ -183,17 +169,13 @@ export function ProjectToken(props: DivProjectTokenProps): JSX.Element {
 					hx-post={`/ui/token/${projectId}`}
 					hx-swap="beforebegin"
 				>
-					<button
-						class={css`
-							background: #fff;
-							box-shadow: 0 3px 0 -2px #0003;
-							border: 1px solid black;
-							padding: 10px;
-						`}
-						type="submit"
+					<button.create
+						hx-post={`/ui/token/${projectId}`}
+						hx-swap="beforebegin"
+						disabled={disabled}
 					>
 						+ New token
-					</button>
+					</button.create>
 				</form>
 			)
 		}
@@ -235,22 +217,13 @@ export function ProjectToken(props: DivProjectTokenProps): JSX.Element {
 							<span class={css`font-size: 14px;`}>(deleted)</span>
 						) : null}
 						<span class={css`flex-grow: 1;`} />
-						<button
-							type="button"
+						<button.x
 							hx-delete={`/ui/token/${id}`}
 							hx-target={`#project-${id}`}
 							hx-swap="outerHTML"
 							hx-confirm={`Delete token "${name}"?`}
-							class={css`
-								background-color: ${mode === `deleted` ? `transparent` : `#fff`};
-								box-shadow: 0 3px 0 -2px #0003;
-								border: 1px solid black;
-								padding: 10px;
-							`}
 							disabled={mode === `deleted`}
-						>
-							x
-						</button>
+						/>
 					</header>
 					{secretShownOnce && (
 						<>
@@ -271,20 +244,7 @@ export function ProjectToken(props: DivProjectTokenProps): JSX.Element {
 										{id}:{secretShownOnce}
 									</code>
 								</span>
-								<button
-									type="button"
-									hx-on:click={`navigator.clipboard.writeText('${secretShownOnce}')
-									.then(() => alert('Copied!'))
-									.catch(err => alert('Copy failed: ' + err))`}
-									class={css`
-										background: #fff;
-										box-shadow: 0 3px 0 -2px #0003;
-										border: 1px solid black;
-										padding: 10px;
-									`}
-								>
-									copy
-								</button>
+								<button.copy text={secretShownOnce} />
 							</div>
 							<div class={css`font-size: 12px;`}>
 								^ copy this code and put it somewhere safe. it will not be shown
