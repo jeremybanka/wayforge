@@ -10,12 +10,12 @@ export function diagonals({ children }: PropsWithChildren): JSX.Element {
         margin-bottom: 5px;
         &::before {
           background: url(/assets/diagonal.svg) repeat;
-          background-size: 4px 20px; /* Image size slightly larger for overlap */
-          background-position: -4px -8px; /* Offset to create overlap */
+          background-size: 4px 40px; /* Image size slightly larger for overlap */
+          background-position: 0px -8px; /* Offset to create overlap */
           content: "";
           display: block;
           width: 100%;
-          height: 10px;
+          height: 30px;
           margin-right: 5px;
           color: black;
         }

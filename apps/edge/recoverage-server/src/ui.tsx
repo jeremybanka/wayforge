@@ -75,7 +75,7 @@ uiRoutes.get(`/project`, uiAuth, async (c) => {
 				<Project mode="existing" key={project.id} {...project} />
 			))}
 			<Project mode="button" />
-			<Project mode="creator" />
+			{/* <Project mode="creator" />
 			<Project
 				mode="existing"
 				id="123"
@@ -89,7 +89,7 @@ uiRoutes.get(`/project`, uiAuth, async (c) => {
 					},
 				]}
 			/>
-			<Project mode="deleted" id="123" name="my old project" tokens={[]} />
+			<Project mode="deleted" id="123" name="my old project" tokens={[]} /> */}
 		</>,
 	)
 })

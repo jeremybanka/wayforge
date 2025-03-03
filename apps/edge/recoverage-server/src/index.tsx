@@ -80,7 +80,9 @@ app.get(`/`, async (c) => {
 				`}
 			/>
 			<h1>Recoverage</h1>
-			Logged in as {data.login}
+			<p>
+				Logged in as {data.login} ({data.id})
+			</p>
 			<h2>Your Projects</h2>
 			<div
 				hx-get="/ui/project"

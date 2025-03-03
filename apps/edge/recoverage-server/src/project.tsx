@@ -3,6 +3,7 @@ import { css } from "hono/css"
 import * as button from "./button"
 import * as form from "./form"
 import * as h4 from "./h4"
+import * as header from "./header"
 
 export type DivProjectProps =
 	| {
@@ -24,7 +25,9 @@ export function Project(props: DivProjectProps): JSX.Element {
 			)
 		}
 		case `creator`: {
-			return <form.namer hx-post="/ui/project" hx-swap="outerHTML" />
+			return (
+				<form.namer hx-post="/ui/project" hx-swap="outerHTML" header="project" />
+			)
 		}
 		case `existing`:
 		case `deleted`: {
@@ -51,14 +54,18 @@ export function Project(props: DivProjectProps): JSX.Element {
 							gap: 10px;
 						`}
 					>
-						<h3
-							class={css`
+						<span>
+							<header.mini>project</header.mini>
+							<h3
+								class={css`
 								margin: 0;
-								margin-top: 16px;
+								margin-top: 5px;
 							`}
-						>
-							{name}
-						</h3>
+							>
+								{name}
+							</h3>
+						</span>
+
 						<button.x
 							hx-delete={`/ui/project/${id}`}
 							hx-target={`#project-${id}`}
@@ -162,27 +169,23 @@ export function ProjectToken(props: DivProjectTokenProps): JSX.Element {
 		case `button`: {
 			const { projectId, disabled } = props
 			return (
-				<form
-					class={css`
-					margin-block-end: 0;
-			`}
+				<button.create
 					hx-post={`/ui/token/${projectId}`}
 					hx-swap="beforebegin"
+					disabled={disabled}
 				>
-					<button.create
-						hx-post={`/ui/token/${projectId}`}
-						hx-swap="beforebegin"
-						disabled={disabled}
-					>
-						+ New token
-					</button.create>
-				</form>
+					+ New token
+				</button.create>
 			)
 		}
 		case `creator`: {
 			const { projectId } = props
 			return (
-				<form.namer hx-post={`/ui/token/${projectId}`} hx-swap="outerHTML" />
+				<form.namer
+					hx-post={`/ui/token/${projectId}`}
+					hx-swap="outerHTML"
+					header="token"
+				/>
 			)
 		}
 		case undefined:
@@ -200,7 +203,7 @@ export function ProjectToken(props: DivProjectTokenProps): JSX.Element {
 						border: 1px solid black;
 						padding: 10px;
 						background: ${mode === `deleted` ? `#eee` : `#fff`};
-						box-shadow: 0 4px 0 -2px #0003;
+						box-shadow: ${mode === `deleted` ? `inset` : ``} 0 4px 0 -2px #0003;
 					`}
 				>
 					<header
@@ -212,10 +215,18 @@ export function ProjectToken(props: DivProjectTokenProps): JSX.Element {
 							gap: 10px;
 						`}
 					>
-						<h5 class={css`margin: 0;`}>{name}</h5>
-						{mode === `deleted` ? (
-							<span class={css`font-size: 14px;`}>(deleted)</span>
-						) : null}
+						<span>
+							<header.mini>token</header.mini>
+							<h5 class={css`margin: 0; margin-top: 5px;`}>
+								{name}
+								{` `}
+								{mode === `deleted` ? (
+									<span class={css`font-size: 14px; font-weight: 400;`}>
+										(deleted)
+									</span>
+								) : null}
+							</h5>
+						</span>
 						<span class={css`flex-grow: 1;`} />
 						<button.x
 							hx-delete={`/ui/token/${id}`}

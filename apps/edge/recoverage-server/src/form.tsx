@@ -1,7 +1,11 @@
 import { css } from "hono/css"
 
+import * as button from "./button"
+import * as header from "./header"
+
 /* eslint-disable quotes */
 export type NamerProps = {
+	header: string
 	"hx-post": string
 	"hx-swap": string
 	"hx-target"?: string
@@ -13,37 +17,39 @@ export function namer(props: NamerProps): JSX.Element {
 		<form
 			{...props}
 			class={css`
+        background-color: #fff;
         border: 1px solid black;
         padding: 10px;
         display: flex;
-        flex-flow: row;
-        gap: 10px;
+        flex-flow: column;
+        gap: 5px;
+        margin-block-end: 0;
+        border-radius: 10px 0 10px 0;
       `}
 		>
-			<input
-				type="text"
-				name="name"
-				placeholder="name"
+			<header.mini>{props.header}</header.mini>
+			<main
 				class={css`
-          flex-grow: 1;
+          display: flex;
+          flex-flow: row;
+          gap: 5px;
+        `}
+			>
+				<input
+					type="text"
+					name="name"
+					placeholder="name"
+					class={css`
+          width: 100%;
           font-size: 16px;
           border: 1px solid black;
           padding: 10px;
           box-shadow: inset 0 1px 0 1px #0002;
           background-color: #f6f6f6;
         `}
-			/>
-			<button
-				type="submit"
-				class={css`
-          background-color: #fff;
-          box-shadow: 0 3px 0 -2px #0003;
-          border: 1px solid black;
-          padding: 10px;
-        `}
-			>
-				Submit
-			</button>
+				/>
+				<button.submit />
+			</main>
 		</form>
 	)
 }

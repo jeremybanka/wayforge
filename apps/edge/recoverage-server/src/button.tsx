@@ -25,6 +25,11 @@ export function create(props: CreateProps): JSX.Element {
         padding: 10px;
         justify-self: left;
         align-self: flex-start;
+        border-radius: 0px 0 5px 0;
+        &:active {
+          background-color: #eee;
+          box-shadow: inset 0 1px 0 1px #0002;
+        }
       `}
 		>
 			{props.children}
@@ -58,6 +63,11 @@ export function x(props: XProps): JSX.Element {
         padding: 10px;
         justify-self: left;
         align-self: flex-start;
+        border-radius: 0 0 0 5px;
+        &:active {
+          background-color: #eee;
+          box-shadow: inset 0 1px 0 1px #0002;
+        }
       `}
 		>
 			x
@@ -85,9 +95,38 @@ export function copy({ disabled, text }: CopyProps): JSX.Element {
         padding: 10px;
         justify-self: left;
         align-self: flex-start;
+        border-radius: 5px 0 5px 0;
+        &:active {
+          background-color: #eee;
+          box-shadow: inset 0 1px 0 1px #0002;
+        }
       `}
 		>
 			copy
+		</button>
+	)
+}
+
+export type SubmitProps = {
+	children?: string
+}
+export function submit(props: SubmitProps): JSX.Element {
+	return (
+		<button
+			type="submit"
+			class={css`
+        background-color: #fff;
+        box-shadow: 0 3px 0 -2px #0003;
+        border: 1px solid black;
+        padding: 10px;
+        border-radius: 0 0 5px 0;
+        &:active {
+          background-color: #eee;
+          box-shadow: inset 0 1px 0 1px #0002;
+        }
+      `}
+		>
+			{props.children ?? `Submit`}
 		</button>
 	)
 }
