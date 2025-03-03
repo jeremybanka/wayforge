@@ -7,6 +7,7 @@ type Bindings = {
 	DB: D1Database
 	GITHUB_CLIENT_ID: string
 	GITHUB_CLIENT_SECRET: string
+	COOKIE_SECRET: string
 }
 type Variables = {
 	drizzle: DrizzleD1Database<typeof Schema>

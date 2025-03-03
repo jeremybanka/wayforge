@@ -1,4 +1,4 @@
-import { name, relations, sql } from "drizzle-orm"
+import { relations, sql } from "drizzle-orm"
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core"
 
 export const users = sqliteTable(`users`, {
@@ -9,7 +9,7 @@ export const users = sqliteTable(`users`, {
 export const projects = sqliteTable(`projects`, {
 	id: text().primaryKey(),
 	userId: integer()
-		.references(() => users.id)
+		.references(() => users.id, { onDelete: `cascade` })
 		.notNull(),
 	name: text().notNull(),
 	createdAt: text().notNull().default(sql`(current_timestamp)`),
@@ -24,8 +24,8 @@ export const tokens = sqliteTable(`tokens`, {
 	name: text().notNull(),
 	hash: text().notNull(),
 	salt: text().notNull(),
-	projectId: integer()
-		.references(() => projects.id)
+	projectId: text()
+		.references(() => projects.id, { onDelete: `cascade` })
 		.notNull(),
 	createdAt: text().notNull().default(sql`(current_timestamp)`),
 })
@@ -40,7 +40,7 @@ export const tokensRelations = relations(tokens, ({ one }) => ({
 export const reports = sqliteTable(`reports`, {
 	id: text().primaryKey(),
 	projectId: text()
-		.references(() => projects.id)
+		.references(() => projects.id, { onDelete: `cascade` })
 		.notNull(),
 	data: text().notNull(),
 	createdAt: text().notNull().default(sql`(current_timestamp)`),

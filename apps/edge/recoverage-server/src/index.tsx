@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm"
 import { drizzle } from "drizzle-orm/d1"
 import { Hono } from "hono"
-import { deleteCookie, getCookie, setCookie } from "hono/cookie"
+import { deleteCookie, getSignedCookie, setSignedCookie } from "hono/cookie"
 import { css } from "hono/css"
 import { Octokit } from "octokit"
 
@@ -9,7 +9,6 @@ import { assetsRoutes } from "./assets"
 import { cachedFetch } from "./cached-fetch"
 import { type Env, GITHUB_CALLBACK_ENDPOINT } from "./env"
 import { Page, SplashPage } from "./page"
-import { Project } from "./project"
 import { reporterRoutes } from "./reporter"
 import * as schema from "./schema"
 import { uiRoutes } from "./ui"
@@ -18,7 +17,6 @@ const app = new Hono<Env>()
 
 app.use(`*`, async (c, next) => {
 	console.log(c.req.method, c.req.path)
-	c.set(`drizzle`, drizzle(c.env.DB, { schema }))
 	await next()
 })
 
@@ -28,7 +26,11 @@ app.route(`ui`, uiRoutes)
 
 app.get(`/`, async (c) => {
 	const url = new URL(c.req.url)
-	const githubAccessTokenCookie = getCookie(c, `github-access-token`)
+	const githubAccessTokenCookie = await getSignedCookie(
+		c,
+		c.env.COOKIE_SECRET,
+		`github-access-token`,
+	)
 	if (!githubAccessTokenCookie) {
 		return c.html(
 			<SplashPage currentUrl={url} githubClientId={c.env.GITHUB_CLIENT_ID} />,
@@ -52,7 +54,16 @@ app.get(`/`, async (c) => {
 		)
 	}
 
-	const db = c.get(`drizzle`)
+	const db = drizzle(c.env.DB, {
+		schema,
+		logger: {
+			logQuery(query, params) {
+				console.info(`📝 query`, query, params)
+			},
+		},
+	})
+
+	c.set(`drizzle`, db)
 	let user = await db
 		.select()
 		.from(schema.users)
@@ -61,18 +72,6 @@ app.get(`/`, async (c) => {
 	if (!user) {
 		user = (await db.insert(schema.users).values({ id: data.id }).returning())[0]
 	}
-
-	console.log(db)
-
-	const projects = await db.query.projects.findMany({
-		where: eq(schema.projects.userId, user.id),
-		with: {
-			tokens: true,
-		},
-	})
-
-	console.log(`User`, user)
-	console.log(`Projects`, projects)
 
 	return c.html(
 		<Page>
@@ -89,30 +88,15 @@ app.get(`/`, async (c) => {
 			<h1>Recoverage</h1>
 			Logged in as {data.login}
 			<h2>Your Projects</h2>
-			<section
+			<div
+				hx-get="/ui/project"
+				hx-trigger="load"
 				class={css`
 					display: flex;
 					flex-flow: column;
 					gap: 10px;
 				`}
-			>
-				{projects.map((project) => (
-					<Project key={project.id} {...project} />
-				))}
-				<form hx-post="/ui/project" hx-swap="beforebegin">
-					<button
-						class={css`
-							background-color: #fff;
-							box-shadow: 0 3px 0 -2px #0003;
-							border: 1px solid black;
-							padding: 10px;
-						`}
-						type="submit"
-					>
-						+ New project
-					</button>
-				</form>
-			</section>
+			/>
 		</Page>,
 	)
 })
@@ -127,24 +111,37 @@ app.get(GITHUB_CALLBACK_ENDPOINT, async (c) => {
 	accessTokenUrl.searchParams.set(`client_secret`, c.env.GITHUB_CLIENT_SECRET)
 	accessTokenUrl.searchParams.set(`code`, code)
 
-	const accessTokenResponse = await fetch(accessTokenUrl)
+	const accessTokenResponse = await cachedFetch(accessTokenUrl)
 
 	if (!accessTokenResponse.ok) {
 		return c.json({ error: `Failed to get access token` }, 400)
 	}
-	const responseText = await accessTokenResponse.text()
+	const accessTokenResponseText = await accessTokenResponse.text()
 
-	console.log(responseText)
+	console.log({ accessTokenResponseText })
 
-	const params = new URLSearchParams(responseText)
+	const params = new URLSearchParams(accessTokenResponseText)
 	const accessToken = params.get(`access_token`)
 	if (!accessToken) {
 		return c.json({ error: `Failed to get access token` }, 400)
 	}
-	setCookie(c, `github-access-token`, accessToken, {
-		httpOnly: true,
-		path: `/`,
-	})
+	await setSignedCookie(
+		c,
+		`github-access-token`,
+		accessToken,
+		c.env.COOKIE_SECRET,
+		{
+			httpOnly: true,
+			path: `/`,
+		},
+	)
+
+	const signedCookie = await getSignedCookie(
+		c,
+		c.env.COOKIE_SECRET,
+		`github-access-token`,
+	)
+	console.log({ signedCookie })
 
 	return c.redirect(`/`)
 })

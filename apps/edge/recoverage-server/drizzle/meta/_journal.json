@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1740862722741,
-      "tag": "0000_empty_vampiro",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1740902283976,
-      "tag": "0001_first_golden_guardian",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1740902470884,
-      "tag": "0002_wide_iron_lad",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1740902573052,
-      "tag": "0003_last_shotgun",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "6",
-      "when": 1740958598236,
-      "tag": "0004_light_dark_phoenix",
+      "when": 1740991948209,
+      "tag": "0000_wonderful_tomorrow_man",
       "breakpoints": true
     }
   ]

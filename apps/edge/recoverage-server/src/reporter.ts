@@ -7,17 +7,6 @@ import * as Schema from "./schema"
 
 export const reporterRoutes = new Hono<Env>()
 
-// Helper to compute SHA-256 hash
-async function computeHash(verifier: string) {
-	const hashBuffer = await crypto.subtle.digest(
-		`SHA-256`,
-		new TextEncoder().encode(verifier),
-	)
-	return Array.from(new Uint8Array(hashBuffer))
-		.map((b) => b.toString(16).padStart(2, `0`))
-		.join(``)
-}
-
 const reporterAuth: MiddlewareHandler<Env> = async (c, next) => {
 	const authHeader = c.req.header(`Authorization`)
 	if (!authHeader?.startsWith(`Bearer `)) {

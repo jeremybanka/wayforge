@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "8e51a765-af8b-4a41-ba93-e5ddf472d4fd",
+  "id": "d58ac245-2aed-4b92-bf66-08e94a6d91c6",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "projects": {
@@ -27,6 +27,14 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(current_timestamp)"
         }
       },
       "indexes": {},
@@ -41,7 +49,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -75,11 +83,11 @@
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "CURRENT_TIMESTAMP"
+          "default": "(current_timestamp)"
         }
       },
       "indexes": {},
@@ -94,7 +102,7 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -105,22 +113,36 @@
     "tokens": {
       "name": "tokens",
       "columns": {
-        "selector": {
-          "name": "selector",
+        "id": {
+          "name": "id",
           "type": "text",
           "primaryKey": true,
           "notNull": true,
           "autoincrement": false
         },
-        "userId": {
-          "name": "userId",
-          "type": "integer",
+        "name": {
+          "name": "name",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "verifierHash": {
-          "name": "verifierHash",
+        "hash": {
+          "name": "hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "salt": {
+          "name": "salt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "projectId": {
+          "name": "projectId",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -128,26 +150,26 @@
         },
         "createdAt": {
           "name": "createdAt",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "CURRENT_TIMESTAMP"
+          "default": "(current_timestamp)"
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "tokens_userId_users_id_fk": {
-          "name": "tokens_userId_users_id_fk",
+        "tokens_projectId_projects_id_fk": {
+          "name": "tokens_projectId_projects_id_fk",
           "tableFrom": "tokens",
-          "tableTo": "users",
+          "tableTo": "projects",
           "columnsFrom": [
-            "userId"
+            "projectId"
           ],
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
+          "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
@@ -165,31 +187,16 @@
           "notNull": true,
           "autoincrement": false
         },
-        "githubId": {
-          "name": "githubId",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "createdAt": {
           "name": "createdAt",
-          "type": "integer",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
-          "default": "CURRENT_TIMESTAMP"
+          "default": "(current_timestamp)"
         }
       },
-      "indexes": {
-        "users_githubId_unique": {
-          "name": "users_githubId_unique",
-          "columns": [
-            "githubId"
-          ],
-          "isUnique": true
-        }
-      },
+      "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
