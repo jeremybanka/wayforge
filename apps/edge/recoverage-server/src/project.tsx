@@ -6,25 +6,53 @@ export type DivProjectProps = {
 	id: string
 	name: string
 	tokens: DivProjectTokenProps[]
+	deleted?: boolean
 }
-export function Project({ id, name, tokens }: DivProjectProps): JSX.Element {
+export function Project({
+	id,
+	name,
+	tokens,
+	deleted,
+}: DivProjectProps): JSX.Element {
 	return (
 		<div
 			key={id}
+			id={`project-${id}`}
 			class={css`
 				border: 1px solid black;
 				padding: 10px;
 				background: #fbfbfb;
-				box-shadow: 0 4px 0 -2px #0003;
+				box-shadow: ${deleted ? `inset` : ``} 0 4px 0 -2px #0003;
 			`}
 		>
-			<h3
+			<header
 				class={css`
-					margin: 0;
+					display: flex;
+					flex-flow: row;
+					justify-content: space-between;
+					align-items: center;
+					gap: 10px;
 				`}
 			>
-				{name}
-			</h3>
+				<h3 class={css`margin: 0;`}>{name}</h3>
+				<button
+					type="button"
+					hx-delete={`/ui/project/${id}`}
+					hx-target={`#project-${id}`}
+					hx-swap="outerHTML"
+					hx-confirm={`Delete project "${name}"?`}
+					class={css`
+						background-color: #fff;
+						box-shadow: 0 3px 0 -2px #0003;
+						border: 1px solid black;
+						padding: 10px;
+						margin-left: auto;
+				`}
+					disabled={deleted}
+				>
+					x
+				</button>
+			</header>
 			<h4.diagonals>Reports</h4.diagonals>
 			<div
 				class={css`
@@ -38,7 +66,7 @@ export function Project({ id, name, tokens }: DivProjectProps): JSX.Element {
 						background:transparent;
 						background-color: #f3f3f3;
 						box-shadow: inset 0 1px 0 1px #0002;
-						border: 1px solid #777;
+						border: 1px solid #888;
 						padding: 5px;
 						height: 30px;
 						width: 80px;

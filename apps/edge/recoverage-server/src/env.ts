@@ -1,3 +1,4 @@
+import type { Endpoints } from "@octokit/types"
 import type { DrizzleD1Database } from "drizzle-orm/d1"
 
 import type * as Schema from "./schema"
@@ -9,7 +10,7 @@ type Bindings = {
 }
 type Variables = {
 	drizzle: DrizzleD1Database<typeof Schema>
-	projectId: number
+	githubUserData: Endpoints[`GET /user`][`response`][`data`]
 }
 export type Env = { Bindings: Bindings; Variables: Variables }
 

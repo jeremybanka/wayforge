@@ -37,7 +37,7 @@ export function Page(props: PropsWithChildren): JSX.Element {
 						box-sizing: border-box;
 						background: #f8f8f8;
 						border: 1px solid black;
-						padding: 40px 20px 20px;
+						padding: 40px 15px 20px;
 						flex-grow: 0;
 						display: flex;
 						position: relative;

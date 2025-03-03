@@ -80,15 +80,15 @@ app.get(`/`, async (c) => {
 				src={data.avatar_url}
 				alt={data.login}
 				class={css`
-              width: 50px;
-              position: absolute;
-              top: 0;
-              left: 20px;
-            `}
+					width: 50px;
+					position: absolute;
+					top: 0;
+					left: 20px;
+				`}
 			/>
 			<h1>Recoverage</h1>
 			Logged in as {data.login}
-			<h2>Your projects</h2>
+			<h2>Your Projects</h2>
 			<section
 				class={css`
 					display: flex;
@@ -100,7 +100,6 @@ app.get(`/`, async (c) => {
 					<Project key={project.id} {...project} />
 				))}
 				<form hx-post="/ui/project" hx-swap="beforebegin">
-					<input name="userId" type="hidden" value={user.id} />
 					<button
 						class={css`
 							background-color: #fff;

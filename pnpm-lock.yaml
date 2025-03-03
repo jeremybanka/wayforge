@@ -172,12 +172,18 @@ importers:
 
   apps/edge/recoverage-server:
     dependencies:
+      arktype:
+        specifier: 2.1.2
+        version: 2.1.2
       drizzle-orm:
         specifier: 0.40.0
         version: 0.40.0(@cloudflare/workers-types@4.20250224.0)(bun-types@1.2.4)(gel@2.0.0)(postgres@3.4.5)
       hono:
         specifier: 4.7.2
         version: 4.7.2
+      htmx.org:
+        specifier: 2.0.4
+        version: 2.0.4
       nanoid:
         specifier: 5.1.2
         version: 5.1.2
@@ -197,9 +203,9 @@ importers:
       '@hono/vite-dev-server':
         specifier: 0.18.2
         version: 0.18.2(hono@4.7.2)(miniflare@3.20250214.1)(wrangler@3.111.0(@cloudflare/workers-types@4.20250224.0))
-      arktype:
-        specifier: 2.1.2
-        version: 2.1.2
+      '@octokit/types':
+        specifier: 13.8.0
+        version: 13.8.0
       bun-types:
         specifier: 1.2.4
         version: 1.2.4
@@ -212,9 +218,6 @@ importers:
       eslint:
         specifier: 9.21.0
         version: 9.21.0(jiti@2.4.2)
-      htmx.org:
-        specifier: 2.0.4
-        version: 2.0.4
       vite:
         specifier: 6.2.0
         version: 6.2.0(@types/node@22.13.9)(jiti@2.4.2)(lightningcss@1.29.1)(sass-embedded@1.85.1)(sass@1.85.1)(terser@5.37.0)(tsx@4.19.3)
