@@ -2,7 +2,7 @@
 	"name": "recoverage-server",
 	"type": "module",
 	"scripts": {
-		"dev": "vite",
+		"dev": "wrangler dev --live-reload",
 		"build": "vite build",
 		"preview": "wrangler pages dev",
 		"deploy": "pnpm run build && wrangler pages deploy",

@@ -1,7 +1,7 @@
 import { css, Style } from "hono/css"
 import type { PropsWithChildren } from "hono/jsx"
 
-import { GITHUB_CALLBACK_ENDPOINT } from "."
+import { GITHUB_CALLBACK_ENDPOINT } from "./env"
 import * as Script from "./scripts.gen"
 
 export function Page(props: PropsWithChildren): JSX.Element {
@@ -19,11 +19,12 @@ export function Page(props: PropsWithChildren): JSX.Element {
 				<Style />
 			</head>
 			<body
-				className={css`
-					background-color: #fcfcfc;
+				class={css`
+					background: #f6f6f6;
+					position: relative;
 					display: flex;
-					margin: 0;
-					padding: 10px;
+					margin: 0px;
+					padding: 5px;
 					box-sizing: border-box;
 					flex-direction: column;
 					min-height: 100svh;
@@ -32,9 +33,11 @@ export function Page(props: PropsWithChildren): JSX.Element {
         `}
 			>
 				<main
-					className={css`
+					class={css`
+						box-sizing: border-box;
+						background: #f8f8f8;
 						border: 1px solid black;
-						padding: 40 20px 20px;
+						padding: 40px 20px 20px;
 						flex-grow: 0;
 						display: flex;
 						position: relative;
@@ -68,7 +71,7 @@ export function SplashPage({
 		<Page>
 			<h1>Recoverage</h1>
 			<p>A micro-platform for storing your coverage reports.</p>
-			<div className={css`flex-grow: 1;`} />
+			<div class={css`flex-grow: 1;`} />
 			<a
 				href={`https://github.com/login/oauth/authorize?client_id=${githubClientId}&redirect_uri=${callbackUrl}&scope=user`}
 			>

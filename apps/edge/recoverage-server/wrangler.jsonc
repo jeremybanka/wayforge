@@ -2,7 +2,8 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "recoverage-server",
 	"compatibility_date": "2025-02-27",
-	"pages_build_output_dir": "./dist",
+	"main": "src/index.tsx",
+	// "pages_build_output_dir": "./dist",
 	"compatibility_flags": ["nodejs_compat"],
 	// "vars": {
 	//   "MY_VAR": "my-variable"

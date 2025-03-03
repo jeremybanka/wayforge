@@ -5,7 +5,7 @@ import { Hono } from "hono"
 import type { Env } from "./env"
 import * as Schema from "./schema"
 
-const reporterRoutes = new Hono<Env>()
+export const reporterRoutes = new Hono<Env>()
 
 // Helper to compute SHA-256 hash
 async function computeHash(verifier: string) {
@@ -32,7 +32,7 @@ const reporterAuth: MiddlewareHandler<Env> = async (c, next) => {
 	const tokenRecord = await db
 		.select()
 		.from(Schema.tokens)
-		.where(eq(Schema.tokens.selector, selector))
+		.where(eq(Schema.tokens.id, id))
 		.get() // Use .get() for single row in Drizzle with D1
 	if (!tokenRecord) {
 		return c.json({ error: `Token not found` }, 401)
@@ -95,5 +95,3 @@ reporterRoutes.put(`/:projectId`, reporterAuth, async (c) => {
 	// }
 	return c.json({ success: true })
 })
-
-export default reporterRoutes

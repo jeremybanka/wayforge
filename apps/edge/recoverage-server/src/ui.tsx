@@ -6,7 +6,7 @@ import type { Env } from "./env"
 import { Project } from "./project"
 import * as Schema from "./schema"
 
-const uiRoutes = new Hono<Env>()
+export const uiRoutes = new Hono<Env>()
 
 uiRoutes.post(`/project`, async (c) => {
 	const db = c.get(`drizzle`)
@@ -33,7 +33,5 @@ uiRoutes.post(`/project`, async (c) => {
 			.values({ userId, name, id: nanoid() })
 			.returning()
 	)[0]
-	return c.html(<Project {...project} />)
+	return c.html(<Project {...project} tokens={[]} />)
 })
-
-export default uiRoutes

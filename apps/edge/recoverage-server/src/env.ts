@@ -12,3 +12,5 @@ type Variables = {
 	projectId: number
 }
 export type Env = { Bindings: Bindings; Variables: Variables }
+
+export const GITHUB_CALLBACK_ENDPOINT = `/oauth/github/callback`

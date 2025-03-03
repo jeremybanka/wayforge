@@ -5,24 +5,24 @@ import { deleteCookie, getCookie, setCookie } from "hono/cookie"
 import { css } from "hono/css"
 import { Octokit } from "octokit"
 
+import { assetsRoutes } from "./assets"
 import { cachedFetch } from "./cached-fetch"
-import type { Env } from "./env"
+import { type Env, GITHUB_CALLBACK_ENDPOINT } from "./env"
 import { Page, SplashPage } from "./page"
 import { Project } from "./project"
-import reporterRoutes from "./reporter"
-import * as Schema from "./schema"
-import uiRoutes from "./ui"
-
-export const GITHUB_CALLBACK_ENDPOINT = `/oauth/github/callback`
+import { reporterRoutes } from "./reporter"
+import * as schema from "./schema"
+import { uiRoutes } from "./ui"
 
 const app = new Hono<Env>()
 
 app.use(`*`, async (c, next) => {
 	console.log(c.req.method, c.req.path)
-	c.set(`drizzle`, drizzle<typeof Schema>(c.env.DB))
+	c.set(`drizzle`, drizzle(c.env.DB, { schema }))
 	await next()
 })
 
+app.route(`assets`, assetsRoutes)
 app.route(`reporter`, reporterRoutes)
 app.route(`ui`, uiRoutes)
 
@@ -55,18 +55,21 @@ app.get(`/`, async (c) => {
 	const db = c.get(`drizzle`)
 	let user = await db
 		.select()
-		.from(Schema.users)
-		.where(eq(Schema.users.id, data.id))
+		.from(schema.users)
+		.where(eq(schema.users.id, data.id))
 		.get()
 	if (!user) {
-		user = (await db.insert(Schema.users).values({ id: data.id }).returning())[0]
+		user = (await db.insert(schema.users).values({ id: data.id }).returning())[0]
 	}
 
-	const projects = await db
-		.select()
-		.from(Schema.projects)
-		.where(eq(Schema.projects.userId, user.id))
-		.all()
+	console.log(db)
+
+	const projects = await db.query.projects.findMany({
+		where: eq(schema.projects.userId, user.id),
+		with: {
+			tokens: true,
+		},
+	})
 
 	console.log(`User`, user)
 	console.log(`Projects`, projects)
@@ -76,7 +79,7 @@ app.get(`/`, async (c) => {
 			<img
 				src={data.avatar_url}
 				alt={data.login}
-				className={css`
+				class={css`
               width: 50px;
               position: absolute;
               top: 0;
@@ -87,18 +90,28 @@ app.get(`/`, async (c) => {
 			Logged in as {data.login}
 			<h2>Your projects</h2>
 			<section
-				className={css`
+				class={css`
 					display: flex;
 					flex-flow: column;
 					gap: 10px;
 				`}
 			>
 				{projects.map((project) => (
-					<Project key={project.id} id={project.id} name={project.name} />
+					<Project key={project.id} {...project} />
 				))}
 				<form hx-post="/ui/project" hx-swap="beforebegin">
 					<input name="userId" type="hidden" value={user.id} />
-					<button type="submit">+ New project</button>
+					<button
+						class={css`
+							background-color: #fff;
+							box-shadow: 0 3px 0 -2px #0003;
+							border: 1px solid black;
+							padding: 10px;
+						`}
+						type="submit"
+					>
+						+ New project
+					</button>
 				</form>
 			</section>
 		</Page>,
