@@ -20,8 +20,6 @@ export default defineWorkersProject(async () => {
 						configPath: `./wrangler.jsonc`,
 					},
 					miniflare: {
-						// Add a test-only binding for migrations, so we can apply them in a
-						// setup file
 						bindings: {
 							TEST_MIGRATIONS: migrations,
 							COOKIE_SECRET: `HI`,
