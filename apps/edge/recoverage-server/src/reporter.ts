@@ -1,8 +1,10 @@
+import { type } from "arktype"
 import { and, eq } from "drizzle-orm"
 import type { DrizzleD1Database } from "drizzle-orm/d1"
 import type { MiddlewareHandler } from "hono"
 import { Hono } from "hono"
 
+import { createDatabase } from "./db"
 import type { Bindings } from "./env"
 import { computeHash } from "./hash"
 import * as schema from "./schema"
@@ -78,43 +80,48 @@ reporterRoutes.put(`/:reportId`, reporterAuth, async (c) => {
 	}
 
 	const db = c.get(`drizzle`)
+
+	await db.insert(schema.reports).values({
+		id: reportId,
+		projectId: projectScope,
+		data: JSON.stringify(out),
+	})
+
+	return c.json({ success: true })
 })
-
-import { type } from "arktype"
-
-import { createDatabase } from "./db"
 
 // Reusable schema for a source code location (start/end)
 const locationSchema = type({
-	start: { line: `number`, column: `number` },
-	end: { line: `number`, column: `number` },
+	start: { line: `number.integer`, column: `number.integer` },
+	end: { line: `number.integer`, column: `number.integer` },
 })
 
 // Coverage data for one file
 const coverageMapEntrySchema = type({
 	path: `string`,
-	statementMap: type({ "[string]": locationSchema }),
-	fnMap: type({
-		"[string]": type({
+	all: `boolean`,
+	statementMap: { "[string]": locationSchema },
+	fnMap: {
+		"[string]": {
 			name: `string`,
 			decl: locationSchema,
 			loc: locationSchema,
-		}),
-	}),
-	branchMap: type({
-		"[string]": type({
-			line: `number`,
+		},
+	},
+	branchMap: {
+		"[string]": {
+			line: `number.integer`,
 			type: `string`,
 			locations: type(locationSchema, `[]`),
-		}),
-	}),
+		},
+	},
 	// s, f, and b track how many times statements/functions/branches were hit
-	s: type({ "[string]": `number` }),
-	f: type({ "[string]": `number` }),
-	b: type({ "[string]": `number[]` }),
+	s: { "[string]": `number.integer` },
+	f: { "[string]": `number.integer` },
+	b: { "[string]": `number.integer` },
 })
 
 // A coverage map is a record keyed by file path
 export const istanbulCoverageMapType = type({
-	coverageMap: type({ "[string]": coverageMapEntrySchema }),
+	"[string]": coverageMapEntrySchema,
 })
