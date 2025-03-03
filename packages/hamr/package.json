@@ -76,7 +76,7 @@
 		"sass": "1.85.1",
 		"tsup": "8.4.0",
 		"typescript": "5.8.2",
-		"vite-plugin-dts": "4.5.1",
+		"vite-plugin-dts": "4.5.3",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.0.7"
 	},
