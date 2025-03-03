@@ -76,7 +76,7 @@ reporterRoutes.put(`/:reportId`, reporterAuth, async (c) => {
 
 	if (out instanceof type.errors) {
 		console.log(out)
-		return c.json({ error: `Invalid report` }, 400)
+		return c.json({ error: `Invalid report: ${out.issues}` }, 400)
 	}
 
 	const db = c.get(`drizzle`)
@@ -118,7 +118,7 @@ const coverageMapEntrySchema = type({
 	// s, f, and b track how many times statements/functions/branches were hit
 	s: { "[string]": `number.integer` },
 	f: { "[string]": `number.integer` },
-	b: { "[string]": `number.integer` },
+	b: { "[string]": `number.integer[]` },
 })
 
 // A coverage map is a record keyed by file path

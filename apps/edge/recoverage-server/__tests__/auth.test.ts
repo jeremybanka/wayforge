@@ -1,8 +1,10 @@
 import { env } from "cloudflare:test"
 import { afterEach, expect, it, vi } from "vitest"
+import { XMLParser } from "fast-xml-parser"
 
 import app from "../src"
 import { GITHUB_CALLBACK_ENDPOINT } from "../src/env"
+import { reportFixture } from "./report-fixture"
 
 afterEach(() => {
 	vi.restoreAllMocks()
@@ -14,9 +16,9 @@ it(`mocks GET requests`, async () => {
 		const request = new Request(input, init)
 		const url = new URL(request.url)
 
-		// console.log(request.method)
-		// console.log(url.origin)
-		// console.log(url.pathname)
+		console.log(request.method)
+		console.log(url.origin)
+		console.log(url.pathname)
 
 		switch (`${request.method} ${url.origin}${url.pathname}`) {
 			case `GET https://github.com/login/oauth/authorize`: {
@@ -61,4 +63,88 @@ it(`mocks GET requests`, async () => {
 		env,
 	)
 	expect(response2.status).toBe(200)
+
+	const project = await app.request(
+		`/ui/project`,
+		{
+			method: `POST`,
+			headers: {
+				Cookie: githubAccessTokenCookie,
+				"Content-Type": `application/x-www-form-urlencoded`,
+			},
+			body: `name=test`,
+		},
+		env,
+	)
+	const projectText = await project.text()
+
+	const hxPost = projectText.match(/hx-post="([^"]+)"/)
+	const postTokenToProjectUrl = hxPost?.[1]
+	assert(postTokenToProjectUrl)
+	console.log({ postTokenToProjectUrl })
+	const projectId = postTokenToProjectUrl.split(`/`)[3]
+
+	console.log({ projectId })
+
+	const token = await app.request(
+		postTokenToProjectUrl,
+		{
+			method: `POST`,
+			headers: {
+				Cookie: githubAccessTokenCookie,
+				"Content-Type": `application/x-www-form-urlencoded`,
+			},
+			body: `name=test`,
+		},
+		env,
+	)
+
+	const tokenText = await token.text()
+	const parser = new XMLParser()
+	const tokenXml = parser.parse(tokenText)
+	const code = tokenXml.div.div[0].span.code
+	console.log({ code })
+	assert(code)
+
+	const reportMissing = await app.request(
+		`/reporter/${projectId}`,
+		{
+			method: `GET`,
+			headers: {
+				Authorization: `Bearer ${code}`,
+			},
+		},
+		env,
+	)
+	console.log(await reportMissing.json())
+	expect(reportMissing.status).toBe(404)
+
+	const reportPut = await app.request(
+		`/reporter/${projectId}`,
+		{
+			method: `PUT`,
+			headers: {
+				Authorization: `Bearer ${code}`,
+			},
+			body: JSON.stringify(reportFixture),
+		},
+		env,
+	)
+
+	console.log(await reportPut.json())
+	expect(reportPut.status).toBe(200)
+
+	const reportGet = await app.request(
+		`/reporter/${projectId}`,
+		{
+			method: `GET`,
+			headers: {
+				Authorization: `Bearer ${code}`,
+			},
+		},
+		env,
+	)
+
+	expect(reportGet.status).toBe(200)
+	expect(await reportGet.json()).toEqual(reportFixture)
 })

@@ -252,7 +252,7 @@ export function ProjectToken(props: DivProjectTokenProps): JSX.Element {
 							>
 								<span class={css`flex-grow: 1;`}>
 									<code class={css`font-size: 18px; color: green;`}>
-										{id}:{secretShownOnce}
+										{id}.{secretShownOnce}
 									</code>
 								</span>
 								<button.copy text={secretShownOnce} />
