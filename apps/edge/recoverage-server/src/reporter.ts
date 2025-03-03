@@ -1,86 +1,120 @@
 import { and, eq } from "drizzle-orm"
+import type { DrizzleD1Database } from "drizzle-orm/d1"
 import type { MiddlewareHandler } from "hono"
 import { Hono } from "hono"
 
-import type { Env } from "./env"
-import * as Schema from "./schema"
+import type { Bindings } from "./env"
+import { computeHash } from "./hash"
+import * as schema from "./schema"
 
-export const reporterRoutes = new Hono<Env>()
+type ReporterEnv = {
+	Bindings: Bindings
+	Variables: {
+		drizzle: DrizzleD1Database<typeof schema>
+		projectScope: string
+	}
+}
+export const reporterRoutes = new Hono<ReporterEnv>()
 
-const reporterAuth: MiddlewareHandler<Env> = async (c, next) => {
+const reporterAuth: MiddlewareHandler<ReporterEnv> = async (c, next) => {
 	const authHeader = c.req.header(`Authorization`)
 	if (!authHeader?.startsWith(`Bearer `)) {
 		return c.json({ error: `Unauthorized` }, 401)
 	}
 	const token = authHeader.slice(7) // Remove "Bearer "
-	const [selector, verifier] = token.split(`.`)
-	if (!selector || !verifier) {
+	const [id, password] = token.split(`.`)
+	if (!id || !password) {
 		return c.json({ error: `Invalid token format` }, 401)
 	}
-	const db = c.get(`drizzle`)
+	const db = createDatabase(c.env.DB)
 	const tokenRecord = await db
-		.select()
-		.from(Schema.tokens)
-		.where(eq(Schema.tokens.id, id))
-		.get() // Use .get() for single row in Drizzle with D1
+		.select({
+			projectId: schema.tokens.projectId,
+			salt: schema.tokens.salt,
+			hash: schema.tokens.hash,
+		})
+		.from(schema.tokens)
+		.where(eq(schema.tokens.id, id))
+		.get()
 	if (!tokenRecord) {
 		return c.json({ error: `Token not found` }, 401)
 	}
-	const hash = await computeHash(verifier)
-	if (hash !== tokenRecord.verifierHash) {
+	const { projectId, salt, hash: realHash } = tokenRecord
+	const suppliedHash = await computeHash(password, salt)
+	if (suppliedHash !== realHash) {
 		return c.json({ error: `Invalid token` }, 401)
 	}
-	c.set(`projectId`, tokenRecord.projectId)
+	c.set(`drizzle`, db)
+	c.set(`projectScope`, projectId)
 	await next()
 }
 
-// GET /api/report: Retrieve the default report
-reporterRoutes.get(`/:projectId`, reporterAuth, async (c) => {
-	const projectId = c.req.param(`projectId`)
-	const userId = c.get(`projectId`)
+reporterRoutes.get(`/:reportId`, reporterAuth, async (c) => {
+	const reportId = c.req.param(`reportId`)
+	const projectScope = c.get(`projectScope`)
 	const db = c.get(`drizzle`)
-	const project = await db
-		.select()
-		.from(Schema.projects)
-		.where(
-			and(eq(Schema.projects.userId, userId), eq(Schema.projects.id, projectId)),
-		)
-		.get()
-	if (!project) {
-		return c.json({ error: `No project found` }, 404)
-	}
-	const report = await db
-		.select()
-		.from(Schema.reports)
-		.where(eq(Schema.reports.projectId, projectId))
-		.get()
+	const report = await db.query.reports.findFirst({
+		where: and(
+			eq(schema.reports.projectId, projectScope),
+			eq(schema.reports.id, reportId),
+		),
+	})
 	if (!report) {
-		return c.json({ error: `No default report found` }, 404)
+		return c.json({ error: `No report found` }, 404)
 	}
-	const data = JSON.parse(report.data)
-	return c.json(data)
+	c.header(`Content-Type`, `application/json`)
+	return c.body(report.data)
 })
 
-// PUT /api/report: Upload or update the default report
-reporterRoutes.put(`/:projectId`, reporterAuth, async (c) => {
-	const userId = c.get(`projectId`)
+reporterRoutes.put(`/:reportId`, reporterAuth, async (c) => {
+	const projectScope = c.get(`projectScope`)
+	const reportId = c.req.param(`reportId`)
 	const data = await c.req.json()
-	const jsonData = JSON.stringify(data)
+	const out = istanbulCoverageMapType(data)
+
+	if (out instanceof type.errors) {
+		console.log(out)
+		return c.json({ error: `Invalid report` }, 400)
+	}
+
 	const db = c.get(`drizzle`)
-	// const existingReport = await db
-	// 	.select()
-	// 	.from(Schema.reports)
-	// 	.where(eq(Schema.reports.userId, userId))
-	// 	.all()
-	// if (existingReport) {
-	// 	await db
-	// 		.update(Schema.reports)
-	// 		.set({ data: jsonData })
-	// 		.where(eq(Schema.reports.id, existingReport.id))
-	// 		.run()
-	// } else {
-	// 	const id = crypto.randomUUID()
-	// 	await db.insert(Schema.reports).values({ id, userId, data: jsonData }).run()
-	// }
-	return c.json({ success: true })
+})
+
+import { type } from "arktype"
+
+import { createDatabase } from "./db"
+
+// Reusable schema for a source code location (start/end)
+const locationSchema = type({
+	start: { line: `number`, column: `number` },
+	end: { line: `number`, column: `number` },
+})
+
+// Coverage data for one file
+const coverageMapEntrySchema = type({
+	path: `string`,
+	statementMap: type({ "[string]": locationSchema }),
+	fnMap: type({
+		"[string]": type({
+			name: `string`,
+			decl: locationSchema,
+			loc: locationSchema,
+		}),
+	}),
+	branchMap: type({
+		"[string]": type({
+			line: `number`,
+			type: `string`,
+			locations: type(locationSchema, `[]`),
+		}),
+	}),
+	// s, f, and b track how many times statements/functions/branches were hit
+	s: type({ "[string]": `number` }),
+	f: type({ "[string]": `number` }),
+	b: type({ "[string]": `number[]` }),
+})
+
+// A coverage map is a record keyed by file path
+export const istanbulCoverageMapType = type({
+	coverageMap: type({ "[string]": coverageMapEntrySchema }),
 })

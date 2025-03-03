@@ -14,9 +14,13 @@ export const projects = sqliteTable(`projects`, {
 	name: text().notNull(),
 	createdAt: text().notNull().default(sql`(current_timestamp)`),
 })
-export const projectsRelations = relations(projects, ({ many }) => ({
+export const projectsRelations = relations(projects, ({ many, one }) => ({
 	tokens: many(tokens),
 	reports: many(reports),
+	user: one(users, {
+		fields: [projects.userId],
+		references: [users.id],
+	}),
 }))
 
 export const tokens = sqliteTable(`tokens`, {
@@ -31,7 +35,7 @@ export const tokens = sqliteTable(`tokens`, {
 })
 
 export const tokensRelations = relations(tokens, ({ one }) => ({
-	projects: one(projects, {
+	project: one(projects, {
 		fields: [tokens.projectId],
 		references: [projects.id],
 	}),

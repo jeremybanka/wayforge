@@ -1,5 +1,4 @@
 import { eq } from "drizzle-orm"
-import { drizzle } from "drizzle-orm/d1"
 import { Hono } from "hono"
 import { deleteCookie, getSignedCookie, setSignedCookie } from "hono/cookie"
 import { css } from "hono/css"
@@ -7,13 +6,15 @@ import { Octokit } from "octokit"
 
 import { assetsRoutes } from "./assets"
 import { cachedFetch } from "./cached-fetch"
-import { type Env, GITHUB_CALLBACK_ENDPOINT } from "./env"
+import { createDatabase } from "./db"
+import { GITHUB_CALLBACK_ENDPOINT } from "./env"
 import { Page, SplashPage } from "./page"
 import { reporterRoutes } from "./reporter"
 import * as schema from "./schema"
+import type { UiEnv } from "./ui"
 import { uiRoutes } from "./ui"
 
-const app = new Hono<Env>()
+const app = new Hono<UiEnv>()
 
 app.use(`*`, async (c, next) => {
 	console.log(c.req.method, c.req.path)
@@ -54,14 +55,7 @@ app.get(`/`, async (c) => {
 		)
 	}
 
-	const db = drizzle(c.env.DB, {
-		schema,
-		logger: {
-			logQuery(query, params) {
-				console.info(`📝 query`, query, params)
-			},
-		},
-	})
+	const db = createDatabase(c.env.DB)
 
 	c.set(`drizzle`, db)
 	let user = await db

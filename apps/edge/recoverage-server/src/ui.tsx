@@ -1,6 +1,7 @@
+import type { Endpoints } from "@octokit/types"
 import { type } from "arktype"
 import { and, eq } from "drizzle-orm"
-import { drizzle } from "drizzle-orm/d1"
+import type { DrizzleD1Database } from "drizzle-orm/d1"
 import type { MiddlewareHandler } from "hono"
 import { Hono } from "hono"
 import { deleteCookie, getSignedCookie } from "hono/cookie"
@@ -8,14 +9,23 @@ import { nanoid } from "nanoid"
 import { Octokit } from "octokit"
 
 import { cachedFetch } from "./cached-fetch"
-import type { Env } from "./env"
+import { createDatabase } from "./db"
+import type { Bindings } from "./env"
 import { computeHash } from "./hash"
 import { Project, ProjectToken } from "./project"
 import * as schema from "./schema"
 
-export const uiRoutes = new Hono<Env>()
+export type UiEnv = {
+	Bindings: Bindings
+	Variables: {
+		drizzle: DrizzleD1Database<typeof schema>
+		githubUserData: Endpoints[`GET /user`][`response`][`data`]
+		projectScope: string
+	}
+}
+export const uiRoutes = new Hono<UiEnv>()
 
-const uiAuth: MiddlewareHandler<Env> = async (c, next) => {
+const uiAuth: MiddlewareHandler<UiEnv> = async (c, next) => {
 	const githubAccessTokenCookie = await getSignedCookie(
 		c,
 		c.env.COOKIE_SECRET,
@@ -38,17 +48,10 @@ const uiAuth: MiddlewareHandler<Env> = async (c, next) => {
 		deleteCookie(c, `github-access-token`)
 		return c.json({ error: `Unauthorized` }, 401)
 	}
-	c.set(
-		`drizzle`,
-		drizzle(c.env.DB, {
-			schema,
-			logger: {
-				logQuery(query, params) {
-					console.info(`📝 query`, query, params)
-				},
-			},
-		}),
-	)
+
+	const db = createDatabase(c.env.DB)
+
+	c.set(`drizzle`, db)
 	c.set(`githubUserData`, data)
 
 	await next()
@@ -163,4 +166,33 @@ uiRoutes.post(`/token/:projectId`, uiAuth, async (c) => {
 	return c.html(
 		<ProjectToken {...token} mode="existing" secretShownOnce={secret} />,
 	)
+})
+
+uiRoutes.delete(`/token/:tokenId`, uiAuth, async (c) => {
+	const db = c.get(`drizzle`)
+	const tokenId = c.req.param(`tokenId`)
+	const userId = c.get(`githubUserData`).id
+	const token = await db.query.tokens.findFirst({
+		with: {
+			project: {
+				with: {
+					user: true,
+				},
+			},
+		},
+		where: eq(schema.tokens.id, tokenId),
+	})
+	if (!token) {
+		return c.json({ error: `No token found` }, 404)
+	}
+	if (token.project.user.id !== userId) {
+		return c.json({ error: `Not your token` }, 401)
+	}
+
+	const result = await db
+		.delete(schema.tokens)
+		.where(eq(schema.tokens.id, tokenId))
+		.run()
+
+	return c.html(<ProjectToken {...token} mode="deleted" />)
 })
