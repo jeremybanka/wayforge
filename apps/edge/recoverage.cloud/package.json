@@ -7,8 +7,14 @@
 		"dev": "wrangler dev --live-reload",
 		"deploy": "wrangler deploy --minify",
 		"test": "vitest",
+		"test:once": "vitest run",
 		"db:gen": "drizzle-kit generate",
-		"db:up": "wrangler d1 migrations apply recoverage-data"
+		"db:up": "wrangler d1 migrations apply recoverage-data",
+		"lint:biome": "biome check -- .",
+		"lint:eslint": "eslint -- .",
+		"lint:types": "tsc --noEmit",
+		"watch:types": "tsc --watch --noEmit",
+		"lint": "concurrently \"bun:lint:*\""
 	},
 	"dependencies": {
 		"arktype": "2.1.2",
