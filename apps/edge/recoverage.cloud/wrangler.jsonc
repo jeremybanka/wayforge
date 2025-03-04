@@ -1,8 +1,11 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "recoverage-server",
+	"name": "recoverage-cloud",
 	"compatibility_date": "2025-02-27",
 	"main": "src/index.tsx",
+	"observability": {
+		"logs": { "enabled": true }
+	},
 	// "pages_build_output_dir": "./dist",
 	"compatibility_flags": ["nodejs_compat"],
 	// "vars": {
@@ -23,8 +26,8 @@
 	"d1_databases": [
 		{
 			"binding": "DB",
-			"database_name": "recoverage-beta",
-			"database_id": "fbcf630b-64f2-45f1-a023-4f984ed0604b",
+			"database_name": "recoverage-data",
+			"database_id": "746583b2-6056-4e2a-8d0d-c103797aa8a7",
 			"migrations_dir": "drizzle"
 		}
 	]
