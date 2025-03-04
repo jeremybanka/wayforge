@@ -6,7 +6,7 @@
 		"deploy": "wrangler deploy --minify",
 		"test": "vitest",
 		"db:gen": "drizzle-kit generate",
-		"db:up": "wrangler d1 migrations apply recoverage-beta"
+		"db:up": "wrangler d1 migrations apply recoverage-data"
 	},
 	"dependencies": {
 		"arktype": "2.1.2",
