@@ -76,7 +76,7 @@ export function SplashPage({
 			<p>A micro-platform for storing your coverage reports.</p>
 			<div class={css`flex-grow: 1;`} />
 			<a
-				href={`https://github.com/login/oauth/authorize?client_id=${githubClientId}&redirect_uri=${callbackUrl}&scope=user`}
+				href={`https://github.com/login/oauth/authorize?client_id=${githubClientId}&redirect_uri=${callbackUrl.toString()}&scope=user`}
 			>
 				Login with GitHub
 			</a>

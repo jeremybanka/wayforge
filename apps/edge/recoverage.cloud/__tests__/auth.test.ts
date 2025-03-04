@@ -1,6 +1,6 @@
 import { env } from "cloudflare:test"
-import { afterEach, expect, it, vi } from "vitest"
 import { XMLParser } from "fast-xml-parser"
+import { afterEach, expect, it, vi } from "vitest"
 
 import app from "../src"
 import { GITHUB_CALLBACK_ENDPOINT } from "../src/env"
