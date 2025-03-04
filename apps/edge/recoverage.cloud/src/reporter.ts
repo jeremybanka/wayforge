@@ -76,7 +76,7 @@ reporterRoutes.put(`/:reportId`, reporterAuth, async (c) => {
 
 	if (out instanceof type.errors) {
 		console.log(out)
-		return c.json({ error: `Invalid report: ${out.issues}` }, 400)
+		return c.json({ error: `Invalid report`, typeErrors: out }, 400)
 	}
 
 	const db = c.get(`drizzle`)
