@@ -1,0 +1,34 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "recoverage-server",
+	"compatibility_date": "2025-02-27",
+	"main": "src/index.tsx",
+	// "pages_build_output_dir": "./dist",
+	"compatibility_flags": ["nodejs_compat"],
+	// "vars": {
+	//   "MY_VAR": "my-variable"
+	// },
+	// "kv_namespaces": [
+	//   {
+	//     "binding": "MY_KV_NAMESPACE",
+	//     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+	//   }
+	// ],
+	// "r2_buckets": [
+	//   {
+	//     "binding": "MY_BUCKET",
+	//     "bucket_name": "my-bucket"
+	//   }
+	// ],
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "recoverage-beta",
+			"database_id": "fbcf630b-64f2-45f1-a023-4f984ed0604b",
+			"migrations_dir": "drizzle"
+		}
+	]
+	// "ai": {
+	//   "binding": "AI"
+	// }
+}

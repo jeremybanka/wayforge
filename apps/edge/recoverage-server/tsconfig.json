@@ -1,0 +1,20 @@
+{
+	"extends": "../../../tsconfig.json",
+	"compilerOptions": {
+		"target": "ESNext",
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"strict": true,
+		"skipLibCheck": true,
+		"lib": ["ESNext"],
+		"types": [
+			"bun-types",
+			"vite/client",
+			"vitest/globals",
+			"@cloudflare/workers-types/experimental",
+			"@cloudflare/vitest-pool-workers"
+		],
+		"jsx": "react-jsx",
+		"jsxImportSource": "hono/jsx"
+	}
+}

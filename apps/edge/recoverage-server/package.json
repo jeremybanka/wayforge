@@ -1,0 +1,34 @@
+{
+	"name": "recoverage-server",
+	"type": "module",
+	"scripts": {
+		"dev": "wrangler dev --live-reload",
+		"deploy": "wrangler deploy --minify",
+		"test": "vitest",
+		"db:gen": "drizzle-kit generate",
+		"db:up": "na wrangler d1 migrations apply recoverage-beta"
+	},
+	"dependencies": {
+		"arktype": "2.1.2",
+		"drizzle-orm": "0.40.0",
+		"hono": "4.7.2",
+		"htmx.org": "2.0.4",
+		"nanoid": "5.1.2",
+		"octokit": "4.1.2"
+	},
+	"devDependencies": {
+		"@cloudflare/vitest-pool-workers": "0.7.4",
+		"@cloudflare/workers-types": "4.20250224.0",
+		"@hono/vite-build": "1.3.0",
+		"@hono/vite-dev-server": "0.18.2",
+		"@octokit/types": "13.8.0",
+		"bun-types": "1.2.4",
+		"cloudflare": "4.1.0",
+		"drizzle-kit": "0.30.5",
+		"eslint": "9.21.0",
+		"fast-xml-parser": "5.0.8",
+		"vite": "6.2.0",
+		"vitest": "3.0.7",
+		"wrangler": "3.111.0"
+	}
+}

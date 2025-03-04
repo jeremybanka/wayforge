@@ -12,4 +12,5 @@ declare namespace JSX {
 			HTMLDivElement
 		>
 	}
+	type Element = JSX.Element
 }

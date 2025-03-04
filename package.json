@@ -62,7 +62,8 @@
 			"@swc/core",
 			"@vercel/speed-insights",
 			"esbuild",
-			"sharp"
+			"sharp",
+			"workerd"
 		]
 	}
 }
