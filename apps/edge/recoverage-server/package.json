@@ -3,9 +3,7 @@
 	"type": "module",
 	"scripts": {
 		"dev": "wrangler dev --live-reload",
-		"build": "vite build",
-		"preview": "wrangler pages dev",
-		"deploy": "pnpm run build && wrangler pages deploy",
+		"deploy": "wrangler deploy --minify",
 		"test": "vitest",
 		"db:gen": "drizzle-kit generate",
 		"db:up": "na wrangler d1 migrations apply recoverage-beta"
