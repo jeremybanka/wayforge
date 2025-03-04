@@ -64,8 +64,7 @@ reporterRoutes.get(`/:reportId`, reporterAuth, async (c) => {
 	if (!report) {
 		return c.json({ error: `No report found` }, 404)
 	}
-	c.header(`Content-Type`, `application/json`)
-	return c.body(report.data)
+	c.json(report.data)
 })
 
 reporterRoutes.put(`/:reportId`, reporterAuth, async (c) => {
