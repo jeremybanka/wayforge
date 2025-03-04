@@ -3,6 +3,9 @@
 	"name": "recoverage-cloud",
 	"compatibility_date": "2025-02-27",
 	"main": "src/index.tsx",
+	"observability": {
+		"logs": { "enabled": true }
+	},
 	// "pages_build_output_dir": "./dist",
 	"compatibility_flags": ["nodejs_compat"],
 	// "vars": {
