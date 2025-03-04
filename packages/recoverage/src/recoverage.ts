@@ -8,7 +8,7 @@ import { logDiff, logger, useMarks } from "./logger"
 import { getCoverageJsonSummary, getCoverageTextReport } from "./nyc-coverage"
 import { uploadCoverageReportToCloud } from "./persist-cloud"
 import { uploadCoverageDatabaseToS3 } from "./persist-s3"
-import { env } from "./recoverage.env"
+import { env, S3_CREDENTIALS } from "./recoverage.env"
 
 export class BranchCoverage {
 	public git_ref: string
@@ -41,7 +41,7 @@ export async function capture(
 	if (!silent && !logger.mark) {
 		Object.assign(logger, useMarks({ inline: true }))
 	}
-	logger.mark?.(`recoverage`)
+	logger.mark?.(`start`)
 
 	const git = simpleGit(import.meta.dir)
 	logger.mark?.(`spawn git`)
@@ -59,7 +59,10 @@ export async function capture(
 	})
 
 	logger.mark?.(`updated coverage for ${currentGitRef}`)
-	await uploadCoverageDatabaseToS3()
+
+	if (S3_CREDENTIALS) {
+		await uploadCoverageDatabaseToS3(S3_CREDENTIALS)
+	}
 
 	if (env.RECOVERAGE_CLOUD_TOKEN) {
 		const mainGitRef = await getDefaultBranchHashRef(
@@ -89,7 +92,7 @@ export async function diff(
 		Object.assign(logger, useMarks({ inline: false }))
 	}
 
-	logger.mark?.(`recoverage`)
+	logger.mark?.(`start`)
 
 	const git = simpleGit(import.meta.dir)
 	logger.mark?.(`spawn git`)

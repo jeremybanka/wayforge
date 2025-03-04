@@ -2,11 +2,14 @@ import Database from "bun:sqlite"
 
 import { downloadCoverageDatabaseFromS3 } from "./persist-s3"
 import { BranchCoverage } from "./recoverage"
+import { S3_CREDENTIALS } from "./recoverage.env"
 
 const database = await initDatabase()
 
 export async function initDatabase(): Promise<Database> {
-	await downloadCoverageDatabaseFromS3()
+	if (S3_CREDENTIALS) {
+		await downloadCoverageDatabaseFromS3(S3_CREDENTIALS)
+	}
 	const db = new Database(`./coverage.sqlite`)
 	db.run(`create table if not exists coverage (git_ref text, coverage text);`)
 	return db

@@ -37,14 +37,14 @@ export async function uploadCoverageReportToCloud(
 	branchCoverage: BranchCoverage,
 ): Promise<Error | void> {
 	const baseUrl = env.RECOVERAGE_CLOUD_URL ?? `https://recoverage.cloud`
-	const url = new URL(`/reporter`, baseUrl)
+	const url = new URL(`/reporter/${branchCoverage.git_ref}`, baseUrl)
 	try {
 		const response = await fetch(url, {
 			method: `PUT`,
 			headers: {
 				Authorization: `Bearer ${env.RECOVERAGE_CLOUD_TOKEN}`,
 			},
-			body: JSON.stringify(branchCoverage),
+			body: JSON.stringify(branchCoverage.coverage),
 		})
 		if (!response.ok) {
 			const text = await response.text()
