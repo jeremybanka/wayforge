@@ -2,7 +2,7 @@
 	"name": "recoverage-server",
 	"type": "module",
 	"scripts": {
-		"go": "pnpm db:up && pnpm gen && pnpm run deploy",
+		"go": "pnpm db:up --remote && pnpm gen && pnpm run deploy",
 		"gen": "bun __scripts__/gen-scripts.bun.ts",
 		"dev": "wrangler dev --live-reload",
 		"deploy": "wrangler deploy --minify",
