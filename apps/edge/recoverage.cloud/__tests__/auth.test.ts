@@ -16,9 +16,7 @@ it(`mocks GET requests`, async () => {
 		const request = new Request(input, init)
 		const url = new URL(request.url)
 
-		console.log(request.method)
-		console.log(url.origin)
-		console.log(url.pathname)
+		console.log(`[intercepted]`, request.method, url.origin + url.pathname)
 
 		switch (`${request.method} ${url.origin}${url.pathname}`) {
 			case `GET https://github.com/login/oauth/authorize`: {
