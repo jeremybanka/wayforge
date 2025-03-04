@@ -8,6 +8,8 @@ export const env = createEnv({
 		R2_SECRET_ACCESS_KEY: z.string().optional(),
 		R2_TOKEN_VALUE: z.string().optional(),
 		R2_URL: z.string().optional(),
+		RECOVERAGE_CLOUD_TOKEN: z.string().optional(),
+		RECOVERAGE_CLOUD_URL: z.string().optional(),
 		CI: z
 			.string()
 			.optional()
