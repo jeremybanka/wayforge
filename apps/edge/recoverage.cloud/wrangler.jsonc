@@ -1,6 +1,6 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "recoverage-server",
+	"name": "recoverage.cloud",
 	"compatibility_date": "2025-02-27",
 	"main": "src/index.tsx",
 	// "pages_build_output_dir": "./dist",
