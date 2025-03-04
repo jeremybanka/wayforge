@@ -9,7 +9,7 @@ export type DivProjectProps =
 	| {
 			id: string
 			name: string
-			tokens: ExistingProjectTokenProps[]
+			tokens: CompleteProjectTokenProps[]
 			mode: `deleted` | `existing`
 	  }
 	| {
@@ -145,20 +145,15 @@ export function Project(props: DivProjectProps): JSX.Element {
 	}
 }
 
-export type ExistingProjectTokenProps = {
+export type CompleteProjectTokenProps = {
 	id: string
 	name: string
 	secretShownOnce?: string
-	mode?: `existing`
+	mode?: `deleted` | `existing`
 }
 
 export type DivProjectTokenProps =
-	| {
-			id: string
-			name: string
-			secretShownOnce?: string
-			mode?: `deleted` | `existing`
-	  }
+	| CompleteProjectTokenProps
 	| {
 			mode: `button` | `creator`
 			disabled?: boolean
@@ -204,6 +199,7 @@ export function ProjectToken(props: DivProjectTokenProps): JSX.Element {
 						padding: 10px;
 						background: ${mode === `deleted` ? `#eee` : `#fff`};
 						box-shadow: ${mode === `deleted` ? `inset` : ``} 0 4px 0 -2px #0003;
+						border-radius: 10px 0 10px 0;
 					`}
 				>
 					<header

@@ -20,7 +20,11 @@ export function Page(props: PropsWithChildren): JSX.Element {
 			</head>
 			<body
 				class={css`
-					background: #f6f6f6;
+					background: url(/assets/dots.svg) repeat;
+					background-size: 4px 4px;
+					background-position: 0px -100px; /* Offset to create overlap */
+					background-blend-mode: overlay;
+					background-color: #f6f6f6;
 					position: relative;
 					display: flex;
 					margin: 0px;

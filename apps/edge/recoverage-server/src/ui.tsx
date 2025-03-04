@@ -137,7 +137,13 @@ uiRoutes.delete(`/project/:projectId`, uiAuth, async (c) => {
 			and(eq(schema.projects.id, projectId), eq(schema.projects.userId, userId)),
 		)
 	console.log(result)
-	return c.html(<Project {...project} mode="deleted" />)
+	return c.html(
+		<Project
+			{...project}
+			tokens={project.tokens.map((token) => ({ ...token, mode: `deleted` }))}
+			mode="deleted"
+		/>,
+	)
 })
 
 uiRoutes.post(`/token/:projectId`, uiAuth, async (c) => {
