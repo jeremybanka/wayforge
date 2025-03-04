@@ -1,5 +1,5 @@
 packages:
-  - "apps/*"  
+  - "apps/*"
   - "apps/edge/*"
   - "apps/node/*"
   - "apps/web/*"
