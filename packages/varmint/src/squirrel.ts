@@ -161,9 +161,9 @@ export class Squirrel {
 							let cachedSubKey = this.filenameCache.get(unSafeSubKey)
 							if (!cachedSubKey) {
 								cachedSubKey = sanitizeFilename(unSafeSubKey)
-								this.filenameCache.set(unSafeSubKey, subKey)
-								subKey = cachedSubKey
+								this.filenameCache.set(unSafeSubKey, cachedSubKey)
 							}
+							subKey = cachedSubKey
 							this.filesTouched.get(key)?.add(subKey)
 							const fileName = `${listName}${SBS}${subKey}` as const
 							const fileNameTagged = `file${SBS}${fileName}` as const
