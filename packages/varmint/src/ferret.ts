@@ -112,7 +112,7 @@ export class Ferret {
 				mgr.storage.setItem(`DID_CACHE_MISS`, `true`)
 			}
 			throw new Error(
-				`Squirrel: the content of the cached input file ${pathToInputFile} does not match the input provided.\n\nProvided:\n${inputStringified}\n\nCached:\n${inputFileContents}`,
+				`Ferret: the content of the cached input file ${pathToInputFile} does not match the input provided.\n\nProvided:\n${inputStringified}\n\nCached:\n${inputFileContents}`,
 			)
 		}
 		const pathToOutputFile = path.join(this.baseDir, key, `${subKey}.stream.txt`)
