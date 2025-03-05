@@ -104,7 +104,7 @@
 		"drizzle-kit": "0.30.5",
 		"drizzle-orm": "0.40.0",
 		"eslint": "9.21.0",
-		"happy-dom": "17.1.9",
+		"happy-dom": "17.2.2",
 		"http-proxy": "1.18.1",
 		"motion": "12.4.10",
 		"npmlog": "7.0.1",
