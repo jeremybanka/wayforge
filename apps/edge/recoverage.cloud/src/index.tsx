@@ -127,6 +127,7 @@ app.get(GITHUB_CALLBACK_ENDPOINT, async (c) => {
 		accessToken,
 		c.env.COOKIE_SECRET,
 		{
+			sameSite: `strict`,
 			httpOnly: true,
 			path: `/`,
 		},
