@@ -1,6 +1,5 @@
 import { env } from "cloudflare:test"
 import { XMLParser } from "fast-xml-parser"
-import { afterEach, expect, it, vi } from "vitest"
 
 import app from "../src"
 import { GITHUB_CALLBACK_ENDPOINT } from "../src/env"
@@ -10,7 +9,7 @@ afterEach(() => {
 	vi.restoreAllMocks()
 })
 
-it(`mocks GET requests`, async () => {
+test(`authentication flow`, async () => {
 	vi.spyOn(globalThis, `fetch`).mockImplementation(async (input, init) => {
 		await Promise.resolve()
 		const request = new Request(input, init)
@@ -38,7 +37,8 @@ it(`mocks GET requests`, async () => {
 				})
 
 			default:
-				throw new Error(`No mock found`)
+				// handle with the worker
+				return app.request(input, init, env)
 		}
 	})
 
@@ -50,52 +50,44 @@ it(`mocks GET requests`, async () => {
 
 	assert(githubAccessTokenCookie)
 
-	const response2 = await app.request(
-		`/`,
-		{
-			method: `GET`,
-			headers: {
-				Cookie: githubAccessTokenCookie,
-			},
+	const response2 = await fetch(`https://recoverage.cloud/`, {
+		method: `GET`,
+		headers: {
+			Cookie: githubAccessTokenCookie,
 		},
-		env,
-	)
+	})
 	expect(response2.status).toBe(200)
 
-	const project = await app.request(
-		`/ui/project`,
-		{
-			method: `POST`,
-			headers: {
-				Cookie: githubAccessTokenCookie,
-				"Content-Type": `application/x-www-form-urlencoded`,
-			},
-			body: `name=test`,
+	const project = await fetch(`https://recoverage.cloud/ui/project`, {
+		method: `POST`,
+		headers: {
+			Cookie: githubAccessTokenCookie,
+			"Content-Type": `application/x-www-form-urlencoded`,
 		},
-		env,
-	)
+		body: `name=test`,
+	})
 	const projectText = await project.text()
 
 	const hxPost = projectText.match(/hx-post="([^"]+)"/)
-	const postTokenToProjectUrl = hxPost?.[1]
-	assert(postTokenToProjectUrl)
-	console.log({ postTokenToProjectUrl })
-	const projectId = postTokenToProjectUrl.split(`/`)[3]
+	const postTokenToProjectPath = hxPost?.[1]
+	assert(postTokenToProjectPath)
+	const postTokenToProjectUrl = new URL(
+		postTokenToProjectPath,
+		`https://recoverage.cloud`,
+	)
+	console.log({ postTokenToProjectUrl: postTokenToProjectPath })
+	const projectId = postTokenToProjectPath.split(`/`)[3]
 
 	console.log({ projectId })
 
-	const token = await app.request(
-		postTokenToProjectUrl,
-		{
-			method: `POST`,
-			headers: {
-				Cookie: githubAccessTokenCookie,
-				"Content-Type": `application/x-www-form-urlencoded`,
-			},
-			body: `name=test`,
+	const token = await fetch(postTokenToProjectUrl, {
+		method: `POST`,
+		headers: {
+			Cookie: githubAccessTokenCookie,
+			"Content-Type": `application/x-www-form-urlencoded`,
 		},
-		env,
-	)
+		body: `name=test`,
+	})
 
 	const tokenText = await token.text()
 	const parser = new XMLParser()
@@ -104,15 +96,14 @@ it(`mocks GET requests`, async () => {
 	console.log({ code })
 	assert(code)
 
-	const reportMissing = await app.request(
-		`/reporter/${projectId}`,
+	const reportMissing = await fetch(
+		`https://recoverage.cloud/reporter/${projectId}`,
 		{
 			method: `GET`,
 			headers: {
 				Authorization: `Bearer ${code}`,
 			},
 		},
-		env,
 	)
 	console.log(await reportMissing.json())
 	expect(reportMissing.status).toBe(404)
@@ -132,15 +123,14 @@ it(`mocks GET requests`, async () => {
 	console.log(await reportPut.json())
 	expect(reportPut.status).toBe(200)
 
-	const reportGet = await app.request(
-		`/reporter/${projectId}`,
+	const reportGet = await fetch(
+		`https://recoverage.cloud/reporter/${projectId}`,
 		{
 			method: `GET`,
 			headers: {
 				Authorization: `Bearer ${code}`,
 			},
 		},
-		env,
 	)
 
 	expect(reportGet.status).toBe(200)
