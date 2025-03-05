@@ -1,5 +1,11 @@
 # varmint
 
+## 0.4.3
+
+### Patch Changes
+
+- 24e579c: 🐛 Fix bug where in cases of super long inputs, varmint would fail to shorten them into something reasonable for the file system.
+
 ## 0.4.2
 
 ### Patch Changes
