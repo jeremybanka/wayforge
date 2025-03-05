@@ -112,7 +112,7 @@ export class Ferret {
 				mgr.storage.setItem(`DID_CACHE_MISS`, `true`)
 			}
 			throw new Error(
-				`Squirrel: the content of the cached input file ${pathToInputFile} does not match the input provided.\n\nProvided:\n${inputStringified}\n\nCached:\n${inputFileContents}`,
+				`Ferret: the content of the cached input file ${pathToInputFile} does not match the input provided.\n\nProvided:\n${inputStringified}\n\nCached:\n${inputFileContents}`,
 			)
 		}
 		const pathToOutputFile = path.join(this.baseDir, key, `${subKey}.stream.txt`)
@@ -205,9 +205,9 @@ export class Ferret {
 							let cachedSubKey = this.filenameCache.get(unSafeSubKey)
 							if (!cachedSubKey) {
 								cachedSubKey = sanitizeFilename(unSafeSubKey)
-								this.filenameCache.set(unSafeSubKey, subKey)
-								subKey = cachedSubKey
+								this.filenameCache.set(unSafeSubKey, cachedSubKey)
 							}
+							subKey = cachedSubKey
 							this.filesTouched.get(key)?.add(subKey)
 							const fileName = `${listName}${SBS}${subKey}` as const
 							const fileNameTagged = `file${SBS}${fileName}` as const
