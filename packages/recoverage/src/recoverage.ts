@@ -6,7 +6,10 @@ import { getCoverage, saveCoverage } from "./database"
 import { getDefaultBranchHashRef, hashRepoState } from "./git-status"
 import { logDiff, logger, useMarks } from "./logger"
 import { getCoverageJsonSummary, getCoverageTextReport } from "./nyc-coverage"
-import { uploadCoverageReportToCloud } from "./persist-cloud"
+import {
+	downloadCoverageReportFromCloud,
+	uploadCoverageReportToCloud,
+} from "./persist-cloud"
 import { uploadCoverageDatabaseToS3 } from "./persist-s3"
 import { env, S3_CREDENTIALS } from "./recoverage.env"
 
@@ -72,10 +75,14 @@ export async function capture(
 		)
 		if (currentGitRef === mainGitRef) {
 			logger.mark?.(`uploading coverage report to recoverage.cloud`)
-			await uploadCoverageReportToCloud({
-				git_ref: currentGitRef,
-				coverage: JSON.stringify(coverageMap),
-			})
+			await uploadCoverageReportToCloud(
+				{
+					git_ref: currentGitRef,
+					coverage: JSON.stringify(coverageMap),
+				},
+				env.RECOVERAGE_CLOUD_TOKEN,
+				env.RECOVERAGE_CLOUD_URL,
+			)
 		}
 		logger.mark?.(`uploaded coverage report to recoverage.cloud`)
 	}
@@ -106,13 +113,37 @@ export async function diff(
 	logger.mark?.(`current git ref: ${currentGitRef}`)
 	logger.mark?.(`setup database`)
 
-	const [mainCoverage] = getCoverage.all(mainGitRef)
+	let [mainCoverage] = getCoverage.all(mainGitRef)
 	const [currentCoverage] = getCoverage.all(currentGitRef)
 
 	if (!mainCoverage) {
 		logger.mark?.(`no coverage found for the target branch`)
-		logger.logMarks?.()
-		return 1
+		if (!env.RECOVERAGE_CLOUD_TOKEN) {
+			logger.logMarks?.()
+			return 1
+		}
+		logger.mark?.(`looking for coverage report on recoverage.cloud`)
+		const cloudCoverage = await downloadCoverageReportFromCloud(
+			mainGitRef,
+			env.RECOVERAGE_CLOUD_TOKEN,
+			env.RECOVERAGE_CLOUD_URL,
+		)
+		if (cloudCoverage instanceof Error) {
+			logger.mark?.(`failed to download coverage report from recoverage.cloud`)
+			console.error(cloudCoverage)
+			logger.logMarks?.()
+			return 1
+		}
+		mainCoverage = {
+			git_ref: mainGitRef,
+			coverage: cloudCoverage,
+		}
+		logger.mark?.(`coverage report found on recoverage.cloud`)
+		saveCoverage.run({
+			$git_ref: mainGitRef,
+			$coverage: cloudCoverage,
+		})
+		logger.mark?.(`saved coverage for ${mainGitRef}`)
 	}
 	if (!currentCoverage) {
 		logger.mark?.(`no coverage found for the current ref`)
