@@ -230,6 +230,9 @@ importers:
       recoverage:
         specifier: workspace:*
         version: link:../../../packages/recoverage
+      treetrunks:
+        specifier: 0.0.4
+        version: 0.0.4
       vite:
         specifier: 6.2.1
         version: 6.2.1(@types/node@22.13.9)(jiti@2.4.2)(lightningcss@1.29.2)(sass-embedded@1.85.1)(sass@1.85.1)(terser@5.39.0)(tsx@4.19.3)
