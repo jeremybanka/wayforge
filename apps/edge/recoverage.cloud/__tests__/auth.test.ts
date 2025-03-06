@@ -1,5 +1,9 @@
 import { env } from "cloudflare:test"
 import { XMLParser } from "fast-xml-parser"
+import {
+	downloadCoverageReportFromCloud,
+	uploadCoverageReportToCloud,
+} from "recoverage/lib"
 
 import app from "../src"
 import { GITHUB_CALLBACK_ENDPOINT } from "../src/env"
@@ -96,8 +100,9 @@ test(`authentication flow`, async () => {
 	console.log({ code })
 	assert(code)
 
+	const reportRef = `xxxxxxx_atom.io`
 	const reportMissing = await fetch(
-		`https://recoverage.cloud/reporter/${projectId}`,
+		`https://recoverage.cloud/reporter/${reportRef}`,
 		{
 			method: `GET`,
 			headers: {
@@ -107,9 +112,11 @@ test(`authentication flow`, async () => {
 	)
 	console.log(await reportMissing.json())
 	expect(reportMissing.status).toBe(404)
+	const reportMissingLib = await downloadCoverageReportFromCloud(reportRef, code)
+	expect(reportMissingLib).toBeInstanceOf(Error)
 
-	const reportPut = await app.request(
-		`/reporter/${projectId}`,
+	const reportPut = await fetch(
+		`https://recoverage.cloud/reporter/${reportRef}`,
 		{
 			method: `PUT`,
 			headers: {
@@ -117,14 +124,20 @@ test(`authentication flow`, async () => {
 			},
 			body: JSON.stringify(reportFixture),
 		},
-		env,
 	)
-
-	console.log(await reportPut.json())
 	expect(reportPut.status).toBe(200)
+	const reportPutJson = await reportPut.json()
+	const reportPutLibJson = await uploadCoverageReportToCloud(
+		{
+			git_ref: reportRef,
+			coverage: JSON.stringify(reportFixture),
+		},
+		code,
+	)
+	expect(reportPutLibJson).toEqual(reportPutJson)
 
 	const reportGet = await fetch(
-		`https://recoverage.cloud/reporter/${projectId}`,
+		`https://recoverage.cloud/reporter/${reportRef}`,
 		{
 			method: `GET`,
 			headers: {
@@ -132,7 +145,10 @@ test(`authentication flow`, async () => {
 			},
 		},
 	)
-
 	expect(reportGet.status).toBe(200)
-	expect(await reportGet.json()).toEqual(reportFixture)
+	const reportGetJson = await reportGet.json()
+	expect(reportGetJson).toEqual(reportFixture)
+	const reportGetLib = await downloadCoverageReportFromCloud(reportRef, code)
+	assert(typeof reportGetLib === `string`)
+	expect(JSON.parse(reportGetLib)).toEqual(reportFixture)
 })
