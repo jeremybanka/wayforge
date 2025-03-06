@@ -49,7 +49,7 @@ export class Laws<
 			toEntries<RolePermissions>(rolePermissions).map(
 				([role, permissionsOfRole]) => [
 					role,
-					Laws.decompressRolePermissions(permissionsOfRole),
+					decompressRolePermissions(permissionsOfRole),
 				],
 			),
 		)
@@ -58,20 +58,20 @@ export class Laws<
 	public check(role: Role, permission: Permission): boolean {
 		return this.decompressedRolePermissions[role].has(permission)
 	}
+}
 
-	protected static decompressRolePermissions(
-		permissionSet: ReadonlySet<string>,
-	): ReadonlySet<string> {
-		const decompressed = new Set<string>(permissionSet)
-		for (const permission of permissionSet) {
-			const preconditions = permission.split(`_`)
-			for (let i = 0; i < preconditions.length - 1; i++) {
-				const subPermission = preconditions.slice(0, i + 1).join(`_`)
-				decompressed.add(subPermission)
-			}
+export function decompressRolePermissions(
+	permissionSet: ReadonlySet<string>,
+): ReadonlySet<string> {
+	const decompressed = new Set<string>(permissionSet)
+	for (const permission of permissionSet) {
+		const preconditions = permission.split(`_`)
+		for (let i = 0; i < preconditions.length - 1; i++) {
+			const subPermission = preconditions.slice(0, i + 1).join(`_`)
+			decompressed.add(subPermission)
 		}
-		return decompressed
 	}
+	return decompressed
 }
 
 export type EscalatorStyle = `firstFound` | `lastFound` | `untilMiss`
