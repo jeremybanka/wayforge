@@ -40,6 +40,6 @@
 		"recoverage": "workspace:*",
 		"vite": "6.2.0",
 		"vitest": "3.0.8",
-		"wrangler": "3.113.0"
+		"wrangler": "3.114.0"
 	}
 }
