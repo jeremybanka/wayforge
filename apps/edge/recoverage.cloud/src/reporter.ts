@@ -51,14 +51,14 @@ const reporterAuth: MiddlewareHandler<ReporterEnv> = async (c, next) => {
 	await next()
 }
 
-reporterRoutes.get(`/:reportId`, reporterAuth, async (c) => {
-	const reportId = c.req.param(`reportId`)
+reporterRoutes.get(`/:reportRef`, reporterAuth, async (c) => {
+	const reportRef = c.req.param(`reportRef`)
 	const projectScope = c.get(`projectScope`)
 	const db = c.get(`drizzle`)
 	const report = await db.query.reports.findFirst({
 		where: and(
 			eq(schema.reports.projectId, projectScope),
-			eq(schema.reports.id, reportId),
+			eq(schema.reports.ref, reportRef),
 		),
 	})
 	if (!report) {
@@ -68,24 +68,43 @@ reporterRoutes.get(`/:reportId`, reporterAuth, async (c) => {
 	return c.body(report.data)
 })
 
-reporterRoutes.put(`/:reportId`, reporterAuth, async (c) => {
+reporterRoutes.put(`/:reportRef`, reporterAuth, async (c) => {
 	const projectScope = c.get(`projectScope`)
-	const reportId = c.req.param(`reportId`)
+	const reportRef = c.req.param(`reportRef`)
+	const reportRefMaxLength = 64
+	const suppliedReportRefLength = reportRef.length
+	if (suppliedReportRefLength > reportRefMaxLength) {
+		return c.json(
+			{
+				error: `Report ref is too long, at ${suppliedReportRefLength} characters. Max length is ${reportRefMaxLength}`,
+			},
+			400,
+		)
+	}
+
 	const data = await c.req.json()
 	const out = istanbulCoverageMapType(data)
 
 	if (out instanceof type.errors) {
-		console.log(out)
-		return c.json({ error: `Invalid report`, typeErrors: out }, 400)
+		console.log(out.summary)
+		return c.json({ error: `Invalid report`, typeErrors: out.summary }, 400)
 	}
 
 	const db = c.get(`drizzle`)
 
-	await db.insert(schema.reports).values({
-		id: reportId,
-		projectId: projectScope,
-		data: JSON.stringify(out),
-	})
+	await db
+		.insert(schema.reports)
+		.values({
+			ref: reportRef,
+			projectId: projectScope,
+			data: JSON.stringify(out),
+		})
+		.onConflictDoUpdate({
+			target: [schema.reports.ref, schema.reports.projectId],
+			set: {
+				data: JSON.stringify(out),
+			},
+		})
 
 	return c.json({ success: true })
 })

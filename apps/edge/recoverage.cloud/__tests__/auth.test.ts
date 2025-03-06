@@ -1,6 +1,9 @@
 import { env } from "cloudflare:test"
 import { XMLParser } from "fast-xml-parser"
-import { afterEach, expect, it, vi } from "vitest"
+import {
+	downloadCoverageReportFromCloud,
+	uploadCoverageReportToCloud,
+} from "recoverage/lib"
 
 import app from "../src"
 import { GITHUB_CALLBACK_ENDPOINT } from "../src/env"
@@ -10,15 +13,13 @@ afterEach(() => {
 	vi.restoreAllMocks()
 })
 
-it(`mocks GET requests`, async () => {
+test(`authentication flow`, async () => {
 	vi.spyOn(globalThis, `fetch`).mockImplementation(async (input, init) => {
 		await Promise.resolve()
 		const request = new Request(input, init)
 		const url = new URL(request.url)
 
-		console.log(request.method)
-		console.log(url.origin)
-		console.log(url.pathname)
+		console.log(`[intercepted]`, request.method, url.origin + url.pathname)
 
 		switch (`${request.method} ${url.origin}${url.pathname}`) {
 			case `GET https://github.com/login/oauth/authorize`: {
@@ -40,7 +41,8 @@ it(`mocks GET requests`, async () => {
 				})
 
 			default:
-				throw new Error(`No mock found`)
+				// handle with the worker
+				return app.request(input, init, env)
 		}
 	})
 
@@ -52,52 +54,44 @@ it(`mocks GET requests`, async () => {
 
 	assert(githubAccessTokenCookie)
 
-	const response2 = await app.request(
-		`/`,
-		{
-			method: `GET`,
-			headers: {
-				Cookie: githubAccessTokenCookie,
-			},
+	const response2 = await fetch(`https://recoverage.cloud/`, {
+		method: `GET`,
+		headers: {
+			Cookie: githubAccessTokenCookie,
 		},
-		env,
-	)
+	})
 	expect(response2.status).toBe(200)
 
-	const project = await app.request(
-		`/ui/project`,
-		{
-			method: `POST`,
-			headers: {
-				Cookie: githubAccessTokenCookie,
-				"Content-Type": `application/x-www-form-urlencoded`,
-			},
-			body: `name=test`,
+	const project = await fetch(`https://recoverage.cloud/ui/project`, {
+		method: `POST`,
+		headers: {
+			Cookie: githubAccessTokenCookie,
+			"Content-Type": `application/x-www-form-urlencoded`,
 		},
-		env,
-	)
+		body: `name=test`,
+	})
 	const projectText = await project.text()
 
 	const hxPost = projectText.match(/hx-post="([^"]+)"/)
-	const postTokenToProjectUrl = hxPost?.[1]
-	assert(postTokenToProjectUrl)
-	console.log({ postTokenToProjectUrl })
-	const projectId = postTokenToProjectUrl.split(`/`)[3]
+	const postTokenToProjectPath = hxPost?.[1]
+	assert(postTokenToProjectPath)
+	const postTokenToProjectUrl = new URL(
+		postTokenToProjectPath,
+		`https://recoverage.cloud`,
+	)
+	console.log({ postTokenToProjectUrl: postTokenToProjectPath })
+	const projectId = postTokenToProjectPath.split(`/`)[3]
 
 	console.log({ projectId })
 
-	const token = await app.request(
-		postTokenToProjectUrl,
-		{
-			method: `POST`,
-			headers: {
-				Cookie: githubAccessTokenCookie,
-				"Content-Type": `application/x-www-form-urlencoded`,
-			},
-			body: `name=test`,
+	const token = await fetch(postTokenToProjectUrl, {
+		method: `POST`,
+		headers: {
+			Cookie: githubAccessTokenCookie,
+			"Content-Type": `application/x-www-form-urlencoded`,
 		},
-		env,
-	)
+		body: `name=test`,
+	})
 
 	const tokenText = await token.text()
 	const parser = new XMLParser()
@@ -106,21 +100,23 @@ it(`mocks GET requests`, async () => {
 	console.log({ code })
 	assert(code)
 
-	const reportMissing = await app.request(
-		`/reporter/${projectId}`,
+	const reportRef = `xxxxxxx_atom.io`
+	const reportMissing = await fetch(
+		`https://recoverage.cloud/reporter/${reportRef}`,
 		{
 			method: `GET`,
 			headers: {
 				Authorization: `Bearer ${code}`,
 			},
 		},
-		env,
 	)
 	console.log(await reportMissing.json())
 	expect(reportMissing.status).toBe(404)
+	const reportMissingLib = await downloadCoverageReportFromCloud(reportRef, code)
+	expect(reportMissingLib).toBeInstanceOf(Error)
 
-	const reportPut = await app.request(
-		`/reporter/${projectId}`,
+	const reportPut = await fetch(
+		`https://recoverage.cloud/reporter/${reportRef}`,
 		{
 			method: `PUT`,
 			headers: {
@@ -128,23 +124,31 @@ it(`mocks GET requests`, async () => {
 			},
 			body: JSON.stringify(reportFixture),
 		},
-		env,
 	)
-
-	console.log(await reportPut.json())
 	expect(reportPut.status).toBe(200)
+	const reportPutJson = await reportPut.json()
+	const reportPutLibJson = await uploadCoverageReportToCloud(
+		{
+			git_ref: reportRef,
+			coverage: JSON.stringify(reportFixture),
+		},
+		code,
+	)
+	expect(reportPutLibJson).toEqual(reportPutJson)
 
-	const reportGet = await app.request(
-		`/reporter/${projectId}`,
+	const reportGet = await fetch(
+		`https://recoverage.cloud/reporter/${reportRef}`,
 		{
 			method: `GET`,
 			headers: {
 				Authorization: `Bearer ${code}`,
 			},
 		},
-		env,
 	)
-
 	expect(reportGet.status).toBe(200)
-	expect(await reportGet.json()).toEqual(reportFixture)
+	const reportGetJson = await reportGet.json()
+	expect(reportGetJson).toEqual(reportFixture)
+	const reportGetLib = await downloadCoverageReportFromCloud(reportRef, code)
+	assert(typeof reportGetLib === `string`)
+	expect(JSON.parse(reportGetLib)).toEqual(reportFixture)
 })
