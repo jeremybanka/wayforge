@@ -13,7 +13,7 @@ import { createDatabase } from "./db"
 import type { Bindings } from "./env"
 import { computeHash } from "./hash"
 import { Project, ProjectToken } from "./project"
-import { authorization, type Role } from "./roles-permissions"
+import { authorization, projectsAllowed, type Role } from "./roles-permissions"
 import * as schema from "./schema"
 
 export type UiEnv = {
@@ -113,11 +113,9 @@ uiRoutes.get(`/project`, uiAuth, async (c) => {
 
 uiRoutes.post(`/project`, uiAuth, async (c) => {
 	const userRole = c.get(`userRole`)
-	if (authorization.check(userRole, `ownProjects`)) {
-		return c.json(
-			{ error: `You don't have permission to create a project` },
-			401,
-		)
+	const numberOfProjectsAllowed = projectsAllowed.get(userRole)
+	if (numberOfProjectsAllowed === 0) {
+		return c.json({ error: `You may not create projects` }, 401)
 	}
 	const db = c.get(`drizzle`)
 	const { id: userId } = c.get(`githubUserData`)

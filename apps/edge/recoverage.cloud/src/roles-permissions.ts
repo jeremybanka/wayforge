@@ -27,9 +27,23 @@ export const authorization = new Laws({
 	},
 })
 
-export const numberOfProjectsAllowed = new Escalator({
+export const projectsAllowed = new Escalator({
 	style: `untilMiss`,
 	laws: authorization,
 	permissionData: [[`ownProjects_upTo3`, 3]] as const,
+	fallback: 0 as const,
+})
+
+export const tokensAllowed = new Escalator({
+	style: `untilMiss`,
+	laws: authorization,
+	permissionData: [[`ownProjects_attachTokens_upTo12`, 12]] as const,
+	fallback: 0 as const,
+})
+
+export const reportsAllowed = new Escalator({
+	style: `untilMiss`,
+	laws: authorization,
+	permissionData: [[`ownProjects_attachReports_upTo3`, 3]] as const,
 	fallback: 0 as const,
 })
