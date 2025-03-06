@@ -1,6 +1,7 @@
 # prod
 dist/
 *.gen.ts
+tsconfig.tsbuildinfo
 
 # dev
 .yarn/
