@@ -44,14 +44,13 @@ export async function capture(
 	if (!silent && !logger.mark) {
 		Object.assign(logger, useMarks({ inline: true }))
 	}
-	logger.mark?.(`start`)
+	logger.mark?.(`called recoverage capture`)
 
 	const git = simpleGit(import.meta.dir)
 	logger.mark?.(`spawn git`)
 	const currentGitRef = await hashRepoState(git, logger.mark)
-	logger.mark?.(`git ref retrieved`)
+	logger.mark?.(`retrieved current git ref: ${currentGitRef}`)
 
-	logger.mark?.(`setup database`)
 	const coverageFile = file(`./coverage/coverage-final.json`)
 	const coverageJson = await coverageFile.json()
 	const coverageMap = createCoverageMap(coverageJson)
@@ -73,6 +72,7 @@ export async function capture(
 			defaultBranch,
 			logger.mark,
 		)
+		logger.mark?.(`retrieved default branch git ref: ${mainGitRef}`)
 		if (currentGitRef === mainGitRef) {
 			logger.mark?.(`uploading coverage report to recoverage.cloud`)
 			await uploadCoverageReportToCloud(
@@ -85,6 +85,8 @@ export async function capture(
 			)
 		}
 		logger.mark?.(`uploaded coverage report to recoverage.cloud`)
+	} else {
+		logger.mark?.(`RECOVERAGE_CLOUD_TOKEN not set; skipping upload`)
 	}
 
 	logger.logMarks?.()
@@ -99,7 +101,7 @@ export async function diff(
 		Object.assign(logger, useMarks({ inline: false }))
 	}
 
-	logger.mark?.(`start`)
+	logger.mark?.(`called recoverage diff`)
 
 	const git = simpleGit(import.meta.dir)
 	logger.mark?.(`spawn git`)
@@ -119,6 +121,9 @@ export async function diff(
 	if (!mainCoverage) {
 		logger.mark?.(`no coverage found for the target branch`)
 		if (!env.RECOVERAGE_CLOUD_TOKEN) {
+			logger.mark?.(
+				`RECOVERAGE_CLOUD_TOKEN not set; cannot download coverage report`,
+			)
 			logger.logMarks?.()
 			return 1
 		}
@@ -129,7 +134,7 @@ export async function diff(
 			env.RECOVERAGE_CLOUD_URL,
 		)
 		if (cloudCoverage instanceof Error) {
-			logger.mark?.(`failed to download coverage report from recoverage.cloud`)
+			logger.mark?.(`failed to download coverage report`)
 			console.error(cloudCoverage)
 			logger.logMarks?.()
 			return 1
