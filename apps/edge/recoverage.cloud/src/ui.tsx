@@ -13,6 +13,7 @@ import { createDatabase } from "./db"
 import type { Bindings } from "./env"
 import { computeHash } from "./hash"
 import { Project, ProjectToken } from "./project"
+import { authorization, type Role } from "./roles-permissions"
 import * as schema from "./schema"
 
 export type UiEnv = {
@@ -20,6 +21,7 @@ export type UiEnv = {
 	Variables: {
 		drizzle: DrizzleD1Database<typeof schema>
 		githubUserData: Endpoints[`GET /user`][`response`][`data`]
+		userRole: Role
 		projectScope: string
 	}
 }
@@ -51,8 +53,23 @@ const uiAuth: MiddlewareHandler<UiEnv> = async (c, next) => {
 
 	const db = createDatabase(c.env.DB)
 
+	const maybeUser = await db.query.users.findFirst({
+		where: eq(schema.users.id, data.id),
+		columns: { role: true },
+	})
+
+	if (!maybeUser) {
+		deleteCookie(c, `github-access-token`)
+		return c.json(
+			{ error: `User did not move through the expected auth flow.` },
+			500,
+		)
+	}
+	const userRole = maybeUser.role
+
 	c.set(`drizzle`, db)
 	c.set(`githubUserData`, data)
+	c.set(`userRole`, userRole)
 
 	await next()
 }
@@ -95,8 +112,16 @@ uiRoutes.get(`/project`, uiAuth, async (c) => {
 })
 
 uiRoutes.post(`/project`, uiAuth, async (c) => {
+	const userRole = c.get(`userRole`)
+	if (authorization.check(userRole, `ownProjects`)) {
+		return c.json(
+			{ error: `You don't have permission to create a project` },
+			401,
+		)
+	}
 	const db = c.get(`drizzle`)
 	const { id: userId } = c.get(`githubUserData`)
+
 	const formData = await c.req.formData()
 	const name = type(`string`)(formData.get(`name`))
 

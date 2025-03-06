@@ -1,9 +1,10 @@
 import { optional, required } from "treetrunks"
 
-import type { Roles } from "./laws"
-import { Laws } from "./laws"
+import type { Permissions, Roles } from "./laws"
+import { Escalator, Laws } from "./laws"
 
 export type Role = Roles<typeof authorization>
+export type Permission = Permissions<typeof authorization>
 export const authorization = new Laws({
 	roles: [`free`],
 	permissions: required({
@@ -24,4 +25,11 @@ export const authorization = new Laws({
 			`ownProjects_attachTokens_upTo12`,
 		]),
 	},
+})
+
+export const numberOfProjectsAllowed = new Escalator({
+	style: `untilMiss`,
+	laws: authorization,
+	permissionData: [[`ownProjects_upTo3`, 3]] as const,
+	fallback: 0 as const,
 })
