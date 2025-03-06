@@ -1,8 +1,11 @@
 import { relations, sql } from "drizzle-orm"
 import { integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core"
 
+import type { Role } from "./roles-permisions"
+
 export const users = sqliteTable(`users`, {
 	id: integer().primaryKey(),
+	role: text().$type<Role>(),
 	createdAt: text().notNull().default(sql`(current_timestamp)`),
 })
 
