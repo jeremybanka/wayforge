@@ -9,6 +9,20 @@ export type Roles<L extends Laws<any, any, any, any>> = L extends Laws<
 	? Role
 	: never
 
+export type Permissions<L extends Laws<any, any, any, any>> = L extends Laws<
+	any,
+	any,
+	infer Permission,
+	any
+>
+	? Permission
+	: never
+
+export type PermissionData<L extends Laws<any, any, any, any>, D> = Entries<
+	Permissions<L>,
+	D
+>
+
 export class Laws<
 	Role extends string,
 	PermissionTree extends Tree,
@@ -35,7 +49,7 @@ export class Laws<
 			toEntries<RolePermissions>(rolePermissions).map(
 				([role, permissionsOfRole]) => [
 					role,
-					decompressRolePermissions(permissionsOfRole),
+					Laws.decompressRolePermissions(permissionsOfRole),
 				],
 			),
 		)
@@ -44,20 +58,67 @@ export class Laws<
 	public check(role: Role, permission: Permission): boolean {
 		return this.decompressedRolePermissions[role].has(permission)
 	}
+
+	protected static decompressRolePermissions(
+		permissionSet: ReadonlySet<string>,
+	): ReadonlySet<string> {
+		const decompressed = new Set<string>(permissionSet)
+		for (const permission of permissionSet) {
+			const preconditions = permission.split(`_`)
+			for (let i = 0; i < preconditions.length - 1; i++) {
+				const subPermission = preconditions.slice(0, i + 1).join(`_`)
+				decompressed.add(subPermission)
+			}
+		}
+		return decompressed
+	}
 }
 
-function decompressRolePermissions(
-	permissionSet: ReadonlySet<string>,
-): ReadonlySet<string> {
-	const decompressed = new Set<string>(permissionSet)
-	for (const permission of permissionSet) {
-		const preconditions = permission.split(`_`)
-		for (let i = 0; i < preconditions.length - 1; i++) {
-			const subPermission = preconditions.slice(0, i + 1).join(`_`)
-			decompressed.add(subPermission)
-		}
+export type EscalatorStyle = `firstFound` | `lastFound` | `untilMiss`
+export class Escalator<
+	S extends EscalatorStyle,
+	L extends Laws<any, any, any, any>,
+	P extends PermissionData<L, any>,
+	D extends P extends PermissionData<L, infer d> ? d : never,
+	F,
+> {
+	public readonly style: S
+	public readonly laws: L
+	public readonly permissionData: P
+	public readonly fallback: F
+	public constructor(
+		options: Readonly<{
+			style: S
+			laws: L
+			permissionData: P
+			fallback: F
+		}>,
+	) {
+		const { style, laws, permissionData, fallback } = options
+		this.style = style
+		this.laws = laws
+		this.permissionData = permissionData
+		this.fallback = fallback
 	}
-	return decompressed
+
+	public get(role: Roles<L>): D | F {
+		let result: D | F = this.fallback
+		for (const [permission, data] of this.permissionData) {
+			const hasPermission = this.laws.check(role, permission)
+			switch (this.style) {
+				case `firstFound`:
+					if (hasPermission) return data
+					break
+				case `lastFound`:
+					if (hasPermission) result = data
+					break
+				case `untilMiss`:
+					if (hasPermission) result = data
+					else return result
+			}
+		}
+		return result
+	}
 }
 
 type Flat<R extends { [K in PropertyKey]: any }> = {
