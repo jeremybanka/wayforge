@@ -1,11 +1,12 @@
 {
-	"name": "recoverage-server",
+	"name": "recoverage.cloud",
 	"type": "module",
 	"scripts": {
-		"go": "pnpm db:up --remote && pnpm gen && pnpm run deploy",
-		"gen": "bun __scripts__/gen-scripts.bun.ts",
+		"go": "concurrently \"pnpm:setup:*\" && wrangler deploy --minify",
+		"setup:deps": "pnpm -w build --filter=recoverage.cloud",
+		"setup:scripts": "bun __scripts__/gen-scripts.bun.ts",
+		"setup:db": "pnpm db:up --remote",
 		"dev": "wrangler dev --live-reload",
-		"deploy": "wrangler deploy --minify",
 		"test": "vitest",
 		"test:once": "vitest run",
 		"db:gen": "drizzle-kit generate",
