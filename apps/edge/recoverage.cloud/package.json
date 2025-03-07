@@ -22,6 +22,7 @@
 		"drizzle-orm": "0.40.0",
 		"hono": "4.7.4",
 		"htmx.org": "2.0.4",
+		"jurist": "workspace:*",
 		"nanoid": "5.1.2",
 		"octokit": "4.1.2"
 	},
