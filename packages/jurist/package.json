@@ -1,0 +1,41 @@
+{
+	"name": "jurist",
+	"version": "0.0.0",
+	"license": "MIT",
+	"author": {
+		"name": "Jeremy Banka",
+		"email": "hello@jeremybanka.com"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeremybanka/wayforge.git",
+		"directory": "packages/jurist"
+	},
+	"type": "module",
+	"files": ["dist", "src"],
+	"main": "dist/jurist.js",
+	"scripts": {
+		"build": "tsup-node",
+		"lint:biome": "biome check -- .",
+		"lint:eslint": "eslint -- .",
+		"lint:types": "tsc --noEmit",
+		"watch:types": "tsc --watch --noEmit",
+		"lint": "concurrently \"bun:lint:*\"",
+		"test": "vitest",
+		"test:once": "vitest run",
+		"postversion": "biome format --write package.json"
+	},
+	"dependencies": {
+		"treetrunks": "workspace:*"
+	},
+	"devDependencies": {
+		"concurrently": "9.1.2",
+		"eslint": "9.21.0",
+		"rimraf": "6.0.1",
+		"tsup": "8.4.0",
+		"vitest": "3.0.8"
+	}
+}
