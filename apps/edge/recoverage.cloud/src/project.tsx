@@ -37,10 +37,10 @@ export function Project(props: DivProjectProps): JSX.Element {
 					key={id}
 					id={`project-${id}`}
 					class={css`
-					border: 1px solid black;
+					border: 1px solid var(--color-fg-light);
 					padding: 10px;
 					padding-bottom: 12px;
-					background: ${mode === `deleted` ? `var(--color-bg-s2)` : ``};
+					background: ${mode === `deleted` ? `var(--color-bg-s2)` : `var(--color-bg-t2)`};
 					box-shadow: ${mode === `deleted` ? `inset` : ``} 0 4px 0 -2px #0003;
 					border-radius: 10px 0px 10px 0px;
 			`}
@@ -197,7 +197,7 @@ export function ProjectToken(props: DivProjectTokenProps): JSX.Element {
 						gap: 5px;
 						border: 1px solid black;
 						padding: 10px;
-						background: ${mode === `deleted` ? `#eee` : `#fff`};
+						background: ${mode === `deleted` ? `var(--color-bg-s1)` : `var(--color-bg-t3)`};
 						box-shadow: ${mode === `deleted` ? `inset` : ``} 0 4px 0 -2px #0003;
 						border-radius: 10px 0 10px 0;
 					`}
@@ -247,13 +247,13 @@ export function ProjectToken(props: DivProjectTokenProps): JSX.Element {
 							`}
 							>
 								<span class={css`flex-grow: 1;`}>
-									<code class={css`font-size: 18px; color: green;`}>
+									<code class={css`font-size: 18px; color: var(--success);`}>
 										{id}.{secretShownOnce}
 									</code>
 								</span>
 								<button.copy text={secretShownOnce} />
 							</div>
-							<div class={css`font-size: 12px;`}>
+							<div class={css`font-size: 12px; text-align: right;`}>
 								^ copy this code and put it somewhere safe. it will not be shown
 								again.
 							</div>

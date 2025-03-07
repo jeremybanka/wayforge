@@ -20,8 +20,8 @@ export function create(props: CreateProps): JSX.Element {
 			class={css`
         background: ${disabled ? `transparent` : `var(--color-bg-t3)`};
         box-shadow: ${disabled ? `none` : `0 3px 0 -2px #0003`};
-        color: ${disabled ? `var(--color-fg-superlight)` : `black`};
-        border: ${disabled ? `1px solid var(--color-fg-superlight)` : `1px solid black`};
+        color: ${disabled ? `var(--color-fg-superlight)` : `var(--color-fg)`};
+        border: ${disabled ? `1px solid var(--color-fg-superlight)` : `1px solid var(--color-fg)`};
         padding: 10px;
         justify-self: left;
         align-self: flex-start;
@@ -58,8 +58,8 @@ export function x(props: XProps): JSX.Element {
 			class={css`
         background-color: ${disabled ? `transparent` : `var(--color-bg-t3)`};
         box-shadow: ${disabled ? `none` : `0 3px 0 -2px #0003`};
-        color: ${disabled ? `var(--color-fg-superlight)` : `black`};
-        border: 1px solid var(--color-fg-superlight);
+        color: ${disabled ? `var(--color-fg-superlight)` : `var(--color-fg)`};
+        border: 1px solid ${disabled ? `var(--color-fg-superlight)` : `var(--color-fg)`};
         padding: 10px;
         justify-self: left;
         align-self: flex-start;
@@ -90,8 +90,8 @@ export function copy({ disabled, text }: CopyProps): JSX.Element {
 			class={css`
         background-color: ${disabled ? `transparent` : `var(--color-bg-t3)`};
         box-shadow: ${disabled ? `none` : `0 3px 0 -2px #0003`};
-        color: ${disabled ? `var(--color-fg-superlight)` : `black`};
-        border: 1px solid var(--color-fg-superlight);
+        color: ${disabled ? `var(--color-fg-superlight)` : `var(--color-fg)`};
+        border: 1px solid ${disabled ? `var(--color-fg-superlight)` : `var(--color-fg)`};
         padding: 10px;
         justify-self: left;
         align-self: flex-start;
@@ -109,15 +109,18 @@ export function copy({ disabled, text }: CopyProps): JSX.Element {
 
 export type SubmitProps = {
 	children?: string
+	disabled?: boolean
 }
 export function submit(props: SubmitProps): JSX.Element {
+	const { disabled } = props
 	return (
 		<button
 			type="submit"
 			class={css`
         background-color: var(--color-bg-t3);
         box-shadow: 0 3px 0 -2px #0003;
-        border: 1px solid black;
+				color: ${disabled ? `var(--color-fg-superlight)` : `var(--color-fg)`};
+        border: 1px solid ${disabled ? `var(--color-fg-superlight)` : `var(--color-fg)`};
         padding: 10px;
         border-radius: 0 0 5px 0;
         &:active {

@@ -18,7 +18,7 @@ export function namer(props: NamerProps): JSX.Element {
 			{...props}
 			class={css`
         background: var(--color-bg-t3);
-        border: 1px solid black;
+        border: 1px solid var(--color-fg-light);
         padding: 10px;
         display: flex;
         flex-flow: column;
@@ -42,9 +42,10 @@ export function namer(props: NamerProps): JSX.Element {
 					class={css`
           width: 100%;
           font-size: 16px;
-          border: 1px solid black;
+          border: 1px solid var(--color-fg);
           padding: 10px;
           box-shadow: inset 0 1px 0 1px #0002;
+					color: var(--color-fg);
           background: var(--color-bg);
         `}
 				/>

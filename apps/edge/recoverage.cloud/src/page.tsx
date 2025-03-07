@@ -38,7 +38,8 @@ export function Page(props: PropsWithChildren): JSX.Element {
 					color: var(--color-fg);
 					--hyperlink: #0ff;
 					--hyperlink-active: #f80;
-					--hyperlink-visited: #f5f; 
+					--hyperlink-visited: #f5f;
+					--success: #0f0;
 					--color-fg: white;
 					--color-fg-light: #777;
 					--color-fg-superlight: #555;
@@ -53,6 +54,7 @@ export function Page(props: PropsWithChildren): JSX.Element {
 						--hyperlink: #00f;
 						--hyperlink-active: #f00;
 						--hyperlink-visited: #a0a;
+						--success: #080;
 						--color-fg: black;
 						--color-fg-light: #888;
 						--color-fg-superlight: #aaa;
@@ -70,7 +72,7 @@ export function Page(props: PropsWithChildren): JSX.Element {
 					class={css`
 						box-sizing: border-box;
 						background: var(--color-bg-t1);
-						border: 1px solid black;
+						border: 1px solid var(--color-fg-light);
 						padding: 40px 15px 20px;
 						flex-grow: 0;
 						display: flex;
