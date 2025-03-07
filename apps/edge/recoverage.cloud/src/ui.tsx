@@ -13,7 +13,7 @@ import { createDatabase } from "./db"
 import type { Bindings } from "./env"
 import { computeHash } from "./hash"
 import { Project, ProjectToken } from "./project"
-import { authorization, projectsAllowed, type Role } from "./roles-permissions"
+import { projectsAllowed, type Role, tokensAllowed } from "./roles-permissions"
 import * as schema from "./schema"
 
 export type UiEnv = {
@@ -114,11 +114,16 @@ uiRoutes.get(`/project`, uiAuth, async (c) => {
 uiRoutes.post(`/project`, uiAuth, async (c) => {
 	const userRole = c.get(`userRole`)
 	const numberOfProjectsAllowed = projectsAllowed.get(userRole)
-	if (numberOfProjectsAllowed === 0) {
-		return c.json({ error: `You may not create projects` }, 401)
-	}
 	const db = c.get(`drizzle`)
 	const { id: userId } = c.get(`githubUserData`)
+
+	const currentProjects = await db.query.projects.findMany({
+		where: eq(schema.projects.userId, userId),
+	})
+
+	if (currentProjects.length >= numberOfProjectsAllowed) {
+		return c.json({ error: `You may not create more projects` }, 401)
+	}
 
 	const formData = await c.req.formData()
 	const name = type(`string`)(formData.get(`name`))
@@ -171,19 +176,28 @@ uiRoutes.delete(`/project/:projectId`, uiAuth, async (c) => {
 
 uiRoutes.post(`/token/:projectId`, uiAuth, async (c) => {
 	const db = c.get(`drizzle`)
+	const userId = c.get(`githubUserData`).id
+
 	const formData = await c.req.formData()
 	const name = type(`string`)(formData.get(`name`))
 	const projectId = c.req.param(`projectId`)
-	const userId = c.get(`githubUserData`).id
 
-	const project = await db
-		.select()
-		.from(schema.projects)
-		.where(
-			and(eq(schema.projects.id, projectId), eq(schema.projects.userId, userId)),
-		)
+	const project = await db.query.projects.findFirst({
+		where: and(
+			eq(schema.projects.id, projectId),
+			eq(schema.projects.userId, userId),
+		),
+		with: {
+			tokens: true,
+		},
+	})
+
 	if (!project) {
 		return c.json({ error: `No project found` }, 404)
+	}
+	const numberOfTokensAllowed = tokensAllowed.get(c.get(`userRole`))
+	if (project?.tokens.length >= numberOfTokensAllowed) {
+		return c.json({ error: `You may not create more tokens` }, 401)
 	}
 
 	if (name instanceof type.errors) {
