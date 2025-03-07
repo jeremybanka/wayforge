@@ -77,7 +77,7 @@ export async function capture(
 			logger.mark?.(`uploading coverage report to recoverage.cloud`)
 			await uploadCoverageReportToCloud(
 				{
-					git_ref: currentGitRef,
+					git_ref: import.meta.dir,
 					coverage: JSON.stringify(coverageMap),
 				},
 				env.RECOVERAGE_CLOUD_TOKEN,

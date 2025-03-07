@@ -100,7 +100,7 @@ test(`authentication flow`, async () => {
 	console.log({ code })
 	assert(code)
 
-	const reportRef = `xxxxxxx_atom.io`
+	const reportRef = `atom.io`
 	const reportMissing = await fetch(
 		`https://recoverage.cloud/reporter/${reportRef}`,
 		{
