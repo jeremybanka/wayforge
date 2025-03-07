@@ -1,7 +1,5 @@
-import { optional, required } from "treetrunks"
-
-import type { Permissions, Roles } from "./laws"
-import { Escalator, Laws } from "./laws"
+import type { Permissions, Roles } from "jurist"
+import { Escalator, Laws, optional, required } from "jurist"
 
 export type Role = Roles<typeof authorization>
 export type Permission = Permissions<typeof authorization>
