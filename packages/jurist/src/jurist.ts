@@ -1,5 +1,7 @@
 import type { Join, Tree, TreePathName } from "treetrunks"
 
+export * from "treetrunks"
+
 export type Roles<L extends Laws<any, any, any, any>> = L extends Laws<
 	infer Role,
 	any,
@@ -60,7 +62,7 @@ export class Laws<
 	}
 }
 
-export function decompressRolePermissions(
+function decompressRolePermissions(
 	permissionSet: ReadonlySet<string>,
 ): ReadonlySet<string> {
 	const decompressed = new Set<string>(permissionSet)

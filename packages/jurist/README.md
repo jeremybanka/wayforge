@@ -1,116 +1,71 @@
-# treetrunks
+# jurist
 
 ```sh
-bun i treetrunks
+npm i jurist
 ```
 
-treetrunks is a convenient way to define type-safe routers.
+Jurist is a TypeScript-first authorization library supporting role-based access control.
 
 ## usage
 
-let's say we have the following function defined in `greet.ts`:
+### `Laws`
+
+With Jurist, permissions are expressed in a tree structure.
 
 ```typescript
-/**
- * @param {string} name
- * @param {number} age
- * @returns {string}
- */
-function greet(name: string, age: number): string {
-  return `Hello, ${name}!`
-}
-```
+// my-authorization.ts
+import { Laws, optional, required } from "jurist";
 
-create a `greet.x.ts` file with the following contents:
-
-```typescript
-import { greet } from "./greet"
-
-import { cli, parseNumberArg, parseStringArg } from "comline"
-import { z } from "zod"
-
-const greetCli = cli({
-  cliName: "greet",
-  discoverConfigPath: (positionalArgs) => path.join(process.cwd(), `.greet-config.json`),
-  optionsSchema: z.object({
-    name: z.string(),
-    age: z.number(),
+const authorization = new Laws({
+  roles: ["suspended", "free", "premium"],
+  permissions: required({
+    create: optional({
+      document: required({
+        "<=5": optional({ "<=5000": null }),
+        shareDocuments: null,
+      }),
+    }),
   }),
-  options: {
-    name: {
-      description: `name`,
-      example: `--name=hello`,
-      flag: `n`,
-      parse: parseStringArg,
-      required: true,
-    },
-    age: {
-      description: `age`,
-      example: `--age=1`,
-      flag: `a`,
-      parse: parseNumberArg,
-      required: true,
-    },
+  rolePermissions: {
+    suspended: new Set([]),
+    free: new Set([
+      /* a granted  permission grants all preceding permissions, e.g., 
+      "create"
+      "create_documents" */
+      "create_documents_<=5",
+    ]),
+    premium: new Set([
+      "create_documents_<=5_<=5000",
+      "create_documents_shareDocuments",
+    ]),
   },
-})
-
-const { suppliedOptions: { name, age } } = greetCli(process.argv)
-const output = greet(name, age) 
-process.stdout.write(output)
+});
 ```
 
-then, run the file `greet.x.ts` with the following command:
+The idea here is that some permissions must logically follow from other permissions. In other words, the `create_documents_<=5` permission is a prerequisite for the `create_documents_<=5_<=5000` permission, because if you are allowed to create 5,000 documents, you are logically allowed to create 5 documents in the first place.
 
-```sh
-bun greet.x.ts --name=jeremybanka --age=1
+This makes authorization checks easier, safer, and more explicit.
+
+```typescript
+// routes.ts
+import { Roles } from "jurist";
+
+import { authorization } from "./my-authorization";
+import { app } from "./my-hono-like-app";
+
+type Role = Roles<typeof authorization>; // "free" | "premium" | "suspended"
+
+type User = {
+  id: string;
+  role: Role;
+};
+
+app.post("/api/v1/resources", async (c) => {
+  const { user /* { id: "123-456", role: "free" } */ } = c.get("user");
+  /* ✅ true  */ authorization.check(user.role, "create");
+  /* ✅ true  */ authorization.check(user.role, "create_documents_<=5");
+  /* ❌ false */ authorization.check(user.role, "create_documents_<=5_<=5000");
+});
 ```
 
-this will print `Hello, jeremybanka!`
-
-## features
-- [x] switches (`--age`)
-  - `""` will be provided to the parse function for `age` in this case
-- [x] switches with values (`--age=1`)
-  - `"1"` will be provided to the parse function for `age` in this case
-- [x] multiple instances of the same switch (`--age=1 --age=2`) 
-  - `"1,2"` will be provided to the parse function for `age` in this case
-- [x] flags (`-a`)
-  - `""` will be provided to the parse function for `age` in this case
-- [x] multiple instances of the same flag (`-aa`)
-  - `","` will be provided to the parse function for `age` in this case
-- [x] flags with values (`-a=1`)
-  - `"1"` will be provided to the parse function for `age` in this case
-- [x] combined flags (`-na`)
-  - `""` will be provided to the parse function for `name` in this case
-  - `""` will be provided to the parse function for `age` in this case
-- [x] positional arguments (`my-cli -- positional`)
-  - validated as a "route" into the tree of positional arguments
-  ```typescript
-  import type { Tree, TreePath } from "comline"
-  import { optional, required } from "comline"
-
-  const myTree = required({
-	  hello: optional({
-		  world: null,
-		  $name: optional({
-			  good: required({
-				  morning: null,
-			  }),
-		  }),
-  	}),
-  }) satisfies Tree
-
-  const validPaths: TreePath<typeof myTree>[] = [
-    [`hello`],
-    [`hello`, `world`],
-    [`hello`, `jeremybanka`],
-    [`hello`, `jeremybanka`, `good`, `morning`],
-  ]
-  ```
-  
-
-## limitations
-
-- comline supports positional arguments, but only following the `--` convention.
-- comline supports options with values, but only when using `=` to separate the option name from the value.
-- flags are supported, but they must be single characters, either uppercase or lowercase.
+Here, we can see that a free user has permission to create a resource, and has permission to own up to 5 documents, but they cannot own up to 5,000 documents like a premium user.
