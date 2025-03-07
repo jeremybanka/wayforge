@@ -17,7 +17,7 @@ export function namer(props: NamerProps): JSX.Element {
 		<form
 			{...props}
 			class={css`
-        background-color: #fff;
+        background: var(--color-bg-t3);
         border: 1px solid black;
         padding: 10px;
         display: flex;
@@ -45,7 +45,7 @@ export function namer(props: NamerProps): JSX.Element {
           border: 1px solid black;
           padding: 10px;
           box-shadow: inset 0 1px 0 1px #0002;
-          background-color: #f6f6f6;
+          background: var(--color-bg);
         `}
 				/>
 				<button.submit />

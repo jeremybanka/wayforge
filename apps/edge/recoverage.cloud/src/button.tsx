@@ -18,16 +18,16 @@ export function create(props: CreateProps): JSX.Element {
 			hx-swap={props[`hx-swap`]}
 			type="button"
 			class={css`
-        background: ${disabled ? `transparent` : `#fff`};
+        background: ${disabled ? `transparent` : `var(--color-bg-t3)`};
         box-shadow: ${disabled ? `none` : `0 3px 0 -2px #0003`};
-        color: ${disabled ? `#aaa` : `black`};
-        border: ${disabled ? `1px solid #aaa` : `1px solid black`};
+        color: ${disabled ? `var(--color-fg-superlight)` : `black`};
+        border: ${disabled ? `1px solid var(--color-fg-superlight)` : `1px solid black`};
         padding: 10px;
         justify-self: left;
         align-self: flex-start;
         border-radius: 0px 0 5px 0;
         &:active {
-          background-color: #eee;
+          background-color: var(--bg-color-s2);
           box-shadow: inset 0 1px 0 1px #0002;
         }
       `}
@@ -56,16 +56,16 @@ export function x(props: XProps): JSX.Element {
 			hx-swap={props[`hx-swap`]}
 			type="button"
 			class={css`
-        background-color: ${disabled ? `transparent` : `#fff`};
+        background-color: ${disabled ? `transparent` : `var(--color-bg-t3)`};
         box-shadow: ${disabled ? `none` : `0 3px 0 -2px #0003`};
-        color: ${disabled ? `#aaa` : `black`};
-        border: 1px solid #aaa;
+        color: ${disabled ? `var(--color-fg-superlight)` : `black`};
+        border: 1px solid var(--color-fg-superlight);
         padding: 10px;
         justify-self: left;
         align-self: flex-start;
         border-radius: 0 0 0 5px;
         &:active {
-          background-color: #eee;
+          background-color: var(--bg-color-s2);
           box-shadow: inset 0 1px 0 1px #0002;
         }
       `}
@@ -88,16 +88,16 @@ export function copy({ disabled, text }: CopyProps): JSX.Element {
     .catch(err => alert('Copy failed: ' + err))`}
 			type="button"
 			class={css`
-        background-color: ${disabled ? `transparent` : `#fff`};
+        background-color: ${disabled ? `transparent` : `var(--color-bg-t3)`};
         box-shadow: ${disabled ? `none` : `0 3px 0 -2px #0003`};
-        color: ${disabled ? `#aaa` : `black`};
-        border: 1px solid #aaa;
+        color: ${disabled ? `var(--color-fg-superlight)` : `black`};
+        border: 1px solid var(--color-fg-superlight);
         padding: 10px;
         justify-self: left;
         align-self: flex-start;
         border-radius: 5px 0 5px 0;
         &:active {
-          background-color: #eee;
+          background-color: var(--bg-color-s2);
           box-shadow: inset 0 1px 0 1px #0002;
         }
       `}
@@ -115,13 +115,13 @@ export function submit(props: SubmitProps): JSX.Element {
 		<button
 			type="submit"
 			class={css`
-        background-color: #fff;
+        background-color: var(--color-bg-t3);
         box-shadow: 0 3px 0 -2px #0003;
         border: 1px solid black;
         padding: 10px;
         border-radius: 0 0 5px 0;
         &:active {
-          background-color: #eee;
+          background-color: var(--bg-color-s2);
           box-shadow: inset 0 1px 0 1px #0002;
         }
       `}

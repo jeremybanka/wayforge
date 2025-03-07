@@ -40,7 +40,7 @@ export function Project(props: DivProjectProps): JSX.Element {
 					border: 1px solid black;
 					padding: 10px;
 					padding-bottom: 12px;
-					background: ${mode === `deleted` ? `#eee` : `#fbfbfb`};
+					background: ${mode === `deleted` ? `var(--color-bg-s2)` : ``};
 					box-shadow: ${mode === `deleted` ? `inset` : ``} 0 4px 0 -2px #0003;
 					border-radius: 10px 0px 10px 0px;
 			`}
@@ -92,9 +92,9 @@ export function Project(props: DivProjectProps): JSX.Element {
 							<span
 								class={css`
 									background:transparent;
-									background-color: #f3f3f3;
+									background-color: var()(--color-bg-s1);								
 									box-shadow: inset 0 1px 0 1px #0002;
-									border: 1px solid #888;
+									border: 1px solid var(--color-fg-light);
 									padding: 5px;
 									height: 30px;
 									width: 80px;
@@ -103,7 +103,7 @@ export function Project(props: DivProjectProps): JSX.Element {
 							<span
 								class={css`
 									background: transparent;
-									border: 1px solid #ddd;
+									border: 1px solid var(--color-fg-faint);
 									padding: 5px;
 									height: 30px;
 									width: 80px;
@@ -239,7 +239,7 @@ export function ProjectToken(props: DivProjectTokenProps): JSX.Element {
 								display: flex;
 								flex-flow: row;
 								gap: 10px;
-								background: #fafffa;
+								background: #0f02;
 								box-shadow: 0 3px 0 -2px #0003;
 								border: 2px dotted green;
 								padding: 10px;
