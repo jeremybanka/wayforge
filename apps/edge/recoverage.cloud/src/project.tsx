@@ -4,6 +4,7 @@ import * as button from "./button"
 import * as form from "./form"
 import * as h4 from "./h4"
 import * as header from "./header"
+import { type Role, tokensAllowed } from "./roles-permissions"
 
 export type DivProjectProps =
 	| {
@@ -11,15 +12,21 @@ export type DivProjectProps =
 			name: string
 			tokens: CompleteProjectTokenProps[]
 			mode: `deleted` | `existing`
+			userRole: Role
 	  }
 	| {
 			mode: `button` | `creator`
+			disabled?: boolean
 	  }
 export function Project(props: DivProjectProps): JSX.Element {
 	switch (props.mode) {
 		case `button`: {
 			return (
-				<button.create hx-post="/ui/project" hx-swap="beforebegin">
+				<button.create
+					hx-post="/ui/project"
+					hx-swap="beforebegin"
+					disabled={props.disabled}
+				>
 					+ New project
 				</button.create>
 			)
@@ -31,7 +38,9 @@ export function Project(props: DivProjectProps): JSX.Element {
 		}
 		case `existing`:
 		case `deleted`: {
-			const { id, name, tokens, mode } = props
+			const { id, name, tokens, mode, userRole } = props
+			const numberOfTokensAllowed = tokensAllowed.get(userRole)
+			const mayCreateToken = tokens.length < numberOfTokensAllowed
 			return (
 				<div
 					key={id}
@@ -128,7 +137,7 @@ export function Project(props: DivProjectProps): JSX.Element {
 						<ProjectToken
 							mode="button"
 							projectId={id}
-							disabled={mode === `deleted`}
+							disabled={mode === `deleted` || !mayCreateToken}
 						/>
 						{/* <ProjectToken mode="creator" projectId={id} />
 						<ProjectToken
