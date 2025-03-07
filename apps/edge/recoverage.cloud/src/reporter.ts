@@ -7,6 +7,8 @@ import { Hono } from "hono"
 import { createDatabase } from "./db"
 import type { Bindings } from "./env"
 import { computeHash } from "./hash"
+import type { Role } from "./roles-permissions"
+import { reportsAllowed } from "./roles-permissions"
 import * as schema from "./schema"
 
 type ReporterEnv = {
@@ -14,6 +16,7 @@ type ReporterEnv = {
 	Variables: {
 		drizzle: DrizzleD1Database<typeof schema>
 		projectScope: string
+		userRole: Role
 	}
 }
 export const reporterRoutes = new Hono<ReporterEnv>()
@@ -29,18 +32,26 @@ const reporterAuth: MiddlewareHandler<ReporterEnv> = async (c, next) => {
 		return c.json({ error: `Invalid token format` }, 401)
 	}
 	const db = createDatabase(c.env.DB)
-	const tokenRecord = await db
-		.select({
-			projectId: schema.tokens.projectId,
-			salt: schema.tokens.salt,
-			hash: schema.tokens.hash,
-		})
-		.from(schema.tokens)
-		.where(eq(schema.tokens.id, id))
-		.get()
+	const tokenRecord = await db.query.tokens.findFirst({
+		where: eq(schema.tokens.id, id),
+		columns: {
+			projectId: true,
+			salt: true,
+			hash: true,
+		},
+		with: {
+			project: {
+				with: {
+					user: true,
+				},
+			},
+		},
+	})
+
 	if (!tokenRecord) {
 		return c.json({ error: `Token not found` }, 401)
 	}
+
 	const { projectId, salt, hash: realHash } = tokenRecord
 	const suppliedHash = await computeHash(password, salt)
 	if (suppliedHash !== realHash) {
@@ -48,6 +59,7 @@ const reporterAuth: MiddlewareHandler<ReporterEnv> = async (c, next) => {
 	}
 	c.set(`drizzle`, db)
 	c.set(`projectScope`, projectId)
+	c.set(`userRole`, tokenRecord.project.user.role)
 	await next()
 }
 
@@ -82,6 +94,19 @@ reporterRoutes.put(`/:reportRef`, reporterAuth, async (c) => {
 		)
 	}
 
+	const userRole = c.get(`userRole`)
+	const numberOfReportsAllowed = reportsAllowed.get(userRole)
+
+	const db = c.get(`drizzle`)
+
+	const currentReports = await db.query.reports.findMany({
+		where: eq(schema.reports.projectId, projectScope),
+	})
+
+	if (currentReports.length >= numberOfReportsAllowed) {
+		return c.json({ error: `You may not create more reports` }, 401)
+	}
+
 	const data = await c.req.json()
 	const out = istanbulCoverageMapType(data)
 
@@ -89,8 +114,6 @@ reporterRoutes.put(`/:reportRef`, reporterAuth, async (c) => {
 		console.log(out.summary)
 		return c.json({ error: `Invalid report`, typeErrors: out.summary }, 400)
 	}
-
-	const db = c.get(`drizzle`)
 
 	await db
 		.insert(schema.reports)
