@@ -38,7 +38,7 @@ export function Page(props: PropsWithChildren): JSX.Element {
 					color: var(--color-fg);
 					--hyperlink: #0ff;
 					--hyperlink-active: #f80;
-					--hyperlink-visited: #f5f	; 
+					--hyperlink-visited: #f5f; 
 					--color-fg: white;
 					--color-fg-light: #777;
 					--color-fg-superlight: #555;
@@ -50,6 +50,9 @@ export function Page(props: PropsWithChildren): JSX.Element {
 					--color-bg-t2: #353535;
 					--color-bg-t3: #424242;
 					@media (prefers-color-scheme: light) {
+						--hyperlink: #00f;
+						--hyperlink-active: #f00;
+						--hyperlink-visited: #a0a;
 						--color-fg: black;
 						--color-fg-light: #888;
 						--color-fg-superlight: #aaa;
