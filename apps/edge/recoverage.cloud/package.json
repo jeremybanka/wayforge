@@ -6,6 +6,7 @@
 		"setup:deps": "pnpm -w build --filter=recoverage.cloud",
 		"setup:scripts": "bun __scripts__/gen-scripts.bun.ts",
 		"setup:db": "pnpm db:up --remote",
+		"gen": "pnpm setup:scripts",
 		"dev": "wrangler dev --live-reload",
 		"test": "vitest",
 		"test:once": "vitest run",
