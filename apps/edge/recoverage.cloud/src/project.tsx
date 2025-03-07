@@ -4,13 +4,14 @@ import * as button from "./button"
 import * as form from "./form"
 import * as h4 from "./h4"
 import * as header from "./header"
-import { type Role, tokensAllowed } from "./roles-permissions"
+import { reportsAllowed, type Role, tokensAllowed } from "./roles-permissions"
 
 export type DivProjectProps =
 	| {
 			id: string
 			name: string
 			tokens: CompleteProjectTokenProps[]
+			reports: { ref: string }[]
 			mode: `deleted` | `existing`
 			userRole: Role
 	  }
@@ -38,7 +39,7 @@ export function Project(props: DivProjectProps): JSX.Element {
 		}
 		case `existing`:
 		case `deleted`: {
-			const { id, name, tokens, mode, userRole } = props
+			const { id, name, tokens, reports, mode, userRole } = props
 			const numberOfTokensAllowed = tokensAllowed.get(userRole)
 			const mayCreateToken = tokens.length < numberOfTokensAllowed
 			return (
@@ -72,6 +73,14 @@ export function Project(props: DivProjectProps): JSX.Element {
 							`}
 							>
 								{name}
+								{` `}
+								{mode === `deleted` ? (
+									<span
+										class={css`font-size: 14px; font-weight: 400; color: var(--color-fg-light);`}
+									>
+										(deleted)
+									</span>
+								) : null}
 							</h3>
 						</span>
 
@@ -98,26 +107,62 @@ export function Project(props: DivProjectProps): JSX.Element {
 								gap: 10px;
 							`}
 						>
-							<span
-								class={css`
-									background:transparent;
-									background-color: var()(--color-bg-s1);								
-									box-shadow: inset 0 1px 0 1px #0002;
-									border: 1px solid var(--color-fg-light);
-									padding: 5px;
-									height: 30px;
-									width: 80px;
-								`}
-							/>
-							<span
-								class={css`
-									background: transparent;
-									border: 1px solid var(--color-fg-faint);
-									padding: 5px;
-									height: 30px;
-									width: 80px;
-								`}
-							/>
+							{Array.from({ length: reportsAllowed.get(userRole) }).map(
+								(_, idx) => {
+									const report: { ref: string } | undefined = reports[idx]
+									if (!report) {
+										return (
+											<span
+												class={css`
+												background: transparent;
+												border: 1px solid var(--color-fg-faint);
+												padding: 5px;
+												box-sizing: border-box;
+												height: 46px;
+												width: 80px;
+												box-shadow: inset 0 1px 0 1px #0002;
+											`}
+											/>
+										)
+									}
+									return (
+										<span
+											key={report?.ref ?? idx}
+											class={css`
+												display: flex;
+												box-sizing: border-box;
+												flex-flow: column;
+												align-items: center;
+												justify-content: center;
+												background-color: ${mode === `deleted` ? `transparent` : `var(--color-bg-t1)`};
+												border: 1px solid ${mode === `deleted` ? `var(--color-fg-faint)` : `var(--color-fg-light)`};
+												box-shadow: inset 0 1px 0 1px #0002;
+												padding: 2px;
+												min-height: 30px;
+												min-width: 80px;
+											`}
+										>
+											<span
+												class={css`
+													display: flex;
+													flex-flow: column;
+													align-items: center;
+													justify-content: center;
+													background:transparent;
+													color: ${mode === `deleted` ? `var(--color-fg-faint)` : `var(--color-fg)`};
+													background-color: ${mode === `deleted` ? `transparent` : `var(--color-bg-t3)`};						
+													border: 1px solid ${mode === `deleted` ? `transparent` : `var(--color-fg-faint)`};
+													box-shadow: 0 4px 0 -2px #0003;
+													padding: 10px 10px;
+													min-width: 80px;
+												`}
+											>
+												{report?.ref ?? ``}
+											</span>
+										</span>
+									)
+								},
+							)}
 						</div>
 					</section>
 
@@ -226,7 +271,9 @@ export function ProjectToken(props: DivProjectTokenProps): JSX.Element {
 								{name}
 								{` `}
 								{mode === `deleted` ? (
-									<span class={css`font-size: 14px; font-weight: 400;`}>
+									<span
+										class={css`font-size: 14px; font-weight: 400; color: var(--color-fg-light);`}
+									>
 										(deleted)
 									</span>
 								) : null}

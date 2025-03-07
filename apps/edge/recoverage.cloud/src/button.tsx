@@ -56,11 +56,12 @@ export function x(props: XProps): JSX.Element {
 			hx-swap={props[`hx-swap`]}
 			type="button"
 			class={css`
+				font-size: 15px;
         background-color: ${disabled ? `transparent` : `var(--color-bg-t3)`};
         box-shadow: ${disabled ? `none` : `0 3px 0 -2px #0003`};
         color: ${disabled ? `var(--color-fg-superlight)` : `var(--color-fg)`};
         border: 1px solid ${disabled ? `var(--color-fg-superlight)` : `var(--color-fg)`};
-        padding: 10px;
+        padding: 7px 10px;
         justify-self: left;
         align-self: flex-start;
         border-radius: 0 0 0 5px;
@@ -70,7 +71,7 @@ export function x(props: XProps): JSX.Element {
         }
       `}
 		>
-			x
+			×
 		</button>
 	)
 }

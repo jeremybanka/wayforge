@@ -81,6 +81,11 @@ uiRoutes.get(`/project`, uiAuth, async (c) => {
 		where: eq(schema.projects.userId, user.id),
 		with: {
 			tokens: true,
+			reports: {
+				columns: {
+					ref: true,
+				},
+			},
 		},
 	})
 	// console.log(`User`, user)
@@ -114,8 +119,17 @@ uiRoutes.get(`/project`, uiAuth, async (c) => {
 						mode: `existing`,
 					},
 				]}
+				reports={[{ ref: `hahahahhahahahahahahah` }]}
+				userRole="free"
 			/>
-			<Project mode="deleted" id="123" name="my old project" tokens={[]} /> */}
+			<Project
+				mode="deleted"
+				id="123"
+				name="my old project"
+				tokens={[]}
+				reports={[{ ref: `123` }]}
+				userRole="free"
+			/> */}
 		</>,
 	)
 })
@@ -148,7 +162,13 @@ uiRoutes.post(`/project`, uiAuth, async (c) => {
 			.returning()
 	)[0]
 	return c.html(
-		<Project {...project} mode="existing" userRole={userRole} tokens={[]} />,
+		<Project
+			{...project}
+			mode="existing"
+			userRole={userRole}
+			tokens={[]}
+			reports={[]}
+		/>,
 	)
 })
 

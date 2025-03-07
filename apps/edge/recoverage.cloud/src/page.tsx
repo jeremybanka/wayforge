@@ -42,8 +42,8 @@ export function Page(props: PropsWithChildren): JSX.Element {
 					--success: #0f0;
 					--color-fg: white;
 					--color-fg-light: #777;
-					--color-fg-superlight: #555;
-					--color-fg-faint: #333;
+					--color-fg-superlight: #666;
+					--color-fg-faint: #555;
 					--color-bg-s2: #050505;
 					--color-bg-s1: #121212;
 					--color-bg:	#222;
