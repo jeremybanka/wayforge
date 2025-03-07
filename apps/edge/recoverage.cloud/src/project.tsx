@@ -249,7 +249,7 @@ export function ProjectToken(props: DivProjectTokenProps): JSX.Element {
 						display: flex;
 						flex-flow: column;
 						gap: 5px;
-						border: 1px solid black;
+						border: 1px solid var(--color-fg-light);
 						padding: 10px;
 						background: ${mode === `deleted` ? `var(--color-bg-s1)` : `var(--color-bg-t3)`};
 						box-shadow: ${mode === `deleted` ? `inset` : ``} 0 4px 0 -2px #0003;
