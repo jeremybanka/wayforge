@@ -173,8 +173,8 @@ importers:
   apps/edge/recoverage.cloud:
     dependencies:
       arktype:
-        specifier: 2.1.7
-        version: 2.1.7
+        specifier: 2.1.9
+        version: 2.1.9
       bun:
         specifier: 1.2.4
         version: 1.2.4
@@ -1611,11 +1611,11 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@ark/schema@0.44.2':
-    resolution: {integrity: sha512-h11NRCJiY3OSug3RHz4aLJN79Dszq8cG+VN05v/NfSz0CpEW741mvkz5gdSZGq5/tshBYcVPfLGlA4QFkizqXA==}
+  '@ark/schema@0.44.4':
+    resolution: {integrity: sha512-TsZTX+k5J7xsGABsFjVdRUNgViGDMLv73sikBM8JNxC4STe0suTuMNa1OJ/AFP2N+LpJ1zL9tdWlg28PRqAYhg==}
 
-  '@ark/util@0.44.2':
-    resolution: {integrity: sha512-4wWe3gPlIeP1oXqtrLflOsgT+0KjlDmQaLPjqRsdCDAb4GlTzH9/eZTC2Hz/8rDGlvPJ7JvCVXHbvK/n9CuD6g==}
+  '@ark/util@0.44.4':
+    resolution: {integrity: sha512-zLfNZrsq5Dq+8B0pHJwL/wD3xNBHb8FoP0FuPB455w7HpqVaqO5qPXvn+YoO8v1Y6pNwLVsM9vCIiO221LoODQ==}
 
   '@asamuzakjp/css-color@2.8.3':
     resolution: {integrity: sha512-GIc76d9UI1hCvOATjZPyHFmE5qhRccp3/zGfMPapK3jBi+yocEzp6BBB0UnfRYP9NP4FANqUZYb0hnfs3TM3hw==}
@@ -4713,8 +4713,8 @@ packages:
     resolution: {integrity: sha512-COROpnaoap1E2F000S62r6A60uHZnmlvomhfyT2DlTcrY1OrBKn2UhH7qn5wTC9zMvD0AY7csdPSNwKP+7WiQw==}
     engines: {node: '>= 0.4'}
 
-  arktype@2.1.7:
-    resolution: {integrity: sha512-RpczU+Ny4g4BqeVu9v2o288A5p8DQ8w8kJuFcD3okCT+oHP8C9YDTkj2kJG2Vz3XQAN2O9Aw06RNoJV0UZ8m6A==}
+  arktype@2.1.9:
+    resolution: {integrity: sha512-bq46shcLpfop4D9acVQN/+quZ+hIGs4OUzoLq2vCaZLdkITOlWkfamBk9abMuC6fbgxW1fu/2PamcQgggWhTwQ==}
 
   array-buffer-byte-length@1.0.2:
     resolution: {integrity: sha512-LHE+8BuR7RYGDKvnrmcuSq3tDcKv9OFEXQt/HpbZhY7V6h0zlUXutnAD82GiFx9rdieCMjkvtcsPqBwgUl1Iiw==}
@@ -9122,11 +9122,11 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@ark/schema@0.44.2':
+  '@ark/schema@0.44.4':
     dependencies:
-      '@ark/util': 0.44.2
+      '@ark/util': 0.44.4
 
-  '@ark/util@0.44.2': {}
+  '@ark/util@0.44.4': {}
 
   '@asamuzakjp/css-color@2.8.3':
     dependencies:
@@ -12344,10 +12344,10 @@ snapshots:
 
   aria-query@5.3.2: {}
 
-  arktype@2.1.7:
+  arktype@2.1.9:
     dependencies:
-      '@ark/schema': 0.44.2
-      '@ark/util': 0.44.2
+      '@ark/schema': 0.44.4
+      '@ark/util': 0.44.4
 
   array-buffer-byte-length@1.0.2:
     dependencies:
