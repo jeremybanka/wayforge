@@ -24,7 +24,7 @@ export async function getCoverageJsonSummary(
 		`${tempDir.name}/coverage/coverage-summary.json`,
 	).json()) as JsonSummaryReport
 	tempDir.removeCallback()
-	mark?.(`got json coverage for ${branchCoverage.git_ref}`)
+	mark?.(`got json coverage for ${branchCoverage.reportName}`)
 	return jsonReport
 }
 
@@ -47,7 +47,7 @@ export async function getCoverageTextReport(
 		throw new Error(`failed to generate coverage text report`)
 	}
 	tempDir.removeCallback()
-	mark?.(`got text coverage for ${branchCoverage.git_ref}`)
+	mark?.(`got text coverage for ${branchCoverage.reportName}`)
 	// console.log(textReport)
 	return textReport
 }

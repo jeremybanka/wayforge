@@ -13,7 +13,9 @@ export async function initDatabase(): Promise<Database> {
 		await downloadCoverageDatabaseFromS3(S3_CREDENTIALS)
 	}
 	const db = new Database(`./coverage.sqlite`)
-	db.run(`create table if not exists coverage (git_ref text, coverage text);`)
+	db.run(
+		`create table if not exists coverage (git_ref text, coverage text, last_updated text default current_timestamp);`,
+	)
 	logger.mark?.(`set up database`)
 	return db
 }

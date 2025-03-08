@@ -1,11 +1,11 @@
 import type { BranchCoverage } from "./recoverage"
 
 export async function downloadCoverageReportFromCloud(
-	gitRef: string,
+	reportName: string,
 	cloudToken: string,
 	cloudHost = `https://recoverage.cloud`,
 ): Promise<Error | string> {
-	const url = new URL(`/reporter/${gitRef}`, cloudHost)
+	const url = new URL(`/reporter/${reportName}`, cloudHost)
 	try {
 		const response = await fetch(url, {
 			method: `GET`,
@@ -35,7 +35,7 @@ export async function uploadCoverageReportToCloud(
 	cloudToken: string,
 	cloudHost = `https://recoverage.cloud`,
 ): Promise<Error | { success: true }> {
-	const url = new URL(`/reporter/${branchCoverage.git_ref}`, cloudHost)
+	const url = new URL(`/reporter/${branchCoverage.reportName}`, cloudHost)
 	try {
 		const response = await fetch(url, {
 			method: `PUT`,

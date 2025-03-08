@@ -14,7 +14,7 @@ import { uploadCoverageDatabaseToS3 } from "./persist-s3"
 import { env, S3_CREDENTIALS } from "./recoverage.env"
 
 export class BranchCoverage {
-	public git_ref: string
+	public reportName: string
 	public coverage: string
 }
 
@@ -77,7 +77,7 @@ export async function capture(
 			logger.mark?.(`uploading coverage report to recoverage.cloud`)
 			await uploadCoverageReportToCloud(
 				{
-					git_ref: import.meta.dir,
+					reportName: import.meta.dir,
 					coverage: JSON.stringify(coverageMap),
 				},
 				env.RECOVERAGE_CLOUD_TOKEN,
@@ -129,7 +129,7 @@ export async function diff(
 		}
 		logger.mark?.(`looking for coverage report on recoverage.cloud`)
 		const cloudCoverage = await downloadCoverageReportFromCloud(
-			mainGitRef,
+			import.meta.dir,
 			env.RECOVERAGE_CLOUD_TOKEN,
 			env.RECOVERAGE_CLOUD_URL,
 		)
@@ -140,7 +140,7 @@ export async function diff(
 			return 1
 		}
 		mainCoverage = {
-			git_ref: mainGitRef,
+			reportName: mainGitRef,
 			coverage: cloudCoverage,
 		}
 		logger.mark?.(`coverage report found on recoverage.cloud`)
