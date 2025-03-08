@@ -128,10 +128,8 @@ test(`authentication flow`, async () => {
 	expect(reportPut.status).toBe(200)
 	const reportPutJson = await reportPut.json()
 	const reportPutLibJson = await uploadCoverageReportToCloud(
-		{
-			git_ref: reportRef,
-			coverage: JSON.stringify(reportFixture),
-		},
+		reportRef,
+		JSON.stringify(reportFixture),
 		code,
 	)
 	expect(reportPutLibJson).toEqual(reportPutJson)
