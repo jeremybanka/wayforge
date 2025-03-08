@@ -33,3 +33,7 @@ export const getCoverage = database
 		`SELECT * FROM coverage WHERE git_ref = $git_ref`,
 	)
 	.as(BranchCoverage)
+
+export const deleteAllButLast10Reports = database.prepare<BranchCoverage, []>(
+	`DELETE FROM coverage WHERE git_ref NOT IN (SELECT git_ref FROM coverage ORDER BY git_ref DESC LIMIT 10)`,
+)

@@ -2,7 +2,7 @@ import { file } from "bun"
 import { createCoverageMap } from "istanbul-lib-coverage"
 import simpleGit from "simple-git"
 
-import { getCoverage, saveCoverage } from "./database"
+import { deleteAllButLast10Reports, getCoverage, saveCoverage } from "./database"
 import { getDefaultBranchHashRef, hashRepoState } from "./git-status"
 import { logDiff, logger, useMarks } from "./logger"
 import { getCoverageJsonSummary, getCoverageTextReport } from "./nyc-coverage"
@@ -12,9 +12,10 @@ import {
 } from "./persist-cloud"
 import { uploadCoverageDatabaseToS3 } from "./persist-s3"
 import { env, S3_CREDENTIALS } from "./recoverage.env"
+import { stringify } from "./stringify"
 
 export class BranchCoverage {
-	public reportName: string
+	public git_ref: string
 	public coverage: string
 }
 
@@ -54,13 +55,16 @@ export async function capture(
 	const coverageFile = file(`./coverage/coverage-final.json`)
 	const coverageJson = await coverageFile.json()
 	const coverageMap = createCoverageMap(coverageJson)
+	const coverageMapStringified = stringify(coverageMap)
 
 	saveCoverage.run({
 		$git_ref: currentGitRef,
-		$coverage: JSON.stringify(coverageMap),
+		$coverage: coverageMapStringified,
 	})
 
 	logger.mark?.(`updated coverage for ${currentGitRef}`)
+
+	deleteAllButLast10Reports.run()
 
 	if (S3_CREDENTIALS) {
 		await uploadCoverageDatabaseToS3(S3_CREDENTIALS)
@@ -76,10 +80,8 @@ export async function capture(
 		if (currentGitRef === mainGitRef) {
 			logger.mark?.(`uploading coverage report to recoverage.cloud`)
 			await uploadCoverageReportToCloud(
-				{
-					reportName: import.meta.dir,
-					coverage: JSON.stringify(coverageMap),
-				},
+				import.meta.dir,
+				coverageMapStringified,
 				env.RECOVERAGE_CLOUD_TOKEN,
 				env.RECOVERAGE_CLOUD_URL,
 			)
@@ -140,7 +142,7 @@ export async function diff(
 			return 1
 		}
 		mainCoverage = {
-			reportName: mainGitRef,
+			git_ref: mainGitRef,
 			coverage: cloudCoverage,
 		}
 		logger.mark?.(`coverage report found on recoverage.cloud`)
