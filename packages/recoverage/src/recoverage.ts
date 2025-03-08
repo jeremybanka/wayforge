@@ -66,18 +66,20 @@ export async function capture(
 
 	deleteAllButLast10Reports.run()
 
-	if (S3_CREDENTIALS) {
-		await uploadCoverageDatabaseToS3(S3_CREDENTIALS)
-	}
-
-	if (env.RECOVERAGE_CLOUD_TOKEN) {
-		const mainGitRef = await getDefaultBranchHashRef(
-			git,
-			defaultBranch,
-			logger.mark,
-		)
-		logger.mark?.(`retrieved default branch git ref: ${mainGitRef}`)
-		if (currentGitRef === mainGitRef) {
+	const defaultGitRef = await getDefaultBranchHashRef(
+		git,
+		defaultBranch,
+		logger.mark,
+	)
+	logger.mark?.(`retrieved default branch git ref: ${defaultGitRef}`)
+	if (currentGitRef === defaultGitRef) {
+		logger.mark?.(`we're on the default branch`)
+		if (S3_CREDENTIALS) {
+			logger.mark?.(`uploading coverage database to S3`)
+			await uploadCoverageDatabaseToS3(S3_CREDENTIALS)
+			logger.mark?.(`uploaded coverage database to S3`)
+		}
+		if (env.RECOVERAGE_CLOUD_TOKEN) {
 			logger.mark?.(`uploading coverage report to recoverage.cloud`)
 			await uploadCoverageReportToCloud(
 				import.meta.dir,
@@ -85,10 +87,10 @@ export async function capture(
 				env.RECOVERAGE_CLOUD_TOKEN,
 				env.RECOVERAGE_CLOUD_URL,
 			)
+			logger.mark?.(`uploaded coverage report to recoverage.cloud`)
+		} else {
+			logger.mark?.(`RECOVERAGE_CLOUD_TOKEN not set; skipping upload`)
 		}
-		logger.mark?.(`uploaded coverage report to recoverage.cloud`)
-	} else {
-		logger.mark?.(`RECOVERAGE_CLOUD_TOKEN not set; skipping upload`)
 	}
 
 	logger.logMarks?.()
