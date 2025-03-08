@@ -91,6 +91,8 @@ export async function capture(
 		} else {
 			logger.mark?.(`RECOVERAGE_CLOUD_TOKEN not set; skipping upload`)
 		}
+	} else {
+		logger.mark?.(`we're not on the default branch; no need to persist coverage`)
 	}
 
 	logger.logMarks?.()
