@@ -40,5 +40,5 @@ export const deleteAllButLast10Reports = (
 	db: Database,
 ): Statement<BranchCoverage, []> =>
 	db.prepare(
-		`DELETE FROM coverage WHERE git_ref NOT IN (SELECT git_ref FROM coverage ORDER BY git_ref DESC LIMIT 10)`,
+		`DELETE FROM coverage WHERE last_updated NOT IN (SELECT last_updated FROM coverage ORDER BY last_updated DESC LIMIT 10)`,
 	)
