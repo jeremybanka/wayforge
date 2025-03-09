@@ -1,5 +1,11 @@
 # treetrunks
 
+## 0.0.9
+
+### Patch Changes
+
+- 6ad75b0: 🐛 Previously, recoverage would in some situations clear the default branch's coverage report. Now this coverage report will never be cleared.
+
 ## 0.0.8
 
 ### Patch Changes
