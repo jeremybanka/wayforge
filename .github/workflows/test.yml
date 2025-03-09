@@ -77,7 +77,6 @@ jobs:
           S3_ENDPOINT: ${{ secrets.S3_ENDPOINT }}
           S3_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
       - run: git rev-parse HEAD > git.sha
-      - run: pnpm test:coverage
       - run: pnpm test:coverage:increased
       # - uses: coverallsapp/github-action@v2.3.6
       #   with:

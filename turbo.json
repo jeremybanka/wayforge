@@ -38,21 +38,21 @@
 				"__scripts__/**"
 			]
 		},
-		"test:coverage": {
+		"test:coverage:once": {
 			"dependsOn": ["^build"],
 			"outputs": ["coverage/**", "**/coverage/**"],
 			"inputs": [
 				"../../.github/workflows/test.yml",
 				"../../git.sha",
 				"**/package.json",
-				"src/**/*",
+				"src/**",
 				"**/src/**",
 				"__tests__/**",
 				"__scripts__/**"
 			]
 		},
 		"test:coverage:increased": {
-			"dependsOn": ["test:coverage"],
+			"dependsOn": ["test:coverage:once"],
 			"cache": false
 		},
 		"test:semver": {
