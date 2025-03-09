@@ -4,22 +4,30 @@ import * as button from "./button"
 import * as form from "./form"
 import * as h4 from "./h4"
 import * as header from "./header"
+import { reportsAllowed, type Role, tokensAllowed } from "./roles-permissions"
 
 export type DivProjectProps =
 	| {
 			id: string
 			name: string
 			tokens: CompleteProjectTokenProps[]
+			reports: { ref: string }[]
 			mode: `deleted` | `existing`
+			userRole: Role
 	  }
 	| {
 			mode: `button` | `creator`
+			disabled?: boolean
 	  }
 export function Project(props: DivProjectProps): JSX.Element {
 	switch (props.mode) {
 		case `button`: {
 			return (
-				<button.create hx-post="/ui/project" hx-swap="beforebegin">
+				<button.create
+					hx-post="/ui/project"
+					hx-swap="beforebegin"
+					disabled={props.disabled}
+				>
 					+ New project
 				</button.create>
 			)
@@ -31,16 +39,18 @@ export function Project(props: DivProjectProps): JSX.Element {
 		}
 		case `existing`:
 		case `deleted`: {
-			const { id, name, tokens, mode } = props
+			const { id, name, tokens, reports, mode, userRole } = props
+			const numberOfTokensAllowed = tokensAllowed.get(userRole)
+			const mayCreateToken = tokens.length < numberOfTokensAllowed
 			return (
 				<div
 					key={id}
 					id={`project-${id}`}
 					class={css`
-					border: 1px solid black;
+					border: 1px solid var(--color-fg-light);
 					padding: 10px;
 					padding-bottom: 12px;
-					background: ${mode === `deleted` ? `#eee` : `#fbfbfb`};
+					background: ${mode === `deleted` ? `var(--color-bg-s2)` : `var(--color-bg-t2)`};
 					box-shadow: ${mode === `deleted` ? `inset` : ``} 0 4px 0 -2px #0003;
 					border-radius: 10px 0px 10px 0px;
 			`}
@@ -63,6 +73,14 @@ export function Project(props: DivProjectProps): JSX.Element {
 							`}
 							>
 								{name}
+								{` `}
+								{mode === `deleted` ? (
+									<span
+										class={css`font-size: 14px; font-weight: 400; color: var(--color-fg-light);`}
+									>
+										(deleted)
+									</span>
+								) : null}
 							</h3>
 						</span>
 
@@ -89,26 +107,62 @@ export function Project(props: DivProjectProps): JSX.Element {
 								gap: 10px;
 							`}
 						>
-							<span
-								class={css`
-									background:transparent;
-									background-color: #f3f3f3;
-									box-shadow: inset 0 1px 0 1px #0002;
-									border: 1px solid #888;
-									padding: 5px;
-									height: 30px;
-									width: 80px;
-								`}
-							/>
-							<span
-								class={css`
-									background: transparent;
-									border: 1px solid #ddd;
-									padding: 5px;
-									height: 30px;
-									width: 80px;
-								`}
-							/>
+							{Array.from({ length: reportsAllowed.get(userRole) }).map(
+								(_, idx) => {
+									const report: { ref: string } | undefined = reports[idx]
+									if (!report) {
+										return (
+											<span
+												class={css`
+												background: transparent;
+												border: 1px solid var(--color-fg-faint);
+												padding: 5px;
+												box-sizing: border-box;
+												height: 46px;
+												width: 80px;
+												box-shadow: inset 0 1px 0 1px #0002;
+											`}
+											/>
+										)
+									}
+									return (
+										<span
+											key={report?.ref ?? idx}
+											class={css`
+												display: flex;
+												box-sizing: border-box;
+												flex-flow: column;
+												align-items: center;
+												justify-content: center;
+												background-color: ${mode === `deleted` ? `transparent` : `var(--color-bg-t1)`};
+												border: 1px solid ${mode === `deleted` ? `var(--color-fg-faint)` : `var(--color-fg-light)`};
+												box-shadow: inset 0 1px 0 1px #0002;
+												padding: 2px;
+												min-height: 30px;
+												min-width: 80px;
+											`}
+										>
+											<span
+												class={css`
+													display: flex;
+													flex-flow: column;
+													align-items: center;
+													justify-content: center;
+													background:transparent;
+													color: ${mode === `deleted` ? `var(--color-fg-faint)` : `var(--color-fg)`};
+													background-color: ${mode === `deleted` ? `transparent` : `var(--color-bg-t3)`};						
+													border: 1px solid ${mode === `deleted` ? `transparent` : `var(--color-fg-faint)`};
+													box-shadow: 0 4px 0 -2px #0003;
+													padding: 10px 10px;
+													min-width: 80px;
+												`}
+											>
+												{report?.ref ?? ``}
+											</span>
+										</span>
+									)
+								},
+							)}
 						</div>
 					</section>
 
@@ -128,7 +182,7 @@ export function Project(props: DivProjectProps): JSX.Element {
 						<ProjectToken
 							mode="button"
 							projectId={id}
-							disabled={mode === `deleted`}
+							disabled={mode === `deleted` || !mayCreateToken}
 						/>
 						{/* <ProjectToken mode="creator" projectId={id} />
 						<ProjectToken
@@ -195,9 +249,9 @@ export function ProjectToken(props: DivProjectTokenProps): JSX.Element {
 						display: flex;
 						flex-flow: column;
 						gap: 5px;
-						border: 1px solid black;
+						border: 1px solid var(--color-fg-light);
 						padding: 10px;
-						background: ${mode === `deleted` ? `#eee` : `#fff`};
+						background: ${mode === `deleted` ? `var(--color-bg-s1)` : `var(--color-bg-t3)`};
 						box-shadow: ${mode === `deleted` ? `inset` : ``} 0 4px 0 -2px #0003;
 						border-radius: 10px 0 10px 0;
 					`}
@@ -217,7 +271,9 @@ export function ProjectToken(props: DivProjectTokenProps): JSX.Element {
 								{name}
 								{` `}
 								{mode === `deleted` ? (
-									<span class={css`font-size: 14px; font-weight: 400;`}>
+									<span
+										class={css`font-size: 14px; font-weight: 400; color: var(--color-fg-light);`}
+									>
 										(deleted)
 									</span>
 								) : null}
@@ -239,7 +295,7 @@ export function ProjectToken(props: DivProjectTokenProps): JSX.Element {
 								display: flex;
 								flex-flow: row;
 								gap: 10px;
-								background: #fafffa;
+								background: #0f02;
 								box-shadow: 0 3px 0 -2px #0003;
 								border: 2px dotted green;
 								padding: 10px;
@@ -247,13 +303,13 @@ export function ProjectToken(props: DivProjectTokenProps): JSX.Element {
 							`}
 							>
 								<span class={css`flex-grow: 1;`}>
-									<code class={css`font-size: 18px; color: green;`}>
+									<code class={css`font-size: 18px; color: var(--success);`}>
 										{id}.{secretShownOnce}
 									</code>
 								</span>
 								<button.copy text={secretShownOnce} />
 							</div>
-							<div class={css`font-size: 12px;`}>
+							<div class={css`font-size: 12px; text-align: right;`}>
 								^ copy this code and put it somewhere safe. it will not be shown
 								again.
 							</div>
