@@ -19,14 +19,14 @@ export async function downloadCoverageDatabaseFromS3(
 	credentials: S3Credentials,
 ): Promise<void> {
 	initS3(credentials)
-	logger.mark?.(`downloading coverage database from R2`)
+	logger.mark?.(`downloading coverage database from S3`)
 	const remote = Bun.s3.file(`coverage.sqlite`)
 	try {
 		await write(`./coverage.sqlite`, remote)
-		logger.mark?.(`downloaded coverage database from R2`)
+		logger.mark?.(`downloaded coverage database from S3`)
 	} catch (error) {
 		console.error(error)
-		logger.mark?.(`downloading coverage database from R2 failed`)
+		logger.mark?.(`downloading coverage database from S3 failed`)
 	}
 }
 
@@ -35,7 +35,7 @@ export async function uploadCoverageDatabaseToS3(
 ): Promise<void> {
 	initS3(credentials)
 	const sqliteFile = Bun.s3.file(`coverage.sqlite`)
-	logger.mark?.(`uploading coverage database to R2`)
+	logger.mark?.(`uploading coverage database to S3`)
 	await sqliteFile.write(Bun.file(`coverage.sqlite`))
-	logger.mark?.(`uploaded coverage database to R2`)
+	logger.mark?.(`uploaded coverage database to S3`)
 }

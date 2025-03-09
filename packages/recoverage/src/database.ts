@@ -34,11 +34,11 @@ export const saveCoverage = (
 export const getCoverage = (
 	db: Database,
 ): Statement<BranchCoverage, [git_ref: string]> =>
-	db.query(`SELECT * FROM coverage WHERE git_ref = $git_ref`).as(BranchCoverage)
+	db.query(`select * from coverage where git_ref = $git_ref`).as(BranchCoverage)
 
 export const deleteAllButLast10Reports = (
 	db: Database,
-): Statement<BranchCoverage, []> =>
+): Statement<BranchCoverage, [exception: string]> =>
 	db.prepare(
-		`DELETE FROM coverage WHERE last_updated NOT IN (SELECT last_updated FROM coverage ORDER BY last_updated DESC LIMIT 10)`,
+		`delete from coverage where last_updated not in (select last_updated from coverage order by last_updated desc limit 10) and git_ref != $exception`,
 	)
