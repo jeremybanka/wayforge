@@ -174,10 +174,10 @@ export async function diff(
 		baseCoverageTextReport,
 		currentCoverageTextReport,
 	] = await Promise.all([
-		getCoverageJsonSummary(baseCoverage, logger.mark),
-		getCoverageJsonSummary(currentCoverage, logger.mark),
-		getCoverageTextReport(baseCoverage, logger.mark),
-		getCoverageTextReport(currentCoverage, logger.mark),
+		getCoverageJsonSummary(baseCoverage),
+		getCoverageJsonSummary(currentCoverage),
+		getCoverageTextReport(baseCoverage),
+		getCoverageTextReport(currentCoverage),
 	])
 
 	const coverageDifference =

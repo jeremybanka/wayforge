@@ -2,12 +2,11 @@ import type { ShellError } from "bun"
 import { $, file, write } from "bun"
 import tmp from "tmp"
 
-import type { useMarks } from "./logger"
+import { logger } from "./logger"
 import type { BranchCoverage, JsonSummaryReport } from "./recoverage"
 
 export async function getCoverageJsonSummary(
 	branchCoverage: BranchCoverage,
-	mark?: ReturnType<typeof useMarks>[`mark`],
 ): Promise<JsonSummaryReport> {
 	const { coverage } = branchCoverage
 	const tempDir = tmp.dirSync({ unsafeCleanup: true })
@@ -24,13 +23,12 @@ export async function getCoverageJsonSummary(
 		`${tempDir.name}/coverage/coverage-summary.json`,
 	).json()) as JsonSummaryReport
 	tempDir.removeCallback()
-	mark?.(`got json coverage for ${branchCoverage.git_ref}`)
+	logger.mark?.(`got json coverage for ${branchCoverage.git_ref}`)
 	return jsonReport
 }
 
 export async function getCoverageTextReport(
 	branchCoverage: BranchCoverage,
-	mark?: ReturnType<typeof useMarks>[`mark`],
 ): Promise<string> {
 	const { coverage } = branchCoverage
 	const tempDir = tmp.dirSync({ unsafeCleanup: true })
@@ -47,7 +45,7 @@ export async function getCoverageTextReport(
 		throw new Error(`failed to generate coverage text report`)
 	}
 	tempDir.removeCallback()
-	mark?.(`got text coverage for ${branchCoverage.git_ref}`)
+	logger.mark?.(`got text coverage for ${branchCoverage.git_ref}`)
 	// console.log(textReport)
 	return textReport
 }
