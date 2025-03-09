@@ -1,5 +1,11 @@
 # treetrunks
 
+## 0.0.8
+
+### Patch Changes
+
+- 2d1b35f: ✨ Add system for automatic backup on https://recoverage.cloud/.
+
 ## 0.0.7
 
 ### Patch Changes
