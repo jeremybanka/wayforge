@@ -39,6 +39,7 @@ export async function uploadCoverageReportToCloud(
 	cloudHost = `https://recoverage.cloud`,
 ): Promise<Error | { success: true }> {
 	const url = new URL(`/reporter/${reportName}`, cloudHost)
+	console.log(`PUT`, url)
 	try {
 		const response = await fetch(url, {
 			method: `PUT`,
