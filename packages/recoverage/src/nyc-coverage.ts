@@ -1,51 +1,55 @@
-import type { ShellError } from "bun"
-import { $, file, write } from "bun"
-import tmp from "tmp"
+import type { CoverageMap } from "istanbul-lib-coverage"
+import { createCoverageMap } from "istanbul-lib-coverage"
+import type { FileWriter } from "istanbul-lib-report"
+import { createContext } from "istanbul-lib-report"
+import reports from "istanbul-reports"
 
-import { logger } from "./logger"
+import type { useMarks } from "./logger"
 import type { BranchCoverage, JsonSummaryReport } from "./recoverage"
 
-export async function getCoverageJsonSummary(
-	branchCoverage: BranchCoverage,
-): Promise<JsonSummaryReport> {
-	const { coverage } = branchCoverage
-	const tempDir = tmp.dirSync({ unsafeCleanup: true })
-	await write(`${tempDir.name}/out.json`, coverage)
-	try {
-		await $`nyc report --reporter=json-summary --temp-dir=${tempDir.name} --report-dir=${tempDir.name}/coverage`.text()
-	} catch (thrown) {
-		const caught = thrown as ShellError
-		console.log(caught.stdout.toString())
-		console.error(caught.stderr.toString())
-		throw new Error(`failed to generate coverage summary`)
+// A simple in-memory writer to capture report output.
+class MemoryWriter implements FileWriter {
+	data = ``
+	write(chunk: string) {
+		this.data += chunk
 	}
-	const jsonReport = (await file(
-		`${tempDir.name}/coverage/coverage-summary.json`,
-	).json()) as JsonSummaryReport
-	tempDir.removeCallback()
-	logger.mark?.(`got json coverage for ${branchCoverage.git_ref}`)
+}
+
+export function getCoverageJsonSummary(
+	coverageMap: CoverageMap,
+	mark?: ReturnType<typeof useMarks>[`mark`],
+): JsonSummaryReport {
+	// const { coverage [ ]} = branchCoverage
+	// // Create a coverage map from the coverage JSON.
+	// const coverageMap = createCoverageMap(coverage)
+	// Set up an in-memory writer.
+	const writer = new MemoryWriter()
+	// Create a reporting context using the coverage map and our custom writer.
+	const context = createContext({ coverageMap, writer })
+	// Create the JSON summary report.
+	const report = reports.create(`json-summary`, {
+		file: `coverage-summary.json`,
+	})
+	report.execute(context)
+	// Parse the JSON output captured by the writer.
+	const jsonReport = JSON.parse(writer.data) as JsonSummaryReport
+	mark?.(`got json coverage for ${branchCoverage.git_ref}`)
 	return jsonReport
 }
 
-export async function getCoverageTextReport(
-	branchCoverage: BranchCoverage,
-): Promise<string> {
-	const { coverage } = branchCoverage
-	const tempDir = tmp.dirSync({ unsafeCleanup: true })
-	await write(`${tempDir.name}/out.json`, coverage)
-	let textReport: string
-	try {
-		textReport = await $`nyc report --reporter=text --temp-dir=${tempDir.name}`
-			.env({ ...process.env, COLUMNS: `120`, FORCE_COLOR: `0` })
-			.text()
-	} catch (thrown) {
-		const caught = thrown as ShellError
-		console.log(caught.stdout.toString())
-		console.error(caught.stderr.toString())
-		throw new Error(`failed to generate coverage text report`)
-	}
-	tempDir.removeCallback()
-	logger.mark?.(`got text coverage for ${branchCoverage.git_ref}`)
-	// console.log(textReport)
-	return textReport
+export function getCoverageTextReport(
+	coverageMap: CoverageMap,
+	// branchCoverage: BranchCoverage,
+	mark?: ReturnType<typeof useMarks>[`mark`],
+): string {
+	// const { coverage } = branchCoverage
+	// const coverageMap = createCoverageMap(coverage)
+	const writer = new MemoryWriter()
+	const context = createContext({ coverageMap })
+	context.writer = writer
+	// Create the text report.
+	const report = reports.create(`text`)
+	report.execute(context)
+	mark?.(`got text coverage for ${branchCoverage.git_ref}`)
+	return writer.data
 }
