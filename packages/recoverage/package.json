@@ -26,6 +26,7 @@
 		"recoverage": "bin/recoverage.bin.js"
 	},
 	"scripts": {
+		"dev": "tsup-node --watch",
 		"build": "tsup-node && rm -f dist/*.x.d.ts",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",

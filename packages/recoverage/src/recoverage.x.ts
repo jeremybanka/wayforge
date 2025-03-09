@@ -3,6 +3,7 @@
 import { cli, help, noOptions, optional } from "comline"
 import { z } from "zod"
 
+import { logger } from "./logger"
 import * as Recoverage from "./recoverage"
 
 const parse = cli({
@@ -53,17 +54,21 @@ switch (inputs.case) {
 		{
 			const captureCode = await Recoverage.capture()
 			if (captureCode === 1) {
+				logger.logMarks?.()
 				process.exit(1)
 			}
 			try {
 				const diffCode = await Recoverage.diff(
 					inputs.opts[`default-branch`] ?? `main`,
 				)
+				logger.logMarks?.()
 				if (diffCode === 1) {
 					process.exit(1)
 				}
 			} catch (thrown) {
+				logger.logMarks?.()
 				console.error(thrown)
+				process.exit(1)
 			}
 		}
 		break

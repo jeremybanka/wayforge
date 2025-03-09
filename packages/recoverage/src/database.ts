@@ -20,7 +20,7 @@ export async function initDatabase(): Promise<Database> {
 	database.run(
 		`create table if not exists coverage (git_ref text, coverage text, last_updated text default current_timestamp);`,
 	)
-	logger.mark?.(`set up database`)
+	logger.mark?.(`spawn database`)
 	return database
 }
 

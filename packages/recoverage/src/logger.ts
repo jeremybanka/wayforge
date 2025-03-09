@@ -55,6 +55,7 @@ export function useMarks({ inline = false }: { inline?: boolean } = {}): {
 			}
 		}
 		logMark(`TOTAL TIME`, overall.duration)
+		console.log()
 	}
 	return { mark, logMarks }
 }
