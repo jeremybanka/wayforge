@@ -1,11 +1,13 @@
-import type { BranchCoverage } from "./recoverage"
+import type { CoverageMap } from "istanbul-lib-coverage"
+
+import type { Json } from "./stringify"
 
 export async function downloadCoverageReportFromCloud(
-	gitRef: string,
+	reportName: string,
 	cloudToken: string,
 	cloudHost = `https://recoverage.cloud`,
 ): Promise<Error | string> {
-	const url = new URL(`/reporter/${gitRef}`, cloudHost)
+	const url = new URL(`/reporter/${reportName}`, cloudHost)
 	try {
 		const response = await fetch(url, {
 			method: `GET`,
@@ -31,18 +33,19 @@ export async function downloadCoverageReportFromCloud(
 }
 
 export async function uploadCoverageReportToCloud(
-	branchCoverage: BranchCoverage,
+	reportName: string,
+	coverageMapStringified: Json.stringified<CoverageMap>,
 	cloudToken: string,
 	cloudHost = `https://recoverage.cloud`,
 ): Promise<Error | { success: true }> {
-	const url = new URL(`/reporter/${branchCoverage.git_ref}`, cloudHost)
+	const url = new URL(`/reporter/${reportName}`, cloudHost)
 	try {
 		const response = await fetch(url, {
 			method: `PUT`,
 			headers: {
 				Authorization: `Bearer ${cloudToken}`,
 			},
-			body: branchCoverage.coverage,
+			body: coverageMapStringified,
 		})
 		if (!response.ok) {
 			const text = await response.text()

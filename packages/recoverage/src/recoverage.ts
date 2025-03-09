@@ -2,7 +2,12 @@ import { file } from "bun"
 import { createCoverageMap } from "istanbul-lib-coverage"
 import simpleGit from "simple-git"
 
-import { getCoverage, saveCoverage } from "./database"
+import {
+	deleteAllButLast10Reports,
+	getCoverage,
+	initDatabase,
+	saveCoverage,
+} from "./database"
 import { getDefaultBranchHashRef, hashRepoState } from "./git-status"
 import { logDiff, logger, useMarks } from "./logger"
 import { getCoverageJsonSummary, getCoverageTextReport } from "./nyc-coverage"
@@ -12,6 +17,7 @@ import {
 } from "./persist-cloud"
 import { uploadCoverageDatabaseToS3 } from "./persist-s3"
 import { env, S3_CREDENTIALS } from "./recoverage.env"
+import { stringify } from "./stringify"
 
 export class BranchCoverage {
 	public git_ref: string
@@ -42,7 +48,7 @@ export async function capture(
 	silent = false,
 ): Promise<0 | 1> {
 	if (!silent && !logger.mark) {
-		Object.assign(logger, useMarks({ inline: true }))
+		Object.assign(logger, useMarks({ inline: false }))
 	}
 	logger.mark?.(`called recoverage capture`)
 
@@ -54,42 +60,49 @@ export async function capture(
 	const coverageFile = file(`./coverage/coverage-final.json`)
 	const coverageJson = await coverageFile.json()
 	const coverageMap = createCoverageMap(coverageJson)
+	const coverageMapStringified = stringify(coverageMap)
 
-	saveCoverage.run({
+	const db = await initDatabase()
+	saveCoverage(db).run({
 		$git_ref: currentGitRef,
-		$coverage: JSON.stringify(coverageMap),
+		$coverage: coverageMapStringified,
 	})
 
 	logger.mark?.(`updated coverage for ${currentGitRef}`)
 
-	if (S3_CREDENTIALS) {
-		await uploadCoverageDatabaseToS3(S3_CREDENTIALS)
-	}
+	deleteAllButLast10Reports(db).run()
 
-	if (env.RECOVERAGE_CLOUD_TOKEN) {
-		const mainGitRef = await getDefaultBranchHashRef(
-			git,
-			defaultBranch,
-			logger.mark,
-		)
-		logger.mark?.(`retrieved default branch git ref: ${mainGitRef}`)
-		if (currentGitRef === mainGitRef) {
+	const defaultGitRef = await getDefaultBranchHashRef(
+		git,
+		defaultBranch,
+		logger.mark,
+	)
+	logger.mark?.(`retrieved default branch git ref: ${defaultGitRef}`)
+	if (currentGitRef === defaultGitRef) {
+		logger.mark?.(`we're on the default branch`)
+		if (S3_CREDENTIALS) {
+			logger.mark?.(`uploading coverage database to S3`)
+			await uploadCoverageDatabaseToS3(S3_CREDENTIALS)
+			logger.mark?.(`uploaded coverage database to S3`)
+		}
+		if (env.RECOVERAGE_CLOUD_TOKEN) {
 			logger.mark?.(`uploading coverage report to recoverage.cloud`)
 			await uploadCoverageReportToCloud(
-				{
-					git_ref: currentGitRef,
-					coverage: JSON.stringify(coverageMap),
-				},
+				import.meta.dir,
+				coverageMapStringified,
 				env.RECOVERAGE_CLOUD_TOKEN,
 				env.RECOVERAGE_CLOUD_URL,
 			)
+			logger.mark?.(`uploaded coverage report to recoverage.cloud`)
+		} else {
+			logger.mark?.(`RECOVERAGE_CLOUD_TOKEN not set; skipping upload`)
 		}
-		logger.mark?.(`uploaded coverage report to recoverage.cloud`)
 	} else {
-		logger.mark?.(`RECOVERAGE_CLOUD_TOKEN not set; skipping upload`)
+		logger.mark?.(`we're not on the default branch; no need to persist coverage`)
 	}
 
 	logger.logMarks?.()
+	console.log()
 	return 0
 }
 
@@ -113,10 +126,10 @@ export async function diff(
 	logger.mark?.(`main git ref: ${mainGitRef}`)
 	const currentGitRef = await hashRepoState(git, logger.mark)
 	logger.mark?.(`current git ref: ${currentGitRef}`)
-	logger.mark?.(`setup database`)
 
-	let [mainCoverage] = getCoverage.all(mainGitRef)
-	const [currentCoverage] = getCoverage.all(currentGitRef)
+	const db = await initDatabase()
+	let [mainCoverage] = getCoverage(db).all(mainGitRef)
+	const [currentCoverage] = getCoverage(db).all(currentGitRef)
 
 	if (!mainCoverage) {
 		logger.mark?.(`no coverage found for the target branch`)
@@ -129,7 +142,7 @@ export async function diff(
 		}
 		logger.mark?.(`looking for coverage report on recoverage.cloud`)
 		const cloudCoverage = await downloadCoverageReportFromCloud(
-			mainGitRef,
+			import.meta.dir,
 			env.RECOVERAGE_CLOUD_TOKEN,
 			env.RECOVERAGE_CLOUD_URL,
 		)
@@ -144,7 +157,7 @@ export async function diff(
 			coverage: cloudCoverage,
 		}
 		logger.mark?.(`coverage report found on recoverage.cloud`)
-		saveCoverage.run({
+		saveCoverage(db).run({
 			$git_ref: mainGitRef,
 			$coverage: cloudCoverage,
 		})

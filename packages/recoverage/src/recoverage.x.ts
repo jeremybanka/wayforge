@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 
-import { cli, help, helpOption, noOptions, optional } from "comline"
+import { cli, help, noOptions, optional } from "comline"
 import { z } from "zod"
 
 import * as Recoverage from "./recoverage"

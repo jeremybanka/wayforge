@@ -100,7 +100,7 @@ test(`authentication flow`, async () => {
 	console.log({ code })
 	assert(code)
 
-	const reportRef = `xxxxxxx_atom.io`
+	const reportRef = `atom.io`
 	const reportMissing = await fetch(
 		`https://recoverage.cloud/reporter/${reportRef}`,
 		{
@@ -128,10 +128,8 @@ test(`authentication flow`, async () => {
 	expect(reportPut.status).toBe(200)
 	const reportPutJson = await reportPut.json()
 	const reportPutLibJson = await uploadCoverageReportToCloud(
-		{
-			git_ref: reportRef,
-			coverage: JSON.stringify(reportFixture),
-		},
+		reportRef,
+		JSON.stringify(reportFixture),
 		code,
 	)
 	expect(reportPutLibJson).toEqual(reportPutJson)

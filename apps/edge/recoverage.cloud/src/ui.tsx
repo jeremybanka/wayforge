@@ -81,17 +81,31 @@ uiRoutes.get(`/project`, uiAuth, async (c) => {
 		where: eq(schema.projects.userId, user.id),
 		with: {
 			tokens: true,
+			reports: {
+				columns: {
+					ref: true,
+				},
+			},
 		},
 	})
 	// console.log(`User`, user)
 	// console.log(`Projects`, projects)
 
+	const userRole = c.get(`userRole`)
+	const numberOfProjectsAllowed = projectsAllowed.get(userRole)
+	const mayCreateProject = projects.length < numberOfProjectsAllowed
+
 	return c.html(
 		<>
 			{projects.map((project) => (
-				<Project mode="existing" key={project.id} {...project} />
+				<Project
+					{...project}
+					mode="existing"
+					userRole={userRole}
+					key={project.id}
+				/>
 			))}
-			<Project mode="button" />
+			<Project mode="button" disabled={!mayCreateProject} />
 			{/* <Project mode="creator" />
 			<Project
 				mode="existing"
@@ -105,8 +119,17 @@ uiRoutes.get(`/project`, uiAuth, async (c) => {
 						mode: `existing`,
 					},
 				]}
+				reports={[{ ref: `hahahahhahahahahahahah` }]}
+				userRole="free"
 			/>
-			<Project mode="deleted" id="123" name="my old project" tokens={[]} /> */}
+			<Project
+				mode="deleted"
+				id="123"
+				name="my old project"
+				tokens={[]}
+				reports={[{ ref: `123` }]}
+				userRole="free"
+			/> */}
 		</>,
 	)
 })
@@ -138,7 +161,15 @@ uiRoutes.post(`/project`, uiAuth, async (c) => {
 			.values({ userId, name, id: nanoid() })
 			.returning()
 	)[0]
-	return c.html(<Project {...project} mode="existing" tokens={[]} />)
+	return c.html(
+		<Project
+			{...project}
+			mode="existing"
+			userRole={userRole}
+			tokens={[]}
+			reports={[]}
+		/>,
+	)
 })
 
 uiRoutes.delete(`/project/:projectId`, uiAuth, async (c) => {
@@ -168,6 +199,7 @@ uiRoutes.delete(`/project/:projectId`, uiAuth, async (c) => {
 	return c.html(
 		<Project
 			{...project}
+			userRole={c.get(`userRole`)}
 			tokens={project.tokens.map((token) => ({ ...token, mode: `deleted` }))}
 			mode="deleted"
 		/>,
