@@ -1,5 +1,12 @@
 # treetrunks
 
+## 0.0.10
+
+### Patch Changes
+
+- 277ac67: 🚀 Only spawn one git client and retrieve git data once.
+- 277ac67: 🐛 Fix bug where an incorrect endpoint on recoverage.cloud would be used when persisting a report.
+
 ## 0.0.9
 
 ### Patch Changes
