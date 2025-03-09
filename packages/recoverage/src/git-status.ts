@@ -2,37 +2,63 @@ import { createHash } from "node:crypto"
 import path from "node:path"
 
 import { file } from "bun"
-import type { SimpleGit } from "simple-git"
+import { type SimpleGit, simpleGit } from "simple-git"
 
+import { logger } from "./logger"
 import { env } from "./recoverage.env"
 
-export async function getDefaultBranchHashRef(
-	git: SimpleGit,
-	defaultBranch: string,
-	mark?: (text: string) => void,
-): Promise<string> {
+export type GitToolkit = {
+	_client: SimpleGit | undefined
+	get client(): SimpleGit
+	baseRef: string | undefined
+	currentRef: string | undefined
+}
+
+export const gitToolkit: GitToolkit = {
+	_client: undefined,
+	baseRef: undefined,
+	currentRef: undefined,
+	get client(): SimpleGit {
+		if (this._client) {
+			return this._client
+		}
+		this._client = simpleGit(import.meta.dir)
+		logger.mark?.(`spawn git`)
+		return this._client
+	},
+}
+
+export async function getBaseGitRef(defaultBranch: string): Promise<string> {
+	if (gitToolkit.baseRef) {
+		return gitToolkit.baseRef
+	}
+	const { client: git } = gitToolkit
 	if (env.CI) {
 		await git.fetch(
 			`origin`,
 			defaultBranch,
 			env.CI ? { "--depth": `1` } : undefined,
 		)
-		mark?.(`fetched origin/${defaultBranch}`)
+		logger.mark?.(`fetched origin/${defaultBranch}`)
 		const sha = await git.revparse([`origin/${defaultBranch}`])
 		return sha.slice(0, 7)
 	}
 	const sha = await git.revparse([defaultBranch])
-	return sha.slice(0, 7)
+	const baseGitRef = sha.slice(0, 7)
+	logger.mark?.(`base git ref: ${baseGitRef}`)
+	gitToolkit.baseRef = baseGitRef
+	return baseGitRef
 }
 
-export async function hashRepoState(
-	git: SimpleGit,
-	mark?: (text: string) => void,
-): Promise<string> {
+export async function getCurrentGitRef(): Promise<string> {
+	if (gitToolkit.currentRef) {
+		return gitToolkit.currentRef
+	}
+	const { client: git } = gitToolkit
 	const { current, branches } = await git.branch()
 	const gitStatus = await git.status()
 	const gitIsClean = gitStatus.isClean()
-	mark?.(`git status is clean: ${gitIsClean}`)
+	logger.mark?.(`git status is clean: ${gitIsClean}`)
 	let currentGitRef = branches[current].commit.slice(0, 7)
 	if (!gitIsClean) {
 		const gitDiff = await git.diff()
@@ -53,7 +79,9 @@ export async function hashRepoState(
 		const diffHash = gitStatusHash.digest(`hex`).slice(0, currentGitRef.length)
 		currentGitRef = `${currentGitRef}+${diffHash}`
 
-		mark?.(`git status hash created: ${diffHash}`)
+		logger.mark?.(`git status hash created: ${diffHash}`)
 	}
+	logger.mark?.(`current git ref: ${currentGitRef}`)
+	gitToolkit.currentRef = currentGitRef
 	return currentGitRef
 }
