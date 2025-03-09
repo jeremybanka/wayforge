@@ -70,13 +70,14 @@ export async function capture(
 
 	logger.mark?.(`updated coverage for ${currentGitRef}`)
 
-	deleteAllButLast10Reports(db).run()
-
 	const defaultGitRef = await getDefaultBranchHashRef(
 		git,
 		defaultBranch,
 		logger.mark,
 	)
+
+	deleteAllButLast10Reports(db).run(defaultGitRef)
+
 	logger.mark?.(`retrieved default branch git ref: ${defaultGitRef}`)
 	if (currentGitRef === defaultGitRef) {
 		logger.mark?.(`we're on the default branch`)
