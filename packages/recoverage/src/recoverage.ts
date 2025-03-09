@@ -1,6 +1,5 @@
 import { file } from "bun"
 import { createCoverageMap } from "istanbul-lib-coverage"
-import simpleGit from "simple-git"
 
 import {
 	deleteAllButLast10Reports,

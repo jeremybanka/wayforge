@@ -9,15 +9,15 @@ import { env } from "./recoverage.env"
 
 export type GitToolkit = {
 	_client: SimpleGit | undefined
-	_baseRef: string | undefined
-	_currentRef: string | undefined
 	get client(): SimpleGit
+	baseRef: string | undefined
+	currentRef: string | undefined
 }
 
 export const gitToolkit: GitToolkit = {
 	_client: undefined,
-	_baseRef: undefined,
-	_currentRef: undefined,
+	baseRef: undefined,
+	currentRef: undefined,
 	get client(): SimpleGit {
 		if (this._client) {
 			return this._client
@@ -29,8 +29,8 @@ export const gitToolkit: GitToolkit = {
 }
 
 export async function getBaseGitRef(defaultBranch: string): Promise<string> {
-	if (gitToolkit._baseRef) {
-		return gitToolkit._baseRef
+	if (gitToolkit.baseRef) {
+		return gitToolkit.baseRef
 	}
 	const { client: git } = gitToolkit
 	if (env.CI) {
@@ -46,13 +46,13 @@ export async function getBaseGitRef(defaultBranch: string): Promise<string> {
 	const sha = await git.revparse([defaultBranch])
 	const baseGitRef = sha.slice(0, 7)
 	logger.mark?.(`base git ref: ${baseGitRef}`)
-	gitToolkit._baseRef = baseGitRef
+	gitToolkit.baseRef = baseGitRef
 	return baseGitRef
 }
 
 export async function getCurrentGitRef(): Promise<string> {
-	if (gitToolkit._currentRef) {
-		return gitToolkit._currentRef
+	if (gitToolkit.currentRef) {
+		return gitToolkit.currentRef
 	}
 	const { client: git } = gitToolkit
 	const { current, branches } = await git.branch()
@@ -82,6 +82,6 @@ export async function getCurrentGitRef(): Promise<string> {
 		logger.mark?.(`git status hash created: ${diffHash}`)
 	}
 	logger.mark?.(`current git ref: ${currentGitRef}`)
-	gitToolkit._currentRef = currentGitRef
+	gitToolkit.currentRef = currentGitRef
 	return currentGitRef
 }
