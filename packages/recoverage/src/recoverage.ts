@@ -2,7 +2,12 @@ import { file } from "bun"
 import { createCoverageMap } from "istanbul-lib-coverage"
 import simpleGit from "simple-git"
 
-import { deleteAllButLast10Reports, getCoverage, saveCoverage } from "./database"
+import {
+	deleteAllButLast10Reports,
+	getCoverage,
+	initDatabase,
+	saveCoverage,
+} from "./database"
 import { getDefaultBranchHashRef, hashRepoState } from "./git-status"
 import { logDiff, logger, useMarks } from "./logger"
 import { getCoverageJsonSummary, getCoverageTextReport } from "./nyc-coverage"
@@ -43,7 +48,7 @@ export async function capture(
 	silent = false,
 ): Promise<0 | 1> {
 	if (!silent && !logger.mark) {
-		Object.assign(logger, useMarks({ inline: true }))
+		Object.assign(logger, useMarks({ inline: false }))
 	}
 	logger.mark?.(`called recoverage capture`)
 
@@ -57,14 +62,15 @@ export async function capture(
 	const coverageMap = createCoverageMap(coverageJson)
 	const coverageMapStringified = stringify(coverageMap)
 
-	saveCoverage.run({
+	const db = await initDatabase()
+	saveCoverage(db).run({
 		$git_ref: currentGitRef,
 		$coverage: coverageMapStringified,
 	})
 
 	logger.mark?.(`updated coverage for ${currentGitRef}`)
 
-	deleteAllButLast10Reports.run()
+	deleteAllButLast10Reports(db).run()
 
 	const defaultGitRef = await getDefaultBranchHashRef(
 		git,
@@ -96,6 +102,7 @@ export async function capture(
 	}
 
 	logger.logMarks?.()
+	console.log()
 	return 0
 }
 
@@ -119,10 +126,10 @@ export async function diff(
 	logger.mark?.(`main git ref: ${mainGitRef}`)
 	const currentGitRef = await hashRepoState(git, logger.mark)
 	logger.mark?.(`current git ref: ${currentGitRef}`)
-	logger.mark?.(`setup database`)
 
-	let [mainCoverage] = getCoverage.all(mainGitRef)
-	const [currentCoverage] = getCoverage.all(currentGitRef)
+	const db = await initDatabase()
+	let [mainCoverage] = getCoverage(db).all(mainGitRef)
+	const [currentCoverage] = getCoverage(db).all(currentGitRef)
 
 	if (!mainCoverage) {
 		logger.mark?.(`no coverage found for the target branch`)
@@ -150,7 +157,7 @@ export async function diff(
 			coverage: cloudCoverage,
 		}
 		logger.mark?.(`coverage report found on recoverage.cloud`)
-		saveCoverage.run({
+		saveCoverage(db).run({
 			$git_ref: mainGitRef,
 			$coverage: cloudCoverage,
 		})
