@@ -20,7 +20,7 @@
 	"exports": {
 		"./package.json": "./package.json",
 		".": "./dist/recoverage.js",
-		"./lib": "./dist/lib.js"
+		"./lib": "./dist/recoverage.lib.js"
 	},
 	"bin": {
 		"recoverage": "bin/recoverage.bin.js"

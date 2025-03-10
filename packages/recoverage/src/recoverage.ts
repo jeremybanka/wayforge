@@ -12,6 +12,7 @@ import {
 	getCoverageJsonSummary,
 	getCoverageTextReport,
 } from "./istanbul-reports"
+import { stringify } from "./json"
 import { logDiff, logger, useMarks } from "./logger"
 import {
 	downloadCoverageReportFromCloud,
@@ -19,7 +20,6 @@ import {
 } from "./persist-cloud"
 import { uploadCoverageDatabaseToS3 } from "./persist-s3"
 import { env, S3_CREDENTIALS } from "./recoverage.env"
-import { stringify } from "./stringify"
 
 export class BranchCoverage {
 	public git_ref: string
