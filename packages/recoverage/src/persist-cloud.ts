@@ -1,6 +1,6 @@
 import type { CoverageMap } from "istanbul-lib-coverage"
 
-import type { Json } from "./stringify"
+import type { Json } from "./json"
 
 export async function downloadCoverageReportFromCloud(
 	reportName: string,

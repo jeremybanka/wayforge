@@ -8,15 +8,18 @@ import {
 	saveCoverage,
 } from "./database"
 import { getBaseGitRef, getCurrentGitRef } from "./git-status"
+import {
+	getCoverageJsonSummary,
+	getCoverageTextReport,
+} from "./istanbul-reports"
+import { stringify } from "./json"
 import { logDiff, logger, useMarks } from "./logger"
-import { getCoverageJsonSummary, getCoverageTextReport } from "./nyc-coverage"
 import {
 	downloadCoverageReportFromCloud,
 	uploadCoverageReportToCloud,
 } from "./persist-cloud"
 import { uploadCoverageDatabaseToS3 } from "./persist-s3"
 import { env, S3_CREDENTIALS } from "./recoverage.env"
-import { stringify } from "./stringify"
 
 export class BranchCoverage {
 	public git_ref: string
@@ -92,11 +95,15 @@ export async function capture(options: RecoverageOptions = {}): Promise<0 | 1> {
 				env.RECOVERAGE_CLOUD_URL,
 			)
 			if (cloudResponse instanceof Error) {
-				logger.mark?.(`failed to upload coverage report`)
+				logger.mark?.(
+					`failed to upload report "${packageName}" to recoverage.cloud`,
+				)
 				console.error(cloudResponse)
 				return 1
 			}
-			logger.mark?.(`uploaded coverage report to recoverage.cloud`)
+			logger.mark?.(
+				`uploaded coverage report "${packageName}" to recoverage.cloud`,
+			)
 		} else {
 			logger.mark?.(`RECOVERAGE_CLOUD_TOKEN not set; skipping upload`)
 		}
@@ -132,18 +139,18 @@ export async function diff(
 			)
 			return 1
 		}
+
 		// biome-ignore lint/style/noNonNullAssertion: there's always an element here
 		const packageName = process.cwd().split(`/`).at(-1)!
+		logger.mark?.(`getting report "${packageName}" from recoverage.cloud`)
 		const cloudCoverage = await downloadCoverageReportFromCloud(
 			packageName,
 			env.RECOVERAGE_CLOUD_TOKEN,
 			env.RECOVERAGE_CLOUD_URL,
 		)
-		logger.mark?.(
-			`looking for coverage report "${packageName}" on recoverage.cloud`,
-		)
+
 		if (cloudCoverage instanceof Error) {
-			logger.mark?.(`failed to download coverage report`)
+			logger.mark?.(`failed to download coverage report "${packageName}"`)
 			console.error(cloudCoverage)
 			return 1
 		}
@@ -151,12 +158,12 @@ export async function diff(
 			git_ref: baseGitRef,
 			coverage: cloudCoverage,
 		}
-		logger.mark?.(`found report "${packageName}" on recoverage.cloud`)
+		logger.mark?.(`downloaded report "${packageName}" from recoverage.cloud`)
 		saveCoverage(db).run({
 			$git_ref: baseGitRef,
 			$coverage: cloudCoverage,
 		})
-		logger.mark?.(`downloaded coverage report from recoverage.cloud`)
+		logger.mark?.(`saved report "${packageName}" to local database`)
 	}
 
 	if (!currentCoverage) {
@@ -168,17 +175,19 @@ export async function diff(
 		return 0
 	}
 
-	const [
-		baseCoverageJsonSummary,
-		currentCoverageJsonSummary,
-		baseCoverageTextReport,
-		currentCoverageTextReport,
-	] = await Promise.all([
-		getCoverageJsonSummary(baseCoverage, logger.mark),
-		getCoverageJsonSummary(currentCoverage, logger.mark),
-		getCoverageTextReport(baseCoverage, logger.mark),
-		getCoverageTextReport(currentCoverage, logger.mark),
-	])
+	const baseCoverageMap = createCoverageMap(JSON.parse(baseCoverage.coverage))
+	const currentCoverageMap = createCoverageMap(
+		JSON.parse(currentCoverage.coverage),
+	)
+
+	const baseCoverageJsonSummary = getCoverageJsonSummary(baseCoverageMap)
+	logger.mark?.(`got base coverage json summary`)
+	const currentCoverageJsonSummary = getCoverageJsonSummary(currentCoverageMap)
+	logger.mark?.(`got current coverage json summary`)
+	const baseCoverageTextReport = getCoverageTextReport(baseCoverageMap)
+	logger.mark?.(`got base coverage text report`)
+	const currentCoverageTextReport = getCoverageTextReport(currentCoverageMap)
+	logger.mark?.(`got current coverage text report`)
 
 	const coverageDifference =
 		currentCoverageJsonSummary.total.statements.pct -

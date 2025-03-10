@@ -4,7 +4,7 @@ import { defineConfig } from "tsup"
 export const OPTIONS = {
 	clean: true,
 	dts: true,
-	entry: [`src/recoverage.ts`, `src/recoverage.x.ts`, `src/lib.ts`],
+	entry: [`src/recoverage.ts`, `src/recoverage.x.ts`, `src/recoverage.lib.ts`],
 	format: [`esm`],
 	metafile: false,
 	outDir: `dist`,
