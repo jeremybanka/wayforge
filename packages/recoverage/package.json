@@ -15,11 +15,7 @@
 		"directory": "packages/recoverage"
 	},
 	"type": "module",
-	"files": [
-		"bin",
-		"dist",
-		"src"
-	],
+	"files": ["bin", "dist", "src"],
 	"main": "dist/recoverage.js",
 	"exports": {
 		"./package.json": "./package.json",
@@ -40,9 +36,6 @@
 		"test": "vitest",
 		"test:once": "vitest run",
 		"postversion": "biome format --write package.json"
-	},
-	"peerDependencies": {
-		"nyc": "^17.1.0"
 	},
 	"dependencies": {
 		"@t3-oss/env-core": "0.12.0",
