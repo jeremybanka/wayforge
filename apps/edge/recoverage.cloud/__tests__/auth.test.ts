@@ -112,6 +112,7 @@ test(`authentication flow`, async () => {
 	)
 	console.log(await reportMissing.json())
 	expect(reportMissing.status).toBe(404)
+
 	const reportMissingLib = await downloadCoverageReportFromCloud(reportRef, code)
 	expect(reportMissingLib).toBeInstanceOf(Error)
 
