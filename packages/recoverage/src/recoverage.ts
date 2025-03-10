@@ -85,9 +85,11 @@ export async function capture(options: RecoverageOptions = {}): Promise<0 | 1> {
 			logger.mark?.(`uploaded coverage database to S3`)
 		}
 		if (env.RECOVERAGE_CLOUD_TOKEN) {
-			logger.mark?.(`uploading coverage report to recoverage.cloud`)
 			// biome-ignore lint/style/noNonNullAssertion: there's always an element here
 			const packageName = process.cwd().split(`/`).at(-1)!
+			logger.mark?.(
+				`uploading coverage report "${packageName}" to recoverage.cloud`,
+			)
 			const cloudResponse = await uploadCoverageReportToCloud(
 				packageName,
 				coverageMapStringified,
@@ -171,7 +173,7 @@ export async function diff(
 		return 1
 	}
 	if (baseGitRef === currentGitRef) {
-		logger.mark?.(`you're already on the target branch`)
+		logger.mark?.(`no diff (we're already on the target branch)`)
 		return 0
 	}
 
@@ -181,13 +183,13 @@ export async function diff(
 	)
 
 	const baseCoverageJsonSummary = getCoverageJsonSummary(baseCoverageMap)
-	logger.mark?.(`got base coverage json summary`)
+	logger.mark?.(`got json summary for ${baseGitRef}`)
 	const currentCoverageJsonSummary = getCoverageJsonSummary(currentCoverageMap)
-	logger.mark?.(`got current coverage json summary`)
+	logger.mark?.(`got json summary for ${currentGitRef}`)
 	const baseCoverageTextReport = getCoverageTextReport(baseCoverageMap)
-	logger.mark?.(`got base coverage text report`)
+	logger.mark?.(`got text report for ${baseGitRef}`)
 	const currentCoverageTextReport = getCoverageTextReport(currentCoverageMap)
-	logger.mark?.(`got current coverage text report`)
+	logger.mark?.(`got text report for ${currentGitRef}`)
 
 	const coverageDifference =
 		currentCoverageJsonSummary.total.statements.pct -
@@ -200,7 +202,7 @@ export async function diff(
 			baseCoverageTextReport,
 			currentCoverageTextReport,
 		)
-		logger.mark?.(`coverage decreased by ${+coverageDifference}%`)
+		logger.mark?.(`coverage decreased by ${-coverageDifference}%`)
 		return 1
 	}
 

@@ -41,7 +41,9 @@ export async function getBaseGitRef(defaultBranch: string): Promise<string> {
 		)
 		logger.mark?.(`fetched origin/${defaultBranch}`)
 		const sha = await git.revparse([`origin/${defaultBranch}`])
-		return sha.slice(0, 7)
+		const baseGitRef = sha.slice(0, 7)
+		gitToolkit.baseRef = baseGitRef
+		return baseGitRef
 	}
 	const sha = await git.revparse([defaultBranch])
 	const baseGitRef = sha.slice(0, 7)
