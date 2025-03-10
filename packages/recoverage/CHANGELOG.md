@@ -1,5 +1,12 @@
 # treetrunks
 
+## 0.1.1
+
+### Patch Changes
+
+- 2f78638: 🔊 Improve the quality and consistency of logs.
+- 2f78638: 🚀 In CI, recoverage would previously fetch the main branch twice, with each fetch taking ~500ms. Now it only fetches once, reducing running time on github actions by ~;25%.
+
 ## 0.1.0
 
 ### Minor Changes
