@@ -1,5 +1,13 @@
 # treetrunks
 
+## 0.1.0
+
+### Minor Changes
+
+- e951247: 🚀 Improve performance by 2x by removing need to spawn processes.
+- e951247: ➖ Drop peer dependency `nyc`.
+- e951247: ✨ Add coverage report transformations to recoverage/lib.
+
 ## 0.0.10
 
 ### Patch Changes
