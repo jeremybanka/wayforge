@@ -1,5 +1,5 @@
 import { file } from "bun"
-import { createCoverageMap } from "istanbul-lib-coverage"
+import { CoverageMap, createCoverageMap } from "istanbul-lib-coverage"
 
 import {
 	deleteAllButLast10Reports,
@@ -168,16 +168,21 @@ export async function diff(
 		return 0
 	}
 
+	const baseCoverageMap = createCoverageMap(JSON.parse(baseCoverage.coverage))
+	const currentCoverageMap = createCoverageMap(
+		JSON.parse(currentCoverage.coverage),
+	)
+
 	const [
 		baseCoverageJsonSummary,
 		currentCoverageJsonSummary,
 		baseCoverageTextReport,
 		currentCoverageTextReport,
 	] = await Promise.all([
-		getCoverageJsonSummary(baseCoverage),
-		getCoverageJsonSummary(currentCoverage),
-		getCoverageTextReport(baseCoverage),
-		getCoverageTextReport(currentCoverage),
+		getCoverageJsonSummary(baseCoverageMap),
+		getCoverageJsonSummary(currentCoverageMap),
+		getCoverageTextReport(baseCoverageMap),
+		getCoverageTextReport(currentCoverageMap),
 	])
 
 	const coverageDifference =

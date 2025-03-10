@@ -2,55 +2,67 @@
  Copyright 2012-2015, Yahoo Inc.
  Copyrights licensed under the New BSD License. See the accompanying LICENSE file for terms.
  */
-// import fs from "node:fs"
 import path from "node:path"
 
-// const mkdirp = require(`make-dir`)
-// const supportsColor = require(`supports-color`)
+class TreeMap<K, V> extends Map<K, TreeMap<K, V> | V> {}
 
-// type RecursiveMap<T> = Map<string, RecursiveMap<T>>
-// const virtualDirectoryTree = new Map<string, RecursiveMap<string>>()
-// const files = new Map<string, string>()
+class VirtualFileSystem extends TreeMap<string, string> {
+	// Track the next file descriptor to assign
+	private nextFd = 1
+	// Store open files with their descriptors and metadata
+	private openFiles: Map<
+		number,
+		{ path: string; flag: string; position: number; appendMode: boolean }
+	> = new Map()
+	private tree: TreeMap<string, string>
 
-class VirtualFileTree extends Map<string, VirtualFileTree | string> {
+	// Existing methods (with assumed correction in writeFileSync)
 	public mkdirSync(dirPath: string): void {
-		const segments = dirPath.split(`/`)
-		let currentNode: VirtualFileTree | undefined
-		for (const segment of segments) {
-			if (!(this ?? currentNode).has(segment)) {
-				;(this ?? currentNode).set(segment, new VirtualFileTree())
-			}
-			const nextNode = this.get(segment)
-			if (nextNode instanceof VirtualFileTree) {
-				currentNode = nextNode
-			} else {
-				throw new Error(`Cannot create a directory`)
-			}
-		}
-	}
-	public writeFileSync(filePath: string, contents: string): void {
-		let currentNode: VirtualFileTree | undefined
-		const segments = filePath.split(`/`)
+		const segments = dirPath.split(`/`).filter((s) => s !== ``)
+		let currentNode: TreeMap<string, string> | undefined
 		for (const segment of segments) {
 			if (!(currentNode ?? this).has(segment)) {
-				;(currentNode ?? this).set(segment, new VirtualFileTree())
+				;(currentNode ?? this).set(segment, new TreeMap())
 			}
-			const nextNode = this.get(segment)
-			if (nextNode instanceof VirtualFileTree) {
+			const nextNode = (currentNode ?? this).get(segment) // Fixed from this.get(segment)
+			if (nextNode instanceof TreeMap) {
 				currentNode = nextNode
 			} else {
-				if (segment !== segments.at(-1)) {
-					throw new Error(`Cannot write to a file`)
-				}
+				console.error({
+					currentNode,
+					nextNode,
+					segments,
+					dirPath,
+				})
+				throw new Error(`Cannot create a directory...`)
 			}
 		}
-		;(currentNode ?? this)?.set(filePath, contents)
 	}
+
+	public writeFileSync(filePath: string, contents: string): void {
+		let currentNode: TreeMap<string, string> | undefined
+		const segments = filePath.split(`/`).filter((s) => s !== ``)
+		for (const segment of segments.slice(0, -1)) {
+			// Up to parent directory
+			if (!(currentNode ?? this).has(segment)) {
+				;(currentNode ?? this).set(segment, new TreeMap())
+			}
+			const nextNode = (currentNode ?? this).get(segment)
+			if (nextNode instanceof TreeMap) {
+				currentNode = nextNode
+			} else {
+				throw new Error(`Cannot write to a file`)
+			}
+		}
+		// Set the last segment (filename) to contents, fixing the original bug
+		;(currentNode ?? this).set(segments[segments.length - 1], contents)
+	}
+
 	public readFileSync(filePath: string): string {
-		let currentNode: VirtualFileTree | undefined
+		let currentNode: TreeMap<string, string> | undefined
 		for (const segment of filePath.split(`/`)) {
 			const nextNode = (currentNode ?? this).get(segment)
-			if (nextNode instanceof VirtualFileTree) {
+			if (nextNode instanceof TreeMap) {
 				currentNode = nextNode
 			} else {
 				if (segment !== filePath.split(`/`).at(-1)) {
@@ -63,11 +75,143 @@ class VirtualFileTree extends Map<string, VirtualFileTree | string> {
 		}
 		throw new Error(`File not found`)
 	}
-	public openSync(filePath: string, flags: string): number {
-		return 0
+
+	public openSync(filePath: string, flag: string): number {
+		const segments = filePath.split(`/`).filter((s) => s !== ``)
+		let currentNode: TreeMap<string, string> | undefined
+
+		// Traverse to the parent directory
+		for (let i = 0; i < segments.length - 1; i++) {
+			const segment = segments[i]
+			const nextNode = (currentNode ?? this).get(segment)
+			if (!(nextNode instanceof TreeMap)) {
+				throw new Error(
+					`Directory not found: ${segments.slice(0, i + 1).join(`/`)}`,
+				)
+			}
+			currentNode = nextNode
+		}
+
+		const fileName = segments[segments.length - 1]
+		let fileContent = (currentNode ?? this).get(fileName)
+
+		// Check if the path is a directory
+		if (fileContent instanceof TreeMap) {
+			throw new Error(`Is a directory: ${filePath}`)
+		}
+
+		const fileExists = typeof fileContent === `string`
+
+		// Handle flags
+		if (flag === `r` || flag === `r+`) {
+			if (!fileExists) {
+				throw new Error(`File not found: ${filePath}`)
+			}
+		} else if (flag === `w` || flag === `w+` || flag === `a` || flag === `a+`) {
+			if (!fileExists) {
+				;(currentNode ?? this).set(fileName, ``)
+				fileContent = ``
+			} else if (flag === `w` || flag === `w+`) {
+				;(currentNode ?? this).set(fileName, ``) // Truncate file
+				fileContent = ``
+			}
+			// For 'a' or 'a+', keep existing content
+		} else {
+			throw new Error(`Unsupported flag: ${flag}`)
+		}
+
+		// Assign file descriptor and store metadata
+		const fd = this.nextFd++
+		const appendMode = flag === `a` || flag === `a+`
+		const initialPosition = appendMode ? (fileContent as string).length : 0
+		this.openFiles.set(fd, {
+			path: filePath,
+			flag,
+			position: initialPosition,
+			appendMode,
+		})
+
+		return fd
+	}
+
+	public closeSync(fd: number): void {
+		if (!this.openFiles.has(fd)) {
+			throw new Error(`Bad file descriptor: ${fd}`)
+		}
+		this.openFiles.delete(fd)
+	}
+
+	public writeSync(fd: number, data: string, position?: number): number {
+		if (!this.openFiles.has(fd)) {
+			throw new Error(`Bad file descriptor: ${fd}`)
+		}
+
+		const {
+			path: filePath,
+			flag,
+			position: currentPosition,
+			appendMode,
+			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+		} = this.openFiles.get(fd)!
+
+		// Check if writing is allowed
+		if (flag === `r`) {
+			throw new Error(`File not open for writing: ${filePath}`)
+		}
+
+		// Traverse to the file
+		const segments = filePath.split(`/`).filter((s) => s !== ``)
+		let currentNode: TreeMap<string, string> | undefined
+		for (let i = 0; i < segments.length - 1; i++) {
+			const segment = segments[i]
+			const nextNode = (currentNode ?? this).get(segment)
+			if (!(nextNode instanceof TreeMap)) {
+				throw new Error(
+					`Directory not found: ${segments.slice(0, i + 1).join(`/`)}`,
+				)
+			}
+			currentNode = nextNode
+		}
+
+		const fileName = segments[segments.length - 1]
+		let fileContent = (currentNode ?? this).get(fileName)
+		if (fileContent instanceof TreeMap) {
+			throw new Error(`Is a directory: ${filePath}`)
+		}
+		if (typeof fileContent !== `string`) {
+			throw new Error(`File not found: ${filePath}`)
+		}
+
+		// Determine where to write
+		let writePosition: number
+		if (appendMode) {
+			writePosition = fileContent.length // Always append
+		} else if (position !== undefined) {
+			writePosition = position // Use specified position
+		} else {
+			writePosition = currentPosition // Use current position
+		}
+
+		// Perform the write
+		if (writePosition > fileContent.length) {
+			fileContent += `\0`.repeat(writePosition - fileContent.length) // Pad with nulls
+		}
+		fileContent =
+			fileContent.slice(0, writePosition) +
+			data +
+			fileContent.slice(writePosition + data.length)
+		;(currentNode ?? this).set(fileName, fileContent)
+
+		// Update position if not in append mode and no position was specified
+		if (!appendMode && position === undefined) {
+			const newPosition = writePosition + data.length
+			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			this.openFiles.get(fd)!.position = newPosition
+		}
+
+		return data.length
 	}
 }
-const vfs = new VirtualFileTree()
 
 /**
  * Base class for writing content
@@ -112,18 +256,20 @@ abstract class ContentWriter {
  */
 class FileContentWriter extends ContentWriter {
 	public fd: number
-	public constructor(fd: number) {
+	public vfs: VirtualFileSystem
+	public constructor(fd: number, vfs: VirtualFileSystem) {
 		super()
 
 		this.fd = fd
+		this.vfs = vfs
 	}
 
 	public write(str) {
-		fs.writeSync(this.fd, str)
+		this.vfs.writeSync(this.fd, str)
 	}
 
 	public close() {
-		fs.closeSync(this.fd)
+		this.vfs.closeSync(this.fd)
 	}
 }
 
@@ -166,13 +312,15 @@ let output = ``
  * @param {String} baseDir the base directory under which files should be written
  * @constructor
  */
-class VirtualFileWriter {
+export class VirtualFileWriter {
 	public baseDir: string
-	public constructor(baseDir: string) {
+	public vfs: VirtualFileSystem
+	public constructor(baseDir: string, vfs = new VirtualFileSystem()) {
 		if (!baseDir) {
 			throw new Error(`baseDir must be specified`)
 		}
 		this.baseDir = baseDir
+		this.vfs = vfs
 	}
 
 	/**
@@ -183,11 +331,11 @@ class VirtualFileWriter {
 		capture = true
 	}
 
-	public static stopCapture() {
+	public static stopCapture(): void {
 		capture = false
 	}
 
-	public static getOutput() {
+	public static getOutput(): string {
 		return output
 	}
 
@@ -201,7 +349,7 @@ class VirtualFileWriter {
 	 *  returned FileWriter
 	 * @returns {VirtualFileWriter}
 	 */
-	public writerForDir(subdir: string): VirtualFileWriter {
+	public writeForDir(subdir: string): VirtualFileWriter {
 		if (path.isAbsolute(subdir)) {
 			throw new Error(`Cannot create subdir writer for absolute path: ${subdir}`)
 		}
@@ -220,14 +368,14 @@ class VirtualFileWriter {
 			throw new Error(`Cannot write to absolute path: ${dest}`)
 		}
 		dest = path.resolve(this.baseDir, dest)
-		vfs.mkdirSync(path.dirname(dest))
+		this.vfs.mkdirSync(path.dirname(dest))
 		let contents: string
 		if (header) {
-			contents = header + vfs.readFileSync(source)
+			contents = header + this.vfs.readFileSync(source)
 		} else {
-			contents = vfs.readFileSync(source)
+			contents = this.vfs.readFileSync(source)
 		}
-		vfs.writeFileSync(dest, contents)
+		this.vfs.writeFileSync(dest, contents)
 	}
 
 	/**
@@ -236,17 +384,15 @@ class VirtualFileWriter {
 	 *  values `"-"` or `null` for writing to the console
 	 * @returns {ContentWriter}
 	 */
-	writeFile(file) {
-		if (file === null || file === `-`) {
-			return new ConsoleWriter()
-		}
+	public writeFile(file: string): ContentWriter {
+		// if (file === null || file === `-`) {
+		// 	return new ConsoleWriter()
+		// }
 		if (path.isAbsolute(file)) {
 			throw new Error(`Cannot write to absolute path: ${file}`)
 		}
 		file = path.resolve(this.baseDir, file)
-		vfs.mkdirSync(path.dirname(file))
-		return new FileContentWriter(fs.openSync(file, `w`))
+		this.vfs.mkdirSync(path.dirname(file))
+		return new FileContentWriter(this.vfs.openSync(file, `w`), this.vfs)
 	}
 }
-
-module.exports = VirtualFileWriter
