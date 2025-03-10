@@ -11,7 +11,10 @@ export default defineWorkersProject(async () => {
 
 	return {
 		test: {
-			setupFiles: [`./__tests__/apply-migrations.ts`],
+			setupFiles: [
+				`./__tests__/apply-migrations.ts`,
+				`./__tests__/hack-process-version.ts`,
+			],
 			globals: true,
 			poolOptions: {
 				workers: {
