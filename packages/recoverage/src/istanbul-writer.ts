@@ -277,35 +277,6 @@ class FileContentWriter extends ContentWriter {
 let capture = false
 let output = ``
 
-// /**
-//  * a content writer that writes to the console
-//  * @extends ContentWriter
-//  * @constructor
-//  */
-// class ConsoleWriter extends ContentWriter {
-// 	public write(str: string): void {
-// 		if (capture) {
-// 			output += str
-// 		} else {
-// 			process.stdout.write(str)
-// 		}
-// 	}
-
-// public	colorize(str: string, string clazz) {
-// 		const colors = {
-// 			low: `31;1`,
-// 			medium: `33;1`,
-// 			high: `32;1`,
-// 		}
-
-// 		/* istanbul ignore next: different modes for CI and local */
-// 		if (supportsColor.stdout && colors[clazz]) {
-// 			return `\u001b[${colors[clazz]}m${str}\u001b[0m`
-// 		}
-// 		return str
-// 	}
-// }
-
 /**
  * utility for writing files under a specific directory
  * @class FileWriter

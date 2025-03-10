@@ -1,5 +1,5 @@
 import { file } from "bun"
-import { CoverageMap, createCoverageMap } from "istanbul-lib-coverage"
+import { createCoverageMap } from "istanbul-lib-coverage"
 
 import {
 	deleteAllButLast10Reports,
@@ -8,8 +8,11 @@ import {
 	saveCoverage,
 } from "./database"
 import { getBaseGitRef, getCurrentGitRef } from "./git-status"
+import {
+	getCoverageJsonSummary,
+	getCoverageTextReport,
+} from "./istanbul-reports"
 import { logDiff, logger, useMarks } from "./logger"
-import { getCoverageJsonSummary, getCoverageTextReport } from "./nyc-coverage"
 import {
 	downloadCoverageReportFromCloud,
 	uploadCoverageReportToCloud,
