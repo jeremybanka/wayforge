@@ -95,11 +95,15 @@ export async function capture(options: RecoverageOptions = {}): Promise<0 | 1> {
 				env.RECOVERAGE_CLOUD_URL,
 			)
 			if (cloudResponse instanceof Error) {
-				logger.mark?.(`failed to upload coverage report`)
+				logger.mark?.(
+					`failed to upload report "${packageName}" to recoverage.cloud`,
+				)
 				console.error(cloudResponse)
 				return 1
 			}
-			logger.mark?.(`uploaded coverage report to recoverage.cloud`)
+			logger.mark?.(
+				`uploaded coverage report "${packageName}" to recoverage.cloud`,
+			)
 		} else {
 			logger.mark?.(`RECOVERAGE_CLOUD_TOKEN not set; skipping upload`)
 		}
@@ -135,18 +139,18 @@ export async function diff(
 			)
 			return 1
 		}
+
 		// biome-ignore lint/style/noNonNullAssertion: there's always an element here
 		const packageName = process.cwd().split(`/`).at(-1)!
+		logger.mark?.(`getting report "${packageName}" from recoverage.cloud`)
 		const cloudCoverage = await downloadCoverageReportFromCloud(
 			packageName,
 			env.RECOVERAGE_CLOUD_TOKEN,
 			env.RECOVERAGE_CLOUD_URL,
 		)
-		logger.mark?.(
-			`looking for coverage report "${packageName}" on recoverage.cloud`,
-		)
+
 		if (cloudCoverage instanceof Error) {
-			logger.mark?.(`failed to download coverage report`)
+			logger.mark?.(`failed to download coverage report "${packageName}"`)
 			console.error(cloudCoverage)
 			return 1
 		}
@@ -154,12 +158,12 @@ export async function diff(
 			git_ref: baseGitRef,
 			coverage: cloudCoverage,
 		}
-		logger.mark?.(`found report "${packageName}" on recoverage.cloud`)
+		logger.mark?.(`downloaded report "${packageName}" from recoverage.cloud`)
 		saveCoverage(db).run({
 			$git_ref: baseGitRef,
 			$coverage: cloudCoverage,
 		})
-		logger.mark?.(`downloaded coverage report from recoverage.cloud`)
+		logger.mark?.(`saved report "${packageName}" to local database`)
 	}
 
 	if (!currentCoverage) {
