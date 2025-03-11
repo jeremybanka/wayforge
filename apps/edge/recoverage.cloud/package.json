@@ -20,7 +20,7 @@
 	},
 	"dependencies": {
 		"arktype": "2.1.9",
-		"bun": "1.2.4",
+		"bun": "1.2.5",
 		"drizzle-orm": "0.40.0",
 		"hono": "4.7.4",
 		"htmx.org": "2.0.4",
