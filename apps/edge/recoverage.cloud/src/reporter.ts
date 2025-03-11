@@ -193,7 +193,7 @@ export const coverageEvalType: Type<CoverageEval> = type({
 	total: `number.integer`,
 	covered: `number.integer`,
 	skipped: `number.integer`,
-	pct: `number.integer`,
+	pct: `number`,
 })
 
 export const jsonSummaryType: Type<CoverageSummary> = type({
