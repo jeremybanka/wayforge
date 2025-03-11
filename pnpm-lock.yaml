@@ -109,8 +109,8 @@ importers:
         specifier: 15.5.13
         version: 15.5.13
       bun-types:
-        specifier: 1.2.4
-        version: 1.2.4
+        specifier: 1.2.5
+        version: 1.2.5
       chokidar:
         specifier: 4.0.3
         version: 4.0.3
@@ -155,8 +155,8 @@ importers:
         version: 3.24.2
     devDependencies:
       bun-types:
-        specifier: 1.2.4
-        version: 1.2.4
+        specifier: 1.2.5
+        version: 1.2.5
       eslint:
         specifier: 9.22.0
         version: 9.22.0(jiti@2.4.2)
@@ -180,7 +180,7 @@ importers:
         version: 1.2.4
       drizzle-orm:
         specifier: 0.40.0
-        version: 0.40.0(@cloudflare/workers-types@4.20250310.0)(bun-types@1.2.4)(gel@2.0.0)(postgres@3.4.5)
+        version: 0.40.0(@cloudflare/workers-types@4.20250310.0)(bun-types@1.2.5)(gel@2.0.0)(postgres@3.4.5)
       hono:
         specifier: 4.7.4
         version: 4.7.4
@@ -219,8 +219,8 @@ importers:
         specifier: 2.0.6
         version: 2.0.6
       bun-types:
-        specifier: 1.2.4
-        version: 1.2.4
+        specifier: 1.2.5
+        version: 1.2.5
       cloudflare:
         specifier: 4.1.0
         version: 4.1.0
@@ -268,8 +268,8 @@ importers:
         specifier: 4.24.4
         version: 4.24.4
       bun-types:
-        specifier: 1.2.4
-        version: 1.2.4
+        specifier: 1.2.5
+        version: 1.2.5
       chokidar:
         specifier: 4.0.3
         version: 4.0.3
@@ -409,7 +409,7 @@ importers:
         version: 4.1.0
       drizzle-orm:
         specifier: 0.40.0
-        version: 0.40.0(@cloudflare/workers-types@4.20250310.0)(bun-types@1.2.4)(gel@2.0.0)(postgres@3.4.5)
+        version: 0.40.0(@cloudflare/workers-types@4.20250310.0)(bun-types@1.2.5)(gel@2.0.0)(postgres@3.4.5)
       openai:
         specifier: 4.86.2
         version: 4.86.2(ws@8.18.1)(zod@3.24.2)
@@ -460,8 +460,8 @@ importers:
         specifier: 3.8.0
         version: 3.8.0(@swc/helpers@0.5.15)(vite@6.2.1(@types/node@22.13.10)(jiti@2.4.2)(lightningcss@1.29.2)(sass-embedded@1.85.1)(sass@1.85.1)(terser@5.39.0)(tsx@4.19.3))
       bun-types:
-        specifier: 1.2.4
-        version: 1.2.4
+        specifier: 1.2.5
+        version: 1.2.5
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
@@ -846,8 +846,8 @@ importers:
         specifier: workspace:*
         version: link:../break-check
       bun-types:
-        specifier: 1.2.4
-        version: 1.2.4
+        specifier: 1.2.5
+        version: 1.2.5
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
@@ -856,7 +856,7 @@ importers:
         version: 0.30.5
       drizzle-orm:
         specifier: 0.40.0
-        version: 0.40.0(@cloudflare/workers-types@4.20250310.0)(bun-types@1.2.4)(gel@2.0.0)(postgres@3.4.5)
+        version: 0.40.0(@cloudflare/workers-types@4.20250310.0)(bun-types@1.2.5)(gel@2.0.0)(postgres@3.4.5)
       eslint:
         specifier: 9.22.0
         version: 9.22.0(jiti@2.4.2)
@@ -949,8 +949,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       bun-types:
-        specifier: 1.2.4
-        version: 1.2.4
+        specifier: 1.2.5
+        version: 1.2.5
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
@@ -989,8 +989,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       bun-types:
-        specifier: 1.2.4
-        version: 1.2.4
+        specifier: 1.2.5
+        version: 1.2.5
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
@@ -1041,8 +1041,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       bun-types:
-        specifier: 1.2.4
-        version: 1.2.4
+        specifier: 1.2.5
+        version: 1.2.5
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
@@ -1334,8 +1334,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       bun-types:
-        specifier: 1.2.4
-        version: 1.2.4
+        specifier: 1.2.5
+        version: 1.2.5
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
@@ -1544,8 +1544,8 @@ importers:
         specifier: 19.0.10
         version: 19.0.10
       bun-types:
-        specifier: 1.2.4
-        version: 1.2.4
+        specifier: 1.2.5
+        version: 1.2.5
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
@@ -1587,8 +1587,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       bun-types:
-        specifier: 1.2.4
-        version: 1.2.4
+        specifier: 1.2.5
+        version: 1.2.5
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
@@ -5000,8 +5000,8 @@ packages:
   buffer@5.7.1:
     resolution: {integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==}
 
-  bun-types@1.2.4:
-    resolution: {integrity: sha512-nDPymR207ZZEoWD4AavvEaa/KZe/qlrbMSchqpQwovPZCKc7pwMoENjEtHgMKaAjJhy+x6vfqSBA1QU3bJgs0Q==}
+  bun-types@1.2.5:
+    resolution: {integrity: sha512-3oO6LVGGRRKI4kHINx5PIdIgnLRb7l/SprhzqXapmoYkFl5m4j6EvALvbDVuuBFaamB46Ap6HCUxIXNLCGy+tg==}
 
   bun@1.2.4:
     resolution: {integrity: sha512-ZY0EZ/UKqheaLeAtMsfJA6jWoWvV9HAtfFaOJSmS3LrNpFKs1Sg5fZLSsczN1h3a+Dtheo4O3p3ZYWrf40kRGw==}
@@ -12745,7 +12745,7 @@ snapshots:
       base64-js: 1.5.1
       ieee754: 1.2.1
 
-  bun-types@1.2.4:
+  bun-types@1.2.5:
     dependencies:
       '@types/node': 22.13.10
       '@types/ws': 8.5.14
@@ -13316,10 +13316,10 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.40.0(@cloudflare/workers-types@4.20250310.0)(bun-types@1.2.4)(gel@2.0.0)(postgres@3.4.5):
+  drizzle-orm@0.40.0(@cloudflare/workers-types@4.20250310.0)(bun-types@1.2.5)(gel@2.0.0)(postgres@3.4.5):
     optionalDependencies:
       '@cloudflare/workers-types': 4.20250310.0
-      bun-types: 1.2.4
+      bun-types: 1.2.5
       gel: 2.0.0
       postgres: 3.4.5
 

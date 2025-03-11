@@ -10,7 +10,7 @@ import AtomIOPlugin from "./packages/atom.io/eslint-plugin"
 const ERROR = 2
 
 const parserOptions = {
-	project: [`./tsconfig.json`],
+	project: [`./tsconfig.json`, "__scripts__/tsconfig.json"],
 	sourceType: `module`,
 } satisfies parser.ParserOptions
 
