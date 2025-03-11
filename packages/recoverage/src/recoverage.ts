@@ -33,16 +33,16 @@ export type CoverageEval = {
 	pct: number
 }
 
-export type JsonSummary = {
+export type CoverageSummary = {
 	branches: CoverageEval
 	functions: CoverageEval
 	lines: CoverageEval
 	statements: CoverageEval
 }
-export type JsonSummaryReport = {
-	[key: string]: JsonSummary | undefined
+export type JsonSummary = {
+	[key: string]: CoverageSummary
 } & {
-	total: JsonSummary
+	total: CoverageSummary
 }
 
 export type RecoverageOptions = {
@@ -63,6 +63,7 @@ export async function capture(options: RecoverageOptions = {}): Promise<0 | 1> {
 	const coverageFile = file(`./coverage/coverage-final.json`)
 	const coverageJson = await coverageFile.json()
 	const coverageMap = createCoverageMap(coverageJson)
+	const coverageJsonSummary = getCoverageJsonSummary(coverageMap)
 	const coverageMapStringified = stringify(coverageMap)
 
 	const db = await initDatabase()
@@ -92,7 +93,8 @@ export async function capture(options: RecoverageOptions = {}): Promise<0 | 1> {
 			)
 			const cloudResponse = await uploadCoverageReportToCloud(
 				packageName,
-				coverageMapStringified,
+				coverageMap,
+				coverageJsonSummary,
 				env.RECOVERAGE_CLOUD_TOKEN,
 				env.RECOVERAGE_CLOUD_URL,
 			)

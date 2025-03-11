@@ -13,6 +13,7 @@
 			"*.tsdoc.json",
 			".turbo",
 			".varmint",
+			".wrangler",
 			"app/**/*",
 			"bin/**/*",
 			"coverage",

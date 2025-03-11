@@ -160,6 +160,7 @@ const commonRules = {
 const configs = [
 	{
 		ignores: [
+			`**/.wrangler/**`,
 			`**/_shared/**`,
 			`**/build/**`,
 			`**/coverage/**`,

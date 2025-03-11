@@ -1,6 +1,7 @@
 import type { CoverageMap } from "istanbul-lib-coverage"
 
-import type { Json } from "./json"
+import { type Json, stringify } from "./json"
+import type { JsonSummary } from "./recoverage"
 
 export async function downloadCoverageReportFromCloud(
 	reportName: string,
@@ -34,7 +35,8 @@ export async function downloadCoverageReportFromCloud(
 
 export async function uploadCoverageReportToCloud(
 	reportName: string,
-	coverageMapStringified: Json.stringified<CoverageMap>,
+	coverageMap: CoverageMap,
+	jsonSummary: JsonSummary,
 	cloudToken: string,
 	cloudHost = `https://recoverage.cloud`,
 ): Promise<Error | { success: true }> {
@@ -45,7 +47,7 @@ export async function uploadCoverageReportToCloud(
 			headers: {
 				Authorization: `Bearer ${cloudToken}`,
 			},
-			body: coverageMapStringified,
+			body: stringify({ mapData: coverageMap, jsonSummary }),
 		})
 		if (!response.ok) {
 			const text = await response.text()
