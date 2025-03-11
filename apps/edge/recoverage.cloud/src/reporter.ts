@@ -1,12 +1,22 @@
+import type { Type } from "arktype"
 import { type } from "arktype"
 import { and, eq } from "drizzle-orm"
 import type { DrizzleD1Database } from "drizzle-orm/d1"
 import type { MiddlewareHandler } from "hono"
 import { Hono } from "hono"
+import type {
+	CoverageMapData,
+	FileCoverageData,
+	Location,
+	Range,
+} from "istanbul-lib-coverage"
+import { createCoverageMap } from "istanbul-lib-coverage"
+import type { CoverageEval, CoverageSummary, JsonSummary } from "recoverage"
 
 import { createDatabase } from "./db"
 import type { Bindings } from "./env"
 import { computeHash } from "./hash"
+import { stringify } from "./json"
 import type { Role } from "./roles-permissions"
 import { reportsAllowed } from "./roles-permissions"
 import * as schema from "./schema"
@@ -107,54 +117,65 @@ reporterRoutes.put(`/:reportRef`, reporterAuth, async (c) => {
 		return c.json({ error: `You may not create more reports` }, 401)
 	}
 
-	const data = await c.req.json()
-	const out = istanbulCoverageMapType(data)
+	const jsonPayload = await c.req.json()
+	console.log({ jsonPayload })
+	const payloadOut = reporterPutType(jsonPayload)
 
-	if (out instanceof type.errors) {
-		console.log(out.summary)
-		return c.json({ error: `Invalid report`, typeErrors: out.summary }, 400)
+	if (payloadOut instanceof type.errors) {
+		return c.json({ error: `Bad request`, typeErrors: payloadOut.summary }, 400)
 	}
+
+	const coverageMapString = stringify(createCoverageMap(payloadOut.mapData))
+	const summaryReportString = stringify(payloadOut.jsonSummary)
 
 	await db
 		.insert(schema.reports)
 		.values({
 			ref: reportRef,
 			projectId: projectScope,
-			data: JSON.stringify(out),
+			data: coverageMapString,
+			jsonSummary: summaryReportString,
 		})
 		.onConflictDoUpdate({
 			target: [schema.reports.ref, schema.reports.projectId],
 			set: {
-				data: JSON.stringify(out),
+				data: coverageMapString,
+				jsonSummary: summaryReportString,
 			},
 		})
 
 	return c.json({ success: true })
 })
 
+const locationSchema: Type<Location> = type({
+	line: `number.integer`,
+	column: `number.integer`,
+})
+
 // Reusable schema for a source code location (start/end)
-const locationSchema = type({
-	start: { line: `number.integer`, column: `number.integer` },
-	end: { line: `number.integer`, column: `number.integer` },
+const rangeSchema: Type<Range> = type({
+	start: locationSchema,
+	end: locationSchema,
 })
 
 // Coverage data for one file
-const coverageMapEntrySchema = type({
+const coverageMapEntrySchema: Type<FileCoverageData> = type({
 	path: `string`,
-	all: `boolean`,
-	statementMap: { "[string]": locationSchema },
+	statementMap: { "[string]": rangeSchema },
 	fnMap: {
 		"[string]": {
 			name: `string`,
-			decl: locationSchema,
-			loc: locationSchema,
+			line: `number.integer`,
+			decl: rangeSchema,
+			loc: rangeSchema,
 		},
 	},
 	branchMap: {
 		"[string]": {
 			line: `number.integer`,
 			type: `string`,
-			locations: type(locationSchema, `[]`),
+			locations: type(rangeSchema, `[]`),
+			loc: rangeSchema,
 		},
 	},
 	// s, f, and b track how many times statements/functions/branches were hit
@@ -164,6 +185,30 @@ const coverageMapEntrySchema = type({
 })
 
 // A coverage map is a record keyed by file path
-export const istanbulCoverageMapType = type({
+export const istanbulCoverageMapDataType: Type<CoverageMapData> = type({
 	"[string]": coverageMapEntrySchema,
+})
+
+export const coverageEvalType: Type<CoverageEval> = type({
+	total: `number.integer`,
+	covered: `number.integer`,
+	skipped: `number.integer`,
+	pct: `number.integer`,
+})
+
+export const jsonSummaryType: Type<CoverageSummary> = type({
+	branches: coverageEvalType,
+	functions: coverageEvalType,
+	lines: coverageEvalType,
+	statements: coverageEvalType,
+})
+
+export const jsonSummaryReportType: Type<JsonSummary> = type({
+	total: jsonSummaryType,
+	"[string]": jsonSummaryType,
+})
+
+export const reporterPutType = type({
+	mapData: istanbulCoverageMapDataType,
+	jsonSummary: jsonSummaryReportType,
 })

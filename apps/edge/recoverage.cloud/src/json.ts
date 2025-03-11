@@ -1,7 +1,7 @@
 export namespace Json {
 	export type primitive = boolean | number | string | null
-	export type Arr = Array<Arr | Compatible<any> | Obj | primitive>
-	export type Obj = { [key: keyof any]: Arr | Compatible<any> | Obj | primitive }
+	export type Arr = Array<Arr | Obj | primitive>
+	export type Obj = { [key: keyof any]: Arr | Obj | primitive }
 	export type Val = Arr | Obj | primitive
 	export type Compatible<J> = { toJSON(): J }
 	export type stringified<J extends Compatible<any> | Val> = string & {

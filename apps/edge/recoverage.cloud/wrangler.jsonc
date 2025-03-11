@@ -27,7 +27,7 @@
 		{
 			"binding": "DB",
 			"database_name": "recoverage-data",
-			"database_id": "746583b2-6056-4e2a-8d0d-c103797aa8a7",
+			"database_id": "48543dc9-b6d2-4546-93f0-d16f18495b8e",
 			"migrations_dir": "drizzle"
 		}
 	]

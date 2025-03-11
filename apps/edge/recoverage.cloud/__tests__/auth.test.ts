@@ -1,5 +1,6 @@
 import { env } from "cloudflare:test"
 import { XMLParser } from "fast-xml-parser"
+import { createCoverageMap } from "istanbul-lib-coverage"
 import {
 	downloadCoverageReportFromCloud,
 	uploadCoverageReportToCloud,
@@ -7,7 +8,7 @@ import {
 
 import app from "../src"
 import { GITHUB_CALLBACK_ENDPOINT } from "../src/env"
-import { reportFixture } from "./report-fixture"
+import { jsonSummaryFixture, reportFixture } from "./report-fixture"
 
 afterEach(() => {
 	vi.restoreAllMocks()
@@ -123,14 +124,19 @@ test(`authentication flow`, async () => {
 			headers: {
 				Authorization: `Bearer ${code}`,
 			},
-			body: JSON.stringify(reportFixture),
+			body: JSON.stringify({
+				mapData: reportFixture,
+				jsonSummary: jsonSummaryFixture,
+			}),
 		},
 	)
-	expect(reportPut.status).toBe(200)
 	const reportPutJson = await reportPut.json()
+	console.log({ reportPutJson })
+	expect(reportPut.status).toBe(200)
 	const reportPutLibJson = await uploadCoverageReportToCloud(
 		reportRef,
-		JSON.stringify(reportFixture),
+		createCoverageMap(reportFixture),
+		jsonSummaryFixture,
 		code,
 	)
 	expect(reportPutLibJson).toEqual(reportPutJson)
