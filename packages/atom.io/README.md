@@ -1,6 +1,3 @@
-
-
-
 <div align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/jeremybanka/wayforge/main/packages/atom.io/__assets__/logo-dark-mode.png">
@@ -17,21 +14,18 @@
   Composable, high-performance reactivity for ECMAScript inspired by <a href="https://recoiljs.org/">Recoil</a> 💙
 </h3>
 
-
-
 <h3 align="center">
   <a href="https://atom.io.fyi">📖 Read the docs at atom.io.fyi</a>
 </h3>
 
-
-
-
 ```shell
 npm i atom.io
 ```
+
 ```shell
 pnpm i atom.io
 ```
+
 ```shell
 bun i atom.io
 ```
@@ -50,12 +44,8 @@ bun i atom.io
     <img alt="NPM Version" src="https://img.shields.io/npm/v/atom.io?style=for-the-badge&labelColor=333">
   </a>
   <a aria-label="Coverage" href="https://coveralls.io/github/jeremybanka/wayforge">
-    <img alt="Coverage" src="https://img.shields.io/coverallsCoverage/github/jeremybanka/wayforge?style=for-the-badge&labelColor=333">
+    <img alt="Coverage" src="https://img.shields.io/endpoint?url=https%3A%2F%2Frecoverage.cloud%2Fshields%2FS1ikz1yFmk93qbAI7lLnu%2Fatom.io
+    ">
   </a>
 
 </p>
-
-
-
-
-
