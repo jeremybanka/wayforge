@@ -307,7 +307,7 @@ export function ProjectToken(props: DivProjectTokenProps): JSX.Element {
 										{id}.{secretShownOnce}
 									</code>
 								</span>
-								<button.copy text={secretShownOnce} />
+								<button.copy text={`${id}.${secretShownOnce}`} />
 							</div>
 							<div class={css`font-size: 12px; text-align: right;`}>
 								^ copy this code and put it somewhere safe. it will not be shown
