@@ -56,7 +56,7 @@ export const reports = sqliteTable(
 			.references(() => projects.id, { onDelete: `cascade` })
 			.notNull(),
 		data: text().notNull().$type<Json.stringified<CoverageMap>>(),
-		jsonSummary: text().notNull().$type<Json.stringified<JsonSummary>>(),
+		jsonSummary: text().$type<Json.stringified<JsonSummary>>(),
 		createdAt: text().notNull().default(sql`(current_timestamp)`),
 	},
 	(table) => [

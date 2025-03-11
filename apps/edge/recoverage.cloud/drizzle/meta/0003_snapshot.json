@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "1b645ef3-2b77-4f20-98f4-b029ac49eeb5",
+  "id": "817a2f12-10a0-4499-a7b5-74a2b9cf3535",
   "prevId": "b4b2b15d-2bf8-4ba8-ba9e-f22c423d1261",
   "tables": {
     "projects": {
@@ -85,7 +85,7 @@
           "name": "jsonSummary",
           "type": "text",
           "primaryKey": false,
-          "notNull": true,
+          "notNull": false,
           "autoincrement": false
         },
         "createdAt": {
