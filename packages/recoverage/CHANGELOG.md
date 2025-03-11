@@ -1,5 +1,11 @@
 # treetrunks
 
+## 0.1.2
+
+### Patch Changes
+
+- f2b7740: ✨ Report json summary to recoverage.cloud.
+
 ## 0.1.1
 
 ### Patch Changes
