@@ -11,6 +11,7 @@ import { GITHUB_CALLBACK_ENDPOINT } from "./env"
 import { Page, SplashPage } from "./page"
 import { reporterRoutes } from "./reporter"
 import * as schema from "./schema"
+import { shieldsRoutes } from "./shields"
 import type { UiEnv } from "./ui"
 import { uiRoutes } from "./ui"
 
@@ -24,6 +25,7 @@ app.use(`*`, async (c, next) => {
 app.route(`assets`, assetsRoutes)
 app.route(`reporter`, reporterRoutes)
 app.route(`ui`, uiRoutes)
+app.route(`shields`, shieldsRoutes)
 
 app.get(`/`, async (c) => {
 	const url = new URL(c.req.url)
