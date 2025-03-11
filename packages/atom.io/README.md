@@ -44,8 +44,7 @@ bun i atom.io
     <img alt="NPM Version" src="https://img.shields.io/npm/v/atom.io?style=for-the-badge&labelColor=333">
   </a>
   <a aria-label="Coverage" href="https://coveralls.io/github/jeremybanka/wayforge">
-    <img alt="Coverage" src="https://img.shields.io/endpoint?url=https%3A%2F%2Frecoverage.cloud%2Fshields%2FS1ikz1yFmk93qbAI7lLnu%2Fatom.io
-    ">
+    <img alt="Coverage" src="https://img.shields.io/endpoint?url=https%3A%2F%2Frecoverage.cloud%2Fshields%2FS1ikz1yFmk93qbAI7lLnu%2Fatom.io">
   </a>
 
 </p>
