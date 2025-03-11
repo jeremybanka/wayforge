@@ -1,6 +1,6 @@
 {
-	"extends": "../../../tsconfig.json",
-	"include": ["src", "__tests__", "**/*.config.ts"],
+	"extends": "../../../../tsconfig.json",
+	"include": ["*.ts", "../__tests__/report-fixture.ts"],
 	"compilerOptions": {
 		"composite": true,
 		"target": "ESNext",
@@ -10,12 +10,7 @@
 		"strict": true,
 		"skipLibCheck": true,
 		"lib": ["ESNext"],
-		"types": [
-			"vite/client",
-			"vitest/globals",
-			"@cloudflare/workers-types/experimental",
-			"@cloudflare/vitest-pool-workers"
-		],
+		"types": ["bun-types"],
 		"jsx": "react-jsx",
 		"jsxImportSource": "hono/jsx"
 	}
