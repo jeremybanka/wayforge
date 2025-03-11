@@ -69,7 +69,7 @@ shieldsRoutes.get(`/:projectId/:reportRef`, shieldsMiddleware, async (c) => {
 		{
 			schemaVersion: 1,
 			color,
-			style: "for-the-badge",
+			style: `for-the-badge`,
 		} as const,
 		coveragePct === 100
 			? { label: ``, message: `coverage 100%` }
