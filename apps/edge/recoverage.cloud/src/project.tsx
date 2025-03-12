@@ -1,17 +1,22 @@
 import { css } from "hono/css"
+import type { JsonSummary } from "recoverage"
 
 import * as button from "./button"
 import * as form from "./form"
 import * as h4 from "./h4"
 import * as header from "./header"
+import type { Json } from "./json"
 import { reportsAllowed, type Role, tokensAllowed } from "./roles-permissions"
 
-export type DivProjectProps =
+export type ProjectProps =
 	| {
 			id: string
 			name: string
 			tokens: CompleteProjectTokenProps[]
-			reports: { ref: string }[]
+			reports: {
+				ref: string
+				jsonSummary: Json.stringified<JsonSummary> | null
+			}[]
 			mode: `deleted` | `existing`
 			userRole: Role
 	  }
@@ -19,7 +24,7 @@ export type DivProjectProps =
 			mode: `button` | `creator`
 			disabled?: boolean
 	  }
-export function Project(props: DivProjectProps): JSX.Element {
+export function Project(props: ProjectProps): JSX.Element {
 	switch (props.mode) {
 		case `button`: {
 			return (
@@ -109,7 +114,7 @@ export function Project(props: DivProjectProps): JSX.Element {
 						>
 							{Array.from({ length: reportsAllowed.get(userRole) }).map(
 								(_, idx) => {
-									const report: { ref: string } | undefined = reports[idx]
+									const report = reports[idx]
 									if (!report) {
 										return (
 											<span
@@ -124,6 +129,11 @@ export function Project(props: DivProjectProps): JSX.Element {
 											`}
 											/>
 										)
+									}
+									let coveragePercent: number | undefined
+									if (report?.jsonSummary) {
+										const summary = JSON.parse(report.jsonSummary)
+										coveragePercent = summary.total.statements.pct
 									}
 									return (
 										<span
@@ -140,10 +150,12 @@ export function Project(props: DivProjectProps): JSX.Element {
 												padding: 2px;
 												min-height: 30px;
 												min-width: 80px;
-											`}
+												`}
 										>
 											<span
 												class={css`
+													position: relative;
+													box-sizing: border-box;
 													display: flex;
 													flex-flow: column;
 													align-items: center;
@@ -153,11 +165,31 @@ export function Project(props: DivProjectProps): JSX.Element {
 													background-color: ${mode === `deleted` ? `transparent` : `var(--color-bg-t3)`};						
 													border: 1px solid ${mode === `deleted` ? `transparent` : `var(--color-fg-faint)`};
 													box-shadow: 0 4px 0 -2px #0003;
-													padding: 10px 10px;
+													padding: 9px 10px 11px;
 													min-width: 80px;
+													line-break: none;
 												`}
 											>
-												{report?.ref ?? ``}
+												{report.ref}
+												{coveragePercent ? (
+													<span
+														class={css`
+															position: absolute;
+															bottom: -12px;
+															margin: auto;
+															display: inline;
+															font-size: 12px;
+															color: var(--color-fg-light);
+															border-radius: 10px;
+															border: 1px solid var(--color-fg-faint);
+															background: var(--color-bg-t3);
+															padding: 1px 3px 2px 6px;
+															box-shadow: 0 2px 0px -1px #0005;
+														`}
+													>
+														{coveragePercent}%
+													</span>
+												) : null}
 											</span>
 										</span>
 									)

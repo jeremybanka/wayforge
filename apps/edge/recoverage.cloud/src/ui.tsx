@@ -84,6 +84,7 @@ uiRoutes.get(`/project`, uiAuth, async (c) => {
 			reports: {
 				columns: {
 					ref: true,
+					jsonSummary: true,
 				},
 			},
 		},

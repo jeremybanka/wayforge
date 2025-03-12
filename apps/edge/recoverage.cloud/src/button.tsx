@@ -61,7 +61,7 @@ export function x(props: XProps): JSX.Element {
         box-shadow: ${disabled ? `none` : `0 3px 0 -2px #0003`};
         color: ${disabled ? `var(--color-fg-superlight)` : `var(--color-fg)`};
         border: 1px solid ${disabled ? `var(--color-fg-superlight)` : `var(--color-fg)`};
-        padding: 7px 10px;
+        padding: 6px 10px 7px;
         justify-self: left;
         align-self: flex-start;
         border-radius: 0 0 0 5px;
