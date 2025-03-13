@@ -42,61 +42,61 @@ app.get(`/`, async (c) => {
 
 	console.log(`Found github access token cookie`)
 
-	const octokit = new Octokit({
-		auth: githubAccessTokenCookie,
-	})
+	try {
+		const octokit = new Octokit({ auth: githubAccessTokenCookie })
 
-	const { data, status } = await octokit.request(`GET /user`, {
-		request: { fetch: cachedFetch },
-	})
+		const { data } = await octokit.request(`GET /user`, {
+			request: { fetch: cachedFetch },
+		})
 
-	if (status !== 200) {
-		deleteCookie(c, `github-access-token`)
-		return c.html(
-			<SplashPage currentUrl={url} githubClientId={c.env.GITHUB_CLIENT_ID} />,
-		)
-	}
+		const db = createDatabase(c.env.DB)
 
-	const db = createDatabase(c.env.DB)
+		c.set(`drizzle`, db)
+		let user = await db
+			.select()
+			.from(schema.users)
+			.where(eq(schema.users.id, data.id))
+			.get()
+		if (!user) {
+			user = (
+				await db.insert(schema.users).values({ id: data.id }).returning()
+			)[0]
+		}
 
-	c.set(`drizzle`, db)
-	let user = await db
-		.select()
-		.from(schema.users)
-		.where(eq(schema.users.id, data.id))
-		.get()
-	if (!user) {
-		user = (await db.insert(schema.users).values({ id: data.id }).returning())[0]
-	}
-
-	return c.html(
-		<Page>
-			<img
-				src={data.avatar_url}
-				alt={data.login}
-				class={css`
+		return await c.html(
+			<Page>
+				<img
+					src={data.avatar_url}
+					alt={data.login}
+					class={css`
 					width: 50px;
 					position: absolute;
 					top: 0;
 					left: 20px;
 				`}
-			/>
-			<h1>Recoverage</h1>
-			<p>
-				Logged in as {data.login} ({data.id})
-			</p>
-			<h2>Your Projects</h2>
-			<div
-				hx-get="/ui/project"
-				hx-trigger="load"
-				class={css`
+				/>
+				<h1>Recoverage</h1>
+				<p>
+					Logged in as {data.login} ({data.id})
+				</p>
+				<h2>Your Projects</h2>
+				<div
+					hx-get="/ui/project"
+					hx-trigger="load"
+					class={css`
 					display: flex;
 					flex-flow: column;
 					gap: 10px;
 				`}
-			/>
-		</Page>,
-	)
+				/>
+			</Page>,
+		)
+	} catch (error) {
+		deleteCookie(c, `github-access-token`)
+		return c.html(
+			<SplashPage currentUrl={url} githubClientId={c.env.GITHUB_CLIENT_ID} />,
+		)
+	}
 })
 
 app.get(GITHUB_CALLBACK_ENDPOINT, async (c) => {
