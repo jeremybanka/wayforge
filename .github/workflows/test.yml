@@ -70,7 +70,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4.2.2
       - uses: ./.github/actions/setup
-      - run: printenv > packages/atom.io/.env
+      - run: |
+          printenv > packages/atom.io/.env
+          printenv > packages/treetrunks/.env
         env:
           RECOVERAGE_CLOUD_TOKEN: ${{ secrets.RECOVERAGE_CLOUD_TOKEN }}
           S3_ACCESS_KEY_ID: ${{ secrets.S3_ACCESS_KEY_ID }}
