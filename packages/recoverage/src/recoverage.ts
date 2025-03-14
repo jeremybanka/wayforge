@@ -53,7 +53,7 @@ export type RecoverageOptions = {
 export async function capture(options: RecoverageOptions = {}): Promise<0 | 1> {
 	const { defaultBranch = `main`, silent = false } = options
 	if (!silent && !logger.mark) {
-		Object.assign(logger, useMarks({ inline: false }))
+		Object.assign(logger, useMarks({ inline: true }))
 	}
 	logger.mark?.(`start`)
 	logger.mark?.(`called recoverage capture`)
@@ -123,7 +123,7 @@ export async function diff(
 	silent = false,
 ): Promise<0 | 1> {
 	if (!silent && !logger.mark) {
-		Object.assign(logger, useMarks({ inline: false }))
+		Object.assign(logger, useMarks({ inline: true }))
 	}
 
 	logger.mark?.(`called recoverage diff`)

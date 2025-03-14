@@ -64,7 +64,7 @@ export function isTreePath<T extends Tree>(
 	tree: T,
 	maybePath: unknown[],
 ): maybePath is TreePath<T> {
-	let currentTreeNode: Tree | null = tree
+	let currentTreeNode: (Tree | null)[] | Tree | null = tree
 	for (const segment of maybePath) {
 		if (currentTreeNode === null) {
 			return false
@@ -72,11 +72,43 @@ export function isTreePath<T extends Tree>(
 		if (typeof segment !== `string`) {
 			return false
 		}
-		const subPaths = currentTreeNode[1]
-		if (segment in subPaths) {
-			currentTreeNode = subPaths[segment]
+		let subPaths: TreeContents | TreeContents[] // = currentTreeNode[1]
+		if (typeof currentTreeNode[0] === `string`) {
+			subPaths = currentTreeNode[1]
 		} else {
-			const wildcard = Object.keys(subPaths).find((key) => key.startsWith(`$`))
+			const filteredTreeNodes: Tree[] = currentTreeNode.filter((x) => x !== null)
+			switch (filteredTreeNodes.length) {
+				case 0:
+					return false
+				case 1:
+					currentTreeNode = filteredTreeNodes[0]
+					subPaths = filteredTreeNodes[0][1]
+					break
+				default:
+					currentTreeNode = filteredTreeNodes
+					subPaths = filteredTreeNodes.map(([_, value]) => value)
+			}
+		}
+		let wildcard: string | undefined
+		//= Object.keys(subPaths).find((key) => key.startsWith(`$`))
+		if (Array.isArray(subPaths)) {
+			wildcard = subPaths
+				.map((paths) => Object.keys(paths).find((key) => key.startsWith(`$`)))
+				.find((key) => key !== undefined)
+		} else {
+			wildcard = Object.keys(subPaths).find((key) => key.startsWith(`$`))
+		}
+		if (segment in subPaths) {
+			const nextNode = subPaths[segment]
+			if (wildcard) {
+				if (typeof currentTreeNode[0] === `string`) {
+					currentTreeNode = []
+				}
+				currentTreeNode.push(nextNode, subPaths[wildcard])
+			} else {
+				currentTreeNode = nextNode
+			}
+		} else {
 			if (wildcard) {
 				currentTreeNode = subPaths[wildcard]
 				continue
@@ -87,10 +119,18 @@ export function isTreePath<T extends Tree>(
 	if (currentTreeNode === null) {
 		return true
 	}
-	switch (currentTreeNode[0]) {
-		case `required`:
-			return false
-		case `optional`:
-			return true
+	if (typeof currentTreeNode[0] === `string`) {
+		switch (currentTreeNode[0]) {
+			case `required`:
+				return false
+			case `optional`:
+				return true
+		}
 	}
+	for (const node of currentTreeNode) {
+		if (node?.[0] === `optional`) {
+			return true
+		}
+	}
+	return false
 }
