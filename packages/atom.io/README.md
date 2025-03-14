@@ -22,29 +22,18 @@
 npm i atom.io
 ```
 
-```shell
-pnpm i atom.io
-```
-
-```shell
-bun i atom.io
-```
-
 <p align="center">
-  <a href="https://bundlephobia.com/result?p=atom.io">
-    <img alt="Bundlephobia" src="https://img.shields.io/bundlephobia/minzip/atom.io?style=for-the-badge&labelColor=333">
-  </a>
-  <a aria-label="Types" href="https://www.npmjs.com/package/atom.io">
-    <img alt="Types" src="https://img.shields.io/npm/types/atom.io?style=for-the-badge&labelColor=333">
-  </a>
-  <a aria-label="Build status" href="https://github.com/jeremybanka/wayforge/actions/workflows/integration.yml">
-    <img alt="Build status" src="https://img.shields.io/github/actions/workflow/status/jeremybanka/wayforge/integration.yml?branch=main&style=for-the-badge&labelColor=333">
-  </a>
   <a aria-label="NPM version" href="https://www.npmjs.com/package/atom.io">
-    <img alt="NPM Version" src="https://img.shields.io/npm/v/atom.io?style=for-the-badge&labelColor=333">
+    <img alt="NPM Version" src="https://img.shields.io/npm/v/atom.io?style=for-the-badge">
+  </a>
+  <img alt="Dependencies 0" src=" https://img.shields.io/badge/dependencies-0-0?style=for-the-badge">
+  <a aria-label="Types" href="https://www.npmjs.com/package/atom.io">
+    <img alt="Types" src="https://img.shields.io/npm/types/atom.io?style=for-the-badge">
+  </a>
+  <a href="https://bundlephobia.com/result?p=atom.io">
+    <img alt="Bundlephobia" src="https://img.shields.io/bundlephobia/minzip/atom.io?style=for-the-badge">
   </a>
   <a aria-label="Coverage" href="https://recoverage.cloud/">
     <img alt="Coverage" src="https://img.shields.io/endpoint?url=https%3A%2F%2Frecoverage.cloud%2Fshields%2FS1ikz1yFmk93qbAI7lLnu%2Fatom.io">
   </a>
-
 </p>
