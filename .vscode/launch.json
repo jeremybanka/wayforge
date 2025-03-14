@@ -7,7 +7,7 @@
 			"name": "Debug Current Test File",
 			"autoAttachChildProcesses": true,
 			"skipFiles": ["<node_internals>/**", "**/node_modules/**"],
-			"cwd": "${workspaceRoot}/packages/atom.io",
+			"cwd": "${workspaceRoot}/packages/treetrunks",
 			"program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
 			"args": ["run", "${fileBasenameNoExtension}"],
 			"smartStep": true,
