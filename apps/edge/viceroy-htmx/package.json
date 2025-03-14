@@ -28,7 +28,7 @@
 		"concurrently": "9.1.2",
 		"eslint": "9.22.0",
 		"htmx.org": "2.0.4",
-		"lightningcss": "1.29.2",
+		"lightningcss": "1.29.3",
 		"npmlog": "7.0.1",
 		"preact": "10.26.4",
 		"typed-htmx": "0.3.1"
