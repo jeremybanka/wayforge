@@ -1,4 +1,4 @@
-# treetrunks
+# recoverage
 
 ## 0.1.2
 
