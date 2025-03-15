@@ -1,5 +1,11 @@
 # tsdoc.json
 
+## 0.6.6
+
+### Patch Changes
+
+- 93e1af1: 📝 Update README.md.
+
 ## 0.6.5
 
 ### Patch Changes

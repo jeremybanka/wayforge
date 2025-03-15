@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.32.3
+
+### Patch Changes
+
+- 93e1af1: 📝 Update README.md.
+
 ## 0.32.2
 
 ### Patch Changes

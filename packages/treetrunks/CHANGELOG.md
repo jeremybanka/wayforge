@@ -1,5 +1,11 @@
 # treetrunks
 
+## 0.0.5
+
+### Patch Changes
+
+- 93e1af1: 📝 Update README.md.
+
 ## 0.0.4
 
 ### Patch Changes

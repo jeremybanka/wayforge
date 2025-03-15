@@ -1,5 +1,12 @@
 # varmint
 
+## 0.4.4
+
+### Patch Changes
+
+- 93e1af1: 📝 Update README.md.
+  - comline@0.1.10
+
 ## 0.4.3
 
 ### Patch Changes
