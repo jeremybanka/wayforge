@@ -7,8 +7,12 @@
 </div>
 
 <h1 align="center">
-  atom.io
+  <code>atom.io</code>
 </h1>
+
+```shell
+npm i atom.io
+```
 
 <p align="center">
   <a aria-label="NPM version" href="https://www.npmjs.com/package/atom.io">
@@ -35,7 +39,3 @@
 <h3 align="center">
   <a href="https://atom.io.fyi">📖 Read the docs at atom.io.fyi</a>
 </h3>
-
-```shell
-npm i atom.io
-```
