@@ -34,7 +34,7 @@
 		"typescript": "5.8.2",
 		"vite": "6.2.2",
 		"vite-tsconfig-paths": "5.1.4",
-		"vitest": "3.0.8"
+		"vitest": "3.0.9"
 	},
 	"keywords": ["relation", "data", "relational", "join", "bridge", "junction"],
 	"repository": {
