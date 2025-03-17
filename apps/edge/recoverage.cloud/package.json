@@ -21,7 +21,7 @@
 	"dependencies": {
 		"arktype": "2.1.9",
 		"bun": "1.2.5",
-		"drizzle-orm": "0.40.0",
+		"drizzle-orm": "0.40.1",
 		"hono": "4.7.4",
 		"htmx.org": "2.0.4",
 		"istanbul-lib-coverage": "3.2.2",
