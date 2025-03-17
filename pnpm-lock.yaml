@@ -179,8 +179,8 @@ importers:
         specifier: 1.2.5
         version: 1.2.5
       drizzle-orm:
-        specifier: 0.40.0
-        version: 0.40.0(@cloudflare/workers-types@4.20250313.0)(bun-types@1.2.5)(gel@2.0.0)(postgres@3.4.5)
+        specifier: 0.40.1
+        version: 0.40.1(@cloudflare/workers-types@4.20250313.0)(bun-types@1.2.5)(gel@2.0.0)(postgres@3.4.5)
       hono:
         specifier: 4.7.4
         version: 4.7.4
@@ -408,8 +408,8 @@ importers:
         specifier: 4.1.0
         version: 4.1.0
       drizzle-orm:
-        specifier: 0.40.0
-        version: 0.40.0(@cloudflare/workers-types@4.20250313.0)(bun-types@1.2.5)(gel@2.0.0)(postgres@3.4.5)
+        specifier: 0.40.1
+        version: 0.40.1(@cloudflare/workers-types@4.20250313.0)(bun-types@1.2.5)(gel@2.0.0)(postgres@3.4.5)
       openai:
         specifier: 4.87.3
         version: 4.87.3(ws@8.18.1)(zod@3.24.2)
@@ -855,8 +855,8 @@ importers:
         specifier: 0.30.5
         version: 0.30.5
       drizzle-orm:
-        specifier: 0.40.0
-        version: 0.40.0(@cloudflare/workers-types@4.20250313.0)(bun-types@1.2.5)(gel@2.0.0)(postgres@3.4.5)
+        specifier: 0.40.1
+        version: 0.40.1(@cloudflare/workers-types@4.20250313.0)(bun-types@1.2.5)(gel@2.0.0)(postgres@3.4.5)
       eslint:
         specifier: 9.22.0
         version: 9.22.0(jiti@2.4.2)
@@ -5601,8 +5601,8 @@ packages:
     resolution: {integrity: sha512-l6dMSE100u7sDaTbLczibrQZjA35jLsHNqIV+jmhNVO3O8jzM6kywMOmV9uOz9ZVSCMPQhAZEFjL/qDPVrqpUA==}
     hasBin: true
 
-  drizzle-orm@0.40.0:
-    resolution: {integrity: sha512-7ptk/HQiMSrEZHnAsSlBESXWj52VwgMmyTEfoNmpNN2ZXpcz13LwHfXTIghsAEud7Z5UJhDOp8U07ujcqme7wg==}
+  drizzle-orm@0.40.1:
+    resolution: {integrity: sha512-aPNhtiJiPfm3qxz1czrnIDkfvkSdKGXYeZkpG55NPTVI186LmK2fBLMi4dsHpPHlJrZeQ92D322YFPHADBALew==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=4'
@@ -13284,7 +13284,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.40.0(@cloudflare/workers-types@4.20250313.0)(bun-types@1.2.5)(gel@2.0.0)(postgres@3.4.5):
+  drizzle-orm@0.40.1(@cloudflare/workers-types@4.20250313.0)(bun-types@1.2.5)(gel@2.0.0)(postgres@3.4.5):
     optionalDependencies:
       '@cloudflare/workers-types': 4.20250313.0
       bun-types: 1.2.5
