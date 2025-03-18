@@ -222,8 +222,8 @@ importers:
         specifier: 1.2.5
         version: 1.2.5
       cloudflare:
-        specifier: 4.1.0
-        version: 4.1.0
+        specifier: 4.2.0
+        version: 4.2.0
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
@@ -5184,8 +5184,8 @@ packages:
     resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
     engines: {node: '>=12'}
 
-  cloudflare@4.1.0:
-    resolution: {integrity: sha512-TySwSEGGQhuVHFVjKRUHkzZum0MSGJkgfVjep+KBJxuxScEvjoTckQFbxlYThPp5kLm8IUi4C7oJeVr5e9etVw==}
+  cloudflare@4.2.0:
+    resolution: {integrity: sha512-L9IainZq+7PN3NG/Mg7T9oRm7SB7AskNe6QLD8j7FrJY+2Dn1qpeLqXF8Im04ANnssezf0KAOtSuxNAAyNEgkg==}
 
   collapse-white-space@2.1.0:
     resolution: {integrity: sha512-loKTxY1zCOuG4j9f6EPnuyyYkf58RnhhWTvRoZEokgB+WbdXehfjFviyOVYkqzEWz1Q5kRiZdBYS5SwxbQYwzw==}
@@ -12875,7 +12875,7 @@ snapshots:
       strip-ansi: 6.0.1
       wrap-ansi: 7.0.0
 
-  cloudflare@4.1.0:
+  cloudflare@4.2.0:
     dependencies:
       '@types/node': 18.19.79
       '@types/node-fetch': 2.6.12
