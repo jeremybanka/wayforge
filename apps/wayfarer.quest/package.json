@@ -24,7 +24,7 @@
 		"corners": "0.2.0",
 		"motion": "12.5.0",
 		"nanoid": "5.1.4",
-		"next": "15.2.2",
+		"next": "15.2.3",
 		"react": "19.0.0",
 		"react-dom": "19.0.0",
 		"socket.io-client": "4.8.1",
@@ -37,7 +37,7 @@
 		"@types/react-dom": "19.0.4",
 		"concurrently": "9.1.2",
 		"eslint": "9.22.0",
-		"eslint-config-next": "15.2.2",
+		"eslint-config-next": "15.2.3",
 		"typescript": "5.8.2"
 	}
 }
