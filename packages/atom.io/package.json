@@ -115,7 +115,7 @@
 		"preact": "10.26.4",
 		"react": "19.0.0",
 		"react-dom": "19.0.0",
-		"react-router-dom": "7.3.0",
+		"react-router-dom": "7.4.0",
 		"recoverage": "workspace:*",
 		"socket.io": "4.8.1",
 		"socket.io-client": "4.8.1",
