@@ -20,7 +20,7 @@
 	"dependencies": {
 		"fp-ts": "2.16.9",
 		"io-ts": "2.2.22",
-		"nanoid": "5.1.4"
+		"nanoid": "5.1.5"
 	},
 	"devDependencies": {
 		"eslint": "9.22.0",
