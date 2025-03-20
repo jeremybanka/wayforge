@@ -22,7 +22,7 @@
 		"arktype": "2.1.10",
 		"bun": "1.2.5",
 		"drizzle-orm": "0.40.1",
-		"hono": "4.7.4",
+		"hono": "4.7.5",
 		"htmx.org": "2.0.4",
 		"istanbul-lib-coverage": "3.2.2",
 		"jurist": "workspace:*",
