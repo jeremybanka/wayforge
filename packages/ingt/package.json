@@ -22,7 +22,7 @@
 		"io-ts": "2.2.22"
 	},
 	"devDependencies": {
-		"@types/node": "22.13.10",
+		"@types/node": "22.13.11",
 		"eslint": "9.22.0",
 		"tsup": "8.4.0",
 		"typescript": "5.8.2",
