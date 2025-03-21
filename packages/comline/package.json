@@ -22,7 +22,7 @@
 		"chalk": "5.4.1",
 		"treetrunks": "workspace:*",
 		"zod": "3.24.2",
-		"zod-to-json-schema": "3.24.4"
+		"zod-to-json-schema": "3.24.5"
 	},
 	"scripts": {
 		"build": "tsup-node",
