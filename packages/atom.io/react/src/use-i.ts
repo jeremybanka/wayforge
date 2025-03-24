@@ -20,7 +20,7 @@ export function useI<T, K extends Canonical>(
 ): <New extends T>(next: New | ((old: T) => New)) => void {
 	const store = React.useContext(StoreContext)
 	const token = parseStateOverloads(store, ...params)
-	const setter: React.MutableRefObject<
+	const setter: React.RefObject<
 		(<New extends T>(next: New | ((old: T) => New)) => void) | null
 	> = React.useRef(null)
 	setter.current ??= (next) => {
