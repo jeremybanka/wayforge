@@ -19,7 +19,7 @@
 		"lint": "concurrently \"bun:lint:*\""
 	},
 	"dependencies": {
-		"arktype": "2.1.11",
+		"arktype": "2.1.12",
 		"bun": "1.2.5",
 		"drizzle-orm": "0.41.0",
 		"hono": "4.7.5",
