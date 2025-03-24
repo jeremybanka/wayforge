@@ -42,7 +42,7 @@
 		"fp-ts": "2.16.9",
 		"tsup": "8.4.0",
 		"typescript": "5.8.2",
-		"vite": "6.2.2",
+		"vite": "6.2.3",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.0.9"
 	},
