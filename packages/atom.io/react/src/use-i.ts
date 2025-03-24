@@ -23,10 +23,8 @@ export function useI<T, K extends Canonical>(
 	const setter: React.MutableRefObject<
 		(<New extends T>(next: New | ((old: T) => New)) => void) | null
 	> = React.useRef(null)
-	if (setter.current === null) {
-		setter.current = (next) => {
-			setIntoStore(store, token, next)
-		}
+	setter.current ??= (next) => {
+		setIntoStore(store, token, next)
 	}
 	return setter.current
 }
