@@ -57,11 +57,9 @@ app.get(`/`, async (c) => {
 			.from(schema.users)
 			.where(eq(schema.users.id, data.id))
 			.get()
-		if (!user) {
-			user = (
-				await db.insert(schema.users).values({ id: data.id }).returning()
-			)[0]
-		}
+		user ??= (
+			await db.insert(schema.users).values({ id: data.id }).returning()
+		)[0]
 
 		return await c.html(
 			<Page>

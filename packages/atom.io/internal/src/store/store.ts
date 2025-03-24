@@ -252,12 +252,10 @@ export class Store implements Lineage {
 
 export const IMPLICIT = {
 	get STORE(): Store {
-		if (!globalThis.ATOM_IO_IMPLICIT_STORE) {
-			globalThis.ATOM_IO_IMPLICIT_STORE = new Store({
-				name: `IMPLICIT_STORE`,
-				lifespan: `ephemeral`,
-			})
-		}
+		globalThis.ATOM_IO_IMPLICIT_STORE ??= new Store({
+			name: `IMPLICIT_STORE`,
+			lifespan: `ephemeral`,
+		})
 		return globalThis.ATOM_IO_IMPLICIT_STORE as Store
 	},
 }
