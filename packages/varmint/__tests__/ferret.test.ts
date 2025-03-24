@@ -39,12 +39,10 @@ test(`ferret with openAI`, async () => {
 		body: Omit<OpenAIResources.ChatCompletionCreateParamsStreaming, `stream`>,
 		options?: OpenAICore.RequestOptions,
 	): Promise<AsyncIterable<ChatCompletionChunk>> {
-		if (!openAI) {
-			openAI = new OpenAI({
-				apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-				dangerouslyAllowBrowser: process.env.NODE_ENV === `test`,
-			})
-		}
+		openAI ??= new OpenAI({
+			apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+			dangerouslyAllowBrowser: process.env.NODE_ENV === `test`,
+		})
 
 		const createParams: OpenAIResources.ChatCompletionCreateParamsStreaming = {
 			...body,
@@ -77,12 +75,10 @@ test(`ferret with openAI (cache-miss)`, async () => {
 		body: Omit<OpenAIResources.ChatCompletionCreateParamsStreaming, `stream`>,
 		options?: OpenAICore.RequestOptions,
 	): Promise<AsyncIterable<ChatCompletionChunk>> {
-		if (!openAI) {
-			openAI = new OpenAI({
-				apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-				dangerouslyAllowBrowser: process.env.NODE_ENV === `test`,
-			})
-		}
+		openAI ??= new OpenAI({
+			apiKey: import.meta.env.VITE_OPENAI_API_KEY,
+			dangerouslyAllowBrowser: process.env.NODE_ENV === `test`,
+		})
 
 		const createParams: OpenAIResources.ChatCompletionCreateParamsStreaming = {
 			...body,
