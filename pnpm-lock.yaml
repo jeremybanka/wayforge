@@ -176,8 +176,8 @@ importers:
         specifier: 2.1.12
         version: 2.1.12
       bun:
-        specifier: 1.2.5
-        version: 1.2.5
+        specifier: 1.2.6
+        version: 1.2.6
       drizzle-orm:
         specifier: 0.41.0
         version: 0.41.0(@cloudflare/workers-types@4.20250321.0)(bun-types@1.2.6)(gel@2.0.0)(postgres@3.4.5)
@@ -3749,58 +3749,58 @@ packages:
     resolution: {integrity: sha512-f386XyLTieQbgKPKS6ZMlH4dq8eLsxNddwofiKRZCq0bZ2gikoFwMD99K6l1oAwqe/KZNzrEziGicRgnzplplQ==}
     engines: {node: '>= 18'}
 
-  '@oven/bun-darwin-aarch64@1.2.5':
-    resolution: {integrity: sha512-ggZfdpgUJ/OiWrfcfTgHeSTHcec5HAjkGrZHL9FJ/R60sydRKPYHgAgexdIoJAGfsCVAL+x7y8NSTRIAX8J4Ng==}
+  '@oven/bun-darwin-aarch64@1.2.6':
+    resolution: {integrity: sha512-nhBuCgiYO+JpWwodRh4QpAYSLG7ZvpETiz3l5AqQMtBeZnUXzfnpa03cNr3eOBn3sBF9ep85KzLtN8MlE3TARw==}
     cpu: [arm64]
     os: [darwin]
 
-  '@oven/bun-darwin-x64-baseline@1.2.5':
-    resolution: {integrity: sha512-3W1RO3/D6Z1S79J47F/DLzmK+dgkYq5hS1ShOCSBAYTTA2b1ZuymaN8avGzSb9ed5W0QfxtyeAksfEY2xUBOqA==}
+  '@oven/bun-darwin-x64-baseline@1.2.6':
+    resolution: {integrity: sha512-t2FSKWHmgoqbAw/d+wy8eiSYuvTiaq9QhtYQepwcAlNRuGJ05f5Ew3MLpPqczolovAOAy3I+QXo7r9zPQFRM5w==}
     cpu: [x64]
     os: [darwin]
 
-  '@oven/bun-darwin-x64@1.2.5':
-    resolution: {integrity: sha512-4zqyQLJB33s99KcTxH6yQqH5EYBmF1qofQTtLsToIFbIZN1NqSp/aegYiGmxO5Kj/BuWsy8Wf8MS6vX2O0o2Lw==}
+  '@oven/bun-darwin-x64@1.2.6':
+    resolution: {integrity: sha512-+O7oTuH+iFdvH80q5Trrj6qqpzc12F1VTgJTicXvYDT0gvMOHHSkkuLXBDlaxVhYZTe4UX453nX2KlxE+K8dKQ==}
     cpu: [x64]
     os: [darwin]
 
-  '@oven/bun-linux-aarch64-musl@1.2.5':
-    resolution: {integrity: sha512-URlISBOE2HQi8qdru691OYywJRwChxMfXFbk26tCgdZ01LgGAKsIjAYylefuSsPuA697imDN3Pel3D7rveusmw==}
+  '@oven/bun-linux-aarch64-musl@1.2.6':
+    resolution: {integrity: sha512-731vpVFMVo3EKxv8duT6lywU14nLVKKqCmdTL8LxaogbHiZSjXVuMdX7QUdABsXBw1ThzzT8bLJRagIQOB8U4Q==}
     cpu: [aarch64]
     os: [linux]
 
-  '@oven/bun-linux-aarch64@1.2.5':
-    resolution: {integrity: sha512-NQFtAVyQyJhLYrhFVxKdh6cqrDNc60pBnBGLQSO8PU+oyFyiJ3e3gGXjLzMbxd6cJxNIK5FZ0JIq96WljKAhlg==}
+  '@oven/bun-linux-aarch64@1.2.6':
+    resolution: {integrity: sha512-PcvQn3WFNr496rg/DnIMlw1v/4LkiPDm7UMqxRmP+dMHHH/zs4Xh/iOSiELJ0kxvBP5obhiaewi6PHDYI0vROA==}
     cpu: [arm64]
     os: [linux]
 
-  '@oven/bun-linux-x64-baseline@1.2.5':
-    resolution: {integrity: sha512-fCm/qp7e3VYlaoRs6NIEsKubPqyxjzLv8/qZkxeLLOlPd7CS8L26UY4KPOSjA+wrhPT+Nxsyvl/EEJq2R/iauA==}
+  '@oven/bun-linux-x64-baseline@1.2.6':
+    resolution: {integrity: sha512-l9CMf4Z+GHP6WK00sl1+KyqukIEz1dYBhSlZgympKUSfg9s0GACsFaLb+ED2Uo4rP5wU51Tin7iFOMeE1FSEGg==}
     cpu: [x64]
     os: [linux]
 
-  '@oven/bun-linux-x64-musl-baseline@1.2.5':
-    resolution: {integrity: sha512-H7tuJz7mZvOTPo4yLbIXIxkiDGWSGd2DbwGl4zNol/FURqGsKQVqpomv86yl9KCXsUUOm5FX2i5Ed+ro8N//Cg==}
+  '@oven/bun-linux-x64-musl-baseline@1.2.6':
+    resolution: {integrity: sha512-zaxVTK6yuqhTFBoaZrjGZWARrKopcEVw1yauvY8qtGczs4Zk4lPeRZ1hEsrgpTXD92w1GFHxvRw76QKafUvHvg==}
     cpu: [x64]
     os: [linux]
 
-  '@oven/bun-linux-x64-musl@1.2.5':
-    resolution: {integrity: sha512-DuU2kQnY48g9tNWjFrZqyG+U2emCBwlhOPxbuY/TMVVNSTMAcQbE/bb3s2pZdhZH5ssjc5SH/ZyWU1TePcYB2A==}
+  '@oven/bun-linux-x64-musl@1.2.6':
+    resolution: {integrity: sha512-NIamulIWb11m/tqM/W4gYaA8J1PTWASbfawbeOG95Y5Qp3VQS9sTW6LX8kLoU3nADRLoA0Ic/mxLu1VVlnFLOA==}
     cpu: [x64]
     os: [linux]
 
-  '@oven/bun-linux-x64@1.2.5':
-    resolution: {integrity: sha512-pa3kQ4cXNV0jk5aM8+Hdmxr+b4QoPVgeAIA454SN5l3hMGfNsHjczKpsz0ksInZ8506iMMTCPEBXpyQJcSme+Q==}
+  '@oven/bun-linux-x64@1.2.6':
+    resolution: {integrity: sha512-s2r5bBzLVWE35AdS9P7j4xH4aOnaZ5/wPY+eWtsrcpWDA8SAQPzVifLk1A/fisNTWiPHg4GqhlT5ID/btwvEvg==}
     cpu: [x64]
     os: [linux]
 
-  '@oven/bun-windows-x64-baseline@1.2.5':
-    resolution: {integrity: sha512-j5FxI8FeKfWI6rEXA+1O3ASBMTp5CFcZ7MR+/aCpiBKrDse32wLaZMVGnvqQqs4y0YHUvR8b7eXHHTboezjL1w==}
+  '@oven/bun-windows-x64-baseline@1.2.6':
+    resolution: {integrity: sha512-wFlZzGcBs6laNc0fBi2lGKta5+2JVlaqzkX4jLR9/59bR8dKRqUk+jy0vsoQTtSMRPdxNpUThnjpIG0U7u2zWA==}
     cpu: [x64]
     os: [win32]
 
-  '@oven/bun-windows-x64@1.2.5':
-    resolution: {integrity: sha512-oNDdPmzsCyvCATiYgkKWgxOeEx2F7m/i2MGUba+YJAeVXJsJg9iPJrLVBtETvKoSAgkXViwoUEw2U25jRYsp4g==}
+  '@oven/bun-windows-x64@1.2.6':
+    resolution: {integrity: sha512-4QUID8i+0yrpkqi81axd42/fQAA5BpZ/9JgUg5IZwrULHyLAkKa7TUiXKJkRDbLRe9FtDyux0pubzCJQZ6fYuQ==}
     cpu: [x64]
     os: [win32]
 
@@ -5025,8 +5025,8 @@ packages:
   bun-types@1.2.6:
     resolution: {integrity: sha512-FbCKyr5KDiPULUzN/nm5oqQs9nXCHD8dVc64BArxJadCvbNzAI6lUWGh9fSJZWeDIRD38ikceBU8Kj/Uh+53oQ==}
 
-  bun@1.2.5:
-    resolution: {integrity: sha512-fbQLt+DPiGUrPKdmsHRRT7cQAlfjdxPVFvLZrsUPmKiTdv+pU50ypdx9yRJluknSbyaZchFVV7Lx2KXikXKX2Q==}
+  bun@1.2.6:
+    resolution: {integrity: sha512-v0G1dOS5ALc4laomafP2h/PjO9qLF7mwzXySo3VJFiX2Ty70WmPjuGRNGdk65Djk0u3ahpFTtCrzsgIj/NDOiw==}
     cpu: [arm64, x64, aarch64]
     os: [darwin, linux, win32]
     hasBin: true
@@ -11381,37 +11381,37 @@ snapshots:
       '@octokit/request-error': 6.1.7
       '@octokit/webhooks-methods': 5.1.1
 
-  '@oven/bun-darwin-aarch64@1.2.5':
+  '@oven/bun-darwin-aarch64@1.2.6':
     optional: true
 
-  '@oven/bun-darwin-x64-baseline@1.2.5':
+  '@oven/bun-darwin-x64-baseline@1.2.6':
     optional: true
 
-  '@oven/bun-darwin-x64@1.2.5':
+  '@oven/bun-darwin-x64@1.2.6':
     optional: true
 
-  '@oven/bun-linux-aarch64-musl@1.2.5':
+  '@oven/bun-linux-aarch64-musl@1.2.6':
     optional: true
 
-  '@oven/bun-linux-aarch64@1.2.5':
+  '@oven/bun-linux-aarch64@1.2.6':
     optional: true
 
-  '@oven/bun-linux-x64-baseline@1.2.5':
+  '@oven/bun-linux-x64-baseline@1.2.6':
     optional: true
 
-  '@oven/bun-linux-x64-musl-baseline@1.2.5':
+  '@oven/bun-linux-x64-musl-baseline@1.2.6':
     optional: true
 
-  '@oven/bun-linux-x64-musl@1.2.5':
+  '@oven/bun-linux-x64-musl@1.2.6':
     optional: true
 
-  '@oven/bun-linux-x64@1.2.5':
+  '@oven/bun-linux-x64@1.2.6':
     optional: true
 
-  '@oven/bun-windows-x64-baseline@1.2.5':
+  '@oven/bun-windows-x64-baseline@1.2.6':
     optional: true
 
-  '@oven/bun-windows-x64@1.2.5':
+  '@oven/bun-windows-x64@1.2.6':
     optional: true
 
   '@parcel/watcher-android-arm64@2.5.1':
@@ -12718,19 +12718,19 @@ snapshots:
       '@types/node': 22.13.13
       '@types/ws': 8.5.14
 
-  bun@1.2.5:
+  bun@1.2.6:
     optionalDependencies:
-      '@oven/bun-darwin-aarch64': 1.2.5
-      '@oven/bun-darwin-x64': 1.2.5
-      '@oven/bun-darwin-x64-baseline': 1.2.5
-      '@oven/bun-linux-aarch64': 1.2.5
-      '@oven/bun-linux-aarch64-musl': 1.2.5
-      '@oven/bun-linux-x64': 1.2.5
-      '@oven/bun-linux-x64-baseline': 1.2.5
-      '@oven/bun-linux-x64-musl': 1.2.5
-      '@oven/bun-linux-x64-musl-baseline': 1.2.5
-      '@oven/bun-windows-x64': 1.2.5
-      '@oven/bun-windows-x64-baseline': 1.2.5
+      '@oven/bun-darwin-aarch64': 1.2.6
+      '@oven/bun-darwin-x64': 1.2.6
+      '@oven/bun-darwin-x64-baseline': 1.2.6
+      '@oven/bun-linux-aarch64': 1.2.6
+      '@oven/bun-linux-aarch64-musl': 1.2.6
+      '@oven/bun-linux-x64': 1.2.6
+      '@oven/bun-linux-x64-baseline': 1.2.6
+      '@oven/bun-linux-x64-musl': 1.2.6
+      '@oven/bun-linux-x64-musl-baseline': 1.2.6
+      '@oven/bun-windows-x64': 1.2.6
+      '@oven/bun-windows-x64-baseline': 1.2.6
 
   bundle-require@5.1.0(esbuild@0.25.0):
     dependencies:
