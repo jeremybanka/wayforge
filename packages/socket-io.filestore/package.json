@@ -40,7 +40,7 @@
 		"@types/tmp": "0.2.6",
 		"atom.io": "workspace:*",
 		"eslint": "9.23.0",
-		"react": "19.0.0",
+		"react": "19.1.0",
 		"recoil": "0.7.7",
 		"socket.io": "4.8.1",
 		"socket.io-client": "4.8.1",
