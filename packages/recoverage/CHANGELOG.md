@@ -1,5 +1,11 @@
 # recoverage
 
+## 0.1.4
+
+### Patch Changes
+
+- 17a7873: 📝 Update `README.md` with an overview and walkthrough.
+
 ## 0.1.3
 
 ### Patch Changes
