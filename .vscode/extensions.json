@@ -1,7 +1,6 @@
 {
 	"recommendations": [
 		"bierner.color-info",
-		"bierner.markdown-preview-github-styles",
 		"biomejs.biome",
 		"christian-kohler.npm-intellisense",
 		"christian-kohler.path-intellisense",
