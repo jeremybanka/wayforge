@@ -19,3 +19,4 @@ heap.json
 *.tsdoc.json
 coverage.sqlite
 git.sha
+repomix-output.xml
