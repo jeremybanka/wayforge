@@ -30,12 +30,22 @@ export type TreePathName<T extends Tree> = {
 		: (T[1][K] extends Tree ? [K, ...TreePathName<T[1][K]>] : [K]) | []
 }[keyof T[1]]
 
+export type TreePathNameExhaustive<T extends Tree> = {
+	[K in keyof T[1]]:
+		| (T[1][K] extends Tree ? [K, ...TreePathNameExhaustive<T[1][K]>] : [K])
+		| []
+}[keyof T[1]]
+
 export type Flat<R extends { [K in PropertyKey]: any }> = {
 	[K in keyof R]: R[K]
 }
 
 export type TreeMap<T extends Tree, P, J extends string = `/`> = {
 	[K in Join<TreePathName<T>, J>]: P
+}
+
+export type TreeMapExhaustive<T extends Tree, P, J extends string = `/`> = {
+	[K in Join<TreePathNameExhaustive<T>, J>]: P
 }
 
 export type Join<
