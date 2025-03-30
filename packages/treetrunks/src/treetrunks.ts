@@ -34,8 +34,8 @@ export type Flat<R extends { [K in PropertyKey]: any }> = {
 	[K in keyof R]: R[K]
 }
 
-export type TreeMap<T extends Tree, P> = {
-	[K in Join<TreePathName<T>, `/`>]: P
+export type TreeMap<T extends Tree, P, J extends string = `/`> = {
+	[K in Join<TreePathName<T>, J>]: P
 }
 
 export type Join<
