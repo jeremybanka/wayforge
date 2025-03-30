@@ -1,7 +1,6 @@
 import type {
 	Join,
 	ToPath,
-	Tree,
 	TreeMap,
 	TreePath,
 	TreePathName,
@@ -37,31 +36,3 @@ test(`treetrunks`, () => {
 	expect(isTreePath(myTree, [`hello`, `world`, `good`])).toBe(false)
 	expect(isTreePath(myTree, [`hello`, `world`, `good`, `morning`])).toBe(true)
 })
-
-const myWebRoutes = optional({
-	documents: null,
-}) satisfies Tree
-
-type HttpInterface = { query: Record<string, string>; response: string }
-type HttpSignalMethod = `DELETE` | `GET`
-type HttpVectorMethod = `GET` | `PATCH` | `POST` | `PUT`
-type HttpMethod = HttpSignalMethod | HttpVectorMethod
-type WebIO<M extends HttpMethod> = M extends HttpSignalMethod
-	? HttpInterface
-	: HttpInterface & { body: string }
-
-type WebApiRouteDescriptor = Partial<{ [M in HttpMethod]: WebIO<M> }>
-
-type WebApi<Routes extends Tree> = TreeMap<Routes, WebApiRouteDescriptor>
-
-const none: Readonly<Record<never, never>> = {}
-
-const WEB_ROUTES = {
-	"": {
-		GET: {
-			query: none,
-			response: `Hello World`,
-		},
-	},
-	documents: {},
-} satisfies WebApi<typeof myWebRoutes>
