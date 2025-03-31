@@ -1,4 +1,12 @@
-import type { Tree, TreeMap, TreeMapExhaustive } from "../src/treetrunks"
+import type {
+	Distill,
+	LastInUnion,
+	MergeTrees,
+	ReduceTrees,
+	Tree,
+	TreeMap,
+	TreeMapExhaustive,
+} from "../src/treetrunks"
 import { optional, required } from "../src/treetrunks"
 
 describe(`experiments`, () => {
@@ -96,30 +104,6 @@ describe(`experiments`, () => {
 			}
 			return div(span(`hi`))
 		}
-		type Flat<R extends { [K in PropertyKey]: any }> = {
-			[K in keyof R]: R[K]
-		}
-
-		type MergeTrees<T extends Tree, U extends Tree> = [
-			T[0] extends `required`
-				? U[0] extends `required`
-					? `required`
-					: `optional`
-				: `optional`,
-			Flat<{
-				[K in keyof T[1] | keyof U[1]]: K extends keyof T[1]
-					? K extends keyof U[1]
-						? T[1][K] extends Tree
-							? U[1][K] extends Tree
-								? Flat<MergeTrees<T[1][K], U[1][K]>>
-								: U[1][K]
-							: T[1][K]
-						: T[1][K]
-					: K extends keyof U[1]
-						? U[1][K]
-						: never
-			}>,
-		]
 
 		const treeA = optional({
 			a: required({
@@ -144,50 +128,19 @@ describe(`experiments`, () => {
 				: never
 			: never
 
-		// Convert a union to an intersection
-		type UnionToIntersection<U> = (
-			U extends any
-				? (x: U) => void
-				: never
-		) extends (x: infer I) => void
-			? I
-			: never
-
-		// Get the “last” element of a union (order is arbitrary)
-		type LastInUnion<U> = UnionToIntersection<
-			U extends any ? (x: U) => void : never
-		> extends (x: infer Last) => void
-			? Last
-			: never
-
 		type Z = LastInUnion<1 | 2>
 
-		type UnionToTuple<T, Last = LastInUnion<T>> = [T] extends [never]
-			? []
-			: [...UnionToTuple<Exclude<T, Last>>, Last]
+		type ZZ = Distill<1 | 2 | 3>
 
-		type ZZ = UnionToTuple<1 | 2 | 3>
-
-		type ReduceTrees<
-			Tuple extends Tree[],
-			Acc extends MergeTrees<any, any> | Tree = [`required`, {}],
-		> = Tuple extends [infer Head, ...infer Rest]
-			? Head extends Tree
-				? Rest extends Tree[]
-					? ReduceTrees<Rest, MergeTrees<Acc, Head>>
-					: never
-				: never
-			: Acc
-
-		type ComponentTree<F extends ComponentFn<any>> = UnionToTuple<
+		type ComponentTree<F extends ComponentFn<any>> = Distill<
 			TreesFromComponentFn<F>
 		> extends Tree[]
-			? ReduceTrees<UnionToTuple<TreesFromComponentFn<F>>> extends Tree
-				? ReduceTrees<UnionToTuple<TreesFromComponentFn<F>>>
+			? ReduceTrees<Distill<TreesFromComponentFn<F>>> extends Tree
+				? ReduceTrees<Distill<TreesFromComponentFn<F>>>
 				: never
 			: never
 
-		type ComponentTrees = UnionToTuple<TreesFromComponentFn<typeof myComponent>>
+		type ComponentTrees = Distill<TreesFromComponentFn<typeof myComponent>>
 
 		type ComponentTrees2 = ComponentTree<typeof myComponent>
 
