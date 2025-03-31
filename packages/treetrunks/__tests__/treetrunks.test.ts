@@ -1,6 +1,6 @@
 import type {
 	Join,
-	ToPath,
+	Split,
 	TreeMap,
 	TreePath,
 	TreePathName,
@@ -8,7 +8,7 @@ import type {
 import { isTreePath, optional, required } from "../src/treetrunks"
 
 test(`treetrunks`, () => {
-	type MySplit = ToPath<`hello/$world/good/morning`, `/`>
+	type MySplit = Split<`hello/$world/good/morning`>
 
 	const myTree = required({
 		hello: optional({
