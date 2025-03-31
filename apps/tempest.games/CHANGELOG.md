@@ -1,5 +1,18 @@
 # tempest.games
 
+## 0.1.36
+
+### Patch Changes
+
+- Updated dependencies [9e9afe4]
+- Updated dependencies [9e9afe4]
+- Updated dependencies [9e9afe4]
+- Updated dependencies [9e9afe4]
+- Updated dependencies [9e9afe4]
+- Updated dependencies [9e9afe4]
+  - treetrunks@0.1.0
+  - atom.io@0.32.3
+
 ## 0.1.35
 
 ### Patch Changes

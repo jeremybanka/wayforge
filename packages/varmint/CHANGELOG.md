@@ -1,5 +1,13 @@
 # varmint
 
+## 0.4.5
+
+### Patch Changes
+
+- Updated dependencies [9e9afe4]
+- Updated dependencies [9e9afe4]
+  - comline@0.2.0
+
 ## 0.4.4
 
 ### Patch Changes
