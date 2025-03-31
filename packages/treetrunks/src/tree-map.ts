@@ -1,6 +1,6 @@
-import type { Join, Split } from "./join-split"
-import type { Tree } from "./tree"
-import type { TreeNodePathName, TreePathName } from "./tree-path-name"
+import type { Tree } from "./tree.ts"
+import type { TreeNodePathName, TreePathName } from "./tree-path-name.ts"
+import type { Join, Split } from "./utility-types.ts"
 
 /**
  * For a `Tree` `T`, data of type `P` at each path in `T` is mapped to a key in the output.
@@ -15,36 +15,13 @@ export function flattenTree<T extends Tree, J extends string = `/`>(
 ): {
 	[K in Join<TreePathName<T>, J>]: Split<K, J>
 } {
-	const treePathNames = {} as {
-		[K in Join<TreePathName<T>, J>]: Split<K, J>
+	const treePathNames = {} as { [K in Join<TreePathName<T>, J>]: Split<K, J> }
+	const discoveredBranches = discoverBranches(``, [], [], tree, separator)
+
+	for (const [pathName, path] of discoveredBranches) {
+		treePathNames[pathName] = path
 	}
 
-	const [status, branches] = tree
-	if (status === `optional`) {
-		treePathNames[``] = []
-	}
-	for (const [segment, maybeTree] of Object.entries(branches)) {
-		const isTerminal = maybeTree === null
-		if (isTerminal) {
-			treePathNames[segment] = [segment]
-			continue
-		}
-		const isOptional = maybeTree[0] === `optional`
-		if (isOptional) {
-			treePathNames[segment] = [segment]
-		}
-		const discoveredBranches = discoverBranches(
-			segment,
-			[segment],
-			[],
-			maybeTree,
-			separator,
-		)
-		console.log(`DISCOVERED BRANCHES:`, discoveredBranches)
-		for (const [pathName, path] of discoveredBranches) {
-			treePathNames[pathName] = path
-		}
-	}
 	return treePathNames
 }
 
@@ -56,21 +33,25 @@ export function discoverBranches<J extends string = `/`>(
 	separator = `/` as J,
 ): [pathName: string, path: string[]][] {
 	const [status, branches] = tree
+	if (status === `optional`) {
+		discoveredBranches.push([basePrefix, basePath])
+	}
+
 	for (const [segment, maybeTree] of Object.entries(branches)) {
-		const newPrefix = `${basePrefix}${separator}${segment}`
+		const newPrefix = basePrefix
+			? `${basePrefix}${separator}${segment}`
+			: segment
 		const newBasePath = [...basePath, segment]
-		if (status === `optional` || maybeTree === null) {
+		if (maybeTree === null || maybeTree[0] === `optional`) {
 			discoveredBranches.push([newPrefix, newBasePath])
 		}
 		if (maybeTree) {
-			discoveredBranches.push(
-				...discoverBranches(
-					newPrefix,
-					newBasePath,
-					discoveredBranches,
-					maybeTree,
-					separator,
-				),
+			discoverBranches(
+				newPrefix,
+				newBasePath,
+				discoveredBranches,
+				maybeTree,
+				separator,
 			)
 		}
 	}
@@ -79,9 +60,24 @@ export function discoverBranches<J extends string = `/`>(
 
 export function mapTree<T extends Tree, P, J extends string = `/`>(
 	tree: T,
-	mapper: (path: TreePathName<T>, tree: T) => P,
+	mapper: (
+		path: TreePathName<T>,
+		joinedPath: Join<TreePathName<T>, J>,
+		tree: T,
+	) => P,
 	separator = `/` as J,
-): TreeMap<T, P, J> {}
+): TreeMap<T, P, J> {
+	const treeMap = {} as TreeMap<T, P, J>
+	const discoveredBranches = discoverBranches(``, [], [], tree, separator)
+	for (const [pathName, path] of discoveredBranches) {
+		treeMap[pathName] = mapper(
+			path as TreePathName<T>,
+			pathName as Join<TreePathName<T>, J>,
+			tree,
+		)
+	}
+	return treeMap
+}
 
 export type TreeMapExhaustive<T extends Tree, P, J extends string = `/`> = {
 	[K in Join<TreeNodePathName<T>, J>]: P

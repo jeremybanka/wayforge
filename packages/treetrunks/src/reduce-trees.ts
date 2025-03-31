@@ -1,6 +1,6 @@
-import type { Flatten } from "./flatten"
-import { type MergeTrees, mergeTrees } from "./merge-trees"
-import type { Tree } from "./tree"
+import { type MergeTrees, mergeTrees } from "./merge-trees.ts"
+import type { Tree } from "./tree.ts"
+import type { Flatten } from "./utility-types.ts"
 
 export type ReduceTrees<
 	Tuple extends Tree[],

@@ -1,4 +1,4 @@
-import type { Tree } from "./tree"
+import type { Tree } from "./tree.ts"
 
 /**
  * For a `Tree`, the set of all paths through that tree.

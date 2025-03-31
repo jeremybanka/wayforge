@@ -1,5 +1,5 @@
-import type { Flatten } from "./flatten"
-import type { Tree, TreeBranches } from "./tree"
+import type { Tree, TreeBranches } from "./tree.ts"
+import type { Flatten } from "./utility-types.ts"
 
 export type MergeTrees<A extends Tree, B extends Tree> = [
 	A[0] extends `required`

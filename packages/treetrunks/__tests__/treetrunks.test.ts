@@ -10,15 +10,16 @@ import type {
 	TreeMap,
 	TreePath,
 	TreePathName,
-} from "../src/treetrunks"
+} from "../src/treetrunks.ts"
 import {
 	flattenTree,
 	isTreePath,
+	mapTree,
 	mergeTrees,
 	optional,
 	reduceTrees,
 	required,
-} from "../src/treetrunks"
+} from "../src/treetrunks.ts"
 
 test(`isTreePath`, () => {
 	type MySplit = Split<`hello/$world/good/morning`>
@@ -168,7 +169,10 @@ test(`flattenTree`, () => {
 		a: required({
 			cc: null,
 			dd: required({
-				fff: null,
+				eee: null,
+				fff: required({
+					gggg: null,
+				}),
 			}),
 		}),
 		w: null,
@@ -177,11 +181,39 @@ test(`flattenTree`, () => {
 	const flattenedTreeTarget = {
 		"": [],
 		a_cc: [`a`, `cc`],
-		a_dd_fff: [`a`, `dd`, `fff`],
+		a_dd_eee: [`a`, `dd`, `eee`],
+		a_dd_fff_gggg: [`a`, `dd`, `fff`, `gggg`],
 		w: [`w`],
 	} as const satisfies {
 		[K in Join<TreePathName<typeof sampleTree>, `_`>]: Split<K, `_`>
 	}
 	const flattenTreeActual = flattenTree(sampleTree, `_`)
 	expect(flattenTreeActual).toEqual(flattenedTreeTarget)
+})
+
+test(`mapTree`, () => {
+	const sampleTree = optional({
+		a: required({
+			cc: null,
+			dd: required({
+				eee: null,
+				fff: required({
+					gggg: null,
+				}),
+			}),
+		}),
+		w: null,
+	})
+
+	const depthMap = (path: TreePathName<typeof sampleTree>): number => path.length
+
+	const mappedTreeTarget = {
+		"": 0,
+		a_cc: 2,
+		a_dd_eee: 3,
+		a_dd_fff_gggg: 4,
+		w: 1,
+	} as const satisfies TreeMap<typeof sampleTree, number, `_`>
+	const mappedTreeActual = mapTree(sampleTree, depthMap, `_`)
+	expect(mappedTreeActual).toEqual(mappedTreeTarget)
 })
