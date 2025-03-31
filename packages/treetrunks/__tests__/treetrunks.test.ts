@@ -2,6 +2,7 @@ import type { InspectOptions } from "node:util"
 import { inspect } from "node:util"
 
 import type {
+	Deref,
 	Join,
 	MergeTrees,
 	ReduceTrees,
@@ -11,6 +12,7 @@ import type {
 	TreePathName,
 } from "../src/treetrunks"
 import {
+	flattenTree,
 	isTreePath,
 	mergeTrees,
 	optional,
@@ -20,6 +22,7 @@ import {
 
 test(`isTreePath`, () => {
 	type MySplit = Split<`hello/$world/good/morning`>
+	type MyDeref = Deref<MySplit>
 
 	const myTree = required({
 		hello: optional({
@@ -158,4 +161,27 @@ describe(`reduceTrees`, () => {
 
 		expect(reducedTreeActual).toEqual(reducedTreeTarget)
 	})
+})
+
+test(`flattenTree`, () => {
+	const sampleTree = optional({
+		a: required({
+			cc: null,
+			dd: required({
+				fff: null,
+			}),
+		}),
+		w: null,
+	})
+
+	const flattenedTreeTarget = {
+		"": [],
+		a_cc: [`a`, `cc`],
+		a_dd_fff: [`a`, `dd`, `fff`],
+		w: [`w`],
+	} as const satisfies {
+		[K in Join<TreePathName<typeof sampleTree>, `_`>]: Split<K, `_`>
+	}
+	const flattenTreeActual = flattenTree(sampleTree, `_`)
+	expect(flattenTreeActual).toEqual(flattenedTreeTarget)
 })
