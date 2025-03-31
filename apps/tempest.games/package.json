@@ -87,7 +87,7 @@
 		"sass-embedded": "1.86.0",
 		"tsx": "4.19.3",
 		"typescript": "5.8.2",
-		"typescript-eslint": "8.28.0",
+		"typescript-eslint": "8.29.0",
 		"varmint": "workspace:*",
 		"vite": "6.2.4",
 		"vite-tsconfig-paths": "5.1.4",
