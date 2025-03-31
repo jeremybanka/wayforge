@@ -1,7 +1,7 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
 
-import type { Flat, ToPath, Tree, TreeMap, TreePath } from "treetrunks"
+import type { Flatten, Split, Tree, TreeMap, TreePath } from "treetrunks"
 import type { ZodSchema } from "zod"
 import { z } from "zod"
 import { zodToJsonSchema } from "zod-to-json-schema"
@@ -43,12 +43,12 @@ export type CliOption<T extends CliOptionValue> = (T extends string
 	example: string
 }
 
-export type CliParseOutput<CLI extends CommandLineInterface<any>> = Flat<
+export type CliParseOutput<CLI extends CommandLineInterface<any>> = Flatten<
 	Readonly<{
 		[K in keyof CLI[`routeOptions`]]: K extends string
 			? Readonly<{
 					case: K
-					path: ToPath<K, `/`>
+					path: Split<K, `/`>
 					opts: CLI[`routeOptions`][K] extends { optionsSchema: any }
 						? z.infer<CLI[`routeOptions`][K][`optionsSchema`]>
 						: null
