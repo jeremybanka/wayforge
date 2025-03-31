@@ -5,9 +5,9 @@ export function optional<T>(arg: T): [`optional`, T] {
 	return [`optional`, arg]
 }
 
-export type TreeContents = Readonly<{ [key: string]: Tree | null }>
-export type OptionalTree = [`optional`, TreeContents]
-export type RequiredTree = [`required`, TreeContents]
+export type TreeBranches = Readonly<{ [key: string]: Tree | null }>
+export type OptionalTree = [`optional`, TreeBranches]
+export type RequiredTree = [`required`, TreeBranches]
 export type Tree = OptionalTree | RequiredTree
 
 export type TreePath<T extends Tree> = {
@@ -74,71 +74,39 @@ export function isTreePath<T extends Tree>(
 	tree: T,
 	maybePath: unknown[],
 ): maybePath is TreePath<T> {
-	let currentTreeNode: (Tree | null)[] | Tree | null = tree
+	let possibleTrees: (Tree | null)[] = [tree]
+
 	for (const segment of maybePath) {
-		if (currentTreeNode === null) {
-			return false
-		}
 		if (typeof segment !== `string`) {
-			return false
+			return false // segments should always be strings
 		}
-		let subPaths: TreeContents | TreeContents[] // = currentTreeNode[1]
-		if (typeof currentTreeNode[0] === `string`) {
-			subPaths = currentTreeNode[1]
-		} else {
-			const filteredTreeNodes: Tree[] = currentTreeNode.filter((x) => x !== null)
-			switch (filteredTreeNodes.length) {
-				case 0:
-					return false
-				case 1:
-					currentTreeNode = filteredTreeNodes[0]
-					subPaths = filteredTreeNodes[0][1]
-					break
-				default:
-					currentTreeNode = filteredTreeNodes
-					subPaths = filteredTreeNodes.map(([_, value]) => value)
+		possibleTrees = possibleTrees.flatMap((t) => {
+			if (t === null) {
+				return []
 			}
-		}
-		let wildcard: string | undefined
-		//= Object.keys(subPaths).find((key) => key.startsWith(`$`))
-		if (Array.isArray(subPaths)) {
-			wildcard = subPaths
-				.map((paths) => Object.keys(paths).find((key) => key.startsWith(`$`)))
-				.find((key) => key !== undefined)
-		} else {
-			wildcard = Object.keys(subPaths).find((key) => key.startsWith(`$`))
-		}
-		if (segment in subPaths) {
-			const nextNode = subPaths[segment]
+			const treesDiscovered: (Tree | null)[] = []
+			const branches = t[1]
+			const segmentSubTree = branches[segment]
+			if (segmentSubTree !== undefined) {
+				treesDiscovered.push(segmentSubTree)
+			}
+
+			const wildcard = Object.keys(branches).find((key) => key.startsWith(`$`))
 			if (wildcard) {
-				if (typeof currentTreeNode[0] === `string`) {
-					currentTreeNode = []
+				const wildcardSubTree = branches[wildcard]
+				if (wildcardSubTree) {
+					treesDiscovered.push(wildcardSubTree)
 				}
-				currentTreeNode.push(nextNode, subPaths[wildcard])
-			} else {
-				currentTreeNode = nextNode
 			}
-		} else {
-			if (wildcard) {
-				currentTreeNode = subPaths[wildcard]
-				continue
-			}
-			return false
+			return treesDiscovered
+		})
+	}
+
+	for (const possibleTree of possibleTrees) {
+		if (possibleTree === null) {
+			return true
 		}
-	}
-	if (currentTreeNode === null) {
-		return true
-	}
-	if (typeof currentTreeNode[0] === `string`) {
-		switch (currentTreeNode[0]) {
-			case `required`:
-				return false
-			case `optional`:
-				return true
-		}
-	}
-	for (const node of currentTreeNode) {
-		if (node?.[0] === `optional`) {
+		if (possibleTree[0] === `optional`) {
 			return true
 		}
 	}
