@@ -34,7 +34,7 @@ export type TreePath<T extends Tree> = {
 }[keyof T[1]]
 
 /**
- * Against `Tree` `T`, validate whether a possible `maybePath` goes through it.
+ * Against `Tree` `T`, validate whether a possible `maybePath` goes through it
  *
  * @param tree `T`, the source of truth for determining valid paths
  * @param maybePath the path to validate
