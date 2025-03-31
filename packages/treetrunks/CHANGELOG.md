@@ -1,5 +1,19 @@
 # treetrunks
 
+## 0.1.0
+
+### Minor Changes
+
+- 9e9afe4: 💥 BREAKING CHANGE: Renamed the type `ToPath` to `Split`.
+- 9e9afe4: 💥 BREAKING CHANGE: Renamed the type `Flat` to `Flatten`.
+
+### Patch Changes
+
+- 9e9afe4: ✨ Add the new `ReduceTree` type which applies `MergeTree` over a tuple of trees.
+- 9e9afe4: ✨ Add new types `ExhaustiveTreeMap` and `ExhaustiveTreePath` which include 'partway' paths which wouldn't be valid in terms of 'required/optional' terms, but which may still be useful when analyzing the structure of a `Tree`.
+- 9e9afe4: ✨ Add the new `MergeTree` type, which neatly merges the structures of two different trees. Any path valid in one of the two trees `(A B)` given to `MergeTree<A, B>` is valid in the resulting tree.
+- 9e9afe4: ♻️ Refactored `isTreePath`, bringing treetrunks' code coverage to 100%.
+
 ## 0.0.5
 
 ### Patch Changes
