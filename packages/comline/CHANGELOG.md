@@ -1,5 +1,22 @@
 # comline
 
+## 0.2.0
+
+### Minor Changes
+
+- 9e9afe4: 💥 BREAKING CHANGE: Renamed the type `ToPath` to `Split`.
+- 9e9afe4: 💥 BREAKING CHANGE: Renamed the type `Flat` to `Flatten`.
+
+### Patch Changes
+
+- Updated dependencies [9e9afe4]
+- Updated dependencies [9e9afe4]
+- Updated dependencies [9e9afe4]
+- Updated dependencies [9e9afe4]
+- Updated dependencies [9e9afe4]
+- Updated dependencies [9e9afe4]
+  - treetrunks@0.1.0
+
 ## 0.1.10
 
 ### Patch Changes
