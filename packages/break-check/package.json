@@ -43,7 +43,7 @@
 	"devDependencies": {
 		"@types/npmlog": "7.0.0",
 		"@types/tmp": "0.2.6",
-		"bun-types": "1.2.7",
+		"bun-types": "1.2.8",
 		"concurrently": "9.1.2",
 		"eslint": "9.23.0",
 		"rimraf": "6.0.1",

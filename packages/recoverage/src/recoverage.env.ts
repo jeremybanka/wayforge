@@ -14,7 +14,7 @@ export const env = createEnv({
 			.optional()
 			.transform((v) => Boolean(v) && v !== `false` && v !== `0`),
 	},
-	runtimeEnv: import.meta.env,
+	runtimeEnv: import.meta.env as Record<string, string>,
 	emptyStringAsUndefined: true,
 })
 

@@ -307,7 +307,7 @@ export class FlightDeck<S extends string = string> {
 		const [exe, ...args] = this.options.services[serviceName].run.split(` `)
 		const serviceProcess = spawn(exe, args, {
 			cwd: this.options.flightdeckRootDir,
-			env: import.meta.env,
+			env: import.meta.env as Record<string, string>,
 		})
 		const serviceLogger = this.serviceLoggers[serviceName]
 		const service = (this.services[serviceName] = new ChildSocket(
