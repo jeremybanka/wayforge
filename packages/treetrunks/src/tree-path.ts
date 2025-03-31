@@ -1,5 +1,26 @@
 import type { Tree } from "./tree"
 
+/**
+ * For a `Tree`, the set of all paths through that tree.
+ *
+ * @example
+ * TreePath<
+ *  typeof required({
+ *		hello: optional({
+ *			world: null,
+ *			$name: optional({
+ * 				good: required({
+ *					morning: null
+ *				})
+ *			})
+ *  	}),
+ *  })
+ * > =
+ *   | [`hello`]
+ *   | [`hello`, `world`]
+ *   | [`hello`, string & {}]
+ *   | [`hello`, string & {}, `good`, `morning`]
+ */
 export type TreePath<T extends Tree> = {
 	[K in keyof T[1]]: T[0] extends `required`
 		? T[1][K] extends Tree
@@ -12,6 +33,13 @@ export type TreePath<T extends Tree> = {
 				| []
 }[keyof T[1]]
 
+/**
+ * Against `Tree` `T`, validate whether a possible `maybePath` goes through it.
+ *
+ * @param tree `T`, the source of truth for determining valid paths
+ * @param maybePath the path to validate
+ * @returns refinement for `maybePath` into `TreePath<T>`
+ */
 export function isTreePath<T extends Tree>(
 	tree: T,
 	maybePath: unknown[],
