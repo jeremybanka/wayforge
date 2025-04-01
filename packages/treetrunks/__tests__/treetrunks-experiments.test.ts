@@ -6,8 +6,8 @@ import type {
 	Tree,
 	TreeMap,
 	TreeMapExhaustive,
-} from "../src/treetrunks"
-import { optional, required } from "../src/treetrunks"
+} from "../src/treetrunks.ts"
+import { optional, required } from "../src/treetrunks.ts"
 
 describe(`experiments`, () => {
 	test(`web routes`, () => {
