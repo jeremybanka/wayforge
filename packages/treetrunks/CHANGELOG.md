@@ -1,5 +1,15 @@
 # treetrunks
 
+## 0.1.1
+
+### Patch Changes
+
+- f51ef63: 📝 Add JSDoc annotations to most types.
+- f51ef63: ✨ Add mergeTrees function for combining the structures of two trees.
+- f51ef63: ✨ Add flattenTree function.
+- f51ef63: ✨ Add reduceTrees function for combining the structures of N trees.
+- f51ef63: ✨ Add mapTree function.
+
 ## 0.1.0
 
 ### Minor Changes
