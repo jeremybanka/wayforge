@@ -3,7 +3,9 @@ import { inspect } from "node:util"
 
 import type {
 	Deref,
+	Distill,
 	Join,
+	LastInUnion,
 	MergeTrees,
 	ReduceTrees,
 	Split,
@@ -21,10 +23,24 @@ import {
 	required,
 } from "../src/treetrunks.ts"
 
-test(`isTreePath`, () => {
-	type MySplit = Split<`hello/$world/good/morning`>
-	type MyDeref = Deref<MySplit>
+describe(`utility types`, () => {
+	test(`path reassembly`, () => {
+		type Greeting = `hello/$name/good/morning`
+		type GreetingSplit = Split<Greeting, `/`>
+		;[`hello`, `$name`, `good`, `morning`] satisfies GreetingSplit
+		type GreetingDereferenced = Deref<GreetingSplit, `$`>
+		;[`hello`, `jeremybanka`, `good`, `morning`] satisfies GreetingDereferenced
+		type GreetingRejoined = Join<GreetingDereferenced, `/`>
+		;`hello/jeremybanka/good/morning` satisfies GreetingRejoined
+	})
+	test(`union distillation`, () => {
+		type Union = 1 | 2 | 3 | 4
+		type Distilled = Distill<Union>
+		;[2, 1, 3, 4] satisfies Distilled
+	})
+})
 
+test(`isTreePath`, () => {
 	const myTree = required({
 		hello: optional({
 			world: null,
