@@ -38,7 +38,7 @@ export type TreePath<T extends Tree> = {
  *
  * @param tree `T`, the source of truth for determining valid paths
  * @param maybePath the path to validate
- * @returns refinement for `maybePath` into `TreePath<T>`
+ * @returns refinement for `maybePath` into a {@link TreePath} of `T`
  */
 export function isTreePath<T extends Tree>(
 	tree: T,
