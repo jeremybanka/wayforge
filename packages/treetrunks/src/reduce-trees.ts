@@ -1,5 +1,6 @@
-import type { MergeTrees } from "./merge-trees"
-import type { Tree } from "./tree"
+import { type MergeTrees, mergeTrees } from "./merge-trees.ts"
+import type { Tree } from "./tree.ts"
+import type { Flatten } from "./utility-types.ts"
 
 export type ReduceTrees<
 	Tuple extends Tree[],
@@ -7,7 +8,18 @@ export type ReduceTrees<
 > = Tuple extends [infer Head, ...infer Rest]
 	? Head extends Tree
 		? Rest extends Tree[]
-			? ReduceTrees<Rest, MergeTrees<Acc, Head>>
+			? Flatten<ReduceTrees<Rest, MergeTrees<Acc, Head>>>
 			: never
 		: never
 	: Acc
+
+export function reduceTrees<T extends Tree[]>(...trees: T): ReduceTrees<T> {
+	const base = trees.pop()
+	if (base === undefined) {
+		return [`required`, {}] as ReduceTrees<T>
+	}
+	return trees.reduce(
+		(acc, tree) => mergeTrees(acc, tree) as Tree,
+		base,
+	) as ReduceTrees<T>
+}

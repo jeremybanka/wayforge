@@ -1512,6 +1512,9 @@ importers:
 
   packages/treetrunks:
     devDependencies:
+      '@types/node':
+        specifier: 22.13.15
+        version: 22.13.15
       '@vitest/coverage-v8':
         specifier: 3.1.1
         version: 3.1.1(vitest@3.1.1)
@@ -1522,8 +1525,8 @@ importers:
         specifier: 9.23.0
         version: 9.23.0(jiti@2.4.2)
       recoverage:
-        specifier: 0.1.4
-        version: 0.1.4(typescript@5.8.2)
+        specifier: 0.1.5
+        version: 0.1.5(typescript@5.8.2)
       rimraf:
         specifier: 6.0.1
         version: 6.0.1
@@ -5099,7 +5102,6 @@ packages:
 
   bun@1.2.8:
     resolution: {integrity: sha512-X8r9UuXAruvpE37u/JVfvJI8KRdFf9hUdTLw00DMScnBe7Xerawd/VvmFVT9Y/NrmXDAdDp0Dm6N6bulZYTGvA==}
-    cpu: [arm64, x64, aarch64]
     os: [darwin, linux, win32]
     hasBin: true
 
@@ -5291,11 +5293,11 @@ packages:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
     engines: {node: '>= 0.8'}
 
-  comline@0.1.10:
-    resolution: {integrity: sha512-mdeSJQeiFpj1onV7KtL0cZfHH39Vd0+VMhraR0Hlwb42iG82VLKKKnp8Byur9Io+/Bt9ly96qnzfqreEJVoRQA==}
-
   comline@0.1.9:
     resolution: {integrity: sha512-YM6Duc9a4leyne/weZ2BIfpIkZ5I3zfQ/xOM2Dpdh/C+7Nli/cQWmPl4e8a6YutQjbN2IUMeR1krytNkPztLvw==}
+
+  comline@0.2.0:
+    resolution: {integrity: sha512-g+J/HInsoSYy+As51yf5d0iC0j/7AG3KGTOmSfIqBqKKxdx2LkXh98cKuKtRL3N7M4CLeD+Ph+hm+eQ2EyPVCA==}
 
   comma-separated-tokens@1.0.8:
     resolution: {integrity: sha512-GHuDRO12Sypu2cV70d1dkA2EUmXHgntrzbpvOB+Qy+49ypNfGgFQIC2fhhXbnyrJRynDCAARsT7Ou0M6hirpfw==}
@@ -7885,8 +7887,8 @@ packages:
       react-native:
         optional: true
 
-  recoverage@0.1.4:
-    resolution: {integrity: sha512-sRhrhq0Buvz/SnA6lyhQEnlutHlgRrgHJCgkfWxhSxd2cFBmZVrh4MWx/bIvK89V77ErFGfW7NzqjC6hzyWAfg==}
+  recoverage@0.1.5:
+    resolution: {integrity: sha512-0tIGU8E3rwrFkK7tskAYf/tkWA/szzTItiCt+bQpScdEe+JZ/B7NSOTofSrMKsL3sgIc7shKdWqCafQyjYlFyw==}
     hasBin: true
 
   redent@3.0.0:
@@ -8658,8 +8660,8 @@ packages:
   treetrunks@0.0.4:
     resolution: {integrity: sha512-enfoB7wiep+KG1GVHaHD8ag/uby5/VRUB9eLJa/usvDW9pxIpNFPoDUqQwOq27T8Wq74uvEjefmuTVZ5GXpnZA==}
 
-  treetrunks@0.0.5:
-    resolution: {integrity: sha512-Bd7YUCSrzHDKc4iv2oEodh/Bq4GnSKnNtq7MCGiRhjVG9ET/HmDqXRsUA22/Rl1gEh3KOSzNziX5rrqyW04PPQ==}
+  treetrunks@0.1.0:
+    resolution: {integrity: sha512-BU63lSbe7w1aeS3fXe3X+EaKOstX9a2A7g6KDQWZOvKePTaJcFUBKVvHJBOoOKfpjGu9zuv+Eo9w3rC0vnGYtg==}
 
   trim-lines@3.0.1:
     resolution: {integrity: sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg==}
@@ -9258,11 +9260,6 @@ packages:
 
   zod-to-json-schema@3.24.1:
     resolution: {integrity: sha512-3h08nf3Vw3Wl3PK+q3ow/lIil81IT2Oa7YpQyUUDsEWbXveMesdfK1xBd2RhCkynwZndAxixji/7SYJJowr62w==}
-    peerDependencies:
-      zod: ^3.24.1
-
-  zod-to-json-schema@3.24.4:
-    resolution: {integrity: sha512-0uNlcvgabyrni9Ag8Vghj21drk7+7tp7VTwwR7KxxXXc/3pbXz2PHlDgj3cICahgF1kHm4dExBFj7BXrZJXzig==}
     peerDependencies:
       zod: ^3.24.1
 
@@ -13088,19 +13085,19 @@ snapshots:
     dependencies:
       delayed-stream: 1.0.0
 
-  comline@0.1.10:
-    dependencies:
-      chalk: 5.4.1
-      treetrunks: 0.0.5
-      zod: 3.24.2
-      zod-to-json-schema: 3.24.4(zod@3.24.2)
-
   comline@0.1.9:
     dependencies:
       chalk: 5.4.1
       treetrunks: 0.0.4
       zod: 3.24.2
       zod-to-json-schema: 3.24.1(zod@3.24.2)
+
+  comline@0.2.0:
+    dependencies:
+      chalk: 5.4.1
+      treetrunks: 0.1.0
+      zod: 3.24.2
+      zod-to-json-schema: 3.24.5(zod@3.24.2)
 
   comma-separated-tokens@1.0.8: {}
 
@@ -16169,11 +16166,11 @@ snapshots:
     optionalDependencies:
       react-dom: 19.1.0(react@19.1.0)
 
-  recoverage@0.1.4(typescript@5.8.2):
+  recoverage@0.1.5(typescript@5.8.2):
     dependencies:
       '@t3-oss/env-core': 0.12.0(typescript@5.8.2)(zod@3.24.2)
       colors: 1.4.0
-      comline: 0.1.10
+      comline: 0.2.0
       diff: 7.0.0
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
@@ -17086,7 +17083,7 @@ snapshots:
 
   treetrunks@0.0.4: {}
 
-  treetrunks@0.0.5: {}
+  treetrunks@0.1.0: {}
 
   trim-lines@3.0.1: {}
 
@@ -17785,10 +17782,6 @@ snapshots:
       stacktracey: 2.1.8
 
   zod-to-json-schema@3.24.1(zod@3.24.2):
-    dependencies:
-      zod: 3.24.2
-
-  zod-to-json-schema@3.24.4(zod@3.24.2):
     dependencies:
       zod: 3.24.2
 
