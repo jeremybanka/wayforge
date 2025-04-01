@@ -1,5 +1,12 @@
 # flightdeck
 
+## 0.2.22
+
+### Patch Changes
+
+- comline@0.2.1
+- atom.io@0.32.3
+
 ## 0.2.21
 
 ### Patch Changes

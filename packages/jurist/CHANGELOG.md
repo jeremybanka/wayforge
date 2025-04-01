@@ -1,5 +1,16 @@
 # jurist
 
+## 0.0.3
+
+### Patch Changes
+
+- Updated dependencies [f51ef63]
+- Updated dependencies [f51ef63]
+- Updated dependencies [f51ef63]
+- Updated dependencies [f51ef63]
+- Updated dependencies [f51ef63]
+  - treetrunks@0.1.1
+
 ## 0.0.2
 
 ### Patch Changes
