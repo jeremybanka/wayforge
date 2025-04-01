@@ -89,16 +89,19 @@ test(`mergeTrees`, () => {
 	}) satisfies MergedTree
 	const mergedTreeActual = mergeTrees(treeA, treeB)
 
-	console.log(`TREE A:`, inspect(treeA, { depth: null, colors: true }))
-	console.log(`TREE B:`, inspect(treeB, { depth: null, colors: true }))
-	console.log(
-		`MERGED TARGET:`,
-		inspect(mergedTreeTarget, { depth: null, colors: true }),
-	)
-	console.log(
-		`MERGED ACTUAL:`,
-		inspect(mergedTreeActual, { depth: null, colors: true }),
-	)
+	const DO = false
+	if (DO) {
+		console.log(`TREE A:`, inspect(treeA, { depth: null, colors: true }))
+		console.log(`TREE B:`, inspect(treeB, { depth: null, colors: true }))
+		console.log(
+			`MERGED TARGET:`,
+			inspect(mergedTreeTarget, { depth: null, colors: true }),
+		)
+		console.log(
+			`MERGED ACTUAL:`,
+			inspect(mergedTreeActual, { depth: null, colors: true }),
+		)
+	}
 
 	expect(mergedTreeActual).toEqual(mergedTreeTarget)
 })
