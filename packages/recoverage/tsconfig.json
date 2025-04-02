@@ -1,8 +1,0 @@
-{
-	"extends": "../../tsconfig.json",
-	"include": ["src", "__tests__", "**/*.config.ts"],
-	"compilerOptions": {
-		"types": ["vitest/globals", "bun-types"],
-		"target": "ES2024"
-	}
-}
