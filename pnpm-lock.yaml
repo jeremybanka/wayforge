@@ -237,8 +237,8 @@ importers:
         specifier: 5.1.0
         version: 5.1.0
       recoverage:
-        specifier: workspace:*
-        version: link:../../../packages/recoverage
+        specifier: 0.1.6
+        version: 0.1.6(typescript@5.8.2)
       vite:
         specifier: 6.2.4
         version: 6.2.4(@types/node@22.13.17)(jiti@2.4.2)(lightningcss@1.29.3)(sass-embedded@1.86.1)(sass@1.86.1)(terser@5.39.0)(tsx@4.19.3)
@@ -891,8 +891,8 @@ importers:
         specifier: 7.4.1
         version: 7.4.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       recoverage:
-        specifier: workspace:*
-        version: link:../recoverage
+        specifier: 0.1.6
+        version: 0.1.6(typescript@5.8.2)
       socket.io:
         specifier: 4.8.1
         version: 4.8.1
@@ -1285,76 +1285,6 @@ importers:
         specifier: 3.1.1
         version: 3.1.1(@types/debug@4.1.12)(@types/node@22.13.17)(@vitest/ui@3.1.1)(happy-dom@17.4.4)(jiti@2.4.2)(jsdom@26.0.0)(lightningcss@1.29.3)(sass-embedded@1.86.1)(sass@1.86.1)(terser@5.39.0)(tsx@4.19.3)
 
-  packages/recoverage:
-    dependencies:
-      '@t3-oss/env-core':
-        specifier: 0.12.0
-        version: 0.12.0(typescript@5.8.2)(zod@3.24.2)
-      colors:
-        specifier: 1.4.0
-        version: 1.4.0
-      comline:
-        specifier: workspace:*
-        version: link:../comline
-      diff:
-        specifier: 7.0.0
-        version: 7.0.0
-      istanbul-lib-coverage:
-        specifier: 3.2.2
-        version: 3.2.2
-      istanbul-lib-report:
-        specifier: 3.0.1
-        version: 3.0.1
-      istanbul-reports:
-        specifier: 3.1.7
-        version: 3.1.7
-      simple-git:
-        specifier: 3.27.0
-        version: 3.27.0
-      tmp:
-        specifier: 0.2.3
-        version: 0.2.3
-      zod:
-        specifier: 3.24.2
-        version: 3.24.2
-    devDependencies:
-      '@types/diff':
-        specifier: 7.0.2
-        version: 7.0.2
-      '@types/istanbul-lib-coverage':
-        specifier: 2.0.6
-        version: 2.0.6
-      '@types/istanbul-lib-report':
-        specifier: 3.0.3
-        version: 3.0.3
-      '@types/istanbul-reports':
-        specifier: 3.0.4
-        version: 3.0.4
-      '@types/tmp':
-        specifier: 0.2.6
-        version: 0.2.6
-      bun-types:
-        specifier: 1.2.8
-        version: 1.2.8
-      concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
-      eslint:
-        specifier: 9.23.0
-        version: 9.23.0(jiti@2.4.2)
-      nyc:
-        specifier: 17.1.0
-        version: 17.1.0
-      tsup:
-        specifier: 8.4.0
-        version: 8.4.0(@microsoft/api-extractor@7.51.1(@types/node@22.13.17))(@swc/core@1.11.11(@swc/helpers@0.5.15))(jiti@2.4.2)(postcss@8.5.3)(tsx@4.19.3)(typescript@5.8.2)
-      vitest:
-        specifier: 3.1.1
-        version: 3.1.1(@types/debug@4.1.12)(@types/node@22.13.17)(@vitest/ui@3.1.1)(happy-dom@17.4.4)(jiti@2.4.2)(jsdom@26.0.0)(lightningcss@1.29.3)(sass-embedded@1.86.1)(sass@1.86.1)(terser@5.39.0)(tsx@4.19.3)
-      yalc:
-        specifier: 1.0.0-pre.53
-        version: 1.0.0-pre.53
-
   packages/rel8:
     devDependencies:
       concurrently:
@@ -1525,8 +1455,8 @@ importers:
         specifier: 9.23.0
         version: 9.23.0(jiti@2.4.2)
       recoverage:
-        specifier: 0.1.5
-        version: 0.1.5(typescript@5.8.2)
+        specifier: 0.1.6
+        version: 0.1.6(typescript@5.8.2)
       rimraf:
         specifier: 6.0.1
         version: 6.0.1
@@ -4338,9 +4268,6 @@ packages:
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
 
-  '@types/diff@7.0.2':
-    resolution: {integrity: sha512-JSWRMozjFKsGlEjiiKajUjIJVKuKdE3oVy2DNtK+fUo8q82nhFZ2CPQwicAIkXrofahDXrWJ7mjelvZphMS98Q==}
-
   '@types/doctrine@0.0.9':
     resolution: {integrity: sha512-eOIHzCUSH7SMfonMG1LsC2f8vxBFtho6NGBznK41R84YzPuvSBzrhEps33IsQiOW9+VL6NQ9DbjQJznk/S4uRA==}
 
@@ -4364,12 +4291,6 @@ packages:
 
   '@types/istanbul-lib-coverage@2.0.6':
     resolution: {integrity: sha512-2QF/t/auWm0lsy8XtKVPG19v3sSOQlJe/YHZgfjb/KBBHOGSV+J2q/S671rcq9uTBrLAXmZpqJiaQbMT+zNU1w==}
-
-  '@types/istanbul-lib-report@3.0.3':
-    resolution: {integrity: sha512-NQn7AHQnk/RSLOxrBbGyJM/aVQ+pjj5HCgasFxc0K/KhoATfQ/47AyUl15I2yBUpihjmas+a+VJBOqecrFH+uA==}
-
-  '@types/istanbul-reports@3.0.4':
-    resolution: {integrity: sha512-pk2B1NWalF9toCRu6gjBzR69syFjP4Od8WRAX+0mmf9lAjCRicLOWc+ZrxZHx/0XRjotgkF9t6iaMJ+aXcOdZQ==}
 
   '@types/jsdom@21.1.7':
     resolution: {integrity: sha512-yOriVnggzrnQ3a9OKOCxaVuSug3w3/SbOj5i7VwXWZEyUNl3bLF9V3MfxGbZKuwqJOQyRfqXyROBB1CoZLFWzA==}
@@ -5108,7 +5029,6 @@ packages:
 
   bun@1.2.8:
     resolution: {integrity: sha512-X8r9UuXAruvpE37u/JVfvJI8KRdFf9hUdTLw00DMScnBe7Xerawd/VvmFVT9Y/NrmXDAdDp0Dm6N6bulZYTGvA==}
-    cpu: [arm64, x64, aarch64]
     os: [darwin, linux, win32]
     hasBin: true
 
@@ -5303,8 +5223,8 @@ packages:
   comline@0.1.9:
     resolution: {integrity: sha512-YM6Duc9a4leyne/weZ2BIfpIkZ5I3zfQ/xOM2Dpdh/C+7Nli/cQWmPl4e8a6YutQjbN2IUMeR1krytNkPztLvw==}
 
-  comline@0.2.0:
-    resolution: {integrity: sha512-g+J/HInsoSYy+As51yf5d0iC0j/7AG3KGTOmSfIqBqKKxdx2LkXh98cKuKtRL3N7M4CLeD+Ph+hm+eQ2EyPVCA==}
+  comline@0.2.1:
+    resolution: {integrity: sha512-9eu2kENS/AY5eipZZ3m0HEwYiHvPUJkC/wFxsEtf/2kYORHiyYuyQNzYGYdUuzdm75XUzpABxXDaePBi5kSl7g==}
 
   comma-separated-tokens@1.0.8:
     resolution: {integrity: sha512-GHuDRO12Sypu2cV70d1dkA2EUmXHgntrzbpvOB+Qy+49ypNfGgFQIC2fhhXbnyrJRynDCAARsT7Ou0M6hirpfw==}
@@ -7894,8 +7814,8 @@ packages:
       react-native:
         optional: true
 
-  recoverage@0.1.5:
-    resolution: {integrity: sha512-0tIGU8E3rwrFkK7tskAYf/tkWA/szzTItiCt+bQpScdEe+JZ/B7NSOTofSrMKsL3sgIc7shKdWqCafQyjYlFyw==}
+  recoverage@0.1.6:
+    resolution: {integrity: sha512-jRxCcnRNFSjVi7K2rrvI1V/JPUd3D1RqhWQsiqcudxIn5wqUze26ChgTaa+vo59dPT+/JmREk6FUE1wOvqwaWg==}
     hasBin: true
 
   redent@3.0.0:
@@ -8667,8 +8587,8 @@ packages:
   treetrunks@0.0.4:
     resolution: {integrity: sha512-enfoB7wiep+KG1GVHaHD8ag/uby5/VRUB9eLJa/usvDW9pxIpNFPoDUqQwOq27T8Wq74uvEjefmuTVZ5GXpnZA==}
 
-  treetrunks@0.1.0:
-    resolution: {integrity: sha512-BU63lSbe7w1aeS3fXe3X+EaKOstX9a2A7g6KDQWZOvKePTaJcFUBKVvHJBOoOKfpjGu9zuv+Eo9w3rC0vnGYtg==}
+  treetrunks@0.1.1:
+    resolution: {integrity: sha512-D/MQDu6vtoo5FmDRNapQobO/1w0jB1SMgWbm2zAcneZsVYU6UhTcJWpQYMswUpWz4QEI4CXcU0pGnqk8FKPFmw==}
 
   trim-lines@3.0.1:
     resolution: {integrity: sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg==}
@@ -12007,8 +11927,6 @@ snapshots:
     dependencies:
       '@types/ms': 2.1.0
 
-  '@types/diff@7.0.2': {}
-
   '@types/doctrine@0.0.9': {}
 
   '@types/eslint@9.6.1':
@@ -12035,14 +11953,6 @@ snapshots:
       '@types/node': 22.13.17
 
   '@types/istanbul-lib-coverage@2.0.6': {}
-
-  '@types/istanbul-lib-report@3.0.3':
-    dependencies:
-      '@types/istanbul-lib-coverage': 2.0.6
-
-  '@types/istanbul-reports@3.0.4':
-    dependencies:
-      '@types/istanbul-lib-report': 3.0.3
 
   '@types/jsdom@21.1.7':
     dependencies:
@@ -13107,10 +13017,10 @@ snapshots:
       zod: 3.24.2
       zod-to-json-schema: 3.24.1(zod@3.24.2)
 
-  comline@0.2.0:
+  comline@0.2.1:
     dependencies:
       chalk: 5.4.1
-      treetrunks: 0.1.0
+      treetrunks: 0.1.1
       zod: 3.24.2
       zod-to-json-schema: 3.24.5(zod@3.24.2)
 
@@ -16181,11 +16091,11 @@ snapshots:
     optionalDependencies:
       react-dom: 19.1.0(react@19.1.0)
 
-  recoverage@0.1.5(typescript@5.8.2):
+  recoverage@0.1.6(typescript@5.8.2):
     dependencies:
       '@t3-oss/env-core': 0.12.0(typescript@5.8.2)(zod@3.24.2)
       colors: 1.4.0
-      comline: 0.2.0
+      comline: 0.2.1
       diff: 7.0.0
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
@@ -17098,7 +17008,7 @@ snapshots:
 
   treetrunks@0.0.4: {}
 
-  treetrunks@0.1.0: {}
+  treetrunks@0.1.1: {}
 
   trim-lines@3.0.1: {}
 
