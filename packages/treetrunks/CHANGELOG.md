@@ -1,5 +1,11 @@
 # treetrunks
 
+## 0.1.2
+
+### Patch Changes
+
+- f0a729f: 📝 Finish inline documentation for functions and types.
+
 ## 0.1.1
 
 ### Patch Changes
