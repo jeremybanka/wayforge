@@ -1,6 +1,26 @@
 import type { Tree, TreeBranches } from "./tree.ts"
 import type { Flatten } from "./utility-types.ts"
 
+/**
+ * For two `Tree`s `A` and `B`, deeply combine their structures into a single `Tree`.
+ *
+ * @example
+ * MergeTrees<
+ *  typeof required({
+ *		a: required({ bb: null }),
+ *		x: null,
+ *  }),
+ *  typeof required({
+ *		a: required({ cc: null }),
+ *		y: null,
+ *  })
+ * > =
+ *   typeof required({
+ *     a: required({ bb: null, cc: null }),
+ *     x: null,
+ *     y: null,
+ *   })
+ */
 export type MergeTrees<A extends Tree, B extends Tree> = [
 	A[0] extends `required`
 		? B[0] extends `required`
@@ -24,6 +44,13 @@ export type MergeTrees<A extends Tree, B extends Tree> = [
 	}>,
 ]
 
+/**
+ * For two `Tree`s `A` and `B`, deeply combine their structures into a single `Tree`.
+ *
+ * @param treeA `A`, the first `Tree` to combine
+ * @param treeB `B`, the second `Tree` to combine
+ * @returns a {@link MergeTrees} type of the combined `Tree`s
+ */
 export function mergeTrees<A extends Tree, B extends Tree>(
 	treeA: A,
 	treeB: B,
@@ -34,6 +61,9 @@ export function mergeTrees<A extends Tree, B extends Tree>(
 		Tree
 }
 
+/**
+ * @internal
+ */
 function mergeTreesBranches(
 	branchesA: TreeBranches,
 	branchesB: TreeBranches,
