@@ -122,12 +122,6 @@ describe(`experiments`, () => {
 
 		type MergedTree = MergeTrees<typeof treeA, typeof treeB>
 
-		type FromUnion<U> = U extends infer T
-			? T extends U
-				? Exclude<U, T>
-				: never
-			: never
-
 		type Z = LastInUnion<1 | 2>
 
 		type ZZ = Distill<1 | 2 | 3>

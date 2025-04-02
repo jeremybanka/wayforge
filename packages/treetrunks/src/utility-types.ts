@@ -1,3 +1,6 @@
+/**
+ * Join an array of strings `Arr` together with a `Separator`.
+ */
 export type Join<
 	Arr extends any[],
 	Separator extends string = `,`,
@@ -9,51 +12,57 @@ export type Join<
 			? `${First}${Separator}${Join<Rest, Separator>}`
 			: string
 
+/**
+ * At instances of `Splitter` in split `Str` into an array of substrings.
+ */
 export type Split<
-	S extends string,
-	D extends string = `/`,
-> = S extends `${infer T extends string}${D}${infer U extends string}`
-	? [T, ...Split<U, D>]
-	: S extends ``
+	Str extends string,
+	Splitter extends string = `/`,
+> = Str extends `${infer Head extends string}${Splitter}${infer Tail extends string}`
+	? [Head, ...Split<Tail, Splitter>]
+	: Str extends ``
 		? []
-		: [S]
+		: [Str]
 
-export type Deref<S extends string[], V extends string = `$`> = S extends [
-	`${infer T extends string}`,
-	...infer U extends string[],
-]
-	? T extends `${V}${string}`
-		? [string & {}, ...Deref<U, V>]
-		: [T, ...Deref<U, V>]
+/**
+ * In array `Arr`, replace elements starting with `VarMarker` with `string & {}`.
+ */
+export type Deref<
+	Arr extends string[],
+	VarMarker extends string = `$`,
+> = Arr extends [`${infer Head extends string}`, ...infer Tail extends string[]]
+	? Head extends `${VarMarker}${string}`
+		? [string & {}, ...Deref<Tail, VarMarker>]
+		: [Head, ...Deref<Tail, VarMarker>]
 	: []
 
-export type Flatten<R extends { [K in PropertyKey]: any }> = {
-	[K in keyof R]: R[K]
+export type Flatten<Record extends { [K in PropertyKey]: any }> = {
+	[K in keyof Record]: Record[K]
 }
 
 /**
- * Convert a union ("|") to an intersection ("&")
+ * Convert a union (`|`) to an intersection (`&` ).
  */
-export type UnionToIntersection<U> = (
-	U extends any
-		? (x: U) => void
+export type UnionToIntersection<Union> = (
+	Union extends any
+		? (x: Union) => void
 		: never
-) extends (x: infer I) => void
-	? I
+) extends (x: infer Item) => void
+	? Item
 	: never
 
 /**
- * Get the “last” element of a union (order is arbitrary)
+ * Get the “last” element of a union (order is arbitrary).
  */
-export type LastInUnion<U> = UnionToIntersection<
-	U extends any ? (x: U) => void : never
+export type LastInUnion<Union> = UnionToIntersection<
+	Union extends any ? (x: Union) => void : never
 > extends (x: infer Last) => void
 	? Last
 	: never
 
 /**
- * Convert a union to a tuple
+ * Convert a union to a tuple, order not guaranteed.
  */
-export type Distill<T, Last = LastInUnion<T>> = [T] extends [never]
+export type Distill<Union, Last = LastInUnion<Union>> = [Union] extends [never]
 	? []
-	: [...Distill<Exclude<T, Last>>, Last]
+	: [...Distill<Exclude<Union, Last>>, Last]

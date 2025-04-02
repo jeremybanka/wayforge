@@ -21,7 +21,7 @@ export type TreeBranches = Readonly<{ [key: string]: Tree | null }>
 /**
  * Helper function to create a `Tree` with a `required` status.
  * @param branches an object holding the required segments from this point in the tree
- * @returns a `RequiredTree`
+ * @returns a {@link RequiredTree}
  */
 export function required<B extends TreeBranches>(branches: B): [`required`, B] {
 	return [`required`, branches]
@@ -30,7 +30,7 @@ export function required<B extends TreeBranches>(branches: B): [`required`, B] {
 /**
  * Helper function to create a `Tree` with an `optional` status.
  * @param branches an object holding the optional segments from this point in the tree
- * @returns an `OptionalTree`
+ * @returns an {@link OptionalTree}
  */
 export function optional<B extends TreeBranches>(branches: B): [`optional`, B] {
 	return [`optional`, branches]
