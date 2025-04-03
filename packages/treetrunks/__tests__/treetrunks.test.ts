@@ -5,10 +5,10 @@ import type {
 	Deref,
 	Distill,
 	Join,
-	LastInUnion,
 	MergeTrees,
 	ReduceTrees,
 	Split,
+	Tree,
 	TreeMap,
 	TreePath,
 	TreePathName,
@@ -40,32 +40,43 @@ describe(`utility types`, () => {
 	})
 })
 
-test(`isTreePath`, () => {
-	const myTree = required({
+describe(`paths`, () => {
+	const greetings = required({
 		hello: optional({
 			world: null,
 			$name: optional({ good: required({ morning: null }) }),
 		}),
+	}) satisfies Tree
+
+	test(`types`, () => {
+		type MyTreePathName = TreePathName<typeof greetings>
+		;[`hello`] satisfies MyTreePathName
+		;[`hello`, `world`] satisfies MyTreePathName
+		;[`hello`, `$name`, `good`, `morning`] satisfies MyTreePathName
+		type MyTreePath = TreePath<typeof greetings>
+		;[`hello`] satisfies MyTreePath
+		;[`hello`, `world`] satisfies MyTreePath
+		;[`hello`, `treetrunks`, `good`, `morning`] satisfies MyTreePath
 	})
 
-	type MyTreePathName = TreePathName<typeof myTree>
-	type MyTreePath = TreePath<typeof myTree>
-	type MyTreeMap = TreeMap<typeof myTree, null>
+	test(`isTreePath`, () => {
+		expect(isTreePath(greetings, [`hello`, `world`])).toBe(true)
+		expect(isTreePath(greetings, [`hello`, `jo`, `good`, `morning`])).toBe(true)
+		expect(isTreePath(greetings, [`hello`])).toBe(true)
 
-	type MyTreePathsJoined = Join<MyTreePath, `/`>
+		expect(isTreePath(greetings, [`hello`, `jo`, `good`])).toBe(false)
+		expect(isTreePath(greetings, [`hello`, `jo`, `bad`])).toBe(false)
+		expect(isTreePath(greetings, [`hello`, `jo`, `good`, `morning`, ``])).toBe(
+			false,
+		)
+		expect(isTreePath(greetings, [])).toBe(false)
+		expect(isTreePath(greetings, [1234])).toBe(false)
 
-	expect(isTreePath(myTree, [`hello`, `world`])).toBe(true)
-	expect(isTreePath(myTree, [`hello`, `jo`, `good`, `morning`])).toBe(true)
-	expect(isTreePath(myTree, [`hello`])).toBe(true)
-
-	expect(isTreePath(myTree, [`hello`, `jo`, `good`])).toBe(false)
-	expect(isTreePath(myTree, [`hello`, `jo`, `bad`])).toBe(false)
-	expect(isTreePath(myTree, [`hello`, `jo`, `good`, `morning`, ``])).toBe(false)
-	expect(isTreePath(myTree, [])).toBe(false)
-	expect(isTreePath(myTree, [1234])).toBe(false)
-
-	expect(isTreePath(myTree, [`hello`, `world`, `good`])).toBe(false)
-	expect(isTreePath(myTree, [`hello`, `world`, `good`, `morning`])).toBe(true)
+		expect(isTreePath(greetings, [`hello`, `world`, `good`])).toBe(false)
+		expect(isTreePath(greetings, [`hello`, `world`, `good`, `morning`])).toBe(
+			true,
+		)
+	})
 })
 
 test(`mergeTrees`, () => {
@@ -152,7 +163,7 @@ describe(`reduceTrees`, () => {
 			w: null,
 		})
 
-		type ReducedTree = ReduceTrees<[typeof treeA, typeof treeB, typeof treeC]>
+		type ReducedTreeABC = ReduceTrees<[typeof treeA, typeof treeB, typeof treeC]>
 
 		const reducedTreeTarget = optional({
 			a: required({
@@ -166,7 +177,7 @@ describe(`reduceTrees`, () => {
 			w: null,
 			x: null,
 			z: null,
-		}) satisfies ReducedTree
+		}) satisfies ReducedTreeABC
 		const reducedTreeActual = reduceTrees(treeA, treeB, treeC)
 
 		const DO = false
