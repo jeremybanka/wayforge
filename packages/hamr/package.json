@@ -71,7 +71,7 @@
 		"preact": "10.26.4",
 		"react": "19.1.0",
 		"react-dom": "19.1.0",
-		"react-router-dom": "7.4.1",
+		"react-router-dom": "7.5.0",
 		"atom.io": "workspace:*",
 		"sass": "1.86.3",
 		"tsup": "8.4.0",
