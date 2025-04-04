@@ -38,7 +38,7 @@
 	},
 	"devDependencies": {
 		"concurrently": "9.1.2",
-		"eslint": "9.23.0",
+		"eslint": "9.24.0",
 		"fp-ts": "2.16.9",
 		"tsup": "8.4.0",
 		"typescript": "5.8.2",
