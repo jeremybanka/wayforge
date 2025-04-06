@@ -112,7 +112,7 @@
 		"npmlog": "7.0.1",
 		"nyc": "17.1.0",
 		"postgres": "3.4.5",
-		"preact": "10.26.4",
+		"preact": "10.26.5",
 		"react": "19.1.0",
 		"react-dom": "19.1.0",
 		"react-router-dom": "7.5.0",
