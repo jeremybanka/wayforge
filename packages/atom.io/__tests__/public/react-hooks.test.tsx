@@ -279,6 +279,5 @@ describe(`timeline (dynamic)`, () => {
 		fireEvent.click(changeTimelineButton)
 		expect(timelineAt.textContent).toEqual(`0`)
 		expect(timelineLength.textContent).toEqual(`1`)
-		prettyP
 	})
 })
