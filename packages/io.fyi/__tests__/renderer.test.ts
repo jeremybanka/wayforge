@@ -1,9 +1,9 @@
-import type { Read } from "atom.io"
-import { atom, atomFamily, selector, selectorFamily } from "atom.io"
+import type { Write } from "atom.io"
+import { atomFamily } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
-	createReadonlySelector,
 	createReadonlySelectorFamily,
+	createWritableSelector,
 	getFromStore,
 	IMPLICIT,
 } from "atom.io/internal"
@@ -40,11 +40,11 @@ type ComponentTree<F extends ComponentFn<any>> = Distill<
 
 type Attributes = Record<string, string>
 function useElement(document: Document) {
-	const element = <N extends VNode<any> | string>(
-		tag: string,
+	const element = <T extends string, N extends VNode<any> | string>(
+		tag: T,
 		attributes: Attributes,
 		children?: N,
-	): VNode<[`required`, { div: TreeFromVNode<N> }]> => {
+	): VNode<[`required`, { [Tag in T]: TreeFromVNode<N> }]> => {
 		return {
 			render: (parent) => {
 				const el = document.createElement(tag)
@@ -52,7 +52,7 @@ function useElement(document: Document) {
 				for (const [key, value] of Object.entries(attributes)) {
 					el.setAttribute(key, value)
 				}
-				parent.appendChild(el)
+				parent.replaceChildren(el)
 
 				if (typeof children === `string`) {
 					el.textContent = children
@@ -75,65 +75,72 @@ function useComponent(store: Store) {
 	})
 
 	return {
-		component: <V extends VNode<any>>(
-			get: Read<() => V>,
-		): {
-			render(parent: HTMLElement): HTMLElement
-			tree?: [`required`, { div: TreeFromVNode<V> }]
-		} => {
-			const selectorKey = `$$__DOM__$$("${get.name}")`
-			const token = createReadonlySelector(
-				store,
-				{ key: selectorKey, get },
-				{ key: `$$__DOM__$$`, subKey: `"${get.name}"` },
-			)
-			return getFromStore(store, token)
+		component:
+			<P extends any[], V extends VNode<any>>(
+				render: Write<(...params: P) => V>,
+			): ((...params: P) => {
+				render(parent: HTMLElement): HTMLElement
+				tree?: TreeFromVNode<V>
+			}) =>
+			(...params: P) => {
+				const selectorKey = `$$__DOM__$$("${render.name}")`
+				const token = createWritableSelector(
+					store,
+					{ key: selectorKey, get: (toolkit) => render(toolkit, ...params) },
+					{ key: `$$__DOM__$$`, subKey: `"${render.name}"` },
+				)
+				return getFromStore(store, token)
+			},
+	}
+}
+function useHyper({ element }: ReturnType<typeof useElement>) {
+	return {
+		div: <N extends VNode<any> | string>(
+			attributes: Attributes,
+			children?: N,
+		): VNode<[`required`, { div: TreeFromVNode<N> }]> => {
+			return element(`div`, attributes, children)
+		},
+		span: <N extends VNode<any> | string>(
+			attributes: Attributes,
+			children?: N,
+		): VNode<[`required`, { span: TreeFromVNode<N> }]> => {
+			return element(`span`, attributes, children)
 		},
 	}
 }
 
 test(`element rendering`, () => {
 	const document = window.document as unknown as Document
-	document.body.innerHTML = `<div id="app"></div>`
 
 	const { element } = useElement(document)
-	console.log(document.body.innerHTML)
-	expect(document.body.innerHTML).toBe(`<div id="app"></div>`)
 
-	const app = document.getElementById(`app`)
+	element(`div`, { id: `my-div` }).render(document.body)
 
-	assert(app)
-
-	element(`div`, { id: `my-div` }).render(app)
-
-	expect(document.body.innerHTML).toBe(
-		`<div id="app"><div id="my-div"></div></div>`,
-	)
+	expect(document.body.innerHTML).toBe(`<div id="my-div"></div>`)
 })
 test(`component rendering`, () => {
 	const document = window.document as unknown as Document
-	document.body.innerHTML = `<div id="app"></div>`
 
-	const { element } = useElement(document)
+	const { div, span } = useHyper(useElement(document))
 	const { component } = useComponent(IMPLICIT.STORE)
-	console.log(document.body.innerHTML)
-	expect(document.body.innerHTML).toBe(`<div id="app"></div>`)
 
-	const app = document.getElementById(`app`)
-
-	assert(app)
-
-	const countAtom = atom<number>({
+	const countAtoms = atomFamily<number, `count:${string}`>({
 		key: `count`,
 		default: 0,
 	})
-	const counter = component(({ get }) => {
-		return element(`div`, { id: `my-div` }, get(countAtom).toString())
+	const counter = component(function counter(
+		{ get },
+		countKey: `count:${string}`,
+	) {
+		return div({ id: countKey }, span({}, get(countAtoms, countKey).toString()))
 	})
 
-	counter.render(app)
+	counter(`count:abc`).render(document.body)
 
 	expect(document.body.innerHTML).toBe(
-		`<div id="app"><div id="my-div">0</div></div>`,
+		`<div id="count:abc"><span>0</span></div>`,
 	)
+
+	type CounterTree = ComponentTree<typeof counter>
 })
