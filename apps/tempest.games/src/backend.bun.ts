@@ -34,13 +34,14 @@ import { userSessionMap } from "./backend/user-session-map"
 import { DatabaseManager } from "./database/tempest-db-manager"
 import { banishedIps, loginHistory, users } from "./database/tempest-db-schema"
 import { asUUID } from "./library/as-uuid-node"
-import { credentialsSchema, signupSchema } from "./library/data-constraints"
+import { credentialsType, signupType } from "./library/data-constraints"
 import { env } from "./library/env"
 import {
 	RESPONSE_DICTIONARY,
-	serverIssueSchema,
+	serverIssueType,
 } from "./library/response-dictionary"
 import { countContinuity } from "./library/store"
+import { type } from "arktype"
 
 const gameWorker = worker(parentSocket, `backend.worker.game.bun`, logger)
 
@@ -111,12 +112,12 @@ const httpServer = createServer((req, res) => {
 								{
 									const text = Buffer.concat(data).toString()
 									const json: Json.Serializable = JSON.parse(text)
-									const parsed = signupSchema.safeParse(json)
-									if (!parsed.success) {
-										logger.warn(`signup parsed`, parsed.error.issues)
-										return
+									const parsed = signupType(json)
+									if (parsed instanceof type.errors) {
+										logger.warn(`signup parsed`, parsed)
+										throw [400, `Signup failed`]
 									}
-									const { username, password, email } = parsed.data
+									const { username, password, email } = parsed
 									logger.info(`🔑 attempting to sign up: ${username}`)
 									const maybeUser = await db.drizzle.query.users.findFirst({
 										columns: { id: true },
@@ -188,12 +189,12 @@ const httpServer = createServer((req, res) => {
 
 										const text = Buffer.concat(data).toString()
 										const json: Json.Serializable = JSON.parse(text)
-										const zodParsed = credentialsSchema.safeParse(json)
-										if (!zodParsed.success) {
-											logger.warn(`login parsed`, zodParsed.error.issues)
+										const parsed = credentialsType(json)
+										if (parsed instanceof type.errors) {
+											logger.warn(`login parsed`, parsed)
 											throw [400, `${attemptsRemaining} attempts remaining.`]
 										}
-										const { username, password } = zodParsed.data
+										const { username, password } = parsed
 										const maybeUser = await db.drizzle.query.users.findFirst({
 											columns: {
 												id: true,
@@ -249,9 +250,16 @@ const httpServer = createServer((req, res) => {
 						throw [405, `Method not allowed`]
 				}
 			} catch (thrown) {
-				const result = serverIssueSchema.safeParse(thrown)
-				if (result.success) {
-					const [code, message] = result.data
+				const result = serverIssueType(thrown)
+				if (result instanceof type.errors) {
+					logger.error(thrown)
+					res.writeHead(500, {
+						"Content-Type": `text/plain`,
+						"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
+					})
+					res.end(`Internal Server Error`)
+				} else {
+					const [code, message] = result
 					const codeMeaning = RESPONSE_DICTIONARY[code]
 					const responseText = `${codeMeaning}. ${message}`
 					logger.info(`❌ ${code}: ${responseText}`)
@@ -260,13 +268,6 @@ const httpServer = createServer((req, res) => {
 						"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
 					})
 					res.end(responseText)
-				} else {
-					logger.error(thrown)
-					res.writeHead(500, {
-						"Content-Type": `text/plain`,
-						"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
-					})
-					res.end(`Internal Server Error`)
 				}
 			}
 		})

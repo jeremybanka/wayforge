@@ -1,34 +1,28 @@
 import { createEnv } from "@t3-oss/env-core"
-import { z } from "zod"
+import { type } from "arktype"
 
 export const BUILDING_WITH_VITE = `__vite_start_time` in globalThis
 export const HAS_WINDOW = typeof window !== `undefined`
 export const IS_TEST = `vitest` in globalThis
 
+const str = type(`string`)
+const maybeBool = type(`"true" | "false" | undefined`)
+
 export const env = createEnv({
 	isServer: !BUILDING_WITH_VITE && !HAS_WINDOW,
 
 	server: {
-		CI: z
-			.string()
-			.transform((_) => true as const)
-			.optional(),
-		POSTGRES_USER: z.string(),
-		POSTGRES_PASSWORD: z.string(),
-		POSTGRES_DATABASE: z.string(),
-		POSTGRES_HOST: z.string(),
-		POSTGRES_PORT: z.string().transform((s) => Number.parseInt(s, 10)),
-		BACKEND_PORT: z.string().transform((s) => Number.parseInt(s, 10)),
-		RUN_WORKERS_FROM_SOURCE: z
-			.union([z.literal(`true`), z.literal(`false`)])
-			.optional()
-			.transform((s) => s === `true`),
-		FRONTEND_PORT: z.string().transform((s) => Number.parseInt(s, 10)),
-		FRONTEND_ORIGINS: z
-			.string()
-			.transform((s) => JSON.parse(s))
-			.pipe(z.array(z.string())),
-		OPENAI_API_KEY: z.string().optional(),
+		CI: type(`string | undefined`).pipe(Boolean),
+		POSTGRES_USER: str,
+		POSTGRES_PASSWORD: str,
+		POSTGRES_DATABASE: str,
+		POSTGRES_HOST: str,
+		POSTGRES_PORT: str.pipe((s) => Number.parseInt(s, 10)),
+		BACKEND_PORT: str.pipe((s) => Number.parseInt(s, 10)),
+		RUN_WORKERS_FROM_SOURCE: maybeBool.pipe((s) => s === `true`),
+		FRONTEND_PORT: str.pipe((s) => Number.parseInt(s, 10)),
+		FRONTEND_ORIGINS: str.pipe((s) => JSON.parse(s)).and(`string[]`),
+		OPENAI_API_KEY: type(`string | undefined`),
 	},
 
 	/**
@@ -38,11 +32,8 @@ export const env = createEnv({
 	clientPrefix: `VITE_`,
 
 	client: {
-		VITE_BACKEND_ORIGIN: z.string(),
-		VITE_USE_SELF_SIGNED_CERTIFICATE: z
-			.union([z.literal(`true`), z.literal(`false`)])
-			.optional()
-			.transform((s) => s === `true`),
+		VITE_BACKEND_ORIGIN: str,
+		VITE_USE_SELF_SIGNED_CERTIFICATE: maybeBool.pipe((s) => s === `true`),
 	},
 
 	/**

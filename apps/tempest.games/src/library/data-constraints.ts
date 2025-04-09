@@ -1,15 +1,18 @@
-import { z } from "zod"
-
+import { type } from "arktype"
 import { COMMON_PASSWORDS_NOT_ALLOWED } from "./common-passwords-not-allowed"
 
 export const USERNAME_MIN_LENGTH = 3
 export const USERNAME_MAX_LENGTH = 15
 export const USERNAME_ALLOWED_CHARS = /^[a-zA-Z0-9_-]+$/
-export const usernameSchema = z
-	.string()
-	.min(USERNAME_MIN_LENGTH)
-	.max(USERNAME_MAX_LENGTH)
-	.regex(USERNAME_ALLOWED_CHARS)
+// export const usernameSchema = z
+// 	.string()
+// 	.min(USERNAME_MIN_LENGTH)
+// 	.max(USERNAME_MAX_LENGTH)
+// 	.regex(USERNAME_ALLOWED_CHARS)
+
+export const usernameType = type(USERNAME_ALLOWED_CHARS)
+	.and(`string > ${USERNAME_MIN_LENGTH} & string < ${USERNAME_MAX_LENGTH}`)
+	.brand(`username`)
 
 const MINIMUM_PASSWORD_COMPLEXITY = 20
 const LEET_SPEAK_DICTIONARY = {
@@ -63,32 +66,29 @@ export function calculatePasswordComplexity(password: string): number {
 
 	return Math.max(score, 0)
 }
-export const passwordSchema = z
-	.string()
-	.refine(
-		(password) => {
-			const complexity = calculatePasswordComplexity(password)
-			return complexity >= MINIMUM_PASSWORD_COMPLEXITY
-		},
-		{
-			message: `Password does not meet the minimum complexity of ${MINIMUM_PASSWORD_COMPLEXITY}.`,
-		},
-	)
+
+export const passwordType = type(`string`)
+	.narrow((str, ctx) => {
+		const complexity = calculatePasswordComplexity(str)
+		return complexity >= MINIMUM_PASSWORD_COMPLEXITY
+			? true
+			: ctx.mustBe(
+					`Of complexity ${MINIMUM_PASSWORD_COMPLEXITY} or more. Was ${complexity}.`,
+				)
+	})
 	.brand(`password`)
 
-export const credentialsSchema = z
-	.object({
-		username: usernameSchema,
-		password: passwordSchema,
-	})
-	.strict()
+export const credentialsType = type({
+	"+": "delete",
+	username: `string`,
+	password: `string`,
+})
 
-export const emailSchema = z.string().email().brand(`email`)
+export const emailType = type(`string`).brand(`email`)
 
-export const signupSchema = z
-	.object({
-		username: usernameSchema,
-		password: passwordSchema,
-		email: emailSchema,
-	})
-	.strict()
+export const signupType = type({
+	"+": "delete",
+	username: `string`,
+	password: `string`,
+	email: `string`,
+})
