@@ -9,7 +9,7 @@
 		"src"
 	],
 	"compilerOptions": {
-		"types": ["vite/client", "vitest/globals", "bun-types"],
+		"types": ["vite/client", "vitest/globals"],
 		"target": "ES2022"
 	}
 }
