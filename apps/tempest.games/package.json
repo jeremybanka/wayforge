@@ -64,9 +64,7 @@
 		"safegen": "0.2.15",
 		"socket.io": "4.8.1",
 		"socket.io-client": "4.8.1",
-		"treetrunks": "workspace:*",
-		"zod": "3.24.2",
-		"zod-to-json-schema": "3.24.5"
+		"treetrunks": "workspace:*"
 	},
 	"devDependencies": {
 		"@eslint/js": "9.24.0",
