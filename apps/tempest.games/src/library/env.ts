@@ -21,7 +21,7 @@ export const env = createEnv({
 		BACKEND_PORT: str.pipe((s) => Number.parseInt(s, 10)),
 		RUN_WORKERS_FROM_SOURCE: maybeBool.pipe((s) => s === `true`),
 		FRONTEND_PORT: str.pipe((s) => Number.parseInt(s, 10)),
-		FRONTEND_ORIGINS: str.pipe((s) => JSON.parse(s)).and(`string[]`),
+		FRONTEND_ORIGINS: str.pipe.try((s) => JSON.parse(s), type(`string[]`)),
 		OPENAI_API_KEY: type(`string | undefined`),
 	},
 
