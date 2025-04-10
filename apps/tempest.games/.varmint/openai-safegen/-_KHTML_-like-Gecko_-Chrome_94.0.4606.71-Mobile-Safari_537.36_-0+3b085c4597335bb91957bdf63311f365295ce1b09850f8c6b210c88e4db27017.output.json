@@ -2,5 +2,20 @@
 	"data": {
 		"shouldBanIp": false
 	},
-	"usdPrice": 0.00007845
+	"usage": {
+		"prompt_tokens": 296,
+		"completion_tokens": 11,
+		"total_tokens": 307,
+		"prompt_tokens_details": {
+			"cached_tokens": 0,
+			"audio_tokens": 0
+		},
+		"completion_tokens_details": {
+			"reasoning_tokens": 0,
+			"audio_tokens": 0,
+			"accepted_prediction_tokens": 0,
+			"rejected_prediction_tokens": 0
+		}
+	},
+	"usdPrice": 0.00007319999999999999
 }
