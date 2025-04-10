@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.1.39
+
+### Patch Changes
+
+- bd5d338: 🚀 Use `arktype` instead of `zod` for validations.
+
 ## 0.1.38
 
 ### Patch Changes
