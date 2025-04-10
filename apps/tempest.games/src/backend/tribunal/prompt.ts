@@ -1,5 +1,6 @@
 import { type } from "arktype"
 import { arktypeToJsonSchema } from "safegen/arktype"
+
 const NETWORK_SECURITY_ADJUDICATOR_BRIEF = [
 	`Network security adjudicator, your job is to determine if an IP address should be banned.`,
 	`The IP address in question created the following logs on our server today:`,

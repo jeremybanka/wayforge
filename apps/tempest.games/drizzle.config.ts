@@ -1,5 +1,5 @@
-import { defineConfig } from "drizzle-kit"
 import { type } from "arktype"
+import { defineConfig } from "drizzle-kit"
 
 const dbEnvType = type({
 	POSTGRES_HOST: `string`,

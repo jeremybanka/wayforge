@@ -1,6 +1,6 @@
 import { type } from "arktype"
+
 import { passwordType } from "./data-constraints"
-import { inspect } from "node:util"
 
 describe(`password complexity`, () => {
 	test(`should roughly sort good passwords from bad`, () => {

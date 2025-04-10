@@ -1,3 +1,5 @@
+import type { ArkErrors } from "arktype"
+import { type } from "arktype"
 import { atom, getState, selector, setState } from "atom.io"
 import { io } from "socket.io-client"
 
@@ -7,7 +9,6 @@ import {
 	usernameType,
 } from "../../library/data-constraints.ts"
 import { env } from "../../library/env.ts"
-import { ArkErrors, type } from "arktype"
 
 export const socket = io(env.VITE_BACKEND_ORIGIN, {
 	auth: (pass) => {

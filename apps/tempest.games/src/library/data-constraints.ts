@@ -1,4 +1,5 @@
 import { type } from "arktype"
+
 import { COMMON_PASSWORDS_NOT_ALLOWED } from "./common-passwords-not-allowed"
 
 export const USERNAME_MIN_LENGTH = 3
@@ -79,7 +80,7 @@ export const passwordType = type(`string`)
 	.brand(`password`)
 
 export const credentialsType = type({
-	"+": "delete",
+	"+": `delete`,
 	username: `string`,
 	password: `string`,
 })
@@ -87,7 +88,7 @@ export const credentialsType = type({
 export const emailType = type(`string`).brand(`email`)
 
 export const signupType = type({
-	"+": "delete",
+	"+": `delete`,
 	username: `string`,
 	password: `string`,
 	email: `string`,

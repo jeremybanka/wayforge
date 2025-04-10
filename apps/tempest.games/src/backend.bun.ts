@@ -5,6 +5,7 @@ import type { RequestListener } from "node:http"
 import { createServer as createHttpServer } from "node:http"
 import { createServer as createSecureServer } from "node:https"
 
+import { type } from "arktype"
 import { AtomIOLogger } from "atom.io"
 import {
 	editRelationsInStore,
@@ -41,7 +42,6 @@ import {
 	serverIssueType,
 } from "./library/response-dictionary"
 import { countContinuity } from "./library/store"
-import { type } from "arktype"
 
 const gameWorker = worker(parentSocket, `backend.worker.game.bun`, logger)
 
