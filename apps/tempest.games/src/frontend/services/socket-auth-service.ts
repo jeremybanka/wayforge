@@ -1,11 +1,12 @@
+import type { ArkErrors } from "arktype"
+import { type } from "arktype"
 import { atom, getState, selector, setState } from "atom.io"
 import { io } from "socket.io-client"
-import { z, type ZodIssue } from "zod"
 
 import {
-	emailSchema,
-	passwordSchema,
-	usernameSchema,
+	emailType,
+	passwordType,
+	usernameType,
 } from "../../library/data-constraints.ts"
 import { env } from "../../library/env.ts"
 
@@ -57,66 +58,61 @@ export const usernameInputAtom = atom<string>({
 	key: `username`,
 	default: window.localStorage.getItem(`username`) ?? ``,
 })
-export const usernameIssuesSelector = selector<ZodIssue[] | null>({
+export const usernameIssuesSelector = selector<ArkErrors | null>({
 	key: `usernameIssues`,
 	get: ({ get }) => {
 		const username = get(usernameInputAtom)
-		const parsed = usernameSchema.safeParse(username)
-		if (parsed.success) {
-			return null
+		const parsed = usernameType(username)
+		if (parsed instanceof type.errors) {
+			return parsed
 		}
-		return parsed.error.issues
+		return null
 	},
 })
 export const password0InputAtom = atom<string>({
 	key: `password0`,
 	default: ``,
 })
-export const password0IssuesSelector = selector<ZodIssue[] | null>({
+export const password0IssuesSelector = selector<ArkErrors | null>({
 	key: `password0Issues`,
 	get: ({ get }) => {
 		const password0 = get(password0InputAtom)
-		const parsed = passwordSchema.safeParse(password0)
-		if (parsed.success) {
-			return null
+		const parsed = passwordType(password0)
+		if (parsed instanceof type.errors) {
+			return parsed
 		}
-		return parsed.error.issues
+		return null
 	},
 })
 export const password1InputAtom = atom<string>({
 	key: `password1`,
 	default: ``,
 })
-export const password1IssuesSelector = selector<ZodIssue[] | null>({
+export const password1IssuesSelector = selector<ArkErrors | null>({
 	key: `password1Issues`,
 	get: ({ get }) => {
 		const password0 = get(password0InputAtom)
 		const password1 = get(password1InputAtom)
-		const parsed = z
-			.string()
-			.refine((pwd) => pwd === password0, {
-				message: `Passwords do not match.`,
-			})
-			.safeParse(password1)
-		if (parsed.success) {
-			return null
+		const parsed = passwordType.and(`"${password0}"`)(password1)
+		if (parsed instanceof type.errors) {
+			return parsed
 		}
-		return parsed.error.issues
+		return null
 	},
 })
 export const emailInputAtom = atom<string>({
 	key: `email`,
 	default: ``,
 })
-export const emailIssuesSelector = selector<ZodIssue[] | null>({
+export const emailIssuesSelector = selector<ArkErrors | null>({
 	key: `emailIssues`,
 	get: ({ get }) => {
 		const email = get(emailInputAtom)
-		const parsed = emailSchema.safeParse(email)
-		if (parsed.success) {
-			return null
+		const parsed = emailType(email)
+		if (parsed instanceof type.errors) {
+			return parsed
 		}
-		return parsed.error.issues
+		return null
 	},
 })
 export const signUpReadySelector = selector<boolean>({

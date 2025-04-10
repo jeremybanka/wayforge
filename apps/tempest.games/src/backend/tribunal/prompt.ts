@@ -1,4 +1,5 @@
-import { z } from "zod"
+import { type } from "arktype"
+import { arktypeToJsonSchema } from "safegen/arktype"
 
 const NETWORK_SECURITY_ADJUDICATOR_BRIEF = [
 	`Network security adjudicator, your job is to determine if an IP address should be banned.`,
@@ -12,17 +13,14 @@ export function logsToPrompt(logs: string[]): string {
 }
 
 export const banRulingSpec = {
-	schema: z.union([
-		z.object({
-			shouldBanIp: z.literal(false),
-		}),
-		z.object({
-			shouldBanIp: z.literal(true),
-			veryConciseReason: z.string(),
-		}),
+	schema: type([
+		{ shouldBanIp: `false` },
+		`|`,
+		{ shouldBanIp: `true`, veryConciseReason: `string` },
 	]),
+	toJsonSchema: arktypeToJsonSchema,
 	fallback: {
 		shouldBanIp: false,
 	} as const,
 }
-export type BanRuling = z.infer<typeof banRulingSpec.schema>
+export type BanRuling = typeof banRulingSpec.schema.infer

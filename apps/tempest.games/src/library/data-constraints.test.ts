@@ -1,6 +1,6 @@
-import { z } from "zod"
+import { type } from "arktype"
 
-import { passwordSchema } from "./data-constraints"
+import { passwordType } from "./data-constraints"
 
 describe(`password complexity`, () => {
 	test(`should roughly sort good passwords from bad`, () => {
@@ -22,10 +22,10 @@ describe(`password complexity`, () => {
 		]
 
 		for (const pwd of goodPasswords) {
-			expect(passwordSchema.safeParse(pwd).success ? pwd : null).toBe(pwd)
+			expect(passwordType(pwd) instanceof type.errors).toBe(false)
 		}
 		for (const pwd of badPasswords) {
-			expect(passwordSchema.safeParse(pwd).success ? pwd : null).toBe(null)
+			assert(passwordType(pwd) instanceof type.errors)
 		}
 	})
 })

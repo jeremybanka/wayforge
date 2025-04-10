@@ -2,6 +2,7 @@
 
 import { join, normalize, resolve } from "node:path"
 
+import { type } from "arktype"
 import { discoverType } from "atom.io/introspection"
 import { ParentSocket } from "atom.io/realtime-server"
 import { file, serve } from "bun"
@@ -11,7 +12,7 @@ import { DatabaseManager } from "./database/tempest-db-manager"
 import { env } from "./library/env"
 import {
 	RESPONSE_DICTIONARY,
-	serverIssueSchema,
+	serverIssueType,
 } from "./library/response-dictionary"
 
 const parentSocket = new ParentSocket()
@@ -57,9 +58,9 @@ serve({
 			}
 			return new Response(file(normalizedPath))
 		} catch (thrown) {
-			const result = serverIssueSchema.safeParse(thrown)
-			if (result.success) {
-				const [code, message] = result.data
+			const result = serverIssueType(thrown)
+			if (result instanceof type.errors === false) {
+				const [code, message] = result
 				const codeMeaning = RESPONSE_DICTIONARY[code]
 				const responseText = `${codeMeaning}. ${message}`
 				logger.info(`❌ ${code}: ${responseText}`)
