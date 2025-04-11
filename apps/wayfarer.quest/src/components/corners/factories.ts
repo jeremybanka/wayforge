@@ -27,8 +27,8 @@ export const auspice: DrawCorner = (p1, p2, idx) => {
 	return [
 		writePathPoint(p1.x, p1.y, idx === 0 ? `M` : `L`),
 
-		isEven ? writePathPoint(l1.x, l1.y) : writePathPoint(l0.x, l0.y),
-		isEven ? writePathPoint(l2.x, l2.y) : writePathPoint(l1.x, l1.y),
+		isEven ? writePathPoint(l1[`x`], l1[`y`]) : writePathPoint(l0[`x`], l0[`y`]),
+		isEven ? writePathPoint(l2[`x`], l2[`y`]) : writePathPoint(l1[`x`], l1[`y`]),
 		writePathPoint(p2.x, p2.y),
 	]
 }
