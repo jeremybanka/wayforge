@@ -12,7 +12,7 @@ export const Div_EnergyCardFeature: FC<
 	const reaction = useO(family, label.id)
 
 	return (
-		<div className={scss.class}>
+		<div className={scss[`class`]}>
 			<h2>
 				{reaction.name}
 				<small>

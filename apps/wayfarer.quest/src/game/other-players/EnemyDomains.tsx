@@ -12,7 +12,7 @@ import { TheirStuff } from "./TheirStuff"
 export const EnemyDomains: React.FC = () => {
 	const enemyIds = useO(otherPlayersIndex)
 	return (
-		<div className={scss.class}>
+		<div className={scss[`class`]}>
 			<main>
 				{enemyIds.map((id) => (
 					<div key={id} data-css="enemy">

@@ -81,7 +81,7 @@ export function Game({ roomId }: GameProps): React.ReactNode {
 	return (
 		<>
 			<CoreSync />
-			<div className={scss.class}>
+			<div className={scss[`class`]}>
 				{/* <Controls /> */}
 				<section data-css="enemy-domains">
 					<EnemyDomains />

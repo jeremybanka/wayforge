@@ -9,7 +9,7 @@ export const TheirHands: React.FC<{ playerId: string }> = ({ playerId }) => {
 	const theirHands = useO(handsOfPlayerSelectors, playerId)
 
 	return (
-		<div className={scss.class}>
+		<div className={scss[`class`]}>
 			{theirHands.map((id) => (
 				<Hand key={id} id={id} />
 			))}

@@ -18,7 +18,7 @@ export const ProfilePicture: React.FC<{ id: string; detailed?: boolean }> = ({
 	const bgColor = stringToColor(id)
 	return (
 		<span
-			className={scss.class}
+			className={scss[`class`]}
 			data-css="profile-picture"
 			style={setCssVars({
 				"--background-color": bgColor,

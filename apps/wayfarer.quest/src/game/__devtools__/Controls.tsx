@@ -20,7 +20,7 @@ export const Controls: FC = () => {
 	const spawnHand = runTransaction(spawnHandTX)
 	const spawnClassicDeck = runTransaction(spawnClassicDeckTX)
 	return (
-		<span className={scss.class}>
+		<span className={scss[`class`]}>
 			{myId ? (
 				<button.curledLeft
 					className={comic.class}
