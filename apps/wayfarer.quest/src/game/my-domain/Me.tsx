@@ -9,7 +9,7 @@ export const Me: React.FC = () => {
 	const myId = useO(myIdState)
 	const myUsername = useO(myUsernameState)
 	return (
-		<span.chamferedTop className={scss.class}>
+		<span.chamferedTop className={scss[`class`]}>
 			<ProfilePicture id={myId ?? ``} detailed />
 			<h3>{myUsername}</h3>
 		</span.chamferedTop>

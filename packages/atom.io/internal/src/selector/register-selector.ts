@@ -86,6 +86,7 @@ export const registerSelector = (
 		const state = withdraw(target, token)
 		setAtomOrSelector(target, state, value)
 	}) as typeof setState,
-	find: ((token, key) => findInStore(store, token, key)) as typeof findState,
+	find: ((...args: Parameters<typeof findState>) =>
+		findInStore(store, ...args)) as typeof findState,
 	json: (token) => getJsonToken(store, token),
 })

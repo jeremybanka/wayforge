@@ -44,14 +44,17 @@ export default function main(mode: string): void {
 			import: `./dist/index.js`,
 			types: `./dist/index.d.ts`,
 		},
-		...submodules.reduce((acc, folder) => {
-			acc[`./${folder}/package.json`] = `./${folder}/package.json`
-			acc[`./${folder}`] = {
-				import: `./${folder}/dist/index.js`,
-				types: `./${folder}/dist/index.d.ts`,
-			}
-			return acc
-		}, {}),
+		...submodules.reduce(
+			(acc, folder) => {
+				acc[`./${folder}/package.json`] = `./${folder}/package.json`
+				acc[`./${folder}`] = {
+					import: `./${folder}/dist/index.js`,
+					types: `./${folder}/dist/index.d.ts`,
+				}
+				return acc
+			},
+			{} as Record<string, string | { import: string; types: string }>,
+		),
 	}
 
 	const oldText = JSON.stringify(oldPackageJson, null, 2)
@@ -66,14 +69,14 @@ export default function main(mode: string): void {
 					`testing`,
 					`files in "atom.io/package.json" are missing`,
 					newPackageJson.files.filter(
-						(filepath) => !oldPackageJson.files.includes(filepath),
+						(filepath: string) => !oldPackageJson.files.includes(filepath),
 					),
 				)
 				logger.error(
 					`testing`,
 					`files in "atom.io/package.json" are extraneous`,
 					oldPackageJson.files.filter(
-						(filepath) => !newPackageJson.files.includes(filepath),
+						(filepath: string) => !newPackageJson.files.includes(filepath),
 					),
 				)
 				logger.error(

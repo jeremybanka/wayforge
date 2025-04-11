@@ -34,7 +34,7 @@ export default function Room({
 
 	return (
 		<>
-			<article className={scss.class}>
+			<article className={scss[`class`]}>
 				<button
 					key={roomId}
 					type="button"

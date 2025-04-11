@@ -15,7 +15,7 @@ export function App(): React.ReactNode {
 	const route = useO(routeSelector)
 
 	return (
-		<main className={scss.class}>
+		<main className={scss[`class`]}>
 			<header>
 				<svg.tempest />
 			</header>

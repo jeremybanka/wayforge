@@ -50,7 +50,7 @@ export const EnergyEditor_INTERNAL: FC<
 	const energySchema = useO(energySchemaState)
 
 	return (
-		<div className={scss.class}>
+		<div className={scss[`class`]}>
 			<RecoverableErrorBoundary>
 				<article>
 					<SVG_EnergyIcon energyId={id} size={100} />

@@ -146,7 +146,7 @@ const aiComplete = (async (
 	if (!openAiClient) {
 		openAiClient = new OpenAI({
 			apiKey: import.meta.env.VITE_OPENAI_API_KEY,
-			dangerouslyAllowBrowser: process.env.NODE_ENV === `test`,
+			dangerouslyAllowBrowser: process.env[`NODE_ENV`] === `test`,
 		})
 	}
 	return openAiClient.chat.completions.create(
@@ -158,9 +158,9 @@ const aiComplete = (async (
 	)
 }) as typeof openAiClient.chat.completions.create
 const squirrel = new Squirrel(
-	process.env.CI
+	process.env[`CI`]
 		? `read`
-		: process.env.NODE_ENV === `production`
+		: process.env[`NODE_ENV`] === `production`
 			? `off`
 			: `read-write`,
 )

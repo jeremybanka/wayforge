@@ -20,7 +20,7 @@ export default function DocsLayout({
 			<Head>
 				<link rel="preload" href="/noise.svg" as="image" type="image/svg+xml" />
 			</Head>
-			<article className={scss.class}>
+			<article className={scss[`class`]}>
 				<aside>
 					<nav.SiteDirectory />
 				</aside>

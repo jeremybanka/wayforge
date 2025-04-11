@@ -6,7 +6,7 @@ import postgres from "postgres"
 
 import { env } from "../src/library/env.ts"
 
-const PRETTY_PLEASE = process.env.PRETTY_PLEASE
+const PRETTY_PLEASE = process.env[`PRETTY_PLEASE`]
 
 if (!PRETTY_PLEASE) {
 	console.warn(`🚨 this is a dangerous script, please ask nicely`)

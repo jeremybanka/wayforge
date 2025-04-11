@@ -27,7 +27,7 @@ export type CellFormat = {
 	padLeft?: string
 	padRight?: string
 	foregroundColor?: TerminalColor
-	backgroundColor?: TerminalColor
+	backgroundColor?: Exclude<TerminalColor, `bold` | `reset`>
 }
 export type CellContext = {
 	x: number
@@ -97,11 +97,12 @@ export function renderTable(
 					break
 				}
 			}
-			if (cellFormat.foregroundColor) {
-				cellText = chalk[cellFormat.foregroundColor](cellText ?? ``)
+			const { foregroundColor, backgroundColor } = cellFormat
+			if (foregroundColor) {
+				cellText = chalk[foregroundColor](cellText ?? ``)
 			}
-			if (cellFormat.backgroundColor) {
-				cellText = chalk[`bg${capitalize(cellFormat.backgroundColor)}`](cellText)
+			if (backgroundColor) {
+				cellText = chalk[`bg${capitalize(backgroundColor)}`](cellText)
 			}
 			cellText = `${padLeft}${cellText}${padRight}`
 

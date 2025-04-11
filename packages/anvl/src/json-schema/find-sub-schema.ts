@@ -22,7 +22,8 @@ export const findSubSchema = (
 				console.log({ node, key }),
 				isJsonSchemaRef(node)
 					? retrieveRef({ refNode: node, root: schema, refMap })
-					: { node: node[key], refMap }
+					: // @ts-expect-error tricky to represent
+						{ node: node[key], refMap }
 			),
 			{ node: schema, refMap: undefined },
 		)

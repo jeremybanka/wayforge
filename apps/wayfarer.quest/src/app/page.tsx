@@ -32,7 +32,7 @@ export default function SPA(): React.ReactNode {
 	const roomView = useO(roomViewState)
 	const myUsername = useO(myUsernameState)
 	return (
-		<main className={scss.class}>
+		<main className={scss[`class`]}>
 			{roomView === null || myUsername === null ? (
 				<Lobby />
 			) : (

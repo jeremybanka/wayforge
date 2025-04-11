@@ -22,11 +22,11 @@ export function retrievePositionalArgs<PositionalArgTree extends Tree>(
 
 	const namedPositionalArgs: string[] = []
 	const validPositionalArgs: string[] = []
-	let treePointer: object = positionalArgTree
+	let treePointer: Tree | null = positionalArgTree
 	let argumentIndex = -1
 	if (positionalArgs === undefined || positionalArgs.length === 0) {
 		if (treePointer[0] === `required`) {
-			const currentPath = []
+			const currentPath: string[] = []
 			const command =
 				cliName + (currentPath.length > 0 ? ` -- ${currentPath.join(` `)}` : ``)
 			const possiblePositionalArgs = Object.keys(treePointer[1])
@@ -63,9 +63,9 @@ export function retrievePositionalArgs<PositionalArgTree extends Tree>(
 			namedPositionalArgs.push(positionalArg)
 			validPositionalArgs.push(positionalArg)
 		} else if (Object.keys(treePointer[1]).length > 0) {
-			const variablePath = Object.keys(treePointer[1]).find((key) =>
-				key.startsWith(`$`),
-			)
+			const variablePath: `$${string}` | undefined = Object.keys(
+				treePointer[1],
+			).find((key): key is `$${string}` => key.startsWith(`$`))
 			if (variablePath) {
 				treePointer = treePointer[1][variablePath]
 				namedPositionalArgs.push(variablePath)

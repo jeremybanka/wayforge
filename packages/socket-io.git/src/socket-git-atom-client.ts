@@ -41,7 +41,7 @@ export const initGitAtomicTools = (socket: GitClientSocket): GitClientTools => {
 			default: DEFAULT_SIMPLE_GIT_RETURN_VALUES[key],
 			effects: [
 				({ setSelf }) => {
-					socket.on(key, (result) => {
+					socket.on(key, (result: unknown) => {
 						setSelf(result)
 					})
 				},

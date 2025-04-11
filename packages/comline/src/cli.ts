@@ -1,7 +1,15 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
 
-import type { Flatten, Split, Tree, TreeMap, TreePath } from "treetrunks"
+import type {
+	Flatten,
+	Join,
+	Split,
+	Tree,
+	TreeMap,
+	TreePath,
+	TreePathName,
+} from "treetrunks"
 import type { ZodSchema } from "zod"
 import { z } from "zod"
 import { zodToJsonSchema } from "zod-to-json-schema"
@@ -133,7 +141,10 @@ export function cli<
 
 			let failedValidation = false
 			let optionsFromConfig: Options | undefined
-			let positionalArgs = { path: [] as TreePath<Routes>, route: `` }
+			let positionalArgs = {
+				path: [] as TreePath<Routes>,
+				route: `` as Join<TreePathName<Routes>>,
+			}
 			if (routes) {
 				positionalArgs = retrievePositionalArgs(cliName, routes, passed)
 			}
@@ -221,7 +232,7 @@ export function cli<
 					path: positionalArgs.path,
 					opts: suppliedOptions,
 				} as unknown as CliParseOutput<CLI>,
-				writeJsonSchema: (outdir) => {
+				writeJsonSchema: (outdir: string) => {
 					for (const [unsafeRoute, optionsGroup] of Object.entries(
 						routeOptions as Record<string, OptionsGroup<any> | null>,
 					)) {

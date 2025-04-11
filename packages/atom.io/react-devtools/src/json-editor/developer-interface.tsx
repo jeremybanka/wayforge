@@ -31,7 +31,7 @@ export type JsonEditorProps<T> = {
 	set: (valOrUpdater: T | ((currVal: T) => T)) => void
 	name?: string | undefined
 	rename?: ((newKey: string) => void) | undefined
-	remove?: () => void
+	remove?: (() => void) | undefined
 	path?: ReadonlyArray<number | string>
 	isReadonly?: (path: ReadonlyArray<number | string>) => boolean
 	isHidden?: (path: ReadonlyArray<number | string>) => boolean
@@ -39,7 +39,7 @@ export type JsonEditorProps<T> = {
 	style?: CSSProperties
 	Header?: FC<{ data: T }>
 	Components?: Partial<JsonEditorComponents>
-	testid?: string
+	testid?: string | undefined
 }
 
 export const JsonEditor = <T,>({

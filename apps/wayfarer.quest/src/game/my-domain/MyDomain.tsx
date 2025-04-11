@@ -10,7 +10,7 @@ import scss from "./MyDomain.module.scss"
 export const MyDomain: React.FC = () => {
 	const myHands = useO(myHandsIndex)
 	return (
-		<div className={scss.class}>
+		<div className={scss[`class`]}>
 			<section data-css="me">
 				<Me />
 			</section>

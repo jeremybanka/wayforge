@@ -9,7 +9,7 @@ export const Slot_PreviewCardSleeve: FC<{
 	hex: string
 }> = ({ children, hex }) => (
 	<slot
-		className={scss.class}
+		className={scss[`class`]}
 		style={setCssVars({
 			"--sleeve-background": hex,
 		})}

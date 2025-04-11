@@ -87,7 +87,7 @@ export function Public({ roomId }: GameProps): React.ReactNode {
 		},
 	])
 	return (
-		<div className={scss.class}>
+		<div className={scss[`class`]}>
 			<h3.Trapezoid {...handlers}>Game</h3.Trapezoid>
 			<main>
 				<Hearts roomId={roomId} />
