@@ -4,18 +4,23 @@ import { deckIndex, groupsOfCards } from "../card-game-stores/card-groups-store"
 
 const rngOut: number[] = []
 
-function LCG(seed: number) {
-	const a = 1664525
-	const c = 1013904223
-	const m = 2 ** 32
+class LinearCongruentialGenerator {
+	private multiplier: number
+	private increment: number
+	private modulus: number
+	private currentState: number
 
-	let state = seed
+	public constructor(seed: number) {
+		this.multiplier = 1664525
+		this.increment = 1013904223
+		this.modulus = 2 ** 32
+		this.currentState = seed
+	}
 
-	this.next = (): number => {
-		state = (a * state + c) % m
-		const n = state / m
-		rngOut.push(n)
-		return n
+	public next(): number {
+		this.currentState =
+			(this.multiplier * this.currentState + this.increment) % this.modulus
+		return this.currentState / this.modulus
 	}
 }
 
@@ -33,7 +38,7 @@ export const shuffleDeckTX = transaction<
 	key: `shuffleDeck`,
 	do: (transactors, deckId, shuffleSeed) => {
 		const { get, env } = transactors
-		const rng = new LCG(shuffleSeed)
+		const rng = new LinearCongruentialGenerator(shuffleSeed)
 		const deckDoesExist = get(deckIndex).has(deckId)
 		if (!deckDoesExist) {
 			throw new Error(`Deck does not exist`)
