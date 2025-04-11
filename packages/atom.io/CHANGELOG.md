@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.32.4
+
+### Patch Changes
+
+- 23a9345: ✨ `atom.io` now reflects on the type-level, the fact that `ATOM_IO_IMPLICIT_STORE` is defined on `globalThis`.
+
 ## 0.32.3
 
 ### Patch Changes
