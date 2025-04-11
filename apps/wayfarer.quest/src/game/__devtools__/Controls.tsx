@@ -20,10 +20,10 @@ export const Controls: FC = () => {
 	const spawnHand = runTransaction(spawnHandTX)
 	const spawnClassicDeck = runTransaction(spawnClassicDeckTX)
 	return (
-		<span className={scss.class}>
+		<span className={scss[`class`]}>
 			{myId ? (
 				<button.curledLeft
-					className={comic.class}
+					className={comic[`class`]}
 					onClick={() => {
 						const groupId = nanoid(5)
 						spawnHand(myId, groupId)
@@ -33,7 +33,7 @@ export const Controls: FC = () => {
 				</button.curledLeft>
 			) : null}
 			<button.curledLeft
-				className={comic.class}
+				className={comic[`class`]}
 				onClick={() => {
 					if (myRoomId) {
 						const deckId = nanoid(5)

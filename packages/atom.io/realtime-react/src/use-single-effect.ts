@@ -1,6 +1,7 @@
 import * as React from "react"
 
-const { NODE_ENV } = globalThis.env ?? {}
+// @ts-expect-error this is a safe way to check a property on the global object
+const { NODE_ENV } = globalThis[`env`] ?? {}
 const IN_DEV = NODE_ENV === `development`
 
 function noop() {}

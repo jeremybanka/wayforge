@@ -24,7 +24,7 @@ export const Explorer: FC = () => {
 	const newBranchName = useO(newBranchNameState)
 	const setNewBranchName = useI(newBranchNameState)
 	return (
-		<div className={scss.class}>
+		<div className={scss[`class`]}>
 			Explorer -{` `}
 			{isGitSocketError(gitBranch) ? gitBranch.title : gitBranch.current}
 			<div>

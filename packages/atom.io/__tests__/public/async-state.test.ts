@@ -110,8 +110,8 @@ describe(`async selector`, () => {
 										body !== null &&
 										`dividend` in body &&
 										`divisor` in body &&
-										typeof body.dividend === `number` &&
-										typeof body.divisor === `number`
+										typeof body[`dividend`] === `number` &&
+										typeof body[`divisor`] === `number`
 									) {
 										const { dividend, divisor } = body
 										const quotient =

@@ -37,7 +37,7 @@ export const Deck = memoize<{ id: string; detailed?: boolean }>(
 		return (
 			<AnimatePresence>
 				<span
-					className={scss.class}
+					className={scss[`class`]}
 					style={setCssVars({
 						"--child-len": `${height}px`,
 						"--child-count": `${cardIds.length}`,

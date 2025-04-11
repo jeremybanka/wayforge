@@ -20,7 +20,7 @@ export const Data_EnergyCard_A: FC<{ energyId: string }> = ({ energyId }) => {
 
 	return (
 		<data
-			className={scss.class}
+			className={scss[`class`]}
 			style={setCssVars({
 				"--background-color": colorA.hex,
 				"--background-color-shade-5": colorA.shade(5).hex,

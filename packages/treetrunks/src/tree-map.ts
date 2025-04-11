@@ -26,7 +26,7 @@ export function flattenTree<T extends Tree, J extends string = `/`>(
 	const discoveredBranches = discoverBranches(``, [], [], tree, separator)
 
 	for (const [pathName, path] of discoveredBranches) {
-		treePathNames[pathName] = path
+		treePathNames[pathName as Join<TreePathName<T>, J>] = path as any
 	}
 
 	return treePathNames
@@ -88,7 +88,7 @@ export function mapTree<T extends Tree, D, J extends string = `/`>(
 	const treeMap = {} as TreeMap<T, D, J>
 	const discoveredBranches = discoverBranches(``, [], [], tree, separator)
 	for (const [pathName, path] of discoveredBranches) {
-		treeMap[pathName] = mapper(
+		treeMap[pathName as Join<TreePathName<T>, J>] = mapper(
 			path as TreePathName<T>,
 			pathName as Join<TreePathName<T>, J>,
 			tree,

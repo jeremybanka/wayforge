@@ -17,6 +17,7 @@ export const deepMob = <Tree extends Array<unknown> | object>(
 	const newTree = Array.isArray(tree) ? [...tree] : { ...tree }
 	const getNewNode = reduce<string, Tree>((acc, key) => {
 		if (Array.isArray(acc)) return acc[Number(key)]
+		// @ts-expect-error tricky to represent
 		return acc[key]
 	}, newTree as Tree)
 	const getNewParentNode = (path: string[]): Error | Tree =>
@@ -36,6 +37,7 @@ export const deepMob = <Tree extends Array<unknown> | object>(
 				? { ...oldChild }
 				: oldChild
 		const { data, meta } = fn(newChild, path, newParent)
+		// @ts-expect-error tricky to represent
 		newParent[key] = data
 		return meta
 	}

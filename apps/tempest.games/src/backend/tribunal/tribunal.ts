@@ -100,7 +100,7 @@ export async function tribunal({
 
 	// database to iptables
 	try {
-		if (process.env.EXPERIMENTAL_BAN_IPS) {
+		if (process.env[`EXPERIMENTAL_BAN_IPS`]) {
 			await Promise.all(
 				bansSinceLastFlush.map(
 					(ban) =>

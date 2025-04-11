@@ -6,6 +6,6 @@ import { LAYER } from "./corners/layers"
 export const button = {
 	curledLeft: CurledLeft(motion.button, {
 		useClipPath: false,
-		below: [LAYER.FG_STROKE],
+		below: [LAYER[`FG_STROKE`]],
 	}),
 }

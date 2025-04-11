@@ -1,5 +1,11 @@
 import type * as net from "node:net"
 
+type Entries<K extends PropertyKey = keyof any, V = any> = [K, V][]
+
+function toEntries<T extends object>(obj: T): Entries<keyof T, T[keyof T]> {
+	return Object.entries(obj) as Entries<keyof T, T[keyof T]>
+}
+
 class FakeOut implements Pick<net.Socket, `write`> {
 	public captured: string[] = []
 
@@ -42,22 +48,24 @@ function encapsulateConsole(): {
 } {
 	const createMockFn = () => {
 		const calls: any[][] = []
-		const mock = (...args: any[]) => calls.push([...args])
-		return [mock, calls]
+		const mock = (...args: any[]) => {
+			calls.push([...args])
+		}
+		return [mock, calls] as const
 	}
 	const originalConsoleMethods: Partial<typeof console> = {}
 	const mockConsoleCalls: { [K in keyof typeof console]?: any[][] } = {}
-	for (const [key, value] of Object.entries(console)) {
+	for (const [key, value] of toEntries(console)) {
 		if (typeof value === `function`) {
 			originalConsoleMethods[key] = value.bind(console)
 			const [mockFn, calls] = createMockFn()
 			mockConsoleCalls[key] = calls
-			console[key] = mockFn
+			console[key] = mockFn as any
 		}
 	}
 	const restoreConsole = () => {
-		for (const [key, value] of Object.entries(originalConsoleMethods)) {
-			console[key] = value
+		for (const [key, value] of toEntries(originalConsoleMethods)) {
+			console[key] = value as any
 		}
 	}
 	return { mockConsoleCalls, restoreConsole }

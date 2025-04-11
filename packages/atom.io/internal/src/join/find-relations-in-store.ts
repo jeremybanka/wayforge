@@ -26,11 +26,13 @@ export function findRelationsInStore<
 			const keyBA = `${token.b}KeyOf${capitalize(token.a)}`
 			relations = {
 				get [keyAB]() {
+					// @ts-expect-error way too complicated to represent
 					const familyAB = myJoin.states[keyAB as any]
 					const state = findInStore(store, familyAB, key)
 					return state
 				},
 				get [keyBA]() {
+					// @ts-expect-error way too complicated to represent
 					const familyBA = myJoin.states[keyBA as any]
 					const state = findInStore(store, familyBA, key)
 					return state
@@ -41,11 +43,13 @@ export function findRelationsInStore<
 				const entryBA = `${token.b}EntryOf${capitalize(token.a)}`
 				Object.assign(relations, {
 					get [entryAB]() {
+						// @ts-expect-error way too complicated to represent
 						const familyAB = myJoin.states[entryAB as any]
 						const state = findInStore(store, familyAB, key)
 						return state
 					},
 					get [entryBA]() {
+						// @ts-expect-error way too complicated to represent
 						const familyBA = myJoin.states[entryBA as any]
 						const state = findInStore(store, familyBA, key)
 						return state
@@ -59,11 +63,13 @@ export function findRelationsInStore<
 			const keysBA = `${token.b}KeysOf${capitalize(token.a)}`
 			relations = {
 				get [keyAB]() {
+					// @ts-expect-error way too complicated to represent
 					const familyAB = myJoin.states[keyAB as any]
 					const state = findInStore(store, familyAB, key)
 					return state
 				},
 				get [keysBA]() {
+					// @ts-expect-error way too complicated to represent
 					const familyBA = myJoin.states[keysBA as any]
 					const state = findInStore(store, familyBA, key)
 					return state
@@ -74,11 +80,13 @@ export function findRelationsInStore<
 				const entriesBA = `${token.b}EntriesOf${capitalize(token.a)}`
 				Object.assign(relations, {
 					get [entryAB]() {
+						// @ts-expect-error way too complicated to represent
 						const familyAB = myJoin.states[entryAB as any]
 						const state = findInStore(store, familyAB, key)
 						return state
 					},
 					get [entriesBA]() {
+						// @ts-expect-error way too complicated to represent
 						const familyBA = myJoin.states[entriesBA as any]
 						const state = findInStore(store, familyBA, key)
 						return state
@@ -92,11 +100,13 @@ export function findRelationsInStore<
 			const keysBA = `${token.b}KeysOf${capitalize(token.a)}`
 			relations = {
 				get [keysAB]() {
+					// @ts-expect-error way too complicated to represent
 					const familyAB = myJoin.states[keysAB as any]
 					const state = findInStore(store, familyAB, key)
 					return state
 				},
 				get [keysBA]() {
+					// @ts-expect-error way too complicated to represent
 					const familyBA = myJoin.states[keysBA as any]
 					const state = findInStore(store, familyBA, key)
 					return state
@@ -107,11 +117,13 @@ export function findRelationsInStore<
 				const entriesBA = `${token.b}EntriesOf${capitalize(token.a)}`
 				Object.assign(relations, {
 					get [entriesAB]() {
+						// @ts-expect-error way too complicated to represent
 						const familyAB = myJoin.states[entriesAB as any]
 						const state = findInStore(store, familyAB, key)
 						return state
 					},
 					get [entriesBA]() {
+						// @ts-expect-error way too complicated to represent
 						const familyBA = myJoin.states[entriesBA as any]
 						const state = findInStore(store, familyBA, key)
 						return state

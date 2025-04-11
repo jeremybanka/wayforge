@@ -11,7 +11,7 @@ import { connectionState } from "./services/socket"
 export const App: FC = () => {
 	const connection = useO(connectionState)
 	return (
-		<main className={scss.class}>
+		<main className={scss[`class`]}>
 			<div>{connection ? <Connected /> : <Disconnected />}</div>
 			<Explorer />
 			<Spaces />

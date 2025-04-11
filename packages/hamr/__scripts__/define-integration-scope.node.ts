@@ -54,14 +54,14 @@ export default function main(mode: string): void {
 						`testing`,
 						`files and exports in "tsconfig.prod.json" are missing`,
 						newTsconfigJson.include.filter(
-							(filepath) => !oldTsconfigJson.include.includes(filepath),
+							(filepath: string) => !oldTsconfigJson.include.includes(filepath),
 						),
 					)
 					logger.error(
 						`testing`,
 						`files and exports in "tsconfig.prod.json" are extraneous`,
 						oldTsconfigJson.include.filter(
-							(filepath) => !newTsconfigJson.include.includes(filepath),
+							(filepath: string) => !newTsconfigJson.include.includes(filepath),
 						),
 					)
 					logger.error(

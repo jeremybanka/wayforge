@@ -49,7 +49,7 @@ export class ChildSocket<
 	) {
 		super((event, ...args) => {
 			const stringifiedEvent = JSON.stringify([event, ...args]) + `\x03`
-			const errorHandler = (err) => {
+			const errorHandler = (err: { code: string }) => {
 				if (err.code === `EPIPE`) {
 					console.error(`EPIPE error during write`, this.process.stdin)
 				}

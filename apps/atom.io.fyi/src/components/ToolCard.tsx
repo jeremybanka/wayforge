@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import SyntaxHighlighter from "react-syntax-highlighter/dist/esm/default-highlight"
+import SyntaxHighlighter from "react-syntax-highlighter"
 
 const TYPE_LETTERS = {
 	class: `c`,

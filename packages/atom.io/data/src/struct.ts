@@ -44,6 +44,7 @@ export function struct<
 		key: options.key,
 		get: ({ get }) => {
 			return Object.keys(options.default).reduce((acc, key) => {
+				// @ts-expect-error finicky
 				acc[key] = get(atoms[options.key + capitalize(key) + `State`])
 				return acc
 			}, {} as any)

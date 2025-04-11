@@ -9,7 +9,7 @@ export default function Home(): ReactNode {
 			<Head>
 				<link rel="preload" href="/noise.svg" as="image" type="image/svg+xml" />
 			</Head>
-			<main className={scss.class}>
+			<main className={scss[`class`]}>
 				<h1>
 					<span>atom</span>
 					<span>.io</span>

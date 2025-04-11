@@ -2,27 +2,32 @@ import { editRelations, findRelations, transaction } from "atom.io"
 
 import { deckIndices, groupsOfCards } from "../card-groups"
 
-function LCG(seed: number) {
-	// LCG parameters
-	const a = 1664525
-	const c = 1013904223
-	const m = 2 ** 32
+class LinearCongruentialGenerator {
+	private multiplier: number
+	private increment: number
+	private modulus: number
+	private currentState: number
 
-	let state = seed
+	public constructor(seed: number) {
+		this.multiplier = 1664525
+		this.increment = 1013904223
+		this.modulus = 2 ** 32
+		this.currentState = seed
+	}
 
-	this.next = (): number => {
-		state = (a * state + c) % m
-		return state / m
+	public next(): number {
+		this.currentState =
+			(this.multiplier * this.currentState + this.increment) % this.modulus
+		return this.currentState / this.modulus
 	}
 }
-
 export const shuffleDeckTX = transaction<
 	(gameId: string, deckId: string, shuffleSeed: number) => void
 >({
 	key: `shuffleDeck`,
 	do: (transactors, gameId, deckId, shuffleSeed) => {
 		const { get, find, env } = transactors
-		const rng = new LCG(shuffleSeed)
+		const rng = new LinearCongruentialGenerator(shuffleSeed)
 		const deckIndex = find(deckIndices, gameId)
 		const deckDoesExist = get(deckIndex).has(deckId)
 		if (!deckDoesExist) {

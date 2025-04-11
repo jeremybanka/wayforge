@@ -349,6 +349,7 @@ export const validateLeaf =
 		console.log({ instance, schema, refMap, root })
 		const check = validateAsType[schema.type]
 		const passesValidation = Object.entries(schema).every(([keyword, spec]) =>
+			// @ts-expect-error tricky to represent
 			keyword in check ? check[keyword]({ spec, refMap, root })(instance) : true,
 		)
 		if (passesValidation) return { isValid: true, violations: [] }
@@ -363,6 +364,7 @@ export const validateLeaf =
 							const [keyword, spec] = entry
 							return (
 								keyword in check &&
+								// @ts-expect-error tricky to represent
 								!check[keyword]({ spec, refMap, root })(instance)
 							)
 						},

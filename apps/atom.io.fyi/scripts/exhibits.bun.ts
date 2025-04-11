@@ -32,7 +32,7 @@ const Codeblock: React.FC = () => {
 		const myElementsWithClassNameStringAndContainingDoubleQuotes = 
 			Array.prototype.filter.call(
 				me.querySelectorAll('.token.string'),
-				(element) => element.textContent.includes('./')
+				(element: any) => element.textContent.includes('./')
 			);
 		for (const element of myElementsWithClassNameStringAndContainingDoubleQuotes) {
 			// get everything following the final '/'

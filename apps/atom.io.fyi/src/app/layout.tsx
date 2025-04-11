@@ -6,7 +6,6 @@ import fs from "node:fs"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import type { Metadata } from "next"
-import dynamic from "next/dynamic"
 import Link from "next/link"
 import * as React from "react"
 
@@ -32,7 +31,7 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<Theme />
-			<body className={scss.class}>
+			<body className={scss[`class`]}>
 				<header>
 					<nav>
 						<section>

@@ -14,9 +14,9 @@ export const stringToObject = (str: string): Json.Tree.Object => {
 export const objectToString = (obj: Json.Tree.Object): string =>
 	JSON.stringify(obj)
 export const objectToBoolean = (obj: Json.Tree.Object): boolean =>
-	obj.true === true
+	obj[`true`] === true
 export const objectToNumber = (obj: Json.Tree.Object): number =>
-	Number(obj.number ?? obj.size ?? obj.count ?? 0)
+	Number(obj[`number`] ?? obj[`size`] ?? obj[`count`] ?? 0)
 export const objectToArray = <T>(
 	obj: Json.Tree.Object<string, T>,
 ): [key: string, value: T][] => Object.entries(obj)

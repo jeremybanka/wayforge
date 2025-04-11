@@ -14,7 +14,7 @@ export function Button({
 }: ToggleProps): React.ReactNode {
 	return (
 		<label
-			className={label.class}
+			className={label[`class`]}
 			style={setCssVars({
 				"--width": `40px`,
 				"--height": `40px`,

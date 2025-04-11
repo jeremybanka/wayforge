@@ -16,7 +16,7 @@ export const usernameType = type(USERNAME_ALLOWED_CHARS)
 	.brand(`username`)
 
 const MINIMUM_PASSWORD_COMPLEXITY = 20
-const LEET_SPEAK_DICTIONARY = {
+const LEET_SPEAK_DICTIONARY: { [key: string]: string } = {
 	"0": `o`,
 	"1": `l`,
 	"3": `e`,
@@ -52,7 +52,7 @@ function isCommonPassword(password: string): boolean {
 	}
 	return false
 }
-function estimateEntropy(password) {
+function estimateEntropy(password: string) {
 	const poolSize = new Set(password).size
 	const entropy = password.length * Math.log2(poolSize)
 	return entropy

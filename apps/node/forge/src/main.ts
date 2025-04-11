@@ -19,11 +19,11 @@ pipe(
 	serveFilestore({
 		logger,
 		formatResource: formatJson,
-		baseDir: process.env.BASE_DIR ?? `json`,
+		baseDir: process.env[`BASE_DIR`] ?? `json`,
 	}),
 	serveSimpleGit({
 		logger,
-		git: git({ baseDir: process.env.BASE_DIR ?? `` }),
+		git: git({ baseDir: process.env[`BASE_DIR`] ?? `` }),
 	}),
 )
 logger.info(

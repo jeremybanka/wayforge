@@ -8,7 +8,7 @@ export type CountProps = {
 }
 export function Count({ amount }: CountProps): React.ReactNode {
 	return (
-		<span.diagon className={scss.class} data-css="count">
+		<span.diagon className={scss[`class`]} data-css="count">
 			{amount}
 		</span.diagon>
 	)

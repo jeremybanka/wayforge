@@ -12,9 +12,19 @@ export const composeUseRadial =
 	) =>
 	(
 		actions: RadialAction[],
-	): Record<string, React.EventHandler<React.MouseEvent>> => {
+	): {
+		onMouseEnter: () => void
+		onMouseLeave: () => void
+		onMouseMove: () => void
+		onClick: React.MouseEventHandler
+		onMouseDown: React.MouseEventHandler
+		onMouseUp: React.MouseEventHandler
+		onContextMenu: React.MouseEventHandler
+		onTouchStart: React.TouchEventHandler
+		onTouchEnd: React.TouchEventHandler
+	} => {
 		const mouseHasMoved = React.useRef(false)
-		const handlers = {
+		return {
 			onMouseEnter: () => {
 				if (getRadialMode() === `idle`) {
 					setActions(actions)
@@ -65,5 +75,4 @@ export const composeUseRadial =
 				setRadialMode(`open`)
 			},
 		}
-		return handlers
 	}

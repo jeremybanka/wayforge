@@ -24,7 +24,7 @@ export const Trick = memoize<{ id: string; gameId: string; detailed?: boolean }>
 		return (
 			<AnimatePresence>
 				<span
-					className={scss.class}
+					className={scss[`class`]}
 					style={setCssVars({
 						"--child-len": `${height * (5 / 7)}px`,
 						"--child-count": trickContent.length,

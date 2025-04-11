@@ -48,7 +48,7 @@ export const Hand = memoize<{ id: string; detailed?: boolean }>(
 		return (
 			<AnimatePresence>
 				<span
-					className={scss.class}
+					className={scss[`class`]}
 					style={setCssVars({
 						"--child-len": `${height * (5 / 7)}px`,
 						"--child-count": cardIds.length,

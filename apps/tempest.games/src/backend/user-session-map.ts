@@ -4,6 +4,10 @@ import { logger } from "."
 
 const ONE_WEEK_MS = 1000 * 60 * 60 * 24 * 7
 
+declare global {
+	var __userSessionMap: Map<string, Map<string, number>>
+}
+
 export const userSessionMap: Map<string, Map<string, number>> = (() => {
 	let { __userSessionMap } = globalThis as any
 	if (!__userSessionMap) {

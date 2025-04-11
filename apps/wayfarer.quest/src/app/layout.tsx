@@ -26,7 +26,7 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<Theme />
-			<body className={scss.class}>
+			<body className={scss[`class`]}>
 				<header />
 				<main>
 					<Realtime>{children}</Realtime>

@@ -9,13 +9,13 @@ const LOGGING = false
 
 const parentSocket = new RTS.ParentSocket()
 const ipcLog = {
-	info: (...args) => {
+	info: (...args: unknown[]) => {
 		parentSocket.logger.info(...args)
 	},
-	warn: (...args) => {
+	warn: (...args: unknown[]) => {
 		parentSocket.logger.warn(...args)
 	},
-	error: (...args) => {
+	error: (...args: unknown[]) => {
 		parentSocket.logger.error(...args)
 	},
 }

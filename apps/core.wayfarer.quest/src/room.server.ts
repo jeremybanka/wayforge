@@ -15,13 +15,13 @@ const LOG_FILE = Bun.file(LOG_FILEPATH)
 const writer = LOG_FILE.writer()
 
 const ipcLog = {
-	info: (...args) => {
+	info: (...args: unknown[]) => {
 		parentSocket.logger.info(...args)
 	},
-	warn: (...args) => {
+	warn: (...args: unknown[]) => {
 		parentSocket.logger.warn(...args)
 	},
-	error: (...args) => {
+	error: (...args: unknown[]) => {
 		parentSocket.logger.error(...args)
 	},
 }

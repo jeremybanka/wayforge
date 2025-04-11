@@ -1,4 +1,4 @@
-async function createHash(input, algorithm = `SHA-256`) {
+async function createHash(input: string, algorithm = `SHA-256`) {
 	const encoder = new TextEncoder()
 	const data = encoder.encode(input)
 	const hashBuffer = await crypto.subtle.digest(algorithm, data)

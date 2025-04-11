@@ -9,7 +9,7 @@ import scss from "./Hearts.module.scss"
 
 export function Hearts({ roomId }: GameProps): React.ReactNode {
 	return (
-		<article className={scss.class}>
+		<article className={scss[`class`]}>
 			<section data-css="deck">
 				<GameDeck />
 			</section>

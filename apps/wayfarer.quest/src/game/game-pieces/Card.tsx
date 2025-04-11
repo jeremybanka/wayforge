@@ -15,7 +15,7 @@ export const CardFace: FC<{ id: string }> = ({ id }) => {
 		useO(findRelations(valuesOfCards, id).valueKeyOfCard) ?? `Back`
 	const PlayingCard = PlayingCards[valueKey]
 	return (
-		<span className={scss.class} data-css="card">
+		<span className={scss[`class`]} data-css="card">
 			<AnimatePresence>
 				<article.whiteCard layoutId={id}>
 					<Image src={PlayingCard.src} alt="card" fill />
@@ -26,7 +26,7 @@ export const CardFace: FC<{ id: string }> = ({ id }) => {
 }
 export const CardBack: FC<{ id: string }> = ({ id }) => {
 	return (
-		<span className={scss.class} data-css="card">
+		<span className={scss[`class`]} data-css="card">
 			<AnimatePresence>
 				<article.redCard layoutId={id} />
 			</AnimatePresence>
@@ -36,7 +36,7 @@ export const CardBack: FC<{ id: string }> = ({ id }) => {
 
 export const CardSlot: FC<{ onClick?: () => void }> = ({ onClick }) => {
 	return (
-		<span className={scss.class} data-css="card">
+		<span className={scss[`class`]} data-css="card">
 			<AnimatePresence>
 				<article.greyCardSlot onClick={onClick} />
 			</AnimatePresence>

@@ -25,7 +25,7 @@ export const initScanner = ({ baseDir }: FilestoreOptions): Scan => {
 			return paths.reduce<ScanResult>((acc, path) => {
 				const files = readDirectory(join(baseDir, path))
 				if (files instanceof Error) throw files
-				acc[String(path)] = files
+				acc[String(path) as `/${string}`] = files
 				return acc
 			}, {})
 		} catch (caught) {

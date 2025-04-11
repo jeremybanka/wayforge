@@ -74,7 +74,7 @@ export const ReactionIcon_INTERNAL: FC<{
 			onClick={handleClick}
 			onKeyUp={handleClick}
 			style={mode === `fancy` ? { width: `100%` } : undefined}
-			className={scss.class}
+			className={scss[`class`]}
 		>
 			<ListItems
 				family={energyAtoms}

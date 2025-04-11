@@ -19,7 +19,7 @@ export const initSchemaReader = ({
 	baseDir,
 	logger,
 }: FilestoreOptions): ReadSchema => {
-	const readSchema = ({ type }) => {
+	return ({ type }) => {
 		const dir = `${baseDir}/_schemas/${type}`
 		try {
 			const directory = `${baseDir}/_schemas`
@@ -33,5 +33,4 @@ export const initSchemaReader = ({
 			throw caught
 		}
 	}
-	return readSchema
 }
