@@ -38,16 +38,23 @@ export default function main(mode: string): void {
 
 	newPackageJson.exports = {
 		"./package.json": null,
-		...submodules.reduce((acc, folder) => {
-			acc[`./${folder}/package.json`] = `./${folder}/package.json`
-			acc[`./${folder}`] = {
-				types: `./${folder}/dist/index.d.ts`,
-				browser: `./${folder}/dist/index.js`,
-				import: `./${folder}/dist/index.js`,
-				require: `./${folder}/dist/index.cjs`,
-			}
-			return acc
-		}, {}),
+		...submodules.reduce(
+			(acc, folder) => {
+				acc[`./${folder}/package.json`] = `./${folder}/package.json`
+				acc[`./${folder}`] = {
+					types: `./${folder}/dist/index.d.ts`,
+					browser: `./${folder}/dist/index.js`,
+					import: `./${folder}/dist/index.js`,
+					require: `./${folder}/dist/index.cjs`,
+				}
+				return acc
+			},
+			{} as Record<
+				string,
+				| string
+				| { types: string; browser: string; import: string; require: string }
+			>,
+		),
 	}
 
 	const oldText = JSON.stringify(oldPackageJson, null, 2)
@@ -62,14 +69,14 @@ export default function main(mode: string): void {
 					`testing`,
 					`files in "hamr/package.json" are missing`,
 					newPackageJson.files.filter(
-						(filepath) => !oldPackageJson.files.includes(filepath),
+						(filepath: string) => !oldPackageJson.files.includes(filepath),
 					),
 				)
 				logger.error(
 					`testing`,
 					`files in "hamr/package.json" are extraneous`,
 					oldPackageJson.files.filter(
-						(filepath) => !newPackageJson.files.includes(filepath),
+						(filepath: string) => !newPackageJson.files.includes(filepath),
 					),
 				)
 				logger.error(
