@@ -59,8 +59,8 @@ export async function getLogs(
 		const regex = /^(?<ip>\S+) \S+ \S+ \[(?<dateTime>.*?)\]/
 		const match = line.match(regex)
 		if (match?.groups) {
-			const ip = match.groups.ip
-			const dateTime = match.groups.dateTime // e.g., '10/Oct/2023:13:55:36 +0000'
+			const ip = match.groups[`ip`]
+			const dateTime = match.groups[`dateTime`] // e.g., '10/Oct/2023:13:55:36 +0000'
 
 			const logDate = parseNginxDateTime(dateTime)
 			if (!Number.isNaN(logDate.getTime())) {
