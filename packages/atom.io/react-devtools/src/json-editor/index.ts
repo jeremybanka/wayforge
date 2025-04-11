@@ -19,14 +19,11 @@ export type SetterOrUpdater<T> = <New extends T>(
 	next: New | ((old: T) => New),
 ) => void
 
-export const SubEditors: Record<
-	keyof JsonTypes,
-	FC<JsonEditorProps_INTERNAL<any>>
-> = {
+export const SubEditors = {
 	array: ArrayEditor,
 	boolean: BooleanEditor,
 	null: NullEditor,
 	number: NumberEditor,
 	object: ObjectEditor,
 	string: StringEditor,
-}
+} satisfies Record<keyof JsonTypes, FC<JsonEditorProps_INTERNAL<any>>>

@@ -79,7 +79,8 @@ export const buildTransaction = (
 			}) as typeof setState,
 			run: (token, identifier = arbitrary()) =>
 				actUponStore(child, token, identifier),
-			find: ((token, k) => findInStore(child, token, k)) as typeof findState,
+			find: ((...ps: Parameters<typeof findState>) =>
+				findInStore(store, ...ps)) as typeof findState,
 			json: (token) => getJsonToken(child, token),
 			dispose: ((...ps: Parameters<typeof disposeState>) => {
 				disposeFromStore(child, ...ps)

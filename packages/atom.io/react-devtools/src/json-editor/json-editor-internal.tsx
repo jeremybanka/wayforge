@@ -47,7 +47,9 @@ export const JsonEditor_INTERNAL = <T,>({
 		type: `non-json`,
 		data,
 	}
-	const SubEditor = dataIsJson ? SubEditors[refined.type] : NonJsonEditor
+	const SubEditor = dataIsJson
+		? SubEditors[refined.type as keyof JsonTypes]
+		: NonJsonEditor
 
 	const disabled = isReadonly(path)
 
@@ -92,7 +94,7 @@ export const JsonEditor_INTERNAL = <T,>({
 					</Components.KeyWrapper>
 				)}
 				<SubEditor
-					data={refined.data}
+					data={refined.data as never}
 					set={set}
 					remove={remove}
 					rename={rename}

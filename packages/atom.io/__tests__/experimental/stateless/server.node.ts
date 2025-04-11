@@ -10,10 +10,10 @@ const LOGGING = false
 
 if (LOGGING) console.log(`Server starting...`)
 
-const PORT = process.env.PORT ?? 8080
+const PORT = process.env[`PORT`] ?? 8080
 const ORIGIN = `http://localhost:${PORT}`
 const DB_HOST = `localhost`
-const DB_NAME = process.env.DB_NAME
+const DB_NAME = process.env[`DB_NAME`]
 
 if (DB_NAME === undefined) {
 	throw new Error(`DB_NAME environment variable is not set`)
@@ -84,7 +84,7 @@ const main = async () => {
 												typeof json === `object` &&
 												json !== null &&
 												`name` in json &&
-												typeof json.name === `string`
+												typeof json[`name`] === `string`
 											) {
 												const { name } = json
 												const rows = await db
@@ -105,9 +105,9 @@ const main = async () => {
 												typeof json === `object` &&
 												json !== null &&
 												`name` in json &&
-												typeof json.name === `string` &&
+												typeof json[`name`] === `string` &&
 												`countryId` in json &&
-												typeof json.countryId === `number`
+												typeof json[`countryId`] === `number`
 											) {
 												const { name, countryId } = json
 												const rows = await db

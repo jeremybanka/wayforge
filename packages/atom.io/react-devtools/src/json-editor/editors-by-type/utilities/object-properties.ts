@@ -1,7 +1,7 @@
 import { become } from "atom.io/internal"
 import type { Json, JsonTypeName } from "atom.io/json"
 import { fromEntries, JSON_DEFAULTS, toEntries } from "atom.io/json"
-import type { MutableRefObject } from "react"
+import type { RefObject } from "react"
 
 import type { SetterOrUpdater } from "../.."
 import { castToJson } from "./cast-to-json"
@@ -13,7 +13,7 @@ export const makePropertySetters = <T extends Json.Tree.Object>(
 	fromEntries(
 		toEntries(data).map(([key, value]) => [
 			key,
-			(newValue) => {
+			(newValue: unknown) => {
 				set({ ...data, [key]: become(newValue)(value) })
 			},
 		]),
@@ -22,7 +22,7 @@ export const makePropertySetters = <T extends Json.Tree.Object>(
 export const makePropertyRenamers = <T extends Json.Tree.Object>(
 	data: T,
 	set: SetterOrUpdater<T>,
-	stableKeyMapRef: MutableRefObject<{ [Key in keyof T]: keyof T }>,
+	stableKeyMapRef: RefObject<{ [Key in keyof T]: keyof T }>,
 ): { [K in keyof T]: (newKey: string) => void } =>
 	fromEntries(
 		toEntries(data).map(([key, value]) => [
