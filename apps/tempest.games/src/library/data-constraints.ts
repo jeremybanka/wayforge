@@ -12,7 +12,9 @@ export const USERNAME_ALLOWED_CHARS = /^[a-zA-Z0-9_-]+$/
 // 	.regex(USERNAME_ALLOWED_CHARS)
 
 export const usernameType = type(USERNAME_ALLOWED_CHARS)
-	.and(`string > ${USERNAME_MIN_LENGTH} & string < ${USERNAME_MAX_LENGTH}`)
+	.pipe(
+		type(`string > ${USERNAME_MIN_LENGTH} & string < ${USERNAME_MAX_LENGTH}`),
+	)
 	.brand(`username`)
 
 const MINIMUM_PASSWORD_COMPLEXITY = 20
