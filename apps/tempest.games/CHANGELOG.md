@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.1.41
+
+### Patch Changes
+
+- f1dd3ca: 🐛 Fixed bug with password comparison causing frontend to break.
+
 ## 0.1.40
 
 ### Patch Changes
