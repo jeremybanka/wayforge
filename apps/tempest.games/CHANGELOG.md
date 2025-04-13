@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.1.42
+
+### Patch Changes
+
+- 8bd19c1: 🐛 Fixed bug with username validation also causing frontend to break.
+
 ## 0.1.41
 
 ### Patch Changes
