@@ -7,7 +7,7 @@ import { drizzle } from "drizzle-orm/postgres-js"
 import { migrate } from "drizzle-orm/postgres-js/migrator"
 import postgres from "postgres"
 
-import * as schema from "../src/database/tempest-db-schema.ts"
+import type * as schema from "../src/database/tempest-db-schema.ts"
 import { env } from "../src/library/env.ts"
 
 console.log({
@@ -76,7 +76,6 @@ const tempest = postgres({
 try {
 	console.log(`🚀 Migrating database ${env.POSTGRES_DATABASE}... `)
 	const db = drizzle<typeof schema>(tempest)
-	await db.delete(schema.users)
 	await migrate(db, {
 		migrationsFolder: resolve(import.meta.dir, `../drizzle`),
 	})
