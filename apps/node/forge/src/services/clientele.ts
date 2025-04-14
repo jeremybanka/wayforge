@@ -22,7 +22,7 @@ export type Clientele = {
 	ServerEvents: {
 		connection: (socket: Socket) => void
 	}
-	ServerSideEvents: Record<keyof any, unknown>
+	ServerSideEvents: Record<PropertyKey, unknown>
 }
 
 type ClienteleSocketServer = WebSocketServer<

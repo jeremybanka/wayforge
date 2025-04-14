@@ -2,7 +2,7 @@ import { map } from "../array"
 import { pipe } from "../function"
 import { entriesToRecord, recordToEntries } from "./entries"
 
-export const mapObject = <K extends keyof any, I, O>(
+export const mapObject = <K extends PropertyKey, I, O>(
 	obj: Record<K, I>,
 	fn: (val: I, key: K) => O,
 ): Record<K, O> =>
@@ -14,6 +14,6 @@ export const mapObject = <K extends keyof any, I, O>(
 	)
 
 export const mob =
-	<K extends keyof any, I, O>(fn: (val: I, key: K) => O) =>
+	<K extends PropertyKey, I, O>(fn: (val: I, key: K) => O) =>
 	(obj: Record<K, I>): Record<K, O> =>
 		mapObject(obj, fn)

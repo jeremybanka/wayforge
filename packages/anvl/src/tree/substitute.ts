@@ -1,5 +1,5 @@
 export type Substitute<Container, Content, Substitution> =
-	Container extends Record<keyof any, any>
+	Container extends Record<PropertyKey, any>
 		? {
 				[K in keyof Container]: Container[K] extends Content
 					? Substitute<Container[K], Content, Substitution> | Substitution

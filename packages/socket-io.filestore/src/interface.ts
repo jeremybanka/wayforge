@@ -38,4 +38,4 @@ export type FilestoreServerEvents = Record<
 		error_filestore: (message: string) => void
 	}
 
-export type FilestoreClusterEvents = Record<keyof any, unknown>
+export type FilestoreClusterEvents = Record<PropertyKey, unknown>
