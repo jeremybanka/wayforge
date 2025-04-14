@@ -1,5 +1,11 @@
 # flightdeck
 
+## 0.2.25
+
+### Patch Changes
+
+- 2bcb0b2: ✨ Support asynchronous .stop() method in `cron 4.2.0`.
+
 ## 0.2.24
 
 ### Patch Changes
