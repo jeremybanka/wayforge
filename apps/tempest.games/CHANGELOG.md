@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.1.44
+
+### Patch Changes
+
+- 2bcb0b2: ✨ Support asynchronous .stop() method in `cron 4.2.0`.
+
 ## 0.1.43
 
 ### Patch Changes
