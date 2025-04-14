@@ -51,6 +51,7 @@
 		"db:setup": "./__scripts__/setup-db.bun.ts"
 	},
 	"dependencies": {
+		"@node-rs/bcrypt": "1.10.7",
 		"@t3-oss/env-core": "0.12.0",
 		"arktype": "2.1.19",
 		"atom.io": "workspace:*",
