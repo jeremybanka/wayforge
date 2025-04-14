@@ -3,7 +3,7 @@ import { defineConfig } from "drizzle-kit"
 
 const dbEnvType = type({
 	POSTGRES_HOST: `string`,
-	POSTGRES_PORT: `number`,
+	POSTGRES_PORT: type(`string`).pipe((s) => Number.parseInt(s, 10)),
 	POSTGRES_USER: `string`,
 	POSTGRES_PASSWORD: `string`,
 	POSTGRES_DATABASE: `string`,

@@ -1,10 +1,10 @@
 #!/usr/bin/env bun
 
-import { createHash } from "node:crypto"
 import type { RequestListener } from "node:http"
 import { createServer as createHttpServer } from "node:http"
 import { createServer as createSecureServer } from "node:https"
 
+import * as bcrypt from "@node-rs/bcrypt"
 import { type } from "arktype"
 import { AtomIOLogger } from "atom.io"
 import {
@@ -126,15 +126,11 @@ const httpServer = createServer((req, res) => {
 									if (maybeUser) {
 										throw [400, `User already exists`]
 									}
-									const salt = crypto.randomUUID()
-									const hash = createHash(`sha256`)
-										.update(password + salt)
-										.digest(`hex`)
+									const passwordHash = await bcrypt.hash(password, 10)
 									await db.drizzle.insert(users).values({
 										username,
 										email,
-										hash,
-										salt,
+										password: passwordHash,
 										createdIp: ipAddress,
 									})
 									logger.info(`🔑 user created: ${username}`)
@@ -198,8 +194,7 @@ const httpServer = createServer((req, res) => {
 										const maybeUser = await db.drizzle.query.users.findFirst({
 											columns: {
 												id: true,
-												hash: true,
-												salt: true,
+												password: true,
 											},
 											where: eq(users.username, username),
 										})
@@ -208,12 +203,13 @@ const httpServer = createServer((req, res) => {
 											logger.info(`🔑 user ${username} does not exist`)
 											throw [400, `${attemptsRemaining} attempts remaining.`]
 										}
-										const { hash: trueHash, salt } = maybeUser
+										const { password: trueHash } = maybeUser
 										userId = maybeUser.id
-										const hash = createHash(`sha256`)
-											.update(password + salt)
-											.digest(`hex`)
-										if (hash === trueHash) {
+										const passwordDoesMatch = await bcrypt.compare(
+											password,
+											trueHash,
+										)
+										if (passwordDoesMatch) {
 											const sessionKey = crypto.randomUUID()
 											let userSessions = userSessionMap.get(username)
 											if (!userSessions) {

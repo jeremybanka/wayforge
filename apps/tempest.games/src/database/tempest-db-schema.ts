@@ -25,8 +25,7 @@ export const users = pgTable(
 		id: uuid().primaryKey().defaultRandom(),
 		username: varchar({ length: 16 }).notNull(),
 		email: varchar({ length: 254 }).notNull(),
-		hash: varchar({ length: 64 }).notNull(),
-		salt: varchar({ length: 36 }).notNull(),
+		password: varchar({ length: 254 }).notNull(),
 		createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 		createdIp: varchar({ length: 45 }).notNull(), // IP address length can be up to 45 characters (for IPv6)
 		isActive: boolean().notNull().default(false),
@@ -45,13 +44,12 @@ export const untrackedUserColumnNames = [
 	`createdAt`,
 	`createdIp`,
 	`isActive`,
-	`salt`,
 	`verifiedAt`,
 ] as const satisfies UserColumnName[]
 export const trackableUserColumnNames = [
 	`username`,
 	`email`,
-	`hash`,
+	`password`,
 	`userRole`,
 ] as const satisfies UserColumnName[]
 ;`` as UserColumnName satisfies
@@ -67,7 +65,7 @@ export const userChanges = pgTable(`userChanges`, {
 	id: uuid().primaryKey().defaultRandom(),
 	userId: uuid()
 		.notNull()
-		.references(() => users.id),
+		.references(() => users.id, { onDelete: `cascade` }),
 	changedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 	changedIp: varchar({ length: 45 }).notNull(),
 	changedColumn: trackedUserColumnName().notNull(),
@@ -84,10 +82,10 @@ export const players = pgTable(
 	{
 		userId: uuid()
 			.notNull()
-			.references(() => users.id),
+			.references(() => users.id, { onDelete: `cascade` }),
 		gameId: uuid()
 			.notNull()
-			.references(() => games.id),
+			.references(() => games.id, { onDelete: `cascade` }),
 		score: integer().notNull(),
 	},
 	(table) => [
@@ -100,7 +98,7 @@ export const players = pgTable(
 
 export const loginHistory = pgTable(`loginHistory`, {
 	id: uuid().primaryKey().defaultRandom(),
-	userId: uuid().references(() => users.id),
+	userId: uuid().references(() => users.id, { onDelete: `cascade` }),
 	loginTime: timestamp({ withTimezone: true }).notNull().defaultNow(),
 	ipAddress: varchar({ length: 45 }).notNull(),
 	userAgent: varchar({ length: 1024 }),
@@ -113,7 +111,7 @@ export const passwordResetAttempts = pgTable(`passwordResetAttempts`, {
 	id: uuid().primaryKey().defaultRandom(),
 	userId: uuid()
 		.notNull()
-		.references(() => users.id),
+		.references(() => users.id, { onDelete: `cascade` }),
 	requestedIp: varchar({ length: 45 }).notNull(),
 	requestedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 	succeededIp: varchar({ length: 45 }),
