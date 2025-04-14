@@ -5,7 +5,7 @@ import { map } from "../array"
 import { pipe } from "../function"
 import { entriesToRecord, recordToEntries } from "./entries"
 
-export const reverseRecord = <A extends keyof any, B extends keyof any>(
+export const reverseRecord = <A extends PropertyKey, B extends PropertyKey>(
 	record: Record<A, B>,
 ): Record<B, A> =>
 	pipe(

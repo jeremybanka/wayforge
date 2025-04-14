@@ -4,7 +4,7 @@ import { delve, tweak } from "../object"
 import { deepMob } from "../object/deepMob"
 import { isJsonSchemaRef } from "./refs"
 
-export const dereference = <T extends Array<any> | { [key: keyof any]: any }>(
+export const dereference = <T extends Array<any> | { [key: PropertyKey]: any }>(
 	input: T,
 ): T => {
 	const result: T = deepMob(input)

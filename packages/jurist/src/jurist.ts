@@ -134,7 +134,7 @@ export type Count<N extends number, A extends any[] = []> = [
 	? A[`length`]
 	: A[`length`] | Count<N, [...A, any]>
 
-type Entries<K extends PropertyKey = keyof any, V = any> = [K, V][]
+type Entries<K extends PropertyKey = PropertyKey, V = any> = [K, V][]
 
 type KeyOfEntries<E extends Entries> = E extends [infer K, any][] ? K : never
 
