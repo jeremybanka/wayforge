@@ -25,8 +25,7 @@ export const users = pgTable(
 		id: uuid().primaryKey().defaultRandom(),
 		username: varchar({ length: 16 }).notNull(),
 		email: varchar({ length: 254 }).notNull(),
-		hash: varchar({ length: 64 }).notNull(),
-		salt: varchar({ length: 36 }).notNull(),
+		password: varchar({ length: 254 }).notNull(),
 		createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 		createdIp: varchar({ length: 45 }).notNull(), // IP address length can be up to 45 characters (for IPv6)
 		isActive: boolean().notNull().default(false),
@@ -45,13 +44,12 @@ export const untrackedUserColumnNames = [
 	`createdAt`,
 	`createdIp`,
 	`isActive`,
-	`salt`,
 	`verifiedAt`,
 ] as const satisfies UserColumnName[]
 export const trackableUserColumnNames = [
 	`username`,
 	`email`,
-	`hash`,
+	`password`,
 	`userRole`,
 ] as const satisfies UserColumnName[]
 ;`` as UserColumnName satisfies
