@@ -4,7 +4,6 @@ import type { RequestListener } from "node:http"
 import { createServer as createHttpServer } from "node:http"
 import { createServer as createSecureServer } from "node:https"
 
-import * as bcrypt from "@node-rs/bcrypt"
 import { type } from "arktype"
 import { AtomIOLogger } from "atom.io"
 import {
@@ -126,7 +125,10 @@ const httpServer = createServer((req, res) => {
 									if (maybeUser) {
 										throw [400, `User already exists`]
 									}
-									const passwordHash = await bcrypt.hash(password, 10)
+									const passwordHash = await Bun.password.hash(password, {
+										algorithm: `bcrypt`,
+										cost: 10,
+									})
 									await db.drizzle.insert(users).values({
 										username,
 										email,
@@ -205,7 +207,7 @@ const httpServer = createServer((req, res) => {
 										}
 										const { password: trueHash } = maybeUser
 										userId = maybeUser.id
-										const passwordDoesMatch = await bcrypt.compare(
+										const passwordDoesMatch = await Bun.password.verify(
 											password,
 											trueHash,
 										)
