@@ -1,6 +1,6 @@
 import type * as net from "node:net"
 
-type Entries<K extends PropertyKey = keyof any, V = any> = [K, V][]
+type Entries<K extends PropertyKey = PropertyKey, V = any> = [K, V][]
 
 function toEntries<T extends object>(obj: T): Entries<keyof T, T[keyof T]> {
 	return Object.entries(obj) as Entries<keyof T, T[keyof T]>

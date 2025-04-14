@@ -1,5 +1,5 @@
 export const modify =
-	<Mod extends Record<keyof any, any>>(modifications: Mod) =>
+	<Mod extends Record<PropertyKey, any>>(modifications: Mod) =>
 	<
 		Obj extends {
 			[Key in keyof Mod]?: Key extends keyof Mod

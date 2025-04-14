@@ -9,7 +9,7 @@ export type Fragment<T> = Partial<{
 		: Fragment<Partial<T[K]>>
 }>
 
-interface ExampleTree extends Record<keyof any, any> {
+interface ExampleTree extends Record<PropertyKey, any> {
 	a?: {
 		b: {
 			c: number | null

@@ -6,8 +6,8 @@ import { access } from "./access"
 import { recordToEntries } from "./entries"
 import { mob } from "./mapObject"
 
-export type PlainObject = Record<keyof any, unknown>
-export type EmptyObject = Record<keyof any, never>
+export type PlainObject = Record<PropertyKey, unknown>
+export type EmptyObject = Record<PropertyKey, never>
 
 export const isNonNullObject = (input: unknown): input is object =>
 	typeof input === `object` && input !== null
@@ -19,8 +19,8 @@ export const isEmptyObject = (input: unknown): input is EmptyObject =>
 	isPlainObject(input) && Object.keys(input).length === 0
 
 export const isRecord =
-	<KEY extends keyof any, VAL>(
-		isKey: Refinement<keyof any, KEY>,
+	<KEY extends PropertyKey, VAL>(
+		isKey: Refinement<PropertyKey, KEY>,
 		isValue: Refinement<unknown, VAL>,
 	) =>
 	(input: unknown): input is Record<KEY, VAL> =>
@@ -37,7 +37,7 @@ export const hasProperties = <OBJ extends object>(
 	options: HasPropertiesOptions = { allowExtraProperties: false },
 ): Refinement<unknown, OBJ> => {
 	const name = `{${recordToEntries(
-		isValue as Record<keyof any, Refinement<any, any>>,
+		isValue as Record<PropertyKey, Refinement<any, any>>,
 	)
 		.map(([k, v]) => String(k) + `:` + v.name)
 		.join(`,`)}}`

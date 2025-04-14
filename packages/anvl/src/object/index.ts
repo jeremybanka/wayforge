@@ -15,12 +15,12 @@ export * from "./patch"
 export * from "./refinement"
 
 export const redact =
-	<K extends keyof any>(...args: K[]) =>
+	<K extends PropertyKey>(...args: K[]) =>
 	<O extends Record<K, any>>(obj: O): Omit<O, K> =>
 		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
 		reduce<K, O>((acc, key) => (delete acc[key], acc), obj)(args)
 
-export type Redacted<Holder, RedactProp extends keyof any> = Omit<
+export type Redacted<Holder, RedactProp extends PropertyKey> = Omit<
 	{
 		[K in keyof Holder]: Holder[K] extends (infer Item)[]
 			? Redacted<Item, RedactProp>[]
@@ -29,7 +29,7 @@ export type Redacted<Holder, RedactProp extends keyof any> = Omit<
 	RedactProp
 >
 export const redactDeep =
-	<K extends keyof any>(...args: K[]) =>
+	<K extends PropertyKey>(...args: K[]) =>
 	<O extends Record<K, any>>(base: O): Redacted<O, K> =>
 		deepMob(base, (node, path) =>
 			includesAny(args)(path)
@@ -38,13 +38,13 @@ export const redactDeep =
 					}
 				: {
 						data: isPlainObject(node)
-							? redact(...args)(node as Record<keyof any, any>)
+							? redact(...args)(node as Record<PropertyKey, any>)
 							: node,
 					},
 		)
 
 export const select =
-	<Key extends keyof any>(...args: Key[]) =>
+	<Key extends PropertyKey>(...args: Key[]) =>
 	<Obj extends object>(
 		obj: Obj,
 	): {
@@ -63,10 +63,10 @@ export const select =
 		)(args)
 
 export const treeShake =
-	(shouldDiscard: (val: unknown, key: keyof any) => boolean = isUndefined) =>
+	(shouldDiscard: (val: unknown, key: PropertyKey) => boolean = isUndefined) =>
 	<T extends object>(
 		obj: T,
-	): T extends Record<keyof any, unknown> ? T : Partial<T> => {
+	): T extends Record<PropertyKey, unknown> ? T : Partial<T> => {
 		const newObj = {} as T
 		const entries = Object.entries(obj) as [keyof T, any][]
 		for (const [key, val] of entries) {
@@ -74,7 +74,7 @@ export const treeShake =
 				newObj[key] = val
 			}
 		}
-		return newObj as T extends Record<keyof any, unknown> ? T : Partial<T>
+		return newObj as T extends Record<PropertyKey, unknown> ? T : Partial<T>
 	}
 
 export type KeysExtending<T, V> = keyof {
@@ -82,11 +82,11 @@ export type KeysExtending<T, V> = keyof {
 }
 
 export const filterProperties =
-	<DiscardVal, DiscardKey extends keyof any>(
+	<DiscardVal, DiscardKey extends PropertyKey>(
 		shouldDiscardVal: Refinement<unknown, DiscardVal>,
 		shouldDiscardKey: Refinement<unknown, DiscardKey>,
 	) =>
-	<P extends Record<keyof any, any>>(
+	<P extends Record<PropertyKey, any>>(
 		props: P,
 	): DiscardVal extends never
 		? DiscardKey extends never
@@ -109,16 +109,16 @@ export const filterProperties =
 		)
 
 export const delve = (
-	obj: Record<keyof any, any>,
-	path: ReadonlyArray<keyof any>,
+	obj: Record<PropertyKey, any>,
+	path: ReadonlyArray<PropertyKey>,
 ): Error | { found: unknown } => {
 	const found = path.reduce((acc, key) => acc?.[key], obj)
 	return found === undefined ? new Error(`Not found`) : { found }
 }
 
 export const tweak = (
-	obj: Record<keyof any, any>,
-	path: ReadonlyArray<keyof any>,
+	obj: Record<PropertyKey, any>,
+	path: ReadonlyArray<PropertyKey>,
 	value: unknown,
 ): void =>
 	path.reduce((acc, key, i) => {

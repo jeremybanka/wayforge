@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/switch-exhaustiveness-check */
 export const expandPathForSchema = (
-	path: (keyof any)[],
+	path: PropertyKey[],
 ): (number | string)[] | Error => {
 	try {
 		return path.flatMap((key) => {

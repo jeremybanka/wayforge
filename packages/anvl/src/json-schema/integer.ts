@@ -80,11 +80,11 @@ export const Int = Object.assign((input: unknown) => parseInteger(input), {
 
 	formula: <
 		I extends Record<
-			keyof any,
+			PropertyKey,
 			Fraction | Fraction[] | integer | integer[] | number[] | number
 		>,
 		O extends Record<
-			keyof any,
+			PropertyKey,
 			Fraction | Fraction[] | integer | integer[] | number[] | number
 		>,
 	>(
@@ -108,7 +108,7 @@ export function asNumber(input: Fraction | integer | number): number
 export function asNumber(input: Fraction[] | integer[] | number[]): number[]
 export function asNumber<
 	R extends Record<
-		keyof any,
+		PropertyKey,
 		Fraction | Fraction[] | integer | integer[] | number[] | number
 	>,
 >(

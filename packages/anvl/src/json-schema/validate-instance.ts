@@ -359,8 +359,8 @@ export const validateLeaf =
 		](instance)
 			? pipe(
 					Object.entries(rest),
-					filter<[keyof any, any], [keyof any, any]>(
-						(entry): entry is [keyof any, any] => {
+					filter<[PropertyKey, any], [PropertyKey, any]>(
+						(entry): entry is [PropertyKey, any] => {
 							const [keyword, spec] = entry
 							return (
 								keyword in check &&
