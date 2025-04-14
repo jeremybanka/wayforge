@@ -93,7 +93,7 @@ export const password1IssuesSelector = selector<ArkErrors | null>({
 	get: ({ get }) => {
 		const password0 = get(password0InputAtom)
 		const password1 = get(password1InputAtom)
-		const parsed = passwordType.pipe(type(`"${password0}"`))(password1)
+		const parsed = type(`"${password0}"`)(password1)
 		if (parsed instanceof type.errors) {
 			return parsed
 		}
