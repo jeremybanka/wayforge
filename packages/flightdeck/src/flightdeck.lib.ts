@@ -139,7 +139,7 @@ export class FlightDeck<S extends string = string> {
 					.on(`data`, (chunk) => {
 						data.push(chunk instanceof Buffer ? chunk : Buffer.from(chunk))
 					})
-					.on(`end`, () => {
+					.on(`end`, async () => {
 						const authHeader = req.headers.authorization
 						try {
 							if (typeof req.url === `undefined`) throw 400
@@ -165,15 +165,15 @@ export class FlightDeck<S extends string = string> {
 							this.storage.setItem(`updateAwaitedVersion`, versionForeignInput)
 							const { checkAvailability } = options.scripts
 							if (checkAvailability) {
-								this.updateAvailabilityChecker?.stop()
-								this.seekUpdate(versionForeignInput)
+								await this.updateAvailabilityChecker?.stop()
+								await this.seekUpdate(versionForeignInput)
 								const updatePhase = this.storage.getItem(`updatePhase`)
 								this.logger.info(`> storage("updatePhase") >`, updatePhase)
 								if (updatePhase === `notified`) {
 									this.updateAvailabilityChecker = new CronJob(
 										`30 * * * * *`,
-										() => {
-											this.seekUpdate(versionForeignInput)
+										async () => {
+											await this.seekUpdate(versionForeignInput)
 										},
 									)
 									this.updateAvailabilityChecker.start()
@@ -207,7 +207,7 @@ export class FlightDeck<S extends string = string> {
 			})
 	}
 
-	protected seekUpdate(version: string): void {
+	protected async seekUpdate(version: string): Promise<void> {
 		this.logger.info(`Checking for updates...`)
 		const { checkAvailability } = this.options.scripts
 		if (!checkAvailability) {
@@ -217,7 +217,7 @@ export class FlightDeck<S extends string = string> {
 		try {
 			const out = execSync(`${checkAvailability} ${version}`)
 			this.logger.info(`Check stdout:`, out.toString())
-			this.updateAvailabilityChecker?.stop()
+			await this.updateAvailabilityChecker?.stop()
 			this.storage.setItem(`updatePhase`, `confirmed`)
 			this.downloadPackage()
 			this.announceUpdate()

@@ -26,8 +26,8 @@ export const userSessionMap: Map<string, Map<string, number>> = (() => {
 			}
 		})
 		autoExpiry.start()
-		process.on(`exit`, () => {
-			autoExpiry.stop()
+		process.on(`exit`, async () => {
+			await autoExpiry.stop()
 			logger.info(`🛬 autoExpiry stopped`)
 		})
 	}
