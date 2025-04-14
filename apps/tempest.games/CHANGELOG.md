@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.1.43
+
+### Patch Changes
+
+- 880e19a: 💥 BREAKING CHANGE: Auth has been moved to use bcrypt instead of a fast hashing algorithm. User accounts have been removed and will need to be recreated.
+
 ## 0.1.42
 
 ### Patch Changes
