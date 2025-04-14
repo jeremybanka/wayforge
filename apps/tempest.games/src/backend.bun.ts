@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 
-import { createHash } from "node:crypto"
+import * as crypto from "node:crypto"
 import type { RequestListener } from "node:http"
 import { createServer as createHttpServer } from "node:http"
 import { createServer as createSecureServer } from "node:https"
@@ -127,7 +127,8 @@ const httpServer = createServer((req, res) => {
 										throw [400, `User already exists`]
 									}
 									const salt = crypto.randomUUID()
-									const hash = createHash(`sha256`)
+									const hash = crypto
+										.createHash(`sha256`)
 										.update(password + salt)
 										.digest(`hex`)
 									await db.drizzle.insert(users).values({
@@ -210,7 +211,8 @@ const httpServer = createServer((req, res) => {
 										}
 										const { hash: trueHash, salt } = maybeUser
 										userId = maybeUser.id
-										const hash = createHash(`sha256`)
+										const hash = crypto
+											.createHash(`sha256`)
 											.update(password + salt)
 											.digest(`hex`)
 										if (hash === trueHash) {
