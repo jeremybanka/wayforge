@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.1.45
+
+### Patch Changes
+
+- 9f0b62a: 🐛 Fix crash resulting from incompatibility between our runtime and our cryptography services. Switched the cryptography service to a runtime builtin.
+
 ## 0.1.44
 
 ### Patch Changes
