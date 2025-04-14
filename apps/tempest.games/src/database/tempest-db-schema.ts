@@ -67,7 +67,7 @@ export const userChanges = pgTable(`userChanges`, {
 	id: uuid().primaryKey().defaultRandom(),
 	userId: uuid()
 		.notNull()
-		.references(() => users.id),
+		.references(() => users.id, { onDelete: `cascade` }),
 	changedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 	changedIp: varchar({ length: 45 }).notNull(),
 	changedColumn: trackedUserColumnName().notNull(),
@@ -84,10 +84,10 @@ export const players = pgTable(
 	{
 		userId: uuid()
 			.notNull()
-			.references(() => users.id),
+			.references(() => users.id, { onDelete: `cascade` }),
 		gameId: uuid()
 			.notNull()
-			.references(() => games.id),
+			.references(() => games.id, { onDelete: `cascade` }),
 		score: integer().notNull(),
 	},
 	(table) => [
@@ -100,7 +100,7 @@ export const players = pgTable(
 
 export const loginHistory = pgTable(`loginHistory`, {
 	id: uuid().primaryKey().defaultRandom(),
-	userId: uuid().references(() => users.id),
+	userId: uuid().references(() => users.id, { onDelete: `cascade` }),
 	loginTime: timestamp({ withTimezone: true }).notNull().defaultNow(),
 	ipAddress: varchar({ length: 45 }).notNull(),
 	userAgent: varchar({ length: 1024 }),
@@ -113,7 +113,7 @@ export const passwordResetAttempts = pgTable(`passwordResetAttempts`, {
 	id: uuid().primaryKey().defaultRandom(),
 	userId: uuid()
 		.notNull()
-		.references(() => users.id),
+		.references(() => users.id, { onDelete: `cascade` }),
 	requestedIp: varchar({ length: 45 }).notNull(),
 	requestedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 	succeededIp: varchar({ length: 45 }),
