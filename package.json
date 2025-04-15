@@ -12,7 +12,10 @@
 		"bun": "1.2.1",
 		"node": "23.11.0"
 	},
-	"workspaces": ["apps/*", "packages/*"],
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
 	"scripts": {
 		"dev": "tsc --watch",
 		"gen": "turbo run gen",
@@ -35,7 +38,9 @@
 		"nuke": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name 'dist' -type d -prune -exec rm -rf '{}' + && rm pnpm-lock.yaml",
 		"nv": "fnm use $(pnpm list -w --json | jq -r '.[0].path')"
 	},
-	"trustedDependencies": ["@biomejs/biome"],
+	"trustedDependencies": [
+		"@biomejs/biome"
+	],
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@changesets/cli": "2.29.0",
@@ -47,6 +52,7 @@
 		"@typescript-eslint/parser": "8.30.1",
 		"c8": "10.1.3",
 		"cross-env": "7.0.3",
+		"eslint-plugin-drizzle": "0.2.3",
 		"eslint-plugin-import-x": "4.10.5",
 		"eslint-plugin-simple-import-sort": "12.1.1",
 		"jiti": "2.4.2",
