@@ -179,8 +179,8 @@ importers:
   apps/edge/viceroy-htmx:
     dependencies:
       '@fastly/js-compute':
-        specifier: 3.33.4
-        version: 3.33.4
+        specifier: 3.34.0
+        version: 3.34.0
       preact-render-to-string:
         specifier: 6.5.13
         version: 6.5.13(preact@10.26.5)
@@ -2554,8 +2554,8 @@ packages:
       react-dom: '>=17'
       recoil: '>=0.7.6'
 
-  '@fastly/js-compute@3.33.4':
-    resolution: {integrity: sha512-xUkw8AE4Wo4SnPrZjZBKd82UevQ49cUqlQuyXXiQs6IgJFEBQNcmuVgTD1qSqMxSx8ucsB9Hn7t9ryW4w1tPEA==}
+  '@fastly/js-compute@3.34.0':
+    resolution: {integrity: sha512-gHAj6MMzZkQWk6uXCipLnH+hluMTdlsNdvS59M7MMkM6gCcfF3xkglX9NB4i7Gv6T4lCwVCT5+bacS85699jVg==}
     hasBin: true
 
   '@floating-ui/core@1.6.9':
@@ -9364,7 +9364,7 @@ snapshots:
     transitivePeerDependencies:
       - '@babel/core'
 
-  '@fastly/js-compute@3.33.4':
+  '@fastly/js-compute@3.34.0':
     dependencies:
       '@bytecodealliance/jco': 1.10.2
       '@bytecodealliance/weval': 0.3.3
