@@ -120,10 +120,13 @@ const httpServer = createServer((req, res) => {
 									logger.info(`🔑 attempting to sign up: ${username}`)
 									const maybeUser = await db.drizzle.query.users.findFirst({
 										columns: { id: true },
-										where: eq(users.email, email),
+										where: eq(users.emailVerified, email),
 									})
 									if (maybeUser) {
-										throw [400, `User already exists`]
+										throw [
+											400,
+											`This email was already verified on another account.`,
+										]
 									}
 									const passwordHash = await Bun.password.hash(password, {
 										algorithm: `bcrypt`,
@@ -131,7 +134,7 @@ const httpServer = createServer((req, res) => {
 									})
 									await db.drizzle.insert(users).values({
 										username,
-										email,
+										emailOffered: email,
 										password: passwordHash,
 										createdIp: ipAddress,
 									})
