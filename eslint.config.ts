@@ -4,6 +4,7 @@ import * as parser from "@typescript-eslint/parser"
 import type { Linter } from "eslint"
 import * as ImportPlugin from "eslint-plugin-import-x"
 import { default as SimpleImportSortPlugin } from "eslint-plugin-simple-import-sort"
+import * as DrizzlePlugin from "eslint-plugin-drizzle"
 
 import AtomIOPlugin from "./packages/atom.io/eslint-plugin"
 
@@ -234,6 +235,22 @@ const configs = [
 		ignores: [`apps/tempest.games/src/frontend/**/*.ts{,x}`, `**/*.test.ts`],
 		rules: {
 			"no-console": ERROR,
+		},
+	},
+	{
+		files: [`apps/tempest.games/src/**/*.ts{,x}`],
+		plugins: {
+			drizzle: DrizzlePlugin,
+		},
+		ignores: [`apps/tempest.games/src/frontend/**/*.ts{,x}`, `**/*.test.ts`],
+		rules: {
+			"drizzle/enforce-update-with-where": ERROR,
+			"drizzle/enforce-delete-with-where": [
+				ERROR,
+				{
+					drizzleObjectName: "db.drizzle",
+				},
+			],
 		},
 	},
 ] satisfies Linter.Config[]
