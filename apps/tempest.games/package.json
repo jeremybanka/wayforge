@@ -55,7 +55,7 @@
 		"arktype": "2.1.19",
 		"atom.io": "workspace:*",
 		"cron": "4.3.0",
-		"drizzle-orm": "0.41.0",
+		"drizzle-orm": "0.42.0",
 		"openai": "4.94.0",
 		"postgres": "3.4.5",
 		"react": "19.1.0",
