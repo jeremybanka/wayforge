@@ -77,7 +77,7 @@
 		"cross-env": "7.0.3",
 		"dotenv": "16.5.0",
 		"dotenv-cli": "8.0.0",
-		"drizzle-kit": "0.30.6",
+		"drizzle-kit": "0.31.0",
 		"eslint": "9.24.0",
 		"eslint-plugin-react-refresh": "0.4.19",
 		"flightdeck": "workspace:*",
