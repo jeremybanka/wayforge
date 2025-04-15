@@ -24,7 +24,8 @@ export const users = pgTable(
 	{
 		id: uuid().primaryKey().defaultRandom(),
 		username: varchar({ length: 16 }).notNull(),
-		email: varchar({ length: 254 }).notNull(),
+		emailOffered: varchar({ length: 254 }).notNull(),
+		emailVerified: varchar({ length: 254 }),
 		password: varchar({ length: 254 }).notNull(),
 		createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 		createdIp: varchar({ length: 45 }).notNull(), // IP address length can be up to 45 characters (for IPv6)
@@ -34,7 +35,7 @@ export const users = pgTable(
 	},
 	(table) => [
 		uniqueIndex(`usernameUniqueIndex`).on(lower(table.username)),
-		uniqueIndex(`emailUniqueIndex`).on(lower(table.email)),
+		uniqueIndex(`emailVerifiedUniqueIndex`).on(lower(table.emailVerified)),
 	],
 )
 
@@ -48,7 +49,8 @@ export const untrackedUserColumnNames = [
 ] as const satisfies UserColumnName[]
 export const trackableUserColumnNames = [
 	`username`,
-	`email`,
+	`emailOffered`,
+	`emailVerified`,
 	`password`,
 	`userRole`,
 ] as const satisfies UserColumnName[]
@@ -61,16 +63,19 @@ export const trackedUserColumnName = pgEnum(
 	trackableUserColumnNames,
 )
 
-export const userChanges = pgTable(`userChanges`, {
-	id: uuid().primaryKey().defaultRandom(),
+export const accountAction = pgEnum(`accountAction`, [
+	`emailConfirm`,
+	`passwordReset`,
+	`emailChange`,
+])
+
+export const accountActions = pgTable(`userTokens`, {
 	userId: uuid()
-		.notNull()
-		.references(() => users.id, { onDelete: `cascade` }),
-	changedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
-	changedIp: varchar({ length: 45 }).notNull(),
-	changedColumn: trackedUserColumnName().notNull(),
-	oldValue: varchar({ length: 255 }),
-	newValue: varchar({ length: 255 }),
+		.references(() => users.id)
+		.primaryKey(),
+	action: accountAction().notNull(),
+	token: varchar({ length: 255 }).notNull(),
+	expiresAt: timestamp({ withTimezone: true }).notNull(),
 })
 
 export const games = pgTable(`games`, {
