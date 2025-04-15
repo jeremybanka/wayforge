@@ -78,6 +78,13 @@
       "when": 1744608910962,
       "tag": "0010_lucky_brood",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1744698631375,
+      "tag": "0011_slimy_onslaught",
+      "breakpoints": true
     }
   ]
 }
