@@ -10,6 +10,7 @@ import { Admin } from "./views/Admin"
 import { GameView } from "./views/Game"
 import { Login } from "./views/Login"
 import { SignUp } from "./views/SignUp"
+import { Verify } from "./views/Verify"
 
 export function App(): React.ReactNode {
 	const route = useO(routeSelector)
@@ -28,8 +29,7 @@ export function App(): React.ReactNode {
 					</article>
 				) : (
 					(() => {
-						const [root, ...rest] = route
-						switch (root) {
+						switch (route[0]) {
 							case `admin`:
 								return <Admin />
 							case `login`:
@@ -37,7 +37,9 @@ export function App(): React.ReactNode {
 							case `sign_up`:
 								return <SignUp />
 							case `game`:
-								return <GameView route={rest} />
+								return <GameView route={route} />
+							case `verify`:
+								return <Verify route={route} />
 						}
 					})()
 				)}
