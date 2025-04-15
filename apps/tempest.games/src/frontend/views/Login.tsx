@@ -38,11 +38,13 @@ export function Login(): React.ReactNode {
 					setUsername(``)
 					setPassword(``)
 					const responseText = await response.text()
-					const [, sessionKey] = responseText.split(` `)
-					setState(authAtom, { username, sessionKey })
-					socket.once(`connect`, () => {
-						navigate(`/game`)
-					})
+					const [, sessionKey, status] = responseText.split(` `)
+					if (status === `unverified` || status === `verified`) {
+						setState(authAtom, { username, sessionKey, status })
+						socket.once(`connect`, () => {
+							navigate(`/game`)
+						})
+					}
 				}
 				if (response.status >= 400) {
 					const responseText = await response.text()

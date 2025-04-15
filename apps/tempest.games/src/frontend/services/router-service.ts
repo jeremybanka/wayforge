@@ -7,6 +7,9 @@ import { authAtom } from "./socket-auth-service"
 export const ROUTES = required({
 	login: null,
 	sign_up: null,
+	verify: optional({
+		$token: null,
+	}),
 	game: optional({
 		clicker: null,
 	}),
@@ -103,6 +106,9 @@ export const routeSelector = selector<Route | 401 | 404>({
 		const auth = get(authAtom)
 		if (!auth) {
 			return 401
+		}
+		if (auth.status === `unverified`) {
+			return [`verify`]
 		}
 		return path
 	},

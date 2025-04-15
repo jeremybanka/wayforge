@@ -200,6 +200,7 @@ const httpServer = createServer((req, res) => {
 											columns: {
 												id: true,
 												password: true,
+												emailVerified: true,
 											},
 											where: eq(users.username, username),
 										})
@@ -228,7 +229,10 @@ const httpServer = createServer((req, res) => {
 												"Content-Type": `text/plain`,
 												"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
 											})
-											res.end(`${username} ${sessionKey}`)
+											const status = maybeUser.emailVerified
+												? `verified`
+												: `unverified`
+											res.end(`${username} ${sessionKey} ${status}`)
 										}
 									} finally {
 										await db.drizzle.insert(loginHistory).values({

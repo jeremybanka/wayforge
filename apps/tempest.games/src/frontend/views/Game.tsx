@@ -10,13 +10,15 @@ import { type Route, ROUTES } from "../services/router-service"
 
 export type Tail<T extends any[]> = T extends [any, ...infer Rest] ? Rest : never
 
-export type GameRoute = Tail<Extract<Route, [`game`, ...any]>>
+export type GameRoute = Extract<Route, [`game`, ...any]>
 
 export type GameIndexProps = {
 	route: GameRoute
 }
 
-export function GameView({ route: [gameId] }: GameIndexProps): React.ReactNode {
+export function GameView({
+	route: [, gameId],
+}: GameIndexProps): React.ReactNode {
 	return <article>{gameId ? <Game gameId={gameId} /> : <GameIndex />}</article>
 }
 
