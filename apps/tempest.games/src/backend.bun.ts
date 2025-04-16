@@ -4,6 +4,8 @@ import type { RequestListener } from "node:http"
 import { createServer as createHttpServer } from "node:http"
 import { createServer as createSecureServer } from "node:https"
 
+import { initTRPC, TRPCError } from "@trpc/server"
+import { createHTTPHandler } from "@trpc/server/adapters/standalone"
 import { type } from "arktype"
 import { AtomIOLogger } from "atom.io"
 import {
@@ -14,7 +16,6 @@ import {
 	IMPLICIT,
 	setIntoStore,
 } from "atom.io/internal"
-import type { Json } from "atom.io/json"
 import type { SocketKey, UserKey } from "atom.io/realtime-server"
 import {
 	prepareToExposeRealtimeContinuity,
@@ -23,6 +24,7 @@ import {
 	userIndex,
 	usersOfSockets,
 } from "atom.io/realtime-server"
+import cors from "cors"
 import { CronJob } from "cron"
 import { and, eq, gt } from "drizzle-orm"
 import { Server as WebSocketServer } from "socket.io"
@@ -33,13 +35,12 @@ import { worker } from "./backend.worker"
 import { userSessionMap } from "./backend/user-session-map"
 import { DatabaseManager } from "./database/tempest-db-manager"
 import { banishedIps, loginHistory, users } from "./database/tempest-db-schema"
-import { asUUID } from "./library/as-uuid-node"
-import { credentialsType, signupType } from "./library/data-constraints"
-import { env } from "./library/env"
 import {
-	RESPONSE_DICTIONARY,
-	serverIssueType,
-} from "./library/response-dictionary"
+	credentialsType,
+	signupType as signUpType,
+} from "./library/data-constraints"
+import { env } from "./library/env"
+import { RESPONSE_DICTIONARY } from "./library/response-dictionary"
 import { countContinuity } from "./library/store"
 
 const gameWorker = worker(parentSocket, `backend.worker.game.bun`, logger)
@@ -52,6 +53,152 @@ const db = new DatabaseManager({
 
 IMPLICIT.STORE.loggers[0] = new AtomIOLogger(`info`, undefined, logger)
 
+interface Context {
+	req: Parameters<RequestListener>[0]
+	res: Parameters<RequestListener>[1]
+	ip: string
+	now: Date
+	db: DatabaseManager
+	logger: typeof logger
+}
+
+const trpc = initTRPC.context<Context>().create()
+
+export const appRouter = trpc.router({
+	signUp: trpc.procedure.input(signUpType).mutation(async ({ input, ctx }) => {
+		const { username, password, email } = input
+		ctx.logger.info(`🔑 attempting to sign up:`, username)
+		const maybeUser = await ctx.db.drizzle.query.users.findFirst({
+			columns: { id: true },
+			where: eq(users.emailVerified, email),
+		})
+		if (maybeUser) {
+			throw new TRPCError({
+				code: `BAD_REQUEST`,
+				message: `This email was already verified on another account.`,
+			})
+		}
+		const passwordHash = await Bun.password.hash(password, {
+			algorithm: `bcrypt`,
+			cost: 10,
+		})
+		await ctx.db.drizzle.insert(users).values({
+			username,
+			emailOffered: email,
+			password: passwordHash,
+			createdIp: ctx.ip,
+		})
+		ctx.logger.info(`🔑 user created:`, username)
+		return { status: 201 }
+	}),
+
+	login: trpc.procedure
+		.input(credentialsType)
+		.mutation(async ({ input, ctx }) => {
+			const { username, password } = input
+			let successful = false
+			let userId: string | null = null
+			try {
+				ctx.logger.info(`🔑 login attempt as user`, username)
+				const tenMinutesAgo = new Date(+ctx.now - 1000 * 60 * 10)
+				const recentFailures = await ctx.db.drizzle.query.loginHistory.findMany({
+					columns: { userId: true, successful: true, loginTime: true },
+					where: and(
+						eq(loginHistory.ipAddress, ctx.ip),
+						eq(loginHistory.successful, false),
+						gt(loginHistory.loginTime, tenMinutesAgo),
+					),
+					limit: 10,
+				})
+				const attemptsRemaining = 10 - recentFailures.length
+				const allUsers = await ctx.db.drizzle.query.users.findMany({
+					columns: { id: true, username: true },
+				})
+				logger.info({ attemptsRemaining, allUsers })
+				if (attemptsRemaining < 1) {
+					// ban IP
+					await ctx.db.drizzle.insert(banishedIps).values({
+						ip: ctx.ip,
+						reason: `Too many recent login attempts.`,
+						banishedAt: ctx.now,
+						banishedUntil: new Date(+ctx.now + 1000 * 60 * 60 * 24),
+					})
+					throw new TRPCError({
+						code: `TOO_MANY_REQUESTS`,
+						message: `Too many recent login attempts.`,
+					})
+				}
+				const maybeUser = await ctx.db.drizzle.query.users.findFirst({
+					columns: { id: true, password: true, emailVerified: true },
+					where: eq(users.username, username),
+				})
+				if (!maybeUser) {
+					throw new TRPCError({
+						code: `BAD_REQUEST`,
+						message: `${attemptsRemaining} attempts remaining.`,
+					})
+				}
+				userId = maybeUser.id
+				logger.info({
+					password,
+					maybeUser,
+				})
+				const match = await Bun.password.verify(password, maybeUser.password)
+				if (!match) {
+					throw new TRPCError({
+						code: `BAD_REQUEST`,
+						message: `${attemptsRemaining} attempts remaining.`,
+					})
+				}
+				const sessionKey = crypto.randomUUID()
+				let userSessions = userSessionMap.get(username)
+				if (!userSessions) {
+					userSessions = new Map()
+					userSessionMap.set(username, userSessions)
+				}
+				const now = new Date()
+				userSessions.set(sessionKey, +now)
+				successful = true
+				ctx.logger.info(`🔑 login successful as`, username)
+				return {
+					status: 200,
+					username,
+					sessionKey,
+					verification: maybeUser.emailVerified
+						? (`verified` as const)
+						: (`unverified` as const),
+				}
+			} finally {
+				logger.info(`finally`)
+				await ctx.db.drizzle.insert(loginHistory).values({
+					userId,
+					successful,
+					ipAddress: ctx.ip,
+					userAgent: ctx.req.headers[`user-agent`] ?? `Withheld`,
+					loginTime: ctx.now,
+				})
+				ctx.logger.info(`🔑 recorded login attempt from`, ctx.ip)
+			}
+		}),
+})
+
+export type AppRouter = typeof appRouter
+
+// Create tRPC HTTP handler
+const trpcHandler = createHTTPHandler({
+	router: appRouter,
+	middleware: cors({ origin: env.FRONTEND_ORIGINS }),
+	createContext: ({ req, res }) => ({
+		req,
+		res,
+		ip: req.socket.remoteAddress ?? ``,
+		now: new Date(),
+		db,
+		logger,
+	}),
+})
+
+// Daily tribunal cron job
 export const tribunalDaily: CronJob = (() => {
 	let { __tribunalDaily } = globalThis as any
 	if (!__tribunalDaily) {
@@ -68,219 +215,19 @@ export const tribunalDaily: CronJob = (() => {
 	return __tribunalDaily
 })()
 
-function createServer(requestListener: RequestListener) {
+function createServer(listener: RequestListener) {
 	if (httpsDev) {
-		return createSecureServer(httpsDev, requestListener)
+		return createSecureServer(httpsDev, listener)
 	}
-	return createHttpServer({}, requestListener)
+	return createHttpServer({}, listener)
 }
 
-const httpServer = createServer((req, res) => {
-	let data: Uint8Array[]
-	req
-		.on(`data`, (chunk) => (data ??= []).push(chunk))
-		.on(`end`, async () => {
-			const authHeader = req.headers.authorization
-			try {
-				if (typeof req.url === `undefined`) throw [400, `No URL`]
-				const ipAddress = req.socket.remoteAddress
-				if (!ipAddress) throw [400, `No IP address`]
+const httpServer = createServer(trpcHandler)
 
-				const now = new Date()
-				const url = new URL(req.url, env.VITE_BACKEND_ORIGIN)
-				logger.info(now, ipAddress, req.method, url.pathname)
-
-				const ban = await db.drizzle.query.banishedIps.findFirst({
-					columns: { banishedUntil: true },
-					where: eq(banishedIps.ip, ipAddress),
-				})
-				const ipBannedIndefinitely = ban?.banishedUntil === null
-				const ipBannedTemporarily = ban?.banishedUntil && ban.banishedUntil > now
-				if (ipBannedIndefinitely || ipBannedTemporarily) {
-					logger.info(`🙅 request from banned ip ${ipAddress}`)
-					return
-				}
-
-				switch (req.method) {
-					case `POST`:
-						if (!data) {
-							throw [400, `No data received`]
-						}
-						switch (url.pathname) {
-							case `/sign-up-${asUUID(`sign-up`)}`:
-								{
-									const text = Buffer.concat(data).toString()
-									const json: Json.Serializable = JSON.parse(text)
-									const parsed = signupType(json)
-									if (parsed instanceof type.errors) {
-										logger.warn(`signup parsed`, parsed)
-										throw [400, `Signup failed`]
-									}
-									const { username, password, email } = parsed
-									logger.info(`🔑 attempting to sign up: ${username}`)
-									const maybeUser = await db.drizzle.query.users.findFirst({
-										columns: { id: true },
-										where: eq(users.emailVerified, email),
-									})
-									if (maybeUser) {
-										throw [
-											400,
-											`This email was already verified on another account.`,
-										]
-									}
-									const passwordHash = await Bun.password.hash(password, {
-										algorithm: `bcrypt`,
-										cost: 10,
-									})
-									await db.drizzle.insert(users).values({
-										username,
-										emailOffered: email,
-										password: passwordHash,
-										createdIp: ipAddress,
-									})
-									logger.info(`🔑 user created: ${username}`)
-									res.writeHead(201, {
-										"Content-Type": `text/plain`,
-										"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
-									})
-									res.end(RESPONSE_DICTIONARY[201])
-								}
-								break
-							case `/login-${asUUID(`login`)}`:
-								{
-									let successful = false
-									let userId: string | null = null
-									try {
-										const tenMinutesAgo = new Date(+now - 1000 * 60 * 10)
-										logger.info(`🔑 ten minutes ago`, {
-											tenMinutesAgo,
-											now,
-										})
-										const recentLoginHistory =
-											await db.drizzle.query.loginHistory.findMany({
-												columns: {
-													userId: true,
-													successful: true,
-												},
-												where: and(
-													eq(loginHistory.ipAddress, ipAddress),
-													eq(loginHistory.successful, false),
-													gt(loginHistory.loginTime, tenMinutesAgo),
-												),
-												limit: 10,
-											})
-
-										logger.info(
-											`🔑 ${recentLoginHistory.length}/10 recent failed logins from ${ipAddress}`,
-										)
-
-										const attemptsRemaining = 10 - recentLoginHistory.length
-										if (attemptsRemaining < 1) {
-											logger.info(
-												`🔑 too many recent failed logins from ${ipAddress}`,
-											)
-											await db.drizzle.insert(banishedIps).values({
-												ip: ipAddress,
-												reason: `Too many recent login attempts.`,
-												banishedAt: now,
-												banishedUntil: new Date(+now + 1000 * 60 * 60 * 24),
-											})
-											throw [429, `Too many recent login attempts.`]
-										}
-
-										const text = Buffer.concat(data).toString()
-										const json: Json.Serializable = JSON.parse(text)
-										const parsed = credentialsType(json)
-										if (parsed instanceof type.errors) {
-											logger.warn(`login parsed`, parsed)
-											throw [400, `${attemptsRemaining} attempts remaining.`]
-										}
-										const { username, password } = parsed
-										const maybeUser = await db.drizzle.query.users.findFirst({
-											columns: {
-												id: true,
-												password: true,
-												emailVerified: true,
-											},
-											where: eq(users.username, username),
-										})
-										logger.info(`🔑 login attempt as user`, username)
-										if (!maybeUser) {
-											logger.info(`🔑 user ${username} does not exist`)
-											throw [400, `${attemptsRemaining} attempts remaining.`]
-										}
-										const { password: trueHash } = maybeUser
-										userId = maybeUser.id
-										const passwordDoesMatch = await Bun.password.verify(
-											password,
-											trueHash,
-										)
-										if (passwordDoesMatch) {
-											const sessionKey = crypto.randomUUID()
-											let userSessions = userSessionMap.get(username)
-											if (!userSessions) {
-												userSessions = new Map()
-												userSessionMap.set(username, userSessions)
-											}
-											userSessions.set(sessionKey, Number(now))
-											successful = true
-											logger.info(`🔑 login successful as`, username)
-											res.writeHead(200, {
-												"Content-Type": `text/plain`,
-												"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
-											})
-											const status = maybeUser.emailVerified
-												? `verified`
-												: `unverified`
-											res.end(`${username} ${sessionKey} ${status}`)
-										}
-									} finally {
-										await db.drizzle.insert(loginHistory).values({
-											userId,
-											successful,
-											ipAddress,
-											userAgent: req.headers[`user-agent`] ?? `Withheld`,
-										})
-										logger.info(`🔑 recorded login attempt from ${ipAddress}`)
-									}
-								}
-								break
-							default:
-								throw [404, `Not found`]
-						}
-						break
-					case undefined:
-						throw [400, `No Method`]
-					default:
-						throw [405, `Method not allowed`]
-				}
-			} catch (thrown) {
-				const result = serverIssueType(thrown)
-				if (result instanceof type.errors) {
-					logger.error(thrown)
-					res.writeHead(500, {
-						"Content-Type": `text/plain`,
-						"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
-					})
-					res.end(`Internal Server Error`)
-				} else {
-					const [code, message] = result
-					const codeMeaning = RESPONSE_DICTIONARY[code]
-					const responseText = `${codeMeaning}. ${message}`
-					logger.info(`❌ ${code}: ${responseText}`)
-					res.writeHead(code, {
-						"Content-Type": `text/plain`,
-						"Access-Control-Allow-Origin": `${env.FRONTEND_ORIGINS[0]}`,
-					})
-					res.end(responseText)
-				}
-			}
-		})
-})
 const address = httpServer.listen(env.BACKEND_PORT).address()
-const port =
-	typeof address === `string` ? null : address === null ? null : address.port
-if (port === null) throw new Error(`Could not determine port for test server`)
+if (!address || typeof address === `string`) {
+	throw new Error(`Could not determine port for test server`)
+}
 
 new WebSocketServer(httpServer, {
 	cors: {

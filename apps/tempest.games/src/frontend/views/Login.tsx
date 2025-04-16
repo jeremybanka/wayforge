@@ -12,6 +12,7 @@ import {
 	socket,
 	usernameInputAtom,
 } from "../services/socket-auth-service"
+import { trpc } from "./SignUp"
 
 export function Login(): React.ReactNode {
 	const setUsername = useI(usernameInputAtom)
@@ -25,30 +26,23 @@ export function Login(): React.ReactNode {
 		<form
 			onSubmit={async (e) => {
 				e.preventDefault()
-				const loginUUID = await asUUID(`login`)
-				const response = await fetch(
-					`${env.VITE_BACKEND_ORIGIN}/login-${loginUUID}`,
-					{
-						method: `POST`,
-						body: JSON.stringify({ username, password }),
-					},
-				)
+				const response = await trpc.login.mutate({ username, password })
 				console.log(response)
 				if (response.status === 200) {
 					setUsername(``)
 					setPassword(``)
-					const responseText = await response.text()
-					const [, sessionKey, status] = responseText.split(` `)
-					if (status === `unverified` || status === `verified`) {
-						setState(authAtom, { username, sessionKey, status })
+					if (
+						response.verification === `unverified` ||
+						response.verification === `verified`
+					) {
+						setState(authAtom, response)
 						socket.once(`connect`, () => {
 							navigate(`/game`)
 						})
 					}
 				}
 				if (response.status >= 400) {
-					const responseText = await response.text()
-					setError(responseText)
+					setError(`Invalid credentials`)
 				}
 			}}
 		>
