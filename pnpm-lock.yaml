@@ -282,6 +282,12 @@ importers:
       '@t3-oss/env-core':
         specifier: 0.13.0
         version: 0.13.0(arktype@2.1.20)(typescript@5.8.3)(valibot@1.0.0(typescript@5.8.3))(zod@3.24.3)
+      '@trpc/client':
+        specifier: 11.1.0
+        version: 11.1.0(@trpc/server@11.1.0(typescript@5.8.3))(typescript@5.8.3)
+      '@trpc/server':
+        specifier: 11.1.0
+        version: 11.1.0(typescript@5.8.3)
       arktype:
         specifier: 2.1.20
         version: 2.1.20
@@ -328,6 +334,12 @@ importers:
       '@react-email/components':
         specifier: 0.0.36
         version: 0.0.36(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@types/bun':
+        specifier: npm:bun-types@1.2.9
+        version: bun-types@1.2.9
+      '@types/cors':
+        specifier: 2.8.17
+        version: 2.8.17
       '@types/node':
         specifier: 22.15.2
         version: 22.15.2
@@ -346,6 +358,9 @@ importers:
       concurrently:
         specifier: 9.1.2
         version: 9.1.2
+      cors:
+        specifier: 2.8.5
+        version: 2.8.5
       cross-env:
         specifier: 7.0.3
         version: 7.0.3
@@ -358,6 +373,9 @@ importers:
       drizzle-kit:
         specifier: 0.31.0
         version: 0.31.0
+      elysia:
+        specifier: 1.2.25
+        version: 1.2.25(@sinclair/typebox@0.34.33)(typescript@5.8.3)
       eslint:
         specifier: 9.25.1
         version: 9.25.1(jiti@2.4.2)
@@ -3629,6 +3647,9 @@ packages:
   '@selderee/plugin-htmlparser2@0.11.0':
     resolution: {integrity: sha512-P33hHGdldxGabLFjPPpaTxVolMrzrcegejx+0GxjrIb9Zv48D8yAIA/QTDR2dFl7Uz7urX8aX6+5bCZslr+gWQ==}
 
+  '@sinclair/typebox@0.34.33':
+    resolution: {integrity: sha512-5HAV9exOMcXRUxo+9iYB5n09XxzCXnfy4VTNW4xnDv+FgjzAGY989C28BIdljKqmF+ZltUwujE3aossvcVtq6g==}
+
   '@socket.io/component-emitter@3.1.2':
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
 
@@ -3857,6 +3878,17 @@ packages:
       '@types/react-dom':
         optional: true
 
+  '@trpc/client@11.1.0':
+    resolution: {integrity: sha512-Q3pL4p7AddxI/ZJTEFo1utKSdasDFjZPECIPsKDkthEt52k530JkYVltTdLkYFKrNWXKKBo8MN7NwchelczoRw==}
+    peerDependencies:
+      '@trpc/server': 11.1.0
+      typescript: '>=5.7.2'
+
+  '@trpc/server@11.1.0':
+    resolution: {integrity: sha512-uAJ7ikejeujVkf53XFJ/0W8nr7bDjul+Szk5Rsepq97Hb/WS1RkRXdyX4KqAyCE9b1vDFCJVJwSxiIZdRtbTZQ==}
+    peerDependencies:
+      typescript: '>=5.7.2'
+
   '@trysound/sax@0.2.0':
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
     engines: {node: '>=10.13.0'}
@@ -3973,6 +4005,9 @@ packages:
 
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
+
+  '@types/ws@8.18.1':
+    resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
 
   '@typescript-eslint/eslint-plugin@8.31.0':
     resolution: {integrity: sha512-evaQJZ/J/S4wisevDvC1KFZkPzRetH8kYZbkgcTRyql3mcKsf+ZFDV1BVWUGTCAW5pQHoqn5gK5b8kn7ou9aFQ==}
@@ -4650,6 +4685,9 @@ packages:
   bun-types@1.2.10:
     resolution: {integrity: sha512-b5ITZMnVdf3m1gMvJHG+gIfeJHiQPJak0f7925Hxu6ZN5VKA8AGy4GZ4lM+Xkn6jtWxg5S3ldWvfmXdvnkp3GQ==}
 
+  bun-types@1.2.9:
+    resolution: {integrity: sha512-dk/kOEfQbajENN/D6FyiSgOKEuUi9PWfqKQJEgwKrCMWbjS/S6tEXp178mWvWAcUSYm9ArDlWHZKO3T/4cLXiw==}
+
   bundle-require@5.1.0:
     resolution: {integrity: sha512-3WrrOuZiyaaZPWiEt4G3+IffISVC9HYlWueJEBWED4ZH4aIAC2PnkdnuRrR94M+w6yGWn4AglWtJtBI8YqvgoA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
@@ -5267,6 +5305,18 @@ packages:
 
   electron-to-chromium@1.5.140:
     resolution: {integrity: sha512-o82Rj+ONp4Ip7Cl1r7lrqx/pXhbp/lh9DpKcMNscFJdh8ebyRofnc7Sh01B4jx403RI0oqTBvlZ7OBIZLMr2+Q==}
+
+  elysia@1.2.25:
+    resolution: {integrity: sha512-WsdQpORJvb4uszzeqYT0lg97knw1iBW1NTzJ1Jm57tiHg+DfAotlWXYbjmvQ039ssV0fYELDHinLLoUazZkEHg==}
+    peerDependencies:
+      '@sinclair/typebox': '>= 0.34.0'
+      openapi-types: '>= 12.0.0'
+      typescript: '>= 5.0.0'
+    peerDependenciesMeta:
+      openapi-types:
+        optional: true
+      typescript:
+        optional: true
 
   emoji-regex@10.4.0:
     resolution: {integrity: sha512-EC+0oUMY1Rqm4O6LLrgjtYDvcVYTy7chDnM4Q7030tP4Kwj3u/pR6gP9ygnp2CJMK5Gq+9Q2oqmrFJAz01DXjw==}
@@ -6604,6 +6654,9 @@ packages:
 
   mdn-data@2.0.30:
     resolution: {integrity: sha512-GaqWWShW4kv/G9IEucWScBx9G1/vsFZZJUO+tD26M8J8z3Kw5RDQjaoZe03YAClgeS/SWPOcb4nkFBTEi5DUEA==}
+
+  memoirist@0.3.0:
+    resolution: {integrity: sha512-wR+4chMgVPq+T6OOsk40u9Wlpw1Pjx66NMNiYxCQQ4EUJ7jDs3D9kTCeKdBOkvAiqXlHLVJlvYL01PvIJ1MPNg==}
 
   merge2@1.4.1:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
@@ -10888,6 +10941,8 @@ snapshots:
       domhandler: 5.0.3
       selderee: 0.11.0
 
+  '@sinclair/typebox@0.34.33': {}
+
   '@socket.io/component-emitter@3.1.2': {}
 
   '@standard-schema/spec@1.0.0': {}
@@ -11096,6 +11151,15 @@ snapshots:
       '@types/react': 19.1.2
       '@types/react-dom': 19.1.2(@types/react@19.1.2)
 
+  '@trpc/client@11.1.0(@trpc/server@11.1.0(typescript@5.8.3))(typescript@5.8.3)':
+    dependencies:
+      '@trpc/server': 11.1.0(typescript@5.8.3)
+      typescript: 5.8.3
+
+  '@trpc/server@11.1.0(typescript@5.8.3)':
+    dependencies:
+      typescript: 5.8.3
+
   '@trysound/sax@0.2.0': {}
 
   '@tybys/wasm-util@0.9.0':
@@ -11223,6 +11287,10 @@ snapshots:
   '@types/unist@2.0.11': {}
 
   '@types/unist@3.0.3': {}
+
+  '@types/ws@8.18.1':
+    dependencies:
+      '@types/node': 22.15.2
 
   '@typescript-eslint/eslint-plugin@8.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3))(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3)':
     dependencies:
@@ -11886,6 +11954,11 @@ snapshots:
     dependencies:
       '@types/node': 22.15.2
 
+  bun-types@1.2.9:
+    dependencies:
+      '@types/node': 22.15.2
+      '@types/ws': 8.18.1
+
   bundle-require@5.1.0(esbuild@0.25.2):
     dependencies:
       esbuild: 0.25.2
@@ -12411,6 +12484,14 @@ snapshots:
       safe-buffer: 5.2.1
 
   electron-to-chromium@1.5.140: {}
+
+  elysia@1.2.25(@sinclair/typebox@0.34.33)(typescript@5.8.3):
+    dependencies:
+      '@sinclair/typebox': 0.34.33
+      cookie: 1.0.2
+      memoirist: 0.3.0
+    optionalDependencies:
+      typescript: 5.8.3
 
   emoji-regex@10.4.0: {}
 
@@ -14096,6 +14177,8 @@ snapshots:
   mdn-data@2.0.28: {}
 
   mdn-data@2.0.30: {}
+
+  memoirist@0.3.0: {}
 
   merge2@1.4.1: {}
 

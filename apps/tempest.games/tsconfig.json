@@ -2,7 +2,7 @@
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
 		"target": "ES2020",
-		"types": ["vitest/globals", "bun-types", "node"]
+		"types": ["vitest/globals", "bun", "node"]
 	},
 	"include": [
 		"src",

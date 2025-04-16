@@ -1,8 +1,9 @@
+import { createTRPCClient, httpBatchLink } from "@trpc/client"
+import { TRPCError } from "@trpc/server"
 import { useI, useO } from "atom.io/react"
 import * as React from "react"
 
-import { asUUID } from "../../library/as-uuid-web"
-import { env } from "../../library/env"
+import type { AppRouter } from "../../backend.bun"
 import { setCssVars } from "../../library/set-css-vars"
 import { Anchor } from "../Anchor"
 import { navigate } from "../services/router-service"
@@ -17,6 +18,14 @@ import {
 	usernameInputAtom,
 	usernameIssuesSelector,
 } from "../services/socket-auth-service"
+
+export const trpc = createTRPCClient<AppRouter>({
+	links: [
+		httpBatchLink({
+			url: `https://localhost:4444`,
+		}),
+	],
+})
 
 export function SignUp(): React.ReactNode {
 	const setUsername = useI(usernameInputAtom)
@@ -40,22 +49,21 @@ export function SignUp(): React.ReactNode {
 			onSubmit={async (e) => {
 				e.preventDefault()
 				const password = password0
-				const signUpUUID = await asUUID(`sign-up`)
-				const response = await fetch(
-					`${env.VITE_BACKEND_ORIGIN}/sign-up-${signUpUUID}`,
-					{
-						method: `POST`,
-						body: JSON.stringify({ username, password, email }),
-					},
-				)
-				if (response.status === 201) {
-					setPassword1(``)
-					setEmail(``)
-					navigate(`/login`)
-				}
-				if (response.status >= 400) {
-					const responseText = await response.text()
-					setError(responseText)
+				try {
+					const response = await trpc.signUp.mutate({
+						username,
+						password,
+						email,
+					})
+					if (response.status === 201) {
+						setPassword1(``)
+						setEmail(``)
+						navigate(`/login`)
+					}
+				} catch (err) {
+					if (err instanceof TRPCError) {
+						setError(err.message)
+					}
 				}
 			}}
 		>
