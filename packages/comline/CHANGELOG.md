@@ -1,5 +1,11 @@
 # comline
 
+## 0.2.3
+
+### Patch Changes
+
+- c5c9ae1: 🐛 Remove zod from direct dependencies, enabling consumers of comline to plug in any compatible (`^3.0.0`) version of zod.
+
 ## 0.2.2
 
 ### Patch Changes
