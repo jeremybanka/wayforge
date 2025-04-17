@@ -759,12 +759,6 @@ importers:
       treetrunks:
         specifier: workspace:*
         version: link:../treetrunks
-      zod:
-        specifier: 3.24.3
-        version: 3.24.3
-      zod-to-json-schema:
-        specifier: 3.24.5
-        version: 3.24.5(zod@3.24.3)
     devDependencies:
       '@types/node':
         specifier: 22.14.1
@@ -790,6 +784,12 @@ importers:
       vitest:
         specifier: 3.1.1
         version: 3.1.1(@types/debug@4.1.12)(@types/node@22.14.1)(@vitest/ui@3.1.1)(happy-dom@17.4.4)(jiti@2.4.2)(jsdom@26.1.0)(lightningcss@1.29.3)(sass-embedded@1.86.3)(sass@1.86.3)(terser@5.39.0)(tsx@4.19.3)
+      zod:
+        specifier: 3.24.3
+        version: 3.24.3
+      zod-to-json-schema:
+        specifier: 3.24.5
+        version: 3.24.5(zod@3.24.3)
 
   packages/flightdeck:
     dependencies:
