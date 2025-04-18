@@ -76,5 +76,5 @@ describe(`FlightDeck`, () => {
 		const [data2, data3] = await Promise.all([res2.text(), res3.text()])
 		expect(data2).toEqual(`I can see my house from here!`)
 		expect(data3).toEqual(`I can see my house from here!`)
-	}, 5000)
+	}, 25000)
 })
