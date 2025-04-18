@@ -1,6 +1,6 @@
 import { CronJob } from "cron"
 
-import { logger } from "."
+import { logger } from "./logger"
 
 const ONE_WEEK_MS = 1000 * 60 * 60 * 24 * 7
 
