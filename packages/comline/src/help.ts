@@ -1,4 +1,4 @@
-import pc from "picocolors"
+import picocolors from "picocolors"
 import type { Colors } from "picocolors/types"
 import { z } from "zod"
 
@@ -44,7 +44,6 @@ export type FormatCell = (ctx: CellContext) => CellFormat
 export function renderTable(
 	table: string[][],
 	format: FormatCell,
-	// chalk: InstanceType<typeof Chalk>,
 	pico: Colors,
 ): string {
 	const longestRow = table.reduce(
@@ -122,7 +121,7 @@ export function help(
 	cli: CommandLineInterface<any>,
 	options?: HelpOptions,
 ): string {
-	const pico = pc.createColors(options?.forceColor)
+	const pico = picocolors.createColors(options?.forceColor)
 	return [
 		renderTable(
 			[[cli.cliName, cli.cliDescription ?? `cli`]],
