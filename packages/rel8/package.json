@@ -39,7 +39,7 @@
 	"devDependencies": {
 		"concurrently": "9.1.2",
 		"eslint": "9.24.0",
-		"fp-ts": "2.16.9",
+		"fp-ts": "2.16.10",
 		"tsup": "8.4.0",
 		"typescript": "5.8.3",
 		"vite": "6.3.2",
