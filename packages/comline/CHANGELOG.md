@@ -1,5 +1,11 @@
 # comline
 
+## 0.2.4
+
+### Patch Changes
+
+- c8927e5: ♻️ Changed vendors for terminal coloring from `chalk` to `picocolors`, a smaller alternative.
+
 ## 0.2.3
 
 ### Patch Changes
