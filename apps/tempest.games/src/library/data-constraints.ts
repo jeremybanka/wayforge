@@ -89,7 +89,7 @@ export const credentialsType = type({
 
 export const emailType = type(`string`).brand(`email`)
 
-export const signupType = type({
+export const signUpType = type({
 	"+": `delete`,
 	username: `string`,
 	password: `string`,
