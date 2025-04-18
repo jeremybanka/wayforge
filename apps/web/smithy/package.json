@@ -19,7 +19,7 @@
 		"@floating-ui/react": "0.27.7",
 		"atom.io": "workspace:*",
 		"corners": "0.2.0",
-		"fp-ts": "2.16.9",
+		"fp-ts": "2.16.10",
 		"io-ts": "2.2.22",
 		"luum": "workspace:*",
 		"motion": "12.7.4",
