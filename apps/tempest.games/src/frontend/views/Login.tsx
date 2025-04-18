@@ -2,8 +2,6 @@ import { setState } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import * as React from "react"
 
-import { asUUID } from "../../library/as-uuid-web"
-import { env } from "../../library/env"
 import { Anchor } from "../Anchor"
 import { navigate } from "../services/router-service"
 import {
@@ -12,7 +10,7 @@ import {
 	socket,
 	usernameInputAtom,
 } from "../services/socket-auth-service"
-import { trpc } from "./SignUp"
+import { trpc } from "../services/trpc-client-service"
 
 export function Login(): React.ReactNode {
 	const setUsername = useI(usernameInputAtom)
