@@ -1,9 +1,7 @@
-import { createTRPCClient, httpBatchLink } from "@trpc/client"
 import { TRPCError } from "@trpc/server"
 import { useI, useO } from "atom.io/react"
 import * as React from "react"
 
-import type { AppRouter } from "../../backend.bun"
 import { setCssVars } from "../../library/set-css-vars"
 import { Anchor } from "../Anchor"
 import { navigate } from "../services/router-service"
@@ -18,14 +16,7 @@ import {
 	usernameInputAtom,
 	usernameIssuesSelector,
 } from "../services/socket-auth-service"
-
-export const trpc = createTRPCClient<AppRouter>({
-	links: [
-		httpBatchLink({
-			url: `https://localhost:4444`,
-		}),
-	],
-})
+import { trpc } from "../services/trpc-client-service"
 
 export function SignUp(): React.ReactNode {
 	const setUsername = useI(usernameInputAtom)
