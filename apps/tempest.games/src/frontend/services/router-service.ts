@@ -107,7 +107,7 @@ export const routeSelector = selector<Route | 401 | 404>({
 		if (!auth) {
 			return 401
 		}
-		if (auth.status === `unverified`) {
+		if (auth.verification === `unverified`) {
 			return [`verify`]
 		}
 		return path
