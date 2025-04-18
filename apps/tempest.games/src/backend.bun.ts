@@ -6,7 +6,6 @@ import { createServer as createSecureServer } from "node:https"
 
 import { initTRPC, TRPCError } from "@trpc/server"
 import { createHTTPHandler } from "@trpc/server/adapters/standalone"
-import { type } from "arktype"
 import { AtomIOLogger } from "atom.io"
 import {
 	editRelationsInStore,
@@ -40,7 +39,6 @@ import {
 	signupType as signUpType,
 } from "./library/data-constraints"
 import { env } from "./library/env"
-import { RESPONSE_DICTIONARY } from "./library/response-dictionary"
 import { countContinuity } from "./library/store"
 
 const gameWorker = worker(parentSocket, `backend.worker.game.bun`, logger)
