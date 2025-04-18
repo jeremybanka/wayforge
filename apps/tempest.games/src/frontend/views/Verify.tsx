@@ -17,7 +17,7 @@ export function Verify({ route: [, token] }: VerifyProps): React.ReactNode {
 		return <p>You must be logged in to verify your account.</p>
 	}
 
-	const { status } = auth
+	const { verification } = auth
 
 	onMount(() => {
 		if (!token) return
@@ -28,7 +28,7 @@ export function Verify({ route: [, token] }: VerifyProps): React.ReactNode {
 		return <p>Check your email for a verification link.</p>
 	}
 
-	if (status === `unverified`) {
+	if (verification === `unverified`) {
 		return <p>Verifying your account...</p>
 	}
 
