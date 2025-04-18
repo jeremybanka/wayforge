@@ -1,4 +1,4 @@
-import { Chalk } from "chalk"
+import picocolors from "picocolors"
 import { z } from "zod"
 
 import {
@@ -33,7 +33,7 @@ test(`renderTable`, () => {
 				}
 				return base
 			},
-			new Chalk(),
+			picocolors.createColors(true),
 		),
 	)
 })

@@ -1,4 +1,5 @@
-import { Chalk } from "chalk"
+import pc from "picocolors"
+import type { Colors } from "picocolors/types"
 import { z } from "zod"
 
 import type { CommandLineInterface, OptionsGroup } from "./cli"
@@ -43,7 +44,8 @@ export type FormatCell = (ctx: CellContext) => CellFormat
 export function renderTable(
 	table: string[][],
 	format: FormatCell,
-	chalk: InstanceType<typeof Chalk>,
+	// chalk: InstanceType<typeof Chalk>,
+	pico: Colors,
 ): string {
 	const longestRow = table.reduce(
 		(acc, row) => (acc.length > row.length ? acc : row),
@@ -99,10 +101,10 @@ export function renderTable(
 			}
 			const { foregroundColor, backgroundColor } = cellFormat
 			if (foregroundColor) {
-				cellText = chalk[foregroundColor](cellText ?? ``)
+				cellText = pico[foregroundColor](cellText ?? ``)
 			}
 			if (backgroundColor) {
-				cellText = chalk[`bg${capitalize(backgroundColor)}`](cellText)
+				cellText = pico[`bg${capitalize(backgroundColor)}`](cellText)
 			}
 			cellText = `${padLeft}${cellText}${padRight}`
 
@@ -120,7 +122,7 @@ export function help(
 	cli: CommandLineInterface<any>,
 	options?: HelpOptions,
 ): string {
-	const chalk = new Chalk(options?.forceColor ? { level: 1 } : undefined)
+	const pico = pc.createColors(options?.forceColor)
 	return [
 		renderTable(
 			[[cli.cliName, cli.cliDescription ?? `cli`]],
@@ -132,7 +134,7 @@ export function help(
 					},
 					[x === 0, { foregroundColor: `bold` }],
 				),
-			chalk,
+			pico,
 		),
 		`USAGE`,
 		renderTable(
@@ -181,7 +183,7 @@ export function help(
 				)
 			},
 
-			chalk,
+			pico,
 		),
 	].join(`\n`)
 }
