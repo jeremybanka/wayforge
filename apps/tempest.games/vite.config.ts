@@ -18,7 +18,7 @@ export default defineConfig((async ({ mode }) => {
 			port: 3333,
 			host: `0.0.0.0`,
 			hmr: {
-				host: `localhost`,
+				host: env[`VITE_FRONTEND_HOST`],
 			},
 			...(httpsDev ? { https: httpsDev } : undefined),
 		},
