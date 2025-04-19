@@ -53,15 +53,38 @@ export const pathnameAtom = atom<Pathname | (string & {})>({
 				switch (newValue) {
 					case `/`: {
 						const auth = getState(authAtom)
-						let destination: Pathname = `/login`
-						if (auth) destination = `/game`
-						resolve(destination)
+						const intended: Pathname = `/login`
+						switch (auth?.verification) {
+							case `verified`:
+								resolve(`/game`)
+								break
+							case `unverified`:
+								resolve(`/verify`)
+								break
+							case undefined:
+								resolve(intended)
+						}
 						break
 					}
 					case `/login`:
 					case `/sign_up`: {
 						const auth = getState(authAtom)
-						if (auth) resolve(`/game`)
+						if (auth)
+							switch (auth.verification) {
+								case `verified`:
+									resolve(`/game`)
+									break
+								case `unverified`:
+									resolve(`/verify`)
+									break
+							}
+						break
+					}
+					case `/game`: {
+						const auth = getState(authAtom)
+						if (auth?.verification === `unverified`) {
+							resolve(`/verify`)
+						}
 						break
 					}
 					default:
@@ -106,9 +129,6 @@ export const routeSelector = selector<Route | 401 | 404>({
 		const auth = get(authAtom)
 		if (!auth) {
 			return 401
-		}
-		if (auth.verification === `unverified`) {
-			return [`verify`]
 		}
 		return path
 	},
