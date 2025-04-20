@@ -74,9 +74,12 @@ export const accountActions = pgTable(`userTokens`, {
 		.references(() => users.id)
 		.primaryKey(),
 	action: accountAction().notNull(),
-	token: varchar({ length: 255 }).notNull(),
+	token: varchar({ length: 7 }).notNull(),
+	wrongTokenCount: integer().notNull().default(0),
 	expiresAt: timestamp({ withTimezone: true }).notNull(),
 })
+
+export type AccountAction = typeof accountActions.$inferSelect
 
 export const games = pgTable(`games`, {
 	id: uuid().primaryKey().defaultRandom(),
