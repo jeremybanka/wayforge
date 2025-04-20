@@ -25,7 +25,12 @@ export function Verify({ route: [, token] }: VerifyProps): React.ReactNode {
 	})
 
 	if (!token) {
-		return <p>Check your email for a verification link.</p>
+		return (
+			<>
+				<p>Check your email for a verification code.</p>
+				<input type="text" placeholder="Verification code" />
+			</>
+		)
 	}
 
 	if (verification === `unverified`) {

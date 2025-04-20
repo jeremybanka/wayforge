@@ -31,7 +31,7 @@ export function CompleteAccountAction({
 	baseUrl = FRONTEND_ORIGIN,
 }: SlackConfirmEmailProps): React.ReactNode {
 	const url = new URL(baseUrl)
-	const prettyLink = `${url.host}/confirm`
+	const prettyLink = `${url.host}/verify`
 	const prettyAction = prettyPrintAccountAction(action)
 	return (
 		<Html>
@@ -68,7 +68,7 @@ export function CompleteAccountAction({
 					<Heading style={h1}>{prettyAction}</Heading>
 					<Text style={heroText}>
 						Paste the token below into your browser window at{` `}
-						<a href={`${baseUrl}/confirm`} style={footerLink}>
+						<a href={`${baseUrl}/verify`} style={footerLink}>
 							{prettyLink}
 						</a>
 						.

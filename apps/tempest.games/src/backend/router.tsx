@@ -3,6 +3,7 @@ import type { RequestListener } from "node:http"
 import { initTRPC, TRPCError } from "@trpc/server"
 import { and, eq, gt } from "drizzle-orm"
 
+import { CompleteAccountAction } from "../../emails/CompleteAccountAction"
 import type { DatabaseManager } from "../database/tempest-db-manager"
 import {
 	accountActions,
@@ -11,6 +12,9 @@ import {
 	users,
 } from "../database/tempest-db-schema"
 import { credentialsType, signUpType } from "../library/data-constraints"
+import { env } from "../library/env"
+import { genAccountActionToken } from "./account-actions"
+import { resend } from "./email"
 import { logger } from "./logger"
 import { userSessionMap } from "./user-sessions"
 
@@ -53,13 +57,26 @@ export const appRouter = trpc.router({
 			})
 			.returning()
 		ctx.logger.info(`🔑 user created:`, username)
-		const confirmToken = `123-456`
+		const accountActionToken = genAccountActionToken()
 
 		await ctx.db.drizzle.insert(accountActions).values({
 			action: `emailConfirm`,
 			userId: user.id,
-			token: confirmToken,
-			expiresAt: new Date(+ctx.now + 1000 * 60 * 60 * 24),
+			token: accountActionToken,
+			expiresAt: new Date(+ctx.now + 1000 * 60 * 15),
+		})
+
+		await resend.emails.send({
+			from: `noreply@tempest.games`,
+			to: email,
+			subject: `Confirm your email address`,
+			react: (
+				<CompleteAccountAction
+					action="emailConfirm"
+					validationCode={accountActionToken}
+					baseUrl={env.FRONTEND_ORIGINS[0]}
+				/>
+			),
 		})
 
 		return { status: 201 }
