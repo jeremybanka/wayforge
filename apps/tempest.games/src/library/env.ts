@@ -35,7 +35,7 @@ export const env = createEnv({
 	client: {
 		VITE_BACKEND_ORIGIN: str,
 		VITE_DEV_FRONTEND_HOST: type(`string | undefined`),
-		VITE_USE_SELF_SIGNED_CERTIFICATE: maybeBool.pipe((s) => s === `true`),
+		VITE_DEV_HTTPS: maybeBool.pipe((s) => s === `true`),
 	},
 
 	/**
