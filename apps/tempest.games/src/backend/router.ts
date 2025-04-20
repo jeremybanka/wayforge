@@ -4,10 +4,15 @@ import { initTRPC, TRPCError } from "@trpc/server"
 import { and, eq, gt } from "drizzle-orm"
 
 import type { DatabaseManager } from "../database/tempest-db-manager"
-import { banishedIps, loginHistory, users } from "../database/tempest-db-schema"
+import {
+	accountActions,
+	banishedIps,
+	loginHistory,
+	users,
+} from "../database/tempest-db-schema"
 import { credentialsType, signUpType } from "../library/data-constraints"
 import { logger } from "./logger"
-import { userSessionMap } from "./user-session-map"
+import { userSessionMap } from "./user-sessions"
 
 interface Context {
 	req: Parameters<RequestListener>[0]
@@ -38,13 +43,25 @@ export const appRouter = trpc.router({
 			algorithm: `bcrypt`,
 			cost: 10,
 		})
-		await ctx.db.drizzle.insert(users).values({
-			username,
-			emailOffered: email,
-			password: passwordHash,
-			createdIp: ctx.ip,
-		})
+		const [user] = await ctx.db.drizzle
+			.insert(users)
+			.values({
+				username,
+				emailOffered: email,
+				password: passwordHash,
+				createdIp: ctx.ip,
+			})
+			.returning()
 		ctx.logger.info(`🔑 user created:`, username)
+		const confirmToken = `123-456`
+
+		await ctx.db.drizzle.insert(accountActions).values({
+			action: `emailConfirm`,
+			userId: user.id,
+			token: confirmToken,
+			expiresAt: new Date(+ctx.now + 1000 * 60 * 60 * 24),
+		})
+
 		return { status: 201 }
 	}),
 

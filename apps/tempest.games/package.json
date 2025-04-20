@@ -28,6 +28,7 @@
 		"dev": "bun run env:dev && concurrently \"bun:dev:*\"",
 		"dev:vite": "vite --port 3333",
 		"dev:backend": "bun --hot --env-file=.env.development ./src/backend.bun.ts",
+		"dev:email": "bun --env-file=.env.development email dev",
 		"build": "rimraf ./bin && ([ $PREVIEW ] && bun run env:pre || bun run env:prod) && concurrently \"bun:build:*\"",
 		"build:bun": "./build.bun.ts",
 		"build:vite": "[ $PREVIEW ] && vite build --mode preview || vite build --mode production",
@@ -51,6 +52,7 @@
 		"db:setup": "./__scripts__/setup-db.bun.ts"
 	},
 	"dependencies": {
+		"@react-email/components": "0.0.36",
 		"@t3-oss/env-core": "0.13.0",
 		"@trpc/client": "11.1.0",
 		"@trpc/server": "11.1.0",
@@ -62,6 +64,8 @@
 		"postgres": "3.4.5",
 		"react": "19.1.0",
 		"react-dom": "19.1.0",
+		"react-email": "4.0.7",
+		"resend": "4.2.0",
 		"safedeposit": "workspace:*",
 		"safegen": "0.3.0",
 		"socket.io": "4.8.1",
@@ -89,7 +93,6 @@
 		"eslint-plugin-react-refresh": "0.4.20",
 		"flightdeck": "workspace:*",
 		"globals": "16.0.0",
-		"resend": "4.2.0",
 		"rimraf": "6.0.1",
 		"sass-embedded": "1.87.0",
 		"tsx": "4.19.3",
