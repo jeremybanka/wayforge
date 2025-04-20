@@ -67,6 +67,7 @@ export const accountAction = pgEnum(`accountAction`, [
 	`emailConfirm`,
 	`passwordReset`,
 	`emailChange`,
+	`cooldown`,
 ])
 
 export const accountActions = pgTable(`userTokens`, {
@@ -74,7 +75,7 @@ export const accountActions = pgTable(`userTokens`, {
 		.references(() => users.id)
 		.primaryKey(),
 	action: accountAction().notNull(),
-	token: varchar({ length: 9 }).notNull(),
+	token: varchar({ length: 254 }).notNull(),
 	wrongTokenCount: integer().notNull().default(0),
 	expiresAt: timestamp({ withTimezone: true }).notNull(),
 })

@@ -19,6 +19,31 @@ import { resend } from "./email"
 import { logger } from "./logger"
 import { userSessionMap } from "./user-sessions"
 
+function simpleFormatMs(ms: number): string {
+	const seconds = Math.floor(ms / 1000)
+	const minutes = Math.floor(seconds / 60)
+	const hours = Math.floor(minutes / 60)
+	const days = Math.floor(hours / 24)
+	const weeks = Math.floor(days / 7)
+	const years = Math.floor(weeks / 52)
+	if (years > 0) {
+		return `${years} year${years === 1 ? `` : `s`}, `
+	}
+	if (weeks > 0) {
+		return `${weeks} week${weeks === 1 ? `` : `s`}, `
+	}
+	if (days > 0) {
+		return `${days} day${days === 1 ? `` : `s`}, `
+	}
+	if (hours > 0) {
+		return `${hours} hour${hours === 1 ? `` : `s`}, `
+	}
+	if (minutes > 0) {
+		return `${minutes} minute${minutes === 1 ? `` : `s`}, `
+	}
+	return `${seconds} second${seconds === 1 ? `` : `s`}`
+}
+
 interface Context {
 	req: Parameters<RequestListener>[0]
 	res: Parameters<RequestListener>[1]
@@ -59,11 +84,15 @@ export const appRouter = trpc.router({
 			.returning()
 		ctx.logger.info(`🔑 user created:`, username)
 		const accountActionToken = genAccountActionToken()
+		const encryptedToken = await Bun.password.hash(accountActionToken, {
+			algorithm: `bcrypt`,
+			cost: 10,
+		})
 
 		await ctx.db.drizzle.insert(accountActions).values({
 			action: `emailConfirm`,
 			userId: user.id,
-			token: accountActionToken,
+			token: encryptedToken,
 			expiresAt: new Date(+ctx.now + 1000 * 60 * 15),
 		})
 
@@ -187,9 +216,37 @@ export const appRouter = trpc.router({
 			}
 
 			const accountAction = await ctx.db.drizzle.query.accountActions.findFirst({
-				columns: { action: true, expiresAt: true, wrongTokenCount: true },
+				columns: {
+					action: true,
+					expiresAt: true,
+					wrongTokenCount: true,
+					token: true,
+				},
 				where: eq(accountActions.userId, maybeUser.id),
 			})
+
+			if (!accountAction) {
+				throw new TRPCError({
+					code: `BAD_REQUEST`,
+					message: `Account action not found.`,
+				})
+			}
+
+			if (accountAction.action === `cooldown`) {
+				const cooldownMs = accountAction.expiresAt.getTime() - ctx.now.getTime()
+				const cooldownString = simpleFormatMs(cooldownMs)
+				throw new TRPCError({
+					code: `TOO_MANY_REQUESTS`,
+					message: `You must wait ${
+						cooldownString
+					} before attempting to perform this action again.`,
+				})
+			}
+
+			const accountActionToken = await Bun.password.verify(
+				token,
+				accountAction.token,
+			)
 		}),
 })
 
