@@ -18,7 +18,7 @@ import type { DefaultEventsMap, ExtendedError, Socket } from "socket.io"
 
 import { countContinuity } from "../library/store"
 import { logger } from "./logger"
-import { userSessionMap } from "./user-session-map"
+import { userSessionMap } from "./user-sessions"
 
 export interface EventsMap {
 	[event: string]: any
