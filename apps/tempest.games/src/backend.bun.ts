@@ -9,10 +9,10 @@ import { Server as WebSocketServer } from "socket.io"
 
 import { createServer } from "../dev/https-dev"
 import { worker } from "./backend.worker"
+import { db } from "./backend/db"
 import { logger, parentSocket } from "./backend/logger"
 import { appRouter } from "./backend/router"
 import { serveSocket, sessionMiddleware } from "./backend/websockets"
-import { DatabaseManager } from "./database/tempest-db-manager"
 import { env } from "./library/env"
 
 export const tribunalDaily: CronJob = (() => {
@@ -32,12 +32,6 @@ export const tribunalDaily: CronJob = (() => {
 })()
 
 const gameWorker = worker(parentSocket, `backend.worker.game.bun`, logger)
-
-const db = new DatabaseManager({
-	logQuery(query, params) {
-		logger.info(`📝 query`, query, params)
-	},
-})
 
 IMPLICIT.STORE.loggers[0] = new AtomIOLogger(`info`, undefined, logger)
 
