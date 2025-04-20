@@ -14,9 +14,12 @@ import {
 	userIndex,
 	usersOfSockets,
 } from "atom.io/realtime-server"
+import { eq } from "drizzle-orm"
 import type { DefaultEventsMap, ExtendedError, Socket } from "socket.io"
 
+import { users } from "../database/tempest-db-schema"
 import { countContinuity } from "../library/store"
+import { db } from "./db"
 import { logger } from "./logger"
 import { userSessionMap } from "./user-sessions"
 
@@ -33,13 +36,23 @@ type SocketServerMiddleware<
 	next: (err?: ExtendedError) => void,
 ) => void
 
-export const sessionMiddleware: SocketServerMiddleware = (socket, next) => {
+export const sessionMiddleware: SocketServerMiddleware = async (
+	socket,
+	next,
+) => {
 	const { username, sessionKey } = socket.handshake.auth as {
 		username: string
 		sessionKey: string
 	}
 	if (!(username && sessionKey)) {
 		next(new Error(`No auth header provided`))
+		return
+	}
+	const user = await db.drizzle.query.users.findFirst({
+		where: eq(users.username, username),
+	})
+	if (!user?.emailVerified) {
+		next(new Error(`Email not verified`))
 		return
 	}
 	const userKey = `user::${username}` satisfies UserKey
