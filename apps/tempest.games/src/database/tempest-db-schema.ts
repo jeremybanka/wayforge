@@ -74,7 +74,7 @@ export const accountActions = pgTable(`userTokens`, {
 		.references(() => users.id)
 		.primaryKey(),
 	action: accountAction().notNull(),
-	token: varchar({ length: 7 }).notNull(),
+	token: varchar({ length: 9 }).notNull(),
 	wrongTokenCount: integer().notNull().default(0),
 	expiresAt: timestamp({ withTimezone: true }).notNull(),
 })
