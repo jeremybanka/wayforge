@@ -23,6 +23,7 @@ export const env = createEnv({
 		FRONTEND_PORT: str.pipe((s) => Number.parseInt(s, 10)),
 		FRONTEND_ORIGINS: str.pipe.try((s) => JSON.parse(s), type(`string[]`)),
 		API_KEY_OPENAI: type(`string | undefined`),
+		API_KEY_RESEND: type(`string | undefined`),
 	},
 
 	/**
