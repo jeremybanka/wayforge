@@ -1,6 +1,7 @@
 import type { RequestListener } from "node:http"
 
 import { initTRPC, TRPCError } from "@trpc/server"
+import { type } from "arktype"
 import { and, eq, gt } from "drizzle-orm"
 
 import { CompleteAccountAction } from "../../emails/CompleteAccountAction"
@@ -165,6 +166,30 @@ export const appRouter = trpc.router({
 				})
 				ctx.logger.info(`🔑 recorded login attempt from`, ctx.ip)
 			}
+		}),
+
+	verifyAccountAction: trpc.procedure
+		.input(type({ token: `string`, username: `string` }))
+		.mutation(async ({ input, ctx }) => {
+			const { token, username } = input
+			ctx.logger.info(`🔑 verifying account action token:`, token)
+
+			const maybeUser = await ctx.db.drizzle.query.users.findFirst({
+				columns: { id: true, emailOffered: true },
+				where: eq(users.username, username),
+			})
+
+			if (!maybeUser) {
+				throw new TRPCError({
+					code: `BAD_REQUEST`,
+					message: `User not found.`,
+				})
+			}
+
+			const accountAction = await ctx.db.drizzle.query.accountActions.findFirst({
+				columns: { action: true, expiresAt: true, wrongTokenCount: true },
+				where: eq(accountActions.userId, maybeUser.id),
+			})
 		}),
 })
 
