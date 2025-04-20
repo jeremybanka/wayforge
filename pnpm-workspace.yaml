@@ -4,3 +4,13 @@ packages:
   - "apps/node/*"
   - "apps/web/*"
   - "packages/*"
+onlyBuiltDependencies:
+  - "@biomejs/biome"
+  - "@parcel/watcher"
+  - "@swc/core"
+  - "@vercel/speed-insights"
+  - "bun"
+  - "esbuild"
+  - "sharp"
+  - "unrs-resolver"
+  - "workerd"

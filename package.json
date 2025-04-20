@@ -35,7 +35,6 @@
 		"nuke": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name 'dist' -type d -prune -exec rm -rf '{}' + && rm pnpm-lock.yaml",
 		"nv": "fnm use $(pnpm list -w --json | jq -r '.[0].path')"
 	},
-	"trustedDependencies": ["@biomejs/biome"],
 	"devDependencies": {
 		"@biomejs/biome": "1.9.4",
 		"@changesets/cli": "2.29.2",
@@ -55,17 +54,5 @@
 		"typescript": "5.8.3",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.1.1"
-	},
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"@biomejs/biome",
-			"@parcel/watcher",
-			"@swc/core",
-			"@vercel/speed-insights",
-			"bun",
-			"esbuild",
-			"sharp",
-			"workerd"
-		]
 	}
 }
