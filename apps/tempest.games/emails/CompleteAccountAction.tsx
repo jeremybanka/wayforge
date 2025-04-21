@@ -20,7 +20,7 @@ import * as svg from "../src/frontend/<svg>"
 // biome-ignore lint/style/noNonNullAssertion: <explanation>
 const FRONTEND_ORIGIN = JSON.parse(process.env[`FRONTEND_ORIGINS`]!)[0] ?? ``
 interface SlackConfirmEmailProps {
-	action: AccountAction[`action`]
+	action: Exclude<AccountAction[`action`], `cooldown`>
 	validationCode: string
 	baseUrl?: string
 }
@@ -99,7 +99,7 @@ export function CompleteAccountAction({
 }
 
 CompleteAccountAction.PreviewProps = {
-	action: `emailConfirm`,
+	action: `confirmEmail`,
 	validationCode: genAccountActionToken(),
 	baseUrl: `https://tempest.games`,
 } as SlackConfirmEmailProps

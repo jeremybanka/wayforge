@@ -6,14 +6,14 @@ export function genAccountActionToken(): string {
 }
 
 export function prettyPrintAccountAction(
-	action: AccountAction[`action`],
+	action: Exclude<AccountAction[`action`], `cooldown`>,
 ): string {
 	switch (action) {
-		case `emailConfirm`:
+		case `confirmEmail`:
 			return `Confirm your email address`
-		case `passwordReset`:
+		case `resetPassword`:
 			return `Reset your password`
-		case `emailChange`:
-			return `Change your email address`
+		case `login`:
+			return `Login`
 	}
 }

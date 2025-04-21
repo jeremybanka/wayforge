@@ -36,13 +36,19 @@ export const authAtom = atom<{
 	default: null,
 	effects: [
 		({ onSet }) => {
-			onSet(({ newValue }) => {
+			onSet(async ({ newValue }) => {
 				if (newValue) {
 					localStorage.setItem(`username`, newValue.username)
 					localStorage.setItem(`sessionKey`, newValue.sessionKey)
 					localStorage.setItem(`verification`, newValue.verification)
 					console.log(`connecting...`)
-					socket.connect()
+					if (newValue.verification === `verified`) {
+						socket.connect()
+					} else {
+						await import(`./router-service.ts`).then(({ navigate }) => {
+							navigate(`/verify`)
+						})
+					}
 				} else {
 					console.log(`clearing session...`)
 					localStorage.removeItem(`sessionKey`)
@@ -132,4 +138,9 @@ export const signUpReadySelector = selector<boolean>({
 		const emailIssues = get(emailIssuesSelector)
 		return !(usernameIssues ?? password0Issues ?? password1Issues ?? emailIssues)
 	},
+})
+
+export const tokenInputAtom = atom<string>({
+	key: `token`,
+	default: ``,
 })

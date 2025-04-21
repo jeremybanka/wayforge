@@ -49,7 +49,7 @@ export const pathnameAtom = atom<Pathname | (string & {})>({
 				history.replaceState(null, ``, pathname)
 				setSelf(pathname)
 			}
-			const redirect = (newValue: string) => {
+			const redirect = (newValue: Pathname | (string & {})) => {
 				switch (newValue) {
 					case `/`: {
 						const auth = getState(authAtom)
@@ -80,13 +80,23 @@ export const pathnameAtom = atom<Pathname | (string & {})>({
 							}
 						break
 					}
-					case `/game`: {
+					case `/verify`: {
+						const auth = getState(authAtom)
+						if (auth?.verification === `verified`) {
+							resolve(`/game`)
+						}
+						break
+					}
+					case `/game`:
+					case `/game/clicker`: {
 						const auth = getState(authAtom)
 						if (auth?.verification === `unverified`) {
 							resolve(`/verify`)
 						}
 						break
 					}
+					case `/admin`:
+						break
 					default:
 				}
 			}

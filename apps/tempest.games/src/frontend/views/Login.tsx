@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server"
 import { setState } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import * as React from "react"
@@ -24,23 +25,18 @@ export function Login(): React.ReactNode {
 		<form
 			onSubmit={async (e) => {
 				e.preventDefault()
-				const response = await trpc.login.mutate({ username, password })
-				console.log(response)
-				if (response.status === 200) {
+				try {
+					const response = await trpc.login.mutate({ username, password })
 					setUsername(``)
 					setPassword(``)
-					if (
-						response.verification === `unverified` ||
-						response.verification === `verified`
-					) {
-						setState(authAtom, response)
-						socket.once(`connect`, () => {
-							navigate(`/game`)
-						})
+					setState(authAtom, response)
+					socket.once(`connect`, () => {
+						navigate(`/game`)
+					})
+				} catch (thrown) {
+					if (thrown instanceof TRPCError) {
+						setError(thrown.message)
 					}
-				}
-				if (response.status >= 400) {
-					setError(`Invalid credentials`)
 				}
 			}}
 		>

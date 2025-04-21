@@ -26,7 +26,7 @@ export const users = pgTable(
 		username: varchar({ length: 16 }).notNull(),
 		emailOffered: varchar({ length: 254 }).notNull(),
 		emailVerified: varchar({ length: 254 }),
-		password: varchar({ length: 254 }).notNull(),
+		password: varchar({ length: 254 }),
 		createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 		createdIp: varchar({ length: 45 }).notNull(), // IP address length can be up to 45 characters (for IPv6)
 		isActive: boolean().notNull().default(false),
@@ -64,10 +64,10 @@ export const trackedUserColumnName = pgEnum(
 )
 
 export const accountAction = pgEnum(`accountAction`, [
-	`emailConfirm`,
-	`passwordReset`,
-	`emailChange`,
 	`cooldown`,
+	`confirmEmail`,
+	`login`,
+	`resetPassword`,
 ])
 
 export const accountActions = pgTable(`userTokens`, {
@@ -75,12 +75,14 @@ export const accountActions = pgTable(`userTokens`, {
 		.references(() => users.id)
 		.primaryKey(),
 	action: accountAction().notNull(),
-	token: varchar({ length: 254 }).notNull(),
-	wrongTokenCount: integer().notNull().default(0),
+	code: varchar({ length: 254 }).notNull(),
+	wrongCodeCount: integer().notNull().default(0),
 	expiresAt: timestamp({ withTimezone: true }).notNull(),
 })
 
 export type AccountAction = typeof accountActions.$inferSelect
+export type AccountActionInsert = typeof accountActions.$inferInsert
+export type AccountActionUpdate = Partial<AccountActionInsert>
 
 export const games = pgTable(`games`, {
 	id: uuid().primaryKey().defaultRandom(),

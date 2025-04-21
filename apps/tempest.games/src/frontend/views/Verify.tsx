@@ -1,8 +1,12 @@
-import { useO } from "atom.io/react"
+import { TRPCError } from "@trpc/server"
+import { setState } from "atom.io"
+import { useI, useO } from "atom.io/react"
 import { onMount } from "atom.io/realtime-react"
+import React from "react"
 
 import type { Route } from "../services/router-service"
-import { authAtom } from "../services/socket-auth-service"
+import { authAtom, tokenInputAtom } from "../services/socket-auth-service"
+import { trpc } from "../services/trpc-client-service"
 
 export type VerifyRoute = Extract<Route, [`verify`, ...any]>
 
@@ -10,8 +14,21 @@ type VerifyProps = {
 	route: VerifyRoute
 }
 
-export function Verify({ route: [, token] }: VerifyProps): React.ReactNode {
+export function Verify({
+	route: [, tokenFromUrl],
+}: VerifyProps): React.ReactNode {
 	const auth = useO(authAtom)
+	const token = useO(tokenInputAtom)
+	const setToken = useI(tokenInputAtom)
+
+	const submitted = React.useState(false)
+	const [error, setError] = React.useState<string | null>(null)
+
+	onMount(() => {
+		if (tokenFromUrl) {
+			setToken(tokenFromUrl)
+		}
+	})
 
 	if (!auth) {
 		return <p>You must be logged in to verify your account.</p>
@@ -24,28 +41,45 @@ export function Verify({ route: [, token] }: VerifyProps): React.ReactNode {
 		console.log(`verifying token`, token)
 	})
 
-	if (!token) {
-		return (
-			<form
-				onSubmit={(e) => {
-					e.preventDefault()
-					console.log(`submit`)
-				}}
-			>
-				<main>
-					<p>Check your email for a verification code.</p>
-					<label htmlFor="code">
-						<span>Verification code</span>
-						<input type="text" placeholder="Verification code" />
-					</label>
-				</main>
-			</form>
-		)
-	}
-
-	if (verification === `unverified`) {
-		return <p>Verifying your account...</p>
-	}
-
-	return <p>Account verified.</p>
+	return (
+		<form
+			onSubmit={async (e) => {
+				e.preventDefault()
+				try {
+					if (!auth) {
+						console.error(`No auth`)
+						return
+					}
+					const { username } = auth
+					const response = await trpc.verifyAccountAction.mutate({
+						token,
+						username,
+					})
+					setState(authAtom, response)
+				} catch (thrown) {
+					if (thrown instanceof TRPCError) {
+						setError(thrown.message)
+					}
+				}
+			}}
+		>
+			<main>
+				<p>Check your email for a verification code.</p>
+				<label htmlFor="code">
+					<span>Verification code</span>
+					<input
+						id="code"
+						type="text"
+						value={token}
+						onChange={(e) => {
+							setToken(e.target.value)
+						}}
+						placeholder="Verification code"
+						autoComplete="one-time-code"
+						autoCapitalize="none"
+					/>
+				</label>
+			</main>
+		</form>
+	)
 }

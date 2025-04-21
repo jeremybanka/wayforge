@@ -41,19 +41,17 @@ export function SignUp(): React.ReactNode {
 				e.preventDefault()
 				const password = password0
 				try {
-					const response = await trpc.signUp.mutate({
+					await trpc.signUp.mutate({
 						username,
 						password,
 						email,
 					})
-					if (response.status === 201) {
-						setPassword1(``)
-						setEmail(``)
-						navigate(`/login`)
-					}
-				} catch (err) {
-					if (err instanceof TRPCError) {
-						setError(err.message)
+					setPassword1(``)
+					setEmail(``)
+					navigate(`/login`)
+				} catch (thrown) {
+					if (thrown instanceof TRPCError) {
+						setError(thrown.message)
 					}
 				}
 			}}

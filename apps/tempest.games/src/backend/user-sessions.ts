@@ -33,3 +33,14 @@ export const userSessionMap: Map<string, Map<string, number>> = (() => {
 	}
 	return __userSessionMap
 })()
+
+export function createSession(username: string, now: Date): string {
+	const sessionKey = crypto.randomUUID()
+	let userSessions = userSessionMap.get(username)
+	if (!userSessions) {
+		userSessions = new Map()
+		userSessionMap.set(username, userSessions)
+	}
+	userSessions.set(sessionKey, +now)
+	return sessionKey
+}
