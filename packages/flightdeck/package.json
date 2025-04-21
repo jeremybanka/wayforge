@@ -56,6 +56,6 @@
 		"tmp": "0.2.3",
 		"tsup": "8.4.0",
 		"varmint": "workspace:*",
-		"vitest": "3.1.1"
+		"vitest": "3.1.2"
 	}
 }
