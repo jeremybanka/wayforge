@@ -70,7 +70,7 @@ export const accountAction = pgEnum(`accountAction`, [
 	`resetPassword`,
 ])
 
-export const accountActions = pgTable(`userTokens`, {
+export const accountActions = pgTable(`accountActions`, {
 	userId: uuid()
 		.references(() => users.id)
 		.primaryKey(),
