@@ -287,6 +287,9 @@ export const appRouter = trpc.router({
 						.where(eq(users.id, user.id))
 				}
 			}
+			await ctx.db.drizzle
+				.delete(accountActions)
+				.where(eq(accountActions.userId, user.id))
 			const sessionKey = createSession(username, ctx.now)
 			return {
 				username,
