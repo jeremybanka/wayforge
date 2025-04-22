@@ -81,9 +81,12 @@
 		"tsdoc",
 		"tsdown",
 		"tsup",
+		"unrs",
 		"unsub",
+		"vercel",
 		"Vitest",
 		"wayforge",
+		"workerd",
 		"yalc",
 		"zustand"
 	]
