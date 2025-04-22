@@ -1,12 +1,11 @@
-import type { Options } from "tsup"
-import { defineConfig } from "tsup"
+import type { Options } from "tsdown"
+import { defineConfig } from "tsdown"
 
 export const OPTIONS = {
 	clean: true,
 	dts: true,
 	entry: [`src/index.ts`, `src/varmint.x.ts`],
 	format: [`esm`],
-	metafile: false,
 	outDir: `dist`,
 	sourcemap: true,
 	treeshake: true,
