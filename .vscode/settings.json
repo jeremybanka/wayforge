@@ -78,6 +78,7 @@
 		"treeshake",
 		"treetrunks",
 		"tsdoc",
+		"tsdown",
 		"tsup",
 		"unsub",
 		"Vitest",
