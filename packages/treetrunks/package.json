@@ -1,47 +1,44 @@
 {
-  "name": "treetrunks",
-  "version": "0.1.2",
-  "license": "MIT",
-  "author": {
-    "name": "Jeremy Banka",
-    "email": "hello@jeremybanka.com"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jeremybanka/wayforge.git",
-    "directory": "packages/treetrunks"
-  },
-  "type": "module",
-  "files": [
-    "dist",
-    "src"
-  ],
-  "main": "dist/treetrunks.js",
-  "scripts": {
-    "build": "tsdown",
-    "lint:biome": "biome check -- .",
-    "lint:eslint": "eslint -- .",
-    "lint:types": "tsc --noEmit",
-    "watch:types": "tsc --watch --noEmit",
-    "lint": "concurrently \"bun:lint:*\"",
-    "test": "vitest",
-    "test:coverage:once": "vitest run --coverage",
-    "test:coverage:increased": "recoverage",
-    "test:coverage": "pnpm test:coverage:once && pnpm test:coverage:increased",
-    "test:once": "vitest run",
-    "postversion": "biome format --write package.json"
-  },
-  "devDependencies": {
-    "@types/node": "22.14.1",
-    "@vitest/coverage-v8": "3.1.2",
-    "concurrently": "9.1.2",
-    "eslint": "9.25.1",
-    "recoverage": "0.1.9",
-    "rimraf": "6.0.1",
-    "tsdown": "^0.9.3",
-    "vitest": "3.1.2"
-  }
+	"name": "treetrunks",
+	"version": "0.1.2",
+	"license": "MIT",
+	"author": {
+		"name": "Jeremy Banka",
+		"email": "hello@jeremybanka.com"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeremybanka/wayforge.git",
+		"directory": "packages/treetrunks"
+	},
+	"type": "module",
+	"files": ["dist", "src"],
+	"main": "dist/treetrunks.js",
+	"scripts": {
+		"build": "tsdown",
+		"lint:biome": "biome check -- .",
+		"lint:eslint": "eslint -- .",
+		"lint:types": "tsc --noEmit",
+		"watch:types": "tsc --watch --noEmit",
+		"lint": "concurrently \"bun:lint:*\"",
+		"test": "vitest",
+		"test:coverage:once": "vitest run --coverage",
+		"test:coverage:increased": "recoverage",
+		"test:coverage": "pnpm test:coverage:once && pnpm test:coverage:increased",
+		"test:once": "vitest run",
+		"postversion": "biome format --write package.json"
+	},
+	"devDependencies": {
+		"@types/node": "22.14.1",
+		"@vitest/coverage-v8": "3.1.2",
+		"concurrently": "9.1.2",
+		"eslint": "9.25.1",
+		"recoverage": "0.1.9",
+		"rimraf": "6.0.1",
+		"tsdown": "^0.9.3",
+		"vitest": "3.1.2"
+	}
 }
