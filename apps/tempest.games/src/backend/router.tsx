@@ -6,7 +6,10 @@ import { and, eq, gt } from "drizzle-orm"
 
 import { CompleteAccountAction } from "../../emails/CompleteAccountAction"
 import type { DatabaseManager } from "../database/tempest-db-manager"
-import type { AccountActionUpdate } from "../database/tempest-db-schema"
+import type {
+	AccountAction,
+	AccountActionUpdate,
+} from "../database/tempest-db-schema"
 import {
 	accountActions,
 	banishedIps,
@@ -18,7 +21,7 @@ import { env } from "../library/env"
 import { genAccountActionToken as genAccountActionCode } from "./account-actions"
 import { resend } from "./email"
 import type { logger } from "./logger"
-import { createSession } from "./user-sessions"
+import { createSession, userSessionMap } from "./user-sessions"
 
 function simpleFormatMs(ms: number): string {
 	const seconds = Math.floor(ms / 1000)
@@ -56,8 +59,13 @@ interface Context {
 
 interface LoginResponse {
 	username: string
+	password: boolean
 	sessionKey: string
 	verification: `unverified` | `verified`
+}
+
+interface VerifyAccountActionResponse extends LoginResponse {
+	action: Exclude<AccountAction[`action`], `cooldown`>
 }
 
 export const trpc = initTRPC.context<Context>().create()
@@ -178,6 +186,7 @@ export const appRouter = trpc.router({
 				ctx.logger.info(`🔑 login successful as`, username)
 				return {
 					username,
+					password: Boolean(user.password),
 					sessionKey,
 					verification: user.emailVerified
 						? (`verified` as const)
@@ -197,12 +206,17 @@ export const appRouter = trpc.router({
 
 	verifyAccountAction: trpc.procedure
 		.input(type({ token: `string`, username: `string` }))
-		.mutation(async ({ input, ctx }): Promise<LoginResponse> => {
+		.mutation(async ({ input, ctx }): Promise<VerifyAccountActionResponse> => {
 			const { token, username } = input
 			ctx.logger.info(`🔑 verifying account action token:`, token)
 
 			const user = await ctx.db.drizzle.query.users.findFirst({
-				columns: { id: true, emailOffered: true, emailVerified: true },
+				columns: {
+					id: true,
+					emailOffered: true,
+					emailVerified: true,
+					password: true,
+				},
 				where: eq(users.username, username),
 			})
 
@@ -230,7 +244,8 @@ export const appRouter = trpc.router({
 				})
 			}
 
-			if (accountAction.action === `cooldown`) {
+			const { action } = accountAction
+			if (action === `cooldown`) {
 				const cooldownMs = accountAction.expiresAt.getTime() - ctx.now.getTime()
 				const cooldownString = simpleFormatMs(cooldownMs)
 				throw new TRPCError({
@@ -265,10 +280,11 @@ export const appRouter = trpc.router({
 				})
 			}
 
+			let password = Boolean(user.password)
 			let verification = user.emailVerified
 				? (`verified` as const)
 				: (`unverified` as const)
-			switch (accountAction.action) {
+			switch (action) {
 				case `login`: {
 					break
 				}
@@ -285,6 +301,7 @@ export const appRouter = trpc.router({
 						.update(users)
 						.set({ password: null })
 						.where(eq(users.id, user.id))
+					password = false
 				}
 			}
 			await ctx.db.drizzle
@@ -293,8 +310,97 @@ export const appRouter = trpc.router({
 			const sessionKey = createSession(username, ctx.now)
 			return {
 				username,
+				password,
 				sessionKey,
 				verification,
+				action,
+			}
+		}),
+
+	startPasswordReset: trpc.procedure
+		.input(type({ sessionKey: `string`, username: `string` }))
+		.mutation(async ({ input, ctx }): Promise<LoginResponse> => {
+			const { sessionKey, username } = input
+			ctx.logger.info(`🔑 starting password reset for`, username)
+			const user = await ctx.db.drizzle.query.users.findFirst({
+				columns: { id: true, emailVerified: true },
+				where: eq(users.username, username),
+			})
+			if (!user) {
+				throw new TRPCError({
+					code: `BAD_REQUEST`,
+					message: `User not found.`,
+				})
+			}
+			if (!user.emailVerified) {
+				throw new TRPCError({
+					code: `BAD_REQUEST`,
+					message: `Please verify your email address before resetting your password.`,
+				})
+			}
+
+			const userSessions = userSessionMap.get(username)
+
+			if (!userSessions) {
+				throw new TRPCError({
+					code: `BAD_REQUEST`,
+					message: `Session not found.`,
+				})
+			}
+			if (!userSessions.has(sessionKey)) {
+				throw new TRPCError({
+					code: `BAD_REQUEST`,
+					message: `Session not found.`,
+				})
+			}
+			const currentAccountAction =
+				await ctx.db.drizzle.query.accountActions.findFirst({
+					columns: { action: true, expiresAt: true },
+					where: eq(accountActions.userId, user.id),
+				})
+			if (currentAccountAction) {
+				if (currentAccountAction.action === `cooldown`) {
+					throw new TRPCError({
+						code: `TOO_MANY_REQUESTS`,
+						message: `You must wait ${currentAccountAction.expiresAt.getTime() - ctx.now.getTime()} before attempting to perform this action again.`,
+					})
+				}
+				throw new TRPCError({
+					code: `BAD_REQUEST`,
+					message: `Account action (${currentAccountAction.action}) already in progress.`,
+				})
+			}
+
+			const passwordResetCode = genAccountActionCode()
+			const encryptedCode = await Bun.password.hash(passwordResetCode, {
+				algorithm: `bcrypt`,
+				cost: 10,
+			})
+			await ctx.db.drizzle.insert(accountActions).values({
+				action: `resetPassword`,
+				userId: user.id,
+				code: encryptedCode,
+				expiresAt: new Date(+ctx.now + 1000 * 60 * 15),
+			})
+
+			await resend.emails.send({
+				from: `Tempest Games <noreply@tempest.games>`,
+				to: user.emailVerified,
+				subject: `Reset your password`,
+				react: (
+					<CompleteAccountAction
+						action="resetPassword"
+						validationCode={passwordResetCode}
+						baseUrl={env.FRONTEND_ORIGINS[0]}
+					/>
+				),
+			})
+
+			return {
+				username,
+				password: false,
+				sessionKey,
+				verification: `verified`,
 			}
 		}),
 })

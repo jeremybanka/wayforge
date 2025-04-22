@@ -6,6 +6,7 @@ import * as svg from "./<svg>"
 import { Anchor } from "./Anchor"
 import scss from "./App.module.scss"
 import { routeSelector } from "./services/router-service"
+import { Account } from "./views/Account"
 import { Admin } from "./views/Admin"
 import { GameView } from "./views/Game"
 import { Login } from "./views/Login"
@@ -40,6 +41,8 @@ export function App(): React.ReactNode {
 								return <GameView route={route} />
 							case `verify`:
 								return <Verify route={route} />
+							case `account`:
+								return <Account />
 						}
 					})()
 				)}

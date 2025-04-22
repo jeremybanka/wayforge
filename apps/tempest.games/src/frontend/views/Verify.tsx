@@ -4,7 +4,7 @@ import { useI, useO } from "atom.io/react"
 import { onMount } from "atom.io/realtime-react"
 import React from "react"
 
-import type { Route } from "../services/router-service"
+import { navigate, type Route } from "../services/router-service"
 import { authAtom, tokenInputAtom } from "../services/socket-auth-service"
 import { trpc } from "../services/trpc-client-service"
 
@@ -56,6 +56,9 @@ export function Verify({
 						username,
 					})
 					setState(authAtom, response)
+					if (response.action === `resetPassword`) {
+						navigate(`/account`)
+					}
 				} catch (thrown) {
 					if (thrown instanceof TRPCError) {
 						setError(thrown.message)

@@ -29,6 +29,7 @@ export const socket = io(env.VITE_BACKEND_ORIGIN, {
 
 export const authAtom = atom<{
 	username: string
+	password: boolean
 	sessionKey: string
 	verification: `unverified` | `verified`
 } | null>({
@@ -38,7 +39,9 @@ export const authAtom = atom<{
 		({ onSet }) => {
 			onSet(async ({ newValue }) => {
 				if (newValue) {
+					console.log(`setting auth`, newValue)
 					localStorage.setItem(`username`, newValue.username)
+					localStorage.setItem(`password`, `${+newValue}`)
 					localStorage.setItem(`sessionKey`, newValue.sessionKey)
 					localStorage.setItem(`verification`, newValue.verification)
 					console.log(`connecting...`)
@@ -57,11 +60,12 @@ export const authAtom = atom<{
 		},
 		({ setSelf }) => {
 			const username = localStorage.getItem(`username`)
+			const password = localStorage.getItem(`password`) === `1`
 			const sessionKey = localStorage.getItem(`sessionKey`)
 			const verification = localStorage.getItem(`verification`)
 			if (username && sessionKey && verification) {
 				if (verification === `verified` || verification === `unverified`) {
-					setSelf({ username, sessionKey, verification })
+					setSelf({ username, password, sessionKey, verification })
 				}
 			}
 		},

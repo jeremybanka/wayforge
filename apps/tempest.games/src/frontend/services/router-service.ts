@@ -13,6 +13,7 @@ export const ROUTES = required({
 	game: optional({
 		clicker: null,
 	}),
+	account: null,
 	admin: null,
 }) satisfies Tree
 export type Route = TreePath<typeof ROUTES>
@@ -97,6 +98,17 @@ export const pathnameAtom = atom<Pathname | (string & {})>({
 					}
 					case `/admin`:
 						break
+					case `/account`: {
+						const auth = getState(authAtom)
+						if (!auth) {
+							resolve(`/login`)
+							break
+						}
+						if (auth.verification === `unverified`) {
+							resolve(`/verify`)
+						}
+						break
+					}
 					default:
 				}
 			}
