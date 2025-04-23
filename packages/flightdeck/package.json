@@ -23,7 +23,7 @@
 		"klaxon": "./bin/klaxon.bin.js"
 	},
 	"dependencies": {
-		"@t3-oss/env-core": "0.12.0",
+		"@t3-oss/env-core": "0.13.0",
 		"atom.io": "workspace:*",
 		"comline": "workspace:*",
 		"cron": "4.3.0",
