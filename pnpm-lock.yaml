@@ -398,8 +398,8 @@ importers:
   apps/wayfarer.quest:
     dependencies:
       '@t3-oss/env-nextjs':
-        specifier: 0.12.0
-        version: 0.12.0(typescript@5.8.3)(zod@3.24.3)
+        specifier: 0.13.0
+        version: 0.13.0(arktype@2.1.20)(typescript@5.8.3)(zod@3.24.3)
       '@vercel/analytics':
         specifier: 1.5.0
         version: 1.5.0(next@15.3.1(@babel/core@7.26.10)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.87.0))(react@19.1.0)
@@ -3430,12 +3430,12 @@ packages:
       zod:
         optional: true
 
-  '@t3-oss/env-nextjs@0.12.0':
-    resolution: {integrity: sha512-rFnvYk1049RnNVUPvY8iQ55AuQh1Rr+qZzQBh3t++RttCGK4COpXGNxS4+45afuQq02lu+QAOy/5955aU8hRKw==}
+  '@t3-oss/env-nextjs@0.13.0':
+    resolution: {integrity: sha512-l+3H7w1rezfPhnfi5DPKeoLaMhsG8Os2WtoSA1Sq/+X+szccidazNmTAGKjp4v03IuUz4bsxYvU9DzQAX7atkg==}
     peerDependencies:
       typescript: '>=5.0.0'
       valibot: ^1.0.0-beta.7 || ^1.0.0
-      zod: ^3.24.0
+      zod: ^3.24.0 || ^4.0.0-beta.0
     peerDependenciesMeta:
       typescript:
         optional: true
@@ -10218,12 +10218,14 @@ snapshots:
       typescript: 5.8.3
       zod: 3.24.3
 
-  '@t3-oss/env-nextjs@0.12.0(typescript@5.8.3)(zod@3.24.3)':
+  '@t3-oss/env-nextjs@0.13.0(arktype@2.1.20)(typescript@5.8.3)(zod@3.24.3)':
     dependencies:
-      '@t3-oss/env-core': 0.12.0(typescript@5.8.3)(zod@3.24.3)
+      '@t3-oss/env-core': 0.13.0(arktype@2.1.20)(typescript@5.8.3)(zod@3.24.3)
     optionalDependencies:
       typescript: 5.8.3
       zod: 3.24.3
+    transitivePeerDependencies:
+      - arktype
 
   '@testing-library/dom@10.4.0':
     dependencies:
