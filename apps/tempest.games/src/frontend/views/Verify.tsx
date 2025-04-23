@@ -58,6 +58,8 @@ export function Verify({
 					setState(authAtom, response)
 					if (response.action === `resetPassword`) {
 						navigate(`/account`)
+					} else {
+						navigate(`/game`)
 					}
 				} catch (thrown) {
 					if (thrown instanceof TRPCError) {

@@ -41,7 +41,7 @@ export const authAtom = atom<{
 				if (newValue) {
 					console.log(`setting auth`, newValue)
 					localStorage.setItem(`username`, newValue.username)
-					localStorage.setItem(`password`, `${+newValue}`)
+					localStorage.setItem(`password`, `${+newValue.password}`)
 					localStorage.setItem(`sessionKey`, newValue.sessionKey)
 					localStorage.setItem(`verification`, newValue.verification)
 					console.log(`connecting...`)
@@ -63,7 +63,7 @@ export const authAtom = atom<{
 			const password = localStorage.getItem(`password`) === `1`
 			const sessionKey = localStorage.getItem(`sessionKey`)
 			const verification = localStorage.getItem(`verification`)
-			if (username && sessionKey && verification) {
+			if (username && password && sessionKey && verification) {
 				if (verification === `verified` || verification === `unverified`) {
 					setSelf({ username, password, sessionKey, verification })
 				}

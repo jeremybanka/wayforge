@@ -25,7 +25,7 @@ export function App(): React.ReactNode {
 				{typeof route === `number` ? (
 					<article>
 						<h1>{route}</h1>
-						<h2>{RESPONSE_DICTIONARY[route]}</h2>
+						<h2>{JSON.parse(RESPONSE_DICTIONARY[route])}</h2>
 						<Anchor href="/login">Return to Home Page</Anchor>
 					</article>
 				) : (
