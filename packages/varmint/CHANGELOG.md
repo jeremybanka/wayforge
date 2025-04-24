@@ -1,5 +1,14 @@
 # varmint
 
+## 0.4.10
+
+### Patch Changes
+
+- 29c48a5: ♻️ Changed build vendor from `tsup` to `tsdown`.
+- Updated dependencies [29c48a5]
+  - safedeposit@0.1.1
+  - comline@0.2.5
+
 ## 0.4.9
 
 ### Patch Changes

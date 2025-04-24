@@ -1,5 +1,13 @@
 # jurist
 
+## 0.0.5
+
+### Patch Changes
+
+- 29c48a5: ♻️ Changed build vendor from `tsup` to `tsdown`.
+- Updated dependencies [29c48a5]
+  - treetrunks@0.1.3
+
 ## 0.0.4
 
 ### Patch Changes

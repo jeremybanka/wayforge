@@ -1,5 +1,15 @@
 # flightdeck
 
+## 0.2.28
+
+### Patch Changes
+
+- 29c48a5: ♻️ Changed build vendor from `tsup` to `tsdown`.
+- Updated dependencies [29c48a5]
+  - safedeposit@0.1.1
+  - comline@0.2.5
+  - atom.io@0.32.4
+
 ## 0.2.27
 
 ### Patch Changes

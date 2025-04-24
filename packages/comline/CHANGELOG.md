@@ -1,5 +1,13 @@
 # comline
 
+## 0.2.5
+
+### Patch Changes
+
+- 29c48a5: ♻️ Changed build vendor from `tsup` to `tsdown`.
+- Updated dependencies [29c48a5]
+  - treetrunks@0.1.3
+
 ## 0.2.4
 
 ### Patch Changes
