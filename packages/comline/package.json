@@ -27,7 +27,7 @@
 		"treetrunks": "workspace:*"
 	},
 	"scripts": {
-		"build": "tsup-node",
+		"build": "tsdown",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
 		"lint:types": "tsc --noEmit",
@@ -44,7 +44,7 @@
 		"concurrently": "9.1.2",
 		"eslint": "9.25.1",
 		"tmp": "0.2.3",
-		"tsup": "8.4.0",
+		"tsdown": "0.9.3",
 		"vitest": "3.1.2",
 		"zod": "3.24.3",
 		"zod-to-json-schema": "3.24.5"

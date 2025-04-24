@@ -29,7 +29,7 @@
 		"zod": "3.24.3"
 	},
 	"scripts": {
-		"build": "tsup-node && rm -f dist/*.x.d.ts && pnpm run schema",
+		"build": "tsdown && rm -f dist/*.x.d.ts && pnpm run schema",
 		"schema": "bun src/break-check.x.ts --outdir=dist -- schema",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
@@ -48,6 +48,6 @@
 		"eslint": "9.25.1",
 		"rimraf": "6.0.1",
 		"tmp": "0.2.3",
-		"tsup": "8.4.0"
+		"tsdown": "0.9.3"
 	}
 }

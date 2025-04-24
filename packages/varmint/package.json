@@ -23,7 +23,7 @@
 	},
 	"files": ["dist", "src", "CHANGELOG.md"],
 	"scripts": {
-		"build": "tsup-node && rm -f dist/*.x.d.ts",
+		"build": "tsdown && rm -f dist/*.x.d.ts",
 		"clean:build": "rm -rf dist",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
@@ -47,7 +47,7 @@
 		"eslint": "9.25.1",
 		"openai": "4.96.0",
 		"tmp": "0.2.3",
-		"tsup": "8.4.0",
+		"tsdown": "0.9.3",
 		"vite": "6.3.3",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.1.2",

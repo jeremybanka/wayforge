@@ -11,6 +11,7 @@ onlyBuiltDependencies:
   - "@vercel/speed-insights"
   - "bun"
   - "esbuild"
+  - "rolldown"
   - "sharp"
   - "unrs-resolver"
   - "workerd"
