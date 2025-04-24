@@ -1,5 +1,14 @@
 # tempest.games
 
+## 0.1.46
+
+### Patch Changes
+
+- Updated dependencies [29c48a5]
+  - safedeposit@0.1.1
+  - treetrunks@0.1.3
+  - atom.io@0.32.4
+
 ## 0.1.45
 
 ### Patch Changes

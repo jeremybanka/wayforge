@@ -1,5 +1,11 @@
 # safedeposit
 
+## 0.1.1
+
+### Patch Changes
+
+- 29c48a5: ♻️ Changed build vendor from `tsup` to `tsdown`.
+
 ## 0.1.0
 
 ### Minor Changes

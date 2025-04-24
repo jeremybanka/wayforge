@@ -1,5 +1,11 @@
 # treetrunks
 
+## 0.1.3
+
+### Patch Changes
+
+- 29c48a5: ♻️ Changed build vendor from `tsup` to `tsdown`.
+
 ## 0.1.2
 
 ### Patch Changes
