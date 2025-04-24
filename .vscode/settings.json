@@ -69,6 +69,7 @@
 		"recoverage",
 		"Renamers",
 		"revparse",
+		"rolldown",
 		"safedeposit",
 		"safegen",
 		"Schemable",
@@ -78,10 +79,14 @@
 		"treeshake",
 		"treetrunks",
 		"tsdoc",
+		"tsdown",
 		"tsup",
+		"unrs",
 		"unsub",
+		"vercel",
 		"Vitest",
 		"wayforge",
+		"workerd",
 		"yalc",
 		"zustand"
 	]

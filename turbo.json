@@ -6,7 +6,7 @@
 		"build": {
 			"dependsOn": ["gen", "^build", "^gen"],
 			"outputs": ["dist/**", "**/dist/*", "**/dist/**/*", "bin/**"],
-			"inputs": ["**/package.json", "src/**", "**/src/**"]
+			"inputs": ["**/package.json", "**/*.config.ts", "src/**", "**/src/**"]
 		},
 		"tempest.games#build": {
 			"dependsOn": ["^build"],

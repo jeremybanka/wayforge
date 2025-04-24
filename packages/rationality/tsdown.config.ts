@@ -1,6 +1,6 @@
 import { join } from "node:path"
 
-import { defineConfig } from "tsup"
+import { defineConfig } from "tsdown"
 
 export default defineConfig({
 	clean: true,
@@ -9,5 +9,4 @@ export default defineConfig({
 	format: [`esm`, `cjs`],
 	outDir: join(import.meta.dirname, `dist`),
 	sourcemap: true,
-	splitting: false,
 })

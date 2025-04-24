@@ -32,7 +32,7 @@
 	},
 	"scripts": {
 		"gen": "bun ./__scripts__/gen.bun.ts",
-		"build": "tsup-node && rm -f dist/*.x.d.ts && bun ./__scripts__/build-lnav.bun.ts",
+		"build": "tsdown && rm -f dist/*.x.d.ts && bun ./__scripts__/build-lnav.bun.ts",
 		"schema:flightdeck": "bun ./src/flightdeck.bin.ts --outdir=dist -- schema",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
@@ -54,7 +54,7 @@
 		"json-schema-to-zod": "2.6.1",
 		"rimraf": "6.0.1",
 		"tmp": "0.2.3",
-		"tsup": "8.4.0",
+		"tsdown": "0.9.3",
 		"varmint": "workspace:*",
 		"vitest": "3.1.2"
 	}

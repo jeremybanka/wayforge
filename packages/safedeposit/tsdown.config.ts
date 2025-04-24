@@ -1,13 +1,13 @@
-import type { Options } from "tsup"
-import { defineConfig } from "tsup"
+import type { Options } from "tsdown"
+import { defineConfig } from "tsdown"
 
 export const OPTIONS = {
 	clean: true,
 	dts: true,
-	entry: [`src/treetrunks.ts`],
+	entry: [`src/safedeposit.ts`],
 	format: [`esm`],
-	metafile: false,
 	outDir: `dist`,
+	platform: `node`,
 	sourcemap: true,
 	treeshake: true,
 	tsconfig: `tsconfig.json`,
