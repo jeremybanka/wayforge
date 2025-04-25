@@ -17,14 +17,10 @@ afterEach(() => {
 
 describe(`flushing with workspace manager`, () => {
 	test(`flushing untouched files`, async () => {
-		const setup = spawn(
-			`node`,
-			[`--experimental-strip-types`, `global-setup.node.ts`, tempDir.name],
-			{
-				stdio: `inherit`,
-				cwd: path.join(import.meta.dirname, `isolation-flush`),
-			},
-		)
+		const setup = spawn(`node`, [`global-setup.node.ts`, tempDir.name], {
+			stdio: `inherit`,
+			cwd: path.join(import.meta.dirname, `isolation-flush`),
+		})
 		await new Promise((resolve) => setup.on(`exit`, resolve))
 		fs.mkdirSync(path.join(tempDir.name, `other`))
 		console.log(`tempDir contents:`, fs.readdirSync(tempDir.name))
@@ -47,14 +43,10 @@ describe(`flushing with workspace manager`, () => {
 			`myAsyncIterable.input.json`,
 			`myAsyncIterable.stream.txt`,
 		])
-		const teardown = spawn(
-			`node`,
-			[`--experimental-strip-types`, `global-teardown.node.ts`],
-			{
-				stdio: `inherit`,
-				cwd: path.join(import.meta.dirname, `isolation-flush`),
-			},
-		)
+		const teardown = spawn(`node`, [`global-teardown.node.ts`], {
+			stdio: `inherit`,
+			cwd: path.join(import.meta.dirname, `isolation-flush`),
+		})
 		await new Promise((resolve) => teardown.on(`exit`, resolve))
 		expect(fs.readdirSync(tempDir.name)).toEqual([`myStreamer`, `rand`])
 		expect(fs.readdirSync(path.join(tempDir.name, `rand`))).toEqual([

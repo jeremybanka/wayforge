@@ -33,7 +33,7 @@ describe(`cli`, () => {
 		await Yalc.publishPackage({ workingDir: `../comline` })
 		await Yalc.publishPackage({ workingDir: `../treetrunks` })
 		process.chdir(tmpDir.name)
-		const projectInit = spawn(`bun`, [`init`], { stdio: `inherit` })
+		const projectInit = spawn(`bun`, [`init`, `-y`], { stdio: `inherit` })
 		await new Promise((resolve) => projectInit.on(`exit`, resolve))
 		expect(projectInit.exitCode).toBe(0)
 		await editJsonFile(`package.json`, (json) => {
