@@ -1,11 +1,10 @@
 {
 	"data": {
-		"shouldBanIp": true,
-		"veryConciseReason": "Unauthorized access attempt to admin panel"
+		"shouldBanIp": false
 	},
 	"usage": {
-		"prompt_tokens": 275,
-		"completion_tokens": 26,
+		"prompt_tokens": 290,
+		"completion_tokens": 11,
 		"total_tokens": 301,
 		"prompt_tokens_details": {
 			"cached_tokens": 0,
@@ -18,5 +17,5 @@
 			"rejected_prediction_tokens": 0
 		}
 	},
-	"usdPrice": 0.000077475
+	"usdPrice": 0.00007185
 }

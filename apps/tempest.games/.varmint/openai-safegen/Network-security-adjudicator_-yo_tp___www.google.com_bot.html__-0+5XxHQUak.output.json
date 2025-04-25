@@ -1,12 +1,11 @@
 {
 	"data": {
-		"shouldBanIp": true,
-		"veryConciseReason": "Automated bot detected"
+		"shouldBanIp": false
 	},
 	"usage": {
-		"prompt_tokens": 278,
-		"completion_tokens": 24,
-		"total_tokens": 302,
+		"prompt_tokens": 275,
+		"completion_tokens": 11,
+		"total_tokens": 286,
 		"prompt_tokens_details": {
 			"cached_tokens": 0,
 			"audio_tokens": 0
@@ -18,5 +17,5 @@
 			"rejected_prediction_tokens": 0
 		}
 	},
-	"usdPrice": 0.00007695
+	"usdPrice": 0.000068475
 }
