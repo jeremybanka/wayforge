@@ -1,12 +1,12 @@
 {
 	"data": {
 		"shouldBanIp": true,
-		"veryConciseReason": "Attempted access to a sensitive plugin path."
+		"veryConciseReason": "Detected as a web crawler accessing sensitive author data."
 	},
 	"usage": {
-		"prompt_tokens": 290,
-		"completion_tokens": 28,
-		"total_tokens": 318,
+		"prompt_tokens": 278,
+		"completion_tokens": 29,
+		"total_tokens": 307,
 		"prompt_tokens_details": {
 			"cached_tokens": 0,
 			"audio_tokens": 0
@@ -18,5 +18,5 @@
 			"rejected_prediction_tokens": 0
 		}
 	},
-	"usdPrice": 0.00008205
+	"usdPrice": 0.00007995
 }

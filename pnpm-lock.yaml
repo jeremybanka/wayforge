@@ -281,7 +281,7 @@ importers:
     dependencies:
       '@t3-oss/env-core':
         specifier: 0.13.0
-        version: 0.13.0(arktype@2.1.20)(typescript@5.8.3)(valibot@1.0.0(typescript@5.8.3))(zod@3.24.2)
+        version: 0.13.0(arktype@2.1.20)(typescript@5.8.3)(valibot@1.0.0(typescript@5.8.3))(zod@3.24.3)
       arktype:
         specifier: 2.1.20
         version: 2.1.20
@@ -296,7 +296,7 @@ importers:
         version: 0.43.1(bun-types@1.2.10)(postgres@3.4.5)
       openai:
         specifier: 4.96.0
-        version: 4.96.0(ws@8.18.1)(zod@3.24.2)
+        version: 4.96.0(ws@8.18.1)(zod@3.24.3)
       postgres:
         specifier: 3.4.5
         version: 3.4.5
@@ -310,8 +310,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/safedeposit
       safegen:
-        specifier: 0.2.16
-        version: 0.2.16(@floating-ui/react-dom@2.1.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@floating-ui/react@0.27.8(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@google/genai@0.9.0)(@testing-library/react@16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(arktype@2.1.20)(eslint@9.25.1(jiti@2.4.2))(motion@12.9.2(@emotion/is-prop-valid@1.3.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(openai@4.96.0(ws@8.18.1)(zod@3.24.2))(react@19.1.0)(socket.io-client@4.8.1)(socket.io@4.8.1)(zod-to-json-schema@3.24.5(zod@3.24.2))(zod@3.24.2)
+        specifier: 0.3.0
+        version: 0.3.0(@floating-ui/react-dom@2.1.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@floating-ui/react@0.27.8(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@google/genai@0.9.0)(@testing-library/react@16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(arktype@2.1.20)(eslint@9.25.1(jiti@2.4.2))(motion@12.9.2(@emotion/is-prop-valid@1.3.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(openai@4.96.0(ws@8.18.1)(zod@3.24.3))(react@19.1.0)(socket.io-client@4.8.1)(socket.io@4.8.1)(zod-to-json-schema@3.24.5(zod@3.24.3))(zod@3.24.3)
       socket.io:
         specifier: 4.8.1
         version: 4.8.1
@@ -4687,11 +4687,14 @@ packages:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
     engines: {node: '>= 0.8'}
 
-  comline@0.2.2:
-    resolution: {integrity: sha512-wuN8PGWLH9cTE+KJpT8AxymHi4HtzVbQs6aLsFH5go8HgCnyUWfQT+RjwtMv8tDElnn8Vas4zGYGS7sEiY2AoQ==}
-
   comline@0.2.4:
     resolution: {integrity: sha512-AoDLQj9v/V1NdqwrVMEEqHFZ2DcUM53RPdSW5RRQAldWbSw/uQnvfbR4qldr5ftveowjUlxwodL8eC+yjgI4oQ==}
+    peerDependencies:
+      zod: ^3.0.0
+      zod-to-json-schema: ^3.0.0
+
+  comline@0.2.5:
+    resolution: {integrity: sha512-eBIYd38Ck0hwLmrKwansM4YDB5QvRbh2yM2Jg+71hRvy1uQpBo+Onx094B5xnDcltKchp1a2TDduNxRB7cR+tA==}
     peerDependencies:
       zod: ^3.0.0
       zod-to-json-schema: ^3.0.0
@@ -7294,11 +7297,11 @@ packages:
     resolution: {integrity: sha512-x/+Cz4YrimQxQccJf5mKEbIa1NzeCRNI5Ecl/ekmlYaampdNLPalVyIcCZNNH3MvmqBugV5TMYZXv0ljslUlaw==}
     engines: {node: '>= 0.4'}
 
-  safedeposit@0.1.0:
-    resolution: {integrity: sha512-plypqiX0/Cr0u9CMkxpk7uPM8Q/V7/DIv1Ze3AO12J4z9i0y0MJDB/QQoOYS3uou06ZQx1wjNfaUaCmmuKzUTw==}
+  safedeposit@0.1.1:
+    resolution: {integrity: sha512-nWCmtQXwMXwptgR+JRsPDnH/FQGa9jAHvO2f8b1nDUdBD/JhqckFBDAVz9Tfpmk/6CDdCKrU5Q+k+EIL54bfoQ==}
 
-  safegen@0.2.16:
-    resolution: {integrity: sha512-YzSv70+3JEWlzIJ/VybsX+ob6UeUSE1tYxyAP5wMi91qI+a8hFEdYVbLEPNkF07l7HGIUx959swzj2pMIWpwtw==}
+  safegen@0.3.0:
+    resolution: {integrity: sha512-Gx+A7ZkN6eWk9Yb4CBKV6ORluJQ2DaZxdKJr854FqO00FA1tNPlD8nMVaOPR/ejjKaaLrt6yhC9RrqpWMrPBoA==}
     peerDependencies:
       '@anthropic-ai/sdk': '>=0.32.0'
       '@google/genai': '>=0.8.0'
@@ -7878,6 +7881,9 @@ packages:
   treetrunks@0.1.2:
     resolution: {integrity: sha512-VT0SaMvGk41s7aUGrQP/ez+AAOYPsH/M2RXdwkO7bx2FjyIpucu7qlwFognB2KFlufmXAWUVyrwBw5OAZA7FaA==}
 
+  treetrunks@0.1.3:
+    resolution: {integrity: sha512-jJc5zfHcpI6dgYWmncxlGJ/wuzKRD9TLHr7aqqp0EhTOslmI6oGNeZpPJBf7sKaNFrzZMts2U5q0PyWZa77ATg==}
+
   trim-lines@3.0.1:
     resolution: {integrity: sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg==}
 
@@ -8143,8 +8149,8 @@ packages:
   varint@6.0.0:
     resolution: {integrity: sha512-cXEIW6cfr15lFv563k4GuVuW/fiwjknytD37jIOLSdSWuOI6WnO/oKwmP2FQTU2l01LP8/M5TSAJpzUaGe3uWg==}
 
-  varmint@0.4.7:
-    resolution: {integrity: sha512-KEP4TC99JxbFpIUBSzryobzX3v/zSsICTujrjxy8f9EdddmHqNZQfROM3pCLLWmq8FYz+jTP5TRpRWx+BZWRUg==}
+  varmint@0.5.0:
+    resolution: {integrity: sha512-j2K+Edti7G+htZ3lAe00Di8SUxOzFB2WXJ0lBpqz0nezcc4mhlpMq6Vy8uU20+z4oOGHBrMwDX68BOmOJDRmdw==}
     hasBin: true
 
   vary@1.1.2:
@@ -8444,9 +8450,6 @@ packages:
     resolution: {integrity: sha512-/AuWwMP+YqiPbsJx5D6TfgRTc4kTLjsh5SOcd4bLsfUg2RcEXrFMJl1DGgdHy2aCfsIA/cr/1JM0xcB2GZji8g==}
     peerDependencies:
       zod: ^3.24.1
-
-  zod@3.24.2:
-    resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
 
   zod@3.24.3:
     resolution: {integrity: sha512-HhY1oqzWCQWuUqvBFnsyrtZRhyPeR7SUGv+C4+MsisMuVfSPx8HpwWqH8tRahSlt6M3PiFAcoeFhZAqIXTxoSg==}
@@ -10734,14 +10737,6 @@ snapshots:
       valibot: 1.0.0(typescript@5.8.3)
       zod: 3.24.3
 
-  '@t3-oss/env-core@0.13.0(arktype@2.1.20)(typescript@5.8.3)(valibot@1.0.0(typescript@5.8.3))(zod@3.24.2)':
-    dependencies:
-      arktype: 2.1.20
-    optionalDependencies:
-      typescript: 5.8.3
-      valibot: 1.0.0(typescript@5.8.3)
-      zod: 3.24.2
-
   '@t3-oss/env-core@0.13.0(arktype@2.1.20)(typescript@5.8.3)(valibot@1.0.0(typescript@5.8.3))(zod@3.24.3)':
     dependencies:
       arktype: 2.1.20
@@ -11750,17 +11745,17 @@ snapshots:
     dependencies:
       delayed-stream: 1.0.0
 
-  comline@0.2.2:
-    dependencies:
-      chalk: 5.4.1
-      treetrunks: 0.1.2
-      zod: 3.24.2
-      zod-to-json-schema: 3.24.5(zod@3.24.2)
-
   comline@0.2.4(zod-to-json-schema@3.24.5(zod@3.24.3))(zod@3.24.3):
     dependencies:
       picocolors: 1.1.1
       treetrunks: 0.1.2
+      zod: 3.24.3
+      zod-to-json-schema: 3.24.5(zod@3.24.3)
+
+  comline@0.2.5(zod-to-json-schema@3.24.5(zod@3.24.3))(zod@3.24.3):
+    dependencies:
+      picocolors: 1.1.1
+      treetrunks: 0.1.3
       zod: 3.24.3
       zod-to-json-schema: 3.24.5(zod@3.24.3)
 
@@ -14213,21 +14208,6 @@ snapshots:
     dependencies:
       mimic-function: 5.0.1
 
-  openai@4.96.0(ws@8.18.1)(zod@3.24.2):
-    dependencies:
-      '@types/node': 18.19.86
-      '@types/node-fetch': 2.6.12
-      abort-controller: 3.0.0
-      agentkeepalive: 4.6.0
-      form-data-encoder: 1.7.2
-      formdata-node: 4.4.1
-      node-fetch: 2.7.0
-    optionalDependencies:
-      ws: 8.18.1
-      zod: 3.24.2
-    transitivePeerDependencies:
-      - encoding
-
   openai@4.96.0(ws@8.18.1)(zod@3.24.3):
     dependencies:
       '@types/node': 18.19.86
@@ -14896,19 +14876,19 @@ snapshots:
       es-errors: 1.3.0
       is-regex: 1.2.1
 
-  safedeposit@0.1.0: {}
+  safedeposit@0.1.1: {}
 
-  safegen@0.2.16(@floating-ui/react-dom@2.1.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@floating-ui/react@0.27.8(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@google/genai@0.9.0)(@testing-library/react@16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(arktype@2.1.20)(eslint@9.25.1(jiti@2.4.2))(motion@12.9.2(@emotion/is-prop-valid@1.3.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(openai@4.96.0(ws@8.18.1)(zod@3.24.2))(react@19.1.0)(socket.io-client@4.8.1)(socket.io@4.8.1)(zod-to-json-schema@3.24.5(zod@3.24.2))(zod@3.24.2):
+  safegen@0.3.0(@floating-ui/react-dom@2.1.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@floating-ui/react@0.27.8(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@google/genai@0.9.0)(@testing-library/react@16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(arktype@2.1.20)(eslint@9.25.1(jiti@2.4.2))(motion@12.9.2(@emotion/is-prop-valid@1.3.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(openai@4.96.0(ws@8.18.1)(zod@3.24.3))(react@19.1.0)(socket.io-client@4.8.1)(socket.io@4.8.1)(zod-to-json-schema@3.24.5(zod@3.24.3))(zod@3.24.3):
     dependencies:
       '@google/genai': 0.9.0
       '@standard-schema/spec': 1.0.0
       atom.io: 0.32.4(@floating-ui/react-dom@2.1.2(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@floating-ui/react@0.27.8(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@testing-library/react@16.3.0(@testing-library/dom@10.4.0)(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(eslint@9.25.1(jiti@2.4.2))(motion@12.9.2(@emotion/is-prop-valid@1.3.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)(socket.io-client@4.8.1)(socket.io@4.8.1)
-      varmint: 0.4.7
+      varmint: 0.5.0(zod-to-json-schema@3.24.5(zod@3.24.3))(zod@3.24.3)
     optionalDependencies:
       arktype: 2.1.20
-      openai: 4.96.0(ws@8.18.1)(zod@3.24.2)
-      zod: 3.24.2
-      zod-to-json-schema: 3.24.5(zod@3.24.2)
+      openai: 4.96.0(ws@8.18.1)(zod@3.24.3)
+      zod: 3.24.3
+      zod-to-json-schema: 3.24.5(zod@3.24.3)
     transitivePeerDependencies:
       - '@floating-ui/react'
       - '@floating-ui/react-dom'
@@ -15529,6 +15509,8 @@ snapshots:
 
   treetrunks@0.1.2: {}
 
+  treetrunks@0.1.3: {}
+
   trim-lines@3.0.1: {}
 
   trough@2.2.0: {}
@@ -15850,11 +15832,14 @@ snapshots:
 
   varint@6.0.0: {}
 
-  varmint@0.4.7:
+  varmint@0.5.0(zod-to-json-schema@3.24.5(zod@3.24.3))(zod@3.24.3):
     dependencies:
       cachedir: 2.4.0
-      comline: 0.2.2
-      safedeposit: 0.1.0
+      comline: 0.2.5(zod-to-json-schema@3.24.5(zod@3.24.3))(zod@3.24.3)
+      safedeposit: 0.1.1
+    transitivePeerDependencies:
+      - zod
+      - zod-to-json-schema
 
   vary@1.1.2: {}
 
@@ -16197,15 +16182,9 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod-to-json-schema@3.24.5(zod@3.24.2):
-    dependencies:
-      zod: 3.24.2
-
   zod-to-json-schema@3.24.5(zod@3.24.3):
     dependencies:
       zod: 3.24.3
-
-  zod@3.24.2: {}
 
   zod@3.24.3: {}
 
