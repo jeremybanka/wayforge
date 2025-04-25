@@ -748,8 +748,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.9.6
-        version: 0.9.6(typescript@5.8.3)
+        specifier: 0.9.7
+        version: 0.9.7(typescript@5.8.3)
 
   packages/comline:
     dependencies:
@@ -779,8 +779,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.9.6
-        version: 0.9.6(typescript@5.8.3)
+        specifier: 0.9.7
+        version: 0.9.7(typescript@5.8.3)
       vitest:
         specifier: 3.1.2
         version: 3.1.2(@types/debug@4.1.12)(@types/node@22.15.2)(@vitest/ui@3.1.2)(happy-dom@17.4.4)(jiti@2.4.2)(jsdom@26.1.0)(lightningcss@1.29.3)(sass-embedded@1.87.0)(sass@1.87.0)(terser@5.39.0)(tsx@4.19.3)
@@ -843,8 +843,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.9.6
-        version: 0.9.6(typescript@5.8.3)
+        specifier: 0.9.7
+        version: 0.9.7(typescript@5.8.3)
       varmint:
         specifier: workspace:*
         version: link:../varmint
@@ -987,8 +987,8 @@ importers:
         specifier: 6.0.1
         version: 6.0.1
       tsdown:
-        specifier: 0.9.6
-        version: 0.9.6(typescript@5.8.3)
+        specifier: 0.9.7
+        version: 0.9.7(typescript@5.8.3)
       vitest:
         specifier: 3.1.2
         version: 3.1.2(@types/debug@4.1.12)(@types/node@22.15.2)(@vitest/ui@3.1.2)(happy-dom@17.4.4)(jiti@2.4.2)(jsdom@26.1.0)(lightningcss@1.29.3)(sass-embedded@1.87.0)(sass@1.87.0)(terser@5.39.0)(tsx@4.19.3)
@@ -1057,8 +1057,8 @@ importers:
         specifier: 9.25.1
         version: 9.25.1(jiti@2.4.2)
       tsdown:
-        specifier: 0.9.6
-        version: 0.9.6(typescript@5.8.3)
+        specifier: 0.9.7
+        version: 0.9.7(typescript@5.8.3)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -1120,8 +1120,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.9.6
-        version: 0.9.6(typescript@5.8.3)
+        specifier: 0.9.7
+        version: 0.9.7(typescript@5.8.3)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -1248,8 +1248,8 @@ importers:
         specifier: 6.0.1
         version: 6.0.1
       tsdown:
-        specifier: 0.9.6
-        version: 0.9.6(typescript@5.8.3)
+        specifier: 0.9.7
+        version: 0.9.7(typescript@5.8.3)
       vitest:
         specifier: 3.1.2
         version: 3.1.2(@types/debug@4.1.12)(@types/node@22.15.2)(@vitest/ui@3.1.2)(happy-dom@17.4.4)(jiti@2.4.2)(jsdom@26.1.0)(lightningcss@1.29.3)(sass-embedded@1.87.0)(sass@1.87.0)(terser@5.39.0)(tsx@4.19.3)
@@ -1328,8 +1328,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.9.6
-        version: 0.9.6(typescript@5.8.3)
+        specifier: 0.9.7
+        version: 0.9.7(typescript@5.8.3)
       vite:
         specifier: 6.3.3
         version: 6.3.3(@types/node@22.15.2)(jiti@2.4.2)(lightningcss@1.29.3)(sass-embedded@1.87.0)(sass@1.87.0)(terser@5.39.0)(tsx@4.19.3)
@@ -5055,6 +5055,10 @@ packages:
   emoji-regex@9.2.2:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
 
+  empathic@1.0.0:
+    resolution: {integrity: sha512-qtKgI1Mv8rTacvpaTkh28HM2Lbf+IOjXb7rhpt/42kZxRm8TBb/IVlo5iL2ztT19kc/EHAFN0fZ641avlXAgdg==}
+    engines: {node: '>=16'}
+
   end-of-stream@1.4.4:
     resolution: {integrity: sha512-+uw1inIHVPQoaVuHzRyXd21icM+cnt4CzD5rW+NC1wjOUSTOs+Te7FOv7AhN7vS9x/oIyhLP5PR1H+phQAHu5Q==}
 
@@ -5410,10 +5414,6 @@ packages:
 
   find-root@1.1.0:
     resolution: {integrity: sha512-NKfW6bec6GfKc0SGx1e07QZY9PE99u0Bft/0rzSD5k3sO/vwkVUpDUKVm5Gpp5Ue3YfShPFTX2070tDs5kB9Ng==}
-
-  find-up-simple@1.0.1:
-    resolution: {integrity: sha512-afd4O7zpqHeRyg4PfDQsXmlDe2PfdHtJt6Akt8jOWaApLOZk5JXs6VMR29lz03pRe9mpykrRCYIYxaJYcfpncQ==}
-    engines: {node: '>=18'}
 
   find-up@4.1.0:
     resolution: {integrity: sha512-PpOwAdQ/YlXQ2vj8a3h8IipDuYRi3wceVQQGYWxNINccq40Anw7BlsEXCMbt1Zt+OLA6Fq9suIpIWD0OsnISlw==}
@@ -7823,8 +7823,8 @@ packages:
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
 
-  tsdown@0.9.6:
-    resolution: {integrity: sha512-0dGDk1H8REDWWF5PAFS/bIVw/C4LeiJxljLKI0pVRY2e1vx9nUVVhm6WQRRosWLqruAmi7UdoCTQPqvlX0fbnA==}
+  tsdown@0.9.7:
+    resolution: {integrity: sha512-NhuDEuICdHsXH6rfdj6G4ZdLdYY8T5azlt00+vmtOWDMkjlkMNSQWB+dD7vR1dWCAXna7OrFvgUU/JFX0glYTw==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     peerDependencies:
@@ -11980,6 +11980,8 @@ snapshots:
 
   emoji-regex@9.2.2: {}
 
+  empathic@1.0.0: {}
+
   end-of-stream@1.4.4:
     dependencies:
       once: 1.4.0
@@ -12557,8 +12559,6 @@ snapshots:
       pkg-dir: 4.2.0
 
   find-root@1.1.0: {}
-
-  find-up-simple@1.0.1: {}
 
   find-up@4.1.0:
     dependencies:
@@ -15417,7 +15417,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tsdown@0.9.6(typescript@5.8.3):
+  tsdown@0.9.7(typescript@5.8.3):
     dependencies:
       ansis: 3.17.0
       cac: 6.7.14
@@ -15425,7 +15425,7 @@ snapshots:
       consola: 3.4.2
       debug: 4.4.0(supports-color@5.5.0)
       diff: 7.0.0
-      find-up-simple: 1.0.1
+      empathic: 1.0.0
       hookable: 5.5.3
       rolldown: 1.0.0-beta.8-commit.2686eb1(typescript@5.8.3)
       rolldown-plugin-dts: 0.8.3(rolldown@1.0.0-beta.8-commit.2686eb1(typescript@5.8.3))(typescript@5.8.3)
