@@ -4,7 +4,7 @@
 		"messages": [
 			{
 				"role": "user",
-				"content": "Please generate a response in JSON that conforms to the following JSON Schema:\n{\n  \"anyOf\": [\n    {\n      \"type\": \"object\",\n      \"properties\": {\n        \"shouldBanIp\": {\n          \"const\": false\n        }\n      },\n      \"required\": [\n        \"shouldBanIp\"\n      ]\n    },\n    {\n      \"type\": \"object\",\n      \"properties\": {\n        \"shouldBanIp\": {\n          \"const\": true\n        },\n        \"veryConciseReason\": {\n          \"type\": \"string\"\n        }\n      },\n      \"required\": [\n        \"shouldBanIp\",\n        \"veryConciseReason\"\n      ]\n    }\n  ],\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\"\n}"
+				"content": "Please generate a response in JSON that conforms to the following JSON Schema:\n{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"anyOf\": [\n    {\n      \"type\": \"object\",\n      \"properties\": {\n        \"shouldBanIp\": {\n          \"const\": false\n        }\n      },\n      \"required\": [\n        \"shouldBanIp\"\n      ]\n    },\n    {\n      \"type\": \"object\",\n      \"properties\": {\n        \"shouldBanIp\": {\n          \"const\": true\n        },\n        \"veryConciseReason\": {\n          \"type\": \"string\"\n        }\n      },\n      \"required\": [\n        \"shouldBanIp\",\n        \"veryConciseReason\"\n      ]\n    }\n  ]\n}"
 			},
 			{
 				"role": "user",
