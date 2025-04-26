@@ -1,4 +1,4 @@
-import { TRPCError } from "@trpc/server"
+import { TRPCClientError } from "@trpc/client"
 import { setState } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import * as React from "react"
@@ -31,10 +31,11 @@ export function SignIn(): React.ReactNode {
 					setPassword(``)
 					setState(authAtom, response)
 					socket.once(`connect`, () => {
+						console.log(`✨ connected`)
 						navigate(`/game`)
 					})
 				} catch (thrown) {
-					if (thrown instanceof TRPCError) {
+					if (thrown instanceof TRPCClientError) {
 						setError(thrown.message)
 					}
 				}

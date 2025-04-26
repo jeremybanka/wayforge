@@ -1,14 +1,9 @@
-import { TRPCError } from "@trpc/server"
-import { setState } from "atom.io"
+import { TRPCClientError } from "@trpc/client"
 import { useI, useO } from "atom.io/react"
-import { onMount } from "atom.io/realtime-react"
 import React from "react"
 
 import { setCssVars } from "../../library/set-css-vars"
-import { navigate } from "../services/router-service"
 import { authAtom, tokenInputAtom } from "../services/socket-auth-service"
-import { trpc } from "../services/trpc-client-service"
-import scss from "./Account.module.scss"
 
 export function Account(): React.ReactNode {
 	const auth = useO(authAtom)
@@ -38,7 +33,7 @@ export function Account(): React.ReactNode {
 					await new Promise((pass) => setTimeout(pass, 10))
 					console.log(`verifying token`, token)
 				} catch (thrown) {
-					if (thrown instanceof TRPCError) {
+					if (thrown instanceof TRPCClientError) {
 						setError(thrown.message)
 					}
 				}

@@ -1,3 +1,4 @@
+import { TRPCClientError } from "@trpc/client"
 import { TRPCError } from "@trpc/server"
 import { useI, useO } from "atom.io/react"
 import * as React from "react"
@@ -50,7 +51,7 @@ export function SignUp(): React.ReactNode {
 					setEmail(``)
 					navigate(`/sign_in`)
 				} catch (thrown) {
-					if (thrown instanceof TRPCError) {
+					if (thrown instanceof TRPCClientError) {
 						setError(thrown.message)
 					}
 				}

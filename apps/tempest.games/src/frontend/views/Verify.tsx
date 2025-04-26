@@ -1,4 +1,4 @@
-import { TRPCError } from "@trpc/server"
+import { TRPCClientError } from "@trpc/client"
 import { setState } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import { onMount } from "atom.io/realtime-react"
@@ -62,7 +62,7 @@ export function Verify({
 						navigate(`/game`)
 					}
 				} catch (thrown) {
-					if (thrown instanceof TRPCError) {
+					if (thrown instanceof TRPCClientError) {
 						setError(thrown.message)
 					}
 				}

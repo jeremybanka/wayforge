@@ -38,6 +38,7 @@ export const authAtom = atom<{
 	effects: [
 		({ onSet }) => {
 			onSet(async ({ newValue }) => {
+				console.log(`setting auth`, newValue)
 				if (newValue) {
 					console.log(`setting auth`, newValue)
 					localStorage.setItem(`username`, newValue.username)
