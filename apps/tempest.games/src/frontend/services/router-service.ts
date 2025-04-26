@@ -5,7 +5,7 @@ import { isTreePath, optional, required } from "treetrunks"
 import { authAtom } from "./socket-auth-service"
 
 export const ROUTES = required({
-	login: null,
+	sign_in: null,
 	sign_up: null,
 	verify: optional({
 		$token: null,
@@ -24,7 +24,7 @@ export function isRoute(route: unknown[]): route is Route {
 }
 
 export const PUBLIC_ROUTES = [
-	[`login`],
+	[`sign_in`],
 	[`sign_up`],
 ] as const satisfies TreePath<typeof ROUTES>[]
 export type PublicRoute = (typeof PUBLIC_ROUTES)[number]
@@ -54,7 +54,7 @@ export const pathnameAtom = atom<Pathname | (string & {})>({
 				switch (newValue) {
 					case `/`: {
 						const auth = getState(authAtom)
-						const intended: Pathname = `/login`
+						const intended: Pathname = `/sign_in`
 						switch (auth?.verification) {
 							case `verified`:
 								resolve(`/game`)
@@ -67,7 +67,7 @@ export const pathnameAtom = atom<Pathname | (string & {})>({
 						}
 						break
 					}
-					case `/login`:
+					case `/sign_in`:
 					case `/sign_up`: {
 						const auth = getState(authAtom)
 						if (auth)
@@ -101,7 +101,7 @@ export const pathnameAtom = atom<Pathname | (string & {})>({
 					case `/account`: {
 						const auth = getState(authAtom)
 						if (!auth) {
-							resolve(`/login`)
+							resolve(`/sign_in`)
 							break
 						}
 						if (auth.verification === `unverified`) {

@@ -66,7 +66,7 @@ export const trackedUserColumnName = pgEnum(
 export const accountAction = pgEnum(`accountAction`, [
 	`cooldown`,
 	`confirmEmail`,
-	`login`,
+	`signIn`,
 	`resetPassword`,
 ])
 
@@ -107,10 +107,10 @@ export const players = pgTable(
 	],
 )
 
-export const loginHistory = pgTable(`loginHistory`, {
+export const signInHistory = pgTable(`signInHistory`, {
 	id: uuid().primaryKey().defaultRandom(),
 	userId: uuid().references(() => users.id, { onDelete: `cascade` }),
-	loginTime: timestamp({ withTimezone: true }).notNull().defaultNow(),
+	signInTime: timestamp({ withTimezone: true }).notNull().defaultNow(),
 	ipAddress: varchar({ length: 45 }).notNull(),
 	userAgent: varchar({ length: 1024 }),
 	successful: boolean().notNull().default(false),

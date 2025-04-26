@@ -48,7 +48,7 @@ export function SignUp(): React.ReactNode {
 					})
 					setPassword1(``)
 					setEmail(``)
-					navigate(`/login`)
+					navigate(`/sign_in`)
 				} catch (thrown) {
 					if (thrown instanceof TRPCError) {
 						setError(thrown.message)
@@ -169,7 +169,7 @@ export function SignUp(): React.ReactNode {
 				<button type="submit" disabled={!signUpReady}>{`->`}</button>
 			</main>
 			<footer>
-				<Anchor href="/login">
+				<Anchor href="/sign_in">
 					Already have an account? <u>Log in</u> instead.
 				</Anchor>
 			</footer>

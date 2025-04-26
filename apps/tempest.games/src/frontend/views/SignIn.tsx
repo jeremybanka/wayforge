@@ -13,7 +13,7 @@ import {
 } from "../services/socket-auth-service"
 import { trpc } from "../services/trpc-client-service"
 
-export function Login(): React.ReactNode {
+export function SignIn(): React.ReactNode {
 	const setUsername = useI(usernameInputAtom)
 	const setPassword = useI(password0InputAtom)
 	const username = useO(usernameInputAtom)
@@ -26,7 +26,7 @@ export function Login(): React.ReactNode {
 			onSubmit={async (e) => {
 				e.preventDefault()
 				try {
-					const response = await trpc.login.mutate({ username, password })
+					const response = await trpc.signIn.mutate({ username, password })
 					setUsername(``)
 					setPassword(``)
 					setState(authAtom, response)

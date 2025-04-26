@@ -13,7 +13,7 @@ export function prettyPrintAccountAction(
 			return `Confirm your email address`
 		case `resetPassword`:
 			return `Reset your password`
-		case `login`:
-			return `Login`
+		case `signIn`:
+			return `Sign in`
 	}
 }

@@ -9,7 +9,7 @@ import { routeSelector } from "./services/router-service"
 import { Account } from "./views/Account"
 import { Admin } from "./views/Admin"
 import { GameView } from "./views/Game"
-import { Login } from "./views/Login"
+import { SignIn } from "./views/SignIn"
 import { SignUp } from "./views/SignUp"
 import { Verify } from "./views/Verify"
 
@@ -26,15 +26,15 @@ export function App(): React.ReactNode {
 					<article>
 						<h1>{route}</h1>
 						<h2>{JSON.parse(RESPONSE_DICTIONARY[route])}</h2>
-						<Anchor href="/login">Return to Home Page</Anchor>
+						<Anchor href="/sign_in">Return to Home Page</Anchor>
 					</article>
 				) : (
 					(() => {
 						switch (route[0]) {
 							case `admin`:
 								return <Admin />
-							case `login`:
-								return <Login />
+							case `sign_in`:
+								return <SignIn />
 							case `sign_up`:
 								return <SignUp />
 							case `game`:

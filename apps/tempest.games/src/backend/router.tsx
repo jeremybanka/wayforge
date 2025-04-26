@@ -13,7 +13,7 @@ import type {
 import {
 	accountActions,
 	banishedIps,
-	loginHistory,
+	signInHistory,
 	users,
 } from "../database/tempest-db-schema"
 import { credentialsType, signUpType } from "../library/data-constraints"
@@ -57,14 +57,14 @@ interface Context {
 	logger: typeof logger
 }
 
-interface LoginResponse {
+interface SignInResponse {
 	username: string
 	password: boolean
 	sessionKey: string
 	verification: `unverified` | `verified`
 }
 
-interface VerifyAccountActionResponse extends LoginResponse {
+interface VerifyAccountActionResponse extends SignInResponse {
 	action: Exclude<AccountAction[`action`], `cooldown`>
 }
 
@@ -126,35 +126,37 @@ export const appRouter = trpc.router({
 		})
 	}),
 
-	login: trpc.procedure
+	signIn: trpc.procedure
 		.input(credentialsType)
-		.mutation(async ({ input, ctx }): Promise<LoginResponse> => {
+		.mutation(async ({ input, ctx }): Promise<SignInResponse> => {
 			const { username, password } = input
 			let successful = false
 			let userId: string | null = null
 			try {
-				ctx.logger.info(`🔑 login attempt as user`, username)
+				ctx.logger.info(`🔑 sign in attempt as user`, username)
 				const tenMinutesAgo = new Date(+ctx.now - 1000 * 60 * 10)
-				const recentFailures = await ctx.db.drizzle.query.loginHistory.findMany({
-					columns: { userId: true, successful: true, loginTime: true },
-					where: and(
-						eq(loginHistory.ipAddress, ctx.ip),
-						eq(loginHistory.successful, false),
-						gt(loginHistory.loginTime, tenMinutesAgo),
-					),
-					limit: 10,
-				})
+				const recentFailures = await ctx.db.drizzle.query.signInHistory.findMany(
+					{
+						columns: { userId: true, successful: true, signInTime: true },
+						where: and(
+							eq(signInHistory.ipAddress, ctx.ip),
+							eq(signInHistory.successful, false),
+							gt(signInHistory.signInTime, tenMinutesAgo),
+						),
+						limit: 10,
+					},
+				)
 				const attemptsRemaining = 10 - recentFailures.length
 				if (attemptsRemaining < 1) {
 					await ctx.db.drizzle.insert(banishedIps).values({
 						ip: ctx.ip,
-						reason: `Too many recent login attempts.`,
+						reason: `Too many recent sign in attempts.`,
 						banishedAt: ctx.now,
 						banishedUntil: new Date(+ctx.now + 1000 * 60 * 60 * 24),
 					})
 					throw new TRPCError({
 						code: `TOO_MANY_REQUESTS`,
-						message: `Too many recent login attempts.`,
+						message: `Too many recent sign in attempts.`,
 					})
 				}
 				const user = await ctx.db.drizzle.query.users.findFirst({
@@ -183,7 +185,7 @@ export const appRouter = trpc.router({
 				}
 				const sessionKey = createSession(username, ctx.now)
 				successful = true
-				ctx.logger.info(`🔑 login successful as`, username)
+				ctx.logger.info(`🔑 sign in successful as`, username)
 				return {
 					username,
 					password: Boolean(user.password),
@@ -193,14 +195,14 @@ export const appRouter = trpc.router({
 						: (`unverified` as const),
 				}
 			} finally {
-				await ctx.db.drizzle.insert(loginHistory).values({
+				await ctx.db.drizzle.insert(signInHistory).values({
 					userId,
 					successful,
 					ipAddress: ctx.ip,
 					userAgent: ctx.req.headers[`user-agent`] ?? `Withheld`,
-					loginTime: ctx.now,
+					signInTime: ctx.now,
 				})
-				ctx.logger.info(`🔑 recorded login attempt from`, ctx.ip)
+				ctx.logger.info(`🔑 recorded sign in attempt from`, ctx.ip)
 			}
 		}),
 
@@ -285,7 +287,7 @@ export const appRouter = trpc.router({
 				? (`verified` as const)
 				: (`unverified` as const)
 			switch (action) {
-				case `login`: {
+				case `signIn`: {
 					break
 				}
 				case `confirmEmail`: {
@@ -319,7 +321,7 @@ export const appRouter = trpc.router({
 
 	startPasswordReset: trpc.procedure
 		.input(type({ sessionKey: `string`, username: `string` }))
-		.mutation(async ({ input, ctx }): Promise<LoginResponse> => {
+		.mutation(async ({ input, ctx }): Promise<SignInResponse> => {
 			const { sessionKey, username } = input
 			ctx.logger.info(`🔑 starting password reset for`, username)
 			const user = await ctx.db.drizzle.query.users.findFirst({
