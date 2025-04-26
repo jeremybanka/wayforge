@@ -1,7 +1,7 @@
 import type { RequestListener } from "node:http"
 
 import { initTRPC, TRPCError } from "@trpc/server"
-import { type } from "arktype"
+import { Type, type } from "arktype"
 import { and, eq, gt } from "drizzle-orm"
 
 import { CompleteAccountAction } from "../../emails/CompleteAccountAction"
@@ -204,6 +204,27 @@ export const appRouter = trpc.router({
 				})
 				ctx.logger.info(`🔑 recorded sign in attempt from`, ctx.ip)
 			}
+		}),
+
+	signOut: trpc.procedure
+		.input(type({ username: `string`, sessionKey: `string` }))
+		.mutation(({ input }) => {
+			const { username, sessionKey } = input
+			const sessionMap = userSessionMap.get(username)
+			if (!sessionMap) {
+				throw new TRPCError({
+					code: `BAD_REQUEST`,
+					message: `Session not found.`,
+				})
+			}
+			const sessionKeyIsValid = sessionMap.has(sessionKey)
+			if (!sessionKeyIsValid) {
+				throw new TRPCError({
+					code: `BAD_REQUEST`,
+					message: `Session not found.`,
+				})
+			}
+			sessionMap.delete(sessionKey)
 		}),
 
 	verifyAccountAction: trpc.procedure
