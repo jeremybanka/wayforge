@@ -29,11 +29,11 @@ const gpt4Gen = new OpenAiSafeGenerator({
 	usdMinimum: 0,
 	model: `gpt-4o-mini`,
 	// biome-ignore lint/style/noNonNullAssertion: We'll handle this on the following lines
-	apiKey: env.OPENAI_API_KEY!,
+	apiKey: env.API_KEY_OPENAI!,
 	cachingMode: `off`,
 	logger: parent.logger,
 })
-if (env.OPENAI_API_KEY === undefined && !(`VITEST` in import.meta.env)) {
+if (env.API_KEY_OPENAI === undefined && !(`VITEST` in import.meta.env)) {
 	throw new Error(`OPENAI_API_KEY is not set and vitest is not running.`)
 }
 

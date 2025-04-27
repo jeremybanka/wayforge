@@ -1,0 +1,28 @@
+main.class {
+  section {
+    display: flex;
+    gap: 30px;
+    flex-flow: column;
+    align-items: start;
+    label {
+      > span {
+        flex-grow: 1;
+        font-size: 15px;
+      }
+      > input {
+        --energy-color: var(--fg-soft-3);
+        box-sizing: border-box;
+        border-radius: 0px;
+        height: 34px;
+        background: none;
+        border: 1px solid var(--energy-color);
+        font-family: Uruz;
+        font-size: 21px;
+        &:focus {
+          outline: none;
+          border-width: 2px;
+        }
+      }
+    }
+  }
+}

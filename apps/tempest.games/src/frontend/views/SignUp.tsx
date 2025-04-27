@@ -1,8 +1,8 @@
+import { TRPCClientError } from "@trpc/client"
+import { TRPCError } from "@trpc/server"
 import { useI, useO } from "atom.io/react"
 import * as React from "react"
 
-import { asUUID } from "../../library/as-uuid-web"
-import { env } from "../../library/env"
 import { setCssVars } from "../../library/set-css-vars"
 import { Anchor } from "../Anchor"
 import { navigate } from "../services/router-service"
@@ -17,6 +17,7 @@ import {
 	usernameInputAtom,
 	usernameIssuesSelector,
 } from "../services/socket-auth-service"
+import { trpc } from "../services/trpc-client-service"
 
 export function SignUp(): React.ReactNode {
 	const setUsername = useI(usernameInputAtom)
@@ -40,22 +41,19 @@ export function SignUp(): React.ReactNode {
 			onSubmit={async (e) => {
 				e.preventDefault()
 				const password = password0
-				const signUpUUID = await asUUID(`sign-up`)
-				const response = await fetch(
-					`${env.VITE_BACKEND_ORIGIN}/sign-up-${signUpUUID}`,
-					{
-						method: `POST`,
-						body: JSON.stringify({ username, password, email }),
-					},
-				)
-				if (response.status === 201) {
+				try {
+					await trpc.signUp.mutate({
+						username,
+						password,
+						email,
+					})
 					setPassword1(``)
 					setEmail(``)
-					navigate(`/login`)
-				}
-				if (response.status >= 400) {
-					const responseText = await response.text()
-					setError(responseText)
+					navigate(`/sign_in`)
+				} catch (thrown) {
+					if (thrown instanceof TRPCClientError) {
+						setError(thrown.message)
+					}
 				}
 			}}
 		>
@@ -172,7 +170,7 @@ export function SignUp(): React.ReactNode {
 				<button type="submit" disabled={!signUpReady}>{`->`}</button>
 			</main>
 			<footer>
-				<Anchor href="/login">
+				<Anchor href="/sign_in">
 					Already have an account? <u>Log in</u> instead.
 				</Anchor>
 			</footer>

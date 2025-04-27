@@ -78,6 +78,55 @@
       "when": 1744608910962,
       "tag": "0010_lucky_brood",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1744698631375,
+      "tag": "0011_slimy_onslaught",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1745137286026,
+      "tag": "0012_brown_silvermane",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1745183881022,
+      "tag": "0013_moaning_titanium_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1745192808267,
+      "tag": "0014_ambiguous_blacklash",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1745222823635,
+      "tag": "0015_careful_newton_destine",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1745279706544,
+      "tag": "0016_whole_iceman",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1745697499088,
+      "tag": "0017_sparkling_matthew_murdock",
+      "breakpoints": true
     }
   ]
 }

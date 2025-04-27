@@ -1,6 +1,6 @@
 import { CronJob } from "cron"
 
-import { logger } from "."
+import { logger } from "./logger"
 
 const ONE_WEEK_MS = 1000 * 60 * 60 * 24 * 7
 
@@ -33,3 +33,14 @@ export const userSessionMap: Map<string, Map<string, number>> = (() => {
 	}
 	return __userSessionMap
 })()
+
+export function createSession(username: string, now: Date): string {
+	const sessionKey = crypto.randomUUID()
+	let userSessions = userSessionMap.get(username)
+	if (!userSessions) {
+		userSessions = new Map()
+		userSessionMap.set(username, userSessions)
+	}
+	userSessions.set(sessionKey, +now)
+	return sessionKey
+}

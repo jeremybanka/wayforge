@@ -7,7 +7,7 @@ const IN_DEV = NODE_ENV === `development`
 function noop() {}
 
 export function useSingleEffect(
-	effect: () => (() => void) | undefined,
+	effect: () => (() => void) | undefined | void,
 	deps: unknown[],
 ): void {
 	if (IN_DEV) {

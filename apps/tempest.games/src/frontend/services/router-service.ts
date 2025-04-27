@@ -5,11 +5,15 @@ import { isTreePath, optional, required } from "treetrunks"
 import { authAtom } from "./socket-auth-service"
 
 export const ROUTES = required({
-	login: null,
+	sign_in: null,
 	sign_up: null,
+	verify: optional({
+		$token: null,
+	}),
 	game: optional({
 		clicker: null,
 	}),
+	account: null,
 	admin: null,
 }) satisfies Tree
 export type Route = TreePath<typeof ROUTES>
@@ -20,7 +24,7 @@ export function isRoute(route: unknown[]): route is Route {
 }
 
 export const PUBLIC_ROUTES = [
-	[`login`],
+	[`sign_in`],
 	[`sign_up`],
 ] as const satisfies TreePath<typeof ROUTES>[]
 export type PublicRoute = (typeof PUBLIC_ROUTES)[number]
@@ -46,19 +50,63 @@ export const pathnameAtom = atom<Pathname | (string & {})>({
 				history.replaceState(null, ``, pathname)
 				setSelf(pathname)
 			}
-			const redirect = (newValue: string) => {
+			const redirect = (newValue: Pathname | (string & {})) => {
 				switch (newValue) {
 					case `/`: {
 						const auth = getState(authAtom)
-						let destination: Pathname = `/login`
-						if (auth) destination = `/game`
-						resolve(destination)
+						const intended: Pathname = `/sign_in`
+						switch (auth?.verification) {
+							case `verified`:
+								resolve(`/game`)
+								break
+							case `unverified`:
+								resolve(`/verify`)
+								break
+							case undefined:
+								resolve(intended)
+						}
 						break
 					}
-					case `/login`:
+					case `/sign_in`:
 					case `/sign_up`: {
 						const auth = getState(authAtom)
-						if (auth) resolve(`/game`)
+						if (auth)
+							switch (auth.verification) {
+								case `verified`:
+									resolve(`/game`)
+									break
+								case `unverified`:
+									resolve(`/verify`)
+									break
+							}
+						break
+					}
+					case `/verify`: {
+						const auth = getState(authAtom)
+						if (auth?.verification === `verified`) {
+							resolve(`/game`)
+						}
+						break
+					}
+					case `/game`:
+					case `/game/clicker`: {
+						const auth = getState(authAtom)
+						if (auth?.verification === `unverified`) {
+							resolve(`/verify`)
+						}
+						break
+					}
+					case `/admin`:
+						break
+					case `/account`: {
+						const auth = getState(authAtom)
+						if (!auth) {
+							resolve(`/sign_in`)
+							break
+						}
+						if (auth.verification === `unverified`) {
+							resolve(`/verify`)
+						}
 						break
 					}
 					default:

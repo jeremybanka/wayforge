@@ -1,4 +1,5 @@
 import react from "@vitejs/plugin-react-swc"
+import type { UserConfig } from "vite"
 import { loadEnv } from "vite"
 import tsconfigPaths from "vite-tsconfig-paths"
 import type { UserConfigFn } from "vitest/config"
@@ -10,16 +11,12 @@ export default defineConfig((async ({ mode }) => {
 	Object.assign(import.meta, { env })
 	await import(`./src/library/env`)
 	const { httpsDev } = await import(`./dev/https-dev`)
-	return {
+	const config: UserConfig = {
 		plugins: [react(), tsconfigPaths()],
 		build: { outDir: `app` },
 		css: { preprocessorOptions: { scss: { api: `modern-compiler` } } },
 		server: {
-			port: 3333,
-			host: `0.0.0.0`,
-			hmr: {
-				host: `localhost`,
-			},
+			port: 3099,
 			...(httpsDev ? { https: httpsDev } : undefined),
 		},
 		test: {
@@ -29,4 +26,12 @@ export default defineConfig((async ({ mode }) => {
 			include: [`src/**/*.test.ts`],
 		},
 	}
+
+	const hostOverride = env[`VITE_DEV_FRONTEND_HOST`]
+	if (hostOverride && config.server) {
+		config.server.host = hostOverride
+		config.server.hmr = { host: hostOverride }
+	}
+
+	return config
 }) satisfies UserConfigFn)

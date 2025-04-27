@@ -22,7 +22,8 @@ export const env = createEnv({
 		RUN_WORKERS_FROM_SOURCE: maybeBool.pipe((s) => s === `true`),
 		FRONTEND_PORT: str.pipe((s) => Number.parseInt(s, 10)),
 		FRONTEND_ORIGINS: str.pipe.try((s) => JSON.parse(s), type(`string[]`)),
-		OPENAI_API_KEY: type(`string | undefined`),
+		API_KEY_OPENAI: type(`string | undefined`),
+		API_KEY_RESEND: type(`string | undefined`),
 	},
 
 	/**
@@ -33,7 +34,8 @@ export const env = createEnv({
 
 	client: {
 		VITE_BACKEND_ORIGIN: str,
-		VITE_USE_SELF_SIGNED_CERTIFICATE: maybeBool.pipe((s) => s === `true`),
+		VITE_DEV_FRONTEND_HOST: type(`string | undefined`),
+		VITE_DEV_HTTPS: maybeBool.pipe((s) => s === `true`),
 	},
 
 	/**
