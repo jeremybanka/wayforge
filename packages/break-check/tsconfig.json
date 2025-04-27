@@ -2,7 +2,7 @@
 	"extends": "../../tsconfig.json",
 	"include": ["src", "__tests__", "**/*.config.ts"],
 	"compilerOptions": {
-		"types": ["vitest/globals", "bun-types"],
+		"types": ["vitest/globals", "bun"],
 		"target": "ES2022"
 	}
 }

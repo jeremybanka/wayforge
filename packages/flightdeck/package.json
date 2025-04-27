@@ -44,11 +44,11 @@
 		"postversion": "biome format --write package.json"
 	},
 	"devDependencies": {
+		"@types/bun": "npm:bun-types@1.2.10",
 		"@biomejs/js-api": "0.7.1",
 		"@biomejs/wasm-nodejs": "1.9.4",
 		"@types/node": "22.15.2",
 		"@types/tmp": "0.2.6",
-		"bun-types": "1.2.10",
 		"concurrently": "9.1.2",
 		"eslint": "9.25.1",
 		"json-schema-to-zod": "2.6.1",
