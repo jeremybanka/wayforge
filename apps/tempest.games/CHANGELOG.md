@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.2.0
+
+### Minor Changes
+
+- e7e1353: ✨ Confirm your email to enable account recovery.
+
 ## 0.1.46
 
 ### Patch Changes
