@@ -24,8 +24,9 @@ export const users = pgTable(
 	{
 		id: uuid().primaryKey().defaultRandom(),
 		username: varchar({ length: 16 }).notNull(),
-		email: varchar({ length: 254 }).notNull(),
-		password: varchar({ length: 254 }).notNull(),
+		emailOffered: varchar({ length: 254 }).notNull(),
+		emailVerified: varchar({ length: 254 }),
+		password: varchar({ length: 254 }),
 		createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 		createdIp: varchar({ length: 45 }).notNull(), // IP address length can be up to 45 characters (for IPv6)
 		isActive: boolean().notNull().default(false),
@@ -34,7 +35,7 @@ export const users = pgTable(
 	},
 	(table) => [
 		uniqueIndex(`usernameUniqueIndex`).on(lower(table.username)),
-		uniqueIndex(`emailUniqueIndex`).on(lower(table.email)),
+		uniqueIndex(`emailVerifiedUniqueIndex`).on(lower(table.emailVerified)),
 	],
 )
 
@@ -48,7 +49,8 @@ export const untrackedUserColumnNames = [
 ] as const satisfies UserColumnName[]
 export const trackableUserColumnNames = [
 	`username`,
-	`email`,
+	`emailOffered`,
+	`emailVerified`,
 	`password`,
 	`userRole`,
 ] as const satisfies UserColumnName[]
@@ -61,17 +63,26 @@ export const trackedUserColumnName = pgEnum(
 	trackableUserColumnNames,
 )
 
-export const userChanges = pgTable(`userChanges`, {
-	id: uuid().primaryKey().defaultRandom(),
+export const accountAction = pgEnum(`accountAction`, [
+	`cooldown`,
+	`confirmEmail`,
+	`signIn`,
+	`resetPassword`,
+])
+
+export const accountActions = pgTable(`accountActions`, {
 	userId: uuid()
-		.notNull()
-		.references(() => users.id, { onDelete: `cascade` }),
-	changedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
-	changedIp: varchar({ length: 45 }).notNull(),
-	changedColumn: trackedUserColumnName().notNull(),
-	oldValue: varchar({ length: 255 }),
-	newValue: varchar({ length: 255 }),
+		.references(() => users.id)
+		.primaryKey(),
+	action: accountAction().notNull(),
+	code: varchar({ length: 254 }).notNull(),
+	wrongCodeCount: integer().notNull().default(0),
+	expiresAt: timestamp({ withTimezone: true }).notNull(),
 })
+
+export type AccountAction = typeof accountActions.$inferSelect
+export type AccountActionInsert = typeof accountActions.$inferInsert
+export type AccountActionUpdate = Partial<AccountActionInsert>
 
 export const games = pgTable(`games`, {
 	id: uuid().primaryKey().defaultRandom(),
@@ -96,10 +107,10 @@ export const players = pgTable(
 	],
 )
 
-export const loginHistory = pgTable(`loginHistory`, {
+export const signInHistory = pgTable(`signInHistory`, {
 	id: uuid().primaryKey().defaultRandom(),
 	userId: uuid().references(() => users.id, { onDelete: `cascade` }),
-	loginTime: timestamp({ withTimezone: true }).notNull().defaultNow(),
+	signInTime: timestamp({ withTimezone: true }).notNull().defaultNow(),
 	ipAddress: varchar({ length: 45 }).notNull(),
 	userAgent: varchar({ length: 1024 }),
 	successful: boolean().notNull().default(false),

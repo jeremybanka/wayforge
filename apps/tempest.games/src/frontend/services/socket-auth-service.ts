@@ -27,17 +27,32 @@ export const socket = io(env.VITE_BACKEND_ORIGIN, {
 		setState(authAtom, null)
 	})
 
-export const authAtom = atom<{ username: string; sessionKey: string } | null>({
+export const authAtom = atom<{
+	username: string
+	password: boolean
+	sessionKey: string
+	verification: `unverified` | `verified`
+} | null>({
 	key: `auth`,
 	default: null,
 	effects: [
 		({ onSet }) => {
-			onSet(({ newValue }) => {
+			onSet(async ({ newValue }) => {
+				console.log(`setting auth`, newValue)
 				if (newValue) {
+					console.log(`setting auth`, newValue)
 					localStorage.setItem(`username`, newValue.username)
+					localStorage.setItem(`password`, `${+newValue.password}`)
 					localStorage.setItem(`sessionKey`, newValue.sessionKey)
+					localStorage.setItem(`verification`, newValue.verification)
 					console.log(`connecting...`)
-					socket.connect()
+					if (newValue.verification === `verified`) {
+						socket.connect()
+					} else {
+						await import(`./router-service.ts`).then(({ navigate }) => {
+							navigate(`/verify`)
+						})
+					}
 				} else {
 					console.log(`clearing session...`)
 					localStorage.removeItem(`sessionKey`)
@@ -46,9 +61,13 @@ export const authAtom = atom<{ username: string; sessionKey: string } | null>({
 		},
 		({ setSelf }) => {
 			const username = localStorage.getItem(`username`)
+			const password = localStorage.getItem(`password`) === `1`
 			const sessionKey = localStorage.getItem(`sessionKey`)
-			if (username && sessionKey) {
-				setSelf({ username, sessionKey })
+			const verification = localStorage.getItem(`verification`)
+			if (username && password && sessionKey && verification) {
+				if (verification === `verified` || verification === `unverified`) {
+					setSelf({ username, password, sessionKey, verification })
+				}
 			}
 		},
 	],
@@ -124,4 +143,9 @@ export const signUpReadySelector = selector<boolean>({
 		const emailIssues = get(emailIssuesSelector)
 		return !(usernameIssues ?? password0Issues ?? password1Issues ?? emailIssues)
 	},
+})
+
+export const tokenInputAtom = atom<string>({
+	key: `token`,
+	default: ``,
 })

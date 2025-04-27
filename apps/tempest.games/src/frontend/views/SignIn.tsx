@@ -1,9 +1,8 @@
+import { TRPCClientError } from "@trpc/client"
 import { setState } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import * as React from "react"
 
-import { asUUID } from "../../library/as-uuid-web"
-import { env } from "../../library/env"
 import { Anchor } from "../Anchor"
 import { navigate } from "../services/router-service"
 import {
@@ -12,8 +11,9 @@ import {
 	socket,
 	usernameInputAtom,
 } from "../services/socket-auth-service"
+import { trpc } from "../services/trpc-client-service"
 
-export function Login(): React.ReactNode {
+export function SignIn(): React.ReactNode {
 	const setUsername = useI(usernameInputAtom)
 	const setPassword = useI(password0InputAtom)
 	const username = useO(usernameInputAtom)
@@ -25,28 +25,19 @@ export function Login(): React.ReactNode {
 		<form
 			onSubmit={async (e) => {
 				e.preventDefault()
-				const loginUUID = await asUUID(`login`)
-				const response = await fetch(
-					`${env.VITE_BACKEND_ORIGIN}/login-${loginUUID}`,
-					{
-						method: `POST`,
-						body: JSON.stringify({ username, password }),
-					},
-				)
-				console.log(response)
-				if (response.status === 200) {
+				try {
+					const response = await trpc.signIn.mutate({ username, password })
 					setUsername(``)
 					setPassword(``)
-					const responseText = await response.text()
-					const [, sessionKey] = responseText.split(` `)
-					setState(authAtom, { username, sessionKey })
+					setState(authAtom, response)
 					socket.once(`connect`, () => {
+						console.log(`✨ connected`)
 						navigate(`/game`)
 					})
-				}
-				if (response.status >= 400) {
-					const responseText = await response.text()
-					setError(responseText)
+				} catch (thrown) {
+					if (thrown instanceof TRPCClientError) {
+						setError(thrown.message)
+					}
 				}
 			}}
 		>

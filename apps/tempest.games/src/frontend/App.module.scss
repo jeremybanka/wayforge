@@ -10,11 +10,35 @@ main.class {
   > header {
     width: 100%;
     max-width: 512px;
-    svg {
+    display: flex;
+    flex-flow: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+    > svg {
       width: 100%;
       max-width: 270px;
       @media (prefers-color-scheme: light) {
         mix-blend-mode: multiply;
+      }
+    }
+    > button[data-css="profile"] {
+      height: 40px;
+      width: 40px;
+      border-radius: 0px;
+      border: 1px solid var(--fg-soft-1);
+    }
+    > div[data-css="profile-actions"] {
+      background-color: var(--bg-tint-2);
+      border: 1px solid var(--bg-tint-3);
+      display: flex;
+      flex-flow: column;
+      > button {
+        border: none;
+        border-radius: none;
+        padding: 5px 10px;
+        font-size: 15px;
+        text-align: left;
       }
     }
   }
@@ -36,7 +60,7 @@ main.class {
         flex-flow: column;
         gap: 10px;
         > aside {
-          background-color: #f007;
+          background-color: #f00;
           color: var(--bg-hard-3);
           font-size: 15px;
           padding: 3px 6px;
