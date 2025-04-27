@@ -347,8 +347,8 @@ importers:
         specifier: 9.25.1
         version: 9.25.1
       '@types/bun':
-        specifier: npm:bun-types@1.2.9
-        version: bun-types@1.2.9
+        specifier: npm:bun-types@1.2.10
+        version: bun-types@1.2.10
       '@types/cors':
         specifier: 2.8.17
         version: 2.8.17
@@ -4330,9 +4330,6 @@ packages:
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
 
-  '@types/ws@8.18.1':
-    resolution: {integrity: sha512-ThVF6DCVhA8kUGy+aazFQ4kXQ7E1Ty7A3ypFOe0IcJV8O/M511G99AW24irKrW56Wt44yG9+ij8FaqoBGkuBXg==}
-
   '@typescript-eslint/eslint-plugin@8.31.0':
     resolution: {integrity: sha512-evaQJZ/J/S4wisevDvC1KFZkPzRetH8kYZbkgcTRyql3mcKsf+ZFDV1BVWUGTCAW5pQHoqn5gK5b8kn7ou9aFQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -5011,9 +5008,6 @@ packages:
 
   bun-types@1.2.10:
     resolution: {integrity: sha512-b5ITZMnVdf3m1gMvJHG+gIfeJHiQPJak0f7925Hxu6ZN5VKA8AGy4GZ4lM+Xkn6jtWxg5S3ldWvfmXdvnkp3GQ==}
-
-  bun-types@1.2.9:
-    resolution: {integrity: sha512-dk/kOEfQbajENN/D6FyiSgOKEuUi9PWfqKQJEgwKrCMWbjS/S6tEXp178mWvWAcUSYm9ArDlWHZKO3T/4cLXiw==}
 
   bundle-require@5.1.0:
     resolution: {integrity: sha512-3WrrOuZiyaaZPWiEt4G3+IffISVC9HYlWueJEBWED4ZH4aIAC2PnkdnuRrR94M+w6yGWn4AglWtJtBI8YqvgoA==}
@@ -11909,10 +11903,6 @@ snapshots:
 
   '@types/unist@3.0.3': {}
 
-  '@types/ws@8.18.1':
-    dependencies:
-      '@types/node': 22.15.2
-
   '@typescript-eslint/eslint-plugin@8.31.0(@typescript-eslint/parser@8.31.0(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3))(eslint@9.25.1(jiti@2.4.2))(typescript@5.8.3)':
     dependencies:
       '@eslint-community/regexpp': 4.12.1
@@ -12580,11 +12570,6 @@ snapshots:
   bun-types@1.2.10:
     dependencies:
       '@types/node': 22.15.2
-
-  bun-types@1.2.9:
-    dependencies:
-      '@types/node': 22.15.2
-      '@types/ws': 8.18.1
 
   bundle-require@5.1.0(esbuild@0.25.2):
     dependencies:
