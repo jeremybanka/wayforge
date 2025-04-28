@@ -1,5 +1,7 @@
 #!/usr/bin/env bun
 
+import path from "node:path"
+
 import { createHTTPHandler } from "@trpc/server/adapters/standalone"
 import { AtomIOLogger } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
@@ -100,6 +102,9 @@ parentSocket.on(`updatesReady`, () => {
 	})
 })
 
-logger.info(`🛫 backend server ready on port ${env.BACKEND_PORT}`)
+const { version } = await Bun.file(
+	path.resolve(import.meta.dir, `../package.json`),
+).json()
+logger.info(`🛫 backend v${version} ready on port ${env.BACKEND_PORT}`)
 
 parentSocket.emit(`alive`)
