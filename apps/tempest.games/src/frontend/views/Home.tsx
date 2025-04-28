@@ -24,6 +24,7 @@ export function Home(): React.ReactNode {
 	const oneTimeCode = useO(oneTimeCodeInputAtom)
 
 	const [error, setError] = React.useState<string | null>(null)
+	const [userKey, setUserKey] = React.useState<string | null>(null)
 	const [currentlyEntering, setCurrentlyEntering] = React.useState<
 		`email` | `otp` | `password`
 	>(`email`)
@@ -33,17 +34,72 @@ export function Home(): React.ReactNode {
 			onSubmit={async (e) => {
 				e.preventDefault()
 				try {
-					const response = await trpc.signIn.mutate({
-						email,
-						password,
-					})
-					setEmail(``)
-					setPassword(``)
-					setState(authAtom, response)
-					socket.once(`connect`, () => {
-						console.log(`✨ connected`)
-						navigate(`/game`)
-					})
+					switch (currentlyEntering) {
+						case `email`: {
+							const { nextStep, userKey: newUserKey } =
+								await trpc.authStage1.query({
+									email,
+								})
+							setUserKey(newUserKey)
+							switch (nextStep) {
+								case `otp_login`:
+								case `otp_verify`: {
+									setCurrentlyEntering(`otp`)
+									break
+								}
+								case `password_login`: {
+									setCurrentlyEntering(`email`)
+									break
+								}
+							}
+							break
+						}
+						case `otp`: {
+							if (!userKey) {
+								console.error(`somehow userKey is null`)
+								return
+							}
+							const actionResponse = await trpc.verifyAccountAction.mutate({
+								token: oneTimeCode,
+								userKey,
+							})
+							setEmail(``)
+							setOneTimeCode(``)
+							setState(authAtom, actionResponse)
+							socket.once(`connect`, () => {
+								console.log(`✨ connected`)
+								navigate(`/game`)
+							})
+							break
+						}
+						case `password`: {
+							const response = await trpc.signIn.mutate({
+								email,
+								password,
+							})
+							setEmail(``)
+							setPassword(``)
+							setState(authAtom, response)
+							socket.once(`connect`, () => {
+								console.log(`✨ connected`)
+								navigate(`/game`)
+							})
+							break
+						}
+						default: {
+							const response = await trpc.signIn.mutate({
+								email,
+								password,
+							})
+							setEmail(``)
+							setPassword(``)
+							setState(authAtom, response)
+							socket.once(`connect`, () => {
+								console.log(`✨ connected`)
+								navigate(`/game`)
+							})
+						}
+					}
 				} catch (thrown) {
 					if (thrown instanceof TRPCClientError) {
 						setError(thrown.message)
@@ -79,6 +135,25 @@ export function Home(): React.ReactNode {
 							}}
 							autoComplete="current-password"
 							autoCapitalize="none"
+							// biome-ignore lint/a11y/noAutofocus: this is really the best place to focus
+							autoFocus={currentlyEntering === `password`}
+						/>
+					</label>
+				) : null}
+				{currentlyEntering === `otp` ? (
+					<label htmlFor="otp">
+						<span>One-time Code</span>
+						<input
+							id="otp"
+							type="otp"
+							value={oneTimeCode}
+							onChange={(e) => {
+								setOneTimeCode(e.target.value)
+							}}
+							autoComplete="one-time-code"
+							autoCapitalize="none"
+							// biome-ignore lint/a11y/noAutofocus: this is really the best place to focus
+							autoFocus={currentlyEntering === `otp`}
 						/>
 					</label>
 				) : null}

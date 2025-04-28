@@ -77,9 +77,12 @@ main.class {
           > span {
             flex-grow: 1;
             font-size: 15px;
+            &:has(+ input:disabled) {
+              color: var(--fg-soft-2);
+            }
           }
           > input {
-            --energy-color: var(--fg-soft-3);
+            --energy-color: var(--fg-soft-2);
             box-sizing: border-box;
             border-radius: 0px;
             height: 34px;
@@ -93,7 +96,8 @@ main.class {
               outline-width: 2px;
             }
             &:disabled {
-              --energy-color: var(--bg-tint-3);
+              color: var(--fg-soft-3);
+              --energy-color: var(--bg-soft-3);
             }
           }
           > aside {

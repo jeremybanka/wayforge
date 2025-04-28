@@ -24,6 +24,7 @@ import {
 } from "./account-actions"
 import { resend } from "./email"
 import type { logger } from "./logger"
+import { unwrapId, wrapId } from "./secrecy"
 import { createSession, userSessionMap } from "./user-sessions"
 
 function simpleFormatMs(ms: number): string {
@@ -231,19 +232,21 @@ export const appRouter = trpc.router({
 		}),
 
 	verifyAccountAction: trpc.procedure
-		.input(type({ token: `string`, username: `string` }))
+		.input(type({ token: `string`, userKey: `string`, "+": `delete` }))
 		.mutation(async ({ input, ctx }): Promise<VerifyAccountActionResponse> => {
-			const { token, username } = input
+			const { token, userKey } = input
 			ctx.logger.info(`🔑 verifying account action token:`, token)
 
+			const userId = unwrapId(userKey)
 			const user = await ctx.db.drizzle.query.users.findFirst({
 				columns: {
 					id: true,
 					emailOffered: true,
 					emailVerified: true,
+					username: true,
 					password: true,
 				},
-				where: eq(users.username, username),
+				where: eq(users.id, userId),
 			})
 
 			if (!user) {
@@ -333,6 +336,7 @@ export const appRouter = trpc.router({
 			await ctx.db.drizzle
 				.delete(accountActions)
 				.where(eq(accountActions.userId, user.id))
+			const { username } = user
 			const sessionKey = createSession(username, ctx.now)
 			return {
 				username,
@@ -443,59 +447,67 @@ export const appRouter = trpc.router({
 
 	authStage1: trpc.procedure
 		.input(type({ email: `string`, "+": `delete` }))
-		.query(
-			async ({
-				input,
-				ctx,
-			}): Promise<`otp_login` | `otp_verify` | `password_login`> => {
-				const { email } = input
-				const maybeVerifiedUser = await ctx.db.drizzle.query.users.findFirst({
-					columns: { id: true, password: true },
-					where: eq(users.emailVerified, email),
+		.query(async ({ input, ctx }): Promise<AuthStage1Response> => {
+			const { email } = input
+			const maybeVerifiedUser = await ctx.db.drizzle.query.users.findFirst({
+				columns: { id: true, password: true },
+				where: eq(users.emailVerified, email),
+			})
+			if (!maybeVerifiedUser) {
+				const maybeUnverifiedUser = await ctx.db.drizzle.query.users.findFirst({
+					columns: { id: true },
+					where: eq(users.emailOffered, email),
 				})
-				if (!maybeVerifiedUser) {
-					const maybeUnverifiedUser = await ctx.db.drizzle.query.users.findFirst(
-						{
-							columns: { id: true },
-							where: eq(users.emailOffered, email),
-						},
-					)
-					if (!maybeUnverifiedUser) {
-						const [newUser] = await ctx.db.drizzle
-							.insert(users)
-							.values({
-								emailOffered: email,
-								password: null,
-								createdIp: ctx.ip,
-								username: Math.random().toString(36).slice(2),
-							})
-							.returning()
-						ctx.logger.info(`🔑 user created:`, email)
-						await initiateAccountAction({
-							email,
-							userId: newUser.id,
-							action: `confirmEmail`,
-							now: ctx.now,
-							db: ctx.db,
+				if (!maybeUnverifiedUser) {
+					const [newUser] = await ctx.db.drizzle
+						.insert(users)
+						.values({
+							emailOffered: email,
+							password: null,
+							createdIp: ctx.ip,
+							username: Math.random().toString(36).slice(2),
 						})
-					}
-					return `otp_verify`
-				}
-				const { password } = maybeVerifiedUser
-				if (!password) {
+						.returning()
+					ctx.logger.info(`🔑 user created:`, email)
 					await initiateAccountAction({
 						email,
-						userId: maybeVerifiedUser.id,
-						action: `resetPassword`,
+						userId: newUser.id,
+						action: `confirmEmail`,
 						now: ctx.now,
 						db: ctx.db,
 					})
-					return `otp_login`
+					return {
+						nextStep: `otp_verify`,
+						userKey: wrapId(newUser.id),
+					}
 				}
-				return `password_login`
-			},
-		),
+				const unverifiedUser = maybeUnverifiedUser
+				const unverifiedUserKey = wrapId(unverifiedUser.id)
+				return {
+					nextStep: `otp_verify`,
+					userKey: unverifiedUserKey,
+				}
+			}
+			const verifiedUser = maybeVerifiedUser
+			const verifiedUserKey = wrapId(verifiedUser.id)
+			const { password } = verifiedUser
+			if (!password) {
+				return {
+					nextStep: `otp_login`,
+					userKey: verifiedUserKey,
+				}
+			}
+			return {
+				nextStep: `password_login`,
+				userKey: verifiedUserKey,
+			}
+		}),
 })
+
+export type AuthStage1Response = {
+	nextStep: `otp_login` | `otp_verify` | `password_login`
+	userKey: string
+}
 
 async function initiateAccountAction(arg: {
 	email: string

@@ -53,7 +53,7 @@ export function Verify({
 					const { username } = auth
 					const response = await trpc.verifyAccountAction.mutate({
 						token,
-						username,
+						email: username,
 					})
 					setState(authAtom, response)
 					if (response.action === `resetPassword`) {
