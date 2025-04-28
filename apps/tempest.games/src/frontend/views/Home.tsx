@@ -60,7 +60,7 @@ export function Home(): React.ReactNode {
 								return
 							}
 							const actionResponse = await trpc.verifyAccountAction.mutate({
-								token: oneTimeCode,
+								oneTimeCode,
 								userKey,
 							})
 							setEmail(``)

@@ -254,10 +254,10 @@ export const appRouter = trpc.router({
 		}),
 
 	verifyAccountAction: trpc.procedure
-		.input(type({ token: `string`, userKey: `string`, "+": `delete` }))
+		.input(type({ oneTimeCode: `string`, userKey: `string`, "+": `delete` }))
 		.mutation(async ({ input, ctx }): Promise<VerifyAccountActionResponse> => {
-			const { token, userKey } = input
-			ctx.logger.info(`🔑 verifying account action token:`, token)
+			const { oneTimeCode, userKey } = input
+			ctx.logger.info(`🔑 verifying account action token:`, oneTimeCode)
 
 			const userId = unwrapId(userKey)
 			const user = await ctx.db.drizzle.query.users.findFirst({
@@ -305,7 +305,10 @@ export const appRouter = trpc.router({
 				})
 			}
 
-			const tokenIsCorrect = await Bun.password.verify(token, accountAction.code)
+			const tokenIsCorrect = await Bun.password.verify(
+				oneTimeCode,
+				accountAction.code,
+			)
 
 			if (!tokenIsCorrect) {
 				ctx.logger.info(`🔑❌ account action token is incorrect`)
@@ -428,6 +431,7 @@ export const appRouter = trpc.router({
 				algorithm: `bcrypt`,
 				cost: 10,
 			})
+
 			await ctx.db.drizzle.insert(accountActions).values({
 				action: `resetPassword`,
 				userId: user.id,
