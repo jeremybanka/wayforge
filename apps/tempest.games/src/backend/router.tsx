@@ -8,7 +8,7 @@ import { and, eq, gt } from "drizzle-orm"
 import { CompleteAccountAction } from "../../emails/CompleteAccountAction"
 import type { DatabaseManager } from "../database/tempest-db-manager"
 import type {
-	AccountAction,
+	AccountActionTypeActual,
 	AccountActionUpdate,
 } from "../database/tempest-db-schema"
 import {
@@ -70,7 +70,7 @@ interface SignInResponse {
 }
 
 interface VerifyAccountActionResponse extends SignInResponse {
-	action: Exclude<AccountAction[`action`], `cooldown`>
+	action: AccountActionTypeActual
 }
 
 export const trpc = initTRPC.context<Context>().create()
