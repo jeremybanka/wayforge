@@ -5,7 +5,7 @@ import { onMount } from "atom.io/realtime-react"
 import React from "react"
 
 import { navigate, type Route } from "../services/router-service"
-import { authAtom, tokenInputAtom } from "../services/socket-auth-service"
+import { authAtom, oneTimeCodeInputAtom } from "../services/socket-auth-service"
 import { trpc } from "../services/trpc-client-service"
 
 export type VerifyRoute = Extract<Route, [`verify`, ...any]>
@@ -18,8 +18,8 @@ export function Verify({
 	route: [, tokenFromUrl],
 }: VerifyProps): React.ReactNode {
 	const auth = useO(authAtom)
-	const token = useO(tokenInputAtom)
-	const setToken = useI(tokenInputAtom)
+	const token = useO(oneTimeCodeInputAtom)
+	const setToken = useI(oneTimeCodeInputAtom)
 
 	const submitted = React.useState(false)
 	const [error, setError] = React.useState<string | null>(null)

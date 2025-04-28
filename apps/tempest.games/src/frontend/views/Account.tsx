@@ -3,12 +3,12 @@ import { useI, useO } from "atom.io/react"
 import React from "react"
 
 import { setCssVars } from "../../library/set-css-vars"
-import { authAtom, tokenInputAtom } from "../services/socket-auth-service"
+import { authAtom, oneTimeCodeInputAtom } from "../services/socket-auth-service"
 
 export function Account(): React.ReactNode {
 	const auth = useO(authAtom)
-	const token = useO(tokenInputAtom)
-	const setToken = useI(tokenInputAtom)
+	const token = useO(oneTimeCodeInputAtom)
+	const setToken = useI(oneTimeCodeInputAtom)
 
 	const submitted = React.useState(false)
 	const [error, setError] = React.useState<string | null>(null)

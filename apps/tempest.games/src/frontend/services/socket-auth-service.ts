@@ -121,7 +121,7 @@ export const password1IssuesSelector = selector<ArkErrors | null>({
 })
 export const emailInputAtom = atom<string>({
 	key: `email`,
-	default: ``,
+	default: `hi@io.fyi`,
 })
 export const emailIssuesSelector = selector<ArkErrors | null>({
 	key: `emailIssues`,
@@ -145,7 +145,7 @@ export const signUpReadySelector = selector<boolean>({
 	},
 })
 
-export const tokenInputAtom = atom<string>({
-	key: `token`,
+export const oneTimeCodeInputAtom = atom<string>({
+	key: `oneTimeCode`,
 	default: ``,
 })

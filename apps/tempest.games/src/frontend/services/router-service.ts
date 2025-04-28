@@ -4,9 +4,9 @@ import { isTreePath, optional, required } from "treetrunks"
 
 import { authAtom } from "./socket-auth-service"
 
-export const ROUTES = required({
-	sign_in: null,
-	sign_up: null,
+export const ROUTES = optional({
+	// sign_in: null,
+	// sign_up: null,
 	verify: optional({
 		$token: null,
 	}),
@@ -23,10 +23,7 @@ export function isRoute(route: unknown[]): route is Route {
 	return isTreePath(ROUTES, route)
 }
 
-export const PUBLIC_ROUTES = [
-	[`sign_in`],
-	[`sign_up`],
-] as const satisfies TreePath<typeof ROUTES>[]
+export const PUBLIC_ROUTES = [[]] as const satisfies TreePath<typeof ROUTES>[]
 export type PublicRoute = (typeof PUBLIC_ROUTES)[number]
 export type PublicPathname = `/${Join<PublicRoute, `/`>}`
 
@@ -54,7 +51,7 @@ export const pathnameAtom = atom<Pathname | (string & {})>({
 				switch (newValue) {
 					case `/`: {
 						const auth = getState(authAtom)
-						const intended: Pathname = `/sign_in`
+						const intended: Pathname = `/`
 						switch (auth?.verification) {
 							case `verified`:
 								resolve(`/game`)
@@ -65,20 +62,6 @@ export const pathnameAtom = atom<Pathname | (string & {})>({
 							case undefined:
 								resolve(intended)
 						}
-						break
-					}
-					case `/sign_in`:
-					case `/sign_up`: {
-						const auth = getState(authAtom)
-						if (auth)
-							switch (auth.verification) {
-								case `verified`:
-									resolve(`/game`)
-									break
-								case `unverified`:
-									resolve(`/verify`)
-									break
-							}
 						break
 					}
 					case `/verify`: {
@@ -101,7 +84,7 @@ export const pathnameAtom = atom<Pathname | (string & {})>({
 					case `/account`: {
 						const auth = getState(authAtom)
 						if (!auth) {
-							resolve(`/sign_in`)
+							resolve(`/`)
 							break
 						}
 						if (auth.verification === `unverified`) {
@@ -140,8 +123,13 @@ export const routeSelector = selector<Route | 401 | 404>({
 	key: `route`,
 	get: ({ get }) => {
 		const pathname = get(pathnameAtom)
-		const path = pathname.split(`/`).slice(1)
+		const path = pathname.split(`/`).slice(1).filter(Boolean)
 		const pathIsRoute = isRoute(path)
+		console.log({
+			pathname,
+			path,
+			pathIsRoute,
+		})
 		if (!pathIsRoute) {
 			return 404
 		}

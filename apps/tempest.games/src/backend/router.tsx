@@ -18,7 +18,10 @@ import {
 } from "../database/tempest-db-schema"
 import { credentialsType, signUpType } from "../library/data-constraints"
 import { env } from "../library/env"
-import { genAccountActionToken as genAccountActionCode } from "./account-actions"
+import {
+	genAccountActionToken as genAccountActionCode,
+	prettyPrintAccountAction,
+} from "./account-actions"
 import { resend } from "./email"
 import type { logger } from "./logger"
 import { createSession, userSessionMap } from "./user-sessions"
@@ -129,7 +132,7 @@ export const appRouter = trpc.router({
 	signIn: trpc.procedure
 		.input(credentialsType)
 		.mutation(async ({ input, ctx }): Promise<SignInResponse> => {
-			const { username, password } = input
+			const { email: username, password } = input
 			let successful = false
 			let userId: string | null = null
 			try {
@@ -437,4 +440,94 @@ export const appRouter = trpc.router({
 			})
 			return Boolean(maybeUser)
 		}),
+
+	authStage1: trpc.procedure
+		.input(type({ email: `string`, "+": `delete` }))
+		.query(
+			async ({
+				input,
+				ctx,
+			}): Promise<`otp_login` | `otp_verify` | `password_login`> => {
+				const { email } = input
+				const maybeVerifiedUser = await ctx.db.drizzle.query.users.findFirst({
+					columns: { id: true, password: true },
+					where: eq(users.emailVerified, email),
+				})
+				if (!maybeVerifiedUser) {
+					const maybeUnverifiedUser = await ctx.db.drizzle.query.users.findFirst(
+						{
+							columns: { id: true },
+							where: eq(users.emailOffered, email),
+						},
+					)
+					if (!maybeUnverifiedUser) {
+						const [newUser] = await ctx.db.drizzle
+							.insert(users)
+							.values({
+								emailOffered: email,
+								password: null,
+								createdIp: ctx.ip,
+								username: Math.random().toString(36).slice(2),
+							})
+							.returning()
+						ctx.logger.info(`🔑 user created:`, email)
+						await initiateAccountAction({
+							email,
+							userId: newUser.id,
+							action: `confirmEmail`,
+							now: ctx.now,
+							db: ctx.db,
+						})
+					}
+					return `otp_verify`
+				}
+				const { password } = maybeVerifiedUser
+				if (!password) {
+					await initiateAccountAction({
+						email,
+						userId: maybeVerifiedUser.id,
+						action: `resetPassword`,
+						now: ctx.now,
+						db: ctx.db,
+					})
+					return `otp_login`
+				}
+				return `password_login`
+			},
+		),
 })
+
+async function initiateAccountAction(arg: {
+	email: string
+	userId: string
+	action: Exclude<AccountAction[`action`], `cooldown`>
+	now: Date
+	db: DatabaseManager
+}) {
+	const { email, userId, action, now, db } = arg
+	const accountActionCode = genAccountActionCode()
+	const encryptedCode = await Bun.password.hash(accountActionCode, {
+		algorithm: `bcrypt`,
+		cost: 10,
+	})
+
+	await db.drizzle.insert(accountActions).values({
+		action: `confirmEmail`,
+		userId,
+		code: encryptedCode,
+		expiresAt: new Date(+now + 1000 * 60 * 15),
+	})
+
+	await resend.emails.send({
+		from: `Tempest Games <noreply@tempest.games>`,
+		to: email,
+		subject: prettyPrintAccountAction(action),
+		react: (
+			<CompleteAccountAction
+				action={action}
+				validationCode={accountActionCode}
+				baseUrl={env.FRONTEND_ORIGINS[0]}
+			/>
+		),
+	})
+}

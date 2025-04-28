@@ -84,12 +84,16 @@ main.class {
             border-radius: 0px;
             height: 34px;
             background: none;
-            border: 1px solid var(--energy-color);
+            outline: 1px solid var(--energy-color);
+            border: none;
             font-family: Uruz;
             font-size: 21px;
+            padding: 18px 0px 16px 8px;
             &:focus {
-              outline: none;
-              border-width: 2px;
+              outline-width: 2px;
+            }
+            &:disabled {
+              --energy-color: var(--bg-tint-3);
             }
           }
           > aside {
@@ -117,10 +121,10 @@ main.class {
           color: var(--fg);
           width: 50px;
           height: 40px;
+          padding-top: px;
           font-family: theia;
           border: none;
           align-self: flex-end;
-          margin-top: 10px;
           border: var(--fg-soft-3) solid 1px;
           cursor: pointer;
           &:disabled {

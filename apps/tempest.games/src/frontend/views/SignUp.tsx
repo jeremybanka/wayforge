@@ -49,7 +49,7 @@ export function SignUp(): React.ReactNode {
 					})
 					setPassword1(``)
 					setEmail(``)
-					navigate(`/sign_in`)
+					navigate(`/`)
 				} catch (thrown) {
 					if (thrown instanceof TRPCClientError) {
 						setError(thrown.message)

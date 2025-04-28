@@ -83,7 +83,7 @@ export const passwordType = type(`string`)
 
 export const credentialsType = type({
 	"+": `delete`,
-	username: `string`,
+	email: `string`,
 	password: `string`,
 })
 
