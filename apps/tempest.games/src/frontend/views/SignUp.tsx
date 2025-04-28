@@ -58,6 +58,7 @@ export function SignUp(): React.ReactNode {
 			}}
 		>
 			<main>
+				{/* <h1>sign up for an account</h1> */}
 				{error ? <aside>{error}</aside> : null}
 				<label htmlFor="username">
 					<span>Username</span>

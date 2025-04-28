@@ -426,4 +426,15 @@ export const appRouter = trpc.router({
 				verification: `verified`,
 			}
 		}),
+
+	isUsernameTaken: trpc.procedure
+		.input(type({ username: `string` }))
+		.query(async ({ input, ctx }): Promise<boolean> => {
+			const { username } = input
+			const maybeUser = await ctx.db.drizzle.query.users.findFirst({
+				columns: { id: true },
+				where: eq(users.username, username),
+			})
+			return Boolean(maybeUser)
+		}),
 })
