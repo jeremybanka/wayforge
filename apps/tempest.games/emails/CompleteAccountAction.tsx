@@ -32,7 +32,7 @@ export function CompleteAccountAction({
 }: SlackConfirmEmailProps): React.ReactNode {
 	const url = new URL(baseUrl)
 	const prettyLink = `${url.host}/verify`
-	const prettyAction = prettyPrintAccountAction(action)
+	const [header, summary] = prettyPrintAccountAction(action)
 	return (
 		<Html>
 			<Head>
@@ -60,25 +60,27 @@ export function CompleteAccountAction({
 				</style>
 			</Head>
 			<Body style={main}>
-				<Preview>{prettyAction}</Preview>
+				<Preview>{summary}</Preview>
 				<Container style={container}>
 					<Section style={logoContainer}>
 						<svg.tempest width="250" />
 					</Section>
-					<Heading style={h1}>{prettyAction}</Heading>
+					<Heading style={h1}>{header}</Heading>
+					<Text style={heroText}>{summary}</Text>
+
+					<Section style={codeBox}>
+						<Text style={confirmationCodeText}>{validationCode}</Text>
+					</Section>
+
 					<Text style={heroText}>
-						Paste the token below into your browser window at{` `}
+						Paste the code above into your browser window at{` `}
 						<a href={`${baseUrl}/verify`} style={footerLink}>
 							{prettyLink}
 						</a>
 						.
 					</Text>
 
-					<Section style={codeBox}>
-						<Text style={confirmationCodeText}>{validationCode}</Text>
-					</Section>
-
-					<Text style={text}>This token will expire in 15 minutes.</Text>
+					<Text style={text}>This code will expire in 15 minutes.</Text>
 					<Text style={text}>
 						If you didn't request this email, there's nothing to worry about, you
 						can safely ignore it.

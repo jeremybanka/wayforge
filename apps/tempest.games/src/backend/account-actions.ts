@@ -7,13 +7,22 @@ export function genAccountActionToken(): string {
 
 export function prettyPrintAccountAction(
 	action: Exclude<AccountAction[`action`], `cooldown`>,
-): string {
+): [header: string, summary: string] {
 	switch (action) {
 		case `confirmEmail`:
-			return `Confirm your email address`
+			return [
+				`Welcome to Tempest`,
+				`Here's a one-time code to set up your account.`,
+			]
 		case `resetPassword`:
-			return `Reset your password`
+			return [
+				`Reset your password`,
+				`Here's a one-time code to set up a new password`,
+			]
 		case `signIn`:
-			return `Sign in`
+			return [
+				`Welcome Back to Tempest`,
+				`Here's a one-time code to sign into your account`,
+			]
 	}
 }
