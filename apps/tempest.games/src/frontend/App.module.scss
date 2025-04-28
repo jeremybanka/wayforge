@@ -15,11 +15,18 @@ main.class {
     align-items: flex-start;
     justify-content: space-between;
     gap: 10px;
-    > svg {
-      width: 100%;
-      max-width: 270px;
-      @media (prefers-color-scheme: light) {
-        mix-blend-mode: multiply;
+    > main {
+      display: flex;
+      flex-flow: column;
+      > svg {
+        width: 100%;
+        max-width: 270px;
+        @media (prefers-color-scheme: light) {
+          mix-blend-mode: multiply;
+        }
+      }
+      > span {
+        color: var(--bg-soft-3);
       }
     }
     > button[data-css="profile"] {

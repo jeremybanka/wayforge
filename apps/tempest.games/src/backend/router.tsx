@@ -1,4 +1,5 @@
 import type { RequestListener } from "node:http"
+import path from "node:path"
 
 import { initTRPC, TRPCError } from "@trpc/server"
 import { Type, type } from "arktype"
@@ -76,6 +77,27 @@ export const trpc = initTRPC.context<Context>().create()
 
 export type AppRouter = typeof appRouter
 export const appRouter = trpc.router({
+	version: trpc.procedure.query(async () => {
+		const relative = env.RUN_WORKERS_FROM_SOURCE ? `../..` : `..`
+		const { version } = await Bun.file(
+			path.resolve(import.meta.dir, relative, `package.json`),
+		).json()
+		const changelog = await Bun.file(
+			path.resolve(import.meta.dir, relative, `CHANGELOG.md`),
+		).text()
+		const resType = type({
+			version: `string`,
+			changelog: `string`,
+		})
+		const versionData = resType({ version, changelog })
+		if (versionData instanceof type.errors) {
+			throw new TRPCError({
+				code: `INTERNAL_SERVER_ERROR`,
+				message: `Failed to parse version data.`,
+			})
+		}
+		return versionData
+	}),
 	signUp: trpc.procedure.input(signUpType).mutation(async ({ input, ctx }) => {
 		const { username, password, email } = input
 		ctx.logger.info(`🔑 attempting to sign up:`, username)

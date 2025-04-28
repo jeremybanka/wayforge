@@ -18,6 +18,7 @@ import { RESPONSE_DICTIONARY } from "../library/response-dictionary"
 import * as svg from "./<svg>"
 import { Anchor } from "./Anchor"
 import scss from "./App.module.scss"
+import { appVersionQueryAtom } from "./services/patchnotes-service"
 import { navigate, routeSelector } from "./services/router-service"
 import { authAtom, socket } from "./services/socket-auth-service"
 import { trpc } from "./services/trpc-client-service"
@@ -49,10 +50,21 @@ export function App(): React.ReactNode {
 		role,
 	])
 
+	const appVersion = useO(appVersionQueryAtom)
+
 	return (
 		<main className={scss[`class`]}>
 			<header>
-				<svg.tempest />
+				<main>
+					<svg.tempest />
+					<span>
+						v
+						{appVersion instanceof Promise
+							? `loading version`
+							: appVersion.version}
+					</span>
+				</main>
+
 				<button
 					data-css="profile"
 					ref={refs.setReference}
