@@ -778,8 +778,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.10.1
-        version: 0.10.1(typescript@5.8.3)
+        specifier: 0.10.2
+        version: 0.10.2(typescript@5.8.3)
 
   packages/comline:
     dependencies:
@@ -809,8 +809,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.10.1
-        version: 0.10.1(typescript@5.8.3)
+        specifier: 0.10.2
+        version: 0.10.2(typescript@5.8.3)
       vitest:
         specifier: 3.1.2
         version: 3.1.2(@types/debug@4.1.12)(@types/node@22.15.3)(@vitest/ui@3.1.2)(happy-dom@17.4.4)(jiti@2.4.2)(jsdom@26.1.0)(lightningcss@1.29.3)(sass-embedded@1.87.0)(sass@1.87.0)(terser@5.39.0)(tsx@4.19.4)
@@ -873,8 +873,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.10.1
-        version: 0.10.1(typescript@5.8.3)
+        specifier: 0.10.2
+        version: 0.10.2(typescript@5.8.3)
       varmint:
         specifier: workspace:*
         version: link:../varmint
@@ -1017,8 +1017,8 @@ importers:
         specifier: 6.0.1
         version: 6.0.1
       tsdown:
-        specifier: 0.10.1
-        version: 0.10.1(typescript@5.8.3)
+        specifier: 0.10.2
+        version: 0.10.2(typescript@5.8.3)
       vitest:
         specifier: 3.1.2
         version: 3.1.2(@types/debug@4.1.12)(@types/node@22.15.3)(@vitest/ui@3.1.2)(happy-dom@17.4.4)(jiti@2.4.2)(jsdom@26.1.0)(lightningcss@1.29.3)(sass-embedded@1.87.0)(sass@1.87.0)(terser@5.39.0)(tsx@4.19.4)
@@ -1087,8 +1087,8 @@ importers:
         specifier: 9.25.1
         version: 9.25.1(jiti@2.4.2)
       tsdown:
-        specifier: 0.10.1
-        version: 0.10.1(typescript@5.8.3)
+        specifier: 0.10.2
+        version: 0.10.2(typescript@5.8.3)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -1150,8 +1150,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.10.1
-        version: 0.10.1(typescript@5.8.3)
+        specifier: 0.10.2
+        version: 0.10.2(typescript@5.8.3)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -1278,8 +1278,8 @@ importers:
         specifier: 6.0.1
         version: 6.0.1
       tsdown:
-        specifier: 0.10.1
-        version: 0.10.1(typescript@5.8.3)
+        specifier: 0.10.2
+        version: 0.10.2(typescript@5.8.3)
       vitest:
         specifier: 3.1.2
         version: 3.1.2(@types/debug@4.1.12)(@types/node@22.15.3)(@vitest/ui@3.1.2)(happy-dom@17.4.4)(jiti@2.4.2)(jsdom@26.1.0)(lightningcss@1.29.3)(sass-embedded@1.87.0)(sass@1.87.0)(terser@5.39.0)(tsx@4.19.4)
@@ -1358,8 +1358,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.10.1
-        version: 0.10.1(typescript@5.8.3)
+        specifier: 0.10.2
+        version: 0.10.2(typescript@5.8.3)
       vite:
         specifier: 6.3.3
         version: 6.3.3(@types/node@22.15.3)(jiti@2.4.2)(lightningcss@1.29.3)(sass-embedded@1.87.0)(sass@1.87.0)(terser@5.39.0)(tsx@4.19.4)
@@ -7863,8 +7863,8 @@ packages:
     engines: {node: 20 || >=22}
     hasBin: true
 
-  rolldown-plugin-dts@0.9.5:
-    resolution: {integrity: sha512-p1iJ7v9Rq78xZ3isZrTdtp1PBPsSFO5w5lATicgujmeyo4VjeKqkUmz/eZdDXXTaYQTlg70b0iy6fT8T/9sGEQ==}
+  rolldown-plugin-dts@0.9.7:
+    resolution: {integrity: sha512-aAJhyvmlZx/siIDNQ2CahSyLp0Hvp8xAJkiXa8eZmkZ/SPEOdSjB0StGay2VcFetCa0NhUBxr+LkO2BSQgaU/Q==}
     engines: {node: '>=20.18.0'}
     peerDependencies:
       rolldown: ^1.0.0-beta.7
@@ -8536,8 +8536,8 @@ packages:
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
 
-  tsdown@0.10.1:
-    resolution: {integrity: sha512-NT1XSUDweBpgpiZb3Upfy3DBwAbn8W0aXo3Ecp4kHozTLewWa0UkWUP6nRTvSj2c0NcD/BLLuf0HthqMpbEdkA==}
+  tsdown@0.10.2:
+    resolution: {integrity: sha512-MhauwcNNVMeW3TTvpADDVPoAC3kfBfwPru3gtQ5pbVvGIF399VtbH3szUuXmw56P+DDlYjtQd0gKGJ8K5xRayQ==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     peerDependencies:
@@ -15979,7 +15979,7 @@ snapshots:
       glob: 11.0.1
       package-json-from-dist: 1.0.1
 
-  rolldown-plugin-dts@0.9.5(rolldown@1.0.0-beta.8-commit.852c603(typescript@5.8.3))(typescript@5.8.3):
+  rolldown-plugin-dts@0.9.7(rolldown@1.0.0-beta.8-commit.852c603(typescript@5.8.3))(typescript@5.8.3):
     dependencies:
       '@babel/generator': 7.27.0
       '@babel/parser': 7.27.0
@@ -16763,7 +16763,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tsdown@0.10.1(typescript@5.8.3):
+  tsdown@0.10.2(typescript@5.8.3):
     dependencies:
       ansis: 3.17.0
       cac: 6.7.14
@@ -16775,7 +16775,7 @@ snapshots:
       hookable: 5.5.3
       lightningcss: 1.29.3
       rolldown: 1.0.0-beta.8-commit.852c603(typescript@5.8.3)
-      rolldown-plugin-dts: 0.9.5(rolldown@1.0.0-beta.8-commit.852c603(typescript@5.8.3))(typescript@5.8.3)
+      rolldown-plugin-dts: 0.9.7(rolldown@1.0.0-beta.8-commit.852c603(typescript@5.8.3))(typescript@5.8.3)
       tinyexec: 1.0.1
       tinyglobby: 0.2.13
       unconfig: 7.3.2
