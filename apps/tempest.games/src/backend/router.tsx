@@ -63,6 +63,7 @@ interface Context {
 }
 
 interface SignInResponse {
+	email: string
 	username: string
 	password: boolean
 	sessionKey: string
@@ -214,6 +215,7 @@ export const appRouter = trpc.router({
 				successful = true
 				ctx.logger.info(`🔑 sign in successful as`, username)
 				return {
+					email: user.emailVerified ?? ``,
 					username,
 					password: Boolean(user.password),
 					sessionKey,
@@ -335,6 +337,7 @@ export const appRouter = trpc.router({
 				})
 			}
 
+			let email = user.emailVerified ?? user.emailOffered
 			let password = Boolean(user.password)
 			let verification = user.emailVerified
 				? (`verified` as const)
@@ -348,6 +351,7 @@ export const appRouter = trpc.router({
 						.update(users)
 						.set({ emailVerified: user.emailOffered })
 						.where(eq(users.id, user.id))
+					email = user.emailOffered
 					verification = `verified`
 					break
 				}
@@ -365,6 +369,7 @@ export const appRouter = trpc.router({
 			const { username } = user
 			const sessionKey = createSession(username, ctx.now)
 			return {
+				email,
 				username,
 				password,
 				sessionKey,
@@ -388,7 +393,8 @@ export const appRouter = trpc.router({
 					message: `User not found.`,
 				})
 			}
-			if (!user.emailVerified) {
+			const { emailVerified } = user
+			if (!emailVerified) {
 				throw new TRPCError({
 					code: `BAD_REQUEST`,
 					message: `Please verify your email address before resetting your password.`,
@@ -442,7 +448,7 @@ export const appRouter = trpc.router({
 
 			await resend.emails.send({
 				from: `Tempest Games <noreply@tempest.games>`,
-				to: user.emailVerified,
+				to: emailVerified,
 				subject: `Reset your password`,
 				react: (
 					<CompleteAccountAction
@@ -455,6 +461,7 @@ export const appRouter = trpc.router({
 			})
 
 			return {
+				email: emailVerified,
 				username,
 				password: false,
 				sessionKey,

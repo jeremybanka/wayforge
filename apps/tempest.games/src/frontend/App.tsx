@@ -79,6 +79,7 @@ export function App(): React.ReactNode {
 							style={floatingStyles}
 							{...getFloatingProps()}
 						>
+							<span>{auth.username}</span>
 							<button
 								type="button"
 								onClick={() => {

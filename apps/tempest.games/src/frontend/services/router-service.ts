@@ -49,6 +49,7 @@ export const pathnameAtom = atom<Pathname | (string & {})>({
 				switch (newValue) {
 					case `/`: {
 						const auth = getState(authAtom)
+						console.log(`/`, `auth`, auth)
 						switch (auth?.verification) {
 							case `verified`:
 								resolve(`/game`)

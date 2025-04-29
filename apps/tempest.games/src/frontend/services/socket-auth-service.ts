@@ -1,6 +1,7 @@
 import type { ArkErrors } from "arktype"
 import { type } from "arktype"
-import { atom, getState, selector, setState } from "atom.io"
+import type { Loadable } from "atom.io"
+import { atom, getState, selector, setState, subscribe } from "atom.io"
 import { io } from "socket.io-client"
 
 import {
@@ -9,6 +10,7 @@ import {
 	usernameType,
 } from "../../library/data-constraints.ts"
 import { env } from "../../library/env.ts"
+import { trpc } from "./trpc-client-service.ts"
 
 export const socket = io(env.VITE_BACKEND_ORIGIN, {
 	auth: (pass) => {
@@ -28,19 +30,33 @@ export const socket = io(env.VITE_BACKEND_ORIGIN, {
 	})
 
 export const authAtom = atom<{
+	email: string
 	username: string
 	password: boolean
 	sessionKey: string
 	verification: `unverified` | `verified`
 } | null>({
 	key: `auth`,
-	default: null,
+	default: () => {
+		const email = localStorage.getItem(`email`)
+		const username = localStorage.getItem(`username`)
+		const password = localStorage.getItem(`password`) === `1`
+		const sessionKey = localStorage.getItem(`sessionKey`)
+		const verification = localStorage.getItem(`verification`)
+		if (email && username && sessionKey && verification) {
+			if (verification === `verified` || verification === `unverified`) {
+				return { email, username, password, sessionKey, verification }
+			}
+		}
+		return null
+	},
 	effects: [
 		({ onSet }) => {
 			onSet(async ({ newValue }) => {
 				console.log(`setting auth`, newValue)
 				if (newValue) {
 					console.log(`setting auth`, newValue)
+					localStorage.setItem(`email`, newValue.email)
 					localStorage.setItem(`username`, newValue.username)
 					localStorage.setItem(`password`, `${+newValue.password}`)
 					localStorage.setItem(`sessionKey`, newValue.sessionKey)
@@ -60,22 +76,54 @@ export const authAtom = atom<{
 			})
 		},
 		({ setSelf }) => {
+			const email = localStorage.getItem(`email`)
 			const username = localStorage.getItem(`username`)
 			const password = localStorage.getItem(`password`) === `1`
 			const sessionKey = localStorage.getItem(`sessionKey`)
 			const verification = localStorage.getItem(`verification`)
-			if (username && password && sessionKey && verification) {
+			if (email && username && sessionKey && verification) {
 				if (verification === `verified` || verification === `unverified`) {
-					setSelf({ username, password, sessionKey, verification })
+					setSelf({ email, username, password, sessionKey, verification })
 				}
 			}
 		},
 	],
 })
-
 export const usernameInputAtom = atom<string>({
 	key: `username`,
 	default: window.localStorage.getItem(`username`) ?? ``,
+})
+export const usernameQueryReadyAtom = atom<boolean>({
+	key: `usernameDebounce`,
+	default: true,
+})
+export const usernameDebounced100msAtom = atom<string | null>({
+	key: `usernameDebounced100ms`,
+	default: window.localStorage.getItem(`username`) ?? ``,
+	effects: [
+		({ setSelf }) => {
+			subscribe(usernameInputAtom, () => {
+				if (getState(usernameQueryReadyAtom)) {
+					setSelf(getState(usernameInputAtom))
+					setState(usernameQueryReadyAtom, false)
+					setTimeout(() => {
+						setState(usernameQueryReadyAtom, true)
+						setSelf(getState(usernameInputAtom))
+					}, 2000)
+				}
+			})
+		},
+	],
+})
+export const isUsernameTakenQuerySelector = selector<Loadable<boolean>>({
+	key: `isUsernameTakenQuery`,
+	get: async ({ get }) => {
+		const username = get(usernameDebounced100msAtom)
+		if (!username) return false
+		const auth = getState(authAtom)
+		if (username === auth?.username) return false
+		return trpc.isUsernameTaken.query({ username })
+	},
 })
 export const usernameIssuesSelector = selector<ArkErrors | null>({
 	key: `usernameIssues`,

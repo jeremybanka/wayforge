@@ -11,15 +11,15 @@ export function prettyPrintAccountAction(
 ): [header: string, summary: string] {
 	switch (action) {
 		case `confirmEmail`:
-			return [`Welcome.`, `Here's a one-time code to set up your new account.`]
+			return [`Welcome`, `Here's a one-time code to set up your new account.`]
 		case `resetPassword`:
 			return [
-				`Approve Password Reset?`,
+				`Approve password reset?`,
 				`Here's a one-time code that will let you make a new password.`,
 			]
 		case `signIn`:
 			return [
-				`Welcome Back, ${username}.`,
+				`Welcome back, ${username}`,
 				`Here's a one-time code to sign into your account.`,
 			]
 	}
