@@ -26,7 +26,6 @@ import { Account } from "./views/Account"
 import { Admin } from "./views/Admin"
 import { GameView } from "./views/Game"
 import { Home } from "./views/Home"
-import { SignUp } from "./views/SignUp"
 import { Verify } from "./views/Verify"
 
 export function App(): React.ReactNode {
@@ -96,9 +95,11 @@ export function App(): React.ReactNode {
 										username: auth.username,
 										sessionKey: auth.sessionKey,
 									})
+									socket.once(`disconnect`, () => {
+										setState(authAtom, null)
+										navigate(`/`)
+									})
 									socket.disconnect()
-									setState(authAtom, null)
-									navigate(`/`)
 								}}
 							>
 								Sign out

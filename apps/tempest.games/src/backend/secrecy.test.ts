@@ -11,5 +11,10 @@ test(`wrapId and unwrapId`, () => {
 		unwrapped,
 		fake: fakeId(),
 	})
+	console.log({
+		wrapped: wrapped.length,
+		unwrapped: unwrapped.length,
+		fake: fakeId().length,
+	})
 	expect(unwrapped).toBe(id)
 })

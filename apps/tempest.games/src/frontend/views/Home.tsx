@@ -63,12 +63,11 @@ export function Home(): React.ReactNode {
 								oneTimeCode,
 								userKey,
 							})
-							setEmail(``)
-							setOneTimeCode(``)
 							setState(authAtom, actionResponse)
 							socket.once(`connect`, () => {
-								console.log(`✨ connected`)
 								navigate(`/game`)
+								setEmail(``)
+								setOneTimeCode(``)
 							})
 							break
 						}
@@ -77,12 +76,11 @@ export function Home(): React.ReactNode {
 								email,
 								password,
 							})
-							setEmail(``)
-							setPassword(``)
 							setState(authAtom, response)
 							socket.once(`connect`, () => {
-								console.log(`✨ connected`)
 								navigate(`/game`)
+								setEmail(``)
+								setPassword(``)
 							})
 							break
 						}

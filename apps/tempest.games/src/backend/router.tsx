@@ -20,7 +20,7 @@ import {
 import { credentialsType, signUpType } from "../library/data-constraints"
 import { env } from "../library/env"
 import {
-	genAccountActionToken as genAccountActionCode,
+	genAccountActionCode,
 	prettyPrintAccountAction,
 } from "./account-actions"
 import { resend } from "./email"
@@ -144,6 +144,7 @@ export const appRouter = trpc.router({
 			subject: `Confirm your email address`,
 			react: (
 				<CompleteAccountAction
+					username={username}
 					action="confirmEmail"
 					validationCode={accountActionCode}
 					baseUrl={env.FRONTEND_ORIGINS[0]}
@@ -445,6 +446,7 @@ export const appRouter = trpc.router({
 				subject: `Reset your password`,
 				react: (
 					<CompleteAccountAction
+						username={username}
 						action="resetPassword"
 						validationCode={passwordResetCode}
 						baseUrl={env.FRONTEND_ORIGINS[0]}
@@ -477,13 +479,13 @@ export const appRouter = trpc.router({
 			const { email } = input
 			ctx.logger.info(`🔑 authStage1:`, email)
 			const maybeVerifiedUser = await ctx.db.drizzle.query.users.findFirst({
-				columns: { id: true, password: true },
+				columns: { id: true, password: true, username: true },
 				where: eq(users.emailVerified, email),
 			})
 			if (!maybeVerifiedUser) {
 				ctx.logger.info(`🔑 no verified account with email:`, email)
 				const maybeUnverifiedUser = await ctx.db.drizzle.query.users.findFirst({
-					columns: { id: true },
+					columns: { id: true, username: true },
 					where: and(eq(users.emailOffered, email), isNull(users.emailVerified)),
 				})
 				if (!maybeUnverifiedUser) {
@@ -501,6 +503,7 @@ export const appRouter = trpc.router({
 					const newUserKey = wrapId(newUser.id)
 					await initiateAccountAction({
 						email,
+						username: newUser.username,
 						userId: newUser.id,
 						action: `confirmEmail`,
 						ctx,
@@ -514,6 +517,7 @@ export const appRouter = trpc.router({
 				const unverifiedUserKey = wrapId(unverifiedUser.id)
 				await initiateAccountAction({
 					email,
+					username: unverifiedUser.username,
 					userId: unverifiedUser.id,
 					action: `confirmEmail`,
 					ctx,
@@ -535,6 +539,7 @@ export const appRouter = trpc.router({
 				)
 				await initiateAccountAction({
 					email,
+					username: verifiedUser.username,
 					userId: verifiedUser.id,
 					action: `signIn`,
 					ctx,
@@ -558,11 +563,12 @@ export type AuthStage1Response = {
 
 async function initiateAccountAction(arg: {
 	email: string
+	username: string
 	userId: string
 	action: AccountActionTypeActual
 	ctx: Context
 }): Promise<void> {
-	const { email, userId, action, ctx } = arg
+	const { email, username, userId, action, ctx } = arg
 	const maybeExistingAccountAction =
 		await ctx.db.drizzle.query.accountActions.findFirst({
 			columns: { action: true, expiresAt: true },
@@ -626,9 +632,10 @@ async function initiateAccountAction(arg: {
 		void resend.emails.send({
 			from: `Tempest Games <noreply@tempest.games>`,
 			to: email,
-			subject: prettyPrintAccountAction(action)[0],
+			subject: prettyPrintAccountAction(action, username)[0],
 			react: (
 				<CompleteAccountAction
+					username={username}
 					action={action}
 					validationCode={accountActionCode}
 					baseUrl={env.FRONTEND_ORIGINS[0]}

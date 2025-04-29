@@ -11,28 +11,30 @@ import {
 import * as React from "react"
 
 import {
-	genAccountActionToken,
+	genAccountActionCode,
 	prettyPrintAccountAction,
 } from "../src/backend/account-actions"
-import type { AccountAction } from "../src/database/tempest-db-schema"
+import type { AccountActionTypeActual } from "../src/database/tempest-db-schema"
 import * as svg from "../src/frontend/<svg>"
 
 // biome-ignore lint/style/noNonNullAssertion: <explanation>
 const FRONTEND_ORIGIN = JSON.parse(process.env[`FRONTEND_ORIGINS`]!)[0] ?? ``
 interface SlackConfirmEmailProps {
-	action: Exclude<AccountAction[`action`], `cooldown`>
+	username: string
+	action: AccountActionTypeActual
 	validationCode: string
 	baseUrl?: string
 }
 
 export function CompleteAccountAction({
+	username,
 	action,
 	validationCode,
 	baseUrl = FRONTEND_ORIGIN,
 }: SlackConfirmEmailProps): React.ReactNode {
 	const url = new URL(baseUrl)
 	const prettyLink = `${url.host}/verify`
-	const [header, summary] = prettyPrintAccountAction(action)
+	const [header, summary] = prettyPrintAccountAction(action, username)
 	return (
 		<Html>
 			<Head>
@@ -102,7 +104,7 @@ export function CompleteAccountAction({
 
 CompleteAccountAction.PreviewProps = {
 	action: `confirmEmail`,
-	validationCode: genAccountActionToken(),
+	validationCode: genAccountActionCode(),
 	baseUrl: `https://tempest.games`,
 } as SlackConfirmEmailProps
 

@@ -1,4 +1,3 @@
-// virtual-id.ts --------------------------------------------------------------
 import {
 	createCipheriv,
 	createDecipheriv,

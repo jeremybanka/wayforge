@@ -1,12 +1,10 @@
 import { atom, getState, selector, setState } from "atom.io"
 import type { Join, Tree, TreePath } from "treetrunks"
-import { isTreePath, optional, required } from "treetrunks"
+import { isTreePath, optional } from "treetrunks"
 
 import { authAtom } from "./socket-auth-service"
 
 export const ROUTES = optional({
-	// sign_in: null,
-	// sign_up: null,
 	verify: optional({
 		$token: null,
 	}),
@@ -51,7 +49,6 @@ export const pathnameAtom = atom<Pathname | (string & {})>({
 				switch (newValue) {
 					case `/`: {
 						const auth = getState(authAtom)
-						const intended: Pathname = `/`
 						switch (auth?.verification) {
 							case `verified`:
 								resolve(`/game`)
@@ -60,7 +57,6 @@ export const pathnameAtom = atom<Pathname | (string & {})>({
 								resolve(`/verify`)
 								break
 							case undefined:
-								resolve(intended)
 						}
 						break
 					}
@@ -125,11 +121,6 @@ export const routeSelector = selector<Route | 401 | 404>({
 		const pathname = get(pathnameAtom)
 		const path = pathname.split(`/`).slice(1).filter(Boolean)
 		const pathIsRoute = isRoute(path)
-		console.log({
-			pathname,
-			path,
-			pathIsRoute,
-		})
 		if (!pathIsRoute) {
 			return 404
 		}
