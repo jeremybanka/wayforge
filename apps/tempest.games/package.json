@@ -63,7 +63,7 @@
 		"cron": "4.3.0",
 		"drizzle-orm": "0.43.1",
 		"nanoid": "5.1.5",
-		"openai": "4.96.1",
+		"openai": "4.96.2",
 		"postgres": "3.4.5",
 		"react": "19.1.0",
 		"react-dom": "19.1.0",
