@@ -38,7 +38,7 @@
 		"postversion": "biome format --write package.json"
 	},
 	"devDependencies": {
-		"@types/bun": "npm:bun-types@1.2.10",
+		"@types/bun": "npm:bun-types@1.2.11",
 		"@types/node": "22.15.3",
 		"@types/tmp": "0.2.6",
 		"concurrently": "9.1.2",
