@@ -9,7 +9,7 @@
 		"forceConsistentCasingInFileNames": true,
 		"jsx": "react-jsx",
 		"jsxImportSource": "react",
-		"lib": ["DOM", "ES2023"],
+		"lib": ["DOM", "ES2024"],
 		"module": "preserve",
 		"moduleResolution": "bundler",
 		"noEmit": true,
