@@ -6,7 +6,7 @@ export class CompositePropertyDeclaration {
 	 * @public
 	 * Hey how are you?
 	 */
-	public compositeProperty: {
+	public compositeProperty!: {
 		/**
 		 * @public
 		 * Nested in composite property.

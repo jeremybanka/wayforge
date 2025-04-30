@@ -18,6 +18,7 @@
 		"skipLibCheck": true,
 		"strictBuiltinIteratorReturn": true,
 		"strictNullChecks": true,
+		"strictPropertyInitialization": true,
 		"target": "ES2017",
 		"useUnknownInCatchVariables": true,
 		"paths": {

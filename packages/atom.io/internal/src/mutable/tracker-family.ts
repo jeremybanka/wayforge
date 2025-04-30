@@ -12,7 +12,7 @@ export class FamilyTracker<
 	FamilyMemberKey extends Canonical,
 > {
 	private trackers: Map<FamilyMemberKey, Tracker<Core>> = new Map()
-	private readonly Update: Core extends Transceiver<infer Signal>
+	private readonly Update!: Core extends Transceiver<infer Signal>
 		? Signal
 		: never
 
