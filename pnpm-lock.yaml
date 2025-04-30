@@ -139,8 +139,8 @@ importers:
   apps/core.wayfarer.quest:
     dependencies:
       '@t3-oss/env-core':
-        specifier: 0.13.0
-        version: 0.13.0(arktype@2.1.20)(typescript@5.8.3)(valibot@1.0.0(typescript@5.8.3))(zod@3.24.3)
+        specifier: 0.13.4
+        version: 0.13.4(arktype@2.1.20)(typescript@5.8.3)(valibot@1.0.0(typescript@5.8.3))(zod@3.24.3)
       fp-ts:
         specifier: 2.16.10
         version: 2.16.10
@@ -286,8 +286,8 @@ importers:
         specifier: 0.0.36
         version: 0.0.36(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@t3-oss/env-core':
-        specifier: 0.13.0
-        version: 0.13.0(arktype@2.1.20)(typescript@5.8.3)(valibot@1.0.0(typescript@5.8.3))(zod@3.24.3)
+        specifier: 0.13.4
+        version: 0.13.4(arktype@2.1.20)(typescript@5.8.3)(valibot@1.0.0(typescript@5.8.3))(zod@3.24.3)
       '@trpc/client':
         specifier: 11.1.2
         version: 11.1.2(@trpc/server@11.1.2(typescript@5.8.3))(typescript@5.8.3)
@@ -824,8 +824,8 @@ importers:
   packages/flightdeck:
     dependencies:
       '@t3-oss/env-core':
-        specifier: 0.13.0
-        version: 0.13.0(arktype@2.1.20)(typescript@5.8.3)(valibot@1.0.0(typescript@5.8.3))(zod@3.24.3)
+        specifier: 0.13.4
+        version: 0.13.4(arktype@2.1.20)(typescript@5.8.3)(valibot@1.0.0(typescript@5.8.3))(zod@3.24.3)
       atom.io:
         specifier: workspace:*
         version: link:../atom.io
@@ -4080,6 +4080,21 @@ packages:
 
   '@t3-oss/env-core@0.13.0':
     resolution: {integrity: sha512-bV7LAvwoeyigLXyjBnlgbKb8S9l+E29uSzWtU1GJYuKMQ6qF9dvFbjakkgoxR+tXFoxg7aGbg8DdEfwNihvF8Q==}
+    peerDependencies:
+      arktype: ^2.1.0
+      typescript: '>=5.0.0'
+      valibot: ^1.0.0-beta.7 || ^1.0.0
+      zod: ^3.24.0 || ^4.0.0-beta.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+      valibot:
+        optional: true
+      zod:
+        optional: true
+
+  '@t3-oss/env-core@0.13.4':
+    resolution: {integrity: sha512-zVOiYO0+CF7EnBScz8s0O5JnJLPTU0lrUi8qhKXfIxIJXvI/jcppSiXXsEJwfB4A6XZawY/Wg/EQGKANi/aPmQ==}
     peerDependencies:
       arktype: ^2.1.0
       typescript: '>=5.0.0'
@@ -11653,6 +11668,14 @@ snapshots:
       zod: 3.24.3
 
   '@t3-oss/env-core@0.13.0(arktype@2.1.20)(typescript@5.8.3)(valibot@1.0.0(typescript@5.8.3))(zod@3.24.3)':
+    dependencies:
+      arktype: 2.1.20
+    optionalDependencies:
+      typescript: 5.8.3
+      valibot: 1.0.0(typescript@5.8.3)
+      zod: 3.24.3
+
+  '@t3-oss/env-core@0.13.4(arktype@2.1.20)(typescript@5.8.3)(valibot@1.0.0(typescript@5.8.3))(zod@3.24.3)':
     dependencies:
       arktype: 2.1.20
     optionalDependencies:
