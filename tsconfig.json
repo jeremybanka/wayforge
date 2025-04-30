@@ -37,5 +37,5 @@
 		"**/*.schema.json.ts",
 		"**/*.js"
 	],
-	"exclude": ["**/dist", "apps/edge/viceroy-htmx"]
+	"exclude": ["**/dist"]
 }
