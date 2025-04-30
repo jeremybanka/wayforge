@@ -3,7 +3,6 @@
 	"compilerOptions": {
 		"target": "ES2017",
 		"lib": ["DOM", "DOM.iterable", "ESNext"],
-		"types": ["bun"],
 		"allowJs": false,
 		"skipLibCheck": true,
 		"noEmit": true,
