@@ -4,9 +4,9 @@
 	"compilerOptions": {
 		"jsx": "react-jsx",
 		"jsxImportSource": "react",
-		"types": ["bun", "vitest/globals"],
+		"types": ["vitest/globals"],
 		"paths": {
-			"tsdoc.json": ["packages/tsdoc.json/src"]
+			"tsdoc.json": ["./packages/tsdoc.json/src"]
 		}
 	}
 }

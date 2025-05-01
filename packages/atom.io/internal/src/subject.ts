@@ -1,5 +1,5 @@
 export class Subject<T> {
-	public Subscriber: (value: T) => void
+	public Subscriber!: (value: T) => void
 
 	public subscribers: Map<string, this[`Subscriber`]> = new Map()
 

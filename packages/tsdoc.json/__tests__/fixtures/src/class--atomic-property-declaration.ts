@@ -6,5 +6,5 @@ export class AtomicPropertyDeclaration {
 	 * @public
 	 * The property is called "hello".
 	 */
-	public hello: string
+	public hello!: string
 }
