@@ -8,6 +8,24 @@
 			"atom.io/*": ["./packages/atom.io/*"]
 		}
 	},
-	"include": ["__tests__", "dist", "src"],
+	"include": [
+		"__tests__",
+		"dist",
+		"src",
+		"data/src",
+		"eslint-plugin/src",
+		"internal/src",
+		"introspection/src",
+		"json/src",
+		"react/src",
+		"react-devtools/src",
+		"realtime/src",
+		"realtime-client/src",
+		"realtime-react/src",
+		"realtime-server/src",
+		"realtime-testing/src",
+		"transceivers/set-rtx/src",
+		"web/src"
+	],
 	"exclude": ["src", "**/src"]
 }

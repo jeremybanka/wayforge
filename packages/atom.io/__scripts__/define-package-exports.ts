@@ -28,7 +28,11 @@ export default function main(mode: string): void {
 
 	const submodules = discoverSubmodules()
 
-	newPackageJson.files = [`dist`, `src`]
+	newPackageJson.files = [
+		`dist`,
+		`src`,
+		...submodules.map((folder) => `${folder}/src`),
+	]
 
 	newPackageJson.exports = {
 		"./package.json": `./package.json`,
