@@ -17,8 +17,7 @@
 	},
 	"scripts": {
 		"manifest": "tsx __scripts__/manifest-build.node.ts",
-		"clean:build": "find . -type d -name 'dist' -not -path '*/node_modules/*' | xargs rm -rf",
-		"build": "bun run clean:build && tsdown",
+		"build": "tsdown && bun ./__scripts__/build-sort.bun.ts",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
 		"lint:types": "tsc --noEmit",
