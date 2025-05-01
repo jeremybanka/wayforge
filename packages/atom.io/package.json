@@ -39,26 +39,34 @@
 		"@floating-ui/react": ">=0.25.0",
 		"@floating-ui/react-dom": ">=2.0.0",
 		"@testing-library/react": ">=14.0.0",
+		"@typescript-eslint/parser": ">=9.0.0",
 		"eslint": ">=9.0.0",
+		"happy-dom": ">=17.4.4",
 		"motion": ">=11.0.0",
 		"react": "^18.0.0 || ^19.0.0",
 		"socket.io": ">=4.0.0",
 		"socket.io-client": ">=4.0.0"
 	},
 	"peerDependenciesMeta": {
-		"@testing-library/react": {
-			"optional": true
-		},
-		"react": {
-			"optional": true
-		},
 		"@floating-ui/react": {
 			"optional": true
 		},
 		"@floating-ui/react-dom": {
 			"optional": true
 		},
+		"@testing-library/react": {
+			"optional": true
+		},
+		"@typescript-eslint/parser": {
+			"optional": true
+		},
+		"react": {
+			"optional": true
+		},
 		"eslint": {
+			"optional": true
+		},
+		"happy-dom": {
 			"optional": true
 		},
 		"motion": {
