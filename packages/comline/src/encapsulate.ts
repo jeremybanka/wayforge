@@ -57,6 +57,7 @@ function encapsulateConsole(): {
 	const mockConsoleCalls: { [K in keyof typeof console]?: any[][] } = {}
 	for (const [key, value] of toEntries(console)) {
 		if (typeof value === `function`) {
+			// @ts-expect-error	this is a safe bind but hard to statically analyze
 			originalConsoleMethods[key] = value.bind(console)
 			const [mockFn, calls] = createMockFn()
 			mockConsoleCalls[key] = calls

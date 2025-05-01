@@ -87,7 +87,7 @@ export class SetRTX<P extends primitive>
 		return result
 	}
 
-	public readonly parent: SetRTX<P> | null
+	public readonly parent: SetRTX<P> | null = null
 	public child: SetRTX<P> | null = null
 	public transactionUpdates: SetUpdate[] | null = null
 	public transaction(run: (child: SetRTX<P>) => boolean): void {

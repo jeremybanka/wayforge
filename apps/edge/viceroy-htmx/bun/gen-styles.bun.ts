@@ -1,3 +1,4 @@
+import { file, write } from "bun"
 import chokidar from "chokidar"
 import { transform } from "lightningcss"
 import npmlog from "npmlog"
@@ -14,13 +15,13 @@ if (!lastArgument) {
 
 async function gen() {
 	npmlog.info(`reading`, INPUT_FILE)
-	const scss = await Bun.file(INPUT_FILE).arrayBuffer()
+	const scss = await file(INPUT_FILE).arrayBuffer()
 	const { code } = transform({
 		filename: INPUT_FILE,
 		code: new Uint8Array(scss),
 	})
 	npmlog.info(`writing`, OUTPUT_FILE)
-	await Bun.write(
+	await write(
 		OUTPUT_FILE,
 		`/* eslint-disable */\nexport const main = ${JSON.stringify(
 			code.toString(),

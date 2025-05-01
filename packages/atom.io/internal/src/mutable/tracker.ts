@@ -19,7 +19,7 @@ import type { Transceiver } from "./transceiver"
  * the tracker will update its own state to reflect the change.
  */
 export class Tracker<Mutable extends Transceiver<any>> {
-	private Update: Mutable extends Transceiver<infer Signal> ? Signal : never
+	private Update!: Mutable extends Transceiver<infer Signal> ? Signal : never
 
 	private initializeState(
 		mutableState: MutableAtomToken<Mutable, Json.Serializable>,
@@ -52,8 +52,8 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		return latestUpdateState
 	}
 
-	private unsubscribeFromInnerValue: () => void
-	private unsubscribeFromState: () => void
+	private unsubscribeFromInnerValue!: () => void
+	private unsubscribeFromState!: () => void
 	private observeCore(
 		mutableState: MutableAtomToken<Mutable, any>,
 		latestUpdateState: RegularAtomToken<typeof this.Update | null>,
@@ -160,7 +160,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 	public mutableState: MutableAtomToken<Mutable, Json.Serializable>
 	public latestUpdateState: RegularAtomToken<typeof this.Update | null>
 
-	public [Symbol.dispose]: () => void
+	public [Symbol.dispose]!: () => void
 
 	public constructor(
 		mutableState: MutableAtomToken<Mutable, Json.Serializable>,

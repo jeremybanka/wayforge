@@ -18,11 +18,11 @@ export class Join<
 	B extends string = `to`,
 > implements RelationData<CONTENT, A, B>
 {
-	public readonly relationType: `1:1` | `1:n` | `n:n`
+	public readonly relationType!: `1:1` | `1:n` | `n:n`
 	public readonly a: A = `from` as A
 	public readonly b: B = `to` as B
-	public readonly relations: Record<string, string[]>
-	public readonly contents: Record<string, CONTENT>
+	public readonly relations!: Record<string, string[]>
+	public readonly contents!: Record<string, CONTENT>
 	public constructor(json?: Partial<RelationData<CONTENT, A, B>>) {
 		Object.assign(this, {
 			...EMPTY_RELATION_DATA,

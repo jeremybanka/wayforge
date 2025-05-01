@@ -1,6 +1,8 @@
 import path from "node:path"
 import url from "node:url"
 
+import { write } from "bun"
+
 import type { TSD } from "../src"
 import { compileDocs } from "../src"
 
@@ -17,7 +19,7 @@ async function testDocCompiler(
 	const entrypoint = path.join(DIRNAME, `fixtures`, `src`, `${name}.ts`)
 	const tsconfigPath = path.join(DIRNAME, `..`, `tsconfig.json`)
 	const docs = compileDocs({ entrypoint, tsconfigPath })
-	await Bun.write(
+	await write(
 		path.join(DIRNAME, `fixtures`, `src`, `${name}.tsdoc.json`),
 		JSON.stringify(docs, null, `\t`) + `\n`,
 	)

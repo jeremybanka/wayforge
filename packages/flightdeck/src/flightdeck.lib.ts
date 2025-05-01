@@ -1,5 +1,4 @@
 import { execSync, spawn } from "node:child_process"
-import type { Server } from "node:http"
 import { createServer } from "node:http"
 import { homedir } from "node:os"
 import { resolve } from "node:path"
@@ -52,7 +51,6 @@ export class FlightDeck<S extends string = string> {
 		updatePhase: FlightDeckUpdatePhase
 		updateAwaitedVersion: string
 	}>
-	protected webhookServer: Server
 	protected services: {
 		[service in S]: ChildSocket<
 			{ timeToStop: []; updatesReady: [] },

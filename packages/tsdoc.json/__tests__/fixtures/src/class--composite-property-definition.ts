@@ -26,7 +26,7 @@ export class Example {
 	// 	 */
 	// 	doo: `doo`,
 	// }
-	public hello: {
+	public hello!: {
 		/**
 		 * @public
 		 * Nested in initialized property.
