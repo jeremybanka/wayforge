@@ -119,127 +119,68 @@
 		"vitest": "3.1.2",
 		"zod": "3.24.3"
 	},
-	"files": [
-		"dist",
-		"src",
-		"data/dist",
-		"data/package.json",
-		"data/src",
-		"eslint-plugin/dist",
-		"eslint-plugin/package.json",
-		"eslint-plugin/src",
-		"internal/dist",
-		"internal/package.json",
-		"internal/src",
-		"introspection/dist",
-		"introspection/package.json",
-		"introspection/src",
-		"json/dist",
-		"json/package.json",
-		"json/src",
-		"react/dist",
-		"react/package.json",
-		"react/src",
-		"react-devtools/dist",
-		"react-devtools/package.json",
-		"react-devtools/src",
-		"realtime/dist",
-		"realtime/package.json",
-		"realtime/src",
-		"realtime-client/dist",
-		"realtime-client/package.json",
-		"realtime-client/src",
-		"realtime-react/dist",
-		"realtime-react/package.json",
-		"realtime-react/src",
-		"realtime-server/dist",
-		"realtime-server/package.json",
-		"realtime-server/src",
-		"realtime-testing/dist",
-		"realtime-testing/package.json",
-		"realtime-testing/src",
-		"transceivers/set-rtx/dist",
-		"transceivers/set-rtx/package.json",
-		"transceivers/set-rtx/src",
-		"web/dist",
-		"web/package.json",
-		"web/src"
-	],
+	"files": ["dist", "src"],
 	"exports": {
 		"./package.json": "./package.json",
 		".": {
-			"import": "./dist/index.js",
-			"types": "./dist/index.d.ts"
+			"import": "./dist/main/index.js",
+			"types": "./dist/main/index.d.ts"
 		},
-		"./data/package.json": "./data/package.json",
 		"./data": {
-			"import": "./data/dist/index.js",
-			"types": "./data/dist/index.d.ts"
+			"import": "./dist/data/index.js",
+			"types": "./dist/data/index.d.ts"
 		},
-		"./eslint-plugin/package.json": "./eslint-plugin/package.json",
 		"./eslint-plugin": {
-			"import": "./eslint-plugin/dist/index.js",
-			"types": "./eslint-plugin/dist/index.d.ts"
+			"import": "./dist/eslint-plugin/index.js",
+			"types": "./dist/eslint-plugin/index.d.ts"
 		},
-		"./internal/package.json": "./internal/package.json",
 		"./internal": {
-			"import": "./internal/dist/index.js",
-			"types": "./internal/dist/index.d.ts"
+			"import": "./dist/internal/index.js",
+			"types": "./dist/internal/index.d.ts"
 		},
-		"./introspection/package.json": "./introspection/package.json",
 		"./introspection": {
-			"import": "./introspection/dist/index.js",
-			"types": "./introspection/dist/index.d.ts"
+			"import": "./dist/introspection/index.js",
+			"types": "./dist/introspection/index.d.ts"
 		},
-		"./json/package.json": "./json/package.json",
 		"./json": {
-			"import": "./json/dist/index.js",
-			"types": "./json/dist/index.d.ts"
+			"import": "./dist/json/index.js",
+			"types": "./dist/json/index.d.ts"
 		},
-		"./react/package.json": "./react/package.json",
 		"./react": {
-			"import": "./react/dist/index.js",
-			"types": "./react/dist/index.d.ts"
+			"import": "./dist/react/index.js",
+			"types": "./dist/react/index.d.ts"
 		},
-		"./react-devtools/package.json": "./react-devtools/package.json",
 		"./react-devtools": {
-			"import": "./react-devtools/dist/index.js",
-			"types": "./react-devtools/dist/index.d.ts"
+			"import": "./dist/react-devtools/index.js",
+			"types": "./dist/react-devtools/index.d.ts"
 		},
-		"./realtime/package.json": "./realtime/package.json",
 		"./realtime": {
-			"import": "./realtime/dist/index.js",
-			"types": "./realtime/dist/index.d.ts"
+			"import": "./dist/realtime/index.js",
+			"types": "./dist/realtime/index.d.ts"
 		},
-		"./realtime-client/package.json": "./realtime-client/package.json",
 		"./realtime-client": {
-			"import": "./realtime-client/dist/index.js",
-			"types": "./realtime-client/dist/index.d.ts"
+			"import": "./dist/realtime-client/index.js",
+			"types": "./dist/realtime-client/index.d.ts"
 		},
-		"./realtime-react/package.json": "./realtime-react/package.json",
 		"./realtime-react": {
-			"import": "./realtime-react/dist/index.js",
-			"types": "./realtime-react/dist/index.d.ts"
+			"import": "./dist/realtime-react/index.js",
+			"types": "./dist/realtime-react/index.d.ts"
 		},
-		"./realtime-server/package.json": "./realtime-server/package.json",
 		"./realtime-server": {
-			"import": "./realtime-server/dist/index.js",
-			"types": "./realtime-server/dist/index.d.ts"
+			"import": "./dist/realtime-server/index.js",
+			"types": "./dist/realtime-server/index.d.ts"
 		},
-		"./realtime-testing/package.json": "./realtime-testing/package.json",
 		"./realtime-testing": {
-			"import": "./realtime-testing/dist/index.js",
-			"types": "./realtime-testing/dist/index.d.ts"
+			"import": "./dist/realtime-testing/index.js",
+			"types": "./dist/realtime-testing/index.d.ts"
 		},
-		"./transceivers/set-rtx/package.json": "./transceivers/set-rtx/package.json",
 		"./transceivers/set-rtx": {
-			"import": "./transceivers/set-rtx/dist/index.js",
-			"types": "./transceivers/set-rtx/dist/index.d.ts"
+			"import": "./dist/transceivers/set-rtx/index.js",
+			"types": "./dist/transceivers/set-rtx/index.d.ts"
 		},
-		"./web/package.json": "./web/package.json",
 		"./web": {
-			"import": "./web/dist/index.js",
-			"types": "./web/dist/index.d.ts"
+			"import": "./dist/web/index.js",
+			"types": "./dist/web/index.d.ts"
 		}
 	}
 }
