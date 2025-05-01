@@ -1,8 +1,8 @@
-import type { Options, UserConfig } from "tsdown"
+import type { UserConfig } from "tsdown"
 import { defineConfig } from "tsdown"
 
 import discoverSubmodules from "./__scripts__/discover-submodules.ts"
-import { fromEntries } from "./json/src/entries.ts"
+import { fromEntries } from "./src/json/entries.ts"
 
 const SUBMODULE_NAMES = discoverSubmodules()
 
@@ -16,7 +16,7 @@ const EXTERNAL = [
 
 const otherEntries = fromEntries(
 	SUBMODULE_NAMES.map(
-		(name) => [`${name}/index`, `${name}/src/index.ts`] as const,
+		(name) => [`${name}/index`, `src/${name}/index.ts`] as const,
 	),
 )
 
@@ -32,7 +32,7 @@ const config: UserConfig = defineConfig({
 	clean: true,
 	outDir: `dist`,
 	entry: {
-		"main/index": `src/index.ts`,
+		"main/index": `src/main/index.ts`,
 		...otherEntries,
 	},
 })
