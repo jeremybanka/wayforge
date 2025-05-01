@@ -119,7 +119,24 @@
 		"vitest": "3.1.2",
 		"zod": "3.24.3"
 	},
-	"files": ["dist", "src"],
+	"files": [
+		"dist",
+		"src",
+		"data/src",
+		"eslint-plugin/src",
+		"internal/src",
+		"introspection/src",
+		"json/src",
+		"react/src",
+		"react-devtools/src",
+		"realtime/src",
+		"realtime-client/src",
+		"realtime-react/src",
+		"realtime-server/src",
+		"realtime-testing/src",
+		"transceivers/set-rtx/src",
+		"web/src"
+	],
 	"exports": {
 		"./package.json": "./package.json",
 		".": {
