@@ -157,7 +157,18 @@ export class Differ<
 	}
 }
 
-export const prettyJson = new Differ(primitiveRefinery, jsonTreeRefinery, {
+export const prettyJson: Differ<
+	{
+		number: (input: unknown) => input is number
+		string: (input: unknown) => input is string
+		boolean: (input: unknown) => input is boolean
+		null: (input: unknown) => input is null
+	},
+	{
+		object: (input: unknown) => input is Json.Tree.Object
+		array: (input: unknown) => input is Json.Tree.Array
+	}
+> = new Differ(primitiveRefinery, jsonTreeRefinery, {
 	number: diffNumber,
 	string: diffString,
 	boolean: diffBoolean,

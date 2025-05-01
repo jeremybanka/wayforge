@@ -1,7 +1,11 @@
 import type { ChildProcessWithoutNullStreams } from "node:child_process"
 import { spawn } from "node:child_process"
 
-import type { Loadable } from "atom.io"
+import type {
+	Loadable,
+	ReadonlySelectorFamilyToken,
+	RegularAtomFamilyToken,
+} from "atom.io"
 import { atomFamily, selectorFamily } from "atom.io"
 
 import { ChildSocket } from "../ipc-sockets"
@@ -10,15 +14,16 @@ export type RoomArguments =
 	| [script: string, options: string[]]
 	| [script: string]
 
-export const roomArgumentsAtoms = atomFamily<RoomArguments, string>({
-	key: `roomArguments`,
-	default: [`echo`, [`Hello World!`]],
-})
+export const roomArgumentsAtoms: RegularAtomFamilyToken<RoomArguments, string> =
+	atomFamily({
+		key: `roomArguments`,
+		default: [`echo`, [`Hello World!`]],
+	})
 
-export const roomSelectors = selectorFamily<
+export const roomSelectors: ReadonlySelectorFamilyToken<
 	Loadable<ChildSocket<any, any>>,
 	string
->({
+> = selectorFamily<Loadable<ChildSocket<any, any>>, string>({
 	key: `room`,
 	get:
 		(roomId) =>

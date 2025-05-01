@@ -7,7 +7,12 @@ const createRule = ESLintUtils.RuleCreator(
 
 const STATE_FUNCTIONS = [`atom`, `atomFamily`, `selector`, `selectorFamily`]
 
-export const explicitStateTypes = createRule({
+export const explicitStateTypes: ESLintUtils.RuleModule<
+	"noTypeArgument",
+	[],
+	unknown,
+	ESLintUtils.RuleListener
+> = createRule({
 	name: `explicit-state-types`,
 	meta: {
 		type: `problem`,

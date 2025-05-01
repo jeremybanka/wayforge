@@ -12,12 +12,9 @@ export class FamilyTracker<
 	FamilyMemberKey extends Canonical,
 > {
 	private trackers: Map<FamilyMemberKey, Tracker<Core>> = new Map()
-	private readonly Update!: Core extends Transceiver<infer Signal>
-		? Signal
-		: never
 
 	public readonly latestUpdateAtoms: RegularAtomFamily<
-		typeof this.Update | null,
+		(Core extends Transceiver<infer Signal> ? Signal : never) | null,
 		FamilyMemberKey
 	>
 	public readonly mutableAtoms: MutableAtomFamily<Core, any, FamilyMemberKey>
@@ -27,7 +24,7 @@ export class FamilyTracker<
 		store: Store,
 	) {
 		const updateAtoms = createRegularAtomFamily<
-			typeof this.Update | null,
+			(Core extends Transceiver<infer Signal> ? Signal : never) | null,
 			FamilyMemberKey
 		>(
 			store,

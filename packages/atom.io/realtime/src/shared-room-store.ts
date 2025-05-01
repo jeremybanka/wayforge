@@ -1,9 +1,19 @@
-import type { MutableAtomToken } from "atom.io"
+import type {
+	AtomToken,
+	JoinToken,
+	MutableAtomToken,
+	ReadonlySelectorFamilyToken,
+	ReadonlySelectorToken,
+} from "atom.io"
 import { atom, getInternalRelations, join, selectorFamily } from "atom.io"
+import { Join } from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
-export const usersInThisRoomIndex = atom<SetRTX<string>, SetRTXJson<string>>({
+export const usersInThisRoomIndex: MutableAtomToken<
+	SetRTX<string>,
+	SetRTXJson<string>
+> = atom<SetRTX<string>, SetRTXJson<string>>({
 	key: `usersInRoomIndex`,
 	mutable: true,
 	default: () => new SetRTX<string>(),
@@ -11,7 +21,10 @@ export const usersInThisRoomIndex = atom<SetRTX<string>, SetRTXJson<string>>({
 	fromJson: (json) => SetRTX.fromJSON(json),
 })
 
-export const roomIndex = atom<SetRTX<string>, SetRTXJson<string>>({
+export const roomIndex: MutableAtomToken<
+	SetRTX<string>,
+	SetRTXJson<string>
+> = atom<SetRTX<string>, SetRTXJson<string>>({
 	key: `roomIndex`,
 	default: () => new SetRTX<string>(),
 	mutable: true,
@@ -25,7 +38,14 @@ export type UserInRoomMeta = {
 export const DEFAULT_USER_IN_ROOM_META: UserInRoomMeta = {
 	enteredAtEpoch: 0,
 }
-export const usersInRooms = join(
+export const usersInRooms: JoinToken<
+	`room`,
+	string,
+	`user`,
+	string,
+	`1:n`,
+	UserInRoomMeta
+> = join(
 	{
 		key: `usersInRooms`,
 		between: [`room`, `user`],
@@ -36,7 +56,10 @@ export const usersInRooms = join(
 	DEFAULT_USER_IN_ROOM_META,
 )
 
-export const usersInMyRoomView = selectorFamily<
+export const usersInMyRoomView: ReadonlySelectorFamilyToken<
+	MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[],
+	string
+> = selectorFamily<
 	MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[],
 	string
 >({

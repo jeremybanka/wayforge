@@ -1,4 +1,4 @@
-import "./devtools.scss"
+import "./devtools.css"
 
 import { StoreContext, useI, useO } from "atom.io/react"
 import { LayoutGroup, motion, spring } from "motion/react"

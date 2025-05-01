@@ -9,7 +9,7 @@ import {
 } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 
-export const $claim = Symbol(`claim`)
+export const $claim: unique symbol = Symbol.for(`claim`)
 export type Claim<K extends Canonical> = K & { [$claim]?: true }
 
 export class Realm<H extends Hierarchy> {

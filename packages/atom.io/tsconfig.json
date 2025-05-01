@@ -6,7 +6,9 @@
 		"jsxImportSource": "react",
 		"types": ["vitest/globals"],
 		"noEmit": true,
-		"declaration": true
+		"declaration": true,
+		"allowJs": false,
+		"isolatedDeclarations": true
 	},
 	"include": [
 		"src",

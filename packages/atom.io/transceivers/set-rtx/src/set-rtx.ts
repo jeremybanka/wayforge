@@ -19,7 +19,7 @@ export class SetRTX<P extends primitive>
 	implements Transceiver<NumberedSetUpdate>, Lineage
 {
 	public mode: TransceiverMode = `record`
-	public readonly subject = new Subject<SetUpdate>()
+	public readonly subject: Subject<SetUpdate> = new Subject<SetUpdate>()
 	public cacheLimit = 0
 	public cache: (NumberedSetUpdate | null)[] = []
 	public cacheIdx = -1

@@ -1,4 +1,8 @@
-import type { TransactionUpdate, TransactionUpdateContent } from "atom.io"
+import type {
+	RegularAtomFamilyToken,
+	TransactionUpdate,
+	TransactionUpdateContent,
+} from "atom.io"
 import { atomFamily } from "atom.io"
 
 import type { UserKey } from "./server-user-store"
@@ -52,7 +56,12 @@ export function redactTransactionUpdateContent(
 		})
 }
 
-export const redactorAtoms = atomFamily<
+export const redactorAtoms: RegularAtomFamilyToken<
+	{
+		occlude: (updates: TransactionUpdateContent[]) => TransactionUpdateContent[]
+	},
+	UserKey
+> = atomFamily<
 	{
 		occlude: (updates: TransactionUpdateContent[]) => TransactionUpdateContent[]
 	},
@@ -83,10 +92,10 @@ export type ContinuitySyncTransactionUpdate = Pick<
 	TransactionUpdate<any>,
 	`epoch` | `id` | `key` | `output` | `updates`
 >
-export const userUnacknowledgedQueues = atomFamily<
+export const userUnacknowledgedQueues: RegularAtomFamilyToken<
 	ContinuitySyncTransactionUpdate[],
 	UserKey
->({
+> = atomFamily<ContinuitySyncTransactionUpdate[], UserKey>({
 	key: `unacknowledgedUpdates`,
 	default: () => [],
 })

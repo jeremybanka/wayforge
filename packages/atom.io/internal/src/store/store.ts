@@ -43,25 +43,26 @@ export class Store implements Lineage {
 	public parent: Store | null = null
 	public child: Store | null = null
 
-	public valueMap = new Map<string, any>()
-	public defaults = new Map<string, any>()
+	public valueMap: Map<string, any> = new Map()
+	public defaults: Map<string, any> = new Map()
 
-	public atoms = new Map<string, Atom<any>>()
-	public selectors = new Map<string, WritableSelector<any>>()
-	public readonlySelectors = new Map<string, ReadonlySelector<any>>()
+	public atoms: Map<string, Atom<any>> = new Map()
+	public selectors: Map<string, WritableSelector<any>> = new Map()
+	public readonlySelectors: Map<string, ReadonlySelector<any>> = new Map()
 
-	public atomsThatAreDefault = new Set<string>()
-	public selectorAtoms = new Junction({
-		between: [`selectorKey`, `atomKey`],
-		cardinality: `n:n`,
-	})
-	public selectorGraph = new Junction<
+	public atomsThatAreDefault: Set<string> = new Set()
+	public selectorAtoms: Junction<`selectorKey`, string, `atomKey`, string> =
+		new Junction({
+			between: [`selectorKey`, `atomKey`],
+			cardinality: `n:n`,
+		})
+	public selectorGraph: Junction<
 		`upstreamSelectorKey`,
 		string,
 		`downstreamSelectorKey`,
 		string,
 		{ source: string }
-	>(
+	> = new Junction(
 		{
 			between: [`upstreamSelectorKey`, `downstreamSelectorKey`],
 			cardinality: `n:n`,
@@ -70,17 +71,17 @@ export class Store implements Lineage {
 			makeContentKey: (...keys) => keys.sort().join(`:`),
 		},
 	)
-	public trackers = new Map<string, Tracker<Transceiver<any>>>()
-	public families = new Map<
+	public trackers: Map<string, Tracker<Transceiver<any>>> = new Map()
+	public families: Map<
 		string,
 		| MutableAtomFamily<any, any, any>
 		| ReadonlySelectorFamily<any, any>
 		| RegularAtomFamily<any, any>
 		| WritableSelectorFamily<any, any>
-	>()
-	public joins = new Map<string, Join<any, any, any, any, any, any>>()
+	> = new Map()
+	public joins: Map<string, Join<any, any, any, any, any, any>> = new Map()
 
-	public transactions = new Map<string, Transaction<Func>>()
+	public transactions: Map<string, Transaction<Func>> = new Map()
 	public transactionMeta: TransactionEpoch | TransactionProgress<Func> = {
 		epoch: new Map<string, number>(),
 		actionContinuities: new Junction({
@@ -89,27 +90,28 @@ export class Store implements Lineage {
 		}),
 	}
 
-	public timelines = new Map<string, Timeline<any>>()
-	public timelineTopics = new Junction<
+	public timelines: Map<string, Timeline<any>> = new Map()
+	public timelineTopics: Junction<
 		`timelineKey`,
 		string,
 		`topicKey`,
 		string,
 		{ topicType: `atom_family` | `atom` | `molecule_family` | `molecule` }
-	>({
+	> = new Junction({
 		between: [`timelineKey`, `topicKey`],
 		cardinality: `1:n`,
 	})
 
-	public disposalTraces = new CircularBuffer<{ key: string; trace: string }>(100)
+	public disposalTraces: CircularBuffer<{ key: string; trace: string }> =
+		new CircularBuffer(100)
 
-	public molecules = new Map<string, Molecule<Canonical>>()
-	public moleculeJoins = new Junction<
+	public molecules: Map<string, Molecule<Canonical>> = new Map()
+	public moleculeJoins: Junction<
 		`moleculeKey`,
 		stringified<Canonical>,
 		`joinKey`,
 		string
-	>(
+	> = new Junction(
 		{
 			between: [`moleculeKey`, `joinKey`],
 			cardinality: `n:n`,
@@ -118,13 +120,13 @@ export class Store implements Lineage {
 			makeContentKey: (...keys) => keys.sort().join(`:`),
 		},
 	)
-	public moleculeGraph = new Junction<
+	public moleculeGraph: Junction<
 		`upstreamMoleculeKey`,
 		stringified<Canonical> | `root`,
 		`downstreamMoleculeKey`,
 		stringified<Canonical>,
 		{ source: stringified<Canonical> }
-	>(
+	> = new Junction(
 		{
 			between: [`upstreamMoleculeKey`, `downstreamMoleculeKey`],
 			cardinality: `n:n`,
@@ -133,12 +135,12 @@ export class Store implements Lineage {
 			makeContentKey: (...keys) => keys.sort().join(`:`),
 		},
 	)
-	public moleculeData = new Junction<
+	public moleculeData: Junction<
 		`moleculeKey`,
 		stringified<Canonical>,
 		`stateFamilyKey`,
 		string
-	>(
+	> = new Junction(
 		{
 			between: [`moleculeKey`, `stateFamilyKey`],
 			cardinality: `n:n`,
@@ -147,25 +149,19 @@ export class Store implements Lineage {
 			makeContentKey: (...keys) => keys.sort().join(`:`),
 		},
 	)
-	public miscResources = new Map<string, Disposable>()
+	public miscResources: Map<string, Disposable> = new Map()
 
-	public on = {
-		atomCreation: new Subject<AtomToken<unknown>>(),
-		atomDisposal: new Subject<AtomToken<unknown>>(),
-		selectorCreation: new Subject<
-			ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>
-		>(),
-		selectorDisposal: new Subject<
-			ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>
-		>(),
-		timelineCreation: new Subject<TimelineToken<unknown>>(),
-		transactionCreation: new Subject<TransactionToken<Func>>(),
-		transactionApplying: new StatefulSubject<TransactionProgress<Func> | null>(
-			null,
-		),
-		operationClose: new Subject<OperationProgress>(),
-		moleculeCreation: new Subject<MoleculeCreation>(),
-		moleculeDisposal: new Subject<MoleculeDisposal>(),
+	public on: StoreEventCarrier = {
+		atomCreation: new Subject(),
+		atomDisposal: new Subject(),
+		selectorCreation: new Subject(),
+		selectorDisposal: new Subject(),
+		timelineCreation: new Subject(),
+		transactionCreation: new Subject(),
+		transactionApplying: new StatefulSubject(null),
+		operationClose: new Subject(),
+		moleculeCreation: new Subject(),
+		moleculeDisposal: new Subject(),
 	}
 	public operation: OperationProgress = { open: false }
 
@@ -248,6 +244,23 @@ export class Store implements Lineage {
 			}
 		}
 	}
+}
+
+export type StoreEventCarrier = {
+	atomCreation: Subject<AtomToken<unknown>>
+	atomDisposal: Subject<AtomToken<unknown>>
+	selectorCreation: Subject<
+		ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>
+	>
+	selectorDisposal: Subject<
+		ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>
+	>
+	timelineCreation: Subject<TimelineToken<unknown>>
+	transactionCreation: Subject<TransactionToken<Func>>
+	transactionApplying: StatefulSubject<TransactionProgress<Func> | null>
+	operationClose: Subject<OperationProgress>
+	moleculeCreation: Subject<MoleculeCreation>
+	moleculeDisposal: Subject<MoleculeDisposal>
 }
 
 declare global {

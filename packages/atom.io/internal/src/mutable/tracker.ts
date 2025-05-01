@@ -19,12 +19,12 @@ import type { Transceiver } from "./transceiver"
  * the tracker will update its own state to reflect the change.
  */
 export class Tracker<Mutable extends Transceiver<any>> {
-	private Update!: Mutable extends Transceiver<infer Signal> ? Signal : never
-
 	private initializeState(
 		mutableState: MutableAtomToken<Mutable, Json.Serializable>,
 		store: Store,
-	): RegularAtomToken<typeof this.Update | null> {
+	): RegularAtomToken<
+		(Mutable extends Transceiver<infer Signal> ? Signal : never) | null
+	> {
 		const latestUpdateStateKey = `*${mutableState.key}`
 		store.atoms.delete(latestUpdateStateKey)
 		store.valueMap.delete(latestUpdateStateKey)
@@ -56,7 +56,9 @@ export class Tracker<Mutable extends Transceiver<any>> {
 	private unsubscribeFromState!: () => void
 	private observeCore(
 		mutableState: MutableAtomToken<Mutable, any>,
-		latestUpdateState: RegularAtomToken<typeof this.Update | null>,
+		latestUpdateState: RegularAtomToken<
+			(Mutable extends Transceiver<infer Signal> ? Signal : never) | null
+		>,
 		target: Store,
 	): void {
 		const subscriptionKey = `tracker:${target.config.name}:${
@@ -89,7 +91,9 @@ export class Tracker<Mutable extends Transceiver<any>> {
 
 	private updateCore<Core extends Transceiver<any>>(
 		mutableState: MutableAtomToken<Core, Json.Serializable>,
-		latestUpdateState: RegularAtomToken<typeof this.Update | null>,
+		latestUpdateState: RegularAtomToken<
+			(Mutable extends Transceiver<infer Signal> ? Signal : never) | null
+		>,
 		target: Store,
 	): void {
 		const subscriptionKey = `tracker:${target.config.name}:${
@@ -158,7 +162,9 @@ export class Tracker<Mutable extends Transceiver<any>> {
 	}
 
 	public mutableState: MutableAtomToken<Mutable, Json.Serializable>
-	public latestUpdateState: RegularAtomToken<typeof this.Update | null>
+	public latestUpdateState: RegularAtomToken<
+		(Mutable extends Transceiver<infer Signal> ? Signal : never) | null
+	>
 
 	public [Symbol.dispose]!: () => void
 

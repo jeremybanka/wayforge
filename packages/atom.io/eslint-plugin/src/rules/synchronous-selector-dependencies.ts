@@ -4,7 +4,7 @@ import type * as ESTree from "estree"
 
 import { walk } from "../walk"
 
-export const synchronousSelectorDependencies = {
+export const synchronousSelectorDependencies: Rule.RuleModule = {
 	meta: {
 		type: `problem`,
 		docs: {
@@ -124,4 +124,4 @@ export const synchronousSelectorDependencies = {
 			},
 		}
 	},
-} satisfies Rule.RuleModule
+}

@@ -59,7 +59,12 @@ export class Refinery<SupportedTypes extends RefinementSupport> {
 	}
 }
 
-export const primitiveRefinery = new Refinery({
+export const primitiveRefinery: Refinery<{
+	number: (input: unknown) => input is number
+	string: (input: unknown) => input is string
+	boolean: (input: unknown) => input is boolean
+	null: (input: unknown) => input is null
+}> = new Refinery({
 	number: (input: unknown): input is number => typeof input === `number`,
 	string: (input: unknown): input is string => typeof input === `string`,
 	boolean: (input: unknown): input is boolean => typeof input === `boolean`,
@@ -74,12 +79,22 @@ export function isPlainObject(input: unknown): input is Json.Tree.Object {
 	return prototype === Object.prototype
 }
 
-export const jsonTreeRefinery = new Refinery({
+export const jsonTreeRefinery: Refinery<{
+	object: (input: unknown) => input is Json.Tree.Object
+	array: (input: unknown) => input is Json.Tree.Array
+}> = new Refinery({
 	object: isPlainObject,
 	array: (input: unknown): input is Json.Tree.Array => Array.isArray(input),
 })
 
-export const jsonRefinery = new Refinery({
+export const jsonRefinery: Refinery<{
+	object: (input: unknown) => input is Json.Tree.Object
+	array: (input: unknown) => input is Json.Tree.Array
+	number: (input: unknown) => input is number
+	string: (input: unknown) => input is string
+	boolean: (input: unknown) => input is boolean
+	null: (input: unknown) => input is null
+}> = new Refinery({
 	...primitiveRefinery.supported,
 	...jsonTreeRefinery.supported,
 })

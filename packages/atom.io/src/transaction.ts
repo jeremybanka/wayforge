@@ -133,7 +133,7 @@ export function transaction<F extends Func>(
 
 export function runTransaction<F extends Func>(
 	token: TransactionToken<F>,
-	id = arbitrary(),
+	id: string = arbitrary(),
 ): (...parameters: Parameters<F>) => ReturnType<F> {
 	return actUponStore(IMPLICIT.STORE, token, id)
 }

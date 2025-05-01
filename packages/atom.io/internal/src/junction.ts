@@ -83,8 +83,9 @@ export class Junction<
 	public readonly a: ASide
 	public readonly b: BSide
 	public readonly cardinality: `1:1` | `1:n` | `n:n`
-	public readonly relations = new Map<AType | BType, Set<AType> | Set<BType>>()
-	public readonly contents = new Map<string, Content>()
+	public readonly relations: Map<AType | BType, Set<AType> | Set<BType>> =
+		new Map()
+	public readonly contents: Map<string, Content> = new Map()
 
 	public isAType?: Refinement<string, AType> | null
 	public isBType?: Refinement<string, BType> | null

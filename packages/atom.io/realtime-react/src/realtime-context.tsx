@@ -11,10 +11,11 @@ export type RealtimeReactStore = {
 	> | null
 }
 
-export const RealtimeContext = React.createContext<RealtimeReactStore>({
-	socket: null,
-	services: null,
-})
+export const RealtimeContext: React.Context<RealtimeReactStore> =
+	React.createContext({
+		socket: null,
+		services: null,
+	})
 
 export const RealtimeProvider: React.FC<{
 	children: React.ReactNode

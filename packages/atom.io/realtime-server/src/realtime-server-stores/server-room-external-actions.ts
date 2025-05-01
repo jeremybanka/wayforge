@@ -8,13 +8,13 @@ import type { ChildSocket } from "../ipc-sockets"
 import type { RoomArguments } from "./server-room-external-store"
 import { roomArgumentsAtoms, roomSelectors } from "./server-room-external-store"
 
-export const createRoomTX = AtomIO.transaction<
+export const createRoomTX: AtomIO.TransactionToken<
 	(
 		roomId: string,
 		script: string,
 		options?: string[],
 	) => Loadable<ChildSocket<any, any>>
->({
+> = AtomIO.transaction({
 	key: `createRoom`,
 	do: ({ get, set, find }, roomId, script, options) => {
 		const args: RoomArguments = options ? [script, options] : [script]
@@ -28,9 +28,9 @@ export const createRoomTX = AtomIO.transaction<
 })
 export type CreateRoomIO = AtomIO.TransactionIO<typeof createRoomTX>
 
-export const joinRoomTX = AtomIO.transaction<
+export const joinRoomTX: AtomIO.TransactionToken<
 	(roomId: string, userId: string, enteredAtEpoch: number) => UserInRoomMeta
->({
+> = AtomIO.transaction({
 	key: `joinRoom`,
 	do: (tools, roomId, userId, enteredAtEpoch) => {
 		const meta = { enteredAtEpoch }
@@ -46,9 +46,9 @@ export const joinRoomTX = AtomIO.transaction<
 })
 export type JoinRoomIO = AtomIO.TransactionIO<typeof joinRoomTX>
 
-export const leaveRoomTX = AtomIO.transaction<
+export const leaveRoomTX: AtomIO.TransactionToken<
 	(roomId: string, userId: string) => void
->({
+> = AtomIO.transaction({
 	key: `leaveRoom`,
 	do: (tools, roomId, userId) => {
 		editRelationsInStore(
@@ -62,16 +62,17 @@ export const leaveRoomTX = AtomIO.transaction<
 })
 export type LeaveRoomIO = AtomIO.TransactionIO<typeof leaveRoomTX>
 
-export const destroyRoomTX = AtomIO.transaction<(roomId: string) => void>({
-	key: `destroyRoom`,
-	do: (tools, roomId) => {
-		editRelationsInStore(
-			usersInRooms,
-			(relations) => {
-				relations.delete({ room: roomId })
-			},
-			tools.env().store,
-		)
-		tools.set(roomIndex, (s) => (s.delete(roomId), s))
-	},
-})
+export const destroyRoomTX: AtomIO.TransactionToken<(roomId: string) => void> =
+	AtomIO.transaction({
+		key: `destroyRoom`,
+		do: (tools, roomId) => {
+			editRelationsInStore(
+				usersInRooms,
+				(relations) => {
+					relations.delete({ room: roomId })
+				},
+				tools.env().store,
+			)
+			tools.set(roomIndex, (s) => (s.delete(roomId), s))
+		},
+	})

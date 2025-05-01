@@ -73,7 +73,7 @@ export class Auditor {
 			)
 	}
 
-	public static readonly DEFAULT_LIST_RESOURCES_PARAM = {
+	public static readonly DEFAULT_LIST_RESOURCES_PARAM: ListResourcesParam = {
 		atomFamilies: true,
 		selectorFamilies: true,
 	} satisfies ListResourcesParam
