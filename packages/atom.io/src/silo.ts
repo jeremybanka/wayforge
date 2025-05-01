@@ -12,13 +12,13 @@ import {
 	findInStore,
 	getFromStore,
 	IMPLICIT,
+	installIntoStore,
 	setIntoStore,
 	Store,
 	subscribeInStore,
 	timeTravel,
 } from "atom.io/internal"
 
-import { installIntoStore } from "../internal/src/install-into-store"
 import type {
 	AtomIOToken,
 	disposeState,

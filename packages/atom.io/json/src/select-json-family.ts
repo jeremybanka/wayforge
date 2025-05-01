@@ -1,7 +1,7 @@
 import type * as AtomIO from "atom.io"
 import type { Store, Transceiver } from "atom.io/internal"
+import { createWritableSelectorFamily } from "atom.io/internal"
 
-import { createWritableSelectorFamily } from "../../internal/src/families/create-writable-selector-family"
 import type { Canonical, Json, JsonInterface } from "."
 
 export function selectJsonFamily<
