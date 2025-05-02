@@ -72,7 +72,7 @@ export function Home(): React.ReactNode {
 							break
 						}
 						case `password`: {
-							const response = await trpc.signIn.mutate({
+							const response = await trpc.openSession.mutate({
 								email,
 								password,
 							})
@@ -85,7 +85,7 @@ export function Home(): React.ReactNode {
 							break
 						}
 						default: {
-							const response = await trpc.signIn.mutate({
+							const response = await trpc.openSession.mutate({
 								email,
 								password,
 							})

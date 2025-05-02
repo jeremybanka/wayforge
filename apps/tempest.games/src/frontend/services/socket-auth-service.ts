@@ -169,7 +169,7 @@ export const password1IssuesSelector = selector<ArkErrors | null>({
 })
 export const emailInputAtom = atom<string>({
 	key: `email`,
-	default: `hi@io.fyi`,
+	default: ``,
 })
 export const emailIssuesSelector = selector<ArkErrors | null>({
 	key: `emailIssues`,

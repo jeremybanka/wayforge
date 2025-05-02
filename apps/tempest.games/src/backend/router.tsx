@@ -17,7 +17,7 @@ import {
 	signInHistory,
 	users,
 } from "../database/tempest-db-schema"
-import { credentialsType, signUpType } from "../library/data-constraints"
+import { credentialsType } from "../library/data-constraints"
 import { env } from "../library/env"
 import {
 	genAccountActionCode,
@@ -99,62 +99,8 @@ export const appRouter = trpc.router({
 		}
 		return versionData
 	}),
-	signUp: trpc.procedure.input(signUpType).mutation(async ({ input, ctx }) => {
-		const { username, password, email } = input
-		ctx.logger.info(`🔑 attempting to sign up:`, username)
-		const maybeUser = await ctx.db.drizzle.query.users.findFirst({
-			columns: { id: true },
-			where: eq(users.emailVerified, email),
-		})
-		if (maybeUser) {
-			throw new TRPCError({
-				code: `BAD_REQUEST`,
-				message: `This email was already verified on another account.`,
-			})
-		}
-		const passwordHash = await Bun.password.hash(password, {
-			algorithm: `bcrypt`,
-			cost: 10,
-		})
-		const [user] = await ctx.db.drizzle
-			.insert(users)
-			.values({
-				username,
-				emailOffered: email,
-				password: passwordHash,
-				createdIp: ctx.ip,
-			})
-			.returning()
-		ctx.logger.info(`🔑 user created:`, username)
-		const accountActionCode = genAccountActionCode()
-		const encryptedCode = await Bun.password.hash(accountActionCode, {
-			algorithm: `bcrypt`,
-			cost: 10,
-		})
 
-		await ctx.db.drizzle.insert(accountActions).values({
-			action: `confirmEmail`,
-			userId: user.id,
-			code: encryptedCode,
-			expiresAt: new Date(+ctx.now + 1000 * 60 * 15),
-		})
-
-		await resend.emails.send({
-			from: `Tempest Games <noreply@tempest.games>`,
-			to: email,
-			subject: `Confirm your email address`,
-			react: (
-				<CompleteAccountAction
-					username={username}
-					action="confirmEmail"
-					validationCode={accountActionCode}
-					baseUrl={env.FRONTEND_ORIGINS[0]}
-				/>
-			),
-		})
-	}),
-
-	signIn: trpc.procedure
+	openSession: trpc.procedure
 		.input(credentialsType)
 		.mutation(async ({ input, ctx }): Promise<SignInResponse> => {
 			const { email: username, password } = input
@@ -235,7 +181,7 @@ export const appRouter = trpc.router({
 			}
 		}),
 
-	signOut: trpc.procedure
+	closeSession: trpc.procedure
 		.input(type({ username: `string`, sessionKey: `string` }))
 		.mutation(({ input }) => {
 			const { username, sessionKey } = input

@@ -92,7 +92,7 @@ export function App(): React.ReactNode {
 								type="button"
 								onClick={async () => {
 									if (!auth) return
-									await trpc.signOut.mutate({
+									await trpc.closeSession.mutate({
 										username: auth.username,
 										sessionKey: auth.sessionKey,
 									})

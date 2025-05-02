@@ -85,6 +85,7 @@ export const serveSocket = (socket: Socket): void => {
 		store: IMPLICIT.STORE,
 	})
 	const cleanup = syncContinuity(countContinuity)
+
 	socket.on(`disconnect`, () => {
 		const socketKey = `socket::${socket.id}` satisfies SocketKey
 		const userKeyState = findRelationsInStore(
