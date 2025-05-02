@@ -267,7 +267,7 @@ declare global {
 	var ATOM_IO_IMPLICIT_STORE: Store | undefined
 }
 
-export const IMPLICIT = {
+export const IMPLICIT: { readonly STORE: Store } = {
 	get STORE(): Store {
 		globalThis.ATOM_IO_IMPLICIT_STORE ??= new Store({
 			name: `IMPLICIT_STORE`,
