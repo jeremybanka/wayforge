@@ -8,7 +8,7 @@ import discoverSubmodules from "~/packages/atom.io/__scripts__/discover-submodul
 import { ATOM_IO_FYI_ROOT } from "./constants"
 
 function runWorker(submodule: string) {
-	if (submodule === `.`) {
+	if (submodule === `main`) {
 		return new Promise((resolve, reject) => {
 			const worker = new Worker(
 				path.join(ATOM_IO_FYI_ROOT, `scripts`, `tsdoc.bun.worker.ts`),
@@ -29,7 +29,7 @@ function runWorker(submodule: string) {
 	console.log(`📝 Skipping ${submodule}`)
 	return Promise.resolve()
 }
-const submodules = [`.`, ...discoverSubmodules()]
+const submodules = [`main`, ...discoverSubmodules()]
 
 await Promise.all(submodules.map(runWorker)).then(() => {
 	process.exit(0)

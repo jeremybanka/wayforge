@@ -1,9 +1,9 @@
+import { atom, atomFamily, selector, transaction } from "atom.io"
+import { useI, useO } from "atom.io/react"
+import { persistSync } from "atom.io/web"
 import { useEffect } from "react"
 import type { Location } from "react-router-dom"
 import { useLocation } from "react-router-dom"
-import { atom, atomFamily, selector, transaction } from "atom.io"
-import { persistSync } from "atom.io/web"
-import { useI, useO } from "atom.io/react"
 
 import { lastOf } from "~/packages/anvl/src/array"
 import { now } from "~/packages/anvl/src/id/now"

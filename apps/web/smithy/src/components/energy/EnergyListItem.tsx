@@ -1,9 +1,9 @@
+import type { AtomListItemProps } from "hamr/atom.io-tools"
 import type { FC } from "react"
 
 import type { Energy } from "../../services/energy"
-import { SVG_EnergyIcon } from "./EnergyIcon"
-import { AtomListItemProps } from "hamr/atom.io-tools"
 import { RecoverableErrorBoundary } from "../RecoverableErrorBoundary"
+import { SVG_EnergyIcon } from "./EnergyIcon"
 
 export const EnergyListItem: FC<AtomListItemProps<Energy>> = ({ label }) => (
 	<RecoverableErrorBoundary>

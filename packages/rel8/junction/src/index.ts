@@ -1,1 +1,1 @@
-export * from "~/packages/atom.io/internal/src/junction"
+export * from "~/packages/atom.io/src/internal/junction"

@@ -1,4 +1,4 @@
-import type { Json } from "~/packages/atom.io/json/src"
+import type { Json } from "~/packages/atom.io/src/json"
 
 import type { EmptyObject, PlainObject } from "../object"
 import { filterProperties } from "../object"

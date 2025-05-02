@@ -1,17 +1,17 @@
 import { default as NextPlugin } from "@next/eslint-plugin-next"
 import { default as TypeScriptPlugin } from "@typescript-eslint/eslint-plugin"
 import * as parser from "@typescript-eslint/parser"
-import type { Linter } from "eslint"
+import type { ESLint, Linter } from "eslint"
+import * as DrizzlePlugin from "eslint-plugin-drizzle"
 import * as ImportPlugin from "eslint-plugin-import-x"
 import { default as SimpleImportSortPlugin } from "eslint-plugin-simple-import-sort"
-import * as DrizzlePlugin from "eslint-plugin-drizzle"
 
-import AtomIOPlugin from "./packages/atom.io/eslint-plugin"
+import AtomIOPlugin from "./packages/atom.io/dist/eslint-plugin"
 
 const ERROR = 2
 
 const parserOptions = {
-	project: [`./tsconfig.json`, "__scripts__/tsconfig.json"],
+	project: [`./tsconfig.json`, `__scripts__/tsconfig.json`],
 	sourceType: `module`,
 } satisfies parser.ParserOptions
 
@@ -176,7 +176,7 @@ const configs = [
 		files: [`**/*.ts{,x}`, `eslint.config.ts`],
 		plugins: {
 			"@typescript-eslint": TypeScriptPlugin,
-			"atom.io": AtomIOPlugin,
+			"atom.io": AtomIOPlugin as ESLint.Plugin,
 			import: ImportPlugin,
 			"simple-import-sort": SimpleImportSortPlugin,
 		},
@@ -221,7 +221,7 @@ const configs = [
 		ignores: [`**/bin/**`, `**/dist/**`, `**/*.gen.ts`, `**/node_modules/**`],
 		plugins: {
 			"@typescript-eslint": TypeScriptPlugin,
-			"atom.io": AtomIOPlugin,
+			"atom.io": AtomIOPlugin as ESLint.Plugin,
 			import: ImportPlugin,
 			"simple-import-sort": SimpleImportSortPlugin,
 		},
@@ -248,7 +248,7 @@ const configs = [
 			"drizzle/enforce-delete-with-where": [
 				ERROR,
 				{
-					drizzleObjectName: "db.drizzle",
+					drizzleObjectName: `db.drizzle`,
 				},
 			],
 		},

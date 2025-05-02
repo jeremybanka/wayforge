@@ -17,24 +17,7 @@
 	},
 	"scripts": {
 		"manifest": "tsx __scripts__/manifest-build.node.ts",
-		"clean:build": "find . -type d -name 'dist' -not -path '*/node_modules/*' | xargs rm -rf",
-		"build": "bun run clean:build && concurrently \"bun:build:*\"",
-		"build:main": "tsup-node",
-		"build:types": "tsup-node --dts",
-		"build:data": "cd data && tsup-node",
-		"build:eslint-plugin": "cd eslint-plugin && tsup-node",
-		"build:internal": "cd internal && tsup-node",
-		"build:introspection": "cd introspection && tsup-node",
-		"build:json": "cd json && tsup-node",
-		"build:react": "cd react && tsup-node",
-		"build:react-devtools": "cd react-devtools && tsup-node",
-		"build:realtime": "cd realtime && tsup-node",
-		"build:realtime-client": "cd realtime-client && tsup-node",
-		"build:realtime-react": "cd realtime-react && tsup-node",
-		"build:realtime-server": "cd realtime-server && tsup-node",
-		"build:realtime-testing": "cd realtime-testing && tsup-node",
-		"build:transceivers:set-rtx": "cd transceivers/set-rtx && tsup-node",
-		"build:web": "cd web && tsup-node",
+		"build": "tsdown && bun ./__scripts__/build-sort.bun.ts",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
 		"lint:types": "tsc --noEmit",
@@ -55,26 +38,34 @@
 		"@floating-ui/react": ">=0.25.0",
 		"@floating-ui/react-dom": ">=2.0.0",
 		"@testing-library/react": ">=14.0.0",
+		"@typescript-eslint/parser": ">=9.0.0",
 		"eslint": ">=9.0.0",
+		"happy-dom": ">=17.4.4",
 		"motion": ">=11.0.0",
 		"react": "^18.0.0 || ^19.0.0",
 		"socket.io": ">=4.0.0",
 		"socket.io-client": ">=4.0.0"
 	},
 	"peerDependenciesMeta": {
-		"@testing-library/react": {
-			"optional": true
-		},
-		"react": {
-			"optional": true
-		},
 		"@floating-ui/react": {
 			"optional": true
 		},
 		"@floating-ui/react-dom": {
 			"optional": true
 		},
+		"@testing-library/react": {
+			"optional": true
+		},
+		"@typescript-eslint/parser": {
+			"optional": true
+		},
+		"react": {
+			"optional": true
+		},
 		"eslint": {
+			"optional": true
+		},
+		"happy-dom": {
 			"optional": true
 		},
 		"motion": {
@@ -88,6 +79,7 @@
 		}
 	},
 	"devDependencies": {
+		"@eslint/core": "0.14.0",
 		"@testing-library/react": "16.3.0",
 		"@types/bun": "npm:bun-types@1.2.11",
 		"@types/eslint": "9.6.1",
@@ -120,7 +112,7 @@
 		"socket.io": "4.8.1",
 		"socket.io-client": "4.8.1",
 		"tmp": "0.2.3",
-		"tsup": "8.4.0",
+		"tsdown": "0.10.2",
 		"tsx": "4.19.4",
 		"typescript": "5.8.3",
 		"vite": "6.3.4",
@@ -128,129 +120,85 @@
 		"vitest": "3.1.2",
 		"zod": "3.24.3"
 	},
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
 	"files": [
 		"dist",
 		"src",
-		"data/dist",
-		"data/package.json",
 		"data/src",
-		"eslint-plugin/dist",
-		"eslint-plugin/package.json",
 		"eslint-plugin/src",
-		"internal/dist",
-		"internal/package.json",
 		"internal/src",
-		"introspection/dist",
-		"introspection/package.json",
 		"introspection/src",
-		"json/dist",
-		"json/package.json",
 		"json/src",
-		"react/dist",
-		"react/package.json",
 		"react/src",
-		"react-devtools/dist",
-		"react-devtools/package.json",
 		"react-devtools/src",
-		"realtime/dist",
-		"realtime/package.json",
 		"realtime/src",
-		"realtime-client/dist",
-		"realtime-client/package.json",
 		"realtime-client/src",
-		"realtime-react/dist",
-		"realtime-react/package.json",
 		"realtime-react/src",
-		"realtime-server/dist",
-		"realtime-server/package.json",
 		"realtime-server/src",
-		"realtime-testing/dist",
-		"realtime-testing/package.json",
 		"realtime-testing/src",
-		"transceivers/set-rtx/dist",
-		"transceivers/set-rtx/package.json",
 		"transceivers/set-rtx/src",
-		"web/dist",
-		"web/package.json",
 		"web/src"
 	],
 	"exports": {
 		"./package.json": "./package.json",
 		".": {
-			"import": "./dist/index.js",
-			"types": "./dist/index.d.ts"
+			"import": "./dist/main/index.js",
+			"types": "./dist/main/index.d.ts"
 		},
-		"./data/package.json": "./data/package.json",
 		"./data": {
-			"import": "./data/dist/index.js",
-			"types": "./data/dist/index.d.ts"
+			"import": "./dist/data/index.js",
+			"types": "./dist/data/index.d.ts"
 		},
-		"./eslint-plugin/package.json": "./eslint-plugin/package.json",
 		"./eslint-plugin": {
-			"import": "./eslint-plugin/dist/index.js",
-			"types": "./eslint-plugin/dist/index.d.ts"
+			"import": "./dist/eslint-plugin/index.js",
+			"types": "./dist/eslint-plugin/index.d.ts"
 		},
-		"./internal/package.json": "./internal/package.json",
 		"./internal": {
-			"import": "./internal/dist/index.js",
-			"types": "./internal/dist/index.d.ts"
+			"import": "./dist/internal/index.js",
+			"types": "./dist/internal/index.d.ts"
 		},
-		"./introspection/package.json": "./introspection/package.json",
 		"./introspection": {
-			"import": "./introspection/dist/index.js",
-			"types": "./introspection/dist/index.d.ts"
+			"import": "./dist/introspection/index.js",
+			"types": "./dist/introspection/index.d.ts"
 		},
-		"./json/package.json": "./json/package.json",
 		"./json": {
-			"import": "./json/dist/index.js",
-			"types": "./json/dist/index.d.ts"
+			"import": "./dist/json/index.js",
+			"types": "./dist/json/index.d.ts"
 		},
-		"./react/package.json": "./react/package.json",
 		"./react": {
-			"import": "./react/dist/index.js",
-			"types": "./react/dist/index.d.ts"
+			"import": "./dist/react/index.js",
+			"types": "./dist/react/index.d.ts"
 		},
-		"./react-devtools/package.json": "./react-devtools/package.json",
 		"./react-devtools": {
-			"import": "./react-devtools/dist/index.js",
-			"types": "./react-devtools/dist/index.d.ts"
+			"import": "./dist/react-devtools/index.js",
+			"types": "./dist/react-devtools/index.d.ts"
 		},
-		"./realtime/package.json": "./realtime/package.json",
 		"./realtime": {
-			"import": "./realtime/dist/index.js",
-			"types": "./realtime/dist/index.d.ts"
+			"import": "./dist/realtime/index.js",
+			"types": "./dist/realtime/index.d.ts"
 		},
-		"./realtime-client/package.json": "./realtime-client/package.json",
 		"./realtime-client": {
-			"import": "./realtime-client/dist/index.js",
-			"types": "./realtime-client/dist/index.d.ts"
+			"import": "./dist/realtime-client/index.js",
+			"types": "./dist/realtime-client/index.d.ts"
 		},
-		"./realtime-react/package.json": "./realtime-react/package.json",
 		"./realtime-react": {
-			"import": "./realtime-react/dist/index.js",
-			"types": "./realtime-react/dist/index.d.ts"
+			"import": "./dist/realtime-react/index.js",
+			"types": "./dist/realtime-react/index.d.ts"
 		},
-		"./realtime-server/package.json": "./realtime-server/package.json",
 		"./realtime-server": {
-			"import": "./realtime-server/dist/index.js",
-			"types": "./realtime-server/dist/index.d.ts"
+			"import": "./dist/realtime-server/index.js",
+			"types": "./dist/realtime-server/index.d.ts"
 		},
-		"./realtime-testing/package.json": "./realtime-testing/package.json",
 		"./realtime-testing": {
-			"import": "./realtime-testing/dist/index.js",
-			"types": "./realtime-testing/dist/index.d.ts"
+			"import": "./dist/realtime-testing/index.js",
+			"types": "./dist/realtime-testing/index.d.ts"
 		},
-		"./transceivers/set-rtx/package.json": "./transceivers/set-rtx/package.json",
 		"./transceivers/set-rtx": {
-			"import": "./transceivers/set-rtx/dist/index.js",
-			"types": "./transceivers/set-rtx/dist/index.d.ts"
+			"import": "./dist/transceivers/set-rtx/index.js",
+			"types": "./dist/transceivers/set-rtx/index.d.ts"
 		},
-		"./web/package.json": "./web/package.json",
 		"./web": {
-			"import": "./web/dist/index.js",
-			"types": "./web/dist/index.d.ts"
+			"import": "./dist/web/index.js",
+			"types": "./dist/web/index.d.ts"
 		}
 	}
 }

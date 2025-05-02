@@ -1,9 +1,9 @@
+import type { AtomListItemProps } from "hamr/atom.io-tools"
 import type { FC } from "react"
 
 import type { Reaction } from "../../services/reaction"
-import { Div_ReactionIcon } from "./ReactionIcon"
-import { AtomListItemProps } from "hamr/atom.io-tools"
 import { RecoverableErrorBoundary } from "../RecoverableErrorBoundary"
+import { Div_ReactionIcon } from "./ReactionIcon"
 
 export const ReactionListItem: FC<AtomListItemProps<Reaction>> = ({ label }) => (
 	<RecoverableErrorBoundary>

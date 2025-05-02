@@ -1,3 +1,6 @@
+import { runTransaction, setState } from "atom.io"
+import { useI, useO } from "atom.io/react"
+import { ErrorBoundary } from "atom.io/react-devtools"
 import type { FC } from "react"
 import { useEffect } from "react"
 import {
@@ -8,9 +11,6 @@ import {
 	Routes,
 	useLocation,
 } from "react-router-dom"
-import { useO, useI } from "atom.io/react"
-import { runTransaction, setState } from "atom.io"
-import { ErrorBoundary } from "atom.io/react-devtools"
 
 import type { WC } from "~/packages/hamr/react-json-editor/src"
 
@@ -19,8 +19,8 @@ import { EnergyHome } from "./components/energy/EnergyHome"
 import { Home } from "./components/Home"
 import { ReactionEditorFromRoute } from "./components/reaction/ReactionEditor"
 import { ReactionHome } from "./components/reaction/ReactionHome"
-import { addViewTX, viewAtoms, viewIndexState } from "./services/view"
 import { RecoverableErrorBoundary } from "./components/RecoverableErrorBoundary"
+import { addViewTX, viewAtoms, viewIndexState } from "./services/view"
 
 export const InnerView: FC<{ viewId: string; close: () => void }> = ({
 	viewId,

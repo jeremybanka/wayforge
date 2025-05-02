@@ -1,4 +1,4 @@
-import type { Json } from "~/packages/atom.io/json/src"
+import type { Json } from "~/packages/atom.io/src/json"
 import type { Refinement } from "~/packages/rel8/types/src"
 
 export type Identified = { id: string }

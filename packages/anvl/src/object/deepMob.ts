@@ -1,5 +1,5 @@
-import type { InspectionResult } from "~/packages/atom.io/introspection/src/sprawl"
-import { sprawl } from "~/packages/atom.io/introspection/src/sprawl"
+import type { InspectionResult } from "~/packages/atom.io/src/introspection/sprawl"
+import { sprawl } from "~/packages/atom.io/src/introspection/sprawl"
 
 import { reduce, slice } from "../array"
 import { pipe } from "../function"

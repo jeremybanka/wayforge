@@ -2,9 +2,9 @@ import "./font-face.scss"
 import "./index.scss"
 
 import { RecoilInspector } from "@eyecuelab/recoil-devtools"
+import { StoreProvider } from "atom.io/react"
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
-import { StoreProvider } from "atom.io/react"
 
 import { App } from "./App"
 

@@ -1,4 +1,6 @@
 import styled from "@emotion/styled"
+import { setState } from "atom.io"
+import { ListItems } from "hamr/atom.io-tools"
 import type { FC } from "react"
 
 import type { Identified } from "~/packages/anvl/src/id/identified"
@@ -8,8 +10,6 @@ import {
 	reactionWithRelationsAtoms,
 } from "../../services/reaction"
 import { ReactionEditorListItem } from "../reaction/ReactionEditor"
-import { setState } from "atom.io"
-import { ListItems } from "hamr/atom.io-tools"
 
 export const ReactionList: FC<{
 	labels: Identified[]

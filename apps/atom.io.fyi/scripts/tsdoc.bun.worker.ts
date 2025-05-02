@@ -2,7 +2,10 @@ import path from "node:path"
 
 import * as Bun from "bun"
 
-import { ATOM_IO_ROOT } from "~/packages/atom.io/__scripts__/constants"
+import {
+	ATOM_IO_ROOT,
+	ATOM_IO_SRC,
+} from "~/packages/atom.io/__scripts__/constants"
 import { compileDocs } from "~/packages/tsdoc.json/src/library"
 
 import { ATOM_IO_FYI_ROOT } from "./constants"
@@ -14,7 +17,7 @@ export async function tsDocWorkerJob({
 	data: subPackageName,
 }: { data: string }): Promise<void> {
 	console.log(`📝 Extracting ${subPackageName}`)
-	const entrypoint = path.join(ATOM_IO_ROOT, subPackageName, `src`, `index.ts`)
+	const entrypoint = path.join(ATOM_IO_SRC, subPackageName, `index.ts`)
 	const tsconfigPath = path.join(ATOM_IO_ROOT, `tsconfig.json`)
 	const doc = compileDocs({ entrypoint, tsconfigPath })
 	await Bun.write(
