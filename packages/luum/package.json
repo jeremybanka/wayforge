@@ -19,7 +19,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "22.15.3",
-		"eslint": "9.25.1",
+		"eslint": "9.26.0",
 		"tsup": "8.4.0",
 		"typescript": "5.8.3",
 		"vite": "6.3.4",

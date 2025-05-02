@@ -42,7 +42,7 @@
 		"@types/node": "22.15.3",
 		"@types/tmp": "0.2.6",
 		"concurrently": "9.1.2",
-		"eslint": "9.25.1",
+		"eslint": "9.26.0",
 		"tmp": "0.2.3",
 		"tsdown": "0.10.2",
 		"vitest": "3.1.2",
