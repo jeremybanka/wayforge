@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.33.0
+
+### Minor Changes
+
+- d654c2d: 🚀 `atom.io` now builds with rolldown. As a result, the `.scss` stylesheet included with `atom.io/react-devtools` has been changed to `.css`.
+
 ## 0.32.4
 
 ### Patch Changes
