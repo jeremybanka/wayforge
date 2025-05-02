@@ -1,4 +1,4 @@
-import { Loadable } from "atom.io/internal"
+import type { Loadable } from "atom.io/internal"
 
 /**
  * Utility for handling loadable values

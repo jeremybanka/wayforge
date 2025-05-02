@@ -22,6 +22,8 @@ export const OpenClose: FC<{
 	)
 }
 
-export const button = {
+export const button: {
+	OpenClose: typeof OpenClose
+} = {
 	OpenClose,
 }

@@ -210,7 +210,11 @@ export const TimelineUpdateFC: React.FC<{
 	) : null
 }
 
-export const article = {
+export const article: {
+	AtomUpdate: typeof AtomUpdateFC
+	TransactionUpdate: typeof TransactionUpdateFC
+	TimelineUpdate: typeof TimelineUpdateFC
+} = {
 	AtomUpdate: AtomUpdateFC,
 	TransactionUpdate: TransactionUpdateFC,
 	TimelineUpdate: TimelineUpdateFC,

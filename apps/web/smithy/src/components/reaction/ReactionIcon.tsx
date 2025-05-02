@@ -1,8 +1,9 @@
+import { useO } from "atom.io/react"
 import corners, { chamfer, writePathPoint } from "corners"
 import { pipe } from "fp-ts/function"
+import { ListItems } from "hamr/atom.io-tools"
 import type { FC } from "react"
 import { useNavigate } from "react-router-dom"
-import { useO } from "atom.io/react"
 
 import { Luum } from "~/packages/luum/src"
 
@@ -12,7 +13,6 @@ import type { Reaction, ReactionRelations } from "../../services/reaction"
 import { reactionWithRelationsAtoms } from "../../services/reaction"
 import { Span_EnergyAmount, Span_VoidIcon } from "../energy/EnergyIcon"
 import scss from "./ReactionIcon.module.scss"
-import { ListItems } from "hamr/atom.io-tools"
 
 const SvgArrow = (props: { fillHex: string; strokeHex: string }) => (
 	<svg

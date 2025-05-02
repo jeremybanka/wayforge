@@ -1,3 +1,5 @@
+import { atomFamily, setState } from "atom.io"
+import { useI, useO } from "atom.io/react"
 import type {
 	ErrorBoundaryProps,
 	ErrorBoundaryState,
@@ -5,8 +7,6 @@ import type {
 import { RecoverableErrorBoundary as ReactErrorBoundary } from "hamr/react-error-boundary"
 import type { FC } from "react"
 import { useId } from "react"
-import { atomFamily, setState } from "atom.io"
-import { useI, useO } from "atom.io/react"
 
 export const findErrorBoundaryState = atomFamily<ErrorBoundaryState, string>({
 	key: `errorBoundary`,
@@ -27,7 +27,7 @@ export const RecoverableErrorBoundary: FC<ErrorBoundaryProps> = ({
 				useO(findErrorBoundaryState, id),
 				useI(findErrorBoundaryState, id),
 			]}
-			useResetErrorState={() => () => setState(findErrorBoundaryState, id, {})}
+			useResetErrorState={() => () => { setState(findErrorBoundaryState, id, {}); }}
 		>
 			{children}
 		</ReactErrorBoundary>

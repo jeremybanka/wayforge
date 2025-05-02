@@ -1,3 +1,4 @@
+import { stringSetJsonInterface } from "anvl/json"
 import { atom, atomFamily, selectorFamily, transaction } from "atom.io"
 import type z from "zod"
 
@@ -5,7 +6,6 @@ import type reactionSchema from "~/apps/node/forge/gen/reaction.schema.json"
 import type { Identified } from "~/packages/anvl/src/id/identified"
 import { now } from "~/packages/anvl/src/id/now"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
-
 import {
 	socketIndex,
 	socketSchema,
@@ -19,7 +19,6 @@ import {
 	reactionReagentsState,
 } from "./energy_reaction"
 import { socket } from "./socket"
-import { stringSetJsonInterface } from "anvl/json"
 
 export const TIME_UNITS = {
 	ms: 1,

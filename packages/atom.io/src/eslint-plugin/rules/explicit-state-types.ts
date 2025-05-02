@@ -8,7 +8,7 @@ const createRule = ESLintUtils.RuleCreator(
 const STATE_FUNCTIONS = [`atom`, `atomFamily`, `selector`, `selectorFamily`]
 
 export const explicitStateTypes: ESLintUtils.RuleModule<
-	"noTypeArgument",
+	`noTypeArgument`,
 	[],
 	unknown,
 	ESLintUtils.RuleListener

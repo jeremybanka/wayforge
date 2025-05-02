@@ -1,13 +1,15 @@
 import "../styles/json-editor-skeletal.scss"
 
+import { findState, runTransaction, setState  } from "atom.io"
+import { useI,useO } from "atom.io/react"
+import { RecoverableErrorBoundary } from "hamr/react-error-boundary"
 import type { FC } from "react"
 import { useEffect } from "react"
-import { useO, useI } from "atom.io/react"
 
 import { includesAny } from "~/packages/anvl/src/array/venn"
-import { JsonEditor } from "~/packages/hamr/react-json-editor/src"
 import type { AtomEditorProps } from "~/packages/hamr/atom.io-tools/src"
 import { AtomEditor } from "~/packages/hamr/atom.io-tools/src"
+import { JsonEditor } from "~/packages/hamr/react-json-editor/src"
 import { isGitSocketError } from "~/packages/socket-io.git/src/socket-git-atom-client"
 
 import type { Energy, EnergyRelations } from "../../services/energy"
@@ -17,6 +19,7 @@ import {
 	energyWithRelationsSelectors,
 } from "../../services/energy"
 import { git } from "../../services/git"
+import { addReactionAsEnergyFeatureTX } from "../../services/reaction"
 import { useSetTitle } from "../../services/view"
 import { Data_EnergyCard_A } from "./EnergyCard_A"
 import { Data_EnergyCard_B } from "./EnergyCard_B"
@@ -24,10 +27,6 @@ import scss from "./EnergyEditor.module.scss"
 import { ReactionList } from "./EnergyFeatureReactionList"
 import { SVG_EnergyIcon } from "./EnergyIcon"
 import { Slot_PreviewCardSleeve } from "./PreviewCardSleeve"
-import { findState } from "atom.io"
-import { RecoverableErrorBoundary } from "hamr/react-error-boundary"
-import { runTransaction, setState } from "atom.io"
-import { addReactionAsEnergyFeatureTX } from "../../services/reaction"
 
 export const EnergyEditor_INTERNAL: FC<
 	AtomEditorProps<Energy & EnergyRelations>
@@ -78,7 +77,7 @@ export const EnergyEditor_INTERNAL: FC<
 			/>
 			<ReactionList
 				labels={energy.features}
-				useCreate={() => () => runTransaction(addReactionAsEnergyFeatureTX)(id)}
+				useCreate={() => () => { runTransaction(addReactionAsEnergyFeatureTX)(id); }}
 			/>
 		</div>
 	)

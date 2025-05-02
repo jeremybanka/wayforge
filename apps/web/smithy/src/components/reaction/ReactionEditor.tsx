@@ -1,30 +1,29 @@
 import "../styles/json-editor-skeletal.scss"
 
-import type { FC } from "react"
-import { selector, setState } from "atom.io"
+import { findState,selector, setState  } from "atom.io"
+import type { Json } from "atom.io/json"
 import { useI, useO } from "atom.io/react"
+import type { FC } from "react"
 
 import { includesAny } from "~/packages/anvl/src/array/venn"
 import { become, raiseError } from "~/packages/anvl/src/function"
-import { JsonEditor } from "~/packages/hamr/react-json-editor/src"
 import type {
-	FromListItemProps,
 	AtomEditorProps,
+	FromListItemProps,
 } from "~/packages/hamr/atom.io-tools/src"
 import { AtomEditor } from "~/packages/hamr/atom.io-tools/src"
+import { JsonEditor } from "~/packages/hamr/react-json-editor/src"
 
-import { energyIndex, energyAtoms } from "../../services/energy"
+import { energyAtoms,energyIndex } from "../../services/energy"
 import type { Product, Reagent } from "../../services/energy_reaction"
 import type { Reaction, ReactionRelations } from "../../services/reaction"
 import {
-	reactionWithRelationsAtoms,
 	reactionIndex,
 	reactionSchemaState,
+	reactionWithRelationsAtoms,
 } from "../../services/reaction"
 import { SVG_EnergyIcon } from "../energy/EnergyIcon"
 import { RecoverableErrorBoundary } from "../RecoverableErrorBoundary"
-import { Json } from "atom.io/json"
-import { findState } from "atom.io"
 
 export const energySelectState = selector<{ value: string; text: string }[]>({
 	key: `energyCatalog`,

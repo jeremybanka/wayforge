@@ -1,5 +1,6 @@
-import { pipe } from "fp-ts/function"
 import { atom, atomFamily, selectorFamily, transaction } from "atom.io"
+import type { Json } from "atom.io/json"
+import { pipe } from "fp-ts/function"
 import z, { string } from "zod"
 
 import type energySchema from "~/apps/node/forge/gen/energy.schema.json"
@@ -13,7 +14,6 @@ import {
 
 import { energyFeaturesState } from "./energy_reaction"
 import { socket } from "./socket"
-import { Json } from "atom.io/json"
 
 export type Energy = z.infer<typeof energySchema>
 

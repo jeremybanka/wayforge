@@ -1,23 +1,23 @@
 #!/usr/bin/env bun
 
+import { createReadStream } from "node:fs"
 import * as fs from "node:fs/promises"
 import * as path from "node:path"
-import { createReadStream } from "node:fs"
 
 const DEBUG = false
 
-const files = await fs.readdir(path.join(__dirname, "../dist"))
+const files = await fs.readdir(path.join(__dirname, `../dist`))
 
 if (DEBUG) console.log(files)
 
-const botchedDeclarations = files.filter((file) => file.startsWith("index.d"))
+const botchedDeclarations = files.filter((file) => file.startsWith(`index.d`))
 
 if (DEBUG) console.log({ botchedDeclarations })
 
 const groups: { declaration: string; map?: string }[] = []
 
 const botchedOnlyTsFiles = botchedDeclarations.filter((file) =>
-	file.endsWith(".ts"),
+	file.endsWith(`.ts`),
 )
 
 for (const file of botchedOnlyTsFiles) {
@@ -39,24 +39,24 @@ type NamedGroup = {
 const namedGroups: NamedGroup[] = []
 for (const group of groups) {
 	const declaration = group.declaration
-	const chunks = createReadStream(path.join(__dirname, "../dist", declaration), {
-		encoding: "utf8",
+	const chunks = createReadStream(path.join(__dirname, `../dist`, declaration), {
+		encoding: `utf8`,
 		highWaterMark: 1024,
 	})
 
-	let groupName = ""
-	let leftover = ""
+	let groupName = ``
+	let leftover = ``
 	for await (const chunk of chunks as unknown as AsyncGenerator<string>) {
 		if (DEBUG) console.log({ chunk })
-		const lines = chunk.split("\n")
+		const lines = chunk.split(`\n`)
 		if (lines[0]) {
 			lines[0] = leftover + lines[0]
 		}
-		leftover = lines.pop() || ""
+		leftover = lines.pop() ?? ``
 		for (const line of lines) {
-			if (line.startsWith("//#region ")) {
+			if (line.startsWith(`//#region `)) {
 				if (DEBUG) console.log({ line }, `❗`)
-				groupName = line.replace("//#region ", "").split("/")[0]
+				groupName = line.replace(`//#region `, ``).split(`/`)[0]
 				if (DEBUG) console.log({ groupName })
 			}
 		}
@@ -81,15 +81,15 @@ await Promise.all(
 		const { declaration, map, name } = group
 		const tasks = [
 			fs.rename(
-				path.join(__dirname, "../dist", declaration),
-				path.join(__dirname, "../dist", name, `index.d.ts`),
+				path.join(__dirname, `../dist`, declaration),
+				path.join(__dirname, `../dist`, name, `index.d.ts`),
 			),
 		]
 		if (map) {
 			tasks.push(
 				fs.rename(
-					path.join(__dirname, "../dist", map),
-					path.join(__dirname, "../dist", name, `index.d.ts.map`),
+					path.join(__dirname, `../dist`, map),
+					path.join(__dirname, `../dist`, name, `index.d.ts.map`),
 				),
 			)
 		}

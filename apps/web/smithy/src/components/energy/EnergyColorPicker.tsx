@@ -1,6 +1,6 @@
-import type { FC } from "react"
 import type { RecoilState } from "atom.io"
 import { useRecoilState } from "atom.io"
+import type { FC } from "react"
 
 import { NumberInput } from "~/packages/hamr/react-elastic-input/src"
 import type { LuumSpec } from "~/packages/luum/src"

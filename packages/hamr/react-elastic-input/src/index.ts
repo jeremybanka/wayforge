@@ -1,1 +1,1 @@
-export * from "~/packages/atom.io/react-devtools/src/elastic-input"
+export * from "~/packages/atom.io/src/react-devtools/elastic-input"

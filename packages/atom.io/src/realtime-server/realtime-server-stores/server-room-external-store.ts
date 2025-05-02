@@ -15,7 +15,7 @@ export type RoomArguments =
 	| [script: string]
 
 export const roomArgumentsAtoms: RegularAtomFamilyToken<RoomArguments, string> =
-	atomFamily({
+	atomFamily<RoomArguments, string>({
 		key: `roomArguments`,
 		default: [`echo`, [`Hello World!`]],
 	})

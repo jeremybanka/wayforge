@@ -24,7 +24,7 @@ export type SocketSystemHierarchy = Hierarchy<
 >
 
 export const socketAtoms: RegularAtomFamilyToken<Socket | null, SocketKey> =
-	atomFamily({
+	atomFamily<Socket | null, SocketKey>({
 		key: `sockets`,
 		default: null,
 	})
@@ -32,7 +32,7 @@ export const socketAtoms: RegularAtomFamilyToken<Socket | null, SocketKey> =
 export const socketIndex: MutableAtomToken<
 	SetRTX<SocketKey>,
 	SetRTXJson<SocketKey>
-> = atom({
+> = atom<SetRTX<SocketKey>, SetRTXJson<SocketKey>>({
 	key: `socketsIndex`,
 	mutable: true,
 	default: () => new SetRTX(),
@@ -42,7 +42,7 @@ export const socketIndex: MutableAtomToken<
 export const userIndex: MutableAtomToken<
 	SetRTX<UserKey>,
 	SetRTXJson<UserKey>
-> = atom({
+> = atom<SetRTX<UserKey>, SetRTXJson<UserKey>>({
 	key: `usersIndex`,
 	mutable: true,
 	default: () => new SetRTX(),

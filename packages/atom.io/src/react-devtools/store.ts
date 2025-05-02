@@ -8,6 +8,7 @@ import {
 import type { IntrospectionStates } from "atom.io/introspection"
 import { attachIntrospectionStates } from "atom.io/introspection"
 import { persistSync } from "atom.io/web"
+import type { Context} from "react";
 import { createContext } from "react"
 
 type DevtoolsView = `atoms` | `selectors` | `timelines` | `transactions`
@@ -70,6 +71,6 @@ export function attachDevtoolsStates(
 	}
 }
 
-export const DevtoolsContext = createContext<
+export const DevtoolsContext: Context<
 	DevtoolsStates & IntrospectionStates & { store: Store }
->(attachDevtoolsStates(IMPLICIT.STORE))
+> = createContext(attachDevtoolsStates(IMPLICIT.STORE))

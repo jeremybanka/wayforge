@@ -1,10 +1,23 @@
 /* eslint-disable @typescript-eslint/switch-exhaustiveness-check */
+import type { RuleType } from "@eslint/core"
 import type { Rule } from "eslint"
 import type * as ESTree from "estree"
 
 import { walk } from "../walk"
 
-export const synchronousSelectorDependencies: Rule.RuleModule = {
+export const synchronousSelectorDependencies: {
+	meta: {
+		type: RuleType
+		docs: {
+			description: string
+			category: string
+			recommended: boolean
+			url: string
+		}
+		schema: never[]
+	}
+	create(context: Rule.RuleContext): Rule.NodeListener
+} = {
 	meta: {
 		type: `problem`,
 		docs: {
@@ -124,4 +137,4 @@ export const synchronousSelectorDependencies: Rule.RuleModule = {
 			},
 		}
 	},
-}
+} satisfies Rule.RuleModule
