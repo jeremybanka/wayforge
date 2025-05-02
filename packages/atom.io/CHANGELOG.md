@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.33.1
+
+### Patch Changes
+
+- ff43a3d: 🐛 Fix issue where IMPLICIT.STORE is the wrong type.
+
 ## 0.33.0
 
 ### Minor Changes
