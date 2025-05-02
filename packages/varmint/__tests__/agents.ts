@@ -1,6 +1,10 @@
 import * as crypto from "node:crypto"
 
-import type { Loadable } from "atom.io"
+import type {
+	Loadable,
+	ReadonlySelectorFamilyToken,
+	RegularAtomFamilyToken,
+} from "atom.io"
 import {
 	atomFamily,
 	findState,
@@ -11,6 +15,7 @@ import {
 import OpenAI from "openai"
 import type * as OpenAICore from "openai/core"
 import type OpenAIResources from "openai/resources/index"
+import type { ZodSchema } from "zod"
 import { z } from "zod"
 
 import type { Squirreled } from "../src"
@@ -20,14 +25,17 @@ export type Agenda = {
 	[key: string]: boolean | string | null
 }
 
-export const agendaAtoms = atomFamily<Agenda, string>({
+export const agendaAtoms: RegularAtomFamilyToken<Agenda, string> = atomFamily<
+	Agenda,
+	string
+>({
 	key: `agendas`,
 	default: {},
 })
-export const agendaSystemMessageSelectors = selectorFamily<
+export const agendaSystemMessageSelectors: ReadonlySelectorFamilyToken<
 	SystemMessage | null,
 	string
->({
+> = selectorFamily<SystemMessage | null, string>({
 	key: `agendaPrompts`,
 	get:
 		(agendaKey) =>
@@ -72,20 +80,22 @@ export const agendaSystemMessageSelectors = selectorFamily<
 		},
 })
 
-export const orientationAtoms = atomFamily<string, string>({
-	key: `orientation`,
-	default: `You are an AI assistant designed to assist with tasks.`,
-})
+export const orientationAtoms: RegularAtomFamilyToken<string, string> =
+	atomFamily<string, string>({
+		key: `orientation`,
+		default: `You are an AI assistant designed to assist with tasks.`,
+	})
 
-export const messageIndices = atomFamily<string[], string>({
-	key: `messageIndices`,
-	default: [],
-})
+export const messageIndices: RegularAtomFamilyToken<string[], string> =
+	atomFamily<string[], string>({
+		key: `messageIndices`,
+		default: [],
+	})
 
-export const chatMessageAtoms = atomFamily<
+export const chatMessageAtoms: RegularAtomFamilyToken<
 	Loadable<Omit<Message, `id`>>,
 	string
->({
+> = atomFamily<Loadable<Omit<Message, `id`>>, string>({
 	key: `messages`,
 	default: {
 		role: `user`,
@@ -93,7 +103,10 @@ export const chatMessageAtoms = atomFamily<
 	},
 })
 
-export const conversationSelectors = selectorFamily<
+export const conversationSelectors: ReadonlySelectorFamilyToken<
+	Loadable<(AssistantMessage | SystemMessage | UserMessage)[]>,
+	string
+> = selectorFamily<
 	Loadable<(AssistantMessage | SystemMessage | UserMessage)[]>,
 	string
 >({
@@ -109,7 +122,10 @@ export const conversationSelectors = selectorFamily<
 		},
 })
 
-export const openAIParamsSelectors = selectorFamily<
+export const openAIParamsSelectors: ReadonlySelectorFamilyToken<
+	Loadable<OpenAIResources.Chat.Completions.ChatCompletionCreateParamsNonStreaming>,
+	string
+> = selectorFamily<
 	Loadable<OpenAIResources.Chat.Completions.ChatCompletionCreateParamsNonStreaming>,
 	string
 >({
@@ -307,7 +323,10 @@ export type TestTools = {
 	it: (key: string, fn: () => void) => void
 }
 
-export const evaluationSchema = z.object({
+export const evaluationSchema: ZodSchema<{
+	passed: boolean
+	message: string
+}> = z.object({
 	passed: z.boolean(),
 	message: z.string(),
 })
