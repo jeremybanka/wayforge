@@ -38,7 +38,7 @@ main[data-css="atom_io_devtools"] {
 			font-size: inherit;
 			margin: 0;
 			font-size: 24px;
-			font-family: charter;
+			font-family: charter, serif;
 		}
 		nav {
 			display: flex;
@@ -240,7 +240,7 @@ main[data-css="atom_io_devtools"] {
 
 	.json_editor {
 		input {
-			font-family: theia;
+			font-family: theia, monospace;
 			border: none;
 			border-bottom: 1px solid;
 			background: none;
@@ -250,10 +250,9 @@ main[data-css="atom_io_devtools"] {
 		}
 		button {
 			background: none;
-			margin-left: auto;
 			color: #777;
 			border: none;
-			font-family: theia;
+			font-family: theia, monospace;
 			font-size: 14px;
 			margin: none;
 			padding: 4px;
@@ -265,7 +264,7 @@ main[data-css="atom_io_devtools"] {
 			}
 		}
 		select {
-			font-family: theia;
+			font-family: theia, monospace;
 			font-size: 14px;
 			background: none;
 			border: none;
