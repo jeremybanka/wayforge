@@ -5,7 +5,7 @@ import type { FC } from "react"
 
 import { ListItems } from "~/packages/hamr/atom.io-tools/src/AtomList"
 
-import { addEnergyTX,energyAtoms, energyIndex } from "../../services/energy"
+import { addEnergyTX, energyAtoms, energyIndex } from "../../services/energy"
 import { useSetTitle } from "../../services/view"
 import { EnergyListItem } from "./EnergyListItem"
 

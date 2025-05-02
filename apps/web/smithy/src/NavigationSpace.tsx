@@ -1,5 +1,5 @@
 import { runTransaction, setState } from "atom.io"
-import { useI,useO } from "atom.io/react"
+import { useI, useO } from "atom.io/react"
 import { ErrorBoundary } from "atom.io/react-devtools"
 import type { FC } from "react"
 import { useEffect } from "react"

@@ -1,7 +1,7 @@
 import "../styles/json-editor-skeletal.scss"
 
-import { findState, runTransaction, setState  } from "atom.io"
-import { useI,useO } from "atom.io/react"
+import { findState, runTransaction, setState } from "atom.io"
+import { useI, useO } from "atom.io/react"
 import { RecoverableErrorBoundary } from "hamr/react-error-boundary"
 import type { FC } from "react"
 import { useEffect } from "react"
@@ -77,7 +77,9 @@ export const EnergyEditor_INTERNAL: FC<
 			/>
 			<ReactionList
 				labels={energy.features}
-				useCreate={() => () => { runTransaction(addReactionAsEnergyFeatureTX)(id); }}
+				useCreate={() => () => {
+					runTransaction(addReactionAsEnergyFeatureTX)(id)
+				}}
 			/>
 		</div>
 	)

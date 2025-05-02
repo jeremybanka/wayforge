@@ -8,7 +8,7 @@ import {
 import type { IntrospectionStates } from "atom.io/introspection"
 import { attachIntrospectionStates } from "atom.io/introspection"
 import { persistSync } from "atom.io/web"
-import type { Context} from "react";
+import type { Context } from "react"
 import { createContext } from "react"
 
 type DevtoolsView = `atoms` | `selectors` | `timelines` | `transactions`

@@ -27,7 +27,9 @@ export const RecoverableErrorBoundary: FC<ErrorBoundaryProps> = ({
 				useO(findErrorBoundaryState, id),
 				useI(findErrorBoundaryState, id),
 			]}
-			useResetErrorState={() => () => { setState(findErrorBoundaryState, id, {}); }}
+			useResetErrorState={() => () => {
+				setState(findErrorBoundaryState, id, {})
+			}}
 		>
 			{children}
 		</ReactErrorBoundary>

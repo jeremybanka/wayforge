@@ -1,6 +1,6 @@
 import "../styles/json-editor-skeletal.scss"
 
-import { findState,selector, setState  } from "atom.io"
+import { findState, selector, setState } from "atom.io"
 import type { Json } from "atom.io/json"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
@@ -14,7 +14,7 @@ import type {
 import { AtomEditor } from "~/packages/hamr/atom.io-tools/src"
 import { JsonEditor } from "~/packages/hamr/react-json-editor/src"
 
-import { energyAtoms,energyIndex } from "../../services/energy"
+import { energyAtoms, energyIndex } from "../../services/energy"
 import type { Product, Reagent } from "../../services/energy_reaction"
 import type { Reaction, ReactionRelations } from "../../services/reaction"
 import {
