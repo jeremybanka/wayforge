@@ -15,7 +15,10 @@
 		"directory": "packages/jurist"
 	},
 	"type": "module",
-	"files": ["dist", "src"],
+	"files": [
+		"dist",
+		"src"
+	],
 	"main": "dist/jurist.js",
 	"scripts": {
 		"build": "tsdown",
@@ -36,6 +39,7 @@
 		"eslint": "9.26.0",
 		"rimraf": "6.0.1",
 		"tsdown": "0.10.2",
+		"vite": "6.3.4",
 		"vitest": "3.1.2"
 	}
 }
