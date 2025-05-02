@@ -1,5 +1,6 @@
-import type { FC } from "react"
+import { runTransaction } from "atom.io"
 import { useI, useO } from "atom.io/react"
+import type { FC } from "react"
 
 import { isGitSocketError } from "~/packages/socket-io.git/src/socket-git-atom-client"
 
@@ -11,7 +12,6 @@ import {
 	makeNewBranchTX,
 	newBranchNameState,
 } from "./services/git"
-import { runTransaction } from "atom.io"
 
 export const Explorer: FC = () => {
 	const gitStatus = useO(git.status.state)

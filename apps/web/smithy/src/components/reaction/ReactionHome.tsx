@@ -1,6 +1,7 @@
 import styled from "@emotion/styled"
-import type { FC } from "react"
+import { runTransaction, setState } from "atom.io"
 import { useO } from "atom.io/react"
+import type { FC } from "react"
 
 import { ListItems } from "~/packages/hamr/atom.io-tools/src/AtomList"
 
@@ -11,7 +12,6 @@ import {
 } from "../../services/reaction"
 import { useSetTitle } from "../../services/view"
 import { ReactionListItem } from "./ReactionListItem"
-import { runTransaction, setState } from "atom.io"
 
 const Wrapper = styled.ul`
 	padding: 20px;

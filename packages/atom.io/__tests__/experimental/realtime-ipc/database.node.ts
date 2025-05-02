@@ -6,7 +6,7 @@ import postgres from "postgres"
 import { cities, countries } from "./schema.node"
 
 export class DatabaseManager {
-	public dbName = `test_db_` + Date.now()
+	public dbName: string = `test_db_` + Date.now()
 	private config = {
 		user: `postgres`,
 		host: `localhost`,

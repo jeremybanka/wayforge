@@ -6,7 +6,7 @@ import { isString } from "fp-ts/string"
 import type { Identified } from "~/packages/anvl/src/id"
 import { identify } from "~/packages/anvl/src/id"
 import { doesExtend } from "~/packages/anvl/src/object"
-import type { Json } from "~/packages/atom.io/json/src"
+import type { Json } from "~/packages/atom.io/src/json"
 
 import { NotFoundError } from "./errors"
 import type { ScanResult } from "./explore"

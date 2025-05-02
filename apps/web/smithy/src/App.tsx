@@ -1,5 +1,5 @@
-import type { FC } from "react"
 import { useO } from "atom.io/react"
+import type { FC } from "react"
 
 import scss from "./App.module.scss"
 import Connected from "./assets/svg/connected.svg?react"

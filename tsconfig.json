@@ -24,8 +24,8 @@
 		"useUnknownInCatchVariables": true,
 		"paths": {
 			"anvl/*": ["./packages/anvl/src/*"],
-			"atom.io": ["./packages/atom.io/src"],
-			"atom.io/*": ["./packages/atom.io/*/src"],
+			"atom.io": ["./packages/atom.io/src/main"],
+			"atom.io/*": ["./packages/atom.io/src/*"],
 			"hamr/*": ["./packages/hamr/*/src"],
 			"wayfarer.quest/*": ["./apps/wayfarer.quest/src/*"],
 			"~/*": ["./*"]

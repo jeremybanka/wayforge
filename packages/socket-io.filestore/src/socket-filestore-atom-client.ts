@@ -6,7 +6,7 @@ import type { Socket } from "socket.io-client"
 import { Join } from "~/packages/anvl/src/join"
 import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
 import { isJsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
-import type { Json, JsonInterface } from "~/packages/atom.io/json/src"
+import type { Json, JsonInterface } from "~/packages/atom.io/src/json"
 
 import type { FilestoreClientEvents, FilestoreServerEvents } from "./interface"
 

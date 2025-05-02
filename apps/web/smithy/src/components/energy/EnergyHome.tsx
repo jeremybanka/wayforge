@@ -1,13 +1,13 @@
 import styled from "@emotion/styled"
-import type { FC } from "react"
+import { runTransaction, setState } from "atom.io"
 import { useO } from "atom.io/react"
+import type { FC } from "react"
 
 import { ListItems } from "~/packages/hamr/atom.io-tools/src/AtomList"
 
-import { energyIndex, energyAtoms, addEnergyTX } from "../../services/energy"
+import { addEnergyTX, energyAtoms, energyIndex } from "../../services/energy"
 import { useSetTitle } from "../../services/view"
 import { EnergyListItem } from "./EnergyListItem"
-import { runTransaction, setState } from "atom.io"
 
 export const EnergyHome: FC = () => {
 	const ids = useO(energyIndex)

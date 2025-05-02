@@ -1,14 +1,14 @@
+import { useO } from "atom.io/react"
+import type { AtomListItemProps } from "hamr/atom.io-tools"
 import type { FC } from "react"
 import { useId } from "react"
 import { useNavigate } from "react-router-dom"
-import { useO } from "atom.io/react"
 
 import { Luum } from "~/packages/luum/src"
 
 import type { Energy } from "../../services/energy"
 import { energyAtoms } from "../../services/energy"
 import type { Amount } from "../../services/energy_reaction"
-import { AtomListItemProps } from "hamr/atom.io-tools"
 
 export const SvgTSpan_Spacer: FC = () => (
 	<tspan fill="none" stroke="none" style={{ userSelect: `none` }}>{`-`}</tspan>

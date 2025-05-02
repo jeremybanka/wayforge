@@ -31,25 +31,20 @@ export default function main(mode: string): void {
 	newPackageJson.files = [
 		`dist`,
 		`src`,
-		...submodules.flatMap((folder) => [
-			`${folder}/dist`,
-			`${folder}/package.json`,
-			`${folder}/src`,
-		]),
+		...submodules.map((folder) => `${folder}/src`),
 	]
 
 	newPackageJson.exports = {
 		"./package.json": `./package.json`,
 		".": {
-			import: `./dist/index.js`,
-			types: `./dist/index.d.ts`,
+			import: `./dist/main/index.js`,
+			types: `./dist/main/index.d.ts`,
 		},
 		...submodules.reduce(
 			(acc, folder) => {
-				acc[`./${folder}/package.json`] = `./${folder}/package.json`
 				acc[`./${folder}`] = {
-					import: `./${folder}/dist/index.js`,
-					types: `./${folder}/dist/index.d.ts`,
+					import: `./dist/${folder}/index.js`,
+					types: `./dist/${folder}/index.d.ts`,
 				}
 				return acc
 			},
