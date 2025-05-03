@@ -95,7 +95,7 @@
 		"@vitest/ui": "3.1.2",
 		"break-check": "workspace:*",
 		"concurrently": "9.1.2",
-		"drizzle-kit": "0.31.0",
+		"drizzle-kit": "0.31.1",
 		"drizzle-orm": "0.43.1",
 		"eslint": "9.26.0",
 		"happy-dom": "17.4.6",
