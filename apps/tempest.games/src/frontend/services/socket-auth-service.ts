@@ -2,7 +2,8 @@ import type { ArkErrors } from "arktype"
 import { type } from "arktype"
 import type { Loadable } from "atom.io"
 import { atom, getState, selector, setState, subscribe } from "atom.io"
-import { io, Socket } from "socket.io-client"
+import type { Socket } from "socket.io-client"
+import { io } from "socket.io-client"
 
 import {
 	emailType,
@@ -10,11 +11,11 @@ import {
 	usernameType,
 } from "../../library/data-constraints.ts"
 import { env } from "../../library/env.ts"
-import { trpc } from "./trpc-client-service.ts"
-import {
+import type {
 	TempestSocketDown,
 	TempestSocketUp,
 } from "../../library/socket-interface.ts"
+import { trpc } from "./trpc-client-service.ts"
 
 export const socket: Socket<TempestSocketDown, TempestSocketUp> = io(
 	env.VITE_BACKEND_ORIGIN,

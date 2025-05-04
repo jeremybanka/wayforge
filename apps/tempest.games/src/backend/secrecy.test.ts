@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto"
 
-import { fakeId, decryptId, encryptId } from "./secrecy"
+import { decryptId, encryptId, fakeId } from "./secrecy"
 
 test(`wrapId and unwrapId`, () => {
 	const id = randomUUID()
