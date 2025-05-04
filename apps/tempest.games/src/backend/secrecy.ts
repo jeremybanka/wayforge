@@ -27,7 +27,7 @@ const b64u = {
 }
 
 /** Wrap a real ID to an opaque virtual ID */
-export function wrapId(realId: number | string): string {
+export function encryptId(realId: number | string): string {
 	if (!SECRET_KEY.length) throw new Error(`SECRET_KEY is not set`)
 
 	const iv = randomBytes(IV_LEN)
@@ -41,7 +41,7 @@ export function wrapId(realId: number | string): string {
 }
 
 /** Unwrap a virtual ID back to the real ID (throws on failure) */
-export function unwrapId(virtualId: string): string {
+export function decryptId(virtualId: string): string {
 	if (!SECRET_KEY.length) throw new Error(`SECRET_KEY is not set`)
 
 	const data = b64u.decode(virtualId)
@@ -62,5 +62,5 @@ export function unwrapId(virtualId: string): string {
 }
 
 export function fakeId(): string {
-	return wrapId(randomUUID())
+	return encryptId(randomUUID())
 }

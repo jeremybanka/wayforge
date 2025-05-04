@@ -25,7 +25,7 @@ import {
 } from "./account-actions"
 import { resend } from "./email"
 import type { logger } from "./logger"
-import { unwrapId, wrapId } from "./secrecy"
+import { decryptId, encryptId } from "./secrecy"
 import { createSession, userSessionMap } from "./user-sessions"
 
 function simpleFormatMs(ms: number): string {
@@ -217,7 +217,7 @@ export const appRouter = trpc.router({
 			const { oneTimeCode, userKey } = input
 			ctx.logger.info(`🔑 verifying account action token:`, oneTimeCode)
 
-			const userId = unwrapId(userKey)
+			const userId = decryptId(userKey)
 			const user = await ctx.db.drizzle.query.users.findFirst({
 				columns: {
 					id: true,
@@ -462,7 +462,7 @@ export const appRouter = trpc.router({
 						})
 						.returning()
 					ctx.logger.info(`🔑 user created:`, email)
-					const newUserKey = wrapId(newUser.id)
+					const newUserKey = encryptId(newUser.id)
 					await initiateAccountAction({
 						email,
 						username: newUser.username,
@@ -476,7 +476,7 @@ export const appRouter = trpc.router({
 					}
 				}
 				const unverifiedUser = maybeUnverifiedUser
-				const unverifiedUserKey = wrapId(unverifiedUser.id)
+				const unverifiedUserKey = encryptId(unverifiedUser.id)
 				await initiateAccountAction({
 					email,
 					username: unverifiedUser.username,
@@ -491,7 +491,7 @@ export const appRouter = trpc.router({
 				}
 			}
 			const verifiedUser = maybeVerifiedUser
-			const verifiedUserKey = wrapId(verifiedUser.id)
+			const verifiedUserKey = encryptId(verifiedUser.id)
 			const { password } = verifiedUser
 			if (!password) {
 				ctx.logger.info(
