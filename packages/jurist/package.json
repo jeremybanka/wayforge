@@ -15,10 +15,7 @@
 		"directory": "packages/jurist"
 	},
 	"type": "module",
-	"files": [
-		"dist",
-		"src"
-	],
+	"files": ["dist", "src"],
 	"main": "dist/jurist.js",
 	"scripts": {
 		"build": "tsdown",

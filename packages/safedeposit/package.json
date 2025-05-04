@@ -15,11 +15,7 @@
 		"directory": "packages/safedeposit"
 	},
 	"type": "module",
-	"files": [
-		"dist",
-		"src",
-		"CHANGELOG.md"
-	],
+	"files": ["dist", "src", "CHANGELOG.md"],
 	"main": "dist/safedeposit.js",
 	"scripts": {
 		"build": "tsdown",
