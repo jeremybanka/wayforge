@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.33.2
+
+### Patch Changes
+
+- f008f47: 🔧 Repair atom.io's representation of its own size in its `README.md`.
+
 ## 0.33.1
 
 ### Patch Changes
