@@ -77,6 +77,12 @@ describe(`paths`, () => {
 			true,
 		)
 	})
+	test(`isTreePath - optional root`, () => {
+		const tree = optional({ a: null }) satisfies Tree
+		expect(isTreePath(tree, [`a`])).toBe(true)
+		expect(isTreePath(tree, [`b`])).toBe(false)
+		expect(isTreePath(tree, [])).toBe(true)
+	})
 })
 
 test(`mergeTrees`, () => {

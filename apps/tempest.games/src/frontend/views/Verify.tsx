@@ -5,7 +5,7 @@ import { onMount } from "atom.io/realtime-react"
 import React from "react"
 
 import { navigate, type Route } from "../services/router-service"
-import { authAtom, tokenInputAtom } from "../services/socket-auth-service"
+import { authAtom, oneTimeCodeInputAtom } from "../services/socket-auth-service"
 import { trpc } from "../services/trpc-client-service"
 
 export type VerifyRoute = Extract<Route, [`verify`, ...any]>
@@ -18,15 +18,15 @@ export function Verify({
 	route: [, tokenFromUrl],
 }: VerifyProps): React.ReactNode {
 	const auth = useO(authAtom)
-	const token = useO(tokenInputAtom)
-	const setToken = useI(tokenInputAtom)
+	const oneTimeCode = useO(oneTimeCodeInputAtom)
+	const setOneTimeCode = useI(oneTimeCodeInputAtom)
 
 	const submitted = React.useState(false)
 	const [error, setError] = React.useState<string | null>(null)
 
 	onMount(() => {
 		if (tokenFromUrl) {
-			setToken(tokenFromUrl)
+			setOneTimeCode(tokenFromUrl)
 		}
 	})
 
@@ -37,8 +37,8 @@ export function Verify({
 	const { verification } = auth
 
 	onMount(() => {
-		if (!token) return
-		console.log(`verifying token`, token)
+		if (!oneTimeCode) return
+		console.log(`verifying token`, oneTimeCode)
 	})
 
 	return (
@@ -46,14 +46,9 @@ export function Verify({
 			onSubmit={async (e) => {
 				e.preventDefault()
 				try {
-					if (!auth) {
-						console.error(`No auth`)
-						return
-					}
-					const { username } = auth
 					const response = await trpc.verifyAccountAction.mutate({
-						token,
-						username,
+						oneTimeCode,
+						userKey: `CHANGEME`,
 					})
 					setState(authAtom, response)
 					if (response.action === `resetPassword`) {
@@ -75,9 +70,9 @@ export function Verify({
 					<input
 						id="code"
 						type="text"
-						value={token}
+						value={oneTimeCode}
 						onChange={(e) => {
-							setToken(e.target.value)
+							setOneTimeCode(e.target.value)
 						}}
 						placeholder="Verification code"
 						autoComplete="one-time-code"

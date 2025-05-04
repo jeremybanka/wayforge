@@ -16,7 +16,7 @@ export default defineConfig((async ({ mode }) => {
 		build: { outDir: `app` },
 		css: { preprocessorOptions: { scss: { api: `modern-compiler` } } },
 		server: {
-			port: 3099,
+			port: 3333,
 			...(httpsDev ? { https: httpsDev } : undefined),
 		},
 		test: {
@@ -29,7 +29,7 @@ export default defineConfig((async ({ mode }) => {
 
 	const hostOverride = env[`VITE_DEV_FRONTEND_HOST`]
 	if (hostOverride && config.server) {
-		config.server.host = hostOverride
+		config.server.host = `0.0.0.0`
 		config.server.hmr = { host: hostOverride }
 	}
 

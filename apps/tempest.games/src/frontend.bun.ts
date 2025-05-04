@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 
-import { join, normalize, resolve } from "node:path"
+import path, { join, normalize, resolve } from "node:path"
 
 import { type } from "arktype"
 import { discoverType } from "atom.io/introspection"
@@ -102,7 +102,10 @@ parentSocket.on(`timeToStop`, () => {
 	gracefulExit()
 })
 
+const { version } = await Bun.file(
+	path.resolve(import.meta.dir, `../package.json`),
+).json()
 logger.info(
-	`🛫 frontend server running at http://localhost:${env.FRONTEND_PORT}/`,
+	`🛫 frontend v${version} running at http://localhost:${env.FRONTEND_PORT}/`,
 )
 parentSocket.emit(`alive`)

@@ -81,6 +81,8 @@ export const accountActions = pgTable(`accountActions`, {
 })
 
 export type AccountAction = typeof accountActions.$inferSelect
+export type AccountActionType = AccountAction[`action`]
+export type AccountActionTypeActual = Exclude<AccountActionType, `cooldown`>
 export type AccountActionInsert = typeof accountActions.$inferInsert
 export type AccountActionUpdate = Partial<AccountActionInsert>
 
