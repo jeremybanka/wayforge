@@ -157,7 +157,7 @@ export const appRouter = trpc.router({
 						message: `${attemptsRemaining} attempts remaining.`,
 					})
 				}
-				const sessionKey = createSession(username, ctx.now)
+				const sessionKey = createSession(userId, ctx.now)
 				successful = true
 				ctx.logger.info(`🔑 sign in successful as`, username)
 				return {
@@ -183,9 +183,18 @@ export const appRouter = trpc.router({
 
 	closeSession: trpc.procedure
 		.input(type({ username: `string`, sessionKey: `string` }))
-		.mutation(({ input }) => {
+		.mutation(async ({ input, ctx }) => {
 			const { username, sessionKey } = input
-			const sessionMap = userSessionMap.get(username)
+			const user = await ctx.db.drizzle.query.users.findFirst({
+				where: eq(users.username, username),
+			})
+			if (!user) {
+				throw new TRPCError({
+					code: `BAD_REQUEST`,
+					message: `User not found.`,
+				})
+			}
+			const sessionMap = userSessionMap.get(user.id)
 			if (!sessionMap) {
 				throw new TRPCError({
 					code: `BAD_REQUEST`,
@@ -313,7 +322,7 @@ export const appRouter = trpc.router({
 				.delete(accountActions)
 				.where(eq(accountActions.userId, user.id))
 			const { username } = user
-			const sessionKey = createSession(username, ctx.now)
+			const sessionKey = createSession(user.id, ctx.now)
 			return {
 				email,
 				username,
@@ -347,7 +356,7 @@ export const appRouter = trpc.router({
 				})
 			}
 
-			const userSessions = userSessionMap.get(username)
+			const userSessions = userSessionMap.get(user.id)
 
 			if (!userSessions) {
 				throw new TRPCError({

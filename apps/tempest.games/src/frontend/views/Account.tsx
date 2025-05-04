@@ -14,17 +14,20 @@ import {
 	password1InputAtom,
 	password1IssuesSelector,
 	signUpReadySelector,
+	socket,
 	usernameInputAtom,
 	usernameIssuesSelector,
 } from "../services/socket-auth-service"
+import { trpc } from "../services/trpc-client-service"
 
 export function Account(): React.ReactNode {
-	const auth = useO(authAtom)
-	const token = useO(oneTimeCodeInputAtom)
 	const setUsername = useI(usernameInputAtom)
 	const setPassword0 = useI(password0InputAtom)
 	const setPassword1 = useI(password1InputAtom)
 	const setEmail = useI(emailInputAtom)
+
+	const auth = useO(authAtom)
+	const token = useO(oneTimeCodeInputAtom)
 	const username = useO(usernameInputAtom)
 	const password0 = useO(password0InputAtom)
 	const password1 = useO(password1InputAtom)
@@ -33,7 +36,6 @@ export function Account(): React.ReactNode {
 	const password0Issues = useO(password0IssuesSelector)
 	const password1Issues = useO(password1IssuesSelector)
 	const emailIssues = useO(emailIssuesSelector)
-	const signUpReady = useO(signUpReadySelector)
 	const usernameIsTaken = useO(isUsernameTakenQuerySelector)
 
 	console.log(`usernameIsTaken`, usernameIsTaken)
@@ -43,10 +45,13 @@ export function Account(): React.ReactNode {
 		`email` | `password` | `username` | null
 	>(null)
 	const [error, setError] = React.useState<string | null>(null)
+	const [buttonBlockActive, setButtonBlockActive] = React.useState(false)
 
 	const usernameRef = React.useRef<HTMLInputElement>(null)
 	const emailRef = React.useRef<HTMLInputElement>(null)
 	const passwordRef = React.useRef<HTMLInputElement>(null)
+
+	console.log(`isEditing`, isEditing)
 
 	React.useEffect(() => {
 		switch (isEditing) {
@@ -79,6 +84,13 @@ export function Account(): React.ReactNode {
 			<form
 				onSubmit={(e) => {
 					e.preventDefault()
+					if (buttonBlockActive) {
+						setButtonBlockActive(false)
+						return
+					}
+					console.log(`submitted! changing username to`, username)
+					socket.emit(`changeUsername`, username)
+					setEditing(null)
 				}}
 			>
 				{isEditing === `username` ? (
@@ -93,7 +105,7 @@ export function Account(): React.ReactNode {
 				) : null}
 				<main>
 					<label htmlFor="username">
-						{username && (usernameIssues || usernameIsTaken) ? (
+						{username && (usernameIssues || usernameIsTaken === true) ? (
 							<aside>
 								{usernameIsTaken === true ? (
 									<span>This username is taken.</span>
@@ -125,8 +137,12 @@ export function Account(): React.ReactNode {
 				) : (
 					<button
 						type="button"
-						onClick={() => {
+						onMouseDown={() => {
+							setButtonBlockActive(true)
 							setEditing(`username`)
+						}}
+						onMouseUp={() => {
+							setButtonBlockActive(false)
 						}}
 					>
 						/

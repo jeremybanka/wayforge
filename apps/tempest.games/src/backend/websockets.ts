@@ -8,7 +8,6 @@ import {
 } from "atom.io/internal"
 import type { SocketKey, UserKey } from "atom.io/realtime-server"
 import {
-	prepareToExposeRealtimeContinuity,
 	socketAtoms,
 	socketIndex,
 	userIndex,
@@ -18,10 +17,20 @@ import { eq } from "drizzle-orm"
 import type { DefaultEventsMap, ExtendedError, Socket } from "socket.io"
 
 import { users } from "../database/tempest-db-schema"
-import { countContinuity } from "../library/store"
+import type {
+	TempestSocketDown,
+	TempestSocketServerSide,
+	TempestSocketUp,
+} from "../library/socket-interface"
 import { db } from "./db"
 import { logger } from "./logger"
 import { userSessionMap } from "./user-sessions"
+
+export type TempestServerSocket = Socket<
+	TempestSocketUp,
+	TempestSocketDown,
+	TempestSocketServerSide
+>
 
 export interface EventsMap {
 	[event: string]: any
@@ -55,10 +64,10 @@ export const sessionMiddleware: SocketServerMiddleware = async (
 		next(new Error(`Email not verified`))
 		return
 	}
-	const userKey = `user::${username}` satisfies UserKey
+	const userKey = `user::${user.id}` satisfies UserKey
 	const socketKey = `socket::${socket.id}` satisfies SocketKey
 
-	const userSessions = userSessionMap.get(username)
+	const userSessions = userSessionMap.get(user.id)
 	if (userSessions?.has(sessionKey)) {
 		const socketState = findInStore(IMPLICIT.STORE, socketAtoms, socketKey)
 		setIntoStore(IMPLICIT.STORE, socketState, socket)
@@ -79,15 +88,33 @@ export const sessionMiddleware: SocketServerMiddleware = async (
 	}
 }
 
-export const serveSocket = (socket: Socket): void => {
-	const syncContinuity = prepareToExposeRealtimeContinuity({
-		socket,
-		store: IMPLICIT.STORE,
+export const serveSocket = (socket: TempestServerSocket): void => {
+	// const syncContinuity = prepareToExposeRealtimeContinuity({
+	// 	socket,
+	// 	store: IMPLICIT.STORE,
+	// })
+	// const cleanup = syncContinuity(countContinuity)
+	const socketKey = `socket::${socket.id}` satisfies SocketKey
+	const userOfSocketSelector = findRelationsInStore(
+		usersOfSockets,
+		socketKey,
+		IMPLICIT.STORE,
+	).userKeyOfSocket
+	const userKeyOfSocket = getFromStore(IMPLICIT.STORE, userOfSocketSelector)
+	const rawUserId = userKeyOfSocket?.replace(/^user::/, ``)
+
+	socket.on(`changeUsername`, async (username) => {
+		logger.info(`changing username to`, username)
+		if (rawUserId) {
+			await db.drizzle
+				.update(users)
+				.set({ username })
+				.where(eq(users.id, rawUserId))
+			socket.emit(`usernameChanged`, username)
+		}
 	})
-	const cleanup = syncContinuity(countContinuity)
 
 	socket.on(`disconnect`, () => {
-		const socketKey = `socket::${socket.id}` satisfies SocketKey
 		const userKeyState = findRelationsInStore(
 			usersOfSockets,
 			socketKey,
@@ -114,6 +141,6 @@ export const serveSocket = (socket: Socket): void => {
 			(index) => (index.delete(socketKey), index),
 		)
 		logger.info(`${socket.id} disconnected`)
-		cleanup()
+		// cleanup()
 	})
 }

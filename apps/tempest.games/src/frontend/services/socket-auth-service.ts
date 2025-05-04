@@ -2,7 +2,7 @@ import type { ArkErrors } from "arktype"
 import { type } from "arktype"
 import type { Loadable } from "atom.io"
 import { atom, getState, selector, setState, subscribe } from "atom.io"
-import { io } from "socket.io-client"
+import { io, Socket } from "socket.io-client"
 
 import {
 	emailType,
@@ -11,22 +11,33 @@ import {
 } from "../../library/data-constraints.ts"
 import { env } from "../../library/env.ts"
 import { trpc } from "./trpc-client-service.ts"
+import {
+	TempestSocketDown,
+	TempestSocketUp,
+} from "../../library/socket-interface.ts"
 
-export const socket = io(env.VITE_BACKEND_ORIGIN, {
-	auth: (pass) => {
-		const auth = getState(authAtom)
-		if (auth) {
-			pass(auth)
-		}
+export const socket: Socket<TempestSocketDown, TempestSocketUp> = io(
+	env.VITE_BACKEND_ORIGIN,
+	{
+		auth: (pass) => {
+			const auth = getState(authAtom)
+			if (auth) {
+				pass(auth)
+			}
+		},
+		autoConnect: false,
 	},
-	autoConnect: false,
-})
+)
+socket
 	.on(`connect`, () => {
 		console.log(`connected`)
 	})
 	.on(`connect_error`, () => {
 		console.log(`connect_error`)
 		setState(authAtom, null)
+	})
+	.on(`usernameChanged`, (username) => {
+		setState(authAtom, (auth) => (auth === null ? null : { ...auth, username }))
 	})
 
 export const authAtom = atom<{

@@ -4,7 +4,6 @@ import { useI, useO } from "atom.io/react"
 import { motion } from "motion/react"
 import * as React from "react"
 
-import { Anchor } from "../Anchor"
 import { navigate } from "../services/router-service"
 import {
 	authAtom,
