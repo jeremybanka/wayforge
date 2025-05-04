@@ -10,6 +10,7 @@ export const OPTIONS = {
 	sourcemap: true,
 	treeshake: true,
 	tsconfig: `tsconfig.json`,
+	external: [/^atom\.io/, `safedeposit`],
 } satisfies Options
 
 export default defineConfig(OPTIONS)

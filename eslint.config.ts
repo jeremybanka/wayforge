@@ -11,7 +11,7 @@ import AtomIOPlugin from "./packages/atom.io/dist/eslint-plugin"
 const ERROR = 2
 
 const parserOptions = {
-	project: [`./tsconfig.json`, `__scripts__/tsconfig.json`],
+	project: [`./tsconfig.json`],
 	sourceType: `module`,
 } satisfies parser.ParserOptions
 
@@ -70,7 +70,7 @@ const commonRules = {
 	"@typescript-eslint/no-for-in-array": ERROR,
 	"@typescript-eslint/no-implied-eval": ERROR,
 	"@typescript-eslint/no-import-type-side-effects": ERROR,
-	"@typescript-eslint/no-inferrable-types": ERROR,
+	"@typescript-eslint/no-inferrable-types": 0, // not compatible with isolatedDeclarations
 	"@typescript-eslint/no-invalid-void-type": 0, // void is good in unions sometimes?
 	"@typescript-eslint/no-loop-func": 0,
 	"@typescript-eslint/no-loss-of-precision": ERROR,

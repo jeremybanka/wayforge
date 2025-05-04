@@ -1,7 +1,7 @@
-import type { Options } from "tsdown"
+import type { Options, UserConfig } from "tsdown"
 import { defineConfig } from "tsdown"
 
-export const OPTIONS = {
+const config: UserConfig = defineConfig({
 	clean: true,
 	dts: true,
 	entry: [`src/safedeposit.ts`],
@@ -11,6 +11,6 @@ export const OPTIONS = {
 	sourcemap: true,
 	treeshake: true,
 	tsconfig: `tsconfig.json`,
-} satisfies Options
+} satisfies Options)
 
-export default defineConfig(OPTIONS)
+export default config

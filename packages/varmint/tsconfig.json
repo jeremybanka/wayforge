@@ -9,6 +9,9 @@
 		"src"
 	],
 	"compilerOptions": {
+		"allowJs": false,
+		"declaration": true,
+		"isolatedDeclarations": true,
 		"types": ["vite/client", "vitest/globals"],
 		"target": "ES2022"
 	}

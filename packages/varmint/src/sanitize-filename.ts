@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto"
 
-export const filenameAllowList = /[^a-zA-Z0-9\-._]/g
+export const filenameAllowList: RegExp = /[^a-zA-Z0-9\-._]/g
 
 export function sanitizeFilename(filename: string, maxLen = 64): string {
 	if (maxLen % 2 === 1) {

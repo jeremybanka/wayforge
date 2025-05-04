@@ -29,8 +29,8 @@ export type Ferreted<F extends StreamFunc> = {
 }
 
 export class Ferret {
-	public filenameCache = new Map<string, string>()
-	public filesTouched = new Map<string, Set<string>>()
+	public filenameCache: Map<string, string> = new Map()
+	public filesTouched: Map<string, Set<string>> = new Map()
 	public mode: CacheMode
 	public baseDir: string
 	public rootName: string
