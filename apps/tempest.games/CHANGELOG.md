@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.2.4
+
+### Patch Changes
+
+- caef7de: ✨ Add new, fast authentication flow centered on one-time-passwords.
+
 ## 0.2.3
 
 ### Patch Changes
