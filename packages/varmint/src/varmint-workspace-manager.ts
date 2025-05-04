@@ -15,10 +15,10 @@ const CACHE_FOLDER = resolve(GLOBAL_CACHE_FOLDER, PROJECT_IDENTIFIER)
 
 export const SPECIAL_BREAK_SEQ = `_-$-_-$-_`
 export type SpecialBreakSequence = typeof SPECIAL_BREAK_SEQ
-export const FILE_TAG = `file${SPECIAL_BREAK_SEQ}`
-export const LIST_TAG = `list${SPECIAL_BREAK_SEQ}`
-export const ROOT_TAG = `root${SPECIAL_BREAK_SEQ}`
-export const UNMATCHED_TAG = `unmatched${SPECIAL_BREAK_SEQ}`
+export const FILE_TAG: `file${SpecialBreakSequence}` = `file${SPECIAL_BREAK_SEQ}`
+export const LIST_TAG: `list${SpecialBreakSequence}` = `list${SPECIAL_BREAK_SEQ}`
+export const ROOT_TAG: `root${SpecialBreakSequence}` = `root${SPECIAL_BREAK_SEQ}`
+export const UNMATCHED_TAG: `unmatched${SpecialBreakSequence}` = `unmatched${SPECIAL_BREAK_SEQ}`
 export type FileTag = typeof FILE_TAG
 export type ListTag = typeof LIST_TAG
 export type RootTag = typeof ROOT_TAG
@@ -42,7 +42,13 @@ export type VarmintFileSystemState = FilesTouched &
 		DID_CACHE_MISS: `true`
 	}
 
-export const varmintWorkspaceManager = {
+export type VarmintWorkspaceManager = {
+	storage: FilesystemStorage<VarmintFileSystemState>
+	startGlobalTracking(): void
+	prepareUploads(ciFlag: string): Promise<void>
+	endGlobalTrackingAndFlushUnusedFiles(): void
+}
+export const varmintWorkspaceManager: VarmintWorkspaceManager = {
 	storage: new FilesystemStorage<VarmintFileSystemState>({
 		path: CACHE_FOLDER,
 		eagerInit: false,
