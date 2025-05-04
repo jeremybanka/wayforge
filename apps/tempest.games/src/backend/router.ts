@@ -23,7 +23,7 @@ import { sendEmailToConfirmAccountAction } from "./email"
 // import { resend } from "./email"
 import type { logger } from "./logger"
 import { decryptId, encryptId } from "./secrecy"
-import { createSession, userSessionMap } from "./user-sessions"
+import { createSession, userSessions } from "./user-sessions"
 
 function simpleFormatMs(ms: number): string {
 	const seconds = Math.floor(ms / 1000)
@@ -191,21 +191,14 @@ export const appRouter = trpc.router({
 					message: `User not found.`,
 				})
 			}
-			const sessionMap = userSessionMap.get(user.id)
-			if (!sessionMap) {
-				throw new TRPCError({
-					code: `BAD_REQUEST`,
-					message: `Session not found.`,
-				})
-			}
-			const sessionKeyIsValid = sessionMap.has(sessionKey)
+			const sessionKeyIsValid = userSessions.has(user.id, sessionKey)
 			if (!sessionKeyIsValid) {
 				throw new TRPCError({
 					code: `BAD_REQUEST`,
 					message: `Session not found.`,
 				})
 			}
-			sessionMap.delete(sessionKey)
+			userSessions.delete(sessionKey)
 		}),
 
 	verifyAccountAction: trpc.procedure
@@ -353,15 +346,7 @@ export const appRouter = trpc.router({
 				})
 			}
 
-			const userSessions = userSessionMap.get(user.id)
-
-			if (!userSessions) {
-				throw new TRPCError({
-					code: `BAD_REQUEST`,
-					message: `Session not found.`,
-				})
-			}
-			if (!userSessions.has(sessionKey)) {
+			if (!userSessions.has(user.id, sessionKey)) {
 				throw new TRPCError({
 					code: `BAD_REQUEST`,
 					message: `Session not found.`,

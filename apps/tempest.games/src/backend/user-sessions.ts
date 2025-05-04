@@ -1,27 +1,38 @@
 import { CronJob } from "cron"
 
 import { logger } from "./logger"
+import { Junction } from "atom.io/internal"
 
 const ONE_WEEK_MS = 1000 * 60 * 60 * 24 * 7
 
 declare global {
-	var __userSessionMap: Map<string, Map<string, number>>
+	var __sessionData: SessionData
 }
 
-export const userSessionMap: Map<string, Map<string, number>> = (() => {
-	let { __userSessionMap } = globalThis as any
-	if (!__userSessionMap) {
-		__userSessionMap = globalThis.__userSessionMap = new Map()
+export type UserSessions = Junction<`user`, string, `session`, string>
+export type SessionData = [
+	sessionCreatedTimes: Map<string, number>,
+	userSessions: UserSessions,
+]
+export const [sessionCreatedTimes, userSessions]: SessionData = (() => {
+	let { __sessionData } = global
+	if (!__sessionData) {
+		__sessionData = global.__sessionData = [
+			new Map(),
+			new Junction({
+				between: [`user`, `session`],
+				cardinality: `1:n`,
+			}),
+		]
+		const [sessionCreatedTimes, userSessions] = __sessionData
 		const autoExpiry = new CronJob(`00 00 03 * * *`, () => {
-			for (const [userId, sessions] of __userSessionMap.entries()) {
-				const now = Date.now()
-				for (const [sessionId, sessionCreatedAt] of sessions.entries()) {
-					if (now - sessionCreatedAt > ONE_WEEK_MS) {
-						sessions.delete(sessionId)
-					}
-				}
-				if (sessions.size === 0) {
-					__userSessionMap.delete(userId)
+			const now = Date.now()
+			for (const [
+				sessionId,
+				sessionCreatedAt,
+			] of sessionCreatedTimes.entries()) {
+				if (now - sessionCreatedAt > ONE_WEEK_MS) {
+					userSessions.delete(sessionId)
 				}
 			}
 		})
@@ -31,16 +42,12 @@ export const userSessionMap: Map<string, Map<string, number>> = (() => {
 			logger.info(`🛬 autoExpiry stopped`)
 		})
 	}
-	return __userSessionMap
+	return __sessionData
 })()
 
 export function createSession(userId: string, now: Date): string {
 	const sessionKey = crypto.randomUUID()
-	let userSessions = userSessionMap.get(userId)
-	if (!userSessions) {
-		userSessions = new Map()
-		userSessionMap.set(userId, userSessions)
-	}
-	userSessions.set(sessionKey, +now)
+	sessionCreatedTimes.set(sessionKey, +now)
+	userSessions.set(userId, sessionKey)
 	return sessionKey
 }
