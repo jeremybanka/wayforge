@@ -1,13 +1,14 @@
 import type { RequestListener } from "node:http"
+import path from "node:path"
 
 import { initTRPC, TRPCError } from "@trpc/server"
-import { Type, type } from "arktype"
-import { and, eq, gt } from "drizzle-orm"
+import { type } from "arktype"
+import { and, eq, gt, isNull } from "drizzle-orm"
 
 import { CompleteAccountAction } from "../../emails/CompleteAccountAction"
 import type { DatabaseManager } from "../database/tempest-db-manager"
 import type {
-	AccountAction,
+	AccountActionTypeActual,
 	AccountActionUpdate,
 } from "../database/tempest-db-schema"
 import {
@@ -16,11 +17,15 @@ import {
 	signInHistory,
 	users,
 } from "../database/tempest-db-schema"
-import { credentialsType, signUpType } from "../library/data-constraints"
+import { credentialsType } from "../library/data-constraints"
 import { env } from "../library/env"
-import { genAccountActionToken as genAccountActionCode } from "./account-actions"
+import {
+	genAccountActionCode,
+	prettyPrintAccountAction,
+} from "./account-actions"
 import { resend } from "./email"
 import type { logger } from "./logger"
+import { decryptId, encryptId } from "./secrecy"
 import { createSession, userSessionMap } from "./user-sessions"
 
 function simpleFormatMs(ms: number): string {
@@ -58,6 +63,7 @@ interface Context {
 }
 
 interface SignInResponse {
+	email: string
 	username: string
 	password: boolean
 	sessionKey: string
@@ -65,71 +71,39 @@ interface SignInResponse {
 }
 
 interface VerifyAccountActionResponse extends SignInResponse {
-	action: Exclude<AccountAction[`action`], `cooldown`>
+	action: AccountActionTypeActual
 }
 
 export const trpc = initTRPC.context<Context>().create()
 
 export type AppRouter = typeof appRouter
 export const appRouter = trpc.router({
-	signUp: trpc.procedure.input(signUpType).mutation(async ({ input, ctx }) => {
-		const { username, password, email } = input
-		ctx.logger.info(`🔑 attempting to sign up:`, username)
-		const maybeUser = await ctx.db.drizzle.query.users.findFirst({
-			columns: { id: true },
-			where: eq(users.emailVerified, email),
+	version: trpc.procedure.query(async () => {
+		const relative = env.RUN_WORKERS_FROM_SOURCE ? `../..` : `..`
+		const { version } = await Bun.file(
+			path.resolve(import.meta.dir, relative, `package.json`),
+		).json()
+		const changelog = await Bun.file(
+			path.resolve(import.meta.dir, relative, `CHANGELOG.md`),
+		).text()
+		const resType = type({
+			version: `string`,
+			changelog: `string`,
 		})
-		if (maybeUser) {
+		const versionData = resType({ version, changelog })
+		if (versionData instanceof type.errors) {
 			throw new TRPCError({
-				code: `BAD_REQUEST`,
-				message: `This email was already verified on another account.`,
+				code: `INTERNAL_SERVER_ERROR`,
+				message: `Failed to parse version data.`,
 			})
 		}
-		const passwordHash = await Bun.password.hash(password, {
-			algorithm: `bcrypt`,
-			cost: 10,
-		})
-		const [user] = await ctx.db.drizzle
-			.insert(users)
-			.values({
-				username,
-				emailOffered: email,
-				password: passwordHash,
-				createdIp: ctx.ip,
-			})
-			.returning()
-		ctx.logger.info(`🔑 user created:`, username)
-		const accountActionCode = genAccountActionCode()
-		const encryptedCode = await Bun.password.hash(accountActionCode, {
-			algorithm: `bcrypt`,
-			cost: 10,
-		})
-
-		await ctx.db.drizzle.insert(accountActions).values({
-			action: `confirmEmail`,
-			userId: user.id,
-			code: encryptedCode,
-			expiresAt: new Date(+ctx.now + 1000 * 60 * 15),
-		})
-
-		await resend.emails.send({
-			from: `Tempest Games <noreply@tempest.games>`,
-			to: email,
-			subject: `Confirm your email address`,
-			react: (
-				<CompleteAccountAction
-					action="confirmEmail"
-					validationCode={accountActionCode}
-					baseUrl={env.FRONTEND_ORIGINS[0]}
-				/>
-			),
-		})
+		return versionData
 	}),
 
-	signIn: trpc.procedure
+	openSession: trpc.procedure
 		.input(credentialsType)
 		.mutation(async ({ input, ctx }): Promise<SignInResponse> => {
-			const { username, password } = input
+			const { email: username, password } = input
 			let successful = false
 			let userId: string | null = null
 			try {
@@ -183,10 +157,11 @@ export const appRouter = trpc.router({
 						message: `${attemptsRemaining} attempts remaining.`,
 					})
 				}
-				const sessionKey = createSession(username, ctx.now)
+				const sessionKey = createSession(userId, ctx.now)
 				successful = true
 				ctx.logger.info(`🔑 sign in successful as`, username)
 				return {
+					email: user.emailVerified ?? ``,
 					username,
 					password: Boolean(user.password),
 					sessionKey,
@@ -206,11 +181,20 @@ export const appRouter = trpc.router({
 			}
 		}),
 
-	signOut: trpc.procedure
+	closeSession: trpc.procedure
 		.input(type({ username: `string`, sessionKey: `string` }))
-		.mutation(({ input }) => {
+		.mutation(async ({ input, ctx }) => {
 			const { username, sessionKey } = input
-			const sessionMap = userSessionMap.get(username)
+			const user = await ctx.db.drizzle.query.users.findFirst({
+				where: eq(users.username, username),
+			})
+			if (!user) {
+				throw new TRPCError({
+					code: `BAD_REQUEST`,
+					message: `User not found.`,
+				})
+			}
+			const sessionMap = userSessionMap.get(user.id)
 			if (!sessionMap) {
 				throw new TRPCError({
 					code: `BAD_REQUEST`,
@@ -228,19 +212,21 @@ export const appRouter = trpc.router({
 		}),
 
 	verifyAccountAction: trpc.procedure
-		.input(type({ token: `string`, username: `string` }))
+		.input(type({ oneTimeCode: `string`, userKey: `string`, "+": `delete` }))
 		.mutation(async ({ input, ctx }): Promise<VerifyAccountActionResponse> => {
-			const { token, username } = input
-			ctx.logger.info(`🔑 verifying account action token:`, token)
+			const { oneTimeCode, userKey } = input
+			ctx.logger.info(`🔑 verifying account action token:`, oneTimeCode)
 
+			const userId = decryptId(userKey)
 			const user = await ctx.db.drizzle.query.users.findFirst({
 				columns: {
 					id: true,
 					emailOffered: true,
 					emailVerified: true,
+					username: true,
 					password: true,
 				},
-				where: eq(users.username, username),
+				where: eq(users.id, userId),
 			})
 
 			if (!user) {
@@ -277,7 +263,10 @@ export const appRouter = trpc.router({
 				})
 			}
 
-			const tokenIsCorrect = await Bun.password.verify(token, accountAction.code)
+			const tokenIsCorrect = await Bun.password.verify(
+				oneTimeCode,
+				accountAction.code,
+			)
 
 			if (!tokenIsCorrect) {
 				ctx.logger.info(`🔑❌ account action token is incorrect`)
@@ -303,6 +292,7 @@ export const appRouter = trpc.router({
 				})
 			}
 
+			let email = user.emailVerified ?? user.emailOffered
 			let password = Boolean(user.password)
 			let verification = user.emailVerified
 				? (`verified` as const)
@@ -316,6 +306,7 @@ export const appRouter = trpc.router({
 						.update(users)
 						.set({ emailVerified: user.emailOffered })
 						.where(eq(users.id, user.id))
+					email = user.emailOffered
 					verification = `verified`
 					break
 				}
@@ -330,8 +321,10 @@ export const appRouter = trpc.router({
 			await ctx.db.drizzle
 				.delete(accountActions)
 				.where(eq(accountActions.userId, user.id))
-			const sessionKey = createSession(username, ctx.now)
+			const { username } = user
+			const sessionKey = createSession(user.id, ctx.now)
 			return {
+				email,
 				username,
 				password,
 				sessionKey,
@@ -355,14 +348,15 @@ export const appRouter = trpc.router({
 					message: `User not found.`,
 				})
 			}
-			if (!user.emailVerified) {
+			const { emailVerified } = user
+			if (!emailVerified) {
 				throw new TRPCError({
 					code: `BAD_REQUEST`,
 					message: `Please verify your email address before resetting your password.`,
 				})
 			}
 
-			const userSessions = userSessionMap.get(username)
+			const userSessions = userSessionMap.get(user.id)
 
 			if (!userSessions) {
 				throw new TRPCError({
@@ -399,6 +393,7 @@ export const appRouter = trpc.router({
 				algorithm: `bcrypt`,
 				cost: 10,
 			})
+
 			await ctx.db.drizzle.insert(accountActions).values({
 				action: `resetPassword`,
 				userId: user.id,
@@ -408,10 +403,11 @@ export const appRouter = trpc.router({
 
 			await resend.emails.send({
 				from: `Tempest Games <noreply@tempest.games>`,
-				to: user.emailVerified,
+				to: emailVerified,
 				subject: `Reset your password`,
 				react: (
 					<CompleteAccountAction
+						username={username}
 						action="resetPassword"
 						validationCode={passwordResetCode}
 						baseUrl={env.FRONTEND_ORIGINS[0]}
@@ -420,10 +416,193 @@ export const appRouter = trpc.router({
 			})
 
 			return {
+				email: emailVerified,
 				username,
 				password: false,
 				sessionKey,
 				verification: `verified`,
 			}
 		}),
+
+	isUsernameTaken: trpc.procedure
+		.input(type({ username: `string` }))
+		.query(async ({ input, ctx }): Promise<boolean> => {
+			const { username } = input
+			const maybeUser = await ctx.db.drizzle.query.users.findFirst({
+				columns: { id: true },
+				where: eq(users.username, username),
+			})
+			return Boolean(maybeUser)
+		}),
+
+	authStage1: trpc.procedure
+		.input(type({ email: `string`, "+": `delete` }))
+		.query(async ({ input, ctx }): Promise<AuthStage1Response> => {
+			const { email } = input
+			ctx.logger.info(`🔑 authStage1:`, email)
+			const maybeVerifiedUser = await ctx.db.drizzle.query.users.findFirst({
+				columns: { id: true, password: true, username: true },
+				where: eq(users.emailVerified, email),
+			})
+			if (!maybeVerifiedUser) {
+				ctx.logger.info(`🔑 no verified account with email:`, email)
+				const maybeUnverifiedUser = await ctx.db.drizzle.query.users.findFirst({
+					columns: { id: true, username: true },
+					where: and(eq(users.emailOffered, email), isNull(users.emailVerified)),
+				})
+				if (!maybeUnverifiedUser) {
+					ctx.logger.info(`🔑 no account with email:`, email)
+					const [newUser] = await ctx.db.drizzle
+						.insert(users)
+						.values({
+							emailOffered: email,
+							password: null,
+							createdIp: ctx.ip,
+							username: Math.random().toString(36).slice(2),
+						})
+						.returning()
+					ctx.logger.info(`🔑 user created:`, email)
+					const newUserKey = encryptId(newUser.id)
+					await initiateAccountAction({
+						email,
+						username: newUser.username,
+						userId: newUser.id,
+						action: `confirmEmail`,
+						ctx,
+					})
+					return {
+						nextStep: `otp_verify`,
+						userKey: newUserKey,
+					}
+				}
+				const unverifiedUser = maybeUnverifiedUser
+				const unverifiedUserKey = encryptId(unverifiedUser.id)
+				await initiateAccountAction({
+					email,
+					username: unverifiedUser.username,
+					userId: unverifiedUser.id,
+					action: `confirmEmail`,
+					ctx,
+				})
+
+				return {
+					nextStep: `otp_verify`,
+					userKey: unverifiedUserKey,
+				}
+			}
+			const verifiedUser = maybeVerifiedUser
+			const verifiedUserKey = encryptId(verifiedUser.id)
+			const { password } = verifiedUser
+			if (!password) {
+				ctx.logger.info(
+					`🔑 account with email:`,
+					email,
+					`is verified but has no password`,
+				)
+				await initiateAccountAction({
+					email,
+					username: verifiedUser.username,
+					userId: verifiedUser.id,
+					action: `signIn`,
+					ctx,
+				})
+				return {
+					nextStep: `otp_login`,
+					userKey: verifiedUserKey,
+				}
+			}
+			return {
+				nextStep: `password_login`,
+				userKey: verifiedUserKey,
+			}
+		}),
 })
+
+export type AuthStage1Response = {
+	nextStep: `otp_login` | `otp_verify` | `password_login`
+	userKey: string
+}
+
+async function initiateAccountAction(arg: {
+	email: string
+	username: string
+	userId: string
+	action: AccountActionTypeActual
+	ctx: Context
+}): Promise<void> {
+	const { email, username, userId, action, ctx } = arg
+	const maybeExistingAccountAction =
+		await ctx.db.drizzle.query.accountActions.findFirst({
+			columns: { action: true, expiresAt: true },
+			where: eq(accountActions.userId, userId),
+		})
+	let existingActionMayBeOverwritten = false
+	if (maybeExistingAccountAction) {
+		const { action: existingAction, expiresAt } = maybeExistingAccountAction
+		const existingActionIsExpired = expiresAt.getTime() < ctx.now.getTime()
+		if (existingActionIsExpired) {
+			existingActionMayBeOverwritten = true
+		} else if (existingAction !== `cooldown`) {
+			const actionFlow = `${existingAction} -> ${action}` as const
+			switch (actionFlow) {
+				case `confirmEmail -> resetPassword`:
+				case `confirmEmail -> signIn`:
+				case `resetPassword -> confirmEmail`:
+				case `resetPassword -> signIn`:
+				case `signIn -> resetPassword`:
+					existingActionMayBeOverwritten = true
+					break
+				case `confirmEmail -> confirmEmail`:
+				case `resetPassword -> resetPassword`:
+				case `signIn -> confirmEmail`:
+				case `signIn -> signIn`:
+					existingActionMayBeOverwritten = false
+			}
+		}
+	}
+	if (!maybeExistingAccountAction || existingActionMayBeOverwritten) {
+		const accountActionCode = genAccountActionCode()
+		const encryptedCode = await Bun.password.hash(accountActionCode, {
+			algorithm: `bcrypt`,
+			cost: 10,
+		})
+
+		ctx.logger.info({
+			encryptedCode,
+			accountActionCode,
+			doesMatch: await Bun.password.verify(accountActionCode, encryptedCode),
+		})
+
+		const expiresAt = new Date(+ctx.now + 1000 * 60 * 15)
+		await ctx.db.drizzle
+			.insert(accountActions)
+			.values({
+				userId,
+				code: encryptedCode,
+				action,
+				expiresAt,
+			})
+			.onConflictDoUpdate({
+				target: [accountActions.userId],
+				set: {
+					code: encryptedCode,
+					action,
+					expiresAt,
+				},
+			})
+
+		void resend.emails.send({
+			from: `Tempest Games <noreply@tempest.games>`,
+			to: email,
+			subject: prettyPrintAccountAction(action, username)[0],
+			react: (
+				<CompleteAccountAction
+					username={username}
+					action={action}
+					validationCode={accountActionCode}
+					baseUrl={env.FRONTEND_ORIGINS[0]}
+				/>
+			),
+		})
+	}
+}

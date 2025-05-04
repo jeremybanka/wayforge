@@ -18,14 +18,14 @@ import { RESPONSE_DICTIONARY } from "../library/response-dictionary"
 import * as svg from "./<svg>"
 import { Anchor } from "./Anchor"
 import scss from "./App.module.scss"
+import { appVersionQueryAtom } from "./services/patchnotes-service"
 import { navigate, routeSelector } from "./services/router-service"
 import { authAtom, socket } from "./services/socket-auth-service"
 import { trpc } from "./services/trpc-client-service"
 import { Account } from "./views/Account"
 import { Admin } from "./views/Admin"
 import { GameView } from "./views/Game"
-import { SignIn } from "./views/SignIn"
-import { SignUp } from "./views/SignUp"
+import { Home } from "./views/Home"
 import { Verify } from "./views/Verify"
 
 export function App(): React.ReactNode {
@@ -49,10 +49,21 @@ export function App(): React.ReactNode {
 		role,
 	])
 
+	const appVersion = useO(appVersionQueryAtom)
+
 	return (
 		<main className={scss[`class`]}>
 			<header>
-				<svg.tempest />
+				<main>
+					<svg.tempest />
+					<span>
+						v
+						{appVersion instanceof Promise
+							? `loading version`
+							: appVersion.version}
+					</span>
+				</main>
+
 				<button
 					data-css="profile"
 					ref={refs.setReference}
@@ -68,6 +79,7 @@ export function App(): React.ReactNode {
 							style={floatingStyles}
 							{...getFloatingProps()}
 						>
+							<span>{auth.username}</span>
 							<button
 								type="button"
 								onClick={() => {
@@ -80,13 +92,15 @@ export function App(): React.ReactNode {
 								type="button"
 								onClick={async () => {
 									if (!auth) return
-									await trpc.signOut.mutate({
+									await trpc.closeSession.mutate({
 										username: auth.username,
 										sessionKey: auth.sessionKey,
 									})
+									socket.once(`disconnect`, () => {
+										setState(authAtom, null)
+										navigate(`/`)
+									})
 									socket.disconnect()
-									setState(authAtom, null)
-									navigate(`/sign_in`)
 								}}
 							>
 								Sign out
@@ -100,17 +114,19 @@ export function App(): React.ReactNode {
 					<article>
 						<h1>{route}</h1>
 						<h2>{JSON.parse(RESPONSE_DICTIONARY[route])}</h2>
-						<Anchor href="/sign_in">Return to Home Page</Anchor>
+						<Anchor href="/">Return to Home Page</Anchor>
 					</article>
 				) : (
 					(() => {
 						switch (route[0]) {
+							case undefined:
+								return <Home />
 							case `admin`:
 								return <Admin />
-							case `sign_in`:
-								return <SignIn />
-							case `sign_up`:
-								return <SignUp />
+							// case `sign_in`:
+							// 	return <SignIn />
+							// case `sign_up`:
+							// 	return <SignUp />
 							case `game`:
 								return <GameView route={route} />
 							case `verify`:
