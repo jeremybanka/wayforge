@@ -28,6 +28,14 @@ jobs:
       - run: pnpm fmt
       - run: pnpm lint:biome
 
+  Dependencies:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4.2.2
+      - uses: ./.github/actions/setup
+      - run: pnpm lint:deps
+
   ESLint:
     runs-on: ubuntu-latest
     timeout-minutes: 9
