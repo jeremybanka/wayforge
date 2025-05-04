@@ -1,5 +1,11 @@
 # flightdeck
 
+## 0.2.32
+
+### Patch Changes
+
+- 6c5da6b: 🚀 Reduce bundle size by not including dependency types.
+
 ## 0.2.31
 
 ### Patch Changes
