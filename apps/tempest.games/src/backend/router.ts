@@ -1,11 +1,9 @@
-import type { RequestListener } from "node:http"
 import path from "node:path"
 
-import { initTRPC, TRPCError } from "@trpc/server"
+import { TRPCError } from "@trpc/server"
 import { type } from "arktype"
 import { and, eq, gt, isNull } from "drizzle-orm"
 
-import type { DatabaseManager } from "../database/tempest-db-manager"
 import type {
 	AccountActionTypeActual,
 	AccountActionUpdate,
@@ -19,73 +17,22 @@ import {
 import type { ClientAuthData } from "../library/data-constraints"
 import { credentialsType } from "../library/data-constraints"
 import { env } from "../library/env"
-import { genAccountActionCode, summarizeAccountAction } from "./account-actions"
+import { simpleFormatMs } from "../library/simple-format-ms"
+import { genAccountActionCode } from "./account-actions"
 import { sendEmailToConfirmAccountAction } from "./email"
-// import { resend } from "./email"
-import type { logger } from "./logger"
+import { loggedProcedure } from "./procedures"
 import { decryptId, encryptId } from "./secrecy"
+import type { Context } from "./trpc-server"
+import { trpc } from "./trpc-server"
 import {
 	createSession,
 	sessionCreatedTimes,
 	userSessions,
 } from "./user-sessions"
 
-function simpleFormatMs(ms: number): string {
-	const seconds = Math.floor(ms / 1000)
-	const minutes = Math.floor(seconds / 60)
-	const hours = Math.floor(minutes / 60)
-	const days = Math.floor(hours / 24)
-	const weeks = Math.floor(days / 7)
-	const years = Math.floor(weeks / 52)
-	if (years > 0) {
-		return `${years} year${years === 1 ? `` : `s`}, `
-	}
-	if (weeks > 0) {
-		return `${weeks} week${weeks === 1 ? `` : `s`}, `
-	}
-	if (days > 0) {
-		return `${days} day${days === 1 ? `` : `s`}, `
-	}
-	if (hours > 0) {
-		return `${hours} hour${hours === 1 ? `` : `s`}, `
-	}
-	if (minutes > 0) {
-		return `${minutes} minute${minutes === 1 ? `` : `s`}, `
-	}
-	return `${seconds} second${seconds === 1 ? `` : `s`}`
-}
-
-export type ContextAuth = { userId: string; sessionKey: string } | null
-
-export interface Context {
-	req: Parameters<RequestListener>[0]
-	res: Parameters<RequestListener>[1]
-	auth: ContextAuth
-	ip: string
-	now: Date
-	db: DatabaseManager
-	logger: typeof logger
-}
-
 interface VerifyAccountActionResponse extends ClientAuthData {
 	action: AccountActionTypeActual
 }
-
-export const trpc = initTRPC.context<Context>().create()
-
-export const loggedProcedure = trpc.procedure.use(async (opts) => {
-	const start = performance.now()
-
-	const result = await opts.next()
-
-	const durationMs = (performance.now() - start).toFixed(0)
-
-	result.ok
-		? opts.ctx.logger.info(`😃`, opts.path, `[${opts.type}]`, `${durationMs}ms`)
-		: opts.ctx.logger.error(`😭`, opts.path, `[${opts.type}]`, `${durationMs}ms`)
-
-	return result
-})
 
 export type AppRouter = typeof appRouter
 export const appRouter = trpc.router({
