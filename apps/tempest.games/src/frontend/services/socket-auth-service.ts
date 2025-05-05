@@ -74,6 +74,7 @@ export const authAtom = atom<ClientAuthData | null>({
 				console.log(`setting auth`, newValue)
 				if (newValue) {
 					console.log(`setting auth`, newValue)
+					setState(usernameInputAtom, newValue.username)
 					localStorage.setItem(`auth`, stringifyJson(newValue))
 					if (newValue.verification === `verified`) {
 						console.log(`connecting...`)
