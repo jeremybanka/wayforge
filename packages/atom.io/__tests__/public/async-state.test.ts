@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/only-throw-error */
 /* eslint-disable @typescript-eslint/require-await */
 import * as http from "node:http"
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/only-throw-error */
 import { execSync, spawn } from "node:child_process"
 import { createServer } from "node:http"
 import { homedir } from "node:os"

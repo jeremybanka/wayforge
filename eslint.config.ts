@@ -108,6 +108,7 @@ const commonRules = {
 	"@typescript-eslint/no-useless-empty-export": ERROR,
 	"@typescript-eslint/no-var-requires": ERROR,
 	"@typescript-eslint/non-nullable-type-assertion-style": 0,
+	"@typescript-eslint/only-throw-error": ERROR,
 	"@typescript-eslint/parameter-properties": 0,
 	"@typescript-eslint/prefer-as-const": ERROR,
 	"@typescript-eslint/prefer-destructuring": 0,
