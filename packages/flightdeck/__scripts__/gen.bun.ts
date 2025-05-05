@@ -39,7 +39,7 @@ const zodSchema = jsonSchemaToZod(
 
 const content = [
 	`import { z } from "zod"`,
-	`export const lnavFormatSchema = ${zodSchema.toString()}`,
+	`export const lnavFormatSchema = ${zodSchema}`,
 	`export type LnavFormat = z.infer<typeof lnavFormatSchema>`,
 ].join(`\n\n`)
 

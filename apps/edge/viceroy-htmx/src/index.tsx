@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/only-throw-error */
 import { KVStore } from "fastly:kv-store"
 import render from "preact-render-to-string"
 

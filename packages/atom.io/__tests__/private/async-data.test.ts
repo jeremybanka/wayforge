@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/only-throw-error */
 import * as http from "node:http"
 
 import * as AtomIO from "atom.io"
