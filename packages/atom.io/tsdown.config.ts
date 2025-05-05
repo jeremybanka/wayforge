@@ -1,4 +1,4 @@
-import type { UserConfig } from "tsdown"
+import type { UserConfig, UserConfigFn } from "tsdown"
 import { defineConfig } from "tsdown"
 
 import discoverSubmodules from "./__scripts__/discover-submodules.ts"
@@ -22,7 +22,7 @@ const otherEntries = fromEntries(
 
 console.log({ SUBMODULE_NAMES, otherEntries })
 
-const config: UserConfig = defineConfig({
+const config: UserConfig | UserConfigFn = defineConfig({
 	external: EXTERNAL,
 	dts: { sourcemap: true },
 	format: [`esm`],
