@@ -1,7 +1,7 @@
-import type { Options, UserConfig } from "tsdown"
+import type { Options, UserConfig, UserConfigFn } from "tsdown"
 import { defineConfig } from "tsdown"
 
-export const config: UserConfig = defineConfig({
+export const config: UserConfig | UserConfigFn = defineConfig({
 	clean: true,
 	dts: true,
 	entry: [`src/treetrunks.ts`],

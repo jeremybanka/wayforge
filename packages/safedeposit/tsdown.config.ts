@@ -1,7 +1,7 @@
-import type { Options, UserConfig } from "tsdown"
+import type { Options, UserConfig, UserConfigFn } from "tsdown"
 import { defineConfig } from "tsdown"
 
-const config: UserConfig = defineConfig({
+const config: UserConfig | UserConfigFn = defineConfig({
 	clean: true,
 	dts: true,
 	entry: [`src/safedeposit.ts`],
