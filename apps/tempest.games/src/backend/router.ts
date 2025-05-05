@@ -16,6 +16,7 @@ import {
 	signInHistory,
 	users,
 } from "../database/tempest-db-schema"
+import type { ClientAuthData } from "../library/data-constraints"
 import { credentialsType } from "../library/data-constraints"
 import { env } from "../library/env"
 import { genAccountActionCode, summarizeAccountAction } from "./account-actions"
@@ -23,7 +24,11 @@ import { sendEmailToConfirmAccountAction } from "./email"
 // import { resend } from "./email"
 import type { logger } from "./logger"
 import { decryptId, encryptId } from "./secrecy"
-import { createSession, userSessions } from "./user-sessions"
+import {
+	createSession,
+	sessionCreatedTimes,
+	userSessions,
+} from "./user-sessions"
 
 function simpleFormatMs(ms: number): string {
 	const seconds = Math.floor(ms / 1000)
@@ -50,32 +55,41 @@ function simpleFormatMs(ms: number): string {
 	return `${seconds} second${seconds === 1 ? `` : `s`}`
 }
 
-interface Context {
+export type ContextAuth = { userId: string; sessionKey: string } | null
+
+export interface Context {
 	req: Parameters<RequestListener>[0]
 	res: Parameters<RequestListener>[1]
+	auth: ContextAuth
 	ip: string
 	now: Date
 	db: DatabaseManager
 	logger: typeof logger
 }
 
-interface SignInResponse {
-	email: string
-	username: string
-	password: boolean
-	sessionKey: string
-	verification: `unverified` | `verified`
-}
-
-interface VerifyAccountActionResponse extends SignInResponse {
+interface VerifyAccountActionResponse extends ClientAuthData {
 	action: AccountActionTypeActual
 }
 
 export const trpc = initTRPC.context<Context>().create()
 
+export const loggedProcedure = trpc.procedure.use(async (opts) => {
+	const start = performance.now()
+
+	const result = await opts.next()
+
+	const durationMs = (performance.now() - start).toFixed(0)
+
+	result.ok
+		? opts.ctx.logger.info(`😃`, opts.path, `[${opts.type}]`, `${durationMs}ms`)
+		: opts.ctx.logger.error(`😭`, opts.path, `[${opts.type}]`, `${durationMs}ms`)
+
+	return result
+})
+
 export type AppRouter = typeof appRouter
 export const appRouter = trpc.router({
-	version: trpc.procedure.query(async () => {
+	version: loggedProcedure.query(async () => {
 		const relative = env.RUN_WORKERS_FROM_SOURCE ? `../..` : `..`
 		const { version } = await Bun.file(
 			path.resolve(import.meta.dir, relative, `package.json`),
@@ -97,9 +111,9 @@ export const appRouter = trpc.router({
 		return versionData
 	}),
 
-	openSession: trpc.procedure
+	openSession: loggedProcedure
 		.input(credentialsType)
-		.mutation(async ({ input, ctx }): Promise<SignInResponse> => {
+		.mutation(async ({ input, ctx }): Promise<ClientAuthData> => {
 			const { email: username, password } = input
 			let successful = false
 			let userId: string | null = null
@@ -158,6 +172,7 @@ export const appRouter = trpc.router({
 				successful = true
 				ctx.logger.info(`🔑 sign in successful as`, username)
 				return {
+					userId,
 					email: user.emailVerified ?? ``,
 					username,
 					password: Boolean(user.password),
@@ -178,30 +193,33 @@ export const appRouter = trpc.router({
 			}
 		}),
 
-	closeSession: trpc.procedure
-		.input(type({ username: `string`, sessionKey: `string` }))
-		.mutation(async ({ input, ctx }) => {
-			const { username, sessionKey } = input
-			const user = await ctx.db.drizzle.query.users.findFirst({
-				where: eq(users.username, username),
-			})
-			if (!user) {
+	closeSession: loggedProcedure
+		// .input(type({ username: `string`, sessionKey: `string` }))
+		.mutation(({ ctx }) => {
+			// const {  } = ctx.auth
+			// const user = await ctx.db.drizzle.query.users.findFirst({
+			// 	where: eq(users.username, username),
+			// })
+			if (!ctx.auth) {
 				throw new TRPCError({
 					code: `BAD_REQUEST`,
 					message: `User not found.`,
 				})
 			}
-			const sessionKeyIsValid = userSessions.has(user.id, sessionKey)
-			if (!sessionKeyIsValid) {
-				throw new TRPCError({
-					code: `BAD_REQUEST`,
-					message: `Session not found.`,
-				})
-			}
+			const { sessionKey } = ctx.auth
+			ctx.logger.info(userSessions.relations)
+			// const sessionKeyIsValid = userSessions.has(user.id, sessionKey)
+			// if (!sessionKeyIsValid) {
+			// 	throw new TRPCError({
+			// 		code: `BAD_REQUEST`,
+			// 		message: `Session not found.`,
+			// 	})
+			// }
 			userSessions.delete(sessionKey)
+			sessionCreatedTimes.delete(sessionKey)
 		}),
 
-	verifyAccountAction: trpc.procedure
+	verifyAccountAction: loggedProcedure
 		.input(type({ oneTimeCode: `string`, userKey: `string`, "+": `delete` }))
 		.mutation(async ({ input, ctx }): Promise<VerifyAccountActionResponse> => {
 			const { oneTimeCode, userKey } = input
@@ -314,6 +332,7 @@ export const appRouter = trpc.router({
 			const { username } = user
 			const sessionKey = createSession(user.id, ctx.now)
 			return {
+				userId,
 				email,
 				username,
 				password,
@@ -323,9 +342,9 @@ export const appRouter = trpc.router({
 			}
 		}),
 
-	startPasswordReset: trpc.procedure
+	startPasswordReset: loggedProcedure
 		.input(type({ sessionKey: `string`, username: `string` }))
-		.mutation(async ({ input, ctx }): Promise<SignInResponse> => {
+		.mutation(async ({ input, ctx }): Promise<ClientAuthData> => {
 			const { sessionKey, username } = input
 			ctx.logger.info(`🔑 starting password reset for`, username)
 			const user = await ctx.db.drizzle.query.users.findFirst({
@@ -392,6 +411,7 @@ export const appRouter = trpc.router({
 			})
 
 			return {
+				userId: user.id,
 				email: emailVerified,
 				username,
 				password: false,
@@ -400,7 +420,7 @@ export const appRouter = trpc.router({
 			}
 		}),
 
-	isUsernameTaken: trpc.procedure
+	isUsernameTaken: loggedProcedure
 		.input(type({ username: `string` }))
 		.query(async ({ input, ctx }): Promise<boolean> => {
 			const { username } = input
@@ -411,7 +431,7 @@ export const appRouter = trpc.router({
 			return Boolean(maybeUser)
 		}),
 
-	authStage1: trpc.procedure
+	authStage1: loggedProcedure
 		.input(type({ email: `string`, "+": `delete` }))
 		.query(async ({ input, ctx }): Promise<AuthStage1Response> => {
 			const { email } = input

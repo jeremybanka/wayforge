@@ -18,7 +18,7 @@ import {
 	usernameInputAtom,
 	usernameIssuesSelector,
 } from "../services/socket-auth-service"
-import { trpc } from "../services/trpc-client-service"
+import { trpcClient } from "../services/trpc-client-service"
 
 export function Account(): React.ReactNode {
 	const setUsername = useI(usernameInputAtom)

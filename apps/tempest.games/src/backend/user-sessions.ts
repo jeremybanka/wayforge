@@ -1,7 +1,7 @@
+import { Junction } from "atom.io/internal"
 import { CronJob } from "cron"
 
 import { logger } from "./logger"
-import { Junction } from "atom.io/internal"
 
 const ONE_WEEK_MS = 1000 * 60 * 60 * 24 * 7
 
@@ -24,15 +24,12 @@ export const [sessionCreatedTimes, userSessions]: SessionData = (() => {
 				cardinality: `1:n`,
 			}),
 		]
-		const [sessionCreatedTimes, userSessions] = __sessionData
+		const [createdTimes, sessions] = __sessionData
 		const autoExpiry = new CronJob(`00 00 03 * * *`, () => {
 			const now = Date.now()
-			for (const [
-				sessionId,
-				sessionCreatedAt,
-			] of sessionCreatedTimes.entries()) {
+			for (const [sessionId, sessionCreatedAt] of createdTimes.entries()) {
 				if (now - sessionCreatedAt > ONE_WEEK_MS) {
-					userSessions.delete(sessionId)
+					sessions.delete(sessionId)
 				}
 			}
 		})

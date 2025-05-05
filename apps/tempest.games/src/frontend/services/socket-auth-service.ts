@@ -2,10 +2,13 @@ import type { ArkErrors } from "arktype"
 import { type } from "arktype"
 import type { Loadable } from "atom.io"
 import { atom, getState, selector, setState, subscribe } from "atom.io"
+import { parseJson, stringifyJson } from "atom.io/json"
 import type { Socket } from "socket.io-client"
 import { io } from "socket.io-client"
 
+import type { ClientAuthData } from "../../library/data-constraints.ts"
 import {
+	clientAuthDataType,
 	emailType,
 	passwordType,
 	usernameType,
@@ -15,7 +18,7 @@ import type {
 	TempestSocketDown,
 	TempestSocketUp,
 } from "../../library/socket-interface.ts"
-import { trpc } from "./trpc-client-service.ts"
+import { trpcClient } from "./trpc-client-service.ts"
 
 export const socket: Socket<TempestSocketDown, TempestSocketUp> = io(
 	env.VITE_BACKEND_ORIGIN,
@@ -41,40 +44,39 @@ socket
 		setState(authAtom, (auth) => (auth === null ? null : { ...auth, username }))
 	})
 
-export const authAtom = atom<{
-	email: string
-	username: string
-	password: boolean
-	sessionKey: string
-	verification: `unverified` | `verified`
-} | null>({
+export const authAtom = atom<ClientAuthData | null>({
 	key: `auth`,
-	default: () => {
-		const email = localStorage.getItem(`email`)
-		const username = localStorage.getItem(`username`)
-		const password = localStorage.getItem(`password`) === `1`
-		const sessionKey = localStorage.getItem(`sessionKey`)
-		const verification = localStorage.getItem(`verification`)
-		if (email && username && sessionKey && verification) {
-			if (verification === `verified` || verification === `unverified`) {
-				return { email, username, password, sessionKey, verification }
+	default: function loadSavedAuth() {
+		const stored: string | null = localStorage.getItem(`auth`)
+		if (stored) {
+			try {
+				const parsed = parseJson(stored)
+				const auth = clientAuthDataType(parsed)
+				if (auth instanceof type.errors) {
+					console.error(`failed to parse auth data`, auth)
+					return null
+				}
+				if (auth.verification === `verified`) {
+					console.log(`connecting...`)
+					socket.connect()
+				}
+				return auth
+			} catch (thrown) {
+				console.error(`failed to parse auth data`, thrown)
+				return null
 			}
 		}
 		return null
 	},
 	effects: [
-		({ onSet }) => {
+		function saveAuth({ onSet }) {
 			onSet(async ({ newValue }) => {
 				console.log(`setting auth`, newValue)
 				if (newValue) {
 					console.log(`setting auth`, newValue)
-					localStorage.setItem(`email`, newValue.email)
-					localStorage.setItem(`username`, newValue.username)
-					localStorage.setItem(`password`, `${+newValue.password}`)
-					localStorage.setItem(`sessionKey`, newValue.sessionKey)
-					localStorage.setItem(`verification`, newValue.verification)
-					console.log(`connecting...`)
+					localStorage.setItem(`auth`, stringifyJson(newValue))
 					if (newValue.verification === `verified`) {
+						console.log(`connecting...`)
 						socket.connect()
 					} else {
 						await import(`./router-service.ts`).then(({ navigate }) => {
@@ -83,27 +85,15 @@ export const authAtom = atom<{
 					}
 				} else {
 					console.log(`clearing session...`)
-					localStorage.removeItem(`sessionKey`)
+					localStorage.removeItem(`auth`)
 				}
 			})
-		},
-		({ setSelf }) => {
-			const email = localStorage.getItem(`email`)
-			const username = localStorage.getItem(`username`)
-			const password = localStorage.getItem(`password`) === `1`
-			const sessionKey = localStorage.getItem(`sessionKey`)
-			const verification = localStorage.getItem(`verification`)
-			if (email && username && sessionKey && verification) {
-				if (verification === `verified` || verification === `unverified`) {
-					setSelf({ email, username, password, sessionKey, verification })
-				}
-			}
 		},
 	],
 })
 export const usernameInputAtom = atom<string>({
 	key: `username`,
-	default: window.localStorage.getItem(`username`) ?? ``,
+	default: getState(authAtom)?.username ?? ``,
 })
 export const usernameQueryReadyAtom = atom<boolean>({
 	key: `usernameDebounce`,
@@ -134,7 +124,7 @@ export const isUsernameTakenQuerySelector = selector<Loadable<boolean>>({
 		if (!username) return false
 		const auth = getState(authAtom)
 		if (username === auth?.username) return false
-		return trpc.isUsernameTaken.query({ username })
+		return trpcClient.isUsernameTaken.query({ username })
 	},
 })
 export const usernameIssuesSelector = selector<ArkErrors | null>({

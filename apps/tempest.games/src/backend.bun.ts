@@ -7,13 +7,15 @@ import { AtomIOLogger } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import cors from "cors"
 import { CronJob } from "cron"
-import { Server as WebSocketServer } from "socket.io"
+import { Server as WebSocketServer, Socket } from "socket.io"
 
 import { createServer } from "../dev/https-dev"
 import { worker } from "./backend.worker"
 import { db } from "./backend/db"
 import { logger, parentSocket } from "./backend/logger"
+import type { Context, ContextAuth } from "./backend/router"
 import { appRouter } from "./backend/router"
+import { userSessions } from "./backend/user-sessions"
 import { serveSocket, sessionMiddleware } from "./backend/websockets"
 import { env } from "./library/env"
 
@@ -35,19 +37,43 @@ export const tribunalDaily: CronJob = (() => {
 
 const gameWorker = worker(parentSocket, `backend.worker.game.bun`, logger)
 
-IMPLICIT.STORE.loggers[0] = new AtomIOLogger(`info`, undefined, logger)
+IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
+	`info`,
+	(...params) => {
+		let idx = 0
+		for (const param of params) {
+			if (param instanceof Socket) {
+				params[idx] = `Socket:${param.id}`
+			}
+			idx++
+		}
+		return params
+	},
+	logger,
+)
 
 const trpcHandler = createHTTPHandler({
 	router: appRouter,
 	middleware: cors({ origin: env.FRONTEND_ORIGINS }),
-	createContext: ({ req, res }) => ({
-		req,
-		res,
-		ip: req.socket.remoteAddress ?? ``,
-		now: new Date(),
-		db,
-		logger,
-	}),
+	createContext: ({ req, res }) => {
+		let auth: ContextAuth = null
+		if (req.headers.authorization) {
+			const [userId, sessionKey] = req.headers.authorization.split(` `)
+			if (userId && sessionKey && userSessions.has(userId, sessionKey)) {
+				auth = { userId, sessionKey }
+			}
+		}
+		const context: Context = {
+			req,
+			res,
+			auth,
+			ip: req.socket.remoteAddress ?? ``,
+			now: new Date(),
+			db,
+			logger,
+		}
+		return context
+	},
 })
 const httpServer = createServer(trpcHandler)
 const address = httpServer.listen(env.BACKEND_PORT).address()

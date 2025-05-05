@@ -6,7 +6,7 @@ import React from "react"
 
 import { navigate, type Route } from "../services/router-service"
 import { authAtom, oneTimeCodeInputAtom } from "../services/socket-auth-service"
-import { trpc } from "../services/trpc-client-service"
+import { trpcClient } from "../services/trpc-client-service"
 
 export type VerifyRoute = Extract<Route, [`verify`, ...any]>
 
@@ -46,7 +46,7 @@ export function Verify({
 			onSubmit={async (e) => {
 				e.preventDefault()
 				try {
-					const response = await trpc.verifyAccountAction.mutate({
+					const response = await trpcClient.verifyAccountAction.mutate({
 						oneTimeCode,
 						userKey: `CHANGEME`,
 					})
