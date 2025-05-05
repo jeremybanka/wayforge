@@ -36,7 +36,7 @@ export function Home(): React.ReactNode {
 					switch (currentlyEntering) {
 						case `email`: {
 							const { nextStep, userKey: newUserKey } =
-								await trpcClient.authStage1.query({
+								await trpcClient.declareAuthTarget.query({
 									email,
 								})
 							setUserKey(newUserKey)

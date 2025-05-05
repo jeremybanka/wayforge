@@ -378,7 +378,7 @@ export const appRouter = trpc.router({
 			return Boolean(maybeUser)
 		}),
 
-	authStage1: loggedProcedure
+	declareAuthTarget: loggedProcedure
 		.input(type({ email: `string`, "+": `delete` }))
 		.query(async ({ input, ctx }): Promise<AuthStage1Response> => {
 			const { email } = input
