@@ -71,7 +71,7 @@
 		"react-email": "4.0.11",
 		"resend": "4.5.1",
 		"safedeposit": "workspace:*",
-		"safegen": "0.3.2",
+		"safegen": "0.3.3",
 		"socket.io": "4.8.1",
 		"socket.io-client": "4.8.1",
 		"treetrunks": "workspace:*"
