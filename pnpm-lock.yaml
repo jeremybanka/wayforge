@@ -726,8 +726,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.11.0
-        version: 0.11.0(typescript@5.8.3)(unplugin-lightningcss@0.3.3)
+        specifier: 0.11.1
+        version: 0.11.1(typescript@5.8.3)(unplugin-lightningcss@0.3.3)
       tsx:
         specifier: 4.19.4
         version: 4.19.4
@@ -787,8 +787,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.11.0
-        version: 0.11.0(typescript@5.8.3)(unplugin-lightningcss@0.3.3)
+        specifier: 0.11.1
+        version: 0.11.1(typescript@5.8.3)(unplugin-lightningcss@0.3.3)
 
   packages/comline:
     dependencies:
@@ -818,8 +818,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.11.0
-        version: 0.11.0(typescript@5.8.3)(unplugin-lightningcss@0.3.3)
+        specifier: 0.11.1
+        version: 0.11.1(typescript@5.8.3)(unplugin-lightningcss@0.3.3)
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@22.15.14)(jiti@2.4.2)(lightningcss@1.29.3)(sass-embedded@1.87.0)(sass@1.87.0)(terser@5.39.0)(tsx@4.19.4)
@@ -885,8 +885,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.11.0
-        version: 0.11.0(typescript@5.8.3)(unplugin-lightningcss@0.3.3)
+        specifier: 0.11.1
+        version: 0.11.1(typescript@5.8.3)(unplugin-lightningcss@0.3.3)
       varmint:
         specifier: workspace:*
         version: link:../varmint
@@ -1029,8 +1029,8 @@ importers:
         specifier: 6.0.1
         version: 6.0.1
       tsdown:
-        specifier: 0.11.0
-        version: 0.11.0(typescript@5.8.3)(unplugin-lightningcss@0.3.3)
+        specifier: 0.11.1
+        version: 0.11.1(typescript@5.8.3)(unplugin-lightningcss@0.3.3)
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@22.15.14)(jiti@2.4.2)(lightningcss@1.29.3)(sass-embedded@1.87.0)(sass@1.87.0)(terser@5.39.0)(tsx@4.19.4)
@@ -1102,8 +1102,8 @@ importers:
         specifier: 9.26.0
         version: 9.26.0(jiti@2.4.2)
       tsdown:
-        specifier: 0.11.0
-        version: 0.11.0(typescript@5.8.3)(unplugin-lightningcss@0.3.3)
+        specifier: 0.11.1
+        version: 0.11.1(typescript@5.8.3)(unplugin-lightningcss@0.3.3)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -1165,8 +1165,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.11.0
-        version: 0.11.0(typescript@5.8.3)(unplugin-lightningcss@0.3.3)
+        specifier: 0.11.1
+        version: 0.11.1(typescript@5.8.3)(unplugin-lightningcss@0.3.3)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -1296,8 +1296,8 @@ importers:
         specifier: 6.0.1
         version: 6.0.1
       tsdown:
-        specifier: 0.11.0
-        version: 0.11.0(typescript@5.8.3)(unplugin-lightningcss@0.3.3)
+        specifier: 0.11.1
+        version: 0.11.1(typescript@5.8.3)(unplugin-lightningcss@0.3.3)
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@22.15.14)(jiti@2.4.2)(lightningcss@1.29.3)(sass-embedded@1.87.0)(sass@1.87.0)(terser@5.39.0)(tsx@4.19.4)
@@ -1379,8 +1379,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.11.0
-        version: 0.11.0(typescript@5.8.3)(unplugin-lightningcss@0.3.3)
+        specifier: 0.11.1
+        version: 0.11.1(typescript@5.8.3)(unplugin-lightningcss@0.3.3)
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@22.15.14)(jiti@2.4.2)(lightningcss@1.29.3)(sass-embedded@1.87.0)(sass@1.87.0)(terser@5.39.0)(tsx@4.19.4)
@@ -8193,8 +8193,8 @@ packages:
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
 
-  tsdown@0.11.0:
-    resolution: {integrity: sha512-WU3ZVksLk/9JIiSYuH0sR7iNwo/dZQoYxc3ri75CjFv8cj2M735Xstj44x2TMgZGHA1uii9mI55Ja/NpDVHAAQ==}
+  tsdown@0.11.1:
+    resolution: {integrity: sha512-VtooVG/dMeIddux3AG5fYatl9WEAS42A+pQVuHWrE3doGo1ZW9A57gT477x/hL7jxkq52srv3zKyrp2hyFdDng==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     peerDependencies:
@@ -8833,7 +8833,7 @@ snapshots:
 
   '@babel/helper-annotate-as-pure@7.25.9':
     dependencies:
-      '@babel/types': 7.27.0
+      '@babel/types': 7.27.1
 
   '@babel/helper-compilation-targets@7.27.0':
     dependencies:
@@ -8877,7 +8877,7 @@ snapshots:
   '@babel/helper-member-expression-to-functions@7.25.9':
     dependencies:
       '@babel/traverse': 7.27.0(supports-color@5.5.0)
-      '@babel/types': 7.27.0
+      '@babel/types': 7.27.1
     transitivePeerDependencies:
       - supports-color
 
@@ -8899,7 +8899,7 @@ snapshots:
 
   '@babel/helper-optimise-call-expression@7.25.9':
     dependencies:
-      '@babel/types': 7.27.0
+      '@babel/types': 7.27.1
 
   '@babel/helper-plugin-utils@7.26.5': {}
 
@@ -8924,7 +8924,7 @@ snapshots:
   '@babel/helper-skip-transparent-expression-wrappers@7.25.9':
     dependencies:
       '@babel/traverse': 7.27.0(supports-color@5.5.0)
-      '@babel/types': 7.27.0
+      '@babel/types': 7.27.1
     transitivePeerDependencies:
       - supports-color
 
@@ -8942,7 +8942,7 @@ snapshots:
     dependencies:
       '@babel/template': 7.27.0
       '@babel/traverse': 7.27.0(supports-color@5.5.0)
-      '@babel/types': 7.27.0
+      '@babel/types': 7.27.1
     transitivePeerDependencies:
       - supports-color
 
@@ -11609,7 +11609,7 @@ snapshots:
 
   '@vue/compiler-core@3.5.13':
     dependencies:
-      '@babel/parser': 7.27.0
+      '@babel/parser': 7.27.1
       '@vue/shared': 3.5.13
       entities: 4.5.0
       estree-walker: 2.0.2
@@ -16194,7 +16194,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tsdown@0.11.0(typescript@5.8.3)(unplugin-lightningcss@0.3.3):
+  tsdown@0.11.1(typescript@5.8.3)(unplugin-lightningcss@0.3.3):
     dependencies:
       ansis: 3.17.0
       cac: 6.7.14
