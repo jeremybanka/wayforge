@@ -25,7 +25,7 @@
 		"motion": "12.10.4",
 		"react": "19.1.0",
 		"react-dom": "19.1.0",
-		"react-router-dom": "7.5.3",
+		"react-router-dom": "7.6.0",
 		"socket.io-client": "4.8.1",
 		"zod": "3.24.4"
 	},
