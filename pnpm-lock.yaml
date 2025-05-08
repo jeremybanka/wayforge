@@ -356,8 +356,8 @@ importers:
         specifier: npm:bun-types@1.2.12
         version: bun-types@1.2.12
       '@types/cors':
-        specifier: 2.8.17
-        version: 2.8.17
+        specifier: 2.8.18
+        version: 2.8.18
       '@types/node':
         specifier: 22.15.16
         version: 22.15.16
@@ -3867,8 +3867,8 @@ packages:
   '@types/babel__traverse@7.20.7':
     resolution: {integrity: sha512-dkO5fhS7+/oos4ciWxyEyjWe48zmG6wbCheo/G2ZnHx4fs3EU6YC6UM8rk56gAjNJ9P3MTH2jo5jb92/K6wbng==}
 
-  '@types/cors@2.8.17':
-    resolution: {integrity: sha512-8CGDvrBj1zgo2qE+oS3pOCyYNqCPryMWY2bGfwA0dcfopWGgxs+78df0Rs3rc9THP4JkOhLsAa+15VdpAqkcUA==}
+  '@types/cors@2.8.18':
+    resolution: {integrity: sha512-nX3d0sxJW41CqQvfOzVG1NCTXfFDrDWIghCZncpHeWlVFd81zxB/DLhg7avFg6eHLCRX7ckBmoIIcqa++upvJA==}
 
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
@@ -11256,7 +11256,7 @@ snapshots:
     dependencies:
       '@babel/types': 7.27.0
 
-  '@types/cors@2.8.17':
+  '@types/cors@2.8.18':
     dependencies:
       '@types/node': 22.15.16
 
@@ -12571,7 +12571,7 @@ snapshots:
 
   engine.io@6.6.4:
     dependencies:
-      '@types/cors': 2.8.17
+      '@types/cors': 2.8.18
       '@types/node': 22.15.16
       accepts: 1.3.8
       base64id: 2.0.0
