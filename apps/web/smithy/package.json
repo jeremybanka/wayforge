@@ -22,7 +22,7 @@
 		"fp-ts": "2.16.10",
 		"io-ts": "2.2.22",
 		"luum": "workspace:*",
-		"motion": "12.10.4",
+		"motion": "12.10.5",
 		"react": "19.1.0",
 		"react-dom": "19.1.0",
 		"react-router-dom": "7.6.0",
