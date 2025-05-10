@@ -32,7 +32,7 @@
 		"@mdx-js/loader": "3.1.0",
 		"@mdx-js/react": "3.1.0",
 		"@next/mdx": "15.3.2",
-		"@types/bun": "npm:bun-types@1.2.12",
+		"@types/bun": "npm:bun-types@1.2.13",
 		"@types/mdx": "2.0.13",
 		"@types/node": "22.15.17",
 		"@types/npmlog": "7.0.0",
