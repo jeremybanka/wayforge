@@ -18,7 +18,7 @@ export const updateSelectorAtoms = (
 		})
 		store.logger.info(
 			`🔍`,
-			`selector`,
+			`writable_selector`,
 			selectorKey,
 			`discovers root atom "${dependency.key}"`,
 		)
@@ -26,7 +26,7 @@ export const updateSelectorAtoms = (
 		const rootKeys = traceSelectorAtoms(dependency.key, covered, store)
 		store.logger.info(
 			`🔍`,
-			`selector`,
+			`writable_selector`,
 			selectorKey,
 			`discovers root atoms: [ ${rootKeys
 				.map((key) => `"${key}"`)

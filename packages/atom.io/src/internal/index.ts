@@ -77,7 +77,7 @@ export type Atom<T> =
 	| (T extends Transceiver<any> ? MutableAtom<T, any> : never)
 
 export type WritableSelector<T> = AtomIOState & {
-	type: `selector`
+	type: `writable_selector`
 	get: () => T
 	set: (newValue: T | ((oldValue: T) => T)) => void
 }

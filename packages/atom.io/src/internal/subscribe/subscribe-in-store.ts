@@ -52,7 +52,7 @@ export function subscribeInStore(
 		case `atom`:
 		case `mutable_atom`:
 		case `readonly_selector`:
-		case `selector`:
+		case `writable_selector`:
 			return subscribeToState(store, token, key, handleUpdate)
 		case `transaction`:
 			return subscribeToTransaction(store, token, key, handleUpdate)

@@ -33,7 +33,7 @@ export const getJsonToken = <
 		return jsonToken
 	}
 	const token: WritableSelectorToken<SerializableCore> = {
-		type: `selector`,
+		type: `writable_selector`,
 		key: `${mutableAtomToken.key}:JSON`,
 	}
 	return token

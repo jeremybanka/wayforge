@@ -11,7 +11,7 @@ export const readOrComputeValue = <T>(
 		return readCachedValue(state, target)
 	}
 	switch (state.type) {
-		case `selector`:
+		case `writable_selector`:
 		case `readonly_selector`:
 			target.logger.info(`🧮`, state.type, state.key, `computing value`)
 			return state.get()

@@ -147,7 +147,7 @@ export function withdraw(
 			case `mutable_atom`:
 				withdrawn = target.atoms.get(token.key)
 				break
-			case `selector`:
+			case `writable_selector`:
 				withdrawn = target.writableSelectors.get(token.key)
 				break
 			case `readonly_selector`:

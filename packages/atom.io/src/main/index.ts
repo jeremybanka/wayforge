@@ -86,7 +86,7 @@ export type WritableSelectorToken<T, K extends Canonical = any> = {
 	/** The unique identifier of the selector. */
 	key: string
 	/** Discriminator. */
-	type: `selector`
+	type: `writable_selector`
 	/** Present if the selector belongs to a family. */
 	family?: FamilyMetadata<K>
 	/** Never present. This is a marker that preserves the type of the selector's value. */

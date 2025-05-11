@@ -62,11 +62,11 @@ export type TokenDenomination =
 	| `readonly_selector_family`
 	| `readonly_selector`
 	| `selector_family`
-	| `selector`
 	| `state`
 	| `timeline`
 	| `transaction`
 	| `unknown`
+	| `writable_selector`
 
 export const LOG_LEVELS = [`info`, `warn`, `error`] as const
 export type LogLevel = (typeof LOG_LEVELS)[number]
