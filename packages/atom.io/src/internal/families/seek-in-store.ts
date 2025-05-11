@@ -92,7 +92,7 @@ export function seekInStore(
 			state = target.atoms.get(fullKey)
 			break
 		case `selector_family`:
-			state = target.selectors.get(fullKey)
+			state = target.writableSelectors.get(fullKey)
 			break
 		case `readonly_selector_family`:
 			state = target.readonlySelectors.get(fullKey)
