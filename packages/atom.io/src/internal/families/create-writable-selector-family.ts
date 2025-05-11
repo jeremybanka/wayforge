@@ -30,14 +30,14 @@ export function createWritableSelectorFamily<T, K extends Canonical>(
 ): WritableSelectorFamilyToken<T, K> {
 	const familyToken = {
 		key: options.key,
-		type: `selector_family`,
+		type: `writable_selector_family`,
 	} as const satisfies WritableSelectorFamilyToken<T, K>
 
 	const existing = store.families.get(options.key)
 	if (existing) {
 		store.logger.error(
 			`❗`,
-			`selector_family`,
+			`writable_selector_family`,
 			options.key,
 			`Overwriting an existing ${prettyPrintTokenType(
 				existing,

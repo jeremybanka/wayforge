@@ -24,7 +24,7 @@ import type { Transceiver } from "../mutable"
 export const FAMILY_MEMBER_TOKEN_TYPES = {
 	atom_family: `atom`,
 	mutable_atom_family: `mutable_atom`,
-	selector_family: `writable_selector`,
+	writable_selector_family: `writable_selector`,
 	readonly_selector_family: `readonly_selector`,
 	molecule_family: `molecule`,
 } as const

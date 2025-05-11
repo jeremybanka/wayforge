@@ -29,7 +29,7 @@ export function disposeSelector(
 					target.writableSelectors.delete(key)
 					familyToken = {
 						key: selector.family.key,
-						type: `selector_family`,
+						type: `writable_selector_family`,
 					}
 					const family = withdraw(store, familyToken)
 					family.subject.next({

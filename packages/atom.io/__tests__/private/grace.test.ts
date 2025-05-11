@@ -253,7 +253,7 @@ describe(`two families may not have the same key`, () => {
 
 		expect(logger.error).toHaveBeenLastCalledWith(
 			`❗`,
-			`selector_family`,
+			`writable_selector_family`,
 			`count`,
 			`Overwriting an existing Mutable Atom Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
 		)

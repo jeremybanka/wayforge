@@ -61,11 +61,11 @@ export type TokenDenomination =
 	| `mutable_atom`
 	| `readonly_selector_family`
 	| `readonly_selector`
-	| `selector_family`
 	| `state`
 	| `timeline`
 	| `transaction`
 	| `unknown`
+	| `writable_selector_family`
 	| `writable_selector`
 
 export const LOG_LEVELS = [`info`, `warn`, `error`] as const
