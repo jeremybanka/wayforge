@@ -25,7 +25,7 @@ export const getJsonToken = <
 			string
 		> = {
 			key: jsonFamilyKey,
-			type: `selector_family`,
+			type: `writable_selector_family`,
 		}
 		const family = withdraw(target, jsonFamilyToken)
 		const subKey = JSON.parse(mutableAtomToken.family.subKey)

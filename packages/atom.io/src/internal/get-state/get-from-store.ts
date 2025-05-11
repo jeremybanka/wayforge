@@ -50,7 +50,7 @@ export function getFromStore(
 			case `atom_family`:
 			case `mutable_atom_family`:
 				return store.defaults.get(family.key)
-			case `selector_family`:
+			case `writable_selector_family`:
 			case `readonly_selector_family`: {
 				if (store.defaults.has(family.key)) {
 					return store.defaults.get(token.family.key)

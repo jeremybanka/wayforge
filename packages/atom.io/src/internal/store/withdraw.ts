@@ -155,7 +155,7 @@ export function withdraw(
 				break
 			case `atom_family`:
 			case `mutable_atom_family`:
-			case `selector_family`:
+			case `writable_selector_family`:
 			case `readonly_selector_family`:
 				withdrawn = target.families.get(token.key)
 				break

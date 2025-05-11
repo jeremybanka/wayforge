@@ -62,7 +62,7 @@ export type ReadonlySelectorFamilyOptions<T, K extends Canonical> = {
 
 export type WritableSelectorFamilyToken<T, K extends Canonical> = {
 	key: string
-	type: `selector_family`
+	type: `writable_selector_family`
 	__T?: T
 	__K?: K
 }
