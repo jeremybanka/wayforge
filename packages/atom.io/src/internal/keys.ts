@@ -13,7 +13,7 @@ export const isAtomKey = (store: Store, key: string): key is AtomKey<unknown> =>
 export const isSelectorKey = (
 	store: Store,
 	key: string,
-): key is SelectorKey<unknown> => newest(store).selectors.has(key)
+): key is SelectorKey<unknown> => newest(store).writableSelectors.has(key)
 export const isReadonlySelectorKey = (
 	store: Store,
 	key: string,

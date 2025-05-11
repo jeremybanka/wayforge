@@ -63,7 +63,7 @@ export const createWritableSelector = <T>(
 		type: `selector`,
 		...(family && { family }),
 	}
-	target.selectors.set(options.key, mySelector)
+	target.writableSelectors.set(options.key, mySelector)
 	const initialValue = getSelf()
 	store.logger.info(`✨`, mySelector.type, mySelector.key, `=`, initialValue)
 	const token: WritableSelectorToken<T> = {

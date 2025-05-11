@@ -16,7 +16,7 @@ export const attachTypeSelectors = (
 				try {
 					const token =
 						store.atoms.get(key) ??
-						store.selectors.get(key) ??
+						store.writableSelectors.get(key) ??
 						store.readonlySelectors.get(key)
 					if (token === undefined) {
 						throw new Error(`Could not find state with key "${key}"`)

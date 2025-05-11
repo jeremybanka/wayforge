@@ -65,7 +65,7 @@ export const evictCachedValue = (key: string, target: Store): void => {
 	if (currentValue instanceof Future) {
 		const future = currentValue
 		const selector =
-			target.selectors.get(key) ?? target.readonlySelectors.get(key)
+			target.writableSelectors.get(key) ?? target.readonlySelectors.get(key)
 		if (selector) {
 			future.use(selector.get())
 		}

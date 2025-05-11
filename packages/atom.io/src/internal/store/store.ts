@@ -47,7 +47,7 @@ export class Store implements Lineage {
 	public defaults: Map<string, any> = new Map()
 
 	public atoms: Map<string, Atom<any>> = new Map()
-	public selectors: Map<string, WritableSelector<any>> = new Map()
+	public writableSelectors: Map<string, WritableSelector<any>> = new Map()
 	public readonlySelectors: Map<string, ReadonlySelector<any>> = new Map()
 
 	public atomsThatAreDefault: Set<string> = new Set()
@@ -230,7 +230,7 @@ export class Store implements Lineage {
 			for (const [, selector] of store.readonlySelectors) {
 				selector.install(this)
 			}
-			for (const [, selector] of store.selectors) {
+			for (const [, selector] of store.writableSelectors) {
 				if (mutableHelpers.has(selector.key)) {
 					continue
 				}

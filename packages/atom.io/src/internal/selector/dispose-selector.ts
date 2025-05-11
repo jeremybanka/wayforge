@@ -26,7 +26,7 @@ export function disposeSelector(
 		switch (selectorToken.type) {
 			case `selector`:
 				{
-					target.selectors.delete(key)
+					target.writableSelectors.delete(key)
 					familyToken = {
 						key: selector.family.key,
 						type: `selector_family`,

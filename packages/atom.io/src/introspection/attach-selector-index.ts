@@ -22,7 +22,7 @@ export const attachSelectorIndex = (
 				key: `🔍 Selector Token Index (Internal)`,
 				default: () => {
 					const base: SelectorTokenIndex = new Map()
-					for (const map of [store.readonlySelectors, store.selectors]) {
+					for (const map of [store.readonlySelectors, store.writableSelectors]) {
 						for (const [key, val] of map) {
 							if (isReservedIntrospectionKey(key)) {
 								continue
