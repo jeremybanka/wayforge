@@ -39,7 +39,7 @@ export const createWritableSelector = <T>(
 		const newValue = become(next)(oldValue)
 		store.logger.info(
 			`📝`,
-			`selector`,
+			`writable_selector`,
 			options.key,
 			`set (`,
 			oldValue,
@@ -60,7 +60,7 @@ export const createWritableSelector = <T>(
 		install: (s: Store) => createWritableSelector(s, options, family),
 		get: getSelf,
 		set: setSelf,
-		type: `selector`,
+		type: `writable_selector`,
 		...(family && { family }),
 	}
 	target.writableSelectors.set(options.key, mySelector)
@@ -68,7 +68,7 @@ export const createWritableSelector = <T>(
 	store.logger.info(`✨`, mySelector.type, mySelector.key, `=`, initialValue)
 	const token: WritableSelectorToken<T> = {
 		key: options.key,
-		type: `selector`,
+		type: `writable_selector`,
 	}
 	if (family) {
 		token.family = family

@@ -95,7 +95,7 @@ export function initFamilyMemberInStore(
 				case `mutable_atom`:
 					store.on.atomCreation.next(state)
 					break
-				case `selector`:
+				case `writable_selector`:
 				case `readonly_selector`:
 					store.on.selectorCreation.next(state)
 					break

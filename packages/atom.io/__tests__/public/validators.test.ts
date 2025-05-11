@@ -51,7 +51,7 @@ describe(`validators`, () => {
 				default: 0,
 			})
 			const unknownToken: ReadableToken<number> = {
-				type: `selector`,
+				type: `writable_selector`,
 				key: `name("a")`,
 				family: { key: `name`, subKey: `"a"` },
 			}

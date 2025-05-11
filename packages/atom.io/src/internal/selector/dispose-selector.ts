@@ -13,7 +13,7 @@ export function disposeSelector(
 	if (!selector.family) {
 		store.logger.error(
 			`❌`,
-			`selector`,
+			`writable_selector`,
 			key,
 			`Standalone selectors cannot be disposed.`,
 		)
@@ -24,7 +24,7 @@ export function disposeSelector(
 		}
 		let familyToken: SelectorFamilyToken<any, any>
 		switch (selectorToken.type) {
-			case `selector`:
+			case `writable_selector`:
 				{
 					target.writableSelectors.delete(key)
 					familyToken = {

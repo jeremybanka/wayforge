@@ -188,11 +188,13 @@ function addAtomToTimeline(
 			function timelineCapturesAtomUpdate(update) {
 				const target = newest(store)
 				const currentSelectorKey =
-					store.operation.open && store.operation.token.type === `selector`
+					store.operation.open &&
+					store.operation.token.type === `writable_selector`
 						? store.operation.token.key
 						: null
 				const currentSelectorTime =
-					store.operation.open && store.operation.token.type === `selector`
+					store.operation.open &&
+					store.operation.token.type === `writable_selector`
 						? store.operation.time
 						: null
 
