@@ -93,6 +93,17 @@ export type WritableSelectorToken<T, K extends Canonical = any> = {
 	__T?: T
 }
 /** @public */
+export type WritableRecyclableSelectorToken<T, K extends Canonical = any> = {
+	/** The unique identifier of the selector. */
+	key: string
+	/** Discriminator. */
+	type: `writable_selector`
+	/** Present if the selector belongs to a family. */
+	family?: FamilyMetadata<K>
+	/** Never present. This is a marker that preserves the type of the selector's value. */
+	__T?: T
+}
+/** @public */
 export type ReadonlySelectorToken<T, K extends Canonical = any> = {
 	/** The unique identifier of the selector. */
 	key: string
@@ -104,8 +115,26 @@ export type ReadonlySelectorToken<T, K extends Canonical = any> = {
 	__T?: T
 }
 /** @public */
+export type ReadonlyRecyclableSelectorToken<T, K extends Canonical = any> = {
+	/** The unique identifier of the selector. */
+	key: string
+	/** Discriminator. */
+	type: `readonly_selector`
+	/** Present if the selector belongs to a family. */
+	family?: FamilyMetadata<K>
+	/** Never present. This is a marker that preserves the type of the selector's value. */
+	__T?: T
+}
+/** @public */
+export type RecyclableSelectorToken<T, K extends Canonical = any> =
+	| ReadonlyRecyclableSelectorToken<T, K>
+	| WritableRecyclableSelectorToken<T, K>
+
+/** @public */
 export type SelectorToken<T, K extends Canonical = any> =
+	| ReadonlyRecyclableSelectorToken<T, K>
 	| ReadonlySelectorToken<T, K>
+	| WritableRecyclableSelectorToken<T, K>
 	| WritableSelectorToken<T, K>
 
 /**
