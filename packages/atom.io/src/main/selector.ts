@@ -17,6 +17,11 @@ export type ReadonlySelectorOptions<T> = {
 	key: string
 	get: Read<() => T>
 }
+export type RecyclableSelectorOptions<T> = {
+	key: string
+	default: T | (() => T)
+	get: Read<(permanent: T) => void>
+}
 
 /**
  * @public
@@ -58,6 +63,11 @@ export type WritableSelectorFamilyOptions<T, K extends Canonical> = {
 export type ReadonlySelectorFamilyOptions<T, K extends Canonical> = {
 	key: string
 	get: (key: K) => Read<() => T>
+}
+export type RecyclableSelectorFamilyOptions<T, K extends Canonical> = {
+	key: string
+	default: (key: K) => T
+	get: (key: K) => Read<(permanent: T) => void>
 }
 
 export type WritableSelectorFamilyToken<T, K extends Canonical> = {
