@@ -1,6 +1,6 @@
 import type {
-	ReadonlySelectorFamilyToken,
-	ReadonlySelectorToken,
+	ReadonlyTransientSelectorFamilyToken,
+	ReadonlyTransientSelectorToken,
 	TimelineToken,
 	TransactionToken,
 	TransactionUpdate,
@@ -17,16 +17,16 @@ import { attachTransactionLogs } from "./attach-transaction-logs"
 import { attachTypeSelectors } from "./attach-type-selectors"
 
 export type IntrospectionStates = {
-	atomIndex: ReadonlySelectorToken<AtomTokenIndex>
-	selectorIndex: ReadonlySelectorToken<SelectorTokenIndex>
-	transactionIndex: ReadonlySelectorToken<TransactionToken<Func>[]>
-	transactionLogSelectors: ReadonlySelectorFamilyToken<
+	atomIndex: ReadonlyTransientSelectorToken<AtomTokenIndex>
+	selectorIndex: ReadonlyTransientSelectorToken<SelectorTokenIndex>
+	transactionIndex: ReadonlyTransientSelectorToken<TransactionToken<Func>[]>
+	transactionLogSelectors: ReadonlyTransientSelectorFamilyToken<
 		TransactionUpdate<Func>[],
 		string
 	>
-	timelineIndex: ReadonlySelectorToken<TimelineToken<any>[]>
-	timelineSelectors: ReadonlySelectorFamilyToken<Timeline<any>, string>
-	typeSelectors: ReadonlySelectorFamilyToken<string, string>
+	timelineIndex: ReadonlyTransientSelectorToken<TimelineToken<any>[]>
+	timelineSelectors: ReadonlyTransientSelectorFamilyToken<Timeline<any>, string>
+	typeSelectors: ReadonlyTransientSelectorFamilyToken<string, string>
 }
 
 export const attachIntrospectionStates = (store: Store): IntrospectionStates => {

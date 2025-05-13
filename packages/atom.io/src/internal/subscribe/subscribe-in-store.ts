@@ -51,8 +51,10 @@ export function subscribeInStore(
 	switch (token.type) {
 		case `atom`:
 		case `mutable_atom`:
-		case `readonly_selector`:
-		case `writable_selector`:
+		case `readonly_transient_selector`:
+		case `readonly_recyclable_selector`:
+		case `writable_transient_selector`:
+		case `writable_recyclable_selector`:
 			return subscribeToState(store, token, key, handleUpdate)
 		case `transaction`:
 			return subscribeToTransaction(store, token, key, handleUpdate)

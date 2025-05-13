@@ -3,10 +3,13 @@ import type {
 	Logger,
 	MoleculeCreation,
 	MoleculeDisposal,
-	ReadonlySelectorToken,
+	ReadonlyRecyclableSelectorToken,
+	ReadonlyTransientSelectorToken,
+	SelectorToken,
 	TimelineToken,
 	TransactionToken,
-	WritableSelectorToken,
+	WritableRecyclableSelectorToken,
+	WritableTransientSelectorToken,
 } from "atom.io"
 import { AtomIOLogger } from "atom.io"
 import type { Canonical, stringified } from "atom.io/json"
@@ -14,11 +17,13 @@ import type { Canonical, stringified } from "atom.io/json"
 import type {
 	Atom,
 	MutableAtomFamily,
-	ReadonlySelector,
-	ReadonlySelectorFamily,
+	ReadonlyTransientSelector,
+	ReadonlyTransientSelectorFamily,
+	RecyclableSelectorFamily,
 	RegularAtomFamily,
-	WritableSelector,
-	WritableSelectorFamily,
+	TransientSelectorFamily,
+	WritableTransientSelector,
+	WritableTransientSelectorFamily,
 } from ".."
 import { isReservedIntrospectionKey } from ".."
 import type { Join } from "../join"
@@ -48,8 +53,10 @@ export class Store implements Lineage {
 	public stableRefs: Map<string, any> = new Map()
 
 	public atoms: Map<string, Atom<any>> = new Map()
-	public writableSelectors: Map<string, WritableSelector<any>> = new Map()
-	public readonlySelectors: Map<string, ReadonlySelector<any>> = new Map()
+	public writableSelectors: Map<string, WritableTransientSelector<any>> =
+		new Map()
+	public readonlySelectors: Map<string, ReadonlyTransientSelector<any>> =
+		new Map()
 
 	public atomsThatAreDefault: Set<string> = new Set()
 	public selectorAtoms: Junction<`selectorKey`, string, `atomKey`, string> =
@@ -76,9 +83,9 @@ export class Store implements Lineage {
 	public families: Map<
 		string,
 		| MutableAtomFamily<any, any, any>
-		| ReadonlySelectorFamily<any, any>
+		| RecyclableSelectorFamily<any, any>
 		| RegularAtomFamily<any, any>
-		| WritableSelectorFamily<any, any>
+		| TransientSelectorFamily<any, any>
 	> = new Map()
 	public joins: Map<string, Join<any, any, any, any, any, any>> = new Map()
 
@@ -250,12 +257,8 @@ export class Store implements Lineage {
 export type StoreEventCarrier = {
 	atomCreation: Subject<AtomToken<unknown>>
 	atomDisposal: Subject<AtomToken<unknown>>
-	selectorCreation: Subject<
-		ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>
-	>
-	selectorDisposal: Subject<
-		ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>
-	>
+	selectorCreation: Subject<SelectorToken<unknown>>
+	selectorDisposal: Subject<SelectorToken<unknown>>
 	timelineCreation: Subject<TimelineToken<unknown>>
 	transactionCreation: Subject<TransactionToken<Func>>
 	transactionApplying: StatefulSubject<TransactionProgress<Func> | null>

@@ -14,7 +14,7 @@ import type {
 	MutableAtomToken,
 	ReadableToken,
 	TokenType,
-	WritableSelectorToken,
+	WritableTransientSelectorToken,
 } from "."
 
 export type TransactionToken<F extends Func> = {
@@ -88,7 +88,7 @@ export type SetterToolkit = Readonly<{
 	find: typeof findState
 	json: <T extends Transceiver<any>, J extends Json.Serializable>(
 		state: MutableAtomToken<T, J>,
-	) => WritableSelectorToken<J>
+	) => WritableTransientSelectorToken<J>
 }>
 export type ActorToolkit = Readonly<{
 	get: typeof getState
@@ -96,7 +96,7 @@ export type ActorToolkit = Readonly<{
 	find: typeof findState
 	json: <T extends Transceiver<any>, J extends Json.Serializable>(
 		state: MutableAtomToken<T, J>,
-	) => WritableSelectorToken<J>
+	) => WritableTransientSelectorToken<J>
 	dispose: typeof disposeState
 	run: typeof runTransaction
 	env: () => EnvironmentData

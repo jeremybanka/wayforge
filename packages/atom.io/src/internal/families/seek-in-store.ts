@@ -5,16 +5,16 @@ import type {
 	MutableAtomToken,
 	ReadableFamilyToken,
 	ReadableToken,
-	ReadonlySelectorFamilyToken,
-	ReadonlySelectorToken,
+	ReadonlyTransientSelectorFamilyToken,
+	ReadonlyTransientSelectorToken,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
 	SelectorFamilyToken,
 	SelectorToken,
 	WritableFamilyToken,
-	WritableSelectorFamilyToken,
-	WritableSelectorToken,
 	WritableToken,
+	WritableTransientSelectorFamilyToken,
+	WritableTransientSelectorToken,
 } from "atom.io"
 import type { Canonical, Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
@@ -49,15 +49,15 @@ export function seekInStore<T, K extends Canonical, Key extends K>(
 
 export function seekInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
-	token: WritableSelectorFamilyToken<T, K>,
+	token: WritableTransientSelectorFamilyToken<T, K>,
 	key: Key,
-): WritableSelectorToken<T, K> | undefined
+): WritableTransientSelectorToken<T, K> | undefined
 
 export function seekInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
-	token: ReadonlySelectorFamilyToken<T, K>,
+	token: ReadonlyTransientSelectorFamilyToken<T, K>,
 	key: Key,
-): ReadonlySelectorToken<T, K> | undefined
+): ReadonlyTransientSelectorToken<T, K> | undefined
 
 export function seekInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
@@ -91,10 +91,12 @@ export function seekInStore(
 		case `mutable_atom_family`:
 			state = target.atoms.get(fullKey)
 			break
-		case `writable_selector_family`:
+		case `writable_recyclable_selector_family`:
+		case `writable_transient_selector_family`:
 			state = target.writableSelectors.get(fullKey)
 			break
-		case `readonly_selector_family`:
+		case `readonly_recyclable_selector_family`:
+		case `readonly_transient_selector_family`:
 			state = target.readonlySelectors.get(fullKey)
 			break
 	}

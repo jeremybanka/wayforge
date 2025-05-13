@@ -24,7 +24,7 @@ describe(`validators`, () => {
 		it(`returns false for a mismatch`, () => {
 			const knownToken: RegularAtomToken<number> = { type: `atom`, key: `count` }
 			const unknownToken: ReadableToken<number> = {
-				type: `readonly_selector`,
+				type: `readonly_transient_selector`,
 				key: `count2`,
 			}
 			expect(isToken(knownToken, unknownToken)).toBe(false)
@@ -51,7 +51,7 @@ describe(`validators`, () => {
 				default: 0,
 			})
 			const unknownToken: ReadableToken<number> = {
-				type: `writable_selector`,
+				type: `writable_transient_selector`,
 				key: `name("a")`,
 				family: { key: `name`, subKey: `"a"` },
 			}

@@ -170,7 +170,7 @@ export class FlightDeck<S extends string = string> {
 								this.logger.info(`> storage("updatePhase") >`, updatePhase)
 								if (updatePhase === `notified`) {
 									this.updateAvailabilityChecker = new CronJob(
-										`30 * * * * *`,
+										`*/30 * * * * *`,
 										async () => {
 											await this.seekUpdate(versionForeignInput)
 										},
