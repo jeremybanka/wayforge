@@ -20,8 +20,8 @@ export const emitUpdate = <T>(
 			)
 			break
 		case `atom`:
-		case `writable_selector`:
-		case `readonly_selector`:
+		case `writable_transient_selector`:
+		case `readonly_transient_selector`:
 			store.logger.info(
 				`📢`,
 				state.type,

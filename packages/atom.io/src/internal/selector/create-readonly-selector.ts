@@ -1,10 +1,10 @@
 import type {
 	FamilyMetadata,
-	ReadonlySelectorOptions,
-	ReadonlySelectorToken,
+	ReadonlyTransientSelectorOptions,
+	ReadonlyTransientSelectorToken,
 } from "atom.io"
 
-import type { ReadonlySelector } from ".."
+import type { ReadonlyTransientSelector } from ".."
 import { cacheValue } from "../caching"
 import { newest } from "../lineage"
 import type { Store } from "../store"
@@ -13,9 +13,9 @@ import { registerSelector } from "./register-selector"
 
 export const createReadonlySelector = <T>(
 	store: Store,
-	options: ReadonlySelectorOptions<T>,
+	options: ReadonlyTransientSelectorOptions<T>,
 	family: FamilyMetadata | undefined,
-): ReadonlySelectorToken<T> => {
+): ReadonlyTransientSelectorToken<T> => {
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const covered = new Set<string>()
@@ -27,12 +27,12 @@ export const createReadonlySelector = <T>(
 		return value
 	}
 
-	const readonlySelector: ReadonlySelector<T> = {
+	const readonlySelector: ReadonlyTransientSelector<T> = {
 		...options,
 		subject,
 		install: (s: Store) => createReadonlySelector(s, options, family),
 		get: getSelf,
-		type: `readonly_selector`,
+		type: `readonly_transient_selector`,
 		...(family && { family }),
 	}
 	target.readonlySelectors.set(options.key, readonlySelector)
@@ -44,9 +44,9 @@ export const createReadonlySelector = <T>(
 		`=`,
 		initialValue,
 	)
-	const token: ReadonlySelectorToken<T> = {
+	const token: ReadonlyTransientSelectorToken<T> = {
 		key: options.key,
-		type: `readonly_selector`,
+		type: `readonly_transient_selector`,
 	}
 	if (family) {
 		token.family = family

@@ -1,4 +1,7 @@
-import type { MutableAtomFamilyToken, ReadonlySelectorToken } from "atom.io"
+import type {
+	MutableAtomFamilyToken,
+	ReadonlyTransientSelectorToken,
+} from "atom.io"
 import type {
 	Junction,
 	JunctionEntriesBase,
@@ -105,23 +108,23 @@ export type JoinStates<
 > = Cardinality extends `1:1`
 	? (Content extends Json.Object
 			? {
-					readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlySelectorToken<
+					readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlyTransientSelectorToken<
 						[AType, Content] | null,
 						BType
 					>
 				} & {
-					readonly [B in BSide as `${B}EntryOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
+					readonly [B in BSide as `${B}EntryOf${Capitalize<ASide>}`]: ReadonlyTransientSelectorToken<
 						[BType, Content] | null,
 						AType
 					>
 				}
 			: {}) & {
-			readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlySelectorToken<
+			readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlyTransientSelectorToken<
 				AType | null,
 				BType
 			>
 		} & {
-			readonly [B in BSide as `${B}KeyOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
+			readonly [B in BSide as `${B}KeyOf${Capitalize<ASide>}`]: ReadonlyTransientSelectorToken<
 				BType | null,
 				AType
 			>
@@ -129,23 +132,23 @@ export type JoinStates<
 	: Cardinality extends `1:n`
 		? (Content extends Json.Object
 				? {
-						readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlySelectorToken<
+						readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlyTransientSelectorToken<
 							[AType, Content] | null,
 							BType
 						>
 					} & {
-						readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
+						readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlyTransientSelectorToken<
 							[BType, Content][],
 							AType
 						>
 					}
 				: {}) & {
-				readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlySelectorToken<
+				readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlyTransientSelectorToken<
 					AType | null,
 					BType
 				>
 			} & {
-				readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
+				readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlyTransientSelectorToken<
 					BType[],
 					AType
 				>
@@ -153,23 +156,23 @@ export type JoinStates<
 		: Cardinality extends `n:n`
 			? (Content extends Json.Object
 					? {
-							readonly [A in ASide as `${A}EntriesOf${Capitalize<BSide>}`]: ReadonlySelectorToken<
+							readonly [A in ASide as `${A}EntriesOf${Capitalize<BSide>}`]: ReadonlyTransientSelectorToken<
 								[AType, Content][],
 								BType
 							>
 						} & {
-							readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
+							readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlyTransientSelectorToken<
 								[BType, Content][],
 								AType
 							>
 						}
 					: {}) & {
-					readonly [A in ASide as `${A}KeysOf${Capitalize<BSide>}`]: ReadonlySelectorToken<
+					readonly [A in ASide as `${A}KeysOf${Capitalize<BSide>}`]: ReadonlyTransientSelectorToken<
 						AType[],
 						BType
 					>
 				} & {
-					readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlySelectorToken<
+					readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlyTransientSelectorToken<
 						BType[],
 						AType
 					>

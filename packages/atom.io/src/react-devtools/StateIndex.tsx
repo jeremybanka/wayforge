@@ -1,6 +1,6 @@
 import type {
 	ReadableToken,
-	ReadonlySelectorToken,
+	ReadonlyTransientSelectorToken,
 	RegularAtomToken,
 } from "atom.io"
 import { getState } from "atom.io"
@@ -19,7 +19,7 @@ import { DevtoolsContext } from "./store"
 export const StateIndexLeafNode: FC<{
 	node: ReadableToken<unknown>
 	isOpenState: RegularAtomToken<boolean>
-	typeState: ReadonlySelectorToken<string>
+	typeState: ReadonlyTransientSelectorToken<string>
 }> = ({ node, isOpenState, typeState }) => {
 	const setIsOpen = useI(isOpenState)
 	const isOpen = useO(isOpenState)
@@ -102,7 +102,7 @@ export const StateIndexTreeNode: FC<{
 export const StateIndexNode: FC<{
 	node: FamilyNode<ReadableToken<unknown>> | ReadableToken<unknown>
 	isOpenState: RegularAtomToken<boolean>
-	typeState: ReadonlySelectorToken<string>
+	typeState: ReadonlyTransientSelectorToken<string>
 }> = ({ node, isOpenState, typeState }) => {
 	return (
 		<section className="node state" data-testid={`state-${node.key}`}>
@@ -120,7 +120,9 @@ export const StateIndexNode: FC<{
 }
 
 export const StateIndex: FC<{
-	tokenIndex: ReadonlySelectorToken<WritableTokenIndex<ReadableToken<unknown>>>
+	tokenIndex: ReadonlyTransientSelectorToken<
+		WritableTokenIndex<ReadableToken<unknown>>
+	>
 }> = ({ tokenIndex }) => {
 	const tokenIds = useO(tokenIndex)
 

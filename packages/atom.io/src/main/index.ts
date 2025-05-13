@@ -6,6 +6,7 @@ import type { getState } from "./get-state"
 import type {
 	SelectorFamilyToken,
 	WritableSelectorFamilyToken,
+	WritableTransientSelectorFamilyToken,
 } from "./selector"
 import type { setState } from "./set-state"
 import type { TimelineToken } from "./timeline"
@@ -82,60 +83,99 @@ export type AtomToken<T, K extends Canonical = any> =
 	| RegularAtomToken<T, K>
 
 /** @public */
-export type WritableSelectorToken<T, K extends Canonical = any> = {
+export type WritableTransientSelectorToken<T, K extends Canonical = any> = {
 	/** The unique identifier of the selector. */
 	key: string
 	/** Discriminator. */
-	type: `writable_selector`
+	type: `writable_transient_selector`
 	/** Present if the selector belongs to a family. */
 	family?: FamilyMetadata<K>
 	/** Never present. This is a marker that preserves the type of the selector's value. */
 	__T?: T
 }
 /** @public */
-export type WritableRecyclableSelectorToken<T, K extends Canonical = any> = {
+export type WritableRecyclableSelectorToken<
+	T extends object,
+	K extends Canonical = any,
+> = {
 	/** The unique identifier of the selector. */
 	key: string
 	/** Discriminator. */
-	type: `writable_selector`
+	type: `writable_recyclable_selector`
 	/** Present if the selector belongs to a family. */
 	family?: FamilyMetadata<K>
 	/** Never present. This is a marker that preserves the type of the selector's value. */
 	__T?: T
 }
 /** @public */
-export type ReadonlySelectorToken<T, K extends Canonical = any> = {
+export type ReadonlyTransientSelectorToken<T, K extends Canonical = any> = {
 	/** The unique identifier of the selector. */
 	key: string
 	/** Discriminator. */
-	type: `readonly_selector`
+	type: `readonly_transient_selector`
 	/** Present if the selector belongs to a family. */
 	family?: FamilyMetadata<K>
 	/** Never present. This is a marker that preserves the type of the selector's value. */
 	__T?: T
 }
 /** @public */
-export type ReadonlyRecyclableSelectorToken<T, K extends Canonical = any> = {
+export type ReadonlyRecyclableSelectorToken<
+	T extends object,
+	K extends Canonical = any,
+> = {
 	/** The unique identifier of the selector. */
 	key: string
 	/** Discriminator. */
-	type: `readonly_selector`
+	type: `readonly_recyclable_selector`
 	/** Present if the selector belongs to a family. */
 	family?: FamilyMetadata<K>
 	/** Never present. This is a marker that preserves the type of the selector's value. */
 	__T?: T
 }
+
 /** @public */
-export type RecyclableSelectorToken<T, K extends Canonical = any> =
-	| ReadonlyRecyclableSelectorToken<T, K>
-	| WritableRecyclableSelectorToken<T, K>
+export type TransientRecyclableSelectorToken<T, K extends Canonical = any> =
+	| ReadonlyTransientSelectorToken<T, K>
+	| WritableTransientSelectorToken<T, K>
+
+/** @public */
+export type RecyclableSelectorToken<
+	T extends object,
+	K extends Canonical = any,
+> = ReadonlyRecyclableSelectorToken<T, K> | WritableRecyclableSelectorToken<T, K>
+
+/** @public */
+export type ReadonlySelectorToken<T, K extends Canonical = any> =
+	| ReadonlyTransientSelectorToken<T, K>
+	| (T extends object
+			? ReadonlyRecyclableSelectorToken<T, K>
+			: unknown extends T
+				? ReadonlyRecyclableSelectorToken<object, K>
+				: never)
+
+/** @public */
+export type WritableSelectorToken<T, K extends Canonical = any> =
+	| WritableTransientSelectorToken<T, K>
+	| (T extends object
+			? WritableRecyclableSelectorToken<T, K>
+			: unknown extends T
+				? WritableRecyclableSelectorToken<object, K>
+				: never)
 
 /** @public */
 export type SelectorToken<T, K extends Canonical = any> =
-	| ReadonlyRecyclableSelectorToken<T, K>
-	| ReadonlySelectorToken<T, K>
-	| WritableRecyclableSelectorToken<T, K>
-	| WritableSelectorToken<T, K>
+	| ReadonlyTransientSelectorToken<T, K>
+	| WritableTransientSelectorToken<T, K>
+	| (T extends object
+			? ReadonlyRecyclableSelectorToken<T, K>
+			: unknown extends T
+				? ReadonlyRecyclableSelectorToken<object, K>
+				: never)
+	| (T extends object
+			? WritableRecyclableSelectorToken<T, K>
+			: unknown extends T
+				? WritableRecyclableSelectorToken<object, K>
+				: never)
 
 /**
  * @public

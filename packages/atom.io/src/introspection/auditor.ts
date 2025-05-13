@@ -2,7 +2,7 @@ import {
 	type AtomToken,
 	getState,
 	type ReadableToken,
-	type ReadonlySelectorToken,
+	type ReadonlyTransientSelectorToken,
 	type SelectorToken,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
@@ -26,8 +26,8 @@ export class Auditor {
 	public readonly store: Internal.Store
 	public auditorCreatedAt: number = performance.now()
 	public statesCreatedAt: Map<string, number> = new Map()
-	public readonly atomIndex: ReadonlySelectorToken<AtomTokenIndex>
-	public readonly selectorIndex: ReadonlySelectorToken<SelectorTokenIndex>
+	public readonly atomIndex: ReadonlyTransientSelectorToken<AtomTokenIndex>
+	public readonly selectorIndex: ReadonlyTransientSelectorToken<SelectorTokenIndex>
 	public disposed = false
 
 	private readonly unsubscribeFromAtomCreation: () => void

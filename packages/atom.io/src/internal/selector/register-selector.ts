@@ -43,7 +43,7 @@ export const registerSelector = (
 
 		store.logger.info(
 			`🔌`,
-			`writable_selector`,
+			`writable_transient_selector`,
 			selectorKey,
 			`registers dependency ( "${dependency.key}" =`,
 			dependencyValue,

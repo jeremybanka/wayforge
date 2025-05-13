@@ -3,13 +3,13 @@ import type {
 	MutableAtomToken,
 	ReadableFamilyToken,
 	ReadableToken,
-	ReadonlySelectorFamilyToken,
-	ReadonlySelectorToken,
+	ReadonlyTransientSelectorFamilyToken,
+	ReadonlyTransientSelectorToken,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
 	WritableFamilyToken,
-	WritableSelectorFamilyToken,
-	WritableSelectorToken,
+	WritableTransientSelectorFamilyToken,
+	WritableTransientSelectorToken,
 	WritableToken,
 } from "atom.io"
 import type { Transceiver } from "atom.io/internal"
@@ -54,9 +54,9 @@ export function findState<T, K extends Canonical, Key extends K>(
  * @overload Writable Selector
  */
 export function findState<T, K extends Canonical, Key extends K>(
-	token: WritableSelectorFamilyToken<T, K>,
+	token: WritableTransientSelectorFamilyToken<T, K>,
 	key: Key,
-): WritableSelectorToken<T, K>
+): WritableTransientSelectorToken<T, K>
 /**
  * @public
  * Finds a state in the store
@@ -67,9 +67,9 @@ export function findState<T, K extends Canonical, Key extends K>(
  * @overload Readonly Selector
  */
 export function findState<T, K extends Canonical, Key extends K>(
-	token: ReadonlySelectorFamilyToken<T, K>,
+	token: ReadonlyTransientSelectorFamilyToken<T, K>,
 	key: Key,
-): ReadonlySelectorToken<T, K>
+): ReadonlyTransientSelectorToken<T, K>
 /**
  * @public
  * Finds a state in the store

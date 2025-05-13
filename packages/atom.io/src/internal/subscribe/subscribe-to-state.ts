@@ -26,7 +26,8 @@ export function subscribeToState<T>(
 	const state = withdraw(store, token)
 	store.logger.info(`👀`, state.type, state.key, `Adding subscription "${key}"`)
 	const isSelector =
-		state.type === `writable_selector` || state.type === `readonly_selector`
+		state.type === `writable_transient_selector` ||
+		state.type === `readonly_transient_selector`
 	let dependencyUnsubFunctions: (() => void)[] | null = null
 	let updateHandler: UpdateHandler<T> = safelyHandleUpdate
 	if (isSelector) {

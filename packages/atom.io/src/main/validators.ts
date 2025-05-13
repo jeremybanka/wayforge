@@ -3,13 +3,13 @@ import type {
 	MutableAtomToken,
 	ReadableFamilyToken,
 	ReadableToken,
-	ReadonlySelectorFamilyToken,
-	ReadonlySelectorToken,
+	ReadonlyTransientSelectorFamilyToken,
+	ReadonlyTransientSelectorToken,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
 	WritableFamilyToken,
-	WritableSelectorFamilyToken,
-	WritableSelectorToken,
+	WritableTransientSelectorFamilyToken,
+	WritableTransientSelectorToken,
 	WritableToken,
 } from "atom.io"
 
@@ -29,14 +29,14 @@ export function isToken<KnownToken extends MutableAtomToken<any, any>>(
 	knownToken: KnownToken,
 	unknownToken: ReadableToken<any>,
 ): unknownToken is MutableAtomToken<TokenType<KnownToken>, any>
-export function isToken<KnownToken extends WritableSelectorToken<any>>(
+export function isToken<KnownToken extends WritableTransientSelectorToken<any>>(
 	knownToken: KnownToken,
 	unknownToken: ReadableToken<any>,
-): unknownToken is WritableSelectorToken<TokenType<KnownToken>>
-export function isToken<KnownToken extends ReadonlySelectorToken<any>>(
+): unknownToken is WritableTransientSelectorToken<TokenType<KnownToken>>
+export function isToken<KnownToken extends ReadonlyTransientSelectorToken<any>>(
 	knownToken: KnownToken,
 	unknownToken: ReadableToken<any>,
-): unknownToken is ReadonlySelectorToken<TokenType<KnownToken>>
+): unknownToken is ReadonlyTransientSelectorToken<TokenType<KnownToken>>
 export function isToken<KnownToken extends WritableToken<any>>(
 	knownToken: KnownToken,
 	unknownToken: ReadableToken<any>,
@@ -60,14 +60,18 @@ export function belongsTo<Family extends MutableAtomFamilyToken<any, any, any>>(
 	family: Family,
 	unknownToken: ReadableToken<any>,
 ): unknownToken is MutableAtomToken<TokenType<Family>, any>
-export function belongsTo<Family extends WritableSelectorFamilyToken<any, any>>(
+export function belongsTo<
+	Family extends WritableTransientSelectorFamilyToken<any, any>,
+>(
 	family: Family,
 	unknownToken: ReadableToken<any>,
-): unknownToken is WritableSelectorToken<TokenType<Family>>
-export function belongsTo<Family extends ReadonlySelectorFamilyToken<any, any>>(
+): unknownToken is WritableTransientSelectorToken<TokenType<Family>>
+export function belongsTo<
+	Family extends ReadonlyTransientSelectorFamilyToken<any, any>,
+>(
 	family: Family,
 	unknownToken: ReadableToken<any>,
-): unknownToken is ReadonlySelectorToken<TokenType<Family>>
+): unknownToken is ReadonlyTransientSelectorToken<TokenType<Family>>
 export function belongsTo<Family extends WritableFamilyToken<any, any>>(
 	family: Family,
 	unknownToken: ReadableToken<any>,

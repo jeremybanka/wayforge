@@ -4,9 +4,9 @@ import type {
 	getState,
 	StateCreation,
 	StateDisposal,
-	WritableSelectorFamilyOptions,
-	WritableSelectorFamilyToken,
-	WritableSelectorToken,
+	WritableTransientSelectorFamilyOptions,
+	WritableTransientSelectorFamilyToken,
+	WritableTransientSelectorToken,
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
@@ -16,28 +16,28 @@ import {
 	getFromStore,
 	getJsonToken,
 	prettyPrintTokenType,
-	type WritableSelectorFamily,
+	type WritableTransientSelectorFamily,
 } from ".."
 import { newest } from "../lineage"
 import { createWritableSelector } from "../selector"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 
-export function createWritableSelectorFamily<T, K extends Canonical>(
+export function createWritableTransientSelectorFamily<T, K extends Canonical>(
 	store: Store,
-	options: WritableSelectorFamilyOptions<T, K>,
+	options: WritableTransientSelectorFamilyOptions<T, K>,
 	internalRoles?: string[],
-): WritableSelectorFamilyToken<T, K> {
+): WritableTransientSelectorFamilyToken<T, K> {
 	const familyToken = {
 		key: options.key,
-		type: `writable_selector_family`,
-	} as const satisfies WritableSelectorFamilyToken<T, K>
+		type: `writable_transient_selector_family`,
+	} as const satisfies WritableTransientSelectorFamilyToken<T, K>
 
 	const existing = store.families.get(options.key)
 	if (existing) {
 		store.logger.error(
 			`❗`,
-			`writable_selector_family`,
+			`writable_transient_selector_family`,
 			options.key,
 			`Overwriting an existing ${prettyPrintTokenType(
 				existing,
@@ -45,11 +45,11 @@ export function createWritableSelectorFamily<T, K extends Canonical>(
 		)
 	}
 	const subject = new Subject<
-		| StateCreation<WritableSelectorToken<T>>
-		| StateDisposal<WritableSelectorToken<T>>
+		| StateCreation<WritableTransientSelectorToken<T>>
+		| StateDisposal<WritableTransientSelectorToken<T>>
 	>()
 
-	const familyFunction = (key: K): WritableSelectorToken<T> => {
+	const familyFunction = (key: K): WritableTransientSelectorToken<T> => {
 		const subKey = stringifyJson(key)
 		const family: FamilyMetadata = { key: options.key, subKey }
 		const fullKey = `${options.key}(${subKey})`
@@ -72,7 +72,7 @@ export function createWritableSelectorFamily<T, K extends Canonical>(
 	const selectorFamily = Object.assign(familyFunction, familyToken, {
 		internalRoles,
 		subject,
-		install: (s: Store) => createWritableSelectorFamily(s, options),
+		install: (s: Store) => createWritableTransientSelectorFamily(s, options),
 		default: (key: K) => {
 			const getFn = options.get(key)
 			return getFn({
@@ -83,7 +83,7 @@ export function createWritableSelectorFamily<T, K extends Canonical>(
 				json: (token) => getJsonToken(store, token),
 			})
 		},
-	}) satisfies WritableSelectorFamily<T, K>
+	}) satisfies WritableTransientSelectorFamily<T, K>
 
 	store.families.set(options.key, selectorFamily)
 	return familyToken
