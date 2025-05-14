@@ -726,8 +726,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.11.8
-        version: 0.11.8(typescript@5.8.3)
+        specifier: 0.11.9
+        version: 0.11.9(typescript@5.8.3)
       tsx:
         specifier: 4.19.4
         version: 4.19.4
@@ -787,8 +787,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.11.8
-        version: 0.11.8(typescript@5.8.3)
+        specifier: 0.11.9
+        version: 0.11.9(typescript@5.8.3)
 
   packages/comline:
     dependencies:
@@ -818,8 +818,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.11.8
-        version: 0.11.8(typescript@5.8.3)
+        specifier: 0.11.9
+        version: 0.11.9(typescript@5.8.3)
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@22.15.17)(jiti@2.4.2)(lightningcss@1.30.0)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.39.0)(tsx@4.19.4)
@@ -885,8 +885,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.11.8
-        version: 0.11.8(typescript@5.8.3)
+        specifier: 0.11.9
+        version: 0.11.9(typescript@5.8.3)
       varmint:
         specifier: workspace:*
         version: link:../varmint
@@ -1029,8 +1029,8 @@ importers:
         specifier: 6.0.1
         version: 6.0.1
       tsdown:
-        specifier: 0.11.8
-        version: 0.11.8(typescript@5.8.3)
+        specifier: 0.11.9
+        version: 0.11.9(typescript@5.8.3)
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@22.15.17)(jiti@2.4.2)(lightningcss@1.30.0)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.39.0)(tsx@4.19.4)
@@ -1102,8 +1102,8 @@ importers:
         specifier: 9.26.0
         version: 9.26.0(jiti@2.4.2)
       tsdown:
-        specifier: 0.11.8
-        version: 0.11.8(typescript@5.8.3)
+        specifier: 0.11.9
+        version: 0.11.9(typescript@5.8.3)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -1165,8 +1165,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.11.8
-        version: 0.11.8(typescript@5.8.3)
+        specifier: 0.11.9
+        version: 0.11.9(typescript@5.8.3)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -1296,8 +1296,8 @@ importers:
         specifier: 6.0.1
         version: 6.0.1
       tsdown:
-        specifier: 0.11.8
-        version: 0.11.8(typescript@5.8.3)
+        specifier: 0.11.9
+        version: 0.11.9(typescript@5.8.3)
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@22.15.17)(jiti@2.4.2)(lightningcss@1.30.0)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.39.0)(tsx@4.19.4)
@@ -1379,8 +1379,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.11.8
-        version: 0.11.8(typescript@5.8.3)
+        specifier: 0.11.9
+        version: 0.11.9(typescript@5.8.3)
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@22.15.17)(jiti@2.4.2)(lightningcss@1.30.0)(sass-embedded@1.88.0)(sass@1.88.0)(terser@5.39.0)(tsx@4.19.4)
@@ -8196,8 +8196,8 @@ packages:
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
 
-  tsdown@0.11.8:
-    resolution: {integrity: sha512-rks863d/+VT513hX6O9kGgp3ohRI/rc7bzgtMVACyOJLfMTvNLc6KpjwyLvpo0hm/3PfMyU5GghBIixmHwOlHQ==}
+  tsdown@0.11.9:
+    resolution: {integrity: sha512-Lp1lflza4U+Ennezzj7NyC3+OtoeAn7TuOe0fm7uKl0lt71I4gCGSj1HAdInRMD3uQhKUH3uU7nj+MpRSXL7Lg==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     peerDependencies:
@@ -16212,7 +16212,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tsdown@0.11.8(typescript@5.8.3):
+  tsdown@0.11.9(typescript@5.8.3):
     dependencies:
       ansis: 4.0.0
       cac: 6.7.14
