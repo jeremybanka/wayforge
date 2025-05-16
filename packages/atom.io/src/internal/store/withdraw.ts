@@ -2,12 +2,20 @@ import type {
 	AtomFamilyToken,
 	AtomIOToken,
 	AtomToken,
+	HeldSelectorFamilyToken,
+	HeldSelectorToken,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
+	PureSelectorFamilyToken,
+	PureSelectorToken,
 	ReadableFamilyToken,
 	ReadableToken,
+	ReadonlyHeldSelectorFamilyToken,
+	ReadonlyHeldSelectorToken,
 	ReadonlyPureSelectorFamilyToken,
 	ReadonlyPureSelectorToken,
+	ReadonlySelectorFamilyToken,
+	ReadonlySelectorToken,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
 	SelectorFamilyToken,
@@ -16,8 +24,12 @@ import type {
 	TimelineToken,
 	TransactionToken,
 	WritableFamilyToken,
+	WritableHeldSelectorFamilyToken,
+	WritableHeldSelectorToken,
 	WritablePureSelectorFamilyToken,
 	WritablePureSelectorToken,
+	WritableSelectorFamilyToken,
+	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
 import type { Canonical, Json } from "atom.io/json"
@@ -27,20 +39,32 @@ import type {
 	AtomFamily,
 	AtomIOInternalResource,
 	Func,
+	HeldSelector,
+	HeldSelectorFamily,
 	MutableAtom,
 	MutableAtomFamily,
+	PureSelector,
+	PureSelectorFamily,
 	ReadableFamily,
 	ReadableState,
+	ReadonlyHeldSelector,
+	ReadonlyHeldSelectorFamily,
 	ReadonlyPureSelector,
 	ReadonlyPureSelectorFamily,
+	ReadonlySelector,
+	ReadonlySelectorFamily,
 	RegularAtom,
 	RegularAtomFamily,
 	Selector,
 	SelectorFamily,
 	Transceiver,
 	WritableFamily,
+	WritableHeldSelector,
+	WritableHeldSelectorFamily,
 	WritablePureSelector,
 	WritablePureSelectorFamily,
+	WritableSelector,
+	WritableSelectorFamily,
 	WritableState,
 } from ".."
 import { NotFoundError } from ".."
@@ -59,12 +83,36 @@ export function withdraw<T extends Transceiver<any>>(
 export function withdraw<T>(store: Store, token: AtomToken<T>): Atom<T>
 export function withdraw<T>(
 	store: Store,
+	token: WritableHeldSelectorToken<T>,
+): WritableHeldSelector<T>
+export function withdraw<T>(
+	store: Store,
+	token: ReadonlyHeldSelectorToken<T>,
+): ReadonlyHeldSelector<T>
+export function withdraw<T>(
+	store: Store,
 	token: WritablePureSelectorToken<T>,
 ): WritablePureSelector<T>
 export function withdraw<T>(
 	store: Store,
 	token: ReadonlyPureSelectorToken<T>,
 ): ReadonlyPureSelector<T>
+export function withdraw<T>(
+	store: Store,
+	token: ReadonlySelectorToken<T>,
+): ReadonlySelector<T>
+export function withdraw<T>(
+	store: Store,
+	token: WritableSelectorToken<T>,
+): WritableSelector<T>
+export function withdraw<T>(
+	store: Store,
+	token: HeldSelectorToken<T>,
+): HeldSelector<T>
+export function withdraw<T>(
+	store: Store,
+	token: PureSelectorToken<T>,
+): PureSelector<T>
 export function withdraw<T>(store: Store, token: SelectorToken<T>): Selector<T>
 export function withdraw<T>(
 	store: Store,
@@ -93,12 +141,36 @@ export function withdraw<T, K extends Canonical>(
 ): AtomFamily<T, any>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
+	token: ReadonlyHeldSelectorFamilyToken<T, K>,
+): ReadonlyHeldSelectorFamily<T, any>
+export function withdraw<T, K extends Canonical>(
+	store: Store,
+	token: WritableHeldSelectorFamilyToken<T, K>,
+): WritableHeldSelectorFamily<T, any>
+export function withdraw<T, K extends Canonical>(
+	store: Store,
 	token: ReadonlyPureSelectorFamilyToken<T, K>,
 ): ReadonlyPureSelectorFamily<T, any>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: WritablePureSelectorFamilyToken<T, K>,
 ): WritablePureSelectorFamily<T, any>
+export function withdraw<T, K extends Canonical>(
+	store: Store,
+	token: ReadonlySelectorFamilyToken<T, K>,
+): ReadonlySelectorFamily<T, any>
+export function withdraw<T, K extends Canonical>(
+	store: Store,
+	token: WritableSelectorFamilyToken<T, K>,
+): WritableSelectorFamily<T, any>
+export function withdraw<T, K extends Canonical>(
+	store: Store,
+	token: HeldSelectorFamilyToken<T, K>,
+): HeldSelectorFamily<T, any>
+export function withdraw<T, K extends Canonical>(
+	store: Store,
+	token: PureSelectorFamilyToken<T, K>,
+): PureSelectorFamily<T, any>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: SelectorFamilyToken<T, K>,
