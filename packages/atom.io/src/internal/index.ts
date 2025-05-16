@@ -140,7 +140,7 @@ export type WritableTransientSelectorFamily<T, K extends Canonical> =
 	}
 
 // biome-ignore format: intersection
-export type WritableRecyclableSelectorFamily<T extends object, K extends Canonical> = 
+export type WritableRecyclableSelectorFamily<T , K extends Canonical> = 
 	& WritableRecyclableSelectorFamilyToken<T, K> 
 	& ((key: K) => WritableRecyclableSelectorToken<T>)
 	& {
@@ -168,7 +168,7 @@ export type ReadonlyTransientSelectorFamily<T, K extends Canonical> =
 	}
 
 // biome-ignore format: intersection
-export type ReadonlyRecyclableSelectorFamily<T extends object, K extends Canonical> = 
+export type ReadonlyRecyclableSelectorFamily<T , K extends Canonical> = 
 	& ReadonlyRecyclableSelectorFamilyToken<T, K>
 	& ((key: K) => ReadonlyRecyclableSelectorToken<T>)
 	& {
@@ -185,21 +185,21 @@ export type TransientSelectorFamily<T, K extends Canonical> =
 	| ReadonlyTransientSelectorFamily<T, K>
 	| WritableTransientSelectorFamily<T, K>
 
-export type RecyclableSelectorFamily<T extends object, K extends Canonical> =
+export type RecyclableSelectorFamily<T, K extends Canonical> =
 	| ReadonlyRecyclableSelectorFamily<T, K>
 	| WritableRecyclableSelectorFamily<T, K>
 
 export type ReadonlySelectorFamily<T, K extends Canonical> =
+	| ReadonlyRecyclableSelectorFamily<T, K>
 	| ReadonlyTransientSelectorFamily<T, K>
-	| (T extends object ? ReadonlyRecyclableSelectorFamily<T, K> : never)
 
 export type WritableSelectorFamily<T, K extends Canonical> =
+	| WritableRecyclableSelectorFamily<T, K>
 	| WritableTransientSelectorFamily<T, K>
-	| (T extends object ? WritableRecyclableSelectorFamily<T, K> : never)
 
 export type SelectorFamily<T, K extends Canonical> =
+	| RecyclableSelectorFamily<T, K>
 	| TransientSelectorFamily<T, K>
-	| (T extends object ? RecyclableSelectorFamily<T, K> : never)
 
 export type WritableFamily<T, K extends Canonical> =
 	| AtomFamily<T, K>

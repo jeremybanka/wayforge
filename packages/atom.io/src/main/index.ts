@@ -94,10 +94,7 @@ export type WritableTransientSelectorToken<T, K extends Canonical = any> = {
 	__T?: T
 }
 /** @public */
-export type WritableRecyclableSelectorToken<
-	T extends object,
-	K extends Canonical = any,
-> = {
+export type WritableRecyclableSelectorToken<T, K extends Canonical = any> = {
 	/** The unique identifier of the selector. */
 	key: string
 	/** Discriminator. */
@@ -119,10 +116,7 @@ export type ReadonlyTransientSelectorToken<T, K extends Canonical = any> = {
 	__T?: T
 }
 /** @public */
-export type ReadonlyRecyclableSelectorToken<
-	T extends object,
-	K extends Canonical = any,
-> = {
+export type ReadonlyRecyclableSelectorToken<T, K extends Canonical = any> = {
 	/** The unique identifier of the selector. */
 	key: string
 	/** Discriminator. */
@@ -139,43 +133,26 @@ export type TransientRecyclableSelectorToken<T, K extends Canonical = any> =
 	| WritableTransientSelectorToken<T, K>
 
 /** @public */
-export type RecyclableSelectorToken<
-	T extends object,
-	K extends Canonical = any,
-> = ReadonlyRecyclableSelectorToken<T, K> | WritableRecyclableSelectorToken<T, K>
+export type RecyclableSelectorToken<T, K extends Canonical = any> =
+	| ReadonlyRecyclableSelectorToken<T, K>
+	| WritableRecyclableSelectorToken<T, K>
 
 /** @public */
 export type ReadonlySelectorToken<T, K extends Canonical = any> =
+	| ReadonlyRecyclableSelectorToken<T, K>
 	| ReadonlyTransientSelectorToken<T, K>
-	| (T extends object
-			? ReadonlyRecyclableSelectorToken<T, K>
-			: unknown extends T
-				? ReadonlyRecyclableSelectorToken<object, K>
-				: never)
 
 /** @public */
 export type WritableSelectorToken<T, K extends Canonical = any> =
+	| WritableRecyclableSelectorToken<T, K>
 	| WritableTransientSelectorToken<T, K>
-	| (T extends object
-			? WritableRecyclableSelectorToken<T, K>
-			: unknown extends T
-				? WritableRecyclableSelectorToken<object, K>
-				: never)
 
 /** @public */
 export type SelectorToken<T, K extends Canonical = any> =
+	| ReadonlyRecyclableSelectorToken<T, K>
 	| ReadonlyTransientSelectorToken<T, K>
+	| WritableRecyclableSelectorToken<T, K>
 	| WritableTransientSelectorToken<T, K>
-	| (T extends object
-			? ReadonlyRecyclableSelectorToken<T, K>
-			: unknown extends T
-				? ReadonlyRecyclableSelectorToken<object, K>
-				: never)
-	| (T extends object
-			? WritableRecyclableSelectorToken<T, K>
-			: unknown extends T
-				? WritableRecyclableSelectorToken<object, K>
-				: never)
 
 /**
  * @public
