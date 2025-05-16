@@ -163,19 +163,13 @@ export type ReadonlyTransientSelectorFamilyToken<T, K extends Canonical> = {
 	__T?: T
 	__K?: K
 }
-export type WritableRecyclableSelectorFamilyToken<
-	T extends object,
-	K extends Canonical,
-> = {
+export type WritableRecyclableSelectorFamilyToken<T, K extends Canonical> = {
 	key: string
 	type: `writable_recyclable_selector_family`
 	__T?: T
 	__K?: K
 }
-export type ReadonlyRecyclableSelectorFamilyToken<
-	T extends object,
-	K extends Canonical,
-> = {
+export type ReadonlyRecyclableSelectorFamilyToken<T, K extends Canonical> = {
 	key: string
 	type: `readonly_recyclable_selector_family`
 	__T?: T
@@ -185,33 +179,20 @@ export type ReadonlyRecyclableSelectorFamilyToken<
 export type TransientSelectorFamilyToken<T, K extends Canonical> =
 	| ReadonlyTransientSelectorFamilyToken<T, K>
 	| WritableTransientSelectorFamilyToken<T, K>
-export type RecyclableSelectorFamilyToken<
-	T extends object,
-	K extends Canonical,
-> =
+export type RecyclableSelectorFamilyToken<T, K extends Canonical> =
 	| ReadonlyRecyclableSelectorFamilyToken<T, K>
 	| WritableRecyclableSelectorFamilyToken<T, K>
 export type ReadonlySelectorFamilyToken<T, K extends Canonical> =
+	| ReadonlyRecyclableSelectorFamilyToken<T, K>
 	| ReadonlyTransientSelectorFamilyToken<T, K>
-	| (T extends object
-			? ReadonlyRecyclableSelectorFamilyToken<T, K>
-			: unknown extends T
-				? ReadonlyRecyclableSelectorFamilyToken<object, K>
-				: never)
+
 export type WritableSelectorFamilyToken<T, K extends Canonical> =
+	| WritableRecyclableSelectorFamilyToken<T, K>
 	| WritableTransientSelectorFamilyToken<T, K>
-	| (T extends object
-			? WritableRecyclableSelectorFamilyToken<T, K>
-			: unknown extends T
-				? WritableRecyclableSelectorFamilyToken<object, K>
-				: never)
+
 export type SelectorFamilyToken<T, K extends Canonical> =
+	| RecyclableSelectorFamilyToken<T, K>
 	| TransientSelectorFamilyToken<T, K>
-	| (T extends object
-			? RecyclableSelectorFamilyToken<T, K>
-			: unknown extends T
-				? RecyclableSelectorFamilyToken<object, K>
-				: never)
 
 export function selectorFamily<T, K extends Canonical>(
 	options: WritableTransientSelectorFamilyOptions<T, K>,
