@@ -46,7 +46,6 @@ export const buildTransaction = (
 		writableSelectors: new LazyMap(parent.writableSelectors),
 		valueMap: new LazyMap(parent.valueMap),
 		defaults: parent.defaults,
-		stableRefs: new LazyMap(parent.stableRefs),
 		disposalTraces: store.disposalTraces.copy(),
 		molecules: new LazyMap(parent.molecules),
 		moleculeGraph: new Junction(parent.moleculeGraph.toJSON(), {
