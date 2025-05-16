@@ -59,16 +59,16 @@ export type TokenDenomination =
 	| `molecule`
 	| `mutable_atom_family`
 	| `mutable_atom`
-	| `readonly_recyclable_selector_family`
-	| `readonly_recyclable_selector`
+	| `readonly_held_selector_family`
+	| `readonly_held_selector`
 	| `readonly_pure_selector_family`
 	| `readonly_pure_selector`
 	| `state`
 	| `timeline`
 	| `transaction`
 	| `unknown`
-	| `writable_recyclable_selector_family`
-	| `writable_recyclable_selector`
+	| `writable_held_selector_family`
+	| `writable_held_selector`
 	| `writable_pure_selector_family`
 	| `writable_pure_selector`
 

@@ -1,6 +1,6 @@
 import { atom, getState, selector, setState } from "atom.io"
 
-test(`recyclable selector`, () => {
+test(`held selector`, () => {
 	const myAtom = atom<{ a: number[]; b: number[]; c: number[] }>({
 		key: `myAtom`,
 		default: {
@@ -10,7 +10,7 @@ test(`recyclable selector`, () => {
 		},
 	})
 
-	const recyclableValue: { a: number; b: number; c: number } = {
+	const heldValue: { a: number; b: number; c: number } = {
 		a: 0,
 		b: 0,
 		c: 0,
@@ -23,10 +23,10 @@ test(`recyclable selector`, () => {
 		key: `mySelector`,
 		get: ({ get }) => {
 			const { a, b, c } = get(myAtom)
-			recyclableValue.a = a.reduce((acc, cur) => acc + cur, 0)
-			recyclableValue.b = b.reduce((acc, cur) => acc + cur, 0)
-			recyclableValue.c = c.reduce((acc, cur) => acc + cur, 0)
-			return recyclableValue
+			heldValue.a = a.reduce((acc, cur) => acc + cur, 0)
+			heldValue.b = b.reduce((acc, cur) => acc + cur, 0)
+			heldValue.c = c.reduce((acc, cur) => acc + cur, 0)
+			return heldValue
 		},
 	})
 

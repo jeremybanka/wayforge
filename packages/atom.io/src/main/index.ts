@@ -94,11 +94,11 @@ export type WritablePureSelectorToken<T, K extends Canonical = any> = {
 	__T?: T
 }
 /** @public */
-export type WritableRecyclableSelectorToken<T, K extends Canonical = any> = {
+export type WritableHeldSelectorToken<T, K extends Canonical = any> = {
 	/** The unique identifier of the selector. */
 	key: string
 	/** Discriminator. */
-	type: `writable_recyclable_selector`
+	type: `writable_held_selector`
 	/** Present if the selector belongs to a family. */
 	family?: FamilyMetadata<K>
 	/** Never present. This is a marker that preserves the type of the selector's value. */
@@ -116,11 +116,11 @@ export type ReadonlyPureSelectorToken<T, K extends Canonical = any> = {
 	__T?: T
 }
 /** @public */
-export type ReadonlyRecyclableSelectorToken<T, K extends Canonical = any> = {
+export type ReadonlyHeldSelectorToken<T, K extends Canonical = any> = {
 	/** The unique identifier of the selector. */
 	key: string
 	/** Discriminator. */
-	type: `readonly_recyclable_selector`
+	type: `readonly_held_selector`
 	/** Present if the selector belongs to a family. */
 	family?: FamilyMetadata<K>
 	/** Never present. This is a marker that preserves the type of the selector's value. */
@@ -128,31 +128,31 @@ export type ReadonlyRecyclableSelectorToken<T, K extends Canonical = any> = {
 }
 
 /** @public */
-export type TransientRecyclableSelectorToken<T, K extends Canonical = any> =
+export type TransientHeldSelectorToken<T, K extends Canonical = any> =
 	| ReadonlyPureSelectorToken<T, K>
 	| WritablePureSelectorToken<T, K>
 
 /** @public */
-export type RecyclableSelectorToken<T, K extends Canonical = any> =
-	| ReadonlyRecyclableSelectorToken<T, K>
-	| WritableRecyclableSelectorToken<T, K>
+export type HeldSelectorToken<T, K extends Canonical = any> =
+	| ReadonlyHeldSelectorToken<T, K>
+	| WritableHeldSelectorToken<T, K>
 
 /** @public */
 export type ReadonlySelectorToken<T, K extends Canonical = any> =
+	| ReadonlyHeldSelectorToken<T, K>
 	| ReadonlyPureSelectorToken<T, K>
-	| ReadonlyRecyclableSelectorToken<T, K>
 
 /** @public */
 export type WritableSelectorToken<T, K extends Canonical = any> =
+	| WritableHeldSelectorToken<T, K>
 	| WritablePureSelectorToken<T, K>
-	| WritableRecyclableSelectorToken<T, K>
 
 /** @public */
 export type SelectorToken<T, K extends Canonical = any> =
+	| ReadonlyHeldSelectorToken<T, K>
 	| ReadonlyPureSelectorToken<T, K>
-	| ReadonlyRecyclableSelectorToken<T, K>
+	| WritableHeldSelectorToken<T, K>
 	| WritablePureSelectorToken<T, K>
-	| WritableRecyclableSelectorToken<T, K>
 
 /**
  * @public

@@ -91,11 +91,11 @@ export function seekInStore(
 		case `mutable_atom_family`:
 			state = target.atoms.get(fullKey)
 			break
-		case `writable_recyclable_selector_family`:
+		case `writable_held_selector_family`:
 		case `writable_pure_selector_family`:
 			state = target.writableSelectors.get(fullKey)
 			break
-		case `readonly_recyclable_selector_family`:
+		case `readonly_held_selector_family`:
 		case `readonly_pure_selector_family`:
 			state = target.readonlySelectors.get(fullKey)
 			break

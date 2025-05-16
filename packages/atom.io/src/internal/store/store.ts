@@ -3,24 +3,24 @@ import type {
 	Logger,
 	MoleculeCreation,
 	MoleculeDisposal,
+	ReadonlyHeldSelectorToken,
 	ReadonlyPureSelectorToken,
-	ReadonlyRecyclableSelectorToken,
 	SelectorToken,
 	TimelineToken,
 	TransactionToken,
+	WritableHeldSelectorToken,
 	WritablePureSelectorToken,
-	WritableRecyclableSelectorToken,
 } from "atom.io"
 import { AtomIOLogger } from "atom.io"
 import type { Canonical, stringified } from "atom.io/json"
 
 import type {
 	Atom,
+	HeldSelectorFamily,
 	MutableAtomFamily,
 	PureSelectorFamily,
 	ReadonlyPureSelector,
 	ReadonlyPureSelectorFamily,
-	RecyclableSelectorFamily,
 	RegularAtomFamily,
 	WritablePureSelector,
 	WritablePureSelectorFamily,
@@ -80,9 +80,9 @@ export class Store implements Lineage {
 	public trackers: Map<string, Tracker<Transceiver<any>>> = new Map()
 	public families: Map<
 		string,
+		| HeldSelectorFamily<any, any>
 		| MutableAtomFamily<any, any, any>
 		| PureSelectorFamily<any, any>
-		| RecyclableSelectorFamily<any, any>
 		| RegularAtomFamily<any, any>
 	> = new Map()
 	public joins: Map<string, Join<any, any, any, any, any, any>> = new Map()
