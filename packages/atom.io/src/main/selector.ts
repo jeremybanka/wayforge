@@ -200,18 +200,28 @@ export type SelectorFamilyToken<T, K extends Canonical> =
 	| HeldSelectorFamilyToken<T, K>
 	| PureSelectorFamilyToken<T, K>
 
+export function selectorFamily<T extends object, K extends Canonical>(
+	options: WritableHeldSelectorFamilyOptions<T, K>,
+): WritableHeldSelectorFamilyToken<T, K>
+export function selectorFamily<T extends object, K extends Canonical>(
+	options: ReadonlyHeldSelectorFamilyOptions<T, K>,
+): ReadonlyHeldSelectorFamilyToken<T, K>
 export function selectorFamily<T, K extends Canonical>(
 	options: WritablePureSelectorFamilyOptions<T, K>,
 ): WritablePureSelectorFamilyToken<T, K>
 export function selectorFamily<T, K extends Canonical>(
 	options: ReadonlyPureSelectorFamilyOptions<T, K>,
 ): ReadonlyPureSelectorFamilyToken<T, K>
-export function selectorFamily<T, K extends Canonical>(
+export function selectorFamily(
 	options:
-		| ReadonlyPureSelectorFamilyOptions<T, K>
-		| WritablePureSelectorFamilyOptions<T, K>,
+		| ReadonlyHeldSelectorFamilyOptions<any, any>
+		| ReadonlyPureSelectorFamilyOptions<any, any>
+		| WritableHeldSelectorFamilyOptions<any, any>
+		| WritablePureSelectorFamilyOptions<any, any>,
 ):
-	| ReadonlyPureSelectorFamilyToken<T, K>
-	| WritablePureSelectorFamilyToken<T, K> {
+	| ReadonlyHeldSelectorFamilyToken<any, any>
+	| ReadonlyPureSelectorFamilyToken<any, any>
+	| WritableHeldSelectorFamilyToken<any, any>
+	| WritablePureSelectorFamilyToken<any, any> {
 	return createSelectorFamily(IMPLICIT.STORE, options)
 }
