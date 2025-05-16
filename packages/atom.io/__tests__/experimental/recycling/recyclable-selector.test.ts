@@ -46,11 +46,11 @@ describe(`standalone selectors held`, () => {
 		}>({
 			key: `mySelector`,
 			const: { a: 0, b: 0, c: 0 },
-			get: ({ get }, permanent) => {
+			get: ({ get }, self) => {
 				const { a, b, c } = get(myAtom)
-				permanent.a = a.reduce((acc, cur) => acc + cur, 0)
-				permanent.b = b.reduce((acc, cur) => acc + cur, 0)
-				permanent.c = c.reduce((acc, cur) => acc + cur, 0)
+				self.a = a.reduce((acc, cur) => acc + cur, 0)
+				self.b = b.reduce((acc, cur) => acc + cur, 0)
+				self.c = c.reduce((acc, cur) => acc + cur, 0)
 			},
 		})
 
@@ -94,11 +94,11 @@ describe(`standalone selectors held`, () => {
 		}>({
 			key: `mySelector`,
 			const: { a: 0, b: 0, c: 0 },
-			get: ({ get }, permanent) => {
+			get: ({ get }, self) => {
 				const { a, b, c } = get(myAtom)
-				permanent.a = a.reduce((acc, cur) => acc + cur, 0)
-				permanent.b = b.reduce((acc, cur) => acc + cur, 0)
-				permanent.c = c.reduce((acc, cur) => acc + cur, 0)
+				self.a = a.reduce((acc, cur) => acc + cur, 0)
+				self.b = b.reduce((acc, cur) => acc + cur, 0)
+				self.c = c.reduce((acc, cur) => acc + cur, 0)
 			},
 			set: ({ set }, newValue) => {
 				set(myAtom, (state) => {
@@ -158,11 +158,11 @@ describe(`family selectors held`, () => {
 			const: () => ({ a: 0, b: 0, c: 0 }),
 			get:
 				(key) =>
-				({ get }, permanent) => {
+				({ get }, self) => {
 					const { a, b, c } = get(myAtomFamily, key)
-					permanent.a = a.reduce((acc, cur) => acc + cur, 0)
-					permanent.b = b.reduce((acc, cur) => acc + cur, 0)
-					permanent.c = c.reduce((acc, cur) => acc + cur, 0)
+					self.a = a.reduce((acc, cur) => acc + cur, 0)
+					self.b = b.reduce((acc, cur) => acc + cur, 0)
+					self.c = c.reduce((acc, cur) => acc + cur, 0)
 				},
 		})
 
@@ -231,11 +231,11 @@ describe(`family selectors held`, () => {
 				},
 			set:
 				(key) =>
-				({ set }, newValue) => {
+				({ set }, self) => {
 					set(myAtomFamily, key, (state) => {
-						state.a = Array.from({ length: newValue.a }).map(() => 1)
-						state.b = Array.from({ length: newValue.b }).map(() => 1)
-						state.c = Array.from({ length: newValue.c }).map(() => 1)
+						state.a = Array.from({ length: self.a }).map(() => 1)
+						state.b = Array.from({ length: self.b }).map(() => 1)
+						state.c = Array.from({ length: self.c }).map(() => 1)
 						return state
 					})
 				},
