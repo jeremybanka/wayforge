@@ -1,5 +1,12 @@
 import type { Logger } from "atom.io"
-import { atom, getState, selector, setState } from "atom.io"
+import {
+	atom,
+	atomFamily,
+	getState,
+	selector,
+	selectorFamily,
+	setState,
+} from "atom.io"
 import * as Internal from "atom.io/internal"
 
 import * as Utils from "../../__util__"
@@ -20,7 +27,7 @@ beforeEach(() => {
 	vitest.spyOn(Utils, `stdout0`)
 })
 
-test.skip(`held selector concept`, () => {
+test(`held selector concept`, () => {
 	const myAtom = atom<{ a: number[]; b: number[]; c: number[] }>({
 		key: `myAtom`,
 		default: {
@@ -119,4 +126,61 @@ test(`held selector implementation`, () => {
 		c: 9,
 	})
 	expect(valueInitial).toBe(valueAfter)
+})
+
+test(`held selector families`, () => {
+	const myAtom = atomFamily<{ a: number[]; b: number[]; c: number[] }, boolean>({
+		key: `myAtom`,
+		default: {
+			a: [],
+			b: [],
+			c: [],
+		},
+	})
+
+	const mySelector = selectorFamily<
+		{
+			a: number
+			b: number
+			c: number
+		},
+		boolean
+	>({
+		key: `mySelector`,
+		default: () => ({ a: 0, b: 0, c: 0 }),
+		get:
+			(key) =>
+			({ get }, permanent) => {
+				const { a, b, c } = get(myAtom, key)
+				permanent.a = a.reduce((acc, cur) => acc + cur, 0)
+				permanent.b = b.reduce((acc, cur) => acc + cur, 0)
+				permanent.c = c.reduce((acc, cur) => acc + cur, 0)
+			},
+	})
+	const valueInitial = getState(mySelector, true)
+	expect(valueInitial).toEqual({
+		a: 0,
+		b: 0,
+		c: 0,
+	})
+
+	setState(myAtom, true, (state) => {
+		state.a.push(1, 2)
+		state.b.push(2, 2, 2)
+		state.c.push(3, 6)
+		return state
+	})
+
+	const valueAfter = getState(mySelector, true)
+	expect(valueAfter).toEqual({
+		a: 3,
+		b: 6,
+		c: 9,
+	})
+
+	expect(valueInitial).toBe(valueAfter)
+
+	const valueAlt = getState(mySelector, false)
+
+	expect(valueInitial).not.toBe(valueAlt)
 })
