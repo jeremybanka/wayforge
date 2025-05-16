@@ -128,7 +128,7 @@ export type ReadonlyHeldSelectorToken<T, K extends Canonical = any> = {
 }
 
 /** @public */
-export type TransientHeldSelectorToken<T, K extends Canonical = any> =
+export type PureSelectorToken<T, K extends Canonical = any> =
 	| ReadonlyPureSelectorToken<T, K>
 	| WritablePureSelectorToken<T, K>
 
