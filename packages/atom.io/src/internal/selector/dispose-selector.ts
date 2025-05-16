@@ -24,12 +24,42 @@ export function disposeSelector(
 		}
 		let familyToken: SelectorFamilyToken<any, any>
 		switch (selectorToken.type) {
+			case `writable_held_selector`:
+				{
+					target.writableSelectors.delete(key)
+					familyToken = {
+						key: selector.family.key,
+						type: `writable_held_selector_family`,
+					}
+					const family = withdraw(store, familyToken)
+					family.subject.next({
+						type: `state_disposal`,
+						subType: `selector`,
+						token: selectorToken,
+					})
+				}
+				break
 			case `writable_pure_selector`:
 				{
 					target.writableSelectors.delete(key)
 					familyToken = {
 						key: selector.family.key,
 						type: `writable_pure_selector_family`,
+					}
+					const family = withdraw(store, familyToken)
+					family.subject.next({
+						type: `state_disposal`,
+						subType: `selector`,
+						token: selectorToken,
+					})
+				}
+				break
+			case `readonly_held_selector`:
+				{
+					target.readonlySelectors.delete(key)
+					familyToken = {
+						key: selector.family.key,
+						type: `readonly_held_selector_family`,
 					}
 					const family = withdraw(store, familyToken)
 					family.subject.next({
