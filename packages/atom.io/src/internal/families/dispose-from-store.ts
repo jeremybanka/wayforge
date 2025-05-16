@@ -47,6 +47,8 @@ export function disposeFromStore(
 			break
 		case `writable_pure_selector`:
 		case `readonly_pure_selector`:
+		case `writable_held_selector`:
+		case `readonly_held_selector`:
 			disposeSelector(store, token)
 			break
 	}

@@ -19,13 +19,9 @@ export const createReadonlyHeldSelector = <T extends object>(
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const covered = new Set<string>()
-	const key = options.key
+	const { key, default: def } = options
 	const type = `readonly_held_selector` as const
 	const { get, find, json } = registerSelector(target, type, key, covered)
-	let def = options.default
-	if (typeof def === `function`) {
-		def = def()
-	}
 	const getSelf = () => {
 		options.get({ get, find, json }, def)
 		cacheValue(newest(store), key, def, subject)

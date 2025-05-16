@@ -22,15 +22,11 @@ export const createWritableHeldSelector = <T extends object>(
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const covered = new Set<string>()
-	const key = options.key
+	const { key, default: def } = options
 	const type = `writable_held_selector` as const
 	const setterToolkit = registerSelector(target, type, key, covered)
 	const { find, get, json } = setterToolkit
 	const getterToolkit = { find, get, json }
-	let def = options.default
-	if (typeof def === `function`) {
-		def = def()
-	}
 
 	const getSelf = (getFn = options.get, innerTarget = newest(store)): T => {
 		getFn(getterToolkit, def)
