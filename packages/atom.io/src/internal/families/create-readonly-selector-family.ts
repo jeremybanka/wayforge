@@ -2,9 +2,9 @@ import type {
 	FamilyMetadata,
 	findState,
 	getState,
-	ReadonlyTransientSelectorFamilyOptions,
-	ReadonlyTransientSelectorFamilyToken,
-	ReadonlyTransientSelectorToken,
+	ReadonlyPureSelectorFamilyOptions,
+	ReadonlyPureSelectorFamilyToken,
+	ReadonlyPureSelectorToken,
 	StateCreation,
 	StateDisposal,
 } from "atom.io"
@@ -16,28 +16,28 @@ import {
 	getFromStore,
 	getJsonToken,
 	prettyPrintTokenType,
-	type ReadonlyTransientSelectorFamily,
+	type ReadonlyPureSelectorFamily,
 } from ".."
 import { newest } from "../lineage"
 import { createReadonlySelector } from "../selector"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 
-export function createReadonlyTransientSelectorFamily<T, K extends Canonical>(
+export function createReadonlyPureSelectorFamily<T, K extends Canonical>(
 	store: Store,
-	options: ReadonlyTransientSelectorFamilyOptions<T, K>,
+	options: ReadonlyPureSelectorFamilyOptions<T, K>,
 	internalRoles?: string[],
-): ReadonlyTransientSelectorFamilyToken<T, K> {
+): ReadonlyPureSelectorFamilyToken<T, K> {
 	const familyToken = {
 		key: options.key,
-		type: `readonly_transient_selector_family`,
-	} as const satisfies ReadonlyTransientSelectorFamilyToken<T, K>
+		type: `readonly_pure_selector_family`,
+	} as const satisfies ReadonlyPureSelectorFamilyToken<T, K>
 
 	const existing = store.families.get(options.key)
 	if (existing) {
 		store.logger.error(
 			`❗`,
-			`readonly_transient_selector_family`,
+			`readonly_pure_selector_family`,
 			options.key,
 			`Overwriting an existing ${prettyPrintTokenType(
 				existing,
@@ -46,11 +46,11 @@ export function createReadonlyTransientSelectorFamily<T, K extends Canonical>(
 	}
 
 	const subject = new Subject<
-		| StateCreation<ReadonlyTransientSelectorToken<T>>
-		| StateDisposal<ReadonlyTransientSelectorToken<T>>
+		| StateCreation<ReadonlyPureSelectorToken<T>>
+		| StateDisposal<ReadonlyPureSelectorToken<T>>
 	>()
 
-	const familyFunction = (key: K): ReadonlyTransientSelectorToken<T> => {
+	const familyFunction = (key: K): ReadonlyPureSelectorToken<T> => {
 		const subKey = stringifyJson(key)
 		const family: FamilyMetadata = { key: options.key, subKey }
 		const fullKey = `${options.key}(${subKey})`
@@ -72,7 +72,7 @@ export function createReadonlyTransientSelectorFamily<T, K extends Canonical>(
 	const readonlySelectorFamily = Object.assign(familyFunction, familyToken, {
 		internalRoles,
 		subject,
-		install: (s: Store) => createReadonlyTransientSelectorFamily(s, options),
+		install: (s: Store) => createReadonlyPureSelectorFamily(s, options),
 		default: (key: K) => {
 			const getFn = options.get(key)
 			return getFn({
@@ -83,7 +83,7 @@ export function createReadonlyTransientSelectorFamily<T, K extends Canonical>(
 				json: (token) => getJsonToken(store, token),
 			})
 		},
-	}) satisfies ReadonlyTransientSelectorFamily<T, K>
+	}) satisfies ReadonlyPureSelectorFamily<T, K>
 
 	store.families.set(options.key, readonlySelectorFamily)
 	return familyToken

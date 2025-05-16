@@ -1,4 +1,4 @@
-import type { ReadonlyTransientSelectorToken, SelectorToken } from "atom.io"
+import type { ReadonlyPureSelectorToken, SelectorToken } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
 	createRegularAtom,
@@ -13,7 +13,7 @@ export type SelectorTokenIndex = WritableTokenIndex<SelectorToken<unknown>>
 
 export const attachSelectorIndex = (
 	store: Store,
-): ReadonlyTransientSelectorToken<SelectorTokenIndex> => {
+): ReadonlyPureSelectorToken<SelectorTokenIndex> => {
 	const readonlySelectorTokenIndexState__INTERNAL =
 		createRegularAtom<SelectorTokenIndex>(
 			store,

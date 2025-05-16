@@ -1,10 +1,10 @@
 import type {
 	FamilyMetadata,
-	WritableTransientSelectorOptions,
-	WritableTransientSelectorToken,
+	WritablePureSelectorOptions,
+	WritablePureSelectorToken,
 } from "atom.io"
 
-import type { WritableTransientSelector } from ".."
+import type { WritablePureSelector } from ".."
 import { cacheValue } from "../caching"
 import { newest } from "../lineage"
 import { markDone } from "../operation"
@@ -16,9 +16,9 @@ import { registerSelector } from "./register-selector"
 
 export const createWritableSelector = <T>(
 	store: Store,
-	options: WritableTransientSelectorOptions<T>,
+	options: WritablePureSelectorOptions<T>,
 	family: FamilyMetadata | undefined,
-): WritableTransientSelectorToken<T> => {
+): WritablePureSelectorToken<T> => {
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const covered = new Set<string>()
@@ -39,7 +39,7 @@ export const createWritableSelector = <T>(
 		const newValue = become(next)(oldValue)
 		store.logger.info(
 			`📝`,
-			`writable_transient_selector`,
+			`writable_pure_selector`,
 			options.key,
 			`set (`,
 			oldValue,
@@ -54,21 +54,21 @@ export const createWritableSelector = <T>(
 		}
 		options.set(setterToolkit, newValue)
 	}
-	const mySelector: WritableTransientSelector<T> = {
+	const mySelector: WritablePureSelector<T> = {
 		...options,
 		subject,
 		install: (s: Store) => createWritableSelector(s, options, family),
 		get: getSelf,
 		set: setSelf,
-		type: `writable_transient_selector`,
+		type: `writable_pure_selector`,
 		...(family && { family }),
 	}
 	target.writableSelectors.set(options.key, mySelector)
 	const initialValue = getSelf()
 	store.logger.info(`✨`, mySelector.type, mySelector.key, `=`, initialValue)
-	const token: WritableTransientSelectorToken<T> = {
+	const token: WritablePureSelectorToken<T> = {
 		key: options.key,
-		type: `writable_transient_selector`,
+		type: `writable_pure_selector`,
 	}
 	if (family) {
 		token.family = family

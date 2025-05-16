@@ -2,8 +2,8 @@ import type {
 	AtomToken,
 	JoinToken,
 	MutableAtomToken,
-	ReadonlyTransientSelectorFamilyToken,
-	ReadonlyTransientSelectorToken,
+	ReadonlyPureSelectorFamilyToken,
+	ReadonlyPureSelectorToken,
 } from "atom.io"
 import { atom, getInternalRelations, join, selectorFamily } from "atom.io"
 import { Join } from "atom.io/internal"
@@ -56,7 +56,7 @@ export const usersInRooms: JoinToken<
 	DEFAULT_USER_IN_ROOM_META,
 )
 
-export const usersInMyRoomView: ReadonlyTransientSelectorFamilyToken<
+export const usersInMyRoomView: ReadonlyPureSelectorFamilyToken<
 	MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[],
 	string
 > = selectorFamily<

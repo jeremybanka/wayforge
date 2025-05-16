@@ -51,9 +51,9 @@ export function getFromStore(
 			case `mutable_atom_family`:
 				return store.defaults.get(family.key)
 			case `readonly_recyclable_selector_family`:
-			case `readonly_transient_selector_family`:
+			case `readonly_pure_selector_family`:
 			case `writable_recyclable_selector_family`:
-			case `writable_transient_selector_family`: {
+			case `writable_pure_selector_family`: {
 				if (store.defaults.has(family.key)) {
 					return store.defaults.get(token.family.key)
 				}

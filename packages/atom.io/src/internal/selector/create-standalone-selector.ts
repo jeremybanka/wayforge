@@ -1,8 +1,8 @@
 import type {
-	ReadonlyTransientSelectorOptions,
-	ReadonlyTransientSelectorToken,
-	WritableTransientSelectorOptions,
-	WritableTransientSelectorToken,
+	ReadonlyPureSelectorOptions,
+	ReadonlyPureSelectorToken,
+	WritablePureSelectorOptions,
+	WritablePureSelectorToken,
 } from "atom.io"
 
 import type { Store } from "../store"
@@ -11,18 +11,16 @@ import { createWritableSelector } from "./create-writable-selector"
 
 export function createStandaloneSelector<T>(
 	store: Store,
-	options: WritableTransientSelectorOptions<T>,
-): WritableTransientSelectorToken<T>
+	options: WritablePureSelectorOptions<T>,
+): WritablePureSelectorToken<T>
 export function createStandaloneSelector<T>(
 	store: Store,
-	options: ReadonlyTransientSelectorOptions<T>,
-): ReadonlyTransientSelectorToken<T>
+	options: ReadonlyPureSelectorOptions<T>,
+): ReadonlyPureSelectorToken<T>
 export function createStandaloneSelector<T>(
 	store: Store,
-	options:
-		| ReadonlyTransientSelectorOptions<T>
-		| WritableTransientSelectorOptions<T>,
-): ReadonlyTransientSelectorToken<T> | WritableTransientSelectorToken<T> {
+	options: ReadonlyPureSelectorOptions<T> | WritablePureSelectorOptions<T>,
+): ReadonlyPureSelectorToken<T> | WritablePureSelectorToken<T> {
 	const isWritable = `set` in options
 
 	if (isWritable) {

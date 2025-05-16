@@ -3,18 +3,18 @@ import type {
 	FamilyMetadata,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
+	ReadonlyPureSelectorFamilyToken,
+	ReadonlyPureSelectorToken,
 	ReadonlyRecyclableSelectorFamilyToken,
 	ReadonlyRecyclableSelectorToken,
-	ReadonlyTransientSelectorFamilyToken,
-	ReadonlyTransientSelectorToken,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
 	StateCreation,
 	StateDisposal,
+	WritablePureSelectorFamilyToken,
+	WritablePureSelectorToken,
 	WritableRecyclableSelectorFamilyToken,
 	WritableRecyclableSelectorToken,
-	WritableTransientSelectorFamilyToken,
-	WritableTransientSelectorToken,
 } from "atom.io"
 import type { Canonical, Json, JsonInterface } from "atom.io/json"
 
@@ -80,20 +80,18 @@ export type Atom<T> =
 	| RegularAtom<T>
 	| (T extends Transceiver<any> ? MutableAtom<T, any> : never)
 
-export type WritableTransientSelector<T> = AtomIOState & {
-	type: `writable_transient_selector`
+export type WritablePureSelector<T> = AtomIOState & {
+	type: `writable_pure_selector`
 	get: () => T
 	set: (newValue: T | ((oldValue: T) => T)) => void
 }
-export type ReadonlyTransientSelector<T> = AtomIOState & {
-	type: `readonly_transient_selector`
+export type ReadonlyPureSelector<T> = AtomIOState & {
+	type: `readonly_pure_selector`
 	get: () => T
 }
-export type Selector<T> =
-	| ReadonlyTransientSelector<T>
-	| WritableTransientSelector<T>
+export type Selector<T> = ReadonlyPureSelector<T> | WritablePureSelector<T>
 
-export type WritableState<T> = Atom<T> | WritableTransientSelector<T>
+export type WritableState<T> = Atom<T> | WritablePureSelector<T>
 export type ReadableState<T> = Atom<T> | Selector<T>
 
 // biome-ignore format: intersection
@@ -126,14 +124,14 @@ export type AtomFamily<T, K extends Canonical = Canonical> =
 	| RegularAtomFamily<T, K>
 
 // biome-ignore format: intersection
-export type WritableTransientSelectorFamily<T, K extends Canonical> = 
-	& WritableTransientSelectorFamilyToken<T, K> 
-	& ((key: K) => WritableTransientSelectorToken<T>)
+export type WritablePureSelectorFamily<T, K extends Canonical> = 
+	& WritablePureSelectorFamilyToken<T, K> 
+	& ((key: K) => WritablePureSelectorToken<T>)
 	& {
 		default: (key: K) => T,
 		subject: Subject<
-			| StateCreation<WritableTransientSelectorToken<T>>
-			| StateDisposal<WritableTransientSelectorToken<T>>
+			| StateCreation<WritablePureSelectorToken<T>>
+			| StateDisposal<WritablePureSelectorToken<T>>
 		>
 		install: (store: Store) => void
 		internalRoles : string[] | undefined
@@ -154,14 +152,14 @@ export type WritableRecyclableSelectorFamily<T , K extends Canonical> =
 	}
 
 // biome-ignore format: intersection
-export type ReadonlyTransientSelectorFamily<T, K extends Canonical> = 
-	& ReadonlyTransientSelectorFamilyToken<T, K>
-	& ((key: K) => ReadonlyTransientSelectorToken<T>)
+export type ReadonlyPureSelectorFamily<T, K extends Canonical> = 
+	& ReadonlyPureSelectorFamilyToken<T, K>
+	& ((key: K) => ReadonlyPureSelectorToken<T>)
 	& {
 		default: (key: K) => T,
 		subject: Subject<
-			| StateCreation<ReadonlyTransientSelectorToken<T>>
-			| StateDisposal<ReadonlyTransientSelectorToken<T>>
+			| StateCreation<ReadonlyPureSelectorToken<T>>
+			| StateDisposal<ReadonlyPureSelectorToken<T>>
 		>
 		install: (store: Store) => void
 		internalRoles : string[] | undefined
@@ -181,29 +179,29 @@ export type ReadonlyRecyclableSelectorFamily<T , K extends Canonical> =
 		internalRoles : string[] | undefined
 	}
 
-export type TransientSelectorFamily<T, K extends Canonical> =
-	| ReadonlyTransientSelectorFamily<T, K>
-	| WritableTransientSelectorFamily<T, K>
+export type PureSelectorFamily<T, K extends Canonical> =
+	| ReadonlyPureSelectorFamily<T, K>
+	| WritablePureSelectorFamily<T, K>
 
 export type RecyclableSelectorFamily<T, K extends Canonical> =
 	| ReadonlyRecyclableSelectorFamily<T, K>
 	| WritableRecyclableSelectorFamily<T, K>
 
 export type ReadonlySelectorFamily<T, K extends Canonical> =
+	| ReadonlyPureSelectorFamily<T, K>
 	| ReadonlyRecyclableSelectorFamily<T, K>
-	| ReadonlyTransientSelectorFamily<T, K>
 
 export type WritableSelectorFamily<T, K extends Canonical> =
+	| WritablePureSelectorFamily<T, K>
 	| WritableRecyclableSelectorFamily<T, K>
-	| WritableTransientSelectorFamily<T, K>
 
 export type SelectorFamily<T, K extends Canonical> =
+	| PureSelectorFamily<T, K>
 	| RecyclableSelectorFamily<T, K>
-	| TransientSelectorFamily<T, K>
 
 export type WritableFamily<T, K extends Canonical> =
 	| AtomFamily<T, K>
-	| WritableTransientSelectorFamily<T, K>
+	| WritablePureSelectorFamily<T, K>
 export type ReadableFamily<T, K extends Canonical> =
 	| AtomFamily<T, K>
 	| SelectorFamily<T, K>

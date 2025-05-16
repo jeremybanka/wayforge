@@ -1,34 +1,34 @@
 import type {
-	ReadonlyTransientSelectorFamilyOptions,
-	ReadonlyTransientSelectorFamilyToken,
+	ReadonlyPureSelectorFamilyOptions,
+	ReadonlyPureSelectorFamilyToken,
 	SelectorFamilyToken,
-	WritableTransientSelectorFamilyOptions,
-	WritableTransientSelectorFamilyToken,
+	WritablePureSelectorFamilyOptions,
+	WritablePureSelectorFamilyToken,
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 
 import type { Store } from "../store"
-import { createReadonlyTransientSelectorFamily } from "./create-readonly-selector-family"
-import { createWritableTransientSelectorFamily } from "./create-writable-selector-family"
+import { createReadonlyPureSelectorFamily } from "./create-readonly-selector-family"
+import { createWritablePureSelectorFamily } from "./create-writable-selector-family"
 
 export function createSelectorFamily<T, K extends Canonical>(
 	store: Store,
-	options: WritableTransientSelectorFamilyOptions<T, K>,
-): WritableTransientSelectorFamilyToken<T, K>
+	options: WritablePureSelectorFamilyOptions<T, K>,
+): WritablePureSelectorFamilyToken<T, K>
 export function createSelectorFamily<T, K extends Canonical>(
 	store: Store,
-	options: ReadonlyTransientSelectorFamilyOptions<T, K>,
-): ReadonlyTransientSelectorFamilyToken<T, K>
+	options: ReadonlyPureSelectorFamilyOptions<T, K>,
+): ReadonlyPureSelectorFamilyToken<T, K>
 export function createSelectorFamily<T, K extends Canonical>(
 	store: Store,
 	options:
-		| ReadonlyTransientSelectorFamilyOptions<T, K>
-		| WritableTransientSelectorFamilyOptions<T, K>,
+		| ReadonlyPureSelectorFamilyOptions<T, K>
+		| WritablePureSelectorFamilyOptions<T, K>,
 ): SelectorFamilyToken<T, K> {
 	const isWritable = `set` in options
 
 	if (isWritable) {
-		return createWritableTransientSelectorFamily(store, options)
+		return createWritablePureSelectorFamily(store, options)
 	}
-	return createReadonlyTransientSelectorFamily(store, options)
+	return createReadonlyPureSelectorFamily(store, options)
 }

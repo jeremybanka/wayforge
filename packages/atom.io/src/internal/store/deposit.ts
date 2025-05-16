@@ -6,8 +6,8 @@ import type {
 	MutableAtomToken,
 	ReadableFamilyToken,
 	ReadableToken,
-	ReadonlyTransientSelectorFamilyToken,
-	ReadonlyTransientSelectorToken,
+	ReadonlyPureSelectorFamilyToken,
+	ReadonlyPureSelectorToken,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
 	SelectorFamilyToken,
@@ -16,8 +16,8 @@ import type {
 	TimelineToken,
 	TransactionToken,
 	WritableFamilyToken,
-	WritableTransientSelectorFamilyToken,
-	WritableTransientSelectorToken,
+	WritablePureSelectorFamilyToken,
+	WritablePureSelectorToken,
 	WritableToken,
 } from "atom.io"
 import type { Canonical, Json } from "atom.io/json"
@@ -31,8 +31,8 @@ import type {
 	MutableAtomFamily,
 	ReadableFamily,
 	ReadableState,
-	ReadonlyTransientSelector,
-	ReadonlyTransientSelectorFamily,
+	ReadonlyPureSelector,
+	ReadonlyPureSelectorFamily,
 	RegularAtom,
 	RegularAtomFamily,
 	Selector,
@@ -40,8 +40,8 @@ import type {
 	Timeline,
 	Transceiver,
 	WritableFamily,
-	WritableTransientSelector,
-	WritableTransientSelectorFamily,
+	WritablePureSelector,
+	WritablePureSelectorFamily,
 	WritableState,
 } from ".."
 import type { Transaction } from "../transaction"
@@ -52,11 +52,11 @@ export function deposit<T extends Transceiver<any>>(
 ): MutableAtomToken<T, any>
 export function deposit<T>(state: Atom<T>): AtomToken<T>
 export function deposit<T>(
-	state: WritableTransientSelector<T>,
-): WritableTransientSelectorToken<T>
+	state: WritablePureSelector<T>,
+): WritablePureSelectorToken<T>
 export function deposit<T>(
-	state: ReadonlyTransientSelector<T>,
-): ReadonlyTransientSelectorToken<T>
+	state: ReadonlyPureSelector<T>,
+): ReadonlyPureSelectorToken<T>
 export function deposit<T>(state: Selector<T>): SelectorToken<T>
 export function deposit<T>(state: WritableState<T>): WritableToken<T>
 export function deposit<T>(state: ReadableState<T>): ReadableToken<T>
@@ -71,11 +71,11 @@ export function deposit<
 >(state: MutableAtomFamily<T, J, K>): MutableAtomFamilyToken<T, J, K>
 export function deposit<T>(state: AtomFamily<T, any>): AtomFamilyToken<T, any>
 export function deposit<T>(
-	state: WritableTransientSelectorFamily<T, any>,
-): WritableTransientSelectorFamilyToken<T, any>
+	state: WritablePureSelectorFamily<T, any>,
+): WritablePureSelectorFamilyToken<T, any>
 export function deposit<T>(
-	state: ReadonlyTransientSelectorFamily<T, any>,
-): ReadonlyTransientSelectorFamilyToken<T, any>
+	state: ReadonlyPureSelectorFamily<T, any>,
+): ReadonlyPureSelectorFamilyToken<T, any>
 export function deposit<T>(
 	state: SelectorFamily<T, any>,
 ): SelectorFamilyToken<T, any>

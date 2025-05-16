@@ -1,7 +1,7 @@
 import type {
 	MutableAtomToken,
-	WritableTransientSelectorFamilyToken,
-	WritableTransientSelectorToken,
+	WritablePureSelectorFamilyToken,
+	WritablePureSelectorToken,
 } from "atom.io"
 import type { Json } from "atom.io/json"
 
@@ -16,24 +16,24 @@ export const getJsonToken = <
 >(
 	store: Store,
 	mutableAtomToken: MutableAtomToken<Core, SerializableCore>,
-): WritableTransientSelectorToken<SerializableCore> => {
+): WritablePureSelectorToken<SerializableCore> => {
 	if (mutableAtomToken.family) {
 		const target = newest(store)
 		const jsonFamilyKey = `${mutableAtomToken.family.key}:JSON`
-		const jsonFamilyToken: WritableTransientSelectorFamilyToken<
+		const jsonFamilyToken: WritablePureSelectorFamilyToken<
 			SerializableCore,
 			string
 		> = {
 			key: jsonFamilyKey,
-			type: `writable_transient_selector_family`,
+			type: `writable_pure_selector_family`,
 		}
 		const family = withdraw(target, jsonFamilyToken)
 		const subKey = JSON.parse(mutableAtomToken.family.subKey)
 		const jsonToken = findInStore(store, family, subKey)
 		return jsonToken
 	}
-	const token: WritableTransientSelectorToken<SerializableCore> = {
-		type: `writable_transient_selector`,
+	const token: WritablePureSelectorToken<SerializableCore> = {
+		type: `writable_pure_selector`,
 		key: `${mutableAtomToken.key}:JSON`,
 	}
 	return token

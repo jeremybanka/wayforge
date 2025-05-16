@@ -5,15 +5,15 @@ import type {
 	MutableAtomToken,
 	ReadableFamilyToken,
 	ReadableToken,
-	ReadonlyTransientSelectorFamilyToken,
-	ReadonlyTransientSelectorToken,
+	ReadonlyPureSelectorFamilyToken,
+	ReadonlyPureSelectorToken,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
 	SelectorFamilyToken,
 	SelectorToken,
 	WritableFamilyToken,
-	WritableTransientSelectorFamilyToken,
-	WritableTransientSelectorToken,
+	WritablePureSelectorFamilyToken,
+	WritablePureSelectorToken,
 	WritableToken,
 } from "atom.io"
 import { type Canonical, type Json, stringifyJson } from "atom.io/json"
@@ -49,15 +49,15 @@ export function findInStore<T, K extends Canonical, Key extends K>(
 
 export function findInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
-	token: WritableTransientSelectorFamilyToken<T, K>,
+	token: WritablePureSelectorFamilyToken<T, K>,
 	key: Key,
-): WritableTransientSelectorToken<T, K>
+): WritablePureSelectorToken<T, K>
 
 export function findInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
-	token: ReadonlyTransientSelectorFamilyToken<T, K>,
+	token: ReadonlyPureSelectorFamilyToken<T, K>,
 	key: Key,
-): ReadonlyTransientSelectorToken<T, K>
+): ReadonlyPureSelectorToken<T, K>
 
 export function findInStore<T, K extends Canonical, Key extends K>(
 	store: Store,

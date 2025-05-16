@@ -21,7 +21,7 @@ export function structFamily<
 			K & string
 		>}State`]: AtomIO.RegularAtomFamilyToken<Struct[K], string>
 	},
-	AtomIO.ReadonlyTransientSelectorFamilyToken<Struct, string>,
+	AtomIO.ReadonlyPureSelectorFamilyToken<Struct, string>,
 ] {
 	const atoms: {
 		[K in keyof Struct as `find${Capitalize<Key & string>}${Capitalize<
@@ -35,21 +35,19 @@ export function structFamily<
 		})
 		return acc
 	}, {} as any)
-	const findStructState: AtomIO.ReadonlyTransientSelectorFamilyToken<
-		Struct,
-		string
-	> = createSelectorFamily(IMPLICIT.STORE, {
-		key: options.key,
-		get:
-			(id) =>
-			({ find, get }) => {
-				return Object.keys(options.default).reduce((acc, subKey) => {
-					acc[subKey] = get(
-						find((atoms as any)[nameFamily(options.key, subKey)], id),
-					)
-					return acc
-				}, {} as any)
-			},
-	})
+	const findStructState: AtomIO.ReadonlyPureSelectorFamilyToken<Struct, string> =
+		createSelectorFamily(IMPLICIT.STORE, {
+			key: options.key,
+			get:
+				(id) =>
+				({ find, get }) => {
+					return Object.keys(options.default).reduce((acc, subKey) => {
+						acc[subKey] = get(
+							find((atoms as any)[nameFamily(options.key, subKey)], id),
+						)
+						return acc
+					}, {} as any)
+				},
+		})
 	return [atoms, findStructState]
 }

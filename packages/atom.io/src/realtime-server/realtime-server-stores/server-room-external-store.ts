@@ -3,7 +3,7 @@ import { spawn } from "node:child_process"
 
 import type {
 	Loadable,
-	ReadonlyTransientSelectorFamilyToken,
+	ReadonlyPureSelectorFamilyToken,
 	RegularAtomFamilyToken,
 } from "atom.io"
 import { atomFamily, selectorFamily } from "atom.io"
@@ -20,7 +20,7 @@ export const roomArgumentsAtoms: RegularAtomFamilyToken<RoomArguments, string> =
 		default: [`echo`, [`Hello World!`]],
 	})
 
-export const roomSelectors: ReadonlyTransientSelectorFamilyToken<
+export const roomSelectors: ReadonlyPureSelectorFamilyToken<
 	Loadable<ChildSocket<any, any>>,
 	string
 > = selectorFamily<Loadable<ChildSocket<any, any>>, string>({

@@ -5,7 +5,7 @@ import type {
 	JoinOptions,
 	MutableAtomFamilyToken,
 	Read,
-	ReadonlyTransientSelectorFamilyToken,
+	ReadonlyPureSelectorFamilyToken,
 	RegularAtomFamilyToken,
 	setState,
 	SetterToolkit,
@@ -19,7 +19,7 @@ import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import { capitalize } from "../capitalize"
 import {
-	createReadonlyTransientSelectorFamily,
+	createReadonlyPureSelectorFamily,
 	createRegularAtomFamily,
 	findInStore,
 } from "../families"
@@ -45,23 +45,23 @@ export type JoinStateFamilies<
 > = Cardinality extends `1:1`
 	? (Content extends Json.Object
 			? {
-					readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlyTransientSelectorFamilyToken<
+					readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlyPureSelectorFamilyToken<
 						[AType, Content] | null,
 						BType
 					>
 				} & {
-					readonly [B in BSide as `${B}EntryOf${Capitalize<ASide>}`]: ReadonlyTransientSelectorFamilyToken<
+					readonly [B in BSide as `${B}EntryOf${Capitalize<ASide>}`]: ReadonlyPureSelectorFamilyToken<
 						[BType, Content] | null,
 						AType
 					>
 				}
 			: {}) & {
-			readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlyTransientSelectorFamilyToken<
+			readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlyPureSelectorFamilyToken<
 				AType | null,
 				BType
 			>
 		} & {
-			readonly [B in BSide as `${B}KeyOf${Capitalize<ASide>}`]: ReadonlyTransientSelectorFamilyToken<
+			readonly [B in BSide as `${B}KeyOf${Capitalize<ASide>}`]: ReadonlyPureSelectorFamilyToken<
 				BType | null,
 				AType
 			>
@@ -69,23 +69,23 @@ export type JoinStateFamilies<
 	: Cardinality extends `1:n`
 		? (Content extends Json.Object
 				? {
-						readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlyTransientSelectorFamilyToken<
+						readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlyPureSelectorFamilyToken<
 							[AType, Content] | null,
 							BType
 						>
 					} & {
-						readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlyTransientSelectorFamilyToken<
+						readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlyPureSelectorFamilyToken<
 							[BType, Content][],
 							AType
 						>
 					}
 				: {}) & {
-				readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlyTransientSelectorFamilyToken<
+				readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlyPureSelectorFamilyToken<
 					AType | null,
 					BType
 				>
 			} & {
-				readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlyTransientSelectorFamilyToken<
+				readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlyPureSelectorFamilyToken<
 					BType[],
 					AType
 				>
@@ -93,23 +93,23 @@ export type JoinStateFamilies<
 		: Cardinality extends `n:n`
 			? (Content extends Json.Object
 					? {
-							readonly [A in ASide as `${A}EntriesOf${Capitalize<BSide>}`]: ReadonlyTransientSelectorFamilyToken<
+							readonly [A in ASide as `${A}EntriesOf${Capitalize<BSide>}`]: ReadonlyPureSelectorFamilyToken<
 								[AType, Content][],
 								BType
 							>
 						} & {
-							readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlyTransientSelectorFamilyToken<
+							readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlyPureSelectorFamilyToken<
 								[BType, Content][],
 								AType
 							>
 						}
 					: {}) & {
-					readonly [A in ASide as `${A}KeysOf${Capitalize<BSide>}`]: ReadonlyTransientSelectorFamilyToken<
+					readonly [A in ASide as `${A}KeysOf${Capitalize<BSide>}`]: ReadonlyPureSelectorFamilyToken<
 						AType[],
 						BType
 					>
 				} & {
-					readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlyTransientSelectorFamilyToken<
+					readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlyPureSelectorFamilyToken<
 						BType[],
 						AType
 					>
@@ -412,7 +412,7 @@ export class Join<
 		)
 
 		const createSingleKeySelectorFamily = () =>
-			createReadonlyTransientSelectorFamily<string | null, string>(
+			createReadonlyPureSelectorFamily<string | null, string>(
 				store,
 				{
 					key: `${options.key}/singleRelatedKey`,
@@ -429,7 +429,7 @@ export class Join<
 				[`join`, `keys`],
 			)
 		const getMultipleKeySelectorFamily = () => {
-			return createReadonlyTransientSelectorFamily<string[], string>(
+			return createReadonlyPureSelectorFamily<string[], string>(
 				store,
 				{
 					key: `${options.key}/multipleRelatedKeys`,
@@ -445,7 +445,7 @@ export class Join<
 			)
 		}
 		const createSingleEntrySelectorFamily = () =>
-			createReadonlyTransientSelectorFamily<[string, Content] | null, string>(
+			createReadonlyPureSelectorFamily<[string, Content] | null, string>(
 				store,
 				{
 					key: `${options.key}/singleRelatedEntry`,
@@ -468,7 +468,7 @@ export class Join<
 				[`join`, `entries`],
 			)
 		const getMultipleEntrySelectorFamily = () =>
-			createReadonlyTransientSelectorFamily<[string, Content][], string>(
+			createReadonlyPureSelectorFamily<[string, Content][], string>(
 				store,
 				{
 					key: `${options.key}/multipleRelatedEntries`,
