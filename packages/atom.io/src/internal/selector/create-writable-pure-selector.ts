@@ -14,7 +14,7 @@ import { Subject } from "../subject"
 import { isRootStore } from "../transaction"
 import { registerSelector } from "./register-selector"
 
-export const createWritableSelector = <T>(
+export const createWritablePureSelector = <T>(
 	store: Store,
 	options: WritablePureSelectorOptions<T>,
 	family: FamilyMetadata | undefined,
@@ -57,7 +57,7 @@ export const createWritableSelector = <T>(
 	const mySelector: WritablePureSelector<T> = {
 		...options,
 		subject,
-		install: (s: Store) => createWritableSelector(s, options, family),
+		install: (s: Store) => createWritablePureSelector(s, options, family),
 		get: getSelf,
 		set: setSelf,
 		type: `writable_pure_selector`,

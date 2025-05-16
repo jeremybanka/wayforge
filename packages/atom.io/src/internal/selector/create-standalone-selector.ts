@@ -6,8 +6,8 @@ import type {
 } from "atom.io"
 
 import type { Store } from "../store"
-import { createReadonlySelector } from "./create-readonly-selector"
-import { createWritableSelector } from "./create-writable-selector"
+import { createReadonlyPureSelector } from "./create-readonly-pure-selector"
+import { createWritablePureSelector } from "./create-writable-pure-selector"
 
 export function createStandaloneSelector<T>(
 	store: Store,
@@ -24,11 +24,11 @@ export function createStandaloneSelector<T>(
 	const isWritable = `set` in options
 
 	if (isWritable) {
-		const state = createWritableSelector(store, options, undefined)
+		const state = createWritablePureSelector(store, options, undefined)
 		store.on.selectorCreation.next(state)
 		return state
 	}
-	const state = createReadonlySelector(store, options, undefined)
+	const state = createReadonlyPureSelector(store, options, undefined)
 	store.on.selectorCreation.next(state)
 	return state
 }

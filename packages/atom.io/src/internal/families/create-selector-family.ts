@@ -8,8 +8,8 @@ import type {
 import type { Canonical } from "atom.io/json"
 
 import type { Store } from "../store"
-import { createReadonlyPureSelectorFamily } from "./create-readonly-selector-family"
-import { createWritablePureSelectorFamily } from "./create-writable-selector-family"
+import { createReadonlyPureSelectorFamily } from "./create-readonly-pure-selector-family"
+import { createWritablePureSelectorFamily } from "./create-writable-pure-selector-family"
 
 export function createSelectorFamily<T, K extends Canonical>(
 	store: Store,

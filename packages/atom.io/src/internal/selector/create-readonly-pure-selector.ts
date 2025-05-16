@@ -11,7 +11,7 @@ import type { Store } from "../store"
 import { Subject } from "../subject"
 import { registerSelector } from "./register-selector"
 
-export const createReadonlySelector = <T>(
+export const createReadonlyPureSelector = <T>(
 	store: Store,
 	options: ReadonlyPureSelectorOptions<T>,
 	family: FamilyMetadata | undefined,
@@ -30,7 +30,7 @@ export const createReadonlySelector = <T>(
 	const readonlySelector: ReadonlyPureSelector<T> = {
 		...options,
 		subject,
-		install: (s: Store) => createReadonlySelector(s, options, family),
+		install: (s: Store) => createReadonlyPureSelector(s, options, family),
 		get: getSelf,
 		type: `readonly_pure_selector`,
 		...(family && { family }),
