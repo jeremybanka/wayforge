@@ -7,7 +7,7 @@
 ```ts
 const myAtom = atom<{ a: number[]; b: number[]; c: number[] }>({
   key: `myAtom`,
-  const: {
+  default: {
     a: [],
     b: [],
     c: [],
@@ -21,11 +21,11 @@ const mySelector = selector<{
 }>({
   key: `mySelector`,
   const: { a: 0, b: 0, c: 0 },
-  get: ({ get }, permanent) => {
+  get: ({ get }, self) => {
     const { a, b, c } = get(myAtom);
-    permanent.a = a.reduce((acc, cur) => acc + cur, 0);
-    permanent.b = b.reduce((acc, cur) => acc + cur, 0);
-    permanent.c = c.reduce((acc, cur) => acc + cur, 0);
+    self.a = a.reduce((acc, cur) => acc + cur, 0);
+    self.b = b.reduce((acc, cur) => acc + cur, 0);
+    self.c = c.reduce((acc, cur) => acc + cur, 0);
   },
 });
 ```
