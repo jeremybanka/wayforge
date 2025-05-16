@@ -1,5 +1,7 @@
+export * from "./create-readonly-held-selector"
 export * from "./create-readonly-pure-selector"
 export * from "./create-standalone-selector"
+export * from "./create-writable-held-selector"
 export * from "./create-writable-pure-selector"
 export * from "./dispose-selector"
 export * from "./get-selector-dependency-keys"
