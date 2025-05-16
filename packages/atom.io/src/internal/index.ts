@@ -80,6 +80,17 @@ export type Atom<T> =
 	| RegularAtom<T>
 	| (T extends Transceiver<any> ? MutableAtom<T, any> : never)
 
+export type WritableHeldSelector<T> = AtomIOState & {
+	type: `writable_held_selector`
+	default: T | (() => T)
+	get: () => T
+	set: (newValue: T | ((oldValue: T) => T)) => void
+}
+export type ReadonlyHeldSelector<T> = AtomIOState & {
+	type: `readonly_held_selector`
+	default: T | (() => T)
+	get: () => T
+}
 export type WritablePureSelector<T> = AtomIOState & {
 	type: `writable_pure_selector`
 	get: () => T
@@ -89,7 +100,19 @@ export type ReadonlyPureSelector<T> = AtomIOState & {
 	type: `readonly_pure_selector`
 	get: () => T
 }
-export type Selector<T> = ReadonlyPureSelector<T> | WritablePureSelector<T>
+export type ReadonlySelector<T> =
+	| ReadonlyHeldSelector<T>
+	| ReadonlyPureSelector<T>
+export type WritableSelector<T> =
+	| WritableHeldSelector<T>
+	| WritablePureSelector<T>
+export type HeldSelector<T> = ReadonlyHeldSelector<T> | WritableHeldSelector<T>
+export type PureSelector<T> = ReadonlyPureSelector<T> | WritablePureSelector<T>
+export type Selector<T> =
+	| ReadonlyHeldSelector<T>
+	| ReadonlyPureSelector<T>
+	| WritableHeldSelector<T>
+	| WritablePureSelector<T>
 
 export type WritableState<T> = Atom<T> | WritablePureSelector<T>
 export type ReadableState<T> = Atom<T> | Selector<T>

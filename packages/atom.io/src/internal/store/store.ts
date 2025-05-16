@@ -3,13 +3,9 @@ import type {
 	Logger,
 	MoleculeCreation,
 	MoleculeDisposal,
-	ReadonlyHeldSelectorToken,
-	ReadonlyPureSelectorToken,
 	SelectorToken,
 	TimelineToken,
 	TransactionToken,
-	WritableHeldSelectorToken,
-	WritablePureSelectorToken,
 } from "atom.io"
 import { AtomIOLogger } from "atom.io"
 import type { Canonical, stringified } from "atom.io/json"
@@ -19,11 +15,9 @@ import type {
 	HeldSelectorFamily,
 	MutableAtomFamily,
 	PureSelectorFamily,
-	ReadonlyPureSelector,
-	ReadonlyPureSelectorFamily,
+	ReadonlySelector,
 	RegularAtomFamily,
-	WritablePureSelector,
-	WritablePureSelectorFamily,
+	WritableSelector,
 } from ".."
 import { isReservedIntrospectionKey } from ".."
 import type { Join } from "../join"
@@ -53,8 +47,8 @@ export class Store implements Lineage {
 	public stableRefs: Map<string, any> = new Map()
 
 	public atoms: Map<string, Atom<any>> = new Map()
-	public writableSelectors: Map<string, WritablePureSelector<any>> = new Map()
-	public readonlySelectors: Map<string, ReadonlyPureSelector<any>> = new Map()
+	public writableSelectors: Map<string, WritableSelector<any>> = new Map()
+	public readonlySelectors: Map<string, ReadonlySelector<any>> = new Map()
 
 	public atomsThatAreDefault: Set<string> = new Set()
 	public selectorAtoms: Junction<`selectorKey`, string, `atomKey`, string> =
