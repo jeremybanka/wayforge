@@ -21,7 +21,7 @@ export const createReadonlyHeldSelector = <T extends object>(
 	const covered = new Set<string>()
 	const key = options.key
 	const type = `readonly_held_selector` as const
-	const { get, find, json } = registerSelector(key, covered, target)
+	const { get, find, json } = registerSelector(target, type, key, covered)
 	let def = options.default
 	if (typeof def === `function`) {
 		def = def()

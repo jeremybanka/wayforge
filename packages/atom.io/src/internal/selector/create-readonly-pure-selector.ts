@@ -19,34 +19,30 @@ export const createReadonlyPureSelector = <T>(
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const covered = new Set<string>()
-	const { get, find, json } = registerSelector(options.key, covered, target)
+	const key = options.key
+	const type = `readonly_pure_selector` as const
+	const { get, find, json } = registerSelector(target, type, key, covered)
 	const getSelf = () => {
 		const value = options.get({ get, find, json })
-		cacheValue(newest(store), options.key, value, subject)
+		cacheValue(newest(store), key, value, subject)
 		covered.clear()
 		return value
 	}
 
 	const readonlySelector: ReadonlyPureSelector<T> = {
 		...options,
+		type,
 		subject,
 		install: (s: Store) => createReadonlyPureSelector(s, options, family),
 		get: getSelf,
-		type: `readonly_pure_selector`,
 		...(family && { family }),
 	}
-	target.readonlySelectors.set(options.key, readonlySelector)
+	target.readonlySelectors.set(key, readonlySelector)
 	const initialValue = getSelf()
-	store.logger.info(
-		`✨`,
-		readonlySelector.type,
-		readonlySelector.key,
-		`=`,
-		initialValue,
-	)
+	store.logger.info(`✨`, type, key, `=`, initialValue)
 	const token: ReadonlyPureSelectorToken<T> = {
-		key: options.key,
-		type: `readonly_pure_selector`,
+		key,
+		type,
 	}
 	if (family) {
 		token.family = family
