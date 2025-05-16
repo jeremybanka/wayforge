@@ -13,6 +13,7 @@ export const setAtomOrSelector = <T>(
 			setAtom(store, state, value)
 			break
 		case `writable_pure_selector`:
+		case `writable_held_selector`:
 			state.set(value)
 			break
 	}

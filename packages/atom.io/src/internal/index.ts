@@ -114,7 +114,7 @@ export type Selector<T> =
 	| WritableHeldSelector<T>
 	| WritablePureSelector<T>
 
-export type WritableState<T> = Atom<T> | WritablePureSelector<T>
+export type WritableState<T> = Atom<T> | WritableSelector<T>
 export type ReadableState<T> = Atom<T> | Selector<T>
 
 // biome-ignore format: intersection
