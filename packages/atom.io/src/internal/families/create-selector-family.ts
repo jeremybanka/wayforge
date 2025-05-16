@@ -26,6 +26,7 @@ export function createSelectorFamily<T, K extends Canonical>(
 		| WritablePureSelectorFamilyOptions<T, K>,
 ): SelectorFamilyToken<T, K> {
 	const isWritable = `set` in options
+	const isHeld = `default` in options
 
 	if (isWritable) {
 		return createWritablePureSelectorFamily(store, options)
