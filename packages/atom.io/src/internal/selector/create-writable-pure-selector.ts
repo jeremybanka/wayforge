@@ -22,13 +22,15 @@ export const createWritablePureSelector = <T>(
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const covered = new Set<string>()
-	const setterToolkit = registerSelector(options.key, covered, target)
+	const key = options.key
+	const type = `writable_pure_selector` as const
+	const setterToolkit = registerSelector(target, type, key, covered)
 	const { find, get, json } = setterToolkit
 	const getterToolkit = { find, get, json }
 
 	const getSelf = (getFn = options.get, innerTarget = newest(store)): T => {
 		const value = getFn(getterToolkit)
-		cacheValue(innerTarget, options.key, value, subject)
+		cacheValue(innerTarget, key, value, subject)
 		covered.clear()
 		return value
 	}
@@ -37,16 +39,7 @@ export const createWritablePureSelector = <T>(
 		const innerTarget = newest(store)
 		const oldValue = getSelf(options.get, innerTarget)
 		const newValue = become(next)(oldValue)
-		store.logger.info(
-			`📝`,
-			`writable_pure_selector`,
-			options.key,
-			`set (`,
-			oldValue,
-			`->`,
-			newValue,
-			`)`,
-		)
+		store.logger.info(`📝`, type, key, `set (`, oldValue, `->`, newValue, `)`)
 		cacheValue(innerTarget, options.key, newValue, subject)
 		markDone(innerTarget, options.key)
 		if (isRootStore(innerTarget)) {
@@ -56,19 +49,19 @@ export const createWritablePureSelector = <T>(
 	}
 	const mySelector: WritablePureSelector<T> = {
 		...options,
+		type,
 		subject,
 		install: (s: Store) => createWritablePureSelector(s, options, family),
 		get: getSelf,
 		set: setSelf,
-		type: `writable_pure_selector`,
 		...(family && { family }),
 	}
-	target.writableSelectors.set(options.key, mySelector)
+	target.writableSelectors.set(key, mySelector)
 	const initialValue = getSelf()
 	store.logger.info(`✨`, mySelector.type, mySelector.key, `=`, initialValue)
 	const token: WritablePureSelectorToken<T> = {
-		key: options.key,
-		type: `writable_pure_selector`,
+		key,
+		type,
 	}
 	if (family) {
 		token.family = family
