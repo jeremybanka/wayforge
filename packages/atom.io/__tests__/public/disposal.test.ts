@@ -128,8 +128,8 @@ describe(`disposeState`, () => {
 		expect(logger.error).toHaveBeenCalledTimes(1)
 		expect(logger.error).toHaveBeenCalledWith(
 			`❌`,
-			`selector`,
-			`doubled`,
+			doubledState.type,
+			doubledState.key,
 			`Standalone selectors cannot be disposed.`,
 		)
 	})
