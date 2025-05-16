@@ -5,8 +5,8 @@ import type { atom, AtomFamilyToken } from "./atom"
 import type { getState } from "./get-state"
 import type {
 	SelectorFamilyToken,
+	WritablePureSelectorFamilyToken,
 	WritableSelectorFamilyToken,
-	WritableTransientSelectorFamilyToken,
 } from "./selector"
 import type { setState } from "./set-state"
 import type { TimelineToken } from "./timeline"
@@ -83,11 +83,11 @@ export type AtomToken<T, K extends Canonical = any> =
 	| RegularAtomToken<T, K>
 
 /** @public */
-export type WritableTransientSelectorToken<T, K extends Canonical = any> = {
+export type WritablePureSelectorToken<T, K extends Canonical = any> = {
 	/** The unique identifier of the selector. */
 	key: string
 	/** Discriminator. */
-	type: `writable_transient_selector`
+	type: `writable_pure_selector`
 	/** Present if the selector belongs to a family. */
 	family?: FamilyMetadata<K>
 	/** Never present. This is a marker that preserves the type of the selector's value. */
@@ -105,11 +105,11 @@ export type WritableRecyclableSelectorToken<T, K extends Canonical = any> = {
 	__T?: T
 }
 /** @public */
-export type ReadonlyTransientSelectorToken<T, K extends Canonical = any> = {
+export type ReadonlyPureSelectorToken<T, K extends Canonical = any> = {
 	/** The unique identifier of the selector. */
 	key: string
 	/** Discriminator. */
-	type: `readonly_transient_selector`
+	type: `readonly_pure_selector`
 	/** Present if the selector belongs to a family. */
 	family?: FamilyMetadata<K>
 	/** Never present. This is a marker that preserves the type of the selector's value. */
@@ -129,8 +129,8 @@ export type ReadonlyRecyclableSelectorToken<T, K extends Canonical = any> = {
 
 /** @public */
 export type TransientRecyclableSelectorToken<T, K extends Canonical = any> =
-	| ReadonlyTransientSelectorToken<T, K>
-	| WritableTransientSelectorToken<T, K>
+	| ReadonlyPureSelectorToken<T, K>
+	| WritablePureSelectorToken<T, K>
 
 /** @public */
 export type RecyclableSelectorToken<T, K extends Canonical = any> =
@@ -139,20 +139,20 @@ export type RecyclableSelectorToken<T, K extends Canonical = any> =
 
 /** @public */
 export type ReadonlySelectorToken<T, K extends Canonical = any> =
+	| ReadonlyPureSelectorToken<T, K>
 	| ReadonlyRecyclableSelectorToken<T, K>
-	| ReadonlyTransientSelectorToken<T, K>
 
 /** @public */
 export type WritableSelectorToken<T, K extends Canonical = any> =
+	| WritablePureSelectorToken<T, K>
 	| WritableRecyclableSelectorToken<T, K>
-	| WritableTransientSelectorToken<T, K>
 
 /** @public */
 export type SelectorToken<T, K extends Canonical = any> =
+	| ReadonlyPureSelectorToken<T, K>
 	| ReadonlyRecyclableSelectorToken<T, K>
-	| ReadonlyTransientSelectorToken<T, K>
+	| WritablePureSelectorToken<T, K>
 	| WritableRecyclableSelectorToken<T, K>
-	| WritableTransientSelectorToken<T, K>
 
 /**
  * @public

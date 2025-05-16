@@ -1,36 +1,33 @@
-import type { ReadonlyTransientSelectorFamilyToken } from "atom.io"
+import type { ReadonlyPureSelectorFamilyToken } from "atom.io"
 import type { Store } from "atom.io/internal"
-import { createReadonlyTransientSelectorFamily } from "atom.io/internal"
+import { createReadonlyPureSelectorFamily } from "atom.io/internal"
 
 import { discoverType } from "./refinery"
 
 export const attachTypeSelectors = (
 	store: Store,
-): ReadonlyTransientSelectorFamilyToken<string, string> => {
-	const typeSelectors = createReadonlyTransientSelectorFamily<string, string>(
-		store,
-		{
-			key: `🔍 State Type`,
-			get:
-				(key) =>
-				({ get }) => {
-					let state: unknown
-					try {
-						const token =
-							store.atoms.get(key) ??
-							store.writableSelectors.get(key) ??
-							store.readonlySelectors.get(key)
-						if (token === undefined) {
-							throw new Error(`Could not find state with key "${key}"`)
-						}
-						state = get(token)
-					} catch (thrown) {
-						return `error`
+): ReadonlyPureSelectorFamilyToken<string, string> => {
+	const typeSelectors = createReadonlyPureSelectorFamily<string, string>(store, {
+		key: `🔍 State Type`,
+		get:
+			(key) =>
+			({ get }) => {
+				let state: unknown
+				try {
+					const token =
+						store.atoms.get(key) ??
+						store.writableSelectors.get(key) ??
+						store.readonlySelectors.get(key)
+					if (token === undefined) {
+						throw new Error(`Could not find state with key "${key}"`)
 					}
-					const typeOfState = discoverType(state)
-					return typeOfState
-				},
-		},
-	)
+					state = get(token)
+				} catch (thrown) {
+					return `error`
+				}
+				const typeOfState = discoverType(state)
+				return typeOfState
+			},
+	})
 	return typeSelectors
 }

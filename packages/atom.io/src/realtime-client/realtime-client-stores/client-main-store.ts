@@ -6,12 +6,11 @@ export const myIdState__INTERNAL: AtomIO.RegularAtomToken<string | undefined> =
 		key: `mySocketId__INTERNAL`,
 		default: undefined,
 	})
-export const myIdState: AtomIO.ReadonlyTransientSelectorToken<
-	string | undefined
-> = AtomIO.selector<string | undefined>({
-	key: `mySocketId`,
-	get: ({ get }) => get(myIdState__INTERNAL),
-})
+export const myIdState: AtomIO.ReadonlyPureSelectorToken<string | undefined> =
+	AtomIO.selector<string | undefined>({
+		key: `mySocketId`,
+		get: ({ get }) => get(myIdState__INTERNAL),
+	})
 
 export const myUsernameState: AtomIO.RegularAtomToken<string | null> =
 	AtomIO.atom<string | null>({

@@ -1,4 +1,4 @@
-import type { ReadonlyTransientSelectorFamilyToken } from "atom.io"
+import type { ReadonlyPureSelectorFamilyToken } from "atom.io"
 import type { Store, Timeline } from "atom.io/internal"
 import {
 	createRegularAtomFamily,
@@ -8,7 +8,7 @@ import {
 
 export const attachTimelineFamily = (
 	store: Store,
-): ReadonlyTransientSelectorFamilyToken<Timeline<any>, string> => {
+): ReadonlyPureSelectorFamilyToken<Timeline<any>, string> => {
 	const findTimelineLogState__INTERNAL = createRegularAtomFamily<
 		Timeline<any>,
 		string

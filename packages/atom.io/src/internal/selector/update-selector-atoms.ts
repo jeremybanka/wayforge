@@ -1,4 +1,4 @@
-import type { ReadonlyTransientSelectorToken, WritableToken } from "atom.io"
+import type { ReadonlyPureSelectorToken, WritableToken } from "atom.io"
 
 import { newest } from "../lineage"
 import type { Store } from "../store"
@@ -6,7 +6,7 @@ import { traceSelectorAtoms } from "./trace-selector-atoms"
 
 export const updateSelectorAtoms = (
 	selectorKey: string,
-	dependency: ReadonlyTransientSelectorToken<unknown> | WritableToken<unknown>,
+	dependency: ReadonlyPureSelectorToken<unknown> | WritableToken<unknown>,
 	covered: Set<string>,
 	store: Store,
 ): void => {
@@ -18,7 +18,7 @@ export const updateSelectorAtoms = (
 		})
 		store.logger.info(
 			`🔍`,
-			`writable_transient_selector`,
+			`writable_pure_selector`,
 			selectorKey,
 			`discovers root atom "${dependency.key}"`,
 		)
@@ -26,7 +26,7 @@ export const updateSelectorAtoms = (
 		const rootKeys = traceSelectorAtoms(dependency.key, covered, store)
 		store.logger.info(
 			`🔍`,
-			`writable_transient_selector`,
+			`writable_pure_selector`,
 			selectorKey,
 			`discovers root atoms: [ ${rootKeys
 				.map((key) => `"${key}"`)

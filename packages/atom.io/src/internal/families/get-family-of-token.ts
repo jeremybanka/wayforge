@@ -3,13 +3,13 @@ import type {
 	MutableAtomToken,
 	ReadableFamilyToken,
 	ReadableToken,
-	ReadonlyTransientSelectorFamilyToken,
-	ReadonlyTransientSelectorToken,
+	ReadonlyPureSelectorFamilyToken,
+	ReadonlyPureSelectorToken,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
 	WritableFamilyToken,
-	WritableTransientSelectorFamilyToken,
-	WritableTransientSelectorToken,
+	WritablePureSelectorFamilyToken,
+	WritablePureSelectorToken,
 	WritableToken,
 } from "atom.io"
 import type { Canonical, Json } from "atom.io/json"
@@ -33,13 +33,13 @@ export function getFamilyOfToken<T, K extends Canonical>(
 
 export function getFamilyOfToken<T, K extends Canonical>(
 	store: Store,
-	token: WritableTransientSelectorToken<T, K>,
-): WritableTransientSelectorFamilyToken<T, K> | undefined
+	token: WritablePureSelectorToken<T, K>,
+): WritablePureSelectorFamilyToken<T, K> | undefined
 
 export function getFamilyOfToken<T, K extends Canonical>(
 	store: Store,
-	token: ReadonlyTransientSelectorToken<T, K>,
-): ReadonlyTransientSelectorFamilyToken<T, K> | undefined
+	token: ReadonlyPureSelectorToken<T, K>,
+): ReadonlyPureSelectorFamilyToken<T, K> | undefined
 
 export function getFamilyOfToken<T, K extends Canonical>(
 	store: Store,

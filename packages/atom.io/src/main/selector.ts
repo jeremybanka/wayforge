@@ -6,19 +6,19 @@ import {
 import type { Canonical } from "atom.io/json"
 
 import type {
+	ReadonlyPureSelectorToken,
 	ReadonlyRecyclableSelectorToken,
-	ReadonlyTransientSelectorToken,
+	WritablePureSelectorToken,
 	WritableRecyclableSelectorToken,
-	WritableTransientSelectorToken,
 } from "."
 import type { Read, Write } from "./transaction"
 
-export type WritableTransientSelectorOptions<T> = {
+export type WritablePureSelectorOptions<T> = {
 	key: string
 	get: Read<() => T>
 	set: Write<(newValue: T) => void>
 }
-export type ReadonlyTransientSelectorOptions<T> = {
+export type ReadonlyPureSelectorOptions<T> = {
 	key: string
 	get: Read<() => T>
 }
@@ -81,7 +81,7 @@ export function selector<T extends object>(
  * Declare a selector. The value of a selector should depend
  * on the value of atoms or other selectors in the store.
  *
- * A transient selector's current value is evicted from the store
+ * A pure selector's current value is evicted from the store
  * in order to be garbage collected when a root atom of the selector is set.
  *
  * A writable selector can be "set" to a new value.
@@ -91,51 +91,51 @@ export function selector<T extends object>(
  * @param options - {@link TransientWritableSelectorOptions}.
  * @returns
  * The token for your selector.
- * @overload WritableTransient
+ * @overload WritablePure
  */
 export function selector<T>(
-	options: WritableTransientSelectorOptions<T>,
-): WritableTransientSelectorToken<T>
+	options: WritablePureSelectorOptions<T>,
+): WritablePureSelectorToken<T>
 
 /**
  * @public
  * Declare a selector. The value of a selector should depend
  * on the value of atoms or other selectors in the store.
  *
- * A transient selector's current value is evicted from the store
+ * A pure selector's current value is evicted from the store
  * in order to be garbage collected when a root atom of the selector is set.
  *
  * A readonly selector can be "gotten" but not "set".
  *
- * @param options - {@link ReadonlyTransientSelectorOptions}.
+ * @param options - {@link ReadonlyPureSelectorOptions}.
  * @returns
  * The token for your selector.
- * @overload ReadonlyTransient
+ * @overload ReadonlyPure
  */
 export function selector<T>(
-	options: ReadonlyTransientSelectorOptions<T>,
-): ReadonlyTransientSelectorToken<T>
+	options: ReadonlyPureSelectorOptions<T>,
+): ReadonlyPureSelectorToken<T>
 
 export function selector(
 	options:
+		| ReadonlyPureSelectorOptions<any>
 		| ReadonlyRecyclableSelectorOptions<any>
-		| ReadonlyTransientSelectorOptions<any>
-		| WritableRecyclableSelectorOptions<any>
-		| WritableTransientSelectorOptions<any>,
+		| WritablePureSelectorOptions<any>
+		| WritableRecyclableSelectorOptions<any>,
 ):
+	| ReadonlyPureSelectorToken<any>
 	| ReadonlyRecyclableSelectorToken<any>
-	| ReadonlyTransientSelectorToken<any>
-	| WritableRecyclableSelectorToken<any>
-	| WritableTransientSelectorToken<any> {
+	| WritablePureSelectorToken<any>
+	| WritableRecyclableSelectorToken<any> {
 	return createStandaloneSelector(IMPLICIT.STORE, options)
 }
 
-export type WritableTransientSelectorFamilyOptions<T, K extends Canonical> = {
+export type WritablePureSelectorFamilyOptions<T, K extends Canonical> = {
 	key: string
 	get: (key: K) => Read<() => T>
 	set: (key: K) => Write<(newValue: T) => void>
 }
-export type ReadonlyTransientSelectorFamilyOptions<T, K extends Canonical> = {
+export type ReadonlyPureSelectorFamilyOptions<T, K extends Canonical> = {
 	key: string
 	get: (key: K) => Read<() => T>
 }
@@ -151,15 +151,15 @@ export type ReadonlyRecyclableSelectorFamilyOptions<T, K extends Canonical> = {
 	get: (key: K) => Read<(permanent: T) => void>
 }
 
-export type WritableTransientSelectorFamilyToken<T, K extends Canonical> = {
+export type WritablePureSelectorFamilyToken<T, K extends Canonical> = {
 	key: string
-	type: `writable_transient_selector_family`
+	type: `writable_pure_selector_family`
 	__T?: T
 	__K?: K
 }
-export type ReadonlyTransientSelectorFamilyToken<T, K extends Canonical> = {
+export type ReadonlyPureSelectorFamilyToken<T, K extends Canonical> = {
 	key: string
-	type: `readonly_transient_selector_family`
+	type: `readonly_pure_selector_family`
 	__T?: T
 	__K?: K
 }
@@ -176,36 +176,36 @@ export type ReadonlyRecyclableSelectorFamilyToken<T, K extends Canonical> = {
 	__K?: K
 }
 
-export type TransientSelectorFamilyToken<T, K extends Canonical> =
-	| ReadonlyTransientSelectorFamilyToken<T, K>
-	| WritableTransientSelectorFamilyToken<T, K>
+export type PureSelectorFamilyToken<T, K extends Canonical> =
+	| ReadonlyPureSelectorFamilyToken<T, K>
+	| WritablePureSelectorFamilyToken<T, K>
 export type RecyclableSelectorFamilyToken<T, K extends Canonical> =
 	| ReadonlyRecyclableSelectorFamilyToken<T, K>
 	| WritableRecyclableSelectorFamilyToken<T, K>
 export type ReadonlySelectorFamilyToken<T, K extends Canonical> =
+	| ReadonlyPureSelectorFamilyToken<T, K>
 	| ReadonlyRecyclableSelectorFamilyToken<T, K>
-	| ReadonlyTransientSelectorFamilyToken<T, K>
 
 export type WritableSelectorFamilyToken<T, K extends Canonical> =
+	| WritablePureSelectorFamilyToken<T, K>
 	| WritableRecyclableSelectorFamilyToken<T, K>
-	| WritableTransientSelectorFamilyToken<T, K>
 
 export type SelectorFamilyToken<T, K extends Canonical> =
+	| PureSelectorFamilyToken<T, K>
 	| RecyclableSelectorFamilyToken<T, K>
-	| TransientSelectorFamilyToken<T, K>
 
 export function selectorFamily<T, K extends Canonical>(
-	options: WritableTransientSelectorFamilyOptions<T, K>,
-): WritableTransientSelectorFamilyToken<T, K>
+	options: WritablePureSelectorFamilyOptions<T, K>,
+): WritablePureSelectorFamilyToken<T, K>
 export function selectorFamily<T, K extends Canonical>(
-	options: ReadonlyTransientSelectorFamilyOptions<T, K>,
-): ReadonlyTransientSelectorFamilyToken<T, K>
+	options: ReadonlyPureSelectorFamilyOptions<T, K>,
+): ReadonlyPureSelectorFamilyToken<T, K>
 export function selectorFamily<T, K extends Canonical>(
 	options:
-		| ReadonlyTransientSelectorFamilyOptions<T, K>
-		| WritableTransientSelectorFamilyOptions<T, K>,
+		| ReadonlyPureSelectorFamilyOptions<T, K>
+		| WritablePureSelectorFamilyOptions<T, K>,
 ):
-	| ReadonlyTransientSelectorFamilyToken<T, K>
-	| WritableTransientSelectorFamilyToken<T, K> {
+	| ReadonlyPureSelectorFamilyToken<T, K>
+	| WritablePureSelectorFamilyToken<T, K> {
 	return createSelectorFamily(IMPLICIT.STORE, options)
 }

@@ -61,16 +61,16 @@ export type TokenDenomination =
 	| `mutable_atom`
 	| `readonly_recyclable_selector_family`
 	| `readonly_recyclable_selector`
-	| `readonly_transient_selector_family`
-	| `readonly_transient_selector`
+	| `readonly_pure_selector_family`
+	| `readonly_pure_selector`
 	| `state`
 	| `timeline`
 	| `transaction`
 	| `unknown`
 	| `writable_recyclable_selector_family`
 	| `writable_recyclable_selector`
-	| `writable_transient_selector_family`
-	| `writable_transient_selector`
+	| `writable_pure_selector_family`
+	| `writable_pure_selector`
 
 export const LOG_LEVELS = [`info`, `warn`, `error`] as const
 export type LogLevel = (typeof LOG_LEVELS)[number]

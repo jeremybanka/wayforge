@@ -1,6 +1,6 @@
 import type {
+	ReadonlyPureSelectorToken,
 	ReadonlySelectorToken,
-	ReadonlyTransientSelectorToken,
 	WritableToken,
 } from "atom.io"
 import { useI, useO } from "atom.io/react"
@@ -36,10 +36,10 @@ export const StoreEditor: FC<{
 	token: ReadonlySelectorToken<unknown> | WritableToken<unknown>
 }> = ({ token }) => {
 	switch (token.type) {
-		case `readonly_transient_selector`:
+		case `readonly_pure_selector`:
 		case `readonly_recyclable_selector`:
 			return <ReadonlySelectorViewer token={token} />
-		case `writable_transient_selector`:
+		case `writable_pure_selector`:
 		case `writable_recyclable_selector`:
 		case `atom`:
 		case `mutable_atom`:

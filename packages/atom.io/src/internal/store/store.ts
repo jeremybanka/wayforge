@@ -3,13 +3,13 @@ import type {
 	Logger,
 	MoleculeCreation,
 	MoleculeDisposal,
+	ReadonlyPureSelectorToken,
 	ReadonlyRecyclableSelectorToken,
-	ReadonlyTransientSelectorToken,
 	SelectorToken,
 	TimelineToken,
 	TransactionToken,
+	WritablePureSelectorToken,
 	WritableRecyclableSelectorToken,
-	WritableTransientSelectorToken,
 } from "atom.io"
 import { AtomIOLogger } from "atom.io"
 import type { Canonical, stringified } from "atom.io/json"
@@ -17,13 +17,13 @@ import type { Canonical, stringified } from "atom.io/json"
 import type {
 	Atom,
 	MutableAtomFamily,
-	ReadonlyTransientSelector,
-	ReadonlyTransientSelectorFamily,
+	PureSelectorFamily,
+	ReadonlyPureSelector,
+	ReadonlyPureSelectorFamily,
 	RecyclableSelectorFamily,
 	RegularAtomFamily,
-	TransientSelectorFamily,
-	WritableTransientSelector,
-	WritableTransientSelectorFamily,
+	WritablePureSelector,
+	WritablePureSelectorFamily,
 } from ".."
 import { isReservedIntrospectionKey } from ".."
 import type { Join } from "../join"
@@ -53,10 +53,8 @@ export class Store implements Lineage {
 	public stableRefs: Map<string, any> = new Map()
 
 	public atoms: Map<string, Atom<any>> = new Map()
-	public writableSelectors: Map<string, WritableTransientSelector<any>> =
-		new Map()
-	public readonlySelectors: Map<string, ReadonlyTransientSelector<any>> =
-		new Map()
+	public writableSelectors: Map<string, WritablePureSelector<any>> = new Map()
+	public readonlySelectors: Map<string, ReadonlyPureSelector<any>> = new Map()
 
 	public atomsThatAreDefault: Set<string> = new Set()
 	public selectorAtoms: Junction<`selectorKey`, string, `atomKey`, string> =
@@ -83,9 +81,9 @@ export class Store implements Lineage {
 	public families: Map<
 		string,
 		| MutableAtomFamily<any, any, any>
+		| PureSelectorFamily<any, any>
 		| RecyclableSelectorFamily<any, any>
 		| RegularAtomFamily<any, any>
-		| TransientSelectorFamily<any, any>
 	> = new Map()
 	public joins: Map<string, Join<any, any, any, any, any, any>> = new Map()
 

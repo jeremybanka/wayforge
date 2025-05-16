@@ -13,7 +13,7 @@ export function disposeSelector(
 	if (!selector.family) {
 		store.logger.error(
 			`❌`,
-			`writable_transient_selector`,
+			`writable_pure_selector`,
 			key,
 			`Standalone selectors cannot be disposed.`,
 		)
@@ -24,12 +24,12 @@ export function disposeSelector(
 		}
 		let familyToken: SelectorFamilyToken<any, any>
 		switch (selectorToken.type) {
-			case `writable_transient_selector`:
+			case `writable_pure_selector`:
 				{
 					target.writableSelectors.delete(key)
 					familyToken = {
 						key: selector.family.key,
-						type: `writable_transient_selector_family`,
+						type: `writable_pure_selector_family`,
 					}
 					const family = withdraw(store, familyToken)
 					family.subject.next({
@@ -39,12 +39,12 @@ export function disposeSelector(
 					})
 				}
 				break
-			case `readonly_transient_selector`:
+			case `readonly_pure_selector`:
 				{
 					target.readonlySelectors.delete(key)
 					familyToken = {
 						key: selector.family.key,
-						type: `readonly_transient_selector_family`,
+						type: `readonly_pure_selector_family`,
 					}
 					const family = withdraw(store, familyToken)
 					family.subject.next({

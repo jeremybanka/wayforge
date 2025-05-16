@@ -5,16 +5,16 @@ import type {
 	MutableAtomToken,
 	ReadableFamilyToken,
 	ReadableToken,
-	ReadonlyTransientSelectorFamilyToken,
-	ReadonlyTransientSelectorToken,
+	ReadonlyPureSelectorFamilyToken,
+	ReadonlyPureSelectorToken,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
 	SelectorFamilyToken,
 	SelectorToken,
 	WritableFamilyToken,
+	WritablePureSelectorFamilyToken,
+	WritablePureSelectorToken,
 	WritableToken,
-	WritableTransientSelectorFamilyToken,
-	WritableTransientSelectorToken,
 } from "atom.io"
 import type { Canonical, Json } from "atom.io/json"
 
@@ -49,15 +49,15 @@ export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
 
 export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
-	token: WritableTransientSelectorFamilyToken<T, K>,
+	token: WritablePureSelectorFamilyToken<T, K>,
 	key: Key,
-): WritableTransientSelectorToken<T, K>
+): WritablePureSelectorToken<T, K>
 
 export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
-	token: ReadonlyTransientSelectorFamilyToken<T, K>,
+	token: ReadonlyPureSelectorFamilyToken<T, K>,
 	key: Key,
-): ReadonlyTransientSelectorToken<T, K>
+): ReadonlyPureSelectorToken<T, K>
 
 export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
@@ -95,8 +95,8 @@ export function initFamilyMemberInStore(
 				case `mutable_atom`:
 					store.on.atomCreation.next(state)
 					break
-				case `writable_transient_selector`:
-				case `readonly_transient_selector`:
+				case `writable_pure_selector`:
+				case `readonly_pure_selector`:
 				case `writable_recyclable_selector`:
 				case `readonly_recyclable_selector`:
 					store.on.selectorCreation.next(state)

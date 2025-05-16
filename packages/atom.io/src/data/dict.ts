@@ -9,15 +9,15 @@ import type { Canonical, stringified } from "atom.io/json"
 
 export function dict<State, Key extends Canonical>(
 	family:
-		| AtomIO.ReadonlyTransientSelectorFamilyToken<State, Key>
+		| AtomIO.ReadonlyPureSelectorFamilyToken<State, Key>
 		| AtomIO.RegularAtomFamilyToken<State, Key>
-		| AtomIO.WritableTransientSelectorFamilyToken<State, Key>,
+		| AtomIO.WritablePureSelectorFamilyToken<State, Key>,
 	index:
-		| AtomIO.ReadonlyTransientSelectorToken<Key[]>
+		| AtomIO.ReadonlyPureSelectorToken<Key[]>
 		| AtomIO.RegularAtomToken<Key[]>
-		| AtomIO.WritableTransientSelectorToken<Key[]>,
+		| AtomIO.WritablePureSelectorToken<Key[]>,
 	store: Store = IMPLICIT.STORE,
-): AtomIO.ReadonlyTransientSelectorToken<{ [K in stringified<Key>]: State }> {
+): AtomIO.ReadonlyPureSelectorToken<{ [K in stringified<Key>]: State }> {
 	return createStandaloneSelector(store, {
 		key: `${family.key}Dict`,
 		get: ({ get }) => {
