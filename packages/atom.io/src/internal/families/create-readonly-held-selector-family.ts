@@ -59,7 +59,7 @@ export function createReadonlyHeldSelectorFamily<
 			target,
 			{
 				key: fullKey,
-				default: options.default(key),
+				const: options.const(key),
 				get: options.get(key),
 			},
 			family,
@@ -73,7 +73,7 @@ export function createReadonlyHeldSelectorFamily<
 		internalRoles,
 		subject,
 		install: (s: Store) => createReadonlyHeldSelectorFamily(s, options),
-		default: options.default,
+		default: options.const,
 	}) satisfies ReadonlyHeldSelectorFamily<T, K>
 
 	store.families.set(familyKey, readonlySelectorFamily)

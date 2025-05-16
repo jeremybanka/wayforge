@@ -42,7 +42,7 @@ export function createSelectorFamily(
 		| WritablePureSelectorFamilyOptions<any, any>,
 ): SelectorFamilyToken<any, any> {
 	const isWritable = `set` in options
-	const isHeld = `default` in options
+	const isHeld = `const` in options
 
 	if (isHeld && isWritable) {
 		return createWritableHeldSelectorFamily(store, options, undefined)

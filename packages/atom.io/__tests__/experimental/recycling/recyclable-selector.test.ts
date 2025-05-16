@@ -45,7 +45,7 @@ describe(`standalone selectors held`, () => {
 			c: number
 		}>({
 			key: `mySelector`,
-			default: { a: 0, b: 0, c: 0 },
+			const: { a: 0, b: 0, c: 0 },
 			get: ({ get }, permanent) => {
 				const { a, b, c } = get(myAtom)
 				permanent.a = a.reduce((acc, cur) => acc + cur, 0)
@@ -93,7 +93,7 @@ describe(`standalone selectors held`, () => {
 			c: number
 		}>({
 			key: `mySelector`,
-			default: { a: 0, b: 0, c: 0 },
+			const: { a: 0, b: 0, c: 0 },
 			get: ({ get }, permanent) => {
 				const { a, b, c } = get(myAtom)
 				permanent.a = a.reduce((acc, cur) => acc + cur, 0)
@@ -155,7 +155,7 @@ describe(`family selectors held`, () => {
 			boolean
 		>({
 			key: `mySelector`,
-			default: () => ({ a: 0, b: 0, c: 0 }),
+			const: () => ({ a: 0, b: 0, c: 0 }),
 			get:
 				(key) =>
 				({ get }, permanent) => {
@@ -221,7 +221,7 @@ describe(`family selectors held`, () => {
 			boolean
 		>({
 			key: `mySelector`,
-			default: () => ({ a: 0, b: 0, c: 0 }),
+			const: () => ({ a: 0, b: 0, c: 0 }),
 			get:
 				(key) =>
 				({ get }, self) => {
