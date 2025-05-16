@@ -8,12 +8,12 @@ export function disposeSelector(
 	selectorToken: SelectorToken<unknown>,
 ): void {
 	const target = newest(store)
-	const { key } = selectorToken
+	const { key, type } = selectorToken
 	const selector = withdraw(target, selectorToken)
 	if (!selector.family) {
 		store.logger.error(
 			`❌`,
-			`writable_pure_selector`,
+			type,
 			key,
 			`Standalone selectors cannot be disposed.`,
 		)

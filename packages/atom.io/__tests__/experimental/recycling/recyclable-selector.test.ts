@@ -27,160 +27,172 @@ beforeEach(() => {
 	vitest.spyOn(Utils, `stdout0`)
 })
 
-test(`held selector concept`, () => {
-	const myAtom = atom<{ a: number[]; b: number[]; c: number[] }>({
-		key: `myAtom`,
-		default: {
-			a: [],
-			b: [],
-			c: [],
-		},
-	})
+describe(`standalone selectors held`, () => {
+	test(`readonly held selector`, () => {
+		const myAtom = atom<{ a: number[]; b: number[]; c: number[] }>({
+			key: `myAtom`,
+			default: {
+				a: [],
+				b: [],
+				c: [],
+			},
+		})
 
-	const heldValue: { a: number; b: number; c: number } = {
-		a: 0,
-		b: 0,
-		c: 0,
-	}
-	const mySelector = selector<{
-		a: number
-		b: number
-		c: number
-	}>({
-		key: `mySelector`,
-		get: ({ get }) => {
-			const { a, b, c } = get(myAtom)
-			heldValue.a = a.reduce((acc, cur) => acc + cur, 0)
-			heldValue.b = b.reduce((acc, cur) => acc + cur, 0)
-			heldValue.c = c.reduce((acc, cur) => acc + cur, 0)
-			return heldValue
-		},
-	})
-
-	const valueInitial = getState(mySelector)
-	expect(valueInitial).toEqual({
-		a: 0,
-		b: 0,
-		c: 0,
-	})
-
-	setState(myAtom, (state) => {
-		state.a.push(1, 2)
-		state.b.push(2, 2, 2)
-		state.c.push(3, 6)
-		return state
-	})
-
-	const valueAfter = getState(mySelector)
-	expect(valueAfter).toEqual({
-		a: 3,
-		b: 6,
-		c: 9,
-	})
-	expect(valueInitial).toBe(valueAfter)
-})
-
-test(`held selector implementation`, () => {
-	const myAtom = atom<{ a: number[]; b: number[]; c: number[] }>({
-		key: `myAtom`,
-		default: {
-			a: [],
-			b: [],
-			c: [],
-		},
-	})
-
-	const mySelector = selector<{
-		a: number
-		b: number
-		c: number
-	}>({
-		key: `mySelector`,
-		default: { a: 0, b: 0, c: 0 },
-		get: ({ get }, permanent) => {
-			const { a, b, c } = get(myAtom)
-			permanent.a = a.reduce((acc, cur) => acc + cur, 0)
-			permanent.b = b.reduce((acc, cur) => acc + cur, 0)
-			permanent.c = c.reduce((acc, cur) => acc + cur, 0)
-		},
-	})
-
-	const valueInitial = getState(mySelector)
-	expect(valueInitial).toEqual({
-		a: 0,
-		b: 0,
-		c: 0,
-	})
-
-	setState(myAtom, (state) => {
-		state.a.push(1, 2)
-		state.b.push(2, 2, 2)
-		state.c.push(3, 6)
-		return state
-	})
-
-	const valueAfter = getState(mySelector)
-	expect(valueAfter).toEqual({
-		a: 3,
-		b: 6,
-		c: 9,
-	})
-	expect(valueInitial).toBe(valueAfter)
-})
-
-test(`held selector families`, () => {
-	const myAtom = atomFamily<{ a: number[]; b: number[]; c: number[] }, boolean>({
-		key: `myAtom`,
-		default: {
-			a: [],
-			b: [],
-			c: [],
-		},
-	})
-
-	const mySelector = selectorFamily<
-		{
+		const mySelector = selector<{
 			a: number
 			b: number
 			c: number
-		},
-		boolean
-	>({
-		key: `mySelector`,
-		default: () => ({ a: 0, b: 0, c: 0 }),
-		get:
-			(key) =>
-			({ get }, permanent) => {
-				const { a, b, c } = get(myAtom, key)
+		}>({
+			key: `mySelector`,
+			default: { a: 0, b: 0, c: 0 },
+			get: ({ get }, permanent) => {
+				const { a, b, c } = get(myAtom)
 				permanent.a = a.reduce((acc, cur) => acc + cur, 0)
 				permanent.b = b.reduce((acc, cur) => acc + cur, 0)
 				permanent.c = c.reduce((acc, cur) => acc + cur, 0)
 			},
+		})
+
+		const valueInitial = getState(mySelector)
+		expect(valueInitial).toEqual({
+			a: 0,
+			b: 0,
+			c: 0,
+		})
+
+		setState(myAtom, (state) => {
+			state.a.push(1, 2)
+			state.b.push(2, 2, 2)
+			state.c.push(3, 6)
+			return state
+		})
+
+		const valueAfter = getState(mySelector)
+		expect(valueAfter).toEqual({
+			a: 3,
+			b: 6,
+			c: 9,
+		})
+		expect(valueInitial).toBe(valueAfter)
 	})
-	const valueInitial = getState(mySelector, true)
-	expect(valueInitial).toEqual({
-		a: 0,
-		b: 0,
-		c: 0,
+
+	test(`writable held selector`, () => {
+		const myAtom = atom<{ a: number[]; b: number[]; c: number[] }>({
+			key: `myAtom`,
+			default: {
+				a: [],
+				b: [],
+				c: [],
+			},
+		})
+
+		const mySelector = selector<{
+			a: number
+			b: number
+			c: number
+		}>({
+			key: `mySelector`,
+			default: { a: 0, b: 0, c: 0 },
+			get: ({ get }, permanent) => {
+				const { a, b, c } = get(myAtom)
+				permanent.a = a.reduce((acc, cur) => acc + cur, 0)
+				permanent.b = b.reduce((acc, cur) => acc + cur, 0)
+				permanent.c = c.reduce((acc, cur) => acc + cur, 0)
+			},
+			set: ({ set }, newValue) => {
+				console.log(`😎`)
+				console.log({ newValue })
+				set(myAtom, (state) => {
+					state.a = Array.from({ length: newValue.a }).map(() => 1)
+					state.b = Array.from({ length: newValue.b }).map(() => 1)
+					state.c = Array.from({ length: newValue.c }).map(() => 1)
+					return state
+				})
+			},
+		})
+
+		const valueInitial = getState(mySelector)
+		expect(valueInitial).toEqual({
+			a: 0,
+			b: 0,
+			c: 0,
+		})
+		setState(mySelector, (state) => {
+			console.log(`😎`)
+			state.a = 3
+			state.b = 6
+			state.c = 9
+			return state
+		})
+		console.log(getState(myAtom))
+		const valueAfter = getState(mySelector)
+		expect(valueAfter).toEqual({
+			a: 3,
+			b: 6,
+			c: 9,
+		})
+		expect(valueInitial).toBe(valueAfter)
 	})
+})
 
-	setState(myAtom, true, (state) => {
-		state.a.push(1, 2)
-		state.b.push(2, 2, 2)
-		state.c.push(3, 6)
-		return state
+describe(`family selectors held`, () => {
+	test(`held selector families`, () => {
+		const myAtom = atomFamily<
+			{ a: number[]; b: number[]; c: number[] },
+			boolean
+		>({
+			key: `myAtom`,
+			default: {
+				a: [],
+				b: [],
+				c: [],
+			},
+		})
+
+		const mySelector = selectorFamily<
+			{
+				a: number
+				b: number
+				c: number
+			},
+			boolean
+		>({
+			key: `mySelector`,
+			default: () => ({ a: 0, b: 0, c: 0 }),
+			get:
+				(key) =>
+				({ get }, permanent) => {
+					const { a, b, c } = get(myAtom, key)
+					permanent.a = a.reduce((acc, cur) => acc + cur, 0)
+					permanent.b = b.reduce((acc, cur) => acc + cur, 0)
+					permanent.c = c.reduce((acc, cur) => acc + cur, 0)
+				},
+		})
+		const valueInitial = getState(mySelector, true)
+		expect(valueInitial).toEqual({
+			a: 0,
+			b: 0,
+			c: 0,
+		})
+
+		setState(myAtom, true, (state) => {
+			state.a.push(1, 2)
+			state.b.push(2, 2, 2)
+			state.c.push(3, 6)
+			return state
+		})
+
+		const valueAfter = getState(mySelector, true)
+		expect(valueAfter).toEqual({
+			a: 3,
+			b: 6,
+			c: 9,
+		})
+
+		expect(valueInitial).toBe(valueAfter)
+
+		const valueAlt = getState(mySelector, false)
+
+		expect(valueInitial).not.toBe(valueAlt)
 	})
-
-	const valueAfter = getState(mySelector, true)
-	expect(valueAfter).toEqual({
-		a: 3,
-		b: 6,
-		c: 9,
-	})
-
-	expect(valueInitial).toBe(valueAfter)
-
-	const valueAlt = getState(mySelector, false)
-
-	expect(valueInitial).not.toBe(valueAlt)
 })

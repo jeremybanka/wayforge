@@ -257,6 +257,57 @@ describe(`two families may not have the same key`, () => {
 			`count`,
 			`Overwriting an existing Mutable Atom Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
+
+		selectorFamily<{ count: number }, string>({
+			key: `count`,
+			default: () => ({ count: 0 }),
+			get:
+				(key) =>
+				({ get }, self) => {
+					self.count = get(findState(countAtoms, key))
+				},
+			set:
+				(key) =>
+				({ set }, newValue) => {
+					set(findState(countAtoms, key), newValue.count)
+				},
+		})
+
+		expect(logger.error).toHaveBeenLastCalledWith(
+			`❗`,
+			`writable_held_selector_family`,
+			`count`,
+			`Overwriting an existing Writable Pure Selector Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
+		)
+
+		selectorFamily<{ count: number }, string>({
+			key: `count`,
+			default: () => ({ count: 0 }),
+			get:
+				(key) =>
+				({ get }, self) => {
+					self.count = get(findState(countAtoms, key))
+				},
+		})
+
+		expect(logger.error).toHaveBeenLastCalledWith(
+			`❗`,
+			`readonly_held_selector_family`,
+			`count`,
+			`Overwriting an existing Writable Held Selector Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
+		)
+
+		atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+
+		expect(logger.error).toHaveBeenLastCalledWith(
+			`❗`,
+			`atom_family`,
+			`count`,
+			`Overwriting an existing Readonly Held Selector Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
+		)
 	})
 })
 
