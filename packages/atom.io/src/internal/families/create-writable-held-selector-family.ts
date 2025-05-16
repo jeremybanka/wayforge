@@ -1,40 +1,35 @@
 import type {
 	FamilyMetadata,
-	findState,
-	getState,
 	StateCreation,
 	StateDisposal,
-	WritablePureSelectorFamilyOptions,
-	WritablePureSelectorFamilyToken,
-	WritablePureSelectorToken,
+	WritableHeldSelectorFamilyOptions,
+	WritableHeldSelectorFamilyToken,
+	WritableHeldSelectorToken,
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import {
-	findInStore,
-	getFromStore,
-	getJsonToken,
-	prettyPrintTokenType,
-	type WritablePureSelectorFamily,
-} from ".."
+import { prettyPrintTokenType, type WritableHeldSelectorFamily } from ".."
 import { newest } from "../lineage"
-import { createWritablePureSelector } from "../selector"
+import { createWritableHeldSelector } from "../selector"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 
-export function createWritablePureSelectorFamily<T, K extends Canonical>(
+export function createWritableHeldSelectorFamily<
+	T extends object,
+	K extends Canonical,
+>(
 	store: Store,
-	options: WritablePureSelectorFamilyOptions<T, K>,
+	options: WritableHeldSelectorFamilyOptions<T, K>,
 	internalRoles?: string[],
-): WritablePureSelectorFamilyToken<T, K> {
+): WritableHeldSelectorFamilyToken<T, K> {
 	const familyKey = options.key
-	const type = `writable_pure_selector_family`
+	const type = `writable_held_selector_family`
 
 	const familyToken = {
 		key: familyKey,
 		type,
-	} as const satisfies WritablePureSelectorFamilyToken<T, K>
+	} as const satisfies WritableHeldSelectorFamilyToken<T, K>
 
 	const existing = store.families.get(familyKey)
 	if (existing) {
@@ -48,20 +43,21 @@ export function createWritablePureSelectorFamily<T, K extends Canonical>(
 		)
 	}
 	const subject = new Subject<
-		| StateCreation<WritablePureSelectorToken<T>>
-		| StateDisposal<WritablePureSelectorToken<T>>
+		| StateCreation<WritableHeldSelectorToken<T>>
+		| StateDisposal<WritableHeldSelectorToken<T>>
 	>()
 
-	const familyFunction = (key: K): WritablePureSelectorToken<T> => {
+	const familyFunction = (key: K): WritableHeldSelectorToken<T> => {
 		const subKey = stringifyJson(key)
 		const family: FamilyMetadata = { key: familyKey, subKey }
 		const fullKey = `${familyKey}(${subKey})`
 		const target = newest(store)
 
-		const token = createWritablePureSelector(
+		const token = createWritableHeldSelector(
 			target,
 			{
 				key: fullKey,
+				default: options.default(key),
 				get: options.get(key),
 				set: options.set(key),
 			},
@@ -75,18 +71,9 @@ export function createWritablePureSelectorFamily<T, K extends Canonical>(
 	const selectorFamily = Object.assign(familyFunction, familyToken, {
 		internalRoles,
 		subject,
-		install: (s: Store) => createWritablePureSelectorFamily(s, options),
-		default: (key: K) => {
-			const getFn = options.get(key)
-			return getFn({
-				get: ((...args: Parameters<typeof getState>) =>
-					getFromStore(store, ...args)) as typeof getState,
-				find: ((...args: Parameters<typeof findState>) =>
-					findInStore(store, ...args)) as typeof findState,
-				json: (token) => getJsonToken(store, token),
-			})
-		},
-	}) satisfies WritablePureSelectorFamily<T, K>
+		install: (s: Store) => createWritableHeldSelectorFamily(s, options),
+		default: options.default,
+	}) satisfies WritableHeldSelectorFamily<T, K>
 
 	store.families.set(familyKey, selectorFamily)
 	return familyToken

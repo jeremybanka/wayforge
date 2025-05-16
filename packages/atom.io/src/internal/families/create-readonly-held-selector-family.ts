@@ -1,40 +1,36 @@
 import type {
 	FamilyMetadata,
-	findState,
-	getState,
-	ReadonlyPureSelectorFamilyOptions,
-	ReadonlyPureSelectorFamilyToken,
-	ReadonlyPureSelectorToken,
+	ReadonlyHeldSelectorFamilyOptions,
+	ReadonlyHeldSelectorFamilyToken,
+	ReadonlyHeldSelectorToken,
 	StateCreation,
 	StateDisposal,
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import {
-	findInStore,
-	getFromStore,
-	getJsonToken,
-	prettyPrintTokenType,
-	type ReadonlyPureSelectorFamily,
-} from ".."
+import type { ReadonlyHeldSelectorFamily } from ".."
+import { prettyPrintTokenType } from ".."
 import { newest } from "../lineage"
-import { createReadonlyPureSelector } from "../selector"
+import { createReadonlyHeldSelector } from "../selector"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 
-export function createReadonlyPureSelectorFamily<T, K extends Canonical>(
+export function createReadonlyHeldSelectorFamily<
+	T extends object,
+	K extends Canonical,
+>(
 	store: Store,
-	options: ReadonlyPureSelectorFamilyOptions<T, K>,
+	options: ReadonlyHeldSelectorFamilyOptions<T, K>,
 	internalRoles?: string[],
-): ReadonlyPureSelectorFamilyToken<T, K> {
+): ReadonlyHeldSelectorFamilyToken<T, K> {
 	const familyKey = options.key
-	const type = `readonly_pure_selector_family`
+	const type = `readonly_held_selector_family`
 
 	const familyToken = {
 		key: familyKey,
 		type,
-	} as const satisfies ReadonlyPureSelectorFamilyToken<T, K>
+	} as const satisfies ReadonlyHeldSelectorFamilyToken<T, K>
 
 	const existing = store.families.get(familyKey)
 	if (existing) {
@@ -49,20 +45,21 @@ export function createReadonlyPureSelectorFamily<T, K extends Canonical>(
 	}
 
 	const subject = new Subject<
-		| StateCreation<ReadonlyPureSelectorToken<T>>
-		| StateDisposal<ReadonlyPureSelectorToken<T>>
+		| StateCreation<ReadonlyHeldSelectorToken<T>>
+		| StateDisposal<ReadonlyHeldSelectorToken<T>>
 	>()
 
-	const familyFunction = (key: K): ReadonlyPureSelectorToken<T> => {
+	const familyFunction = (key: K): ReadonlyHeldSelectorToken<T> => {
 		const subKey = stringifyJson(key)
 		const family: FamilyMetadata = { key: familyKey, subKey }
 		const fullKey = `${familyKey}(${subKey})`
 		const target = newest(store)
 
-		const token = createReadonlyPureSelector(
+		const token = createReadonlyHeldSelector(
 			target,
 			{
 				key: fullKey,
+				default: options.default(key),
 				get: options.get(key),
 			},
 			family,
@@ -75,18 +72,9 @@ export function createReadonlyPureSelectorFamily<T, K extends Canonical>(
 	const readonlySelectorFamily = Object.assign(familyFunction, familyToken, {
 		internalRoles,
 		subject,
-		install: (s: Store) => createReadonlyPureSelectorFamily(s, options),
-		default: (key: K) => {
-			const getFn = options.get(key)
-			return getFn({
-				get: ((...args: Parameters<typeof getState>) =>
-					getFromStore(store, ...args)) as typeof getState,
-				find: ((...args: Parameters<typeof findState>) =>
-					findInStore(store, ...args)) as typeof findState,
-				json: (token) => getJsonToken(store, token),
-			})
-		},
-	}) satisfies ReadonlyPureSelectorFamily<T, K>
+		install: (s: Store) => createReadonlyHeldSelectorFamily(s, options),
+		default: options.default,
+	}) satisfies ReadonlyHeldSelectorFamily<T, K>
 
 	store.families.set(familyKey, readonlySelectorFamily)
 	return familyToken

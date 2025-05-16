@@ -139,13 +139,19 @@ export type ReadonlyPureSelectorFamilyOptions<T, K extends Canonical> = {
 	key: string
 	get: (key: K) => Read<() => T>
 }
-export type WritableHeldSelectorFamilyOptions<T, K extends Canonical> = {
+export type WritableHeldSelectorFamilyOptions<
+	T extends object,
+	K extends Canonical,
+> = {
 	key: string
 	default: (key: K) => T
 	get: (key: K) => Read<(permanent: T) => void>
 	set: (key: K) => Write<(newValue: T) => void>
 }
-export type ReadonlyHeldSelectorFamilyOptions<T, K extends Canonical> = {
+export type ReadonlyHeldSelectorFamilyOptions<
+	T extends object,
+	K extends Canonical,
+> = {
 	key: string
 	default: (key: K) => T
 	get: (key: K) => Read<(permanent: T) => void>
