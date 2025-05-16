@@ -24,12 +24,12 @@ export type ReadonlyPureSelectorOptions<T> = {
 }
 export type ReadonlyHeldSelectorOptions<T extends object> = {
 	key: string
-	default: T | (() => T)
+	default: T
 	get: Read<(permanent: T) => void>
 }
 export type WritableHeldSelectorOptions<T extends object> = {
 	key: string
-	default: T | (() => T)
+	default: T
 	get: Read<(permanent: T) => void>
 	set: Write<(newValue: T) => void>
 }
