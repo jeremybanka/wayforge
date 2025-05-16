@@ -148,19 +148,19 @@ export function withdraw(
 				withdrawn = target.atoms.get(token.key)
 				break
 			case `writable_pure_selector`:
-			case `writable_recyclable_selector`:
+			case `writable_held_selector`:
 				withdrawn = target.writableSelectors.get(token.key)
 				break
 			case `readonly_pure_selector`:
-			case `readonly_recyclable_selector`:
+			case `readonly_held_selector`:
 				withdrawn = target.readonlySelectors.get(token.key)
 				break
 			case `atom_family`:
 			case `mutable_atom_family`:
 			case `writable_pure_selector_family`:
 			case `readonly_pure_selector_family`:
-			case `writable_recyclable_selector_family`:
-			case `readonly_recyclable_selector_family`:
+			case `writable_held_selector_family`:
+			case `readonly_held_selector_family`:
 				withdrawn = target.families.get(token.key)
 				break
 			case `timeline`:

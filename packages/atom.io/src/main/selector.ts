@@ -6,10 +6,10 @@ import {
 import type { Canonical } from "atom.io/json"
 
 import type {
+	ReadonlyHeldSelectorToken,
 	ReadonlyPureSelectorToken,
-	ReadonlyRecyclableSelectorToken,
+	WritableHeldSelectorToken,
 	WritablePureSelectorToken,
-	WritableRecyclableSelectorToken,
 } from "."
 import type { Read, Write } from "./transaction"
 
@@ -22,12 +22,12 @@ export type ReadonlyPureSelectorOptions<T> = {
 	key: string
 	get: Read<() => T>
 }
-export type ReadonlyRecyclableSelectorOptions<T extends object> = {
+export type ReadonlyHeldSelectorOptions<T extends object> = {
 	key: string
 	default: T | (() => T)
 	get: Read<(permanent: T) => void>
 }
-export type WritableRecyclableSelectorOptions<T extends object> = {
+export type WritableHeldSelectorOptions<T extends object> = {
 	key: string
 	default: T | (() => T)
 	get: Read<(permanent: T) => void>
@@ -40,21 +40,21 @@ export type WritableRecyclableSelectorOptions<T extends object> = {
  * on the value of atoms or other selectors in the store, and
  * should be recycled when a root atom of the selector is set.
  *
- * A recyclable selector's value must be some object.
+ * A held selector's value must be some object.
  * The reference to that object is permanent and will not be replaced.
  *
  * A writable selector can be "set" to a new value.
  * It is advised to set its dependencies to values
  * that would produce the new value of the selector.
  *
- * @param options - {@link WritableRecyclableSelectorOptions}.
+ * @param options - {@link WritableHeldSelectorOptions}.
  * @returns
  * The token for your selector.
- * @overload WritableRecyclable
+ * @overload WritableHeld
  */
 export function selector<T extends object>(
-	options: WritableRecyclableSelectorOptions<T>,
-): WritableRecyclableSelectorToken<T>
+	options: WritableHeldSelectorOptions<T>,
+): WritableHeldSelectorToken<T>
 
 /**
  * @public
@@ -62,19 +62,19 @@ export function selector<T extends object>(
  * on the value of atoms or other selectors in the store,
  * and should be recycled when a root atom of the selector is set.
  *
- * A recyclable selector's value must be some object.
+ * A held selector's value must be some object.
  * The reference to that object is permanent and will not be replaced.
  *
  * A readonly selector can be "gotten" but not "set".
  *
- * @param options - {@link ReadonlyRecyclableSelectorOptions}.
+ * @param options - {@link ReadonlyHeldSelectorOptions}.
  * @returns
  * The token for your selector.
- * @overload ReadonlyRecyclable
+ * @overload ReadonlyHeld
  */
 export function selector<T extends object>(
-	options: ReadonlyRecyclableSelectorOptions<T>,
-): ReadonlyRecyclableSelectorToken<T>
+	options: ReadonlyHeldSelectorOptions<T>,
+): ReadonlyHeldSelectorToken<T>
 
 /**
  * @public
@@ -118,15 +118,15 @@ export function selector<T>(
 
 export function selector(
 	options:
+		| ReadonlyHeldSelectorOptions<any>
 		| ReadonlyPureSelectorOptions<any>
-		| ReadonlyRecyclableSelectorOptions<any>
-		| WritablePureSelectorOptions<any>
-		| WritableRecyclableSelectorOptions<any>,
+		| WritableHeldSelectorOptions<any>
+		| WritablePureSelectorOptions<any>,
 ):
+	| ReadonlyHeldSelectorToken<any>
 	| ReadonlyPureSelectorToken<any>
-	| ReadonlyRecyclableSelectorToken<any>
-	| WritablePureSelectorToken<any>
-	| WritableRecyclableSelectorToken<any> {
+	| WritableHeldSelectorToken<any>
+	| WritablePureSelectorToken<any> {
 	return createStandaloneSelector(IMPLICIT.STORE, options)
 }
 
@@ -139,13 +139,13 @@ export type ReadonlyPureSelectorFamilyOptions<T, K extends Canonical> = {
 	key: string
 	get: (key: K) => Read<() => T>
 }
-export type WritableRecyclableSelectorFamilyOptions<T, K extends Canonical> = {
+export type WritableHeldSelectorFamilyOptions<T, K extends Canonical> = {
 	key: string
 	default: (key: K) => T
 	get: (key: K) => Read<(permanent: T) => void>
 	set: (key: K) => Write<(newValue: T) => void>
 }
-export type ReadonlyRecyclableSelectorFamilyOptions<T, K extends Canonical> = {
+export type ReadonlyHeldSelectorFamilyOptions<T, K extends Canonical> = {
 	key: string
 	default: (key: K) => T
 	get: (key: K) => Read<(permanent: T) => void>
@@ -163,15 +163,15 @@ export type ReadonlyPureSelectorFamilyToken<T, K extends Canonical> = {
 	__T?: T
 	__K?: K
 }
-export type WritableRecyclableSelectorFamilyToken<T, K extends Canonical> = {
+export type WritableHeldSelectorFamilyToken<T, K extends Canonical> = {
 	key: string
-	type: `writable_recyclable_selector_family`
+	type: `writable_held_selector_family`
 	__T?: T
 	__K?: K
 }
-export type ReadonlyRecyclableSelectorFamilyToken<T, K extends Canonical> = {
+export type ReadonlyHeldSelectorFamilyToken<T, K extends Canonical> = {
 	key: string
-	type: `readonly_recyclable_selector_family`
+	type: `readonly_held_selector_family`
 	__T?: T
 	__K?: K
 }
@@ -179,20 +179,20 @@ export type ReadonlyRecyclableSelectorFamilyToken<T, K extends Canonical> = {
 export type PureSelectorFamilyToken<T, K extends Canonical> =
 	| ReadonlyPureSelectorFamilyToken<T, K>
 	| WritablePureSelectorFamilyToken<T, K>
-export type RecyclableSelectorFamilyToken<T, K extends Canonical> =
-	| ReadonlyRecyclableSelectorFamilyToken<T, K>
-	| WritableRecyclableSelectorFamilyToken<T, K>
+export type HeldSelectorFamilyToken<T, K extends Canonical> =
+	| ReadonlyHeldSelectorFamilyToken<T, K>
+	| WritableHeldSelectorFamilyToken<T, K>
 export type ReadonlySelectorFamilyToken<T, K extends Canonical> =
+	| ReadonlyHeldSelectorFamilyToken<T, K>
 	| ReadonlyPureSelectorFamilyToken<T, K>
-	| ReadonlyRecyclableSelectorFamilyToken<T, K>
 
 export type WritableSelectorFamilyToken<T, K extends Canonical> =
+	| WritableHeldSelectorFamilyToken<T, K>
 	| WritablePureSelectorFamilyToken<T, K>
-	| WritableRecyclableSelectorFamilyToken<T, K>
 
 export type SelectorFamilyToken<T, K extends Canonical> =
+	| HeldSelectorFamilyToken<T, K>
 	| PureSelectorFamilyToken<T, K>
-	| RecyclableSelectorFamilyToken<T, K>
 
 export function selectorFamily<T, K extends Canonical>(
 	options: WritablePureSelectorFamilyOptions<T, K>,
