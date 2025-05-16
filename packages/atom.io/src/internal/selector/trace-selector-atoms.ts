@@ -4,15 +4,15 @@ import { isAtomKey } from "../keys"
 import { getSelectorDependencyKeys } from "./get-selector-dependency-keys"
 
 export const traceSelectorAtoms = (
+	store: Store,
 	directDependencyKey: StateKey<unknown>,
 	covered: Set<string>,
-	store: Store,
 ): AtomKey<unknown>[] => {
 	const rootKeys: AtomKey<unknown>[] = []
 
 	const indirectDependencyKeys = getSelectorDependencyKeys(
-		directDependencyKey,
 		store,
+		directDependencyKey,
 	)
 	while (indirectDependencyKeys.length > 0) {
 		// biome-ignore lint/style/noNonNullAssertion: just checked length ^^^
@@ -24,7 +24,7 @@ export const traceSelectorAtoms = (
 
 		if (!isAtomKey(store, indirectDependencyKey)) {
 			indirectDependencyKeys.push(
-				...getSelectorDependencyKeys(indirectDependencyKey, store),
+				...getSelectorDependencyKeys(store, indirectDependencyKey),
 			)
 		} else if (!rootKeys.includes(indirectDependencyKey)) {
 			rootKeys.push(indirectDependencyKey)
@@ -39,11 +39,11 @@ export const traceAllSelectorAtoms = (
 	store: Store,
 ): AtomKey<unknown>[] => {
 	const selectorKey = selector.key
-	const directDependencyKeys = getSelectorDependencyKeys(selectorKey, store)
+	const directDependencyKeys = getSelectorDependencyKeys(store, selectorKey)
 	const covered = new Set<string>()
 	return directDependencyKeys.flatMap((depKey) =>
 		isAtomKey(store, depKey)
 			? depKey
-			: traceSelectorAtoms(depKey, covered, store),
+			: traceSelectorAtoms(store, depKey, covered),
 	)
 }

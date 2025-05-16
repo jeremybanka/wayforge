@@ -29,7 +29,7 @@ export const updateSelectorAtoms = (
 			`discovers root atom "${dependencyKey}"`,
 		)
 	} else {
-		const rootKeys = traceSelectorAtoms(dependencyKey, covered, store)
+		const rootKeys = traceSelectorAtoms(store, dependencyKey, covered)
 		store.logger.info(
 			`🔍`,
 			selectorType,
