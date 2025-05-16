@@ -44,7 +44,7 @@ export function createStandaloneSelector(
 	| WritableHeldSelectorToken<any>
 	| WritablePureSelectorToken<any> {
 	const isWritable = `set` in options
-	const isHeld = `default` in options
+	const isHeld = `const` in options
 
 	if (isHeld && isWritable) {
 		const state = createWritableHeldSelector(store, options, undefined)

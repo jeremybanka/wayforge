@@ -19,14 +19,14 @@ export const createReadonlyHeldSelector = <T extends object>(
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const covered = new Set<string>()
-	const { key, default: def } = options
+	const { key, const: constant } = options
 	const type = `readonly_held_selector` as const
 	const { get, find, json } = registerSelector(target, type, key, covered)
 	const getSelf = () => {
-		options.get({ get, find, json }, def)
-		cacheValue(newest(store), key, def, subject)
+		options.get({ get, find, json }, constant)
+		cacheValue(newest(store), key, constant, subject)
 		covered.clear()
-		return def
+		return constant
 	}
 
 	const readonlySelector: ReadonlyHeldSelector<T> = {
@@ -38,7 +38,7 @@ export const createReadonlyHeldSelector = <T extends object>(
 		...(family && { family }),
 	}
 	target.readonlySelectors.set(key, readonlySelector)
-	store.logger.info(`✨`, type, key, `=`, def)
+	store.logger.info(`✨`, type, key, `=`, constant)
 	const token: ReadonlyHeldSelectorToken<T> = {
 		key,
 		type,

@@ -57,7 +57,7 @@ export function createWritableHeldSelectorFamily<
 			target,
 			{
 				key: fullKey,
-				default: options.default(key),
+				const: options.const(key),
 				get: options.get(key),
 				set: options.set(key),
 			},
@@ -72,7 +72,7 @@ export function createWritableHeldSelectorFamily<
 		internalRoles,
 		subject,
 		install: (s: Store) => createWritableHeldSelectorFamily(s, options),
-		default: options.default,
+		default: options.const,
 	}) satisfies WritableHeldSelectorFamily<T, K>
 
 	store.families.set(familyKey, selectorFamily)

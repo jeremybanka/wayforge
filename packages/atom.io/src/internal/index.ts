@@ -82,13 +82,13 @@ export type Atom<T> =
 
 export type WritableHeldSelector<T> = AtomIOState & {
 	type: `writable_held_selector`
-	default: T | (() => T)
+	const: T
 	get: () => T
 	set: (newValue: T | ((oldValue: T) => T)) => void
 }
 export type ReadonlyHeldSelector<T> = AtomIOState & {
 	type: `readonly_held_selector`
-	default: T | (() => T)
+	const: T
 	get: () => T
 }
 export type WritablePureSelector<T> = AtomIOState & {

@@ -260,7 +260,7 @@ describe(`two families may not have the same key`, () => {
 
 		selectorFamily<{ count: number }, string>({
 			key: `count`,
-			default: () => ({ count: 0 }),
+			const: () => ({ count: 0 }),
 			get:
 				(key) =>
 				({ get }, self) => {
@@ -282,7 +282,7 @@ describe(`two families may not have the same key`, () => {
 
 		selectorFamily<{ count: number }, string>({
 			key: `count`,
-			default: () => ({ count: 0 }),
+			const: () => ({ count: 0 }),
 			get:
 				(key) =>
 				({ get }, self) => {

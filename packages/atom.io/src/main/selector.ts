@@ -24,12 +24,12 @@ export type ReadonlyPureSelectorOptions<T> = {
 }
 export type ReadonlyHeldSelectorOptions<T extends object> = {
 	key: string
-	default: T
+	const: T
 	get: Read<(permanent: T) => void>
 }
 export type WritableHeldSelectorOptions<T extends object> = {
 	key: string
-	default: T
+	const: T
 	get: Read<(permanent: T) => void>
 	set: Write<(newValue: T) => void>
 }
@@ -144,7 +144,7 @@ export type WritableHeldSelectorFamilyOptions<
 	K extends Canonical,
 > = {
 	key: string
-	default: (key: K) => T
+	const: (key: K) => T
 	get: (key: K) => Read<(permanent: T) => void>
 	set: (key: K) => Write<(newValue: T) => void>
 }
@@ -153,7 +153,7 @@ export type ReadonlyHeldSelectorFamilyOptions<
 	K extends Canonical,
 > = {
 	key: string
-	default: (key: K) => T
+	const: (key: K) => T
 	get: (key: K) => Read<(permanent: T) => void>
 }
 
