@@ -219,7 +219,7 @@ describe(`two families may not have the same key`, () => {
 		})
 		expect(logger.error).toHaveBeenLastCalledWith(
 			`❗`,
-			`readonly_selector_family`,
+			`readonly_pure_selector_family`,
 			`count`,
 			`Overwriting an existing Atom Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
@@ -236,7 +236,7 @@ describe(`two families may not have the same key`, () => {
 			`❗`,
 			`mutable_atom_family`,
 			`count`,
-			`Overwriting an existing Readonly Selector Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
+			`Overwriting an existing Readonly Pure Selector Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
 		selectorFamily<number, string>({
 			key: `count`,
@@ -253,7 +253,7 @@ describe(`two families may not have the same key`, () => {
 
 		expect(logger.error).toHaveBeenLastCalledWith(
 			`❗`,
-			`writable_selector_family`,
+			`writable_pure_selector_family`,
 			`count`,
 			`Overwriting an existing Mutable Atom Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
