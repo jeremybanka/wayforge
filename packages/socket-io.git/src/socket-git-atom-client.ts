@@ -22,7 +22,7 @@ export type GitClientTools = {
 	) => any
 		? {
 				(...args: Parameters<GitInterface[GitFunction]>): void
-				state: A_IO.ReadonlySelectorToken<
+				state: A_IO.ReadonlyPureSelectorToken<
 					Awaited<ReturnType<GitInterface[GitFunction]>> | GitSocketError
 				>
 				getCurrentState: A_IO.Read<
