@@ -5,7 +5,6 @@ import type { atom, AtomFamilyToken } from "./atom"
 import type { getState } from "./get-state"
 import type {
 	SelectorFamilyToken,
-	WritablePureSelectorFamilyToken,
 	WritableSelectorFamilyToken,
 } from "./selector"
 import type { setState } from "./set-state"
