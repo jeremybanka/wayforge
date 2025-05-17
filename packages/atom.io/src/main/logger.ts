@@ -59,14 +59,18 @@ export type TokenDenomination =
 	| `molecule`
 	| `mutable_atom_family`
 	| `mutable_atom`
-	| `readonly_selector_family`
-	| `readonly_selector`
-	| `selector_family`
-	| `selector`
+	| `readonly_held_selector_family`
+	| `readonly_held_selector`
+	| `readonly_pure_selector_family`
+	| `readonly_pure_selector`
 	| `state`
 	| `timeline`
 	| `transaction`
 	| `unknown`
+	| `writable_held_selector_family`
+	| `writable_held_selector`
+	| `writable_pure_selector_family`
+	| `writable_pure_selector`
 
 export const LOG_LEVELS = [`info`, `warn`, `error`] as const
 export type LogLevel = (typeof LOG_LEVELS)[number]

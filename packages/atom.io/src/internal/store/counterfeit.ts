@@ -5,15 +5,15 @@ import type {
 	MutableAtomToken,
 	ReadableFamilyToken,
 	ReadableToken,
-	ReadonlySelectorFamilyToken,
-	ReadonlySelectorToken,
+	ReadonlyPureSelectorFamilyToken,
+	ReadonlyPureSelectorToken,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
 	SelectorFamilyToken,
 	SelectorToken,
 	WritableFamilyToken,
-	WritableSelectorFamilyToken,
-	WritableSelectorToken,
+	WritablePureSelectorFamilyToken,
+	WritablePureSelectorToken,
 	WritableToken,
 } from "atom.io"
 import type { Canonical, Json } from "atom.io/json"
@@ -23,10 +23,12 @@ import type { Transceiver } from "../mutable"
 
 export const FAMILY_MEMBER_TOKEN_TYPES = {
 	atom_family: `atom`,
-	mutable_atom_family: `mutable_atom`,
-	selector_family: `selector`,
-	readonly_selector_family: `readonly_selector`,
 	molecule_family: `molecule`,
+	mutable_atom_family: `mutable_atom`,
+	readonly_held_selector_family: `readonly_held_selector`,
+	readonly_pure_selector_family: `readonly_pure_selector`,
+	writable_held_selector_family: `writable_held_selector`,
+	writable_pure_selector_family: `writable_pure_selector`,
 } as const
 
 export function counterfeit<
@@ -47,14 +49,14 @@ export function counterfeit<T, K extends Canonical, Key extends K>(
 ): AtomToken<T>
 
 export function counterfeit<T, K extends Canonical, Key extends K>(
-	token: WritableSelectorFamilyToken<T, K>,
+	token: WritablePureSelectorFamilyToken<T, K>,
 	key: Key,
-): WritableSelectorToken<T>
+): WritablePureSelectorToken<T>
 
 export function counterfeit<T, K extends Canonical, Key extends K>(
-	token: ReadonlySelectorFamilyToken<T, K>,
+	token: ReadonlyPureSelectorFamilyToken<T, K>,
 	key: Key,
-): ReadonlySelectorToken<T>
+): ReadonlyPureSelectorToken<T>
 
 export function counterfeit<T, K extends Canonical, Key extends K>(
 	token: SelectorFamilyToken<T, K>,

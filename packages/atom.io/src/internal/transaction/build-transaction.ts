@@ -43,7 +43,7 @@ export const buildTransaction = (
 		selectorGraph: new Junction(parent.selectorGraph.toJSON(), {
 			makeContentKey: (...keys) => keys.sort().join(`:`),
 		}),
-		selectors: new LazyMap(parent.selectors),
+		writableSelectors: new LazyMap(parent.writableSelectors),
 		valueMap: new LazyMap(parent.valueMap),
 		defaults: parent.defaults,
 		disposalTraces: store.disposalTraces.copy(),

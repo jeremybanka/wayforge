@@ -6,7 +6,7 @@ export const myIdState__INTERNAL: AtomIO.RegularAtomToken<string | undefined> =
 		key: `mySocketId__INTERNAL`,
 		default: undefined,
 	})
-export const myIdState: AtomIO.ReadonlySelectorToken<string | undefined> =
+export const myIdState: AtomIO.ReadonlyPureSelectorToken<string | undefined> =
 	AtomIO.selector<string | undefined>({
 		key: `mySocketId`,
 		get: ({ get }) => get(myIdState__INTERNAL),

@@ -1,4 +1,8 @@
-import type { ReadonlySelectorToken, WritableToken } from "atom.io"
+import type {
+	ReadonlyPureSelectorToken,
+	ReadonlySelectorToken,
+	WritableToken,
+} from "atom.io"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 
@@ -31,8 +35,14 @@ export const ReadonlySelectorViewer: FC<{
 export const StoreEditor: FC<{
 	token: ReadonlySelectorToken<unknown> | WritableToken<unknown>
 }> = ({ token }) => {
-	if (token.type === `readonly_selector`) {
-		return <ReadonlySelectorViewer token={token} />
+	switch (token.type) {
+		case `readonly_pure_selector`:
+		case `readonly_held_selector`:
+			return <ReadonlySelectorViewer token={token} />
+		case `writable_pure_selector`:
+		case `writable_held_selector`:
+		case `atom`:
+		case `mutable_atom`:
+			return <StateEditor token={token} />
 	}
-	return <StateEditor token={token} />
 }

@@ -1,5 +1,5 @@
 import type {
-	ReadonlySelectorFamilyOptions,
+	ReadonlyPureSelectorFamilyOptions,
 	RegularAtomFamilyOptions,
 	RegularAtomOptions,
 } from "atom.io"
@@ -59,7 +59,7 @@ describe(`silo`, () => {
 				key: `counts`,
 				default: 0,
 			}
-		const DEFAULT_DOUBLE_COUNT_SELECTORS_CONFIG: ReadonlySelectorFamilyOptions<
+		const DEFAULT_DOUBLE_COUNT_SELECTORS_CONFIG: ReadonlyPureSelectorFamilyOptions<
 			number,
 			string
 		> = {
