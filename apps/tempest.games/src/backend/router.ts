@@ -5,7 +5,6 @@ import { initTRPC, TRPCError } from "@trpc/server"
 import { type } from "arktype"
 import { and, eq, gt, isNull } from "drizzle-orm"
 
-import { CompleteAccountAction } from "../../emails/CompleteAccountAction"
 import type { DatabaseManager } from "../database/tempest-db-manager"
 import type {
 	AccountActionTypeActual,
@@ -19,11 +18,9 @@ import {
 } from "../database/tempest-db-schema"
 import { credentialsType } from "../library/data-constraints"
 import { env } from "../library/env"
-import {
-	genAccountActionCode,
-	prettyPrintAccountAction,
-} from "./account-actions"
-import { resend } from "./email"
+import { genAccountActionCode, summarizeAccountAction } from "./account-actions"
+import { sendEmailToConfirmAccountAction } from "./email"
+// import { resend } from "./email"
 import type { logger } from "./logger"
 import { decryptId, encryptId } from "./secrecy"
 import { createSession, userSessionMap } from "./user-sessions"
@@ -401,18 +398,12 @@ export const appRouter = trpc.router({
 				expiresAt: new Date(+ctx.now + 1000 * 60 * 15),
 			})
 
-			await resend.emails.send({
-				from: `Tempest Games <noreply@tempest.games>`,
+			void sendEmailToConfirmAccountAction({
 				to: emailVerified,
-				subject: `Reset your password`,
-				react: (
-					<CompleteAccountAction
-						username={username}
-						action="resetPassword"
-						validationCode={passwordResetCode}
-						baseUrl={env.FRONTEND_ORIGINS[0]}
-					/>
-				),
+				username,
+				action: `resetPassword`,
+				oneTimeCode: passwordResetCode,
+				baseUrl: env.FRONTEND_ORIGINS[0],
 			})
 
 			return {
@@ -591,18 +582,12 @@ async function initiateAccountAction(arg: {
 				},
 			})
 
-		void resend.emails.send({
-			from: `Tempest Games <noreply@tempest.games>`,
+		void sendEmailToConfirmAccountAction({
 			to: email,
-			subject: prettyPrintAccountAction(action, username)[0],
-			react: (
-				<CompleteAccountAction
-					username={username}
-					action={action}
-					validationCode={accountActionCode}
-					baseUrl={env.FRONTEND_ORIGINS[0]}
-				/>
-			),
+			username,
+			action,
+			oneTimeCode: accountActionCode,
+			baseUrl: env.FRONTEND_ORIGINS[0],
 		})
 	}
 }
