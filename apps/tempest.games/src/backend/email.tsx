@@ -1,6 +1,6 @@
 import { Resend } from "resend"
 
-import CompleteAccountAction from "../../emails/CompleteAccountAction"
+import ConfirmAccountAction from "../../emails/ConfirmAccountAction"
 import type { AccountActionTypeActual } from "../database/tempest-db-schema"
 import { env } from "../library/env"
 import { summarizeAccountAction } from "./account-actions"
@@ -34,7 +34,7 @@ export async function sendEmailToConfirmAccountAction({
 			to,
 			subject,
 			react: (
-				<CompleteAccountAction
+				<ConfirmAccountAction
 					subject={subject}
 					summary={summary}
 					oneTimeCode={oneTimeCode}
