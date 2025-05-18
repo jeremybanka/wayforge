@@ -116,9 +116,9 @@ describe(`nested setState withing a setState callback`, () => {
 
 		expect(logger.info).toHaveBeenCalledWith(
 			`❗`,
-			`atom`,
-			`b`,
-			`deferring setState at ${rejectionTime} until setState for "a" is done`,
+			b.type,
+			b.key,
+			`deferring setState at ${rejectionTime} until setState for "${a.key}" is done`,
 		)
 
 		expect(getState(a)).toBe(1)
@@ -150,8 +150,8 @@ describe(`two timelines attempt to own the same atom`, () => {
 
 		expect(logger.error).toHaveBeenCalledWith(
 			`❌`,
-			`timeline`,
-			`count_history_too`,
+			countTimeline001.type,
+			countTimeline001.key,
 			`Failed to add atom "count" because it already belongs to timeline "count_history"`,
 		)
 		expect(countTimeline0Data?.history).toHaveLength(1)
@@ -183,8 +183,8 @@ describe(`two timelines attempt to own the same atom`, () => {
 		)
 		expect(logger.error).toHaveBeenCalledWith(
 			`❌`,
-			`timeline`,
-			`a_count_history`,
+			aCountTimeline.type,
+			aCountTimeline.key,
 			`Failed to add atom "counts("a")" because its family "counts" already belongs to timeline "counts_history"`,
 		)
 		expect(countTimelineData?.history).toHaveLength(2)
