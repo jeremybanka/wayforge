@@ -1,26 +1,35 @@
-import type { AccountAction } from "../database/tempest-db-schema"
+import type { AccountActionTypeActual } from "../database/tempest-db-schema"
 import { alphaRand } from "../library/alpha-rand"
 
 export function genAccountActionCode(): string {
 	return alphaRand(4) + `_` + alphaRand(4)
 }
 
-export function prettyPrintAccountAction(
-	action: Exclude<AccountAction[`action`], `cooldown`>,
-	username: string,
-): [header: string, summary: string] {
+export type SummarizeAccountActionData = {
+	action: AccountActionTypeActual
+	username: string
+	oneTimeCode: string
+}
+export function summarizeAccountAction({
+	action,
+	username,
+	oneTimeCode,
+}: SummarizeAccountActionData): { subject: string; summary: string } {
 	switch (action) {
 		case `confirmEmail`:
-			return [`Welcome`, `Here's a one-time code to set up your new account.`]
+			return {
+				subject: `Welcome`,
+				summary: `${oneTimeCode} is your one-time code to set up your account.`,
+			}
 		case `resetPassword`:
-			return [
-				`Approve password reset?`,
-				`Here's a one-time code that will let you make a new password.`,
-			]
+			return {
+				subject: `Approve password reset?`,
+				summary: `${oneTimeCode} is your one-time code to make a new password.`,
+			}
 		case `signIn`:
-			return [
-				`Welcome back, ${username}`,
-				`Here's a one-time code to sign into your account.`,
-			]
+			return {
+				subject: `Welcome back, ${username}`,
+				summary: `${oneTimeCode} is your one-time code to get signed in.`,
+			}
 	}
 }

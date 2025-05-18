@@ -10,31 +10,28 @@ import {
 } from "@react-email/components"
 import * as React from "react"
 
-import {
-	genAccountActionCode,
-	prettyPrintAccountAction,
-} from "../src/backend/account-actions"
-import type { AccountActionTypeActual } from "../src/database/tempest-db-schema"
+import { genAccountActionCode } from "../src/backend/account-actions"
 import * as svg from "../src/frontend/<svg>"
 
 // biome-ignore lint/style/noNonNullAssertion: <explanation>
 const FRONTEND_ORIGIN = JSON.parse(process.env[`FRONTEND_ORIGINS`]!)[0] ?? ``
-interface SlackConfirmEmailProps {
-	username: string
-	action: AccountActionTypeActual
-	validationCode: string
+
+interface ConfirmEmailProps {
+	subject: string
+	summary: string
+	oneTimeCode: string
 	baseUrl?: string
 }
 
-export function CompleteAccountAction({
-	username,
-	action,
-	validationCode,
+function CompleteAccountAction({
+	subject,
+	summary,
+	oneTimeCode,
 	baseUrl = FRONTEND_ORIGIN,
-}: SlackConfirmEmailProps): React.ReactNode {
+}: ConfirmEmailProps): React.ReactNode {
 	const url = new URL(baseUrl)
 	const prettyLink = `${url.host}/verify`
-	const [header, summary] = prettyPrintAccountAction(action, username)
+
 	return (
 		<Html>
 			<Head>
@@ -67,11 +64,11 @@ export function CompleteAccountAction({
 					<Section style={logoContainer}>
 						<svg.tempest width="250" />
 					</Section>
-					<Heading style={h1}>{header}</Heading>
+					<Heading style={h1}>{subject}</Heading>
 					<Text style={heroText}>{summary}</Text>
 
 					<Section style={codeBox}>
-						<Text style={confirmationCodeText}>{validationCode}</Text>
+						<Text style={confirmationCodeText}>{oneTimeCode}</Text>
 					</Section>
 
 					<Text style={heroText}>
@@ -103,10 +100,11 @@ export function CompleteAccountAction({
 }
 
 CompleteAccountAction.PreviewProps = {
-	action: `confirmEmail`,
-	validationCode: genAccountActionCode(),
+	subject: `Welcome`,
+	summary: `Your one-time code is: 1234567890`,
+	oneTimeCode: genAccountActionCode(),
 	baseUrl: `https://tempest.games`,
-} as SlackConfirmEmailProps
+}
 
 export default CompleteAccountAction
 
