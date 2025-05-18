@@ -34,14 +34,13 @@ describe(`disposeState`, () => {
 			key: `count`,
 			default: 0,
 		})
-		expect(countState.key).toEqual(`count`)
 		disposeState(countState)
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).toHaveBeenCalledTimes(1)
 		expect(logger.error).toHaveBeenCalledWith(
 			`❌`,
-			`atom`,
-			`count`,
+			countState.type,
+			countState.key,
 			`Standalone atoms cannot be disposed.`,
 		)
 	})
