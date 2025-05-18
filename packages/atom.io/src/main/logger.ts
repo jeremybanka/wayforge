@@ -78,7 +78,9 @@ export type LogFn = (
 	message: string,
 	...rest: unknown[]
 ) => void
-export type LogFilter = (...params: Parameters<LogFn>) => boolean
+export type LogFilter = (
+	...params: Parameters<LogFn>
+) => Parameters<LogFn> | boolean
 
 export type Logger = Record<LogLevel, LogFn>
 
@@ -113,22 +115,33 @@ export class AtomIOLogger implements Logger {
 	}
 
 	public error: LogFn = (...args) => {
-		if ((this.filter?.(...args) ?? true) && this.logLevel !== null) {
-			this.logger.error(...args)
+		const filterResult = this.filter?.(...args) ?? true
+		if (this.logLevel !== null) {
+			if (filterResult === true) {
+				this.logger.error(...args)
+			} else if (filterResult !== false) {
+				this.logger.error(...filterResult)
+			}
 		}
 	}
 	public info: LogFn = (...args) => {
-		if ((this.filter?.(...args) ?? true) && this.logLevel === `info`) {
-			this.logger.info(...args)
+		const filterResult = this.filter?.(...args) ?? true
+		if (this.logLevel === `info`) {
+			if (filterResult === true) {
+				this.logger.info(...args)
+			} else if (filterResult !== false) {
+				this.logger.info(...filterResult)
+			}
 		}
 	}
 	public warn: LogFn = (...args) => {
-		if (
-			(this.filter?.(...args) ?? true) &&
-			this.logLevel !== `error` &&
-			this.logLevel !== null
-		) {
-			this.logger.warn(...args)
+		const filterResult = this.filter?.(...args) ?? true
+		if (this.logLevel !== `error` && this.logLevel !== null) {
+			if (filterResult === true) {
+				this.logger.warn(...args)
+			} else if (filterResult !== false) {
+				this.logger.warn(...filterResult)
+			}
 		}
 	}
 }

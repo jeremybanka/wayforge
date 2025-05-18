@@ -24,7 +24,7 @@ import type {
 } from "../library/socket-interface"
 import { db } from "./db"
 import { logger } from "./logger"
-import { userSessionMap } from "./user-sessions"
+import { userSessions } from "./user-sessions"
 
 export type TempestServerSocket = Socket<
 	TempestSocketUp,
@@ -67,8 +67,7 @@ export const sessionMiddleware: SocketServerMiddleware = async (
 	const userKey = `user::${user.id}` satisfies UserKey
 	const socketKey = `socket::${socket.id}` satisfies SocketKey
 
-	const userSessions = userSessionMap.get(user.id)
-	if (userSessions?.has(sessionKey)) {
+	if (userSessions?.has(user.id, sessionKey)) {
 		const socketState = findInStore(IMPLICIT.STORE, socketAtoms, socketKey)
 		setIntoStore(IMPLICIT.STORE, socketState, socket)
 		editRelationsInStore(

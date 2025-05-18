@@ -31,7 +31,6 @@ function CompleteAccountAction({
 }: ConfirmEmailProps): React.ReactNode {
 	const url = new URL(baseUrl)
 	const prettyLink = `${url.host}/verify`
-
 	return (
 		<Html>
 			<Head>

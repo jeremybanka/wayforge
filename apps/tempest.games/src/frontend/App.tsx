@@ -21,7 +21,7 @@ import scss from "./App.module.scss"
 import { appVersionQueryAtom } from "./services/patchnotes-service"
 import { navigate, routeSelector } from "./services/router-service"
 import { authAtom, socket } from "./services/socket-auth-service"
-import { trpc } from "./services/trpc-client-service"
+import { trpcClient } from "./services/trpc-client-service"
 import { Account } from "./views/Account"
 import { Admin } from "./views/Admin"
 import { GameView } from "./views/Game"
@@ -92,7 +92,7 @@ export function App(): React.ReactNode {
 								type="button"
 								onClick={async () => {
 									if (!auth) return
-									await trpc.closeSession.mutate({
+									await trpcClient.closeSession.mutate({
 										username: auth.username,
 										sessionKey: auth.sessionKey,
 									})

@@ -95,3 +95,13 @@ export const signUpType = type({
 	password: `string`,
 	email: `string`,
 })
+
+export const clientAuthDataType = type({
+	email: `string`,
+	userId: `string`,
+	username: `string`,
+	password: `boolean`,
+	sessionKey: `string`,
+	verification: `'unverified' | 'verified'`,
+})
+export type ClientAuthData = typeof clientAuthDataType.infer
