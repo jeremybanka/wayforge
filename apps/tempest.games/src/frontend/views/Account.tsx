@@ -13,59 +13,32 @@ import {
 	password0IssuesSelector,
 	password1InputAtom,
 	password1IssuesSelector,
-	signUpReadySelector,
-	socket,
 	usernameInputAtom,
 	usernameIssuesSelector,
 } from "../services/socket-auth-service"
 import { trpcClient } from "../services/trpc-client-service"
+import type { AccountString } from "./Account/account-state"
+import { usernameInputElementAtom } from "./Account/account-state"
+import { Form } from "./Account/Form"
 
 export function Account(): React.ReactNode {
-	const setUsername = useI(usernameInputAtom)
 	const setPassword0 = useI(password0InputAtom)
 	const setPassword1 = useI(password1InputAtom)
 	const setEmail = useI(emailInputAtom)
 
 	const auth = useO(authAtom)
 	const token = useO(oneTimeCodeInputAtom)
-	const username = useO(usernameInputAtom)
 	const password0 = useO(password0InputAtom)
 	const password1 = useO(password1InputAtom)
 	const email = useO(emailInputAtom)
-	const usernameIssues = useO(usernameIssuesSelector)
 	const password0Issues = useO(password0IssuesSelector)
 	const password1Issues = useO(password1IssuesSelector)
 	const emailIssues = useO(emailIssuesSelector)
+
+	const [isEditing, setEditing] = React.useState<AccountString | null>(null)
 	const usernameIsTaken = useO(isUsernameTakenQuerySelector)
-
-	const [submitted, setSubmitted] = React.useState(false)
-	const [isEditing, setEditing] = React.useState<
-		`email` | `password` | `username` | null
-	>(null)
-	const [error, setError] = React.useState<string | null>(null)
-	const [buttonBlockActive, setButtonBlockActive] = React.useState(false)
-
-	const usernameRef = React.useRef<HTMLInputElement>(null)
 	const emailRef = React.useRef<HTMLInputElement>(null)
 	const passwordRef = React.useRef<HTMLInputElement>(null)
-
-	React.useEffect(() => {
-		switch (isEditing) {
-			case `username`: {
-				usernameRef.current?.focus()
-				break
-			}
-			case `password`: {
-				passwordRef.current?.focus()
-				break
-			}
-			case `email`: {
-				break
-			}
-			case null: {
-			}
-		}
-	})
 
 	onMount(() => {
 		if (auth) setEmail(auth.email)
@@ -77,75 +50,16 @@ export function Account(): React.ReactNode {
 
 	return (
 		<article data-css="editor">
-			<form
-				onSubmit={(e) => {
-					e.preventDefault()
-					if (buttonBlockActive) {
-						setButtonBlockActive(false)
-						return
-					}
-					console.log(`submitted! changing username to`, username)
-					socket.emit(`changeUsername`, username)
-					setEditing(null)
-				}}
-			>
-				{isEditing === `username` ? (
-					<button
-						type="button"
-						onClick={() => {
-							setEditing(null)
-						}}
-					>
-						x
-					</button>
-				) : null}
-				<main>
-					<label htmlFor="username">
-						{username && (usernameIssues || usernameIsTaken === true) ? (
-							<aside>
-								{usernameIsTaken === true ? (
-									<span>This username is taken.</span>
-								) : null}
-								{usernameIssues?.map((issue) => (
-									<span key={issue.path.join(`.`)}>{issue.message}</span>
-								))}
-							</aside>
-						) : null}
-						<span>Username</span>
-						<input
-							id="username"
-							type="text"
-							ref={usernameRef}
-							value={username}
-							onChange={(e) => {
-								setUsername(e.target.value)
-							}}
-							autoComplete="username"
-							autoCapitalize="none"
-							disabled={isEditing !== `username`}
-						/>
-					</label>
-				</main>
-				{isEditing === `username` ? (
-					<button type="submit" disabled={submitted}>
-						{`->`}
-					</button>
-				) : (
-					<button
-						type="button"
-						onMouseDown={() => {
-							setButtonBlockActive(true)
-							setEditing(`username`)
-						}}
-						onMouseUp={() => {
-							setButtonBlockActive(false)
-						}}
-					>
-						/
-					</button>
-				)}
-			</form>
-
+			<Form
+				label="username"
+				inputToken={usernameInputAtom}
+				issuesToken={usernameIssuesSelector}
+				inputElementToken={usernameInputElementAtom}
+				signal="changeUsername"
+				extraIssues={
+					usernameIsTaken ? <span>This username is taken.</span> : null
+				}
+			/>
 			<form
 				onSubmit={(e) => {
 					e.preventDefault()
@@ -162,7 +76,6 @@ export function Account(): React.ReactNode {
 					</button>
 				) : null}
 				<main>
-					{error ? <aside>{error}</aside> : null}
 					<label htmlFor="email">
 						{email && emailIssues ? (
 							<aside>
@@ -187,9 +100,7 @@ export function Account(): React.ReactNode {
 					</label>
 				</main>
 				{isEditing === `email` ? (
-					<button type="submit" disabled={submitted}>
-						{`->`}
-					</button>
+					<button type="submit">{`->`}</button>
 				) : (
 					<button
 						type="button"
@@ -218,7 +129,6 @@ export function Account(): React.ReactNode {
 					</button>
 				) : null}
 				<main>
-					{error ? <aside>{error}</aside> : null}
 					<label htmlFor="password">
 						{password0 && password0Issues ? (
 							<aside>
@@ -286,9 +196,7 @@ export function Account(): React.ReactNode {
 					) : null}
 				</main>
 				{isEditing === `password` ? (
-					<button type="submit" disabled={submitted}>
-						{`->`}
-					</button>
+					<button type="submit">{`->`}</button>
 				) : auth.password ? (
 					<button
 						type="button"
