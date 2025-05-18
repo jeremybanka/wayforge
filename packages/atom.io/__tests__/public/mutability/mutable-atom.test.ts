@@ -338,7 +338,7 @@ describe(`mutable atom effects`, () => {
 
 describe(`graceful handling of hmr/duplicate atom keys`, () => {
 	it(`logs an error if an atom is created with the same key as an existing atom`, () => {
-		atom<SetRTX<string>, SetRTXJson<string>>({
+		const myMutableState = atom<SetRTX<string>, SetRTXJson<string>>({
 			key: `myMutableState`,
 			default: () => new SetRTX(),
 			mutable: true,
@@ -356,8 +356,8 @@ describe(`graceful handling of hmr/duplicate atom keys`, () => {
 		expect(logger.error).toHaveBeenCalledTimes(1)
 		expect(logger.error).toHaveBeenCalledWith(
 			`❌`,
-			`atom`,
-			`myMutableState`,
+			myMutableState.type,
+			myMutableState.key,
 			`Tried to create atom, but it already exists in the store.`,
 		)
 	})

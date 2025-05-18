@@ -7,7 +7,12 @@ import type {
 import type { Json } from "atom.io/json"
 import { selectJson } from "atom.io/json"
 
-import { cacheValue, type MutableAtom, setIntoStore } from ".."
+import {
+	cacheValue,
+	type MutableAtom,
+	prettyPrintTokenType,
+	setIntoStore,
+} from ".."
 import { markAtomAsDefault } from "../atom"
 import { newest } from "../lineage"
 import { deposit, type Store } from "../store"
@@ -31,12 +36,14 @@ export function createMutableAtom<
 		`creating in store "${store.config.name}"`,
 	)
 	const target = newest(store)
-	const existing = target.atoms.get(options.key)
-	if (existing && existing.type === `mutable_atom`) {
+	const { key, default: def } = options
+	const existing = target.atoms.get(key)
+	const type = `mutable_atom`
+	if (existing && existing.type === type) {
 		store.logger.error(
 			`❌`,
-			`atom`,
-			options.key,
+			type,
+			key,
 			`Tried to create atom, but it already exists in the store.`,
 		)
 		return deposit(existing)
@@ -44,14 +51,9 @@ export function createMutableAtom<
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const newAtom: MutableAtom<T, J> = {
 		...options,
-		type: `mutable_atom`,
+		type,
 		install: (s: Store) => {
-			s.logger.info(
-				`🛠️`,
-				`atom`,
-				options.key,
-				`installing in store "${s.config.name}"`,
-			)
+			s.logger.info(`🛠️`, `atom`, key, `installing in store "${s.config.name}"`)
 			return createMutableAtom(s, options, family)
 		},
 		subject,
@@ -59,10 +61,10 @@ export function createMutableAtom<
 	if (family) {
 		newAtom.family = family
 	}
-	const initialValue = options.default()
+	const initialValue = def()
 	target.atoms.set(newAtom.key, newAtom)
-	markAtomAsDefault(store, options.key)
-	cacheValue(target, options.key, initialValue, subject)
+	markAtomAsDefault(store, key)
+	cacheValue(target, key, initialValue, subject)
 	const token = deposit(newAtom)
 	if (options.effects) {
 		let effectIndex = 0

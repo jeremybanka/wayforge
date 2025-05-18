@@ -3,14 +3,18 @@ import type {
 	FamilyMetadata,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
-	ReadonlySelectorFamilyToken,
-	ReadonlySelectorToken,
+	ReadonlyHeldSelectorFamilyToken,
+	ReadonlyHeldSelectorToken,
+	ReadonlyPureSelectorFamilyToken,
+	ReadonlyPureSelectorToken,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
 	StateCreation,
 	StateDisposal,
-	WritableSelectorFamilyToken,
-	WritableSelectorToken,
+	WritableHeldSelectorFamilyToken,
+	WritableHeldSelectorToken,
+	WritablePureSelectorFamilyToken,
+	WritablePureSelectorToken,
 } from "atom.io"
 import type { Canonical, Json, JsonInterface } from "atom.io/json"
 
@@ -76,16 +80,39 @@ export type Atom<T> =
 	| RegularAtom<T>
 	| (T extends Transceiver<any> ? MutableAtom<T, any> : never)
 
-export type WritableSelector<T> = AtomIOState & {
-	type: `selector`
+export type WritableHeldSelector<T> = AtomIOState & {
+	type: `writable_held_selector`
+	const: T
 	get: () => T
 	set: (newValue: T | ((oldValue: T) => T)) => void
 }
-export type ReadonlySelector<T> = AtomIOState & {
-	type: `readonly_selector`
+export type ReadonlyHeldSelector<T> = AtomIOState & {
+	type: `readonly_held_selector`
+	const: T
 	get: () => T
 }
-export type Selector<T> = ReadonlySelector<T> | WritableSelector<T>
+export type WritablePureSelector<T> = AtomIOState & {
+	type: `writable_pure_selector`
+	get: () => T
+	set: (newValue: T | ((oldValue: T) => T)) => void
+}
+export type ReadonlyPureSelector<T> = AtomIOState & {
+	type: `readonly_pure_selector`
+	get: () => T
+}
+export type ReadonlySelector<T> =
+	| ReadonlyHeldSelector<T>
+	| ReadonlyPureSelector<T>
+export type WritableSelector<T> =
+	| WritableHeldSelector<T>
+	| WritablePureSelector<T>
+export type HeldSelector<T> = ReadonlyHeldSelector<T> | WritableHeldSelector<T>
+export type PureSelector<T> = ReadonlyPureSelector<T> | WritablePureSelector<T>
+export type Selector<T> =
+	| ReadonlyHeldSelector<T>
+	| ReadonlyPureSelector<T>
+	| WritableHeldSelector<T>
+	| WritablePureSelector<T>
 
 export type WritableState<T> = Atom<T> | WritableSelector<T>
 export type ReadableState<T> = Atom<T> | Selector<T>
@@ -120,34 +147,84 @@ export type AtomFamily<T, K extends Canonical = Canonical> =
 	| RegularAtomFamily<T, K>
 
 // biome-ignore format: intersection
-export type WritableSelectorFamily<T, K extends Canonical> = 
-	& WritableSelectorFamilyToken<T, K> 
-	& ((key: K) => WritableSelectorToken<T>)
+export type WritablePureSelectorFamily<T, K extends Canonical> = 
+	& WritablePureSelectorFamilyToken<T, K> 
+	& ((key: K) => WritablePureSelectorToken<T>)
 	& {
 		default: (key: K) => T,
-		subject: Subject<StateCreation<WritableSelectorToken<T>> | StateDisposal<WritableSelectorToken<T>>>
+		subject: Subject<
+			| StateCreation<WritablePureSelectorToken<T>>
+			| StateDisposal<WritablePureSelectorToken<T>>
+		>
 		install: (store: Store) => void
 		internalRoles : string[] | undefined
 	}
 
 // biome-ignore format: intersection
-export type ReadonlySelectorFamily<T, K extends Canonical> = 
-	& ReadonlySelectorFamilyToken<T, K>
-	& ((key: K) => ReadonlySelectorToken<T>)
+export type WritableHeldSelectorFamily<T , K extends Canonical> = 
+	& WritableHeldSelectorFamilyToken<T, K> 
+	& ((key: K) => WritableHeldSelectorToken<T>)
 	& {
 		default: (key: K) => T,
-		subject: Subject<StateCreation<ReadonlySelectorToken<T>> | StateDisposal<ReadonlySelectorToken<T>>>
+		subject: Subject<
+			| StateCreation<WritableHeldSelectorToken<T>>
+			| StateDisposal<WritableHeldSelectorToken<T>>
+		>
 		install: (store: Store) => void
 		internalRoles : string[] | undefined
 	}
 
+// biome-ignore format: intersection
+export type ReadonlyPureSelectorFamily<T, K extends Canonical> = 
+	& ReadonlyPureSelectorFamilyToken<T, K>
+	& ((key: K) => ReadonlyPureSelectorToken<T>)
+	& {
+		default: (key: K) => T,
+		subject: Subject<
+			| StateCreation<ReadonlyPureSelectorToken<T>>
+			| StateDisposal<ReadonlyPureSelectorToken<T>>
+		>
+		install: (store: Store) => void
+		internalRoles : string[] | undefined
+	}
+
+// biome-ignore format: intersection
+export type ReadonlyHeldSelectorFamily<T , K extends Canonical> = 
+	& ReadonlyHeldSelectorFamilyToken<T, K>
+	& ((key: K) => ReadonlyHeldSelectorToken<T>)
+	& {
+		default: (key: K) => T,
+		subject: Subject<
+			| StateCreation<ReadonlyHeldSelectorToken<T>> 
+			| StateDisposal<ReadonlyHeldSelectorToken<T>>
+		>
+		install: (store: Store) => void
+		internalRoles : string[] | undefined
+	}
+
+export type PureSelectorFamily<T, K extends Canonical> =
+	| ReadonlyPureSelectorFamily<T, K>
+	| WritablePureSelectorFamily<T, K>
+
+export type HeldSelectorFamily<T, K extends Canonical> =
+	| ReadonlyHeldSelectorFamily<T, K>
+	| WritableHeldSelectorFamily<T, K>
+
+export type ReadonlySelectorFamily<T, K extends Canonical> =
+	| ReadonlyHeldSelectorFamily<T, K>
+	| ReadonlyPureSelectorFamily<T, K>
+
+export type WritableSelectorFamily<T, K extends Canonical> =
+	| WritableHeldSelectorFamily<T, K>
+	| WritablePureSelectorFamily<T, K>
+
 export type SelectorFamily<T, K extends Canonical> =
-	| ReadonlySelectorFamily<T, K>
-	| WritableSelectorFamily<T, K>
+	| HeldSelectorFamily<T, K>
+	| PureSelectorFamily<T, K>
 
 export type WritableFamily<T, K extends Canonical> =
 	| AtomFamily<T, K>
-	| WritableSelectorFamily<T, K>
+	| WritablePureSelectorFamily<T, K>
 export type ReadableFamily<T, K extends Canonical> =
 	| AtomFamily<T, K>
 	| SelectorFamily<T, K>

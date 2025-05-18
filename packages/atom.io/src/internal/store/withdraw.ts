@@ -2,10 +2,18 @@ import type {
 	AtomFamilyToken,
 	AtomIOToken,
 	AtomToken,
+	HeldSelectorFamilyToken,
+	HeldSelectorToken,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
+	PureSelectorFamilyToken,
+	PureSelectorToken,
 	ReadableFamilyToken,
 	ReadableToken,
+	ReadonlyHeldSelectorFamilyToken,
+	ReadonlyHeldSelectorToken,
+	ReadonlyPureSelectorFamilyToken,
+	ReadonlyPureSelectorToken,
 	ReadonlySelectorFamilyToken,
 	ReadonlySelectorToken,
 	RegularAtomFamilyToken,
@@ -16,6 +24,10 @@ import type {
 	TimelineToken,
 	TransactionToken,
 	WritableFamilyToken,
+	WritableHeldSelectorFamilyToken,
+	WritableHeldSelectorToken,
+	WritablePureSelectorFamilyToken,
+	WritablePureSelectorToken,
 	WritableSelectorFamilyToken,
 	WritableSelectorToken,
 	WritableToken,
@@ -27,10 +39,18 @@ import type {
 	AtomFamily,
 	AtomIOInternalResource,
 	Func,
+	HeldSelector,
+	HeldSelectorFamily,
 	MutableAtom,
 	MutableAtomFamily,
+	PureSelector,
+	PureSelectorFamily,
 	ReadableFamily,
 	ReadableState,
+	ReadonlyHeldSelector,
+	ReadonlyHeldSelectorFamily,
+	ReadonlyPureSelector,
+	ReadonlyPureSelectorFamily,
 	ReadonlySelector,
 	ReadonlySelectorFamily,
 	RegularAtom,
@@ -39,6 +59,10 @@ import type {
 	SelectorFamily,
 	Transceiver,
 	WritableFamily,
+	WritableHeldSelector,
+	WritableHeldSelectorFamily,
+	WritablePureSelector,
+	WritablePureSelectorFamily,
 	WritableSelector,
 	WritableSelectorFamily,
 	WritableState,
@@ -59,12 +83,36 @@ export function withdraw<T extends Transceiver<any>>(
 export function withdraw<T>(store: Store, token: AtomToken<T>): Atom<T>
 export function withdraw<T>(
 	store: Store,
-	token: WritableSelectorToken<T>,
-): WritableSelector<T>
+	token: WritableHeldSelectorToken<T>,
+): WritableHeldSelector<T>
+export function withdraw<T>(
+	store: Store,
+	token: ReadonlyHeldSelectorToken<T>,
+): ReadonlyHeldSelector<T>
+export function withdraw<T>(
+	store: Store,
+	token: WritablePureSelectorToken<T>,
+): WritablePureSelector<T>
+export function withdraw<T>(
+	store: Store,
+	token: ReadonlyPureSelectorToken<T>,
+): ReadonlyPureSelector<T>
 export function withdraw<T>(
 	store: Store,
 	token: ReadonlySelectorToken<T>,
 ): ReadonlySelector<T>
+export function withdraw<T>(
+	store: Store,
+	token: WritableSelectorToken<T>,
+): WritableSelector<T>
+export function withdraw<T>(
+	store: Store,
+	token: HeldSelectorToken<T>,
+): HeldSelector<T>
+export function withdraw<T>(
+	store: Store,
+	token: PureSelectorToken<T>,
+): PureSelector<T>
 export function withdraw<T>(store: Store, token: SelectorToken<T>): Selector<T>
 export function withdraw<T>(
 	store: Store,
@@ -93,12 +141,36 @@ export function withdraw<T, K extends Canonical>(
 ): AtomFamily<T, any>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
+	token: ReadonlyHeldSelectorFamilyToken<T, K>,
+): ReadonlyHeldSelectorFamily<T, any>
+export function withdraw<T, K extends Canonical>(
+	store: Store,
+	token: WritableHeldSelectorFamilyToken<T, K>,
+): WritableHeldSelectorFamily<T, any>
+export function withdraw<T, K extends Canonical>(
+	store: Store,
+	token: ReadonlyPureSelectorFamilyToken<T, K>,
+): ReadonlyPureSelectorFamily<T, any>
+export function withdraw<T, K extends Canonical>(
+	store: Store,
+	token: WritablePureSelectorFamilyToken<T, K>,
+): WritablePureSelectorFamily<T, any>
+export function withdraw<T, K extends Canonical>(
+	store: Store,
 	token: ReadonlySelectorFamilyToken<T, K>,
 ): ReadonlySelectorFamily<T, any>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: WritableSelectorFamilyToken<T, K>,
 ): WritableSelectorFamily<T, any>
+export function withdraw<T, K extends Canonical>(
+	store: Store,
+	token: HeldSelectorFamilyToken<T, K>,
+): HeldSelectorFamily<T, any>
+export function withdraw<T, K extends Canonical>(
+	store: Store,
+	token: PureSelectorFamilyToken<T, K>,
+): PureSelectorFamily<T, any>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: SelectorFamilyToken<T, K>,
@@ -147,16 +219,20 @@ export function withdraw(
 			case `mutable_atom`:
 				withdrawn = target.atoms.get(token.key)
 				break
-			case `selector`:
-				withdrawn = target.selectors.get(token.key)
+			case `writable_pure_selector`:
+			case `writable_held_selector`:
+				withdrawn = target.writableSelectors.get(token.key)
 				break
-			case `readonly_selector`:
+			case `readonly_pure_selector`:
+			case `readonly_held_selector`:
 				withdrawn = target.readonlySelectors.get(token.key)
 				break
 			case `atom_family`:
 			case `mutable_atom_family`:
-			case `selector_family`:
-			case `readonly_selector_family`:
+			case `writable_pure_selector_family`:
+			case `readonly_pure_selector_family`:
+			case `writable_held_selector_family`:
+			case `readonly_held_selector_family`:
 				withdrawn = target.families.get(token.key)
 				break
 			case `timeline`:

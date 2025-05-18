@@ -1,10 +1,10 @@
-import type { ReadonlySelectorFamilyToken, TransactionUpdate } from "atom.io"
+import type { ReadonlyPureSelectorFamilyToken, TransactionUpdate } from "atom.io"
 import type { Func, Store } from "atom.io/internal"
 import { createRegularAtomFamily, createSelectorFamily } from "atom.io/internal"
 
 export const attachTransactionLogs = (
 	store: Store,
-): ReadonlySelectorFamilyToken<TransactionUpdate<Func>[], string> => {
+): ReadonlyPureSelectorFamilyToken<TransactionUpdate<Func>[], string> => {
 	const transactionUpdateLogAtoms = createRegularAtomFamily<
 		TransactionUpdate<Func>[],
 		string

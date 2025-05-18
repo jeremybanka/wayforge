@@ -4,8 +4,8 @@ import { newest } from "../lineage"
 import type { Store } from "../store"
 
 export const getSelectorDependencyKeys = (
-	key: string,
 	store: Store,
+	key: string,
 ): (
 	| AtomKey<unknown>
 	| ReadonlySelectorKey<unknown>

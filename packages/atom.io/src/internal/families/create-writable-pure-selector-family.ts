@@ -4,9 +4,9 @@ import type {
 	getState,
 	StateCreation,
 	StateDisposal,
-	WritableSelectorFamilyOptions,
-	WritableSelectorFamilyToken,
-	WritableSelectorToken,
+	WritablePureSelectorFamilyOptions,
+	WritablePureSelectorFamilyToken,
+	WritablePureSelectorToken,
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
@@ -16,46 +16,49 @@ import {
 	getFromStore,
 	getJsonToken,
 	prettyPrintTokenType,
-	type WritableSelectorFamily,
+	type WritablePureSelectorFamily,
 } from ".."
 import { newest } from "../lineage"
-import { createWritableSelector } from "../selector"
+import { createWritablePureSelector } from "../selector"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 
-export function createWritableSelectorFamily<T, K extends Canonical>(
+export function createWritablePureSelectorFamily<T, K extends Canonical>(
 	store: Store,
-	options: WritableSelectorFamilyOptions<T, K>,
+	options: WritablePureSelectorFamilyOptions<T, K>,
 	internalRoles?: string[],
-): WritableSelectorFamilyToken<T, K> {
-	const familyToken = {
-		key: options.key,
-		type: `selector_family`,
-	} as const satisfies WritableSelectorFamilyToken<T, K>
+): WritablePureSelectorFamilyToken<T, K> {
+	const familyKey = options.key
+	const type = `writable_pure_selector_family`
 
-	const existing = store.families.get(options.key)
+	const familyToken = {
+		key: familyKey,
+		type,
+	} as const satisfies WritablePureSelectorFamilyToken<T, K>
+
+	const existing = store.families.get(familyKey)
 	if (existing) {
 		store.logger.error(
 			`❗`,
-			`selector_family`,
-			options.key,
+			type,
+			familyKey,
 			`Overwriting an existing ${prettyPrintTokenType(
 				existing,
 			)} "${existing.key}" in store "${store.config.name}". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
 	}
 	const subject = new Subject<
-		| StateCreation<WritableSelectorToken<T>>
-		| StateDisposal<WritableSelectorToken<T>>
+		| StateCreation<WritablePureSelectorToken<T>>
+		| StateDisposal<WritablePureSelectorToken<T>>
 	>()
 
-	const familyFunction = (key: K): WritableSelectorToken<T> => {
+	const familyFunction = (key: K): WritablePureSelectorToken<T> => {
 		const subKey = stringifyJson(key)
-		const family: FamilyMetadata = { key: options.key, subKey }
-		const fullKey = `${options.key}(${subKey})`
+		const family: FamilyMetadata = { key: familyKey, subKey }
+		const fullKey = `${familyKey}(${subKey})`
 		const target = newest(store)
 
-		const token = createWritableSelector(
+		const token = createWritablePureSelector(
 			target,
 			{
 				key: fullKey,
@@ -72,7 +75,7 @@ export function createWritableSelectorFamily<T, K extends Canonical>(
 	const selectorFamily = Object.assign(familyFunction, familyToken, {
 		internalRoles,
 		subject,
-		install: (s: Store) => createWritableSelectorFamily(s, options),
+		install: (s: Store) => createWritablePureSelectorFamily(s, options),
 		default: (key: K) => {
 			const getFn = options.get(key)
 			return getFn({
@@ -83,8 +86,8 @@ export function createWritableSelectorFamily<T, K extends Canonical>(
 				json: (token) => getJsonToken(store, token),
 			})
 		},
-	}) satisfies WritableSelectorFamily<T, K>
+	}) satisfies WritablePureSelectorFamily<T, K>
 
-	store.families.set(options.key, selectorFamily)
+	store.families.set(familyKey, selectorFamily)
 	return familyToken
 }

@@ -21,7 +21,7 @@ export function structFamily<
 			K & string
 		>}State`]: AtomIO.RegularAtomFamilyToken<Struct[K], string>
 	},
-	AtomIO.ReadonlySelectorFamilyToken<Struct, string>,
+	AtomIO.ReadonlyPureSelectorFamilyToken<Struct, string>,
 ] {
 	const atoms: {
 		[K in keyof Struct as `find${Capitalize<Key & string>}${Capitalize<
@@ -35,7 +35,7 @@ export function structFamily<
 		})
 		return acc
 	}, {} as any)
-	const findStructState: AtomIO.ReadonlySelectorFamilyToken<Struct, string> =
+	const findStructState: AtomIO.ReadonlyPureSelectorFamilyToken<Struct, string> =
 		createSelectorFamily(IMPLICIT.STORE, {
 			key: options.key,
 			get:

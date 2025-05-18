@@ -1,10 +1,10 @@
 import type {
 	FamilyMetadata,
-	WritableSelectorOptions,
-	WritableSelectorToken,
+	WritableHeldSelectorOptions,
+	WritableHeldSelectorToken,
 } from "atom.io"
 
-import type { WritableSelector } from ".."
+import type { WritableHeldSelector } from ".."
 import { cacheValue } from "../caching"
 import { newest } from "../lineage"
 import { markDone } from "../operation"
@@ -14,62 +14,53 @@ import { Subject } from "../subject"
 import { isRootStore } from "../transaction"
 import { registerSelector } from "./register-selector"
 
-export const createWritableSelector = <T>(
+export const createWritableHeldSelector = <T extends object>(
 	store: Store,
-	options: WritableSelectorOptions<T>,
+	options: WritableHeldSelectorOptions<T>,
 	family: FamilyMetadata | undefined,
-): WritableSelectorToken<T> => {
+): WritableHeldSelectorToken<T> => {
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const covered = new Set<string>()
-	const setterToolkit = registerSelector(options.key, covered, target)
+	const { key, const: constant } = options
+	const type = `writable_held_selector` as const
+	const setterToolkit = registerSelector(target, type, key, covered)
 	const { find, get, json } = setterToolkit
 	const getterToolkit = { find, get, json }
 
 	const getSelf = (getFn = options.get, innerTarget = newest(store)): T => {
-		const value = getFn(getterToolkit)
-		cacheValue(innerTarget, options.key, value, subject)
+		getFn(getterToolkit, constant)
+		cacheValue(innerTarget, key, constant, subject)
 		covered.clear()
-		return value
+		return constant
 	}
 
 	const setSelf = (next: T | ((oldValue: T) => T)): void => {
 		const innerTarget = newest(store)
 		const oldValue = getSelf(options.get, innerTarget)
 		const newValue = become(next)(oldValue)
-		store.logger.info(
-			`📝`,
-			`selector`,
-			options.key,
-			`set (`,
-			oldValue,
-			`->`,
-			newValue,
-			`)`,
-		)
-		cacheValue(innerTarget, options.key, newValue, subject)
-		markDone(innerTarget, options.key)
+		store.logger.info(`📝`, type, key, `set (`, oldValue, `->`, newValue, `)`)
+		cacheValue(innerTarget, key, newValue, subject)
+		markDone(innerTarget, key)
 		if (isRootStore(innerTarget)) {
 			subject.next({ newValue, oldValue })
 		}
 		options.set(setterToolkit, newValue)
 	}
-	const mySelector: WritableSelector<T> = {
+	const mySelector: WritableHeldSelector<T> = {
 		...options,
+		type,
 		subject,
-		install: (s: Store) => createWritableSelector(s, options, family),
+		install: (s: Store) => createWritableHeldSelector(s, options, family),
 		get: getSelf,
 		set: setSelf,
-		type: `selector`,
 		...(family && { family }),
 	}
-	target.selectors.set(options.key, mySelector)
+	target.writableSelectors.set(key, mySelector)
 	const initialValue = getSelf()
-	store.logger.info(`✨`, mySelector.type, mySelector.key, `=`, initialValue)
-	const token: WritableSelectorToken<T> = {
-		key: options.key,
-		type: `selector`,
-	}
+	store.logger.info(`✨`, type, key, `=`, initialValue)
+
+	const token: WritableHeldSelectorToken<T> = { key, type }
 	if (family) {
 		token.family = family
 	}

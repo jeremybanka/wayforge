@@ -1,6 +1,6 @@
 import type * as AtomIO from "atom.io"
 import type { Store, Transceiver } from "atom.io/internal"
-import { createWritableSelectorFamily } from "atom.io/internal"
+import { createWritablePureSelectorFamily } from "atom.io/internal"
 
 import type { Canonical, Json, JsonInterface } from "."
 
@@ -12,7 +12,7 @@ export function selectJsonFamily<
 	store: Store,
 	atomFamilyToken: AtomIO.MutableAtomFamilyToken<T, J, K>,
 	transform: JsonInterface<T, J>,
-): AtomIO.WritableSelectorFamilyToken<J, K>
+): AtomIO.WritablePureSelectorFamilyToken<J, K>
 export function selectJsonFamily<
 	T,
 	J extends Json.Serializable,
@@ -21,7 +21,7 @@ export function selectJsonFamily<
 	store: Store,
 	atomFamilyToken: AtomIO.RegularAtomFamilyToken<T, K>,
 	transform: JsonInterface<T, J>,
-): AtomIO.WritableSelectorFamilyToken<J, K>
+): AtomIO.WritablePureSelectorFamilyToken<J, K>
 export function selectJsonFamily<
 	T,
 	J extends Json.Serializable,
@@ -32,8 +32,8 @@ export function selectJsonFamily<
 		| AtomIO.MutableAtomFamilyToken<T extends Transceiver<any> ? T : never, J, K>
 		| AtomIO.RegularAtomFamilyToken<T, K>,
 	transform: JsonInterface<T, J>,
-): AtomIO.WritableSelectorFamilyToken<J, K> {
-	const jsonFamily = createWritableSelectorFamily<J, K>(
+): AtomIO.WritablePureSelectorFamilyToken<J, K> {
+	const jsonFamily = createWritablePureSelectorFamily<J, K>(
 		store,
 		{
 			key: `${atomFamilyToken.key}:JSON`,

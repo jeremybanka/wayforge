@@ -19,19 +19,21 @@ export function createRegularAtom<T>(
 	options: RegularAtomOptions<T>,
 	family: FamilyMetadata | undefined,
 ): RegularAtomToken<T> {
+	const type = `atom`
+	const { key, default: def } = options
 	store.logger.info(
 		`🔨`,
 		`atom`,
-		options.key,
+		key,
 		`creating in store "${store.config.name}"`,
 	)
 	const target = newest(store)
-	const existing = target.atoms.get(options.key)
-	if (existing && existing.type === `atom`) {
+	const existing = target.atoms.get(key)
+	if (existing && existing.type === type) {
 		store.logger.error(
 			`❌`,
 			`atom`,
-			options.key,
+			key,
 			`Tried to create atom, but it already exists in the store.`,
 		)
 		return deposit(existing)
@@ -39,14 +41,9 @@ export function createRegularAtom<T>(
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const newAtom: RegularAtom<T> = {
 		...options,
-		type: `atom`,
+		type,
 		install: (s: Store) => {
-			s.logger.info(
-				`🛠️`,
-				`atom`,
-				options.key,
-				`installing in store "${s.config.name}"`,
-			)
+			s.logger.info(`🛠️`, type, key, `installing in store "${s.config.name}"`)
 			return createRegularAtom(s, options, family)
 		},
 		subject,
@@ -54,13 +51,13 @@ export function createRegularAtom<T>(
 	if (family) {
 		newAtom.family = family
 	}
-	let initialValue = options.default
-	if (options.default instanceof Function) {
-		initialValue = options.default()
+	let initialValue = def
+	if (def instanceof Function) {
+		initialValue = def()
 	}
-	target.atoms.set(newAtom.key, newAtom)
-	markAtomAsDefault(store, options.key)
-	cacheValue(target, options.key, initialValue, subject)
+	target.atoms.set(key, newAtom)
+	markAtomAsDefault(store, key)
+	cacheValue(target, key, initialValue, subject)
 	const token = deposit(newAtom)
 	if (options.effects) {
 		let effectIndex = 0
