@@ -12,7 +12,7 @@ import {
 	password0InputAtom,
 	socket,
 } from "../services/socket-auth-service"
-import { trpc } from "../services/trpc-client-service"
+import { trpcClient } from "../services/trpc-client-service"
 
 export function Home(): React.ReactNode {
 	const setEmail = useI(emailInputAtom)
@@ -36,7 +36,7 @@ export function Home(): React.ReactNode {
 					switch (currentlyEntering) {
 						case `email`: {
 							const { nextStep, userKey: newUserKey } =
-								await trpc.authStage1.query({
+								await trpcClient.declareAuthTarget.query({
 									email,
 								})
 							setUserKey(newUserKey)
@@ -58,10 +58,12 @@ export function Home(): React.ReactNode {
 								console.error(`somehow userKey is null`)
 								return
 							}
-							const actionResponse = await trpc.verifyAccountAction.mutate({
-								oneTimeCode,
-								userKey,
-							})
+							const actionResponse = await trpcClient.verifyAccountAction.mutate(
+								{
+									oneTimeCode,
+									userKey,
+								},
+							)
 							setState(authAtom, actionResponse)
 							socket.once(`connect`, () => {
 								navigate(`/game`)
@@ -71,7 +73,7 @@ export function Home(): React.ReactNode {
 							break
 						}
 						case `password`: {
-							const response = await trpc.openSession.mutate({
+							const response = await trpcClient.openSession.mutate({
 								email,
 								password,
 							})
@@ -84,7 +86,7 @@ export function Home(): React.ReactNode {
 							break
 						}
 						default: {
-							const response = await trpc.openSession.mutate({
+							const response = await trpcClient.openSession.mutate({
 								email,
 								password,
 							})

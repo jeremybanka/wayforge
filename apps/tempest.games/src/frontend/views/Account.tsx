@@ -18,7 +18,7 @@ import {
 	usernameInputAtom,
 	usernameIssuesSelector,
 } from "../services/socket-auth-service"
-import { trpc } from "../services/trpc-client-service"
+import { trpcClient } from "../services/trpc-client-service"
 
 export function Account(): React.ReactNode {
 	const setUsername = useI(usernameInputAtom)
@@ -38,8 +38,6 @@ export function Account(): React.ReactNode {
 	const emailIssues = useO(emailIssuesSelector)
 	const usernameIsTaken = useO(isUsernameTakenQuerySelector)
 
-	console.log(`usernameIsTaken`, usernameIsTaken)
-
 	const [submitted, setSubmitted] = React.useState(false)
 	const [isEditing, setEditing] = React.useState<
 		`email` | `password` | `username` | null
@@ -50,8 +48,6 @@ export function Account(): React.ReactNode {
 	const usernameRef = React.useRef<HTMLInputElement>(null)
 	const emailRef = React.useRef<HTMLInputElement>(null)
 	const passwordRef = React.useRef<HTMLInputElement>(null)
-
-	console.log(`isEditing`, isEditing)
 
 	React.useEffect(() => {
 		switch (isEditing) {
