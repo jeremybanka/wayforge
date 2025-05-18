@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.2.5
+
+### Patch Changes
+
+- c9913e6: ✨ QoL: Include one-time-code in the summary line for emails.
+
 ## 0.2.4
 
 ### Patch Changes
