@@ -1,5 +1,6 @@
 import {
 	Body,
+	CodeBlock,
 	Container,
 	Head,
 	Heading,
@@ -67,7 +68,12 @@ function CompleteAccountAction({
 					<Text style={heroText}>{summary}</Text>
 
 					<Section style={codeBox}>
-						<Text style={confirmationCodeText}>{oneTimeCode}</Text>
+						<CodeBlock
+							style={confirmationCodeText}
+							code={oneTimeCode}
+							language="properties"
+							theme={{}}
+						/>
 					</Section>
 
 					<Text style={heroText}>
@@ -175,6 +181,7 @@ const confirmationCodeText = {
 	fontSize: `30px`,
 	textAlign: `center` as const,
 	verticalAlign: `middle`,
+	font: `monospace`,
 }
 
 const text = {
