@@ -30,4 +30,4 @@ const mySelector = selector<{
 });
 ```
 
-A held selector requires a `const` value to be initialized. The `get` function for a held selector passes the held value of the selector to the setter function as a second parameter following the `GetterToolkit` interface. The expectation is that the getter mutates the held value and returns `void`.
+A held selector requires a `const` value to be initialized. The `get` function for a held selector passes the held value of the selector to the getter function as a second parameter following the `GetterToolkit` interface. The expectation is that the getter mutates the held value and returns `void`.
