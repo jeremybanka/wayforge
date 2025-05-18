@@ -482,11 +482,11 @@ async function initiateAccountAction(arg: {
 				case `resetPassword -> confirmEmail`:
 				case `resetPassword -> signIn`:
 				case `signIn -> resetPassword`:
+				case `signIn -> confirmEmail`:
 					existingActionMayBeOverwritten = true
 					break
 				case `confirmEmail -> confirmEmail`:
 				case `resetPassword -> resetPassword`:
-				case `signIn -> confirmEmail`:
 				case `signIn -> signIn`:
 					existingActionMayBeOverwritten = false
 			}
