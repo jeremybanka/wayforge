@@ -24,7 +24,7 @@ interface ConfirmEmailProps {
 	baseUrl?: string
 }
 
-function CompleteAccountAction({
+function ConfirmAccountAction({
 	subject,
 	summary,
 	oneTimeCode,
@@ -104,14 +104,14 @@ function CompleteAccountAction({
 	)
 }
 
-CompleteAccountAction.PreviewProps = {
+ConfirmAccountAction.PreviewProps = {
 	subject: `Welcome`,
 	summary: `Your one-time code is: 1234567890`,
 	oneTimeCode: genAccountActionCode(),
 	baseUrl: `https://tempest.games`,
 }
 
-export default CompleteAccountAction
+export default ConfirmAccountAction
 
 const footerText = {
 	fontSize: `12px`,
