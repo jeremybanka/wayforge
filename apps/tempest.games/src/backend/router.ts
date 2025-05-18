@@ -141,12 +141,8 @@ export const appRouter = trpc.router({
 		}),
 
 	closeSession: loggedProcedure
-		// .input(type({ username: `string`, sessionKey: `string` }))
+		.input(type({ username: `string`, sessionKey: `string` }))
 		.mutation(({ ctx }) => {
-			// const {  } = ctx.auth
-			// const user = await ctx.db.drizzle.query.users.findFirst({
-			// 	where: eq(users.username, username),
-			// })
 			if (!ctx.auth) {
 				throw new TRPCError({
 					code: `BAD_REQUEST`,
@@ -155,13 +151,6 @@ export const appRouter = trpc.router({
 			}
 			const { sessionKey } = ctx.auth
 			ctx.logger.info(userSessions.relations)
-			// const sessionKeyIsValid = userSessions.has(user.id, sessionKey)
-			// if (!sessionKeyIsValid) {
-			// 	throw new TRPCError({
-			// 		code: `BAD_REQUEST`,
-			// 		message: `Session not found.`,
-			// 	})
-			// }
 			userSessions.delete(sessionKey)
 			sessionCreatedTimes.delete(sessionKey)
 		}),
