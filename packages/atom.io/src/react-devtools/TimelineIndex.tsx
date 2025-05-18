@@ -1,5 +1,5 @@
 import type {
-	ReadonlySelectorToken,
+	ReadonlyPureSelectorToken,
 	RegularAtomToken,
 	TimelineToken,
 } from "atom.io"
@@ -19,7 +19,7 @@ export const YouAreHere: FC = () => {
 export const TimelineLog: FC<{
 	token: TimelineToken<any>
 	isOpenState: RegularAtomToken<boolean>
-	timelineState: ReadonlySelectorToken<Timeline<any>>
+	timelineState: ReadonlyPureSelectorToken<Timeline<any>>
 }> = ({ token, isOpenState, timelineState }) => {
 	const timeline = useO(timelineState)
 	const isOpen = useO(isOpenState)

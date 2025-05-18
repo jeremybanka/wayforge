@@ -34,14 +34,13 @@ describe(`disposeState`, () => {
 			key: `count`,
 			default: 0,
 		})
-		expect(countState.key).toEqual(`count`)
 		disposeState(countState)
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).toHaveBeenCalledTimes(1)
 		expect(logger.error).toHaveBeenCalledWith(
 			`❌`,
-			`atom`,
-			`count`,
+			countState.type,
+			countState.key,
 			`Standalone atoms cannot be disposed.`,
 		)
 	})
@@ -128,8 +127,8 @@ describe(`disposeState`, () => {
 		expect(logger.error).toHaveBeenCalledTimes(1)
 		expect(logger.error).toHaveBeenCalledWith(
 			`❌`,
-			`selector`,
-			`doubled`,
+			doubledState.type,
+			doubledState.key,
 			`Standalone selectors cannot be disposed.`,
 		)
 	})
@@ -149,7 +148,9 @@ describe(`disposeState`, () => {
 		const doubledState = findState(doubledSelectors, `my-key`)
 		disposeState(doubledState)
 		expect(logger.error).toHaveBeenCalledTimes(0)
-		expect(Internal.IMPLICIT.STORE.selectors.has(doubledState.key)).toBe(false)
+		expect(Internal.IMPLICIT.STORE.writableSelectors.has(doubledState.key)).toBe(
+			false,
+		)
 		expect(Internal.IMPLICIT.STORE.valueMap.has(doubledState.key)).toBe(false)
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
@@ -174,7 +175,9 @@ describe(`disposeState`, () => {
 		const tripledState = findState(tripledSelectors, `my-key`)
 		disposeState(tripledState)
 		expect(logger.error).toHaveBeenCalledTimes(0)
-		expect(Internal.IMPLICIT.STORE.selectors.has(tripledState.key)).toBe(false)
+		expect(Internal.IMPLICIT.STORE.writableSelectors.has(tripledState.key)).toBe(
+			false,
+		)
 		expect(Internal.IMPLICIT.STORE.valueMap.has(tripledState.key)).toBe(false)
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
@@ -199,9 +202,9 @@ describe(`disposeState`, () => {
 		expect(triple).toBe(3)
 		disposeState(tripledSelectors, `hi`)
 
-		expect(Internal.IMPLICIT.STORE.selectors.has(tripledSelectors.key)).toBe(
-			false,
-		)
+		expect(
+			Internal.IMPLICIT.STORE.writableSelectors.has(tripledSelectors.key),
+		).toBe(false)
 
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()

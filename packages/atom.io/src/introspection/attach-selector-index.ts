@@ -1,4 +1,4 @@
-import type { ReadonlySelectorToken, SelectorToken } from "atom.io"
+import type { ReadonlyPureSelectorToken, SelectorToken } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
 	createRegularAtom,
@@ -13,7 +13,7 @@ export type SelectorTokenIndex = WritableTokenIndex<SelectorToken<unknown>>
 
 export const attachSelectorIndex = (
 	store: Store,
-): ReadonlySelectorToken<SelectorTokenIndex> => {
+): ReadonlyPureSelectorToken<SelectorTokenIndex> => {
 	const readonlySelectorTokenIndexState__INTERNAL =
 		createRegularAtom<SelectorTokenIndex>(
 			store,
@@ -22,7 +22,7 @@ export const attachSelectorIndex = (
 				key: `🔍 Selector Token Index (Internal)`,
 				default: () => {
 					const base: SelectorTokenIndex = new Map()
-					for (const map of [store.readonlySelectors, store.selectors]) {
+					for (const map of [store.readonlySelectors, store.writableSelectors]) {
 						for (const [key, val] of map) {
 							if (isReservedIntrospectionKey(key)) {
 								continue

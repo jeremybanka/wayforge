@@ -22,7 +22,7 @@ export function struct<
 			K & string
 		>}State`]: AtomIO.RegularAtomToken<Struct[K]>
 	},
-	AtomIO.ReadonlySelectorToken<Struct>,
+	AtomIO.ReadonlyPureSelectorToken<Struct>,
 ] {
 	const atoms: {
 		[K in keyof Struct as `${Key}${Capitalize<

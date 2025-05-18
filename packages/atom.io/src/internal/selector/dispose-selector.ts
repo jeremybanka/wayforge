@@ -8,12 +8,12 @@ export function disposeSelector(
 	selectorToken: SelectorToken<unknown>,
 ): void {
 	const target = newest(store)
-	const { key } = selectorToken
+	const { key, type } = selectorToken
 	const selector = withdraw(target, selectorToken)
 	if (!selector.family) {
 		store.logger.error(
 			`❌`,
-			`selector`,
+			type,
 			key,
 			`Standalone selectors cannot be disposed.`,
 		)
@@ -24,12 +24,12 @@ export function disposeSelector(
 		}
 		let familyToken: SelectorFamilyToken<any, any>
 		switch (selectorToken.type) {
-			case `selector`:
+			case `writable_held_selector`:
 				{
-					target.selectors.delete(key)
+					target.writableSelectors.delete(key)
 					familyToken = {
 						key: selector.family.key,
-						type: `selector_family`,
+						type: `writable_held_selector_family`,
 					}
 					const family = withdraw(store, familyToken)
 					family.subject.next({
@@ -39,12 +39,42 @@ export function disposeSelector(
 					})
 				}
 				break
-			case `readonly_selector`:
+			case `writable_pure_selector`:
+				{
+					target.writableSelectors.delete(key)
+					familyToken = {
+						key: selector.family.key,
+						type: `writable_pure_selector_family`,
+					}
+					const family = withdraw(store, familyToken)
+					family.subject.next({
+						type: `state_disposal`,
+						subType: `selector`,
+						token: selectorToken,
+					})
+				}
+				break
+			case `readonly_held_selector`:
 				{
 					target.readonlySelectors.delete(key)
 					familyToken = {
 						key: selector.family.key,
-						type: `readonly_selector_family`,
+						type: `readonly_held_selector_family`,
+					}
+					const family = withdraw(store, familyToken)
+					family.subject.next({
+						type: `state_disposal`,
+						subType: `selector`,
+						token: selectorToken,
+					})
+				}
+				break
+			case `readonly_pure_selector`:
+				{
+					target.readonlySelectors.delete(key)
+					familyToken = {
+						key: selector.family.key,
+						type: `readonly_pure_selector_family`,
 					}
 					const family = withdraw(store, familyToken)
 					family.subject.next({

@@ -19,9 +19,14 @@ import { withdraw } from "../store"
 import { updateSelectorAtoms } from "./update-selector-atoms"
 
 export const registerSelector = (
+	store: Store,
+	selectorType:
+		| `readonly_held_selector`
+		| `readonly_pure_selector`
+		| `writable_held_selector`
+		| `writable_pure_selector`,
 	selectorKey: string,
 	covered: Set<string>,
-	store: Store,
 ): SetterToolkit => ({
 	get: (
 		...params:
@@ -40,26 +45,33 @@ export const registerSelector = (
 
 		const dependencyState = withdraw(store, dependency)
 		const dependencyValue = readOrComputeValue(store, dependencyState)
+		const dependencyKey = dependency.key
 
 		store.logger.info(
 			`🔌`,
-			`selector`,
+			selectorType,
 			selectorKey,
-			`registers dependency ( "${dependency.key}" =`,
+			`registers dependency ( "${dependencyKey}" =`,
 			dependencyValue,
 			`)`,
 		)
 
 		target.selectorGraph.set(
 			{
-				upstreamSelectorKey: dependency.key,
+				upstreamSelectorKey: dependencyKey,
 				downstreamSelectorKey: selectorKey,
 			},
 			{
 				source: dependency.key,
 			},
 		)
-		updateSelectorAtoms(selectorKey, dependency as any, covered, store)
+		updateSelectorAtoms(
+			store,
+			selectorType,
+			selectorKey,
+			dependency as any,
+			covered,
+		)
 		return dependencyValue
 	},
 	set: (<T, New extends T>(

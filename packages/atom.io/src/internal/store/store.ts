@@ -3,22 +3,21 @@ import type {
 	Logger,
 	MoleculeCreation,
 	MoleculeDisposal,
-	ReadonlySelectorToken,
+	SelectorToken,
 	TimelineToken,
 	TransactionToken,
-	WritableSelectorToken,
 } from "atom.io"
 import { AtomIOLogger } from "atom.io"
 import type { Canonical, stringified } from "atom.io/json"
 
 import type {
 	Atom,
+	HeldSelectorFamily,
 	MutableAtomFamily,
+	PureSelectorFamily,
 	ReadonlySelector,
-	ReadonlySelectorFamily,
 	RegularAtomFamily,
 	WritableSelector,
-	WritableSelectorFamily,
 } from ".."
 import { isReservedIntrospectionKey } from ".."
 import type { Join } from "../join"
@@ -47,7 +46,7 @@ export class Store implements Lineage {
 	public defaults: Map<string, any> = new Map()
 
 	public atoms: Map<string, Atom<any>> = new Map()
-	public selectors: Map<string, WritableSelector<any>> = new Map()
+	public writableSelectors: Map<string, WritableSelector<any>> = new Map()
 	public readonlySelectors: Map<string, ReadonlySelector<any>> = new Map()
 
 	public atomsThatAreDefault: Set<string> = new Set()
@@ -74,10 +73,10 @@ export class Store implements Lineage {
 	public trackers: Map<string, Tracker<Transceiver<any>>> = new Map()
 	public families: Map<
 		string,
+		| HeldSelectorFamily<any, any>
 		| MutableAtomFamily<any, any, any>
-		| ReadonlySelectorFamily<any, any>
+		| PureSelectorFamily<any, any>
 		| RegularAtomFamily<any, any>
-		| WritableSelectorFamily<any, any>
 	> = new Map()
 	public joins: Map<string, Join<any, any, any, any, any, any>> = new Map()
 
@@ -230,7 +229,7 @@ export class Store implements Lineage {
 			for (const [, selector] of store.readonlySelectors) {
 				selector.install(this)
 			}
-			for (const [, selector] of store.selectors) {
+			for (const [, selector] of store.writableSelectors) {
 				if (mutableHelpers.has(selector.key)) {
 					continue
 				}
@@ -249,12 +248,8 @@ export class Store implements Lineage {
 export type StoreEventCarrier = {
 	atomCreation: Subject<AtomToken<unknown>>
 	atomDisposal: Subject<AtomToken<unknown>>
-	selectorCreation: Subject<
-		ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>
-	>
-	selectorDisposal: Subject<
-		ReadonlySelectorToken<unknown> | WritableSelectorToken<unknown>
-	>
+	selectorCreation: Subject<SelectorToken<unknown>>
+	selectorDisposal: Subject<SelectorToken<unknown>>
 	timelineCreation: Subject<TimelineToken<unknown>>
 	transactionCreation: Subject<TransactionToken<Func>>
 	transactionApplying: StatefulSubject<TransactionProgress<Func> | null>

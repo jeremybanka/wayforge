@@ -45,8 +45,10 @@ export function disposeFromStore(
 		case `mutable_atom`:
 			disposeAtom(store, token)
 			break
-		case `selector`:
-		case `readonly_selector`:
+		case `writable_pure_selector`:
+		case `readonly_pure_selector`:
+		case `writable_held_selector`:
+		case `readonly_held_selector`:
 			disposeSelector(store, token)
 			break
 	}

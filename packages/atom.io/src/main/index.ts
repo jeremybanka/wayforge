@@ -82,31 +82,76 @@ export type AtomToken<T, K extends Canonical = any> =
 	| RegularAtomToken<T, K>
 
 /** @public */
-export type WritableSelectorToken<T, K extends Canonical = any> = {
+export type WritablePureSelectorToken<T, K extends Canonical = any> = {
 	/** The unique identifier of the selector. */
 	key: string
 	/** Discriminator. */
-	type: `selector`
+	type: `writable_pure_selector`
 	/** Present if the selector belongs to a family. */
 	family?: FamilyMetadata<K>
 	/** Never present. This is a marker that preserves the type of the selector's value. */
 	__T?: T
 }
 /** @public */
-export type ReadonlySelectorToken<T, K extends Canonical = any> = {
+export type WritableHeldSelectorToken<T, K extends Canonical = any> = {
 	/** The unique identifier of the selector. */
 	key: string
 	/** Discriminator. */
-	type: `readonly_selector`
+	type: `writable_held_selector`
 	/** Present if the selector belongs to a family. */
 	family?: FamilyMetadata<K>
 	/** Never present. This is a marker that preserves the type of the selector's value. */
 	__T?: T
 }
+/** @public */
+export type ReadonlyPureSelectorToken<T, K extends Canonical = any> = {
+	/** The unique identifier of the selector. */
+	key: string
+	/** Discriminator. */
+	type: `readonly_pure_selector`
+	/** Present if the selector belongs to a family. */
+	family?: FamilyMetadata<K>
+	/** Never present. This is a marker that preserves the type of the selector's value. */
+	__T?: T
+}
+/** @public */
+export type ReadonlyHeldSelectorToken<T, K extends Canonical = any> = {
+	/** The unique identifier of the selector. */
+	key: string
+	/** Discriminator. */
+	type: `readonly_held_selector`
+	/** Present if the selector belongs to a family. */
+	family?: FamilyMetadata<K>
+	/** Never present. This is a marker that preserves the type of the selector's value. */
+	__T?: T
+}
+
+/** @public */
+export type PureSelectorToken<T, K extends Canonical = any> =
+	| ReadonlyPureSelectorToken<T, K>
+	| WritablePureSelectorToken<T, K>
+
+/** @public */
+export type HeldSelectorToken<T, K extends Canonical = any> =
+	| ReadonlyHeldSelectorToken<T, K>
+	| WritableHeldSelectorToken<T, K>
+
+/** @public */
+export type ReadonlySelectorToken<T, K extends Canonical = any> =
+	| ReadonlyHeldSelectorToken<T, K>
+	| ReadonlyPureSelectorToken<T, K>
+
+/** @public */
+export type WritableSelectorToken<T, K extends Canonical = any> =
+	| WritableHeldSelectorToken<T, K>
+	| WritablePureSelectorToken<T, K>
+
 /** @public */
 export type SelectorToken<T, K extends Canonical = any> =
-	| ReadonlySelectorToken<T, K>
-	| WritableSelectorToken<T, K>
+	| ReadonlyHeldSelectorToken<T, K>
+	| ReadonlyPureSelectorToken<T, K>
+	| WritableHeldSelectorToken<T, K>
+	| WritablePureSelectorToken<T, K>
 
 /**
  * @public
