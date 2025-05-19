@@ -12,7 +12,7 @@ import {
 	parseBooleanOption,
 } from "comline"
 import logger from "npmlog"
-import { z } from "zod"
+import { z } from "zod/v4"
 
 import type { BreakCheckOptions } from "./break-check"
 import { breakCheck } from "./break-check"

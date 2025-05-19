@@ -15,8 +15,8 @@ import {
 import OpenAI from "openai"
 import type * as OpenAICore from "openai/core"
 import type OpenAIResources from "openai/resources/index"
-import type { ZodSchema } from "zod"
-import { z } from "zod"
+import type { ZodSchema } from "zod/v4"
+import { z } from "zod/v4"
 
 import type { Squirreled } from "../src"
 import { Squirrel } from "../src"
