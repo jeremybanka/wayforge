@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.2.7
+
+### Patch Changes
+
+- 4751939: ✨ Added a performant loading spinner usable across the application.
+
 ## 0.2.6
 
 ### Patch Changes
