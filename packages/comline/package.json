@@ -19,8 +19,7 @@
 	"main": "dist/cli.js",
 	"types": "dist/cli.d.ts",
 	"peerDependencies": {
-		"zod": "^3.0.0",
-		"zod-to-json-schema": "^3.0.0"
+		"zod": "^3.25.0"
 	},
 	"dependencies": {
 		"picocolors": "1.1.1",
@@ -47,7 +46,6 @@
 		"tsdown": "0.11.12",
 		"vite": "6.3.5",
 		"vitest": "3.1.4",
-		"zod": "3.25.5",
-		"zod-to-json-schema": "3.24.5"
+		"zod": "3.25.5"
 	}
 }

@@ -829,9 +829,6 @@ importers:
       zod:
         specifier: 3.25.5
         version: 3.25.5
-      zod-to-json-schema:
-        specifier: 3.24.5
-        version: 3.24.5(zod@3.25.5)
 
   packages/flightdeck:
     dependencies:

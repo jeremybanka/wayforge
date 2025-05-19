@@ -1,6 +1,6 @@
 import picocolors from "picocolors"
 import type { Colors } from "picocolors/types"
-import { z } from "zod"
+import { z } from "zod/v4"
 
 import type { CommandLineInterface, OptionsGroup } from "./cli"
 import { parseBooleanOption } from "./option-parsers"
@@ -150,10 +150,11 @@ export function help(
 							const flag = option.flag ? `-${option.flag}` : ` . `
 							const optionsSchema = value.optionsSchema as z.ZodObject<any>
 							const optionDef = optionsSchema.shape[key]._def
-							let type = optionDef.typeName as string
+							console.log(optionDef)
+							let type = optionDef.type as string
 
-							if (type === `ZodOptional`) {
-								type = optionDef.innerType._def.typeName as string
+							if (type === `optional`) {
+								type = optionDef.innerType._def.type as string
 							}
 							type = lower(type.replaceAll(`Zod`, ``))
 							if (option.required) {
