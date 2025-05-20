@@ -1,5 +1,5 @@
 import picocolors from "picocolors"
-import { z } from "zod"
+import { z } from "zod/v4"
 
 import {
 	cli,

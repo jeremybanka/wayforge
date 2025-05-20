@@ -4,7 +4,7 @@ import { jsonRefinery } from "atom.io/introspection"
 import type { Json } from "atom.io/json"
 import { isJson } from "atom.io/json"
 import { vitest } from "vitest"
-import { z } from "zod"
+import { z } from "zod/v4"
 
 console.warn = () => undefined
 const warn = vitest.spyOn(global.console, `warn`)

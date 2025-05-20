@@ -11,7 +11,7 @@ import { fromEntries, toEntries } from "atom.io/json"
 import { ChildSocket } from "atom.io/realtime-server"
 import { CronJob } from "cron"
 import { FilesystemStorage } from "safedeposit"
-import { z } from "zod"
+import { z } from "zod/v4"
 
 import type { LnavFormat } from "../gen/lnav-format-schema.gen"
 import { env } from "./flightdeck.env"

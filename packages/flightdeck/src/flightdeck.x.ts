@@ -4,7 +4,7 @@ import * as path from "node:path"
 
 import type { OptionsGroup } from "comline"
 import { cli, optional, parseBooleanOption, parseNumberOption } from "comline"
-import { z } from "zod"
+import { z } from "zod/v4"
 
 import type { FlightDeckOptions } from "./flightdeck.lib"
 import { FlightDeck, FlightDeckLogger } from "./flightdeck.lib"
@@ -23,7 +23,10 @@ const FLIGHTDECK_MANUAL = {
 	optionsSchema: z.object({
 		port: z.number().optional(),
 		packageName: z.string(),
-		services: z.record(z.object({ run: z.string(), waitFor: z.boolean() })),
+		services: z.record(
+			z.string(),
+			z.object({ run: z.string(), waitFor: z.boolean() }),
+		),
 		flightdeckRootDir: z.string(),
 		scripts: z.object({
 			download: z.string(),

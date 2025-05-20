@@ -17,21 +17,22 @@ let's say we have the following function defined in `greet.ts`:
  * @returns {string}
  */
 function greet(name: string, age: number): string {
-  return `Hello, ${name}!`
+  return `Hello, ${name}!`;
 }
 ```
 
 create a `greet.x.ts` file with the following contents:
 
 ```typescript
-import { greet } from "./greet"
+import { greet } from "./greet";
 
-import { cli, parseNumberArg, parseStringArg } from "comline"
-import { z } from "zod"
+import { cli, parseNumberArg, parseStringArg } from "comline";
+import { z } from "zod/v4";
 
 const greetCli = cli({
   cliName: "greet",
-  discoverConfigPath: (positionalArgs) => path.join(process.cwd(), `.greet-config.json`),
+  discoverConfigPath: (positionalArgs) =>
+    path.join(process.cwd(), `.greet-config.json`),
   optionsSchema: z.object({
     name: z.string(),
     age: z.number(),
@@ -52,11 +53,13 @@ const greetCli = cli({
       required: true,
     },
   },
-})
+});
 
-const { suppliedOptions: { name, age } } = greetCli(process.argv)
-const output = greet(name, age) 
-process.stdout.write(output)
+const {
+  suppliedOptions: { name, age },
+} = greetCli(process.argv);
+const output = greet(name, age);
+process.stdout.write(output);
 ```
 
 then, run the file `greet.x.ts` with the following command:
@@ -68,11 +71,12 @@ bun greet.x.ts --name=jeremybanka --age=1
 this will print `Hello, jeremybanka!`
 
 ## features
+
 - [x] switches (`--age`)
   - `""` will be provided to the parse function for `age` in this case
 - [x] switches with values (`--age=1`)
   - `"1"` will be provided to the parse function for `age` in this case
-- [x] multiple instances of the same switch (`--age=1 --age=2`) 
+- [x] multiple instances of the same switch (`--age=1 --age=2`)
   - `"1,2"` will be provided to the parse function for `age` in this case
 - [x] flags (`-a`)
   - `""` will be provided to the parse function for `age` in this case
@@ -84,30 +88,31 @@ this will print `Hello, jeremybanka!`
   - `""` will be provided to the parse function for `name` in this case
   - `""` will be provided to the parse function for `age` in this case
 - [x] positional arguments (`my-cli -- positional`)
+
   - validated as a "route" into the tree of positional arguments
+
   ```typescript
-  import type { Tree, TreePath } from "comline"
-  import { optional, required } from "comline"
+  import type { Tree, TreePath } from "comline";
+  import { optional, required } from "comline";
 
   const myTree = required({
-	  hello: optional({
-		  world: null,
-		  $name: optional({
-			  good: required({
-				  morning: null,
-			  }),
-		  }),
-  	}),
-  }) satisfies Tree
+    hello: optional({
+      world: null,
+      $name: optional({
+        good: required({
+          morning: null,
+        }),
+      }),
+    }),
+  }) satisfies Tree;
 
   const validPaths: TreePath<typeof myTree>[] = [
     [`hello`],
     [`hello`, `world`],
     [`hello`, `jeremybanka`],
     [`hello`, `jeremybanka`, `good`, `morning`],
-  ]
+  ];
   ```
-  
 
 ## limitations
 

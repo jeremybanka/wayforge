@@ -1,5 +1,5 @@
 import { optional, required } from "treetrunks"
-import { z } from "zod"
+import { z } from "zod/v4"
 
 import type { OptionsGroup } from "../src/cli"
 import { cli } from "../src/cli"

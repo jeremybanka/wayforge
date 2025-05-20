@@ -2,7 +2,7 @@
 
 import * as fs from "node:fs"
 
-import { z } from "zod"
+import { z } from "zod/v4"
 
 import { cli } from "../../src/cli"
 import { parseStringOption } from "../../src/option-parsers"
