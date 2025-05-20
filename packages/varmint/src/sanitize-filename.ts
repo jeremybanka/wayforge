@@ -16,13 +16,12 @@ export function sanitizeFilename(filename: string, maxLen = 64): string {
 		.update(filename)
 		.digest(`base64`)
 		.slice(0, 8)
-		.replace(`/`, `_`)
-	// Otherwise, trim the beginning to fit within the max length
+		.replaceAll(`/`, `_`)
 	let baseName = onlyValidChars
 	if (baseName.length > maxLen) {
 		const beginning = baseName.slice(0, maxLen / 2)
 		const end = baseName.slice(-maxLen / 2)
 		baseName = beginning + `_` + end
 	}
-	return baseName + `+` + hash // Keep the last maxLen characters
+	return baseName + `+` + hash
 }
