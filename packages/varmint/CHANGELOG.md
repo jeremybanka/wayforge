@@ -1,5 +1,13 @@
 # varmint
 
+## 0.5.1
+
+### Patch Changes
+
+- cb2596b: ⬆️ Use `zod/v4` (included in `zod@^3.25.0`).
+- Updated dependencies [cb2596b]
+  - comline@0.3.0
+
 ## 0.5.0
 
 ### Minor Changes
