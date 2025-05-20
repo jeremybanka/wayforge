@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.33.4
+
+### Patch Changes
+
+- d26f8c5: 🐛 Fix incorrectly specified peer dependency for `typescript-eslint/parser`.
+
 ## 0.33.3
 
 ### Patch Changes
