@@ -1,5 +1,14 @@
 # flightdeck
 
+## 0.2.34
+
+### Patch Changes
+
+- cb2596b: ⬆️ Use `zod/v4` (included in `zod@^3.25.0`).
+- Updated dependencies [cb2596b]
+  - comline@0.3.0
+  - atom.io@0.33.3
+
 ## 0.2.33
 
 ### Patch Changes
