@@ -10,9 +10,8 @@ import type {
 	TreePath,
 	TreePathName,
 } from "treetrunks"
-import type { ZodSchema } from "zod"
-import { z } from "zod"
-import { zodToJsonSchema } from "zod-to-json-schema"
+import type { ZodType } from "zod/v4"
+import { z } from "zod/v4"
 
 import type { Flag } from "./flag"
 import { parseStringOption } from "./option-parsers"
@@ -70,7 +69,7 @@ export type OptionsGroup<Options extends Record<string, CliOptionValue> | null> 
 		? {
 				description?: string
 				options: { [K in keyof Options]: CliOption<Options[K]> }
-				optionsSchema: ZodSchema<Options>
+				optionsSchema: ZodType<Options>
 			}
 		: null
 
@@ -240,7 +239,7 @@ export function cli<
 							continue
 						}
 						const safeRoute = unsafeRoute.replaceAll(`/`, `.`)
-						const jsonSchema = zodToJsonSchema(optionsGroup.optionsSchema)
+						const jsonSchema = z.toJSONSchema(optionsGroup.optionsSchema)
 						const filepath = path.resolve(
 							outdir,
 							`${cliName}.${safeRoute || `main`}.schema.json`,

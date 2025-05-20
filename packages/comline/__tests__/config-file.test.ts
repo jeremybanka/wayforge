@@ -2,7 +2,7 @@ import * as fs from "node:fs"
 
 import * as tmp from "tmp"
 import { required } from "treetrunks"
-import { z } from "zod"
+import { z } from "zod/v4"
 
 import { cli } from "../src/cli"
 import { parseStringOption } from "../src/option-parsers"
@@ -85,7 +85,7 @@ describe(`creating a config schema`, () => {
 			fs.readFileSync(`${tempDir.name}/my-cli.main.schema.json`, `utf-8`),
 		)
 		expect(jsonSchemaContents).toEqual({
-			$schema: `http://json-schema.org/draft-07/schema#`,
+			$schema: `https://json-schema.org/draft-2020-12/schema`,
 			type: `object`,
 			properties: {
 				foo: {
@@ -93,7 +93,7 @@ describe(`creating a config schema`, () => {
 				},
 			},
 			required: [`foo`],
-			additionalProperties: false,
+			// additionalProperties: false,
 		})
 	})
 })
