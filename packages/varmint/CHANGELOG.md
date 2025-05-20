@@ -1,5 +1,11 @@
 # varmint
 
+## 0.5.2
+
+### Patch Changes
+
+- d47eeed: 🐛 Fix issue where, for long cache keys, an invalid filename containing a forward slash could be produced.
+
 ## 0.5.1
 
 ### Patch Changes
