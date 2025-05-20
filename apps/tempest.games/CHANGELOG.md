@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.2.9
+
+### Patch Changes
+
+- 8f61b7d: 🐛 Fix bug where the backend server would crash on startup.
+
 ## 0.2.8
 
 ### Patch Changes
