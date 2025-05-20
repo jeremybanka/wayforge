@@ -1,5 +1,11 @@
 # comline
 
+## 0.3.0
+
+### Minor Changes
+
+- cb2596b: ⬆️ Use `zod/v4` (included in `zod@^3.25.0`).
+
 ## 0.2.5
 
 ### Patch Changes
