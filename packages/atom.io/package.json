@@ -38,7 +38,7 @@
 		"@floating-ui/react": ">=0.25.0",
 		"@floating-ui/react-dom": ">=2.0.0",
 		"@testing-library/react": ">=14.0.0",
-		"@typescript-eslint/parser": ">=9.0.0",
+		"@typescript-eslint/parser": ">=8.0.0",
 		"eslint": ">=9.0.0",
 		"happy-dom": ">=17.4.4",
 		"motion": ">=11.0.0",
