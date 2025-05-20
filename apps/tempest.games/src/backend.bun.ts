@@ -79,10 +79,7 @@ const trpcHandler = createHTTPHandler({
 	},
 })
 const httpServer = createServer(trpcHandler)
-const address = httpServer.listen(env.BACKEND_PORT).address()
-if (!address || typeof address === `string`) {
-	throw new Error(`Could not determine port for test server`)
-}
+httpServer.listen(env.BACKEND_PORT).address()
 
 new WebSocketServer(httpServer, {
 	cors: {
