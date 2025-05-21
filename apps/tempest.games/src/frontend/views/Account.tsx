@@ -1,3 +1,4 @@
+import { getState, setState } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import { onMount } from "atom.io/realtime-react"
 import React from "react"
@@ -5,6 +6,7 @@ import React from "react"
 import { setCssVars } from "../../library/set-css-vars"
 import {
 	authAtom,
+	authTargetAtom,
 	emailInputAtom,
 	emailIssuesSelector,
 	isUsernameTakenQuerySelector,
@@ -13,12 +15,18 @@ import {
 	password0IssuesSelector,
 	password1InputAtom,
 	password1IssuesSelector,
+	socket,
 	usernameInputAtom,
 	usernameIssuesSelector,
 } from "../services/socket-auth-service"
 import { trpcClient } from "../services/trpc-client-service"
 import type { AccountString } from "./Account/account-state"
-import { usernameInputElementAtom } from "./Account/account-state"
+import {
+	accountEditingAtom,
+	buttonBlockActiveAtom,
+	emailInputElementAtom,
+	usernameInputElementAtom,
+} from "./Account/account-state"
 import { Form } from "./Account/Form"
 
 export function Account(): React.ReactNode {
@@ -27,17 +35,13 @@ export function Account(): React.ReactNode {
 	const setEmail = useI(emailInputAtom)
 
 	const auth = useO(authAtom)
-	const token = useO(oneTimeCodeInputAtom)
 	const password0 = useO(password0InputAtom)
 	const password1 = useO(password1InputAtom)
-	const email = useO(emailInputAtom)
 	const password0Issues = useO(password0IssuesSelector)
 	const password1Issues = useO(password1IssuesSelector)
-	const emailIssues = useO(emailIssuesSelector)
 
 	const [isEditing, setEditing] = React.useState<AccountString | null>(null)
 	const usernameIsTaken = useO(isUsernameTakenQuerySelector)
-	const emailRef = React.useRef<HTMLInputElement>(null)
 	const passwordRef = React.useRef<HTMLInputElement>(null)
 
 	onMount(() => {
@@ -55,63 +59,56 @@ export function Account(): React.ReactNode {
 				inputToken={usernameInputAtom}
 				issuesToken={usernameIssuesSelector}
 				inputElementToken={usernameInputElementAtom}
-				signal="changeUsername"
+				initialState={[`username`]}
+				onSubmit={(input) =>
+					new Promise((resolve) => {
+						socket.once(`usernameChanged`, resolve)
+						socket.emit(`changeUsername`, input)
+					})
+				}
 				extraIssues={
 					usernameIsTaken ? <span>This username is taken.</span> : null
 				}
 			/>
-			<form
-				onSubmit={(e) => {
-					e.preventDefault()
+			<Form
+				label="email"
+				inputToken={emailInputAtom}
+				issuesToken={emailIssuesSelector}
+				inputElementToken={emailInputElementAtom}
+				initialState={[`email`]}
+				onSubmit={async (input) => {
+					const accountEditingState = getState(accountEditingAtom)
+					if (accountEditingState[0] === `email`) {
+						switch (accountEditingState.length) {
+							case 1: {
+								const authTarget = await trpcClient.offerNewEmail.query({
+									emailOffered: input,
+								})
+								setState(authTargetAtom, authTarget)
+								setState(accountEditingAtom, [
+									`email`,
+									`one-time code to confirm email`,
+								])
+								return authTarget
+							}
+
+							case 2: {
+								const authTarget = getState(authTargetAtom)
+								if (!authTarget) return new Error(`No auth target`)
+								const otc = getState(oneTimeCodeInputAtom)
+								const response = await trpcClient.verifyAccountAction.mutate({
+									oneTimeCode: otc,
+									userKey: authTarget,
+								})
+								setState(authAtom, response)
+								setState(accountEditingAtom, [])
+								return response.email
+							}
+						}
+					}
+					return new Error(`field not email`)
 				}}
-			>
-				{isEditing === `email` ? (
-					<button
-						type="button"
-						onClick={() => {
-							setEditing(null)
-						}}
-					>
-						x
-					</button>
-				) : null}
-				<main>
-					<label htmlFor="email">
-						{email && emailIssues ? (
-							<aside>
-								{emailIssues.map((issue) => (
-									<span key={issue.path.join(`.`)}>{issue.message}</span>
-								))}
-							</aside>
-						) : null}
-						<span>Email</span>
-						<input
-							id="email"
-							type="text"
-							ref={emailRef}
-							value={email}
-							onChange={(e) => {
-								setEmail(e.target.value)
-							}}
-							autoComplete="email"
-							autoCapitalize="none"
-							disabled={isEditing !== `email`}
-						/>
-					</label>
-				</main>
-				{isEditing === `email` ? (
-					<button type="submit">{`->`}</button>
-				) : (
-					<button
-						type="button"
-						onClick={() => {
-							setEditing(`email`)
-						}}
-					>
-						/
-					</button>
-				)}
-			</form>
+			/>
 
 			<form
 				onSubmit={(e) => {

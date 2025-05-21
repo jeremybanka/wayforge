@@ -1,27 +1,32 @@
 import type { ArkErrors } from "arktype"
 import type { ReadableToken, WritableToken } from "atom.io"
+import { capitalize } from "atom.io/internal"
 import { useI, useO } from "atom.io/react"
 import * as React from "react"
 
-import type { TempestSocketUp } from "../../../library/socket-interface"
-import { socket } from "../../services/socket-auth-service"
-import type { AccountString } from "./account-state"
-import { buttonBlockActiveAtom, editingAtom, useElement } from "./account-state"
+import type { AccountEditingState, AccountString } from "./account-state"
+import {
+	accountEditingAtom,
+	buttonBlockActiveAtom,
+	useElement,
+} from "./account-state"
 
 export type FormProps = {
 	label: AccountString
-	extraIssues?: React.ReactNode
 	inputToken: WritableToken<string>
 	issuesToken: ReadableToken<ArkErrors | null>
 	inputElementToken: WritableToken<HTMLInputElement | null>
-	signal: keyof TempestSocketUp
+	initialState: AccountEditingState
+	onSubmit: (value: string) => Promise<Error | string>
+	extraIssues?: React.ReactNode
 }
 export function Form({
 	label,
 	inputToken,
 	issuesToken,
 	inputElementToken,
-	signal,
+	initialState,
+	onSubmit,
 	extraIssues,
 }: FormProps): React.ReactNode {
 	const input = useO(inputToken)
@@ -30,8 +35,8 @@ export function Form({
 	const buttonBlockActive = useO(buttonBlockActiveAtom)
 	const setButtonBlockActive = useI(buttonBlockActiveAtom)
 
-	const isEditing = useO(editingAtom)
-	const setEditing = useI(editingAtom)
+	const editingState = useO(accountEditingAtom)
+	const setEditing = useI(accountEditingAtom)
 
 	const issues = useO(issuesToken)
 
@@ -39,22 +44,22 @@ export function Form({
 
 	return (
 		<form
-			onSubmit={(e) => {
+			onSubmit={async (e) => {
 				e.preventDefault()
 				if (buttonBlockActive) {
 					setButtonBlockActive(false)
 					return
 				}
-				console.log(`submitted! ${label} to`, input)
-				socket.emit(signal, input)
-				setEditing(null)
+				console.log(`submitted! changing ${label} to`, input)
+				setEditing([])
+				await onSubmit(input)
 			}}
 		>
-			{isEditing === label ? (
+			{editingState[0] === label ? (
 				<button
 					type="button"
 					onClick={() => {
-						setEditing(null)
+						setEditing([])
 					}}
 				>
 					x
@@ -70,7 +75,7 @@ export function Form({
 							))}
 						</aside>
 					) : null}
-					<span>{label}</span>
+					<span>{capitalize(label)}</span>
 					<input
 						id={label}
 						type="text"
@@ -81,18 +86,18 @@ export function Form({
 						}}
 						autoComplete={label}
 						autoCapitalize="none"
-						disabled={isEditing !== label}
+						disabled={editingState[0] !== label}
 					/>
 				</label>
 			</main>
-			{isEditing === label ? (
+			{editingState[0] === label ? (
 				<button type="submit">{`->`}</button>
 			) : (
 				<button
 					type="button"
 					onMouseDown={() => {
 						setButtonBlockActive(true)
-						setEditing(label)
+						setEditing(initialState)
 					}}
 					onMouseUp={() => {
 						setButtonBlockActive(false)

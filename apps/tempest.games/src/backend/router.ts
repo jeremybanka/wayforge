@@ -20,7 +20,7 @@ import { env } from "../library/env"
 import { simpleFormatMs } from "../library/simple-format-ms"
 import { genAccountActionCode } from "./account-actions"
 import { sendEmailToConfirmAccountAction } from "./email"
-import { loggedProcedure } from "./procedures"
+import { authedProcedure, loggedProcedure } from "./procedures"
 import { decryptId, encryptId } from "./secrecy"
 import type { Context } from "./trpc-server"
 import { trpc } from "./trpc-server"
@@ -57,6 +57,24 @@ export const appRouter = trpc.router({
 		}
 		return versionData
 	}),
+
+	offerNewEmail: authedProcedure
+		.input(
+			type({
+				emailOffered: `string.email`,
+				"+": `delete`,
+			}),
+		)
+		.query(async ({ input, ctx }): Promise<string> => {
+			const { emailOffered } = input
+			await ctx.db.drizzle.insert(users).values({
+				emailOffered,
+				password: null,
+				createdIp: ctx.ip,
+				username: Math.random().toString(36).slice(2),
+			})
+			return encryptId(ctx.userId)
+		}),
 
 	openSession: loggedProcedure
 		.input(credentialsType)
@@ -140,16 +158,10 @@ export const appRouter = trpc.router({
 			}
 		}),
 
-	closeSession: loggedProcedure
+	closeSession: authedProcedure
 		.input(type({ username: `string`, sessionKey: `string` }))
 		.mutation(({ ctx }) => {
-			if (!ctx.auth) {
-				throw new TRPCError({
-					code: `BAD_REQUEST`,
-					message: `User not found.`,
-				})
-			}
-			const { sessionKey } = ctx.auth
+			const { sessionKey } = ctx
 			ctx.logger.info(userSessions.relations)
 			userSessions.delete(sessionKey)
 			sessionCreatedTimes.delete(sessionKey)
@@ -278,14 +290,13 @@ export const appRouter = trpc.router({
 			}
 		}),
 
-	startPasswordReset: loggedProcedure
-		.input(type({ sessionKey: `string`, username: `string` }))
-		.mutation(async ({ input, ctx }): Promise<ClientAuthData> => {
-			const { sessionKey, username } = input
-			ctx.logger.info(`🔑 starting password reset for`, username)
-			const user = await ctx.db.drizzle.query.users.findFirst({
-				columns: { id: true, emailVerified: true },
-				where: eq(users.username, username),
+	startPasswordReset: authedProcedure.mutation(
+		async ({ ctx }): Promise<ClientAuthData> => {
+			const { userId, sessionKey, db } = ctx
+			ctx.logger.info(`🔑 starting password reset for`, userId)
+			const user = await db.drizzle.query.users.findFirst({
+				columns: { emailVerified: true, username: true },
+				where: eq(users.id, userId),
 			})
 			if (!user) {
 				throw new TRPCError({
@@ -293,24 +304,17 @@ export const appRouter = trpc.router({
 					message: `User not found.`,
 				})
 			}
-			const { emailVerified } = user
+			const { emailVerified, username } = user
 			if (!emailVerified) {
 				throw new TRPCError({
 					code: `BAD_REQUEST`,
 					message: `Please verify your email address before resetting your password.`,
 				})
 			}
-
-			if (!userSessions.has(user.id, sessionKey)) {
-				throw new TRPCError({
-					code: `BAD_REQUEST`,
-					message: `Session not found.`,
-				})
-			}
 			const currentAccountAction =
 				await ctx.db.drizzle.query.accountActions.findFirst({
 					columns: { action: true, expiresAt: true },
-					where: eq(accountActions.userId, user.id),
+					where: eq(accountActions.userId, userId),
 				})
 			if (currentAccountAction) {
 				if (currentAccountAction.action === `cooldown`) {
@@ -333,28 +337,29 @@ export const appRouter = trpc.router({
 
 			await ctx.db.drizzle.insert(accountActions).values({
 				action: `resetPassword`,
-				userId: user.id,
+				userId,
 				code: encryptedCode,
 				expiresAt: new Date(+ctx.now + 1000 * 60 * 15),
 			})
 
 			void sendEmailToConfirmAccountAction({
 				to: emailVerified,
-				username,
+				username: user.username,
 				action: `resetPassword`,
 				oneTimeCode: passwordResetCode,
 				baseUrl: env.FRONTEND_ORIGINS[0],
 			})
 
 			return {
-				userId: user.id,
+				userId,
 				email: emailVerified,
 				username,
 				password: false,
 				sessionKey,
 				verification: `verified`,
 			}
-		}),
+		},
+	),
 
 	isUsernameTaken: loggedProcedure
 		.input(type({ username: `string` }))
@@ -369,91 +374,101 @@ export const appRouter = trpc.router({
 
 	declareAuthTarget: loggedProcedure
 		.input(type({ email: `string`, "+": `delete` }))
-		.query(async ({ input, ctx }): Promise<AuthStage1Response> => {
-			const { email } = input
-			ctx.logger.info(`🔑 authStage1:`, email)
-			const maybeVerifiedUser = await ctx.db.drizzle.query.users.findFirst({
-				columns: { id: true, password: true, username: true },
-				where: eq(users.emailVerified, email),
-			})
-			if (!maybeVerifiedUser) {
-				ctx.logger.info(`🔑 no verified account with email:`, email)
-				const maybeUnverifiedUser = await ctx.db.drizzle.query.users.findFirst({
-					columns: { id: true, username: true },
-					where: and(eq(users.emailOffered, email), isNull(users.emailVerified)),
+		.query(
+			async ({
+				input,
+				ctx,
+			}): Promise<{
+				nextStep: `otp_login` | `otp_verify` | `password_login`
+				userKey: string
+			}> => {
+				const { email } = input
+				ctx.logger.info(`🔑 authStage1:`, email)
+				const maybeVerifiedUser = await ctx.db.drizzle.query.users.findFirst({
+					columns: { id: true, password: true, username: true },
+					where: eq(users.emailVerified, email),
 				})
-				if (!maybeUnverifiedUser) {
-					ctx.logger.info(`🔑 no account with email:`, email)
-					const [newUser] = await ctx.db.drizzle
-						.insert(users)
-						.values({
-							emailOffered: email,
-							password: null,
-							createdIp: ctx.ip,
-							username: Math.random().toString(36).slice(2),
+				if (!maybeVerifiedUser) {
+					ctx.logger.info(`🔑 no verified account with email:`, email)
+					const maybeUnverifiedUser = await ctx.db.drizzle.query.users.findFirst(
+						{
+							columns: { id: true, username: true },
+							where: and(
+								eq(users.emailOffered, email),
+								isNull(users.emailVerified),
+							),
+						},
+					)
+					if (!maybeUnverifiedUser) {
+						ctx.logger.info(`🔑 no account with email:`, email)
+						const [newUser] = await ctx.db.drizzle
+							.insert(users)
+							.values({
+								emailOffered: email,
+								password: null,
+								createdIp: ctx.ip,
+								username: Math.random().toString(36).slice(2),
+							})
+							.returning()
+						ctx.logger.info(`🔑 user created:`, email)
+						const newUserKey = encryptId(newUser.id)
+						await initiateAccountAction({
+							email,
+							username: newUser.username,
+							userId: newUser.id,
+							action: `confirmEmail`,
+							ctx,
 						})
-						.returning()
-					ctx.logger.info(`🔑 user created:`, email)
-					const newUserKey = encryptId(newUser.id)
+						return {
+							nextStep: `otp_verify`,
+							userKey: newUserKey,
+						}
+					}
+					const unverifiedUser = maybeUnverifiedUser
+					const unverifiedUserKey = encryptId(unverifiedUser.id)
 					await initiateAccountAction({
 						email,
-						username: newUser.username,
-						userId: newUser.id,
+						username: unverifiedUser.username,
+						userId: unverifiedUser.id,
 						action: `confirmEmail`,
 						ctx,
 					})
+
 					return {
 						nextStep: `otp_verify`,
-						userKey: newUserKey,
+						userKey: unverifiedUserKey,
 					}
 				}
-				const unverifiedUser = maybeUnverifiedUser
-				const unverifiedUserKey = encryptId(unverifiedUser.id)
-				await initiateAccountAction({
-					email,
-					username: unverifiedUser.username,
-					userId: unverifiedUser.id,
-					action: `confirmEmail`,
-					ctx,
-				})
-
-				return {
-					nextStep: `otp_verify`,
-					userKey: unverifiedUserKey,
+				const verifiedUser = maybeVerifiedUser
+				const verifiedUserKey = encryptId(verifiedUser.id)
+				const { password } = verifiedUser
+				if (!password) {
+					ctx.logger.info(
+						`🔑 account with email:`,
+						email,
+						`is verified but has no password`,
+					)
+					await initiateAccountAction({
+						email,
+						username: verifiedUser.username,
+						userId: verifiedUser.id,
+						action: `signIn`,
+						ctx,
+					})
+					return {
+						nextStep: `otp_login`,
+						userKey: verifiedUserKey,
+					}
 				}
-			}
-			const verifiedUser = maybeVerifiedUser
-			const verifiedUserKey = encryptId(verifiedUser.id)
-			const { password } = verifiedUser
-			if (!password) {
-				ctx.logger.info(
-					`🔑 account with email:`,
-					email,
-					`is verified but has no password`,
-				)
-				await initiateAccountAction({
-					email,
-					username: verifiedUser.username,
-					userId: verifiedUser.id,
-					action: `signIn`,
-					ctx,
-				})
 				return {
-					nextStep: `otp_login`,
+					nextStep: `password_login`,
 					userKey: verifiedUserKey,
 				}
-			}
-			return {
-				nextStep: `password_login`,
-				userKey: verifiedUserKey,
-			}
-		}),
+			},
+		),
 })
 
-export type AuthStage1Response = {
-	nextStep: `otp_login` | `otp_verify` | `password_login`
-	userKey: string
-}
+// export type DeclareAuthTargetResponse =
 
 async function initiateAccountAction(arg: {
 	email: string
