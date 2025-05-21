@@ -726,8 +726,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.11.13
-        version: 0.11.13(typescript@5.8.3)
+        specifier: 0.12.0
+        version: 0.12.0(typescript@5.8.3)
       tsx:
         specifier: 4.19.4
         version: 4.19.4
@@ -787,8 +787,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.11.13
-        version: 0.11.13(typescript@5.8.3)
+        specifier: 0.12.0
+        version: 0.12.0(typescript@5.8.3)
 
   packages/comline:
     dependencies:
@@ -818,8 +818,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.11.13
-        version: 0.11.13(typescript@5.8.3)
+        specifier: 0.12.0
+        version: 0.12.0(typescript@5.8.3)
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@22.15.21)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.0)(sass@1.89.0)(terser@5.39.0)(tsx@4.19.4)
@@ -882,8 +882,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.11.13
-        version: 0.11.13(typescript@5.8.3)
+        specifier: 0.12.0
+        version: 0.12.0(typescript@5.8.3)
       varmint:
         specifier: workspace:*
         version: link:../varmint
@@ -1026,8 +1026,8 @@ importers:
         specifier: 6.0.1
         version: 6.0.1
       tsdown:
-        specifier: 0.11.13
-        version: 0.11.13(typescript@5.8.3)
+        specifier: 0.12.0
+        version: 0.12.0(typescript@5.8.3)
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@22.15.21)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.0)(sass@1.89.0)(terser@5.39.0)(tsx@4.19.4)
@@ -1099,8 +1099,8 @@ importers:
         specifier: 9.27.0
         version: 9.27.0(jiti@2.4.2)
       tsdown:
-        specifier: 0.11.13
-        version: 0.11.13(typescript@5.8.3)
+        specifier: 0.12.0
+        version: 0.12.0(typescript@5.8.3)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -1162,8 +1162,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.11.13
-        version: 0.11.13(typescript@5.8.3)
+        specifier: 0.12.0
+        version: 0.12.0(typescript@5.8.3)
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -1293,8 +1293,8 @@ importers:
         specifier: 6.0.1
         version: 6.0.1
       tsdown:
-        specifier: 0.11.13
-        version: 0.11.13(typescript@5.8.3)
+        specifier: 0.12.0
+        version: 0.12.0(typescript@5.8.3)
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@22.15.21)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.0)(sass@1.89.0)(terser@5.39.0)(tsx@4.19.4)
@@ -1376,8 +1376,8 @@ importers:
         specifier: 0.2.3
         version: 0.2.3
       tsdown:
-        specifier: 0.11.13
-        version: 0.11.13(typescript@5.8.3)
+        specifier: 0.12.0
+        version: 0.12.0(typescript@5.8.3)
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@22.15.21)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.0)(sass@1.89.0)(terser@5.39.0)(tsx@4.19.4)
@@ -5696,6 +5696,9 @@ packages:
   get-tsconfig@4.10.0:
     resolution: {integrity: sha512-kGzZ3LWWQcGIAmg6iWvXn0ei6WDtV26wzHRMwDSzmAbcXrTEXxHy6IehI6/4eT6VRKyMP1eF1VqwrVUmE/LR7A==}
 
+  get-tsconfig@4.10.1:
+    resolution: {integrity: sha512-auHyJ4AgMz7vgS8Hp3N6HXSmlMdUyhSUrfBF16w153rxtLIEOE+HGqaBppczZvnHLqQJfiHotCYpNhl0lUROFQ==}
+
   github-slugger@2.0.0:
     resolution: {integrity: sha512-IaOQ9puYtjrkq7Y0Ygl9KDZnrf/aiUJYUpVf89y8kyaxbRG7Y1SrX/jaumrv81vc61+kiMempujsM3Yw7w5qcw==}
 
@@ -7334,8 +7337,8 @@ packages:
     engines: {node: 20 || >=22}
     hasBin: true
 
-  rolldown-plugin-dts@0.13.3:
-    resolution: {integrity: sha512-l0n0YsO9NI9Ve5Njmb1k2AYoDsgO8go1UEkXYnRgxoJokJXAK1V486XvOMxDpC8FcfgJwfQe71qmwpBjZXUOow==}
+  rolldown-plugin-dts@0.13.4:
+    resolution: {integrity: sha512-2+3GnKj6A3wKfyomUKfONRHjgKE85X4PcgW1b84KkHvuN3mUuUiOMseLKafFLMF6NkqQPAJ3FErwtC4HuwIswg==}
     engines: {node: '>=20.18.0'}
     peerDependencies:
       rolldown: ^1.0.0-beta.9
@@ -8005,8 +8008,8 @@ packages:
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
 
-  tsdown@0.11.13:
-    resolution: {integrity: sha512-VSfoNm8MJXFdg7PJ4p2javgjMRiQQHpkP9N3iBBTrmCixcT6YZ9ZtqYMW3NDHczqR0C0Qnur1HMQr1ZfZcmrng==}
+  tsdown@0.12.0:
+    resolution: {integrity: sha512-LNVFCCxK97xmagqooDnLX+1KLx7GxBb5BHfy3g+A0l6c8bNjsbcfxE3RvSsp3oX+YGMU2D6pD8VrwcHSXZkUMA==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     peerDependencies:
@@ -13095,6 +13098,10 @@ snapshots:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
+  get-tsconfig@4.10.1:
+    dependencies:
+      resolve-pkg-maps: 1.0.0
+
   github-slugger@2.0.0: {}
 
   glob-parent@5.1.2:
@@ -15050,7 +15057,7 @@ snapshots:
       glob: 11.0.1
       package-json-from-dist: 1.0.1
 
-  rolldown-plugin-dts@0.13.3(rolldown@1.0.0-beta.9)(typescript@5.8.3):
+  rolldown-plugin-dts@0.13.4(rolldown@1.0.0-beta.9)(typescript@5.8.3):
     dependencies:
       '@babel/generator': 7.27.1
       '@babel/parser': 7.27.2
@@ -15059,7 +15066,7 @@ snapshots:
       birpc: 2.3.0
       debug: 4.4.1(supports-color@5.5.0)
       dts-resolver: 2.0.1
-      get-tsconfig: 4.10.0
+      get-tsconfig: 4.10.1
       rolldown: 1.0.0-beta.9
     optionalDependencies:
       typescript: 5.8.3
@@ -15806,7 +15813,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tsdown@0.11.13(typescript@5.8.3):
+  tsdown@0.12.0(typescript@5.8.3):
     dependencies:
       ansis: 4.0.0
       cac: 6.7.14
@@ -15816,7 +15823,7 @@ snapshots:
       empathic: 1.1.0
       hookable: 5.5.3
       rolldown: 1.0.0-beta.9
-      rolldown-plugin-dts: 0.13.3(rolldown@1.0.0-beta.9)(typescript@5.8.3)
+      rolldown-plugin-dts: 0.13.4(rolldown@1.0.0-beta.9)(typescript@5.8.3)
       semver: 7.7.2
       tinyexec: 1.0.1
       tinyglobby: 0.2.13
