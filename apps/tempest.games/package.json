@@ -81,7 +81,7 @@
 		"@react-email/components": "0.0.41",
 		"@types/bun": "npm:bun-types@1.2.13",
 		"@types/cors": "2.8.18",
-		"@types/node": "22.15.20",
+		"@types/node": "22.15.21",
 		"@types/react": "19.1.4",
 		"@types/react-dom": "19.1.5",
 		"@vitejs/plugin-react-swc": "3.9.0",
