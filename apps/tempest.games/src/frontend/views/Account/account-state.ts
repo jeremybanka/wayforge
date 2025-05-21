@@ -1,20 +1,33 @@
-import type { RegularAtomToken, WritableToken } from "atom.io"
+import type { WritableToken } from "atom.io"
 import { atom, getState, setState } from "atom.io"
 import * as React from "react"
+import type { Tree, TreePath } from "treetrunks"
+import { optional, required } from "treetrunks"
 
 export const buttonBlockActiveAtom = atom<boolean>({
 	key: `buttonBlockActive`,
 	default: false,
 })
 
+export const ACCOUNT_EDITING_STATES = optional({
+	username: null,
+	email: optional({
+		"one-time code to confirm email": null,
+	}),
+	password: required({
+		"one-time code to reset password": null,
+	}),
+}) satisfies Tree
+export type AccountEditingState = TreePath<typeof ACCOUNT_EDITING_STATES>
+
 export type AccountString = `email` | `password` | `username`
-export const editingAtom = atom<AccountString | null>({
+export const accountEditingAtom = atom<AccountEditingState>({
 	key: `editing`,
-	default: null,
+	default: [],
 	effects: [
 		({ onSet }) => {
 			onSet(({ newValue }) => {
-				switch (newValue) {
+				switch (newValue[0]) {
 					case `email`: {
 						getState(emailInputElementAtom)?.focus()
 						break
@@ -27,7 +40,7 @@ export const editingAtom = atom<AccountString | null>({
 						getState(usernameInputElementAtom)?.focus()
 						break
 					}
-					case null: {
+					case undefined: {
 						break
 					}
 				}

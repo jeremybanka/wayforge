@@ -1,5 +1,5 @@
 import { TRPCClientError } from "@trpc/client"
-import { setState } from "atom.io"
+import { getState, setState } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import { motion } from "motion/react"
 import * as React from "react"
@@ -7,6 +7,7 @@ import * as React from "react"
 import { navigate } from "../services/router-service"
 import {
 	authAtom,
+	authTargetAtom,
 	emailInputAtom,
 	oneTimeCodeInputAtom,
 	password0InputAtom,
@@ -23,7 +24,6 @@ export function Home(): React.ReactNode {
 	const oneTimeCode = useO(oneTimeCodeInputAtom)
 
 	const [error, setError] = React.useState<string | null>(null)
-	const [userKey, setUserKey] = React.useState<string | null>(null)
 	const [currentlyEntering, setCurrentlyEntering] = React.useState<
 		`email` | `otp` | `password`
 	>(`email`)
@@ -32,14 +32,15 @@ export function Home(): React.ReactNode {
 		<form
 			onSubmit={async (e) => {
 				e.preventDefault()
+				const currentAuthTarget = getState(authTargetAtom)
 				try {
 					switch (currentlyEntering) {
 						case `email`: {
-							const { nextStep, userKey: newUserKey } =
+							const { nextStep, userKey: newAuthTarget } =
 								await trpcClient.declareAuthTarget.query({
 									email,
 								})
-							setUserKey(newUserKey)
+							setState(authTargetAtom, newAuthTarget)
 							switch (nextStep) {
 								case `otp_login`:
 								case `otp_verify`: {
@@ -54,14 +55,14 @@ export function Home(): React.ReactNode {
 							break
 						}
 						case `otp`: {
-							if (!userKey) {
+							if (!currentAuthTarget) {
 								console.error(`somehow userKey is null`)
 								return
 							}
 							const actionResponse = await trpcClient.verifyAccountAction.mutate(
 								{
 									oneTimeCode,
-									userKey,
+									userKey: currentAuthTarget,
 								},
 							)
 							setState(authAtom, actionResponse)

@@ -59,17 +59,9 @@ const trpcHandler = createHTTPHandler({
 	router: appRouter,
 	middleware: cors({ origin: env.FRONTEND_ORIGINS }),
 	createContext: ({ req, res }) => {
-		let auth: ContextAuth = null
-		if (req.headers.authorization) {
-			const [userId, sessionKey] = req.headers.authorization.split(` `)
-			if (userId && sessionKey && userSessions.has(userId, sessionKey)) {
-				auth = { userId, sessionKey }
-			}
-		}
 		const context: Context = {
 			req,
 			res,
-			auth,
 			ip: req.socket.remoteAddress ?? ``,
 			now: new Date(),
 			db,
