@@ -86,6 +86,7 @@ describe(`creating a config schema`, () => {
 		)
 		expect(jsonSchemaContents).toEqual({
 			$schema: `https://json-schema.org/draft/2020-12/schema`,
+			additionalProperties: false,
 			type: `object`,
 			properties: {
 				foo: {
