@@ -21,7 +21,7 @@
 		"nanoid": "5.1.5",
 		"npmlog": "7.0.1",
 		"socket.io": "4.8.1",
-		"zod": "3.25.25"
+		"zod": "3.25.27"
 	},
 	"devDependencies": {
 		"@types/bun": "npm:bun-types@1.2.14",
