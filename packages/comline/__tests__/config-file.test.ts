@@ -1,4 +1,5 @@
 import * as fs from "node:fs"
+import path from "node:path"
 
 import * as tmp from "tmp"
 import { required } from "treetrunks"
@@ -84,16 +85,15 @@ describe(`creating a config schema`, () => {
 		const jsonSchemaContents = JSON.parse(
 			fs.readFileSync(`${tempDir.name}/my-cli.main.schema.json`, `utf-8`),
 		)
-		expect(jsonSchemaContents).toEqual({
-			$schema: `https://json-schema.org/draft/2020-12/schema`,
-			type: `object`,
-			properties: {
-				foo: {
-					type: `string`,
-				},
-			},
-			required: [`foo`],
-			// additionalProperties: false,
-		})
+		const jsonSchemaFixtureLocation = path.join(
+			import.meta.dirname,
+			`fixtures/example-schema.json`,
+		)
+		const jsonSchemaFixtureContentsString = fs.readFileSync(
+			jsonSchemaFixtureLocation,
+			`utf-8`,
+		)
+		const jsonSchemaFixture = JSON.parse(jsonSchemaFixtureContentsString)
+		expect(jsonSchemaContents).toEqual(jsonSchemaFixture)
 	})
 })
