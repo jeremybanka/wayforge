@@ -85,7 +85,7 @@ describe(`creating a config schema`, () => {
 			fs.readFileSync(`${tempDir.name}/my-cli.main.schema.json`, `utf-8`),
 		)
 		expect(jsonSchemaContents).toEqual({
-			$schema: `https://json-schema.org/draft-2020-12/schema`,
+			$schema: `https://json-schema.org/draft/2020-12/schema`,
 			type: `object`,
 			properties: {
 				foo: {
