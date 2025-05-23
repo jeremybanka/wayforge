@@ -63,7 +63,7 @@
 		"@types/jsdom": "21.1.7",
 		"@types/npmlog": "7.0.0",
 		"@types/react": "19.1.5",
-		"@vitejs/plugin-react": "4.4.1",
+		"@vitejs/plugin-react": "4.5.0",
 		"atom.io": "workspace:*",
 		"concurrently": "9.1.2",
 		"eslint": "9.27.0",
