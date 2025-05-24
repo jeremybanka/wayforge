@@ -18,7 +18,6 @@ import type {
 	TempestSocketDown,
 	TempestSocketUp,
 } from "../../library/socket-interface.ts"
-import { trpcClient } from "./trpc-client-service.ts"
 
 export const socket: Socket<TempestSocketDown, TempestSocketUp> = io(
 	env.VITE_BACKEND_ORIGIN,
@@ -125,6 +124,7 @@ export const isUsernameTakenQuerySelector = selector<Loadable<boolean>>({
 		if (!username) return false
 		const auth = getState(authAtom)
 		if (username === auth?.username) return false
+		const { trpcClient } = await import(`./trpc-client-service.ts`)
 		return trpcClient.isUsernameTaken.query({ username })
 	},
 })
