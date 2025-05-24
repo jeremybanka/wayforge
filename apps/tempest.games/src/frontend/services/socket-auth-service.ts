@@ -200,3 +200,8 @@ export const oneTimeCodeInputAtom = atom<string>({
 	key: `oneTimeCode`,
 	default: ``,
 })
+
+export const authTargetAtom = atom<string | null>({
+	key: `authTarget`,
+	default: null,
+})
