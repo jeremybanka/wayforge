@@ -186,7 +186,7 @@ importers:
         version: 3.34.0
       preact-render-to-string:
         specifier: 6.5.13
-        version: 6.5.13(preact@10.26.6)
+        version: 6.5.13(preact@10.26.7)
       zod:
         specifier: 3.25.28
         version: 3.25.28
@@ -219,8 +219,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       preact:
-        specifier: 10.26.6
-        version: 10.26.6
+        specifier: 10.26.7
+        version: 10.26.7
       typed-htmx:
         specifier: 0.3.1
         version: 0.3.1
@@ -702,8 +702,8 @@ importers:
         specifier: 3.4.7
         version: 3.4.7
       preact:
-        specifier: 10.26.6
-        version: 10.26.6
+        specifier: 10.26.7
+        version: 10.26.7
       react:
         specifier: 19.1.0
         version: 19.1.0
@@ -949,8 +949,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       preact:
-        specifier: 10.26.6
-        version: 10.26.6
+        specifier: 10.26.7
+        version: 10.26.7
       react:
         specifier: 19.1.0
         version: 19.1.0
@@ -7077,8 +7077,8 @@ packages:
     peerDependencies:
       preact: '>=10'
 
-  preact@10.26.6:
-    resolution: {integrity: sha512-5SRRBinwpwkaD+OqlBDeITlRgvd8I8QlxHJw9AxSdMNV6O+LodN9nUyYGpSF7sadHjs6RzeFShMexC6DbtWr9g==}
+  preact@10.26.7:
+    resolution: {integrity: sha512-43xS+QYc1X1IPbw03faSgY6I6OYWcLrJRv3hU0+qMOfh/XCHcP0MX2CVjNARYR2cC/guu975sta4OcjlczxD7g==}
 
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
@@ -14718,11 +14718,11 @@ snapshots:
 
   postgres@3.4.7: {}
 
-  preact-render-to-string@6.5.13(preact@10.26.6):
+  preact-render-to-string@6.5.13(preact@10.26.7):
     dependencies:
-      preact: 10.26.6
+      preact: 10.26.7
 
-  preact@10.26.6: {}
+  preact@10.26.7: {}
 
   prelude-ls@1.2.1: {}
 
