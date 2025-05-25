@@ -4,10 +4,17 @@ import { capitalize } from "atom.io/internal"
 import { useI, useO } from "atom.io/react"
 import * as React from "react"
 
+import {
+	oneTimeCodeInputAtom,
+	oneTimeCodeNewEmailInputAtom,
+	password0InputAtom,
+} from "../../services/socket-auth-service"
 import type { AccountEditingState, AccountString } from "./account-state"
 import {
 	accountEditingAtom,
 	buttonBlockActiveAtom,
+	otpLoginFieldLabelSelector,
+	otpVerifyFieldLabelSelector,
 	useElement,
 } from "./account-state"
 
@@ -32,6 +39,15 @@ export function Form({
 	const input = useO(inputToken)
 	const setInput = useI(inputToken)
 
+	const otc = useO(oneTimeCodeInputAtom)
+	const setOtc = useI(oneTimeCodeInputAtom)
+
+	const otcEmailNew = useO(oneTimeCodeNewEmailInputAtom)
+	const setOtcEmailNew = useI(oneTimeCodeNewEmailInputAtom)
+
+	const password0 = useO(password0InputAtom)
+	const setPassword0 = useI(password0InputAtom)
+
 	const buttonBlockActive = useO(buttonBlockActiveAtom)
 	const setButtonBlockActive = useI(buttonBlockActiveAtom)
 
@@ -39,8 +55,22 @@ export function Form({
 	const setEditing = useI(accountEditingAtom)
 
 	const issues = useO(issuesToken)
+	const otpLoginFieldLabel = useO(otpLoginFieldLabelSelector)
+	const otpVerifyFieldLabel = useO(otpVerifyFieldLabelSelector)
 
 	const elementRef = useElement(inputElementToken)
+
+	const isUsingForm = editingState[0] === label
+	const currentField = editingState.at(-1)
+	const [_, ...nextSteps] = editingState
+
+	// console.log({
+	// 	editingState,
+	// 	nextSteps,
+	// 	currentField,
+	// 	label,
+	// 	input,
+	// })
 
 	return (
 		<form
@@ -51,11 +81,13 @@ export function Form({
 					return
 				}
 				console.log(`submitted! changing ${label} to`, input)
-				setEditing([])
-				await onSubmit(input)
+				const result = await onSubmit(input)
+				if (Error.isError(result)) {
+					console.error(result)
+				}
 			}}
 		>
-			{editingState[0] === label ? (
+			{isUsingForm ? (
 				<button
 					type="button"
 					onClick={() => {
@@ -86,9 +118,72 @@ export function Form({
 						}}
 						autoComplete={label}
 						autoCapitalize="none"
-						disabled={editingState[0] !== label}
+						disabled={currentField !== label}
 					/>
 				</label>
+				{isUsingForm
+					? nextSteps.map((field) => (
+							<label key={`${label}-${field}`} htmlFor={`${label}-${field}`}>
+								<span>
+									{((): string => {
+										switch (field) {
+											case `otcLogin`:
+												return otpLoginFieldLabel
+
+											case `otcVerify`:
+												return otpVerifyFieldLabel
+
+											case `passwordLogin`:
+												return `Password`
+										}
+									})()}
+								</span>
+								<input
+									id={`${label}-otc`}
+									type="text"
+									ref={elementRef}
+									value={(() => {
+										switch (field) {
+											case `otcLogin`:
+												return otc
+											case `otcVerify`:
+												if (label === `email`) {
+													return otcEmailNew
+												}
+												return otc
+											case `passwordLogin`:
+												return password0
+										}
+									})()}
+									onChange={(e) => {
+										switch (field) {
+											case `otcLogin`:
+												setOtc(e.target.value)
+												break
+											case `otcVerify`:
+												if (label === `email`) {
+													setOtcEmailNew(e.target.value)
+													break
+												}
+												setOtc(e.target.value)
+												break
+											case `passwordLogin`:
+												setPassword0(e.target.value)
+										}
+									}}
+									autoComplete={
+										label.includes(`otc`)
+											? `one-time-code`
+											: label.includes(`password`)
+												? `password`
+												: ``
+									}
+									autoCapitalize="none"
+									disabled={field !== currentField}
+								/>
+							</label>
+						))
+					: null}
 			</main>
 			{editingState[0] === label ? (
 				<button type="submit">{`->`}</button>

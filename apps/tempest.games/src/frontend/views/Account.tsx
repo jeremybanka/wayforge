@@ -11,6 +11,7 @@ import {
 	emailIssuesSelector,
 	isUsernameTakenQuerySelector,
 	oneTimeCodeInputAtom,
+	oneTimeCodeNewEmailInputAtom,
 	password0InputAtom,
 	password0IssuesSelector,
 	password1InputAtom,
@@ -23,7 +24,6 @@ import { trpcClient } from "../services/trpc-client-service"
 import type { AccountString } from "./Account/account-state"
 import {
 	accountEditingAtom,
-	buttonBlockActiveAtom,
 	emailInputElementAtom,
 	usernameInputElementAtom,
 } from "./Account/account-state"
@@ -78,35 +78,79 @@ export function Account(): React.ReactNode {
 				initialState={[`email`]}
 				onSubmit={async (input) => {
 					const accountEditingState = getState(accountEditingAtom)
-					if (accountEditingState[0] === `email`) {
-						switch (accountEditingState.length) {
-							case 1: {
-								const authTarget = await trpcClient.offerNewEmail.query({
+					if (accountEditingState[0] !== `email`) {
+						return new Error(`field not email`)
+					}
+					switch (accountEditingState.length) {
+						case 1: {
+							const { userKey: authTarget, nextStep } =
+								await trpcClient.offerNewEmail.mutate({
 									emailOffered: input,
 								})
-								setState(authTargetAtom, authTarget)
-								setState(accountEditingAtom, [
-									`email`,
-									`one-time code to confirm email`,
-								])
-								return authTarget
+							console.log({ authTarget, nextStep })
+							switch (nextStep) {
+								case `otp_login`: {
+									setState(authTargetAtom, authTarget)
+									setState(accountEditingAtom, [`email`, `otcLogin`])
+									break
+								}
+								case `password_login`: {
+									setState(authTargetAtom, authTarget)
+									setState(accountEditingAtom, [`email`, `passwordLogin`])
+									break
+								}
+								case `otp_verify`: {
+									setState(authTargetAtom, authTarget)
+									setState(oneTimeCodeInputAtom, `not needed`)
+									setState(accountEditingAtom, [
+										`email`,
+										`otcLogin`,
+										`otcVerify`,
+									])
+									break
+								}
 							}
+							return authTarget
+						}
 
-							case 2: {
-								const authTarget = getState(authTargetAtom)
-								if (!authTarget) return new Error(`No auth target`)
-								const otc = getState(oneTimeCodeInputAtom)
-								const response = await trpcClient.verifyAccountAction.mutate({
-									oneTimeCode: otc,
-									userKey: authTarget,
-								})
-								setState(authAtom, response)
-								setState(accountEditingAtom, [])
-								return response.email
+						case 2:
+							console.log(`case 2`)
+							switch (accountEditingState[1]) {
+								case `otcLogin`: {
+									console.log(`case 2.1`)
+									const authTarget = getState(authTargetAtom)
+									if (!authTarget) return new Error(`No auth target`)
+									const otc = getState(oneTimeCodeInputAtom)
+									const response = await trpcClient.verifyAccountAction.mutate({
+										oneTimeCode: otc,
+										userKey: authTarget,
+									})
+									setState(authAtom, response)
+									setState(accountEditingAtom, [
+										`email`,
+										`otcLogin`,
+										`otcVerify`,
+									])
+									return authTarget
+								}
+								case `passwordLogin`:
+									return new Error(`not implemented`)
 							}
+							break
+
+						case 3: {
+							const authTarget = getState(authTargetAtom)
+							if (!authTarget) return new Error(`No auth target`)
+							const otcNew = getState(oneTimeCodeNewEmailInputAtom)
+							const response = await trpcClient.verifyAccountAction.mutate({
+								oneTimeCode: otcNew,
+								userKey: authTarget,
+							})
+							setState(authAtom, response)
+							setState(accountEditingAtom, [])
+							return response.email
 						}
 					}
-					return new Error(`field not email`)
 				}}
 			/>
 
@@ -115,7 +159,7 @@ export function Account(): React.ReactNode {
 					e.preventDefault()
 				}}
 			>
-				{isEditing === `password` ? (
+				{isEditing === `new-password` ? (
 					<button
 						type="button"
 						onClick={() => {
@@ -140,7 +184,7 @@ export function Account(): React.ReactNode {
 							ref={passwordRef}
 							type="password"
 							placeholder={
-								isEditing === `password`
+								isEditing === `new-password`
 									? ``
 									: auth.password
 										? `••••••••••••`
@@ -155,10 +199,10 @@ export function Account(): React.ReactNode {
 							style={setCssVars({
 								"--energy-color": auth.password ? `green` : undefined,
 							})}
-							disabled={isEditing !== `password`}
+							disabled={isEditing !== `new-password`}
 						/>
 					</label>
-					{isEditing === `password` ? (
+					{isEditing === `new-password` ? (
 						<label htmlFor="password">
 							{password1 && password1Issues ? (
 								<aside>
@@ -172,7 +216,7 @@ export function Account(): React.ReactNode {
 								id="password1"
 								type="password"
 								placeholder={
-									isEditing === `password`
+									isEditing === `new-password`
 										? ``
 										: auth.password
 											? `••••••••••••`
@@ -187,18 +231,18 @@ export function Account(): React.ReactNode {
 								style={setCssVars({
 									"--energy-color": auth.password ? `green` : undefined,
 								})}
-								disabled={isEditing !== `password`}
+								disabled={isEditing !== `new-password`}
 							/>
 						</label>
 					) : null}
 				</main>
-				{isEditing === `password` ? (
+				{isEditing === `new-password` ? (
 					<button type="submit">{`->`}</button>
 				) : auth.password ? (
 					<button
 						type="button"
 						onClick={() => {
-							setEditing(`password`)
+							setEditing(`new-password`)
 						}}
 					>
 						/
@@ -207,7 +251,7 @@ export function Account(): React.ReactNode {
 					<button
 						type="button"
 						onClick={() => {
-							setEditing(`password`)
+							setEditing(`new-password`)
 						}}
 					>
 						{`+ add password`}

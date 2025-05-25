@@ -1,8 +1,10 @@
 import type { WritableToken } from "atom.io"
-import { atom, getState, setState } from "atom.io"
+import { atom, getState, selector, selectorFamily, setState } from "atom.io"
 import * as React from "react"
 import type { Tree, TreePath } from "treetrunks"
 import { optional, required } from "treetrunks"
+
+import { authAtom, emailInputAtom } from "../../services/socket-auth-service"
 
 export const buttonBlockActiveAtom = atom<boolean>({
 	key: `buttonBlockActive`,
@@ -12,15 +14,21 @@ export const buttonBlockActiveAtom = atom<boolean>({
 export const ACCOUNT_EDITING_STATES = optional({
 	username: null,
 	email: optional({
-		"one-time code to confirm email": null,
+		otcLogin: optional({
+			otcVerify: null,
+		}),
+		passwordLogin: optional({
+			otcVerify: null,
+		}),
 	}),
-	password: required({
-		"one-time code to reset password": null,
+	"new-password": optional({
+		otcVerify: null,
 	}),
 }) satisfies Tree
 export type AccountEditingState = TreePath<typeof ACCOUNT_EDITING_STATES>
 
-export type AccountString = `email` | `password` | `username`
+export type AccountString = `email` | `new-password` | `username`
+export type AccountConfirmationField = `otpLogin` | `otpVerify` | `passwordLogin`
 export const accountEditingAtom = atom<AccountEditingState>({
 	key: `editing`,
 	default: [],
@@ -32,7 +40,7 @@ export const accountEditingAtom = atom<AccountEditingState>({
 						getState(emailInputElementAtom)?.focus()
 						break
 					}
-					case `password`: {
+					case `new-password`: {
 						getState(password0InputElementAtom)?.focus()
 						break
 					}
@@ -70,3 +78,20 @@ export function useElement<T extends HTMLElement>(
 	}, [token])
 	return ref as React.RefObject<T>
 }
+
+export const otpLoginFieldLabelSelector = selector<string>({
+	key: `otpLoginFieldLabel`,
+	get: ({ get }) => {
+		const auth = get(authAtom)
+		if (!auth) return ``
+		return `Code sent to ${auth.email}`
+	},
+})
+export const otpVerifyFieldLabelSelector = selector<string>({
+	key: `otpVerifyFieldLabel`,
+	get: ({ get }) => {
+		const email = get(emailInputAtom)
+		if (!email) return ``
+		return `Code sent to ${email}`
+	},
+})

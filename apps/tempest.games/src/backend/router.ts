@@ -26,6 +26,7 @@ import type { Context } from "./trpc-server"
 import { trpc } from "./trpc-server"
 import {
 	createSession,
+	isSessionRecent,
 	sessionCreatedTimes,
 	userSessions,
 } from "./user-sessions"
@@ -65,16 +66,84 @@ export const appRouter = trpc.router({
 				"+": `delete`,
 			}),
 		)
-		.query(async ({ input, ctx }): Promise<string> => {
-			const { emailOffered } = input
-			await ctx.db.drizzle.insert(users).values({
-				emailOffered,
-				password: null,
-				createdIp: ctx.ip,
-				username: Math.random().toString(36).slice(2),
-			})
-			return encryptId(ctx.userId)
-		}),
+		.mutation(
+			async ({
+				input,
+				ctx,
+			}): Promise<{
+				nextStep: `otp_login` | `otp_verify` | `password_login`
+				userKey: string
+			}> => {
+				const { emailOffered } = input
+				const { userId, sessionKey, now } = ctx
+
+				const sessionIsRecent = isSessionRecent(sessionKey, now)
+				if (sessionIsRecent) {
+					void ctx.db.drizzle
+						.update(users)
+						.set({ emailOffered })
+						.where(eq(users.id, userId))
+						.returning()
+						.then(async ([user]) => {
+							const { emailVerified, username } = user
+							if (!emailVerified) {
+								throw new TRPCError({
+									code: `BAD_REQUEST`,
+									message: `Please verify your email address before resetting your password.`,
+								})
+							}
+							await initiateAccountAction({
+								email: emailVerified,
+								username,
+								userId,
+								action: `confirmEmail`,
+								ctx,
+							})
+						})
+						.catch((thrown) => {
+							if (Error.isError(thrown)) {
+								ctx.logger.error(thrown.message)
+							}
+						})
+					const userKey = encryptId(userId)
+
+					return {
+						nextStep: `otp_verify`,
+						userKey,
+					}
+				}
+				const user = await ctx.db.drizzle.query.users.findFirst({
+					columns: { username: true, emailVerified: true },
+					where: eq(users.id, userId),
+				})
+
+				if (!user) {
+					throw new TRPCError({
+						code: `BAD_REQUEST`,
+						message: `User not found.`,
+					})
+				}
+				const { username, emailVerified } = user
+				if (!emailVerified) {
+					throw new TRPCError({
+						code: `BAD_REQUEST`,
+						message: `Please verify your email address before resetting your password.`,
+					})
+				}
+
+				void initiateAccountAction({
+					email: emailVerified,
+					username,
+					userId,
+					action: `signIn`,
+					ctx,
+				})
+				return {
+					nextStep: `otp_login`,
+					userKey: encryptId(userId),
+				}
+			},
+		),
 
 	openSession: loggedProcedure
 		.input(credentialsType)
@@ -162,7 +231,6 @@ export const appRouter = trpc.router({
 		.input(type({ username: `string`, sessionKey: `string` }))
 		.mutation(({ ctx }) => {
 			const { sessionKey } = ctx
-			ctx.logger.info(userSessions.relations)
 			userSessions.delete(sessionKey)
 			sessionCreatedTimes.delete(sessionKey)
 		}),
@@ -468,8 +536,6 @@ export const appRouter = trpc.router({
 		),
 })
 
-// export type DeclareAuthTargetResponse =
-
 async function initiateAccountAction(arg: {
 	email: string
 	username: string
@@ -514,11 +580,12 @@ async function initiateAccountAction(arg: {
 			cost: 10,
 		})
 
-		ctx.logger.info({
-			encryptedCode,
-			accountActionCode,
-			doesMatch: await Bun.password.verify(accountActionCode, encryptedCode),
-		})
+		ctx.logger.info(`🔑 account action code:`, accountActionCode)
+		// ctx.logger.info({
+		// 	encryptedCode,
+		// 	accountActionCode,
+		// 	doesMatch: await Bun.password.verify(accountActionCode, encryptedCode),
+		// })
 
 		const expiresAt = new Date(+ctx.now + 1000 * 60 * 15)
 		await ctx.db.drizzle
