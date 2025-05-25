@@ -48,7 +48,7 @@ export function Home(): React.ReactNode {
 									break
 								}
 								case `password_login`: {
-									setCurrentlyEntering(`email`)
+									setCurrentlyEntering(`password`)
 									break
 								}
 							}
@@ -85,19 +85,6 @@ export function Home(): React.ReactNode {
 								setPassword(``)
 							})
 							break
-						}
-						default: {
-							const response = await trpcClient.openSession.mutate({
-								email,
-								password,
-							})
-							setEmail(``)
-							setPassword(``)
-							setState(authAtom, response)
-							socket.once(`connect`, () => {
-								console.log(`✨ connected`)
-								navigate(`/game`)
-							})
 						}
 					}
 				} catch (thrown) {

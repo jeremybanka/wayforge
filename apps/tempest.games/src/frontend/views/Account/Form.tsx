@@ -64,14 +64,6 @@ export function Form({
 	const currentField = editingState.at(-1)
 	const [_, ...nextSteps] = editingState
 
-	// console.log({
-	// 	editingState,
-	// 	nextSteps,
-	// 	currentField,
-	// 	label,
-	// 	input,
-	// })
-
 	return (
 		<form
 			onSubmit={async (e) => {
@@ -107,10 +99,12 @@ export function Form({
 							))}
 						</aside>
 					) : null}
-					<span>{capitalize(label)}</span>
+					<span>
+						{label === `new-password` ? `Password` : capitalize(label)}
+					</span>
 					<input
 						id={label}
-						type="text"
+						type={label === `new-password` ? `password` : `text`}
 						ref={elementRef}
 						value={input}
 						onChange={(e) => {

@@ -25,6 +25,7 @@ import type { AccountString } from "./Account/account-state"
 import {
 	accountEditingAtom,
 	emailInputElementAtom,
+	password0InputElementAtom,
 	usernameInputElementAtom,
 } from "./Account/account-state"
 import { Form } from "./Account/Form"
@@ -154,7 +155,31 @@ export function Account(): React.ReactNode {
 				}}
 			/>
 
-			<form
+			<Form
+				label="new-password"
+				inputToken={password0InputAtom}
+				issuesToken={password0IssuesSelector}
+				inputElementToken={password0InputElementAtom}
+				initialState={[`new-password`]}
+				onSubmit={async (input) => {
+					const accountEditingState = getState(accountEditingAtom)
+					if (accountEditingState[0] !== `new-password`) {
+						return new Error(`field not new-password`)
+					}
+					switch (accountEditingState.length) {
+						case 1: {
+							await trpcClient.setPassword.mutate({ password: input })
+							setState(accountEditingAtom, [])
+							return `done`
+						}
+						case 2: {
+							return new Error(`not implemented`)
+						}
+					}
+				}}
+			/>
+
+			{/* <form
 				onSubmit={(e) => {
 					e.preventDefault()
 				}}
@@ -257,7 +282,7 @@ export function Account(): React.ReactNode {
 						{`+ add password`}
 					</button>
 				)}
-			</form>
+			</form> */}
 		</article>
 	)
 }

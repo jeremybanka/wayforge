@@ -397,25 +397,12 @@ export const appRouter = trpc.router({
 				})
 			}
 
-			const passwordResetCode = genAccountActionCode()
-			const encryptedCode = await Bun.password.hash(passwordResetCode, {
-				algorithm: `bcrypt`,
-				cost: 10,
-			})
-
-			await ctx.db.drizzle.insert(accountActions).values({
-				action: `resetPassword`,
+			void initiateAccountAction({
+				email: emailVerified,
+				username,
 				userId,
-				code: encryptedCode,
-				expiresAt: new Date(+ctx.now + 1000 * 60 * 15),
-			})
-
-			void sendEmailToConfirmAccountAction({
-				to: emailVerified,
-				username: user.username,
 				action: `resetPassword`,
-				oneTimeCode: passwordResetCode,
-				baseUrl: env.FRONTEND_ORIGINS[0],
+				ctx,
 			})
 
 			return {
@@ -428,6 +415,44 @@ export const appRouter = trpc.router({
 			}
 		},
 	),
+
+	setPassword: authedProcedure
+		.input(type({ password: `string` }))
+		.mutation(async ({ input, ctx }): Promise<{ password: true }> => {
+			const { userId, sessionKey, db } = ctx
+			ctx.logger.info(`🔑 setting password for`, userId)
+
+			const user = await db.drizzle.query.users.findFirst({
+				columns: { password: true },
+				where: eq(users.id, userId),
+			})
+
+			if (!user) {
+				throw new TRPCError({
+					code: `BAD_REQUEST`,
+					message: `User not found.`,
+				})
+			}
+
+			if (user.password) {
+				throw new TRPCError({
+					code: `BAD_REQUEST`,
+					message: `Reset your password before setting a new one.`,
+				})
+			}
+
+			const password = await Bun.password.hash(input.password, {
+				algorithm: `bcrypt`,
+				cost: 10,
+			})
+
+			await ctx.db.drizzle
+				.update(users)
+				.set({ password })
+				.where(eq(users.id, userId))
+
+			return { password: true }
+		}),
 
 	isUsernameTaken: loggedProcedure
 		.input(type({ username: `string` }))
