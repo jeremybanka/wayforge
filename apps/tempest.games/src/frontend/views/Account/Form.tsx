@@ -7,7 +7,7 @@ import * as React from "react"
 import {
 	oneTimeCodeInputAtom,
 	oneTimeCodeNewEmailInputAtom,
-	password0InputAtom,
+	passwordInputAtom,
 } from "../../services/socket-auth-service"
 import type { AccountEditingState, AccountString } from "./account-state"
 import {
@@ -45,8 +45,8 @@ export function Form({
 	const otcEmailNew = useO(oneTimeCodeNewEmailInputAtom)
 	const setOtcEmailNew = useI(oneTimeCodeNewEmailInputAtom)
 
-	const password0 = useO(password0InputAtom)
-	const setPassword0 = useI(password0InputAtom)
+	const password0 = useO(passwordInputAtom)
+	const setPassword0 = useI(passwordInputAtom)
 
 	const buttonBlockActive = useO(buttonBlockActiveAtom)
 	const setButtonBlockActive = useI(buttonBlockActiveAtom)

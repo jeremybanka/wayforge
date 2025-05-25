@@ -3,7 +3,6 @@ import { useI, useO } from "atom.io/react"
 import { onMount } from "atom.io/realtime-react"
 import React from "react"
 
-import { setCssVars } from "../../library/set-css-vars"
 import {
 	authAtom,
 	authTargetAtom,
@@ -12,16 +11,13 @@ import {
 	isUsernameTakenQuerySelector,
 	oneTimeCodeInputAtom,
 	oneTimeCodeNewEmailInputAtom,
-	password0InputAtom,
-	password0IssuesSelector,
-	password1InputAtom,
-	password1IssuesSelector,
+	passwordInputAtom,
+	passwordIssuesSelector,
 	socket,
 	usernameInputAtom,
 	usernameIssuesSelector,
 } from "../services/socket-auth-service"
 import { trpcClient } from "../services/trpc-client-service"
-import type { AccountString } from "./Account/account-state"
 import {
 	accountEditingAtom,
 	emailInputElementAtom,
@@ -31,22 +27,16 @@ import {
 import { Form } from "./Account/Form"
 
 export function Account(): React.ReactNode {
-	const setPassword0 = useI(password0InputAtom)
-	const setPassword1 = useI(password1InputAtom)
 	const setEmail = useI(emailInputAtom)
+	const setPassword = useI(passwordInputAtom)
 
 	const auth = useO(authAtom)
-	const password0 = useO(password0InputAtom)
-	const password1 = useO(password1InputAtom)
-	const password0Issues = useO(password0IssuesSelector)
-	const password1Issues = useO(password1IssuesSelector)
 
-	const [isEditing, setEditing] = React.useState<AccountString | null>(null)
 	const usernameIsTaken = useO(isUsernameTakenQuerySelector)
-	const passwordRef = React.useRef<HTMLInputElement>(null)
 
 	onMount(() => {
 		if (auth) setEmail(auth.email)
+		if (auth?.password) setPassword(`••••••••••••`)
 	})
 
 	if (!auth) {
@@ -157,8 +147,8 @@ export function Account(): React.ReactNode {
 
 			<Form
 				label="new-password"
-				inputToken={password0InputAtom}
-				issuesToken={password0IssuesSelector}
+				inputToken={passwordInputAtom}
+				issuesToken={passwordIssuesSelector}
 				inputElementToken={password0InputElementAtom}
 				initialState={[`new-password`]}
 				onSubmit={async (input) => {
@@ -178,111 +168,6 @@ export function Account(): React.ReactNode {
 					}
 				}}
 			/>
-
-			{/* <form
-				onSubmit={(e) => {
-					e.preventDefault()
-				}}
-			>
-				{isEditing === `new-password` ? (
-					<button
-						type="button"
-						onClick={() => {
-							setEditing(null)
-						}}
-					>
-						x
-					</button>
-				) : null}
-				<main>
-					<label htmlFor="password">
-						{password0 && password0Issues ? (
-							<aside>
-								{password0Issues.map((issue) => (
-									<span key={issue.path.join(`.`)}>{issue.message}</span>
-								))}
-							</aside>
-						) : null}
-						<span>Password</span>
-						<input
-							id="password0"
-							ref={passwordRef}
-							type="password"
-							placeholder={
-								isEditing === `new-password`
-									? ``
-									: auth.password
-										? `••••••••••••`
-										: `none`
-							}
-							value={password0}
-							onChange={(e) => {
-								setPassword0(e.target.value)
-							}}
-							autoComplete="new-password"
-							autoCapitalize="none"
-							style={setCssVars({
-								"--energy-color": auth.password ? `green` : undefined,
-							})}
-							disabled={isEditing !== `new-password`}
-						/>
-					</label>
-					{isEditing === `new-password` ? (
-						<label htmlFor="password">
-							{password1 && password1Issues ? (
-								<aside>
-									{password1Issues.map((issue) => (
-										<span key={issue.path.join(`.`)}>{issue.message}</span>
-									))}
-								</aside>
-							) : null}
-							<span>Confirm Password</span>
-							<input
-								id="password1"
-								type="password"
-								placeholder={
-									isEditing === `new-password`
-										? ``
-										: auth.password
-											? `••••••••••••`
-											: `none`
-								}
-								value={password1}
-								onChange={(e) => {
-									setPassword1(e.target.value)
-								}}
-								autoComplete="new-password"
-								autoCapitalize="none"
-								style={setCssVars({
-									"--energy-color": auth.password ? `green` : undefined,
-								})}
-								disabled={isEditing !== `new-password`}
-							/>
-						</label>
-					) : null}
-				</main>
-				{isEditing === `new-password` ? (
-					<button type="submit">{`->`}</button>
-				) : auth.password ? (
-					<button
-						type="button"
-						onClick={() => {
-							setEditing(`new-password`)
-						}}
-					>
-						/
-					</button>
-				) : (
-					<button
-						type="button"
-						onClick={() => {
-							setEditing(`new-password`)
-						}}
-					>
-						{`+ add password`}
-					</button>
-				)}
-			</form> */}
 		</article>
 	)
 }

@@ -10,17 +10,17 @@ import {
 	authTargetAtom,
 	emailInputAtom,
 	oneTimeCodeInputAtom,
-	password0InputAtom,
+	passwordInputAtom,
 	socket,
 } from "../services/socket-auth-service"
 import { trpcClient } from "../services/trpc-client-service"
 
 export function Home(): React.ReactNode {
 	const setEmail = useI(emailInputAtom)
-	const setPassword = useI(password0InputAtom)
+	const setPassword = useI(passwordInputAtom)
 	const setOneTimeCode = useI(oneTimeCodeInputAtom)
 	const email = useO(emailInputAtom)
-	const password = useO(password0InputAtom)
+	const password = useO(passwordInputAtom)
 	const oneTimeCode = useO(oneTimeCodeInputAtom)
 
 	const [error, setError] = React.useState<string | null>(null)

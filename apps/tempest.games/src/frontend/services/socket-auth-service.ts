@@ -139,31 +139,15 @@ export const usernameIssuesSelector = selector<ArkErrors | null>({
 		return null
 	},
 })
-export const password0InputAtom = atom<string>({
+export const passwordInputAtom = atom<string>({
 	key: `password0`,
 	default: ``,
 })
-export const password0IssuesSelector = selector<ArkErrors | null>({
+export const passwordIssuesSelector = selector<ArkErrors | null>({
 	key: `password0Issues`,
 	get: ({ get }) => {
-		const password0 = get(password0InputAtom)
+		const password0 = get(passwordInputAtom)
 		const parsed = passwordType(password0)
-		if (parsed instanceof type.errors) {
-			return parsed
-		}
-		return null
-	},
-})
-export const password1InputAtom = atom<string>({
-	key: `password1`,
-	default: ``,
-})
-export const password1IssuesSelector = selector<ArkErrors | null>({
-	key: `password1Issues`,
-	get: ({ get }) => {
-		const password0 = get(password0InputAtom)
-		const password1 = get(password1InputAtom)
-		const parsed = type(`"${password0}"`)(password1)
 		if (parsed instanceof type.errors) {
 			return parsed
 		}
@@ -189,10 +173,9 @@ export const signUpReadySelector = selector<boolean>({
 	key: `signupReady`,
 	get: ({ get }) => {
 		const usernameIssues = get(usernameIssuesSelector)
-		const password0Issues = get(password0IssuesSelector)
-		const password1Issues = get(password1IssuesSelector)
+		const password0Issues = get(passwordIssuesSelector)
 		const emailIssues = get(emailIssuesSelector)
-		return !(usernameIssues ?? password0Issues ?? password1Issues ?? emailIssues)
+		return !(usernameIssues ?? password0Issues ?? emailIssues)
 	},
 })
 

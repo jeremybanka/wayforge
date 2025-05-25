@@ -419,7 +419,7 @@ export const appRouter = trpc.router({
 	setPassword: authedProcedure
 		.input(type({ password: `string` }))
 		.mutation(async ({ input, ctx }): Promise<{ password: true }> => {
-			const { userId, sessionKey, db } = ctx
+			const { userId, db } = ctx
 			ctx.logger.info(`🔑 setting password for`, userId)
 
 			const user = await db.drizzle.query.users.findFirst({
