@@ -100,7 +100,7 @@
 		"eslint": "9.27.0",
 		"happy-dom": "17.4.7",
 		"http-proxy": "1.18.1",
-		"motion": "12.12.2",
+		"motion": "12.14.0",
 		"npmlog": "7.0.1",
 		"nyc": "17.1.0",
 		"postgres": "3.4.7",
