@@ -148,15 +148,11 @@ export function Home(): React.ReactNode {
 					type="submit"
 					disabled={
 						(!email && currentlyEntering === `email`) ||
-						(!password && currentlyEntering === `password`)
+						(!password && currentlyEntering === `password`) ||
+						(!oneTimeCode && currentlyEntering === `otp`)
 					}
 				>{`>>->`}</button>
 			</main>
-			{/* <footer>
-				<Anchor href="/sign_up">
-					New here? <u>Sign up</u> for an account.
-				</Anchor>
-			</footer> */}
 		</form>
 	)
 }
