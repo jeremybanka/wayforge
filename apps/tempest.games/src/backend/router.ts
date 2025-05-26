@@ -20,7 +20,7 @@ import { env } from "../library/env"
 import { simpleFormatMs } from "../library/simple-format-ms"
 import { genAccountActionCode } from "./account-actions"
 import { sendEmailToConfirmAccountAction } from "./email"
-import { authedProcedure, loggedProcedure } from "./procedures"
+import { loggedProcedure, userSessionProcedure } from "./procedures"
 import { decryptId, encryptId } from "./secrecy"
 import type { Context } from "./trpc-server"
 import { trpc } from "./trpc-server"
@@ -59,7 +59,7 @@ export const appRouter = trpc.router({
 		return versionData
 	}),
 
-	offerNewEmail: authedProcedure
+	offerNewEmail: userSessionProcedure
 		.input(
 			type({
 				emailOffered: `string.email`,
@@ -227,7 +227,7 @@ export const appRouter = trpc.router({
 			}
 		}),
 
-	closeSession: authedProcedure
+	closeSession: userSessionProcedure
 		.input(type({ username: `string`, sessionKey: `string` }))
 		.mutation(({ ctx }) => {
 			const { sessionKey } = ctx
@@ -358,7 +358,7 @@ export const appRouter = trpc.router({
 			}
 		}),
 
-	startPasswordReset: authedProcedure.mutation(
+	startPasswordReset: userSessionProcedure.mutation(
 		async ({ ctx }): Promise<ClientAuthData> => {
 			const { userId, sessionKey, db } = ctx
 			ctx.logger.info(`🔑 starting password reset for`, userId)
@@ -416,7 +416,7 @@ export const appRouter = trpc.router({
 		},
 	),
 
-	setPassword: authedProcedure
+	setPassword: userSessionProcedure
 		.input(type({ password: `string` }))
 		.mutation(async ({ input, ctx }): Promise<{ password: true }> => {
 			const { userId, db } = ctx

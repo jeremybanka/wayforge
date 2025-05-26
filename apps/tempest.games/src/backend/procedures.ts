@@ -1,5 +1,7 @@
 import { TRPCError } from "@trpc/server"
+import { eq } from "drizzle-orm"
 
+import { users } from "../database/tempest-db-schema"
 import type { ContextAuth } from "./trpc-server"
 import { trpc } from "./trpc-server"
 import { userSessions } from "./user-sessions"
@@ -18,7 +20,7 @@ export const loggedProcedure = trpc.procedure.use(async (opts) => {
 	return result
 })
 
-export const authedProcedure = loggedProcedure.use(async (opts) => {
+export const userSessionProcedure = loggedProcedure.use((opts) => {
 	const { authorization } = opts.ctx.req.headers
 	let auth: ContextAuth | null = null
 	if (authorization) {
@@ -36,4 +38,24 @@ export const authedProcedure = loggedProcedure.use(async (opts) => {
 	return opts.next({
 		ctx: auth,
 	})
+})
+
+export const verifiedUserProcedure = userSessionProcedure.use(async (opts) => {
+	const user = await opts.ctx.db.drizzle.query.users.findFirst({
+		where: eq(users.id, opts.ctx.userId),
+	})
+	if (!user) {
+		userSessions.delete(opts.ctx.sessionKey)
+		throw new TRPCError({
+			code: `FORBIDDEN`,
+			message: `You must be logged in to perform this action.`,
+		})
+	}
+	if (!user.emailVerified) {
+		throw new TRPCError({
+			code: `FORBIDDEN`,
+			message: `You must be logged in to perform this action.`,
+		})
+	}
+	return opts.next({ ctx: { user } })
 })
