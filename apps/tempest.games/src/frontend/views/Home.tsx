@@ -1,5 +1,5 @@
 import { TRPCClientError } from "@trpc/client"
-import { setState } from "atom.io"
+import { getState, setState } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import { motion } from "motion/react"
 import * as React from "react"
@@ -7,61 +7,62 @@ import * as React from "react"
 import { navigate } from "../services/router-service"
 import {
 	authAtom,
+	authTargetAtom,
 	emailInputAtom,
 	oneTimeCodeInputAtom,
-	password0InputAtom,
+	passwordInputAtom,
 	socket,
 } from "../services/socket-auth-service"
 import { trpcClient } from "../services/trpc-client-service"
 
 export function Home(): React.ReactNode {
 	const setEmail = useI(emailInputAtom)
-	const setPassword = useI(password0InputAtom)
+	const setPassword = useI(passwordInputAtom)
 	const setOneTimeCode = useI(oneTimeCodeInputAtom)
 	const email = useO(emailInputAtom)
-	const password = useO(password0InputAtom)
+	const password = useO(passwordInputAtom)
 	const oneTimeCode = useO(oneTimeCodeInputAtom)
 
 	const [error, setError] = React.useState<string | null>(null)
-	const [userKey, setUserKey] = React.useState<string | null>(null)
 	const [currentlyEntering, setCurrentlyEntering] = React.useState<
-		`email` | `otp` | `password`
+		`email` | `otc` | `password`
 	>(`email`)
 
 	return (
 		<form
 			onSubmit={async (e) => {
 				e.preventDefault()
+				const currentAuthTarget = getState(authTargetAtom)
 				try {
 					switch (currentlyEntering) {
 						case `email`: {
-							const { nextStep, userKey: newUserKey } =
+							const { nextStep, userKey: newAuthTarget } =
 								await trpcClient.declareAuthTarget.query({
 									email,
 								})
-							setUserKey(newUserKey)
+							setState(authTargetAtom, newAuthTarget)
 							switch (nextStep) {
-								case `otp_login`:
-								case `otp_verify`: {
-									setCurrentlyEntering(`otp`)
+								case `otc_login`:
+								case `otc_verify`: {
+									setCurrentlyEntering(`otc`)
 									break
 								}
 								case `password_login`: {
-									setCurrentlyEntering(`email`)
+									setCurrentlyEntering(`password`)
 									break
 								}
 							}
 							break
 						}
-						case `otp`: {
-							if (!userKey) {
+						case `otc`: {
+							if (!currentAuthTarget) {
 								console.error(`somehow userKey is null`)
 								return
 							}
 							const actionResponse = await trpcClient.verifyAccountAction.mutate(
 								{
 									oneTimeCode,
-									userKey,
+									userKey: currentAuthTarget,
 								},
 							)
 							setState(authAtom, actionResponse)
@@ -84,19 +85,6 @@ export function Home(): React.ReactNode {
 								setPassword(``)
 							})
 							break
-						}
-						default: {
-							const response = await trpcClient.openSession.mutate({
-								email,
-								password,
-							})
-							setEmail(``)
-							setPassword(``)
-							setState(authAtom, response)
-							socket.once(`connect`, () => {
-								console.log(`✨ connected`)
-								navigate(`/game`)
-							})
 						}
 					}
 				} catch (thrown) {
@@ -139,12 +127,12 @@ export function Home(): React.ReactNode {
 						/>
 					</label>
 				) : null}
-				{currentlyEntering === `otp` ? (
-					<label htmlFor="otp">
+				{currentlyEntering === `otc` ? (
+					<label htmlFor="otc">
 						<span>One-time Code</span>
 						<input
-							id="otp"
-							type="otp"
+							id="otc"
+							type="otc"
 							value={oneTimeCode}
 							onChange={(e) => {
 								setOneTimeCode(e.target.value)
@@ -152,23 +140,33 @@ export function Home(): React.ReactNode {
 							autoComplete="one-time-code"
 							autoCapitalize="none"
 							// biome-ignore lint/a11y/noAutofocus: this is really the best place to focus
-							autoFocus={currentlyEntering === `otp`}
+							autoFocus={currentlyEntering === `otc`}
 						/>
 					</label>
 				) : null}
-				<button
-					type="submit"
-					disabled={
-						(!email && currentlyEntering === `email`) ||
-						(!password && currentlyEntering === `password`)
-					}
-				>{`>>->`}</button>
+				<footer>
+					{currentlyEntering === `password` ? (
+						<button
+							type="button"
+							onClick={async () => {
+								const userKey = getState(authTargetAtom)
+								if (!userKey) return new Error(`No userKey`)
+								await trpcClient.startPasswordReset.mutate({ userKey })
+								setCurrentlyEntering(`otc`)
+							}}
+						>{`Forgot Password?`}</button>
+					) : null}
+					<span />
+					<button
+						type="submit"
+						disabled={
+							(!email && currentlyEntering === `email`) ||
+							(!password && currentlyEntering === `password`) ||
+							(!oneTimeCode && currentlyEntering === `otc`)
+						}
+					>{`>>->`}</button>
+				</footer>
 			</main>
-			{/* <footer>
-				<Anchor href="/sign_up">
-					New here? <u>Sign up</u> for an account.
-				</Anchor>
-			</footer> */}
 		</form>
 	)
 }

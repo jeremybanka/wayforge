@@ -1,5 +1,6 @@
 import {
 	Body,
+	CodeBlock,
 	Container,
 	Head,
 	Heading,
@@ -23,7 +24,7 @@ interface ConfirmEmailProps {
 	baseUrl?: string
 }
 
-function CompleteAccountAction({
+function ConfirmAccountAction({
 	subject,
 	summary,
 	oneTimeCode,
@@ -67,7 +68,12 @@ function CompleteAccountAction({
 					<Text style={heroText}>{summary}</Text>
 
 					<Section style={codeBox}>
-						<Text style={confirmationCodeText}>{oneTimeCode}</Text>
+						<CodeBlock
+							style={confirmationCodeText}
+							code={oneTimeCode}
+							language="properties"
+							theme={{}}
+						/>
 					</Section>
 
 					<Text style={heroText}>
@@ -98,14 +104,14 @@ function CompleteAccountAction({
 	)
 }
 
-CompleteAccountAction.PreviewProps = {
+ConfirmAccountAction.PreviewProps = {
 	subject: `Welcome`,
 	summary: `Your one-time code is: 1234567890`,
 	oneTimeCode: genAccountActionCode(),
 	baseUrl: `https://tempest.games`,
 }
 
-export default CompleteAccountAction
+export default ConfirmAccountAction
 
 const footerText = {
 	fontSize: `12px`,
@@ -175,6 +181,7 @@ const confirmationCodeText = {
 	fontSize: `30px`,
 	textAlign: `center` as const,
 	verticalAlign: `middle`,
+	font: `monospace`,
 }
 
 const text = {
