@@ -66,12 +66,7 @@ export const appRouter = trpc.router({
 	}),
 
 	offerNewEmail: userSessionProcedure
-		.input(
-			type({
-				emailOffered: `string.email`,
-				"+": `delete`,
-			}),
-		)
+		.input(type({ emailOffered: `string.email`, "+": `delete` }))
 		.mutation(async ({ input, ctx }): Promise<AuthTriageResponse> => {
 			const { emailOffered } = input
 			const { userId, sessionKey, now } = ctx
@@ -360,19 +355,20 @@ export const appRouter = trpc.router({
 			}
 		}),
 
-	startPasswordReset: userSessionProcedure.mutation(
-		async ({ ctx }): Promise<{ userKey: string }> => {
-			const { userId, sessionKey, db } = ctx
+	startPasswordReset: loggedProcedure
+		.input(type({ userKey: `string`, "+": `delete` }))
+		.mutation(async ({ input, ctx }): Promise<{ userKey: string }> => {
+			const { userKey } = input
+			const { db } = ctx
+			const userId = decryptId(userKey)
 			ctx.logger.info(`🔑 starting password reset for`, userId)
 			const user = await db.drizzle.query.users.findFirst({
 				columns: { emailVerified: true, username: true },
 				where: eq(users.id, userId),
 			})
 			if (!user) {
-				throw new TRPCError({
-					code: `BAD_REQUEST`,
-					message: `User not found.`,
-				})
+				ctx.logger.error(`🔑 no user with userId:`, userId)
+				return { userKey }
 			}
 			const { emailVerified, username } = user
 			if (!emailVerified) {
@@ -401,11 +397,8 @@ export const appRouter = trpc.router({
 				ctx,
 			})
 
-			const userKey = encryptId(userId)
-
 			return { userKey }
-		},
-	),
+		}),
 
 	setPassword: userSessionProcedure
 		.input(type({ password: `string` }))

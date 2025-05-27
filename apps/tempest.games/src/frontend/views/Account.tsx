@@ -185,8 +185,9 @@ export function Account(): React.ReactNode {
 				}}
 				onOpen={async () => {
 					if (auth.password) {
-						const { userKey } = await trpcClient.startPasswordReset.mutate()
-						setState(authTargetAtom, userKey)
+						const userKey = getState(authTargetAtom)
+						if (!userKey) return new Error(`No userKey`)
+						await trpcClient.startPasswordReset.mutate({ userKey })
 					}
 				}}
 			/>
