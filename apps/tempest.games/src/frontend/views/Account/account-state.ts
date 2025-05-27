@@ -28,7 +28,7 @@ export const ACCOUNT_EDITING_STATES = optional({
 export type AccountEditingState = TreePath<typeof ACCOUNT_EDITING_STATES>
 
 export type AccountString = `email` | `new-password` | `username`
-export type AccountConfirmationField = `otpLogin` | `otpVerify` | `passwordLogin`
+export type AccountConfirmationField = `otcLogin` | `otcVerify` | `passwordLogin`
 export const accountEditingAtom = atom<AccountEditingState>({
 	key: `editing`,
 	default: [],
@@ -79,16 +79,16 @@ export function useElement<T extends HTMLElement>(
 	return ref as React.RefObject<T>
 }
 
-export const otpLoginFieldLabelSelector = selector<string>({
-	key: `otpLoginFieldLabel`,
+export const otcLoginFieldLabelSelector = selector<string>({
+	key: `otcLoginFieldLabel`,
 	get: ({ get }) => {
 		const auth = get(authAtom)
 		if (!auth) return ``
 		return `Code sent to ${auth.email}`
 	},
 })
-export const otpVerifyFieldLabelSelector = selector<string>({
-	key: `otpVerifyFieldLabel`,
+export const otcVerifyFieldLabelSelector = selector<string>({
+	key: `otcVerifyFieldLabel`,
 	get: ({ get }) => {
 		const email = get(emailInputAtom)
 		if (!email) return ``

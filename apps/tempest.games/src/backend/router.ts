@@ -35,7 +35,13 @@ interface VerifyAccountActionResponse extends ClientAuthData {
 	action: AccountActionTypeActual
 }
 
+type AuthTriageResponse = {
+	nextStep: `otc_login` | `otc_verify` | `password_login`
+	userKey: string
+}
+
 export type AppRouter = typeof appRouter
+
 export const appRouter = trpc.router({
 	version: loggedProcedure.query(async () => {
 		const relative = env.RUN_WORKERS_FROM_SOURCE ? `../..` : `..`
@@ -66,84 +72,76 @@ export const appRouter = trpc.router({
 				"+": `delete`,
 			}),
 		)
-		.mutation(
-			async ({
-				input,
-				ctx,
-			}): Promise<{
-				nextStep: `otp_login` | `otp_verify` | `password_login`
-				userKey: string
-			}> => {
-				const { emailOffered } = input
-				const { userId, sessionKey, now } = ctx
+		.mutation(async ({ input, ctx }): Promise<AuthTriageResponse> => {
+			const { emailOffered } = input
+			const { userId, sessionKey, now } = ctx
 
-				const sessionIsRecent = isSessionRecent(sessionKey, now)
-				if (sessionIsRecent) {
-					void ctx.db.drizzle
-						.update(users)
-						.set({ emailOffered })
-						.where(eq(users.id, userId))
-						.returning()
-						.then(async ([user]) => {
-							const { emailVerified, username } = user
-							if (!emailVerified) {
-								throw new TRPCError({
-									code: `BAD_REQUEST`,
-									message: `Please verify your email address before resetting your password.`,
-								})
-							}
-							await initiateAccountAction({
-								email: emailVerified,
-								username,
-								userId,
-								action: `confirmEmail`,
-								ctx,
+			const sessionIsRecent = isSessionRecent(sessionKey, now)
+			if (sessionIsRecent) {
+				void ctx.db.drizzle
+					.update(users)
+					.set({ emailOffered })
+					.where(eq(users.id, userId))
+					.returning()
+					.then(async ([user]) => {
+						const { emailVerified, username } = user
+						if (!emailVerified) {
+							throw new TRPCError({
+								code: `BAD_REQUEST`,
+								message: `Please verify your email address before resetting your password.`,
 							})
+						}
+						await initiateAccountAction({
+							email: emailVerified,
+							username,
+							userId,
+							action: `confirmEmail`,
+							ctx,
 						})
-						.catch((thrown) => {
-							if (Error.isError(thrown)) {
-								ctx.logger.error(thrown.message)
-							}
-						})
-					const userKey = encryptId(userId)
-
-					return {
-						nextStep: `otp_verify`,
-						userKey,
-					}
-				}
-				const user = await ctx.db.drizzle.query.users.findFirst({
-					columns: { username: true, emailVerified: true },
-					where: eq(users.id, userId),
-				})
-
-				if (!user) {
-					throw new TRPCError({
-						code: `BAD_REQUEST`,
-						message: `User not found.`,
 					})
-				}
-				const { username, emailVerified } = user
-				if (!emailVerified) {
-					throw new TRPCError({
-						code: `BAD_REQUEST`,
-						message: `Please verify your email address before resetting your password.`,
+					.catch((thrown) => {
+						if (Error.isError(thrown)) {
+							ctx.logger.error(thrown.message)
+						}
 					})
-				}
+				const userKey = encryptId(userId)
 
-				void initiateAccountAction({
-					email: emailVerified,
-					username,
-					userId,
-					action: `signIn`,
-					ctx,
-				})
 				return {
-					nextStep: `otp_login`,
-					userKey: encryptId(userId),
+					nextStep: `otc_verify`,
+					userKey,
 				}
-			},
-		),
+			}
+			const user = await ctx.db.drizzle.query.users.findFirst({
+				columns: { username: true, emailVerified: true },
+				where: eq(users.id, userId),
+			})
+
+			if (!user) {
+				throw new TRPCError({
+					code: `BAD_REQUEST`,
+					message: `User not found.`,
+				})
+			}
+			const { username, emailVerified } = user
+			if (!emailVerified) {
+				throw new TRPCError({
+					code: `BAD_REQUEST`,
+					message: `Please verify your email address before resetting your password.`,
+				})
+			}
+
+			void initiateAccountAction({
+				email: emailVerified,
+				username,
+				userId,
+				action: `signIn`,
+				ctx,
+			})
+			return {
+				nextStep: `otc_login`,
+				userKey: encryptId(userId),
+			}
+		}),
 
 	openSession: loggedProcedure
 		.input(credentialsType)
@@ -467,98 +465,85 @@ export const appRouter = trpc.router({
 
 	declareAuthTarget: loggedProcedure
 		.input(type({ email: `string`, "+": `delete` }))
-		.query(
-			async ({
-				input,
-				ctx,
-			}): Promise<{
-				nextStep: `otp_login` | `otp_verify` | `password_login`
-				userKey: string
-			}> => {
-				const { email } = input
-				ctx.logger.info(`🔑 authStage1:`, email)
-				const maybeVerifiedUser = await ctx.db.drizzle.query.users.findFirst({
-					columns: { id: true, password: true, username: true },
-					where: eq(users.emailVerified, email),
+		.query(async ({ input, ctx }): Promise<AuthTriageResponse> => {
+			const { email } = input
+			ctx.logger.info(`🔑 authStage1:`, email)
+			const maybeVerifiedUser = await ctx.db.drizzle.query.users.findFirst({
+				columns: { id: true, password: true, username: true },
+				where: eq(users.emailVerified, email),
+			})
+			if (!maybeVerifiedUser) {
+				ctx.logger.info(`🔑 no verified account with email:`, email)
+				const maybeUnverifiedUser = await ctx.db.drizzle.query.users.findFirst({
+					columns: { id: true, username: true },
+					where: and(eq(users.emailOffered, email), isNull(users.emailVerified)),
 				})
-				if (!maybeVerifiedUser) {
-					ctx.logger.info(`🔑 no verified account with email:`, email)
-					const maybeUnverifiedUser = await ctx.db.drizzle.query.users.findFirst(
-						{
-							columns: { id: true, username: true },
-							where: and(
-								eq(users.emailOffered, email),
-								isNull(users.emailVerified),
-							),
-						},
-					)
-					if (!maybeUnverifiedUser) {
-						ctx.logger.info(`🔑 no account with email:`, email)
-						const [newUser] = await ctx.db.drizzle
-							.insert(users)
-							.values({
-								emailOffered: email,
-								password: null,
-								createdIp: ctx.ip,
-								username: Math.random().toString(36).slice(2),
-							})
-							.returning()
-						ctx.logger.info(`🔑 user created:`, email)
-						const newUserKey = encryptId(newUser.id)
-						await initiateAccountAction({
-							email,
-							username: newUser.username,
-							userId: newUser.id,
-							action: `confirmEmail`,
-							ctx,
+				if (!maybeUnverifiedUser) {
+					ctx.logger.info(`🔑 no account with email:`, email)
+					const [newUser] = await ctx.db.drizzle
+						.insert(users)
+						.values({
+							emailOffered: email,
+							password: null,
+							createdIp: ctx.ip,
+							username: Math.random().toString(36).slice(2),
 						})
-						return {
-							nextStep: `otp_verify`,
-							userKey: newUserKey,
-						}
-					}
-					const unverifiedUser = maybeUnverifiedUser
-					const unverifiedUserKey = encryptId(unverifiedUser.id)
+						.returning()
+					ctx.logger.info(`🔑 user created:`, email)
+					const newUserKey = encryptId(newUser.id)
 					await initiateAccountAction({
 						email,
-						username: unverifiedUser.username,
-						userId: unverifiedUser.id,
+						username: newUser.username,
+						userId: newUser.id,
 						action: `confirmEmail`,
 						ctx,
 					})
+					return {
+						nextStep: `otc_verify`,
+						userKey: newUserKey,
+					}
+				}
+				const unverifiedUser = maybeUnverifiedUser
+				const unverifiedUserKey = encryptId(unverifiedUser.id)
+				await initiateAccountAction({
+					email,
+					username: unverifiedUser.username,
+					userId: unverifiedUser.id,
+					action: `confirmEmail`,
+					ctx,
+				})
 
-					return {
-						nextStep: `otp_verify`,
-						userKey: unverifiedUserKey,
-					}
-				}
-				const verifiedUser = maybeVerifiedUser
-				const verifiedUserKey = encryptId(verifiedUser.id)
-				const { password } = verifiedUser
-				if (!password) {
-					ctx.logger.info(
-						`🔑 account with email:`,
-						email,
-						`is verified but has no password`,
-					)
-					await initiateAccountAction({
-						email,
-						username: verifiedUser.username,
-						userId: verifiedUser.id,
-						action: `signIn`,
-						ctx,
-					})
-					return {
-						nextStep: `otp_login`,
-						userKey: verifiedUserKey,
-					}
-				}
 				return {
-					nextStep: `password_login`,
+					nextStep: `otc_verify`,
+					userKey: unverifiedUserKey,
+				}
+			}
+			const verifiedUser = maybeVerifiedUser
+			const verifiedUserKey = encryptId(verifiedUser.id)
+			const { password } = verifiedUser
+			if (!password) {
+				ctx.logger.info(
+					`🔑 account with email:`,
+					email,
+					`is verified but has no password`,
+				)
+				await initiateAccountAction({
+					email,
+					username: verifiedUser.username,
+					userId: verifiedUser.id,
+					action: `signIn`,
+					ctx,
+				})
+				return {
+					nextStep: `otc_login`,
 					userKey: verifiedUserKey,
 				}
-			},
-		),
+			}
+			return {
+				nextStep: `password_login`,
+				userKey: verifiedUserKey,
+			}
+		}),
 })
 
 async function initiateAccountAction(arg: {
@@ -606,11 +591,6 @@ async function initiateAccountAction(arg: {
 		})
 
 		ctx.logger.info(`🔑 account action code:`, accountActionCode)
-		// ctx.logger.info({
-		// 	encryptedCode,
-		// 	accountActionCode,
-		// 	doesMatch: await Bun.password.verify(accountActionCode, encryptedCode),
-		// })
 
 		const expiresAt = new Date(+ctx.now + 1000 * 60 * 15)
 		await ctx.db.drizzle

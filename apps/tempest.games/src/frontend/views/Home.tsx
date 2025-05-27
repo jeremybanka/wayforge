@@ -25,7 +25,7 @@ export function Home(): React.ReactNode {
 
 	const [error, setError] = React.useState<string | null>(null)
 	const [currentlyEntering, setCurrentlyEntering] = React.useState<
-		`email` | `otp` | `password`
+		`email` | `otc` | `password`
 	>(`email`)
 
 	return (
@@ -42,9 +42,9 @@ export function Home(): React.ReactNode {
 								})
 							setState(authTargetAtom, newAuthTarget)
 							switch (nextStep) {
-								case `otp_login`:
-								case `otp_verify`: {
-									setCurrentlyEntering(`otp`)
+								case `otc_login`:
+								case `otc_verify`: {
+									setCurrentlyEntering(`otc`)
 									break
 								}
 								case `password_login`: {
@@ -54,7 +54,7 @@ export function Home(): React.ReactNode {
 							}
 							break
 						}
-						case `otp`: {
+						case `otc`: {
 							if (!currentAuthTarget) {
 								console.error(`somehow userKey is null`)
 								return
@@ -127,12 +127,12 @@ export function Home(): React.ReactNode {
 						/>
 					</label>
 				) : null}
-				{currentlyEntering === `otp` ? (
-					<label htmlFor="otp">
+				{currentlyEntering === `otc` ? (
+					<label htmlFor="otc">
 						<span>One-time Code</span>
 						<input
-							id="otp"
-							type="otp"
+							id="otc"
+							type="otc"
 							value={oneTimeCode}
 							onChange={(e) => {
 								setOneTimeCode(e.target.value)
@@ -140,7 +140,7 @@ export function Home(): React.ReactNode {
 							autoComplete="one-time-code"
 							autoCapitalize="none"
 							// biome-ignore lint/a11y/noAutofocus: this is really the best place to focus
-							autoFocus={currentlyEntering === `otp`}
+							autoFocus={currentlyEntering === `otc`}
 						/>
 					</label>
 				) : null}
@@ -149,7 +149,7 @@ export function Home(): React.ReactNode {
 					disabled={
 						(!email && currentlyEntering === `email`) ||
 						(!password && currentlyEntering === `password`) ||
-						(!oneTimeCode && currentlyEntering === `otp`)
+						(!oneTimeCode && currentlyEntering === `otc`)
 					}
 				>{`>>->`}</button>
 			</main>

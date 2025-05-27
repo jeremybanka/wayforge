@@ -80,7 +80,7 @@ export function Account(): React.ReactNode {
 								})
 							console.log({ authTarget, nextStep })
 							switch (nextStep) {
-								case `otp_login`: {
+								case `otc_login`: {
 									setState(authTargetAtom, authTarget)
 									setState(accountEditingAtom, [`email`, `otcLogin`])
 									break
@@ -90,7 +90,7 @@ export function Account(): React.ReactNode {
 									setState(accountEditingAtom, [`email`, `passwordLogin`])
 									break
 								}
-								case `otp_verify`: {
+								case `otc_verify`: {
 									setState(authTargetAtom, authTarget)
 									setState(oneTimeCodeInputAtom, `not needed`)
 									setState(accountEditingAtom, [

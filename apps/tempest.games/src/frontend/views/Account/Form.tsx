@@ -13,8 +13,8 @@ import type { AccountEditingState, AccountString } from "./account-state"
 import {
 	accountEditingAtom,
 	buttonBlockActiveAtom,
-	otpLoginFieldLabelSelector,
-	otpVerifyFieldLabelSelector,
+	otcLoginFieldLabelSelector,
+	otcVerifyFieldLabelSelector,
 	useElement,
 } from "./account-state"
 
@@ -55,8 +55,8 @@ export function Form({
 	const setEditing = useI(accountEditingAtom)
 
 	const issues = useO(issuesToken)
-	const otpLoginFieldLabel = useO(otpLoginFieldLabelSelector)
-	const otpVerifyFieldLabel = useO(otpVerifyFieldLabelSelector)
+	const otcLoginFieldLabel = useO(otcLoginFieldLabelSelector)
+	const otcVerifyFieldLabel = useO(otcVerifyFieldLabelSelector)
 
 	const elementRef = useElement(inputElementToken)
 
@@ -122,10 +122,10 @@ export function Form({
 									{((): string => {
 										switch (field) {
 											case `otcLogin`:
-												return otpLoginFieldLabel
+												return otcLoginFieldLabel
 
 											case `otcVerify`:
-												return otpVerifyFieldLabel
+												return otcVerifyFieldLabel
 
 											case `passwordLogin`:
 												return `Password`
