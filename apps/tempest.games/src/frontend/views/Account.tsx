@@ -1,5 +1,5 @@
 import { getState, setState } from "atom.io"
-import { useI, useO } from "atom.io/react"
+import { useO } from "atom.io/react"
 import { onMount } from "atom.io/realtime-react"
 import React from "react"
 
@@ -27,16 +27,12 @@ import {
 import { Form } from "./Account/Form"
 
 export function Account(): React.ReactNode {
-	const setEmail = useI(emailInputAtom)
-	const setPassword = useI(passwordInputAtom)
-
 	const auth = useO(authAtom)
-
 	const usernameIsTaken = useO(isUsernameTakenQuerySelector)
 
 	onMount(() => {
-		if (auth) setEmail(auth.email)
-		if (auth?.password) setPassword(`••••••••••••`)
+		if (auth) setState(emailInputAtom, auth.email)
+		if (auth?.password) setState(passwordInputAtom, `••••••••••••`)
 	})
 
 	if (!auth) {
@@ -150,7 +146,9 @@ export function Account(): React.ReactNode {
 				inputToken={passwordInputAtom}
 				issuesToken={passwordIssuesSelector}
 				inputElementToken={password0InputElementAtom}
-				initialState={[`new-password`]}
+				initialState={
+					auth.password ? [`new-password`, `otcVerify`] : [`new-password`]
+				}
 				onSubmit={async (input) => {
 					const accountEditingState = getState(accountEditingAtom)
 					if (accountEditingState[0] !== `new-password`) {
@@ -159,20 +157,37 @@ export function Account(): React.ReactNode {
 					switch (accountEditingState.length) {
 						case 1: {
 							await trpcClient.setPassword.mutate({ password: input })
+							setState(passwordInputAtom, `••••••••••••`)
+							setState(authAtom, (prev) =>
+								prev ? { ...prev, password: true } : prev,
+							)
 							setState(accountEditingAtom, [])
-							setPassword(`••••••••••••`)
 							return `done`
 						}
 						case 2: {
-							return new Error(`not implemented`)
+							const userKey = getState(authTargetAtom)
+							if (!userKey) return new Error(`No userKey`)
+							await trpcClient.verifyAccountAction.mutate({
+								oneTimeCode: getState(oneTimeCodeInputAtom),
+								userKey,
+							})
+							setState(authAtom, (prev) =>
+								prev ? { ...prev, password: false } : prev,
+							)
+							setState(passwordInputAtom, ``)
+							setState(accountEditingAtom, [`new-password`])
+							return `done`
 						}
 					}
 				}}
 				onCancel={() => {
-					setPassword(`••••••••••••`)
+					if (auth.password) setState(passwordInputAtom, `••••••••••••`)
 				}}
-				onOpen={() => {
-					setPassword(``)
+				onOpen={async () => {
+					if (auth.password) {
+						const { userKey } = await trpcClient.startPasswordReset.mutate()
+						setState(authTargetAtom, userKey)
+					}
 				}}
 			/>
 		</article>

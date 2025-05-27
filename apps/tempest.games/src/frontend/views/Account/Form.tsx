@@ -49,8 +49,8 @@ export function Form({
 	const otcEmailNew = useO(oneTimeCodeNewEmailInputAtom)
 	const setOtcEmailNew = useI(oneTimeCodeNewEmailInputAtom)
 
-	const password0 = useO(passwordInputAtom)
-	const setPassword0 = useI(passwordInputAtom)
+	const password = useO(passwordInputAtom)
+	const setPassword = useI(passwordInputAtom)
 
 	const buttonBlockActive = useO(buttonBlockActiveAtom)
 	const setButtonBlockActive = useI(buttonBlockActiveAtom)
@@ -151,7 +151,7 @@ export function Form({
 												}
 												return otc
 											case `passwordLogin`:
-												return password0
+												return password
 										}
 									})()}
 									onChange={(e) => {
@@ -167,7 +167,7 @@ export function Form({
 												setOtc(e.target.value)
 												break
 											case `passwordLogin`:
-												setPassword0(e.target.value)
+												setPassword(e.target.value)
 										}
 									}}
 									autoComplete={

@@ -361,7 +361,7 @@ export const appRouter = trpc.router({
 		}),
 
 	startPasswordReset: userSessionProcedure.mutation(
-		async ({ ctx }): Promise<ClientAuthData> => {
+		async ({ ctx }): Promise<{ userKey: string }> => {
 			const { userId, sessionKey, db } = ctx
 			ctx.logger.info(`🔑 starting password reset for`, userId)
 			const user = await db.drizzle.query.users.findFirst({
@@ -386,16 +386,10 @@ export const appRouter = trpc.router({
 					columns: { action: true, expiresAt: true },
 					where: eq(accountActions.userId, userId),
 				})
-			if (currentAccountAction) {
-				if (currentAccountAction.action === `cooldown`) {
-					throw new TRPCError({
-						code: `TOO_MANY_REQUESTS`,
-						message: `You must wait ${currentAccountAction.expiresAt.getTime() - ctx.now.getTime()} before attempting to perform this action again.`,
-					})
-				}
+			if (currentAccountAction?.action === `cooldown`) {
 				throw new TRPCError({
-					code: `BAD_REQUEST`,
-					message: `Account action (${currentAccountAction.action}) already in progress.`,
+					code: `TOO_MANY_REQUESTS`,
+					message: `You must wait ${currentAccountAction.expiresAt.getTime() - ctx.now.getTime()} before attempting to perform this action again.`,
 				})
 			}
 
@@ -407,14 +401,9 @@ export const appRouter = trpc.router({
 				ctx,
 			})
 
-			return {
-				userId,
-				email: emailVerified,
-				username,
-				password: false,
-				sessionKey,
-				verification: `verified`,
-			}
+			const userKey = encryptId(userId)
+
+			return { userKey }
 		},
 	),
 
