@@ -1,4 +1,4 @@
-const LoggerIconDictionary = {
+const LOGGER_ICON_DICTIONARY = {
 	"⌛": `Timeline event fully captured`,
 	"⏩": `Timeline redo`,
 	"⏪": `Timeline undo`,
@@ -50,7 +50,7 @@ const LoggerIconDictionary = {
 	"🖌": `Redacting realtime update`,
 	"👁": `Determining perspective`,
 } as const
-export type LoggerIcon = keyof typeof LoggerIconDictionary
+export type LoggerIcon = keyof typeof LOGGER_ICON_DICTIONARY
 export type TokenDenomination =
 	| `atom_family`
 	| `atom`
