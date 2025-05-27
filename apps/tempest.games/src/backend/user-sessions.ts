@@ -4,6 +4,7 @@ import { CronJob } from "cron"
 import { logger } from "./logger"
 
 const ONE_WEEK_MS = 1000 * 60 * 60 * 24 * 7
+const TEN_MINUTES_MS = 1000 * 60 * 10
 
 declare global {
 	var __sessionData: SessionData
@@ -47,4 +48,10 @@ export function createSession(userId: string, now: Date): string {
 	sessionCreatedTimes.set(sessionKey, +now)
 	userSessions.set(userId, sessionKey)
 	return sessionKey
+}
+
+export function isSessionRecent(sessionKey: string, now: Date): boolean {
+	const sessionCreatedAt = sessionCreatedTimes.get(sessionKey)
+	if (!sessionCreatedAt) return false
+	return +now - sessionCreatedAt < TEN_MINUTES_MS
 }

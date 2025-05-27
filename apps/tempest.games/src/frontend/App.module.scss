@@ -111,23 +111,34 @@ main.class {
             }
           }
         }
-        > button {
-          background-color: var(--bg-dark-3);
-          color: var(--fg);
-          width: 50px;
-          height: 40px;
-          padding-top: px;
-          font-family: theia;
-          border: none;
-          align-self: flex-end;
-          border: var(--fg-soft-3) solid 1px;
-          cursor: pointer;
-          &:disabled {
-            background-color: var(--bg-hard-1);
-            border: 1px solid var(--bg-soft-1);
-            color: var(--bg-soft-3);
-            &:hover {
-              cursor: not-allowed;
+        > footer {
+          display: flex;
+          flex-flow: row;
+          justify-content: space-between;
+          > button {
+            border: none;
+            padding: 0px;
+            font-size: 12px;
+            color: var(--hyperlink-color);
+          }
+          > span ~ button {
+            background-color: var(--bg-dark-3);
+            color: var(--fg);
+            width: 50px;
+            height: 40px;
+            padding-top: px;
+            font-family: theia;
+            border: none;
+            align-self: flex-end;
+            border: var(--fg-soft-3) solid 1px;
+            cursor: pointer;
+            &:disabled {
+              background-color: var(--bg-hard-1);
+              border: 1px solid var(--bg-soft-1);
+              color: var(--bg-soft-3);
+              &:hover {
+                cursor: not-allowed;
+              }
             }
           }
         }
