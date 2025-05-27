@@ -144,14 +144,28 @@ export function Home(): React.ReactNode {
 						/>
 					</label>
 				) : null}
-				<button
-					type="submit"
-					disabled={
-						(!email && currentlyEntering === `email`) ||
-						(!password && currentlyEntering === `password`) ||
-						(!oneTimeCode && currentlyEntering === `otc`)
-					}
-				>{`>>->`}</button>
+				<footer>
+					{currentlyEntering === `password` ? (
+						<button
+							type="button"
+							onClick={async () => {
+								const userKey = getState(authTargetAtom)
+								if (!userKey) return new Error(`No userKey`)
+								await trpcClient.startPasswordReset.mutate({ userKey })
+								setCurrentlyEntering(`otc`)
+							}}
+						>{`Forgot Password?`}</button>
+					) : null}
+					<span />
+					<button
+						type="submit"
+						disabled={
+							(!email && currentlyEntering === `email`) ||
+							(!password && currentlyEntering === `password`) ||
+							(!oneTimeCode && currentlyEntering === `otc`)
+						}
+					>{`>>->`}</button>
+				</footer>
 			</main>
 		</form>
 	)
