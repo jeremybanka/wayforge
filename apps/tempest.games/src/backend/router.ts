@@ -447,11 +447,6 @@ export const appRouter = trpc.router({
 				algorithm: `bcrypt`,
 				cost: 10,
 			})
-			console.log({
-				input: input.password,
-				hashed: password,
-				comparesEqual: await Bun.password.verify(input.password, password),
-			})
 
 			await ctx.db.drizzle
 				.update(users)

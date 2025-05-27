@@ -160,12 +160,19 @@ export function Account(): React.ReactNode {
 						case 1: {
 							await trpcClient.setPassword.mutate({ password: input })
 							setState(accountEditingAtom, [])
+							setPassword(`••••••••••••`)
 							return `done`
 						}
 						case 2: {
 							return new Error(`not implemented`)
 						}
 					}
+				}}
+				onCancel={() => {
+					setPassword(`••••••••••••`)
+				}}
+				onOpen={() => {
+					setPassword(``)
 				}}
 			/>
 		</article>

@@ -25,6 +25,8 @@ export type FormProps = {
 	inputElementToken: WritableToken<HTMLInputElement | null>
 	initialState: AccountEditingState
 	onSubmit: (value: string) => Promise<Error | string>
+	onOpen?: (() => Promise<void>) | (() => void)
+	onCancel?: (() => Promise<void>) | (() => void)
 	extraIssues?: React.ReactNode
 }
 export function Form({
@@ -34,6 +36,8 @@ export function Form({
 	inputElementToken,
 	initialState,
 	onSubmit,
+	onOpen,
+	onCancel,
 	extraIssues,
 }: FormProps): React.ReactNode {
 	const input = useO(inputToken)
@@ -82,7 +86,8 @@ export function Form({
 			{isUsingForm ? (
 				<button
 					type="button"
-					onClick={() => {
+					onClick={async () => {
+						await onCancel?.()
 						setEditing([])
 					}}
 				>
@@ -184,8 +189,9 @@ export function Form({
 			) : (
 				<button
 					type="button"
-					onMouseDown={() => {
+					onMouseDown={async () => {
 						setButtonBlockActive(true)
+						await onOpen?.()
 						setEditing(initialState)
 					}}
 					onMouseUp={() => {
