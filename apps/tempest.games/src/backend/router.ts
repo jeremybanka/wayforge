@@ -146,11 +146,11 @@ export const appRouter = trpc.router({
 	openSession: loggedProcedure
 		.input(credentialsType)
 		.mutation(async ({ input, ctx }): Promise<ClientAuthData> => {
-			const { email: username, password } = input
+			const { email, password } = input
 			let successful = false
 			let userId: string | null = null
 			try {
-				ctx.logger.info(`🔑 sign in attempt as user`, username)
+				ctx.logger.info(`🔑 sign in attempt as user with email`, email)
 				const tenMinutesAgo = new Date(+ctx.now - 1000 * 60 * 10)
 				const recentFailures = await ctx.db.drizzle.query.signInHistory.findMany(
 					{
@@ -177,8 +177,13 @@ export const appRouter = trpc.router({
 					})
 				}
 				const user = await ctx.db.drizzle.query.users.findFirst({
-					columns: { id: true, password: true, emailVerified: true },
-					where: eq(users.username, username),
+					columns: {
+						id: true,
+						emailVerified: true,
+						password: true,
+						username: true,
+					},
+					where: eq(users.emailVerified, email),
 				})
 				if (!user) {
 					throw new TRPCError({
@@ -186,14 +191,15 @@ export const appRouter = trpc.router({
 						message: `${attemptsRemaining} attempts remaining.`,
 					})
 				}
+				userId = user.id
 				if (!user.password) {
 					throw new TRPCError({
 						code: `BAD_REQUEST`,
 						message: `Sign in with a link.`,
 					})
 				}
-				userId = user.id
-				const match = await Bun.password.verify(password, user.password)
+				const { password: userPassword, username } = user
+				const match = await Bun.password.verify(password, userPassword)
 				if (!match) {
 					throw new TRPCError({
 						code: `BAD_REQUEST`,
@@ -202,16 +208,14 @@ export const appRouter = trpc.router({
 				}
 				const sessionKey = createSession(userId, ctx.now)
 				successful = true
-				ctx.logger.info(`🔑 sign in successful as`, username)
+				ctx.logger.info(`🔑 sign in successful as`, email)
 				return {
 					userId,
-					email: user.emailVerified ?? ``,
+					email,
 					username,
-					password: Boolean(user.password),
+					password: true,
 					sessionKey,
-					verification: user.emailVerified
-						? (`verified` as const)
-						: (`unverified` as const),
+					verification: `verified`,
 				}
 			} finally {
 				await ctx.db.drizzle.insert(signInHistory).values({
@@ -442,6 +446,11 @@ export const appRouter = trpc.router({
 			const password = await Bun.password.hash(input.password, {
 				algorithm: `bcrypt`,
 				cost: 10,
+			})
+			console.log({
+				input: input.password,
+				hashed: password,
+				comparesEqual: await Bun.password.verify(input.password, password),
 			})
 
 			await ctx.db.drizzle
