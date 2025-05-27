@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.2.10
+
+### Patch Changes
+
+- 9162dd5: ✨ Add optional passwords for user accounts with the ability to recover accounts via a one-time code.
+
 ## 0.2.9
 
 ### Patch Changes
