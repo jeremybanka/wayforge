@@ -4,3 +4,4 @@
 - [ ] use Temporal instead of Date
 - [ ] add favicon
 - [ ] add email icons
+- [ ] add animations to frontend
