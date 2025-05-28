@@ -13,7 +13,7 @@ import {
 	varchar,
 } from "drizzle-orm/pg-core"
 
-type ISO8601 = string & { __brand: `ISO8601` }
+import type { ISO8601 } from "../backend/time"
 
 function iso8601() {
 	return varchar({ length: 24 }).$type<ISO8601>()
@@ -35,11 +35,11 @@ export const users = pgTable(
 		emailOffered: varchar({ length: 254 }).notNull(),
 		emailVerified: varchar({ length: 254 }),
 		password: varchar({ length: 254 }),
-		createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+		// createdAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 		createdAtIso: iso8601().notNull().default(ISO_NOW),
 		createdIp: varchar({ length: 45 }).notNull(), // IP address length can be up to 45 characters (for IPv6)
 		isActive: boolean().notNull().default(false),
-		verifiedAt: timestamp({ withTimezone: true }),
+		// verifiedAt: timestamp({ withTimezone: true }),
 		verifiedAtIso: iso8601(),
 		userRole: role().default(`user`),
 	},
@@ -52,11 +52,11 @@ export const users = pgTable(
 export type UserColumnName = keyof typeof users._.columns
 export const untrackedUserColumnNames = [
 	`id`,
-	`createdAt`,
+	// `createdAt`,
 	`createdAtIso`,
 	`createdIp`,
 	`isActive`,
-	`verifiedAt`,
+	// `verifiedAt`,
 	`verifiedAtIso`,
 ] as const satisfies UserColumnName[]
 export const trackableUserColumnNames = [
@@ -89,7 +89,7 @@ export const accountActions = pgTable(`accountActions`, {
 	action: accountAction().notNull(),
 	code: varchar({ length: 254 }).notNull(),
 	wrongCodeCount: integer().notNull().default(0),
-	expiresAt: timestamp({ withTimezone: true }).notNull(),
+	// expiresAt: timestamp({ withTimezone: true }).notNull(),
 	expiresAtIso: iso8601().notNull(),
 })
 
@@ -125,7 +125,7 @@ export const players = pgTable(
 export const signInHistory = pgTable(`signInHistory`, {
 	id: uuid().primaryKey().defaultRandom(),
 	userId: uuid().references(() => users.id, { onDelete: `cascade` }),
-	signInTime: timestamp({ withTimezone: true }).notNull().defaultNow(),
+	// signInTime: timestamp({ withTimezone: true }).notNull().defaultNow(),
 	signInTimeIso: iso8601().notNull().default(ISO_NOW),
 	ipAddress: varchar({ length: 45 }).notNull(),
 	userAgent: varchar({ length: 1024 }),
@@ -140,10 +140,10 @@ export const passwordResetAttempts = pgTable(`passwordResetAttempts`, {
 		.notNull()
 		.references(() => users.id, { onDelete: `cascade` }),
 	requestedIp: varchar({ length: 45 }).notNull(),
-	requestedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+	// requestedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 	requestedAtIso: iso8601().notNull().default(ISO_NOW),
 	succeededIp: varchar({ length: 45 }),
-	succeededAt: timestamp({ withTimezone: true }),
+	// succeededAt: timestamp({ withTimezone: true }),
 	succeededAtIso: iso8601(),
 	verificationMethod: twoFactorMethod().notNull(),
 })
@@ -151,8 +151,8 @@ export const passwordResetAttempts = pgTable(`passwordResetAttempts`, {
 export const banishedIps = pgTable(`banishedIps`, {
 	ip: varchar({ length: 45 }).primaryKey(),
 	reason: varchar({ length: 2048 }).notNull(),
-	banishedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
+	// banishedAt: timestamp({ withTimezone: true }).notNull().defaultNow(),
 	banishedAtIso: iso8601().notNull().default(ISO_NOW),
-	banishedUntil: timestamp({ withTimezone: true }),
+	// banishedUntil: timestamp({ withTimezone: true }),
 	banishedUntilIso: iso8601(),
 })

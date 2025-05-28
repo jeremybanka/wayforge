@@ -1,5 +1,6 @@
 import type { RequestListener } from "node:http"
 
+import type { Temporal } from "@js-temporal/polyfill"
 import { initTRPC } from "@trpc/server"
 
 import type { DatabaseManager } from "../database/tempest-db-manager"
@@ -11,7 +12,7 @@ export interface Context {
 	req: Parameters<RequestListener>[0]
 	res: Parameters<RequestListener>[1]
 	ip: string
-	now: Date
+	now: Temporal.Instant
 	db: DatabaseManager
 	logger: typeof logger
 }

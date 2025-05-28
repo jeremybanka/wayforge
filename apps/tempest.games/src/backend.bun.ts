@@ -2,6 +2,7 @@
 
 import path from "node:path"
 
+import { Temporal } from "@js-temporal/polyfill"
 import { createHTTPHandler } from "@trpc/server/adapters/standalone"
 import { AtomIOLogger } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
@@ -14,8 +15,7 @@ import { worker } from "./backend.worker"
 import { db } from "./backend/db"
 import { logger, parentSocket } from "./backend/logger"
 import { appRouter } from "./backend/router"
-import type { Context, ContextAuth } from "./backend/trpc-server"
-import { userSessions } from "./backend/user-sessions"
+import type { Context } from "./backend/trpc-server"
 import { serveSocket, sessionMiddleware } from "./backend/websockets"
 import { env } from "./library/env"
 
@@ -63,7 +63,7 @@ const trpcHandler = createHTTPHandler({
 			req,
 			res,
 			ip: req.socket.remoteAddress ?? ``,
-			now: new Date(),
+			now: Temporal.Now.instant(),
 			db,
 			logger,
 		}

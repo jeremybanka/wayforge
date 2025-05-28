@@ -1,12 +1,15 @@
 import { exec } from "node:child_process"
 
+import { Temporal } from "@js-temporal/polyfill"
 import { discoverType } from "atom.io/introspection"
 import { gt } from "drizzle-orm"
 import type { OpenAiSafeGenerator } from "safegen/openai"
+import { T } from "vitest/dist/chunks/reporters.d.C-cu31ET.js"
 
 import { DatabaseManager } from "../../database/tempest-db-manager"
 import { banishedIps } from "../../database/tempest-db-schema"
 import { storage } from "../shared/storage"
+import { iso8601 } from "../time"
 import { getLogs } from "./get-logs"
 import { banRulingSpec, logsToPrompt } from "./prompt"
 
@@ -84,14 +87,14 @@ export async function tribunal({
 	const lastTribunalProcessedDateString = storage.getItem(
 		`lastTribunalProcessedDate`,
 	)
-	const lastTribunalProcessedDate = new Date(
-		lastTribunalProcessedDateString ?? `1970-01-01`,
+	const lastTribunalProcessedDate = iso8601(
+		Temporal.Instant.from(lastTribunalProcessedDateString ?? `1970-01-01`),
 	)
 	try {
 		bansSinceLastFlush.push(
 			...(await db.drizzle.query.banishedIps.findMany({
 				columns: { ip: true },
-				where: gt(banishedIps.banishedAt, lastTribunalProcessedDate),
+				where: gt(banishedIps.banishedAtIso, lastTribunalProcessedDate),
 			})),
 		)
 	} catch (thrown) {
