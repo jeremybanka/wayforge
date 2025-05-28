@@ -127,6 +127,13 @@
       "when": 1745697499088,
       "tag": "0017_sparkling_matthew_murdock",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1748393272130,
+      "tag": "0018_curved_wallop",
+      "breakpoints": true
     }
   ]
 }
