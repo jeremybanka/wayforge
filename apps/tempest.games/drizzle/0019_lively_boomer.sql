@@ -1,4 +1,4 @@
-ALTER TABLE "banishedIps" ALTER COLUMN "banishedAtIso" SET DEFAULT SELECT TO_CHAR(NOW() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"');--> statement-breakpoint
-ALTER TABLE "passwordResetAttempts" ALTER COLUMN "requestedAtIso" SET DEFAULT SELECT TO_CHAR(NOW() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"');--> statement-breakpoint
-ALTER TABLE "signInHistory" ALTER COLUMN "signInTimeIso" SET DEFAULT SELECT TO_CHAR(NOW() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"');--> statement-breakpoint
-ALTER TABLE "users" ALTER COLUMN "createdAtIso" SET DEFAULT SELECT TO_CHAR(NOW() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"');
+ALTER TABLE "banishedIps" ALTER COLUMN "banishedAtIso" SET DEFAULT TO_CHAR(NOW() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"');--> statement-breakpoint
+ALTER TABLE "passwordResetAttempts" ALTER COLUMN "requestedAtIso" SET DEFAULT TO_CHAR(NOW() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"');--> statement-breakpoint
+ALTER TABLE "signInHistory" ALTER COLUMN "signInTimeIso" SET DEFAULT TO_CHAR(NOW() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"');--> statement-breakpoint
+ALTER TABLE "users" ALTER COLUMN "createdAtIso" SET DEFAULT TO_CHAR(NOW() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"');

@@ -23,7 +23,7 @@ function lower(email: AnyPgColumn): SQL {
 	return sql`lower(${email})`
 }
 
-const ISO_NOW = sql<ISO8601>`SELECT TO_CHAR(NOW() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"')`
+const ISO_NOW = sql<ISO8601>`TO_CHAR(NOW() AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.MS"Z"')`
 
 export const role = pgEnum(`role`, [`admin`, `user`])
 
