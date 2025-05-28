@@ -23,7 +23,7 @@ import { genAccountActionCode } from "./account-actions"
 import { sendEmailToConfirmAccountAction } from "./email"
 import { loggedProcedure, userSessionProcedure } from "./procedures"
 import { decryptId, encryptId } from "./secrecy"
-import { iso8601 } from "./time"
+import { instant, iso8601 } from "./time"
 import type { Context } from "./trpc-server"
 import { trpc } from "./trpc-server"
 import {
@@ -281,9 +281,9 @@ export const appRouter = trpc.router({
 
 			const { action } = accountAction
 			if (action === `cooldown`) {
-				const cooldownDuration = Temporal.Instant.from(
-					accountAction.expiresAtIso,
-				).since(ctx.now)
+				const cooldownDuration = instant(accountAction.expiresAtIso).since(
+					ctx.now,
+				)
 				const cooldownMs = cooldownDuration.total({ unit: `milliseconds` })
 				const cooldownString = simpleFormatMs(cooldownMs)
 				throw new TRPCError({
