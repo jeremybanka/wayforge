@@ -165,9 +165,7 @@ export const appRouter = trpc.router({
 					await ctx.db.drizzle.insert(banishedIps).values({
 						ip: ctx.ip,
 						reason: `Too many recent sign in attempts.`,
-						// banishedAt: ctx.now,
 						banishedAtIso: iso8601(ctx.now),
-						// banishedUntil: new Date(+ctx.now + 1000 * 60 * 60 * 24),
 						banishedUntilIso: iso8601(ctx.now.add({ hours: 24 })),
 					})
 					throw new TRPCError({
@@ -264,7 +262,6 @@ export const appRouter = trpc.router({
 			const accountAction = await ctx.db.drizzle.query.accountActions.findFirst({
 				columns: {
 					action: true,
-					// expiresAt: true,
 					expiresAtIso: true,
 					wrongCodeCount: true,
 					code: true,
@@ -305,7 +302,6 @@ export const appRouter = trpc.router({
 					actionUpdate = {
 						action: `cooldown`,
 						code: accountAction.code,
-						// expiresAt: new Date(+ctx.now + 1000 * 60 * 15),
 						expiresAtIso: iso8601(ctx.now.add({ minutes: 15 })),
 					}
 				} else {
@@ -393,7 +389,7 @@ export const appRouter = trpc.router({
 				})
 
 			if (currentAccountAction?.action === `cooldown`) {
-				const cooldownRemaining = Temporal.Instant.from(ctx.now).until(
+				const cooldownRemaining = ctx.now.until(
 					currentAccountAction.expiresAtIso,
 				).milliseconds
 				throw new TRPCError({
@@ -592,7 +588,6 @@ async function initiateAccountAction(arg: {
 
 		ctx.logger.info(`🔑 account action code:`, accountActionCode)
 
-		// const expiresAt = new Date(+ctx.now + 1000 * 60 * 15)
 		const expiresAtIso = iso8601(ctx.now.add({ minutes: 15 }))
 		await ctx.db.drizzle
 			.insert(accountActions)
@@ -600,7 +595,6 @@ async function initiateAccountAction(arg: {
 				userId,
 				code: encryptedCode,
 				action,
-				// expiresAt,
 				expiresAtIso,
 			})
 			.onConflictDoUpdate({
@@ -608,7 +602,6 @@ async function initiateAccountAction(arg: {
 				set: {
 					code: encryptedCode,
 					action,
-					// expiresAt,
 					expiresAtIso,
 				},
 			})
