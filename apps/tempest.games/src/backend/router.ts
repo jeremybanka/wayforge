@@ -164,7 +164,11 @@ export const appRouter = trpc.router({
 						ip: ctx.ip,
 						reason: `Too many recent sign in attempts.`,
 						banishedAt: ctx.now,
+						banishedAtIso: ctx.now.toISOString(),
 						banishedUntil: new Date(+ctx.now + 1000 * 60 * 60 * 24),
+						banishedUntilIso: new Date(
+							+ctx.now + 1000 * 60 * 60 * 24,
+						).toISOString(),
 					})
 					throw new TRPCError({
 						code: `TOO_MANY_REQUESTS`,
