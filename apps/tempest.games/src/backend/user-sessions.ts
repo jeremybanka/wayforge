@@ -1,3 +1,4 @@
+import type { Temporal } from "@js-temporal/polyfill"
 import { Junction } from "atom.io/internal"
 import { CronJob } from "cron"
 
@@ -43,14 +44,17 @@ export const [sessionCreatedTimes, userSessions]: SessionData = (() => {
 	return __sessionData
 })()
 
-export function createSession(userId: string, now: Date): string {
+export function createSession(userId: string, now: Temporal.Instant): string {
 	const sessionKey = crypto.randomUUID()
 	sessionCreatedTimes.set(sessionKey, +now)
 	userSessions.set(userId, sessionKey)
 	return sessionKey
 }
 
-export function isSessionRecent(sessionKey: string, now: Date): boolean {
+export function isSessionRecent(
+	sessionKey: string,
+	now: Temporal.Instant,
+): boolean {
 	const sessionCreatedAt = sessionCreatedTimes.get(sessionKey)
 	if (!sessionCreatedAt) return false
 	return +now - sessionCreatedAt < TEN_MINUTES_MS
