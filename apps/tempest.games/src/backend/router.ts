@@ -1,5 +1,6 @@
 import path from "node:path"
 
+import { Temporal } from "@js-temporal/polyfill"
 import { TRPCError } from "@trpc/server"
 import { type } from "arktype"
 import { and, eq, gt, isNull } from "drizzle-orm"
@@ -22,6 +23,7 @@ import { genAccountActionCode } from "./account-actions"
 import { sendEmailToConfirmAccountAction } from "./email"
 import { loggedProcedure, userSessionProcedure } from "./procedures"
 import { decryptId, encryptId } from "./secrecy"
+import { instant, iso8601 } from "./time"
 import type { Context } from "./trpc-server"
 import { trpc } from "./trpc-server"
 import {
@@ -146,14 +148,14 @@ export const appRouter = trpc.router({
 			let userId: string | null = null
 			try {
 				ctx.logger.info(`🔑 sign in attempt as user with email`, email)
-				const tenMinutesAgo = new Date(+ctx.now - 1000 * 60 * 10)
+				const tenMinutesAgo = iso8601(ctx.now.subtract({ minutes: 10 }))
 				const recentFailures = await ctx.db.drizzle.query.signInHistory.findMany(
 					{
-						columns: { userId: true, successful: true, signInTime: true },
+						columns: { userId: true, successful: true, signInTimeIso: true },
 						where: and(
 							eq(signInHistory.ipAddress, ctx.ip),
 							eq(signInHistory.successful, false),
-							gt(signInHistory.signInTime, tenMinutesAgo),
+							gt(signInHistory.signInTimeIso, tenMinutesAgo),
 						),
 						limit: 10,
 					},
@@ -163,8 +165,8 @@ export const appRouter = trpc.router({
 					await ctx.db.drizzle.insert(banishedIps).values({
 						ip: ctx.ip,
 						reason: `Too many recent sign in attempts.`,
-						banishedAt: ctx.now,
-						banishedUntil: new Date(+ctx.now + 1000 * 60 * 60 * 24),
+						banishedAtIso: iso8601(ctx.now),
+						banishedUntilIso: iso8601(ctx.now.add({ hours: 24 })),
 					})
 					throw new TRPCError({
 						code: `TOO_MANY_REQUESTS`,
@@ -218,7 +220,7 @@ export const appRouter = trpc.router({
 					successful,
 					ipAddress: ctx.ip,
 					userAgent: ctx.req.headers[`user-agent`] ?? `Withheld`,
-					signInTime: ctx.now,
+					signInTimeIso: iso8601(ctx.now),
 				})
 				ctx.logger.info(`🔑 recorded sign in attempt from`, ctx.ip)
 			}
@@ -260,7 +262,7 @@ export const appRouter = trpc.router({
 			const accountAction = await ctx.db.drizzle.query.accountActions.findFirst({
 				columns: {
 					action: true,
-					expiresAt: true,
+					expiresAtIso: true,
 					wrongCodeCount: true,
 					code: true,
 				},
@@ -276,7 +278,10 @@ export const appRouter = trpc.router({
 
 			const { action } = accountAction
 			if (action === `cooldown`) {
-				const cooldownMs = accountAction.expiresAt.getTime() - ctx.now.getTime()
+				const cooldownDuration = instant(accountAction.expiresAtIso).since(
+					ctx.now,
+				)
+				const cooldownMs = cooldownDuration.total({ unit: `milliseconds` })
 				const cooldownString = simpleFormatMs(cooldownMs)
 				throw new TRPCError({
 					code: `TOO_MANY_REQUESTS`,
@@ -297,7 +302,7 @@ export const appRouter = trpc.router({
 					actionUpdate = {
 						action: `cooldown`,
 						code: accountAction.code,
-						expiresAt: new Date(+ctx.now + 1000 * 60 * 15),
+						expiresAtIso: iso8601(ctx.now.add({ minutes: 15 })),
 					}
 				} else {
 					actionUpdate = { wrongCodeCount: newWrongCodeCount }
@@ -379,13 +384,17 @@ export const appRouter = trpc.router({
 			}
 			const currentAccountAction =
 				await ctx.db.drizzle.query.accountActions.findFirst({
-					columns: { action: true, expiresAt: true },
+					columns: { action: true, expiresAtIso: true },
 					where: eq(accountActions.userId, userId),
 				})
+
 			if (currentAccountAction?.action === `cooldown`) {
+				const cooldownRemaining = ctx.now.until(
+					currentAccountAction.expiresAtIso,
+				).milliseconds
 				throw new TRPCError({
 					code: `TOO_MANY_REQUESTS`,
-					message: `You must wait ${currentAccountAction.expiresAt.getTime() - ctx.now.getTime()} before attempting to perform this action again.`,
+					message: `You must wait ${simpleFormatMs(cooldownRemaining)} before attempting to perform this action again.`,
 				})
 			}
 
@@ -542,13 +551,14 @@ async function initiateAccountAction(arg: {
 	const { email, username, userId, action, ctx } = arg
 	const maybeExistingAccountAction =
 		await ctx.db.drizzle.query.accountActions.findFirst({
-			columns: { action: true, expiresAt: true },
+			columns: { action: true, expiresAtIso: true },
 			where: eq(accountActions.userId, userId),
 		})
 	let existingActionMayBeOverwritten = false
 	if (maybeExistingAccountAction) {
-		const { action: existingAction, expiresAt } = maybeExistingAccountAction
-		const existingActionIsExpired = expiresAt.getTime() < ctx.now.getTime()
+		const { action: existingAction, expiresAtIso } = maybeExistingAccountAction
+		const existingActionIsExpired =
+			Temporal.Instant.compare(expiresAtIso, ctx.now) < 0
 		if (existingActionIsExpired) {
 			existingActionMayBeOverwritten = true
 		} else if (existingAction !== `cooldown`) {
@@ -578,21 +588,21 @@ async function initiateAccountAction(arg: {
 
 		ctx.logger.info(`🔑 account action code:`, accountActionCode)
 
-		const expiresAt = new Date(+ctx.now + 1000 * 60 * 15)
+		const expiresAtIso = iso8601(ctx.now.add({ minutes: 15 }))
 		await ctx.db.drizzle
 			.insert(accountActions)
 			.values({
 				userId,
 				code: encryptedCode,
 				action,
-				expiresAt,
+				expiresAtIso,
 			})
 			.onConflictDoUpdate({
 				target: [accountActions.userId],
 				set: {
 					code: encryptedCode,
 					action,
-					expiresAt,
+					expiresAtIso,
 				},
 			})
 
