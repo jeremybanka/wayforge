@@ -47,12 +47,14 @@ export function Account(): React.ReactNode {
 				issuesToken={usernameIssuesSelector}
 				inputElementToken={usernameInputElementAtom}
 				initialState={[`username`]}
-				onSubmit={(input) =>
-					new Promise((resolve) => {
+				onSubmit={async (input) => {
+					await new Promise((resolve) => {
 						socket.once(`usernameChanged`, resolve)
 						socket.emit(`changeUsername`, input)
 					})
-				}
+					setState(accountEditingAtom, [])
+					return input
+				}}
 				extraIssues={
 					usernameIsTaken ? <span>This username is taken.</span> : null
 				}
