@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.2.11
+
+### Patch Changes
+
+- 5304c28: 🐛 Fixed bug where username field would remain open after being submitted.
+
 ## 0.2.10
 
 ### Patch Changes
