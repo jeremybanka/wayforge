@@ -23,7 +23,7 @@
 	"devDependencies": {
 		"@types/bun": "npm:bun-types@1.2.15",
 		"@types/npmlog": "7.0.0",
-		"browserslist": "4.24.5",
+		"browserslist": "4.25.0",
 		"chokidar": "4.0.3",
 		"concurrently": "9.1.2",
 		"eslint": "9.27.0",
