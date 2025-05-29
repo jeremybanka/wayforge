@@ -307,8 +307,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/atom.io
       cron:
-        specifier: 4.3.0
-        version: 4.3.0
+        specifier: 4.3.1
+        version: 4.3.1
       drizzle-orm:
         specifier: 0.44.0
         version: 0.44.0(bun-types@1.2.15)(postgres@3.4.7)
@@ -845,8 +845,8 @@ importers:
         specifier: workspace:*
         version: link:../comline
       cron:
-        specifier: 4.3.0
-        version: 4.3.0
+        specifier: 4.3.1
+        version: 4.3.1
       safedeposit:
         specifier: workspace:*
         version: link:../safedeposit
@@ -4926,8 +4926,8 @@ packages:
       typescript:
         optional: true
 
-  cron@4.3.0:
-    resolution: {integrity: sha512-ciiYNLfSlF9MrDqnbMdRWFiA6oizSF7kA1osPP9lRzNu0Uu+AWog1UKy7SkckiDY2irrNjeO6qLyKnXC8oxmrw==}
+  cron@4.3.1:
+    resolution: {integrity: sha512-7x7DoEOxV11t3OPWWMjj1xrL1PGkTV5RV+/54IJTZD7gStiaMploY43EkeBSkDZTLRbUwk+OISbQ0TR133oXyA==}
     engines: {node: '>=18.x'}
 
   cross-env@7.0.3:
@@ -12272,7 +12272,7 @@ snapshots:
     optionalDependencies:
       typescript: 5.8.3
 
-  cron@4.3.0:
+  cron@4.3.1:
     dependencies:
       '@types/luxon': 3.6.2
       luxon: 3.6.1
