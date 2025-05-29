@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.2.12
+
+### Patch Changes
+
+- c855022: ♻️ Simplified the handling of timestamps in our database.
+
 ## 0.2.11
 
 ### Patch Changes
