@@ -13,9 +13,8 @@ import {
 	setState,
 } from "atom.io"
 import OpenAI from "openai"
-import type * as OpenAICore from "openai/core"
-import type OpenAIResources from "openai/resources/index"
-import type { ZodSchema } from "zod/v4"
+import type * as OpenAIResources from "openai/resources"
+import type { ZodType } from "zod/v4"
 import { z } from "zod/v4"
 
 import type { Squirreled } from "../src"
@@ -157,7 +156,7 @@ export const openAIParamsSelectors: ReadonlySelectorFamilyToken<
 let openAiClient: OpenAI
 const aiComplete = (async (
 	body: OpenAIResources.ChatCompletionCreateParams,
-	options?: OpenAICore.RequestOptions,
+	options?: OpenAI.RequestOptions,
 ) => {
 	if (!openAiClient) {
 		openAiClient = new OpenAI({
@@ -323,7 +322,7 @@ export type TestTools = {
 	it: (key: string, fn: () => void) => void
 }
 
-export const evaluationSchema: ZodSchema<{
+export const evaluationSchema: ZodType<{
 	passed: boolean
 	message: string
 }> = z.object({

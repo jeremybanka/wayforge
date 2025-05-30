@@ -1,7 +1,5 @@
 import OpenAI from "openai"
-import type * as OpenAICore from "openai/core"
-import type OpenAIResources from "openai/resources/index"
-import type { ChatCompletionChunk } from "openai/resources/index"
+import type * as OpenAIResources from "openai/resources"
 
 import { Ferret } from "../src"
 
@@ -37,8 +35,8 @@ test(`ferret with openAI`, async () => {
 	let openAI: OpenAI | undefined
 	function getStreamFromOpenAi(
 		body: Omit<OpenAIResources.ChatCompletionCreateParamsStreaming, `stream`>,
-		options?: OpenAICore.RequestOptions,
-	): Promise<AsyncIterable<ChatCompletionChunk>> {
+		options?: OpenAI.RequestOptions,
+	): Promise<AsyncIterable<OpenAIResources.ChatCompletionChunk>> {
 		openAI ??= new OpenAI({
 			apiKey: import.meta.env.VITE_OPENAI_API_KEY,
 			dangerouslyAllowBrowser: process.env[`NODE_ENV`] === `test`,
@@ -62,7 +60,7 @@ test(`ferret with openAI`, async () => {
 			messages: [{ role: `user`, content: `Hello, how are you?` }],
 		})
 
-	const chunks: ChatCompletionChunk[] = []
+	const chunks: OpenAIResources.ChatCompletionChunk[] = []
 	for await (const chunk of await aiResponse) {
 		chunks.push(chunk)
 	}
@@ -73,8 +71,8 @@ test(`ferret with openAI (cache-miss)`, async () => {
 	let openAI: OpenAI | undefined
 	function getStreamFromOpenAi(
 		body: Omit<OpenAIResources.ChatCompletionCreateParamsStreaming, `stream`>,
-		options?: OpenAICore.RequestOptions,
-	): Promise<AsyncIterable<ChatCompletionChunk>> {
+		options?: OpenAI.RequestOptions,
+	): Promise<AsyncIterable<OpenAIResources.ChatCompletionChunk>> {
 		openAI ??= new OpenAI({
 			apiKey: import.meta.env.VITE_OPENAI_API_KEY,
 			dangerouslyAllowBrowser: process.env[`NODE_ENV`] === `test`,
