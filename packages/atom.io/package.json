@@ -96,7 +96,7 @@
 		"break-check": "workspace:*",
 		"concurrently": "9.1.2",
 		"drizzle-kit": "0.31.1",
-		"drizzle-orm": "0.44.0",
+		"drizzle-orm": "0.44.1",
 		"eslint": "9.27.0",
 		"happy-dom": "17.5.6",
 		"http-proxy": "1.18.1",
