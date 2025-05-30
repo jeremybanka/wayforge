@@ -32,7 +32,7 @@
 	},
 	"devDependencies": {
 		"@svgr/webpack": "8.1.0",
-		"@types/node": "22.15.28",
+		"@types/node": "22.15.29",
 		"@types/react": "19.1.6",
 		"@types/react-dom": "19.1.5",
 		"concurrently": "9.1.2",
