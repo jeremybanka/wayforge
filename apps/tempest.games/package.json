@@ -78,7 +78,7 @@
 		"treetrunks": "workspace:*"
 	},
 	"devDependencies": {
-		"@eslint/js": "9.27.0",
+		"@eslint/js": "9.28.0",
 		"@react-email/components": "0.0.41",
 		"@types/bun": "npm:bun-types@1.2.15",
 		"@types/cors": "2.8.18",
