@@ -1,37 +1,37 @@
 {
-  // FILE FORMATTING ////////////////////////////////////////////////////////////
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "[json][jsonc][typescript][typescriptreact][css]": {
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-  "editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" },
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "coverage-gutters.coverageBaseDir": "**/coverage/",
-  "files.associations": {
-    "api-extractor.json": "jsonc",
-    "tsconfig.json": "jsonc",
-    ".env.*": "properties"
-  },
-  "json.schemas": [
-    {
-      "fileMatch": ["**/break-check.config.json"],
-      "url": "./packages/break-check/dist/break-check.main.schema.json"
-    },
-    {
-      "fileMatch": ["**/flightdeck.config.json"],
-      "url": "./packages/flightdeck/dist/flightdeck.main.schema.json"
-    }
-  ],
-  // EDITOR DISPLAY AND BEHAVIOR ////////////////////////////////////////////////
-  "editor.wordSeparators": "./\\()\"'-:,.;<>~!@#%^&*|+=[]{}`~?",
-  "workbench.editor.customLabels.patterns": {
-    "**/src/index.ts": "${dirname(1)}/${dirname}/index.ts",
-    "**/src/index.tsx": "${dirname(1)}/${dirname}/index.tsx",
-    "**/index.ts": "${dirname}/index.ts",
-    "**/index.tsx": "${dirname}/index.tsx",
-    "**/app/**/page.tsx": "${dirname}/page.tsx",
-    "**/app/**/page.mdx": "${dirname}/page.tsx",
-    "**/app/**/layout.tsx": "${dirname}/layout.tsx"
-  }
+	// FILE FORMATTING ////////////////////////////////////////////////////////////
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"[json][jsonc][typescript][typescriptreact][css]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+	"editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" },
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"coverage-gutters.coverageBaseDir": "**/coverage/",
+	"files.associations": {
+		"api-extractor.json": "jsonc",
+		"tsconfig.json": "jsonc",
+		".env.*": "properties"
+	},
+	"json.schemas": [
+		{
+			"fileMatch": ["**/break-check.config.json"],
+			"url": "./packages/break-check/dist/break-check.main.schema.json"
+		},
+		{
+			"fileMatch": ["**/flightdeck.config.json"],
+			"url": "./packages/flightdeck/dist/flightdeck.main.schema.json"
+		}
+	],
+	// EDITOR DISPLAY AND BEHAVIOR ////////////////////////////////////////////////
+	"editor.wordSeparators": "./\\()\"'-:,.;<>~!@#%^&*|+=[]{}`~?",
+	"workbench.editor.customLabels.patterns": {
+		"**/src/index.ts": "${dirname(1)}/${dirname}/index.ts",
+		"**/src/index.tsx": "${dirname(1)}/${dirname}/index.tsx",
+		"**/index.ts": "${dirname}/index.ts",
+		"**/index.tsx": "${dirname}/index.tsx",
+		"**/app/**/page.tsx": "${dirname}/page.tsx",
+		"**/app/**/page.mdx": "${dirname}/page.tsx",
+		"**/app/**/layout.tsx": "${dirname}/layout.tsx"
+	}
 }
