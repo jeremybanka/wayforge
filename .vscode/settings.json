@@ -1,95 +1,37 @@
 {
-	// FILE FORMATTING ////////////////////////////////////////////////////////////
-	"editor.formatOnSave": true,
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
-	"[json][jsonc][typescript][typescriptreact][css]": {
-		"editor.defaultFormatter": "biomejs.biome"
-	},
-	"editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" },
-	"typescript.tsdk": "node_modules/typescript/lib",
-	"coverage-gutters.coverageBaseDir": "**/coverage/",
-	"files.associations": {
-		"api-extractor.json": "jsonc",
-		"tsconfig.json": "jsonc",
-		".env.*": "properties"
-	},
-	"json.schemas": [
-		{
-			"fileMatch": ["**/break-check.config.json"],
-			"url": "./packages/break-check/dist/break-check.main.schema.json"
-		},
-		{
-			"fileMatch": ["**/flightdeck.config.json"],
-			"url": "./packages/flightdeck/dist/flightdeck.main.schema.json"
-		}
-	],
-	// EDITOR DISPLAY AND BEHAVIOR ////////////////////////////////////////////////
-	"editor.wordSeparators": "./\\()\"'-:,.;<>~!@#%^&*|+=[]{}`~?",
-	"workbench.editor.customLabels.patterns": {
-		"**/src/index.ts": "${dirname(1)}/${dirname}/index.ts",
-		"**/src/index.tsx": "${dirname(1)}/${dirname}/index.tsx",
-		"**/index.ts": "${dirname}/index.ts",
-		"**/index.tsx": "${dirname}/index.tsx",
-		"**/app/**/page.tsx": "${dirname}/page.tsx",
-		"**/app/**/page.mdx": "${dirname}/page.tsx",
-		"**/app/**/layout.tsx": "${dirname}/layout.tsx"
-	},
-	"cSpell.words": [
-		"anvl",
-		"arktype",
-		"biomejs",
-		"cachedir",
-		"Cardstock",
-		"Cdnl",
-		"comline",
-		"cooldown",
-		"Deleters",
-		"Diagon",
-		"elysia",
-		"esbuild",
-		"estree",
-		"eyecuelab",
-		"filestore",
-		"flightdeck",
-		"hamr",
-		"hamt",
-		"htmx",
-		"immer",
-		"immerable",
-		"ingt",
-		"jeremybanka",
-		"Lnav",
-		"lockb",
-		"Luum",
-		"metafile",
-		"npmlog",
-		"outdir",
-		"outfile",
-		"postversion",
-		"preact",
-		"Recasters",
-		"recoverage",
-		"Renamers",
-		"revparse",
-		"rolldown",
-		"safedeposit",
-		"safegen",
-		"Schemable",
-		"Selectables",
-		"svgr",
-		"testid",
-		"treeshake",
-		"treetrunks",
-		"tsdoc",
-		"tsdown",
-		"tsup",
-		"unrs",
-		"unsub",
-		"vercel",
-		"Vitest",
-		"wayforge",
-		"workerd",
-		"yalc",
-		"zustand"
-	]
+  // FILE FORMATTING ////////////////////////////////////////////////////////////
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[json][jsonc][typescript][typescriptreact][css]": {
+    "editor.defaultFormatter": "biomejs.biome"
+  },
+  "editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "coverage-gutters.coverageBaseDir": "**/coverage/",
+  "files.associations": {
+    "api-extractor.json": "jsonc",
+    "tsconfig.json": "jsonc",
+    ".env.*": "properties"
+  },
+  "json.schemas": [
+    {
+      "fileMatch": ["**/break-check.config.json"],
+      "url": "./packages/break-check/dist/break-check.main.schema.json"
+    },
+    {
+      "fileMatch": ["**/flightdeck.config.json"],
+      "url": "./packages/flightdeck/dist/flightdeck.main.schema.json"
+    }
+  ],
+  // EDITOR DISPLAY AND BEHAVIOR ////////////////////////////////////////////////
+  "editor.wordSeparators": "./\\()\"'-:,.;<>~!@#%^&*|+=[]{}`~?",
+  "workbench.editor.customLabels.patterns": {
+    "**/src/index.ts": "${dirname(1)}/${dirname}/index.ts",
+    "**/src/index.tsx": "${dirname(1)}/${dirname}/index.tsx",
+    "**/index.ts": "${dirname}/index.ts",
+    "**/index.tsx": "${dirname}/index.tsx",
+    "**/app/**/page.tsx": "${dirname}/page.tsx",
+    "**/app/**/page.mdx": "${dirname}/page.tsx",
+    "**/app/**/layout.tsx": "${dirname}/layout.tsx"
+  }
 }
