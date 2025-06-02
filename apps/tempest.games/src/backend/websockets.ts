@@ -13,6 +13,7 @@ import {
 	userIndex,
 	usersOfSockets,
 } from "atom.io/realtime-server"
+import { CookieMap } from "bun"
 import { eq } from "drizzle-orm"
 import type { DefaultEventsMap, ExtendedError, Socket } from "socket.io"
 
@@ -49,12 +50,15 @@ export const sessionMiddleware: SocketServerMiddleware = async (
 	socket,
 	next,
 ) => {
-	const { username, sessionKey } = socket.handshake.auth as {
-		username: string
-		sessionKey: string
-	}
-	if (!(username && sessionKey)) {
+	const { username } = socket.handshake.auth as { username: string }
+	if (!username) {
 		next(new Error(`No auth header provided`))
+		return
+	}
+	const cookies = new CookieMap(socket.handshake.headers.cookie ?? ``)
+	const sessionKey = cookies.get(`sessionKey`)
+	if (!sessionKey) {
+		next(new Error(`No session key provided`))
 		return
 	}
 	const user = await db.drizzle.query.users.findFirst({

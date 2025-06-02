@@ -57,7 +57,7 @@ IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
 
 const trpcHandler = createHTTPHandler({
 	router: appRouter,
-	middleware: cors({ origin: env.FRONTEND_ORIGINS }),
+	middleware: cors({ origin: env.FRONTEND_ORIGINS, credentials: true }),
 	createContext: ({ req, res }) => {
 		const context: Context = {
 			req,
@@ -77,6 +77,7 @@ new WebSocketServer(httpServer, {
 	cors: {
 		origin: env.FRONTEND_ORIGINS,
 		methods: [`GET`, `POST`],
+		credentials: true,
 	},
 })
 	.use(sessionMiddleware)

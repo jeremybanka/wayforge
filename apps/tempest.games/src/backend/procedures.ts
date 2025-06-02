@@ -1,4 +1,5 @@
 import { TRPCError } from "@trpc/server"
+import { CookieMap } from "bun"
 import { eq } from "drizzle-orm"
 
 import { users } from "../database/tempest-db-schema"
@@ -21,11 +22,13 @@ export const loggedProcedure = trpc.procedure.use(async (opts) => {
 })
 
 export const userSessionProcedure = loggedProcedure.use((opts) => {
-	const { authorization } = opts.ctx.req.headers
+	const cookieHeader = opts.ctx.req.headers.cookie ?? ``
+	const cookies = new CookieMap(cookieHeader)
+	const sessionKey = cookies.get(`sessionKey`)
 	let auth: ContextAuth | null = null
-	if (authorization) {
-		const [userId, sessionKey] = authorization.split(` `)
-		if (userId && sessionKey && userSessions.has(userId, sessionKey)) {
+	if (sessionKey) {
+		const userId = userSessions.getRelatedKey(sessionKey)
+		if (userId) {
 			auth = { userId, sessionKey }
 		}
 	}

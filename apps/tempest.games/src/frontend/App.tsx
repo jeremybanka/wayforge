@@ -95,7 +95,6 @@ export function App(): React.ReactNode {
 									if (!auth) return
 									await trpcClient.closeSession.mutate({
 										username: auth.username,
-										sessionKey: auth.sessionKey,
 									})
 									socket.once(`disconnect`, () => {
 										setState(authAtom, null)
