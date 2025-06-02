@@ -206,12 +206,15 @@ export const appRouter = trpc.router({
 				const sessionKey = createSession(userId, ctx.now)
 				successful = true
 				ctx.logger.info(`🔑 sign in successful as`, email)
+				ctx.res.setHeader(
+					`Set-Cookie`,
+					`sessionKey=${sessionKey}; HttpOnly; Expires=${60 * 60 * 24 * 7}; Path=/`,
+				)
 				return {
 					userId,
 					email,
 					username,
 					password: true,
-					sessionKey,
 					verification: `verified`,
 				}
 			} finally {
@@ -227,7 +230,7 @@ export const appRouter = trpc.router({
 		}),
 
 	closeSession: userSessionProcedure
-		.input(type({ username: `string`, sessionKey: `string` }))
+		.input(type({ username: `string` }))
 		.mutation(({ ctx }) => {
 			const { sessionKey } = ctx
 			userSessions.delete(sessionKey)
@@ -349,12 +352,15 @@ export const appRouter = trpc.router({
 				.where(eq(accountActions.userId, user.id))
 			const { username } = user
 			const sessionKey = createSession(user.id, ctx.now)
+			ctx.res.setHeader(
+				`Set-Cookie`,
+				`sessionKey=${sessionKey}; HttpOnly; Expires=${60 * 60 * 24 * 7}; Path=/`,
+			)
 			return {
 				userId,
 				email,
 				username,
 				password,
-				sessionKey,
 				verification,
 				action,
 			}

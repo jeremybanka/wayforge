@@ -101,7 +101,6 @@ export const clientAuthDataType = type({
 	userId: `string`,
 	username: `string`,
 	password: `boolean`,
-	sessionKey: `string`,
 	verification: `'unverified' | 'verified'`,
 })
 export type ClientAuthData = typeof clientAuthDataType.infer

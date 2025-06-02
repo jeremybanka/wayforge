@@ -1,4 +1,4 @@
-import type { Temporal } from "@js-temporal/polyfill"
+import { Temporal } from "@js-temporal/polyfill"
 import { Junction } from "atom.io/internal"
 import { CronJob } from "cron"
 
@@ -13,7 +13,7 @@ declare global {
 
 export type UserSessions = Junction<`user`, string, `session`, string>
 export type SessionData = [
-	sessionCreatedTimes: Map<string, number>,
+	sessionCreatedTimes: Map<string, Temporal.Instant>,
 	userSessions: UserSessions,
 ]
 export const [sessionCreatedTimes, userSessions]: SessionData = (() => {
@@ -28,9 +28,9 @@ export const [sessionCreatedTimes, userSessions]: SessionData = (() => {
 		]
 		const [createdTimes, sessions] = __sessionData
 		const autoExpiry = new CronJob(`00 00 03 * * *`, () => {
-			const now = Date.now()
+			const aboutAWeekAgo = Temporal.Now.instant().subtract({ hours: 24 * 7 })
 			for (const [sessionId, sessionCreatedAt] of createdTimes.entries()) {
-				if (now - sessionCreatedAt > ONE_WEEK_MS) {
+				if (Temporal.Instant.compare(sessionCreatedAt, aboutAWeekAgo) <= 0) {
 					sessions.delete(sessionId)
 				}
 			}
@@ -46,7 +46,7 @@ export const [sessionCreatedTimes, userSessions]: SessionData = (() => {
 
 export function createSession(userId: string, now: Temporal.Instant): string {
 	const sessionKey = crypto.randomUUID()
-	sessionCreatedTimes.set(sessionKey, +now)
+	sessionCreatedTimes.set(sessionKey, now)
 	userSessions.set(userId, sessionKey)
 	return sessionKey
 }
@@ -57,5 +57,6 @@ export function isSessionRecent(
 ): boolean {
 	const sessionCreatedAt = sessionCreatedTimes.get(sessionKey)
 	if (!sessionCreatedAt) return false
-	return +now - sessionCreatedAt < TEN_MINUTES_MS
+	const tenMinutesAgo = now.subtract({ minutes: 10 })
+	return Temporal.Instant.compare(sessionCreatedAt, tenMinutesAgo) >= 0
 }
