@@ -55,7 +55,6 @@ IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
 	logger,
 )
 
-logger.info({ FRONTEND_ORIGINS: env.FRONTEND_ORIGINS })
 const trpcHandler = createHTTPHandler({
 	router: appRouter,
 	middleware: cors({ origin: env.FRONTEND_ORIGINS, credentials: true }),
