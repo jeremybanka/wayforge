@@ -1,5 +1,12 @@
 # tempest.games
 
+## 0.2.13
+
+### Patch Changes
+
+- 1f8e07e: 🐛 Fixed a bug with the implementation of Temporal features where signins could be blocked.
+- 1f8e07e: ✨ Improved security by making session keys invisible to the tab's JavaScript runtime.
+
 ## 0.2.12
 
 ### Patch Changes
