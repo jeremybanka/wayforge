@@ -78,6 +78,7 @@ new WebSocketServer(httpServer, {
 	cors: {
 		origin: env.FRONTEND_ORIGINS,
 		methods: [`GET`, `POST`],
+		credentials: true,
 	},
 })
 	.use(sessionMiddleware)

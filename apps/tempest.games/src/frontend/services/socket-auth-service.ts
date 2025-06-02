@@ -28,6 +28,7 @@ export const socket: Socket<TempestSocketDown, TempestSocketUp> = io(
 				pass(auth)
 			}
 		},
+		withCredentials: true,
 		autoConnect: false,
 	},
 )
