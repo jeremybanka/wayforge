@@ -211,7 +211,6 @@ export const appRouter = trpc.router({
 					email,
 					username,
 					password: true,
-					sessionKey,
 					verification: `verified`,
 				}
 			} finally {
@@ -227,7 +226,7 @@ export const appRouter = trpc.router({
 		}),
 
 	closeSession: userSessionProcedure
-		.input(type({ username: `string`, sessionKey: `string` }))
+		.input(type({ username: `string` }))
 		.mutation(({ ctx }) => {
 			const { sessionKey } = ctx
 			userSessions.delete(sessionKey)
@@ -358,7 +357,6 @@ export const appRouter = trpc.router({
 				email,
 				username,
 				password,
-				sessionKey,
 				verification,
 				action,
 			}
