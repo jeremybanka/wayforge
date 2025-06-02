@@ -349,6 +349,10 @@ export const appRouter = trpc.router({
 				.where(eq(accountActions.userId, user.id))
 			const { username } = user
 			const sessionKey = createSession(user.id, ctx.now)
+			ctx.res.setHeader(
+				`Set-Cookie`,
+				`sessionKey=${sessionKey}; HttpOnly; Expires=${60 * 60 * 24 * 7}; Path=/`,
+			)
 			return {
 				userId,
 				email,
