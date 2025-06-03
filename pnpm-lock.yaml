@@ -331,8 +331,8 @@ importers:
         specifier: 19.1.0
         version: 19.1.0(react@19.1.0)
       react-email:
-        specifier: 4.0.15
-        version: 4.0.15(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.1)
+        specifier: 4.0.16
+        version: 4.0.16(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.1)
       resend:
         specifier: 4.5.1
         version: 4.5.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -1431,10 +1431,6 @@ packages:
     resolution: {integrity: sha512-VybsKvpiN1gU1sdMZIp7FcqphVVKEwcuj02x73uvcHE0PTihx1nlBcowYWhDwjpoAXRv43+gDzyggGnn1XZhVw==}
     engines: {node: '>=6.9.0'}
 
-  '@babel/generator@7.27.1':
-    resolution: {integrity: sha512-UnJfnIpc/+JO0/+KRVQNGU+y5taA5vCbwN8+azkX6beii/ZF+enZJSOKo11ZSzGJjlNfJHfQtmQT8H+9TXPG2w==}
-    engines: {node: '>=6.9.0'}
-
   '@babel/generator@7.27.3':
     resolution: {integrity: sha512-xnlJYj5zepml8NXtjkG0WquFUv8RskFqyFcVgTBp5k+NaA/8uw/K+OSVf8AMGw5e9HKP2ETd5xpK5MLZQD6b4Q==}
     engines: {node: '>=6.9.0'}
@@ -1529,11 +1525,6 @@ packages:
   '@babel/helpers@7.27.0':
     resolution: {integrity: sha512-U5eyP/CTFPuNE3qk+WZMxFkp/4zUzdceQlfzf7DdGdhp+Fezd7HD+i8Y24ZuTMKX3wQBld449jijbGq6OdGNQg==}
     engines: {node: '>=6.9.0'}
-
-  '@babel/parser@7.27.2':
-    resolution: {integrity: sha512-QYLs8299NA7WM/bZAdp+CviYYkVoYXlDW2rzliy3chxd1PQjej7JORuMJDJXJUb9g0TT+B99EwaVLKmX+sPXWw==}
-    engines: {node: '>=6.0.0'}
-    hasBin: true
 
   '@babel/parser@7.27.3':
     resolution: {integrity: sha512-xyYxRj6+tLNDTWi0KCBcZ9V7yg3/lwL9DWh9Uwh/RIVlIfFidggcgxKX3GCXwCiswwcGRawBKbEg2LG/Y8eJhw==}
@@ -1991,10 +1982,6 @@ packages:
 
   '@babel/types@7.27.0':
     resolution: {integrity: sha512-H45s8fVLYjbhFH62dIJ3WtmJ6RSPt/3DRO0ZcT2SUiYiQyz3BLVb9ADEnLl91m74aQPS3AzzeajZHYOalWe3bg==}
-    engines: {node: '>=6.9.0'}
-
-  '@babel/types@7.27.1':
-    resolution: {integrity: sha512-+EzkxvLNfiUeKMgy/3luqfsCWFRXLb7U6wNQTk60tovuckwB15B191tJWvpp4HjiQWdJkCxO3Wbvc6jlk3Xb2Q==}
     engines: {node: '>=6.9.0'}
 
   '@babel/types@7.27.3':
@@ -7276,8 +7263,8 @@ packages:
     peerDependencies:
       react: ^19.1.0
 
-  react-email@4.0.15:
-    resolution: {integrity: sha512-UQR18Toi3TAasqcZal69rYZ9RiIKRvHRW69tN6k7hONJpEPeiC4uBtDwH5VxpllW591D+NOdpBF/V1pTansaKg==}
+  react-email@4.0.16:
+    resolution: {integrity: sha512-auhFU+nQxAkKkP6lQhPyGsa9exwfUEzp2BwZnjHokCwphZlg30tu4t1LgdKRwGPYsi7XNGy6asbVLAUhOVpzzg==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -8747,7 +8734,7 @@ snapshots:
       '@babel/helper-compilation-targets': 7.27.0
       '@babel/helper-module-transforms': 7.26.0(@babel/core@7.26.10)
       '@babel/helpers': 7.27.0
-      '@babel/parser': 7.27.2
+      '@babel/parser': 7.27.3
       '@babel/template': 7.27.0
       '@babel/traverse': 7.27.0(supports-color@5.5.0)
       '@babel/types': 7.27.0
@@ -8761,16 +8748,8 @@ snapshots:
 
   '@babel/generator@7.27.0':
     dependencies:
-      '@babel/parser': 7.27.2
-      '@babel/types': 7.27.1
-      '@jridgewell/gen-mapping': 0.3.8
-      '@jridgewell/trace-mapping': 0.3.25
-      jsesc: 3.1.0
-
-  '@babel/generator@7.27.1':
-    dependencies:
-      '@babel/parser': 7.27.2
-      '@babel/types': 7.27.1
+      '@babel/parser': 7.27.3
+      '@babel/types': 7.27.3
       '@jridgewell/gen-mapping': 0.3.8
       '@jridgewell/trace-mapping': 0.3.25
       jsesc: 3.1.0
@@ -8836,7 +8815,7 @@ snapshots:
   '@babel/helper-module-imports@7.25.9(supports-color@5.5.0)':
     dependencies:
       '@babel/traverse': 7.27.0(supports-color@5.5.0)
-      '@babel/types': 7.27.1
+      '@babel/types': 7.27.3
     transitivePeerDependencies:
       - supports-color
 
@@ -8901,11 +8880,7 @@ snapshots:
   '@babel/helpers@7.27.0':
     dependencies:
       '@babel/template': 7.27.0
-      '@babel/types': 7.27.1
-
-  '@babel/parser@7.27.2':
-    dependencies:
-      '@babel/types': 7.27.1
+      '@babel/types': 7.27.3
 
   '@babel/parser@7.27.3':
     dependencies:
@@ -9261,7 +9236,7 @@ snapshots:
       '@babel/helper-module-imports': 7.25.9(supports-color@5.5.0)
       '@babel/helper-plugin-utils': 7.26.5
       '@babel/plugin-syntax-jsx': 7.25.9(@babel/core@7.26.10)
-      '@babel/types': 7.27.1
+      '@babel/types': 7.27.3
     transitivePeerDependencies:
       - supports-color
 
@@ -9429,7 +9404,7 @@ snapshots:
     dependencies:
       '@babel/core': 7.26.10
       '@babel/helper-plugin-utils': 7.26.5
-      '@babel/types': 7.27.1
+      '@babel/types': 7.27.3
       esutils: 2.0.3
 
   '@babel/preset-react@7.26.3(@babel/core@7.26.10)':
@@ -9462,16 +9437,16 @@ snapshots:
   '@babel/template@7.27.0':
     dependencies:
       '@babel/code-frame': 7.26.2
-      '@babel/parser': 7.27.2
-      '@babel/types': 7.27.1
+      '@babel/parser': 7.27.3
+      '@babel/types': 7.27.3
 
   '@babel/traverse@7.27.0(supports-color@5.5.0)':
     dependencies:
       '@babel/code-frame': 7.26.2
-      '@babel/generator': 7.27.1
-      '@babel/parser': 7.27.2
+      '@babel/generator': 7.27.3
+      '@babel/parser': 7.27.3
       '@babel/template': 7.27.0
-      '@babel/types': 7.27.1
+      '@babel/types': 7.27.3
       debug: 4.4.1(supports-color@5.5.0)
       globals: 11.12.0
     transitivePeerDependencies:
@@ -9481,11 +9456,6 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.25.9
       '@babel/helper-validator-identifier': 7.25.9
-
-  '@babel/types@7.27.1':
-    dependencies:
-      '@babel/helper-string-parser': 7.27.1
-      '@babel/helper-validator-identifier': 7.27.1
 
   '@babel/types@7.27.3':
     dependencies:
@@ -10983,7 +10953,7 @@ snapshots:
 
   '@svgr/hast-util-to-babel-ast@8.0.0':
     dependencies:
-      '@babel/types': 7.27.1
+      '@babel/types': 7.27.3
       entities: 4.5.0
 
   '@svgr/plugin-jsx@8.1.0(@svgr/core@8.1.0(typescript@5.8.3))':
@@ -13829,7 +13799,7 @@ snapshots:
   istanbul-lib-instrument@6.0.3:
     dependencies:
       '@babel/core': 7.26.10
-      '@babel/parser': 7.27.2
+      '@babel/parser': 7.27.3
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.2
       semver: 7.7.1
@@ -14992,9 +14962,9 @@ snapshots:
       react: 19.1.0
       scheduler: 0.26.0
 
-  react-email@4.0.15(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.1):
+  react-email@4.0.16(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.1):
     dependencies:
-      '@babel/parser': 7.27.2
+      '@babel/parser': 7.27.3
       '@babel/traverse': 7.27.0(supports-color@5.5.0)
       chalk: 5.4.1
       chokidar: 4.0.3
