@@ -295,11 +295,11 @@ importers:
         specifier: 0.13.6
         version: 0.13.6(arktype@2.1.20)(typescript@5.8.3)(valibot@1.0.0(typescript@5.8.3))(zod@3.25.51)
       '@trpc/client':
-        specifier: 11.3.0
-        version: 11.3.0(@trpc/server@11.3.0(typescript@5.8.3))(typescript@5.8.3)
+        specifier: 11.3.1
+        version: 11.3.1(@trpc/server@11.3.1(typescript@5.8.3))(typescript@5.8.3)
       '@trpc/server':
-        specifier: 11.3.0
-        version: 11.3.0(typescript@5.8.3)
+        specifier: 11.3.1
+        version: 11.3.1(typescript@5.8.3)
       arktype:
         specifier: 2.1.20
         version: 2.1.20
@@ -3775,14 +3775,14 @@ packages:
       '@types/react-dom':
         optional: true
 
-  '@trpc/client@11.3.0':
-    resolution: {integrity: sha512-O8fih4Tj+mGqN7bPM1inXJ7/3SFYI3/0D/AKYDc/G6Bq7GNNX+1st0YMMdtFk+Vv3e8K95h6233ZOwRX0qiwOg==}
+  '@trpc/client@11.3.1':
+    resolution: {integrity: sha512-UlLsUN7x8qD07FaGzdz/FG3K+kpaYowZkmVZ8R4Nlx1Yj01Kgr1Y+cGjtBdRpd+0l7uVylwDPmHA1OxYE6zHgA==}
     peerDependencies:
-      '@trpc/server': 11.3.0
+      '@trpc/server': 11.3.1
       typescript: '>=5.7.2'
 
-  '@trpc/server@11.3.0':
-    resolution: {integrity: sha512-E5y94QLxgYr+T5FOWiMqNrCW0d2CJfhxNB7bS9xQzPfPMQeo4dpX8/s3nAxITJ9ARrORhK3Efpqs3/bPI9UOTQ==}
+  '@trpc/server@11.3.1':
+    resolution: {integrity: sha512-5Rjigjqwl9ieXL91ebZ1M4FPFXQJ5qipRyZuBoNzvqkq7Qlig+2F4WwLELyiTSNk2bGzdJTXJMKLhRE9Z56D8w==}
     peerDependencies:
       typescript: '>=5.7.2'
 
@@ -11105,12 +11105,12 @@ snapshots:
       '@types/react': 19.1.6
       '@types/react-dom': 19.1.6(@types/react@19.1.6)
 
-  '@trpc/client@11.3.0(@trpc/server@11.3.0(typescript@5.8.3))(typescript@5.8.3)':
+  '@trpc/client@11.3.1(@trpc/server@11.3.1(typescript@5.8.3))(typescript@5.8.3)':
     dependencies:
-      '@trpc/server': 11.3.0(typescript@5.8.3)
+      '@trpc/server': 11.3.1(typescript@5.8.3)
       typescript: 5.8.3
 
-  '@trpc/server@11.3.0(typescript@5.8.3)':
+  '@trpc/server@11.3.1(typescript@5.8.3)':
     dependencies:
       typescript: 5.8.3
 
