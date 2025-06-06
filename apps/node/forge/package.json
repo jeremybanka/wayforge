@@ -21,7 +21,7 @@
 		"json-schema-to-zod": "2.6.1",
 		"npmlog": "7.0.1",
 		"prettier": "3.5.3",
-		"simple-git": "3.27.0",
+		"simple-git": "3.28.0",
 		"socket-io.filestore": "workspace:*",
 		"socket-io.git": "workspace:*",
 		"socket.io": "4.8.1",
