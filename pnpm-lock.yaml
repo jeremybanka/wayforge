@@ -437,8 +437,8 @@ importers:
   apps/wayfarer.quest:
     dependencies:
       '@t3-oss/env-nextjs':
-        specifier: 0.13.6
-        version: 0.13.6(arktype@2.1.20)(typescript@5.8.3)(zod@3.25.56)
+        specifier: 0.13.7
+        version: 0.13.7(arktype@2.1.20)(typescript@5.8.3)(zod@3.25.56)
       '@vercel/analytics':
         specifier: 1.5.0
         version: 1.5.0(next@15.3.3(@babel/core@7.27.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.1))(react@19.1.0)
@@ -3699,23 +3699,6 @@ packages:
       zod:
         optional: true
 
-  '@t3-oss/env-core@0.13.6':
-    resolution: {integrity: sha512-rH7FgcB1YGbv/tvv7mdJAxnNvRkK/gEqdVYBwO1AVvaWOTNuftqskxkEYyhM2O+lkNPJmTq5YBE7H+Unl7CLjg==}
-    peerDependencies:
-      arktype: ^2.1.0
-      typescript: '>=5.0.0'
-      valibot: ^1.0.0-beta.7 || ^1.0.0
-      zod: ^3.24.0 || ^4.0.0-beta.0
-    peerDependenciesMeta:
-      arktype:
-        optional: true
-      typescript:
-        optional: true
-      valibot:
-        optional: true
-      zod:
-        optional: true
-
   '@t3-oss/env-core@0.13.7':
     resolution: {integrity: sha512-e/SfMtpZeYwS1b0zaG7cGetcQdTbTFUXojDX+3ahdB8B20oZz1PPZngMZgZ95+eOK+NRy7XJSFLjkEWqfISCkg==}
     peerDependencies:
@@ -3733,8 +3716,8 @@ packages:
       zod:
         optional: true
 
-  '@t3-oss/env-nextjs@0.13.6':
-    resolution: {integrity: sha512-KcA5U8L+Be4OuR5YxmrBzkeo7WsKkEFJDwcAgYFwcBgxxc3oJBdTB7KPQfVrx7wjtX5aDr2jZ0LG55yEXqQi9A==}
+  '@t3-oss/env-nextjs@0.13.7':
+    resolution: {integrity: sha512-UB7ypr53UrxwLgwd8uXEODMA1lMSdytO06je0pdquzZW0qIks1Zqf1mysAKtBynBGemATL1IArdyWNZQpDBJ+w==}
     peerDependencies:
       arktype: ^2.1.0
       typescript: '>=5.0.0'
@@ -11007,21 +10990,15 @@ snapshots:
       typescript: 5.8.3
       zod: 3.25.7
 
-  '@t3-oss/env-core@0.13.6(arktype@2.1.20)(typescript@5.8.3)(zod@3.25.56)':
-    optionalDependencies:
-      arktype: 2.1.20
-      typescript: 5.8.3
-      zod: 3.25.56
-
   '@t3-oss/env-core@0.13.7(arktype@2.1.20)(typescript@5.8.3)(zod@3.25.56)':
     optionalDependencies:
       arktype: 2.1.20
       typescript: 5.8.3
       zod: 3.25.56
 
-  '@t3-oss/env-nextjs@0.13.6(arktype@2.1.20)(typescript@5.8.3)(zod@3.25.56)':
+  '@t3-oss/env-nextjs@0.13.7(arktype@2.1.20)(typescript@5.8.3)(zod@3.25.56)':
     dependencies:
-      '@t3-oss/env-core': 0.13.6(arktype@2.1.20)(typescript@5.8.3)(zod@3.25.56)
+      '@t3-oss/env-core': 0.13.7(arktype@2.1.20)(typescript@5.8.3)(zod@3.25.56)
     optionalDependencies:
       arktype: 2.1.20
       typescript: 5.8.3
