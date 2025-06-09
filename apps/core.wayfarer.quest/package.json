@@ -16,7 +16,7 @@
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types"
 	},
 	"dependencies": {
-		"@t3-oss/env-core": "0.13.6",
+		"@t3-oss/env-core": "0.13.7",
 		"fp-ts": "2.16.10",
 		"nanoid": "5.1.5",
 		"npmlog": "7.0.1",
