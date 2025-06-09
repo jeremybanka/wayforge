@@ -10,7 +10,7 @@
 	"packageManager": "pnpm@10.12.1",
 	"engines": {
 		"bun": "1.2.1",
-		"node": "24.1.0"
+		"node": "24.2.0"
 	},
 	"workspaces": ["apps/*", "packages/*"],
 	"scripts": {
