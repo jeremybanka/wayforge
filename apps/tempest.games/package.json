@@ -78,7 +78,6 @@
 		"treetrunks": "workspace:*"
 	},
 	"devDependencies": {
-		"@eslint/js": "9.29.0",
 		"@react-email/components": "0.0.42",
 		"@types/bun": "npm:bun-types@1.2.16",
 		"@types/cors": "2.8.19",
@@ -94,14 +93,10 @@
 		"drizzle-kit": "0.31.1",
 		"elysia": "1.3.4",
 		"eslint": "9.29.0",
-		"eslint-plugin-react-refresh": "0.4.20",
 		"flightdeck": "workspace:*",
 		"globals": "16.2.0",
 		"rimraf": "6.0.1",
 		"sass-embedded": "1.89.2",
-		"tsx": "4.20.3",
-		"typescript": "5.8.3",
-		"typescript-eslint": "8.34.0",
 		"varmint": "workspace:*",
 		"vite": "6.3.5",
 		"vite-tsconfig-paths": "5.1.4",
