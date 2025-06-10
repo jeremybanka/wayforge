@@ -14,8 +14,8 @@
 		"start": "next start -p 5454",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
-		"lint:types": "tsc --noEmit",
-		"watch:types": "tsc --watch --noEmit",
+		"lint:types": "tsgo --noEmit",
+		"watch:types": "tsgo --watch --noEmit",
 		"lint": "concurrently \"bun:lint:*\"",
 		"test": "echo no tests yet",
 		"test:once": "echo no tests yet"
