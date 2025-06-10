@@ -19,17 +19,8 @@
 			}
 		],
 		"paths": {
-			"~/*": ["./*"],
-			"src/*": ["./apps/atom.io.fyi/src/*"],
 			"x/*": ["./apps/atom.io.fyi/src/exhibits-wrapped/*"],
-			"atom.io": ["./packages/atom.io/src/main"],
-			"atom.io/*": ["./packages/atom.io/src/*"],
-			"anvl/*": ["./packages/anvl/src/*"],
-			"hamr/*": ["./packages/hamr/*/src"],
-			"rel8": ["./packages/rel8/types/src"],
-			"rel8/*": ["./packages/rel8/*/src"],
-			"tsdoc.json": ["./packages/tsdoc.json/src"],
-			"tsdoc.json/*": ["./packages/tsdoc.json/*/src"]
+			"tsdoc.json": ["./packages/tsdoc.json/src/index.ts"]
 		},
 		"strict": false
 	},
