@@ -32,6 +32,9 @@ importers:
       '@typescript-eslint/parser':
         specifier: 8.34.0
         version: 8.34.0(eslint@9.28.0(jiti@2.4.2))(typescript@5.8.3)
+      '@typescript/native-preview':
+        specifier: 7.0.0-dev.20250611.1
+        version: 7.0.0-dev.20250611.1
       c8:
         specifier: 10.1.3
         version: 10.1.3
@@ -74,6 +77,9 @@ importers:
       '@vercel/speed-insights':
         specifier: 1.2.0
         version: 1.2.0(next@15.3.3(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.2))(react@19.1.0)
+      atom.io:
+        specifier: workspace:*
+        version: link:../../packages/atom.io
       next:
         specifier: 15.3.3
         version: 15.3.3(@babel/core@7.27.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.2)
@@ -135,6 +141,9 @@ importers:
       rehype-slug:
         specifier: 6.0.0
         version: 6.0.0
+      tsdoc.json:
+        specifier: workspace:*
+        version: link:../../packages/tsdoc.json
       typescript:
         specifier: 5.8.3
         version: 5.8.3
@@ -352,9 +361,6 @@ importers:
         specifier: workspace:*
         version: link:../../packages/treetrunks
     devDependencies:
-      '@eslint/js':
-        specifier: 9.28.0
-        version: 9.28.0
       '@types/bun':
         specifier: npm:bun-types@1.2.15
         version: bun-types@1.2.15
@@ -394,12 +400,6 @@ importers:
       elysia:
         specifier: 1.3.4
         version: 1.3.4(exact-mirror@0.1.2(@sinclair/typebox@0.34.33))(file-type@6.2.0)(typescript@5.8.3)
-      eslint:
-        specifier: 9.28.0
-        version: 9.28.0(jiti@2.4.2)
-      eslint-plugin-react-refresh:
-        specifier: 0.4.20
-        version: 0.4.20(eslint@9.28.0(jiti@2.4.2))
       flightdeck:
         specifier: workspace:*
         version: link:../../packages/flightdeck
@@ -412,15 +412,6 @@ importers:
       sass-embedded:
         specifier: 1.89.2
         version: 1.89.2
-      tsx:
-        specifier: 4.20.1
-        version: 4.20.1
-      typescript:
-        specifier: 5.8.3
-        version: 5.8.3
-      typescript-eslint:
-        specifier: 8.34.0
-        version: 8.34.0(eslint@9.28.0(jiti@2.4.2))(typescript@5.8.3)
       varmint:
         specifier: workspace:*
         version: link:../../packages/varmint
@@ -601,15 +592,15 @@ importers:
 
   packages/anvl:
     devDependencies:
+      concurrently:
+        specifier: 9.1.2
+        version: 9.1.2
       eslint:
         specifier: 9.28.0
         version: 9.28.0(jiti@2.4.2)
       tsup:
         specifier: 8.5.0
         version: 8.5.0(@microsoft/api-extractor@7.52.8(@types/node@24.0.1))(@swc/core@1.11.31)(jiti@2.4.2)(postcss@8.5.4)(tsx@4.20.1)(typescript@5.8.3)
-      typescript:
-        specifier: 5.8.3
-        version: 5.8.3
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@24.0.1)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.41.0)(tsx@4.20.1)
@@ -730,7 +721,7 @@ importers:
         version: 0.2.3
       tsdown:
         specifier: 0.12.7
-        version: 0.12.7(typescript@5.8.3)
+        version: 0.12.7(@typescript/native-preview@7.0.0-dev.20250611.1)(typescript@5.8.3)
       tsx:
         specifier: 4.20.1
         version: 4.20.1
@@ -791,7 +782,7 @@ importers:
         version: 0.2.3
       tsdown:
         specifier: 0.12.7
-        version: 0.12.7(typescript@5.8.3)
+        version: 0.12.7(@typescript/native-preview@7.0.0-dev.20250611.1)(typescript@5.8.3)
 
   packages/comline:
     dependencies:
@@ -822,7 +813,7 @@ importers:
         version: 0.2.3
       tsdown:
         specifier: 0.12.7
-        version: 0.12.7(typescript@5.8.3)
+        version: 0.12.7(@typescript/native-preview@7.0.0-dev.20250611.1)(typescript@5.8.3)
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@24.0.1)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.41.0)(tsx@4.20.1)
@@ -886,7 +877,7 @@ importers:
         version: 0.2.3
       tsdown:
         specifier: 0.12.7
-        version: 0.12.7(typescript@5.8.3)
+        version: 0.12.7(@typescript/native-preview@7.0.0-dev.20250611.1)(typescript@5.8.3)
       varmint:
         specifier: workspace:*
         version: link:../varmint
@@ -969,9 +960,6 @@ importers:
       tsup:
         specifier: 8.5.0
         version: 8.5.0(@microsoft/api-extractor@7.52.8(@types/node@24.0.1))(@swc/core@1.11.31)(jiti@2.4.2)(postcss@8.5.4)(tsx@4.20.1)(typescript@5.8.3)
-      typescript:
-        specifier: 5.8.3
-        version: 5.8.3
       vite-plugin-dts:
         specifier: 4.5.4
         version: 4.5.4(@types/node@24.0.1)(rollup@4.42.0)(typescript@5.8.3)(vite@6.3.5(@types/node@24.0.1)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.41.0)(tsx@4.20.1))
@@ -994,15 +982,15 @@ importers:
       '@types/node':
         specifier: 24.0.1
         version: 24.0.1
+      concurrently:
+        specifier: 9.1.2
+        version: 9.1.2
       eslint:
         specifier: 9.28.0
         version: 9.28.0(jiti@2.4.2)
       tsup:
         specifier: 8.5.0
         version: 8.5.0(@microsoft/api-extractor@7.52.8(@types/node@24.0.1))(@swc/core@1.11.31)(jiti@2.4.2)(postcss@8.5.4)(tsx@4.20.1)(typescript@5.8.3)
-      typescript:
-        specifier: 5.8.3
-        version: 5.8.3
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@24.0.1)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.41.0)(tsx@4.20.1)
@@ -1030,7 +1018,7 @@ importers:
         version: 6.0.1
       tsdown:
         specifier: 0.12.7
-        version: 0.12.7(typescript@5.8.3)
+        version: 0.12.7(@typescript/native-preview@7.0.0-dev.20250611.1)(typescript@5.8.3)
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@24.0.1)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.41.0)(tsx@4.20.1)
@@ -1043,15 +1031,15 @@ importers:
       '@types/node':
         specifier: 24.0.1
         version: 24.0.1
+      concurrently:
+        specifier: 9.1.2
+        version: 9.1.2
       eslint:
         specifier: 9.28.0
         version: 9.28.0(jiti@2.4.2)
       tsup:
         specifier: 8.5.0
         version: 8.5.0(@microsoft/api-extractor@7.52.8(@types/node@24.0.1))(@swc/core@1.11.31)(jiti@2.4.2)(postcss@8.5.4)(tsx@4.20.1)(typescript@5.8.3)
-      typescript:
-        specifier: 5.8.3
-        version: 5.8.3
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@24.0.1)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.41.0)(tsx@4.20.1)
@@ -1074,15 +1062,15 @@ importers:
         specifier: 5.1.5
         version: 5.1.5
     devDependencies:
+      concurrently:
+        specifier: 9.1.2
+        version: 9.1.2
       eslint:
         specifier: 9.28.0
         version: 9.28.0(jiti@2.4.2)
       tsup:
         specifier: 8.5.0
         version: 8.5.0(@microsoft/api-extractor@7.52.8(@types/node@24.0.1))(@swc/core@1.11.31)(jiti@2.4.2)(postcss@8.5.4)(tsx@4.20.1)(typescript@5.8.3)
-      typescript:
-        specifier: 5.8.3
-        version: 5.8.3
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@24.0.1)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.41.0)(tsx@4.20.1)
@@ -1103,10 +1091,7 @@ importers:
         version: 9.28.0(jiti@2.4.2)
       tsdown:
         specifier: 0.12.7
-        version: 0.12.7(typescript@5.8.3)
-      typescript:
-        specifier: 5.8.3
-        version: 5.8.3
+        version: 0.12.7(@typescript/native-preview@7.0.0-dev.20250611.1)(typescript@5.8.3)
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@24.0.1)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.41.0)(tsx@4.20.1)
@@ -1131,9 +1116,6 @@ importers:
       tsup:
         specifier: 8.5.0
         version: 8.5.0(@microsoft/api-extractor@7.52.8(@types/node@24.0.1))(@swc/core@1.11.31)(jiti@2.4.2)(postcss@8.5.4)(tsx@4.20.1)(typescript@5.8.3)
-      typescript:
-        specifier: 5.8.3
-        version: 5.8.3
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@24.0.1)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.41.0)(tsx@4.20.1)
@@ -1166,10 +1148,7 @@ importers:
         version: 0.2.3
       tsdown:
         specifier: 0.12.7
-        version: 0.12.7(typescript@5.8.3)
-      typescript:
-        specifier: 5.8.3
-        version: 5.8.3
+        version: 0.12.7(@typescript/native-preview@7.0.0-dev.20250611.1)(typescript@5.8.3)
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@24.0.1)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.41.0)(tsx@4.20.1)
@@ -1192,6 +1171,9 @@ importers:
       atom.io:
         specifier: workspace:*
         version: link:../atom.io
+      concurrently:
+        specifier: 9.1.2
+        version: 9.1.2
       eslint:
         specifier: 9.28.0
         version: 9.28.0(jiti@2.4.2)
@@ -1213,9 +1195,6 @@ importers:
       tsup:
         specifier: 8.5.0
         version: 8.5.0(@microsoft/api-extractor@7.52.8(@types/node@24.0.1))(@swc/core@1.11.31)(jiti@2.4.2)(postcss@8.5.4)(tsx@4.20.1)(typescript@5.8.3)
-      typescript:
-        specifier: 5.8.3
-        version: 5.8.3
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@24.0.1)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.41.0)(tsx@4.20.1)
@@ -1241,6 +1220,9 @@ importers:
       '@types/tmp':
         specifier: 0.2.6
         version: 0.2.6
+      concurrently:
+        specifier: 9.1.2
+        version: 9.1.2
       eslint:
         specifier: 9.28.0
         version: 9.28.0(jiti@2.4.2)
@@ -1262,9 +1244,6 @@ importers:
       tsup:
         specifier: 8.5.0
         version: 8.5.0(@microsoft/api-extractor@7.52.8(@types/node@24.0.1))(@swc/core@1.11.31)(jiti@2.4.2)(postcss@8.5.4)(tsx@4.20.1)(typescript@5.8.3)
-      typescript:
-        specifier: 5.8.3
-        version: 5.8.3
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@24.0.1)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.41.0)(tsx@4.20.1)
@@ -1297,7 +1276,7 @@ importers:
         version: 6.0.1
       tsdown:
         specifier: 0.12.7
-        version: 0.12.7(typescript@5.8.3)
+        version: 0.12.7(@typescript/native-preview@7.0.0-dev.20250611.1)(typescript@5.8.3)
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@24.0.1)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.41.0)(tsx@4.20.1)
@@ -1380,7 +1359,7 @@ importers:
         version: 0.2.3
       tsdown:
         specifier: 0.12.7
-        version: 0.12.7(typescript@5.8.3)
+        version: 0.12.7(@typescript/native-preview@7.0.0-dev.20250611.1)(typescript@5.8.3)
       vite:
         specifier: 6.3.5
         version: 6.3.5(@types/node@24.0.1)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.41.0)(tsx@4.20.1)
@@ -3962,6 +3941,53 @@ packages:
     resolution: {integrity: sha512-qHV7pW7E85A0x6qyrFn+O+q1k1p3tQCsqIZ1KZ5ESLXY57aTvUd3/a4rdPTeXisvhXn2VQG0VSKUqs8KHF2zcA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
+  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20250611.1':
+    resolution: {integrity: sha512-FmLlxktvUP/j91ervWGZZ7909idVlHgEqHbetPXPpiABBqzMbE7de6qCiL+mNuZ6tcXHZ3eSng5yvQMLa4EX/w==}
+    engines: {node: '>=20.6.0'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@typescript/native-preview-darwin-x64@7.0.0-dev.20250611.1':
+    resolution: {integrity: sha512-rdWrYFCz2BnhmOuHyPNApuP6kN04lFgKXcAftlpBj/hbSrW64RAB2+kDKbUqhrBf7UaUdN02RRLOEBiDK+zWsA==}
+    engines: {node: '>=20.6.0'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@typescript/native-preview-linux-arm64@7.0.0-dev.20250611.1':
+    resolution: {integrity: sha512-Abn9vNMJn48oJqrnUMmLap8jpI4lIq1Fb/tmWLnpST4S49/PxqJxo5g+WmT9Ql1CzBczHX+6kKXfowU4nAe1DA==}
+    engines: {node: '>=20.6.0'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@typescript/native-preview-linux-arm@7.0.0-dev.20250611.1':
+    resolution: {integrity: sha512-saymYX8jnjYbvzxIyCb89egXMUVyB9A1Xa42sdAhMFyt7Yvr10v0XEf/ef+KS3fyja8XXTzvpaEca7DEVO60lQ==}
+    engines: {node: '>=20.6.0'}
+    cpu: [arm]
+    os: [linux]
+
+  '@typescript/native-preview-linux-x64@7.0.0-dev.20250611.1':
+    resolution: {integrity: sha512-zeWIXFbwPPhY47fR++NysyN6j8Q2GO8OBIetVr6pLr8h8o0U6FOLGdDgvfQjJ7eZ6/ZDzC27AjTVHmsXKRf4ww==}
+    engines: {node: '>=20.6.0'}
+    cpu: [x64]
+    os: [linux]
+
+  '@typescript/native-preview-win32-arm64@7.0.0-dev.20250611.1':
+    resolution: {integrity: sha512-7aHRJxSWhxRCBehaRjVAvWSpMVQHgHrkMryXp/mJd63tJInEqQpvYbuA4C4wdNJCRl0iTAoqHwFBkJmNgvLK9g==}
+    engines: {node: '>=20.6.0'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@typescript/native-preview-win32-x64@7.0.0-dev.20250611.1':
+    resolution: {integrity: sha512-xZa/8hAFEjcd1/B9LJQPSxfs7P64jwcWIU3tNFtZLZgYs4ICJAUhbYxwPRO7bOrqkCIu2ZoviFw3VPTQsFAbBg==}
+    engines: {node: '>=20.6.0'}
+    cpu: [x64]
+    os: [win32]
+
+  '@typescript/native-preview@7.0.0-dev.20250611.1':
+    resolution: {integrity: sha512-tmTHXiKI8Jzc2/sEnr0E8Ep4G9o7FBl0yVMvo70x3v9NtO3oFpU0J3CGdjNEQjMQOtk6u6sxualy6fISzKL8yw==}
+    engines: {node: '>=20.6.0'}
+    hasBin: true
+
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
 
@@ -5479,11 +5505,6 @@ packages:
     engines: {node: '>=10'}
     peerDependencies:
       eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0
-
-  eslint-plugin-react-refresh@0.4.20:
-    resolution: {integrity: sha512-XpbHQ2q5gUF8BGOX4dHe+71qoirYMhApEPZ7sfhF/dNnOF1UXnCMGZf79SFTBO7Bz5YEIT4TMieSlJBWhP9WBA==}
-    peerDependencies:
-      eslint: '>=8.40'
 
   eslint-plugin-react@7.37.5:
     resolution: {integrity: sha512-Qteup0SqU15kdocexFNAJMvCJEfa2xUKNV4CC1xsVMrIIqEy3SQ/rqyxCWNzfrd3/ldy6HMlD2e0JDVpDg2qIA==}
@@ -8345,13 +8366,6 @@ packages:
 
   typedarray-to-buffer@3.1.5:
     resolution: {integrity: sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==}
-
-  typescript-eslint@8.34.0:
-    resolution: {integrity: sha512-MRpfN7uYjTrTGigFCt8sRyNqJFhjN0WwZecldaqhWm+wy0gaRt8Edb/3cuUy0zdq2opJWT6iXINKAtewnDOltQ==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      eslint: ^8.57.0 || ^9.0.0
-      typescript: '>=4.8.4 <5.9.0'
 
   typescript@5.8.2:
     resolution: {integrity: sha512-aJn6wq13/afZp/jT9QZmwEjDqqvSGp1VT5GVg+f/t6/oVyrgXM6BY1h9BRh/O5p3PlUPAe+WuiEZOmb/49RqoQ==}
@@ -11414,6 +11428,37 @@ snapshots:
       '@typescript-eslint/types': 8.34.0
       eslint-visitor-keys: 4.2.0
 
+  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20250611.1':
+    optional: true
+
+  '@typescript/native-preview-darwin-x64@7.0.0-dev.20250611.1':
+    optional: true
+
+  '@typescript/native-preview-linux-arm64@7.0.0-dev.20250611.1':
+    optional: true
+
+  '@typescript/native-preview-linux-arm@7.0.0-dev.20250611.1':
+    optional: true
+
+  '@typescript/native-preview-linux-x64@7.0.0-dev.20250611.1':
+    optional: true
+
+  '@typescript/native-preview-win32-arm64@7.0.0-dev.20250611.1':
+    optional: true
+
+  '@typescript/native-preview-win32-x64@7.0.0-dev.20250611.1':
+    optional: true
+
+  '@typescript/native-preview@7.0.0-dev.20250611.1':
+    optionalDependencies:
+      '@typescript/native-preview-darwin-arm64': 7.0.0-dev.20250611.1
+      '@typescript/native-preview-darwin-x64': 7.0.0-dev.20250611.1
+      '@typescript/native-preview-linux-arm': 7.0.0-dev.20250611.1
+      '@typescript/native-preview-linux-arm64': 7.0.0-dev.20250611.1
+      '@typescript/native-preview-linux-x64': 7.0.0-dev.20250611.1
+      '@typescript/native-preview-win32-arm64': 7.0.0-dev.20250611.1
+      '@typescript/native-preview-win32-x64': 7.0.0-dev.20250611.1
+
   '@ungap/structured-clone@1.3.0': {}
 
   '@unrs/resolver-binding-android-arm-eabi@1.9.0':
@@ -12948,10 +12993,6 @@ snapshots:
       string.prototype.includes: 2.0.1
 
   eslint-plugin-react-hooks@5.2.0(eslint@9.28.0(jiti@2.4.2)):
-    dependencies:
-      eslint: 9.28.0(jiti@2.4.2)
-
-  eslint-plugin-react-refresh@0.4.20(eslint@9.28.0(jiti@2.4.2)):
     dependencies:
       eslint: 9.28.0(jiti@2.4.2)
 
@@ -15397,7 +15438,7 @@ snapshots:
       glob: 11.0.2
       package-json-from-dist: 1.0.1
 
-  rolldown-plugin-dts@0.13.8(rolldown@1.0.0-beta.11-commit.f051675)(typescript@5.8.3):
+  rolldown-plugin-dts@0.13.8(@typescript/native-preview@7.0.0-dev.20250611.1)(rolldown@1.0.0-beta.11-commit.f051675)(typescript@5.8.3):
     dependencies:
       '@babel/generator': 7.27.5
       '@babel/parser': 7.27.5
@@ -15409,6 +15450,7 @@ snapshots:
       get-tsconfig: 4.10.1
       rolldown: 1.0.0-beta.11-commit.f051675
     optionalDependencies:
+      '@typescript/native-preview': 7.0.0-dev.20250611.1
       typescript: 5.8.3
     transitivePeerDependencies:
       - oxc-resolver
@@ -16197,7 +16239,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tsdown@0.12.7(typescript@5.8.3):
+  tsdown@0.12.7(@typescript/native-preview@7.0.0-dev.20250611.1)(typescript@5.8.3):
     dependencies:
       ansis: 4.1.0
       cac: 6.7.14
@@ -16207,7 +16249,7 @@ snapshots:
       empathic: 1.1.0
       hookable: 5.5.3
       rolldown: 1.0.0-beta.11-commit.f051675
-      rolldown-plugin-dts: 0.13.8(rolldown@1.0.0-beta.11-commit.f051675)(typescript@5.8.3)
+      rolldown-plugin-dts: 0.13.8(@typescript/native-preview@7.0.0-dev.20250611.1)(rolldown@1.0.0-beta.11-commit.f051675)(typescript@5.8.3)
       semver: 7.7.2
       tinyexec: 1.0.1
       tinyglobby: 0.2.14
@@ -16342,16 +16384,6 @@ snapshots:
   typedarray-to-buffer@3.1.5:
     dependencies:
       is-typedarray: 1.0.0
-
-  typescript-eslint@8.34.0(eslint@9.28.0(jiti@2.4.2))(typescript@5.8.3):
-    dependencies:
-      '@typescript-eslint/eslint-plugin': 8.34.0(@typescript-eslint/parser@8.34.0(eslint@9.28.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.28.0(jiti@2.4.2))(typescript@5.8.3)
-      '@typescript-eslint/parser': 8.34.0(eslint@9.28.0(jiti@2.4.2))(typescript@5.8.3)
-      '@typescript-eslint/utils': 8.34.0(eslint@9.28.0(jiti@2.4.2))(typescript@5.8.3)
-      eslint: 9.28.0(jiti@2.4.2)
-      typescript: 5.8.3
-    transitivePeerDependencies:
-      - supports-color
 
   typescript@5.8.2: {}
 
