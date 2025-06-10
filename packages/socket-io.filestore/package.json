@@ -46,7 +46,6 @@
 		"socket.io-client": "4.8.1",
 		"tmp": "0.2.3",
 		"tsup": "8.5.0",
-		"typescript": "5.8.3",
 		"vite": "6.3.5",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.2.3"
