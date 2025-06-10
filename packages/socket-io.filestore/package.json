@@ -38,6 +38,7 @@
 	"devDependencies": {
 		"@types/node": "24.0.1",
 		"@types/tmp": "0.2.6",
+		"concurrently": "9.1.2",
 		"atom.io": "workspace:*",
 		"eslint": "9.29.0",
 		"react": "19.1.0",
