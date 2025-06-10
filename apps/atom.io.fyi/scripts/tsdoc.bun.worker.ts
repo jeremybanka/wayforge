@@ -1,19 +1,16 @@
 import path from "node:path"
 
 import * as Bun from "bun"
+import { compileDocs } from "tsdoc.json"
 
 import {
 	ATOM_IO_ROOT,
 	ATOM_IO_SRC,
-} from "~/packages/atom.io/__scripts__/constants"
-import { compileDocs } from "~/packages/tsdoc.json/src/library"
-
+} from "../../../packages/atom.io/__scripts__/constants"
 import { ATOM_IO_FYI_ROOT } from "./constants"
 
 declare const self: Worker
-self.onmessage = tsDocWorkerJob
-
-export async function tsDocWorkerJob({
+self.onmessage = async function tsDocWorkerJob({
 	data: subPackageName,
 }: { data: string }): Promise<void> {
 	console.log(`📝 Extracting ${subPackageName}`)
