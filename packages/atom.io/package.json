@@ -118,7 +118,7 @@
 		"vite": "6.3.5",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.2.3",
-		"zod": "3.25.61"
+		"zod": "3.25.62"
 	},
 	"main": "./dist/main/index.js",
 	"files": [
