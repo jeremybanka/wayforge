@@ -67,7 +67,7 @@
 		"atom.io": "workspace:*",
 		"concurrently": "9.1.2",
 		"eslint": "9.28.0",
-		"happy-dom": "18.0.0",
+		"happy-dom": "18.0.1",
 		"jsdom": "26.1.0",
 		"npmlog": "7.0.1",
 		"preact": "10.26.8",
