@@ -23,7 +23,7 @@
 	},
 	"dependencies": {
 		"comline": "workspace:*",
-		"minimatch": "10.0.1",
+		"minimatch": "10.0.2",
 		"npmlog": "7.0.1",
 		"simple-git": "3.28.0",
 		"zod": "3.25.61"
