@@ -4,7 +4,6 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"tsc": "tsc --watch",
 		"dev": "concurrently \"npm:dev:*\"",
 		"dev:next": "next dev -p 4500",
 		"build": "bun build:next",
@@ -12,8 +11,8 @@
 		"start": "next start -p 4545",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
-		"lint:types": "tsc --noEmit",
-		"watch:types": "tsc --watch --noEmit",
+		"lint:types": "tsgo --noEmit",
+		"watch:types": "tsgo --watch --noEmit",
 		"lint": "concurrently \"bun:lint:*\"",
 		"test": "echo no tests yet",
 		"test:once": "echo no tests yet"
