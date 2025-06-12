@@ -21,7 +21,7 @@
 		"deploy": "fastly compute publish"
 	},
 	"devDependencies": {
-		"@types/bun": "npm:bun-types@1.2.15",
+		"@types/bun": "npm:bun-types@1.2.16",
 		"@types/npmlog": "7.0.0",
 		"browserslist": "4.25.0",
 		"chokidar": "4.0.3",
