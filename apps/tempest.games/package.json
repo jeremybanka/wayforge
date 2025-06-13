@@ -99,7 +99,7 @@
 		"globals": "16.2.0",
 		"rimraf": "6.0.1",
 		"sass-embedded": "1.89.2",
-		"tsx": "4.20.2",
+		"tsx": "4.20.3",
 		"typescript": "5.8.3",
 		"typescript-eslint": "8.34.0",
 		"varmint": "workspace:*",
