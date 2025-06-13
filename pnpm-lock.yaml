@@ -295,11 +295,11 @@ importers:
         specifier: 0.13.8
         version: 0.13.8(arktype@2.1.20)(typescript@5.8.3)(zod@3.25.63)
       '@trpc/client':
-        specifier: 11.3.1
-        version: 11.3.1(@trpc/server@11.3.1(typescript@5.8.3))(typescript@5.8.3)
+        specifier: 11.4.0
+        version: 11.4.0(@trpc/server@11.4.0(typescript@5.8.3))(typescript@5.8.3)
       '@trpc/server':
-        specifier: 11.3.1
-        version: 11.3.1(typescript@5.8.3)
+        specifier: 11.4.0
+        version: 11.4.0(typescript@5.8.3)
       arktype:
         specifier: 2.1.20
         version: 2.1.20
@@ -3771,14 +3771,14 @@ packages:
       '@types/react-dom':
         optional: true
 
-  '@trpc/client@11.3.1':
-    resolution: {integrity: sha512-UlLsUN7x8qD07FaGzdz/FG3K+kpaYowZkmVZ8R4Nlx1Yj01Kgr1Y+cGjtBdRpd+0l7uVylwDPmHA1OxYE6zHgA==}
+  '@trpc/client@11.4.0':
+    resolution: {integrity: sha512-AI+qThLuR52ALsMN/oEjgmw101c54YV6XoXSRyVGzO29kLUgo7PUBnvdq51x2rl57z7tg4AG8U2CvkDWdn00vw==}
     peerDependencies:
-      '@trpc/server': 11.3.1
+      '@trpc/server': 11.4.0
       typescript: '>=5.7.2'
 
-  '@trpc/server@11.3.1':
-    resolution: {integrity: sha512-5Rjigjqwl9ieXL91ebZ1M4FPFXQJ5qipRyZuBoNzvqkq7Qlig+2F4WwLELyiTSNk2bGzdJTXJMKLhRE9Z56D8w==}
+  '@trpc/server@11.4.0':
+    resolution: {integrity: sha512-ubE5LgMQuVH5PKcaFq0JJaHbAT3bBV8m1rdlLYEDjJG85zGrYak+6YkXIzUct/LYYXNg/FgyGrqOTM2FyzAlhQ==}
     peerDependencies:
       typescript: '>=5.7.2'
 
@@ -11186,12 +11186,12 @@ snapshots:
       '@types/react': 19.1.8
       '@types/react-dom': 19.1.6(@types/react@19.1.8)
 
-  '@trpc/client@11.3.1(@trpc/server@11.3.1(typescript@5.8.3))(typescript@5.8.3)':
+  '@trpc/client@11.4.0(@trpc/server@11.4.0(typescript@5.8.3))(typescript@5.8.3)':
     dependencies:
-      '@trpc/server': 11.3.1(typescript@5.8.3)
+      '@trpc/server': 11.4.0(typescript@5.8.3)
       typescript: 5.8.3
 
-  '@trpc/server@11.3.1(typescript@5.8.3)':
+  '@trpc/server@11.4.0(typescript@5.8.3)':
     dependencies:
       typescript: 5.8.3
 
