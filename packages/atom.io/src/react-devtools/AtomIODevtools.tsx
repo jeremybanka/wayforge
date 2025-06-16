@@ -1,7 +1,7 @@
 import "./devtools.css"
 
 import { StoreContext, useI, useO } from "atom.io/react"
-import { LayoutGroup, motion, spring } from "motion/react"
+import { LayoutGroup, motion } from "motion/react"
 import { useContext, useRef } from "react"
 
 import { StateIndex } from "./StateIndex"
@@ -63,7 +63,7 @@ const AtomIODevtoolsInternal = (): React.ReactNode => {
 				drag
 				dragConstraints={constraintsRef}
 				data-css="atom_io_devtools"
-				transition={spring}
+				transition={{ type: `spring`, bounce: 0.25 }}
 				style={
 					devtoolsAreOpen
 						? {}
