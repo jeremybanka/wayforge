@@ -10,6 +10,8 @@ import type { TSD } from "./namespace"
 
 export type { TSD }
 
+const DEBUG_LOGGING = false
+
 function isExported(node: TS.Node): node is TS.Node & { $__exported?: boolean } {
 	const possibleExport: TS.Node | undefined = node.getFirstToken()
 	return possibleExport?.kind === TS.SyntaxKind.ExportKeyword
@@ -161,13 +163,18 @@ function walkCompilerAstAndDiscoverResources(
 					)
 					break
 			}
-			console.log(`${indent}- ${TS.SyntaxKind[node.kind]}${foundCommentsSuffix}`)
-
+			if (DEBUG_LOGGING) {
+				console.log(
+					`${indent}- ${TS.SyntaxKind[node.kind]}${foundCommentsSuffix}`,
+				)
+			}
 			const name = nameNode(node)
-			console.log(
-				colors.cyan(`${indent}^ ${name} `) +
-					colors.magenta(`(${isNested ? `NESTED` : `EXPORTED`})`),
-			)
+			if (DEBUG_LOGGING) {
+				console.log(
+					colors.cyan(`${indent}^ ${name} `) +
+						colors.magenta(`(${isNested ? `NESTED` : `EXPORTED`})`),
+				)
+			}
 
 			const comment = comments.at(0)
 			const packageExport: DiscoveredResource = {
@@ -277,16 +284,16 @@ function walkCompilerAstAndDiscoverResources(
 }
 
 function makeParagraph(node: tsdoc.DocNode): TSD.Paragraph {
-	console.log(colors.blue(` Paragraph`))
+	if (DEBUG_LOGGING) console.log(colors.blue(` Paragraph`))
 	const paragraph: TSD.Paragraph = {
 		type: `paragraph`,
 		content: [],
 	}
 	for (const paragraphChild of node.getChildNodes()) {
-		console.log(`  ` + paragraphChild.kind)
+		if (DEBUG_LOGGING) console.log(`  ` + paragraphChild.kind)
 		switch (paragraphChild.kind) {
 			case `PlainText`:
-				console.log(colors.blue(`  PlainText`))
+				if (DEBUG_LOGGING) console.log(colors.blue(`  PlainText`))
 				for (const textChild of paragraphChild.getChildNodes()) {
 					if (textChild instanceof tsdoc.DocExcerpt) {
 						const text = textChild.content.toString().trim()
@@ -299,10 +306,11 @@ function makeParagraph(node: tsdoc.DocNode): TSD.Paragraph {
 				break
 			case `LinkTag`:
 				for (const linkChild of paragraphChild.getChildNodes()) {
-					console.log(`  ` + linkChild.kind)
+					if (DEBUG_LOGGING) console.log(`  ` + linkChild.kind)
 					if (linkChild.kind === `DeclarationReference`) {
 						let excerpt: tsdoc.DocExcerpt | undefined
-						console.log(colors.blue(`   DeclarationReference`))
+						if (DEBUG_LOGGING)
+							console.log(colors.blue(`   DeclarationReference`))
 
 						let currentNode = linkChild
 						while (!excerpt) {
@@ -323,7 +331,7 @@ function makeParagraph(node: tsdoc.DocNode): TSD.Paragraph {
 				}
 				break
 			case `SoftBreak`:
-				console.log(colors.blue(`  SoftBreak`))
+				if (DEBUG_LOGGING) console.log(colors.blue(`  SoftBreak`))
 				paragraph.content.push({
 					type: `softBreak`,
 				})
@@ -334,13 +342,13 @@ function makeParagraph(node: tsdoc.DocNode): TSD.Paragraph {
 }
 
 function makeDocSection(docNode: tsdoc.DocNode): TSD.DocSection {
-	console.log(colors.blue(`Section`))
+	if (DEBUG_LOGGING) console.log(colors.blue(`Section`))
 	const section: TSD.DocSection = {
 		type: `section`,
 		content: [],
 	}
 	for (const sectionChild of docNode.getChildNodes()) {
-		console.log(` ` + sectionChild.kind)
+		if (DEBUG_LOGGING) console.log(` ` + sectionChild.kind)
 		switch (sectionChild.kind) {
 			case `Paragraph`: {
 				const paragraph = makeParagraph(sectionChild)
@@ -354,7 +362,7 @@ function makeDocSection(docNode: tsdoc.DocNode): TSD.DocSection {
 function makeFunctionDocParameter(
 	paramBlockNode: tsdoc.DocNode,
 ): TSD.ParamBlock {
-	console.log(colors.blue(` ParamBlock`))
+	if (DEBUG_LOGGING) console.log(colors.blue(` ParamBlock`))
 	const param: TSD.ParamBlock = {
 		type: `paramBlock`,
 		name: `???`,
@@ -366,7 +374,7 @@ function makeFunctionDocParameter(
 			paramBlockChild instanceof tsdoc.DocExcerpt &&
 			paramBlockChild.excerptKind === `ParamBlock_ParameterName`
 		) {
-			console.log(colors.blue(`  ParamBlock_ParameterName`))
+			if (DEBUG_LOGGING) console.log(colors.blue(`  ParamBlock_ParameterName`))
 			param.name = paramBlockChild.content.toString()
 			nameSet = true
 		}
@@ -380,17 +388,17 @@ function makeFunctionDocParameter(
 }
 
 function makeDocBlock(docBlockNode: tsdoc.DocNode): TSD.DocBlock {
-	console.log(colors.blue(` Block`))
+	if (DEBUG_LOGGING) console.log(colors.blue(` Block`))
 	const block: TSD.DocBlock = {
 		type: `block`,
 		name: `???`,
 	}
 	for (const blockChild of docBlockNode.getChildNodes()) {
-		console.log(` ` + blockChild.kind)
+		if (DEBUG_LOGGING) console.log(` ` + blockChild.kind)
 		switch (blockChild.kind) {
 			case `BlockTag`:
 				{
-					console.log(colors.blue(`  BlockTag`))
+					if (DEBUG_LOGGING) console.log(colors.blue(`  BlockTag`))
 					const blockTag = blockChild.getChildNodes()[0]
 					if (blockTag instanceof tsdoc.DocExcerpt) {
 						block.name = blockTag.content.toString()
@@ -399,7 +407,7 @@ function makeDocBlock(docBlockNode: tsdoc.DocNode): TSD.DocBlock {
 				break
 			case `Section`:
 				{
-					console.log(colors.blue(`  Section`))
+					if (DEBUG_LOGGING) console.log(colors.blue(`  Section`))
 					const paragraph = blockChild.getChildNodes()[0]
 					const desc = makeParagraph(paragraph)
 					block.desc = desc
@@ -411,7 +419,7 @@ function makeDocBlock(docBlockNode: tsdoc.DocNode): TSD.DocBlock {
 }
 
 function makeModifierTag(modifierTagNode: tsdoc.DocNode): string | undefined {
-	console.log(colors.blue(` BlockTag`))
+	if (DEBUG_LOGGING) console.log(colors.blue(` BlockTag`))
 	const blockTag = modifierTagNode.getChildNodes()[0]
 	if (blockTag instanceof tsdoc.DocExcerpt) {
 		const tagName = blockTag.content.toString()
@@ -462,11 +470,11 @@ function documentFunction(
 	}
 	if (comment) {
 		for (const child of comment.getChildNodes()) {
-			console.log(child.kind)
+			if (DEBUG_LOGGING) console.log(child.kind)
 			switch (child.kind) {
 				case `ParamCollection`:
 					for (const paramChild of child.getChildNodes()) {
-						console.log(` ` + paramChild.kind)
+						if (DEBUG_LOGGING) console.log(` ` + paramChild.kind)
 						if (paramChild.kind === `ParamBlock`) {
 							const param = makeFunctionDocParameter(paramChild)
 							doc.params.push(param)
@@ -496,7 +504,7 @@ function documentAtomicResource(
 	}
 	if (comment) {
 		for (const child of comment.getChildNodes()) {
-			console.log(child.kind)
+			if (DEBUG_LOGGING) console.log(child.kind)
 			documentGeneralContent(doc, child)
 		}
 	}
@@ -518,7 +526,7 @@ function documentCompositeResource(
 	}
 	if (comment) {
 		for (const child of comment.getChildNodes()) {
-			console.log(child.kind)
+			if (DEBUG_LOGGING) console.log(child.kind)
 			documentGeneralContent(doc, child)
 		}
 	}
@@ -570,11 +578,12 @@ function assembleJsonDocForResource(
 		}
 
 		const docType = resource.compilerNode.kind
-		console.log(
-			TS.SyntaxKind[docType],
-			`"${resourceName}"`,
-			`properties: ${resource.properties ? `[${[...resource.properties.keys()].join(`, `)}]` : `none`}`,
-		)
+		if (DEBUG_LOGGING)
+			console.log(
+				TS.SyntaxKind[docType],
+				`"${resourceName}"`,
+				`properties: ${resource.properties ? `[${[...resource.properties.keys()].join(`, `)}]` : `none`}`,
+			)
 
 		switch (docType) {
 			case TS.SyntaxKind.CallSignature:
@@ -718,14 +727,16 @@ export function compileDocs(options: CompileDocsOptions): TSD.Doc[] {
 				!f.includes(options.entrypoint),
 		)
 
-	console.log(
-		os.EOL +
-			colors.cyan(`Files Found:`) +
+	if (DEBUG_LOGGING) {
+		console.log(
 			os.EOL +
-			` - ` +
-			subPackageSourceFilenames.join(os.EOL + ` - `) +
-			os.EOL,
-	)
+				colors.cyan(`Files Found:`) +
+				os.EOL +
+				` - ` +
+				subPackageSourceFilenames.join(os.EOL + ` - `) +
+				os.EOL,
+		)
+	}
 
 	for (const subPackageSourceFilename of subPackageSourceFilenames) {
 		const subPackageSourceFile: TS.SourceFile | undefined =

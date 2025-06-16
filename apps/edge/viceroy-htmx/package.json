@@ -15,8 +15,8 @@
 		"test:once": "echo no tests yet",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "bun run gen && eslint -- .",
-		"lint:types": "tsc --noEmit",
-		"watch:types": "tsc --watch --noEmit",
+		"lint:types": "tsgo --noEmit",
+		"watch:types": "tsgo --watch --noEmit",
 		"lint": "concurrently \"bun:lint:*\"",
 		"deploy": "fastly compute publish"
 	},

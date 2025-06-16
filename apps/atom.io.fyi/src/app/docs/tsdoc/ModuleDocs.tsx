@@ -7,7 +7,7 @@ import type { ReactNode } from "react"
 import type { TSD } from "tsdoc.json"
 import { Mod } from "tsdoc.json/react"
 
-import { ATOM_IO_FYI_ROOT } from "~/apps/atom.io.fyi/scripts/constants"
+import { ATOM_IO_FYI_ROOT } from "../../../../scripts/constants"
 
 export function ModuleDocs({ module }: { module: string }): ReactNode {
 	const docsText = fs.readFileSync(

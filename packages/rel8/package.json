@@ -29,8 +29,8 @@
 		"build:types": "cd types && tsup",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
-		"lint:types": "tsc --noEmit",
-		"watch:types": "tsc --watch --noEmit",
+		"lint:types": "tsgo --noEmit",
+		"watch:types": "tsgo --watch --noEmit",
 		"lint": "concurrently \"bun:lint:*\"",
 		"test": "echo 'no tests yet'",
 		"test:once": "echo 'no tests yet'",
@@ -41,7 +41,6 @@
 		"eslint": "9.29.0",
 		"fp-ts": "2.16.10",
 		"tsup": "8.5.0",
-		"typescript": "5.8.3",
 		"vite": "6.3.5",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.2.3"
