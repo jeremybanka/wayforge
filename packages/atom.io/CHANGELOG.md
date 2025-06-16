@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.33.5
+
+### Patch Changes
+
+- 8f2e97a: 🏷️ Fix some of the overload type signatures for families given for the internal `withdraw()` function. Previously, the type parameter `K`, representing a family's key type was not being carried through.
+
 ## 0.33.4
 
 ### Patch Changes
