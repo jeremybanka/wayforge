@@ -20,6 +20,8 @@
 		],
 		"paths": {
 			"x/*": ["./apps/atom.io.fyi/src/exhibits-wrapped/*"],
+			"atom.io": ["./packages/atom.io/src/main"],
+			"atom.io/*": ["./packages/atom.io/src/*"],
 			"tsdoc.json": ["./packages/tsdoc.json/src/index.ts"]
 		},
 		"strict": false
