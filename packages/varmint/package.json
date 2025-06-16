@@ -47,7 +47,7 @@
 		"eslint": "9.29.0",
 		"openai": "5.3.0",
 		"tmp": "0.2.3",
-		"tsdown": "0.12.7",
+		"tsdown": "0.12.8",
 		"vite": "6.3.5",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.2.3",
