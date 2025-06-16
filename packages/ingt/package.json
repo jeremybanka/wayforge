@@ -10,8 +10,8 @@
 		"build": "tsup src/index.ts --format cjs,esm --dts",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
-		"lint:types": "tsc --noEmit",
-		"watch:types": "tsc --watch --noEmit",
+		"lint:types": "tsgo --noEmit",
+		"watch:types": "tsgo --watch --noEmit",
 		"lint": "concurrently \"bun:lint:*\"",
 		"test": "vitest",
 		"test:once": "vitest run",
@@ -23,9 +23,9 @@
 	},
 	"devDependencies": {
 		"@types/node": "24.0.1",
+		"concurrently": "9.1.2",
 		"eslint": "9.29.0",
 		"tsup": "8.5.0",
-		"typescript": "5.8.3",
 		"vite": "6.3.5",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.2.3"

@@ -137,52 +137,52 @@ export function withdraw<
 ): MutableAtomFamily<T, J, K>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
-	token: AtomFamilyToken<T>,
-): AtomFamily<T, any>
+	token: AtomFamilyToken<T, K>,
+): AtomFamily<T, K>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: ReadonlyHeldSelectorFamilyToken<T, K>,
-): ReadonlyHeldSelectorFamily<T, any>
+): ReadonlyHeldSelectorFamily<T, K>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: WritableHeldSelectorFamilyToken<T, K>,
-): WritableHeldSelectorFamily<T, any>
+): WritableHeldSelectorFamily<T, K>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: ReadonlyPureSelectorFamilyToken<T, K>,
-): ReadonlyPureSelectorFamily<T, any>
+): ReadonlyPureSelectorFamily<T, K>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: WritablePureSelectorFamilyToken<T, K>,
-): WritablePureSelectorFamily<T, any>
+): WritablePureSelectorFamily<T, K>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: ReadonlySelectorFamilyToken<T, K>,
-): ReadonlySelectorFamily<T, any>
+): ReadonlySelectorFamily<T, K>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: WritableSelectorFamilyToken<T, K>,
-): WritableSelectorFamily<T, any>
+): WritableSelectorFamily<T, K>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: HeldSelectorFamilyToken<T, K>,
-): HeldSelectorFamily<T, any>
+): HeldSelectorFamily<T, K>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: PureSelectorFamilyToken<T, K>,
-): PureSelectorFamily<T, any>
+): PureSelectorFamily<T, K>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: SelectorFamilyToken<T, K>,
-): SelectorFamily<T, any>
+): SelectorFamily<T, K>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: ReadableFamilyToken<T, K>,
-): ReadableFamily<T, any>
+): ReadableFamily<T, K>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: WritableFamilyToken<T, K>,
-): WritableFamily<T, any>
+): WritableFamily<T, K>
 
 export function withdraw<T extends Func>(
 	store: Store,

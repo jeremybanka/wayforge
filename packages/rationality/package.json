@@ -20,8 +20,8 @@
 		"build": "tsdown",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
-		"lint:types": "tsc --noEmit",
-		"watch:types": "tsc --watch --noEmit",
+		"lint:types": "tsgo --noEmit",
+		"watch:types": "tsgo --watch --noEmit",
 		"lint": "concurrently \"bun:lint:*\"",
 		"test": "vitest",
 		"test:once": "vitest run",
@@ -31,7 +31,6 @@
 		"concurrently": "9.1.2",
 		"eslint": "9.29.0",
 		"tsdown": "0.12.7",
-		"typescript": "5.8.3",
 		"vite": "6.3.5",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.2.3"
