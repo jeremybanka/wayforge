@@ -9,10 +9,12 @@ import { write } from "bun"
 import jsonSchemaToZod from "json-schema-to-zod"
 import { Squirrel } from "varmint"
 
-const GEN_DIR_PATH = resolve(import.meta.dirname, `../gen`)
+const FLIGHTDECK_ROOT = resolve(import.meta.dirname, `..`)
+const REPO_ROOT = resolve(FLIGHTDECK_ROOT, `../..`)
+const FLIGHTDECK_GEN_PATH = resolve(FLIGHTDECK_ROOT, `gen`)
 const LNAV_FORMAT_SCHEMA_FILENAME = `lnav-format-schema.gen.ts`
 const LNAV_FORMAT_SCHEMA_PATH = resolve(
-	GEN_DIR_PATH,
+	FLIGHTDECK_GEN_PATH,
 	LNAV_FORMAT_SCHEMA_FILENAME,
 )
 
@@ -45,13 +47,15 @@ const content = [
 
 const biome = await Biome.create({ distribution: Distribution.NODE })
 
-const formatted = biome.formatContent(content, {
+const { projectKey } = biome.openProject(REPO_ROOT)
+
+const formatted = biome.formatContent(projectKey, content, {
 	filePath: LNAV_FORMAT_SCHEMA_FILENAME,
 })
 
-const result = biome.lintContent(formatted.content, {
+const result = biome.lintContent(projectKey, formatted.content, {
 	filePath: LNAV_FORMAT_SCHEMA_FILENAME,
-	fixFileMode: `SafeAndUnsafeFixes`,
+	fixFileMode: `safeAndUnsafeFixes`,
 })
 
 biome.printDiagnostics(result.diagnostics, {
@@ -59,7 +63,7 @@ biome.printDiagnostics(result.diagnostics, {
 	fileSource: formatted.content,
 })
 
-if (!existsSync(GEN_DIR_PATH)) {
-	mkdirSync(GEN_DIR_PATH, { recursive: true })
+if (!existsSync(FLIGHTDECK_GEN_PATH)) {
+	mkdirSync(FLIGHTDECK_GEN_PATH, { recursive: true })
 }
 await write(LNAV_FORMAT_SCHEMA_PATH, result.content)
