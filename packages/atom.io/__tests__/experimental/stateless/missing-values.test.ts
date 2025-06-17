@@ -52,7 +52,7 @@ describe(`stateless data persistence strategies`, () => {
 					try {
 						const data = await fsp.readFile(`${tmpDir.name}/count.txt`, `utf8`)
 						return Number.parseInt(data, 10)
-					} catch (error) {
+					} catch (_) {
 						await fsp.writeFile(`${tmpDir.name}/count.txt`, `0`)
 						return 0
 					}

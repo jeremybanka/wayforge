@@ -13,15 +13,17 @@ import {
 export const RecoverableErrorBoundary: FC<ErrorBoundaryProps> = ({
 	children,
 	Fallback = DefaultFallback,
-	useErrorState = () => useState<ErrorBoundaryState>({}),
-	useResetErrorState,
+	useErrorState,
+	resetErrorState,
 }) => {
-	const [{ error }, setError] = useErrorState()
-	const resetError = useResetErrorState
-		? useResetErrorState()
-		: () => {
-				setError({})
-			}
+	const internalState = useState<ErrorBoundaryState>({})
+	const externalState = useErrorState?.()
+	const [{ error }, setError] = externalState ?? internalState
+	const resetError =
+		resetErrorState ??
+		(() => {
+			setError({})
+		})
 	const hasError = Boolean(error)
 
 	return hasError ? (

@@ -7,12 +7,8 @@ import type {
 import type { Json } from "atom.io/json"
 import { selectJson } from "atom.io/json"
 
-import {
-	cacheValue,
-	type MutableAtom,
-	prettyPrintTokenType,
-	setIntoStore,
-} from ".."
+import type { MutableAtom } from ".."
+import { cacheValue, setIntoStore } from ".."
 import { markAtomAsDefault } from "../atom"
 import { newest } from "../lineage"
 import { deposit, type Store } from "../store"

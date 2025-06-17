@@ -1,27 +1,26 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
-	"organizeImports": {
-		"enabled": false
-	},
+	"$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
+	"assist": { "actions": { "source": { "organizeImports": "off" } } },
 	"files": {
 		"maxSize": 200000000,
 		"ignoreUnknown": true,
-		"ignore": [
-			"**/metafile-*",
-			"*.gen.ts",
-			"*.gen.tsx",
-			"*.tsdoc.json",
-			".turbo",
-			".varmint",
-			".wrangler",
-			"app/**/*",
-			"bin/**/*",
-			"coverage",
-			"dist/**/*",
-			"drizzle/meta",
-			"heap.json",
-			"node_modules/**/*",
-			"projects"
+		"includes": [
+			"**",
+			"!**/metafile-*",
+			"!**/*.gen.ts",
+			"!**/*.gen.tsx",
+			"!**/*.tsdoc.json",
+			"!**/.turbo",
+			"!**/.varmint",
+			"!**/.wrangler",
+			"!**/app/**/*",
+			"!**/bin/**/*",
+			"!**/coverage",
+			"!**/dist/**/*",
+			"!**/drizzle/meta",
+			"!**/heap.json",
+			"!**/node_modules/**/*",
+			"!**/projects"
 		]
 	},
 	"javascript": {
@@ -36,17 +35,19 @@
 		"indentStyle": "tab",
 		"indentWidth": 2,
 		"lineWidth": 81,
-		"ignore": ["**/*.gen.ts", "**/*.cache.json"]
+		"includes": ["**", "!**/*.gen.ts", "!**/*.cache.json"]
 	},
 	"linter": {
 		"enabled": true,
 		"rules": {
 			"recommended": true,
 			"correctness": {
-				"useExhaustiveDependencies": "off"
+				"useExhaustiveDependencies": "off",
+				"useValidTypeof": "off"
 			},
 			"complexity": {
 				"noBannedTypes": "off",
+				"noCommaOperator": "off",
 				"useLiteralKeys": "off"
 			},
 			"suspicious": {
@@ -54,15 +55,22 @@
 				"noAssignInExpressions": "off",
 				"noConfusingVoidType": "off",
 				"noExplicitAny": "off",
-				"noThenProperty": "off",
-				"useValidTypeof": "off"
+				"noThenProperty": "off"
 			},
 			"style": {
-				"noCommaOperator": "off",
+				"noDescendingSpecificity": "off",
+				"noInferrableTypes": "error",
 				"noParameterAssign": "off",
 				"noUnusedTemplateLiteral": "off",
+				"noUselessElse": "error",
+				"useAsConstAssertion": "error",
+				"useDefaultParameterLast": "error",
+				"useEnumInitializers": "error",
 				"useImportType": "off",
+				"useNumberNamespace": "error",
+				"useSelfClosingElements": "error",
 				"useShorthandFunctionType": "off",
+				"useSingleVarDeclarator": "error",
 				"useTemplate": "off"
 			}
 		}

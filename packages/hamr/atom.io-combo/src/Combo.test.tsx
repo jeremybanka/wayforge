@@ -33,7 +33,13 @@ const scenarioA_Managed = () => {
 		const setLetters = useI(lettersState)
 		return (
 			<main>
-				<Combo options={[`a`]} selections={letters} setSelections={setLetters} />
+				<Combo
+					options={[`a`]}
+					selections={letters}
+					setSelections={setLetters}
+					label="Multiple Choice"
+					testId="managed"
+				/>
 			</main>
 		)
 	}
@@ -43,7 +49,7 @@ const scenarioA_Managed = () => {
 			<Managed />
 		</StoreProvider>,
 	)
-	const combo = utils.getByLabelText(`Multiple Choice`) as HTMLDivElement
+	const combo = utils.getByTestId(`managed`) as HTMLDivElement
 	const inputSearch = utils.getByLabelText(`Search`) as HTMLInputElement
 	return {
 		combo,
@@ -65,7 +71,11 @@ it(`accepts user input with externally managed state`, () => {
 
 const scenarioB_SelfManaged = () => {
 	const SelfManaged: FC = () => (
-		<Combo options={[`a`]} selectionsState={lettersState} />
+		<Combo
+			options={[`a`]}
+			selectionsState={lettersState}
+			testId="self-managed"
+		/>
 	)
 	const utils = render(
 		<StoreProvider>
@@ -73,7 +83,7 @@ const scenarioB_SelfManaged = () => {
 			<SelfManaged />
 		</StoreProvider>,
 	)
-	const combo = utils.getByLabelText(`Multiple Choice`) as HTMLDivElement
+	const combo = utils.getByTestId(`self-managed`) as HTMLDivElement
 	const inputSearch = utils.getByLabelText(`Search`) as HTMLInputElement
 	return {
 		combo,

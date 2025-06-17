@@ -49,7 +49,7 @@ export function prepareToExposeRealtimeContinuity({
 			userKey,
 			store,
 		).socketKeyOfUser
-		const unsubscribeFromSocketTracking = subscribeToState(
+		const _unsubscribeFromSocketTracking = subscribeToState(
 			store,
 			socketKeyState,
 			`sync-continuity:${continuityKey}:${userKey}`,

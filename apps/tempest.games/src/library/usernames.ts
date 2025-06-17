@@ -1,4 +1,4 @@
-const ADJECTIVES_1 = [
+export const ADJECTIVES_1 = [
 	`big`,
 	`chill`,
 	`cruel`,
@@ -10,7 +10,7 @@ const ADJECTIVES_1 = [
 	`sly`,
 ]
 
-const ADJECTIVES_2 = [
+export const ADJECTIVES_2 = [
 	`avaricious`,
 	`blind`,
 	`brave`,
@@ -61,7 +61,7 @@ const ADJECTIVES_2 = [
 	`young`,
 ] as const
 
-const NOUNS = [
+export const NOUNS = [
 	`adder`,
 	`apiarist`,
 	`arbiter`,

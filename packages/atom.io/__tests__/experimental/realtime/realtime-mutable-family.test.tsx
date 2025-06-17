@@ -6,7 +6,6 @@ import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
-import * as React from "react"
 
 const numberCollectionAtoms = AtomIO.atomFamily<
 	SetRTX<number>,
@@ -53,7 +52,6 @@ describe(`running transactions`, () => {
 					const addToNumbersCollection = RTR.useServerAction(
 						addToNumbersCollectionTX,
 					)
-					const store = React.useContext(AR.StoreContext)
 
 					return (
 						<button

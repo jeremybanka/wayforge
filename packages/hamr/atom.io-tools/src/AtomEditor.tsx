@@ -1,4 +1,4 @@
-import type { WritableFamilyToken, WritableToken } from "atom.io"
+import type { WritableFamilyToken } from "atom.io"
 import type { FC, ReactElement } from "react"
 import { useParams } from "react-router-dom"
 

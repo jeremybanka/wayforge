@@ -12,7 +12,10 @@
 		"bun": "1.2.1",
 		"node": "24.2.0"
 	},
-	"workspaces": ["apps/*", "packages/*"],
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
 	"scripts": {
 		"gen": "turbo run gen",
 		"lint": "turbo run lint",
@@ -36,7 +39,7 @@
 		"nv": "fnm use $(pnpm list -w --json | jq -r '.[0].path')"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "1.9.4",
+		"@biomejs/biome": "2.0.0",
 		"@changesets/cli": "2.29.4",
 		"@eslint/eslintrc": "3.3.1",
 		"@eslint/js": "9.29.0",
