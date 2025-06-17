@@ -49,7 +49,7 @@
 	},
 	"devDependencies": {
 		"@types/bun": "npm:bun-types@1.2.16",
-		"@biomejs/js-api": "0.7.1",
+		"@biomejs/js-api": "1.0.0",
 		"@biomejs/wasm-nodejs": "1.9.4",
 		"@types/node": "24.0.3",
 		"@types/tmp": "0.2.6",
