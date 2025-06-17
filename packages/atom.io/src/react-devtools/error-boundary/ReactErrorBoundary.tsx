@@ -13,7 +13,7 @@ export type ErrorBoundaryProps = {
 	children: ReactNode
 	onError?: ((error: Error | string, errorInfo: ErrorInfo) => void) | undefined
 	Fallback?: FC<FallbackProps> | undefined
-	useResetErrorState?: () => () => void
+	resetErrorState?: () => void
 	useErrorState?: () => [
 		ErrorBoundaryState,
 		(
