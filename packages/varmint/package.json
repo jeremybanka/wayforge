@@ -54,7 +54,7 @@
 		"tsdown": "0.12.8",
 		"vite": "6.3.5",
 		"vite-tsconfig-paths": "5.1.4",
-		"vitest": "3.2.3",
+		"vitest": "3.2.4",
 		"yalc": "1.0.0-pre.53",
 		"zod": "3.25.67"
 	}
