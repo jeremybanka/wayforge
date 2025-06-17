@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/correctness/noUnusedVariables: we're inspecting types here */
 import type { Above, Below, Hierarchy, Logger, Mutuals, Vassal } from "atom.io"
 import {
 	Anarchy,

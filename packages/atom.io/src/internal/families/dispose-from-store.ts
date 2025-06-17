@@ -31,7 +31,7 @@ export function disposeFromStore(
 	}
 	try {
 		withdraw(store, token)
-	} catch (thrown) {
+	} catch (_) {
 		store.logger.error(
 			`❌`,
 			token.type,

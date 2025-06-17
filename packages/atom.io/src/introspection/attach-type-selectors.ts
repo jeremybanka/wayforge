@@ -22,7 +22,7 @@ export const attachTypeSelectors = (
 						throw new Error(`Could not find state with key "${key}"`)
 					}
 					state = get(token)
-				} catch (thrown) {
+				} catch (_) {
 					return `error`
 				}
 				const typeOfState = discoverType(state)

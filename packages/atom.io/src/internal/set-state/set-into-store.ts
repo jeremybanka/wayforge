@@ -1,5 +1,5 @@
 import type { WritableFamilyToken, WritableToken } from "atom.io"
-import { type Canonical, parseJson, stringifyJson } from "atom.io/json"
+import { type Canonical, parseJson } from "atom.io/json"
 
 import { findInStore } from "../families"
 import { getFamilyOfToken } from "../families/get-family-of-token"

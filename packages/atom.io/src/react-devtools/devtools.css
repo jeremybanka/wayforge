@@ -35,7 +35,6 @@ main[data-css="atom_io_devtools"] {
 		display: flex;
 		justify-content: space-between;
 		h1 {
-			font-size: inherit;
 			margin: 0;
 			font-size: 24px;
 			font-family: charter, serif;

@@ -4,8 +4,6 @@ import {
 	ingestAtomUpdate,
 	ingestCreationEvent,
 	ingestDisposalEvent,
-	ingestMoleculeCreationEvent,
-	ingestMoleculeDisposalEvent,
 	ingestSelectorUpdate,
 	ingestTransactionUpdate,
 } from "../ingest-updates"

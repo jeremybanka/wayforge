@@ -47,8 +47,8 @@
 			},
 			"complexity": {
 				"noBannedTypes": "off",
-				"useLiteralKeys": "off",
-				"noCommaOperator": "off"
+				"noCommaOperator": "off",
+				"useLiteralKeys": "off"
 			},
 			"suspicious": {
 				"noArrayIndexKey": "off",
@@ -58,19 +58,20 @@
 				"noThenProperty": "off"
 			},
 			"style": {
+				"noDescendingSpecificity": "off",
+				"noInferrableTypes": "error",
 				"noParameterAssign": "off",
 				"noUnusedTemplateLiteral": "off",
-				"useImportType": "off",
-				"useShorthandFunctionType": "off",
-				"useTemplate": "off",
+				"noUselessElse": "error",
 				"useAsConstAssertion": "error",
 				"useDefaultParameterLast": "error",
 				"useEnumInitializers": "error",
-				"useSelfClosingElements": "error",
-				"useSingleVarDeclarator": "error",
+				"useImportType": "off",
 				"useNumberNamespace": "error",
-				"noInferrableTypes": "error",
-				"noUselessElse": "error"
+				"useSelfClosingElements": "error",
+				"useShorthandFunctionType": "off",
+				"useSingleVarDeclarator": "error",
+				"useTemplate": "off"
 			}
 		}
 	}
