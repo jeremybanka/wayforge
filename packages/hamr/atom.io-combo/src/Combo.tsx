@@ -12,6 +12,7 @@ export type ComboPropsCore<T> = {
 	minItems?: number
 	constrainMinMax?: boolean
 	placeholder?: string
+	testId?: string
 }
 export type ComboSelectionsAtom<T> = {
 	selectionsState: WritableToken<T[]>
@@ -49,6 +50,7 @@ const Combo_INTERNAL = <State,>({
 	maxItems = Number.POSITIVE_INFINITY,
 	minItems = 0,
 	placeholder,
+	testId,
 }: ComboProps_INTERNAL<State>): ReactElement => {
 	const domId = `${maxItems > 1 ? `multiple-` : ``}choice${useId()}`
 
@@ -119,7 +121,7 @@ const Combo_INTERNAL = <State,>({
 	}
 
 	return (
-		<div>
+		<div data-testid={testId}>
 			{label ? <label htmlFor={domId}>{label}</label> : null}
 			<div>
 				<span>
