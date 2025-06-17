@@ -12,7 +12,9 @@ import { ATOM_IO_FYI_ROOT } from "./constants"
 declare const self: Worker
 self.onmessage = async function tsDocWorkerJob({
 	data: subPackageName,
-}: { data: string }): Promise<void> {
+}: {
+	data: string
+}): Promise<void> {
 	console.log(`📝 Extracting ${subPackageName}`)
 	const entrypoint = path.join(ATOM_IO_SRC, subPackageName, `index.ts`)
 	const tsconfigPath = path.join(ATOM_IO_ROOT, `tsconfig.json`)

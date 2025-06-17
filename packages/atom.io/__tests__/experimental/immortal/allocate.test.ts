@@ -324,10 +324,7 @@ describe(`integrations`, () => {
 			return x
 		}
 		const transferDocumentTX = transaction<
-			(opts: {
-				to: UserGroupKey
-				document: DocumentKey
-			}) => void
+			(opts: { to: UserGroupKey; document: DocumentKey }) => void
 		>({
 			key: `transferDocument`,
 			do: ({ set }, { to, document }) => {

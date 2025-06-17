@@ -12,7 +12,10 @@
 		"bun": "1.2.1",
 		"node": "24.2.0"
 	},
-	"workspaces": ["apps/*", "packages/*"],
+	"workspaces": [
+		"apps/*",
+		"packages/*"
+	],
 	"scripts": {
 		"gen": "turbo run gen",
 		"lint": "turbo run lint",

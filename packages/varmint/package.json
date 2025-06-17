@@ -21,7 +21,11 @@
 	"bin": {
 		"varmint": "bin/varmint.bin.js"
 	},
-	"files": ["dist", "src", "CHANGELOG.md"],
+	"files": [
+		"dist",
+		"src",
+		"CHANGELOG.md"
+	],
 	"scripts": {
 		"build": "tsdown && rm -f dist/*.x.d.ts",
 		"clean:build": "rm -rf dist",
