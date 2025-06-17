@@ -2,7 +2,7 @@ import { TRPCClientError } from "@trpc/client"
 import { setState } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import { onMount } from "atom.io/realtime-react"
-import React from "react"
+import React, { useId } from "react"
 
 import { navigate, type Route } from "../services/router-service"
 import { authAtom, oneTimeCodeInputAtom } from "../services/socket-auth-service"
@@ -23,6 +23,7 @@ export function Verify({
 
 	const submitted = React.useState(false)
 	const [error, setError] = React.useState<string | null>(null)
+	const codeInputId = `code-${useId()}`
 
 	onMount(() => {
 		if (tokenFromUrl) {
@@ -65,10 +66,10 @@ export function Verify({
 		>
 			<main>
 				<p>Check your email for a verification code.</p>
-				<label htmlFor="code">
+				<label htmlFor={codeInputId}>
 					<span>Verification code</span>
 					<input
-						id="code"
+						id={codeInputId}
 						type="text"
 						value={oneTimeCode}
 						onChange={(e) => {
