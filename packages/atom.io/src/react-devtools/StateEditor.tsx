@@ -1,8 +1,4 @@
-import type {
-	ReadonlyPureSelectorToken,
-	ReadonlySelectorToken,
-	WritableToken,
-} from "atom.io"
+import type { ReadonlySelectorToken, WritableToken } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import type { FC } from "react"
 

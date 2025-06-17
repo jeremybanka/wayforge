@@ -6,7 +6,7 @@ export const stringToArray = (str: string): string[] => str.split(`,`)
 export const stringToObject = (str: string): Json.Tree.Object => {
 	try {
 		return JSON.parse(str)
-	} catch (e) {
+	} catch (_) {
 		return { [str]: str }
 	}
 }

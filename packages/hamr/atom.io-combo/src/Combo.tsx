@@ -12,6 +12,7 @@ export type ComboPropsCore<T> = {
 	minItems?: number
 	constrainMinMax?: boolean
 	placeholder?: string
+	testId?: string
 }
 export type ComboSelectionsAtom<T> = {
 	selectionsState: WritableToken<T[]>
@@ -49,6 +50,7 @@ const Combo_INTERNAL = <State,>({
 	maxItems = Number.POSITIVE_INFINITY,
 	minItems = 0,
 	placeholder,
+	testId,
 }: ComboProps_INTERNAL<State>): ReactElement => {
 	const domId = `${maxItems > 1 ? `multiple-` : ``}choice${useId()}`
 
@@ -119,7 +121,7 @@ const Combo_INTERNAL = <State,>({
 	}
 
 	return (
-		<div aria-label="Multiple Choice">
+		<div data-testid={testId}>
 			{label ? <label htmlFor={domId}>{label}</label> : null}
 			<div>
 				<span>
@@ -201,13 +203,16 @@ export const Combo = <State,>(props: ComboProps<State>): ReactElement => {
 	if (`options` in props) {
 		options = props.options
 	} else if (`optionsState` in props) {
+		// biome-ignore lint: intentional
 		options = useO(props.optionsState)
 	}
 	if (`selections` in props) {
 		selections = props.selections
 		setSelections = props.setSelections
 	} else if (`selectionsState` in props) {
+		// biome-ignore lint: intentional
 		selections = useO(props.selectionsState)
+		// biome-ignore lint: intentional
 		setSelections = useI(props.selectionsState)
 	}
 

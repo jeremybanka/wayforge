@@ -38,7 +38,6 @@ function RealtimeDisplay(): React.ReactNode {
 	RTR.usePullAtomFamilyMember(numberCollectionAtoms, `foo`)
 	RTR.usePullSelectorFamilyMember(findCollectionSumState, `foo`)
 	const numbers = AR.useO(numberCollectionAtoms, `foo`)
-	const sum = AR.useO(findCollectionSumState, `foo`)
 	return (
 		<>
 			{numbers.map((n) => (
@@ -66,7 +65,6 @@ describe(`running transactions`, () => {
 					const addToNumbersCollection = RTR.useServerAction(
 						addToNumbersCollectionTX,
 					)
-					const store = React.useContext(AR.StoreContext)
 
 					return (
 						<button

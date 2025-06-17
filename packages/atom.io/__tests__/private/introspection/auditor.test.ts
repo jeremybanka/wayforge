@@ -49,7 +49,7 @@ describe(`Auditor practical tests`, () => {
 		findState(doubleSelectors, `bar`)
 		let resources = auditor.listResources()
 		expect(resources.length).toBe(4)
-		for (const [token, age] of resources) {
+		for (const [token] of resources) {
 			disposeState(token)
 		}
 		resources = auditor.listResources()

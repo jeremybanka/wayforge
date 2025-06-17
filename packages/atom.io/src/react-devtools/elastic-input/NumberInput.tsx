@@ -12,7 +12,7 @@ function round(value: number, decimalPlaces?: number): number {
 	const factor = 10 ** decimalPlaces
 	return Math.round(value * factor) / factor
 }
-function roundAndPad(value: number, decimalPlaces?: number): string {
+function _roundAndPad(value: number, decimalPlaces?: number): string {
 	const roundedValue = round(value, decimalPlaces)
 	const paddedString = roundedValue.toFixed(decimalPlaces)
 	return paddedString

@@ -93,7 +93,7 @@ describe(`nested setState withing a setState callback`, () => {
 			key: `c`,
 			default: `hi`,
 		})
-		const s = selector<number>({
+		const _s = selector<number>({
 			key: `s`,
 			get: ({ get }) => {
 				return get(b) ? get(a) + 1 : 0
@@ -134,6 +134,7 @@ describe(`two timelines attempt to own the same atom`, () => {
 			key: `count`,
 			default: 0,
 		})
+		// biome-ignore lint/correctness/noUnusedVariables: intentional for readability
 		const countTimeline000 = timeline({
 			key: `count_history`,
 			scope: [countState],

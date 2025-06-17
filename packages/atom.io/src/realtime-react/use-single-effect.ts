@@ -1,3 +1,5 @@
+/** biome-ignore-all lint/correctness/useHookAtTopLevel: intentional */
+
 import * as React from "react"
 
 // @ts-expect-error this is a safe way to check a property on the global object

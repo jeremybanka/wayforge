@@ -23,7 +23,7 @@ const ipcLog = {
 const atomIOSubprocessLogger = new AtomIOLogger(
 	`warn`,
 	(_, tokenType, tokenKey, message) => {
-		const allowedIcons: LoggerIcon[] = [`🛄`]
+		const _allowedIcons: LoggerIcon[] = [`🛄`]
 		const ignoredTokenTypes: TokenDenomination[] = []
 		const ignoredTokens = [`actions`, `radialMode`, `windowMousePosition`]
 		const ignoredMessageContents: string[] = []

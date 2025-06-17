@@ -1,6 +1,6 @@
 import { act, waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
-import { actUponStore, arbitrary, clearStore, IMPLICIT } from "atom.io/internal"
+import { actUponStore, arbitrary } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
 import * as RTR from "atom.io/realtime-react"
@@ -214,7 +214,7 @@ describe(`mutable atoms in continuity`, () => {
 		)
 	}
 	test(`mutable initialization`, async () => {
-		const { client, server, teardown, addItemTX, myListAtom } = scenario()
+		const { client, server, addItemTX, myListAtom } = scenario()
 		const clientApp = client.init()
 		// clientApp.enableLogging()
 		await waitFor(() => {

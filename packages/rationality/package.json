@@ -6,7 +6,12 @@
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"module": "./dist/index.mjs",
-	"files": ["dist", "junction/package.json", "junction/dist", "junction/src"],
+	"files": [
+		"dist",
+		"junction/package.json",
+		"junction/dist",
+		"junction/src"
+	],
 	"exports": {
 		"./package.json": "./package.json",
 		".": {
@@ -35,7 +40,14 @@
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.2.3"
 	},
-	"keywords": ["relation", "data", "relational", "join", "bridge", "junction"],
+	"keywords": [
+		"relation",
+		"data",
+		"relational",
+		"join",
+		"bridge",
+		"junction"
+	],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/jeremybanka/wayforge.git",

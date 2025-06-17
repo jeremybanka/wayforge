@@ -18,7 +18,10 @@ import type * as SocketIO from "socket.io"
 export const SystemServer = ({
 	socket,
 	silo: { store },
-}: { socket: SocketIO.Socket; silo: Silo }): void => {
+}: {
+	socket: SocketIO.Socket
+	silo: Silo
+}): void => {
 	store.loggers[0].logLevel = `warn`
 	// socket.onAny((...payload: [string, ...Json.Array]) => {
 	// 	logger.info(`🛰 `, username, ...payload)

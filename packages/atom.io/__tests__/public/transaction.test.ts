@@ -34,33 +34,6 @@ beforeEach(() => {
 	vitest.spyOn(Utils, `stdout2`)
 })
 
-type CoreStats = {
-	fierce: number
-	tough: number
-	keen: number
-	mystic: number
-	deft: number
-}
-const DEFAULT_CORE_STATS: CoreStats = {
-	fierce: 0,
-	tough: 0,
-	keen: 0,
-	mystic: 0,
-	deft: 0,
-}
-
-type Being = {
-	name: string
-	species: string
-	class: string
-}
-
-type Item = {
-	name: string
-	desc: string
-	value: number
-}
-
 describe(`transaction`, () => {
 	it(`sets state`, () => {
 		const countState = atom<number>({

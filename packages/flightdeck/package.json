@@ -15,7 +15,11 @@
 		"directory": "packages/flightdeck"
 	},
 	"type": "module",
-	"files": ["dist", "gen", "src"],
+	"files": [
+		"dist",
+		"gen",
+		"src"
+	],
 	"main": "dist/lib.js",
 	"types": "dist/lib.d.ts",
 	"bin": {

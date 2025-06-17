@@ -67,11 +67,9 @@ const TransactionUpdateFC: React.FC<{
 									{typeof param === `object` &&
 									param !== null &&
 									`type` in param &&
-									`target` in param ? (
-										<>{JSON.stringify(param.type)}</>
-									) : (
-										<>{JSON.stringify(param)}</>
-									)}
+									`target` in param
+										? JSON.stringify(param.type)
+										: JSON.stringify(param)}
 								</span>
 							</article>
 						)

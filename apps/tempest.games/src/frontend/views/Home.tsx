@@ -22,6 +22,9 @@ export function Home(): React.ReactNode {
 	const email = useO(emailInputAtom)
 	const password = useO(passwordInputAtom)
 	const oneTimeCode = useO(oneTimeCodeInputAtom)
+	const emailInputId = `email-${React.useId()}`
+	const passwordInputId = `password-${React.useId()}`
+	const oneTimeCodeInputId = `one-time-code-${React.useId()}`
 
 	const [error, setError] = React.useState<string | null>(null)
 	const [currentlyEntering, setCurrentlyEntering] = React.useState<
@@ -96,10 +99,10 @@ export function Home(): React.ReactNode {
 		>
 			<main>
 				{error ? <aside>{error}</aside> : null}
-				<motion.label htmlFor="email">
+				<motion.label htmlFor={emailInputId}>
 					<span>Email</span>
 					<input
-						id="email"
+						id={emailInputId}
 						type="text"
 						value={email}
 						onChange={(e) => {
@@ -111,10 +114,10 @@ export function Home(): React.ReactNode {
 					/>
 				</motion.label>
 				{currentlyEntering === `password` ? (
-					<label htmlFor="password">
+					<label htmlFor={passwordInputId}>
 						<span>Password</span>
 						<input
-							id="password"
+							id={passwordInputId}
 							type="password"
 							value={password}
 							onChange={(e) => {
@@ -128,10 +131,10 @@ export function Home(): React.ReactNode {
 					</label>
 				) : null}
 				{currentlyEntering === `otc` ? (
-					<label htmlFor="otc">
+					<label htmlFor={oneTimeCodeInputId}>
 						<span>One-time Code</span>
 						<input
-							id="otc"
+							id={oneTimeCodeInputId}
 							type="otc"
 							value={oneTimeCode}
 							onChange={(e) => {

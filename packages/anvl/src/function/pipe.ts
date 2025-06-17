@@ -257,40 +257,40 @@ export function pipe(
 	gh?: Function,
 	hi?: Function,
 ): unknown {
-	// biome-ignore lint/style/noArguments: <explanation>
+	// biome-ignore lint: ok here
 	switch (arguments.length) {
 		case 1:
 			return a
 		case 2:
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			// biome-ignore lint: ok here
 			return ab!(a)
 		case 3:
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			// biome-ignore lint: ok here
 			return bc!(ab!(a))
 		case 4:
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			// biome-ignore lint: ok here
 			return cd!(bc!(ab!(a)))
 		case 5:
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			// biome-ignore lint: ok here
 			return de!(cd!(bc!(ab!(a))))
 		case 6:
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			// biome-ignore lint: ok here
 			return ef!(de!(cd!(bc!(ab!(a)))))
 		case 7:
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			// biome-ignore lint: ok here
 			return fg!(ef!(de!(cd!(bc!(ab!(a))))))
 		case 8:
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			// biome-ignore lint: ok here
 			return gh!(fg!(ef!(de!(cd!(bc!(ab!(a)))))))
 		case 9:
-			// biome-ignore lint/style/noNonNullAssertion: <explanation>
+			// biome-ignore lint: ok here
 			return hi!(gh!(fg!(ef!(de!(cd!(bc!(ab!(a))))))))
 		default: {
-			// biome-ignore lint/style/noArguments: <explanation>
+			// biome-ignore lint: ok here
 			let ret = arguments[0]
-			// biome-ignore lint/style/noArguments: <explanation>
+			// biome-ignore lint: ok here
 			for (let i = 1; i < arguments.length; i++) {
-				// biome-ignore lint/style/noArguments: <explanation>
+				// biome-ignore lint: ok here
 				ret = arguments[i](ret)
 			}
 			return ret

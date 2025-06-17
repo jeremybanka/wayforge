@@ -69,7 +69,8 @@ export const Radial = ({
 				})}
 			>
 				{mode === `open` ? (
-					<div
+					<button
+						type="button"
 						className={`radial-option back`}
 						onMouseUp={() => {
 							setMode(`idle`)
@@ -82,11 +83,12 @@ export const Radial = ({
 						}}
 					>
 						x
-					</div>
+					</button>
 				) : null}
 				{actions.map((opt, idx): React.ReactElement => {
 					return (
-						<div
+						<button
+							type="button"
 							key={idx}
 							className={
 								`radial-option` + (hasPressed.current === idx ? ` pressed` : ``)
@@ -107,7 +109,7 @@ export const Radial = ({
 							onMouseLeave={() => (label.current = null)}
 						>
 							{idx + 1}
-						</div>
+						</button>
 					)
 				})}
 			</div>

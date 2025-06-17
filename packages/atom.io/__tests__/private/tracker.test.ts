@@ -9,7 +9,7 @@ import {
 	transaction,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
-import { FamilyTracker, Tracker } from "atom.io/internal"
+import { Tracker } from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import { vitest } from "vitest"

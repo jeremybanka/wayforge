@@ -1,4 +1,4 @@
-import { IMPLICIT, Subject } from "atom.io/internal"
+import { Subject } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { parseJson, stringifyJson } from "atom.io/json"
 import { SetRTX } from "atom.io/transceivers/set-rtx"

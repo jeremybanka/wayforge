@@ -60,7 +60,7 @@ describe(`async atom`, async () => {
 			default: 0,
 		})
 		let resolveAtAnInconvenientTime: () => void
-		const doubledAsyncState = AtomIO.selector<Loadable<number>>({
+		const _doubledAsyncState = AtomIO.selector<Loadable<number>>({
 			key: `doubled`,
 			get: ({ get }) => {
 				const count = get(countState)
@@ -158,7 +158,7 @@ describe(`async selector`, () => {
 	})
 	server.listen(PORT)
 	test(`selector as a caching mechanism for async data`, async () => {
-		const { atom, selector, getState, store } = new AtomIO.Silo({
+		const { atom, selector, getState /* store */ } = new AtomIO.Silo({
 			name: `math`,
 			lifespan: `ephemeral`,
 		})

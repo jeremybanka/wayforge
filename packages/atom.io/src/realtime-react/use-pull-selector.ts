@@ -1,5 +1,4 @@
 import type * as AtomIO from "atom.io"
-import { findInStore } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { StoreContext, useO } from "atom.io/react"
 import * as RTC from "atom.io/realtime-client"

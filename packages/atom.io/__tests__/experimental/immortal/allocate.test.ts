@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/correctness/noUnusedVariables: we're inspecting types here */
 import type { Above, Below, Hierarchy, Logger, Mutuals, Vassal } from "atom.io"
 import {
 	Anarchy,
@@ -324,10 +325,7 @@ describe(`integrations`, () => {
 			return x
 		}
 		const transferDocumentTX = transaction<
-			(opts: {
-				to: UserGroupKey
-				document: DocumentKey
-			}) => void
+			(opts: { to: UserGroupKey; document: DocumentKey }) => void
 		>({
 			key: `transferDocument`,
 			do: ({ set }, { to, document }) => {

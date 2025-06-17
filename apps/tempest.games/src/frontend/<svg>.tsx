@@ -4,12 +4,7 @@ export function tempest(
 	props: React.SVGAttributes<SVGElement>,
 ): React.ReactNode {
 	return (
-		<svg
-			id="uuid-3d2d6be6-f179-42a3-9511-1e9ddeb8575f"
-			xmlns="http://www.w3.org/2000/svg"
-			viewBox="0 0 500 101"
-			{...props}
-		>
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 101" {...props}>
 			<title>Tempest Games Logo</title>
 			<path
 				d="M155.76.93v59.89h-17.11V7.78h-13.69V.93h30.8Z"

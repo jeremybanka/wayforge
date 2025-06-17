@@ -1,4 +1,4 @@
-import type { Json, JsonTypes } from "atom.io/json"
+import type { JsonTypes } from "atom.io/json"
 import type { CSSProperties, FC, ReactElement } from "react"
 
 import type { JsonEditorComponents } from "./default-components"

@@ -104,7 +104,7 @@ describe(`editing an object atom`, () => {
 			default: { a: 1, b: 2 },
 		})
 
-		const { getByTestId, debug } = scenario()
+		const { getByTestId /* debug */ } = scenario()
 
 		await waitFor(() => getByTestId(`myObject-state-editor-property-a`))
 		await waitFor(() => getByTestId(`myObject-state-editor-property-b`))
@@ -172,7 +172,7 @@ describe(`editing an array atom`, () => {
 	test(`array`, async () => {
 		const arrayAtom = $.atom<string[]>({ key: `myArray`, default: [`A`] })
 
-		const { getByTestId, debug } = scenario()
+		const { getByTestId /* debug */ } = scenario()
 
 		await waitFor(() => getByTestId(`myArray-state-editor-element-0`))
 
@@ -206,7 +206,7 @@ describe(`displaying non-JSON`, () => {
 describe(`editing selectors`, () => {
 	test(`selector that depends on an atom`, async () => {
 		const letterState = $.atom<string>({ key: `letter`, default: `A` })
-		const doubleLetterState = $.selector<string>({
+		const _doubleLetterState = $.selector<string>({
 			key: `doubleLetter`,
 			get: ({ get }) => get(letterState) + get(letterState),
 		})
@@ -227,7 +227,7 @@ describe(`editing selectors`, () => {
 			toJson: (set) => set.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})
-		const selectionsWithoutGreenState = $.selector<Set<string>>({
+		const _selectionsWithoutGreenState = $.selector<Set<string>>({
 			key: `selectionsWithoutGreen`,
 			get: ({ get }) => {
 				const selectionsWithGreen = get(selectionsState)
@@ -252,8 +252,8 @@ describe(`working with families`, () => {
 			key: `count`,
 			default: 0,
 		})
-		const countAtomA = $.findState(countAtoms, `A`)
-		const countAtomB = $.findState(countAtoms, `B`)
+		const _countAtomA = $.findState(countAtoms, `A`)
+		const _countAtomB = $.findState(countAtoms, `B`)
 
 		const { getByTestId } = scenario()
 
@@ -323,12 +323,12 @@ describe(`working with timelines`, () => {
 				run(decrementTX)()
 			},
 		})
-		const letterTL = $.timeline({
+		const _letterTL = $.timeline({
 			key: `countTL`,
 			scope: [countAtom],
 		})
 
-		const { getByTestId, debug } = scenario()
+		const { getByTestId /* debug */ } = scenario()
 
 		act(() => {
 			getByTestId(`view-timelines`).click()
