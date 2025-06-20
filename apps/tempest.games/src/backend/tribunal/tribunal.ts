@@ -39,7 +39,7 @@ export async function tribunal({
 
 	// map to ban-decision
 	const banRulings: { ip: string; reason: string }[] = []
-	const generateBanRuling = generator.from(banRulingSpec)
+	const generateBanRuling = generator.object(banRulingSpec)
 	let logsDone = 0
 	let notBanCount = 0
 	for (const [ip, logs] of logsPerIpMap) {
