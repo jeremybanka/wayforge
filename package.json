@@ -40,7 +40,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.0.0",
-		"@changesets/cli": "2.29.4",
+		"@changesets/cli": "2.29.5",
 		"@eslint/eslintrc": "3.3.1",
 		"@eslint/js": "9.29.0",
 		"@next/eslint-plugin-next": "15.3.4",
