@@ -48,7 +48,7 @@
 		"postversion": "biome format --write package.json"
 	},
 	"devDependencies": {
-		"@types/bun": "npm:bun-types@1.2.16",
+		"@types/bun": "npm:bun-types@1.2.17",
 		"@biomejs/js-api": "1.0.0",
 		"@biomejs/wasm-nodejs": "2.0.4",
 		"@types/node": "24.0.3",
