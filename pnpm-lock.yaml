@@ -127,8 +127,8 @@ importers:
         specifier: 4.0.3
         version: 4.0.3
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       eslint:
         specifier: 9.29.0
         version: 9.29.0(jiti@2.4.2)
@@ -213,8 +213,8 @@ importers:
         specifier: 4.0.3
         version: 4.0.3
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       eslint:
         specifier: 9.29.0
         version: 9.29.0(jiti@2.4.2)
@@ -380,8 +380,8 @@ importers:
         specifier: 3.10.2
         version: 3.10.2(vite@6.3.5(@types/node@24.0.3)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.43.0)(tsx@4.20.3))
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       cors:
         specifier: 2.8.5
         version: 2.8.5
@@ -471,8 +471,8 @@ importers:
         specifier: 19.1.6
         version: 19.1.6(@types/react@19.1.8)
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       eslint:
         specifier: 9.29.0
         version: 9.29.0(jiti@2.4.2)
@@ -508,8 +508,8 @@ importers:
   packages/anvl:
     devDependencies:
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       eslint:
         specifier: 9.29.0
         version: 9.29.0(jiti@2.4.2)
@@ -581,8 +581,8 @@ importers:
         specifier: workspace:*
         version: link:../break-check
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       drizzle-kit:
         specifier: 0.31.1
         version: 0.31.1
@@ -684,8 +684,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       eslint:
         specifier: 9.29.0
         version: 9.29.0(jiti@2.4.2)
@@ -718,8 +718,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       eslint:
         specifier: 9.29.0
         version: 9.29.0(jiti@2.4.2)
@@ -776,8 +776,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       eslint:
         specifier: 9.29.0
         version: 9.29.0(jiti@2.4.2)
@@ -843,8 +843,8 @@ importers:
         specifier: workspace:*
         version: link:../atom.io
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       eslint:
         specifier: 9.29.0
         version: 9.29.0(jiti@2.4.2)
@@ -898,8 +898,8 @@ importers:
         specifier: 24.0.3
         version: 24.0.3
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       eslint:
         specifier: 9.29.0
         version: 9.29.0(jiti@2.4.2)
@@ -923,8 +923,8 @@ importers:
         version: link:../treetrunks
     devDependencies:
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       eslint:
         specifier: 9.29.0
         version: 9.29.0(jiti@2.4.2)
@@ -947,8 +947,8 @@ importers:
         specifier: 24.0.3
         version: 24.0.3
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       eslint:
         specifier: 9.29.0
         version: 9.29.0(jiti@2.4.2)
@@ -978,8 +978,8 @@ importers:
         version: 5.1.5
     devDependencies:
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       eslint:
         specifier: 9.29.0
         version: 9.29.0(jiti@2.4.2)
@@ -999,8 +999,8 @@ importers:
   packages/rationality:
     devDependencies:
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       eslint:
         specifier: 9.29.0
         version: 9.29.0(jiti@2.4.2)
@@ -1020,8 +1020,8 @@ importers:
   packages/rel8:
     devDependencies:
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       eslint:
         specifier: 9.29.0
         version: 9.29.0(jiti@2.4.2)
@@ -1050,8 +1050,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       eslint:
         specifier: 9.29.0
         version: 9.29.0(jiti@2.4.2)
@@ -1087,8 +1087,8 @@ importers:
         specifier: workspace:*
         version: link:../atom.io
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       eslint:
         specifier: 9.29.0
         version: 9.29.0(jiti@2.4.2)
@@ -1136,8 +1136,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       eslint:
         specifier: 9.29.0
         version: 9.29.0(jiti@2.4.2)
@@ -1178,8 +1178,8 @@ importers:
         specifier: 3.2.4
         version: 3.2.4(vitest@3.2.4)
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       eslint:
         specifier: 9.29.0
         version: 9.29.0(jiti@2.4.2)
@@ -1218,8 +1218,8 @@ importers:
         specifier: 19.1.8
         version: 19.1.8
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       eslint:
         specifier: 9.29.0
         version: 9.29.0(jiti@2.4.2)
@@ -1261,8 +1261,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       concurrently:
-        specifier: 9.1.2
-        version: 9.1.2
+        specifier: 9.2.0
+        version: 9.2.0
       eslint:
         specifier: 9.29.0
         version: 9.29.0(jiti@2.4.2)
@@ -4628,8 +4628,8 @@ packages:
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
 
-  concurrently@9.1.2:
-    resolution: {integrity: sha512-H9MWcoPsYddwbOGM6difjVwVZHl63nwMEwDJG/L7VGtuaJhb12h2caPG2tVPWs7emuYix252iGfqOyrz1GczTQ==}
+  concurrently@9.2.0:
+    resolution: {integrity: sha512-IsB/fiXTupmagMW4MNp2lx2cdSN2FfZq78vF90LBB+zZHArbIQZjQtzXCiXnvTxCZSvXanTqFLWBjw2UkLx1SQ==}
     engines: {node: '>=18'}
     hasBin: true
 
@@ -11633,7 +11633,7 @@ snapshots:
 
   concat-map@0.0.1: {}
 
-  concurrently@9.1.2:
+  concurrently@9.2.0:
     dependencies:
       chalk: 4.1.2
       lodash: 4.17.21
