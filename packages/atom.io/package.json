@@ -173,6 +173,9 @@
 			"import": "./dist/react-devtools/index.js",
 			"types": "./dist/react-devtools/index.d.ts"
 		},
+		"./react-devtools/css": {
+			"import": "./dist/react-devtools/index.css"
+		},
 		"./realtime": {
 			"import": "./dist/realtime/index.js",
 			"types": "./dist/realtime/index.d.ts"
