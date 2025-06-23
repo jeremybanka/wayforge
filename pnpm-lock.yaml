@@ -837,8 +837,8 @@ importers:
         specifier: 19.1.8
         version: 19.1.8
       '@vitejs/plugin-react':
-        specifier: 4.5.2
-        version: 4.5.2(vite@6.3.5(@types/node@24.0.3)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.43.0)(tsx@4.20.3))
+        specifier: 4.6.0
+        version: 4.6.0(vite@6.3.5(@types/node@24.0.3)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.43.0)(tsx@4.20.3))
       atom.io:
         specifier: workspace:*
         version: link:../atom.io
@@ -3246,6 +3246,9 @@ packages:
   '@rolldown/pluginutils@1.0.0-beta.15':
     resolution: {integrity: sha512-lvFtIbidq5EqyAAeiVk41ZNjGRgUoGRBIuqpe1VRJ7R8Av7TLAgGWAwGlHNhO7MFkl7MNRX350CsTtIWIYkNIQ==}
 
+  '@rolldown/pluginutils@1.0.0-beta.19':
+    resolution: {integrity: sha512-3FL3mnMbPu0muGOCaKAhhFEYmqv9eTfPSJRJmANrCwtgK8VuxpsZDGK+m0LYAGoyO8+0j5uRe4PeyPDK1yA/hA==}
+
   '@rollup/pluginutils@5.2.0':
     resolution: {integrity: sha512-qWJ2ZTbmumwiLFomfzTyt5Kng4hwPi9rwCYN4SHb6eaRU1KNO4ccxINHr/VhH4GgPlt1XfSTLX2LBTme8ne4Zw==}
     engines: {node: '>=14.0.0'}
@@ -4018,8 +4021,8 @@ packages:
     peerDependencies:
       vite: ^4 || ^5 || ^6 || ^7.0.0-beta.0
 
-  '@vitejs/plugin-react@4.5.2':
-    resolution: {integrity: sha512-QNVT3/Lxx99nMQWJWF7K4N6apUEuT0KlZA3mx/mVaoGj3smm/8rc8ezz15J1pcbcjDK0V15rpHetVfya08r76Q==}
+  '@vitejs/plugin-react@4.6.0':
+    resolution: {integrity: sha512-5Kgff+m8e2PB+9j51eGHEpn5kUzRKH2Ry0qGoe8ItJg7pqnkPrYPkDQZGgGmTa0EGarHrkjLvOdU3b1fzI8otQ==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
       vite: ^4.2.0 || ^5.0.0 || ^6.0.0 || ^7.0.0-beta.0
@@ -10320,6 +10323,8 @@ snapshots:
 
   '@rolldown/pluginutils@1.0.0-beta.15': {}
 
+  '@rolldown/pluginutils@1.0.0-beta.19': {}
+
   '@rollup/pluginutils@5.2.0(rollup@4.43.0)':
     dependencies:
       '@types/estree': 1.0.8
@@ -10992,12 +10997,12 @@ snapshots:
     transitivePeerDependencies:
       - '@swc/helpers'
 
-  '@vitejs/plugin-react@4.5.2(vite@6.3.5(@types/node@24.0.3)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.43.0)(tsx@4.20.3))':
+  '@vitejs/plugin-react@4.6.0(vite@6.3.5(@types/node@24.0.3)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.43.0)(tsx@4.20.3))':
     dependencies:
       '@babel/core': 7.27.4
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.27.4)
       '@babel/plugin-transform-react-jsx-source': 7.27.1(@babel/core@7.27.4)
-      '@rolldown/pluginutils': 1.0.0-beta.11
+      '@rolldown/pluginutils': 1.0.0-beta.19
       '@types/babel__core': 7.20.5
       react-refresh: 0.17.0
       vite: 6.3.5(@types/node@24.0.3)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.43.0)(tsx@4.20.3)
