@@ -12,10 +12,10 @@
 	},
 	"include": [
 		"src",
-		"**/src",
+		"**/*.config.ts",
 		"__tests__",
 		"__scripts__",
-		"__unstable__",
-		"**/*.config.ts"
+		"__stories__",
+		"__unstable__"
 	]
 }
