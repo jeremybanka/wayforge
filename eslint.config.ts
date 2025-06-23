@@ -267,6 +267,7 @@ const configs = [
 				"storybook/use-storybook-expect": ERROR,
 				"storybook/use-storybook-testing-library": ERROR,
 			} satisfies {
+				// https://storybook.js.org/docs/configure/integration/eslint-plugin
 				[K in keyof StorybookRules as `storybook/${K}`]: StorybookRules[K] extends RuleModuleWithMetaDocs<
 					any,
 					infer Options
