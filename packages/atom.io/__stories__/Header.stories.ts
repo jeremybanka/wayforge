@@ -3,7 +3,6 @@ import { fn } from "storybook/test"
 
 import { Header } from "./Header"
 
-/* eslint-disable quotes */
 const meta: Meta<typeof Header> = {
 	title: "Example/Header",
 	component: Header,
@@ -11,7 +10,7 @@ const meta: Meta<typeof Header> = {
 	tags: ["autodocs"],
 	parameters: {
 		// More on how to position stories at: https://storybook.js.org/docs/configure/story-layout
-		layout: `fullscreen`,
+		layout: "fullscreen",
 	},
 	args: {
 		onLogin: fn(),
@@ -19,7 +18,6 @@ const meta: Meta<typeof Header> = {
 		onCreateAccount: fn(),
 	},
 }
-/* eslint-enable quotes */
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -27,7 +25,7 @@ type Story = StoryObj<typeof meta>
 export const LoggedIn: Story = {
 	args: {
 		user: {
-			name: `Jane Doe`,
+			name: "Jane Doe",
 		},
 	},
 }

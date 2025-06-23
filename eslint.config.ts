@@ -1,6 +1,3 @@
-// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-// import storybook from "eslint-plugin-storybook"
-
 import { default as NextPlugin } from "@next/eslint-plugin-next"
 import { default as TypeScriptPlugin } from "@typescript-eslint/eslint-plugin"
 import * as parser from "@typescript-eslint/parser"
@@ -8,9 +5,14 @@ import type { ESLint, Linter } from "eslint"
 import * as DrizzlePlugin from "eslint-plugin-drizzle"
 import * as ImportPlugin from "eslint-plugin-import-x"
 import { default as SimpleImportSortPlugin } from "eslint-plugin-simple-import-sort"
+import StorybookPlugin from "eslint-plugin-storybook"
 
 import AtomIOPlugin from "./packages/atom.io/src/eslint-plugin"
+import { RuleModuleWithMetaDocs } from "@typescript-eslint/utils/ts-eslint"
 
+type StorybookRules = typeof StorybookPlugin.rules
+
+const WARN = 1
 const ERROR = 2
 
 const parserOptions = {
@@ -240,6 +242,38 @@ const configs = [
 		ignores: [`apps/tempest.games/src/frontend/**/*.ts{,x}`, `**/*.test.ts`],
 		rules: {
 			"no-console": ERROR,
+		},
+	},
+	{
+		files: [`packages/atom.io/**/*.stories.ts`],
+		plugins: { storybook: StorybookPlugin as any as ESLint.Plugin },
+		rules: {
+			quotes: [ERROR, `double`],
+			...({
+				"storybook/await-interactions": ERROR,
+				"storybook/context-in-play-function": ERROR,
+				"storybook/csf-component": 0,
+				"storybook/default-exports": ERROR,
+				"storybook/hierarchy-separator": WARN,
+				"storybook/meta-inline-properties": 0,
+				"storybook/meta-satisfies-type": 0,
+				"storybook/no-redundant-story-name": WARN,
+				"storybook/no-renderer-packages": ERROR,
+				"storybook/no-stories-of": 0,
+				"storybook/no-title-property-in-meta": 0,
+				"storybook/no-uninstalled-addons": 0,
+				"storybook/prefer-pascal-case": WARN,
+				"storybook/story-exports": ERROR,
+				"storybook/use-storybook-expect": ERROR,
+				"storybook/use-storybook-testing-library": ERROR,
+			} satisfies {
+				[K in keyof StorybookRules as `storybook/${K}`]: StorybookRules[K] extends RuleModuleWithMetaDocs<
+					any,
+					infer Options
+				>
+					? 0 | 1 | 2 | [0 | 1 | 2, Options]
+					: 0 | 1 | 2
+			}),
 		},
 	},
 	{

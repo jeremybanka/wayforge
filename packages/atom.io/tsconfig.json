@@ -16,6 +16,7 @@
 		"__tests__",
 		"__scripts__",
 		"__stories__",
-		"__unstable__"
+		"__unstable__",
+		".storybook/*.ts"
 	]
 }
