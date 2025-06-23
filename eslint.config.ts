@@ -1,3 +1,6 @@
+// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
+import storybook from "eslint-plugin-storybook";
+
 import { default as NextPlugin } from "@next/eslint-plugin-next"
 import { default as TypeScriptPlugin } from "@typescript-eslint/eslint-plugin"
 import * as parser from "@typescript-eslint/parser"
@@ -160,101 +163,93 @@ const commonRules = {
 	quotes: [ERROR, `backtick`],
 } satisfies Linter.Config[`rules`]
 
-const configs = [
-	{
-		ignores: [
-			`**/.wrangler/**`,
-			`**/_shared/**`,
-			`**/build/**`,
-			`**/coverage/**`,
-			`**/dist/**`,
-			`**/gen/**`,
-			`**/node_modules/**`,
-		],
-	},
-	{
-		languageOptions: { parser, parserOptions },
-		ignores: [`apps/edge/viceroy-htmx/**`],
-		files: [`**/*.ts{,x}`, `eslint.config.ts`],
-		plugins: {
-			"@typescript-eslint": TypeScriptPlugin,
-			"atom.io": AtomIOPlugin as ESLint.Plugin,
-			import: ImportPlugin,
-			"simple-import-sort": SimpleImportSortPlugin,
-		},
-		rules: commonRules,
-	},
-	{
-		files: [`apps/atom.io.fyi/**/*.ts{,x}`],
-		ignores: [`**/*.gen.tsx`, `**/dist/**`, `**/node_modules/**`],
-		plugins: { "@next/next": NextPlugin },
-		rules: {
-			...NextPlugin.configs.recommended.rules,
-			...NextPlugin.configs[`core-web-vitals`].rules,
-			"@next/next/no-duplicate-head": 0,
-			"@next/next/no-page-custom-font": 0,
-		},
-		settings: { next: { rootDir: `apps/atom.io.fyi/` } },
-	},
-	{
-		files: [`apps/wayfarer.quest/**/*.ts{,x}`],
-		ignores: [`**/generated/**`, `**/dist/**`, `**/node_modules/**`],
-		plugins: { "@next/next": NextPlugin },
-		rules: {
-			...NextPlugin.configs.recommended.rules,
-			...NextPlugin.configs[`core-web-vitals`].rules,
-			"@next/next/no-duplicate-head": 0,
-			"@next/next/no-page-custom-font": 0,
-		},
-		settings: { next: { rootDir: `apps/wayfarer.quest/` } },
-	},
-	{
-		languageOptions: {
-			parser,
-			parserOptions: {
-				project:
-					process.cwd().split(`/`)[process.cwd().split(`/`).length - 1] ===
-					`viceroy-htmx`
-						? `./tsconfig.json`
-						: `./apps/edge/viceroy-htmx/tsconfig.json`,
-			},
-		},
-		files: [`apps/edge/viceroy-htmx/**/*.ts{,x}`],
-		ignores: [`**/bin/**`, `**/dist/**`, `**/*.gen.ts`, `**/node_modules/**`],
-		plugins: {
-			"@typescript-eslint": TypeScriptPlugin,
-			"atom.io": AtomIOPlugin as ESLint.Plugin,
-			import: ImportPlugin,
-			"simple-import-sort": SimpleImportSortPlugin,
-		},
-		rules: commonRules,
-	},
-	{
-		files: [
-			`packages/atom.io/**/src/**/*.ts{,x}`,
-			`apps/tempest.games/src/**/*.ts{,x}`,
-		],
-		ignores: [`apps/tempest.games/src/frontend/**/*.ts{,x}`, `**/*.test.ts`],
-		rules: {
-			"no-console": ERROR,
-		},
-	},
-	{
-		files: [`apps/tempest.games/src/**/*.ts{,x}`],
-		plugins: {
-			drizzle: DrizzlePlugin,
-		},
-		ignores: [`apps/tempest.games/src/frontend/**/*.ts{,x}`, `**/*.test.ts`],
-		rules: {
-			"drizzle/enforce-update-with-where": ERROR,
-			"drizzle/enforce-delete-with-where": [
-				ERROR,
-				{
-					drizzleObjectName: `db.drizzle`,
-				},
-			],
-		},
-	},
-] satisfies Linter.Config[]
+const configs = [{
+    ignores: [
+        `**/.wrangler/**`,
+        `**/_shared/**`,
+        `**/build/**`,
+        `**/coverage/**`,
+        `**/dist/**`,
+        `**/gen/**`,
+        `**/node_modules/**`,
+    ],
+}, {
+    languageOptions: { parser, parserOptions },
+    ignores: [`apps/edge/viceroy-htmx/**`],
+    files: [`**/*.ts{,x}`, `eslint.config.ts`],
+    plugins: {
+        "@typescript-eslint": TypeScriptPlugin,
+        "atom.io": AtomIOPlugin as ESLint.Plugin,
+        import: ImportPlugin,
+        "simple-import-sort": SimpleImportSortPlugin,
+    },
+    rules: commonRules,
+}, {
+    files: [`apps/atom.io.fyi/**/*.ts{,x}`],
+    ignores: [`**/*.gen.tsx`, `**/dist/**`, `**/node_modules/**`],
+    plugins: { "@next/next": NextPlugin },
+    rules: {
+        ...NextPlugin.configs.recommended.rules,
+        ...NextPlugin.configs[`core-web-vitals`].rules,
+        "@next/next/no-duplicate-head": 0,
+        "@next/next/no-page-custom-font": 0,
+    },
+    settings: { next: { rootDir: `apps/atom.io.fyi/` } },
+}, {
+    files: [`apps/wayfarer.quest/**/*.ts{,x}`],
+    ignores: [`**/generated/**`, `**/dist/**`, `**/node_modules/**`],
+    plugins: { "@next/next": NextPlugin },
+    rules: {
+        ...NextPlugin.configs.recommended.rules,
+        ...NextPlugin.configs[`core-web-vitals`].rules,
+        "@next/next/no-duplicate-head": 0,
+        "@next/next/no-page-custom-font": 0,
+    },
+    settings: { next: { rootDir: `apps/wayfarer.quest/` } },
+}, {
+    languageOptions: {
+        parser,
+        parserOptions: {
+            project:
+                process.cwd().split(`/`)[process.cwd().split(`/`).length - 1] ===
+                `viceroy-htmx`
+                    ? `./tsconfig.json`
+                    : `./apps/edge/viceroy-htmx/tsconfig.json`,
+        },
+    },
+    files: [`apps/edge/viceroy-htmx/**/*.ts{,x}`],
+    ignores: [`**/bin/**`, `**/dist/**`, `**/*.gen.ts`, `**/node_modules/**`],
+    plugins: {
+        "@typescript-eslint": TypeScriptPlugin,
+        "atom.io": AtomIOPlugin as ESLint.Plugin,
+        import: ImportPlugin,
+        "simple-import-sort": SimpleImportSortPlugin,
+    },
+    rules: commonRules,
+}, {
+    files: [
+        `packages/atom.io/**/src/**/*.ts{,x}`,
+        `apps/tempest.games/src/**/*.ts{,x}`,
+    ],
+    ignores: [`apps/tempest.games/src/frontend/**/*.ts{,x}`, `**/*.test.ts`],
+    rules: {
+        "no-console": ERROR,
+    },
+}, {
+    files: [`apps/tempest.games/src/**/*.ts{,x}`],
+    plugins: {
+        drizzle: DrizzlePlugin,
+    },
+    ignores: [`apps/tempest.games/src/frontend/**/*.ts{,x}`, `**/*.test.ts`],
+    rules: {
+        "drizzle/enforce-update-with-where": ERROR,
+        "drizzle/enforce-delete-with-where": [
+            ERROR,
+            {
+                drizzleObjectName: `db.drizzle`,
+            },
+        ],
+    },
+}, ...storybook.configs["flat/recommended"]] satisfies Linter.Config[]
 
 export default configs
