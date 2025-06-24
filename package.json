@@ -47,7 +47,7 @@
 		"@types/eslint": "9.6.1",
 		"@typescript-eslint/eslint-plugin": "8.35.0",
 		"@typescript-eslint/parser": "8.35.0",
-		"@typescript/native-preview": "7.0.0-dev.20250623.1",
+		"@typescript/native-preview": "7.0.0-dev.20250624.1",
 		"c8": "10.1.3",
 		"cross-env": "7.0.3",
 		"eslint-plugin-drizzle": "0.2.3",
