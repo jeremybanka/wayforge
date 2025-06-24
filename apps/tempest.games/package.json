@@ -55,7 +55,7 @@
 	"dependencies": {
 		"@floating-ui/react": "0.27.12",
 		"@js-temporal/polyfill": "0.5.1",
-		"@react-email/components": "0.1.0",
+		"@react-email/components": "0.1.1",
 		"@t3-oss/env-core": "0.13.8",
 		"@trpc/client": "11.4.2",
 		"@trpc/server": "11.4.2",
@@ -78,7 +78,7 @@
 		"treetrunks": "workspace:*"
 	},
 	"devDependencies": {
-		"@react-email/components": "0.1.0",
+		"@react-email/components": "0.1.1",
 		"@types/bun": "npm:bun-types@1.2.17",
 		"@types/cors": "2.8.19",
 		"@types/node": "24.0.3",
