@@ -40,7 +40,7 @@
 		"simple-git": "3.28.0"
 	},
 	"devDependencies": {
-		"@types/node": "24.0.3",
+		"@types/node": "24.0.4",
 		"@types/tmp": "0.2.6",
 		"concurrently": "9.2.0",
 		"eslint": "9.29.0",
