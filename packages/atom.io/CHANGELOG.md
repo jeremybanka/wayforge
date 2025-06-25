@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.33.6
+
+### Patch Changes
+
+- f552fba: 🐛 Fix bug where atom.io/react-devtools would be included unstyled.
+- f552fba: 🎁 Exported `atom.io/react-devtools/css`. Import this to automatically style atom.io's devtools.
+
 ## 0.33.5
 
 ### Patch Changes
@@ -269,7 +276,6 @@
 ### Minor Changes
 
 - b10961b: ✨ `atom.io/immortal` now permits `findState`. Though, it may return a `counterfeit` token.
-
   - A `counterfeit` token is a reference to a state that is not actually created in the store, but does belong to a real family that is known to the store.
   - We create a counterfeit token when we attempt to `findState`, but we are not permitted to initialize the state we need to find. This can happen in `immortal` stores, where we cannot create free-floating states, but must have previously reserved space for them using the `moleculeFamily` function.
   - Counterfeit is the best of several undesirable options where we cannot return a real token:
@@ -716,7 +722,6 @@
 - d73205e: 🎁 New Subpackage! `atom.io/realtime` introduces the new end-to-end `continuity` API.
 
   `continuity` Is an out-of-the-box solution for efficient rollback netcode with adversarial perspectives. It tracks a group of global states, actions, and "perspectives". Assuming the global and perspective-bound states are only updated via the listed actions, `continuity` allows clients to optimistically predict the global state from their perspective, and roll back to the correct state when the server disagrees.
-
   - ✨ `realtime-server` `continuitySynchronizer`
   - ✨ `realtime-client` `syncContinuity`
   - ✨ `realtime-react` `useSyncContinuity`
@@ -772,7 +777,6 @@
 
 - 4013686: 💥 BREAKING CHANGE: Types for atoms and selectors have been changed. `Selector` now encompasses `ReadonlySelector` and `WritableSelector`; `MutableAtom` is now differentiated from `RegularAtom` and are given the brands `{ type: "mutable_atom" }` and `{ type: "atom" }` respectively. `Atom` encompasses these.
 - 636b095: 💥 BREAKING CHANGE: `atom.io/realtime` has renamed most core functions to organize the design around three core APIs:
-
   - Isolated
   - Shared
   - Adversarial
@@ -1193,7 +1197,6 @@
   | _Why would it be useful to set the atom's state to a Promise?_
 
   When an atom enters a refetching mode, subscribers are notified with an update `{ oldValue: T; newValue: Promise<T> }`, and they may choose one of three options:
-
   - **Do nothing** — The subscriber will continue to use the atom's current state.
   - **Enter a loading state** — Expose a flag to indicate that the data is loading, while continuing to use the atom's `oldValue`.
   - **Defer to React Suspense** — If the subscriber is a React component, it may prefer access to the promise itself, so it can throw it and trigger suspense.
