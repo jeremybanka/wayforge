@@ -27,6 +27,7 @@ main[data-css="atom_io_devtools"] {
 	* {
 		font-size: 16px;
 		font-family: theia, monospace;
+		line-height: 1em;
 	}
 	> header {
 		padding: 5px;
@@ -46,7 +47,7 @@ main[data-css="atom_io_devtools"] {
 				cursor: pointer;
 				background: none;
 				border: none;
-				padding: none;
+				padding: 0px 5px;
 				margin-bottom: -2px;
 				z-index: 1000;
 				&:disabled {
@@ -113,10 +114,12 @@ main[data-css="atom_io_devtools"] {
 						flex-flow: row;
 						gap: 5px;
 						cursor: help;
-						h2 {
+						align-items: baseline;
+						/* h2,
+						span.type {
 							display: inline-block;
 							margin: 0;
-						}
+						} */
 						.detail {
 							color: #777;
 							@media (prefers-color-scheme: light) {
@@ -125,9 +128,9 @@ main[data-css="atom_io_devtools"] {
 						}
 					}
 				}
-				main {
-					margin-left: 15px;
-				}
+				/* main {
+          margin-left: 15px;
+        } */
 			}
 			section.transaction_log {
 				margin-top: 0;

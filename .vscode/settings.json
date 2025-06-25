@@ -11,7 +11,8 @@
 	"files.associations": {
 		"api-extractor.json": "jsonc",
 		"tsconfig.json": "jsonc",
-		".env.*": "properties"
+		".env.*": "properties",
+		"*.css": "css"
 	},
 	"json.schemas": [
 		{

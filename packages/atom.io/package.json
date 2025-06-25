@@ -32,7 +32,9 @@
 		"test:once:public": "cross-env IMPORT=dist vitest run public",
 		"test:manifest": "tsx __scripts__/manifest-test.node.ts",
 		"test:semver": "break-check --verbose",
-		"postversion": "biome format --write package.json"
+		"postversion": "biome format --write package.json",
+		"storybook": "storybook dev -p 6006",
+		"build-storybook": "storybook build"
 	},
 	"peerDependencies": {
 		"@floating-ui/react": ">=0.25.0",
@@ -80,6 +82,9 @@
 	},
 	"devDependencies": {
 		"@eslint/core": "0.15.1",
+		"@storybook/addon-docs": "9.0.12",
+		"@storybook/addon-onboarding": "9.0.12",
+		"@storybook/react-vite": "9.0.12",
 		"@testing-library/react": "16.3.0",
 		"@types/bun": "npm:bun-types@1.2.17",
 		"@types/eslint": "9.6.1",
@@ -111,6 +116,7 @@
 		"recoverage": "0.1.11",
 		"socket.io": "4.8.1",
 		"socket.io-client": "4.8.1",
+		"storybook": "9.0.12",
 		"tmp": "0.2.3",
 		"tsdown": "0.12.9",
 		"tsx": "4.20.3",
@@ -172,6 +178,9 @@
 		"./react-devtools": {
 			"import": "./dist/react-devtools/index.js",
 			"types": "./dist/react-devtools/index.d.ts"
+		},
+		"./react-devtools/css": {
+			"import": "./dist/react-devtools/index.css"
 		},
 		"./realtime": {
 			"import": "./dist/realtime/index.js",
