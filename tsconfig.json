@@ -31,6 +31,6 @@
 			"~/*": ["./*"]
 		}
 	},
-	"include": ["**/*.ts", "**/*.tsx", "**/*.js"],
+	"include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/.storybook/*.ts"],
 	"exclude": ["**/dist"]
 }

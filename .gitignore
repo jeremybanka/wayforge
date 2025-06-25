@@ -20,3 +20,6 @@ heap.json
 coverage.sqlite
 git.sha
 repomix-output.xml
+
+*storybook.log
+storybook-static
