@@ -27,6 +27,7 @@ main[data-css="atom_io_devtools"] {
 	* {
 		font-size: 16px;
 		font-family: theia, monospace;
+		line-height: 1em;
 	}
 	> header {
 		padding: 5px;
@@ -38,7 +39,6 @@ main[data-css="atom_io_devtools"] {
 			margin: 0;
 			font-size: 24px;
 			font-family: charter, serif;
-			line-height: 1em;
 		}
 		nav {
 			display: flex;
@@ -114,11 +114,12 @@ main[data-css="atom_io_devtools"] {
 						flex-flow: row;
 						gap: 5px;
 						cursor: help;
-						h2 {
+						align-items: baseline;
+						/* h2,
+						span.type {
 							display: inline-block;
 							margin: 0;
-							line-height: 21px;
-						}
+						} */
 						.detail {
 							color: #777;
 							@media (prefers-color-scheme: light) {
