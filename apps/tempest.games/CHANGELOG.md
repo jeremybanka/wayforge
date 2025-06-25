@@ -1,5 +1,13 @@
 # tempest.games
 
+## 0.2.15
+
+### Patch Changes
+
+- Updated dependencies [f552fba]
+- Updated dependencies [f552fba]
+  - atom.io@0.33.6
+
 ## 0.2.14
 
 ### Patch Changes
@@ -428,7 +436,6 @@
 ### Patch Changes
 
 - 6be0203: ✨ Validations and security.
-
   - Enhanced backend security by adding IP tracking and banning for multiple failed login attempts.
   - Improved signup and login forms with error handling, validation feedback, and input readiness checks.
   - Extended database schema to include user tracking and login history tables.
