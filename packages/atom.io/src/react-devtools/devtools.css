@@ -8,6 +8,7 @@ main[data-css="atom_io_devtools"] {
 		--bg-color: #ddd;
 		--bg-tint1: #e3e3e3;
 	}
+	pointer-events: all;
 	& {
 		box-sizing: border-box;
 		color: var(--fg-color);

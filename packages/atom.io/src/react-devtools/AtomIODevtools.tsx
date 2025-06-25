@@ -45,6 +45,7 @@ const AtomIODevtoolsInternal = (): React.ReactNode => {
 				left: 0,
 				right: 0,
 				bottom: 0,
+				pointerEvents: `none`,
 			}}
 		>
 			<motion.span
