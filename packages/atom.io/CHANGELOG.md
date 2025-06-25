@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.33.7
+
+### Patch Changes
+
+- 2d0483b: 🐛 Avoided blocking the application with devtools by setting `pointer-events: none` on all wrappers and `pointer-events: all` on the devtools themselves.
+
 ## 0.33.6
 
 ### Patch Changes
