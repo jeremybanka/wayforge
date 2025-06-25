@@ -1,5 +1,7 @@
 import type { StorybookConfig } from "@storybook/react-vite"
 import { dirname, join, resolve } from "path"
+import { mergeConfig } from "vite"
+import tsconfigPaths from "vite-tsconfig-paths"
 
 /**
  * This function is used to resolve the absolute path of a package.
@@ -18,5 +20,9 @@ const config: StorybookConfig = {
 		name: getAbsolutePath(`@storybook/react-vite`),
 		options: {},
 	},
+	viteFinal: (cfg) =>
+		mergeConfig(cfg, {
+			plugins: [tsconfigPaths({ projects: [`./tsconfig.json`] })],
+		}),
 }
 export default config
