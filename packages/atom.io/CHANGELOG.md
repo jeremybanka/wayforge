@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.33.8
+
+### Patch Changes
+
+- ac830e1: 💄 Improved styles for `react-devtools` to be more compact and readable.
+
 ## 0.33.7
 
 ### Patch Changes
