@@ -115,12 +115,11 @@ main[data-css="atom_io_devtools"] {
 						flex-flow: row;
 						gap: 5px;
 						cursor: help;
-						align-items: baseline;
-						/* h2,
-						span.type {
+						align-items: center;
+						h2 {
 							display: inline-block;
 							margin: 0;
-						} */
+						}
 						.detail {
 							color: #777;
 							@media (prefers-color-scheme: light) {
@@ -129,9 +128,6 @@ main[data-css="atom_io_devtools"] {
 						}
 					}
 				}
-				/* main {
-          margin-left: 15px;
-        } */
 			}
 			section.transaction_log {
 				margin-top: 0;
