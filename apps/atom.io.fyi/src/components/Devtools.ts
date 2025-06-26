@@ -9,7 +9,7 @@ const shouldLoadComponent = () => {
 export const AtomIODevtools = dynamic(
 	() =>
 		shouldLoadComponent()
-			? import(`./DevtoolsDynamic.ts`).then((mod) => mod.AtomIODevtools)
+			? import(`./DevtoolsDynamic.tsx`).then((mod) => mod.AtomIODevtools)
 			: Promise.resolve(() => null),
 	{
 		ssr: false,
