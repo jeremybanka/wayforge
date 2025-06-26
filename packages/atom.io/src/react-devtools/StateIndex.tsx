@@ -1,4 +1,5 @@
 import type {
+	Loadable,
 	ReadableToken,
 	ReadonlyPureSelectorToken,
 	RegularAtomToken,
@@ -19,13 +20,15 @@ import { DevtoolsContext } from "./store"
 export const StateIndexLeafNode: FC<{
 	node: ReadableToken<unknown>
 	isOpenState: RegularAtomToken<boolean>
-	typeState: ReadonlyPureSelectorToken<string>
+	typeState: ReadonlyPureSelectorToken<Loadable<string>>
 }> = ({ node, isOpenState, typeState }) => {
 	const setIsOpen = useI(isOpenState)
 	const isOpen = useO(isOpenState)
 
 	const state = useO(node)
-	const stateType = useO(typeState)
+	const stateTypeLoadable = useO(typeState)
+	const stateType =
+		stateTypeLoadable instanceof Promise ? `Promise` : stateTypeLoadable
 
 	const isPrimitive = Boolean(primitiveRefinery.refine(state))
 
@@ -49,7 +52,11 @@ export const StateIndexLeafNode: FC<{
 					<h2>{node.family?.subKey ?? node.key}</h2>
 					<span className="type detail">({stateType})</span>
 				</main>
-				{isPrimitive ? <StoreEditor token={node} /> : JSON.stringify(state)}
+				{isPrimitive ? (
+					<StoreEditor token={node} />
+				) : (
+					<div className="json_viewer">{JSON.stringify(state)}</div>
+				)}
 			</header>
 			{isOpen && !isPrimitive ? (
 				<main>
@@ -102,7 +109,7 @@ export const StateIndexTreeNode: FC<{
 export const StateIndexNode: FC<{
 	node: FamilyNode<ReadableToken<unknown>> | ReadableToken<unknown>
 	isOpenState: RegularAtomToken<boolean>
-	typeState: ReadonlyPureSelectorToken<string>
+	typeState: ReadonlyPureSelectorToken<Loadable<string>>
 }> = ({ node, isOpenState, typeState }) => {
 	return (
 		<section className="node state" data-testid={`state-${node.key}`}>
