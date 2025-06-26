@@ -49,7 +49,7 @@ export const StateIndexLeafNode: FC<{
 					<h2>{node.family?.subKey ?? node.key}</h2>
 					<span className="type detail">({stateType})</span>
 				</main>
-				<StoreEditor token={node} />
+				{isPrimitive ? <StoreEditor token={node} /> : JSON.stringify(state)}
 			</header>
 			{isOpen && !isPrimitive ? (
 				<main>
@@ -128,21 +128,19 @@ export const StateIndex: FC<{
 
 	const { typeSelectors, viewIsOpenAtoms, store } = useContext(DevtoolsContext)
 
+	console.log(tokenIds)
 	return (
 		<article className="index state_index" data-testid="state-index">
-			{[...tokenIds.entries()]
-				.filter(([key]) => !key.startsWith(`👁‍🗨`))
-				.sort()
-				.map(([key, node]) => {
-					return (
-						<StateIndexNode
-							key={key}
-							node={node}
-							isOpenState={findInStore(store, viewIsOpenAtoms, node.key)}
-							typeState={findInStore(store, typeSelectors, node.key)}
-						/>
-					)
-				})}
+			{[...tokenIds.entries()].map(([key, node]) => {
+				return (
+					<StateIndexNode
+						key={key}
+						node={node}
+						isOpenState={findInStore(store, viewIsOpenAtoms, node.key)}
+						typeState={findInStore(store, typeSelectors, node.key)}
+					/>
+				)
+			})}
 		</article>
 	)
 }
