@@ -1,15 +1,21 @@
 main[data-css="atom_io_devtools"] {
-	--fg-color: #eee;
+	--fg-color: #ccc;
+	--fg-light: #aaa;
+	--fg-faint: #555;
 	--bg-color: #111;
+	--bg-accent: #00f;
 	--bg-tint1: #222;
 	--fg-border: 1px solid var(--fg-color);
 	@media (prefers-color-scheme: light) {
 		--fg-color: #444;
+		--fg-light: #777;
+		--fg-faint: #999;
 		--bg-color: #ddd;
+		--bg-accent: #0ff;
 		--bg-tint1: #e3e3e3;
 	}
-	pointer-events: all;
 	& {
+		pointer-events: all;
 		box-sizing: border-box;
 		color: var(--fg-color);
 		background-color: var(--bg-color);
@@ -29,10 +35,9 @@ main[data-css="atom_io_devtools"] {
 		font-size: 16px;
 		font-family: theia, monospace;
 		line-height: 1em;
+		color: var(--fg-color);
 	}
 	> header {
-		padding: 5px;
-		padding-left: 10px;
 		padding-bottom: 0;
 		display: flex;
 		justify-content: space-between;
@@ -74,17 +79,21 @@ main[data-css="atom_io_devtools"] {
 			.node .node {
 				border-right: var(--fg-border);
 				padding-right: 0;
-				background: #fff3;
+				background: #ffffff08;
+				@media (prefers-color-scheme: light) {
+					background: #00000004;
+				}
 			}
 			.node > .node {
-				margin: 5px 0;
-				margin-left: 12px;
+				margin: 0px 2px 2px 18px;
 				border-left: var(--fg-border);
+				&:last-of-type {
+					margin-bottom: 6px;
+				}
 			}
 			.node {
 				border-top: var(--fg-border);
-				overflow-x: scroll;
-				padding: 5px;
+				overflow: visible;
 				&:last-of-type {
 					border-bottom: var(--fg-border);
 				}
@@ -94,44 +103,74 @@ main[data-css="atom_io_devtools"] {
 				header {
 					display: flex;
 					flex-flow: row;
-					gap: 5px;
 					position: sticky;
 					z-index: 999;
 					top: 0;
+					height: 22px;
 					button.carat {
 						cursor: pointer;
 						background: none;
 						border: none;
 						width: 20px;
+						color: var(--fg-light);
 						&.open {
 							transform: rotate(90deg);
 						}
 						&:disabled {
 							cursor: default;
+							color: var(--fg-faint);
 						}
 					}
 					> main {
 						display: flex;
 						flex-flow: row;
-						gap: 5px;
 						cursor: help;
-						align-items: baseline;
-						/* h2,
-						span.type {
-							display: inline-block;
+						align-items: center;
+						* {
+							height: 100%;
+							display: flex;
+							align-items: center;
+							align-content: center;
+							justify-content: center;
+						}
+						h2 {
 							margin: 0;
-						} */
+						}
 						.detail {
+							margin-left: 5px;
 							color: #777;
 							@media (prefers-color-scheme: light) {
 								color: #999;
 							}
 						}
 					}
+					> .json_viewer {
+						color: var(--fg-light);
+					}
+					> .json_editor,
+					> .json_viewer {
+						display: flex;
+						align-items: center;
+						border-left: 1px solid var(--fg-light);
+						background-color: var(--bg-tint1);
+						* {
+							display: flex;
+							height: 100%;
+						}
+						> span {
+							padding: 0px 5px;
+							border-left: var(--fg-color);
+							z-index: 0;
+							&:focus-within {
+								outline: 4px solid var(--fg-color);
+								background: var(--bg-accent);
+							}
+						}
+						input {
+							outline: none;
+						}
+					}
 				}
-				/* main {
-          margin-left: 15px;
-        } */
 			}
 			section.transaction_log {
 				margin-top: 0;
@@ -244,8 +283,6 @@ main[data-css="atom_io_devtools"] {
 	.json_editor {
 		input {
 			font-family: theia, monospace;
-			border: none;
-			border-bottom: 1px solid;
 			background: none;
 			&:disabled {
 				border: none;
