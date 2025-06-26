@@ -1,4 +1,4 @@
-import type { ReadonlyPureSelectorFamilyToken } from "atom.io"
+import type { Loadable, ReadonlyPureSelectorFamilyToken } from "atom.io"
 import type { Store } from "atom.io/internal"
 import { createReadonlyPureSelectorFamily } from "atom.io/internal"
 
@@ -6,12 +6,15 @@ import { discoverType } from "./refinery"
 
 export const attachTypeSelectors = (
 	store: Store,
-): ReadonlyPureSelectorFamilyToken<string, string> => {
-	const typeSelectors = createReadonlyPureSelectorFamily<string, string>(store, {
+): ReadonlyPureSelectorFamilyToken<Loadable<string>, string> => {
+	const typeSelectors = createReadonlyPureSelectorFamily<
+		Loadable<string>,
+		string
+	>(store, {
 		key: `🔍 State Type`,
 		get:
 			(key) =>
-			({ get }) => {
+			async ({ get }) => {
 				let state: unknown
 				try {
 					const token =
@@ -24,6 +27,9 @@ export const attachTypeSelectors = (
 					state = get(token)
 				} catch (_) {
 					return `error`
+				}
+				if (state instanceof Promise) {
+					state = await state
 				}
 				const typeOfState = discoverType(state)
 				return typeOfState

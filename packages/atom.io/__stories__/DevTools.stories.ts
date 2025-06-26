@@ -1,7 +1,9 @@
 import "atom.io/react-devtools/css"
 
 import type { Meta, StoryObj } from "@storybook/react-vite"
-import { atom } from "atom.io"
+import type { Loadable } from "atom.io"
+import { atom, atomFamily, findState } from "atom.io"
+import { IMPLICIT } from "atom.io/internal"
 import { AtomIODevtools } from "atom.io/react-devtools"
 import { fn } from "storybook/test"
 
@@ -26,10 +28,48 @@ const meta: Meta<typeof AtomIODevtools> = {
 export default meta
 type Story = StoryObj<typeof meta>
 
+IMPLICIT.STORE.loggers[0].logLevel = "info"
 const countState = atom<number>({
 	key: "count",
 	default: 0,
 })
+const nameState = atom<string>({
+	key: "name",
+	default: "John Doe",
+})
+const listState = atom<string[]>({
+	key: "list",
+	default: ["a", "b", "c"],
+})
+const dictState = atom<Record<string, string>>({
+	key: "dict",
+	default: { a: "b", c: "d" },
+})
+const nullState = atom<null>({
+	key: "null",
+	default: null,
+})
+const isTrueState = atom<boolean>({
+	key: "isTrue",
+	default: true,
+})
+const loadableState = atom<Loadable<string>>({
+	key: "loadable",
+	default: () =>
+		new Promise((resolve) =>
+			setTimeout(() => {
+				resolve("hello")
+			}, 1000),
+		),
+})
+
+const countAtoms = atomFamily<number, string>({
+	key: "counts",
+	default: 0,
+})
+findState(countAtoms, "A")
+findState(countAtoms, "B")
+findState(countAtoms, "C")
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary: Story = {}

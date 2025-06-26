@@ -10,7 +10,7 @@ import Link from "next/link"
 import * as React from "react"
 
 import { ATOM_IO_ROOT } from "../../../../packages/atom.io/__scripts__/constants"
-import { AtomIODevtools } from "../components/DevTools"
+import { AtomIODevtools } from "../components/Devtools"
 import scss from "./layout.module.scss"
 import { Theme } from "./Theme"
 

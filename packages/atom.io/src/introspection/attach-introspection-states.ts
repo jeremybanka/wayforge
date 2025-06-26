@@ -1,4 +1,5 @@
 import type {
+	Loadable,
 	ReadonlyPureSelectorFamilyToken,
 	ReadonlyPureSelectorToken,
 	TimelineToken,
@@ -26,7 +27,7 @@ export type IntrospectionStates = {
 	>
 	timelineIndex: ReadonlyPureSelectorToken<TimelineToken<any>[]>
 	timelineSelectors: ReadonlyPureSelectorFamilyToken<Timeline<any>, string>
-	typeSelectors: ReadonlyPureSelectorFamilyToken<string, string>
+	typeSelectors: ReadonlyPureSelectorFamilyToken<Loadable<string>, string>
 }
 
 export const attachIntrospectionStates = (store: Store): IntrospectionStates => {

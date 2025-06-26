@@ -106,6 +106,12 @@ describe(`editing an object atom`, () => {
 
 		const { getByTestId /* debug */ } = scenario()
 
+		await waitFor(() => getByTestId(`open-close-state-myObject`))
+
+		act(() => {
+			getByTestId(`open-close-state-myObject`).click()
+		})
+
 		await waitFor(() => getByTestId(`myObject-state-editor-property-a`))
 		await waitFor(() => getByTestId(`myObject-state-editor-property-b`))
 
@@ -174,6 +180,12 @@ describe(`editing an array atom`, () => {
 
 		const { getByTestId /* debug */ } = scenario()
 
+		await waitFor(() => getByTestId(`open-close-state-myArray`))
+
+		act(() => {
+			getByTestId(`open-close-state-myArray`).click()
+		})
+
 		await waitFor(() => getByTestId(`myArray-state-editor-element-0`))
 
 		act(() => {
@@ -197,7 +209,7 @@ describe(`displaying non-JSON`, () => {
 
 		const { getByTestId } = scenario()
 
-		getByTestId(`myUndefined-state-editor-undefined`)
+		getByTestId(`state-myUndefined`)
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
 	})
