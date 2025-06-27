@@ -1,9 +1,10 @@
 import type { StateUpdate } from "atom.io"
 
 import type { ReadableState } from "."
-import { isChildStore } from "."
+import { closeOperation, isChildStore, openOperation } from "."
 import { Future } from "./future"
 import { copyMutableIfNeeded } from "./set-state/copy-mutable-if-needed"
+import { evictDownStream } from "./set-state/evict-downstream"
 import type { Store } from "./store"
 import type { Subject } from "./subject"
 
@@ -36,6 +37,18 @@ export function cacheValue<T>(
 		future
 			.then((resolved) => {
 				cacheValue(target, key, resolved, subject)
+				const atom = target.atoms.get(key)
+				if (atom) {
+					openOperation(target, atom)
+					evictDownStream(target, atom)
+					closeOperation(target)
+				} else {
+					const selector =
+						target.writableSelectors.get(key) ??
+						target.readonlySelectors.get(key)
+					if (selector) {
+					}
+				}
 				subject.next({ newValue: resolved, oldValue: future })
 			})
 			.catch((thrown) => {
