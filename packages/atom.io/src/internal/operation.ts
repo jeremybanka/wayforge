@@ -1,4 +1,4 @@
-import type { WritableToken } from "atom.io"
+import type { ReadableToken } from "atom.io"
 
 import type { Store } from "./store"
 import { isChildStore } from "./transaction/is-root-store"
@@ -12,12 +12,12 @@ export type OperationProgress =
 			done: Set<string>
 			prev: Map<string, any>
 			time: number
-			token: WritableToken<any>
+			token: ReadableToken<any>
 	  }
 
 export const openOperation = (
 	store: Store,
-	token: WritableToken<any>,
+	token: ReadableToken<any>,
 ): number | undefined => {
 	if (store.operation.open) {
 		const rejectionTime = performance.now()
