@@ -4,7 +4,10 @@ import type { ReadableState } from "."
 import { closeOperation, isChildStore, openOperation } from "."
 import { Future } from "./future"
 import { copyMutableIfNeeded } from "./set-state/copy-mutable-if-needed"
-import { evictDownStream } from "./set-state/evict-downstream"
+import {
+	evictDownStream,
+	evictDownStreamFromSelector,
+} from "./set-state/evict-downstream"
 import type { Store } from "./store"
 import type { Subject } from "./subject"
 
@@ -47,6 +50,9 @@ export function cacheValue<T>(
 						target.writableSelectors.get(key) ??
 						target.readonlySelectors.get(key)
 					if (selector) {
+						openOperation(target, selector)
+						evictDownStreamFromSelector(target, selector)
+						closeOperation(target)
 					}
 				}
 				subject.next({ newValue: resolved, oldValue: future })
