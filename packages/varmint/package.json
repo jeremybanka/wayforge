@@ -52,7 +52,7 @@
 		"openai": "5.8.2",
 		"tmp": "0.2.3",
 		"tsdown": "0.12.9",
-		"vite": "7.0.2",
+		"vite": "7.0.3",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.2.4",
 		"yalc": "1.0.0-pre.53",
