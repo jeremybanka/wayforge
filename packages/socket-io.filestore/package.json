@@ -42,7 +42,7 @@
 		"fp-ts": "2.16.10"
 	},
 	"devDependencies": {
-		"@types/node": "24.0.10",
+		"@types/node": "24.0.12",
 		"@types/tmp": "0.2.6",
 		"concurrently": "9.2.0",
 		"atom.io": "workspace:*",
