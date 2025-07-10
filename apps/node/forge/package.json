@@ -14,7 +14,7 @@
 		"lint": "bun run lint:biome && bun run lint:eslint && bun run lint:types"
 	},
 	"dependencies": {
-		"dotenv": "17.1.0",
+		"dotenv": "17.2.0",
 		"fp-ts": "2.16.10",
 		"io-ts": "2.2.22",
 		"json-schema": "0.4.0",
