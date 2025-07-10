@@ -65,7 +65,7 @@
 		"drizzle-orm": "0.44.2",
 		"motion": "12.23.3",
 		"nanoid": "5.1.5",
-		"openai": "5.8.3",
+		"openai": "5.8.4",
 		"postgres": "3.4.7",
 		"react": "19.1.0",
 		"react-dom": "19.1.0",
