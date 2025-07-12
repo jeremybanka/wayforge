@@ -79,7 +79,7 @@ importers:
     dependencies:
       '@vercel/analytics':
         specifier: 1.5.0
-        version: 1.5.0(next@15.3.5(@babel/core@7.28.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.2))(react@19.1.0)
+        version: 1.5.0(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.2))(react@19.1.0)
       '@vercel/speed-insights':
         specifier: 1.2.0
         version: 1.2.0(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.2))(react@19.1.0)
@@ -438,7 +438,7 @@ importers:
         version: 0.13.8(arktype@2.1.20)(typescript@5.8.3)(zod@3.25.76)
       '@vercel/analytics':
         specifier: 1.5.0
-        version: 1.5.0(next@15.3.5(@babel/core@7.28.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.2))(react@19.1.0)
+        version: 1.5.0(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.2))(react@19.1.0)
       corners:
         specifier: 0.2.0
         version: 0.2.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -905,6 +905,12 @@ importers:
 
   packages/ingt:
     dependencies:
+      anvl:
+        specifier: workspace:*
+        version: link:../anvl
+      atom.io:
+        specifier: workspace:*
+        version: link:../atom.io
       fp-ts:
         specifier: 2.16.10
         version: 2.16.10
@@ -1094,6 +1100,9 @@ importers:
       fp-ts:
         specifier: 2.16.10
         version: 2.16.10
+      ingt:
+        specifier: workspace:*
+        version: link:../ingt
     devDependencies:
       '@types/node':
         specifier: 24.0.13
@@ -1140,6 +1149,9 @@ importers:
 
   packages/socket-io.git:
     dependencies:
+      anvl:
+        specifier: workspace:*
+        version: link:../anvl
       fp-ts:
         specifier: 2.16.10
         version: 2.16.10
@@ -1250,6 +1262,9 @@ importers:
       tmp:
         specifier: 0.2.3
         version: 0.2.3
+      tsdown:
+        specifier: 0.12.9
+        version: 0.12.9(@typescript/native-preview@7.0.0-dev.20250712.1)(typescript@5.8.3)
       tsup:
         specifier: 8.5.0
         version: 8.5.0(@microsoft/api-extractor@7.52.8(@types/node@24.0.13))(@swc/core@1.12.11)(jiti@2.4.2)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)
@@ -11326,7 +11341,7 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.11.0':
     optional: true
 
-  '@vercel/analytics@1.5.0(next@15.3.5(@babel/core@7.28.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.2))(react@19.1.0)':
+  '@vercel/analytics@1.5.0(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.2))(react@19.1.0)':
     optionalDependencies:
       next: 15.3.5(@babel/core@7.28.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.2)
       react: 19.1.0

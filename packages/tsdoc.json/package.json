@@ -17,35 +17,28 @@
 	"type": "module",
 	"files": [
 		"dist",
-		"src",
-		"react/dist",
-		"react/package.json",
-		"react/src"
+		"src"
 	],
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.js",
-			"browser": "./dist/index.js"
+			"types": "./dist/main/index.d.ts",
+			"import": "./dist/main/index.js",
+			"browser": "./dist/main/index.js"
 		},
 		"./react": {
-			"types": "./react/dist/index.d.ts",
-			"import": "./react/dist/index.js",
-			"browser": "./react/dist/index.js"
+			"types": "./dist/react/index.d.ts",
+			"import": "./dist/react/index.js",
+			"browser": "./dist/react/index.js"
 		}
 	},
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
+	"main": "dist/main/index.js",
+	"types": "dist/main/index.d.ts",
 	"dependencies": {
 		"@microsoft/tsdoc": "0.15.1",
 		"colors": "1.4.0"
 	},
 	"scripts": {
-		"clean:build": "find . -type d -name 'dist' -not -path '*/node_modules/*' | xargs rm -rf",
-		"build": "bun run clean:build && concurrently \"bun:build:*\"",
-		"build:main": "tsup",
-		"build:types": "tsup --dts",
-		"build:react": "cd react && tsup",
+		"build": "tsdown",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
 		"lint:types": "tsc --noEmit",
@@ -64,6 +57,7 @@
 		"react": "19.1.0",
 		"rimraf": "6.0.1",
 		"tmp": "0.2.3",
+		"tsdown": "0.12.9",
 		"tsup": "8.5.0",
 		"typescript": "5.8.3"
 	}

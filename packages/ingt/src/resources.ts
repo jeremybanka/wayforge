@@ -1,12 +1,11 @@
 import { mkdirSync, renameSync, writeFileSync } from "node:fs"
 
+import type { Identified } from "anvl/id"
+import { identify } from "anvl/id"
+import { doesExtend } from "anvl/object"
+import type { Json } from "atom.io/json"
 import { pipe } from "fp-ts/function"
 import { isString } from "fp-ts/string"
-
-import type { Identified } from "~/packages/anvl/src/id"
-import { identify } from "~/packages/anvl/src/id"
-import { doesExtend } from "~/packages/anvl/src/object"
-import type { Json } from "~/packages/atom.io/src/json"
 
 import { NotFoundError } from "./errors"
 import type { ScanResult } from "./explore"
