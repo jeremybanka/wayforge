@@ -1,4 +1,4 @@
-import { sprawl } from "~/packages/atom.io/src/introspection/sprawl"
+import { sprawl } from "atom.io/introspection"
 
 import { key } from "./access"
 import { isPlainObject } from "./refinement"

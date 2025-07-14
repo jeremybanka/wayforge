@@ -79,7 +79,7 @@ importers:
     dependencies:
       '@vercel/analytics':
         specifier: 1.5.0
-        version: 1.5.0(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.2))(react@19.1.0)
+        version: 1.5.0(next@15.3.5(@babel/core@7.28.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.2))(react@19.1.0)
       '@vercel/speed-insights':
         specifier: 1.2.0
         version: 1.2.0(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.2))(react@19.1.0)
@@ -438,7 +438,7 @@ importers:
         version: 0.13.8(arktype@2.1.20)(typescript@5.8.3)(zod@3.25.76)
       '@vercel/analytics':
         specifier: 1.5.0
-        version: 1.5.0(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.2))(react@19.1.0)
+        version: 1.5.0(next@15.3.5(@babel/core@7.28.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.2))(react@19.1.0)
       corners:
         specifier: 0.2.0
         version: 0.2.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -512,6 +512,10 @@ importers:
         version: 5.1.4(typescript@5.8.3)(vite@7.0.3(@types/node@24.0.13)(jiti@2.4.2)(lightningcss@1.30.1)(sass-embedded@1.89.2)(sass@1.89.2)(terser@5.43.1)(tsx@4.20.3))
 
   packages/anvl:
+    dependencies:
+      atom.io:
+        specifier: workspace:*
+        version: link:../atom.io
     devDependencies:
       concurrently:
         specifier: 9.2.0
@@ -991,6 +995,9 @@ importers:
 
   packages/occlusion:
     dependencies:
+      anvl:
+        specifier: workspace:*
+        version: link:../anvl
       fp-ts:
         specifier: 2.16.10
         version: 2.16.10
@@ -1097,6 +1104,9 @@ importers:
 
   packages/socket-io.filestore:
     dependencies:
+      anvl:
+        specifier: workspace:*
+        version: link:../anvl
       fp-ts:
         specifier: 2.16.10
         version: 2.16.10
@@ -1165,6 +1175,9 @@ importers:
       '@types/tmp':
         specifier: 0.2.6
         version: 0.2.6
+      atom.io:
+        specifier: workspace:*
+        version: link:../atom.io
       concurrently:
         specifier: 9.2.0
         version: 9.2.0
@@ -11341,7 +11354,7 @@ snapshots:
   '@unrs/resolver-binding-win32-x64-msvc@1.11.0':
     optional: true
 
-  '@vercel/analytics@1.5.0(next@15.3.5(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.2))(react@19.1.0)':
+  '@vercel/analytics@1.5.0(next@15.3.5(@babel/core@7.28.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.2))(react@19.1.0)':
     optionalDependencies:
       next: 15.3.5(@babel/core@7.28.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.2)
       react: 19.1.0

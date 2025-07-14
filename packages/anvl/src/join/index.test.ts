@@ -1,6 +1,5 @@
+import type { Json } from "atom.io/json"
 import { vitest } from "vitest"
-
-import type { Json } from "~/packages/atom.io/src/json"
 
 import { Join } from "."
 

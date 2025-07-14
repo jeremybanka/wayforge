@@ -1,8 +1,7 @@
+import type { Docket as Identifier } from "anvl/id"
+import { isUndefined } from "anvl/nullish"
+import { Dictionary } from "anvl/object"
 import { nanoid } from "nanoid"
-
-import type { Docket as Identifier } from "~/packages/anvl/src/id"
-import { isUndefined } from "~/packages/anvl/src/nullish"
-import { Dictionary } from "~/packages/anvl/src/object/dictionary"
 
 export interface TrueIdentifier<TypeName extends string>
 	extends Identifier<TypeName> {

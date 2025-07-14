@@ -31,6 +31,9 @@
 		"test:once": "vitest run",
 		"postversion": "biome format --write package.json"
 	},
+	"dependencies": {
+		"atom.io": "workspace:*"
+	},
 	"devDependencies": {
 		"concurrently": "9.2.0",
 		"eslint": "9.31.0",
