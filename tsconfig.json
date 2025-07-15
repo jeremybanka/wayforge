@@ -20,15 +20,7 @@
 		"strictNullChecks": true,
 		"strictPropertyInitialization": true,
 		"target": "ES2017",
-		"useUnknownInCatchVariables": true,
-		"paths": {
-			"anvl/*": ["./packages/anvl/src/*"],
-			"atom.io": ["./packages/atom.io/src/main"],
-			"atom.io/*": ["./packages/atom.io/src/*"],
-			"hamr/*": ["./packages/hamr/*/src"],
-			"wayfarer.quest/*": ["./apps/wayfarer.quest/src/*"],
-			"~/*": ["./*"]
-		}
+		"useUnknownInCatchVariables": true
 	},
 	"include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/.storybook/*.ts"],
 	"exclude": ["**/dist"]

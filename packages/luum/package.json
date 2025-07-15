@@ -17,6 +17,9 @@
 		"test:once": "vitest run",
 		"postversion": "biome format --write package.json"
 	},
+	"dependencies": {
+		"anvl": "workspace:*"
+	},
 	"devDependencies": {
 		"@types/node": "24.0.13",
 		"concurrently": "9.2.0",

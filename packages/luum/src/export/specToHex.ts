@@ -1,5 +1,4 @@
-import type { Filter, Hex, LuumSpec } from "~/packages/luum/src"
-
+import type { Filter, Hex, LuumSpec } from ".."
 import specToHexFixLimit from "./specToHexFixLimit"
 
 const specToHex = (

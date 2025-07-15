@@ -1,5 +1,4 @@
-import type { ChannelObject, HSL } from "~/packages/luum/src"
-
+import type { ChannelObject, HSL } from ".."
 import { hueFromChannels, lumFromChannels, satFromChannels } from "../solveFor"
 
 const channelsToSpec = ({ R, G, B }: ChannelObject): HSL => {

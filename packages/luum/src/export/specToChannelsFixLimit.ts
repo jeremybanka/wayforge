@@ -1,4 +1,5 @@
-import { clampInto } from "~/packages/anvl/src/number"
+import { clampInto } from "anvl/number"
+
 import type {
 	ChannelObject,
 	Degree,
@@ -7,8 +8,7 @@ import type {
 	LuumSpec,
 	OutOf255,
 	Range,
-} from "~/packages/luum/src"
-
+} from ".."
 import { unfiltered } from "../constants/filters"
 import hueToRelativeChannels from "../import/hueToRelativeChannels"
 import {

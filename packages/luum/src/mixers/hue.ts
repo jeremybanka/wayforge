@@ -1,6 +1,6 @@
-import type { Modifier } from "~/packages/anvl/src/function"
-import { become, pipe } from "~/packages/anvl/src/function"
-import { wrapInto } from "~/packages/anvl/src/number/wrap"
+import type { Modifier } from "anvl/function"
+import { become, pipe } from "anvl/function"
+import { wrapInto } from "anvl/number"
 
 import type { LuumSpec } from ".."
 import type { LuumApplicator } from "."

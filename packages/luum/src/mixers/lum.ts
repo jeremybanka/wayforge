@@ -1,8 +1,8 @@
-import type { Modifier } from "~/packages/anvl/src/function"
-import { become, pipe } from "~/packages/anvl/src/function"
-import { clampInto } from "~/packages/anvl/src/number/clamp"
-import type { HSL, LuumSpec } from "~/packages/luum/src"
+import type { Modifier } from "anvl/function"
+import { become, pipe } from "anvl/function"
+import { clampInto } from "anvl/number"
 
+import type { HSL, LuumSpec } from ".."
 import { hexToSpec, specToHex } from ".."
 import type { LuumApplicator } from "."
 
