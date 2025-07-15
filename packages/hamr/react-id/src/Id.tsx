@@ -4,11 +4,10 @@ import {
 	useFloating,
 	useInteractions,
 } from "@floating-ui/react"
+import { pipe } from "anvl/function"
+import { stringToColor } from "anvl/string"
+import { contrastMax, hexToSpec, offset, specToHex } from "luum"
 import * as React from "react"
-
-import { pipe } from "~/packages/anvl/src/function"
-import { stringToColor } from "~/packages/anvl/src/string/string-to-color"
-import { contrastMax, hexToSpec, offset, specToHex } from "~/packages/luum/src"
 
 export const Id: React.FC<{ id: string }> = ({ id }) => {
 	const [isOpen, setIsOpen] = React.useState(false)

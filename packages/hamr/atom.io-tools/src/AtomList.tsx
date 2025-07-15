@@ -1,8 +1,7 @@
+import type { Identified } from "anvl/identified"
 import type { WritableFamilyToken } from "atom.io"
 import type { WC } from "hamr/react-json-editor"
 import type { FC, ReactElement } from "react"
-
-import type { Identified } from "~/packages/anvl/src/id/identified"
 
 export type AtomListItemProps<DATA, META = {}> = {
 	label: Identified & META

@@ -18,7 +18,7 @@
 		"manifest": "tsx __scripts__/manifest-build.node",
 		"clean:build": "find . -type d -name 'dist' -not -path '*/node_modules/*' | xargs rm -rf",
 		"build": "npm run clean:build && concurrently \"npm:build:*\"",
-		"build:main": "tsup",
+		"build:main": "tsup node",
 		"build:atom.io-combo": "cd atom.io-combo && tsup",
 		"build:atom.io-tools": "cd atom.io-tools && tsup",
 		"build:react-click-handlers": "cd react-click-handlers && tsup",
@@ -26,7 +26,7 @@
 		"build:react-data-designer": "cd react-data-designer && tsup",
 		"build:react-elastic-input": "cd react-elastic-input && tsup",
 		"build:react-error-boundary": "cd react-error-boundary && tsup",
-		"build:react-id": "cd react-id && tsup",
+		"build:react-id": "cd react-id && tsup node",
 		"build:react-json-editor": "cd react-json-editor && tsup",
 		"build:react-radial": "cd react-radial && tsup",
 		"lint:biome": "biome check -- .",
@@ -42,7 +42,9 @@
 	"dependencies": {
 		"@floating-ui/react": "0.27.13",
 		"@floating-ui/react-dom": "2.1.4",
+		"anvl": "workspace:*",
 		"corners": "0.2.0",
+		"luum": "workspace:*",
 		"motion": "12.23.5"
 	},
 	"peerDependencies": {

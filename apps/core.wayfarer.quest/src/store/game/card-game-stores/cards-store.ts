@@ -1,18 +1,9 @@
 import type { RegularAtomToken } from "atom.io"
 import { atom, atomFamily, join, selector, selectorFamily } from "atom.io"
-import { IMPLICIT } from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import { Perspective } from "~/packages/occlusion/src"
-
-import {
-	groupsOfCards,
-	handIndex,
-	ownersOfGroups,
-	pileIndex,
-} from "./card-groups-store"
-import { currentTrickIdState } from "./trick-store"
 
 export const cardOwners = join({
 	key: `ownersOfCards`,

@@ -18,6 +18,9 @@
 				"name": "next"
 			}
 		],
+		"paths": {
+			"wayfarer.quest/*": ["./src/*"]
+		},
 		"strict": false
 	},
 	"include": [
