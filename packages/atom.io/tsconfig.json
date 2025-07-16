@@ -8,7 +8,11 @@
 		"noEmit": true,
 		"declaration": true,
 		"allowJs": false,
-		"isolatedDeclarations": true
+		"isolatedDeclarations": true,
+		"paths": {
+			"atom.io": ["./src/main"],
+			"atom.io/*": ["./src/*"]
+		}
 	},
 	"include": [
 		"src",
