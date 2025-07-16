@@ -42,7 +42,7 @@
 		"simple-git": "3.28.0"
 	},
 	"devDependencies": {
-		"@types/node": "24.0.13",
+		"@types/node": "24.0.14",
 		"@types/tmp": "0.2.6",
 		"atom.io": "workspace:*",
 		"concurrently": "9.2.0",
