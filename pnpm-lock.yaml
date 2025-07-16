@@ -451,6 +451,9 @@ importers:
       corners:
         specifier: 0.2.0
         version: 0.2.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      luum:
+        specifier: workspace:*
+        version: link:../../packages/luum
       motion:
         specifier: 12.23.5
         version: 12.23.5(@emotion/is-prop-valid@1.3.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -460,6 +463,9 @@ importers:
       next:
         specifier: 15.3.5
         version: 15.3.5(@babel/core@7.28.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(sass@1.89.2)
+      occlusion:
+        specifier: workspace:*
+        version: link:../../packages/occlusion
       react:
         specifier: 19.1.0
         version: 19.1.0
