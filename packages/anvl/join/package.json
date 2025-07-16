@@ -1,6 +1,0 @@
-{
-	"name": "@anvl/join",
-	"main": "../dist/join/index.js",
-	"types": "../dist/join/index.d.ts",
-	"module": "../dist/join/index.mjs"
-}

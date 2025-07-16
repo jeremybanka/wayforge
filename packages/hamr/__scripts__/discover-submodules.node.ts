@@ -1,7 +1,7 @@
 import fs from "node:fs"
 import path from "node:path"
 
-import { EXCLUDE_LIST, HAMR_ROOT } from "./constants"
+import { EXCLUDE_LIST, HAMR_ROOT } from "./constants.ts"
 
 export default function discoverSubmodules(): string[] {
 	const folders = fs

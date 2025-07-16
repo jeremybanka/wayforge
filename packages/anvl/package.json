@@ -34,6 +34,93 @@
 	"dependencies": {
 		"atom.io": "workspace:*"
 	},
+	"exports": {
+		"./package.json": "./package.json",
+		"./array": {
+			"types": "./dist/array/index.d.ts",
+			"browser": "./dist/array/index.js",
+			"import": "./dist/array/index.js",
+			"require": "./dist/array/index.cjs"
+		},
+		"./function": {
+			"types": "./dist/function/index.d.ts",
+			"browser": "./dist/function/index.js",
+			"import": "./dist/function/index.js",
+			"require": "./dist/function/index.cjs"
+		},
+		"./id": {
+			"types": "./dist/id/index.d.ts",
+			"browser": "./dist/id/index.js",
+			"import": "./dist/id/index.js",
+			"require": "./dist/id/index.cjs"
+		},
+		"./join": {
+			"types": "./dist/join/index.d.ts",
+			"browser": "./dist/join/index.js",
+			"import": "./dist/join/index.js",
+			"require": "./dist/join/index.cjs"
+		},
+		"./json": {
+			"types": "./dist/json/index.d.ts",
+			"browser": "./dist/json/index.js",
+			"import": "./dist/json/index.js",
+			"require": "./dist/json/index.cjs"
+		},
+		"./json-api": {
+			"types": "./dist/json-api/index.d.ts",
+			"browser": "./dist/json-api/index.js",
+			"import": "./dist/json-api/index.js",
+			"require": "./dist/json-api/index.cjs"
+		},
+		"./json-schema": {
+			"types": "./dist/json-schema/index.d.ts",
+			"browser": "./dist/json-schema/index.js",
+			"import": "./dist/json-schema/index.js",
+			"require": "./dist/json-schema/index.cjs"
+		},
+		"./nullish": {
+			"types": "./dist/nullish/index.d.ts",
+			"browser": "./dist/nullish/index.js",
+			"import": "./dist/nullish/index.js",
+			"require": "./dist/nullish/index.cjs"
+		},
+		"./number": {
+			"types": "./dist/number/index.d.ts",
+			"browser": "./dist/number/index.js",
+			"import": "./dist/number/index.js",
+			"require": "./dist/number/index.cjs"
+		},
+		"./object": {
+			"types": "./dist/object/index.d.ts",
+			"browser": "./dist/object/index.js",
+			"import": "./dist/object/index.js",
+			"require": "./dist/object/index.cjs"
+		},
+		"./primitive": {
+			"types": "./dist/primitive/index.d.ts",
+			"browser": "./dist/primitive/index.js",
+			"import": "./dist/primitive/index.js",
+			"require": "./dist/primitive/index.cjs"
+		},
+		"./refinement": {
+			"types": "./dist/refinement/index.d.ts",
+			"browser": "./dist/refinement/index.js",
+			"import": "./refinement/index.js",
+			"require": "./refinement/index.cjs"
+		},
+		"./string": {
+			"types": "./dist/string/index.d.ts",
+			"browser": "./dist/string/index.js",
+			"import": "./dist/string/index.js",
+			"require": "./dist/string/index.cjs"
+		},
+		"./tree": {
+			"types": "./dist/tree/index.d.ts",
+			"browser": "./dist/tree/index.js",
+			"import": "./dist/tree/index.js",
+			"require": "./dist/tree/index.cjs"
+		}
+	},
 	"devDependencies": {
 		"concurrently": "9.2.0",
 		"eslint": "9.31.0",

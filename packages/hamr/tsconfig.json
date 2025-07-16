@@ -6,7 +6,7 @@
 		"types": ["vitest/globals"],
 		"noEmit": true,
 		"paths": {
-			"hamr/*": ["./*/src"]
+			"hamr/*": ["./src/*"]
 		}
 	},
 	"include": ["**/src", "__scripts__", "__experimental__", "**/*.config.ts"]
