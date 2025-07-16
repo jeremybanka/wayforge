@@ -14,13 +14,16 @@ const EXTERNAL = [
 	...SUBMODULE_NAMES.map((submodule) => `atom.io/${submodule}`),
 ]
 
-const otherEntries = fromEntries(
-	SUBMODULE_NAMES.map(
-		(name) => [`${name}/index`, `src/${name}/index.ts`] as const,
+const ALL_ENTRIES = {
+	"main/index": `src/main/index.ts`,
+	...fromEntries(
+		SUBMODULE_NAMES.map(
+			(name) => [`${name}/index`, `src/${name}/index.ts`] as const,
+		),
 	),
-)
+}
 
-console.log({ SUBMODULE_NAMES, otherEntries })
+console.log({ SUBMODULE_NAMES, ALL_ENTRIES })
 
 const config: UserConfig | UserConfigFn = defineConfig({
 	external: EXTERNAL,
@@ -31,9 +34,6 @@ const config: UserConfig | UserConfigFn = defineConfig({
 	tsconfig: `tsconfig.json`,
 	clean: true,
 	outDir: `dist`,
-	entry: {
-		"main/index": `src/main/index.ts`,
-		...otherEntries,
-	},
+	entry: ALL_ENTRIES,
 })
 export default config
