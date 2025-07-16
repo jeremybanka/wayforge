@@ -1,5 +1,14 @@
 # socket-io.filestore
 
+## 3.0.1
+
+### Patch Changes
+
+- Updated dependencies [ba95e13]
+  - atom.io@0.33.9
+  - anvl@0.3.2
+  - ingt@0.0.2
+
 ## 3.0.0
 
 ### Patch Changes

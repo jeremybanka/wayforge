@@ -1,5 +1,12 @@
 # anvl
 
+## 0.3.2
+
+### Patch Changes
+
+- Updated dependencies [ba95e13]
+  - atom.io@0.33.9
+
 ## 0.3.1
 
 ### Patch Changes

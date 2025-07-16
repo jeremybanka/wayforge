@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.33.9
+
+### Patch Changes
+
+- ba95e13: 🔧 Reduced the 'files' list in package.json to respect atom.io's new package structure.
+
 ## 0.33.8
 
 ### Patch Changes
