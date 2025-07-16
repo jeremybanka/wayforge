@@ -105,8 +105,8 @@
 		"./refinement": {
 			"types": "./dist/refinement/index.d.ts",
 			"browser": "./dist/refinement/index.js",
-			"import": "./refinement/index.js",
-			"require": "./refinement/index.cjs"
+			"import": "./dist/refinement/index.js",
+			"require": "./dist/refinement/index.cjs"
 		},
 		"./string": {
 			"types": "./dist/string/index.d.ts",

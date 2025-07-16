@@ -1,8 +1,7 @@
-import "./relation-editor-styles.scss"
+import "./relation-editor-styles.css"
 
+import type { Join } from "anvl/join"
 import { Id } from "hamr/react-id"
-
-import type { Join } from "~/packages/anvl/src/join"
 
 import type { DataDesigner } from "./DataDesigner"
 

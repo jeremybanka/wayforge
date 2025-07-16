@@ -1,4 +1,4 @@
-import type { Identified } from "anvl/identified"
+import type { Identified } from "anvl/id"
 import type { WritableFamilyToken } from "atom.io"
 import type { WC } from "hamr/react-json-editor"
 import type { FC, ReactElement } from "react"

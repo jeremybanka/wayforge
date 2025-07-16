@@ -17,6 +17,7 @@
 	},
 	"dependencies": {
 		"@t3-oss/env-core": "0.13.8",
+		"anvl": "workspace:*",
 		"atom.io": "workspace:*",
 		"fp-ts": "2.16.10",
 		"nanoid": "5.1.5",

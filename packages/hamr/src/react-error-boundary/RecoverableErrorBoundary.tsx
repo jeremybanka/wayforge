@@ -4,11 +4,11 @@ import { useState } from "react"
 import type {
 	ErrorBoundaryProps,
 	ErrorBoundaryState,
-} from "~/packages/atom.io/src/react-devtools/error-boundary"
+} from "../../../atom.io/src/react-devtools/error-boundary"
 import {
 	DefaultFallback,
 	ErrorBoundary,
-} from "~/packages/atom.io/src/react-devtools/error-boundary"
+} from "../../../atom.io/src/react-devtools/error-boundary"
 
 export const RecoverableErrorBoundary: FC<ErrorBoundaryProps> = ({
 	children,

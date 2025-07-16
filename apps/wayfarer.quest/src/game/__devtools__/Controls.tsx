@@ -1,16 +1,15 @@
 import { runTransaction } from "atom.io"
 import { useO } from "atom.io/react"
 import { myIdState } from "atom.io/realtime-client"
+import {
+	spawnClassicDeckTX,
+	spawnHandTX,
+} from "core.wayfarer.quest/src/store/game"
 import { nanoid } from "nanoid"
 import type { FC } from "react"
 import { button } from "wayfarer.quest/components/<button>"
 import comic from "wayfarer.quest/components/comic.module.scss"
 import { myRoomKeyState } from "wayfarer.quest/services/store/my-room"
-
-import {
-	spawnClassicDeckTX,
-	spawnHandTX,
-} from "~/apps/core.wayfarer.quest/src/store/game"
 
 import scss from "./Controls.module.scss"
 

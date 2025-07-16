@@ -1,3 +1,4 @@
+import type { Identified } from "anvl/id"
 import type { MutableAtomToken, RegularAtomToken } from "atom.io"
 import {
 	atom,
@@ -11,8 +12,6 @@ import {
 import type { Json } from "atom.io/json"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
-
-import type { Identified } from "~/packages/anvl/src/id"
 
 import {
 	currentTrickIdState,

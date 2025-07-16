@@ -1,12 +1,11 @@
 import { findRelations } from "atom.io"
 import { useO } from "atom.io/react"
+import { valuesOfCards } from "core.wayfarer.quest/src/store/game"
 import { AnimatePresence } from "motion/react"
 import Image from "next/image"
 import type { FC } from "react"
 import { article } from "wayfarer.quest/components/<article>"
 import { PlayingCards } from "wayfarer.quest/components/PlayingCards"
-
-import { valuesOfCards } from "~/apps/core.wayfarer.quest/src/store/game"
 
 import scss from "./Card.module.scss"
 

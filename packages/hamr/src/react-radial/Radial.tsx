@@ -1,4 +1,4 @@
-import "./react-radial-styles.scss"
+import "./react-radial-styles.css"
 
 import { makeMouseHandlers } from "hamr/react-click-handlers"
 import { setCssVars } from "hamr/react-css-vars"

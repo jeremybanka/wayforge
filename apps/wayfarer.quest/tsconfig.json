@@ -19,7 +19,12 @@
 			}
 		],
 		"paths": {
-			"wayfarer.quest/*": ["./src/*"]
+			"core.wayfarer.quest/*": ["../core.wayfarer.quest/*"],
+			"wayfarer.quest/*": ["./src/*"],
+			"atom.io": ["../../packages/atom.io/src/main"],
+			"atom.io/*": ["../../packages/atom.io/src/*"],
+			"anvl/*": ["../../packages/anvl/src/*"],
+			"hamr/*": ["../../packages/hamr/src/*"]
 		},
 		"strict": false
 	},

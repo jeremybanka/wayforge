@@ -2,8 +2,7 @@ import type { RegularAtomToken } from "atom.io"
 import { atom, atomFamily, join, selector, selectorFamily } from "atom.io"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
-
-import { Perspective } from "~/packages/occlusion/src"
+import { Perspective } from "occlusion"
 
 export const cardOwners = join({
 	key: `ownersOfCards`,
