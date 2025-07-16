@@ -39,7 +39,9 @@
 		"socket.io-client": "^4.6.0"
 	},
 	"dependencies": {
-		"fp-ts": "2.16.10"
+		"anvl": "workspace:*",
+		"fp-ts": "2.16.10",
+		"ingt": "workspace:*"
 	},
 	"devDependencies": {
 		"@types/node": "24.0.13",

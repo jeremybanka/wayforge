@@ -2,6 +2,9 @@
 	"extends": "../../tsconfig.json",
 	"include": ["src", "**/*.config.ts"],
 	"compilerOptions": {
-		"types": ["vitest/globals"]
+		"types": ["vitest/globals"],
+		"paths": {
+			"anvl/*": ["./src/*"]
+		}
 	}
 }

@@ -2,11 +2,7 @@ import * as AtomIO from "atom.io"
 import { findRelations } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import { myUsernameState } from "atom.io/realtime-client"
-
-import {
-	handIndex,
-	ownersOfGroups,
-} from "~/apps/core.wayfarer.quest/src/store/game"
+import { handIndex, ownersOfGroups } from "core.wayfarer.quest/src/store/game"
 
 export const myHandsIndex = AtomIO.selector<string[]>({
 	key: `myHands`,

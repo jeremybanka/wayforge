@@ -1,5 +1,6 @@
-import { wrapInto } from "~/packages/anvl/src/number"
-import type { Degree, Filter } from "~/packages/luum/src"
+import { wrapInto } from "anvl/number"
+
+import type { Degree, Filter } from ".."
 
 export default (hue: Degree, filter: Filter): number => {
 	// 430

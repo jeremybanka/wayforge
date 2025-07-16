@@ -1,4 +1,4 @@
-import type { LuumSpec } from "~/packages/luum/src"
+import type { LuumSpec } from ".."
 
 export const defaultSpec: LuumSpec = {
 	hue: 0,

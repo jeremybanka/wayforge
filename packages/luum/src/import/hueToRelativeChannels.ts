@@ -1,4 +1,4 @@
-import { wrapInto } from "~/packages/anvl/src/number"
+import { wrapInto } from "anvl/number"
 
 import type { Degree, Fraction } from ".."
 

@@ -1,10 +1,6 @@
 import * as AtomIO from "atom.io"
 import { findRelations } from "atom.io"
-
-import {
-	deckIndex,
-	ownersOfGroups,
-} from "~/apps/core.wayfarer.quest/src/store/game"
+import { deckIndex, ownersOfGroups } from "core.wayfarer.quest/src/store/game"
 
 import { myRoomKeyState } from "./my-room"
 

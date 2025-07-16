@@ -1,5 +1,4 @@
-import { ID } from "~/apps/core.wayfarer.quest/test/test-utils"
-
+import { ID } from "../../../apps/core.wayfarer.quest/test/test-utils"
 import { Perspective } from "../src"
 
 const idFn = ID.style_000000_$()

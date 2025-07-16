@@ -1,4 +1,4 @@
-import type { Fraction } from "~/packages/luum/src"
+import type { Fraction } from ".."
 
 type Interpolate = (args: {
 	completionRatio: Fraction

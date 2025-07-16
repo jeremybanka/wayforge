@@ -1,12 +1,11 @@
+import { Join } from "anvl/join"
+import type { JsonSchema } from "anvl/json-schema"
+import { isJsonSchema } from "anvl/json-schema"
 import type { AtomEffect } from "atom.io"
+import type { Json, JsonInterface } from "atom.io/json"
 import { identity } from "fp-ts/function"
 import type { Refinement } from "fp-ts/Refinement"
 import type { Socket } from "socket.io-client"
-
-import { Join } from "~/packages/anvl/src/join"
-import type { JsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
-import { isJsonSchema } from "~/packages/anvl/src/json-schema/json-schema"
-import type { Json, JsonInterface } from "~/packages/atom.io/src/json"
 
 import type { FilestoreClientEvents, FilestoreServerEvents } from "./interface"
 

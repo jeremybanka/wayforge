@@ -1,4 +1,4 @@
-import type { Json } from "~/packages/atom.io/src/json"
+import type { Json } from "atom.io/json"
 
 /* eslint-disable @typescript-eslint/no-dynamic-delete */
 import { map } from "../array"

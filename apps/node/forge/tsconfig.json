@@ -2,6 +2,10 @@
 	"extends": "../../../tsconfig.json",
 	"include": ["src", "./vitest.config.ts"],
 	"compilerOptions": {
-		"types": ["vitest/globals"]
+		"types": ["vitest/globals"],
+		"paths": {
+			"anvl/*": ["../../../packages/anvl/src/*"],
+			"ingt": ["../../../packages/ingt/src"]
+		}
 	}
 }
