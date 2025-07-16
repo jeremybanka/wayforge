@@ -1,5 +1,12 @@
 # rel8
 
+## 0.1.2
+
+### Patch Changes
+
+- Updated dependencies [ba95e13]
+  - atom.io@0.33.9
+
 ## 0.1.1
 
 ### Patch Changes

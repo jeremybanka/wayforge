@@ -1,5 +1,14 @@
 # hamr
 
+## 3.0.1
+
+### Patch Changes
+
+- Updated dependencies [ba95e13]
+  - atom.io@0.33.9
+  - anvl@0.3.2
+  - luum@0.0.16
+
 ## 3.0.0
 
 ### Patch Changes
@@ -110,7 +119,6 @@
 ### Minor Changes
 
 - 9fc5472: - React Combo, a combo box that unpack recoil state or work with state/setter props.
-
   - React Elastic Input, an input that expands or contracts to the size of its content.
   - React Error Boundary, a convenient, resettable error boundary with built-in recoil state.
   - React Json Editor, a powerful tool for manipulating arbitrary JSON data.
