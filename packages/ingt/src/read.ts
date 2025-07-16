@@ -1,5 +1,5 @@
-import { identify } from "~/packages/anvl/src/id/identified"
-import type { Json } from "~/packages/atom.io/src/json"
+import { identify } from "anvl/id"
+import type { Json } from "atom.io/json"
 
 import type { FilestoreOptions } from "./options"
 import { getDirectoryJsonArr } from "./utils"

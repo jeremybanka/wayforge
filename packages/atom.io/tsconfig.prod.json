@@ -3,29 +3,10 @@
 	"compilerOptions": {
 		"allowJs": true,
 		"paths": {
-			"~/*": ["./*"],
-			"atom.io": ["./packages/atom.io/dist"],
-			"atom.io/*": ["./packages/atom.io/*"]
+			"atom.io": ["./dist/main"],
+			"atom.io/*": ["./dist/*"]
 		}
 	},
-	"include": [
-		"__tests__",
-		"dist",
-		"src",
-		"data/src",
-		"eslint-plugin/src",
-		"internal/src",
-		"introspection/src",
-		"json/src",
-		"react/src",
-		"react-devtools/src",
-		"realtime/src",
-		"realtime-client/src",
-		"realtime-react/src",
-		"realtime-server/src",
-		"realtime-testing/src",
-		"transceivers/set-rtx/src",
-		"web/src"
-	],
+	"include": ["__tests__", "dist", "src"],
 	"exclude": ["src", "**/src"]
 }

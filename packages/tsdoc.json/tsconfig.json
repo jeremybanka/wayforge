@@ -2,11 +2,14 @@
 	"extends": "../../tsconfig.json",
 	"include": ["src", "**/src", "__tests__", "**/*.config.ts"],
 	"compilerOptions": {
+		"allowJs": false,
+		"declaration": true,
+		"isolatedDeclarations": true,
 		"jsx": "react-jsx",
 		"jsxImportSource": "react",
 		"types": ["vitest/globals"],
 		"paths": {
-			"tsdoc.json": ["./packages/tsdoc.json/src"]
+			"tsdoc.json": ["./src/main"]
 		}
 	}
 }

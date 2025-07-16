@@ -1,6 +1,5 @@
+import { mapObject } from "anvl/object"
 import type { ReadonlyRecord } from "fp-ts/ReadonlyRecord"
-
-import { mapObject } from "~/packages/anvl/src/object"
 
 export function* createIterator(
 	callback: (idx: number) => string,

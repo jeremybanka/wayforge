@@ -1,14 +1,19 @@
-import { content, each, isArray, join, map } from "~/packages/anvl/src/array"
-import type { Modifier, OneOrMany } from "~/packages/anvl/src/function"
-import { isModifier, pipe } from "~/packages/anvl/src/function"
-import { isUndefined } from "~/packages/anvl/src/nullish"
-import { key } from "~/packages/anvl/src/object/access"
-import { isString } from "~/packages/anvl/src/primitive"
-import type { Refinement } from "~/packages/anvl/src/refinement"
-import type { Filter, FilterPoint, LuumSpec } from "~/packages/luum/src"
-import { specToHex } from "~/packages/luum/src"
-import { defaultSpec } from "~/packages/luum/src/constants/luum-spec"
-import { shadeBy } from "~/packages/luum/src/mixers/lum"
+import { content, each, isArray, join, map } from "anvl/array"
+import type { Modifier, OneOrMany } from "anvl/function"
+import { isModifier, pipe } from "anvl/function"
+import { isUndefined } from "anvl/nullish"
+import { key } from "anvl/object"
+import { isString } from "anvl/primitive"
+import type { Refinement } from "anvl/refinement"
+
+import {
+	type Filter,
+	type FilterPoint,
+	type LuumSpec,
+	shadeBy,
+	specToHex,
+} from ".."
+import { defaultSpec } from "../constants/luum-spec"
 
 // export type InteractiveStates = `active` | `base` | `disabled` | `hover`
 

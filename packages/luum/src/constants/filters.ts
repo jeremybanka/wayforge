@@ -1,4 +1,4 @@
-import type { Filter } from "~/packages/luum/src"
+import type { Filter } from ".."
 
 export const unfiltered: Filter = [
 	{ sat: 255, hue: 0 },

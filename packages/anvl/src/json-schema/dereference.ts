@@ -1,4 +1,4 @@
-import { sprawl } from "~/packages/atom.io/src/introspection/sprawl"
+import { sprawl } from "atom.io/introspection"
 
 import { delve, tweak } from "../object"
 import { deepMob } from "../object/deepMob"

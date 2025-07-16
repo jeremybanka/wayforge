@@ -1,6 +1,6 @@
-import type { Modifier } from "~/packages/anvl/src/function"
-import { become, pipe } from "~/packages/anvl/src/function"
-import { clampInto } from "~/packages/anvl/src/number/clamp"
+import type { Modifier } from "anvl/function"
+import { become, pipe } from "anvl/function"
+import { clampInto } from "anvl/number"
 
 import type { LuumSpec } from ".."
 import type { LuumApplicator } from "."

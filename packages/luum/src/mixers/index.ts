@@ -1,4 +1,4 @@
-import type { Applicator } from "~/packages/anvl/src/function"
+import type { Applicator } from "anvl/function"
 
 import type { LuumSpec } from ".."
 

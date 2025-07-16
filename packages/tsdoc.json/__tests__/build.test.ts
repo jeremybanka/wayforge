@@ -3,8 +3,8 @@ import url from "node:url"
 
 import { write } from "bun"
 
-import type { TSD } from "../src"
-import { compileDocs } from "../src"
+import type { TSD } from "../src/main"
+import { compileDocs } from "../src/main"
 
 const FILEPATH = url.fileURLToPath(import.meta.url)
 const DIRNAME = path.dirname(FILEPATH)

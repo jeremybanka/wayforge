@@ -1,7 +1,5 @@
-import type { Server, Socket } from "socket.io"
-
-import { recordToEntries } from "~/packages/anvl/src/object"
-import type { FilestoreOptions } from "~/packages/ingt/src"
+import { recordToEntries } from "anvl/object"
+import type { FilestoreOptions } from "ingt"
 import {
 	initIndexer,
 	initIndexWriter,
@@ -11,7 +9,8 @@ import {
 	initResourceTypeInitializer,
 	initResourceWriter,
 	initSchemaReader,
-} from "~/packages/ingt/src"
+} from "ingt"
+import type { Server, Socket } from "socket.io"
 
 import type {
 	FilestoreClientEvents,

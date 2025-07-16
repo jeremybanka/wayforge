@@ -22,8 +22,6 @@ import { welcome } from "./welcome"
 
 welcome(logger)
 
-const TIMESTAMP = Date.now()
-
 pipe(
 	new SocketIO.Server(env.PORT, { cors: { origin: env.CLIENT_ORIGINS } }),
 	(server) => {

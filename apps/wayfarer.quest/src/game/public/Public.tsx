@@ -3,18 +3,17 @@ import { useO } from "atom.io/react"
 import { usersInRooms } from "atom.io/realtime"
 import { myUsernameState } from "atom.io/realtime-client"
 import { RealtimeContext } from "atom.io/realtime-react"
-import { nanoid } from "nanoid"
-import { useContext } from "react"
-import { h3 } from "wayfarer.quest/components/<hX>"
-import { useRadial } from "wayfarer.quest/services/peripherals/radial"
-
 import {
 	spawnClassicDeckTX,
 	spawnHandTX,
 	spawnTrickTX,
-} from "~/apps/core.wayfarer.quest/src/store/game"
-import { addPlayerToGameTX } from "~/apps/core.wayfarer.quest/src/store/game/card-game-actions/add-player-to-game"
-import { startGameTX } from "~/apps/core.wayfarer.quest/src/store/game/hearts"
+} from "core.wayfarer.quest/src/store/game"
+import { addPlayerToGameTX } from "core.wayfarer.quest/src/store/game/card-game-actions/add-player-to-game"
+import { startGameTX } from "core.wayfarer.quest/src/store/game/hearts"
+import { nanoid } from "nanoid"
+import { useContext } from "react"
+import { h3 } from "wayfarer.quest/components/<hX>"
+import { useRadial } from "wayfarer.quest/services/peripherals/radial"
 
 import type { GameProps } from "../Game"
 import { Hearts } from "./Hearts"

@@ -14,7 +14,7 @@
 			"inputs": ["**/package.json", "src/**"]
 		},
 		"atom.io.fyi#build": {
-			"dependsOn": ["atom.io#build"],
+			"dependsOn": ["atom.io#build", "tsdoc.json#build"],
 			"outputs": ["dist/**"],
 			"inputs": ["**/package.json", "src/**"]
 		},

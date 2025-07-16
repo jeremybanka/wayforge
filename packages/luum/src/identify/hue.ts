@@ -1,5 +1,6 @@
-import { wrapInto } from "~/packages/anvl/src/number"
-import type { Degree } from "~/packages/luum/src"
+import { wrapInto } from "anvl/number"
+
+import type { Degree } from ".."
 
 type NamingPoint = { hue: Degree; name: string }
 

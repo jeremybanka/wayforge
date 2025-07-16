@@ -1,5 +1,4 @@
-import type { ChannelObject } from "~/packages/luum/src"
-
+import type { ChannelObject } from ".."
 import { CHANNEL_SPECIFIC_LUM } from "../constants"
 
 const lumFromChannels = ({ R, G, B }: ChannelObject): number => {

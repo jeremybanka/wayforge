@@ -1,4 +1,4 @@
-import type { ChannelObject } from "~/packages/luum/src"
+import type { ChannelObject } from ".."
 
 const satFromChannels = ({ R, G, B }: ChannelObject): number => {
 	const sat = Math.max(R, G, B) - Math.min(R, G, B)

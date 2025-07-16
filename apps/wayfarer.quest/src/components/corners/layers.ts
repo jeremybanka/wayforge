@@ -1,6 +1,5 @@
+import type { Fragment } from "anvl/object"
 import type { Layer } from "corners"
-
-import type { Fragment } from "~/packages/anvl/src/object"
 
 export const LAYER: Readonly<Record<string, Fragment<Layer>>> = {
 	FAINT_SHADOW: {

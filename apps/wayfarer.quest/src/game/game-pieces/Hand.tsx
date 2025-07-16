@@ -1,5 +1,7 @@
 import { findRelations, runTransaction } from "atom.io"
 import { useO } from "atom.io/react"
+import { dealCardsTX, groupsOfCards } from "core.wayfarer.quest/src/store/game"
+import { setCssVars } from "hamr/react-css-vars"
 import { AnimatePresence, motion } from "motion/react"
 import { memoize } from "wayfarer.quest/components/memoize"
 import { useRadial } from "wayfarer.quest/services/peripherals/radial"
@@ -7,12 +9,6 @@ import { myHandsIndex } from "wayfarer.quest/services/store/my-hands-index"
 import { myRoomKeyState } from "wayfarer.quest/services/store/my-room"
 import { publicDeckIndex } from "wayfarer.quest/services/store/public-deck-index"
 import { useDOMRect } from "wayfarer.quest/services/use-dimensions"
-
-import {
-	dealCardsTX,
-	groupsOfCards,
-} from "~/apps/core.wayfarer.quest/src/store/game"
-import { setCssVars } from "~/packages/hamr/react-css-vars/src"
 
 import { Count } from "../labels/Count"
 import { CardBack, CardFace, CardSlot } from "./Card"

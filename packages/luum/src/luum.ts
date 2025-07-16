@@ -1,6 +1,5 @@
-import type { LuumSpec } from "~/packages/luum/src"
-import { isLuumSpec, specToHex } from "~/packages/luum/src"
-
+import type { LuumSpec } from "."
+import { isLuumSpec, specToHex } from "."
 import { shade, tint } from "./mixers/lum"
 import { amp, mute } from "./mixers/sat"
 

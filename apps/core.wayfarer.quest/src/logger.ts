@@ -1,8 +1,7 @@
+import type { Logger } from "atom.io"
+import { AtomIOLogger } from "atom.io"
+import { IMPLICIT } from "atom.io/internal"
 import log from "npmlog"
-
-import { IMPLICIT } from "~/packages/atom.io/src/internal"
-import type { Logger } from "~/packages/atom.io/src/main"
-import { AtomIOLogger } from "~/packages/atom.io/src/main"
 
 export const logger = log
 

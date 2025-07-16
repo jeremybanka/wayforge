@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs"
 
-import type { Json } from "~/packages/atom.io/src/json"
-import { parseJson } from "~/packages/atom.io/src/json"
+import type { Json } from "atom.io/json"
+import { parseJson } from "atom.io/json"
 
 import type { FilestoreOptions } from "./options"
 

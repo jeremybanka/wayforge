@@ -1,6 +1,5 @@
-import type { Encapsulate } from "~/packages/anvl/src/function"
-import type { Json } from "~/packages/atom.io/src/json"
-
+import type { Encapsulate } from "anvl/function"
+import type { Json } from "atom.io/json"
 import type {
 	InitResource,
 	ReadIndex,
@@ -10,7 +9,7 @@ import type {
 	WriteIndex,
 	WriteRelations,
 	WriteResource,
-} from "../../ingt/src"
+} from "ingt"
 
 /* prettier-ignore */
 // server "on" / client "emit"

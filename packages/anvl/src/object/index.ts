@@ -8,6 +8,7 @@ import { isPlainObject } from "./refinement"
 
 export * from "./access"
 export * from "./deepMob"
+export * from "./dictionary"
 export * from "./entries"
 export * from "./mapObject"
 export * from "./modify"
