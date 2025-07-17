@@ -47,7 +47,6 @@
 		"@types/node": "24.0.14",
 		"@types/tmp": "0.2.6",
 		"concurrently": "9.2.0",
-		"atom.io": "workspace:*",
 		"eslint": "9.31.0",
 		"react": "19.1.0",
 		"recoil": "0.7.7",

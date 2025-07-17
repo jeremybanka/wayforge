@@ -37,14 +37,12 @@
 		"socket.io-client": "^4.6.0"
 	},
 	"dependencies": {
-		"anvl": "workspace:*",
 		"fp-ts": "2.16.10",
 		"simple-git": "3.28.0"
 	},
 	"devDependencies": {
 		"@types/node": "24.0.14",
 		"@types/tmp": "0.2.6",
-		"atom.io": "workspace:*",
 		"concurrently": "9.2.0",
 		"eslint": "9.31.0",
 		"react": "19.1.0",

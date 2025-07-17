@@ -5,11 +5,7 @@
 		"moduleResolution": "bundler",
 		"allowImportingTsExtensions": true,
 		"verbatimModuleSyntax": true,
-		"noEmit": true,
-		"paths": {
-			"~/*": ["../../*"],
-			"occlusion": ["../../packages/occlusion/src"]
-		}
+		"noEmit": true
 	},
 	"include": ["src", "test", "./vitest.config.ts"]
 }

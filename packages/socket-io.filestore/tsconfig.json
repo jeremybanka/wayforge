@@ -2,6 +2,10 @@
 	"extends": "../../tsconfig.json",
 	"include": ["src", "test", "**/*.config.ts"],
 	"compilerOptions": {
-		"types": ["vitest/globals"]
+		"types": ["vitest/globals"],
+		"paths": {
+			"atom.io": ["../atom.io/src/main"],
+			"atom.io/*": ["../atom.io/src/*"]
+		}
 	}
 }
