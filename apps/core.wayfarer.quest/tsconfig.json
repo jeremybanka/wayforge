@@ -8,6 +8,9 @@
 		"noEmit": true,
 		"paths": {
 			"~/*": ["../../*"],
+			"anvl/*": ["../../packages/anvl/src/*"],
+			"atom.io": ["../../packages/atom.io/src/main"],
+			"atom.io/*": ["../../packages/atom.io/src/*"],
 			"occlusion": ["../../packages/occlusion/src"]
 		}
 	},

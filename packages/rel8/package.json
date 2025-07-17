@@ -28,9 +28,6 @@
 			"require": "./junction/dist/index.js"
 		}
 	},
-	"dependencies": {
-		"atom.io": "workspace:*"
-	},
 	"scripts": {
 		"build": "concurrently \"npm:build:*\"",
 		"build:junction": "cd junction && tsup",

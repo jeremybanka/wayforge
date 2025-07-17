@@ -5,7 +5,15 @@
 		"types": ["vitest/globals"],
 		"paths": {
 			"anvl/*": ["../../../packages/anvl/src/*"],
-			"ingt": ["../../../packages/ingt/src"]
+			"atom.io": ["../../../packages/atom.io/src/main"],
+			"atom.io/*": ["../../../packages/atom.io/src/*"],
+			"ingt": ["../../../packages/ingt/src"],
+			"socket-io.git/socket-git-node": [
+				"../../../packages/socket-io.git/src/socket-git-node.ts"
+			],
+			"socket-io.filestore/socket-filestore-node": [
+				"../../../packages/socket-io.filestore/src/socket-filestore-node.ts"
+			]
 		}
 	}
 }

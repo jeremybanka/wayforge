@@ -22,8 +22,6 @@
 		"npmlog": "7.0.1",
 		"prettier": "3.6.2",
 		"simple-git": "3.28.0",
-		"socket-io.filestore": "workspace:*",
-		"socket-io.git": "workspace:*",
 		"socket.io": "4.8.1",
 		"zod": "3.25.76"
 	},

@@ -55,7 +55,6 @@
 		"@types/npmlog": "7.0.0",
 		"@types/react": "19.1.8",
 		"@vitejs/plugin-react": "4.6.0",
-		"atom.io": "workspace:*",
 		"concurrently": "9.2.0",
 		"eslint": "9.31.0",
 		"happy-dom": "18.0.1",
