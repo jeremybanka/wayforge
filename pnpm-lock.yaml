@@ -998,9 +998,6 @@ importers:
 
   packages/occlusion:
     dependencies:
-      anvl:
-        specifier: workspace:*
-        version: link:../anvl
       fp-ts:
         specifier: 2.16.10
         version: 2.16.10
