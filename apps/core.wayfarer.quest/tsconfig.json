@@ -5,14 +5,7 @@
 		"moduleResolution": "bundler",
 		"allowImportingTsExtensions": true,
 		"verbatimModuleSyntax": true,
-		"noEmit": true,
-		"paths": {
-			"~/*": ["../../*"],
-			"anvl/*": ["../../packages/anvl/src/*"],
-			"atom.io": ["../../packages/atom.io/src/main"],
-			"atom.io/*": ["../../packages/atom.io/src/*"],
-			"occlusion": ["../../packages/occlusion/src"]
-		}
+		"noEmit": true
 	},
 	"include": ["src", "test", "./vitest.config.ts"]
 }

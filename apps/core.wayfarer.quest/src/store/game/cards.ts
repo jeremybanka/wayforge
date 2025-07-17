@@ -1,9 +1,7 @@
 import { atom, atomFamily, join } from "atom.io"
-import { createMutableAtom, IMPLICIT } from "atom.io/internal"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
-
-import { Perspective } from "~/packages/occlusion/src"
+import { Perspective } from "occlusion"
 
 export const cardOwners = join({
 	key: `ownersOfCards`,
