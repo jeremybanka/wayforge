@@ -20,7 +20,6 @@
 		"postversion": "biome format --write package.json"
 	},
 	"dependencies": {
-		"anvl": "workspace:*",
 		"fp-ts": "2.16.10",
 		"io-ts": "2.2.22",
 		"nanoid": "5.1.5"
