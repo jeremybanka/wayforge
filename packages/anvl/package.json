@@ -31,9 +31,6 @@
 		"test:once": "vitest run",
 		"postversion": "biome format --write package.json"
 	},
-	"dependencies": {
-		"atom.io": "workspace:*"
-	},
 	"exports": {
 		"./package.json": "./package.json",
 		"./array": {
