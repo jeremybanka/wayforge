@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.33.10
+
+### Patch Changes
+
+- 5a8193d: 🐛 Previously, there were problems when creating synchronous states downstream from asynchronous ones. Now, this is better supported.
+- 5a8193d: 🚀 Improve performance with async states; create fewer Promise objects under the hood.
+
 ## 0.33.9
 
 ### Patch Changes
