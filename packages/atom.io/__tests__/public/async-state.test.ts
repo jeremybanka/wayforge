@@ -71,10 +71,13 @@ describe(`async atom`, async () => {
 				})
 			},
 		})
+		console.log(`👀`, Internal.IMPLICIT.STORE.valueMap.get(`doubled`))
 		expect(Internal.IMPLICIT.STORE.valueMap.get(`doubled`)).toBeInstanceOf(
 			Internal.Future,
 		)
 		AtomIO.setState(countState, 1)
+		console.log(`set state`)
+		console.log(Internal.IMPLICIT.STORE.valueMap)
 		expect(Internal.IMPLICIT.STORE.valueMap.get(`doubled`)).toBeInstanceOf(
 			Internal.Future,
 		)
@@ -204,5 +207,195 @@ describe(`async selector`, () => {
 
 		const quotient2 = getState(quotientState)
 		expect(quotient2).toBe(Number.POSITIVE_INFINITY)
+	})
+})
+
+describe(`downstream from async`, () => {
+	test(`sync selector downstream from async atom`, async () => {
+		const countAtom = AtomIO.atom<Loadable<number>>({
+			key: `count`,
+			default: () =>
+				new Promise((resolve) =>
+					setTimeout(() => {
+						resolve(1)
+					}, 10),
+				),
+		})
+		const typeSelector = AtomIO.selector<string>({
+			key: `doubled`,
+			get: ({ get }) => {
+				const count = get(countAtom)
+				return typeof count
+			},
+		})
+		const countLoadable = AtomIO.getState(countAtom)
+		expect(countLoadable).toBeInstanceOf(Internal.Future)
+
+		expect(AtomIO.getState(typeSelector)).toBe(`object`)
+
+		const count = await countLoadable
+		expect(count).toBe(1)
+		expect(AtomIO.getState(typeSelector)).toBe(`number`)
+	})
+	test(`sync selector downstream from async selector`, async () => {
+		const countAtom = AtomIO.atom<number>({
+			key: `count`,
+			default: 2,
+		})
+		const doubledSelector = AtomIO.selector<Loadable<number>>({
+			key: `doubled`,
+			get: async ({ get }) => {
+				const count = get(countAtom)
+				const double = count * 2
+				return double
+			},
+		})
+		const typeSelector = AtomIO.selector<string>({
+			key: `tripled`,
+			get: ({ get }) => {
+				const doubled = get(doubledSelector)
+				return typeof doubled
+			},
+		})
+
+		const doubledLoadable = AtomIO.getState(doubledSelector)
+		expect(doubledLoadable).toBeInstanceOf(Internal.Future)
+		expect(AtomIO.getState(typeSelector)).toBe(`object`)
+
+		const doubled = await doubledLoadable
+		expect(doubled).toBe(4)
+
+		expect(AtomIO.getState(typeSelector)).toBe(`number`)
+	})
+	test(`loadable index`, async () => {
+		let loadOrgId = (_: number) => {
+			console.warn(`loadOrgId not attached`)
+		}
+
+		const orgIdAtom = AtomIO.atom<Loadable<number>>({
+			key: `orgId`,
+			default: () => new Promise((resolve) => (loadOrgId = resolve)),
+		})
+
+		const loadIndex: Record<number, () => void> = {}
+		const loadItems: Record<number, () => void> = {}
+		const indexRevalidationAtoms = AtomIO.atomFamily<number | null, number>({
+			key: `indexRevalidation`,
+			default: null,
+		})
+		const indexSelectors = AtomIO.selectorFamily<Loadable<number[]>, number>({
+			key: `index`,
+			get:
+				(key) =>
+				async ({ get }) => {
+					get(indexRevalidationAtoms, 0)
+					return new Promise((resolve) => {
+						loadIndex[key] = () => {
+							resolve([1, 2, 3])
+						}
+					})
+				},
+		})
+		const itemRevalidationAtoms = AtomIO.atomFamily<number | null, number>({
+			key: `itemRevalidation`,
+			default: null,
+		})
+		const itemSelectors = AtomIO.selectorFamily<
+			Loadable<{ data: string }>,
+			number
+		>({
+			key: `items`,
+			get:
+				(key) =>
+				async ({ get }) => {
+					get(itemRevalidationAtoms, key)
+					return new Promise<{ data: string }>((resolve) => {
+						loadItems[key] = () => {
+							resolve({ data: `${key}`.repeat(3) })
+						}
+					})
+				},
+		})
+
+		const allItemsSelector = AtomIO.selector<Loadable<{ data: string }[]>>({
+			key: `allItems`,
+			get: async ({ get }) => {
+				const orgId = await get(orgIdAtom)
+				const index = get(indexSelectors, orgId)
+				const itemIds = await index
+				const itemsLoadable = Promise.all(
+					itemIds.map((id) => get(itemSelectors, id)),
+				)
+				return itemsLoadable
+			},
+		})
+
+		AtomIO.subscribe(allItemsSelector, ({ newValue, oldValue }) => {
+			console.log(`subscriber`, { newValue, oldValue })
+			console.count(`subscriber`)
+			Utils.stdout({ newValue, oldValue })
+		})
+
+		console.log({
+			orgId: AtomIO.getState(orgIdAtom),
+			itemIds: AtomIO.getState(indexSelectors, 0),
+			item1: AtomIO.getState(itemSelectors, 1),
+			item2: AtomIO.getState(itemSelectors, 2),
+			item3: AtomIO.getState(itemSelectors, 3),
+			allItems: AtomIO.getState(allItemsSelector),
+		})
+
+		loadOrgId(0)
+		console.log({
+			orgId: AtomIO.getState(orgIdAtom),
+			itemIds: AtomIO.getState(indexSelectors, 0),
+			item1: AtomIO.getState(itemSelectors, 1),
+			item2: AtomIO.getState(itemSelectors, 2),
+			item3: AtomIO.getState(itemSelectors, 3),
+			allItems: AtomIO.getState(allItemsSelector),
+		})
+
+		loadIndex[0]()
+		await new Promise((resolve) => setImmediate(resolve))
+		console.log({
+			orgId: AtomIO.getState(orgIdAtom),
+			itemIds: AtomIO.getState(indexSelectors, 0),
+			item1: AtomIO.getState(itemSelectors, 1),
+			item2: AtomIO.getState(itemSelectors, 2),
+			item3: AtomIO.getState(itemSelectors, 3),
+			allItems: AtomIO.getState(allItemsSelector),
+		})
+		loadItems[1]()
+		await new Promise((resolve) => setImmediate(resolve))
+		console.log({
+			orgId: AtomIO.getState(orgIdAtom),
+			itemIds: AtomIO.getState(indexSelectors, 0),
+			item1: AtomIO.getState(itemSelectors, 1),
+			item2: AtomIO.getState(itemSelectors, 2),
+			item3: AtomIO.getState(itemSelectors, 3),
+			allItems: AtomIO.getState(allItemsSelector),
+		})
+		loadItems[2]()
+		await new Promise((resolve) => setImmediate(resolve))
+		console.log({
+			orgId: AtomIO.getState(orgIdAtom),
+			itemIds: AtomIO.getState(indexSelectors, 0),
+			item1: AtomIO.getState(itemSelectors, 1),
+			item2: AtomIO.getState(itemSelectors, 2),
+			item3: AtomIO.getState(itemSelectors, 3),
+			allItems: AtomIO.getState(allItemsSelector),
+		})
+		console.log(`❗❗❗ loadItems[3]()`)
+		loadItems[3]()
+		console.log(`post ❗❗❗ loadItems[3]()`)
+		await new Promise((resolve) => setImmediate(resolve))
+		console.log({
+			orgId: AtomIO.getState(orgIdAtom),
+			itemIds: AtomIO.getState(indexSelectors, 0),
+			item1: AtomIO.getState(itemSelectors, 1),
+			item2: AtomIO.getState(itemSelectors, 2),
+			item3: AtomIO.getState(itemSelectors, 3),
+			allItems: AtomIO.getState(allItemsSelector),
+		})
 	})
 })

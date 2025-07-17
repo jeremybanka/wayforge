@@ -1,9 +1,13 @@
 import type { StateUpdate } from "atom.io"
 
 import type { ReadableState } from "."
-import { isChildStore } from "."
+import { closeOperation, isChildStore, openOperation } from "."
 import { Future } from "./future"
 import { copyMutableIfNeeded } from "./set-state/copy-mutable-if-needed"
+import {
+	evictDownStream,
+	evictDownStreamFromSelector,
+} from "./set-state/evict-downstream"
 import type { Store } from "./store"
 import type { Subject } from "./subject"
 
@@ -28,15 +32,37 @@ export function cacheValue<T>(
 	const currentValue = target.valueMap.get(key)
 	if (currentValue instanceof Future) {
 		const future = currentValue
-		future.use(value)
+		if (value instanceof Promise) {
+			return future
+		}
+		target.valueMap.set(key, value)
+		return value
 	}
 	if (value instanceof Promise) {
 		const future = new Future<T>(value)
 		target.valueMap.set(key, future)
 		future
 			.then((resolved) => {
-				cacheValue(target, key, resolved, subject)
-				subject.next({ newValue: resolved, oldValue: future })
+				const current = target.valueMap.get(key)
+				if (current === future) {
+					cacheValue(target, key, resolved, subject)
+					const atom = target.atoms.get(key)
+					if (atom) {
+						openOperation(target, atom)
+						evictDownStream(target, atom)
+						closeOperation(target)
+					} else {
+						const selector =
+							target.writableSelectors.get(key) ??
+							target.readonlySelectors.get(key)
+						if (selector) {
+							openOperation(target, selector)
+							evictDownStreamFromSelector(target, selector)
+							closeOperation(target)
+						}
+					}
+					subject.next({ newValue: resolved, oldValue: future })
+				}
 			})
 			.catch((thrown) => {
 				target.logger.error(`💥`, `state`, key, `rejected:`, thrown)
