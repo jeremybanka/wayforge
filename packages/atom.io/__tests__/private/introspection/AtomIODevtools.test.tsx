@@ -104,7 +104,7 @@ describe(`editing an object atom`, () => {
 			default: { a: 1, b: 2 },
 		})
 
-		const { getByTestId /* debug */ } = scenario()
+		const { getByTestId, debug } = scenario()
 
 		await waitFor(() => getByTestId(`open-close-state-myObject`))
 
@@ -121,8 +121,11 @@ describe(`editing an object atom`, () => {
 			})
 		})
 
-		await waitFor(() => getByTestId(`myObject-state-editor-property-c`))
+		await waitFor(() =>
+			getByTestId(`myObject-state-editor-property-c-number-input`),
+		)
 
+		debug()
 		expect($.getState(objectAtom)).toEqual({ b: 2, c: 1 })
 
 		act(() => {

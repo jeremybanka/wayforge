@@ -27,7 +27,7 @@ export class Future<T> extends Promise<T> {
 		})
 		this.resolve = superResolve as (value: T) => void
 		this.reject = superReject as (reason?: any) => void
-		this.use(executor instanceof Promise ? executor : new Promise(executor))
+		void this.use(executor instanceof Promise ? executor : new Promise(executor))
 	}
 
 	private pass(promise: Promise<T>, value: T) {
@@ -43,7 +43,7 @@ export class Future<T> extends Promise<T> {
 		}
 	}
 
-	public use(value: Promise<T> | T): void {
+	public use(value: Promise<T> | T): this {
 		if (value instanceof Promise) {
 			const promise = value
 			this.fate = promise
@@ -59,5 +59,6 @@ export class Future<T> extends Promise<T> {
 			this.resolve(value)
 			this.fate = undefined
 		}
+		return this
 	}
 }

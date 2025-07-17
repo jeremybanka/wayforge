@@ -71,10 +71,13 @@ describe(`async atom`, async () => {
 				})
 			},
 		})
+		console.log(`👀`, Internal.IMPLICIT.STORE.valueMap.get(`doubled`))
 		expect(Internal.IMPLICIT.STORE.valueMap.get(`doubled`)).toBeInstanceOf(
 			Internal.Future,
 		)
 		AtomIO.setState(countState, 1)
+		console.log(`set state`)
+		console.log(Internal.IMPLICIT.STORE.valueMap)
 		expect(Internal.IMPLICIT.STORE.valueMap.get(`doubled`)).toBeInstanceOf(
 			Internal.Future,
 		)
@@ -327,6 +330,12 @@ describe(`downstream from async`, () => {
 			},
 		})
 
+		AtomIO.subscribe(allItemsSelector, ({ newValue, oldValue }) => {
+			console.log(`subscriber`, { newValue, oldValue })
+			console.count(`subscriber`)
+			Utils.stdout({ newValue, oldValue })
+		})
+
 		console.log({
 			orgId: AtomIO.getState(orgIdAtom),
 			itemIds: AtomIO.getState(indexSelectors, 0),
@@ -376,7 +385,9 @@ describe(`downstream from async`, () => {
 			item3: AtomIO.getState(itemSelectors, 3),
 			allItems: AtomIO.getState(allItemsSelector),
 		})
+		console.log(`❗❗❗ loadItems[3]()`)
 		loadItems[3]()
+		console.log(`post ❗❗❗ loadItems[3]()`)
 		await new Promise((resolve) => setImmediate(resolve))
 		console.log({
 			orgId: AtomIO.getState(orgIdAtom),
