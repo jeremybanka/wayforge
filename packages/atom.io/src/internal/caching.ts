@@ -32,30 +32,38 @@ export function cacheValue<T>(
 	const currentValue = target.valueMap.get(key)
 	if (currentValue instanceof Future) {
 		const future = currentValue
-		future.use(value)
+		void future.use(value)
+		if (value instanceof Promise) {
+			return future
+		}
+		target.valueMap.set(key, value)
+		return value
 	}
 	if (value instanceof Promise) {
 		const future = new Future<T>(value)
 		target.valueMap.set(key, future)
 		future
 			.then((resolved) => {
-				cacheValue(target, key, resolved, subject)
-				const atom = target.atoms.get(key)
-				if (atom) {
-					openOperation(target, atom)
-					evictDownStream(target, atom)
-					closeOperation(target)
-				} else {
-					const selector =
-						target.writableSelectors.get(key) ??
-						target.readonlySelectors.get(key)
-					if (selector) {
-						openOperation(target, selector)
-						evictDownStreamFromSelector(target, selector)
+				const current = target.valueMap.get(key)
+				if (current === future) {
+					cacheValue(target, key, resolved, subject)
+					const atom = target.atoms.get(key)
+					if (atom) {
+						openOperation(target, atom)
+						evictDownStream(target, atom)
 						closeOperation(target)
+					} else {
+						const selector =
+							target.writableSelectors.get(key) ??
+							target.readonlySelectors.get(key)
+						if (selector) {
+							openOperation(target, selector)
+							evictDownStreamFromSelector(target, selector)
+							closeOperation(target)
+						}
 					}
+					subject.next({ newValue: resolved, oldValue: future })
 				}
-				subject.next({ newValue: resolved, oldValue: future })
 			})
 			.catch((thrown) => {
 				target.logger.error(`💥`, `state`, key, `rejected:`, thrown)
@@ -86,7 +94,7 @@ export const evictCachedValue = (key: string, target: Store): void => {
 		const selector =
 			target.writableSelectors.get(key) ?? target.readonlySelectors.get(key)
 		if (selector) {
-			future.use(selector.get())
+			void future.use(selector.get())
 		}
 		return
 	}

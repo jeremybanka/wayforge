@@ -40,9 +40,11 @@ export function evictDownStreamFromSelector(
 	selector: Selector<any>,
 ): void {
 	const target = newest(store)
-	const relationEntries = target.selectorGraph.getRelationEntries({
-		upstreamSelectorKey: selector.key,
-	})
+	const relationEntries = target.selectorGraph
+		.getRelationEntries({
+			upstreamSelectorKey: selector.key,
+		})
+		.filter(([_, { source }]) => source === selector.key)
 	for (const [downstreamSelectorKey] of relationEntries) {
 		if (isDone(target, downstreamSelectorKey)) {
 			continue
