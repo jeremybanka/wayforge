@@ -32,7 +32,6 @@ export function cacheValue<T>(
 	const currentValue = target.valueMap.get(key)
 	if (currentValue instanceof Future) {
 		const future = currentValue
-		void future.use(value)
 		if (value instanceof Promise) {
 			return future
 		}
@@ -94,7 +93,7 @@ export const evictCachedValue = (key: string, target: Store): void => {
 		const selector =
 			target.writableSelectors.get(key) ?? target.readonlySelectors.get(key)
 		if (selector) {
-			void future.use(selector.get())
+			future.use(selector.get())
 		}
 		return
 	}
