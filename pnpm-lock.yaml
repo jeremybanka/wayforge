@@ -1059,6 +1059,9 @@ importers:
       fp-ts:
         specifier: 2.16.10
         version: 2.16.10
+      tsdown:
+        specifier: 0.12.9
+        version: 0.12.9(@typescript/native-preview@7.0.0-dev.20250716.1)(typescript@5.8.3)
       tsup:
         specifier: 8.5.0
         version: 8.5.0(@microsoft/api-extractor@7.52.8(@types/node@24.0.14))(@swc/core@1.12.14)(jiti@2.4.2)(postcss@8.5.6)(tsx@4.20.3)(typescript@5.8.3)
