@@ -28,13 +28,8 @@
 			"require": "./junction/dist/index.js"
 		}
 	},
-	"dependencies": {
-		"atom.io": "workspace:*"
-	},
 	"scripts": {
-		"build": "concurrently \"npm:build:*\"",
-		"build:junction": "cd junction && tsup",
-		"build:types": "cd types && tsup",
+		"build": "tsdown",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
 		"lint:types": "tsgo --noEmit",
@@ -48,6 +43,7 @@
 		"concurrently": "9.2.0",
 		"eslint": "9.31.0",
 		"fp-ts": "2.16.10",
+		"tsdown": "0.12.9",
 		"tsup": "8.5.0",
 		"vite": "7.0.5",
 		"vite-tsconfig-paths": "5.1.4",

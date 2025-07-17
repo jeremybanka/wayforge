@@ -4,7 +4,9 @@
 	"compilerOptions": {
 		"types": ["vitest/globals"],
 		"paths": {
-			"anvl/*": ["./src/*"]
+			"anvl/*": ["./src/*"],
+			"atom.io": ["../atom.io/src/main"],
+			"atom.io/*": ["../atom.io/src/*"]
 		}
 	}
 }
