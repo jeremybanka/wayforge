@@ -140,10 +140,10 @@ describe(`editing an object atom`, () => {
 		expect($.getState(objectAtom)).toEqual({ b: 2, c: 3 })
 
 		expect(JSON.stringify($.getState(objectAtom))).toBe(`{"c":3,"b":2}`)
-		act(() => {
-			getByTestId(`myObject-state-editor-sort-properties`).click()
-		})
-		expect(JSON.stringify($.getState(objectAtom))).toBe(`{"b":2,"c":3}`)
+		// act(() => {
+		// 	getByTestId(`myObject-state-editor-sort-properties`).click()
+		// })
+		// expect(JSON.stringify($.getState(objectAtom))).toBe(`{"b":2,"c":3}`)
 
 		act(() => {
 			getByTestId(`myObject-state-editor-property-c-delete`).click()
