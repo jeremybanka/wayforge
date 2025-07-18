@@ -45,7 +45,9 @@ export const makePropertyRenamers = <T extends Json.Tree.Object>(
 		]),
 	)
 
-export const makePropertyRemovers = <T extends Json.Tree.Object>(
+export const makePropertyRemovers = <
+	T extends Json.Tree.Array | Json.Tree.Object,
+>(
 	data: T,
 	set: SetterOrUpdater<T>,
 ): { [K in keyof T]: () => void } =>
@@ -54,14 +56,24 @@ export const makePropertyRemovers = <T extends Json.Tree.Object>(
 			key,
 			() => {
 				set(() => {
-					const { [key]: _, ...rest } = data
-					return rest as T
+					let next: T
+					if (Array.isArray(data)) {
+						const copy = [...data]
+						copy.splice(key as number, 1)
+						next = copy as unknown as T
+					} else {
+						const { [key]: _, ...rest } = data
+						next = rest as T
+					}
+					return next
 				})
 			},
 		]),
 	)
 
-export const makePropertyRecasters = <T extends Json.Tree.Object>(
+export const makePropertyRecasters = <
+	T extends Json.Tree.Array | Json.Tree.Object,
+>(
 	data: T,
 	set: SetterOrUpdater<T>,
 ): { [K in keyof T]: (newType: JsonTypeName) => void } =>

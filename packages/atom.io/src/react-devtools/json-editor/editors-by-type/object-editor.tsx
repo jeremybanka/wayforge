@@ -12,7 +12,7 @@ import {
 	makePropertyRemovers,
 	makePropertyRenamers,
 	makePropertySetters,
-	makePropertySorter,
+	// makePropertySorter,
 } from "./utilities/object-properties"
 
 export type PropertyAdderProps = {
@@ -68,12 +68,12 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 	const renameProperty = makePropertyRenamers(data, set, stableKeyMap)
 	const removeProperty = makePropertyRemovers(data, set)
 	const recastProperty = makePropertyRecasters(data, set)
-	const sortProperties = makePropertySorter(data, set)
+	// const sortProperties = makePropertySorter(data, set)
 	const makePropertyAdder = makePropertyCreationInterface(data, set)
 
 	return (
 		<Components.ObjectWrapper>
-			<Components.Button
+			{/* <Components.Button
 				testid={`${testid}-sort-properties`}
 				onClick={() => {
 					sortProperties()
@@ -81,7 +81,7 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 				disabled={disabled}
 			>
 				Sort
-			</Components.Button>
+			</Components.Button> */}
 			<div className="json_editor_properties">
 				{Object.keys(data).map((key) => {
 					const originalKey = stableKeyMap.current[key]
