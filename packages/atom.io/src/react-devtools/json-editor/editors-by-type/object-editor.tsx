@@ -12,7 +12,7 @@ import {
 	makePropertyRemovers,
 	makePropertyRenamers,
 	makePropertySetters,
-	// makePropertySorter,
+	makePropertySorter,
 } from "./utilities/object-properties"
 
 export type PropertyAdderProps = {
@@ -68,21 +68,12 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 	const renameProperty = makePropertyRenamers(data, set, stableKeyMap)
 	const removeProperty = makePropertyRemovers(data, set)
 	const recastProperty = makePropertyRecasters(data, set)
-	// const sortProperties = makePropertySorter(data, set)
+	const sortProperties = makePropertySorter(data, set)
 	const makePropertyAdder = makePropertyCreationInterface(data, set)
 
 	return (
 		<Components.ObjectWrapper>
-			{/* <Components.Button
-				testid={`${testid}-sort-properties`}
-				onClick={() => {
-					sortProperties()
-				}}
-				disabled={disabled}
-			>
-				Sort
-			</Components.Button> */}
-			<div className="json_editor_properties">
+			<div className={`json_editor_properties${disabled ? ` readonly` : ``}`}>
 				{Object.keys(data).map((key) => {
 					const originalKey = stableKeyMap.current[key]
 					const newPath = [...path, key]
@@ -107,19 +98,27 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 					)
 				})}
 			</div>
-			{disabled ? (
-				<Components.Button disabled testid={`${testid}-add-property`}>
-					+
-				</Components.Button>
-			) : (
-				<Components.Button
-					testid={`${testid}-add-property`}
-					onClick={() => {
-						makePropertyAdder(`new_property`, `string`)()
-					}}
-				>
-					+
-				</Components.Button>
+			{disabled ? null : (
+				<>
+					<Components.Button
+						disabled={disabled}
+						testid={`${testid}-add-property`}
+						onClick={() => {
+							makePropertyAdder(`new_property`, `string`)()
+						}}
+					>
+						+
+					</Components.Button>
+					<Components.Button
+						testid={`${testid}-sort-properties`}
+						onClick={() => {
+							sortProperties()
+						}}
+						disabled={disabled}
+					>
+						Sort
+					</Components.Button>
+				</>
 			)}
 		</Components.ObjectWrapper>
 	)

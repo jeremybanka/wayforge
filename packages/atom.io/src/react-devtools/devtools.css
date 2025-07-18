@@ -3,6 +3,7 @@ main[data-css="atom_io_devtools"] {
 	--fg-light: #aaa;
 	--fg-soft: #777;
 	--fg-faint: #555;
+	--fg-hint: #333;
 	--fg-max: #fff;
 	--bg-color: #111;
 	--bg-accent: #00f;
@@ -16,6 +17,7 @@ main[data-css="atom_io_devtools"] {
 		--fg-light: #777;
 		--fg-soft: #888;
 		--fg-faint: #999;
+		--fg-hint: #ccc;
 		--fg-max: #000;
 		--bg-color: #ddd;
 		--bg-accent: #0ff;
@@ -138,7 +140,6 @@ main[data-css="atom_io_devtools"] {
 						}
 						&:disabled {
 							cursor: default;
-							color: var(--fg-faint);
 						}
 						&:focus-within {
 							outline: 2px solid var(--fg-max);
@@ -324,6 +325,15 @@ main[data-css="atom_io_devtools"] {
 				background: var(--bg-max);
 			}
 		}
+		button:disabled {
+			cursor: default;
+			> span.json_editor_icon {
+				color: var(--fg-hint);
+			}
+			&:hover {
+				background: none;
+			}
+		}
 		input::selection {
 			background: var(--bg-accent);
 		}
@@ -380,17 +390,31 @@ main[data-css="atom_io_devtools"] {
 			border-left: var(--fg-border-soft);
 			padding-left: 12px;
 			margin-left: 8px;
-			.json_editor_property,
-			.json_editor_element {
-				border-bottom: var(--fg-border-soft);
-				margin-bottom: 2px;
-				min-height: 23px;
-				> span {
-					input {
-						min-width: 10px;
+			.json_editor_properties,
+			.json_editor_elements {
+				.json_editor_property,
+				.json_editor_element {
+					border-bottom: var(--fg-border-soft);
+					margin-bottom: 2px;
+					min-height: 23px;
+					> span {
+						input {
+							min-width: 10px;
+						}
+						> * {
+							border: var(--fg-border-soft);
+						}
 					}
-					> * {
-						border: var(--fg-border-soft);
+				}
+				&.readonly {
+					.json_editor_property,
+					.json_editor_element {
+						&:last-of-type {
+							border-bottom: none;
+						}
+						> span > * {
+							border: 1px solid transparent;
+						}
 					}
 				}
 			}

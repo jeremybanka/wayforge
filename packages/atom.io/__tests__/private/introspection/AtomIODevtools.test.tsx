@@ -140,10 +140,10 @@ describe(`editing an object atom`, () => {
 		expect($.getState(objectAtom)).toEqual({ b: 2, c: 3 })
 
 		expect(JSON.stringify($.getState(objectAtom))).toBe(`{"c":3,"b":2}`)
-		// act(() => {
-		// 	getByTestId(`myObject-state-editor-sort-properties`).click()
-		// })
-		// expect(JSON.stringify($.getState(objectAtom))).toBe(`{"b":2,"c":3}`)
+		act(() => {
+			getByTestId(`myObject-state-editor-sort-properties`).click()
+		})
+		expect(JSON.stringify($.getState(objectAtom))).toBe(`{"b":2,"c":3}`)
 
 		act(() => {
 			getByTestId(`myObject-state-editor-property-c-delete`).click()
@@ -201,6 +201,25 @@ describe(`editing an array atom`, () => {
 		})
 
 		expect($.getState(arrayAtom)).toEqual([`B`])
+
+		act(() => {
+			getByTestId(`myArray-state-editor-add-element`).click()
+		})
+		expect($.getState(arrayAtom)).toEqual([`B`, ``])
+
+		// recast to number
+		act(() => {
+			fireEvent.change(getByTestId(`myArray-state-editor-element-1-recast`), {
+				target: { value: `number` },
+			})
+		})
+		expect($.getState(arrayAtom)).toEqual([`B`, 0])
+
+		act(() => {
+			getByTestId(`myArray-state-editor-element-1-delete`).click()
+		})
+		expect($.getState(arrayAtom)).toEqual([`B`])
+
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
 	})
@@ -258,6 +277,29 @@ describe(`editing selectors`, () => {
 			getByTestId(`view-selectors`).click()
 		})
 		await waitFor(() => getByTestId(`state-selectionsWithoutGreen`))
+	})
+})
+
+describe(`displaying readonly selectors`, () => {
+	test(`array selector`, async () => {
+		const selectionsState = $.atom<number[]>({
+			key: `selections`,
+			default: [1, 2, 3],
+		})
+		const _evenSelectionsState = $.selector<number[]>({
+			key: `evenSelections`,
+			get: ({ get }) => get(selectionsState).filter((n) => n % 2 === 0),
+		})
+
+		const { getByTestId } = scenario()
+
+		act(() => {
+			getByTestId(`view-selectors`).click()
+		})
+
+		await waitFor(() => getByTestId(`state-evenSelections`))
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
 	})
 })
 
