@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.33.11
+
+### Patch Changes
+
+- f7ce7b7: 💄 Improve styling of devtools; improve Array layout.
+
 ## 0.33.10
 
 ### Patch Changes
