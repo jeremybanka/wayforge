@@ -75,5 +75,10 @@ findState(countAtoms, "A")
 findState(countAtoms, "B")
 findState(countAtoms, "C")
 
+const nestAtom = atom<[{ a: number }]>({
+	key: "nest",
+	default: [{ a: 1 }],
+})
+
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary: Story = {}

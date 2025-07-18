@@ -367,7 +367,7 @@ main[data-css="atom_io_devtools"] {
 			.json_editor_element {
 				border-bottom: var(--fg-border);
 				margin-bottom: 2px;
-				min-width: 10px;
+				min-height: 23px;
 				> span {
 					input {
 						min-width: 10px;
