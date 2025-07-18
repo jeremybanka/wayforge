@@ -1,18 +1,29 @@
 main[data-css="atom_io_devtools"] {
 	--fg-color: #ccc;
 	--fg-light: #aaa;
+	--fg-soft: #777;
 	--fg-faint: #555;
+	--fg-hint: #333;
+	--fg-max: #fff;
 	--bg-color: #111;
 	--bg-accent: #00f;
+	--bg-max: #000;
 	--bg-tint1: #222;
+	--bg-tint2: #333;
 	--fg-border: 1px solid var(--fg-color);
+	--fg-border-soft: 1px solid var(--fg-soft);
 	@media (prefers-color-scheme: light) {
 		--fg-color: #444;
 		--fg-light: #777;
+		--fg-soft: #888;
 		--fg-faint: #999;
+		--fg-hint: #ccc;
+		--fg-max: #000;
 		--bg-color: #ddd;
 		--bg-accent: #0ff;
+		--bg-max: #fff;
 		--bg-tint1: #e3e3e3;
+		--bg-tint2: #f3f3f3;
 	}
 	& {
 		pointer-events: all;
@@ -42,14 +53,20 @@ main[data-css="atom_io_devtools"] {
 		display: flex;
 		justify-content: space-between;
 		h1 {
-			margin: 0;
+			margin: 2px 4px;
 			font-size: 24px;
 			font-family: charter, serif;
 		}
 		nav {
+			position: relative;
 			display: flex;
 			flex-flow: row nowrap;
+			margin-top: 4px;
+			overflow-x: scroll;
+			overflow-y: visible;
+			height: 24px;
 			button {
+				height: 24px;
 				cursor: pointer;
 				background: none;
 				border: none;
@@ -58,16 +75,19 @@ main[data-css="atom_io_devtools"] {
 				z-index: 1000;
 				&:disabled {
 					cursor: default;
-					background-color: var(--bg-tint1);
-					color: var(--fg-color);
+					background-color: var(--fg-color);
+					color: var(--bg-color);
 					border: var(--fg-border);
-					border-bottom: none;
 				}
 			}
 		}
 	}
 	> main {
 		background: var(--bg-tint1);
+	}
+	> main::before {
+		background-color: black;
+		height: 10px;
 	}
 	main {
 		overflow-y: scroll;
@@ -86,7 +106,7 @@ main[data-css="atom_io_devtools"] {
 			}
 			.node > .node {
 				margin: 0px 2px 2px 18px;
-				border-left: var(--fg-border);
+				border-left: var(--fg-border-soft);
 				&:last-of-type {
 					margin-bottom: 6px;
 				}
@@ -107,6 +127,8 @@ main[data-css="atom_io_devtools"] {
 					z-index: 999;
 					top: 0;
 					height: 22px;
+					background: var(--bg-tint2);
+					border-bottom: var(--fg-border-soft);
 					button.carat {
 						cursor: pointer;
 						background: none;
@@ -118,7 +140,10 @@ main[data-css="atom_io_devtools"] {
 						}
 						&:disabled {
 							cursor: default;
-							color: var(--fg-faint);
+						}
+						&:focus-within {
+							outline: 2px solid var(--fg-max);
+							background: var(--bg-max);
 						}
 					}
 					> main {
@@ -126,6 +151,7 @@ main[data-css="atom_io_devtools"] {
 						flex-flow: row;
 						cursor: help;
 						align-items: center;
+						flex-shrink: 0;
 						* {
 							height: 100%;
 							display: flex;
@@ -150,21 +176,24 @@ main[data-css="atom_io_devtools"] {
 					> .json_editor,
 					> .json_viewer {
 						display: flex;
+						flex-shrink: 1;
+						z-index: -1;
+						overflow-x: scroll;
 						align-items: center;
-						border-left: 1px solid var(--fg-light);
-						background-color: var(--bg-tint1);
-						* {
+						border-left: var(--fg-border-soft);
+						white-space: pre;
+						background: var(--bg-tint2);
+						&:focus-within {
+							background-color: var(--bg-max);
+							outline: 2px solid var(--fg-max);
+						}
+						&.nu * {
 							display: flex;
 							height: 100%;
 						}
 						> span {
 							padding: 0px 5px;
-							border-left: var(--fg-color);
 							z-index: 0;
-							&:focus-within {
-								outline: 4px solid var(--fg-color);
-								background: var(--bg-accent);
-							}
 						}
 						input {
 							outline: none;
@@ -288,12 +317,34 @@ main[data-css="atom_io_devtools"] {
 				border: none;
 			}
 		}
+		input,
+		button,
+		select {
+			&:focus-within {
+				outline: 2px solid var(--fg-max);
+				background: var(--bg-max);
+			}
+		}
+		button:disabled {
+			cursor: default;
+			> span.json_editor_icon {
+				color: var(--fg-hint);
+			}
+			&:hover {
+				background: none;
+			}
+		}
+		input::selection {
+			background: var(--bg-accent);
+		}
+
 		button {
 			background: none;
 			color: #777;
 			border: none;
 			font-family: theia, monospace;
 			font-size: 14px;
+			height: 21px;
 			margin: none;
 			padding: 4px;
 			padding-bottom: 6px;
@@ -323,7 +374,10 @@ main[data-css="atom_io_devtools"] {
 			background-color: #f055;
 		}
 		.json_editor_key {
-			padding-right: 10px;
+			padding-right: 0px;
+			&::after {
+				content: ":";
+			}
 			input {
 				color: #999;
 				@media (prefers-color-scheme: light) {
@@ -331,16 +385,37 @@ main[data-css="atom_io_devtools"] {
 				}
 			}
 		}
-		.json_editor_object {
-			border-left: 2px solid #333;
-			padding-left: 20px;
-			@media (prefers-color-scheme: light) {
-				border-color: #ccc;
-			}
-			.json_editor_properties {
-				> * {
-					border-bottom: var(--fg-border);
+		.json_editor_object,
+		.json_editor_array {
+			border-left: var(--fg-border-soft);
+			padding-left: 12px;
+			margin-left: 8px;
+			.json_editor_properties,
+			.json_editor_elements {
+				.json_editor_property,
+				.json_editor_element {
+					border-bottom: var(--fg-border-soft);
 					margin-bottom: 2px;
+					min-height: 23px;
+					> span {
+						input {
+							min-width: 10px;
+						}
+						> * {
+							border: var(--fg-border-soft);
+						}
+					}
+				}
+				&.readonly {
+					.json_editor_property,
+					.json_editor_element {
+						&:last-of-type {
+							border-bottom: none;
+						}
+						> span > * {
+							border: 1px solid transparent;
+						}
+					}
 				}
 			}
 		}

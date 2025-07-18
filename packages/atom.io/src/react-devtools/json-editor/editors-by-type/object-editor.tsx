@@ -72,48 +72,36 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 	const makePropertyAdder = makePropertyCreationInterface(data, set)
 
 	return (
-		<>
-			<Components.Button
-				testid={`${testid}-sort-properties`}
-				onClick={() => {
-					sortProperties()
-				}}
-				disabled={disabled}
-			>
-				Sort
-			</Components.Button>
-			<Components.ObjectWrapper>
-				<div className="json_editor_properties">
-					{Object.keys(data).map((key) => {
-						const originalKey = stableKeyMap.current[key]
-						const newPath = [...path, key]
-						const originalPath = [...path, originalKey]
+		<Components.ObjectWrapper>
+			<div className={`json_editor_properties${disabled ? ` readonly` : ``}`}>
+				{Object.keys(data).map((key) => {
+					const originalKey = stableKeyMap.current[key]
+					const newPath = [...path, key]
+					const originalPath = [...path, originalKey]
 
-						return (
-							<JsonEditor_INTERNAL
-								key={originalPath.join(`.`)}
-								path={newPath}
-								name={key}
-								isReadonly={isReadonly}
-								isHidden={isHidden}
-								data={data[key as keyof T]}
-								set={setProperty[key as keyof T]}
-								rename={renameProperty[key as keyof T]}
-								remove={removeProperty[key as keyof T]}
-								recast={recastProperty[key as keyof T]}
-								className="json_editor_property"
-								Components={Components}
-								testid={`${testid}-property-${key}`}
-							/>
-						)
-					})}
-				</div>
-				{disabled ? (
-					<Components.Button disabled testid={`${testid}-add-property`}>
-						+
-					</Components.Button>
-				) : (
+					return (
+						<JsonEditor_INTERNAL
+							key={originalPath.join(`.`)}
+							path={newPath}
+							name={key}
+							isReadonly={isReadonly}
+							isHidden={isHidden}
+							data={data[key as keyof T]}
+							set={setProperty[key as keyof T]}
+							rename={renameProperty[key as keyof T]}
+							remove={removeProperty[key as keyof T]}
+							recast={recastProperty[key as keyof T]}
+							className="json_editor_property"
+							Components={Components}
+							testid={`${testid}-property-${key}`}
+						/>
+					)
+				})}
+			</div>
+			{disabled ? null : (
+				<>
 					<Components.Button
+						disabled={disabled}
 						testid={`${testid}-add-property`}
 						onClick={() => {
 							makePropertyAdder(`new_property`, `string`)()
@@ -121,8 +109,17 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 					>
 						+
 					</Components.Button>
-				)}
-			</Components.ObjectWrapper>
-		</>
+					<Components.Button
+						testid={`${testid}-sort-properties`}
+						onClick={() => {
+							sortProperties()
+						}}
+						disabled={disabled}
+					>
+						Sort
+					</Components.Button>
+				</>
+			)}
+		</Components.ObjectWrapper>
 	)
 }
