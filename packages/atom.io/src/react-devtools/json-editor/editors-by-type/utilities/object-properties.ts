@@ -81,10 +81,20 @@ export const makePropertyRecasters = <
 		toEntries(data).map(([key, value]) => [
 			key,
 			(newType: JsonTypeName) => {
-				set(() => ({
-					...data,
-					[key]: castToJson(value)[newType],
-				}))
+				set(() => {
+					let next: T
+					if (Array.isArray(data)) {
+						const copy = [...data]
+						copy[key as number] = castToJson(value)[newType]
+						next = copy as unknown as T
+					} else {
+						next = {
+							...data,
+							[key]: castToJson(value)[newType],
+						}
+					}
+					return next
+				})
 			},
 		]),
 	)
