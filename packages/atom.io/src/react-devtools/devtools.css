@@ -3,8 +3,10 @@ main[data-css="atom_io_devtools"] {
 	--fg-light: #aaa;
 	--fg-soft: #777;
 	--fg-faint: #555;
+	--fg-max: #fff;
 	--bg-color: #111;
 	--bg-accent: #00f;
+	--bg-max: #000;
 	--bg-tint1: #222;
 	--bg-tint2: #333;
 	--fg-border: 1px solid var(--fg-color);
@@ -14,8 +16,10 @@ main[data-css="atom_io_devtools"] {
 		--fg-light: #777;
 		--fg-soft: #888;
 		--fg-faint: #999;
+		--fg-max: #000;
 		--bg-color: #ddd;
 		--bg-accent: #0ff;
+		--bg-max: #fff;
 		--bg-tint1: #e3e3e3;
 		--bg-tint2: #f3f3f3;
 	}
@@ -182,10 +186,6 @@ main[data-css="atom_io_devtools"] {
 							padding: 0px 5px;
 							border-left: var(--fg-color);
 							z-index: 0;
-							&:focus-within {
-								outline: 4px solid var(--fg-color);
-								background: var(--bg-accent);
-							}
 						}
 						input {
 							outline: none;
@@ -309,6 +309,17 @@ main[data-css="atom_io_devtools"] {
 				border: none;
 			}
 		}
+		input,
+		button {
+			&:focus-within {
+				outline: 2px solid var(--fg-max);
+				background: var(--bg-max);
+			}
+		}
+		input::selection {
+			background: var(--bg-accent);
+		}
+
 		button {
 			background: none;
 			color: #777;
