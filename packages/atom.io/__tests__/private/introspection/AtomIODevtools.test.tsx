@@ -297,7 +297,13 @@ describe(`displaying readonly selectors`, () => {
 			getByTestId(`view-selectors`).click()
 		})
 
-		await waitFor(() => getByTestId(`state-evenSelections`))
+		await waitFor(() => getByTestId(`open-close-state-evenSelections`))
+		act(() => {
+			getByTestId(`open-close-state-evenSelections`).click()
+		})
+
+		await waitFor(() => getByTestId(`evenSelections-state-editor-element-0`))
+
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
 	})
