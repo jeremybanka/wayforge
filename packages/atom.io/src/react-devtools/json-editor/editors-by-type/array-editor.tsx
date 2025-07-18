@@ -5,7 +5,6 @@ import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
 import { JsonEditor_INTERNAL } from "../json-editor-internal"
 import { makeElementSetters } from "./utilities/array-elements"
 import {
-	makePropertyCreationInterface,
 	makePropertyRecasters,
 	makePropertyRemovers,
 } from "./utilities/object-properties"
