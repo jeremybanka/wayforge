@@ -61,20 +61,15 @@ export const JsonEditor_INTERNAL = <T,>({
 				testid={testid}
 			>
 				{remove ? (
-					disabled ? (
-						<Components.Button disabled testid={`${testid}-delete`}>
-							<Components.DeleteIcon />
-						</Components.Button>
-					) : (
-						<Components.Button
-							testid={`${testid}-delete`}
-							onClick={() => {
-								remove()
-							}}
-						>
-							<Components.DeleteIcon />
-						</Components.Button>
-					)
+					<Components.Button
+						disabled={disabled}
+						onClick={() => {
+							remove()
+						}}
+						testid={`${testid}-delete`}
+					>
+						<Components.DeleteIcon />
+					</Components.Button>
 				) : null}
 				{HeaderDisplay && <HeaderDisplay data={data} />}
 				{rename && (

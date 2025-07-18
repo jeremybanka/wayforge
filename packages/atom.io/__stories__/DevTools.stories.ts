@@ -2,7 +2,7 @@ import "atom.io/react-devtools/css"
 
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import type { Loadable } from "atom.io"
-import { atom, atomFamily, findState } from "atom.io"
+import { atom, atomFamily, findState, selector } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import { AtomIODevtools } from "atom.io/react-devtools"
 import { fn } from "storybook/test"
@@ -62,6 +62,10 @@ const loadableState = atom<Loadable<string>>({
 			}, 1000),
 		),
 })
+const futureState = atom<Loadable<unknown>>({
+	key: "future",
+	default: new Promise(() => {}),
+})
 
 const countAtoms = atomFamily<number, string>({
 	key: "counts",
@@ -70,6 +74,31 @@ const countAtoms = atomFamily<number, string>({
 findState(countAtoms, "A")
 findState(countAtoms, "B")
 findState(countAtoms, "C")
+
+const nestAtom = atom<[{ a: number }]>({
+	key: "nest",
+	default: [{ a: 1 }],
+})
+
+const selectionsState = atom<number[]>({
+	key: "selections",
+	default: [1, 2, 3],
+})
+const evenSelectionsState = selector<number[]>({
+	key: "evenSelections",
+	get: ({ get }) => get(selectionsState).filter((n) => n % 2 === 0),
+})
+const objSelector = selector<Record<string, number>>({
+	key: "objSelector",
+	get: ({ get }) => {
+		const selections = get(selectionsState)
+		const evenSelections = get(evenSelectionsState)
+		return {
+			a: selections[0],
+			b: evenSelections[0],
+		}
+	},
+})
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary: Story = {}

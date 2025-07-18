@@ -4,6 +4,8 @@ import { NumberInput, TextInput } from "../../elastic-input"
 import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
 
 export const BooleanEditor = ({
+	path = [],
+	isReadonly = () => false,
 	data,
 	set,
 	Components,
@@ -11,6 +13,7 @@ export const BooleanEditor = ({
 }: JsonEditorProps_INTERNAL<boolean>): ReactElement => (
 	<Components.BooleanWrapper>
 		<input
+			disabled={isReadonly(path)}
 			data-testid={`${testid}-boolean-input`}
 			type="checkbox"
 			checked={data}
@@ -38,6 +41,7 @@ export const NumberEditor = ({
 }: JsonEditorProps_INTERNAL<number>): ReactElement => (
 	<Components.NumberWrapper>
 		<NumberInput
+			disabled={isReadonly(path)}
 			testid={`${testid}-number-input`}
 			value={data}
 			set={
@@ -63,6 +67,7 @@ export const StringEditor = ({
 	return (
 		<Components.StringWrapper>
 			<TextInput
+				readOnly={isReadonly(path)}
 				testid={`${testid}-string-input`}
 				value={data}
 				set={isReadonly(path) ? undefined : set}
