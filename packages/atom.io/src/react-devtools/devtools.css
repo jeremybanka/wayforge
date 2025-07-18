@@ -104,7 +104,7 @@ main[data-css="atom_io_devtools"] {
 			}
 			.node > .node {
 				margin: 0px 2px 2px 18px;
-				border-left: var(--fg-border);
+				border-left: var(--fg-border-soft);
 				&:last-of-type {
 					margin-bottom: 6px;
 				}
@@ -139,6 +139,10 @@ main[data-css="atom_io_devtools"] {
 						&:disabled {
 							cursor: default;
 							color: var(--fg-faint);
+						}
+						&:focus-within {
+							outline: 2px solid var(--fg-max);
+							background: var(--bg-max);
 						}
 					}
 					> main {
@@ -178,13 +182,16 @@ main[data-css="atom_io_devtools"] {
 						border-left: var(--fg-border-soft);
 						white-space: pre;
 						background: var(--bg-tint2);
+						&:focus-within {
+							background-color: var(--bg-max);
+							outline: 2px solid var(--fg-max);
+						}
 						&.nu * {
 							display: flex;
 							height: 100%;
 						}
 						> span {
 							padding: 0px 5px;
-							border-left: var(--fg-color);
 							z-index: 0;
 						}
 						input {
@@ -310,7 +317,8 @@ main[data-css="atom_io_devtools"] {
 			}
 		}
 		input,
-		button {
+		button,
+		select {
 			&:focus-within {
 				outline: 2px solid var(--fg-max);
 				background: var(--bg-max);
@@ -369,14 +377,12 @@ main[data-css="atom_io_devtools"] {
 		}
 		.json_editor_object,
 		.json_editor_array {
-			border-left: 2px solid #333;
-			padding-left: 20px;
-			@media (prefers-color-scheme: light) {
-				border-color: #ccc;
-			}
+			border-left: var(--fg-border-soft);
+			padding-left: 12px;
+			margin-left: 8px;
 			.json_editor_property,
 			.json_editor_element {
-				border-bottom: var(--fg-border);
+				border-bottom: var(--fg-border-soft);
 				margin-bottom: 2px;
 				min-height: 23px;
 				> span {
