@@ -62,6 +62,10 @@ const loadableState = atom<Loadable<string>>({
 			}, 1000),
 		),
 })
+const futureState = atom<Loadable<unknown>>({
+	key: "future",
+	default: new Promise(() => {}),
+})
 
 const countAtoms = atomFamily<number, string>({
 	key: "counts",

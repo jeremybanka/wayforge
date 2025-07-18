@@ -16,23 +16,25 @@ export const ArrayEditor = ({
 }: JsonEditorProps_INTERNAL<Json.Tree.Array>): ReactElement => {
 	const setElement = makeElementSetters(data, set)
 	return (
-		<>
-			{data.map((element, index) => {
-				const newPath = [...path, index]
-				return (
-					<JsonEditor_INTERNAL
-						key={newPath.join(``)}
-						path={newPath}
-						isReadonly={isReadonly}
-						isHidden={isHidden}
-						data={element}
-						set={setElement[index]}
-						Components={Components}
-						className="json_editor_element"
-						testid={`${testid}-element-${index}`}
-					/>
-				)
-			})}
-		</>
+		<Components.ArrayWrapper>
+			<div className="json_editor_elements">
+				{data.map((element, index) => {
+					const newPath = [...path, index]
+					return (
+						<JsonEditor_INTERNAL
+							key={newPath.join(``)}
+							path={newPath}
+							isReadonly={isReadonly}
+							isHidden={isHidden}
+							data={element}
+							set={setElement[index]}
+							Components={Components}
+							className="json_editor_element"
+							testid={`${testid}-element-${index}`}
+						/>
+					)
+				})}
+			</div>
+		</Components.ArrayWrapper>
 	)
 }
