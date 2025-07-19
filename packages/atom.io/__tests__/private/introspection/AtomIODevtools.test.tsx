@@ -175,6 +175,34 @@ describe(`editing an object atom`, () => {
 
 		expect($.getState(objectAtom)).toEqual({ b: 2, e: 0 })
 	})
+	test(`nested object`, async () => {
+		const objectAtom = $.atom<Record<string, Record<string, number>>>({
+			key: `myObject`,
+			default: { a: { b: 1 } },
+		})
+
+		const { getByTestId /* debug */ } = scenario()
+
+		await waitFor(() => getByTestId(`open-close-state-myObject`))
+
+		expect($.getState(objectAtom)).toEqual({ a: { b: 1 } })
+
+		act(() => {
+			getByTestId(`open-close-state-myObject`).click()
+		})
+
+		await waitFor(() => getByTestId(`myObject-state-editor-property-a`))
+
+		act(() => {
+			getByTestId(`myObject-state-editor-property-a-open-close`).click()
+		})
+		await waitFor(() =>
+			getByTestId(`myObject-state-editor-property-a-property-b`),
+		)
+
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
+	})
 })
 
 describe(`editing an array atom`, () => {

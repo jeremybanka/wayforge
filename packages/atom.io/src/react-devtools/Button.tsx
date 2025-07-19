@@ -17,7 +17,7 @@ export const OpenClose: FC<{
 			}}
 			disabled={disabled}
 		>
-			▶
+			<span className="json_editor_icon json_editor_carat">▶</span>
 		</button>
 	)
 }

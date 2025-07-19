@@ -12,6 +12,7 @@ main[data-css="atom_io_devtools"] {
 	--bg-tint2: #333;
 	--fg-border: 1px solid var(--fg-color);
 	--fg-border-soft: 1px solid var(--fg-soft);
+	--fg-border-hint: 1px solid var(--fg-hint);
 	@media (prefers-color-scheme: light) {
 		--fg-color: #444;
 		--fg-light: #777;
@@ -120,7 +121,7 @@ main[data-css="atom_io_devtools"] {
 				&.transaction_update {
 					padding: 0;
 				}
-				header {
+				> header {
 					display: flex;
 					flex-flow: row;
 					position: sticky;
@@ -129,23 +130,6 @@ main[data-css="atom_io_devtools"] {
 					height: 22px;
 					background: var(--bg-tint2);
 					border-bottom: var(--fg-border-soft);
-					button.carat {
-						cursor: pointer;
-						background: none;
-						border: none;
-						width: 20px;
-						color: var(--fg-light);
-						&.open {
-							transform: rotate(90deg);
-						}
-						&:disabled {
-							cursor: default;
-						}
-						&:focus-within {
-							outline: 2px solid var(--fg-max);
-							background: var(--bg-max);
-						}
-					}
 					> main {
 						display: flex;
 						flex-flow: row;
@@ -172,6 +156,9 @@ main[data-css="atom_io_devtools"] {
 					}
 					> .json_viewer {
 						color: var(--fg-light);
+						font-size: 14px;
+						flex-shrink: 1;
+						overflow-x: scroll;
 					}
 					> .json_editor,
 					> .json_viewer {
@@ -186,6 +173,9 @@ main[data-css="atom_io_devtools"] {
 						&:focus-within {
 							background-color: var(--bg-max);
 							outline: 2px solid var(--fg-max);
+							* {
+								color: var(--fg-max);
+							}
 						}
 						&.nu * {
 							display: flex;
@@ -310,6 +300,41 @@ main[data-css="atom_io_devtools"] {
 	}
 
 	.json_editor {
+		display: flex;
+		flex-flow: column;
+		align-items: flex-start;
+		> header {
+			display: flex;
+			flex-flow: row;
+			width: 100%;
+			position: relative;
+			align-items: baseline;
+			overflow: hidden;
+			white-space: nowrap;
+			> .json_viewer {
+				flex-shrink: 1;
+				overflow-x: scroll;
+				height: 21px;
+				font-size: 14px;
+				display: flex;
+				align-items: center;
+				margin-left: 6px;
+				color: var(--fg-light);
+			}
+			> button {
+				padding: 0;
+				&.carat {
+					line-height: 0.5em;
+					font-size: 14px;
+					align-self: flex-start;
+				}
+			}
+		}
+		> .json_editor_array,
+		> .json_editor_object {
+			width: 100%;
+			flex-grow: 1;
+		}
 		input {
 			font-family: theia, monospace;
 			background: none;
@@ -323,6 +348,7 @@ main[data-css="atom_io_devtools"] {
 			&:focus-within {
 				outline: 2px solid var(--fg-max);
 				background: var(--bg-max);
+				color: var(--fg-max);
 			}
 		}
 		button:disabled {
@@ -345,6 +371,7 @@ main[data-css="atom_io_devtools"] {
 			font-family: theia, monospace;
 			font-size: 14px;
 			height: 21px;
+			min-width: 21px;
 			margin: none;
 			padding: 4px;
 			padding-bottom: 6px;
@@ -379,30 +406,33 @@ main[data-css="atom_io_devtools"] {
 				content: ":";
 			}
 			input {
-				color: #999;
-				@media (prefers-color-scheme: light) {
-					color: #777;
-				}
+				color: var(--fg-color);
 			}
 		}
 		.json_editor_object,
 		.json_editor_array {
 			border-left: var(--fg-border-soft);
-			padding-left: 12px;
-			margin-left: 8px;
+			padding-left: 10px;
+			margin-left: 10px;
+			width: calc(100% - 21px);
 			.json_editor_properties,
 			.json_editor_elements {
 				.json_editor_property,
 				.json_editor_element {
+					display: flex;
 					border-bottom: var(--fg-border-soft);
 					margin-bottom: 2px;
 					min-height: 23px;
-					> span {
-						input {
-							min-width: 10px;
-						}
-						> * {
-							border: var(--fg-border-soft);
+					> header {
+						width: 100%;
+
+						> span {
+							input {
+								min-width: 10px;
+							}
+							> * {
+								border: var(--fg-border-hint);
+							}
 						}
 					}
 				}
@@ -417,6 +447,32 @@ main[data-css="atom_io_devtools"] {
 						}
 					}
 				}
+			}
+		}
+	}
+
+	.json_editor_icon {
+		color: var(--fg-soft);
+	}
+
+	button.carat {
+		border: none;
+		cursor: pointer;
+		background: none;
+		&:focus-within {
+			outline: none;
+			background: none;
+		}
+		> .json_editor_icon {
+			line-height: 4px;
+		}
+		&.open {
+			transform: rotate(90deg);
+		}
+		&:disabled {
+			> .json_editor_icon {
+				cursor: default;
+				color: var(--fg-hint);
 			}
 		}
 	}
