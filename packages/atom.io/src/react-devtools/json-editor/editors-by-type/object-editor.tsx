@@ -1,8 +1,14 @@
-import type { Json } from "atom.io/json"
+import type { RegularAtomToken } from "atom.io"
+import { findInStore } from "atom.io/internal"
+import type { Json, JsonTypes } from "atom.io/json"
+import { useI } from "atom.io/react/use-i"
+import { useO } from "atom.io/react/use-o"
+import { DevtoolsContext } from "atom.io/react-devtools/store"
 import type { FC, ReactElement } from "react"
-import { useRef } from "react"
+import { useContext, useRef } from "react"
 
 import { ElasticInput } from "../../elastic-input"
+import type { SetterOrUpdater } from ".."
 import type { JsonEditorComponents } from "../default-components"
 import type { JsonEditorProps_INTERNAL } from "../json-editor-internal"
 import { JsonEditor_INTERNAL } from "../json-editor-internal"
@@ -43,6 +49,56 @@ export const PropertyAdder: FC<PropertyAdderProps> = ({
 	</Components.MissingPropertyWrapper>
 )
 
+type ObjectPropertyProps = {
+	path: ReadonlyArray<number | string>
+	isReadonly: (path: ReadonlyArray<number | string>) => boolean
+	isHidden: (path: ReadonlyArray<number | string>) => boolean
+	data: unknown
+	set: SetterOrUpdater<Json.Tree.Object>
+	rename: (newKey: string) => void
+	remove: (() => void) | undefined
+	recast: (newType: keyof JsonTypes) => void
+	Components: JsonEditorComponents
+	testid?: string | undefined
+	viewIsOpenAtom: RegularAtomToken<boolean, string>
+}
+const ObjectProperty = ({
+	path,
+	isReadonly,
+	isHidden,
+	data,
+	set,
+	rename,
+	remove,
+	recast,
+	Components,
+	testid,
+	viewIsOpenAtom,
+}: ObjectPropertyProps): ReactElement => {
+	const key = path[path.length - 1]
+	const viewIsOpen = useO(viewIsOpenAtom)
+	const setViewIsOpen = useI(viewIsOpenAtom)
+
+	return (
+		<JsonEditor_INTERNAL
+			path={path}
+			name={`${key}`}
+			isReadonly={isReadonly}
+			isHidden={isHidden}
+			data={data}
+			set={set}
+			rename={rename}
+			remove={remove}
+			recast={recast}
+			className="json_editor_property"
+			Components={Components}
+			isOpen={viewIsOpen}
+			setIsOpen={setViewIsOpen}
+			testid={`${testid}-property-${key}`}
+		/>
+	)
+}
+
 export const ObjectEditor = <T extends Json.Tree.Object>({
 	path = [],
 	isReadonly = () => false,
@@ -52,6 +108,8 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 	Components,
 	testid,
 }: JsonEditorProps_INTERNAL<T>): ReactElement => {
+	const { viewIsOpenAtoms, store } = useContext(DevtoolsContext)
+
 	const disabled = isReadonly(path)
 
 	const stableKeyMap = useRef<Record<keyof T, keyof T>>(
@@ -76,24 +134,44 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 			<div className={`json_editor_properties${disabled ? ` readonly` : ``}`}>
 				{Object.keys(data).map((key) => {
 					const originalKey = stableKeyMap.current[key]
-					const newPath = [...path, key]
-					const originalPath = [...path, originalKey]
+					const propertyPath = [...path, key]
+					const originalPropertyPath = [...path, originalKey]
+					const stablePathKey = originalPropertyPath.join(`.`)
+					const viewIsOpenAtom = findInStore(
+						store,
+						viewIsOpenAtoms,
+						`${testid}__${stablePathKey}`,
+					)
 
 					return (
-						<JsonEditor_INTERNAL
-							key={originalPath.join(`.`)}
-							path={newPath}
-							name={key}
+						// <JsonEditor_INTERNAL
+						// 	key={originalPath.join(`.`)}
+						// 	path={newPath}
+						// 	name={key}
+						// 	isReadonly={isReadonly}
+						// 	isHidden={isHidden}
+						// 	data={data[key as keyof T]}
+						// 	set={setProperty[key as keyof T]}
+						// 	rename={renameProperty[key as keyof T]}
+						// 	remove={removeProperty[key as keyof T]}
+						// 	recast={recastProperty[key as keyof T]}
+						// 	className="json_editor_property"
+						// 	Components={Components}
+						// 	testid={`${testid}-property-${key}`}
+						// />
+						<ObjectProperty
+							key={stablePathKey}
+							path={propertyPath}
 							isReadonly={isReadonly}
 							isHidden={isHidden}
-							data={data[key as keyof T]}
-							set={setProperty[key as keyof T]}
-							rename={renameProperty[key as keyof T]}
-							remove={removeProperty[key as keyof T]}
-							recast={recastProperty[key as keyof T]}
-							className="json_editor_property"
+							data={data[key]}
+							set={setProperty[key]}
+							rename={renameProperty[key]}
+							remove={removeProperty[key]}
+							recast={recastProperty[key]}
 							Components={Components}
-							testid={`${testid}-property-${key}`}
+							testid={testid}
+							viewIsOpenAtom={viewIsOpenAtom}
 						/>
 					)
 				})}
@@ -107,7 +185,7 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 							makePropertyAdder(`new_property`, `string`)()
 						}}
 					>
-						+
+						<Components.AddIcon />
 					</Components.Button>
 					<Components.Button
 						testid={`${testid}-sort-properties`}
