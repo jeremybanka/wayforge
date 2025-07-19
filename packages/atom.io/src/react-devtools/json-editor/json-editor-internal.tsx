@@ -81,7 +81,7 @@ export const JsonEditor_INTERNAL = <T,>({
 					{dataIsTree && isOpen !== undefined && setIsOpen ? (
 						<button.OpenClose
 							isOpen={isOpen}
-							testid={`${testid}-open-close-${path.join(`,`)}`}
+							testid={`${testid}-open-close`}
 							setIsOpen={setIsOpen}
 						/>
 					) : null}
@@ -89,13 +89,9 @@ export const JsonEditor_INTERNAL = <T,>({
 						<Components.KeyWrapper>
 							<ElasticInput
 								value={name}
-								onChange={
-									disabled
-										? undefined
-										: (e) => {
-												rename(e.target.value)
-											}
-								}
+								onChange={(e) => {
+									rename(e.target.value)
+								}}
 								disabled={disabled}
 								data-testid={`${testid}-rename`}
 							/>
@@ -105,13 +101,9 @@ export const JsonEditor_INTERNAL = <T,>({
 						<>
 							{recast ? (
 								<select
-									onChange={
-										disabled
-											? undefined
-											: (e) => {
-													recast(e.target.value as keyof JsonTypes)
-												}
-									}
+									onChange={(e) => {
+										recast(e.target.value as keyof JsonTypes)
+									}}
 									value={refined.type}
 									disabled={disabled}
 									data-testid={`${testid}-recast`}
