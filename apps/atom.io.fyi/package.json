@@ -24,7 +24,7 @@
 		"@vercel/analytics": "1.5.0",
 		"@vercel/speed-insights": "1.2.0",
 		"atom.io": "workspace:*",
-		"next": "15.4.1",
+		"next": "15.4.2",
 		"react": "19.1.0",
 		"react-dom": "19.1.0",
 		"react-syntax-highlighter": "15.6.1"
@@ -32,7 +32,7 @@
 	"devDependencies": {
 		"@mdx-js/loader": "3.1.0",
 		"@mdx-js/react": "3.1.0",
-		"@next/mdx": "15.4.1",
+		"@next/mdx": "15.4.2",
 		"@types/bun": "npm:bun-types@1.2.18",
 		"@types/mdx": "2.0.13",
 		"@types/node": "24.0.14",
@@ -43,7 +43,7 @@
 		"chokidar": "4.0.3",
 		"concurrently": "9.2.0",
 		"eslint": "9.31.0",
-		"eslint-config-next": "15.4.1",
+		"eslint-config-next": "15.4.2",
 		"npmlog": "7.0.1",
 		"rehype-slug": "6.0.0",
 		"tsdoc.json": "workspace:*",
