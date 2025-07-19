@@ -75,9 +75,16 @@ findState(countAtoms, "A")
 findState(countAtoms, "B")
 findState(countAtoms, "C")
 
-const nestAtom = atom<[{ a: number }]>({
-	key: "nest",
+const nestArrayAtom = atom<[{ a: number }]>({
+	key: "nestArray",
 	default: [{ a: 1 }],
+})
+const nestObjectAtom = atom<{ a: number[]; b: { num: number } }>({
+	key: "nestObject",
+	default: {
+		a: [1],
+		b: { num: 2 },
+	},
 })
 
 const selectionsState = atom<number[]>({
