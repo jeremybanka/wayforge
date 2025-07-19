@@ -35,7 +35,7 @@
 		"@next/mdx": "15.4.2",
 		"@types/bun": "npm:bun-types@1.2.18",
 		"@types/mdx": "2.0.13",
-		"@types/node": "24.0.14",
+		"@types/node": "24.0.15",
 		"@types/npmlog": "7.0.0",
 		"@types/react": "19.1.8",
 		"@types/react-dom": "19.1.6",
