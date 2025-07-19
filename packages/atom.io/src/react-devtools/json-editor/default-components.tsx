@@ -18,6 +18,7 @@ export type JsonEditorComponents = {
 		disabled?: boolean
 	}>
 	DeleteIcon: FC
+	AddIcon: FC
 
 	EditorWrapper: WC<{
 		style?: CSSProperties | undefined
@@ -86,8 +87,10 @@ export const DEFAULT_JSON_EDITOR_COMPONENTS: JsonEditorComponents = {
 		<span className="json_editor_null" data-testid={testid} />
 	),
 	DeleteIcon: () => (
-		<span className="json_editor_icon json_editor_delete">x</span>
+		<span className="json_editor_icon json_editor_delete">×</span>
 	),
+	// big plus
+	AddIcon: () => <span className="json_editor_icon json_editor_add">＋</span>,
 	MissingPropertyWrapper: ({ children, testid }) => (
 		<span className="json_editor_missing_property" data-testid={testid}>
 			{children}
