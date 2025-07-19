@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.33.12
+
+### Patch Changes
+
+- 8288ed6: 💄 Allow for the collapse and and expansion of nested structures like arrays and objects in `atom.io/react-devtools`.
+
 ## 0.33.11
 
 ### Patch Changes
