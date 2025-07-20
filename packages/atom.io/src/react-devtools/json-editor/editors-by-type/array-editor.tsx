@@ -80,7 +80,7 @@ export const ArrayEditor = ({
 
 	return (
 		<Components.ArrayWrapper>
-			<div className={`json_editor_elements${disabled ? ` readonly` : ``}`}>
+			<main className={`json_editor_elements${disabled ? ` readonly` : ``}`}>
 				{data.map((element, index) => {
 					const elementPath = [...path, index]
 					const pathKey = elementPath.join(`,`)
@@ -105,20 +105,22 @@ export const ArrayEditor = ({
 						/>
 					)
 				})}
-			</div>
+			</main>
 			{!disabled ? (
-				<Components.Button
-					testid={`${testid}-add-element`}
-					disabled={disabled}
-					onClick={() => {
-						set((current) => {
-							const newData = [...current, JSON_DEFAULTS.string]
-							return newData
-						})
-					}}
-				>
-					<Components.AddIcon />
-				</Components.Button>
+				<footer>
+					<Components.Button
+						testid={`${testid}-add-element`}
+						disabled={disabled}
+						onClick={() => {
+							set((current) => {
+								const newData = [...current, JSON_DEFAULTS.string]
+								return newData
+							})
+						}}
+					>
+						<Components.AddIcon />
+					</Components.Button>
+				</footer>
 			) : null}
 		</Components.ArrayWrapper>
 	)
