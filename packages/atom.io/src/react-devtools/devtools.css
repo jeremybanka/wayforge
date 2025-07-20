@@ -100,7 +100,8 @@ main[data-css="atom_io_devtools"] {
 		flex-flow: column;
 		gap: 0;
 		article.index {
-			padding-bottom: 24px;
+			margin-bottom: 24px;
+			border-bottom: var(--fg-border);
 			.node .node {
 				border-right: var(--fg-border);
 				padding-right: 0;
@@ -110,18 +111,13 @@ main[data-css="atom_io_devtools"] {
 				}
 			}
 			.node > .node {
-				margin: 0px 2px 2px 18px;
+				margin: 0px 0px 0px 9px;
 				border-left: var(--fg-border-soft);
-				&:last-of-type {
-					margin-bottom: 6px;
-				}
 			}
 			.node {
 				border-top: var(--fg-border);
 				overflow: visible;
-				&:last-of-type {
-					border-bottom: var(--fg-border);
-				}
+
 				&.transaction_update {
 					padding: 0;
 				}
@@ -134,7 +130,7 @@ main[data-css="atom_io_devtools"] {
 					top: 0;
 					height: 22px;
 					background: var(--bg-tint2);
-					border-bottom: var(--fg-border-soft);
+					border-bottom: none;
 					> main {
 						display: flex;
 						flex-flow: row;
