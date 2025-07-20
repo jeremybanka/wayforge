@@ -191,6 +191,7 @@ main[data-css="atom_io_devtools"] {
 						}
 						input {
 							outline: none;
+							min-width: 10px;
 						}
 					}
 				}
@@ -320,6 +321,8 @@ main[data-css="atom_io_devtools"] {
 				flex-flow: row;
 				align-items: baseline;
 				height: 100%;
+				flex-shrink: 1;
+				overflow-x: hidden;
 				> .json_viewer {
 					flex-shrink: 1;
 					overflow-x: scroll;
@@ -444,7 +447,6 @@ main[data-css="atom_io_devtools"] {
 					min-height: 23px;
 					> header {
 						> main {
-							width: 100%;
 							> span {
 								input {
 									min-width: 10px;
