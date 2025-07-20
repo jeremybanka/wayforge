@@ -106,18 +106,20 @@ export const ArrayEditor = ({
 					)
 				})}
 			</div>
-			<Components.Button
-				testid={`${testid}-add-element`}
-				disabled={disabled}
-				onClick={() => {
-					set((current) => {
-						const newData = [...current, JSON_DEFAULTS.string]
-						return newData
-					})
-				}}
-			>
-				<Components.AddIcon />
-			</Components.Button>
+			{!disabled ? (
+				<Components.Button
+					testid={`${testid}-add-element`}
+					disabled={disabled}
+					onClick={() => {
+						set((current) => {
+							const newData = [...current, JSON_DEFAULTS.string]
+							return newData
+						})
+					}}
+				>
+					<Components.AddIcon />
+				</Components.Button>
+			) : null}
 		</Components.ArrayWrapper>
 	)
 }
