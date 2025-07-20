@@ -144,21 +144,6 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 					)
 
 					return (
-						// <JsonEditor_INTERNAL
-						// 	key={originalPath.join(`.`)}
-						// 	path={newPath}
-						// 	name={key}
-						// 	isReadonly={isReadonly}
-						// 	isHidden={isHidden}
-						// 	data={data[key as keyof T]}
-						// 	set={setProperty[key as keyof T]}
-						// 	rename={renameProperty[key as keyof T]}
-						// 	remove={removeProperty[key as keyof T]}
-						// 	recast={recastProperty[key as keyof T]}
-						// 	className="json_editor_property"
-						// 	Components={Components}
-						// 	testid={`${testid}-property-${key}`}
-						// />
 						<ObjectProperty
 							key={stablePathKey}
 							path={propertyPath}
@@ -177,7 +162,7 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 				})}
 			</div>
 			{disabled ? null : (
-				<>
+				<footer>
 					<Components.Button
 						disabled={disabled}
 						testid={`${testid}-add-property`}
@@ -196,7 +181,7 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 					>
 						Sort
 					</Components.Button>
-				</>
+				</footer>
 			)}
 		</Components.ObjectWrapper>
 	)

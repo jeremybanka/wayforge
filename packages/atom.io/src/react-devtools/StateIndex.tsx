@@ -35,12 +35,6 @@ export const StateIndexLeafNode: FC<{
 	return (
 		<>
 			<header>
-				<button.OpenClose
-					isOpen={isOpen && !isPrimitive}
-					testid={`open-close-state-${node.key}`}
-					setIsOpen={setIsOpen}
-					disabled={isPrimitive}
-				/>
 				<main
 					onClick={() => {
 						console.log(node, getState(node))
@@ -49,6 +43,12 @@ export const StateIndexLeafNode: FC<{
 						console.log(node, getState(node))
 					}}
 				>
+					<button.OpenClose
+						isOpen={isOpen && !isPrimitive}
+						testid={`open-close-state-${node.key}`}
+						setIsOpen={setIsOpen}
+						disabled={isPrimitive}
+					/>
 					<h2>{node.family?.subKey ?? node.key}</h2>
 					<span className="type detail">({stateType})</span>
 				</main>
@@ -82,12 +82,12 @@ export const StateIndexTreeNode: FC<{
 	return (
 		<>
 			<header>
-				<button.OpenClose
-					isOpen={isOpen}
-					testid={`open-close-state-family-${node.key}`}
-					setIsOpen={setIsOpen}
-				/>
 				<main>
+					<button.OpenClose
+						isOpen={isOpen}
+						testid={`open-close-state-family-${node.key}`}
+						setIsOpen={setIsOpen}
+					/>
 					<h2>{node.key}</h2>
 					<span className="type detail"> (family)</span>
 				</main>
