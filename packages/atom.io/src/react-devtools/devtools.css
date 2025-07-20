@@ -26,9 +26,9 @@ main[data-css="atom_io_devtools"] {
 		--bg-tint1: #e3e3e3;
 		--bg-tint2: #f3f3f3;
 	}
-	/* * {
+	* {
 		box-sizing: border-box;
-	} */
+	}
 	& {
 		pointer-events: all;
 		box-sizing: border-box;
@@ -425,7 +425,7 @@ main[data-css="atom_io_devtools"] {
 		.json_editor_array {
 			border-left: var(--fg-border-soft);
 			margin-left: 9px;
-			width: calc(100% - 10px);
+			width: calc(100% - 9px);
 			.json_editor_properties,
 			.json_editor_elements {
 				border-top: var(--fg-border-soft);
