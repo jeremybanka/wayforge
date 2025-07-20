@@ -1,9 +1,9 @@
 main[data-css="atom_io_devtools"] {
 	--fg-color: #ccc;
 	--fg-light: #aaa;
-	--fg-soft: #777;
-	--fg-faint: #555;
-	--fg-hint: #333;
+	--fg-soft: #888;
+	--fg-faint: #777;
+	--fg-hint: #666;
 	--fg-max: #fff;
 	--bg-color: #111;
 	--bg-accent: #00f;
@@ -26,6 +26,9 @@ main[data-css="atom_io_devtools"] {
 		--bg-tint1: #e3e3e3;
 		--bg-tint2: #f3f3f3;
 	}
+	/* * {
+		box-sizing: border-box;
+	} */
 	& {
 		pointer-events: all;
 		box-sizing: border-box;
@@ -97,6 +100,7 @@ main[data-css="atom_io_devtools"] {
 		flex-flow: column;
 		gap: 0;
 		article.index {
+			padding-bottom: 24px;
 			.node .node {
 				border-right: var(--fg-border);
 				padding-right: 0;
@@ -154,20 +158,23 @@ main[data-css="atom_io_devtools"] {
 							}
 						}
 					}
+					> .json_editor {
+						border-left: var(--fg-border-soft);
+						padding: 3px 0px;
+					}
 					> .json_viewer {
 						color: var(--fg-light);
 						font-size: 14px;
 						flex-shrink: 1;
-						overflow-x: scroll;
 					}
 					> .json_editor,
 					> .json_viewer {
+						margin-left: 3px;
 						display: flex;
 						flex-shrink: 1;
 						z-index: -1;
 						overflow-x: scroll;
 						align-items: center;
-						border-left: var(--fg-border-soft);
 						white-space: pre;
 						background: var(--bg-tint2);
 						&:focus-within {
@@ -306,27 +313,32 @@ main[data-css="atom_io_devtools"] {
 		> header {
 			display: flex;
 			flex-flow: row;
-			width: 100%;
-			position: relative;
 			align-items: baseline;
 			overflow: hidden;
 			white-space: nowrap;
-			> .json_viewer {
-				flex-shrink: 1;
-				overflow-x: scroll;
-				height: 21px;
-				font-size: 14px;
+			justify-content: space-between;
+			> main {
 				display: flex;
-				align-items: center;
-				margin-left: 6px;
-				color: var(--fg-light);
-			}
-			> button {
-				padding: 0;
-				&.carat {
-					line-height: 0.5em;
+				flex-flow: row;
+				align-items: baseline;
+				height: 100%;
+				> .json_viewer {
+					flex-shrink: 1;
+					overflow-x: scroll;
+					height: 21px;
 					font-size: 14px;
-					align-self: flex-start;
+					display: flex;
+					align-items: center;
+					margin-left: 0px;
+					color: var(--fg-light);
+				}
+				> button {
+					padding: 0;
+					&.carat {
+						line-height: 0.5em;
+						font-size: 14px;
+						align-self: flex-start;
+					}
 				}
 			}
 		}
@@ -412,11 +424,11 @@ main[data-css="atom_io_devtools"] {
 		.json_editor_object,
 		.json_editor_array {
 			border-left: var(--fg-border-soft);
-			padding-left: 10px;
-			margin-left: 10px;
-			width: calc(100% - 21px);
+			margin-left: 9px;
+			width: calc(100% - 10px);
 			.json_editor_properties,
 			.json_editor_elements {
+				border-top: var(--fg-border-soft);
 				.json_editor_property,
 				.json_editor_element {
 					display: flex;
@@ -424,14 +436,15 @@ main[data-css="atom_io_devtools"] {
 					margin-bottom: 2px;
 					min-height: 23px;
 					> header {
-						width: 100%;
-
-						> span {
-							input {
-								min-width: 10px;
-							}
-							> * {
-								border: var(--fg-border-hint);
+						> main {
+							width: 100%;
+							> span {
+								input {
+									min-width: 10px;
+								}
+								> * {
+									border: var(--fg-border-hint);
+								}
 							}
 						}
 					}
@@ -442,7 +455,7 @@ main[data-css="atom_io_devtools"] {
 						&:last-of-type {
 							border-bottom: none;
 						}
-						> span > * {
+						span > * {
 							border: 1px solid transparent;
 						}
 					}

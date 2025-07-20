@@ -58,6 +58,7 @@ export const JsonEditor_INTERNAL = <T,>({
 	const disabled = isReadonly(path)
 
 	const dataIsTree = refined.type === `array` || refined.type === `object`
+	const dataIsExpandable = dataIsTree && isOpen !== undefined && setIsOpen
 
 	return isHidden(path) ? null : (
 		<Components.ErrorBoundary>
@@ -67,6 +68,85 @@ export const JsonEditor_INTERNAL = <T,>({
 				testid={testid}
 			>
 				<header>
+					<main>
+						{remove || dataIsExpandable ? (
+							<button.OpenClose
+								isOpen={isOpen ?? false}
+								testid={`${testid}-open-close`}
+								setIsOpen={setIsOpen ?? (() => {})}
+								disabled={!dataIsExpandable}
+							/>
+						) : null}
+						{rename && (
+							<Components.KeyWrapper>
+								<ElasticInput
+									value={name}
+									onChange={(e) => {
+										rename(e.target.value)
+									}}
+									disabled={disabled}
+									data-testid={`${testid}-rename`}
+								/>
+							</Components.KeyWrapper>
+						)}
+						{dataIsTree ? (
+							<>
+								{isOpen !== undefined && setIsOpen ? (
+									<span className="json_viewer">{JSON.stringify(data)}</span>
+								) : null}
+								{recast ? (
+									<select
+										onChange={(e) => {
+											recast(e.target.value as keyof JsonTypes)
+										}}
+										value={refined.type}
+										disabled={disabled}
+										data-testid={`${testid}-recast`}
+									>
+										{Object.keys(SubEditors).map((type) => (
+											<option key={type} value={type}>
+												{type}
+											</option>
+										))}
+									</select>
+								) : null}
+							</>
+						) : (
+							<>
+								<SubEditor
+									data={refined.data as never}
+									set={set}
+									remove={remove}
+									rename={rename}
+									path={path}
+									isReadonly={isReadonly}
+									isHidden={isHidden}
+									Components={Components}
+									testid={testid}
+								/>
+								{recast && dataIsJson ? (
+									<select
+										onChange={
+											disabled
+												? undefined
+												: (e) => {
+														recast(e.target.value as keyof JsonTypes)
+													}
+										}
+										value={refined.type}
+										disabled={disabled}
+										data-testid={`${testid}-recast`}
+									>
+										{Object.keys(SubEditors).map((type) => (
+											<option key={type} value={type}>
+												{type}
+											</option>
+										))}
+									</select>
+								) : null}
+							</>
+						)}
+					</main>
 					{remove ? (
 						<Components.Button
 							disabled={disabled}
@@ -78,82 +158,6 @@ export const JsonEditor_INTERNAL = <T,>({
 							<Components.DeleteIcon />
 						</Components.Button>
 					) : null}
-					{dataIsTree && isOpen !== undefined && setIsOpen ? (
-						<button.OpenClose
-							isOpen={isOpen}
-							testid={`${testid}-open-close`}
-							setIsOpen={setIsOpen}
-						/>
-					) : null}
-					{rename && (
-						<Components.KeyWrapper>
-							<ElasticInput
-								value={name}
-								onChange={(e) => {
-									rename(e.target.value)
-								}}
-								disabled={disabled}
-								data-testid={`${testid}-rename`}
-							/>
-						</Components.KeyWrapper>
-					)}
-					{dataIsTree ? (
-						<>
-							{recast ? (
-								<select
-									onChange={(e) => {
-										recast(e.target.value as keyof JsonTypes)
-									}}
-									value={refined.type}
-									disabled={disabled}
-									data-testid={`${testid}-recast`}
-								>
-									{Object.keys(SubEditors).map((type) => (
-										<option key={type} value={type}>
-											{type}
-										</option>
-									))}
-								</select>
-							) : null}
-							{isOpen !== undefined && setIsOpen ? (
-								<span className="json_viewer">{JSON.stringify(data)}</span>
-							) : null}
-						</>
-					) : (
-						<>
-							<SubEditor
-								data={refined.data as never}
-								set={set}
-								remove={remove}
-								rename={rename}
-								path={path}
-								isReadonly={isReadonly}
-								isHidden={isHidden}
-								Components={Components}
-								testid={testid}
-							/>
-							{recast && dataIsJson ? (
-								<select
-									onChange={
-										disabled
-											? undefined
-											: (e) => {
-													recast(e.target.value as keyof JsonTypes)
-												}
-									}
-									value={refined.type}
-									disabled={disabled}
-									data-testid={`${testid}-recast`}
-								>
-									{Object.keys(SubEditors).map((type) => (
-										<option key={type} value={type}>
-											{type}
-										</option>
-									))}
-								</select>
-							) : null}
-						</>
-					)}
 				</header>
 
 				{dataIsTree && isOpen !== false ? (
