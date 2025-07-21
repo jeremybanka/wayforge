@@ -335,7 +335,7 @@ main[data-css="atom_io_devtools"] {
 					display: flex;
 					align-items: center;
 					margin-left: 0px;
-					color: var(--fg-light);
+					color: var(--fg-soft);
 				}
 				> button {
 					padding: 0;
@@ -424,6 +424,7 @@ main[data-css="atom_io_devtools"] {
 			padding-right: 0px;
 			&::after {
 				content: ":";
+				color: var(--fg-soft);
 			}
 			input {
 				color: var(--fg-color);
