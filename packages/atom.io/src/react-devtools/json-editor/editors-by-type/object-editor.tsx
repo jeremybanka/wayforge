@@ -60,7 +60,7 @@ type ObjectPropertyProps = {
 	recast: (newType: keyof JsonTypes) => void
 	Components: JsonEditorComponents
 	testid?: string | undefined
-	viewIsOpenAtom: RegularAtomToken<boolean, string>
+	viewIsOpenAtom: RegularAtomToken<boolean, readonly (number | string)[]>
 }
 const ObjectProperty = ({
 	path,
@@ -137,11 +137,10 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 					const propertyPath = [...path, key]
 					const originalPropertyPath = [...path, originalKey]
 					const stablePathKey = originalPropertyPath.join(`.`)
-					const viewIsOpenAtom = findInStore(
-						store,
-						viewIsOpenAtoms,
-						`${testid}__${stablePathKey}`,
-					)
+					const viewIsOpenAtom = findInStore(store, viewIsOpenAtoms, [
+						...path,
+						key,
+					])
 
 					return (
 						<ObjectProperty

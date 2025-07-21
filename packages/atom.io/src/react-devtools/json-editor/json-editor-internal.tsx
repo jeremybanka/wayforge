@@ -2,11 +2,16 @@ import { runTransaction } from "atom.io"
 import { jsonRefinery } from "atom.io/introspection"
 import type { JsonTypes } from "atom.io/json"
 import { isJson } from "atom.io/json"
-import type { CSSProperties, FC, ReactElement } from "react"
+import {
+	type CSSProperties,
+	type FC,
+	type ReactElement,
+	useContext,
+} from "react"
 
 import { button } from "../Button"
 import { ElasticInput } from "../elastic-input"
-import { openCloseAllTX } from "../open-close-multiview-tx"
+import { DevtoolsContext } from "../store"
 import type { SetterOrUpdater } from "."
 import { SubEditors } from "."
 import type { JsonEditorComponents } from "./default-components"
@@ -48,6 +53,8 @@ export const JsonEditor_INTERNAL = <T,>({
 	setIsOpen,
 	testid,
 }: JsonEditorProps_INTERNAL<T>): ReactElement | null => {
+	const { openCloseAllTX } = useContext(DevtoolsContext)
+
 	const dataIsJson = isJson(data)
 	const refined = jsonRefinery.refine<unknown>(data) ?? {
 		type: `non-json`,
@@ -76,8 +83,7 @@ export const JsonEditor_INTERNAL = <T,>({
 								isOpen={isOpen ?? false}
 								testid={`${testid}-open-close`}
 								onShiftClick={() => {
-									console.log(`shift click`)
-									runTransaction(openCloseAllTX)(path)
+									runTransaction(openCloseAllTX)(path, isOpen)
 									return false
 								}}
 								setIsOpen={setIsOpen}
