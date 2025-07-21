@@ -1,4 +1,4 @@
-import { runTransaction } from "atom.io"
+import { actUponStore, arbitrary } from "atom.io/internal"
 import { jsonRefinery } from "atom.io/introspection"
 import type { JsonTypes } from "atom.io/json"
 import { isJson } from "atom.io/json"
@@ -53,7 +53,7 @@ export const JsonEditor_INTERNAL = <T,>({
 	setIsOpen,
 	testid,
 }: JsonEditorProps_INTERNAL<T>): ReactElement | null => {
-	const { openCloseAllTX } = useContext(DevtoolsContext)
+	const { openCloseAllTX, store } = useContext(DevtoolsContext)
 
 	const dataIsJson = isJson(data)
 	const refined = jsonRefinery.refine<unknown>(data) ?? {
@@ -83,7 +83,7 @@ export const JsonEditor_INTERNAL = <T,>({
 								isOpen={isOpen ?? false}
 								testid={`${testid}-open-close`}
 								onShiftClick={() => {
-									runTransaction(openCloseAllTX)(path, isOpen)
+									actUponStore(store, openCloseAllTX, arbitrary())(path, isOpen)
 									return false
 								}}
 								setIsOpen={setIsOpen}
