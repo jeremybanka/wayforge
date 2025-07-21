@@ -25,7 +25,7 @@ type ArrayElementProps = {
 	recast: (newType: keyof JsonTypes) => void
 	Components: JsonEditorComponents
 	testid?: string | undefined
-	viewIsOpenAtom: RegularAtomToken<boolean, string>
+	viewIsOpenAtom: RegularAtomToken<boolean, readonly (number | string)[]>
 }
 const ArrayElement = ({
 	path,
@@ -80,15 +80,14 @@ export const ArrayEditor = ({
 
 	return (
 		<Components.ArrayWrapper>
-			<div className={`json_editor_elements${disabled ? ` readonly` : ``}`}>
+			<main className={`json_editor_elements${disabled ? ` readonly` : ``}`}>
 				{data.map((element, index) => {
 					const elementPath = [...path, index]
 					const pathKey = elementPath.join(`,`)
-					const viewIsOpenAtom = findInStore(
-						store,
-						viewIsOpenAtoms,
-						`${testid}__${pathKey}`,
-					)
+					const viewIsOpenAtom = findInStore(store, viewIsOpenAtoms, [
+						...path,
+						index,
+					])
 					return (
 						<ArrayElement
 							key={pathKey}
@@ -105,19 +104,23 @@ export const ArrayEditor = ({
 						/>
 					)
 				})}
-			</div>
-			<Components.Button
-				testid={`${testid}-add-element`}
-				disabled={disabled}
-				onClick={() => {
-					set((current) => {
-						const newData = [...current, JSON_DEFAULTS.string]
-						return newData
-					})
-				}}
-			>
-				<Components.AddIcon />
-			</Components.Button>
+			</main>
+			{!disabled ? (
+				<footer>
+					<Components.Button
+						testid={`${testid}-add-element`}
+						disabled={disabled}
+						onClick={() => {
+							set((current) => {
+								const newData = [...current, JSON_DEFAULTS.string]
+								return newData
+							})
+						}}
+					>
+						<Components.AddIcon />
+					</Components.Button>
+				</footer>
+			) : null}
 		</Components.ArrayWrapper>
 	)
 }

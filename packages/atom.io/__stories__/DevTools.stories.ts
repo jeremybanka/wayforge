@@ -74,6 +74,16 @@ const countAtoms = atomFamily<number, string>({
 findState(countAtoms, "A")
 findState(countAtoms, "B")
 findState(countAtoms, "C")
+const userAtoms = atomFamily<
+	{ name: { first: string; last: string }; stats: Record<string, number> },
+	string
+>({
+	key: "users",
+	default: { name: { first: "John", last: "Doe" }, stats: { a: 1, b: 2, c: 3 } },
+})
+findState(userAtoms, "A")
+findState(userAtoms, "B")
+findState(userAtoms, "C")
 
 const nestArrayAtom = atom<[{ a: number }]>({
 	key: "nestArray",
@@ -108,4 +118,8 @@ const objSelector = selector<Record<string, number>>({
 })
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
-export const Primary: Story = {}
+export const Primary: Story = {
+	args: {
+		backgroundColor: "#ae5757",
+	},
+}

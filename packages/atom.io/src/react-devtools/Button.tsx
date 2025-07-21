@@ -3,17 +3,25 @@ import type { FC } from "react"
 
 export const OpenClose: FC<{
 	isOpen: boolean
-	setIsOpen: (next: Modify<boolean> | boolean) => void
+	setIsOpen?: ((next: Modify<boolean> | boolean) => void) | undefined
+	onShiftClick?: (
+		event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+	) => boolean
 	disabled?: boolean
 	testid: string
-}> = ({ isOpen, setIsOpen, disabled, testid }) => {
+}> = ({ isOpen, setIsOpen, onShiftClick, disabled, testid }) => {
 	return (
 		<button
 			type="button"
 			data-testid={testid}
 			className={`carat ${isOpen ? `open` : `closed`}`}
-			onClick={() => {
-				setIsOpen((prev) => !prev)
+			onClick={(event) => {
+				if (onShiftClick && event.shiftKey) {
+					if (!onShiftClick(event)) {
+						return
+					}
+				}
+				setIsOpen?.((prev) => !prev)
 			}}
 			disabled={disabled}
 		>
