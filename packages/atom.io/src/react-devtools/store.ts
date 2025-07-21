@@ -79,148 +79,67 @@ export function attachDevtoolsStates(
 	>(store, {
 		key: `openCloseMultiView`,
 		do: ({ get, set }, path, current) => {
+			const currentView = get(devtoolsViewSelectionState)
+			const states =
+				currentView === `atoms`
+					? get(introspectionStates.atomIndex)
+					: currentView === `selectors`
+						? get(introspectionStates.selectorIndex)
+						: null
+			if (states === null) {
+				return
+			}
 			switch (path.length) {
 				case 1:
 					{
-						const currentView = get(devtoolsViewSelectionState)
-						switch (currentView) {
-							case `atoms`:
-								{
-									const atomKeys = get(introspectionStates.atomIndex)
-									for (const [atomKey] of atomKeys) {
-										set(viewIsOpenAtoms, [atomKey], !current)
-									}
-								}
-								break
-							case `selectors`:
-								{
-									const selectorKeys = get(introspectionStates.selectorIndex)
-									for (const [selectorKey] of selectorKeys) {
-										set(viewIsOpenAtoms, [selectorKey], !current)
-									}
-								}
-								break
-							case `timelines`:
-								break
-							case `transactions`:
-								break
+						for (const [key] of states) {
+							set(viewIsOpenAtoms, [key], !current)
 						}
 					}
 					break
-				case 2:
+				default:
 					{
-						const currentView = get(devtoolsViewSelectionState)
-						switch (currentView) {
-							case `atoms`:
-								{
-									const atomKeys = get(introspectionStates.atomIndex)
-									const item = atomKeys.get(path[0] as string)
-									if (item) {
-										if (`familyMembers` in item) {
-											for (const [subKey] of item.familyMembers) {
-												set(viewIsOpenAtoms, [path[0], subKey], !current)
-											}
-										} else {
-											const value = get(item)
-											if (Array.isArray(value)) {
-												for (let i = 0; i < value.length; i++) {
-													set(viewIsOpenAtoms, [path[0], i], !current)
-												}
-											} else {
-												if (isPlainObject(value)) {
-													for (const [key] of Object.keys(value)) {
-														set(viewIsOpenAtoms, [path[0], key], !current)
-													}
-												}
-											}
-										}
+						const item = states.get(path[0] as string)
+						let value: unknown
+						let segments: (number | string)[]
+						if (item) {
+							if (`familyMembers` in item) {
+								if (path.length === 2) {
+									for (const [subKey] of item.familyMembers) {
+										set(viewIsOpenAtoms, [path[0], subKey], !current)
+									}
+									return
+								}
+								const token = item.familyMembers.get(path[1] as string)
+								if (!token) {
+									throw new Error(`familyMembers missing token`)
+								}
+								value = get(token)
+								segments = path.slice(2, -1)
+							} else {
+								value = get(item)
+								segments = path.slice(1, -1)
+							}
+							for (const segment of segments) {
+								if (value && typeof value === `object`) {
+									value = value[segment as keyof typeof value]
+								}
+							}
+							const head = path.slice(0, -1)
+							if (Array.isArray(value)) {
+								for (let i = 0; i < value.length; i++) {
+									set(viewIsOpenAtoms, [...head, i], !current)
+								}
+							} else {
+								if (isPlainObject(value)) {
+									for (const key of Object.keys(value)) {
+										set(viewIsOpenAtoms, [...head, key], !current)
 									}
 								}
-								break
-							case `selectors`:
-								{
-									const selectorKeys = get(introspectionStates.selectorIndex)
-									const item = selectorKeys.get(path[0] as string)
-									if (item) {
-										if (`familyMembers` in item) {
-											for (const [subKey] of item.familyMembers) {
-												set(viewIsOpenAtoms, [path[0], subKey], !current)
-											}
-										} else {
-											const value = get(item)
-											if (Array.isArray(value)) {
-												for (let i = 0; i < value.length; i++) {
-													set(viewIsOpenAtoms, [path[0], i], !current)
-												}
-											} else {
-												if (isPlainObject(value)) {
-													for (const key of Object.keys(value)) {
-														set(viewIsOpenAtoms, [path[0], key], !current)
-													}
-												}
-											}
-										}
-									}
-								}
-								break
-							case `timelines`:
-								break
-							case `transactions`:
-								break
+							}
 						}
 					}
 					break
-				default: {
-					const currentView = get(devtoolsViewSelectionState)
-					switch (currentView) {
-						case `atoms`:
-							{
-								const atomKeys = get(introspectionStates.atomIndex)
-								const item = atomKeys.get(path[0] as string)
-								let value: unknown
-								let segments: (number | string)[]
-								if (item) {
-									if (`familyMembers` in item) {
-										const token = item.familyMembers.get(path[1] as string)
-										if (!token) {
-											throw new Error(`familyMembers missing token`)
-										}
-										value = get(token)
-										segments = path.slice(2, -1)
-									} else {
-										value = get(item)
-										segments = path.slice(1, -1)
-									}
-									for (const segment of segments) {
-										if (value && typeof value === `object`) {
-											value = value[segment as keyof typeof value]
-										}
-									}
-									const head = path.slice(0, -1)
-									if (Array.isArray(value)) {
-										for (let i = 0; i < value.length; i++) {
-											set(viewIsOpenAtoms, [...head, i], !current)
-										}
-									} else {
-										if (isPlainObject(value)) {
-											for (const key of Object.keys(value)) {
-												set(viewIsOpenAtoms, [...head, key], !current)
-											}
-										}
-									}
-								}
-							}
-							break
-						case `selectors`:
-							{
-							}
-							break
-						case `timelines`:
-							break
-						case `transactions`:
-							break
-					}
-				}
 			}
 		},
 	})
