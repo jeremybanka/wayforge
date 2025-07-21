@@ -154,7 +154,7 @@ export function attachDevtoolsStates(
 												}
 											} else {
 												if (isPlainObject(value)) {
-													for (const [key] of Object.keys(value)) {
+													for (const key of Object.keys(value)) {
 														set(viewIsOpenAtoms, [path[0], key], !current)
 													}
 												}
@@ -171,7 +171,55 @@ export function attachDevtoolsStates(
 					}
 					break
 				default: {
-					throw new Error(`Too many path elements`)
+					const currentView = get(devtoolsViewSelectionState)
+					switch (currentView) {
+						case `atoms`:
+							{
+								const atomKeys = get(introspectionStates.atomIndex)
+								const item = atomKeys.get(path[0] as string)
+								let value: unknown
+								let segments: (number | string)[]
+								if (item) {
+									if (`familyMembers` in item) {
+										const token = item.familyMembers.get(path[1] as string)
+										if (!token) {
+											throw new Error(`familyMembers missing token`)
+										}
+										value = get(token)
+										segments = path.slice(2, -1)
+									} else {
+										value = get(item)
+										segments = path.slice(1, -1)
+									}
+									for (const segment of segments) {
+										if (value && typeof value === `object`) {
+											value = value[segment as keyof typeof value]
+										}
+									}
+									const head = path.slice(0, -1)
+									if (Array.isArray(value)) {
+										for (let i = 0; i < value.length; i++) {
+											set(viewIsOpenAtoms, [...head, i], !current)
+										}
+									} else {
+										if (isPlainObject(value)) {
+											for (const key of Object.keys(value)) {
+												set(viewIsOpenAtoms, [...head, key], !current)
+											}
+										}
+									}
+								}
+							}
+							break
+						case `selectors`:
+							{
+							}
+							break
+						case `timelines`:
+							break
+						case `transactions`:
+							break
+					}
 				}
 			}
 		},
