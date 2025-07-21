@@ -493,3 +493,119 @@ describe(`miscellaneous tool behavior`, () => {
 		})
 	})
 })
+
+describe(`devtools multi-expand/collapse`, () => {
+	test(`expand all atoms`, async () => {
+		$.atom<{ a: boolean }>({ key: `exampleA`, default: { a: true } })
+		$.atom<{ b: boolean }>({ key: `exampleB`, default: { b: true } })
+
+		const { getByTestId } = scenario()
+
+		await waitFor(() => getByTestId(`open-close-state-exampleA`))
+		await waitFor(() => getByTestId(`open-close-state-exampleB`))
+
+		act(() => {
+			const openCloseA = getByTestId(`open-close-state-exampleA`)
+			fireEvent.click(openCloseA, { shiftKey: true })
+		})
+
+		await waitFor(() =>
+			getByTestId(`exampleA-state-editor-property-a-boolean-input`),
+		)
+		await waitFor(() =>
+			getByTestId(`exampleB-state-editor-property-b-boolean-input`),
+		)
+	})
+	test(`expand all family members`, async () => {
+		const exampleSelectors = $.selectorFamily<{ a: boolean }, string>({
+			key: `example`,
+			get: () => () => ({ a: true }),
+		})
+		$.findState(exampleSelectors, `a`)
+		$.findState(exampleSelectors, `b`)
+		$.findState(exampleSelectors, `c`)
+
+		const { getByTestId } = scenario()
+
+		act(() => {
+			getByTestId(`view-selectors`).click()
+		})
+
+		await waitFor(() => getByTestId(`state-example`))
+
+		act(() => {
+			getByTestId(`open-close-state-family-example`).click()
+		})
+
+		await waitFor(() => getByTestId(`state-example("a")`))
+
+		act(() => {
+			const openCloseA = getByTestId(`open-close-state-example("a")`)
+			fireEvent.click(openCloseA, { shiftKey: true })
+		})
+		await waitFor(() => getByTestId(`example("a")-state-editor-property-a`))
+		await waitFor(() => getByTestId(`example("b")-state-editor-property-a`))
+		await waitFor(() => getByTestId(`example("c")-state-editor-property-a`))
+	})
+	test(`expand all properties at a certain depth`, async () => {
+		$.atom<object>({
+			key: `myNestedObject`,
+			default: {
+				stuff: {
+					a: { thing: true },
+					b: { thing: true },
+					c: { thing: true },
+				},
+			},
+		})
+
+		const { getByTestId } = scenario()
+
+		act(() => {
+			getByTestId(`open-close-state-myNestedObject`).click()
+		})
+
+		await waitFor(() =>
+			getByTestId(`myNestedObject-state-editor-property-stuff`),
+		)
+
+		act(() => {
+			getByTestId(
+				`myNestedObject-state-editor-property-stuff-open-close`,
+			).click()
+		})
+
+		await waitFor(() =>
+			getByTestId(`myNestedObject-state-editor-property-stuff-property-a`),
+		)
+		await waitFor(() =>
+			getByTestId(`myNestedObject-state-editor-property-stuff-property-b`),
+		)
+		await waitFor(() =>
+			getByTestId(`myNestedObject-state-editor-property-stuff-property-c`),
+		)
+
+		act(() => {
+			const openCloseA = getByTestId(
+				`myNestedObject-state-editor-property-stuff-property-a-open-close`,
+			)
+			fireEvent.click(openCloseA, { shiftKey: true })
+		})
+
+		await waitFor(() =>
+			getByTestId(
+				`myNestedObject-state-editor-property-stuff-property-a-property-thing`,
+			),
+		)
+		await waitFor(() =>
+			getByTestId(
+				`myNestedObject-state-editor-property-stuff-property-b-property-thing`,
+			),
+		)
+		await waitFor(() =>
+			getByTestId(
+				`myNestedObject-state-editor-property-stuff-property-c-property-thing`,
+			),
+		)
+	})
+})
