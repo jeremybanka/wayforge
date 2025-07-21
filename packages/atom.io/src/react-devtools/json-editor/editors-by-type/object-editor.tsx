@@ -60,7 +60,7 @@ type ObjectPropertyProps = {
 	recast: (newType: keyof JsonTypes) => void
 	Components: JsonEditorComponents
 	testid?: string | undefined
-	viewIsOpenAtom: RegularAtomToken<boolean, string>
+	viewIsOpenAtom: RegularAtomToken<boolean, readonly (number | string)[]>
 }
 const ObjectProperty = ({
 	path,
@@ -137,28 +137,12 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 					const propertyPath = [...path, key]
 					const originalPropertyPath = [...path, originalKey]
 					const stablePathKey = originalPropertyPath.join(`.`)
-					const viewIsOpenAtom = findInStore(
-						store,
-						viewIsOpenAtoms,
-						`${testid}__${stablePathKey}`,
-					)
+					const viewIsOpenAtom = findInStore(store, viewIsOpenAtoms, [
+						...path,
+						key,
+					])
 
 					return (
-						// <JsonEditor_INTERNAL
-						// 	key={originalPath.join(`.`)}
-						// 	path={newPath}
-						// 	name={key}
-						// 	isReadonly={isReadonly}
-						// 	isHidden={isHidden}
-						// 	data={data[key as keyof T]}
-						// 	set={setProperty[key as keyof T]}
-						// 	rename={renameProperty[key as keyof T]}
-						// 	remove={removeProperty[key as keyof T]}
-						// 	recast={recastProperty[key as keyof T]}
-						// 	className="json_editor_property"
-						// 	Components={Components}
-						// 	testid={`${testid}-property-${key}`}
-						// />
 						<ObjectProperty
 							key={stablePathKey}
 							path={propertyPath}
@@ -177,7 +161,7 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 				})}
 			</div>
 			{disabled ? null : (
-				<>
+				<footer>
 					<Components.Button
 						disabled={disabled}
 						testid={`${testid}-add-property`}
@@ -196,7 +180,7 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 					>
 						Sort
 					</Components.Button>
-				</>
+				</footer>
 			)}
 		</Components.ObjectWrapper>
 	)

@@ -48,6 +48,7 @@ export const JsonEditor = <T,>({
 	name,
 	rename,
 	remove,
+	path = [],
 	isReadonly = () => false,
 	isHidden = () => false,
 	className,
@@ -68,7 +69,7 @@ export const JsonEditor = <T,>({
 			name={name}
 			rename={rename}
 			remove={remove}
-			path={[]}
+			path={path}
 			isReadonly={isReadonly}
 			isHidden={isHidden}
 			className={className}

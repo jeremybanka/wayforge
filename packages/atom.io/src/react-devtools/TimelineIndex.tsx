@@ -102,7 +102,7 @@ export const TimelineIndex: FC = () => {
 						<TimelineLog
 							key={token.key}
 							token={token}
-							isOpenState={findInStore(store, viewIsOpenAtoms, token.key)}
+							isOpenState={findInStore(store, viewIsOpenAtoms, [token.key])}
 							timelineState={findInStore(store, timelineSelectors, token.key)}
 						/>
 					)

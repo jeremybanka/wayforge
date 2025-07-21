@@ -4,8 +4,12 @@ import type {
 	ReadonlyPureSelectorToken,
 	RegularAtomToken,
 } from "atom.io"
-import { getState } from "atom.io"
-import { findInStore } from "atom.io/internal"
+import {
+	actUponStore,
+	arbitrary,
+	findInStore,
+	getFromStore,
+} from "atom.io/internal"
 import type { FamilyNode, WritableTokenIndex } from "atom.io/introspection"
 import { primitiveRefinery } from "atom.io/introspection"
 import { useI, useO } from "atom.io/react"
@@ -22,6 +26,8 @@ export const StateIndexLeafNode: FC<{
 	isOpenState: RegularAtomToken<boolean>
 	typeState: ReadonlyPureSelectorToken<Loadable<string>>
 }> = ({ node, isOpenState, typeState }) => {
+	const { openCloseAllTX, store } = useContext(DevtoolsContext)
+
 	const setIsOpen = useI(isOpenState)
 	const isOpen = useO(isOpenState)
 
@@ -32,23 +38,29 @@ export const StateIndexLeafNode: FC<{
 
 	const isPrimitive = Boolean(primitiveRefinery.refine(state))
 
+	const path = node.family ? [node.family.key, node.family.subKey] : [node.key]
+
 	return (
 		<>
 			<header>
-				<button.OpenClose
-					isOpen={isOpen && !isPrimitive}
-					testid={`open-close-state-${node.key}`}
-					setIsOpen={setIsOpen}
-					disabled={isPrimitive}
-				/>
 				<main
 					onClick={() => {
-						console.log(node, getState(node))
+						console.log(node, getFromStore(store, node))
 					}}
 					onKeyUp={() => {
-						console.log(node, getState(node))
+						console.log(node, getFromStore(store, node))
 					}}
 				>
+					<button.OpenClose
+						isOpen={isOpen && !isPrimitive}
+						testid={`open-close-state-${node.key}`}
+						onShiftClick={() => {
+							actUponStore(store, openCloseAllTX, arbitrary())(path, isOpen)
+							return false
+						}}
+						setIsOpen={setIsOpen}
+						disabled={isPrimitive}
+					/>
 					<h2>{node.family?.subKey ?? node.key}</h2>
 					<span className="type detail">({stateType})</span>
 				</main>
@@ -73,21 +85,30 @@ export const StateIndexTreeNode: FC<{
 	const setIsOpen = useI(isOpenState)
 	const isOpen = useO(isOpenState)
 
-	const { typeSelectors, viewIsOpenAtoms, store } = useContext(DevtoolsContext)
+	const { typeSelectors, viewIsOpenAtoms, openCloseAllTX, store } =
+		useContext(DevtoolsContext)
 
 	for (const [key, childNode] of node.familyMembers) {
-		findInStore(store, viewIsOpenAtoms, key)
+		findInStore(store, viewIsOpenAtoms, [key])
 		findInStore(store, typeSelectors, childNode.key)
 	}
 	return (
 		<>
 			<header>
-				<button.OpenClose
-					isOpen={isOpen}
-					testid={`open-close-state-family-${node.key}`}
-					setIsOpen={setIsOpen}
-				/>
 				<main>
+					<button.OpenClose
+						isOpen={isOpen}
+						testid={`open-close-state-family-${node.key}`}
+						onShiftClick={() => {
+							actUponStore(
+								store,
+								openCloseAllTX,
+								arbitrary(),
+							)([node.key], isOpen)
+							return false
+						}}
+						setIsOpen={setIsOpen}
+					/>
 					<h2>{node.key}</h2>
 					<span className="type detail"> (family)</span>
 				</main>
@@ -97,7 +118,7 @@ export const StateIndexTreeNode: FC<{
 						<StateIndexNode
 							key={key}
 							node={childNode}
-							isOpenState={findInStore(store, viewIsOpenAtoms, childNode.key)}
+							isOpenState={findInStore(store, viewIsOpenAtoms, [node.key, key])}
 							typeState={findInStore(store, typeSelectors, childNode.key)}
 						/>
 					))
@@ -135,7 +156,6 @@ export const StateIndex: FC<{
 
 	const { typeSelectors, viewIsOpenAtoms, store } = useContext(DevtoolsContext)
 
-	console.log(tokenIds)
 	return (
 		<article className="index state_index" data-testid="state-index">
 			{[...tokenIds.entries()].map(([key, node]) => {
@@ -143,7 +163,7 @@ export const StateIndex: FC<{
 					<StateIndexNode
 						key={key}
 						node={node}
-						isOpenState={findInStore(store, viewIsOpenAtoms, node.key)}
+						isOpenState={findInStore(store, viewIsOpenAtoms, [node.key])}
 						typeState={findInStore(store, typeSelectors, node.key)}
 					/>
 				)

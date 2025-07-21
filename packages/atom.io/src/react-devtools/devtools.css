@@ -1,9 +1,9 @@
 main[data-css="atom_io_devtools"] {
 	--fg-color: #ccc;
 	--fg-light: #aaa;
-	--fg-soft: #777;
-	--fg-faint: #555;
-	--fg-hint: #333;
+	--fg-soft: #888;
+	--fg-faint: #777;
+	--fg-hint: #4a4a4a;
 	--fg-max: #fff;
 	--bg-color: #111;
 	--bg-accent: #00f;
@@ -26,6 +26,9 @@ main[data-css="atom_io_devtools"] {
 		--bg-tint1: #e3e3e3;
 		--bg-tint2: #f3f3f3;
 	}
+	* {
+		box-sizing: border-box;
+	}
 	& {
 		pointer-events: all;
 		box-sizing: border-box;
@@ -44,7 +47,7 @@ main[data-css="atom_io_devtools"] {
 		overflow-y: scroll;
 	}
 	* {
-		font-size: 16px;
+		font-size: 14px;
 		font-family: theia, monospace;
 		line-height: 1em;
 		color: var(--fg-color);
@@ -90,13 +93,15 @@ main[data-css="atom_io_devtools"] {
 		background-color: black;
 		height: 10px;
 	}
-	main {
+	> main {
 		overflow-y: scroll;
 		flex-grow: 1;
 		display: flex;
 		flex-flow: column;
 		gap: 0;
 		article.index {
+			margin-bottom: 24px;
+			border-bottom: var(--fg-border);
 			.node .node {
 				border-right: var(--fg-border);
 				padding-right: 0;
@@ -106,30 +111,26 @@ main[data-css="atom_io_devtools"] {
 				}
 			}
 			.node > .node {
-				margin: 0px 2px 2px 18px;
+				margin: 0px 0px 0px 9px;
 				border-left: var(--fg-border-soft);
-				&:last-of-type {
-					margin-bottom: 6px;
-				}
 			}
 			.node {
 				border-top: var(--fg-border);
 				overflow: visible;
-				&:last-of-type {
-					border-bottom: var(--fg-border);
-				}
+
 				&.transaction_update {
 					padding: 0;
 				}
 				> header {
 					display: flex;
 					flex-flow: row;
+					justify-content: space-between;
 					position: sticky;
 					z-index: 999;
 					top: 0;
 					height: 22px;
 					background: var(--bg-tint2);
-					border-bottom: var(--fg-border-soft);
+					border-bottom: none;
 					> main {
 						display: flex;
 						flex-flow: row;
@@ -154,20 +155,23 @@ main[data-css="atom_io_devtools"] {
 							}
 						}
 					}
+					> .json_editor {
+						border-left: var(--fg-border-soft);
+						padding: 3px 0px;
+					}
 					> .json_viewer {
 						color: var(--fg-light);
 						font-size: 14px;
 						flex-shrink: 1;
-						overflow-x: scroll;
 					}
 					> .json_editor,
 					> .json_viewer {
+						margin-left: 3px;
 						display: flex;
 						flex-shrink: 1;
 						z-index: -1;
 						overflow-x: scroll;
 						align-items: center;
-						border-left: var(--fg-border-soft);
 						white-space: pre;
 						background: var(--bg-tint2);
 						&:focus-within {
@@ -187,6 +191,7 @@ main[data-css="atom_io_devtools"] {
 						}
 						input {
 							outline: none;
+							min-width: 10px;
 						}
 					}
 				}
@@ -285,7 +290,7 @@ main[data-css="atom_io_devtools"] {
 			}
 		}
 	}
-	footer {
+	> footer {
 		display: flex;
 		justify-content: flex-end;
 		button {
@@ -304,29 +309,39 @@ main[data-css="atom_io_devtools"] {
 		flex-flow: column;
 		align-items: flex-start;
 		> header {
+			width: 100%;
 			display: flex;
 			flex-flow: row;
-			width: 100%;
-			position: relative;
-			align-items: baseline;
+			align-items: center;
 			overflow: hidden;
 			white-space: nowrap;
-			> .json_viewer {
-				flex-shrink: 1;
-				overflow-x: scroll;
+			justify-content: space-between;
+			&:has(> main > button.carat) {
 				height: 21px;
-				font-size: 14px;
-				display: flex;
-				align-items: center;
-				margin-left: 6px;
-				color: var(--fg-light);
 			}
-			> button {
-				padding: 0;
-				&.carat {
-					line-height: 0.5em;
+			> main {
+				display: flex;
+				flex-flow: row;
+				align-items: center;
+				flex-shrink: 1;
+				overflow-x: hidden;
+				align-self: center;
+				> .json_viewer {
+					flex-shrink: 1;
+					overflow-x: scroll;
+					height: 21px;
 					font-size: 14px;
-					align-self: flex-start;
+					display: flex;
+					align-items: center;
+					margin-left: 0px;
+					color: var(--fg-soft);
+				}
+				> button {
+					padding: 0;
+					&.carat {
+						line-height: 0.5em;
+						font-size: 14px;
+					}
 				}
 			}
 		}
@@ -343,7 +358,6 @@ main[data-css="atom_io_devtools"] {
 			}
 		}
 		input,
-		button,
 		select {
 			&:focus-within {
 				outline: 2px solid var(--fg-max);
@@ -351,6 +365,7 @@ main[data-css="atom_io_devtools"] {
 				color: var(--fg-max);
 			}
 		}
+
 		button:disabled {
 			cursor: default;
 			> span.json_editor_icon {
@@ -376,9 +391,20 @@ main[data-css="atom_io_devtools"] {
 			padding: 4px;
 			padding-bottom: 6px;
 			cursor: pointer;
-			&:hover {
-				color: #333;
-				background-color: #aaa;
+			&:hover,
+			&:focus-within {
+				background-color: var(--fg-faint);
+				&,
+				> * {
+					color: var(--bg-color);
+				}
+			}
+			&:active {
+				background: var(--fg-color);
+				&,
+				> * {
+					color: var(--bg-color);
+				}
 			}
 		}
 		select {
@@ -404,6 +430,7 @@ main[data-css="atom_io_devtools"] {
 			padding-right: 0px;
 			&::after {
 				content: ":";
+				color: var(--fg-soft);
 			}
 			input {
 				color: var(--fg-color);
@@ -412,26 +439,35 @@ main[data-css="atom_io_devtools"] {
 		.json_editor_object,
 		.json_editor_array {
 			border-left: var(--fg-border-soft);
-			padding-left: 10px;
-			margin-left: 10px;
-			width: calc(100% - 21px);
+			margin-left: 9px;
+			width: calc(100% - 9px);
+			> footer {
+				display: flex;
+				flex-flow: row;
+				justify-content: flex-start;
+				justify-items: flex-start;
+				height: 21px;
+				align-items: baseline;
+				position: relative;
+			}
 			.json_editor_properties,
 			.json_editor_elements {
+				border-top: var(--fg-border-soft);
 				.json_editor_property,
 				.json_editor_element {
 					display: flex;
 					border-bottom: var(--fg-border-soft);
-					margin-bottom: 2px;
-					min-height: 23px;
+					margin-bottom: 0;
+					min-height: 21px;
 					> header {
-						width: 100%;
-
-						> span {
-							input {
-								min-width: 10px;
-							}
-							> * {
-								border: var(--fg-border-hint);
+						> main {
+							> span {
+								input {
+									min-width: 10px;
+								}
+								> * {
+									border: var(--fg-border-hint);
+								}
 							}
 						}
 					}
@@ -442,7 +478,7 @@ main[data-css="atom_io_devtools"] {
 						&:last-of-type {
 							border-bottom: none;
 						}
-						> span > * {
+						span > * {
 							border: 1px solid transparent;
 						}
 					}
@@ -459,10 +495,6 @@ main[data-css="atom_io_devtools"] {
 		border: none;
 		cursor: pointer;
 		background: none;
-		&:focus-within {
-			outline: none;
-			background: none;
-		}
 		> .json_editor_icon {
 			line-height: 4px;
 		}
