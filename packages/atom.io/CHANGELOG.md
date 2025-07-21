@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.33.13
+
+### Patch Changes
+
+- 6fc9abf: ✨ In `atom.io/react-devtools`, add the ability to simultaneously open and close all state editors at a particular level by holding the `shift` key.
+- 6fc9abf: 💄 Improve font sizes and level of contrast in `atom.io/react-devtools`.
+
 ## 0.33.12
 
 ### Patch Changes
