@@ -26,12 +26,16 @@ export const ReadonlySelectorViewer: FC<{
 	token: ReadonlySelectorToken<unknown>
 }> = ({ token }) => {
 	const data = useO(token)
+	const metaPath = token.family
+		? [token.family.key, token.family.subKey]
+		: [token.key]
 	return (
 		<JsonEditor
 			testid={`${token.key}-state-editor`}
 			data={data}
 			set={() => null}
 			isReadonly={() => true}
+			path={metaPath}
 		/>
 	)
 }
