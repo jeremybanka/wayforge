@@ -4,8 +4,12 @@ import type {
 	ReadonlyPureSelectorToken,
 	RegularAtomToken,
 } from "atom.io"
-import { getState, runTransaction } from "atom.io"
-import { findInStore } from "atom.io/internal"
+import {
+	actUponStore,
+	arbitrary,
+	findInStore,
+	getFromStore,
+} from "atom.io/internal"
 import type { FamilyNode, WritableTokenIndex } from "atom.io/introspection"
 import { primitiveRefinery } from "atom.io/introspection"
 import { useI, useO } from "atom.io/react"
@@ -22,7 +26,7 @@ export const StateIndexLeafNode: FC<{
 	isOpenState: RegularAtomToken<boolean>
 	typeState: ReadonlyPureSelectorToken<Loadable<string>>
 }> = ({ node, isOpenState, typeState }) => {
-	const { openCloseAllTX } = useContext(DevtoolsContext)
+	const { openCloseAllTX, store } = useContext(DevtoolsContext)
 
 	const setIsOpen = useI(isOpenState)
 	const isOpen = useO(isOpenState)
@@ -41,17 +45,17 @@ export const StateIndexLeafNode: FC<{
 			<header>
 				<main
 					onClick={() => {
-						console.log(node, getState(node))
+						console.log(node, getFromStore(store, node))
 					}}
 					onKeyUp={() => {
-						console.log(node, getState(node))
+						console.log(node, getFromStore(store, node))
 					}}
 				>
 					<button.OpenClose
 						isOpen={isOpen && !isPrimitive}
 						testid={`open-close-state-${node.key}`}
 						onShiftClick={() => {
-							runTransaction(openCloseAllTX)(path, isOpen)
+							actUponStore(store, openCloseAllTX, arbitrary())(path, isOpen)
 							return false
 						}}
 						setIsOpen={setIsOpen}
@@ -85,7 +89,6 @@ export const StateIndexTreeNode: FC<{
 		useContext(DevtoolsContext)
 
 	for (const [key, childNode] of node.familyMembers) {
-		console.log(`❗`, { key })
 		findInStore(store, viewIsOpenAtoms, [key])
 		findInStore(store, typeSelectors, childNode.key)
 	}
@@ -97,7 +100,11 @@ export const StateIndexTreeNode: FC<{
 						isOpen={isOpen}
 						testid={`open-close-state-family-${node.key}`}
 						onShiftClick={() => {
-							runTransaction(openCloseAllTX)([node.key], isOpen)
+							actUponStore(
+								store,
+								openCloseAllTX,
+								arbitrary(),
+							)([node.key], isOpen)
 							return false
 						}}
 						setIsOpen={setIsOpen}
@@ -149,7 +156,6 @@ export const StateIndex: FC<{
 
 	const { typeSelectors, viewIsOpenAtoms, store } = useContext(DevtoolsContext)
 
-	console.log(tokenIds)
 	return (
 		<article className="index state_index" data-testid="state-index">
 			{[...tokenIds.entries()].map(([key, node]) => {

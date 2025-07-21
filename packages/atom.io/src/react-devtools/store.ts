@@ -69,7 +69,7 @@ export function attachDevtoolsStates(
 		effects: (key) =>
 			typeof window === `undefined`
 				? []
-				: [persistSync(window.localStorage, JSON, key.join() + `:view-is-open`)],
+				: [persistSync(window.localStorage, JSON, `view-is-open:${key.join()}`)],
 	})
 
 	const openCloseAllTX: TransactionToken<
