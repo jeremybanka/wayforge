@@ -25,7 +25,7 @@ type ArrayElementProps = {
 	recast: (newType: keyof JsonTypes) => void
 	Components: JsonEditorComponents
 	testid?: string | undefined
-	viewIsOpenAtom: RegularAtomToken<boolean, string>
+	viewIsOpenAtom: RegularAtomToken<boolean, readonly (number | string)[]>
 }
 const ArrayElement = ({
 	path,
@@ -84,11 +84,10 @@ export const ArrayEditor = ({
 				{data.map((element, index) => {
 					const elementPath = [...path, index]
 					const pathKey = elementPath.join(`,`)
-					const viewIsOpenAtom = findInStore(
-						store,
-						viewIsOpenAtoms,
-						`${testid}__${pathKey}`,
-					)
+					const viewIsOpenAtom = findInStore(store, viewIsOpenAtoms, [
+						...path,
+						index,
+					])
 					return (
 						<ArrayElement
 							key={pathKey}

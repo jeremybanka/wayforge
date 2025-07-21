@@ -4,7 +4,7 @@ import type {
 	ReadonlyPureSelectorToken,
 	RegularAtomToken,
 } from "atom.io"
-import { getState } from "atom.io"
+import { getState, runTransaction } from "atom.io"
 import { findInStore } from "atom.io/internal"
 import type { FamilyNode, WritableTokenIndex } from "atom.io/introspection"
 import { primitiveRefinery } from "atom.io/introspection"
@@ -22,6 +22,8 @@ export const StateIndexLeafNode: FC<{
 	isOpenState: RegularAtomToken<boolean>
 	typeState: ReadonlyPureSelectorToken<Loadable<string>>
 }> = ({ node, isOpenState, typeState }) => {
+	const { openCloseAllTX } = useContext(DevtoolsContext)
+
 	const setIsOpen = useI(isOpenState)
 	const isOpen = useO(isOpenState)
 
@@ -31,6 +33,8 @@ export const StateIndexLeafNode: FC<{
 		stateTypeLoadable instanceof Promise ? `Promise` : stateTypeLoadable
 
 	const isPrimitive = Boolean(primitiveRefinery.refine(state))
+
+	const path = node.family ? [node.family.key, node.family.subKey] : [node.key]
 
 	return (
 		<>
@@ -46,6 +50,10 @@ export const StateIndexLeafNode: FC<{
 					<button.OpenClose
 						isOpen={isOpen && !isPrimitive}
 						testid={`open-close-state-${node.key}`}
+						onShiftClick={() => {
+							runTransaction(openCloseAllTX)(path, isOpen)
+							return false
+						}}
 						setIsOpen={setIsOpen}
 						disabled={isPrimitive}
 					/>
@@ -73,10 +81,12 @@ export const StateIndexTreeNode: FC<{
 	const setIsOpen = useI(isOpenState)
 	const isOpen = useO(isOpenState)
 
-	const { typeSelectors, viewIsOpenAtoms, store } = useContext(DevtoolsContext)
+	const { typeSelectors, viewIsOpenAtoms, openCloseAllTX, store } =
+		useContext(DevtoolsContext)
 
 	for (const [key, childNode] of node.familyMembers) {
-		findInStore(store, viewIsOpenAtoms, key)
+		console.log(`❗`, { key })
+		findInStore(store, viewIsOpenAtoms, [key])
 		findInStore(store, typeSelectors, childNode.key)
 	}
 	return (
@@ -86,6 +96,10 @@ export const StateIndexTreeNode: FC<{
 					<button.OpenClose
 						isOpen={isOpen}
 						testid={`open-close-state-family-${node.key}`}
+						onShiftClick={() => {
+							runTransaction(openCloseAllTX)([node.key], isOpen)
+							return false
+						}}
 						setIsOpen={setIsOpen}
 					/>
 					<h2>{node.key}</h2>
@@ -97,7 +111,7 @@ export const StateIndexTreeNode: FC<{
 						<StateIndexNode
 							key={key}
 							node={childNode}
-							isOpenState={findInStore(store, viewIsOpenAtoms, childNode.key)}
+							isOpenState={findInStore(store, viewIsOpenAtoms, [node.key, key])}
 							typeState={findInStore(store, typeSelectors, childNode.key)}
 						/>
 					))
@@ -143,7 +157,7 @@ export const StateIndex: FC<{
 					<StateIndexNode
 						key={key}
 						node={node}
-						isOpenState={findInStore(store, viewIsOpenAtoms, node.key)}
+						isOpenState={findInStore(store, viewIsOpenAtoms, [node.key])}
 						typeState={findInStore(store, typeSelectors, node.key)}
 					/>
 				)

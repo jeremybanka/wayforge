@@ -1,12 +1,17 @@
-import type { RegularAtomFamilyToken, RegularAtomToken } from "atom.io"
+import type {
+	RegularAtomFamilyToken,
+	RegularAtomToken,
+	TransactionToken,
+} from "atom.io"
 import {
 	createAtomFamily,
 	createStandaloneAtom,
+	createTransaction,
 	IMPLICIT,
 	type Store,
 } from "atom.io/internal"
 import type { IntrospectionStates } from "atom.io/introspection"
-import { attachIntrospectionStates } from "atom.io/introspection"
+import { attachIntrospectionStates, isPlainObject } from "atom.io/introspection"
 import { persistSync } from "atom.io/web"
 import type { Context } from "react"
 import { createContext } from "react"
@@ -17,7 +22,10 @@ export type DevtoolsStates = {
 	devtoolsAreOpenState: RegularAtomToken<boolean>
 	devtoolsViewSelectionState: RegularAtomToken<DevtoolsView>
 	devtoolsViewOptionsState: RegularAtomToken<DevtoolsView[]>
-	viewIsOpenAtoms: RegularAtomFamilyToken<boolean, string>
+	viewIsOpenAtoms: RegularAtomFamilyToken<boolean, readonly (number | string)[]>
+	openCloseAllTX: TransactionToken<
+		(path: readonly (number | string)[], current?: boolean) => void
+	>
 }
 
 export function attachDevtoolsStates(
@@ -52,13 +60,121 @@ export function attachDevtoolsStates(
 				: [persistSync(window.localStorage, JSON, `🔍 Devtools View Options`)],
 	})
 
-	const viewIsOpenAtoms = createAtomFamily<boolean, string>(store, {
+	const viewIsOpenAtoms = createAtomFamily<
+		boolean,
+		readonly (number | string)[]
+	>(store, {
 		key: `🔍 Devtools View Is Open`,
 		default: false,
 		effects: (key) =>
 			typeof window === `undefined`
 				? []
-				: [persistSync(window.localStorage, JSON, key + `:view-is-open`)],
+				: [persistSync(window.localStorage, JSON, key.join() + `:view-is-open`)],
+	})
+
+	const openCloseAllTX: TransactionToken<
+		(path: readonly (number | string)[], current?: boolean) => void
+	> = createTransaction<
+		(path: readonly (number | string)[], current?: boolean) => void
+	>(store, {
+		key: `openCloseMultiView`,
+		do: ({ get, set }, path, current) => {
+			switch (path.length) {
+				case 1:
+					{
+						const currentView = get(devtoolsViewSelectionState)
+						switch (currentView) {
+							case `atoms`:
+								{
+									const atomKeys = get(introspectionStates.atomIndex)
+									for (const [atomKey] of atomKeys) {
+										set(viewIsOpenAtoms, [atomKey], !current)
+									}
+								}
+								break
+							case `selectors`:
+								{
+									const selectorKeys = get(introspectionStates.selectorIndex)
+									for (const [selectorKey] of selectorKeys) {
+										set(viewIsOpenAtoms, [selectorKey], !current)
+									}
+								}
+								break
+							case `timelines`:
+								break
+							case `transactions`:
+								break
+						}
+					}
+					break
+				case 2:
+					{
+						const currentView = get(devtoolsViewSelectionState)
+						switch (currentView) {
+							case `atoms`:
+								{
+									const atomKeys = get(introspectionStates.atomIndex)
+									const item = atomKeys.get(path[0] as string)
+									if (item) {
+										if (`familyMembers` in item) {
+											for (const [subKey] of item.familyMembers) {
+												set(viewIsOpenAtoms, [path[0], subKey], !current)
+											}
+										} else {
+											const value = get(item)
+											if (Array.isArray(value)) {
+												for (let i = 0; i < value.length; i++) {
+													set(viewIsOpenAtoms, [path[0], i], !current)
+												}
+											} else {
+												if (isPlainObject(value)) {
+													for (const [key] of Object.keys(value)) {
+														set(viewIsOpenAtoms, [path[0], key], !current)
+													}
+												}
+											}
+										}
+									}
+								}
+								break
+							case `selectors`:
+								{
+									const selectorKeys = get(introspectionStates.selectorIndex)
+									const item = selectorKeys.get(path[0] as string)
+									if (item) {
+										if (`familyMembers` in item) {
+											for (const [subKey] of item.familyMembers) {
+												set(viewIsOpenAtoms, [path[0], subKey], !current)
+											}
+										} else {
+											const value = get(item)
+											if (Array.isArray(value)) {
+												for (let i = 0; i < value.length; i++) {
+													set(viewIsOpenAtoms, [path[0], i], !current)
+												}
+											} else {
+												if (isPlainObject(value)) {
+													for (const [key] of Object.keys(value)) {
+														set(viewIsOpenAtoms, [path[0], key], !current)
+													}
+												}
+											}
+										}
+									}
+								}
+								break
+							case `timelines`:
+								break
+							case `transactions`:
+								break
+						}
+					}
+					break
+				default: {
+					throw new Error(`Too many path elements`)
+				}
+			}
+		},
 	})
 
 	return {
@@ -67,6 +183,7 @@ export function attachDevtoolsStates(
 		devtoolsViewSelectionState,
 		devtoolsViewOptionsState,
 		viewIsOpenAtoms,
+		openCloseAllTX,
 		store,
 	}
 }

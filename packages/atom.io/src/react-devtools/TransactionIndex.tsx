@@ -66,7 +66,7 @@ export const TransactionIndex: FC = () => {
 						<TransactionLog
 							key={token.key}
 							token={token}
-							isOpenState={findInStore(store, viewIsOpenAtoms, token.key)}
+							isOpenState={findInStore(store, viewIsOpenAtoms, [token.key])}
 							logState={findInStore(store, transactionLogSelectors, token.key)}
 						/>
 					)
