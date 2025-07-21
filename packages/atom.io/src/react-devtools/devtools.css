@@ -325,7 +325,6 @@ main[data-css="atom_io_devtools"] {
 				align-items: center;
 				flex-shrink: 1;
 				overflow-x: hidden;
-				/* height: 10%; */
 				align-self: center;
 				> .json_viewer {
 					flex-shrink: 1;
@@ -342,7 +341,6 @@ main[data-css="atom_io_devtools"] {
 					&.carat {
 						line-height: 0.5em;
 						font-size: 14px;
-						align-self: flex-start;
 					}
 				}
 			}
@@ -360,7 +358,6 @@ main[data-css="atom_io_devtools"] {
 			}
 		}
 		input,
-		button,
 		select {
 			&:focus-within {
 				outline: 2px solid var(--fg-max);
@@ -368,6 +365,7 @@ main[data-css="atom_io_devtools"] {
 				color: var(--fg-max);
 			}
 		}
+
 		button:disabled {
 			cursor: default;
 			> span.json_editor_icon {
@@ -393,8 +391,16 @@ main[data-css="atom_io_devtools"] {
 			padding: 4px;
 			padding-bottom: 6px;
 			cursor: pointer;
-			&:hover {
+			&:hover,
+			&:focus-within {
 				background-color: var(--fg-faint);
+				&,
+				> * {
+					color: var(--bg-color);
+				}
+			}
+			&:active {
+				background: var(--fg-color);
 				&,
 				> * {
 					color: var(--bg-color);
@@ -489,10 +495,6 @@ main[data-css="atom_io_devtools"] {
 		border: none;
 		cursor: pointer;
 		background: none;
-		&:focus-within {
-			outline: none;
-			background: none;
-		}
 		> .json_editor_icon {
 			line-height: 4px;
 		}
