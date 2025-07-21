@@ -74,9 +74,12 @@ const countAtoms = atomFamily<number, string>({
 findState(countAtoms, "A")
 findState(countAtoms, "B")
 findState(countAtoms, "C")
-const userAtoms = atomFamily<{ name: string }, string>({
+const userAtoms = atomFamily<
+	{ name: { first: string; last: string }; stats: Record<string, number> },
+	string
+>({
 	key: "users",
-	default: { name: "John Doe" },
+	default: { name: { first: "John", last: "Doe" }, stats: { a: 1, b: 2, c: 3 } },
 })
 findState(userAtoms, "A")
 findState(userAtoms, "B")

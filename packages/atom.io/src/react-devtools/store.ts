@@ -1,6 +1,8 @@
 import type {
+	AtomToken,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
+	SelectorToken,
 	TransactionToken,
 } from "atom.io"
 import {
@@ -10,7 +12,10 @@ import {
 	IMPLICIT,
 	type Store,
 } from "atom.io/internal"
-import type { IntrospectionStates } from "atom.io/introspection"
+import type {
+	IntrospectionStates,
+	WritableTokenIndex,
+} from "atom.io/introspection"
 import { attachIntrospectionStates, isPlainObject } from "atom.io/introspection"
 import { persistSync } from "atom.io/web"
 import type { Context } from "react"
@@ -80,15 +85,21 @@ export function attachDevtoolsStates(
 		key: `openCloseMultiView`,
 		do: ({ get, set }, path, current) => {
 			const currentView = get(devtoolsViewSelectionState)
-			const states =
-				currentView === `atoms`
-					? get(introspectionStates.atomIndex)
-					: currentView === `selectors`
-						? get(introspectionStates.selectorIndex)
-						: null
-			if (states === null) {
-				return
+			let states:
+				| WritableTokenIndex<AtomToken<unknown>>
+				| WritableTokenIndex<SelectorToken<unknown>>
+			switch (currentView) {
+				case `atoms`:
+					states = get(introspectionStates.atomIndex)
+					break
+				case `selectors`:
+					states = get(introspectionStates.selectorIndex)
+					break
+				case `transactions`:
+				case `timelines`:
+					return
 			}
+
 			switch (path.length) {
 				case 1:
 					{
@@ -97,49 +108,45 @@ export function attachDevtoolsStates(
 						}
 					}
 					break
-				default:
-					{
-						const item = states.get(path[0] as string)
-						let value: unknown
-						let segments: (number | string)[]
-						if (item) {
-							if (`familyMembers` in item) {
-								if (path.length === 2) {
-									for (const [subKey] of item.familyMembers) {
-										set(viewIsOpenAtoms, [path[0], subKey], !current)
-									}
-									return
+				default: {
+					const item = states.get(path[0] as string)
+					let value: unknown
+					let segments: (number | string)[]
+					if (item) {
+						if (`familyMembers` in item) {
+							if (path.length === 2) {
+								for (const [subKey] of item.familyMembers) {
+									set(viewIsOpenAtoms, [path[0], subKey], !current)
 								}
-								const token = item.familyMembers.get(path[1] as string)
-								if (!token) {
-									throw new Error(`familyMembers missing token`)
-								}
-								value = get(token)
-								segments = path.slice(2, -1)
-							} else {
-								value = get(item)
-								segments = path.slice(1, -1)
+								return
 							}
-							for (const segment of segments) {
-								if (value && typeof value === `object`) {
-									value = value[segment as keyof typeof value]
-								}
+							// biome-ignore lint/style/noNonNullAssertion: fine here
+							const token = item.familyMembers.get(path[1] as string)!
+							value = get(token)
+							segments = path.slice(2, -1)
+						} else {
+							value = get(item)
+							segments = path.slice(1, -1)
+						}
+						for (const segment of segments) {
+							if (value && typeof value === `object`) {
+								value = value[segment as keyof typeof value]
 							}
-							const head = path.slice(0, -1)
-							if (Array.isArray(value)) {
-								for (let i = 0; i < value.length; i++) {
-									set(viewIsOpenAtoms, [...head, i], !current)
-								}
-							} else {
-								if (isPlainObject(value)) {
-									for (const key of Object.keys(value)) {
-										set(viewIsOpenAtoms, [...head, key], !current)
-									}
+						}
+						const head = path.slice(0, -1)
+						if (Array.isArray(value)) {
+							for (let i = 0; i < value.length; i++) {
+								set(viewIsOpenAtoms, [...head, i], !current)
+							}
+						} else {
+							if (isPlainObject(value)) {
+								for (const key of Object.keys(value)) {
+									set(viewIsOpenAtoms, [...head, key], !current)
 								}
 							}
 						}
 					}
-					break
+				}
 			}
 		},
 	})
