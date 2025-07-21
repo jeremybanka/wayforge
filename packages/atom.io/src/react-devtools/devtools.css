@@ -3,7 +3,7 @@ main[data-css="atom_io_devtools"] {
 	--fg-light: #aaa;
 	--fg-soft: #888;
 	--fg-faint: #777;
-	--fg-hint: #666;
+	--fg-hint: #4a4a4a;
 	--fg-max: #fff;
 	--bg-color: #111;
 	--bg-accent: #00f;
@@ -47,7 +47,7 @@ main[data-css="atom_io_devtools"] {
 		overflow-y: scroll;
 	}
 	* {
-		font-size: 16px;
+		font-size: 14px;
 		font-family: theia, monospace;
 		line-height: 1em;
 		color: var(--fg-color);
@@ -312,17 +312,21 @@ main[data-css="atom_io_devtools"] {
 			width: 100%;
 			display: flex;
 			flex-flow: row;
-			align-items: baseline;
+			align-items: center;
 			overflow: hidden;
 			white-space: nowrap;
 			justify-content: space-between;
+			&:has(> main > button.carat) {
+				height: 21px;
+			}
 			> main {
 				display: flex;
 				flex-flow: row;
-				align-items: baseline;
-				height: 100%;
+				align-items: center;
 				flex-shrink: 1;
 				overflow-x: hidden;
+				/* height: 10%; */
+				align-self: center;
 				> .json_viewer {
 					flex-shrink: 1;
 					overflow-x: scroll;
@@ -390,8 +394,11 @@ main[data-css="atom_io_devtools"] {
 			padding-bottom: 6px;
 			cursor: pointer;
 			&:hover {
-				color: #333;
-				background-color: #aaa;
+				background-color: var(--fg-faint);
+				&,
+				> * {
+					color: var(--bg-color);
+				}
 			}
 		}
 		select {
@@ -432,7 +439,7 @@ main[data-css="atom_io_devtools"] {
 				flex-flow: row;
 				justify-content: flex-start;
 				justify-items: flex-start;
-				height: 23px;
+				height: 21px;
 				align-items: baseline;
 				position: relative;
 			}
@@ -443,8 +450,8 @@ main[data-css="atom_io_devtools"] {
 				.json_editor_element {
 					display: flex;
 					border-bottom: var(--fg-border-soft);
-					margin-bottom: 2px;
-					min-height: 23px;
+					margin-bottom: 0;
+					min-height: 21px;
 					> header {
 						> main {
 							> span {
