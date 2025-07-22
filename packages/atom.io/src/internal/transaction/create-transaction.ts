@@ -25,11 +25,13 @@ export function createTransaction<F extends Func>(
 	store: Store,
 	options: TransactionOptions<F>,
 ): TransactionToken<F> {
+	const { key } = options
+	const transactionAlreadyExists = store.transactions.has(key)
 	const newTransaction: Transaction<F> = {
-		key: options.key,
+		key,
 		type: `transaction`,
 		run: (params: Parameters<F>, id: string) => {
-			const childStore = buildTransaction(store, options.key, params, id)
+			const childStore = buildTransaction(store, key, params, id)
 			try {
 				const target = newest(store)
 				const { toolkit } = childStore.transactionMeta
@@ -38,7 +40,7 @@ export function createTransaction<F extends Func>(
 				return output
 			} catch (thrown) {
 				abortTransaction(target)
-				store.logger.warn(`💥`, `transaction`, options.key, `caught:`, thrown)
+				store.logger.warn(`💥`, `transaction`, key, `caught:`, thrown)
 				throw thrown
 			}
 		},
@@ -46,8 +48,10 @@ export function createTransaction<F extends Func>(
 		subject: new Subject(),
 	}
 	const target = newest(store)
-	target.transactions.set(newTransaction.key, newTransaction)
+	target.transactions.set(key, newTransaction)
 	const token = deposit(newTransaction)
-	store.on.transactionCreation.next(token)
+	if (!transactionAlreadyExists) {
+		store.on.transactionCreation.next(token)
+	}
 	return token
 }
