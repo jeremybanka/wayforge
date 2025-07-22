@@ -2,7 +2,14 @@ import "atom.io/react-devtools/css"
 
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import type { Loadable } from "atom.io"
-import { atom, atomFamily, findState, selector } from "atom.io"
+import {
+	atom,
+	atomFamily,
+	findState,
+	runTransaction,
+	selector,
+	transaction,
+} from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import { AtomIODevtools } from "atom.io/react-devtools"
 import { fn } from "storybook/test"
@@ -10,7 +17,21 @@ import { fn } from "storybook/test"
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta: Meta<typeof AtomIODevtools> = {
 	title: "AtomIODevtools",
-	component: AtomIODevtools,
+	component: () => (
+		<>
+			<button
+				style={{ position: "absolute", top: "10px", right: "10px" }}
+				type="button"
+				onClick={() => {
+					console.log("run")
+					runTransaction(myTX)()
+				}}
+			>
+				run
+			</button>
+			<AtomIODevtools />
+		</>
+	),
 	parameters: {
 		// Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
 		layout: "centered",
@@ -115,6 +136,10 @@ const objSelector = selector<Record<string, number>>({
 			b: evenSelections[0],
 		}
 	},
+})
+const myTX = transaction<() => number>({
+	key: "myTX",
+	do: () => 123,
 })
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
