@@ -24,7 +24,7 @@ const meta: Meta<typeof AtomIODevtools> = {
 				type="button"
 				onClick={() => {
 					console.log("run")
-					runTransaction(myTX)()
+					runTransaction(myTX)({ thing: ["hi"] })
 				}}
 			>
 				run
@@ -137,9 +137,17 @@ const objSelector = selector<Record<string, number>>({
 		}
 	},
 })
-const myTX = transaction<() => number>({
+const myTX = transaction<(param: object) => object>({
 	key: "myTX",
-	do: () => 123,
+	do: ({ set }) => {
+		set(countState, 0)
+		set(selectionsState, (prev) => [...prev, 4])
+		return {
+			a: 1,
+			b: 2,
+			c: { stuff: [1, 2, 3] },
+		}
+	},
 })
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
