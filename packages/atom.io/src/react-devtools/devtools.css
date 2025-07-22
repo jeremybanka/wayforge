@@ -86,14 +86,9 @@ main[data-css="atom_io_devtools"] {
 			}
 		}
 	}
+
 	> main {
 		background: var(--bg-tint1);
-	}
-	> main::before {
-		background-color: black;
-		height: 10px;
-	}
-	> main {
 		overflow-y: scroll;
 		flex-grow: 1;
 		display: flex;
@@ -222,8 +217,8 @@ main[data-css="atom_io_devtools"] {
 				main {
 					display: flex;
 					flex-flow: row wrap;
-					gap: 5px;
-					.transaction_update {
+					gap: 0;
+					article.transaction_update {
 						width: 100%;
 						display: flex;
 						flex-flow: row;
@@ -231,10 +226,15 @@ main[data-css="atom_io_devtools"] {
 						justify-content: flex-start;
 						justify-items: flex-start;
 						align-content: flex-start;
-						border-left: var(--fg-border);
+						/* border-left: var(--fg-border); */
+						border-left: none;
+						border-bottom: none;
 						border-top: var(--fg-border);
 						header {
+							height: 100%;
 							padding: 5px;
+							display: flex;
+							flex-flow: column;
 							h4 {
 								margin: 0;
 								padding: 0;
@@ -245,6 +245,7 @@ main[data-css="atom_io_devtools"] {
 							margin-left: 0;
 							display: flex;
 							flex-flow: column;
+							flex-grow: 1;
 							gap: 0px;
 							border-left: 1px solid #333;
 							section ~ section {
@@ -252,16 +253,22 @@ main[data-css="atom_io_devtools"] {
 							}
 							section {
 								padding: 5px;
+								border-bottom: none;
+								margin: 0;
 								&.transaction_output {
 									border-right: none;
 								}
 								&.transaction_impact {
 									padding: 5px;
 								}
-								margin: 0;
+
 								article {
+									padding: 3px 6px;
 									border-left: var(--fg-border);
 									border-right: var(--fg-border);
+									&:first-of-type {
+										border-top: var(--fg-border);
+									}
 									.summary {
 										white-space: nowrap;
 									}
@@ -271,6 +278,7 @@ main[data-css="atom_io_devtools"] {
 					}
 				}
 			}
+
 			section.timeline_log {
 				header {
 					display: flex;
@@ -311,6 +319,7 @@ main[data-css="atom_io_devtools"] {
 			}
 		}
 	}
+
 	> footer {
 		display: flex;
 		justify-content: flex-end;
