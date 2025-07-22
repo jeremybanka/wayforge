@@ -102,6 +102,9 @@ main[data-css="atom_io_devtools"] {
 		article.index {
 			margin-bottom: 24px;
 			border-top: var(--fg-border);
+			min-height: calc(100% - 24px);
+			display: flex;
+			flex-flow: column;
 			.node .node {
 				border-right: none;
 				padding-right: 0;
@@ -109,6 +112,14 @@ main[data-css="atom_io_devtools"] {
 				@media (prefers-color-scheme: light) {
 					background: #00000004;
 				}
+			}
+			.index-empty-state {
+				width: 100%;
+				height: 100%;
+				font-style: italic;
+				display: flex;
+				justify-content: center;
+				align-items: center;
 			}
 			.node > .node {
 				margin: 0px 0px 0px 9px;
