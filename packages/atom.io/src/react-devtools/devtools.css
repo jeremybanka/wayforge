@@ -148,6 +148,7 @@ main[data-css="atom_io_devtools"] {
 					height: 22px;
 					background: var(--bg-tint2);
 					border-bottom: none;
+					align-items: center;
 					> button {
 						border: none;
 					}
@@ -167,12 +168,12 @@ main[data-css="atom_io_devtools"] {
 						h2 {
 							margin: 0;
 						}
-						.detail {
-							margin-left: 5px;
-							color: #777;
-							@media (prefers-color-scheme: light) {
-								color: #999;
-							}
+					}
+					.detail {
+						margin-left: 5px;
+						color: #777;
+						@media (prefers-color-scheme: light) {
+							color: #999;
 						}
 					}
 					> .json_editor {
