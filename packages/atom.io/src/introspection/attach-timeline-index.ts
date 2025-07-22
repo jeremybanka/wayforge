@@ -1,16 +1,14 @@
-import type { ReadonlyPureSelectorToken, TimelineToken } from "atom.io"
+import type { AtomToken, TimelineToken } from "atom.io"
 import type { Store } from "atom.io/internal"
-import { createRegularAtom, createStandaloneSelector } from "atom.io/internal"
+import { createRegularAtom } from "atom.io/internal"
 
 export const attachTimelineIndex = (
 	store: Store,
-): ReadonlyPureSelectorToken<TimelineToken<any>[]> => {
-	const timelineTokenIndexState__INTERNAL = createRegularAtom<
-		TimelineToken<any>[]
-	>(
+): AtomToken<TimelineToken<any>[]> => {
+	return createRegularAtom<TimelineToken<any>[]>(
 		store,
 		{
-			key: `🔍 Timeline Token Index (Internal)`,
+			key: `🔍 Timeline Token Index`,
 			default: () =>
 				[...store.timelines].map(([key]): TimelineToken<any> => {
 					return { key, type: `timeline` }
@@ -28,9 +26,4 @@ export const attachTimelineIndex = (
 		},
 		undefined,
 	)
-	const timelineTokenIndex = createStandaloneSelector(store, {
-		key: `🔍 Timeline Token Index`,
-		get: ({ get }) => get(timelineTokenIndexState__INTERNAL),
-	})
-	return timelineTokenIndex
 }

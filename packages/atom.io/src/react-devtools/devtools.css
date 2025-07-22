@@ -137,6 +137,7 @@ main[data-css="atom_io_devtools"] {
 				&.transaction_update {
 					padding: 0;
 				}
+
 				> header {
 					display: flex;
 					flex-flow: row;
@@ -147,6 +148,9 @@ main[data-css="atom_io_devtools"] {
 					height: 22px;
 					background: var(--bg-tint2);
 					border-bottom: none;
+					> button {
+						border: none;
+					}
 					> main {
 						display: flex;
 						flex-flow: row;

@@ -1,4 +1,5 @@
 import type {
+	AtomToken,
 	Loadable,
 	ReadableToken,
 	ReadonlyPureSelectorToken,
@@ -7,6 +8,7 @@ import type {
 import {
 	actUponStore,
 	arbitrary,
+	disposeFromStore,
 	findInStore,
 	getFromStore,
 } from "atom.io/internal"
@@ -16,6 +18,7 @@ import { useI, useO } from "atom.io/react"
 import { type FC, useContext } from "react"
 
 import { button } from "./Button"
+import { DEFAULT_JSON_EDITOR_COMPONENTS } from "./json-editor"
 import { StoreEditor } from "./StateEditor"
 import { DevtoolsContext } from "./store"
 
@@ -25,7 +28,8 @@ export const StateIndexLeafNode: FC<{
 	node: ReadableToken<unknown>
 	isOpenState: RegularAtomToken<boolean>
 	typeState: ReadonlyPureSelectorToken<Loadable<string>>
-}> = ({ node, isOpenState, typeState }) => {
+	dispose?: (() => void) | undefined
+}> = ({ node, isOpenState, typeState, dispose }) => {
 	const { openCloseAllTX, store } = useContext(DevtoolsContext)
 
 	const setIsOpen = useI(isOpenState)
@@ -69,6 +73,16 @@ export const StateIndexLeafNode: FC<{
 				) : (
 					<div className="json_viewer">{JSON.stringify(state)}</div>
 				)}
+				{dispose ? (
+					<DEFAULT_JSON_EDITOR_COMPONENTS.Button
+						onClick={() => {
+							dispose?.()
+						}}
+						testid={`${node.key}-dispose`}
+					>
+						<DEFAULT_JSON_EDITOR_COMPONENTS.DeleteIcon />
+					</DEFAULT_JSON_EDITOR_COMPONENTS.Button>
+				) : null}
 			</header>
 			{isOpen && !isPrimitive ? (
 				<main>
@@ -120,6 +134,9 @@ export const StateIndexTreeNode: FC<{
 							node={childNode}
 							isOpenState={findInStore(store, viewIsOpenAtoms, [node.key, key])}
 							typeState={findInStore(store, typeSelectors, childNode.key)}
+							dispose={() => {
+								disposeFromStore(store, childNode)
+							}}
 						/>
 					))
 				: null}
@@ -131,7 +148,8 @@ export const StateIndexNode: FC<{
 	node: FamilyNode<ReadableToken<unknown>> | ReadableToken<unknown>
 	isOpenState: RegularAtomToken<boolean>
 	typeState: ReadonlyPureSelectorToken<Loadable<string>>
-}> = ({ node, isOpenState, typeState }) => {
+	dispose?: () => void
+}> = ({ node, isOpenState, typeState, dispose }) => {
 	return (
 		<section className="node state" data-testid={`state-${node.key}`}>
 			{`type` in node ? (
@@ -139,6 +157,7 @@ export const StateIndexNode: FC<{
 					node={node}
 					isOpenState={isOpenState}
 					typeState={typeState}
+					dispose={dispose}
 				/>
 			) : (
 				<StateIndexTreeNode node={node} isOpenState={isOpenState} />
@@ -148,9 +167,7 @@ export const StateIndexNode: FC<{
 }
 
 export const StateIndex: FC<{
-	tokenIndex: ReadonlyPureSelectorToken<
-		WritableTokenIndex<ReadableToken<unknown>>
-	>
+	tokenIndex: AtomToken<WritableTokenIndex<ReadableToken<unknown>>>
 }> = ({ tokenIndex }) => {
 	const tokenIds = useO(tokenIndex)
 
