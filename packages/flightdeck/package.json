@@ -58,7 +58,7 @@
 		"json-schema-to-zod": "2.6.1",
 		"rimraf": "6.0.1",
 		"tmp": "0.2.3",
-		"tsdown": "0.12.9",
+		"tsdown": "0.13.0",
 		"varmint": "workspace:*",
 		"vitest": "3.2.4"
 	}
