@@ -27,15 +27,15 @@ export const TransactionLog: FC<{
 			data-testid={`transaction-${token.key}`}
 		>
 			<header>
-				<button.OpenClose
-					isOpen={isOpen}
-					testid={`open-close-transaction-${token.key}`}
-					setIsOpen={setIsOpen}
-				/>
 				<main>
+					<button.OpenClose
+						isOpen={isOpen}
+						testid={`open-close-transaction-${token.key}`}
+						setIsOpen={setIsOpen}
+					/>
 					<h2>{token.key}</h2>
-					<span className="detail length">({log.length})</span>
 				</main>
+				<span className="detail length">({log.length})</span>
 			</header>
 			{isOpen ? (
 				<main>
