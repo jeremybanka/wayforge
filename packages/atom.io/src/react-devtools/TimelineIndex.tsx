@@ -95,18 +95,22 @@ export const TimelineIndex: FC = () => {
 
 	return (
 		<article className="index timeline_index" data-testid="timeline-index">
-			{tokenIds
-				.filter((token) => !token.key.startsWith(`👁‍🗨`))
-				.map((token) => {
-					return (
-						<TimelineLog
-							key={token.key}
-							token={token}
-							isOpenState={findInStore(store, viewIsOpenAtoms, [token.key])}
-							timelineState={findInStore(store, timelineSelectors, token.key)}
-						/>
-					)
-				})}
+			{tokenIds.length === 0 ? (
+				<p className="index-empty-state">(no timelines)</p>
+			) : (
+				tokenIds
+					.filter((token) => !token.key.startsWith(`👁‍🗨`))
+					.map((token) => {
+						return (
+							<TimelineLog
+								key={token.key}
+								token={token}
+								isOpenState={findInStore(store, viewIsOpenAtoms, [token.key])}
+								timelineState={findInStore(store, timelineSelectors, token.key)}
+							/>
+						)
+					})
+			)}
 		</article>
 	)
 }

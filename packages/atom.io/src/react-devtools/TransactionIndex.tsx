@@ -59,18 +59,22 @@ export const TransactionIndex: FC = () => {
 	const tokenIds = useO(transactionIndex)
 	return (
 		<article className="index transaction_index" data-testid="transaction-index">
-			{tokenIds
-				.filter((token) => !token.key.startsWith(`🔍`))
-				.map((token) => {
-					return (
-						<TransactionLog
-							key={token.key}
-							token={token}
-							isOpenState={findInStore(store, viewIsOpenAtoms, [token.key])}
-							logState={findInStore(store, transactionLogSelectors, token.key)}
-						/>
-					)
-				})}
+			{tokenIds.length === 0 ? (
+				<p className="index-empty-state">(no transactions)</p>
+			) : (
+				tokenIds
+					.filter((token) => !token.key.startsWith(`🔍`))
+					.map((token) => {
+						return (
+							<TransactionLog
+								key={token.key}
+								token={token}
+								isOpenState={findInStore(store, viewIsOpenAtoms, [token.key])}
+								logState={findInStore(store, transactionLogSelectors, token.key)}
+							/>
+						)
+					})
+			)}
 		</article>
 	)
 }

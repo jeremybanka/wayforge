@@ -155,19 +155,24 @@ export const StateIndex: FC<{
 	const tokenIds = useO(tokenIndex)
 
 	const { typeSelectors, viewIsOpenAtoms, store } = useContext(DevtoolsContext)
+	const statesName = tokenIndex.key.includes(`Atom`) ? `atoms` : `selectors`
 
 	return (
 		<article className="index state_index" data-testid="state-index">
-			{[...tokenIds.entries()].map(([key, node]) => {
-				return (
-					<StateIndexNode
-						key={key}
-						node={node}
-						isOpenState={findInStore(store, viewIsOpenAtoms, [node.key])}
-						typeState={findInStore(store, typeSelectors, node.key)}
-					/>
-				)
-			})}
+			{tokenIds.size === 0 ? (
+				<p className="index-empty-state">(no {statesName})</p>
+			) : (
+				[...tokenIds.entries()].map(([key, node]) => {
+					return (
+						<StateIndexNode
+							key={key}
+							node={node}
+							isOpenState={findInStore(store, viewIsOpenAtoms, [node.key])}
+							typeState={findInStore(store, typeSelectors, node.key)}
+						/>
+					)
+				})
+			)}
 		</article>
 	)
 }
