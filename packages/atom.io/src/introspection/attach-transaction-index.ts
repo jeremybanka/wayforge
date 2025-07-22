@@ -1,6 +1,10 @@
 import type { ReadonlyPureSelectorToken, TransactionToken } from "atom.io"
 import type { Func, Store } from "atom.io/internal"
-import { createRegularAtom, createStandaloneSelector } from "atom.io/internal"
+import {
+	createRegularAtom,
+	createStandaloneSelector,
+	isReservedIntrospectionKey,
+} from "atom.io/internal"
 
 export const attachTransactionIndex = (
 	store: Store,
@@ -11,15 +15,24 @@ export const attachTransactionIndex = (
 		store,
 		{
 			key: `🔍 Transaction Token Index (Internal)`,
-			default: () =>
-				[...store.transactions].map(([key]): TransactionToken<Func> => {
-					return { key, type: `transaction` }
-				}),
+			default: () => {
+				const tokens: TransactionToken<Func>[] = []
+				for (const [key] of store.transactions) {
+					if (isReservedIntrospectionKey(key)) {
+						continue
+					}
+					tokens.push({ key, type: `transaction` })
+				}
+				return tokens
+			},
 			effects: [
 				({ setSelf }) => {
 					store.on.transactionCreation.subscribe(
 						`introspection`,
 						(transactionToken) => {
+							if (isReservedIntrospectionKey(transactionToken.key)) {
+								return
+							}
 							setSelf((state) => [...state, transactionToken])
 						},
 					)
