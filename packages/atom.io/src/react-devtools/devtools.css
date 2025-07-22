@@ -101,9 +101,9 @@ main[data-css="atom_io_devtools"] {
 		gap: 0;
 		article.index {
 			margin-bottom: 24px;
-			border-bottom: var(--fg-border);
+			border-top: var(--fg-border);
 			.node .node {
-				border-right: var(--fg-border);
+				border-right: none;
 				padding-right: 0;
 				background: #ffffff08;
 				@media (prefers-color-scheme: light) {
@@ -113,11 +113,16 @@ main[data-css="atom_io_devtools"] {
 			.node > .node {
 				margin: 0px 0px 0px 9px;
 				border-left: var(--fg-border-soft);
+				&:first-of-type {
+					border-top: var(--fg-border-soft);
+				}
+				&:last-of-type {
+					border-bottom: none;
+				}
 			}
 			.node {
-				border-top: var(--fg-border);
+				border-bottom: var(--fg-border-soft);
 				overflow: visible;
-
 				&.transaction_update {
 					padding: 0;
 				}
