@@ -44,7 +44,7 @@
 		"ingt": "workspace:*"
 	},
 	"devDependencies": {
-		"@types/node": "24.0.15",
+		"@types/node": "24.1.0",
 		"@types/tmp": "0.2.6",
 		"concurrently": "9.2.0",
 		"eslint": "9.31.0",
