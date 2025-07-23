@@ -163,7 +163,7 @@ export const JsonEditor_INTERNAL = <T,>({
 					{remove ? (
 						<Components.Button
 							disabled={disabled}
-							onClick={() => {
+							fn={() => {
 								remove()
 							}}
 							testid={`${testid}-delete`}

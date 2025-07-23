@@ -5,23 +5,39 @@ export const OpenClose: FC<{
 	isOpen: boolean
 	setIsOpen?: ((next: Modify<boolean> | boolean) => void) | undefined
 	onShiftClick?: (
-		event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+		event:
+			| React.KeyboardEvent<HTMLButtonElement>
+			| React.MouseEvent<HTMLButtonElement, MouseEvent>,
 	) => boolean
 	disabled?: boolean
 	testid: string
 }> = ({ isOpen, setIsOpen, onShiftClick, disabled, testid }) => {
+	function fn(
+		event:
+			| React.KeyboardEvent<HTMLButtonElement>
+			| React.MouseEvent<HTMLButtonElement, MouseEvent>,
+	) {
+		if (onShiftClick && event.shiftKey) {
+			if (!onShiftClick(event)) {
+				return
+			}
+		}
+		setIsOpen?.((prev) => !prev)
+	}
 	return (
 		<button
 			type="button"
 			data-testid={testid}
 			className={`carat ${isOpen ? `open` : `closed`}`}
-			onClick={(event) => {
-				if (onShiftClick && event.shiftKey) {
-					if (!onShiftClick(event)) {
-						return
-					}
+			onMouseDown={fn}
+			onKeyDown={(event) => {
+				switch (event.key) {
+					case `Enter`:
+					case ` `:
+						fn(event)
+						break
+					default:
 				}
-				setIsOpen?.((prev) => !prev)
 			}}
 			disabled={disabled}
 		>
