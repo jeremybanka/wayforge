@@ -343,7 +343,6 @@ main[data-css="atom_io_devtools"] {
 	}
 
 	> footer {
-		position: relative;
 		z-index: 10000;
 		display: flex;
 		justify-content: flex-end;
