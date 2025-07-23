@@ -48,10 +48,10 @@ export const StateIndexLeafNode: FC<{
 		<>
 			<header>
 				<main
-					onMouseDown={() => {
+					onClick={() => {
 						console.log(node, getFromStore(store, node))
 					}}
-					onKeyDown={() => {
+					onKeyUp={() => {
 						console.log(node, getFromStore(store, node))
 					}}
 				>
@@ -76,7 +76,7 @@ export const StateIndexLeafNode: FC<{
 					)}
 					{dispose ? (
 						<DEFAULT_JSON_EDITOR_COMPONENTS.Button
-							fn={() => {
+							onClick={() => {
 								dispose?.()
 							}}
 							testid={`${node.key}-dispose`}

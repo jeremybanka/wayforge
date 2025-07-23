@@ -14,7 +14,7 @@ export type JsonEditorComponents = {
 	ErrorBoundary: WC
 
 	Button: WC<{
-		fn?: () => void
+		onClick?: () => void
 		disabled?: boolean
 	}>
 	DeleteIcon: FC
@@ -39,11 +39,11 @@ export type JsonEditorComponents = {
 
 export const DEFAULT_JSON_EDITOR_COMPONENTS: JsonEditorComponents = {
 	ErrorBoundary: ({ children }) => <ErrorBoundary>{children}</ErrorBoundary>,
-	Button: ({ fn, children, disabled, testid }) => (
+	Button: ({ onClick, children, disabled, testid }) => (
 		<button
 			type="button"
 			className="json_editor_button"
-			onMouseDown={fn}
+			onClick={onClick}
 			disabled={disabled}
 			data-testid={testid}
 		>
