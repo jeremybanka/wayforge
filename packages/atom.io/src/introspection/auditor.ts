@@ -2,7 +2,6 @@ import {
 	type AtomToken,
 	getState,
 	type ReadableToken,
-	type ReadonlyPureSelectorToken,
 	type SelectorToken,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
