@@ -25,8 +25,8 @@ export class Auditor {
 	public readonly store: Internal.Store
 	public auditorCreatedAt: number = performance.now()
 	public statesCreatedAt: Map<string, number> = new Map()
-	public readonly atomIndex: ReadonlyPureSelectorToken<AtomTokenIndex>
-	public readonly selectorIndex: ReadonlyPureSelectorToken<SelectorTokenIndex>
+	public readonly atomIndex: AtomToken<AtomTokenIndex>
+	public readonly selectorIndex: AtomToken<SelectorTokenIndex>
 	public disposed = false
 
 	private readonly unsubscribeFromAtomCreation: () => void
