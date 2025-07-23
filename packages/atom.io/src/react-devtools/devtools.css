@@ -95,10 +95,12 @@ main[data-css="atom_io_devtools"] {
 		flex-flow: column;
 		gap: 0;
 		article.index {
-			margin-bottom: 24px;
+			margin-bottom: 0px;
+			padding-bottom: 24px;
 			border-top: var(--fg-border);
 			min-height: calc(100% - 24px);
 			display: flex;
+			flex-shrink: 0;
 			flex-flow: column;
 			.node .node {
 				border-right: none;
@@ -118,6 +120,7 @@ main[data-css="atom_io_devtools"] {
 			}
 			.node > .node {
 				margin: 0px 0px 0px 9px;
+				width: calc(100% - 9px);
 				border-left: var(--fg-border-soft);
 				&:first-of-type {
 					border-top: var(--fg-border-soft);
@@ -127,13 +130,18 @@ main[data-css="atom_io_devtools"] {
 				}
 			}
 			.node {
+				position: relative;
 				border-bottom: var(--fg-border-soft);
 				overflow: visible;
+				width: 100%;
+				display: flex;
+				flex-flow: column;
 				&.transaction_update {
 					padding: 0;
 				}
 
 				> header {
+					width: auto;
 					display: flex;
 					flex-flow: row;
 					justify-content: space-between;
@@ -144,10 +152,10 @@ main[data-css="atom_io_devtools"] {
 					background: var(--bg-tint2);
 					border-bottom: none;
 					align-items: center;
-					> button {
-						border: none;
-					}
+					overflow: hidden;
+
 					> main {
+						height: 100%;
 						display: flex;
 						flex-flow: row;
 						cursor: help;
@@ -164,50 +172,64 @@ main[data-css="atom_io_devtools"] {
 							margin: 0;
 						}
 					}
+
+					> footer {
+						height: 100%;
+						width: fit-content;
+						min-width: 0;
+						display: flex;
+						border-left: var(--fg-border-soft);
+						justify-content: flex-start;
+						align-items: center;
+						flex-shrink: 1;
+						> button {
+							border: none;
+							background: none;
+						}
+						> .json_viewer {
+							color: var(--fg-light);
+							flex-shrink: 1;
+							overflow: scroll;
+							align-self: start;
+							align-items: flex-start;
+						}
+						> .json_editor,
+						> .json_viewer {
+							height: calc(100% - 2px);
+							display: flex;
+							flex-flow: row;
+							margin-right: 0px;
+							overflow-x: scroll;
+							align-items: center;
+							justify-content: flex-start;
+							white-space: pre;
+							background: var(--bg-tint2);
+							&:focus-within {
+								background-color: var(--bg-max);
+								outline: 2px solid var(--fg-max);
+								* {
+									color: var(--fg-max);
+								}
+							}
+							main {
+								height: 100%;
+							}
+							> span {
+								padding: 0px 5px;
+								z-index: 0;
+							}
+							input {
+								outline: none;
+								min-width: 10px;
+							}
+						}
+					}
+
 					.detail {
 						margin-left: 5px;
 						color: #777;
 						@media (prefers-color-scheme: light) {
 							color: #999;
-						}
-					}
-					> .json_editor {
-						border-left: var(--fg-border-soft);
-						padding: 3px 0px;
-					}
-					> .json_viewer {
-						color: var(--fg-light);
-						font-size: 14px;
-						flex-shrink: 1;
-					}
-					> .json_editor,
-					> .json_viewer {
-						margin-left: 3px;
-						display: flex;
-						flex-shrink: 1;
-						z-index: -1;
-						overflow-x: scroll;
-						align-items: center;
-						white-space: pre;
-						background: var(--bg-tint2);
-						&:focus-within {
-							background-color: var(--bg-max);
-							outline: 2px solid var(--fg-max);
-							* {
-								color: var(--fg-max);
-							}
-						}
-						&.nu * {
-							display: flex;
-							height: 100%;
-						}
-						> span {
-							padding: 0px 5px;
-							z-index: 0;
-						}
-						input {
-							outline: none;
-							min-width: 10px;
 						}
 					}
 				}
@@ -321,6 +343,8 @@ main[data-css="atom_io_devtools"] {
 	}
 
 	> footer {
+		position: relative;
+		z-index: 10000;
 		display: flex;
 		justify-content: flex-end;
 		button {
@@ -337,7 +361,6 @@ main[data-css="atom_io_devtools"] {
 	.json_editor {
 		display: flex;
 		flex-flow: column;
-		align-items: flex-start;
 		> header {
 			width: 100%;
 			display: flex;
@@ -353,9 +376,9 @@ main[data-css="atom_io_devtools"] {
 				display: flex;
 				flex-flow: row;
 				align-items: center;
+				align-self: center;
 				flex-shrink: 1;
 				overflow-x: hidden;
-				align-self: center;
 				padding-right: 2px;
 				> .json_viewer {
 					flex-shrink: 1;
