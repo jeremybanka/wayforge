@@ -174,28 +174,31 @@ main[data-css="atom_io_devtools"] {
 					}
 
 					> footer {
-						height: 100%;
+						height: 16px;
 						width: fit-content;
 						min-width: 0;
 						display: flex;
-						border-left: var(--fg-border-soft);
 						justify-content: flex-start;
 						align-items: center;
 						flex-shrink: 1;
 						> button {
 							border: none;
 							background: none;
+							border-left: var(--fg-border-soft);
 						}
 						> .json_viewer {
 							color: var(--fg-light);
 							flex-shrink: 1;
 							overflow: scroll;
-							align-self: start;
+							align-self: center;
 							align-items: flex-start;
 						}
 						> .json_editor,
 						> .json_viewer {
-							height: calc(100% - 2px);
+							height: 16px;
+							min-width: 10px;
+							padding-left: 4px;
+							padding-right: 2px;
 							display: flex;
 							flex-flow: row;
 							margin-right: 0px;
@@ -203,7 +206,7 @@ main[data-css="atom_io_devtools"] {
 							align-items: center;
 							justify-content: flex-start;
 							white-space: pre;
-							background: var(--bg-tint2);
+							border-left: var(--fg-border-soft);
 							&:focus-within {
 								background-color: var(--bg-max);
 								outline: 2px solid var(--fg-max);
@@ -220,7 +223,6 @@ main[data-css="atom_io_devtools"] {
 							}
 							input {
 								outline: none;
-								min-width: 10px;
 							}
 						}
 					}
@@ -248,7 +250,6 @@ main[data-css="atom_io_devtools"] {
 						justify-content: flex-start;
 						justify-items: flex-start;
 						align-content: flex-start;
-						/* border-left: var(--fg-border); */
 						border-left: none;
 						border-bottom: none;
 						border-top: var(--fg-border);
