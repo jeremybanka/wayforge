@@ -1,5 +1,15 @@
 # atom.io
 
+## 0.33.14
+
+### Patch Changes
+
+- 208b4a9: 🐛 Removed "openCloseAll" from default transactions list in `atom.io/react-devtools`.
+- 208b4a9: 💄 Improved appearance of JSON previews in `atom.io/react-devtools`.
+- 208b4a9: 💄 Added empty states for `atom.io/react-devtools` store indices.
+- 208b4a9: 🐛 No longer record transactions in the list multiple times.
+- 208b4a9: ✨ Added the ability to dispose of states in `atom.io/react-devtools`.
+
 ## 0.33.13
 
 ### Patch Changes
