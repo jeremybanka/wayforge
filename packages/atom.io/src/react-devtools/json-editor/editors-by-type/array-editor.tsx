@@ -110,7 +110,7 @@ export const ArrayEditor = ({
 					<Components.Button
 						testid={`${testid}-add-element`}
 						disabled={disabled}
-						fn={() => {
+						onClick={() => {
 							set((current) => {
 								const newData = [...current, JSON_DEFAULTS.string]
 								return newData

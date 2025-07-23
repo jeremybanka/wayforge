@@ -39,7 +39,7 @@ export const PropertyAdder: FC<PropertyAdderProps> = ({
 		{` `}
 		<ElasticInput disabled defaultValue="is missing" />
 		<Components.Button
-			fn={() => {
+			onClick={() => {
 				addProperty()
 			}}
 			disabled={disabled}
@@ -165,7 +165,7 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 					<Components.Button
 						disabled={disabled}
 						testid={`${testid}-add-property`}
-						fn={() => {
+						onClick={() => {
 							makePropertyAdder(`new_property`, `string`)()
 						}}
 					>
@@ -173,7 +173,7 @@ export const ObjectEditor = <T extends Json.Tree.Object>({
 					</Components.Button>
 					<Components.Button
 						testid={`${testid}-sort-properties`}
-						fn={() => {
+						onClick={() => {
 							sortProperties()
 						}}
 						disabled={disabled}
