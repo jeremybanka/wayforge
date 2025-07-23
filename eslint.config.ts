@@ -245,7 +245,7 @@ const configs = [
 		},
 	},
 	{
-		files: [`packages/atom.io/**/*.stories.ts`],
+		files: [`packages/atom.io/**/*.stories.ts{,x}`],
 		plugins: { storybook: StorybookPlugin as any as ESLint.Plugin },
 		rules: {
 			quotes: [ERROR, `double`],

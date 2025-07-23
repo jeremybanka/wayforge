@@ -1,8 +1,7 @@
-import type { AtomToken, ReadonlyPureSelectorToken } from "atom.io"
+import type { AtomToken } from "atom.io"
 import type { Store } from "atom.io/internal"
 import {
 	createRegularAtom,
-	createStandaloneSelector,
 	deposit,
 	isReservedIntrospectionKey,
 } from "atom.io/internal"
@@ -11,13 +10,11 @@ import type { WritableTokenIndex } from "."
 
 export type AtomTokenIndex = WritableTokenIndex<AtomToken<unknown>>
 
-export const attachAtomIndex = (
-	store: Store,
-): ReadonlyPureSelectorToken<AtomTokenIndex> => {
-	const atomTokenIndexState__INTERNAL = createRegularAtom<AtomTokenIndex>(
+export const attachAtomIndex = (store: Store): AtomToken<AtomTokenIndex> => {
+	return createRegularAtom<AtomTokenIndex>(
 		store,
 		{
-			key: `🔍 Atom Token Index (Internal)`,
+			key: `🔍 Atom Token Index`,
 			default: () => {
 				const base: AtomTokenIndex = new Map()
 				for (const [key, val] of store.atoms) {
@@ -66,7 +63,7 @@ export const attachAtomIndex = (
 							} else {
 								self.set(atomToken.key, atomToken)
 							}
-							return self
+							return new Map(self)
 						})
 					})
 					store.on.atomDisposal.subscribe(`introspection`, (atomToken) => {
@@ -80,10 +77,8 @@ export const attachAtomIndex = (
 										self.delete(familyKey)
 									}
 								}
-							} else {
-								self.delete(atomToken.key)
 							}
-							return self
+							return new Map(self)
 						})
 					})
 				},
@@ -91,8 +86,4 @@ export const attachAtomIndex = (
 		},
 		undefined,
 	)
-	return createStandaloneSelector(store, {
-		key: `🔍 Atom Token Index`,
-		get: ({ get }) => get(atomTokenIndexState__INTERNAL),
-	})
 }

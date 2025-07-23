@@ -82,7 +82,7 @@ export function attachDevtoolsStates(
 	> = createTransaction<
 		(path: readonly (number | string)[], current?: boolean) => void
 	>(store, {
-		key: `openCloseMultiView`,
+		key: `🔍 Open Close All`,
 		do: ({ get, set }, path, current) => {
 			const currentView = get(devtoolsViewSelectionState)
 			let states:
