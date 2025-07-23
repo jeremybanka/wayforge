@@ -68,21 +68,23 @@ export const StateIndexLeafNode: FC<{
 					<h2>{node.family?.subKey ?? node.key}</h2>
 					<span className="type detail">({stateType})</span>
 				</main>
-				{isPrimitive ? (
-					<StoreEditor token={node} />
-				) : (
-					<div className="json_viewer">{JSON.stringify(state)}</div>
-				)}
-				{dispose ? (
-					<DEFAULT_JSON_EDITOR_COMPONENTS.Button
-						onClick={() => {
-							dispose?.()
-						}}
-						testid={`${node.key}-dispose`}
-					>
-						<DEFAULT_JSON_EDITOR_COMPONENTS.DeleteIcon />
-					</DEFAULT_JSON_EDITOR_COMPONENTS.Button>
-				) : null}
+				<footer>
+					{isPrimitive ? (
+						<StoreEditor token={node} />
+					) : (
+						<div className="json_viewer">{JSON.stringify(state)}</div>
+					)}
+					{dispose ? (
+						<DEFAULT_JSON_EDITOR_COMPONENTS.Button
+							onClick={() => {
+								dispose?.()
+							}}
+							testid={`${node.key}-dispose`}
+						>
+							<DEFAULT_JSON_EDITOR_COMPONENTS.DeleteIcon />
+						</DEFAULT_JSON_EDITOR_COMPONENTS.Button>
+					) : null}
+				</footer>
 			</header>
 			{isOpen && !isPrimitive ? (
 				<main>
