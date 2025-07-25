@@ -9,7 +9,6 @@ import { selectJson } from "atom.io/json"
 
 import type { MutableAtom } from ".."
 import { cacheValue, setIntoStore } from ".."
-import { markAtomAsDefault } from "../atom"
 import { newest } from "../lineage"
 import { deposit, type Store } from "../store"
 import { Subject } from "../subject"
@@ -59,7 +58,6 @@ export function createMutableAtom<
 	}
 	const initialValue = def()
 	target.atoms.set(newAtom.key, newAtom)
-	markAtomAsDefault(store, key)
 	cacheValue(target, key, initialValue, subject)
 	const token = deposit(newAtom)
 	if (options.effects) {
