@@ -1,3 +1,5 @@
 export * from "./become"
+export * from "./reset-atom-or-selector"
+export * from "./reset-in-store"
 export * from "./set-atom-or-selector"
 export * from "./set-into-store"
