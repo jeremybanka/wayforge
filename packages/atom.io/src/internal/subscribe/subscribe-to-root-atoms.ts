@@ -11,13 +11,7 @@ export const subscribeToRootAtoms = <T>(
 ): (() => void)[] => {
 	const target = newest(store)
 	const dependencySubscriptions = traceAllSelectorAtoms(selector, store).map(
-		(atomKey) => {
-			const atom = target.atoms.get(atomKey)
-			if (atom === undefined) {
-				throw new Error(
-					`Atom "${atomKey}", a dependency of selector "${selector.key}", not found in store "${store.config.name}".`,
-				)
-			}
+		(atom) => {
 			return atom.subject.subscribe(
 				`${selector.type}:${selector.key}`,
 				(atomChange) => {
@@ -26,7 +20,7 @@ export const subscribeToRootAtoms = <T>(
 						selector.type,
 						selector.key,
 						`root`,
-						atomKey,
+						atom.key,
 						`went`,
 						atomChange.oldValue,
 						`->`,
