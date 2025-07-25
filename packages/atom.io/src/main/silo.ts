@@ -13,6 +13,7 @@ import {
 	getFromStore,
 	IMPLICIT,
 	installIntoStore,
+	resetInStore,
 	setIntoStore,
 	Store,
 	subscribeInStore,
@@ -30,6 +31,7 @@ import type {
 	undo,
 } from "."
 import type { atom, atomFamily } from "./atom"
+import type { resetState } from "./reset-state"
 import type { selector, selectorFamily } from "./selector"
 import type { runTransaction, transaction } from "./transaction"
 
@@ -44,6 +46,7 @@ export class Silo {
 	public findState: typeof findState
 	public getState: typeof getState
 	public setState: typeof setState
+	public resetState: typeof resetState
 	public disposeState: typeof disposeState
 	public subscribe: typeof subscribe
 	public undo: typeof undo
@@ -70,6 +73,9 @@ export class Silo {
 		this.setState = ((...params: Parameters<typeof setState>) => {
 			setIntoStore(s, ...params)
 		}) as typeof setState
+		this.resetState = ((...params: Parameters<typeof resetState>) => {
+			resetInStore(s, ...params)
+		}) as typeof resetState
 		this.disposeState = ((...params: Parameters<typeof disposeState>) => {
 			disposeFromStore(s, ...params)
 		}) as typeof disposeState
