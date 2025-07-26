@@ -51,7 +51,7 @@ export function createRegularAtomFamily<T, K extends Canonical>(
 		const def = options.default
 		const individualOptions: RegularAtomOptions<T> = {
 			key: fullKey,
-			default: def instanceof Function ? def(key) : def,
+			default: def instanceof Function ? () => def(key) : def,
 		}
 		if (options.effects) {
 			individualOptions.effects = options.effects(key)
