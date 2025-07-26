@@ -1,6 +1,6 @@
 import { act, fireEvent, render } from "@testing-library/react"
-import type { Logger, TimelineToken } from "atom.io"
-import { atom, redo, selector, timeline, undo } from "atom.io"
+import type { Loadable, Logger, TimelineToken } from "atom.io"
+import { atom, atomFamily, redo, selector, timeline, undo } from "atom.io"
 import * as Internal from "atom.io/internal"
 import * as AR from "atom.io/react"
 import type { FC } from "react"
@@ -279,5 +279,159 @@ describe(`timeline (dynamic)`, () => {
 		fireEvent.click(changeTimelineButton)
 		expect(timelineAt.textContent).toEqual(`0`)
 		expect(timelineLength.textContent).toEqual(`1`)
+	})
+})
+
+describe(`useLoadable`, () => {
+	test(`standalone, without a fallback`, async () => {
+		let loadLetter = (_: string) => {
+			console.warn(`loadLetter not attached`)
+		}
+
+		const letterAtom = atom<Loadable<string>>({
+			key: `letter`,
+			default: () =>
+				new Promise((resolve) => {
+					loadLetter = (letter: string) => {
+						resolve(letter)
+					}
+				}),
+		})
+
+		const Letter: FC = () => {
+			const letter = AR.useLoadable(letterAtom)
+			if (letter === `LOADING`) {
+				return (
+					<div data-testid="loading">
+						<div>Loading...</div>
+					</div>
+				)
+			}
+			return (
+				<div data-testid="not-loading">
+					<div data-testid={letter.value}>{letter.value}</div>
+				</div>
+			)
+		}
+		const utils = render(
+			<AR.StoreProvider>
+				<Letter />
+			</AR.StoreProvider>,
+		)
+		expect(utils.getByTestId(`loading`)).toBeTruthy()
+		await act(async () => {
+			loadLetter(`A`)
+			await new Promise((resolve) => setImmediate(resolve))
+		})
+		expect(utils.getByTestId(`not-loading`)).toBeTruthy()
+		expect(utils.getByTestId(`A`)).toBeTruthy()
+	})
+	test(`standalone, with a fallback`, async () => {
+		let loadLetter = (_: string) => {
+			console.warn(`loadLetter not attached`)
+		}
+
+		const letterAtom = atom<Loadable<string>>({
+			key: `letter`,
+			default: () =>
+				new Promise((resolve) => {
+					loadLetter = (letter: string) => {
+						resolve(letter)
+					}
+				}),
+		})
+
+		const Letter: FC = () => {
+			const letter = AR.useLoadable(letterAtom, `Z`)
+			return (
+				<div data-testid={letter.loading ? `loading` : `not-loading`}>
+					<div data-testid={letter.value}>{letter.value}</div>
+				</div>
+			)
+		}
+		const utils = render(
+			<AR.StoreProvider>
+				<Letter />
+			</AR.StoreProvider>,
+		)
+		expect(utils.getByTestId(`loading`)).toBeTruthy()
+		expect(utils.getByTestId(`Z`)).toBeTruthy()
+		await act(async () => {
+			loadLetter(`A`)
+			await new Promise((resolve) => setImmediate(resolve))
+		})
+		expect(utils.getByTestId(`not-loading`)).toBeTruthy()
+		expect(utils.getByTestId(`A`)).toBeTruthy()
+	})
+	test(`family, without a fallback`, () => {
+		const loadIndex: Record<number, () => void> = {}
+
+		const indexAtoms = atomFamily<Loadable<number[]>, number>({
+			key: `index`,
+			default: (key) =>
+				new Promise((resolve) => {
+					loadIndex[key] = () => {
+						resolve([1, 2, 3])
+					}
+				}),
+		})
+
+		const Letter: FC = () => {
+			const ids = AR.useLoadable(indexAtoms, 0)
+			if (ids === `LOADING`) {
+				return (
+					<div data-testid="loading">
+						<div>Loading...</div>
+					</div>
+				)
+			}
+			return (
+				<div data-testid="not-loading">
+					{ids.value.map((id) => (
+						<div key={id} data-testid={id}>
+							{id}
+						</div>
+					))}
+				</div>
+			)
+		}
+		const utils = render(
+			<AR.StoreProvider>
+				<Letter />
+			</AR.StoreProvider>,
+		)
+		expect(utils.getByTestId(`loading`)).toBeTruthy()
+	})
+	test(`family, with a fallback`, () => {
+		const loadIndex: Record<number, () => void> = {}
+
+		const indexAtoms = atomFamily<Loadable<number[]>, number>({
+			key: `index`,
+			default: (key) =>
+				new Promise((resolve) => {
+					loadIndex[key] = () => {
+						resolve([1, 2, 3])
+					}
+				}),
+		})
+
+		const Letter: FC = () => {
+			const ids = AR.useLoadable(indexAtoms, 0, [4, 5, 6])
+			return (
+				<div data-testid={ids.loading ? `loading` : `not-loading`}>
+					{ids.value.map((id) => (
+						<div key={id} data-testid={id}>
+							{id}
+						</div>
+					))}
+				</div>
+			)
+		}
+		const utils = render(
+			<AR.StoreProvider>
+				<Letter />
+			</AR.StoreProvider>,
+		)
+		expect(utils.getByTestId(`loading`)).toBeTruthy()
 	})
 })
