@@ -3,6 +3,7 @@ import {
 	atomFamily,
 	findState,
 	getState,
+	resetState,
 	selectorFamily,
 	setState,
 } from "atom.io"
@@ -31,6 +32,8 @@ describe(`atom families`, () => {
 		})
 		setState(findState(coordinateStates, `a`), { x: 1, y: 1 })
 		expect(getState(findState(coordinateStates, `a`))).toEqual({ x: 1, y: 1 })
+		resetState(coordinateStates, `a`)
+		expect(getState(coordinateStates, `a`)).toEqual({ x: 0, y: 0 })
 	})
 })
 
@@ -77,6 +80,10 @@ describe(`selector families`, () => {
 			x: Math.SQRT2 / 2 + 1,
 			y: Math.SQRT2 / 2 + 1,
 		})
+
+		resetState(distanceSelectors, [`a`, `b`])
+		expect(getState(pointAtoms, `a`)).toEqual({ x: 0, y: 0 })
+		expect(getState(pointAtoms, `b`)).toEqual({ x: 0, y: 0 })
 	})
 	it(`implicitly creates in an ephemeral store`, () => {
 		const arrayAtoms = atomFamily<number[], string>({

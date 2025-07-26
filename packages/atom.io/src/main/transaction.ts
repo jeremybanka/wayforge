@@ -16,6 +16,7 @@ import type {
 	TokenType,
 	WritablePureSelectorToken,
 } from "."
+import type { resetState } from "./reset-state"
 
 export type TransactionToken<F extends Func> = {
 	key: string
@@ -93,6 +94,7 @@ export type SetterToolkit = Readonly<{
 export type ActorToolkit = Readonly<{
 	get: typeof getState
 	set: typeof setState
+	reset: typeof resetState
 	find: typeof findState
 	json: <T extends Transceiver<any>, J extends Json.Serializable>(
 		state: MutableAtomToken<T, J>,

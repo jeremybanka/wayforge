@@ -51,6 +51,23 @@ describe(`transaction`, () => {
 		runTransaction(incrementTX)()
 		expect(getState(countState)).toEqual(1)
 	})
+	it(`resets state`, () => {
+		const countState = atom<number>({
+			key: `count`,
+			default: 0,
+		})
+		const resetTX = transaction({
+			key: `increment`,
+			do: ({ reset }) => {
+				reset(countState)
+			},
+		})
+		expect(getState(countState)).toEqual(0)
+		setState(countState, 1)
+		expect(getState(countState)).toEqual(1)
+		runTransaction(resetTX)()
+		expect(getState(countState)).toEqual(0)
+	})
 	it(`creates an atom in a transaction`, () => {
 		const pointStates = atomFamily<{ x: number; y: number }, number>({
 			key: `point`,

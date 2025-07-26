@@ -12,7 +12,6 @@ import type { Store } from "../store"
 import { deposit } from "../store"
 import { Subject } from "../subject"
 import { subscribeToState } from "../subscribe"
-import { markAtomAsDefault } from "./is-default"
 
 export function createRegularAtom<T>(
 	store: Store,
@@ -56,7 +55,6 @@ export function createRegularAtom<T>(
 		initialValue = def()
 	}
 	target.atoms.set(key, newAtom)
-	markAtomAsDefault(store, key)
 	cacheValue(target, key, initialValue, subject)
 	const token = deposit(newAtom)
 	if (options.effects) {

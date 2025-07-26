@@ -1,5 +1,12 @@
 import type { Logger } from "atom.io"
-import { atom, getState, selector, setState, subscribe } from "atom.io"
+import {
+	atom,
+	getState,
+	resetState,
+	selector,
+	setState,
+	subscribe,
+} from "atom.io"
 import * as Internal from "atom.io/internal"
 import { vitest } from "vitest"
 
@@ -51,7 +58,7 @@ describe(`atom`, () => {
 		})
 		expect(getState(count)).toBe(0)
 	})
-	it(`can be verified whether an atom is its default value`, () => {
+	it(`can be reset to its default value`, () => {
 		const stats = atom<Record<number, number>>({
 			key: `count`,
 			default: () => ({ 0: 0, 1: 0, 2: 0 }),
@@ -60,6 +67,9 @@ describe(`atom`, () => {
 
 		setState(stats, { 0: 1, 1: 0, 2: 0 })
 		expect(getState(stats)).toStrictEqual({ 0: 1, 1: 0, 2: 0 })
+
+		resetState(stats)
+		expect(getState(stats)).toStrictEqual({ 0: 0, 1: 0, 2: 0 })
 	})
 })
 
@@ -121,6 +131,23 @@ describe(`selector`, () => {
 		expect(getState(doublePlusOne)).toBe(21)
 		setState(doublePlusOne, 43)
 		expect(getState(count)).toBe(21)
+	})
+	it(`can be reset to its default value`, () => {
+		const count = atom<number>({
+			key: `count`,
+			default: 0,
+		})
+		const double = selector<number>({
+			key: `double`,
+			get: ({ get }) => get(count) * 2,
+			set: ({ set }, newValue) => {
+				set(count, newValue / 2)
+			},
+		})
+		setState(count, 1)
+		expect(getState(double)).toBe(2)
+		resetState(double)
+		expect(getState(double)).toBe(0)
 	})
 	it(`may depend on more than one atom or selector`, () => {
 		const firstNameState = atom<string>({

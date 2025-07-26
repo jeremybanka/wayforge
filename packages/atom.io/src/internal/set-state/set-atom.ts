@@ -1,7 +1,6 @@
 import type { KeyedStateUpdate } from "atom.io"
 
 import type { Atom, Store } from ".."
-import { isAtomDefault, markAtomAsNotDefault } from "../atom"
 import { cacheValue } from "../caching"
 import { readOrComputeValue } from "../get-state/read-or-compute-value"
 import { isTransceiver, type Transceiver } from "../mutable"
@@ -27,9 +26,6 @@ export const setAtom = <T>(
 	newValue = become(next)(newValue)
 	target.logger.info(`📝`, `atom`, atom.key, `set to`, newValue)
 	newValue = cacheValue(target, atom.key, newValue, atom.subject)
-	if (isAtomDefault(target, atom.key)) {
-		markAtomAsNotDefault(target, atom.key)
-	}
 	markDone(target, atom.key)
 	evictDownStream(target, atom)
 	const update = { oldValue, newValue }
