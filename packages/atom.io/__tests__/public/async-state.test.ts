@@ -71,13 +71,11 @@ describe(`async atom`, async () => {
 				})
 			},
 		})
-		console.log(`👀`, Internal.IMPLICIT.STORE.valueMap.get(`doubled`))
+		// console.log(`👀`, Internal.IMPLICIT.STORE.valueMap.get(`doubled`))
 		expect(Internal.IMPLICIT.STORE.valueMap.get(`doubled`)).toBeInstanceOf(
 			Internal.Future,
 		)
 		AtomIO.setState(countState, 1)
-		console.log(`set state`)
-		console.log(Internal.IMPLICIT.STORE.valueMap)
 		expect(Internal.IMPLICIT.STORE.valueMap.get(`doubled`)).toBeInstanceOf(
 			Internal.Future,
 		)
@@ -279,123 +277,109 @@ describe(`downstream from async`, () => {
 
 		const loadIndex: Record<number, () => void> = {}
 		const loadItems: Record<number, () => void> = {}
-		const indexRevalidationAtoms = AtomIO.atomFamily<number | null, number>({
-			key: `indexRevalidation`,
-			default: null,
-		})
-		const indexSelectors = AtomIO.selectorFamily<Loadable<number[]>, number>({
+
+		const indexAtoms = AtomIO.atomFamily<Loadable<number[]>, number>({
 			key: `index`,
-			get:
-				(key) =>
-				async ({ get }) => {
-					get(indexRevalidationAtoms, 0)
-					return new Promise((resolve) => {
-						loadIndex[key] = () => {
-							resolve([1, 2, 3])
-						}
-					})
-				},
+			default: (key) =>
+				new Promise((resolve) => {
+					loadIndex[key] = () => {
+						resolve([1, 2, 3])
+					}
+				}),
 		})
-		const itemRevalidationAtoms = AtomIO.atomFamily<number | null, number>({
-			key: `itemRevalidation`,
-			default: null,
-		})
-		const itemSelectors = AtomIO.selectorFamily<
-			Loadable<{ data: string }>,
-			number
-		>({
+		const itemAtoms = AtomIO.atomFamily<Loadable<{ data: string }>, number>({
 			key: `items`,
-			get:
-				(key) =>
-				async ({ get }) => {
-					get(itemRevalidationAtoms, key)
-					return new Promise<{ data: string }>((resolve) => {
-						loadItems[key] = () => {
-							resolve({ data: `${key}`.repeat(3) })
-						}
-					})
-				},
+			default: (key) =>
+				new Promise<{ data: string }>((resolve) => {
+					loadItems[key] = () => {
+						resolve({ data: `${key}`.repeat(3) })
+					}
+				}),
 		})
 
+		let idx = 0
 		const allItemsSelector = AtomIO.selector<Loadable<{ data: string }[]>>({
 			key: `allItems`,
 			get: async ({ get }) => {
+				const i = idx++
 				const orgId = await get(orgIdAtom)
-				const index = get(indexSelectors, orgId)
+				console.log(i, `👀`, orgId)
+				const index = get(indexAtoms, orgId)
+				console.log(i, `👀`, index)
 				const itemIds = await index
+				console.log(i, `👀`, itemIds)
 				const itemsLoadable = Promise.all(
-					itemIds.map((id) => get(itemSelectors, id)),
+					itemIds.map((id) => get(itemAtoms, id)),
 				)
+				console.log(i, `👀`, itemsLoadable)
 				return itemsLoadable
 			},
 		})
 
 		AtomIO.subscribe(allItemsSelector, ({ newValue, oldValue }) => {
-			console.log(`subscriber`, { newValue, oldValue })
+			console.log(`❗❗❗ subscriber`, {
+				newValue,
+				oldValue,
+				newValueEqualsOldValue: newValue === oldValue,
+			})
 			console.count(`subscriber`)
 			Utils.stdout({ newValue, oldValue })
 		})
 
-		console.log({
-			orgId: AtomIO.getState(orgIdAtom),
-			itemIds: AtomIO.getState(indexSelectors, 0),
-			item1: AtomIO.getState(itemSelectors, 1),
-			item2: AtomIO.getState(itemSelectors, 2),
-			item3: AtomIO.getState(itemSelectors, 3),
-			allItems: AtomIO.getState(allItemsSelector),
-		})
-
-		loadOrgId(0)
-		console.log({
-			orgId: AtomIO.getState(orgIdAtom),
-			itemIds: AtomIO.getState(indexSelectors, 0),
-			item1: AtomIO.getState(itemSelectors, 1),
-			item2: AtomIO.getState(itemSelectors, 2),
-			item3: AtomIO.getState(itemSelectors, 3),
-			allItems: AtomIO.getState(allItemsSelector),
-		})
-
+		expect(AtomIO.getState(indexAtoms, 0)).toBeInstanceOf(Internal.Future)
+		expect(AtomIO.getState(itemAtoms, 1)).toBeInstanceOf(Internal.Future)
+		expect(AtomIO.getState(itemAtoms, 2)).toBeInstanceOf(Internal.Future)
+		expect(AtomIO.getState(itemAtoms, 3)).toBeInstanceOf(Internal.Future)
+		expect(AtomIO.getState(allItemsSelector)).toBeInstanceOf(Internal.Future)
 		loadIndex[0]()
 		await new Promise((resolve) => setImmediate(resolve))
-		console.log({
-			orgId: AtomIO.getState(orgIdAtom),
-			itemIds: AtomIO.getState(indexSelectors, 0),
-			item1: AtomIO.getState(itemSelectors, 1),
-			item2: AtomIO.getState(itemSelectors, 2),
-			item3: AtomIO.getState(itemSelectors, 3),
-			allItems: AtomIO.getState(allItemsSelector),
-		})
+		expect(AtomIO.getState(indexAtoms, 0)).toEqual([1, 2, 3])
+		expect(AtomIO.getState(itemAtoms, 1)).toBeInstanceOf(Internal.Future)
+		expect(AtomIO.getState(itemAtoms, 2)).toBeInstanceOf(Internal.Future)
+		expect(AtomIO.getState(itemAtoms, 3)).toBeInstanceOf(Internal.Future)
+		expect(AtomIO.getState(allItemsSelector)).toBeInstanceOf(Internal.Future)
 		loadItems[1]()
 		await new Promise((resolve) => setImmediate(resolve))
-		console.log({
-			orgId: AtomIO.getState(orgIdAtom),
-			itemIds: AtomIO.getState(indexSelectors, 0),
-			item1: AtomIO.getState(itemSelectors, 1),
-			item2: AtomIO.getState(itemSelectors, 2),
-			item3: AtomIO.getState(itemSelectors, 3),
-			allItems: AtomIO.getState(allItemsSelector),
-		})
+		expect(AtomIO.getState(indexAtoms, 0)).toEqual([1, 2, 3])
+		expect(AtomIO.getState(itemAtoms, 1)).toEqual({ data: `1`.repeat(3) })
+		expect(AtomIO.getState(itemAtoms, 2)).toBeInstanceOf(Internal.Future)
+		expect(AtomIO.getState(itemAtoms, 3)).toBeInstanceOf(Internal.Future)
+		expect(AtomIO.getState(allItemsSelector)).toBeInstanceOf(Internal.Future)
 		loadItems[2]()
 		await new Promise((resolve) => setImmediate(resolve))
-		console.log({
-			orgId: AtomIO.getState(orgIdAtom),
-			itemIds: AtomIO.getState(indexSelectors, 0),
-			item1: AtomIO.getState(itemSelectors, 1),
-			item2: AtomIO.getState(itemSelectors, 2),
-			item3: AtomIO.getState(itemSelectors, 3),
-			allItems: AtomIO.getState(allItemsSelector),
-		})
-		console.log(`❗❗❗ loadItems[3]()`)
+		expect(AtomIO.getState(indexAtoms, 0)).toEqual([1, 2, 3])
+		expect(AtomIO.getState(itemAtoms, 1)).toEqual({ data: `1`.repeat(3) })
+		expect(AtomIO.getState(itemAtoms, 2)).toEqual({ data: `2`.repeat(3) })
+		expect(AtomIO.getState(itemAtoms, 3)).toBeInstanceOf(Internal.Future)
+		expect(AtomIO.getState(allItemsSelector)).toBeInstanceOf(Internal.Future)
 		loadItems[3]()
-		console.log(`post ❗❗❗ loadItems[3]()`)
 		await new Promise((resolve) => setImmediate(resolve))
-		console.log({
-			orgId: AtomIO.getState(orgIdAtom),
-			itemIds: AtomIO.getState(indexSelectors, 0),
-			item1: AtomIO.getState(itemSelectors, 1),
-			item2: AtomIO.getState(itemSelectors, 2),
-			item3: AtomIO.getState(itemSelectors, 3),
-			allItems: AtomIO.getState(allItemsSelector),
-		})
+		expect(AtomIO.getState(indexAtoms, 0)).toEqual([1, 2, 3])
+		expect(AtomIO.getState(itemAtoms, 1)).toEqual({ data: `1`.repeat(3) })
+		expect(AtomIO.getState(itemAtoms, 2)).toEqual({ data: `2`.repeat(3) })
+		expect(AtomIO.getState(itemAtoms, 3)).toEqual({ data: `3`.repeat(3) })
+		expect(AtomIO.getState(allItemsSelector)).toBeInstanceOf(Internal.Future)
+		loadOrgId(0)
+
+		AtomIO.resetState(indexAtoms, 0)
+		AtomIO.resetState(itemAtoms, 1)
+		expect(AtomIO.getState(indexAtoms, 0)).toBeInstanceOf(Internal.Future)
+		expect(AtomIO.getState(itemAtoms, 1)).toBeInstanceOf(Internal.Future)
+		expect(AtomIO.getState(itemAtoms, 2)).toEqual({ data: `2`.repeat(3) })
+		expect(AtomIO.getState(itemAtoms, 3)).toEqual({ data: `3`.repeat(3) })
+		expect(AtomIO.getState(allItemsSelector)).toBeInstanceOf(Internal.Future)
+
+		loadIndex[0]()
+		loadItems[1]()
+		await new Promise((resolve) => setImmediate(resolve))
+		expect(AtomIO.getState(indexAtoms, 0)).toEqual([1, 2, 3])
+		expect(AtomIO.getState(itemAtoms, 1)).toEqual({ data: `1`.repeat(3) })
+		expect(AtomIO.getState(itemAtoms, 2)).toEqual({ data: `2`.repeat(3) })
+		expect(AtomIO.getState(itemAtoms, 3)).toEqual({ data: `3`.repeat(3) })
+		expect(AtomIO.getState(allItemsSelector)).toEqual([
+			{ data: `1`.repeat(3) },
+			{ data: `2`.repeat(3) },
+			{ data: `3`.repeat(3) },
+		])
 	})
 })
