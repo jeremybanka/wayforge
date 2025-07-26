@@ -3,11 +3,11 @@ import {
 	atomFamily,
 	findState,
 	getState,
+	resetState,
 	selectorFamily,
 	setState,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
-import { resetState } from "atom.io/main/reset-state"
 import { vitest } from "vitest"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
