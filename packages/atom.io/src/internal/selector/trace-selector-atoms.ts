@@ -1,4 +1,4 @@
-import type { Selector, Store } from ".."
+import type { Atom, Selector, Store } from ".."
 import type { AtomKey, StateKey } from "../keys"
 import { isAtomKey } from "../keys"
 import { getSelectorDependencyKeys } from "./get-selector-dependency-keys"
@@ -37,13 +37,15 @@ export const traceSelectorAtoms = (
 export const traceAllSelectorAtoms = (
 	selector: Selector<any>,
 	store: Store,
-): AtomKey<unknown>[] => {
+): Atom<unknown>[] => {
 	const selectorKey = selector.key
 	const directDependencyKeys = getSelectorDependencyKeys(store, selectorKey)
 	const covered = new Set<string>()
-	return directDependencyKeys.flatMap((depKey) =>
-		isAtomKey(store, depKey)
-			? depKey
-			: traceSelectorAtoms(store, depKey, covered),
-	)
+	return directDependencyKeys
+		.flatMap((depKey) =>
+			isAtomKey(store, depKey)
+				? depKey
+				: traceSelectorAtoms(store, depKey, covered),
+		)
+		.map((atomKey) => store.atoms.get(atomKey) as Atom<unknown>)
 }

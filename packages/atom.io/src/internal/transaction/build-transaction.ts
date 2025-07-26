@@ -1,4 +1,10 @@
-import type { disposeState, findState, getState, setState } from "atom.io"
+import type {
+	disposeState,
+	findState,
+	getState,
+	resetState,
+	setState,
+} from "atom.io"
 
 import { arbitrary } from "../arbitrary"
 import { disposeFromStore, findInStore } from "../families"
@@ -8,7 +14,7 @@ import { Junction } from "../junction"
 import { LazyMap } from "../lazy-map"
 import { newest } from "../lineage"
 import { getJsonToken } from "../mutable"
-import { setIntoStore } from "../set-state"
+import { resetInStore, setIntoStore } from "../set-state"
 import type { Store } from "../store"
 import type { Func } from "../utility-types"
 import type { TransactionProgress } from "."
@@ -77,6 +83,9 @@ export const buildTransaction = (
 			set: ((...ps: Parameters<typeof setState>) => {
 				setIntoStore(child, ...ps)
 			}) as typeof setState,
+			reset: ((...ps: Parameters<typeof resetState>) => {
+				resetInStore(child, ...ps)
+			}) as typeof resetState,
 			run: (token, identifier = arbitrary()) =>
 				actUponStore(child, token, identifier),
 			find: ((...ps: Parameters<typeof findState>) =>

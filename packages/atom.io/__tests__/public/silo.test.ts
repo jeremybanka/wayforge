@@ -104,6 +104,14 @@ describe(`silo`, () => {
 		expect(Uno.getState(doubleCountSelectors__Uno, `a`)).toBe(2)
 		expect(Dos.getState(doubleCountSelectors__Dos, `b`)).toBe(4)
 
+		Uno.resetState(countState__Uno)
+		Dos.resetState(countState__Dos)
+
+		expect(Uno.getState(countState__Uno)).toBe(0)
+		expect(Dos.getState(countState__Dos)).toBe(0)
+		expect(Uno.getState(doubleCountSelectors__Uno, `a`)).toBe(0)
+		expect(Dos.getState(doubleCountSelectors__Dos, `b`)).toBe(0)
+
 		Uno.disposeState(countState__Uno)
 		Dos.disposeState(countState__Dos)
 
