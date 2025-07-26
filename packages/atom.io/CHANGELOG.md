@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.33.17
+
+### Patch Changes
+
+- 0dbd502: ✨ `atom.io/react` adds the new hook `useLoadable` to make it more convenient to handle asynchronously retrieved states when rendering.
+
 ## 0.33.16
 
 ### Patch Changes
