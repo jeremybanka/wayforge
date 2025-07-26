@@ -47,7 +47,7 @@ export function resetInStore<T>(
 			`❌`,
 			token.type,
 			token.key,
-			`could not be set because it was not found in the store "${store.config.name}".`,
+			`could not be reset because it was not found in the store "${store.config.name}".`,
 			disposal
 				? `This state was previously disposed:\n${disposal.trace}`
 				: `No previous disposal trace was found.`,
@@ -58,14 +58,14 @@ export function resetInStore<T>(
 	const rejectionTime = openOperation(store, token)
 	if (rejectionTime) {
 		const unsubscribe = store.on.operationClose.subscribe(
-			`waiting to set "${token.key}" at T-${rejectionTime}`,
+			`waiting to reset "${token.key}" at T-${rejectionTime}`,
 			() => {
 				unsubscribe()
 				store.logger.info(
 					`🟢`,
 					token.type,
 					token.key,
-					`resuming deferred setState from T-${rejectionTime}`,
+					`resuming deferred resetState from T-${rejectionTime}`,
 				)
 				resetInStore(store, token)
 			},
