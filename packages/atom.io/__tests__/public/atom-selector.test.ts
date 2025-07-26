@@ -1,7 +1,13 @@
 import type { Logger } from "atom.io"
-import { atom, getState, selector, setState, subscribe } from "atom.io"
+import {
+	atom,
+	getState,
+	resetState,
+	selector,
+	setState,
+	subscribe,
+} from "atom.io"
 import * as Internal from "atom.io/internal"
-import { resetState } from "atom.io/main/reset-state"
 import { vitest } from "vitest"
 
 import * as Utils from "../__util__"
