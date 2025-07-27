@@ -4,9 +4,10 @@
 	"version": "0.1.1",
 	"private": true,
 	"scripts": {
-		"dev": "concurrently \"npm:dev:*\"",
+		"env": "[ -f .env.development ] && echo '.env.development already present' || cp .env.defaults .env",
+		"dev": "bun run env && concurrently \"npm:dev:*\"",
 		"dev:next": "next dev -p 4500",
-		"build": "bun build:next",
+		"build": "bun run env && bun build:next",
 		"build:next": "next build",
 		"start": "next start -p 4545",
 		"lint:biome": "biome check -- .",
