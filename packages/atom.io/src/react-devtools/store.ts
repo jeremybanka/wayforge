@@ -24,9 +24,10 @@ import { createContext } from "react"
 type DevtoolsView = `atoms` | `selectors` | `timelines` | `transactions`
 
 export type DevtoolsStates = {
-	devtoolsAreOpenState: RegularAtomToken<boolean>
-	devtoolsViewSelectionState: RegularAtomToken<DevtoolsView>
-	devtoolsViewOptionsState: RegularAtomToken<DevtoolsView[]>
+	devtoolsAreHiddenAtom: RegularAtomToken<boolean>
+	devtoolsAreOpenAtom: RegularAtomToken<boolean>
+	devtoolsViewSelectionAtom: RegularAtomToken<DevtoolsView>
+	devtoolsViewOptionsAtom: RegularAtomToken<DevtoolsView[]>
 	viewIsOpenAtoms: RegularAtomFamilyToken<boolean, readonly (number | string)[]>
 	openCloseAllTX: TransactionToken<
 		(path: readonly (number | string)[], current?: boolean) => void
@@ -35,10 +36,30 @@ export type DevtoolsStates = {
 
 export function attachDevtoolsStates(
 	store: Store,
+	hideByDefault = false,
 ): DevtoolsStates & IntrospectionStates & { store: Store } {
 	const introspectionStates = attachIntrospectionStates(store)
 
-	const devtoolsAreOpenState = createStandaloneAtom<boolean>(store, {
+	const devtoolsAreHiddenAtom = createStandaloneAtom<boolean>(store, {
+		key: `🔍 Devtools Are Hidden`,
+		default: hideByDefault,
+		effects:
+			typeof window === `undefined`
+				? []
+				: [
+						persistSync(window.localStorage, JSON, `🔍 Devtools Are Hidden`),
+						({ setSelf }) => {
+							window.addEventListener(`keydown`, (e) => {
+								if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === `a`) {
+									e.preventDefault()
+									setSelf((state) => !state)
+								}
+							})
+						},
+					],
+	})
+
+	const devtoolsAreOpenAtom = createStandaloneAtom<boolean>(store, {
 		key: `🔍 Devtools Are Open`,
 		default: true,
 		effects:
@@ -47,7 +68,7 @@ export function attachDevtoolsStates(
 				: [persistSync(window.localStorage, JSON, `🔍 Devtools Are Open`)],
 	})
 
-	const devtoolsViewSelectionState = createStandaloneAtom<DevtoolsView>(store, {
+	const devtoolsViewSelectionAtom = createStandaloneAtom<DevtoolsView>(store, {
 		key: `🔍 Devtools View Selection`,
 		default: `atoms`,
 		effects:
@@ -56,7 +77,7 @@ export function attachDevtoolsStates(
 				: [persistSync(window.localStorage, JSON, `🔍 Devtools View`)],
 	})
 
-	const devtoolsViewOptionsState = createStandaloneAtom<DevtoolsView[]>(store, {
+	const devtoolsViewOptionsAtom = createStandaloneAtom<DevtoolsView[]>(store, {
 		key: `🔍 Devtools View Options`,
 		default: [`atoms`, `selectors`, `transactions`, `timelines`],
 		effects:
@@ -84,7 +105,7 @@ export function attachDevtoolsStates(
 	>(store, {
 		key: `🔍 Open Close All`,
 		do: ({ get, set }, path, current) => {
-			const currentView = get(devtoolsViewSelectionState)
+			const currentView = get(devtoolsViewSelectionAtom)
 			let states:
 				| WritableTokenIndex<AtomToken<unknown>>
 				| WritableTokenIndex<SelectorToken<unknown>>
@@ -153,9 +174,10 @@ export function attachDevtoolsStates(
 
 	return {
 		...introspectionStates,
-		devtoolsAreOpenState,
-		devtoolsViewSelectionState,
-		devtoolsViewOptionsState,
+		devtoolsAreHiddenAtom,
+		devtoolsAreOpenAtom,
+		devtoolsViewSelectionAtom,
+		devtoolsViewOptionsAtom,
 		viewIsOpenAtoms,
 		openCloseAllTX,
 		store,
