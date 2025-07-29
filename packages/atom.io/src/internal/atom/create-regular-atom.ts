@@ -6,7 +6,6 @@ import type {
 } from "atom.io"
 
 import { type RegularAtom, resetInStore, setIntoStore } from ".."
-import { cacheValue } from "../caching"
 import { newest } from "../lineage"
 import type { Store } from "../store"
 import { deposit } from "../store"
@@ -19,7 +18,7 @@ export function createRegularAtom<T>(
 	family: FamilyMetadata | undefined,
 ): RegularAtomToken<T> {
 	const type = `atom`
-	const { key, default: def } = options
+	const { key } = options
 	store.logger.info(
 		`🔨`,
 		`atom`,
