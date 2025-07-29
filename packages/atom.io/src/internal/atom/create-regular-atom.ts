@@ -50,12 +50,12 @@ export function createRegularAtom<T>(
 	if (family) {
 		newAtom.family = family
 	}
-	let initialValue = def
-	if (def instanceof Function) {
-		initialValue = def()
-	}
+	// let initialValue = def
+	// if (def instanceof Function) {
+	// 	initialValue = def()
+	// }
 	target.atoms.set(key, newAtom)
-	cacheValue(target, key, initialValue, subject)
+	// cacheValue(target, key, initialValue, subject)
 	const token = deposit(newAtom)
 	if (options.effects) {
 		let effectIndex = 0
