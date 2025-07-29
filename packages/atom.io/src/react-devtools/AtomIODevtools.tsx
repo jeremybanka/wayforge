@@ -70,6 +70,7 @@ const AtomIODevtoolsInternal = (): React.ReactNode => {
 					drag
 					dragConstraints={constraintsRef}
 					data-css="atom_io_devtools"
+					data-testid="devtools"
 					transition={{ type: `spring`, bounce: 0.25 }}
 					style={
 						devtoolsAreOpen
