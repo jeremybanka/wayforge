@@ -88,7 +88,7 @@ export const readCachedValue = <T>(
 	return value
 }
 
-export const evictCachedValue = (key: string, target: Store): void => {
+export const evictCachedValue = (target: Store, key: string): void => {
 	const currentValue = target.valueMap.get(key)
 	if (currentValue instanceof Future) {
 		const selector =
