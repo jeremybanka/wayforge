@@ -9,7 +9,6 @@ import {
 	createAtomFamily,
 	createStandaloneAtom,
 	createTransaction,
-	IMPLICIT,
 	type Store,
 } from "atom.io/internal"
 import type {
@@ -186,4 +185,4 @@ export function attachDevtoolsStates(
 
 export const DevtoolsContext: Context<
 	DevtoolsStates & IntrospectionStates & { store: Store }
-> = createContext(attachDevtoolsStates(IMPLICIT.STORE))
+> = createContext({})
