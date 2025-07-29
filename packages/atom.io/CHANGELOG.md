@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.33.19
+
+### Patch Changes
+
+- 3435018: 🐛 Fixed a bug with `atom.io/react-devtools` where the devtools, when using the implicit store, would not respect the value of the `hideByDefault` prop.
+
 ## 0.33.18
 
 ### Patch Changes
