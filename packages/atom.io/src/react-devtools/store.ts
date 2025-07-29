@@ -61,7 +61,7 @@ export function attachDevtoolsStates(
 
 	const devtoolsAreOpenAtom = createStandaloneAtom<boolean>(store, {
 		key: `🔍 Devtools Are Open`,
-		default: false,
+		default: true,
 		effects:
 			typeof window === `undefined`
 				? []
