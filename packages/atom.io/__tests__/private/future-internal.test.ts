@@ -69,4 +69,12 @@ describe(`Future`, () => {
 		future.use(2)
 		expect(await future.then((value) => value)).toBe(2)
 	})
+	it(`does nothing if told to use itself`, async () => {
+		const myPromise = new Promise<number>((resolve) => {
+			resolve(1)
+		})
+		const future = new Future<number>(myPromise)
+		future.use(future)
+		expect(await future).toBe(1)
+	})
 })
