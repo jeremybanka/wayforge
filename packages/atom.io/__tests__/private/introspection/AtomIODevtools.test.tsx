@@ -492,6 +492,28 @@ describe(`miscellaneous tool behavior`, () => {
 			throw new Error(`Expected element to not be found`)
 		})
 	})
+	test(`hiding/un-hiding the devtools`, async () => {
+		const { getByTestId } = scenario()
+
+		await waitFor(() => getByTestId(`devtools`))
+
+		act(() => {
+			fireEvent.keyDown(document.body, {
+				key: `a`,
+				ctrlKey: true,
+				shiftKey: true,
+			})
+		})
+
+		await waitFor(() => {
+			try {
+				getByTestId(`devtools`)
+			} catch (_) {
+				return
+			}
+			throw new Error(`Expected element to not be found`)
+		})
+	})
 })
 
 describe(`devtools multi-expand/collapse`, () => {
