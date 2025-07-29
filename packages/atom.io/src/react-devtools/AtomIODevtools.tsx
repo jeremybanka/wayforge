@@ -9,10 +9,12 @@ import { attachDevtoolsStates, DevtoolsContext } from "./store"
 import { TimelineIndex } from "./TimelineIndex"
 import { TransactionIndex } from "./TransactionIndex"
 
-export const AtomIODevtools: React.FC = () => {
+export const AtomIODevtools: React.FC<{ hideByDefault?: boolean }> = ({
+	hideByDefault = false,
+}) => {
 	const store = useContext(StoreContext)
 	return (
-		<DevtoolsContext.Provider value={attachDevtoolsStates(store)}>
+		<DevtoolsContext.Provider value={attachDevtoolsStates(store, hideByDefault)}>
 			<AtomIODevtoolsInternal />
 		</DevtoolsContext.Provider>
 	)
