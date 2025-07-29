@@ -23,10 +23,21 @@ export const createReadonlyPureSelector = <T>(
 	const type = `readonly_pure_selector` as const
 	const { get, find, json } = registerSelector(target, type, key, covered)
 	const getSelf = () => {
+		const innerTarget = newest(store)
+		const upstreamStates = innerTarget.selectorGraph.getRelationEntries({
+			downstreamSelectorKey: key,
+		})
+		for (const [downstreamSelectorKey, { source }] of upstreamStates) {
+			if (source !== key) {
+				innerTarget.selectorGraph.delete(downstreamSelectorKey, key)
+			}
+		}
+		innerTarget.selectorAtoms.delete(key)
 		const value = options.get({ get, find, json })
-		cacheValue(newest(store), key, value, subject)
+		const cached = cacheValue(innerTarget, key, value, subject)
+		store.logger.info(`✨`, type, key, `=`, cached)
 		covered.clear()
-		return value
+		return cached
 	}
 
 	const readonlySelector: ReadonlyPureSelector<T> = {
@@ -38,8 +49,6 @@ export const createReadonlyPureSelector = <T>(
 		...(family && { family }),
 	}
 	target.readonlySelectors.set(key, readonlySelector)
-	const initialValue = getSelf()
-	store.logger.info(`✨`, type, key, `=`, initialValue)
 	const token: ReadonlyPureSelectorToken<T> = {
 		key,
 		type,

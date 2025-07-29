@@ -90,12 +90,17 @@ describe(`lazy propagation system`, () => {
 			},
 		})
 
-		expect(Utils.stdout).toHaveBeenCalledWith(`selector0 evaluated`)
-		expect(Utils.stdout).toHaveBeenCalledWith(`selector1 evaluated`)
+		expect(Utils.stdout).not.toHaveBeenCalledWith(`selector0 evaluated`)
+		expect(Utils.stdout).not.toHaveBeenCalledWith(`selector1 evaluated`)
 
 		vitest.spyOn(Utils, `stdout`)
 
 		subscribe(selector0, Utils.stdout)
+		expect(Utils.stdout).toHaveBeenCalledWith(`selector0 evaluated`)
+		expect(Utils.stdout).not.toHaveBeenCalledWith(`selector1 evaluated`)
+
+		vitest.spyOn(Utils, `stdout`)
+
 		setState(a, 1)
 		expect(Utils.stdout).toHaveBeenCalledWith(`selector0 evaluated`)
 		expect(Utils.stdout).not.toHaveBeenCalledWith(`selector1 evaluated`)

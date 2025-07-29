@@ -30,7 +30,7 @@ export function cacheValue<T>(
 	subject: Subject<StateUpdate<unknown>>,
 ): Future<T> | T {
 	const currentValue = target.valueMap.get(key)
-	if (currentValue instanceof Future) {
+	if (currentValue instanceof Future && !currentValue.done) {
 		const future = currentValue
 		if (value instanceof Promise) {
 			future.use(value)
@@ -43,7 +43,7 @@ export function cacheValue<T>(
 		const future = new Future<T>(value)
 		target.valueMap.set(key, future)
 		future
-			.then((resolved) => {
+			.then(function handleResolvedFuture(resolved) {
 				const current = target.valueMap.get(key)
 				if (current === future) {
 					cacheValue(target, key, resolved, subject)
@@ -75,13 +75,14 @@ export function cacheValue<T>(
 }
 
 export const readCachedValue = <T>(
-	token: ReadableState<any>,
+	state: ReadableState<any>,
 	target: Store,
 ): T => {
-	let value = target.valueMap.get(token.key) as T
-	if (token.type === `mutable_atom` && isChildStore(target)) {
+	target.logger.info(`📖`, state.type, state.key, `reading cached value`)
+	let value = target.valueMap.get(state.key) as T
+	if (state.type === `mutable_atom` && isChildStore(target)) {
 		const { parent } = target
-		const copiedValue = copyMutableIfNeeded(target, token, parent)
+		const copiedValue = copyMutableIfNeeded(target, state, parent)
 		value = copiedValue
 	}
 	return value
@@ -90,11 +91,10 @@ export const readCachedValue = <T>(
 export const evictCachedValue = (key: string, target: Store): void => {
 	const currentValue = target.valueMap.get(key)
 	if (currentValue instanceof Future) {
-		const future = currentValue
 		const selector =
 			target.writableSelectors.get(key) ?? target.readonlySelectors.get(key)
 		if (selector) {
-			future.use(selector.get())
+			selector.get()
 		}
 		return
 	}
