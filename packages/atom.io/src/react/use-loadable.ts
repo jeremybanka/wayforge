@@ -69,11 +69,7 @@ export function useLoadable(
 		if (lastLoaded === `LOADING`) {
 			return `LOADING`
 		}
-		if (wrapper.loading === false) {
-			wrapper = wrapperRef.current = { loading: true, value: lastLoaded }
-		} else {
-			wrapper.value = lastLoaded
-		}
+		wrapper = wrapperRef.current = { loading: true, value: lastLoaded }
 	} else {
 		lastLoadedRef.current = state
 		if (wrapper.loading === true) {
