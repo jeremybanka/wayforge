@@ -220,7 +220,7 @@ describe(`selector`, () => {
 				return null
 			},
 		})
-		expect(Utils.stdout0).toHaveBeenCalledTimes(1)
+		expect(Utils.stdout0).toHaveBeenCalledTimes(0) // selectors do NOT initially evaluate
 		const unsubscribe = subscribe(trackedCountSelector, Utils.stdout)
 		expect(getState(trackedCountSelector)).toBe(null)
 		setState(countIsTrackedAtom, true)
@@ -274,5 +274,40 @@ describe(`selector`, () => {
 		expect(getState(countPlusFiveSelector)).toBe(5)
 		expect(getState(doubleCountPlusFifteenSelector)).toBe(15)
 		expect(getState(tripleCountPlusTwentySelector)).toBe(20)
+	})
+	it(`drops subscriptions to roots that are no longer gotten`, () => {
+		const countAtom = atom<number>({
+			key: `count`,
+			default: 0,
+		})
+		const fallbackAtom = atom<number>({
+			key: `fallback`,
+			default: 0,
+		})
+		const myDivergentSelector = selector<number>({
+			key: `myDivergentSelector`,
+			get: ({ get }) => {
+				Utils.stdout(`evaluated`)
+				const fallback = get(fallbackAtom)
+				if (fallback >= 10) {
+					return fallback
+				}
+				return get(countAtom)
+			},
+		})
+
+		getState(myDivergentSelector)
+
+		expect(Utils.stdout).toHaveBeenCalledTimes(1)
+
+		setState(countAtom, 1)
+		getState(myDivergentSelector)
+		expect(Utils.stdout).toHaveBeenCalledTimes(2)
+		setState(fallbackAtom, 10)
+		getState(myDivergentSelector)
+		expect(Utils.stdout).toHaveBeenCalledTimes(3)
+		setState(countAtom, 2)
+		getState(myDivergentSelector)
+		expect(Utils.stdout).toHaveBeenCalledTimes(3)
 	})
 })

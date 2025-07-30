@@ -44,6 +44,9 @@ export class Future<T> extends Promise<T> {
 	}
 
 	public use(value: Promise<T> | T): void {
+		if (this === value) {
+			return
+		}
 		if (value instanceof Promise) {
 			const promise = value
 			this.fate = promise

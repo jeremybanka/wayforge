@@ -14,7 +14,7 @@ import * as Utils from "../../__util__"
 
 console.warn = () => undefined
 console.error = () => undefined
-const DEBUG_LOGGING = false
+const DEBUG_LOGGING = true
 
 describe(`synchronizing transactions`, () => {
 	const runScenario = () => {
@@ -44,6 +44,7 @@ describe(`synchronizing transactions`, () => {
 				port: 5465,
 				immortal: { server: true },
 				server: ({ socket, silo: { store } }) => {
+					// enableLogging()
 					const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
 						socket,
 						store,
@@ -129,14 +130,14 @@ describe(`synchronizing transactions`, () => {
 
 	test(`client 1 -> server -> client 2`, async () => {
 		jane.renderResult.getByTestId(`0`)
-		act(() => {
+		await act(async () => {
 			dave.renderResult.getByTestId(`increment`).click()
+			await waitFor(() => jane.renderResult.getByTestId(`1`))
 		})
-		await waitFor(() => jane.renderResult.getByTestId(`1`))
 	})
 	test(`rollback`, async () => {
 		const { countState } = scenario
-
+		// jane.enableLogging()
 		// dave.enableLogging()
 
 		await waitFor(() => {
@@ -148,25 +149,23 @@ describe(`synchronizing transactions`, () => {
 
 		dave.socket.disconnect()
 
-		act(() => {
+		await act(async () => {
 			jane.renderResult.getByTestId(`increment`).click()
+			await waitFor(() => jane.renderResult.getByTestId(`1`))
+			await waitFor(() => server.silo.getState(countState) === 1)
 		})
-		await waitFor(() => server.silo.getState(countState) === 1)
 
-		act(() => {
+		await act(async () => {
 			dave.renderResult.getByTestId(`increment`).click()
+			await waitFor(() => dave.renderResult.getByTestId(`1`))
 		})
-
-		await waitFor(() => jane.renderResult.getByTestId(`1`))
-		await waitFor(() => dave.renderResult.getByTestId(`1`))
 
 		dave.socket.connect()
-		await waitFor(() => {
+		await waitFor(async () => {
 			Utils.throwUntil(dave.socket.connected)
+			await waitFor(() => jane.renderResult.getByTestId(`2`))
+			await waitFor(() => dave.renderResult.getByTestId(`2`))
 		})
-
-		await waitFor(() => jane.renderResult.getByTestId(`2`))
-		await waitFor(() => dave.renderResult.getByTestId(`2`), { timeout: 30000 })
 	})
 })
 

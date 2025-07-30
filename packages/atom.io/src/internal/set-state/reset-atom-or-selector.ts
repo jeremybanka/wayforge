@@ -1,5 +1,5 @@
 import type { Atom, WritableState } from ".."
-import { traceAllSelectorAtoms } from ".."
+import { traceRootSelectorAtoms } from ".."
 import type { Store } from "../store"
 import { setAtom } from "./set-atom"
 
@@ -23,8 +23,8 @@ export function resetAtomOrSelector(
 		case `writable_pure_selector`:
 		case `writable_held_selector`:
 			{
-				const atoms = traceAllSelectorAtoms(state, store)
-				for (const atom of atoms) {
+				const atoms = traceRootSelectorAtoms(store, state.key)
+				for (const atom of atoms.values()) {
 					resetAtom(store, atom)
 				}
 			}

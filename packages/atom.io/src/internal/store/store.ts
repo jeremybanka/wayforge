@@ -193,7 +193,6 @@ export class Store implements Lineage {
 			...config,
 		}
 		if (store !== null) {
-			this.valueMap = new Map(store?.valueMap)
 			this.operation = { ...store?.operation }
 			if (isRootStore(store)) {
 				this.transactionMeta = {

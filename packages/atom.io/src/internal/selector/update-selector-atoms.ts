@@ -2,7 +2,7 @@ import type { ReadonlyPureSelectorToken, WritableToken } from "atom.io"
 
 import { newest } from "../lineage"
 import type { Store } from "../store"
-import { traceSelectorAtoms } from "./trace-selector-atoms"
+import { traceRootSelectorAtoms } from "./trace-selector-atoms"
 
 export const updateSelectorAtoms = (
 	store: Store,
@@ -29,16 +29,16 @@ export const updateSelectorAtoms = (
 			`discovers root atom "${dependencyKey}"`,
 		)
 	} else {
-		const rootKeys = traceSelectorAtoms(store, dependencyKey, covered)
+		const rootKeys = traceRootSelectorAtoms(store, dependencyKey, covered)
 		store.logger.info(
 			`🔍`,
 			selectorType,
 			selectorKey,
-			`discovers root atoms: [ ${rootKeys
-				.map((key) => `"${key}"`)
+			`discovers root atoms: [ ${[...rootKeys.values()]
+				.map((root) => `"${root.key}"`)
 				.join(`, `)} ]`,
 		)
-		for (const atomKey of rootKeys) {
+		for (const { key: atomKey } of rootKeys.values()) {
 			target.selectorAtoms = target.selectorAtoms.set({
 				selectorKey,
 				atomKey,

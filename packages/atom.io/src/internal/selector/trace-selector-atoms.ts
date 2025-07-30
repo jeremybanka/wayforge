@@ -1,51 +1,29 @@
-import type { Atom, Selector, Store } from ".."
-import type { AtomKey, StateKey } from "../keys"
+import type { Atom, Store } from ".."
 import { isAtomKey } from "../keys"
 import { getSelectorDependencyKeys } from "./get-selector-dependency-keys"
 
-export const traceSelectorAtoms = (
+export const traceRootSelectorAtoms = (
 	store: Store,
-	directDependencyKey: StateKey<unknown>,
-	covered: Set<string>,
-): AtomKey<unknown>[] => {
-	const rootKeys: AtomKey<unknown>[] = []
+	selectorKey: string,
+	covered: Set<string> = new Set<string>(),
+): Map<string, Atom<unknown>> => {
+	const dependencies = getSelectorDependencyKeys(store, selectorKey)
 
-	const indirectDependencyKeys = getSelectorDependencyKeys(
-		store,
-		directDependencyKey,
-	)
-	while (indirectDependencyKeys.length > 0) {
+	const roots = new Map<string, Atom<unknown>>()
+
+	while (dependencies.length > 0) {
 		// biome-ignore lint/style/noNonNullAssertion: just checked length ^^^
-		const indirectDependencyKey = indirectDependencyKeys.shift()!
-		if (covered.has(indirectDependencyKey)) {
+		const dependencyKey = dependencies.pop()!
+		if (covered.has(dependencyKey)) {
 			continue
 		}
-		covered.add(indirectDependencyKey)
-
-		if (!isAtomKey(store, indirectDependencyKey)) {
-			indirectDependencyKeys.push(
-				...getSelectorDependencyKeys(store, indirectDependencyKey),
-			)
-		} else if (!rootKeys.includes(indirectDependencyKey)) {
-			rootKeys.push(indirectDependencyKey)
+		covered.add(dependencyKey)
+		if (isAtomKey(store, dependencyKey)) {
+			const atom = store.atoms.get(dependencyKey) as Atom<unknown>
+			roots.set(atom.key, atom)
+		} else {
+			dependencies.push(...getSelectorDependencyKeys(store, dependencyKey))
 		}
 	}
-
-	return rootKeys
-}
-
-export const traceAllSelectorAtoms = (
-	selector: Selector<any>,
-	store: Store,
-): Atom<unknown>[] => {
-	const selectorKey = selector.key
-	const directDependencyKeys = getSelectorDependencyKeys(store, selectorKey)
-	const covered = new Set<string>()
-	return directDependencyKeys
-		.flatMap((depKey) =>
-			isAtomKey(store, depKey)
-				? depKey
-				: traceSelectorAtoms(store, depKey, covered),
-		)
-		.map((atomKey) => store.atoms.get(atomKey) as Atom<unknown>)
+	return roots
 }
