@@ -1,9 +1,17 @@
 import { act, fireEvent, render } from "@testing-library/react"
 import type { Loadable, Logger, TimelineToken } from "atom.io"
-import { atom, atomFamily, redo, selector, timeline, undo } from "atom.io"
+import {
+	atom,
+	atomFamily,
+	redo,
+	resetState,
+	selector,
+	timeline,
+	undo,
+} from "atom.io"
 import * as Internal from "atom.io/internal"
 import * as AR from "atom.io/react"
-import type { FC } from "react"
+import { type FC, useEffect } from "react"
 
 import * as Utils from "../__util__"
 
@@ -61,7 +69,7 @@ describe(`single atom`, () => {
 		const changeStateButton = getByTestId(`changeStateButton`)
 		fireEvent.click(changeStateButton)
 		const option = getByTestId(`B`)
-		expect(option).toBeTruthy()
+		assert(option)
 		expect(setters.length).toBe(2)
 		expect(setters[0]).toBe(setters[1])
 	})
@@ -133,14 +141,14 @@ describe(`timeline`, () => {
 		const changeStateButtonC = getByTestId(`changeStateButtonC`)
 		fireEvent.click(changeStateButtonB)
 		const option = getByTestId(`B`)
-		expect(option).toBeTruthy()
+		assert(option)
 		const timelineAt = getByTestId(`timelineAt`)
 		expect(timelineAt.textContent).toEqual(`1`)
 		const timelineLength = getByTestId(`timelineLength`)
 		expect(timelineLength.textContent).toEqual(`1`)
 		fireEvent.click(changeStateButtonC)
 		const option2 = getByTestId(`C`)
-		expect(option2).toBeTruthy()
+		assert(option2)
 		expect(timelineAt.textContent).toEqual(`2`)
 		act(() => {
 			undo(letterTL)
@@ -262,7 +270,7 @@ describe(`timeline (dynamic)`, () => {
 		const timelineLength = getByTestId(`timelineLength`)
 		fireEvent.click(changeLetterButtonB)
 		const option = getByTestId(`B`)
-		expect(option).toBeTruthy()
+		assert(option)
 		expect(timelineAt.textContent).toEqual(`1`)
 		expect(timelineLength.textContent).toEqual(`1`)
 		fireEvent.click(changeTimelineButton)
@@ -270,7 +278,7 @@ describe(`timeline (dynamic)`, () => {
 		expect(timelineLength.textContent).toEqual(`0`)
 		fireEvent.click(changeNumberButton2)
 		const option2 = getByTestId(`2`)
-		expect(option2).toBeTruthy()
+		assert(option2)
 		expect(timelineAt.textContent).toEqual(`1`)
 		expect(timelineLength.textContent).toEqual(`1`)
 		act(() => {
@@ -318,13 +326,13 @@ describe(`useLoadable`, () => {
 				<Letter />
 			</AR.StoreProvider>,
 		)
-		expect(utils.getByTestId(`loading`)).toBeTruthy()
+		assert(utils.getByTestId(`loading`))
 		await act(async () => {
 			loadLetter(`A`)
 			await new Promise((resolve) => setImmediate(resolve))
 		})
-		expect(utils.getByTestId(`not-loading`)).toBeTruthy()
-		expect(utils.getByTestId(`A`)).toBeTruthy()
+		assert(utils.getByTestId(`not-loading`))
+		assert(utils.getByTestId(`A`))
 	})
 	test(`standalone, with a fallback`, async () => {
 		let loadLetter = (_: string) => {
@@ -354,16 +362,16 @@ describe(`useLoadable`, () => {
 				<Letter />
 			</AR.StoreProvider>,
 		)
-		expect(utils.getByTestId(`loading`)).toBeTruthy()
-		expect(utils.getByTestId(`Z`)).toBeTruthy()
+		assert(utils.getByTestId(`loading`))
+		assert(utils.getByTestId(`Z`))
 		await act(async () => {
 			loadLetter(`A`)
 			await new Promise((resolve) => setImmediate(resolve))
 		})
-		expect(utils.getByTestId(`not-loading`)).toBeTruthy()
-		expect(utils.getByTestId(`A`)).toBeTruthy()
+		assert(utils.getByTestId(`not-loading`))
+		assert(utils.getByTestId(`A`))
 	})
-	test(`family, without a fallback`, () => {
+	test(`family, without a fallback`, async () => {
 		const loadIndex: Record<number, () => void> = {}
 
 		const indexAtoms = atomFamily<Loadable<number[]>, number>({
@@ -400,9 +408,17 @@ describe(`useLoadable`, () => {
 				<Letter />
 			</AR.StoreProvider>,
 		)
-		expect(utils.getByTestId(`loading`)).toBeTruthy()
+		assert(utils.getByTestId(`loading`))
+		await act(async () => {
+			loadIndex[0]()
+			await new Promise((resolve) => setImmediate(resolve))
+		})
+		assert(utils.getByTestId(`not-loading`))
+		assert(utils.getByTestId(`1`))
+		assert(utils.getByTestId(`2`))
+		assert(utils.getByTestId(`3`))
 	})
-	test(`family, with a fallback`, () => {
+	test(`family, with a fallback`, async () => {
 		const loadIndex: Record<number, () => void> = {}
 
 		const indexAtoms = atomFamily<Loadable<number[]>, number>({
@@ -432,6 +448,79 @@ describe(`useLoadable`, () => {
 				<Letter />
 			</AR.StoreProvider>,
 		)
-		expect(utils.getByTestId(`loading`)).toBeTruthy()
+		assert(utils.getByTestId(`loading`))
+		await act(async () => {
+			loadIndex[0]()
+			await new Promise((resolve) => setImmediate(resolve))
+		})
+		assert(utils.getByTestId(`not-loading`))
+		assert(utils.getByTestId(`1`))
+		assert(utils.getByTestId(`2`))
+		assert(utils.getByTestId(`3`))
+	})
+	test(`referential identity`, async () => {
+		const uniqueRefs: unknown[] = []
+		let loadLetter = (_: string) => {
+			console.warn(`loadLetter not attached`)
+		}
+		const letterAtom = atom<Loadable<string>>({
+			key: `letter`,
+			default: () =>
+				new Promise((resolve) => {
+					loadLetter = (letter: string) => {
+						resolve(letter)
+					}
+				}),
+		})
+
+		const Letter: FC = () => {
+			const letter = AR.useLoadable(letterAtom)
+
+			useEffect(() => {
+				uniqueRefs.push(letter)
+			}, [letter])
+
+			if (letter === `LOADING`) {
+				return (
+					<div data-testid="loading">
+						<div>Loading...</div>
+					</div>
+				)
+			}
+			return (
+				<div data-testid={letter.loading ? `loading` : `not-loading`}>
+					<div data-testid={letter.value}>{letter.value}</div>
+				</div>
+			)
+		}
+
+		const utils = render(
+			<AR.StoreProvider>
+				<Letter />
+			</AR.StoreProvider>,
+		)
+		assert(utils.getByTestId(`loading`))
+		expect(uniqueRefs).toHaveLength(1)
+		await act(async () => {
+			loadLetter(`A`)
+			await new Promise((resolve) => setImmediate(resolve))
+		})
+		assert(utils.getByTestId(`not-loading`))
+		assert(utils.getByTestId(`A`))
+		expect(uniqueRefs).toHaveLength(2)
+		await act(async () => {
+			resetState(letterAtom)
+			await new Promise((resolve) => setImmediate(resolve))
+		})
+		assert(utils.getByTestId(`loading`))
+		assert(utils.getByTestId(`A`))
+		expect(uniqueRefs).toHaveLength(3)
+		await act(async () => {
+			loadLetter(`B`)
+			await new Promise((resolve) => setImmediate(resolve))
+		})
+		assert(utils.getByTestId(`not-loading`))
+		assert(utils.getByTestId(`B`))
+		expect(uniqueRefs).toHaveLength(4)
 	})
 })
