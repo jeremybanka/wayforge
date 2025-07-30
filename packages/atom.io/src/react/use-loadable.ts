@@ -31,7 +31,7 @@ export function useLoadable(
 		| readonly [ReadableToken<any>, unknown]
 		| readonly [ReadableToken<any>]
 ): `LOADING` | { loading: boolean; value: unknown } {
-	let loadable: ReadableToken<any>
+	let state: unknown
 	let fallback: unknown
 
 	const [token] = params
@@ -43,7 +43,7 @@ export function useLoadable(
 		case `readonly_pure_selector`:
 		case `writable_held_selector`:
 		case `writable_pure_selector`:
-			loadable = useO(token)
+			state = useO(token)
 			fallback = params[1]
 			break
 		case `atom_family`:
@@ -53,27 +53,32 @@ export function useLoadable(
 		case `writable_held_selector_family`:
 		case `writable_pure_selector_family`:
 			key = params[1] as Canonical
-			loadable = useO(token, key)
+			state = useO(token, key)
 			fallback = params[2]
 	}
 
+	const wrapperRef = React.useRef({ loading: false, value: null as unknown })
 	const lastLoadedRef = React.useRef(
-		fallback ?? (loadable instanceof Promise ? `LOADING` : loadable),
+		fallback ?? (state instanceof Promise ? `LOADING` : state),
 	)
+
 	const { current: lastLoaded } = lastLoadedRef
-	if (loadable instanceof Promise) {
+	let { current: wrapper } = wrapperRef
+
+	if (state instanceof Promise) {
 		if (lastLoaded === `LOADING`) {
 			return `LOADING`
 		}
-		return {
-			loading: true,
-			value: lastLoaded,
+		wrapper = wrapperRef.current = { loading: true, value: lastLoaded }
+	} else {
+		lastLoadedRef.current = state
+		if (wrapper.loading === true) {
+			wrapper = wrapperRef.current = { loading: false, value: state }
+		} else {
+			wrapper.loading = false
+			wrapper.value = state
 		}
 	}
 
-	lastLoadedRef.current = loadable
-	return {
-		loading: false,
-		value: loadable,
-	}
+	return wrapper
 }
