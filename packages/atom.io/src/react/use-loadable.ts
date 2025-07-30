@@ -57,23 +57,32 @@ export function useLoadable(
 			fallback = params[2]
 	}
 
+	const wrapperRef = React.useRef({ loading: false, value: null as unknown })
 	const lastLoadedRef = React.useRef(
 		fallback ?? (loadable instanceof Promise ? `LOADING` : loadable),
 	)
+
 	const { current: lastLoaded } = lastLoadedRef
+	let { current: wrapper } = wrapperRef
+
 	if (loadable instanceof Promise) {
 		if (lastLoaded === `LOADING`) {
 			return `LOADING`
 		}
-		return {
-			loading: true,
-			value: lastLoaded,
+		if (wrapper.loading === false) {
+			wrapper = wrapperRef.current = { loading: true, value: lastLoaded }
+		} else {
+			wrapper.value = lastLoaded
+		}
+	} else {
+		lastLoadedRef.current = loadable
+		if (wrapper.loading === true) {
+			wrapper = wrapperRef.current = { loading: false, value: loadable }
+		} else {
+			wrapper.loading = false
+			wrapper.value = loadable
 		}
 	}
 
-	lastLoadedRef.current = loadable
-	return {
-		loading: false,
-		value: loadable,
-	}
+	return wrapper
 }
