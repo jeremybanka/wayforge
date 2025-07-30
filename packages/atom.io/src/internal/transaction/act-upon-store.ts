@@ -10,6 +10,7 @@ export function actUponStore<F extends Func>(
 	token: TransactionToken<F>,
 	id: string,
 ): (...parameters: Parameters<F>) => ReturnType<F> {
+	// if (store.config.name === `jane`) debugger
 	return (...parameters: Parameters<F>): ReturnType<F> => {
 		const tx = withdraw(store, token)
 		if (tx) {
