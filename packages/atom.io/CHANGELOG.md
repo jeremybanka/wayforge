@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.34.0
+
+### Minor Changes
+
+- 0bf335a: 🚀 Atom.io becomes lazier. Now, atoms and selectors are not evaluated when declared, but wait until you `getState` to be computed. Strategies to add background eager evaluation are forthcoming.
+
 ## 0.33.21
 
 ### Patch Changes
