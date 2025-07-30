@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.33.20
+
+### Patch Changes
+
+- 6a25fd9: ✨ Add `resetState` to the atom `Effectors`.
+
 ## 0.33.19
 
 ### Patch Changes
