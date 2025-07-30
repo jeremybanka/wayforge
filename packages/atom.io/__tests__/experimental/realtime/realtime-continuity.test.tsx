@@ -43,7 +43,8 @@ describe(`synchronizing transactions`, () => {
 			RTTest.multiClient({
 				port: 5465,
 				immortal: { server: true },
-				server: ({ socket, silo: { store } }) => {
+				server: ({ socket, silo: { store }, enableLogging }) => {
+					enableLogging()
 					const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
 						socket,
 						store,
@@ -102,9 +103,9 @@ describe(`synchronizing transactions`, () => {
 		jane = scenario.clients.jane.init()
 		server = scenario.server
 		teardown = scenario.teardown
-		dave.silo.store.logger = Utils.createNullLogger()
-		jane.silo.store.logger = Utils.createNullLogger()
-		server.silo.store.logger = Utils.createNullLogger()
+		// dave.silo.store.logger = Utils.createNullLogger()
+		// jane.silo.store.logger = Utils.createNullLogger()
+		// server.silo.store.logger = Utils.createNullLogger()
 
 		vitest.spyOn(dave.silo.store.logger, `error`)
 		vitest.spyOn(dave.silo.store.logger, `warn`)
@@ -129,15 +130,15 @@ describe(`synchronizing transactions`, () => {
 
 	test(`client 1 -> server -> client 2`, async () => {
 		jane.renderResult.getByTestId(`0`)
-		act(() => {
+		await act(async () => {
 			dave.renderResult.getByTestId(`increment`).click()
+			await waitFor(() => jane.renderResult.getByTestId(`1`))
 		})
-		await waitFor(() => jane.renderResult.getByTestId(`1`))
 	})
 	test(`rollback`, async () => {
 		const { countState } = scenario
-
-		// dave.enableLogging()
+		jane.enableLogging()
+		dave.enableLogging()
 
 		await waitFor(() => {
 			Utils.throwUntil(jane.socket.connected)
@@ -148,25 +149,23 @@ describe(`synchronizing transactions`, () => {
 
 		dave.socket.disconnect()
 
-		act(() => {
+		await act(async () => {
 			jane.renderResult.getByTestId(`increment`).click()
+			await waitFor(() => jane.renderResult.getByTestId(`1`))
+			await waitFor(() => server.silo.getState(countState) === 1)
 		})
-		await waitFor(() => server.silo.getState(countState) === 1)
 
-		act(() => {
+		await act(async () => {
 			dave.renderResult.getByTestId(`increment`).click()
+			await waitFor(() => dave.renderResult.getByTestId(`1`))
 		})
-
-		await waitFor(() => jane.renderResult.getByTestId(`1`))
-		await waitFor(() => dave.renderResult.getByTestId(`1`))
 
 		dave.socket.connect()
-		await waitFor(() => {
+		await waitFor(async () => {
 			Utils.throwUntil(dave.socket.connected)
+			await waitFor(() => jane.renderResult.getByTestId(`2`))
+			await waitFor(() => dave.renderResult.getByTestId(`2`))
 		})
-
-		await waitFor(() => jane.renderResult.getByTestId(`2`))
-		await waitFor(() => dave.renderResult.getByTestId(`2`), { timeout: 30000 })
 	})
 })
 
