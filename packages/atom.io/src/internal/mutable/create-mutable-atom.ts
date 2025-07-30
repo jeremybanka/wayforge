@@ -8,7 +8,7 @@ import type { Json } from "atom.io/json"
 import { selectJson } from "atom.io/json"
 
 import type { MutableAtom } from ".."
-import { cacheValue, setIntoStore } from ".."
+import { cacheValue, resetInStore, setIntoStore } from ".."
 import { newest } from "../lineage"
 import { deposit, type Store } from "../store"
 import { Subject } from "../subject"
@@ -65,6 +65,9 @@ export function createMutableAtom<
 		const cleanupFunctions: (() => void)[] = []
 		for (const effect of options.effects) {
 			const cleanup = effect({
+				resetSelf: () => {
+					resetInStore(store, token)
+				},
 				setSelf: (next) => {
 					setIntoStore(store, token, next)
 				},
