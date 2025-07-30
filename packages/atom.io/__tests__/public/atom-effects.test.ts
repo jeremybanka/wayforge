@@ -75,6 +75,26 @@ describe(`atom effects`, () => {
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
 	})
+	it(`resets itself`, () => {
+		const mySubject = new Internal.Subject<string>()
+		const nameState = atom<string>({
+			key: `name`,
+			default: ``,
+			effects: [
+				({ resetSelf }) => {
+					mySubject.subscribe(`waiting to reset`, () => {
+						resetSelf()
+					})
+				},
+			],
+		})
+		setState(nameState, `Mavis`)
+		expect(getState(nameState)).toBe(`Mavis`)
+		mySubject.next(`reset`)
+		expect(getState(nameState)).toBe(``)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
+	})
 })
 
 describe(`atom effect cleanup`, () => {
