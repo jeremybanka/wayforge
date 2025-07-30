@@ -66,26 +66,19 @@ export function useLoadable(
 	let { current: wrapper } = wrapperRef
 
 	if (state instanceof Promise) {
-		console.log(`❓ state is a promise`)
 		if (lastLoaded === `LOADING`) {
-			console.log(`❓❓ lastLoaded is "LOADING"`)
 			return `LOADING`
 		}
 		if (wrapper.loading === false) {
-			console.log(`❓❓ wrapper.loading is false`)
 			wrapper = wrapperRef.current = { loading: true, value: lastLoaded }
 		} else {
-			console.log(`❓❓ wrapper.loading is true`)
 			wrapper.value = lastLoaded
 		}
 	} else {
-		console.log(`❓ state is not a promise`, state)
 		lastLoadedRef.current = state
 		if (wrapper.loading === true) {
-			console.log(`❓❓ wrapper.loading is true`)
 			wrapper = wrapperRef.current = { loading: false, value: state }
 		} else {
-			console.log(`❓❓ wrapper.loading is false`)
 			wrapper.loading = false
 			wrapper.value = state
 		}
