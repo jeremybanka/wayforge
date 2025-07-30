@@ -30,7 +30,7 @@
 	},
 	"dependencies": {
 		"@floating-ui/react": "0.27.15",
-		"@floating-ui/react-dom": "2.1.4",
+		"@floating-ui/react-dom": "2.1.5",
 		"anvl": "workspace:*",
 		"corners": "0.2.0",
 		"luum": "workspace:*",
