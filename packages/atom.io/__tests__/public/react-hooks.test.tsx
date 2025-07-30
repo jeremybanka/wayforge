@@ -6,6 +6,7 @@ import {
 	redo,
 	resetState,
 	selector,
+	setState,
 	timeline,
 	undo,
 } from "atom.io"
@@ -458,7 +459,7 @@ describe(`useLoadable`, () => {
 		assert(utils.getByTestId(`2`))
 		assert(utils.getByTestId(`3`))
 	})
-	test(`referential identity`, async () => {
+	test.only(`referential identity`, async () => {
 		const uniqueRefs: unknown[] = []
 		let loadLetter = (_: string) => {
 			console.warn(`loadLetter not attached`)
@@ -503,6 +504,7 @@ describe(`useLoadable`, () => {
 		expect(uniqueRefs).toHaveLength(1)
 		await act(async () => {
 			loadLetter(`A`)
+			console.log(`📝 loadLetter "A"`)
 			await new Promise((resolve) => setImmediate(resolve))
 		})
 		assert(utils.getByTestId(`not-loading`))
@@ -510,6 +512,7 @@ describe(`useLoadable`, () => {
 		expect(uniqueRefs).toHaveLength(2)
 		await act(async () => {
 			resetState(letterAtom)
+			console.log(`📝 resetState`)
 			await new Promise((resolve) => setImmediate(resolve))
 		})
 		assert(utils.getByTestId(`loading`))
@@ -517,10 +520,19 @@ describe(`useLoadable`, () => {
 		expect(uniqueRefs).toHaveLength(3)
 		await act(async () => {
 			loadLetter(`B`)
+			console.log(`📝 loadLetter "B"`)
 			await new Promise((resolve) => setImmediate(resolve))
 		})
 		assert(utils.getByTestId(`not-loading`))
 		assert(utils.getByTestId(`B`))
+		expect(uniqueRefs).toHaveLength(4)
+		await act(async () => {
+			setState(letterAtom, `C`)
+			console.log(`📝 resetState`)
+			await new Promise((resolve) => setImmediate(resolve))
+		})
+		assert(utils.getByTestId(`not-loading`))
+		assert(utils.getByTestId(`C`))
 		expect(uniqueRefs).toHaveLength(4)
 	})
 })
