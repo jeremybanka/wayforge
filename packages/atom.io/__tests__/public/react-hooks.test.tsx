@@ -3,6 +3,7 @@ import type { Loadable, Logger, TimelineToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
+	getState,
 	redo,
 	resetState,
 	selector,
@@ -461,17 +462,26 @@ describe(`useLoadable`, () => {
 	})
 	test(`referential identity`, async () => {
 		const uniqueRefs: unknown[] = []
-		let loadLetter = (_: string) => {
-			console.warn(`loadLetter not attached`)
+		const promises: Promise<string>[] = []
+		const loaders: ((letter: string) => void)[] = []
+		function loadLetter(...params: string[]) {
+			for (const letter of params) {
+				// biome-ignore lint/style/noNonNullAssertion: test will fail
+				loaders.shift()!(letter)
+			}
 		}
+
 		const letterAtom = atom<Loadable<string>>({
 			key: `letter`,
-			default: () =>
-				new Promise((resolve) => {
-					loadLetter = (letter: string) => {
+			default: () => {
+				const promise = new Promise<string>((resolve) => {
+					loaders.push((letter: string) => {
 						resolve(letter)
-					}
-				}),
+					})
+				})
+				promises.push(promise)
+				return promise
+			},
 		})
 
 		const Letter: FC = () => {
@@ -512,28 +522,30 @@ describe(`useLoadable`, () => {
 		expect(uniqueRefs).toHaveLength(2)
 		await act(async () => {
 			resetState(letterAtom)
+			resetState(letterAtom)
 			// console.log(`📝 resetState`)
 			await new Promise((resolve) => setImmediate(resolve))
 		})
 		assert(utils.getByTestId(`loading`))
 		assert(utils.getByTestId(`A`))
+
 		expect(uniqueRefs).toHaveLength(3)
 		await act(async () => {
-			loadLetter(`B`)
-			// console.log(`📝 loadLetter "B"`)
-			await new Promise((resolve) => setImmediate(resolve))
-		})
-		assert(utils.getByTestId(`not-loading`))
-		assert(utils.getByTestId(`B`))
-		expect(uniqueRefs).toHaveLength(4)
-		await act(async () => {
-			setState(letterAtom, `C`)
-			// console.log(`📝 resetState`)
+			// console.log(`📝 loadLetter "B", "C"`)
+			loadLetter(``, `C`)
 			await new Promise((resolve) => setImmediate(resolve))
 		})
 		assert(utils.getByTestId(`not-loading`))
 		assert(utils.getByTestId(`C`))
-		// expect(uniqueRefs).toHaveLength(4)
-		/* ^ ❗ I don't have an opinion on this yet ❗ ^ */
+		expect(uniqueRefs).toHaveLength(4)
+		await act(async () => {
+			setState(letterAtom, `D`)
+			// console.log(`📝 resetState`)
+			await new Promise((resolve) => setImmediate(resolve))
+		})
+		assert(utils.getByTestId(`not-loading`))
+		assert(utils.getByTestId(`D`))
+		expect(uniqueRefs).toHaveLength(4)
+		// /* ^ ❗ I don't have an opinion on this yet ❗ ^ */
 	})
 })
