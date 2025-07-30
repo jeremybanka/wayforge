@@ -33,6 +33,7 @@ export function cacheValue<T>(
 	if (currentValue instanceof Future) {
 		const future = currentValue
 		if (value instanceof Promise) {
+			future.use(value)
 			return future
 		}
 		target.valueMap.set(key, value)
