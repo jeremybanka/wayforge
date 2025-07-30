@@ -10,6 +10,8 @@ import {
 	setState,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
+import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
+import { SetRTX } from "atom.io/transceivers/set-rtx"
 import tmp from "tmp"
 import { vitest } from "vitest"
 
@@ -72,6 +74,50 @@ describe(`atom effects`, () => {
 		expect(getState(nameState)).toBe(`Mavis`)
 		setState(nameState, `Mavis2`)
 		expect(readFileSync(`${tmpDir.name}/name.txt`, `utf8`)).toBe(`Mavis2`)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
+	})
+	it(`resets itself`, () => {
+		const mySubject = new Internal.Subject<string>()
+		const nameState = atom<string>({
+			key: `name`,
+			default: ``,
+			effects: [
+				({ resetSelf }) => {
+					mySubject.subscribe(`waiting to reset`, () => {
+						resetSelf()
+					})
+				},
+			],
+		})
+		setState(nameState, `Mavis`)
+		expect(getState(nameState)).toBe(`Mavis`)
+		mySubject.next(`reset`)
+		expect(getState(nameState)).toBe(``)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
+	})
+	it(`resets itself (mutable)`, () => {
+		const mySubject = new Internal.Subject<string>()
+		const nameState = atom<SetRTX<string>, SetRTXJson<string>>({
+			key: `name`,
+			mutable: true,
+			default: () => new SetRTX(),
+			effects: [
+				({ resetSelf }) => {
+					mySubject.subscribe(`waiting to reset`, () => {
+						resetSelf()
+					})
+				},
+			],
+			toJson: (set) => set.toJSON(),
+			fromJson: (json) => SetRTX.fromJSON(json),
+		})
+		setState(nameState, (current) => current.add(`Cat`))
+		const setOriginal = getState(nameState)
+		mySubject.next(`reset`)
+		const setNew = getState(nameState)
+		expect(setNew).not.toBe(setOriginal)
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
 	})

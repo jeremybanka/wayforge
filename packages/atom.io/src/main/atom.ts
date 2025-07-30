@@ -41,6 +41,10 @@ export function atom(
 /** @public */
 export type Effectors<T> = {
 	/**
+	 * Reset the value of the atom to its default
+	 */
+	resetSelf: () => void
+	/**
 	 * Set the value of the atom
 	 * @param next - The new value of the atom, or a setter function
 	 */
