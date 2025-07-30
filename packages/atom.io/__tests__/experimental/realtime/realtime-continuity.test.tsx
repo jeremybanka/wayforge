@@ -12,9 +12,9 @@ import * as React from "react"
 
 import * as Utils from "../../__util__"
 
-console.warn = () => undefined
-console.error = () => undefined
-const DEBUG_LOGGING = false
+// console.warn = () => undefined
+// console.error = () => undefined
+const DEBUG_LOGGING = true
 
 describe(`synchronizing transactions`, () => {
 	const runScenario = () => {
