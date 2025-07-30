@@ -192,11 +192,6 @@ export const setupRealtimeTestClient = (
 			auth: { token: `test`, username: `${name}-${testNumber}` },
 		})
 		const silo = new AtomIO.Silo({ name, lifespan: `ephemeral` }, IMPLICIT.STORE)
-		for (const [key, value] of silo.store.valueMap.entries()) {
-			if (Array.isArray(value)) {
-				silo.store.valueMap.set(key, [...value])
-			}
-		}
 		silo.setState(RTC.myUsernameState, `${name}-${testNumber}`)
 
 		const { document } = new Happy.Window()
