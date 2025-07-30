@@ -29,8 +29,18 @@ export const createWritablePureSelector = <T>(
 	const getterToolkit = { find, get, json }
 
 	const getSelf = (getFn = options.get, innerTarget = newest(store)): T => {
+		const upstreamStates = innerTarget.selectorGraph.getRelationEntries({
+			downstreamSelectorKey: key,
+		})
+		for (const [downstreamSelectorKey, { source }] of upstreamStates) {
+			if (source !== key) {
+				innerTarget.selectorGraph.delete(downstreamSelectorKey, key)
+			}
+		}
+		innerTarget.selectorAtoms.delete(key)
 		const value = getFn(getterToolkit)
-		cacheValue(innerTarget, key, value, subject)
+		const cached = cacheValue(innerTarget, key, value, subject)
+		store.logger.info(`✨`, type, key, `=`, cached)
 		covered.clear()
 		return value
 	}

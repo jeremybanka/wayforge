@@ -8,7 +8,7 @@ import type { Json } from "atom.io/json"
 import { selectJson } from "atom.io/json"
 
 import type { MutableAtom } from ".."
-import { cacheValue, resetInStore, setIntoStore } from ".."
+import { resetInStore, setIntoStore } from ".."
 import { newest } from "../lineage"
 import { deposit, type Store } from "../store"
 import { Subject } from "../subject"
@@ -31,7 +31,7 @@ export function createMutableAtom<
 		`creating in store "${store.config.name}"`,
 	)
 	const target = newest(store)
-	const { key, default: def } = options
+	const { key } = options
 	const existing = target.atoms.get(key)
 	const type = `mutable_atom`
 	if (existing && existing.type === type) {
@@ -56,9 +56,7 @@ export function createMutableAtom<
 	if (family) {
 		newAtom.family = family
 	}
-	const initialValue = def()
 	target.atoms.set(newAtom.key, newAtom)
-	cacheValue(target, key, initialValue, subject)
 	const token = deposit(newAtom)
 	if (options.effects) {
 		let effectIndex = 0

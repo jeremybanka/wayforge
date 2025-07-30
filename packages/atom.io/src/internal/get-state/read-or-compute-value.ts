@@ -1,5 +1,5 @@
 import type { ReadableState } from ".."
-import { readCachedValue } from "../caching"
+import { cacheValue, readCachedValue } from "../caching"
 import type { Store } from "../store"
 
 export const readOrComputeValue = <T>(
@@ -7,7 +7,6 @@ export const readOrComputeValue = <T>(
 	state: ReadableState<T>,
 ): T => {
 	if (target.valueMap.has(state.key)) {
-		target.logger.info(`📖`, state.type, state.key, `reading cached value`)
 		return readCachedValue(state, target)
 	}
 	switch (state.type) {
@@ -20,20 +19,26 @@ export const readOrComputeValue = <T>(
 		case `atom`:
 		case `mutable_atom`: {
 			const def = state.default
-			let fallback: T
+			let defaultValue: T
 			if (def instanceof Function) {
-				fallback = def()
+				defaultValue = def()
 			} else {
-				fallback = def
+				defaultValue = def
 			}
+			const cachedValue = cacheValue(
+				target,
+				state.key,
+				defaultValue,
+				state.subject,
+			)
 			target.logger.info(
 				`💁`,
 				`atom`,
 				state.key,
 				`could not find cached value; using default`,
-				fallback,
+				defaultValue,
 			)
-			return fallback
+			return cachedValue
 		}
 	}
 }

@@ -29,7 +29,7 @@ export function evictDownStream(store: Store, atom: Atom<any>): void {
 			if (isDone(target, key)) {
 				continue
 			}
-			evictCachedValue(key, target)
+			evictCachedValue(target, key)
 			markDone(target, key)
 		}
 	}
@@ -49,7 +49,7 @@ export function evictDownStreamFromSelector(
 		if (isDone(target, downstreamSelectorKey)) {
 			continue
 		}
-		evictCachedValue(downstreamSelectorKey, target)
+		evictCachedValue(target, downstreamSelectorKey)
 		markDone(target, downstreamSelectorKey)
 	}
 }

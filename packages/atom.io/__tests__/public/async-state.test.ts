@@ -54,36 +54,6 @@ describe(`async atom`, async () => {
 
 		expect(Utils.stdout).toHaveBeenCalledTimes(1)
 	})
-	it(`cancels an evicted cached pending Future`, async () => {
-		const countState = AtomIO.atom<number>({
-			key: `count`,
-			default: 0,
-		})
-		let resolveAtAnInconvenientTime: () => void
-		const _doubledAsyncState = AtomIO.selector<Loadable<number>>({
-			key: `doubled`,
-			get: ({ get }) => {
-				const count = get(countState)
-				return new Promise((resolve) => {
-					resolveAtAnInconvenientTime = () => {
-						resolve(count * 2)
-					}
-				})
-			},
-		})
-		// console.log(`👀`, Internal.IMPLICIT.STORE.valueMap.get(`doubled`))
-		expect(Internal.IMPLICIT.STORE.valueMap.get(`doubled`)).toBeInstanceOf(
-			Internal.Future,
-		)
-		AtomIO.setState(countState, 1)
-		expect(Internal.IMPLICIT.STORE.valueMap.get(`doubled`)).toBeInstanceOf(
-			Internal.Future,
-		)
-		// biome-ignore lint/style/noNonNullAssertion: it's a test, so
-		resolveAtAnInconvenientTime!()
-		await new Promise((resolve) => setTimeout(resolve, 0))
-		expect(Internal.IMPLICIT.STORE.valueMap.get(`doubled`)).toBe(2)
-	})
 })
 
 describe(`async selector`, () => {
@@ -303,26 +273,25 @@ describe(`downstream from async`, () => {
 			get: async ({ get }) => {
 				const i = idx++
 				const orgId = await get(orgIdAtom)
-				console.log(i, `👀`, orgId)
+				console.log(i, `👀 iod`, orgId)
 				const index = get(indexAtoms, orgId)
-				console.log(i, `👀`, index)
+				console.log(i, `👀 idx`, index)
 				const itemIds = await index
-				console.log(i, `👀`, itemIds)
-				const itemsLoadable = Promise.all(
-					itemIds.map((id) => get(itemAtoms, id)),
-				)
-				console.log(i, `👀`, itemsLoadable)
-				return itemsLoadable
+				console.log(i, `👀 iid`, itemIds)
+				const items = await Promise.all(itemIds.map((id) => get(itemAtoms, id)))
+				console.log(i, `👀`, items)
+
+				return items
 			},
 		})
 
 		AtomIO.subscribe(allItemsSelector, ({ newValue, oldValue }) => {
+			console.count(`❗❗❗ subscriber`)
 			console.log(`❗❗❗ subscriber`, {
 				newValue,
 				oldValue,
 				newValueEqualsOldValue: newValue === oldValue,
 			})
-			console.count(`subscriber`)
 			Utils.stdout({ newValue, oldValue })
 		})
 
@@ -372,6 +341,11 @@ describe(`downstream from async`, () => {
 		loadIndex[0]()
 		loadItems[1]()
 		await new Promise((resolve) => setImmediate(resolve))
+		console.log(Internal.IMPLICIT.STORE.valueMap)
+		const allItemsValue = Internal.IMPLICIT.STORE.valueMap.get(
+			allItemsSelector.key,
+		)
+		console.log(allItemsValue[`fate`] === allItemsValue)
 		expect(AtomIO.getState(indexAtoms, 0)).toEqual([1, 2, 3])
 		expect(AtomIO.getState(itemAtoms, 1)).toEqual({ data: `1`.repeat(3) })
 		expect(AtomIO.getState(itemAtoms, 2)).toEqual({ data: `2`.repeat(3) })

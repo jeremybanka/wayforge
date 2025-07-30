@@ -22,13 +22,6 @@ export const SystemServer = ({
 	socket: SocketIO.Socket
 	silo: Silo
 }): void => {
-	store.loggers[0].logLevel = `warn`
-	// socket.onAny((...payload: [string, ...Json.Array]) => {
-	// 	logger.info(`🛰 `, username, ...payload)
-	// })
-	// socket.onAnyOutgoing((event, ...args) => {
-	// 	logger.info(`🛰  >>`, username, event, ...args)
-	// })
 	const shortId = socket.id.slice(0, 3)
 	const { username } = socket.handshake.auth
 	const exposeMutable = RTS.realtimeMutableProvider({ socket, store })

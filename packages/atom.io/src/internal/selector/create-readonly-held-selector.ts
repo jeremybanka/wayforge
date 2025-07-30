@@ -23,6 +23,16 @@ export const createReadonlyHeldSelector = <T extends object>(
 	const type = `readonly_held_selector` as const
 	const { get, find, json } = registerSelector(target, type, key, covered)
 	const getSelf = () => {
+		const innerTarget = newest(store)
+		const upstreamStates = innerTarget.selectorGraph.getRelationEntries({
+			downstreamSelectorKey: key,
+		})
+		for (const [downstreamSelectorKey, { source }] of upstreamStates) {
+			if (source !== key) {
+				innerTarget.selectorGraph.delete(downstreamSelectorKey, key)
+			}
+		}
+		innerTarget.selectorAtoms.delete(key)
 		options.get({ get, find, json }, constant)
 		cacheValue(newest(store), key, constant, subject)
 		covered.clear()

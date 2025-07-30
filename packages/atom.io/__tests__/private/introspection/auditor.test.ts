@@ -1,4 +1,10 @@
-import { atomFamily, disposeState, findState, selectorFamily } from "atom.io"
+import {
+	atomFamily,
+	disposeState,
+	findState,
+	getState,
+	selectorFamily,
+} from "atom.io"
 import * as Internal from "atom.io/internal"
 import { Auditor } from "atom.io/introspection"
 
@@ -48,7 +54,10 @@ describe(`Auditor practical tests`, () => {
 		const auditor = new Auditor()
 		findState(doubleSelectors, `bar`)
 		let resources = auditor.listResources()
-		expect(resources.length).toBe(4)
+		expect(resources.length).toBe(2) // selectors weren't evaluated, so atoms weren't created
+		getState(doubleSelectors, `bar`)
+		resources = auditor.listResources()
+		expect(resources.length).toBe(3)
 		for (const [token] of resources) {
 			disposeState(token)
 		}

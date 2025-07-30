@@ -29,8 +29,18 @@ export const createWritableHeldSelector = <T extends object>(
 	const getterToolkit = { find, get, json }
 
 	const getSelf = (getFn = options.get, innerTarget = newest(store)): T => {
+		const upstreamStates = innerTarget.selectorGraph.getRelationEntries({
+			downstreamSelectorKey: key,
+		})
+		for (const [downstreamSelectorKey, { source }] of upstreamStates) {
+			if (source !== key) {
+				innerTarget.selectorGraph.delete(downstreamSelectorKey, key)
+			}
+		}
+		innerTarget.selectorAtoms.delete(key)
 		getFn(getterToolkit, constant)
 		cacheValue(innerTarget, key, constant, subject)
+		store.logger.info(`✨`, type, key, `=`, constant)
 		covered.clear()
 		return constant
 	}
@@ -57,8 +67,7 @@ export const createWritableHeldSelector = <T extends object>(
 		...(family && { family }),
 	}
 	target.writableSelectors.set(key, mySelector)
-	const initialValue = getSelf()
-	store.logger.info(`✨`, type, key, `=`, initialValue)
+	// const initialValue = getSelf()
 
 	const token: WritableHeldSelectorToken<T> = { key, type }
 	if (family) {
