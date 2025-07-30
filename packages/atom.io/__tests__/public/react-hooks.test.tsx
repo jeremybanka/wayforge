@@ -3,7 +3,6 @@ import type { Loadable, Logger, TimelineToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
-	getState,
 	redo,
 	resetState,
 	selector,
