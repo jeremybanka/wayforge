@@ -12,8 +12,8 @@ import * as React from "react"
 
 import * as Utils from "../../__util__"
 
-// console.warn = () => undefined
-// console.error = () => undefined
+console.warn = () => undefined
+console.error = () => undefined
 const DEBUG_LOGGING = true
 
 describe(`synchronizing transactions`, () => {
@@ -43,8 +43,8 @@ describe(`synchronizing transactions`, () => {
 			RTTest.multiClient({
 				port: 5465,
 				immortal: { server: true },
-				server: ({ socket, silo: { store }, enableLogging }) => {
-					enableLogging()
+				server: ({ socket, silo: { store } }) => {
+					// enableLogging()
 					const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
 						socket,
 						store,
@@ -103,9 +103,9 @@ describe(`synchronizing transactions`, () => {
 		jane = scenario.clients.jane.init()
 		server = scenario.server
 		teardown = scenario.teardown
-		// dave.silo.store.logger = Utils.createNullLogger()
-		// jane.silo.store.logger = Utils.createNullLogger()
-		// server.silo.store.logger = Utils.createNullLogger()
+		dave.silo.store.logger = Utils.createNullLogger()
+		jane.silo.store.logger = Utils.createNullLogger()
+		server.silo.store.logger = Utils.createNullLogger()
 
 		vitest.spyOn(dave.silo.store.logger, `error`)
 		vitest.spyOn(dave.silo.store.logger, `warn`)
@@ -137,8 +137,8 @@ describe(`synchronizing transactions`, () => {
 	})
 	test(`rollback`, async () => {
 		const { countState } = scenario
-		jane.enableLogging()
-		dave.enableLogging()
+		// jane.enableLogging()
+		// dave.enableLogging()
 
 		await waitFor(() => {
 			Utils.throwUntil(jane.socket.connected)
