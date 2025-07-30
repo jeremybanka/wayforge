@@ -1,4 +1,5 @@
-import { type Atom, traceAllSelectorAtoms, type WritableState } from ".."
+import type { Atom, WritableState } from ".."
+import { traceAllSelectorAtoms } from ".."
 import type { Store } from "../store"
 import { setAtom } from "./set-atom"
 

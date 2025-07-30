@@ -10,6 +10,7 @@ import {
 	setState,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
+import { SetRTX } from "atom.io/transceivers/set-rtx"
 import tmp from "tmp"
 import { vitest } from "vitest"
 
@@ -92,6 +93,27 @@ describe(`atom effects`, () => {
 		expect(getState(nameState)).toBe(`Mavis`)
 		mySubject.next(`reset`)
 		expect(getState(nameState)).toBe(``)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
+	})
+	it(`resets itself (mutable)`, () => {
+		const mySubject = new Internal.Subject<string>()
+		const nameState = atom<SetRTX<string>>({
+			key: `name`,
+			default: () => new SetRTX(),
+			effects: [
+				({ resetSelf }) => {
+					mySubject.subscribe(`waiting to reset`, () => {
+						resetSelf()
+					})
+				},
+			],
+		})
+		setState(nameState, (current) => current.add(`Cat`))
+		const setOriginal = getState(nameState)
+		mySubject.next(`reset`)
+		const setNew = getState(nameState)
+		expect(setNew).not.toBe(setOriginal)
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
 	})
