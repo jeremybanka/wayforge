@@ -22,7 +22,6 @@ import type { AtomToken, MutableAtomToken, RegularAtomToken, Setter } from "."
 export function atom<T extends Transceiver<any>, J extends Json.Serializable>(
 	options: MutableAtomOptions<T, J>,
 ): MutableAtomToken<T, J>
-
 /**
  * @public
  * Create a regular atom, a global reactive variable in the implicit store
