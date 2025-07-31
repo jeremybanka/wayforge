@@ -51,6 +51,9 @@ export const stringifyJson = <J extends Json.Serializable>(
 	json: J,
 ): stringified<J> => JSON.stringify(json) as stringified<J>
 
+/**
+ * Always serializes to the same string.
+ */
 export type Canonical = primitive | ReadonlyArray<Canonical>
 
 export type JsonIO = (...params: Json.Serializable[]) => Json.Serializable | void
