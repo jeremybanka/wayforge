@@ -4,14 +4,13 @@ import type {
 	JunctionEntriesBase,
 	JunctionSchemaBase,
 	Refinement,
-	Store,
 } from "atom.io/internal"
 import {
+	createJoin,
 	editRelationsInStore,
 	findRelationsInStore,
 	getInternalRelationsFromStore,
 	IMPLICIT,
-	Join,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import type { SetRTX, SetRTXJson } from "atom.io/transceivers/set-rtx"
@@ -58,7 +57,6 @@ export function join<
 >(
 	options: JoinOptions<ASide, AType, BSide, BType, Cardinality, null>,
 	defaultContent?: undefined,
-	store?: Store,
 ): JoinToken<ASide, AType, BSide, BType, Cardinality, null>
 export function join<
 	const ASide extends string,
@@ -70,7 +68,6 @@ export function join<
 >(
 	options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>,
 	defaultContent: Content,
-	store?: Store,
 ): JoinToken<ASide, AType, BSide, BType, Cardinality, Content>
 export function join<
 	ASide extends string,
@@ -82,17 +79,8 @@ export function join<
 >(
 	options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>,
 	defaultContent: Content | undefined,
-	store: Store = IMPLICIT.STORE,
 ): JoinToken<ASide, AType, BSide, BType, Cardinality, Content> {
-	store.joins.set(options.key, new Join(options, defaultContent, store))
-	const token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content> = {
-		key: options.key,
-		type: `join`,
-		a: options.between[0],
-		b: options.between[1],
-		cardinality: options.cardinality,
-	}
-	return token
+	return createJoin(IMPLICIT.STORE, options, defaultContent)
 }
 
 export type JoinStates<
