@@ -78,7 +78,7 @@ export type MutableAtomOptions<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
 > = 
-  & JsonInterface<T, J>
+	& JsonInterface<T, J>
 	& {
 		/** Used to signal that the atom is mutable */
 		mutable: true
