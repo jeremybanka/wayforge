@@ -3,13 +3,13 @@ import type {
 	MutableAtomToken,
 	ReadableFamilyToken,
 	ReadableToken,
-	ReadonlyPureSelectorFamilyToken,
-	ReadonlyPureSelectorToken,
+	ReadonlySelectorFamilyToken,
+	ReadonlySelectorToken,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
 	WritableFamilyToken,
-	WritablePureSelectorFamilyToken,
-	WritablePureSelectorToken,
+	WritableSelectorFamilyToken,
+	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
 import type { Transceiver } from "atom.io/internal"
@@ -18,7 +18,12 @@ import type { Canonical, Json } from "atom.io/json"
 
 /**
  * @public
- * Finds a {@link MutableAtomToken} in the store
+ * Finds a {@link MutableAtomToken} in the store, without accessing its value.
+ *
+ * In an ephemeral store, this will create a new atom if one does not exist with the given key.
+ *
+ * In an immortal store, a "counterfeit" atom token will be returned in this case and a warning will be logged.
+ *
  * @param token - A {@link MutableAtomFamilyToken}
  * @param key - The key of the state
  * @returns
@@ -33,7 +38,12 @@ export function findState<
 >(token: MutableAtomFamilyToken<T, J, K>, key: Key): MutableAtomToken<T, J, K>
 /**
  * @public
- * Finds a state in the store
+ * Finds a {@link RegularAtomToken} in the store, without accessing its value.
+ *
+ * In an ephemeral store, this will create a new atom if one does not exist with the given key.
+ *
+ * In an immortal store, a "counterfeit" atom token will be returned in this case and a warning will be logged.
+ *
  * @param token - The token of the state family
  * @param key - The key of the state
  * @returns
@@ -46,7 +56,12 @@ export function findState<T, K extends Canonical, Key extends K>(
 ): RegularAtomToken<T, K>
 /**
  * @public
- * Finds a state in the store
+ * Finds a {@link WritableSelectorToken} in the store, without accessing its value.
+ *
+ * In an ephemeral store, this will create a new selector if one does not exist with the given key.
+ *
+ * In an immortal store, a "counterfeit" selector token will be returned in this case and a warning will be logged.
+ *
  * @param token - The token of the state family
  * @param key - The key of the state
  * @returns
@@ -54,12 +69,17 @@ export function findState<T, K extends Canonical, Key extends K>(
  * @overload Writable Selector
  */
 export function findState<T, K extends Canonical, Key extends K>(
-	token: WritablePureSelectorFamilyToken<T, K>,
+	token: WritableSelectorFamilyToken<T, K>,
 	key: Key,
-): WritablePureSelectorToken<T, K>
+): WritableSelectorToken<T, K>
 /**
  * @public
- * Finds a state in the store
+ * Finds a {@link ReadonlySelectorToken} in the store, without accessing its value.
+ *
+ * In an ephemeral store, this will create a new selector if one does not exist with the given key.
+ *
+ * In an immortal store, a "counterfeit" selector token will be returned in this case and a warning will be logged.
+ *
  * @param token - The token of the state family
  * @param key - The key of the state
  * @returns
@@ -67,12 +87,17 @@ export function findState<T, K extends Canonical, Key extends K>(
  * @overload Readonly Selector
  */
 export function findState<T, K extends Canonical, Key extends K>(
-	token: ReadonlyPureSelectorFamilyToken<T, K>,
+	token: ReadonlySelectorFamilyToken<T, K>,
 	key: Key,
-): ReadonlyPureSelectorToken<T, K>
+): ReadonlySelectorToken<T, K>
 /**
  * @public
- * Finds a state in the store
+ * Finds a {@link WritableToken} in the store, without accessing its value.
+ *
+ * In an ephemeral store, this will create a new atom or selector if one does not exist with the given key.
+ *
+ * In an immortal store, a "counterfeit" token will be returned in this case and a warning will be logged.
+ *
  * @param token - The token of the state family
  * @param key - The key of the state
  * @returns
@@ -85,7 +110,12 @@ export function findState<T, K extends Canonical, Key extends K>(
 ): WritableToken<T, K>
 /**
  * @public
- * Finds a {@link ReadableToken} in the store
+ * Finds a {@link MutableAtomToken} in the store, without accessing its value.
+ *
+ * In an ephemeral store, this will create a new atom or selector if one does not exist with the given key.
+ *
+ * In an immortal store, a "counterfeit" token will be returned in this case and a warning will be logged.
+ *
  * @param token - A {@link ReadableFamilyToken}
  * @param key - The key of the state
  * @returns
