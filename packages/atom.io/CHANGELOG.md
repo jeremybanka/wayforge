@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.34.1
+
+### Patch Changes
+
+- 3793608: 📝 Added inline documentation to almost all of `atom.io`'s core module.
+
 ## 0.34.0
 
 ### Minor Changes
