@@ -14,10 +14,21 @@ export type Claim<K extends Canonical> = K & { [$claim]?: true }
 
 export class Realm<H extends Hierarchy> {
 	public store: Store
+	/**
+	 * @param store - The store to which the realm will be attached
+	 */
 	public constructor(store: Store = IMPLICIT.STORE) {
 		this.store = store
 		makeRootMoleculeInStore(`root`, store)
 	}
+	/**
+	 * Make space for a new subject of the realm
+	 * @param provenance - A key for an owner {@link Above} the new subject in the realm's {@link Hierarchy}
+	 * @param key - A unique identifier for the new subject
+	 * @param attachmentStyle - The attachment style of new subject to its owner(s). `any` means that if any owners remain, the subject will be retained. `all` means that the subject be retained only if all owners remain .
+	 * @returns
+	 * The subject's key, given status as a true {@link Claim}
+	 */
 	public allocate<V extends Vassal<H>, A extends Above<V, H>>(
 		provenance: A,
 		key: V,
@@ -30,6 +41,14 @@ export class Realm<H extends Hierarchy> {
 			attachmentStyle,
 		)
 	}
+	/**
+	 * Fuse two reagents into a compound
+	 * @param type - the name of the compound that is being fused
+	 * @param reagentA - the left reagent of the compound
+	 * @param reagentB - the right reagent of the compound
+	 * @returns
+	 * The compound's key, given status as a true {@link Claim}
+	 */
 	public fuse<
 		C extends CompoundFrom<H>,
 		T extends C extends CompoundTypedKey<infer t, any, any> ? t : never,
@@ -42,10 +61,21 @@ export class Realm<H extends Hierarchy> {
 	): Claim<CompoundTypedKey<T, A, B>> {
 		return fuseWithinStore<H, C, T, A, B>(this.store, type, reagentA, reagentB)
 	}
-
+	/**
+	 * Remove a subject from the realm
+	 * @param claim - The subject to be deallocated
+	 */
 	public deallocate<V extends Vassal<H>>(claim: Claim<V>): void {
 		deallocateFromStore<H, V>(this.store, claim)
 	}
+	/**
+	 * Transfer a subject of the realm from one owner to another
+	 * @param newProvenance - A key for an owner {@link Above} the new subject in the realm's {@link Hierarchy}
+	 * @param claim - The subject to be claimed
+	 * @param exclusive - Whether the subjects previous owners should be detached from it
+	 * @returns
+	 * The subject's key, given status as a true {@link Claim}
+	 */
 	public claim<
 		V extends Exclude<Vassal<H>, CompoundTypedKey>,
 		A extends Above<V, H>,
@@ -58,11 +88,19 @@ export class Anarchy {
 	public store: Store
 	public realm: Realm<any>
 
+	/**
+	 * @param store - The store to which the anarchy-realm will be attached
+	 */
 	public constructor(store: Store = IMPLICIT.STORE) {
 		this.store = store
 		this.realm = new Realm(store)
 	}
-
+	/**
+	 * Declare a new entity
+	 * @param provenance - A key for an owner of the entity
+	 * @param key - A unique identifier for the new entity
+	 * @param attachmentStyle - The attachment style of new entity to its owner(s). `any` means that if any owners remain, the subject will be retained. `all` means that the subject be retained only if all owners remain .
+	 */
 	public allocate(
 		provenance: Canonical,
 		key: Canonical,
@@ -75,11 +113,19 @@ export class Anarchy {
 			attachmentStyle,
 		)
 	}
-
+	/**
+	 * Remove an entity
+	 * @param key - The entity to be deallocated
+	 */
 	public deallocate(key: Canonical): void {
 		deallocateFromStore<any, any>(this.store, key)
 	}
-
+	/**
+	 * Transfer an entity from one owner to another
+	 * @param newProvenance - A key for an owner of the entity
+	 * @param key - The entity to be claimed
+	 * @param exclusive - Whether the entity's previous owners should be detached from it
+	 */
 	public claim(
 		newProvenance: Canonical,
 		key: Canonical,

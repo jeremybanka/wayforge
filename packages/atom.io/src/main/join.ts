@@ -1,36 +1,46 @@
 import type { MutableAtomFamilyToken, ReadonlyPureSelectorToken } from "atom.io"
 import type {
+	Flat,
 	Junction,
 	JunctionEntriesBase,
 	JunctionSchemaBase,
 	Refinement,
-	Store,
 } from "atom.io/internal"
 import {
+	createJoin,
 	editRelationsInStore,
 	findRelationsInStore,
 	getInternalRelationsFromStore,
 	IMPLICIT,
-	Join,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import type { SetRTX, SetRTXJson } from "atom.io/transceivers/set-rtx"
 
-export interface JoinOptions<
+/** @public */
+// biome-ignore format: intersection
+export type JoinOptions<
 	ASide extends string,
 	AType extends string,
 	BSide extends string,
 	BType extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
-> extends JunctionSchemaBase<ASide, BSide>,
-		Partial<JunctionEntriesBase<AType, BType, Content>> {
-	readonly key: string
-	readonly cardinality: Cardinality
-	readonly isAType: Refinement<string, AType>
-	readonly isBType: Refinement<string, BType>
-}
+> = 
+	Flat<
+		& JunctionSchemaBase<ASide, BSide>
+		& {
+			/** Unique identifier of the join */
+			readonly key: string
+			/** How many relations are allowed in each direction? */
+			readonly cardinality: Cardinality
+			/** Type guard for the type of the left side */
+			readonly isAType: Refinement<string, AType>
+			/** Type guard for the type of the right side */
+			readonly isBType: Refinement<string, BType>
+		}
+	> & Partial<JunctionEntriesBase<AType, BType, Content>>
 
+/** @public */
 export type JoinToken<
 	ASide extends string,
 	AType extends string,
@@ -39,16 +49,38 @@ export type JoinToken<
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null = null,
 > = {
+	/** Unique identifier of the join */
 	key: string
+	/** Discriminator */
 	type: `join`
+	/** How many relations are allowed in each direction? */
 	cardinality: Cardinality
+	/** Name of the join's left side */
 	a: ASide
+	/** Name of the join's right side */
 	b: BSide
+	/** Never present. This is a marker that preserves the type of the left side's keys */
 	__aType?: AType
+	/** Never present. This is a marker that preserves the type of the right side's keys */
 	__bType?: BType
+	/** Never present. This is a marker that preserves the type of the data present for each relation */
 	__content?: Content
 }
 
+/**
+ * @public
+ * Create a join, an interface for managing relations between two sets of keys.
+ *
+ * Use joins when it is important to view relationships from either side.
+ *
+ * Under the hood, joins coordinate changes of multiple atoms to support that the desired relationships stay consistent.
+ *
+ * @param options - {@link JoinOptions}
+ * @param defaultContent - (undefined)
+ * @returns
+ * A reference to the join created: a {@link JoinToken}
+ * @overload No Content
+ */
 export function join<
 	const ASide extends string,
 	const AType extends string,
@@ -58,7 +90,6 @@ export function join<
 >(
 	options: JoinOptions<ASide, AType, BSide, BType, Cardinality, null>,
 	defaultContent?: undefined,
-	store?: Store,
 ): JoinToken<ASide, AType, BSide, BType, Cardinality, null>
 export function join<
 	const ASide extends string,
@@ -70,8 +101,21 @@ export function join<
 >(
 	options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>,
 	defaultContent: Content,
-	store?: Store,
 ): JoinToken<ASide, AType, BSide, BType, Cardinality, Content>
+/**
+ * @public
+ * Create a join, an interface for managing relations between two sets of keys.
+ *
+ * Use joins when it is important to view relationships from either side.
+ *
+ * Under the hood, joins coordinate changes of multiple atoms to support that the desired relationships stay consistent.
+ *
+ * @param options - {@link JoinOptions}
+ * @param defaultContent - The default value for the content of each relation
+ * @returns
+ * A reference to the join created: a {@link JoinToken}
+ * @overload With Content
+ */
 export function join<
 	ASide extends string,
 	AType extends string,
@@ -82,19 +126,11 @@ export function join<
 >(
 	options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>,
 	defaultContent: Content | undefined,
-	store: Store = IMPLICIT.STORE,
 ): JoinToken<ASide, AType, BSide, BType, Cardinality, Content> {
-	store.joins.set(options.key, new Join(options, defaultContent, store))
-	const token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content> = {
-		key: options.key,
-		type: `join`,
-		a: options.between[0],
-		b: options.between[1],
-		cardinality: options.cardinality,
-	}
-	return token
+	return createJoin(IMPLICIT.STORE, options, defaultContent)
 }
 
+/** @public */
 export type JoinStates<
 	ASide extends string,
 	AType extends string,
@@ -176,6 +212,15 @@ export type JoinStates<
 				}
 			: never
 
+/**
+ * @public
+ * Find the current value of a relation owned by a {@link join}
+ * @param token - The token of the join
+ * @param key - The key of the relation to find
+ * @returns
+ * A {@link JoinStates} interface to access the relation
+ * @overload Default
+ */
 export function findRelations<
 	ASide extends string,
 	AType extends string,
@@ -190,6 +235,12 @@ export function findRelations<
 	return findRelationsInStore(token, key, IMPLICIT.STORE)
 }
 
+/**
+ * @public
+ * Change one or multiple relations owned by a {@link join}
+ * @param token - The token of the join
+ * @param change - A function that takes a {@link Junction} interface to edit the relations
+ */
 export function editRelations<
 	ASide extends string,
 	AType extends string,
@@ -204,6 +255,12 @@ export function editRelations<
 	editRelationsInStore(token, change, IMPLICIT.STORE)
 }
 
+/**
+ * @public
+ * @param token - The token of the join
+ * @returns
+ * A {@link MutableAtomFamilyToken} to access the internal relations
+ */
 export function getInternalRelations<
 	ASide extends string,
 	AType extends string,

@@ -22,7 +22,6 @@ import type { AtomToken, MutableAtomToken, RegularAtomToken, Setter } from "."
 export function atom<T extends Transceiver<any>, J extends Json.Serializable>(
 	options: MutableAtomOptions<T, J>,
 ): MutableAtomToken<T, J>
-
 /**
  * @public
  * Create a regular atom, a global reactive variable in the implicit store
@@ -71,14 +70,24 @@ export type RegularAtomOptions<T> = {
 	/** Hooks used to run side effects when the atom is set */
 	effects?: AtomEffect<T>[]
 }
-// biome-ignore format: complex intersection
-export type MutableAtomOptions<T extends Transceiver<any>, J extends Json.Serializable> = 
+
+/** @public */
+// biome-ignore format: intersection
+export type MutableAtomOptions<
+	T extends Transceiver<any>,
+	J extends Json.Serializable,
+> = 
 	& JsonInterface<T, J>
-	& Omit<RegularAtomOptions<T>, `default`> 
-	& { 
-			default: ()	=> T
-			mutable: true
-		}
+	& {
+		/** Used to signal that the atom is mutable */
+		mutable: true
+		/** The unique identifier of the atom */
+		key: string
+		/** A function to create an initial value for the atom */
+		default: () => T
+		/** Hooks used to run side effects when the atom is set */
+		effects?: AtomEffect<T>[]
+	}
 
 /** @public */
 export type RegularAtomFamilyOptions<T, K extends Canonical> = {
@@ -91,24 +100,33 @@ export type RegularAtomFamilyOptions<T, K extends Canonical> = {
 }
 
 export type RegularAtomFamilyToken<T, K extends Canonical> = {
+	/** The unique identifier of the atom family */
 	key: string
+	/** Discriminator */
 	type: `atom_family`
+	/** Never present. This is a marker that preserves the type of atoms in this family */
 	__T?: T
+	/** Never present. This is a marker that preserves the type of keys used for atoms in this family */
 	__K?: K
 }
 
+/** @public */
 // biome-ignore format: intersection
 export type MutableAtomFamilyOptions<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
 	K extends Canonical,
-> = 
-	& JsonInterface<T, J>
-	& { 
+> =
+	& JsonInterface<T, J> 
+	& {
+		/** Used to signal that the atoms created from this family are mutable */
+		mutable: true
+		/** The unique identifier of the atom family */
 		key: string
+		/** A function to create an initial value for each atom in the family */
 		default: (key: K) => T
+		/** Hooks used to run side effects when an atom in the family is set  */
 		effects?: (key: K) => AtomEffect<T>[]
-		mutable: true,
 	}
 
 export type MutableAtomFamilyToken<
@@ -116,22 +134,45 @@ export type MutableAtomFamilyToken<
 	J extends Json.Serializable,
 	K extends Canonical,
 > = {
+	/** The unique identifier of the atom family */
 	key: string
+	/** Discriminator */
 	type: `mutable_atom_family`
+	/** Never present. This is a marker that preserves the type of atoms in this family */
 	__T?: T
+	/** Never present. This is a marker that preserves the type of the JSON form of atoms in this family */
 	__J?: J
+	/** Never present. This is a marker that preserves the type of keys used for atoms in this family */
 	__K?: K
 }
-
 export type AtomFamilyToken<T, K extends Canonical = Canonical> =
 	| MutableAtomFamilyToken<T extends Transceiver<any> ? T : never, any, K>
 	| RegularAtomFamilyToken<T, K>
 
+/**
+ * @public
+ * Create a family of mutable atoms, allowing for the dynamic creation and disposal of atoms.
+ *
+ * The value of a mutable atom must be some kind of {@link Transceiver}.
+ *
+ * @param options - {@link MutableAtomFamilyOptions}
+ * @returns
+ * A reference to the atom family created: a {@link MutableAtomFamilyToken}
+ * @overload Mutable
+ */
 export function atomFamily<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
 	K extends Canonical,
 >(options: MutableAtomFamilyOptions<T, J, K>): MutableAtomFamilyToken<T, J, K>
+/**
+ * @public
+ * Create a family of regular atoms, allowing for the dynamic creation and disposal of atoms.
+ * @param options - {@link RegularAtomFamilyOptions}
+ * @returns
+ * A reference to the atom family created: a {@link RegularAtomFamilyToken}
+ * @overload Regular
+ */
 export function atomFamily<T, K extends Canonical>(
 	options: RegularAtomFamilyOptions<T, K>,
 ): RegularAtomFamilyToken<T, K>

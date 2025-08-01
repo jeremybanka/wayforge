@@ -5,14 +5,20 @@ import type { ReadableFamilyToken, ReadableToken } from "."
 
 /**
  * @public
- * Disposes of a state in the implicit store
+ * Disposes of a state in the implicit store.
+ *
+ * Only family members can be disposed of.
+ *
  * @param token - The token of the state to dispose
  * @overload Default
  */
 export function disposeState(token: ReadableToken<any>): void
 /**
  * @public
- * Disposes of a state family in the implicit store
+ * Disposes of a state in the implicit store.
+ *
+ * Only family members can be disposed of.
+ *
  * @param token - The token of the state family to dispose
  * @param key - The unique key of the state to dispose
  */
