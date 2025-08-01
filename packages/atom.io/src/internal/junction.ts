@@ -18,7 +18,9 @@ export interface JunctionEntries<
 		JunctionEntriesBase<AType, BType, Content> {}
 
 export type JunctionSchemaBase<ASide extends string, BSide extends string> = {
+	/** Description of the relationship between the two sides */
 	readonly between: [a: ASide, b: BSide]
+	/** How many relations are allowed in each direction? */
 	readonly cardinality: `1:1` | `1:n` | `n:n`
 }
 export interface JunctionSchema<ASide extends string, BSide extends string>
