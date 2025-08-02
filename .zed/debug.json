@@ -1,0 +1,12 @@
+[
+	{
+		"label": "Vitest",
+		"adapter": "JavaScript",
+		"type": "node-terminal",
+		"request": "launch",
+		"program": "pnpm",
+		"args": ["vitest", "run", "--testTimeout=Infinity", "${ZED_FILENAME}"],
+		"skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+		"cwd": "${ZED_DIRNAME}"
+	}
+]
