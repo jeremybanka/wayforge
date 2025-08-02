@@ -1,4 +1,7 @@
 {
+	"debugger": {
+		"dock": "left"
+	},
 	"languages": {
 		"TypeScript": {
 			"formatter": {
