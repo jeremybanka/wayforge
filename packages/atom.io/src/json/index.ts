@@ -29,19 +29,39 @@ export namespace Json {
 		ReadonlyArray<Element>
 }
 
-export type stringified<J extends Json.Serializable> = J extends string
-	? `"${J}"`
-	: J extends number
-		? `${J}`
-		: J extends true
-			? `true`
-			: J extends false
-				? `false`
-				: J extends boolean
-					? `false` | `true`
-					: J extends null
-						? `null`
-						: string & { __json?: J }
+// biome-ignore format: long silly ternary
+export type stringified<J extends Json.Serializable> = (
+      J extends string
+    ? `"${J}"`
+    : J extends number
+    ? `${J}`
+    : J extends true
+    ? `true`
+    : J extends false
+    ? `false`
+    : J extends boolean
+    ? `false` | `true`
+    : J extends null
+    ? `null`
+    : J extends []
+    ? `[]`
+    : J extends [infer Element extends Json.Serializable]
+    ? `[${stringified<Element>}]`
+    : J extends [
+					infer Element1 extends Json.Serializable,
+					infer Element2 extends Json.Serializable,
+				]
+    ? `[${stringified<Element1>}, ${stringified<Element2>}]`
+    : J extends [
+					infer Element1 extends Json.Serializable,
+					infer Element2 extends Json.Serializable,
+					infer Element3 extends Json.Serializable,
+				]
+    ? `[${stringified<Element1>}, ${stringified<Element2>}, ${stringified<Element3>}]`
+    : J extends any[]
+    ? `[${string}]` & { __json?: J }
+    : string & { __json?: J }
+  )
 
 export const parseJson = <S extends stringified<Json.Serializable>>(
 	str: S | string,
