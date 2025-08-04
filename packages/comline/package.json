@@ -41,7 +41,7 @@
 	},
 	"devDependencies": {
 		"@types/bun": "npm:bun-types@1.2.19",
-		"@types/node": "24.1.0",
+		"@types/node": "24.2.0",
 		"@types/tmp": "0.2.6",
 		"concurrently": "9.2.0",
 		"eslint": "9.32.0",
