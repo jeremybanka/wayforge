@@ -34,6 +34,33 @@ export type TimelineToken<M> = {
 	__M?: M
 }
 
+/**
+ * @public
+ * If there is an update ahead of the cursor (in the future of this {@link timeline}), apply it and move the cursor to the next update
+ * @param timeline - A {@link TimelineToken}
+ */
+export const redo = (timeline: TimelineToken<any>): void => {
+	timeTravel(IMPLICIT.STORE, `redo`, timeline)
+}
+/**
+ * @public
+ * Reverse the last update on the {@link timeline} and move the cursor to the previous update
+ * @param timeline - A {@link TimelineToken}
+ */
+export const undo = (timeline: TimelineToken<any>): void => {
+	timeTravel(IMPLICIT.STORE, `undo`, timeline)
+}
+
+/** @public */
+export type TimelineUpdate<ManagedAtom extends TimelineManageable> =
+	| TimelineAtomUpdate<ManagedAtom>
+	| TimelineMoleculeCreation
+	| TimelineMoleculeDisposal
+	| TimelineSelectorUpdate<ManagedAtom>
+	| TimelineStateCreation<AtomOnly<ManagedAtom>>
+	| TimelineStateDisposal<AtomOnly<ManagedAtom>>
+	| TimelineTransactionUpdate
+
 /** @public */
 export type TimelineOptions<ManagedAtom extends TimelineManageable> = {
 	/** The unique identifier of the timeline */
@@ -47,19 +74,9 @@ export type TimelineOptions<ManagedAtom extends TimelineManageable> = {
 	) => boolean
 }
 
-/** @public */
-export type TimelineUpdate<ManagedAtom extends TimelineManageable> =
-	| TimelineAtomUpdate<ManagedAtom>
-	| TimelineMoleculeCreation
-	| TimelineMoleculeDisposal
-	| TimelineSelectorUpdate<ManagedAtom>
-	| TimelineStateCreation<AtomOnly<ManagedAtom>>
-	| TimelineStateDisposal<AtomOnly<ManagedAtom>>
-	| TimelineTransactionUpdate
-
 /**
  * @public
- * Create a timeline, a mechanism for recording, undoing, and replaying changes to groups of atoms.
+ * Create a timeline, a mechanism for recording, undoing, and replaying changes to groups of atoms
  * @param options - {@link TimelineOptions}
  * @returns A reference to the timeline created: a {@link TimelineToken}
  */
@@ -67,12 +84,4 @@ export const timeline = <ManagedAtom extends TimelineManageable>(
 	options: TimelineOptions<ManagedAtom>,
 ): TimelineToken<ManagedAtom> => {
 	return createTimeline(IMPLICIT.STORE, options)
-}
-
-export const redo = (tl: TimelineToken<any>): void => {
-	timeTravel(IMPLICIT.STORE, `redo`, tl)
-}
-
-export const undo = (tl: TimelineToken<any>): void => {
-	timeTravel(IMPLICIT.STORE, `undo`, tl)
 }
