@@ -25,7 +25,7 @@ export type JoinOptions<
 	BType extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object | null,
-> = 
+> =
 	Flat<
 		& JunctionSchemaBase<ASide, BSide>
 		& {
@@ -91,17 +91,6 @@ export function join<
 	options: JoinOptions<ASide, AType, BSide, BType, Cardinality, null>,
 	defaultContent?: undefined,
 ): JoinToken<ASide, AType, BSide, BType, Cardinality, null>
-export function join<
-	const ASide extends string,
-	const AType extends string,
-	const BSide extends string,
-	const BType extends string,
-	const Cardinality extends `1:1` | `1:n` | `n:n`,
-	const Content extends Json.Object,
->(
-	options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>,
-	defaultContent: Content,
-): JoinToken<ASide, AType, BSide, BType, Cardinality, Content>
 /**
  * @public
  * Create a join, an interface for managing relations between two sets of keys.
@@ -117,6 +106,17 @@ export function join<
  * @overload With Content
  */
 export function join<
+	const ASide extends string,
+	const AType extends string,
+	const BSide extends string,
+	const BType extends string,
+	const Cardinality extends `1:1` | `1:n` | `n:n`,
+	const Content extends Json.Object,
+>(
+	options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>,
+	defaultContent: Content,
+): JoinToken<ASide, AType, BSide, BType, Cardinality, Content>
+export function join<
 	ASide extends string,
 	AType extends string,
 	BSide extends string,
@@ -130,7 +130,6 @@ export function join<
 	return createJoin(IMPLICIT.STORE, options, defaultContent)
 }
 
-/** @public */
 export type JoinStates<
 	ASide extends string,
 	AType extends string,

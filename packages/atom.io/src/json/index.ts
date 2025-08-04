@@ -15,6 +15,7 @@ export namespace Json {
 		export type Node = Fork | Leaf
 	}
 
+	/** A value can survive being {@link JSON.stringify}-ed and {@link JSON.parse}-d fully intact */
 	export type Serializable =
 		| primitive
 		| Readonly<{ [key: string]: Serializable }>
@@ -29,33 +30,55 @@ export namespace Json {
 		ReadonlyArray<Element>
 }
 
-export type stringified<J extends Json.Serializable> = J extends string
-	? `"${J}"`
-	: J extends number
-		? `${J}`
-		: J extends true
-			? `true`
-			: J extends false
-				? `false`
-				: J extends boolean
-					? `false` | `true`
-					: J extends null
-						? `null`
-						: string & { __json?: J }
+/** A generic that retains the type information of a {@link Json.Serializable} value while in string form */
+// biome-ignore format: long silly ternary
+export type stringified<J extends Json.Serializable> = (
+      J extends string
+    ? `"${J}"`
+    : J extends number
+    ? `${J}`
+    : J extends true
+    ? `true`
+    : J extends false
+    ? `false`
+    : J extends boolean
+    ? `false` | `true`
+    : J extends null
+    ? `null`
+    : J extends []
+    ? `[]`
+    : J extends [infer Element extends Json.Serializable]
+    ? `[${stringified<Element>}]`
+    : J extends [
+					infer Element1 extends Json.Serializable,
+					infer Element2 extends Json.Serializable,
+				]
+    ? `[${stringified<Element1>}, ${stringified<Element2>}]`
+    : J extends [
+					infer Element1 extends Json.Serializable,
+					infer Element2 extends Json.Serializable,
+					infer Element3 extends Json.Serializable,
+				]
+    ? `[${stringified<Element1>}, ${stringified<Element2>}, ${stringified<Element3>}]`
+    : J extends any[]
+    ? `[${string}]` & { __json?: J }
+    : string & { __json?: J }
+  )
 
+/** Type-safe wrapper for {@link JSON.parse} */
 export const parseJson = <S extends stringified<Json.Serializable>>(
 	str: S | string,
 ): S extends stringified<infer J> ? J : Json.Serializable => JSON.parse(str)
 
+/** Type-safe wrapper for {@link JSON.stringify} */
 export const stringifyJson = <J extends Json.Serializable>(
 	json: J,
 ): stringified<J> => JSON.stringify(json) as stringified<J>
 
-/**
- * Always serializes to the same string.
- */
+/** Only Canonical values should be used for keys because they always serialize to the same string */
 export type Canonical = primitive | ReadonlyArray<Canonical>
 
+/** A function whose parameters and return value are {@link Json.Serializable} */
 export type JsonIO = (...params: Json.Serializable[]) => Json.Serializable | void
 
 export type JsonInterface<T, J extends Json.Serializable = Json.Serializable> = {
