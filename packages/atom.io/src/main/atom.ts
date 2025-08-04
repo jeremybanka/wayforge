@@ -76,7 +76,7 @@ export type RegularAtomOptions<T> = {
 export type MutableAtomOptions<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
-> = 
+> =
 	& JsonInterface<T, J>
 	& {
 		/** Used to signal that the atom is mutable */
@@ -117,7 +117,7 @@ export type MutableAtomFamilyOptions<
 	J extends Json.Serializable,
 	K extends Canonical,
 > =
-	& JsonInterface<T, J> 
+	& JsonInterface<T, J>
 	& {
 		/** Used to signal that the atoms created from this family are mutable */
 		mutable: true
