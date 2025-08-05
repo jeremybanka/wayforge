@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.34.2
+
+### Patch Changes
+
+- 0a20064: 📝 Added more in-editor documentation for the `atom.io` and `atom.io/json` modules.
+
 ## 0.34.1
 
 ### Patch Changes
