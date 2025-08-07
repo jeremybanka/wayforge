@@ -119,8 +119,6 @@ export type MutableAtomFamilyOptions<
 > =
 	& JsonInterface<T, J>
 	& {
-		/** Used to signal that the atoms created from this family are mutable */
-		mutable: true
 		/** The unique identifier of the atom family */
 		key: string
 		/** A function to create an initial value for each atom in the family */
@@ -160,11 +158,14 @@ export type AtomFamilyToken<T, K extends Canonical = Canonical> =
  * A reference to the atom family created: a {@link MutableAtomFamilyToken}
  * @overload Mutable
  */
-export function atomFamily<
+export function mutableAtomFamily<
 	T extends Transceiver<any>,
 	J extends Json.Serializable,
 	K extends Canonical,
->(options: MutableAtomFamilyOptions<T, J, K>): MutableAtomFamilyToken<T, J, K>
+>(options: MutableAtomFamilyOptions<T, J, K>): MutableAtomFamilyToken<T, J, K> {
+	return createAtomFamily(IMPLICIT.STORE, options)
+}
+
 /**
  * @public
  * Create a family of regular atoms, allowing for the dynamic creation and disposal of atoms.
@@ -175,11 +176,6 @@ export function atomFamily<
  */
 export function atomFamily<T, K extends Canonical>(
 	options: RegularAtomFamilyOptions<T, K>,
-): RegularAtomFamilyToken<T, K>
-export function atomFamily<T, K extends Canonical>(
-	options:
-		| MutableAtomFamilyOptions<any, any, any>
-		| RegularAtomFamilyOptions<T, K>,
-): MutableAtomFamilyToken<any, any, any> | RegularAtomFamilyToken<T, K> {
+): RegularAtomFamilyToken<T, K> {
 	return createAtomFamily(IMPLICIT.STORE, options)
 }

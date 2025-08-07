@@ -29,7 +29,7 @@ export function createAtomFamily<T, K extends Canonical>(
 		| MutableAtomFamilyOptions<any, any, any>
 		| RegularAtomFamilyOptions<T, K>,
 ): AtomFamilyToken<any, any> {
-	const isMutable = `mutable` in options
+	const isMutable = `toJson` in options
 
 	if (isMutable) {
 		return createMutableAtomFamily(store, options)

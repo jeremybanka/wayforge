@@ -1,10 +1,10 @@
 import type { Logger } from "atom.io"
 import {
-	atomFamily,
 	disposeState,
 	findState,
 	getState,
 	mutableAtom,
+	mutableAtomFamily,
 	redo,
 	runTransaction,
 	setState,
@@ -90,7 +90,6 @@ describe(`mutable atomic state`, () => {
 			string
 		>(Internal.IMPLICIT.STORE, {
 			key: `flagsByUserId::mutable`,
-			mutable: true,
 			default: () => new SetRTX(),
 			toJson: (set) => set.toJSON(),
 			fromJson: (array) => SetRTX.fromJSON(array),
@@ -189,13 +188,12 @@ describe(`mutable time traveling`, () => {
 		expect(logger.error).not.toHaveBeenCalled()
 	})
 	it(`can travel back and forward in time`, () => {
-		const myMutableStates = atomFamily<
+		const myMutableStates = mutableAtomFamily<
 			SetRTX<string>,
 			SetRTXJson<string>,
 			string
 		>({
 			key: `myMutable`,
-			mutable: true,
 			default: () => new SetRTX(),
 			toJson: (set) => set.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
@@ -278,14 +276,13 @@ describe(`mutable atom effects`, () => {
 	})
 	it(`runs a callback when the atom is set`, () => {
 		let setSize = 0
-		const myMutableAtoms = atomFamily<
+		const myMutableAtoms = mutableAtomFamily<
 			SetRTX<string>,
 			SetRTXJson<string>,
 			string
 		>({
 			key: `myMutableAtoms`,
 			default: () => new SetRTX(),
-			mutable: true,
 			toJson: (s) => s.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
 			effects: () => [
