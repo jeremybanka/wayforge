@@ -2,9 +2,10 @@ import type { findState } from "atom.io"
 import {
 	actUponStore,
 	arbitrary,
-	createAtomFamily,
 	createMutableAtom,
+	createMutableAtomFamily,
 	createRegularAtom,
+	createRegularAtomFamily,
 	createSelectorFamily,
 	createStandaloneSelector,
 	createTimeline,
@@ -31,7 +32,7 @@ import type {
 	timeline,
 	undo,
 } from "."
-import type { atom, atomFamily, mutableAtom } from "./atom"
+import type { atom, atomFamily, mutableAtom, mutableAtomFamily } from "./atom"
 import type { resetState } from "./reset-state"
 import type { selector, selectorFamily } from "./selector"
 import type { runTransaction, transaction } from "./transaction"
@@ -41,6 +42,7 @@ export class Silo {
 	public atom: typeof atom
 	public mutableAtom: typeof mutableAtom
 	public atomFamily: typeof atomFamily
+	public mutableAtomFamily: typeof mutableAtomFamily
 	public selector: typeof selector
 	public selectorFamily: typeof selectorFamily
 	public transaction: typeof transaction
@@ -63,7 +65,10 @@ export class Silo {
 		this.mutableAtom = ((options: Parameters<typeof mutableAtom>[0]) =>
 			createMutableAtom(s, options, undefined)) as typeof mutableAtom
 		this.atomFamily = ((options: Parameters<typeof atomFamily>[0]) =>
-			createAtomFamily(s, options)) as typeof atomFamily
+			createRegularAtomFamily(s, options)) as typeof atomFamily
+		this.mutableAtomFamily = ((
+			options: Parameters<typeof mutableAtomFamily>[0],
+		) => createMutableAtomFamily(s, options)) as typeof mutableAtomFamily
 		this.selector = ((options: Parameters<typeof selector>[0]) =>
 			createStandaloneSelector(s, options)) as typeof selector
 		this.selectorFamily = ((options: Parameters<typeof selectorFamily>[0]) =>

@@ -1,8 +1,9 @@
 import type { Transceiver } from "atom.io/internal"
 import {
-	createAtomFamily,
 	createMutableAtom,
+	createMutableAtomFamily,
 	createRegularAtom,
+	createRegularAtomFamily,
 	IMPLICIT,
 } from "atom.io/internal"
 import type { Canonical, Json, JsonInterface } from "atom.io/json"
@@ -163,7 +164,7 @@ export function mutableAtomFamily<
 	J extends Json.Serializable,
 	K extends Canonical,
 >(options: MutableAtomFamilyOptions<T, J, K>): MutableAtomFamilyToken<T, J, K> {
-	return createAtomFamily(IMPLICIT.STORE, options)
+	return createMutableAtomFamily(IMPLICIT.STORE, options)
 }
 
 /**
@@ -177,5 +178,5 @@ export function mutableAtomFamily<
 export function atomFamily<T, K extends Canonical>(
 	options: RegularAtomFamilyOptions<T, K>,
 ): RegularAtomFamilyToken<T, K> {
-	return createAtomFamily(IMPLICIT.STORE, options)
+	return createRegularAtomFamily(IMPLICIT.STORE, options)
 }
