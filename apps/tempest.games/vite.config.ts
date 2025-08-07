@@ -1,4 +1,4 @@
-import react from "@vitejs/plugin-react-swc"
+import react from "@vitejs/plugin-react"
 import type { UserConfig } from "vite"
 import { loadEnv } from "vite"
 import tsconfigPaths from "vite-tsconfig-paths"
