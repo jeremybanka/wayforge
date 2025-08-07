@@ -10,7 +10,7 @@ import type {
 } from "atom.io/internal"
 import { createTimeline, IMPLICIT, timeTravel } from "atom.io/internal"
 
-import type { AtomFamilyToken, AtomToken } from "."
+import type { AtomFamilyToken, AtomToken, TimelineToken } from "."
 
 /** @public */
 export type TimelineManageable = AtomFamilyToken<any, any> | AtomToken<any>
@@ -23,16 +23,6 @@ export type AtomOnly<M extends TimelineManageable> = M extends AtomFamilyToken<
 	: M extends AtomToken<any>
 		? M
 		: never
-
-/** @public */
-export type TimelineToken<M> = {
-	/** The unique identifier of the timeline */
-	key: string
-	/** Discriminator */
-	type: `timeline`
-	/** Never present. This is a marker that preserves the type of the managed atoms */
-	__M?: M
-}
 
 /**
  * @public

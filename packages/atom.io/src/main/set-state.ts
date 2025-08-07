@@ -1,7 +1,7 @@
 import * as Internal from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 
-import type { WritableFamilyToken, WritableToken } from "."
+import type { WritableFamilyToken, WritableToken } from "./tokens"
 
 /**
  * @public

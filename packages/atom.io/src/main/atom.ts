@@ -8,8 +8,50 @@ import {
 } from "atom.io/internal"
 import type { Canonical, Json, JsonInterface } from "atom.io/json"
 
-import type { MutableAtomToken, RegularAtomToken, Setter } from "."
+import type { Setter } from "./set-state"
+import type {
+	MutableAtomFamilyToken,
+	MutableAtomToken,
+	RegularAtomFamilyToken,
+	RegularAtomToken,
+} from "./tokens"
 
+/** @public */
+export type RegularAtomOptions<T> = {
+	/** The unique identifier of the atom */
+	key: string
+	/** The starting value of the atom */
+	default: T | (() => T)
+	/** Hooks used to run side effects when the atom is set */
+	effects?: AtomEffect<T>[]
+}
+/**
+ * @public
+ * Create a regular atom, a global reactive variable in the implicit store
+ * @param options - {@link RegularAtomOptions}.
+ * @returns
+ * A reference to the atom created: a {@link RegularAtomToken}
+ * @overload Regular
+ */
+export function atom<T>(options: RegularAtomOptions<T>): RegularAtomToken<T> {
+	return createRegularAtom(IMPLICIT.STORE, options, undefined)
+}
+
+/** @public */
+// biome-ignore format: intersection
+export type MutableAtomOptions<
+	T extends Transceiver<any>,
+	J extends Json.Serializable,
+> =
+	& JsonInterface<T, J>
+	& {
+		/** The unique identifier of the atom */
+		key: string
+		/** A function to create an initial value for the atom */
+		default: () => T
+		/** Hooks used to run side effects when the atom is set */
+		effects?: AtomEffect<T>[]
+	}
 /**
  * @public
  * Create a mutable atom, a global reactive variable in the implicit store
@@ -30,16 +72,12 @@ export function mutableAtom<
 
 /**
  * @public
- * Create a regular atom, a global reactive variable in the implicit store
- * @param options - {@link RegularAtomOptions}.
+ * A function that runs side effects when the atom is set
+ * @param tools - {@link Effectors} that can be used to run side effects
  * @returns
- * A reference to the atom created: a {@link RegularAtomToken}
- * @overload Regular
+ * Optionally, a cleanup function that will be called when the atom is disposed
  */
-export function atom<T>(options: RegularAtomOptions<T>): RegularAtomToken<T> {
-	return createRegularAtom(IMPLICIT.STORE, options, undefined)
-}
-
+export type AtomEffect<T> = (tools: Effectors<T>) => (() => void) | void
 /** @public */
 export type Effectors<T> = {
 	/**
@@ -55,41 +93,6 @@ export type Effectors<T> = {
 	onSet: (callback: (options: { newValue: T; oldValue: T }) => void) => void
 }
 
-/**
- * @public
- * A function that runs side effects when the atom is set
- * @param tools - {@link Effectors} that can be used to run side effects
- * @returns
- * Optionally, a cleanup function that will be called when the atom is disposed
- */
-export type AtomEffect<T> = (tools: Effectors<T>) => (() => void) | void
-
-/** @public */
-export type RegularAtomOptions<T> = {
-	/** The unique identifier of the atom */
-	key: string
-	/** The starting value of the atom */
-	default: T | (() => T)
-	/** Hooks used to run side effects when the atom is set */
-	effects?: AtomEffect<T>[]
-}
-
-/** @public */
-// biome-ignore format: intersection
-export type MutableAtomOptions<
-	T extends Transceiver<any>,
-	J extends Json.Serializable,
-> =
-	& JsonInterface<T, J>
-	& {
-		/** The unique identifier of the atom */
-		key: string
-		/** A function to create an initial value for the atom */
-		default: () => T
-		/** Hooks used to run side effects when the atom is set */
-		effects?: AtomEffect<T>[]
-	}
-
 /** @public */
 export type RegularAtomFamilyOptions<T, K extends Canonical> = {
 	/** The unique identifier of the atom family */
@@ -99,16 +102,18 @@ export type RegularAtomFamilyOptions<T, K extends Canonical> = {
 	/** Hooks used to run side effects when an atom in the family is set  */
 	effects?: (key: K) => AtomEffect<T>[]
 }
-
-export type RegularAtomFamilyToken<T, K extends Canonical> = {
-	/** The unique identifier of the atom family */
-	key: string
-	/** Discriminator */
-	type: `atom_family`
-	/** Never present. This is a marker that preserves the type of atoms in this family */
-	__T?: T
-	/** Never present. This is a marker that preserves the type of keys used for atoms in this family */
-	__K?: K
+/**
+ * @public
+ * Create a family of regular atoms, allowing for the dynamic creation and disposal of atoms.
+ * @param options - {@link RegularAtomFamilyOptions}
+ * @returns
+ * A reference to the atom family created: a {@link RegularAtomFamilyToken}
+ * @overload Regular
+ */
+export function atomFamily<T, K extends Canonical>(
+	options: RegularAtomFamilyOptions<T, K>,
+): RegularAtomFamilyToken<T, K> {
+	return createRegularAtomFamily(IMPLICIT.STORE, options)
 }
 
 /** @public */
@@ -127,27 +132,6 @@ export type MutableAtomFamilyOptions<
 		/** Hooks used to run side effects when an atom in the family is set  */
 		effects?: (key: K) => AtomEffect<T>[]
 	}
-
-export type MutableAtomFamilyToken<
-	T extends Transceiver<any>,
-	J extends Json.Serializable,
-	K extends Canonical,
-> = {
-	/** The unique identifier of the atom family */
-	key: string
-	/** Discriminator */
-	type: `mutable_atom_family`
-	/** Never present. This is a marker that preserves the type of atoms in this family */
-	__T?: T
-	/** Never present. This is a marker that preserves the type of the JSON form of atoms in this family */
-	__J?: J
-	/** Never present. This is a marker that preserves the type of keys used for atoms in this family */
-	__K?: K
-}
-export type AtomFamilyToken<T, K extends Canonical = Canonical> =
-	| MutableAtomFamilyToken<T extends Transceiver<any> ? T : never, any, K>
-	| RegularAtomFamilyToken<T, K>
-
 /**
  * @public
  * Create a family of mutable atoms, allowing for the dynamic creation and disposal of atoms.
@@ -165,18 +149,4 @@ export function mutableAtomFamily<
 	K extends Canonical,
 >(options: MutableAtomFamilyOptions<T, J, K>): MutableAtomFamilyToken<T, J, K> {
 	return createMutableAtomFamily(IMPLICIT.STORE, options)
-}
-
-/**
- * @public
- * Create a family of regular atoms, allowing for the dynamic creation and disposal of atoms.
- * @param options - {@link RegularAtomFamilyOptions}
- * @returns
- * A reference to the atom family created: a {@link RegularAtomFamilyToken}
- * @overload Regular
- */
-export function atomFamily<T, K extends Canonical>(
-	options: RegularAtomFamilyOptions<T, K>,
-): RegularAtomFamilyToken<T, K> {
-	return createRegularAtomFamily(IMPLICIT.STORE, options)
 }

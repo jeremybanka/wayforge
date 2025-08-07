@@ -6,11 +6,15 @@ import {
 import type { Canonical } from "atom.io/json"
 
 import type {
+	ReadonlyHeldSelectorFamilyToken,
 	ReadonlyHeldSelectorToken,
+	ReadonlyPureSelectorFamilyToken,
 	ReadonlyPureSelectorToken,
+	WritableHeldSelectorFamilyToken,
 	WritableHeldSelectorToken,
+	WritablePureSelectorFamilyToken,
 	WritablePureSelectorToken,
-} from "."
+} from "./tokens"
 import type { Read, Write } from "./transaction"
 
 export type WritablePureSelectorOptions<T> = {
@@ -180,65 +184,6 @@ export type ReadonlyHeldSelectorFamilyOptions<
 	/** For each instantiated family member, a function that computes its value */
 	get: (key: K) => Read<(permanent: T) => void>
 }
-
-export type WritablePureSelectorFamilyToken<T, K extends Canonical> = {
-	/** The unique identifier of the family */
-	key: string
-	/** Discriminator */
-	type: `writable_pure_selector_family`
-	/** Never present. This is a marker that preserves the type of the value of each family member */
-	__T?: T
-	/** Never present. This is a marker that preserves the type of keys used for each family member */
-	__K?: K
-}
-export type ReadonlyPureSelectorFamilyToken<T, K extends Canonical> = {
-	/** The unique identifier of the family */
-	key: string
-	/** Discriminator */
-	type: `readonly_pure_selector_family`
-	/** Never present. This is a marker that preserves the type of the value of each family member */
-	__T?: T
-	/** Never present. This is a marker that preserves the type of keys used for each family member */
-	__K?: K
-}
-export type WritableHeldSelectorFamilyToken<T, K extends Canonical> = {
-	/** The unique identifier of the family */
-	key: string
-	/** Discriminator */
-	type: `writable_held_selector_family`
-	/** Never present. This is a marker that preserves the type of the value of each family member */
-	__T?: T
-	/** Never present. This is a marker that preserves the type of keys used for each family member */
-	__K?: K
-}
-export type ReadonlyHeldSelectorFamilyToken<T, K extends Canonical> = {
-	/** The unique identifier of the family */
-	key: string
-	/** Discriminator */
-	type: `readonly_held_selector_family`
-	/** Never present. This is a marker that preserves the type of the value of each family member */
-	__T?: T
-	/** Never present. This is a marker that preserves the type of keys used for each family member */
-	__K?: K
-}
-
-export type PureSelectorFamilyToken<T, K extends Canonical> =
-	| ReadonlyPureSelectorFamilyToken<T, K>
-	| WritablePureSelectorFamilyToken<T, K>
-export type HeldSelectorFamilyToken<T, K extends Canonical> =
-	| ReadonlyHeldSelectorFamilyToken<T, K>
-	| WritableHeldSelectorFamilyToken<T, K>
-export type ReadonlySelectorFamilyToken<T, K extends Canonical> =
-	| ReadonlyHeldSelectorFamilyToken<T, K>
-	| ReadonlyPureSelectorFamilyToken<T, K>
-
-export type WritableSelectorFamilyToken<T, K extends Canonical> =
-	| WritableHeldSelectorFamilyToken<T, K>
-	| WritablePureSelectorFamilyToken<T, K>
-
-export type SelectorFamilyToken<T, K extends Canonical> =
-	| HeldSelectorFamilyToken<T, K>
-	| PureSelectorFamilyToken<T, K>
 
 /**
  * @public

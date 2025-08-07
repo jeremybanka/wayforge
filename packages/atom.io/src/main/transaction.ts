@@ -1,4 +1,3 @@
-import type { findState, getState, setState } from "atom.io"
 import type { EnvironmentData, Func, Transceiver } from "atom.io/internal"
 import {
 	actUponStore,
@@ -8,65 +7,51 @@ import {
 } from "atom.io/internal"
 import type { Canonical, Json, stringified } from "atom.io/json"
 
+import type { disposeState } from "./dispose-state"
+import type { findState } from "./find-state"
+import type { getState } from "./get-state"
+import type { resetState } from "./reset-state"
+import type { setState } from "./set-state"
+import type { KeyedStateUpdate } from "./subscribe"
 import type {
-	disposeState,
-	KeyedStateUpdate,
 	MutableAtomToken,
 	ReadableToken,
-	TokenType,
+	TransactionToken,
 	WritablePureSelectorToken,
-} from "."
-import type { resetState } from "./reset-state"
+} from "./tokens"
+import type { TokenType } from "./validators"
 
-/** @public */
-export type TransactionToken<F extends Func> = {
-	/** The unique identifier of the transaction */
-	key: string
-	/** Discriminator */
-	type: `transaction`
-	/** Never present. This is a marker that preserves the type of the transaction function */
-	__F?: F
-}
-
-/** @public */
 export type StateCreation<Token extends ReadableToken<any>> = {
 	type: `state_creation`
 	token: Token
 }
-/** @public */
+export type StateDisposal<Token extends ReadableToken<any>> =
+	| AtomDisposal<Token>
+	| SelectorDisposal<Token>
+
 export type AtomDisposal<Token extends ReadableToken<any>> = {
 	type: `state_disposal`
 	subType: `atom`
 	token: Token
 	value: TokenType<Token>
 }
-/** @public */
 export type SelectorDisposal<Token extends ReadableToken<any>> = {
 	type: `state_disposal`
 	subType: `selector`
 	token: Token
 }
-/** @public */
-export type StateDisposal<Token extends ReadableToken<any>> =
-	| AtomDisposal<Token>
-	| SelectorDisposal<Token>
 
-/** @public */
 export type MoleculeCreation = {
 	type: `molecule_creation`
 	key: Canonical
 	provenance: Canonical
 }
-
-/** @public */
 export type MoleculeDisposal = {
 	type: `molecule_disposal`
 	key: Canonical
 	provenance: stringified<Canonical>[]
 	values: [key: string, value: any][]
 }
-
-/** @public */
 export type MoleculeTransfer = {
 	type: `molecule_transfer`
 	key: Canonical
@@ -74,7 +59,6 @@ export type MoleculeTransfer = {
 	to: Canonical[]
 }
 
-/** @public */
 export type TransactionUpdateContent =
 	| KeyedStateUpdate<unknown>
 	| MoleculeCreation
@@ -84,7 +68,6 @@ export type TransactionUpdateContent =
 	| StateDisposal<ReadableToken<unknown>>
 	| TransactionUpdate<Func>
 
-/** @public */
 export type TransactionUpdate<F extends Func> = {
 	type: `transaction_update`
 	key: string
@@ -95,18 +78,8 @@ export type TransactionUpdate<F extends Func> = {
 	output: ReturnType<F>
 }
 
-/** @public */
-export type GetterToolkit = Pick<SetterToolkit, `find` | `get` | `json`>
-/** @public */
-export type SetterToolkit = Readonly<{
-	get: typeof getState
-	set: typeof setState
-	find: typeof findState
-	json: <T extends Transceiver<any>, J extends Json.Serializable>(
-		state: MutableAtomToken<T, J>,
-	) => WritablePureSelectorToken<J>
-}>
-/** @public */
+export type ReaderToolkit = Pick<ActorToolkit, `find` | `get` | `json`>
+export type WriterToolkit = Pick<ActorToolkit, `find` | `get` | `json` | `set`>
 export type ActorToolkit = Readonly<{
 	get: typeof getState
 	set: typeof setState
@@ -120,29 +93,20 @@ export type ActorToolkit = Readonly<{
 	env: () => EnvironmentData
 }>
 
-/** @public */
 export type Read<F extends Func> = (
-	toolkit: GetterToolkit,
+	toolkit: ReaderToolkit,
 	...parameters: Parameters<F>
 ) => ReturnType<F>
-
-/** @public */
 export type Write<F extends Func> = (
-	toolkit: SetterToolkit,
+	toolkit: WriterToolkit,
 	...parameters: Parameters<F>
 ) => ReturnType<F>
-
-/** @public */
 export type Transact<F extends Func> = (
 	toolkit: ActorToolkit,
 	...parameters: Parameters<F>
 ) => ReturnType<F>
-
-/** @public */
 export type TransactionIO<Token extends TransactionToken<any>> =
 	Token extends TransactionToken<infer F> ? F : never
-
-/** @public */
 export type TransactionOptions<F extends Func> = {
 	/** The unique identifier of the transaction */
 	key: string

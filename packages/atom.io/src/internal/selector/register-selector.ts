@@ -3,7 +3,7 @@ import type {
 	ReadableFamilyToken,
 	ReadableToken,
 	setState,
-	SetterToolkit,
+	WriterToolkit,
 	WritableFamilyToken,
 	WritableToken,
 } from "atom.io"
@@ -27,7 +27,7 @@ export const registerSelector = (
 		| `writable_pure_selector`,
 	selectorKey: string,
 	covered: Set<string>,
-): SetterToolkit => ({
+): WriterToolkit => ({
 	get: (
 		...params:
 			| [ReadableFamilyToken<any, any>, Json.Serializable]
