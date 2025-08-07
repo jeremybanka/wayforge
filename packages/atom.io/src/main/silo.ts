@@ -3,8 +3,9 @@ import {
 	actUponStore,
 	arbitrary,
 	createAtomFamily,
+	createMutableAtom,
+	createRegularAtom,
 	createSelectorFamily,
-	createStandaloneAtom,
 	createStandaloneSelector,
 	createTimeline,
 	createTransaction,
@@ -30,7 +31,7 @@ import type {
 	timeline,
 	undo,
 } from "."
-import type { atom, atomFamily } from "./atom"
+import type { atom, atomFamily, mutableAtom } from "./atom"
 import type { resetState } from "./reset-state"
 import type { selector, selectorFamily } from "./selector"
 import type { runTransaction, transaction } from "./transaction"
@@ -38,6 +39,7 @@ import type { runTransaction, transaction } from "./transaction"
 export class Silo {
 	public store: Store
 	public atom: typeof atom
+	public mutableAtom: typeof mutableAtom
 	public atomFamily: typeof atomFamily
 	public selector: typeof selector
 	public selectorFamily: typeof selectorFamily
@@ -57,7 +59,9 @@ export class Silo {
 	public constructor(config: Store[`config`], fromStore: Store | null = null) {
 		const s = (this.store = new Store(config, fromStore))
 		this.atom = ((options: Parameters<typeof atom>[0]) =>
-			createStandaloneAtom(s, options)) as typeof atom
+			createRegularAtom(s, options, undefined)) as typeof atom
+		this.mutableAtom = ((options: Parameters<typeof mutableAtom>[0]) =>
+			createMutableAtom(s, options, undefined)) as typeof mutableAtom
 		this.atomFamily = ((options: Parameters<typeof atomFamily>[0]) =>
 			createAtomFamily(s, options)) as typeof atomFamily
 		this.selector = ((options: Parameters<typeof selector>[0]) =>

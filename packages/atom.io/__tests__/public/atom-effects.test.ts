@@ -7,6 +7,7 @@ import {
 	disposeState,
 	findState,
 	getState,
+	mutableAtom,
 	setState,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
@@ -99,9 +100,8 @@ describe(`atom effects`, () => {
 	})
 	it(`resets itself (mutable)`, () => {
 		const mySubject = new Internal.Subject<string>()
-		const nameState = atom<SetRTX<string>, SetRTXJson<string>>({
+		const nameState = mutableAtom<SetRTX<string>, SetRTXJson<string>>({
 			key: `name`,
-			mutable: true,
 			default: () => new SetRTX(),
 			effects: [
 				({ resetSelf }) => {
