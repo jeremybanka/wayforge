@@ -1,5 +1,11 @@
 # hamr
 
+## 3.0.2
+
+### Patch Changes
+
+- 85be35d: ⬆️ Allow `@vitejs/plugin-react` version 5.
+
 ## 3.0.1
 
 ### Patch Changes
