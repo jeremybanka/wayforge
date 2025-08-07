@@ -6,8 +6,8 @@ import type {
 	TransactionToken,
 } from "atom.io"
 import {
-	createAtomFamily,
 	createRegularAtom,
+	createRegularAtomFamily,
 	createTransaction,
 	type Store,
 } from "atom.io/internal"
@@ -101,7 +101,7 @@ export function attachDevtoolsStates(
 		undefined,
 	)
 
-	const viewIsOpenAtoms = createAtomFamily<
+	const viewIsOpenAtoms = createRegularAtomFamily<
 		boolean,
 		readonly (number | string)[]
 	>(store, {
