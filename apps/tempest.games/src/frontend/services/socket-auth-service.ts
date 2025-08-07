@@ -18,6 +18,8 @@ import type {
 	TempestSocketDown,
 	TempestSocketUp,
 } from "../../library/socket-interface.ts"
+import { navigate } from "./router-service.ts"
+import { trpcClient } from "./trpc-client-service.ts"
 
 export const socket: Socket<TempestSocketDown, TempestSocketUp> = io(
 	env.VITE_BACKEND_ORIGIN,
@@ -70,7 +72,7 @@ export const authAtom = atom<ClientAuthData | null>({
 	},
 	effects: [
 		function saveAuth({ onSet }) {
-			onSet(async ({ newValue }) => {
+			onSet(({ newValue }) => {
 				console.log(`setting auth`, newValue)
 				if (newValue) {
 					console.log(`setting auth`, newValue)
@@ -80,9 +82,7 @@ export const authAtom = atom<ClientAuthData | null>({
 						console.log(`connecting...`)
 						socket.connect()
 					} else {
-						await import(`./router-service.ts`).then(({ navigate }) => {
-							navigate(`/verify`)
-						})
+						navigate(`/verify`)
 					}
 				} else {
 					console.log(`clearing session...`)
@@ -120,12 +120,11 @@ export const usernameDebounced100msAtom = atom<string | null>({
 })
 export const isUsernameTakenQuerySelector = selector<Loadable<boolean>>({
 	key: `isUsernameTakenQuery`,
-	get: async ({ get }) => {
+	get: ({ get }) => {
 		const username = get(usernameDebounced100msAtom)
 		if (!username) return false
 		const auth = getState(authAtom)
 		if (username === auth?.username) return false
-		const { trpcClient } = await import(`./trpc-client-service.ts`)
 		return trpcClient.isUsernameTaken.query({ username })
 	},
 })
