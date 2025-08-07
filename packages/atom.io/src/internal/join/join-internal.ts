@@ -202,7 +202,6 @@ export class Join<
 			{
 				key: `${options.key}/relatedKeys`,
 				default: () => new SetRTX(),
-				mutable: true,
 				fromJson: (json) => SetRTX.fromJSON(json),
 				toJson: (set) => set.toJSON(),
 			},

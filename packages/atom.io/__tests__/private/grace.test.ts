@@ -9,6 +9,7 @@ import {
 	atomFamily,
 	findState,
 	getState,
+	mutableAtomFamily,
 	redo,
 	selector,
 	selectorFamily,
@@ -225,9 +226,8 @@ describe(`two families may not have the same key`, () => {
 			`Overwriting an existing Atom Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
 
-		atomFamily<SetRTX<number>, SetRTXJson<number>, string>({
+		mutableAtomFamily<SetRTX<number>, SetRTXJson<number>, string>({
 			key: `count`,
-			mutable: true,
 			default: () => new SetRTX<number>(),
 			toJson: (set) => set.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
