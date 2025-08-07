@@ -88,6 +88,6 @@ export function createMutableAtom<
 	if (!family) {
 		selectJson(token, options, store)
 	}
-
+	store.on.atomCreation.next(token)
 	return token
 }

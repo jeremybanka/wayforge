@@ -1,9 +1,9 @@
 import type { Logger } from "atom.io"
 import {
-	atom,
 	atomFamily,
 	findState,
 	getState,
+	mutableAtom,
 	runTransaction,
 	setState,
 	transaction,
@@ -38,10 +38,9 @@ afterEach(() => {
 
 describe(`tracker`, () => {
 	test(`tracks the state of a mutable atom`, () => {
-		const mutableSetState = atom<SetRTX<string>, string[]>({
+		const mutableSetState = mutableAtom<SetRTX<string>, string[]>({
 			key: `mutableSetState`,
 			default: () => new SetRTX(),
-			mutable: true,
 			toJson: (set) => [...set],
 			fromJson: (array) => new SetRTX(array),
 		})
@@ -61,10 +60,9 @@ describe(`tracker`, () => {
 	})
 
 	test(`updates its core in a transaction`, () => {
-		const mutableSetState = atom<SetRTX<string>, string[]>({
+		const mutableSetState = mutableAtom<SetRTX<string>, string[]>({
 			key: `mutableSetState`,
 			default: () => new SetRTX(),
-			mutable: true,
 			toJson: (set) => [...set],
 			fromJson: (array) => new SetRTX(array),
 		})

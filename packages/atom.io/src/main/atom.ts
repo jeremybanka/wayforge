@@ -1,12 +1,13 @@
 import type { Transceiver } from "atom.io/internal"
 import {
 	createAtomFamily,
-	createStandaloneAtom,
+	createMutableAtom,
+	createRegularAtom,
 	IMPLICIT,
 } from "atom.io/internal"
 import type { Canonical, Json, JsonInterface } from "atom.io/json"
 
-import type { AtomToken, MutableAtomToken, RegularAtomToken, Setter } from "."
+import type { MutableAtomToken, RegularAtomToken, Setter } from "."
 
 /**
  * @public
@@ -19,9 +20,13 @@ import type { AtomToken, MutableAtomToken, RegularAtomToken, Setter } from "."
  * A reference to the atom created: a {@link MutableAtomToken}
  * @overload Mutable
  */
-export function atom<T extends Transceiver<any>, J extends Json.Serializable>(
-	options: MutableAtomOptions<T, J>,
-): MutableAtomToken<T, J>
+export function mutableAtom<
+	T extends Transceiver<any>,
+	J extends Json.Serializable,
+>(options: MutableAtomOptions<T, J>): MutableAtomToken<T, J> {
+	return createMutableAtom(IMPLICIT.STORE, options, undefined)
+}
+
 /**
  * @public
  * Create a regular atom, a global reactive variable in the implicit store
@@ -30,11 +35,8 @@ export function atom<T extends Transceiver<any>, J extends Json.Serializable>(
  * A reference to the atom created: a {@link RegularAtomToken}
  * @overload Regular
  */
-export function atom<T>(options: RegularAtomOptions<T>): RegularAtomToken<T>
-export function atom(
-	options: MutableAtomOptions<any, any> | RegularAtomOptions<any>,
-): AtomToken<any> {
-	return createStandaloneAtom(IMPLICIT.STORE, options)
+export function atom<T>(options: RegularAtomOptions<T>): RegularAtomToken<T> {
+	return createRegularAtom(IMPLICIT.STORE, options, undefined)
 }
 
 /** @public */
@@ -79,8 +81,6 @@ export type MutableAtomOptions<
 > =
 	& JsonInterface<T, J>
 	& {
-		/** Used to signal that the atom is mutable */
-		mutable: true
 		/** The unique identifier of the atom */
 		key: string
 		/** A function to create an initial value for the atom */
