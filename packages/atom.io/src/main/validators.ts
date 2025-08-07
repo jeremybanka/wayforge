@@ -11,7 +11,7 @@ import type {
 	WritablePureSelectorFamilyToken,
 	WritablePureSelectorToken,
 	WritableToken,
-} from "atom.io"
+} from "./tokens"
 
 export type TokenType<
 	Comparison extends ReadableFamilyToken<any, any> | ReadableToken<any>,
