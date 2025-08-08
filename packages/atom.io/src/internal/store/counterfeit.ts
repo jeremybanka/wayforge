@@ -16,7 +16,7 @@ import type {
 	WritablePureSelectorToken,
 	WritableToken,
 } from "atom.io"
-import type { Canonical, Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import type { Transceiver } from "../mutable"
@@ -32,11 +32,10 @@ export const FAMILY_MEMBER_TOKEN_TYPES = {
 } as const
 
 export function counterfeit<
-	T extends Transceiver<any>,
-	J extends Json.Serializable,
+	T extends Transceiver<any, any>,
 	K extends Canonical,
 	Key extends K,
->(token: MutableAtomFamilyToken<T, J, K>, key: Key): MutableAtomToken<T, J>
+>(token: MutableAtomFamilyToken<T, K>, key: Key): MutableAtomToken<T>
 
 export function counterfeit<T, K extends Canonical, Key extends K>(
 	token: RegularAtomFamilyToken<T, K>,

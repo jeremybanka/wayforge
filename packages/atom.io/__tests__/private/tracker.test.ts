@@ -10,7 +10,6 @@ import {
 } from "atom.io"
 import * as Internal from "atom.io/internal"
 import { Tracker } from "atom.io/internal"
-import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import { vitest } from "vitest"
 
@@ -38,11 +37,9 @@ afterEach(() => {
 
 describe(`tracker`, () => {
 	test(`tracks the state of a mutable atom`, () => {
-		const mutableSetState = mutableAtom<SetRTX<string>, string[]>({
+		const mutableSetState = mutableAtom({
 			key: `mutableSetState`,
-			default: () => new SetRTX(),
-			toJson: (set) => [...set],
-			fromJson: (array) => new SetRTX(array),
+			class: SetRTX<string>,
 		})
 		const { latestUpdateState } = new Tracker(
 			mutableSetState,
@@ -60,11 +57,9 @@ describe(`tracker`, () => {
 	})
 
 	test(`updates its core in a transaction`, () => {
-		const mutableSetState = mutableAtom<SetRTX<string>, string[]>({
+		const mutableSetState = mutableAtom({
 			key: `mutableSetState`,
-			default: () => new SetRTX(),
-			toJson: (set) => [...set],
-			fromJson: (array) => new SetRTX(array),
+			class: SetRTX<string>,
 		})
 		const tracker = new Tracker(mutableSetState, Internal.IMPLICIT.STORE)
 		const updateTrackerTX = transaction({
@@ -85,14 +80,11 @@ describe(`tracker`, () => {
 describe(`trackerFamily`, () => {
 	test(`tracks the state of a family of mutable atoms`, () => {
 		const setAtoms = mutableAtomFamily<
-			SetRTX<string>,
-			SetRTXJson<string>,
+			(new () => SetRTX<string>) & { fromJSON: (json: any) => SetRTX<string> },
 			string
 		>({
 			key: `sets`,
-			default: () => new SetRTX(),
-			toJson: (set) => set.toJSON(),
-			fromJson: (json) => SetRTX.fromJSON(json),
+			class: SetRTX,
 		})
 
 		const latestUpdateStates = Internal.getUpdateFamily(
@@ -105,14 +97,11 @@ describe(`trackerFamily`, () => {
 	})
 	test(`updates the core of a new family member in a transaction`, () => {
 		const setAtoms = mutableAtomFamily<
-			SetRTX<string>,
-			SetRTXJson<string>,
+			(new () => SetRTX<string>) & { fromJSON: (json: any) => SetRTX<string> },
 			string
 		>({
 			key: `findSetState`,
-			default: () => new SetRTX(),
-			toJson: (set) => set.toJSON(),
-			fromJson: (json) => SetRTX.fromJSON(json),
+			class: SetRTX,
 		})
 
 		const latestUpdateStates = Internal.getUpdateFamily(

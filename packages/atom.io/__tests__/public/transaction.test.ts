@@ -13,7 +13,6 @@ import {
 	transaction,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
-import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import { vitest } from "vitest"
 
@@ -251,11 +250,9 @@ describe(`nesting transactions`, () => {
 			key: `coffeeQuantity`,
 			default: 0,
 		})
-		const shoppingListState = mutableAtom<SetRTX<string>, SetRTXJson<string>>({
+		const shoppingListState = mutableAtom({
 			key: `shoppingList`,
-			default: () => new SetRTX<string>(),
-			toJson: (set) => set.toJSON(),
-			fromJson: (json) => SetRTX.fromJSON(json),
+			class: SetRTX<string>,
 		})
 		const addItemToShoppingListTX = transaction<(item: string) => void>({
 			key: `addItemToShoppingList`,

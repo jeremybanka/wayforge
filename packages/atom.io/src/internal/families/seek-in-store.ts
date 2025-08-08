@@ -16,7 +16,7 @@ import type {
 	WritablePureSelectorToken,
 	WritableToken,
 } from "atom.io"
-import type { Canonical, Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import type { Molecule, ReadableState } from ".."
@@ -26,12 +26,11 @@ import { deposit, type Store } from "../store"
 
 export function seekInStore<
 	T extends Transceiver<any, any>,
-	J extends Json.Serializable,
 	K extends Canonical,
 	Key extends K,
 >(
 	store: Store,
-	token: MutableAtomFamilyToken<T, J, K>,
+	token: MutableAtomFamilyToken<T, K>,
 	key: Key,
 ): MutableAtomToken<T, K> | undefined
 

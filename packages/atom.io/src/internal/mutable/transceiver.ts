@@ -17,7 +17,7 @@ export type TransceiverConstructor<
   J extends Json.Serializable,
   T extends Transceiver<any, J>
 > =
-	& ( abstract new () => T )
+	& ( new () => T )
 	& { fromJSON: (json: J) => T }
 
 // export type TransceiverKit<
@@ -41,7 +41,7 @@ export function isTransceiver(
 
 export type TransceiverMode = `playback` | `record` | `transaction`
 
-export type Signal<TVR extends Transceiver<any, any>> = TVR extends Transceiver<
+export type Signal<T extends Transceiver<any, any>> = T extends Transceiver<
 	infer S,
 	any
 >

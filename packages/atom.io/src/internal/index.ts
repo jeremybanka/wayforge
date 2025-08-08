@@ -16,7 +16,7 @@ import type {
 	WritablePureSelectorFamilyToken,
 	WritablePureSelectorToken,
 } from "atom.io"
-import type { Canonical, Json, JsonInterface } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 
 import type { Transceiver, TransceiverConstructor } from "./mutable"
 import type { Store } from "./store"
@@ -80,7 +80,7 @@ export type Atom<T> =
 	| RegularAtom<T>
 	| (T extends Transceiver<any, any>
 			? MutableAtom<
-					(abstract new () => T) & {
+					(new () => T) & {
 						fromJSON: (j: ReturnType<T[`toJSON`]>) => T
 					}
 				>
@@ -143,23 +143,24 @@ export type RegularAtomFamily<T, K extends Canonical> =
 
 // biome-ignore format: intersection
 export type MutableAtomFamily<
-T extends Transceiver<any, any>,
-J extends Json.Serializable,
-K extends Canonical,
+	C extends TransceiverConstructor<any,any>,
+	K extends Canonical,
 > =
 	& Flat<
-		& JsonInterface<T, J>
-		& MutableAtomFamilyToken<T, J, K>
+		& MutableAtomFamilyToken<InstanceType<C>, K>
 		& {
 				install: (store: Store) => void
 				internalRoles: string[] | undefined
-				subject: Subject<StateCreation<MutableAtomToken<T>> | StateDisposal<MutableAtomToken<T>>>
+				subject: Subject<
+					| StateCreation<MutableAtomToken<InstanceType<C>>>
+					| StateDisposal<MutableAtomToken<InstanceType<C>>>
+				>
 			}
 	>
-	& ((key: K) => MutableAtomToken<T>)
+	& ((key: K) => MutableAtomToken<InstanceType<C>>)
 
 export type AtomFamily<T, K extends Canonical = Canonical> =
-	| MutableAtomFamily<T extends Transceiver<any, any> ? T : never, any, K>
+	| MutableAtomFamily<T extends TransceiverConstructor<any, any> ? T : never, K>
 	| RegularAtomFamily<T, K>
 
 // biome-ignore format: intersection

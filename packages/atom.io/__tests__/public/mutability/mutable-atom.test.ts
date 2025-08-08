@@ -14,7 +14,6 @@ import {
 	undo,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
-import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import { vitest } from "vitest"
 
@@ -82,16 +81,13 @@ describe(`mutable atomic state`, () => {
 	})
 
 	it(`has its own family function for ease of use`, () => {
-		const findFlagsStateByUserId = Internal.createMutableAtomFamily<
-			SetRTX<string>,
-			SetRTXJson<string>,
-			string
-		>(Internal.IMPLICIT.STORE, {
-			key: `flagsByUserId::mutable`,
-			default: () => new SetRTX(),
-			toJson: (set) => set.toJSON(),
-			fromJson: (array) => SetRTX.fromJSON(array),
-		})
+		const findFlagsStateByUserId = Internal.createMutableAtomFamily(
+			Internal.IMPLICIT.STORE,
+			{
+				key: `flagsByUserId::mutable`,
+				class: SetRTX<string>,
+			},
+		)
 
 		const myFlagsState = findState(findFlagsStateByUserId, `my-user-id`)
 		const findFlagsByUserIdJSON = Internal.getJsonToken(
@@ -184,15 +180,9 @@ describe(`mutable time traveling`, () => {
 		expect(logger.error).not.toHaveBeenCalled()
 	})
 	it(`can travel back and forward in time`, () => {
-		const myMutableStates = mutableAtomFamily<
-			SetRTX<string>,
-			SetRTXJson<string>,
-			string
-		>({
+		const myMutableStates = mutableAtomFamily({
 			key: `myMutable`,
-			default: () => new SetRTX(),
-			toJson: (set) => set.toJSON(),
-			fromJson: (json) => SetRTX.fromJSON(json),
+			class: SetRTX<string>,
 		})
 		const myMutableState = findState(myMutableStates, `example`)
 		const myTL = timeline({
@@ -270,15 +260,9 @@ describe(`mutable atom effects`, () => {
 	})
 	it(`runs a callback when the atom is set`, () => {
 		let setSize = 0
-		const myMutableAtoms = mutableAtomFamily<
-			SetRTX<string>,
-			SetRTXJson<string>,
-			string
-		>({
+		const myMutableAtoms = mutableAtomFamily({
 			key: `myMutableAtoms`,
-			default: () => new SetRTX(),
-			toJson: (s) => s.toJSON(),
-			fromJson: (json) => SetRTX.fromJSON(json),
+			class: SetRTX<string>,
 			effects: () => [
 				({ onSet }) => {
 					onSet(({ newValue }) => {

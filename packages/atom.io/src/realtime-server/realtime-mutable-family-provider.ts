@@ -8,7 +8,7 @@ import {
 	IMPLICIT,
 	subscribeToState,
 } from "atom.io/internal"
-import type { Canonical, Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import type { ServerConfig } from "."
@@ -21,11 +21,10 @@ export function realtimeMutableFamilyProvider({
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
 	return function mutableFamilyProvider<
-		T extends Transceiver<any>,
-		J extends Json.Serializable,
+		T extends Transceiver<any, any>,
 		K extends Canonical,
 	>(
-		family: AtomIO.MutableAtomFamilyToken<T, J, K>,
+		family: AtomIO.MutableAtomFamilyToken<T, K>,
 		index: AtomIO.ReadableToken<Iterable<K>>,
 	): () => void {
 		const unsubCallbacksByKey = new Map<string, () => void>()

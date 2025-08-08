@@ -16,7 +16,7 @@ import type {
 	WritablePureSelectorToken,
 	WritableToken,
 } from "atom.io"
-import { type Canonical, type Json, stringifyJson } from "atom.io/json"
+import { type Canonical, stringifyJson } from "atom.io/json"
 
 import { newest } from "../lineage"
 import type { Transceiver } from "../mutable"
@@ -26,12 +26,11 @@ import { seekInStore } from "./seek-in-store"
 
 export function findInStore<
 	T extends Transceiver<any, any>,
-	J extends Json.Serializable,
 	K extends Canonical,
 	Key extends K,
 >(
 	store: Store,
-	token: MutableAtomFamilyToken<T, J, K>,
+	token: MutableAtomFamilyToken<T, K>,
 	key: Key,
 ): MutableAtomToken<T, K>
 

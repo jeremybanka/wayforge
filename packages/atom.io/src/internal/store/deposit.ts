@@ -20,7 +20,7 @@ import type {
 	WritablePureSelectorToken,
 	WritableToken,
 } from "atom.io"
-import type { Canonical, Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 
 import type {
 	Atom,
@@ -49,7 +49,7 @@ import type { Transaction } from "../transaction"
 export function deposit<T>(state: RegularAtom<T>): RegularAtomToken<T>
 export function deposit<T extends Transceiver<any, any>>(
 	state: MutableAtom<
-		(abstract new () => T) & { fromJSON: (json: ReturnType<T[`toJSON`]>) => T }
+		(new () => T) & { fromJSON: (json: ReturnType<T[`toJSON`]>) => T }
 	>,
 ): MutableAtomToken<T>
 export function deposit<T>(state: Atom<T>): AtomToken<T>
@@ -66,11 +66,12 @@ export function deposit<T>(state: ReadableState<T>): ReadableToken<T>
 export function deposit<T, K extends Canonical>(
 	state: RegularAtomFamily<T, K>,
 ): RegularAtomFamilyToken<T, K>
-export function deposit<
-	T extends Transceiver<any>,
-	J extends Json.Serializable,
-	K extends Canonical,
->(state: MutableAtomFamily<T, J, K>): MutableAtomFamilyToken<T, J, K>
+export function deposit<T extends Transceiver<any, any>, K extends Canonical>(
+	state: MutableAtomFamily<
+		(new () => T) & { fromJSON: (json: ReturnType<T[`toJSON`]>) => T },
+		K
+	>,
+): MutableAtomFamilyToken<T, K>
 export function deposit<T>(state: AtomFamily<T, any>): AtomFamilyToken<T, any>
 export function deposit<T>(
 	state: WritablePureSelectorFamily<T, any>,

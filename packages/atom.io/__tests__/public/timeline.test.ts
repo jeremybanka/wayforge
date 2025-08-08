@@ -293,9 +293,17 @@ describe(`timeline`, () => {
 			shouldCapture: (update) => {
 				if (update.type === `atom_update`) {
 					const atomKey = update.key
-					const atomDefault = Internal.IMPLICIT.STORE.atoms.get(atomKey)?.default
-					if (atomDefault === update.oldValue) {
-						return false
+					const atomActual = Internal.IMPLICIT.STORE.atoms.get(atomKey)
+					if (atomActual) {
+						switch (atomActual.type) {
+							case `atom`:
+								if (atomActual.default === update.oldValue) {
+									return false
+								}
+								break
+							case `mutable_atom`:
+								return false
+						}
 					}
 				}
 				return true
