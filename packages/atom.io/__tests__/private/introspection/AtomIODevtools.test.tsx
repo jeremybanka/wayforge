@@ -281,9 +281,9 @@ describe(`editing selectors`, () => {
 	})
 
 	test(`selector that filters a SetRTX`, async () => {
-		const selectionsState = $.mutableAtom({
+		const selectionsState = $.mutableAtom<SetRTX<string>>({
 			key: `selections`,
-			class: SetRTX<string>,
+			class: SetRTX,
 		})
 		const _selectionsWithoutGreenState = $.selector<Set<string>>({
 			key: `selectionsWithoutGreen`,

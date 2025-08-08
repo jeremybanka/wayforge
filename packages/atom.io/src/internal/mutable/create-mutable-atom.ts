@@ -12,13 +12,13 @@ import { deposit, type Store } from "../store"
 import { Subject } from "../subject"
 import { subscribeToState } from "../subscribe"
 import { Tracker } from "./tracker"
-import type { TransceiverConstructor } from "./transceiver"
+import type { Transceiver } from "./transceiver"
 
-export function createMutableAtom<C extends TransceiverConstructor<any, any>>(
+export function createMutableAtom<T extends Transceiver<any, any>>(
 	store: Store,
-	options: MutableAtomOptions<C>,
+	options: MutableAtomOptions<T>,
 	family: FamilyMetadata | undefined,
-): MutableAtomToken<InstanceType<C>> {
+): MutableAtomToken<T> {
 	store.logger.info(
 		`🔨`,
 		`atom`,
@@ -39,10 +39,10 @@ export function createMutableAtom<C extends TransceiverConstructor<any, any>>(
 		return deposit(existing)
 	}
 	const subject = new Subject<{
-		newValue: InstanceType<C>
-		oldValue: InstanceType<C>
+		newValue: T
+		oldValue: T
 	}>()
-	const newAtom: MutableAtom<C> = {
+	const newAtom: MutableAtom<T> = {
 		...options,
 		type,
 		install: (s: Store) => {
@@ -67,7 +67,7 @@ export function createMutableAtom<C extends TransceiverConstructor<any, any>>(
 				setSelf: (next) => {
 					setIntoStore(store, token, next)
 				},
-				onSet: (handle: UpdateHandler<InstanceType<C>>) =>
+				onSet: (handle: UpdateHandler<T>) =>
 					subscribeToState(store, token, `effect[${effectIndex}]`, handle),
 			})
 			if (cleanup) {

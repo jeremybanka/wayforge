@@ -6,9 +6,9 @@ import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
-const numbersCollectionState = AtomIO.mutableAtom({
+const numbersCollectionState = AtomIO.mutableAtom<SetRTX<number>>({
 	key: `numbersCollection`,
-	class: SetRTX<number>,
+	class: SetRTX,
 	effects: [
 		({ setSelf }) => {
 			setSelf((prev) => prev.add(0))

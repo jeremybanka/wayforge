@@ -34,12 +34,22 @@ export function isTransceiver(
 
 export type TransceiverMode = `playback` | `record` | `transaction`
 
-export type Signal<T extends Transceiver<any, any>> = T extends Transceiver<
+export type SignalFrom<T extends Transceiver<any, any>> = T extends Transceiver<
 	infer S,
 	any
 >
 	? S
 	: never
+
+export type AsJSON<T extends Transceiver<any, any>> = T extends Transceiver<
+	any,
+	infer J
+>
+	? J
+	: never
+
+export type ConstructorOf<T extends Transceiver<any, any>> =
+	TransceiverConstructor<AsJSON<T>, T>
 
 /*
 A transceiver may also keep a list of updates that have been applied to it.

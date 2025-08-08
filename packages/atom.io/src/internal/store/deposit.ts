@@ -48,9 +48,7 @@ import type { Transaction } from "../transaction"
 
 export function deposit<T>(state: RegularAtom<T>): RegularAtomToken<T>
 export function deposit<T extends Transceiver<any, any>>(
-	state: MutableAtom<
-		(new () => T) & { fromJSON: (json: ReturnType<T[`toJSON`]>) => T }
-	>,
+	state: MutableAtom<T>,
 ): MutableAtomToken<T>
 export function deposit<T>(state: Atom<T>): AtomToken<T>
 export function deposit<T>(
@@ -67,10 +65,7 @@ export function deposit<T, K extends Canonical>(
 	state: RegularAtomFamily<T, K>,
 ): RegularAtomFamilyToken<T, K>
 export function deposit<T extends Transceiver<any, any>, K extends Canonical>(
-	state: MutableAtomFamily<
-		(new () => T) & { fromJSON: (json: ReturnType<T[`toJSON`]>) => T },
-		K
-	>,
+	state: MutableAtomFamily<T, K>,
 ): MutableAtomFamilyToken<T, K>
 export function deposit<T>(state: AtomFamily<T, any>): AtomFamilyToken<T, any>
 export function deposit<T>(

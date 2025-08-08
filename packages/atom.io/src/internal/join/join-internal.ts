@@ -188,16 +188,11 @@ export class Join<
 
 		const aSide: ASide = options.between[0]
 		const bSide: BSide = options.between[1]
-		const relatedKeysAtoms = createMutableAtomFamily<
-			(new () => SetRTX<string>) & {
-				fromJSON: (json: any) => SetRTX<string>
-			},
-			string
-		>(
+		const relatedKeysAtoms = createMutableAtomFamily<SetRTX<string>, string>(
 			store,
 			{
 				key: `${options.key}/relatedKeys`,
-				class: SetRTX as any,
+				class: SetRTX,
 			},
 			[`join`, `relations`],
 		)

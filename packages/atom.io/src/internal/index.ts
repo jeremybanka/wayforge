@@ -18,7 +18,7 @@ import type {
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 
-import type { Transceiver, TransceiverConstructor } from "./mutable"
+import type { ConstructorOf, Transceiver } from "./mutable"
 import type { Store } from "./store"
 import type { Subject } from "./subject"
 import type { Timeline } from "./timeline"
@@ -69,22 +69,16 @@ export type RegularAtom<T> = Flat<
 		cleanup?: () => void
 	}
 >
-export type MutableAtom<C extends TransceiverConstructor<any, any>> = Flat<
+export type MutableAtom<T extends Transceiver<any, any>> = Flat<
 	AtomIOState & {
 		type: `mutable_atom`
-		class: C
+		class: ConstructorOf<T>
 		cleanup?: () => void
 	}
 >
 export type Atom<T> =
 	| RegularAtom<T>
-	| (T extends Transceiver<any, any>
-			? MutableAtom<
-					(new () => T) & {
-						fromJSON: (j: ReturnType<T[`toJSON`]>) => T
-					}
-				>
-			: never)
+	| (T extends Transceiver<any, any> ? MutableAtom<T> : never)
 
 export type WritableHeldSelector<T> = Flat<
 	AtomIOState & {
@@ -143,24 +137,25 @@ export type RegularAtomFamily<T, K extends Canonical> =
 
 // biome-ignore format: intersection
 export type MutableAtomFamily<
-	C extends TransceiverConstructor<any,any>,
+	// C extends TransceiverConstructor<any,any>,
+	T extends Transceiver<any,any>,
 	K extends Canonical,
 > =
 	& Flat<
-		& MutableAtomFamilyToken<InstanceType<C>, K>
+		& MutableAtomFamilyToken<T, K>
 		& {
 				install: (store: Store) => void
 				internalRoles: string[] | undefined
 				subject: Subject<
-					| StateCreation<MutableAtomToken<InstanceType<C>>>
-					| StateDisposal<MutableAtomToken<InstanceType<C>>>
+					| StateCreation<MutableAtomToken<T>>
+					| StateDisposal<MutableAtomToken<T>>
 				>
 			}
 	>
-	& ((key: K) => MutableAtomToken<InstanceType<C>>)
+	& ((key: K) => MutableAtomToken<T>)
 
 export type AtomFamily<T, K extends Canonical = Canonical> =
-	| MutableAtomFamily<T extends TransceiverConstructor<any, any> ? T : never, K>
+	| MutableAtomFamily<T extends Transceiver<any, any> ? T : never, K>
 	| RegularAtomFamily<T, K>
 
 // biome-ignore format: intersection

@@ -1,4 +1,4 @@
-import type { Func, Transceiver } from "atom.io/internal"
+import type { Func, AsJSON, Transceiver } from "atom.io/internal"
 import type { Canonical, stringified } from "atom.io/json"
 
 /**
@@ -86,7 +86,7 @@ export type MutableAtomToken<
 	/** Present if the atom belongs to a family. */
 	family?: FamilyMetadata<K>
 	/** Never present. This is a marker that preserves the JSON form of the atom's transceiver value. */
-	__J?: ReturnType<T[`toJSON`]>
+	__J?: AsJSON<T>
 	/** Never present. This is a marker that preserves the type of the atom's transceiver value. */
 	__U?: T extends Transceiver<infer Update, any> ? Update : never
 }
@@ -182,7 +182,7 @@ export type MutableAtomFamilyToken<
 	/** Never present. This is a marker that preserves the type of atoms in this family */
 	__T?: T
 	/** Never present. This is a marker that preserves the type of the JSON form of atoms in this family */
-	__J?: ReturnType<T[`toJSON`]>
+	__J?: AsJSON<T>
 	/** Never present. This is a marker that preserves the type of keys used for atoms in this family */
 	__K?: K
 }

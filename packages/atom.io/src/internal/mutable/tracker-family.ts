@@ -5,25 +5,23 @@ import type { MutableAtomFamily, RegularAtomFamily } from ".."
 import { createRegularAtomFamily } from "../families"
 import { type Store, withdraw } from "../store"
 import { Tracker } from "./tracker"
-import type { Transceiver, TransceiverConstructor } from "./transceiver"
+import type { Transceiver } from "./transceiver"
 
 export class FamilyTracker<
-	C extends TransceiverConstructor<any, any>,
+	T extends Transceiver<any, any>,
 	K extends Canonical,
 > {
-	private trackers: Map<K, Tracker<InstanceType<C>>> = new Map()
+	private trackers: Map<K, Tracker<T>> = new Map()
 
 	public readonly latestUpdateAtoms: RegularAtomFamily<
-		| (InstanceType<C> extends Transceiver<infer Signal, any> ? Signal : never)
-		| null,
+		(T extends Transceiver<infer Signal, any> ? Signal : never) | null,
 		K
 	>
-	public readonly mutableAtoms: MutableAtomFamily<C, K>
+	public readonly mutableAtoms: MutableAtomFamily<T, K>
 
-	public constructor(mutableAtoms: MutableAtomFamily<C, K>, store: Store) {
+	public constructor(mutableAtoms: MutableAtomFamily<T, K>, store: Store) {
 		const updateAtoms = createRegularAtomFamily<
-			| (InstanceType<C> extends Transceiver<infer Signal, any> ? Signal : never)
-			| null,
+			(T extends Transceiver<infer Signal, any> ? Signal : never) | null,
 			K
 		>(
 			store,
@@ -43,7 +41,7 @@ export class FamilyTracker<
 					const key = parseJson(token.family.subKey)
 					switch (type) {
 						case `state_creation`:
-							this.trackers.set(key, new Tracker<InstanceType<C>>(token, store))
+							this.trackers.set(key, new Tracker<T>(token, store))
 							break
 						case `state_disposal`:
 							{
