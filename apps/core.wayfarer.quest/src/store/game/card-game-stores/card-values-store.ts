@@ -10,7 +10,6 @@ import {
 	selectorFamily,
 } from "atom.io"
 import type { Json } from "atom.io/json"
-import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import {
