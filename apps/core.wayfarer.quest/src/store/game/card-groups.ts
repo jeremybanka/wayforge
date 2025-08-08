@@ -1,5 +1,4 @@
 import { atomFamily, join, mutableAtomFamily, selectorFamily } from "atom.io"
-import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 export const groupsOfCards = join({
@@ -51,15 +50,9 @@ export const deckStates = atomFamily<Deck, string>({
 		name: ``,
 	},
 })
-export const deckIndices = mutableAtomFamily<
-	SetRTX<string>,
-	SetRTXJson<string>,
-	string
->({
+export const deckIndices = mutableAtomFamily({
 	key: `deckIndex`,
-	default: () => new SetRTX<string>(),
-	toJson: (set) => set.toJSON(),
-	fromJson: (json) => SetRTX.fromJSON(json),
+	class: SetRTX<string>,
 })
 export const handStates = atomFamily<Hand, string>({
 	key: `hand`,
@@ -68,15 +61,9 @@ export const handStates = atomFamily<Hand, string>({
 		name: ``,
 	},
 })
-export const handIndices = mutableAtomFamily<
-	SetRTX<string>,
-	SetRTXJson<string>,
-	string
->({
+export const handIndices = mutableAtomFamily({
 	key: `handIndex`,
-	default: () => new SetRTX<string>(),
-	toJson: (set) => set.toJSON(),
-	fromJson: (json) => SetRTX.fromJSON(json),
+	class: SetRTX<string>,
 })
 export const pileStates = atomFamily<Pile, string>({
 	key: `pile`,
@@ -85,15 +72,9 @@ export const pileStates = atomFamily<Pile, string>({
 		name: ``,
 	},
 })
-export const pileIndices = mutableAtomFamily<
-	SetRTX<string>,
-	SetRTXJson<string>,
-	string
->({
+export const pileIndices = mutableAtomFamily({
 	key: `pileIndex`,
-	default: () => new SetRTX<string>(),
-	toJson: (set) => set.toJSON(),
-	fromJson: (json) => SetRTX.fromJSON(json),
+	class: SetRTX<string>,
 })
 export const trickStates = atomFamily<Trick, string>({
 	key: `trick`,
@@ -102,15 +83,9 @@ export const trickStates = atomFamily<Trick, string>({
 		name: ``,
 	},
 })
-export const trickIndices = mutableAtomFamily<
-	SetRTX<string>,
-	SetRTXJson<string>,
-	string
->({
+export const trickIndices = mutableAtomFamily({
 	key: `trickIndex`,
-	default: () => new SetRTX<string>(),
-	toJson: (set) => set.toJSON(),
-	fromJson: (json) => SetRTX.fromJSON(json),
+	class: SetRTX<string>,
 })
 
 export const indices = selectorFamily<string[], string>({

@@ -2,18 +2,16 @@ import { mutableAtom } from "atom.io"
 import { useJSON } from "atom.io/react"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
-const numbersCollectionState = mutableAtom<SetRTX<number>, number[]>({
+const numbersCollectionState = mutableAtom({
 	key: `numbersCollection::mutable`,
-	default: () => new SetRTX([0]),
-	toJson: (s) => [...s],
-	fromJson: (a) => new SetRTX(a),
+	class: SetRTX<string>,
 })
 
 export const Numbers: React.FC = () => {
 	const numbers = useJSON(numbersCollectionState)
 	return (
 		<>
-			{numbers.map((n) => (
+			{numbers.members.map((n) => (
 				<div key={n}>{n}</div>
 			))}
 		</>
