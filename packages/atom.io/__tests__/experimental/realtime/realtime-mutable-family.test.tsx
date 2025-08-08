@@ -9,6 +9,11 @@ import { SetRTX } from "atom.io/transceivers/set-rtx"
 const numberCollectionAtoms = AtomIO.mutableAtomFamily({
 	key: `numbersCollection`,
 	class: SetRTX<number>,
+	effects: () => [
+		({ setSelf }) => {
+			setSelf((prev) => prev.add(0))
+		},
+	],
 })
 const numbersCollectionIndex = AtomIO.atom<Set<string>>({
 	key: `numbersCollectionIndex`,

@@ -9,6 +9,11 @@ import { SetRTX } from "atom.io/transceivers/set-rtx"
 const numbersCollectionState = AtomIO.mutableAtom({
 	key: `numbersCollection`,
 	class: SetRTX<number>,
+	effects: [
+		({ setSelf }) => {
+			setSelf((prev) => prev.add(0))
+		},
+	],
 })
 const addToNumbersCollectionTX = AtomIO.transaction({
 	key: `addToNumbersCollection`,
