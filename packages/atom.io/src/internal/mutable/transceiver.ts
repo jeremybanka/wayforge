@@ -20,13 +20,6 @@ export type TransceiverConstructor<
 	& ( new () => T )
 	& { fromJSON: (json: J) => T }
 
-// export type TransceiverKit<
-// 	J extends Json.Serializable,
-// 	C extends abstract new (
-// 		...args: any[]
-// 	) => Transceiver<any, J>,
-// > = C & { fromJSON: (json: J) => InstanceType<C> }
-
 export function isTransceiver(
 	value: unknown,
 ): value is Transceiver<Json.Serializable, Json.Serializable> {
@@ -134,55 +127,3 @@ Update `24=add:"z"` is passed to myTransceiver.do:
 // The function wants a constructor C
 // - that has a static fromJSON(json) returning an instance of C
 // - and whose instances have toJSON() whose return type matches fromJSON's param
-function takeClass<
-	J extends Json.Serializable,
-	C extends abstract new (
-		...args: any[]
-	) => {
-		toJSON(): J
-	},
->(
-	Ctor: C & {
-		fromJSON(json: J): InstanceType<C>
-	},
-) {
-	// ...use Ctor here
-}
-
-class User {
-	public name: string
-	public constructor(name: string) {
-		this.name = name
-	}
-	public toJSON() {
-		return { name: this.name }
-	}
-	public static fromJSON(j: { name: string }) {
-		return new User(j.name)
-	}
-}
-
-takeClass(User) // ✅ OK
-
-class Bad {
-	public toJSON() {
-		return { x: 1 }
-	}
-	public static fromJSON(_j: string) {
-		return new Bad()
-	} // ❌ param type doesn't match toJSON
-}
-
-// // @ts-expect-error
-// takeClass(Bad)
-
-function z(a: abstract new () => any) {
-	takeClass(a)
-}
-z(
-	class {
-		public constructor(b?: string) {
-			console
-		}
-	},
-)
