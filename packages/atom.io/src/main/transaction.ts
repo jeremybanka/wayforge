@@ -115,7 +115,6 @@ export type TransactionOptions<F extends Func> = {
 }
 
 /**
- * @public
  * Create a transaction, a mechanism for batching updates multiple states in a single, all-or-nothing operation
  * @param options - {@link TransactionOptions}
  * @returns A reference to the transaction created: a {@link TransactionToken}
@@ -127,7 +126,6 @@ export function transaction<F extends Func>(
 }
 
 /**
- * @public
  * Execute a {@link transaction}
  * @param token - A {@link TransactionToken}
  * @param id - A unique identifier for the transaction. If not provided, a random identifier will be generated

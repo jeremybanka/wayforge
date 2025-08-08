@@ -16,7 +16,6 @@ import type {
 	RegularAtomToken,
 } from "./tokens"
 
-/** @public */
 export type RegularAtomOptions<T> = {
 	/** The unique identifier of the atom */
 	key: string
@@ -26,18 +25,15 @@ export type RegularAtomOptions<T> = {
 	effects?: AtomEffect<T>[]
 }
 /**
- * @public
  * Create a regular atom, a global reactive variable in the implicit store
  * @param options - {@link RegularAtomOptions}.
  * @returns
  * A reference to the atom created: a {@link RegularAtomToken}
- * @overload Regular
  */
 export function atom<T>(options: RegularAtomOptions<T>): RegularAtomToken<T> {
 	return createRegularAtom(IMPLICIT.STORE, options, undefined)
 }
 
-/** @public */
 // biome-ignore format: intersection
 export type MutableAtomOptions<
 	T extends Transceiver<any>,
@@ -53,7 +49,6 @@ export type MutableAtomOptions<
 		effects?: AtomEffect<T>[]
 	}
 /**
- * @public
  * Create a mutable atom, a global reactive variable in the implicit store
  *
  * The value of a mutable atom must be some kind of {@link Transceiver}.
@@ -61,7 +56,6 @@ export type MutableAtomOptions<
  * @param options - {@link MutableAtomOptions}.
  * @returns
  * A reference to the atom created: a {@link MutableAtomToken}
- * @overload Mutable
  */
 export function mutableAtom<
 	T extends Transceiver<any>,
@@ -71,14 +65,12 @@ export function mutableAtom<
 }
 
 /**
- * @public
  * A function that runs side effects when the atom is set
  * @param tools - {@link Effectors} that can be used to run side effects
  * @returns
  * Optionally, a cleanup function that will be called when the atom is disposed
  */
 export type AtomEffect<T> = (tools: Effectors<T>) => (() => void) | void
-/** @public */
 export type Effectors<T> = {
 	/**
 	 * Reset the value of the atom to its default
@@ -93,7 +85,6 @@ export type Effectors<T> = {
 	onSet: (callback: (options: { newValue: T; oldValue: T }) => void) => void
 }
 
-/** @public */
 export type RegularAtomFamilyOptions<T, K extends Canonical> = {
 	/** The unique identifier of the atom family */
 	key: string
@@ -103,12 +94,10 @@ export type RegularAtomFamilyOptions<T, K extends Canonical> = {
 	effects?: (key: K) => AtomEffect<T>[]
 }
 /**
- * @public
  * Create a family of regular atoms, allowing for the dynamic creation and disposal of atoms.
  * @param options - {@link RegularAtomFamilyOptions}
  * @returns
  * A reference to the atom family created: a {@link RegularAtomFamilyToken}
- * @overload Regular
  */
 export function atomFamily<T, K extends Canonical>(
 	options: RegularAtomFamilyOptions<T, K>,
@@ -116,7 +105,6 @@ export function atomFamily<T, K extends Canonical>(
 	return createRegularAtomFamily(IMPLICIT.STORE, options)
 }
 
-/** @public */
 // biome-ignore format: intersection
 export type MutableAtomFamilyOptions<
 	T extends Transceiver<any>,
@@ -133,7 +121,6 @@ export type MutableAtomFamilyOptions<
 		effects?: (key: K) => AtomEffect<T>[]
 	}
 /**
- * @public
  * Create a family of mutable atoms, allowing for the dynamic creation and disposal of atoms.
  *
  * The value of a mutable atom must be some kind of {@link Transceiver}.
@@ -141,7 +128,6 @@ export type MutableAtomFamilyOptions<
  * @param options - {@link MutableAtomFamilyOptions}
  * @returns
  * A reference to the atom family created: a {@link MutableAtomFamilyToken}
- * @overload Mutable
  */
 export function mutableAtomFamily<
 	T extends Transceiver<any>,

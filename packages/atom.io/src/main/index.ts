@@ -16,7 +16,6 @@ export * from "./transaction"
 export * from "./validators"
 
 /**
- * @public
  * Loadable is used to type atoms or selectors that may at some point be initialized to or set to a {@link Promise}.
  *
  * When a Promise is cached as the value of a state in atom.io, that state will be automatically set to the resolved value of the Promise when it is resolved.

@@ -1,11 +1,9 @@
 import type {
-	MutableAtomFamilyToken,
 	MutableAtomToken,
 	ReadableFamilyToken,
 	ReadableToken,
 	ReadonlySelectorFamilyToken,
 	ReadonlySelectorToken,
-	RegularAtomFamilyToken,
 	RegularAtomToken,
 	WritableFamilyToken,
 	WritableSelectorFamilyToken,
@@ -16,8 +14,9 @@ import type { Transceiver } from "atom.io/internal"
 import { findInStore, IMPLICIT } from "atom.io/internal"
 import type { Canonical, Json } from "atom.io/json"
 
+import type { MutableAtomFamilyToken, RegularAtomFamilyToken } from "./tokens"
+
 /**
- * @public
  * Finds a {@link MutableAtomToken} in the store, without accessing its value.
  *
  * In an ephemeral store, this will create a new atom if one does not exist with the given key.
@@ -37,7 +36,6 @@ export function findState<
 	Key extends K,
 >(token: MutableAtomFamilyToken<T, J, K>, key: Key): MutableAtomToken<T, J, K>
 /**
- * @public
  * Finds a {@link RegularAtomToken} in the store, without accessing its value.
  *
  * In an ephemeral store, this will create a new atom if one does not exist with the given key.
@@ -55,7 +53,6 @@ export function findState<T, K extends Canonical, Key extends K>(
 	key: Key,
 ): RegularAtomToken<T, K>
 /**
- * @public
  * Finds a {@link WritableSelectorToken} in the store, without accessing its value.
  *
  * In an ephemeral store, this will create a new selector if one does not exist with the given key.
@@ -73,7 +70,6 @@ export function findState<T, K extends Canonical, Key extends K>(
 	key: Key,
 ): WritableSelectorToken<T, K>
 /**
- * @public
  * Finds a {@link ReadonlySelectorToken} in the store, without accessing its value.
  *
  * In an ephemeral store, this will create a new selector if one does not exist with the given key.
@@ -91,7 +87,6 @@ export function findState<T, K extends Canonical, Key extends K>(
 	key: Key,
 ): ReadonlySelectorToken<T, K>
 /**
- * @public
  * Finds a {@link WritableToken} in the store, without accessing its value.
  *
  * In an ephemeral store, this will create a new atom or selector if one does not exist with the given key.
@@ -109,7 +104,6 @@ export function findState<T, K extends Canonical, Key extends K>(
 	key: Key,
 ): WritableToken<T, K>
 /**
- * @public
  * Finds a {@link MutableAtomToken} in the store, without accessing its value.
  *
  * In an ephemeral store, this will create a new atom or selector if one does not exist with the given key.
@@ -130,7 +124,7 @@ export function findState<T, K extends Canonical, Key extends K>(
 
 export function findState(
 	token: ReadableFamilyToken<any, any>,
-	key: Json.Serializable,
+	key: Canonical,
 ): ReadableToken<any> {
 	const state = findInStore(IMPLICIT.STORE, token, key)
 	return state

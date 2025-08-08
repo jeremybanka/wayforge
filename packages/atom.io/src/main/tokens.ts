@@ -2,7 +2,6 @@ import type { Func, Transceiver } from "atom.io/internal"
 import type { Canonical, Json, stringified } from "atom.io/json"
 
 /**
- * @public
  * A token is an object that uniquely identifies a particular state, family, timeline, or transaction.
  *
  * While they represent one of these resources, they are not the resource itself. Think of them like paper currency representing money in the bank.
@@ -20,14 +19,12 @@ export type AtomIOToken =
 	| TransactionToken<any>
 
 /**
- * @public
  * These states cannot be set.
  */
 export type ReadableToken<T, K extends Canonical = any> =
 	| AtomToken<T, K>
 	| SelectorToken<T, K>
 /**
- * @public
  * These states can be set.
  */
 export type WritableToken<T, K extends Canonical = any> =
@@ -35,14 +32,12 @@ export type WritableToken<T, K extends Canonical = any> =
 	| WritableSelectorToken<T, K>
 
 /**
- * @public
  * States belonging to this family can be gotten from the store.
  */
 export type ReadableFamilyToken<T, K extends Canonical> =
 	| AtomFamilyToken<T, K>
 	| SelectorFamilyToken<T, K>
 /**
- * @public
  * States belonging to this family can be set.
  */
 export type WritableFamilyToken<T, K extends Canonical> =
@@ -155,7 +150,6 @@ export type ReadonlyHeldSelectorToken<T, K extends Canonical = any> = {
 }
 
 /**
- * @public
  * Identifies a state's connection to its family.
  */
 export type FamilyMetadata<K extends Canonical = any> = {
