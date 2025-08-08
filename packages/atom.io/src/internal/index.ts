@@ -18,7 +18,7 @@ import type {
 } from "atom.io"
 import type { Canonical, Json, JsonInterface } from "atom.io/json"
 
-import type { Transceiver, TransceiverKit } from "./mutable"
+import type { Transceiver, TransceiverConstructor } from "./mutable"
 import type { Store } from "./store"
 import type { Subject } from "./subject"
 import type { Timeline } from "./timeline"
@@ -69,16 +69,10 @@ export type RegularAtom<T> = Flat<
 		cleanup?: () => void
 	}
 >
-export type MutableAtom<
-	J extends Json.Serializable,
-	C extends abstract new (
-		...args: any[]
-	) => Transceiver<any, J>,
-	K extends TransceiverKit<J, C>,
-> = Flat<
+export type MutableAtom<C extends TransceiverConstructor<any, any>> = Flat<
 	AtomIOState & {
 		type: `mutable_atom`
-		class: K
+		class: C
 		cleanup?: () => void
 	}
 >
@@ -86,11 +80,9 @@ export type Atom<T> =
 	| RegularAtom<T>
 	| (T extends Transceiver<any, any>
 			? MutableAtom<
-					Json.Serializable,
-					abstract new (
-						...args: any[]
-					) => Transceiver<any, any>,
-					TransceiverKit<any, any>
+					(abstract new () => T) & {
+						fromJSON: (j: ReturnType<T[`toJSON`]>) => T
+					}
 				>
 			: never)
 
