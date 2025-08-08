@@ -80,8 +80,6 @@ export function withdraw<T extends Transceiver<any, any>>(
 	store: Store,
 	token: MutableAtomToken<T, any>,
 ): MutableAtom<
-	ReturnType<T[`toJSON`]>,
-	abstract new () => T,
 	(abstract new () => T) & { fromJSON: (json: ReturnType<T[`toJSON`]>) => T }
 >
 export function withdraw<T>(store: Store, token: AtomToken<T>): Atom<T>
@@ -132,7 +130,7 @@ export function withdraw<T, K extends Canonical>(
 	token: RegularAtomFamilyToken<T, K>,
 ): RegularAtomFamily<T, K>
 export function withdraw<
-	T extends Transceiver<any>,
+	T extends Transceiver<any, any>,
 	J extends Json.Serializable,
 	K extends Canonical,
 >(

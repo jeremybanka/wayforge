@@ -4,7 +4,6 @@ import type {
 	MutableAtomToken,
 	UpdateHandler,
 } from "atom.io"
-import type { Json } from "atom.io/json"
 
 import type { MutableAtom } from ".."
 import { createStandaloneSelector, resetInStore, setIntoStore } from ".."
@@ -13,17 +12,13 @@ import { deposit, type Store } from "../store"
 import { Subject } from "../subject"
 import { subscribeToState } from "../subscribe"
 import { Tracker } from "./tracker"
-import type { Transceiver, TransceiverKit } from "./transceiver"
+import type { TransceiverConstructor } from "./transceiver"
 
-export function createMutableAtom<
-	J extends Json.Serializable,
-	C extends abstract new () => Transceiver<any, J>,
-	K extends TransceiverKit<J, C>,
->(
+export function createMutableAtom<C extends TransceiverConstructor<any, any>>(
 	store: Store,
-	options: MutableAtomOptions<J, C, K>,
+	options: MutableAtomOptions<C>,
 	family: FamilyMetadata | undefined,
-): MutableAtomToken<InstanceType<K>> {
+): MutableAtomToken<InstanceType<C>> {
 	store.logger.info(
 		`🔨`,
 		`atom`,
@@ -44,10 +39,10 @@ export function createMutableAtom<
 		return deposit(existing)
 	}
 	const subject = new Subject<{
-		newValue: InstanceType<K>
-		oldValue: InstanceType<K>
+		newValue: InstanceType<C>
+		oldValue: InstanceType<C>
 	}>()
-	const newAtom: MutableAtom<J, C, K> = {
+	const newAtom: MutableAtom<C> = {
 		...options,
 		type,
 		install: (s: Store) => {
@@ -72,7 +67,7 @@ export function createMutableAtom<
 				setSelf: (next) => {
 					setIntoStore(store, token, next)
 				},
-				onSet: (handle: UpdateHandler<InstanceType<K>>) =>
+				onSet: (handle: UpdateHandler<InstanceType<C>>) =>
 					subscribeToState(store, token, `effect[${effectIndex}]`, handle),
 			})
 			if (cleanup) {

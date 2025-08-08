@@ -49,13 +49,7 @@ import type { Transaction } from "../transaction"
 export function deposit<T>(state: RegularAtom<T>): RegularAtomToken<T>
 export function deposit<T extends Transceiver<any, any>>(
 	state: MutableAtom<
-		ReturnType<T[`toJSON`]>,
-		abstract new (
-			...args: any[]
-		) => T,
-		(abstract new (
-			...args: any[]
-		) => T) & { fromJSON: (json: ReturnType<T[`toJSON`]>) => T }
+		(abstract new () => T) & { fromJSON: (json: ReturnType<T[`toJSON`]>) => T }
 	>,
 ): MutableAtomToken<T>
 export function deposit<T>(state: Atom<T>): AtomToken<T>

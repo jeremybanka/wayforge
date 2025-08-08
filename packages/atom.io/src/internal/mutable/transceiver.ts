@@ -12,12 +12,20 @@ export interface Transceiver<
 	toJSON: () => J
 }
 
-export type TransceiverKit<
-	J extends Json.Serializable,
-	C extends abstract new (
-		...args: any[]
-	) => Transceiver<any, J>,
-> = C & { fromJSON: (json: J) => InstanceType<C> }
+// biome-ignore format: intersection
+export type TransceiverConstructor<
+  J extends Json.Serializable,
+  T extends Transceiver<any, J>
+> =
+	& ( abstract new () => T )
+	& { fromJSON: (json: J) => T }
+
+// export type TransceiverKit<
+// 	J extends Json.Serializable,
+// 	C extends abstract new (
+// 		...args: any[]
+// 	) => Transceiver<any, J>,
+// > = C & { fromJSON: (json: J) => InstanceType<C> }
 
 export function isTransceiver(
 	value: unknown,
