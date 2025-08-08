@@ -1,16 +1,27 @@
 import type { Json } from "atom.io/json"
 
-export interface Transceiver<S extends Json.Serializable> {
+export interface Transceiver<
+	S extends Json.Serializable,
+	J extends Json.Serializable,
+> {
 	do: (update: S) => number | `OUT_OF_RANGE` | null
 	undo: (update: S) => void
 	subscribe: (key: string, fn: (update: S) => void) => () => void
 	cacheUpdateNumber: number
 	getUpdateNumber: (update: S) => number
+	toJSON: () => J
 }
+
+export type TransceiverKit<
+	J extends Json.Serializable,
+	C extends abstract new (
+		...args: any[]
+	) => Transceiver<any, J>,
+> = C & { fromJSON: (json: J) => InstanceType<C> }
 
 export function isTransceiver(
 	value: unknown,
-): value is Transceiver<Json.Serializable> {
+): value is Transceiver<Json.Serializable, Json.Serializable> {
 	return (
 		typeof value === `object` &&
 		value !== null &&
@@ -22,8 +33,9 @@ export function isTransceiver(
 
 export type TransceiverMode = `playback` | `record` | `transaction`
 
-export type Signal<TVR extends Transceiver<any>> = TVR extends Transceiver<
-	infer S
+export type Signal<TVR extends Transceiver<any, any>> = TVR extends Transceiver<
+	infer S,
+	any
 >
 	? S
 	: never
@@ -31,8 +43,8 @@ export type Signal<TVR extends Transceiver<any>> = TVR extends Transceiver<
 /*
 A transceiver may also keep a list of updates that have been applied to it.
 This is useful for undo/redo functionality, especially in the context of
-revising history. It is a good idea to accept a cache limit in your 
-constructor, and overwrite old updates. Here's an example of how we 
+revising history. It is a good idea to accept a cache limit in your
+constructor, and overwrite old updates. Here's an example of how we
 might set that up:
 
 myTransceiver = Transceiver {
@@ -48,7 +60,7 @@ myTransceiver = Transceiver {
 
 CONFIRM/NO-OP
 Update `27=del:"x"` is passed to myTransceiver.do:
-- [updateNumber = 27, update = `del:"x"`]	
+- [updateNumber = 27, update = `del:"x"`]
 - updateOffset = updateNumber - cacheUpdateNumber // 0
 - eventOffset < 1 // true (we're validating the past)
 - |eventOffset| < cacheLimit // true (we remember this update)
@@ -75,7 +87,7 @@ Update `29=del:"x"` is passed to myTransceiver.do:
 - eventOffset === 1 // false (we're NOT ready to apply this update)
 - updateIdx := cacheIdx + updateOffset // 3
 - updateIdx %= cacheLimit // 0
-- cache[updateIdx] = update // cache = <{ 0 => del:"x" }> 
+- cache[updateIdx] = update // cache = <{ 0 => del:"x" }>
 - expectedUpdateNumber = cacheUpdateNumber + 1 // 28
 - return expectedUpdateNumber // 🤨👂
 
@@ -110,3 +122,59 @@ Update `24=add:"z"` is passed to myTransceiver.do:
 - return `OUT_OF_RANGE` // 😵‍💫👂
 
 */
+
+// The function wants a constructor C
+// - that has a static fromJSON(json) returning an instance of C
+// - and whose instances have toJSON() whose return type matches fromJSON's param
+function takeClass<
+	J extends Json.Serializable,
+	C extends abstract new (
+		...args: any[]
+	) => {
+		toJSON(): J
+	},
+>(
+	Ctor: C & {
+		fromJSON(json: J): InstanceType<C>
+	},
+) {
+	// ...use Ctor here
+}
+
+class User {
+	public name: string
+	public constructor(name: string) {
+		this.name = name
+	}
+	public toJSON() {
+		return { name: this.name }
+	}
+	public static fromJSON(j: { name: string }) {
+		return new User(j.name)
+	}
+}
+
+takeClass(User) // ✅ OK
+
+class Bad {
+	public toJSON() {
+		return { x: 1 }
+	}
+	public static fromJSON(_j: string) {
+		return new Bad()
+	} // ❌ param type doesn't match toJSON
+}
+
+// // @ts-expect-error
+// takeClass(Bad)
+
+function z(a: abstract new () => any) {
+	takeClass(a)
+}
+z(
+	class {
+		public constructor(b?: string) {
+			console
+		}
+	},
+)

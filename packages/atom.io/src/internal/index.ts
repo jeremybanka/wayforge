@@ -18,7 +18,7 @@ import type {
 } from "atom.io"
 import type { Canonical, Json, JsonInterface } from "atom.io/json"
 
-import type { Transceiver } from "./mutable"
+import type { Transceiver, TransceiverKit } from "./mutable"
 import type { Store } from "./store"
 import type { Subject } from "./subject"
 import type { Timeline } from "./timeline"
@@ -70,19 +70,29 @@ export type RegularAtom<T> = Flat<
 	}
 >
 export type MutableAtom<
-	T extends Transceiver<any>,
 	J extends Json.Serializable,
+	C extends abstract new (
+		...args: any[]
+	) => Transceiver<any, J>,
+	K extends TransceiverKit<J, C>,
 > = Flat<
-	AtomIOState &
-		JsonInterface<T, J> & {
-			type: `mutable_atom`
-			default: () => T
-			cleanup?: () => void
-		}
+	AtomIOState & {
+		type: `mutable_atom`
+		class: K
+		cleanup?: () => void
+	}
 >
 export type Atom<T> =
 	| RegularAtom<T>
-	| (T extends Transceiver<any> ? MutableAtom<T, any> : never)
+	| (T extends Transceiver<any, any>
+			? MutableAtom<
+					Json.Serializable,
+					abstract new (
+						...args: any[]
+					) => Transceiver<any, any>,
+					TransceiverKit<any, any>
+				>
+			: never)
 
 export type WritableHeldSelector<T> = Flat<
 	AtomIOState & {
@@ -141,7 +151,7 @@ export type RegularAtomFamily<T, K extends Canonical> =
 
 // biome-ignore format: intersection
 export type MutableAtomFamily<
-T extends Transceiver<any>,
+T extends Transceiver<any, any>,
 J extends Json.Serializable,
 K extends Canonical,
 > =
@@ -151,13 +161,13 @@ K extends Canonical,
 		& {
 				install: (store: Store) => void
 				internalRoles: string[] | undefined
-				subject: Subject<StateCreation<MutableAtomToken<T, J>> | StateDisposal<MutableAtomToken<T, J>>>
+				subject: Subject<StateCreation<MutableAtomToken<T>> | StateDisposal<MutableAtomToken<T>>>
 			}
 	>
-	& ((key: K) => MutableAtomToken<T, J>)
+	& ((key: K) => MutableAtomToken<T>)
 
 export type AtomFamily<T, K extends Canonical = Canonical> =
-	| MutableAtomFamily<T extends Transceiver<any> ? T : never, any, K>
+	| MutableAtomFamily<T extends Transceiver<any, any> ? T : never, any, K>
 	| RegularAtomFamily<T, K>
 
 // biome-ignore format: intersection

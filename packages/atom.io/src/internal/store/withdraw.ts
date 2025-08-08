@@ -76,10 +76,14 @@ export function withdraw<T>(
 	store: Store,
 	token: RegularAtomToken<T>,
 ): RegularAtom<T>
-export function withdraw<T extends Transceiver<any>>(
+export function withdraw<T extends Transceiver<any, any>>(
 	store: Store,
 	token: MutableAtomToken<T, any>,
-): MutableAtom<T, any>
+): MutableAtom<
+	ReturnType<T[`toJSON`]>,
+	abstract new () => T,
+	(abstract new () => T) & { fromJSON: (json: ReturnType<T[`toJSON`]>) => T }
+>
 export function withdraw<T>(store: Store, token: AtomToken<T>): Atom<T>
 export function withdraw<T>(
 	store: Store,

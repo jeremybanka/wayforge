@@ -25,7 +25,7 @@ import { initFamilyMemberInStore } from "./init-family-member"
 import { seekInStore } from "./seek-in-store"
 
 export function findInStore<
-	T extends Transceiver<any>,
+	T extends Transceiver<any, any>,
 	J extends Json.Serializable,
 	K extends Canonical,
 	Key extends K,
@@ -33,7 +33,7 @@ export function findInStore<
 	store: Store,
 	token: MutableAtomFamilyToken<T, J, K>,
 	key: Key,
-): MutableAtomToken<T, J, K>
+): MutableAtomToken<T, K>
 
 export function findInStore<T, K extends Canonical, Key extends K>(
 	store: Store,

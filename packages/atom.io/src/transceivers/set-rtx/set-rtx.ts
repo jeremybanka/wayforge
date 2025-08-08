@@ -16,7 +16,7 @@ export interface SetRTXJson<P extends primitive> extends Json.Object {
 }
 export class SetRTX<P extends primitive>
 	extends Set<P>
-	implements Transceiver<NumberedSetUpdate>, Lineage
+	implements Transceiver<NumberedSetUpdate, SetRTXJson<P>>, Lineage
 {
 	public mode: TransceiverMode = `record`
 	public readonly subject: Subject<SetUpdate> = new Subject<SetUpdate>()

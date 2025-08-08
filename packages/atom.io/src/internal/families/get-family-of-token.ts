@@ -18,12 +18,12 @@ import type { Transceiver } from "../mutable"
 import type { Store } from "../store"
 
 export function getFamilyOfToken<
-	T extends Transceiver<any>,
+	T extends Transceiver<any, any>,
 	J extends Json.Serializable,
 	K extends Canonical,
 >(
 	store: Store,
-	token: MutableAtomToken<T, J, K>,
+	token: MutableAtomToken<T, K>,
 ): MutableAtomFamilyToken<T, J, K> | undefined
 
 export function getFamilyOfToken<T, K extends Canonical>(
