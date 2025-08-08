@@ -36,7 +36,7 @@
 		"@types/node": "24.2.1",
 		"@types/tmp": "0.2.6",
 		"concurrently": "9.2.0",
-		"eslint": "9.32.0",
+		"eslint": "9.33.0",
 		"rimraf": "6.0.1",
 		"tmp": "0.2.4",
 		"tsdown": "0.13.4",
