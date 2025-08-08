@@ -174,6 +174,7 @@ const configs = [
 			`**/dist/**`,
 			`**/gen/**`,
 			`**/node_modules/**`,
+			`**/.next/**`,
 		],
 	},
 	{

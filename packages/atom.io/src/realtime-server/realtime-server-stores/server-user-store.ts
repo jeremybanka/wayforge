@@ -28,11 +28,15 @@ export const socketAtoms: RegularAtomFamilyToken<Socket | null, SocketKey> =
 		default: null,
 	})
 
-export const socketIndex: MutableAtomToken<SetRTX<SocketKey>> = mutableAtom({
+export const socketIndex: MutableAtomToken<SetRTX<SocketKey>> = mutableAtom<
+	SetRTX<SocketKey>
+>({
 	key: `socketsIndex`,
 	class: SetRTX,
 })
-export const userIndex: MutableAtomToken<SetRTX<UserKey>> = mutableAtom({
+export const userIndex: MutableAtomToken<SetRTX<UserKey>> = mutableAtom<
+	SetRTX<UserKey>
+>({
 	key: `usersIndex`,
 	class: SetRTX,
 })
