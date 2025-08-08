@@ -9,15 +9,15 @@ import { newest } from "../lineage"
 import { type Store, withdraw } from "../store"
 import type { Transceiver } from "./transceiver"
 
-export const getJsonToken = <Core extends Transceiver<any, any>>(
+export const getJsonToken = <T extends Transceiver<any, any>>(
 	store: Store,
-	mutableAtomToken: MutableAtomToken<Core>,
-): WritablePureSelectorToken<ReturnType<Core[`toJSON`]>> => {
+	mutableAtomToken: MutableAtomToken<T>,
+): WritablePureSelectorToken<ReturnType<T[`toJSON`]>> => {
 	if (mutableAtomToken.family) {
 		const target = newest(store)
 		const jsonFamilyKey = `${mutableAtomToken.family.key}:JSON`
 		const jsonFamilyToken: WritablePureSelectorFamilyToken<
-			ReturnType<Core[`toJSON`]>,
+			ReturnType<T[`toJSON`]>,
 			string
 		> = {
 			key: jsonFamilyKey,
@@ -28,7 +28,7 @@ export const getJsonToken = <Core extends Transceiver<any, any>>(
 		const jsonToken = findInStore(store, family, subKey)
 		return jsonToken
 	}
-	const token: WritablePureSelectorToken<ReturnType<Core[`toJSON`]>> = {
+	const token: WritablePureSelectorToken<ReturnType<T[`toJSON`]>> = {
 		type: `writable_pure_selector`,
 		key: `${mutableAtomToken.key}:JSON`,
 	}

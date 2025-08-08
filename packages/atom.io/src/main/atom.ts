@@ -1,8 +1,4 @@
-import type {
-	Transceiver,
-	TransceiverConstructor,
-	TransceiverKit,
-} from "atom.io/internal"
+import type { Transceiver, TransceiverConstructor } from "atom.io/internal"
 import {
 	createMutableAtom,
 	createMutableAtomFamily,
@@ -10,7 +6,7 @@ import {
 	createRegularAtomFamily,
 	IMPLICIT,
 } from "atom.io/internal"
-import type { Canonical, Json, JsonInterface } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 
 import type { Setter } from "./set-state"
 import type {
@@ -102,21 +98,17 @@ export function atomFamily<T, K extends Canonical>(
 	return createRegularAtomFamily(IMPLICIT.STORE, options)
 }
 
-// biome-ignore format: intersection
 export type MutableAtomFamilyOptions<
-	T extends Transceiver<any>,
-	J extends Json.Serializable,
+	C extends TransceiverConstructor<any, any>,
 	K extends Canonical,
-> =
-	& JsonInterface<T, J>
-	& {
-		/** The unique identifier of the atom family */
-		key: string
-		/** A function to create an initial value for each atom in the family */
-		default: (key: K) => T
-		/** Hooks used to run side effects when an atom in the family is set  */
-		effects?: (key: K) => AtomEffect<T>[]
-	}
+> = {
+	/** The unique identifier of the atom family */
+	key: string
+	/** The class of the transceiver to be created */
+	class: C
+	/** Hooks used to run side effects when an atom in the family is set  */
+	effects?: (key: K) => AtomEffect<InstanceType<C>>[]
+}
 /**
  * Create a family of mutable atoms, allowing for the dynamic creation and disposal of atoms.
  *
@@ -127,9 +119,10 @@ export type MutableAtomFamilyOptions<
  * A reference to the atom family created: a {@link MutableAtomFamilyToken}
  */
 export function mutableAtomFamily<
-	T extends Transceiver<any>,
-	J extends Json.Serializable,
+	C extends TransceiverConstructor<any, any>,
 	K extends Canonical,
->(options: MutableAtomFamilyOptions<T, J, K>): MutableAtomFamilyToken<T, J, K> {
+>(
+	options: MutableAtomFamilyOptions<C, K>,
+): MutableAtomFamilyToken<InstanceType<C>, K> {
 	return createMutableAtomFamily(IMPLICIT.STORE, options)
 }

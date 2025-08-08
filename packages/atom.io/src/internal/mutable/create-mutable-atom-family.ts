@@ -7,30 +7,36 @@ import type {
 	StateCreation,
 	StateDisposal,
 } from "atom.io"
-import type { Canonical, Json } from "atom.io/json"
-import { selectJsonFamily, stringifyJson } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
+import { stringifyJson } from "atom.io/json"
 
-import { type MutableAtomFamily, prettyPrintTokenType } from ".."
+import {
+	createWritablePureSelectorFamily,
+	type MutableAtomFamily,
+	prettyPrintTokenType,
+} from ".."
 import { newest } from "../lineage"
 import { createMutableAtom } from "../mutable"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 import { FamilyTracker } from "./tracker-family"
-import type { Transceiver } from "./transceiver"
+import type { Transceiver, TransceiverConstructor } from "./transceiver"
 
 export function createMutableAtomFamily<
-	T extends Transceiver<any>,
-	J extends Json.Serializable,
+	C extends TransceiverConstructor<any, any>,
 	K extends Canonical,
 >(
 	store: Store,
-	options: MutableAtomFamilyOptions<T, J, K>,
+	options: MutableAtomFamilyOptions<C, K>,
 	internalRoles?: string[],
-): MutableAtomFamilyToken<T, J, K> {
-	const familyToken = {
+): MutableAtomFamilyToken<InstanceType<C>, K> {
+	const familyToken: MutableAtomFamilyToken<
+		InstanceType<C> & Transceiver<any, any>,
+		K
+	> = {
 		key: options.key,
 		type: `mutable_atom_family`,
-	} as const satisfies MutableAtomFamilyToken<T, J, K>
+	}
 
 	const existing = store.families.get(options.key)
 	if (existing) {
@@ -45,20 +51,19 @@ export function createMutableAtomFamily<
 	}
 
 	const subject = new Subject<
-		StateCreation<MutableAtomToken<T, J>> | StateDisposal<MutableAtomToken<T, J>>
+		| StateCreation<MutableAtomToken<InstanceType<C>>>
+		| StateDisposal<MutableAtomToken<InstanceType<C>>>
 	>()
 
-	const familyFunction = (key: K): MutableAtomToken<T, J> => {
+	const familyFunction = (key: K): MutableAtomToken<InstanceType<C>> => {
 		const subKey = stringifyJson(key)
 		const family: FamilyMetadata = { key: options.key, subKey }
 		const fullKey = `${options.key}(${subKey})`
 		const target = newest(store)
 
-		const individualOptions: MutableAtomOptions<T, J> = {
+		const individualOptions: MutableAtomOptions<C> = {
 			key: fullKey,
-			default: () => options.default(key),
-			toJson: options.toJson,
-			fromJson: options.fromJson,
+			class: options.class,
 		}
 		if (options.effects) {
 			individualOptions.effects = options.effects(key)
@@ -73,13 +78,29 @@ export function createMutableAtomFamily<
 	const atomFamily = Object.assign(familyFunction, familyToken, {
 		subject,
 		install: (s: Store) => createMutableAtomFamily(s, options),
-		toJson: options.toJson,
-		fromJson: options.fromJson,
 		internalRoles,
-	}) satisfies MutableAtomFamily<T, J, K>
+	}) satisfies MutableAtomFamily<C, K>
 
 	store.families.set(options.key, atomFamily)
-	selectJsonFamily(store, atomFamily, options)
+
+	createWritablePureSelectorFamily<ReturnType<InstanceType<C>[`toJSON`]>, K>(
+		store,
+		{
+			key: `${options.key}:JSON`,
+			get:
+				(key) =>
+				({ get }) =>
+					get(familyToken, key).toJSON(),
+			set:
+				(key) =>
+				({ set }, newValue) => {
+					set(familyToken, key, options.class.fromJSON(newValue))
+				},
+		},
+		[`mutable`, `json`],
+	)
+
 	new FamilyTracker(atomFamily, store)
+
 	return familyToken
 }

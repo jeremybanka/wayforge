@@ -4,11 +4,18 @@ import type { Store } from "../store"
 import { setAtom } from "./set-atom"
 
 function resetAtom(store: Store, state: Atom<any>) {
-	let def = state.default
-	if (def instanceof Function) {
-		def = def()
+	switch (state.type) {
+		case `mutable_atom`:
+			setAtom(store, state, new state.class())
+			return
+		case `atom`: {
+			let def = state.default
+			if (def instanceof Function) {
+				def = def()
+			}
+			setAtom(store, state, def)
+		}
 	}
-	setAtom(store, state, def)
 }
 
 export function resetAtomOrSelector(

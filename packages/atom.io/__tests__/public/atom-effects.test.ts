@@ -11,7 +11,6 @@ import {
 	setState,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
-import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import tmp from "tmp"
 import { vitest } from "vitest"
@@ -100,9 +99,9 @@ describe(`atom effects`, () => {
 	})
 	it(`resets itself (mutable)`, () => {
 		const mySubject = new Internal.Subject<string>()
-		const nameState = mutableAtom<SetRTX<string>, SetRTXJson<string>>({
+		const nameState = mutableAtom({
 			key: `name`,
-			default: () => new SetRTX(),
+			class: SetRTX,
 			effects: [
 				({ resetSelf }) => {
 					mySubject.subscribe(`waiting to reset`, () => {
@@ -110,8 +109,6 @@ describe(`atom effects`, () => {
 					})
 				},
 			],
-			toJson: (set) => set.toJSON(),
-			fromJson: (json) => SetRTX.fromJSON(json),
 		})
 		setState(nameState, (current) => current.add(`Cat`))
 		const setOriginal = getState(nameState)

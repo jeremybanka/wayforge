@@ -1,5 +1,5 @@
 import type { Func, Transceiver } from "atom.io/internal"
-import type { Canonical, Json, stringified } from "atom.io/json"
+import type { Canonical, stringified } from "atom.io/json"
 
 /**
  * A token is an object that uniquely identifies a particular state, family, timeline, or transaction.

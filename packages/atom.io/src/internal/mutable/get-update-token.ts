@@ -1,13 +1,9 @@
 import type { MutableAtomToken, RegularAtomToken } from "atom.io"
-import type { Json } from "atom.io/json"
 
 import type { Signal, Transceiver } from "./transceiver"
 
-export const getUpdateToken = <
-	Core extends Transceiver<any>,
-	SerializableCore extends Json.Serializable,
->(
-	mutableAtomToken: MutableAtomToken<Core, SerializableCore>,
+export const getUpdateToken = <Core extends Transceiver<any, any>>(
+	mutableAtomToken: MutableAtomToken<Core>,
 ): RegularAtomToken<Signal<Core>> => {
 	const key = `*${mutableAtomToken.key}`
 	const updateToken: RegularAtomToken<Signal<Core>> = { type: `atom`, key }

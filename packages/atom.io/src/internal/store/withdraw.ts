@@ -32,7 +32,7 @@ import type {
 	WritableSelectorToken,
 	WritableToken,
 } from "atom.io"
-import type { Canonical, Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 
 import type {
 	Atom,
@@ -80,7 +80,7 @@ export function withdraw<T extends Transceiver<any, any>>(
 	store: Store,
 	token: MutableAtomToken<T, any>,
 ): MutableAtom<
-	(abstract new () => T) & { fromJSON: (json: ReturnType<T[`toJSON`]>) => T }
+	(new () => T) & { fromJSON: (json: ReturnType<T[`toJSON`]>) => T }
 >
 export function withdraw<T>(store: Store, token: AtomToken<T>): Atom<T>
 export function withdraw<T>(
@@ -129,14 +129,13 @@ export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: RegularAtomFamilyToken<T, K>,
 ): RegularAtomFamily<T, K>
-export function withdraw<
-	T extends Transceiver<any, any>,
-	J extends Json.Serializable,
-	K extends Canonical,
->(
+export function withdraw<T extends Transceiver<any, any>, K extends Canonical>(
 	store: Store,
-	token: MutableAtomFamilyToken<T, J, K>,
-): MutableAtomFamily<T, J, K>
+	token: MutableAtomFamilyToken<T, K>,
+): MutableAtomFamily<
+	(new () => T) & { fromJSON: (json: ReturnType<T[`toJSON`]>) => T },
+	K
+>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: AtomFamilyToken<T, K>,
