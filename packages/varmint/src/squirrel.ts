@@ -2,9 +2,11 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 import { inspect } from "node:util"
 
+import { diffLines } from "diff"
 import { closest } from "fastest-levenshtein"
 
 import type { CacheMode } from "./cache-mode.ts"
+import { prettyPrintDiff } from "./colors.ts"
 import { sanitizeFilename } from "./sanitize-filename.ts"
 import {
 	SPECIAL_BREAK_SEQ as SBS,
@@ -93,6 +95,11 @@ export class Squirrel {
 			}
 
 			const mostSimilarInput = closest(inputData, allInputs)
+
+			const diff = diffLines(inputData, mostSimilarInput)
+			console.log(`❗❗❗❗❗❗❗❗\n`, diff)
+			const prettyDiff = prettyPrintDiff(inputData, mostSimilarInput)
+			console.log(`❗❗❗❗❗❗❗❗\n`, prettyDiff)
 
 			throw new Error(
 				[

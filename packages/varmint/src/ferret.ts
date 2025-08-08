@@ -5,6 +5,7 @@ import { inspect } from "node:util"
 import { closest } from "fastest-levenshtein"
 
 import type { CacheMode } from "./cache-mode.ts"
+import { pico, prettyPrintDiff } from "./colors.ts"
 import { sanitizeFilename } from "./sanitize-filename.ts"
 import {
 	SPECIAL_BREAK_SEQ as SBS,
@@ -105,6 +106,11 @@ export class Ferret {
 			}
 
 			const mostSimilarInput = closest(inputData, allInputs)
+			const prettyDiff = prettyPrintDiff(
+				pico.reset(inputData),
+				pico.reset(mostSimilarInput),
+			)
+			console.log(`❗❗❗❗❗❗❗❗\n`, prettyDiff)
 
 			throw new Error(
 				[
