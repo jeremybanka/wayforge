@@ -5,7 +5,6 @@ import type {
 	RegularAtomFamilyToken,
 } from "atom.io"
 import { atomFamily, join, mutableAtom } from "atom.io"
-import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import type { Socket } from ".."
@@ -29,23 +28,13 @@ export const socketAtoms: RegularAtomFamilyToken<Socket | null, SocketKey> =
 		default: null,
 	})
 
-export const socketIndex: MutableAtomToken<
-	SetRTX<SocketKey>,
-	SetRTXJson<SocketKey>
-> = mutableAtom<SetRTX<SocketKey>, SetRTXJson<SocketKey>>({
+export const socketIndex: MutableAtomToken<SetRTX<SocketKey>> = mutableAtom({
 	key: `socketsIndex`,
-	default: () => new SetRTX(),
-	toJson: (set) => set.toJSON(),
-	fromJson: (json) => SetRTX.fromJSON(json),
+	class: SetRTX,
 })
-export const userIndex: MutableAtomToken<
-	SetRTX<UserKey>,
-	SetRTXJson<UserKey>
-> = mutableAtom<SetRTX<UserKey>, SetRTXJson<UserKey>>({
+export const userIndex: MutableAtomToken<SetRTX<UserKey>> = mutableAtom({
 	key: `usersIndex`,
-	default: () => new SetRTX(),
-	toJson: (set) => set.toJSON(),
-	fromJson: (json) => SetRTX.fromJSON(json),
+	class: SetRTX,
 })
 export const usersOfSockets: JoinToken<
 	`user`,

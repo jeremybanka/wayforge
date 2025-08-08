@@ -17,9 +17,8 @@ export function realtimeMutableProvider({
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
 	return function mutableProvider<
-		Core extends Transceiver<Json.Serializable>,
-		SerializableCore extends Json.Serializable,
-	>(token: AtomIO.MutableAtomToken<Core, SerializableCore>): () => void {
+		Core extends Transceiver<Json.Serializable, Json.Serializable>,
+	>(token: AtomIO.MutableAtomToken<Core>): () => void {
 		let unsubscribeFromStateUpdates: (() => void) | null = null
 
 		const jsonToken = getJsonToken(store, token)

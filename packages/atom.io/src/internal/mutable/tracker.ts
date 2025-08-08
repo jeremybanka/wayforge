@@ -1,5 +1,4 @@
 import type { FamilyMetadata, MutableAtomToken, RegularAtomToken } from "atom.io"
-import type { Json } from "atom.io/json"
 
 import type { Store } from ".."
 import {
@@ -18,12 +17,12 @@ import type { Transceiver } from "./transceiver"
  * subscribe to the transceiver's inner value. When the inner value changes,
  * the tracker will update its own state to reflect the change.
  */
-export class Tracker<Mutable extends Transceiver<any>> {
+export class Tracker<Mutable extends Transceiver<any, any>> {
 	private initializeState(
-		mutableState: MutableAtomToken<Mutable, Json.Serializable>,
+		mutableState: MutableAtomToken<Mutable>,
 		store: Store,
 	): RegularAtomToken<
-		(Mutable extends Transceiver<infer Signal> ? Signal : never) | null
+		(Mutable extends Transceiver<infer Signal, any> ? Signal : never) | null
 	> {
 		const latestUpdateStateKey = `*${mutableState.key}`
 		store.atoms.delete(latestUpdateStateKey)
@@ -35,7 +34,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 				}
 			: undefined
 		const latestUpdateState = createRegularAtom<
-			(Mutable extends Transceiver<infer Signal> ? Signal : never) | null
+			(Mutable extends Transceiver<infer Signal, any> ? Signal : never) | null
 		>(
 			store,
 			{
@@ -57,7 +56,7 @@ export class Tracker<Mutable extends Transceiver<any>> {
 	private observeCore(
 		mutableState: MutableAtomToken<Mutable, any>,
 		latestUpdateState: RegularAtomToken<
-			(Mutable extends Transceiver<infer Signal> ? Signal : never) | null
+			(Mutable extends Transceiver<infer Signal, any> ? Signal : never) | null
 		>,
 		target: Store,
 	): void {
@@ -89,10 +88,10 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		)
 	}
 
-	private updateCore<Core extends Transceiver<any>>(
-		mutableState: MutableAtomToken<Core, Json.Serializable>,
+	private updateCore<Core extends Transceiver<any, any>>(
+		mutableState: MutableAtomToken<Core>,
 		latestUpdateState: RegularAtomToken<
-			(Mutable extends Transceiver<infer Signal> ? Signal : never) | null
+			(Mutable extends Transceiver<infer Signal, any> ? Signal : never) | null
 		>,
 		target: Store,
 	): void {
@@ -161,17 +160,14 @@ export class Tracker<Mutable extends Transceiver<any>> {
 		)
 	}
 
-	public mutableState: MutableAtomToken<Mutable, Json.Serializable>
+	public mutableState: MutableAtomToken<Mutable>
 	public latestUpdateState: RegularAtomToken<
-		(Mutable extends Transceiver<infer Signal> ? Signal : never) | null
+		(Mutable extends Transceiver<infer Signal, any> ? Signal : never) | null
 	>
 
 	public [Symbol.dispose]!: () => void
 
-	public constructor(
-		mutableState: MutableAtomToken<Mutable, Json.Serializable>,
-		store: Store,
-	) {
+	public constructor(mutableState: MutableAtomToken<Mutable>, store: Store) {
 		this.mutableState = mutableState
 		const target = newest(store)
 		this.latestUpdateState = this.initializeState(mutableState, target)

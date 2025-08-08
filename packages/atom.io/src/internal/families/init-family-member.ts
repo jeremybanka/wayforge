@@ -25,7 +25,7 @@ import type { Store } from "../store"
 import { isChildStore, isRootStore } from "../transaction"
 
 export function initFamilyMemberInStore<
-	T extends Transceiver<any>,
+	T extends Transceiver<any, any>,
 	J extends Json.Serializable,
 	K extends Canonical,
 	Key extends K,
@@ -33,7 +33,7 @@ export function initFamilyMemberInStore<
 	store: Store,
 	token: MutableAtomFamilyToken<T, J, K>,
 	key: Key,
-): MutableAtomToken<T, J, K>
+): MutableAtomToken<T, K>
 
 export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
 	store: Store,

@@ -25,7 +25,7 @@ import type { Transceiver } from "../mutable"
 import { deposit, type Store } from "../store"
 
 export function seekInStore<
-	T extends Transceiver<any>,
+	T extends Transceiver<any, any>,
 	J extends Json.Serializable,
 	K extends Canonical,
 	Key extends K,
@@ -33,7 +33,7 @@ export function seekInStore<
 	store: Store,
 	token: MutableAtomFamilyToken<T, J, K>,
 	key: Key,
-): MutableAtomToken<T, J, K> | undefined
+): MutableAtomToken<T, K> | undefined
 
 export function seekInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
