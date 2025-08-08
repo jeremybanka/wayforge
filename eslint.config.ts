@@ -153,7 +153,6 @@ const commonRules = {
 	"@typescript-eslint/unified-signatures": ERROR,
 
 	"atom.io/explicit-state-types": ERROR,
-	"atom.io/synchronous-selector-dependencies": ERROR,
 
 	"import/newline-after-import": ERROR,
 	"import/no-duplicates": ERROR,
