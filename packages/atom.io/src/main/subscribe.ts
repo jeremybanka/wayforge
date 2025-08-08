@@ -11,9 +11,7 @@ import type {
 	TransactionUpdate,
 } from "."
 
-/** @public */
 export type StateUpdate<T> = { newValue: T; oldValue: T }
-/** @public */
 export type KeyedStateUpdate<T> = Flat<
 	StateUpdate<T> & {
 		key: string
@@ -21,15 +19,12 @@ export type KeyedStateUpdate<T> = Flat<
 		family?: FamilyMetadata
 	}
 >
-/** @public */
 export type UpdateHandler<T> = (update: StateUpdate<T>) => void
-/** @public */
 export type TransactionUpdateHandler<F extends Func> = (
 	data: TransactionUpdate<F>,
 ) => void
 
 /**
- * @public
  * Subscribe to a state in the implicit store
  * @param token - The token of the state to subscribe to
  * @param handleUpdate - A function that will be called when the state is updated
@@ -43,7 +38,6 @@ export function subscribe<T>(
 	key?: string,
 ): () => void
 /**
- * @public
  * Subscribe to a transaction in the implicit store
  * @param token - The token of the transaction to subscribe to
  * @param handleUpdate - A function that will be called when the transaction succeeds
@@ -57,7 +51,6 @@ export function subscribe<F extends Func>(
 	key?: string,
 ): () => void
 /**
- * @public
  * Subscribe to a timeline in the implicit store
  * @param token - The token of the timeline to subscribe to
  * @param handleUpdate - A function that will be called when a new update is available
