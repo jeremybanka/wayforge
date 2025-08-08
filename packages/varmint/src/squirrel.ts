@@ -2,11 +2,10 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 import { inspect } from "node:util"
 
-import { diffLines } from "diff"
 import { closest } from "fastest-levenshtein"
 
 import type { CacheMode } from "./cache-mode.ts"
-import { prettyPrintDiff } from "./colors.ts"
+import { prettyPrintDiffInline } from "./colors.ts"
 import { sanitizeFilename } from "./sanitize-filename.ts"
 import {
 	SPECIAL_BREAK_SEQ as SBS,
@@ -67,24 +66,37 @@ export class Squirrel {
 					fs.readFileSync(path.join(groupDirectory, filename), `utf-8`),
 				])
 				.filter(([filename]) => filename.endsWith(`.input.json`))
-			const allInputs: string[] = []
+			const allInputsPlain: string[] = []
+			const allInputsMap: Map<string, { filename: string; contents: string }> =
+				new Map()
 			for (const [filename, contents] of directoryFiles) {
 				const otherInputFilename = `\t${filename}`
-				const otherInputFileData = `\t\t${inspect(JSON.parse(contents), {
+				const otherInputFileDataPlain = `\t\t${inspect(JSON.parse(contents), {
+					depth: Number.POSITIVE_INFINITY,
+					colors: false,
+				})
+					.split(`\n`)
+					.join(`\n\t\t`)}`
+
+				const otherInput = otherInputFilename + `\n` + otherInputFileDataPlain
+				allInputsPlain.push(otherInput)
+				allInputsMap.set(otherInput, { filename: otherInputFilename, contents })
+			}
+
+			const inputData = {
+				color: `\t${subKey}.input.json\n\t\t${inspect(args, {
 					depth: Number.POSITIVE_INFINITY,
 					colors: true,
 				})
 					.split(`\n`)
-					.join(`\n\t\t`)}`
-				allInputs.push(otherInputFilename + `\n` + otherInputFileData)
+					.join(`\n\t\t`)}`,
+				plain: `\t${subKey}.input.json\n\t\t${inspect(args, {
+					depth: Number.POSITIVE_INFINITY,
+					colors: false,
+				})
+					.split(`\n`)
+					.join(`\n\t\t`)}`,
 			}
-
-			const inputData = `\t${inputFilename}\n\t\t${inspect(args, {
-				depth: Number.POSITIVE_INFINITY,
-				colors: true,
-			})
-				.split(`\n`)
-				.join(`\n\t\t`)}`
 
 			if (mgr.storage.initialized && this.mode === `read`) {
 				mgr.storage.setItem(
@@ -94,21 +106,39 @@ export class Squirrel {
 				mgr.storage.setItem(`DID_CACHE_MISS`, `true`)
 			}
 
-			const mostSimilarInput = closest(inputData, allInputs)
+			const mostSimilarInputPlain = closest(inputData.plain, allInputsPlain)
+			const prettyDiff = prettyPrintDiffInline(
+				inputData.plain,
+				mostSimilarInputPlain,
+			)
+			const {
+				filename: mostSimilarInputFilename,
+				contents: mostSimilarInputRawContent,
+				// biome-ignore lint/style/noNonNullAssertion: the way this is set up, it's guaranteed to be there
+			} = allInputsMap.get(mostSimilarInputPlain)!
+			const mostSimilarInputContentsColor = `\t\t${inspect(
+				JSON.parse(mostSimilarInputRawContent),
+				{
+					depth: Number.POSITIVE_INFINITY,
+					colors: true,
+				},
+			)
+				.split(`\n`)
+				.join(`\n\t\t`)}`
 
-			const diff = diffLines(inputData, mostSimilarInput)
-			console.log(`❗❗❗❗❗❗❗❗\n`, diff)
-			const prettyDiff = prettyPrintDiff(inputData, mostSimilarInput)
-			console.log(`❗❗❗❗❗❗❗❗\n`, prettyDiff)
+			const mostSimilarInput =
+				mostSimilarInputFilename + `\n` + mostSimilarInputContentsColor
 
 			throw new Error(
 				[
-					`Ferret: input file for key "${key}" with subKey "${subKey}" was not found here:`,
+					`Squirrel: input file for key "${key}" with subKey "${subKey}" was not found here:`,
 					`\t${groupDirectory}`,
 					`This is the file we didn't find:`,
-					inputData,
+					inputData.color,
 					`The most similar file in that directory is:`,
 					mostSimilarInput,
+					`Here's the difference between the two files:`,
+					`${prettyDiff}`,
 				].join(`\n`),
 			)
 		}
