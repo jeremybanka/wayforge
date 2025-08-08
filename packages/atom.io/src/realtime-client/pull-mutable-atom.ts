@@ -1,5 +1,5 @@
 import type * as AtomIO from "atom.io"
-import type { Store, Transceiver } from "atom.io/internal"
+import type { AsJSON, Store, Transceiver } from "atom.io/internal"
 import { getJsonToken, getUpdateToken, setIntoStore } from "atom.io/internal"
 import type { Socket } from "socket.io-client"
 
@@ -10,7 +10,7 @@ export function pullMutableAtom<T extends Transceiver<any, any>>(
 ): () => void {
 	const jsonToken = getJsonToken(store, token)
 	const updateToken = getUpdateToken(token)
-	socket.on(`init:${token.key}`, (data: ReturnType<T[`toJSON`]>) => {
+	socket.on(`init:${token.key}`, (data: AsJSON<T>) => {
 		setIntoStore(store, jsonToken, data)
 	})
 	socket.on(

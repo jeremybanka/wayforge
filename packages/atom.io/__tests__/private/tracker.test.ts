@@ -79,10 +79,7 @@ describe(`tracker`, () => {
 
 describe(`trackerFamily`, () => {
 	test(`tracks the state of a family of mutable atoms`, () => {
-		const setAtoms = mutableAtomFamily<
-			(new () => SetRTX<string>) & { fromJSON: (json: any) => SetRTX<string> },
-			string
-		>({
+		const setAtoms = mutableAtomFamily<SetRTX<string>, string>({
 			key: `sets`,
 			class: SetRTX,
 		})
@@ -96,10 +93,7 @@ describe(`trackerFamily`, () => {
 		expect(getState(latestUpdateStates, `a`)).toEqual(null)
 	})
 	test(`updates the core of a new family member in a transaction`, () => {
-		const setAtoms = mutableAtomFamily<
-			(new () => SetRTX<string>) & { fromJSON: (json: any) => SetRTX<string> },
-			string
-		>({
+		const setAtoms = mutableAtomFamily<SetRTX<string>, string>({
 			key: `findSetState`,
 			class: SetRTX,
 		})

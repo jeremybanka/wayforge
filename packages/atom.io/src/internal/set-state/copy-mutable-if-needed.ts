@@ -1,12 +1,12 @@
-import type { MutableAtom, Transceiver, TransceiverConstructor } from ".."
+import type { MutableAtom, Transceiver } from ".."
 import { Tracker } from "../mutable"
 import type { Store } from "../store"
 
-export function copyMutableIfNeeded<C extends TransceiverConstructor<any, any>>(
+export function copyMutableIfNeeded<T extends Transceiver<any, any>>(
 	target: Store,
-	atom: MutableAtom<C>,
+	atom: MutableAtom<T>,
 	origin: Store,
-): InstanceType<C> {
+): T {
 	const originValue = origin.valueMap.get(atom.key) as
 		| Transceiver<any, any>
 		| undefined

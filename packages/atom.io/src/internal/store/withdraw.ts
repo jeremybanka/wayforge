@@ -79,9 +79,7 @@ export function withdraw<T>(
 export function withdraw<T extends Transceiver<any, any>>(
 	store: Store,
 	token: MutableAtomToken<T, any>,
-): MutableAtom<
-	(new () => T) & { fromJSON: (json: ReturnType<T[`toJSON`]>) => T }
->
+): MutableAtom<T>
 export function withdraw<T>(store: Store, token: AtomToken<T>): Atom<T>
 export function withdraw<T>(
 	store: Store,
@@ -132,10 +130,7 @@ export function withdraw<T, K extends Canonical>(
 export function withdraw<T extends Transceiver<any, any>, K extends Canonical>(
 	store: Store,
 	token: MutableAtomFamilyToken<T, K>,
-): MutableAtomFamily<
-	(new () => T) & { fromJSON: (json: ReturnType<T[`toJSON`]>) => T },
-	K
->
+): MutableAtomFamily<T, K>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: AtomFamilyToken<T, K>,

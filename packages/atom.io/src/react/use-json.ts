@@ -1,5 +1,5 @@
 import type { MutableAtomFamilyToken, MutableAtomToken } from "atom.io"
-import type { Transceiver } from "atom.io/internal"
+import type { AsJSON, Transceiver } from "atom.io/internal"
 import { findInStore, getJsonToken } from "atom.io/internal"
 import type { Canonical, Json } from "atom.io/json"
 import * as React from "react"
@@ -9,12 +9,12 @@ import { useO } from "./use-o"
 
 export function useJSON<T extends Transceiver<any, any>>(
 	token: MutableAtomToken<T>,
-): ReturnType<T[`toJSON`]>
+): AsJSON<T>
 
 export function useJSON<T extends Transceiver<any, any>, K extends Canonical>(
 	token: MutableAtomFamilyToken<T, K>,
 	key: K,
-): ReturnType<T[`toJSON`]>
+): AsJSON<T>
 
 export function useJSON(
 	token: MutableAtomFamilyToken<any, any> | MutableAtomToken<any>,

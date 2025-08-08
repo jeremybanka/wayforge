@@ -1,4 +1,4 @@
-import type { Transceiver, TransceiverConstructor } from "atom.io/internal"
+import type { ConstructorOf, Transceiver } from "atom.io/internal"
 import {
 	createMutableAtom,
 	createMutableAtomFamily,
@@ -34,13 +34,13 @@ export function atom<T>(options: RegularAtomOptions<T>): RegularAtomToken<T> {
 	return createRegularAtom(IMPLICIT.STORE, options, undefined)
 }
 
-export type MutableAtomOptions<C extends TransceiverConstructor<any, any>> = {
+export type MutableAtomOptions<T extends Transceiver<any, any>> = {
 	/** The unique identifier of the atom */
 	key: string
 	/** A constructor for the atom's value */
-	class: C
+	class: ConstructorOf<T>
 	/** Hooks used to run side effects when the atom is set */
-	effects?: AtomEffect<InstanceType<C>>[]
+	effects?: AtomEffect<T>[]
 }
 /**
  * Create a mutable atom, a global reactive variable in the implicit store
@@ -51,9 +51,9 @@ export type MutableAtomOptions<C extends TransceiverConstructor<any, any>> = {
  * @returns
  * A reference to the atom created: a {@link MutableAtomToken}
  */
-export function mutableAtom<C extends TransceiverConstructor<any, any>>(
-	options: MutableAtomOptions<C>,
-): MutableAtomToken<InstanceType<C>> {
+export function mutableAtom<T extends Transceiver<any, any>>(
+	options: MutableAtomOptions<T>,
+): MutableAtomToken<T> {
 	return createMutableAtom(IMPLICIT.STORE, options, undefined)
 }
 
@@ -99,15 +99,15 @@ export function atomFamily<T, K extends Canonical>(
 }
 
 export type MutableAtomFamilyOptions<
-	C extends TransceiverConstructor<any, any>,
+	T extends Transceiver<any, any>,
 	K extends Canonical,
 > = {
 	/** The unique identifier of the atom family */
 	key: string
 	/** The class of the transceiver to be created */
-	class: C
+	class: ConstructorOf<T>
 	/** Hooks used to run side effects when an atom in the family is set  */
-	effects?: (key: K) => AtomEffect<InstanceType<C>>[]
+	effects?: (key: K) => AtomEffect<T>[]
 }
 /**
  * Create a family of mutable atoms, allowing for the dynamic creation and disposal of atoms.
@@ -119,10 +119,8 @@ export type MutableAtomFamilyOptions<
  * A reference to the atom family created: a {@link MutableAtomFamilyToken}
  */
 export function mutableAtomFamily<
-	C extends TransceiverConstructor<any, any>,
+	T extends Transceiver<any, any>,
 	K extends Canonical,
->(
-	options: MutableAtomFamilyOptions<C, K>,
-): MutableAtomFamilyToken<InstanceType<C>, K> {
+>(options: MutableAtomFamilyOptions<T, K>): MutableAtomFamilyToken<T, K> {
 	return createMutableAtomFamily(IMPLICIT.STORE, options)
 }

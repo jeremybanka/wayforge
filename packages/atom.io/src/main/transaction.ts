@@ -1,4 +1,9 @@
-import type { EnvironmentData, Func, Transceiver } from "atom.io/internal"
+import type {
+	EnvironmentData,
+	Func,
+	AsJSON,
+	Transceiver,
+} from "atom.io/internal"
 import {
 	actUponStore,
 	arbitrary,
@@ -87,7 +92,7 @@ export type ActorToolkit = Readonly<{
 	find: typeof findState
 	json: <T extends Transceiver<any, any>>(
 		state: MutableAtomToken<T>,
-	) => WritablePureSelectorToken<ReturnType<T[`toJSON`]>>
+	) => WritablePureSelectorToken<AsJSON<T>>
 	dispose: typeof disposeState
 	run: typeof runTransaction
 	env: () => EnvironmentData

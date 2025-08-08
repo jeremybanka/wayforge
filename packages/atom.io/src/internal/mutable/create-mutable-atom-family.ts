@@ -20,20 +20,17 @@ import { createMutableAtom } from "../mutable"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 import { FamilyTracker } from "./tracker-family"
-import type { Transceiver, TransceiverConstructor } from "./transceiver"
+import type { AsJSON, Transceiver } from "./transceiver"
 
 export function createMutableAtomFamily<
-	C extends TransceiverConstructor<any, any>,
+	T extends Transceiver<any, any>,
 	K extends Canonical,
 >(
 	store: Store,
-	options: MutableAtomFamilyOptions<C, K>,
+	options: MutableAtomFamilyOptions<T, K>,
 	internalRoles?: string[],
-): MutableAtomFamilyToken<InstanceType<C>, K> {
-	const familyToken: MutableAtomFamilyToken<
-		InstanceType<C> & Transceiver<any, any>,
-		K
-	> = {
+): MutableAtomFamilyToken<T, K> {
+	const familyToken: MutableAtomFamilyToken<T & Transceiver<any, any>, K> = {
 		key: options.key,
 		type: `mutable_atom_family`,
 	}
@@ -51,17 +48,16 @@ export function createMutableAtomFamily<
 	}
 
 	const subject = new Subject<
-		| StateCreation<MutableAtomToken<InstanceType<C>>>
-		| StateDisposal<MutableAtomToken<InstanceType<C>>>
+		StateCreation<MutableAtomToken<T>> | StateDisposal<MutableAtomToken<T>>
 	>()
 
-	const familyFunction = (key: K): MutableAtomToken<InstanceType<C>> => {
+	const familyFunction = (key: K): MutableAtomToken<T> => {
 		const subKey = stringifyJson(key)
 		const family: FamilyMetadata = { key: options.key, subKey }
 		const fullKey = `${options.key}(${subKey})`
 		const target = newest(store)
 
-		const individualOptions: MutableAtomOptions<C> = {
+		const individualOptions: MutableAtomOptions<T> = {
 			key: fullKey,
 			class: options.class,
 		}
@@ -79,11 +75,11 @@ export function createMutableAtomFamily<
 		subject,
 		install: (s: Store) => createMutableAtomFamily(s, options),
 		internalRoles,
-	}) satisfies MutableAtomFamily<C, K>
+	}) satisfies MutableAtomFamily<T, K>
 
 	store.families.set(options.key, atomFamily)
 
-	createWritablePureSelectorFamily<ReturnType<InstanceType<C>[`toJSON`]>, K>(
+	createWritablePureSelectorFamily<AsJSON<T>, K>(
 		store,
 		{
 			key: `${options.key}:JSON`,
