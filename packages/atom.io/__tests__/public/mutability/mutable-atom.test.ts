@@ -300,6 +300,8 @@ describe(`mutable atom effects`, () => {
 			],
 		})
 
+		letterSubject.next({ letter: `A` })
+		expect(getState(myMutableState)).toEqual(new SetRTX([`A`]))
 		letterSubject.next({ letter: `B` })
 		expect(getState(myMutableState)).toEqual(new SetRTX([`A`, `B`]))
 	})
