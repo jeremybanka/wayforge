@@ -225,7 +225,7 @@ describe(`two families may not have the same key`, () => {
 			`Overwriting an existing Atom Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
 
-		mutableAtomFamily({
+		mutableAtomFamily<SetRTX<string>, string>({
 			key: `count`,
 			class: SetRTX,
 		})

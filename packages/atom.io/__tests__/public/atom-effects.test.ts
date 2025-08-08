@@ -99,7 +99,7 @@ describe(`atom effects`, () => {
 	})
 	it(`resets itself (mutable)`, () => {
 		const mySubject = new Internal.Subject<string>()
-		const nameState = mutableAtom({
+		const nameState = mutableAtom<SetRTX<string>>({
 			key: `name`,
 			class: SetRTX,
 			effects: [

@@ -1,4 +1,4 @@
-import type { Func, AsJSON, Transceiver } from "atom.io/internal"
+import type { AsJSON, Func, Transceiver } from "atom.io/internal"
 import type { Canonical, stringified } from "atom.io/json"
 
 /**

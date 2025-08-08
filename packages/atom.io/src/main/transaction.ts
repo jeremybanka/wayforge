@@ -1,7 +1,7 @@
 import type {
+	AsJSON,
 	EnvironmentData,
 	Func,
-	AsJSON,
 	Transceiver,
 } from "atom.io/internal"
 import {

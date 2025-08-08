@@ -12,7 +12,7 @@ const STATE_FUNCTIONS = [
 	`mutableAtomFamily`,
 	`selector`,
 	`selectorFamily`,
-] as const
+]
 
 export const explicitStateTypes: ESLintUtils.RuleModule<
 	`noTypeArgument`,

@@ -37,9 +37,9 @@ afterEach(() => {
 
 describe(`tracker`, () => {
 	test(`tracks the state of a mutable atom`, () => {
-		const mutableSetState = mutableAtom({
+		const mutableSetState = mutableAtom<SetRTX<string>>({
 			key: `mutableSetState`,
-			class: SetRTX<string>,
+			class: SetRTX,
 		})
 		const { latestUpdateState } = new Tracker(
 			mutableSetState,
@@ -57,9 +57,9 @@ describe(`tracker`, () => {
 	})
 
 	test(`updates its core in a transaction`, () => {
-		const mutableSetState = mutableAtom({
+		const mutableSetState = mutableAtom<SetRTX<string>>({
 			key: `mutableSetState`,
-			class: SetRTX<string>,
+			class: SetRTX,
 		})
 		const tracker = new Tracker(mutableSetState, Internal.IMPLICIT.STORE)
 		const updateTrackerTX = transaction({

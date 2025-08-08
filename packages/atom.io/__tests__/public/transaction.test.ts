@@ -250,9 +250,9 @@ describe(`nesting transactions`, () => {
 			key: `coffeeQuantity`,
 			default: 0,
 		})
-		const shoppingListState = mutableAtom({
+		const shoppingListState = mutableAtom<SetRTX<string>>({
 			key: `shoppingList`,
-			class: SetRTX<string>,
+			class: SetRTX,
 		})
 		const addItemToShoppingListTX = transaction<(item: string) => void>({
 			key: `addItemToShoppingList`,

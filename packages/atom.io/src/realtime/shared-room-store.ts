@@ -7,12 +7,14 @@ import { getInternalRelations, join, mutableAtom, selectorFamily } from "atom.io
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 export const usersInThisRoomIndex: MutableAtomToken<SetRTX<string>> =
-	mutableAtom({
+	mutableAtom<SetRTX<string>>({
 		key: `usersInRoomIndex`,
 		class: SetRTX,
 	})
 
-export const roomIndex: MutableAtomToken<SetRTX<string>> = mutableAtom({
+export const roomIndex: MutableAtomToken<SetRTX<string>> = mutableAtom<
+	SetRTX<string>
+>({
 	key: `roomIndex`,
 	class: SetRTX,
 })
