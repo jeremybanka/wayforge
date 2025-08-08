@@ -1,4 +1,4 @@
-import { atomFamily, join, selectorFamily } from "atom.io"
+import { atomFamily, join, mutableAtomFamily, selectorFamily } from "atom.io"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
@@ -51,13 +51,12 @@ export const deckStates = atomFamily<Deck, string>({
 		name: ``,
 	},
 })
-export const deckIndices = atomFamily<
+export const deckIndices = mutableAtomFamily<
 	SetRTX<string>,
 	SetRTXJson<string>,
 	string
 >({
 	key: `deckIndex`,
-	mutable: true,
 	default: () => new SetRTX<string>(),
 	toJson: (set) => set.toJSON(),
 	fromJson: (json) => SetRTX.fromJSON(json),
@@ -69,13 +68,12 @@ export const handStates = atomFamily<Hand, string>({
 		name: ``,
 	},
 })
-export const handIndices = atomFamily<
+export const handIndices = mutableAtomFamily<
 	SetRTX<string>,
 	SetRTXJson<string>,
 	string
 >({
 	key: `handIndex`,
-	mutable: true,
 	default: () => new SetRTX<string>(),
 	toJson: (set) => set.toJSON(),
 	fromJson: (json) => SetRTX.fromJSON(json),
@@ -87,13 +85,12 @@ export const pileStates = atomFamily<Pile, string>({
 		name: ``,
 	},
 })
-export const pileIndices = atomFamily<
+export const pileIndices = mutableAtomFamily<
 	SetRTX<string>,
 	SetRTXJson<string>,
 	string
 >({
 	key: `pileIndex`,
-	mutable: true,
 	default: () => new SetRTX<string>(),
 	toJson: (set) => set.toJSON(),
 	fromJson: (json) => SetRTX.fromJSON(json),
@@ -105,13 +102,12 @@ export const trickStates = atomFamily<Trick, string>({
 		name: ``,
 	},
 })
-export const trickIndices = atomFamily<
+export const trickIndices = mutableAtomFamily<
 	SetRTX<string>,
 	SetRTXJson<string>,
 	string
 >({
 	key: `trickIndex`,
-	mutable: true,
 	default: () => new SetRTX<string>(),
 	toJson: (set) => set.toJSON(),
 	fromJson: (json) => SetRTX.fromJSON(json),

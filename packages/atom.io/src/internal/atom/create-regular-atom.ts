@@ -81,5 +81,6 @@ export function createRegularAtom<T>(
 			}
 		}
 	}
+	store.on.atomCreation.next(token)
 	return token
 }

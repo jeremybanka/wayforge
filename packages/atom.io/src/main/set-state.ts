@@ -1,10 +1,9 @@
 import * as Internal from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 
-import type { WritableFamilyToken, WritableToken } from "."
+import type { WritableFamilyToken, WritableToken } from "./tokens"
 
 /**
- * @public
  * A function that sets the value of a state.
  * @param oldValue - The current value of the state.
  * @returns
@@ -13,7 +12,6 @@ import type { WritableFamilyToken, WritableToken } from "."
 export type Setter<T, New extends T> = (oldValue: T) => New
 
 /**
- * @public
  * Set the value of a state into the implicit store.
  * @param token - An atom or writable selector token.
  * @param value - The new value of the state.
@@ -26,7 +24,6 @@ export function setState<T, New extends T>(
 ): void
 
 /**
- * @public
  * Set the value of a state into the implicit store.
  * @param token - An atom family or writable selector family token.
  * @param key - The unique key of the state to set.

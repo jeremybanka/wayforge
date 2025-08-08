@@ -4,7 +4,6 @@ import type { Canonical } from "atom.io/json"
 import type { ReadableFamilyToken, ReadableToken } from "."
 
 /**
- * @public
  * Disposes of a state in the implicit store.
  *
  * Only family members can be disposed of.
@@ -14,7 +13,6 @@ import type { ReadableFamilyToken, ReadableToken } from "."
  */
 export function disposeState(token: ReadableToken<any>): void
 /**
- * @public
  * Disposes of a state in the implicit store.
  *
  * Only family members can be disposed of.

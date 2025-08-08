@@ -6,8 +6,8 @@ import type {
 	TransactionToken,
 } from "atom.io"
 import {
-	createAtomFamily,
-	createStandaloneAtom,
+	createRegularAtom,
+	createRegularAtomFamily,
 	createTransaction,
 	type Store,
 } from "atom.io/internal"
@@ -39,53 +39,69 @@ export function attachDevtoolsStates(
 ): DevtoolsStates & IntrospectionStates & { store: Store } {
 	const introspectionStates = attachIntrospectionStates(store)
 
-	const devtoolsAreHiddenAtom = createStandaloneAtom<boolean>(store, {
-		key: `🔍 Devtools Are Hidden`,
-		default: hideByDefault,
-		effects:
-			typeof window === `undefined`
-				? []
-				: [
-						persistSync(window.localStorage, JSON, `🔍 Devtools Are Hidden`),
-						({ setSelf }) => {
-							window.addEventListener(`keydown`, (e) => {
-								if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === `a`) {
-									e.preventDefault()
-									setSelf((state) => !state)
-								}
-							})
-						},
-					],
-	})
+	const devtoolsAreHiddenAtom = createRegularAtom<boolean>(
+		store,
+		{
+			key: `🔍 Devtools Are Hidden`,
+			default: hideByDefault,
+			effects:
+				typeof window === `undefined`
+					? []
+					: [
+							persistSync(window.localStorage, JSON, `🔍 Devtools Are Hidden`),
+							({ setSelf }) => {
+								window.addEventListener(`keydown`, (e) => {
+									if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === `a`) {
+										e.preventDefault()
+										setSelf((state) => !state)
+									}
+								})
+							},
+						],
+		},
+		undefined,
+	)
 
-	const devtoolsAreOpenAtom = createStandaloneAtom<boolean>(store, {
-		key: `🔍 Devtools Are Open`,
-		default: true,
-		effects:
-			typeof window === `undefined`
-				? []
-				: [persistSync(window.localStorage, JSON, `🔍 Devtools Are Open`)],
-	})
+	const devtoolsAreOpenAtom = createRegularAtom<boolean>(
+		store,
+		{
+			key: `🔍 Devtools Are Open`,
+			default: true,
+			effects:
+				typeof window === `undefined`
+					? []
+					: [persistSync(window.localStorage, JSON, `🔍 Devtools Are Open`)],
+		},
+		undefined,
+	)
 
-	const devtoolsViewSelectionAtom = createStandaloneAtom<DevtoolsView>(store, {
-		key: `🔍 Devtools View Selection`,
-		default: `atoms`,
-		effects:
-			typeof window === `undefined`
-				? []
-				: [persistSync(window.localStorage, JSON, `🔍 Devtools View`)],
-	})
+	const devtoolsViewSelectionAtom = createRegularAtom<DevtoolsView>(
+		store,
+		{
+			key: `🔍 Devtools View Selection`,
+			default: `atoms`,
+			effects:
+				typeof window === `undefined`
+					? []
+					: [persistSync(window.localStorage, JSON, `🔍 Devtools View`)],
+		},
+		undefined,
+	)
 
-	const devtoolsViewOptionsAtom = createStandaloneAtom<DevtoolsView[]>(store, {
-		key: `🔍 Devtools View Options`,
-		default: [`atoms`, `selectors`, `transactions`, `timelines`],
-		effects:
-			typeof window === `undefined`
-				? []
-				: [persistSync(window.localStorage, JSON, `🔍 Devtools View Options`)],
-	})
+	const devtoolsViewOptionsAtom = createRegularAtom<DevtoolsView[]>(
+		store,
+		{
+			key: `🔍 Devtools View Options`,
+			default: [`atoms`, `selectors`, `transactions`, `timelines`],
+			effects:
+				typeof window === `undefined`
+					? []
+					: [persistSync(window.localStorage, JSON, `🔍 Devtools View Options`)],
+		},
+		undefined,
+	)
 
-	const viewIsOpenAtoms = createAtomFamily<
+	const viewIsOpenAtoms = createRegularAtomFamily<
 		boolean,
 		readonly (number | string)[]
 	>(store, {

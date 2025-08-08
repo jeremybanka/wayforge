@@ -8,8 +8,8 @@ import type {
 	ReadonlyPureSelectorFamilyToken,
 	RegularAtomFamilyToken,
 	setState,
-	SetterToolkit,
 	Write,
+	WriterToolkit,
 } from "atom.io"
 import { Anarchy } from "atom.io"
 import type { Canonical, Json, stringified } from "atom.io/json"
@@ -129,7 +129,7 @@ export class Join<
 		BSide
 	> = CompoundTypedKey<`content`, ASide, BSide>,
 > {
-	private toolkit: SetterToolkit
+	private toolkit: WriterToolkit
 	public options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>
 	public defaultContent: Content | undefined
 	public molecules: Map<string, Molecule<any>> = new Map()
@@ -150,7 +150,7 @@ export class Join<
 		>
 	}
 	public transact(
-		toolkit: SetterToolkit,
+		toolkit: WriterToolkit,
 		run: (join: Join<ASide, AType, BSide, BType, Cardinality, Content>) => void,
 	): void {
 		const originalToolkit = this.toolkit
@@ -202,7 +202,6 @@ export class Join<
 			{
 				key: `${options.key}/relatedKeys`,
 				default: () => new SetRTX(),
-				mutable: true,
 				fromJson: (json) => SetRTX.fromJSON(json),
 				toJson: (set) => set.toJSON(),
 			},

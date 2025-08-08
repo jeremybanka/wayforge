@@ -1,5 +1,5 @@
 import type { RegularAtomToken } from "atom.io"
-import { atom, atomFamily, join, selector, selectorFamily } from "atom.io"
+import { atomFamily, join, mutableAtom, selector, selectorFamily } from "atom.io"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import { Perspective } from "occlusion"
@@ -26,9 +26,8 @@ export const cardAtoms = atomFamily<Card, string>({
 		rotation: 0,
 	}),
 })
-export const cardIndex = atom<SetRTX<string>, SetRTXJson<string>>({
+export const cardIndex = mutableAtom<SetRTX<string>, SetRTXJson<string>>({
 	key: `cardIndex`,
-	mutable: true,
 	default: () => new SetRTX<string>(),
 	toJson: (set) => set.toJSON(),
 	fromJson: (json) => SetRTX.fromJSON(json),

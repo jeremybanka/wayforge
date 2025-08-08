@@ -10,11 +10,9 @@ import type {
 } from "atom.io/internal"
 import { createTimeline, IMPLICIT, timeTravel } from "atom.io/internal"
 
-import type { AtomFamilyToken, AtomToken } from "."
+import type { AtomFamilyToken, AtomToken, TimelineToken } from "."
 
-/** @public */
 export type TimelineManageable = AtomFamilyToken<any, any> | AtomToken<any>
-/** @public */
 export type AtomOnly<M extends TimelineManageable> = M extends AtomFamilyToken<
 	any,
 	any
@@ -24,18 +22,7 @@ export type AtomOnly<M extends TimelineManageable> = M extends AtomFamilyToken<
 		? M
 		: never
 
-/** @public */
-export type TimelineToken<M> = {
-	/** The unique identifier of the timeline */
-	key: string
-	/** Discriminator */
-	type: `timeline`
-	/** Never present. This is a marker that preserves the type of the managed atoms */
-	__M?: M
-}
-
 /**
- * @public
  * If there is an update ahead of the cursor (in the future of this {@link timeline}), apply it and move the cursor to the next update
  * @param timeline - A {@link TimelineToken}
  */
@@ -43,7 +30,6 @@ export const redo = (timeline: TimelineToken<any>): void => {
 	timeTravel(IMPLICIT.STORE, `redo`, timeline)
 }
 /**
- * @public
  * Reverse the last update on the {@link timeline} and move the cursor to the previous update
  * @param timeline - A {@link TimelineToken}
  */
@@ -51,7 +37,6 @@ export const undo = (timeline: TimelineToken<any>): void => {
 	timeTravel(IMPLICIT.STORE, `undo`, timeline)
 }
 
-/** @public */
 export type TimelineUpdate<ManagedAtom extends TimelineManageable> =
 	| TimelineAtomUpdate<ManagedAtom>
 	| TimelineMoleculeCreation
@@ -61,7 +46,6 @@ export type TimelineUpdate<ManagedAtom extends TimelineManageable> =
 	| TimelineStateDisposal<AtomOnly<ManagedAtom>>
 	| TimelineTransactionUpdate
 
-/** @public */
 export type TimelineOptions<ManagedAtom extends TimelineManageable> = {
 	/** The unique identifier of the timeline */
 	key: string
@@ -75,7 +59,6 @@ export type TimelineOptions<ManagedAtom extends TimelineManageable> = {
 }
 
 /**
- * @public
  * Create a timeline, a mechanism for recording, undoing, and replaying changes to groups of atoms
  * @param options - {@link TimelineOptions}
  * @returns A reference to the timeline created: a {@link TimelineToken}

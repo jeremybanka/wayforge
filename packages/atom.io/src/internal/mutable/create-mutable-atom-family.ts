@@ -59,7 +59,6 @@ export function createMutableAtomFamily<
 			default: () => options.default(key),
 			toJson: options.toJson,
 			fromJson: options.fromJson,
-			mutable: true,
 		}
 		if (options.effects) {
 			individualOptions.effects = options.effects(key)

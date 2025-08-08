@@ -16,7 +16,6 @@ import {
 import type { Json } from "atom.io/json"
 import type { SetRTX, SetRTXJson } from "atom.io/transceivers/set-rtx"
 
-/** @public */
 // biome-ignore format: intersection
 export type JoinOptions<
 	ASide extends string,
@@ -40,7 +39,6 @@ export type JoinOptions<
 		}
 	> & Partial<JunctionEntriesBase<AType, BType, Content>>
 
-/** @public */
 export type JoinToken<
 	ASide extends string,
 	AType extends string,
@@ -68,7 +66,6 @@ export type JoinToken<
 }
 
 /**
- * @public
  * Create a join, an interface for managing relations between two sets of keys.
  *
  * Use joins when it is important to view relationships from either side.
@@ -92,7 +89,6 @@ export function join<
 	defaultContent?: undefined,
 ): JoinToken<ASide, AType, BSide, BType, Cardinality, null>
 /**
- * @public
  * Create a join, an interface for managing relations between two sets of keys.
  *
  * Use joins when it is important to view relationships from either side.
@@ -212,7 +208,6 @@ export type JoinStates<
 			: never
 
 /**
- * @public
  * Find the current value of a relation owned by a {@link join}
  * @param token - The token of the join
  * @param key - The key of the relation to find
@@ -235,7 +230,6 @@ export function findRelations<
 }
 
 /**
- * @public
  * Change one or multiple relations owned by a {@link join}
  * @param token - The token of the join
  * @param change - A function that takes a {@link Junction} interface to edit the relations
@@ -255,7 +249,6 @@ export function editRelations<
 }
 
 /**
- * @public
  * @param token - The token of the join
  * @returns
  * A {@link MutableAtomFamilyToken} to access the internal relations
