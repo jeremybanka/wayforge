@@ -1,5 +1,11 @@
 # varmint
 
+## 0.5.3
+
+### Patch Changes
+
+- 301af4f: ✨ Greatly improved the error logged when a cache miss occurs in read mode.
+
 ## 0.5.2
 
 ### Patch Changes
