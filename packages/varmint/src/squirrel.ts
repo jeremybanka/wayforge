@@ -2,6 +2,8 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 import { inspect } from "node:util"
 
+import { closest } from "fastest-levenshtein"
+
 import type { CacheMode } from "./cache-mode.ts"
 import { sanitizeFilename } from "./sanitize-filename.ts"
 import {
@@ -72,7 +74,7 @@ export class Squirrel {
 				})
 					.split(`\n`)
 					.join(`\n\t\t`)}`
-				allInputs.push(otherInputFilename, otherInputFileData)
+				allInputs.push(otherInputFilename + `\n` + otherInputFileData)
 			}
 
 			const inputData = `\t${inputFilename}\n\t\t${inspect(args, {
@@ -89,8 +91,18 @@ export class Squirrel {
 				)
 				mgr.storage.setItem(`DID_CACHE_MISS`, `true`)
 			}
+
+			const mostSimilarInput = closest(inputData, allInputs)
+
 			throw new Error(
-				`Squirrel: input file for key "${key}" with subKey "${subKey}" (${pathToInputFile}) was not found. Directory "${groupDirectory}" exists, but the file does not. Below is a list of CACHED INPUT FILES from that directory and their contents, followed by YOUR INPUT DATA.\n\nCACHED INPUT FILES:\n${allInputs.join(`\n`)}\n\nYOUR INPUT DATA:\n${inputData}\n`,
+				[
+					`Ferret: input file for key "${key}" with subKey "${subKey}" was not found here:`,
+					`\t${groupDirectory}`,
+					`This is the file we didn't find:`,
+					inputData,
+					`The most similar file in that directory is:`,
+					mostSimilarInput,
+				].join(`\n`),
 			)
 		}
 		const inputFileContents = fs.readFileSync(pathToInputFile, `utf-8`)
