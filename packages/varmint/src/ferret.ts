@@ -2,7 +2,10 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 import { inspect } from "node:util"
 
+import { closest } from "fastest-levenshtein"
+
 import type { CacheMode } from "./cache-mode.ts"
+import { prettyPrintDiffInline } from "./colors.ts"
 import { sanitizeFilename } from "./sanitize-filename.ts"
 import {
 	SPECIAL_BREAK_SEQ as SBS,
@@ -75,24 +78,37 @@ export class Ferret {
 					fs.readFileSync(path.join(groupDirectory, filename), `utf-8`),
 				])
 				.filter(([filename]) => filename.endsWith(`.input.json`))
-			const allInputs: string[] = []
+			const allInputsPlain: string[] = []
+			const allInputsMap: Map<string, { filename: string; contents: string }> =
+				new Map()
 			for (const [filename, contents] of directoryFiles) {
 				const otherInputFilename = `\t${filename}`
-				const otherInputFileData = `\t\t${inspect(JSON.parse(contents), {
+				const otherInputFileDataPlain = `\t\t${inspect(JSON.parse(contents), {
+					depth: Number.POSITIVE_INFINITY,
+					colors: false,
+				})
+					.split(`\n`)
+					.join(`\n\t\t`)}`
+
+				const otherInput = otherInputFilename + `\n` + otherInputFileDataPlain
+				allInputsPlain.push(otherInput)
+				allInputsMap.set(otherInput, { filename: otherInputFilename, contents })
+			}
+
+			const inputData = {
+				color: `\t${subKey}.input.json\n\t\t${inspect(args, {
 					depth: Number.POSITIVE_INFINITY,
 					colors: true,
 				})
 					.split(`\n`)
-					.join(`\n\t\t`)}`
-				allInputs.push(otherInputFilename, otherInputFileData)
+					.join(`\n\t\t`)}`,
+				plain: `\t${subKey}.input.json\n\t\t${inspect(args, {
+					depth: Number.POSITIVE_INFINITY,
+					colors: false,
+				})
+					.split(`\n`)
+					.join(`\n\t\t`)}`,
 			}
-
-			const inputData = `\t${subKey}.input.json\n\t\t${inspect(args, {
-				depth: Number.POSITIVE_INFINITY,
-				colors: true,
-			})
-				.split(`\n`)
-				.join(`\n\t\t`)}`
 
 			if (mgr.storage.initialized && this.mode === `read`) {
 				mgr.storage.setItem(
@@ -101,8 +117,41 @@ export class Ferret {
 				)
 				mgr.storage.setItem(`DID_CACHE_MISS`, `true`)
 			}
+
+			const mostSimilarInputPlain = closest(inputData.plain, allInputsPlain)
+			const prettyDiff = prettyPrintDiffInline(
+				inputData.plain,
+				mostSimilarInputPlain,
+			)
+			const {
+				filename: mostSimilarInputFilename,
+				contents: mostSimilarInputRawContent,
+				// biome-ignore lint/style/noNonNullAssertion: the way this is set up, it's guaranteed to be there
+			} = allInputsMap.get(mostSimilarInputPlain)!
+			const mostSimilarInputContentsColor = `\t\t${inspect(
+				JSON.parse(mostSimilarInputRawContent),
+				{
+					depth: Number.POSITIVE_INFINITY,
+					colors: true,
+				},
+			)
+				.split(`\n`)
+				.join(`\n\t\t`)}`
+
+			const mostSimilarInput =
+				mostSimilarInputFilename + `\n` + mostSimilarInputContentsColor
+
 			throw new Error(
-				`Ferret: input file for key "${key}" with subKey "${subKey}" (${pathToInputFile}) was not found. Directory "${groupDirectory}" exists, but the file does not. Below is a list of CACHED INPUT FILES from that directory and their contents, followed by YOUR INPUT DATA.\n\nCACHED INPUT FILES:\n${allInputs.join(`\n`)}\n\nYOUR INPUT DATA:\n${inputData}\n`,
+				[
+					`Ferret: input file for key "${key}" with subKey "${subKey}" was not found here:`,
+					`\t${groupDirectory}`,
+					`This is the file we didn't find:`,
+					inputData.color,
+					`The most similar file in that directory is:`,
+					mostSimilarInput,
+					`Here's the difference between the two files:`,
+					`${prettyDiff}`,
+				].join(`\n`),
 			)
 		}
 		const inputFileContents = fs.readFileSync(pathToInputFile, `utf-8`)
@@ -127,7 +176,7 @@ export class Ferret {
 						const line = lines.shift()
 						if (line) {
 							await new Promise((resolve) => setTimeout(resolve, 2))
-							const [time, piece] = line.split(`\t`)
+							const [_time, piece] = line.split(`\t`)
 							yield JSON.parse(piece)
 						}
 					}

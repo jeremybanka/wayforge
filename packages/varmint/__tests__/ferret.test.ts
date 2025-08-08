@@ -108,7 +108,5 @@ test(`ferret with openAI (cache-miss)`, async () => {
 		expect(caught).toBeInstanceOf(Error)
 		expect(caught?.message).toContain(`Hello, how are you?`)
 		expect(caught?.message).toContain(`Hello!!!!!!!!!!!!!!!!!!!!!!!!!!!!!`)
-		expect(caught?.message).toContain(`YOUR INPUT DATA:`)
-		expect(caught?.message).toContain(`CACHED INPUT FILES:`)
 	}
 })

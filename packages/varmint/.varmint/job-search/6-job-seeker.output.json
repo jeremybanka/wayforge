@@ -1,23 +1,36 @@
 {
-	"id": "chatcmpl-9V1n1TNBjYAWsWAF2iAEExRGMHQSg",
+	"id": "chatcmpl-C25HjCYyTFzRkRhN0g8Xe3up2rLoU",
 	"object": "chat.completion",
-	"created": 1717182075,
+	"created": 1754613007,
 	"model": "gpt-4-turbo-2024-04-09",
 	"choices": [
 		{
 			"index": 0,
 			"message": {
 				"role": "assistant",
-				"content": "To excel in your upcoming job interview, it's essential to be well-prepared. Research the company thoroughly, understand the role you're applying for in detail, and practice your responses to common interview questions. Also, consider preparing some thoughtful questions to ask the interviewer to show your interest and enthusiasm for the position.\n\nAGENDA_JSON{ \"You wonder, what should I do to pass my upcoming job interview?\": \"Research the company thoroughly, understand the role in detail, practice responses to common interview questions, and prepare some thoughtful questions to ask the interviewer.\" }"
+				"content": "Thanks! Now, can you give me some advice on what I should do to ace my upcoming job interview? AGENDA_JSON{ \"You wonder, what should I do to pass my upcoming job interview?\": null }",
+				"refusal": null,
+				"annotations": []
 			},
 			"logprobs": null,
 			"finish_reason": "stop"
 		}
 	],
 	"usage": {
-		"prompt_tokens": 411,
-		"completion_tokens": 113,
-		"total_tokens": 524
+		"prompt_tokens": 481,
+		"completion_tokens": 45,
+		"total_tokens": 526,
+		"prompt_tokens_details": {
+			"cached_tokens": 0,
+			"audio_tokens": 0
+		},
+		"completion_tokens_details": {
+			"reasoning_tokens": 0,
+			"audio_tokens": 0,
+			"accepted_prediction_tokens": 0,
+			"rejected_prediction_tokens": 0
+		}
 	},
-	"system_fingerprint": "fp_31a6c0accf"
+	"service_tier": "default",
+	"system_fingerprint": "fp_de235176ee"
 }
