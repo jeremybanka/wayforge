@@ -2,6 +2,8 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 import { inspect } from "node:util"
 
+import { closest } from "fastest-levenshtein"
+
 import type { CacheMode } from "./cache-mode.ts"
 import { sanitizeFilename } from "./sanitize-filename.ts"
 import {
@@ -84,7 +86,7 @@ export class Ferret {
 				})
 					.split(`\n`)
 					.join(`\n\t\t`)}`
-				allInputs.push(otherInputFilename, otherInputFileData)
+				allInputs.push(otherInputFilename + `\n` + otherInputFileData)
 			}
 
 			const inputData = `\t${subKey}.input.json\n\t\t${inspect(args, {
@@ -101,8 +103,18 @@ export class Ferret {
 				)
 				mgr.storage.setItem(`DID_CACHE_MISS`, `true`)
 			}
+
+			const mostSimilarInput = closest(inputData, allInputs)
+
 			throw new Error(
-				`Ferret: input file for key "${key}" with subKey "${subKey}" (${pathToInputFile}) was not found. Directory "${groupDirectory}" exists, but the file does not. Below is a list of CACHED INPUT FILES from that directory and their contents, followed by YOUR INPUT DATA.\n\nCACHED INPUT FILES:\n${allInputs.join(`\n`)}\n\nYOUR INPUT DATA:\n${inputData}\n`,
+				[
+					`Ferret: input file for key "${key}" with subKey "${subKey}" was not found here:`,
+					`\t${groupDirectory}`,
+					`This is the file we didn't find:`,
+					inputData,
+					`The most similar file in that directory is:`,
+					mostSimilarInput,
+				].join(`\n`),
 			)
 		}
 		const inputFileContents = fs.readFileSync(pathToInputFile, `utf-8`)
@@ -127,7 +139,7 @@ export class Ferret {
 						const line = lines.shift()
 						if (line) {
 							await new Promise((resolve) => setTimeout(resolve, 2))
-							const [time, piece] = line.split(`\t`)
+							const [_time, piece] = line.split(`\t`)
 							yield JSON.parse(piece)
 						}
 					}
