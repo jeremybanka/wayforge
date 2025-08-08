@@ -1,23 +1,36 @@
 {
-	"id": "chatcmpl-9V1n6B1HLnCpXsWSOnVC2E3O2ztuU",
+	"id": "chatcmpl-C25HlxJCo8cry4G6WMbbtJ8ADFUsk",
 	"object": "chat.completion",
-	"created": 1717182080,
+	"created": 1754613009,
 	"model": "gpt-4-turbo-2024-04-09",
 	"choices": [
 		{
 			"index": 0,
 			"message": {
 				"role": "assistant",
-				"content": "It's fantastic that you're focusing on preparation! Alongside researching the company and understanding the job role, tailor your resume and cover letter to highlight your skills and experiences that align closely with the job description. Also, practice a confident, professional demeanor for the interview. Do you have specific questions about these preparation steps or any other concerns regarding your interview?\n\nAGENDA_JSON{ \"Give advice until the user has no more questions.\": false }"
+				"content": "Great! Here are some strategies to help you ace the interview:\n\n1. **Research the Company:** Understanding the company’s culture, values, and recent news can impress your interviewers and demonstrate your genuine interest.\n2. **Practice Common Questions:** Rehearse your answers to typical interview questions, focusing on experiences and accomplishments that showcase your skills and fit for the job.\n3. **Dress Appropriately:** Your attire should match the company culture. When in doubt, it's safer to lean toward business professional.\n4. **Be Punctual:** Arrive on time, which usually means being there about 10-15 minutes early. This shows respect and organizational skills.\n5. **Prepare Questions:** Have a few insightful questions ready about the role or the company. This shows your enthusiasm and engagement.\n6. **Follow Up:** Send a thank you email after the interview, reiterating your interest and why you are a good fit for the role.\n\nDo you have any other questions or specific areas where you need more detailed advice?\n\nAGENDA_JSON{ \"Give advice until the user has no more questions.\": false }",
+				"refusal": null,
+				"annotations": []
 			},
 			"logprobs": null,
 			"finish_reason": "stop"
 		}
 	],
 	"usage": {
-		"prompt_tokens": 370,
-		"completion_tokens": 89,
-		"total_tokens": 459
+		"prompt_tokens": 302,
+		"completion_tokens": 228,
+		"total_tokens": 530,
+		"prompt_tokens_details": {
+			"cached_tokens": 0,
+			"audio_tokens": 0
+		},
+		"completion_tokens_details": {
+			"reasoning_tokens": 0,
+			"audio_tokens": 0,
+			"accepted_prediction_tokens": 0,
+			"rejected_prediction_tokens": 0
+		}
 	},
-	"system_fingerprint": "fp_31a6c0accf"
+	"service_tier": "default",
+	"system_fingerprint": "fp_de235176ee"
 }

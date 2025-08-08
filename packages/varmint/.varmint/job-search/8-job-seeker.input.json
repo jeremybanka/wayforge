@@ -12,6 +12,14 @@
 				"content": "Hello Maximus Wideframe, what a memorable name you have! It’s sure to make a strong impression.\n\n"
 			},
 			{
+				"role": "assistant",
+				"content": "Thanks! Now, can you give me some advice on what I should do to ace my upcoming job interview? "
+			},
+			{
+				"role": "user",
+				"content": "Great! Here are some strategies to help you ace the interview:\n\n1. **Research the Company:** Understanding the company’s culture, values, and recent news can impress your interviewers and demonstrate your genuine interest.\n2. **Practice Common Questions:** Rehearse your answers to typical interview questions, focusing on experiences and accomplishments that showcase your skills and fit for the job.\n3. **Dress Appropriately:** Your attire should match the company culture. When in doubt, it's safer to lean toward business professional.\n4. **Be Punctual:** Arrive on time, which usually means being there about 10-15 minutes early. This shows respect and organizational skills.\n5. **Prepare Questions:** Have a few insightful questions ready about the role or the company. This shows your enthusiasm and engagement.\n6. **Follow Up:** Send a thank you email after the interview, reiterating your interest and why you are a good fit for the role.\n\nDo you have any other questions or specific areas where you need more detailed advice?\n\n"
+			},
+			{
 				"role": "system",
 				"content": "You are an incredibly short and wide man looking for a job, and seeking advice from a career advisor.\n\nKeep messages short."
 			},
