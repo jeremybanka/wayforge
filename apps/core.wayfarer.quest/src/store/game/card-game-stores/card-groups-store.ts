@@ -4,6 +4,7 @@ import {
 	atomFamily,
 	getInternalRelations,
 	join,
+	mutableAtom,
 	selector,
 	selectorFamily,
 } from "atom.io"
@@ -39,9 +40,8 @@ export const deckAtoms = atomFamily<Deck, string>({
 		name: ``,
 	},
 })
-export const deckIndex = atom<SetRTX<string>, SetRTXJson<string>>({
+export const deckIndex = mutableAtom<SetRTX<string>, SetRTXJson<string>>({
 	key: `deckIndex`,
-	mutable: true,
 	default: () => new SetRTX<string>(),
 	toJson: (set) => set.toJSON(),
 	fromJson: (json) => SetRTX.fromJSON(json),
@@ -73,9 +73,8 @@ export const handAtoms = atomFamily<Hand, string>({
 		name: ``,
 	},
 })
-export const handIndex = atom<SetRTX<string>, SetRTXJson<string>>({
+export const handIndex = mutableAtom<SetRTX<string>, SetRTXJson<string>>({
 	key: `handIndex`,
-	mutable: true,
 	default: () => new SetRTX<string>(),
 	toJson: (set) => set.toJSON(),
 	fromJson: (json) => SetRTX.fromJSON(json),
@@ -107,9 +106,8 @@ export const pileStates = atomFamily<Pile, string>({
 		name: ``,
 	},
 })
-export const pileIndex = atom<SetRTX<string>, SetRTXJson<string>>({
+export const pileIndex = mutableAtom<SetRTX<string>, SetRTXJson<string>>({
 	key: `pileIndex`,
-	mutable: true,
 	default: () => new SetRTX<string>(),
 	toJson: (set) => set.toJSON(),
 	fromJson: (json) => SetRTX.fromJSON(json),

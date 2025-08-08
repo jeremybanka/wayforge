@@ -1,11 +1,11 @@
 import type { Identified } from "anvl/id"
 import type { MutableAtomToken, RegularAtomToken } from "atom.io"
 import {
-	atom,
 	atomFamily,
 	findRelations,
 	getInternalRelations,
 	join,
+	mutableAtom,
 	selector,
 	selectorFamily,
 } from "atom.io"
@@ -25,9 +25,8 @@ export const cardValueAtoms = atomFamily<Identified & Json.Object, string>({
 	key: `cardValue`,
 	default: () => ({ id: `` }),
 })
-export const cardValueIndex = atom<SetRTX<string>, SetRTXJson<string>>({
+export const cardValueIndex = mutableAtom<SetRTX<string>, SetRTXJson<string>>({
 	key: `cardValuesIndex`,
-	mutable: true,
 	default: () => new SetRTX<string>(),
 	toJson: (set) => set.toJSON(),
 	fromJson: (json) => SetRTX.fromJSON(json),
