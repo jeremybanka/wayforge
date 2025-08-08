@@ -24,9 +24,9 @@ export const findCardState = atomFamily<Card, string>({
 		rotation: 0,
 	}),
 })
-export const cardIndex = mutableAtom({
+export const cardIndex = mutableAtom<SetRTX<string>>({
 	key: `cardIndex`,
-	class: SetRTX<string>,
+	class: SetRTX,
 })
 
 export type CardCycle = {

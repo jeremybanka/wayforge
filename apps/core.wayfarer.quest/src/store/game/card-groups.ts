@@ -50,9 +50,9 @@ export const deckStates = atomFamily<Deck, string>({
 		name: ``,
 	},
 })
-export const deckIndices = mutableAtomFamily({
+export const deckIndices = mutableAtomFamily<SetRTX<string>, string>({
 	key: `deckIndex`,
-	class: SetRTX<string>,
+	class: SetRTX,
 })
 export const handStates = atomFamily<Hand, string>({
 	key: `hand`,
@@ -61,9 +61,9 @@ export const handStates = atomFamily<Hand, string>({
 		name: ``,
 	},
 })
-export const handIndices = mutableAtomFamily({
+export const handIndices = mutableAtomFamily<SetRTX<string>, string>({
 	key: `handIndex`,
-	class: SetRTX<string>,
+	class: SetRTX,
 })
 export const pileStates = atomFamily<Pile, string>({
 	key: `pile`,
@@ -72,9 +72,9 @@ export const pileStates = atomFamily<Pile, string>({
 		name: ``,
 	},
 })
-export const pileIndices = mutableAtomFamily({
+export const pileIndices = mutableAtomFamily<SetRTX<string>, string>({
 	key: `pileIndex`,
-	class: SetRTX<string>,
+	class: SetRTX,
 })
 export const trickStates = atomFamily<Trick, string>({
 	key: `trick`,
@@ -83,9 +83,9 @@ export const trickStates = atomFamily<Trick, string>({
 		name: ``,
 	},
 })
-export const trickIndices = mutableAtomFamily({
+export const trickIndices = mutableAtomFamily<SetRTX<string>, string>({
 	key: `trickIndex`,
-	class: SetRTX<string>,
+	class: SetRTX,
 })
 
 export const indices = selectorFamily<string[], string>({

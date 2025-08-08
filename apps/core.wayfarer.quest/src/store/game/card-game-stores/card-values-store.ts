@@ -24,9 +24,9 @@ export const cardValueAtoms = atomFamily<Identified & Json.Object, string>({
 	key: `cardValue`,
 	default: () => ({ id: `` }),
 })
-export const cardValueIndex = mutableAtom({
+export const cardValueIndex = mutableAtom<SetRTX<string>>({
 	key: `cardValuesIndex`,
-	class: SetRTX<string>,
+	class: SetRTX,
 })
 export const cardValueGlobalView = selector<
 	RegularAtomToken<Identified & Json.Object>[]
