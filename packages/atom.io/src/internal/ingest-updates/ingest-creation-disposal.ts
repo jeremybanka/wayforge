@@ -115,25 +115,28 @@ export function ingestMoleculeTransferEvent(
 	switch (applying) {
 		case `newValue`:
 			{
-				const provenance = update.to.length === 1 ? update.to[0] : update.to
-				claimWithinStore<any, any, any>(
-					store,
-					provenance,
-					update.key,
-					`exclusive`,
-				)
+				for (const newOwner of update.to) {
+					claimWithinStore<any, any, any>(
+						store,
+						newOwner,
+						update.key,
+						update.exclusive ? `exclusive` : undefined,
+					)
+				}
 			}
 			break
 		case `oldValue`:
 			{
-				const provenance =
-					update.from.length === 1 ? update.from[0] : update.from
-				claimWithinStore<any, any, any>(
-					store,
-					provenance,
-					update.key,
-					`exclusive`,
-				)
+				let exclusivity: `exclusive` | undefined = `exclusive`
+				for (const previousOwner of update.from) {
+					claimWithinStore<any, any, any>(
+						store,
+						previousOwner,
+						update.key,
+						exclusivity,
+					)
+					exclusivity = undefined
+				}
 			}
 			break
 	}

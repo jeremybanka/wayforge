@@ -278,7 +278,7 @@ describe(`errors`, () => {
 })
 describe(`integrations`, () => {
 	test(`transaction+timeline support`, () => {
-		type DocumentKey = `document::${string}`
+		type DocumentKey = `document::${number}`
 		type UserKey = `user::${string}`
 		type UserGroupKey = `userGroup::${string}`
 		type DocumentHierarchy = Hierarchy<
@@ -305,7 +305,7 @@ describe(`integrations`, () => {
 		})
 
 		const createDocumentTX = transaction<
-			(owner: UserGroupKey | UserKey, id: string) => DocumentKey
+			(owner: UserGroupKey | UserKey, id: number) => DocumentKey
 		>({
 			key: `createDocument`,
 			do: ({ set }, owner, id) => {
@@ -325,11 +325,18 @@ describe(`integrations`, () => {
 			return x
 		}
 		const transferDocumentTX = transaction<
-			(opts: { to: UserGroupKey; document: DocumentKey }) => void
+			(opts: {
+				to: Above<DocumentKey, DocumentHierarchy>[]
+				document: DocumentKey
+			}) => void
 		>({
 			key: `transferDocument`,
 			do: ({ set }, { to, document }) => {
-				documentRealm.claim(to, document, `exclusive`)
+				let exclusivity: `exclusive` | undefined = `exclusive`
+				for (const newOwner of to) {
+					documentRealm.claim(newOwner, document, exclusivity)
+					exclusivity = undefined
+				}
 				set(documentAtoms, document, identity) // TODO -- possible to avoid "bumping" a state to get picked up by a timeline?
 			},
 		})
@@ -343,7 +350,7 @@ describe(`integrations`, () => {
 		const transferDocument = runTransaction(transferDocumentTX)
 
 		documentRealm.allocate(`root`, `userGroup::homies`)
-		const documentClaim = createDocument(`userGroup::homies`, `1`)
+		const documentClaim = createDocument(`userGroup::homies`, 1)
 
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
 		deleteDocument(documentClaim)
@@ -351,6 +358,7 @@ describe(`integrations`, () => {
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
 		undo(documentTimeline)
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
+		console.log(IMPLICIT.STORE.timelines.get(`documentTimeline`))
 		undo(documentTimeline)
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
 		redo(documentTimeline)
@@ -359,21 +367,18 @@ describe(`integrations`, () => {
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
 		documentRealm.allocate(`root`, `userGroup::workPals`)
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
-		documentRealm.allocate(`userGroup::homies`, `document::work`)
+		documentRealm.allocate(`userGroup::homies`, `document::${2}`)
 		expect(IMPLICIT.STORE.molecules.size).toBe(4)
 		const homiesConfiguration = new Map([
-			[
-				`"document::work":"userGroup::homies"`,
-				{ source: `"userGroup::homies"` },
-			],
+			[`"document::2":"userGroup::homies"`, { source: `"userGroup::homies"` }],
 			[`"root":"userGroup::homies"`, { source: `"root"` }],
 			[`"root":"userGroup::workPals"`, { source: `"root"` }],
 		])
 		expect(IMPLICIT.STORE.moleculeGraph.contents).toEqual(homiesConfiguration)
-		transferDocument({ to: `userGroup::workPals`, document: `document::work` })
+		transferDocument({ to: [`userGroup::workPals`], document: `document::${2}` })
 		const workPalsConfiguration = new Map([
 			[
-				`"document::work":"userGroup::workPals"`,
+				`"document::2":"userGroup::workPals"`,
 				{ source: `"userGroup::workPals"` },
 			],
 
@@ -383,6 +388,43 @@ describe(`integrations`, () => {
 		expect(IMPLICIT.STORE.moleculeGraph.contents).toEqual(workPalsConfiguration)
 		undo(documentTimeline)
 		expect(IMPLICIT.STORE.moleculeGraph.contents).toEqual(homiesConfiguration)
+
+		documentRealm.deallocate(`userGroup::workPals`)
+		documentRealm.deallocate(`document::${2}`)
+		documentRealm.allocate(`root`, `user::joe`)
+		documentRealm.allocate(`root`, `user::deb`)
+		documentRealm.allocate(`root`, `user::sue`)
+		documentRealm.allocate(`userGroup::homies`, `document::${3}`)
+
+		transferDocument({
+			to: [`user::deb`, `user::joe`],
+			document: `document::${3}`,
+		})
+		console.log(IMPLICIT.STORE.moleculeGraph.contents)
+		documentRealm.deallocate(`userGroup::homies`)
+		const debAndJoeConfiguration = new Map([
+			[`"root":"user::joe"`, { source: `"root"` }],
+			[`"root":"user::deb"`, { source: `"root"` }],
+			[`"root":"user::sue"`, { source: `"root"` }],
+			[`"document::3":"user::deb"`, { source: `"user::deb"` }],
+			[`"document::3":"user::joe"`, { source: `"user::joe"` }],
+		])
+		expect(IMPLICIT.STORE.moleculeGraph.contents).toEqual(debAndJoeConfiguration)
+		transferDocument({
+			to: [`user::sue`],
+			document: `document::${3}`,
+		})
+		const sueConfiguration = new Map([
+			[`"root":"user::joe"`, { source: `"root"` }],
+			[`"root":"user::deb"`, { source: `"root"` }],
+			[`"root":"user::sue"`, { source: `"root"` }],
+			[`"document::3":"user::sue"`, { source: `"user::sue"` }],
+		])
+		expect(IMPLICIT.STORE.moleculeGraph.contents).toEqual(sueConfiguration)
+		undo(documentTimeline)
+		expect(IMPLICIT.STORE.moleculeGraph.contents).toEqual(debAndJoeConfiguration)
+		redo(documentTimeline)
+		expect(IMPLICIT.STORE.moleculeGraph.contents).toEqual(sueConfiguration)
 	})
 	test(`join supports allocation pattern`, () => {
 		const roomPlayers = join(

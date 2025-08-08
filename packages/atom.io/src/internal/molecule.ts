@@ -293,6 +293,7 @@ export function claimWithinStore<
 	const transferEvent: MoleculeTransfer = {
 		type: `molecule_transfer`,
 		key: molecule.key,
+		exclusive: Boolean(exclusive),
 		from: priorProvenance,
 		to: [newProvenanceMolecule.key],
 	}

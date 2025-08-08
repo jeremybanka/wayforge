@@ -60,6 +60,7 @@ export type MoleculeDisposal = {
 export type MoleculeTransfer = {
 	type: `molecule_transfer`
 	key: Canonical
+	exclusive: boolean
 	from: Canonical[]
 	to: Canonical[]
 }

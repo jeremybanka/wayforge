@@ -8,9 +8,8 @@ export function disposeSelector(
 	selectorToken: SelectorToken<unknown>,
 ): void {
 	const target = newest(store)
-	const { key, type } = selectorToken
-	const selector = withdraw(target, selectorToken)
-	if (!selector.family) {
+	const { key, type, family: familyMeta } = selectorToken
+	if (!familyMeta) {
 		store.logger.error(
 			`❌`,
 			type,
@@ -18,9 +17,9 @@ export function disposeSelector(
 			`Standalone selectors cannot be disposed.`,
 		)
 	} else {
-		const molecule = target.molecules.get(selector.family.subKey)
+		const molecule = target.molecules.get(familyMeta.subKey)
 		if (molecule) {
-			target.moleculeData.delete(selector.family.subKey, selector.family.key)
+			target.moleculeData.delete(familyMeta.subKey, familyMeta.key)
 		}
 		let familyToken: SelectorFamilyToken<any, any>
 		switch (selectorToken.type) {
@@ -28,7 +27,7 @@ export function disposeSelector(
 				{
 					target.writableSelectors.delete(key)
 					familyToken = {
-						key: selector.family.key,
+						key: familyMeta.key,
 						type: `writable_held_selector_family`,
 					}
 					const family = withdraw(store, familyToken)
@@ -43,7 +42,7 @@ export function disposeSelector(
 				{
 					target.writableSelectors.delete(key)
 					familyToken = {
-						key: selector.family.key,
+						key: familyMeta.key,
 						type: `writable_pure_selector_family`,
 					}
 					const family = withdraw(store, familyToken)
@@ -58,7 +57,7 @@ export function disposeSelector(
 				{
 					target.readonlySelectors.delete(key)
 					familyToken = {
-						key: selector.family.key,
+						key: familyMeta.key,
 						type: `readonly_held_selector_family`,
 					}
 					const family = withdraw(store, familyToken)
@@ -73,7 +72,7 @@ export function disposeSelector(
 				{
 					target.readonlySelectors.delete(key)
 					familyToken = {
-						key: selector.family.key,
+						key: familyMeta.key,
 						type: `readonly_pure_selector_family`,
 					}
 					const family = withdraw(store, familyToken)
@@ -89,6 +88,7 @@ export function disposeSelector(
 		target.valueMap.delete(key)
 		target.selectorAtoms.delete(key)
 		target.selectorGraph.delete(key)
+		target.moleculeData.delete(familyMeta.key, familyMeta.subKey)
 		store.logger.info(`🔥`, selectorToken.type, key, `deleted`)
 		if (isChildStore(target) && target.transactionMeta.phase === `building`) {
 			target.transactionMeta.update.updates.push({
