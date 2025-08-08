@@ -1,10 +1,10 @@
 import type { Logger } from "atom.io"
 import {
-	atom,
-	atomFamily,
 	disposeState,
 	findState,
 	getState,
+	mutableAtom,
+	mutableAtomFamily,
 	redo,
 	runTransaction,
 	setState,
@@ -40,9 +40,8 @@ beforeEach(() => {
 
 describe(`mutable atomic state`, () => {
 	it(`must hold a Transceiver whose changes can be tracked`, () => {
-		const myMutableState = atom<SetRTX<string>, SetRTXJson<string>>({
+		const myMutableState = mutableAtom<SetRTX<string>, SetRTXJson<string>>({
 			key: `letters`,
-			mutable: true,
 			default: () => new SetRTX<string>(),
 			toJson: (set) => set.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
@@ -91,7 +90,6 @@ describe(`mutable atomic state`, () => {
 			string
 		>(Internal.IMPLICIT.STORE, {
 			key: `flagsByUserId::mutable`,
-			mutable: true,
 			default: () => new SetRTX(),
 			toJson: (set) => set.toJSON(),
 			fromJson: (array) => SetRTX.fromJSON(array),
@@ -139,9 +137,8 @@ describe(`mutable atomic state`, () => {
 	})
 
 	it(`can recover from a failed transaction`, () => {
-		const myMutableState = atom<SetRTX<string>, string[]>({
+		const myMutableState = mutableAtom<SetRTX<string>, string[]>({
 			key: `my::mutable`,
-			mutable: true,
 			default: () => new SetRTX(),
 			toJson: (set) => [...set],
 			fromJson: (array) => new SetRTX(array),
@@ -191,13 +188,12 @@ describe(`mutable time traveling`, () => {
 		expect(logger.error).not.toHaveBeenCalled()
 	})
 	it(`can travel back and forward in time`, () => {
-		const myMutableStates = atomFamily<
+		const myMutableStates = mutableAtomFamily<
 			SetRTX<string>,
 			SetRTXJson<string>,
 			string
 		>({
 			key: `myMutable`,
-			mutable: true,
 			default: () => new SetRTX(),
 			toJson: (set) => set.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
@@ -231,9 +227,8 @@ describe(`mutable time traveling`, () => {
 		expect(getState(myMutableState)).toEqual(new SetRTX([`a`, `b`]))
 	})
 	it(`can travel back and forward in time with a transaction`, () => {
-		const myMutableState = atom<SetRTX<string>, SetRTXJson<string>>({
+		const myMutableState = mutableAtom<SetRTX<string>, SetRTXJson<string>>({
 			key: `myMutableSet`,
-			mutable: true,
 			default: () => new SetRTX(),
 			toJson: (set) => set.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
@@ -281,14 +276,13 @@ describe(`mutable atom effects`, () => {
 	})
 	it(`runs a callback when the atom is set`, () => {
 		let setSize = 0
-		const myMutableAtoms = atomFamily<
+		const myMutableAtoms = mutableAtomFamily<
 			SetRTX<string>,
 			SetRTXJson<string>,
 			string
 		>({
 			key: `myMutableAtoms`,
 			default: () => new SetRTX(),
-			mutable: true,
 			toJson: (s) => s.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
 			effects: () => [
@@ -312,10 +306,9 @@ describe(`mutable atom effects`, () => {
 		const letterSubject = new Internal.StatefulSubject<{ letter: string }>({
 			letter: `A`,
 		})
-		const myMutableState = atom<SetRTX<string>, SetRTXJson<string>>({
+		const myMutableState = mutableAtom<SetRTX<string>, SetRTXJson<string>>({
 			key: `myMutableState`,
 			default: () => new SetRTX([letterSubject.state.letter]),
-			mutable: true,
 			toJson: (s) => s.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
 			effects: [
@@ -338,17 +331,15 @@ describe(`mutable atom effects`, () => {
 
 describe(`graceful handling of hmr/duplicate atom keys`, () => {
 	it(`logs an error if an atom is created with the same key as an existing atom`, () => {
-		const myMutableState = atom<SetRTX<string>, SetRTXJson<string>>({
+		const myMutableState = mutableAtom<SetRTX<string>, SetRTXJson<string>>({
 			key: `myMutableState`,
 			default: () => new SetRTX(),
-			mutable: true,
 			toJson: (s) => s.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})
-		atom<SetRTX<string>, SetRTXJson<string>>({
+		mutableAtom<SetRTX<string>, SetRTXJson<string>>({
 			key: `myMutableState`,
 			default: () => new SetRTX(),
-			mutable: true,
 			toJson: (s) => s.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})

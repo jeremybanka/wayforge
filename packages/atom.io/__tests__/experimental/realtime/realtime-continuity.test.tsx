@@ -171,10 +171,9 @@ describe(`synchronizing transactions`, () => {
 
 describe(`mutable atoms in continuity`, () => {
 	const scenario = () => {
-		const myListAtom = AtomIO.atom<SetRTX<string>, SetRTXJson<string>>({
+		const myListAtom = AtomIO.mutableAtom<SetRTX<string>, SetRTXJson<string>>({
 			key: `myList`,
 			default: () => new SetRTX<string>(),
-			mutable: true,
 			toJson: (set) => set.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})

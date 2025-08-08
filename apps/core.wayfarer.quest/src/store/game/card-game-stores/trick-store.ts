@@ -1,4 +1,10 @@
-import { atom, findRelations, join, selector, selectorFamily } from "atom.io"
+import {
+	findRelations,
+	join,
+	mutableAtom,
+	selector,
+	selectorFamily,
+} from "atom.io"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
@@ -20,9 +26,8 @@ export const trickWinners = join({
 	isBType: (input): input is string => typeof input === `string`,
 })
 
-export const trickIndex = atom<SetRTX<string>, SetRTXJson<string>>({
+export const trickIndex = mutableAtom<SetRTX<string>, SetRTXJson<string>>({
 	key: `trickIndex`,
-	mutable: true,
 	default: () => new SetRTX<string>(),
 	toJson: (set) => set.toJSON(),
 	fromJson: (json) => SetRTX.fromJSON(json),

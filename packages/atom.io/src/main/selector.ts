@@ -6,11 +6,15 @@ import {
 import type { Canonical } from "atom.io/json"
 
 import type {
+	ReadonlyHeldSelectorFamilyToken,
 	ReadonlyHeldSelectorToken,
+	ReadonlyPureSelectorFamilyToken,
 	ReadonlyPureSelectorToken,
+	WritableHeldSelectorFamilyToken,
 	WritableHeldSelectorToken,
+	WritablePureSelectorFamilyToken,
 	WritablePureSelectorToken,
-} from "."
+} from "./tokens"
 import type { Read, Write } from "./transaction"
 
 export type WritablePureSelectorOptions<T> = {
@@ -47,7 +51,6 @@ export type WritableHeldSelectorOptions<T extends object> = {
 }
 
 /**
- * @public
  * Declare a selector. The value of a selector should depend
  * on the value of atoms or other selectors in the store, and
  * should be recycled when a root atom of the selector is set.
@@ -68,7 +71,6 @@ export function selector<T extends object>(
 	options: WritableHeldSelectorOptions<T>,
 ): WritableHeldSelectorToken<T>
 /**
- * @public
  * Declare a selector. The value of a selector should depend
  * on the value of atoms or other selectors in the store,
  * and should be recycled when a root atom of the selector is set.
@@ -87,7 +89,6 @@ export function selector<T extends object>(
 	options: ReadonlyHeldSelectorOptions<T>,
 ): ReadonlyHeldSelectorToken<T>
 /**
- * @public
  * Declare a selector. The value of a selector should depend
  * on the value of atoms or other selectors in the store.
  *
@@ -107,7 +108,6 @@ export function selector<T>(
 	options: WritablePureSelectorOptions<T>,
 ): WritablePureSelectorToken<T>
 /**
- * @public
  * Declare a selector. The value of a selector should depend
  * on the value of atoms or other selectors in the store.
  *
@@ -138,7 +138,6 @@ export function selector(
 	return createStandaloneSelector(IMPLICIT.STORE, options)
 }
 
-/** @public */
 export type WritablePureSelectorFamilyOptions<T, K extends Canonical> = {
 	/** The unique identifier of the family */
 	key: string
@@ -147,14 +146,12 @@ export type WritablePureSelectorFamilyOptions<T, K extends Canonical> = {
 	/** For each instantiated family member, a function that sets its value */
 	set: (key: K) => Write<(newValue: T) => void>
 }
-/** @public */
 export type ReadonlyPureSelectorFamilyOptions<T, K extends Canonical> = {
 	/** The unique identifier of the family */
 	key: string
 	/** For each instantiated family member, a function that computes its value */
 	get: (key: K) => Read<() => T>
 }
-/** @public */
 export type WritableHeldSelectorFamilyOptions<
 	T extends object,
 	K extends Canonical,
@@ -168,7 +165,6 @@ export type WritableHeldSelectorFamilyOptions<
 	/** For each instantiated family member, a function that sets its value */
 	set: (key: K) => Write<(newValue: T) => void>
 }
-/** @public */
 export type ReadonlyHeldSelectorFamilyOptions<
 	T extends object,
 	K extends Canonical,
@@ -181,67 +177,7 @@ export type ReadonlyHeldSelectorFamilyOptions<
 	get: (key: K) => Read<(permanent: T) => void>
 }
 
-export type WritablePureSelectorFamilyToken<T, K extends Canonical> = {
-	/** The unique identifier of the family */
-	key: string
-	/** Discriminator */
-	type: `writable_pure_selector_family`
-	/** Never present. This is a marker that preserves the type of the value of each family member */
-	__T?: T
-	/** Never present. This is a marker that preserves the type of keys used for each family member */
-	__K?: K
-}
-export type ReadonlyPureSelectorFamilyToken<T, K extends Canonical> = {
-	/** The unique identifier of the family */
-	key: string
-	/** Discriminator */
-	type: `readonly_pure_selector_family`
-	/** Never present. This is a marker that preserves the type of the value of each family member */
-	__T?: T
-	/** Never present. This is a marker that preserves the type of keys used for each family member */
-	__K?: K
-}
-export type WritableHeldSelectorFamilyToken<T, K extends Canonical> = {
-	/** The unique identifier of the family */
-	key: string
-	/** Discriminator */
-	type: `writable_held_selector_family`
-	/** Never present. This is a marker that preserves the type of the value of each family member */
-	__T?: T
-	/** Never present. This is a marker that preserves the type of keys used for each family member */
-	__K?: K
-}
-export type ReadonlyHeldSelectorFamilyToken<T, K extends Canonical> = {
-	/** The unique identifier of the family */
-	key: string
-	/** Discriminator */
-	type: `readonly_held_selector_family`
-	/** Never present. This is a marker that preserves the type of the value of each family member */
-	__T?: T
-	/** Never present. This is a marker that preserves the type of keys used for each family member */
-	__K?: K
-}
-
-export type PureSelectorFamilyToken<T, K extends Canonical> =
-	| ReadonlyPureSelectorFamilyToken<T, K>
-	| WritablePureSelectorFamilyToken<T, K>
-export type HeldSelectorFamilyToken<T, K extends Canonical> =
-	| ReadonlyHeldSelectorFamilyToken<T, K>
-	| WritableHeldSelectorFamilyToken<T, K>
-export type ReadonlySelectorFamilyToken<T, K extends Canonical> =
-	| ReadonlyHeldSelectorFamilyToken<T, K>
-	| ReadonlyPureSelectorFamilyToken<T, K>
-
-export type WritableSelectorFamilyToken<T, K extends Canonical> =
-	| WritableHeldSelectorFamilyToken<T, K>
-	| WritablePureSelectorFamilyToken<T, K>
-
-export type SelectorFamilyToken<T, K extends Canonical> =
-	| HeldSelectorFamilyToken<T, K>
-	| PureSelectorFamilyToken<T, K>
-
 /**
- * @public
  * Create a family of selectors, allowing for the dynamic creation and disposal of selectors.
  *
  * The value of a held selector should depend on the value of atoms or other selectors in the store,
@@ -263,7 +199,6 @@ export function selectorFamily<T extends object, K extends Canonical>(
 	options: WritableHeldSelectorFamilyOptions<T, K>,
 ): WritableHeldSelectorFamilyToken<T, K>
 /**
- * @public
  * Create a family of selectors, allowing for the dynamic creation and disposal of selectors.
  *
  * The value of a held selector should depend on the value of atoms or other selectors in the store,
@@ -283,7 +218,6 @@ export function selectorFamily<T extends object, K extends Canonical>(
 	options: ReadonlyHeldSelectorFamilyOptions<T, K>,
 ): ReadonlyHeldSelectorFamilyToken<T, K>
 /**
- * @public
  * Create a family of selectors, allowing for the dynamic creation and disposal of selectors.
  *
  * The value of a selector should depend on the value of atoms or other selectors in the store.
@@ -304,7 +238,6 @@ export function selectorFamily<T, K extends Canonical>(
 	options: WritablePureSelectorFamilyOptions<T, K>,
 ): WritablePureSelectorFamilyToken<T, K>
 /**
- * @public
  * Create a family of selectors, allowing for the dynamic creation and disposal of selectors.
  *
  * The value of a selector should depend on the value of atoms or other selectors in the store.

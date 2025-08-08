@@ -1,4 +1,3 @@
-export * from "./create-atom-family"
 export * from "./create-readonly-pure-selector-family"
 export * from "./create-readonly-pure-selector-family"
 export * from "./create-regular-atom-family"

@@ -282,10 +282,9 @@ describe(`editing selectors`, () => {
 	})
 
 	test(`selector that filters a SetRTX`, async () => {
-		const selectionsState = $.atom<SetRTX<string>, SetRTXJson<string>>({
+		const selectionsState = $.mutableAtom<SetRTX<string>, SetRTXJson<string>>({
 			key: `selections`,
 			default: () => new SetRTX([`green`]),
-			mutable: true,
 			toJson: (set) => set.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
 		})

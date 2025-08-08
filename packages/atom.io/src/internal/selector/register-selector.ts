@@ -3,9 +3,9 @@ import type {
 	ReadableFamilyToken,
 	ReadableToken,
 	setState,
-	SetterToolkit,
 	WritableFamilyToken,
 	WritableToken,
+	WriterToolkit,
 } from "atom.io"
 import type { Json } from "atom.io/json"
 
@@ -27,7 +27,7 @@ export const registerSelector = (
 		| `writable_pure_selector`,
 	selectorKey: string,
 	covered: Set<string>,
-): SetterToolkit => ({
+): WriterToolkit => ({
 	get: (
 		...params:
 			| [ReadableFamilyToken<any, any>, Json.Serializable]

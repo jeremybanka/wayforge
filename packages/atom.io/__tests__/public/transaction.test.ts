@@ -4,6 +4,7 @@ import {
 	atomFamily,
 	findState,
 	getState,
+	mutableAtom,
 	runTransaction,
 	selector,
 	selectorFamily,
@@ -250,12 +251,11 @@ describe(`nesting transactions`, () => {
 			key: `coffeeQuantity`,
 			default: 0,
 		})
-		const shoppingListState = atom<SetRTX<string>, SetRTXJson<string>>({
+		const shoppingListState = mutableAtom<SetRTX<string>, SetRTXJson<string>>({
 			key: `shoppingList`,
 			default: () => new SetRTX<string>(),
 			toJson: (set) => set.toJSON(),
 			fromJson: (json) => SetRTX.fromJSON(json),
-			mutable: true,
 		})
 		const addItemToShoppingListTX = transaction<(item: string) => void>({
 			key: `addItemToShoppingList`,

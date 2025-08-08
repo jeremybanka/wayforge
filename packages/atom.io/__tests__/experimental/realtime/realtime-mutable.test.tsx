@@ -7,9 +7,11 @@ import * as RTTest from "atom.io/realtime-testing"
 import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
-const numbersCollectionState = AtomIO.atom<SetRTX<number>, SetRTXJson<number>>({
+const numbersCollectionState = AtomIO.mutableAtom<
+	SetRTX<number>,
+	SetRTXJson<number>
+>({
 	key: `numbersCollection`,
-	mutable: true,
 	default: () => new SetRTX<number>([0]),
 	toJson: (s) => s.toJSON(),
 	fromJson: (a) => SetRTX.fromJSON(a),
