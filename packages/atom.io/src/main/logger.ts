@@ -82,7 +82,9 @@ export type LogFn = (
 	message: string,
 	...rest: unknown[]
 ) => void
-export type LogFilter = (...params: Parameters<LogFn>) => boolean
+export type LogFilter = (
+	...params: Parameters<LogFn>
+) => Parameters<LogFn> | boolean
 
 export type Logger = Record<LogLevel, LogFn>
 
@@ -121,6 +123,8 @@ export class AtomIOLogger implements Logger {
 			const filterResult = this.filter?.(...args) ?? true
 			if (filterResult === true) {
 				this.logger.error(...args)
+			} else if (filterResult) {
+				this.logger.error(...filterResult)
 			}
 		}
 	}
@@ -129,6 +133,8 @@ export class AtomIOLogger implements Logger {
 			const filterResult = this.filter?.(...args) ?? true
 			if (filterResult === true) {
 				this.logger.info(...args)
+			} else if (filterResult) {
+				this.logger.info(...filterResult)
 			}
 		}
 	}
@@ -137,6 +143,8 @@ export class AtomIOLogger implements Logger {
 			const filterResult = this.filter?.(...args) ?? true
 			if (filterResult === true) {
 				this.logger.warn(...args)
+			} else if (filterResult) {
+				this.logger.warn(...filterResult)
 			}
 		}
 	}

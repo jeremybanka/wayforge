@@ -50,7 +50,7 @@ describe(`setLogLevel`, () => {
 		undo(countTL)
 		expect(externalLogger.warn).toHaveBeenCalled()
 	})
-	it(`filters messages based on a predicate`, () => {
+	it(`filters out messages based on a predicate`, () => {
 		internalLogger.filter = (icon) => icon === `📖`
 		const countState = atom<number>({
 			key: `count`,
@@ -83,5 +83,65 @@ describe(`setLogLevel`, () => {
 		internalLogger.filter = (icon) => icon === `💁`
 		undo(countTL)
 		expect(externalLogger.warn).toHaveBeenCalledOnce()
+	})
+	it(`refines messages as needed, keeping large objects out of logs`, () => {
+		class MyComplexThing {
+			public id: string
+			public constructor(id: string) {
+				this.id = id
+			}
+		}
+		internalLogger.filter = (...params) => {
+			let idx = 0
+			for (const param of params) {
+				if (param instanceof MyComplexThing) {
+					params[idx] = `Thing:${param.id}`
+				}
+				idx++
+			}
+			return params
+		}
+		internalLogger.error(
+			`❌`,
+			`atom`,
+			`thingy`,
+			`errored`,
+			new MyComplexThing(`123`),
+		)
+		expect(externalLogger.error).toHaveBeenLastCalledWith(
+			`❌`,
+			`atom`,
+			`thingy`,
+			`errored`,
+			`Thing:123`,
+		)
+		internalLogger.warn(
+			`💁`,
+			`atom`,
+			`thingy`,
+			`warned`,
+			new MyComplexThing(`456`),
+		)
+		expect(externalLogger.warn).toHaveBeenLastCalledWith(
+			`💁`,
+			`atom`,
+			`thingy`,
+			`warned`,
+			`Thing:456`,
+		)
+		internalLogger.info(
+			`👍`,
+			`atom`,
+			`thingy`,
+			`infoed`,
+			new MyComplexThing(`789`),
+		)
+		expect(externalLogger.info).toHaveBeenLastCalledWith(
+			`👍`,
+			`atom`,
+			`thingy`,
+			`infoed`,
+			`Thing:789`,
+		)
 	})
 })
