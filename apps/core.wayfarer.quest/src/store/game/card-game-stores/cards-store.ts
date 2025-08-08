@@ -25,9 +25,9 @@ export const cardAtoms = atomFamily<Card, string>({
 		rotation: 0,
 	}),
 })
-export const cardIndex = mutableAtom({
+export const cardIndex = mutableAtom<SetRTX<string>>({
 	key: `cardIndex`,
-	class: SetRTX<string>,
+	class: SetRTX,
 })
 
 export const globalCardView = selector<RegularAtomToken<Card>[]>({

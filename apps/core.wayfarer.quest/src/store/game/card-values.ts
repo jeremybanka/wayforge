@@ -7,9 +7,9 @@ export const findCardValueState = atomFamily<Identified & Json.Object, string>({
 	key: `cardValue`,
 	default: () => ({ id: `` }),
 })
-export const cardValuesIndex = mutableAtom({
+export const cardValuesIndex = mutableAtom<SetRTX<string>>({
 	key: `cardValuesIndex`,
-	class: SetRTX<string>,
+	class: SetRTX,
 })
 
 export const valuesOfCards = join({

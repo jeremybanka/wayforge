@@ -38,9 +38,9 @@ export const deckAtoms = atomFamily<Deck, string>({
 		name: ``,
 	},
 })
-export const deckIndex = mutableAtom({
+export const deckIndex = mutableAtom<SetRTX<string>>({
 	key: `deckIndex`,
-	class: SetRTX<string>,
+	class: SetRTX,
 })
 export const deckGlobalView = selector<RegularAtomToken<Deck>[]>({
 	key: `deckGlobalView`,
@@ -69,9 +69,9 @@ export const handAtoms = atomFamily<Hand, string>({
 		name: ``,
 	},
 })
-export const handIndex = mutableAtom({
+export const handIndex = mutableAtom<SetRTX<string>>({
 	key: `handIndex`,
-	class: SetRTX<string>,
+	class: SetRTX,
 })
 export const handGlobalView = selector<RegularAtomToken<Hand>[]>({
 	key: `handGlobalView`,
@@ -100,9 +100,9 @@ export const pileStates = atomFamily<Pile, string>({
 		name: ``,
 	},
 })
-export const pileIndex = mutableAtom({
+export const pileIndex = mutableAtom<SetRTX<string>>({
 	key: `pileIndex`,
-	class: SetRTX<string>,
+	class: SetRTX,
 })
 export const pileGlobalView = selector<RegularAtomToken<Pile>[]>({
 	key: `pileGlobalView`,

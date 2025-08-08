@@ -2,9 +2,9 @@ import { mutableAtom } from "atom.io"
 import { useJSON } from "atom.io/react"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
-const numbersCollectionState = mutableAtom({
+const numbersCollectionState = mutableAtom<SetRTX<string>>({
 	key: `numbersCollection::mutable`,
-	class: SetRTX<string>,
+	class: SetRTX,
 })
 
 export const Numbers: React.FC = () => {

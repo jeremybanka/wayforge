@@ -25,9 +25,9 @@ export const trickWinners = join({
 	isBType: (input): input is string => typeof input === `string`,
 })
 
-export const trickIndex = mutableAtom({
+export const trickIndex = mutableAtom<SetRTX<string>>({
 	key: `trickIndex`,
-	class: SetRTX<string>,
+	class: SetRTX,
 })
 
 export type TrickContent = [playerId: string, cardId: string | undefined]
