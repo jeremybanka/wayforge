@@ -81,7 +81,7 @@
 		}
 	},
 	"devDependencies": {
-		"@eslint/core": "0.15.1",
+		"@eslint/core": "0.15.2",
 		"@storybook/addon-docs": "9.1.1",
 		"@storybook/addon-onboarding": "9.1.1",
 		"@storybook/react-vite": "9.1.1",
