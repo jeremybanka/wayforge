@@ -16,10 +16,7 @@ export const getJsonToken = <T extends Transceiver<any, any>>(
 	if (mutableAtomToken.family) {
 		const target = newest(store)
 		const jsonFamilyKey = `${mutableAtomToken.family.key}:JSON`
-		const jsonFamilyToken: WritablePureSelectorFamilyToken<
-			AsJSON<T>,
-			string
-		> = {
+		const jsonFamilyToken: WritablePureSelectorFamilyToken<AsJSON<T>, string> = {
 			key: jsonFamilyKey,
 			type: `writable_pure_selector_family`,
 		}
