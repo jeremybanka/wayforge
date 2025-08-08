@@ -5,7 +5,14 @@ const createRule = ESLintUtils.RuleCreator(
 	(name) => `https://atom.io.fyi/docs/eslint-plugin#${name}`,
 )
 
-const STATE_FUNCTIONS = [`atom`, `atomFamily`, `selector`, `selectorFamily`]
+const STATE_FUNCTIONS = [
+	`atom`,
+	`atomFamily`,
+	`mutableAtom`,
+	`mutableAtomFamily`,
+	`selector`,
+	`selectorFamily`,
+] as const
 
 export const explicitStateTypes: ESLintUtils.RuleModule<
 	`noTypeArgument`,
