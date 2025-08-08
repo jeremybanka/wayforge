@@ -1,6 +1,6 @@
 {
 	"name": "socket-io.git",
-	"version": "0.3.2",
+	"version": "1.0.0",
 	"type": "module",
 	"description": "remote control a simple-git instance over a socket.io connection",
 	"files": [
@@ -30,7 +30,7 @@
 		"postversion": "biome format --write package.json"
 	},
 	"peerDependencies": {
-		"atom.io": ">=0.33.9",
+		"atom.io": ">=0.35.0",
 		"react": "^18.2.0 || ^19.0.0",
 		"recoil": "^0.7.6",
 		"socket.io": "^4.6.0",
