@@ -25,13 +25,13 @@ export function disposeState<K extends Canonical>(
 	key: K,
 ): void
 export function disposeState(
-	...[token, key]:
+	...params:
 		| [token: ReadableFamilyToken<any, any>, key: Canonical]
 		| [token: ReadableToken<any>]
 ): void {
-	if (key) {
-		Internal.disposeFromStore(Internal.IMPLICIT.STORE, token as any, key)
+	if (params.length === 2) {
+		Internal.disposeFromStore(Internal.IMPLICIT.STORE, ...params)
 	} else {
-		Internal.disposeFromStore(Internal.IMPLICIT.STORE, token as any)
+		Internal.disposeFromStore(Internal.IMPLICIT.STORE, ...params)
 	}
 }
