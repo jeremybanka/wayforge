@@ -1,41 +1,147 @@
-import { atom, AtomIOLogger, timeline, undo } from "atom.io"
+import type { Logger } from "atom.io"
+import { atom, AtomIOLogger, getState, timeline, undo } from "atom.io"
 import * as Internal from "atom.io/internal"
 
+import { createNullLogger } from "../__util__"
+
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 2
-const logger = new AtomIOLogger(LOG_LEVELS[CHOOSE])
-Internal.IMPLICIT.STORE.loggers = [
-	new AtomIOLogger(LOG_LEVELS[CHOOSE], () => true, logger),
-]
+const CHOOSE = 0
+let internalLogger: AtomIOLogger
+const externalLogger: Logger = createNullLogger()
 
 beforeEach(() => {
-	vitest.spyOn(logger, `error`)
-	vitest.spyOn(logger, `warn`)
-	vitest.spyOn(logger, `info`)
+	Internal.clearStore(Internal.IMPLICIT.STORE)
+	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+	Internal.IMPLICIT.STORE.loggers[1] = internalLogger = new AtomIOLogger(
+		`info`,
+		undefined,
+		externalLogger,
+	)
+	vitest.spyOn(internalLogger, `error`)
+	vitest.spyOn(internalLogger, `warn`)
+	vitest.spyOn(internalLogger, `info`)
+	vitest.spyOn(externalLogger, `error`)
+	vitest.spyOn(externalLogger, `warn`)
+	vitest.spyOn(externalLogger, `info`)
 })
 
 describe(`setLogLevel`, () => {
 	it(`allows logging at the preferred level`, () => {
+		Internal.IMPLICIT.STORE.loggers[1].logLevel = null
 		atom<number>({
 			key: `count`,
 			default: 0,
 		})
-		expect(logger.info).not.toHaveBeenCalled()
-		Internal.IMPLICIT.STORE.loggers[0].logLevel = `info`
+		expect(externalLogger.info).not.toHaveBeenCalled()
+		Internal.IMPLICIT.STORE.loggers[1].logLevel = `info`
 		const countState = atom<number>({
 			key: `count`,
 			default: 0,
 		})
-		expect(logger.error).toHaveBeenCalled()
-		Internal.IMPLICIT.STORE.loggers[0].logLevel = `error`
+		expect(externalLogger.error).toHaveBeenCalled()
+		Internal.IMPLICIT.STORE.loggers[1].logLevel = `error`
 		const countTL = timeline({
 			key: `count`,
 			scope: [countState],
 		})
 		undo(countTL)
-		expect(logger.warn).not.toHaveBeenCalled()
-		Internal.IMPLICIT.STORE.loggers[0].logLevel = `warn`
+		expect(externalLogger.warn).not.toHaveBeenCalled()
+		Internal.IMPLICIT.STORE.loggers[1].logLevel = `warn`
 		undo(countTL)
-		expect(logger.warn).toHaveBeenCalled()
+		expect(externalLogger.warn).toHaveBeenCalled()
+	})
+	it(`filters out messages based on a predicate`, () => {
+		internalLogger.filter = (icon) => icon === `📖`
+		const countState = atom<number>({
+			key: `count`,
+			default: 0,
+		})
+		expect(internalLogger.info).toHaveBeenCalledOnce()
+		expect(externalLogger.info).not.toHaveBeenCalled()
+		atom<number>({
+			key: `count`,
+			default: 0,
+		})
+		expect(internalLogger.error).toHaveBeenCalledOnce()
+		expect(externalLogger.error).not.toHaveBeenCalled()
+		const countTL = timeline({
+			key: `count`,
+			scope: [countState],
+		})
+		undo(countTL)
+		expect(internalLogger.warn).toHaveBeenCalledOnce()
+		expect(externalLogger.warn).not.toHaveBeenCalled()
+		getState(countState)
+		getState(countState)
+		expect(externalLogger.info).toHaveBeenCalledOnce()
+		internalLogger.filter = (icon) => icon === `❌`
+		atom<number>({
+			key: `count`,
+			default: 0,
+		})
+		expect(externalLogger.info).toHaveBeenCalledOnce()
+		internalLogger.filter = (icon) => icon === `💁`
+		undo(countTL)
+		expect(externalLogger.warn).toHaveBeenCalledOnce()
+	})
+	it(`refines messages as needed, keeping large objects out of logs`, () => {
+		class MyComplexThing {
+			public id: string
+			public constructor(id: string) {
+				this.id = id
+			}
+		}
+		internalLogger.filter = (...params) => {
+			let idx = 0
+			for (const param of params) {
+				if (param instanceof MyComplexThing) {
+					params[idx] = `Thing:${param.id}`
+				}
+				idx++
+			}
+			return params
+		}
+		internalLogger.error(
+			`❌`,
+			`atom`,
+			`thingy`,
+			`errored`,
+			new MyComplexThing(`123`),
+		)
+		expect(externalLogger.error).toHaveBeenLastCalledWith(
+			`❌`,
+			`atom`,
+			`thingy`,
+			`errored`,
+			`Thing:123`,
+		)
+		internalLogger.warn(
+			`💁`,
+			`atom`,
+			`thingy`,
+			`warned`,
+			new MyComplexThing(`456`),
+		)
+		expect(externalLogger.warn).toHaveBeenLastCalledWith(
+			`💁`,
+			`atom`,
+			`thingy`,
+			`warned`,
+			`Thing:456`,
+		)
+		internalLogger.info(
+			`👍`,
+			`atom`,
+			`thingy`,
+			`infoed`,
+			new MyComplexThing(`789`),
+		)
+		expect(externalLogger.info).toHaveBeenLastCalledWith(
+			`👍`,
+			`atom`,
+			`thingy`,
+			`infoed`,
+			`Thing:789`,
+		)
 	})
 })

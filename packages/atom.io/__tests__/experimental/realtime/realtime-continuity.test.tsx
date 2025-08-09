@@ -6,7 +6,6 @@ import * as RT from "atom.io/realtime"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
-import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import * as React from "react"
 
@@ -171,11 +170,9 @@ describe(`synchronizing transactions`, () => {
 
 describe(`mutable atoms in continuity`, () => {
 	const scenario = () => {
-		const myListAtom = AtomIO.mutableAtom<SetRTX<string>, SetRTXJson<string>>({
+		const myListAtom = AtomIO.mutableAtom<SetRTX<string>>({
 			key: `myList`,
-			default: () => new SetRTX<string>(),
-			toJson: (set) => set.toJSON(),
-			fromJson: (json) => SetRTX.fromJSON(json),
+			class: SetRTX,
 		})
 
 		const addItemTX = AtomIO.transaction<(item: string) => void>({

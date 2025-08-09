@@ -4,27 +4,19 @@ import type {
 	ReadonlyPureSelectorFamilyToken,
 } from "atom.io"
 import { getInternalRelations, join, mutableAtom, selectorFamily } from "atom.io"
-import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
-export const usersInThisRoomIndex: MutableAtomToken<
-	SetRTX<string>,
-	SetRTXJson<string>
-> = mutableAtom<SetRTX<string>, SetRTXJson<string>>({
-	key: `usersInRoomIndex`,
-	default: () => new SetRTX<string>(),
-	toJson: (set) => set.toJSON(),
-	fromJson: (json) => SetRTX.fromJSON(json),
-})
+export const usersInThisRoomIndex: MutableAtomToken<SetRTX<string>> =
+	mutableAtom<SetRTX<string>>({
+		key: `usersInRoomIndex`,
+		class: SetRTX,
+	})
 
-export const roomIndex: MutableAtomToken<
-	SetRTX<string>,
-	SetRTXJson<string>
-> = mutableAtom<SetRTX<string>, SetRTXJson<string>>({
+export const roomIndex: MutableAtomToken<SetRTX<string>> = mutableAtom<
+	SetRTX<string>
+>({
 	key: `roomIndex`,
-	default: () => new SetRTX<string>(),
-	toJson: (set) => set.toJSON(),
-	fromJson: (json) => SetRTX.fromJSON(json),
+	class: SetRTX,
 })
 
 export type UserInRoomMeta = {
@@ -52,12 +44,9 @@ export const usersInRooms: JoinToken<
 )
 
 export const usersInMyRoomView: ReadonlyPureSelectorFamilyToken<
-	MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[],
+	MutableAtomToken<SetRTX<string>>[],
 	string
-> = selectorFamily<
-	MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[],
-	string
->({
+> = selectorFamily<MutableAtomToken<SetRTX<string>>[], string>({
 	key: `usersInMyRoomView`,
 	get:
 		(myUsername) =>

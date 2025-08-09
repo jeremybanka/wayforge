@@ -10,7 +10,6 @@ import {
 } from "atom.io"
 import * as Internal from "atom.io/internal"
 import { Tracker } from "atom.io/internal"
-import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import { vitest } from "vitest"
 
@@ -38,45 +37,41 @@ afterEach(() => {
 
 describe(`tracker`, () => {
 	test(`tracks the state of a mutable atom`, () => {
-		const mutableSetState = mutableAtom<SetRTX<string>, string[]>({
+		const mutableSetState = mutableAtom<SetRTX<string>>({
 			key: `mutableSetState`,
-			default: () => new SetRTX(),
-			toJson: (set) => [...set],
-			fromJson: (array) => new SetRTX(array),
+			class: SetRTX,
 		})
-		const { latestUpdateState } = new Tracker(
+		const { latestSignalToken } = new Tracker(
 			mutableSetState,
 			Internal.IMPLICIT.STORE,
 		)
 
 		expect(getState(mutableSetState)).toEqual(new SetRTX())
-		expect(getState(latestUpdateState)).toEqual(null)
-		setState(latestUpdateState, `0=add:"x"`)
-		expect(getState(latestUpdateState)).toEqual(`0=add:"x"`)
+		expect(getState(latestSignalToken)).toEqual(null)
+		setState(latestSignalToken, `0=add:"x"`)
+		expect(getState(latestSignalToken)).toEqual(`0=add:"x"`)
 		expect(getState(mutableSetState)).toEqual(new SetRTX([`x`]))
-		setState(latestUpdateState, `1=add:"y"`)
-		expect(getState(latestUpdateState)).toEqual(`1=add:"y"`)
+		setState(latestSignalToken, `1=add:"y"`)
+		expect(getState(latestSignalToken)).toEqual(`1=add:"y"`)
 		expect(getState(mutableSetState)).toEqual(new SetRTX([`x`, `y`]))
 	})
 
 	test(`updates its core in a transaction`, () => {
-		const mutableSetState = mutableAtom<SetRTX<string>, string[]>({
+		const mutableSetState = mutableAtom<SetRTX<string>>({
 			key: `mutableSetState`,
-			default: () => new SetRTX(),
-			toJson: (set) => [...set],
-			fromJson: (array) => new SetRTX(array),
+			class: SetRTX,
 		})
 		const tracker = new Tracker(mutableSetState, Internal.IMPLICIT.STORE)
 		const updateTrackerTX = transaction({
 			key: `updateTrackerTX`,
 			do: ({ set }) => {
-				set(tracker.latestUpdateState, `0=add:"x"`)
-				set(tracker.latestUpdateState, `1=add:"y"`)
+				set(tracker.latestSignalToken, `0=add:"x"`)
+				set(tracker.latestSignalToken, `1=add:"y"`)
 			},
 		})
 
 		expect(getState(mutableSetState)).toEqual(new SetRTX())
-		expect(getState(tracker.latestUpdateState)).toEqual(null)
+		expect(getState(tracker.latestSignalToken)).toEqual(null)
 		runTransaction(updateTrackerTX)()
 		expect(getState(mutableSetState)).toEqual(new SetRTX([`x`, `y`]))
 	})
@@ -84,15 +79,9 @@ describe(`tracker`, () => {
 
 describe(`trackerFamily`, () => {
 	test(`tracks the state of a family of mutable atoms`, () => {
-		const setAtoms = mutableAtomFamily<
-			SetRTX<string>,
-			SetRTXJson<string>,
-			string
-		>({
+		const setAtoms = mutableAtomFamily<SetRTX<string>, string>({
 			key: `sets`,
-			default: () => new SetRTX(),
-			toJson: (set) => set.toJSON(),
-			fromJson: (json) => SetRTX.fromJSON(json),
+			class: SetRTX,
 		})
 
 		const latestUpdateStates = Internal.getUpdateFamily(
@@ -104,15 +93,9 @@ describe(`trackerFamily`, () => {
 		expect(getState(latestUpdateStates, `a`)).toEqual(null)
 	})
 	test(`updates the core of a new family member in a transaction`, () => {
-		const setAtoms = mutableAtomFamily<
-			SetRTX<string>,
-			SetRTXJson<string>,
-			string
-		>({
+		const setAtoms = mutableAtomFamily<SetRTX<string>, string>({
 			key: `findSetState`,
-			default: () => new SetRTX(),
-			toJson: (set) => set.toJSON(),
-			fromJson: (json) => SetRTX.fromJSON(json),
+			class: SetRTX,
 		})
 
 		const latestUpdateStates = Internal.getUpdateFamily(

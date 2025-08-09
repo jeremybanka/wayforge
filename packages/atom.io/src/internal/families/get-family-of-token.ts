@@ -12,19 +12,18 @@ import type {
 	WritablePureSelectorToken,
 	WritableToken,
 } from "atom.io"
-import type { Canonical, Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 
 import type { Transceiver } from "../mutable"
 import type { Store } from "../store"
 
 export function getFamilyOfToken<
-	T extends Transceiver<any>,
-	J extends Json.Serializable,
+	T extends Transceiver<any, any>,
 	K extends Canonical,
 >(
 	store: Store,
-	token: MutableAtomToken<T, J, K>,
-): MutableAtomFamilyToken<T, J, K> | undefined
+	token: MutableAtomToken<T, K>,
+): MutableAtomFamilyToken<T, K> | undefined
 
 export function getFamilyOfToken<T, K extends Canonical>(
 	store: Store,

@@ -1,5 +1,7 @@
+import type { TimelineManageable } from "atom.io"
+
 import type { Store } from "../store"
-import type { TimelineSelectorUpdate } from "../timeline"
+import type { TimelineAtomUpdate, TimelineSelectorUpdate } from "../timeline"
 import { ingestAtomUpdate } from "./ingest-atom-update"
 
 export function ingestSelectorUpdate(
@@ -7,10 +9,12 @@ export function ingestSelectorUpdate(
 	selectorUpdate: TimelineSelectorUpdate<any>,
 	store: Store,
 ): void {
-	const updates =
-		applying === `newValue`
-			? selectorUpdate.atomUpdates
-			: selectorUpdate.atomUpdates.toReversed()
+	let updates: Omit<TimelineAtomUpdate<TimelineManageable>, `timestamp`>[]
+	if (applying === `newValue`) {
+		updates = selectorUpdate.atomUpdates
+	} else {
+		updates = selectorUpdate.atomUpdates.toReversed()
+	}
 	for (const atomUpdate of updates) {
 		ingestAtomUpdate(applying, atomUpdate, store)
 	}

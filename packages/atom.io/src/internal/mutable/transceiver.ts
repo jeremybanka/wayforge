@@ -1,16 +1,28 @@
 import type { Json } from "atom.io/json"
 
-export interface Transceiver<S extends Json.Serializable> {
+export interface Transceiver<
+	S extends Json.Serializable,
+	J extends Json.Serializable,
+> {
 	do: (update: S) => number | `OUT_OF_RANGE` | null
 	undo: (update: S) => void
 	subscribe: (key: string, fn: (update: S) => void) => () => void
 	cacheUpdateNumber: number
 	getUpdateNumber: (update: S) => number
+	toJSON: () => J
 }
+
+// biome-ignore format: intersection
+export type TransceiverConstructor<
+  J extends Json.Serializable,
+  T extends Transceiver<any, J>
+> =
+	& ( new () => T )
+	& { fromJSON: (json: J) => T }
 
 export function isTransceiver(
 	value: unknown,
-): value is Transceiver<Json.Serializable> {
+): value is Transceiver<Json.Serializable, Json.Serializable> {
 	return (
 		typeof value === `object` &&
 		value !== null &&
@@ -22,17 +34,28 @@ export function isTransceiver(
 
 export type TransceiverMode = `playback` | `record` | `transaction`
 
-export type Signal<TVR extends Transceiver<any>> = TVR extends Transceiver<
-	infer S
+export type SignalFrom<T extends Transceiver<any, any>> = T extends Transceiver<
+	infer S,
+	any
 >
 	? S
 	: never
 
+export type AsJSON<T extends Transceiver<any, any>> = T extends Transceiver<
+	any,
+	infer J
+>
+	? J
+	: never
+
+export type ConstructorOf<T extends Transceiver<any, any>> =
+	TransceiverConstructor<AsJSON<T>, T>
+
 /*
 A transceiver may also keep a list of updates that have been applied to it.
 This is useful for undo/redo functionality, especially in the context of
-revising history. It is a good idea to accept a cache limit in your 
-constructor, and overwrite old updates. Here's an example of how we 
+revising history. It is a good idea to accept a cache limit in your
+constructor, and overwrite old updates. Here's an example of how we
 might set that up:
 
 myTransceiver = Transceiver {
@@ -48,7 +71,7 @@ myTransceiver = Transceiver {
 
 CONFIRM/NO-OP
 Update `27=del:"x"` is passed to myTransceiver.do:
-- [updateNumber = 27, update = `del:"x"`]	
+- [updateNumber = 27, update = `del:"x"`]
 - updateOffset = updateNumber - cacheUpdateNumber // 0
 - eventOffset < 1 // true (we're validating the past)
 - |eventOffset| < cacheLimit // true (we remember this update)
@@ -75,7 +98,7 @@ Update `29=del:"x"` is passed to myTransceiver.do:
 - eventOffset === 1 // false (we're NOT ready to apply this update)
 - updateIdx := cacheIdx + updateOffset // 3
 - updateIdx %= cacheLimit // 0
-- cache[updateIdx] = update // cache = <{ 0 => del:"x" }> 
+- cache[updateIdx] = update // cache = <{ 0 => del:"x" }>
 - expectedUpdateNumber = cacheUpdateNumber + 1 // 28
 - return expectedUpdateNumber // 🤨👂
 
@@ -110,3 +133,7 @@ Update `24=add:"z"` is passed to myTransceiver.do:
 - return `OUT_OF_RANGE` // 😵‍💫👂
 
 */
+
+// The function wants a constructor C
+// - that has a static fromJSON(json) returning an instance of C
+// - and whose instances have toJSON() whose return type matches fromJSON's param

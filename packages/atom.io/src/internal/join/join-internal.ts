@@ -14,7 +14,6 @@ import type {
 import { Anarchy } from "atom.io"
 import type { Canonical, Json, stringified } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
-import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import { capitalize } from "../capitalize"
@@ -143,11 +142,7 @@ export class Join<
 		Content
 	>
 	public core: {
-		relatedKeysAtoms: MutableAtomFamilyToken<
-			SetRTX<string>,
-			SetRTXJson<string>,
-			string
-		>
+		relatedKeysAtoms: MutableAtomFamilyToken<SetRTX<string>, string>
 	}
 	public transact(
 		toolkit: WriterToolkit,
@@ -193,17 +188,11 @@ export class Join<
 
 		const aSide: ASide = options.between[0]
 		const bSide: BSide = options.between[1]
-		const relatedKeysAtoms = createMutableAtomFamily<
-			SetRTX<string>,
-			SetRTXJson<string>,
-			string
-		>(
+		const relatedKeysAtoms = createMutableAtomFamily<SetRTX<string>, string>(
 			store,
 			{
 				key: `${options.key}/relatedKeys`,
-				default: () => new SetRTX(),
-				fromJson: (json) => SetRTX.fromJSON(json),
-				toJson: (set) => set.toJSON(),
+				class: SetRTX,
 			},
 			[`join`, `relations`],
 		)

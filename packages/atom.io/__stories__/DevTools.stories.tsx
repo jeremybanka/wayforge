@@ -47,27 +47,27 @@ const countState = atom<number>({
 	key: "count",
 	default: 0,
 })
-const nameState = atom<string>({
+atom<string>({
 	key: "name",
 	default: "John Doe",
 })
-const listState = atom<string[]>({
+atom<string[]>({
 	key: "list",
 	default: ["a", "b", "c"],
 })
-const dictState = atom<Record<string, string>>({
+atom<Record<string, string>>({
 	key: "dict",
 	default: { a: "b", c: "d" },
 })
-const nullState = atom<null>({
+atom<null>({
 	key: "null",
 	default: null,
 })
-const isTrueState = atom<boolean>({
+atom<boolean>({
 	key: "isTrue",
 	default: true,
 })
-const loadableState = atom<Loadable<string>>({
+atom<Loadable<string>>({
 	key: "loadable",
 	default: () =>
 		new Promise((resolve) =>
@@ -76,7 +76,7 @@ const loadableState = atom<Loadable<string>>({
 			}, 1000),
 		),
 })
-const futureState = atom<Loadable<unknown>>({
+atom<Loadable<unknown>>({
 	key: "future",
 	default: new Promise(() => {}),
 })
@@ -99,11 +99,11 @@ findState(userAtoms, "A")
 findState(userAtoms, "B")
 findState(userAtoms, "C")
 
-const nestArrayAtom = atom<[{ a: number }]>({
+atom<[{ a: number }]>({
 	key: "nestArray",
 	default: [{ a: 1 }],
 })
-const nestObjectAtom = atom<{ a: number[]; b: { num: number } }>({
+atom<{ a: number[]; b: { num: number } }>({
 	key: "nestObject",
 	default: {
 		a: [1],
@@ -119,7 +119,7 @@ const evenSelectionsState = selector<number[]>({
 	key: "evenSelections",
 	get: ({ get }) => get(selectionsState).filter((n) => n % 2 === 0),
 })
-const objSelector = selector<Record<string, number>>({
+selector<Record<string, number>>({
 	key: "objSelector",
 	get: ({ get }) => {
 		const selections = get(selectionsState)

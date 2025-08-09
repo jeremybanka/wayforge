@@ -18,7 +18,6 @@ import {
 	undo,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
-import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import { vitest } from "vitest"
 
@@ -226,11 +225,9 @@ describe(`two families may not have the same key`, () => {
 			`Overwriting an existing Atom Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
 
-		mutableAtomFamily<SetRTX<number>, SetRTXJson<number>, string>({
+		mutableAtomFamily<SetRTX<string>, string>({
 			key: `count`,
-			default: () => new SetRTX<number>(),
-			toJson: (set) => set.toJSON(),
-			fromJson: (json) => SetRTX.fromJSON(json),
+			class: SetRTX,
 		})
 
 		expect(logger.error).toHaveBeenLastCalledWith(

@@ -3,27 +3,20 @@ import type {
 	WritablePureSelectorFamilyToken,
 	WritablePureSelectorToken,
 } from "atom.io"
-import type { Json } from "atom.io/json"
 
 import { findInStore } from "../families"
 import { newest } from "../lineage"
 import { type Store, withdraw } from "../store"
-import type { Transceiver } from "./transceiver"
+import type { AsJSON, Transceiver } from "./transceiver"
 
-export const getJsonToken = <
-	Core extends Transceiver<any>,
-	SerializableCore extends Json.Serializable,
->(
+export const getJsonToken = <T extends Transceiver<any, any>>(
 	store: Store,
-	mutableAtomToken: MutableAtomToken<Core, SerializableCore>,
-): WritablePureSelectorToken<SerializableCore> => {
+	mutableAtomToken: MutableAtomToken<T>,
+): WritablePureSelectorToken<AsJSON<T>> => {
 	if (mutableAtomToken.family) {
 		const target = newest(store)
 		const jsonFamilyKey = `${mutableAtomToken.family.key}:JSON`
-		const jsonFamilyToken: WritablePureSelectorFamilyToken<
-			SerializableCore,
-			string
-		> = {
+		const jsonFamilyToken: WritablePureSelectorFamilyToken<AsJSON<T>, string> = {
 			key: jsonFamilyKey,
 			type: `writable_pure_selector_family`,
 		}
@@ -32,7 +25,7 @@ export const getJsonToken = <
 		const jsonToken = findInStore(store, family, subKey)
 		return jsonToken
 	}
-	const token: WritablePureSelectorToken<SerializableCore> = {
+	const token: WritablePureSelectorToken<AsJSON<T>> = {
 		type: `writable_pure_selector`,
 		key: `${mutableAtomToken.key}:JSON`,
 	}
