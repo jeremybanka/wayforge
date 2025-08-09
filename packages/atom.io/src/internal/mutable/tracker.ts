@@ -57,28 +57,27 @@ export class Tracker<T extends Transceiver<any, any>> {
 		const subscriptionKey = `tracker:${target.config.name}:${
 			isChildStore(target) ? target.transactionMeta.update.key : `main`
 		}:${mutableState.key}`
+		const trackerCapturesOutboundSignal = (update: SignalFrom<T>) => {
+			setIntoStore(target, latestUpdateState, update)
+		}
 		const originalInnerValue = getFromStore(target, mutableState)
 		this.unsubscribeFromInnerValue = originalInnerValue.subscribe(
 			subscriptionKey,
-			function trackerCapturesOutboundSignal(update) {
-				setIntoStore(target, latestUpdateState, update)
-			},
+			trackerCapturesOutboundSignal,
 		)
 		this.unsubscribeFromState = subscribeToState(
 			target,
 			mutableState,
 			subscriptionKey,
-			function trackerLooksForNewReference(update) {
+			function trackerLooksForNewReference(update: SignalFrom<T>) {
 				if (update.newValue !== update.oldValue) {
 					this.unsubscribeFromInnerValue()
 					this.unsubscribeFromInnerValue = update.newValue.subscribe(
 						subscriptionKey,
-						(transceiverUpdate) => {
-							setIntoStore(target, latestUpdateState, transceiverUpdate)
-						},
+						trackerCapturesOutboundSignal,
 					)
 				}
-			},
+			}.bind(this),
 		)
 	}
 
