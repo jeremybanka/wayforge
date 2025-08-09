@@ -1,5 +1,39 @@
 # atom.io
 
+## 0.36.0
+
+### Minor Changes
+
+- 5a5498d: 🔥 Remove eslint rule `synchronous-selector-dependencies`. This isn't a necessary pattern to follow anymore.
+- 5a5498d: 💥 BREAKING CHANGE: `mutableAtom` greatly simplifies its API, removing a significant amount of boilerplate.
+
+  Previously, creating a mutable atom looked like this:
+
+  ```typescript
+  const atom = atom<SetRTX<string>, SetRTXJson<string>({
+    key: 'my-atom',
+    mutable: true,
+    default: () => new SetRTX<string>(),
+    toJson: (value) => value.toJSON(),
+    fromJson: (value) => SetRTX.fromJSON(value),
+  });
+
+  const mutableAtom = mutableAtom(atom);
+  ```
+
+  Now, it can be created much more simply:
+
+  ```javascript
+  const mutableAtom = mutableAtom({
+    key: 'my-atom',
+    class: SetRTX<string>,
+  });
+  ```
+
+### Patch Changes
+
+- 5a5498d: ✨ Update eslint rule `explicit-state-types` to require explicit typing for `mutableAtom` and `mutableAtomFamily`.
+
 ## 0.35.0
 
 ### Minor Changes
