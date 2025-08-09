@@ -98,75 +98,73 @@ export class Tracker<T extends Transceiver<any, any>> {
 					latestUpdateState.key,
 				)
 
-				if (timelineId) {
-					const timelineData = target.timelines.get(timelineId)
-					if (timelineData?.timeTraveling) {
-						const unsubscribe = subscribeToTimeline(
-							target,
-							{ key: timelineId, type: `timeline` },
-							subscriptionKey,
-							(update) => {
-								unsubscribe()
-								setIntoStore(target, mutableState, (transceiver) => {
-									if (update === `redo` && newValue) {
-										transceiver.do(newValue)
-									} else if (update === `undo` && oldValue) {
-										transceiver.undo(oldValue)
-									}
-									return transceiver
-								})
-							},
-						)
-						return
-					}
+				if (timelineId && target.timelines.get(timelineId)?.timeTraveling) {
+					const unsubscribe = subscribeToTimeline(
+						target,
+						{ key: timelineId, type: `timeline` },
+						subscriptionKey,
+						function trackerWaitsForTimeTravelToFinish(update) {
+							unsubscribe()
+							setIntoStore(target, mutableState, (transceiver) => {
+								if (update === `redo` && newValue) {
+									transceiver.do(newValue)
+								} else if (update === `undo` && oldValue) {
+									transceiver.undo(oldValue)
+								}
+								return transceiver
+							})
+						},
+					)
+					return
 				}
 
-				const unsubscribe = target.on.operationClose.subscribe(
-					subscriptionKey,
-					() => {
-						unsubscribe()
-						const mutable = getFromStore(target, mutableState)
-						const updateNumber =
-							newValue === null ? -1 : mutable.getUpdateNumber(newValue)
-						const eventOffset = updateNumber - mutable.cacheUpdateNumber
-						if (newValue && eventOffset === 1) {
-							setIntoStore(
-								target,
-								mutableState,
-								(transceiver) => (transceiver.do(newValue), transceiver),
-							)
-						} else {
-							target.logger.info(
-								`❌`,
-								`mutable_atom`,
-								mutableState.key,
-								`could not be updated. Expected update number ${
-									mutable.cacheUpdateNumber + 1
-								}, but got ${updateNumber}`,
-							)
-						}
-					},
-				)
+				const mutable = getFromStore(target, mutableState)
+
+				let updateNumber: number
+				if (newValue) {
+					updateNumber = mutable.getUpdateNumber(newValue)
+				} else {
+					updateNumber = -1
+				}
+
+				const eventOffset = updateNumber - mutable.cacheUpdateNumber
+				if (newValue && eventOffset === 1) {
+					setIntoStore(
+						target,
+						mutableState,
+						(transceiver) => (transceiver.do(newValue), transceiver),
+					)
+				} else {
+					target.logger.info(
+						`❌`,
+						`mutable_atom`,
+						mutableState.key,
+						`could not be updated. Expected update number ${
+							mutable.cacheUpdateNumber + 1
+						}, but got ${updateNumber}`,
+					)
+				}
 			},
 		)
 	}
 
-	public mutableState: MutableAtomToken<T>
-	public latestUpdateState: RegularAtomToken<SignalFrom<T> | null>
+	public mutableAtomToken: MutableAtomToken<T>
+	public latestSignalToken: RegularAtomToken<SignalFrom<T> | null>
 
 	public [Symbol.dispose]!: () => void
 
-	public constructor(mutableState: MutableAtomToken<T>, store: Store) {
-		this.mutableState = mutableState
+	public constructor(mutableAtomToken: MutableAtomToken<T>, store: Store) {
 		const target = newest(store)
-		this.latestUpdateState = this.initializeState(mutableState, target)
-		this.captureSignalsFromCore(mutableState, this.latestUpdateState, target)
-		this.supplySignalsToCore(mutableState, this.latestUpdateState, target)
-		target.trackers.set(mutableState.key, this)
+		const latestSignalToken = this.initializeState(mutableAtomToken, target)
+		this.mutableAtomToken = mutableAtomToken
+		this.latestSignalToken = latestSignalToken
+		this.captureSignalsFromCore(mutableAtomToken, latestSignalToken, target)
+		this.supplySignalsToCore(mutableAtomToken, latestSignalToken, target)
+		target.trackers.set(mutableAtomToken.key, this)
 		this[Symbol.dispose] = () => {
 			this.unsubscribeFromInnerValue()
 			this.unsubscribeFromState()
-			target.trackers.delete(mutableState.key)
+			target.trackers.delete(mutableAtomToken.key)
 		}
 	}
 }
