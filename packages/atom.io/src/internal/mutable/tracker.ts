@@ -10,20 +10,18 @@ import {
 } from ".."
 import { createRegularAtom } from "../atom"
 import { isChildStore } from "../transaction/is-root-store"
-import type { Transceiver } from "./transceiver"
+import type { SignalFrom, Transceiver } from "./transceiver"
 
 /**
  * @internal Give the tracker a transceiver state and a store, and it will
  * subscribe to the transceiver's inner value. When the inner value changes,
  * the tracker will update its own state to reflect the change.
  */
-export class Tracker<Mutable extends Transceiver<any, any>> {
+export class Tracker<T extends Transceiver<any, any>> {
 	private initializeState(
-		mutableState: MutableAtomToken<Mutable>,
+		mutableState: MutableAtomToken<T>,
 		store: Store,
-	): RegularAtomToken<
-		(Mutable extends Transceiver<infer Signal, any> ? Signal : never) | null
-	> {
+	): RegularAtomToken<SignalFrom<T> | null> {
 		const latestUpdateStateKey = `*${mutableState.key}`
 		store.atoms.delete(latestUpdateStateKey)
 		store.valueMap.delete(latestUpdateStateKey)
@@ -33,9 +31,7 @@ export class Tracker<Mutable extends Transceiver<any, any>> {
 					subKey: mutableState.family.subKey,
 				}
 			: undefined
-		const latestUpdateState = createRegularAtom<
-			(Mutable extends Transceiver<infer Signal, any> ? Signal : never) | null
-		>(
+		const latestUpdateState = createRegularAtom<SignalFrom<T> | null>(
 			store,
 			{
 				key: latestUpdateStateKey,
@@ -53,11 +49,9 @@ export class Tracker<Mutable extends Transceiver<any, any>> {
 
 	private unsubscribeFromInnerValue!: () => void
 	private unsubscribeFromState!: () => void
-	private observeCore(
-		mutableState: MutableAtomToken<Mutable, any>,
-		latestUpdateState: RegularAtomToken<
-			(Mutable extends Transceiver<infer Signal, any> ? Signal : never) | null
-		>,
+	private captureSignalsFromCore(
+		mutableState: MutableAtomToken<T, any>,
+		latestUpdateState: RegularAtomToken<SignalFrom<T> | null>,
 		target: Store,
 	): void {
 		const subscriptionKey = `tracker:${target.config.name}:${
@@ -66,7 +60,7 @@ export class Tracker<Mutable extends Transceiver<any, any>> {
 		const originalInnerValue = getFromStore(target, mutableState)
 		this.unsubscribeFromInnerValue = originalInnerValue.subscribe(
 			subscriptionKey,
-			(update) => {
+			function trackerCapturesOutboundSignal(update) {
 				setIntoStore(target, latestUpdateState, update)
 			},
 		)
@@ -74,7 +68,7 @@ export class Tracker<Mutable extends Transceiver<any, any>> {
 			target,
 			mutableState,
 			subscriptionKey,
-			(update) => {
+			function trackerLooksForNewReference(update) {
 				if (update.newValue !== update.oldValue) {
 					this.unsubscribeFromInnerValue()
 					this.unsubscribeFromInnerValue = update.newValue.subscribe(
@@ -88,11 +82,9 @@ export class Tracker<Mutable extends Transceiver<any, any>> {
 		)
 	}
 
-	private updateCore<Core extends Transceiver<any, any>>(
-		mutableState: MutableAtomToken<Core>,
-		latestUpdateState: RegularAtomToken<
-			(Mutable extends Transceiver<infer Signal, any> ? Signal : never) | null
-		>,
+	private supplySignalsToCore(
+		mutableState: MutableAtomToken<T>,
+		latestUpdateState: RegularAtomToken<SignalFrom<T> | null>,
 		target: Store,
 	): void {
 		const subscriptionKey = `tracker:${target.config.name}:${
@@ -102,7 +94,7 @@ export class Tracker<Mutable extends Transceiver<any, any>> {
 			target,
 			latestUpdateState,
 			subscriptionKey,
-			({ newValue, oldValue }) => {
+			function trackerCapturesInboundSignal({ newValue, oldValue }) {
 				const timelineId = target.timelineTopics.getRelatedKey(
 					latestUpdateState.key,
 				)
@@ -160,19 +152,17 @@ export class Tracker<Mutable extends Transceiver<any, any>> {
 		)
 	}
 
-	public mutableState: MutableAtomToken<Mutable>
-	public latestUpdateState: RegularAtomToken<
-		(Mutable extends Transceiver<infer Signal, any> ? Signal : never) | null
-	>
+	public mutableState: MutableAtomToken<T>
+	public latestUpdateState: RegularAtomToken<SignalFrom<T> | null>
 
 	public [Symbol.dispose]!: () => void
 
-	public constructor(mutableState: MutableAtomToken<Mutable>, store: Store) {
+	public constructor(mutableState: MutableAtomToken<T>, store: Store) {
 		this.mutableState = mutableState
 		const target = newest(store)
 		this.latestUpdateState = this.initializeState(mutableState, target)
-		this.observeCore(mutableState, this.latestUpdateState, target)
-		this.updateCore(mutableState, this.latestUpdateState, target)
+		this.captureSignalsFromCore(mutableState, this.latestUpdateState, target)
+		this.supplySignalsToCore(mutableState, this.latestUpdateState, target)
 		target.trackers.set(mutableState.key, this)
 		this[Symbol.dispose] = () => {
 			this.unsubscribeFromInnerValue()
