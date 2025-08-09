@@ -41,18 +41,18 @@ describe(`tracker`, () => {
 			key: `mutableSetState`,
 			class: SetRTX,
 		})
-		const { latestUpdateState } = new Tracker(
+		const { latestSignalToken } = new Tracker(
 			mutableSetState,
 			Internal.IMPLICIT.STORE,
 		)
 
 		expect(getState(mutableSetState)).toEqual(new SetRTX())
-		expect(getState(latestUpdateState)).toEqual(null)
-		setState(latestUpdateState, `0=add:"x"`)
-		expect(getState(latestUpdateState)).toEqual(`0=add:"x"`)
+		expect(getState(latestSignalToken)).toEqual(null)
+		setState(latestSignalToken, `0=add:"x"`)
+		expect(getState(latestSignalToken)).toEqual(`0=add:"x"`)
 		expect(getState(mutableSetState)).toEqual(new SetRTX([`x`]))
-		setState(latestUpdateState, `1=add:"y"`)
-		expect(getState(latestUpdateState)).toEqual(`1=add:"y"`)
+		setState(latestSignalToken, `1=add:"y"`)
+		expect(getState(latestSignalToken)).toEqual(`1=add:"y"`)
 		expect(getState(mutableSetState)).toEqual(new SetRTX([`x`, `y`]))
 	})
 
@@ -65,13 +65,13 @@ describe(`tracker`, () => {
 		const updateTrackerTX = transaction({
 			key: `updateTrackerTX`,
 			do: ({ set }) => {
-				set(tracker.latestUpdateState, `0=add:"x"`)
-				set(tracker.latestUpdateState, `1=add:"y"`)
+				set(tracker.latestSignalToken, `0=add:"x"`)
+				set(tracker.latestSignalToken, `1=add:"y"`)
 			},
 		})
 
 		expect(getState(mutableSetState)).toEqual(new SetRTX())
-		expect(getState(tracker.latestUpdateState)).toEqual(null)
+		expect(getState(tracker.latestSignalToken)).toEqual(null)
 		runTransaction(updateTrackerTX)()
 		expect(getState(mutableSetState)).toEqual(new SetRTX([`x`, `y`]))
 	})
