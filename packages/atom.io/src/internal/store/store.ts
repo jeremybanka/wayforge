@@ -70,11 +70,11 @@ export class Store implements Lineage {
 			makeContentKey: (...keys) => keys.sort().join(`:`),
 		},
 	)
-	public trackers: Map<string, Tracker<Transceiver<any>>> = new Map()
+	public trackers: Map<string, Tracker<Transceiver<any, any>>> = new Map()
 	public families: Map<
 		string,
 		| HeldSelectorFamily<any, any>
-		| MutableAtomFamily<any, any, any>
+		| MutableAtomFamily<any, any>
 		| PureSelectorFamily<any, any>
 		| RegularAtomFamily<any, any>
 	> = new Map()

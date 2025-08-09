@@ -14,7 +14,7 @@ import {
 	IMPLICIT,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-import type { SetRTX, SetRTXJson } from "atom.io/transceivers/set-rtx"
+import type { SetRTX } from "atom.io/transceivers/set-rtx"
 
 // biome-ignore format: intersection
 export type JoinOptions<
@@ -262,6 +262,6 @@ export function getInternalRelations<
 	Content extends Json.Object | null,
 >(
 	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
-): MutableAtomFamilyToken<SetRTX<string>, SetRTXJson<string>, string> {
+): MutableAtomFamilyToken<SetRTX<string>, string> {
 	return getInternalRelationsFromStore(token, IMPLICIT.STORE)
 }

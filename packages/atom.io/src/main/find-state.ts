@@ -12,7 +12,7 @@ import type {
 } from "atom.io"
 import type { Transceiver } from "atom.io/internal"
 import { findInStore, IMPLICIT } from "atom.io/internal"
-import type { Canonical, Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 
 import type { MutableAtomFamilyToken, RegularAtomFamilyToken } from "./tokens"
 
@@ -30,11 +30,10 @@ import type { MutableAtomFamilyToken, RegularAtomFamilyToken } from "./tokens"
  * @overload Mutable Atom
  */
 export function findState<
-	T extends Transceiver<any>,
-	J extends Json.Serializable,
+	T extends Transceiver<any, any>,
 	K extends Canonical,
 	Key extends K,
->(token: MutableAtomFamilyToken<T, J, K>, key: Key): MutableAtomToken<T, J, K>
+>(token: MutableAtomFamilyToken<T, K>, key: Key): MutableAtomToken<T, K>
 /**
  * Finds a {@link RegularAtomToken} in the store, without accessing its value.
  *

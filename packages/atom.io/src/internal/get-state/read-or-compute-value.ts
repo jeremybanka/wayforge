@@ -16,8 +16,7 @@ export const readOrComputeValue = <T>(
 		case `writable_pure_selector`:
 			target.logger.info(`🧮`, state.type, state.key, `computing value`)
 			return state.get()
-		case `atom`:
-		case `mutable_atom`: {
+		case `atom`: {
 			const def = state.default
 			let defaultValue: T
 			if (def instanceof Function) {
@@ -37,6 +36,19 @@ export const readOrComputeValue = <T>(
 				state.key,
 				`could not find cached value; using default`,
 				defaultValue,
+			)
+			return cachedValue
+		}
+		case `mutable_atom`: {
+			const Ctor = state.class
+			const instance = new Ctor()
+			const cachedValue = cacheValue(target, state.key, instance, state.subject)
+			target.logger.info(
+				`💁`,
+				`mutable_atom`,
+				state.key,
+				`could not find cached value; using default`,
+				instance,
 			)
 			return cachedValue
 		}

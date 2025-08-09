@@ -1,9 +1,10 @@
 import type {
+	MutableAtomFamilyOptions,
 	ReadonlyPureSelectorFamilyOptions,
-	RegularAtomFamilyOptions,
 	RegularAtomOptions,
 } from "atom.io"
 import { getState, Silo } from "atom.io"
+import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 const hasImplicitStoreBeenCreated = () =>
 	globalThis.ATOM_IO_IMPLICIT_STORE !== undefined
@@ -54,12 +55,14 @@ describe(`silo`, () => {
 		const Uno = new Silo({ name: `uno`, lifespan: `ephemeral` })
 		const Dos = new Silo({ name: `dos`, lifespan: `ephemeral` })
 
-		const DEFAULT_COUNT_ATOMS_CONFIG: RegularAtomFamilyOptions<number, string> =
-			{
-				key: `counts`,
-				default: 0,
-			}
-		const DEFAULT_DOUBLE_COUNT_SELECTORS_CONFIG: ReadonlyPureSelectorFamilyOptions<
+		const DEFAULT_LIST_ATOMS_CONFIG: MutableAtomFamilyOptions<
+			SetRTX<number>,
+			string
+		> = {
+			key: `counts`,
+			class: SetRTX,
+		}
+		const DEFAULT_SIZE_SELECTORS_CONFIG: ReadonlyPureSelectorFamilyOptions<
 			number,
 			string
 		> = {
@@ -67,56 +70,56 @@ describe(`silo`, () => {
 			get:
 				(key) =>
 				({ get }) =>
-					get(countAtoms__Uno, key) * 2,
+					get(listAtoms__Uno, key).size,
 		}
 
-		const countAtoms__Uno = Uno.atomFamily<number, string>(
-			DEFAULT_COUNT_ATOMS_CONFIG,
+		const listAtoms__Uno = Uno.mutableAtomFamily<SetRTX<number>, string>(
+			DEFAULT_LIST_ATOMS_CONFIG,
 		)
-		const countAtoms__Dos = Dos.atomFamily<number, string>(
-			DEFAULT_COUNT_ATOMS_CONFIG,
+		const listAtoms__Dos = Dos.mutableAtomFamily<SetRTX<number>, string>(
+			DEFAULT_LIST_ATOMS_CONFIG,
 		)
-		const doubleCountSelectors__Uno = Uno.selectorFamily<number, string>(
-			DEFAULT_DOUBLE_COUNT_SELECTORS_CONFIG,
+		const sizeSelectors__Uno = Uno.selectorFamily<number, string>(
+			DEFAULT_SIZE_SELECTORS_CONFIG,
 		)
-		const doubleCountSelectors__Dos = Dos.selectorFamily<number, string>(
-			DEFAULT_DOUBLE_COUNT_SELECTORS_CONFIG,
+		const sizeSelectors__Dos = Dos.selectorFamily<number, string>(
+			DEFAULT_SIZE_SELECTORS_CONFIG,
 		)
 
-		const countState__Uno = Uno.findState(countAtoms__Uno, `a`)
-		const countState__Dos = Dos.findState(countAtoms__Dos, `b`)
+		const listState__Uno = Uno.findState(listAtoms__Uno, `a`)
+		const listState__Dos = Dos.findState(listAtoms__Dos, `b`)
 
-		const UnoCountValue = Uno.getState(countState__Uno)
-		const DosCountValue = Dos.getState(countState__Dos)
-		const UnoDoubleCountValue = Uno.getState(doubleCountSelectors__Uno, `a`)
-		const DosDoubleCountValue = Dos.getState(doubleCountSelectors__Dos, `b`)
+		const UnoCountValue = Uno.getState(listState__Uno)
+		const DosCountValue = Dos.getState(listState__Dos)
+		const UnoDoubleCountValue = Uno.getState(sizeSelectors__Uno, `a`)
+		const DosDoubleCountValue = Dos.getState(sizeSelectors__Dos, `b`)
 
-		expect(UnoCountValue).toBe(0)
-		expect(DosCountValue).toBe(0)
+		expect(UnoCountValue).toEqual(new SetRTX([]))
+		expect(DosCountValue).toEqual(new SetRTX([]))
 		expect(UnoDoubleCountValue).toBe(0)
 		expect(DosDoubleCountValue).toBe(0)
 
-		Uno.setState(countState__Uno, 1)
-		Dos.setState(countState__Dos, 2)
+		Uno.setState(listState__Uno, (prev) => prev.add(1))
+		Dos.setState(listState__Dos, (prev) => (prev.add(1), prev.add(2)))
 
-		expect(Uno.getState(countState__Uno)).toBe(1)
-		expect(Dos.getState(countState__Dos)).toBe(2)
-		expect(Uno.getState(doubleCountSelectors__Uno, `a`)).toBe(2)
-		expect(Dos.getState(doubleCountSelectors__Dos, `b`)).toBe(4)
+		expect(Uno.getState(listState__Uno)).toEqual(new SetRTX([1]))
+		expect(Dos.getState(listState__Dos)).toEqual(new SetRTX([1, 2]))
+		expect(Uno.getState(sizeSelectors__Uno, `a`)).toBe(1)
+		expect(Dos.getState(sizeSelectors__Dos, `b`)).toBe(2)
 
-		Uno.resetState(countState__Uno)
-		Dos.resetState(countState__Dos)
+		Uno.resetState(listState__Uno)
+		Dos.resetState(listState__Dos)
 
-		expect(Uno.getState(countState__Uno)).toBe(0)
-		expect(Dos.getState(countState__Dos)).toBe(0)
-		expect(Uno.getState(doubleCountSelectors__Uno, `a`)).toBe(0)
-		expect(Dos.getState(doubleCountSelectors__Dos, `b`)).toBe(0)
+		expect(Uno.getState(listState__Uno)).toEqual(new SetRTX([]))
+		expect(Dos.getState(listState__Dos)).toEqual(new SetRTX([]))
+		expect(Uno.getState(sizeSelectors__Uno, `a`)).toBe(0)
+		expect(Dos.getState(sizeSelectors__Dos, `b`)).toBe(0)
 
-		Uno.disposeState(countState__Uno)
-		Dos.disposeState(countState__Dos)
+		Uno.disposeState(listState__Uno)
+		Dos.disposeState(listState__Dos)
 
 		expect(hasImplicitStoreBeenCreated()).toBe(false)
-		expect(() => getState(countState__Uno)).toThrowError(
+		expect(() => getState(listState__Uno)).toThrowError(
 			`Atom "counts(\\"a\\")" not found in store "IMPLICIT_STORE".`,
 		)
 	})

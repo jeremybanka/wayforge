@@ -1,11 +1,16 @@
-import type { EnvironmentData, Func, Transceiver } from "atom.io/internal"
+import type {
+	AsJSON,
+	EnvironmentData,
+	Func,
+	Transceiver,
+} from "atom.io/internal"
 import {
 	actUponStore,
 	arbitrary,
 	createTransaction,
 	IMPLICIT,
 } from "atom.io/internal"
-import type { Canonical, Json, stringified } from "atom.io/json"
+import type { Canonical, stringified } from "atom.io/json"
 
 import type { disposeState } from "./dispose-state"
 import type { findState } from "./find-state"
@@ -55,6 +60,7 @@ export type MoleculeDisposal = {
 export type MoleculeTransfer = {
 	type: `molecule_transfer`
 	key: Canonical
+	exclusive: boolean
 	from: Canonical[]
 	to: Canonical[]
 }
@@ -85,9 +91,9 @@ export type ActorToolkit = Readonly<{
 	set: typeof setState
 	reset: typeof resetState
 	find: typeof findState
-	json: <T extends Transceiver<any>, J extends Json.Serializable>(
-		state: MutableAtomToken<T, J>,
-	) => WritablePureSelectorToken<J>
+	json: <T extends Transceiver<any, any>>(
+		state: MutableAtomToken<T>,
+	) => WritablePureSelectorToken<AsJSON<T>>
 	dispose: typeof disposeState
 	run: typeof runTransaction
 	env: () => EnvironmentData

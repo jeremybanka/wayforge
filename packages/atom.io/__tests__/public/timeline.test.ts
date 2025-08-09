@@ -203,6 +203,11 @@ describe(`timeline`, () => {
 
 		expect(Utils.stdout).toHaveBeenCalledWith({ oldValue: 3, newValue: 1 })
 		expect(Utils.stdout).toHaveBeenCalledWith({ oldValue: 1, newValue: 3 })
+
+		redo(timeline_ab)
+
+		expect(getState(a)).toBe(1)
+		expect(getState(b)).toBe(1)
 	})
 	test(`history erasure from the past`, () => {
 		const nameState = atom<string>({
@@ -293,9 +298,17 @@ describe(`timeline`, () => {
 			shouldCapture: (update) => {
 				if (update.type === `atom_update`) {
 					const atomKey = update.key
-					const atomDefault = Internal.IMPLICIT.STORE.atoms.get(atomKey)?.default
-					if (atomDefault === update.oldValue) {
-						return false
+					const atomActual = Internal.IMPLICIT.STORE.atoms.get(atomKey)
+					if (atomActual) {
+						switch (atomActual.type) {
+							case `atom`:
+								if (atomActual.default === update.oldValue) {
+									return false
+								}
+								break
+							case `mutable_atom`:
+								return false
+						}
 					}
 				}
 				return true

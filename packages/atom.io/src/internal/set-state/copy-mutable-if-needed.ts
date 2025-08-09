@@ -2,12 +2,14 @@ import type { MutableAtom, Transceiver } from ".."
 import { Tracker } from "../mutable"
 import type { Store } from "../store"
 
-export function copyMutableIfNeeded<T extends Transceiver<any>>(
+export function copyMutableIfNeeded<T extends Transceiver<any, any>>(
 	target: Store,
-	atom: MutableAtom<T, any>,
+	atom: MutableAtom<T>,
 	origin: Store,
 ): T {
-	const originValue = origin.valueMap.get(atom.key)
+	const originValue = origin.valueMap.get(atom.key) as
+		| Transceiver<any, any>
+		| undefined
 	const targetValue = target.valueMap.get(atom.key)
 
 	if (originValue !== targetValue) {
@@ -15,12 +17,12 @@ export function copyMutableIfNeeded<T extends Transceiver<any>>(
 	}
 
 	if (originValue === undefined) {
-		return atom.default()
+		return new atom.class()
 	}
 
 	origin.logger.info(`📃`, `atom`, atom.key, `copying`)
-	const jsonValue = atom.toJson(originValue)
-	const copiedValue = atom.fromJson(jsonValue)
+	const jsonValue = originValue.toJSON()
+	const copiedValue = atom.class.fromJSON(jsonValue)
 	target.valueMap.set(atom.key, copiedValue)
 	new Tracker(atom, origin)
 	return copiedValue

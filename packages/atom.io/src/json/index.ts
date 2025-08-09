@@ -1,6 +1,4 @@
 export * from "./entries"
-export * from "./select-json"
-export * from "./select-json-family"
 
 export type primitive = boolean | number | string | null
 

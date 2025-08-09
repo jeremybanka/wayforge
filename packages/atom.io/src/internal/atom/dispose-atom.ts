@@ -29,6 +29,7 @@ export function disposeAtom(store: Store, atomToken: AtomToken<unknown>): void {
 		target.valueMap.delete(key)
 		target.selectorAtoms.delete(key)
 		target.atomsThatAreDefault.delete(key)
+		target.moleculeData.delete(family.key, family.subKey)
 		store.timelineTopics.delete(key)
 
 		if (atomToken.type === `mutable_atom`) {

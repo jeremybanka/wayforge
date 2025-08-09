@@ -7,10 +7,11 @@ import { roomIndex, usersInRooms } from "atom.io/realtime"
 import type { ChildSocket } from "../ipc-sockets"
 import type { RoomArguments } from "./server-room-external-store"
 import { roomArgumentsAtoms, roomSelectors } from "./server-room-external-store"
+import type { RoomKey } from "./server-user-store"
 
 export const createRoomTX: AtomIO.TransactionToken<
 	(
-		roomId: string,
+		roomKey: RoomKey,
 		script: string,
 		options?: string[],
 	) => Loadable<ChildSocket<any, any>>
@@ -62,17 +63,17 @@ export const leaveRoomTX: AtomIO.TransactionToken<
 })
 export type LeaveRoomIO = AtomIO.TransactionIO<typeof leaveRoomTX>
 
-export const destroyRoomTX: AtomIO.TransactionToken<(roomId: string) => void> =
+export const destroyRoomTX: AtomIO.TransactionToken<(roomKey: RoomKey) => void> =
 	AtomIO.transaction({
 		key: `destroyRoom`,
-		do: (tools, roomId) => {
+		do: (tools, roomKey) => {
 			editRelationsInStore(
 				usersInRooms,
 				(relations) => {
-					relations.delete({ room: roomId })
+					relations.delete({ room: roomKey })
 				},
 				tools.env().store,
 			)
-			tools.set(roomIndex, (s) => (s.delete(roomId), s))
+			tools.set(roomIndex, (s) => (s.delete(roomKey), s))
 		},
 	})

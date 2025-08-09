@@ -4,11 +4,9 @@ import type {
 	MutableAtomToken,
 	UpdateHandler,
 } from "atom.io"
-import type { Json } from "atom.io/json"
-import { selectJson } from "atom.io/json"
 
 import type { MutableAtom } from ".."
-import { resetInStore, setIntoStore } from ".."
+import { createStandaloneSelector, resetInStore, setIntoStore } from ".."
 import { newest } from "../lineage"
 import { deposit, type Store } from "../store"
 import { Subject } from "../subject"
@@ -16,14 +14,11 @@ import { subscribeToState } from "../subscribe"
 import { Tracker } from "./tracker"
 import type { Transceiver } from "./transceiver"
 
-export function createMutableAtom<
-	T extends Transceiver<any>,
-	J extends Json.Serializable,
->(
+export function createMutableAtom<T extends Transceiver<any, any>>(
 	store: Store,
-	options: MutableAtomOptions<T, J>,
+	options: MutableAtomOptions<T>,
 	family: FamilyMetadata | undefined,
-): MutableAtomToken<T, J> {
+): MutableAtomToken<T> {
 	store.logger.info(
 		`🔨`,
 		`atom`,
@@ -43,8 +38,11 @@ export function createMutableAtom<
 		)
 		return deposit(existing)
 	}
-	const subject = new Subject<{ newValue: T; oldValue: T }>()
-	const newAtom: MutableAtom<T, J> = {
+	const subject = new Subject<{
+		newValue: T
+		oldValue: T
+	}>()
+	const newAtom: MutableAtom<T> = {
 		...options,
 		type,
 		install: (s: Store) => {
@@ -86,7 +84,13 @@ export function createMutableAtom<
 
 	new Tracker(token, store)
 	if (!family) {
-		selectJson(token, options, store)
+		createStandaloneSelector(store, {
+			key: `${key}:JSON`,
+			get: ({ get }) => get(token).toJSON(),
+			set: ({ set }, newValue) => {
+				set(token, options.class.fromJSON(newValue))
+			},
+		})
 	}
 	store.on.atomCreation.next(token)
 	return token

@@ -1,4 +1,4 @@
-import type { Transceiver } from "atom.io/internal"
+import type { ConstructorOf, Transceiver } from "atom.io/internal"
 import {
 	createMutableAtom,
 	createMutableAtomFamily,
@@ -6,7 +6,7 @@ import {
 	createRegularAtomFamily,
 	IMPLICIT,
 } from "atom.io/internal"
-import type { Canonical, Json, JsonInterface } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 
 import type { Setter } from "./set-state"
 import type {
@@ -34,20 +34,14 @@ export function atom<T>(options: RegularAtomOptions<T>): RegularAtomToken<T> {
 	return createRegularAtom(IMPLICIT.STORE, options, undefined)
 }
 
-// biome-ignore format: intersection
-export type MutableAtomOptions<
-	T extends Transceiver<any>,
-	J extends Json.Serializable,
-> =
-	& JsonInterface<T, J>
-	& {
-		/** The unique identifier of the atom */
-		key: string
-		/** A function to create an initial value for the atom */
-		default: () => T
-		/** Hooks used to run side effects when the atom is set */
-		effects?: AtomEffect<T>[]
-	}
+export type MutableAtomOptions<T extends Transceiver<any, any>> = {
+	/** The unique identifier of the atom */
+	key: string
+	/** A constructor for the atom's value */
+	class: ConstructorOf<T>
+	/** Hooks used to run side effects when the atom is set */
+	effects?: AtomEffect<T>[]
+}
 /**
  * Create a mutable atom, a global reactive variable in the implicit store
  *
@@ -57,10 +51,9 @@ export type MutableAtomOptions<
  * @returns
  * A reference to the atom created: a {@link MutableAtomToken}
  */
-export function mutableAtom<
-	T extends Transceiver<any>,
-	J extends Json.Serializable,
->(options: MutableAtomOptions<T, J>): MutableAtomToken<T, J> {
+export function mutableAtom<T extends Transceiver<any, any>>(
+	options: MutableAtomOptions<T>,
+): MutableAtomToken<T> {
 	return createMutableAtom(IMPLICIT.STORE, options, undefined)
 }
 
@@ -105,21 +98,17 @@ export function atomFamily<T, K extends Canonical>(
 	return createRegularAtomFamily(IMPLICIT.STORE, options)
 }
 
-// biome-ignore format: intersection
 export type MutableAtomFamilyOptions<
-	T extends Transceiver<any>,
-	J extends Json.Serializable,
+	T extends Transceiver<any, any>,
 	K extends Canonical,
-> =
-	& JsonInterface<T, J>
-	& {
-		/** The unique identifier of the atom family */
-		key: string
-		/** A function to create an initial value for each atom in the family */
-		default: (key: K) => T
-		/** Hooks used to run side effects when an atom in the family is set  */
-		effects?: (key: K) => AtomEffect<T>[]
-	}
+> = {
+	/** The unique identifier of the atom family */
+	key: string
+	/** The class of the transceiver to be created */
+	class: ConstructorOf<T>
+	/** Hooks used to run side effects when an atom in the family is set  */
+	effects?: (key: K) => AtomEffect<T>[]
+}
 /**
  * Create a family of mutable atoms, allowing for the dynamic creation and disposal of atoms.
  *
@@ -130,9 +119,8 @@ export type MutableAtomFamilyOptions<
  * A reference to the atom family created: a {@link MutableAtomFamilyToken}
  */
 export function mutableAtomFamily<
-	T extends Transceiver<any>,
-	J extends Json.Serializable,
+	T extends Transceiver<any, any>,
 	K extends Canonical,
->(options: MutableAtomFamilyOptions<T, J, K>): MutableAtomFamilyToken<T, J, K> {
+>(options: MutableAtomFamilyOptions<T, K>): MutableAtomFamilyToken<T, K> {
 	return createMutableAtomFamily(IMPLICIT.STORE, options)
 }

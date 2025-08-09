@@ -8,24 +8,21 @@ import { Tracker } from "./tracker"
 import type { Transceiver } from "./transceiver"
 
 export class FamilyTracker<
-	Core extends Transceiver<any>,
-	FamilyMemberKey extends Canonical,
+	T extends Transceiver<any, any>,
+	K extends Canonical,
 > {
-	private trackers: Map<FamilyMemberKey, Tracker<Core>> = new Map()
+	private trackers: Map<K, Tracker<T>> = new Map()
 
 	public readonly latestUpdateAtoms: RegularAtomFamily<
-		(Core extends Transceiver<infer Signal> ? Signal : never) | null,
-		FamilyMemberKey
+		(T extends Transceiver<infer Signal, any> ? Signal : never) | null,
+		K
 	>
-	public readonly mutableAtoms: MutableAtomFamily<Core, any, FamilyMemberKey>
+	public readonly mutableAtoms: MutableAtomFamily<T, K>
 
-	public constructor(
-		mutableAtoms: MutableAtomFamily<Core, any, FamilyMemberKey>,
-		store: Store,
-	) {
+	public constructor(mutableAtoms: MutableAtomFamily<T, K>, store: Store) {
 		const updateAtoms = createRegularAtomFamily<
-			(Core extends Transceiver<infer Signal> ? Signal : never) | null,
-			FamilyMemberKey
+			(T extends Transceiver<infer Signal, any> ? Signal : never) | null,
+			K
 		>(
 			store,
 			{
@@ -44,7 +41,7 @@ export class FamilyTracker<
 					const key = parseJson(token.family.subKey)
 					switch (type) {
 						case `state_creation`:
-							this.trackers.set(key, new Tracker<Core>(token, store))
+							this.trackers.set(key, new Tracker<T>(token, store))
 							break
 						case `state_disposal`:
 							{

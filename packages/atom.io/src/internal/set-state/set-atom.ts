@@ -60,7 +60,7 @@ export const setAtom = <T>(
 	} else if (atom.key.startsWith(`*`)) {
 		const mutableKey = atom.key.slice(1)
 		const mutableAtom = target.atoms.get(mutableKey) as Atom<any>
-		let transceiver: Transceiver<any> = target.valueMap.get(mutableKey)
+		let transceiver: Transceiver<any, any> = target.valueMap.get(mutableKey)
 		if (mutableAtom.type === `mutable_atom` && isChildStore(target)) {
 			const { parent } = target
 			const copiedValue = copyMutableIfNeeded(target, mutableAtom, parent)

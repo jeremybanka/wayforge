@@ -1,6 +1,5 @@
 import type { MutableAtomToken, RegularAtomToken } from "atom.io"
 import {
-	atom,
 	atomFamily,
 	getInternalRelations,
 	join,
@@ -8,7 +7,6 @@ import {
 	selector,
 	selectorFamily,
 } from "atom.io"
-import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import { cardIndex } from "./cards-store"
@@ -40,11 +38,9 @@ export const deckAtoms = atomFamily<Deck, string>({
 		name: ``,
 	},
 })
-export const deckIndex = mutableAtom<SetRTX<string>, SetRTXJson<string>>({
+export const deckIndex = mutableAtom<SetRTX<string>>({
 	key: `deckIndex`,
-	default: () => new SetRTX<string>(),
-	toJson: (set) => set.toJSON(),
-	fromJson: (json) => SetRTX.fromJSON(json),
+	class: SetRTX,
 })
 export const deckGlobalView = selector<RegularAtomToken<Deck>[]>({
 	key: `deckGlobalView`,
@@ -73,11 +69,9 @@ export const handAtoms = atomFamily<Hand, string>({
 		name: ``,
 	},
 })
-export const handIndex = mutableAtom<SetRTX<string>, SetRTXJson<string>>({
+export const handIndex = mutableAtom<SetRTX<string>>({
 	key: `handIndex`,
-	default: () => new SetRTX<string>(),
-	toJson: (set) => set.toJSON(),
-	fromJson: (json) => SetRTX.fromJSON(json),
+	class: SetRTX,
 })
 export const handGlobalView = selector<RegularAtomToken<Hand>[]>({
 	key: `handGlobalView`,
@@ -106,11 +100,9 @@ export const pileStates = atomFamily<Pile, string>({
 		name: ``,
 	},
 })
-export const pileIndex = mutableAtom<SetRTX<string>, SetRTXJson<string>>({
+export const pileIndex = mutableAtom<SetRTX<string>>({
 	key: `pileIndex`,
-	default: () => new SetRTX<string>(),
-	toJson: (set) => set.toJSON(),
-	fromJson: (json) => SetRTX.fromJSON(json),
+	class: SetRTX,
 })
 export const pileGlobalView = selector<RegularAtomToken<Pile>[]>({
 	key: `pileGlobalView`,
@@ -179,11 +171,11 @@ export const groupsOfCards = join({
 	isBType: (input): input is string => typeof input === `string`,
 })
 export const groupsOfCardsGlobalView = selector<
-	MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[]
+	MutableAtomToken<SetRTX<string>>[]
 >({
 	key: `groupsOfCardsGlobalView`,
 	get: ({ find, get }) => {
-		const tokens: MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[] = []
+		const tokens: MutableAtomToken<SetRTX<string>>[] = []
 		const groupIds = get(cardGroupIndex)
 		for (const groupId of groupIds) {
 			const token = find(getInternalRelations(groupsOfCards), groupId)
@@ -198,7 +190,7 @@ export const groupsOfCardsGlobalView = selector<
 	},
 })
 export const groupsOfCardsView = selectorFamily<
-	MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[],
+	MutableAtomToken<SetRTX<string>>[],
 	string
 >({
 	key: `groupsOfCardsView`,
@@ -216,11 +208,11 @@ export const ownersOfGroups = join({
 	isBType: (input): input is string => typeof input === `string`,
 })
 export const ownersOfGroupsGlobalView = selector<
-	MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[]
+	MutableAtomToken<SetRTX<string>>[]
 >({
 	key: `ownersOfGroupsGlobalView`,
 	get: ({ find, get }) => {
-		const tokens: MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[] = []
+		const tokens: MutableAtomToken<SetRTX<string>>[] = []
 		const groupIds = get(cardGroupIndex)
 		for (const groupId of groupIds) {
 			const token = find(getInternalRelations(ownersOfGroups), groupId)
@@ -235,7 +227,7 @@ export const ownersOfGroupsGlobalView = selector<
 	},
 })
 export const ownersOfGroupsView = selectorFamily<
-	MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[],
+	MutableAtomToken<SetRTX<string>>[],
 	string
 >({
 	key: `ownersOfGroupsView`,

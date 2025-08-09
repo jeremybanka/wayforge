@@ -10,7 +10,6 @@ import {
 	selectorFamily,
 } from "atom.io"
 import type { Json } from "atom.io/json"
-import type { SetRTXJson } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import {
@@ -25,11 +24,9 @@ export const cardValueAtoms = atomFamily<Identified & Json.Object, string>({
 	key: `cardValue`,
 	default: () => ({ id: `` }),
 })
-export const cardValueIndex = mutableAtom<SetRTX<string>, SetRTXJson<string>>({
+export const cardValueIndex = mutableAtom<SetRTX<string>>({
 	key: `cardValuesIndex`,
-	default: () => new SetRTX<string>(),
-	toJson: (set) => set.toJSON(),
-	fromJson: (json) => SetRTX.fromJSON(json),
+	class: SetRTX,
 })
 export const cardValueGlobalView = selector<
 	RegularAtomToken<Identified & Json.Object>[]
@@ -116,7 +113,7 @@ export const visibleCardIndices = selectorFamily<string[], string>({
 		},
 })
 export const valuesOfCardsView = selectorFamily<
-	MutableAtomToken<SetRTX<string>, SetRTXJson<string>>[],
+	MutableAtomToken<SetRTX<string>>[],
 	string
 >({
 	key: `valuesOfCardsView`,

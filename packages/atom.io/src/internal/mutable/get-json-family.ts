@@ -7,16 +7,17 @@ import type { Store } from "../store"
 import type { Transceiver } from "./transceiver"
 
 export const getJsonFamily = <
-	Core extends Transceiver<Json.Serializable>,
-	SerializableCore extends Json.Serializable,
+	Core extends Transceiver<Json.Serializable, Json.Serializable>,
 	Key extends Canonical,
 >(
-	mutableAtomFamily: MutableAtomFamilyToken<Core, SerializableCore, Key>,
+	mutableAtomFamily: MutableAtomFamilyToken<Core, Key>,
 	store: Store,
-): WritablePureSelectorFamily<SerializableCore, Key> => {
+): WritablePureSelectorFamily<ReturnType<Core[`toJSON`]>, Key> => {
 	const target = newest(store)
 	const key = `${mutableAtomFamily.key}:JSON`
-	const jsonFamily: WritablePureSelectorFamily<SerializableCore, Key> =
-		target.families.get(key) as WritablePureSelectorFamily<SerializableCore, Key>
+	const jsonFamily = target.families.get(key) as WritablePureSelectorFamily<
+		ReturnType<Core[`toJSON`]>,
+		Key
+	>
 	return jsonFamily
 }

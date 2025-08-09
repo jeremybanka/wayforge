@@ -56,7 +56,7 @@ export function belongsTo<Family extends RegularAtomFamilyToken<any, any>>(
 	family: Family,
 	unknownToken: ReadableToken<any>,
 ): unknownToken is RegularAtomToken<TokenType<Family>>
-export function belongsTo<Family extends MutableAtomFamilyToken<any, any, any>>(
+export function belongsTo<Family extends MutableAtomFamilyToken<any, any>>(
 	family: Family,
 	unknownToken: ReadableToken<any>,
 ): unknownToken is MutableAtomToken<TokenType<Family>, any>
