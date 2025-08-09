@@ -119,14 +119,7 @@ export class Tracker<T extends Transceiver<any, any>> {
 				}
 
 				const mutable = getFromStore(target, mutableState)
-
-				let updateNumber: number
-				if (newValue) {
-					updateNumber = mutable.getUpdateNumber(newValue)
-				} else {
-					updateNumber = -1
-				}
-
+				const updateNumber = mutable.getUpdateNumber(newValue)
 				const eventOffset = updateNumber - mutable.cacheUpdateNumber
 				if (newValue && eventOffset === 1) {
 					setIntoStore(
