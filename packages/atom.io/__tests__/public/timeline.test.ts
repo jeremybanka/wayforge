@@ -203,6 +203,11 @@ describe(`timeline`, () => {
 
 		expect(Utils.stdout).toHaveBeenCalledWith({ oldValue: 3, newValue: 1 })
 		expect(Utils.stdout).toHaveBeenCalledWith({ oldValue: 1, newValue: 3 })
+
+		redo(timeline_ab)
+
+		expect(getState(a)).toBe(1)
+		expect(getState(b)).toBe(1)
 	})
 	test(`history erasure from the past`, () => {
 		const nameState = atom<string>({
