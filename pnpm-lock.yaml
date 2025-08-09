@@ -60,8 +60,8 @@ importers:
         specifier: 2.5.1
         version: 2.5.1
       pin-dependencies-checker:
-        specifier: 2.6.1
-        version: 2.6.1
+        specifier: 2.7.1
+        version: 2.7.1
       turbo:
         specifier: 2.5.5
         version: 2.5.5
@@ -7207,9 +7207,9 @@ packages:
     resolution: {integrity: sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==}
     engines: {node: '>=6'}
 
-  pin-dependencies-checker@2.6.1:
-    resolution: {integrity: sha512-7dfEXZ+/IN71iPqtNana0P/dy35Vo9XL1zOVCvCltx3F5iJ+xVb+YRtoHTELQA5qdsH7GmVwFTAAHHnyJKFXsA==}
-    engines: {bun: 1.2.10, node: '20'}
+  pin-dependencies-checker@2.7.1:
+    resolution: {integrity: sha512-z7YjBDpbVYuW0Li12To2z3a2E2TOUVEhcutF3z2oF34VbTgu8rs2CWJTIuQDjRkJMH1Sk7hF59sjjyjGQCDryw==}
+    engines: {bun: '>=1.2.10', node: '>=20'}
     hasBin: true
 
   pinkie-promise@2.0.1:
@@ -14934,7 +14934,7 @@ snapshots:
 
   pify@4.0.1: {}
 
-  pin-dependencies-checker@2.6.1:
+  pin-dependencies-checker@2.7.1:
     dependencies:
       '@manypkg/get-packages': 2.2.2
       consola: 3.4.2
