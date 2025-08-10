@@ -54,9 +54,6 @@ export class Tracker<T extends Transceiver<any, any>> {
 		latestSignalState: RegularAtomToken<SignalFrom<T> | null>,
 		target: Store,
 	): void {
-		// const subscriptionKey = `tracker:${target.config.name}:${
-		// 	isChildStore(target) ? target.transactionMeta.update.key : `main`
-		// }:${mutableState.key}`
 		let subscriptionKey: string
 		if (isChildStore(target)) {
 			subscriptionKey = `tracker:${target.config.name}:${target.transactionMeta.update.key}:${mutableState.key}`
@@ -134,13 +131,15 @@ export class Tracker<T extends Transceiver<any, any>> {
 						(transceiver) => (transceiver.do(newValue), transceiver),
 					)
 				} else {
+					const expected = mutable.cacheUpdateNumber + 1
 					target.logger.info(
 						`❌`,
 						`mutable_atom`,
 						mutableState.key,
-						`could not be updated. Expected update number ${
-							mutable.cacheUpdateNumber + 1
-						}, but got ${updateNumber}`,
+						`could not be updated. Expected update number`,
+						expected,
+						`but got`,
+						updateNumber,
 					)
 				}
 			},
