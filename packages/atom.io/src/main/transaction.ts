@@ -33,6 +33,9 @@ export type StateCreation<Token extends ReadableToken<any>> = {
 export type StateDisposal<Token extends ReadableToken<any>> =
 	| AtomDisposal<Token>
 	| SelectorDisposal<Token>
+export type StateLifecycleEvent<Token extends ReadableToken<any>> =
+	| StateCreation<Token>
+	| StateDisposal<Token>
 
 export type AtomDisposal<Token extends ReadableToken<any>> = {
 	type: `state_disposal`

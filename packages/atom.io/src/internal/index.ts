@@ -11,6 +11,7 @@ import type {
 	RegularAtomToken,
 	StateCreation,
 	StateDisposal,
+	StateLifecycleEvent,
 	WritableHeldSelectorFamilyToken,
 	WritableHeldSelectorToken,
 	WritablePureSelectorFamilyToken,
@@ -148,10 +149,7 @@ export type MutableAtomFamily<
 		& {
 				install: (store: Store) => void
 				internalRoles: string[] | undefined
-				subject: Subject<
-					| StateCreation<MutableAtomToken<T>>
-					| StateDisposal<MutableAtomToken<T>>
-				>
+				subject: Subject<StateLifecycleEvent<MutableAtomToken<T>>>
 			}
 	>
 	& ((key: K) => MutableAtomToken<T>)
