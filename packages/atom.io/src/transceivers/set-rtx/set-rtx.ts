@@ -7,6 +7,13 @@ export type SetUpdateType = `add` | `clear` | `del` | `tx`
 export type SetUpdate = `${SetUpdateType}:${string}`
 export type NumberedSetUpdate = `${number}=${SetUpdate}`
 
+export interface SetRTXView<P extends primitive> extends ReadonlySet<P> {
+	readonly cache: ReadonlyArray<NumberedSetUpdate | null>
+	readonly cacheLimit: number
+	readonly cacheIdx: number
+	readonly cacheUpdateNumber: number
+}
+
 export interface SetRTXJson<P extends primitive> extends Json.Object {
 	members: P[]
 	cache: (NumberedSetUpdate | null)[]
@@ -16,7 +23,9 @@ export interface SetRTXJson<P extends primitive> extends Json.Object {
 }
 export class SetRTX<P extends primitive>
 	extends Set<P>
-	implements Transceiver<NumberedSetUpdate, SetRTXJson<P>>, Lineage
+	implements
+		Transceiver<SetRTXView<P>, NumberedSetUpdate, SetRTXJson<P>>,
+		Lineage
 {
 	public mode: TransceiverMode = `record`
 	public readonly subject: Subject<SetUpdate> = new Subject<SetUpdate>()
@@ -40,6 +49,10 @@ export class SetRTX<P extends primitive>
 				this.cache[this.cacheIdx] = update
 			})
 		}
+	}
+
+	public view(): SetRTXView<P> {
+		return this
 	}
 
 	public toJSON(): SetRTXJson<P> {
