@@ -38,6 +38,7 @@ export class Tracker<T extends Transceiver<any, any>> {
 				default: null,
 			},
 			familyMetaData,
+			[`tracker:signal`],
 		)
 		if (store.parent?.valueMap.has(latestSignalStateKey)) {
 			const parentValue = store.parent.valueMap.get(latestSignalStateKey)
@@ -54,12 +55,12 @@ export class Tracker<T extends Transceiver<any, any>> {
 		latestSignalState: RegularAtomToken<SignalFrom<T> | null>,
 		target: Store,
 	): void {
-		let subscriptionKey: string
-		if (isChildStore(target)) {
-			subscriptionKey = `tracker:${target.config.name}:${target.transactionMeta.update.key}:${mutableState.key}`
-		} else {
-			subscriptionKey = `tracker:${target.config.name}:main:${mutableState.key}`
-		}
+		const stateKey = mutableState.key
+		const storeName = target.config.name
+		const storeStatus = isChildStore(target)
+			? target.transactionMeta.update.key
+			: `main`
+		const subscriptionKey = `tracker:${storeName}:${storeStatus}:${stateKey}`
 		const trackerCapturesOutboundSignal = (update: SignalFrom<T>) => {
 			setIntoStore(target, latestSignalState, update)
 		}
