@@ -1,6 +1,6 @@
 import type { StateUpdate } from "atom.io"
 
-import type { ReadableState, Transceiver } from "."
+import type { MutableAtom, ReadableState, Transceiver, ViewOf } from "."
 import { closeOperation, isChildStore, openOperation, Tracker } from "."
 import { Future } from "./future"
 import {
@@ -73,7 +73,21 @@ export function writeToCache<T>(
 	return value
 }
 
-export function readFromCache<T>(target: Store, state: ReadableState<T>): T {
+export function readFromCache<T extends Transceiver<any, any, any>>(
+	target: Store,
+	state: MutableAtom<T>,
+): ViewOf<T>
+export function readFromCache<T extends Transceiver<any, any, any>>(
+	target: Store,
+	state: MutableAtom<T>,
+	mut: `mut`,
+): T
+export function readFromCache<T>(target: Store, state: ReadableState<T>): T
+export function readFromCache<T>(
+	target: Store,
+	state: ReadableState<T>,
+	mut?: `mut`,
+): T {
 	target.logger.info(`📖`, state.type, state.key, `reading cached value`)
 	let value = target.valueMap.get(state.key) as T
 
