@@ -1,6 +1,7 @@
 import type { Json } from "atom.io/json"
 
 export interface Transceiver<
+	V,
 	S extends Json.Serializable,
 	J extends Json.Serializable,
 > {
@@ -9,20 +10,21 @@ export interface Transceiver<
 	subscribe: (key: string, fn: (update: S) => void) => () => void
 	cacheUpdateNumber: number
 	getUpdateNumber: (update: S) => number
+	view: () => V
 	toJSON: () => J
 }
 
 // biome-ignore format: intersection
 export type TransceiverConstructor<
   J extends Json.Serializable,
-  T extends Transceiver<any, J>
+  T extends Transceiver<any, any, J>
 > =
 	& ( new () => T )
 	& { fromJSON: (json: J) => T }
 
 export function isTransceiver(
 	value: unknown,
-): value is Transceiver<Json.Serializable, Json.Serializable> {
+): value is Transceiver<any, Json.Serializable, Json.Serializable> {
 	return (
 		typeof value === `object` &&
 		value !== null &&
@@ -34,21 +36,26 @@ export function isTransceiver(
 
 export type TransceiverMode = `playback` | `record` | `transaction`
 
-export type SignalFrom<T extends Transceiver<any, any>> = T extends Transceiver<
-	infer S,
+export type ViewOf<T extends Transceiver<any, any, any>> = T extends Transceiver<
+	infer V,
+	any,
 	any
 >
-	? S
+	? V
 	: never
 
-export type AsJSON<T extends Transceiver<any, any>> = T extends Transceiver<
+export type SignalFrom<T extends Transceiver<any, any, any>> =
+	T extends Transceiver<any, infer S, any> ? S : never
+
+export type AsJSON<T extends Transceiver<any, any, any>> = T extends Transceiver<
+	any,
 	any,
 	infer J
 >
 	? J
 	: never
 
-export type ConstructorOf<T extends Transceiver<any, any>> =
+export type ConstructorOf<T extends Transceiver<any, any, any>> =
 	TransceiverConstructor<AsJSON<T>, T>
 
 /*
