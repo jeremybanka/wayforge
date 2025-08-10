@@ -18,47 +18,53 @@ import type { SignalFrom, Transceiver } from "./transceiver"
  * the tracker will update its own state to reflect the change.
  */
 export class Tracker<T extends Transceiver<any, any>> {
-	private initializeState(
+	private initializeSignalAtom(
 		mutableState: MutableAtomToken<T>,
 		store: Store,
 	): RegularAtomToken<SignalFrom<T> | null> {
-		const latestUpdateStateKey = `*${mutableState.key}`
-		store.atoms.delete(latestUpdateStateKey)
-		store.valueMap.delete(latestUpdateStateKey)
+		const latestSignalStateKey = `*${mutableState.key}`
+		store.atoms.delete(latestSignalStateKey)
+		store.valueMap.delete(latestSignalStateKey)
 		const familyMetaData: FamilyMetadata | undefined = mutableState.family
 			? {
 					key: `*${mutableState.family.key}`,
 					subKey: mutableState.family.subKey,
 				}
 			: undefined
-		const latestUpdateState = createRegularAtom<SignalFrom<T> | null>(
+		const latestSignalState = createRegularAtom<SignalFrom<T> | null>(
 			store,
 			{
-				key: latestUpdateStateKey,
+				key: latestSignalStateKey,
 				default: null,
 			},
 			familyMetaData,
 		)
-		if (store.parent?.valueMap.has(latestUpdateStateKey)) {
-			const parentValue = store.parent.valueMap.get(latestUpdateStateKey)
-			store.valueMap.set(latestUpdateStateKey, parentValue)
+		if (store.parent?.valueMap.has(latestSignalStateKey)) {
+			const parentValue = store.parent.valueMap.get(latestSignalStateKey)
+			store.valueMap.set(latestSignalStateKey, parentValue)
 		}
 
-		return latestUpdateState
+		return latestSignalState
 	}
 
 	private unsubscribeFromInnerValue!: () => void
 	private unsubscribeFromState!: () => void
 	private captureSignalsFromCore(
 		mutableState: MutableAtomToken<T, any>,
-		latestUpdateState: RegularAtomToken<SignalFrom<T> | null>,
+		latestSignalState: RegularAtomToken<SignalFrom<T> | null>,
 		target: Store,
 	): void {
-		const subscriptionKey = `tracker:${target.config.name}:${
-			isChildStore(target) ? target.transactionMeta.update.key : `main`
-		}:${mutableState.key}`
+		// const subscriptionKey = `tracker:${target.config.name}:${
+		// 	isChildStore(target) ? target.transactionMeta.update.key : `main`
+		// }:${mutableState.key}`
+		let subscriptionKey: string
+		if (isChildStore(target)) {
+			subscriptionKey = `tracker:${target.config.name}:${target.transactionMeta.update.key}:${mutableState.key}`
+		} else {
+			subscriptionKey = `tracker:${target.config.name}:main:${mutableState.key}`
+		}
 		const trackerCapturesOutboundSignal = (update: SignalFrom<T>) => {
-			setIntoStore(target, latestUpdateState, update)
+			setIntoStore(target, latestSignalState, update)
 		}
 		const originalInnerValue = getFromStore(target, mutableState)
 		this.unsubscribeFromInnerValue = originalInnerValue.subscribe(
@@ -83,7 +89,7 @@ export class Tracker<T extends Transceiver<any, any>> {
 
 	private supplySignalsToCore(
 		mutableState: MutableAtomToken<T>,
-		latestUpdateState: RegularAtomToken<SignalFrom<T> | null>,
+		latestSignalState: RegularAtomToken<SignalFrom<T> | null>,
 		target: Store,
 	): void {
 		const subscriptionKey = `tracker:${target.config.name}:${
@@ -91,11 +97,11 @@ export class Tracker<T extends Transceiver<any, any>> {
 		}:${mutableState.key}`
 		subscribeToState(
 			target,
-			latestUpdateState,
+			latestSignalState,
 			subscriptionKey,
 			function trackerCapturesInboundSignal({ newValue, oldValue }) {
 				const timelineId = target.timelineTopics.getRelatedKey(
-					latestUpdateState.key,
+					latestSignalState.key,
 				)
 
 				if (timelineId && target.timelines.get(timelineId)?.timeTraveling) {
@@ -148,7 +154,7 @@ export class Tracker<T extends Transceiver<any, any>> {
 
 	public constructor(mutableAtomToken: MutableAtomToken<T>, store: Store) {
 		const target = newest(store)
-		const latestSignalToken = this.initializeState(mutableAtomToken, target)
+		const latestSignalToken = this.initializeSignalAtom(mutableAtomToken, target)
 		this.mutableAtomToken = mutableAtomToken
 		this.latestSignalToken = latestSignalToken
 		this.captureSignalsFromCore(mutableAtomToken, latestSignalToken, target)
