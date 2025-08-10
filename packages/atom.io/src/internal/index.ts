@@ -18,6 +18,7 @@ import type {
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 
+import type { internalRole } from "./atom/has-role"
 import type { ConstructorOf, Transceiver } from "./mutable"
 import type { Store } from "./store"
 import type { Subject } from "./subject"
@@ -67,6 +68,7 @@ export type RegularAtom<T> = Flat<
 		type: `atom`
 		default: T | (() => T)
 		cleanup?: () => void
+		internalRoles?: internalRole[]
 	}
 >
 export type MutableAtom<T extends Transceiver<any, any>> = Flat<
