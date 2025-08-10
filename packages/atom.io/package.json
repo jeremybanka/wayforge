@@ -118,7 +118,7 @@
 		"socket.io-client": "4.8.1",
 		"storybook": "9.1.1",
 		"tmp": "0.2.5",
-		"tsdown": "0.13.4",
+		"tsdown": "0.13.5",
 		"tsx": "4.20.3",
 		"typescript": "5.9.2",
 		"vite": "7.1.1",
