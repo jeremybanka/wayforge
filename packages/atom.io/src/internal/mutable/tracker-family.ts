@@ -9,7 +9,7 @@ import { Tracker } from "./tracker"
 import type { SignalFrom, Transceiver } from "./transceiver"
 
 export class FamilyTracker<
-	T extends Transceiver<any, any>,
+	T extends Transceiver<any, any, any>,
 	K extends Canonical,
 > {
 	private trackers: Map<K, Tracker<T>> = new Map()

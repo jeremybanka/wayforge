@@ -7,14 +7,14 @@ import * as React from "react"
 import { StoreContext } from "./store-context"
 import { useO } from "./use-o"
 
-export function useJSON<T extends Transceiver<any, any>>(
+export function useJSON<T extends Transceiver<any, any, any>>(
 	token: MutableAtomToken<T>,
 ): AsJSON<T>
 
-export function useJSON<T extends Transceiver<any, any>, K extends Canonical>(
-	token: MutableAtomFamilyToken<T, K>,
-	key: K,
-): AsJSON<T>
+export function useJSON<
+	T extends Transceiver<any, any, any>,
+	K extends Canonical,
+>(token: MutableAtomFamilyToken<T, K>, key: K): AsJSON<T>
 
 export function useJSON(
 	token: MutableAtomFamilyToken<any, any> | MutableAtomToken<any>,

@@ -25,7 +25,7 @@ import type { Store } from "../store"
 import { isChildStore, isRootStore } from "../transaction"
 
 export function initFamilyMemberInStore<
-	T extends Transceiver<any, any>,
+	T extends Transceiver<any, any, any>,
 	K extends Canonical,
 	Key extends K,
 >(
