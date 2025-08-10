@@ -11,11 +11,13 @@ import type { Store } from "../store"
 import { deposit } from "../store"
 import { Subject } from "../subject"
 import { subscribeToState } from "../subscribe"
+import type { internalRole } from "./has-role"
 
 export function createRegularAtom<T>(
 	store: Store,
 	options: RegularAtomOptions<T>,
 	family: FamilyMetadata | undefined,
+	internalRoles?: internalRole[],
 ): RegularAtomToken<T> {
 	const type = `atom`
 	const { key } = options
@@ -49,12 +51,10 @@ export function createRegularAtom<T>(
 	if (family) {
 		newAtom.family = family
 	}
-	// let initialValue = def
-	// if (def instanceof Function) {
-	// 	initialValue = def()
-	// }
+	if (internalRoles) {
+		newAtom.internalRoles = internalRoles
+	}
 	target.atoms.set(key, newAtom)
-	// cacheValue(target, key, initialValue, subject)
 	const token = deposit(newAtom)
 	if (options.effects) {
 		let effectIndex = 0

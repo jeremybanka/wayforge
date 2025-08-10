@@ -1,6 +1,7 @@
 import type { KeyedStateUpdate } from "atom.io"
 
 import type { Atom, Store } from ".."
+import { hasRole } from "../atom/has-role"
 import { cacheValue } from "../caching"
 import { readOrComputeValue } from "../get-state/read-or-compute-value"
 import { isTransceiver, type Transceiver } from "../mutable"
@@ -57,7 +58,7 @@ export const setAtom = <T>(
 			update.newValue,
 			`)`,
 		)
-	} else if (atom.key.startsWith(`*`)) {
+	} else if (hasRole(atom, `tracker:signal`)) {
 		const mutableKey = atom.key.slice(1)
 		const mutableAtom = target.atoms.get(mutableKey) as Atom<any>
 		let transceiver: Transceiver<any, any> = target.valueMap.get(mutableKey)
