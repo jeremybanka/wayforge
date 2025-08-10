@@ -1,13 +1,24 @@
-import type { ReadableState } from ".."
+import type { ReadableState, ViewOf } from ".."
 import { readFromCache, writeToCache } from "../caching"
 import type { Store } from "../store"
 
-export const readOrComputeValue = <T>(
+export function readOrComputeValue<T>(
 	target: Store,
 	state: ReadableState<T>,
-): T => {
+	mut?: undefined,
+): ViewOf<T>
+export function readOrComputeValue<T>(
+	target: Store,
+	state: ReadableState<T>,
+	mut: `mut`,
+): T
+export function readOrComputeValue<T>(
+	target: Store,
+	state: ReadableState<T>,
+	mut: `mut` | undefined,
+): T {
 	if (target.valueMap.has(state.key)) {
-		return readFromCache(target, state)
+		return readFromCache(target, state, mut)
 	}
 	switch (state.type) {
 		case `readonly_held_selector`:
