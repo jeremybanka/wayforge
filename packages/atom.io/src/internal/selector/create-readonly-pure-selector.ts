@@ -5,7 +5,7 @@ import type {
 } from "atom.io"
 
 import type { ReadonlyPureSelector } from ".."
-import { cacheValue } from "../caching"
+import { writeToCache } from "../caching"
 import { newest } from "../lineage"
 import type { Store } from "../store"
 import { Subject } from "../subject"
@@ -34,7 +34,7 @@ export const createReadonlyPureSelector = <T>(
 		}
 		innerTarget.selectorAtoms.delete(key)
 		const value = options.get({ get, find, json })
-		const cached = cacheValue(innerTarget, key, value, subject)
+		const cached = writeToCache(innerTarget, key, value, subject)
 		store.logger.info(`✨`, type, key, `=`, cached)
 		covered.clear()
 		return cached

@@ -5,7 +5,7 @@ import type {
 } from "atom.io"
 
 import type { WritablePureSelector } from ".."
-import { cacheValue } from "../caching"
+import { writeToCache } from "../caching"
 import { newest } from "../lineage"
 import { markDone } from "../operation"
 import { become } from "../set-state"
@@ -39,7 +39,7 @@ export const createWritablePureSelector = <T>(
 		}
 		innerTarget.selectorAtoms.delete(key)
 		const value = getFn(getterToolkit)
-		const cached = cacheValue(innerTarget, key, value, subject)
+		const cached = writeToCache(innerTarget, key, value, subject)
 		store.logger.info(`✨`, type, key, `=`, cached)
 		covered.clear()
 		return value
@@ -50,7 +50,7 @@ export const createWritablePureSelector = <T>(
 		const oldValue = getSelf(options.get, innerTarget)
 		const newValue = become(next)(oldValue)
 		store.logger.info(`📝`, type, key, `set (`, oldValue, `->`, newValue, `)`)
-		cacheValue(innerTarget, options.key, newValue, subject)
+		writeToCache(innerTarget, options.key, newValue, subject)
 		markDone(innerTarget, options.key)
 		if (isRootStore(innerTarget)) {
 			subject.next({ newValue, oldValue })

@@ -10,19 +10,19 @@ import {
 import type { Store } from "./store"
 import type { Subject } from "./subject"
 
-export function cacheValue<T>(
+export function writeToCache<T>(
 	store: Store,
 	key: string,
 	value: T,
 	subject: Subject<StateUpdate<unknown>>,
 ): T
-export function cacheValue<T extends Promise<any>>(
+export function writeToCache<T extends Promise<any>>(
 	store: Store,
 	key: string,
 	value: T,
 	subject: Subject<StateUpdate<unknown>>,
 ): Future<T>
-export function cacheValue<T>(
+export function writeToCache<T>(
 	target: Store,
 	key: string,
 	value: T,
@@ -45,7 +45,7 @@ export function cacheValue<T>(
 			.then(function handleResolvedFuture(resolved) {
 				const current = target.valueMap.get(key)
 				if (current === future) {
-					cacheValue(target, key, resolved, subject)
+					writeToCache(target, key, resolved, subject)
 					const atom = target.atoms.get(key)
 					if (atom) {
 						openOperation(target, atom)
@@ -73,33 +73,27 @@ export function cacheValue<T>(
 	return value
 }
 
-export const readCachedValue = <T>(
-	target: Store,
-	state: ReadableState<any>,
-): T => {
+export const readFromCache = <T>(target: Store, state: ReadableState<T>): T => {
 	target.logger.info(`📖`, state.type, state.key, `reading cached value`)
 	let value = target.valueMap.get(state.key) as T
-	if (state.type === `mutable_atom` && isChildStore(target)) {
-		const atom = state
+
+	const mayNeedToBeCopied = state.type === `mutable_atom` && isChildStore(target)
+	if (mayNeedToBeCopied) {
+		const mutableAtom = state
 		const { parent } = target
-		const originValue = parent.valueMap.get(atom.key) as
-			| Transceiver<any, any>
-			| undefined
-		const targetValue = target.valueMap.get(atom.key)
 
-		if (originValue !== targetValue) {
-			return targetValue
+		if (target.valueMap.hasOwn(mutableAtom.key)) {
+			return value
 		}
 
-		if (originValue === undefined) {
-			return new atom.class()
-		}
+		const parentValue = parent.valueMap.get(mutableAtom.key) as T &
+			Transceiver<any, any>
 
-		parent.logger.info(`📃`, `atom`, atom.key, `copying`)
-		const jsonValue = originValue.toJSON()
-		const copiedValue = atom.class.fromJSON(jsonValue)
-		target.valueMap.set(atom.key, copiedValue)
-		new Tracker(atom, parent)
+		target.logger.info(`📃`, `atom`, mutableAtom.key, `copying`)
+		const jsonValue = parentValue.toJSON()
+		const copiedValue = mutableAtom.class.fromJSON(jsonValue)
+		target.valueMap.set(mutableAtom.key, copiedValue)
+		new Tracker(mutableAtom, parent)
 		value = copiedValue
 	}
 	return value

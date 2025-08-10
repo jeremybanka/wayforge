@@ -1,5 +1,5 @@
 import type { ReadableState } from ".."
-import { cacheValue, readCachedValue } from "../caching"
+import { readFromCache, writeToCache } from "../caching"
 import type { Store } from "../store"
 
 export const readOrComputeValue = <T>(
@@ -7,7 +7,7 @@ export const readOrComputeValue = <T>(
 	state: ReadableState<T>,
 ): T => {
 	if (target.valueMap.has(state.key)) {
-		return readCachedValue(target, state)
+		return readFromCache(target, state)
 	}
 	switch (state.type) {
 		case `readonly_held_selector`:
@@ -23,7 +23,7 @@ export const readOrComputeValue = <T>(
 			} else {
 				def = state.default
 			}
-			const cachedValue = cacheValue(target, state.key, def, state.subject)
+			const cachedValue = writeToCache(target, state.key, def, state.subject)
 			target.logger.info(
 				`💁`,
 				`atom`,
@@ -35,7 +35,12 @@ export const readOrComputeValue = <T>(
 		}
 		case `mutable_atom`: {
 			const instance = new state.class()
-			const cachedValue = cacheValue(target, state.key, instance, state.subject)
+			const cachedValue = writeToCache(
+				target,
+				state.key,
+				instance,
+				state.subject,
+			)
 			target.logger.info(
 				`💁`,
 				`mutable_atom`,
