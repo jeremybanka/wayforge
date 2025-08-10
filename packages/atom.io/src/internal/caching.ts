@@ -11,17 +11,17 @@ import type { Store } from "./store"
 import type { Subject } from "./subject"
 
 export function writeToCache<T>(
-	store: Store,
+	target: Store,
 	key: string,
 	value: T,
 	subject: Subject<StateUpdate<unknown>>,
 ): T
 export function writeToCache<T extends Promise<any>>(
-	store: Store,
+	target: Store,
 	key: string,
 	value: T,
 	subject: Subject<StateUpdate<unknown>>,
-): Future<T>
+): Future<Awaited<T>>
 export function writeToCache<T>(
 	target: Store,
 	key: string,
@@ -73,7 +73,7 @@ export function writeToCache<T>(
 	return value
 }
 
-export const readFromCache = <T>(target: Store, state: ReadableState<T>): T => {
+export function readFromCache<T>(target: Store, state: ReadableState<T>): T {
 	target.logger.info(`📖`, state.type, state.key, `reading cached value`)
 	let value = target.valueMap.get(state.key) as T
 
@@ -99,7 +99,7 @@ export const readFromCache = <T>(target: Store, state: ReadableState<T>): T => {
 	return value
 }
 
-export const evictCachedValue = (target: Store, key: string): void => {
+export function evictCachedValue(target: Store, key: string): void {
 	const currentValue = target.valueMap.get(key)
 	if (currentValue instanceof Future) {
 		const selector =
