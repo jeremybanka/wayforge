@@ -9,7 +9,7 @@ import * as React from "react"
 import { useRealtimeService } from "./use-realtime-service"
 
 export function usePullMutableAtomFamilyMember<
-	T extends Transceiver<any, any>,
+	T extends Transceiver<any, any, any>,
 	K extends Canonical,
 	Key extends K,
 >(familyToken: AtomIO.MutableAtomFamilyToken<T, K>, key: Key): T {

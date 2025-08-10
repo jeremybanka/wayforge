@@ -25,7 +25,7 @@ import type { Transceiver } from "../mutable"
 import { deposit, type Store } from "../store"
 
 export function seekInStore<
-	T extends Transceiver<any, any>,
+	T extends Transceiver<any, any, any>,
 	K extends Canonical,
 	Key extends K,
 >(

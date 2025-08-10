@@ -53,7 +53,9 @@ export const setAtom = <T>(
 		)
 	} else if (hasRole(atom, `tracker:signal`)) {
 		const key = atom.key.slice(1)
-		const mutable = target.atoms.get(key) as MutableAtom<Transceiver<any, any>>
+		const mutable = target.atoms.get(key) as MutableAtom<
+			Transceiver<any, any, any>
+		>
 		const transceiver = readOrComputeValue(target, mutable)
 		const accepted = transceiver.do(update.newValue) === null
 		if (accepted === true) {

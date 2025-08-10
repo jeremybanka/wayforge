@@ -17,7 +17,7 @@ import type { SignalFrom, Transceiver } from "./transceiver"
  * subscribe to the transceiver's inner value. When the inner value changes,
  * the tracker will update its own state to reflect the change.
  */
-export class Tracker<T extends Transceiver<any, any>> {
+export class Tracker<T extends Transceiver<any, any, any>> {
 	private initializeSignalAtom(
 		mutableState: MutableAtomToken<T>,
 		store: Store,

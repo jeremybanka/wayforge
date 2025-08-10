@@ -30,7 +30,7 @@ import type { MutableAtomFamilyToken, RegularAtomFamilyToken } from "./tokens"
  * @overload Mutable Atom
  */
 export function findState<
-	T extends Transceiver<any, any>,
+	T extends Transceiver<any, any, any>,
 	K extends Canonical,
 	Key extends K,
 >(token: MutableAtomFamilyToken<T, K>, key: Key): MutableAtomToken<T, K>

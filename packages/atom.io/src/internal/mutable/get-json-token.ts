@@ -9,7 +9,7 @@ import { newest } from "../lineage"
 import { type Store, withdraw } from "../store"
 import type { AsJSON, Transceiver } from "./transceiver"
 
-export const getJsonToken = <T extends Transceiver<any, any>>(
+export const getJsonToken = <T extends Transceiver<any, any, any>>(
 	store: Store,
 	mutableAtomToken: MutableAtomToken<T>,
 ): WritablePureSelectorToken<AsJSON<T>> => {

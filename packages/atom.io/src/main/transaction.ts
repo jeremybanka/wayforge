@@ -94,7 +94,7 @@ export type ActorToolkit = Readonly<{
 	set: typeof setState
 	reset: typeof resetState
 	find: typeof findState
-	json: <T extends Transceiver<any, any>>(
+	json: <T extends Transceiver<any, any, any>>(
 		state: MutableAtomToken<T>,
 	) => WritablePureSelectorToken<AsJSON<T>>
 	dispose: typeof disposeState

@@ -34,7 +34,7 @@ export function atom<T>(options: RegularAtomOptions<T>): RegularAtomToken<T> {
 	return createRegularAtom(IMPLICIT.STORE, options, undefined)
 }
 
-export type MutableAtomOptions<T extends Transceiver<any, any>> = {
+export type MutableAtomOptions<T extends Transceiver<any, any, any>> = {
 	/** The unique identifier of the atom */
 	key: string
 	/** A constructor for the atom's value */
@@ -51,7 +51,7 @@ export type MutableAtomOptions<T extends Transceiver<any, any>> = {
  * @returns
  * A reference to the atom created: a {@link MutableAtomToken}
  */
-export function mutableAtom<T extends Transceiver<any, any>>(
+export function mutableAtom<T extends Transceiver<any, any, any>>(
 	options: MutableAtomOptions<T>,
 ): MutableAtomToken<T> {
 	return createMutableAtom(IMPLICIT.STORE, options, undefined)
@@ -99,7 +99,7 @@ export function atomFamily<T, K extends Canonical>(
 }
 
 export type MutableAtomFamilyOptions<
-	T extends Transceiver<any, any>,
+	T extends Transceiver<any, any, any>,
 	K extends Canonical,
 > = {
 	/** The unique identifier of the atom family */
@@ -119,7 +119,7 @@ export type MutableAtomFamilyOptions<
  * A reference to the atom family created: a {@link MutableAtomFamilyToken}
  */
 export function mutableAtomFamily<
-	T extends Transceiver<any, any>,
+	T extends Transceiver<any, any, any>,
 	K extends Canonical,
 >(options: MutableAtomFamilyOptions<T, K>): MutableAtomFamilyToken<T, K> {
 	return createMutableAtomFamily(IMPLICIT.STORE, options)

@@ -76,7 +76,7 @@ export function withdraw<T>(
 	store: Store,
 	token: RegularAtomToken<T>,
 ): RegularAtom<T>
-export function withdraw<T extends Transceiver<any, any>>(
+export function withdraw<T extends Transceiver<any, any, any>>(
 	store: Store,
 	token: MutableAtomToken<T, any>,
 ): MutableAtom<T>
@@ -127,10 +127,10 @@ export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: RegularAtomFamilyToken<T, K>,
 ): RegularAtomFamily<T, K>
-export function withdraw<T extends Transceiver<any, any>, K extends Canonical>(
-	store: Store,
-	token: MutableAtomFamilyToken<T, K>,
-): MutableAtomFamily<T, K>
+export function withdraw<
+	T extends Transceiver<any, any, any>,
+	K extends Canonical,
+>(store: Store, token: MutableAtomFamilyToken<T, K>): MutableAtomFamily<T, K>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: AtomFamilyToken<T, K>,

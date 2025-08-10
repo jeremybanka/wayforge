@@ -14,7 +14,7 @@ import { subscribeToState } from "../subscribe"
 import { Tracker } from "./tracker"
 import type { Transceiver } from "./transceiver"
 
-export function createMutableAtom<T extends Transceiver<any, any>>(
+export function createMutableAtom<T extends Transceiver<any, any, any>>(
 	store: Store,
 	options: MutableAtomOptions<T>,
 	family: FamilyMetadata | undefined,

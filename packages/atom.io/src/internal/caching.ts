@@ -87,7 +87,7 @@ export const readFromCache = <T>(target: Store, state: ReadableState<T>): T => {
 		}
 
 		const parentValue = parent.valueMap.get(mutableAtom.key) as T &
-			Transceiver<any, any>
+			Transceiver<any, any, any>
 
 		target.logger.info(`📃`, `atom`, mutableAtom.key, `copying`)
 		const jsonValue = parentValue.toJSON()

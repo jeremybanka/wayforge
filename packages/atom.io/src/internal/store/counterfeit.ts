@@ -32,7 +32,7 @@ export const FAMILY_MEMBER_TOKEN_TYPES = {
 } as const
 
 export function counterfeit<
-	T extends Transceiver<any, any>,
+	T extends Transceiver<any, any, any>,
 	K extends Canonical,
 	Key extends K,
 >(token: MutableAtomFamilyToken<T, K>, key: Key): MutableAtomToken<T>
