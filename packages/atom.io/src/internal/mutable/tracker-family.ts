@@ -5,7 +5,7 @@ import type { MutableAtomFamily, RegularAtomFamily } from ".."
 import { createRegularAtomFamily } from "../families"
 import { type Store, withdraw } from "../store"
 import { Tracker } from "./tracker"
-import type { Transceiver } from "./transceiver"
+import type { SignalFrom, Transceiver } from "./transceiver"
 
 export class FamilyTracker<
 	T extends Transceiver<any, any>,
@@ -13,17 +13,11 @@ export class FamilyTracker<
 > {
 	private trackers: Map<K, Tracker<T>> = new Map()
 
-	public readonly latestUpdateAtoms: RegularAtomFamily<
-		(T extends Transceiver<infer Signal, any> ? Signal : never) | null,
-		K
-	>
+	public readonly latestUpdateAtoms: RegularAtomFamily<SignalFrom<T> | null, K>
 	public readonly mutableAtoms: MutableAtomFamily<T, K>
 
 	public constructor(mutableAtoms: MutableAtomFamily<T, K>, store: Store) {
-		const updateAtoms = createRegularAtomFamily<
-			(T extends Transceiver<infer Signal, any> ? Signal : never) | null,
-			K
-		>(
+		const updateAtoms = createRegularAtomFamily<SignalFrom<T> | null, K>(
 			store,
 			{
 				key: `*${mutableAtoms.key}`,
