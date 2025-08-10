@@ -1,6 +1,6 @@
 import type { StateUpdate } from "atom.io"
 
-import type { MutableAtom, ReadableState, Transceiver, ViewOf } from "."
+import type { ReadableState, Transceiver } from "."
 import { closeOperation, isChildStore, openOperation, Tracker } from "."
 import { Future } from "./future"
 import {
@@ -73,25 +73,22 @@ export function writeToCache<T>(
 	return value
 }
 
-export function readFromCache<T extends Transceiver<any, any, any>>(
-	target: Store,
-	state: MutableAtom<T>,
-): ViewOf<T>
-export function readFromCache<T extends Transceiver<any, any, any>>(
-	target: Store,
-	state: MutableAtom<T>,
-	mut: `mut`,
-): T
-export function readFromCache<T>(target: Store, state: ReadableState<T>): T
+/**
+ * @param target - the newest layer of the store
+ * @param state - the state to read from cache
+ * @param mut - whether the value is intended to be mutable
+ * @returns the state's current value
+ */
 export function readFromCache<T>(
 	target: Store,
 	state: ReadableState<T>,
-	mut?: `mut`,
+	mut: `mut` | undefined,
 ): T {
 	target.logger.info(`📖`, state.type, state.key, `reading cached value`)
 	let value = target.valueMap.get(state.key) as T
 
-	const mayNeedToBeCopied = state.type === `mutable_atom` && isChildStore(target)
+	const mayNeedToBeCopied =
+		mut === `mut` && state.type === `mutable_atom` && isChildStore(target)
 	if (mayNeedToBeCopied) {
 		const mutableAtom = state
 		const { parent } = target

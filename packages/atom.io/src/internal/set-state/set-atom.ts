@@ -16,7 +16,7 @@ export const setAtom = <T>(
 	atom: Atom<T>,
 	next: T | ((oldValue: T) => T),
 ): void => {
-	const oldValue = readOrComputeValue(target, atom)
+	const oldValue = readOrComputeValue(target, atom, `mut`)
 	let newValue = become(next)(oldValue)
 	target.logger.info(`📝`, `atom`, atom.key, `set to`, newValue)
 	newValue = writeToCache(target, atom.key, newValue, atom.subject)
@@ -54,9 +54,9 @@ export const setAtom = <T>(
 	} else if (hasRole(atom, `tracker:signal`)) {
 		const key = atom.key.slice(1)
 		const mutable = target.atoms.get(key) as MutableAtom<
-			Transceiver<any, any, any>
+			Transceiver<unknown, any, any>
 		>
-		const transceiver = readOrComputeValue(target, mutable)
+		const transceiver = readOrComputeValue(target, mutable, `mut`)
 		const accepted = transceiver.do(update.newValue) === null
 		if (accepted === true) {
 			evictDownStream(target, mutable)
