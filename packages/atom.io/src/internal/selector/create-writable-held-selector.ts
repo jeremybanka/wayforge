@@ -5,7 +5,7 @@ import type {
 } from "atom.io"
 
 import type { WritableHeldSelector } from ".."
-import { cacheValue } from "../caching"
+import { writeToCache } from "../caching"
 import { newest } from "../lineage"
 import { markDone } from "../operation"
 import { become } from "../set-state"
@@ -39,7 +39,7 @@ export const createWritableHeldSelector = <T extends object>(
 		}
 		innerTarget.selectorAtoms.delete(key)
 		getFn(getterToolkit, constant)
-		cacheValue(innerTarget, key, constant, subject)
+		writeToCache(innerTarget, key, constant, subject)
 		store.logger.info(`✨`, type, key, `=`, constant)
 		covered.clear()
 		return constant
@@ -50,7 +50,7 @@ export const createWritableHeldSelector = <T extends object>(
 		const oldValue = getSelf(options.get, innerTarget)
 		const newValue = become(next)(oldValue)
 		store.logger.info(`📝`, type, key, `set (`, oldValue, `->`, newValue, `)`)
-		cacheValue(innerTarget, key, newValue, subject)
+		writeToCache(innerTarget, key, newValue, subject)
 		markDone(innerTarget, key)
 		if (isRootStore(innerTarget)) {
 			subject.next({ newValue, oldValue })

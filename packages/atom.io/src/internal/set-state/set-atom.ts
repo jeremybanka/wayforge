@@ -2,7 +2,7 @@ import type { KeyedStateUpdate } from "atom.io"
 
 import type { Atom, MutableAtom, Store } from ".."
 import { hasRole } from "../atom/has-role"
-import { cacheValue, readCachedValue } from "../caching"
+import { writeToCache } from "../caching"
 import { readOrComputeValue } from "../get-state/read-or-compute-value"
 import { isTransceiver, type Transceiver } from "../mutable"
 import { markDone } from "../operation"
@@ -19,7 +19,7 @@ export const setAtom = <T>(
 	const oldValue = readOrComputeValue(target, atom)
 	let newValue = become(next)(oldValue)
 	target.logger.info(`📝`, `atom`, atom.key, `set to`, newValue)
-	newValue = cacheValue(target, atom.key, newValue, atom.subject)
+	newValue = writeToCache(target, atom.key, newValue, atom.subject)
 	markDone(target, atom.key)
 	evictDownStream(target, atom)
 	const update = { oldValue, newValue }
@@ -52,9 +52,9 @@ export const setAtom = <T>(
 			`)`,
 		)
 	} else if (hasRole(atom, `tracker:signal`)) {
-		const mutableKey = atom.key.slice(1)
-		const mutable = target.atoms.get(mutableKey) as MutableAtom<any>
-		const transceiver: Transceiver<any, any> = readCachedValue(target, mutable)
+		const key = atom.key.slice(1)
+		const mutable = target.atoms.get(key) as MutableAtom<Transceiver<any, any>>
+		const transceiver = readOrComputeValue(target, mutable)
 		const accepted = transceiver.do(update.newValue) === null
 		if (accepted === true) {
 			evictDownStream(target, mutable)
