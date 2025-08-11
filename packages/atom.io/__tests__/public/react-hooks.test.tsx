@@ -10,7 +10,7 @@ import {
 	timeline,
 	undo,
 } from "atom.io"
-import type { Func } from "atom.io/internal"
+import type { Fn } from "atom.io/internal"
 import { clearStore, IMPLICIT } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import { type FC, useEffect } from "react"
@@ -34,7 +34,7 @@ beforeEach(() => {
 const onChange = [() => undefined, console.log][0]
 
 describe(`single atom`, () => {
-	const setters: Func[] = []
+	const setters: Fn[] = []
 	const scenario = () => {
 		const letterState = atom<string>({
 			key: `letter`,
@@ -77,7 +77,7 @@ describe(`single atom`, () => {
 	})
 })
 describe(`timeline`, () => {
-	const setters: Func[] = []
+	const setters: Fn[] = []
 	const scenario = () => {
 		const letterState = atom<string>({
 			key: `letter`,

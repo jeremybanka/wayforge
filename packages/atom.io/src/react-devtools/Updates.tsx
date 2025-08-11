@@ -3,7 +3,7 @@ import type {
 	TimelineUpdate,
 	TransactionUpdate,
 } from "atom.io"
-import type { Func } from "atom.io/internal"
+import type { Fn } from "atom.io/internal"
 import { discoverType, prettyJson } from "atom.io/introspection"
 import { stringifyJson } from "atom.io/json"
 import * as React from "react"
@@ -37,7 +37,7 @@ const AtomUpdateFC: React.FC<{
 
 const TransactionUpdateFC: React.FC<{
 	serialNumber: number
-	transactionUpdate: TransactionUpdate<Func>
+	transactionUpdate: TransactionUpdate<Fn>
 }> = ({ serialNumber, transactionUpdate }) => {
 	return (
 		<article

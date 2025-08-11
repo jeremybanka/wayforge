@@ -7,7 +7,7 @@ import type {
 	TransactionUpdateHandler,
 	UpdateHandler,
 } from "atom.io"
-import type { Func, Store } from "atom.io/internal"
+import type { Fn, Store } from "atom.io/internal"
 import {
 	arbitrary,
 	subscribeToState,
@@ -21,7 +21,7 @@ export function subscribeInStore<T>(
 	handleUpdate: UpdateHandler<T>,
 	key?: string,
 ): () => void
-export function subscribeInStore<F extends Func>(
+export function subscribeInStore<F extends Fn>(
 	store: Store,
 	token: TransactionToken<F>,
 	handleUpdate: TransactionUpdateHandler<F>,

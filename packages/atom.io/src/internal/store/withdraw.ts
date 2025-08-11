@@ -38,7 +38,7 @@ import type {
 	Atom,
 	AtomFamily,
 	AtomIOInternalResource,
-	Func,
+	Fn,
 	HeldSelector,
 	HeldSelectorFamily,
 	MutableAtom,
@@ -180,10 +180,10 @@ export function withdraw<T, K extends Canonical>(
 	token: WritableFamilyToken<T, K>,
 ): WritableFamily<T, K>
 
-export function withdraw<T extends Func>(
+export function withdraw<T extends Fn>(
 	store: Store,
 	token: TransactionToken<T>,
-): Transaction<T extends Func ? T : never>
+): Transaction<T extends Fn ? T : never>
 export function withdraw<T>(
 	store: Store,
 	token: TimelineToken<T>,

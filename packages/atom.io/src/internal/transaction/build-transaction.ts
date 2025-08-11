@@ -16,7 +16,7 @@ import { newest } from "../lineage"
 import { getJsonToken } from "../mutable"
 import { resetInStore, setIntoStore } from "../set-state"
 import type { Store } from "../store"
-import type { Func } from "../utility-types"
+import type { Fn } from "../utility-types"
 import type { TransactionProgress } from "."
 import { actUponStore, getEpochNumberOfAction } from "."
 import type { ChildStore, RootStore } from "./is-root-store"
@@ -66,7 +66,7 @@ export const buildTransaction = (
 		miscResources: new LazyMap(parent.miscResources),
 	}
 	const epoch = getEpochNumberOfAction(store, key)
-	const transactionMeta: TransactionProgress<Func> = {
+	const transactionMeta: TransactionProgress<Fn> = {
 		phase: `building`,
 		update: {
 			type: `transaction_update`,
