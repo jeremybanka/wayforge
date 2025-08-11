@@ -34,7 +34,7 @@ export const createReadonlyPureSelector = <T>(
 		}
 		innerTarget.selectorAtoms.delete(key)
 		const value = options.get({ get, find, json })
-		const cached = writeToCache(innerTarget, key, value, subject)
+		const cached = writeToCache(innerTarget, readonlySelector, value)
 		store.logger.info(`✨`, type, key, `=`, cached)
 		covered.clear()
 		return cached
