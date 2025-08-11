@@ -1,4 +1,5 @@
-import * as Internal from "atom.io/internal"
+import type { ViewOf } from "atom.io/internal"
+import { getFromStore, IMPLICIT } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 
 import type { ReadableFamilyToken, ReadableToken } from "."
@@ -10,7 +11,7 @@ import type { ReadableFamilyToken, ReadableToken } from "."
  * @overload Default
  * @default
  */
-export function getState<T>(token: ReadableToken<T>): T
+export function getState<T>(token: ReadableToken<T>): ViewOf<T>
 
 /**
  * Read or compute the current value of a state
@@ -22,7 +23,7 @@ export function getState<T>(token: ReadableToken<T>): T
 export function getState<T, K extends Canonical, Key extends K>(
 	token: ReadableFamilyToken<T, K>,
 	key: Key,
-): T
+): ViewOf<T>
 
 export function getState(
 	...params:
@@ -30,7 +31,7 @@ export function getState(
 		| [token: ReadableToken<any>]
 ): any {
 	if (params.length === 2) {
-		return Internal.getFromStore(Internal.IMPLICIT.STORE, ...params)
+		return getFromStore(IMPLICIT.STORE, ...params)
 	}
-	return Internal.getFromStore(Internal.IMPLICIT.STORE, ...params)
+	return getFromStore(IMPLICIT.STORE, ...params)
 }

@@ -1,4 +1,4 @@
-import * as Internal from "atom.io/internal"
+import { disposeFromStore, IMPLICIT } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 
 import type { ReadableFamilyToken, ReadableToken } from "."
@@ -19,6 +19,7 @@ export function disposeState(token: ReadableToken<any>): void
  *
  * @param token - The token of the state family to dispose
  * @param key - The unique key of the state to dispose
+ * @overload Streamlined
  */
 export function disposeState<K extends Canonical>(
 	token: ReadableFamilyToken<any, K>,
@@ -30,8 +31,8 @@ export function disposeState(
 		| [token: ReadableToken<any>]
 ): void {
 	if (params.length === 2) {
-		Internal.disposeFromStore(Internal.IMPLICIT.STORE, ...params)
+		disposeFromStore(IMPLICIT.STORE, ...params)
 	} else {
-		Internal.disposeFromStore(Internal.IMPLICIT.STORE, ...params)
+		disposeFromStore(IMPLICIT.STORE, ...params)
 	}
 }
