@@ -1,4 +1,4 @@
-import * as Internal from "atom.io/internal"
+import { IMPLICIT, setIntoStore } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 
 import type { WritableFamilyToken, WritableToken } from "./tokens"
@@ -45,8 +45,8 @@ export function setState<T, New extends T>(
 		| [token: WritableToken<T>, value: New | Setter<T, New>]
 ): void {
 	if (params.length === 2) {
-		Internal.setIntoStore(Internal.IMPLICIT.STORE, ...params)
+		setIntoStore(IMPLICIT.STORE, ...params)
 	} else {
-		Internal.setIntoStore(Internal.IMPLICIT.STORE, ...params)
+		setIntoStore(IMPLICIT.STORE, ...params)
 	}
 }
