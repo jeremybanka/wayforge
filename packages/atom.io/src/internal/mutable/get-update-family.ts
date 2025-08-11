@@ -7,7 +7,7 @@ import type { Store } from "../store"
 import type { SignalFrom, Transceiver } from "./transceiver"
 
 export const getUpdateFamily = <
-	T extends Transceiver<Json.Serializable, Json.Serializable>,
+	T extends Transceiver<any, Json.Serializable, Json.Serializable>,
 	K extends string,
 >(
 	mutableAtomFamily: MutableAtomFamilyToken<T, K>,

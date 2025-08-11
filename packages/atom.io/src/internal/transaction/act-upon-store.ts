@@ -3,9 +3,9 @@ import type { TransactionToken } from "atom.io"
 import { NotFoundError } from "../not-found-error"
 import type { Store } from "../store"
 import { withdraw } from "../store"
-import type { Func } from "../utility-types"
+import type { Fn } from "../utility-types"
 
-export function actUponStore<F extends Func>(
+export function actUponStore<F extends Fn>(
 	store: Store,
 	token: TransactionToken<F>,
 	id: string,

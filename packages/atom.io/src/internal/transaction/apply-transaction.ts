@@ -2,11 +2,11 @@ import { ingestTransactionUpdate } from "../ingest-updates"
 import { newest } from "../lineage"
 import type { Store } from "../store"
 import { withdraw } from "../store"
-import type { Func } from "../utility-types"
+import type { Fn } from "../utility-types"
 import { isChildStore, isRootStore } from "./is-root-store"
 import { setEpochNumberOfAction } from "./set-epoch-number"
 
-export const applyTransaction = <F extends Func>(
+export const applyTransaction = <F extends Fn>(
 	output: ReturnType<F>,
 	store: Store,
 ): void => {

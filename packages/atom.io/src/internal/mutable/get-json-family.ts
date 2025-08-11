@@ -7,7 +7,7 @@ import type { Store } from "../store"
 import type { Transceiver } from "./transceiver"
 
 export const getJsonFamily = <
-	Core extends Transceiver<Json.Serializable, Json.Serializable>,
+	Core extends Transceiver<any, Json.Serializable, Json.Serializable>,
 	Key extends Canonical,
 >(
 	mutableAtomFamily: MutableAtomFamilyToken<Core, Key>,

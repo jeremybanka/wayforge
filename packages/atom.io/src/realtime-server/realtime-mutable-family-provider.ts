@@ -21,7 +21,7 @@ export function realtimeMutableFamilyProvider({
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
 	return function mutableFamilyProvider<
-		T extends Transceiver<any, any>,
+		T extends Transceiver<any, any, any>,
 		K extends Canonical,
 	>(
 		family: AtomIO.MutableAtomFamilyToken<T, K>,

@@ -1,13 +1,24 @@
-import type { ReadableState } from ".."
-import { cacheValue, readCachedValue } from "../caching"
+import type { ReadableState, ViewOf } from ".."
+import { readFromCache, writeToCache } from "../caching"
 import type { Store } from "../store"
 
-export const readOrComputeValue = <T>(
+export function readOrComputeValue<T>(
 	target: Store,
 	state: ReadableState<T>,
-): T => {
+	mut?: undefined,
+): ViewOf<T>
+export function readOrComputeValue<T>(
+	target: Store,
+	state: ReadableState<T>,
+	mut: `mut`,
+): T
+export function readOrComputeValue<T>(
+	target: Store,
+	state: ReadableState<T>,
+	mut: `mut` | undefined,
+): T {
 	if (target.valueMap.has(state.key)) {
-		return readCachedValue(state, target)
+		return readFromCache(target, state, mut)
 	}
 	switch (state.type) {
 		case `readonly_held_selector`:
@@ -17,32 +28,30 @@ export const readOrComputeValue = <T>(
 			target.logger.info(`🧮`, state.type, state.key, `computing value`)
 			return state.get()
 		case `atom`: {
-			const def = state.default
-			let defaultValue: T
-			if (def instanceof Function) {
-				defaultValue = def()
+			let def: T
+			if (state.default instanceof Function) {
+				def = state.default()
 			} else {
-				defaultValue = def
+				def = state.default
 			}
-			const cachedValue = cacheValue(
-				target,
-				state.key,
-				defaultValue,
-				state.subject,
-			)
+			const cachedValue = writeToCache(target, state.key, def, state.subject)
 			target.logger.info(
 				`💁`,
 				`atom`,
 				state.key,
 				`could not find cached value; using default`,
-				defaultValue,
+				def,
 			)
 			return cachedValue
 		}
 		case `mutable_atom`: {
-			const Ctor = state.class
-			const instance = new Ctor()
-			const cachedValue = cacheValue(target, state.key, instance, state.subject)
+			const instance = new state.class()
+			const cachedValue = writeToCache(
+				target,
+				state.key,
+				instance,
+				state.subject,
+			)
 			target.logger.info(
 				`💁`,
 				`mutable_atom`,

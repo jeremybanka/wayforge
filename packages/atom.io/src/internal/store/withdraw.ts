@@ -38,7 +38,7 @@ import type {
 	Atom,
 	AtomFamily,
 	AtomIOInternalResource,
-	Func,
+	Fn,
 	HeldSelector,
 	HeldSelectorFamily,
 	MutableAtom,
@@ -76,7 +76,7 @@ export function withdraw<T>(
 	store: Store,
 	token: RegularAtomToken<T>,
 ): RegularAtom<T>
-export function withdraw<T extends Transceiver<any, any>>(
+export function withdraw<T extends Transceiver<any, any, any>>(
 	store: Store,
 	token: MutableAtomToken<T, any>,
 ): MutableAtom<T>
@@ -127,10 +127,10 @@ export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: RegularAtomFamilyToken<T, K>,
 ): RegularAtomFamily<T, K>
-export function withdraw<T extends Transceiver<any, any>, K extends Canonical>(
-	store: Store,
-	token: MutableAtomFamilyToken<T, K>,
-): MutableAtomFamily<T, K>
+export function withdraw<
+	T extends Transceiver<any, any, any>,
+	K extends Canonical,
+>(store: Store, token: MutableAtomFamilyToken<T, K>): MutableAtomFamily<T, K>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: AtomFamilyToken<T, K>,
@@ -180,10 +180,10 @@ export function withdraw<T, K extends Canonical>(
 	token: WritableFamilyToken<T, K>,
 ): WritableFamily<T, K>
 
-export function withdraw<T extends Func>(
+export function withdraw<T extends Fn>(
 	store: Store,
 	token: TransactionToken<T>,
-): Transaction<T extends Func ? T : never>
+): Transaction<T extends Fn ? T : never>
 export function withdraw<T>(
 	store: Store,
 	token: TimelineToken<T>,

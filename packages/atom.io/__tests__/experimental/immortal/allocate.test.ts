@@ -465,3 +465,21 @@ describe(`integrations`, () => {
 		expect(IMPLICIT.STORE.valueMap.size).toBe(2)
 	})
 })
+
+describe(`counterfeits and error logging`, () => {
+	test(`logs an error when a disposed state is set`, () => {
+		const anarchy = new Anarchy()
+		const priceAtoms = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		anarchy.allocate(`root`, `item1`)
+		setState(priceAtoms, `item1`, 10)
+		anarchy.deallocate(`item1`)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
+		setState(priceAtoms, `item1`, 20)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).toHaveBeenCalledTimes(2)
+	})
+})

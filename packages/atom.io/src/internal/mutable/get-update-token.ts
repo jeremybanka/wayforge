@@ -2,7 +2,7 @@ import type { MutableAtomToken, RegularAtomToken } from "atom.io"
 
 import type { SignalFrom, Transceiver } from "./transceiver"
 
-export const getUpdateToken = <T extends Transceiver<any, any>>(
+export const getUpdateToken = <T extends Transceiver<any, any, any>>(
 	mutableAtomToken: MutableAtomToken<T>,
 ): RegularAtomToken<SignalFrom<T>> => {
 	const key = `*${mutableAtomToken.key}`

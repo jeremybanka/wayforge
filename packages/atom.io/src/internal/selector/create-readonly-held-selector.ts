@@ -5,7 +5,7 @@ import type {
 } from "atom.io"
 
 import type { ReadonlyHeldSelector } from ".."
-import { cacheValue } from "../caching"
+import { writeToCache } from "../caching"
 import { newest } from "../lineage"
 import type { Store } from "../store"
 import { Subject } from "../subject"
@@ -34,7 +34,7 @@ export const createReadonlyHeldSelector = <T extends object>(
 		}
 		innerTarget.selectorAtoms.delete(key)
 		options.get({ get, find, json }, constant)
-		cacheValue(newest(store), key, constant, subject)
+		writeToCache(newest(store), key, constant, subject)
 		covered.clear()
 		return constant
 	}

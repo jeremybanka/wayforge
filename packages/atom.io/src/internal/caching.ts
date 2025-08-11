@@ -1,9 +1,8 @@
 import type { StateUpdate } from "atom.io"
 
-import type { ReadableState } from "."
-import { closeOperation, isChildStore, openOperation } from "."
+import type { ReadableState, Transceiver } from "."
+import { closeOperation, isChildStore, openOperation, Tracker } from "."
 import { Future } from "./future"
-import { copyMutableIfNeeded } from "./set-state/copy-mutable-if-needed"
 import {
 	evictDownStream,
 	evictDownStreamFromSelector,
@@ -11,19 +10,19 @@ import {
 import type { Store } from "./store"
 import type { Subject } from "./subject"
 
-export function cacheValue<T>(
-	store: Store,
+export function writeToCache<T>(
+	target: Store,
 	key: string,
 	value: T,
 	subject: Subject<StateUpdate<unknown>>,
 ): T
-export function cacheValue<T extends Promise<any>>(
-	store: Store,
+export function writeToCache<T extends Promise<any>>(
+	target: Store,
 	key: string,
 	value: T,
 	subject: Subject<StateUpdate<unknown>>,
-): Future<T>
-export function cacheValue<T>(
+): Future<Awaited<T>>
+export function writeToCache<T>(
 	target: Store,
 	key: string,
 	value: T,
@@ -46,7 +45,7 @@ export function cacheValue<T>(
 			.then(function handleResolvedFuture(resolved) {
 				const current = target.valueMap.get(key)
 				if (current === future) {
-					cacheValue(target, key, resolved, subject)
+					writeToCache(target, key, resolved, subject)
 					const atom = target.atoms.get(key)
 					if (atom) {
 						openOperation(target, atom)
@@ -74,21 +73,44 @@ export function cacheValue<T>(
 	return value
 }
 
-export const readCachedValue = <T>(
-	state: ReadableState<any>,
+/**
+ * @param target - the newest layer of the store
+ * @param state - the state to read from cache
+ * @param mut - whether the value is intended to be mutable
+ * @returns the state's current value
+ */
+export function readFromCache<T>(
 	target: Store,
-): T => {
+	state: ReadableState<T>,
+	mut: `mut` | undefined,
+): T {
 	target.logger.info(`📖`, state.type, state.key, `reading cached value`)
 	let value = target.valueMap.get(state.key) as T
-	if (state.type === `mutable_atom` && isChildStore(target)) {
+
+	const mayNeedToBeCopied =
+		mut === `mut` && state.type === `mutable_atom` && isChildStore(target)
+	if (mayNeedToBeCopied) {
+		const mutableAtom = state
 		const { parent } = target
-		const copiedValue = copyMutableIfNeeded(target, state, parent)
+
+		if (target.valueMap.hasOwn(mutableAtom.key)) {
+			return value
+		}
+
+		const parentValue = parent.valueMap.get(mutableAtom.key) as T &
+			Transceiver<any, any, any>
+
+		target.logger.info(`📃`, `atom`, mutableAtom.key, `copying`)
+		const jsonValue = parentValue.toJSON()
+		const copiedValue = mutableAtom.class.fromJSON(jsonValue)
+		target.valueMap.set(mutableAtom.key, copiedValue)
+		new Tracker(mutableAtom, parent)
 		value = copiedValue
 	}
 	return value
 }
 
-export const evictCachedValue = (target: Store, key: string): void => {
+export function evictCachedValue(target: Store, key: string): void {
 	const currentValue = target.valueMap.get(key)
 	if (currentValue instanceof Future) {
 		const selector =
