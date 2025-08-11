@@ -1,7 +1,7 @@
 import type { TimelineManageable, TimelineToken, TimelineUpdate } from "atom.io"
 
-import type { Store } from ".."
-import { withdraw } from ".."
+import type { Store } from "../store/store"
+import { withdraw } from "../store/withdraw"
 
 export const subscribeToTimeline = <ManagedAtom extends TimelineManageable>(
 	store: Store,

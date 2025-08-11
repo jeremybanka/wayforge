@@ -1,7 +1,8 @@
 import type { JoinOptions, JoinToken } from "atom.io"
-import type { Store } from "atom.io/internal"
-import { Join } from "atom.io/internal"
 import type { Json } from "atom.io/json"
+
+import type { Store } from "../store"
+import { Join } from "./join-internal"
 
 export function createJoin<
 	ASide extends string,
