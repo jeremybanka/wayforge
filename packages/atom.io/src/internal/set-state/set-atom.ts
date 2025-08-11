@@ -9,7 +9,7 @@ import { markDone } from "../operation"
 import { isChildStore } from "../transaction/is-root-store"
 import { become } from "./become"
 import { emitUpdate } from "./emit-update"
-import { evictDownStream } from "./evict-downstream"
+import { evictDownstreamFromAtom } from "./evict-downstream"
 
 export const setAtom = <T>(
 	target: Store,
@@ -21,7 +21,7 @@ export const setAtom = <T>(
 	target.logger.info(`📝`, `atom`, atom.key, `set to`, newValue)
 	newValue = writeToCache(target, atom.key, newValue, atom.subject)
 	markDone(target, atom.key)
-	evictDownStream(target, atom)
+	evictDownstreamFromAtom(target, atom.key, atom.type)
 	const update = { oldValue, newValue }
 	if (!isChildStore(target)) {
 		emitUpdate(target, atom, update)
@@ -59,7 +59,7 @@ export const setAtom = <T>(
 		const transceiver = readOrComputeValue(target, mutable, `mut`)
 		const accepted = transceiver.do(update.newValue) === null
 		if (accepted === true) {
-			evictDownStream(target, mutable)
+			evictDownstreamFromAtom(target, mutable.key, `mutable_atom`)
 		}
 	}
 }

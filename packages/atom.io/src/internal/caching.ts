@@ -4,8 +4,8 @@ import type { ReadableState, Transceiver } from "."
 import { closeOperation, isChildStore, openOperation, Tracker } from "."
 import { Future } from "./future"
 import {
-	evictDownStream,
-	evictDownStreamFromSelector,
+	evictDownstreamFromAtom,
+	evictDownstreamFromSelector,
 } from "./set-state/evict-downstream"
 import type { Store } from "./store"
 import type { Subject } from "./subject"
@@ -49,7 +49,7 @@ export function writeToCache<T>(
 					const atom = target.atoms.get(key)
 					if (atom) {
 						openOperation(target, atom)
-						evictDownStream(target, atom)
+						evictDownstreamFromAtom(target, atom.key, atom.type)
 						closeOperation(target)
 					} else {
 						const selector =
@@ -57,7 +57,7 @@ export function writeToCache<T>(
 							target.readonlySelectors.get(key)
 						if (selector) {
 							openOperation(target, selector)
-							evictDownStreamFromSelector(target, selector)
+							evictDownstreamFromSelector(target, selector.key)
 							closeOperation(target)
 						}
 					}

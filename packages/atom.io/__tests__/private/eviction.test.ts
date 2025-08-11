@@ -1,7 +1,7 @@
 import type { Logger, SelectorToken } from "atom.io"
 import { getState, selector } from "atom.io"
 import * as Internal from "atom.io/internal"
-import { evictDownStreamFromSelector } from "atom.io/internal/set-state/evict-downstream"
+import { evictDownstreamFromSelector } from "atom.io/internal/set-state/evict-downstream"
 import { vitest } from "vitest"
 
 import * as Utils from "../__util__"
@@ -50,7 +50,7 @@ describe(`evictDownStreamFromSelector`, () => {
 		const selectorB = Internal.IMPLICIT.STORE.readonlySelectors.get(`b`)
 		assert(selectorB)
 		Internal.openOperation(Internal.IMPLICIT.STORE, b)
-		evictDownStreamFromSelector(Internal.IMPLICIT.STORE, selectorB)
+		evictDownstreamFromSelector(Internal.IMPLICIT.STORE, `b`)
 		assert(vMap.has(`a`))
 		assert(vMap.has(`b`))
 		assert(!vMap.has(`ab`))

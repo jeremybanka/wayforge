@@ -1,16 +1,19 @@
-import type { Atom, Selector } from ".."
 import { evictCachedValue } from "../caching"
 import { newest } from "../lineage"
 import { isDone, markDone } from "../operation"
 import type { Store } from "../store"
 
-export function evictDownStream(store: Store, atom: Atom<any>): void {
+export function evictDownstreamFromAtom(
+	store: Store,
+	atomKey: string,
+	atomType: `atom` | `mutable_atom`,
+): void {
 	const target = newest(store)
-	const downstreamKeys = target.selectorAtoms.getRelatedKeys(atom.key)
+	const downstreamKeys = target.selectorAtoms.getRelatedKeys(atomKey)
 	target.logger.info(
 		`🧹`,
-		atom.type,
-		atom.key,
+		atomType,
+		atomKey,
 		downstreamKeys
 			? `evicting ${downstreamKeys.size} states downstream:`
 			: `no downstream states`,
@@ -20,8 +23,8 @@ export function evictDownStream(store: Store, atom: Atom<any>): void {
 		if (target.operation.open) {
 			target.logger.info(
 				`🧹`,
-				atom.type,
-				atom.key,
+				atomType,
+				atomKey,
 				`[ ${[...target.operation.done].join(`, `)} ] already done`,
 			)
 		}
@@ -35,26 +38,22 @@ export function evictDownStream(store: Store, atom: Atom<any>): void {
 	}
 }
 
-export function evictDownStreamFromSelector(
+export function evictDownstreamFromSelector(
 	store: Store,
-	selector: Selector<any>,
+	selectorKey: string,
 ): void {
 	const target = newest(store)
 	const relationEntries = target.selectorGraph
 		.getRelationEntries({
-			upstreamSelectorKey: selector.key,
+			upstreamSelectorKey: selectorKey,
 		})
-		.filter(([_, { source }]) => source === selector.key)
+		.filter(([_, { source }]) => source === selectorKey)
 	for (const [downstreamSelectorKey] of relationEntries) {
 		if (isDone(target, downstreamSelectorKey)) {
 			continue
 		}
 		evictCachedValue(target, downstreamSelectorKey)
 		markDone(target, downstreamSelectorKey)
-		const downstream =
-			store.readonlySelectors.get(downstreamSelectorKey) ??
-			// biome-ignore lint/style/noNonNullAssertion: it's in one of these
-			store.writableSelectors.get(downstreamSelectorKey)!
-		evictDownStreamFromSelector(store, downstream)
+		evictDownstreamFromSelector(store, downstreamSelectorKey)
 	}
 }
