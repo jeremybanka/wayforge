@@ -6,19 +6,21 @@ import { getFamilyOfToken } from "../families/get-family-of-token"
 import { closeOperation, openOperation } from "../operation"
 import type { Store } from "../store"
 import { withdraw } from "../store"
+import { resetAtomOrSelector } from "./reset-atom-or-selector"
+import { RESET_STATE } from "./reset-in-store"
 import { setAtomOrSelector } from "./set-atom-or-selector"
 
 export function setIntoStore<T, New extends T>(
 	store: Store,
 	token: WritableToken<T>,
-	value: New | ((oldValue: T) => New),
+	value: New | typeof RESET_STATE | ((oldValue: T) => New),
 ): void
 
 export function setIntoStore<T, K extends Canonical, New extends T>(
 	store: Store,
 	token: WritableFamilyToken<T, K>,
 	key: K,
-	value: New | ((oldValue: T) => New),
+	value: New | typeof RESET_STATE | ((oldValue: T) => New),
 ): void
 
 export function setIntoStore<T, New extends T>(
@@ -27,14 +29,17 @@ export function setIntoStore<T, New extends T>(
 		| [
 				token: WritableFamilyToken<T, Canonical>,
 				key: Canonical,
-				value: New | ((oldValue: T) => New),
+				value: New | typeof RESET_STATE | ((oldValue: T) => New),
 		  ]
-		| [token: WritableToken<T>, value: New | ((oldValue: T) => New)]
+		| [
+				token: WritableToken<T>,
+				value: New | typeof RESET_STATE | ((oldValue: T) => New),
+		  ]
 ): void {
 	let token: WritableToken<T>
 	let family: WritableFamilyToken<T, Canonical> | null
 	let key: Canonical | null
-	let value: New | ((oldValue: T) => New)
+	let value: New | typeof RESET_STATE | ((oldValue: T) => New)
 	if (params.length === 2) {
 		token = params[0]
 		value = params[1]
@@ -51,6 +56,8 @@ export function setIntoStore<T, New extends T>(
 		token = findInStore(store, family, key)
 	}
 
+	const action = value === RESET_STATE ? `reset` : `set`
+
 	if (`counterfeit` in token && `family` in token) {
 		const subKey = token.family.subKey
 		const disposal = store.disposalTraces.buffer.find(
@@ -60,7 +67,9 @@ export function setIntoStore<T, New extends T>(
 			`❌`,
 			token.type,
 			token.key,
-			`could not be set because it was not found in the store "${store.config.name}".`,
+			`could not be`,
+			action,
+			`because it was not found in the store "${store.config.name}".`,
 			disposal
 				? `This state was previously disposed:\n${disposal.trace}`
 				: `No previous disposal trace was found.`,
@@ -71,14 +80,16 @@ export function setIntoStore<T, New extends T>(
 	const rejectionTime = openOperation(store, token)
 	if (rejectionTime) {
 		const unsubscribe = store.on.operationClose.subscribe(
-			`waiting to set "${token.key}" at T-${rejectionTime}`,
+			`waiting to ${action} "${token.key}" at T-${rejectionTime}`,
 			function waitUntilOperationCloseToSetState() {
 				unsubscribe()
 				store.logger.info(
 					`🟢`,
 					token.type,
 					token.key,
-					`resuming deferred setState from T-${rejectionTime}`,
+					`resuming deferred`,
+					action,
+					`from T-${rejectionTime}`,
 				)
 				setIntoStore(store, token, value)
 			},
@@ -86,6 +97,10 @@ export function setIntoStore<T, New extends T>(
 		return
 	}
 	const state = withdraw(store, token)
-	setAtomOrSelector(store, state, value)
+	if (value === RESET_STATE) {
+		resetAtomOrSelector(store, state)
+	} else {
+		setAtomOrSelector(store, state, value)
+	}
 	closeOperation(store)
 }

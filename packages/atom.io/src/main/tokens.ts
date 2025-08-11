@@ -18,27 +18,22 @@ export type AtomIOToken =
 	| TimelineToken<any>
 	| TransactionToken<any>
 
-/**
- * These states cannot be set.
- */
 export type ReadableToken<T, K extends Canonical = any> =
 	| AtomToken<T, K>
 	| SelectorToken<T, K>
-/**
- * These states can be set.
- */
+
 export type WritableToken<T, K extends Canonical = any> =
 	| AtomToken<T, K>
 	| WritableSelectorToken<T, K>
 
 /**
- * States belonging to this family can be gotten from the store.
+ * States belonging to this family can be read from the store.
  */
 export type ReadableFamilyToken<T, K extends Canonical> =
 	| AtomFamilyToken<T, K>
 	| SelectorFamilyToken<T, K>
 /**
- * States belonging to this family can be set.
+ * States belonging to this family can be written directly.
  */
 export type WritableFamilyToken<T, K extends Canonical> =
 	| AtomFamilyToken<T, K>
