@@ -1,9 +1,4 @@
-import type {
-	AsJSON,
-	EnvironmentData,
-	Fn,
-	Transceiver,
-} from "atom.io/internal"
+import type { AsJSON, EnvironmentData, Fn, Transceiver } from "atom.io/internal"
 import {
 	actUponStore,
 	arbitrary,

@@ -85,9 +85,7 @@ export function deposit<T>(
 	state: ReadableFamily<T, any>,
 ): ReadableFamilyToken<T, any>
 
-export function deposit<T extends Fn>(
-	state: Transaction<T>,
-): TransactionToken<T>
+export function deposit<T extends Fn>(state: Transaction<T>): TransactionToken<T>
 export function deposit<M extends TimelineManageable>(
 	state: Timeline<M>,
 ): TimelineToken<M>
