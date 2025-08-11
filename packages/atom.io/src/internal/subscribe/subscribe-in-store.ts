@@ -7,13 +7,13 @@ import type {
 	TransactionUpdateHandler,
 	UpdateHandler,
 } from "atom.io"
-import type { Fn, Store } from "atom.io/internal"
-import {
-	arbitrary,
-	subscribeToState,
-	subscribeToTimeline,
-	subscribeToTransaction,
-} from "atom.io/internal"
+
+import { arbitrary } from "../arbitrary"
+import type { Store } from "../store"
+import type { Fn } from "../utility-types"
+import { subscribeToState } from "./subscribe-to-state"
+import { subscribeToTimeline } from "./subscribe-to-timeline"
+import { subscribeToTransaction } from "./subscribe-to-transaction"
 
 export function subscribeInStore<T>(
 	store: Store,
