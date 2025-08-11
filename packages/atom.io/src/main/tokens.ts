@@ -1,4 +1,4 @@
-import type { AsJSON, Fn, SignalFrom, Transceiver } from "atom.io/internal"
+import type { AsJSON, Fn, Transceiver } from "atom.io/internal"
 import type { Canonical, stringified } from "atom.io/json"
 
 /**
