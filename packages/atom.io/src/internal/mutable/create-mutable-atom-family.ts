@@ -23,17 +23,18 @@ import { FamilyTracker } from "./tracker-family"
 import type { AsJSON, Transceiver } from "./transceiver"
 
 export function createMutableAtomFamily<
-	T extends Transceiver<any, any>,
+	T extends Transceiver<any, any, any>,
 	K extends Canonical,
 >(
 	store: Store,
 	options: MutableAtomFamilyOptions<T, K>,
 	internalRoles?: string[],
 ): MutableAtomFamilyToken<T, K> {
-	const familyToken: MutableAtomFamilyToken<T & Transceiver<any, any>, K> = {
-		key: options.key,
-		type: `mutable_atom_family`,
-	}
+	const familyToken: MutableAtomFamilyToken<T & Transceiver<any, any, any>, K> =
+		{
+			key: options.key,
+			type: `mutable_atom_family`,
+		}
 
 	const existing = store.families.get(options.key)
 	if (existing) {

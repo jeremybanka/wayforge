@@ -1,4 +1,4 @@
-import type { AsJSON, Func, Transceiver } from "atom.io/internal"
+import type { AsJSON, Fn, Transceiver } from "atom.io/internal"
 import type { Canonical, stringified } from "atom.io/json"
 
 /**
@@ -53,7 +53,7 @@ export type TimelineToken<M> = {
 	__M?: M
 }
 
-export type TransactionToken<F extends Func> = {
+export type TransactionToken<F extends Fn> = {
 	/** The unique identifier of the transaction */
 	key: string
 	/** Discriminator */
@@ -63,7 +63,7 @@ export type TransactionToken<F extends Func> = {
 }
 
 export type AtomToken<T, K extends Canonical = any> =
-	| MutableAtomToken<T extends Transceiver<any, any> ? T : never, K>
+	| MutableAtomToken<T extends Transceiver<any, any, any> ? T : never, K>
 	| RegularAtomToken<T, K>
 export type RegularAtomToken<T, K extends Canonical = any> = {
 	/** The unique identifier of the atom. */
@@ -76,7 +76,7 @@ export type RegularAtomToken<T, K extends Canonical = any> = {
 	__T?: T
 }
 export type MutableAtomToken<
-	T extends Transceiver<any, any>,
+	T extends Transceiver<any, any, any>,
 	K extends Canonical = any,
 > = {
 	/** The unique identifier of the atom. */
@@ -87,8 +87,6 @@ export type MutableAtomToken<
 	family?: FamilyMetadata<K>
 	/** Never present. This is a marker that preserves the JSON form of the atom's transceiver value. */
 	__J?: AsJSON<T>
-	/** Never present. This is a marker that preserves the type of the atom's transceiver value. */
-	__U?: T extends Transceiver<infer Update, any> ? Update : never
 }
 
 export type SelectorToken<T, K extends Canonical = any> =
@@ -159,7 +157,7 @@ export type FamilyMetadata<K extends Canonical = any> = {
 }
 
 export type AtomFamilyToken<T, K extends Canonical = Canonical> =
-	| MutableAtomFamilyToken<T extends Transceiver<any, any> ? T : never, K>
+	| MutableAtomFamilyToken<T extends Transceiver<any, any, any> ? T : never, K>
 	| RegularAtomFamilyToken<T, K>
 export type RegularAtomFamilyToken<T, K extends Canonical> = {
 	/** The unique identifier of the atom family */
@@ -172,7 +170,7 @@ export type RegularAtomFamilyToken<T, K extends Canonical> = {
 	__K?: K
 }
 export type MutableAtomFamilyToken<
-	T extends Transceiver<any, any>,
+	T extends Transceiver<any, any, any>,
 	K extends Canonical,
 > = {
 	/** The unique identifier of the atom family */
@@ -181,8 +179,6 @@ export type MutableAtomFamilyToken<
 	type: `mutable_atom_family`
 	/** Never present. This is a marker that preserves the type of atoms in this family */
 	__T?: T
-	/** Never present. This is a marker that preserves the type of the JSON form of atoms in this family */
-	__J?: AsJSON<T>
 	/** Never present. This is a marker that preserves the type of keys used for atoms in this family */
 	__K?: K
 }

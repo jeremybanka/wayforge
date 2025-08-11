@@ -25,7 +25,7 @@ import { initFamilyMemberInStore } from "./init-family-member"
 import { seekInStore } from "./seek-in-store"
 
 export function findInStore<
-	T extends Transceiver<any, any>,
+	T extends Transceiver<any, any, any>,
 	K extends Canonical,
 	Key extends K,
 >(

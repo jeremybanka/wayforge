@@ -51,7 +51,7 @@ describe(`disposeState`, () => {
 		})
 		const countState = findState(countStates, `count`)
 		disposeState(countState)
-		expect(logger.error).toHaveBeenCalledTimes(0)
+		expect(logger.error).not.toHaveBeenCalled()
 		expect(Internal.IMPLICIT.STORE.atoms.has(countState.key)).toBe(false)
 		expect(Internal.IMPLICIT.STORE.valueMap.has(countState.key)).toBe(false)
 		expect(logger.warn).not.toHaveBeenCalled()
@@ -84,7 +84,7 @@ describe(`disposeState`, () => {
 		expect(getState(allDoublesSelector)).toEqual([4])
 		disposeState(countAtoms, `my-key`)
 		setState(countIndex, (current) => [...current, `my-key`])
-		expect(logger.error).toHaveBeenCalledTimes(0)
+		expect(logger.error).not.toHaveBeenCalled()
 		expect(Internal.IMPLICIT.STORE.atoms.has(countAtom.key)).toBe(false)
 		expect(Internal.IMPLICIT.STORE.valueMap.has(countAtom.key)).toBe(false)
 		expect(
@@ -111,6 +111,7 @@ describe(`disposeState`, () => {
 		disposeState(countState)
 		disposeState(countState)
 		expect(logger.error).toHaveBeenCalledTimes(1)
+		setState(countAtoms, `my-key`, 1)
 	})
 
 	it(`does not delete a standalone selector`, () => {
@@ -147,7 +148,7 @@ describe(`disposeState`, () => {
 		})
 		const doubledState = findState(doubledSelectors, `my-key`)
 		disposeState(doubledState)
-		expect(logger.error).toHaveBeenCalledTimes(0)
+		expect(logger.error).not.toHaveBeenCalled()
 		expect(Internal.IMPLICIT.STORE.writableSelectors.has(doubledState.key)).toBe(
 			false,
 		)
@@ -174,7 +175,7 @@ describe(`disposeState`, () => {
 		})
 		const tripledState = findState(tripledSelectors, `my-key`)
 		disposeState(tripledState)
-		expect(logger.error).toHaveBeenCalledTimes(0)
+		expect(logger.error).not.toHaveBeenCalled()
 		expect(Internal.IMPLICIT.STORE.writableSelectors.has(tripledState.key)).toBe(
 			false,
 		)

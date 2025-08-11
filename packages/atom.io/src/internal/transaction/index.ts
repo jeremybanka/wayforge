@@ -1,7 +1,7 @@
 import type { ActorToolkit, TransactionUpdate } from "atom.io"
 
 import type { Junction } from "../junction"
-import type { Func } from "../utility-types"
+import type { Fn } from "../utility-types"
 
 export * from "./abort-transaction"
 export * from "./act-upon-store"
@@ -16,7 +16,7 @@ export * from "./set-epoch-number"
 export const TRANSACTION_PHASES = [`idle`, `building`, `applying`] as const
 export type TransactionPhase = (typeof TRANSACTION_PHASES)[number]
 
-export type TransactionProgress<F extends Func> = {
+export type TransactionProgress<F extends Fn> = {
 	phase: `applying` | `building`
 	update: TransactionUpdate<F>
 	toolkit: ActorToolkit

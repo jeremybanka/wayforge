@@ -23,7 +23,7 @@ import { getUpdateToken } from "../mutable"
 import { type Store, withdraw } from "../store"
 import { Subject } from "../subject"
 import { isChildStore } from "../transaction"
-import type { Flat, Func } from "../utility-types"
+import type { Flat, Fn } from "../utility-types"
 
 export type TimelineAtomUpdate<ManagedAtom extends TimelineManageable> = Flat<
 	StateUpdate<TokenType<ManagedAtom>> & {
@@ -40,7 +40,7 @@ export type TimelineSelectorUpdate<ManagedAtom extends TimelineManageable> = {
 	atomUpdates: Omit<TimelineAtomUpdate<ManagedAtom>, `timestamp`>[]
 }
 export type TimelineTransactionUpdate = Flat<
-	TransactionUpdate<Func> & {
+	TransactionUpdate<Fn> & {
 		key: string
 		type: `transaction_update`
 		timestamp: number
@@ -340,7 +340,7 @@ function addAtomFamilyToTimeline(
 function joinTransaction(
 	store: Store,
 	tl: Timeline<any>,
-	txUpdateInProgress: TransactionUpdate<Func>,
+	txUpdateInProgress: TransactionUpdate<Fn>,
 ) {
 	const currentTxKey = txUpdateInProgress.key
 	const currentTxInstanceId = txUpdateInProgress.id

@@ -6,7 +6,7 @@ import type {
 	TransactionToken,
 	TransactionUpdate,
 } from "atom.io"
-import type { Func, Store, Timeline } from "atom.io/internal"
+import type { Fn, Store, Timeline } from "atom.io/internal"
 
 import { type AtomTokenIndex, attachAtomIndex } from "./attach-atom-index"
 import type { SelectorTokenIndex } from "./attach-selector-index"
@@ -20,9 +20,9 @@ import { attachTypeSelectors } from "./attach-type-selectors"
 export type IntrospectionStates = {
 	atomIndex: AtomToken<AtomTokenIndex>
 	selectorIndex: AtomToken<SelectorTokenIndex>
-	transactionIndex: AtomToken<TransactionToken<Func>[]>
+	transactionIndex: AtomToken<TransactionToken<Fn>[]>
 	transactionLogSelectors: ReadonlyPureSelectorFamilyToken<
-		TransactionUpdate<Func>[],
+		TransactionUpdate<Fn>[],
 		string
 	>
 	timelineIndex: AtomToken<TimelineToken<any>[]>

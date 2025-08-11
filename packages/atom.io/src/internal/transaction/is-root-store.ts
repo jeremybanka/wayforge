@@ -1,5 +1,6 @@
+import type { LazyMap } from "../lazy-map"
 import type { Store } from "../store"
-import type { Func } from "../utility-types"
+import type { Fn } from "../utility-types"
 import type { TransactionEpoch, TransactionProgress } from "."
 
 export interface RootStore extends Store {
@@ -8,9 +9,10 @@ export interface RootStore extends Store {
 	child: ChildStore | null
 }
 export interface ChildStore extends Store {
-	transactionMeta: TransactionProgress<Func>
+	transactionMeta: TransactionProgress<Fn>
 	parent: ChildStore | RootStore
 	child: ChildStore | null
+	valueMap: LazyMap<string, any>
 }
 
 export function isRootStore(store: Store): store is RootStore {

@@ -1,13 +1,13 @@
 import type { KeyedStateUpdate } from "atom.io"
 
-import type { Atom, Store } from ".."
-import { cacheValue } from "../caching"
+import type { Atom, MutableAtom, Store } from ".."
+import { hasRole } from "../atom/has-role"
+import { writeToCache } from "../caching"
 import { readOrComputeValue } from "../get-state/read-or-compute-value"
 import { isTransceiver, type Transceiver } from "../mutable"
 import { markDone } from "../operation"
 import { isChildStore } from "../transaction/is-root-store"
 import { become } from "./become"
-import { copyMutableIfNeeded } from "./copy-mutable-if-needed"
 import { emitUpdate } from "./emit-update"
 import { evictDownStream } from "./evict-downstream"
 
@@ -16,16 +16,10 @@ export const setAtom = <T>(
 	atom: Atom<T>,
 	next: T | ((oldValue: T) => T),
 ): void => {
-	const oldValue = readOrComputeValue(target, atom)
-	let newValue = oldValue
-	if (atom.type === `mutable_atom` && isChildStore(target)) {
-		const { parent } = target
-		const copiedValue = copyMutableIfNeeded(target, atom, parent)
-		newValue = copiedValue
-	}
-	newValue = become(next)(newValue)
+	const oldValue = readOrComputeValue(target, atom, `mut`)
+	let newValue = become(next)(oldValue)
 	target.logger.info(`📝`, `atom`, atom.key, `set to`, newValue)
-	newValue = cacheValue(target, atom.key, newValue, atom.subject)
+	newValue = writeToCache(target, atom.key, newValue, atom.subject)
 	markDone(target, atom.key)
 	evictDownStream(target, atom)
 	const update = { oldValue, newValue }
@@ -57,16 +51,15 @@ export const setAtom = <T>(
 			update.newValue,
 			`)`,
 		)
-	} else if (atom.key.startsWith(`*`)) {
-		const mutableKey = atom.key.slice(1)
-		const mutableAtom = target.atoms.get(mutableKey) as Atom<any>
-		let transceiver: Transceiver<any, any> = target.valueMap.get(mutableKey)
-		if (mutableAtom.type === `mutable_atom` && isChildStore(target)) {
-			const { parent } = target
-			const copiedValue = copyMutableIfNeeded(target, mutableAtom, parent)
-			transceiver = copiedValue
-		}
+	} else if (hasRole(atom, `tracker:signal`)) {
+		const key = atom.key.slice(1)
+		const mutable = target.atoms.get(key) as MutableAtom<
+			Transceiver<unknown, any, any>
+		>
+		const transceiver = readOrComputeValue(target, mutable, `mut`)
 		const accepted = transceiver.do(update.newValue) === null
-		if (accepted) evictDownStream(target, mutableAtom)
+		if (accepted === true) {
+			evictDownStream(target, mutable)
+		}
 	}
 }

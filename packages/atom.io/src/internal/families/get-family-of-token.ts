@@ -18,7 +18,7 @@ import type { Transceiver } from "../mutable"
 import type { Store } from "../store"
 
 export function getFamilyOfToken<
-	T extends Transceiver<any, any>,
+	T extends Transceiver<any, any, any>,
 	K extends Canonical,
 >(
 	store: Store,

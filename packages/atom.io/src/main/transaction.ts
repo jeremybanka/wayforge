@@ -1,9 +1,4 @@
-import type {
-	AsJSON,
-	EnvironmentData,
-	Func,
-	Transceiver,
-} from "atom.io/internal"
+import type { AsJSON, EnvironmentData, Fn, Transceiver } from "atom.io/internal"
 import {
 	actUponStore,
 	arbitrary,
@@ -33,6 +28,9 @@ export type StateCreation<Token extends ReadableToken<any>> = {
 export type StateDisposal<Token extends ReadableToken<any>> =
 	| AtomDisposal<Token>
 	| SelectorDisposal<Token>
+export type StateLifecycleEvent<Token extends ReadableToken<any>> =
+	| StateCreation<Token>
+	| StateDisposal<Token>
 
 export type AtomDisposal<Token extends ReadableToken<any>> = {
 	type: `state_disposal`
@@ -72,9 +70,9 @@ export type TransactionUpdateContent =
 	| MoleculeTransfer
 	| StateCreation<ReadableToken<unknown>>
 	| StateDisposal<ReadableToken<unknown>>
-	| TransactionUpdate<Func>
+	| TransactionUpdate<Fn>
 
-export type TransactionUpdate<F extends Func> = {
+export type TransactionUpdate<F extends Fn> = {
 	type: `transaction_update`
 	key: string
 	id: string
@@ -91,7 +89,7 @@ export type ActorToolkit = Readonly<{
 	set: typeof setState
 	reset: typeof resetState
 	find: typeof findState
-	json: <T extends Transceiver<any, any>>(
+	json: <T extends Transceiver<any, any, any>>(
 		state: MutableAtomToken<T>,
 	) => WritablePureSelectorToken<AsJSON<T>>
 	dispose: typeof disposeState
@@ -99,21 +97,21 @@ export type ActorToolkit = Readonly<{
 	env: () => EnvironmentData
 }>
 
-export type Read<F extends Func> = (
+export type Read<F extends Fn> = (
 	toolkit: ReaderToolkit,
 	...parameters: Parameters<F>
 ) => ReturnType<F>
-export type Write<F extends Func> = (
+export type Write<F extends Fn> = (
 	toolkit: WriterToolkit,
 	...parameters: Parameters<F>
 ) => ReturnType<F>
-export type Transact<F extends Func> = (
+export type Transact<F extends Fn> = (
 	toolkit: ActorToolkit,
 	...parameters: Parameters<F>
 ) => ReturnType<F>
 export type TransactionIO<Token extends TransactionToken<any>> =
 	Token extends TransactionToken<infer F> ? F : never
-export type TransactionOptions<F extends Func> = {
+export type TransactionOptions<F extends Fn> = {
 	/** The unique identifier of the transaction */
 	key: string
 	/** The operation to perform */
@@ -125,7 +123,7 @@ export type TransactionOptions<F extends Func> = {
  * @param options - {@link TransactionOptions}
  * @returns A reference to the transaction created: a {@link TransactionToken}
  */
-export function transaction<F extends Func>(
+export function transaction<F extends Fn>(
 	options: TransactionOptions<F>,
 ): TransactionToken<F> {
 	return createTransaction(IMPLICIT.STORE, options)
@@ -137,7 +135,7 @@ export function transaction<F extends Func>(
  * @param id - A unique identifier for the transaction. If not provided, a random identifier will be generated
  * @returns A function that can be called to run the transaction with its {@link TransactionIO} parameters
  */
-export function runTransaction<F extends Func>(
+export function runTransaction<F extends Fn>(
 	token: TransactionToken<F>,
 	id: string = arbitrary(),
 ): (...parameters: Parameters<F>) => ReturnType<F> {

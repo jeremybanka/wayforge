@@ -10,7 +10,8 @@ import {
 	timeline,
 	undo,
 } from "atom.io"
-import * as Internal from "atom.io/internal"
+import type { Fn } from "atom.io/internal"
+import { clearStore, IMPLICIT } from "atom.io/internal"
 import * as AR from "atom.io/react"
 import { type FC, useEffect } from "react"
 
@@ -22,9 +23,9 @@ const CHOOSE = 2
 let logger: Logger
 
 beforeEach(() => {
-	Internal.clearStore(Internal.IMPLICIT.STORE)
-	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = Internal.IMPLICIT.STORE.logger
+	clearStore(IMPLICIT.STORE)
+	IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+	logger = IMPLICIT.STORE.logger
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -33,7 +34,7 @@ beforeEach(() => {
 const onChange = [() => undefined, console.log][0]
 
 describe(`single atom`, () => {
-	const setters: Internal.Func[] = []
+	const setters: Fn[] = []
 	const scenario = () => {
 		const letterState = atom<string>({
 			key: `letter`,
@@ -76,7 +77,7 @@ describe(`single atom`, () => {
 	})
 })
 describe(`timeline`, () => {
-	const setters: Internal.Func[] = []
+	const setters: Fn[] = []
 	const scenario = () => {
 		const letterState = atom<string>({
 			key: `letter`,

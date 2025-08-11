@@ -10,6 +10,7 @@
 			"!**/*.gen.ts",
 			"!**/*.gen.tsx",
 			"!**/*.tsdoc.json",
+			"!**/.next",
 			"!**/.turbo",
 			"!**/.varmint",
 			"!**/.wrangler",
@@ -35,7 +36,7 @@
 		"indentStyle": "tab",
 		"indentWidth": 2,
 		"lineWidth": 81,
-		"includes": ["**", "!**/*.gen.ts", "!**/*.cache.json", "!**/.next/**/*"]
+		"includes": ["**", "!**/*.gen.ts", "!**/*.cache.json"]
 	},
 	"linter": {
 		"enabled": true,

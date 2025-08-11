@@ -1,4 +1,4 @@
-import * as Internal from "atom.io/internal"
+import { IMPLICIT, resetInStore } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 
 import type { WritableFamilyToken, WritableToken } from "."
@@ -26,8 +26,8 @@ export function resetState(
 		| [token: WritableToken<any>]
 ): void {
 	if (params.length === 2) {
-		Internal.resetInStore(Internal.IMPLICIT.STORE, ...params)
+		resetInStore(IMPLICIT.STORE, ...params)
 	} else {
-		Internal.resetInStore(Internal.IMPLICIT.STORE, ...params)
+		resetInStore(IMPLICIT.STORE, ...params)
 	}
 }

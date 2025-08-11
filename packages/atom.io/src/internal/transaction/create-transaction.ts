@@ -8,12 +8,12 @@ import { newest } from "../lineage"
 import type { Store } from "../store"
 import { deposit } from "../store"
 import { Subject } from "../subject"
-import type { Func } from "../utility-types"
+import type { Fn } from "../utility-types"
 import { abortTransaction } from "./abort-transaction"
 import { applyTransaction } from "./apply-transaction"
 import { buildTransaction } from "./build-transaction"
 
-export type Transaction<F extends Func> = {
+export type Transaction<F extends Fn> = {
 	key: string
 	type: `transaction`
 	install: (store: Store) => void
@@ -21,7 +21,7 @@ export type Transaction<F extends Func> = {
 	run: (parameters: Parameters<F>, id?: string) => ReturnType<F>
 }
 
-export function createTransaction<F extends Func>(
+export function createTransaction<F extends Fn>(
 	store: Store,
 	options: TransactionOptions<F>,
 ): TransactionToken<F> {

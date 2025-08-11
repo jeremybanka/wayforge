@@ -4,7 +4,7 @@ import {
 	type ReadableToken,
 	type SelectorToken,
 } from "atom.io"
-import * as Internal from "atom.io/internal"
+import { IMPLICIT, type Store } from "atom.io/internal"
 
 import type { FamilyNode } from "."
 import type { AtomTokenIndex } from "./attach-atom-index"
@@ -22,7 +22,7 @@ export type ListResourcesParam = {
  * @experimental
  */
 export class Auditor {
-	public readonly store: Internal.Store
+	public readonly store: Store
 	public auditorCreatedAt: number = performance.now()
 	public statesCreatedAt: Map<string, number> = new Map()
 	public readonly atomIndex: AtomToken<AtomTokenIndex>
@@ -37,7 +37,7 @@ export class Auditor {
 	/**
 	 * @param {Store} store - The store to audit.
 	 */
-	public constructor(store: Internal.Store = Internal.IMPLICIT.STORE) {
+	public constructor(store: Store = IMPLICIT.STORE) {
 		this.store = store
 		this.atomIndex = attachAtomIndex(this.store)
 		this.selectorIndex = attachSelectorIndex(this.store)

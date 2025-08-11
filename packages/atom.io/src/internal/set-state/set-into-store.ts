@@ -38,9 +38,10 @@ export function setIntoStore<T, New extends T>(
 	if (params.length === 2) {
 		token = params[0]
 		value = params[1]
-		family = getFamilyOfToken(store, token) ?? null
-		if (family) {
-			key = token.family ? parseJson(token.family.subKey) : null
+		if (token.family) {
+			// biome-ignore lint/style/noNonNullAssertion: this token belongs to a family
+			family = getFamilyOfToken(store, token)!
+			key = parseJson(token.family.subKey)
 			token = findInStore(store, family, key)
 		}
 	} else {
@@ -71,7 +72,7 @@ export function setIntoStore<T, New extends T>(
 	if (rejectionTime) {
 		const unsubscribe = store.on.operationClose.subscribe(
 			`waiting to set "${token.key}" at T-${rejectionTime}`,
-			() => {
+			function waitUntilOperationCloseToSetState() {
 				unsubscribe()
 				store.logger.info(
 					`🟢`,
