@@ -169,7 +169,8 @@ describe(`mutable atomic state`, () => {
 				oldValue: [],
 				newValue: [`a`, `b`],
 			})
-			expect(getState(myMutableState)).toEqual(new SetRTX())
+			const myMutable = getState(myMutableState)
+			expect(myMutable).toEqual(new SetRTX())
 		}
 	})
 })
