@@ -29,6 +29,7 @@ import type {
 } from "../junction"
 import { Junction } from "../junction"
 import type { Molecule } from "../molecule"
+import type { ViewOf } from "../mutable"
 import { createMutableAtomFamily, getJsonFamily, getJsonToken } from "../mutable"
 import { setIntoStore } from "../set-state"
 import type { Store } from "../store"
@@ -343,8 +344,10 @@ export class Join<
 				[`join`, `content`],
 			)
 
-			const getContent: Read<(key: string) => Content | null> = ({ get }, key) =>
-				get(contentAtoms, key)
+			const getContent: Read<(key: string) => ViewOf<Content> | null> = (
+				{ get },
+				key,
+			) => get(contentAtoms, key)
 			const setContent: Write<(key: string, content: Content) => void> = (
 				{ set },
 				key,
@@ -433,7 +436,7 @@ export class Join<
 			)
 		}
 		const createSingleEntrySelectorFamily = () =>
-			createReadonlyPureSelectorFamily<[string, Content] | null, string>(
+			createReadonlyPureSelectorFamily<[string, ViewOf<Content>] | null, string>(
 				store,
 				{
 					key: `${options.key}/singleRelatedEntry`,
@@ -456,7 +459,7 @@ export class Join<
 				[`join`, `entries`],
 			)
 		const getMultipleEntrySelectorFamily = () =>
-			createReadonlyPureSelectorFamily<[string, Content][], string>(
+			createReadonlyPureSelectorFamily<[string, ViewOf<Content>][], string>(
 				store,
 				{
 					key: `${options.key}/multipleRelatedEntries`,
