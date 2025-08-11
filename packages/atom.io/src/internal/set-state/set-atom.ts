@@ -19,9 +19,9 @@ export const setAtom = <T>(
 	const oldValue = readOrComputeValue(target, atom, `mut`)
 	let newValue = become(next)(oldValue)
 	target.logger.info(`📝`, `atom`, atom.key, `set to`, newValue)
-	newValue = writeToCache(target, atom.key, newValue, atom.subject)
+	newValue = writeToCache(target, atom, newValue)
 	markDone(target, atom.key)
-	evictDownstreamFromAtom(target, atom.key, atom.type)
+	evictDownstreamFromAtom(target, atom)
 	const update = { oldValue, newValue }
 	if (!isChildStore(target)) {
 		emitUpdate(target, atom, update)
@@ -59,7 +59,7 @@ export const setAtom = <T>(
 		const transceiver = readOrComputeValue(target, mutable, `mut`)
 		const accepted = transceiver.do(update.newValue) === null
 		if (accepted === true) {
-			evictDownstreamFromAtom(target, mutable.key, `mutable_atom`)
+			evictDownstreamFromAtom(target, mutable)
 		}
 	}
 }

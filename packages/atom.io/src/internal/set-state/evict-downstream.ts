@@ -1,19 +1,17 @@
+import type { Atom } from ".."
 import { evictCachedValue } from "../caching"
 import { newest } from "../lineage"
 import { isDone, markDone } from "../operation"
 import type { Store } from "../store"
 
-export function evictDownstreamFromAtom(
-	store: Store,
-	atomKey: string,
-	atomType: `atom` | `mutable_atom`,
-): void {
+export function evictDownstreamFromAtom(store: Store, atom: Atom<any>): void {
 	const target = newest(store)
-	const downstreamKeys = target.selectorAtoms.getRelatedKeys(atomKey)
+	const { key, type } = atom
+	const downstreamKeys = target.selectorAtoms.getRelatedKeys(key)
 	target.logger.info(
 		`🧹`,
-		atomType,
-		atomKey,
+		type,
+		key,
 		downstreamKeys
 			? `evicting ${downstreamKeys.size} states downstream:`
 			: `no downstream states`,
@@ -23,17 +21,17 @@ export function evictDownstreamFromAtom(
 		if (target.operation.open) {
 			target.logger.info(
 				`🧹`,
-				atomType,
-				atomKey,
+				type,
+				key,
 				`[ ${[...target.operation.done].join(`, `)} ] already done`,
 			)
 		}
-		for (const key of downstreamKeys) {
-			if (isDone(target, key)) {
+		for (const downstreamKey of downstreamKeys) {
+			if (isDone(target, downstreamKey)) {
 				continue
 			}
-			evictCachedValue(target, key)
-			markDone(target, key)
+			evictCachedValue(target, downstreamKey)
+			markDone(target, downstreamKey)
 		}
 	}
 }
