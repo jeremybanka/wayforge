@@ -1,5 +1,3 @@
-import type { StateUpdate } from "atom.io"
-
 import type { ReadableState, Transceiver } from "."
 import { closeOperation, isChildStore, openOperation, Tracker } from "."
 import { Future } from "./future"
@@ -8,26 +6,26 @@ import {
 	evictDownstreamFromSelector,
 } from "./set-state/evict-downstream"
 import type { Store } from "./store"
-import type { Subject } from "./subject"
 
 export function writeToCache<T>(
 	target: Store,
-	key: string,
+	state: ReadableState<T>,
 	value: T,
-	subject: Subject<StateUpdate<unknown>>,
+	// subject: Subject<StateUpdate<unknown>>,
 ): T
 export function writeToCache<T extends Promise<any>>(
 	target: Store,
-	key: string,
+	state: ReadableState<T>,
 	value: T,
-	subject: Subject<StateUpdate<unknown>>,
+	// subject: Subject<StateUpdate<unknown>>,
 ): Future<Awaited<T>>
 export function writeToCache<T>(
 	target: Store,
-	key: string,
+	state: ReadableState<T>,
 	value: T,
-	subject: Subject<StateUpdate<unknown>>,
+	// subject: Subject<StateUpdate<unknown>>,
 ): Future<T> | T {
+	const { key, subject, type } = state
 	const currentValue = target.valueMap.get(key)
 	if (currentValue instanceof Future && !currentValue.done) {
 		const future = currentValue
@@ -45,22 +43,21 @@ export function writeToCache<T>(
 			.then(function handleResolvedFuture(resolved) {
 				const current = target.valueMap.get(key)
 				if (current === future) {
-					writeToCache(target, key, resolved, subject)
-					const atom = target.atoms.get(key)
-					if (atom) {
-						openOperation(target, atom)
-						evictDownstreamFromAtom(target, atom.key, atom.type)
-						closeOperation(target)
-					} else {
-						const selector =
-							target.writableSelectors.get(key) ??
-							target.readonlySelectors.get(key)
-						if (selector) {
-							openOperation(target, selector)
-							evictDownstreamFromSelector(target, selector.key)
-							closeOperation(target)
-						}
+					openOperation(target, state)
+					writeToCache(target, state, resolved)
+					switch (type) {
+						case `atom`:
+						case `mutable_atom`:
+							evictDownstreamFromAtom(target, state)
+							break
+						case `readonly_held_selector`:
+						case `readonly_pure_selector`:
+						case `writable_held_selector`:
+						case `writable_pure_selector`:
+							evictDownstreamFromSelector(target, key)
+							break
 					}
+					closeOperation(target)
 					subject.next({ newValue: resolved, oldValue: future })
 				}
 			})
