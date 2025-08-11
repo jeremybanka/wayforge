@@ -1,4 +1,4 @@
-import type { AsJSON, Fn, Transceiver } from "atom.io/internal"
+import type { AsJSON, Fn, SignalFrom, Transceiver } from "atom.io/internal"
 import type { Canonical, stringified } from "atom.io/json"
 
 /**
@@ -87,8 +87,6 @@ export type MutableAtomToken<
 	family?: FamilyMetadata<K>
 	/** Never present. This is a marker that preserves the JSON form of the atom's transceiver value. */
 	__J?: AsJSON<T>
-	/** Never present. This is a marker that preserves the type of the atom's transceiver value. */
-	__U?: T extends Transceiver<any, infer Update, any> ? Update : never
 }
 
 export type SelectorToken<T, K extends Canonical = any> =
@@ -181,8 +179,6 @@ export type MutableAtomFamilyToken<
 	type: `mutable_atom_family`
 	/** Never present. This is a marker that preserves the type of atoms in this family */
 	__T?: T
-	/** Never present. This is a marker that preserves the type of the JSON form of atoms in this family */
-	__J?: AsJSON<T>
 	/** Never present. This is a marker that preserves the type of keys used for atoms in this family */
 	__K?: K
 }
