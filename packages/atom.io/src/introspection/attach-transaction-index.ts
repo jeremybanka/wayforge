@@ -1,16 +1,16 @@
 import type { AtomToken, TransactionToken } from "atom.io"
-import type { Func, Store } from "atom.io/internal"
+import type { Fn, Store } from "atom.io/internal"
 import { createRegularAtom, isReservedIntrospectionKey } from "atom.io/internal"
 
 export const attachTransactionIndex = (
 	store: Store,
-): AtomToken<TransactionToken<Func>[]> => {
-	return createRegularAtom<TransactionToken<Func>[]>(
+): AtomToken<TransactionToken<Fn>[]> => {
+	return createRegularAtom<TransactionToken<Fn>[]>(
 		store,
 		{
 			key: `🔍 Transaction Token Index`,
 			default: () => {
-				const tokens: TransactionToken<Func>[] = []
+				const tokens: TransactionToken<Fn>[] = []
 				for (const [key] of store.transactions) {
 					if (isReservedIntrospectionKey(key)) {
 						continue

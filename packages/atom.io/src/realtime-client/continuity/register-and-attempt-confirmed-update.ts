@@ -1,5 +1,5 @@
 import type * as AtomIO from "atom.io"
-import type { Func, Store } from "atom.io/internal"
+import type { Fn, Store } from "atom.io/internal"
 import {
 	actUponStore,
 	getEpochNumberOfContinuity,
@@ -22,7 +22,7 @@ export const useRegisterAndAttemptConfirmedUpdate =
 		optimisticUpdates: AtomIO.TransactionUpdate<any>[],
 		confirmedUpdates: AtomIO.TransactionUpdate<any>[],
 	) =>
-	(confirmed: AtomIO.TransactionUpdate<Func>): void => {
+	(confirmed: AtomIO.TransactionUpdate<Fn>): void => {
 		function reconcileEpoch(
 			optimisticUpdate: AtomIO.TransactionUpdate<any>,
 			confirmedUpdate: AtomIO.TransactionUpdate<any>,

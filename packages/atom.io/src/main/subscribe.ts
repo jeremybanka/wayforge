@@ -1,4 +1,4 @@
-import type { Flat, Func } from "atom.io/internal"
+import type { Flat, Fn } from "atom.io/internal"
 import { arbitrary, IMPLICIT, subscribeInStore } from "atom.io/internal"
 
 import type {
@@ -20,7 +20,7 @@ export type KeyedStateUpdate<T> = Flat<
 	}
 >
 export type UpdateHandler<T> = (update: StateUpdate<T>) => void
-export type TransactionUpdateHandler<F extends Func> = (
+export type TransactionUpdateHandler<F extends Fn> = (
 	data: TransactionUpdate<F>,
 ) => void
 
@@ -45,7 +45,7 @@ export function subscribe<T>(
  * @returns A function that can be called to unsubscribe from the transaction
  * @overload Transaction
  */
-export function subscribe<F extends Func>(
+export function subscribe<F extends Fn>(
 	token: TransactionToken<F>,
 	handleUpdate: TransactionUpdateHandler<F>,
 	key?: string,

@@ -35,7 +35,7 @@ import type {
 	TransactionProgress,
 } from "../transaction"
 import { isRootStore } from "../transaction"
-import type { Func } from "../utility-types"
+import type { Fn } from "../utility-types"
 import { CircularBuffer } from "./circular-buffer"
 
 export class Store implements Lineage {
@@ -80,8 +80,8 @@ export class Store implements Lineage {
 	> = new Map()
 	public joins: Map<string, Join<any, any, any, any, any, any>> = new Map()
 
-	public transactions: Map<string, Transaction<Func>> = new Map()
-	public transactionMeta: TransactionEpoch | TransactionProgress<Func> = {
+	public transactions: Map<string, Transaction<Fn>> = new Map()
+	public transactionMeta: TransactionEpoch | TransactionProgress<Fn> = {
 		epoch: new Map<string, number>(),
 		actionContinuities: new Junction({
 			between: [`continuity`, `action`],
@@ -250,8 +250,8 @@ export type StoreEventCarrier = {
 	selectorCreation: Subject<SelectorToken<unknown>>
 	selectorDisposal: Subject<SelectorToken<unknown>>
 	timelineCreation: Subject<TimelineToken<unknown>>
-	transactionCreation: Subject<TransactionToken<Func>>
-	transactionApplying: StatefulSubject<TransactionProgress<Func> | null>
+	transactionCreation: Subject<TransactionToken<Fn>>
+	transactionApplying: StatefulSubject<TransactionProgress<Fn> | null>
 	operationClose: Subject<OperationProgress>
 	moleculeCreation: Subject<MoleculeCreation>
 	moleculeDisposal: Subject<MoleculeDisposal>

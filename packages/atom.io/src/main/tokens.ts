@@ -1,4 +1,4 @@
-import type { AsJSON, Func, Transceiver } from "atom.io/internal"
+import type { AsJSON, Fn, Transceiver } from "atom.io/internal"
 import type { Canonical, stringified } from "atom.io/json"
 
 /**
@@ -53,7 +53,7 @@ export type TimelineToken<M> = {
 	__M?: M
 }
 
-export type TransactionToken<F extends Func> = {
+export type TransactionToken<F extends Fn> = {
 	/** The unique identifier of the transaction */
 	key: string
 	/** Discriminator */
