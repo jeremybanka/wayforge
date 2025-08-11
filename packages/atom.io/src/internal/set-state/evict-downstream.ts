@@ -51,5 +51,10 @@ export function evictDownStreamFromSelector(
 		}
 		evictCachedValue(target, downstreamSelectorKey)
 		markDone(target, downstreamSelectorKey)
+		const downstream =
+			store.readonlySelectors.get(downstreamSelectorKey) ??
+			// biome-ignore lint/style/noNonNullAssertion: it's in one of these
+			store.writableSelectors.get(downstreamSelectorKey)!
+		evictDownStreamFromSelector(store, downstream)
 	}
 }
