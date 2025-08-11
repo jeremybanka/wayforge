@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.36.1
+
+### Patch Changes
+
+- 72f21f5: 🚀 Improved performance when reading mutable atoms in a transaction.
+
 ## 0.36.0
 
 ### Minor Changes
