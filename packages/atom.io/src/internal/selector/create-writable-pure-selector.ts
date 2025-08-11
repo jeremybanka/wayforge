@@ -39,7 +39,7 @@ export const createWritablePureSelector = <T>(
 		}
 		innerTarget.selectorAtoms.delete(key)
 		const value = getFn(getterToolkit)
-		const cached = writeToCache(innerTarget, key, value, subject)
+		const cached = writeToCache(innerTarget, mySelector, value)
 		store.logger.info(`✨`, type, key, `=`, cached)
 		covered.clear()
 		return value
@@ -50,7 +50,7 @@ export const createWritablePureSelector = <T>(
 		const oldValue = getSelf(options.get, innerTarget)
 		const newValue = become(next)(oldValue)
 		store.logger.info(`📝`, type, key, `set (`, oldValue, `->`, newValue, `)`)
-		writeToCache(innerTarget, options.key, newValue, subject)
+		writeToCache(innerTarget, mySelector, newValue)
 		markDone(innerTarget, options.key)
 		if (isRootStore(innerTarget)) {
 			subject.next({ newValue, oldValue })

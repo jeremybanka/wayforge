@@ -1,16 +1,17 @@
-import type { Atom, Selector } from ".."
+import type { Atom } from ".."
 import { evictCachedValue } from "../caching"
 import { newest } from "../lineage"
 import { isDone, markDone } from "../operation"
 import type { Store } from "../store"
 
-export function evictDownStream(store: Store, atom: Atom<any>): void {
+export function evictDownstreamFromAtom(store: Store, atom: Atom<any>): void {
 	const target = newest(store)
-	const downstreamKeys = target.selectorAtoms.getRelatedKeys(atom.key)
+	const { key, type } = atom
+	const downstreamKeys = target.selectorAtoms.getRelatedKeys(key)
 	target.logger.info(
 		`🧹`,
-		atom.type,
-		atom.key,
+		type,
+		key,
 		downstreamKeys
 			? `evicting ${downstreamKeys.size} states downstream:`
 			: `no downstream states`,
@@ -20,36 +21,37 @@ export function evictDownStream(store: Store, atom: Atom<any>): void {
 		if (target.operation.open) {
 			target.logger.info(
 				`🧹`,
-				atom.type,
-				atom.key,
+				type,
+				key,
 				`[ ${[...target.operation.done].join(`, `)} ] already done`,
 			)
 		}
-		for (const key of downstreamKeys) {
-			if (isDone(target, key)) {
+		for (const downstreamKey of downstreamKeys) {
+			if (isDone(target, downstreamKey)) {
 				continue
 			}
-			evictCachedValue(target, key)
-			markDone(target, key)
+			evictCachedValue(target, downstreamKey)
+			markDone(target, downstreamKey)
 		}
 	}
 }
 
-export function evictDownStreamFromSelector(
+export function evictDownstreamFromSelector(
 	store: Store,
-	selector: Selector<any>,
+	selectorKey: string,
 ): void {
 	const target = newest(store)
 	const relationEntries = target.selectorGraph
 		.getRelationEntries({
-			upstreamSelectorKey: selector.key,
+			upstreamSelectorKey: selectorKey,
 		})
-		.filter(([_, { source }]) => source === selector.key)
+		.filter(([_, { source }]) => source === selectorKey)
 	for (const [downstreamSelectorKey] of relationEntries) {
 		if (isDone(target, downstreamSelectorKey)) {
 			continue
 		}
 		evictCachedValue(target, downstreamSelectorKey)
 		markDone(target, downstreamSelectorKey)
+		evictDownstreamFromSelector(store, downstreamSelectorKey)
 	}
 }

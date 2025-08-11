@@ -39,7 +39,7 @@ export const createWritableHeldSelector = <T extends object>(
 		}
 		innerTarget.selectorAtoms.delete(key)
 		getFn(getterToolkit, constant)
-		writeToCache(innerTarget, key, constant, subject)
+		writeToCache(innerTarget, mySelector, constant)
 		store.logger.info(`✨`, type, key, `=`, constant)
 		covered.clear()
 		return constant
@@ -50,7 +50,7 @@ export const createWritableHeldSelector = <T extends object>(
 		const oldValue = getSelf(options.get, innerTarget)
 		const newValue = become(next)(oldValue)
 		store.logger.info(`📝`, type, key, `set (`, oldValue, `->`, newValue, `)`)
-		writeToCache(innerTarget, key, newValue, subject)
+		writeToCache(innerTarget, mySelector, newValue)
 		markDone(innerTarget, key)
 		if (isRootStore(innerTarget)) {
 			subject.next({ newValue, oldValue })
@@ -67,7 +67,6 @@ export const createWritableHeldSelector = <T extends object>(
 		...(family && { family }),
 	}
 	target.writableSelectors.set(key, mySelector)
-	// const initialValue = getSelf()
 
 	const token: WritableHeldSelectorToken<T> = { key, type }
 	if (family) {

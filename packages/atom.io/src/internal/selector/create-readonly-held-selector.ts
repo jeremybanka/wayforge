@@ -34,7 +34,7 @@ export const createReadonlyHeldSelector = <T extends object>(
 		}
 		innerTarget.selectorAtoms.delete(key)
 		options.get({ get, find, json }, constant)
-		writeToCache(newest(store), key, constant, subject)
+		writeToCache(newest(store), readonlySelector, constant)
 		covered.clear()
 		return constant
 	}
