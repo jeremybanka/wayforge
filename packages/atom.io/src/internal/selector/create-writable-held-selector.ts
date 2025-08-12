@@ -1,5 +1,6 @@
 import type {
 	FamilyMetadata,
+	StateUpdate,
 	WritableHeldSelectorOptions,
 	WritableHeldSelectorToken,
 } from "atom.io"
@@ -45,7 +46,7 @@ export const createWritableHeldSelector = <T extends object>(
 		return constant
 	}
 
-	const setSelf = (next: T | ((oldValue: T) => T)): void => {
+	const setSelf = (next: T | ((oldValue: T) => T)): StateUpdate<T> => {
 		const innerTarget = newest(store)
 		const oldValue = getSelf(options.get, innerTarget)
 		const newValue = become(next)(oldValue)
@@ -56,6 +57,7 @@ export const createWritableHeldSelector = <T extends object>(
 			subject.next({ newValue, oldValue })
 		}
 		options.set(setterToolkit, newValue)
+		return { oldValue, newValue }
 	}
 	const mySelector: WritableHeldSelector<T> = {
 		...options,

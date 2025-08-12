@@ -370,11 +370,11 @@ describe(`timeline state lifecycle`, () => {
 			key: `counts`,
 			scope: [countStates],
 		})
-		const countState = findState(countStates, `my-key`)
-		setState(countState, 1)
+		setState(countStates, `my-item`, 1)
 		undo(countsTL)
-		console.log(I.withdraw(I.IMPLICIT.STORE, countsTL))
-		expect(getState(countState)).toBe(1)
+		expect(getState(countStates, `my-item`)).toBe(0)
+		redo(countsTL)
+		expect(getState(countStates, `my-item`)).toBe(1)
 	})
 })
 

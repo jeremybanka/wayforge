@@ -1,40 +1,41 @@
+import type { StateUpdate } from "atom.io"
+
 import type { Atom, WritableState } from ".."
-import { traceRootSelectorAtoms } from ".."
+import { readOrComputeValue, traceRootSelectorAtoms } from ".."
 import type { Store } from "../store"
 import { setAtom } from "./set-atom"
 
-function resetAtom(store: Store, state: Atom<any>) {
+function resetAtom<T>(store: Store, state: Atom<T>): StateUpdate<T> {
 	switch (state.type) {
 		case `mutable_atom`:
-			setAtom(store, state, new state.class())
-			return
+			return setAtom(store, state, new state.class())
 		case `atom`: {
 			let def = state.default
 			if (def instanceof Function) {
 				def = def()
 			}
-			setAtom(store, state, def)
+			return setAtom(store, state, def)
 		}
 	}
 }
 
-export function resetAtomOrSelector(
+export function resetAtomOrSelector<T>(
 	store: Store,
-	state: WritableState<any>,
-): void {
+	state: WritableState<T>,
+): StateUpdate<T> {
 	switch (state.type) {
 		case `atom`:
 		case `mutable_atom`:
-			resetAtom(store, state)
-			break
+			return resetAtom(store, state)
 		case `writable_pure_selector`:
-		case `writable_held_selector`:
-			{
-				const atoms = traceRootSelectorAtoms(store, state.key)
-				for (const atom of atoms.values()) {
-					resetAtom(store, atom)
-				}
+		case `writable_held_selector`: {
+			const oldValue = readOrComputeValue(store, state) as T
+			const atoms = traceRootSelectorAtoms(store, state.key)
+			for (const atom of atoms.values()) {
+				resetAtom(store, atom)
 			}
-			break
+			const newValue = readOrComputeValue(store, state) as T
+			return { oldValue, newValue }
+		}
 	}
 }
