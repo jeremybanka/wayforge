@@ -11,6 +11,7 @@ import type {
 	RegularAtomToken,
 	SelectorFamilyToken,
 	SelectorToken,
+	StateCreation,
 	WritableFamilyToken,
 	WritablePureSelectorFamilyToken,
 	WritablePureSelectorToken,
@@ -18,10 +19,13 @@ import type {
 } from "atom.io"
 import type { Canonical, Json } from "atom.io/json"
 
+import type { ReadableFamily } from ".."
+import { readOrComputeValue } from "../get-state"
 import { newest } from "../lineage"
 import type { Transceiver } from "../mutable"
 import { NotFoundError } from "../not-found-error"
 import type { Store } from "../store"
+import type { Subject } from "../subject"
 import { isChildStore, isRootStore } from "../transaction"
 
 export function initFamilyMemberInStore<
@@ -85,7 +89,23 @@ export function initFamilyMemberInStore(
 	if (family === undefined) {
 		throw new NotFoundError(token, store)
 	}
+
 	const state = family(key)
+	emitStateCreation(store, family, state)
+	return state
+}
+
+export function emitStateCreation(
+	store: Store,
+	family: ReadableFamily<any, any>,
+	state: ReadableToken<any>,
+): void {
+	const stateCreation: StateCreation<any> = {
+		type: `state_creation`,
+		token: state,
+	}
+	const subject = family.subject as Subject<StateCreation<any>>
+	subject.next(stateCreation)
 	const target = newest(store)
 	if (state.family) {
 		if (isRootStore(target)) {
@@ -105,11 +125,7 @@ export function initFamilyMemberInStore(
 			isChildStore(target) &&
 			target.on.transactionApplying.state === null
 		) {
-			target.transactionMeta.update.updates.push({
-				type: `state_creation`,
-				token: state,
-			})
+			// target.transactionMeta.update.updates.push(stateCreation)
 		}
 	}
-	return state
 }
