@@ -21,16 +21,18 @@ import type {
 } from "./tokens"
 import type { TokenType } from "./validators"
 
-export type StateCreation<Token extends ReadableToken<any>> = {
+export type AtomCreation<Token extends ReadableToken<any>> = {
 	type: `state_creation`
+	subType: `atom`
 	token: Token
+	value: TokenType<Token>
 }
-export type StateDisposal<Token extends ReadableToken<any>> =
-	| AtomDisposal<Token>
-	| SelectorDisposal<Token>
-export type StateLifecycleEvent<Token extends ReadableToken<any>> =
-	| StateCreation<Token>
-	| StateDisposal<Token>
+export type SelectorCreation<Token extends ReadableToken<any>> = {
+	type: `state_creation`
+	subType: `selector`
+	token: Token
+	value: TokenType<Token>
+}
 
 export type AtomDisposal<Token extends ReadableToken<any>> = {
 	type: `state_disposal`
@@ -43,6 +45,16 @@ export type SelectorDisposal<Token extends ReadableToken<any>> = {
 	subType: `selector`
 	token: Token
 }
+
+export type StateCreation<Token extends ReadableToken<any>> =
+	| AtomCreation<Token>
+	| SelectorCreation<Token>
+export type StateDisposal<Token extends ReadableToken<any>> =
+	| AtomDisposal<Token>
+	| SelectorDisposal<Token>
+export type StateLifecycleEvent<Token extends ReadableToken<any>> =
+	| StateCreation<Token>
+	| StateDisposal<Token>
 
 export type MoleculeCreation = {
 	type: `molecule_creation`
