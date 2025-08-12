@@ -3,17 +3,19 @@ import type { ReadableToken } from "atom.io"
 import type { Store } from "./store"
 import { isChildStore } from "./transaction/is-root-store"
 
+export type OperationNotInProgress = {
+	open: false
+}
+export type OperationCurrentlyInProgress<T extends ReadableToken<any>> = {
+	open: true
+	done: Set<string>
+	prev: Map<string, any>
+	time: number
+	token: T
+}
 export type OperationProgress =
-	| {
-			open: false
-	  }
-	| {
-			open: true
-			done: Set<string>
-			prev: Map<string, any>
-			time: number
-			token: ReadableToken<any>
-	  }
+	| OperationCurrentlyInProgress<any>
+	| OperationNotInProgress
 
 export const openOperation = (
 	store: Store,
