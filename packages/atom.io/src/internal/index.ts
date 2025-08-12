@@ -12,6 +12,7 @@ import type {
 	StateCreation,
 	StateDisposal,
 	StateLifecycleEvent,
+	StateUpdate,
 	WritableHeldSelectorFamilyToken,
 	WritableHeldSelectorToken,
 	WritablePureSelectorFamilyToken,
@@ -88,7 +89,7 @@ export type WritableHeldSelector<T> = Flat<
 		type: `writable_held_selector`
 		const: T
 		get: () => T
-		set: (newValue: T | ((oldValue: T) => T)) => void
+		set: (newValue: T | ((oldValue: T) => T)) => StateUpdate<T>
 	}
 >
 export type ReadonlyHeldSelector<T> = Flat<
@@ -102,7 +103,7 @@ export type WritablePureSelector<T> = Flat<
 	AtomIOState & {
 		type: `writable_pure_selector`
 		get: () => T
-		set: (newValue: T | ((oldValue: T) => T)) => void
+		set: (newValue: T | ((oldValue: T) => T)) => StateUpdate<T>
 	}
 >
 export type ReadonlyPureSelector<T> = Flat<

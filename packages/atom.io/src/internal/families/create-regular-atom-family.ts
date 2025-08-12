@@ -55,12 +55,7 @@ export function createRegularAtomFamily<T, K extends Canonical>(
 		if (options.effects) {
 			individualOptions.effects = options.effects(key)
 		}
-
-		const token = createRegularAtom(target, individualOptions, family)
-
-		console.log(`???????`)
-		// throw new Error(`Atom family "${fullKey}" has been created.`)
-		return token
+		return createRegularAtom(target, individualOptions, family)
 	}
 
 	const atomFamily = Object.assign(familyFunction, familyToken, {

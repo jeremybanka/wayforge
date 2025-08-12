@@ -11,7 +11,6 @@ import type {
 	RegularAtomToken,
 	SelectorFamilyToken,
 	SelectorToken,
-	StateCreation,
 	WritableFamilyToken,
 	WritablePureSelectorFamilyToken,
 	WritablePureSelectorToken,
@@ -19,14 +18,9 @@ import type {
 } from "atom.io"
 import type { Canonical, Json } from "atom.io/json"
 
-import type { ReadableFamily } from ".."
-import { readOrComputeValue } from "../get-state"
-import { newest } from "../lineage"
 import type { Transceiver } from "../mutable"
 import { NotFoundError } from "../not-found-error"
 import type { Store } from "../store"
-import type { Subject } from "../subject"
-import { isChildStore, isRootStore } from "../transaction"
 
 export function initFamilyMemberInStore<
 	T extends Transceiver<any, any, any>,
@@ -90,42 +84,5 @@ export function initFamilyMemberInStore(
 		throw new NotFoundError(token, store)
 	}
 
-	const state = family(key)
-	emitStateCreation(store, family, state)
-	return state
-}
-
-export function emitStateCreation(
-	store: Store,
-	family: ReadableFamily<any, any>,
-	state: ReadableToken<any>,
-): void {
-	const stateCreation: StateCreation<any> = {
-		type: `state_creation`,
-		token: state,
-	}
-	const subject = family.subject as Subject<StateCreation<any>>
-	subject.next(stateCreation)
-	const target = newest(store)
-	if (state.family) {
-		if (isRootStore(target)) {
-			switch (state.type) {
-				case `atom`:
-				case `mutable_atom`:
-					store.on.atomCreation.next(state)
-					break
-				case `writable_pure_selector`:
-				case `readonly_pure_selector`:
-				case `writable_held_selector`:
-				case `readonly_held_selector`:
-					store.on.selectorCreation.next(state)
-					break
-			}
-		} else if (
-			isChildStore(target) &&
-			target.on.transactionApplying.state === null
-		) {
-			// target.transactionMeta.update.updates.push(stateCreation)
-		}
-	}
+	return family(key)
 }

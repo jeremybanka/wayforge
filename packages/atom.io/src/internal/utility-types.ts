@@ -16,3 +16,5 @@ export type Each<E extends any[]> = {
 }
 
 export type Refinement<A, B extends A> = (a: A) => a is B
+
+export type SafelyExtract<T, U> = any extends T ? U : Extract<T, U>
