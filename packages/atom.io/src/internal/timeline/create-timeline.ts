@@ -354,7 +354,9 @@ function timelineBuildsSelectorUpdate<T>(
 	if (willCapture) {
 		tl.subject.next(selectorUpdate)
 	} else {
-		tl.history.pop()
+		tl.history.pop() // ❗ Cover case where a selector update is not captured
+		// but is it even reasonable?
+		// not capturing a selector update means discarding all of its atom updaes...
 		tl.at = tl.history.length
 	}
 }
