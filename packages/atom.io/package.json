@@ -121,7 +121,7 @@
 		"tsdown": "0.14.1",
 		"tsx": "4.20.3",
 		"typescript": "5.9.2",
-		"vite": "7.1.1",
+		"vite": "7.1.2",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.2.4",
 		"zod": "3.25.76"
