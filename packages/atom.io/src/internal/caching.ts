@@ -45,17 +45,17 @@ export function writeToCache<T>(
 				if (current === future) {
 					openOperation(target, state)
 					writeToCache(target, state, resolved)
+					// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 					switch (type) {
 						case `atom`:
 						case `mutable_atom`:
 							evictDownstreamFromAtom(target, state)
 							break
-						case `readonly_held_selector`:
 						case `readonly_pure_selector`:
-						case `writable_held_selector`:
 						case `writable_pure_selector`:
 							evictDownstreamFromSelector(target, key)
 							break
+						// held selectors, by definitions, don't become promises
 					}
 					closeOperation(target)
 					subject.next({ newValue: resolved, oldValue: future })
