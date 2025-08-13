@@ -1,10 +1,9 @@
 import type { Fn } from "atom.io/internal"
 import { arbitrary, IMPLICIT, subscribeInStore } from "atom.io/internal"
 
-import type { StateUpdate, TimelineUpdate } from "./events"
+import type { StateUpdate, TimelineUpdate, TransactionUpdate } from "./events"
 import type { TimelineManageable } from "./timeline"
 import type { ReadableToken, TimelineToken, TransactionToken } from "./tokens"
-import type { TransactionUpdate } from "./transaction"
 
 export type UpdateHandler<T> = (update: StateUpdate<T>) => void
 export type TransactionUpdateHandler<F extends Fn> = (
