@@ -8,6 +8,7 @@ import {
 	redo,
 	runTransaction,
 	selector,
+	selectorFamily,
 	setState,
 	subscribe,
 	timeline,
@@ -366,14 +367,29 @@ describe(`timeline state lifecycle`, () => {
 			key: `count`,
 			default: 0,
 		})
+		const doubleStates = selectorFamily<number, string>({
+			key: `double`,
+			get:
+				(key: string) =>
+				({ get }) => {
+					const count = get(countStates, key)
+					return count * 2
+				},
+			set:
+				(key: string) =>
+				({ set }) => {
+					set(countStates, key, (prev) => prev / 2)
+				},
+		})
 		const countsTL = timeline({
 			key: `counts`,
 			scope: [countStates],
 		})
-		setState(countStates, `my-item`, 1)
+		setState(doubleStates, `my-item`, 2)
 		undo(countsTL)
 		expect(getState(countStates, `my-item`)).toBe(0)
 		redo(countsTL)
+		console.log(I.withdraw(I.IMPLICIT.STORE, countsTL))
 		expect(getState(countStates, `my-item`)).toBe(1)
 	})
 })

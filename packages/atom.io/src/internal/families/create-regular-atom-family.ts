@@ -4,8 +4,6 @@ import type {
 	RegularAtomFamilyToken,
 	RegularAtomOptions,
 	RegularAtomToken,
-	StateCreation,
-	StateDisposal,
 	StateLifecycleEvent,
 } from "atom.io"
 import type { Canonical } from "atom.io/json"

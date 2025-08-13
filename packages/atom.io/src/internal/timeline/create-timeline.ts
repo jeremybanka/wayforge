@@ -108,7 +108,7 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 			case `atom`:
 			case `mutable_atom`:
 				{
-					const atomToken: AtomToken<ManagedAtom> = initialTopic
+					const atomToken: AtomToken<any> = initialTopic
 					const atomKey = atomToken.key
 					let existingTimelineKey = target.timelineTopics.getRelatedKey(atomKey)
 					if (`family` in atomToken) {
