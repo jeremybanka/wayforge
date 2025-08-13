@@ -57,7 +57,7 @@ export const createWritablePureSelector = <T>(
 			subject.next({ newValue, oldValue })
 		}
 		options.set(setterToolkit, newValue)
-		return { oldValue, newValue }
+		return { oldValue, newValue } as StateUpdate<T>
 	}
 	const mySelector: WritablePureSelector<T> = {
 		...options,

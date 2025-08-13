@@ -2,17 +2,18 @@ import type { ReadableFamilyToken, ReadableToken } from "atom.io"
 import type { Canonical } from "atom.io/json"
 
 import { findInStore } from "../families"
+import type { ViewOf } from "../mutable"
 import type { Store } from "../store"
 import { withdraw } from "../store"
 import { readOrComputeValue } from "./read-or-compute-value"
 
-export function getFromStore<T>(store: Store, token: ReadableToken<T>): T
+export function getFromStore<T>(store: Store, token: ReadableToken<T>): ViewOf<T>
 
 export function getFromStore<T, K extends Canonical>(
 	store: Store,
 	token: ReadableFamilyToken<T, K>,
 	key: K,
-): T
+): ViewOf<T>
 
 export function getFromStore(
 	store: Store,

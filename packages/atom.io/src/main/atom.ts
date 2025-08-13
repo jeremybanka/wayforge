@@ -8,6 +8,7 @@ import {
 } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 
+import type { StateUpdate } from "./events"
 import type { Setter } from "./set-state"
 import type {
 	MutableAtomFamilyToken,
@@ -75,7 +76,7 @@ export type Effectors<T> = {
 	 */
 	setSelf: <New extends T>(next: New | Setter<T, New>) => void
 	/** Subscribe to changes to the atom */
-	onSet: (callback: (options: { newValue: T; oldValue: T }) => void) => void
+	onSet: (callback: (update: StateUpdate<T>) => void) => void
 }
 
 export type RegularAtomFamilyOptions<T, K extends Canonical> = {

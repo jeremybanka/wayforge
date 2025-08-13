@@ -1,5 +1,5 @@
 import type * as AtomIO from "atom.io"
-import type { Transceiver } from "atom.io/internal"
+import type { AsTransceiver, Transceiver } from "atom.io/internal"
 import {
 	findInStore,
 	getFromStore,
@@ -24,7 +24,7 @@ export function realtimeMutableFamilyProvider({
 		T extends Transceiver<any, any, any>,
 		K extends Canonical,
 	>(
-		family: AtomIO.MutableAtomFamilyToken<T, K>,
+		family: AtomIO.MutableAtomFamilyToken<AsTransceiver<T>, K>,
 		index: AtomIO.ReadableToken<Iterable<K>>,
 	): () => void {
 		const unsubCallbacksByKey = new Map<string, () => void>()
