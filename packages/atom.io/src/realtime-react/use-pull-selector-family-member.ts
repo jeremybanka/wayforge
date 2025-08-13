@@ -1,4 +1,5 @@
 import type * as AtomIO from "atom.io"
+import type { ViewOf } from "atom.io/internal"
 import { findInStore } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 import { StoreContext, useO } from "atom.io/react"
@@ -11,7 +12,7 @@ export function usePullSelectorFamilyMember<
 	T,
 	K extends Canonical,
 	Key extends K,
->(familyToken: AtomIO.SelectorFamilyToken<T, K>, key: Key): T {
+>(familyToken: AtomIO.SelectorFamilyToken<T, K>, key: Key): ViewOf<T> {
 	const store = React.useContext(StoreContext)
 	const token = findInStore(store, familyToken, key)
 	useRealtimeService(`pull:${token.key}`, (socket) =>

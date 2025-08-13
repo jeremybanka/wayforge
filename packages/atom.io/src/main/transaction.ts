@@ -8,11 +8,11 @@ import {
 import type { Canonical, stringified } from "atom.io/json"
 
 import type { disposeState } from "./dispose-state"
+import type { KeyedStateUpdate } from "./events"
 import type { findState } from "./find-state"
 import type { getState } from "./get-state"
 import type { resetState } from "./reset-state"
 import type { setState } from "./set-state"
-import type { KeyedStateUpdate } from "./subscribe"
 import type {
 	MutableAtomToken,
 	ReadableToken,

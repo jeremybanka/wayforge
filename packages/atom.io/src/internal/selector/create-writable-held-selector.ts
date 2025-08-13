@@ -57,7 +57,7 @@ export const createWritableHeldSelector = <T extends object>(
 			subject.next({ newValue, oldValue })
 		}
 		options.set(setterToolkit, newValue)
-		return { oldValue, newValue }
+		return { oldValue, newValue } as StateUpdate<T>
 	}
 	const mySelector: WritableHeldSelector<T> = {
 		...options,

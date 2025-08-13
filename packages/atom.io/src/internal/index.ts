@@ -21,7 +21,7 @@ import type {
 import type { Canonical } from "atom.io/json"
 
 import type { internalRole } from "./atom/has-role"
-import type { ConstructorOf, Transceiver } from "./mutable"
+import type { AsTransceiver, ConstructorOf, Transceiver } from "./mutable"
 import type { Store } from "./store"
 import type { Subject } from "./subject"
 import type { Timeline } from "./timeline"
@@ -80,9 +80,7 @@ export type MutableAtom<T extends Transceiver<any, any, any>> = Flat<
 		cleanup?: () => void
 	}
 >
-export type Atom<T> =
-	| RegularAtom<T>
-	| (T extends Transceiver<any, any, any> ? MutableAtom<T> : never)
+export type Atom<T> = MutableAtom<AsTransceiver<T>> | RegularAtom<T>
 
 export type WritableHeldSelector<T> = Flat<
 	AtomIOState & {
@@ -156,7 +154,7 @@ export type MutableAtomFamily<
 	& ((key: K) => MutableAtomToken<T>)
 
 export type AtomFamily<T, K extends Canonical = Canonical> =
-	| MutableAtomFamily<T extends Transceiver<any, any, any> ? T : never, K>
+	| MutableAtomFamily<AsTransceiver<T>, K>
 	| RegularAtomFamily<T, K>
 
 // biome-ignore format: intersection

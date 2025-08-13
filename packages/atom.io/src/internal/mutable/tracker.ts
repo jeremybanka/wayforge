@@ -51,7 +51,7 @@ export class Tracker<T extends Transceiver<any, any, any>> {
 	private unsubscribeFromInnerValue!: () => void
 	private unsubscribeFromState!: () => void
 	private captureSignalsFromCore(
-		mutableState: MutableAtomToken<T, any>,
+		mutableState: MutableAtomToken<Transceiver<any, any, any>, any>,
 		latestSignalState: RegularAtomToken<SignalFrom<T> | null>,
 		target: Store,
 	): void {
@@ -86,7 +86,7 @@ export class Tracker<T extends Transceiver<any, any, any>> {
 	}
 
 	private supplySignalsToCore(
-		mutableState: MutableAtomToken<T>,
+		mutableState: MutableAtomToken<Transceiver<any, any, any>>,
 		latestSignalState: RegularAtomToken<SignalFrom<T> | null>,
 		target: Store,
 	): void {

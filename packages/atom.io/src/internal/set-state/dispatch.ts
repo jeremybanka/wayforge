@@ -15,6 +15,7 @@ import type {
 	Store,
 	Subject,
 	Transceiver,
+	ViewOf,
 } from ".."
 import {
 	evictDownstreamFromAtom,
@@ -67,7 +68,7 @@ export function emitStateCreation<T>(
 	store: Store,
 	family: ReadableFamily<T, any>,
 	token: ReadableToken<T>,
-	value: T,
+	value: ViewOf<T>,
 ): void {
 	let subType: StateCreation<any>[`subType`]
 	switch (token.type) {

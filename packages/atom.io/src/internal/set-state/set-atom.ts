@@ -18,5 +18,5 @@ export const setAtom = <T>(
 	newValue = writeToCache(target, atom, newValue)
 	markDone(target, atom.key)
 	evictDownstreamFromAtom(target, atom)
-	return { oldValue, newValue }
+	return { oldValue, newValue } as StateUpdate<T>
 }

@@ -35,7 +35,7 @@ export function resetAtomOrSelector<T>(
 				resetAtom(store, atom)
 			}
 			const newValue = readOrComputeValue(store, state) as T
-			return { oldValue, newValue }
+			return { oldValue, newValue } as StateUpdate<T>
 		}
 	}
 }

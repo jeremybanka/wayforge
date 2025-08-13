@@ -1,5 +1,7 @@
 import type { Json } from "atom.io/json"
 
+import type { SafelyExtract } from "../utility-types"
+
 export interface Transceiver<
 	V,
 	S extends Json.Serializable,
@@ -33,6 +35,12 @@ export function isTransceiver(
 		`subscribe` in value
 	)
 }
+
+export type AsTransceiver<T> = T extends Transceiver<any, any, any>
+	? T
+	: Transceiver<any, any, any> extends T
+		? SafelyExtract<T, Transceiver<any, any, any>>
+		: T & Transceiver<any, any, any>
 
 export type TransceiverMode = `playback` | `record` | `transaction`
 

@@ -1,19 +1,16 @@
 import type {
 	AtomFamilyToken,
 	AtomToken,
-	FamilyMetadata,
-	MoleculeCreation,
-	MoleculeDisposal,
-	ReadableToken,
 	SelectorToken,
 	StateCreation,
 	StateDisposal,
-	StateUpdate,
+	TimelineAtomUpdate,
 	TimelineManageable,
 	TimelineOptions,
+	TimelineSelectorUpdate,
 	TimelineToken,
+	TimelineTransactionUpdate,
 	TimelineUpdate,
-	TokenType,
 	TransactionToken,
 	TransactionUpdate,
 	TransactionUpdateContent,
@@ -26,41 +23,7 @@ import type { OperationCurrentlyInProgress } from "../operation"
 import { type Store, withdraw } from "../store"
 import { Subject } from "../subject"
 import { isChildStore } from "../transaction"
-import type { Flat, Fn } from "../utility-types"
-
-export type TimelineAtomUpdate<ManagedAtom extends TimelineManageable> = Flat<
-	StateUpdate<TokenType<ManagedAtom>> & {
-		key: string
-		type: `atom_update`
-		timestamp: number
-		family?: FamilyMetadata
-	}
->
-export type TimelineSelectorUpdate<ManagedAtom extends TimelineManageable> = {
-	key: string
-	type: `selector_update`
-	timestamp: number
-	atomUpdates: Omit<TimelineAtomUpdate<ManagedAtom>, `timestamp`>[]
-}
-export type TimelineTransactionUpdate = Flat<
-	TransactionUpdate<Fn> & {
-		key: string
-		type: `transaction_update`
-		timestamp: number
-	}
->
-export type TimelineStateCreation<T extends ReadableToken<any>> = Flat<
-	StateCreation<T> & { timestamp: number }
->
-export type TimelineStateDisposal<T extends ReadableToken<any>> = Flat<
-	StateDisposal<T> & { timestamp: number }
->
-export type TimelineMoleculeCreation = Flat<
-	MoleculeCreation & { timestamp: number }
->
-export type TimelineMoleculeDisposal = Flat<
-	MoleculeDisposal & { timestamp: number }
->
+import type { Fn } from "../utility-types"
 
 export type Timeline<ManagedAtom extends TimelineManageable> = {
 	type: `timeline`

@@ -2,17 +2,29 @@ import type {
 	FamilyMetadata,
 	MutableAtomOptions,
 	MutableAtomToken,
+	ReadableToken,
 	UpdateHandler,
+	WritableToken,
 } from "atom.io"
+import type { SetRTX } from "atom.io/transceivers/set-rtx"
 
-import type { MutableAtom } from ".."
+import type { Atom, MutableAtom } from ".."
 import { createStandaloneSelector, resetInStore, setIntoStore } from ".."
 import { newest } from "../lineage"
 import { deposit, type Store } from "../store"
 import { Subject } from "../subject"
 import { subscribeToState } from "../subscribe"
 import { Tracker } from "./tracker"
-import type { Transceiver } from "./transceiver"
+import type { AsTransceiver, Transceiver } from "./transceiver"
+
+// type A<T extends Transceiver<any, any, any>> = AsTransceiver<T>
+// type B = A<Transceiver<string, string, string>> extends Transceiver<
+// 	string,
+// 	string,
+// 	string
+// >
+// 	? true
+// 	: false
 
 export function createMutableAtom<T extends Transceiver<any, any, any>>(
 	store: Store,
@@ -27,7 +39,7 @@ export function createMutableAtom<T extends Transceiver<any, any, any>>(
 	)
 	const target = newest(store)
 	const { key } = options
-	const existing = target.atoms.get(key)
+	const existing = target.atoms.get(key) as Atom<T>
 	const type = `mutable_atom`
 	if (existing && existing.type === type) {
 		store.logger.error(
@@ -65,10 +77,15 @@ export function createMutableAtom<T extends Transceiver<any, any, any>>(
 					resetInStore(store, token)
 				},
 				setSelf: (next) => {
-					setIntoStore(store, token, next)
+					setIntoStore(store, token as WritableToken<T>, next)
 				},
 				onSet: (handle: UpdateHandler<T>) =>
-					subscribeToState(store, token, `effect[${effectIndex}]`, handle),
+					subscribeToState(
+						store,
+						token as ReadableToken<T>,
+						`effect[${effectIndex}]`,
+						handle,
+					),
 			})
 			if (cleanup) {
 				cleanupFunctions.push(cleanup)
@@ -86,9 +103,9 @@ export function createMutableAtom<T extends Transceiver<any, any, any>>(
 	if (!family) {
 		createStandaloneSelector(store, {
 			key: `${key}:JSON`,
-			get: ({ get }) => get(token).toJSON(),
+			get: ({ get }) => get(token as WritableToken<T>).toJSON(),
 			set: ({ set }, newValue) => {
-				set(token, options.class.fromJSON(newValue))
+				set(token as WritableToken<T>, options.class.fromJSON(newValue))
 			},
 		})
 	}
