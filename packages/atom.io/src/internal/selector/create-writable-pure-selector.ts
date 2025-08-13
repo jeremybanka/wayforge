@@ -69,8 +69,8 @@ export const createWritablePureSelector = <T>(
 		...(family && { family }),
 	}
 	target.writableSelectors.set(key, mySelector)
-	const initialValue = getSelf()
-	store.logger.info(`✨`, mySelector.type, mySelector.key, `=`, initialValue)
+	// const initialValue = getSelf()
+	// store.logger.info(`✨`, mySelector.type, mySelector.key, `=`, initialValue)
 	const token: WritablePureSelectorToken<T> = {
 		key,
 		type,

@@ -37,14 +37,3 @@ export const subscribeToRootDependency = (
 		},
 	)
 }
-
-// export const subscribeToRootAtoms = (
-// 	store: Store,
-// 	selector: Selector<any>,
-// ): (() => void)[] => {
-// 	const target = newest(store)
-// 	const dependencySubscriptions = traceAllSelectorAtoms(selector, store).map(
-// 		(atom) => subscribeToRootDependency(target, selector, atom),
-// 	)
-// 	return dependencySubscriptions
-// }
