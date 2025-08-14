@@ -69,7 +69,7 @@ export const buildTransaction = (
 	const transactionMeta: TransactionProgress<Fn> = {
 		phase: `building`,
 		update: {
-			type: `transaction_update`,
+			type: `transaction_outcome`,
 			key,
 			id,
 			epoch: epoch === undefined ? Number.NaN : epoch + 1,

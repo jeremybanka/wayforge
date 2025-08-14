@@ -109,7 +109,7 @@ const TransactionUpdateFC: React.FC<{
 											atomUpdate={update}
 										/>
 									)
-								case `transaction_update`:
+								case `transaction_outcome`:
 									return (
 										<TransactionUpdateFC
 											key={`${transactionUpdate.key}:${index}:${update.key}`}
@@ -147,7 +147,7 @@ export const TimelineUpdateFC: React.FC<{
 				</h4>
 			</header>
 			<main>
-				{timelineUpdate.type === `transaction_update` ? (
+				{timelineUpdate.type === `transaction_outcome` ? (
 					timelineUpdate.updates
 						.filter(
 							(token) =>
@@ -169,7 +169,7 @@ export const TimelineUpdateFC: React.FC<{
 											atomUpdate={update}
 										/>
 									)
-								case `transaction_update`:
+								case `transaction_outcome`:
 									return (
 										<TransactionUpdateFC
 											key={`${timelineUpdate.key}:${index}:${update.key}`}
