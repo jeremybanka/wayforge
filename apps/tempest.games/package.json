@@ -72,7 +72,7 @@
 		"react-email": "4.2.8",
 		"resend": "6.0.1",
 		"safedeposit": "workspace:*",
-		"safegen": "0.6.4",
+		"safegen": "0.7.0",
 		"socket.io": "4.8.1",
 		"socket.io-client": "4.8.1",
 		"treetrunks": "workspace:*"
