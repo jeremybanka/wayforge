@@ -21,9 +21,7 @@ export const appVersionSelector = selector<Loadable<string>>({
 	key: `appVersion`,
 	get: async ({ get }) => {
 		const appVersionQuery = get(appVersionQueryAtom)
-		if (appVersionQuery instanceof Promise) {
-			return appVersionQuery.then((res) => res.version)
-		}
-		return appVersionQuery.version
+		const { version } = await appVersionQuery
+		return version
 	},
 })

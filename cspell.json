@@ -56,6 +56,7 @@
 		"wayforge",
 		"workerd",
 		"yalc",
-		"zustand"
+		"zustand",
+		"TRPC"
 	]
 }

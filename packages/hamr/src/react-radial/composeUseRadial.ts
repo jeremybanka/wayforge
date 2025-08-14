@@ -68,10 +68,7 @@ export const composeUseRadial =
 					x: event.changedTouches[0].clientX,
 					y: event.changedTouches[0].clientY,
 				}
-				setMousePosition?.({
-					x: event.changedTouches[0].clientX,
-					y: event.changedTouches[0].clientY,
-				})
+				setMousePosition?.(mousePosition)
 				setRadialMode(`open`)
 			},
 		}

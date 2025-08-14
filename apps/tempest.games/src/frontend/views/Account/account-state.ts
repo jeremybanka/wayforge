@@ -1,8 +1,8 @@
 import type { WritableToken } from "atom.io"
-import { atom, getState, selector, selectorFamily, setState } from "atom.io"
+import { atom, getState, selector, setState } from "atom.io"
 import * as React from "react"
 import type { Tree, TreePath } from "treetrunks"
-import { optional, required } from "treetrunks"
+import { optional } from "treetrunks"
 
 import { authAtom, emailInputAtom } from "../../services/socket-auth-service"
 

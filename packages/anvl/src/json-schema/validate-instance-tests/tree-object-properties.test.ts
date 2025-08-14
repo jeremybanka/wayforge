@@ -19,14 +19,14 @@ const color = {
 	},
 } as const satisfies ReffedJsonSchema
 
-const validate = validateBy(color)
+const _validate = validateBy(color)
 
 describe(`properties`, () => {
 	it(`fails instances with a malformed property`, () => {
 		const instance = {
 			red: 255.1,
 		}
-		const expected = {
+		const _expected = {
 			isValid: false,
 			violations: [
 				{

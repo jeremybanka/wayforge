@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.1.4/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.2.0/schema.json",
 	"assist": { "actions": { "source": { "organizeImports": "off" } } },
 	"files": {
 		"maxSize": 200000000,
@@ -56,7 +56,8 @@
 				"noAssignInExpressions": "off",
 				"noConfusingVoidType": "off",
 				"noExplicitAny": "off",
-				"noThenProperty": "off"
+				"noThenProperty": "off",
+				"useIterableCallbackReturn": "off"
 			},
 			"style": {
 				"noDescendingSpecificity": "off",

@@ -4,8 +4,8 @@ import type { Permissions, Roles } from "../src/jurist"
 import { Escalator, Laws } from "../src/jurist"
 
 test(`laws`, () => {
-	type Role = Roles<typeof authorization>
-	type Permission = Permissions<typeof authorization>
+	type _Role = Roles<typeof authorization>
+	type _Permission = Permissions<typeof authorization>
 	const authorization = new Laws({
 		roles: [`free`],
 		permissions: required({

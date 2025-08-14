@@ -32,11 +32,11 @@ export const getDirectoryJsonEntries = <T>({
 			readFileSync(`${dir}/${fileName}`, `utf8`),
 		])
 		.map(([fileName, fileContents]) => {
-			let json: Json.Serializable | undefined = undefined
-			let content: T | undefined = undefined
+			let json: Json.Serializable | undefined
+			let content: T | undefined
 			try {
 				json = parseJson(fileContents)
-			} catch (error) {
+			} catch (_error) {
 				if (!suppressWarnings) {
 					console.warn(
 						`The file ${fileName} in the directory ${dir} is not valid JSON.`,
@@ -46,7 +46,7 @@ export const getDirectoryJsonEntries = <T>({
 			if (json !== undefined) {
 				try {
 					content = coerce(json)
-				} catch (error) {
+				} catch (_error) {
 					if (!suppressWarnings) {
 						console.warn(
 							`The file ${fileName} in the directory ${dir} does not match the expected type.`,

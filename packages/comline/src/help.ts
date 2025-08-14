@@ -192,9 +192,11 @@ function assemble<T extends Object>(
 	base: T,
 	...overrides: [cond: boolean, ext: Partial<T>][]
 ) {
-	return overrides.reduce(
-		(acc, [cond, ext]) => (cond ? Object.assign(acc, ext) : acc),
-		base,
+	return (
+		overrides
+			.filter(([cond]) => cond)
+			// biome-ignore lint/performance/noAccumulatingSpread: filtered first
+			.reduce((acc, [, ext]) => Object.assign(acc, ext), base)
 	)
 }
 

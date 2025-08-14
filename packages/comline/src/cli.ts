@@ -31,8 +31,6 @@ export type CliOptionValue =
 	| string
 	| undefined
 
-const FILENAME_CHAR_ALLOWLIST = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-`
-
 export type CliOption<T extends CliOptionValue> = (T extends string
 	? {
 			parse?: (arg: string) => T

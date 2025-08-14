@@ -5,7 +5,7 @@ import {
 	cardValueIndex,
 	valuesOfCards,
 } from "../card-game-stores/card-values-store"
-import { cardAtoms, cardIndex } from "../card-game-stores/cards-store"
+import { cardIndex } from "../card-game-stores/cards-store"
 import { CARD_VALUES } from "../playing-card-data"
 
 export const spawnClassicDeckTX = transaction<

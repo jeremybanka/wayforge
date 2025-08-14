@@ -2,8 +2,6 @@ import { editRelations, findRelations, transaction } from "atom.io"
 
 import { deckIndex, groupsOfCards } from "../card-game-stores/card-groups-store"
 
-const rngOut: number[] = []
-
 class LinearCongruentialGenerator {
 	private multiplier: number
 	private increment: number
@@ -37,7 +35,7 @@ export const shuffleDeckTX = transaction<
 >({
 	key: `shuffleDeck`,
 	do: (transactors, deckId, shuffleSeed) => {
-		const { get, env } = transactors
+		const { get } = transactors
 		const rng = new LinearCongruentialGenerator(shuffleSeed)
 		const deckDoesExist = get(deckIndex).has(deckId)
 		if (!deckDoesExist) {

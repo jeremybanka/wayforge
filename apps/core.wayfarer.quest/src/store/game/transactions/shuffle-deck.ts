@@ -26,7 +26,7 @@ export const shuffleDeckTX = transaction<
 >({
 	key: `shuffleDeck`,
 	do: (transactors, gameId, deckId, shuffleSeed) => {
-		const { get, find, env } = transactors
+		const { get, find } = transactors
 		const rng = new LinearCongruentialGenerator(shuffleSeed)
 		const deckIndex = find(deckIndices, gameId)
 		const deckDoesExist = get(deckIndex).has(deckId)

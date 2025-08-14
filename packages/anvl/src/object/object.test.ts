@@ -91,7 +91,7 @@ describe(`redact (Omit<Obj, Keys>)`, () => {
 	})
 })
 
-const G: Pick<{ a: number; b: integer; c: string }, `a` | `b`> = {
+const _G: Pick<{ a: number; b: integer; c: string }, `a` | `b`> = {
 	a: 1,
 	b: Int(2),
 }
@@ -106,12 +106,10 @@ describe(`select (Pick<Obj, Keys>)`, () => {
 	it(`does not include properties that are not in the object`, () => {
 		const result0 = select(`a`, `b`)({ a: 1, c: true })
 		// @ts-expect-error c was not selected
-		const { a, b, c } = result0
-		console.log(b)
+		const { c: _ } = result0
 		const result1 = select(`a`, `b`)<MySelectable>({ a: 1, c: true })
 		// @ts-expect-error c was not selected
-		const { a: a1, b: b1, c: c1 } = result1
-		console.log({ result0, result1 })
+		const { c: _1 } = result1
 		expect(result0).toStrictEqual({ a: 1 })
 	})
 })
