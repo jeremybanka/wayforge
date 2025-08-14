@@ -9,13 +9,19 @@ subscribe(coordinatesTL, (value) => {
 
 setState(xAtoms, `sample_key`, 1)
 /* {
-  newValue: 1,
-  oldValue: 0,
-  key: `sample_key`,
-  type: `atom_update`,
-  timestamp: 1629780000000,
-  family: {
-    key: `x`,
-    type: `atom_family`,
+  type: `update`,
+  subType: `atom`,
+  update: {
+    newValue: 1,
+    oldValue: 0,
   }
+  token: {
+    key: `sample_key`,
+    type: `atom`,
+    family: {
+      key: `x`,
+      type: `atom_family`,
+    },
+  },
+  timestamp: 1629780000000,
 } */

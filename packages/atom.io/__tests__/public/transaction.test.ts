@@ -1,4 +1,4 @@
-import type { Logger, TransactionUpdate } from "atom.io"
+import type { Logger, TransactionOutcomeEvent } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -177,7 +177,7 @@ describe(`transaction`, () => {
 
 		subscribe(setAllCounts, ({ id, ...data }) => {
 			Utils.stdout0(`Transaction update:`, data)
-			for (const update of data.updates) {
+			for (const update of data.events) {
 				Utils.stdout1(`Atom update:`, update)
 			}
 		})
@@ -307,11 +307,11 @@ describe(`precise scope of transactions`, () => {
 			},
 		})
 		const validate = {
-			update: (update: TransactionUpdate<any>) => {
-				expect(update.updates).toHaveLength(1)
-				expect(`key` in update.updates[0]).toBe(true)
-				if (`key` in update.updates[0]) {
-					expect(update.updates[0].key).toEqual(`count`)
+			update: (update: TransactionOutcomeEvent<any>) => {
+				expect(update.events).toHaveLength(1)
+				expect(`key` in update.events[0]).toBe(true)
+				if (`key` in update.events[0]) {
+					expect(update.events[0].key).toEqual(`count`)
 				}
 			},
 		}

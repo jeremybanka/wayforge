@@ -3,11 +3,11 @@ import type {
 	Claim,
 	CompoundFrom,
 	CompoundTypedKey,
+	CreationEvent,
+	DisposalEvent,
 	Hierarchy,
-	MoleculeCreation,
-	MoleculeDisposal,
-	MoleculeTransfer,
 	SingularTypedKey,
+	TransferEvent,
 	Vassal,
 } from "atom.io"
 import type { Canonical, stringified } from "atom.io/json"
@@ -77,15 +77,15 @@ export function allocateIntoStore<
 		target.molecules.set(stringKey, { key, stringKey, dependsOn })
 	}
 
-	const creationEvent: MoleculeCreation = {
+	const creationEvent: CreationEvent = {
 		type: `molecule_creation`,
-		key,
+		token: { key },
 		provenance: origin,
 	}
 	const isTransaction =
 		isChildStore(target) && target.transactionMeta.phase === `building`
 	if (isTransaction) {
-		target.transactionMeta.update.updates.push(creationEvent)
+		target.transactionMeta.update.events.push(creationEvent)
 	} else {
 		target.on.moleculeCreation.next(creationEvent)
 	}
@@ -174,9 +174,9 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 	const provenance: stringified<Canonical>[] = []
 
 	const values: [string, any][] = []
-	const disposalEvent: MoleculeDisposal = {
+	const disposalEvent: DisposalEvent = {
 		type: `molecule_disposal`,
-		key: molecule.key,
+		token: { key: molecule.key },
 		values,
 		provenance,
 	}
@@ -185,7 +185,7 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 	const isTransaction =
 		isChildStore(target) && target.transactionMeta.phase === `building`
 	if (isTransaction) {
-		target.transactionMeta.update.updates.push(disposalEvent)
+		target.transactionMeta.update.events.push(disposalEvent)
 	}
 	const relatedMolecules = store.moleculeGraph.getRelationEntries({
 		downstreamMoleculeKey: molecule.stringKey,
@@ -290,9 +290,9 @@ export function claimWithinStore<
 			source: newProvenanceMolecule.stringKey,
 		},
 	)
-	const transferEvent: MoleculeTransfer = {
+	const transferEvent: TransferEvent = {
 		type: `molecule_transfer`,
-		key: molecule.key,
+		token: { key: molecule.key },
 		exclusive: Boolean(exclusive),
 		from: priorProvenance,
 		to: [newProvenanceMolecule.key],
@@ -300,7 +300,7 @@ export function claimWithinStore<
 	const isTransaction =
 		isChildStore(target) && target.transactionMeta.phase === `building`
 	if (isTransaction) {
-		target.transactionMeta.update.updates.push(transferEvent)
+		target.transactionMeta.update.events.push(transferEvent)
 	}
 
 	return claim

@@ -1,8 +1,8 @@
 import type {
-	KeyedStateUpdate,
 	ReadableToken,
-	StateCreation,
+	StateCreationEvent,
 	StateUpdate,
+	StateUpdateEvent,
 } from "atom.io"
 
 import type {
@@ -18,6 +18,7 @@ import type {
 	ViewOf,
 } from ".."
 import {
+	deposit,
 	evictDownstreamFromAtom,
 	hasRole,
 	isChildStore,
@@ -70,25 +71,34 @@ export function emitStateCreation<T>(
 	token: ReadableToken<T>,
 	value: ViewOf<T>,
 ): void {
-	let subType: StateCreation<any>[`subType`]
+	let subType: StateCreationEvent<any>[`subType`]
+	let stateCreation: StateCreationEvent<any>
 	switch (token.type) {
 		case `atom`:
 		case `mutable_atom`:
 			subType = `atom`
+			stateCreation = {
+				type: `creation`,
+				subType,
+				token,
+				value,
+			}
 			break
 		case `writable_pure_selector`:
 		case `readonly_pure_selector`:
 		case `writable_held_selector`:
 		case `readonly_held_selector`:
 			subType = `selector`
+			stateCreation = {
+				type: `creation`,
+				subType,
+				token,
+				value,
+				events: [],
+			}
 	}
-	const stateCreation: StateCreation<any> = {
-		type: `state_creation`,
-		subType,
-		token,
-		value,
-	}
-	const subject = family.subject as Subject<StateCreation<any>>
+
+	const subject = family.subject as Subject<StateCreationEvent<any>>
 	subject.next(stateCreation)
 	const target = newest(store)
 	if (token.family) {
@@ -109,7 +119,7 @@ export function emitStateCreation<T>(
 			isChildStore(target) &&
 			target.on.transactionApplying.state === null
 		) {
-			target.transactionMeta.update.updates.push(stateCreation)
+			target.transactionMeta.update.events.push(stateCreation)
 		}
 	}
 }
@@ -124,15 +134,13 @@ export function deferDispatchUpdateForTransaction(
 		if (isTransceiver(update.newValue)) {
 			return
 		}
-		const atomUpdate: KeyedStateUpdate<any> = {
-			type: `atom_update`,
-			key,
-			...update,
+		const atomUpdate: StateUpdateEvent<any> = {
+			type: `update`,
+			subType: `atom`,
+			token: deposit(atom),
+			update,
 		}
-		if (atom.family) {
-			atomUpdate.family = atom.family
-		}
-		target.transactionMeta.update.updates.push(atomUpdate)
+		target.transactionMeta.update.events.push(atomUpdate)
 		target.logger.info(
 			`📁`,
 			`atom`,

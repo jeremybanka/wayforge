@@ -1,4 +1,4 @@
-import type { TransactionUpdate } from "atom.io"
+import type { TransactionOutcomeEvent } from "atom.io"
 import type { Store } from "atom.io/internal"
 import { actUponStore } from "atom.io/internal"
 import type { JsonIO } from "atom.io/json"
@@ -8,7 +8,7 @@ export function prepareToServeTransactionRequest(
 	store: Store,
 	continuity: ContinuityToken,
 	userKey: string,
-): (update: Pick<TransactionUpdate<JsonIO>, `id` | `key` | `params`>) => void {
+): (update: Pick<TransactionOutcomeEvent<JsonIO>, `id` | `key` | `params`>) => void {
 	const continuityKey = continuity.key
 	return function serveTransactionRequest(update) {
 		store.logger.info(`🛎️`, `continuity`, continuityKey, `received`, update)

@@ -3,8 +3,8 @@ import type {
 	ReadonlyHeldSelectorFamilyOptions,
 	ReadonlyHeldSelectorFamilyToken,
 	ReadonlyHeldSelectorToken,
-	StateCreation,
-	StateDisposal,
+	StateCreationEvent,
+	StateDisposalEvent,
 	StateLifecycleEvent,
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
