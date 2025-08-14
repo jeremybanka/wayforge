@@ -1,24 +1,10 @@
-import type { Flat, Fn } from "atom.io/internal"
+import type { Fn } from "atom.io/internal"
 import { arbitrary, IMPLICIT, subscribeInStore } from "atom.io/internal"
 
-import type {
-	FamilyMetadata,
-	ReadableToken,
-	TimelineManageable,
-	TimelineToken,
-	TimelineUpdate,
-	TransactionToken,
-	TransactionUpdate,
-} from "."
+import type { StateUpdate, TimelineUpdate, TransactionUpdate } from "./events"
+import type { TimelineManageable } from "./timeline"
+import type { ReadableToken, TimelineToken, TransactionToken } from "./tokens"
 
-export type StateUpdate<T> = { newValue: T; oldValue: T }
-export type KeyedStateUpdate<T> = Flat<
-	StateUpdate<T> & {
-		key: string
-		type: `atom_update` | `selector_update`
-		family?: FamilyMetadata
-	}
->
 export type UpdateHandler<T> = (update: StateUpdate<T>) => void
 export type TransactionUpdateHandler<F extends Fn> = (
 	data: TransactionUpdate<F>,
