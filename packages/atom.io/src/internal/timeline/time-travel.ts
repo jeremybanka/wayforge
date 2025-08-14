@@ -62,7 +62,7 @@ export const timeTravel = (
 			ingestSelectorUpdate(applying, update, store)
 			break
 		}
-		case `transaction_update`: {
+		case `transaction_outcome`: {
 			ingestTransactionUpdate(applying, update, store)
 			break
 		}

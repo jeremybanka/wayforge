@@ -355,7 +355,7 @@ function filterTransactionUpdates(
 ): TransactionUpdateContent[] {
 	return updates
 		.filter((updateFromTx) => {
-			if (updateFromTx.type === `transaction_update`) {
+			if (updateFromTx.type === `transaction_outcome`) {
 				return true
 			}
 
