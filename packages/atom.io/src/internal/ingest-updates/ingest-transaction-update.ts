@@ -22,7 +22,6 @@ export function ingestTransactionUpdate(
 	for (const updateFromTransaction of updates) {
 		switch (updateFromTransaction.type) {
 			case `atom_update`:
-			case `selector_update`:
 				ingestAtomUpdate(applying, updateFromTransaction, store)
 				break
 			case `state_creation`:
