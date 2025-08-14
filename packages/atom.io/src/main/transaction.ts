@@ -5,82 +5,17 @@ import {
 	createTransaction,
 	IMPLICIT,
 } from "atom.io/internal"
-import type { Canonical, stringified } from "atom.io/json"
 
 import type { disposeState } from "./dispose-state"
 import type { findState } from "./find-state"
 import type { getState } from "./get-state"
 import type { resetState } from "./reset-state"
 import type { setState } from "./set-state"
-import type { KeyedStateUpdate } from "./subscribe"
 import type {
 	MutableAtomToken,
-	ReadableToken,
 	TransactionToken,
 	WritablePureSelectorToken,
 } from "./tokens"
-import type { TokenType } from "./validators"
-
-export type StateCreation<Token extends ReadableToken<any>> = {
-	type: `state_creation`
-	token: Token
-}
-export type StateDisposal<Token extends ReadableToken<any>> =
-	| AtomDisposal<Token>
-	| SelectorDisposal<Token>
-export type StateLifecycleEvent<Token extends ReadableToken<any>> =
-	| StateCreation<Token>
-	| StateDisposal<Token>
-
-export type AtomDisposal<Token extends ReadableToken<any>> = {
-	type: `state_disposal`
-	subType: `atom`
-	token: Token
-	value: TokenType<Token>
-}
-export type SelectorDisposal<Token extends ReadableToken<any>> = {
-	type: `state_disposal`
-	subType: `selector`
-	token: Token
-}
-
-export type MoleculeCreation = {
-	type: `molecule_creation`
-	key: Canonical
-	provenance: Canonical
-}
-export type MoleculeDisposal = {
-	type: `molecule_disposal`
-	key: Canonical
-	provenance: stringified<Canonical>[]
-	values: [key: string, value: any][]
-}
-export type MoleculeTransfer = {
-	type: `molecule_transfer`
-	key: Canonical
-	exclusive: boolean
-	from: Canonical[]
-	to: Canonical[]
-}
-
-export type TransactionUpdateContent =
-	| KeyedStateUpdate<unknown>
-	| MoleculeCreation
-	| MoleculeDisposal
-	| MoleculeTransfer
-	| StateCreation<ReadableToken<unknown>>
-	| StateDisposal<ReadableToken<unknown>>
-	| TransactionUpdate<Fn>
-
-export type TransactionUpdate<F extends Fn> = {
-	type: `transaction_update`
-	key: string
-	id: string
-	epoch: number
-	updates: TransactionUpdateContent[]
-	params: Parameters<F>
-	output: ReturnType<F>
-}
 
 export type ReaderToolkit = Pick<ActorToolkit, `find` | `get` | `json`>
 export type WriterToolkit = Pick<ActorToolkit, `find` | `get` | `json` | `set`>

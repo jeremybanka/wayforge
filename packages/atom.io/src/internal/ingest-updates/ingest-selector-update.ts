@@ -1,7 +1,10 @@
-import type { TimelineManageable } from "atom.io"
+import type {
+	TimelineAtomUpdate,
+	TimelineManageable,
+	TimelineSelectorUpdate,
+} from "atom.io"
 
 import type { Store } from "../store"
-import type { TimelineAtomUpdate, TimelineSelectorUpdate } from "../timeline"
 import { ingestAtomUpdate } from "./ingest-atom-update"
 
 export function ingestSelectorUpdate(
