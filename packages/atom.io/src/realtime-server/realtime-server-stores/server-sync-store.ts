@@ -1,6 +1,6 @@
 import type {
 	RegularAtomFamilyToken,
-	TransactionUpdate,
+	TransactionOutcomeEvent,
 	TransactionUpdateContent,
 } from "atom.io"
 import { atomFamily } from "atom.io"
@@ -89,7 +89,7 @@ export const redactorAtoms: RegularAtomFamilyToken<
 // })
 
 export type ContinuitySyncTransactionUpdate = Pick<
-	TransactionUpdate<any>,
+	TransactionOutcomeEvent<any>,
 	`epoch` | `id` | `key` | `output` | `updates`
 >
 export const userUnacknowledgedQueues: RegularAtomFamilyToken<

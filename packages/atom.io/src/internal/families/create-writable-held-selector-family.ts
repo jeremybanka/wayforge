@@ -1,7 +1,7 @@
 import type {
 	FamilyMetadata,
-	StateCreation,
-	StateDisposal,
+	StateCreationEvent,
+	StateDisposalEvent,
 	WritableHeldSelectorFamilyOptions,
 	WritableHeldSelectorFamilyToken,
 	WritableHeldSelectorToken,
@@ -43,8 +43,8 @@ export function createWritableHeldSelectorFamily<
 		)
 	}
 	const subject = new Subject<
-		| StateCreation<WritableHeldSelectorToken<T>>
-		| StateDisposal<WritableHeldSelectorToken<T>>
+		| StateCreationEvent<WritableHeldSelectorToken<T>>
+		| StateDisposalEvent<WritableHeldSelectorToken<T>>
 	>()
 
 	const familyFunction = (key: K): WritableHeldSelectorToken<T> => {

@@ -4,9 +4,9 @@ import type {
 	CompoundFrom,
 	CompoundTypedKey,
 	Hierarchy,
-	MoleculeCreation,
-	MoleculeDisposal,
-	MoleculeTransfer,
+	MoleculeCreationEvent,
+	MoleculeDisposalEvent,
+	MoleculeTransferEvent,
 	SingularTypedKey,
 	Vassal,
 } from "atom.io"
@@ -77,7 +77,7 @@ export function allocateIntoStore<
 		target.molecules.set(stringKey, { key, stringKey, dependsOn })
 	}
 
-	const creationEvent: MoleculeCreation = {
+	const creationEvent: MoleculeCreationEvent = {
 		type: `molecule_creation`,
 		key,
 		provenance: origin,
@@ -174,7 +174,7 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 	const provenance: stringified<Canonical>[] = []
 
 	const values: [string, any][] = []
-	const disposalEvent: MoleculeDisposal = {
+	const disposalEvent: MoleculeDisposalEvent = {
 		type: `molecule_disposal`,
 		key: molecule.key,
 		values,
@@ -290,7 +290,7 @@ export function claimWithinStore<
 			source: newProvenanceMolecule.stringKey,
 		},
 	)
-	const transferEvent: MoleculeTransfer = {
+	const transferEvent: MoleculeTransferEvent = {
 		type: `molecule_transfer`,
 		key: molecule.key,
 		exclusive: Boolean(exclusive),

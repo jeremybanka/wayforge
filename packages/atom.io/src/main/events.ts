@@ -7,48 +7,58 @@ import type { TokenType } from "./validators"
 
 export type StateUpdate<T> = { newValue: T; oldValue: T }
 
-export type KeyedStateUpdate<T> = Flat<
+export type StateUpdateEvent<T> = Flat<
 	StateUpdate<T> & {
 		key: string
 		type: `atom_update` | `selector_update`
 		family?: FamilyMetadata
 	}
 >
-export type StateCreation<Token extends ReadableToken<any>> = {
+export type TimelineAtomUpdateEvent<ManagedAtom extends TimelineManageable> =
+	Flat<
+		StateUpdate<TokenType<ManagedAtom>> & {
+			key: string
+			type: `atom_update`
+			timestamp: number
+			family?: FamilyMetadata
+		}
+	>
+
+export type StateCreationEvent<Token extends ReadableToken<any>> = {
 	type: `state_creation`
 	token: Token
 }
-export type StateDisposal<Token extends ReadableToken<any>> =
-	| AtomDisposal<Token>
-	| SelectorDisposal<Token>
+export type StateDisposalEvent<Token extends ReadableToken<any>> =
+	| AtomDisposalEvent<Token>
+	| SelectorDisposalEvent<Token>
 export type StateLifecycleEvent<Token extends ReadableToken<any>> =
-	| StateCreation<Token>
-	| StateDisposal<Token>
+	| StateCreationEvent<Token>
+	| StateDisposalEvent<Token>
 
-export type AtomDisposal<Token extends ReadableToken<any>> = {
+export type AtomDisposalEvent<Token extends ReadableToken<any>> = {
 	type: `state_disposal`
 	subType: `atom`
 	token: Token
 	value: TokenType<Token>
 }
-export type SelectorDisposal<Token extends ReadableToken<any>> = {
+export type SelectorDisposalEvent<Token extends ReadableToken<any>> = {
 	type: `state_disposal`
 	subType: `selector`
 	token: Token
 }
 
-export type MoleculeCreation = {
+export type MoleculeCreationEvent = {
 	type: `molecule_creation`
 	key: Canonical
 	provenance: Canonical
 }
-export type MoleculeDisposal = {
+export type MoleculeDisposalEvent = {
 	type: `molecule_disposal`
 	key: Canonical
 	provenance: stringified<Canonical>[]
 	values: [key: string, value: any][]
 }
-export type MoleculeTransfer = {
+export type MoleculeTransferEvent = {
 	type: `molecule_transfer`
 	key: Canonical
 	exclusive: boolean
@@ -57,15 +67,15 @@ export type MoleculeTransfer = {
 }
 
 export type TransactionUpdateContent =
-	| KeyedStateUpdate<unknown>
-	| MoleculeCreation
-	| MoleculeDisposal
-	| MoleculeTransfer
-	| StateCreation<ReadableToken<unknown>>
-	| StateDisposal<ReadableToken<unknown>>
-	| TransactionUpdate<Fn>
+	| MoleculeCreationEvent
+	| MoleculeDisposalEvent
+	| MoleculeTransferEvent
+	| StateCreationEvent<ReadableToken<unknown>>
+	| StateDisposalEvent<ReadableToken<unknown>>
+	| StateUpdateEvent<unknown>
+	| TransactionOutcomeEvent<Fn>
 
-export type TransactionUpdate<F extends Fn> = {
+export type TransactionOutcomeEvent<F extends Fn> = {
 	type: `transaction_update`
 	key: string
 	id: string
@@ -75,45 +85,38 @@ export type TransactionUpdate<F extends Fn> = {
 	output: ReturnType<F>
 }
 
-export type TimelineAtomUpdate<ManagedAtom extends TimelineManageable> = Flat<
-	StateUpdate<TokenType<ManagedAtom>> & {
+export type TimelineSelectorUpdateEvent<ManagedAtom extends TimelineManageable> =
+	{
 		key: string
-		type: `atom_update`
+		type: `selector_update`
 		timestamp: number
-		family?: FamilyMetadata
+		atomUpdates: Omit<TimelineAtomUpdateEvent<ManagedAtom>, `timestamp`>[]
 	}
->
-export type TimelineSelectorUpdate<ManagedAtom extends TimelineManageable> = {
-	key: string
-	type: `selector_update`
-	timestamp: number
-	atomUpdates: Omit<TimelineAtomUpdate<ManagedAtom>, `timestamp`>[]
-}
-export type TimelineTransactionUpdate = Flat<
-	TransactionUpdate<Fn> & {
+export type TimelineTransactionOutcomeEvent = Flat<
+	TransactionOutcomeEvent<Fn> & {
 		key: string
 		type: `transaction_update`
 		timestamp: number
 	}
 >
-export type TimelineStateCreation<T extends ReadableToken<any>> = Flat<
-	StateCreation<T> & { timestamp: number }
+export type TimelineStateCreationEvent<T extends ReadableToken<any>> = Flat<
+	StateCreationEvent<T> & { timestamp: number }
 >
-export type TimelineStateDisposal<T extends ReadableToken<any>> = Flat<
-	StateDisposal<T> & { timestamp: number }
+export type TimelineStateDisposalEvent<T extends ReadableToken<any>> = Flat<
+	StateDisposalEvent<T> & { timestamp: number }
 >
-export type TimelineMoleculeCreation = Flat<
-	MoleculeCreation & { timestamp: number }
+export type TimelineMoleculeCreationEvent = Flat<
+	MoleculeCreationEvent & { timestamp: number }
 >
-export type TimelineMoleculeDisposal = Flat<
-	MoleculeDisposal & { timestamp: number }
+export type TimelineMoleculeDisposalEvent = Flat<
+	MoleculeDisposalEvent & { timestamp: number }
 >
 
-export type TimelineUpdate<ManagedAtom extends TimelineManageable> =
-	| TimelineAtomUpdate<ManagedAtom>
-	| TimelineMoleculeCreation
-	| TimelineMoleculeDisposal
-	| TimelineSelectorUpdate<ManagedAtom>
-	| TimelineStateCreation<AtomOnly<ManagedAtom>>
-	| TimelineStateDisposal<AtomOnly<ManagedAtom>>
-	| TimelineTransactionUpdate
+export type TimelineEvent<ManagedAtom extends TimelineManageable> =
+	| TimelineAtomUpdateEvent<ManagedAtom>
+	| TimelineMoleculeCreationEvent
+	| TimelineMoleculeDisposalEvent
+	| TimelineSelectorUpdateEvent<ManagedAtom>
+	| TimelineStateCreationEvent<AtomOnly<ManagedAtom>>
+	| TimelineStateDisposalEvent<AtomOnly<ManagedAtom>>
+	| TimelineTransactionOutcomeEvent

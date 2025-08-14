@@ -1,12 +1,12 @@
-import type { ReadonlyPureSelectorFamilyToken, TransactionUpdate } from "atom.io"
+import type { ReadonlyPureSelectorFamilyToken, TransactionOutcomeEvent } from "atom.io"
 import type { Fn, Store } from "atom.io/internal"
 import { createRegularAtomFamily, createSelectorFamily } from "atom.io/internal"
 
 export const attachTransactionLogs = (
 	store: Store,
-): ReadonlyPureSelectorFamilyToken<TransactionUpdate<Fn>[], string> => {
+): ReadonlyPureSelectorFamilyToken<TransactionOutcomeEvent<Fn>[], string> => {
 	const transactionUpdateLogAtoms = createRegularAtomFamily<
-		TransactionUpdate<Fn>[],
+		TransactionOutcomeEvent<Fn>[],
 		string
 	>(store, {
 		key: `🔍 Transaction Update Log (Internal)`,
@@ -23,7 +23,7 @@ export const attachTransactionLogs = (
 		],
 	})
 	const findTransactionUpdateLogState = createSelectorFamily<
-		TransactionUpdate<Fn>[],
+		TransactionOutcomeEvent<Fn>[],
 		string
 	>(store, {
 		key: `🔍 Transaction Update Log`,

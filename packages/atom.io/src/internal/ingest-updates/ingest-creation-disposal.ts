@@ -1,10 +1,10 @@
 import type {
-	MoleculeCreation,
-	MoleculeDisposal,
-	MoleculeTransfer,
+	MoleculeCreationEvent,
+	MoleculeDisposalEvent,
+	MoleculeTransferEvent,
 	ReadableToken,
-	StateCreation,
-	StateDisposal,
+	StateCreationEvent,
+	StateDisposalEvent,
 } from "atom.io"
 import { parseJson, stringifyJson } from "atom.io/json"
 
@@ -17,7 +17,7 @@ import {
 import type { Store } from "../store"
 
 export function ingestCreationEvent(
-	update: StateCreation<any>,
+	update: StateCreationEvent<any>,
 	applying: `newValue` | `oldValue`,
 	store: Store,
 ): void {
@@ -34,7 +34,7 @@ export function ingestCreationEvent(
 }
 
 export function ingestDisposalEvent(
-	update: StateDisposal<ReadableToken<any>>,
+	update: StateDisposalEvent<ReadableToken<any>>,
 	applying: `newValue` | `oldValue`,
 	store: Store,
 ): void {
@@ -54,7 +54,7 @@ export function ingestDisposalEvent(
 }
 
 function createInStore(
-	update: StateCreation<any> | StateDisposal<any>,
+	update: StateCreationEvent<any> | StateDisposalEvent<any>,
 	store: Store,
 ): void {
 	const { family: familyMeta } = update.token
@@ -67,7 +67,7 @@ function createInStore(
 }
 
 export function ingestMoleculeCreationEvent(
-	update: MoleculeCreation,
+	update: MoleculeCreationEvent,
 	applying: `newValue` | `oldValue`,
 	store: Store,
 ): void {
@@ -82,7 +82,7 @@ export function ingestMoleculeCreationEvent(
 	}
 }
 export function ingestMoleculeDisposalEvent(
-	update: MoleculeDisposal,
+	update: MoleculeDisposalEvent,
 	applying: `newValue` | `oldValue`,
 	store: Store,
 ): void {
@@ -108,7 +108,7 @@ export function ingestMoleculeDisposalEvent(
 	}
 }
 export function ingestMoleculeTransferEvent(
-	update: MoleculeTransfer,
+	update: MoleculeTransferEvent,
 	applying: `newValue` | `oldValue`,
 	store: Store,
 ): void {

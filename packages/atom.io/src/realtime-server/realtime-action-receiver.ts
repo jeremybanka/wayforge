@@ -13,7 +13,7 @@ export function realtimeActionReceiver({
 		tx: AtomIO.TransactionToken<F>,
 	): () => void {
 		const fillTransactionRequest = (
-			update: Pick<AtomIO.TransactionUpdate<F>, `id` | `params`>,
+			update: Pick<AtomIO.TransactionOutcomeEvent<F>, `id` | `params`>,
 		) => {
 			const performanceKey = `tx-run:${tx.key}:${update.id}`
 			const performanceKeyStart = `${performanceKey}:start`

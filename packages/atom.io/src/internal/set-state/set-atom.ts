@@ -1,4 +1,4 @@
-import type { KeyedStateUpdate } from "atom.io"
+import type { StateUpdateEvent } from "atom.io"
 
 import type { Atom, MutableAtom, Store } from ".."
 import { hasRole } from "../atom/has-role"
@@ -32,7 +32,7 @@ export const setAtom = <T>(
 		if (isTransceiver(update.newValue)) {
 			return
 		}
-		const atomUpdate: KeyedStateUpdate<T> = {
+		const atomUpdate: StateUpdateEvent<T> = {
 			type: `atom_update`,
 			key,
 			...update,

@@ -5,8 +5,8 @@ import type {
 	ReadonlyPureSelectorFamilyOptions,
 	ReadonlyPureSelectorFamilyToken,
 	ReadonlyPureSelectorToken,
-	StateCreation,
-	StateDisposal,
+	StateCreationEvent,
+	StateDisposalEvent,
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
@@ -49,8 +49,8 @@ export function createReadonlyPureSelectorFamily<T, K extends Canonical>(
 	}
 
 	const subject = new Subject<
-		| StateCreation<ReadonlyPureSelectorToken<T>>
-		| StateDisposal<ReadonlyPureSelectorToken<T>>
+		| StateCreationEvent<ReadonlyPureSelectorToken<T>>
+		| StateDisposalEvent<ReadonlyPureSelectorToken<T>>
 	>()
 
 	const familyFunction = (key: K): ReadonlyPureSelectorToken<T> => {

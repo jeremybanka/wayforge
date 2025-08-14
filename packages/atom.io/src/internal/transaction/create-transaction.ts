@@ -1,7 +1,7 @@
 import type {
 	TransactionOptions,
 	TransactionToken,
-	TransactionUpdate,
+	TransactionOutcomeEvent,
 } from "atom.io"
 
 import { newest } from "../lineage"
@@ -17,7 +17,7 @@ export type Transaction<F extends Fn> = {
 	key: string
 	type: `transaction`
 	install: (store: Store) => void
-	subject: Subject<TransactionUpdate<F>>
+	subject: Subject<TransactionOutcomeEvent<F>>
 	run: (parameters: Parameters<F>, id?: string) => ReturnType<F>
 }
 
