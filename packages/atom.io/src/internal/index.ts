@@ -9,8 +9,8 @@ import type {
 	ReadonlyPureSelectorToken,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
-	StateCreation,
-	StateDisposal,
+	StateCreationEvent,
+	StateDisposalEvent,
 	StateLifecycleEvent,
 	WritableHeldSelectorFamilyToken,
 	WritableHeldSelectorToken,
@@ -135,7 +135,7 @@ export type RegularAtomFamily<T, K extends Canonical> =
 		(key: K): RegularAtomToken<T>
 		install: (store: Store) => void
 		internalRoles: string[] | undefined
-		subject: Subject<StateCreation<AtomToken<T>> | StateDisposal<AtomToken<T>>>
+		subject: Subject<StateCreationEvent<AtomToken<T>> | StateDisposalEvent<AtomToken<T>>>
 	}
 
 // biome-ignore format: intersection
@@ -167,8 +167,8 @@ export type WritablePureSelectorFamily<T, K extends Canonical> =
 			install: (store: Store) => void
 			internalRoles: string[] | undefined
 			subject: Subject<
-				| StateCreation<WritablePureSelectorToken<T>>
-				| StateDisposal<WritablePureSelectorToken<T>>
+				| StateCreationEvent<WritablePureSelectorToken<T>>
+				| StateDisposalEvent<WritablePureSelectorToken<T>>
 			>
 		}
 	>
@@ -183,8 +183,8 @@ export type WritableHeldSelectorFamily<T , K extends Canonical> =
 			install: (store: Store) => void
 			internalRoles: string[] | undefined
 			subject: Subject<
-				| StateCreation<WritableHeldSelectorToken<T>>
-				| StateDisposal<WritableHeldSelectorToken<T>>
+				| StateCreationEvent<WritableHeldSelectorToken<T>>
+				| StateDisposalEvent<WritableHeldSelectorToken<T>>
 			>
 		}
 	>
@@ -199,8 +199,8 @@ export type ReadonlyPureSelectorFamily<T, K extends Canonical> =
 			install: (store: Store) => void
 			internalRoles: string[] | undefined
 			subject: Subject<
-				| StateCreation<ReadonlyPureSelectorToken<T>>
-				| StateDisposal<ReadonlyPureSelectorToken<T>>
+				| StateCreationEvent<ReadonlyPureSelectorToken<T>>
+				| StateDisposalEvent<ReadonlyPureSelectorToken<T>>
 			>
 		}
 	>
@@ -215,8 +215,8 @@ export type ReadonlyHeldSelectorFamily<T , K extends Canonical> =
 			install: (store: Store) => void
 			internalRoles: string[] | undefined
 			subject: Subject<
-				| StateCreation<ReadonlyHeldSelectorToken<T>>
-				| StateDisposal<ReadonlyHeldSelectorToken<T>>
+				| StateCreationEvent<ReadonlyHeldSelectorToken<T>>
+				| StateDisposalEvent<ReadonlyHeldSelectorToken<T>>
 			>
 		}
 	>

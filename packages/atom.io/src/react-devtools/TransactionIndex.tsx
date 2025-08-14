@@ -2,7 +2,7 @@ import type {
 	ReadonlyPureSelectorToken,
 	RegularAtomToken,
 	TransactionToken,
-	TransactionUpdate,
+	TransactionOutcomeEvent,
 } from "atom.io"
 import { findInStore, type Fn } from "atom.io/internal"
 import { useI, useO } from "atom.io/react"
@@ -15,7 +15,7 @@ import { article } from "./Updates"
 export const TransactionLog: FC<{
 	token: TransactionToken<Fn>
 	isOpenState: RegularAtomToken<boolean>
-	logState: ReadonlyPureSelectorToken<TransactionUpdate<Fn>[]>
+	logState: ReadonlyPureSelectorToken<TransactionOutcomeEvent<Fn>[]>
 }> = ({ token, isOpenState, logState }) => {
 	const log = useO(logState)
 	const isOpen = useO(isOpenState)

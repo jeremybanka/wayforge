@@ -4,8 +4,8 @@ import type {
 	RegularAtomFamilyToken,
 	RegularAtomOptions,
 	RegularAtomToken,
-	StateCreation,
-	StateDisposal,
+	StateCreationEvent,
+	StateDisposalEvent,
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
@@ -39,7 +39,7 @@ export function createRegularAtomFamily<T, K extends Canonical>(
 	}
 
 	const subject = new Subject<
-		StateCreation<RegularAtomToken<T>> | StateDisposal<RegularAtomToken<T>>
+		StateCreationEvent<RegularAtomToken<T>> | StateDisposalEvent<RegularAtomToken<T>>
 	>()
 
 	const familyFunction = (key: K): RegularAtomToken<any> => {

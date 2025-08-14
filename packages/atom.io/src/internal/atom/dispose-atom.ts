@@ -1,4 +1,4 @@
-import type { AtomDisposal, AtomToken } from "atom.io"
+import type { AtomDisposalEvent, AtomToken } from "atom.io"
 
 import type { Store } from ".."
 import { getUpdateToken, isChildStore, newest, withdraw } from ".."
@@ -14,7 +14,7 @@ export function disposeAtom(store: Store, atomToken: AtomToken<unknown>): void {
 		const lastValue = store.valueMap.get(atom.key)
 		const atomFamily = withdraw(store, { key: family.key, type: `atom_family` })
 
-		const disposal: AtomDisposal<AtomToken<unknown>> = {
+		const disposal: AtomDisposalEvent<AtomToken<unknown>> = {
 			type: `state_disposal`,
 			subType: `atom`,
 			token: atomToken,

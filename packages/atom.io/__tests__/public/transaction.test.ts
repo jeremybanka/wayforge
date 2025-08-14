@@ -1,4 +1,4 @@
-import type { Logger, TransactionUpdate } from "atom.io"
+import type { Logger, TransactionOutcomeEvent } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -307,7 +307,7 @@ describe(`precise scope of transactions`, () => {
 			},
 		})
 		const validate = {
-			update: (update: TransactionUpdate<any>) => {
+			update: (update: TransactionOutcomeEvent<any>) => {
 				expect(update.updates).toHaveLength(1)
 				expect(`key` in update.updates[0]).toBe(true)
 				if (`key` in update.updates[0]) {

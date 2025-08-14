@@ -1,16 +1,16 @@
 import type {
 	AtomFamilyToken,
 	AtomToken,
-	StateCreation,
-	StateDisposal,
-	TimelineAtomUpdate,
+	StateCreationEvent,
+	StateDisposalEvent,
+	TimelineAtomUpdateEvent,
+	TimelineEvent,
 	TimelineManageable,
 	TimelineOptions,
 	TimelineToken,
-	TimelineTransactionUpdate,
-	TimelineUpdate,
+	TimelineTransactionOutcomeEvent,
+	TransactionOutcomeEvent,
 	TransactionToken,
-	TransactionUpdate,
 	TransactionUpdateContent,
 } from "atom.io"
 
@@ -26,15 +26,15 @@ export type Timeline<ManagedAtom extends TimelineManageable> = {
 	key: string
 	at: number
 	shouldCapture?: (
-		update: TimelineUpdate<ManagedAtom>,
+		update: TimelineEvent<ManagedAtom>,
 		timeline: Timeline<ManagedAtom>,
 	) => boolean
 	timeTraveling: `into_future` | `into_past` | null
-	history: TimelineUpdate<ManagedAtom>[]
+	history: TimelineEvent<ManagedAtom>[]
 	selectorTime: number | null
 	transactionKey: string | null
 	install: (store: Store) => void
-	subject: Subject<TimelineUpdate<ManagedAtom> | `redo` | `undo`>
+	subject: Subject<TimelineEvent<ManagedAtom> | `redo` | `undo`>
 	subscriptions: Map<string, () => void>
 }
 
@@ -182,7 +182,7 @@ function addAtomToTimeline(
 					if (txUpdateInProgress) {
 						joinTransaction(store, tl, txUpdateInProgress)
 					} else if (currentSelectorKey && currentSelectorTime) {
-						let latestUpdate: TimelineUpdate<any> | undefined = tl.history.at(-1)
+						let latestUpdate: TimelineEvent<any> | undefined = tl.history.at(-1)
 
 						if (currentSelectorTime !== tl.selectorTime) {
 							latestUpdate = {
@@ -244,7 +244,7 @@ function addAtomToTimeline(
 						if (tl.at !== tl.history.length) {
 							tl.history.splice(tl.at)
 						}
-						const atomUpdate: TimelineAtomUpdate<any> = {
+						const atomUpdate: TimelineAtomUpdateEvent<any> = {
 							type: `atom_update`,
 							timestamp,
 							key: atom.key,
@@ -302,7 +302,7 @@ function addAtomFamilyToTimeline(
 function joinTransaction(
 	store: Store,
 	tl: Timeline<any>,
-	txUpdateInProgress: TransactionUpdate<Fn>,
+	txUpdateInProgress: TransactionOutcomeEvent<Fn>,
 ) {
 	const currentTxKey = txUpdateInProgress.key
 	const currentTxInstanceId = txUpdateInProgress.id
@@ -331,7 +331,7 @@ function joinTransaction(
 						timelineTopics,
 					)
 
-					const timelineTransactionUpdate: TimelineTransactionUpdate = {
+					const timelineTransactionUpdate: TimelineTransactionOutcomeEvent = {
 						timestamp: Date.now(),
 						...transactionUpdate,
 						updates,
@@ -399,13 +399,13 @@ function filterTransactionUpdates(
 
 function handleStateLifecycleEvent(
 	store: Store,
-	event: StateCreation<any> | StateDisposal<any>,
+	event: StateCreationEvent<any> | StateDisposalEvent<any>,
 	tl: Timeline<any>,
 ): void {
 	const timestamp = Date.now()
 	const timelineEvent = Object.assign(event, {
 		timestamp,
-	}) as TimelineUpdate<any>
+	}) as TimelineEvent<any>
 	if (!tl.timeTraveling) {
 		const target = newest(store)
 		if (isChildStore(target)) {
