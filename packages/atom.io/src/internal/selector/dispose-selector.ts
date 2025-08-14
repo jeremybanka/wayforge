@@ -1,4 +1,8 @@
-import type { SelectorFamilyToken, SelectorToken } from "atom.io"
+import type {
+	SelectorDisposalEvent,
+	SelectorFamilyToken,
+	SelectorToken,
+} from "atom.io"
 
 import type { Store } from ".."
 import { isChildStore, newest, withdraw } from ".."
@@ -32,7 +36,7 @@ export function disposeSelector(
 					}
 					const family = withdraw(store, familyToken)
 					family.subject.next({
-						type: `state_disposal`,
+						type: `disposal`,
 						subType: `selector`,
 						token: selectorToken,
 					})
@@ -47,7 +51,7 @@ export function disposeSelector(
 					}
 					const family = withdraw(store, familyToken)
 					family.subject.next({
-						type: `state_disposal`,
+						type: `disposal`,
 						subType: `selector`,
 						token: selectorToken,
 					})
@@ -62,7 +66,7 @@ export function disposeSelector(
 					}
 					const family = withdraw(store, familyToken)
 					family.subject.next({
-						type: `state_disposal`,
+						type: `disposal`,
 						subType: `selector`,
 						token: selectorToken,
 					})
@@ -77,7 +81,7 @@ export function disposeSelector(
 					}
 					const family = withdraw(store, familyToken)
 					family.subject.next({
-						type: `state_disposal`,
+						type: `disposal`,
 						subType: `selector`,
 						token: selectorToken,
 					})
@@ -91,11 +95,12 @@ export function disposeSelector(
 		target.moleculeData.delete(familyMeta.key, familyMeta.subKey)
 		store.logger.info(`🔥`, selectorToken.type, key, `deleted`)
 		if (isChildStore(target) && target.transactionMeta.phase === `building`) {
-			target.transactionMeta.update.updates.push({
-				type: `state_disposal`,
+			const event = {
+				type: `disposal`,
 				subType: `selector`,
 				token: selectorToken,
-			})
+			} satisfies SelectorDisposalEvent<any>
+			target.transactionMeta.update.events.push(event)
 		} else {
 			store.on.selectorDisposal.next(selectorToken)
 		}

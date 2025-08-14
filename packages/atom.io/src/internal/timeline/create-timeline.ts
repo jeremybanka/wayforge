@@ -1,26 +1,27 @@
 import type {
 	AtomFamilyToken,
 	AtomToken,
+	AtomUpdateEvent,
 	SelectorToken,
-	StateCreation,
-	StateDisposal,
-	TimelineAtomUpdate,
+	SelectorUpdateEvent,
+	StateCreationEvent,
+	StateDisposalEvent,
+	StateUpdate,
+	TimelineEvent,
 	TimelineManageable,
 	TimelineOptions,
-	TimelineSelectorUpdate,
 	TimelineToken,
-	TimelineTransactionUpdate,
-	TimelineUpdate,
+	Timestamped,
+	TransactionEvent,
+	TransactionOutcomeEvent,
 	TransactionToken,
-	TransactionUpdate,
-	TransactionUpdateContent,
 } from "atom.io"
 
 import type { Atom } from ".."
 import { newest } from "../lineage"
 import { getUpdateToken } from "../mutable"
 import type { OperationCurrentlyInProgress } from "../operation"
-import { type Store, withdraw } from "../store"
+import { deposit, type Store, withdraw } from "../store"
 import { Subject } from "../subject"
 import { isChildStore } from "../transaction"
 import type { Fn } from "../utility-types"
@@ -30,15 +31,15 @@ export type Timeline<ManagedAtom extends TimelineManageable> = {
 	key: string
 	at: number
 	shouldCapture?: (
-		update: TimelineUpdate<ManagedAtom>,
+		update: TimelineEvent<ManagedAtom>,
 		timeline: Timeline<ManagedAtom>,
 	) => boolean
 	timeTraveling: `into_future` | `into_past` | null
-	history: TimelineUpdate<ManagedAtom>[]
+	history: TimelineEvent<ManagedAtom>[]
 	selectorTime: number | null
 	transactionKey: string | null
 	install: (store: Store) => void
-	subject: Subject<TimelineUpdate<ManagedAtom> | `redo` | `undo`>
+	subject: Subject<TimelineEvent<ManagedAtom> | `redo` | `undo`>
 	subscriptions: Map<string, () => void>
 }
 
@@ -178,7 +179,7 @@ function addAtomToTimeline(
 					`->`,
 					update.newValue,
 					txUpdateInProgress
-						? `in transaction "${txUpdateInProgress.key}"`
+						? `in transaction "${txUpdateInProgress.token.key}"`
 						: selectorOperation
 							? `in selector "${selectorOperation.token.key}"`
 							: ``,
@@ -208,15 +209,12 @@ function addAtomToTimeline(
 				if (tl.at !== tl.history.length) {
 					tl.history.splice(tl.at)
 				}
-				const atomUpdate: TimelineAtomUpdate<any> = {
-					type: `atom_update`,
+				const atomUpdate: AtomUpdateEvent<any> & { timestamp: number } = {
+					type: `update`,
+					subType: `atom`,
+					token: atomToken,
+					update,
 					timestamp,
-					key: atom.key,
-					oldValue: update.oldValue,
-					newValue: update.newValue,
-				}
-				if (atom.family) {
-					atomUpdate.family = atom.family
 				}
 				const willCapture = tl.shouldCapture?.(atomUpdate, tl) ?? true
 				store.logger.info(
@@ -270,32 +268,31 @@ function timelineBuildsSelectorUpdate<T>(
 ) {
 	const selectorKey = selectorOperation.token.key
 	const resumingCapture = selectorOperation.time === tl.selectorTime
-	let selectorUpdate = tl.history.at(-1) as TimelineSelectorUpdate<any>
+	let selectorUpdate = tl.history.at(-1) as Timestamped<SelectorUpdateEvent<any>>
+	const atomUpdateEvent = {
+		type: `update`,
+		subType: `atom`,
+		token: deposit(atom),
+		update,
+	} satisfies AtomUpdateEvent<any>
 	if (resumingCapture) {
-		selectorUpdate.atomUpdates.push({
-			key: atom.key,
-			type: `atom_update`,
-			...update,
-		})
+		selectorUpdate.events.push(atomUpdateEvent)
 		store.logger.info(
 			`⌛`,
 			`timeline`,
 			tl.key,
 			`set selector_update "${selectorKey}" to`,
-			selectorUpdate?.atomUpdates.map((atomUpdate) => atomUpdate.key),
+			selectorUpdate?.events.map(({ token }) => token.key),
 		)
 	} else {
 		selectorUpdate = {
-			type: `selector_update`,
+			type: `update`,
+			subType: `selector`,
+			token: selectorOperation.token,
+			update: null as unknown as StateUpdate<any>, // ❗❗❗
+			events: [atomUpdateEvent],
 			timestamp: selectorOperation.time,
-			key: selectorKey,
-			atomUpdates: [],
 		}
-		selectorUpdate.atomUpdates.push({
-			key: atom.key,
-			type: `atom_update`,
-			...update,
-		})
 		if (tl.at !== tl.history.length) {
 			tl.history.splice(tl.at)
 		}
@@ -307,7 +304,7 @@ function timelineBuildsSelectorUpdate<T>(
 			`timeline`,
 			tl.key,
 			`got a selector_update "${selectorKey}" with`,
-			selectorUpdate.atomUpdates.map((atomUpdate) => atomUpdate.key),
+			selectorUpdate.events.map(({ token }) => token.key),
 		)
 
 		tl.at = tl.history.length
@@ -327,9 +324,9 @@ function timelineBuildsSelectorUpdate<T>(
 function timelineJoinsTransaction(
 	store: Store,
 	tl: Timeline<any>,
-	txUpdateInProgress: TransactionUpdate<Fn>,
+	txUpdateInProgress: TransactionOutcomeEvent<Fn>,
 ) {
-	const currentTxKey = txUpdateInProgress.key
+	const currentTxKey = txUpdateInProgress.token.key
 	const currentTxInstanceId = txUpdateInProgress.id
 	const currentTxToken: TransactionToken<any> = {
 		key: currentTxKey,
@@ -352,14 +349,16 @@ function timelineJoinsTransaction(
 					const timelineTopics = store.timelineTopics.getRelatedKeys(tl.key)!
 
 					const updates = filterTransactionUpdates(
-						transactionUpdate.updates,
+						transactionUpdate.events,
 						timelineTopics,
 					)
 
-					const timelineTransactionUpdate: TimelineTransactionUpdate = {
+					const timelineTransactionUpdate: Timestamped<
+						TransactionOutcomeEvent<any>
+					> = {
 						timestamp: Date.now(),
 						...transactionUpdate,
-						updates,
+						events: updates,
 					}
 					const willCapture =
 						tl.shouldCapture?.(timelineTransactionUpdate, tl) ?? true
@@ -375,9 +374,9 @@ function timelineJoinsTransaction(
 }
 
 function filterTransactionUpdates(
-	updates: TransactionUpdateContent[],
+	updates: TransactionEvent[],
 	timelineTopics: Set<string>,
-): TransactionUpdateContent[] {
+): TransactionEvent[] {
 	return updates
 		.filter((updateFromTx) => {
 			if (updateFromTx.type === `transaction_update`) {
@@ -387,8 +386,8 @@ function filterTransactionUpdates(
 			let key: string
 			let familyKey: string | undefined
 			switch (updateFromTx.type) {
-				case `state_creation`:
-				case `state_disposal`:
+				case `creation`:
+				case `disposal`:
 					key = updateFromTx.token.key
 					familyKey = updateFromTx.token.family?.key
 					break
@@ -396,10 +395,9 @@ function filterTransactionUpdates(
 				case `molecule_disposal`:
 				case `molecule_transfer`:
 					return true // always include
-				case `atom_update`:
-				case `selector_update`:
-					key = updateFromTx.key
-					familyKey = updateFromTx.family?.key
+				case `update`:
+					key = updateFromTx.token.key
+					familyKey = updateFromTx.token.family?.key
 					break
 			}
 			timelineTopics.has(key)
@@ -409,13 +407,10 @@ function filterTransactionUpdates(
 			return timelineTopics.has(key)
 		})
 		.map((updateFromTx) => {
-			if (`updates` in updateFromTx) {
+			if (updateFromTx.type === `transaction_update`) {
 				return {
 					...updateFromTx,
-					updates: filterTransactionUpdates(
-						updateFromTx.updates,
-						timelineTopics,
-					),
+					updates: filterTransactionUpdates(updateFromTx.events, timelineTopics),
 				}
 			}
 			return updateFromTx
@@ -424,13 +419,13 @@ function filterTransactionUpdates(
 
 function handleStateLifecycleEvent(
 	store: Store,
-	event: StateCreation<any> | StateDisposal<any>,
+	event: StateCreationEvent<any> | StateDisposalEvent<any>,
 	tl: Timeline<any>,
 ): void {
 	const timestamp = Date.now()
 	const timelineEvent = Object.assign(event, {
 		timestamp,
-	}) as TimelineUpdate<any>
+	}) as TimelineEvent<any>
 	if (!tl.timeTraveling) {
 		const target = newest(store)
 		if (isChildStore(target)) {
@@ -447,10 +442,12 @@ function handleStateLifecycleEvent(
 		}
 	}
 	switch (event.type) {
-		case `state_creation`:
-			addAtomToTimeline(store, event.token, tl)
+		case `creation`:
+			if (event.subType === `atom`) {
+				addAtomToTimeline(store, event.token, tl)
+			}
 			break
-		case `state_disposal`:
+		case `disposal`:
 			tl.subscriptions.get(event.token.key)?.()
 			tl.subscriptions.delete(event.token.key)
 			break

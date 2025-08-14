@@ -3,25 +3,17 @@ import type { ReadableToken } from "atom.io"
 import type { Store } from "./store"
 import { isChildStore } from "./transaction/is-root-store"
 
-export type OperationNotInProgress = {
-	open: false
-}
-export type OperationCurrentlyInProgress<T extends ReadableToken<any>> = {
-	open: true
-	done: Set<string>
-	prev: Map<string, any>
-	time: number
-	token: T
-}
-export type OperationProgress =
-	| OperationCurrentlyInProgress<any>
-	| OperationNotInProgress
-
+// export type OperationProgress<T extends ReadableToken<any>> = {
+// 	done: Set<string>
+// 	prev: Map<string, any>
+// 	time: number
+// 	token: T
+// }
 export const openOperation = (
 	store: Store,
 	token: ReadableToken<any>,
 ): number | undefined => {
-	if (store.operation.open) {
+	if (store.operation) {
 		const rejectionTime = performance.now()
 		store.logger.info(
 			`❗`,
@@ -32,7 +24,6 @@ export const openOperation = (
 		return rejectionTime
 	}
 	store.operation = {
-		open: true,
 		done: new Set(),
 		prev: new Map(),
 		time: Date.now(),
@@ -45,12 +36,12 @@ export const openOperation = (
 		`operation start in store "${store.config.name}"${
 			!isChildStore(store)
 				? ``
-				: ` ${store.transactionMeta.phase} "${store.transactionMeta.update.key}"`
+				: ` ${store.transactionMeta.phase} "${store.transactionMeta.update.token.key}"`
 		}`,
 	)
 }
 export const closeOperation = (store: Store): void => {
-	if (store.operation.open) {
+	if (store.operation) {
 		store.logger.info(
 			`🔴`,
 			store.operation.token.type,
@@ -58,12 +49,12 @@ export const closeOperation = (store: Store): void => {
 			`operation done in store "${store.config.name}"`,
 		)
 	}
-	store.operation = { open: false }
+	store.operation = null
 	store.on.operationClose.next(store.operation)
 }
 
 export const isDone = (store: Store, key: string): boolean => {
-	if (!store.operation.open) {
+	if (store.operation === null) {
 		store.logger.error(
 			`🐞`,
 			`unknown`,
@@ -75,7 +66,7 @@ export const isDone = (store: Store, key: string): boolean => {
 	return store.operation.done.has(key)
 }
 export const markDone = (store: Store, key: string): void => {
-	if (!store.operation.open) {
+	if (store.operation === null) {
 		store.logger.error(
 			`🐞`,
 			`unknown`,

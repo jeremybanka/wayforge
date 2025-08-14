@@ -56,11 +56,15 @@ export function createRegularAtomFamily<T, K extends Canonical>(
 		return createRegularAtom(target, individualOptions, family)
 	}
 
-	const atomFamily = Object.assign(familyFunction, familyToken, {
-		subject,
-		install: (s: Store) => createRegularAtomFamily(s, options),
-		internalRoles,
-	}) satisfies RegularAtomFamily<T, K>
+	const atomFamily: RegularAtomFamily<T, K> = Object.assign(
+		familyFunction,
+		familyToken,
+		{
+			subject,
+			install: (s: Store) => createRegularAtomFamily(s, options),
+			internalRoles,
+		},
+	)
 
 	store.families.set(options.key, atomFamily)
 	store.defaults.set(options.key, options.default)
