@@ -20,7 +20,7 @@ interface ExampleTree extends Record<PropertyKey, any> {
 
 type ExampleFragment = Fragment<ExampleTree>
 
-const exampleTreeFragment: ExampleFragment = { a: { b: [{}] } }
+const _exampleTreeFragment: ExampleFragment = { a: { b: [{}] } }
 
 export const patch = <Base extends object, Update extends Fragment<Base>>(
 	base: Base,

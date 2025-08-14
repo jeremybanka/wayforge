@@ -5,7 +5,7 @@ describe(`differ`, () => {
 		expect(prettyJson.diff(1, 2)).toEqual({ summary: `+1 (1 → 2)` })
 	})
 	it(`diffs two strings`, () => {
-		expect(prettyJson.diff(`a`, `b`)).toEqual({ summary: `-0 (\"a\" → \"b\")` })
+		expect(prettyJson.diff(`a`, `b`)).toEqual({ summary: `-0 ("a" → "b")` })
 	})
 	it(`diffs two booleans`, () => {
 		expect(prettyJson.diff(true, false)).toEqual({ summary: `true → false` })

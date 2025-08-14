@@ -8,7 +8,7 @@ import {
 } from "."
 
 /* type tests */
-const case1 = (i: unknown): void => {
+const _case1 = (i: unknown): void => {
 	let input = i
 	const isBooleanOrNumber = mustSatisfyOneOfTheFollowing(isBoolean).or(isNumber)
 	// @ts-expect-error booleans can't be incremented

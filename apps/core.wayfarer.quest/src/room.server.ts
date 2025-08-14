@@ -8,11 +8,11 @@ import { generateHeapSnapshot } from "bun"
 import { heartsContinuity } from "./store/game/hearts"
 
 const parentSocket = new RTS.ParentSocket()
-const TIMESTAMP = Date.now()
-const LOG_FILEPATH = `./logs/${TIMESTAMP}.txt`
+// const TIMESTAMP = Date.now()
+// const LOG_FILEPATH = `./logs/${TIMESTAMP}.txt`
 
-const LOG_FILE = Bun.file(LOG_FILEPATH)
-const writer = LOG_FILE.writer()
+// const LOG_FILE = Bun.file(LOG_FILEPATH)
+// const writer = LOG_FILE.writer()
 
 const ipcLog = {
 	info: (...args: unknown[]) => {
@@ -29,7 +29,7 @@ const ipcLog = {
 const atomIOSubprocessLogger = new AtomIO.AtomIOLogger(
 	`info`,
 	(_, tokenType, tokenKey, message) => {
-		const allowedIcons: AtomIO.LoggerIcon[] = [`🛄`]
+		// const allowedIcons: AtomIO.LoggerIcon[] = [`🛄`]
 		const ignoredTokenTypes: AtomIO.TokenDenomination[] = []
 		const ignoredTokens = [`actions`, `radialMode`, `windowMousePosition`]
 		const ignoredMessageContents: string[] = []
@@ -44,25 +44,23 @@ const atomIOSubprocessLogger = new AtomIO.AtomIOLogger(
 	ipcLog,
 )
 
-function txt(arg: unknown) {
-	return typeof arg === `string` ? arg : JSON.stringify(arg)
-}
-const atomIOFileLogger = new AtomIO.AtomIOLogger(`info`, () => true, {
-	error: (...args) => {
-		writer.write(`\n${Date.now()} [ERROR] ${args.map(txt).join(` `)}\n`)
-	},
-	info: (...args) => {
-		writer.write(`\n${Date.now()} [INFO] ${args.map(txt).join(` `)}\n`)
-	},
-	warn: (...args) => {
-		writer.write(`\n${Date.now()} [WARN] ${args.map(txt).join(` `)}\n`)
-	},
-})
+// function txt(arg: unknown) {
+// 	return typeof arg === `string` ? arg : JSON.stringify(arg)
+// }
+// const atomIOFileLogger = new AtomIO.AtomIOLogger(`info`, () => true, {
+// 	error: (...args) => {
+// 		writer.write(`\n${Date.now()} [ERROR] ${args.map(txt).join(` `)}\n`)
+// 	},
+// 	info: (...args) => {
+// 		writer.write(`\n${Date.now()} [INFO] ${args.map(txt).join(` `)}\n`)
+// 	},
+// 	warn: (...args) => {
+// 		writer.write(`\n${Date.now()} [WARN] ${args.map(txt).join(` `)}\n`)
+// 	},
+// })
 
 IMPLICIT.STORE.loggers[0] = atomIOSubprocessLogger
 // IMPLICIT.STORE.loggers[1] = atomIOFileLogger
-
-const logger = IMPLICIT.STORE.logger
 
 parentSocket.relay((socket) => {
 	const snapshot = generateHeapSnapshot()

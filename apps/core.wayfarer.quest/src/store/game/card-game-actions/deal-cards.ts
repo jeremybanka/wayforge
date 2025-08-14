@@ -7,7 +7,7 @@ export const dealCardsTX = transaction<
 >({
 	key: `dealCards`,
 	do: (transactors, deckId, handId, count) => {
-		const { get, find } = transactors
+		const { get } = transactors
 		const deckIds = get(CardGroups.deckIndex)
 		const deckDoesExist = deckIds.has(deckId)
 		if (!deckDoesExist) {

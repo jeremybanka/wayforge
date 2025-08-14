@@ -1,5 +1,3 @@
-import { span } from "wayfarer.quest/components/<span>"
-
 import scss from "./Identity.module.scss"
 
 export type IdentityProps = { id: string }

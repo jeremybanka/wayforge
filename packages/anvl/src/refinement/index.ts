@@ -5,7 +5,6 @@ export * from "./cannot-exist"
 export * from "./is-class"
 export * from "./is-intersection"
 export * from "./is-union"
-export type * from "./refine-json"
 export type * from "./refined"
 export type * from "./refinement"
 

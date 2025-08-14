@@ -35,7 +35,7 @@ export function Verify({
 		return <p>You must be logged in to verify your account.</p>
 	}
 
-	const { verification } = auth
+	// const { verification } = auth
 
 	onMount(() => {
 		if (!oneTimeCode) return
