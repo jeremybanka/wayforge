@@ -372,7 +372,6 @@ function filterTransactionUpdates(
 				case `molecule_transfer`:
 					return true // always include
 				case `atom_update`:
-				case `selector_update`:
 					key = updateFromTx.key
 					familyKey = updateFromTx.family?.key
 					break

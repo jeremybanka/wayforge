@@ -101,7 +101,6 @@ const TransactionUpdateFC: React.FC<{
 						.map((update, index) => {
 							switch (update.type) {
 								case `atom_update`:
-								case `selector_update`:
 									return (
 										<article.AtomUpdate
 											key={`${transactionUpdate.key}:${index}:${update.key}`}
@@ -161,7 +160,6 @@ export const TimelineUpdateFC: React.FC<{
 						.map((update, index) => {
 							switch (update.type) {
 								case `atom_update`:
-								case `selector_update`:
 									return (
 										<article.AtomUpdate
 											key={`${timelineUpdate.key}:${index}:${update.key}`}

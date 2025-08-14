@@ -30,7 +30,6 @@ export function redactTransactionUpdateContent(
 					return { ...update, updates: redacted }
 				}
 				case `atom_update`:
-				case `selector_update`:
 				case `molecule_creation`:
 				case `molecule_disposal`:
 				case `molecule_transfer`:
@@ -42,7 +41,6 @@ export function redactTransactionUpdateContent(
 		.filter((update) => {
 			switch (update.type) {
 				case `atom_update`:
-				case `selector_update`:
 					return visibleStateKeys.includes(update.key)
 				case `state_creation`:
 				case `state_disposal`:
