@@ -38,9 +38,5 @@ export type DataDesigner<Data, NodeType extends TreeNodeType> = React.FC<
 >
 
 export const Stub: DataDesigner<any, any> = (props) => {
-	return (
-		<>
-			<JsonEditor {...props} />
-		</>
-	)
+	return <JsonEditor {...props} />
 }

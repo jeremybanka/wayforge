@@ -56,7 +56,8 @@
 				"noAssignInExpressions": "off",
 				"noConfusingVoidType": "off",
 				"noExplicitAny": "off",
-				"noThenProperty": "off"
+				"noThenProperty": "off",
+				"useIterableCallbackReturn": "off"
 			},
 			"style": {
 				"noDescendingSpecificity": "off",

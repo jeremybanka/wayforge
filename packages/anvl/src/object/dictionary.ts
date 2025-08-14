@@ -117,4 +117,4 @@ const myPairings = new Dictionary({
 	into: `age`,
 })
 myPairings.add({ firstName: `Sam`, age: `21` })
-const { age } = myPairings.getPairOf({ firstName: `f` })
+const { age: _age } = myPairings.getPairOf({ firstName: `f` })

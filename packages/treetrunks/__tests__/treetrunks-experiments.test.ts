@@ -29,7 +29,7 @@ describe(`experiments`, () => {
 
 		const none: Readonly<Record<never, never>> = {}
 
-		const WEB_ROUTES = {
+		const _WEB_ROUTES = {
 			"": {
 				GET: {
 					query: none,
@@ -40,7 +40,7 @@ describe(`experiments`, () => {
 		} satisfies WebApi<typeof myWebRoutes>
 	})
 	test(`render tree`, () => {
-		const myRenderTree = required({
+		const _myRenderTree = required({
 			body: required({
 				header: required({
 					nav: required({
@@ -120,11 +120,11 @@ describe(`experiments`, () => {
 			z: null,
 		})
 
-		type MergedTree = MergeTrees<typeof treeA, typeof treeB>
+		type _MergedTree = MergeTrees<typeof treeA, typeof treeB>
 
-		type Z = LastInUnion<1 | 2>
+		type _Z = LastInUnion<1 | 2>
 
-		type ZZ = Distill<1 | 2 | 3>
+		type _ZZ = Distill<1 | 2 | 3>
 
 		type ComponentTree<F extends ComponentFn<any>> = Distill<
 			TreesFromComponentFn<F>
@@ -134,13 +134,13 @@ describe(`experiments`, () => {
 				: never
 			: never
 
-		type ComponentTrees = Distill<TreesFromComponentFn<typeof myComponent>>
+		type _ComponentTrees = Distill<TreesFromComponentFn<typeof myComponent>>
 
 		type ComponentTrees2 = ComponentTree<typeof myComponent>
 
 		type CSSProperties = Record<string, string>
 
-		type StylesForComponent = Omit<
+		type _StylesForComponent = Omit<
 			TreeMapExhaustive<ComponentTree<typeof myComponent>, CSSProperties, ` > `>,
 			``
 		>
@@ -149,6 +149,6 @@ describe(`experiments`, () => {
 			[K in keyof T[1] as `${P}${K & string}`]: null
 		}
 
-		type ZZZ = TreeLedger<ComponentTrees2, `> `>
+		type _ZZZ = TreeLedger<ComponentTrees2, `> `>
 	})
 })

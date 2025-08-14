@@ -51,11 +51,7 @@ export const Hand = memoize<{ id: string; detailed?: boolean }>(
 					})}
 					{...handlers}
 				>
-					{detailed ? (
-						<>
-							<div>Hand ({cardIds.length})</div>
-						</>
-					) : null}
+					{detailed ? <div>Hand ({cardIds.length})</div> : null}
 					<motion.article
 						ref={ref}
 						layoutId={handId}

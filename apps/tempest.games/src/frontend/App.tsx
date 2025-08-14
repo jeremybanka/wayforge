@@ -19,10 +19,7 @@ import * as svg from "./<svg>"
 import { Anchor } from "./Anchor"
 import scss from "./App.module.scss"
 import Spinner from "./components/Spinner"
-import {
-	appVersionQueryAtom,
-	appVersionSelector,
-} from "./services/patchnotes-service"
+import { appVersionSelector } from "./services/patchnotes-service"
 import { navigate, routeSelector } from "./services/router-service"
 import { authAtom, socket } from "./services/socket-auth-service"
 import { trpcClient } from "./services/trpc-client-service"

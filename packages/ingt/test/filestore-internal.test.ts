@@ -1,13 +1,11 @@
-import { readdirSync } from "node:fs"
-
 // import mock from "mock-fs"
 import { DEFAULT_FILESTORE_OPTIONS } from "../src/options"
 import { initIndexer, initResourceReader } from "../src/read"
 import { initResourceWriter } from "../src/write"
 
-const write = initResourceWriter(DEFAULT_FILESTORE_OPTIONS)
-const read = initResourceReader(DEFAULT_FILESTORE_OPTIONS)
-const readIndex = initIndexer(DEFAULT_FILESTORE_OPTIONS)
+const _write = initResourceWriter(DEFAULT_FILESTORE_OPTIONS)
+const _read = initResourceReader(DEFAULT_FILESTORE_OPTIONS)
+const _readIndex = initIndexer(DEFAULT_FILESTORE_OPTIONS)
 
 it(`is on hold until we can replace mock-fs`, () => {
 	expect(true).toBe(true)
