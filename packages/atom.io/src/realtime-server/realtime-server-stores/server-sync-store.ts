@@ -22,7 +22,7 @@ export function redactTransactionUpdateContent(
 	return updates
 		.map((update): TransactionUpdateContent => {
 			switch (update.type) {
-				case `transaction_update`: {
+				case `transaction_outcome`: {
 					const redacted = redactTransactionUpdateContent(
 						visibleStateKeys,
 						update.updates,
@@ -48,7 +48,7 @@ export function redactTransactionUpdateContent(
 				case `state_disposal`:
 					return visibleStateKeys.includes(update.token.key)
 				case `molecule_creation`:
-				case `transaction_update`:
+				case `transaction_outcome`:
 				case `molecule_disposal`:
 				case `molecule_transfer`:
 					return true

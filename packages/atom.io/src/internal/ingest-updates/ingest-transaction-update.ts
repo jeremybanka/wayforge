@@ -40,7 +40,7 @@ export function ingestTransactionUpdate(
 			case `molecule_transfer`:
 				ingestMoleculeTransferEvent(updateFromTransaction, applying, store)
 				break
-			case `transaction_update`:
+			case `transaction_outcome`:
 				ingestTransactionUpdate(applying, updateFromTransaction, store)
 				break
 		}

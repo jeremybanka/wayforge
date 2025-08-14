@@ -76,7 +76,7 @@ export type TransactionUpdateContent =
 	| TransactionOutcomeEvent<Fn>
 
 export type TransactionOutcomeEvent<F extends Fn> = {
-	type: `transaction_update`
+	type: `transaction_outcome`
 	key: string
 	id: string
 	epoch: number
@@ -95,7 +95,7 @@ export type TimelineSelectorUpdateEvent<ManagedAtom extends TimelineManageable> 
 export type TimelineTransactionOutcomeEvent = Flat<
 	TransactionOutcomeEvent<Fn> & {
 		key: string
-		type: `transaction_update`
+		type: `transaction_outcome`
 		timestamp: number
 	}
 >
