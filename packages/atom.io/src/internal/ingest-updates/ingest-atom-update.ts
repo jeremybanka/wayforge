@@ -1,11 +1,11 @@
-import type { KeyedStateUpdate, RegularAtomToken } from "atom.io"
+import type { RegularAtomToken, StateUpdateEvent } from "atom.io"
 
 import { setIntoStore } from "../set-state"
 import type { Store } from "../store"
 
 export function ingestAtomUpdate(
 	applying: `newValue` | `oldValue`,
-	atomUpdate: KeyedStateUpdate<any>,
+	atomUpdate: StateUpdateEvent<any>,
 	store: Store,
 ): void {
 	const { key, newValue, oldValue } = atomUpdate

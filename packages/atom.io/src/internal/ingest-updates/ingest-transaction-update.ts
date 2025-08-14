@@ -1,4 +1,4 @@
-import type { TransactionUpdate } from "atom.io"
+import type { TransactionOutcomeEvent } from "atom.io"
 
 import type { Store } from "../store"
 import { ingestAtomUpdate } from "./ingest-atom-update"
@@ -12,7 +12,7 @@ import {
 
 export function ingestTransactionUpdate(
 	applying: `newValue` | `oldValue`,
-	transactionUpdate: TransactionUpdate<any>,
+	transactionUpdate: TransactionOutcomeEvent<any>,
 	store: Store,
 ): void {
 	const updates =

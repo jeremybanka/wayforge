@@ -19,13 +19,13 @@ export const useRegisterAndAttemptConfirmedUpdate =
 		store: Store,
 		continuityKey: string,
 		socket: Socket,
-		optimisticUpdates: AtomIO.TransactionUpdate<any>[],
-		confirmedUpdates: AtomIO.TransactionUpdate<any>[],
+		optimisticUpdates: AtomIO.TransactionOutcomeEvent<any>[],
+		confirmedUpdates: AtomIO.TransactionOutcomeEvent<any>[],
 	) =>
-	(confirmed: AtomIO.TransactionUpdate<Fn>): void => {
+	(confirmed: AtomIO.TransactionOutcomeEvent<Fn>): void => {
 		function reconcileEpoch(
-			optimisticUpdate: AtomIO.TransactionUpdate<any>,
-			confirmedUpdate: AtomIO.TransactionUpdate<any>,
+			optimisticUpdate: AtomIO.TransactionOutcomeEvent<any>,
+			confirmedUpdate: AtomIO.TransactionOutcomeEvent<any>,
 		): void {
 			store.logger.info(
 				`🧑‍⚖️`,

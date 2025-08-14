@@ -1,7 +1,7 @@
 import type {
-	KeyedStateUpdate,
-	TimelineUpdate,
-	TransactionUpdate,
+	StateUpdateEvent,
+	TimelineEvent,
+	TransactionOutcomeEvent,
 } from "atom.io"
 import type { Fn } from "atom.io/internal"
 import { discoverType, prettyJson } from "atom.io/introspection"
@@ -12,7 +12,7 @@ import * as React from "react"
 
 const AtomUpdateFC: React.FC<{
 	serialNumber: number
-	atomUpdate: KeyedStateUpdate<unknown>
+	atomUpdate: StateUpdateEvent<unknown>
 }> = ({ atomUpdate }) => {
 	return (
 		<article
@@ -37,7 +37,7 @@ const AtomUpdateFC: React.FC<{
 
 const TransactionUpdateFC: React.FC<{
 	serialNumber: number
-	transactionUpdate: TransactionUpdate<Fn>
+	transactionUpdate: TransactionOutcomeEvent<Fn>
 }> = ({ serialNumber, transactionUpdate }) => {
 	return (
 		<article
@@ -132,7 +132,7 @@ const TransactionUpdateFC: React.FC<{
 }
 
 export const TimelineUpdateFC: React.FC<{
-	timelineUpdate: TimelineUpdate<any>
+	timelineUpdate: TimelineEvent<any>
 	serialNumber: number
 }> = ({ timelineUpdate, serialNumber }) => {
 	return `key` in timelineUpdate ? (

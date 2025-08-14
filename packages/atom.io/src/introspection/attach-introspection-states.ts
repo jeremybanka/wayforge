@@ -4,7 +4,7 @@ import type {
 	ReadonlyPureSelectorFamilyToken,
 	TimelineToken,
 	TransactionToken,
-	TransactionUpdate,
+	TransactionOutcomeEvent,
 } from "atom.io"
 import type { Fn, Store, Timeline } from "atom.io/internal"
 
@@ -22,7 +22,7 @@ export type IntrospectionStates = {
 	selectorIndex: AtomToken<SelectorTokenIndex>
 	transactionIndex: AtomToken<TransactionToken<Fn>[]>
 	transactionLogSelectors: ReadonlyPureSelectorFamilyToken<
-		TransactionUpdate<Fn>[],
+		TransactionOutcomeEvent<Fn>[],
 		string
 	>
 	timelineIndex: AtomToken<TimelineToken<any>[]>
