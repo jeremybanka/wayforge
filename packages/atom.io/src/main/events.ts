@@ -16,15 +16,7 @@ export type AtomUpdateEvent<T> = Flat<
 		timestamp: number
 	}
 >
-export type TimelineAtomUpdateEvent<ManagedAtom extends TimelineManageable> =
-	Flat<
-		StateUpdate<TokenType<ManagedAtom>> & {
-			key: string
-			type: `atom_update`
-			timestamp: number
-			family?: FamilyMetadata
-		}
-	>
+
 export type TimelineSelectorUpdateEvent<ManagedAtom extends TimelineManageable> =
 	Flat<{
 		key: string
