@@ -105,7 +105,7 @@ export function initFamilyMemberInStore(
 			isChildStore(target) &&
 			target.on.transactionApplying.state === null
 		) {
-			target.transactionMeta.update.updates.push({
+			target.transactionMeta.update.subEvents.push({
 				type: `state_creation`,
 				token: state,
 			})

@@ -9,8 +9,8 @@ import type {
 	TimelineOptions,
 	TimelineToken,
 	TransactionOutcomeEvent,
+	TransactionSubEvent,
 	TransactionToken,
-	TransactionUpdateContent,
 } from "atom.io"
 
 import { newest } from "../lineage"
@@ -327,7 +327,7 @@ function joinTransaction(
 					const timelineTopics = store.timelineTopics.getRelatedKeys(tl.key)!
 
 					const updates = filterTransactionUpdates(
-						transactionUpdate.updates,
+						transactionUpdate.subEvents,
 						timelineTopics,
 					)
 
@@ -336,7 +336,7 @@ function joinTransaction(
 					} = {
 						timestamp: Date.now(),
 						...transactionUpdate,
-						updates,
+						subEvents: updates,
 					}
 					const willCapture =
 						tl.shouldCapture?.(timelineTransactionUpdate, tl) ?? true
@@ -352,9 +352,9 @@ function joinTransaction(
 }
 
 function filterTransactionUpdates(
-	updates: TransactionUpdateContent[],
+	updates: TransactionSubEvent[],
 	timelineTopics: Set<string>,
-): TransactionUpdateContent[] {
+): TransactionSubEvent[] {
 	return updates
 		.filter((updateFromTx) => {
 			if (updateFromTx.type === `transaction_outcome`) {
@@ -384,12 +384,12 @@ function filterTransactionUpdates(
 			}
 			return timelineTopics.has(key)
 		})
-		.map((updateFromTx) => {
-			if (`updates` in updateFromTx) {
+		.map((updateFromTx): TransactionSubEvent => {
+			if (`subEvents` in updateFromTx) {
 				return {
 					...updateFromTx,
-					updates: filterTransactionUpdates(
-						updateFromTx.updates,
+					subEvents: filterTransactionUpdates(
+						updateFromTx.subEvents,
 						timelineTopics,
 					),
 				}

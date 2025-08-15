@@ -38,8 +38,8 @@ export const useRegisterAndAttemptConfirmedUpdate =
 				return queue
 			})
 			if (optimisticUpdate.id === confirmedUpdate.id) {
-				const clientResult = JSON.stringify(optimisticUpdate.updates)
-				const serverResult = JSON.stringify(confirmedUpdate.updates)
+				const clientResult = JSON.stringify(optimisticUpdate.subEvents)
+				const serverResult = JSON.stringify(confirmedUpdate.subEvents)
 				if (clientResult === serverResult) {
 					store.logger.info(
 						`✅`,

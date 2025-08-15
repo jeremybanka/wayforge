@@ -41,7 +41,7 @@ export const setAtom = <T>(
 		if (atom.family) {
 			atomUpdate.family = atom.family
 		}
-		target.transactionMeta.update.updates.push(atomUpdate)
+		target.transactionMeta.update.subEvents.push(atomUpdate)
 		target.logger.info(
 			`📁`,
 			`atom`,
