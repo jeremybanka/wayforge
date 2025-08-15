@@ -8,14 +8,13 @@ import type { TokenType } from "./validators"
 export type StateUpdate<T> = { newValue: T; oldValue: T }
 
 export type StateUpdateEvent<T> = AtomUpdateEvent<T>
-export type AtomUpdateEvent<T> = Flat<
-	StateUpdate<T> & {
-		key: string
-		type: `atom_update`
-		family?: FamilyMetadata
-		timestamp: number
-	}
->
+export type AtomUpdateEvent<T> = {
+	key: string
+	type: `atom_update`
+	family?: FamilyMetadata
+	update: StateUpdate<T>
+	timestamp: number
+}
 
 export type TimelineSelectorUpdateEvent<ManagedAtom extends TimelineManageable> =
 	Flat<{

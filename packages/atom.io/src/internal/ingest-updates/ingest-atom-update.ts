@@ -8,7 +8,10 @@ export function ingestAtomUpdate(
 	atomUpdate: StateUpdateEvent<any>,
 	store: Store,
 ): void {
-	const { key, newValue, oldValue } = atomUpdate
+	const {
+		key,
+		update: { newValue, oldValue },
+	} = atomUpdate
 	const value = applying === `newValue` ? newValue : oldValue
 	const token: RegularAtomToken<unknown> = { key, type: `atom` }
 	if (atomUpdate.family) {

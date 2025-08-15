@@ -295,14 +295,14 @@ describe(`timeline`, () => {
 		const countTL = timeline({
 			key: `count`,
 			scope: [count],
-			shouldCapture: (update) => {
-				if (update.type === `atom_update`) {
-					const atomKey = update.key
+			shouldCapture: (event) => {
+				if (event.type === `atom_update`) {
+					const atomKey = event.key
 					const atomActual = Internal.IMPLICIT.STORE.atoms.get(atomKey)
 					if (atomActual) {
 						switch (atomActual.type) {
 							case `atom`:
-								if (atomActual.default === update.oldValue) {
+								if (atomActual.default === event.update.oldValue) {
 									return false
 								}
 								break
