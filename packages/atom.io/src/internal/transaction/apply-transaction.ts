@@ -29,7 +29,7 @@ export const applyTransaction = <F extends Fn>(
 	child.transactionMeta.update.output = output
 	parent.child = null
 	parent.on.transactionApplying.next(child.transactionMeta)
-	const { updates } = child.transactionMeta.update
+	const { subEvents: updates } = child.transactionMeta.update
 	store.logger.info(
 		`🛄`,
 		`transaction`,
@@ -58,7 +58,7 @@ export const applyTransaction = <F extends Fn>(
 			`Finished applying transaction.`,
 		)
 	} else if (isChildStore(parent)) {
-		parent.transactionMeta.update.updates.push(child.transactionMeta.update)
+		parent.transactionMeta.update.subEvents.push(child.transactionMeta.update)
 	}
 	parent.on.transactionApplying.next(null)
 }

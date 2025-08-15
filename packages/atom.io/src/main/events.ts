@@ -71,7 +71,7 @@ export type MoleculeTransferEvent = {
 	to: Canonical[]
 }
 
-export type TransactionUpdateContent =
+export type TransactionSubEvent =
 	| MoleculeCreationEvent
 	| MoleculeDisposalEvent
 	| MoleculeTransferEvent
@@ -85,7 +85,7 @@ export type TransactionOutcomeEvent<F extends Fn> = {
 	key: string
 	id: string
 	epoch: number
-	updates: TransactionUpdateContent[]
+	subEvents: TransactionSubEvent[]
 	params: Parameters<F>
 	output: ReturnType<F>
 }

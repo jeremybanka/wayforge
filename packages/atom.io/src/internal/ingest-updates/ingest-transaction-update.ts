@@ -17,8 +17,8 @@ export function ingestTransactionUpdate(
 ): void {
 	const updates =
 		applying === `newValue`
-			? transactionUpdate.updates
-			: [...transactionUpdate.updates].reverse()
+			? transactionUpdate.subEvents
+			: [...transactionUpdate.subEvents].reverse()
 	for (const updateFromTransaction of updates) {
 		switch (updateFromTransaction.type) {
 			case `atom_update`:
