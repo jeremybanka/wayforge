@@ -4,8 +4,7 @@ import type {
 	RegularAtomFamilyToken,
 	RegularAtomOptions,
 	RegularAtomToken,
-	StateCreation,
-	StateDisposal,
+	StateLifecycleEvent,
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
@@ -38,9 +37,7 @@ export function createRegularAtomFamily<T, K extends Canonical>(
 		)
 	}
 
-	const subject = new Subject<
-		StateCreation<RegularAtomToken<T>> | StateDisposal<RegularAtomToken<T>>
-	>()
+	const subject = new Subject<StateLifecycleEvent<RegularAtomToken<T>>>()
 
 	const familyFunction = (key: K): RegularAtomToken<any> => {
 		const subKey = stringifyJson(key)
@@ -56,18 +53,18 @@ export function createRegularAtomFamily<T, K extends Canonical>(
 		if (options.effects) {
 			individualOptions.effects = options.effects(key)
 		}
-
-		const token = createRegularAtom(target, individualOptions, family)
-
-		subject.next({ type: `state_creation`, token })
-		return token
+		return createRegularAtom(target, individualOptions, family)
 	}
 
-	const atomFamily = Object.assign(familyFunction, familyToken, {
-		subject,
-		install: (s: Store) => createRegularAtomFamily(s, options),
-		internalRoles,
-	}) satisfies RegularAtomFamily<T, K>
+	const atomFamily: RegularAtomFamily<T, K> = Object.assign(
+		familyFunction,
+		familyToken,
+		{
+			subject,
+			install: (s: Store) => createRegularAtomFamily(s, options),
+			internalRoles,
+		},
+	)
 
 	store.families.set(options.key, atomFamily)
 	store.defaults.set(options.key, options.default)

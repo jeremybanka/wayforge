@@ -71,7 +71,7 @@ export const TimelineLog: FC<{
 							<Fragment key={update.key + index + timeline.at}>
 								{index === timeline.at ? <YouAreHere /> : null}
 								<article.TimelineUpdate
-									timelineUpdate={update}
+									timelineUpdateEvent={update}
 									serialNumber={index}
 								/>
 								{index === timeline.history.length - 1 &&

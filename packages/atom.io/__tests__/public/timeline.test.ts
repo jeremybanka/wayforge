@@ -8,13 +8,14 @@ import {
 	redo,
 	runTransaction,
 	selector,
+	selectorFamily,
 	setState,
 	subscribe,
 	timeline,
 	transaction,
 	undo,
 } from "atom.io"
-import * as Internal from "atom.io/internal"
+import * as I from "atom.io/internal"
 import { vitest } from "vitest"
 
 import * as Utils from "../__util__"
@@ -25,9 +26,9 @@ const CHOOSE = 2
 let logger: Logger
 
 beforeEach(() => {
-	Internal.clearStore(Internal.IMPLICIT.STORE)
-	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = Internal.IMPLICIT.STORE.logger = Utils.createNullLogger()
+	I.clearStore(I.IMPLICIT.STORE)
+	I.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+	logger = I.IMPLICIT.STORE.logger = Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -36,7 +37,7 @@ beforeEach(() => {
 })
 
 describe(`timeline`, () => {
-	it(`tracks the state of a group of scope`, () => {
+	it(`tracks the state of a group of atoms`, () => {
 		const a = atom<number>({
 			key: `a`,
 			default: 5,
@@ -127,7 +128,7 @@ describe(`timeline`, () => {
 		undo(tl_abc)
 		expectation0()
 
-		const timelineData = Internal.IMPLICIT.STORE.timelines.get(tl_abc.key)
+		const timelineData = I.IMPLICIT.STORE.timelines.get(tl_abc.key)
 
 		if (!timelineData) throw new Error(`timeline data not found`)
 
@@ -241,7 +242,7 @@ describe(`timeline`, () => {
 		setState(nameCapitalizedState, `JON`)
 		runTransaction(setName)(`Sylvia`)
 
-		const timelineData = Internal.IMPLICIT.STORE.timelines.get(nameHistory.key)
+		const timelineData = I.IMPLICIT.STORE.timelines.get(nameHistory.key)
 
 		if (!timelineData) throw new Error(`timeline data not found`)
 
@@ -295,14 +296,13 @@ describe(`timeline`, () => {
 		const countTL = timeline({
 			key: `count`,
 			scope: [count],
-			shouldCapture: (update) => {
-				if (update.type === `atom_update`) {
-					const atomKey = update.key
-					const atomActual = Internal.IMPLICIT.STORE.atoms.get(atomKey)
+			shouldCapture: (event) => {
+				if (event.type === `update` && event.subType === `atom`) {
+					const atomActual = I.withdraw(I.IMPLICIT.STORE, event.token)
 					if (atomActual) {
 						switch (atomActual.type) {
 							case `atom`:
-								if (atomActual.default === update.oldValue) {
+								if (atomActual.default === event.update.oldValue) {
 									return false
 								}
 								break
@@ -319,13 +319,13 @@ describe(`timeline`, () => {
 		expect(getState(count)).toBe(1)
 		undo(countTL)
 		expect(getState(count)).toBe(1)
-		expect(Internal.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(0)
+		expect(I.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(0)
 		setState(count, 2)
 		expect(getState(count)).toBe(2)
-		expect(Internal.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(1)
+		expect(I.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(1)
 		undo(countTL)
 		expect(getState(count)).toBe(1)
-		expect(Internal.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(0)
+		expect(I.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(0)
 	})
 })
 
@@ -346,13 +346,11 @@ describe(`timeline state lifecycle`, () => {
 		undo(countsTL)
 		undo(countsTL)
 		undo(countsTL)
-		expect(
-			Internal.seekInStore(Internal.IMPLICIT.STORE, countStates, `my-key`),
-		).toBe(undefined)
+		expect(I.seekInStore(I.IMPLICIT.STORE, countStates, `my-key`)).toBe(
+			undefined,
+		)
 		redo(countsTL)
-		expect(
-			Internal.seekInStore(Internal.IMPLICIT.STORE, countStates, `my-key`),
-		).toEqual({
+		expect(I.seekInStore(I.IMPLICIT.STORE, countStates, `my-key`)).toEqual({
 			family: {
 				key: `count`,
 				subKey: `"my-key"`,
@@ -362,6 +360,36 @@ describe(`timeline state lifecycle`, () => {
 		})
 		redo(countsTL)
 		redo(countsTL)
+	})
+	test.only(`states initialized via "set" aren't "changed" from their default value`, () => {
+		const countStates = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		const doubleStates = selectorFamily<number, string>({
+			key: `double`,
+			get:
+				(key: string) =>
+				({ get }) => {
+					const count = get(countStates, key)
+					return count * 2
+				},
+			set:
+				(key: string) =>
+				({ set }) => {
+					set(countStates, key, (prev) => prev / 2)
+				},
+		})
+		const countsTL = timeline({
+			key: `counts`,
+			scope: [countStates],
+		})
+		setState(doubleStates, `my-item`, 2)
+		undo(countsTL)
+		expect(getState(countStates, `my-item`)).toBe(0)
+		redo(countsTL)
+		console.log(I.withdraw(I.IMPLICIT.STORE, countsTL))
+		expect(getState(countStates, `my-item`)).toBe(1)
 	})
 })
 

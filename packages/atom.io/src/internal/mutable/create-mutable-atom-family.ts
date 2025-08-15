@@ -4,8 +4,10 @@ import type {
 	MutableAtomFamilyToken,
 	MutableAtomOptions,
 	MutableAtomToken,
-	StateCreation,
-	StateDisposal,
+	ReadableFamilyToken,
+	StateCreationEvent,
+	StateDisposalEvent,
+	WritableFamilyToken,
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
@@ -49,7 +51,8 @@ export function createMutableAtomFamily<
 	}
 
 	const subject = new Subject<
-		StateCreation<MutableAtomToken<T>> | StateDisposal<MutableAtomToken<T>>
+		| StateCreationEvent<MutableAtomToken<T>>
+		| StateDisposalEvent<MutableAtomToken<T>>
 	>()
 
 	const familyFunction = (key: K): MutableAtomToken<T> => {
@@ -87,11 +90,15 @@ export function createMutableAtomFamily<
 			get:
 				(key) =>
 				({ get }) =>
-					get(familyToken, key).toJSON(),
+					get(familyToken as ReadableFamilyToken<T, K>, key).toJSON(),
 			set:
 				(key) =>
 				({ set }, newValue) => {
-					set(familyToken, key, options.class.fromJSON(newValue))
+					set(
+						familyToken as WritableFamilyToken<T, K>,
+						key,
+						options.class.fromJSON(newValue),
+					)
 				},
 		},
 		[`mutable`, `json`],

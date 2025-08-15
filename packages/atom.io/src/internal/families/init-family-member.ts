@@ -18,11 +18,9 @@ import type {
 } from "atom.io"
 import type { Canonical, Json } from "atom.io/json"
 
-import { newest } from "../lineage"
 import type { Transceiver } from "../mutable"
 import { NotFoundError } from "../not-found-error"
 import type { Store } from "../store"
-import { isChildStore, isRootStore } from "../transaction"
 
 export function initFamilyMemberInStore<
 	T extends Transceiver<any, any, any>,
@@ -85,31 +83,6 @@ export function initFamilyMemberInStore(
 	if (family === undefined) {
 		throw new NotFoundError(token, store)
 	}
-	const state = family(key)
-	const target = newest(store)
-	if (state.family) {
-		if (isRootStore(target)) {
-			switch (state.type) {
-				case `atom`:
-				case `mutable_atom`:
-					store.on.atomCreation.next(state)
-					break
-				case `writable_pure_selector`:
-				case `readonly_pure_selector`:
-				case `writable_held_selector`:
-				case `readonly_held_selector`:
-					store.on.selectorCreation.next(state)
-					break
-			}
-		} else if (
-			isChildStore(target) &&
-			target.on.transactionApplying.state === null
-		) {
-			target.transactionMeta.update.updates.push({
-				type: `state_creation`,
-				token: state,
-			})
-		}
-	}
-	return state
+
+	return family(key)
 }

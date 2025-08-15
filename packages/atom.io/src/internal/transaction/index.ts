@@ -1,4 +1,4 @@
-import type { ActorToolkit, TransactionUpdate } from "atom.io"
+import type { ActorToolkit, TransactionOutcomeEvent } from "atom.io"
 
 import type { Junction } from "../junction"
 import type { Fn } from "../utility-types"
@@ -18,7 +18,7 @@ export type TransactionPhase = (typeof TRANSACTION_PHASES)[number]
 
 export type TransactionProgress<F extends Fn> = {
 	phase: `applying` | `building`
-	update: TransactionUpdate<F>
+	update: TransactionOutcomeEvent<F>
 	toolkit: ActorToolkit
 }
 

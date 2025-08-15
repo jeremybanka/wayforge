@@ -1,4 +1,4 @@
-import type { AsJSON, Fn, Transceiver } from "atom.io/internal"
+import type { AsTransceiver, Fn, Transceiver } from "atom.io/internal"
 import type { Canonical, stringified } from "atom.io/json"
 
 /**
@@ -58,8 +58,11 @@ export type TransactionToken<F extends Fn> = {
 }
 
 export type AtomToken<T, K extends Canonical = any> =
-	| MutableAtomToken<T extends Transceiver<any, any, any> ? T : never, K>
+	| MutableAtomToken<AsTransceiver<T>, K>
 	| RegularAtomToken<T, K>
+
+export type AtomTokenOfIterable = AtomToken<Iterable<string>>
+
 export type RegularAtomToken<T, K extends Canonical = any> = {
 	/** The unique identifier of the atom. */
 	key: string
@@ -81,7 +84,7 @@ export type MutableAtomToken<
 	/** Present if the atom belongs to a family. */
 	family?: FamilyMetadata<K>
 	/** Never present. This is a marker that preserves the JSON form of the atom's transceiver value. */
-	__J?: AsJSON<T>
+	__T?: T
 }
 
 export type SelectorToken<T, K extends Canonical = any> =
@@ -152,7 +155,7 @@ export type FamilyMetadata<K extends Canonical = any> = {
 }
 
 export type AtomFamilyToken<T, K extends Canonical = Canonical> =
-	| MutableAtomFamilyToken<T extends Transceiver<any, any, any> ? T : never, K>
+	| MutableAtomFamilyToken<AsTransceiver<T>, K>
 	| RegularAtomFamilyToken<T, K>
 export type RegularAtomFamilyToken<T, K extends Canonical> = {
 	/** The unique identifier of the atom family */

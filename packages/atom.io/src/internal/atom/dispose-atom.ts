@@ -1,4 +1,4 @@
-import type { AtomDisposal, AtomToken } from "atom.io"
+import type { AtomDisposalEvent, AtomToken } from "atom.io"
 
 import type { Store } from ".."
 import { getUpdateToken, isChildStore, newest, withdraw } from ".."
@@ -14,11 +14,12 @@ export function disposeAtom(store: Store, atomToken: AtomToken<unknown>): void {
 		const lastValue = store.valueMap.get(atom.key)
 		const atomFamily = withdraw(store, { key: family.key, type: `atom_family` })
 
-		const disposal: AtomDisposal<AtomToken<unknown>> = {
-			type: `state_disposal`,
+		const disposal: AtomDisposalEvent<unknown> = {
+			type: `disposal`,
 			subType: `atom`,
 			token: atomToken,
 			value: lastValue,
+			events: [],
 		}
 
 		atomFamily.subject.next(disposal)
@@ -39,14 +40,14 @@ export function disposeAtom(store: Store, atomToken: AtomToken<unknown>): void {
 		}
 		store.logger.info(`🔥`, `atom`, key, `deleted`)
 		if (isChild && target.transactionMeta.phase === `building`) {
-			const mostRecentUpdate = target.transactionMeta.update.updates.at(-1)
+			const mostRecentUpdate = target.transactionMeta.update.events.at(-1)
 			const wasMoleculeDisposal = mostRecentUpdate?.type === `molecule_disposal`
 			const updateAlreadyCaptured =
 				wasMoleculeDisposal &&
 				mostRecentUpdate.values.some(([k]) => k === atom.family?.key)
 
 			if (!updateAlreadyCaptured) {
-				target.transactionMeta.update.updates.push(disposal)
+				target.transactionMeta.update.events.push(disposal)
 			}
 		} else {
 			store.on.atomDisposal.next(atomToken)

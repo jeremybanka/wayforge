@@ -1,8 +1,9 @@
 import type {
 	AtomToken,
+	CreationEvent,
+	DisposalEvent,
 	Logger,
-	MoleculeCreation,
-	MoleculeDisposal,
+	ReadableToken,
 	SelectorToken,
 	TimelineToken,
 	TransactionToken,
@@ -162,7 +163,7 @@ export class Store implements Lineage {
 		moleculeCreation: new Subject(),
 		moleculeDisposal: new Subject(),
 	}
-	public operation: OperationProgress = { open: false }
+	public operation: null
 
 	public config: {
 		name: string
@@ -253,8 +254,8 @@ export type StoreEventCarrier = {
 	transactionCreation: Subject<TransactionToken<Fn>>
 	transactionApplying: StatefulSubject<TransactionProgress<Fn> | null>
 	operationClose: Subject<OperationProgress>
-	moleculeCreation: Subject<MoleculeCreation>
-	moleculeDisposal: Subject<MoleculeDisposal>
+	moleculeCreation: Subject<CreationEvent>
+	moleculeDisposal: Subject<DisposalEvent>
 }
 
 declare global {

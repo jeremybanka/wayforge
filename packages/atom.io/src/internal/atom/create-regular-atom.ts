@@ -5,7 +5,8 @@ import type {
 	UpdateHandler,
 } from "atom.io"
 
-import { type RegularAtom, resetInStore, setIntoStore } from ".."
+import type { RegularAtom, ViewOf } from ".."
+import { resetInStore, setIntoStore } from ".."
 import { newest } from "../lineage"
 import type { Store } from "../store"
 import { deposit } from "../store"

@@ -51,14 +51,14 @@ export class Tracker<T extends Transceiver<any, any, any>> {
 	private unsubscribeFromInnerValue!: () => void
 	private unsubscribeFromState!: () => void
 	private captureSignalsFromCore(
-		mutableState: MutableAtomToken<T, any>,
+		mutableState: MutableAtomToken<Transceiver<any, any, any>, any>,
 		latestSignalState: RegularAtomToken<SignalFrom<T> | null>,
 		target: Store,
 	): void {
 		const stateKey = mutableState.key
 		const storeName = target.config.name
 		const storeStatus = isChildStore(target)
-			? target.transactionMeta.update.key
+			? target.transactionMeta.update.token.key
 			: `main`
 		const subscriptionKey = `tracker:${storeName}:${storeStatus}:${stateKey}`
 		const trackerCapturesOutboundSignal = (update: SignalFrom<T>) => {
@@ -86,12 +86,12 @@ export class Tracker<T extends Transceiver<any, any, any>> {
 	}
 
 	private supplySignalsToCore(
-		mutableState: MutableAtomToken<T>,
+		mutableState: MutableAtomToken<Transceiver<any, any, any>>,
 		latestSignalState: RegularAtomToken<SignalFrom<T> | null>,
 		target: Store,
 	): void {
 		const subscriptionKey = `tracker:${target.config.name}:${
-			isChildStore(target) ? target.transactionMeta.update.key : `main`
+			isChildStore(target) ? target.transactionMeta.update.token.key : `main`
 		}:${mutableState.key}`
 		subscribeToState(
 			target,

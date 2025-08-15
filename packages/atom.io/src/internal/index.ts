@@ -1,5 +1,4 @@
 import type {
-	AtomToken,
 	FamilyMetadata,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
@@ -9,9 +8,8 @@ import type {
 	ReadonlyPureSelectorToken,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
-	StateCreation,
-	StateDisposal,
 	StateLifecycleEvent,
+	StateUpdate,
 	WritableHeldSelectorFamilyToken,
 	WritableHeldSelectorToken,
 	WritablePureSelectorFamilyToken,
@@ -20,7 +18,7 @@ import type {
 import type { Canonical } from "atom.io/json"
 
 import type { internalRole } from "./atom/has-role"
-import type { ConstructorOf, Transceiver } from "./mutable"
+import type { AsTransceiver, ConstructorOf, Transceiver } from "./mutable"
 import type { Store } from "./store"
 import type { Subject } from "./subject"
 import type { Timeline } from "./timeline"
@@ -79,16 +77,14 @@ export type MutableAtom<T extends Transceiver<any, any, any>> = Flat<
 		cleanup?: () => void
 	}
 >
-export type Atom<T> =
-	| RegularAtom<T>
-	| (T extends Transceiver<any, any, any> ? MutableAtom<T> : never)
+export type Atom<T> = MutableAtom<AsTransceiver<T>> | RegularAtom<T>
 
 export type WritableHeldSelector<T> = Flat<
 	AtomIOState & {
 		type: `writable_held_selector`
 		const: T
 		get: () => T
-		set: (newValue: T | ((oldValue: T) => T)) => void
+		set: (newValue: T | ((oldValue: T) => T)) => StateUpdate<T>
 	}
 >
 export type ReadonlyHeldSelector<T> = Flat<
@@ -102,7 +98,7 @@ export type WritablePureSelector<T> = Flat<
 	AtomIOState & {
 		type: `writable_pure_selector`
 		get: () => T
-		set: (newValue: T | ((oldValue: T) => T)) => void
+		set: (newValue: T | ((oldValue: T) => T)) => StateUpdate<T>
 	}
 >
 export type ReadonlyPureSelector<T> = Flat<
@@ -135,12 +131,11 @@ export type RegularAtomFamily<T, K extends Canonical> =
 		(key: K): RegularAtomToken<T>
 		install: (store: Store) => void
 		internalRoles: string[] | undefined
-		subject: Subject<StateCreation<AtomToken<T>> | StateDisposal<AtomToken<T>>>
+		subject: Subject<StateLifecycleEvent<T, K>>
 	}
 
 // biome-ignore format: intersection
 export type MutableAtomFamily<
-	// C extends TransceiverConstructor<any,any>,
 	T extends Transceiver<any, any, any>,
 	K extends Canonical,
 > =
@@ -149,13 +144,13 @@ export type MutableAtomFamily<
 		& {
 				install: (store: Store) => void
 				internalRoles: string[] | undefined
-				subject: Subject<StateLifecycleEvent<MutableAtomToken<T>>>
+				subject: Subject<StateLifecycleEvent<T, K>>
 			}
 	>
 	& ((key: K) => MutableAtomToken<T>)
 
 export type AtomFamily<T, K extends Canonical = Canonical> =
-	| MutableAtomFamily<T extends Transceiver<any, any, any> ? T : never, K>
+	| MutableAtomFamily<AsTransceiver<T>, K>
 	| RegularAtomFamily<T, K>
 
 // biome-ignore format: intersection
@@ -166,10 +161,7 @@ export type WritablePureSelectorFamily<T, K extends Canonical> =
 			default: (key: K) => T,
 			install: (store: Store) => void
 			internalRoles: string[] | undefined
-			subject: Subject<
-				| StateCreation<WritablePureSelectorToken<T>>
-				| StateDisposal<WritablePureSelectorToken<T>>
-			>
+			subject: Subject<StateLifecycleEvent<T, K>>
 		}
 	>
   & ((key: K) => WritablePureSelectorToken<T>)
@@ -182,10 +174,7 @@ export type WritableHeldSelectorFamily<T , K extends Canonical> =
 			default: (key: K) => T,
 			install: (store: Store) => void
 			internalRoles: string[] | undefined
-			subject: Subject<
-				| StateCreation<WritableHeldSelectorToken<T>>
-				| StateDisposal<WritableHeldSelectorToken<T>>
-			>
+			subject: Subject<StateLifecycleEvent<T, K>>
 		}
 	>
   & ((key: K) => WritableHeldSelectorToken<T>)
@@ -198,10 +187,7 @@ export type ReadonlyPureSelectorFamily<T, K extends Canonical> =
 			default: (key: K) => T,
 			install: (store: Store) => void
 			internalRoles: string[] | undefined
-			subject: Subject<
-				| StateCreation<ReadonlyPureSelectorToken<T>>
-				| StateDisposal<ReadonlyPureSelectorToken<T>>
-			>
+			subject: Subject<StateLifecycleEvent<T, K>>
 		}
 	>
 	& ((key: K) => ReadonlyPureSelectorToken<T>)
@@ -214,10 +200,7 @@ export type ReadonlyHeldSelectorFamily<T , K extends Canonical> =
 			default: (key: K) => T,
 			install: (store: Store) => void
 			internalRoles: string[] | undefined
-			subject: Subject<
-				| StateCreation<ReadonlyHeldSelectorToken<T>>
-				| StateDisposal<ReadonlyHeldSelectorToken<T>>
-			>
+			subject: Subject<StateLifecycleEvent<T, K>>
 		}
 	>
 	& ((key: K) => ReadonlyHeldSelectorToken<T>)

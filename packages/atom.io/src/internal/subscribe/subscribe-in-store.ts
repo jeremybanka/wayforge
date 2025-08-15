@@ -1,8 +1,8 @@
 import type {
 	ReadableToken,
+	TimelineEvent,
 	TimelineManageable,
 	TimelineToken,
-	TimelineUpdate,
 	TransactionToken,
 	TransactionUpdateHandler,
 	UpdateHandler,
@@ -30,7 +30,7 @@ export function subscribeInStore<F extends Fn>(
 export function subscribeInStore<M extends TimelineManageable>(
 	store: Store,
 	token: TimelineToken<M>,
-	handleUpdate: (update: TimelineUpdate<M> | `redo` | `undo`) => void,
+	handleUpdate: (update: TimelineEvent<M> | `redo` | `undo`) => void,
 	key?: string,
 ): () => void
 export function subscribeInStore<M extends TimelineManageable>(
@@ -39,7 +39,7 @@ export function subscribeInStore<M extends TimelineManageable>(
 	handleUpdate:
 		| TransactionUpdateHandler<any>
 		| UpdateHandler<any>
-		| ((update: TimelineUpdate<M> | `redo` | `undo`) => void),
+		| ((update: TimelineEvent<M> | `redo` | `undo`) => void),
 	key?: string,
 ): () => void
 export function subscribeInStore(

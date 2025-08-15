@@ -1,11 +1,17 @@
-import type { WritableFamilyToken, WritableToken } from "atom.io"
+import type { StateUpdate, WritableFamilyToken, WritableToken } from "atom.io"
 import { type Canonical, parseJson } from "atom.io/json"
 
-import { findInStore } from "../families"
+import { initFamilyMemberInStore, seekInStore } from "../families"
 import { getFamilyOfToken } from "../families/get-family-of-token"
 import { closeOperation, openOperation } from "../operation"
 import type { Store } from "../store"
 import { withdraw } from "../store"
+import { isChildStore, isRootStore } from "../transaction"
+import {
+	deferDispatchUpdateForTransaction,
+	emitStateCreation,
+	emitStateUpdate,
+} from "./dispatch"
 import { resetAtomOrSelector } from "./reset-atom-or-selector"
 import { RESET_STATE } from "./reset-in-store"
 import { setAtomOrSelector } from "./set-atom-or-selector"
@@ -36,8 +42,9 @@ export function setIntoStore<T, New extends T>(
 				value: New | typeof RESET_STATE | ((oldValue: T) => New),
 		  ]
 ): void {
+	let isNew = false
 	let token: WritableToken<T>
-	let family: WritableFamilyToken<T, Canonical> | null
+	let family: WritableFamilyToken<T, Canonical> | null = null
 	let key: Canonical | null
 	let value: New | typeof RESET_STATE | ((oldValue: T) => New)
 	if (params.length === 2) {
@@ -47,16 +54,47 @@ export function setIntoStore<T, New extends T>(
 			// biome-ignore lint/style/noNonNullAssertion: this token belongs to a family
 			family = getFamilyOfToken(store, token)!
 			key = parseJson(token.family.subKey)
-			token = findInStore(store, family, key)
+			const maybeToken = seekInStore(store, family, key)
+			if (maybeToken) {
+				token = maybeToken
+			} else {
+				token = initFamilyMemberInStore(store, family, key)
+				isNew = true
+			}
 		}
 	} else {
 		family = params[0]
 		key = params[1]
 		value = params[2]
-		token = findInStore(store, family, key)
+		const maybeToken = seekInStore(store, family, key)
+		if (maybeToken) {
+			token = maybeToken
+		} else {
+			token = initFamilyMemberInStore(store, family, key)
+			isNew = true
+		}
 	}
 
 	const action = value === RESET_STATE ? `reset` : `set`
+	const rejectionTime = openOperation(store, token)
+	if (rejectionTime) {
+		const unsubscribe = store.on.operationClose.subscribe(
+			`waiting to ${action} "${token.key}" at T-${rejectionTime}`,
+			function waitUntilOperationCloseToSetState() {
+				unsubscribe()
+				store.logger.info(
+					`🟢`,
+					token.type,
+					token.key,
+					`resuming deferred`,
+					action,
+					`from T-${rejectionTime}`,
+				)
+				setIntoStore(store, token, value)
+			},
+		)
+		return
+	}
 
 	if (`counterfeit` in token && `family` in token) {
 		const subKey = token.family.subKey
@@ -77,30 +115,26 @@ export function setIntoStore<T, New extends T>(
 		return
 	}
 
-	const rejectionTime = openOperation(store, token)
-	if (rejectionTime) {
-		const unsubscribe = store.on.operationClose.subscribe(
-			`waiting to ${action} "${token.key}" at T-${rejectionTime}`,
-			function waitUntilOperationCloseToSetState() {
-				unsubscribe()
-				store.logger.info(
-					`🟢`,
-					token.type,
-					token.key,
-					`resuming deferred`,
-					action,
-					`from T-${rejectionTime}`,
-				)
-				setIntoStore(store, token, value)
-			},
-		)
+	const state = withdraw(store, token)
+	let update: StateUpdate<T>
+	if (value === RESET_STATE) {
+		update = resetAtomOrSelector(store, state)
+	} else {
+		update = setAtomOrSelector(store, state, value)
+	}
+	if (family && isNew) {
+		const familyFn = withdraw(store, family)
+		emitStateCreation(store, familyFn, state, update.newValue)
 		return
 	}
-	const state = withdraw(store, token)
-	if (value === RESET_STATE) {
-		resetAtomOrSelector(store, state)
-	} else {
-		setAtomOrSelector(store, state, value)
+	if (state.type === `atom` || state.type === `mutable_atom`) {
+		if (isRootStore(store)) {
+			emitStateUpdate(store, state, update)
+			return
+		}
+		if (isChildStore(store)) {
+			deferDispatchUpdateForTransaction(store, state, update)
+		}
 	}
 	closeOperation(store)
 }
