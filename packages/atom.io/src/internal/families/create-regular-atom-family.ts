@@ -56,7 +56,7 @@ export function createRegularAtomFamily<T, K extends Canonical>(
 
 		const token = createRegularAtom(target, individualOptions, family)
 
-		subject.next({ type: `state_creation`, token })
+		subject.next({ type: `state_creation`, token, timestamp: Date.now() })
 		return token
 	}
 
