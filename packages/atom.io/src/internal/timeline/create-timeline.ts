@@ -192,7 +192,7 @@ function addAtomToTimeline(
 							}
 							latestUpdate.atomUpdates.push({
 								type: `atom_update`,
-								token: deposit(atom),
+								token: atomToken,
 								update,
 								timestamp: Date.now(), // 👺 use store operation
 							})
@@ -218,7 +218,7 @@ function addAtomToTimeline(
 							if (latestUpdate?.type === `selector_update`) {
 								latestUpdate.atomUpdates.push({
 									type: `atom_update`,
-									token: deposit(atom),
+									token: atomToken,
 									update,
 									timestamp: Date.now(), // 👺 use store operation
 								})
@@ -400,10 +400,6 @@ function handleStateLifecycleEvent(
 	event: StateCreationEvent<any> | StateDisposalEvent<any>,
 	tl: Timeline<any>,
 ): void {
-	const timestamp = Date.now()
-	const timelineEvent = Object.assign(event, {
-		timestamp,
-	}) as TimelineEvent<any>
 	if (!tl.timeTraveling) {
 		const target = newest(store)
 		if (isChildStore(target)) {
@@ -413,9 +409,9 @@ function handleStateLifecycleEvent(
 			if (txUpdateInProgress) {
 				joinTransaction(store, tl, txUpdateInProgress.update)
 			} else {
-				tl.history.push(timelineEvent)
+				tl.history.push(event)
 				tl.at = tl.history.length
-				tl.subject.next(timelineEvent)
+				tl.subject.next(event)
 			}
 		}
 	}

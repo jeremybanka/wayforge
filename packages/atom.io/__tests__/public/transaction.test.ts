@@ -175,7 +175,7 @@ describe(`transaction`, () => {
 			},
 		})
 
-		subscribe(setAllCounts, ({ id, ...data }) => {
+		subscribe(setAllCounts, ({ id, timestamp, ...data }) => {
 			const redacted = {
 				...data,
 				subEvents: data.subEvents.map((update) => {
