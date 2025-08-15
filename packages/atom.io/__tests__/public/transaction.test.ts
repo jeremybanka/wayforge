@@ -176,8 +176,18 @@ describe(`transaction`, () => {
 		})
 
 		subscribe(setAllCounts, ({ id, ...data }) => {
-			Utils.stdout0(`Transaction update:`, data)
-			for (const update of data.updates) {
+			const redacted = {
+				...data,
+				updates: data.updates.map((update) => {
+					if (update.type === `atom_update`) {
+						const { timestamp: _, ...redactedAtomUpdateEvent } = update
+						return redactedAtomUpdateEvent
+					}
+					return update
+				}),
+			}
+			Utils.stdout0(`Transaction update:`, redacted)
+			for (const update of redacted.updates) {
 				Utils.stdout1(`Atom update:`, update)
 			}
 		})
@@ -206,14 +216,18 @@ describe(`transaction`, () => {
 				{
 					type: `atom_update`,
 					key: `count1`,
-					oldValue: 2,
-					newValue: 3,
+					update: {
+						oldValue: 2,
+						newValue: 3,
+					},
 				},
 				{
 					type: `atom_update`,
 					key: `count2`,
-					oldValue: 2,
-					newValue: 3,
+					update: {
+						oldValue: 2,
+						newValue: 3,
+					},
 				},
 			],
 		})
