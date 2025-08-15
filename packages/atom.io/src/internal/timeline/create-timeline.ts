@@ -8,7 +8,6 @@ import type {
 	TimelineManageable,
 	TimelineOptions,
 	TimelineToken,
-	TimelineTransactionOutcomeEvent,
 	TransactionOutcomeEvent,
 	TransactionToken,
 	TransactionUpdateContent,
@@ -333,7 +332,9 @@ function joinTransaction(
 						timelineTopics,
 					)
 
-					const timelineTransactionUpdate: TimelineTransactionOutcomeEvent = {
+					const timelineTransactionUpdate: TransactionOutcomeEvent<Fn> & {
+						timestamp: number
+					} = {
 						timestamp: Date.now(),
 						...transactionUpdate,
 						updates,
