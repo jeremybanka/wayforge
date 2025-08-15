@@ -85,7 +85,7 @@ export function allocateIntoStore<
 	const isTransaction =
 		isChildStore(target) && target.transactionMeta.phase === `building`
 	if (isTransaction) {
-		target.transactionMeta.update.updates.push(creationEvent)
+		target.transactionMeta.update.subEvents.push(creationEvent)
 	} else {
 		target.on.moleculeCreation.next(creationEvent)
 	}
@@ -185,7 +185,7 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 	const isTransaction =
 		isChildStore(target) && target.transactionMeta.phase === `building`
 	if (isTransaction) {
-		target.transactionMeta.update.updates.push(disposalEvent)
+		target.transactionMeta.update.subEvents.push(disposalEvent)
 	}
 	const relatedMolecules = store.moleculeGraph.getRelationEntries({
 		downstreamMoleculeKey: molecule.stringKey,
@@ -300,7 +300,7 @@ export function claimWithinStore<
 	const isTransaction =
 		isChildStore(target) && target.transactionMeta.phase === `building`
 	if (isTransaction) {
-		target.transactionMeta.update.updates.push(transferEvent)
+		target.transactionMeta.update.subEvents.push(transferEvent)
 	}
 
 	return claim

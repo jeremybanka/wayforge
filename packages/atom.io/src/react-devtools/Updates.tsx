@@ -93,7 +93,7 @@ const TransactionUpdateFC: React.FC<{
 				</section>
 				<section className="transaction_impact">
 					<span className="detail">impact: </span>
-					{transactionUpdate.updates
+					{transactionUpdate.subEvents
 						.filter(
 							(token) =>
 								token.type !== `molecule_creation` &&
@@ -152,7 +152,7 @@ export const TimelineUpdateFC: React.FC<{
 			</header>
 			<main>
 				{timelineUpdate.type === `transaction_outcome` ? (
-					timelineUpdate.updates
+					timelineUpdate.subEvents
 						.filter(
 							(token) =>
 								token.type !== `molecule_creation` &&

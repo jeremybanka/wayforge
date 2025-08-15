@@ -178,7 +178,7 @@ describe(`transaction`, () => {
 		subscribe(setAllCounts, ({ id, ...data }) => {
 			const redacted = {
 				...data,
-				updates: data.updates.map((update) => {
+				subEvents: data.subEvents.map((update) => {
 					if (update.type === `atom_update`) {
 						const { timestamp: _, ...redactedAtomUpdateEvent } = update
 						return redactedAtomUpdateEvent
@@ -187,7 +187,7 @@ describe(`transaction`, () => {
 				}),
 			}
 			Utils.stdout0(`Transaction update:`, redacted)
-			for (const update of redacted.updates) {
+			for (const update of redacted.subEvents) {
 				Utils.stdout1(`Atom update:`, update)
 			}
 		})
@@ -212,7 +212,7 @@ describe(`transaction`, () => {
 			epoch: Number.NaN,
 			params: [3],
 			output: undefined,
-			updates: [
+			subEvents: [
 				{
 					type: `atom_update`,
 					key: `count1`,
@@ -322,10 +322,10 @@ describe(`precise scope of transactions`, () => {
 		})
 		const validate = {
 			update: (update: TransactionOutcomeEvent<any>) => {
-				expect(update.updates).toHaveLength(1)
-				expect(`key` in update.updates[0]).toBe(true)
-				if (`key` in update.updates[0]) {
-					expect(update.updates[0].key).toEqual(`count`)
+				expect(update.subEvents).toHaveLength(1)
+				expect(`key` in update.subEvents[0]).toBe(true)
+				if (`key` in update.subEvents[0]) {
+					expect(update.subEvents[0].key).toEqual(`count`)
 				}
 			},
 		}

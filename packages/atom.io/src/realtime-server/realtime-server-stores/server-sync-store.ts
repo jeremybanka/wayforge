@@ -1,7 +1,7 @@
 import type {
 	RegularAtomFamilyToken,
 	TransactionOutcomeEvent,
-	TransactionUpdateContent,
+	TransactionSubEvent,
 } from "atom.io"
 import { atomFamily } from "atom.io"
 
@@ -17,17 +17,17 @@ import type { UserKey } from "./server-user-store"
 
 export function redactTransactionUpdateContent(
 	visibleStateKeys: string[],
-	updates: TransactionUpdateContent[],
-): TransactionUpdateContent[] {
+	updates: TransactionSubEvent[],
+): TransactionSubEvent[] {
 	return updates
-		.map((update): TransactionUpdateContent => {
+		.map((update): TransactionSubEvent => {
 			switch (update.type) {
 				case `transaction_outcome`: {
 					const redacted = redactTransactionUpdateContent(
 						visibleStateKeys,
-						update.updates,
+						update.subEvents,
 					)
-					return { ...update, updates: redacted }
+					return { ...update, subEvents: redacted }
 				}
 				case `atom_update`:
 				case `molecule_creation`:
@@ -56,12 +56,12 @@ export function redactTransactionUpdateContent(
 
 export const redactorAtoms: RegularAtomFamilyToken<
 	{
-		occlude: (updates: TransactionUpdateContent[]) => TransactionUpdateContent[]
+		occlude: (updates: TransactionSubEvent[]) => TransactionSubEvent[]
 	},
 	UserKey
 > = atomFamily<
 	{
-		occlude: (updates: TransactionUpdateContent[]) => TransactionUpdateContent[]
+		occlude: (updates: TransactionSubEvent[]) => TransactionSubEvent[]
 	},
 	UserKey
 >({
@@ -88,7 +88,7 @@ export const redactorAtoms: RegularAtomFamilyToken<
 
 export type ContinuitySyncTransactionUpdate = Pick<
 	TransactionOutcomeEvent<any>,
-	`epoch` | `id` | `key` | `output` | `updates`
+	`epoch` | `id` | `key` | `output` | `subEvents`
 >
 export const userUnacknowledgedQueues: RegularAtomFamilyToken<
 	ContinuitySyncTransactionUpdate[],
