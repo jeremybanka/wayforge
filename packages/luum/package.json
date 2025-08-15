@@ -21,7 +21,7 @@
 		"anvl": "workspace:*"
 	},
 	"devDependencies": {
-		"@types/node": "24.2.1",
+		"@types/node": "24.3.0",
 		"concurrently": "9.2.0",
 		"eslint": "9.33.0",
 		"tsup": "8.5.0",
