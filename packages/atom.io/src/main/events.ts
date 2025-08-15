@@ -13,6 +13,7 @@ export type AtomUpdateEvent<T> = Flat<
 		key: string
 		type: `atom_update`
 		family?: FamilyMetadata
+		timestamp: number
 	}
 >
 export type TimelineAtomUpdateEvent<ManagedAtom extends TimelineManageable> =
@@ -29,7 +30,7 @@ export type TimelineSelectorUpdateEvent<ManagedAtom extends TimelineManageable> 
 		key: string
 		type: `selector_update`
 		family?: FamilyMetadata
-		atomUpdates: Omit<TimelineAtomUpdateEvent<ManagedAtom>, `timestamp`>[]
+		atomUpdates: AtomUpdateEvent<ManagedAtom>[]
 		timestamp: number
 	}>
 

@@ -12,7 +12,7 @@ export function ingestSelectorUpdate(
 	selectorUpdate: TimelineSelectorUpdateEvent<any>,
 	store: Store,
 ): void {
-	let updates: Omit<TimelineAtomUpdateEvent<TimelineManageable>, `timestamp`>[]
+	let updates: TimelineAtomUpdateEvent<TimelineManageable>[]
 	if (applying === `newValue`) {
 		updates = selectorUpdate.atomUpdates
 	} else {

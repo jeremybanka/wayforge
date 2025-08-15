@@ -194,6 +194,7 @@ function addAtomToTimeline(
 							latestUpdate.atomUpdates.push({
 								key: atom.key,
 								type: `atom_update`,
+								timestamp: Date.now(), // 👺 use store operation
 								...update,
 							})
 							if (tl.at !== tl.history.length) {
@@ -217,6 +218,7 @@ function addAtomToTimeline(
 								latestUpdate.atomUpdates.push({
 									key: atom.key,
 									type: `atom_update`,
+									timestamp: Date.now(), // 👺 use store operation
 									...update,
 								})
 								store.logger.info(
