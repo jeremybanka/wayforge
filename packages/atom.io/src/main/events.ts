@@ -30,16 +30,10 @@ export type StateCreationEvent<Token extends ReadableToken<any>> = {
 	type: `state_creation`
 	token: Token
 }
-export type TimelineStateCreationEvent<T extends ReadableToken<any>> = Flat<
-	StateCreationEvent<T> & { timestamp: number }
->
 
 export type StateDisposalEvent<Token extends ReadableToken<any>> =
 	| AtomDisposalEvent<Token>
 	| SelectorDisposalEvent<Token>
-export type TimelineStateDisposalEvent<T extends ReadableToken<any>> = Flat<
-	StateDisposalEvent<T> & { timestamp: number }
->
 
 export type StateLifecycleEvent<Token extends ReadableToken<any>> =
 	| StateCreationEvent<Token>
@@ -62,9 +56,6 @@ export type MoleculeCreationEvent = {
 	key: Canonical
 	provenance: Canonical
 }
-export type TimelineMoleculeCreationEvent = Flat<
-	MoleculeCreationEvent & { timestamp: number }
->
 
 export type MoleculeDisposalEvent = {
 	type: `molecule_disposal`
@@ -102,9 +93,6 @@ export type TransactionOutcomeEvent<F extends Fn> = {
 	params: Parameters<F>
 	output: ReturnType<F>
 }
-export type TimelineTransactionOutcomeEvent = Flat<
-	TransactionOutcomeEvent<Fn> & { timestamp: number }
->
 
 export type TimelineEvent<ManagedAtom extends TimelineManageable> = {
 	timestamp: number
