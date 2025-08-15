@@ -1,9 +1,10 @@
 import type {
-	StateUpdateEvent,
+	AtomToken,
+	AtomUpdateEvent,
 	TimelineEvent,
 	TransactionOutcomeEvent,
+	TransactionToken,
 } from "atom.io"
-import type { Fn } from "atom.io/internal"
 import { discoverType, prettyJson } from "atom.io/introspection"
 import { stringifyJson } from "atom.io/json"
 import * as React from "react"
@@ -12,11 +13,11 @@ import * as React from "react"
 
 const AtomUpdateFC: React.FC<{
 	serialNumber: number
-	atomUpdate: StateUpdateEvent<unknown>
+	atomUpdate: AtomUpdateEvent<AtomToken<unknown>>
 }> = ({ atomUpdate }) => {
 	return (
 		<article
-			key={atomUpdate.key}
+			key={atomUpdate.token.key}
 			className="node atom_update"
 			onClick={() => {
 				console.log(atomUpdate)
@@ -25,7 +26,7 @@ const AtomUpdateFC: React.FC<{
 				console.log(atomUpdate)
 			}}
 		>
-			<span className="detail">{atomUpdate.key}: </span>
+			<span className="detail">{atomUpdate.token.key}: </span>
 			<span>
 				<span className="summary">
 					{
@@ -42,12 +43,12 @@ const AtomUpdateFC: React.FC<{
 
 const TransactionUpdateFC: React.FC<{
 	serialNumber: number
-	transactionUpdate: TransactionOutcomeEvent<Fn>
+	transactionUpdate: TransactionOutcomeEvent<TransactionToken<any>>
 }> = ({ serialNumber, transactionUpdate }) => {
 	return (
 		<article
 			className="node transaction_update"
-			data-testid={`transaction-update-${transactionUpdate.key}-${serialNumber}`}
+			data-testid={`transaction-update-${transactionUpdate.token.key}-${serialNumber}`}
 		>
 			<header>
 				<h4>{serialNumber}</h4>
@@ -95,20 +96,20 @@ const TransactionUpdateFC: React.FC<{
 					<span className="detail">impact: </span>
 					{transactionUpdate.subEvents
 						.filter(
-							(token) =>
-								token.type !== `molecule_creation` &&
-								token.type !== `molecule_disposal` &&
-								token.type !== `molecule_transfer` &&
-								token.type !== `state_creation` &&
-								token.type !== `state_disposal` &&
-								!token.key.startsWith(`👁‍🗨`),
+							(txSubEvent) =>
+								txSubEvent.type !== `molecule_creation` &&
+								txSubEvent.type !== `molecule_disposal` &&
+								txSubEvent.type !== `molecule_transfer` &&
+								txSubEvent.type !== `state_creation` &&
+								txSubEvent.type !== `state_disposal` &&
+								!txSubEvent.token.key.startsWith(`👁‍🗨`),
 						)
 						.map((update, index) => {
 							switch (update.type) {
 								case `atom_update`:
 									return (
 										<article.AtomUpdate
-											key={`${transactionUpdate.key}:${index}:${update.key}`}
+											key={`${transactionUpdate.token.key}:${index}:${update.token.key}`}
 											serialNumber={index}
 											atomUpdate={update}
 										/>
@@ -116,7 +117,7 @@ const TransactionUpdateFC: React.FC<{
 								case `transaction_outcome`:
 									return (
 										<TransactionUpdateFC
-											key={`${transactionUpdate.key}:${index}:${update.key}`}
+											key={`${transactionUpdate.token.key}:${index}:${update.token.key}`}
 											serialNumber={index}
 											transactionUpdate={update}
 										/>
@@ -139,45 +140,47 @@ export const TimelineUpdateFC: React.FC<{
 	timelineUpdate: TimelineEvent<any>
 	serialNumber: number
 }> = ({ timelineUpdate, serialNumber }) => {
-	return `key` in timelineUpdate ? (
+	return timelineUpdate.type === `atom_update` ||
+		timelineUpdate.type === `selector_update` ||
+		timelineUpdate.type === `transaction_outcome` ? (
 		<article
 			className="node timeline_update"
-			data-testid={`timeline-update-${typeof timelineUpdate.key === `string` ? timelineUpdate.key : stringifyJson(timelineUpdate.key)}-${serialNumber}`}
+			data-testid={`timeline-update-${typeof timelineUpdate.token.key === `string` ? timelineUpdate.token.key : stringifyJson(timelineUpdate.token.key)}-${serialNumber}`}
 		>
 			<header>
 				<h4>
-					{timelineUpdate.timestamp}: {timelineUpdate.type} ({timelineUpdate.key}
-					)
+					{timelineUpdate.timestamp}: {timelineUpdate.type} (
+					{timelineUpdate.token.key})
 				</h4>
 			</header>
 			<main>
 				{timelineUpdate.type === `transaction_outcome` ? (
 					timelineUpdate.subEvents
 						.filter(
-							(token) =>
-								token.type !== `molecule_creation` &&
-								token.type !== `molecule_disposal` &&
-								token.type !== `molecule_transfer` &&
-								token.type !== `state_creation` &&
-								token.type !== `state_disposal` &&
-								!token.key.startsWith(`👁‍🗨`),
+							(subEvent) =>
+								subEvent.type !== `molecule_creation` &&
+								subEvent.type !== `molecule_disposal` &&
+								subEvent.type !== `molecule_transfer` &&
+								subEvent.type !== `state_creation` &&
+								subEvent.type !== `state_disposal` &&
+								!subEvent.token.key.startsWith(`👁‍🗨`),
 						)
-						.map((update, index) => {
-							switch (update.type) {
+						.map((subEvent, index) => {
+							switch (subEvent.type) {
 								case `atom_update`:
 									return (
 										<article.AtomUpdate
-											key={`${timelineUpdate.key}:${index}:${update.key}`}
+											key={`${timelineUpdate.token.key}:${index}:${subEvent.token.key}`}
 											serialNumber={index}
-											atomUpdate={update}
+											atomUpdate={subEvent}
 										/>
 									)
 								case `transaction_outcome`:
 									return (
 										<TransactionUpdateFC
-											key={`${timelineUpdate.key}:${index}:${update.key}`}
+											key={`${timelineUpdate.token.key}:${index}:${subEvent.token.key}`}
 											serialNumber={index}
-											transactionUpdate={update}
+											transactionUpdate={subEvent}
 										/>
 									)
 								case `molecule_creation`:
@@ -190,11 +193,13 @@ export const TimelineUpdateFC: React.FC<{
 						})
 				) : timelineUpdate.type === `selector_update` ? (
 					timelineUpdate.atomUpdates
-						.filter((token) => !token.key.startsWith(`👁‍🗨`))
+						.filter(
+							(atomUpdateEvent) => !atomUpdateEvent.token.key.startsWith(`👁‍🗨`),
+						)
 						.map((atomUpdate, index) => {
 							return (
 								<article.AtomUpdate
-									key={`${timelineUpdate.key}:${index}:${atomUpdate.key}`}
+									key={`${timelineUpdate.token.key}:${index}:${atomUpdate.token.key}`}
 									serialNumber={index}
 									atomUpdate={atomUpdate}
 								/>

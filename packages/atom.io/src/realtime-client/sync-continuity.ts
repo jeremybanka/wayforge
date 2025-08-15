@@ -102,7 +102,7 @@ export function syncContinuity(
 				}
 				socket.emit(`tx-run:${continuityKey}`, {
 					id: clientUpdate.id,
-					key: transaction.key,
+					token: transaction,
 					params: clientUpdate.params,
 				})
 			},
