@@ -36,7 +36,7 @@ export const setAtom = <T>(
 			type: `atom_update`,
 			key,
 			timestamp: Date.now(), // 👺 use store operation
-			...update,
+			update,
 		}
 		if (atom.family) {
 			atomUpdate.family = atom.family

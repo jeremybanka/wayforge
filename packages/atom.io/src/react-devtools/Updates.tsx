@@ -28,7 +28,12 @@ const AtomUpdateFC: React.FC<{
 			<span className="detail">{atomUpdate.key}: </span>
 			<span>
 				<span className="summary">
-					{prettyJson.diff(atomUpdate.oldValue, atomUpdate.newValue).summary}
+					{
+						prettyJson.diff(
+							atomUpdate.update.oldValue,
+							atomUpdate.update.newValue,
+						).summary
+					}
 				</span>
 			</span>
 		</article>
