@@ -1,9 +1,9 @@
 import type {
 	AtomFamilyToken,
 	AtomToken,
+	AtomUpdateEvent,
 	StateCreationEvent,
 	StateDisposalEvent,
-	TimelineAtomUpdateEvent,
 	TimelineEvent,
 	TimelineManageable,
 	TimelineOptions,
@@ -246,7 +246,7 @@ function addAtomToTimeline(
 						if (tl.at !== tl.history.length) {
 							tl.history.splice(tl.at)
 						}
-						const atomUpdate: TimelineAtomUpdateEvent<any> = {
+						const atomUpdate: AtomUpdateEvent<any> = {
 							type: `atom_update`,
 							timestamp,
 							key: atom.key,

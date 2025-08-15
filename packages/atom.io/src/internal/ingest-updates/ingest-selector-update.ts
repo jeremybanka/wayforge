@@ -1,5 +1,5 @@
 import type {
-	TimelineAtomUpdateEvent,
+	AtomUpdateEvent,
 	TimelineManageable,
 	TimelineSelectorUpdateEvent,
 } from "atom.io"
@@ -12,7 +12,7 @@ export function ingestSelectorUpdate(
 	selectorUpdate: TimelineSelectorUpdateEvent<any>,
 	store: Store,
 ): void {
-	let updates: TimelineAtomUpdateEvent<TimelineManageable>[]
+	let updates: AtomUpdateEvent<TimelineManageable>[]
 	if (applying === `newValue`) {
 		updates = selectorUpdate.atomUpdates
 	} else {
