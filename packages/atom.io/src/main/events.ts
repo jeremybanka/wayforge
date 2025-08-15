@@ -11,12 +11,9 @@ import type { TokenType } from "./validators"
 
 export type StateUpdate<T> = { newValue: T; oldValue: T }
 
-// export type AtomUpdateEvent<T> = AtomUpdateEvent<T>
 export type AtomUpdateEvent<T extends AtomToken<any>> = {
 	type: `atom_update`
 	token: T
-	// key: string
-	// family?: FamilyMetadata
 	update: StateUpdate<TokenType<T>>
 	timestamp: number
 }
@@ -25,24 +22,20 @@ export type TimelineSelectorUpdateEvent<ManagedAtom extends TimelineManageable> 
 	{
 		type: `selector_update`
 		token: SelectorToken<any>
-		// key: string
-		// family?: FamilyMetadata
 		atomUpdates: AtomUpdateEvent<AtomOnly<ManagedAtom>>[]
 		timestamp: number
 	}
 
+export type StateLifecycleEvent<Token extends ReadableToken<any>> =
+	| StateCreationEvent<Token>
+	| StateDisposalEvent<Token>
 export type StateCreationEvent<Token extends ReadableToken<any>> = {
 	type: `state_creation`
 	token: Token
 }
-
 export type StateDisposalEvent<Token extends ReadableToken<any>> =
 	| AtomDisposalEvent<Token>
 	| SelectorDisposalEvent<Token>
-
-export type StateLifecycleEvent<Token extends ReadableToken<any>> =
-	| StateCreationEvent<Token>
-	| StateDisposalEvent<Token>
 
 export type AtomDisposalEvent<Token extends ReadableToken<any>> = {
 	type: `state_disposal`
@@ -88,7 +81,6 @@ export type TransactionSubEvent =
 
 export type TransactionOutcomeEvent<T extends TransactionToken<any>> = {
 	type: `transaction_outcome`
-	// key: string
 	token: T
 	id: string
 	epoch: number
