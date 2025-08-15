@@ -3,8 +3,7 @@ import type {
 	ReadonlyHeldSelectorFamilyOptions,
 	ReadonlyHeldSelectorFamilyToken,
 	ReadonlyHeldSelectorToken,
-	StateCreationEvent,
-	StateDisposalEvent,
+	StateLifecycleEvent,
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
@@ -45,8 +44,7 @@ export function createReadonlyHeldSelectorFamily<
 	}
 
 	const subject = new Subject<
-		| StateCreationEvent<ReadonlyHeldSelectorToken<T>>
-		| StateDisposalEvent<ReadonlyHeldSelectorToken<T>>
+		StateLifecycleEvent<ReadonlyHeldSelectorToken<T>>
 	>()
 
 	const familyFunction = (key: K): ReadonlyHeldSelectorToken<T> => {
