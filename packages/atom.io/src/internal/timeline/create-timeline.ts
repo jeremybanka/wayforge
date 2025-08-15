@@ -194,7 +194,7 @@ function addAtomToTimeline(
 								key: atom.key,
 								type: `atom_update`,
 								timestamp: Date.now(), // 👺 use store operation
-								...update,
+								update,
 							})
 							if (tl.at !== tl.history.length) {
 								tl.history.splice(tl.at)
@@ -218,7 +218,7 @@ function addAtomToTimeline(
 									key: atom.key,
 									type: `atom_update`,
 									timestamp: Date.now(), // 👺 use store operation
-									...update,
+									update,
 								})
 								store.logger.info(
 									`⌛`,
@@ -249,8 +249,7 @@ function addAtomToTimeline(
 							type: `atom_update`,
 							timestamp,
 							key: atom.key,
-							oldValue: update.oldValue,
-							newValue: update.newValue,
+							update,
 						}
 						if (atom.family) {
 							atomUpdate.family = atom.family
