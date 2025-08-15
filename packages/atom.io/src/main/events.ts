@@ -32,6 +32,7 @@ export type StateLifecycleEvent<Token extends ReadableToken<any>> =
 export type StateCreationEvent<Token extends ReadableToken<any>> = {
 	type: `state_creation`
 	token: Token
+	timestamp: number
 }
 export type StateDisposalEvent<Token extends ReadableToken<any>> =
 	| AtomDisposalEvent<Token>
@@ -42,17 +43,20 @@ export type AtomDisposalEvent<Token extends ReadableToken<any>> = {
 	subType: `atom`
 	token: Token
 	value: TokenType<Token>
+	timestamp: number
 }
 export type SelectorDisposalEvent<Token extends ReadableToken<any>> = {
 	type: `state_disposal`
 	subType: `selector`
 	token: Token
+	timestamp: number
 }
 
 export type MoleculeCreationEvent = {
 	type: `molecule_creation`
 	key: Canonical
 	provenance: Canonical
+	timestamp: number
 }
 
 export type MoleculeDisposalEvent = {
@@ -60,6 +64,7 @@ export type MoleculeDisposalEvent = {
 	key: Canonical
 	provenance: stringified<Canonical>[]
 	values: [key: string, value: any][]
+	timestamp: number
 }
 
 export type MoleculeTransferEvent = {
@@ -68,6 +73,7 @@ export type MoleculeTransferEvent = {
 	exclusive: boolean
 	from: Canonical[]
 	to: Canonical[]
+	timestamp: number
 }
 
 export type TransactionSubEvent =
@@ -84,14 +90,13 @@ export type TransactionOutcomeEvent<T extends TransactionToken<any>> = {
 	token: T
 	id: string
 	epoch: number
+	timestamp: number
 	subEvents: TransactionSubEvent[]
 	params: Parameters<TokenType<T>>
 	output: ReturnType<TokenType<T>>
 }
 
-export type TimelineEvent<ManagedAtom extends TimelineManageable> = {
-	timestamp: number
-} & (
+export type TimelineEvent<ManagedAtom extends TimelineManageable> =
 	| AtomUpdateEvent<AtomOnly<ManagedAtom>>
 	| MoleculeCreationEvent
 	| MoleculeDisposalEvent
@@ -99,4 +104,3 @@ export type TimelineEvent<ManagedAtom extends TimelineManageable> = {
 	| StateDisposalEvent<AtomOnly<ManagedAtom>>
 	| TimelineSelectorUpdateEvent<ManagedAtom>
 	| TransactionOutcomeEvent<TransactionToken<any>>
-)

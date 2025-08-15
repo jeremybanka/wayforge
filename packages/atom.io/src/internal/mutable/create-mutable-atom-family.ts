@@ -65,7 +65,7 @@ export function createMutableAtomFamily<
 
 		const token = createMutableAtom(target, individualOptions, family)
 
-		subject.next({ type: `state_creation`, token })
+		subject.next({ type: `state_creation`, token, timestamp: Date.now() })
 		return token
 	}
 

@@ -63,7 +63,7 @@ export function createReadonlyHeldSelectorFamily<
 			family,
 		)
 
-		subject.next({ type: `state_creation`, token })
+		subject.next({ type: `state_creation`, token, timestamp: Date.now() })
 		return token
 	}
 

@@ -327,19 +327,16 @@ function joinTransaction(
 					// biome-ignore lint/style/noNonNullAssertion: we are in the context of this timeline
 					const timelineTopics = store.timelineTopics.getRelatedKeys(tl.key)!
 
-					const updates = filterTransactionUpdates(
+					const subEventsFiltered = filterTransactionSubEvents(
 						transactionUpdate.subEvents,
 						timelineTopics,
 					)
 
 					const timelineTransactionUpdate: TransactionOutcomeEvent<
 						TransactionToken<any>
-					> & {
-						timestamp: number
-					} = {
-						timestamp: Date.now(),
+					> = {
 						...transactionUpdate,
-						subEvents: updates,
+						subEvents: subEventsFiltered,
 					}
 					const willCapture =
 						tl.shouldCapture?.(timelineTransactionUpdate, tl) ?? true
@@ -354,7 +351,7 @@ function joinTransaction(
 	}
 }
 
-function filterTransactionUpdates(
+function filterTransactionSubEvents(
 	updates: TransactionSubEvent[],
 	timelineTopics: Set<string>,
 ): TransactionSubEvent[] {
@@ -388,7 +385,7 @@ function filterTransactionUpdates(
 			if (`subEvents` in updateFromTx) {
 				return {
 					...updateFromTx,
-					subEvents: filterTransactionUpdates(
+					subEvents: filterTransactionSubEvents(
 						updateFromTx.subEvents,
 						timelineTopics,
 					),
