@@ -35,6 +35,7 @@ export const setAtom = <T>(
 		const atomUpdate: StateUpdateEvent<T> = {
 			type: `atom_update`,
 			key,
+			timestamp: Date.now(), // 👺 use store operation
 			...update,
 		}
 		if (atom.family) {
