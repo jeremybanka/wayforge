@@ -1,4 +1,4 @@
-import type { Flat, Fn } from "atom.io/internal"
+import type { Fn } from "atom.io/internal"
 import type { Canonical, stringified } from "atom.io/json"
 
 import type { AtomOnly, TimelineManageable } from "./timeline"
@@ -17,13 +17,13 @@ export type AtomUpdateEvent<T> = {
 }
 
 export type TimelineSelectorUpdateEvent<ManagedAtom extends TimelineManageable> =
-	Flat<{
+	{
 		key: string
 		type: `selector_update`
 		family?: FamilyMetadata
 		atomUpdates: AtomUpdateEvent<ManagedAtom>[]
 		timestamp: number
-	}>
+	}
 
 export type StateCreationEvent<Token extends ReadableToken<any>> = {
 	type: `state_creation`
@@ -62,9 +62,6 @@ export type MoleculeDisposalEvent = {
 	provenance: stringified<Canonical>[]
 	values: [key: string, value: any][]
 }
-export type TimelineMoleculeDisposalEvent = Flat<
-	MoleculeDisposalEvent & { timestamp: number }
->
 
 export type MoleculeTransferEvent = {
 	type: `molecule_transfer`
