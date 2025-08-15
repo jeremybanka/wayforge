@@ -108,6 +108,7 @@ export function initFamilyMemberInStore(
 			target.transactionMeta.update.subEvents.push({
 				type: `state_creation`,
 				token: state,
+				timestamp: Date.now(),
 			})
 		}
 	}

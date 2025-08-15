@@ -81,6 +81,7 @@ export function allocateIntoStore<
 		type: `molecule_creation`,
 		key,
 		provenance: origin,
+		timestamp: Date.now(),
 	}
 	const isTransaction =
 		isChildStore(target) && target.transactionMeta.phase === `building`
@@ -179,6 +180,7 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 		key: molecule.key,
 		values,
 		provenance,
+		timestamp: Date.now(),
 	}
 	const target = newest(store)
 	target.molecules.delete(stringKey)
@@ -296,6 +298,7 @@ export function claimWithinStore<
 		exclusive: Boolean(exclusive),
 		from: priorProvenance,
 		to: [newProvenanceMolecule.key],
+		timestamp: Date.now(),
 	}
 	const isTransaction =
 		isChildStore(target) && target.transactionMeta.phase === `building`

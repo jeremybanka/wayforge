@@ -35,6 +35,7 @@ export function disposeSelector(
 						type: `state_disposal`,
 						subType: `selector`,
 						token: selectorToken,
+						timestamp: Date.now(),
 					})
 				}
 				break
@@ -50,6 +51,7 @@ export function disposeSelector(
 						type: `state_disposal`,
 						subType: `selector`,
 						token: selectorToken,
+						timestamp: Date.now(),
 					})
 				}
 				break
@@ -65,6 +67,7 @@ export function disposeSelector(
 						type: `state_disposal`,
 						subType: `selector`,
 						token: selectorToken,
+						timestamp: Date.now(),
 					})
 				}
 				break
@@ -80,6 +83,7 @@ export function disposeSelector(
 						type: `state_disposal`,
 						subType: `selector`,
 						token: selectorToken,
+						timestamp: Date.now(),
 					})
 				}
 				break
@@ -95,6 +99,7 @@ export function disposeSelector(
 				type: `state_disposal`,
 				subType: `selector`,
 				token: selectorToken,
+				timestamp: Date.now(),
 			})
 		} else {
 			store.on.selectorDisposal.next(selectorToken)

@@ -74,6 +74,7 @@ export const buildTransaction = (
 			token,
 			id,
 			epoch: epoch === undefined ? Number.NaN : epoch + 1,
+			timestamp: Date.now(),
 			subEvents: [],
 			params,
 			output: undefined,

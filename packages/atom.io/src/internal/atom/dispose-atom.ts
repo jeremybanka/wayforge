@@ -19,6 +19,7 @@ export function disposeAtom(store: Store, atomToken: AtomToken<unknown>): void {
 			subType: `atom`,
 			token: atomToken,
 			value: lastValue,
+			timestamp: Date.now(),
 		}
 
 		atomFamily.subject.next(disposal)
