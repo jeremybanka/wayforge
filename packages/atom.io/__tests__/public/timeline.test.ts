@@ -297,7 +297,7 @@ describe(`timeline`, () => {
 			scope: [count],
 			shouldCapture: (event) => {
 				if (event.type === `atom_update`) {
-					const atomKey = event.key
+					const atomKey = event.token.key
 					const atomActual = Internal.IMPLICIT.STORE.atoms.get(atomKey)
 					if (atomActual) {
 						switch (atomActual.type) {

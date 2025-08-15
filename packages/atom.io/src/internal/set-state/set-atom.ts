@@ -1,6 +1,6 @@
-import type { StateUpdateEvent } from "atom.io"
+import type { AtomToken, AtomUpdateEvent } from "atom.io"
 
-import type { Atom, MutableAtom, Store } from ".."
+import { type Atom, deposit, type MutableAtom, type Store } from ".."
 import { hasRole } from "../atom/has-role"
 import { writeToCache } from "../caching"
 import { readOrComputeValue } from "../get-state/read-or-compute-value"
@@ -32,14 +32,11 @@ export const setAtom = <T>(
 		if (isTransceiver(update.newValue)) {
 			return
 		}
-		const atomUpdate: StateUpdateEvent<T> = {
+		const atomUpdate: AtomUpdateEvent<AtomToken<T>> = {
 			type: `atom_update`,
-			key,
+			token: deposit(atom),
 			timestamp: Date.now(), // 👺 use store operation
 			update,
-		}
-		if (atom.family) {
-			atomUpdate.family = atom.family
 		}
 		target.transactionMeta.update.subEvents.push(atomUpdate)
 		target.logger.info(

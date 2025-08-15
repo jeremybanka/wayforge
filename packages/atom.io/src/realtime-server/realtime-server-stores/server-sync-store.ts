@@ -41,7 +41,6 @@ export function redactTransactionUpdateContent(
 		.filter((update) => {
 			switch (update.type) {
 				case `atom_update`:
-					return visibleStateKeys.includes(update.key)
 				case `state_creation`:
 				case `state_disposal`:
 					return visibleStateKeys.includes(update.token.key)
@@ -88,7 +87,7 @@ export const redactorAtoms: RegularAtomFamilyToken<
 
 export type ContinuitySyncTransactionUpdate = Pick<
 	TransactionOutcomeEvent<any>,
-	`epoch` | `id` | `key` | `output` | `subEvents`
+	`epoch` | `id` | `output` | `subEvents` | `token`
 >
 export const userUnacknowledgedQueues: RegularAtomFamilyToken<
 	ContinuitySyncTransactionUpdate[],

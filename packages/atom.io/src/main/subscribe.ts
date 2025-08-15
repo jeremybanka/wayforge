@@ -11,7 +11,7 @@ import type { ReadableToken, TimelineToken, TransactionToken } from "./tokens"
 
 export type UpdateHandler<T> = (update: StateUpdate<T>) => void
 export type TransactionUpdateHandler<F extends Fn> = (
-	data: TransactionOutcomeEvent<F>,
+	data: TransactionOutcomeEvent<TransactionToken<F>>,
 ) => void
 
 /**

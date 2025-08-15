@@ -1,27 +1,33 @@
-import type { Fn } from "atom.io/internal"
 import type { Canonical, stringified } from "atom.io/json"
 
 import type { AtomOnly, TimelineManageable } from "./timeline"
-import type { FamilyMetadata, ReadableToken } from "./tokens"
+import type {
+	AtomToken,
+	ReadableToken,
+	SelectorToken,
+	TransactionToken,
+} from "./tokens"
 import type { TokenType } from "./validators"
 
 export type StateUpdate<T> = { newValue: T; oldValue: T }
 
-export type StateUpdateEvent<T> = AtomUpdateEvent<T>
-export type AtomUpdateEvent<T> = {
-	key: string
+// export type AtomUpdateEvent<T> = AtomUpdateEvent<T>
+export type AtomUpdateEvent<T extends AtomToken<any>> = {
 	type: `atom_update`
-	family?: FamilyMetadata
-	update: StateUpdate<T>
+	token: T
+	// key: string
+	// family?: FamilyMetadata
+	update: StateUpdate<TokenType<T>>
 	timestamp: number
 }
 
 export type TimelineSelectorUpdateEvent<ManagedAtom extends TimelineManageable> =
 	{
-		key: string
 		type: `selector_update`
-		family?: FamilyMetadata
-		atomUpdates: AtomUpdateEvent<ManagedAtom>[]
+		token: SelectorToken<any>
+		// key: string
+		// family?: FamilyMetadata
+		atomUpdates: AtomUpdateEvent<AtomOnly<ManagedAtom>>[]
 		timestamp: number
 	}
 
@@ -72,32 +78,33 @@ export type MoleculeTransferEvent = {
 }
 
 export type TransactionSubEvent =
+	| AtomUpdateEvent<AtomToken<any>>
 	| MoleculeCreationEvent
 	| MoleculeDisposalEvent
 	| MoleculeTransferEvent
 	| StateCreationEvent<ReadableToken<unknown>>
 	| StateDisposalEvent<ReadableToken<unknown>>
-	| StateUpdateEvent<unknown>
-	| TransactionOutcomeEvent<Fn>
+	| TransactionOutcomeEvent<TransactionToken<any>>
 
-export type TransactionOutcomeEvent<F extends Fn> = {
+export type TransactionOutcomeEvent<T extends TransactionToken<any>> = {
 	type: `transaction_outcome`
-	key: string
+	// key: string
+	token: T
 	id: string
 	epoch: number
 	subEvents: TransactionSubEvent[]
-	params: Parameters<F>
-	output: ReturnType<F>
+	params: Parameters<TokenType<T>>
+	output: ReturnType<TokenType<T>>
 }
 
 export type TimelineEvent<ManagedAtom extends TimelineManageable> = {
 	timestamp: number
 } & (
-	| AtomUpdateEvent<ManagedAtom>
+	| AtomUpdateEvent<AtomOnly<ManagedAtom>>
 	| MoleculeCreationEvent
 	| MoleculeDisposalEvent
 	| StateCreationEvent<AtomOnly<ManagedAtom>>
 	| StateDisposalEvent<AtomOnly<ManagedAtom>>
 	| TimelineSelectorUpdateEvent<ManagedAtom>
-	| TransactionOutcomeEvent<Fn>
+	| TransactionOutcomeEvent<TransactionToken<any>>
 )

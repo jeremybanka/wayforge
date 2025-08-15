@@ -16,7 +16,7 @@ export const abortTransaction = (store: Store): void => {
 	store.logger.info(
 		`🪂`,
 		`transaction`,
-		target.transactionMeta.update.key,
+		target.transactionMeta.update.token.key,
 		`Aborting transaction`,
 	)
 	target.parent.child = null

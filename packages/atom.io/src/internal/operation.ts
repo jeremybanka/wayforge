@@ -43,7 +43,7 @@ export const openOperation = (
 		`operation start in store "${store.config.name}"${
 			!isChildStore(store)
 				? ``
-				: ` ${store.transactionMeta.phase} "${store.transactionMeta.update.key}"`
+				: ` ${store.transactionMeta.phase} "${store.transactionMeta.update.token.key}"`
 		}`,
 	)
 }

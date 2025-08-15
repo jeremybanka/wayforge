@@ -68,7 +68,7 @@ export const TimelineLog: FC<{
 						update.type !== `molecule_disposal` &&
 						update.type !== `state_creation` &&
 						update.type !== `state_disposal` ? (
-							<Fragment key={update.key + index + timeline.at}>
+							<Fragment key={update.token.key + index + timeline.at}>
 								{index === timeline.at ? <YouAreHere /> : null}
 								<article.TimelineUpdate
 									timelineUpdate={update}
