@@ -208,14 +208,20 @@ describe(`transaction`, () => {
 		})
 		expect(Utils.stdout0).toHaveBeenCalledWith(`Transaction update:`, {
 			type: `transaction_outcome`,
-			key: `setAllCounts`,
+			token: {
+				key: `setAllCounts`,
+				type: `transaction`,
+			},
 			epoch: Number.NaN,
 			params: [3],
 			output: undefined,
 			subEvents: [
 				{
 					type: `atom_update`,
-					key: `count1`,
+					token: {
+						type: `atom`,
+						key: `count1`,
+					},
 					update: {
 						oldValue: 2,
 						newValue: 3,
@@ -223,7 +229,10 @@ describe(`transaction`, () => {
 				},
 				{
 					type: `atom_update`,
-					key: `count2`,
+					token: {
+						type: `atom`,
+						key: `count2`,
+					},
 					update: {
 						oldValue: 2,
 						newValue: 3,
@@ -323,9 +332,9 @@ describe(`precise scope of transactions`, () => {
 		const validate = {
 			update: (update: TransactionOutcomeEvent<any>) => {
 				expect(update.subEvents).toHaveLength(1)
-				expect(`key` in update.subEvents[0]).toBe(true)
-				if (`key` in update.subEvents[0]) {
-					expect(update.subEvents[0].key).toEqual(`count`)
+				expect(`token` in update.subEvents[0]).toBe(true)
+				if (`token` in update.subEvents[0]) {
+					expect(update.subEvents[0].token.key).toEqual(`count`)
 				}
 			},
 		}

@@ -7,6 +7,7 @@ import type {
 	ReadonlyPureSelectorToken,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
+	TransactionToken,
 	WritableFamilyToken,
 	WritablePureSelectorFamilyToken,
 	WritablePureSelectorToken,
@@ -14,12 +15,17 @@ import type {
 } from "./tokens"
 
 export type TokenType<
-	Comparison extends ReadableFamilyToken<any, any> | ReadableToken<any>,
+	Comparison extends
+		| ReadableFamilyToken<any, any>
+		| ReadableToken<any>
+		| TransactionToken<any>,
 > = Comparison extends ReadableToken<infer RepresentedValue>
 	? RepresentedValue
 	: Comparison extends ReadableFamilyToken<infer RepresentedValue, any>
 		? RepresentedValue
-		: never
+		: Comparison extends TransactionToken<infer Fn>
+			? Fn
+			: never
 
 export function isToken<KnownToken extends RegularAtomToken<any>>(
 	knownToken: KnownToken,

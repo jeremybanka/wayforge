@@ -22,7 +22,7 @@ export function installIntoStore(
 		source.logger.error(
 			`❌`,
 			`transaction`,
-			sourceNewest.transactionMeta.update.key,
+			sourceNewest.transactionMeta.update.token.key,
 			`could not install the following tokens into store "${target.config.name} from "${source.config.name}":`,
 			tokens,
 			`${sourceNewest.config.name} is undergoing a transaction.`,
@@ -34,7 +34,7 @@ export function installIntoStore(
 		target.logger.error(
 			`❌`,
 			`transaction`,
-			targetNewest.transactionMeta.update.key,
+			targetNewest.transactionMeta.update.token.key,
 			`could not install the following tokens into store "${target.config.name} from "${source.config.name}":`,
 			tokens,
 			`${targetNewest.config.name} is undergoing a transaction.`,

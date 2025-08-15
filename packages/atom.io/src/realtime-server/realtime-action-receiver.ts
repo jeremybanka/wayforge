@@ -1,4 +1,4 @@
-import type * as AtomIO from "atom.io"
+import type { TransactionOutcomeEvent, TransactionToken } from "atom.io"
 import { actUponStore, IMPLICIT } from "atom.io/internal"
 import type { JsonIO } from "atom.io/json"
 
@@ -10,10 +10,13 @@ export function realtimeActionReceiver({
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
 	return function actionReceiver<F extends JsonIO>(
-		tx: AtomIO.TransactionToken<F>,
+		tx: TransactionToken<F>,
 	): () => void {
 		const fillTransactionRequest = (
-			update: Pick<AtomIO.TransactionOutcomeEvent<F>, `id` | `params`>,
+			update: Pick<
+				TransactionOutcomeEvent<TransactionToken<F>>,
+				`id` | `params`
+			>,
 		) => {
 			const performanceKey = `tx-run:${tx.key}:${update.id}`
 			const performanceKeyStart = `${performanceKey}:start`
