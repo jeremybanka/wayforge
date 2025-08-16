@@ -1,11 +1,12 @@
 import type { WritableToken } from "atom.io"
 
+import type { OpenOperation } from "../operation"
 import type { Store } from "../store"
 import { setAtom } from "./set-atom"
 import { setSelector } from "./set-selector"
 
 export const setAtomOrSelector = <T>(
-	store: Store,
+	store: Store & { operation: OpenOperation },
 	token: WritableToken<T>,
 	value: T | ((oldValue: T) => T),
 ): void => {

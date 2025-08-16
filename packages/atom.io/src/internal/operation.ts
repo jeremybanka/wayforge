@@ -8,7 +8,7 @@ export type OperationProgress =
 	| {
 			open: false
 	  }
-export type OpenOperation<R extends ReadableToken<any>> = {
+export type OpenOperation<R extends ReadableToken<any> = ReadableToken<any>> = {
 	open: true
 	token: R
 	done: Set<string>
@@ -16,11 +16,10 @@ export type OpenOperation<R extends ReadableToken<any>> = {
 	timestamp: number
 }
 
-export function openOperation<R extends ReadableToken<any>>(
+export function openOperation(
 	store: Store,
-	token: R,
-): OpenOperation<R> | number {
-	let operation: OpenOperation<R>
+	token: ReadableToken<any>,
+): number | (Store & { operation: OpenOperation }) {
 	if (store.operation.open) {
 		const rejectionTime = performance.now()
 		store.logger.info(
@@ -31,7 +30,7 @@ export function openOperation<R extends ReadableToken<any>>(
 		)
 		return rejectionTime
 	}
-	store.operation = operation = {
+	store.operation = {
 		open: true,
 		done: new Set(),
 		prev: new Map(),
@@ -48,7 +47,7 @@ export function openOperation<R extends ReadableToken<any>>(
 				: ``
 		}`,
 	)
-	return operation
+	return store as Store & { operation: OpenOperation }
 }
 
 export function closeOperation(store: Store): void {
