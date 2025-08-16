@@ -155,7 +155,7 @@ function addAtomToTimeline(
 				const currentSelectorTime =
 					store.operation.open &&
 					store.operation.token.type === `writable_pure_selector`
-						? store.operation.time
+						? store.operation.timestamp
 						: null
 
 				const txUpdateInProgress = target.on.transactionApplying.state?.update
