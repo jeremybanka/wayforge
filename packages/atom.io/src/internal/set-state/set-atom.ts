@@ -8,7 +8,7 @@ import { isTransceiver, type Transceiver } from "../mutable"
 import { markDone } from "../operation"
 import { isChildStore } from "../transaction/is-root-store"
 import { become } from "./become"
-import { emitUpdate } from "./emit-update"
+import { dispatchStateUpdate } from "./dispatch-state-update"
 import { evictDownstreamFromAtom } from "./evict-downstream"
 
 export const setAtom = <T>(
@@ -24,7 +24,7 @@ export const setAtom = <T>(
 	evictDownstreamFromAtom(target, atom)
 	const update = { oldValue, newValue }
 	if (!isChildStore(target)) {
-		emitUpdate(target, atom, update)
+		dispatchStateUpdate(target, atom, update)
 		return
 	}
 	if (target.on.transactionApplying.state === null) {
@@ -44,9 +44,9 @@ export const setAtom = <T>(
 			`atom`,
 			key,
 			`stowed (`,
-			update.oldValue,
+			oldValue,
 			`->`,
-			update.newValue,
+			newValue,
 			`)`,
 		)
 	} else if (hasRole(atom, `tracker:signal`)) {

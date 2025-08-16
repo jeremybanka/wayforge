@@ -2,7 +2,7 @@ import type { StateUpdate } from "atom.io"
 
 import type { Atom, Selector, Store } from ".."
 
-export const emitUpdate = <T>(
+export const dispatchStateUpdate = <T>(
 	store: Store,
 	state: Atom<T> | Selector<T>,
 	update: StateUpdate<T>,
