@@ -1,4 +1,4 @@
-import type { ViewOf } from "atom.io/internal"
+import type { ViewOf } from "atom.io"
 import { getFromStore, IMPLICIT } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 

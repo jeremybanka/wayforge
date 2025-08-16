@@ -1,6 +1,6 @@
 export * from "./atom"
 export * from "./dispose-state"
-export * from "./events"
+export type * from "./events"
 export * from "./find-state"
 export * from "./get-state"
 export * from "./join"
@@ -24,3 +24,5 @@ export * from "./validators"
  * As a result, we consider any state that can be a set to a Promise to be a "loadable" state, whose value may or may not be a Promise at any given time.
  */
 export type Loadable<T> = Promise<T> | T
+
+export type ViewOf<T> = T extends { READONLY_VIEW: infer View } ? View : T
