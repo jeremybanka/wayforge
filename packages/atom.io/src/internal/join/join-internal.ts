@@ -8,6 +8,7 @@ import type {
 	ReadonlyPureSelectorFamilyToken,
 	RegularAtomFamilyToken,
 	setState,
+	ViewOf,
 	Write,
 	WriterToolkit,
 } from "atom.io"
@@ -29,7 +30,6 @@ import type {
 } from "../junction"
 import { Junction } from "../junction"
 import type { Molecule } from "../molecule"
-import type { ViewOf } from "../mutable"
 import { createMutableAtomFamily, getJsonFamily, getJsonToken } from "../mutable"
 import { setIntoStore } from "../set-state"
 import type { Store } from "../store"

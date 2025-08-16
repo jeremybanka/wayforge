@@ -1,4 +1,4 @@
-import type { AtomToken, AtomUpdateEvent } from "atom.io"
+import type { AtomToken, AtomUpdateEvent, StateUpdate } from "atom.io"
 
 import type { MutableAtom, OpenOperation, Store } from ".."
 import { withdraw } from ".."
@@ -24,14 +24,17 @@ export const setAtom = <T>(
 	newValue = writeToCache(target, atom, newValue)
 	markDone(target, atom.key)
 	evictDownstreamFromAtom(target, atom)
-	const update = { oldValue, newValue }
+	const update: StateUpdate<T> = {
+		oldValue: isTransceiver(oldValue) ? oldValue.READONLY_VIEW : oldValue,
+		newValue: isTransceiver(newValue) ? newValue.READONLY_VIEW : newValue,
+	}
 	if (!isChildStore(target)) {
 		dispatchStateUpdate(target, atom, update)
 		return
 	}
 	if (target.on.transactionApplying.state === null) {
 		const { key } = atom
-		if (isTransceiver(update.newValue)) {
+		if (isTransceiver(newValue)) {
 			return
 		}
 		const { timestamp } = target.operation

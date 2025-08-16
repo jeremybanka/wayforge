@@ -1,4 +1,6 @@
-import type { ReadableState, ViewOf } from ".."
+import type { ViewOf } from "atom.io"
+
+import type { ReadableState } from ".."
 import { readFromCache, writeToCache } from "../caching"
 import type { Store } from "../store"
 

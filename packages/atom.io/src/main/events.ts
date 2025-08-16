@@ -1,3 +1,4 @@
+import type { ViewOf } from "atom.io"
 import type { Canonical, stringified } from "atom.io/json"
 
 import type { AtomOnly, TimelineManageable } from "./timeline"
@@ -9,7 +10,10 @@ import type {
 } from "./tokens"
 import type { TokenType } from "./validators"
 
-export type StateUpdate<T> = { newValue: T; oldValue: T }
+export type StateUpdate<T> = {
+	newValue: ViewOf<T>
+	oldValue: ViewOf<T>
+}
 
 export type AtomUpdateEvent<A extends AtomToken<any>> = {
 	type: `atom_update`
