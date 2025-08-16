@@ -1,36 +1,38 @@
-import type { Atom, WritableState } from ".."
-import { traceRootSelectorAtoms } from ".."
+import type { AtomToken, WritableToken } from "atom.io"
+
+import { traceRootSelectorAtoms, withdraw } from ".."
 import type { Store } from "../store"
 import { setAtom } from "./set-atom"
 
-function resetAtom(store: Store, state: Atom<any>) {
-	switch (state.type) {
+function resetAtom(target: Store, token: AtomToken<any>) {
+	const atom = withdraw(target, token)
+	switch (atom.type) {
 		case `mutable_atom`:
-			setAtom(store, state, new state.class())
+			setAtom(target, atom, new atom.class())
 			return
 		case `atom`: {
-			let def = state.default
+			let def = atom.default
 			if (def instanceof Function) {
 				def = def()
 			}
-			setAtom(store, state, def)
+			setAtom(target, atom, def)
 		}
 	}
 }
 
 export function resetAtomOrSelector(
 	store: Store,
-	state: WritableState<any>,
+	token: WritableToken<any>,
 ): void {
-	switch (state.type) {
+	switch (token.type) {
 		case `atom`:
 		case `mutable_atom`:
-			resetAtom(store, state)
+			resetAtom(store, token)
 			break
 		case `writable_pure_selector`:
 		case `writable_held_selector`:
 			{
-				const atoms = traceRootSelectorAtoms(store, state.key)
+				const atoms = traceRootSelectorAtoms(store, token.key)
 				for (const atom of atoms.values()) {
 					resetAtom(store, atom)
 				}
