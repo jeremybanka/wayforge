@@ -4,16 +4,17 @@ import type { Store } from "./store"
 import { isChildStore } from "./transaction/is-root-store"
 
 export type OperationProgress =
+	| OpenOperation<any>
 	| {
 			open: false
 	  }
-	| {
-			open: true
-			done: Set<string>
-			prev: Map<string, any>
-			time: number
-			token: ReadableToken<any>
-	  }
+export type OpenOperation<R extends ReadableToken<any>> = {
+	open: true
+	token: R
+	done: Set<string>
+	prev: Map<string, any>
+	timestamp: number
+}
 
 export const openOperation = (
 	store: Store,
@@ -33,7 +34,7 @@ export const openOperation = (
 		open: true,
 		done: new Set(),
 		prev: new Map(),
-		time: Date.now(),
+		timestamp: Date.now(),
 		token,
 	}
 	store.logger.info(
