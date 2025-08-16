@@ -1,20 +1,22 @@
-import type { WritableState } from ".."
+import type { WritableToken } from "atom.io"
+
 import type { Store } from "../store"
 import { setAtom } from "./set-atom"
+import { setSelector } from "./set-selector"
 
 export const setAtomOrSelector = <T>(
 	store: Store,
-	state: WritableState<T>,
+	token: WritableToken<T>,
 	value: T | ((oldValue: T) => T),
 ): void => {
-	switch (state.type) {
+	switch (token.type) {
 		case `atom`:
 		case `mutable_atom`:
-			setAtom(store, state, value)
+			setAtom(store, token, value)
 			break
 		case `writable_pure_selector`:
 		case `writable_held_selector`:
-			state.set(value)
+			setSelector(store, token, value)
 			break
 	}
 }

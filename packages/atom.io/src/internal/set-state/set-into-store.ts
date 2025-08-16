@@ -5,26 +5,25 @@ import { findInStore } from "../families"
 import { getFamilyOfToken } from "../families/get-family-of-token"
 import { closeOperation, openOperation } from "../operation"
 import type { Store } from "../store"
-import { withdraw } from "../store"
 import { resetAtomOrSelector } from "./reset-atom-or-selector"
 import { RESET_STATE } from "./reset-in-store"
 import { setAtomOrSelector } from "./set-atom-or-selector"
 
 export function setIntoStore<T, New extends T>(
-	store: Store,
+	target: Store,
 	token: WritableToken<T>,
 	value: New | typeof RESET_STATE | ((oldValue: T) => New),
 ): void
 
 export function setIntoStore<T, K extends Canonical, New extends T>(
-	store: Store,
+	target: Store,
 	token: WritableFamilyToken<T, K>,
 	key: K,
 	value: New | typeof RESET_STATE | ((oldValue: T) => New),
 ): void
 
 export function setIntoStore<T, New extends T>(
-	store: Store,
+	target: Store,
 	...params:
 		| [
 				token: WritableFamilyToken<T, Canonical>,
@@ -45,31 +44,31 @@ export function setIntoStore<T, New extends T>(
 		value = params[1]
 		if (token.family) {
 			// biome-ignore lint/style/noNonNullAssertion: this token belongs to a family
-			family = getFamilyOfToken(store, token)!
+			family = getFamilyOfToken(target, token)!
 			key = parseJson(token.family.subKey)
-			token = findInStore(store, family, key)
+			token = findInStore(target, family, key)
 		}
 	} else {
 		family = params[0]
 		key = params[1]
 		value = params[2]
-		token = findInStore(store, family, key)
+		token = findInStore(target, family, key)
 	}
 
 	const action = value === RESET_STATE ? `reset` : `set`
 
 	if (`counterfeit` in token && `family` in token) {
 		const subKey = token.family.subKey
-		const disposal = store.disposalTraces.buffer.find(
+		const disposal = target.disposalTraces.buffer.find(
 			(item) => item?.key === subKey,
 		)
-		store.logger.error(
+		target.logger.error(
 			`❌`,
 			token.type,
 			token.key,
 			`could not be`,
 			action,
-			`because it was not found in the store "${store.config.name}".`,
+			`because it was not found in the store "${target.config.name}".`,
 			disposal
 				? `This state was previously disposed:\n${disposal.trace}`
 				: `No previous disposal trace was found.`,
@@ -77,13 +76,13 @@ export function setIntoStore<T, New extends T>(
 		return
 	}
 
-	const rejectionTime = openOperation(store, token)
+	const rejectionTime = openOperation(target, token)
 	if (rejectionTime) {
-		const unsubscribe = store.on.operationClose.subscribe(
+		const unsubscribe = target.on.operationClose.subscribe(
 			`waiting to ${action} "${token.key}" at T-${rejectionTime}`,
 			function waitUntilOperationCloseToSetState() {
 				unsubscribe()
-				store.logger.info(
+				target.logger.info(
 					`🟢`,
 					token.type,
 					token.key,
@@ -91,16 +90,15 @@ export function setIntoStore<T, New extends T>(
 					action,
 					`from T-${rejectionTime}`,
 				)
-				setIntoStore(store, token, value)
+				setIntoStore(target, token, value)
 			},
 		)
 		return
 	}
-	const state = withdraw(store, token)
 	if (value === RESET_STATE) {
-		resetAtomOrSelector(store, state)
+		resetAtomOrSelector(target, token)
 	} else {
-		setAtomOrSelector(store, state, value)
+		setAtomOrSelector(target, token, value)
 	}
-	closeOperation(store)
+	closeOperation(target)
 }

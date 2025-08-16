@@ -1,6 +1,7 @@
 import type { AtomToken, AtomUpdateEvent } from "atom.io"
 
-import { type Atom, deposit, type MutableAtom, type Store } from ".."
+import type { MutableAtom, Store } from ".."
+import { withdraw } from ".."
 import { hasRole } from "../atom/has-role"
 import { writeToCache } from "../caching"
 import { readOrComputeValue } from "../get-state/read-or-compute-value"
@@ -13,9 +14,10 @@ import { evictDownstreamFromAtom } from "./evict-downstream"
 
 export const setAtom = <T>(
 	target: Store,
-	atom: Atom<T>,
+	token: AtomToken<T>,
 	next: T | ((oldValue: T) => T),
 ): void => {
+	const atom = withdraw(target, token)
 	const oldValue = readOrComputeValue(target, atom, `mut`)
 	let newValue = become(next)(oldValue)
 	target.logger.info(`📝`, `atom`, atom.key, `set to`, newValue)
@@ -34,7 +36,7 @@ export const setAtom = <T>(
 		}
 		const atomUpdate: AtomUpdateEvent<AtomToken<T>> = {
 			type: `atom_update`,
-			token: deposit(atom),
+			token,
 			timestamp: Date.now(), // 👺 use store operation
 			update,
 		}
