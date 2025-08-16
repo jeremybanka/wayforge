@@ -1,10 +1,13 @@
 import type { AtomToken, WritableToken } from "atom.io"
 
+import type { OpenOperation, Store } from ".."
 import { traceRootSelectorAtoms, withdraw } from ".."
-import type { Store } from "../store"
 import { setAtom } from "./set-atom"
 
-function resetAtom(target: Store, token: AtomToken<any>) {
+function resetAtom(
+	target: Store & { operation: OpenOperation },
+	token: AtomToken<any>,
+) {
 	const atom = withdraw(target, token)
 	switch (atom.type) {
 		case `mutable_atom`:
@@ -21,7 +24,7 @@ function resetAtom(target: Store, token: AtomToken<any>) {
 }
 
 export function resetAtomOrSelector(
-	store: Store,
+	store: Store & { operation: OpenOperation },
 	token: WritableToken<any>,
 ): void {
 	switch (token.type) {

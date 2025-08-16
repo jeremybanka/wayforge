@@ -10,20 +10,20 @@ import { RESET_STATE } from "./reset-in-store"
 import { setAtomOrSelector } from "./set-atom-or-selector"
 
 export function setIntoStore<T, New extends T>(
-	target: Store,
+	store: Store,
 	token: WritableToken<T>,
 	value: New | typeof RESET_STATE | ((oldValue: T) => New),
 ): void
 
 export function setIntoStore<T, K extends Canonical, New extends T>(
-	target: Store,
+	store: Store,
 	token: WritableFamilyToken<T, K>,
 	key: K,
 	value: New | typeof RESET_STATE | ((oldValue: T) => New),
 ): void
 
 export function setIntoStore<T, New extends T>(
-	target: Store,
+	store: Store,
 	...params:
 		| [
 				token: WritableFamilyToken<T, Canonical>,
@@ -44,31 +44,31 @@ export function setIntoStore<T, New extends T>(
 		value = params[1]
 		if (token.family) {
 			// biome-ignore lint/style/noNonNullAssertion: this token belongs to a family
-			family = getFamilyOfToken(target, token)!
+			family = getFamilyOfToken(store, token)!
 			key = parseJson(token.family.subKey)
-			token = findInStore(target, family, key)
+			token = findInStore(store, family, key)
 		}
 	} else {
 		family = params[0]
 		key = params[1]
 		value = params[2]
-		token = findInStore(target, family, key)
+		token = findInStore(store, family, key)
 	}
 
 	const action = value === RESET_STATE ? `reset` : `set`
 
 	if (`counterfeit` in token && `family` in token) {
 		const subKey = token.family.subKey
-		const disposal = target.disposalTraces.buffer.find(
+		const disposal = store.disposalTraces.buffer.find(
 			(item) => item?.key === subKey,
 		)
-		target.logger.error(
+		store.logger.error(
 			`❌`,
 			token.type,
 			token.key,
 			`could not be`,
 			action,
-			`because it was not found in the store "${target.config.name}".`,
+			`because it was not found in the store "${store.config.name}".`,
 			disposal
 				? `This state was previously disposed:\n${disposal.trace}`
 				: `No previous disposal trace was found.`,
@@ -76,13 +76,14 @@ export function setIntoStore<T, New extends T>(
 		return
 	}
 
-	const rejectionTime = openOperation(target, token)
-	if (rejectionTime) {
-		const unsubscribe = target.on.operationClose.subscribe(
+	const result = openOperation(store, token)
+	if (typeof result === `number`) {
+		const rejectionTime = result
+		const unsubscribe = store.on.operationClose.subscribe(
 			`waiting to ${action} "${token.key}" at T-${rejectionTime}`,
 			function waitUntilOperationCloseToSetState() {
 				unsubscribe()
-				target.logger.info(
+				store.logger.info(
 					`🟢`,
 					token.type,
 					token.key,
@@ -90,11 +91,12 @@ export function setIntoStore<T, New extends T>(
 					action,
 					`from T-${rejectionTime}`,
 				)
-				setIntoStore(target, token, value)
+				setIntoStore(store, token, value)
 			},
 		)
 		return
 	}
+	const target = result
 	if (value === RESET_STATE) {
 		resetAtomOrSelector(target, token)
 	} else {

@@ -1,6 +1,6 @@
 import type { AtomToken, AtomUpdateEvent } from "atom.io"
 
-import type { MutableAtom, Store } from ".."
+import type { MutableAtom, OpenOperation, Store } from ".."
 import { withdraw } from ".."
 import { hasRole } from "../atom/has-role"
 import { writeToCache } from "../caching"
@@ -13,7 +13,7 @@ import { dispatchStateUpdate } from "./dispatch-state-update"
 import { evictDownstreamFromAtom } from "./evict-downstream"
 
 export const setAtom = <T>(
-	target: Store,
+	target: Store & { operation: OpenOperation<any> },
 	token: AtomToken<T>,
 	next: T | ((oldValue: T) => T),
 ): void => {
@@ -34,10 +34,11 @@ export const setAtom = <T>(
 		if (isTransceiver(update.newValue)) {
 			return
 		}
+		const { timestamp } = target.operation
 		const atomUpdate: AtomUpdateEvent<AtomToken<T>> = {
 			type: `atom_update`,
 			token,
-			timestamp: Date.now(), // 👺 use store operation
+			timestamp,
 			update,
 		}
 		target.transactionMeta.update.subEvents.push(atomUpdate)

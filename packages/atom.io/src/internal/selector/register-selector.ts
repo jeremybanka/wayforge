@@ -13,6 +13,7 @@ import { findInStore } from "../families"
 import { readOrComputeValue } from "../get-state/read-or-compute-value"
 import { newest } from "../lineage"
 import { getJsonToken } from "../mutable"
+import type { OpenOperation } from "../operation"
 import { setAtomOrSelector } from "../set-state"
 import type { Store } from "../store"
 import { withdraw } from "../store"
@@ -94,7 +95,7 @@ export const registerSelector = (
 			value = params[2]
 			token = findInStore(store, family, key)
 		}
-		const target = newest(store)
+		const target = newest(store) as Store & { operation: OpenOperation }
 		const state = withdraw(target, token)
 		setAtomOrSelector(target, state, value)
 	}) as typeof setState,
