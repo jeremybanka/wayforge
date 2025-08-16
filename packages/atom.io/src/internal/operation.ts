@@ -16,10 +16,11 @@ export type OpenOperation<R extends ReadableToken<any>> = {
 	timestamp: number
 }
 
-export const openOperation = (
+export function openOperation<R extends ReadableToken<any>>(
 	store: Store,
-	token: ReadableToken<any>,
-): number | undefined => {
+	token: R,
+): OpenOperation<R> | number {
+	let operation: OpenOperation<R>
 	if (store.operation.open) {
 		const rejectionTime = performance.now()
 		store.logger.info(
@@ -30,7 +31,7 @@ export const openOperation = (
 		)
 		return rejectionTime
 	}
-	store.operation = {
+	store.operation = operation = {
 		open: true,
 		done: new Set(),
 		prev: new Map(),
@@ -42,13 +43,15 @@ export const openOperation = (
 		token.type,
 		token.key,
 		`operation start in store "${store.config.name}"${
-			!isChildStore(store)
-				? ``
-				: ` ${store.transactionMeta.phase} "${store.transactionMeta.update.token.key}"`
+			isChildStore(store)
+				? ` ${store.transactionMeta.phase} "${store.transactionMeta.update.token.key}"`
+				: ``
 		}`,
 	)
+	return operation
 }
-export const closeOperation = (store: Store): void => {
+
+export function closeOperation(store: Store): void {
 	if (store.operation.open) {
 		store.logger.info(
 			`🔴`,
