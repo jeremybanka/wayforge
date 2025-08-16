@@ -11,44 +11,43 @@ import type { TokenType } from "./validators"
 
 export type StateUpdate<T> = { newValue: T; oldValue: T }
 
-export type AtomUpdateEvent<T extends AtomToken<any>> = {
+export type AtomUpdateEvent<A extends AtomToken<any>> = {
 	type: `atom_update`
-	token: T
-	update: StateUpdate<TokenType<T>>
+	token: A
+	update: StateUpdate<TokenType<A>>
 	timestamp: number
 }
 
-export type TimelineSelectorUpdateEvent<ManagedAtom extends TimelineManageable> =
-	{
-		type: `selector_update`
-		token: SelectorToken<any>
-		atomUpdates: AtomUpdateEvent<AtomOnly<ManagedAtom>>[]
-		timestamp: number
-	}
+export type TimelineSelectorUpdateEvent<A extends TimelineManageable> = {
+	type: `selector_update`
+	token: SelectorToken<any>
+	atomUpdates: AtomUpdateEvent<AtomOnly<A>>[]
+	timestamp: number
+}
 
-export type StateLifecycleEvent<Token extends ReadableToken<any>> =
-	| StateCreationEvent<Token>
-	| StateDisposalEvent<Token>
-export type StateCreationEvent<Token extends ReadableToken<any>> = {
+export type StateLifecycleEvent<R extends ReadableToken<any>> =
+	| StateCreationEvent<R>
+	| StateDisposalEvent<R>
+export type StateCreationEvent<R extends ReadableToken<any>> = {
 	type: `state_creation`
-	token: Token
+	token: R
 	timestamp: number
 }
-export type StateDisposalEvent<Token extends ReadableToken<any>> =
-	| AtomDisposalEvent<Token>
-	| SelectorDisposalEvent<Token>
+export type StateDisposalEvent<R extends ReadableToken<any>> =
+	| AtomDisposalEvent<R>
+	| SelectorDisposalEvent<R>
 
-export type AtomDisposalEvent<Token extends ReadableToken<any>> = {
+export type AtomDisposalEvent<R extends ReadableToken<any>> = {
 	type: `state_disposal`
 	subType: `atom`
-	token: Token
-	value: TokenType<Token>
+	token: R
+	value: TokenType<R>
 	timestamp: number
 }
-export type SelectorDisposalEvent<Token extends ReadableToken<any>> = {
+export type SelectorDisposalEvent<R extends ReadableToken<any>> = {
 	type: `state_disposal`
 	subType: `selector`
-	token: Token
+	token: R
 	timestamp: number
 }
 
