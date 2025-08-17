@@ -64,7 +64,9 @@ export const createWritablePureSelector = <T>(
 		install: (s: Store) => createWritablePureSelector(s, options, family),
 		get: getSelf,
 		set: setSelf,
-		...(family && { family }),
+	}
+	if (family) {
+		mySelector.family = family
 	}
 	target.writableSelectors.set(key, mySelector)
 	const initialValue = getSelf()
