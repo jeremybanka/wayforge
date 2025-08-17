@@ -1,5 +1,6 @@
 import type {
 	FamilyMetadata,
+	StateUpdate,
 	WritablePureSelectorOptions,
 	WritablePureSelectorToken,
 } from "atom.io"
@@ -9,6 +10,7 @@ import { writeToCache } from "../caching"
 import { newest } from "../lineage"
 import { markDone } from "../operation"
 import { become } from "../set-state"
+import { dispatchStateUpdate } from "../set-state/dispatch-state-update"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 import { isRootStore } from "../transaction"
@@ -49,14 +51,16 @@ export const createWritablePureSelector = <T>(
 		const innerTarget = newest(store)
 		const oldValue = getSelf(options.get, innerTarget)
 		const newValue = become(next)(oldValue)
-		store.logger.info(`📝`, type, key, `set (`, oldValue, `->`, newValue, `)`)
+		store.logger.info(`📝`, type, key, `set to`, newValue)
 		writeToCache(innerTarget, mySelector, newValue)
 		markDone(innerTarget, options.key)
 		if (isRootStore(innerTarget)) {
-			subject.next({ newValue, oldValue })
+			const update = { oldValue, newValue } as StateUpdate<T>
+			dispatchStateUpdate(innerTarget, mySelector, update)
 		}
 		options.set(setterToolkit, newValue)
 	}
+
 	const mySelector: WritablePureSelector<T> = {
 		...options,
 		type,
@@ -65,18 +69,14 @@ export const createWritablePureSelector = <T>(
 		get: getSelf,
 		set: setSelf,
 	}
-	if (family) {
-		mySelector.family = family
-	}
+	if (family) mySelector.family = family
+
 	target.writableSelectors.set(key, mySelector)
 	const initialValue = getSelf()
 	store.logger.info(`✨`, mySelector.type, mySelector.key, `=`, initialValue)
-	const token: WritablePureSelectorToken<T> = {
-		key,
-		type,
-	}
-	if (family) {
-		token.family = family
-	}
+
+	const token: WritablePureSelectorToken<T> = { key, type }
+	if (family) token.family = family
+
 	return token
 }

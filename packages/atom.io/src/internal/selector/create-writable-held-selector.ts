@@ -1,5 +1,6 @@
 import type {
 	FamilyMetadata,
+	StateUpdate,
 	WritableHeldSelectorOptions,
 	WritableHeldSelectorToken,
 } from "atom.io"
@@ -9,6 +10,7 @@ import { writeToCache } from "../caching"
 import { newest } from "../lineage"
 import { markDone } from "../operation"
 import { become } from "../set-state"
+import { dispatchStateUpdate } from "../set-state/dispatch-state-update"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 import { isRootStore } from "../transaction"
@@ -47,15 +49,14 @@ export const createWritableHeldSelector = <T extends object>(
 
 	const setSelf = (next: T | ((oldValue: T) => T)): void => {
 		const innerTarget = newest(store)
-		const oldValue = getSelf(options.get, innerTarget)
-		const newValue = become(next)(oldValue)
-		store.logger.info(`📝`, type, key, `set (`, oldValue, `->`, newValue, `)`)
-		writeToCache(innerTarget, mySelector, newValue)
+		become(next)(constant)
+		store.logger.info(`📝`, type, key, `set to`, constant)
 		markDone(innerTarget, key)
 		if (isRootStore(innerTarget)) {
-			subject.next({ newValue, oldValue })
+			const update = { oldValue: constant, newValue: constant } as StateUpdate<T>
+			dispatchStateUpdate(innerTarget, mySelector, update)
 		}
-		options.set(setterToolkit, newValue)
+		options.set(setterToolkit, constant)
 	}
 	const mySelector: WritableHeldSelector<T> = {
 		...options,
