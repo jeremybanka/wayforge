@@ -5,6 +5,7 @@ import { findInStore } from "../families"
 import { getFamilyOfToken } from "../families/get-family-of-token"
 import { closeOperation, openOperation } from "../operation"
 import { type Store, withdraw } from "../store"
+import { dispatchOrDeferStateUpdate } from "./dispatch-state-update"
 import { resetAtomOrSelector } from "./reset-atom-or-selector"
 import { RESET_STATE } from "./reset-in-store"
 import { setAtomOrSelector } from "./set-atom-or-selector"
@@ -99,10 +100,12 @@ export function setIntoStore<T, New extends T>(
 	}
 
 	const state = withdraw(target, token)
+	let protoUpdate: [T, T]
 	if (value === RESET_STATE) {
-		resetAtomOrSelector(target, state)
+		protoUpdate = resetAtomOrSelector(target, state)
 	} else {
-		setAtomOrSelector(target, state, value)
+		protoUpdate = setAtomOrSelector(target, state, value)
 	}
+	dispatchOrDeferStateUpdate(target, state, protoUpdate)
 	closeOperation(target)
 }
