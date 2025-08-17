@@ -1,44 +1,48 @@
-import type { AtomToken, WritableToken } from "atom.io"
-
-import type { OpenOperation, Store } from ".."
-import { traceRootSelectorAtoms, withdraw } from ".."
+import type { Atom, OpenOperation, Store, WritableState } from ".."
+import { traceRootSelectorAtoms } from ".."
+import { dispatchOrDeferStateUpdate } from "./dispatch-state-update"
 import { setAtom } from "./set-atom"
 
-function resetAtom(
+function resetAtom<T>(
 	target: Store & { operation: OpenOperation },
-	token: AtomToken<any>,
-) {
-	const atom = withdraw(target, token)
+	atom: Atom<T>,
+): [oldValue: T, newValue: T] {
 	switch (atom.type) {
 		case `mutable_atom`:
-			setAtom(target, atom, new atom.class())
-			return
+			return setAtom(target, atom, new atom.class())
 		case `atom`: {
 			let def = atom.default
 			if (def instanceof Function) {
 				def = def()
 			}
-			setAtom(target, atom, def)
+			return setAtom(target, atom, def)
 		}
 	}
 }
 
-export function resetAtomOrSelector(
-	store: Store & { operation: OpenOperation },
-	token: WritableToken<any>,
+export function resetAtomOrSelector<T>(
+	target: Store & { operation: OpenOperation },
+	state: WritableState<T>,
 ): void {
-	switch (token.type) {
+	switch (state.type) {
 		case `atom`:
 		case `mutable_atom`:
-			resetAtom(store, token)
+			{
+				const protoUpdate = resetAtom(target, state)
+				dispatchOrDeferStateUpdate(target, state, protoUpdate)
+			}
 			break
 		case `writable_pure_selector`:
 		case `writable_held_selector`:
 			{
-				const atoms = traceRootSelectorAtoms(store, token.key)
+				const oldValue = state.getFrom(target)
+				const atoms = traceRootSelectorAtoms(target, state.key)
 				for (const atom of atoms.values()) {
-					resetAtom(store, atom)
+					const protoUpdate = resetAtom(target, atom)
+					dispatchOrDeferStateUpdate(target, state, protoUpdate)
 				}
+				const newValue = state.getFrom(target)
+				dispatchOrDeferStateUpdate(target, state, [oldValue, newValue])
 			}
 			break
 	}

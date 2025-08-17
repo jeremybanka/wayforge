@@ -1,23 +1,19 @@
-import type { WritableSelectorToken } from "atom.io"
-
+import type { WritableSelector } from ".."
 import { writeToCache } from "../caching"
 import { markDone, type OpenOperation } from "../operation"
 import type { Store } from "../store"
-import { withdraw } from "../store"
 import { become } from "./become"
-import { dispatchOrDeferStateUpdate } from "./dispatch-state-update"
 
 export function setSelector<T>(
 	target: Store & { operation: OpenOperation<any> },
-	token: WritableSelectorToken<T>,
+	selector: WritableSelector<T>,
 	next: T | ((oldValue: T) => T),
-): void {
+): [oldValue: T, newValue: T] {
 	let oldValue: T
 	let newValue: T
 	let constant: T
 
-	const { type, key } = token
-	const selector = withdraw(target, token)
+	const { type, key } = selector
 
 	switch (selector.type) {
 		case `writable_pure_selector`:
@@ -35,5 +31,5 @@ export function setSelector<T>(
 	target.logger.info(`📝`, type, key, `setting to`, newValue)
 	markDone(target, key)
 	selector.setSelf(newValue)
-	dispatchOrDeferStateUpdate(target, selector, oldValue, newValue)
+	return [oldValue, newValue]
 }

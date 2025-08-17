@@ -4,7 +4,7 @@ import { type Canonical, parseJson } from "atom.io/json"
 import { findInStore } from "../families"
 import { getFamilyOfToken } from "../families/get-family-of-token"
 import { closeOperation, openOperation } from "../operation"
-import type { Store } from "../store"
+import { type Store, withdraw } from "../store"
 import { resetAtomOrSelector } from "./reset-atom-or-selector"
 import { RESET_STATE } from "./reset-in-store"
 import { setAtomOrSelector } from "./set-atom-or-selector"
@@ -98,10 +98,11 @@ export function setIntoStore<T, New extends T>(
 		return
 	}
 
+	const state = withdraw(target, token)
 	if (value === RESET_STATE) {
-		resetAtomOrSelector(target, token)
+		resetAtomOrSelector(target, state)
 	} else {
-		setAtomOrSelector(target, token, value)
+		setAtomOrSelector(target, state, value)
 	}
 	closeOperation(target)
 }

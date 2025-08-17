@@ -57,7 +57,7 @@ describe(`transaction`, () => {
 			default: 0,
 		})
 		const resetTX = transaction({
-			key: `increment`,
+			key: `reset`,
 			do: ({ reset }) => {
 				reset(countState)
 			},
