@@ -28,7 +28,7 @@ export const createWritableHeldSelector = <T extends object>(
 	const { find, get, json } = setterToolkit
 	const getterToolkit = { find, get, json }
 
-	const getSelf = (getFn = options.get, innerTarget = newest(store)): T => {
+	const getSelf = (innerTarget: Store): T => {
 		const upstreamStates = innerTarget.selectorGraph.getRelationEntries({
 			downstreamSelectorKey: key,
 		})
@@ -38,7 +38,7 @@ export const createWritableHeldSelector = <T extends object>(
 			}
 		}
 		innerTarget.selectorAtoms.delete(key)
-		getFn(getterToolkit, constant)
+		options.get(getterToolkit, constant)
 		writeToCache(innerTarget, mySelector, constant)
 		store.logger.info(`✨`, type, key, `=`, constant)
 		covered.clear()

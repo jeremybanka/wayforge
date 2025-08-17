@@ -28,7 +28,7 @@ export const createWritablePureSelector = <T>(
 	const { find, get, json } = setterToolkit
 	const getterToolkit = { find, get, json }
 
-	const getSelf = (getFn = options.get, innerTarget = newest(store)): T => {
+	const getSelf = (innerTarget: Store): T => {
 		const upstreamStates = innerTarget.selectorGraph.getRelationEntries({
 			downstreamSelectorKey: key,
 		})
@@ -38,7 +38,7 @@ export const createWritablePureSelector = <T>(
 			}
 		}
 		innerTarget.selectorAtoms.delete(key)
-		const value = getFn(getterToolkit)
+		const value = options.get(getterToolkit)
 		const cached = writeToCache(innerTarget, mySelector, value)
 		store.logger.info(`✨`, type, key, `=`, cached)
 		covered.clear()
@@ -49,7 +49,7 @@ export const createWritablePureSelector = <T>(
 		innerTarget: Store & { operation: OpenOperation },
 		next: T | ((oldValue: T) => T),
 	): void => {
-		const oldValue = getSelf(options.get, innerTarget)
+		const oldValue = getSelf(innerTarget)
 		const newValue = become(next)(oldValue)
 		store.logger.info(`📝`, type, key, `set to`, newValue)
 		writeToCache(innerTarget, mySelector, newValue)
@@ -70,7 +70,7 @@ export const createWritablePureSelector = <T>(
 	if (family) mySelector.family = family
 
 	target.writableSelectors.set(key, mySelector)
-	const initialValue = getSelf()
+	const initialValue = getSelf(target)
 	store.logger.info(`✨`, mySelector.type, mySelector.key, `=`, initialValue)
 
 	const token: WritablePureSelectorToken<T> = { key, type }

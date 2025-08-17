@@ -89,10 +89,10 @@ export type WritableHeldSelector<T> = Flat<
 	AtomIOState & {
 		type: `writable_held_selector`
 		const: T
-		get: () => T
+		get: (target: Store) => T
 		set: (
 			target: Store & { operation: OpenOperation },
-			newValue: T | ((oldValue: T) => T),
+			next: T | ((oldValue: T) => T),
 		) => void
 	}
 >
@@ -106,10 +106,10 @@ export type ReadonlyHeldSelector<T> = Flat<
 export type WritablePureSelector<T> = Flat<
 	AtomIOState & {
 		type: `writable_pure_selector`
-		get: () => T
+		get: (target: Store) => T
 		set: (
 			target: Store & { operation: OpenOperation },
-			newValue: T | ((oldValue: T) => T),
+			next: T | ((oldValue: T) => T),
 		) => void
 	}
 >
