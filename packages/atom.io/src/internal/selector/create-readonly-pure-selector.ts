@@ -11,11 +11,11 @@ import type { Store } from "../store"
 import { Subject } from "../subject"
 import { registerSelector } from "./register-selector"
 
-export const createReadonlyPureSelector = <T>(
+export function createReadonlyPureSelector<T>(
 	store: Store,
 	options: ReadonlyPureSelectorOptions<T>,
 	family: FamilyMetadata | undefined,
-): ReadonlyPureSelectorToken<T> => {
+): ReadonlyPureSelectorToken<T> {
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const covered = new Set<string>()

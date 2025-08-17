@@ -3,14 +3,10 @@ import { isStateKey } from "../keys"
 import { newest } from "../lineage"
 import type { Store } from "../store"
 
-export const getSelectorDependencyKeys = (
+export function getSelectorDependencyKeys(
 	store: Store,
 	key: string,
-): (
-	| AtomKey<unknown>
-	| ReadonlySelectorKey<unknown>
-	| SelectorKey<unknown>
-)[] => {
+): (AtomKey<unknown> | ReadonlySelectorKey<unknown> | SelectorKey<unknown>)[] {
 	const sources = newest(store)
 		.selectorGraph.getRelationEntries({ downstreamSelectorKey: key })
 		.filter(([_, { source }]) => source !== key)
