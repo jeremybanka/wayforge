@@ -4,12 +4,9 @@ import type {
 	WritableHeldSelectorToken,
 } from "atom.io"
 
-import type { OpenOperation, WritableHeldSelector } from ".."
+import type { WritableHeldSelector } from ".."
 import { writeToCache } from "../caching"
 import { newest } from "../lineage"
-import { markDone } from "../operation"
-import { become } from "../set-state"
-import { dispatchOrDeferStateUpdate } from "../set-state/dispatch-state-update"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 import { registerSelector } from "./register-selector"
@@ -45,23 +42,16 @@ export function createWritableHeldSelector<T extends object>(
 		return constant
 	}
 
-	const setInto = (
-		innerTarget: Store & { operation: OpenOperation },
-		next: T | ((oldValue: T) => T),
-	): void => {
-		become(next)(constant)
-		store.logger.info(`📝`, type, key, `set to`, constant)
-		markDone(innerTarget, key)
+	const setSelf = (): void => {
 		options.set(setterToolkit, constant)
-
-		dispatchOrDeferStateUpdate(innerTarget, mySelector, constant, constant)
 	}
+
 	const mySelector: WritableHeldSelector<T> = {
 		...options,
 		type,
 		subject,
 		getFrom,
-		setInto,
+		setSelf,
 		install: (s: Store) => createWritableHeldSelector(s, options, family),
 	}
 	if (family) {

@@ -22,7 +22,6 @@ import type { Canonical } from "atom.io/json"
 
 import type { internalRole } from "./atom/has-role"
 import type { ConstructorOf, Transceiver } from "./mutable"
-import type { OpenOperation } from "./operation"
 import type { Store } from "./store"
 import type { Subject } from "./subject"
 import type { Timeline } from "./timeline"
@@ -90,10 +89,7 @@ export type WritableHeldSelector<T> = Flat<
 		type: `writable_held_selector`
 		const: T
 		getFrom: (target: Store) => T
-		setInto: (
-			target: Store & { operation: OpenOperation },
-			next: T | ((oldValue: T) => T),
-		) => void
+		setSelf: (newValue: T) => void
 	}
 >
 export type ReadonlyHeldSelector<T> = Flat<
@@ -107,10 +103,7 @@ export type WritablePureSelector<T> = Flat<
 	AtomIOState & {
 		type: `writable_pure_selector`
 		getFrom: (target: Store) => T
-		setInto: (
-			target: Store & { operation: OpenOperation },
-			next: T | ((oldValue: T) => T),
-		) => void
+		setSelf: (newValue: T) => void
 	}
 >
 export type ReadonlyPureSelector<T> = Flat<
