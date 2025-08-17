@@ -113,7 +113,7 @@ export function evictCachedValue(target: Store, key: string): void {
 		const selector =
 			target.writableSelectors.get(key) ?? target.readonlySelectors.get(key)
 		if (selector) {
-			selector.get()
+			selector.get(target)
 		}
 		return
 	}
