@@ -22,8 +22,8 @@ export const createReadonlyHeldSelector = <T extends object>(
 	const { key, const: constant } = options
 	const type = `readonly_held_selector` as const
 	const { get, find, json } = registerSelector(target, type, key, covered)
-	const getSelf = () => {
-		const innerTarget = newest(store)
+
+	const getFrom = (innerTarget: Store) => {
 		const upstreamStates = innerTarget.selectorGraph.getRelationEntries({
 			downstreamSelectorKey: key,
 		})
@@ -43,8 +43,8 @@ export const createReadonlyHeldSelector = <T extends object>(
 		...options,
 		type,
 		subject,
+		getFrom,
 		install: (s: Store) => createReadonlyHeldSelector(s, options, family),
-		get: getSelf,
 	}
 	if (family) {
 		readonlySelector.family = family

@@ -28,7 +28,7 @@ export const createWritableHeldSelector = <T extends object>(
 	const { find, get, json } = setterToolkit
 	const getterToolkit = { find, get, json }
 
-	const getSelf = (innerTarget: Store): T => {
+	const getFrom = (innerTarget: Store): T => {
 		const upstreamStates = innerTarget.selectorGraph.getRelationEntries({
 			downstreamSelectorKey: key,
 		})
@@ -45,7 +45,7 @@ export const createWritableHeldSelector = <T extends object>(
 		return constant
 	}
 
-	const setSelf = (
+	const setInto = (
 		innerTarget: Store & { operation: OpenOperation },
 		next: T | ((oldValue: T) => T),
 	): void => {
@@ -60,9 +60,9 @@ export const createWritableHeldSelector = <T extends object>(
 		...options,
 		type,
 		subject,
+		getFrom,
+		setInto,
 		install: (s: Store) => createWritableHeldSelector(s, options, family),
-		get: getSelf,
-		set: setSelf,
 	}
 	if (family) {
 		mySelector.family = family

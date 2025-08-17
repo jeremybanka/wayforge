@@ -28,7 +28,7 @@ export const createWritablePureSelector = <T>(
 	const { find, get, json } = setterToolkit
 	const getterToolkit = { find, get, json }
 
-	const getSelf = (innerTarget: Store): T => {
+	const getFrom = (innerTarget: Store): T => {
 		const upstreamStates = innerTarget.selectorGraph.getRelationEntries({
 			downstreamSelectorKey: key,
 		})
@@ -45,11 +45,11 @@ export const createWritablePureSelector = <T>(
 		return cached
 	}
 
-	const setSelf = (
+	const setInto = (
 		innerTarget: Store & { operation: OpenOperation },
 		next: T | ((oldValue: T) => T),
 	): void => {
-		const oldValue = getSelf(innerTarget)
+		const oldValue = getFrom(innerTarget)
 		const newValue = become(next)(oldValue)
 		store.logger.info(`📝`, type, key, `set to`, newValue)
 		writeToCache(innerTarget, mySelector, newValue)
@@ -63,14 +63,14 @@ export const createWritablePureSelector = <T>(
 		...options,
 		type,
 		subject,
+		getFrom,
+		setInto,
 		install: (s: Store) => createWritablePureSelector(s, options, family),
-		get: getSelf,
-		set: setSelf,
 	}
 	if (family) mySelector.family = family
 
 	target.writableSelectors.set(key, mySelector)
-	const initialValue = getSelf(target)
+	const initialValue = getFrom(target)
 	store.logger.info(`✨`, mySelector.type, mySelector.key, `=`, initialValue)
 
 	const token: WritablePureSelectorToken<T> = { key, type }
