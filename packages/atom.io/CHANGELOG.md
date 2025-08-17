@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.36.3
+
+### Patch Changes
+
+- 36e1b76: 🐛 Fixed bug where getting a writable, loadable selector could return a stale Promise.
+
 ## 0.36.2
 
 ### Patch Changes
