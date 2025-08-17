@@ -4,12 +4,9 @@ import type {
 	WritablePureSelectorToken,
 } from "atom.io"
 
-import type { OpenOperation, WritablePureSelector } from ".."
+import type { WritablePureSelector } from ".."
 import { writeToCache } from "../caching"
 import { newest } from "../lineage"
-import { markDone } from "../operation"
-import { become } from "../set-state"
-import { dispatchOrDeferStateUpdate } from "../set-state/dispatch-state-update"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 import { registerSelector } from "./register-selector"
@@ -45,18 +42,8 @@ export function createWritablePureSelector<T>(
 		return cached
 	}
 
-	const setInto = (
-		innerTarget: Store & { operation: OpenOperation },
-		next: T | ((oldValue: T) => T),
-	): void => {
-		const oldValue = getFrom(innerTarget)
-		const newValue = become(next)(oldValue)
-		store.logger.info(`📝`, type, key, `set to`, newValue)
-		writeToCache(innerTarget, mySelector, newValue)
-		markDone(innerTarget, options.key)
+	const setSelf = (newValue: T): void => {
 		options.set(setterToolkit, newValue)
-
-		dispatchOrDeferStateUpdate(innerTarget, mySelector, oldValue, newValue)
 	}
 
 	const mySelector: WritablePureSelector<T> = {
@@ -64,7 +51,7 @@ export function createWritablePureSelector<T>(
 		type,
 		subject,
 		getFrom,
-		setInto,
+		setSelf,
 		install: (s: Store) => createWritablePureSelector(s, options, family),
 	}
 	if (family) mySelector.family = family
