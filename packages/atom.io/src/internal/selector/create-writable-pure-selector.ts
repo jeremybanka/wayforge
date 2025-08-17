@@ -1,16 +1,15 @@
 import type {
 	FamilyMetadata,
-	StateUpdate,
 	WritablePureSelectorOptions,
 	WritablePureSelectorToken,
 } from "atom.io"
 
-import type { WritablePureSelector } from ".."
+import type { OpenOperation, WritablePureSelector } from ".."
 import { writeToCache } from "../caching"
 import { newest } from "../lineage"
 import { markDone } from "../operation"
 import { become } from "../set-state"
-import { dispatchStateUpdate } from "../set-state/dispatch-state-update"
+import { dispatchOrDeferStateUpdate } from "../set-state/dispatch-state-update"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 import { isRootStore } from "../transaction"
@@ -56,8 +55,13 @@ export const createWritablePureSelector = <T>(
 		markDone(innerTarget, options.key)
 		options.set(setterToolkit, newValue)
 		if (isRootStore(innerTarget)) {
-			const update = { oldValue, newValue } as StateUpdate<T>
-			dispatchStateUpdate(innerTarget, mySelector, update)
+			// const update = { oldValue, newValue } as StateUpdate<T>
+			dispatchOrDeferStateUpdate(
+				innerTarget as Store & { operation: OpenOperation }, // 👺 needs access to operable store
+				mySelector,
+				oldValue,
+				newValue,
+			)
 		}
 	}
 

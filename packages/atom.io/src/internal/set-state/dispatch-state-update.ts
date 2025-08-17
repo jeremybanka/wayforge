@@ -1,8 +1,82 @@
-import type { StateUpdate } from "atom.io"
+import type {
+	AtomToken,
+	AtomUpdateEvent,
+	StateUpdate,
+	WritableToken,
+} from "atom.io"
 
-import type { Atom, RootStore, Selector } from ".."
+import type { Atom, MutableAtom, Selector, WritableState } from ".."
+import { hasRole } from "../atom"
+import { readOrComputeValue } from "../get-state"
+import type { Transceiver } from "../mutable"
+import { isTransceiver } from "../mutable"
+import type { OpenOperation } from "../operation"
+import { deposit, type Store } from "../store"
+import type { RootStore } from "../transaction"
+import { isChildStore, isRootStore } from "../transaction"
+import { evictDownstreamFromAtom } from "./evict-downstream"
 
-export function dispatchStateUpdate<T>(
+export function dispatchOrDeferStateUpdate<T>(
+	target: Store & { operation: OpenOperation<any> },
+	state: WritableState<T>,
+	oldValue: T,
+	newValue: T,
+): void {
+	const update: StateUpdate<T> = {
+		oldValue: isTransceiver(oldValue) ? oldValue.READONLY_VIEW : oldValue,
+		newValue: isTransceiver(newValue) ? newValue.READONLY_VIEW : newValue,
+	}
+
+	if (isRootStore(target)) {
+		dispatchStateUpdate(target, state, update)
+	}
+
+	if (
+		isChildStore(target) &&
+		(state.type === `mutable_atom` || state.type === `atom`)
+	) {
+		if (target.on.transactionApplying.state === null) {
+			const { key } = state
+			const token: WritableToken<T> = deposit(state)
+
+			if (isTransceiver(newValue)) {
+				return
+			}
+			const { timestamp } = target.operation
+			const atomUpdate: AtomUpdateEvent<AtomToken<T>> = {
+				type: `atom_update`,
+				token,
+				timestamp,
+				update,
+			}
+			target.transactionMeta.update.subEvents.push(atomUpdate)
+			target.logger.info(
+				`📁`,
+				`atom`,
+				key,
+				`stowed (`,
+				oldValue,
+				`->`,
+				newValue,
+				`)`,
+			)
+			return
+		}
+		if (hasRole(state, `tracker:signal`)) {
+			const key = state.key.slice(1)
+			const mutable = target.atoms.get(key) as MutableAtom<
+				Transceiver<unknown, any, any>
+			>
+			const transceiver = readOrComputeValue(target, mutable, `mut`)
+			const accepted = transceiver.do(update.newValue) === null
+			if (accepted === true) {
+				evictDownstreamFromAtom(target, mutable)
+			}
+		}
+	}
+}
+
+function dispatchStateUpdate<T>(
 	store: RootStore,
 	state: Atom<T> | Selector<T>,
 	update: StateUpdate<T>,
