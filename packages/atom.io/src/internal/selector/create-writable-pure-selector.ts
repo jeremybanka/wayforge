@@ -54,11 +54,11 @@ export const createWritablePureSelector = <T>(
 		store.logger.info(`📝`, type, key, `set to`, newValue)
 		writeToCache(innerTarget, mySelector, newValue)
 		markDone(innerTarget, options.key)
+		options.set(setterToolkit, newValue)
 		if (isRootStore(innerTarget)) {
 			const update = { oldValue, newValue } as StateUpdate<T>
 			dispatchStateUpdate(innerTarget, mySelector, update)
 		}
-		options.set(setterToolkit, newValue)
 	}
 
 	const mySelector: WritablePureSelector<T> = {

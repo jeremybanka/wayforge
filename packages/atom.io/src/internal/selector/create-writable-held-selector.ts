@@ -52,11 +52,11 @@ export const createWritableHeldSelector = <T extends object>(
 		become(next)(constant)
 		store.logger.info(`📝`, type, key, `set to`, constant)
 		markDone(innerTarget, key)
+		options.set(setterToolkit, constant)
 		if (isRootStore(innerTarget)) {
 			const update = { oldValue: constant, newValue: constant } as StateUpdate<T>
 			dispatchStateUpdate(innerTarget, mySelector, update)
 		}
-		options.set(setterToolkit, constant)
 	}
 	const mySelector: WritableHeldSelector<T> = {
 		...options,
