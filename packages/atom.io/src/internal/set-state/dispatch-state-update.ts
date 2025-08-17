@@ -1,12 +1,12 @@
 import type { StateUpdate } from "atom.io"
 
-import type { Atom, Selector, Store } from ".."
+import type { Atom, RootStore, Selector } from ".."
 
-export const dispatchStateUpdate = <T>(
-	store: Store,
+export function dispatchStateUpdate<T>(
+	store: RootStore,
 	state: Atom<T> | Selector<T>,
 	update: StateUpdate<T>,
-): void => {
+): void {
 	switch (state.type) {
 		case `mutable_atom`:
 			store.logger.info(

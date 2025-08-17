@@ -7,7 +7,7 @@ import { writeToCache } from "../caching"
 import { readOrComputeValue } from "../get-state/read-or-compute-value"
 import { isTransceiver, type Transceiver } from "../mutable"
 import { markDone } from "../operation"
-import { isChildStore } from "../transaction/is-root-store"
+import { isChildStore, isRootStore } from "../transaction/is-root-store"
 import { become } from "./become"
 import { dispatchStateUpdate } from "./dispatch-state-update"
 import { evictDownstreamFromAtom } from "./evict-downstream"
@@ -24,46 +24,52 @@ export const setAtom = <T>(
 	newValue = writeToCache(target, atom, newValue)
 	markDone(target, atom.key)
 	evictDownstreamFromAtom(target, atom)
+
 	const update: StateUpdate<T> = {
 		oldValue: isTransceiver(oldValue) ? oldValue.READONLY_VIEW : oldValue,
 		newValue: isTransceiver(newValue) ? newValue.READONLY_VIEW : newValue,
 	}
-	if (!isChildStore(target)) {
+
+	if (isRootStore(target)) {
 		dispatchStateUpdate(target, atom, update)
-		return
 	}
-	if (target.on.transactionApplying.state === null) {
-		const { key } = atom
-		if (isTransceiver(newValue)) {
+
+	if (isChildStore(target)) {
+		if (target.on.transactionApplying.state === null) {
+			const { key } = atom
+			if (isTransceiver(newValue)) {
+				return
+			}
+			const { timestamp } = target.operation
+			const atomUpdate: AtomUpdateEvent<AtomToken<T>> = {
+				type: `atom_update`,
+				token,
+				timestamp,
+				update,
+			}
+			target.transactionMeta.update.subEvents.push(atomUpdate)
+			target.logger.info(
+				`📁`,
+				`atom`,
+				key,
+				`stowed (`,
+				oldValue,
+				`->`,
+				newValue,
+				`)`,
+			)
 			return
 		}
-		const { timestamp } = target.operation
-		const atomUpdate: AtomUpdateEvent<AtomToken<T>> = {
-			type: `atom_update`,
-			token,
-			timestamp,
-			update,
-		}
-		target.transactionMeta.update.subEvents.push(atomUpdate)
-		target.logger.info(
-			`📁`,
-			`atom`,
-			key,
-			`stowed (`,
-			oldValue,
-			`->`,
-			newValue,
-			`)`,
-		)
-	} else if (hasRole(atom, `tracker:signal`)) {
-		const key = atom.key.slice(1)
-		const mutable = target.atoms.get(key) as MutableAtom<
-			Transceiver<unknown, any, any>
-		>
-		const transceiver = readOrComputeValue(target, mutable, `mut`)
-		const accepted = transceiver.do(update.newValue) === null
-		if (accepted === true) {
-			evictDownstreamFromAtom(target, mutable)
+		if (hasRole(atom, `tracker:signal`)) {
+			const key = atom.key.slice(1)
+			const mutable = target.atoms.get(key) as MutableAtom<
+				Transceiver<unknown, any, any>
+			>
+			const transceiver = readOrComputeValue(target, mutable, `mut`)
+			const accepted = transceiver.do(update.newValue) === null
+			if (accepted === true) {
+				evictDownstreamFromAtom(target, mutable)
+			}
 		}
 	}
 }
