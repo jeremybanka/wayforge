@@ -14,11 +14,11 @@ import type { Store } from "../store"
 import { Subject } from "../subject"
 import { registerSelector } from "./register-selector"
 
-export const createWritablePureSelector = <T>(
+export function createWritablePureSelector<T>(
 	store: Store,
 	options: WritablePureSelectorOptions<T>,
 	family: FamilyMetadata | undefined,
-): WritablePureSelectorToken<T> => {
+): WritablePureSelectorToken<T> {
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const covered = new Set<string>()

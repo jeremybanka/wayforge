@@ -14,11 +14,11 @@ import type { Store } from "../store"
 import { Subject } from "../subject"
 import { registerSelector } from "./register-selector"
 
-export const createWritableHeldSelector = <T extends object>(
+export function createWritableHeldSelector<T extends object>(
 	store: Store,
 	options: WritableHeldSelectorOptions<T>,
 	family: FamilyMetadata | undefined,
-): WritableHeldSelectorToken<T> => {
+): WritableHeldSelectorToken<T> {
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const covered = new Set<string>()
