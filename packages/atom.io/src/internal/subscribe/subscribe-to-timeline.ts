@@ -1,4 +1,4 @@
-import type { TimelineManageable, TimelineToken, TimelineEvent } from "atom.io"
+import type { TimelineEvent, TimelineManageable, TimelineToken } from "atom.io"
 
 import type { Store } from "../store/store"
 import { withdraw } from "../store/withdraw"
