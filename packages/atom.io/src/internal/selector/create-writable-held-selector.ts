@@ -1,16 +1,15 @@
 import type {
 	FamilyMetadata,
-	StateUpdate,
 	WritableHeldSelectorOptions,
 	WritableHeldSelectorToken,
 } from "atom.io"
 
-import type { WritableHeldSelector } from ".."
+import type { OpenOperation, WritableHeldSelector } from ".."
 import { writeToCache } from "../caching"
 import { newest } from "../lineage"
 import { markDone } from "../operation"
 import { become } from "../set-state"
-import { dispatchStateUpdate } from "../set-state/dispatch-state-update"
+import { dispatchOrDeferStateUpdate } from "../set-state/dispatch-state-update"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 import { isRootStore } from "../transaction"
@@ -54,8 +53,13 @@ export const createWritableHeldSelector = <T extends object>(
 		markDone(innerTarget, key)
 		options.set(setterToolkit, constant)
 		if (isRootStore(innerTarget)) {
-			const update = { oldValue: constant, newValue: constant } as StateUpdate<T>
-			dispatchStateUpdate(innerTarget, mySelector, update)
+			// const update = { oldValue: constant, newValue: constant } as StateUpdate<T>
+			dispatchOrDeferStateUpdate(
+				innerTarget as Store & { operation: OpenOperation }, // 👺 needs access to operable store
+				mySelector,
+				constant,
+				constant,
+			)
 		}
 	}
 	const mySelector: WritableHeldSelector<T> = {
