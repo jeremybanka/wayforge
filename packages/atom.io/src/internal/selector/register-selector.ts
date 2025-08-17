@@ -15,6 +15,7 @@ import { newest } from "../lineage"
 import { getJsonToken } from "../mutable"
 import type { OpenOperation } from "../operation"
 import { setAtomOrSelector } from "../set-state"
+import { dispatchOrDeferStateUpdate } from "../set-state/dispatch-state-update"
 import type { Store } from "../store"
 import { withdraw } from "../store"
 import { updateSelectorAtoms } from "./update-selector-atoms"
@@ -98,7 +99,8 @@ export function registerSelector(
 			}
 			const target = newest(store) as Store & { operation: OpenOperation }
 			const state = withdraw(target, token)
-			setAtomOrSelector(target, state, value)
+			const protoUpdate = setAtomOrSelector(target, state, value)
+			dispatchOrDeferStateUpdate(target, state, protoUpdate)
 		}) as typeof setState,
 		find: ((...args: Parameters<typeof findState>) =>
 			findInStore(store, ...args)) as typeof findState,

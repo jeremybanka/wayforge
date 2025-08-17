@@ -23,14 +23,12 @@ function resetAtom<T>(
 export function resetAtomOrSelector<T>(
 	target: Store & { operation: OpenOperation },
 	state: WritableState<T>,
-): void {
+): [oldValue: T, newValue: T] {
+	let protoUpdate: [T, T]
 	switch (state.type) {
 		case `atom`:
 		case `mutable_atom`:
-			{
-				const protoUpdate = resetAtom(target, state)
-				dispatchOrDeferStateUpdate(target, state, protoUpdate)
-			}
+			protoUpdate = resetAtom(target, state)
 			break
 		case `writable_pure_selector`:
 		case `writable_held_selector`:
@@ -38,12 +36,14 @@ export function resetAtomOrSelector<T>(
 				const oldValue = state.getFrom(target)
 				const atoms = traceRootSelectorAtoms(target, state.key)
 				for (const atom of atoms.values()) {
-					const protoUpdate = resetAtom(target, atom)
-					dispatchOrDeferStateUpdate(target, state, protoUpdate)
+					const rootProtoUpdate = resetAtom(target, atom)
+					dispatchOrDeferStateUpdate(target, state, rootProtoUpdate)
 				}
 				const newValue = state.getFrom(target)
-				dispatchOrDeferStateUpdate(target, state, [oldValue, newValue])
+				protoUpdate = [oldValue, newValue]
 			}
 			break
 	}
+
+	return protoUpdate
 }

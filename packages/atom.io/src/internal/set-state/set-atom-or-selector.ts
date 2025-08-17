@@ -21,7 +21,6 @@ export const setAtomOrSelector = <T>(
 			protoUpdate = setSelector(target, state, value)
 			break
 	}
-	dispatchOrDeferStateUpdate(target, state, protoUpdate)
 
 	return protoUpdate
 }
