@@ -19,8 +19,7 @@ import { evictDownstreamFromAtom } from "./evict-downstream"
 export function dispatchOrDeferStateUpdate<T>(
 	target: Store & { operation: OpenOperation<any> },
 	state: WritableState<T>,
-	oldValue: T,
-	newValue: T,
+	[oldValue, newValue]: [T, T],
 ): void {
 	const update: StateUpdate<T> = {
 		oldValue: isTransceiver(oldValue) ? oldValue.READONLY_VIEW : oldValue,
