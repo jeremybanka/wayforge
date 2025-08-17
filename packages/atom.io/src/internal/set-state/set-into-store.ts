@@ -57,25 +57,6 @@ export function setIntoStore<T, New extends T>(
 
 	const action = value === RESET_STATE ? `reset` : `set`
 
-	if (`counterfeit` in token && `family` in token) {
-		const subKey = token.family.subKey
-		const disposal = store.disposalTraces.buffer.find(
-			(item) => item?.key === subKey,
-		)
-		store.logger.error(
-			`❌`,
-			token.type,
-			token.key,
-			`could not be`,
-			action,
-			`because it was not found in the store "${store.config.name}".`,
-			disposal
-				? `This state was previously disposed:\n${disposal.trace}`
-				: `No previous disposal trace was found.`,
-		)
-		return
-	}
-
 	const result = openOperation(store, token)
 	if (typeof result === `number`) {
 		const rejectionTime = result
@@ -97,6 +78,26 @@ export function setIntoStore<T, New extends T>(
 		return
 	}
 	const target = result
+
+	if (`counterfeit` in token && `family` in token) {
+		const subKey = token.family.subKey
+		const disposal = store.disposalTraces.buffer.find(
+			(item) => item?.key === subKey,
+		)
+		store.logger.error(
+			`❌`,
+			token.type,
+			token.key,
+			`could not be`,
+			action,
+			`because it was not found in the store "${store.config.name}".`,
+			disposal
+				? `This state was previously disposed:\n${disposal.trace}`
+				: `No previous disposal trace was found.`,
+		)
+		return
+	}
+
 	if (value === RESET_STATE) {
 		resetAtomOrSelector(target, token)
 	} else {
