@@ -22,7 +22,8 @@ export const createReadonlyPureSelector = <T>(
 	const key = options.key
 	const type = `readonly_pure_selector` as const
 	const { get, find, json } = registerSelector(target, type, key, covered)
-	const getSelf = () => {
+
+	const getFrom = () => {
 		const innerTarget = newest(store)
 		const upstreamStates = innerTarget.selectorGraph.getRelationEntries({
 			downstreamSelectorKey: key,
@@ -44,8 +45,8 @@ export const createReadonlyPureSelector = <T>(
 		...options,
 		type,
 		subject,
+		getFrom,
 		install: (s: Store) => createReadonlyPureSelector(s, options, family),
-		get: getSelf,
 	}
 	if (family) {
 		readonlySelector.family = family

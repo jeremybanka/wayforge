@@ -29,7 +29,7 @@ export function readOrComputeValue<T>(
 		case `writable_held_selector`:
 		case `writable_pure_selector`:
 			target.logger.info(`🧮`, state.type, key, `computing value`)
-			return state.get(target)
+			return state.getFrom(target)
 		case `atom`: {
 			let def: T
 			if (state.default instanceof Function) {

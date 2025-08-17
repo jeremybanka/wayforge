@@ -89,8 +89,8 @@ export type WritableHeldSelector<T> = Flat<
 	AtomIOState & {
 		type: `writable_held_selector`
 		const: T
-		get: (target: Store) => T
-		set: (
+		getFrom: (target: Store) => T
+		setInto: (
 			target: Store & { operation: OpenOperation },
 			next: T | ((oldValue: T) => T),
 		) => void
@@ -100,14 +100,14 @@ export type ReadonlyHeldSelector<T> = Flat<
 	AtomIOState & {
 		type: `readonly_held_selector`
 		const: T
-		get: () => T
+		getFrom: (target: Store) => T
 	}
 >
 export type WritablePureSelector<T> = Flat<
 	AtomIOState & {
 		type: `writable_pure_selector`
-		get: (target: Store) => T
-		set: (
+		getFrom: (target: Store) => T
+		setInto: (
 			target: Store & { operation: OpenOperation },
 			next: T | ((oldValue: T) => T),
 		) => void
@@ -116,7 +116,7 @@ export type WritablePureSelector<T> = Flat<
 export type ReadonlyPureSelector<T> = Flat<
 	AtomIOState & {
 		type: `readonly_pure_selector`
-		get: () => T
+		getFrom: (target: Store) => T
 	}
 >
 export type ReadonlySelector<T> =
