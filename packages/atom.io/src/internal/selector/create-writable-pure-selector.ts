@@ -12,7 +12,6 @@ import { become } from "../set-state"
 import { dispatchOrDeferStateUpdate } from "../set-state/dispatch-state-update"
 import type { Store } from "../store"
 import { Subject } from "../subject"
-import { isRootStore } from "../transaction"
 import { registerSelector } from "./register-selector"
 
 export const createWritablePureSelector = <T>(
@@ -46,23 +45,18 @@ export const createWritablePureSelector = <T>(
 		return cached
 	}
 
-	const setSelf = (next: T | ((oldValue: T) => T)): void => {
-		const innerTarget = newest(store)
+	const setSelf = (
+		innerTarget: Store & { operation: OpenOperation },
+		next: T | ((oldValue: T) => T),
+	): void => {
 		const oldValue = getSelf(options.get, innerTarget)
 		const newValue = become(next)(oldValue)
 		store.logger.info(`📝`, type, key, `set to`, newValue)
 		writeToCache(innerTarget, mySelector, newValue)
 		markDone(innerTarget, options.key)
 		options.set(setterToolkit, newValue)
-		if (isRootStore(innerTarget)) {
-			// const update = { oldValue, newValue } as StateUpdate<T>
-			dispatchOrDeferStateUpdate(
-				innerTarget as Store & { operation: OpenOperation }, // 👺 needs access to operable store
-				mySelector,
-				oldValue,
-				newValue,
-			)
-		}
+
+		dispatchOrDeferStateUpdate(innerTarget, mySelector, oldValue, newValue)
 	}
 
 	const mySelector: WritablePureSelector<T> = {

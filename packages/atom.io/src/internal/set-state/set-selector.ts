@@ -10,5 +10,5 @@ export function setSelector<T>(
 	value: T | ((oldValue: T) => T),
 ): void {
 	const selector = withdraw(target, token)
-	selector.set(value)
+	selector.set(target, value)
 }
