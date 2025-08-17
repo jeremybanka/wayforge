@@ -45,7 +45,9 @@ export const createReadonlyHeldSelector = <T extends object>(
 		subject,
 		install: (s: Store) => createReadonlyHeldSelector(s, options, family),
 		get: getSelf,
-		...(family && { family }),
+	}
+	if (family) {
+		readonlySelector.family = family
 	}
 	target.readonlySelectors.set(key, readonlySelector)
 	store.logger.info(`✨`, type, key, `=`, constant)

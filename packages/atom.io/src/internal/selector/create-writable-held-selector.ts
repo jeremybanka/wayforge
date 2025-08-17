@@ -64,7 +64,9 @@ export const createWritableHeldSelector = <T extends object>(
 		install: (s: Store) => createWritableHeldSelector(s, options, family),
 		get: getSelf,
 		set: setSelf,
-		...(family && { family }),
+	}
+	if (family) {
+		mySelector.family = family
 	}
 	target.writableSelectors.set(key, mySelector)
 

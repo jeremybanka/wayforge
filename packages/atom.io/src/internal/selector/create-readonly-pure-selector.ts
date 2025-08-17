@@ -46,7 +46,9 @@ export const createReadonlyPureSelector = <T>(
 		subject,
 		install: (s: Store) => createReadonlyPureSelector(s, options, family),
 		get: getSelf,
-		...(family && { family }),
+	}
+	if (family) {
+		readonlySelector.family = family
 	}
 	target.readonlySelectors.set(key, readonlySelector)
 	const token: ReadonlyPureSelectorToken<T> = {
