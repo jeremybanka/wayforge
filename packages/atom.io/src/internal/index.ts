@@ -12,6 +12,7 @@ import type {
 	StateCreationEvent,
 	StateDisposalEvent,
 	StateLifecycleEvent,
+	StateUpdate,
 	WritableHeldSelectorFamilyToken,
 	WritableHeldSelectorToken,
 	WritablePureSelectorFamilyToken,
@@ -62,7 +63,7 @@ export type AtomIOState = {
 	key: string
 	family?: FamilyMetadata
 	install: (store: Store) => void
-	subject: Subject<{ newValue: any; oldValue: any }>
+	subject: Subject<StateUpdate<any>>
 }
 export type RegularAtom<T> = Flat<
 	AtomIOState & {
