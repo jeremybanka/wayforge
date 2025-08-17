@@ -42,7 +42,7 @@ export const createWritablePureSelector = <T>(
 		const cached = writeToCache(innerTarget, mySelector, value)
 		store.logger.info(`✨`, type, key, `=`, cached)
 		covered.clear()
-		return value
+		return cached
 	}
 
 	const setSelf = (next: T | ((oldValue: T) => T)): void => {
