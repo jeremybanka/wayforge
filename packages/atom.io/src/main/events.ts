@@ -11,8 +11,8 @@ import type {
 import type { TokenType } from "./validators"
 
 export type StateUpdate<T> = {
-	newValue: ViewOf<T>
-	oldValue: ViewOf<T>
+	readonly oldValue: ViewOf<T>
+	readonly newValue: ViewOf<T>
 }
 
 export type AtomUpdateEvent<A extends AtomToken<any>> = {
