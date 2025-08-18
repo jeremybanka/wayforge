@@ -10,6 +10,7 @@ import { stringifyJson } from "atom.io/json"
 import { newest } from "../lineage"
 import type { Store } from "../store"
 import { counterfeit } from "../store"
+import { isChildStore, isRootStore } from "../transaction"
 import { initFamilyMemberInStore } from "./init-family-member"
 
 export function mintInStore<T, K extends Canonical, Key extends K>(
@@ -40,8 +41,33 @@ export function mintInStore<T, K extends Canonical, Key extends K>(
 		return fakeToken
 	}
 	const newStateToken = initFamilyMemberInStore(store, familyToken, key)
+	const target = newest(store)
+	if (newStateToken.family) {
+		if (isRootStore(target)) {
+			switch (newStateToken.type) {
+				case `atom`:
+				case `mutable_atom`:
+					store.on.atomCreation.next(newStateToken)
+					break
+				case `writable_pure_selector`:
+				case `readonly_pure_selector`:
+				case `writable_held_selector`:
+				case `readonly_held_selector`:
+					store.on.selectorCreation.next(newStateToken)
+					break
+			}
+		} else if (
+			isChildStore(target) &&
+			target.on.transactionApplying.state === null
+		) {
+			target.transactionMeta.update.subEvents.push({
+				type: `state_creation`,
+				token: newStateToken,
+				timestamp: Date.now(),
+			})
+		}
+	}
 	if (molecule) {
-		const target = newest(store)
 		target.moleculeData.set(stringKey, familyToken.key)
 	}
 	return newStateToken
