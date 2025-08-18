@@ -15,7 +15,7 @@
 	},
 	"dependencies": {
 		"dotenv": "17.2.1",
-		"fp-ts": "2.16.10",
+		"fp-ts": "2.16.11",
 		"io-ts": "2.2.22",
 		"json-schema": "0.4.0",
 		"json-schema-to-zod": "2.6.1",
