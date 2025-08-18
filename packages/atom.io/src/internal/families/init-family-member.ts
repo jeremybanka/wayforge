@@ -6,10 +6,8 @@ import type {
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 
-import { newest } from "../lineage"
 import type { Store } from "../store"
 import { withdraw } from "../store"
-import { isChildStore, isRootStore } from "../transaction"
 
 export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
@@ -30,31 +28,6 @@ export function initFamilyMemberInStore(
 ): ReadableToken<any> {
 	const family = withdraw(store, token)
 	const state = family(key)
-	const target = newest(store)
-	if (state.family) {
-		if (isRootStore(target)) {
-			switch (state.type) {
-				case `atom`:
-				case `mutable_atom`:
-					store.on.atomCreation.next(state)
-					break
-				case `writable_pure_selector`:
-				case `readonly_pure_selector`:
-				case `writable_held_selector`:
-				case `readonly_held_selector`:
-					store.on.selectorCreation.next(state)
-					break
-			}
-		} else if (
-			isChildStore(target) &&
-			target.on.transactionApplying.state === null
-		) {
-			target.transactionMeta.update.subEvents.push({
-				type: `state_creation`,
-				token: state,
-				timestamp: Date.now(),
-			})
-		}
-	}
+
 	return state
 }
