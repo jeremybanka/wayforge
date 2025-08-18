@@ -5,7 +5,7 @@
 		"type": "node-terminal",
 		"request": "launch",
 		"program": "pnpm",
-		"args": ["vitest", "run", "--testTimeout=Infinity", "${ZED_FILENAME}"],
+		"args": ["vitest", "run", "--testTimeout=999999999", "${ZED_FILENAME}"],
 		"skipFiles": ["<node_internals>/**", "**/node_modules/**"],
 		"cwd": "${ZED_DIRNAME}"
 	}
