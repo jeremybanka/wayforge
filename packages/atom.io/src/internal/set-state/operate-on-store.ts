@@ -117,7 +117,8 @@ export function operateOnStore<T, New extends T>(
 	} else {
 		protoUpdate = setAtomOrSelector(target, state, value)
 	}
-	dispatchOrDeferStateUpdate(target, state, protoUpdate, false)
+	const isNewlyCreated = Boolean(brandNewToken)
+	dispatchOrDeferStateUpdate(target, state, protoUpdate, isNewlyCreated)
 
 	if (ownOp) {
 		closeOperation(target)
