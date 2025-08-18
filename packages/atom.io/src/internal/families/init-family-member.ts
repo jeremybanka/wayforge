@@ -20,8 +20,8 @@ import type { Canonical, Json } from "atom.io/json"
 
 import { newest } from "../lineage"
 import type { Transceiver } from "../mutable"
-import { NotFoundError } from "../not-found-error"
 import type { Store } from "../store"
+import { withdraw } from "../store"
 import { isChildStore, isRootStore } from "../transaction"
 
 export function initFamilyMemberInStore<
@@ -81,10 +81,7 @@ export function initFamilyMemberInStore(
 	token: ReadableFamilyToken<any, any>,
 	key: Json.Serializable,
 ): ReadableToken<any> {
-	const family = store.families.get(token.key)
-	if (family === undefined) {
-		throw new NotFoundError(token, store)
-	}
+	const family = withdraw(store, token)
 	const state = family(key)
 	const target = newest(store)
 	if (state.family) {
