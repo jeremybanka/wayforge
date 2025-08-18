@@ -19,7 +19,7 @@
 		"@t3-oss/env-core": "0.13.8",
 		"anvl": "workspace:*",
 		"atom.io": "workspace:*",
-		"fp-ts": "2.16.10",
+		"fp-ts": "2.16.11",
 		"nanoid": "5.1.5",
 		"npmlog": "7.0.1",
 		"occlusion": "workspace:*",
