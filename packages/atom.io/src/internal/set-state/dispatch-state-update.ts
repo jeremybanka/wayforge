@@ -5,14 +5,13 @@ import type {
 	WritableToken,
 } from "atom.io"
 
-import type { Atom, MutableAtom, Selector, WritableState } from ".."
+import type { MutableAtom, WritableState } from ".."
 import { hasRole } from "../atom"
 import { readOrComputeValue } from "../get-state"
 import type { Transceiver } from "../mutable"
 import { isTransceiver } from "../mutable"
 import type { OpenOperation } from "../operation"
 import { deposit, type Store } from "../store"
-import type { RootStore } from "../transaction"
 import { isChildStore, isRootStore } from "../transaction"
 import { evictDownstreamFromAtom } from "./evict-downstream"
 
@@ -21,21 +20,46 @@ export function dispatchOrDeferStateUpdate<T>(
 	state: WritableState<T>,
 	[oldValue, newValue]: [T, T],
 ): void {
+	const { key, subject, type } = state
+
 	const update: StateUpdate<T> = {
 		oldValue: isTransceiver(oldValue) ? oldValue.READONLY_VIEW : oldValue,
 		newValue: isTransceiver(newValue) ? newValue.READONLY_VIEW : newValue,
 	}
 
 	if (isRootStore(target)) {
-		dispatchStateUpdate(target, state, update)
+		switch (type) {
+			case `mutable_atom`:
+				target.logger.info(
+					`📢`,
+					type,
+					key,
+					`is now (`,
+					newValue,
+					`) subscribers:`,
+					subject.subscribers,
+				)
+				break
+			case `atom`:
+			case `writable_pure_selector`:
+			case `writable_held_selector`:
+				target.logger.info(
+					`📢`,
+					type,
+					key,
+					`went (`,
+					oldValue,
+					`->`,
+					newValue,
+					`) subscribers:`,
+					subject.subscribers,
+				)
+		}
+		subject.next(update)
 	}
 
-	if (
-		isChildStore(target) &&
-		(state.type === `mutable_atom` || state.type === `atom`)
-	) {
+	if (isChildStore(target) && (type === `mutable_atom` || type === `atom`)) {
 		if (target.on.transactionApplying.state === null) {
-			const { key } = state
 			const token: WritableToken<T> = deposit(state)
 
 			if (isTransceiver(newValue)) {
@@ -62,8 +86,8 @@ export function dispatchOrDeferStateUpdate<T>(
 			return
 		}
 		if (hasRole(state, `tracker:signal`)) {
-			const key = state.key.slice(1)
-			const mutable = target.atoms.get(key) as MutableAtom<
+			const keyOfMutable = key.slice(1)
+			const mutable = target.atoms.get(keyOfMutable) as MutableAtom<
 				Transceiver<unknown, any, any>
 			>
 			const transceiver = readOrComputeValue(target, mutable, `mut`)
@@ -73,41 +97,4 @@ export function dispatchOrDeferStateUpdate<T>(
 			}
 		}
 	}
-}
-
-function dispatchStateUpdate<T>(
-	store: RootStore,
-	state: Atom<T> | Selector<T>,
-	update: StateUpdate<T>,
-): void {
-	switch (state.type) {
-		case `mutable_atom`:
-			store.logger.info(
-				`📢`,
-				state.type,
-				state.key,
-				`is now (`,
-				update.newValue,
-				`) subscribers:`,
-				state.subject.subscribers,
-			)
-			break
-		case `atom`:
-		case `writable_pure_selector`:
-		case `readonly_pure_selector`:
-		case `writable_held_selector`:
-		case `readonly_held_selector`:
-			store.logger.info(
-				`📢`,
-				state.type,
-				state.key,
-				`went (`,
-				update.oldValue,
-				`->`,
-				update.newValue,
-				`) subscribers:`,
-				state.subject.subscribers,
-			)
-	}
-	state.subject.next(update)
 }
