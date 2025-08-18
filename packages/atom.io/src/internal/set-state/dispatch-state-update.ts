@@ -19,6 +19,7 @@ export function dispatchOrDeferStateUpdate<T>(
 	target: Store & { operation: OpenOperation<any> },
 	state: WritableState<T>,
 	[oldValue, newValue]: [T, T],
+	_stateIsNewlyCreated: boolean,
 ): void {
 	const { key, subject, type } = state
 

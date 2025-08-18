@@ -1,4 +1,9 @@
-import type { ReadableFamilyToken, ReadableToken } from "atom.io"
+import type {
+	ReadableFamilyToken,
+	ReadableToken,
+	WritableFamilyToken,
+	WritableToken,
+} from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
@@ -7,6 +12,16 @@ import type { Store } from "../store"
 import { counterfeit } from "../store"
 import { initFamilyMemberInStore } from "./init-family-member"
 
+export function mintInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
+	familyToken: WritableFamilyToken<T, K>,
+	key: Key,
+): WritableToken<T, K>
+export function mintInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
+	familyToken: ReadableFamilyToken<T, K>,
+	key: Key,
+): ReadableToken<T, K>
 export function mintInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	familyToken: ReadableFamilyToken<T, K>,
