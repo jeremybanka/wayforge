@@ -1,68 +1,15 @@
 import type {
-	AtomFamilyToken,
-	AtomToken,
-	MutableAtomFamilyToken,
-	MutableAtomToken,
 	ReadableFamilyToken,
 	ReadableToken,
-	ReadonlyPureSelectorFamilyToken,
-	ReadonlyPureSelectorToken,
-	RegularAtomFamilyToken,
-	RegularAtomToken,
-	SelectorFamilyToken,
-	SelectorToken,
 	WritableFamilyToken,
-	WritablePureSelectorFamilyToken,
-	WritablePureSelectorToken,
 	WritableToken,
 } from "atom.io"
-import type { Canonical, Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 
 import { newest } from "../lineage"
-import type { Transceiver } from "../mutable"
 import type { Store } from "../store"
 import { withdraw } from "../store"
 import { isChildStore, isRootStore } from "../transaction"
-
-export function initFamilyMemberInStore<
-	T extends Transceiver<any, any, any>,
-	K extends Canonical,
-	Key extends K,
->(
-	store: Store,
-	token: MutableAtomFamilyToken<T, K>,
-	key: Key,
-): MutableAtomToken<T, K>
-
-export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
-	store: Store,
-	token: RegularAtomFamilyToken<T, K>,
-	key: Key,
-): RegularAtomToken<T, K>
-
-export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
-	store: Store,
-	token: AtomFamilyToken<T, K>,
-	key: Key,
-): AtomToken<T, K>
-
-export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
-	store: Store,
-	token: WritablePureSelectorFamilyToken<T, K>,
-	key: Key,
-): WritablePureSelectorToken<T, K>
-
-export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
-	store: Store,
-	token: ReadonlyPureSelectorFamilyToken<T, K>,
-	key: Key,
-): ReadonlyPureSelectorToken<T, K>
-
-export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
-	store: Store,
-	token: SelectorFamilyToken<T, K>,
-	key: Key,
-): SelectorToken<T, K>
 
 export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
@@ -79,7 +26,7 @@ export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
 export function initFamilyMemberInStore(
 	store: Store,
 	token: ReadableFamilyToken<any, any>,
-	key: Json.Serializable,
+	key: Canonical,
 ): ReadableToken<any> {
 	const family = withdraw(store, token)
 	const state = family(key)
