@@ -7,15 +7,13 @@ import type {
 	WritableToken,
 	WriterToolkit,
 } from "atom.io"
-import type { Json } from "atom.io/json"
+import type { Canonical, Json } from "atom.io/json"
 
 import { findInStore } from "../families"
 import { readOrComputeValue } from "../get-state/read-or-compute-value"
 import { newest } from "../lineage"
 import { getJsonToken } from "../mutable"
-import type { OpenOperation } from "../operation"
-import { setAtomOrSelector } from "../set-state"
-import { dispatchOrDeferStateUpdate } from "../set-state/dispatch-state-update"
+import { operateOnStore } from "../set-state"
 import type { Store } from "../store"
 import { withdraw } from "../store"
 import { updateSelectorAtoms } from "./update-selector-atoms"
@@ -77,30 +75,17 @@ export function registerSelector(
 			)
 			return dependencyValue
 		},
-		set: (<T, New extends T>(
+		set: (<T, K extends Canonical, New extends T, Key extends K>(
 			...params:
 				| [
-						token: WritableFamilyToken<T, any>,
-						key: Json.Serializable,
+						token: WritableFamilyToken<T, K>,
+						key: Key,
 						value: New | ((oldValue: any) => New),
 				  ]
 				| [token: WritableToken<T>, value: New | ((oldValue: T) => New)]
 		) => {
-			let token: WritableToken<T>
-			let value: New | ((oldValue: T) => New)
-			if (params.length === 2) {
-				token = params[0]
-				value = params[1]
-			} else {
-				const family = params[0]
-				const key = params[1]
-				value = params[2]
-				token = findInStore(store, family, key)
-			}
-			const target = newest(store) as Store & { operation: OpenOperation }
-			const state = withdraw(target, token)
-			const protoUpdate = setAtomOrSelector(target, state, value)
-			dispatchOrDeferStateUpdate(target, state, protoUpdate)
+			const target = newest(store)
+			operateOnStore(target, false, ...params)
 		}) as typeof setState,
 		find: ((...args: Parameters<typeof findState>) =>
 			findInStore(store, ...args)) as typeof findState,

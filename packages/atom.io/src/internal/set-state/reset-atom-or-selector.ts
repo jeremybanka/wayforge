@@ -37,7 +37,7 @@ export function resetAtomOrSelector<T>(
 				const atoms = traceRootSelectorAtoms(target, state.key)
 				for (const atom of atoms.values()) {
 					const rootProtoUpdate = resetAtom(target, atom)
-					dispatchOrDeferStateUpdate(target, state, rootProtoUpdate)
+					dispatchOrDeferStateUpdate(target, state, rootProtoUpdate, false)
 				}
 				const newValue = state.getFrom(target)
 				protoUpdate = [oldValue, newValue]

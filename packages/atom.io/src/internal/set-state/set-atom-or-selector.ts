@@ -1,7 +1,6 @@
 import type { WritableState } from ".."
 import type { OpenOperation } from "../operation"
 import type { Store } from "../store"
-import { dispatchOrDeferStateUpdate } from "./dispatch-state-update"
 import { setAtom } from "./set-atom"
 import { setSelector } from "./set-selector"
 
