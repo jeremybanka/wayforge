@@ -40,7 +40,7 @@
 	},
 	"dependencies": {
 		"anvl": "workspace:*",
-		"fp-ts": "2.16.10",
+		"fp-ts": "2.16.11",
 		"ingt": "workspace:*"
 	},
 	"devDependencies": {
