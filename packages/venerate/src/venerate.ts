@@ -94,14 +94,27 @@ export function* symmetricDifference<T>(
  * Still lazy in the sense that we only materialize small per-step Sets;
  * each fold pass consumes its input generator.
  */
-export function symmetricDifferenceVariadic<T>(
-	first: Iterable<T>,
-	...rest: Iterable<T>[]
+export function* symmetricDifferenceVariadic<T>(
+	...its: Iterable<T>[]
 ): Iterable<T> {
-	return rest.reduce<Iterable<T>>(
-		(acc, it) => symmetricDifference(acc, it),
-		first,
-	)
+	const sets = its.map(toSet)
+	const done = new Set<T>()
+	for (let i = 0; i < sets.length; i++) {
+		const set = sets[i]
+		for (const v of set) {
+			if (!done.has(v)) {
+				let count = 1
+				for (let j = i + 1; j < sets.length; j++) {
+					const other = sets[j]
+					if (other.has(v)) {
+						count++
+					}
+				}
+				if (count % 2 === 1) yield v
+				done.add(v)
+			}
+		}
+	}
 }
 
 /**
