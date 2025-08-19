@@ -47,7 +47,7 @@ describe(`toSet`, () => {
 	})
 })
 
-describe(`unionIter`, () => {
+describe(`union`, () => {
 	it(`unions across multiple iterables preserving first-seen order`, () => {
 		const u = V.union([1, 2, 2, 3], [3, 4], gen([4, 5, 1]))
 		expect(arr(u)).toEqual([1, 2, 3, 4, 5])
@@ -59,7 +59,7 @@ describe(`unionIter`, () => {
 	})
 })
 
-describe(`differenceIter`, () => {
+describe(`difference`, () => {
 	it(`A \\ (B ∪ C ...) removes all items present in others, preserves A order/dupes`, () => {
 		const out = V.difference([1, 2, 2, 3, 4], [2, 3], gen([5, 6]))
 		expect(arr(out)).toEqual([1, 4])
@@ -76,7 +76,7 @@ describe(`differenceIter`, () => {
 	})
 })
 
-describe(`intersectionIter`, () => {
+describe(`intersection`, () => {
 	it(`intersects with multiple sets, streaming only the first iterable`, () => {
 		const out = V.intersection(
 			[1, 2, 2, 3, 4],
@@ -98,7 +98,7 @@ describe(`intersectionIter`, () => {
 	})
 })
 
-describe(`symmetricDifferenceIter (pairwise)`, () => {
+describe(`symmetricDifference (pairwise)`, () => {
 	it(`yields items unique to A then unique to B; duplicates are collapsed (set semantics)`, () => {
 		const out = V.symmetricDifference([1, 1, 2, 3], [3, 4, 4, 5])
 		// Unique to A: 1,2 (in A’s insertion order for uniques)
@@ -117,7 +117,7 @@ describe(`symmetricDifferenceIter (pairwise)`, () => {
 	})
 })
 
-describe(`symmetricDifferenceVariadicIter`, () => {
+describe(`symmetricDifferenceVariadic`, () => {
 	it(`folds pairwise symmetric difference across many iterables`, () => {
 		// Elements appearing an odd number of times should remain.
 		// A: 1,2,3
