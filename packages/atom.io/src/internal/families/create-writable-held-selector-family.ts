@@ -5,10 +5,11 @@ import type {
 	WritableHeldSelectorFamilyToken,
 	WritableHeldSelectorToken,
 } from "atom.io"
+import { PRETTY_TOKEN_TYPES } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import { prettyPrintTokenType, type WritableHeldSelectorFamily } from ".."
+import type { WritableHeldSelectorFamily } from ".."
 import { newest } from "../lineage"
 import { createWritableHeldSelector } from "../selector"
 import type { Store } from "../store"
@@ -36,9 +37,7 @@ export function createWritableHeldSelectorFamily<
 			`❗`,
 			type,
 			familyKey,
-			`Overwriting an existing ${prettyPrintTokenType(
-				existing,
-			)} "${existing.key}" in store "${store.config.name}". You can safely ignore this warning if it is due to hot module replacement.`,
+			`Overwriting an existing ${PRETTY_TOKEN_TYPES[existing.type]} "${existing.key}" in store "${store.config.name}". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
 	}
 	const subject = new Subject<

@@ -32,11 +32,11 @@ export function mintInStore<T, K extends Canonical, Key extends K>(
 	const molecule = store.molecules.get(stringKey)
 	if (!molecule && store.config.lifespan === `immortal`) {
 		const fakeToken = counterfeit(familyToken, key)
-		store.logger.error(
-			`❌`,
-			fakeToken.type,
-			fakeToken.key,
-			`was not found in store "${store.config.name}"; returned a counterfeit token.`,
+		store.logger.warn(
+			`💣`,
+			`key`,
+			stringKey,
+			`was used to mint a counterfeit token for ${familyToken.type} "${familyToken.key}"`,
 		)
 		return fakeToken
 	}

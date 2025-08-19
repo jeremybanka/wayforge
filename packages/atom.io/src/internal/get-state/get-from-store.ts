@@ -41,10 +41,12 @@ export function getFromStore(
 			`❌`,
 			token.type,
 			token.key,
-			`could not be retrieved because it was not found in the store "${store.config.name}".`,
+			`gets a fallback value because key`,
+			subKey,
+			`is not allocated`,
 			disposal
-				? `This state was previously disposed:\n${disposal.trace}`
-				: `No previous disposal trace was found.`,
+				? `This key was previously disposed:\n${disposal.trace}`
+				: `(no previous disposal trace found)`,
 		)
 		switch (family.type) {
 			case `mutable_atom_family`: {

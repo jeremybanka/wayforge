@@ -102,10 +102,12 @@ export function operateOnStore<T, New extends T>(
 			token.key,
 			`could not be`,
 			action,
-			`because it was not found in the store "${store.config.name}".`,
+			`because key`,
+			subKey,
+			`is not allocated.`,
 			disposal
-				? `This state was previously disposed:\n${disposal.trace}`
-				: `No previous disposal trace was found.`,
+				? `this key was previously disposed:${disposal.trace}`
+				: `(no previous disposal trace found)`,
 		)
 		return
 	}
