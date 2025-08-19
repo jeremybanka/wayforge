@@ -1,5 +1,12 @@
 # tempest.games
 
+## 0.2.39
+
+### Patch Changes
+
+- Updated dependencies [06aebed]
+  - atom.io@0.37.0
+
 ## 0.2.38
 
 ### Patch Changes
