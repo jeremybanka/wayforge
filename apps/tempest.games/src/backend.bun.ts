@@ -40,7 +40,7 @@ const gameWorker = worker(parentSocket, `backend.worker.game.bun`, logger)
 IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
 	`info`,
 	(...params) => {
-		if (![`⭕`, `🔴`, `🟢`, `❗`, `❌`].includes(params[0])) {
+		if (![`⭕`, `🔴`, `🟢`, `🚫`, `❌`].includes(params[0])) {
 			return false
 		}
 		let idx = 0

@@ -179,21 +179,27 @@ describe(`allocate + claim + deallocate`, () => {
 				},
 		})
 
-		expect(logger.error).toHaveBeenCalledTimes(0)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
 		let myItemDurability = getState(durabilityAtoms, swordKey)
-		expect(logger.error).toHaveBeenCalledTimes(2)
+		expect(logger.warn).toHaveBeenCalledTimes(1)
+		expect(logger.error).toHaveBeenCalledTimes(1)
 		expect(myItemDurability).toBe(0)
 		setState(durabilityAtoms, swordKey, 35)
-		expect(logger.error).toHaveBeenCalledTimes(4)
+		expect(logger.warn).toHaveBeenCalledTimes(2)
+		expect(logger.error).toHaveBeenCalledTimes(2)
 		myItemDurability = getState(durabilityAtoms, swordKey)
-		expect(logger.error).toHaveBeenCalledTimes(6)
+		expect(logger.warn).toHaveBeenCalledTimes(3)
+		expect(logger.error).toHaveBeenCalledTimes(3)
 		expect(myItemDurability).toBe(0)
 		const myDampenedDurability = getState(dampenedDurabilitySelectors, swordKey)
 		expect(myDampenedDurability).toBe(1)
-		expect(logger.error).toHaveBeenCalledTimes(10)
+		expect(logger.warn).toHaveBeenCalledTimes(5)
+		expect(logger.error).toHaveBeenCalledTimes(5)
 		const myDoubledDurability = getState(doubleDurabilitySelectors, swordKey)
 		expect(myDoubledDurability).toBe(0)
-		expect(logger.error).toHaveBeenCalledTimes(14)
+		expect(logger.warn).toHaveBeenCalledTimes(7)
+		expect(logger.error).toHaveBeenCalledTimes(7)
 	})
 })
 describe(`errors`, () => {
@@ -273,9 +279,9 @@ describe(`errors`, () => {
 		anarchy.allocate(`root`, `myself`)
 		anarchy.deallocate(`myself`)
 		getState(sqrtState, `myself`)
-		expect(logger.error).toHaveBeenCalledTimes(4)
+		expect(logger.error).toHaveBeenCalledTimes(2)
 		getState(sqrtState, `myself`)
-		expect(logger.error).toHaveBeenCalledTimes(6)
+		expect(logger.error).toHaveBeenCalledTimes(3)
 	})
 	describe(`fallbacks/family defaults`, () => {
 		test(`mutable - only one SetRTX is used`, () => {
@@ -390,7 +396,7 @@ describe(`integrations`, () => {
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
 		undo(documentTimeline)
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
-		console.log(IMPLICIT.STORE.timelines.get(`documentTimeline`))
+		// console.log(IMPLICIT.STORE.timelines.get(`documentTimeline`))
 		undo(documentTimeline)
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
 		redo(documentTimeline)
@@ -432,7 +438,7 @@ describe(`integrations`, () => {
 			to: [`user::deb`, `user::joe`],
 			document: `document::${3}`,
 		})
-		console.log(IMPLICIT.STORE.moleculeGraph.contents)
+		// console.log(IMPLICIT.STORE.moleculeGraph.contents)
 		documentRealm.deallocate(`userGroup::homies`)
 		const debAndJoeConfiguration = new Map([
 			[`"root":"user::joe"`, { source: `"root"` }],
@@ -511,7 +517,7 @@ describe(`counterfeits and error logging`, () => {
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
 		setState(priceAtoms, `item1`, 20)
-		expect(logger.warn).not.toHaveBeenCalled()
-		expect(logger.error).toHaveBeenCalledTimes(2)
+		expect(logger.warn).toHaveBeenCalledTimes(1)
+		expect(logger.error).toHaveBeenCalledTimes(1)
 	})
 })
