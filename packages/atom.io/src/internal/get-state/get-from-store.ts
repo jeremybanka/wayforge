@@ -1,5 +1,5 @@
 import type { ReadableFamilyToken, ReadableToken } from "atom.io"
-import type { Canonical } from "atom.io/json"
+import { type Canonical, parseJson } from "atom.io/json"
 
 import { findInStore } from "../families"
 import type { Store } from "../store"
@@ -57,8 +57,7 @@ export function getFromStore(
 				if (store.defaults.has(family.key)) {
 					return store.defaults.get(token.family.key)
 				}
-				3
-				const defaultValue = withdraw(store, family).default(subKey)
+				const defaultValue = withdraw(store, family).default(parseJson(subKey))
 				store.defaults.set(family.key, defaultValue)
 				return defaultValue
 			}
