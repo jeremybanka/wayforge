@@ -70,6 +70,7 @@ export function createMutableAtomFamily<
 	}
 
 	const atomFamily = Object.assign(familyFunction, familyToken, {
+		class: options.class,
 		subject,
 		install: (s: Store) => createMutableAtomFamily(s, options),
 		internalRoles,
