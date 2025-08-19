@@ -39,16 +39,16 @@ export function* union<T>(...iterables: Iterable<T>[]): Iterable<T> {
  * Lazily yield A \ (B ∪ C ∪ ...), streaming A and pre-materializing removals.
  */
 export function* difference<T>(
-	a: Iterable<T>,
+	base: Iterable<T>,
 	...rest: Iterable<T>[]
 ): Iterable<T> {
 	if (rest.length === 0) {
-		yield* a
+		yield* base
 		return
 	}
 	const remove = new Set<T>()
 	for (const it of rest) for (const v of it) remove.add(v)
-	for (const v of a) if (!remove.has(v)) yield v
+	for (const v of base) if (!remove.has(v)) yield v
 }
 
 /**
@@ -57,15 +57,15 @@ export function* difference<T>(
  * If no others are provided, yields a shallow copy of A.
  */
 export function* intersection<T>(
-	a: Iterable<T>,
+	base: Iterable<T>,
 	...rest: Iterable<T>[]
 ): Iterable<T> {
 	if (rest.length === 0) {
-		yield* a
+		yield* base
 		return
 	}
 	const sets = rest.map(toSet)
-	for (const v of a) {
+	for (const v of base) {
 		if (sets.every((s) => s.has(v))) yield v
 	}
 }
@@ -95,10 +95,9 @@ export function* symmetricDifference<T>(
  * each fold pass consumes its input generator.
  */
 export function* symmetricDifferenceVariadic<T>(
-	first: Iterable<T>,
+	acc: Iterable<T>,
 	...rest: Iterable<T>[]
 ): Iterable<T> {
-	let acc: Iterable<T> = first
 	for (const it of rest) acc = symmetricDifference(acc, it)
 	yield* acc
 }
