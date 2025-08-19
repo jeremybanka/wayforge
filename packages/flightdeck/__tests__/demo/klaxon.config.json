@@ -1,7 +1,0 @@
-{
-	"packageConfig": {
-		"@wayforge/flightdeck": {
-			"endpoint": "https://flightdeck.wayforge.dev"
-		}
-	}
-}
