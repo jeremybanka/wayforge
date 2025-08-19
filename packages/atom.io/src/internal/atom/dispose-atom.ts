@@ -1,9 +1,10 @@
-import type { AtomDisposalEvent, AtomToken } from "atom.io"
+import type { AtomDisposalEvent, AtomToken, StateLifecycleEvent } from "atom.io"
 
-import type { Store } from ".."
+import type { Store, Subject } from ".."
 import { getUpdateToken, isChildStore, newest, withdraw } from ".."
+import { getFamilyOfToken } from "../families/get-family-of-token"
 
-export function disposeAtom(store: Store, atomToken: AtomToken<unknown>): void {
+export function disposeAtom(store: Store, atomToken: AtomToken<any>): void {
 	const target = newest(store)
 	const { key, family } = atomToken
 	const atom = withdraw(target, atomToken)
@@ -12,9 +13,14 @@ export function disposeAtom(store: Store, atomToken: AtomToken<unknown>): void {
 	} else {
 		atom.cleanup?.()
 		const lastValue = store.valueMap.get(atom.key)
-		const atomFamily = withdraw(store, { key: family.key, type: `atom_family` })
+		// biome-ignore lint/style/noNonNullAssertion: family has been verified
+		const familyToken = getFamilyOfToken(store, atomToken)!
+		const atomFamily = withdraw(store, familyToken)
+		const subject = atomFamily.subject as Subject<
+			StateLifecycleEvent<AtomToken<any>>
+		>
 
-		const disposal: AtomDisposalEvent<AtomToken<unknown>> = {
+		const disposal: AtomDisposalEvent<AtomToken<any>> = {
 			type: `state_disposal`,
 			subType: `atom`,
 			token: atomToken,
@@ -22,7 +28,7 @@ export function disposeAtom(store: Store, atomToken: AtomToken<unknown>): void {
 			timestamp: Date.now(),
 		}
 
-		atomFamily.subject.next(disposal)
+		subject.next(disposal)
 
 		const isChild = isChildStore(target)
 

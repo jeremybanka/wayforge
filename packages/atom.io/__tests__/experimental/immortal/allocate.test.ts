@@ -8,6 +8,7 @@ import {
 	editRelations,
 	getState,
 	join,
+	mutableAtomFamily,
 	Realm,
 	redo,
 	runTransaction,
@@ -18,6 +19,7 @@ import {
 	undo,
 } from "atom.io"
 import { clearStore, IMPLICIT } from "atom.io/internal"
+import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import * as Utils from "../../__util__"
 
@@ -274,6 +276,36 @@ describe(`errors`, () => {
 		expect(logger.error).toHaveBeenCalledTimes(4)
 		getState(sqrtState, `myself`)
 		expect(logger.error).toHaveBeenCalledTimes(6)
+	})
+	describe(`fallbacks/family defaults`, () => {
+		test(`mutable - only one SetRTX is used`, () => {
+			const listAtoms = mutableAtomFamily<SetRTX<string>, string>({
+				key: `list`,
+				class: SetRTX,
+			})
+
+			const list0 = getState(listAtoms, `example`)
+			const list1 = getState(listAtoms, `example`)
+			expect(list0).toBe(list1)
+		})
+		test(`regular, with static default`, () => {
+			const nameAtoms = atomFamily<string, string>({
+				key: `name`,
+				default: `anonymous`,
+			})
+
+			const name = getState(nameAtoms, `example`)
+			expect(name).toBe(`anonymous`)
+		})
+		test(`regular, with (K) => T default - one lucky value becomes default`, () => {
+			const nameAtoms = atomFamily<string, string>({
+				key: `name`,
+				default: (key) => key,
+			})
+
+			const name = getState(nameAtoms, `example`)
+			expect(name).toBe(`example`)
+		})
 	})
 })
 describe(`integrations`, () => {
