@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.37.1
+
+### Patch Changes
+
+- 1486927: 🐛 Fixed bug where a serialized form of a key would be used when producing a default value, in the event that an immortal store prevented the instantiation of a state whose key had not been safely preallocated.
+
 ## 0.37.0
 
 ### Minor Changes
