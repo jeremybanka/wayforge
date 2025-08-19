@@ -1,1 +1,0 @@
-# wayforge-server
