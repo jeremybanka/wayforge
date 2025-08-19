@@ -4,7 +4,7 @@ import { defineConfig } from "tsdown"
 export const config: UserConfig | UserConfigFn = defineConfig({
 	clean: true,
 	dts: true,
-	entry: [`src/treetrunks.ts`],
+	entry: [`src/venerate.ts`],
 	format: [`esm`],
 	outDir: `dist`,
 	sourcemap: true,
