@@ -1,0 +1,13 @@
+{
+	"extends": "../../tsconfig.json",
+	"include": ["src", "__tests__", "**/*.config.ts"],
+	"compilerOptions": {
+		"allowJs": false,
+		"declaration": true,
+		"isolatedDeclarations": true,
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"strict": true,
+		"types": ["vitest/globals"]
+	}
+}
