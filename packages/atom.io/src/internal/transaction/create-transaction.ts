@@ -1,7 +1,7 @@
 import type {
 	TransactionOptions,
+	TransactionOutcomeEvent,
 	TransactionToken,
-	TransactionUpdate,
 } from "atom.io"
 
 import { newest } from "../lineage"
@@ -17,7 +17,7 @@ export type Transaction<F extends Fn> = {
 	key: string
 	type: `transaction`
 	install: (store: Store) => void
-	subject: Subject<TransactionUpdate<F>>
+	subject: Subject<TransactionOutcomeEvent<TransactionToken<F>>>
 	run: (parameters: Parameters<F>, id?: string) => ReturnType<F>
 }
 
@@ -31,7 +31,8 @@ export function createTransaction<F extends Fn>(
 		key,
 		type: `transaction`,
 		run: (params: Parameters<F>, id: string) => {
-			const childStore = buildTransaction(store, key, params, id)
+			const token = deposit(newTransaction)
+			const childStore = buildTransaction(store, token, params, id)
 			try {
 				const target = newest(store)
 				const { toolkit } = childStore.transactionMeta

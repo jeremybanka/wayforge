@@ -5,12 +5,12 @@ export interface Transceiver<
 	S extends Json.Serializable,
 	J extends Json.Serializable,
 > {
+	READONLY_VIEW: V
 	do: (update: S) => number | `OUT_OF_RANGE` | null
 	undo: (update: S) => void
 	subscribe: (key: string, fn: (update: S) => void) => () => void
 	cacheUpdateNumber: number
 	getUpdateNumber: (update: S) => number
-	view: () => V
 	toJSON: () => J
 }
 
@@ -30,13 +30,15 @@ export function isTransceiver(
 		value !== null &&
 		`do` in value &&
 		`undo` in value &&
-		`subscribe` in value
+		`subscribe` in value &&
+		`cacheUpdateNumber` in value &&
+		`getUpdateNumber` in value &&
+		`READONLY_VIEW` in value &&
+		`toJSON` in value
 	)
 }
 
 export type TransceiverMode = `playback` | `record` | `transaction`
-
-export type ViewOf<T> = T extends Transceiver<infer V, any, any> ? V : T
 
 export type SignalFrom<T extends Transceiver<any, any, any>> =
 	T extends Transceiver<any, infer S, any> ? S : never

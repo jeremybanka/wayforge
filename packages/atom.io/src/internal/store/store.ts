@@ -1,8 +1,8 @@
 import type {
 	AtomToken,
 	Logger,
-	MoleculeCreation,
-	MoleculeDisposal,
+	MoleculeCreationEvent,
+	MoleculeDisposalEvent,
 	SelectorToken,
 	TimelineToken,
 	TransactionToken,
@@ -253,8 +253,8 @@ export type StoreEventCarrier = {
 	transactionCreation: Subject<TransactionToken<Fn>>
 	transactionApplying: StatefulSubject<TransactionProgress<Fn> | null>
 	operationClose: Subject<OperationProgress>
-	moleculeCreation: Subject<MoleculeCreation>
-	moleculeDisposal: Subject<MoleculeDisposal>
+	moleculeCreation: Subject<MoleculeCreationEvent>
+	moleculeDisposal: Subject<MoleculeDisposalEvent>
 }
 
 declare global {

@@ -7,18 +7,15 @@ import type {
 import type { WritableHeldSelector } from ".."
 import { writeToCache } from "../caching"
 import { newest } from "../lineage"
-import { markDone } from "../operation"
-import { become } from "../set-state"
 import type { Store } from "../store"
 import { Subject } from "../subject"
-import { isRootStore } from "../transaction"
 import { registerSelector } from "./register-selector"
 
-export const createWritableHeldSelector = <T extends object>(
+export function createWritableHeldSelector<T extends object>(
 	store: Store,
 	options: WritableHeldSelectorOptions<T>,
 	family: FamilyMetadata | undefined,
-): WritableHeldSelectorToken<T> => {
+): WritableHeldSelectorToken<T> {
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const covered = new Set<string>()
@@ -28,7 +25,7 @@ export const createWritableHeldSelector = <T extends object>(
 	const { find, get, json } = setterToolkit
 	const getterToolkit = { find, get, json }
 
-	const getSelf = (getFn = options.get, innerTarget = newest(store)): T => {
+	const getFrom = (innerTarget: Store): T => {
 		const upstreamStates = innerTarget.selectorGraph.getRelationEntries({
 			downstreamSelectorKey: key,
 		})
@@ -38,33 +35,27 @@ export const createWritableHeldSelector = <T extends object>(
 			}
 		}
 		innerTarget.selectorAtoms.delete(key)
-		getFn(getterToolkit, constant)
+		options.get(getterToolkit, constant)
 		writeToCache(innerTarget, mySelector, constant)
 		store.logger.info(`✨`, type, key, `=`, constant)
 		covered.clear()
 		return constant
 	}
 
-	const setSelf = (next: T | ((oldValue: T) => T)): void => {
-		const innerTarget = newest(store)
-		const oldValue = getSelf(options.get, innerTarget)
-		const newValue = become(next)(oldValue)
-		store.logger.info(`📝`, type, key, `set (`, oldValue, `->`, newValue, `)`)
-		writeToCache(innerTarget, mySelector, newValue)
-		markDone(innerTarget, key)
-		if (isRootStore(innerTarget)) {
-			subject.next({ newValue, oldValue })
-		}
-		options.set(setterToolkit, newValue)
+	const setSelf = (): void => {
+		options.set(setterToolkit, constant)
 	}
+
 	const mySelector: WritableHeldSelector<T> = {
 		...options,
 		type,
 		subject,
+		getFrom,
+		setSelf,
 		install: (s: Store) => createWritableHeldSelector(s, options, family),
-		get: getSelf,
-		set: setSelf,
-		...(family && { family }),
+	}
+	if (family) {
+		mySelector.family = family
 	}
 	target.writableSelectors.set(key, mySelector)
 

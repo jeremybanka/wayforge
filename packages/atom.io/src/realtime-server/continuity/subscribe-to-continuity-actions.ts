@@ -59,7 +59,7 @@ export function subscribeToContinuityActions(
 						)
 					const redactedUpdates = redactTransactionUpdateContent(
 						visibleKeys,
-						update.updates,
+						update.subEvents,
 					)
 					const redactedUpdate = {
 						...update,

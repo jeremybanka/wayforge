@@ -1,4 +1,4 @@
-import type { TransactionUpdate } from "atom.io"
+import type { TransactionOutcomeEvent } from "atom.io"
 
 import type { Store } from "../store"
 import { ingestAtomUpdate } from "./ingest-atom-update"
@@ -12,17 +12,16 @@ import {
 
 export function ingestTransactionUpdate(
 	applying: `newValue` | `oldValue`,
-	transactionUpdate: TransactionUpdate<any>,
+	transactionUpdate: TransactionOutcomeEvent<any>,
 	store: Store,
 ): void {
 	const updates =
 		applying === `newValue`
-			? transactionUpdate.updates
-			: [...transactionUpdate.updates].reverse()
+			? transactionUpdate.subEvents
+			: [...transactionUpdate.subEvents].reverse()
 	for (const updateFromTransaction of updates) {
 		switch (updateFromTransaction.type) {
 			case `atom_update`:
-			case `selector_update`:
 				ingestAtomUpdate(applying, updateFromTransaction, store)
 				break
 			case `state_creation`:
@@ -40,7 +39,7 @@ export function ingestTransactionUpdate(
 			case `molecule_transfer`:
 				ingestMoleculeTransferEvent(updateFromTransaction, applying, store)
 				break
-			case `transaction_update`:
+			case `transaction_outcome`:
 				ingestTransactionUpdate(applying, updateFromTransaction, store)
 				break
 		}

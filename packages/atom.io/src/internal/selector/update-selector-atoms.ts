@@ -4,7 +4,7 @@ import { newest } from "../lineage"
 import type { Store } from "../store"
 import { traceRootSelectorAtoms } from "./trace-selector-atoms"
 
-export const updateSelectorAtoms = (
+export function updateSelectorAtoms(
 	store: Store,
 	selectorType:
 		| `readonly_held_selector`
@@ -14,7 +14,7 @@ export const updateSelectorAtoms = (
 	selectorKey: string,
 	dependency: ReadonlyPureSelectorToken<unknown> | WritableToken<unknown>,
 	covered: Set<string>,
-): void => {
+): void {
 	const target = newest(store)
 	const { type: dependencyType, key: dependencyKey } = dependency
 	if (dependencyType === `atom` || dependencyType === `mutable_atom`) {

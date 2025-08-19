@@ -1,4 +1,4 @@
-import type { Logger, TransactionUpdate } from "atom.io"
+import type { Logger, TransactionOutcomeEvent } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -57,7 +57,7 @@ describe(`transaction`, () => {
 			default: 0,
 		})
 		const resetTX = transaction({
-			key: `increment`,
+			key: `reset`,
 			do: ({ reset }) => {
 				reset(countState)
 			},
@@ -175,9 +175,19 @@ describe(`transaction`, () => {
 			},
 		})
 
-		subscribe(setAllCounts, ({ id, ...data }) => {
-			Utils.stdout0(`Transaction update:`, data)
-			for (const update of data.updates) {
+		subscribe(setAllCounts, ({ id, timestamp, ...data }) => {
+			const redacted = {
+				...data,
+				subEvents: data.subEvents.map((update) => {
+					if (update.type === `atom_update`) {
+						const { timestamp: _, ...redactedAtomUpdateEvent } = update
+						return redactedAtomUpdateEvent
+					}
+					return update
+				}),
+			}
+			Utils.stdout0(`Transaction update:`, redacted)
+			for (const update of redacted.subEvents) {
 				Utils.stdout1(`Atom update:`, update)
 			}
 		})
@@ -197,23 +207,36 @@ describe(`transaction`, () => {
 			newValue: 6,
 		})
 		expect(Utils.stdout0).toHaveBeenCalledWith(`Transaction update:`, {
-			type: `transaction_update`,
-			key: `setAllCounts`,
+			type: `transaction_outcome`,
+			token: {
+				key: `setAllCounts`,
+				type: `transaction`,
+			},
 			epoch: Number.NaN,
 			params: [3],
 			output: undefined,
-			updates: [
+			subEvents: [
 				{
 					type: `atom_update`,
-					key: `count1`,
-					oldValue: 2,
-					newValue: 3,
+					token: {
+						type: `atom`,
+						key: `count1`,
+					},
+					update: {
+						oldValue: 2,
+						newValue: 3,
+					},
 				},
 				{
 					type: `atom_update`,
-					key: `count2`,
-					oldValue: 2,
-					newValue: 3,
+					token: {
+						type: `atom`,
+						key: `count2`,
+					},
+					update: {
+						oldValue: 2,
+						newValue: 3,
+					},
 				},
 			],
 		})
@@ -307,11 +330,11 @@ describe(`precise scope of transactions`, () => {
 			},
 		})
 		const validate = {
-			update: (update: TransactionUpdate<any>) => {
-				expect(update.updates).toHaveLength(1)
-				expect(`key` in update.updates[0]).toBe(true)
-				if (`key` in update.updates[0]) {
-					expect(update.updates[0].key).toEqual(`count`)
+			update: (update: TransactionOutcomeEvent<any>) => {
+				expect(update.subEvents).toHaveLength(1)
+				expect(`token` in update.subEvents[0]).toBe(true)
+				if (`token` in update.subEvents[0]) {
+					expect(update.subEvents[0].token.key).toEqual(`count`)
 				}
 			},
 		}
