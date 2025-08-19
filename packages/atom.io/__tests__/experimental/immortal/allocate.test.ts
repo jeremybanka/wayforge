@@ -152,9 +152,8 @@ describe(`allocate + claim + deallocate`, () => {
 			key: `dampenedDurability`,
 			get:
 				(key) =>
-				({ find, get }) => {
-					const durabilityAtom = find(durabilityAtoms, key)
-					const durability = get(durabilityAtom)
+				({ get }) => {
+					const durability = get(durabilityAtoms, key)
 					const dampening = get(dampeningAtom)
 					return Math.max(1, durability - dampening)
 				},
@@ -163,9 +162,8 @@ describe(`allocate + claim + deallocate`, () => {
 			key: `doubleDurability`,
 			get:
 				(key) =>
-				({ find, get }) => {
-					const durabilityAtom = find(durabilityAtoms, key)
-					const durability = get(durabilityAtom)
+				({ get }) => {
+					const durability = get(durabilityAtoms, key)
 					const doubled = durability * 2
 					return doubled
 				},
