@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.37.0
+
+### Minor Changes
+
+- 06aebed: ♻️ Consolidated the overall number of events that can be produced from the atom.io store, in preparation for a broader rework to `timeline`s.
+
 ## 0.36.3
 
 ### Patch Changes

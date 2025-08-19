@@ -1,14 +1,5 @@
 # socket-io.git
 
-## 2.0.0
-
-### Patch Changes
-
-- Updated dependencies [5a5498d]
-- Updated dependencies [5a5498d]
-- Updated dependencies [5a5498d]
-  - atom.io@0.36.0
-
 ## 1.0.0
 
 ### Patch Changes
