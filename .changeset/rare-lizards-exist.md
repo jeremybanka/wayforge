@@ -1,0 +1,5 @@
+---
+"venerate": patch
+---
+
+📝 Updated readme.
