@@ -4,21 +4,22 @@ import type { Store } from "./store"
 import { isChildStore } from "./transaction/is-root-store"
 
 export type OperationProgress =
+	| OpenOperation<any>
 	| {
 			open: false
 	  }
-	| {
-			open: true
-			done: Set<string>
-			prev: Map<string, any>
-			time: number
-			token: ReadableToken<any>
-	  }
+export type OpenOperation<R extends ReadableToken<any> = ReadableToken<any>> = {
+	open: true
+	token: R
+	done: Set<string>
+	prev: Map<string, any>
+	timestamp: number
+}
 
-export const openOperation = (
+export function openOperation(
 	store: Store,
 	token: ReadableToken<any>,
-): number | undefined => {
+): number | (Store & { operation: OpenOperation }) {
 	if (store.operation.open) {
 		const rejectionTime = performance.now()
 		store.logger.info(
@@ -33,7 +34,7 @@ export const openOperation = (
 		open: true,
 		done: new Set(),
 		prev: new Map(),
-		time: Date.now(),
+		timestamp: Date.now(),
 		token,
 	}
 	store.logger.info(
@@ -41,13 +42,15 @@ export const openOperation = (
 		token.type,
 		token.key,
 		`operation start in store "${store.config.name}"${
-			!isChildStore(store)
-				? ``
-				: ` ${store.transactionMeta.phase} "${store.transactionMeta.update.key}"`
+			isChildStore(store)
+				? ` ${store.transactionMeta.phase} "${store.transactionMeta.update.token.key}"`
+				: ``
 		}`,
 	)
+	return store as Store & { operation: OpenOperation }
 }
-export const closeOperation = (store: Store): void => {
+
+export function closeOperation(store: Store): void {
 	if (store.operation.open) {
 		store.logger.info(
 			`🔴`,

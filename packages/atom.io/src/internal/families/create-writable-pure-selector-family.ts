@@ -2,8 +2,7 @@ import type {
 	FamilyMetadata,
 	findState,
 	getState,
-	StateCreation,
-	StateDisposal,
+	StateLifecycleEvent,
 	WritablePureSelectorFamilyOptions,
 	WritablePureSelectorFamilyToken,
 	WritablePureSelectorToken,
@@ -48,8 +47,7 @@ export function createWritablePureSelectorFamily<T, K extends Canonical>(
 		)
 	}
 	const subject = new Subject<
-		| StateCreation<WritablePureSelectorToken<T>>
-		| StateDisposal<WritablePureSelectorToken<T>>
+		StateLifecycleEvent<WritablePureSelectorToken<T>>
 	>()
 
 	const familyFunction = (key: K): WritablePureSelectorToken<T> => {
@@ -68,7 +66,7 @@ export function createWritablePureSelectorFamily<T, K extends Canonical>(
 			family,
 		)
 
-		subject.next({ type: `state_creation`, token })
+		subject.next({ type: `state_creation`, token, timestamp: Date.now() })
 		return token
 	}
 

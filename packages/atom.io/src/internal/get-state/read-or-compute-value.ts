@@ -1,4 +1,6 @@
-import type { ReadableState, ViewOf } from ".."
+import type { ViewOf } from "atom.io"
+
+import type { ReadableState } from ".."
 import { readFromCache, writeToCache } from "../caching"
 import type { Store } from "../store"
 
@@ -27,7 +29,7 @@ export function readOrComputeValue<T>(
 		case `writable_held_selector`:
 		case `writable_pure_selector`:
 			target.logger.info(`🧮`, state.type, key, `computing value`)
-			return state.get()
+			return state.getFrom(target)
 		case `atom`: {
 			let def: T
 			if (state.default instanceof Function) {

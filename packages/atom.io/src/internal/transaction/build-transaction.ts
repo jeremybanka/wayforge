@@ -4,6 +4,7 @@ import type {
 	getState,
 	resetState,
 	setState,
+	TransactionToken,
 } from "atom.io"
 
 import { arbitrary } from "../arbitrary"
@@ -23,7 +24,7 @@ import type { ChildStore, RootStore } from "./is-root-store"
 
 export const buildTransaction = (
 	store: Store,
-	key: string,
+	token: TransactionToken<any>,
 	params: any[],
 	id: string,
 ): ChildStore => {
@@ -65,15 +66,16 @@ export const buildTransaction = (
 		}),
 		miscResources: new LazyMap(parent.miscResources),
 	}
-	const epoch = getEpochNumberOfAction(store, key)
+	const epoch = getEpochNumberOfAction(store, token.key)
 	const transactionMeta: TransactionProgress<Fn> = {
 		phase: `building`,
 		update: {
-			type: `transaction_update`,
-			key,
+			type: `transaction_outcome`,
+			token,
 			id,
 			epoch: epoch === undefined ? Number.NaN : epoch + 1,
-			updates: [],
+			timestamp: Date.now(),
+			subEvents: [],
 			params,
 			output: undefined,
 		},
@@ -86,11 +88,10 @@ export const buildTransaction = (
 			reset: ((...ps: Parameters<typeof resetState>) => {
 				resetInStore(child, ...ps)
 			}) as typeof resetState,
-			run: (token, identifier = arbitrary()) =>
-				actUponStore(child, token, identifier),
+			run: (t, identifier = arbitrary()) => actUponStore(child, t, identifier),
 			find: ((...ps: Parameters<typeof findState>) =>
 				findInStore(store, ...ps)) as typeof findState,
-			json: (token) => getJsonToken(child, token),
+			json: (t) => getJsonToken(child, t),
 			dispose: ((...ps: Parameters<typeof disposeState>) => {
 				disposeFromStore(child, ...ps)
 			}) as typeof disposeState,
@@ -104,7 +105,7 @@ export const buildTransaction = (
 	store.logger.info(
 		`🛫`,
 		`transaction`,
-		key,
+		token.key,
 		`Building transaction with params:`,
 		params,
 	)

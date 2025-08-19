@@ -51,9 +51,7 @@ export class SetRTX<P extends primitive>
 		}
 	}
 
-	public view(): SetRTXView<P> {
-		return this
-	}
+	public readonly READONLY_VIEW: SetRTXView<P> = this
 
 	public toJSON(): SetRTXJson<P> {
 		return {

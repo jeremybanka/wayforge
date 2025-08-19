@@ -4,9 +4,9 @@ import type {
 	CompoundFrom,
 	CompoundTypedKey,
 	Hierarchy,
-	MoleculeCreation,
-	MoleculeDisposal,
-	MoleculeTransfer,
+	MoleculeCreationEvent,
+	MoleculeDisposalEvent,
+	MoleculeTransferEvent,
 	SingularTypedKey,
 	Vassal,
 } from "atom.io"
@@ -77,15 +77,16 @@ export function allocateIntoStore<
 		target.molecules.set(stringKey, { key, stringKey, dependsOn })
 	}
 
-	const creationEvent: MoleculeCreation = {
+	const creationEvent: MoleculeCreationEvent = {
 		type: `molecule_creation`,
 		key,
 		provenance: origin,
+		timestamp: Date.now(),
 	}
 	const isTransaction =
 		isChildStore(target) && target.transactionMeta.phase === `building`
 	if (isTransaction) {
-		target.transactionMeta.update.updates.push(creationEvent)
+		target.transactionMeta.update.subEvents.push(creationEvent)
 	} else {
 		target.on.moleculeCreation.next(creationEvent)
 	}
@@ -174,18 +175,19 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 	const provenance: stringified<Canonical>[] = []
 
 	const values: [string, any][] = []
-	const disposalEvent: MoleculeDisposal = {
+	const disposalEvent: MoleculeDisposalEvent = {
 		type: `molecule_disposal`,
 		key: molecule.key,
 		values,
 		provenance,
+		timestamp: Date.now(),
 	}
 	const target = newest(store)
 	target.molecules.delete(stringKey)
 	const isTransaction =
 		isChildStore(target) && target.transactionMeta.phase === `building`
 	if (isTransaction) {
-		target.transactionMeta.update.updates.push(disposalEvent)
+		target.transactionMeta.update.subEvents.push(disposalEvent)
 	}
 	const relatedMolecules = store.moleculeGraph.getRelationEntries({
 		downstreamMoleculeKey: molecule.stringKey,
@@ -290,17 +292,18 @@ export function claimWithinStore<
 			source: newProvenanceMolecule.stringKey,
 		},
 	)
-	const transferEvent: MoleculeTransfer = {
+	const transferEvent: MoleculeTransferEvent = {
 		type: `molecule_transfer`,
 		key: molecule.key,
 		exclusive: Boolean(exclusive),
 		from: priorProvenance,
 		to: [newProvenanceMolecule.key],
+		timestamp: Date.now(),
 	}
 	const isTransaction =
 		isChildStore(target) && target.transactionMeta.phase === `building`
 	if (isTransaction) {
-		target.transactionMeta.update.updates.push(transferEvent)
+		target.transactionMeta.update.subEvents.push(transferEvent)
 	}
 
 	return claim

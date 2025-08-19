@@ -11,19 +11,19 @@ import type { Store } from "../store"
 import { Subject } from "../subject"
 import { registerSelector } from "./register-selector"
 
-export const createReadonlyHeldSelector = <T extends object>(
+export function createReadonlyHeldSelector<T extends object>(
 	store: Store,
 	options: ReadonlyHeldSelectorOptions<T>,
 	family: FamilyMetadata | undefined,
-): ReadonlyHeldSelectorToken<T> => {
+): ReadonlyHeldSelectorToken<T> {
 	const target = newest(store)
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
 	const covered = new Set<string>()
 	const { key, const: constant } = options
 	const type = `readonly_held_selector` as const
 	const { get, find, json } = registerSelector(target, type, key, covered)
-	const getSelf = () => {
-		const innerTarget = newest(store)
+
+	const getFrom = (innerTarget: Store) => {
 		const upstreamStates = innerTarget.selectorGraph.getRelationEntries({
 			downstreamSelectorKey: key,
 		})
@@ -34,7 +34,7 @@ export const createReadonlyHeldSelector = <T extends object>(
 		}
 		innerTarget.selectorAtoms.delete(key)
 		options.get({ get, find, json }, constant)
-		writeToCache(newest(store), readonlySelector, constant)
+		writeToCache(innerTarget, readonlySelector, constant)
 		covered.clear()
 		return constant
 	}
@@ -43,9 +43,11 @@ export const createReadonlyHeldSelector = <T extends object>(
 		...options,
 		type,
 		subject,
+		getFrom,
 		install: (s: Store) => createReadonlyHeldSelector(s, options, family),
-		get: getSelf,
-		...(family && { family }),
+	}
+	if (family) {
+		readonlySelector.family = family
 	}
 	target.readonlySelectors.set(key, readonlySelector)
 	store.logger.info(`✨`, type, key, `=`, constant)

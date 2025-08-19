@@ -9,9 +9,10 @@ import type {
 	ReadonlyPureSelectorToken,
 	RegularAtomFamilyToken,
 	RegularAtomToken,
-	StateCreation,
-	StateDisposal,
+	StateCreationEvent,
+	StateDisposalEvent,
 	StateLifecycleEvent,
+	StateUpdate,
 	WritableHeldSelectorFamilyToken,
 	WritableHeldSelectorToken,
 	WritablePureSelectorFamilyToken,
@@ -62,7 +63,7 @@ export type AtomIOState = {
 	key: string
 	family?: FamilyMetadata
 	install: (store: Store) => void
-	subject: Subject<{ newValue: any; oldValue: any }>
+	subject: Subject<StateUpdate<any>>
 }
 export type RegularAtom<T> = Flat<
 	AtomIOState & {
@@ -87,28 +88,28 @@ export type WritableHeldSelector<T> = Flat<
 	AtomIOState & {
 		type: `writable_held_selector`
 		const: T
-		get: () => T
-		set: (newValue: T | ((oldValue: T) => T)) => void
+		getFrom: (target: Store) => T
+		setSelf: (newValue: T) => void
 	}
 >
 export type ReadonlyHeldSelector<T> = Flat<
 	AtomIOState & {
 		type: `readonly_held_selector`
 		const: T
-		get: () => T
+		getFrom: (target: Store) => T
 	}
 >
 export type WritablePureSelector<T> = Flat<
 	AtomIOState & {
 		type: `writable_pure_selector`
-		get: () => T
-		set: (newValue: T | ((oldValue: T) => T)) => void
+		getFrom: (target: Store) => T
+		setSelf: (newValue: T) => void
 	}
 >
 export type ReadonlyPureSelector<T> = Flat<
 	AtomIOState & {
 		type: `readonly_pure_selector`
-		get: () => T
+		getFrom: (target: Store) => T
 	}
 >
 export type ReadonlySelector<T> =
@@ -135,7 +136,7 @@ export type RegularAtomFamily<T, K extends Canonical> =
 		(key: K): RegularAtomToken<T>
 		install: (store: Store) => void
 		internalRoles: string[] | undefined
-		subject: Subject<StateCreation<AtomToken<T>> | StateDisposal<AtomToken<T>>>
+		subject: Subject<StateCreationEvent<AtomToken<T>> | StateDisposalEvent<AtomToken<T>>>
 	}
 
 // biome-ignore format: intersection
@@ -167,8 +168,8 @@ export type WritablePureSelectorFamily<T, K extends Canonical> =
 			install: (store: Store) => void
 			internalRoles: string[] | undefined
 			subject: Subject<
-				| StateCreation<WritablePureSelectorToken<T>>
-				| StateDisposal<WritablePureSelectorToken<T>>
+				| StateCreationEvent<WritablePureSelectorToken<T>>
+				| StateDisposalEvent<WritablePureSelectorToken<T>>
 			>
 		}
 	>
@@ -183,8 +184,8 @@ export type WritableHeldSelectorFamily<T , K extends Canonical> =
 			install: (store: Store) => void
 			internalRoles: string[] | undefined
 			subject: Subject<
-				| StateCreation<WritableHeldSelectorToken<T>>
-				| StateDisposal<WritableHeldSelectorToken<T>>
+				| StateCreationEvent<WritableHeldSelectorToken<T>>
+				| StateDisposalEvent<WritableHeldSelectorToken<T>>
 			>
 		}
 	>
@@ -199,8 +200,8 @@ export type ReadonlyPureSelectorFamily<T, K extends Canonical> =
 			install: (store: Store) => void
 			internalRoles: string[] | undefined
 			subject: Subject<
-				| StateCreation<ReadonlyPureSelectorToken<T>>
-				| StateDisposal<ReadonlyPureSelectorToken<T>>
+				| StateCreationEvent<ReadonlyPureSelectorToken<T>>
+				| StateDisposalEvent<ReadonlyPureSelectorToken<T>>
 			>
 		}
 	>
@@ -215,8 +216,8 @@ export type ReadonlyHeldSelectorFamily<T , K extends Canonical> =
 			install: (store: Store) => void
 			internalRoles: string[] | undefined
 			subject: Subject<
-				| StateCreation<ReadonlyHeldSelectorToken<T>>
-				| StateDisposal<ReadonlyHeldSelectorToken<T>>
+				| StateCreationEvent<ReadonlyHeldSelectorToken<T>>
+				| StateDisposalEvent<ReadonlyHeldSelectorToken<T>>
 			>
 		}
 	>

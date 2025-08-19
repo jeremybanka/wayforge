@@ -1,7 +1,7 @@
-import type { AtomEffect } from "atom.io"
+import type { AtomEffect, ViewOf } from "atom.io"
 
 export type StringInterface<T> = {
-	stringify: (t: T) => string
+	stringify: (t: ViewOf<T>) => string
 	parse: (s: string) => T
 }
 

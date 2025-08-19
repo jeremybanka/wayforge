@@ -1,19 +1,25 @@
-import type { TransactionUpdate } from "atom.io"
+import type { TransactionOutcomeEvent, TransactionToken } from "atom.io"
 import type { Store } from "atom.io/internal"
 import { actUponStore } from "atom.io/internal"
-import type { JsonIO } from "atom.io/json"
+import type { Json, JsonIO } from "atom.io/json"
 import type { ContinuityToken } from "atom.io/realtime"
 
 export function prepareToServeTransactionRequest(
 	store: Store,
 	continuity: ContinuityToken,
 	userKey: string,
-): (update: Pick<TransactionUpdate<JsonIO>, `id` | `key` | `params`>) => void {
+): (
+	event: Json.Serializable &
+		Pick<
+			TransactionOutcomeEvent<TransactionToken<JsonIO>>,
+			`id` | `params` | `token`
+		>,
+) => void {
 	const continuityKey = continuity.key
-	return function serveTransactionRequest(update) {
-		store.logger.info(`🛎️`, `continuity`, continuityKey, `received`, update)
-		const transactionKey = update.key
-		const updateId = update.id
+	return function serveTransactionRequest(txOutcome) {
+		store.logger.info(`🛎️`, `continuity`, continuityKey, `received`, txOutcome)
+		const transactionKey = txOutcome.token.key
+		const updateId = txOutcome.id
 		const performanceKey = `tx-run:${transactionKey}:${updateId}`
 		const performanceKeyStart = `${performanceKey}:start`
 		const performanceKeyEnd = `${performanceKey}:end`
@@ -23,7 +29,7 @@ export function prepareToServeTransactionRequest(
 				store,
 				{ type: `transaction`, key: transactionKey },
 				updateId,
-			)(...update.params)
+			)(...txOutcome.params)
 		} catch (thrown) {
 			if (thrown instanceof Error) {
 				store.logger.error(

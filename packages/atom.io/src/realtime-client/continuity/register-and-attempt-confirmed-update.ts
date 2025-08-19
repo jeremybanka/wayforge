@@ -19,13 +19,23 @@ export const useRegisterAndAttemptConfirmedUpdate =
 		store: Store,
 		continuityKey: string,
 		socket: Socket,
-		optimisticUpdates: AtomIO.TransactionUpdate<any>[],
-		confirmedUpdates: AtomIO.TransactionUpdate<any>[],
+		optimisticUpdates: AtomIO.TransactionOutcomeEvent<
+			AtomIO.TransactionToken<Fn>
+		>[],
+		confirmedUpdates: AtomIO.TransactionOutcomeEvent<
+			AtomIO.TransactionToken<Fn>
+		>[],
 	) =>
-	(confirmed: AtomIO.TransactionUpdate<Fn>): void => {
+	(
+		confirmed: AtomIO.TransactionOutcomeEvent<AtomIO.TransactionToken<Fn>>,
+	): void => {
 		function reconcileEpoch(
-			optimisticUpdate: AtomIO.TransactionUpdate<any>,
-			confirmedUpdate: AtomIO.TransactionUpdate<any>,
+			optimisticUpdate: AtomIO.TransactionOutcomeEvent<
+				AtomIO.TransactionToken<Fn>
+			>,
+			confirmedUpdate: AtomIO.TransactionOutcomeEvent<
+				AtomIO.TransactionToken<Fn>
+			>,
 		): void {
 			store.logger.info(
 				`🧑‍⚖️`,
@@ -38,8 +48,8 @@ export const useRegisterAndAttemptConfirmedUpdate =
 				return queue
 			})
 			if (optimisticUpdate.id === confirmedUpdate.id) {
-				const clientResult = JSON.stringify(optimisticUpdate.updates)
-				const serverResult = JSON.stringify(confirmedUpdate.updates)
+				const clientResult = JSON.stringify(optimisticUpdate.subEvents)
+				const serverResult = JSON.stringify(confirmedUpdate.subEvents)
 				if (clientResult === serverResult) {
 					store.logger.info(
 						`✅`,
@@ -56,7 +66,7 @@ export const useRegisterAndAttemptConfirmedUpdate =
 					`❌`,
 					`continuity`,
 					continuityKey,
-					`thought update #${confirmedUpdate.epoch} was ${optimisticUpdate.key}:${optimisticUpdate.id}, but it was actually ${confirmedUpdate.key}:${confirmedUpdate.id}`,
+					`thought update #${confirmedUpdate.epoch} was ${optimisticUpdate.token.key}:${optimisticUpdate.id}, but it was actually ${confirmedUpdate.token.key}:${confirmedUpdate.id}`,
 				)
 			}
 			store.logger.info(
@@ -99,7 +109,7 @@ export const useRegisterAndAttemptConfirmedUpdate =
 			for (const subsequentOptimistic of optimisticUpdates) {
 				const token = {
 					type: `transaction`,
-					key: subsequentOptimistic.key,
+					key: subsequentOptimistic.token.key,
 				} as const
 				const { id, params } = subsequentOptimistic
 				actUponStore(store, token, id)(...params)
@@ -188,7 +198,7 @@ export const useRegisterAndAttemptConfirmedUpdate =
 					`✅`,
 					`continuity`,
 					continuityKey,
-					`integrating update #${confirmed.epoch} (${confirmed.key} ${confirmed.id})`,
+					`integrating update #${confirmed.epoch} (${confirmed.token.key} ${confirmed.id})`,
 				)
 				ingestTransactionUpdate(`newValue`, confirmed, store)
 				socket.emit(`ack:${continuityKey}`, confirmed.epoch)

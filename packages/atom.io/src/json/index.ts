@@ -1,3 +1,5 @@
+import type { ViewOf } from "atom.io"
+
 export * from "./entries"
 
 export type primitive = boolean | number | string | null
@@ -80,7 +82,7 @@ export type Canonical = primitive | ReadonlyArray<Canonical>
 export type JsonIO = (...params: Json.Serializable[]) => Json.Serializable | void
 
 export type JsonInterface<T, J extends Json.Serializable = Json.Serializable> = {
-	toJson: (t: T) => J
+	toJson: (t: ViewOf<T>) => J
 	fromJson: (json: J) => T
 }
 

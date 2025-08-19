@@ -29,11 +29,11 @@ export const applyTransaction = <F extends Fn>(
 	child.transactionMeta.update.output = output
 	parent.child = null
 	parent.on.transactionApplying.next(child.transactionMeta)
-	const { updates } = child.transactionMeta.update
+	const { subEvents: updates } = child.transactionMeta.update
 	store.logger.info(
 		`🛄`,
 		`transaction`,
-		child.transactionMeta.update.key,
+		child.transactionMeta.update.token.key,
 		`Applying transaction with ${updates.length} updates:`,
 		updates,
 	)
@@ -43,22 +43,22 @@ export const applyTransaction = <F extends Fn>(
 	if (isRootStore(parent)) {
 		setEpochNumberOfAction(
 			parent,
-			child.transactionMeta.update.key,
+			child.transactionMeta.update.token.key,
 			child.transactionMeta.update.epoch,
 		)
-		const myTransaction = withdraw<F>(store, {
-			key: child.transactionMeta.update.key,
+		const myTransaction = withdraw<Fn>(store, {
+			key: child.transactionMeta.update.token.key,
 			type: `transaction`,
 		})
 		myTransaction?.subject.next(child.transactionMeta.update)
 		store.logger.info(
 			`🛬`,
 			`transaction`,
-			child.transactionMeta.update.key,
+			child.transactionMeta.update.token.key,
 			`Finished applying transaction.`,
 		)
 	} else if (isChildStore(parent)) {
-		parent.transactionMeta.update.updates.push(child.transactionMeta.update)
+		parent.transactionMeta.update.subEvents.push(child.transactionMeta.update)
 	}
 	parent.on.transactionApplying.next(null)
 }

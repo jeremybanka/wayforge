@@ -35,6 +35,7 @@ export function disposeSelector(
 						type: `state_disposal`,
 						subType: `selector`,
 						token: selectorToken,
+						timestamp: Date.now(),
 					})
 				}
 				break
@@ -50,6 +51,7 @@ export function disposeSelector(
 						type: `state_disposal`,
 						subType: `selector`,
 						token: selectorToken,
+						timestamp: Date.now(),
 					})
 				}
 				break
@@ -65,6 +67,7 @@ export function disposeSelector(
 						type: `state_disposal`,
 						subType: `selector`,
 						token: selectorToken,
+						timestamp: Date.now(),
 					})
 				}
 				break
@@ -80,6 +83,7 @@ export function disposeSelector(
 						type: `state_disposal`,
 						subType: `selector`,
 						token: selectorToken,
+						timestamp: Date.now(),
 					})
 				}
 				break
@@ -91,10 +95,11 @@ export function disposeSelector(
 		target.moleculeData.delete(familyMeta.key, familyMeta.subKey)
 		store.logger.info(`🔥`, selectorToken.type, key, `deleted`)
 		if (isChildStore(target) && target.transactionMeta.phase === `building`) {
-			target.transactionMeta.update.updates.push({
+			target.transactionMeta.update.subEvents.push({
 				type: `state_disposal`,
 				subType: `selector`,
 				token: selectorToken,
+				timestamp: Date.now(),
 			})
 		} else {
 			store.on.selectorDisposal.next(selectorToken)

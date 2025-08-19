@@ -1,16 +1,7 @@
-import type {
-	Timeline,
-	TimelineAtomUpdate,
-	TimelineMoleculeCreation,
-	TimelineMoleculeDisposal,
-	TimelineSelectorUpdate,
-	TimelineStateCreation,
-	TimelineStateDisposal,
-	TimelineTransactionUpdate,
-} from "atom.io/internal"
+import type { Timeline } from "atom.io/internal"
 import { createTimeline, IMPLICIT, timeTravel } from "atom.io/internal"
 
-import type { AtomFamilyToken, AtomToken, TimelineToken } from "."
+import type { AtomFamilyToken, AtomToken, TimelineEvent, TimelineToken } from "."
 
 export type TimelineManageable = AtomFamilyToken<any, any> | AtomToken<any>
 export type AtomOnly<M extends TimelineManageable> = M extends AtomFamilyToken<
@@ -37,15 +28,6 @@ export const undo = (timeline: TimelineToken<any>): void => {
 	timeTravel(IMPLICIT.STORE, `undo`, timeline)
 }
 
-export type TimelineUpdate<ManagedAtom extends TimelineManageable> =
-	| TimelineAtomUpdate<ManagedAtom>
-	| TimelineMoleculeCreation
-	| TimelineMoleculeDisposal
-	| TimelineSelectorUpdate<ManagedAtom>
-	| TimelineStateCreation<AtomOnly<ManagedAtom>>
-	| TimelineStateDisposal<AtomOnly<ManagedAtom>>
-	| TimelineTransactionUpdate
-
 export type TimelineOptions<ManagedAtom extends TimelineManageable> = {
 	/** The unique identifier of the timeline */
 	key: string
@@ -53,7 +35,7 @@ export type TimelineOptions<ManagedAtom extends TimelineManageable> = {
 	scope: ManagedAtom[]
 	/** A function that determines whether a given update should be recorded */
 	shouldCapture?: (
-		update: TimelineUpdate<ManagedAtom>,
+		update: TimelineEvent<ManagedAtom>,
 		timeline: Timeline<TimelineManageable>,
 	) => boolean
 }
