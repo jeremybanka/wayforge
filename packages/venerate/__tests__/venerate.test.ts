@@ -136,7 +136,7 @@ describe(`symmetricDifferenceVariadicIter`, () => {
 		// Implementation reduces starting from 'first' without changing it if rest is empty.
 		const out = V.symmetricDifferenceVariadic([1, 1, 2])
 		// returns the original iterable as-is (no fold performed)
-		expect(arr(out)).toEqual([1, 2])
+		expect(arr(out)).toEqual([1, 1, 2])
 	})
 
 	it(`handles many with duplicates and order expectations`, () => {

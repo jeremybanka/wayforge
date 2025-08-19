@@ -95,26 +95,12 @@ export function* symmetricDifference<T>(
  * each fold pass consumes its input generator.
  */
 export function* symmetricDifferenceVariadic<T>(
-	...its: Iterable<T>[]
+	first: Iterable<T>,
+	...rest: Iterable<T>[]
 ): Iterable<T> {
-	const sets = its.map(toSet)
-	const done = new Set<T>()
-	for (let i = 0; i < sets.length; i++) {
-		const set = sets[i]
-		for (const v of set) {
-			if (!done.has(v)) {
-				let count = 1
-				for (let j = i + 1; j < sets.length; j++) {
-					const other = sets[j]
-					if (other.has(v)) {
-						count++
-					}
-				}
-				if (count % 2 === 1) yield v
-				done.add(v)
-			}
-		}
-	}
+	let acc: Iterable<T> = first
+	for (const it of rest) acc = symmetricDifference(acc, it)
+	yield* acc
 }
 
 /**
