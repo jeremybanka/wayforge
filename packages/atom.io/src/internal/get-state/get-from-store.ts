@@ -47,14 +47,15 @@ export function getFromStore(
 				: `No previous disposal trace was found.`,
 		)
 		switch (family.type) {
-			case `mutable_atom_family`:
-				if (!store.defaults.has(family.key)) {
-					const mutableFamily = withdraw(store, family)
-					const defaultValue = new mutableFamily.class()
-					store.defaults.set(family.key, defaultValue)
-					return defaultValue
+			case `mutable_atom_family`: {
+				if (store.defaults.has(family.key)) {
+					return store.defaults.get(family.key)
 				}
-				break
+				const mutableFamily = withdraw(store, family)
+				const defaultValue = new mutableFamily.class()
+				store.defaults.set(family.key, defaultValue)
+				return defaultValue
+			}
 			case `atom_family`: {
 				if (store.defaults.has(family.key)) {
 					return store.defaults.get(token.family.key)
