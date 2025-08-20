@@ -36,7 +36,9 @@ export function mintInStore<T, K extends Canonical, Key extends K>(
 			`💣`,
 			`key`,
 			stringKey,
-			`was used to mint a counterfeit token for ${familyToken.type} "${familyToken.key}"`,
+			`was used to mint a counterfeit token for`,
+			familyToken.type,
+			`"${familyToken.key}"`,
 		)
 		return fakeToken
 	}
