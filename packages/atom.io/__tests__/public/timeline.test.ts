@@ -339,10 +339,10 @@ describe(`timeline state lifecycle`, () => {
 			key: `counts`,
 			scope: [countStates],
 		})
-		const countState = findState(countStates, `my-key`)
-		setState(countState, 1)
-		expect(getState(countState)).toBe(1)
-		disposeState(countState)
+		// const countState = findState(countStates, `my-key`)
+		setState(countStates, `my-key`, 1)
+		expect(getState(countStates, `my-key`)).toBe(1)
+		disposeState(countStates, `my-key`)
 		undo(countsTL)
 		undo(countsTL)
 		undo(countsTL)

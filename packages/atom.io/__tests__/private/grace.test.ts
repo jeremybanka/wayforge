@@ -319,12 +319,12 @@ describe(`recipes`, () => {
 			const ftl = (
 				key: string,
 			): [state: RegularAtomToken<number>, timeline: TimelineToken<any>] => {
-				const WritableToken = findState(f, key)
+				const writableToken = findState(f, key)
 				const timelineToken = timeline({
-					key: `timeline for ${WritableToken.key}`,
-					scope: [WritableToken],
+					key: `timeline for ${writableToken.key}`,
+					scope: [writableToken],
 				})
-				return [WritableToken, timelineToken]
+				return [writableToken, timelineToken]
 			}
 			const [a, atl] = ftl(`a`)
 

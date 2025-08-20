@@ -7,10 +7,12 @@ import type {
 	WritableToken,
 	WriterToolkit,
 } from "atom.io"
-import type { Canonical, Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 
 import { findInStore } from "../families"
+import { getFallback } from "../get-state/get-fallback"
 import { readOrComputeValue } from "../get-state/read-or-compute-value"
+import { toStateToken } from "../get-state/to-state-token"
 import { newest } from "../lineage"
 import { getJsonToken } from "../mutable"
 import { operateOnStore } from "../set-state/operate-on-store"
@@ -31,22 +33,19 @@ export function registerSelector(
 	return {
 		get: (
 			...params:
-				| [ReadableFamilyToken<any, any>, Json.Serializable]
+				| [ReadableFamilyToken<any, any>, Canonical]
 				| [ReadableToken<any>]
 		) => {
 			const target = newest(store)
-			let dependency: ReadableToken<any>
-
-			if (params.length === 2) {
-				const [family, key] = params
-				dependency = findInStore(store, family, key)
-			} else {
-				;[dependency] = params
-			}
-
-			const dependencyState = withdraw(store, dependency)
-			const dependencyValue = readOrComputeValue(store, dependencyState)
+			const { token, family, subKey } = toStateToken(store, ...params)
+			const dependency = withdraw(store, token)
 			const dependencyKey = dependency.key
+			let dependencyValue: unknown
+			if (`counterfeit` in token && family && subKey) {
+				dependencyValue = getFallback(store, token, family, subKey)
+			} else {
+				dependencyValue = readOrComputeValue(store, dependency)
+			}
 
 			store.logger.info(
 				`🔌`,

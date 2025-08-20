@@ -2,6 +2,7 @@ import type { Logger } from "atom.io"
 import {
 	atomFamily,
 	findState,
+	getState,
 	selectorFamily,
 	timeline,
 	transaction,
@@ -41,7 +42,9 @@ describe(`store observation`, () => {
 			default: 0,
 		})
 		const a = findState(atoms, `a`)
+		getState(a)
 		const b = findState(atoms, `b`)
+		getState(b)
 		expect(Utils.stdout).toHaveBeenCalledWith(a)
 		expect(Utils.stdout).toHaveBeenCalledWith(b)
 	})
@@ -57,7 +60,9 @@ describe(`store observation`, () => {
 			get: () => () => 0,
 		})
 		const c = findState(selectors, `c`)
+		getState(c)
 		const d = findState(selectors, `d`)
+		getState(d)
 		expect(Utils.stdout).toHaveBeenCalledWith(c)
 		expect(Utils.stdout).toHaveBeenCalledWith(d)
 	})

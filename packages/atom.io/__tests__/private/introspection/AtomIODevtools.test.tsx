@@ -339,8 +339,8 @@ describe(`working with families`, () => {
 			key: `count`,
 			default: 0,
 		})
-		const _countAtomA = $.findState(countAtoms, `A`)
-		const _countAtomB = $.findState(countAtoms, `B`)
+		const _countAtomA = $.getState(countAtoms, `A`)
+		const _countAtomB = $.getState(countAtoms, `B`)
 
 		const { getByTestId } = scenario()
 
@@ -542,9 +542,9 @@ describe(`devtools multi-expand/collapse`, () => {
 			key: `example`,
 			get: () => () => ({ opt: { foo: null, bar: null } }),
 		})
-		$.findState(exampleSelectors, `a`)
-		$.findState(exampleSelectors, `b`)
-		$.findState(exampleSelectors, `c`)
+		$.getState(exampleSelectors, `a`)
+		$.getState(exampleSelectors, `b`)
+		$.getState(exampleSelectors, `c`)
 
 		const { getByTestId } = scenario()
 
