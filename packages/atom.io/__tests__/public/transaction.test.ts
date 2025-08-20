@@ -378,7 +378,7 @@ describe(`reversibility of transactions`, () => {
 			key: `count`,
 			default: 0,
 		})
-		findState(countStates, `my-key`)
+		getState(countStates, `my-key`)
 		const incrementTX = transaction({
 			key: `increment`,
 			do: ({ find, dispose }) => {

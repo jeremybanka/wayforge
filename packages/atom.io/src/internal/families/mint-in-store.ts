@@ -14,31 +14,47 @@ import { isChildStore, isRootStore } from "../transaction"
 import { initFamilyMemberInStore } from "./init-family-member"
 import { seekInStore } from "./seek-in-store"
 
-export const DOES_NOT_EXIST: unique symbol = Symbol(`MUST_NOT_EXIST`)
+export const MUST_CREATE: unique symbol = Symbol(`MUST_NOT_EXIST`)
+const MAY_CREATE: unique symbol = Symbol(`MAY_CREATE`)
 
 export function mintInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	familyToken: WritableFamilyToken<T, K>,
 	key: Key,
-	doesNotExist?: typeof DOES_NOT_EXIST,
+	init?: typeof MAY_CREATE | typeof MUST_CREATE,
 ): WritableToken<T, K>
 export function mintInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	familyToken: ReadableFamilyToken<T, K>,
 	key: Key,
-	doesNotExist?: typeof DOES_NOT_EXIST,
+	init?: typeof MAY_CREATE | typeof MUST_CREATE,
 ): ReadableToken<T, K>
 export function mintInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	familyToken: ReadableFamilyToken<T, K>,
 	key: Key,
-	doesNotExist?: typeof DOES_NOT_EXIST,
+	shouldCreate?: typeof MAY_CREATE | typeof MUST_CREATE,
 ): ReadableToken<T, K> {
-	let exists: boolean
-	if (doesNotExist) {
-		exists = false
-	} else {
-		exists = Boolean(seekInStore(store, familyToken, key))
+	let existingStateToken: ReadableToken<T, K> | undefined
+	let stateToken: ReadableToken<T, K>
+
+	let willCreate: boolean
+	switch (shouldCreate) {
+		case MAY_CREATE:
+			existingStateToken = seekInStore(store, familyToken, key)
+			if (existingStateToken) {
+				stateToken = existingStateToken
+				willCreate = false
+			} else {
+				willCreate = true
+			}
+			break
+		case MUST_CREATE:
+			willCreate = true
+			break
+		case undefined:
+			willCreate = false
+			break
 	}
 
 	const stringKey = stringifyJson(key)
@@ -56,40 +72,39 @@ export function mintInStore<T, K extends Canonical, Key extends K>(
 		return fakeToken
 	}
 
-	let newStateToken: ReadableToken<T, K>
-	if (exists) {
-		newStateToken = mint(familyToken, key)
-	} else {
-		newStateToken = initFamilyMemberInStore(store, familyToken, key)
-	}
-	const target = newest(store)
-	if (newStateToken.family) {
-		if (isRootStore(target)) {
-			switch (newStateToken.type) {
-				case `atom`:
-				case `mutable_atom`:
-					store.on.atomCreation.next(newStateToken)
-					break
-				case `writable_pure_selector`:
-				case `readonly_pure_selector`:
-				case `writable_held_selector`:
-				case `readonly_held_selector`:
-					store.on.selectorCreation.next(newStateToken)
-					break
+	if (willCreate) {
+		stateToken = initFamilyMemberInStore(store, familyToken, key)
+		const target = newest(store)
+		if (stateToken.family) {
+			if (isRootStore(target)) {
+				switch (stateToken.type) {
+					case `atom`:
+					case `mutable_atom`:
+						store.on.atomCreation.next(stateToken)
+						break
+					case `writable_pure_selector`:
+					case `readonly_pure_selector`:
+					case `writable_held_selector`:
+					case `readonly_held_selector`:
+						store.on.selectorCreation.next(stateToken)
+						break
+				}
+			} else if (
+				isChildStore(target) &&
+				target.on.transactionApplying.state === null
+			) {
+				target.transactionMeta.update.subEvents.push({
+					type: `state_creation`,
+					token: stateToken,
+					timestamp: Date.now(),
+				})
 			}
-		} else if (
-			isChildStore(target) &&
-			target.on.transactionApplying.state === null
-		) {
-			target.transactionMeta.update.subEvents.push({
-				type: `state_creation`,
-				token: newStateToken,
-				timestamp: Date.now(),
-			})
 		}
+		if (molecule) {
+			target.moleculeData.set(stringKey, familyToken.key)
+		}
+	} else {
+		stateToken = mint(familyToken, key)
 	}
-	if (molecule) {
-		target.moleculeData.set(stringKey, familyToken.key)
-	}
-	return newStateToken
+	return stateToken
 }

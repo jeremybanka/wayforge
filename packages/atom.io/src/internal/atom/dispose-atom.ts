@@ -13,8 +13,7 @@ export function disposeAtom(store: Store, atomToken: AtomToken<any>): void {
 	} else {
 		atom.cleanup?.()
 		const lastValue = store.valueMap.get(atom.key)
-		// biome-ignore lint/style/noNonNullAssertion: family has been verified
-		const familyToken = getFamilyOfToken(store, atomToken)!
+		const familyToken = getFamilyOfToken(store, atomToken)
 		const atomFamily = withdraw(store, familyToken)
 		const subject = atomFamily.subject as Subject<
 			StateLifecycleEvent<AtomToken<any>>

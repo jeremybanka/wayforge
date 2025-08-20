@@ -13,6 +13,7 @@ import type {
 	TransactionToken,
 } from "atom.io"
 
+import { toStateToken } from "../get-state/to-state-token"
 import { newest } from "../lineage"
 import { getUpdateToken } from "../mutable"
 import { deposit, type Store, withdraw } from "../store"
@@ -130,6 +131,7 @@ function addAtomToTimeline(
 	atomToken: AtomToken<any>,
 	tl: Timeline<any>,
 ): void {
+	toStateToken(store, atomToken)
 	let maybeAtom = withdraw(store, atomToken)
 	if (maybeAtom.type === `mutable_atom`) {
 		const updateToken = getUpdateToken(maybeAtom)
