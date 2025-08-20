@@ -120,7 +120,7 @@ describe(`silo`, () => {
 
 		expect(hasImplicitStoreBeenCreated()).toBe(false)
 		expect(() => getState(listState__Uno)).toThrowError(
-			`atom [m] "counts(\\"a\\")" not found in store "IMPLICIT_STORE".`,
+			`atom family [m] "counts" not found in store "IMPLICIT_STORE".`,
 		)
 	})
 })
