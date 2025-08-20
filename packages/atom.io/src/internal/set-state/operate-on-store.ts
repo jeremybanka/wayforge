@@ -3,7 +3,7 @@ import { type Canonical, parseJson } from "atom.io/json"
 
 import { seekInStore } from "../families"
 import { getFamilyOfToken } from "../families/get-family-of-token"
-import { mintInStore } from "../families/mint-in-store"
+import { DOES_NOT_EXIST, mintInStore } from "../families/mint-in-store"
 import type { OpenOperation } from "../operation"
 import { closeOperation, openOperation } from "../operation"
 import { type Store, withdraw } from "../store"
@@ -40,7 +40,7 @@ export function operateOnStore<T, New extends T>(
 			key = parseJson(token.family.subKey)
 			existingToken = seekInStore(store, family, key)
 			if (!existingToken) {
-				brandNewToken = mintInStore(store, family, key)
+				brandNewToken = mintInStore(store, family, key, DOES_NOT_EXIST)
 				token = brandNewToken
 			} else {
 				token = existingToken
@@ -52,7 +52,7 @@ export function operateOnStore<T, New extends T>(
 		value = params[2]
 		existingToken = seekInStore(store, family, key)
 		if (!existingToken) {
-			brandNewToken = mintInStore(store, family, key)
+			brandNewToken = mintInStore(store, family, key, DOES_NOT_EXIST)
 			token = brandNewToken
 		} else {
 			token = existingToken
