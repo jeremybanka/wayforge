@@ -23,6 +23,11 @@ import type { Store } from "../store"
 import { mintInStore } from "./mint-in-store"
 import { seekInStore } from "./seek-in-store"
 
+// seek [token 🟧] [inits ⬛]
+// find [token ✅] [inits ⬛]
+// mint [token ✅] [inits 🟧]
+// init [token ✅] [inits ✅]
+
 export function findInStore<
 	T extends Transceiver<any, any, any>,
 	K extends Canonical,
