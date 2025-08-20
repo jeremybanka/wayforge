@@ -1,63 +1,60 @@
 import type {
-	MutableAtomFamilyToken,
 	MutableAtomToken,
-	ReadableFamilyToken,
 	ReadableToken,
-	ReadonlyPureSelectorFamilyToken,
 	ReadonlyPureSelectorToken,
-	RegularAtomFamilyToken,
 	RegularAtomToken,
-	WritableFamilyToken,
-	WritablePureSelectorFamilyToken,
 	WritablePureSelectorToken,
 	WritableToken,
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 
+import type {
+	MutableAtomFamily,
+	ReadableFamily,
+	ReadonlyPureSelectorFamily,
+	RegularAtomFamily,
+	WritableFamily,
+	WritablePureSelectorFamily,
+} from ".."
 import type { Transceiver } from "../mutable"
-import type { Store } from "../store"
+import { type Store, withdraw } from "../store"
 
 export function getFamilyOfToken<
 	T extends Transceiver<any, any, any>,
 	K extends Canonical,
->(
-	store: Store,
-	token: MutableAtomToken<T, K>,
-): MutableAtomFamilyToken<T, K> | undefined
+>(store: Store, token: MutableAtomToken<T, K>): MutableAtomFamily<T, K>
 
 export function getFamilyOfToken<T, K extends Canonical>(
 	store: Store,
 	token: RegularAtomToken<T, K>,
-): RegularAtomFamilyToken<T, K> | undefined
+): RegularAtomFamily<T, K>
 
 export function getFamilyOfToken<T, K extends Canonical>(
 	store: Store,
 	token: WritablePureSelectorToken<T, K>,
-): WritablePureSelectorFamilyToken<T, K> | undefined
+): WritablePureSelectorFamily<T, K>
 
 export function getFamilyOfToken<T, K extends Canonical>(
 	store: Store,
 	token: ReadonlyPureSelectorToken<T, K>,
-): ReadonlyPureSelectorFamilyToken<T, K> | undefined
+): ReadonlyPureSelectorFamily<T, K>
 
 export function getFamilyOfToken<T, K extends Canonical>(
 	store: Store,
 	token: WritableToken<T, K>,
-): WritableFamilyToken<T, K> | undefined
-
+): WritableFamily<T, K>
 export function getFamilyOfToken<T, K extends Canonical>(
 	store: Store,
 	token: ReadableToken<T, K>,
-): ReadableFamilyToken<T, K> | undefined
+): ReadableFamily<T, K>
 
 export function getFamilyOfToken(
 	store: Store,
 	token: ReadableToken<any, any>,
-): ReadableFamilyToken<any, any> | undefined {
-	if (token.family) {
-		const family = store.families.get(token.family.key)
-		if (family) {
-			return family
-		}
-	}
+): ReadableFamily<any, any> {
+	return withdraw(store, {
+		// biome-ignore lint/style/noNonNullAssertion: family is required
+		key: token.family!.key,
+		type: `${token.type}_family`,
+	})
 }

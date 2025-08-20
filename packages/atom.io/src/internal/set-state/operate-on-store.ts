@@ -35,9 +35,8 @@ export function operateOnStore<T, New extends T>(
 	if (params.length === 2) {
 		token = params[0]
 		value = params[1]
-		if (token.family) {
-			// biome-ignore lint/style/noNonNullAssertion: this token belongs to a family
-			family = getFamilyOfToken(store, token)!
+		if (`family` in token) {
+			family = getFamilyOfToken(store, token)
 			key = parseJson(token.family.subKey)
 			existingToken = seekInStore(store, family, key)
 			if (!existingToken) {

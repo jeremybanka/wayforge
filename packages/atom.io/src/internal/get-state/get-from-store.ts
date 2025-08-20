@@ -1,7 +1,9 @@
 import type { ReadableFamilyToken, ReadableToken } from "atom.io"
 import { type Canonical, parseJson } from "atom.io/json"
 
-import { findInStore } from "../families"
+import { seekInStore } from "../families"
+import { getFamilyOfToken } from "../families/get-family-of-token"
+import { mintInStore } from "../families/mint-in-store"
 import type { Store } from "../store"
 import { withdraw } from "../store"
 import { readOrComputeValue } from "./read-or-compute-value"
@@ -20,16 +22,37 @@ export function getFromStore(
 		| [token: ReadableFamilyToken<any, any>, key: Canonical]
 		| [token: ReadableToken<any>]
 ): any {
+	let existingToken: ReadableToken<any> | undefined
+	let brandNewToken: ReadableToken<any> | undefined
 	let token: ReadableToken<any>
 	let family: ReadableFamilyToken<any, Canonical> | null
 	let key: Canonical | null
 	if (params.length === 1) {
 		token = params[0]
+		if (`family` in token) {
+			family = getFamilyOfToken(store, token)
+			withdraw(store, family)
+			key = parseJson(token.family.subKey)
+			existingToken = seekInStore(store, family, key)
+			if (!existingToken) {
+				brandNewToken = mintInStore(store, family, key)
+				token = brandNewToken
+			} else {
+				token = existingToken
+			}
+		}
 	} else {
 		family = params[0]
 		key = params[1]
-		token = findInStore(store, family, key)
+		existingToken = seekInStore(store, family, key)
+		if (!existingToken) {
+			brandNewToken = mintInStore(store, family, key)
+			token = brandNewToken
+		} else {
+			token = existingToken
+		}
 	}
+
 	if (`counterfeit` in token && `family` in token) {
 		// biome-ignore lint/style/noNonNullAssertion: family must be present
 		family = store.families.get(token.family.key)!
