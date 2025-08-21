@@ -118,7 +118,8 @@ export const setupRealtimeTestServer = (
 		if (token === `test` && socket.id) {
 			const userClaim = socketRealm.allocate(`root`, `user::${username}`)
 			const socketClaim = socketRealm.allocate(`root`, `socket::${socket.id}`)
-			setIntoStore(silo.store, RTS.socketAtoms, socketClaim, socket)
+			const socketState = findInStore(silo.store, RTS.socketAtoms, socketClaim)
+			setIntoStore(silo.store, socketState, socket)
 			editRelationsInStore(
 				RTS.usersOfSockets,
 				(relations) => {
