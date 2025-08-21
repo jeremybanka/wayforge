@@ -104,9 +104,65 @@ export function errorToJSON(error: Error): ErrorAsJSON {
 
 export type StringifiedError = `ERROR!\n${string}`
 export function stringifyError(error: Error): StringifiedError {
-	const payload = errorToJSON(error)
-	const stringifiedPayload = JSON.stringify(payload, null, `\t`)
+	const jsonError = errorToJSON(error)
+	const stringifiedPayload = JSON.stringify(jsonError, null, `\t`)
 	return `ERROR!\n${stringifiedPayload}`
+}
+
+export function errorFromJSON(jsonError: ErrorAsJSON): Error {
+	const Ctor = ctorByName[jsonError.name] ?? Error
+
+	// Rehydrate cause first so we can pass it into the constructor
+	const causeError = jsonError.cause ? errorFromJSON(jsonError.cause) : undefined
+
+	// AggregateError needs special handling for `errors`; for others, just pass message/cause
+	let error: Error
+	if (Ctor === AggregateError) {
+		const subErrors = (jsonError.errors ?? []).map(errorFromJSON)
+		// Message displays differently across engines; set it explicitly too
+		error = new AggregateError(subErrors, jsonError.message, {
+			cause: causeError,
+		})
+	} else {
+		error = new Ctor(jsonError.message, { cause: causeError })
+	}
+
+	// Preserve the original name if it was custom
+	if (!(jsonError.name in ctorByName)) {
+		try {
+			error.name = jsonError.name
+		} catch {
+			/* ignore */
+		}
+	}
+
+	// Restore stack as a non-enumerable property (common engine behavior)
+	if (jsonError.stack) {
+		try {
+			Object.defineProperty(error, `stack`, {
+				value: jsonError.stack,
+				writable: true,
+				configurable: true,
+				enumerable: false,
+			})
+		} catch {
+			// fallback: direct assignment (works in most environments)
+			error.stack = jsonError.stack
+		}
+	}
+
+	// Reattach extra props
+	if (jsonError.props && typeof jsonError.props === `object`) {
+		for (const [k, v] of Object.entries(jsonError.props)) {
+			try {
+				;(error as any)[k] = v
+			} catch {
+				/* ignore */
+			}
+		}
+	}
+
+	return error
 }
 
 export function parseError(stringifiedError: StringifiedError): Error
@@ -115,57 +171,6 @@ export function parseError(maybeStringifiedError: string): Error | undefined {
 	if (!maybeStringifiedError.startsWith(`ERROR!\n`)) return undefined
 
 	const stringifiedPayload = maybeStringifiedError.slice(`ERROR!\n`.length)
-	const payload = JSON.parse(stringifiedPayload)
-
-	const Ctor = ctorByName[payload.name] ?? Error
-
-	// Rehydrate cause first so we can pass it into the constructor
-	const causeErr = payload.cause ? parseError(payload.cause) : undefined
-
-	// AggregateError needs special handling for `errors`; for others, just pass message/cause
-	let err: Error
-	if (Ctor === (AggregateError as unknown)) {
-		const errs = (payload.errors ?? []).map(parseError)
-		// Message displays differently across engines; set it explicitly too
-		err = new (AggregateError as any)(errs, payload.message, { cause: causeErr })
-	} else {
-		err = new Ctor(payload.message, { cause: causeErr })
-	}
-
-	// Preserve the original name if it was custom
-	if (!(payload.name in ctorByName)) {
-		try {
-			err.name = payload.name
-		} catch {
-			/* ignore */
-		}
-	}
-
-	// Restore stack as a non-enumerable property (common engine behavior)
-	if (payload.stack) {
-		try {
-			Object.defineProperty(err, `stack`, {
-				value: payload.stack,
-				writable: true,
-				configurable: true,
-				enumerable: false,
-			})
-		} catch {
-			// fallback: direct assignment (works in most environments)
-			;(err as any).stack = payload.stack
-		}
-	}
-
-	// Reattach extra props
-	if (payload.props && typeof payload.props === `object`) {
-		for (const [k, v] of Object.entries(payload.props)) {
-			try {
-				;(err as any)[k] = v
-			} catch {
-				/* ignore */
-			}
-		}
-	}
-
-	return err
+	const jsonError = JSON.parse(stringifiedPayload) as ErrorAsJSON
+	return errorFromJSON(jsonError)
 }
