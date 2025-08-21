@@ -121,7 +121,7 @@ export class Store implements Lineage {
 	)
 	public moleculeGraph: Junction<
 		`upstreamMoleculeKey`,
-		stringified<Canonical> | `root`,
+		stringified<Canonical> | `"root"`,
 		`downstreamMoleculeKey`,
 		stringified<Canonical>,
 		{ source: stringified<Canonical> }
