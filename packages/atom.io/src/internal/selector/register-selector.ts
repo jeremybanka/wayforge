@@ -15,7 +15,7 @@ import { readOrComputeValue } from "../get-state/read-or-compute-value"
 import { reduceReference } from "../get-state/reduce-reference"
 import { newest } from "../lineage"
 import { getJsonToken } from "../mutable"
-import { operateOnStore } from "../set-state/operate-on-store"
+import { JOIN_OP, operateOnStore } from "../set-state/operate-on-store"
 import type { Store } from "../store"
 import { withdraw } from "../store"
 import { updateSelectorAtoms } from "./update-selector-atoms"
@@ -85,7 +85,7 @@ export function registerSelector(
 				| [token: WritableToken<T>, value: New | ((oldValue: T) => New)]
 		) => {
 			const target = newest(store)
-			operateOnStore(target, false, ...params)
+			operateOnStore(target, JOIN_OP, ...params)
 		}) as typeof setState,
 		find: ((...args: Parameters<typeof findState>) =>
 			findInStore(store, ...args)) as typeof findState,
