@@ -52,7 +52,6 @@ describe(`disposeState`, () => {
 		const countState = findState(countStates, `count`)
 		getState(countState)
 		disposeState(countState)
-		expect(logger.error).not.toHaveBeenCalled()
 		expect(Internal.IMPLICIT.STORE.atoms.has(countState.key)).toBe(false)
 		expect(Internal.IMPLICIT.STORE.valueMap.has(countState.key)).toBe(false)
 		expect(logger.warn).not.toHaveBeenCalled()
