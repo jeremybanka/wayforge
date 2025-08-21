@@ -66,9 +66,9 @@ export type stringified<J extends Json.Serializable> = (
   )
 
 /** Type-safe wrapper for {@link JSON.parse} */
-export const parseJson = <S extends stringified<Json.Serializable>>(
-	str: S | string,
-): S extends stringified<infer J> ? J : Json.Serializable => JSON.parse(str)
+export const parseJson = <J extends Json.Serializable>(
+	str: stringified<J> | string,
+): J => JSON.parse(str)
 
 /** Type-safe wrapper for {@link JSON.stringify} */
 export const stringifyJson = <J extends Json.Serializable>(

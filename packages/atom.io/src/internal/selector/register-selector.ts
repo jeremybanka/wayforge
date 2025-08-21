@@ -7,13 +7,15 @@ import type {
 	WritableToken,
 	WriterToolkit,
 } from "atom.io"
-import type { Canonical, Json } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 
 import { findInStore } from "../families"
+import { getFallback } from "../get-state/get-fallback"
 import { readOrComputeValue } from "../get-state/read-or-compute-value"
+import { reduceReference } from "../get-state/reduce-reference"
 import { newest } from "../lineage"
 import { getJsonToken } from "../mutable"
-import { operateOnStore } from "../set-state/operate-on-store"
+import { JOIN_OP, operateOnStore } from "../set-state/operate-on-store"
 import type { Store } from "../store"
 import { withdraw } from "../store"
 import { updateSelectorAtoms } from "./update-selector-atoms"
@@ -31,48 +33,39 @@ export function registerSelector(
 	return {
 		get: (
 			...params:
-				| [ReadableFamilyToken<any, any>, Json.Serializable]
+				| [ReadableFamilyToken<any, any>, Canonical]
 				| [ReadableToken<any>]
 		) => {
 			const target = newest(store)
-			let dependency: ReadableToken<any>
-
-			if (params.length === 2) {
-				const [family, key] = params
-				dependency = findInStore(store, family, key)
+			const { token, familyToken, subKey } = reduceReference(store, ...params)
+			let dependencyValue: unknown
+			if (`counterfeit` in token && familyToken && subKey) {
+				const dependencyFamily = withdraw(store, familyToken)
+				dependencyValue = getFallback(store, token, dependencyFamily, subKey)
 			} else {
-				;[dependency] = params
+				const dependency = withdraw(store, token)
+				dependencyValue = readOrComputeValue(store, dependency)
 			}
-
-			const dependencyState = withdraw(store, dependency)
-			const dependencyValue = readOrComputeValue(store, dependencyState)
-			const dependencyKey = dependency.key
 
 			store.logger.info(
 				`🔌`,
 				selectorType,
 				selectorKey,
-				`registers dependency ( "${dependencyKey}" =`,
+				`registers dependency ( "${token.key}" =`,
 				dependencyValue,
 				`)`,
 			)
 
 			target.selectorGraph.set(
 				{
-					upstreamSelectorKey: dependencyKey,
+					upstreamSelectorKey: token.key,
 					downstreamSelectorKey: selectorKey,
 				},
 				{
-					source: dependency.key,
+					source: token.key,
 				},
 			)
-			updateSelectorAtoms(
-				store,
-				selectorType,
-				selectorKey,
-				dependency as any,
-				covered,
-			)
+			updateSelectorAtoms(store, selectorType, selectorKey, token, covered)
 			return dependencyValue
 		},
 		set: (<T, K extends Canonical, New extends T, Key extends K>(
@@ -85,7 +78,7 @@ export function registerSelector(
 				| [token: WritableToken<T>, value: New | ((oldValue: T) => New)]
 		) => {
 			const target = newest(store)
-			operateOnStore(target, false, ...params)
+			operateOnStore(target, JOIN_OP, ...params)
 		}) as typeof setState,
 		find: ((...args: Parameters<typeof findState>) =>
 			findInStore(store, ...args)) as typeof findState,

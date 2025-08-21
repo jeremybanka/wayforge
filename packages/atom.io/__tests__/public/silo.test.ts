@@ -48,7 +48,7 @@ describe(`silo`, () => {
 
 		expect(hasImplicitStoreBeenCreated()).toBe(false)
 		expect(() => getState(countState__Uno)).toThrowError(
-			`Atom "count" not found in store "IMPLICIT_STORE".`,
+			`atom "count" not found in store "IMPLICIT_STORE".`,
 		)
 	})
 	it(`creates stores with independent state families`, () => {
@@ -120,7 +120,7 @@ describe(`silo`, () => {
 
 		expect(hasImplicitStoreBeenCreated()).toBe(false)
 		expect(() => getState(listState__Uno)).toThrowError(
-			`Atom "counts(\\"a\\")" not found in store "IMPLICIT_STORE".`,
+			`atom family [m] "counts" not found in store "IMPLICIT_STORE".`,
 		)
 	})
 })

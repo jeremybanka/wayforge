@@ -115,7 +115,7 @@ describe(`nested setState withing a setState callback`, () => {
 		})
 
 		expect(logger.info).toHaveBeenCalledWith(
-			`❗`,
+			`🚫`,
 			b.type,
 			b.key,
 			`deferring setState at ${rejectionTime} until setState for "${a.key}" is done`,
@@ -208,7 +208,7 @@ describe(`two families may not have the same key`, () => {
 			`❗`,
 			`atom_family`,
 			`count`,
-			`Overwriting an existing Atom Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
+			`Overwriting an existing atom family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
 
 		selectorFamily<number, string>({
@@ -222,7 +222,7 @@ describe(`two families may not have the same key`, () => {
 			`❗`,
 			`readonly_pure_selector_family`,
 			`count`,
-			`Overwriting an existing Atom Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
+			`Overwriting an existing atom family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
 
 		mutableAtomFamily<SetRTX<string>, string>({
@@ -234,7 +234,7 @@ describe(`two families may not have the same key`, () => {
 			`❗`,
 			`mutable_atom_family`,
 			`count`,
-			`Overwriting an existing Readonly Pure Selector Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
+			`Overwriting an existing selector family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
 		selectorFamily<number, string>({
 			key: `count`,
@@ -253,7 +253,7 @@ describe(`two families may not have the same key`, () => {
 			`❗`,
 			`writable_pure_selector_family`,
 			`count`,
-			`Overwriting an existing Mutable Atom Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
+			`Overwriting an existing atom family [m] "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
 
 		selectorFamily<{ count: number }, string>({
@@ -275,7 +275,7 @@ describe(`two families may not have the same key`, () => {
 			`❗`,
 			`writable_held_selector_family`,
 			`count`,
-			`Overwriting an existing Writable Pure Selector Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
+			`Overwriting an existing selector family [w] "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
 
 		selectorFamily<{ count: number }, string>({
@@ -292,7 +292,7 @@ describe(`two families may not have the same key`, () => {
 			`❗`,
 			`readonly_held_selector_family`,
 			`count`,
-			`Overwriting an existing Writable Held Selector Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
+			`Overwriting an existing selector family [wh] "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
 
 		atomFamily<number, string>({
@@ -304,7 +304,7 @@ describe(`two families may not have the same key`, () => {
 			`❗`,
 			`atom_family`,
 			`count`,
-			`Overwriting an existing Readonly Held Selector Family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
+			`Overwriting an existing selector family [h] "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
 	})
 })
@@ -319,12 +319,12 @@ describe(`recipes`, () => {
 			const ftl = (
 				key: string,
 			): [state: RegularAtomToken<number>, timeline: TimelineToken<any>] => {
-				const WritableToken = findState(f, key)
+				const writableToken = findState(f, key)
 				const timelineToken = timeline({
-					key: `timeline for ${WritableToken.key}`,
-					scope: [WritableToken],
+					key: `timeline for ${writableToken.key}`,
+					scope: [writableToken],
 				})
-				return [WritableToken, timelineToken]
+				return [writableToken, timelineToken]
 			}
 			const [a, atl] = ftl(`a`)
 
@@ -346,7 +346,7 @@ describe(`findState`, () => {
 		expect(() =>
 			findState(token, `whatever`),
 		).toThrowErrorMatchingInlineSnapshot(
-			`[Error: Atom Family "does not exist" not found in store "IMPLICIT_STORE".]`,
+			`[Error: atom family "does not exist" not found in store "IMPLICIT_STORE".]`,
 		)
 	})
 })

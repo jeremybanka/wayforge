@@ -2,7 +2,7 @@ import type { WritableFamilyToken, WritableToken } from "atom.io"
 import type { Canonical } from "atom.io/json"
 
 import type { Store } from "../store"
-import { operateOnStore } from "./operate-on-store"
+import { operateOnStore, OWN_OP } from "./operate-on-store"
 import type { RESET_STATE } from "./reset-in-store"
 
 export function setIntoStore<T, New extends T>(
@@ -36,5 +36,5 @@ export function setIntoStore<T, New extends T>(
 				value: New | typeof RESET_STATE | ((oldValue: T) => New),
 		  ]
 ): void {
-	operateOnStore(store, true, ...params)
+	operateOnStore(store, OWN_OP, ...params)
 }

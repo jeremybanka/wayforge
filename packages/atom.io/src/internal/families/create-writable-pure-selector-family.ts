@@ -7,6 +7,7 @@ import type {
 	WritablePureSelectorFamilyToken,
 	WritablePureSelectorToken,
 } from "atom.io"
+import { PRETTY_TOKEN_TYPES } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
@@ -14,7 +15,6 @@ import {
 	findInStore,
 	getFromStore,
 	getJsonToken,
-	prettyPrintTokenType,
 	type WritablePureSelectorFamily,
 } from ".."
 import { newest } from "../lineage"
@@ -41,9 +41,7 @@ export function createWritablePureSelectorFamily<T, K extends Canonical>(
 			`❗`,
 			type,
 			familyKey,
-			`Overwriting an existing ${prettyPrintTokenType(
-				existing,
-			)} "${existing.key}" in store "${store.config.name}". You can safely ignore this warning if it is due to hot module replacement.`,
+			`Overwriting an existing ${PRETTY_TOKEN_TYPES[existing.type]} "${existing.key}" in store "${store.config.name}". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
 	}
 	const subject = new Subject<

@@ -21,6 +21,8 @@ import { stringifyJson } from "atom.io/json"
 
 import type { Transceiver } from "../mutable"
 
+export const COUNTERFEIT: unique symbol = Symbol(`counterfeit`)
+
 export const FAMILY_MEMBER_TOKEN_TYPES = {
 	atom_family: `atom`,
 	molecule_family: `molecule`,
@@ -31,66 +33,76 @@ export const FAMILY_MEMBER_TOKEN_TYPES = {
 	writable_pure_selector_family: `writable_pure_selector`,
 } as const
 
-export function counterfeit<
+export function mint<
 	T extends Transceiver<any, any, any>,
 	K extends Canonical,
 	Key extends K,
 >(token: MutableAtomFamilyToken<T, K>, key: Key): MutableAtomToken<T>
 
-export function counterfeit<T, K extends Canonical, Key extends K>(
+export function mint<T, K extends Canonical, Key extends K>(
 	token: RegularAtomFamilyToken<T, K>,
 	key: Key,
+	counterfeit?: typeof COUNTERFEIT,
 ): RegularAtomToken<T>
 
-export function counterfeit<T, K extends Canonical, Key extends K>(
+export function mint<T, K extends Canonical, Key extends K>(
 	token: AtomFamilyToken<T, K>,
 	key: Key,
+	counterfeit?: typeof COUNTERFEIT,
 ): AtomToken<T>
 
-export function counterfeit<T, K extends Canonical, Key extends K>(
+export function mint<T, K extends Canonical, Key extends K>(
 	token: WritablePureSelectorFamilyToken<T, K>,
 	key: Key,
+	counterfeit?: typeof COUNTERFEIT,
 ): WritablePureSelectorToken<T>
 
-export function counterfeit<T, K extends Canonical, Key extends K>(
+export function mint<T, K extends Canonical, Key extends K>(
 	token: ReadonlyPureSelectorFamilyToken<T, K>,
 	key: Key,
+	counterfeit?: typeof COUNTERFEIT,
 ): ReadonlyPureSelectorToken<T>
 
-export function counterfeit<T, K extends Canonical, Key extends K>(
+export function mint<T, K extends Canonical, Key extends K>(
 	token: SelectorFamilyToken<T, K>,
 	key: Key,
+	counterfeit?: typeof COUNTERFEIT,
 ): SelectorToken<T>
 
-export function counterfeit<T, K extends Canonical, Key extends K>(
+export function mint<T, K extends Canonical, Key extends K>(
 	token: WritableFamilyToken<T, K>,
 	key: Key,
+	counterfeit?: typeof COUNTERFEIT,
 ): WritableToken<T>
 
-export function counterfeit<T, K extends Canonical, Key extends K>(
+export function mint<T, K extends Canonical, Key extends K>(
 	token: ReadableFamilyToken<T, K>,
 	key: Key,
+	counterfeit?: typeof COUNTERFEIT,
 ): ReadableToken<T>
 
-export function counterfeit(
+export function mint(
 	token: ReadableFamilyToken<any, any>,
 	key: Canonical,
+	counterfeit?: typeof COUNTERFEIT,
 ): ReadableToken<any> {
 	const subKey = stringifyJson(key)
 	const fullKey = `${token.key}(${subKey})`
 	const type = FAMILY_MEMBER_TOKEN_TYPES[token.type]
-	const stateToken = {
+	const stateToken: ReadableToken<any> & {
+		counterfeit?: boolean
+	} = {
 		key: fullKey,
 		type,
-	} satisfies ReadableToken<any>
-
-	Object.assign(stateToken, {
 		family: {
 			key: token.key,
 			subKey,
 		},
-	})
+	}
 
-	Object.assign(stateToken, { counterfeit: true })
+	if (counterfeit) {
+		stateToken.counterfeit = true
+	}
+
 	return stateToken
 }

@@ -3,7 +3,7 @@ import { type Canonical, parseJson } from "atom.io/json"
 
 import { seekInStore } from "../families"
 import { getFamilyOfToken } from "../families/get-family-of-token"
-import { mintInStore } from "../families/mint-in-store"
+import { mintInStore, MUST_CREATE } from "../families/mint-in-store"
 import type { OpenOperation } from "../operation"
 import { closeOperation, openOperation } from "../operation"
 import { type Store, withdraw } from "../store"
@@ -12,9 +12,12 @@ import { resetAtomOrSelector } from "./reset-atom-or-selector"
 import { RESET_STATE } from "./reset-in-store"
 import { setAtomOrSelector } from "./set-atom-or-selector"
 
+export const OWN_OP: unique symbol = Symbol(`OWN_OP`)
+export const JOIN_OP: unique symbol = Symbol(`JOIN_OP`)
+
 export function operateOnStore<T, New extends T>(
 	store: Store,
-	ownOp: boolean,
+	opMode: typeof JOIN_OP | typeof OWN_OP,
 	...params:
 		| [
 				token: WritableFamilyToken<T, Canonical>,
@@ -35,13 +38,12 @@ export function operateOnStore<T, New extends T>(
 	if (params.length === 2) {
 		token = params[0]
 		value = params[1]
-		if (token.family) {
-			// biome-ignore lint/style/noNonNullAssertion: this token belongs to a family
-			family = getFamilyOfToken(store, token)!
+		if (`family` in token) {
+			family = getFamilyOfToken(store, token)
 			key = parseJson(token.family.subKey)
 			existingToken = seekInStore(store, family, key)
 			if (!existingToken) {
-				brandNewToken = mintInStore(store, family, key)
+				brandNewToken = mintInStore(store, family, key, MUST_CREATE)
 				token = brandNewToken
 			} else {
 				token = existingToken
@@ -53,7 +55,7 @@ export function operateOnStore<T, New extends T>(
 		value = params[2]
 		existingToken = seekInStore(store, family, key)
 		if (!existingToken) {
-			brandNewToken = mintInStore(store, family, key)
+			brandNewToken = mintInStore(store, family, key, MUST_CREATE)
 			token = brandNewToken
 		} else {
 			token = existingToken
@@ -64,7 +66,7 @@ export function operateOnStore<T, New extends T>(
 
 	let target: Store & { operation: OpenOperation }
 
-	if (ownOp) {
+	if (opMode === OWN_OP) {
 		const result = openOperation(store, token)
 		const rejected = typeof result === `number`
 		if (rejected) {
@@ -81,7 +83,7 @@ export function operateOnStore<T, New extends T>(
 						action,
 						`from T-${rejectionTime}`,
 					)
-					operateOnStore(store, ownOp, token, value)
+					operateOnStore(store, opMode, token, value)
 				},
 			)
 			return
@@ -102,10 +104,12 @@ export function operateOnStore<T, New extends T>(
 			token.key,
 			`could not be`,
 			action,
-			`because it was not found in the store "${store.config.name}".`,
+			`because key`,
+			subKey,
+			`is not allocated.`,
 			disposal
-				? `This state was previously disposed:\n${disposal.trace}`
-				: `No previous disposal trace was found.`,
+				? `this key was previously disposed:${disposal.trace}`
+				: `(no previous disposal trace found)`,
 		)
 		return
 	}
@@ -120,7 +124,7 @@ export function operateOnStore<T, New extends T>(
 	const isNewlyCreated = Boolean(brandNewToken)
 	dispatchOrDeferStateUpdate(target, state, protoUpdate, isNewlyCreated)
 
-	if (ownOp) {
+	if (opMode === OWN_OP) {
 		closeOperation(target)
 	}
 }

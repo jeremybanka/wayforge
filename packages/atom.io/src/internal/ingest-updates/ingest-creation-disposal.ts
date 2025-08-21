@@ -8,7 +8,8 @@ import type {
 } from "atom.io"
 import { parseJson, stringifyJson } from "atom.io/json"
 
-import { disposeFromStore, findInStore } from "../families"
+import { disposeFromStore } from "../families"
+import { mintInStore, MUST_CREATE } from "../families/mint-in-store"
 import {
 	allocateIntoStore,
 	claimWithinStore,
@@ -61,7 +62,7 @@ function createInStore(
 	if (familyMeta) {
 		const family = store.families.get(familyMeta.key)
 		if (family) {
-			findInStore(store, family, parseJson(familyMeta.subKey))
+			mintInStore(store, family, parseJson(familyMeta.subKey), MUST_CREATE)
 		}
 	}
 }
@@ -98,7 +99,7 @@ export function ingestMoleculeDisposalEvent(
 				for (const [familyKey, value] of update.values) {
 					const family = store.families.get(familyKey)
 					if (family) {
-						findInStore(store, family, update.key)
+						mintInStore(store, family, update.key, MUST_CREATE)
 						const memberKey = `${familyKey}(${stringifyJson(update.key)})`
 						store.valueMap.set(memberKey, value)
 					}
