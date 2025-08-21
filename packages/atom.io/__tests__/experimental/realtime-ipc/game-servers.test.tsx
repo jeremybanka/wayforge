@@ -1,5 +1,5 @@
 import { act } from "@testing-library/react"
-import { getFromStore } from "atom.io/internal"
+import { findInStore, getFromStore } from "atom.io/internal"
 import { roomSelectors } from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 
@@ -53,11 +53,12 @@ describe(`multi-process realtime server`, () => {
 		})
 		await app.renderResult.findByTestId(`join-room-1`)
 
-		const roomSocket = await getFromStore(
+		const roomSocketState = findInStore(
 			server.silo.store,
 			roomSelectors,
 			`room-1`,
 		)
+		const roomSocket = await getFromStore(server.silo.store, roomSocketState)
 
 		await teardown()
 
