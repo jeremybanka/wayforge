@@ -1,5 +1,11 @@
 # varmint
 
+## 0.5.4
+
+### Patch Changes
+
+- 3559c8a: ✨ Squirrel adds special-case support for functions that return `Promise<Error>`. Previously, only JSON values could be safely cached by Squirrel.
+
 ## 0.5.3
 
 ### Patch Changes
