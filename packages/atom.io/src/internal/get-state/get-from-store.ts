@@ -4,7 +4,7 @@ import type { Canonical } from "atom.io/json"
 import { type Store, withdraw } from "../store"
 import { getFallback } from "./get-fallback"
 import { readOrComputeValue } from "./read-or-compute-value"
-import { toStateToken } from "./to-state-token"
+import { reduceReference } from "./reduce-reference"
 
 export function getFromStore<T>(store: Store, token: ReadableToken<T>): T
 
@@ -20,9 +20,10 @@ export function getFromStore(
 		| [token: ReadableFamilyToken<any, any>, key: Canonical]
 		| [token: ReadableToken<any>]
 ): any {
-	const { token, family, subKey } = toStateToken(store, ...params)
+	const { token, familyToken, subKey } = reduceReference(store, ...params)
 
-	if (`counterfeit` in token && family && subKey) {
+	if (`counterfeit` in token && familyToken && subKey) {
+	  const family = withdraw(store, familyToken)
 		return getFallback(store, token, family, subKey)
 	}
 	const state = withdraw(store, token)

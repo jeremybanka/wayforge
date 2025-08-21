@@ -12,7 +12,7 @@ import type { Canonical } from "atom.io/json"
 import { findInStore } from "../families"
 import { getFallback } from "../get-state/get-fallback"
 import { readOrComputeValue } from "../get-state/read-or-compute-value"
-import { toStateToken } from "../get-state/to-state-token"
+import { reduceReference } from "../get-state/reduce-reference"
 import { newest } from "../lineage"
 import { getJsonToken } from "../mutable"
 import { operateOnStore } from "../set-state/operate-on-store"
@@ -37,12 +37,13 @@ export function registerSelector(
 				| [ReadableToken<any>]
 		) => {
 			const target = newest(store)
-			const { token, family, subKey } = toStateToken(store, ...params)
+			const { token, familyToken, subKey } = reduceReference(store, ...params)
 			const dependency = withdraw(store, token)
 			const dependencyKey = dependency.key
 			let dependencyValue: unknown
-			if (`counterfeit` in token && family && subKey) {
-				dependencyValue = getFallback(store, token, family, subKey)
+			if (`counterfeit` in token && familyToken && subKey) {
+				const dependencyFamily = withdraw(store, familyToken)
+				dependencyValue = getFallback(store, token, dependencyFamily, subKey)
 			} else {
 				dependencyValue = readOrComputeValue(store, dependency)
 			}
