@@ -1,5 +1,5 @@
 import type { ReadableToken } from "atom.io"
-import type { Canonical } from "atom.io/json"
+import { type Canonical, stringifyJson } from "atom.io/json"
 
 import type { ReadableFamily } from ".."
 import type { Store } from "../store"
@@ -11,7 +11,7 @@ export function getFallback<T, K extends Canonical>(
 	subKey: K,
 ): T {
 	const disposal = store.disposalTraces.buffer.find(
-		(item) => item?.key === subKey,
+		(item) => item?.key === stringifyJson(subKey),
 	)
 	store.logger.error(
 		`❌`,

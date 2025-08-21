@@ -32,7 +32,7 @@ beforeEach(() => {
 	clearStore(IMPLICIT.STORE)
 	IMPLICIT.STORE.config.lifespan = `immortal`
 	IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = IMPLICIT.STORE.logger = Utils.createNullLogger()
+	logger = IMPLICIT.STORE.logger //= Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -311,6 +311,33 @@ describe(`errors`, () => {
 
 			const name = getState(nameAtoms, `example`)
 			expect(name).toBe(`example`)
+		})
+		test(`test disposed fallback from selector get`, () => {
+			type Point = { x: number; y: number }
+			const pointAtoms = atomFamily<Point, number>({
+				key: `point`,
+				default: { x: 0, y: 0 },
+			})
+
+			const edgeLengthSelectors = selectorFamily<number, [number, number]>({
+				key: `edgeLength`,
+				get:
+					([a, b]) =>
+					({ get }) => {
+						const aPoint = get(pointAtoms, a)
+						const bPoint = get(pointAtoms, b)
+						return Math.hypot(bPoint.x - aPoint.x, bPoint.y - aPoint.y)
+					},
+			})
+
+			const anarchy = new Anarchy()
+
+			anarchy.allocate(`root`, 1)
+			anarchy.allocate(`root`, 2)
+			anarchy.allocate(`root`, [1, 2])
+
+			anarchy.deallocate(2)
+			getState(edgeLengthSelectors, [1, 2])
 		})
 	})
 })

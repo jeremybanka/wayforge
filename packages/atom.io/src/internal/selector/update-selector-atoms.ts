@@ -1,4 +1,4 @@
-import type { ReadonlyPureSelectorToken, WritableToken } from "atom.io"
+import type { ReadableToken } from "atom.io"
 
 import { newest } from "../lineage"
 import type { Store } from "../store"
@@ -12,7 +12,7 @@ export function updateSelectorAtoms(
 		| `writable_held_selector`
 		| `writable_pure_selector`,
 	selectorKey: string,
-	dependency: ReadonlyPureSelectorToken<unknown> | WritableToken<unknown>,
+	dependency: ReadableToken<unknown>,
 	covered: Set<string>,
 ): void {
 	const target = newest(store)

@@ -12,43 +12,31 @@ import type { Store } from "../store"
 import { COUNTERFEIT, mint } from "../store"
 import { isChildStore, isRootStore } from "../transaction"
 import { initFamilyMemberInStore } from "./init-family-member"
-import { seekInStore } from "./seek-in-store"
 
 export const MUST_CREATE: unique symbol = Symbol(`MUST_NOT_EXIST`)
-const MAY_CREATE: unique symbol = Symbol(`MAY_CREATE`)
 
 export function mintInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	familyToken: WritableFamilyToken<T, K>,
 	key: Key,
-	init?: typeof MAY_CREATE | typeof MUST_CREATE,
+	init?: typeof MUST_CREATE,
 ): WritableToken<T, K>
 export function mintInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	familyToken: ReadableFamilyToken<T, K>,
 	key: Key,
-	init?: typeof MAY_CREATE | typeof MUST_CREATE,
+	init?: typeof MUST_CREATE,
 ): ReadableToken<T, K>
 export function mintInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	familyToken: ReadableFamilyToken<T, K>,
 	key: Key,
-	shouldCreate?: typeof MAY_CREATE | typeof MUST_CREATE,
+	shouldCreate?: typeof MUST_CREATE,
 ): ReadableToken<T, K> {
-	let existingStateToken: ReadableToken<T, K> | undefined
 	let stateToken: ReadableToken<T, K>
 
 	let willCreate: boolean
 	switch (shouldCreate) {
-		case MAY_CREATE:
-			existingStateToken = seekInStore(store, familyToken, key)
-			if (existingStateToken) {
-				stateToken = existingStateToken
-				willCreate = false
-			} else {
-				willCreate = true
-			}
-			break
 		case MUST_CREATE:
 			willCreate = true
 			break
