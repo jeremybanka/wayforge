@@ -17,7 +17,7 @@ export const JOIN_OP: unique symbol = Symbol(`JOIN_OP`)
 
 export function operateOnStore<T, New extends T>(
 	store: Store,
-	ownOp: typeof JOIN_OP | typeof OWN_OP,
+	opMode: typeof JOIN_OP | typeof OWN_OP,
 	...params:
 		| [
 				token: WritableFamilyToken<T, Canonical>,
@@ -66,7 +66,7 @@ export function operateOnStore<T, New extends T>(
 
 	let target: Store & { operation: OpenOperation }
 
-	if (ownOp === OWN_OP) {
+	if (opMode === OWN_OP) {
 		const result = openOperation(store, token)
 		const rejected = typeof result === `number`
 		if (rejected) {
@@ -83,7 +83,7 @@ export function operateOnStore<T, New extends T>(
 						action,
 						`from T-${rejectionTime}`,
 					)
-					operateOnStore(store, ownOp, token, value)
+					operateOnStore(store, opMode, token, value)
 				},
 			)
 			return
@@ -124,7 +124,7 @@ export function operateOnStore<T, New extends T>(
 	const isNewlyCreated = Boolean(brandNewToken)
 	dispatchOrDeferStateUpdate(target, state, protoUpdate, isNewlyCreated)
 
-	if (ownOp === OWN_OP) {
+	if (opMode === OWN_OP) {
 		closeOperation(target)
 	}
 }
