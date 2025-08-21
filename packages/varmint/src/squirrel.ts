@@ -6,6 +6,7 @@ import { closest } from "fastest-levenshtein"
 
 import type { CacheMode } from "./cache-mode.ts"
 import { prettyPrintDiffInline } from "./colors.ts"
+import { parseError, stringifyError } from "./error-interface.ts"
 import { sanitizeFilename } from "./sanitize-filename.ts"
 import {
 	SPECIAL_BREAK_SEQ as SBS,
@@ -156,7 +157,12 @@ export class Squirrel {
 			this.baseDir,
 			`${key}/${subKey}.output.json`,
 		)
-		return JSON.parse(fs.readFileSync(pathToOutputFile, `utf-8`))
+		const fileText = fs.readFileSync(pathToOutputFile, `utf-8`)
+		const errorParsed = parseError(fileText)
+		if (errorParsed !== undefined) {
+			return errorParsed as Awaited<ReturnType<F>>
+		}
+		return JSON.parse(fileText)
 	}
 
 	private async write<I extends any[], O>(
@@ -180,7 +186,12 @@ export class Squirrel {
 			fs.unlinkSync(pathToOutputFile)
 		}
 		const output = await get(...args)
-		const outputStringified = JSON.stringify(output, null, `\t`)
+		let outputStringified: string
+		if (output instanceof Error) {
+			outputStringified = stringifyError(output)
+		} else {
+			outputStringified = JSON.stringify(output, null, `\t`)
+		}
 		fs.writeFileSync(pathToOutputFile, outputStringified)
 		return output
 	}
