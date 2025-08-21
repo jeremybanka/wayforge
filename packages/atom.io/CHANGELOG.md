@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.38.0
+
+### Minor Changes
+
+- eb7f647: 🚀 With this update, atom.io no longer eagerly creates states when `find()`, `findState()`, or `findInStore()` is called. Only getting or setting a state can create it now.
+
 ## 0.37.1
 
 ### Patch Changes
