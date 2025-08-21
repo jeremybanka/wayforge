@@ -23,7 +23,7 @@ export function getFromStore(
 	const { token, familyToken, subKey } = reduceReference(store, ...params)
 
 	if (`counterfeit` in token && familyToken && subKey) {
-	  const family = withdraw(store, familyToken)
+		const family = withdraw(store, familyToken)
 		return getFallback(store, token, family, subKey)
 	}
 	const state = withdraw(store, token)
