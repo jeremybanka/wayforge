@@ -30,6 +30,14 @@ export function reduceReference<T, K extends Canonical>(
 			withdraw(store, familyToken)
 			subKey = parseJson(token.family.subKey)
 			existingToken = seekInStore(store, familyToken, subKey)
+			if (`counterfeit` in token) {
+				return {
+					token,
+					familyToken,
+					subKey,
+					isNew: false,
+				}
+			}
 			if (!existingToken) {
 				brandNewToken = mintInStore(store, familyToken, subKey, MUST_CREATE)
 				token = brandNewToken
