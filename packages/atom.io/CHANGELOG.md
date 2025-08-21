@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.38.1
+
+### Patch Changes
+
+- 61c21d8: 🏷️ Improved the inference types for `parseJson` in `atom.io/json`.
+
 ## 0.38.0
 
 ### Minor Changes
