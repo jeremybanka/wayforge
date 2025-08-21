@@ -32,7 +32,7 @@ beforeEach(() => {
 	clearStore(IMPLICIT.STORE)
 	IMPLICIT.STORE.config.lifespan = `immortal`
 	IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = IMPLICIT.STORE.logger //= Utils.createNullLogger()
+	logger = IMPLICIT.STORE.logger = Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
