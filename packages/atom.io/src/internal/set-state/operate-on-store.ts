@@ -12,9 +12,12 @@ import { resetAtomOrSelector } from "./reset-atom-or-selector"
 import { RESET_STATE } from "./reset-in-store"
 import { setAtomOrSelector } from "./set-atom-or-selector"
 
+export const OWN_OP: unique symbol = Symbol(`OWN_OP`)
+export const JOIN_OP: unique symbol = Symbol(`JOIN_OP`)
+
 export function operateOnStore<T, New extends T>(
 	store: Store,
-	ownOp: boolean,
+	ownOp: typeof JOIN_OP | typeof OWN_OP,
 	...params:
 		| [
 				token: WritableFamilyToken<T, Canonical>,
@@ -63,7 +66,7 @@ export function operateOnStore<T, New extends T>(
 
 	let target: Store & { operation: OpenOperation }
 
-	if (ownOp) {
+	if (ownOp === OWN_OP) {
 		const result = openOperation(store, token)
 		const rejected = typeof result === `number`
 		if (rejected) {
@@ -121,7 +124,7 @@ export function operateOnStore<T, New extends T>(
 	const isNewlyCreated = Boolean(brandNewToken)
 	dispatchOrDeferStateUpdate(target, state, protoUpdate, isNewlyCreated)
 
-	if (ownOp) {
+	if (ownOp === OWN_OP) {
 		closeOperation(target)
 	}
 }
