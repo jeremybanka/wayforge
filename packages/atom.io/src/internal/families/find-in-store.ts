@@ -19,9 +19,14 @@ import type {
 import type { Canonical } from "atom.io/json"
 
 import type { Transceiver } from "../mutable"
-import type { Store } from "../store"
+import { type Store, withdraw } from "../store"
 import { mintInStore } from "./mint-in-store"
 import { seekInStore } from "./seek-in-store"
+
+// seek [token 🟧] [inits ⬛]
+// find [token ✅] [inits ⬛]
+// mint [token ✅] [inits 🟧]
+// init [token ✅] [inits ✅]
 
 export function findInStore<
 	T extends Transceiver<any, any, any>,
@@ -80,6 +85,7 @@ export function findInStore(
 	familyToken: ReadableFamilyToken<any, any>,
 	key: Canonical,
 ): ReadableToken<any> {
+	withdraw(store, familyToken)
 	const existingStateToken = seekInStore(store, familyToken, key)
 	if (existingStateToken) {
 		return existingStateToken

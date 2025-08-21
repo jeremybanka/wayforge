@@ -8,10 +8,12 @@ const LOGGER_ICON_DICTIONARY = {
 	"⏹️": `Time-travel complete`,
 	"✅": `Realtime transaction success`,
 	"✨": `Computation complete`,
+	"💣": `Dangerous action likely to cause bad errors`,
+	"❗": `Dangerous action unless in development mode`,
 	"❌": `Conflict prevents attempted action`,
 	"⭕": `Operation start`,
 	"🔴": `Operation complete`,
-	"❗": `Operation blocked`,
+	"🚫": `Operation blocked`,
 	"🟢": `Operation unblocked`,
 	"🐞": `Possible bug in AtomIO`,
 	"👀": `Subscription added`,
@@ -55,8 +57,7 @@ export type TokenDenomination =
 	| `atom_family`
 	| `atom`
 	| `continuity`
-	| `molecule_family`
-	| `molecule`
+	| `key`
 	| `mutable_atom_family`
 	| `mutable_atom`
 	| `readonly_held_selector_family`
@@ -71,6 +72,27 @@ export type TokenDenomination =
 	| `writable_held_selector`
 	| `writable_pure_selector_family`
 	| `writable_pure_selector`
+
+export const PRETTY_TOKEN_TYPES: Record<TokenDenomination, string> = {
+	atom_family: `atom family`,
+	atom: `atom`,
+	continuity: `continuity`,
+	key: `key`,
+	mutable_atom_family: `atom family [m]`,
+	mutable_atom: `atom [m]`,
+	readonly_held_selector_family: `selector family [h]`,
+	readonly_held_selector: `selector [h]`,
+	readonly_pure_selector_family: `selector family`,
+	readonly_pure_selector: `selector`,
+	state: `state`,
+	timeline: `timeline`,
+	transaction: `transaction`,
+	unknown: `unknown`,
+	writable_held_selector_family: `selector family [wh]`,
+	writable_held_selector: `selector [wh]`,
+	writable_pure_selector_family: `selector family [w]`,
+	writable_pure_selector: `selector [w]`,
+}
 
 export const LOG_LEVELS = [`info`, `warn`, `error`] as const
 export type LogLevel = (typeof LOG_LEVELS)[number]
@@ -93,7 +115,7 @@ export const simpleLog =
 	(icon, denomination, tokenKey, message, ...rest) => {
 		/* eslint-disable-next-line no-console */
 		console[logLevel](
-			`${icon} ${denomination} "${tokenKey}" ${message}`,
+			`${icon} ${PRETTY_TOKEN_TYPES[denomination]} \`${tokenKey}\` ${message}`,
 			...rest,
 		)
 	}

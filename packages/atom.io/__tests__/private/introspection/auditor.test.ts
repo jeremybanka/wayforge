@@ -19,7 +19,7 @@ describe(`Auditor unit tests`, () => {
 			key: `count`,
 			default: 0,
 		})
-		findState(countAtoms, `foo`)
+		getState(countAtoms, `foo`)
 		const resources = auditor.listResources()
 		expect(resources.length).toBe(1)
 		expect(resources[0][0].key).toEqual(`count("foo")`)
@@ -30,7 +30,7 @@ describe(`Auditor unit tests`, () => {
 			key: `count`,
 			get: () => () => 0,
 		})
-		findState(countSelectors, `bar`)
+		getState(countSelectors, `bar`)
 		const resources = auditor.listResources()
 		expect(resources.length).toBe(1)
 		expect(resources[0][0].key).toEqual(`count("bar")`)
@@ -54,10 +54,10 @@ describe(`Auditor practical tests`, () => {
 		const auditor = new Auditor()
 		findState(doubleSelectors, `bar`)
 		let resources = auditor.listResources()
-		expect(resources.length).toBe(2) // selectors weren't evaluated, so atoms weren't created
+		expect(resources.length).toBe(0) // selectors weren't evaluated, so atoms weren't created
 		getState(doubleSelectors, `bar`)
 		resources = auditor.listResources()
-		expect(resources.length).toBe(3)
+		expect(resources.length).toBe(2)
 		for (const [token] of resources) {
 			disposeState(token)
 		}

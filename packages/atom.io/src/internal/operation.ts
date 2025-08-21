@@ -23,7 +23,7 @@ export function openOperation(
 	if (store.operation.open) {
 		const rejectionTime = performance.now()
 		store.logger.info(
-			`❗`,
+			`🚫`,
 			token.type,
 			token.key,
 			`deferring setState at T-${rejectionTime} until setState for "${store.operation.token.key}" is done`,

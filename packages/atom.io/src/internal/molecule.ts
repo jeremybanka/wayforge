@@ -97,7 +97,7 @@ export function allocateIntoStore<
 		)
 		store.logger.error(
 			`❌`,
-			`molecule`,
+			`key`,
 			key,
 			`allocation failed:`,
 			`Could not allocate to ${claim} in store "${store.config.name}".`,
@@ -147,7 +147,7 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 		)
 		store.logger.error(
 			`❌`,
-			`molecule`,
+			`key`,
 			claim,
 			`deallocation failed:`,
 			`Could not find allocation for ${stringKey} in store "${store.config.name}".`,
@@ -244,8 +244,8 @@ export function claimWithinStore<
 		)
 		store.logger.error(
 			`❌`,
-			`molecule`,
-			claim,
+			`key`,
+			stringKey,
 			`claim failed:`,
 			`Could not allocate to ${stringKey} in store "${store.config.name}".`,
 			disposal
@@ -263,7 +263,7 @@ export function claimWithinStore<
 		)
 		store.logger.error(
 			`❌`,
-			`molecule`,
+			`key`,
 			claim,
 			`claim failed:`,
 			`Could not allocate to ${newProvenanceKey} in store "${store.config.name}".`,

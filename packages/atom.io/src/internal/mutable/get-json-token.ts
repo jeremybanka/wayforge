@@ -3,6 +3,7 @@ import type {
 	WritablePureSelectorFamilyToken,
 	WritablePureSelectorToken,
 } from "atom.io"
+import { parseJson } from "atom.io/json"
 
 import { findInStore } from "../families"
 import { newest } from "../lineage"
@@ -21,7 +22,7 @@ export const getJsonToken = <T extends Transceiver<any, any, any>>(
 			type: `writable_pure_selector_family`,
 		}
 		const family = withdraw(target, jsonFamilyToken)
-		const subKey = JSON.parse(mutableAtomToken.family.subKey)
+		const subKey = parseJson(mutableAtomToken.family.subKey)
 		const jsonToken = findInStore(store, family, subKey)
 		return jsonToken
 	}

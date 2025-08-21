@@ -5,11 +5,11 @@ import type {
 	ReadonlyHeldSelectorToken,
 	StateLifecycleEvent,
 } from "atom.io"
+import { PRETTY_TOKEN_TYPES } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import type { ReadonlyHeldSelectorFamily } from ".."
-import { prettyPrintTokenType } from ".."
 import { newest } from "../lineage"
 import { createReadonlyHeldSelector } from "../selector"
 import type { Store } from "../store"
@@ -37,9 +37,7 @@ export function createReadonlyHeldSelectorFamily<
 			`❗`,
 			type,
 			familyKey,
-			`Overwriting an existing ${prettyPrintTokenType(
-				existing,
-			)} "${existing.key}" in store "${store.config.name}". You can safely ignore this warning if it is due to hot module replacement.`,
+			`Overwriting an existing ${PRETTY_TOKEN_TYPES[existing.type]} "${existing.key}" in store "${store.config.name}". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
 	}
 
