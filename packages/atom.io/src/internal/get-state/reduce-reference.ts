@@ -1,21 +1,20 @@
 import type { ReadableFamilyToken, ReadableToken } from "atom.io"
 import { type Canonical, parseJson } from "atom.io/json"
 
-import type { ReadableFamily } from ".."
 import { seekInStore } from "../families"
 import { getFamilyOfToken } from "../families/get-family-of-token"
 import { mintInStore, MUST_CREATE } from "../families/mint-in-store"
 import type { Store } from "../store"
 import { withdraw } from "../store"
 
-export function toStateToken<T, K extends Canonical>(
+export function reduceReference<T, K extends Canonical>(
 	store: Store,
 	...params:
 		| [token: ReadableFamilyToken<T, K>, key: K]
 		| [token: ReadableToken<T>]
 ): {
 	token: ReadableToken<T>
-	family: ReadableFamily<T, K> | undefined
+	familyToken: ReadableFamilyToken<T, K> | undefined
 	subKey: K | undefined
 	isNew: boolean
 } {
@@ -52,7 +51,7 @@ export function toStateToken<T, K extends Canonical>(
 
 	return {
 		token,
-		family: familyToken ? withdraw(store, familyToken) : undefined,
+		familyToken,
 		subKey,
 		isNew: Boolean(brandNewToken),
 	}
