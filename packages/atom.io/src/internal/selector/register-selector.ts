@@ -38,13 +38,12 @@ export function registerSelector(
 		) => {
 			const target = newest(store)
 			const { token, familyToken, subKey } = reduceReference(store, ...params)
-			const dependency = withdraw(store, token)
-			const dependencyKey = dependency.key
 			let dependencyValue: unknown
 			if (`counterfeit` in token && familyToken && subKey) {
 				const dependencyFamily = withdraw(store, familyToken)
 				dependencyValue = getFallback(store, token, dependencyFamily, subKey)
 			} else {
+				const dependency = withdraw(store, token)
 				dependencyValue = readOrComputeValue(store, dependency)
 			}
 
@@ -52,27 +51,21 @@ export function registerSelector(
 				`🔌`,
 				selectorType,
 				selectorKey,
-				`registers dependency ( "${dependencyKey}" =`,
+				`registers dependency ( "${token.key}" =`,
 				dependencyValue,
 				`)`,
 			)
 
 			target.selectorGraph.set(
 				{
-					upstreamSelectorKey: dependencyKey,
+					upstreamSelectorKey: token.key,
 					downstreamSelectorKey: selectorKey,
 				},
 				{
-					source: dependency.key,
+					source: token.key,
 				},
 			)
-			updateSelectorAtoms(
-				store,
-				selectorType,
-				selectorKey,
-				dependency as any,
-				covered,
-			)
+			updateSelectorAtoms(store, selectorType, selectorKey, token, covered)
 			return dependencyValue
 		},
 		set: (<T, K extends Canonical, New extends T, Key extends K>(

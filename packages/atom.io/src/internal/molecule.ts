@@ -245,7 +245,7 @@ export function claimWithinStore<
 		store.logger.error(
 			`❌`,
 			`key`,
-			claim,
+			stringKey,
 			`claim failed:`,
 			`Could not allocate to ${stringKey} in store "${store.config.name}".`,
 			disposal
