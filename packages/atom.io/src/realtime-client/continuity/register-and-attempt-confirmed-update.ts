@@ -3,7 +3,7 @@ import type { Fn, Store } from "atom.io/internal"
 import {
 	actUponStore,
 	getEpochNumberOfContinuity,
-	ingestTransactionUpdate,
+	ingestTransactionOutcomeEvent,
 	isRootStore,
 	setEpochNumberOfContinuity,
 	setIntoStore,
@@ -79,7 +79,7 @@ export const useRegisterAndAttemptConfirmedUpdate =
 			)
 			const reversedOptimisticUpdates = optimisticUpdates.toReversed()
 			for (const subsequentOptimistic of reversedOptimisticUpdates) {
-				ingestTransactionUpdate(`oldValue`, subsequentOptimistic, store)
+				ingestTransactionOutcomeEvent(store, subsequentOptimistic, `oldValue`)
 			}
 			store.logger.info(
 				`⏪`,
@@ -88,7 +88,7 @@ export const useRegisterAndAttemptConfirmedUpdate =
 				`undid optimistic updates:`,
 				reversedOptimisticUpdates,
 			)
-			ingestTransactionUpdate(`oldValue`, optimisticUpdate, store)
+			ingestTransactionOutcomeEvent(store, optimisticUpdate, `oldValue`)
 			store.logger.info(
 				`⏪`,
 				`continuity`,
@@ -96,7 +96,7 @@ export const useRegisterAndAttemptConfirmedUpdate =
 				`undid zeroth optimistic update`,
 				optimisticUpdate,
 			)
-			ingestTransactionUpdate(`newValue`, confirmedUpdate, store)
+			ingestTransactionOutcomeEvent(store, confirmedUpdate, `newValue`)
 			store.logger.info(
 				`⏩`,
 				`continuity`,
@@ -200,7 +200,7 @@ export const useRegisterAndAttemptConfirmedUpdate =
 					continuityKey,
 					`integrating update #${confirmed.epoch} (${confirmed.token.key} ${confirmed.id})`,
 				)
-				ingestTransactionUpdate(`newValue`, confirmed, store)
+				ingestTransactionOutcomeEvent(store, confirmed, `newValue`)
 				socket.emit(`ack:${continuityKey}`, confirmed.epoch)
 				setEpochNumberOfContinuity(store, continuityKey, confirmed.epoch)
 			} else if (isRoot && continuityEpoch !== undefined) {
