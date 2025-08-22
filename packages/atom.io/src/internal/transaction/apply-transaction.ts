@@ -1,4 +1,4 @@
-import { ingestTransactionOutcomeEvent } from "../ingest-updates"
+import { ingestTransactionOutcomeEvent } from "../events"
 import { newest } from "../lineage"
 import type { Store } from "../store"
 import { withdraw } from "../store"
