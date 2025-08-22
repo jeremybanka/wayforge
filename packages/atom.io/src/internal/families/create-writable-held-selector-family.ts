@@ -61,7 +61,7 @@ export function createWritableHeldSelectorFamily<
 			family,
 		)
 
-		subject.next({ type: `state_creation`, token, timestamp: Date.now() })
+		// subject.next({ type: `state_creation`, token, timestamp: Date.now() })
 		return token
 	}
 

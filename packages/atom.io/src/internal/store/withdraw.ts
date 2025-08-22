@@ -173,12 +173,12 @@ export function withdraw<T, K extends Canonical>(
 ): SelectorFamily<T, K>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
-	token: ReadableFamilyToken<T, K>,
-): ReadableFamily<T, K>
-export function withdraw<T, K extends Canonical>(
-	store: Store,
 	token: WritableFamilyToken<T, K>,
 ): WritableFamily<T, K>
+export function withdraw<T, K extends Canonical>(
+	store: Store,
+	token: ReadableFamilyToken<T, K>,
+): ReadableFamily<T, K>
 
 export function withdraw<T extends Fn>(
 	store: Store,

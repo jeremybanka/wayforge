@@ -1,6 +1,7 @@
 import type { WritableFamilyToken, WritableToken } from "atom.io"
 import { type Canonical, parseJson } from "atom.io/json"
 
+import type { WritableFamily } from ".."
 import { seekInStore } from "../families"
 import { getFamilyOfToken } from "../families/get-family-of-token"
 import { mintInStore, MUST_CREATE } from "../families/mint-in-store"
@@ -15,13 +16,13 @@ import { setAtomOrSelector } from "./set-atom-or-selector"
 export const OWN_OP: unique symbol = Symbol(`OWN_OP`)
 export const JOIN_OP: unique symbol = Symbol(`JOIN_OP`)
 
-export function operateOnStore<T, New extends T>(
+export function operateOnStore<T, New extends T, K extends Canonical>(
 	store: Store,
 	opMode: typeof JOIN_OP | typeof OWN_OP,
 	...params:
 		| [
-				token: WritableFamilyToken<T, Canonical>,
-				key: Canonical,
+				token: WritableFamilyToken<T, K>,
+				key: K,
 				value: New | typeof RESET_STATE | ((oldValue: T) => New),
 		  ]
 		| [
@@ -29,11 +30,11 @@ export function operateOnStore<T, New extends T>(
 				value: New | typeof RESET_STATE | ((oldValue: T) => New),
 		  ]
 ): void {
-	let existingToken: WritableToken<T> | undefined
-	let brandNewToken: WritableToken<T> | undefined
-	let token: WritableToken<T>
-	let family: WritableFamilyToken<T, Canonical> | null
-	let key: Canonical | null
+	let existingToken: WritableToken<T, K> | undefined
+	let brandNewToken: WritableToken<T, K> | undefined
+	let token: WritableToken<T, K>
+	let family: WritableFamily<T, K> | null
+	let key: K | null
 	let value: New | typeof RESET_STATE | ((oldValue: T) => New)
 	if (params.length === 2) {
 		token = params[0]
@@ -50,7 +51,7 @@ export function operateOnStore<T, New extends T>(
 			}
 		}
 	} else {
-		family = params[0]
+		family = withdraw(store, params[0])
 		key = params[1]
 		value = params[2]
 		existingToken = seekInStore(store, family, key)
