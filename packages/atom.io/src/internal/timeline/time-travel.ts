@@ -6,7 +6,7 @@ import {
 	ingestDisposalEvent,
 	ingestSelectorUpdateEvent,
 	ingestTransactionOutcomeEvent,
-} from "../ingest-updates"
+} from "../events"
 import type { Store } from "../store"
 
 export const timeTravel = (
