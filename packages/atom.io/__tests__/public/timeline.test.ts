@@ -1,3 +1,5 @@
+import { inspect } from "node:util"
+
 import type { Logger, WritableToken } from "atom.io"
 import {
 	atom,
@@ -14,20 +16,20 @@ import {
 	transaction,
 	undo,
 } from "atom.io"
-import * as Internal from "atom.io/internal"
+import * as I from "atom.io/internal"
 import { vitest } from "vitest"
 
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 2
+const CHOOSE = 3
 
 let logger: Logger
 
 beforeEach(() => {
-	Internal.clearStore(Internal.IMPLICIT.STORE)
-	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = Internal.IMPLICIT.STORE.logger = Utils.createNullLogger()
+	I.clearStore(I.IMPLICIT.STORE)
+	I.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
+	logger = I.IMPLICIT.STORE.logger //= Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -127,7 +129,7 @@ describe(`timeline`, () => {
 		undo(tl_abc)
 		expectation0()
 
-		const timelineData = Internal.IMPLICIT.STORE.timelines.get(tl_abc.key)
+		const timelineData = I.IMPLICIT.STORE.timelines.get(tl_abc.key)
 
 		if (!timelineData) throw new Error(`timeline data not found`)
 
@@ -241,7 +243,7 @@ describe(`timeline`, () => {
 		setState(nameCapitalizedState, `JON`)
 		runTransaction(setName)(`Sylvia`)
 
-		const timelineData = Internal.IMPLICIT.STORE.timelines.get(nameHistory.key)
+		const timelineData = I.IMPLICIT.STORE.timelines.get(nameHistory.key)
 
 		if (!timelineData) throw new Error(`timeline data not found`)
 
@@ -298,7 +300,7 @@ describe(`timeline`, () => {
 			shouldCapture: (event) => {
 				if (event.type === `atom_update`) {
 					const atomKey = event.token.key
-					const atomActual = Internal.IMPLICIT.STORE.atoms.get(atomKey)
+					const atomActual = I.IMPLICIT.STORE.atoms.get(atomKey)
 					if (atomActual) {
 						switch (atomActual.type) {
 							case `atom`:
@@ -319,13 +321,13 @@ describe(`timeline`, () => {
 		expect(getState(count)).toBe(1)
 		undo(countTL)
 		expect(getState(count)).toBe(1)
-		expect(Internal.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(0)
+		expect(I.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(0)
 		setState(count, 2)
 		expect(getState(count)).toBe(2)
-		expect(Internal.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(1)
+		expect(I.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(1)
 		undo(countTL)
 		expect(getState(count)).toBe(1)
-		expect(Internal.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(0)
+		expect(I.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(0)
 	})
 })
 
@@ -346,13 +348,11 @@ describe(`timeline state lifecycle`, () => {
 		undo(countsTL)
 		undo(countsTL)
 		undo(countsTL)
-		expect(
-			Internal.seekInStore(Internal.IMPLICIT.STORE, countStates, `my-key`),
-		).toBe(undefined)
+		expect(I.seekInStore(I.IMPLICIT.STORE, countStates, `my-key`)).toBe(
+			undefined,
+		)
 		redo(countsTL)
-		expect(
-			Internal.seekInStore(Internal.IMPLICIT.STORE, countStates, `my-key`),
-		).toEqual({
+		expect(I.seekInStore(I.IMPLICIT.STORE, countStates, `my-key`)).toEqual({
 			family: {
 				key: `count`,
 				subKey: `"my-key"`,
@@ -369,5 +369,44 @@ describe(`errors`, () => {
 	test(`what if the timeline isn't initialized`, () => {
 		undo({ key: `my-timeline`, type: `timeline` })
 		expect(logger.error).toHaveBeenCalledTimes(1)
+	})
+})
+
+describe(`experiments`, () => {
+	test.only(`0`, () => {
+		const countStates = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		const countsTL = timeline({
+			key: `counts`,
+			scope: [countStates],
+		})
+		setState(countStates, `my-key`, 1)
+		expect(getState(countStates, `my-key`)).toBe(1)
+		disposeState(countStates, `my-key`)
+		console.log(
+			inspect(I.withdraw(I.IMPLICIT.STORE, countsTL), {
+				depth: null,
+				colors: true,
+			}),
+		)
+		undo(countsTL)
+		undo(countsTL)
+		undo(countsTL)
+		expect(
+			I.seekInStore(I.IMPLICIT.STORE, countStates, `my-key`),
+		).toBeUndefined()
+		redo(countsTL)
+		expect(I.seekInStore(I.IMPLICIT.STORE, countStates, `my-key`)).toEqual({
+			family: {
+				key: `count`,
+				subKey: `"my-key"`,
+			},
+			key: `count("my-key")`,
+			type: `atom`,
+		})
+		redo(countsTL)
+		redo(countsTL)
 	})
 })
