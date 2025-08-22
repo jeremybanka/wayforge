@@ -1,7 +1,7 @@
 import type { TransactionOutcomeEvent } from "atom.io"
 
 import type { Store } from "../store"
-import { ingestAtomUpdate } from "./ingest-atom-update"
+import { ingestAtomUpdateEvent } from "./ingest-atom-update"
 import {
 	ingestCreationEvent,
 	ingestDisposalEvent,
@@ -10,37 +10,35 @@ import {
 	ingestMoleculeTransferEvent,
 } from "./ingest-creation-disposal"
 
-export function ingestTransactionUpdate(
-	applying: `newValue` | `oldValue`,
-	transactionUpdate: TransactionOutcomeEvent<any>,
+export function ingestTransactionOutcomeEvent(
 	store: Store,
+	event: TransactionOutcomeEvent<any>,
+	applying: `newValue` | `oldValue`,
 ): void {
-	const updates =
-		applying === `newValue`
-			? transactionUpdate.subEvents
-			: [...transactionUpdate.subEvents].reverse()
-	for (const updateFromTransaction of updates) {
-		switch (updateFromTransaction.type) {
+	const subEvents =
+		applying === `newValue` ? event.subEvents : [...event.subEvents].reverse()
+	for (const subEvent of subEvents) {
+		switch (subEvent.type) {
 			case `atom_update`:
-				ingestAtomUpdate(applying, updateFromTransaction, store)
+				ingestAtomUpdateEvent(store, subEvent, applying)
 				break
 			case `state_creation`:
-				ingestCreationEvent(updateFromTransaction, applying, store)
+				ingestCreationEvent(store, subEvent, applying)
 				break
 			case `state_disposal`:
-				ingestDisposalEvent(updateFromTransaction, applying, store)
+				ingestDisposalEvent(store, subEvent, applying)
 				break
 			case `molecule_creation`:
-				ingestMoleculeCreationEvent(updateFromTransaction, applying, store)
+				ingestMoleculeCreationEvent(store, subEvent, applying)
 				break
 			case `molecule_disposal`:
-				ingestMoleculeDisposalEvent(updateFromTransaction, applying, store)
+				ingestMoleculeDisposalEvent(store, subEvent, applying)
 				break
 			case `molecule_transfer`:
-				ingestMoleculeTransferEvent(updateFromTransaction, applying, store)
+				ingestMoleculeTransferEvent(store, subEvent, applying)
 				break
 			case `transaction_outcome`:
-				ingestTransactionUpdate(applying, updateFromTransaction, store)
+				ingestTransactionOutcomeEvent(store, subEvent, applying)
 				break
 		}
 	}
