@@ -13,37 +13,29 @@ import { COUNTERFEIT, mint } from "../store"
 import { isChildStore, isRootStore } from "../transaction"
 import { initFamilyMemberInStore } from "./init-family-member"
 
-export const MUST_CREATE: unique symbol = Symbol(`MUST_NOT_EXIST`)
+export const MUST_CREATE: unique symbol = Symbol(`MUST_CREATE`)
 
 export function mintInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	familyToken: WritableFamilyToken<T, K>,
 	key: Key,
-	init?: typeof MUST_CREATE,
+	mustCreate?: typeof MUST_CREATE,
 ): WritableToken<T, K>
 export function mintInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	familyToken: ReadableFamilyToken<T, K>,
 	key: Key,
-	init?: typeof MUST_CREATE,
+	mustCreate?: typeof MUST_CREATE,
 ): ReadableToken<T, K>
 export function mintInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	familyToken: ReadableFamilyToken<T, K>,
 	key: Key,
-	shouldCreate?: typeof MUST_CREATE,
+	mustCreate?: typeof MUST_CREATE,
 ): ReadableToken<T, K> {
 	let stateToken: ReadableToken<T, K>
 
-	let willCreate: boolean
-	switch (shouldCreate) {
-		case MUST_CREATE:
-			willCreate = true
-			break
-		case undefined:
-			willCreate = false
-			break
-	}
+	const willCreate = mustCreate === MUST_CREATE
 
 	const stringKey = stringifyJson(key)
 	const molecule = store.molecules.get(stringKey)
