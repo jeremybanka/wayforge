@@ -190,9 +190,9 @@ function addAtomToTimeline(
 								timestamp: currentSelectorTime,
 								// key: currentSelectorKey,
 								token: currentSelectorToken,
-								atomUpdates: [],
+								subEvents: [],
 							}
-							latestUpdate.atomUpdates.push({
+							latestUpdate.subEvents.push({
 								type: `atom_update`,
 								token: atomToken,
 								update,
@@ -209,16 +209,14 @@ function addAtomToTimeline(
 								`timeline`,
 								tl.key,
 								`got a selector_update "${currentSelectorToken.key}" with`,
-								latestUpdate.atomUpdates.map(
-									(atomUpdate) => atomUpdate.token.key,
-								),
+								latestUpdate.subEvents.map((subEvent) => subEvent.token.key),
 							)
 
 							tl.at = tl.history.length
 							tl.selectorTime = currentSelectorTime
 						} else {
 							if (latestUpdate?.type === `selector_update`) {
-								latestUpdate.atomUpdates.push({
+								latestUpdate.subEvents.push({
 									type: `atom_update`,
 									token: atomToken,
 									update,
@@ -229,9 +227,7 @@ function addAtomToTimeline(
 									`timeline`,
 									tl.key,
 									`set selector_update "${currentSelectorToken.key}" to`,
-									latestUpdate?.atomUpdates.map(
-										(atomUpdate) => atomUpdate.token.key,
-									),
+									latestUpdate?.subEvents.map((subEvent) => subEvent.token.key),
 								)
 							}
 						}
@@ -287,11 +283,20 @@ function addAtomFamilyToTimeline(
 		{ topicType: `atom_family` },
 	)
 	tl.subscriptions.set(
-		family.key,
-		family.subject.subscribe(
+		`${family.key}:disposal`,
+		family.onDisposal.subscribe(
 			`timeline`,
-			function timelineCapturesStateLifecycleEvent(creationOrDisposal) {
-				handleStateLifecycleEvent(store, creationOrDisposal, tl)
+			function timelineCapturesStateDisposalEvent(disposalEvent) {
+				handleStateLifecycleEvent(store, disposalEvent, tl)
+			},
+		),
+	)
+	tl.subscriptions.set(
+		`${family.key}:creation`,
+		family.onCreation.subscribe(
+			`timeline`,
+			function timelineCapturesStateCreation(creationEvent) {
+				handleStateLifecycleEvent(store, creationEvent, tl)
 			},
 		),
 	)
@@ -354,10 +359,10 @@ function joinTransaction(
 }
 
 function filterTransactionSubEvents(
-	updates: TransactionSubEvent[],
+	txSubEvents: TransactionSubEvent[],
 	timelineTopics: Set<string>,
 ): TransactionSubEvent[] {
-	return updates
+	return txSubEvents
 		.filter((updateFromTx) => {
 			if (updateFromTx.type === `transaction_outcome`) {
 				return true
@@ -383,23 +388,23 @@ function filterTransactionSubEvents(
 			}
 			return timelineTopics.has(key)
 		})
-		.map((updateFromTx): TransactionSubEvent => {
-			if (`subEvents` in updateFromTx) {
+		.map((txSubEvent): TransactionSubEvent => {
+			if (txSubEvent.type === `transaction_outcome`) {
 				return {
-					...updateFromTx,
+					...txSubEvent,
 					subEvents: filterTransactionSubEvents(
-						updateFromTx.subEvents,
+						txSubEvent.subEvents,
 						timelineTopics,
 					),
 				}
 			}
-			return updateFromTx
+			return txSubEvent
 		})
 }
 
 function handleStateLifecycleEvent(
 	store: Store,
-	event: StateCreationEvent<any> | StateDisposalEvent<any>,
+	event: StateCreationEvent | StateDisposalEvent,
 	tl: Timeline<any>,
 ): void {
 	if (!tl.timeTraveling) {

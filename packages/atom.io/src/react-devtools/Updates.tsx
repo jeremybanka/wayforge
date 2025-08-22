@@ -100,7 +100,7 @@ const TransactionUpdateFC: React.FC<{
 								txSubEvent.type !== `molecule_creation` &&
 								txSubEvent.type !== `molecule_disposal` &&
 								txSubEvent.type !== `molecule_transfer` &&
-								txSubEvent.type !== `state_creation` &&
+								// txSubEvent.type !== `state_creation` &&
 								txSubEvent.type !== `state_disposal` &&
 								!txSubEvent.token.key.startsWith(`👁‍🗨`),
 						)
@@ -192,7 +192,7 @@ export const TimelineUpdateFC: React.FC<{
 							}
 						})
 				) : timelineUpdate.type === `selector_update` ? (
-					timelineUpdate.atomUpdates
+					timelineUpdate.subEvents
 						.filter(
 							(atomUpdateEvent) => !atomUpdateEvent.token.key.startsWith(`👁‍🗨`),
 						)

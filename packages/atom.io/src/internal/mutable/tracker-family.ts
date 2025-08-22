@@ -1,4 +1,8 @@
-import type { MutableAtomToken, StateLifecycleEvent } from "atom.io"
+import type {
+	AtomCreationEvent,
+	AtomDisposalEvent,
+	MutableAtomToken,
+} from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 
@@ -29,7 +33,9 @@ export class FamilyTracker<
 		this.latestSignalAtoms = withdraw(store, latestSignalAtoms)
 		this.mutableAtoms = mutableAtoms
 		const trackerFamilyWatchesForCreationAndDisposalEvents = (
-			event: StateLifecycleEvent<MutableAtomToken<T>>,
+			event:
+				| AtomCreationEvent<MutableAtomToken<T>>
+				| AtomDisposalEvent<MutableAtomToken<T>>,
 		) => {
 			const { type, token } = event
 			if (token.family) {
@@ -48,7 +54,11 @@ export class FamilyTracker<
 				}
 			}
 		}
-		this.mutableAtoms.subject.subscribe(
+		this.mutableAtoms.onCreation.subscribe(
+			`store=${store.config.name}::tracker-atom-family`,
+			trackerFamilyWatchesForCreationAndDisposalEvents,
+		)
+		this.mutableAtoms.onDisposal.subscribe(
 			`store=${store.config.name}::tracker-atom-family`,
 			trackerFamilyWatchesForCreationAndDisposalEvents,
 		)

@@ -5,12 +5,12 @@ import type { AtomFamilyToken, AtomToken, TimelineEvent, TimelineToken } from ".
 
 export type TimelineManageable = AtomFamilyToken<any, any> | AtomToken<any>
 export type AtomOnly<M extends TimelineManageable> = M extends AtomFamilyToken<
-	any,
-	any
+	infer T,
+	infer K
 >
-	? AtomToken<any>
-	: M extends AtomToken<any>
-		? M
+	? AtomToken<T, K>
+	: M extends AtomToken<infer T>
+		? AtomToken<T>
 		: never
 
 /**

@@ -1,6 +1,7 @@
 import type {
 	FamilyMetadata,
-	StateLifecycleEvent,
+	SelectorCreationEvent,
+	SelectorDisposalEvent,
 	WritableHeldSelectorFamilyOptions,
 	WritableHeldSelectorFamilyToken,
 	WritableHeldSelectorToken,
@@ -40,17 +41,20 @@ export function createWritableHeldSelectorFamily<
 			`Overwriting an existing ${PRETTY_TOKEN_TYPES[existing.type]} "${existing.key}" in store "${store.config.name}". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
 	}
-	const subject = new Subject<
-		StateLifecycleEvent<WritableHeldSelectorToken<T>>
+	const onCreation = new Subject<
+		SelectorCreationEvent<WritableHeldSelectorToken<T>>
+	>()
+	const onDisposal = new Subject<
+		SelectorDisposalEvent<WritableHeldSelectorToken<T>>
 	>()
 
-	const familyFunction = (key: K): WritableHeldSelectorToken<T> => {
+	const create = (key: K): WritableHeldSelectorToken<T> => {
 		const subKey = stringifyJson(key)
 		const family: FamilyMetadata = { key: familyKey, subKey }
 		const fullKey = `${familyKey}(${subKey})`
 		const target = newest(store)
 
-		const token = createWritableHeldSelector(
+		return createWritableHeldSelector(
 			target,
 			{
 				key: fullKey,
@@ -60,17 +64,17 @@ export function createWritableHeldSelectorFamily<
 			},
 			family,
 		)
-
-		subject.next({ type: `state_creation`, token, timestamp: Date.now() })
-		return token
 	}
 
-	const selectorFamily = Object.assign(familyFunction, familyToken, {
-		internalRoles,
-		subject,
-		install: (s: Store) => createWritableHeldSelectorFamily(s, options),
+	const selectorFamily = {
+		...familyToken,
+		create,
 		default: options.const,
-	}) satisfies WritableHeldSelectorFamily<T, K>
+		install: (s: Store) => createWritableHeldSelectorFamily(s, options),
+		internalRoles,
+		onCreation,
+		onDisposal,
+	} satisfies WritableHeldSelectorFamily<T, K>
 
 	store.families.set(familyKey, selectorFamily)
 	return familyToken

@@ -2,7 +2,8 @@ import type {
 	FamilyMetadata,
 	findState,
 	getState,
-	StateLifecycleEvent,
+	SelectorCreationEvent,
+	SelectorDisposalEvent,
 	WritablePureSelectorFamilyOptions,
 	WritablePureSelectorFamilyToken,
 	WritablePureSelectorToken,
@@ -44,17 +45,20 @@ export function createWritablePureSelectorFamily<T, K extends Canonical>(
 			`Overwriting an existing ${PRETTY_TOKEN_TYPES[existing.type]} "${existing.key}" in store "${store.config.name}". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
 	}
-	const subject = new Subject<
-		StateLifecycleEvent<WritablePureSelectorToken<T>>
+	const onCreation = new Subject<
+		SelectorCreationEvent<WritablePureSelectorToken<T>>
+	>()
+	const onDisposal = new Subject<
+		SelectorDisposalEvent<WritablePureSelectorToken<T>>
 	>()
 
-	const familyFunction = (key: K): WritablePureSelectorToken<T> => {
+	const create = (key: K): WritablePureSelectorToken<T> => {
 		const subKey = stringifyJson(key)
 		const family: FamilyMetadata = { key: familyKey, subKey }
 		const fullKey = `${familyKey}(${subKey})`
 		const target = newest(store)
 
-		const token = createWritablePureSelector(
+		return createWritablePureSelector(
 			target,
 			{
 				key: fullKey,
@@ -63,15 +67,11 @@ export function createWritablePureSelectorFamily<T, K extends Canonical>(
 			},
 			family,
 		)
-
-		subject.next({ type: `state_creation`, token, timestamp: Date.now() })
-		return token
 	}
 
-	const selectorFamily = Object.assign(familyFunction, familyToken, {
-		internalRoles,
-		subject,
-		install: (s: Store) => createWritablePureSelectorFamily(s, options),
+	const selectorFamily = {
+		...familyToken,
+		create,
 		default: (key: K) => {
 			const getFn = options.get(key)
 			return getFn({
@@ -82,7 +82,11 @@ export function createWritablePureSelectorFamily<T, K extends Canonical>(
 				json: (token) => getJsonToken(store, token),
 			})
 		},
-	}) satisfies WritablePureSelectorFamily<T, K>
+		install: (s: Store) => createWritablePureSelectorFamily(s, options),
+		internalRoles,
+		onCreation,
+		onDisposal,
+	} satisfies WritablePureSelectorFamily<T, K>
 
 	store.families.set(familyKey, selectorFamily)
 	return familyToken

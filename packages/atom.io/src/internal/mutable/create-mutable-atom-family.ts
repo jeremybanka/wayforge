@@ -1,10 +1,11 @@
 import type {
+	AtomCreationEvent,
+	AtomDisposalEvent,
 	FamilyMetadata,
 	MutableAtomFamilyOptions,
 	MutableAtomFamilyToken,
 	MutableAtomOptions,
 	MutableAtomToken,
-	StateLifecycleEvent,
 } from "atom.io"
 import { PRETTY_TOKEN_TYPES } from "atom.io"
 import type { Canonical } from "atom.io/json"
@@ -42,9 +43,10 @@ export function createMutableAtomFamily<
 		)
 	}
 
-	const subject = new Subject<StateLifecycleEvent<MutableAtomToken<T>>>()
+	const onCreation = new Subject<AtomCreationEvent<MutableAtomToken<T>>>()
+	const onDisposal = new Subject<AtomDisposalEvent<MutableAtomToken<T>>>()
 
-	const familyFunction = (key: K): MutableAtomToken<T> => {
+	const create = (key: K): MutableAtomToken<T> => {
 		const subKey = stringifyJson(key)
 		const family: FamilyMetadata = { key: options.key, subKey }
 		const fullKey = `${options.key}(${subKey})`
@@ -58,18 +60,18 @@ export function createMutableAtomFamily<
 			individualOptions.effects = options.effects(key)
 		}
 
-		const token = createMutableAtom(target, individualOptions, family)
-
-		subject.next({ type: `state_creation`, token, timestamp: Date.now() })
-		return token
+		return createMutableAtom(target, individualOptions, family)
 	}
 
-	const atomFamily = Object.assign(familyFunction, familyToken, {
+	const atomFamily = {
+		...familyToken,
+		create,
 		class: options.class,
-		subject,
 		install: (s: Store) => createMutableAtomFamily(s, options),
 		internalRoles,
-	}) satisfies MutableAtomFamily<T, K>
+		onCreation,
+		onDisposal,
+	} satisfies MutableAtomFamily<T, K>
 
 	store.families.set(options.key, atomFamily)
 
