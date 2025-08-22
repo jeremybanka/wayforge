@@ -12,35 +12,35 @@ import {
 
 export function ingestTransactionUpdate(
 	applying: `newValue` | `oldValue`,
-	transactionUpdate: TransactionOutcomeEvent<any>,
+	outcome: TransactionOutcomeEvent<any>,
 	store: Store,
 ): void {
-	const updates =
+	const subEvents =
 		applying === `newValue`
-			? transactionUpdate.subEvents
-			: [...transactionUpdate.subEvents].reverse()
-	for (const updateFromTransaction of updates) {
-		switch (updateFromTransaction.type) {
+			? outcome.subEvents
+			: [...outcome.subEvents].reverse()
+	for (const subEvent of subEvents) {
+		switch (subEvent.type) {
 			case `atom_update`:
-				ingestAtomUpdate(applying, updateFromTransaction, store)
+				ingestAtomUpdate(applying, subEvent, store)
 				break
 			case `state_creation`:
-				ingestCreationEvent(updateFromTransaction, applying, store)
+				ingestCreationEvent(subEvent, applying, store)
 				break
 			case `state_disposal`:
-				ingestDisposalEvent(updateFromTransaction, applying, store)
+				ingestDisposalEvent(subEvent, applying, store)
 				break
 			case `molecule_creation`:
-				ingestMoleculeCreationEvent(updateFromTransaction, applying, store)
+				ingestMoleculeCreationEvent(subEvent, applying, store)
 				break
 			case `molecule_disposal`:
-				ingestMoleculeDisposalEvent(updateFromTransaction, applying, store)
+				ingestMoleculeDisposalEvent(subEvent, applying, store)
 				break
 			case `molecule_transfer`:
-				ingestMoleculeTransferEvent(updateFromTransaction, applying, store)
+				ingestMoleculeTransferEvent(subEvent, applying, store)
 				break
 			case `transaction_outcome`:
-				ingestTransactionUpdate(applying, updateFromTransaction, store)
+				ingestTransactionUpdate(applying, subEvent, store)
 				break
 		}
 	}

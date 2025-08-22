@@ -2,7 +2,6 @@ import type {
 	MoleculeCreationEvent,
 	MoleculeDisposalEvent,
 	MoleculeTransferEvent,
-	ReadableToken,
 	StateCreationEvent,
 	StateDisposalEvent,
 } from "atom.io"
@@ -18,7 +17,7 @@ import {
 import type { Store } from "../store"
 
 export function ingestCreationEvent(
-	update: StateCreationEvent<any>,
+	update: StateCreationEvent,
 	applying: `newValue` | `oldValue`,
 	store: Store,
 ): void {
@@ -35,7 +34,7 @@ export function ingestCreationEvent(
 }
 
 export function ingestDisposalEvent(
-	update: StateDisposalEvent<ReadableToken<any>>,
+	update: StateDisposalEvent,
 	applying: `newValue` | `oldValue`,
 	store: Store,
 ): void {
@@ -55,7 +54,7 @@ export function ingestDisposalEvent(
 }
 
 function createInStore(
-	update: StateCreationEvent<any> | StateDisposalEvent<any>,
+	update: StateCreationEvent | StateDisposalEvent,
 	store: Store,
 ): void {
 	const { family: familyMeta } = update.token

@@ -31,7 +31,7 @@ export function disposeSelector(
 						type: `writable_held_selector_family`,
 					}
 					const family = withdraw(store, familyToken)
-					family.subject.next({
+					family.onDisposal.next({
 						type: `state_disposal`,
 						subType: `selector`,
 						token: selectorToken,
@@ -47,7 +47,7 @@ export function disposeSelector(
 						type: `writable_pure_selector_family`,
 					}
 					const family = withdraw(store, familyToken)
-					family.subject.next({
+					family.onDisposal.next({
 						type: `state_disposal`,
 						subType: `selector`,
 						token: selectorToken,
@@ -63,7 +63,7 @@ export function disposeSelector(
 						type: `readonly_held_selector_family`,
 					}
 					const family = withdraw(store, familyToken)
-					family.subject.next({
+					family.onDisposal.next({
 						type: `state_disposal`,
 						subType: `selector`,
 						token: selectorToken,
@@ -79,7 +79,7 @@ export function disposeSelector(
 						type: `readonly_pure_selector_family`,
 					}
 					const family = withdraw(store, familyToken)
-					family.subject.next({
+					family.onDisposal.next({
 						type: `state_disposal`,
 						subType: `selector`,
 						token: selectorToken,

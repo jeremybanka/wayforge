@@ -1,4 +1,4 @@
-import type { AtomDisposalEvent, AtomToken, StateLifecycleEvent } from "atom.io"
+import type { AtomDisposalEvent, AtomToken } from "atom.io"
 
 import type { Store, Subject } from ".."
 import { getUpdateToken, isChildStore, newest, withdraw } from ".."
@@ -15,9 +15,7 @@ export function disposeAtom(store: Store, atomToken: AtomToken<any>): void {
 		const lastValue = store.valueMap.get(atom.key)
 		const familyToken = getFamilyOfToken(store, atomToken)
 		const atomFamily = withdraw(store, familyToken)
-		const subject = atomFamily.subject as Subject<
-			StateLifecycleEvent<AtomToken<any>>
-		>
+		const onDisposal = atomFamily.onDisposal as Subject<AtomDisposalEvent<any>>
 
 		const disposal: AtomDisposalEvent<AtomToken<any>> = {
 			type: `state_disposal`,
@@ -27,7 +25,7 @@ export function disposeAtom(store: Store, atomToken: AtomToken<any>): void {
 			timestamp: Date.now(),
 		}
 
-		subject.next(disposal)
+		onDisposal.next(disposal)
 
 		const isChild = isChildStore(target)
 

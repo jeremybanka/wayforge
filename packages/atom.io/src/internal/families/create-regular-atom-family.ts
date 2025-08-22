@@ -1,10 +1,11 @@
 import type {
+	AtomCreationEvent,
+	AtomDisposalEvent,
 	FamilyMetadata,
 	RegularAtomFamilyOptions,
 	RegularAtomFamilyToken,
 	RegularAtomOptions,
 	RegularAtomToken,
-	StateLifecycleEvent,
 } from "atom.io"
 import { PRETTY_TOKEN_TYPES } from "atom.io"
 import type { Canonical } from "atom.io/json"
@@ -36,9 +37,10 @@ export function createRegularAtomFamily<T, K extends Canonical>(
 		)
 	}
 
-	const subject = new Subject<StateLifecycleEvent<RegularAtomToken<T>>>()
+	const onCreation = new Subject<AtomCreationEvent<RegularAtomToken<T>>>()
+	const onDisposal = new Subject<AtomDisposalEvent<RegularAtomToken<T>>>()
 
-	const familyFunction = (key: K): RegularAtomToken<any> => {
+	const create = (key: K): RegularAtomToken<any> => {
 		const subKey = stringifyJson(key)
 		const family: FamilyMetadata = { key: options.key, subKey }
 		const fullKey = `${options.key}(${subKey})`
@@ -53,18 +55,18 @@ export function createRegularAtomFamily<T, K extends Canonical>(
 			individualOptions.effects = options.effects(key)
 		}
 
-		const token = createRegularAtom(target, individualOptions, family)
-
-		subject.next({ type: `state_creation`, token, timestamp: Date.now() })
-		return token
+		return createRegularAtom(target, individualOptions, family)
 	}
 
-	const atomFamily = Object.assign(familyFunction, familyToken, {
+	const atomFamily = {
+		...familyToken,
+		create,
 		default: options.default,
-		subject,
 		install: (s: Store) => createRegularAtomFamily(s, options),
 		internalRoles,
-	}) satisfies RegularAtomFamily<T, K>
+		onCreation,
+		onDisposal,
+	} satisfies RegularAtomFamily<T, K>
 
 	store.families.set(options.key, atomFamily)
 	if (options.default instanceof Function === false) {

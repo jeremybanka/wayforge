@@ -3,7 +3,8 @@ import type {
 	ReadonlyHeldSelectorFamilyOptions,
 	ReadonlyHeldSelectorFamilyToken,
 	ReadonlyHeldSelectorToken,
-	StateLifecycleEvent,
+	SelectorCreationEvent,
+	SelectorDisposalEvent,
 } from "atom.io"
 import { PRETTY_TOKEN_TYPES } from "atom.io"
 import type { Canonical } from "atom.io/json"
@@ -41,17 +42,20 @@ export function createReadonlyHeldSelectorFamily<
 		)
 	}
 
-	const subject = new Subject<
-		StateLifecycleEvent<ReadonlyHeldSelectorToken<T>>
+	const onCreation = new Subject<
+		SelectorCreationEvent<ReadonlyHeldSelectorToken<T>>
+	>()
+	const onDisposal = new Subject<
+		SelectorDisposalEvent<ReadonlyHeldSelectorToken<T>>
 	>()
 
-	const familyFunction = (key: K): ReadonlyHeldSelectorToken<T> => {
+	const create = (key: K): ReadonlyHeldSelectorToken<T> => {
 		const subKey = stringifyJson(key)
 		const family: FamilyMetadata = { key: familyKey, subKey }
 		const fullKey = `${familyKey}(${subKey})`
 		const target = newest(store)
 
-		const token = createReadonlyHeldSelector(
+		return createReadonlyHeldSelector(
 			target,
 			{
 				key: fullKey,
@@ -60,17 +64,17 @@ export function createReadonlyHeldSelectorFamily<
 			},
 			family,
 		)
-
-		subject.next({ type: `state_creation`, token, timestamp: Date.now() })
-		return token
 	}
 
-	const readonlySelectorFamily = Object.assign(familyFunction, familyToken, {
-		internalRoles,
-		subject,
-		install: (s: Store) => createReadonlyHeldSelectorFamily(s, options),
+	const readonlySelectorFamily = {
+		...familyToken,
+		create,
 		default: options.const,
-	}) satisfies ReadonlyHeldSelectorFamily<T, K>
+		install: (s: Store) => createReadonlyHeldSelectorFamily(s, options),
+		internalRoles,
+		onCreation,
+		onDisposal,
+	} satisfies ReadonlyHeldSelectorFamily<T, K>
 
 	store.families.set(familyKey, readonlySelectorFamily)
 	return familyToken

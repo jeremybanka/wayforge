@@ -5,7 +5,8 @@ import type {
 	ReadonlyPureSelectorFamilyOptions,
 	ReadonlyPureSelectorFamilyToken,
 	ReadonlyPureSelectorToken,
-	StateLifecycleEvent,
+	SelectorCreationEvent,
+	SelectorDisposalEvent,
 } from "atom.io"
 import { PRETTY_TOKEN_TYPES } from "atom.io"
 import type { Canonical } from "atom.io/json"
@@ -45,17 +46,20 @@ export function createReadonlyPureSelectorFamily<T, K extends Canonical>(
 		)
 	}
 
-	const subject = new Subject<
-		StateLifecycleEvent<ReadonlyPureSelectorToken<T>>
+	const onCreation = new Subject<
+		SelectorCreationEvent<ReadonlyPureSelectorToken<T>>
+	>()
+	const onDisposal = new Subject<
+		SelectorDisposalEvent<ReadonlyPureSelectorToken<T>>
 	>()
 
-	const familyFunction = (key: K): ReadonlyPureSelectorToken<T> => {
+	const create = (key: K): ReadonlyPureSelectorToken<T> => {
 		const subKey = stringifyJson(key)
 		const family: FamilyMetadata = { key: familyKey, subKey }
 		const fullKey = `${familyKey}(${subKey})`
 		const target = newest(store)
 
-		const token = createReadonlyPureSelector(
+		return createReadonlyPureSelector(
 			target,
 			{
 				key: fullKey,
@@ -63,14 +67,11 @@ export function createReadonlyPureSelectorFamily<T, K extends Canonical>(
 			},
 			family,
 		)
-
-		subject.next({ type: `state_creation`, token, timestamp: Date.now() })
-		return token
 	}
 
-	const readonlySelectorFamily = Object.assign(familyFunction, familyToken, {
-		internalRoles,
-		subject,
+	const readonlySelectorFamily = {
+		...familyToken,
+		create,
 		install: (s: Store) => createReadonlyPureSelectorFamily(s, options),
 		default: (key: K) => {
 			const getFn = options.get(key)
@@ -82,7 +83,10 @@ export function createReadonlyPureSelectorFamily<T, K extends Canonical>(
 				json: (token) => getJsonToken(store, token),
 			})
 		},
-	}) satisfies ReadonlyPureSelectorFamily<T, K>
+		internalRoles,
+		onCreation,
+		onDisposal,
+	} satisfies ReadonlyPureSelectorFamily<T, K>
 
 	store.families.set(familyKey, readonlySelectorFamily)
 	return familyToken

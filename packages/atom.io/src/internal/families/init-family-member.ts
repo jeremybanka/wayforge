@@ -11,23 +11,23 @@ import { withdraw } from "../store"
 
 export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
-	token: WritableFamilyToken<T, K>,
+	familyToken: WritableFamilyToken<T, K>,
 	key: Key,
 ): WritableToken<T, K>
 
 export function initFamilyMemberInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
-	token: ReadableFamilyToken<T, K>,
+	familyToken: ReadableFamilyToken<T, K>,
 	key: Key,
 ): ReadableToken<T, K>
 
 export function initFamilyMemberInStore(
 	store: Store,
-	token: ReadableFamilyToken<any, any>,
+	familyToken: ReadableFamilyToken<any, any>,
 	key: Canonical,
 ): ReadableToken<any> {
-	const family = withdraw(store, token)
-	const state = family(key)
+	const family = withdraw(store, familyToken)
+	const stateToken = family.create(key)
 
-	return state
+	return stateToken
 }
