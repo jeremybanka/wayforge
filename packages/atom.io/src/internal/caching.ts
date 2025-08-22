@@ -11,19 +11,16 @@ export function writeToCache<T>(
 	target: Store,
 	state: ReadableState<T>,
 	value: T,
-	// subject: Subject<StateUpdate<unknown>>,
 ): T
 export function writeToCache<T extends Promise<any>>(
 	target: Store,
 	state: ReadableState<T>,
 	value: T,
-	// subject: Subject<StateUpdate<unknown>>,
 ): Future<Awaited<T>>
 export function writeToCache<T>(
 	target: Store,
 	state: ReadableState<T>,
 	value: T,
-	// subject: Subject<StateUpdate<unknown>>,
 ): Future<T> | T {
 	const { key, subject, type } = state
 	const currentValue = target.valueMap.get(key)
@@ -55,7 +52,7 @@ export function writeToCache<T>(
 						case `writable_pure_selector`:
 							evictDownstreamFromSelector(target, key)
 							break
-						// held selectors, by definitions, don't become promises
+						// held selectors, by definition, don't become promises
 					}
 					closeOperation(target)
 					subject.next({ newValue: resolved, oldValue: future })
