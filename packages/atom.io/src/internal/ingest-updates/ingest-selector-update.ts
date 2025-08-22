@@ -6,12 +6,12 @@ import type {
 } from "atom.io"
 
 import type { Store } from "../store"
-import { ingestAtomUpdate } from "./ingest-atom-update"
+import { ingestAtomUpdateEvent } from "./ingest-atom-update"
 
-export function ingestSelectorUpdate(
-	applying: `newValue` | `oldValue`,
-	selectorUpdate: TimelineSelectorUpdateEvent<any>,
+export function ingestSelectorUpdateEvent(
 	store: Store,
+	selectorUpdate: TimelineSelectorUpdateEvent<any>,
+	applying: `newValue` | `oldValue`,
 ): void {
 	let updates: AtomUpdateEvent<AtomOnly<TimelineManageable>>[]
 	if (applying === `newValue`) {
@@ -20,6 +20,6 @@ export function ingestSelectorUpdate(
 		updates = selectorUpdate.atomUpdates.toReversed()
 	}
 	for (const atomUpdate of updates) {
-		ingestAtomUpdate(applying, atomUpdate, store)
+		ingestAtomUpdateEvent(store, atomUpdate, applying)
 	}
 }
