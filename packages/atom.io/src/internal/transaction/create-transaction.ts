@@ -37,7 +37,7 @@ export function createTransaction<F extends Fn>(
 				const target = newest(store)
 				const { toolkit } = childStore.transactionMeta
 				const output = options.do(toolkit, ...params)
-				applyTransaction(output, target)
+				applyTransaction<F>(target, output)
 				return output
 			} catch (thrown) {
 				abortTransaction(target)
