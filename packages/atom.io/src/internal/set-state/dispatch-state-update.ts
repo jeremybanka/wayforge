@@ -1,12 +1,16 @@
 import type {
 	AtomToken,
 	AtomUpdateEvent,
+	StateCreationEvent,
 	StateUpdate,
 	WritableToken,
 } from "atom.io"
+import { stringifyJson } from "atom.io/json"
 
 import type { MutableAtom, WritableState } from ".."
+import { newest, WritableFamily } from ".."
 import { hasRole } from "../atom"
+import { getFamilyOfToken } from "../families/get-family-of-token"
 import { readOrComputeValue } from "../get-state"
 import type { Transceiver } from "../mutable"
 import { isTransceiver } from "../mutable"
@@ -19,13 +23,45 @@ export function dispatchOrDeferStateUpdate<T>(
 	target: Store & { operation: OpenOperation<any> },
 	state: WritableState<T>,
 	[oldValue, newValue]: [T, T],
-	_stateIsNewlyCreated: boolean,
+	stateIsNewlyCreated: boolean,
 ): void {
-	const { key, subject, type } = state
+	const { key, subject, type, family: familyMeta } = state
 
 	const update: StateUpdate<T> = {
 		oldValue: isTransceiver(oldValue) ? oldValue.READONLY_VIEW : oldValue,
 		newValue: isTransceiver(newValue) ? newValue.READONLY_VIEW : newValue,
+	}
+
+	const token: WritableToken<T> = deposit(state)
+	if (stateIsNewlyCreated && familyMeta) {
+		const molecule = target.molecules.get(familyMeta.subKey)
+		const family = getFamilyOfToken(target, token)
+		const creationEvent: StateCreationEvent<any> = {
+			type: `state_creation`,
+			token,
+			timestamp: Date.now(),
+		}
+		if (isRootStore(target)) {
+			family.subject.next(creationEvent)
+			switch (token.type) {
+				case `atom`:
+				case `mutable_atom`:
+					target.on.atomCreation.next(token)
+					break
+				case `writable_pure_selector`:
+				case `writable_held_selector`:
+					target.on.selectorCreation.next(token)
+					break
+			}
+		} else if (
+			isChildStore(target) &&
+			target.on.transactionApplying.state === null
+		) {
+			target.transactionMeta.update.subEvents.push(creationEvent)
+		}
+		if (molecule) {
+			target.moleculeData.set(familyMeta.subKey, family.key)
+		}
 	}
 
 	if (isRootStore(target)) {
@@ -59,10 +95,11 @@ export function dispatchOrDeferStateUpdate<T>(
 		subject.next(update)
 	}
 
-	if (isChildStore(target) && (type === `mutable_atom` || type === `atom`)) {
+	if (
+		isChildStore(target) &&
+		(token.type === `mutable_atom` || token.type === `atom`)
+	) {
 		if (target.on.transactionApplying.state === null) {
-			const token: WritableToken<T> = deposit(state)
-
 			if (isTransceiver(newValue)) {
 				return
 			}

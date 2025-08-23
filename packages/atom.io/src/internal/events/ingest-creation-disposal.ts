@@ -10,6 +10,7 @@ import { parseJson, stringifyJson } from "atom.io/json"
 
 import { disposeFromStore } from "../families"
 import { mintInStore, MUST_CREATE } from "../families/mint-in-store"
+import { getFromStore } from "../get-state"
 import {
 	allocateIntoStore,
 	claimWithinStore,
@@ -58,12 +59,10 @@ function createInStore(
 	store: Store,
 	event: StateCreationEvent<any> | StateDisposalEvent<any>,
 ): void {
-	const { family: familyMeta } = event.token
+	const { token } = event
+	const { family: familyMeta } = token
 	if (familyMeta) {
-		const family = store.families.get(familyMeta.key)
-		if (family) {
-			mintInStore(store, family, parseJson(familyMeta.subKey), MUST_CREATE)
-		}
+		getFromStore(store, token)
 	}
 }
 

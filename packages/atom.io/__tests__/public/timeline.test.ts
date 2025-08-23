@@ -29,7 +29,7 @@ let logger: Logger
 beforeEach(() => {
 	I.clearStore(I.IMPLICIT.STORE)
 	I.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = I.IMPLICIT.STORE.logger //= Utils.createNullLogger()
+	logger = I.IMPLICIT.STORE.logger = Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -272,18 +272,24 @@ describe(`timeline`, () => {
 		expect(timelineData.at).toBe(1)
 		expect(timelineData.history.length).toBe(1)
 	})
-	it(`adds members of a family already created`, () => {
-		const findCountState = atomFamily<number, string>({
-			key: `find count`,
+	it.only(`adds members of a family already created`, () => {
+		const countAtoms = atomFamily<number, string>({
+			key: `count`,
 			default: 0,
 		})
-		const myCountState = findState(findCountState, `foo`)
+		const myCountState = findState(countAtoms, `foo`)
 		const countsTL = timeline({
 			key: `counts`,
-			scope: [findCountState],
+			scope: [countAtoms],
 		})
 		expect(getState(myCountState)).toBe(0)
 		setState(myCountState, 1)
+		console.log(
+			inspect(I.withdraw(I.IMPLICIT.STORE, countsTL), {
+				depth: null,
+				colors: true,
+			}),
+		)
 		expect(getState(myCountState)).toBe(1)
 		undo(countsTL)
 		expect(getState(myCountState)).toBe(0)

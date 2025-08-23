@@ -15,7 +15,7 @@ export function disposeAtom(store: Store, atomToken: AtomToken<any>): void {
 		const lastValue = store.valueMap.get(atom.key)
 		const familyToken = getFamilyOfToken(store, atomToken)
 		const atomFamily = withdraw(store, familyToken)
-		const subject = atomFamily.subject as Subject<
+		const familySubject = atomFamily.subject as Subject<
 			StateLifecycleEvent<AtomToken<any>>
 		>
 
@@ -27,7 +27,7 @@ export function disposeAtom(store: Store, atomToken: AtomToken<any>): void {
 			timestamp: Date.now(),
 		}
 
-		subject.next(disposal)
+		familySubject.next(disposal)
 
 		const isChild = isChildStore(target)
 
