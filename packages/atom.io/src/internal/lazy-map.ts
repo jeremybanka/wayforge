@@ -1,4 +1,4 @@
-export class LazyMap<K, V> extends Map<K, V> {
+export class MapOverlay<K, V> extends Map<K, V> {
 	public deleted: Set<K> = new Set()
 	protected readonly source: Map<K, V>
 
