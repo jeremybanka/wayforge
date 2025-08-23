@@ -1,6 +1,6 @@
 import type { Json } from "atom.io/json"
 
-import { MapOverlay, RelationsOverlay, SetOverlay } from "./map-overlay"
+import { MapOverlay, RelationsOverlay, SetOverlay } from "./overlays"
 import type { Refinement } from "./utility-types"
 
 export type JunctionEntriesBase<

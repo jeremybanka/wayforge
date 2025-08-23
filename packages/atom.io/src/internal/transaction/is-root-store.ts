@@ -1,4 +1,4 @@
-import type { MapOverlay } from "../map-overlay"
+import type { MapOverlay } from "../overlays/map-overlay"
 import type { Store } from "../store"
 import type { Fn } from "../utility-types"
 import type { TransactionEpoch, TransactionProgress } from "."
