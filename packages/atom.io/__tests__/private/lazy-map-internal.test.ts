@@ -1,4 +1,4 @@
-import { LazyMap } from "atom.io/internal"
+import { MapOverlay } from "atom.io/internal"
 
 describe(`LazyMap`, () => {
 	test(`get`, () => {
@@ -6,7 +6,7 @@ describe(`LazyMap`, () => {
 			[`a`, 1],
 			[`b`, 2],
 		])
-		const overlay = new LazyMap(base)
+		const overlay = new MapOverlay(base)
 		expect(overlay.get(`a`)).toBe(1)
 	})
 	test(`set`, () => {
@@ -14,7 +14,7 @@ describe(`LazyMap`, () => {
 			[`a`, 1],
 			[`b`, 2],
 		])
-		const overlay = new LazyMap(base)
+		const overlay = new MapOverlay(base)
 		expect(base.get(`a`)).toBe(1)
 		expect(overlay.get(`a`)).toBe(1)
 		expect(overlay.set(`a`, 2)).toBe(overlay)
@@ -26,7 +26,7 @@ describe(`LazyMap`, () => {
 			[`a`, 1],
 			[`b`, 2],
 		])
-		const overlay = new LazyMap(base)
+		const overlay = new MapOverlay(base)
 		expect(overlay.hasOwn(`a`)).toBe(false)
 		expect(overlay.has(`a`)).toBe(true)
 		overlay.set(`a`, 2)
@@ -37,7 +37,7 @@ describe(`LazyMap`, () => {
 			[`a`, 1],
 			[`b`, 2],
 		])
-		const overlay = new LazyMap(base)
+		const overlay = new MapOverlay(base)
 		expect(overlay.has(`a`)).toBe(true)
 		expect(overlay.has(`b`)).toBe(true)
 		expect(overlay.has(`c`)).toBe(false)
@@ -47,7 +47,7 @@ describe(`LazyMap`, () => {
 			[`a`, 1],
 			[`b`, 2],
 		])
-		const overlay = new LazyMap(base)
+		const overlay = new MapOverlay(base)
 		expect(overlay.delete(`a`)).toBe(false)
 		expect(overlay.has(`a`)).toBe(false)
 		expect(overlay.get(`a`)).toBe(undefined)

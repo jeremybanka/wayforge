@@ -12,7 +12,7 @@ import { disposeFromStore, findInStore } from "../families"
 import { getEnvironmentData } from "../get-environment-data"
 import { getFromStore } from "../get-state"
 import { Junction } from "../junction"
-import { LazyMap } from "../lazy-map"
+import { MapOverlay } from "../lazy-map"
 import { newest } from "../lineage"
 import { getJsonToken } from "../mutable"
 import { resetInStore, setIntoStore } from "../set-state"
@@ -36,25 +36,25 @@ export const buildTransaction = (
 		loggers: parent.loggers,
 		logger: parent.logger,
 		config: parent.config,
-		atoms: new LazyMap(parent.atoms),
+		atoms: new MapOverlay(parent.atoms),
 		atomsThatAreDefault: new Set(parent.atomsThatAreDefault),
-		families: new LazyMap(parent.families),
-		joins: new LazyMap(parent.joins),
+		families: new MapOverlay(parent.families),
+		joins: new MapOverlay(parent.joins),
 		operation: { open: false },
-		readonlySelectors: new LazyMap(parent.readonlySelectors),
-		timelines: new LazyMap(parent.timelines),
+		readonlySelectors: new MapOverlay(parent.readonlySelectors),
+		timelines: new MapOverlay(parent.timelines),
 		timelineTopics: new Junction(parent.timelineTopics.toJSON()),
 		trackers: new Map(),
-		transactions: new LazyMap(parent.transactions),
+		transactions: new MapOverlay(parent.transactions),
 		selectorAtoms: new Junction(parent.selectorAtoms.toJSON()),
 		selectorGraph: new Junction(parent.selectorGraph.toJSON(), {
 			makeContentKey: (...keys) => keys.sort().join(`:`),
 		}),
-		writableSelectors: new LazyMap(parent.writableSelectors),
-		valueMap: new LazyMap(parent.valueMap),
+		writableSelectors: new MapOverlay(parent.writableSelectors),
+		valueMap: new MapOverlay(parent.valueMap),
 		defaults: parent.defaults,
 		disposalTraces: store.disposalTraces.copy(),
-		molecules: new LazyMap(parent.molecules),
+		molecules: new MapOverlay(parent.molecules),
 		moleculeGraph: new Junction(parent.moleculeGraph.toJSON(), {
 			makeContentKey: parent.moleculeGraph.makeContentKey,
 		}),
@@ -64,7 +64,7 @@ export const buildTransaction = (
 		moleculeJoins: new Junction(parent.moleculeJoins.toJSON(), {
 			makeContentKey: parent.moleculeJoins.makeContentKey,
 		}),
-		miscResources: new LazyMap(parent.miscResources),
+		miscResources: new MapOverlay(parent.miscResources),
 	}
 	const epoch = getEpochNumberOfAction(store, token.key)
 	const transactionMeta: TransactionProgress<Fn> = {
