@@ -1,0 +1,39 @@
+import { SetOverlay } from "./set-overlay"
+
+export class RelationsOverlay<K, V extends Set<any>> extends Map<K, V> {
+	public deleted: Set<K> = new Set()
+	protected readonly source: Map<K, V>
+
+	public constructor(source: Map<K, V>) {
+		super()
+		this.source = source
+	}
+
+	public get(key: K): V | undefined {
+		const has = super.has(key)
+		if (has) {
+			return super.get(key)
+		}
+		if (!this.deleted.has(key) && this.source.has(key)) {
+			const value = this.source.get(key)
+			const valueOverlay = new SetOverlay(value as V) as unknown as V
+			super.set(key, valueOverlay)
+			return valueOverlay
+		}
+		return undefined
+	}
+
+	public set(key: K, value: V): this {
+		this.deleted.delete(key)
+		return super.set(key, value)
+	}
+
+	public has(key: K): boolean {
+		return !this.deleted.has(key) && (super.has(key) || this.source.has(key))
+	}
+
+	public delete(key: K): boolean {
+		this.deleted.add(key)
+		return super.delete(key)
+	}
+}
