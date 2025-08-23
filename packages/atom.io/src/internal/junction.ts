@@ -122,7 +122,6 @@ export class Junction<
 		}
 	}
 	protected deleteRelation(a: A, b: B): void {
-		console.log(`deleting ${a} ${b}`)
 		const aRelations = this.relations.get(a) as Set<B> | undefined
 		if (aRelations) {
 			aRelations.delete(b)

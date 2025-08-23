@@ -1,4 +1,4 @@
-import type { LazyMap } from "../lazy-map"
+import type { MapOverlay } from "../map-overlay"
 import type { Store } from "../store"
 import type { Fn } from "../utility-types"
 import type { TransactionEpoch, TransactionProgress } from "."
@@ -12,7 +12,7 @@ export interface ChildStore extends Store {
 	transactionMeta: TransactionProgress<Fn>
 	parent: ChildStore | RootStore
 	child: ChildStore | null
-	valueMap: LazyMap<string, any>
+	valueMap: MapOverlay<string, any>
 }
 
 export function isRootStore(store: Store): store is RootStore {
