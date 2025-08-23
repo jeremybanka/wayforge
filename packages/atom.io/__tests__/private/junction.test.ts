@@ -582,3 +582,44 @@ describe(`Junction.prototype.has`, () => {
 		})
 	})
 })
+
+describe(`Junction.prototype.overlay`, () => {
+	it(`can have properties added and deleted, then merged into the source`, () => {
+		const player = `Helena`
+		const room = `Shrine`
+		const playersInRooms = new Junction(
+			{
+				between: [`player`, `room`],
+				cardinality: `1:n`,
+				relations: [
+					[`Logan`, [`Hall`]],
+					[`Hall`, [`Logan`]],
+				],
+				contents: [[`Logan:Hall`, {}]],
+			},
+			{
+				makeContentKey: (a, b) => `${a}:${b}`,
+				isAType: (_): _ is string => true,
+				isBType: (_): _ is string => true,
+				isContent: (_): _ is Json.Object => true,
+				warn: () => {},
+			},
+		)
+		const playersInRoomsOverlay = playersInRooms.overlay()
+		playersInRoomsOverlay.set(player, room, {})
+
+		expect(playersInRoomsOverlay.has(player, room)).toBe(true)
+		expect(playersInRooms.has(player, room)).toBe(false)
+
+		playersInRoomsOverlay.delete(`Hall`)
+
+		console.log(playersInRoomsOverlay.relations)
+
+		expect(playersInRooms.has(`Logan`, `Hall`)).toBe(true)
+		expect(playersInRoomsOverlay.has(`Logan`, `Hall`)).toBe(false)
+
+		playersInRooms.incorporate(playersInRoomsOverlay)
+
+		expect(playersInRooms.has(player, room)).toBe(true)
+	})
+})
