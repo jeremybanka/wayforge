@@ -380,16 +380,14 @@ export class Junction<
 					this.delete(bRelation, b)
 				}
 			}
-		}
-		if (typeof a === `string` && b === undefined) {
+		} else if (typeof a === `string` && b === undefined) {
 			const aRelations = this.getRelatedKeys(a)
 			if (aRelations) {
 				for (const aRelation of aRelations) {
 					this.delete(a, aRelation)
 				}
 			}
-		}
-		if (typeof a === `string` && typeof b === `string`) {
+		} else if (typeof a === `string` && typeof b === `string`) {
 			this.deleteRelation(a, b)
 			const contentKey = this.makeContentKey(a, b)
 			this.deleteContent(contentKey)
