@@ -117,10 +117,6 @@ export class RelationsOverlay<K, V extends Set<any>> extends Map<K, V> {
 		return super.set(key, value)
 	}
 
-	public hasOwn(key: K): boolean {
-		return super.has(key)
-	}
-
 	public has(key: K): boolean {
 		return !this.deleted.has(key) && (super.has(key) || this.source.has(key))
 	}
