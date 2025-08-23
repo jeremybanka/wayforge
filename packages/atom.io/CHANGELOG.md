@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.38.2
+
+### Patch Changes
+
+- 3f19f7e: 🐛 Fix bug where, when disposing a key in the store, the event recorded would erroneously use the tokens of deleted states where the values should have been placed.
+
 ## 0.38.1
 
 ### Patch Changes
