@@ -1,4 +1,6 @@
 /** biome-ignore-all lint/correctness/noUnusedVariables: we're inspecting types here */
+import { inspect } from "node:util"
+
 import type { Above, Below, Hierarchy, Logger, Mutuals, Vassal } from "atom.io"
 import {
 	Anarchy,
@@ -18,7 +20,7 @@ import {
 	transaction,
 	undo,
 } from "atom.io"
-import { clearStore, IMPLICIT } from "atom.io/internal"
+import { clearStore, IMPLICIT, withdraw } from "atom.io/internal"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import * as Utils from "../../__util__"
@@ -342,7 +344,7 @@ describe(`errors`, () => {
 	})
 })
 describe(`integrations`, () => {
-	test(`transaction+timeline support`, () => {
+	test.only(`transaction+timeline support`, () => {
 		type DocumentKey = `document::${number}`
 		type UserKey = `user::${string}`
 		type UserGroupKey = `userGroup::${string}`
@@ -364,8 +366,8 @@ describe(`integrations`, () => {
 		>
 		const documentRealm = new Realm<DocumentHierarchy>(IMPLICIT.STORE)
 
-		const documentAtoms = atomFamily<string, DocumentKey>({
-			key: `doc`,
+		const textAtoms = atomFamily<string, DocumentKey>({
+			key: `text`,
 			default: ``,
 		})
 
@@ -376,7 +378,7 @@ describe(`integrations`, () => {
 			do: ({ set }, owner, id) => {
 				const documentKey = `document::${id}` satisfies DocumentKey
 				documentRealm.allocate(owner, documentKey)
-				set(documentAtoms, documentKey, `hello work!`)
+				set(textAtoms, documentKey, `hello work!`)
 				return documentKey
 			},
 		})
@@ -402,13 +404,13 @@ describe(`integrations`, () => {
 					documentRealm.claim(newOwner, document, exclusivity)
 					exclusivity = undefined
 				}
-				set(documentAtoms, document, identity) // TODO -- possible to avoid "bumping" a state to get picked up by a timeline?
+				set(textAtoms, document, identity) // TODO -- possible to avoid "bumping" a state to get picked up by a timeline?
 			},
 		})
 
 		const documentTimeline = timeline({
 			key: `documentTimeline`,
-			scope: [documentAtoms],
+			scope: [textAtoms],
 		})
 		const createDocument = runTransaction(createDocumentTX)
 		const deleteDocument = runTransaction(deleteDocumentTX)
@@ -418,8 +420,15 @@ describe(`integrations`, () => {
 		const documentClaim = createDocument(`userGroup::homies`, 1)
 
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
+		console.log(withdraw(IMPLICIT.STORE, documentTimeline).history.length)
 		deleteDocument(documentClaim)
-
+		console.log(
+			inspect(withdraw(IMPLICIT.STORE, documentTimeline), {
+				depth: null,
+				colors: true,
+			}),
+		)
+		console.log(IMPLICIT.STORE.molecules)
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
 		undo(documentTimeline)
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
