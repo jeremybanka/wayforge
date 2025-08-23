@@ -14,6 +14,7 @@ import type { Canonical, stringified } from "atom.io/json"
 import { parseJson, stringifyJson } from "atom.io/json"
 
 import { disposeFromStore, findInStore } from "./families"
+import { getFromStore } from "./get-state"
 import { getTrace } from "./get-trace"
 import { newest } from "./lineage"
 import type { Store } from "./store"
@@ -208,7 +209,8 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 			// biome-ignore lint/style/noNonNullAssertion: tokens of molecules must have a family
 			const family = target.families.get(familyKey)!
 			const token = findInStore(store, family, molecule.key)
-			values.push([family.key, token])
+			const value = getFromStore(store, token)
+			values.push([family.key, value])
 			disposeFromStore(store, token)
 		}
 	}
