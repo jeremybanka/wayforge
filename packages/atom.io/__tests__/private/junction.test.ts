@@ -14,7 +14,7 @@ describe(`Junction.prototype.getRelatedKeys`, () => {
 		const player = `Adelaide`
 		const room = `Shrine`
 		const playersInRooms = new Junction({
-			between: [`player`, `room`],
+			between: [`room`, `player`],
 			cardinality: `1:n`,
 			relations: [
 				[player, [room]],
@@ -35,7 +35,7 @@ describe(`Junction.prototype.getRelatedKey`, () => {
 		const roomB = `Loft`
 		const playersInRooms = new Junction(
 			{
-				between: [`player`, `room`],
+				between: [`room`, `player`],
 				cardinality: `1:n`,
 				relations: [[player, [roomA, roomB]]],
 			},
@@ -535,7 +535,8 @@ describe(`Junction.prototype.has`, () => {
 			const player = `Helena`
 			const room = `Shrine`
 			const playersInRooms = new Junction({
-				between: [`player`, `room`],
+				between: [`room`, `player`],
+
 				cardinality: `1:n`,
 				relations: [[player, [room]]],
 			})
@@ -545,7 +546,8 @@ describe(`Junction.prototype.has`, () => {
 			const player = `Helena`
 			const room = `Shrine`
 			const playersInRooms = new Junction({
-				between: [`player`, `room`],
+				between: [`room`, `player`],
+
 				cardinality: `1:n`,
 				relations: [[player, [room]]],
 			})
@@ -557,7 +559,8 @@ describe(`Junction.prototype.has`, () => {
 			const player = `Helena`
 			const room = `Shrine`
 			const playersInRooms = new Junction({
-				between: [`player`, `room`],
+				between: [`room`, `player`],
+
 				cardinality: `1:n`,
 				relations: [[player, [room]]],
 			})
@@ -567,7 +570,7 @@ describe(`Junction.prototype.has`, () => {
 			const player = `Helena`
 			const room = `Shrine`
 			const playersInRooms = new Junction({
-				between: [`player`, `room`],
+				between: [`room`, `player`],
 				cardinality: `1:n`,
 				relations: [[player, [room]]],
 			})
@@ -575,7 +578,8 @@ describe(`Junction.prototype.has`, () => {
 		})
 		it(`returns false if neither thing exists`, () => {
 			const playersInRooms = new Junction({
-				between: [`player`, `room`],
+				between: [`room`, `player`],
+
 				cardinality: `1:n`,
 			})
 			expect(playersInRooms.has(`other player`, `other room`)).toBe(false)
@@ -584,12 +588,36 @@ describe(`Junction.prototype.has`, () => {
 })
 
 describe(`Junction.prototype.overlay`, () => {
-	it(`can have properties added and deleted, then merged into the source`, () => {
-		const player = `Helena`
-		const room = `Shrine`
+	it(`add a totally new relation`, () => {
+		const helena = `Helena`
+		const shrine = `Shrine`
 		const playersInRooms = new Junction(
 			{
-				between: [`player`, `room`],
+				between: [`room`, `player`],
+				cardinality: `1:n`,
+			},
+			{
+				makeContentKey: (a, b) => `${a}:${b}`,
+				isAType: (_): _ is string => true,
+				isBType: (_): _ is string => true,
+				isContent: (_): _ is Json.Object => true,
+				warn: () => {},
+			},
+		)
+		const playersInRoomsOverlay = playersInRooms.overlay()
+		playersInRoomsOverlay.set(helena, shrine, {})
+
+		expect(playersInRoomsOverlay.has(helena, shrine)).toBe(true)
+		expect(playersInRooms.has(helena, shrine)).toBe(false)
+
+		playersInRooms.incorporate(playersInRoomsOverlay)
+
+		expect(playersInRooms.has(helena, shrine)).toBe(true)
+	})
+	it(`can add onto existing relations`, () => {
+		const playersInRooms = new Junction(
+			{
+				between: [`room`, `player`],
 				cardinality: `1:n`,
 				relations: [
 					[`Logan`, [`Hall`]],
@@ -606,20 +634,95 @@ describe(`Junction.prototype.overlay`, () => {
 			},
 		)
 		const playersInRoomsOverlay = playersInRooms.overlay()
-		playersInRoomsOverlay.set(player, room, {})
+		playersInRoomsOverlay.set(`Hall`, `Helena`, {})
 
-		expect(playersInRoomsOverlay.has(player, room)).toBe(true)
-		expect(playersInRooms.has(player, room)).toBe(false)
-
-		playersInRoomsOverlay.delete(`Hall`)
-
-		console.log(playersInRoomsOverlay.relations)
-
-		expect(playersInRooms.has(`Logan`, `Hall`)).toBe(true)
-		expect(playersInRoomsOverlay.has(`Logan`, `Hall`)).toBe(false)
+		expect(playersInRoomsOverlay.has(`Hall`, `Helena`)).toBe(true)
+		expect(playersInRooms.has(`Hall`, `Helena`)).toBe(false)
 
 		playersInRooms.incorporate(playersInRoomsOverlay)
 
-		expect(playersInRooms.has(player, room)).toBe(true)
+		expect(playersInRooms.has(`Hall`, `Helena`)).toBe(true)
+	})
+	it(`can delete relations entirely`, () => {
+		const playersInRooms = new Junction(
+			{
+				between: [`room`, `player`],
+
+				cardinality: `1:n`,
+				relations: [
+					[`Logan`, [`Hall`]],
+					[`Hall`, [`Logan`]],
+				],
+				contents: [[`Hall:Logan`, {}]],
+			},
+			{
+				makeContentKey: (a, b) => `${a}:${b}`,
+				isAType: (_): _ is string => true,
+				isBType: (_): _ is string => true,
+				isContent: (_): _ is Json.Object => true,
+				warn: () => {},
+			},
+		)
+		const playersInRoomsOverlay = playersInRooms.overlay()
+
+		playersInRoomsOverlay.delete(`Hall`)
+
+		assert(playersInRooms.has(`Logan`, `Hall`))
+		assert(playersInRooms.has(`Logan`))
+		assert(playersInRooms.has(`Hall`))
+		assert.isNotTrue(playersInRoomsOverlay.has(`Logan`, `Hall`))
+		assert.isNotTrue(playersInRoomsOverlay.has(`Logan`))
+		assert.isNotTrue(playersInRoomsOverlay.has(`Hall`))
+
+		playersInRooms.incorporate(playersInRoomsOverlay)
+
+		assert.isNotTrue(playersInRooms.has(`Logan`, `Hall`))
+		assert.isNotTrue(playersInRooms.has(`Logan`))
+		assert.isNotTrue(playersInRooms.has(`Hall`))
+	})
+	it(`can delete relations partially`, () => {
+		const playersInRooms = new Junction(
+			{
+				between: [`room`, `player`],
+
+				cardinality: `1:n`,
+				relations: [
+					[`Hall`, [`Logan`, `Adele`]],
+					[`Logan`, [`Hall`]],
+					[`Adele`, [`Hall`]],
+				],
+				contents: [
+					[`Hall:Logan`, {}],
+					[`Hall:Adele`, {}],
+				],
+			},
+			{
+				makeContentKey: (a, b) => `${a}:${b}`,
+				isAType: (_): _ is string => true,
+				isBType: (_): _ is string => true,
+				isContent: (_): _ is Json.Object => true,
+				warn: () => {},
+			},
+		)
+		const playersInRoomsOverlay = playersInRooms.overlay()
+
+		playersInRoomsOverlay.delete(`Logan`)
+
+		assert.isNotTrue(playersInRoomsOverlay.has(`Logan`))
+		assert.isNotTrue(playersInRoomsOverlay.has(`Logan`, `Hall`))
+		assert(playersInRoomsOverlay.has(`Hall`))
+		assert(playersInRoomsOverlay.has(`Adele`))
+		assert(playersInRoomsOverlay.has(`Hall`, `Adele`))
+		assert(playersInRooms.has(`Hall`))
+		assert(playersInRooms.has(`Hall`, `Logan`))
+		assert(playersInRooms.has(`Hall`, `Adele`))
+
+		playersInRooms.incorporate(playersInRoomsOverlay)
+
+		assert.isNotTrue(playersInRooms.has(`Logan`, `Hall`))
+		assert.isNotTrue(playersInRooms.has(`Logan`))
+		assert(playersInRooms.has(`Hall`))
+		assert(playersInRooms.has(`Adele`, `Hall`))
+		assert(playersInRooms.has(`Adele`))
 	})
 })

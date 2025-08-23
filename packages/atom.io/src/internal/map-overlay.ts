@@ -48,7 +48,10 @@ export class SetOverlay<K> extends Set<K> {
 	}
 
 	public add(value: K): this {
-		this.deleted.delete(value)
+		if (this.source.has(value)) {
+			this.deleted.delete(value)
+			return this
+		}
 		return super.add(value)
 	}
 
@@ -61,17 +64,28 @@ export class SetOverlay<K> extends Set<K> {
 	}
 
 	public delete(key: K): boolean {
-		this.deleted.add(key)
+		if (this.source.has(key)) {
+			this.deleted.add(key)
+			return true
+		}
 		return super.delete(key)
 	}
 
 	public *[Symbol.iterator](): SetIterator<K> {
 		yield* super[Symbol.iterator]()
-		yield* this.source[Symbol.iterator]()
+		for (const value of this.source) {
+			if (!this.deleted.has(value)) {
+				yield value
+			}
+		}
 	}
 
 	public *iterateOwn(): SetIterator<K> {
 		yield* super[Symbol.iterator]()
+	}
+
+	public get size(): number {
+		return super.size + this.source.size - this.deleted.size
 	}
 }
 
