@@ -11,7 +11,6 @@ import { arbitrary } from "../arbitrary"
 import { disposeFromStore, findInStore } from "../families"
 import { getEnvironmentData } from "../get-environment-data"
 import { getFromStore } from "../get-state"
-import { Junction } from "../junction"
 import { newest } from "../lineage"
 import { MapOverlay } from "../map-overlay"
 import { getJsonToken } from "../mutable"
@@ -43,27 +42,19 @@ export const buildTransaction = (
 		operation: { open: false },
 		readonlySelectors: new MapOverlay(parent.readonlySelectors),
 		timelines: new MapOverlay(parent.timelines),
-		timelineTopics: new Junction(parent.timelineTopics.toJSON()),
+		timelineTopics: parent.timelineTopics.overlay(),
 		trackers: new Map(),
 		transactions: new MapOverlay(parent.transactions),
-		selectorAtoms: new Junction(parent.selectorAtoms.toJSON()),
-		selectorGraph: new Junction(parent.selectorGraph.toJSON(), {
-			makeContentKey: (...keys) => keys.sort().join(`:`),
-		}),
+		selectorAtoms: parent.selectorAtoms.overlay(),
+		selectorGraph: parent.selectorGraph.overlay(),
 		writableSelectors: new MapOverlay(parent.writableSelectors),
 		valueMap: new MapOverlay(parent.valueMap),
 		defaults: parent.defaults,
 		disposalTraces: store.disposalTraces.copy(),
 		molecules: new MapOverlay(parent.molecules),
-		moleculeGraph: new Junction(parent.moleculeGraph.toJSON(), {
-			makeContentKey: parent.moleculeGraph.makeContentKey,
-		}),
-		moleculeData: new Junction(parent.moleculeData.toJSON(), {
-			makeContentKey: parent.moleculeData.makeContentKey,
-		}),
-		moleculeJoins: new Junction(parent.moleculeJoins.toJSON(), {
-			makeContentKey: parent.moleculeJoins.makeContentKey,
-		}),
+		moleculeGraph: parent.moleculeGraph.overlay(),
+		moleculeData: parent.moleculeData.overlay(),
+		moleculeJoins: parent.moleculeJoins.overlay(),
 		miscResources: new MapOverlay(parent.miscResources),
 	}
 	const epoch = getEpochNumberOfAction(store, token.key)
