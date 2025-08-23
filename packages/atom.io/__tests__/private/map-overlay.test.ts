@@ -1,6 +1,6 @@
 import { MapOverlay } from "atom.io/internal"
 
-describe(`LazyMap`, () => {
+describe(`MapOverlay`, () => {
 	test(`get`, () => {
 		const base = new Map([
 			[`a`, 1],
