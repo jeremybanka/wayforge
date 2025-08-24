@@ -1,4 +1,6 @@
-export class LazyMap<K, V> extends Map<K, V> {
+import { SetOverlay } from "./set-overlay"
+
+export class RelationsOverlay<K, V extends Set<any>> extends Map<K, V> {
 	public deleted: Set<K> = new Set()
 	protected readonly source: Map<K, V>
 
@@ -14,7 +16,9 @@ export class LazyMap<K, V> extends Map<K, V> {
 		}
 		if (!this.deleted.has(key) && this.source.has(key)) {
 			const value = this.source.get(key)
-			return value
+			const valueOverlay = new SetOverlay(value as V) as unknown as V
+			super.set(key, valueOverlay)
+			return valueOverlay
 		}
 		return undefined
 	}
@@ -22,10 +26,6 @@ export class LazyMap<K, V> extends Map<K, V> {
 	public set(key: K, value: V): this {
 		this.deleted.delete(key)
 		return super.set(key, value)
-	}
-
-	public hasOwn(key: K): boolean {
-		return super.has(key)
 	}
 
 	public has(key: K): boolean {
