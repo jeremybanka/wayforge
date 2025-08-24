@@ -43,6 +43,7 @@ export function getFamilyOfToken<T, K extends Canonical>(
 	store: Store,
 	token: WritableToken<T, K>,
 ): WritableFamily<T, K>
+
 export function getFamilyOfToken<T, K extends Canonical>(
 	store: Store,
 	token: ReadableToken<T, K>,
