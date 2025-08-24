@@ -58,8 +58,10 @@ export function reduceReference<T, K extends Canonical>(
 		}
 	}
 
-	const isNewlyCreated = Boolean(brandNewToken)
-	if (isNewlyCreated) {
+	const isCounterfeit = `counterfeit` in token
+	const isNewlyCreated = Boolean(brandNewToken) && isCounterfeit === false
+	if (isNewlyCreated && family) {
+		family.subject.next({ type: `state_creation`, token, timestamp: Date.now() })
 		const target = newest(store)
 		if (token.family) {
 			if (isRootStore(target)) {
