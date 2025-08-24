@@ -1,7 +1,7 @@
 import type { ReadableFamilyToken, ReadableToken } from "atom.io"
 import { type Canonical, parseJson } from "atom.io/json"
 
-import type { ReadableFamily } from ".."
+import { isChildStore, isRootStore, newest, type ReadableFamily } from ".."
 import { seekInStore } from "../families"
 import { getFamilyOfToken } from "../families/get-family-of-token"
 import { mintInStore, MUST_CREATE } from "../families/mint-in-store"
@@ -55,6 +55,36 @@ export function reduceReference<T, K extends Canonical>(
 			token = brandNewToken
 		} else {
 			token = existingToken
+		}
+	}
+
+	const isNewlyCreated = Boolean(brandNewToken)
+	if (isNewlyCreated) {
+		const target = newest(store)
+		if (token.family) {
+			if (isRootStore(target)) {
+				switch (token.type) {
+					case `atom`:
+					case `mutable_atom`:
+						store.on.atomCreation.next(token)
+						break
+					case `writable_pure_selector`:
+					case `readonly_pure_selector`:
+					case `writable_held_selector`:
+					case `readonly_held_selector`:
+						store.on.selectorCreation.next(token)
+						break
+				}
+			} else if (
+				isChildStore(target) &&
+				target.on.transactionApplying.state === null
+			) {
+				target.transactionMeta.update.subEvents.push({
+					type: `state_creation`,
+					token,
+					timestamp: Date.now(),
+				})
+			}
 		}
 	}
 

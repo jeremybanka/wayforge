@@ -3,10 +3,8 @@ import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import type { ReadableFamily } from ".."
-import { newest } from "../lineage"
 import type { Store } from "../store"
 import { COUNTERFEIT, mint } from "../store"
-import { isChildStore, isRootStore } from "../transaction"
 
 export const MUST_CREATE: unique symbol = Symbol(`MUST_CREATE`)
 
@@ -28,14 +26,12 @@ export function mintInStore<T, K extends Canonical, Key extends K>(
 	key: Key,
 	mustCreate?: typeof MUST_CREATE,
 ): ReadableToken<T, K> {
-	let stateToken: ReadableToken<T, K>
-
-	const willCreate = mustCreate === MUST_CREATE
-
 	const stringKey = stringifyJson(key)
 	const molecule = store.molecules.get(stringKey)
-	if (!molecule && store.config.lifespan === `immortal`) {
-		const fakeToken = mint(family, key, COUNTERFEIT)
+
+	const cannotCreate = !molecule && store.config.lifespan === `immortal`
+
+	if (cannotCreate) {
 		store.logger.warn(
 			`💣`,
 			`key`,
@@ -44,42 +40,15 @@ export function mintInStore<T, K extends Canonical, Key extends K>(
 			family.type,
 			`"${family.key}"`,
 		)
-		return fakeToken
+		return mint(family, key, COUNTERFEIT)
 	}
 
-	if (willCreate) {
-		stateToken = family(key)
-		const target = newest(store)
-		if (stateToken.family) {
-			if (isRootStore(target)) {
-				switch (stateToken.type) {
-					case `atom`:
-					case `mutable_atom`:
-						store.on.atomCreation.next(stateToken)
-						break
-					case `writable_pure_selector`:
-					case `readonly_pure_selector`:
-					case `writable_held_selector`:
-					case `readonly_held_selector`:
-						store.on.selectorCreation.next(stateToken)
-						break
-				}
-			} else if (
-				isChildStore(target) &&
-				target.on.transactionApplying.state === null
-			) {
-				target.transactionMeta.update.subEvents.push({
-					type: `state_creation`,
-					token: stateToken,
-					timestamp: Date.now(),
-				})
-			}
-		}
+	if (mustCreate === MUST_CREATE) {
+		family(key)
 		if (molecule) {
-			target.moleculeData.set(stringKey, family.key)
+			store.moleculeData.set(stringKey, family.key)
 		}
-	} else {
-		stateToken = mint(family, key)
 	}
-	return stateToken
+
+	return mint(family, key)
 }
