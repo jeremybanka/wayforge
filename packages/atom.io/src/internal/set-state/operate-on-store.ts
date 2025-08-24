@@ -66,37 +66,6 @@ export function operateOnStore<T, New extends T>(
 			token = existingToken
 		}
 	}
-	const isCounterfeit = `counterfeit` in token
-	const isNewlyCreated = Boolean(brandNewToken) && isCounterfeit === false
-	if (isNewlyCreated && family) {
-		const stateCreationEvent: StateCreationEvent<ReadableToken<T>> = {
-			type: `state_creation`,
-			token,
-			timestamp: Date.now(),
-		}
-		const familySubject = family.subject as Subject<StateCreationEvent<any>>
-		familySubject.next(stateCreationEvent)
-		const innerTarget = newest(store)
-		if (token.family) {
-			if (isRootStore(innerTarget)) {
-				switch (token.type) {
-					case `atom`:
-					case `mutable_atom`:
-						store.on.atomCreation.next(token)
-						break
-					case `writable_pure_selector`:
-					case `writable_held_selector`:
-						store.on.selectorCreation.next(token)
-						break
-				}
-			} else if (
-				isChildStore(innerTarget) &&
-				innerTarget.on.transactionApplying.state === null
-			) {
-				innerTarget.transactionMeta.update.subEvents.push(stateCreationEvent)
-			}
-		}
-	}
 
 	const action = value === RESET_STATE ? `reset` : `set`
 
@@ -129,7 +98,39 @@ export function operateOnStore<T, New extends T>(
 		target = store as Store & { operation: OpenOperation }
 	}
 
-	if (`counterfeit` in token && `family` in token) {
+	const isCounterfeit = `counterfeit` in token
+	const isNewlyCreated = Boolean(brandNewToken) && isCounterfeit === false
+	if (isNewlyCreated && family) {
+		const stateCreationEvent: StateCreationEvent<ReadableToken<T>> = {
+			type: `state_creation`,
+			token,
+			timestamp: Date.now(),
+		}
+		const familySubject = family.subject as Subject<StateCreationEvent<any>>
+		familySubject.next(stateCreationEvent)
+		const innerTarget = newest(store)
+		if (token.family) {
+			if (isRootStore(innerTarget)) {
+				switch (token.type) {
+					case `atom`:
+					case `mutable_atom`:
+						store.on.atomCreation.next(token)
+						break
+					case `writable_pure_selector`:
+					case `writable_held_selector`:
+						store.on.selectorCreation.next(token)
+						break
+				}
+			} else if (
+				isChildStore(innerTarget) &&
+				innerTarget.on.transactionApplying.state === null
+			) {
+				innerTarget.transactionMeta.update.subEvents.push(stateCreationEvent)
+			}
+		}
+	}
+
+	if (isCounterfeit && `family` in token) {
 		const subKey = token.family.subKey
 		const disposal = store.disposalTraces.buffer.find(
 			(item) => item?.key === subKey,
