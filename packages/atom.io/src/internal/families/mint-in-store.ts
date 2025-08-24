@@ -1,17 +1,12 @@
-import type {
-	ReadableFamilyToken,
-	ReadableToken,
-	WritableFamilyToken,
-	WritableToken,
-} from "atom.io"
+import type { ReadableToken, WritableToken } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
+import type { ReadableFamily } from ".."
 import { newest } from "../lineage"
 import type { Store } from "../store"
 import { COUNTERFEIT, mint } from "../store"
 import { isChildStore, isRootStore } from "../transaction"
-import { initFamilyMemberInStore } from "./init-family-member"
 
 export const MUST_CREATE: unique symbol = Symbol(`MUST_CREATE`)
 
