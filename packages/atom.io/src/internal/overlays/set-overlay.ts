@@ -1,13 +1,13 @@
-export class SetOverlay<K> extends Set<K> {
-	public deleted: Set<K> = new Set()
-	public source: Set<K>
+export class SetOverlay<T> extends Set<T> {
+	public deleted: Set<T> = new Set()
+	public source: Set<T>
 
-	public constructor(source: Set<K>) {
+	public constructor(source: Set<T>) {
 		super()
 		this.source = source
 	}
 
-	public add(value: K): this {
+	public add(value: T): this {
 		if (this.source.has(value)) {
 			this.deleted.delete(value)
 			return this
@@ -15,15 +15,15 @@ export class SetOverlay<K> extends Set<K> {
 		return super.add(value)
 	}
 
-	public hasOwn(key: K): boolean {
-		return super.has(key)
+	public hasOwn(member: T): boolean {
+		return super.has(member)
 	}
 
-	public has(key: K): boolean {
+	public has(key: T): boolean {
 		return !this.deleted.has(key) && (super.has(key) || this.source.has(key))
 	}
 
-	public delete(key: K): boolean {
+	public delete(key: T): boolean {
 		if (this.source.has(key)) {
 			this.deleted.add(key)
 			return true
@@ -31,7 +31,12 @@ export class SetOverlay<K> extends Set<K> {
 		return super.delete(key)
 	}
 
-	public *[Symbol.iterator](): SetIterator<K> {
+	public clear(): void {
+		this.deleted = new Set(this.source)
+		super.clear()
+	}
+
+	public *[Symbol.iterator](): SetIterator<T> {
 		yield* super[Symbol.iterator]()
 		for (const value of this.source) {
 			if (!this.deleted.has(value)) {
@@ -40,7 +45,7 @@ export class SetOverlay<K> extends Set<K> {
 		}
 	}
 
-	public *iterateOwn(): SetIterator<K> {
+	public *iterateOwn(): SetIterator<T> {
 		yield* super[Symbol.iterator]()
 	}
 
