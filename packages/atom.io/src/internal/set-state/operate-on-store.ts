@@ -98,8 +98,28 @@ export function operateOnStore<T, New extends T>(
 		target = store as Store & { operation: OpenOperation }
 	}
 
-	const isCounterfeit = `counterfeit` in token
-	const isNewlyCreated = Boolean(brandNewToken) && isCounterfeit === false
+	if (`counterfeit` in token && `family` in token) {
+		const subKey = token.family.subKey
+		const disposal = store.disposalTraces.buffer.find(
+			(item) => item?.key === subKey,
+		)
+		store.logger.error(
+			`❌`,
+			token.type,
+			token.key,
+			`could not be`,
+			action,
+			`because key`,
+			subKey,
+			`is not allocated.`,
+			disposal
+				? `this key was previously disposed:${disposal.trace}`
+				: `(no previous disposal trace found)`,
+		)
+		return
+	}
+
+	const isNewlyCreated = Boolean(brandNewToken)
 	if (isNewlyCreated && family) {
 		const stateCreationEvent: StateCreationEvent<ReadableToken<T>> = {
 			type: `state_creation`,
@@ -128,27 +148,6 @@ export function operateOnStore<T, New extends T>(
 				innerTarget.transactionMeta.update.subEvents.push(stateCreationEvent)
 			}
 		}
-	}
-
-	if (isCounterfeit && `family` in token) {
-		const subKey = token.family.subKey
-		const disposal = store.disposalTraces.buffer.find(
-			(item) => item?.key === subKey,
-		)
-		store.logger.error(
-			`❌`,
-			token.type,
-			token.key,
-			`could not be`,
-			action,
-			`because key`,
-			subKey,
-			`is not allocated.`,
-			disposal
-				? `this key was previously disposed:${disposal.trace}`
-				: `(no previous disposal trace found)`,
-		)
-		return
 	}
 
 	const state = withdraw(target, token)
