@@ -33,7 +33,7 @@ export function operateOnStore<T, New extends T>(
 	let existingToken: WritableToken<T> | undefined
 	let brandNewToken: WritableToken<T> | undefined
 	let token: WritableToken<T>
-	let family: WritableFamily<T, Canonical> | null
+	let family: WritableFamily<T, Canonical> | undefined
 	let key: Canonical | null
 	let value: New | typeof RESET_STATE | ((oldValue: T) => New)
 	if (params.length === 2) {
@@ -60,8 +60,10 @@ export function operateOnStore<T, New extends T>(
 			token = existingToken
 		}
 	}
-	const isNewlyCreated = Boolean(brandNewToken)
-	if (isNewlyCreated) {
+	const isCounterfeit = `counterfeit` in token
+	const isNewlyCreated = Boolean(brandNewToken) && isCounterfeit === false
+	if (isNewlyCreated && family) {
+		family.subject.next({ type: `state_creation`, token, timestamp: Date.now() })
 		const innerTarget = newest(store)
 		if (token.family) {
 			if (isRootStore(innerTarget)) {
