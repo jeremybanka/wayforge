@@ -1,7 +1,12 @@
-import type { ReadableFamilyToken, ReadableToken } from "atom.io"
+import type {
+	ReadableFamilyToken,
+	ReadableToken,
+	StateCreationEvent,
+} from "atom.io"
 import { type Canonical, parseJson } from "atom.io/json"
 
-import { isChildStore, isRootStore, newest, type ReadableFamily } from ".."
+import type { ReadableFamily, Subject } from ".."
+import { isChildStore, isRootStore, newest } from ".."
 import { seekInStore } from "../families"
 import { getFamilyOfToken } from "../families/get-family-of-token"
 import { mintInStore, MUST_CREATE } from "../families/mint-in-store"
@@ -61,7 +66,13 @@ export function reduceReference<T, K extends Canonical>(
 	const isCounterfeit = `counterfeit` in token
 	const isNewlyCreated = Boolean(brandNewToken) && isCounterfeit === false
 	if (isNewlyCreated && family) {
-		family.subject.next({ type: `state_creation`, token, timestamp: Date.now() })
+		const stateCreationEvent: StateCreationEvent<ReadableToken<T>> = {
+			type: `state_creation`,
+			token,
+			timestamp: Date.now(),
+		}
+		const familySubject = family.subject as Subject<StateCreationEvent<any>>
+		familySubject.next(stateCreationEvent)
 		const target = newest(store)
 		if (token.family) {
 			if (isRootStore(target)) {
@@ -81,11 +92,7 @@ export function reduceReference<T, K extends Canonical>(
 				isChildStore(target) &&
 				target.on.transactionApplying.state === null
 			) {
-				target.transactionMeta.update.subEvents.push({
-					type: `state_creation`,
-					token,
-					timestamp: Date.now(),
-				})
+				target.transactionMeta.update.subEvents.push(stateCreationEvent)
 			}
 		}
 	}

@@ -1,7 +1,13 @@
-import type { WritableFamilyToken, WritableToken } from "atom.io"
+import type {
+	ReadableToken,
+	StateCreationEvent,
+	WritableFamilyToken,
+	WritableToken,
+} from "atom.io"
 import { type Canonical, parseJson } from "atom.io/json"
 
-import { isChildStore, isRootStore, newest, type WritableFamily } from ".."
+import type { Subject, WritableFamily } from ".."
+import { isChildStore, isRootStore, newest } from ".."
 import { seekInStore } from "../families"
 import { getFamilyOfToken } from "../families/get-family-of-token"
 import { mintInStore, MUST_CREATE } from "../families/mint-in-store"
@@ -63,7 +69,13 @@ export function operateOnStore<T, New extends T>(
 	const isCounterfeit = `counterfeit` in token
 	const isNewlyCreated = Boolean(brandNewToken) && isCounterfeit === false
 	if (isNewlyCreated && family) {
-		family.subject.next({ type: `state_creation`, token, timestamp: Date.now() })
+		const stateCreationEvent: StateCreationEvent<ReadableToken<T>> = {
+			type: `state_creation`,
+			token,
+			timestamp: Date.now(),
+		}
+		const familySubject = family.subject as Subject<StateCreationEvent<any>>
+		familySubject.next(stateCreationEvent)
 		const innerTarget = newest(store)
 		if (token.family) {
 			if (isRootStore(innerTarget)) {
@@ -81,11 +93,7 @@ export function operateOnStore<T, New extends T>(
 				isChildStore(innerTarget) &&
 				innerTarget.on.transactionApplying.state === null
 			) {
-				innerTarget.transactionMeta.update.subEvents.push({
-					type: `state_creation`,
-					token,
-					timestamp: Date.now(),
-				})
+				innerTarget.transactionMeta.update.subEvents.push(stateCreationEvent)
 			}
 		}
 	}
