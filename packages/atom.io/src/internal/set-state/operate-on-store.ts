@@ -1,7 +1,7 @@
 import type { WritableFamilyToken, WritableToken } from "atom.io"
 import { type Canonical, parseJson } from "atom.io/json"
 
-import type { WritableFamily } from ".."
+import { isChildStore, isRootStore, newest, type WritableFamily } from ".."
 import { seekInStore } from "../families"
 import { getFamilyOfToken } from "../families/get-family-of-token"
 import { mintInStore, MUST_CREATE } from "../families/mint-in-store"
@@ -58,6 +58,33 @@ export function operateOnStore<T, New extends T>(
 			token = brandNewToken = mintInStore(store, family, key, MUST_CREATE)
 		} else {
 			token = existingToken
+		}
+	}
+	const isNewlyCreated = Boolean(brandNewToken)
+	if (isNewlyCreated) {
+		const innerTarget = newest(store)
+		if (token.family) {
+			if (isRootStore(innerTarget)) {
+				switch (token.type) {
+					case `atom`:
+					case `mutable_atom`:
+						store.on.atomCreation.next(token)
+						break
+					case `writable_pure_selector`:
+					case `writable_held_selector`:
+						store.on.selectorCreation.next(token)
+						break
+				}
+			} else if (
+				isChildStore(innerTarget) &&
+				innerTarget.on.transactionApplying.state === null
+			) {
+				innerTarget.transactionMeta.update.subEvents.push({
+					type: `state_creation`,
+					token,
+					timestamp: Date.now(),
+				})
+			}
 		}
 	}
 
@@ -120,7 +147,7 @@ export function operateOnStore<T, New extends T>(
 	} else {
 		protoUpdate = setAtomOrSelector(target, state, value)
 	}
-	const isNewlyCreated = Boolean(brandNewToken)
+
 	dispatchOrDeferStateUpdate(target, state, protoUpdate, isNewlyCreated)
 
 	if (opMode === OWN_OP) {
