@@ -17,19 +17,19 @@ export const MUST_CREATE: unique symbol = Symbol(`MUST_CREATE`)
 
 export function mintInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
-	familyToken: WritableFamilyToken<T, K>,
+	family: ReadableFamily<T, K>,
 	key: Key,
 	mustCreate?: typeof MUST_CREATE,
 ): WritableToken<T, K>
 export function mintInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
-	familyToken: ReadableFamilyToken<T, K>,
+	family: ReadableFamily<T, K>,
 	key: Key,
 	mustCreate?: typeof MUST_CREATE,
 ): ReadableToken<T, K>
 export function mintInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
-	familyToken: ReadableFamilyToken<T, K>,
+	family: ReadableFamily<T, K>,
 	key: Key,
 	mustCreate?: typeof MUST_CREATE,
 ): ReadableToken<T, K> {
@@ -40,20 +40,20 @@ export function mintInStore<T, K extends Canonical, Key extends K>(
 	const stringKey = stringifyJson(key)
 	const molecule = store.molecules.get(stringKey)
 	if (!molecule && store.config.lifespan === `immortal`) {
-		const fakeToken = mint(familyToken, key, COUNTERFEIT)
+		const fakeToken = mint(family, key, COUNTERFEIT)
 		store.logger.warn(
 			`💣`,
 			`key`,
 			stringKey,
 			`was used to mint a counterfeit token for`,
-			familyToken.type,
-			`"${familyToken.key}"`,
+			family.type,
+			`"${family.key}"`,
 		)
 		return fakeToken
 	}
 
 	if (willCreate) {
-		stateToken = initFamilyMemberInStore(store, familyToken, key)
+		stateToken = family(key)
 		const target = newest(store)
 		if (stateToken.family) {
 			if (isRootStore(target)) {
@@ -81,10 +81,10 @@ export function mintInStore<T, K extends Canonical, Key extends K>(
 			}
 		}
 		if (molecule) {
-			target.moleculeData.set(stringKey, familyToken.key)
+			target.moleculeData.set(stringKey, family.key)
 		}
 	} else {
-		stateToken = mint(familyToken, key)
+		stateToken = mint(family, key)
 	}
 	return stateToken
 }
