@@ -9,12 +9,14 @@ import type {
 import { parseJson, stringifyJson } from "atom.io/json"
 
 import { disposeFromStore } from "../families"
+import { getFamilyOfToken } from "../families/get-family-of-token"
 import { getFromStore } from "../get-state"
 import {
 	allocateIntoStore,
 	claimWithinStore,
 	deallocateFromStore,
 } from "../molecule"
+import { setIntoStore } from "../set-state"
 import type { Store } from "../store"
 
 export function ingestCreationEvent(
@@ -58,12 +60,11 @@ function createInStore(
 	store: Store,
 	event: StateCreationEvent<any> | StateDisposalEvent<any>,
 ): void {
-	const { family: familyMeta } = event.token
-	if (familyMeta) {
-		const family = store.families.get(familyMeta.key)
-		if (family) {
-			getFromStore(store, family, parseJson(familyMeta.subKey))
-		}
+	const { token } = event
+	if (event.subType === `writable` && event.value) {
+		setIntoStore(store, token, event.value)
+	} else {
+		getFromStore(store, token)
 	}
 }
 

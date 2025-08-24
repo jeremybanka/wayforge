@@ -13,6 +13,5 @@ export function ingestAtomUpdateEvent(
 		update: { newValue, oldValue },
 	} = event
 	const value = applying === `newValue` ? newValue : oldValue
-
 	setIntoStore(store, token, value)
 }

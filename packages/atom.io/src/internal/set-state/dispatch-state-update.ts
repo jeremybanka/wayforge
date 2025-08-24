@@ -30,10 +30,12 @@ export function dispatchOrDeferStateUpdate<T>(
 ): void {
 	const token = deposit(state)
 	if (stateIsNewlyCreated && family) {
-		const stateCreationEvent: StateCreationEvent<ReadableToken<T>> = {
+		const stateCreationEvent: StateCreationEvent<any> = {
 			type: `state_creation`,
+			subType: `writable`,
 			token,
 			timestamp: Date.now(),
+			value: newValue,
 		}
 		const familySubject = family.subject as Subject<StateCreationEvent<any>>
 		familySubject.next(stateCreationEvent)
