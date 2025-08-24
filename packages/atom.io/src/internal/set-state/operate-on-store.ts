@@ -1,6 +1,7 @@
 import type { WritableFamilyToken, WritableToken } from "atom.io"
 import { type Canonical, parseJson } from "atom.io/json"
 
+import type { WritableFamily } from ".."
 import { seekInStore } from "../families"
 import { getFamilyOfToken } from "../families/get-family-of-token"
 import { mintInStore, MUST_CREATE } from "../families/mint-in-store"
@@ -32,7 +33,7 @@ export function operateOnStore<T, New extends T>(
 	let existingToken: WritableToken<T> | undefined
 	let brandNewToken: WritableToken<T> | undefined
 	let token: WritableToken<T>
-	let family: WritableFamilyToken<T, Canonical> | null
+	let family: WritableFamily<T, Canonical> | null
 	let key: Canonical | null
 	let value: New | typeof RESET_STATE | ((oldValue: T) => New)
 	if (params.length === 2) {
@@ -50,7 +51,7 @@ export function operateOnStore<T, New extends T>(
 			}
 		}
 	} else {
-		family = params[0]
+		family = withdraw(store, params[0])
 		key = params[1]
 		value = params[2]
 		existingToken = seekInStore(store, family, key)
