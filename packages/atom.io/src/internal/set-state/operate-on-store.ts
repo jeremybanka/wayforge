@@ -119,6 +119,14 @@ export function operateOnStore<T, New extends T>(
 		return
 	}
 
+	const state = withdraw(target, token)
+	let protoUpdate: [T, T]
+	if (value === RESET_STATE) {
+		protoUpdate = resetAtomOrSelector(target, state)
+	} else {
+		protoUpdate = setAtomOrSelector(target, state, value)
+	}
+
 	const isNewlyCreated = Boolean(brandNewToken)
 	if (isNewlyCreated && family) {
 		const stateCreationEvent: StateCreationEvent<ReadableToken<T>> = {
@@ -149,15 +157,6 @@ export function operateOnStore<T, New extends T>(
 			}
 		}
 	}
-
-	const state = withdraw(target, token)
-	let protoUpdate: [T, T]
-	if (value === RESET_STATE) {
-		protoUpdate = resetAtomOrSelector(target, state)
-	} else {
-		protoUpdate = setAtomOrSelector(target, state, value)
-	}
-
 	dispatchOrDeferStateUpdate(target, state, protoUpdate, isNewlyCreated)
 
 	if (opMode === OWN_OP) {
