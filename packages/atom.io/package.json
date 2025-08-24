@@ -16,7 +16,7 @@
 		"directory": "packages/atom.io"
 	},
 	"scripts": {
-		"manifest": "tsx __scripts__/manifest-build.node.ts",
+		"manifest": "./__scripts__/manifest-build.node.ts",
 		"build": "tsdown && bun ./__scripts__/build-sort.bun.ts",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
@@ -30,7 +30,7 @@
 		"test:build": "bun run test:manifest && cross-env IMPORT=dist vitest run",
 		"test:once": "echo tested built code",
 		"test:once:public": "cross-env IMPORT=dist vitest run public",
-		"test:manifest": "tsx __scripts__/manifest-test.node.ts",
+		"test:manifest": "./__scripts__/manifest-test.node.ts",
 		"test:semver": "break-check --verbose",
 		"postversion": "biome format --write package.json",
 		"storybook": "storybook dev -p 6006",

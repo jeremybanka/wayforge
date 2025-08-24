@@ -2,9 +2,9 @@ import { execSync } from "node:child_process"
 import fs from "node:fs"
 import url from "node:url"
 
-import { PACKAGE_JSON_PATH } from "./constants"
-import discoverSubmodules from "./discover-submodules"
-import { createLogger } from "./logger"
+import { PACKAGE_JSON_PATH } from "./constants.ts"
+import discoverSubmodules from "./discover-submodules.ts"
+import { createLogger } from "./logger.ts"
 
 const FILEPATH = url.fileURLToPath(import.meta.url)
 const SCRIPT_NAME = FILEPATH.split(`/`).pop()?.split(`.`)[0] ?? `unknown_file`
