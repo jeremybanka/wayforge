@@ -12,6 +12,7 @@ import { stringifyJson } from "atom.io/json"
 
 import type { RegularAtomFamily } from ".."
 import { createRegularAtom } from "../atom"
+import { isFn } from "../is-fn"
 import { newest } from "../lineage"
 import type { Store } from "../store"
 import { Subject } from "../subject"
@@ -47,7 +48,7 @@ export function createRegularAtomFamily<T, K extends Canonical>(
 		const def = options.default
 		const individualOptions: RegularAtomOptions<T> = {
 			key: fullKey,
-			default: def instanceof Function ? () => def(key) : def,
+			default: isFn(def) ? () => def(key) : def,
 		}
 		if (options.effects) {
 			individualOptions.effects = options.effects(key)
@@ -67,7 +68,7 @@ export function createRegularAtomFamily<T, K extends Canonical>(
 	}) satisfies RegularAtomFamily<T, K>
 
 	store.families.set(options.key, atomFamily)
-	if (options.default instanceof Function === false) {
+	if (isFn(options.default) === false) {
 		store.defaults.set(options.key, options.default)
 	}
 	return familyToken
