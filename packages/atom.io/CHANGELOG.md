@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.39.1
+
+### Patch Changes
+
+- c9c6341: 🐛 Fixed issue where, if a selector was set to a Promise, that Promise would be given out as the newValue without being merged into a manager for further updates that may occur before it is resolved.
+- c9c6341: 🚀 Avoid recomputing if possible when a selector is set.
+
 ## 0.39.0
 
 ### Minor Changes
