@@ -1,12 +1,12 @@
 import type { TimelineToken } from "atom.io"
 
 import {
-	ingestAtomUpdate,
+	ingestAtomUpdateEvent,
 	ingestCreationEvent,
 	ingestDisposalEvent,
-	ingestSelectorUpdate,
-	ingestTransactionUpdate,
-} from "../ingest-updates"
+	ingestSelectorUpdateEvent,
+	ingestTransactionOutcomeEvent,
+} from "../events"
 import type { Store } from "../store"
 
 export const timeTravel = (
@@ -50,28 +50,28 @@ export const timeTravel = (
 		--timelineData.at
 	}
 
-	const update = timelineData.history[timelineData.at]
+	const event = timelineData.history[timelineData.at]
 	const applying = action === `redo` ? `newValue` : `oldValue`
 
-	switch (update.type) {
+	switch (event.type) {
 		case `atom_update`: {
-			ingestAtomUpdate(applying, update, store)
+			ingestAtomUpdateEvent(store, event, applying)
 			break
 		}
 		case `selector_update`: {
-			ingestSelectorUpdate(applying, update, store)
+			ingestSelectorUpdateEvent(store, event, applying)
 			break
 		}
 		case `transaction_outcome`: {
-			ingestTransactionUpdate(applying, update, store)
+			ingestTransactionOutcomeEvent(store, event, applying)
 			break
 		}
 		case `state_creation`: {
-			ingestCreationEvent(update, applying, store)
+			ingestCreationEvent(store, event, applying)
 			break
 		}
 		case `state_disposal`: {
-			ingestDisposalEvent(update, applying, store)
+			ingestDisposalEvent(store, event, applying)
 			break
 		}
 		case `molecule_creation`:

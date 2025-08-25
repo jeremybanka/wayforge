@@ -188,7 +188,7 @@ describe(`two timelines attempt to own the same atom`, () => {
 			aCountTimeline.key,
 			`Failed to add atom "counts("a")" because its family "counts" already belongs to timeline "counts_history"`,
 		)
-		expect(countTimelineData?.history).toHaveLength(2)
+		expect(countTimelineData?.history).toHaveLength(1)
 		expect(aCountTimelineData?.history).toHaveLength(0)
 
 		expect(logger.warn).not.toHaveBeenCalled()

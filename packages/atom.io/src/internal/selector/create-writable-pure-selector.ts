@@ -21,6 +21,8 @@ export function createWritablePureSelector<T>(
 	const covered = new Set<string>()
 	const key = options.key
 	const type = `writable_pure_selector` as const
+	store.logger.info(`🔨`, type, key, `is being created`)
+
 	const setterToolkit = registerSelector(target, type, key, covered)
 	const { find, get, json } = setterToolkit
 	const getterToolkit = { find, get, json }
@@ -57,8 +59,6 @@ export function createWritablePureSelector<T>(
 	if (family) mySelector.family = family
 
 	target.writableSelectors.set(key, mySelector)
-	const initialValue = getFrom(target)
-	store.logger.info(`✨`, mySelector.type, mySelector.key, `=`, initialValue)
 
 	const token: WritablePureSelectorToken<T> = { key, type }
 	if (family) token.family = family
