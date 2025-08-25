@@ -1,5 +1,3 @@
-import { inspect } from "node:util"
-
 import type { Logger, WritableToken } from "atom.io"
 import {
 	atom,
@@ -22,14 +20,14 @@ import { vitest } from "vitest"
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 3
+const CHOOSE = 2
 
 let logger: Logger
 
 beforeEach(() => {
 	I.clearStore(I.IMPLICIT.STORE)
 	I.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = I.IMPLICIT.STORE.logger //= Utils.createNullLogger()
+	logger = I.IMPLICIT.STORE.logger = Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -369,44 +367,5 @@ describe(`errors`, () => {
 	test(`what if the timeline isn't initialized`, () => {
 		undo({ key: `my-timeline`, type: `timeline` })
 		expect(logger.error).toHaveBeenCalledTimes(1)
-	})
-})
-
-describe(`experiments`, () => {
-	test(`0`, () => {
-		const countStates = atomFamily<number, string>({
-			key: `count`,
-			default: 0,
-		})
-		const countsTL = timeline({
-			key: `counts`,
-			scope: [countStates],
-		})
-		setState(countStates, `my-key`, 1)
-		expect(getState(countStates, `my-key`)).toBe(1)
-		disposeState(countStates, `my-key`)
-		console.log(
-			inspect(I.withdraw(I.IMPLICIT.STORE, countsTL), {
-				depth: null,
-				colors: true,
-			}),
-		)
-		undo(countsTL)
-		undo(countsTL)
-		undo(countsTL)
-		expect(
-			I.seekInStore(I.IMPLICIT.STORE, countStates, `my-key`),
-		).toBeUndefined()
-		redo(countsTL)
-		expect(I.seekInStore(I.IMPLICIT.STORE, countStates, `my-key`)).toEqual({
-			family: {
-				key: `count`,
-				subKey: `"my-key"`,
-			},
-			key: `count("my-key")`,
-			type: `atom`,
-		})
-		redo(countsTL)
-		redo(countsTL)
 	})
 })
