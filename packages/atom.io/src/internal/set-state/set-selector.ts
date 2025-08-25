@@ -19,12 +19,12 @@ export function setSelector<T>(
 	switch (selector.type) {
 		case `writable_pure_selector`:
 			oldValue = readOrComputeValue(target, selector, `mut`)
-			newValue = become(next)(oldValue)
+			newValue = become(next, oldValue)
 			newValue = writeToCache(target, selector, newValue)
 			break
 		case `writable_held_selector`:
 			constant = selector.const
-			become(next)(constant)
+			become(next, constant)
 			oldValue = constant
 			newValue = constant
 	}

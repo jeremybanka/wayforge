@@ -12,7 +12,7 @@ export const setAtom = <T>(
 	next: T | ((oldValue: T) => T),
 ): ProtoUpdate<T> => {
 	const oldValue = readOrComputeValue(target, atom, `mut`)
-	let newValue = become(next)(oldValue)
+	let newValue = become(next, oldValue)
 	target.logger.info(`⭐`, `atom`, atom.key, `setting value`, newValue)
 	newValue = writeToCache(target, atom, newValue)
 	markDone(target, atom.key)

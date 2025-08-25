@@ -14,7 +14,7 @@ export const makePropertySetters = <T extends Json.Tree.Object>(
 		toEntries(data).map(([key, value]) => [
 			key,
 			(newValue: unknown) => {
-				set({ ...data, [key]: become(newValue)(value) })
+				set({ ...data, [key]: become(newValue, value) })
 			},
 		]),
 	)
