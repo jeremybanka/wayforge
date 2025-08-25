@@ -1,3 +1,5 @@
+import { inspect } from "node:util"
+
 import type { Logger, WritableToken } from "atom.io"
 import {
 	atom,
@@ -8,6 +10,7 @@ import {
 	redo,
 	runTransaction,
 	selector,
+	selectorFamily,
 	setState,
 	subscribe,
 	timeline,
@@ -20,14 +23,14 @@ import { vitest } from "vitest"
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 2
+const CHOOSE = 3
 
 let logger: Logger
 
 beforeEach(() => {
 	I.clearStore(I.IMPLICIT.STORE)
 	I.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = I.IMPLICIT.STORE.logger = Utils.createNullLogger()
+	logger = I.IMPLICIT.STORE.logger //= Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -197,6 +200,12 @@ describe(`timeline`, () => {
 		subscribe(a, Utils.stdout)
 
 		setState(product_ab, 1)
+		console.log(
+			inspect(I.withdraw(I.IMPLICIT.STORE, timeline_ab), {
+				colors: true,
+				depth: null,
+			}),
+		)
 		undo(timeline_ab)
 
 		expect(getState(a)).toBe(3)
@@ -208,6 +217,42 @@ describe(`timeline`, () => {
 
 		expect(getState(a)).toBe(1)
 		expect(getState(b)).toBe(1)
+	})
+	test.only(`creating selectors with setState`, () => {
+		const numbers = atomFamily<number, string>({
+			key: `number`,
+			default: 0,
+		})
+
+		const products = selectorFamily<number, [a: string, b: string]>({
+			key: `product`,
+			get:
+				([a, b]) =>
+				({ get }) => {
+					return get(numbers, a) * get(numbers, b)
+				},
+			set:
+				([a, b]) =>
+				({ set }, value) => {
+					set(numbers, a, Math.sqrt(value))
+					set(numbers, b, Math.sqrt(value))
+				},
+		})
+
+		const timeline_ab = timeline({
+			key: `numbers over time`,
+			scope: [numbers],
+		})
+
+		setState(products, [`a`, `b`], 9)
+		console.log(
+			inspect(I.withdraw(I.IMPLICIT.STORE, timeline_ab), {
+				colors: true,
+				depth: null,
+			}),
+		)
+		expect(I.withdraw(I.IMPLICIT.STORE, timeline_ab).history).toHaveLength(1)
+		// undo(timeline_ab)
 	})
 	test(`history erasure from the past`, () => {
 		const nameState = atom<string>({
