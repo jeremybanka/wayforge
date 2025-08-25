@@ -30,7 +30,7 @@
 		"next": "15.5.0",
 		"react": "19.1.1",
 		"react-dom": "19.1.1",
-		"react-syntax-highlighter": "15.6.3"
+		"react-syntax-highlighter": "15.6.5"
 	},
 	"devDependencies": {
 		"@mdx-js/loader": "3.1.0",
