@@ -34,7 +34,7 @@ export function applyTransaction<F extends Fn>(
 		`🛄`,
 		`transaction`,
 		child.transactionMeta.update.token.key,
-		`Applying transaction with ${updates.length} updates:`,
+		`applying ${updates.length} subEvents:`,
 		updates,
 	)
 
@@ -55,7 +55,7 @@ export function applyTransaction<F extends Fn>(
 			`🛬`,
 			`transaction`,
 			child.transactionMeta.update.token.key,
-			`Finished applying transaction.`,
+			`applied`,
 		)
 	} else if (isChildStore(parent)) {
 		parent.transactionMeta.update.subEvents.push(child.transactionMeta.update)

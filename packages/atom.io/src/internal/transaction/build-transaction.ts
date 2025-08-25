@@ -97,7 +97,7 @@ export const buildTransaction = (
 		`🛫`,
 		`transaction`,
 		token.key,
-		`Building transaction with params:`,
+		`building with params:`,
 		params,
 	)
 	return child

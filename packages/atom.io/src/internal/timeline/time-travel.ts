@@ -85,7 +85,7 @@ export const timeTravel = (
 	timelineData.subject.next(action)
 	timelineData.timeTraveling = null
 	store.logger.info(
-		`⏹️`,
+		`⏸️`,
 		`timeline`,
 		token.key,
 		`"${token.key}" is now at ${timelineData.at} / ${timelineData.history.length}`,
