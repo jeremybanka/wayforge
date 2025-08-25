@@ -1,4 +1,4 @@
-import type { WritableSelector } from ".."
+import { readOrComputeValue, type WritableSelector } from ".."
 import { writeToCache } from "../caching"
 import { markDone, type OpenOperation } from "../operation"
 import type { Store } from "../store"
@@ -17,7 +17,7 @@ export function setSelector<T>(
 
 	switch (selector.type) {
 		case `writable_pure_selector`:
-			oldValue = selector.getFrom(target)
+			oldValue = readOrComputeValue(target, selector, `mut`)
 			newValue = become(next)(oldValue)
 			newValue = writeToCache(target, selector, newValue)
 			break
