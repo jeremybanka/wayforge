@@ -3,16 +3,15 @@ import type { AtomUpdateEvent } from "atom.io"
 import { setIntoStore } from "../set-state"
 import type { Store } from "../store"
 
-export function ingestAtomUpdate(
-	applying: `newValue` | `oldValue`,
-	atomUpdate: AtomUpdateEvent<any>,
+export function ingestAtomUpdateEvent(
 	store: Store,
+	event: AtomUpdateEvent<any>,
+	applying: `newValue` | `oldValue`,
 ): void {
 	const {
 		token,
 		update: { newValue, oldValue },
-	} = atomUpdate
+	} = event
 	const value = applying === `newValue` ? newValue : oldValue
-
 	setIntoStore(store, token, value)
 }

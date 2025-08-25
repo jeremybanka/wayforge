@@ -7,11 +7,12 @@ import type {
 	ReadableToken,
 	SelectorToken,
 	TransactionToken,
+	WritableToken,
 } from "./tokens"
 import type { TokenType } from "./validators"
 
 export type StateUpdate<T> = {
-	readonly oldValue: ViewOf<T>
+	readonly oldValue?: ViewOf<T>
 	readonly newValue: ViewOf<T>
 }
 
@@ -32,15 +33,25 @@ export type TimelineSelectorUpdateEvent<A extends TimelineManageable> = {
 export type StateLifecycleEvent<R extends ReadableToken<any>> =
 	| StateCreationEvent<R>
 	| StateDisposalEvent<R>
-export type StateCreationEvent<R extends ReadableToken<any>> = {
+export type StateCreationEvent<R extends ReadableToken<any>> =
+	| ReadableStateCreationEvent<R>
+	| (R extends WritableToken<any> ? WritableStateCreationEvent<R> : never)
+export type ReadableStateCreationEvent<R extends ReadableToken<any>> = {
 	type: `state_creation`
+	subType: `readable`
 	token: R
 	timestamp: number
+}
+export type WritableStateCreationEvent<W extends WritableToken<any>> = {
+	type: `state_creation`
+	subType: `writable`
+	token: W
+	timestamp: number
+	value?: TokenType<W>
 }
 export type StateDisposalEvent<R extends ReadableToken<any>> =
 	| AtomDisposalEvent<R>
 	| SelectorDisposalEvent<R>
-
 export type AtomDisposalEvent<R extends ReadableToken<any>> = {
 	type: `state_disposal`
 	subType: `atom`

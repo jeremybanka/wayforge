@@ -21,6 +21,8 @@ export function createReadonlyHeldSelector<T extends object>(
 	const covered = new Set<string>()
 	const { key, const: constant } = options
 	const type = `readonly_held_selector` as const
+	store.logger.info(`🔨`, type, key, `is being created`)
+
 	const { get, find, json } = registerSelector(target, type, key, covered)
 
 	const getFrom = (innerTarget: Store) => {
@@ -35,6 +37,7 @@ export function createReadonlyHeldSelector<T extends object>(
 		innerTarget.selectorAtoms.delete(key)
 		options.get({ get, find, json }, constant)
 		writeToCache(innerTarget, readonlySelector, constant)
+		store.logger.info(`✨`, type, key, `=`, constant)
 		covered.clear()
 		return constant
 	}
@@ -46,17 +49,11 @@ export function createReadonlyHeldSelector<T extends object>(
 		getFrom,
 		install: (s: Store) => createReadonlyHeldSelector(s, options, family),
 	}
-	if (family) {
-		readonlySelector.family = family
-	}
+	if (family) readonlySelector.family = family
+
 	target.readonlySelectors.set(key, readonlySelector)
-	store.logger.info(`✨`, type, key, `=`, constant)
-	const token: ReadonlyHeldSelectorToken<T> = {
-		key,
-		type,
-	}
-	if (family) {
-		token.family = family
-	}
+	const token: ReadonlyHeldSelectorToken<T> = { key, type }
+	if (family) token.family = family
+
 	return token
 }

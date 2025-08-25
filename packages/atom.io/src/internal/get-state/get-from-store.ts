@@ -20,10 +20,9 @@ export function getFromStore(
 		| [token: ReadableFamilyToken<any, any>, key: Canonical]
 		| [token: ReadableToken<any>]
 ): any {
-	const { token, familyToken, subKey } = reduceReference(store, ...params)
+	const { token, family, subKey } = reduceReference(store, ...params)
 
-	if (`counterfeit` in token && familyToken && subKey) {
-		const family = withdraw(store, familyToken)
+	if (`counterfeit` in token && family && subKey) {
 		return getFallback(store, token, family, subKey)
 	}
 	const state = withdraw(store, token)

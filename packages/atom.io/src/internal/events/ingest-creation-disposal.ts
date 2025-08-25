@@ -9,45 +9,46 @@ import type {
 import { parseJson, stringifyJson } from "atom.io/json"
 
 import { disposeFromStore } from "../families"
-import { mintInStore, MUST_CREATE } from "../families/mint-in-store"
+import { getFromStore } from "../get-state"
 import {
 	allocateIntoStore,
 	claimWithinStore,
 	deallocateFromStore,
 } from "../molecule"
+import { setIntoStore } from "../set-state"
 import type { Store } from "../store"
 
 export function ingestCreationEvent(
-	update: StateCreationEvent<any>,
-	applying: `newValue` | `oldValue`,
 	store: Store,
+	event: StateCreationEvent<any>,
+	applying: `newValue` | `oldValue`,
 ): void {
 	switch (applying) {
 		case `newValue`: {
-			createInStore(update, store)
+			createInStore(store, event)
 			break
 		}
 		case `oldValue`: {
-			disposeFromStore(store, update.token)
+			disposeFromStore(store, event.token)
 			break
 		}
 	}
 }
 
 export function ingestDisposalEvent(
-	update: StateDisposalEvent<ReadableToken<any>>,
-	applying: `newValue` | `oldValue`,
 	store: Store,
+	event: StateDisposalEvent<ReadableToken<any>>,
+	applying: `newValue` | `oldValue`,
 ): void {
 	switch (applying) {
 		case `newValue`: {
-			disposeFromStore(store, update.token)
+			disposeFromStore(store, event.token)
 			break
 		}
 		case `oldValue`: {
-			createInStore(update, store)
-			if (update.subType === `atom`) {
-				store.valueMap.set(update.token.key, update.value)
+			createInStore(store, event)
+			if (event.subType === `atom`) {
+				store.valueMap.set(event.token.key, event.value)
 			}
 			break
 		}
@@ -55,52 +56,51 @@ export function ingestDisposalEvent(
 }
 
 function createInStore(
-	update: StateCreationEvent<any> | StateDisposalEvent<any>,
 	store: Store,
+	event: StateCreationEvent<any> | StateDisposalEvent<any>,
 ): void {
-	const { family: familyMeta } = update.token
-	if (familyMeta) {
-		const family = store.families.get(familyMeta.key)
-		if (family) {
-			mintInStore(store, family, parseJson(familyMeta.subKey), MUST_CREATE)
-		}
+	const { token } = event
+	if (event.subType === `writable` && event.value) {
+		setIntoStore(store, token, event.value)
+	} else {
+		getFromStore(store, token)
 	}
 }
 
 export function ingestMoleculeCreationEvent(
-	update: MoleculeCreationEvent,
-	applying: `newValue` | `oldValue`,
 	store: Store,
+	event: MoleculeCreationEvent,
+	applying: `newValue` | `oldValue`,
 ): void {
 	switch (applying) {
 		case `newValue`:
-			allocateIntoStore<any, any, any>(store, update.provenance, update.key)
+			allocateIntoStore<any, any, any>(store, event.provenance, event.key)
 			break
 
 		case `oldValue`:
-			deallocateFromStore<any, any>(store, update.key)
+			deallocateFromStore<any, any>(store, event.key)
 			break
 	}
 }
 export function ingestMoleculeDisposalEvent(
-	update: MoleculeDisposalEvent,
-	applying: `newValue` | `oldValue`,
 	store: Store,
+	event: MoleculeDisposalEvent,
+	applying: `newValue` | `oldValue`,
 ): void {
 	switch (applying) {
 		case `newValue`:
-			deallocateFromStore<any, any>(store, update.key)
+			deallocateFromStore<any, any>(store, event.key)
 			break
 
 		case `oldValue`:
 			{
-				const provenanceJson = update.provenance.map(parseJson)
-				allocateIntoStore<any, any, any>(store, provenanceJson, update.key)
-				for (const [familyKey, value] of update.values) {
+				const provenanceJson = event.provenance.map(parseJson)
+				allocateIntoStore<any, any, any>(store, provenanceJson, event.key)
+				for (const [familyKey, value] of event.values) {
 					const family = store.families.get(familyKey)
 					if (family) {
-						mintInStore(store, family, update.key, MUST_CREATE)
-						const memberKey = `${familyKey}(${stringifyJson(update.key)})`
+						getFromStore(store, family, event.key)
+						const memberKey = `${familyKey}(${stringifyJson(event.key)})`
 						store.valueMap.set(memberKey, value)
 					}
 				}
@@ -109,19 +109,19 @@ export function ingestMoleculeDisposalEvent(
 	}
 }
 export function ingestMoleculeTransferEvent(
-	update: MoleculeTransferEvent,
-	applying: `newValue` | `oldValue`,
 	store: Store,
+	event: MoleculeTransferEvent,
+	applying: `newValue` | `oldValue`,
 ): void {
 	switch (applying) {
 		case `newValue`:
 			{
-				for (const newOwner of update.to) {
+				for (const newOwner of event.to) {
 					claimWithinStore<any, any, any>(
 						store,
 						newOwner,
-						update.key,
-						update.exclusive ? `exclusive` : undefined,
+						event.key,
+						event.exclusive ? `exclusive` : undefined,
 					)
 				}
 			}
@@ -129,11 +129,11 @@ export function ingestMoleculeTransferEvent(
 		case `oldValue`:
 			{
 				let exclusivity: `exclusive` | undefined = `exclusive`
-				for (const previousOwner of update.from) {
+				for (const previousOwner of event.from) {
 					claimWithinStore<any, any, any>(
 						store,
 						previousOwner,
-						update.key,
+						event.key,
 						exclusivity,
 					)
 					exclusivity = undefined

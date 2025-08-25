@@ -28,7 +28,7 @@ export function setSelector<T>(
 			newValue = constant
 	}
 
-	target.logger.info(`📝`, type, key, `setting to`, newValue)
+	target.logger.info(`⭐`, type, key, `setting to`, newValue)
 	markDone(target, key)
 	selector.setSelf(newValue)
 	return [oldValue, newValue]

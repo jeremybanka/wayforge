@@ -85,11 +85,11 @@ export function findInStore(
 	familyToken: ReadableFamilyToken<any, any>,
 	key: Canonical,
 ): ReadableToken<any> {
-	withdraw(store, familyToken)
+	const family = withdraw(store, familyToken)
 	const existingStateToken = seekInStore(store, familyToken, key)
 	if (existingStateToken) {
 		return existingStateToken
 	}
-	const newStateToken = mintInStore(store, familyToken, key)
+	const newStateToken = mintInStore(store, family, key)
 	return newStateToken
 }

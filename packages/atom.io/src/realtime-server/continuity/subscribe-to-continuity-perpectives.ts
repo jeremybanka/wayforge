@@ -26,13 +26,13 @@ export function subscribeToContinuityPerspectives(
 			userViewState,
 			`sync-continuity:${continuityKey}:${userKey}:perspective:${perspective.resourceAtoms.key}`,
 			({ oldValue, newValue }) => {
-				const oldKeys = oldValue.map((token) => token.key)
+				const oldKeys = oldValue?.map((token) => token.key)
 				const newKeys = newValue.map((token) => token.key)
-				const concealed = oldValue.filter(
+				const concealed = oldValue?.filter(
 					(token) => !newKeys.includes(token.key),
 				)
 				const revealed = newValue
-					.filter((token) => !oldKeys.includes(token.key))
+					.filter((token) => !oldKeys?.includes(token.key))
 					.flatMap((token) => {
 						const resourceToken =
 							token.type === `mutable_atom` ? getJsonToken(store, token) : token
@@ -49,7 +49,7 @@ export function subscribeToContinuityPerspectives(
 				if (revealed.length > 0) {
 					socket?.emit(`reveal:${continuityKey}`, revealed)
 				}
-				if (concealed.length > 0) {
+				if (concealed && concealed.length > 0) {
 					socket?.emit(`conceal:${continuityKey}`, concealed)
 				}
 			},

@@ -1,4 +1,4 @@
-import { ingestTransactionUpdate } from "../ingest-updates"
+import { ingestTransactionOutcomeEvent } from "../events"
 import { newest } from "../lineage"
 import type { Store } from "../store"
 import { withdraw } from "../store"
@@ -6,10 +6,10 @@ import type { Fn } from "../utility-types"
 import { isChildStore, isRootStore } from "./is-root-store"
 import { setEpochNumberOfAction } from "./set-epoch-number"
 
-export const applyTransaction = <F extends Fn>(
-	output: ReturnType<F>,
+export function applyTransaction<F extends Fn>(
 	store: Store,
-): void => {
+	output: ReturnType<F>,
+): void {
 	const child = newest(store)
 	const { parent } = child
 	if (
@@ -38,7 +38,7 @@ export const applyTransaction = <F extends Fn>(
 		updates,
 	)
 
-	ingestTransactionUpdate(`newValue`, child.transactionMeta.update, parent)
+	ingestTransactionOutcomeEvent(parent, child.transactionMeta.update, `newValue`)
 
 	if (isRootStore(parent)) {
 		setEpochNumberOfAction(

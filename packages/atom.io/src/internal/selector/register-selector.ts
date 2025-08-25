@@ -37,11 +37,10 @@ export function registerSelector(
 				| [ReadableToken<any>]
 		) => {
 			const target = newest(store)
-			const { token, familyToken, subKey } = reduceReference(store, ...params)
+			const { token, family, subKey } = reduceReference(store, ...params)
 			let dependencyValue: unknown
-			if (`counterfeit` in token && familyToken && subKey) {
-				const dependencyFamily = withdraw(store, familyToken)
-				dependencyValue = getFallback(store, token, dependencyFamily, subKey)
+			if (`counterfeit` in token && family && subKey) {
+				dependencyValue = getFallback(store, token, family, subKey)
 			} else {
 				const dependency = withdraw(store, token)
 				dependencyValue = readOrComputeValue(store, dependency)
