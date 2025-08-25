@@ -68,6 +68,7 @@ export function reduceReference<T, K extends Canonical>(
 	if (isNewlyCreated && family) {
 		const stateCreationEvent: StateCreationEvent<ReadableToken<T>> = {
 			type: `state_creation`,
+			subType: `readable`,
 			token,
 			timestamp: Date.now(),
 		}
