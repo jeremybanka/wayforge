@@ -1,5 +1,6 @@
 import type { Atom, OpenOperation, Store, WritableState } from ".."
 import { traceRootSelectorAtoms } from ".."
+import { isFn } from "../is-fn"
 import { dispatchOrDeferStateUpdate } from "./dispatch-state-update"
 import type { ProtoUpdate } from "./operate-on-store"
 import { setAtom } from "./set-atom"
@@ -13,9 +14,7 @@ function resetAtom<T>(
 			return setAtom(target, atom, new atom.class())
 		case `atom`: {
 			let def = atom.default
-			if (def instanceof Function) {
-				def = def()
-			}
+			if (isFn(def)) def = def()
 			return setAtom(target, atom, def)
 		}
 	}

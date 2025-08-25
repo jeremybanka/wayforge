@@ -2,6 +2,7 @@ import type { ViewOf } from "atom.io"
 
 import type { ReadableState } from ".."
 import { readFromCache, writeToCache } from "../caching"
+import { isFn } from "../is-fn"
 import type { Store } from "../store"
 
 export function readOrComputeValue<T>(
@@ -33,7 +34,7 @@ export function readOrComputeValue<T>(
 			return state.getFrom(target)
 		case `atom`: {
 			let def: T
-			if (state.default instanceof Function) {
+			if (isFn(state.default)) {
 				def = state.default()
 				target.logger.info(`✨`, state.type, key, `computed default`, def)
 			} else {
