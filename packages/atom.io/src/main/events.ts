@@ -12,7 +12,7 @@ import type {
 import type { TokenType } from "./validators"
 
 export type StateUpdate<T> = {
-	readonly oldValue: ViewOf<T>
+	readonly oldValue?: ViewOf<T>
 	readonly newValue: ViewOf<T>
 }
 

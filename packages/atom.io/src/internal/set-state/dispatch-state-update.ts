@@ -25,6 +25,7 @@ export function dispatchOrDeferStateUpdate<T>(
 ): void {
 	const token = deposit(state)
 	if (stateIsNewlyCreated && family) {
+		state.subject.next({ newValue })
 		const stateCreationEvent: StateCreationEvent<any> = {
 			type: `state_creation`,
 			subType: `writable`,
