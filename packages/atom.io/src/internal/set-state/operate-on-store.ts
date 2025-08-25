@@ -13,6 +13,8 @@ import { resetAtomOrSelector } from "./reset-atom-or-selector"
 import { RESET_STATE } from "./reset-in-store"
 import { setAtomOrSelector } from "./set-atom-or-selector"
 
+export type ProtoUpdate<T> = { oldValue: T; newValue: T }
+
 export const OWN_OP: unique symbol = Symbol(`OWN_OP`)
 export const JOIN_OP: unique symbol = Symbol(`JOIN_OP`)
 
@@ -114,7 +116,7 @@ export function operateOnStore<T, New extends T>(
 	}
 
 	const state = withdraw(target, token)
-	let protoUpdate: [T, T]
+	let protoUpdate: ProtoUpdate<T>
 	if (value === RESET_STATE) {
 		protoUpdate = resetAtomOrSelector(target, state)
 	} else {
