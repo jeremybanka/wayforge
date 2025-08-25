@@ -26,7 +26,7 @@ export type AtomUpdateEvent<A extends AtomToken<any>> = {
 export type TimelineSelectorUpdateEvent<A extends TimelineManageable> = {
 	type: `selector_update`
 	token: SelectorToken<any>
-	atomUpdates: AtomUpdateEvent<AtomOnly<A>>[]
+	atomUpdates: (AtomUpdateEvent<AtomOnly<A>> | StateCreationEvent<any>)[]
 	timestamp: number
 }
 

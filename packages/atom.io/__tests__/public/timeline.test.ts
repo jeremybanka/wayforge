@@ -246,7 +246,7 @@ describe(`timeline`, () => {
 
 		setState(products, [`a`, `b`], 9)
 		console.log(
-			inspect(I.withdraw(I.IMPLICIT.STORE, timeline_ab), {
+			inspect(I.withdraw(I.IMPLICIT.STORE, timeline_ab).history, {
 				colors: true,
 				depth: null,
 			}),
