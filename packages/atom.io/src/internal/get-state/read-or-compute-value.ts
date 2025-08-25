@@ -22,6 +22,7 @@ export function readOrComputeValue<T>(
 	if (target.valueMap.has(state.key)) {
 		return readFromCache(target, state, mut)
 	}
+	target.logger.info(`❔`, state.type, state.key, `value not found in cache`)
 	const { key } = state
 	switch (state.type) {
 		case `readonly_held_selector`:
@@ -34,29 +35,18 @@ export function readOrComputeValue<T>(
 			let def: T
 			if (state.default instanceof Function) {
 				def = state.default()
+				target.logger.info(`✨`, state.type, key, `computed default`, def)
 			} else {
 				def = state.default
+				target.logger.info(`✨`, state.type, key, `using static default`, def)
 			}
 			const cachedValue = writeToCache(target, state, def)
-			target.logger.info(
-				`💁`,
-				`atom`,
-				state.key,
-				`could not find cached value; using default`,
-				def,
-			)
 			return cachedValue
 		}
 		case `mutable_atom`: {
 			const instance = new state.class()
+			target.logger.info(`✨`, state.type, key, `created new instance`, instance)
 			const cachedValue = writeToCache(target, state, instance)
-			target.logger.info(
-				`💁`,
-				`mutable_atom`,
-				state.key,
-				`could not find cached value; using default`,
-				instance,
-			)
 			return cachedValue
 		}
 	}

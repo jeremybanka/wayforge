@@ -21,6 +21,8 @@ export function createWritablePureSelector<T>(
 	const covered = new Set<string>()
 	const key = options.key
 	const type = `writable_pure_selector` as const
+	store.logger.info(`🔨`, type, key, `is being created`)
+
 	const setterToolkit = registerSelector(target, type, key, covered)
 	const { find, get, json } = setterToolkit
 	const getterToolkit = { find, get, json }

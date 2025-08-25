@@ -12,7 +12,7 @@ export const setAtom = <T>(
 ): [oldValue: T, newValue: T] => {
 	const oldValue = readOrComputeValue(target, atom, `mut`)
 	let newValue = become(next)(oldValue)
-	target.logger.info(`📝`, `atom`, atom.key, `set to`, newValue)
+	target.logger.info(`⭐`, `atom`, atom.key, `setting value`, newValue)
 	newValue = writeToCache(target, atom, newValue)
 	markDone(target, atom.key)
 	evictDownstreamFromAtom(target, atom)

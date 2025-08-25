@@ -21,6 +21,8 @@ export function createReadonlyPureSelector<T>(
 	const covered = new Set<string>()
 	const key = options.key
 	const type = `readonly_pure_selector` as const
+	store.logger.info(`🔨`, type, key, `is being created`)
+
 	const { get, find, json } = registerSelector(target, type, key, covered)
 
 	const getFrom = () => {
@@ -48,16 +50,12 @@ export function createReadonlyPureSelector<T>(
 		getFrom,
 		install: (s: Store) => createReadonlyPureSelector(s, options, family),
 	}
-	if (family) {
-		readonlySelector.family = family
-	}
+	if (family) readonlySelector.family = family
+
 	target.readonlySelectors.set(key, readonlySelector)
-	const token: ReadonlyPureSelectorToken<T> = {
-		key,
-		type,
-	}
-	if (family) {
-		token.family = family
-	}
+
+	const token: ReadonlyPureSelectorToken<T> = { key, type }
+	if (family) token.family = family
+
 	return token
 }

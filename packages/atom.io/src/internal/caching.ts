@@ -63,6 +63,7 @@ export function writeToCache<T>(
 			})
 		return future
 	}
+	target.logger.info(`📝`, state.type, state.key, `writing to cache`, value)
 	target.valueMap.set(key, value)
 	return value
 }

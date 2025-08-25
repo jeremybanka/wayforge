@@ -21,6 +21,8 @@ export function createWritableHeldSelector<T extends object>(
 	const covered = new Set<string>()
 	const { key, const: constant } = options
 	const type = `writable_held_selector` as const
+	store.logger.info(`🔨`, type, key, `is being created`)
+
 	const setterToolkit = registerSelector(target, type, key, covered)
 	const { find, get, json } = setterToolkit
 	const getterToolkit = { find, get, json }
@@ -54,14 +56,12 @@ export function createWritableHeldSelector<T extends object>(
 		setSelf,
 		install: (s: Store) => createWritableHeldSelector(s, options, family),
 	}
-	if (family) {
-		mySelector.family = family
-	}
+	if (family) mySelector.family = family
+
 	target.writableSelectors.set(key, mySelector)
 
 	const token: WritableHeldSelectorToken<T> = { key, type }
-	if (family) {
-		token.family = family
-	}
+	if (family) token.family = family
+
 	return token
 }
