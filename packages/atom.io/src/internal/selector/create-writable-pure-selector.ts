@@ -57,8 +57,6 @@ export function createWritablePureSelector<T>(
 	if (family) mySelector.family = family
 
 	target.writableSelectors.set(key, mySelector)
-	const initialValue = getFrom(target)
-	store.logger.info(`✨`, mySelector.type, mySelector.key, `=`, initialValue)
 
 	const token: WritablePureSelectorToken<T> = { key, type }
 	if (family) token.family = family
