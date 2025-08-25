@@ -20,9 +20,9 @@ export function ingestSelectorUpdateEvent(
 		| StateCreationEvent<any>
 	)[]
 	if (applying === `newValue`) {
-		updates = selectorUpdate.atomUpdates
+		updates = selectorUpdate.subEvents
 	} else {
-		updates = selectorUpdate.atomUpdates.toReversed()
+		updates = selectorUpdate.subEvents.toReversed()
 	}
 	for (const atomUpdate of updates) {
 		if (atomUpdate.type === `state_creation`) {

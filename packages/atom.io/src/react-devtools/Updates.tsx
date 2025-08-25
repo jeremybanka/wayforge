@@ -192,7 +192,7 @@ export const TimelineUpdateFC: React.FC<{
 							}
 						})
 				) : timelineUpdate.type === `selector_update` ? (
-					timelineUpdate.atomUpdates
+					timelineUpdate.subEvents
 						.filter(
 							(atomUpdateEvent) => !atomUpdateEvent.token.key.startsWith(`👁‍🗨`),
 						)
@@ -206,7 +206,7 @@ export const TimelineUpdateFC: React.FC<{
 											atomUpdate={event}
 										/>
 									)
-								case `state_creation`:
+								default:
 									return null
 							}
 						})

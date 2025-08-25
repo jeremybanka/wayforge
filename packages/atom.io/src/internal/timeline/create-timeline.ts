@@ -315,12 +315,12 @@ function buildSelectorUpdate(
 			type: `selector_update`,
 			timestamp: currentSelectorTime,
 			token: currentSelectorToken,
-			atomUpdates: [],
+			subEvents: [],
 		})
 		if (`type` in eventOrUpdate) {
-			latestUpdate.atomUpdates.push(eventOrUpdate)
+			latestUpdate.subEvents.push(eventOrUpdate)
 		} else {
-			latestUpdate.atomUpdates.push({
+			latestUpdate.subEvents.push({
 				type: `atom_update`,
 				token: atomToken,
 				update: eventOrUpdate,
@@ -338,7 +338,7 @@ function buildSelectorUpdate(
 			`timeline`,
 			tl.key,
 			`got a selector_update "${currentSelectorToken.key}" with`,
-			latestUpdate.atomUpdates.map((atomUpdate) => atomUpdate.token.key),
+			latestUpdate.subEvents.map((event) => event.token.key),
 		)
 
 		tl.at = tl.history.length
@@ -350,9 +350,9 @@ function buildSelectorUpdate(
 			() => {
 				unsub()
 				if (operation.open) {
-					selectorUpdate.atomUpdates = [
+					selectorUpdate.subEvents = [
 						...operation.subEvents,
-						...selectorUpdate.atomUpdates,
+						...selectorUpdate.subEvents,
 					]
 				}
 			},
@@ -360,9 +360,9 @@ function buildSelectorUpdate(
 	} else {
 		if (latestUpdate?.type === `selector_update`) {
 			if (`type` in eventOrUpdate) {
-				latestUpdate.atomUpdates.push(eventOrUpdate)
+				latestUpdate.subEvents.push(eventOrUpdate)
 			} else {
-				latestUpdate.atomUpdates.push({
+				latestUpdate.subEvents.push({
 					type: `atom_update`,
 					token: atomToken,
 					update: eventOrUpdate,
@@ -374,7 +374,7 @@ function buildSelectorUpdate(
 				`timeline`,
 				tl.key,
 				`set selector_update "${currentSelectorToken.key}" to`,
-				latestUpdate?.atomUpdates.map((atomUpdate) => atomUpdate.token.key),
+				latestUpdate?.subEvents.map((event) => event.token.key),
 			)
 		}
 	}
