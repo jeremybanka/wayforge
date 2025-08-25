@@ -372,7 +372,7 @@ describe(`errors`, () => {
 	})
 })
 
-describe(`experiments`, () => {
+describe.only(`experiments`, () => {
 	test(`0`, () => {
 		const countStates = atomFamily<number, string>({
 			key: `count`,

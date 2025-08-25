@@ -1,9 +1,4 @@
-import type {
-	AtomUpdateEvent,
-	ReadableToken,
-	StateCreationEvent,
-	StateUpdate,
-} from "atom.io"
+import type { AtomUpdateEvent, StateCreationEvent, StateUpdate } from "atom.io"
 
 import {
 	type MutableAtom,
@@ -59,6 +54,7 @@ export function dispatchOrDeferStateUpdate<T>(
 				innerTarget.transactionMeta.update.subEvents.push(stateCreationEvent)
 			}
 		}
+		return /* bailing early here to avoid redundant update */
 	}
 	const { key, subject, type } = state
 
