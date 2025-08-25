@@ -36,7 +36,7 @@ beforeEach(() => {
 })
 
 describe(`timeline`, () => {
-	it(`tracks the state of a group of scope`, () => {
+	it(`tracks the state of all atoms in its scope`, () => {
 		const a = atom<number>({
 			key: `a`,
 			default: 5,
