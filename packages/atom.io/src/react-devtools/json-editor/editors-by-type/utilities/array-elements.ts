@@ -10,7 +10,7 @@ export const makeElementSetters = <T extends Json.Tree.Array>(
 	data.map((value, index) => (newValue) => {
 		set((): T => {
 			const newData = [...data]
-			newData[index] = become(newValue)(value)
+			newData[index] = become(newValue, value)
 			return newData as unknown as T
 		})
 	})

@@ -15,11 +15,12 @@ import type { OpenOperation } from "../operation"
 import { deposit, type Store } from "../store"
 import { isChildStore, isRootStore } from "../transaction"
 import { evictDownstreamFromAtom } from "./evict-downstream"
+import type { ProtoUpdate } from "./operate-on-store"
 
 export function dispatchOrDeferStateUpdate<T>(
 	target: Store & { operation: OpenOperation<any> },
 	state: WritableState<T>,
-	[oldValue, newValue]: [T, T],
+	{ oldValue, newValue }: ProtoUpdate<T>,
 	stateIsNewlyCreated: boolean,
 	family?: WritableFamily<T, any>,
 ): void {
