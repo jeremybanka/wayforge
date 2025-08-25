@@ -9,7 +9,6 @@ import type {
 import { parseJson, stringifyJson } from "atom.io/json"
 
 import { disposeFromStore } from "../families"
-import { getFamilyOfToken } from "../families/get-family-of-token"
 import { getFromStore } from "../get-state"
 import {
 	allocateIntoStore,

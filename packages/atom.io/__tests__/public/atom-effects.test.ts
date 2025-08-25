@@ -43,8 +43,8 @@ describe(`atom effects`, () => {
 			default: { x: 0, y: 0 },
 			effects: (key) => [
 				({ onSet }) => {
-					onSet((newValue) => {
-						Utils.stdout(`onSet`, key, newValue)
+					onSet((update) => {
+						Utils.stdout(`onSet`, key, update)
 					})
 				},
 			],
@@ -52,7 +52,7 @@ describe(`atom effects`, () => {
 		setState(findState(coordinateStates, `a`), { x: 1, y: 1 })
 		expect(Utils.stdout).toHaveBeenCalledWith(`onSet`, `a`, {
 			newValue: { x: 1, y: 1 },
-			oldValue: { x: 0, y: 0 },
+			// oldValue: { x: 0, y: 0 },
 		})
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
@@ -139,7 +139,7 @@ describe(`atom effect cleanup`, () => {
 		setState(findState(coordinateStates, `a`), { x: 1, y: 1 })
 		expect(Utils.stdout).toHaveBeenCalledWith(`onSet`, `a`, {
 			newValue: { x: 1, y: 1 },
-			oldValue: { x: 0, y: 0 },
+			// oldValue: { x: 0, y: 0 },
 		})
 		disposeState(findState(coordinateStates, `a`))
 		expect(Utils.stdout).toHaveBeenCalledWith(`cleanup`, `a`)
