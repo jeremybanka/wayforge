@@ -1,6 +1,6 @@
 import { inspect } from "node:util"
 
-import type { Logger, WritableToken } from "atom.io"
+import type { Logger, TimelineToken, WritableToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -37,6 +37,15 @@ beforeEach(() => {
 	vitest.spyOn(Utils, `stdout`)
 	vitest.spyOn(Utils, `stdout0`)
 })
+
+function _inspectTimeline(tl: TimelineToken<any>) {
+	console.log(
+		inspect(I.withdraw(I.IMPLICIT.STORE, tl).history, {
+			colors: true,
+			depth: null,
+		}),
+	)
+}
 
 describe(`timeline`, () => {
 	it(`tracks the state of all atoms in its scope`, () => {
@@ -200,12 +209,7 @@ describe(`timeline`, () => {
 		subscribe(a, Utils.stdout)
 
 		setState(product_ab, 1)
-		console.log(
-			inspect(I.withdraw(I.IMPLICIT.STORE, timeline_ab), {
-				colors: true,
-				depth: null,
-			}),
-		)
+
 		undo(timeline_ab)
 
 		expect(getState(a)).toBe(3)
@@ -256,14 +260,8 @@ describe(`timeline`, () => {
 			scope: [numbers],
 		})
 
-		// setState(products, [`a`, `b`], 9)
 		setState(productSquareRoots, [`a`, `b`], 3)
-		console.log(
-			inspect(I.withdraw(I.IMPLICIT.STORE, timeline_ab).history, {
-				colors: true,
-				depth: null,
-			}),
-		)
+
 		expect(I.withdraw(I.IMPLICIT.STORE, timeline_ab).history).toHaveLength(1)
 		undo(timeline_ab)
 	})
@@ -403,7 +401,6 @@ describe(`timeline state lifecycle`, () => {
 		disposeState(countStates, `my-key`)
 		undo(countsTL)
 		undo(countsTL)
-		undo(countsTL)
 		expect(I.seekInStore(I.IMPLICIT.STORE, countStates, `my-key`)).toBe(
 			undefined,
 		)
@@ -416,7 +413,6 @@ describe(`timeline state lifecycle`, () => {
 			key: `count("my-key")`,
 			type: `atom`,
 		})
-		redo(countsTL)
 		redo(countsTL)
 	})
 })
