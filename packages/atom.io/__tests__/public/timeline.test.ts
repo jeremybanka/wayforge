@@ -218,7 +218,7 @@ describe(`timeline`, () => {
 		expect(getState(a)).toBe(1)
 		expect(getState(b)).toBe(1)
 	})
-	test.only(`creating selectors with setState`, () => {
+	test(`creating selectors with setState`, () => {
 		const numbers = atomFamily<number, string>({
 			key: `number`,
 			default: 0,
