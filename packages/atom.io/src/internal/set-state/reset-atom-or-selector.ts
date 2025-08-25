@@ -1,12 +1,13 @@
 import type { Atom, OpenOperation, Store, WritableState } from ".."
 import { traceRootSelectorAtoms } from ".."
 import { dispatchOrDeferStateUpdate } from "./dispatch-state-update"
+import type { ProtoUpdate } from "./operate-on-store"
 import { setAtom } from "./set-atom"
 
 function resetAtom<T>(
 	target: Store & { operation: OpenOperation },
 	atom: Atom<T>,
-): [oldValue: T, newValue: T] {
+): ProtoUpdate<T> {
 	switch (atom.type) {
 		case `mutable_atom`:
 			return setAtom(target, atom, new atom.class())
@@ -23,8 +24,8 @@ function resetAtom<T>(
 export function resetAtomOrSelector<T>(
 	target: Store & { operation: OpenOperation },
 	state: WritableState<T>,
-): [oldValue: T, newValue: T] {
-	let protoUpdate: [T, T]
+): ProtoUpdate<T> {
+	let protoUpdate: ProtoUpdate<T>
 	switch (state.type) {
 		case `atom`:
 		case `mutable_atom`:
@@ -40,7 +41,7 @@ export function resetAtomOrSelector<T>(
 					dispatchOrDeferStateUpdate(target, state, rootProtoUpdate, false)
 				}
 				const newValue = state.getFrom(target)
-				protoUpdate = [oldValue, newValue]
+				protoUpdate = { oldValue, newValue }
 			}
 			break
 	}

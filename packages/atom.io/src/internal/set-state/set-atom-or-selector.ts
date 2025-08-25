@@ -1,6 +1,7 @@
 import type { WritableState } from ".."
 import type { OpenOperation } from "../operation"
 import type { Store } from "../store"
+import type { ProtoUpdate } from "./operate-on-store"
 import { setAtom } from "./set-atom"
 import { setSelector } from "./set-selector"
 
@@ -8,8 +9,8 @@ export const setAtomOrSelector = <T>(
 	target: Store & { operation: OpenOperation },
 	state: WritableState<T>,
 	value: T | ((oldValue: T) => T),
-): [oldValue: T, newValue: T] => {
-	let protoUpdate: [T, T]
+): ProtoUpdate<T> => {
+	let protoUpdate: ProtoUpdate<T>
 	switch (state.type) {
 		case `atom`:
 		case `mutable_atom`:

@@ -4,17 +4,18 @@ import { readOrComputeValue } from "../get-state/read-or-compute-value"
 import { markDone } from "../operation"
 import { become } from "./become"
 import { evictDownstreamFromAtom } from "./evict-downstream"
+import type { ProtoUpdate } from "./operate-on-store"
 
 export const setAtom = <T>(
 	target: Store & { operation: OpenOperation<any> },
 	atom: Atom<T>,
 	next: T | ((oldValue: T) => T),
-): [oldValue: T, newValue: T] => {
+): ProtoUpdate<T> => {
 	const oldValue = readOrComputeValue(target, atom, `mut`)
 	let newValue = become(next)(oldValue)
 	target.logger.info(`⭐`, `atom`, atom.key, `setting value`, newValue)
 	newValue = writeToCache(target, atom, newValue)
 	markDone(target, atom.key)
 	evictDownstreamFromAtom(target, atom)
-	return [oldValue, newValue]
+	return { oldValue, newValue }
 }
