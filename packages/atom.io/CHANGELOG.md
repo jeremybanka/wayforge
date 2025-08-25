@@ -1,5 +1,20 @@
 # atom.io
 
+## 0.39.0
+
+### Minor Changes
+
+- 376b088: 💥 BREAKING CHANGE: When an state is created for the first time, the event that is broadcast to subscribers will not include an `oldValue`. Only a `newValue` will be included. This only applies to subscribers to a state that placed subscriptions before the state had been given a value, which usually only applies to the `onSet` helper in atom `effects`.
+
+### Patch Changes
+
+- 376b088: 🚀 Setting an atom now only produces up to one timeline event. Previously, if the atom had not been initialized previously, setting it could result in a state creation event and an state update event. This was undesirable, as these are really best seen as the same event. Now, they are.
+- 376b088: 🐛 Fixed issue where some writable selectors were still (erroneously) being eagerly computed upon creation. Now, they wait until the last possible moment to be given values like other states.
+- 376b088: 🔊 Improved the information given to atom.io's built-in logger in several key areas:
+  1. **state creation**: logged for selectors as well as atoms
+  2. **writing to cache**: now straightforward writes are logged, with further logging for futures forthcoming
+  3. **value origination**: now all values for states are logged when derived, whether from selector computation, atom defaults, or setState
+
 ## 0.38.2
 
 ### Patch Changes
