@@ -1,12 +1,7 @@
 import type { AtomUpdateEvent, StateCreationEvent, StateUpdate } from "atom.io"
 
-import {
-	type MutableAtom,
-	newest,
-	type Subject,
-	type WritableFamily,
-	type WritableState,
-} from ".."
+import type { MutableAtom, Subject, WritableFamily, WritableState } from ".."
+import { newest } from ".."
 import { hasRole } from "../atom"
 import { readOrComputeValue } from "../get-state"
 import type { Transceiver } from "../mutable"
@@ -34,6 +29,7 @@ export function dispatchOrDeferStateUpdate<T>(
 			timestamp: Date.now(),
 			value: newValue,
 		}
+		target.operation.subEvents.push(stateCreationEvent)
 		const familySubject = family.subject as Subject<StateCreationEvent<any>>
 		familySubject.next(stateCreationEvent)
 		const innerTarget = newest(target)

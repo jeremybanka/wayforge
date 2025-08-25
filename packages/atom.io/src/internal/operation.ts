@@ -1,4 +1,4 @@
-import type { ReadableToken } from "atom.io"
+import type { AtomUpdateEvent, ReadableToken, StateCreationEvent } from "atom.io"
 
 import type { Store } from "./store"
 import { isChildStore } from "./transaction/is-root-store"
@@ -14,6 +14,7 @@ export type OpenOperation<R extends ReadableToken<any> = ReadableToken<any>> = {
 	done: Set<string>
 	prev: Map<string, any>
 	timestamp: number
+	subEvents: (AtomUpdateEvent<any> | StateCreationEvent<any>)[]
 }
 
 export function openOperation(
@@ -36,6 +37,7 @@ export function openOperation(
 		prev: new Map(),
 		timestamp: Date.now(),
 		token,
+		subEvents: [],
 	}
 	store.logger.info(
 		`⭕`,

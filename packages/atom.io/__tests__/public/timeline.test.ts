@@ -228,9 +228,8 @@ describe(`timeline`, () => {
 			key: `product`,
 			get:
 				([a, b]) =>
-				({ get }) => {
-					return get(numbers, a) * get(numbers, b)
-				},
+				({ get }) =>
+					get(numbers, a) * get(numbers, b),
 			set:
 				([a, b]) =>
 				({ set }, value) => {
@@ -239,12 +238,26 @@ describe(`timeline`, () => {
 				},
 		})
 
+		const productSquareRoots = selectorFamily<number, [a: string, b: string]>({
+			key: `product root`,
+			get:
+				(key) =>
+				({ get }) =>
+					Math.sqrt(get(products, key)),
+			set:
+				(key) =>
+				({ set }, value) => {
+					set(products, key, value ** 2)
+				},
+		})
+
 		const timeline_ab = timeline({
 			key: `numbers over time`,
 			scope: [numbers],
 		})
 
-		setState(products, [`a`, `b`], 9)
+		// setState(products, [`a`, `b`], 9)
+		setState(productSquareRoots, [`a`, `b`], 3)
 		console.log(
 			inspect(I.withdraw(I.IMPLICIT.STORE, timeline_ab).history, {
 				colors: true,
@@ -252,7 +265,7 @@ describe(`timeline`, () => {
 			}),
 		)
 		expect(I.withdraw(I.IMPLICIT.STORE, timeline_ab).history).toHaveLength(1)
-		// undo(timeline_ab)
+		undo(timeline_ab)
 	})
 	test(`history erasure from the past`, () => {
 		const nameState = atom<string>({
