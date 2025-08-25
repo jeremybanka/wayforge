@@ -19,7 +19,7 @@ export function setSelector<T>(
 		case `writable_pure_selector`:
 			oldValue = selector.getFrom(target)
 			newValue = become(next)(oldValue)
-			writeToCache(target, selector, newValue)
+			newValue = writeToCache(target, selector, newValue)
 			break
 		case `writable_held_selector`:
 			constant = selector.const
