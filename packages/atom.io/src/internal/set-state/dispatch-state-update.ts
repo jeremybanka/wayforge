@@ -75,7 +75,7 @@ export function dispatchOrDeferStateUpdate<T>(
 					`is now (`,
 					newValue,
 					`) subscribers:`,
-					subject.subscribers,
+					subject.subscribers.keys(),
 				)
 				break
 			case `atom`:
@@ -90,7 +90,7 @@ export function dispatchOrDeferStateUpdate<T>(
 					`->`,
 					newValue,
 					`) subscribers:`,
-					subject.subscribers,
+					subject.subscribers.keys(),
 				)
 		}
 		subject.next(update)
