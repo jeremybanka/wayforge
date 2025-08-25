@@ -43,12 +43,22 @@ export function mintInStore<T, K extends Canonical, Key extends K>(
 		return mint(family, key, COUNTERFEIT)
 	}
 
+	let token: ReadableToken<T, K>
 	if (mustCreate === MUST_CREATE) {
-		family(key)
+		store.logger.info(
+			`👪`,
+			family.type,
+			family.key,
+			`adds member`,
+			typeof key === `string` ? `\`${key}\`` : key,
+		)
+		token = family(key)
 		if (molecule) {
 			store.moleculeData.set(stringKey, family.key)
 		}
+	} else {
+		token = mint(family, key)
 	}
 
-	return mint(family, key)
+	return token
 }

@@ -21,12 +21,8 @@ export function createRegularAtom<T>(
 ): RegularAtomToken<T> {
 	const type = `atom`
 	const { key } = options
-	store.logger.info(
-		`🔨`,
-		`atom`,
-		key,
-		`creating in store "${store.config.name}"`,
-	)
+	store.logger.info(`🔨`, type, key, `is being created`)
+
 	const target = newest(store)
 	const existing = target.atoms.get(key)
 	if (existing && existing.type === type) {
