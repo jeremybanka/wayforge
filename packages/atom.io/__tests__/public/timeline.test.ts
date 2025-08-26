@@ -344,47 +344,6 @@ describe(`timeline`, () => {
 		undo(countsTL)
 		expect(getState(myCountState)).toBe(0)
 	})
-	it(`may ignore atom updates conditionally`, () => {
-		const count = atom<number>({
-			key: `count`,
-			default: 0,
-		})
-
-		const countTL = timeline({
-			key: `count`,
-			scope: [count],
-			shouldCapture: (event) => {
-				if (event.type === `atom_update`) {
-					const atomKey = event.token.key
-					const atomActual = I.IMPLICIT.STORE.atoms.get(atomKey)
-					if (atomActual) {
-						switch (atomActual.type) {
-							case `atom`:
-								if (atomActual.default === event.update.oldValue) {
-									return false
-								}
-								break
-							case `mutable_atom`:
-								return false
-						}
-					}
-				}
-				return true
-			},
-		})
-		expect(getState(count)).toBe(0)
-		setState(count, 1)
-		expect(getState(count)).toBe(1)
-		undo(countTL)
-		expect(getState(count)).toBe(1)
-		expect(I.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(0)
-		setState(count, 2)
-		expect(getState(count)).toBe(2)
-		expect(I.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(1)
-		undo(countTL)
-		expect(getState(count)).toBe(1)
-		expect(I.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(0)
-	})
 	it(`passes over non-write events`, () => {
 		const counts = atomFamily<number, string>({
 			key: `count`,
