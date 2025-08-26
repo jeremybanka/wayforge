@@ -39,8 +39,10 @@ beforeEach(() => {
 })
 
 function _inspectTimeline(tl: TimelineToken<any>) {
+	const tlInternal = I.withdraw(I.IMPLICIT.STORE, tl)
 	console.log(
-		inspect(I.withdraw(I.IMPLICIT.STORE, tl).history, {
+		`at ${tlInternal.at}`,
+		inspect(tlInternal.history, {
 			colors: true,
 			depth: null,
 		}),
@@ -383,6 +385,33 @@ describe(`timeline`, () => {
 		expect(getState(count)).toBe(1)
 		expect(I.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(0)
 	})
+	it.only(`passes over non-write events`, () => {
+		const counts = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+
+		const countTL = timeline({
+			key: `count`,
+			scope: [counts],
+		})
+
+		setState(counts, `a`, 1)
+		getState(counts, `b`)
+
+		undo(countTL)
+		expect(getState(counts, `a`)).toBe(0)
+
+		undo(countTL)
+
+		setState(counts, `a`, 1)
+		getState(counts, `b`)
+
+		undo(countTL)
+		redo(countTL)
+		_inspectTimeline(countTL)
+		expect(getState(counts, `a`)).toBe(1)
+	})
 })
 
 describe(`timeline state lifecycle`, () => {
@@ -395,7 +424,6 @@ describe(`timeline state lifecycle`, () => {
 			key: `counts`,
 			scope: [countStates],
 		})
-		// const countState = findState(countStates, `my-key`)
 		setState(countStates, `my-key`, 1)
 		expect(getState(countStates, `my-key`)).toBe(1)
 		disposeState(countStates, `my-key`)
