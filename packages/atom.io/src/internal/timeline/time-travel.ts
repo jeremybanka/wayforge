@@ -31,11 +31,6 @@ export const timeTravel = (
 		return
 	}
 
-	console.log(`❓`, {
-		timelineData,
-		isAtEnd: timelineData.at === timelineData.history.length,
-		isAtBeginning: timelineData.at === 0,
-	})
 	if (
 		(action === `redo` && timelineData.at === timelineData.history.length) ||
 		(action === `undo` && timelineData.at === 0)
@@ -61,7 +56,6 @@ export const timeTravel = (
 				--nextIndex
 			}
 			events = timelineData.history.slice(nextIndex, timelineData.at).reverse()
-			console.log({ nextIndex, historyLength: timelineData.history.length })
 
 			break
 		case `redo`:
@@ -72,17 +66,10 @@ export const timeTravel = (
 				++nextIndex
 			}
 			++nextIndex
-			console.log({ nextIndex, historyLength: timelineData.history.length })
 			events = timelineData.history.slice(timelineData.at, nextIndex)
 	}
 	timelineData.at = nextIndex
 
-	console.log(`❗`, {
-		timelineData: timelineData,
-		events,
-	})
-
-	// const event = timelineData.history[timelineData.at]
 	const applying = action === `redo` ? `newValue` : `oldValue`
 
 	for (const event of events) {
@@ -111,10 +98,6 @@ export const timeTravel = (
 			case `molecule_disposal`:
 		}
 	}
-
-	// if (action === `redo`) {
-	// 	++timelineData.at
-	// }
 
 	timelineData.subject.next(action)
 	timelineData.timeTraveling = null

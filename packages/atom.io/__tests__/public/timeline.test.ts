@@ -427,8 +427,6 @@ describe(`timeline state lifecycle`, () => {
 		expect(getState(countStates, `my-key`)).toBe(1)
 		disposeState(countStates, `my-key`)
 		undo(countsTL)
-		_inspectTimeline(countsTL)
-		console.log(`👀`, I.IMPLICIT.STORE.atoms.get(`count("my-key")`))
 
 		expect(I.seekInStore(I.IMPLICIT.STORE, countStates, `my-key`)).toBe(
 			undefined,
