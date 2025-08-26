@@ -1,4 +1,9 @@
-import type { AtomUpdateEvent, StateCreationEvent, StateUpdate } from "atom.io"
+import type {
+	AtomUpdateEvent,
+	StateCreationEvent,
+	StateUpdate,
+	TimelineEvent,
+} from "atom.io"
 
 import type { MutableAtom, Subject, WritableFamily, WritableState } from ".."
 import { newest } from ".."
@@ -22,7 +27,8 @@ export function dispatchOrDeferStateUpdate<T>(
 	const token = deposit(state)
 	if (stateIsNewlyCreated && family) {
 		state.subject.next({ newValue })
-		const stateCreationEvent: StateCreationEvent<any> = {
+		const stateCreationEvent: StateCreationEvent<any> & TimelineEvent<any> = {
+			write: true,
 			type: `state_creation`,
 			subType: `writable`,
 			token,

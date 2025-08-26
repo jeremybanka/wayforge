@@ -113,7 +113,9 @@ export type TransactionOutcomeEvent<T extends TransactionToken<any>> = {
 	output: ReturnType<TokenType<T>>
 }
 
-export type TimelineEvent<ManagedAtom extends TimelineManageable> =
+export type TimelineEvent<ManagedAtom extends TimelineManageable> = {
+	write?: true
+} & (
 	| AtomUpdateEvent<AtomOnly<ManagedAtom>>
 	| MoleculeCreationEvent
 	| MoleculeDisposalEvent
@@ -121,3 +123,4 @@ export type TimelineEvent<ManagedAtom extends TimelineManageable> =
 	| StateDisposalEvent<AtomOnly<ManagedAtom>>
 	| TimelineSelectorUpdateEvent<ManagedAtom>
 	| TransactionOutcomeEvent<TransactionToken<any>>
+)

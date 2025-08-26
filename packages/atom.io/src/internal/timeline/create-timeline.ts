@@ -49,7 +49,6 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 		type: `timeline`,
 		key: options.key,
 		at: 0,
-
 		timeTraveling: null,
 		selectorTime: null,
 		transactionKey: null,
@@ -199,7 +198,8 @@ function addAtomToTimeline(
 						if (tl.at !== tl.history.length) {
 							tl.history.splice(tl.at)
 						}
-						const atomUpdate: AtomUpdateEvent<any> = {
+						const atomUpdate: AtomUpdateEvent<any> & TimelineEvent<any> = {
+							write: true,
 							type: `atom_update`,
 							token: deposit(atom),
 							update,
@@ -471,6 +471,9 @@ function handleStateLifecycleEvent(
 					currentSelectorTime,
 				)
 			} else {
+				if (tl.at !== tl.history.length) {
+					tl.history.splice(tl.at)
+				}
 				tl.history.push(event)
 				tl.at = tl.history.length
 				tl.subject.next(event)
