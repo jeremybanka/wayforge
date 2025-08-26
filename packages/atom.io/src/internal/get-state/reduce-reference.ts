@@ -66,9 +66,22 @@ export function reduceReference<T, K extends Canonical>(
 	const isCounterfeit = `counterfeit` in token
 	const isNewlyCreated = Boolean(brandNewToken) && isCounterfeit === false
 	if (isNewlyCreated && family) {
-		const stateCreationEvent: StateCreationEvent<ReadableToken<T>> = {
+		let subType: `readable` | `writable`
+		switch (token.type) {
+			case `readonly_pure_selector`:
+			case `readonly_held_selector`:
+				subType = `readable`
+				break
+			case `atom`:
+			case `mutable_atom`:
+			case `writable_pure_selector`:
+			case `writable_held_selector`:
+				subType = `writable`
+				break
+		}
+		const stateCreationEvent: StateCreationEvent<any> = {
 			type: `state_creation`,
-			subType: `readable`,
+			subType,
 			token,
 			timestamp: Date.now(),
 		}

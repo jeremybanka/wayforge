@@ -1,4 +1,6 @@
-import type { Logger, WritableToken } from "atom.io"
+import { inspect } from "node:util"
+
+import type { Logger, TimelineToken, WritableToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -8,6 +10,7 @@ import {
 	redo,
 	runTransaction,
 	selector,
+	selectorFamily,
 	setState,
 	subscribe,
 	timeline,
@@ -20,7 +23,7 @@ import { vitest } from "vitest"
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 2
+const CHOOSE = 3
 
 let logger: Logger
 
@@ -34,6 +37,17 @@ beforeEach(() => {
 	vitest.spyOn(Utils, `stdout`)
 	vitest.spyOn(Utils, `stdout0`)
 })
+
+function _inspectTimeline(tl: TimelineToken<any>) {
+	const tlInternal = I.withdraw(I.IMPLICIT.STORE, tl)
+	console.log(
+		`at ${tlInternal.at}`,
+		inspect(tlInternal.history, {
+			colors: true,
+			depth: null,
+		}),
+	)
+}
 
 describe(`timeline`, () => {
 	it(`tracks the state of all atoms in its scope`, () => {
@@ -197,6 +211,7 @@ describe(`timeline`, () => {
 		subscribe(a, Utils.stdout)
 
 		setState(product_ab, 1)
+
 		undo(timeline_ab)
 
 		expect(getState(a)).toBe(3)
@@ -208,6 +223,49 @@ describe(`timeline`, () => {
 
 		expect(getState(a)).toBe(1)
 		expect(getState(b)).toBe(1)
+	})
+	test(`creating selectors with setState`, () => {
+		const numbers = atomFamily<number, string>({
+			key: `number`,
+			default: 0,
+		})
+
+		const products = selectorFamily<number, [a: string, b: string]>({
+			key: `product`,
+			get:
+				([a, b]) =>
+				({ get }) =>
+					get(numbers, a) * get(numbers, b),
+			set:
+				([a, b]) =>
+				({ set }, value) => {
+					set(numbers, a, Math.sqrt(value))
+					set(numbers, b, Math.sqrt(value))
+				},
+		})
+
+		const productSquareRoots = selectorFamily<number, [a: string, b: string]>({
+			key: `product root`,
+			get:
+				(key) =>
+				({ get }) =>
+					Math.sqrt(get(products, key)),
+			set:
+				(key) =>
+				({ set }, value) => {
+					set(products, key, value ** 2)
+				},
+		})
+
+		const timeline_ab = timeline({
+			key: `numbers over time`,
+			scope: [numbers],
+		})
+
+		setState(productSquareRoots, [`a`, `b`], 3)
+
+		expect(I.withdraw(I.IMPLICIT.STORE, timeline_ab).history).toHaveLength(1)
+		undo(timeline_ab)
 	})
 	test(`history erasure from the past`, () => {
 		const nameState = atom<string>({
@@ -286,46 +344,31 @@ describe(`timeline`, () => {
 		undo(countsTL)
 		expect(getState(myCountState)).toBe(0)
 	})
-	it(`may ignore atom updates conditionally`, () => {
-		const count = atom<number>({
+	it(`passes over non-write events`, () => {
+		const counts = atomFamily<number, string>({
 			key: `count`,
 			default: 0,
 		})
 
 		const countTL = timeline({
 			key: `count`,
-			scope: [count],
-			shouldCapture: (event) => {
-				if (event.type === `atom_update`) {
-					const atomKey = event.token.key
-					const atomActual = I.IMPLICIT.STORE.atoms.get(atomKey)
-					if (atomActual) {
-						switch (atomActual.type) {
-							case `atom`:
-								if (atomActual.default === event.update.oldValue) {
-									return false
-								}
-								break
-							case `mutable_atom`:
-								return false
-						}
-					}
-				}
-				return true
-			},
+			scope: [counts],
 		})
-		expect(getState(count)).toBe(0)
-		setState(count, 1)
-		expect(getState(count)).toBe(1)
+
+		setState(counts, `a`, 1)
+		getState(counts, `b`)
+
 		undo(countTL)
-		expect(getState(count)).toBe(1)
-		expect(I.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(0)
-		setState(count, 2)
-		expect(getState(count)).toBe(2)
-		expect(I.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(1)
+		expect(getState(counts, `a`)).toBe(0)
+
 		undo(countTL)
-		expect(getState(count)).toBe(1)
-		expect(I.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(0)
+
+		setState(counts, `a`, 1)
+		getState(counts, `b`)
+
+		undo(countTL)
+		redo(countTL)
+		expect(getState(counts, `a`)).toBe(1)
 	})
 })
 
@@ -339,13 +382,11 @@ describe(`timeline state lifecycle`, () => {
 			key: `counts`,
 			scope: [countStates],
 		})
-		// const countState = findState(countStates, `my-key`)
 		setState(countStates, `my-key`, 1)
 		expect(getState(countStates, `my-key`)).toBe(1)
 		disposeState(countStates, `my-key`)
 		undo(countsTL)
-		undo(countsTL)
-		undo(countsTL)
+
 		expect(I.seekInStore(I.IMPLICIT.STORE, countStates, `my-key`)).toBe(
 			undefined,
 		)
@@ -358,8 +399,6 @@ describe(`timeline state lifecycle`, () => {
 			key: `count("my-key")`,
 			type: `atom`,
 		})
-		redo(countsTL)
-		redo(countsTL)
 	})
 })
 
@@ -367,5 +406,40 @@ describe(`errors`, () => {
 	test(`what if the timeline isn't initialized`, () => {
 		undo({ key: `my-timeline`, type: `timeline` })
 		expect(logger.error).toHaveBeenCalledTimes(1)
+	})
+	test(`what if the atom family already belongs to a timeline`, () => {
+		const countAtoms = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+
+		const _countTL = timeline({
+			key: `count`,
+			scope: [countAtoms],
+		})
+
+		const _countTL2 = timeline({
+			key: `count`,
+			scope: [countAtoms],
+		})
+
+		expect(logger.error).toHaveBeenCalledTimes(1)
+	})
+})
+
+describe(`weird situations`, () => {
+	test(`what if states belonging to a family already exist, but then the family is given to a timeline`, () => {
+		const countAtoms = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		getState(countAtoms, `foo`)
+		const countTL = timeline({
+			key: `count`,
+			scope: [countAtoms],
+		})
+		setState(countAtoms, `foo`, 1)
+		undo(countTL)
+		expect(getState(countAtoms, `foo`)).toBe(0)
 	})
 })

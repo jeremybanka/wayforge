@@ -1,4 +1,4 @@
-import type { TimelineToken } from "atom.io"
+import type { TimelineEvent, TimelineToken } from "atom.io"
 
 import {
 	ingestAtomUpdateEvent,
@@ -30,6 +30,7 @@ export const timeTravel = (
 		)
 		return
 	}
+
 	if (
 		(action === `redo` && timelineData.at === timelineData.history.length) ||
 		(action === `undo` && timelineData.at === 0)
@@ -46,46 +47,56 @@ export const timeTravel = (
 	}
 
 	timelineData.timeTraveling = action === `redo` ? `into_future` : `into_past`
-	if (action === `undo`) {
-		--timelineData.at
-	}
+	let nextIndex = timelineData.at
+	let events: TimelineEvent<any>[]
+	switch (action) {
+		case `undo`:
+			--nextIndex
+			while (nextIndex !== 0 && timelineData.history[nextIndex].write !== true) {
+				--nextIndex
+			}
+			events = timelineData.history.slice(nextIndex, timelineData.at).reverse()
 
-	const event = timelineData.history[timelineData.at]
+			break
+		case `redo`:
+			++nextIndex
+			events = timelineData.history.slice(timelineData.at, nextIndex)
+	}
+	timelineData.at = nextIndex
+
 	const applying = action === `redo` ? `newValue` : `oldValue`
 
-	switch (event.type) {
-		case `atom_update`: {
-			ingestAtomUpdateEvent(store, event, applying)
-			break
+	for (const event of events) {
+		switch (event.type) {
+			case `atom_update`: {
+				ingestAtomUpdateEvent(store, event, applying)
+				break
+			}
+			case `selector_update`: {
+				ingestSelectorUpdateEvent(store, event, applying)
+				break
+			}
+			case `transaction_outcome`: {
+				ingestTransactionOutcomeEvent(store, event, applying)
+				break
+			}
+			case `state_creation`: {
+				ingestCreationEvent(store, event, applying)
+				break
+			}
+			case `state_disposal`: {
+				ingestDisposalEvent(store, event, applying)
+				break
+			}
+			case `molecule_creation`:
+			case `molecule_disposal`:
 		}
-		case `selector_update`: {
-			ingestSelectorUpdateEvent(store, event, applying)
-			break
-		}
-		case `transaction_outcome`: {
-			ingestTransactionOutcomeEvent(store, event, applying)
-			break
-		}
-		case `state_creation`: {
-			ingestCreationEvent(store, event, applying)
-			break
-		}
-		case `state_disposal`: {
-			ingestDisposalEvent(store, event, applying)
-			break
-		}
-		case `molecule_creation`:
-		case `molecule_disposal`:
-	}
-
-	if (action === `redo`) {
-		++timelineData.at
 	}
 
 	timelineData.subject.next(action)
 	timelineData.timeTraveling = null
 	store.logger.info(
-		`⏹️`,
+		`⏸️`,
 		`timeline`,
 		token.key,
 		`"${token.key}" is now at ${timelineData.at} / ${timelineData.history.length}`,
