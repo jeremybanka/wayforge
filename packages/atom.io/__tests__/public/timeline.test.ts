@@ -30,7 +30,7 @@ let logger: Logger
 beforeEach(() => {
 	I.clearStore(I.IMPLICIT.STORE)
 	I.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = I.IMPLICIT.STORE.logger //= Utils.createNullLogger()
+	logger = I.IMPLICIT.STORE.logger = Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -385,7 +385,7 @@ describe(`timeline`, () => {
 		expect(getState(count)).toBe(1)
 		expect(I.IMPLICIT.STORE.timelines.get(countTL.key)?.at).toBe(0)
 	})
-	it.only(`passes over non-write events`, () => {
+	it(`passes over non-write events`, () => {
 		const counts = atomFamily<number, string>({
 			key: `count`,
 			default: 0,
@@ -409,7 +409,6 @@ describe(`timeline`, () => {
 
 		undo(countTL)
 		redo(countTL)
-		_inspectTimeline(countTL)
 		expect(getState(counts, `a`)).toBe(1)
 	})
 })
@@ -428,7 +427,9 @@ describe(`timeline state lifecycle`, () => {
 		expect(getState(countStates, `my-key`)).toBe(1)
 		disposeState(countStates, `my-key`)
 		undo(countsTL)
-		undo(countsTL)
+		_inspectTimeline(countsTL)
+		console.log(`👀`, I.IMPLICIT.STORE.atoms.get(`count("my-key")`))
+
 		expect(I.seekInStore(I.IMPLICIT.STORE, countStates, `my-key`)).toBe(
 			undefined,
 		)
@@ -441,7 +442,6 @@ describe(`timeline state lifecycle`, () => {
 			key: `count("my-key")`,
 			type: `atom`,
 		})
-		redo(countsTL)
 	})
 })
 

@@ -60,7 +60,7 @@ export const timeTravel = (
 			while (nextIndex !== 0 && timelineData.history[nextIndex].write !== true) {
 				--nextIndex
 			}
-			events = timelineData.history.slice(nextIndex, timelineData.at)
+			events = timelineData.history.slice(nextIndex, timelineData.at).reverse()
 			console.log({ nextIndex, historyLength: timelineData.history.length })
 
 			break

@@ -282,9 +282,9 @@ function joinTransaction(
 						timelineTopics,
 					)
 
-					const timelineTransactionUpdate: TransactionOutcomeEvent<
-						TransactionToken<any>
-					> = {
+					const timelineTransactionUpdate: TimelineEvent<any> &
+						TransactionOutcomeEvent<TransactionToken<any>> = {
+						write: true,
 						...transactionUpdate,
 						subEvents: subEventsFiltered,
 					}
@@ -311,12 +311,14 @@ function buildSelectorUpdate(
 ) {
 	let latestUpdate: TimelineEvent<any> | undefined = tl.history.at(-1)
 	if (currentSelectorTime !== tl.selectorTime) {
-		const selectorUpdate: TimelineSelectorUpdateEvent<any> = (latestUpdate = {
-			type: `selector_update`,
-			timestamp: currentSelectorTime,
-			token: currentSelectorToken,
-			subEvents: [],
-		})
+		const selectorUpdate: TimelineEvent<any> & TimelineSelectorUpdateEvent<any> =
+			(latestUpdate = {
+				write: true,
+				type: `selector_update`,
+				timestamp: currentSelectorTime,
+				token: currentSelectorToken,
+				subEvents: [],
+			})
 		if (`type` in eventOrUpdate) {
 			latestUpdate.subEvents.push(eventOrUpdate)
 		} else {
