@@ -206,7 +206,7 @@ export const TimelineUpdateFC: React.FC<{
 											atomUpdate={event}
 										/>
 									)
-								default:
+								case `state_creation`:
 									return null
 							}
 						})
