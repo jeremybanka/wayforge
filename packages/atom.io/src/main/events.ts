@@ -23,10 +23,13 @@ export type AtomUpdateEvent<A extends AtomToken<any>> = {
 	timestamp: number
 }
 
+export type SelectorUpdateSubEvent<A extends AtomToken<any>> =
+	| AtomUpdateEvent<A>
+	| StateCreationEvent<any>
 export type TimelineSelectorUpdateEvent<A extends TimelineManageable> = {
 	type: `selector_update`
 	token: SelectorToken<any>
-	atomUpdates: AtomUpdateEvent<AtomOnly<A>>[]
+	subEvents: SelectorUpdateSubEvent<AtomOnly<A>>[]
 	timestamp: number
 }
 
@@ -110,7 +113,9 @@ export type TransactionOutcomeEvent<T extends TransactionToken<any>> = {
 	output: ReturnType<TokenType<T>>
 }
 
-export type TimelineEvent<ManagedAtom extends TimelineManageable> =
+export type TimelineEvent<ManagedAtom extends TimelineManageable> = {
+	write?: true
+} & (
 	| AtomUpdateEvent<AtomOnly<ManagedAtom>>
 	| MoleculeCreationEvent
 	| MoleculeDisposalEvent
@@ -118,3 +123,4 @@ export type TimelineEvent<ManagedAtom extends TimelineManageable> =
 	| StateDisposalEvent<AtomOnly<ManagedAtom>>
 	| TimelineSelectorUpdateEvent<ManagedAtom>
 	| TransactionOutcomeEvent<TransactionToken<any>>
+)

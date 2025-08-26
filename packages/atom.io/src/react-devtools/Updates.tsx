@@ -192,18 +192,23 @@ export const TimelineUpdateFC: React.FC<{
 							}
 						})
 				) : timelineUpdate.type === `selector_update` ? (
-					timelineUpdate.atomUpdates
+					timelineUpdate.subEvents
 						.filter(
 							(atomUpdateEvent) => !atomUpdateEvent.token.key.startsWith(`👁‍🗨`),
 						)
-						.map((atomUpdate, index) => {
-							return (
-								<article.AtomUpdate
-									key={`${timelineUpdate.token.key}:${index}:${atomUpdate.token.key}`}
-									serialNumber={index}
-									atomUpdate={atomUpdate}
-								/>
-							)
+						.map((event, index) => {
+							switch (event.type) {
+								case `atom_update`:
+									return (
+										<article.AtomUpdate
+											key={`${timelineUpdate.token.key}:${index}:${event.token.key}`}
+											serialNumber={index}
+											atomUpdate={event}
+										/>
+									)
+								case `state_creation`:
+									return null
+							}
 						})
 				) : timelineUpdate.type === `atom_update` ? (
 					<article.AtomUpdate

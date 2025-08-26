@@ -1,12 +1,12 @@
-import type { AtomUpdateEvent, StateCreationEvent, StateUpdate } from "atom.io"
+import type {
+	AtomUpdateEvent,
+	StateCreationEvent,
+	StateUpdate,
+	TimelineEvent,
+} from "atom.io"
 
-import {
-	type MutableAtom,
-	newest,
-	type Subject,
-	type WritableFamily,
-	type WritableState,
-} from ".."
+import type { MutableAtom, Subject, WritableFamily, WritableState } from ".."
+import { newest } from ".."
 import { hasRole } from "../atom"
 import { readOrComputeValue } from "../get-state"
 import type { Transceiver } from "../mutable"
@@ -27,13 +27,15 @@ export function dispatchOrDeferStateUpdate<T>(
 	const token = deposit(state)
 	if (stateIsNewlyCreated && family) {
 		state.subject.next({ newValue })
-		const stateCreationEvent: StateCreationEvent<any> = {
+		const stateCreationEvent: StateCreationEvent<any> & TimelineEvent<any> = {
+			write: true,
 			type: `state_creation`,
 			subType: `writable`,
 			token,
 			timestamp: Date.now(),
 			value: newValue,
 		}
+		target.operation.subEvents.push(stateCreationEvent)
 		const familySubject = family.subject as Subject<StateCreationEvent<any>>
 		familySubject.next(stateCreationEvent)
 		const innerTarget = newest(target)
@@ -75,7 +77,7 @@ export function dispatchOrDeferStateUpdate<T>(
 					`is now (`,
 					newValue,
 					`) subscribers:`,
-					subject.subscribers,
+					subject.subscribers.keys(),
 				)
 				break
 			case `atom`:
@@ -90,7 +92,7 @@ export function dispatchOrDeferStateUpdate<T>(
 					`->`,
 					newValue,
 					`) subscribers:`,
-					subject.subscribers,
+					subject.subscribers.keys(),
 				)
 		}
 		subject.next(update)

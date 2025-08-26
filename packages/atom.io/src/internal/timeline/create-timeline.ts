@@ -4,13 +4,16 @@ import type {
 	AtomUpdateEvent,
 	StateCreationEvent,
 	StateDisposalEvent,
+	StateUpdate,
 	TimelineEvent,
 	TimelineManageable,
 	TimelineOptions,
+	TimelineSelectorUpdateEvent,
 	TimelineToken,
 	TransactionOutcomeEvent,
 	TransactionSubEvent,
 	TransactionToken,
+	WritablePureSelectorToken,
 } from "atom.io"
 
 import { reduceReference } from "../get-state/reduce-reference"
@@ -24,10 +27,6 @@ export type Timeline<ManagedAtom extends TimelineManageable> = {
 	type: `timeline`
 	key: string
 	at: number
-	shouldCapture?: (
-		update: TimelineEvent<ManagedAtom>,
-		timeline: Timeline<ManagedAtom>,
-	) => boolean
 	timeTraveling: `into_future` | `into_past` | null
 	history: TimelineEvent<ManagedAtom>[]
 	selectorTime: number | null
@@ -46,7 +45,6 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 		type: `timeline`,
 		key: options.key,
 		at: 0,
-
 		timeTraveling: null,
 		selectorTime: null,
 		transactionKey: null,
@@ -56,9 +54,7 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 		subject: new Subject(),
 		subscriptions: new Map(),
 	}
-	if (options.shouldCapture) {
-		tl.shouldCapture = options.shouldCapture
-	}
+
 	const timelineKey = options.key
 	const target = newest(store)
 	for (const initialTopic of options.scope) {
@@ -182,93 +178,32 @@ function addAtomToTimeline(
 					if (txUpdateInProgress) {
 						joinTransaction(store, tl, txUpdateInProgress)
 					} else if (currentSelectorToken && currentSelectorTime) {
-						let latestUpdate: TimelineEvent<any> | undefined = tl.history.at(-1)
-
-						if (currentSelectorTime !== tl.selectorTime) {
-							latestUpdate = {
-								type: `selector_update`,
-								timestamp: currentSelectorTime,
-								// key: currentSelectorKey,
-								token: currentSelectorToken,
-								atomUpdates: [],
-							}
-							latestUpdate.atomUpdates.push({
-								type: `atom_update`,
-								token: atomToken,
-								update,
-								timestamp: Date.now(), // 👺 use store operation
-							})
-							if (tl.at !== tl.history.length) {
-								tl.history.splice(tl.at)
-							}
-
-							tl.history.push(latestUpdate)
-
-							store.logger.info(
-								`⌛`,
-								`timeline`,
-								tl.key,
-								`got a selector_update "${currentSelectorToken.key}" with`,
-								latestUpdate.atomUpdates.map(
-									(atomUpdate) => atomUpdate.token.key,
-								),
-							)
-
-							tl.at = tl.history.length
-							tl.selectorTime = currentSelectorTime
-						} else {
-							if (latestUpdate?.type === `selector_update`) {
-								latestUpdate.atomUpdates.push({
-									type: `atom_update`,
-									token: atomToken,
-									update,
-									timestamp: Date.now(), // 👺 use store operation
-								})
-								store.logger.info(
-									`⌛`,
-									`timeline`,
-									tl.key,
-									`set selector_update "${currentSelectorToken.key}" to`,
-									latestUpdate?.atomUpdates.map(
-										(atomUpdate) => atomUpdate.token.key,
-									),
-								)
-							}
-						}
-						if (latestUpdate) {
-							const willCaptureSelectorUpdate =
-								tl.shouldCapture?.(latestUpdate, tl) ?? true
-							if (willCaptureSelectorUpdate) {
-								tl.subject.next(latestUpdate)
-							} else {
-								tl.history.pop()
-								tl.at = tl.history.length
-							}
-						}
+						buildSelectorUpdate(
+							store,
+							tl,
+							atomToken,
+							update,
+							currentSelectorToken,
+							currentSelectorTime,
+						)
 					} else {
 						const timestamp = Date.now()
 						tl.selectorTime = null
-						if (tl.at !== tl.history.length) {
-							tl.history.splice(tl.at)
-						}
-						const atomUpdate: AtomUpdateEvent<any> = {
+
+						const atomUpdate: AtomUpdateEvent<any> & TimelineEvent<any> = {
+							write: true,
 							type: `atom_update`,
 							token: deposit(atom),
 							update,
 							timestamp,
 						}
-						const willCapture = tl.shouldCapture?.(atomUpdate, tl) ?? true
 						store.logger.info(
 							`⌛`,
 							`timeline`,
 							tl.key,
 							`got an atom_update to "${atom.key}"`,
 						)
-						if (willCapture) {
-							tl.history.push(atomUpdate)
-							tl.at = tl.history.length
-							tl.subject.next(atomUpdate)
-						}
+						addToHistory(tl, atomUpdate)
 					}
 				}
 			},
@@ -322,10 +257,6 @@ function joinTransaction(
 				unsubscribe()
 				tl.transactionKey = null
 				if (tl.timeTraveling === null && currentTxInstanceId) {
-					if (tl.at !== tl.history.length) {
-						tl.history.splice(tl.at)
-					}
-
 					// biome-ignore lint/style/noNonNullAssertion: we are in the context of this timeline
 					const timelineTopics = store.timelineTopics.getRelatedKeys(tl.key)!
 
@@ -334,22 +265,96 @@ function joinTransaction(
 						timelineTopics,
 					)
 
-					const timelineTransactionUpdate: TransactionOutcomeEvent<
-						TransactionToken<any>
-					> = {
+					const timelineTransactionUpdate: TimelineEvent<any> &
+						TransactionOutcomeEvent<TransactionToken<any>> = {
+						write: true,
 						...transactionUpdate,
 						subEvents: subEventsFiltered,
 					}
-					const willCapture =
-						tl.shouldCapture?.(timelineTransactionUpdate, tl) ?? true
-					if (willCapture) {
-						tl.history.push(timelineTransactionUpdate)
-						tl.at = tl.history.length
-						tl.subject.next(timelineTransactionUpdate)
-					}
+
+					addToHistory(tl, timelineTransactionUpdate)
 				}
 			},
 		)
+	}
+}
+
+function buildSelectorUpdate(
+	store: Store,
+	tl: Timeline<any>,
+	atomToken: AtomToken<any>,
+	eventOrUpdate: StateCreationEvent<any> | StateUpdate<any>,
+	currentSelectorToken: WritablePureSelectorToken<any>,
+	currentSelectorTime: number,
+) {
+	let latestUpdate: TimelineEvent<any> | undefined = tl.history.at(-1)
+	if (currentSelectorTime !== tl.selectorTime) {
+		const selectorUpdate: TimelineEvent<any> & TimelineSelectorUpdateEvent<any> =
+			(latestUpdate = {
+				write: true,
+				type: `selector_update`,
+				timestamp: currentSelectorTime,
+				token: currentSelectorToken,
+				subEvents: [],
+			})
+		if (`type` in eventOrUpdate) {
+			latestUpdate.subEvents.push(eventOrUpdate)
+		} else {
+			latestUpdate.subEvents.push({
+				type: `atom_update`,
+				token: atomToken,
+				update: eventOrUpdate,
+				timestamp: Date.now(), // 👺 use store operation
+			})
+		}
+
+		addToHistory(tl, latestUpdate)
+		tl.selectorTime = currentSelectorTime
+
+		store.logger.info(
+			`⌛`,
+			`timeline`,
+			tl.key,
+			`got a selector_update "${currentSelectorToken.key}" with`,
+			latestUpdate.subEvents.map((event) => event.token.key),
+		)
+
+		const operation = store.operation
+		const unsub = store.on.operationClose.subscribe(
+			`timeline:${tl.key} (needs to gather nested selector creations)`,
+			() => {
+				unsub()
+				if (operation.open) {
+					selectorUpdate.subEvents = [
+						...operation.subEvents,
+						...selectorUpdate.subEvents,
+					]
+				}
+			},
+		)
+	} else {
+		if (latestUpdate?.type === `selector_update`) {
+			if (`type` in eventOrUpdate) {
+				latestUpdate.subEvents.push(eventOrUpdate)
+			} else {
+				latestUpdate.subEvents.push({
+					type: `atom_update`,
+					token: atomToken,
+					update: eventOrUpdate,
+					timestamp: Date.now(), // 👺 use store operation
+				})
+			}
+			store.logger.info(
+				`⌛`,
+				`timeline`,
+				tl.key,
+				`set selector_update "${currentSelectorToken.key}" to`,
+				latestUpdate?.subEvents.map((event) => event.token.key),
+			)
+		}
+	}
+	if (latestUpdate) {
+		tl.subject.next(latestUpdate)
 	}
 }
 
@@ -402,6 +407,16 @@ function handleStateLifecycleEvent(
 	event: StateCreationEvent<any> | StateDisposalEvent<any>,
 	tl: Timeline<any>,
 ): void {
+	const currentSelectorToken =
+		store.operation.open &&
+		store.operation.token.type === `writable_pure_selector`
+			? store.operation.token
+			: null
+	const currentSelectorTime =
+		store.operation.open &&
+		store.operation.token.type === `writable_pure_selector`
+			? store.operation.timestamp
+			: null
 	if (!tl.timeTraveling) {
 		const target = newest(store)
 		if (isChildStore(target)) {
@@ -410,10 +425,21 @@ function handleStateLifecycleEvent(
 			const txUpdateInProgress = target.on.transactionApplying.state
 			if (txUpdateInProgress) {
 				joinTransaction(store, tl, txUpdateInProgress.update)
+			} else if (
+				currentSelectorToken &&
+				currentSelectorTime &&
+				event.type === `state_creation`
+			) {
+				buildSelectorUpdate(
+					store,
+					tl,
+					event.token,
+					event,
+					currentSelectorToken,
+					currentSelectorTime,
+				)
 			} else {
-				tl.history.push(event)
-				tl.at = tl.history.length
-				tl.subject.next(event)
+				addToHistory(tl, event)
 			}
 		}
 	}
@@ -426,4 +452,13 @@ function handleStateLifecycleEvent(
 			tl.subscriptions.delete(event.token.key)
 			break
 	}
+}
+
+function addToHistory(tl: Timeline<any>, event: TimelineEvent<any>): void {
+	if (tl.at !== tl.history.length) {
+		tl.history.splice(tl.at)
+	}
+	tl.history.push(event)
+	tl.at = tl.history.length
+	tl.subject.next(event)
 }
