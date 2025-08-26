@@ -15,19 +15,18 @@ import { newest } from "../lineage"
 import { getJsonToken } from "../mutable"
 import { MapOverlay } from "../overlays/map-overlay"
 import { resetInStore, setIntoStore } from "../set-state"
-import type { Store } from "../store"
 import type { Fn } from "../utility-types"
 import type { TransactionProgress } from "."
 import { actUponStore, getEpochNumberOfAction } from "."
 import type { ChildStore, RootStore } from "./is-root-store"
 
 export const buildTransaction = (
-	store: Store,
+	store: RootStore,
 	token: TransactionToken<any>,
 	params: any[],
 	id: string,
 ): ChildStore => {
-	const parent = newest(store) as ChildStore | RootStore
+	const parent = newest(store)
 	const childBase: Omit<ChildStore, `transactionMeta`> = {
 		parent,
 		child: null,

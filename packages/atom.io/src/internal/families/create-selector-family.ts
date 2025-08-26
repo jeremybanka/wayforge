@@ -11,30 +11,30 @@ import type {
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 
-import type { Store } from "../store"
+import type { RootStore } from "../transaction"
 import { createReadonlyHeldSelectorFamily } from "./create-readonly-held-selector-family"
 import { createReadonlyPureSelectorFamily } from "./create-readonly-pure-selector-family"
 import { createWritableHeldSelectorFamily } from "./create-writable-held-selector-family"
 import { createWritablePureSelectorFamily } from "./create-writable-pure-selector-family"
 
 export function createSelectorFamily<T extends object, K extends Canonical>(
-	store: Store,
+	store: RootStore,
 	options: WritableHeldSelectorFamilyOptions<T, K>,
 ): WritableHeldSelectorFamilyToken<T, K>
 export function createSelectorFamily<T extends object, K extends Canonical>(
-	store: Store,
+	store: RootStore,
 	options: ReadonlyHeldSelectorFamilyOptions<T, K>,
 ): ReadonlyHeldSelectorFamilyToken<T, K>
 export function createSelectorFamily<T, K extends Canonical>(
-	store: Store,
+	store: RootStore,
 	options: WritablePureSelectorFamilyOptions<T, K>,
 ): WritablePureSelectorFamilyToken<T, K>
 export function createSelectorFamily<T, K extends Canonical>(
-	store: Store,
+	store: RootStore,
 	options: ReadonlyPureSelectorFamilyOptions<T, K>,
 ): ReadonlyPureSelectorFamilyToken<T, K>
 export function createSelectorFamily(
-	store: Store,
+	store: RootStore,
 	options:
 		| ReadonlyHeldSelectorFamilyOptions<any, any>
 		| ReadonlyPureSelectorFamilyOptions<any, any>

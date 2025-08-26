@@ -11,12 +11,8 @@ import { PRETTY_TOKEN_TYPES } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import {
-	findInStore,
-	getFromStore,
-	getJsonToken,
-	type WritablePureSelectorFamily,
-} from ".."
+import type { RootStore, WritablePureSelectorFamily } from ".."
+import { findInStore, getFromStore, getJsonToken } from ".."
 import { newest } from "../lineage"
 import { createWritablePureSelector } from "../selector"
 import type { Store } from "../store"
@@ -71,7 +67,7 @@ export function createWritablePureSelectorFamily<T, K extends Canonical>(
 	const selectorFamily = Object.assign(familyFunction, familyToken, {
 		internalRoles,
 		subject,
-		install: (s: Store) => createWritablePureSelectorFamily(s, options),
+		install: (s: RootStore) => createWritablePureSelectorFamily(s, options),
 		default: (key: K) => {
 			const getFn = options.get(key)
 			return getFn({

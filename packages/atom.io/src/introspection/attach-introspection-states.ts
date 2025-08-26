@@ -6,7 +6,7 @@ import type {
 	TransactionOutcomeEvent,
 	TransactionToken,
 } from "atom.io"
-import type { Fn, Store, Timeline } from "atom.io/internal"
+import type { Fn, RootStore, Store, Timeline } from "atom.io/internal"
 
 import { type AtomTokenIndex, attachAtomIndex } from "./attach-atom-index"
 import type { SelectorTokenIndex } from "./attach-selector-index"
@@ -30,7 +30,9 @@ export type IntrospectionStates = {
 	typeSelectors: ReadonlyPureSelectorFamilyToken<Loadable<string>, string>
 }
 
-export const attachIntrospectionStates = (store: Store): IntrospectionStates => {
+export const attachIntrospectionStates = (
+	store: RootStore,
+): IntrospectionStates => {
 	return {
 		atomIndex: attachAtomIndex(store),
 		selectorIndex: attachSelectorIndex(store),

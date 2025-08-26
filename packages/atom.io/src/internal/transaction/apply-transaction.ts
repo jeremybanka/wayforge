@@ -1,30 +1,18 @@
 import { ingestTransactionOutcomeEvent } from "../events"
 import { newest } from "../lineage"
-import type { Store } from "../store"
 import { withdraw } from "../store"
 import type { Fn } from "../utility-types"
+import type { ChildStore } from "./is-root-store"
 import { isChildStore, isRootStore } from "./is-root-store"
 import { setEpochNumberOfAction } from "./set-epoch-number"
 
 export function applyTransaction<F extends Fn>(
-	store: Store,
+	store: ChildStore,
 	output: ReturnType<F>,
 ): void {
 	const child = newest(store)
 	const { parent } = child
-	if (
-		parent === null ||
-		!isChildStore(child) ||
-		child.transactionMeta?.phase !== `building`
-	) {
-		store.logger.warn(
-			`🐞`,
-			`transaction`,
-			`???`,
-			`applyTransaction called outside of a transaction. This is probably a bug in AtomIO.`,
-		)
-		return
-	}
+
 	child.transactionMeta.phase = `applying`
 	child.transactionMeta.update.output = output
 	parent.child = null

@@ -1,4 +1,4 @@
-import type { Store } from "atom.io/internal"
+import type { RootStore } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
 export * from "./continuity/prepare-to-sync-realtime-continuity"
@@ -25,5 +25,5 @@ export type Socket = {
 }
 export type ServerConfig = {
 	socket: Socket
-	store?: Store
+	store?: RootStore
 }

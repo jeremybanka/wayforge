@@ -1,4 +1,4 @@
-import type { Store } from "atom.io/internal"
+import type { RootStore } from "atom.io/internal"
 import {
 	assignTransactionToContinuity,
 	getFromStore,
@@ -20,7 +20,7 @@ import { useConcealState } from "./continuity/use-conceal-state"
 import { useRevealState } from "./continuity/use-reveal-state"
 
 export function syncContinuity(
-	store: Store,
+	store: RootStore,
 	socket: Socket,
 	continuity: ContinuityToken,
 ): () => void {

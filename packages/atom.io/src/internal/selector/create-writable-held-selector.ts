@@ -4,7 +4,7 @@ import type {
 	WritableHeldSelectorToken,
 } from "atom.io"
 
-import type { WritableHeldSelector } from ".."
+import type { RootStore, WritableHeldSelector } from ".."
 import { writeToCache } from "../caching"
 import { newest } from "../lineage"
 import type { Store } from "../store"
@@ -54,7 +54,7 @@ export function createWritableHeldSelector<T extends object>(
 		subject,
 		getFrom,
 		setSelf,
-		install: (s: Store) => createWritableHeldSelector(s, options, family),
+		install: (s: RootStore) => createWritableHeldSelector(s, options, family),
 	}
 	if (family) mySelector.family = family
 

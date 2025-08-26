@@ -4,7 +4,7 @@ import type {
 	ReadonlyPureSelectorToken,
 } from "atom.io"
 
-import type { ReadonlyPureSelector } from ".."
+import type { ReadonlyPureSelector, RootStore } from ".."
 import { writeToCache } from "../caching"
 import { newest } from "../lineage"
 import type { Store } from "../store"
@@ -48,7 +48,7 @@ export function createReadonlyPureSelector<T>(
 		type,
 		subject,
 		getFrom,
-		install: (s: Store) => createReadonlyPureSelector(s, options, family),
+		install: (s: RootStore) => createReadonlyPureSelector(s, options, family),
 	}
 	if (family) readonlySelector.family = family
 

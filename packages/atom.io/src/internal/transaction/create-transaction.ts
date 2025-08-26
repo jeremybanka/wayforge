@@ -5,24 +5,24 @@ import type {
 } from "atom.io"
 
 import { newest } from "../lineage"
-import type { Store } from "../store"
 import { deposit } from "../store"
 import { Subject } from "../subject"
 import type { Fn } from "../utility-types"
 import { abortTransaction } from "./abort-transaction"
 import { applyTransaction } from "./apply-transaction"
 import { buildTransaction } from "./build-transaction"
+import type { RootStore } from "./is-root-store"
 
 export type Transaction<F extends Fn> = {
 	key: string
 	type: `transaction`
-	install: (store: Store) => void
+	install: (store: RootStore) => void
 	subject: Subject<TransactionOutcomeEvent<TransactionToken<F>>>
 	run: (parameters: Parameters<F>, id?: string) => ReturnType<F>
 }
 
 export function createTransaction<F extends Fn>(
-	store: Store,
+	store: RootStore,
 	options: TransactionOptions<F>,
 ): TransactionToken<F> {
 	const { key } = options
@@ -32,10 +32,9 @@ export function createTransaction<F extends Fn>(
 		type: `transaction`,
 		run: (params: Parameters<F>, id: string) => {
 			const token = deposit(newTransaction)
-			const childStore = buildTransaction(store, token, params, id)
+			const target = buildTransaction(store, token, params, id)
 			try {
-				const target = newest(store)
-				const { toolkit } = childStore.transactionMeta
+				const { toolkit } = target.transactionMeta
 				const output = options.do(toolkit, ...params)
 				applyTransaction<F>(target, output)
 				return output

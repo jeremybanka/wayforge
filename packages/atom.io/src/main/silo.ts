@@ -1,4 +1,5 @@
 import type { findState } from "atom.io"
+import type { RootStore } from "atom.io/internal"
 import {
 	actUponStore,
 	arbitrary,
@@ -38,7 +39,7 @@ import type { selector, selectorFamily } from "./selector"
 import type { runTransaction, transaction } from "./transaction"
 
 export class Silo {
-	public store: Store
+	public store: RootStore
 	public atom: typeof atom
 	public mutableAtom: typeof mutableAtom
 	public atomFamily: typeof atomFamily
@@ -56,10 +57,10 @@ export class Silo {
 	public undo: typeof undo
 	public redo: typeof redo
 	public runTransaction: typeof runTransaction
-	public install: (tokens: AtomIOToken[], store?: Store) => void
+	public install: (tokens: AtomIOToken[], store?: RootStore) => void
 
 	public constructor(config: Store[`config`], fromStore: Store | null = null) {
-		const s = (this.store = new Store(config, fromStore))
+		const s = (this.store = new Store(config, fromStore) as RootStore)
 		this.atom = ((options: Parameters<typeof atom>[0]) =>
 			createRegularAtom(s, options, undefined)) as typeof atom
 		this.mutableAtom = ((options: Parameters<typeof mutableAtom>[0]) =>

@@ -5,11 +5,11 @@ import type {
 	SelectorToken,
 	TransactionToken,
 } from "atom.io"
+import type { RootStore, Store } from "atom.io/internal"
 import {
 	createRegularAtom,
 	createRegularAtomFamily,
 	createTransaction,
-	type Store,
 } from "atom.io/internal"
 import type {
 	IntrospectionStates,
@@ -34,7 +34,7 @@ export type DevtoolsStates = {
 }
 
 export function attachDevtoolsStates(
-	store: Store,
+	store: RootStore,
 	hideByDefault = false,
 ): DevtoolsStates & IntrospectionStates & { store: Store } {
 	const introspectionStates = attachIntrospectionStates(store)
