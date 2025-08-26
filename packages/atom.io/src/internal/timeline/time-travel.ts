@@ -59,12 +59,6 @@ export const timeTravel = (
 
 			break
 		case `redo`:
-			while (
-				nextIndex !== timelineData.history.length &&
-				timelineData.history[nextIndex].write !== true
-			) {
-				++nextIndex
-			}
 			++nextIndex
 			events = timelineData.history.slice(timelineData.at, nextIndex)
 	}

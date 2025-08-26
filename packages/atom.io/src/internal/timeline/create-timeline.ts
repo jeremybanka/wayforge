@@ -189,9 +189,7 @@ function addAtomToTimeline(
 					} else {
 						const timestamp = Date.now()
 						tl.selectorTime = null
-						if (tl.at !== tl.history.length) {
-							tl.history.splice(tl.at)
-						}
+
 						const atomUpdate: AtomUpdateEvent<any> & TimelineEvent<any> = {
 							write: true,
 							type: `atom_update`,
@@ -205,9 +203,7 @@ function addAtomToTimeline(
 							tl.key,
 							`got an atom_update to "${atom.key}"`,
 						)
-						tl.history.push(atomUpdate)
-						tl.at = tl.history.length
-						tl.subject.next(atomUpdate)
+						addToHistory(tl, atomUpdate)
 					}
 				}
 			},
@@ -261,10 +257,6 @@ function joinTransaction(
 				unsubscribe()
 				tl.transactionKey = null
 				if (tl.timeTraveling === null && currentTxInstanceId) {
-					if (tl.at !== tl.history.length) {
-						tl.history.splice(tl.at)
-					}
-
 					// biome-ignore lint/style/noNonNullAssertion: we are in the context of this timeline
 					const timelineTopics = store.timelineTopics.getRelatedKeys(tl.key)!
 
@@ -280,9 +272,7 @@ function joinTransaction(
 						subEvents: subEventsFiltered,
 					}
 
-					tl.history.push(timelineTransactionUpdate)
-					tl.at = tl.history.length
-					tl.subject.next(timelineTransactionUpdate)
+					addToHistory(tl, timelineTransactionUpdate)
 				}
 			},
 		)
@@ -317,11 +307,9 @@ function buildSelectorUpdate(
 				timestamp: Date.now(), // 👺 use store operation
 			})
 		}
-		if (tl.at !== tl.history.length) {
-			tl.history.splice(tl.at)
-		}
 
-		tl.history.push(latestUpdate)
+		addToHistory(tl, latestUpdate)
+		tl.selectorTime = currentSelectorTime
 
 		store.logger.info(
 			`⌛`,
@@ -330,9 +318,6 @@ function buildSelectorUpdate(
 			`got a selector_update "${currentSelectorToken.key}" with`,
 			latestUpdate.subEvents.map((event) => event.token.key),
 		)
-
-		tl.at = tl.history.length
-		tl.selectorTime = currentSelectorTime
 
 		const operation = store.operation
 		const unsub = store.on.operationClose.subscribe(
@@ -454,12 +439,7 @@ function handleStateLifecycleEvent(
 					currentSelectorTime,
 				)
 			} else {
-				if (tl.at !== tl.history.length) {
-					tl.history.splice(tl.at)
-				}
-				tl.history.push(event)
-				tl.at = tl.history.length
-				tl.subject.next(event)
+				addToHistory(tl, event)
 			}
 		}
 	}
@@ -472,4 +452,13 @@ function handleStateLifecycleEvent(
 			tl.subscriptions.delete(event.token.key)
 			break
 	}
+}
+
+function addToHistory(tl: Timeline<any>, event: TimelineEvent<any>): void {
+	if (tl.at !== tl.history.length) {
+		tl.history.splice(tl.at)
+	}
+	tl.history.push(event)
+	tl.at = tl.history.length
+	tl.subject.next(event)
 }
