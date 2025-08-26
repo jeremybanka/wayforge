@@ -1,7 +1,6 @@
-import type { Timeline } from "atom.io/internal"
 import { createTimeline, IMPLICIT, timeTravel } from "atom.io/internal"
 
-import type { AtomFamilyToken, AtomToken, TimelineEvent, TimelineToken } from "."
+import type { AtomFamilyToken, AtomToken, TimelineToken } from "."
 
 export type TimelineManageable = AtomFamilyToken<any, any> | AtomToken<any>
 export type AtomOnly<M extends TimelineManageable> = M extends AtomFamilyToken<
@@ -33,11 +32,6 @@ export type TimelineOptions<ManagedAtom extends TimelineManageable> = {
 	key: string
 	/** The managed atoms (and families of atoms) to record */
 	scope: ManagedAtom[]
-	/** A function that determines whether a given update should be recorded */
-	shouldCapture?: (
-		update: TimelineEvent<ManagedAtom>,
-		timeline: Timeline<TimelineManageable>,
-	) => boolean
 }
 
 /**

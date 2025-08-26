@@ -27,10 +27,6 @@ export type Timeline<ManagedAtom extends TimelineManageable> = {
 	type: `timeline`
 	key: string
 	at: number
-	shouldCapture?: (
-		update: TimelineEvent<ManagedAtom>,
-		timeline: Timeline<ManagedAtom>,
-	) => boolean
 	timeTraveling: `into_future` | `into_past` | null
 	history: TimelineEvent<ManagedAtom>[]
 	selectorTime: number | null
@@ -58,9 +54,7 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 		subject: new Subject(),
 		subscriptions: new Map(),
 	}
-	if (options.shouldCapture) {
-		tl.shouldCapture = options.shouldCapture
-	}
+
 	const timelineKey = options.key
 	const target = newest(store)
 	for (const initialTopic of options.scope) {
@@ -205,18 +199,15 @@ function addAtomToTimeline(
 							update,
 							timestamp,
 						}
-						const willCapture = tl.shouldCapture?.(atomUpdate, tl) ?? true
 						store.logger.info(
 							`⌛`,
 							`timeline`,
 							tl.key,
 							`got an atom_update to "${atom.key}"`,
 						)
-						if (willCapture) {
-							tl.history.push(atomUpdate)
-							tl.at = tl.history.length
-							tl.subject.next(atomUpdate)
-						}
+						tl.history.push(atomUpdate)
+						tl.at = tl.history.length
+						tl.subject.next(atomUpdate)
 					}
 				}
 			},
@@ -288,13 +279,10 @@ function joinTransaction(
 						...transactionUpdate,
 						subEvents: subEventsFiltered,
 					}
-					const willCapture =
-						tl.shouldCapture?.(timelineTransactionUpdate, tl) ?? true
-					if (willCapture) {
-						tl.history.push(timelineTransactionUpdate)
-						tl.at = tl.history.length
-						tl.subject.next(timelineTransactionUpdate)
-					}
+
+					tl.history.push(timelineTransactionUpdate)
+					tl.at = tl.history.length
+					tl.subject.next(timelineTransactionUpdate)
 				}
 			},
 		)
@@ -381,14 +369,7 @@ function buildSelectorUpdate(
 		}
 	}
 	if (latestUpdate) {
-		const willCaptureSelectorUpdate =
-			tl.shouldCapture?.(latestUpdate, tl) ?? true
-		if (willCaptureSelectorUpdate) {
-			tl.subject.next(latestUpdate)
-		} else {
-			tl.history.pop()
-			tl.at = tl.history.length
-		}
+		tl.subject.next(latestUpdate)
 	}
 }
 
