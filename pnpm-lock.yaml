@@ -36,8 +36,8 @@ importers:
         specifier: 8.41.0
         version: 8.41.0(eslint@9.34.0(jiti@2.5.1))(typescript@5.9.2)
       '@typescript/native-preview':
-        specifier: 7.0.0-dev.20250825.1
-        version: 7.0.0-dev.20250825.1
+        specifier: 7.0.0-dev.20250826.1
+        version: 7.0.0-dev.20250826.1
       c8:
         specifier: 10.1.3
         version: 10.1.3
@@ -546,7 +546,7 @@ importers:
         version: 0.2.5
       tsdown:
         specifier: 0.14.2
-        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250825.1)(typescript@5.9.2)
+        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250826.1)(typescript@5.9.2)
       typescript:
         specifier: 5.9.2
         version: 5.9.2
@@ -604,7 +604,7 @@ importers:
         version: 0.2.5
       tsdown:
         specifier: 0.14.2
-        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250825.1)(typescript@5.9.2)
+        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250826.1)(typescript@5.9.2)
 
   packages/comline:
     dependencies:
@@ -635,7 +635,7 @@ importers:
         version: 0.2.5
       tsdown:
         specifier: 0.14.2
-        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250825.1)(typescript@5.9.2)
+        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250826.1)(typescript@5.9.2)
       vite:
         specifier: 7.1.3
         version: 7.1.3(@types/node@24.3.0)(jiti@2.5.1)(sass-embedded@1.91.0)(sass@1.91.0)(tsx@4.20.4)
@@ -699,7 +699,7 @@ importers:
         version: 0.2.5
       tsdown:
         specifier: 0.14.2
-        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250825.1)(typescript@5.9.2)
+        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250826.1)(typescript@5.9.2)
       varmint:
         specifier: workspace:*
         version: link:../varmint
@@ -787,7 +787,7 @@ importers:
         version: 1.91.0
       tsdown:
         specifier: 0.14.2
-        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250825.1)(typescript@5.9.2)
+        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250826.1)(typescript@5.9.2)
       vite-plugin-dts:
         specifier: 4.5.4
         version: 4.5.4(@types/node@24.3.0)(rollup@4.46.3)(typescript@5.9.2)(vite@7.1.3(@types/node@24.3.0)(jiti@2.5.1)(sass-embedded@1.91.0)(sass@1.91.0)(tsx@4.20.4))
@@ -846,7 +846,7 @@ importers:
         version: 6.0.1
       tsdown:
         specifier: 0.14.2
-        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250825.1)(typescript@5.9.2)
+        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250826.1)(typescript@5.9.2)
       vite:
         specifier: 7.1.3
         version: 7.1.3(@types/node@24.3.0)(jiti@2.5.1)(sass-embedded@1.91.0)(sass@1.91.0)(tsx@4.20.4)
@@ -923,7 +923,7 @@ importers:
         version: 9.34.0(jiti@2.5.1)
       tsdown:
         specifier: 0.14.2
-        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250825.1)(typescript@5.9.2)
+        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250826.1)(typescript@5.9.2)
       vite:
         specifier: 7.1.3
         version: 7.1.3(@types/node@24.3.0)(jiti@2.5.1)(sass-embedded@1.91.0)(sass@1.91.0)(tsx@4.20.4)
@@ -947,7 +947,7 @@ importers:
         version: 2.16.11
       tsdown:
         specifier: 0.14.2
-        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250825.1)(typescript@5.9.2)
+        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250826.1)(typescript@5.9.2)
       tsup:
         specifier: 8.5.0
         version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.3.0))(@swc/core@1.13.3)(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.4)(typescript@5.9.2)
@@ -983,7 +983,7 @@ importers:
         version: 0.2.5
       tsdown:
         specifier: 0.14.2
-        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250825.1)(typescript@5.9.2)
+        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250826.1)(typescript@5.9.2)
       vite:
         specifier: 7.1.3
         version: 7.1.3(@types/node@24.3.0)(jiti@2.5.1)(sass-embedded@1.91.0)(sass@1.91.0)(tsx@4.20.4)
@@ -1013,7 +1013,7 @@ importers:
         version: 6.0.1
       tsdown:
         specifier: 0.14.2
-        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250825.1)(typescript@5.9.2)
+        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250826.1)(typescript@5.9.2)
       vite:
         specifier: 7.1.3
         version: 7.1.3(@types/node@24.3.0)(jiti@2.5.1)(sass-embedded@1.91.0)(sass@1.91.0)(tsx@4.20.4)
@@ -1056,7 +1056,7 @@ importers:
         version: 0.2.5
       tsdown:
         specifier: 0.14.2
-        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250825.1)(typescript@5.9.2)
+        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250826.1)(typescript@5.9.2)
       tsup:
         specifier: 8.5.0
         version: 8.5.0(@microsoft/api-extractor@7.52.10(@types/node@24.3.0))(@swc/core@1.13.3)(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.4)(typescript@5.9.2)
@@ -1108,7 +1108,7 @@ importers:
         version: 0.2.5
       tsdown:
         specifier: 0.14.2
-        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250825.1)(typescript@5.9.2)
+        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250826.1)(typescript@5.9.2)
       vite:
         specifier: 7.1.3
         version: 7.1.3(@types/node@24.3.0)(jiti@2.5.1)(sass-embedded@1.91.0)(sass@1.91.0)(tsx@4.20.4)
@@ -1144,7 +1144,7 @@ importers:
         version: 0.1.11(arktype@2.1.20)(typescript@5.9.2)
       tsdown:
         specifier: 0.14.2
-        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250825.1)(typescript@5.9.2)
+        version: 0.14.2(@typescript/native-preview@7.0.0-dev.20250826.1)(typescript@5.9.2)
       vite:
         specifier: 7.1.3
         version: 7.1.3(@types/node@24.3.0)(jiti@2.5.1)(sass-embedded@1.91.0)(sass@1.91.0)(tsx@4.20.4)
@@ -3646,50 +3646,50 @@ packages:
     resolution: {integrity: sha512-+GeGMebMCy0elMNg67LRNoVnUFPIm37iu5CmHESVx56/9Jsfdpsvbv605DQ81Pi/x11IdKUsS5nzgTYbCQU9fg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20250825.1':
-    resolution: {integrity: sha512-RT1IMIimoSK4xlcRVDtEwN3m1T5a9FDgdRZSDYlZsQr9e09GkaIAJgPv5yLkpFbAAq57BiBonNM8+hFJcYyH0A==}
+  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20250826.1':
+    resolution: {integrity: sha512-UTkmzj0+NpraW4GcgG5PECJZ25SASkiK7TP90lUx9/RZRidrClhHqyf/A3NPpI+1pqoKqGXxIt3+jV+BY15KyQ==}
     engines: {node: '>=20.6.0'}
     cpu: [arm64]
     os: [darwin]
 
-  '@typescript/native-preview-darwin-x64@7.0.0-dev.20250825.1':
-    resolution: {integrity: sha512-k8/wn0POmMoXczdgywN9gTGiTql3ICJBoKIvdiE3yjJHSipjQcX9WbQ0HSCfX2cliVNFRANfoKArsJUIk9fN3w==}
+  '@typescript/native-preview-darwin-x64@7.0.0-dev.20250826.1':
+    resolution: {integrity: sha512-9UyLnKkJMW2T118FmS8Jj1djWDXgXGz2d9gUA/d+AdTAOaTBc1TmWhiUVcyKgIzG3+OAFIY+pVLeBWxNpFQu4Q==}
     engines: {node: '>=20.6.0'}
     cpu: [x64]
     os: [darwin]
 
-  '@typescript/native-preview-linux-arm64@7.0.0-dev.20250825.1':
-    resolution: {integrity: sha512-VfiMRCipZY5i+PwgNDFHH8/Sm5w5/9U7Uf/Jb69ZgSdgZGpYev++6CAnWhl7wzJBAI72kNK1hD2s870j0RiNyw==}
+  '@typescript/native-preview-linux-arm64@7.0.0-dev.20250826.1':
+    resolution: {integrity: sha512-GFcWo//t482UhZW+K1Nqlp/eOO2NS1uAIR77UyPn1FK/NOQBaxg8w4AZk0OG5ZHzvut4iZwQa2Gp+8zbNnfAIA==}
     engines: {node: '>=20.6.0'}
     cpu: [arm64]
     os: [linux]
 
-  '@typescript/native-preview-linux-arm@7.0.0-dev.20250825.1':
-    resolution: {integrity: sha512-7EqleheGT7N4V5eGNT2n9ZDMoesi190pnYjbolwbIPSZqklZ/4AXApZhYz8vqqALt+TzGBUQ8MWjX/alzDpl5A==}
+  '@typescript/native-preview-linux-arm@7.0.0-dev.20250826.1':
+    resolution: {integrity: sha512-CRH103rrFme+V917lftxtcttiT69fDNZPcnNzHeuj1z6/G3eIY6Hmon4xQb/Q4CjgblcO/BIEz6zDVphlas3dA==}
     engines: {node: '>=20.6.0'}
     cpu: [arm]
     os: [linux]
 
-  '@typescript/native-preview-linux-x64@7.0.0-dev.20250825.1':
-    resolution: {integrity: sha512-da+bqP2uOD3BrQZgt5fdgvinkekNMh+9enOmjQkv0tdb53PZ5Sf3xEl+yC43TrLfJAFpYHDBU5WTVnSorryZ2Q==}
+  '@typescript/native-preview-linux-x64@7.0.0-dev.20250826.1':
+    resolution: {integrity: sha512-ePQiUwa9YpUUc5g8lu77kCOgZyAseJn14B+5Uwz7n7CFPJn48L0mcKvjr3jVP8sER0r6rFmndEr2uyHnc+Qj2w==}
     engines: {node: '>=20.6.0'}
     cpu: [x64]
     os: [linux]
 
-  '@typescript/native-preview-win32-arm64@7.0.0-dev.20250825.1':
-    resolution: {integrity: sha512-jivNNnPdc/9OFbMXvCwpwVhwU5gDGb95ER9G5tDhs3zUwynw/Z4pp5DJXDYBqj0oaZBeYDWOyxBKh+TiKYk9qQ==}
+  '@typescript/native-preview-win32-arm64@7.0.0-dev.20250826.1':
+    resolution: {integrity: sha512-kL3qH6CeOPdtAgZw1cuFgwpyup3VSkAM+ayZGk08SM42Zd90VMTDf736kXm/xxAcpvmCQ0YrH1FDIG0dPiRCAw==}
     engines: {node: '>=20.6.0'}
     cpu: [arm64]
     os: [win32]
 
-  '@typescript/native-preview-win32-x64@7.0.0-dev.20250825.1':
-    resolution: {integrity: sha512-G6bnjriPrsTQ3ZkUg4wzxv8rP7BJ/lrecTMS97BJuHorJCOqF3uoAGFHZRTnlnanxNr2Akm+hD0d77neOZpgFA==}
+  '@typescript/native-preview-win32-x64@7.0.0-dev.20250826.1':
+    resolution: {integrity: sha512-WPiCnQDz64ZtwUEZ/ezXLHjhZTOetdfZI16ZbjZGkeZ5O3DNMaHrwzvvqqIq7gPxICEOK+6pM9eQ92I6wDq0qQ==}
     engines: {node: '>=20.6.0'}
     cpu: [x64]
     os: [win32]
 
-  '@typescript/native-preview@7.0.0-dev.20250825.1':
-    resolution: {integrity: sha512-DQB0+7nluvRjON/qc/4k6eYxbHII5sMCvMzUX1OOyT6h8nBXATfogBtqQ/NJ3193p+U/9cEgN0uIR+WBcBOuDw==}
+  '@typescript/native-preview@7.0.0-dev.20250826.1':
+    resolution: {integrity: sha512-+NuzOfk/lu6pLYSCio+R7uzJ9pfOasc1fshxVmLp6wgcB8yuUYYvBaT7CoHapUnNBYZXkJ9u0UOECnq3dbzgSQ==}
     engines: {node: '>=20.6.0'}
     hasBin: true
 
@@ -10603,36 +10603,36 @@ snapshots:
       '@typescript-eslint/types': 8.41.0
       eslint-visitor-keys: 4.2.1
 
-  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20250825.1':
+  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20250826.1':
     optional: true
 
-  '@typescript/native-preview-darwin-x64@7.0.0-dev.20250825.1':
+  '@typescript/native-preview-darwin-x64@7.0.0-dev.20250826.1':
     optional: true
 
-  '@typescript/native-preview-linux-arm64@7.0.0-dev.20250825.1':
+  '@typescript/native-preview-linux-arm64@7.0.0-dev.20250826.1':
     optional: true
 
-  '@typescript/native-preview-linux-arm@7.0.0-dev.20250825.1':
+  '@typescript/native-preview-linux-arm@7.0.0-dev.20250826.1':
     optional: true
 
-  '@typescript/native-preview-linux-x64@7.0.0-dev.20250825.1':
+  '@typescript/native-preview-linux-x64@7.0.0-dev.20250826.1':
     optional: true
 
-  '@typescript/native-preview-win32-arm64@7.0.0-dev.20250825.1':
+  '@typescript/native-preview-win32-arm64@7.0.0-dev.20250826.1':
     optional: true
 
-  '@typescript/native-preview-win32-x64@7.0.0-dev.20250825.1':
+  '@typescript/native-preview-win32-x64@7.0.0-dev.20250826.1':
     optional: true
 
-  '@typescript/native-preview@7.0.0-dev.20250825.1':
+  '@typescript/native-preview@7.0.0-dev.20250826.1':
     optionalDependencies:
-      '@typescript/native-preview-darwin-arm64': 7.0.0-dev.20250825.1
-      '@typescript/native-preview-darwin-x64': 7.0.0-dev.20250825.1
-      '@typescript/native-preview-linux-arm': 7.0.0-dev.20250825.1
-      '@typescript/native-preview-linux-arm64': 7.0.0-dev.20250825.1
-      '@typescript/native-preview-linux-x64': 7.0.0-dev.20250825.1
-      '@typescript/native-preview-win32-arm64': 7.0.0-dev.20250825.1
-      '@typescript/native-preview-win32-x64': 7.0.0-dev.20250825.1
+      '@typescript/native-preview-darwin-arm64': 7.0.0-dev.20250826.1
+      '@typescript/native-preview-darwin-x64': 7.0.0-dev.20250826.1
+      '@typescript/native-preview-linux-arm': 7.0.0-dev.20250826.1
+      '@typescript/native-preview-linux-arm64': 7.0.0-dev.20250826.1
+      '@typescript/native-preview-linux-x64': 7.0.0-dev.20250826.1
+      '@typescript/native-preview-win32-arm64': 7.0.0-dev.20250826.1
+      '@typescript/native-preview-win32-x64': 7.0.0-dev.20250826.1
 
   '@ungap/structured-clone@1.3.0': {}
 
@@ -14230,7 +14230,7 @@ snapshots:
       glob: 11.0.3
       package-json-from-dist: 1.0.1
 
-  rolldown-plugin-dts@0.15.9(@typescript/native-preview@7.0.0-dev.20250825.1)(rolldown@1.0.0-beta.34)(typescript@5.9.2):
+  rolldown-plugin-dts@0.15.9(@typescript/native-preview@7.0.0-dev.20250826.1)(rolldown@1.0.0-beta.34)(typescript@5.9.2):
     dependencies:
       '@babel/generator': 7.28.3
       '@babel/parser': 7.28.3
@@ -14242,7 +14242,7 @@ snapshots:
       get-tsconfig: 4.10.1
       rolldown: 1.0.0-beta.34
     optionalDependencies:
-      '@typescript/native-preview': 7.0.0-dev.20250825.1
+      '@typescript/native-preview': 7.0.0-dev.20250826.1
       typescript: 5.9.2
     transitivePeerDependencies:
       - oxc-resolver
@@ -14982,7 +14982,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tsdown@0.14.2(@typescript/native-preview@7.0.0-dev.20250825.1)(typescript@5.9.2):
+  tsdown@0.14.2(@typescript/native-preview@7.0.0-dev.20250826.1)(typescript@5.9.2):
     dependencies:
       ansis: 4.1.0
       cac: 6.7.14
@@ -14992,7 +14992,7 @@ snapshots:
       empathic: 2.0.0
       hookable: 5.5.3
       rolldown: 1.0.0-beta.34
-      rolldown-plugin-dts: 0.15.9(@typescript/native-preview@7.0.0-dev.20250825.1)(rolldown@1.0.0-beta.34)(typescript@5.9.2)
+      rolldown-plugin-dts: 0.15.9(@typescript/native-preview@7.0.0-dev.20250826.1)(rolldown@1.0.0-beta.34)(typescript@5.9.2)
       semver: 7.7.2
       tinyexec: 1.0.1
       tinyglobby: 0.2.14
