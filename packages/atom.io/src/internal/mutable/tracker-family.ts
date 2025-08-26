@@ -2,9 +2,9 @@ import type { MutableAtomToken, StateLifecycleEvent } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 
-import type { MutableAtomFamily, RegularAtomFamily } from ".."
+import type { MutableAtomFamily, RegularAtomFamily, RootStore } from ".."
 import { createRegularAtomFamily } from "../families"
-import { type Store, withdraw } from "../store"
+import { withdraw } from "../store"
 import { Tracker } from "./tracker"
 import type { SignalFrom, Transceiver } from "./transceiver"
 
@@ -17,7 +17,7 @@ export class FamilyTracker<
 	public readonly latestSignalAtoms: RegularAtomFamily<SignalFrom<T> | null, K>
 	public readonly mutableAtoms: MutableAtomFamily<T, K>
 
-	public constructor(mutableAtoms: MutableAtomFamily<T, K>, store: Store) {
+	public constructor(mutableAtoms: MutableAtomFamily<T, K>, store: RootStore) {
 		const latestSignalAtoms = createRegularAtomFamily<SignalFrom<T> | null, K>(
 			store,
 			{

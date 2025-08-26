@@ -10,10 +10,10 @@ import { PRETTY_TOKEN_TYPES } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import { createWritablePureSelectorFamily, type MutableAtomFamily } from ".."
+import type { MutableAtomFamily, RootStore } from ".."
+import { createWritablePureSelectorFamily } from ".."
 import { newest } from "../lineage"
 import { createMutableAtom } from "../mutable"
-import type { Store } from "../store"
 import { Subject } from "../subject"
 import { FamilyTracker } from "./tracker-family"
 import type { AsJSON, Transceiver } from "./transceiver"
@@ -22,7 +22,7 @@ export function createMutableAtomFamily<
 	T extends Transceiver<any, any, any>,
 	K extends Canonical,
 >(
-	store: Store,
+	store: RootStore,
 	options: MutableAtomFamilyOptions<T, K>,
 	internalRoles?: string[],
 ): MutableAtomFamilyToken<T, K> {
@@ -67,7 +67,7 @@ export function createMutableAtomFamily<
 	const atomFamily = Object.assign(familyFunction, familyToken, {
 		class: options.class,
 		subject,
-		install: (s: Store) => createMutableAtomFamily(s, options),
+		install: (s: RootStore) => createMutableAtomFamily(s, options),
 		internalRoles,
 	}) satisfies MutableAtomFamily<T, K>
 

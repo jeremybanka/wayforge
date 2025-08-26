@@ -11,19 +11,14 @@ import { PRETTY_TOKEN_TYPES } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import {
-	findInStore,
-	getFromStore,
-	getJsonToken,
-	type ReadonlyPureSelectorFamily,
-} from ".."
+import type { ReadonlyPureSelectorFamily, RootStore } from ".."
+import { findInStore, getFromStore, getJsonToken } from ".."
 import { newest } from "../lineage"
 import { createReadonlyPureSelector } from "../selector"
-import type { Store } from "../store"
 import { Subject } from "../subject"
 
 export function createReadonlyPureSelectorFamily<T, K extends Canonical>(
-	store: Store,
+	store: RootStore,
 	options: ReadonlyPureSelectorFamilyOptions<T, K>,
 	internalRoles?: string[],
 ): ReadonlyPureSelectorFamilyToken<T, K> {
@@ -71,7 +66,7 @@ export function createReadonlyPureSelectorFamily<T, K extends Canonical>(
 	const readonlySelectorFamily = Object.assign(familyFunction, familyToken, {
 		internalRoles,
 		subject,
-		install: (s: Store) => createReadonlyPureSelectorFamily(s, options),
+		install: (s: RootStore) => createReadonlyPureSelectorFamily(s, options),
 		default: (key: K) => {
 			const getFn = options.get(key)
 			return getFn({

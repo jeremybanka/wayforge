@@ -10,15 +10,14 @@ import { PRETTY_TOKEN_TYPES } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import type { RegularAtomFamily } from ".."
+import type { RegularAtomFamily, RootStore } from ".."
 import { createRegularAtom } from "../atom"
 import { isFn } from "../is-fn"
 import { newest } from "../lineage"
-import type { Store } from "../store"
 import { Subject } from "../subject"
 
 export function createRegularAtomFamily<T, K extends Canonical>(
-	store: Store,
+	store: RootStore,
 	options: RegularAtomFamilyOptions<T, K>,
 	internalRoles?: string[],
 ): RegularAtomFamilyToken<T, K> {
@@ -63,7 +62,7 @@ export function createRegularAtomFamily<T, K extends Canonical>(
 	const atomFamily = Object.assign(familyFunction, familyToken, {
 		default: options.default,
 		subject,
-		install: (s: Store) => createRegularAtomFamily(s, options),
+		install: (s: RootStore) => createRegularAtomFamily(s, options),
 		internalRoles,
 	}) satisfies RegularAtomFamily<T, K>
 

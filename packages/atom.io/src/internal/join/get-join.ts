@@ -1,7 +1,9 @@
 import type { JoinToken } from "atom.io"
 import type { Json } from "atom.io/json"
 
-import { IMPLICIT, type Store } from "../store"
+import { eldest } from "../lineage"
+import type { Store } from "../store"
+import { IMPLICIT } from "../store"
 import { Join } from "./join-internal"
 
 export function getJoin<
@@ -24,7 +26,8 @@ export function getJoin<
 				`Join "${token.key}" not found in store "${store.config.name}"`,
 			)
 		}
-		myJoin = new Join(rootJoin.options, rootJoin.defaultContent, store)
+		const root = eldest(store)
+		myJoin = new Join(rootJoin.options, rootJoin.defaultContent, root)
 		store.joins.set(token.key, myJoin)
 	}
 	return myJoin

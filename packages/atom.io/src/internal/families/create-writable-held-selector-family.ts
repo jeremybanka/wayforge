@@ -9,7 +9,7 @@ import { PRETTY_TOKEN_TYPES } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import type { WritableHeldSelectorFamily } from ".."
+import type { RootStore, WritableHeldSelectorFamily } from ".."
 import { newest } from "../lineage"
 import { createWritableHeldSelector } from "../selector"
 import type { Store } from "../store"
@@ -68,7 +68,7 @@ export function createWritableHeldSelectorFamily<
 	const selectorFamily = Object.assign(familyFunction, familyToken, {
 		internalRoles,
 		subject,
-		install: (s: Store) => createWritableHeldSelectorFamily(s, options),
+		install: (s: RootStore) => createWritableHeldSelectorFamily(s, options),
 		default: options.const,
 	}) satisfies WritableHeldSelectorFamily<T, K>
 

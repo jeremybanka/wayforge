@@ -1,7 +1,7 @@
 import type { JoinOptions, JoinToken } from "atom.io"
 import type { Json } from "atom.io/json"
 
-import type { Store } from "../store"
+import type { RootStore } from "../transaction"
 import { Join } from "./join-internal"
 
 export function createJoin<
@@ -12,7 +12,7 @@ export function createJoin<
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 	Content extends Json.Object,
 >(
-	store: Store,
+	store: RootStore,
 	options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>,
 	defaultContent: Content | undefined,
 ): JoinToken<ASide, AType, BSide, BType, Cardinality, Content> {

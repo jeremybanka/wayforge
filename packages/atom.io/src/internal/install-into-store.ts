@@ -2,6 +2,7 @@ import type { AtomIOToken } from "atom.io"
 
 import { newest } from "./lineage"
 import { type Store, withdraw } from "./store"
+import type { RootStore } from "./transaction"
 import { isChildStore } from "./transaction"
 
 /**
@@ -14,7 +15,7 @@ import { isChildStore } from "./transaction"
  */
 export function installIntoStore(
 	tokens: AtomIOToken[],
-	target: Store,
+	target: RootStore,
 	source: Store,
 ): void {
 	const sourceNewest = newest(source)
