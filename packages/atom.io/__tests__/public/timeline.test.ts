@@ -407,4 +407,39 @@ describe(`errors`, () => {
 		undo({ key: `my-timeline`, type: `timeline` })
 		expect(logger.error).toHaveBeenCalledTimes(1)
 	})
+	test(`what if the atom family already belongs to a timeline`, () => {
+		const countAtoms = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+
+		const _countTL = timeline({
+			key: `count`,
+			scope: [countAtoms],
+		})
+
+		const _countTL2 = timeline({
+			key: `count`,
+			scope: [countAtoms],
+		})
+
+		expect(logger.error).toHaveBeenCalledTimes(1)
+	})
+})
+
+describe(`weird situations`, () => {
+	test(`what if states belonging to a family already exist, but then the family is given to a timeline`, () => {
+		const countAtoms = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		getState(countAtoms, `foo`)
+		const countTL = timeline({
+			key: `count`,
+			scope: [countAtoms],
+		})
+		setState(countAtoms, `foo`, 1)
+		undo(countTL)
+		expect(getState(countAtoms, `foo`)).toBe(0)
+	})
 })
