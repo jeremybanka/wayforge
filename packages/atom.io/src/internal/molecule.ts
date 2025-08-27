@@ -237,6 +237,24 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 	const trace = getTrace(new Error())
 	target.disposalTraces.add({ key: stringKey, trace })
 }
+
+export function createClaimTX<
+	H extends Hierarchy,
+	V extends Exclude<Vassal<H>, CompoundTypedKey>,
+	A extends Above<V, H>,
+>(
+	store: RootStore,
+): TransactionToken<
+	(newProvenance: A, claim: Claim<V>, exclusive?: `exclusive`) => void
+> {
+	return createTransaction(store, {
+		key: `[Internal] claim`,
+		do: (_, newProvenance, claim, exclusive) => {
+			claimWithinStore<H, V, A>(store, newProvenance, claim, exclusive)
+		},
+	})
+}
+
 export function claimWithinStore<
 	H extends Hierarchy,
 	V extends Exclude<Vassal<H>, CompoundTypedKey>,

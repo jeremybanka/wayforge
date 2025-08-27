@@ -4,6 +4,7 @@ import {
 	allocateIntoStore,
 	arbitrary,
 	claimWithinStore,
+	createClaimTX,
 	createDeallocateTX,
 	fuseWithinStore,
 	IMPLICIT,
@@ -19,12 +20,20 @@ export type Claim<K extends Canonical> = K & { [$claim]?: true }
 export class Realm<H extends Hierarchy> {
 	public store: RootStore
 	public deallocateTX: TransactionToken<(claim: Claim<Vassal<H>>) => void>
+	public claimTX: TransactionToken<
+		<V extends Exclude<Vassal<H>, CompoundTypedKey>, A extends Above<V, H>>(
+			newProvenance: A,
+			claim: Claim<V>,
+			exclusive?: `exclusive`,
+		) => void
+	>
 	/**
 	 * @param store - The store to which the realm will be attached
 	 */
 	public constructor(store: RootStore = IMPLICIT.STORE) {
 		this.store = store
 		this.deallocateTX = createDeallocateTX(store)
+		this.claimTX = createClaimTX(store)
 		makeRootMoleculeInStore(`root`, store)
 	}
 	/**
@@ -85,14 +94,21 @@ export class Realm<H extends Hierarchy> {
 	public claim<
 		V extends Exclude<Vassal<H>, CompoundTypedKey>,
 		A extends Above<V, H>,
-	>(newProvenance: A, claim: Claim<V>, exclusive?: `exclusive`): Claim<V> {
-		return claimWithinStore<H, V, A>(this.store, newProvenance, claim, exclusive)
+	>(newProvenance: A, claim: Claim<V>, exclusive?: `exclusive`): void {
+		actUponStore(this.store, this.claimTX, arbitrary())(
+			newProvenance,
+			claim,
+			exclusive,
+		)
 	}
 }
 
 export class Anarchy {
 	public store: RootStore
-	public deallocateTX: TransactionToken<(claim: Canonical) => void>
+	public deallocateTX: TransactionToken<(key: Canonical) => void>
+	public claimTX: TransactionToken<
+		(newProvenance: Canonical, key: Canonical, exclusive?: `exclusive`) => void
+	>
 
 	/**
 	 * @param store - The store to which the anarchy-realm will be attached
@@ -100,6 +116,7 @@ export class Anarchy {
 	public constructor(store: RootStore = IMPLICIT.STORE) {
 		this.store = store
 		this.deallocateTX = createDeallocateTX(store)
+		this.claimTX = createClaimTX(store)
 		makeRootMoleculeInStore(`root`, store)
 	}
 	/**
