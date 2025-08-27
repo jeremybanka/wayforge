@@ -52,7 +52,10 @@ export const timeTravel = (
 	switch (action) {
 		case `undo`:
 			--nextIndex
-			while (nextIndex !== 0 && timelineData.history[nextIndex].write !== true) {
+			while (
+				nextIndex !== 0 &&
+				timelineData.history[nextIndex].checkpoint !== true
+			) {
 				--nextIndex
 			}
 			events = timelineData.history.slice(nextIndex, timelineData.at).reverse()
