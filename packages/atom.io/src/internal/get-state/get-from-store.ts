@@ -14,11 +14,18 @@ export function getFromStore<T, K extends Canonical>(
 	key: K,
 ): T
 
-export function getFromStore(
+export function getFromStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	...params:
-		| [token: ReadableFamilyToken<any, any>, key: Canonical]
-		| [token: ReadableToken<any>]
+		| [token: ReadableFamilyToken<T, K>, key: Key]
+		| [token: ReadableToken<T>]
+): any
+
+export function getFromStore<T, K extends Canonical, Key extends K>(
+	store: Store,
+	...params:
+		| [token: ReadableFamilyToken<T, K>, key: Key]
+		| [token: ReadableToken<T>]
 ): any {
 	const { token, family, subKey } = reduceReference(store, ...params)
 
