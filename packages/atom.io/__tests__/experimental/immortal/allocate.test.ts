@@ -342,7 +342,29 @@ describe(`errors`, () => {
 	})
 })
 describe(`integrations`, () => {
-	test.only(`transaction+timeline support`, () => {
+	test(`timeline support`, () => {
+		const anarchy = new Anarchy()
+		anarchy.allocate(`root`, `owner`)
+		anarchy.allocate(`owner`, `owned_item`)
+
+		const countAtoms = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+
+		const countTL = timeline({
+			key: `count`,
+			scope: [countAtoms],
+		})
+
+		setState(countAtoms, `owner`, 1)
+		setState(countAtoms, `owned_item`, 1)
+
+		anarchy.deallocate(`owner`)
+
+		Utils.inspectTimeline(countTL)
+	})
+	test(`transaction+timeline support`, () => {
 		type DocumentKey = `document::${number}`
 		type UserKey = `user::${string}`
 		type UserGroupKey = `userGroup::${string}`
