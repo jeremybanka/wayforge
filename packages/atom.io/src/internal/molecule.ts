@@ -159,16 +159,16 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 		return
 	}
 
-	const joinKeys = store.moleculeJoins.getRelatedKeys(molecule.stringKey)
+	const joinKeys = store.moleculeJoins.getRelatedKeys(stringKey)
 	if (joinKeys) {
 		for (const joinKey of joinKeys) {
 			const join = store.joins.get(joinKey)
 			if (join) {
-				join.relations.delete(molecule.key)
+				join.relations.delete(claim)
 			}
 		}
 	}
-	store.moleculeJoins.delete(molecule.stringKey)
+	store.moleculeJoins.delete(stringKey)
 
 	const provenance: stringified<Canonical>[] = []
 
@@ -188,7 +188,7 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 		target.transactionMeta.update.subEvents.push(disposalEvent)
 	}
 	const relatedMolecules = store.moleculeGraph.getRelationEntries({
-		downstreamMoleculeKey: molecule.stringKey,
+		downstreamMoleculeKey: stringKey,
 	})
 	if (relatedMolecules) {
 		for (const [relatedStringKey, { source }] of relatedMolecules) {
@@ -205,10 +205,9 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 		for (const familyKey of familyKeys) {
 			// biome-ignore lint/style/noNonNullAssertion: tokens of molecules must have a family
 			const family = target.families.get(familyKey)!
-			const token = findInStore(store, family, molecule.key)
-			const value = getFromStore(store, token)
+			const value = getFromStore(store, family, claim)
 			values.push([family.key, value])
-			disposeFromStore(store, token)
+			disposeFromStore(store, family, claim)
 		}
 	}
 
