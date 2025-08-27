@@ -159,9 +159,7 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 		return
 	}
 
-	const joinKeys = store.moleculeJoins.getRelatedKeys(
-		molecule.key as string /* 💥 RECONCILE */,
-	)
+	const joinKeys = store.moleculeJoins.getRelatedKeys(molecule.stringKey)
 	if (joinKeys) {
 		for (const joinKey of joinKeys) {
 			const join = store.joins.get(joinKey)
