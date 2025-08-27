@@ -1,11 +1,10 @@
-import type { Each, RootStore, Store } from "atom.io/internal"
+import type { Each, RootStore } from "atom.io/internal"
 import {
 	actUponStore,
 	allocateIntoStore,
 	arbitrary,
 	claimWithinStore,
 	createDeallocateTX,
-	deallocateFromStore,
 	fuseWithinStore,
 	IMPLICIT,
 	makeRootMoleculeInStore,
@@ -92,13 +91,15 @@ export class Realm<H extends Hierarchy> {
 }
 
 export class Anarchy {
-	public store: Store
+	public store: RootStore
+	public deallocateTX: TransactionToken<(claim: Canonical) => void>
 
 	/**
 	 * @param store - The store to which the anarchy-realm will be attached
 	 */
-	public constructor(store: Store = IMPLICIT.STORE) {
+	public constructor(store: RootStore = IMPLICIT.STORE) {
 		this.store = store
+		this.deallocateTX = createDeallocateTX(store)
 		makeRootMoleculeInStore(`root`, store)
 	}
 	/**
@@ -124,7 +125,7 @@ export class Anarchy {
 	 * @param key - The entity to be deallocated
 	 */
 	public deallocate(key: Canonical): void {
-		deallocateFromStore<any, any>(this.store, key)
+		actUponStore(this.store, this.deallocateTX, arbitrary())(key)
 	}
 	/**
 	 * Transfer an entity from one owner to another
