@@ -1,7 +1,10 @@
-import type { Each, Store } from "atom.io/internal"
+import type { Each, RootStore, Store } from "atom.io/internal"
 import {
+	actUponStore,
 	allocateIntoStore,
+	arbitrary,
 	claimWithinStore,
+	createDeallocateTX,
 	deallocateFromStore,
 	fuseWithinStore,
 	IMPLICIT,
@@ -9,16 +12,20 @@ import {
 } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 
+import type { TransactionToken } from "./tokens"
+
 export const $claim: unique symbol = Symbol.for(`claim`)
 export type Claim<K extends Canonical> = K & { [$claim]?: true }
 
 export class Realm<H extends Hierarchy> {
-	public store: Store
+	public store: RootStore
+	public deallocateTX: TransactionToken<(claim: Claim<Vassal<H>>) => void>
 	/**
 	 * @param store - The store to which the realm will be attached
 	 */
-	public constructor(store: Store = IMPLICIT.STORE) {
+	public constructor(store: RootStore = IMPLICIT.STORE) {
 		this.store = store
+		this.deallocateTX = createDeallocateTX(store)
 		makeRootMoleculeInStore(`root`, store)
 	}
 	/**
@@ -66,7 +73,7 @@ export class Realm<H extends Hierarchy> {
 	 * @param claim - The subject to be deallocated
 	 */
 	public deallocate<V extends Vassal<H>>(claim: Claim<V>): void {
-		deallocateFromStore<H, V>(this.store, claim)
+		actUponStore(this.store, this.deallocateTX, arbitrary())(claim)
 	}
 	/**
 	 * Transfer a subject of the realm from one owner to another

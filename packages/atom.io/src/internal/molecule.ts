@@ -8,18 +8,20 @@ import type {
 	MoleculeDisposalEvent,
 	MoleculeTransferEvent,
 	SingularTypedKey,
+	TransactionToken,
 	Vassal,
 } from "atom.io"
 import type { Canonical, stringified } from "atom.io/json"
 import { parseJson, stringifyJson } from "atom.io/json"
 
-import { disposeFromStore, findInStore } from "./families"
+import { disposeFromStore } from "./families"
 import { getFromStore } from "./get-state"
 import { getTrace } from "./get-trace"
 import { newest } from "./lineage"
 import type { Store } from "./store"
 import { IMPLICIT } from "./store"
-import { isChildStore } from "./transaction"
+import type { RootStore } from "./transaction"
+import { createTransaction, isChildStore } from "./transaction"
 
 export type Molecule<K extends Canonical> = {
 	readonly key: K
@@ -135,23 +137,35 @@ export function fuseWithinStore<
 	return compoundKey
 }
 
+export function createDeallocateTX<
+	H extends Hierarchy,
+	V extends Exclude<Vassal<H>, CompoundTypedKey>,
+>(store: RootStore): TransactionToken<(claim: Claim<V>) => void> {
+	return createTransaction(store, {
+		key: `[Internal] deallocate`,
+		do: (_, claim: Claim<V>): void => {
+			deallocateFromStore<H, V>(newest(store), claim)
+		},
+	})
+}
+
 export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
-	store: Store,
+	target: Store,
 	claim: Claim<V>,
 ): void {
 	const stringKey = stringifyJson(claim)
 
-	const molecule = store.molecules.get(stringKey)
+	const molecule = target.molecules.get(stringKey)
 	if (!molecule) {
-		const disposal = store.disposalTraces.buffer.find(
+		const disposal = target.disposalTraces.buffer.find(
 			(item) => item?.key === stringKey,
 		)
-		store.logger.error(
+		target.logger.error(
 			`❌`,
 			`key`,
 			claim,
 			`deallocation failed:`,
-			`Could not find allocation for ${stringKey} in store "${store.config.name}".`,
+			`Could not find allocation for ${stringKey} in store "${target.config.name}".`,
 			disposal
 				? `\n   This state was most recently deallocated\n${disposal.trace}`
 				: `No previous disposal trace for ${stringKey} was found.`,
@@ -159,42 +173,29 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 		return
 	}
 
-	const joinKeys = store.moleculeJoins.getRelatedKeys(stringKey)
+	const joinKeys = target.moleculeJoins.getRelatedKeys(stringKey)
 	if (joinKeys) {
 		for (const joinKey of joinKeys) {
-			const join = store.joins.get(joinKey)
+			const join = target.joins.get(joinKey)
 			if (join) {
 				join.relations.delete(claim)
 			}
 		}
 	}
-	store.moleculeJoins.delete(stringKey)
+	target.moleculeJoins.delete(stringKey)
 
 	const provenance: stringified<Canonical>[] = []
 
 	const values: [string, any][] = []
-	const disposalEvent: MoleculeDisposalEvent = {
-		type: `molecule_disposal`,
-		key: molecule.key,
-		values,
-		provenance,
-		timestamp: Date.now(),
-	}
-	const target = newest(store)
-	target.molecules.delete(stringKey)
-	const isTransaction =
-		isChildStore(target) && target.transactionMeta.phase === `building`
-	if (isTransaction) {
-		target.transactionMeta.update.subEvents.push(disposalEvent)
-	}
-	const relatedMolecules = store.moleculeGraph.getRelationEntries({
+
+	const relatedMolecules = target.moleculeGraph.getRelationEntries({
 		downstreamMoleculeKey: stringKey,
 	})
 	if (relatedMolecules) {
 		for (const [relatedStringKey, { source }] of relatedMolecules) {
-			if (source === molecule.stringKey) {
+			if (source === stringKey) {
 				const relatedKey = parseJson(relatedStringKey)
-				deallocateFromStore<any, any>(store, relatedKey)
+				deallocateFromStore<any, any>(target, relatedKey)
 			} else {
 				provenance.push(source)
 			}
@@ -205,10 +206,23 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 		for (const familyKey of familyKeys) {
 			// biome-ignore lint/style/noNonNullAssertion: tokens of molecules must have a family
 			const family = target.families.get(familyKey)!
-			const value = getFromStore(store, family, claim)
+			const value = getFromStore(target, family, claim)
 			values.push([family.key, value])
-			disposeFromStore(store, family, claim)
+			disposeFromStore(target, family, claim)
 		}
+	}
+	const disposalEvent: MoleculeDisposalEvent = {
+		type: `molecule_disposal`,
+		key: molecule.key,
+		values,
+		provenance,
+		timestamp: Date.now(),
+	}
+	target.molecules.delete(stringKey)
+	const isTransaction =
+		isChildStore(target) && target.transactionMeta.phase === `building`
+	if (isTransaction) {
+		target.transactionMeta.update.subEvents.push(disposalEvent)
 	}
 
 	target.moleculeGraph.delete(molecule.stringKey)
@@ -221,7 +235,7 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 	target.molecules.delete(molecule.stringKey)
 
 	const trace = getTrace(new Error())
-	store.disposalTraces.add({ key: stringKey, trace })
+	target.disposalTraces.add({ key: stringKey, trace })
 }
 export function claimWithinStore<
 	H extends Hierarchy,
