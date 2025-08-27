@@ -24,7 +24,7 @@ import { SetRTX } from "atom.io/transceivers/set-rtx"
 import * as Utils from "../../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 3
+const CHOOSE = 2
 
 let logger: Logger
 
@@ -463,7 +463,6 @@ describe(`integrations`, () => {
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
 		undo(documentTimeline)
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
-		// console.log(IMPLICIT.STORE.timelines.get(`documentTimeline`))
 		undo(documentTimeline)
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
 		redo(documentTimeline)
@@ -505,7 +504,6 @@ describe(`integrations`, () => {
 			to: [`user::deb`, `user::joe`],
 			document: `document::${3}`,
 		})
-		// console.log(IMPLICIT.STORE.moleculeGraph.contents)
 		documentRealm.deallocate(`userGroup::homies`)
 		const debAndJoeConfiguration = new Map([
 			[`"root":"user::joe"`, { source: `"root"` }],

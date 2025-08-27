@@ -13,7 +13,7 @@ import type {
 	WriterToolkit,
 } from "atom.io"
 import { Anarchy } from "atom.io"
-import type { Canonical, Json, stringified } from "atom.io/json"
+import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
@@ -225,8 +225,8 @@ export class Join<
 				return bKeys
 			})
 			const [x, y] = [a, b].sort()
-			const compositeKey = `"${x}:${y}"`
-			this.realm.deallocate(compositeKey)
+			const compositeKey = `${x}:${y}`
+			this.store.moleculeJoins.delete(compositeKey)
 		}
 		const replaceRelationsSafely: Write<
 			(a: string, newRelationsOfA: string[]) => void
@@ -270,7 +270,7 @@ export class Join<
 							}
 							for (const previousOwner of previousOwnersToDispose) {
 								const [x, y] = [newRelationB, previousOwner].sort()
-								const compositeKey = `"${x}:${y}"`
+								const compositeKey = `${x}:${y}`
 								store.moleculeJoins.delete(compositeKey)
 							}
 						}
@@ -312,14 +312,8 @@ export class Join<
 		const baseExternalStoreConfiguration: BaseExternalStoreConfiguration = {
 			getRelatedKeys: (key) => getRelatedKeys(this.toolkit, key),
 			addRelation: (a, b) => {
-				this.store.moleculeJoins.set(
-					a as stringified<Canonical> /* 💥 RECONCILE */,
-					options.key,
-				)
-				this.store.moleculeJoins.set(
-					b as stringified<Canonical> /* 💥 RECONCILE */,
-					options.key,
-				)
+				this.store.moleculeJoins.set(`"${a}"`, options.key)
+				this.store.moleculeJoins.set(`"${b}"`, options.key)
 				addRelation(this.toolkit, a, b)
 			},
 			deleteRelation: (a, b) => {
@@ -366,9 +360,7 @@ export class Join<
 				setContent: (contentKey: ContentKey, content: Content) => {
 					setContent(this.toolkit, contentKey, content)
 				},
-				deleteContent: (contentKey: ContentKey) => {
-					this.realm.deallocate(contentKey)
-				},
+				deleteContent: (_: ContentKey) => {},
 			}
 			externalStore = Object.assign(
 				baseExternalStoreConfiguration,
@@ -387,7 +379,7 @@ export class Join<
 				makeContentKey: (...args) => {
 					const [a, b] = args
 					const [x, y] = args.sort()
-					const compositeKey = `"${x}:${y}"`
+					const compositeKey = `${x}:${y}`
 					const aMolecule = store.molecules.get(stringifyJson(a))
 					const bMolecule = store.molecules.get(stringifyJson(b))
 					if (!aMolecule) {
@@ -396,6 +388,7 @@ export class Join<
 					if (!bMolecule) {
 						this.realm.allocate(options.key, b)
 					}
+
 					this.realm.allocate(a, compositeKey, `all`)
 					this.realm.claim(b, compositeKey)
 					this.store.moleculeJoins.set(compositeKey, options.key)
