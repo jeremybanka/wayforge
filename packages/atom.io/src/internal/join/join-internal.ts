@@ -224,6 +224,9 @@ export class Join<
 				bKeys.delete(a)
 				return bKeys
 			})
+			const [x, y] = [a, b].sort()
+			const compositeKey = `"${x}:${y}"`
+			this.realm.deallocate(compositeKey)
 		}
 		const replaceRelationsSafely: Write<
 			(a: string, newRelationsOfA: string[]) => void
@@ -266,8 +269,8 @@ export class Join<
 								relationsOfB.clear()
 							}
 							for (const previousOwner of previousOwnersToDispose) {
-								const sorted = [newRelationB, previousOwner].sort()
-								const compositeKey = `"${sorted[0]}:${sorted[1]}"`
+								const [x, y] = [newRelationB, previousOwner].sort()
+								const compositeKey = `"${x}:${y}"`
 								store.moleculeJoins.delete(compositeKey)
 							}
 						}
@@ -383,8 +386,8 @@ export class Join<
 				isBType: options.isBType,
 				makeContentKey: (...args) => {
 					const [a, b] = args
-					const sorted = args.sort()
-					const compositeKey = `${sorted[0]}:${sorted[1]}`
+					const [x, y] = args.sort()
+					const compositeKey = `"${x}:${y}"`
 					const aMolecule = store.molecules.get(stringifyJson(a))
 					const bMolecule = store.molecules.get(stringifyJson(b))
 					if (!aMolecule) {
