@@ -21,7 +21,8 @@ import { newest } from "../lineage"
 import { getUpdateToken } from "../mutable"
 import { deposit, type Store, withdraw } from "../store"
 import { Subject } from "../subject"
-import { isChildStore, RootStore } from "../transaction"
+import type { RootStore } from "../transaction"
+import { isChildStore } from "../transaction"
 
 export type Timeline<ManagedAtom extends TimelineManageable> = {
 	type: `timeline`
