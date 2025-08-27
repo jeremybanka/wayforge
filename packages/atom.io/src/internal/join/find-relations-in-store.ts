@@ -3,7 +3,7 @@ import type { Json } from "atom.io/json"
 
 import { capitalize } from "../capitalize"
 import { findInStore } from "../families"
-import type { Store } from "../store"
+import type { RootStore } from "../transaction"
 import { getJoin } from "./get-join"
 
 export function findRelationsInStore<
@@ -16,7 +16,7 @@ export function findRelationsInStore<
 >(
 	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
 	key: AType | BType,
-	store: Store,
+	store: RootStore,
 ): JoinStates<ASide, AType, BSide, BType, Cardinality, Content> {
 	const myJoin = getJoin(token, store)
 	let relations: JoinStates<ASide, AType, BSide, BType, Cardinality, Content>

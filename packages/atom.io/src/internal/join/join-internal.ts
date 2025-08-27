@@ -34,6 +34,7 @@ import { createMutableAtomFamily, getJsonFamily, getJsonToken } from "../mutable
 import { setIntoStore } from "../set-state"
 import type { Store } from "../store"
 import { IMPLICIT } from "../store"
+import type { RootStore } from "../transaction"
 
 export type JoinStateFamilies<
 	ASide extends string,
@@ -163,7 +164,7 @@ export class Join<
 	public constructor(
 		options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>,
 		defaultContent: Content | undefined,
-		store: Store = IMPLICIT.STORE,
+		store: RootStore = IMPLICIT.STORE,
 	) {
 		type AnyKey = AType & BType
 

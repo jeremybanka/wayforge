@@ -5,7 +5,8 @@ import type {
 	UpdateHandler,
 } from "atom.io"
 
-import { type RegularAtom, resetInStore, setIntoStore } from ".."
+import type { RegularAtom, RootStore } from ".."
+import { resetInStore, setIntoStore } from ".."
 import { newest } from "../lineage"
 import type { Store } from "../store"
 import { deposit } from "../store"
@@ -38,7 +39,7 @@ export function createRegularAtom<T>(
 	const newAtom: RegularAtom<T> = {
 		...options,
 		type,
-		install: (s: Store) => {
+		install: (s: RootStore) => {
 			s.logger.info(`🛠️`, type, key, `installing in store "${s.config.name}"`)
 			return createRegularAtom(s, options, family)
 		},

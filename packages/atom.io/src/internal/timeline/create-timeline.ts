@@ -21,6 +21,7 @@ import { newest } from "../lineage"
 import { getUpdateToken } from "../mutable"
 import { deposit, type Store, withdraw } from "../store"
 import { Subject } from "../subject"
+import type { RootStore } from "../transaction"
 import { isChildStore } from "../transaction"
 
 export type Timeline<ManagedAtom extends TimelineManageable> = {
@@ -31,13 +32,13 @@ export type Timeline<ManagedAtom extends TimelineManageable> = {
 	history: TimelineEvent<ManagedAtom>[]
 	selectorTime: number | null
 	transactionKey: string | null
-	install: (store: Store) => void
+	install: (store: RootStore) => void
 	subject: Subject<TimelineEvent<ManagedAtom> | `redo` | `undo`>
 	subscriptions: Map<string, () => void>
 }
 
 export function createTimeline<ManagedAtom extends TimelineManageable>(
-	store: Store,
+	store: RootStore,
 	options: TimelineOptions<ManagedAtom>,
 	data?: Timeline<ManagedAtom>,
 ): TimelineToken<ManagedAtom> {

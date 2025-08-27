@@ -4,7 +4,7 @@ import type {
 	WritablePureSelectorToken,
 } from "atom.io"
 
-import type { WritablePureSelector } from ".."
+import type { RootStore, WritablePureSelector } from ".."
 import { writeToCache } from "../caching"
 import { newest } from "../lineage"
 import type { Store } from "../store"
@@ -54,7 +54,7 @@ export function createWritablePureSelector<T>(
 		subject,
 		getFrom,
 		setSelf,
-		install: (s: Store) => createWritablePureSelector(s, options, family),
+		install: (s: RootStore) => createWritablePureSelector(s, options, family),
 	}
 	if (family) mySelector.family = family
 

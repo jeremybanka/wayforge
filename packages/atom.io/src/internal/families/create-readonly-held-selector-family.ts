@@ -9,17 +9,16 @@ import { PRETTY_TOKEN_TYPES } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import type { ReadonlyHeldSelectorFamily } from ".."
+import type { ReadonlyHeldSelectorFamily, RootStore } from ".."
 import { newest } from "../lineage"
 import { createReadonlyHeldSelector } from "../selector"
-import type { Store } from "../store"
 import { Subject } from "../subject"
 
 export function createReadonlyHeldSelectorFamily<
 	T extends object,
 	K extends Canonical,
 >(
-	store: Store,
+	store: RootStore,
 	options: ReadonlyHeldSelectorFamilyOptions<T, K>,
 	internalRoles?: string[],
 ): ReadonlyHeldSelectorFamilyToken<T, K> {
@@ -68,7 +67,7 @@ export function createReadonlyHeldSelectorFamily<
 	const readonlySelectorFamily = Object.assign(familyFunction, familyToken, {
 		internalRoles,
 		subject,
-		install: (s: Store) => createReadonlyHeldSelectorFamily(s, options),
+		install: (s: RootStore) => createReadonlyHeldSelectorFamily(s, options),
 		default: options.const,
 	}) satisfies ReadonlyHeldSelectorFamily<T, K>
 

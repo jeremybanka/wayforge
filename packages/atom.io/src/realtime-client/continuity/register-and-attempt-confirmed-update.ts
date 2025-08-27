@@ -1,10 +1,9 @@
 import type * as AtomIO from "atom.io"
-import type { Fn, Store } from "atom.io/internal"
+import type { Fn, RootStore } from "atom.io/internal"
 import {
 	actUponStore,
 	getEpochNumberOfContinuity,
 	ingestTransactionOutcomeEvent,
-	isRootStore,
 	setEpochNumberOfContinuity,
 	setIntoStore,
 } from "atom.io/internal"
@@ -16,7 +15,7 @@ import type { Socket } from "atom.io/realtime-server"
 
 export const useRegisterAndAttemptConfirmedUpdate =
 	(
-		store: Store,
+		store: RootStore,
 		continuityKey: string,
 		socket: Socket,
 		optimisticUpdates: AtomIO.TransactionOutcomeEvent<
@@ -187,11 +186,8 @@ export const useRegisterAndAttemptConfirmedUpdate =
 				continuityKey,
 				`has no optimistic updates to deal with`,
 			)
-			const isRoot = isRootStore(store)
 			let continuityEpoch: number | undefined
-			if (isRoot) {
-				continuityEpoch = getEpochNumberOfContinuity(store, continuityKey)
-			}
+			continuityEpoch = getEpochNumberOfContinuity(store, continuityKey)
 
 			if (continuityEpoch === confirmed.epoch - 1) {
 				store.logger.info(
@@ -203,7 +199,7 @@ export const useRegisterAndAttemptConfirmedUpdate =
 				ingestTransactionOutcomeEvent(store, confirmed, `newValue`)
 				socket.emit(`ack:${continuityKey}`, confirmed.epoch)
 				setEpochNumberOfContinuity(store, continuityKey, confirmed.epoch)
-			} else if (isRoot && continuityEpoch !== undefined) {
+			} else if (continuityEpoch !== undefined) {
 				store.logger.info(
 					`🧑‍⚖️`,
 					`continuity`,

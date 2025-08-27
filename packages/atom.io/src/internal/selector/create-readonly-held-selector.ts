@@ -4,7 +4,7 @@ import type {
 	ReadonlyHeldSelectorToken,
 } from "atom.io"
 
-import type { ReadonlyHeldSelector } from ".."
+import type { ReadonlyHeldSelector, RootStore } from ".."
 import { writeToCache } from "../caching"
 import { newest } from "../lineage"
 import type { Store } from "../store"
@@ -47,7 +47,7 @@ export function createReadonlyHeldSelector<T extends object>(
 		type,
 		subject,
 		getFrom,
-		install: (s: Store) => createReadonlyHeldSelector(s, options, family),
+		install: (s: RootStore) => createReadonlyHeldSelector(s, options, family),
 	}
 	if (family) readonlySelector.family = family
 

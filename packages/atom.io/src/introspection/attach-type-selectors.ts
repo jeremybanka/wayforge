@@ -1,11 +1,11 @@
 import type { Loadable, ReadonlyPureSelectorFamilyToken } from "atom.io"
-import type { Store } from "atom.io/internal"
+import type { RootStore } from "atom.io/internal"
 import { createReadonlyPureSelectorFamily } from "atom.io/internal"
 
 import { discoverType } from "./refinery"
 
 export const attachTypeSelectors = (
-	store: Store,
+	store: RootStore,
 ): ReadonlyPureSelectorFamilyToken<Loadable<string>, string> => {
 	const typeSelectors = createReadonlyPureSelectorFamily<
 		Loadable<string>,
