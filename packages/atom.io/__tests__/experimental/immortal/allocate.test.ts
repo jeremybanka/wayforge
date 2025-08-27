@@ -366,7 +366,17 @@ describe(`integrations`, () => {
 		expect(getState(countAtoms, `owned_item`)).toBe(0)
 		expect(logger.error).toHaveBeenCalledTimes(2)
 
+		anarchy.allocate(`root`, `owner`)
+		anarchy.allocate(`owner`, `owned_item`)
+
+		setState(countAtoms, `owner`, 1)
+		setState(countAtoms, `owned_item`, 1)
+
 		undo(countTL)
+		undo(countTL)
+		undo(countTL)
+
+		// Utils.inspectTimeline(countTL)
 
 		expect(getState(countAtoms, `owner`)).toBe(1)
 		expect(getState(countAtoms, `owned_item`)).toBe(1)
