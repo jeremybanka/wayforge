@@ -342,7 +342,7 @@ describe(`errors`, () => {
 	})
 })
 describe(`integrations`, () => {
-	test(`timeline support`, () => {
+	test.only(`timeline support`, () => {
 		const anarchy = new Anarchy()
 		anarchy.allocate(`root`, `owner`)
 		anarchy.allocate(`owner`, `owned_item`)
