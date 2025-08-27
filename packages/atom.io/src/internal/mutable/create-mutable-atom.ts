@@ -5,7 +5,7 @@ import type {
 	UpdateHandler,
 } from "atom.io"
 
-import type { MutableAtom } from ".."
+import type { MutableAtom, RootStore } from ".."
 import { createStandaloneSelector, resetInStore, setIntoStore } from ".."
 import { newest } from "../lineage"
 import { deposit, type Store } from "../store"
@@ -45,7 +45,7 @@ export function createMutableAtom<T extends Transceiver<any, any, any>>(
 	const newAtom: MutableAtom<T> = {
 		...options,
 		type,
-		install: (s: Store) => {
+		install: (s: RootStore) => {
 			s.logger.info(`🛠️`, `atom`, key, `installing in store "${s.config.name}"`)
 			return createMutableAtom(s, options, family)
 		},

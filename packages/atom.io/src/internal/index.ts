@@ -22,7 +22,7 @@ import type { ConstructorOf, Transceiver } from "./mutable"
 import type { Store } from "./store"
 import type { Subject } from "./subject"
 import type { Timeline } from "./timeline"
-import type { Transaction } from "./transaction"
+import type { RootStore, Transaction } from "./transaction"
 import type { Flat } from "./utility-types"
 
 export * from "./arbitrary"
@@ -58,7 +58,7 @@ export type * from "./utility-types"
 export type AtomIOState = {
 	key: string
 	family?: FamilyMetadata
-	install: (store: Store) => void
+	install: (store: RootStore) => void
 	subject: Subject<StateUpdate<any>>
 }
 export type RegularAtom<T> = Flat<
@@ -131,7 +131,7 @@ export type RegularAtomFamily<T, K extends Canonical> =
 		& RegularAtomFamilyToken<T, K>
 		& {
 			default: T | ((key: K) => T)
-			install: (store: Store) => void
+			install: (store: RootStore) => void
 			internalRoles: string[] | undefined
 			subject: Subject<StateLifecycleEvent<RegularAtomToken<T>>>
 		}
@@ -147,7 +147,7 @@ export type MutableAtomFamily<
 		& MutableAtomFamilyToken<T, K>
 		& {
 				class: ConstructorOf<T>
-				install: (store: Store) => void
+				install: (store: RootStore) => void
 				internalRoles: string[] | undefined
 				subject: Subject<StateLifecycleEvent<MutableAtomToken<T>>>
 			}
@@ -164,7 +164,7 @@ export type WritablePureSelectorFamily<T, K extends Canonical> =
 		& WritablePureSelectorFamilyToken<T, K>
 		& {
 			default: (key: K) => T,
-			install: (store: Store) => void
+			install: (store: RootStore) => void
 			internalRoles: string[] | undefined
 			subject: Subject<StateLifecycleEvent<WritablePureSelectorToken<T>>>
 		}
@@ -177,7 +177,7 @@ export type WritableHeldSelectorFamily<T , K extends Canonical> =
 		& WritableHeldSelectorFamilyToken<T, K>
 		& {
 			default: (key: K) => T,
-			install: (store: Store) => void
+			install: (store: RootStore) => void
 			internalRoles: string[] | undefined
 			subject: Subject<StateLifecycleEvent<WritableHeldSelectorToken<T>>>
 		}
@@ -190,7 +190,7 @@ export type ReadonlyPureSelectorFamily<T, K extends Canonical> =
 		& ReadonlyPureSelectorFamilyToken<T, K>
 		& {
 			default: (key: K) => T,
-			install: (store: Store) => void
+			install: (store: RootStore) => void
 			internalRoles: string[] | undefined
 			subject: Subject<StateLifecycleEvent<ReadonlyPureSelectorToken<T>>>
 		}
@@ -203,7 +203,7 @@ export type ReadonlyHeldSelectorFamily<T , K extends Canonical> =
 		& ReadonlyHeldSelectorFamilyToken<T, K>
 		& {
 			default: (key: K) => T,
-			install: (store: Store) => void
+			install: (store: RootStore) => void
 			internalRoles: string[] | undefined
 			subject: Subject<StateLifecycleEvent<ReadonlyHeldSelectorToken<T>>>
 		}

@@ -3,11 +3,11 @@ import type {
 	TransactionOutcomeEvent,
 	TransactionToken,
 } from "atom.io"
-import type { Store } from "atom.io/internal"
+import type { RootStore } from "atom.io/internal"
 import { createRegularAtomFamily, createSelectorFamily } from "atom.io/internal"
 
 export const attachTransactionLogs = (
-	store: Store,
+	store: RootStore,
 ): ReadonlyPureSelectorFamilyToken<
 	TransactionOutcomeEvent<TransactionToken<any>>[],
 	string

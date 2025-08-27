@@ -30,6 +30,8 @@ import type { OperationProgress } from "../operation"
 import { StatefulSubject, Subject } from "../subject"
 import type { Timeline } from "../timeline"
 import type {
+	ChildStore,
+	RootStore,
 	Transaction,
 	TransactionEpoch,
 	TransactionProgress,
@@ -39,8 +41,8 @@ import type { Fn } from "../utility-types"
 import { CircularBuffer } from "./circular-buffer"
 
 export class Store implements Lineage {
-	public parent: Store | null = null
-	public child: Store | null = null
+	public parent: ChildStore | RootStore | null = null
+	public child: ChildStore | null = null
 
 	public valueMap: Map<string, any> = new Map()
 	public defaults: Map<string, any> = new Map()
@@ -210,14 +212,14 @@ export class Store implements Lineage {
 				) {
 					continue
 				}
-				family.install(this)
+				family.install(this as RootStore)
 			}
 			const mutableHelpers = new Set<string>()
 			for (const [, atom] of store.atoms) {
 				if (mutableHelpers.has(atom.key)) {
 					continue
 				}
-				atom.install(this)
+				atom.install(this as RootStore)
 				if (atom.type === `mutable_atom`) {
 					const originalJsonToken = getJsonToken(store, atom)
 					const originalUpdateToken = getUpdateToken(atom)
@@ -226,19 +228,19 @@ export class Store implements Lineage {
 				}
 			}
 			for (const [, selector] of store.readonlySelectors) {
-				selector.install(this)
+				selector.install(this as RootStore)
 			}
 			for (const [, selector] of store.writableSelectors) {
 				if (mutableHelpers.has(selector.key)) {
 					continue
 				}
-				selector.install(this)
+				selector.install(this as RootStore)
 			}
 			for (const [, tx] of store.transactions) {
-				tx.install(this)
+				tx.install(this as RootStore)
 			}
 			for (const [, timeline] of store.timelines) {
-				timeline.install(this)
+				timeline.install(this as RootStore)
 			}
 		}
 	}
@@ -258,15 +260,15 @@ export type StoreEventCarrier = {
 }
 
 declare global {
-	var ATOM_IO_IMPLICIT_STORE: Store | undefined
+	var ATOM_IO_IMPLICIT_STORE: RootStore | undefined
 }
 
-export const IMPLICIT: { readonly STORE: Store } = {
-	get STORE(): Store {
+export const IMPLICIT: { readonly STORE: RootStore } = {
+	get STORE(): RootStore {
 		globalThis.ATOM_IO_IMPLICIT_STORE ??= new Store({
 			name: `IMPLICIT_STORE`,
 			lifespan: `ephemeral`,
-		})
+		}) as RootStore
 		return globalThis.ATOM_IO_IMPLICIT_STORE
 	},
 }
