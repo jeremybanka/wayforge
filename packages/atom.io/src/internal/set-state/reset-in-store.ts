@@ -27,15 +27,6 @@ export function resetInStore<T, K extends Canonical, Key extends K>(
 		| [token: WritableFamilyToken<T, K>, key: Key]
 		| [token: WritableToken<T>]
 ): void {
-	let token: WritableToken<T>
-	let family: WritableFamilyToken<T, Canonical> | null
-	let key: Canonical | null
-	if (params.length === 1) {
-		token = params[0]
-		setIntoStore(store, token, RESET_STATE)
-	} else {
-		family = params[0]
-		key = params[1]
-		setIntoStore(store, family, key, RESET_STATE)
-	}
+	const subParams = [...params, RESET_STATE] as const
+	setIntoStore(store, ...subParams)
 }
