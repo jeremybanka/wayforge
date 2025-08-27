@@ -167,7 +167,6 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 			const join = store.joins.get(joinKey)
 			if (join) {
 				join.relations.delete(molecule.key)
-				join.molecules.delete(molecule.stringKey) // get rid of
 			}
 		}
 	}
