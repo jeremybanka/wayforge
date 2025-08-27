@@ -86,14 +86,13 @@ export class Realm<H extends Hierarchy> {
 
 export class Anarchy {
 	public store: Store
-	public realm: Realm<any>
 
 	/**
 	 * @param store - The store to which the anarchy-realm will be attached
 	 */
 	public constructor(store: Store = IMPLICIT.STORE) {
 		this.store = store
-		this.realm = new Realm(store)
+		makeRootMoleculeInStore(`root`, store)
 	}
 	/**
 	 * Declare a new entity
