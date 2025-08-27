@@ -91,8 +91,6 @@ export const timeTravel = (
 				ingestDisposalEvent(store, event, applying)
 				break
 			}
-			case `molecule_creation`:
-			case `molecule_disposal`:
 		}
 	}
 
