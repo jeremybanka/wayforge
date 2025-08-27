@@ -114,7 +114,7 @@ export type TransactionOutcomeEvent<T extends TransactionToken<any>> = {
 }
 
 export type TimelineEvent<ManagedAtom extends TimelineManageable> = {
-	write?: true
+	checkpoint?: true
 } & (
 	| AtomUpdateEvent<AtomOnly<ManagedAtom>>
 	| MoleculeCreationEvent
