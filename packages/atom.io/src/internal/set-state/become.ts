@@ -1,9 +1,7 @@
 import { isFn } from "../is-fn"
 
-export type Modify<T> = (thing: T) => T
-
 export function become<T>(
-	nextVersionOfThing: Modify<T> | T,
+	nextVersionOfThing: T | ((prev: T) => T),
 	originalThing: T,
 ): T {
 	if (isFn(nextVersionOfThing)) {
