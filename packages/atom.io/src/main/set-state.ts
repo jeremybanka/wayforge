@@ -35,18 +35,11 @@ export function setState<T, K extends Canonical, New extends T, Key extends K>(
 	key: Key,
 	value: New | Setter<T, New>,
 ): void
-export function setState<T, New extends T>(
+
+export function setState<T, K extends Canonical, New extends T, Key extends K>(
 	...params:
-		| [
-				token: WritableFamilyToken<T, Canonical>,
-				key: Canonical,
-				value: New | Setter<T, New>,
-		  ]
+		| [token: WritableFamilyToken<T, K>, key: Key, value: New | Setter<T, New>]
 		| [token: WritableToken<T>, value: New | Setter<T, New>]
 ): void {
-	if (params.length === 2) {
-		setIntoStore(IMPLICIT.STORE, ...params)
-	} else {
-		setIntoStore(IMPLICIT.STORE, ...params)
-	}
+	setIntoStore(IMPLICIT.STORE, ...params)
 }

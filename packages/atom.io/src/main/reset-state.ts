@@ -25,9 +25,5 @@ export function resetState(
 		| [token: WritableFamilyToken<any, Canonical>, key: Canonical]
 		| [token: WritableToken<any>]
 ): void {
-	if (params.length === 2) {
-		resetInStore(IMPLICIT.STORE, ...params)
-	} else {
-		resetInStore(IMPLICIT.STORE, ...params)
-	}
+	resetInStore(IMPLICIT.STORE, ...params)
 }
