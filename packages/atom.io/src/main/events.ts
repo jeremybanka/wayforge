@@ -117,8 +117,6 @@ export type TimelineEvent<ManagedAtom extends TimelineManageable> = {
 	checkpoint?: true
 } & (
 	| AtomUpdateEvent<AtomOnly<ManagedAtom>>
-	| MoleculeCreationEvent
-	| MoleculeDisposalEvent
 	| StateCreationEvent<AtomOnly<ManagedAtom>>
 	| StateDisposalEvent<AtomOnly<ManagedAtom>>
 	| TimelineSelectorUpdateEvent<ManagedAtom>
