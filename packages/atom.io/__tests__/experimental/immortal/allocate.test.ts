@@ -32,7 +32,7 @@ beforeEach(() => {
 	clearStore(IMPLICIT.STORE)
 	IMPLICIT.STORE.config.lifespan = `immortal`
 	IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = IMPLICIT.STORE.logger //= Utils.createNullLogger()
+	logger = IMPLICIT.STORE.logger = Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -342,7 +342,7 @@ describe(`errors`, () => {
 	})
 })
 describe(`integrations`, () => {
-	test.only(`timeline support`, () => {
+	test(`timeline support`, () => {
 		const anarchy = new Anarchy()
 		anarchy.allocate(`root`, `owner`)
 		anarchy.allocate(`owner`, `owned_item`)
@@ -362,7 +362,15 @@ describe(`integrations`, () => {
 
 		anarchy.deallocate(`owner`)
 
-		Utils.inspectTimeline(countTL)
+		expect(getState(countAtoms, `owner`)).toBe(0)
+		expect(getState(countAtoms, `owned_item`)).toBe(0)
+		expect(logger.error).toHaveBeenCalledTimes(2)
+
+		undo(countTL)
+
+		expect(getState(countAtoms, `owner`)).toBe(1)
+		expect(getState(countAtoms, `owned_item`)).toBe(1)
+		expect(logger.error).toHaveBeenCalledTimes(2)
 	})
 	test(`transaction+timeline support`, () => {
 		type DocumentKey = `document::${number}`
