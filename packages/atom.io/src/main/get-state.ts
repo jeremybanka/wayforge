@@ -25,13 +25,10 @@ export function getState<T, K extends Canonical, Key extends K>(
 	key: Key,
 ): ViewOf<T>
 
-export function getState(
+export function getState<T, K extends Canonical, Key extends K>(
 	...params:
-		| [token: ReadableFamilyToken<any, any>, key: Canonical]
-		| [token: ReadableToken<any>]
+		| [token: ReadableFamilyToken<T, K>, key: Key]
+		| [token: ReadableToken<T>]
 ): any {
-	if (params.length === 2) {
-		return getFromStore(IMPLICIT.STORE, ...params)
-	}
 	return getFromStore(IMPLICIT.STORE, ...params)
 }

@@ -23,12 +23,36 @@ export function setIntoStore<
 	value: New | typeof RESET_STATE | ((oldValue: T) => New),
 ): void
 
-export function setIntoStore<T, New extends T>(
+export function setIntoStore<
+	T,
+	K extends Canonical,
+	New extends T,
+	Key extends K,
+>(
 	store: Store,
 	...params:
 		| [
-				token: WritableFamilyToken<T, Canonical>,
-				key: Canonical,
+				token: WritableFamilyToken<T, K>,
+				key: Key,
+				value: New | typeof RESET_STATE | ((oldValue: T) => New),
+		  ]
+		| [
+				token: WritableToken<T>,
+				value: New | typeof RESET_STATE | ((oldValue: T) => New),
+		  ]
+): void
+
+export function setIntoStore<
+	T,
+	K extends Canonical,
+	New extends T,
+	Key extends K,
+>(
+	store: Store,
+	...params:
+		| [
+				token: WritableFamilyToken<T, K>,
+				key: Key,
 				value: New | typeof RESET_STATE | ((oldValue: T) => New),
 		  ]
 		| [

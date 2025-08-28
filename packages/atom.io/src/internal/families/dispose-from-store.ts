@@ -8,10 +8,17 @@ import { findInStore } from "./find-in-store"
 
 export function disposeFromStore(store: Store, token: ReadableToken<any>): void
 
-export function disposeFromStore<K extends Canonical>(
+export function disposeFromStore<K extends Canonical, Key extends K>(
 	store: Store,
 	token: ReadableFamilyToken<any, K>,
-	key: K,
+	key: Key,
+): void
+
+export function disposeFromStore<K extends Canonical, Key extends K>(
+	store: Store,
+	...params:
+		| [token: ReadableFamilyToken<any, K>, key: Key]
+		| [token: ReadableToken<any>]
 ): void
 
 export function disposeFromStore(

@@ -1,9 +1,10 @@
-import type { Modify } from "atom.io/internal"
 import type { FC } from "react"
 
 export const OpenClose: FC<{
 	isOpen: boolean
-	setIsOpen?: ((next: Modify<boolean> | boolean) => void) | undefined
+	setIsOpen?:
+		| ((next: boolean | ((prev: boolean) => boolean)) => void)
+		| undefined
 	onShiftClick?: (
 		event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
 	) => boolean

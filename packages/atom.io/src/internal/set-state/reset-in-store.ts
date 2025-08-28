@@ -14,21 +14,19 @@ export function resetInStore<K extends Canonical>(
 	key: K,
 ): void
 
-export function resetInStore<T>(
+export function resetInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	...params:
-		| [token: WritableFamilyToken<T, Canonical>, key: Canonical]
+		| [token: WritableFamilyToken<T, K>, key: Key]
+		| [token: WritableToken<T>]
+): void
+
+export function resetInStore<T, K extends Canonical, Key extends K>(
+	store: Store,
+	...params:
+		| [token: WritableFamilyToken<T, K>, key: Key]
 		| [token: WritableToken<T>]
 ): void {
-	let token: WritableToken<T>
-	let family: WritableFamilyToken<T, Canonical> | null
-	let key: Canonical | null
-	if (params.length === 1) {
-		token = params[0]
-		setIntoStore(store, token, RESET_STATE)
-	} else {
-		family = params[0]
-		key = params[1]
-		setIntoStore(store, family, key, RESET_STATE)
-	}
+	const subParams = [...params, RESET_STATE] as const
+	setIntoStore(store, ...subParams)
 }
