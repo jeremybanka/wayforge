@@ -19,7 +19,7 @@ export function getFromStore<T, K extends Canonical, Key extends K>(
 	...params:
 		| [token: ReadableFamilyToken<T, K>, key: Key]
 		| [token: ReadableToken<T>]
-): any
+): T
 
 export function getFromStore<T, K extends Canonical, Key extends K>(
 	store: Store,
