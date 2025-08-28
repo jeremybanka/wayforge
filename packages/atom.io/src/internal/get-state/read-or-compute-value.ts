@@ -1,4 +1,4 @@
-import type { ViewOf } from "atom.io"
+import type { Loadable, ViewOf } from "atom.io"
 
 import type { ReadableState } from ".."
 import { readFromCache, writeToCache } from "../caching"
@@ -33,22 +33,36 @@ export function readOrComputeValue<T, E>(
 			target.logger.info(`🧮`, state.type, key, `computing value`)
 			return state.getFrom(target)
 		case `atom`: {
-			let def: T
+			let def: E | T
 			if (isFn(state.default)) {
 				try {
 					def = state.default()
+					if (def instanceof Promise) {
+						def = (def as Promise<T> & T).catch<E | T>((e) => {
+							target.logger.error(`💥`, `state`, key, `rejected:`, e)
+							if (state.catch) {
+								for (const Class of state.catch) {
+									if (e instanceof Class) {
+										return writeToCache(target, state, e)
+									}
+								}
+							}
+							throw e
+						}) as E | T
+					}
 				} catch (e) {
+					target.logger.error(`💥`, `state`, key, `rejected:`, e)
 					if (state.catch) {
-						for (const errorClass of state.catch) {
-							if (e instanceof errorClass) {
-								target.logger.error(`💥`, `state`, key, `rejected:`, e)
+						for (const Class of state.catch) {
+							if (e instanceof Class) {
 								return writeToCache(target, state, e)
 							}
 						}
 					}
 					throw e
+				} finally {
+					target.logger.info(`✨`, state.type, key, `computed default`, def)
 				}
-				target.logger.info(`✨`, state.type, key, `computed default`, def)
 			} else {
 				def = state.default
 				target.logger.info(`✨`, state.type, key, `using static default`, def)
