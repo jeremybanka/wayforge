@@ -99,9 +99,9 @@ export type RegularAtomFamilyOptions<T, K extends Canonical, E = never> = {
  * @returns
  * A reference to the atom family created: a {@link RegularAtomFamilyToken}
  */
-export function atomFamily<T, K extends Canonical>(
-	options: RegularAtomFamilyOptions<T, K>,
-): RegularAtomFamilyToken<T, K> {
+export function atomFamily<T, K extends Canonical, E = never>(
+	options: RegularAtomFamilyOptions<T, K, E>,
+): RegularAtomFamilyToken<T, K, E> {
 	return createRegularAtomFamily(IMPLICIT.STORE, options)
 }
 

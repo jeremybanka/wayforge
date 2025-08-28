@@ -250,9 +250,9 @@ export function selectorFamily<T extends object, K extends Canonical>(
  * A reference to the selector family created: a {@link TransientWritableSelectorFamilyToken}
  * @overload WritablePure
  */
-export function selectorFamily<T, K extends Canonical>(
-	options: WritablePureSelectorFamilyOptions<T, K>,
-): WritablePureSelectorFamilyToken<T, K>
+export function selectorFamily<T, K extends Canonical, E = never>(
+	options: WritablePureSelectorFamilyOptions<T, K, E>,
+): WritablePureSelectorFamilyToken<T, K, E>
 /**
  * Create a family of selectors, allowing for the dynamic creation and disposal of selectors.
  *
@@ -268,19 +268,19 @@ export function selectorFamily<T, K extends Canonical>(
  * A reference to the selector family created: a {@link ReadonlyPureSelectorFamilyToken}
  * @overload ReadonlyPure
  */
-export function selectorFamily<T, K extends Canonical>(
-	options: ReadonlyPureSelectorFamilyOptions<T, K>,
-): ReadonlyPureSelectorFamilyToken<T, K>
+export function selectorFamily<T, K extends Canonical, E = never>(
+	options: ReadonlyPureSelectorFamilyOptions<T, K, E>,
+): ReadonlyPureSelectorFamilyToken<T, K, E>
 export function selectorFamily(
 	options:
 		| ReadonlyHeldSelectorFamilyOptions<any, any>
-		| ReadonlyPureSelectorFamilyOptions<any, any>
+		| ReadonlyPureSelectorFamilyOptions<any, any, any>
 		| WritableHeldSelectorFamilyOptions<any, any>
-		| WritablePureSelectorFamilyOptions<any, any>,
+		| WritablePureSelectorFamilyOptions<any, any, any>,
 ):
 	| ReadonlyHeldSelectorFamilyToken<any, any>
-	| ReadonlyPureSelectorFamilyToken<any, any>
+	| ReadonlyPureSelectorFamilyToken<any, any, any>
 	| WritableHeldSelectorFamilyToken<any, any>
-	| WritablePureSelectorFamilyToken<any, any> {
+	| WritablePureSelectorFamilyToken<any, any, any> {
 	return createSelectorFamily(IMPLICIT.STORE, options)
 }
