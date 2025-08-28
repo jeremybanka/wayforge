@@ -108,9 +108,9 @@ export function selector<T extends object>(
  * The token for your selector.
  * @overload WritablePure
  */
-export function selector<T>(
-	options: WritablePureSelectorOptions<T>,
-): WritablePureSelectorToken<T>
+export function selector<T, E = never>(
+	options: WritablePureSelectorOptions<T, E>,
+): WritablePureSelectorToken<T, any, E>
 /**
  * Declare a selector. The value of a selector should depend
  * on the value of atoms or other selectors in the store.
@@ -125,20 +125,20 @@ export function selector<T>(
  * The token for your selector.
  * @overload ReadonlyPure
  */
-export function selector<T>(
-	options: ReadonlyPureSelectorOptions<T>,
-): ReadonlyPureSelectorToken<T>
+export function selector<T, E = never>(
+	options: ReadonlyPureSelectorOptions<T, E>,
+): ReadonlyPureSelectorToken<T, any, E>
 export function selector(
 	options:
 		| ReadonlyHeldSelectorOptions<any>
-		| ReadonlyPureSelectorOptions<any>
+		| ReadonlyPureSelectorOptions<any, any>
 		| WritableHeldSelectorOptions<any>
-		| WritablePureSelectorOptions<any>,
+		| WritablePureSelectorOptions<any, any>,
 ):
 	| ReadonlyHeldSelectorToken<any>
-	| ReadonlyPureSelectorToken<any>
+	| ReadonlyPureSelectorToken<any, any, any>
 	| WritableHeldSelectorToken<any>
-	| WritablePureSelectorToken<any> {
+	| WritablePureSelectorToken<any, any, any> {
 	return createStandaloneSelector(IMPLICIT.STORE, options)
 }
 
