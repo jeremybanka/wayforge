@@ -1,4 +1,4 @@
-import type { ReadableFamilyToken, ReadableToken } from "atom.io"
+import type { ReadableFamilyToken, ReadableToken, ViewOf } from "atom.io"
 import type { Canonical } from "atom.io/json"
 
 import { type Store, withdraw } from "../store"
@@ -12,21 +12,21 @@ export function getFromStore<T, K extends Canonical>(
 	store: Store,
 	token: ReadableFamilyToken<T, K>,
 	key: K,
-): T
+): ViewOf<T>
 
 export function getFromStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	...params:
 		| [token: ReadableFamilyToken<T, K>, key: Key]
 		| [token: ReadableToken<T>]
-): T
+): ViewOf<T>
 
 export function getFromStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	...params:
 		| [token: ReadableFamilyToken<T, K>, key: Key]
 		| [token: ReadableToken<T>]
-): any {
+): ViewOf<T> {
 	const { token, family, subKey } = reduceReference(store, ...params)
 
 	if (`counterfeit` in token && family && subKey) {
