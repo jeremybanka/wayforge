@@ -27,11 +27,42 @@ export function readOrComputeValue<T, E>(
 	const { key } = state
 	switch (state.type) {
 		case `readonly_held_selector`:
-		case `readonly_pure_selector`:
 		case `writable_held_selector`:
-		case `writable_pure_selector`:
 			target.logger.info(`🧮`, state.type, key, `computing value`)
 			return state.getFrom(target)
+		case `readonly_pure_selector`:
+		case `writable_pure_selector`: {
+			let val: E | T
+			target.logger.info(`🧮`, state.type, key, `computing value`)
+			try {
+				val = state.getFrom(target)
+				if (val instanceof Promise) {
+					return (val as Promise<E & T>).catch((e) => {
+						target.logger.error(`💥`, state.type, key, `rejected:`, e)
+						if (state.catch) {
+							for (const Class of state.catch) {
+								if (e instanceof Class) {
+									return writeToCache(target, state, e)
+								}
+							}
+						}
+						throw e
+					}) as E | T
+				}
+			} catch (e) {
+				target.logger.error(`💥`, state.type, key, `rejected:`, e)
+				if (state.catch) {
+					for (const Class of state.catch) {
+						if (e instanceof Class) {
+							return writeToCache(target, state, e)
+						}
+					}
+				}
+				throw e
+			}
+			const cachedValue = writeToCache(target, state, val)
+			return cachedValue
+		}
 		case `atom`: {
 			let def: E | T
 			if (isFn(state.default)) {
