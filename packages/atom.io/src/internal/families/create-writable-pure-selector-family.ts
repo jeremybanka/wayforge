@@ -80,6 +80,7 @@ export function createWritablePureSelectorFamily<T, K extends Canonical, E>(
 				json: (token) => getJsonToken(store, token),
 			})
 		},
+		...(options.catch ? { catch: options.catch } : {}),
 	}) satisfies WritablePureSelectorFamily<T, K, E>
 
 	store.families.set(familyKey, selectorFamily)
