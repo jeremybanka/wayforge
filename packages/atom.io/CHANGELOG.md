@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.40.1
+
+### Patch Changes
+
+- 28f3c72: ✨ `Realm.deallocate()` and `Realm.claim` now use transactions under the hood to guarantee that only one timeline checkpoint is created when running them.
+
 ## 0.40.0
 
 ### Minor Changes
