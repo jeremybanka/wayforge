@@ -30,9 +30,5 @@ export function disposeState(
 		| [token: ReadableFamilyToken<any, any>, key: Canonical]
 		| [token: ReadableToken<any>]
 ): void {
-	if (params.length === 2) {
-		disposeFromStore(IMPLICIT.STORE, ...params)
-	} else {
-		disposeFromStore(IMPLICIT.STORE, ...params)
-	}
+	disposeFromStore(IMPLICIT.STORE, ...params)
 }
