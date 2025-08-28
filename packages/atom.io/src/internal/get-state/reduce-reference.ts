@@ -13,27 +13,27 @@ import { mintInStore, MUST_CREATE } from "../families/mint-in-store"
 import type { Store } from "../store"
 import { withdraw } from "../store"
 
-export function reduceReference<T, K extends Canonical>(
+export function reduceReference<T, K extends Canonical, E>(
 	store: Store,
 	...params:
-		| [token: ReadableFamilyToken<T, K>, key: K]
-		| [token: ReadableToken<T>]
+		| [token: ReadableFamilyToken<T, K, E>, key: K]
+		| [token: ReadableToken<T, K, E>]
 ): {
-	token: ReadableToken<T, K>
-	family: ReadableFamily<T, K> | undefined
+	token: ReadableToken<T, K, E>
+	family: ReadableFamily<T, K, E> | undefined
 	subKey: K | undefined
 	isNew: boolean
 } {
-	let existingToken: ReadableToken<T> | undefined
-	let brandNewToken: ReadableToken<T> | undefined
-	let family: ReadableFamily<T, K> | undefined
+	let existingToken: ReadableToken<T, K, E> | undefined
+	let brandNewToken: ReadableToken<T, K, E> | undefined
+	let family: ReadableFamily<T, K, E> | undefined
 	let subKey: K | undefined
-	let token: ReadableToken<T, K>
+	let token: ReadableToken<T, K, E>
 	if (params.length === 1) {
 		token = params[0]
 		if (`family` in token) {
 			const familyToken = getFamilyOfToken(store, token)
-			family = withdraw(store, familyToken) as ReadableFamily<T, K>
+			family = withdraw(store, familyToken) as ReadableFamily<T, K, E>
 			subKey = parseJson(token.family.subKey)
 			existingToken = seekInStore(store, familyToken, subKey)
 			if (`counterfeit` in token) {

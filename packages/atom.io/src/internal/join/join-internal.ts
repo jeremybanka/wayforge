@@ -331,7 +331,7 @@ export class Join<
 		let contentAtoms: RegularAtomFamilyToken<Content, string>
 
 		if (defaultContent) {
-			contentAtoms = createRegularAtomFamily<Content, ContentKey>(
+			contentAtoms = createRegularAtomFamily<Content, ContentKey, never>(
 				store,
 				{
 					key: `${options.key}/content`,
@@ -398,7 +398,7 @@ export class Join<
 		)
 
 		const createSingleKeySelectorFamily = () =>
-			createReadonlyPureSelectorFamily<string | null, string>(
+			createReadonlyPureSelectorFamily<string | null, string, never>(
 				store,
 				{
 					key: `${options.key}/singleRelatedKey`,
@@ -415,7 +415,7 @@ export class Join<
 				[`join`, `keys`],
 			)
 		const getMultipleKeySelectorFamily = () => {
-			return createReadonlyPureSelectorFamily<string[], string>(
+			return createReadonlyPureSelectorFamily<string[], string, never>(
 				store,
 				{
 					key: `${options.key}/multipleRelatedKeys`,
@@ -431,7 +431,11 @@ export class Join<
 			)
 		}
 		const createSingleEntrySelectorFamily = () =>
-			createReadonlyPureSelectorFamily<[string, ViewOf<Content>] | null, string>(
+			createReadonlyPureSelectorFamily<
+				[string, ViewOf<Content>] | null,
+				string,
+				never
+			>(
 				store,
 				{
 					key: `${options.key}/singleRelatedEntry`,
@@ -454,7 +458,11 @@ export class Join<
 				[`join`, `entries`],
 			)
 		const getMultipleEntrySelectorFamily = () =>
-			createReadonlyPureSelectorFamily<[string, ViewOf<Content>][], string>(
+			createReadonlyPureSelectorFamily<
+				[string, ViewOf<Content>][],
+				string,
+				never
+			>(
 				store,
 				{
 					key: `${options.key}/multipleRelatedEntries`,

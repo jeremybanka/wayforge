@@ -6,15 +6,15 @@ import * as React from "react"
 import { parseStateOverloads } from "./parse-state-overloads"
 import { StoreContext } from "./store-context"
 
-export function useO<T>(token: ReadableToken<T>): T
+export function useO<T, E>(token: ReadableToken<T, any, E>): E | T
 
-export function useO<T, K extends Canonical>(
-	token: ReadableFamilyToken<T, K>,
-	key: K,
-): T
+export function useO<T, K extends Canonical, Key extends K, E>(
+	token: ReadableFamilyToken<T, K, E>,
+	key: Key,
+): E | T
 
-export function useO<T, K extends Canonical>(
-	...params: [ReadableFamilyToken<T, K>, K] | [ReadableToken<T>]
+export function useO<T, K extends Canonical, Key extends K, E>(
+	...params: [ReadableFamilyToken<T, K, E>, Key] | [ReadableToken<T, any, E>]
 ): T {
 	const store = React.useContext(StoreContext)
 	const token = parseStateOverloads(store, ...params)

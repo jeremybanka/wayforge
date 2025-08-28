@@ -6,28 +6,31 @@ import { disposeSelector } from "../selector"
 import { type Store, withdraw } from "../store"
 import { findInStore } from "./find-in-store"
 
-export function disposeFromStore(store: Store, token: ReadableToken<any>): void
+export function disposeFromStore(
+	store: Store,
+	token: ReadableToken<any, any, any>,
+): void
 
 export function disposeFromStore<K extends Canonical, Key extends K>(
 	store: Store,
-	token: ReadableFamilyToken<any, K>,
+	token: ReadableFamilyToken<any, K, any>,
 	key: Key,
 ): void
 
 export function disposeFromStore<K extends Canonical, Key extends K>(
 	store: Store,
 	...params:
-		| [token: ReadableFamilyToken<any, K>, key: Key]
-		| [token: ReadableToken<any>]
+		| [token: ReadableFamilyToken<any, K, any>, key: Key]
+		| [token: ReadableToken<any, any, any>]
 ): void
 
 export function disposeFromStore(
 	store: Store,
 	...params:
-		| [token: ReadableFamilyToken<any, any>, key: Canonical]
-		| [token: ReadableToken<any>]
+		| [token: ReadableFamilyToken<any, any, any>, key: Canonical]
+		| [token: ReadableToken<any, any, any>]
 ): void {
-	let token: ReadableToken<any>
+	let token: ReadableToken<any, any, any>
 	if (params.length === 1) {
 		token = params[0]
 	} else {

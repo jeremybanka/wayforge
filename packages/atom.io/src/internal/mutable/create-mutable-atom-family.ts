@@ -73,7 +73,7 @@ export function createMutableAtomFamily<
 
 	store.families.set(options.key, atomFamily)
 
-	createWritablePureSelectorFamily<AsJSON<T>, K>(
+	createWritablePureSelectorFamily<AsJSON<T>, K, never>(
 		store,
 		{
 			key: `${options.key}:JSON`,

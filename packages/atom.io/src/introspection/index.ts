@@ -6,12 +6,10 @@ export * from "./differ"
 export * from "./refinery"
 export * from "./sprawl"
 
-export type FamilyNode<Token extends ReadableToken<unknown>> = {
+export type FamilyNode<Token extends ReadableToken<unknown, any, any>> = {
 	key: string
 	familyMembers: Map<string, Token>
 }
 
-export type WritableTokenIndex<Token extends ReadableToken<unknown>> = Map<
-	string,
-	FamilyNode<Token> | Token
->
+export type WritableTokenIndex<Token extends ReadableToken<unknown, any, any>> =
+	Map<string, FamilyNode<Token> | Token>

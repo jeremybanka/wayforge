@@ -7,11 +7,11 @@ import type { Store } from "../store"
 import { withdraw } from "../store"
 import { subscribeToRootDependency } from "./subscribe-to-root-atoms"
 
-export function subscribeToState<T>(
+export function subscribeToState<T, E>(
 	store: Store,
-	token: ReadableToken<T>,
+	token: ReadableToken<T, any, E>,
 	key: string,
-	handleUpdate: UpdateHandler<T>,
+	handleUpdate: UpdateHandler<E | T>,
 ): () => void {
 	function safelyHandleUpdate(update: StateUpdate<any>): void {
 		if (store.operation.open) {
@@ -33,7 +33,7 @@ export function subscribeToState<T>(
 		state.type === `writable_pure_selector` ||
 		state.type === `readonly_pure_selector`
 	const rootSubs = new Map<string, () => void>()
-	let updateHandler: UpdateHandler<T> = safelyHandleUpdate
+	let updateHandler: UpdateHandler<E | T> = safelyHandleUpdate
 	if (isSelector) {
 		readOrComputeValue(store, state)
 		for (const [atomKey, atom] of traceRootSelectorAtoms(store, state.key)) {

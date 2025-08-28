@@ -11,7 +11,9 @@ import type { ReadableFamilyToken, ReadableToken } from "."
  * @overload Default
  * @default
  */
-export function getState<T>(token: ReadableToken<T>): ViewOf<T>
+export function getState<T, E = never>(
+	token: ReadableToken<T, any, E>,
+): ViewOf<E | T>
 
 /**
  * Read or compute the current value of a state
@@ -20,15 +22,15 @@ export function getState<T>(token: ReadableToken<T>): ViewOf<T>
  * @return The current value of the state
  * @overload Streamlined
  */
-export function getState<T, K extends Canonical, Key extends K>(
-	token: ReadableFamilyToken<T, K>,
+export function getState<T, K extends Canonical, Key extends K, E = never>(
+	token: ReadableFamilyToken<T, K, E>,
 	key: Key,
-): ViewOf<T>
+): ViewOf<E | T>
 
-export function getState<T, K extends Canonical, Key extends K>(
+export function getState<T, K extends Canonical, Key extends K, E = never>(
 	...params:
-		| [token: ReadableFamilyToken<T, K>, key: Key]
-		| [token: ReadableToken<T>]
-): ViewOf<T> {
+		| [token: ReadableFamilyToken<T, K, E>, key: Key]
+		| [token: ReadableToken<T, any, E>]
+): ViewOf<E | T> {
 	return getFromStore(IMPLICIT.STORE, ...params)
 }

@@ -18,18 +18,18 @@ import { createWritablePureSelector } from "../selector"
 import type { Store } from "../store"
 import { Subject } from "../subject"
 
-export function createWritablePureSelectorFamily<T, K extends Canonical>(
+export function createWritablePureSelectorFamily<T, K extends Canonical, E>(
 	store: Store,
-	options: WritablePureSelectorFamilyOptions<T, K>,
+	options: WritablePureSelectorFamilyOptions<T, K, E>,
 	internalRoles?: string[],
-): WritablePureSelectorFamilyToken<T, K> {
+): WritablePureSelectorFamilyToken<T, K, E> {
 	const familyKey = options.key
 	const type = `writable_pure_selector_family`
 
 	const familyToken = {
 		key: familyKey,
 		type,
-	} as const satisfies WritablePureSelectorFamilyToken<T, K>
+	} as const satisfies WritablePureSelectorFamilyToken<T, K, E>
 
 	const existing = store.families.get(familyKey)
 	if (existing) {
@@ -41,16 +41,18 @@ export function createWritablePureSelectorFamily<T, K extends Canonical>(
 		)
 	}
 	const subject = new Subject<
-		StateLifecycleEvent<WritablePureSelectorToken<T>>
+		StateLifecycleEvent<WritablePureSelectorToken<T, K, E>>
 	>()
 
-	const familyFunction = (key: K): WritablePureSelectorToken<T> => {
+	const familyFunction = <Key extends K>(
+		key: Key,
+	): WritablePureSelectorToken<T, Key, E> => {
 		const subKey = stringifyJson(key)
-		const family: FamilyMetadata = { key: familyKey, subKey }
+		const family: FamilyMetadata<Key> = { key: familyKey, subKey }
 		const fullKey = `${familyKey}(${subKey})`
 		const target = newest(store)
 
-		const token = createWritablePureSelector(
+		const token = createWritablePureSelector<T, Key, E>(
 			target,
 			{
 				key: fullKey,
@@ -78,7 +80,7 @@ export function createWritablePureSelectorFamily<T, K extends Canonical>(
 				json: (token) => getJsonToken(store, token),
 			})
 		},
-	}) satisfies WritablePureSelectorFamily<T, K>
+	}) satisfies WritablePureSelectorFamily<T, K, E>
 
 	store.families.set(familyKey, selectorFamily)
 	return familyToken

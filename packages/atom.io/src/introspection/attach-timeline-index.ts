@@ -5,7 +5,7 @@ import { createRegularAtom } from "atom.io/internal"
 export const attachTimelineIndex = (
 	store: Store,
 ): AtomToken<TimelineToken<any>[]> => {
-	return createRegularAtom<TimelineToken<any>[]>(
+	return createRegularAtom<TimelineToken<any>[], never, never>(
 		store,
 		{
 			key: `🔍 Timeline Token Index`,

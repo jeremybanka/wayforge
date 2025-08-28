@@ -4,12 +4,12 @@ import { type Canonical, stringifyJson } from "atom.io/json"
 import type { ReadableFamily } from ".."
 import type { Store } from "../store"
 
-export function getFallback<T, K extends Canonical>(
+export function getFallback<T, K extends Canonical, E>(
 	store: Store,
-	token: ReadableToken<T, K>,
-	family: ReadableFamily<T, K>,
+	token: ReadableToken<T, K, E>,
+	family: ReadableFamily<T, K, E>,
 	subKey: K,
-): ViewOf<T> {
+): ViewOf<E | T> {
 	const disposal = store.disposalTraces.buffer.find(
 		(item) => item?.key === stringifyJson(subKey),
 	)
