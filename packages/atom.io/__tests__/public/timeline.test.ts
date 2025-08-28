@@ -1,6 +1,4 @@
-import { inspect } from "node:util"
-
-import type { Logger, TimelineToken, WritableToken } from "atom.io"
+import type { Logger, WritableToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -37,17 +35,6 @@ beforeEach(() => {
 	vitest.spyOn(Utils, `stdout`)
 	vitest.spyOn(Utils, `stdout0`)
 })
-
-function _inspectTimeline(tl: TimelineToken<any>) {
-	const tlInternal = I.withdraw(I.IMPLICIT.STORE, tl)
-	console.log(
-		`at ${tlInternal.at}`,
-		inspect(tlInternal.history, {
-			colors: true,
-			depth: null,
-		}),
-	)
-}
 
 describe(`timeline`, () => {
 	it(`tracks the state of all atoms in its scope`, () => {

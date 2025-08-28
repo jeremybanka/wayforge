@@ -342,6 +342,46 @@ describe(`errors`, () => {
 	})
 })
 describe(`integrations`, () => {
+	test(`timeline support`, () => {
+		const anarchy = new Anarchy()
+		anarchy.allocate(`root`, `owner`)
+		anarchy.allocate(`owner`, `owned_item`)
+
+		const countAtoms = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+
+		const countTL = timeline({
+			key: `count`,
+			scope: [countAtoms],
+		})
+
+		setState(countAtoms, `owner`, 1)
+		setState(countAtoms, `owned_item`, 1)
+
+		anarchy.deallocate(`owner`)
+
+		expect(getState(countAtoms, `owner`)).toBe(0)
+		expect(getState(countAtoms, `owned_item`)).toBe(0)
+		expect(logger.error).toHaveBeenCalledTimes(2)
+
+		anarchy.allocate(`root`, `owner`)
+		anarchy.allocate(`owner`, `owned_item`)
+
+		setState(countAtoms, `owner`, 1)
+		setState(countAtoms, `owned_item`, 1)
+
+		undo(countTL)
+		undo(countTL)
+		undo(countTL)
+
+		// Utils.inspectTimeline(countTL)
+
+		expect(getState(countAtoms, `owner`)).toBe(1)
+		expect(getState(countAtoms, `owned_item`)).toBe(1)
+		expect(logger.error).toHaveBeenCalledTimes(2)
+	})
 	test(`transaction+timeline support`, () => {
 		type DocumentKey = `document::${number}`
 		type UserKey = `user::${string}`
@@ -423,7 +463,6 @@ describe(`integrations`, () => {
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
 		undo(documentTimeline)
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
-		// console.log(IMPLICIT.STORE.timelines.get(`documentTimeline`))
 		undo(documentTimeline)
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
 		redo(documentTimeline)
@@ -465,7 +504,6 @@ describe(`integrations`, () => {
 			to: [`user::deb`, `user::joe`],
 			document: `document::${3}`,
 		})
-		// console.log(IMPLICIT.STORE.moleculeGraph.contents)
 		documentRealm.deallocate(`userGroup::homies`)
 		const debAndJoeConfiguration = new Map([
 			[`"root":"user::joe"`, { source: `"root"` }],

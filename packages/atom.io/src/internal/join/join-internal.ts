@@ -13,7 +13,7 @@ import type {
 	WriterToolkit,
 } from "atom.io"
 import { Anarchy } from "atom.io"
-import type { Canonical, Json, stringified } from "atom.io/json"
+import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
@@ -29,7 +29,6 @@ import type {
 	ExternalStoreConfiguration,
 } from "../junction"
 import { Junction } from "../junction"
-import type { Molecule } from "../molecule"
 import { createMutableAtomFamily, getJsonFamily, getJsonToken } from "../mutable"
 import { setIntoStore } from "../set-state"
 import type { Store } from "../store"
@@ -133,7 +132,6 @@ export class Join<
 	private toolkit: WriterToolkit
 	public options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>
 	public defaultContent: Content | undefined
-	public molecules: Map<string, Molecule<any>> = new Map()
 	public relations: Junction<ASide, AType, BSide, BType, Content>
 	public states: JoinStateFamilies<
 		ASide,
@@ -226,6 +224,9 @@ export class Join<
 				bKeys.delete(a)
 				return bKeys
 			})
+			const [x, y] = [a, b].sort()
+			const compositeKey = `${x}:${y}`
+			this.store.moleculeJoins.delete(compositeKey)
 		}
 		const replaceRelationsSafely: Write<
 			(a: string, newRelationsOfA: string[]) => void
@@ -268,9 +269,9 @@ export class Join<
 								relationsOfB.clear()
 							}
 							for (const previousOwner of previousOwnersToDispose) {
-								const sorted = [newRelationB, previousOwner].sort()
-								const compositeKey = `"${sorted[0]}:${sorted[1]}"`
-								this.molecules.delete(compositeKey)
+								const [x, y] = [newRelationB, previousOwner].sort()
+								const compositeKey = `${x}:${y}`
+								store.moleculeJoins.delete(compositeKey)
 							}
 						}
 						if (!newRelationBIsAlreadyRelated) {
@@ -311,14 +312,8 @@ export class Join<
 		const baseExternalStoreConfiguration: BaseExternalStoreConfiguration = {
 			getRelatedKeys: (key) => getRelatedKeys(this.toolkit, key),
 			addRelation: (a, b) => {
-				this.store.moleculeJoins.set(
-					a as stringified<Canonical> /* 💥 RECONCILE */,
-					options.key,
-				)
-				this.store.moleculeJoins.set(
-					b as stringified<Canonical> /* 💥 RECONCILE */,
-					options.key,
-				)
+				this.store.moleculeJoins.set(`"${a}"`, options.key)
+				this.store.moleculeJoins.set(`"${b}"`, options.key)
 				addRelation(this.toolkit, a, b)
 			},
 			deleteRelation: (a, b) => {
@@ -365,9 +360,7 @@ export class Join<
 				setContent: (contentKey: ContentKey, content: Content) => {
 					setContent(this.toolkit, contentKey, content)
 				},
-				deleteContent: (contentKey: ContentKey) => {
-					this.realm.deallocate(contentKey)
-				},
+				deleteContent: (_: ContentKey) => {},
 			}
 			externalStore = Object.assign(
 				baseExternalStoreConfiguration,
@@ -385,8 +378,8 @@ export class Join<
 				isBType: options.isBType,
 				makeContentKey: (...args) => {
 					const [a, b] = args
-					const sorted = args.sort()
-					const compositeKey = `${sorted[0]}:${sorted[1]}`
+					const [x, y] = args.sort()
+					const compositeKey = `${x}:${y}`
 					const aMolecule = store.molecules.get(stringifyJson(a))
 					const bMolecule = store.molecules.get(stringifyJson(b))
 					if (!aMolecule) {
@@ -395,6 +388,7 @@ export class Join<
 					if (!bMolecule) {
 						this.realm.allocate(options.key, b)
 					}
+
 					this.realm.allocate(a, compositeKey, `all`)
 					this.realm.claim(b, compositeKey)
 					this.store.moleculeJoins.set(compositeKey, options.key)

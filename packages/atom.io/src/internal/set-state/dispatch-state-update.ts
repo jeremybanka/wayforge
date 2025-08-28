@@ -28,7 +28,7 @@ export function dispatchOrDeferStateUpdate<T>(
 	if (stateIsNewlyCreated && family) {
 		state.subject.next({ newValue })
 		const stateCreationEvent: StateCreationEvent<any> & TimelineEvent<any> = {
-			write: true,
+			checkpoint: true,
 			type: `state_creation`,
 			subType: `writable`,
 			token,

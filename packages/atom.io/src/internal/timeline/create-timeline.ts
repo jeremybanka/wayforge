@@ -192,7 +192,7 @@ function addAtomToTimeline(
 						tl.selectorTime = null
 
 						const atomUpdate: AtomUpdateEvent<any> & TimelineEvent<any> = {
-							write: true,
+							checkpoint: true,
 							type: `atom_update`,
 							token: deposit(atom),
 							update,
@@ -268,7 +268,7 @@ function joinTransaction(
 
 					const timelineTransactionUpdate: TimelineEvent<any> &
 						TransactionOutcomeEvent<TransactionToken<any>> = {
-						write: true,
+						checkpoint: true,
 						...transactionUpdate,
 						subEvents: subEventsFiltered,
 					}
@@ -292,7 +292,7 @@ function buildSelectorUpdate(
 	if (currentSelectorTime !== tl.selectorTime) {
 		const selectorUpdate: TimelineEvent<any> & TimelineSelectorUpdateEvent<any> =
 			(latestUpdate = {
-				write: true,
+				checkpoint: true,
 				type: `selector_update`,
 				timestamp: currentSelectorTime,
 				token: currentSelectorToken,

@@ -1,24 +1,39 @@
-import type { Each, Store } from "atom.io/internal"
+import type { Each, RootStore } from "atom.io/internal"
 import {
+	actUponStore,
 	allocateIntoStore,
+	arbitrary,
 	claimWithinStore,
-	deallocateFromStore,
+	createClaimTX,
+	createDeallocateTX,
 	fuseWithinStore,
 	IMPLICIT,
 	makeRootMoleculeInStore,
 } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 
+import type { TransactionToken } from "./tokens"
+
 export const $claim: unique symbol = Symbol.for(`claim`)
 export type Claim<K extends Canonical> = K & { [$claim]?: true }
 
 export class Realm<H extends Hierarchy> {
-	public store: Store
+	public store: RootStore
+	public deallocateTX: TransactionToken<(claim: Claim<Vassal<H>>) => void>
+	public claimTX: TransactionToken<
+		<V extends Exclude<Vassal<H>, CompoundTypedKey>, A extends Above<V, H>>(
+			newProvenance: A,
+			claim: Claim<V>,
+			exclusive?: `exclusive`,
+		) => void
+	>
 	/**
 	 * @param store - The store to which the realm will be attached
 	 */
-	public constructor(store: Store = IMPLICIT.STORE) {
+	public constructor(store: RootStore = IMPLICIT.STORE) {
 		this.store = store
+		this.deallocateTX = createDeallocateTX(store)
+		this.claimTX = createClaimTX(store)
 		makeRootMoleculeInStore(`root`, store)
 	}
 	/**
@@ -66,7 +81,7 @@ export class Realm<H extends Hierarchy> {
 	 * @param claim - The subject to be deallocated
 	 */
 	public deallocate<V extends Vassal<H>>(claim: Claim<V>): void {
-		deallocateFromStore<H, V>(this.store, claim)
+		actUponStore(this.store, this.deallocateTX, arbitrary())(claim)
 	}
 	/**
 	 * Transfer a subject of the realm from one owner to another
@@ -79,21 +94,30 @@ export class Realm<H extends Hierarchy> {
 	public claim<
 		V extends Exclude<Vassal<H>, CompoundTypedKey>,
 		A extends Above<V, H>,
-	>(newProvenance: A, claim: Claim<V>, exclusive?: `exclusive`): Claim<V> {
-		return claimWithinStore<H, V, A>(this.store, newProvenance, claim, exclusive)
+	>(newProvenance: A, claim: Claim<V>, exclusive?: `exclusive`): void {
+		actUponStore(this.store, this.claimTX, arbitrary())(
+			newProvenance,
+			claim,
+			exclusive,
+		)
 	}
 }
 
 export class Anarchy {
-	public store: Store
-	public realm: Realm<any>
+	public store: RootStore
+	public deallocateTX: TransactionToken<(key: Canonical) => void>
+	public claimTX: TransactionToken<
+		(newProvenance: Canonical, key: Canonical, exclusive?: `exclusive`) => void
+	>
 
 	/**
 	 * @param store - The store to which the anarchy-realm will be attached
 	 */
-	public constructor(store: Store = IMPLICIT.STORE) {
+	public constructor(store: RootStore = IMPLICIT.STORE) {
 		this.store = store
-		this.realm = new Realm(store)
+		this.deallocateTX = createDeallocateTX(store)
+		this.claimTX = createClaimTX(store)
+		makeRootMoleculeInStore(`root`, store)
 	}
 	/**
 	 * Declare a new entity
@@ -118,7 +142,7 @@ export class Anarchy {
 	 * @param key - The entity to be deallocated
 	 */
 	public deallocate(key: Canonical): void {
-		deallocateFromStore<any, any>(this.store, key)
+		actUponStore(this.store, this.deallocateTX, arbitrary())(key)
 	}
 	/**
 	 * Transfer an entity from one owner to another
