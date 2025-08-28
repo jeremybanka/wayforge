@@ -54,7 +54,7 @@
 		"@types/jsdom": "21.1.7",
 		"@types/npmlog": "7.0.0",
 		"@types/react": "19.1.12",
-		"@vitejs/plugin-react": "5.0.1",
+		"@vitejs/plugin-react": "5.0.2",
 		"concurrently": "9.2.1",
 		"eslint": "9.34.0",
 		"happy-dom": "18.0.1",
