@@ -5,6 +5,7 @@ import type {
 	StateLifecycleEvent,
 	WritablePureSelectorFamilyOptions,
 	WritablePureSelectorFamilyToken,
+	WritablePureSelectorOptions,
 	WritablePureSelectorToken,
 } from "atom.io"
 import { PRETTY_TOKEN_TYPES } from "atom.io"
@@ -51,14 +52,18 @@ export function createWritablePureSelectorFamily<T, K extends Canonical, E>(
 		const family: FamilyMetadata<Key> = { key: familyKey, subKey }
 		const fullKey = `${familyKey}(${subKey})`
 		const target = newest(store)
+		const individualOptions: WritablePureSelectorOptions<T, E> = {
+			key: fullKey,
+			get: options.get(key),
+			set: options.set(key),
+		}
+		if (options.catch) {
+			individualOptions.catch = options.catch
+		}
 
 		const token = createWritablePureSelector<T, Key, E>(
 			target,
-			{
-				key: fullKey,
-				get: options.get(key),
-				set: options.set(key),
-			},
+			individualOptions,
 			family,
 		)
 

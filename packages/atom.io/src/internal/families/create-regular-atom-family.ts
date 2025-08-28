@@ -54,6 +54,9 @@ export function createRegularAtomFamily<T, K extends Canonical, E>(
 		if (options.effects) {
 			individualOptions.effects = options.effects(key)
 		}
+		if (options.catch) {
+			individualOptions.catch = options.catch
+		}
 
 		const token = createRegularAtom(target, individualOptions, family)
 
