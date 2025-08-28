@@ -6,10 +6,10 @@ export function traceRootSelectorAtoms(
 	store: Store,
 	selectorKey: string,
 	covered: Set<string> = new Set<string>(),
-): Map<string, Atom<unknown>> {
+): Map<string, Atom<any, any>> {
 	const dependencies = getSelectorDependencyKeys(store, selectorKey)
 
-	const roots = new Map<string, Atom<unknown>>()
+	const roots = new Map<string, Atom<unknown, unknown>>()
 
 	while (dependencies.length > 0) {
 		// biome-ignore lint/style/noNonNullAssertion: just checked length ^^^
@@ -19,7 +19,7 @@ export function traceRootSelectorAtoms(
 		}
 		covered.add(dependencyKey)
 		if (isAtomKey(store, dependencyKey)) {
-			const atom = store.atoms.get(dependencyKey) as Atom<unknown>
+			const atom = store.atoms.get(dependencyKey) as Atom<unknown, unknown>
 			roots.set(atom.key, atom)
 		} else {
 			dependencies.push(...getSelectorDependencyKeys(store, dependencyKey))

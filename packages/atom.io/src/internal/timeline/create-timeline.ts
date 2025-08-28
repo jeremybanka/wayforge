@@ -63,7 +63,7 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 			case `atom`:
 			case `mutable_atom`:
 				{
-					const atomToken: AtomToken<ManagedAtom> = initialTopic
+					const atomToken: AtomToken<any, any, any> = initialTopic
 					const atomKey = atomToken.key
 					let existingTimelineKey = target.timelineTopics.getRelatedKey(atomKey)
 					if (`family` in atomToken) {
@@ -95,7 +95,7 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 			case `atom_family`:
 			case `mutable_atom_family`:
 				{
-					const familyToken: AtomFamilyToken<any, any> = initialTopic
+					const familyToken: AtomFamilyToken<any, any, any> = initialTopic
 					const familyKey = familyToken.key
 					const existingTimelineKey =
 						target.timelineTopics.getRelatedKey(familyKey)
@@ -125,7 +125,7 @@ export function createTimeline<ManagedAtom extends TimelineManageable>(
 
 function addAtomToTimeline(
 	store: Store,
-	atomToken: AtomToken<any>,
+	atomToken: AtomToken<any, any, any>,
 	tl: Timeline<any>,
 ): void {
 	reduceReference(store, atomToken)
@@ -214,7 +214,7 @@ function addAtomToTimeline(
 
 function addAtomFamilyToTimeline(
 	store: Store,
-	atomFamilyToken: AtomFamilyToken<any, any>,
+	atomFamilyToken: AtomFamilyToken<any, any, any>,
 	tl: Timeline<any>,
 ): void {
 	const family = withdraw(store, atomFamilyToken)
@@ -283,7 +283,7 @@ function joinTransaction(
 function buildSelectorUpdate(
 	store: Store,
 	tl: Timeline<any>,
-	atomToken: AtomToken<any>,
+	atomToken: AtomToken<any, any, any>,
 	eventOrUpdate: StateCreationEvent<any> | StateUpdate<any>,
 	currentSelectorToken: WritablePureSelectorToken<any>,
 	currentSelectorTime: number,

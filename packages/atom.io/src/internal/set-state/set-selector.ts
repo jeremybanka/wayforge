@@ -7,7 +7,7 @@ import type { ProtoUpdate } from "./operate-on-store"
 
 export function setSelector<T>(
 	target: Store & { operation: OpenOperation<any> },
-	selector: WritableSelector<T>,
+	selector: WritableSelector<T, any>,
 	next: T | ((oldValue: T) => T),
 ): ProtoUpdate<T> {
 	let oldValue: T

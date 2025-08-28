@@ -5,10 +5,10 @@ import { dispatchOrDeferStateUpdate } from "./dispatch-state-update"
 import type { ProtoUpdate } from "./operate-on-store"
 import { setAtom } from "./set-atom"
 
-function resetAtom<T>(
+function resetAtom<T, E>(
 	target: Store & { operation: OpenOperation },
-	atom: Atom<T>,
-): ProtoUpdate<T> {
+	atom: Atom<T, E>,
+): ProtoUpdate<E | T> {
 	switch (atom.type) {
 		case `mutable_atom`:
 			return setAtom(target, atom, new atom.class())
@@ -20,11 +20,11 @@ function resetAtom<T>(
 	}
 }
 
-export function resetAtomOrSelector<T>(
+export function resetAtomOrSelector<T, E>(
 	target: Store & { operation: OpenOperation },
-	state: WritableState<T>,
-): ProtoUpdate<T> {
-	let protoUpdate: ProtoUpdate<T>
+	state: WritableState<T, E>,
+): ProtoUpdate<E | T> {
+	let protoUpdate: ProtoUpdate<E | T>
 	switch (state.type) {
 		case `atom`:
 		case `mutable_atom`:

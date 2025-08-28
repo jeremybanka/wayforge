@@ -8,7 +8,7 @@ import type { ProtoUpdate } from "./operate-on-store"
 
 export const setAtom = <T>(
 	target: Store & { operation: OpenOperation<any> },
-	atom: Atom<T>,
+	atom: Atom<T, any>,
 	next: T | ((oldValue: T) => T),
 ): ProtoUpdate<T> => {
 	const oldValue = readOrComputeValue(target, atom, `mut`)

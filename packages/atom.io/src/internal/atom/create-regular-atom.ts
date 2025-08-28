@@ -4,6 +4,7 @@ import type {
 	RegularAtomToken,
 	UpdateHandler,
 } from "atom.io"
+import type { Canonical } from "atom.io/json"
 
 import type { RegularAtom, RootStore } from ".."
 import { resetInStore, setIntoStore } from ".."
@@ -14,12 +15,12 @@ import { Subject } from "../subject"
 import { subscribeToState } from "../subscribe"
 import type { internalRole } from "./has-role"
 
-export function createRegularAtom<T>(
+export function createRegularAtom<T, K extends Canonical, E>(
 	store: Store,
-	options: RegularAtomOptions<T>,
-	family: FamilyMetadata | undefined,
+	options: RegularAtomOptions<T, E>,
+	family: FamilyMetadata<K> | undefined,
 	internalRoles?: internalRole[],
-): RegularAtomToken<T> {
+): RegularAtomToken<T, K, E> {
 	const type = `atom`
 	const { key } = options
 	store.logger.info(`🔨`, type, key, `is being created`)
@@ -33,10 +34,10 @@ export function createRegularAtom<T>(
 			key,
 			`Tried to create atom, but it already exists in the store.`,
 		)
-		return deposit(existing)
+		return deposit(existing) as RegularAtomToken<T, K, E>
 	}
 	const subject = new Subject<{ newValue: T; oldValue: T }>()
-	const newAtom: RegularAtom<T> = {
+	const newAtom: RegularAtom<T, E> = {
 		...options,
 		type,
 		install: (s: RootStore) => {
@@ -52,7 +53,7 @@ export function createRegularAtom<T>(
 		newAtom.internalRoles = internalRoles
 	}
 	target.atoms.set(key, newAtom)
-	const token = deposit(newAtom)
+	const token = deposit(newAtom) as RegularAtomToken<T, K, E>
 	if (options.effects) {
 		let effectIndex = 0
 		const cleanupFunctions: (() => void)[] = []

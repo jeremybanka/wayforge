@@ -39,53 +39,53 @@ export function mint<
 	Key extends K,
 >(token: MutableAtomFamilyToken<T, K>, key: Key): MutableAtomToken<T>
 
-export function mint<T, K extends Canonical, Key extends K>(
-	token: RegularAtomFamilyToken<T, K>,
+export function mint<T, K extends Canonical, Key extends K, E>(
+	token: RegularAtomFamilyToken<T, K, E>,
 	key: Key,
 	counterfeit?: typeof COUNTERFEIT,
-): RegularAtomToken<T>
+): RegularAtomToken<T, Key, E>
 
-export function mint<T, K extends Canonical, Key extends K>(
-	token: AtomFamilyToken<T, K>,
+export function mint<T, K extends Canonical, Key extends K, E>(
+	token: AtomFamilyToken<T, K, E>,
 	key: Key,
 	counterfeit?: typeof COUNTERFEIT,
-): AtomToken<T>
+): AtomToken<T, Key, E>
 
-export function mint<T, K extends Canonical, Key extends K>(
-	token: WritablePureSelectorFamilyToken<T, K>,
+export function mint<T, K extends Canonical, Key extends K, E>(
+	token: WritablePureSelectorFamilyToken<T, K, E>,
 	key: Key,
 	counterfeit?: typeof COUNTERFEIT,
-): WritablePureSelectorToken<T>
+): WritablePureSelectorToken<T, Key, E>
 
-export function mint<T, K extends Canonical, Key extends K>(
-	token: ReadonlyPureSelectorFamilyToken<T, K>,
+export function mint<T, K extends Canonical, Key extends K, E>(
+	token: ReadonlyPureSelectorFamilyToken<T, K, E>,
 	key: Key,
 	counterfeit?: typeof COUNTERFEIT,
-): ReadonlyPureSelectorToken<T>
+): ReadonlyPureSelectorToken<T, Key, E>
 
-export function mint<T, K extends Canonical, Key extends K>(
-	token: SelectorFamilyToken<T, K>,
+export function mint<T, K extends Canonical, Key extends K, E>(
+	token: SelectorFamilyToken<T, K, E>,
 	key: Key,
 	counterfeit?: typeof COUNTERFEIT,
-): SelectorToken<T>
+): SelectorToken<T, Key, E>
 
-export function mint<T, K extends Canonical, Key extends K>(
-	token: WritableFamilyToken<T, K>,
+export function mint<T, K extends Canonical, Key extends K, E>(
+	token: WritableFamilyToken<T, K, E>,
 	key: Key,
 	counterfeit?: typeof COUNTERFEIT,
-): WritableToken<T>
+): WritableToken<T, Key, E>
 
-export function mint<T, K extends Canonical, Key extends K>(
-	token: ReadableFamilyToken<T, K>,
+export function mint<T, K extends Canonical, Key extends K, E>(
+	token: ReadableFamilyToken<T, K, E>,
 	key: Key,
 	counterfeit?: typeof COUNTERFEIT,
-): ReadableToken<T>
+): ReadableToken<T, Key, E>
 
 export function mint(
-	token: ReadableFamilyToken<any, any>,
+	token: ReadableFamilyToken<any, any, any>,
 	key: Canonical,
 	counterfeit?: typeof COUNTERFEIT,
-): ReadableToken<any> {
+): ReadableToken<any, any, any> {
 	const subKey = stringifyJson(key)
 	const fullKey = `${token.key}(${subKey})`
 	const type = FAMILY_MEMBER_TOKEN_TYPES[token.type]

@@ -19,7 +19,7 @@ import type {
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import type { Molecule, ReadableState } from ".."
+import type { ReadableState } from ".."
 import { newest } from "../lineage"
 import type { Transceiver } from "../mutable"
 import { deposit, type Store } from "../store"
@@ -32,59 +32,59 @@ export function seekInStore<
 	store: Store,
 	token: MutableAtomFamilyToken<T, K>,
 	key: Key,
-): MutableAtomToken<T, K> | undefined
+): MutableAtomToken<T, Key> | undefined
 
-export function seekInStore<T, K extends Canonical, Key extends K>(
+export function seekInStore<T, K extends Canonical, Key extends K, E>(
 	store: Store,
-	token: RegularAtomFamilyToken<T, K>,
+	token: RegularAtomFamilyToken<T, K, E>,
 	key: Key,
-): RegularAtomToken<T, K> | undefined
+): RegularAtomToken<T, Key, E> | undefined
 
-export function seekInStore<T, K extends Canonical, Key extends K>(
+export function seekInStore<T, K extends Canonical, Key extends K, E>(
 	store: Store,
-	token: AtomFamilyToken<T, K>,
+	token: AtomFamilyToken<T, K, E>,
 	key: Key,
-): AtomToken<T, K> | undefined
+): AtomToken<T, Key, E> | undefined
 
-export function seekInStore<T, K extends Canonical, Key extends K>(
+export function seekInStore<T, K extends Canonical, Key extends K, E>(
 	store: Store,
-	token: WritablePureSelectorFamilyToken<T, K>,
+	token: WritablePureSelectorFamilyToken<T, K, E>,
 	key: Key,
-): WritablePureSelectorToken<T, K> | undefined
+): WritablePureSelectorToken<T, Key, E> | undefined
 
-export function seekInStore<T, K extends Canonical, Key extends K>(
+export function seekInStore<T, K extends Canonical, Key extends K, E>(
 	store: Store,
-	token: ReadonlyPureSelectorFamilyToken<T, K>,
+	token: ReadonlyPureSelectorFamilyToken<T, K, E>,
 	key: Key,
-): ReadonlyPureSelectorToken<T, K> | undefined
+): ReadonlyPureSelectorToken<T, Key, E> | undefined
 
-export function seekInStore<T, K extends Canonical, Key extends K>(
+export function seekInStore<T, K extends Canonical, Key extends K, E>(
 	store: Store,
-	token: SelectorFamilyToken<T, K>,
+	token: SelectorFamilyToken<T, K, E>,
 	key: Key,
-): SelectorToken<T, K> | undefined
+): SelectorToken<T, Key, E> | undefined
 
-export function seekInStore<T, K extends Canonical, Key extends K>(
+export function seekInStore<T, K extends Canonical, Key extends K, E>(
 	store: Store,
-	token: WritableFamilyToken<T, K>,
+	token: WritableFamilyToken<T, K, E>,
 	key: Key,
-): WritableToken<T, K> | undefined
+): WritableToken<T, Key, E> | undefined
 
-export function seekInStore<T, K extends Canonical, Key extends K>(
+export function seekInStore<T, K extends Canonical, Key extends K, E>(
 	store: Store,
-	token: ReadableFamilyToken<T, K>,
+	token: ReadableFamilyToken<T, K, E>,
 	key: Key,
-): ReadableToken<T, K> | undefined
+): ReadableToken<T, Key, E> | undefined
 
 export function seekInStore(
 	store: Store,
-	token: ReadableFamilyToken<any, any>,
+	token: ReadableFamilyToken<any, any, any>,
 	key: Canonical,
-): ReadableToken<any> | undefined {
+): ReadableToken<any, any, any> | undefined {
 	const subKey = stringifyJson(key)
 	const fullKey = `${token.key}(${subKey})`
 	const target = newest(store)
-	let state: Molecule<any> | ReadableState<any> | undefined
+	let state: ReadableState<any, any> | undefined
 	switch (token.type) {
 		case `atom_family`:
 		case `mutable_atom_family`:

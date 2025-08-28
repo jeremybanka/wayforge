@@ -11,7 +11,8 @@ export const attachTimelineFamily = (
 ): ReadonlyPureSelectorFamilyToken<Timeline<any>, string> => {
 	const findTimelineLogState__INTERNAL = createRegularAtomFamily<
 		Timeline<any>,
-		string
+		string,
+		never
 	>(store, {
 		key: `🔍 Timeline Update Log (Internal)`,
 		default: (key) =>

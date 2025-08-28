@@ -12,12 +12,13 @@ export const getJsonFamily = <
 >(
 	mutableAtomFamily: MutableAtomFamilyToken<Core, Key>,
 	store: Store,
-): WritablePureSelectorFamily<ReturnType<Core[`toJSON`]>, Key> => {
+): WritablePureSelectorFamily<ReturnType<Core[`toJSON`]>, Key, never> => {
 	const target = newest(store)
 	const key = `${mutableAtomFamily.key}:JSON`
 	const jsonFamily = target.families.get(key) as WritablePureSelectorFamily<
 		ReturnType<Core[`toJSON`]>,
-		Key
+		Key,
+		never
 	>
 	return jsonFamily
 }

@@ -8,10 +8,10 @@ import {
 
 import type { WritableTokenIndex } from "."
 
-export type AtomTokenIndex = WritableTokenIndex<AtomToken<unknown>>
+export type AtomTokenIndex = WritableTokenIndex<AtomToken<unknown, any, unknown>>
 
 export const attachAtomIndex = (store: Store): AtomToken<AtomTokenIndex> => {
-	return createRegularAtom<AtomTokenIndex>(
+	return createRegularAtom<AtomTokenIndex, never, never>(
 		store,
 		{
 			key: `🔍 Atom Token Index`,

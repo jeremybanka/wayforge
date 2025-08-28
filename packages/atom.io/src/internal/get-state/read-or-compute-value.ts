@@ -5,21 +5,21 @@ import { readFromCache, writeToCache } from "../caching"
 import { isFn } from "../is-fn"
 import type { Store } from "../store"
 
-export function readOrComputeValue<T>(
+export function readOrComputeValue<T, E>(
 	target: Store,
-	state: ReadableState<T>,
+	state: ReadableState<T, E>,
 	mut?: undefined,
-): ViewOf<T>
-export function readOrComputeValue<T>(
+): ViewOf<E | T>
+export function readOrComputeValue<T, E>(
 	target: Store,
-	state: ReadableState<T>,
+	state: ReadableState<T, E>,
 	mut: `mut`,
-): T
-export function readOrComputeValue<T>(
+): E | T
+export function readOrComputeValue<T, E>(
 	target: Store,
-	state: ReadableState<T>,
+	state: ReadableState<T, E>,
 	mut: `mut` | undefined,
-): T {
+): E | T {
 	if (target.valueMap.has(state.key)) {
 		return readFromCache(target, state, mut)
 	}
@@ -35,7 +35,19 @@ export function readOrComputeValue<T>(
 		case `atom`: {
 			let def: T
 			if (isFn(state.default)) {
-				def = state.default()
+				try {
+					def = state.default()
+				} catch (e) {
+					if (state.catch) {
+						for (const errorClass of state.catch) {
+							if (e instanceof errorClass) {
+								target.logger.error(`💥`, `state`, key, `rejected:`, e)
+								return writeToCache(target, state, e)
+							}
+						}
+					}
+					throw e
+				}
 				target.logger.info(`✨`, state.type, key, `computed default`, def)
 			} else {
 				def = state.default

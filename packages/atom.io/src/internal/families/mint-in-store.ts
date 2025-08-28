@@ -8,24 +8,24 @@ import { COUNTERFEIT, mint } from "../store"
 
 export const MUST_CREATE: unique symbol = Symbol(`MUST_CREATE`)
 
-export function mintInStore<T, K extends Canonical, Key extends K>(
+export function mintInStore<T, K extends Canonical, Key extends K, E>(
 	store: Store,
-	family: ReadableFamily<T, K>,
+	family: ReadableFamily<T, K, E>,
 	key: Key,
 	mustCreate?: typeof MUST_CREATE,
-): WritableToken<T, K>
-export function mintInStore<T, K extends Canonical, Key extends K>(
+): WritableToken<T, Key, E>
+export function mintInStore<T, K extends Canonical, Key extends K, E>(
 	store: Store,
-	family: ReadableFamily<T, K>,
+	family: ReadableFamily<T, K, E>,
 	key: Key,
 	mustCreate?: typeof MUST_CREATE,
-): ReadableToken<T, K>
-export function mintInStore<T, K extends Canonical, Key extends K>(
+): ReadableToken<T, Key, E>
+export function mintInStore<T, K extends Canonical, Key extends K, E>(
 	store: Store,
-	family: ReadableFamily<T, K>,
+	family: ReadableFamily<T, K, E>,
 	key: Key,
 	mustCreate?: typeof MUST_CREATE,
-): ReadableToken<T, K> {
+): ReadableToken<T, Key, E> {
 	const stringKey = stringifyJson(key)
 	const molecule = store.molecules.get(stringKey)
 
@@ -43,7 +43,7 @@ export function mintInStore<T, K extends Canonical, Key extends K>(
 		return mint(family, key, COUNTERFEIT)
 	}
 
-	let token: ReadableToken<T, K>
+	let token: ReadableToken<T, Key, E>
 	if (mustCreate === MUST_CREATE) {
 		store.logger.info(
 			`👪`,

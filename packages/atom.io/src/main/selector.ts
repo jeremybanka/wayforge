@@ -17,19 +17,23 @@ import type {
 } from "./tokens"
 import type { Read, Write } from "./transaction"
 
-export type WritablePureSelectorOptions<T> = {
+export type WritablePureSelectorOptions<T, E = never> = {
 	/** The unique identifier of the selector */
 	key: string
 	/** For each instantiated selector, a function that computes its value */
 	get: Read<() => T>
 	/** For each instantiated selector, a function that sets its value */
 	set: Write<(newValue: T) => void>
+	/** The classes of errors that might be thrown when deriving the atom's default value */
+	catch?: readonly (new () => E)[]
 }
-export type ReadonlyPureSelectorOptions<T> = {
+export type ReadonlyPureSelectorOptions<T, E = never> = {
 	/** The unique identifier of the selector */
 	key: string
 	/** For each instantiated selector, a function that computes its value */
 	get: Read<() => T>
+	/** The classes of errors that might be thrown when deriving the atom's default value */
+	catch?: readonly (new () => E)[]
 }
 export type ReadonlyHeldSelectorOptions<T extends object> = {
 	/** The unique identifier of the selector */
@@ -138,19 +142,31 @@ export function selector(
 	return createStandaloneSelector(IMPLICIT.STORE, options)
 }
 
-export type WritablePureSelectorFamilyOptions<T, K extends Canonical> = {
+export type WritablePureSelectorFamilyOptions<
+	T,
+	K extends Canonical,
+	E = never,
+> = {
 	/** The unique identifier of the family */
 	key: string
 	/** For each instantiated family member, a function that computes its value */
 	get: (key: K) => Read<() => T>
 	/** For each instantiated family member, a function that sets its value */
 	set: (key: K) => Write<(newValue: T) => void>
+	/** The classes of errors that might be thrown when deriving the atom's default value */
+	catch?: readonly (new () => E)[]
 }
-export type ReadonlyPureSelectorFamilyOptions<T, K extends Canonical> = {
+export type ReadonlyPureSelectorFamilyOptions<
+	T,
+	K extends Canonical,
+	E = never,
+> = {
 	/** The unique identifier of the family */
 	key: string
 	/** For each instantiated family member, a function that computes its value */
 	get: (key: K) => Read<() => T>
+	/** The classes of errors that might be thrown when deriving the atom's default value */
+	catch?: readonly (new () => E)[]
 }
 export type WritableHeldSelectorFamilyOptions<
 	T extends object,

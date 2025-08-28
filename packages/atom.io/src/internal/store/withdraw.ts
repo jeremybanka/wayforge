@@ -72,15 +72,18 @@ import type { Timeline } from "../timeline"
 import type { Transaction } from "../transaction"
 import type { Store } from "./store"
 
-export function withdraw<T>(
+export function withdraw<T, E>(
 	store: Store,
-	token: RegularAtomToken<T>,
-): RegularAtom<T>
+	token: RegularAtomToken<T, any, E>,
+): RegularAtom<T, E>
 export function withdraw<T extends Transceiver<any, any, any>>(
 	store: Store,
 	token: MutableAtomToken<T, any>,
 ): MutableAtom<T>
-export function withdraw<T>(store: Store, token: AtomToken<T>): Atom<T>
+export function withdraw<T, E>(
+	store: Store,
+	token: AtomToken<T, any, E>,
+): Atom<T, E>
 export function withdraw<T>(
 	store: Store,
 	token: WritableHeldSelectorToken<T>,
@@ -89,52 +92,55 @@ export function withdraw<T>(
 	store: Store,
 	token: ReadonlyHeldSelectorToken<T>,
 ): ReadonlyHeldSelector<T>
-export function withdraw<T>(
+export function withdraw<T, E>(
 	store: Store,
-	token: WritablePureSelectorToken<T>,
-): WritablePureSelector<T>
-export function withdraw<T>(
+	token: WritablePureSelectorToken<T, any, E>,
+): WritablePureSelector<T, E>
+export function withdraw<T, E>(
 	store: Store,
-	token: ReadonlyPureSelectorToken<T>,
-): ReadonlyPureSelector<T>
-export function withdraw<T>(
+	token: ReadonlyPureSelectorToken<T, any, E>,
+): ReadonlyPureSelector<T, E>
+export function withdraw<T, E>(
 	store: Store,
-	token: ReadonlySelectorToken<T>,
-): ReadonlySelector<T>
-export function withdraw<T>(
+	token: ReadonlySelectorToken<T, any, E>,
+): ReadonlySelector<T, E>
+export function withdraw<T, E>(
 	store: Store,
-	token: WritableSelectorToken<T>,
-): WritableSelector<T>
+	token: WritableSelectorToken<T, any, E>,
+): WritableSelector<T, E>
 export function withdraw<T>(
 	store: Store,
 	token: HeldSelectorToken<T>,
 ): HeldSelector<T>
-export function withdraw<T>(
+export function withdraw<T, E>(
 	store: Store,
-	token: PureSelectorToken<T>,
-): PureSelector<T>
-export function withdraw<T>(store: Store, token: SelectorToken<T>): Selector<T>
-export function withdraw<T>(
+	token: PureSelectorToken<T, any, E>,
+): PureSelector<T, E>
+export function withdraw<T, E>(
 	store: Store,
-	token: WritableToken<T>,
-): WritableState<T>
-export function withdraw<T>(
+	token: SelectorToken<T, any, E>,
+): Selector<T, E>
+export function withdraw<T, E>(
 	store: Store,
-	token: ReadableToken<T>,
-): ReadableState<T>
+	token: WritableToken<T, any, E>,
+): WritableState<T, E>
+export function withdraw<T, E>(
+	store: Store,
+	token: ReadableToken<T, any, E>,
+): ReadableState<T, E>
 
-export function withdraw<T, K extends Canonical>(
+export function withdraw<T, K extends Canonical, E>(
 	store: Store,
-	token: RegularAtomFamilyToken<T, K>,
-): RegularAtomFamily<T, K>
+	token: RegularAtomFamilyToken<T, K, E>,
+): RegularAtomFamily<T, K, E>
 export function withdraw<
 	T extends Transceiver<any, any, any>,
 	K extends Canonical,
 >(store: Store, token: MutableAtomFamilyToken<T, K>): MutableAtomFamily<T, K>
-export function withdraw<T, K extends Canonical>(
+export function withdraw<T, K extends Canonical, E>(
 	store: Store,
-	token: AtomFamilyToken<T, K>,
-): AtomFamily<T, K>
+	token: AtomFamilyToken<T, K, E>,
+): AtomFamily<T, K, E>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: ReadonlyHeldSelectorFamilyToken<T, K>,
@@ -143,42 +149,42 @@ export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: WritableHeldSelectorFamilyToken<T, K>,
 ): WritableHeldSelectorFamily<T, K>
-export function withdraw<T, K extends Canonical>(
+export function withdraw<T, K extends Canonical, E>(
 	store: Store,
-	token: ReadonlyPureSelectorFamilyToken<T, K>,
-): ReadonlyPureSelectorFamily<T, K>
-export function withdraw<T, K extends Canonical>(
+	token: ReadonlyPureSelectorFamilyToken<T, K, E>,
+): ReadonlyPureSelectorFamily<T, K, E>
+export function withdraw<T, K extends Canonical, E>(
 	store: Store,
-	token: WritablePureSelectorFamilyToken<T, K>,
-): WritablePureSelectorFamily<T, K>
-export function withdraw<T, K extends Canonical>(
+	token: WritablePureSelectorFamilyToken<T, K, E>,
+): WritablePureSelectorFamily<T, K, E>
+export function withdraw<T, K extends Canonical, E>(
 	store: Store,
-	token: ReadonlySelectorFamilyToken<T, K>,
-): ReadonlySelectorFamily<T, K>
-export function withdraw<T, K extends Canonical>(
+	token: ReadonlySelectorFamilyToken<T, K, E>,
+): ReadonlySelectorFamily<T, K, E>
+export function withdraw<T, K extends Canonical, E>(
 	store: Store,
-	token: WritableSelectorFamilyToken<T, K>,
-): WritableSelectorFamily<T, K>
+	token: WritableSelectorFamilyToken<T, K, E>,
+): WritableSelectorFamily<T, K, E>
 export function withdraw<T, K extends Canonical>(
 	store: Store,
 	token: HeldSelectorFamilyToken<T, K>,
 ): HeldSelectorFamily<T, K>
-export function withdraw<T, K extends Canonical>(
+export function withdraw<T, K extends Canonical, E>(
 	store: Store,
-	token: PureSelectorFamilyToken<T, K>,
-): PureSelectorFamily<T, K>
-export function withdraw<T, K extends Canonical>(
+	token: PureSelectorFamilyToken<T, K, E>,
+): PureSelectorFamily<T, K, E>
+export function withdraw<T, K extends Canonical, E>(
 	store: Store,
-	token: SelectorFamilyToken<T, K>,
-): SelectorFamily<T, K>
-export function withdraw<T, K extends Canonical>(
+	token: SelectorFamilyToken<T, K, E>,
+): SelectorFamily<T, K, E>
+export function withdraw<T, K extends Canonical, E>(
 	store: Store,
-	token: WritableFamilyToken<T, K>,
-): WritableFamily<T, K>
-export function withdraw<T, K extends Canonical>(
+	token: WritableFamilyToken<T, K, E>,
+): WritableFamily<T, K, E>
+export function withdraw<T, K extends Canonical, E>(
 	store: Store,
-	token: ReadableFamilyToken<T, K>,
-): ReadableFamily<T, K>
+	token: ReadableFamilyToken<T, K, E>,
+): ReadableFamily<T, K, E>
 
 export function withdraw<T extends Fn>(
 	store: Store,
@@ -189,14 +195,14 @@ export function withdraw<T>(
 	token: TimelineToken<T>,
 ): Timeline<T extends TimelineManageable ? T : never>
 
-export function withdraw<T>(
+export function withdraw<T, E>(
 	store: Store,
-	token: WritableToken<T>,
-): WritableState<T>
-export function withdraw<T>(
+	token: WritableToken<T, any, E>,
+): WritableState<T, E>
+export function withdraw<T, E>(
 	store: Store,
-	token: ReadableToken<T>,
-): ReadableState<T>
+	token: ReadableToken<T, any, E>,
+): ReadableState<T, E>
 
 export function withdraw(
 	store: Store,

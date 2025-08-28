@@ -8,7 +8,9 @@ export type OperationProgress =
 	| {
 			open: false
 	  }
-export type OpenOperation<R extends ReadableToken<any> = ReadableToken<any>> = {
+export type OpenOperation<
+	R extends ReadableToken<any, any> = ReadableToken<any, any>,
+> = {
 	open: true
 	token: R
 	done: Set<string>
@@ -19,7 +21,7 @@ export type OpenOperation<R extends ReadableToken<any> = ReadableToken<any>> = {
 
 export function openOperation(
 	store: Store,
-	token: ReadableToken<any>,
+	token: ReadableToken<any, any, any>,
 ): number | (Store & { operation: OpenOperation }) {
 	if (store.operation.open) {
 		const rejectionTime = performance.now()

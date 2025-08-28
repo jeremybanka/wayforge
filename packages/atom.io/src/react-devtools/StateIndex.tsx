@@ -25,7 +25,7 @@ import { DevtoolsContext } from "./store"
 /* eslint-disable no-console */
 
 export const StateIndexLeafNode: FC<{
-	node: ReadableToken<unknown>
+	node: ReadableToken<unknown, any, unknown>
 	isOpenState: RegularAtomToken<boolean>
 	typeState: ReadonlyPureSelectorToken<Loadable<string>>
 	dispose?: (() => void) | undefined
@@ -95,7 +95,7 @@ export const StateIndexLeafNode: FC<{
 	)
 }
 export const StateIndexTreeNode: FC<{
-	node: FamilyNode<ReadableToken<unknown>>
+	node: FamilyNode<ReadableToken<unknown, any, unknown>>
 	isOpenState: RegularAtomToken<boolean>
 }> = ({ node, isOpenState }) => {
 	const setIsOpen = useI(isOpenState)
@@ -147,7 +147,9 @@ export const StateIndexTreeNode: FC<{
 }
 
 export const StateIndexNode: FC<{
-	node: FamilyNode<ReadableToken<unknown>> | ReadableToken<unknown>
+	node:
+		| FamilyNode<ReadableToken<unknown, any, unknown>>
+		| ReadableToken<unknown, any, unknown>
 	isOpenState: RegularAtomToken<boolean>
 	typeState: ReadonlyPureSelectorToken<Loadable<string>>
 	dispose?: () => void
@@ -169,7 +171,7 @@ export const StateIndexNode: FC<{
 }
 
 export const StateIndex: FC<{
-	tokenIndex: AtomToken<WritableTokenIndex<ReadableToken<unknown>>>
+	tokenIndex: AtomToken<WritableTokenIndex<ReadableToken<unknown, any, unknown>>>
 }> = ({ tokenIndex }) => {
 	const tokenIds = useO(tokenIndex)
 

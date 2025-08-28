@@ -17,18 +17,18 @@ import { newest } from "../lineage"
 import { createReadonlyPureSelector } from "../selector"
 import { Subject } from "../subject"
 
-export function createReadonlyPureSelectorFamily<T, K extends Canonical>(
+export function createReadonlyPureSelectorFamily<T, K extends Canonical, E>(
 	store: RootStore,
-	options: ReadonlyPureSelectorFamilyOptions<T, K>,
+	options: ReadonlyPureSelectorFamilyOptions<T, K, E>,
 	internalRoles?: string[],
-): ReadonlyPureSelectorFamilyToken<T, K> {
+): ReadonlyPureSelectorFamilyToken<T, K, E> {
 	const familyKey = options.key
 	const type = `readonly_pure_selector_family`
 
 	const familyToken = {
 		key: familyKey,
 		type,
-	} as const satisfies ReadonlyPureSelectorFamilyToken<T, K>
+	} as const satisfies ReadonlyPureSelectorFamilyToken<T, K, E>
 
 	const existing = store.families.get(familyKey)
 	if (existing) {
@@ -41,16 +41,18 @@ export function createReadonlyPureSelectorFamily<T, K extends Canonical>(
 	}
 
 	const subject = new Subject<
-		StateLifecycleEvent<ReadonlyPureSelectorToken<T>>
+		StateLifecycleEvent<ReadonlyPureSelectorToken<T, K, E>>
 	>()
 
-	const familyFunction = (key: K): ReadonlyPureSelectorToken<T> => {
+	const familyFunction = <Key extends K>(
+		key: Key,
+	): ReadonlyPureSelectorToken<T, Key, E> => {
 		const subKey = stringifyJson(key)
-		const family: FamilyMetadata = { key: familyKey, subKey }
+		const family: FamilyMetadata<Key> = { key: familyKey, subKey }
 		const fullKey = `${familyKey}(${subKey})`
 		const target = newest(store)
 
-		const token = createReadonlyPureSelector(
+		const token = createReadonlyPureSelector<T, Key, E>(
 			target,
 			{
 				key: fullKey,
@@ -59,12 +61,12 @@ export function createReadonlyPureSelectorFamily<T, K extends Canonical>(
 			family,
 		)
 
-		// subject.next({ type: `state_creation`, token, timestamp: Date.now() })
 		return token
 	}
 
 	const readonlySelectorFamily = Object.assign(familyFunction, familyToken, {
 		internalRoles,
+		catch: options.catch,
 		subject,
 		install: (s: RootStore) => createReadonlyPureSelectorFamily(s, options),
 		default: (key: K) => {
@@ -77,7 +79,7 @@ export function createReadonlyPureSelectorFamily<T, K extends Canonical>(
 				json: (token) => getJsonToken(store, token),
 			})
 		},
-	}) satisfies ReadonlyPureSelectorFamily<T, K>
+	}) satisfies ReadonlyPureSelectorFamily<T, K, E>
 
 	store.families.set(familyKey, readonlySelectorFamily)
 	return familyToken
