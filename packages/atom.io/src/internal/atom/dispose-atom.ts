@@ -1,7 +1,7 @@
 import type { AtomDisposalEvent, AtomToken, StateLifecycleEvent } from "atom.io"
 
 import type { Store, Subject } from ".."
-import { getUpdateToken, isChildStore, newest, withdraw } from ".."
+import { getUpdateToken, hasRole, isChildStore, newest, withdraw } from ".."
 import { getFamilyOfToken } from "../families/get-family-of-token"
 
 export function disposeAtom(store: Store, atomToken: AtomToken<any>): void {
@@ -19,7 +19,7 @@ export function disposeAtom(store: Store, atomToken: AtomToken<any>): void {
 			StateLifecycleEvent<AtomToken<any>>
 		>
 
-		const disposal: AtomDisposalEvent<AtomToken<any>> = {
+		const disposalEvent: AtomDisposalEvent<AtomToken<any>> = {
 			type: `state_disposal`,
 			subType: `atom`,
 			token: atomToken,
@@ -27,7 +27,7 @@ export function disposeAtom(store: Store, atomToken: AtomToken<any>): void {
 			timestamp: Date.now(),
 		}
 
-		subject.next(disposal)
+		subject.next(disposalEvent)
 
 		const isChild = isChildStore(target)
 
@@ -50,9 +50,9 @@ export function disposeAtom(store: Store, atomToken: AtomToken<any>): void {
 			const updateAlreadyCaptured =
 				wasMoleculeDisposal &&
 				mostRecentUpdate.values.some(([k]) => k === atom.family?.key)
-
-			if (!updateAlreadyCaptured) {
-				target.transactionMeta.update.subEvents.push(disposal)
+			const isTracker = hasRole(atom, `tracker:signal`)
+			if (!updateAlreadyCaptured && !isTracker) {
+				target.transactionMeta.update.subEvents.push(disposalEvent)
 			}
 		} else {
 			store.on.atomDisposal.next(atomToken)

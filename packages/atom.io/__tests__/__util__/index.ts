@@ -1,3 +1,4 @@
+export * from "./inspections"
 export * from "./nullLogger"
 export * from "./Observer"
 export * from "./stdout"
