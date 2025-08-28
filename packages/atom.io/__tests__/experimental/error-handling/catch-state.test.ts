@@ -19,13 +19,13 @@ describe(`async atom`, async () => {
 	it(`handles a rejected promise`, async () => {
 		class ClientError extends Error {}
 
-		const retrieve = async (): Promise<number> => {
+		const retrieveState = async (): Promise<number> => {
 			throw new ClientError(`😤`)
 		}
 
 		const count = AtomIO.atom<Loadable<number>, ClientError>({
 			key: `count`,
-			default: retrieve,
+			default: retrieveState,
 			catch: [ClientError],
 		})
 

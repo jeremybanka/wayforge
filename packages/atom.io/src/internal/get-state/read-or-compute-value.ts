@@ -1,4 +1,4 @@
-import type { Loadable, ViewOf } from "atom.io"
+import type { ViewOf } from "atom.io"
 
 import type { ReadableState } from ".."
 import { readFromCache, writeToCache } from "../caching"
@@ -39,11 +39,12 @@ export function readOrComputeValue<T, E>(
 					def = state.default()
 					if (def instanceof Promise) {
 						def = (def as Promise<T> & T).catch<E | T>((e) => {
-							target.logger.error(`💥`, `state`, key, `rejected:`, e)
+							target.logger.error(`💥`, state.type, key, `rejected:`, e)
 							if (state.catch) {
 								for (const Class of state.catch) {
 									if (e instanceof Class) {
-										return writeToCache(target, state, e)
+										def = writeToCache(target, state, e)
+										return def
 									}
 								}
 							}
@@ -51,17 +52,23 @@ export function readOrComputeValue<T, E>(
 						}) as E | T
 					}
 				} catch (e) {
-					target.logger.error(`💥`, `state`, key, `rejected:`, e)
+					target.logger.error(`💥`, state.type, key, `rejected:`, e)
 					if (state.catch) {
 						for (const Class of state.catch) {
 							if (e instanceof Class) {
-								return writeToCache(target, state, e)
+								def = writeToCache(target, state, e)
+								target.logger.info(
+									`✨`,
+									state.type,
+									key,
+									`computed default`,
+									def,
+								)
+								return def
 							}
 						}
 					}
 					throw e
-				} finally {
-					target.logger.info(`✨`, state.type, key, `computed default`, def)
 				}
 			} else {
 				def = state.default
