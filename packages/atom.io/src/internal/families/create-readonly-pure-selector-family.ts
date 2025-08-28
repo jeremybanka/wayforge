@@ -4,6 +4,7 @@ import type {
 	getState,
 	ReadonlyPureSelectorFamilyOptions,
 	ReadonlyPureSelectorFamilyToken,
+	ReadonlyPureSelectorOptions,
 	ReadonlyPureSelectorToken,
 	StateLifecycleEvent,
 } from "atom.io"
@@ -51,13 +52,17 @@ export function createReadonlyPureSelectorFamily<T, K extends Canonical, E>(
 		const family: FamilyMetadata<Key> = { key: familyKey, subKey }
 		const fullKey = `${familyKey}(${subKey})`
 		const target = newest(store)
+		const individualOptions: ReadonlyPureSelectorOptions<T, E> = {
+			key: fullKey,
+			get: options.get(key),
+		}
+		if (options.catch) {
+			individualOptions.catch = options.catch
+		}
 
 		const token = createReadonlyPureSelector<T, Key, E>(
 			target,
-			{
-				key: fullKey,
-				get: options.get(key),
-			},
+			individualOptions,
 			family,
 		)
 
