@@ -106,14 +106,6 @@ export function useLoadable(
 	const wasErr =
 		`catch` in state && state.catch.some((E) => lastLoaded instanceof E)
 
-	console.log(`⛔⛔⛔⛔⛔⛔⛔⛔⛔⛔⛔⛔⛔⛔⛔⛔⛔⛔⛔⛔⛔`)
-	console.log({
-		value,
-		state,
-		fallback,
-		isErr,
-		wasErr,
-	})
 	if (value instanceof Promise) {
 		if (lastLoaded === `LOADING`) {
 			return `LOADING`

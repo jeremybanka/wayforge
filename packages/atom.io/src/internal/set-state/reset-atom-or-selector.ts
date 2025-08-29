@@ -1,6 +1,7 @@
 import type { Atom, OpenOperation, Store, WritableState } from ".."
 import { traceRootSelectorAtoms } from ".."
 import { isFn } from "../is-fn"
+import { safeCompute } from "../safe-compute"
 import { dispatchOrDeferStateUpdate } from "./dispatch-state-update"
 import type { ProtoUpdate } from "./operate-on-store"
 import { setAtom } from "./set-atom"
@@ -13,8 +14,9 @@ function resetAtom<T, E>(
 		case `mutable_atom`:
 			return setAtom(target, atom, new atom.class())
 		case `atom`: {
-			let def = atom.default
-			if (isFn(def)) def = def()
+			let def: E | T
+			if (isFn(atom.default)) def = safeCompute(target, atom)
+			else def = atom.default
 			return setAtom(target, atom, def)
 		}
 	}
@@ -30,16 +32,26 @@ export function resetAtomOrSelector<T, E>(
 		case `mutable_atom`:
 			protoUpdate = resetAtom(target, state)
 			break
-		case `writable_pure_selector`:
 		case `writable_held_selector`:
 			{
-				const oldValue = state.getFrom(target)
 				const atoms = traceRootSelectorAtoms(target, state.key)
 				for (const atom of atoms.values()) {
 					const rootProtoUpdate = resetAtom(target, atom)
 					dispatchOrDeferStateUpdate(target, state, rootProtoUpdate, false)
 				}
-				const newValue = state.getFrom(target)
+				const value = state.getFrom(target)
+				protoUpdate = { oldValue: value, newValue: value }
+			}
+			break
+		case `writable_pure_selector`:
+			{
+				const oldValue = safeCompute(target, state)
+				const atoms = traceRootSelectorAtoms(target, state.key)
+				for (const atom of atoms.values()) {
+					const rootProtoUpdate = resetAtom(target, atom)
+					dispatchOrDeferStateUpdate(target, state, rootProtoUpdate, false)
+				}
+				const newValue = safeCompute(target, state)
 				protoUpdate = { oldValue, newValue }
 			}
 			break
