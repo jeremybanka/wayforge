@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.40.6
+
+### Patch Changes
+
+- 8a510f6: 🏷️ Removed confusing overloads from `useLoadable`.
+
 ## 0.40.5
 
 ### Patch Changes
