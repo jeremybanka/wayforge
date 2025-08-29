@@ -25,7 +25,7 @@ let logger: Logger
 beforeEach(() => {
 	clearStore(IMPLICIT.STORE)
 	IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = IMPLICIT.STORE.logger
+	logger = IMPLICIT.STORE.logger = Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -373,6 +373,50 @@ describe(`useLoadable`, () => {
 		assert(utils.getByTestId(`not-loading`))
 		assert(utils.getByTestId(`A`))
 	})
+	// test(`standalone, with a fallback, with an error`, async () => {
+	// 	let loadLetter = (_: string) => {
+	// 		console.warn(`loadLetter not attached`)
+	// 	}
+	// 	let failLetter = (_: string) => {
+	// 		console.warn(`failLetter not attached`)
+	// 	}
+
+	// 	const letterAtom = atom<Loadable<string>>({
+	// 		key: `letter`,
+	// 		default: () =>
+	// 			new Promise((resolve, reject) => {
+	// 				loadLetter = (letter: string) => {
+	// 					resolve(letter)
+	// 				}
+	// 				failLetter = (letter: string) => {
+	// 					reject(new Error(`💥`))
+	// 				}
+	// 			}),
+	// 		catch: [Error],
+	// 	})
+
+	// 	const Letter: FC = () => {
+	// 		const letter = AR.useLoadable(letterAtom, `Z`)
+	// 		return (
+	// 			<div data-testid={letter.loading ? `loading` : `not-loading`}>
+	// 				<div data-testid={letter.value}>{letter.value}</div>
+	// 			</div>
+	// 		)
+	// 	}
+	// 	const utils = render(
+	// 		<AR.StoreProvider>
+	// 			<Letter />
+	// 		</AR.StoreProvider>,
+	// 	)
+	// 	assert(utils.getByTestId(`loading`))
+	// 	assert(utils.getByTestId(`Z`))
+	// 	await act(async () => {
+	// 		loadLetter(`A`)
+	// 		await new Promise((resolve) => setImmediate(resolve))
+	// 	})
+	// 	assert(utils.getByTestId(`not-loading`))
+	// 	assert(utils.getByTestId(`A`))
+	// })
 	test(`family, without a fallback`, async () => {
 		const loadIndex: Record<number, () => void> = {}
 
@@ -460,6 +504,90 @@ describe(`useLoadable`, () => {
 		assert(utils.getByTestId(`2`))
 		assert(utils.getByTestId(`3`))
 	})
+	test(`family, with a fallback, with an error`, async () => {
+		const loadIndex: Record<number, () => void> = {}
+		const failIndex: Record<number, () => void> = {}
+		let throwImmediately = false
+
+		const indexAtoms = atomFamily<Loadable<number[]>, number, Error>({
+			key: `index`,
+			default: (key) => {
+				if (throwImmediately) {
+					throw new Error(`💥`)
+				}
+				return new Promise((resolve, reject) => {
+					loadIndex[key] = () => {
+						resolve([1, 2, 3])
+					}
+					failIndex[key] = () => {
+						reject(new Error(`💥`))
+					}
+				})
+			},
+			catch: [Error],
+		})
+
+		const Letter: FC = () => {
+			const ids = AR.useLoadable(indexAtoms, 0, [4, 5, 6])
+			return (
+				<div data-testid={ids.loading ? `loading` : `not-loading`}>
+					{ids.error ? <div data-testid="error">{ids.error.message}</div> : null}
+					{ids.value.map((id) => (
+						<div key={id} data-testid={id}>
+							{id}
+						</div>
+					))}
+				</div>
+			)
+		}
+		const utils = render(
+			<AR.StoreProvider>
+				<Letter />
+			</AR.StoreProvider>,
+		)
+		assert(utils.getByTestId(`loading`))
+		await act(async () => {
+			failIndex[0]()
+			await new Promise((resolve) => setImmediate(resolve))
+		})
+
+		assert(utils.getByTestId(`not-loading`))
+		assert(utils.getByTestId(`error`))
+		assert(utils.getByTestId(`4`))
+		assert(utils.getByTestId(`5`))
+		assert(utils.getByTestId(`6`))
+
+		act(() => {
+			resetState(indexAtoms, 0)
+		})
+		assert(utils.getByTestId(`loading`))
+		assert(utils.getByTestId(`4`))
+		assert(utils.getByTestId(`5`))
+		assert(utils.getByTestId(`6`))
+
+		await act(async () => {
+			loadIndex[0]()
+			await new Promise((resolve) => setImmediate(resolve))
+		})
+
+		assert(utils.getByTestId(`not-loading`))
+		expect(() => utils.getByTestId(`error`)).toThrowError()
+		assert(utils.getByTestId(`1`))
+		assert(utils.getByTestId(`2`))
+		assert(utils.getByTestId(`3`))
+
+		throwImmediately = true
+		act(() => {
+			resetState(indexAtoms, 0)
+		})
+
+		assert(utils.getByTestId(`not-loading`))
+		assert(utils.getByTestId(`error`))
+		assert(utils.getByTestId(`4`))
+		assert(utils.getByTestId(`5`))
+		assert(utils.getByTestId(`6`))
+	})
+
 	test(`referential identity`, async () => {
 		const uniqueRefs: unknown[] = []
 		const promises: Promise<string>[] = []
