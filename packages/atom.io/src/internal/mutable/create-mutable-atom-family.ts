@@ -61,14 +61,14 @@ export function createMutableAtomFamily<
 		return createMutableAtom(target, individualOptions, family)
 	}
 
-	const atomFamily = {
+	const atomFamily: MutableAtomFamily<T, K> = {
 		...familyToken,
 		create,
 		class: options.class,
 		subject,
 		install: (s: RootStore) => createMutableAtomFamily(s, options),
 		internalRoles,
-	} satisfies MutableAtomFamily<T, K>
+	}
 
 	store.families.set(options.key, atomFamily)
 

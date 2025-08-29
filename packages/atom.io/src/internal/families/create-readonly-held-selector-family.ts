@@ -61,14 +61,14 @@ export function createReadonlyHeldSelectorFamily<
 		)
 	}
 
-	const readonlySelectorFamily = {
+	const readonlySelectorFamily: ReadonlyHeldSelectorFamily<T, K> = {
 		...familyToken,
 		create,
 		internalRoles,
 		subject,
 		install: (s: RootStore) => createReadonlyHeldSelectorFamily(s, options),
 		default: options.const,
-	} satisfies ReadonlyHeldSelectorFamily<T, K>
+	}
 
 	store.families.set(familyKey, readonlySelectorFamily)
 	return familyToken

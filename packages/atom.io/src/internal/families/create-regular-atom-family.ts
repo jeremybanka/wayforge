@@ -59,15 +59,14 @@ export function createRegularAtomFamily<T, K extends Canonical, E>(
 		return createRegularAtom(target, individualOptions, family)
 	}
 
-	const atomFamily = {
+	const atomFamily: RegularAtomFamily<T, K, E> = {
 		...familyToken,
 		create,
 		default: options.default,
 		subject,
 		install: (s: RootStore) => createRegularAtomFamily(s, options),
 		internalRoles,
-		...(options.catch ? { catch: options.catch } : {}),
-	} satisfies RegularAtomFamily<T, K, E>
+	}
 
 	store.families.set(options.key, atomFamily)
 	if (isFn(options.default) === false) {

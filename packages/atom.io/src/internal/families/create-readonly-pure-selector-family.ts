@@ -67,7 +67,7 @@ export function createReadonlyPureSelectorFamily<T, K extends Canonical, E>(
 		)
 	}
 
-	const readonlySelectorFamily = {
+	const readonlySelectorFamily: ReadonlyPureSelectorFamily<T, K, E> = {
 		...familyToken,
 		create,
 		internalRoles,
@@ -83,8 +83,7 @@ export function createReadonlyPureSelectorFamily<T, K extends Canonical, E>(
 				json: (token) => getJsonToken(store, token),
 			})
 		},
-		...(options.catch ? { catch: options.catch } : {}),
-	} satisfies ReadonlyPureSelectorFamily<T, K, E>
+	}
 
 	store.families.set(familyKey, readonlySelectorFamily)
 	return familyToken
