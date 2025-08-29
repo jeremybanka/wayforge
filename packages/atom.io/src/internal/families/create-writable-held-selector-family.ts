@@ -44,13 +44,13 @@ export function createWritableHeldSelectorFamily<
 		StateLifecycleEvent<WritableHeldSelectorToken<T>>
 	>()
 
-	const familyFunction = (key: K): WritableHeldSelectorToken<T> => {
+	const create = (key: K): WritableHeldSelectorToken<T> => {
 		const subKey = stringifyJson(key)
 		const family: FamilyMetadata = { key: familyKey, subKey }
 		const fullKey = `${familyKey}(${subKey})`
 		const target = newest(store)
 
-		const token = createWritableHeldSelector(
+		return createWritableHeldSelector(
 			target,
 			{
 				key: fullKey,
@@ -60,17 +60,16 @@ export function createWritableHeldSelectorFamily<
 			},
 			family,
 		)
-
-		// subject.next({ type: `state_creation`, token, timestamp: Date.now() })
-		return token
 	}
 
-	const selectorFamily = Object.assign(familyFunction, familyToken, {
+	const selectorFamily: WritableHeldSelectorFamily<T, K> = {
+		...familyToken,
+		create,
 		internalRoles,
 		subject,
 		install: (s: RootStore) => createWritableHeldSelectorFamily(s, options),
 		default: options.const,
-	}) satisfies WritableHeldSelectorFamily<T, K>
+	}
 
 	store.families.set(familyKey, selectorFamily)
 	return familyToken

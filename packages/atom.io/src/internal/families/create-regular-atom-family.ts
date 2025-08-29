@@ -38,9 +38,7 @@ export function createRegularAtomFamily<T, K extends Canonical, E>(
 
 	const subject = new Subject<StateLifecycleEvent<RegularAtomToken<T, K, E>>>()
 
-	const familyFunction = <Key extends K>(
-		key: Key,
-	): RegularAtomToken<T, Key, E> => {
+	const create = <Key extends K>(key: Key): RegularAtomToken<T, Key, E> => {
 		const subKey = stringifyJson(key)
 		const family: FamilyMetadata<Key> = { key: options.key, subKey }
 		const fullKey = `${options.key}(${subKey})`
@@ -58,20 +56,17 @@ export function createRegularAtomFamily<T, K extends Canonical, E>(
 			individualOptions.catch = options.catch
 		}
 
-		const token = createRegularAtom(target, individualOptions, family)
-
-		// subject.next({ type: `state_creation`, token, timestamp: Date.now() })
-		return token
+		return createRegularAtom(target, individualOptions, family)
 	}
 
-	const atomFamily: RegularAtomFamily<T, K, E> = Object.assign(familyFunction, {
+	const atomFamily: RegularAtomFamily<T, K, E> = {
 		...familyToken,
+		create,
 		default: options.default,
 		subject,
 		install: (s: RootStore) => createRegularAtomFamily(s, options),
 		internalRoles,
-		...(options.catch ? { catch: options.catch } : {}),
-	})
+	}
 
 	store.families.set(options.key, atomFamily)
 	if (isFn(options.default) === false) {
