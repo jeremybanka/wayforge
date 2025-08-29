@@ -1,4 +1,4 @@
-import type { ConstructorOf, Transceiver } from "atom.io/internal"
+import type { ConstructorOf, Ctor, Transceiver } from "atom.io/internal"
 import {
 	createMutableAtom,
 	createMutableAtomFamily,
@@ -25,7 +25,7 @@ export type RegularAtomOptions<T, E = never> = {
 	/** Hooks used to run side effects when the atom is set */
 	effects?: readonly AtomEffect<T>[]
 	/** The classes of errors that might be thrown when deriving the atom's default value */
-	catch?: readonly (new () => E)[]
+	catch?: readonly Ctor<E>[]
 }
 /**
  * Create a regular atom, a global reactive variable in the implicit store
@@ -91,7 +91,7 @@ export type RegularAtomFamilyOptions<T, K extends Canonical, E = never> = {
 	/** Hooks used to run side effects when an atom in the family is set  */
 	effects?: (key: K) => AtomEffect<T>[]
 	/** The classes of errors that might be thrown when deriving the atom's default value */
-	catch?: readonly (new () => E)[]
+	catch?: readonly Ctor<E>[]
 }
 /**
  * Create a family of regular atoms, allowing for the dynamic creation and disposal of atoms.
