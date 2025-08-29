@@ -5,26 +5,6 @@ import type { Canonical } from "atom.io/json"
 import { StoreContext, useO } from "atom.io/react"
 import React from "react"
 
-export function useLoadable<T>(
-	token: ReadableToken<Loadable<T>, any, never>,
-): `LOADING` | { loading: boolean; value: T }
-
-export function useLoadable<T, K extends Canonical, Key extends K>(
-	token: ReadableFamilyToken<Loadable<T>, K, never>,
-	key: Key,
-): `LOADING` | { loading: boolean; value: T }
-
-export function useLoadable<T, F extends T>(
-	token: ReadableToken<Loadable<T>, any, never>,
-	fallback: F,
-): { loading: boolean; value: T }
-
-export function useLoadable<T, K extends Canonical, F extends T, Key extends K>(
-	token: ReadableFamilyToken<Loadable<T>, K, never>,
-	key: Key,
-	fallback: F,
-): { loading: boolean; value: T }
-
 export function useLoadable<T, E>(
 	token: ReadableToken<Loadable<T>, any, E>,
 ): `LOADING` | { loading: boolean; value: E | T }
