@@ -373,50 +373,7 @@ describe(`useLoadable`, () => {
 		assert(utils.getByTestId(`not-loading`))
 		assert(utils.getByTestId(`A`))
 	})
-	// test(`standalone, with a fallback, with an error`, async () => {
-	// 	let loadLetter = (_: string) => {
-	// 		console.warn(`loadLetter not attached`)
-	// 	}
-	// 	let failLetter = (_: string) => {
-	// 		console.warn(`failLetter not attached`)
-	// 	}
 
-	// 	const letterAtom = atom<Loadable<string>>({
-	// 		key: `letter`,
-	// 		default: () =>
-	// 			new Promise((resolve, reject) => {
-	// 				loadLetter = (letter: string) => {
-	// 					resolve(letter)
-	// 				}
-	// 				failLetter = (letter: string) => {
-	// 					reject(new Error(`💥`))
-	// 				}
-	// 			}),
-	// 		catch: [Error],
-	// 	})
-
-	// 	const Letter: FC = () => {
-	// 		const letter = AR.useLoadable(letterAtom, `Z`)
-	// 		return (
-	// 			<div data-testid={letter.loading ? `loading` : `not-loading`}>
-	// 				<div data-testid={letter.value}>{letter.value}</div>
-	// 			</div>
-	// 		)
-	// 	}
-	// 	const utils = render(
-	// 		<AR.StoreProvider>
-	// 			<Letter />
-	// 		</AR.StoreProvider>,
-	// 	)
-	// 	assert(utils.getByTestId(`loading`))
-	// 	assert(utils.getByTestId(`Z`))
-	// 	await act(async () => {
-	// 		loadLetter(`A`)
-	// 		await new Promise((resolve) => setImmediate(resolve))
-	// 	})
-	// 	assert(utils.getByTestId(`not-loading`))
-	// 	assert(utils.getByTestId(`A`))
-	// })
 	test(`family, without a fallback`, async () => {
 		const loadIndex: Record<number, () => void> = {}
 
@@ -504,6 +461,112 @@ describe(`useLoadable`, () => {
 		assert(utils.getByTestId(`2`))
 		assert(utils.getByTestId(`3`))
 	})
+
+	test(`family, without a fallback, with an error`, async () => {
+		const loadIndex: Record<number, () => void> = {}
+		const failIndex: Record<number, () => void> = {}
+		let throwImmediately = false
+		let resolveImmediately = false
+
+		const indexAtoms = atomFamily<Loadable<number[]>, number, Error>({
+			key: `index`,
+			default: (key) => {
+				if (resolveImmediately) {
+					return [1, 2, 3]
+				}
+				if (throwImmediately) {
+					throw new Error(`💥`)
+				}
+				return new Promise((resolve, reject) => {
+					loadIndex[key] = () => {
+						resolve([1, 2, 3])
+					}
+					failIndex[key] = () => {
+						reject(new Error(`💥`))
+					}
+				})
+			},
+			catch: [Error],
+		})
+
+		const Letter: FC = () => {
+			const ids = AR.useLoadable(indexAtoms, 0)
+			if (ids === `LOADING`) {
+				return (
+					<div data-testid="loading">
+						<div>Loading...</div>
+					</div>
+				)
+			}
+			if (ids.value instanceof Error) {
+				return (
+					<div data-testid={ids.loading ? `reloading` : `not-loading`}>
+						<div data-testid="error">
+							<div>Error...</div>
+						</div>
+					</div>
+				)
+			}
+			return (
+				<div data-testid={ids.loading ? `reloading` : `not-loading`}>
+					{ids.value.map((id) => (
+						<div key={id} data-testid={id}>
+							{id}
+						</div>
+					))}
+				</div>
+			)
+		}
+		const utils = render(
+			<AR.StoreProvider>
+				<Letter />
+			</AR.StoreProvider>,
+		)
+		assert(utils.getByTestId(`loading`))
+		await act(async () => {
+			failIndex[0]()
+			await new Promise((resolve) => setImmediate(resolve))
+		})
+
+		assert(utils.getByTestId(`not-loading`))
+		assert(utils.getByTestId(`error`))
+
+		act(() => {
+			resetState(indexAtoms, 0)
+		})
+		assert(utils.getByTestId(`reloading`))
+
+		await act(async () => {
+			loadIndex[0]()
+			await new Promise((resolve) => setImmediate(resolve))
+		})
+
+		assert(utils.getByTestId(`not-loading`))
+		expect(() => utils.getByTestId(`error`)).toThrowError()
+		assert(utils.getByTestId(`1`))
+		assert(utils.getByTestId(`2`))
+		assert(utils.getByTestId(`3`))
+
+		throwImmediately = true
+		act(() => {
+			resetState(indexAtoms, 0)
+		})
+
+		assert(utils.getByTestId(`not-loading`))
+		assert(utils.getByTestId(`error`))
+
+		resolveImmediately = true
+		act(() => {
+			resetState(indexAtoms, 0)
+		})
+
+		assert(utils.getByTestId(`not-loading`))
+		expect(() => utils.getByTestId(`error`)).toThrowError()
+		assert(utils.getByTestId(`1`))
+		assert(utils.getByTestId(`2`))
+		assert(utils.getByTestId(`3`))
+	})
+
 	test(`family, with a fallback, with an error`, async () => {
 		const loadIndex: Record<number, () => void> = {}
 		const failIndex: Record<number, () => void> = {}
