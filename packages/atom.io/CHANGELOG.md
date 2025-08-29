@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.40.4
+
+### Patch Changes
+
+- cb4b78b: 🐛 Fixed bug where states with caught rejected promises would not propagate updates to some consumers, such as `useLoadable`.
+
 ## 0.40.3
 
 ### Patch Changes
