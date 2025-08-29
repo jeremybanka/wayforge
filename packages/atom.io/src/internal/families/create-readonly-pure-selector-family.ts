@@ -45,7 +45,7 @@ export function createReadonlyPureSelectorFamily<T, K extends Canonical, E>(
 		StateLifecycleEvent<ReadonlyPureSelectorToken<T, K, E>>
 	>()
 
-	const familyFunction = <Key extends K>(
+	const create = <Key extends K>(
 		key: Key,
 	): ReadonlyPureSelectorToken<T, Key, E> => {
 		const subKey = stringifyJson(key)
@@ -60,16 +60,16 @@ export function createReadonlyPureSelectorFamily<T, K extends Canonical, E>(
 			individualOptions.catch = options.catch
 		}
 
-		const token = createReadonlyPureSelector<T, Key, E>(
+		return createReadonlyPureSelector<T, Key, E>(
 			target,
 			individualOptions,
 			family,
 		)
-
-		return token
 	}
 
-	const readonlySelectorFamily = Object.assign(familyFunction, familyToken, {
+	const readonlySelectorFamily: ReadonlyPureSelectorFamily<T, K, E> = {
+		...familyToken,
+		create,
 		internalRoles,
 		subject,
 		install: (s: RootStore) => createReadonlyPureSelectorFamily(s, options),
@@ -83,8 +83,7 @@ export function createReadonlyPureSelectorFamily<T, K extends Canonical, E>(
 				json: (token) => getJsonToken(store, token),
 			})
 		},
-		...(options.catch ? { catch: options.catch } : {}),
-	}) satisfies ReadonlyPureSelectorFamily<T, K, E>
+	}
 
 	store.families.set(familyKey, readonlySelectorFamily)
 	return familyToken
