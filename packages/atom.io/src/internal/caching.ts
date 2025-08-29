@@ -59,7 +59,7 @@ export function writeToCache<T, E>(
 				}
 			})
 			.catch((thrown) => {
-				target.logger.error(`💥`, `state`, key, `rejected:`, thrown)
+				target.logger.error(`💥`, state.type, key, `rejected:`, thrown)
 			})
 		return future
 	}
