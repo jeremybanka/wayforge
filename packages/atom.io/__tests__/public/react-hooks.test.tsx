@@ -471,7 +471,7 @@ describe(`useLoadable`, () => {
 			}
 		}
 
-		const letterAtom = atom<Loadable<string>>({
+		const letterAtom = atom<Loadable<string>, Error>({
 			key: `letter`,
 			default: () => {
 				const promise = new Promise<string>((resolve) => {
@@ -482,6 +482,7 @@ describe(`useLoadable`, () => {
 				promises.push(promise)
 				return promise
 			},
+			catch: [Error],
 		})
 
 		const Letter: FC = () => {
@@ -500,7 +501,11 @@ describe(`useLoadable`, () => {
 			}
 			return (
 				<div data-testid={letter.loading ? `loading` : `not-loading`}>
-					<div data-testid={letter.value}>{letter.value}</div>
+					{letter.value instanceof Error ? (
+						<div data-testid="error">{letter.value.message}</div>
+					) : (
+						<div data-testid={letter.value}>{letter.value}</div>
+					)}
 				</div>
 			)
 		}
