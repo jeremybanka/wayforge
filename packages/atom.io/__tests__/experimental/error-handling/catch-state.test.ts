@@ -18,7 +18,12 @@ beforeEach(() => {
 describe(`immediate states that throw`, () => {
 	describe(`atom`, () => {
 		it(`(happy) catches a thrown error`, () => {
-			class ClientError extends Error {}
+			class ClientError extends Error {
+				public constructor(hey: string) {
+					super()
+					console.log(`😤`, hey)
+				}
+			}
 
 			const retrieveState = (): number => {
 				throw new ClientError(`😤`)
