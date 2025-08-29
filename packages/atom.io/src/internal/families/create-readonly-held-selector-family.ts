@@ -44,7 +44,7 @@ export function createReadonlyHeldSelectorFamily<
 		StateLifecycleEvent<ReadonlyHeldSelectorToken<T>>
 	>()
 
-	const familyFunction = (key: K): ReadonlyHeldSelectorToken<T> => {
+	const create = (key: K): ReadonlyHeldSelectorToken<T> => {
 		const subKey = stringifyJson(key)
 		const family: FamilyMetadata = { key: familyKey, subKey }
 		const fullKey = `${familyKey}(${subKey})`
@@ -61,12 +61,14 @@ export function createReadonlyHeldSelectorFamily<
 		)
 	}
 
-	const readonlySelectorFamily = Object.assign(familyFunction, familyToken, {
+	const readonlySelectorFamily = {
+		...familyToken,
+		create,
 		internalRoles,
 		subject,
 		install: (s: RootStore) => createReadonlyHeldSelectorFamily(s, options),
 		default: options.const,
-	}) satisfies ReadonlyHeldSelectorFamily<T, K>
+	} satisfies ReadonlyHeldSelectorFamily<T, K>
 
 	store.families.set(familyKey, readonlySelectorFamily)
 	return familyToken
