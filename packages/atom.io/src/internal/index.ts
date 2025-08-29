@@ -23,7 +23,7 @@ import type { Store } from "./store"
 import type { Subject } from "./subject"
 import type { Timeline } from "./timeline"
 import type { RootStore, Transaction } from "./transaction"
-import type { Flat } from "./utility-types"
+import type { Ctor, Flat } from "./utility-types"
 
 export * from "./arbitrary"
 export * from "./atom"
@@ -67,7 +67,7 @@ export type RegularAtom<T, E> = Flat<
 		default: T | (() => T)
 		cleanup?: () => void
 		internalRoles?: internalRole[]
-		catch?: readonly (new () => E)[]
+		catch?: readonly Ctor<E>[]
 	}
 >
 export type MutableAtom<T extends Transceiver<any, any, any>> = Flat<
@@ -101,14 +101,14 @@ export type WritablePureSelector<T, E> = Flat<
 		type: `writable_pure_selector`
 		getFrom: (target: Store) => E | T
 		setSelf: (newValue: T) => void
-		catch?: readonly (new () => E)[]
+		catch?: readonly Ctor<E>[]
 	}
 >
 export type ReadonlyPureSelector<T, E> = Flat<
 	AtomIOState & {
 		type: `readonly_pure_selector`
 		getFrom: (target: Store) => E | T
-		catch?: readonly (new () => E)[]
+		catch?: readonly Ctor<E>[]
 	}
 >
 export type ReadonlySelector<T, E> =
