@@ -23,26 +23,26 @@ export function createStandaloneSelector<T extends object>(
 	store: Store,
 	options: ReadonlyHeldSelectorOptions<T>,
 ): ReadonlyHeldSelectorToken<T>
-export function createStandaloneSelector<T>(
+export function createStandaloneSelector<T, E>(
 	store: Store,
-	options: WritablePureSelectorOptions<T>,
-): WritablePureSelectorToken<T>
-export function createStandaloneSelector<T>(
+	options: WritablePureSelectorOptions<T, E>,
+): WritablePureSelectorToken<T, any, E>
+export function createStandaloneSelector<T, E>(
 	store: Store,
-	options: ReadonlyPureSelectorOptions<T>,
-): ReadonlyPureSelectorToken<T>
+	options: ReadonlyPureSelectorOptions<T, E>,
+): ReadonlyPureSelectorToken<T, any, E>
 export function createStandaloneSelector(
 	store: Store,
 	options:
 		| ReadonlyHeldSelectorOptions<any>
-		| ReadonlyPureSelectorOptions<any>
+		| ReadonlyPureSelectorOptions<any, any>
 		| WritableHeldSelectorOptions<any>
-		| WritablePureSelectorOptions<any>,
+		| WritablePureSelectorOptions<any, any>,
 ):
 	| ReadonlyHeldSelectorToken<any>
-	| ReadonlyPureSelectorToken<any>
+	| ReadonlyPureSelectorToken<any, any, any>
 	| WritableHeldSelectorToken<any>
-	| WritablePureSelectorToken<any> {
+	| WritablePureSelectorToken<any, any, any> {
 	const isWritable = `set` in options
 	const isHeld = `const` in options
 

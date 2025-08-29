@@ -9,7 +9,7 @@ import type { WritableFamilyToken, WritableToken } from "."
  * @overload Default
  * @default
  */
-export function resetState(token: WritableToken<any>): void
+export function resetState(token: WritableToken<any, any, any>): void
 /**
  * Set the value of a state into the implicit store back to its default value.
  * @param token - An atom family or writable selector family token.
@@ -17,13 +17,13 @@ export function resetState(token: WritableToken<any>): void
  * @overload Streamlined
  */
 export function resetState<K extends Canonical>(
-	token: WritableFamilyToken<any, K>,
+	token: WritableFamilyToken<any, K, any>,
 	key: K,
 ): void
 export function resetState(
 	...params:
-		| [token: WritableFamilyToken<any, Canonical>, key: Canonical]
-		| [token: WritableToken<any>]
+		| [token: WritableFamilyToken<any, Canonical, any>, key: Canonical]
+		| [token: WritableToken<any, any, any>]
 ): void {
 	resetInStore(IMPLICIT.STORE, ...params)
 }

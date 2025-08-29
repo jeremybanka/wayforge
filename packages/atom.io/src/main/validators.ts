@@ -16,8 +16,8 @@ import type {
 
 export type TokenType<
 	Comparison extends
-		| ReadableFamilyToken<any, any>
-		| ReadableToken<any>
+		| ReadableFamilyToken<any, any, any>
+		| ReadableToken<any, any, any>
 		| TransactionToken<any>,
 > = Comparison extends ReadableToken<infer RepresentedValue>
 	? RepresentedValue
@@ -27,9 +27,9 @@ export type TokenType<
 			? Fn
 			: never
 
-export function isToken<KnownToken extends RegularAtomToken<any>>(
+export function isToken<KnownToken extends RegularAtomToken<any, any, any>>(
 	knownToken: KnownToken,
-	unknownToken: ReadableToken<any>,
+	unknownToken: ReadableToken<any, any, any>,
 ): unknownToken is RegularAtomToken<TokenType<KnownToken>>
 export function isToken<KnownToken extends MutableAtomToken<any, any>>(
 	knownToken: KnownToken,

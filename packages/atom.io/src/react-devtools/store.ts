@@ -39,7 +39,7 @@ export function attachDevtoolsStates(
 ): DevtoolsStates & IntrospectionStates & { store: Store } {
 	const introspectionStates = attachIntrospectionStates(store)
 
-	const devtoolsAreHiddenAtom = createRegularAtom<boolean>(
+	const devtoolsAreHiddenAtom = createRegularAtom<boolean, never, never>(
 		store,
 		{
 			key: `🔍 Devtools Are Hidden`,
@@ -62,7 +62,7 @@ export function attachDevtoolsStates(
 		undefined,
 	)
 
-	const devtoolsAreOpenAtom = createRegularAtom<boolean>(
+	const devtoolsAreOpenAtom = createRegularAtom<boolean, never, never>(
 		store,
 		{
 			key: `🔍 Devtools Are Open`,
@@ -75,7 +75,11 @@ export function attachDevtoolsStates(
 		undefined,
 	)
 
-	const devtoolsViewSelectionAtom = createRegularAtom<DevtoolsView>(
+	const devtoolsViewSelectionAtom = createRegularAtom<
+		DevtoolsView,
+		never,
+		never
+	>(
 		store,
 		{
 			key: `🔍 Devtools View Selection`,
@@ -88,7 +92,11 @@ export function attachDevtoolsStates(
 		undefined,
 	)
 
-	const devtoolsViewOptionsAtom = createRegularAtom<DevtoolsView[]>(
+	const devtoolsViewOptionsAtom = createRegularAtom<
+		DevtoolsView[],
+		never,
+		never
+	>(
 		store,
 		{
 			key: `🔍 Devtools View Options`,
@@ -103,7 +111,8 @@ export function attachDevtoolsStates(
 
 	const viewIsOpenAtoms = createRegularAtomFamily<
 		boolean,
-		readonly (number | string)[]
+		readonly (number | string)[],
+		never
 	>(store, {
 		key: `🔍 Devtools View Is Open`,
 		default: false,
@@ -122,8 +131,8 @@ export function attachDevtoolsStates(
 		do: ({ get, set }, path, current) => {
 			const currentView = get(devtoolsViewSelectionAtom)
 			let states:
-				| WritableTokenIndex<AtomToken<unknown>>
-				| WritableTokenIndex<SelectorToken<unknown>>
+				| WritableTokenIndex<AtomToken<unknown, any, any>>
+				| WritableTokenIndex<SelectorToken<unknown, any, any>>
 			switch (currentView) {
 				case `atoms`:
 					states = get(introspectionStates.atomIndex)

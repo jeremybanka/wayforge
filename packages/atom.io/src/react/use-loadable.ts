@@ -4,32 +4,32 @@ import type { Canonical } from "atom.io/json"
 import { useO } from "atom.io/react"
 import React from "react"
 
-export function useLoadable<T>(
-	token: ReadableToken<Loadable<T>>,
-): `LOADING` | { loading: boolean; value: T }
+export function useLoadable<T, E>(
+	token: ReadableToken<Loadable<T>, any, E>,
+): `LOADING` | { loading: boolean; value: E | T }
 
-export function useLoadable<T, K extends Canonical>(
-	token: ReadableFamilyToken<Loadable<T>, K>,
+export function useLoadable<T, K extends Canonical, E>(
+	token: ReadableFamilyToken<Loadable<T>, K, E>,
 	key: K,
-): `LOADING` | { loading: boolean; value: T }
+): `LOADING` | { loading: boolean; value: E | T }
 
-export function useLoadable<T, F extends T>(
-	token: ReadableToken<Loadable<T>>,
+export function useLoadable<T, F extends T, E>(
+	token: ReadableToken<Loadable<T>, any, E>,
 	fallback: F,
 ): { loading: boolean; value: T }
 
-export function useLoadable<T, K extends Canonical, F extends T>(
-	token: ReadableFamilyToken<Loadable<T>, K>,
+export function useLoadable<T, K extends Canonical, F extends T, E>(
+	token: ReadableFamilyToken<Loadable<T>, K, E>,
 	key: K,
 	fallback: F,
-): { loading: boolean; value: T }
+): { loading: boolean; value: E | T }
 
 export function useLoadable(
 	...params:
-		| readonly [ReadableFamilyToken<any, Canonical>, Canonical, unknown]
-		| readonly [ReadableFamilyToken<any, Canonical>, Canonical]
-		| readonly [ReadableToken<any>, unknown]
-		| readonly [ReadableToken<any>]
+		| readonly [ReadableFamilyToken<any, Canonical, any>, Canonical, unknown]
+		| readonly [ReadableFamilyToken<any, Canonical, any>, Canonical]
+		| readonly [ReadableToken<any, any, any>, unknown]
+		| readonly [ReadableToken<any, any, any>]
 ): `LOADING` | { loading: boolean; value: unknown } {
 	let state: unknown
 	let fallback: unknown

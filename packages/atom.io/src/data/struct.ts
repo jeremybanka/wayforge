@@ -22,7 +22,7 @@ export function struct<
 			K & string
 		>}State`]: AtomIO.RegularAtomToken<Struct[K]>
 	},
-	AtomIO.ReadonlyPureSelectorToken<Struct>,
+	AtomIO.ReadonlyPureSelectorToken<Struct, any, never>,
 ] {
 	const atoms: {
 		[K in keyof Struct as `${Key}${Capitalize<
@@ -40,7 +40,7 @@ export function struct<
 		)
 		return acc
 	}, {} as any)
-	const structState = createStandaloneSelector(store, {
+	const structState = createStandaloneSelector<Struct, never>(store, {
 		key: options.key,
 		get: ({ get }) => {
 			return Object.keys(options.default).reduce((acc, key) => {

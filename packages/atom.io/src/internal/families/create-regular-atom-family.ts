@@ -16,15 +16,15 @@ import { isFn } from "../is-fn"
 import { newest } from "../lineage"
 import { Subject } from "../subject"
 
-export function createRegularAtomFamily<T, K extends Canonical>(
+export function createRegularAtomFamily<T, K extends Canonical, E>(
 	store: RootStore,
-	options: RegularAtomFamilyOptions<T, K>,
+	options: RegularAtomFamilyOptions<T, K, E>,
 	internalRoles?: string[],
-): RegularAtomFamilyToken<T, K> {
-	const familyToken = {
+): RegularAtomFamilyToken<T, K, E> {
+	const familyToken: RegularAtomFamilyToken<T, K, E> = {
 		key: options.key,
 		type: `atom_family`,
-	} as const satisfies RegularAtomFamilyToken<T, K>
+	}
 
 	const existing = store.families.get(options.key)
 	if (existing) {
@@ -36,21 +36,26 @@ export function createRegularAtomFamily<T, K extends Canonical>(
 		)
 	}
 
-	const subject = new Subject<StateLifecycleEvent<RegularAtomToken<T>>>()
+	const subject = new Subject<StateLifecycleEvent<RegularAtomToken<T, K, E>>>()
 
-	const familyFunction = (key: K): RegularAtomToken<any> => {
+	const familyFunction = <Key extends K>(
+		key: Key,
+	): RegularAtomToken<T, Key, E> => {
 		const subKey = stringifyJson(key)
-		const family: FamilyMetadata = { key: options.key, subKey }
+		const family: FamilyMetadata<Key> = { key: options.key, subKey }
 		const fullKey = `${options.key}(${subKey})`
 		const target = newest(store)
 
 		const def = options.default
-		const individualOptions: RegularAtomOptions<T> = {
+		const individualOptions: RegularAtomOptions<T, E> = {
 			key: fullKey,
 			default: isFn(def) ? () => def(key) : def,
 		}
 		if (options.effects) {
 			individualOptions.effects = options.effects(key)
+		}
+		if (options.catch) {
+			individualOptions.catch = options.catch
 		}
 
 		const token = createRegularAtom(target, individualOptions, family)
@@ -59,12 +64,14 @@ export function createRegularAtomFamily<T, K extends Canonical>(
 		return token
 	}
 
-	const atomFamily = Object.assign(familyFunction, familyToken, {
+	const atomFamily: RegularAtomFamily<T, K, E> = Object.assign(familyFunction, {
+		...familyToken,
 		default: options.default,
 		subject,
 		install: (s: RootStore) => createRegularAtomFamily(s, options),
 		internalRoles,
-	}) satisfies RegularAtomFamily<T, K>
+		...(options.catch ? { catch: options.catch } : {}),
+	})
 
 	store.families.set(options.key, atomFamily)
 	if (isFn(options.default) === false) {

@@ -7,7 +7,7 @@ import { setSelector } from "./set-selector"
 
 export const setAtomOrSelector = <T>(
 	target: Store & { operation: OpenOperation },
-	state: WritableState<T>,
+	state: WritableState<T, any>,
 	value: T | ((oldValue: T) => T),
 ): ProtoUpdate<T> => {
 	let protoUpdate: ProtoUpdate<T>

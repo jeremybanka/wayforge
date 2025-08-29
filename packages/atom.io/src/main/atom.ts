@@ -17,13 +17,15 @@ import type {
 	RegularAtomToken,
 } from "./tokens"
 
-export type RegularAtomOptions<T> = {
+export type RegularAtomOptions<T, E = never> = {
 	/** The unique identifier of the atom */
 	key: string
 	/** The starting value of the atom */
 	default: T | (() => T)
 	/** Hooks used to run side effects when the atom is set */
-	effects?: AtomEffect<T>[]
+	effects?: readonly AtomEffect<T>[]
+	/** The classes of errors that might be thrown when deriving the atom's default value */
+	catch?: readonly (new () => E)[]
 }
 /**
  * Create a regular atom, a global reactive variable in the implicit store
@@ -31,7 +33,9 @@ export type RegularAtomOptions<T> = {
  * @returns
  * A reference to the atom created: a {@link RegularAtomToken}
  */
-export function atom<T>(options: RegularAtomOptions<T>): RegularAtomToken<T> {
+export function atom<T, E = never>(
+	options: RegularAtomOptions<T, E>,
+): RegularAtomToken<T, any, E> {
 	return createRegularAtom(IMPLICIT.STORE, options, undefined)
 }
 
@@ -41,7 +45,7 @@ export type MutableAtomOptions<T extends Transceiver<any, any, any>> = {
 	/** A constructor for the atom's value */
 	class: ConstructorOf<T>
 	/** Hooks used to run side effects when the atom is set */
-	effects?: AtomEffect<T>[]
+	effects?: readonly AtomEffect<T>[]
 }
 /**
  * Create a mutable atom, a global reactive variable in the implicit store
@@ -79,13 +83,15 @@ export type Effectors<T> = {
 	onSet: (callback: (options: StateUpdate<T>) => void) => void
 }
 
-export type RegularAtomFamilyOptions<T, K extends Canonical> = {
+export type RegularAtomFamilyOptions<T, K extends Canonical, E = never> = {
 	/** The unique identifier of the atom family */
 	key: string
 	/** The starting value of the atom family */
 	default: T | ((key: K) => T)
 	/** Hooks used to run side effects when an atom in the family is set  */
 	effects?: (key: K) => AtomEffect<T>[]
+	/** The classes of errors that might be thrown when deriving the atom's default value */
+	catch?: readonly (new () => E)[]
 }
 /**
  * Create a family of regular atoms, allowing for the dynamic creation and disposal of atoms.
@@ -93,9 +99,9 @@ export type RegularAtomFamilyOptions<T, K extends Canonical> = {
  * @returns
  * A reference to the atom family created: a {@link RegularAtomFamilyToken}
  */
-export function atomFamily<T, K extends Canonical>(
-	options: RegularAtomFamilyOptions<T, K>,
-): RegularAtomFamilyToken<T, K> {
+export function atomFamily<T, K extends Canonical, E = never>(
+	options: RegularAtomFamilyOptions<T, K, E>,
+): RegularAtomFamilyToken<T, K, E> {
 	return createRegularAtomFamily(IMPLICIT.STORE, options)
 }
 

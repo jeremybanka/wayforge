@@ -5,7 +5,7 @@ import type { FC } from "react"
 import { JsonEditor } from "./json-editor"
 
 export const StateEditor: FC<{
-	token: WritableToken<unknown>
+	token: WritableToken<unknown, any, unknown>
 }> = ({ token }) => {
 	const set = useI(token)
 	const data = useO(token)
@@ -23,7 +23,7 @@ export const StateEditor: FC<{
 }
 
 export const ReadonlySelectorViewer: FC<{
-	token: ReadonlySelectorToken<unknown>
+	token: ReadonlySelectorToken<unknown, any, unknown>
 }> = ({ token }) => {
 	const data = useO(token)
 	const metaPath = token.family
@@ -41,7 +41,9 @@ export const ReadonlySelectorViewer: FC<{
 }
 
 export const StoreEditor: FC<{
-	token: ReadonlySelectorToken<unknown> | WritableToken<unknown>
+	token:
+		| ReadonlySelectorToken<unknown, any, unknown>
+		| WritableToken<unknown, any, unknown>
 }> = ({ token }) => {
 	switch (token.type) {
 		case `readonly_pure_selector`:

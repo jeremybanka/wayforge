@@ -31,7 +31,11 @@ export class Tracker<T extends Transceiver<any, any, any>> {
 					subKey: mutableState.family.subKey,
 				}
 			: undefined
-		const latestSignalState = createRegularAtom<SignalFrom<T> | null>(
+		const latestSignalState = createRegularAtom<
+			SignalFrom<T> | null,
+			any,
+			never
+		>(
 			store,
 			{
 				key: latestSignalStateKey,

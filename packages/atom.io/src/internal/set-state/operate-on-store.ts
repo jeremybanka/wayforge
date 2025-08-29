@@ -18,25 +18,31 @@ export type ProtoUpdate<T> = { oldValue: T; newValue: T }
 export const OWN_OP: unique symbol = Symbol(`OWN_OP`)
 export const JOIN_OP: unique symbol = Symbol(`JOIN_OP`)
 
-export function operateOnStore<T, New extends T>(
+export function operateOnStore<
+	T,
+	K extends Canonical,
+	New extends T,
+	Key extends K,
+	E,
+>(
 	store: Store,
 	opMode: typeof JOIN_OP | typeof OWN_OP,
 	...params:
 		| [
-				token: WritableFamilyToken<T, Canonical>,
-				key: Canonical,
+				token: WritableFamilyToken<T, K, E>,
+				key: Key,
 				value: New | typeof RESET_STATE | ((oldValue: T) => New),
 		  ]
 		| [
-				token: WritableToken<T>,
+				token: WritableToken<T, Key, E>,
 				value: New | typeof RESET_STATE | ((oldValue: T) => New),
 		  ]
 ): void {
-	let existingToken: WritableToken<T> | undefined
-	let brandNewToken: WritableToken<T> | undefined
-	let token: WritableToken<T>
-	let family: WritableFamily<T, Canonical> | undefined
-	let key: Canonical | null
+	let existingToken: WritableToken<T, Key, E> | undefined
+	let brandNewToken: WritableToken<T, Key, E> | undefined
+	let token: WritableToken<T, Key, E>
+	let family: WritableFamily<T, K, E> | undefined
+	let key: Key | null
 	let value: New | typeof RESET_STATE | ((oldValue: T) => New)
 	if (params.length === 2) {
 		token = params[0]
@@ -116,7 +122,7 @@ export function operateOnStore<T, New extends T>(
 	}
 
 	const state = withdraw(target, token)
-	let protoUpdate: ProtoUpdate<T>
+	let protoUpdate: ProtoUpdate<E | T>
 	if (value === RESET_STATE) {
 		protoUpdate = resetAtomOrSelector(target, state)
 	} else {

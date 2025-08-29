@@ -25,22 +25,22 @@ export function createSelectorFamily<T extends object, K extends Canonical>(
 	store: RootStore,
 	options: ReadonlyHeldSelectorFamilyOptions<T, K>,
 ): ReadonlyHeldSelectorFamilyToken<T, K>
-export function createSelectorFamily<T, K extends Canonical>(
+export function createSelectorFamily<T, K extends Canonical, E>(
 	store: RootStore,
-	options: WritablePureSelectorFamilyOptions<T, K>,
-): WritablePureSelectorFamilyToken<T, K>
-export function createSelectorFamily<T, K extends Canonical>(
+	options: WritablePureSelectorFamilyOptions<T, K, E>,
+): WritablePureSelectorFamilyToken<T, K, E>
+export function createSelectorFamily<T, K extends Canonical, E>(
 	store: RootStore,
-	options: ReadonlyPureSelectorFamilyOptions<T, K>,
-): ReadonlyPureSelectorFamilyToken<T, K>
+	options: ReadonlyPureSelectorFamilyOptions<T, K, E>,
+): ReadonlyPureSelectorFamilyToken<T, K, E>
 export function createSelectorFamily(
 	store: RootStore,
 	options:
 		| ReadonlyHeldSelectorFamilyOptions<any, any>
-		| ReadonlyPureSelectorFamilyOptions<any, any>
+		| ReadonlyPureSelectorFamilyOptions<any, any, any>
 		| WritableHeldSelectorFamilyOptions<any, any>
-		| WritablePureSelectorFamilyOptions<any, any>,
-): SelectorFamilyToken<any, any> {
+		| WritablePureSelectorFamilyOptions<any, any, any>,
+): SelectorFamilyToken<any, any, any> {
 	const isWritable = `set` in options
 	const isHeld = `const` in options
 

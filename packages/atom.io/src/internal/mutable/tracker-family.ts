@@ -18,7 +18,11 @@ export class FamilyTracker<
 	public readonly mutableAtoms: MutableAtomFamily<T, K>
 
 	public constructor(mutableAtoms: MutableAtomFamily<T, K>, store: RootStore) {
-		const latestSignalAtoms = createRegularAtomFamily<SignalFrom<T> | null, K>(
+		const latestSignalAtoms = createRegularAtomFamily<
+			SignalFrom<T> | null,
+			K,
+			never
+		>(
 			store,
 			{
 				key: `*${mutableAtoms.key}`,

@@ -17,12 +17,12 @@ import { isChildStore, isRootStore } from "../transaction"
 import { evictDownstreamFromAtom } from "./evict-downstream"
 import type { ProtoUpdate } from "./operate-on-store"
 
-export function dispatchOrDeferStateUpdate<T>(
+export function dispatchOrDeferStateUpdate<T, E>(
 	target: Store & { operation: OpenOperation<any> },
-	state: WritableState<T>,
-	{ oldValue, newValue }: ProtoUpdate<T>,
+	state: WritableState<T, E>,
+	{ oldValue, newValue }: ProtoUpdate<E | T>,
 	stateIsNewlyCreated: boolean,
-	family?: WritableFamily<T, any>,
+	family?: WritableFamily<T, any, E>,
 ): void {
 	const token = deposit(state)
 	if (stateIsNewlyCreated && family) {
@@ -128,7 +128,11 @@ export function dispatchOrDeferStateUpdate<T>(
 			const mutable = target.atoms.get(keyOfMutable) as MutableAtom<
 				Transceiver<unknown, any, any>
 			>
-			const transceiver = readOrComputeValue(target, mutable, `mut`)
+			const transceiver = readOrComputeValue<Transceiver<any, any, any>, never>(
+				target,
+				mutable,
+				`mut`,
+			)
 			const accepted = transceiver.do(update.newValue) === null
 			if (accepted === true) {
 				evictDownstreamFromAtom(target, mutable)

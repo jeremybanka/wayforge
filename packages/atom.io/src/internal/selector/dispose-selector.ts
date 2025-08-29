@@ -5,7 +5,7 @@ import { isChildStore, newest, withdraw } from ".."
 
 export function disposeSelector(
 	store: Store,
-	selectorToken: SelectorToken<unknown>,
+	selectorToken: SelectorToken<unknown, any, any>,
 ): void {
 	const target = newest(store)
 	const { key, type, family: familyMeta } = selectorToken
@@ -21,7 +21,7 @@ export function disposeSelector(
 		if (molecule) {
 			target.moleculeData.delete(familyMeta.subKey, familyMeta.key)
 		}
-		let familyToken: SelectorFamilyToken<any, any>
+		let familyToken: SelectorFamilyToken<any, any, any>
 		switch (selectorToken.type) {
 			case `writable_held_selector`:
 				{

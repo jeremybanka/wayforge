@@ -8,12 +8,14 @@ import {
 
 import type { WritableTokenIndex } from "."
 
-export type SelectorTokenIndex = WritableTokenIndex<SelectorToken<unknown>>
+export type SelectorTokenIndex = WritableTokenIndex<
+	SelectorToken<unknown, any, any>
+>
 
 export const attachSelectorIndex = (
 	store: Store,
 ): AtomToken<SelectorTokenIndex> => {
-	return createRegularAtom<SelectorTokenIndex>(
+	return createRegularAtom<SelectorTokenIndex, never, never>(
 		store,
 		{
 			key: `🔍 Selector Token Index`,
