@@ -45,7 +45,6 @@ export function writeToCache<T, E>(
 					// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 					switch (type) {
 						case `atom`:
-						case `mutable_atom`:
 							evictDownstreamFromAtom(target, state)
 							break
 						case `readonly_pure_selector`:
