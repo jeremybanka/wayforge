@@ -139,7 +139,7 @@ export function useLoadable(
 			} else {
 				wrapper.loading = false
 				wrapper.value = value
-				if (`error` in wrapper) delete wrapper.error
+				delete wrapper.error
 			}
 		}
 	}
