@@ -61,14 +61,11 @@ export function createWritablePureSelectorFamily<T, K extends Canonical, E>(
 			individualOptions.catch = options.catch
 		}
 
-		const token = createWritablePureSelector<T, Key, E>(
+		return createWritablePureSelector<T, Key, E>(
 			target,
 			individualOptions,
 			family,
 		)
-
-		// subject.next({ type: `state_creation`, token, timestamp: Date.now() })
-		return token
 	}
 
 	const selectorFamily = Object.assign(familyFunction, familyToken, {

@@ -50,7 +50,7 @@ export function createWritableHeldSelectorFamily<
 		const fullKey = `${familyKey}(${subKey})`
 		const target = newest(store)
 
-		const token = createWritableHeldSelector(
+		return createWritableHeldSelector(
 			target,
 			{
 				key: fullKey,
@@ -60,9 +60,6 @@ export function createWritableHeldSelectorFamily<
 			},
 			family,
 		)
-
-		// subject.next({ type: `state_creation`, token, timestamp: Date.now() })
-		return token
 	}
 
 	const selectorFamily = Object.assign(familyFunction, familyToken, {

@@ -50,7 +50,7 @@ export function createReadonlyHeldSelectorFamily<
 		const fullKey = `${familyKey}(${subKey})`
 		const target = newest(store)
 
-		const token = createReadonlyHeldSelector(
+		return createReadonlyHeldSelector(
 			target,
 			{
 				key: fullKey,
@@ -59,9 +59,6 @@ export function createReadonlyHeldSelectorFamily<
 			},
 			family,
 		)
-
-		// subject.next({ type: `state_creation`, token, timestamp: Date.now() })
-		return token
 	}
 
 	const readonlySelectorFamily = Object.assign(familyFunction, familyToken, {
