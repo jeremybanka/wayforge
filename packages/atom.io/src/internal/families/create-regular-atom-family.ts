@@ -58,10 +58,7 @@ export function createRegularAtomFamily<T, K extends Canonical, E>(
 			individualOptions.catch = options.catch
 		}
 
-		const token = createRegularAtom(target, individualOptions, family)
-
-		// subject.next({ type: `state_creation`, token, timestamp: Date.now() })
-		return token
+		return createRegularAtom(target, individualOptions, family)
 	}
 
 	const atomFamily: RegularAtomFamily<T, K, E> = Object.assign(familyFunction, {

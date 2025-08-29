@@ -60,13 +60,11 @@ export function createReadonlyPureSelectorFamily<T, K extends Canonical, E>(
 			individualOptions.catch = options.catch
 		}
 
-		const token = createReadonlyPureSelector<T, Key, E>(
+		return createReadonlyPureSelector<T, Key, E>(
 			target,
 			individualOptions,
 			family,
 		)
-
-		return token
 	}
 
 	const readonlySelectorFamily = Object.assign(familyFunction, familyToken, {

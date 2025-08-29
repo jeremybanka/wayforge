@@ -58,10 +58,7 @@ export function createMutableAtomFamily<
 			individualOptions.effects = options.effects(key)
 		}
 
-		const token = createMutableAtom(target, individualOptions, family)
-
-		// subject.next({ type: `state_creation`, token, timestamp: Date.now() })
-		return token
+		return createMutableAtom(target, individualOptions, family)
 	}
 
 	const atomFamily = Object.assign(familyFunction, familyToken, {
