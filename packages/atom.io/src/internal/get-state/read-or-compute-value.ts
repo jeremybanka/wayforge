@@ -37,16 +37,16 @@ export function readOrComputeValue<T, E>(
 			try {
 				val = state.getFrom(target)
 				if (val instanceof Promise) {
-					return (val as Promise<E & T>).catch((e) => {
-						target.logger.error(`💥`, state.type, key, `rejected:`, e)
+					return (val as Promise<E & T>).catch((thrown) => {
+						target.logger.error(`💥`, state.type, key, `rejected:`, thrown)
 						if (state.catch) {
 							for (const Class of state.catch) {
-								if (e instanceof Class) {
-									return writeToCache(target, state, e)
+								if (thrown instanceof Class) {
+									return thrown
 								}
 							}
 						}
-						throw e
+						throw thrown
 					}) as E | T
 				}
 			} catch (e) {
