@@ -68,7 +68,7 @@ export function createWritablePureSelectorFamily<T, K extends Canonical, E>(
 		)
 	}
 
-	const selectorFamily = {
+	const selectorFamily: WritablePureSelectorFamily<T, K, E> = {
 		...familyToken,
 		create,
 		internalRoles,
@@ -84,8 +84,7 @@ export function createWritablePureSelectorFamily<T, K extends Canonical, E>(
 				json: (token) => getJsonToken(store, token),
 			})
 		},
-		...(options.catch ? { catch: options.catch } : {}),
-	} satisfies WritablePureSelectorFamily<T, K, E>
+	}
 
 	store.families.set(familyKey, selectorFamily)
 	return familyToken

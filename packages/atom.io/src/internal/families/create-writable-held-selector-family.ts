@@ -62,14 +62,14 @@ export function createWritableHeldSelectorFamily<
 		)
 	}
 
-	const selectorFamily = {
+	const selectorFamily: WritableHeldSelectorFamily<T, K> = {
 		...familyToken,
 		create,
 		internalRoles,
 		subject,
 		install: (s: RootStore) => createWritableHeldSelectorFamily(s, options),
 		default: options.const,
-	} satisfies WritableHeldSelectorFamily<T, K>
+	}
 
 	store.families.set(familyKey, selectorFamily)
 	return familyToken
