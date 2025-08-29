@@ -4,6 +4,7 @@ import {
 	atomFamily,
 	disposeState,
 	getState,
+	resetState,
 	selector,
 	selectorFamily,
 	setState,
@@ -205,11 +206,11 @@ describe(`family selectors held`, () => {
 			boolean
 		>({
 			key: `myAtom`,
-			default: {
+			default: () => ({
 				a: [],
 				b: [],
 				c: [],
-			},
+			}),
 		})
 
 		const mySelectorFamily = selectorFamily<
@@ -272,5 +273,26 @@ describe(`family selectors held`, () => {
 
 		const valueRecreated = getState(mySelectorFamily, true)
 		expect(valueRecreated).not.toBe(valueInitial)
+
+		setState(myAtomFamily, true, (state) => {
+			state.a = [11, 230]
+			state.b = [306, 32]
+			state.c = [330, 6]
+			return state
+		})
+		getState(mySelectorFamily, true)
+		expect(valueRecreated).toEqual({
+			a: 241,
+			b: 338,
+			c: 336,
+		})
+		resetState(mySelectorFamily, true)
+		console.log(getState(mySelectorFamily, true))
+
+		expect(valueRecreated).toEqual({
+			a: 0,
+			b: 0,
+			c: 0,
+		})
 	})
 })
