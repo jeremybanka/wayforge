@@ -52,7 +52,7 @@ export function mintInStore<T, K extends Canonical, Key extends K, E>(
 			`adds member`,
 			typeof key === `string` ? `\`${key}\`` : key,
 		)
-		token = family(key)
+		token = family.create(key)
 		if (molecule) {
 			store.moleculeData.set(stringKey, family.key)
 		}

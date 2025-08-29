@@ -45,7 +45,7 @@ export function createWritablePureSelectorFamily<T, K extends Canonical, E>(
 		StateLifecycleEvent<WritablePureSelectorToken<T, K, E>>
 	>()
 
-	const familyFunction = <Key extends K>(
+	const create = <Key extends K>(
 		key: Key,
 	): WritablePureSelectorToken<T, Key, E> => {
 		const subKey = stringifyJson(key)
@@ -68,7 +68,9 @@ export function createWritablePureSelectorFamily<T, K extends Canonical, E>(
 		)
 	}
 
-	const selectorFamily = Object.assign(familyFunction, familyToken, {
+	const selectorFamily = {
+		...familyToken,
+		create,
 		internalRoles,
 		subject,
 		install: (s: RootStore) => createWritablePureSelectorFamily(s, options),
@@ -83,7 +85,7 @@ export function createWritablePureSelectorFamily<T, K extends Canonical, E>(
 			})
 		},
 		...(options.catch ? { catch: options.catch } : {}),
-	}) satisfies WritablePureSelectorFamily<T, K, E>
+	} satisfies WritablePureSelectorFamily<T, K, E>
 
 	store.families.set(familyKey, selectorFamily)
 	return familyToken

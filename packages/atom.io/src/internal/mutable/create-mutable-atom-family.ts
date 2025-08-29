@@ -44,7 +44,7 @@ export function createMutableAtomFamily<
 
 	const subject = new Subject<StateLifecycleEvent<MutableAtomToken<T>>>()
 
-	const familyFunction = (key: K): MutableAtomToken<T> => {
+	const create = (key: K): MutableAtomToken<T> => {
 		const subKey = stringifyJson(key)
 		const family: FamilyMetadata = { key: options.key, subKey }
 		const fullKey = `${options.key}(${subKey})`
@@ -61,12 +61,14 @@ export function createMutableAtomFamily<
 		return createMutableAtom(target, individualOptions, family)
 	}
 
-	const atomFamily = Object.assign(familyFunction, familyToken, {
+	const atomFamily = {
+		...familyToken,
+		create,
 		class: options.class,
 		subject,
 		install: (s: RootStore) => createMutableAtomFamily(s, options),
 		internalRoles,
-	}) satisfies MutableAtomFamily<T, K>
+	} satisfies MutableAtomFamily<T, K>
 
 	store.families.set(options.key, atomFamily)
 
