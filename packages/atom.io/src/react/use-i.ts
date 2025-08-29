@@ -6,17 +6,17 @@ import * as React from "react"
 import { parseStateOverloads } from "./parse-state-overloads"
 import { StoreContext } from "./store-context"
 
-export function useI<T, E>(
-	token: WritableToken<T, any, E>,
+export function useI<T>(
+	token: WritableToken<T, any, any>,
 ): <New extends T>(next: New | ((old: T) => New)) => void
 
-export function useI<T, K extends Canonical, Key extends K, E>(
-	token: WritableFamilyToken<T, K, E>,
+export function useI<T, K extends Canonical, Key extends K>(
+	token: WritableFamilyToken<T, K, any>,
 	key: Key,
 ): <New extends T>(next: New | ((old: T) => New)) => void
 
-export function useI<T, K extends Canonical, Key extends K, E>(
-	...params: [WritableFamilyToken<T, K, E>, Key] | [WritableToken<T, any, E>]
+export function useI<T, K extends Canonical, Key extends K>(
+	...params: [WritableFamilyToken<T, K, any>, Key] | [WritableToken<T, any, any>]
 ): <New extends T>(next: New | ((old: T) => New)) => void {
 	const store = React.useContext(StoreContext)
 	const token = parseStateOverloads(store, ...params)

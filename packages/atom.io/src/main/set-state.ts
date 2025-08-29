@@ -19,7 +19,7 @@ export type Setter<T, New extends T> = (oldValue: T) => New
  * @default
  */
 export function setState<T, New extends T>(
-	token: WritableToken<T>,
+	token: WritableToken<T, any, any>,
 	value: New | Setter<T, New>,
 ): void
 
@@ -31,15 +31,19 @@ export function setState<T, New extends T>(
  * @overload Streamlined
  */
 export function setState<T, K extends Canonical, New extends T, Key extends K>(
-	token: WritableFamilyToken<T, K>,
+	token: WritableFamilyToken<T, K, any>,
 	key: Key,
 	value: New | Setter<T, New>,
 ): void
 
 export function setState<T, K extends Canonical, New extends T, Key extends K>(
 	...params:
-		| [token: WritableFamilyToken<T, K>, key: Key, value: New | Setter<T, New>]
-		| [token: WritableToken<T>, value: New | Setter<T, New>]
+		| [
+				token: WritableFamilyToken<T, K, any>,
+				key: Key,
+				value: New | Setter<T, New>,
+		  ]
+		| [token: WritableToken<T, any, any>, value: New | Setter<T, New>]
 ): void {
 	setIntoStore(IMPLICIT.STORE, ...params)
 }
