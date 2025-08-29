@@ -1,7 +1,7 @@
 {
 	"name": "atom.io.fyi",
 	"type": "module",
-	"version": "0.1.35",
+	"version": "0.1.36",
 	"private": true,
 	"scripts": {
 		"dev": "concurrently \"bun:dev:*\"",
