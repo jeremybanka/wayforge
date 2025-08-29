@@ -199,7 +199,8 @@ export class Join<
 		this.core = { relatedKeysAtoms }
 		const getRelatedKeys: Read<
 			(key: string) => SetRTX<AType> | SetRTX<BType>
-		> = ({ get }, key) => get(relatedKeysAtoms, key) as any
+		> = ({ get }, key) =>
+			get(relatedKeysAtoms, key) as SetRTX<AType> | SetRTX<BType>
 		const addRelation: Write<(a: string, b: string) => void> = (
 			{ set },
 			a,
