@@ -18,7 +18,7 @@ import { type FC, useEffect } from "react"
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 2
+const CHOOSE = 3
 
 let logger: Logger
 
@@ -460,6 +460,58 @@ describe(`useLoadable`, () => {
 		assert(utils.getByTestId(`2`))
 		assert(utils.getByTestId(`3`))
 	})
+	test.only(`family, with a fallback, with an error`, async () => {
+		const loadIndex: Record<number, () => void> = {}
+		const failIndex: Record<number, () => void> = {}
+
+		const indexAtoms = atomFamily<Loadable<number[]>, number, Error>({
+			key: `index`,
+			default: (key) =>
+				new Promise((resolve, reject) => {
+					loadIndex[key] = () => {
+						resolve([1, 2, 3])
+					}
+					failIndex[key] = () => {
+						reject(new Error(`💥`))
+					}
+				}),
+			catch: [Error],
+		})
+
+		const Letter: FC = () => {
+			const ids = AR.useLoadable(indexAtoms, 0, [4, 5, 6])
+			console.log(`🚧🚧🚧🚧🚧🚧🚧🚧🚧`, ids)
+			return (
+				<div data-testid={ids.loading ? `loading` : `not-loading`}>
+					{ids.error ? <div data-testid="error">{ids.error.message}</div> : null}
+					{ids.value.map((id) => (
+						<div key={id} data-testid={id}>
+							{id}
+						</div>
+					))}
+				</div>
+			)
+		}
+		const utils = render(
+			<AR.StoreProvider>
+				<Letter />
+			</AR.StoreProvider>,
+		)
+		assert(utils.getByTestId(`loading`))
+		await act(async () => {
+			failIndex[0]()
+			await new Promise((resolve) => setImmediate(resolve))
+			await new Promise((resolve) => setImmediate(resolve))
+			await new Promise((resolve) => setTimeout(resolve, 100))
+		})
+
+		assert(utils.getByTestId(`not-loading`))
+		assert(utils.getByTestId(`error`))
+		assert(utils.getByTestId(`4`))
+		assert(utils.getByTestId(`5`))
+		assert(utils.getByTestId(`6`))
+	})
+
 	test(`referential identity`, async () => {
 		const uniqueRefs: unknown[] = []
 		const promises: Promise<string>[] = []
