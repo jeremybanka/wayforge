@@ -14,7 +14,8 @@ export const attachTransactionLogs = (
 > => {
 	const transactionUpdateLogAtoms = createRegularAtomFamily<
 		TransactionOutcomeEvent<TransactionToken<any>>[],
-		string
+		string,
+		never
 	>(store, {
 		key: `🔍 Transaction Update Log (Internal)`,
 		default: () => [],
@@ -31,7 +32,8 @@ export const attachTransactionLogs = (
 	})
 	const findTransactionUpdateLogState = createSelectorFamily<
 		TransactionOutcomeEvent<TransactionToken<any>>[],
-		string
+		string,
+		never
 	>(store, {
 		key: `🔍 Transaction Update Log`,
 		get:

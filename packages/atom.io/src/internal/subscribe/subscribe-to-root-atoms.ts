@@ -5,8 +5,8 @@ import { recallState } from "./recall-state"
 
 export const subscribeToRootDependency = (
 	target: Store,
-	selector: Selector<any>,
-	atom: Atom<any>,
+	selector: Selector<any, any>,
+	atom: Atom<any, any>,
 ): (() => void) => {
 	return atom.subject.subscribe(
 		`${selector.type}:${selector.key}`,

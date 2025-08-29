@@ -6,26 +6,29 @@ import { setIntoStore } from "./set-into-store"
 
 export const RESET_STATE: unique symbol = Symbol(`RESET`)
 
-export function resetInStore(store: Store, token: WritableToken<any>): void
+export function resetInStore(
+	store: Store,
+	token: WritableToken<any, any, any>,
+): void
 
 export function resetInStore<K extends Canonical>(
 	store: Store,
-	token: WritableFamilyToken<any, K>,
+	token: WritableFamilyToken<any, K, any>,
 	key: K,
 ): void
 
 export function resetInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	...params:
-		| [token: WritableFamilyToken<T, K>, key: Key]
-		| [token: WritableToken<T>]
+		| [token: WritableFamilyToken<T, K, any>, key: Key]
+		| [token: WritableToken<T, any, any>]
 ): void
 
 export function resetInStore<T, K extends Canonical, Key extends K>(
 	store: Store,
 	...params:
-		| [token: WritableFamilyToken<T, K>, key: Key]
-		| [token: WritableToken<T>]
+		| [token: WritableFamilyToken<T, K, any>, key: Key]
+		| [token: WritableToken<T, any, any>]
 ): void {
 	const subParams = [...params, RESET_STATE] as const
 	setIntoStore(store, ...subParams)

@@ -16,14 +16,14 @@ export type StateUpdate<T> = {
 	readonly newValue: ViewOf<T>
 }
 
-export type AtomUpdateEvent<A extends AtomToken<any>> = {
+export type AtomUpdateEvent<A extends AtomToken<any, any, any>> = {
 	type: `atom_update`
 	token: A
 	update: StateUpdate<TokenType<A>>
 	timestamp: number
 }
 
-export type SelectorUpdateSubEvent<A extends AtomToken<any>> =
+export type SelectorUpdateSubEvent<A extends AtomToken<any, any, any>> =
 	| AtomUpdateEvent<A>
 	| StateCreationEvent<any>
 export type TimelineSelectorUpdateEvent<A extends TimelineManageable> = {
@@ -33,36 +33,38 @@ export type TimelineSelectorUpdateEvent<A extends TimelineManageable> = {
 	timestamp: number
 }
 
-export type StateLifecycleEvent<R extends ReadableToken<any>> =
+export type StateLifecycleEvent<R extends ReadableToken<any, any, any>> =
 	| StateCreationEvent<R>
 	| StateDisposalEvent<R>
-export type StateCreationEvent<R extends ReadableToken<any>> =
+export type StateCreationEvent<R extends ReadableToken<any, any, any>> =
 	| ReadableStateCreationEvent<R>
 	| (R extends WritableToken<any> ? WritableStateCreationEvent<R> : never)
-export type ReadableStateCreationEvent<R extends ReadableToken<any>> = {
-	type: `state_creation`
-	subType: `readable`
-	token: R
-	timestamp: number
-}
-export type WritableStateCreationEvent<W extends WritableToken<any>> = {
-	type: `state_creation`
-	subType: `writable`
-	token: W
-	timestamp: number
-	value?: TokenType<W>
-}
-export type StateDisposalEvent<R extends ReadableToken<any>> =
+export type ReadableStateCreationEvent<R extends ReadableToken<any, any, any>> =
+	{
+		type: `state_creation`
+		subType: `readable`
+		token: R
+		timestamp: number
+	}
+export type WritableStateCreationEvent<W extends WritableToken<any, any, any>> =
+	{
+		type: `state_creation`
+		subType: `writable`
+		token: W
+		timestamp: number
+		value?: TokenType<W>
+	}
+export type StateDisposalEvent<R extends ReadableToken<any, any, any>> =
 	| AtomDisposalEvent<R>
 	| SelectorDisposalEvent<R>
-export type AtomDisposalEvent<R extends ReadableToken<any>> = {
+export type AtomDisposalEvent<R extends ReadableToken<any, any, any>> = {
 	type: `state_disposal`
 	subType: `atom`
 	token: R
 	value: TokenType<R>
 	timestamp: number
 }
-export type SelectorDisposalEvent<R extends ReadableToken<any>> = {
+export type SelectorDisposalEvent<R extends ReadableToken<any, any, any>> = {
 	type: `state_disposal`
 	subType: `selector`
 	token: R
@@ -94,12 +96,12 @@ export type MoleculeTransferEvent = {
 }
 
 export type TransactionSubEvent =
-	| AtomUpdateEvent<AtomToken<any>>
+	| AtomUpdateEvent<AtomToken<any, any, any>>
 	| MoleculeCreationEvent
 	| MoleculeDisposalEvent
 	| MoleculeTransferEvent
-	| StateCreationEvent<ReadableToken<unknown>>
-	| StateDisposalEvent<ReadableToken<unknown>>
+	| StateCreationEvent<ReadableToken<unknown, any, any>>
+	| StateDisposalEvent<ReadableToken<unknown, any, any>>
 	| TransactionOutcomeEvent<TransactionToken<any>>
 
 export type TransactionOutcomeEvent<T extends TransactionToken<any>> = {

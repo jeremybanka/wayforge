@@ -13,7 +13,7 @@ import * as React from "react"
 
 const AtomUpdateFC: React.FC<{
 	serialNumber: number
-	atomUpdate: AtomUpdateEvent<AtomToken<unknown>>
+	atomUpdate: AtomUpdateEvent<AtomToken<unknown, any, any>>
 }> = ({ atomUpdate }) => {
 	return (
 		<article

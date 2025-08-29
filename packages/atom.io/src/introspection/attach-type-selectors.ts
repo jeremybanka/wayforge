@@ -9,7 +9,8 @@ export const attachTypeSelectors = (
 ): ReadonlyPureSelectorFamilyToken<Loadable<string>, string> => {
 	const typeSelectors = createReadonlyPureSelectorFamily<
 		Loadable<string>,
-		string
+		string,
+		never
 	>(store, {
 		key: `🔍 State Type`,
 		get:

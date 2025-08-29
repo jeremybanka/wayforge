@@ -1,8 +1,10 @@
 import type {
 	FamilyMetadata,
+	StateUpdate,
 	WritablePureSelectorOptions,
 	WritablePureSelectorToken,
 } from "atom.io"
+import type { Canonical } from "atom.io/json"
 
 import type { RootStore, WritablePureSelector } from ".."
 import { writeToCache } from "../caching"
@@ -11,13 +13,13 @@ import type { Store } from "../store"
 import { Subject } from "../subject"
 import { registerSelector } from "./register-selector"
 
-export function createWritablePureSelector<T>(
+export function createWritablePureSelector<T, K extends Canonical, E>(
 	store: Store,
-	options: WritablePureSelectorOptions<T>,
-	family: FamilyMetadata | undefined,
-): WritablePureSelectorToken<T> {
+	options: WritablePureSelectorOptions<T, E>,
+	family: FamilyMetadata<K> | undefined,
+): WritablePureSelectorToken<T, K, E> {
 	const target = newest(store)
-	const subject = new Subject<{ newValue: T; oldValue: T }>()
+	const subject = new Subject<StateUpdate<E | T>>()
 	const covered = new Set<string>()
 	const key = options.key
 	const type = `writable_pure_selector` as const
@@ -27,7 +29,7 @@ export function createWritablePureSelector<T>(
 	const { find, get, json } = setterToolkit
 	const getterToolkit = { find, get, json }
 
-	const getFrom = (innerTarget: Store): T => {
+	const getFrom = (innerTarget: Store): E | T => {
 		const upstreamStates = innerTarget.selectorGraph.getRelationEntries({
 			downstreamSelectorKey: key,
 		})
@@ -48,7 +50,7 @@ export function createWritablePureSelector<T>(
 		options.set(setterToolkit, newValue)
 	}
 
-	const mySelector: WritablePureSelector<T> = {
+	const mySelector: WritablePureSelector<T, E> = {
 		...options,
 		type,
 		subject,

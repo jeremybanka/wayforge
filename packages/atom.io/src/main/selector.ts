@@ -17,19 +17,23 @@ import type {
 } from "./tokens"
 import type { Read, Write } from "./transaction"
 
-export type WritablePureSelectorOptions<T> = {
+export type WritablePureSelectorOptions<T, E = never> = {
 	/** The unique identifier of the selector */
 	key: string
 	/** For each instantiated selector, a function that computes its value */
 	get: Read<() => T>
 	/** For each instantiated selector, a function that sets its value */
 	set: Write<(newValue: T) => void>
+	/** The classes of errors that might be thrown when deriving the atom's default value */
+	catch?: readonly (new () => E)[]
 }
-export type ReadonlyPureSelectorOptions<T> = {
+export type ReadonlyPureSelectorOptions<T, E = never> = {
 	/** The unique identifier of the selector */
 	key: string
 	/** For each instantiated selector, a function that computes its value */
 	get: Read<() => T>
+	/** The classes of errors that might be thrown when deriving the atom's default value */
+	catch?: readonly (new () => E)[]
 }
 export type ReadonlyHeldSelectorOptions<T extends object> = {
 	/** The unique identifier of the selector */
@@ -104,9 +108,9 @@ export function selector<T extends object>(
  * The token for your selector.
  * @overload WritablePure
  */
-export function selector<T>(
-	options: WritablePureSelectorOptions<T>,
-): WritablePureSelectorToken<T>
+export function selector<T, E = never>(
+	options: WritablePureSelectorOptions<T, E>,
+): WritablePureSelectorToken<T, any, E>
 /**
  * Declare a selector. The value of a selector should depend
  * on the value of atoms or other selectors in the store.
@@ -121,36 +125,48 @@ export function selector<T>(
  * The token for your selector.
  * @overload ReadonlyPure
  */
-export function selector<T>(
-	options: ReadonlyPureSelectorOptions<T>,
-): ReadonlyPureSelectorToken<T>
+export function selector<T, E = never>(
+	options: ReadonlyPureSelectorOptions<T, E>,
+): ReadonlyPureSelectorToken<T, any, E>
 export function selector(
 	options:
 		| ReadonlyHeldSelectorOptions<any>
-		| ReadonlyPureSelectorOptions<any>
+		| ReadonlyPureSelectorOptions<any, any>
 		| WritableHeldSelectorOptions<any>
-		| WritablePureSelectorOptions<any>,
+		| WritablePureSelectorOptions<any, any>,
 ):
 	| ReadonlyHeldSelectorToken<any>
-	| ReadonlyPureSelectorToken<any>
+	| ReadonlyPureSelectorToken<any, any, any>
 	| WritableHeldSelectorToken<any>
-	| WritablePureSelectorToken<any> {
+	| WritablePureSelectorToken<any, any, any> {
 	return createStandaloneSelector(IMPLICIT.STORE, options)
 }
 
-export type WritablePureSelectorFamilyOptions<T, K extends Canonical> = {
+export type WritablePureSelectorFamilyOptions<
+	T,
+	K extends Canonical,
+	E = never,
+> = {
 	/** The unique identifier of the family */
 	key: string
 	/** For each instantiated family member, a function that computes its value */
 	get: (key: K) => Read<() => T>
 	/** For each instantiated family member, a function that sets its value */
 	set: (key: K) => Write<(newValue: T) => void>
+	/** The classes of errors that might be thrown when deriving the atom's default value */
+	catch?: readonly (new () => E)[]
 }
-export type ReadonlyPureSelectorFamilyOptions<T, K extends Canonical> = {
+export type ReadonlyPureSelectorFamilyOptions<
+	T,
+	K extends Canonical,
+	E = never,
+> = {
 	/** The unique identifier of the family */
 	key: string
 	/** For each instantiated family member, a function that computes its value */
 	get: (key: K) => Read<() => T>
+	/** The classes of errors that might be thrown when deriving the atom's default value */
+	catch?: readonly (new () => E)[]
 }
 export type WritableHeldSelectorFamilyOptions<
 	T extends object,
@@ -234,9 +250,9 @@ export function selectorFamily<T extends object, K extends Canonical>(
  * A reference to the selector family created: a {@link TransientWritableSelectorFamilyToken}
  * @overload WritablePure
  */
-export function selectorFamily<T, K extends Canonical>(
-	options: WritablePureSelectorFamilyOptions<T, K>,
-): WritablePureSelectorFamilyToken<T, K>
+export function selectorFamily<T, K extends Canonical, E = never>(
+	options: WritablePureSelectorFamilyOptions<T, K, E>,
+): WritablePureSelectorFamilyToken<T, K, E>
 /**
  * Create a family of selectors, allowing for the dynamic creation and disposal of selectors.
  *
@@ -252,19 +268,19 @@ export function selectorFamily<T, K extends Canonical>(
  * A reference to the selector family created: a {@link ReadonlyPureSelectorFamilyToken}
  * @overload ReadonlyPure
  */
-export function selectorFamily<T, K extends Canonical>(
-	options: ReadonlyPureSelectorFamilyOptions<T, K>,
-): ReadonlyPureSelectorFamilyToken<T, K>
+export function selectorFamily<T, K extends Canonical, E = never>(
+	options: ReadonlyPureSelectorFamilyOptions<T, K, E>,
+): ReadonlyPureSelectorFamilyToken<T, K, E>
 export function selectorFamily(
 	options:
 		| ReadonlyHeldSelectorFamilyOptions<any, any>
-		| ReadonlyPureSelectorFamilyOptions<any, any>
+		| ReadonlyPureSelectorFamilyOptions<any, any, any>
 		| WritableHeldSelectorFamilyOptions<any, any>
-		| WritablePureSelectorFamilyOptions<any, any>,
+		| WritablePureSelectorFamilyOptions<any, any, any>,
 ):
 	| ReadonlyHeldSelectorFamilyToken<any, any>
-	| ReadonlyPureSelectorFamilyToken<any, any>
+	| ReadonlyPureSelectorFamilyToken<any, any, any>
 	| WritableHeldSelectorFamilyToken<any, any>
-	| WritablePureSelectorFamilyToken<any, any> {
+	| WritablePureSelectorFamilyToken<any, any, any> {
 	return createSelectorFamily(IMPLICIT.STORE, options)
 }

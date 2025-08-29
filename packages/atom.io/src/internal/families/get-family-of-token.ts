@@ -24,35 +24,35 @@ export function getFamilyOfToken<
 	K extends Canonical,
 >(store: Store, token: MutableAtomToken<T, K>): MutableAtomFamily<T, K>
 
-export function getFamilyOfToken<T, K extends Canonical>(
+export function getFamilyOfToken<T, K extends Canonical, E>(
 	store: Store,
-	token: RegularAtomToken<T, K>,
-): RegularAtomFamily<T, K>
+	token: RegularAtomToken<T, K, E>,
+): RegularAtomFamily<T, K, E>
 
-export function getFamilyOfToken<T, K extends Canonical>(
+export function getFamilyOfToken<T, K extends Canonical, E>(
 	store: Store,
-	token: WritablePureSelectorToken<T, K>,
-): WritablePureSelectorFamily<T, K>
+	token: WritablePureSelectorToken<T, K, E>,
+): WritablePureSelectorFamily<T, K, E>
 
-export function getFamilyOfToken<T, K extends Canonical>(
+export function getFamilyOfToken<T, K extends Canonical, E>(
 	store: Store,
-	token: ReadonlyPureSelectorToken<T, K>,
-): ReadonlyPureSelectorFamily<T, K>
+	token: ReadonlyPureSelectorToken<T, K, E>,
+): ReadonlyPureSelectorFamily<T, K, E>
 
-export function getFamilyOfToken<T, K extends Canonical>(
+export function getFamilyOfToken<T, K extends Canonical, E>(
 	store: Store,
-	token: WritableToken<T, K>,
-): WritableFamily<T, K>
+	token: WritableToken<T, K, E>,
+): WritableFamily<T, K, E>
 
-export function getFamilyOfToken<T, K extends Canonical>(
+export function getFamilyOfToken<T, K extends Canonical, E>(
 	store: Store,
-	token: ReadableToken<T, K>,
-): ReadableFamily<T, K>
+	token: ReadableToken<T, K, E>,
+): ReadableFamily<T, K, E>
 
 export function getFamilyOfToken(
 	store: Store,
-	token: ReadableToken<any, any>,
-): ReadableFamily<any, any> {
+	token: ReadableToken<any, any, any>,
+): ReadableFamily<any, any, any> {
 	return withdraw(store, {
 		// biome-ignore lint/style/noNonNullAssertion: family is required
 		key: token.family!.key,

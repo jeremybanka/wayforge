@@ -5,7 +5,7 @@ import { createRegularAtom, isReservedIntrospectionKey } from "atom.io/internal"
 export const attachTransactionIndex = (
 	store: Store,
 ): AtomToken<TransactionToken<Fn>[]> => {
-	return createRegularAtom<TransactionToken<Fn>[]>(
+	return createRegularAtom<TransactionToken<Fn>[], never, never>(
 		store,
 		{
 			key: `🔍 Transaction Token Index`,

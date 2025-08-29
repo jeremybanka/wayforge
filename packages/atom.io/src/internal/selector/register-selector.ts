@@ -33,8 +33,8 @@ export function registerSelector(
 	return {
 		get: (
 			...params:
-				| [ReadableFamilyToken<any, any>, Canonical]
-				| [ReadableToken<any>]
+				| [ReadableFamilyToken<any, any, any>, Canonical]
+				| [ReadableToken<any, any, any>]
 		) => {
 			const target = newest(store)
 			const { token, family, subKey } = reduceReference(store, ...params)

@@ -4,7 +4,10 @@ import type { Store, Subject } from ".."
 import { getUpdateToken, hasRole, isChildStore, newest, withdraw } from ".."
 import { getFamilyOfToken } from "../families/get-family-of-token"
 
-export function disposeAtom(store: Store, atomToken: AtomToken<any>): void {
+export function disposeAtom(
+	store: Store,
+	atomToken: AtomToken<any, any, any>,
+): void {
 	const target = newest(store)
 	const { key, family } = atomToken
 	const atom = withdraw(target, atomToken)
@@ -16,10 +19,10 @@ export function disposeAtom(store: Store, atomToken: AtomToken<any>): void {
 		const familyToken = getFamilyOfToken(store, atomToken)
 		const atomFamily = withdraw(store, familyToken)
 		const subject = atomFamily.subject as Subject<
-			StateLifecycleEvent<AtomToken<any>>
+			StateLifecycleEvent<AtomToken<any, any, any>>
 		>
 
-		const disposalEvent: AtomDisposalEvent<AtomToken<any>> = {
+		const disposalEvent: AtomDisposalEvent<AtomToken<any, any, any>> = {
 			type: `state_disposal`,
 			subType: `atom`,
 			token: atomToken,

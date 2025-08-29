@@ -13,31 +13,31 @@ import type { Canonical, stringified } from "atom.io/json"
  * Tokens are fully serializable, so they can be passed between processes.
  */
 export type AtomIOToken =
-	| ReadableFamilyToken<any, any>
-	| ReadableToken<any>
+	| ReadableFamilyToken<any, any, any>
+	| ReadableToken<any, any, any>
 	| TimelineToken<any>
 	| TransactionToken<any>
 
-export type ReadableToken<T, K extends Canonical = any> =
-	| AtomToken<T, K>
-	| SelectorToken<T, K>
+export type ReadableToken<T, K extends Canonical = any, E = never> =
+	| AtomToken<T, K, E>
+	| SelectorToken<T, K, E>
 
-export type WritableToken<T, K extends Canonical = any> =
-	| AtomToken<T, K>
-	| WritableSelectorToken<T, K>
+export type WritableToken<T, K extends Canonical = any, E = never> =
+	| AtomToken<T, K, E>
+	| WritableSelectorToken<T, K, E>
 
 /**
  * States belonging to this family can be read from the store.
  */
-export type ReadableFamilyToken<T, K extends Canonical> =
-	| AtomFamilyToken<T, K>
-	| SelectorFamilyToken<T, K>
+export type ReadableFamilyToken<T, K extends Canonical, E = never> =
+	| AtomFamilyToken<T, K, E>
+	| SelectorFamilyToken<T, K, E>
 /**
  * States belonging to this family can be written directly.
  */
-export type WritableFamilyToken<T, K extends Canonical> =
-	| AtomFamilyToken<T, K>
-	| WritableSelectorFamilyToken<T, K>
+export type WritableFamilyToken<T, K extends Canonical, E = never> =
+	| AtomFamilyToken<T, K, E>
+	| WritableSelectorFamilyToken<T, K, E>
 
 export type TimelineToken<M> = {
 	/** The unique identifier of the timeline */
@@ -57,10 +57,10 @@ export type TransactionToken<F extends Fn> = {
 	__F?: F
 }
 
-export type AtomToken<T, K extends Canonical = any> =
+export type AtomToken<T, K extends Canonical = any, E = never> =
 	| MutableAtomToken<T extends Transceiver<any, any, any> ? T : never, K>
-	| RegularAtomToken<T, K>
-export type RegularAtomToken<T, K extends Canonical = any> = {
+	| RegularAtomToken<T, K, E>
+export type RegularAtomToken<T, K extends Canonical = any, E = never> = {
 	/** The unique identifier of the atom. */
 	key: string
 	/** Discriminator. */
@@ -69,6 +69,8 @@ export type RegularAtomToken<T, K extends Canonical = any> = {
 	family?: FamilyMetadata<K>
 	/** Never present. This is a marker that preserves the type of the atom's value. */
 	__T?: T
+	/** Never present. This is a marker that preserves the type of errors this atom is capable of catching and setting as its value. */
+	__E?: E
 }
 export type MutableAtomToken<
 	T extends Transceiver<any, any, any>,
@@ -84,23 +86,27 @@ export type MutableAtomToken<
 	__J?: AsJSON<T>
 }
 
-export type SelectorToken<T, K extends Canonical = any> =
-	| ReadonlySelectorToken<T, K>
-	| WritableSelectorToken<T, K>
-export type ReadonlySelectorToken<T, K extends Canonical = any> =
+export type SelectorToken<T, K extends Canonical = any, E = never> =
+	| ReadonlySelectorToken<T, K, E>
+	| WritableSelectorToken<T, K, E>
+export type ReadonlySelectorToken<T, K extends Canonical = any, E = never> =
 	| ReadonlyHeldSelectorToken<T, K>
-	| ReadonlyPureSelectorToken<T, K>
-export type WritableSelectorToken<T, K extends Canonical = any> =
+	| ReadonlyPureSelectorToken<T, K, E>
+export type WritableSelectorToken<T, K extends Canonical = any, E = never> =
 	| WritableHeldSelectorToken<T, K>
-	| WritablePureSelectorToken<T, K>
-export type PureSelectorToken<T, K extends Canonical = any> =
-	| ReadonlyPureSelectorToken<T, K>
-	| WritablePureSelectorToken<T, K>
+	| WritablePureSelectorToken<T, K, E>
+export type PureSelectorToken<T, K extends Canonical = any, E = never> =
+	| ReadonlyPureSelectorToken<T, K, E>
+	| WritablePureSelectorToken<T, K, E>
 export type HeldSelectorToken<T, K extends Canonical = any> =
 	| ReadonlyHeldSelectorToken<T, K>
 	| WritableHeldSelectorToken<T, K>
 
-export type WritablePureSelectorToken<T, K extends Canonical = any> = {
+export type WritablePureSelectorToken<
+	T,
+	K extends Canonical = any,
+	E = never,
+> = {
 	/** The unique identifier of the selector. */
 	key: string
 	/** Discriminator. */
@@ -109,6 +115,8 @@ export type WritablePureSelectorToken<T, K extends Canonical = any> = {
 	family?: FamilyMetadata<K>
 	/** Never present. This is a marker that preserves the type of the selector's value. */
 	__T?: T
+	/** Never present. This is a marker that preserves the type of errors this selector is capable of catching and setting as its value. */
+	__E?: E
 }
 export type WritableHeldSelectorToken<T, K extends Canonical = any> = {
 	/** The unique identifier of the selector. */
@@ -120,7 +128,11 @@ export type WritableHeldSelectorToken<T, K extends Canonical = any> = {
 	/** Never present. This is a marker that preserves the type of the selector's value. */
 	__T?: T
 }
-export type ReadonlyPureSelectorToken<T, K extends Canonical = any> = {
+export type ReadonlyPureSelectorToken<
+	T,
+	K extends Canonical = any,
+	E = never,
+> = {
 	/** The unique identifier of the selector. */
 	key: string
 	/** Discriminator. */
@@ -129,6 +141,8 @@ export type ReadonlyPureSelectorToken<T, K extends Canonical = any> = {
 	family?: FamilyMetadata<K>
 	/** Never present. This is a marker that preserves the type of the selector's value. */
 	__T?: T
+	/** Never present. This is a marker that preserves the type of errors this selector is capable of catching and setting as its value. */
+	__E?: E
 }
 export type ReadonlyHeldSelectorToken<T, K extends Canonical = any> = {
 	/** The unique identifier of the selector. */
@@ -151,10 +165,10 @@ export type FamilyMetadata<K extends Canonical = any> = {
 	subKey: stringified<K>
 }
 
-export type AtomFamilyToken<T, K extends Canonical = Canonical> =
+export type AtomFamilyToken<T, K extends Canonical = Canonical, E = never> =
 	| MutableAtomFamilyToken<T extends Transceiver<any, any, any> ? T : never, K>
-	| RegularAtomFamilyToken<T, K>
-export type RegularAtomFamilyToken<T, K extends Canonical> = {
+	| RegularAtomFamilyToken<T, K, E>
+export type RegularAtomFamilyToken<T, K extends Canonical, E = never> = {
 	/** The unique identifier of the atom family */
 	key: string
 	/** Discriminator */
@@ -163,6 +177,8 @@ export type RegularAtomFamilyToken<T, K extends Canonical> = {
 	__T?: T
 	/** Never present. This is a marker that preserves the type of keys used for atoms in this family */
 	__K?: K
+	/** Never present. This is a marker that preserves the type of errors this family is capable of catching and setting as its value. */
+	__E?: E
 }
 export type MutableAtomFamilyToken<
 	T extends Transceiver<any, any, any>,
@@ -178,23 +194,27 @@ export type MutableAtomFamilyToken<
 	__K?: K
 }
 
-export type SelectorFamilyToken<T, K extends Canonical> =
-	| ReadonlySelectorFamilyToken<T, K>
-	| WritableSelectorFamilyToken<T, K>
-export type ReadonlySelectorFamilyToken<T, K extends Canonical> =
+export type SelectorFamilyToken<T, K extends Canonical, E = never> =
+	| ReadonlySelectorFamilyToken<T, K, E>
+	| WritableSelectorFamilyToken<T, K, E>
+export type ReadonlySelectorFamilyToken<T, K extends Canonical, E = never> =
 	| ReadonlyHeldSelectorFamilyToken<T, K>
-	| ReadonlyPureSelectorFamilyToken<T, K>
-export type WritableSelectorFamilyToken<T, K extends Canonical> =
+	| ReadonlyPureSelectorFamilyToken<T, K, E>
+export type WritableSelectorFamilyToken<T, K extends Canonical, E = never> =
 	| WritableHeldSelectorFamilyToken<T, K>
-	| WritablePureSelectorFamilyToken<T, K>
-export type PureSelectorFamilyToken<T, K extends Canonical> =
-	| ReadonlyPureSelectorFamilyToken<T, K>
-	| WritablePureSelectorFamilyToken<T, K>
+	| WritablePureSelectorFamilyToken<T, K, E>
+export type PureSelectorFamilyToken<T, K extends Canonical, E = never> =
+	| ReadonlyPureSelectorFamilyToken<T, K, E>
+	| WritablePureSelectorFamilyToken<T, K, E>
 export type HeldSelectorFamilyToken<T, K extends Canonical> =
 	| ReadonlyHeldSelectorFamilyToken<T, K>
 	| WritableHeldSelectorFamilyToken<T, K>
 
-export type WritablePureSelectorFamilyToken<T, K extends Canonical> = {
+export type WritablePureSelectorFamilyToken<
+	T,
+	K extends Canonical,
+	E = never,
+> = {
 	/** The unique identifier of the family */
 	key: string
 	/** Discriminator */
@@ -203,8 +223,14 @@ export type WritablePureSelectorFamilyToken<T, K extends Canonical> = {
 	__T?: T
 	/** Never present. This is a marker that preserves the type of keys used for each family member */
 	__K?: K
+	/** Never present. This is a marker that preserves the type of errors this family is capable of catching and setting as its value. */
+	__E?: E
 }
-export type ReadonlyPureSelectorFamilyToken<T, K extends Canonical> = {
+export type ReadonlyPureSelectorFamilyToken<
+	T,
+	K extends Canonical,
+	E = never,
+> = {
 	/** The unique identifier of the family */
 	key: string
 	/** Discriminator */
@@ -213,6 +239,8 @@ export type ReadonlyPureSelectorFamilyToken<T, K extends Canonical> = {
 	__T?: T
 	/** Never present. This is a marker that preserves the type of keys used for each family member */
 	__K?: K
+	/** Never present. This is a marker that preserves the type of errors this family is capable of catching and setting as its value. */
+	__E?: E
 }
 export type WritableHeldSelectorFamilyToken<T, K extends Canonical> = {
 	/** The unique identifier of the family */

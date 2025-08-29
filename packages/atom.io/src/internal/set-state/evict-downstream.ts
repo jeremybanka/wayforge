@@ -4,7 +4,10 @@ import { newest } from "../lineage"
 import { isDone, markDone } from "../operation"
 import type { Store } from "../store"
 
-export function evictDownstreamFromAtom(store: Store, atom: Atom<any>): void {
+export function evictDownstreamFromAtom(
+	store: Store,
+	atom: Atom<any, any>,
+): void {
 	const target = newest(store)
 	const { key, type } = atom
 	const downstreamKeys = target.selectorAtoms.getRelatedKeys(key)

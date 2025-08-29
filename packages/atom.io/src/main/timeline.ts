@@ -2,13 +2,15 @@ import { createTimeline, IMPLICIT, timeTravel } from "atom.io/internal"
 
 import type { AtomFamilyToken, AtomToken, TimelineToken } from "."
 
-export type TimelineManageable = AtomFamilyToken<any, any> | AtomToken<any>
+export type TimelineManageable =
+	| AtomFamilyToken<any, any, any>
+	| AtomToken<any, any, any>
 export type AtomOnly<M extends TimelineManageable> = M extends AtomFamilyToken<
 	any,
 	any
 >
-	? AtomToken<any>
-	: M extends AtomToken<any>
+	? AtomToken<any, any, any>
+	: M extends AtomToken<any, any, any>
 		? M
 		: never
 

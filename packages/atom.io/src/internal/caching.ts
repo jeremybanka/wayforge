@@ -7,21 +7,21 @@ import {
 } from "./set-state/evict-downstream"
 import type { Store } from "./store"
 
-export function writeToCache<T>(
+export function writeToCache<T, E>(
 	target: Store,
-	state: ReadableState<T>,
-	value: T,
-): T
-export function writeToCache<T extends Promise<any>>(
+	state: ReadableState<T, E>,
+	value: E | T,
+): E | T
+export function writeToCache<T extends Promise<any>, E>(
 	target: Store,
-	state: ReadableState<T>,
+	state: ReadableState<T, E>,
 	value: T,
-): Future<Awaited<T>>
-export function writeToCache<T>(
+): Future<Awaited<E | T>>
+export function writeToCache<T, E>(
 	target: Store,
-	state: ReadableState<T>,
-	value: T,
-): Future<T> | T {
+	state: ReadableState<T, E>,
+	value: E | T,
+): E | Future<E | T> | T {
 	const { key, subject, type } = state
 	const currentValue = target.valueMap.get(key)
 	if (currentValue instanceof Future && !currentValue.done) {
@@ -74,13 +74,13 @@ export function writeToCache<T>(
  * @param mut - whether the value is intended to be mutable
  * @returns the state's current value
  */
-export function readFromCache<T>(
+export function readFromCache<T, E>(
 	target: Store,
-	state: ReadableState<T>,
+	state: ReadableState<T, E>,
 	mut: `mut` | undefined,
-): T {
+): E | T {
 	target.logger.info(`📖`, state.type, state.key, `reading cached value`)
-	let value = target.valueMap.get(state.key) as T
+	let value = target.valueMap.get(state.key) as E | T
 
 	const mayNeedToBeCopied =
 		mut === `mut` && state.type === `mutable_atom` && isChildStore(target)

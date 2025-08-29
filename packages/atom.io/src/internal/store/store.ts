@@ -47,9 +47,9 @@ export class Store implements Lineage {
 	public valueMap: Map<string, any> = new Map()
 	public defaults: Map<string, any> = new Map()
 
-	public atoms: Map<string, Atom<any>> = new Map()
-	public writableSelectors: Map<string, WritableSelector<any>> = new Map()
-	public readonlySelectors: Map<string, ReadonlySelector<any>> = new Map()
+	public atoms: Map<string, Atom<any, any>> = new Map()
+	public writableSelectors: Map<string, WritableSelector<any, any>> = new Map()
+	public readonlySelectors: Map<string, ReadonlySelector<any, any>> = new Map()
 
 	public atomsThatAreDefault: Set<string> = new Set()
 	public selectorAtoms: Junction<`selectorKey`, string, `atomKey`, string> =
@@ -77,8 +77,8 @@ export class Store implements Lineage {
 		string,
 		| HeldSelectorFamily<any, any>
 		| MutableAtomFamily<any, any>
-		| PureSelectorFamily<any, any>
-		| RegularAtomFamily<any, any>
+		| PureSelectorFamily<any, any, any>
+		| RegularAtomFamily<any, any, any>
 	> = new Map()
 	public joins: Map<string, Join<any, any, any, any, any, any>> = new Map()
 
@@ -247,10 +247,10 @@ export class Store implements Lineage {
 }
 
 export type StoreEventCarrier = {
-	atomCreation: Subject<AtomToken<unknown>>
-	atomDisposal: Subject<AtomToken<unknown>>
-	selectorCreation: Subject<SelectorToken<unknown>>
-	selectorDisposal: Subject<SelectorToken<unknown>>
+	atomCreation: Subject<AtomToken<unknown, any, any>>
+	atomDisposal: Subject<AtomToken<unknown, any, any>>
+	selectorCreation: Subject<SelectorToken<unknown, any, any>>
+	selectorDisposal: Subject<SelectorToken<unknown, any, any>>
 	timelineCreation: Subject<TimelineToken<unknown>>
 	transactionCreation: Subject<TransactionToken<Fn>>
 	transactionApplying: StatefulSubject<TransactionProgress<Fn> | null>

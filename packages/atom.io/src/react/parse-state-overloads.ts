@@ -8,21 +8,21 @@ import type { Store } from "atom.io/internal"
 import { findInStore } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 
-export function parseStateOverloads<T, K extends Canonical>(
+export function parseStateOverloads<T, K extends Canonical, Key extends K, E>(
 	store: Store,
-	...rest: [WritableFamilyToken<T, K>, K] | [WritableToken<T>]
-): WritableToken<T>
+	...rest: [WritableFamilyToken<T, K, E>, Key] | [WritableToken<T, any, E>]
+): WritableToken<T, K, E>
 
-export function parseStateOverloads<T, K extends Canonical>(
+export function parseStateOverloads<T, K extends Canonical, Key extends K, E>(
 	store: Store,
-	...rest: [ReadableFamilyToken<T, K>, K] | [ReadableToken<T>]
-): ReadableToken<T>
+	...rest: [ReadableFamilyToken<T, K, E>, Key] | [ReadableToken<T, any, E>]
+): ReadableToken<T, K, E>
 
-export function parseStateOverloads<T, K extends Canonical>(
+export function parseStateOverloads<T, K extends Canonical, Key extends K, E>(
 	store: Store,
-	...rest: [ReadableFamilyToken<T, K>, K] | [ReadableToken<T>]
-): ReadableToken<T> {
-	let token: ReadableToken<any>
+	...rest: [ReadableFamilyToken<T, K, E>, Key] | [ReadableToken<T, any, E>]
+): ReadableToken<T, K, E> {
+	let token: ReadableToken<any, any, any>
 	if (rest.length === 2) {
 		const family = rest[0]
 		const key = rest[1]

@@ -12,7 +12,7 @@ export function updateSelectorAtoms(
 		| `writable_held_selector`
 		| `writable_pure_selector`,
 	selectorKey: string,
-	dependency: ReadableToken<unknown>,
+	dependency: ReadableToken<unknown, any, unknown>,
 	covered: Set<string>,
 ): void {
 	const target = newest(store)

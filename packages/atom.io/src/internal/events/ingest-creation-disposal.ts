@@ -37,7 +37,7 @@ export function ingestCreationEvent(
 
 export function ingestDisposalEvent(
 	store: Store,
-	event: StateDisposalEvent<ReadableToken<any>>,
+	event: StateDisposalEvent<ReadableToken<any, any, any>>,
 	applying: `newValue` | `oldValue`,
 ): void {
 	switch (applying) {

@@ -2,7 +2,9 @@ import type {
 	FamilyMetadata,
 	ReadonlyPureSelectorOptions,
 	ReadonlyPureSelectorToken,
+	StateUpdate,
 } from "atom.io"
+import type { Canonical } from "atom.io/json"
 
 import type { ReadonlyPureSelector, RootStore } from ".."
 import { writeToCache } from "../caching"
@@ -11,13 +13,13 @@ import type { Store } from "../store"
 import { Subject } from "../subject"
 import { registerSelector } from "./register-selector"
 
-export function createReadonlyPureSelector<T>(
+export function createReadonlyPureSelector<T, K extends Canonical, E>(
 	store: Store,
-	options: ReadonlyPureSelectorOptions<T>,
-	family: FamilyMetadata | undefined,
-): ReadonlyPureSelectorToken<T> {
+	options: ReadonlyPureSelectorOptions<T, E>,
+	family: FamilyMetadata<K> | undefined,
+): ReadonlyPureSelectorToken<T, K, E> {
 	const target = newest(store)
-	const subject = new Subject<{ newValue: T; oldValue: T }>()
+	const subject = new Subject<StateUpdate<E | T>>()
 	const covered = new Set<string>()
 	const key = options.key
 	const type = `readonly_pure_selector` as const
@@ -43,7 +45,7 @@ export function createReadonlyPureSelector<T>(
 		return cached
 	}
 
-	const readonlySelector: ReadonlyPureSelector<T> = {
+	const readonlySelector: ReadonlyPureSelector<T, E> = {
 		...options,
 		type,
 		subject,
