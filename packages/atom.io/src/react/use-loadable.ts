@@ -133,14 +133,13 @@ export function useLoadable(
 			}
 		} else {
 			if (isErr && fallback) {
-				wrapper = wrapperRef.current = {
-					loading: false,
-					value: fallback,
-					error: value,
-				}
+				wrapper.loading = false
+				wrapper.value = fallback
+				wrapper.error = value
 			} else {
 				wrapper.loading = false
 				wrapper.value = value
+				delete wrapper.error
 			}
 		}
 	}

@@ -508,10 +508,14 @@ describe(`useLoadable`, () => {
 		const loadIndex: Record<number, () => void> = {}
 		const failIndex: Record<number, () => void> = {}
 		let throwImmediately = false
+		let resolveImmediately = false
 
 		const indexAtoms = atomFamily<Loadable<number[]>, number, Error>({
 			key: `index`,
 			default: (key) => {
+				if (resolveImmediately) {
+					return [1, 2, 3]
+				}
 				if (throwImmediately) {
 					throw new Error(`💥`)
 				}
@@ -586,6 +590,17 @@ describe(`useLoadable`, () => {
 		assert(utils.getByTestId(`4`))
 		assert(utils.getByTestId(`5`))
 		assert(utils.getByTestId(`6`))
+
+		resolveImmediately = true
+		act(() => {
+			resetState(indexAtoms, 0)
+		})
+
+		assert(utils.getByTestId(`not-loading`))
+		expect(() => utils.getByTestId(`error`)).toThrowError()
+		assert(utils.getByTestId(`1`))
+		assert(utils.getByTestId(`2`))
+		assert(utils.getByTestId(`3`))
 	})
 
 	test(`referential identity`, async () => {
