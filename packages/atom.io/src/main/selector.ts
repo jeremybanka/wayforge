@@ -1,3 +1,4 @@
+import type { Ctor } from "atom.io/internal"
 import {
 	createSelectorFamily,
 	createStandaloneSelector,
@@ -25,7 +26,7 @@ export type WritablePureSelectorOptions<T, E = never> = {
 	/** For each instantiated selector, a function that sets its value */
 	set: Write<(newValue: T) => void>
 	/** The classes of errors that might be thrown when deriving the atom's default value */
-	catch?: readonly (new () => E)[]
+	catch?: readonly Ctor<E>[]
 }
 export type ReadonlyPureSelectorOptions<T, E = never> = {
 	/** The unique identifier of the selector */
@@ -33,7 +34,7 @@ export type ReadonlyPureSelectorOptions<T, E = never> = {
 	/** For each instantiated selector, a function that computes its value */
 	get: Read<() => T>
 	/** The classes of errors that might be thrown when deriving the atom's default value */
-	catch?: readonly (new () => E)[]
+	catch?: readonly Ctor<E>[]
 }
 export type ReadonlyHeldSelectorOptions<T extends object> = {
 	/** The unique identifier of the selector */
@@ -154,7 +155,7 @@ export type WritablePureSelectorFamilyOptions<
 	/** For each instantiated family member, a function that sets its value */
 	set: (key: K) => Write<(newValue: T) => void>
 	/** The classes of errors that might be thrown when deriving the atom's default value */
-	catch?: readonly (new () => E)[]
+	catch?: readonly Ctor<E>[]
 }
 export type ReadonlyPureSelectorFamilyOptions<
 	T,
@@ -166,7 +167,7 @@ export type ReadonlyPureSelectorFamilyOptions<
 	/** For each instantiated family member, a function that computes its value */
 	get: (key: K) => Read<() => T>
 	/** The classes of errors that might be thrown when deriving the atom's default value */
-	catch?: readonly (new () => E)[]
+	catch?: readonly Ctor<E>[]
 }
 export type WritableHeldSelectorFamilyOptions<
 	T extends object,
