@@ -15,11 +15,11 @@ export function useO<T, K extends Canonical, Key extends K, E>(
 
 export function useO<T, K extends Canonical, Key extends K, E>(
 	...params: [ReadableFamilyToken<T, K, E>, Key] | [ReadableToken<T, any, E>]
-): T {
+): E | T {
 	const store = React.useContext(StoreContext)
 	const token = parseStateOverloads(store, ...params)
 	const id = React.useId()
-	return React.useSyncExternalStore<T>(
+	return React.useSyncExternalStore<E | T>(
 		(dispatch) => subscribeToState(store, token, `use-o:${id}`, dispatch),
 		() => getFromStore(store, token),
 		() => getFromStore(store, token),
