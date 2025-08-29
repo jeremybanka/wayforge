@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.40.3
+
+### Patch Changes
+
+- 9b5a3fa: 🏷️ Fixed a bug with the types for the new `catch` option released `v0.40.2`. Passing constructors with required parameters previously resulted in a type error, but now this is provided for.
+
 ## 0.40.2
 
 ### Patch Changes
