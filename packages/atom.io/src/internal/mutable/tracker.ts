@@ -1,14 +1,11 @@
 import type { FamilyMetadata, MutableAtomToken, RegularAtomToken } from "atom.io"
 
-import type { Store } from ".."
-import {
-	getFromStore,
-	newest,
-	setIntoStore,
-	subscribeToState,
-	subscribeToTimeline,
-} from ".."
 import { createRegularAtom } from "../atom"
+import { getFromStore } from "../get-state"
+import { newest } from "../lineage"
+import { setIntoStore } from "../set-state"
+import type { Store } from "../store"
+import { subscribeToState, subscribeToTimeline } from "../subscribe"
 import { isChildStore } from "../transaction/is-root-store"
 import type { SignalFrom, Transceiver } from "./transceiver"
 

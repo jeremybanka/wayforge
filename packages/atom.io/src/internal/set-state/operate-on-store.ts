@@ -1,12 +1,12 @@
 import type { WritableFamilyToken, WritableToken } from "atom.io"
 import { type Canonical, parseJson } from "atom.io/json"
 
-import type { WritableFamily } from ".."
 import { seekInStore } from "../families"
 import { getFamilyOfToken } from "../families/get-family-of-token"
 import { mintInStore, MUST_CREATE } from "../families/mint-in-store"
 import type { OpenOperation } from "../operation"
 import { closeOperation, openOperation } from "../operation"
+import type { WritableFamily } from "../state-types"
 import { type Store, withdraw } from "../store"
 import { dispatchOrDeferStateUpdate } from "./dispatch-state-update"
 import { resetAtomOrSelector } from "./reset-atom-or-selector"

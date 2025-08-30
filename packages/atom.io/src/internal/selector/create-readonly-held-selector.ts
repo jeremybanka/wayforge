@@ -4,11 +4,12 @@ import type {
 	ReadonlyHeldSelectorToken,
 } from "atom.io"
 
-import type { ReadonlyHeldSelector, RootStore } from ".."
 import { writeToCache } from "../caching"
 import { newest } from "../lineage"
+import type { ReadonlyHeldSelector } from "../state-types"
 import type { Store } from "../store"
 import { Subject } from "../subject"
+import type { RootStore } from "../transaction"
 import { registerSelector } from "./register-selector"
 
 export function createReadonlyHeldSelector<T extends object>(

@@ -34,7 +34,7 @@ export class Realm<H extends Hierarchy> {
 		this.store = store
 		this.deallocateTX = createDeallocateTX(store)
 		this.claimTX = createClaimTX(store)
-		makeRootMoleculeInStore(`root`, store)
+		makeRootMoleculeInStore(store, `root`)
 	}
 	/**
 	 * Make space for a new subject of the realm
@@ -117,7 +117,7 @@ export class Anarchy {
 		this.store = store
 		this.deallocateTX = createDeallocateTX(store)
 		this.claimTX = createClaimTX(store)
-		makeRootMoleculeInStore(`root`, store)
+		makeRootMoleculeInStore(store, `root`)
 	}
 	/**
 	 * Declare a new entity

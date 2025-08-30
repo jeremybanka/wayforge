@@ -2,9 +2,10 @@ import type { MutableAtomToken, StateLifecycleEvent } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 
-import type { MutableAtomFamily, RegularAtomFamily, RootStore } from ".."
 import { createRegularAtomFamily } from "../families"
+import type { MutableAtomFamily, RegularAtomFamily } from "../state-types"
 import { withdraw } from "../store"
+import type { RootStore } from "../transaction"
 import { Tracker } from "./tracker"
 import type { SignalFrom, Transceiver } from "./transceiver"
 

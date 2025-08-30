@@ -6,11 +6,12 @@ import type {
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 
-import type { ReadonlyPureSelector, RootStore } from ".."
 import { writeToCache } from "../caching"
 import { newest } from "../lineage"
+import type { ReadonlyPureSelector } from "../state-types"
 import type { Store } from "../store"
 import { Subject } from "../subject"
+import type { RootStore } from "../transaction"
 import { registerSelector } from "./register-selector"
 
 export function createReadonlyPureSelector<T, K extends Canonical, E>(

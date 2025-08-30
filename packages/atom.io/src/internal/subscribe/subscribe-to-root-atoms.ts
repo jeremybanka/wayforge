@@ -1,5 +1,5 @@
-import type { Atom, Selector } from ".."
 import { readOrComputeValue } from "../get-state/read-or-compute-value"
+import type { Atom, Selector } from "../state-types"
 import type { Store } from "../store"
 import { recallState } from "./recall-state"
 
@@ -37,14 +37,3 @@ export const subscribeToRootDependency = (
 		},
 	)
 }
-
-// export const subscribeToRootAtoms = (
-// 	store: Store,
-// 	selector: Selector<any>,
-// ): (() => void)[] => {
-// 	const target = newest(store)
-// 	const dependencySubscriptions = traceAllSelectorAtoms(selector, store).map(
-// 		(atom) => subscribeToRootDependency(target, selector, atom),
-// 	)
-// 	return dependencySubscriptions
-// }

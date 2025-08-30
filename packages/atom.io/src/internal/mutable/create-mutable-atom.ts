@@ -5,12 +5,14 @@ import type {
 	UpdateHandler,
 } from "atom.io"
 
-import type { MutableAtom, RootStore } from ".."
-import { createStandaloneSelector, resetInStore, setIntoStore } from ".."
 import { newest } from "../lineage"
+import { createStandaloneSelector } from "../selector"
+import { resetInStore, setIntoStore } from "../set-state"
+import type { MutableAtom } from "../state-types"
 import { deposit, type Store } from "../store"
 import { Subject } from "../subject"
 import { subscribeToState } from "../subscribe"
+import type { RootStore } from "../transaction"
 import { Tracker } from "./tracker"
 import type { Transceiver } from "./transceiver"
 

@@ -10,6 +10,14 @@ import type {
 import { AtomIOLogger } from "atom.io"
 import type { Canonical, stringified } from "atom.io/json"
 
+import type { Join } from "../join"
+import { Junction } from "../junction"
+import type { Lineage } from "../lineage"
+import type { Molecule } from "../molecule"
+import type { Tracker, Transceiver } from "../mutable"
+import { getJsonToken, getUpdateToken } from "../mutable"
+import type { OperationProgress } from "../operation"
+import { isReservedIntrospectionKey } from "../reserved-keys"
 import type {
 	Atom,
 	HeldSelectorFamily,
@@ -18,15 +26,7 @@ import type {
 	ReadonlySelector,
 	RegularAtomFamily,
 	WritableSelector,
-} from ".."
-import { isReservedIntrospectionKey } from ".."
-import type { Join } from "../join"
-import { Junction } from "../junction"
-import type { Lineage } from "../lineage"
-import type { Molecule } from "../molecule"
-import type { Tracker, Transceiver } from "../mutable"
-import { getJsonToken, getUpdateToken } from "../mutable"
-import type { OperationProgress } from "../operation"
+} from "../state-types"
 import { StatefulSubject, Subject } from "../subject"
 import type { Timeline } from "../timeline"
 import type {

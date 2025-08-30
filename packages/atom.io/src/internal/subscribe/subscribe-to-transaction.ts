@@ -1,7 +1,8 @@
 import type { TransactionToken, TransactionUpdateHandler } from "atom.io"
 
-import type { Fn, Store } from ".."
-import { withdraw } from ".."
+import type { Store } from "../store"
+import { withdraw } from "../store"
+import type { Fn } from "../utility-types"
 
 export const subscribeToTransaction = <F extends Fn>(
 	store: Store,

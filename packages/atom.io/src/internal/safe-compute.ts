@@ -1,6 +1,6 @@
-import type { PureSelector, RegularAtom } from "."
 import { writeToCache } from "./caching"
 import { isFn } from "./is-fn"
+import type { PureSelector, RegularAtom } from "./state-types"
 import type { Store } from "./store"
 
 export function safeCompute<T, E>(

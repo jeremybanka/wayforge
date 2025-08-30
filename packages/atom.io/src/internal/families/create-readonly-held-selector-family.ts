@@ -9,10 +9,11 @@ import { PRETTY_TOKEN_TYPES } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import type { ReadonlyHeldSelectorFamily, RootStore } from ".."
 import { newest } from "../lineage"
 import { createReadonlyHeldSelector } from "../selector"
+import type { ReadonlyHeldSelectorFamily } from "../state-types"
 import { Subject } from "../subject"
+import type { RootStore } from "../transaction"
 
 export function createReadonlyHeldSelectorFamily<
 	T extends object,
