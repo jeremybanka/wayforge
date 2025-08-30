@@ -46,7 +46,7 @@ export function operateOnStore<T, TT extends T, K extends Canonical, E>(
 			key = parseJson(token.family.subKey)
 			existingToken = seekInStore(store, family, key)
 			if (!existingToken) {
-				token = brandNewToken = mintInStore(store, family, key, MUST_CREATE)
+				token = brandNewToken = mintInStore(MUST_CREATE, store, family, key)
 			} else {
 				token = existingToken
 			}
@@ -57,7 +57,7 @@ export function operateOnStore<T, TT extends T, K extends Canonical, E>(
 		value = params[2]
 		existingToken = seekInStore(store, family, key)
 		if (!existingToken) {
-			token = brandNewToken = mintInStore(store, family, key, MUST_CREATE)
+			token = brandNewToken = mintInStore(MUST_CREATE, store, family, key)
 		} else {
 			token = existingToken
 		}

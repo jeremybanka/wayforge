@@ -1,5 +1,4 @@
 export * from "./circular-buffer"
 export * from "./deposit"
-export * from "./mint-or-counterfeit"
 export * from "./store"
 export * from "./withdraw"
