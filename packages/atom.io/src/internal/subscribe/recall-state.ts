@@ -1,5 +1,5 @@
-import type { ReadableState } from ".."
 import { newest } from "../lineage"
+import type { ReadableState } from "../state-types"
 import type { Store } from "../store"
 
 export const recallState = <T, E>(

@@ -1,11 +1,13 @@
-import type { ReadableState, Transceiver } from "."
-import { closeOperation, isChildStore, openOperation, Tracker } from "."
 import { Future } from "./future"
+import { Tracker, type Transceiver } from "./mutable"
+import { closeOperation, openOperation } from "./operation"
 import {
 	evictDownstreamFromAtom,
 	evictDownstreamFromSelector,
 } from "./set-state/evict-downstream"
+import type { ReadableState } from "./state-types"
 import type { Store } from "./store"
+import { isChildStore } from "./transaction"
 
 export function writeToCache<T, E>(
 	target: Store,

@@ -1,5 +1,5 @@
-import type { WritableState } from ".."
 import type { OpenOperation } from "../operation"
+import type { WritableState } from "../state-types"
 import type { Store } from "../store"
 import type { ProtoUpdate } from "./operate-on-store"
 import { setAtom } from "./set-atom"

@@ -6,20 +6,21 @@ import type {
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 
-import type { RegularAtom, RootStore } from ".."
-import { resetInStore, setIntoStore } from ".."
 import { newest } from "../lineage"
+import { resetInStore, setIntoStore } from "../set-state"
+import type { RegularAtom } from "../state-types"
 import type { Store } from "../store"
 import { deposit } from "../store"
 import { Subject } from "../subject"
 import { subscribeToState } from "../subscribe"
-import type { internalRole } from "./has-role"
+import type { RootStore } from "../transaction"
+import type { InternalRole } from "./has-role"
 
 export function createRegularAtom<T, K extends Canonical, E>(
 	store: Store,
 	options: RegularAtomOptions<T, E>,
 	family: FamilyMetadata<K> | undefined,
-	internalRoles?: internalRole[],
+	internalRoles?: InternalRole[],
 ): RegularAtomToken<T, K, E> {
 	const type = `atom`
 	const { key } = options

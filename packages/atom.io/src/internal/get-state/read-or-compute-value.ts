@@ -1,8 +1,8 @@
 import type { ViewOf } from "atom.io"
 
-import type { ReadableState } from ".."
 import { readFromCache, writeToCache } from "../caching"
 import { safeCompute } from "../safe-compute"
+import type { ReadableState } from "../state-types"
 import type { Store } from "../store"
 
 export function readOrComputeValue<T, E>(

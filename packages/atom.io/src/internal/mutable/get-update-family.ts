@@ -1,8 +1,8 @@
 import type { MutableAtomFamilyToken } from "atom.io"
 import type { Json } from "atom.io/json"
 
-import type { RegularAtomFamily } from ".."
 import { newest } from "../lineage"
+import type { RegularAtomFamily } from "../state-types"
 import type { Store } from "../store"
 import type { SignalFrom, Transceiver } from "./transceiver"
 

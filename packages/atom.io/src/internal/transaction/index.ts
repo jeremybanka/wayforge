@@ -1,12 +1,3 @@
-import type {
-	ActorToolkit,
-	TransactionOutcomeEvent,
-	TransactionToken,
-} from "atom.io"
-
-import type { Junction } from "../junction"
-import type { Fn } from "../utility-types"
-
 export * from "./abort-transaction"
 export * from "./act-upon-store"
 export * from "./apply-transaction"
@@ -16,17 +7,4 @@ export * from "./create-transaction"
 export * from "./get-epoch-number"
 export * from "./is-root-store"
 export * from "./set-epoch-number"
-
-export const TRANSACTION_PHASES = [`idle`, `building`, `applying`] as const
-export type TransactionPhase = (typeof TRANSACTION_PHASES)[number]
-
-export type TransactionProgress<F extends Fn> = {
-	phase: `applying` | `building`
-	update: TransactionOutcomeEvent<TransactionToken<F>>
-	toolkit: ActorToolkit
-}
-
-export type TransactionEpoch = {
-	epoch: Map<string, number>
-	actionContinuities: Junction<`continuity`, string, `action`, string>
-}
+export * from "./transaction-meta-progress"

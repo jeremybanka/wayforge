@@ -16,9 +16,10 @@ import { getJsonToken } from "../mutable"
 import { MapOverlay } from "../overlays/map-overlay"
 import { resetInStore, setIntoStore } from "../set-state"
 import type { Fn } from "../utility-types"
-import type { TransactionProgress } from "."
-import { actUponStore, getEpochNumberOfAction } from "."
+import { actUponStore } from "./act-upon-store"
+import { getEpochNumberOfAction } from "./get-epoch-number"
 import type { ChildStore, RootStore } from "./is-root-store"
+import type { TransactionProgress } from "./transaction-meta-progress"
 
 export const buildTransaction = (
 	store: RootStore,

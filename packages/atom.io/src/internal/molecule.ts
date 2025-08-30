@@ -19,7 +19,6 @@ import { getFromStore } from "./get-state"
 import { getTrace } from "./get-trace"
 import { newest } from "./lineage"
 import type { Store } from "./store"
-import { IMPLICIT } from "./store"
 import type { RootStore } from "./transaction"
 import { createTransaction, isChildStore } from "./transaction"
 
@@ -30,8 +29,8 @@ export type Molecule<K extends Canonical> = {
 }
 
 export function makeRootMoleculeInStore<S extends string>(
+	store: Store,
 	key: S,
-	store: Store = IMPLICIT.STORE,
 ): S {
 	const molecule = {
 		key,

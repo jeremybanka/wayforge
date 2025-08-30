@@ -9,11 +9,12 @@ import { PRETTY_TOKEN_TYPES } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import type { RootStore, WritableHeldSelectorFamily } from ".."
 import { newest } from "../lineage"
 import { createWritableHeldSelector } from "../selector"
+import type { WritableHeldSelectorFamily } from "../state-types"
 import type { Store } from "../store"
 import { Subject } from "../subject"
+import type { RootStore } from "../transaction"
 
 export function createWritableHeldSelectorFamily<
 	T extends object,

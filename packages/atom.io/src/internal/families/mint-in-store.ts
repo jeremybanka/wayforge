@@ -2,7 +2,7 @@ import type { ReadableToken, WritableToken } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import type { ReadableFamily } from ".."
+import type { ReadableFamily } from "../state-types"
 import type { Store } from "../store"
 import { COUNTERFEIT, mint } from "../store"
 

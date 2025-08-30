@@ -1,8 +1,13 @@
 import type { AtomDisposalEvent, AtomToken, StateLifecycleEvent } from "atom.io"
 
-import type { Store, Subject } from ".."
-import { getUpdateToken, hasRole, isChildStore, newest, withdraw } from ".."
 import { getFamilyOfToken } from "../families/get-family-of-token"
+import { newest } from "../lineage"
+import { getUpdateToken } from "../mutable"
+import type { Store } from "../store"
+import { withdraw } from "../store"
+import type { Subject } from "../subject"
+import { isChildStore } from "../transaction"
+import { hasRole } from "./has-role"
 
 export function disposeAtom(
 	store: Store,
