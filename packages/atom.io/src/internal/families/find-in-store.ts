@@ -20,7 +20,7 @@ import type { Canonical } from "atom.io/json"
 
 import type { Transceiver } from "../mutable"
 import { type Store, withdraw } from "../store"
-import { mintInStore } from "./mint-in-store"
+import { DO_NOT_CREATE, mintInStore } from "./mint-in-store"
 import { seekInStore } from "./seek-in-store"
 
 // seek [token 🟧] [inits ⬛]
@@ -90,6 +90,6 @@ export function findInStore(
 	if (existingStateToken) {
 		return existingStateToken
 	}
-	const newStateToken = mintInStore(store, family, key)
+	const newStateToken = mintInStore(DO_NOT_CREATE, store, family, key)
 	return newStateToken
 }
