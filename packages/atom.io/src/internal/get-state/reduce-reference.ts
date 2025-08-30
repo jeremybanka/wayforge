@@ -16,12 +16,12 @@ import { withdraw } from "../store"
 export function reduceReference<T, K extends Canonical, E>(
 	store: Store,
 	...params:
-		| [token: ReadableFamilyToken<T, K, E>, key: K]
+		| [token: ReadableFamilyToken<T, K, E>, key: NoInfer<K>]
 		| [token: ReadableToken<T, K, E>]
 ): {
 	token: ReadableToken<T, K, E>
 	family: ReadableFamily<T, K, E> | undefined
-	subKey: K | undefined
+	subKey: NoInfer<K> | undefined
 	isNew: boolean
 } {
 	let existingToken: ReadableToken<T, K, E> | undefined

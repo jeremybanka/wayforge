@@ -11,16 +11,16 @@ export function disposeFromStore(
 	token: ReadableToken<any, any, any>,
 ): void
 
-export function disposeFromStore<K extends Canonical, Key extends K>(
+export function disposeFromStore<K extends Canonical>(
 	store: Store,
 	token: ReadableFamilyToken<any, K, any>,
-	key: Key,
+	key: NoInfer<K>,
 ): void
 
-export function disposeFromStore<K extends Canonical, Key extends K>(
+export function disposeFromStore<K extends Canonical>(
 	store: Store,
 	...params:
-		| [token: ReadableFamilyToken<any, K, any>, key: Key]
+		| [token: ReadableFamilyToken<any, K, any>, key: NoInfer<K>]
 		| [token: ReadableToken<any, any, any>]
 ): void
 

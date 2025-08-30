@@ -9,9 +9,9 @@ export function useLoadable<T, E>(
 	token: ReadableToken<Loadable<T>, any, E>,
 ): `LOADING` | { loading: boolean; value: E | T }
 
-export function useLoadable<T, K extends Canonical, Key extends K, E>(
+export function useLoadable<T, K extends Canonical, E>(
 	token: ReadableFamilyToken<Loadable<T>, K, E>,
-	key: Key,
+	key: NoInfer<K>,
 ): `LOADING` | { loading: boolean; value: E | T }
 
 export function useLoadable<T, F extends T, E>(
@@ -19,15 +19,9 @@ export function useLoadable<T, F extends T, E>(
 	fallback: F,
 ): { loading: boolean; value: T; error?: E }
 
-export function useLoadable<
-	T,
-	K extends Canonical,
-	F extends T,
-	Key extends K,
-	E,
->(
+export function useLoadable<T, K extends Canonical, F extends T, E>(
 	token: ReadableFamilyToken<Loadable<T>, K, E>,
-	key: Key,
+	key: NoInfer<K>,
 	fallback: F,
 ): { loading: boolean; value: T; error?: E }
 

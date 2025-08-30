@@ -16,20 +16,20 @@ export function getFromStore<T, E>(
 export function getFromStore<T, K extends Canonical, E>(
 	store: Store,
 	token: ReadableFamilyToken<T, K, E>,
-	key: K,
+	key: NoInfer<K>,
 ): ViewOf<E | T>
 
-export function getFromStore<T, K extends Canonical, Key extends K, E>(
+export function getFromStore<T, K extends Canonical, E>(
 	store: Store,
 	...params:
-		| [token: ReadableFamilyToken<T, K, E>, key: Key]
+		| [token: ReadableFamilyToken<T, K, E>, key: NoInfer<K>]
 		| [token: ReadableToken<T, any, E>]
 ): ViewOf<E | T>
 
-export function getFromStore<T, K extends Canonical, Key extends K, E>(
+export function getFromStore<T, K extends Canonical, E>(
 	store: Store,
 	...params:
-		| [token: ReadableFamilyToken<T, K, E>, key: Key]
+		| [token: ReadableFamilyToken<T, K, E>, key: NoInfer<K>]
 		| [token: ReadableToken<T, any, E>]
 ): ViewOf<E | T> {
 	const { token, family, subKey } = reduceReference(store, ...params)

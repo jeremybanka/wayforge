@@ -7,11 +7,10 @@ import * as React from "react"
 
 import { useRealtimeService } from "./use-realtime-service"
 
-export function usePullSelectorFamilyMember<
-	T,
-	K extends Canonical,
-	Key extends K,
->(familyToken: AtomIO.SelectorFamilyToken<T, K>, key: Key): T {
+export function usePullSelectorFamilyMember<T, K extends Canonical>(
+	familyToken: AtomIO.SelectorFamilyToken<T, K>,
+	key: NoInfer<K>,
+): T {
 	const store = React.useContext(StoreContext)
 	const token = findInStore(store, familyToken, key)
 	useRealtimeService(`pull:${token.key}`, (socket) =>

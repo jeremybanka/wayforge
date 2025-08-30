@@ -22,14 +22,14 @@ export function getState<T, E = never>(
  * @return The current value of the state
  * @overload Streamlined
  */
-export function getState<T, K extends Canonical, Key extends K, E = never>(
+export function getState<T, K extends Canonical, E = never>(
 	token: ReadableFamilyToken<T, K, E>,
-	key: Key,
+	key: NoInfer<K>,
 ): ViewOf<E | T>
 
-export function getState<T, K extends Canonical, Key extends K, E = never>(
+export function getState<T, K extends Canonical, E = never>(
 	...params:
-		| [token: ReadableFamilyToken<T, K, E>, key: Key]
+		| [token: ReadableFamilyToken<T, K, E>, key: NoInfer<K>]
 		| [token: ReadableToken<T, any, E>]
 ): ViewOf<E | T> {
 	return getFromStore(IMPLICIT.STORE, ...params)
