@@ -1,7 +1,10 @@
 import type { MapOverlay } from "../overlays/map-overlay"
 import type { Store } from "../store"
 import type { Fn } from "../utility-types"
-import type { TransactionEpoch, TransactionProgress } from "."
+import type {
+	TransactionEpoch,
+	TransactionProgress,
+} from "./transaction-meta-progress"
 
 export interface RootStore extends Store {
 	transactionMeta: TransactionEpoch

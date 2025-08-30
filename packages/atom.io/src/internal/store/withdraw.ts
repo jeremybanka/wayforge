@@ -34,11 +34,12 @@ import type {
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 
+import type { Transceiver } from "../mutable"
+import { NotFoundError } from "../not-found-error"
 import type {
 	Atom,
 	AtomFamily,
 	AtomIOInternalResource,
-	Fn,
 	HeldSelector,
 	HeldSelectorFamily,
 	MutableAtom,
@@ -57,7 +58,6 @@ import type {
 	RegularAtomFamily,
 	Selector,
 	SelectorFamily,
-	Transceiver,
 	WritableFamily,
 	WritableHeldSelector,
 	WritableHeldSelectorFamily,
@@ -66,10 +66,10 @@ import type {
 	WritableSelector,
 	WritableSelectorFamily,
 	WritableState,
-} from ".."
-import { NotFoundError } from ".."
+} from "../state-types"
 import type { Timeline } from "../timeline"
 import type { Transaction } from "../transaction"
+import type { Fn } from "../utility-types"
 import type { Store } from "./store"
 
 export function withdraw<T, E>(

@@ -19,9 +19,9 @@ import type {
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import type { ReadableState } from ".."
 import { newest } from "../lineage"
 import type { Transceiver } from "../mutable"
+import type { ReadableState } from "../state-types"
 import { deposit, type Store } from "../store"
 
 export function seekInStore<

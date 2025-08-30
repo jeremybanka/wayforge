@@ -5,13 +5,15 @@ import type {
 } from "atom.io"
 import { type Canonical, parseJson } from "atom.io/json"
 
-import type { ReadableFamily, Subject } from ".."
-import { isChildStore, isRootStore, newest } from ".."
 import { seekInStore } from "../families"
 import { getFamilyOfToken } from "../families/get-family-of-token"
 import { mintInStore, MUST_CREATE } from "../families/mint-in-store"
+import { newest } from "../lineage"
+import type { ReadableFamily } from "../state-types"
 import type { Store } from "../store"
 import { withdraw } from "../store"
+import type { Subject } from "../subject"
+import { isChildStore, isRootStore } from "../transaction"
 
 export function reduceReference<T, K extends Canonical, E>(
 	store: Store,

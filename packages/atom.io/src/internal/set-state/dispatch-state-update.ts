@@ -5,14 +5,15 @@ import type {
 	TimelineEvent,
 } from "atom.io"
 
-import type { MutableAtom, Subject, WritableFamily, WritableState } from ".."
-import { newest } from ".."
 import { hasRole } from "../atom"
 import { readOrComputeValue } from "../get-state"
+import { newest } from "../lineage"
 import type { Transceiver } from "../mutable"
 import { isTransceiver } from "../mutable"
 import type { OpenOperation } from "../operation"
+import type { MutableAtom, WritableFamily, WritableState } from "../state-types"
 import { deposit, type Store } from "../store"
+import type { Subject } from "../subject"
 import { isChildStore, isRootStore } from "../transaction"
 import { evictDownstreamFromAtom } from "./evict-downstream"
 import type { ProtoUpdate } from "./operate-on-store"

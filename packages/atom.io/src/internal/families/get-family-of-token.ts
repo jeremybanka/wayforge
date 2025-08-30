@@ -8,6 +8,7 @@ import type {
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 
+import type { Transceiver } from "../mutable"
 import type {
 	MutableAtomFamily,
 	ReadableFamily,
@@ -15,8 +16,7 @@ import type {
 	RegularAtomFamily,
 	WritableFamily,
 	WritablePureSelectorFamily,
-} from ".."
-import type { Transceiver } from "../mutable"
+} from "../state-types"
 import { type Store, withdraw } from "../store"
 
 export function getFamilyOfToken<

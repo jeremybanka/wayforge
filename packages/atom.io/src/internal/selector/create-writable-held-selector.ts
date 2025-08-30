@@ -4,11 +4,12 @@ import type {
 	WritableHeldSelectorToken,
 } from "atom.io"
 
-import type { RootStore, WritableHeldSelector } from ".."
 import { writeToCache } from "../caching"
 import { newest } from "../lineage"
+import type { WritableHeldSelector } from "../state-types"
 import type { Store } from "../store"
 import { Subject } from "../subject"
+import type { RootStore } from "../transaction"
 import { registerSelector } from "./register-selector"
 
 export function createWritableHeldSelector<T extends object>(
