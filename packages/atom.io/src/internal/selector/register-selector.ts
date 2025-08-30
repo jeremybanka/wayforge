@@ -67,14 +67,17 @@ export function registerSelector(
 			updateSelectorAtoms(store, selectorType, selectorKey, token, covered)
 			return dependencyValue
 		},
-		set: (<T, K extends Canonical, New extends T, Key extends K>(
+		set: (<T, K extends Canonical>(
 			...params:
 				| [
 						token: WritableFamilyToken<T, K>,
-						key: Key,
-						value: New | ((oldValue: any) => New),
+						key: NoInfer<K>,
+						value: NoInfer<T> | ((oldValue: T) => NoInfer<T>),
 				  ]
-				| [token: WritableToken<T>, value: New | ((oldValue: T) => New)]
+				| [
+						token: WritableToken<T>,
+						value: NoInfer<T> | ((oldValue: T) => NoInfer<T>),
+				  ]
 		) => {
 			const target = newest(store)
 			operateOnStore(target, JOIN_OP, ...params)

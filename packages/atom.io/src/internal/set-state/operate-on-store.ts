@@ -18,32 +18,26 @@ export type ProtoUpdate<T> = { oldValue: T; newValue: T }
 export const OWN_OP: unique symbol = Symbol(`OWN_OP`)
 export const JOIN_OP: unique symbol = Symbol(`JOIN_OP`)
 
-export function operateOnStore<
-	T,
-	K extends Canonical,
-	New extends T,
-	Key extends K,
-	E,
->(
+export function operateOnStore<T, K extends Canonical, E>(
 	store: Store,
 	opMode: typeof JOIN_OP | typeof OWN_OP,
 	...params:
 		| [
 				token: WritableFamilyToken<T, K, E>,
-				key: Key,
-				value: New | typeof RESET_STATE | ((oldValue: T) => New),
+				key: NoInfer<K>,
+				value: NoInfer<T> | typeof RESET_STATE | ((oldValue: T) => NoInfer<T>),
 		  ]
 		| [
-				token: WritableToken<T, Key, E>,
-				value: New | typeof RESET_STATE | ((oldValue: T) => New),
+				token: WritableToken<T, any, E>,
+				value: NoInfer<T> | typeof RESET_STATE | ((oldValue: T) => NoInfer<T>),
 		  ]
 ): void {
-	let existingToken: WritableToken<T, Key, E> | undefined
-	let brandNewToken: WritableToken<T, Key, E> | undefined
-	let token: WritableToken<T, Key, E>
+	let existingToken: WritableToken<T, K, E> | undefined
+	let brandNewToken: WritableToken<T, K, E> | undefined
+	let token: WritableToken<T, K, E>
 	let family: WritableFamily<T, K, E> | undefined
-	let key: Key | null
-	let value: New | typeof RESET_STATE | ((oldValue: T) => New)
+	let key: K | null
+	let value: T | typeof RESET_STATE | ((oldValue: T) => T)
 	if (params.length === 2) {
 		token = params[0]
 		value = params[1]

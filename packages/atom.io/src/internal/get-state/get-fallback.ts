@@ -8,7 +8,7 @@ export function getFallback<T, K extends Canonical, E>(
 	store: Store,
 	token: ReadableToken<T, K, E>,
 	family: ReadableFamily<T, K, E>,
-	subKey: K,
+	subKey: NoInfer<K>,
 ): ViewOf<E | T> {
 	const disposal = store.disposalTraces.buffer.find(
 		(item) => item?.key === stringifyJson(subKey),
