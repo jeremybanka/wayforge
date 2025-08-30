@@ -80,7 +80,7 @@ export function registerSelector(
 				  ]
 		) => {
 			const target = newest(store)
-			operateOnStore(target, JOIN_OP, ...params)
+			operateOnStore(JOIN_OP, target, ...params)
 		}) as typeof setState,
 		find: ((...args: Parameters<typeof findState>) =>
 			findInStore(store, ...args)) as typeof findState,

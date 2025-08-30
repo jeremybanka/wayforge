@@ -19,8 +19,8 @@ export const OWN_OP: unique symbol = Symbol(`OWN_OP`)
 export const JOIN_OP: unique symbol = Symbol(`JOIN_OP`)
 
 export function operateOnStore<T, TT extends T, K extends Canonical, E>(
-	store: Store,
 	opMode: typeof JOIN_OP | typeof OWN_OP,
+	store: Store,
 	...params:
 		| [
 				token: WritableFamilyToken<T, K, E>,
@@ -84,7 +84,7 @@ export function operateOnStore<T, TT extends T, K extends Canonical, E>(
 						action,
 						`from T-${rejectionTime}`,
 					)
-					operateOnStore(store, opMode, token, value)
+					operateOnStore(opMode, store, token, value)
 				},
 			)
 			return

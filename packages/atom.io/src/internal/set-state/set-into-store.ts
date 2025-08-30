@@ -45,5 +45,5 @@ export function setIntoStore<T, TT extends T, K extends Canonical>(
 				value: Setter<TT> | TT | typeof RESET_STATE,
 		  ]
 ): void {
-	operateOnStore(store, OWN_OP, ...params)
+	operateOnStore(OWN_OP, store, ...params)
 }
