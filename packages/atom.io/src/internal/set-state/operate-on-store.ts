@@ -19,8 +19,8 @@ export const OWN_OP: unique symbol = Symbol(`OWN_OP`)
 export const JOIN_OP: unique symbol = Symbol(`JOIN_OP`)
 
 export function operateOnStore<T, TT extends T, K extends Canonical, E>(
-	store: Store,
 	opMode: typeof JOIN_OP | typeof OWN_OP,
+	store: Store,
 	...params:
 		| [
 				token: WritableFamilyToken<T, K, E>,
@@ -46,7 +46,7 @@ export function operateOnStore<T, TT extends T, K extends Canonical, E>(
 			key = parseJson(token.family.subKey)
 			existingToken = seekInStore(store, family, key)
 			if (!existingToken) {
-				token = brandNewToken = mintInStore(store, family, key, MUST_CREATE)
+				token = brandNewToken = mintInStore(MUST_CREATE, store, family, key)
 			} else {
 				token = existingToken
 			}
@@ -57,7 +57,7 @@ export function operateOnStore<T, TT extends T, K extends Canonical, E>(
 		value = params[2]
 		existingToken = seekInStore(store, family, key)
 		if (!existingToken) {
-			token = brandNewToken = mintInStore(store, family, key, MUST_CREATE)
+			token = brandNewToken = mintInStore(MUST_CREATE, store, family, key)
 		} else {
 			token = existingToken
 		}
@@ -84,7 +84,7 @@ export function operateOnStore<T, TT extends T, K extends Canonical, E>(
 						action,
 						`from T-${rejectionTime}`,
 					)
-					operateOnStore(store, opMode, token, value)
+					operateOnStore(opMode, store, token, value)
 				},
 			)
 			return
