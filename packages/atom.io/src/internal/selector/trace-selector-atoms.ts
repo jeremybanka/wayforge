@@ -1,5 +1,6 @@
-import type { Atom, Store } from ".."
 import { isAtomKey } from "../keys"
+import type { Atom } from "../state-types"
+import type { Store } from "../store"
 import { getSelectorDependencyKeys } from "./get-selector-dependency-keys"
 
 export function traceRootSelectorAtoms(

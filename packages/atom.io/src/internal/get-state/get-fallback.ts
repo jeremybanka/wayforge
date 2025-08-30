@@ -1,7 +1,7 @@
 import type { ReadableToken, ViewOf } from "atom.io"
 import { type Canonical, stringifyJson } from "atom.io/json"
 
-import type { ReadableFamily } from ".."
+import type { ReadableFamily } from "../state-types"
 import type { Store } from "../store"
 
 export function getFallback<T, K extends Canonical, E>(

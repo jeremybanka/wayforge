@@ -1,8 +1,8 @@
 import type { MutableAtomFamilyToken } from "atom.io"
 import type { Canonical, Json } from "atom.io/json"
 
-import type { WritablePureSelectorFamily } from ".."
 import { newest } from "../lineage"
+import type { WritablePureSelectorFamily } from "../state-types"
 import type { Store } from "../store"
 import type { Transceiver } from "./transceiver"
 

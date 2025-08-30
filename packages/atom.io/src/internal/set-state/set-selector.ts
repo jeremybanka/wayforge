@@ -1,6 +1,7 @@
-import { readOrComputeValue, type WritableSelector } from ".."
 import { writeToCache } from "../caching"
+import { readOrComputeValue } from "../get-state"
 import { markDone, type OpenOperation } from "../operation"
+import type { WritableSelector } from "../state-types"
 import type { Store } from "../store"
 import { become } from "./become"
 import type { ProtoUpdate } from "./operate-on-store"

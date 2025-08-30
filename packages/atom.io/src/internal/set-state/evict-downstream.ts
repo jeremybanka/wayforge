@@ -1,7 +1,7 @@
-import type { Atom } from ".."
 import { evictCachedValue } from "../caching"
 import { newest } from "../lineage"
 import { isDone, markDone } from "../operation"
+import type { Atom } from "../state-types"
 import type { Store } from "../store"
 
 export function evictDownstreamFromAtom(

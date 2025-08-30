@@ -10,11 +10,12 @@ import { PRETTY_TOKEN_TYPES } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-import type { RegularAtomFamily, RootStore } from ".."
 import { createRegularAtom } from "../atom"
 import { isFn } from "../is-fn"
 import { newest } from "../lineage"
+import type { RegularAtomFamily } from "../state-types"
 import { Subject } from "../subject"
+import type { RootStore } from "../transaction"
 
 export function createRegularAtomFamily<T, K extends Canonical, E>(
 	store: RootStore,

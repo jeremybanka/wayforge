@@ -9,7 +9,6 @@ import {
 import type { Canonical } from "atom.io/json"
 
 import type { StateUpdate } from "./events"
-import type { Setter } from "./set-state"
 import type {
 	MutableAtomFamilyToken,
 	MutableAtomToken,
