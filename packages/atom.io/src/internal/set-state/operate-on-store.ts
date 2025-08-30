@@ -1,4 +1,4 @@
-import type { WritableFamilyToken, WritableToken } from "atom.io"
+import type { Setter, WritableFamilyToken, WritableToken } from "atom.io"
 import { type Canonical, parseJson } from "atom.io/json"
 
 import { seekInStore } from "../families"
@@ -18,18 +18,18 @@ export type ProtoUpdate<T> = { oldValue: T; newValue: T }
 export const OWN_OP: unique symbol = Symbol(`OWN_OP`)
 export const JOIN_OP: unique symbol = Symbol(`JOIN_OP`)
 
-export function operateOnStore<T, K extends Canonical, E>(
+export function operateOnStore<T, TT extends T, K extends Canonical, E>(
 	store: Store,
 	opMode: typeof JOIN_OP | typeof OWN_OP,
 	...params:
 		| [
 				token: WritableFamilyToken<T, K, E>,
 				key: NoInfer<K>,
-				value: NoInfer<T> | typeof RESET_STATE | ((oldValue: T) => NoInfer<T>),
+				value: Setter<TT> | TT | typeof RESET_STATE,
 		  ]
 		| [
 				token: WritableToken<T, any, E>,
-				value: NoInfer<T> | typeof RESET_STATE | ((oldValue: T) => NoInfer<T>),
+				value: Setter<TT> | TT | typeof RESET_STATE,
 		  ]
 ): void {
 	let existingToken: WritableToken<T, K, E> | undefined
@@ -37,7 +37,7 @@ export function operateOnStore<T, K extends Canonical, E>(
 	let token: WritableToken<T, K, E>
 	let family: WritableFamily<T, K, E> | undefined
 	let key: K | null
-	let value: T | typeof RESET_STATE | ((oldValue: T) => T)
+	let value: Setter<TT> | TT | typeof RESET_STATE
 	if (params.length === 2) {
 		token = params[0]
 		value = params[1]
