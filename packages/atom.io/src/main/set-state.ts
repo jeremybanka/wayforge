@@ -9,7 +9,7 @@ import type { WritableFamilyToken, WritableToken } from "./tokens"
  * @returns
  * The new value of the state.
  */
-export type Setter<T, New extends T> = (oldValue: T) => New
+export type Setter<T> = (oldValue: T) => T
 
 /**
  * Set the value of a state into the implicit store.
@@ -18,9 +18,9 @@ export type Setter<T, New extends T> = (oldValue: T) => New
  * @overload Default
  * @default
  */
-export function setState<T, New extends T>(
+export function setState<T>(
 	token: WritableToken<T, any, any>,
-	value: New | Setter<T, New>,
+	value: NoInfer<T> | Setter<NoInfer<T>>,
 ): void
 
 /**
@@ -30,20 +30,20 @@ export function setState<T, New extends T>(
  * @param value - The new value of the state.
  * @overload Streamlined
  */
-export function setState<T, K extends Canonical, New extends T, Key extends K>(
+export function setState<T, K extends Canonical>(
 	token: WritableFamilyToken<T, K, any>,
-	key: Key,
-	value: New | Setter<T, New>,
+	key: NoInfer<K>,
+	value: NoInfer<T> | Setter<NoInfer<T>>,
 ): void
 
-export function setState<T, K extends Canonical, New extends T, Key extends K>(
+export function setState<T, K extends Canonical>(
 	...params:
 		| [
 				token: WritableFamilyToken<T, K, any>,
-				key: Key,
-				value: New | Setter<T, New>,
+				key: NoInfer<K>,
+				value: NoInfer<T> | Setter<NoInfer<T>>,
 		  ]
-		| [token: WritableToken<T, any, any>, value: New | Setter<T, New>]
+		| [token: WritableToken<T, any, any>, value: NoInfer<T> | Setter<NoInfer<T>>]
 ): void {
 	setIntoStore(IMPLICIT.STORE, ...params)
 }

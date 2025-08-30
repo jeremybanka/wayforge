@@ -10,8 +10,7 @@ import { useRealtimeService } from "./use-realtime-service"
 export function usePullAtomFamilyMember<
 	J extends Json.Serializable,
 	K extends Canonical,
-	Key extends K,
->(family: AtomIO.RegularAtomFamilyToken<J, K>, subKey: Key): J {
+>(family: AtomIO.RegularAtomFamilyToken<J, K>, subKey: NoInfer<K>): J {
 	const store = React.useContext(StoreContext)
 	const token = findInStore(store, family, subKey)
 	useRealtimeService(`pull:${token.key}`, (socket) =>

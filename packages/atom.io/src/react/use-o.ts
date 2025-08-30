@@ -8,13 +8,15 @@ import { StoreContext } from "./store-context"
 
 export function useO<T, E>(token: ReadableToken<T, any, E>): E | T
 
-export function useO<T, K extends Canonical, Key extends K, E>(
+export function useO<T, K extends Canonical, E>(
 	token: ReadableFamilyToken<T, K, E>,
-	key: Key,
+	key: NoInfer<K>,
 ): E | T
 
-export function useO<T, K extends Canonical, Key extends K, E>(
-	...params: [ReadableFamilyToken<T, K, E>, Key] | [ReadableToken<T, any, E>]
+export function useO<T, K extends Canonical, E>(
+	...params:
+		| [ReadableFamilyToken<T, K, E>, NoInfer<K>]
+		| [ReadableToken<T, any, E>]
 ): E | T {
 	const store = React.useContext(StoreContext)
 	const token = parseStateOverloads(store, ...params)

@@ -10,13 +10,15 @@ export function useI<T>(
 	token: WritableToken<T, any, any>,
 ): <New extends T>(next: New | ((old: T) => New)) => void
 
-export function useI<T, K extends Canonical, Key extends K>(
+export function useI<T, K extends Canonical>(
 	token: WritableFamilyToken<T, K, any>,
-	key: Key,
+	key: NoInfer<K>,
 ): <New extends T>(next: New | ((old: T) => New)) => void
 
-export function useI<T, K extends Canonical, Key extends K>(
-	...params: [WritableFamilyToken<T, K, any>, Key] | [WritableToken<T, any, any>]
+export function useI<T, K extends Canonical>(
+	...params:
+		| [WritableFamilyToken<T, K, any>, NoInfer<K>]
+		| [WritableToken<T, any, any>]
 ): <New extends T>(next: New | ((old: T) => New)) => void {
 	const store = React.useContext(StoreContext)
 	const token = parseStateOverloads(store, ...params)

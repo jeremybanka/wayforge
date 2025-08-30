@@ -78,7 +78,7 @@ export type Effectors<T> = {
 	 * Set the value of the atom
 	 * @param next - The new value of the atom, or a setter function
 	 */
-	setSelf: <New extends T>(next: New | Setter<T, New>) => void
+	setSelf: <New extends T>(next: New | ((old: T) => New)) => void
 	/** Subscribe to changes to the atom */
 	onSet: (callback: (options: StateUpdate<T>) => void) => void
 }
