@@ -47,7 +47,7 @@ export function reduceReference<T, K extends Canonical, E>(
 				}
 			}
 			if (!existingToken) {
-				brandNewToken = mintInStore(store, familyToken, subKey, MUST_CREATE)
+				brandNewToken = mintInStore(MUST_CREATE, store, familyToken, subKey)
 				token = brandNewToken
 			} else {
 				token = existingToken
@@ -58,7 +58,7 @@ export function reduceReference<T, K extends Canonical, E>(
 		subKey = params[1]
 		existingToken = seekInStore(store, family, subKey)
 		if (!existingToken) {
-			brandNewToken = mintInStore(store, family, subKey, MUST_CREATE)
+			brandNewToken = mintInStore(MUST_CREATE, store, family, subKey)
 			token = brandNewToken
 		} else {
 			token = existingToken
