@@ -50,7 +50,7 @@ export function findState<
 export function findState<T, K extends Canonical, Key extends K>(
 	token: RegularAtomFamilyToken<T, K>,
 	key: Key,
-): RegularAtomToken<T, K>
+): RegularAtomToken<T, Key>
 /**
  * Finds a {@link WritableSelectorToken} in the store, without accessing its value.
  *
@@ -67,7 +67,7 @@ export function findState<T, K extends Canonical, Key extends K>(
 export function findState<T, K extends Canonical, Key extends K>(
 	token: WritableSelectorFamilyToken<T, K>,
 	key: Key,
-): WritableSelectorToken<T, K>
+): WritableSelectorToken<T, Key>
 /**
  * Finds a {@link ReadonlySelectorToken} in the store, without accessing its value.
  *
@@ -84,7 +84,7 @@ export function findState<T, K extends Canonical, Key extends K>(
 export function findState<T, K extends Canonical, Key extends K>(
 	token: ReadonlySelectorFamilyToken<T, K>,
 	key: Key,
-): ReadonlySelectorToken<T, K>
+): ReadonlySelectorToken<T, Key>
 /**
  * Finds a {@link WritableToken} in the store, without accessing its value.
  *
@@ -101,7 +101,7 @@ export function findState<T, K extends Canonical, Key extends K>(
 export function findState<T, K extends Canonical, Key extends K>(
 	token: WritableFamilyToken<T, K>,
 	key: Key,
-): WritableToken<T, K>
+): WritableToken<T, Key>
 /**
  * Finds a {@link MutableAtomToken} in the store, without accessing its value.
  *
@@ -119,7 +119,7 @@ export function findState<T, K extends Canonical, Key extends K>(
 export function findState<T, K extends Canonical, Key extends K>(
 	token: ReadableFamilyToken<T, K>,
 	key: Key,
-): ReadableToken<T, K>
+): ReadableToken<T, Key>
 
 export function findState(
 	token: ReadableFamilyToken<any, any>,

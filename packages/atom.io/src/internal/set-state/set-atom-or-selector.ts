@@ -8,7 +8,7 @@ import { setSelector } from "./set-selector"
 export const setAtomOrSelector = <T>(
 	target: Store & { operation: OpenOperation },
 	state: WritableState<T, any>,
-	value: T | ((oldValue: T) => T),
+	value: NoInfer<T> | ((oldValue: T) => NoInfer<T>),
 ): ProtoUpdate<T> => {
 	let protoUpdate: ProtoUpdate<T>
 	switch (state.type) {

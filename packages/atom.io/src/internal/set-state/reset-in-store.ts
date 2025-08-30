@@ -14,20 +14,20 @@ export function resetInStore(
 export function resetInStore<K extends Canonical>(
 	store: Store,
 	token: WritableFamilyToken<any, K, any>,
-	key: K,
+	key: NoInfer<K>,
 ): void
 
-export function resetInStore<T, K extends Canonical, Key extends K>(
+export function resetInStore<T, K extends Canonical>(
 	store: Store,
 	...params:
-		| [token: WritableFamilyToken<T, K, any>, key: Key]
+		| [token: WritableFamilyToken<T, K, any>, key: NoInfer<K>]
 		| [token: WritableToken<T, any, any>]
 ): void
 
-export function resetInStore<T, K extends Canonical, Key extends K>(
+export function resetInStore<T, K extends Canonical>(
 	store: Store,
 	...params:
-		| [token: WritableFamilyToken<T, K, any>, key: Key]
+		| [token: WritableFamilyToken<T, K, any>, key: NoInfer<K>]
 		| [token: WritableToken<T, any, any>]
 ): void {
 	const subParams = [...params, RESET_STATE] as const

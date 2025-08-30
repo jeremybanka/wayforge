@@ -17,7 +17,7 @@ function resetAtom<T, E>(
 			let def: E | T
 			if (isFn(atom.default)) def = safeCompute(target, atom)
 			else def = atom.default
-			return setAtom(target, atom, def)
+			return setAtom<E | T>(target, atom, def)
 		}
 	}
 }
