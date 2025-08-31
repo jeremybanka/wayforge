@@ -1,31 +1,31 @@
 import * as React from "react"
 import type { Socket } from "socket.io-client"
 
-import { onMount } from "./on-mount"
 import { RealtimeContext } from "./realtime-context"
+import { useSingleEffect } from "./use-single-effect"
 
 export function useRealtimeService(
 	key: string,
-	create: (socket: Socket) => (() => void) | undefined,
+	create: (socket: Socket) => () => void,
 ): void {
 	const { socket, services } = React.useContext(RealtimeContext)
-	onMount(() => {
+	useSingleEffect(() => {
 		let service = services?.get(key)
 		if (service) {
-			service[0]++
-		} else {
-			const dispose = socket ? create(socket) : undefined
-			service = [1, dispose]
+			++service.consumerCount
+		} else if (socket) {
+			const dispose = create(socket)
+			service = { consumerCount: 1, dispose }
 			services?.set(key, service)
 		}
 		return () => {
 			if (service) {
-				service[0]--
-				if (service[0] === 0) {
-					service[1]?.()
+				--service.consumerCount
+				if (service.consumerCount === 0) {
+					service.dispose?.()
 					services?.delete(key)
 				}
 			}
 		}
-	})
+	}, [socket])
 }

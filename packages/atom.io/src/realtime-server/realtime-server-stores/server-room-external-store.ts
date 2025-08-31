@@ -1,48 +1,33 @@
 import type { ChildProcessWithoutNullStreams } from "node:child_process"
 import { spawn } from "node:child_process"
 
-import type {
-	Loadable,
-	ReadonlyPureSelectorFamilyToken,
-	RegularAtomFamilyToken,
-} from "atom.io"
-import { atomFamily, selectorFamily } from "atom.io"
-
 import { ChildSocket } from "../ipc-sockets"
 
-export type RoomArguments =
-	| [script: string, options: string[]]
-	| [script: string]
+export const ROOMS: Map<string, ChildSocket<any, any>> = new Map()
 
-export const roomArgumentsAtoms: RegularAtomFamilyToken<RoomArguments, string> =
-	atomFamily<RoomArguments, string>({
-		key: `roomArguments`,
-		default: [`echo`, [`Hello World!`]],
+export async function spawnRoom(
+	roomId: string,
+	script: string,
+	options: string[],
+): Promise<ChildSocket<any, any>> {
+	const child = await new Promise<ChildProcessWithoutNullStreams>((resolve) => {
+		const room = spawn(script, options, { env: process.env })
+		const resolver = (data: Buffer) => {
+			if (data.toString() === `ALIVE`) {
+				room.stdout.off(`data`, resolver)
+				resolve(room)
+			}
+		}
+		room.stdout.on(`data`, resolver)
 	})
+	ROOMS.set(roomId, new ChildSocket(child, roomId))
+	return new ChildSocket(child, roomId)
+}
 
-export const roomSelectors: ReadonlyPureSelectorFamilyToken<
-	Loadable<ChildSocket<any, any>>,
-	string
-> = selectorFamily<Loadable<ChildSocket<any, any>>, string>({
-	key: `room`,
-	get:
-		(roomId) =>
-		async ({ get, find }) => {
-			const argumentsState = find(roomArgumentsAtoms, roomId)
-			const args = get(argumentsState)
-			const [script, options] = args
-			const child = await new Promise<ChildProcessWithoutNullStreams>(
-				(resolve) => {
-					const room = spawn(script, options, { env: process.env })
-					const resolver = (data: Buffer) => {
-						if (data.toString() === `ALIVE`) {
-							room.stdout.off(`data`, resolver)
-							resolve(room)
-						}
-					}
-					room.stdout.on(`data`, resolver)
-				},
-			)
-			return new ChildSocket(child, roomId)
-		},
-})
+export function deleteRoom(roomId: string): void {
+	const room = ROOMS.get(roomId)
+	if (room) {
+		room.emit(`exit`)
+		ROOMS.delete(roomId)
+	}
+}

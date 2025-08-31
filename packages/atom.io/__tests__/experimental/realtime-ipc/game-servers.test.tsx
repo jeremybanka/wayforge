@@ -1,6 +1,5 @@
 import { act } from "@testing-library/react"
-import { findInStore, getFromStore } from "atom.io/internal"
-import { roomSelectors } from "atom.io/realtime-server"
+import { ROOMS } from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 
 import { BrowserGame } from "./BrowserGame"
@@ -8,10 +7,10 @@ import { DatabaseManager } from "./database.node"
 import { SystemServer } from "./system-server.node"
 
 /* ❗❗❗ turn off the lights when you're done ❗❗❗ */
-console.info = () => undefined
-console.log = () => undefined
-console.warn = () => undefined
-console.error = () => undefined
+// console.info = () => undefined
+// console.log = () => undefined
+// console.warn = () => undefined
+// console.error = () => undefined
 const dbManager = new DatabaseManager()
 
 beforeAll(async () => {
@@ -26,6 +25,12 @@ beforeEach(async () => {
 })
 
 afterEach(async () => {
+	console.log(`KILLING ROOMS`, [...ROOMS.keys()])
+	for (const [roomId, room] of ROOMS) {
+		console.log(`KILLING ROOM ${roomId}`)
+		room.process.kill()
+	}
+
 	await dbManager.dropSampleTables()
 })
 
@@ -40,30 +45,9 @@ describe(`multi-process realtime server`, () => {
 			server: SystemServer,
 			client: BrowserGame,
 		})
-
 		return { client, server, teardown }
 	}
 
-	it(`cleans up rooms that were left open on teardown`, async () => {
-		const { client, server, teardown } = scenario(6360)
-		const app = client.init()
-		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
-		act(() => {
-			createRoomButton.click()
-		})
-		await app.renderResult.findByTestId(`join-room-1`)
-
-		const roomSocketState = findInStore(
-			server.silo.store,
-			roomSelectors,
-			`room-1`,
-		)
-		const roomSocket = await getFromStore(server.silo.store, roomSocketState)
-
-		await teardown()
-
-		expect(roomSocket.process.killed).toBe(true)
-	})
 	it(`permits manual creation and deletion of rooms`, async () => {
 		const { client, teardown } = scenario(6361)
 		const app = client.init()

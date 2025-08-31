@@ -1,3 +1,4 @@
+import { ChildProcess } from "node:child_process"
 import * as http from "node:http"
 
 import type { RenderResult } from "@testing-library/react"
@@ -19,6 +20,7 @@ import * as RT from "atom.io/realtime"
 import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
+import { SetRTX } from "atom.io/transceivers/set-rtx"
 import * as Happy from "happy-dom"
 import * as React from "react"
 import * as SocketIO from "socket.io"
@@ -30,17 +32,40 @@ let testNumber = 0
 /* eslint-disable no-console */
 
 function prefixLogger(store: Store, prefix: string) {
-	store.loggers[0] = new AtomIO.AtomIOLogger(`info`, undefined, {
-		info: (...args) => {
-			console.info(prefix, ...args)
+	store.loggers[0] = new AtomIO.AtomIOLogger(
+		`info`,
+		(...params) => {
+			let idx = 0
+			for (const param of params) {
+				if (param instanceof SocketIO.Socket) {
+					params[idx] = `Socket:${param.id}`
+				}
+				if (param instanceof RTS.ChildSocket) {
+					params[idx] = `ChildSocket:${param.id}`
+				}
+				if (param instanceof ChildProcess) {
+					params[idx] = `ChildProcess:${param.pid}`
+				}
+				if (param instanceof SetRTX) {
+					params[idx] =
+						`SetRTX(${param.size}) {${[...param].join(`, `)}} at ${param.cacheIdx}`
+				}
+				idx++
+			}
+			return params
 		},
-		warn: (...args) => {
-			console.warn(prefix, ...args)
+		{
+			info: (...params) => {
+				console.info(prefix, ...params)
+			},
+			warn: (...params) => {
+				console.warn(prefix, ...params)
+			},
+			error: (...params) => {
+				console.error(prefix, ...params)
+			},
 		},
-		error: (...args) => {
-			console.error(prefix, ...args)
-		},
-	})
+	)
 }
 
 export type TestSetupOptions = {
@@ -105,6 +130,7 @@ export const setupRealtimeTestServer = (
 		},
 		IMPLICIT.STORE,
 	)
+	prefixLogger(silo.store, `server`)
 	const socketRealm = new AtomIO.Realm<RTS.SocketSystemHierarchy>(silo.store)
 
 	const httpServer = http.createServer((_, res) => res.end(`Hello World!`))
@@ -163,14 +189,14 @@ export const setupRealtimeTestServer = (
 
 	const dispose = async () => {
 		await server.close()
-		const roomKeys = getFromStore(silo.store, RT.roomIndex)
-		for (const roomKey of roomKeys) {
-			const roomState = findInStore(silo.store, RTS.roomSelectors, roomKey)
-			const room = getFromStore(silo.store, roomState)
-			if (room && !(room instanceof Promise)) {
-				room.process.kill()
-			}
-		}
+		// const roomKeys = getFromStore(silo.store, RT.roomIndex)
+		// for (const roomKey of roomKeys) {
+		// 	const roomState = findInStore(silo.store, RTS.roomSelectors, roomKey)
+		// 	const room = getFromStore(silo.store, roomState)
+		// 	if (room && !(room instanceof Promise)) {
+		// 		room.process.kill()
+		// 	}
+		// } // ❗ PROBABLY STILL NEEDED
 		silo.store.valueMap.clear()
 	}
 
@@ -212,7 +238,7 @@ export const setupRealtimeTestClient = (
 		}
 
 		const enableLogging = () => {
-			prefixLogger(silo.store, name)
+			// prefixLogger(silo.store, name)
 			socket.onAny((event, ...args) => {
 				console.log(`📡 `, name, event, ...args)
 			})

@@ -18,10 +18,13 @@ import type * as SocketIO from "socket.io"
 export const SystemServer = ({
 	socket,
 	silo: { store },
+	enableLogging,
 }: {
 	socket: SocketIO.Socket
 	silo: Silo
+	enableLogging: () => void
 }): void => {
+	enableLogging()
 	const shortId = socket.id.slice(0, 3)
 	const { username } = socket.handshake.auth
 	const exposeMutable = RTS.realtimeMutableProvider({ socket, store })
@@ -38,23 +41,25 @@ export const SystemServer = ({
 	)
 	const usersInRoomsAtoms = getInternalRelationsFromStore(RT.usersInRooms, store)
 	exposeMutableFamily(usersOfSocketsAtoms, RTS.socketIndex)
-	exposeMutable(findInStore(store, usersInRoomsAtoms, username))
+	exposeMutableFamily(
+		usersInRoomsAtoms,
+		findInStore(store, RTS.userMutualSituationalAwarenessIndexes, username),
+	)
 
 	socket.on(`create-room`, async (roomId) => {
-		await actUponStore(store, RTS.createRoomTX, arbitrary())(roomId, `bun`, [
+		await RTS.spawnRoom(roomId, `bun`, [
 			path.join(__dirname, `game-instance.bun.ts`),
 		])
+		setIntoStore(store, RT.roomIndex, (index) => (index.add(roomId), index))
 	})
 
-	socket.on(`delete-room`, async (roomId) => {
-		const roomState = findInStore(store, RTS.roomSelectors, roomId)
-		const roomSocket = await getFromStore(store, roomState)
+	socket.on(`delete-room`, (roomId) => {
 		console.info(`[${shortId}]:${username}`, `deleting room "${roomId}"`)
-		roomSocket.emit(`exit`, username)
+		RTS.deleteRoom(roomId)
 		setIntoStore(store, RT.roomIndex, (index) => (index.delete(roomId), index))
 	})
 
-	socket.on(`join-room`, async (roomId) => {
+	socket.on(`join-room`, (roomId) => {
 		console.info(`[${shortId}]:${username}`, `joining room "${roomId}"`)
 		const roomQueue: [string, ...Json.Array][] = []
 		const pushToRoomQueue = (payload: [string, ...Json.Array]): void => {
@@ -68,8 +73,7 @@ export const SystemServer = ({
 
 		actUponStore(store, RTS.joinRoomTX, arbitrary())(roomId, username, 0)
 
-		const roomSocketState = findInStore(store, RTS.roomSelectors, roomId)
-		const roomSocket = await getFromStore(store, roomSocketState)
+		const roomSocket = RTS.ROOMS.get(roomId)!
 		roomSocket.onAny((...payload) => socket.emit(...payload))
 		roomSocket.emit(`user-joins`, username)
 
@@ -87,7 +91,7 @@ export const SystemServer = ({
 			actUponStore(store, RTS.destroyRoomTX, arbitrary())(roomId)
 		})
 		const leaveRoom = () => {
-			// console.log(`🥋 LEAVE ROOM RECEIVED`)
+			console.log(`🥋 LEAVE ROOM RECEIVED`)
 			socket.off(`leave-room`, leaveRoom)
 			socket.offAny(forward)
 			// roomSocket.dispose() IMPLEMENT ❗
@@ -98,8 +102,8 @@ export const SystemServer = ({
 		socket.on(`leave-room`, leaveRoom)
 	})
 
-	const handleDisconnect = async () => {
-		// console.log(`🥋 DISCONNECT RECEIVED`)
+	const handleDisconnect = () => {
+		console.log(`🥋 DISCONNECT RECEIVED`)
 		socket.off(`disconnect`, handleDisconnect)
 		const roomKeyState = findRelationsInStore(
 			RT.usersInRooms,
@@ -110,8 +114,7 @@ export const SystemServer = ({
 		if (!roomKey) {
 			return
 		}
-		const roomSocketState = findInStore(store, RTS.roomSelectors, roomKey)
-		const roomSocket = await getFromStore(store, roomSocketState)
+		const roomSocket = RTS.ROOMS.get(roomKey)!
 		roomSocket?.emit(`leave-room`, username)
 		actUponStore(store, RTS.leaveRoomTX, arbitrary())(`*`, username)
 		console.info(`[${shortId}]:${username}`, `disconnected`)

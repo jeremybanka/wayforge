@@ -1,8 +1,6 @@
-import { TRPCClientError } from "@trpc/client"
 import { setState } from "atom.io"
 import { useI, useO } from "atom.io/react"
-import { onMount } from "atom.io/realtime-react"
-import React, { useId } from "react"
+import { useEffect, useId } from "react"
 
 import { navigate, type Route } from "../services/router-service"
 import { authAtom, oneTimeCodeInputAtom } from "../services/socket-auth-service"
@@ -21,26 +19,17 @@ export function Verify({
 	const oneTimeCode = useO(oneTimeCodeInputAtom)
 	const setOneTimeCode = useI(oneTimeCodeInputAtom)
 
-	const submitted = React.useState(false)
-	const [error, setError] = React.useState<string | null>(null)
 	const codeInputId = `code-${useId()}`
 
-	onMount(() => {
+	useEffect(() => {
 		if (tokenFromUrl) {
 			setOneTimeCode(tokenFromUrl)
 		}
-	})
+	}, [])
 
 	if (!auth) {
 		return <p>You must be logged in to verify your account.</p>
 	}
-
-	// const { verification } = auth
-
-	onMount(() => {
-		if (!oneTimeCode) return
-		console.log(`verifying token`, oneTimeCode)
-	})
 
 	return (
 		<form
@@ -58,9 +47,7 @@ export function Verify({
 						navigate(`/game`)
 					}
 				} catch (thrown) {
-					if (thrown instanceof TRPCClientError) {
-						setError(thrown.message)
-					}
+					console.error(thrown)
 				}
 			}}
 		>
