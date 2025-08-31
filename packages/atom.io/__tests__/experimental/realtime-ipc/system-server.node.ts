@@ -41,20 +41,20 @@ export const SystemServer = ({
 	)
 	const usersInRoomsAtoms = getInternalRelationsFromStore(RT.usersInRooms, store)
 	exposeMutableFamily(usersOfSocketsAtoms, RTS.socketIndex)
-	exposeMutableFamily(usersInRoomsAtoms, RT.roomIndex)
+	exposeMutableFamily(
+		usersInRoomsAtoms,
+		findInStore(store, RTS.userMutualSituationalAwarenessIndexes, username),
+	)
 
-	socket.on(`create-room`, (roomId) => {
-		// await actUponStore(store, RTS.createRoomTX, arbitrary())(roomId, `bun`, [
-		// 	path.join(__dirname, `game-instance.bun.ts`),
-		// ])
-		RTS.spawnRoom(roomId, `bun`, [path.join(__dirname, `game-instance.bun.ts`)])
+	socket.on(`create-room`, async (roomId) => {
+		await RTS.spawnRoom(roomId, `bun`, [
+			path.join(__dirname, `game-instance.bun.ts`),
+		])
+		setIntoStore(store, RT.roomIndex, (index) => (index.add(roomId), index))
 	})
 
 	socket.on(`delete-room`, (roomId) => {
-		// const roomState = findInStore(store, RTS.roomSelectors, roomId)
-		// const roomSocket = await getFromStore(store, roomState)
 		console.info(`[${shortId}]:${username}`, `deleting room "${roomId}"`)
-		// roomSocket.emit(`exit`, username)
 		RTS.deleteRoom(roomId)
 		setIntoStore(store, RT.roomIndex, (index) => (index.delete(roomId), index))
 	})
@@ -73,8 +73,6 @@ export const SystemServer = ({
 
 		actUponStore(store, RTS.joinRoomTX, arbitrary())(roomId, username, 0)
 
-		// const roomSocketState = findInStore(store, RTS.roomSelectors, roomId)
-		// const roomSocket = await getFromStore(store, roomSocketState)
 		const roomSocket = RTS.ROOMS.get(roomId)!
 		roomSocket.onAny((...payload) => socket.emit(...payload))
 		roomSocket.emit(`user-joins`, username)
@@ -116,8 +114,6 @@ export const SystemServer = ({
 		if (!roomKey) {
 			return
 		}
-		// const roomSocketState = findInStore(store, RTS.roomSelectors, roomKey)
-		// const roomSocket = await getFromStore(store, roomSocketState)
 		const roomSocket = RTS.ROOMS.get(roomKey)!
 		roomSocket?.emit(`leave-room`, username)
 		actUponStore(store, RTS.leaveRoomTX, arbitrary())(`*`, username)

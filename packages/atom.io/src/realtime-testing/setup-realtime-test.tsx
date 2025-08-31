@@ -189,14 +189,14 @@ export const setupRealtimeTestServer = (
 
 	const dispose = async () => {
 		await server.close()
-		const roomKeys = getFromStore(silo.store, RT.roomIndex)
-		for (const roomKey of roomKeys) {
-			const roomState = findInStore(silo.store, RTS.roomSelectors, roomKey)
-			const room = getFromStore(silo.store, roomState)
-			if (room && !(room instanceof Promise)) {
-				room.process.kill()
-			}
-		}
+		// const roomKeys = getFromStore(silo.store, RT.roomIndex)
+		// for (const roomKey of roomKeys) {
+		// 	const roomState = findInStore(silo.store, RTS.roomSelectors, roomKey)
+		// 	const room = getFromStore(silo.store, roomState)
+		// 	if (room && !(room instanceof Promise)) {
+		// 		room.process.kill()
+		// 	}
+		// } // ❗ PROBABLY STILL NEEDED
 		silo.store.valueMap.clear()
 	}
 
