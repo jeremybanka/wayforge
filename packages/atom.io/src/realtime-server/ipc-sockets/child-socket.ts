@@ -1,4 +1,4 @@
-import type { ChildProcessWithoutNullStreams } from "node:child_process"
+import type { Readable, Writable } from "node:stream"
 
 import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"
@@ -19,10 +19,13 @@ export class ChildSocket<
 
 	public id = `#####`
 
-	public process: Pick<
-		ChildProcessWithoutNullStreams,
-		`pid` | `stderr` | `stdin` | `stdout`
-	>
+	public process: {
+		pid?: number | undefined
+		stdin: Writable
+		stdout: Readable
+		stderr: Readable
+		kill: (signal?: NodeJS.Signals | number) => boolean
+	}
 	public key: string
 	public logger: Pick<Console, `error` | `info` | `warn`>
 
@@ -46,10 +49,13 @@ export class ChildSocket<
 	}
 
 	public constructor(
-		proc: Pick<
-			ChildProcessWithoutNullStreams,
-			`pid` | `stderr` | `stdin` | `stdout`
-		>,
+		proc: {
+			pid?: number | undefined
+			stdin: Writable
+			stdout: Readable
+			stderr: Readable
+			kill: (signal?: NodeJS.Signals | number) => boolean
+		},
 		key: string,
 		logger?: Pick<Console, `error` | `info` | `warn`>,
 	) {

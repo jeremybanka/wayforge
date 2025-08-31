@@ -85,7 +85,7 @@ export const SystemServer = ({
 			if (payload) toRoom(payload)
 		}
 
-		roomSocket.process.on(`close`, (code) => {
+		roomSocket.on(`close`, (code) => {
 			console.info(`[${shortId}]:${username}`, `room "${roomId}" closing`)
 			socket.emit(`room-close`, roomId, code)
 			actUponStore(store, RTS.destroyRoomTX, arbitrary())(roomId)

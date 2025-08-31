@@ -1,3 +1,5 @@
+import type { Readable, Writable } from "node:stream"
+
 import { Subject } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { parseJson, stringifyJson } from "atom.io/json"
@@ -54,7 +56,13 @@ export class ParentSocket<
 	protected relayServices: ((
 		socket: SubjectSocket<any, any>,
 	) => (() => void) | void)[]
-	protected process: Pick<NodeJS.Process, `pid` | `stderr` | `stdin` | `stdout`>
+	// protected process: Pick<NodeJS.Process, `pid` | `stderr` | `stdin` | `stdout`>
+	protected process: {
+		pid: number
+		stdin: Readable
+		stdout: Writable
+		stderr: Writable
+	}
 
 	public id = `#####`
 
@@ -82,7 +90,13 @@ export class ParentSocket<
 	}
 
 	public constructor(
-		proc: Pick<NodeJS.Process, `pid` | `stderr` | `stdin` | `stdout`>,
+		// proc: Pick<NodeJS.Process, `pid` | `stderr` | `stdin` | `stdout`>,
+		proc: {
+			pid: number
+			stdin: Readable
+			stdout: Writable
+			stderr: Writable
+		},
 	) {
 		super((event, ...args) => {
 			const stringifiedEvent = JSON.stringify([event, ...args])
