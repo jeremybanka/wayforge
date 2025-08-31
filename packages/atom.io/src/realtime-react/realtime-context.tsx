@@ -5,7 +5,7 @@ import type { Socket } from "socket.io-client"
 
 export type RealtimeServiceCounter = {
 	consumerCount: number
-	dispose: (() => void) | undefined
+	dispose: () => void
 }
 
 export type RealtimeReactStore = {
