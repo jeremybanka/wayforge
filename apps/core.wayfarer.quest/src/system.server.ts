@@ -70,23 +70,21 @@ pipe(
 			exposeMutableFamily(usersInRoomsAtoms, RT.roomIndex)
 			exposeMutable(findState(usersInRoomsAtoms, username))
 
-			socket.on(`create-room`, async (roomId) => {
-				await runTransaction(RTS.createRoomTX)(roomId, `bun`, [
+			socket.on(`create-room`, (roomId) => {
+				RTS.spawnRoom(roomId, `bun`, [
 					// `--smol`,
 					`--watch`,
 					path.join(import.meta.dir, `room.server.ts`),
 				])
 			})
 
-			socket.on(`delete-room`, async (roomId) => {
-				const roomState = findState(RTS.roomSelectors, roomId)
-				const roomSocket = await getState(roomState)
+			socket.on(`delete-room`, (roomId) => {
 				logger.info(`[${shortId}]:${username}`, `deleting room "${roomId}"`)
-				roomSocket.emit(`exit`, username)
+				RTS.deleteRoom(roomId)
 				setState(RT.roomIndex, (index) => (index.delete(roomId), index))
 			})
 
-			socket.on(`join-room`, async (roomId) => {
+			socket.on(`join-room`, (roomId) => {
 				logger.info(`[${shortId}]:${username}`, `joining room "${roomId}"`)
 				const roomQueue: [string, ...Json.Array][] = []
 				const pushToRoomQueue = (payload: [string, ...Json.Array]): void => {
@@ -100,8 +98,7 @@ pipe(
 
 				runTransaction(RTS.joinRoomTX, nanoid())(roomId, username, 0)
 
-				const roomSocketState = findState(RTS.roomSelectors, roomId)
-				const roomSocket = await getState(roomSocketState)
+				const roomSocket = RTS.ROOMS.get(roomId)!
 				roomSocket.onAny((...payload) => socket.emit(...payload))
 				roomSocket.emit(`user-joins`, username)
 
@@ -130,7 +127,7 @@ pipe(
 				socket.on(`disconnect`, leaveRoom)
 			})
 
-			const handleDisconnect = async () => {
+			const handleDisconnect = () => {
 				socket.off(`disconnect`, handleDisconnect)
 				const roomKeyState = findRelations(
 					RT.usersInRooms,
@@ -140,8 +137,7 @@ pipe(
 				if (!roomKey) {
 					return
 				}
-				const roomSocketState = findState(RTS.roomSelectors, roomKey)
-				const roomSocket = await getState(roomSocketState)
+				const roomSocket = RTS.ROOMS.get(roomKey)!
 				roomSocket?.emit(`leave-room`, username)
 				runTransaction(RTS.leaveRoomTX)(`*`, username)
 				logger.info(`[${shortId}]:${username}`, `disconnected`)
