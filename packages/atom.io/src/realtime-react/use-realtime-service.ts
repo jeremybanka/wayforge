@@ -14,7 +14,12 @@ export function useRealtimeService(
 		if (service) {
 			service[0]++
 		} else {
-			const dispose = socket ? create(socket) : undefined
+			let dispose: (() => void) | undefined
+			if (socket) {
+				dispose = create(socket)
+			} else {
+				dispose = undefined
+			}
 			service = [1, dispose]
 			services?.set(key, service)
 		}
