@@ -70,8 +70,8 @@ pipe(
 			exposeMutableFamily(usersInRoomsAtoms, RT.roomIndex)
 			exposeMutable(findState(usersInRoomsAtoms, username))
 
-			socket.on(`create-room`, (roomId) => {
-				RTS.spawnRoom(roomId, `bun`, [
+			socket.on(`create-room`, async (roomId) => {
+				await RTS.spawnRoom(roomId, `bun`, [
 					// `--smol`,
 					`--watch`,
 					path.join(import.meta.dir, `room.server.ts`),
