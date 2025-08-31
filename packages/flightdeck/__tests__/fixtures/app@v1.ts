@@ -4,7 +4,7 @@ import { ParentSocket } from "atom.io/realtime-server"
 import { serve } from "bun"
 
 const PORT = process.argv[2] ?? 4444
-const parentSocket = new ParentSocket()
+const parentSocket = new ParentSocket(process)
 serve({
 	port: PORT,
 	fetch(req) {

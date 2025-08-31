@@ -6,7 +6,7 @@ import { OpenAiSafeGenerator } from "safegen/openai"
 import { tribunal } from "./backend/tribunal/tribunal"
 import { env } from "./library/env"
 
-const parent = new ParentSocket()
+const parent = new ParentSocket(process)
 Object.assign(console, parent.logger, { log: parent.logger.info })
 
 process.on(`SIGINT`, () => {

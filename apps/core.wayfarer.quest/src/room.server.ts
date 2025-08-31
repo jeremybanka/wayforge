@@ -7,7 +7,7 @@ import { generateHeapSnapshot } from "bun"
 
 import { heartsContinuity } from "./store/game/hearts"
 
-const parentSocket = new RTS.ParentSocket()
+const parentSocket = new RTS.ParentSocket(process)
 // const TIMESTAMP = Date.now()
 // const LOG_FILEPATH = `./logs/${TIMESTAMP}.txt`
 
