@@ -1,28 +1,25 @@
 import type * as AtomIO from "atom.io"
-import { setIntoStore, type Store } from "atom.io/internal"
-import type { Json } from "atom.io/json"
-import { parseJson } from "atom.io/json"
+import { findInStore, setIntoStore, type Store } from "atom.io/internal"
+import type { Canonical, Json } from "atom.io/json"
 import type { Socket } from "socket.io-client"
 
-/* eslint-disable no-console */
-
-export function pullAtomFamilyMember<J extends Json.Serializable>(
+export function pullAtomFamilyMember<
+	J extends Json.Serializable,
+	K extends Canonical,
+>(
 	store: Store,
 	socket: Socket,
-	token: AtomIO.RegularAtomToken<J>,
+	family: AtomIO.AtomFamilyToken<J, K, any>,
+	key: NoInfer<K>,
 ): () => void {
-	if (!(`family` in token)) {
-		console.error(`Token is not a family member:`, token)
-		return () => {}
-	}
-	const { key: familyKey, subKey: serializedSubKey } = token.family
-	const subKey = parseJson(serializedSubKey)
-	socket?.on(`serve:${token.key}`, (data: J) => {
+	const token = findInStore(store, family, key)
+	const setServedValue = (data: J) => {
 		setIntoStore(store, token, data)
-	})
-	socket?.emit(`sub:${familyKey}`, subKey)
+	}
+	socket?.on(`serve:${token.key}`, setServedValue)
+	socket?.emit(`sub:${family.key}`, key)
 	return () => {
-		socket?.off(`serve:${token.key}`)
+		socket?.off(`serve:${token.key}`, setServedValue)
 		socket?.emit(`unsub:${token.key}`)
 	}
 }
