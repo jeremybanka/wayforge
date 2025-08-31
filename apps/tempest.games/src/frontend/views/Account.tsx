@@ -1,7 +1,6 @@
 import { getState, setState } from "atom.io"
 import { useO } from "atom.io/react"
-import { onMount } from "atom.io/realtime-react"
-import React from "react"
+import React, { useEffect } from "react"
 
 import {
 	authAtom,
@@ -30,10 +29,10 @@ export function Account(): React.ReactNode {
 	const auth = useO(authAtom)
 	const usernameIsTaken = useO(isUsernameTakenQuerySelector)
 
-	onMount(() => {
+	useEffect(() => {
 		if (auth) setState(emailInputAtom, auth.email)
 		if (auth?.password) setState(passwordInputAtom, `••••••••••••`)
-	})
+	}, [])
 
 	if (!auth) {
 		return <p>You must be logged in to verify your account.</p>
