@@ -175,6 +175,7 @@ const configs = [
 			`**/gen/**`,
 			`**/node_modules/**`,
 			`**/.next/**`,
+			`**/next-env.d.ts`,
 		],
 	},
 	{
