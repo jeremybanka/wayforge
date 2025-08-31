@@ -1,6 +1,4 @@
 import { act } from "@testing-library/react"
-import { findInStore, getFromStore, seekInStore } from "atom.io/internal"
-import { roomIndex } from "atom.io/realtime"
 import { ROOMS } from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 
@@ -65,7 +63,7 @@ describe(`multi-process realtime server`, () => {
 
 		await teardown()
 	})
-	it.only(`permits join and leave`, async () => {
+	it(`permits join and leave`, async () => {
 		const { client, teardown } = scenario(6362)
 		const app = client.init()
 		const createRoomButton = await app.renderResult.findByTestId(`create-room`)

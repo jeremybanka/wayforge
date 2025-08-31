@@ -58,7 +58,7 @@ export function realtimeMutableFamilyProvider({
 			})
 		}
 
-		const isExposed = (exposedSubKeys: Iterable<K>, subKey: K): boolean => {
+		const isAvailable = (exposedSubKeys: Iterable<K>, subKey: K): boolean => {
 			for (const exposedSubKey of exposedSubKeys) {
 				if (stringifyJson(exposedSubKey) === stringifyJson(subKey)) {
 					return true
@@ -69,7 +69,7 @@ export function realtimeMutableFamilyProvider({
 
 		const fillSubRequest = (subKey: K) => {
 			const exposedSubKeys = getFromStore(store, index)
-			const shouldExpose = isExposed(exposedSubKeys, subKey)
+			const shouldExpose = isAvailable(exposedSubKeys, subKey)
 			if (shouldExpose) {
 				doExpose(subKey)
 			} else {
@@ -78,7 +78,8 @@ export function realtimeMutableFamilyProvider({
 					index,
 					`expose-family:${family.key}:${socket.id}`,
 					({ newValue: newExposedSubKeys }) => {
-						if (isExposed(newExposedSubKeys, subKey)) {
+						const shouldNowExpose = isAvailable(newExposedSubKeys, subKey)
+						if (shouldNowExpose) {
 							doExpose(subKey)
 						}
 					},

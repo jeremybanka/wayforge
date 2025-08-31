@@ -1,33 +1,9 @@
-import type { Loadable } from "atom.io"
 import * as AtomIO from "atom.io"
 import { editRelationsInStore } from "atom.io/internal"
 import type { UserInRoomMeta } from "atom.io/realtime"
 import { roomIndex, usersInRooms } from "atom.io/realtime"
 
-import type { ChildSocket } from "../ipc-sockets"
-import type { RoomArguments } from "./server-room-external-store"
-import { roomArgumentsAtoms, roomSelectors } from "./server-room-external-store"
 import type { RoomKey } from "./server-user-store"
-
-// export const createRoomTX: AtomIO.TransactionToken<
-// 	(
-// 		roomKey: RoomKey,
-// 		script: string,
-// 		options?: string[],
-// 	) => Loadable<ChildSocket<any, any>>
-// > = AtomIO.transaction({
-// 	key: `createRoom`,
-// 	do: ({ get, set, find }, roomId, script, options) => {
-// 		const args: RoomArguments = options ? [script, options] : [script]
-// 		const roomArgumentsState = find(roomArgumentsAtoms, roomId)
-// 		set(roomArgumentsState, args)
-// 		set(roomIndex, (s) => s.add(roomId))
-// 		const roomState = find(roomSelectors, roomId)
-// 		const room = get(roomState)
-// 		return room
-// 	},
-// })
-// export type CreateRoomIO = AtomIO.TransactionIO<typeof createRoomTX>
 
 export const joinRoomTX: AtomIO.TransactionToken<
 	(roomId: string, userId: string, enteredAtEpoch: number) => UserInRoomMeta
