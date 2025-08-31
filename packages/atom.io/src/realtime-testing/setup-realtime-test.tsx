@@ -1,3 +1,4 @@
+import { ChildProcess } from "node:child_process"
 import * as http from "node:http"
 
 import type { RenderResult } from "@testing-library/react"
@@ -41,6 +42,9 @@ function prefixLogger(store: Store, prefix: string) {
 				}
 				if (param instanceof RTS.ChildSocket) {
 					params[idx] = `ChildSocket:${param.id}`
+				}
+				if (param instanceof ChildProcess) {
+					params[idx] = `ChildProcess:${param.pid}`
 				}
 				if (param instanceof SetRTX) {
 					params[idx] =
@@ -126,6 +130,7 @@ export const setupRealtimeTestServer = (
 		},
 		IMPLICIT.STORE,
 	)
+	prefixLogger(silo.store, `server`)
 	const socketRealm = new AtomIO.Realm<RTS.SocketSystemHierarchy>(silo.store)
 
 	const httpServer = http.createServer((_, res) => res.end(`Hello World!`))
@@ -233,7 +238,7 @@ export const setupRealtimeTestClient = (
 		}
 
 		const enableLogging = () => {
-			prefixLogger(silo.store, name)
+			// prefixLogger(silo.store, name)
 			socket.onAny((event, ...args) => {
 				console.log(`📡 `, name, event, ...args)
 			})

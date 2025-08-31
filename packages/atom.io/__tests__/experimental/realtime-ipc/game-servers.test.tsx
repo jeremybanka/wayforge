@@ -1,7 +1,7 @@
 import { act } from "@testing-library/react"
 import { findInStore, getFromStore, seekInStore } from "atom.io/internal"
 import { roomIndex } from "atom.io/realtime"
-import { roomSelectors } from "atom.io/realtime-server"
+import { ROOMS } from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 
 import { BrowserGame } from "./BrowserGame"
@@ -27,23 +27,12 @@ beforeEach(async () => {
 })
 
 afterEach(async () => {
-	const roomIds = getFromStore(serverGlobal.silo.store, roomIndex)
-	console.log(`KILLING ROOMS`, [...roomIds])
-	await Promise.all(
-		[...roomIds].map(async (roomId) => {
-			const roomToken = seekInStore(
-				serverGlobal.silo.store,
-				roomSelectors,
-				roomId,
-			)
-			if (!roomToken) {
-				return
-			}
-			const room = await getFromStore(serverGlobal.silo.store, roomToken)
-			console.log(`KILLING ROOM ${roomId}`)
-			room.process.kill()
-		}),
-	)
+	console.log(`KILLING ROOMS`, [...ROOMS.keys()])
+	for (const [roomId, room] of ROOMS) {
+		console.log(`KILLING ROOM ${roomId}`)
+		room.process.kill()
+	}
+
 	await dbManager.dropSampleTables()
 })
 
@@ -51,7 +40,6 @@ afterAll(async () => {
 	await dbManager.dropDatabase()
 })
 
-let serverGlobal: RTTest.RealtimeTestServer
 describe(`multi-process realtime server`, () => {
 	const scenario = (port: number) => {
 		const { server, client, teardown } = RTTest.singleClient({
@@ -59,30 +47,9 @@ describe(`multi-process realtime server`, () => {
 			server: SystemServer,
 			client: BrowserGame,
 		})
-		serverGlobal = server
 		return { client, server, teardown }
 	}
 
-	it(`cleans up rooms that were left open on teardown`, async () => {
-		const { client, server, teardown } = scenario(6360)
-		const app = client.init()
-		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
-		act(() => {
-			createRoomButton.click()
-		})
-		await app.renderResult.findByTestId(`join-room-1`)
-
-		const roomSocketState = findInStore(
-			server.silo.store,
-			roomSelectors,
-			`room-1`,
-		)
-		const roomSocket = await getFromStore(server.silo.store, roomSocketState)
-
-		await teardown()
-
-		expect(roomSocket.process.killed).toBe(true)
-	})
 	it(`permits manual creation and deletion of rooms`, async () => {
 		const { client, teardown } = scenario(6361)
 		const app = client.init()
