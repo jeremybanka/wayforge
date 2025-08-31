@@ -1,20 +1,24 @@
 import type * as AtomIO from "atom.io"
 import type { AsJSON, SignalFrom, Store, Transceiver } from "atom.io/internal"
-import { getJsonToken, getUpdateToken, setIntoStore } from "atom.io/internal"
-import { parseJson } from "atom.io/json"
+import {
+	findInStore,
+	getJsonToken,
+	getUpdateToken,
+	setIntoStore,
+} from "atom.io/internal"
+import type { Canonical } from "atom.io/json"
 import type { Socket } from "socket.io-client"
-
-/* eslint-disable no-console */
 
 export function pullMutableAtomFamilyMember<
 	T extends Transceiver<any, any, any>,
->(store: Store, socket: Socket, token: AtomIO.MutableAtomToken<T>): () => void {
-	if (!(`family` in token)) {
-		console.error(`Token is not a family member:`, token)
-		return () => {}
-	}
-	const { key: familyKey, subKey: serializedSubKey } = token.family
-	const subKey = parseJson(serializedSubKey)
+	K extends Canonical,
+>(
+	store: Store,
+	socket: Socket,
+	family: AtomIO.MutableAtomFamilyToken<T, K>,
+	key: NoInfer<K>,
+): () => void {
+	const token = findInStore(store, family, key)
 	socket.on(`init:${token.key}`, (data: AsJSON<T>) => {
 		const jsonToken = getJsonToken(store, token)
 		setIntoStore(store, jsonToken, data)
@@ -23,7 +27,7 @@ export function pullMutableAtomFamilyMember<
 		const trackerToken = getUpdateToken(token)
 		setIntoStore(store, trackerToken, data)
 	})
-	socket.emit(`sub:${familyKey}`, subKey)
+	socket.emit(`sub:${family.key}`, key)
 	return () => {
 		socket.off(`serve:${token.key}`)
 		socket.emit(`unsub:${token.key}`)

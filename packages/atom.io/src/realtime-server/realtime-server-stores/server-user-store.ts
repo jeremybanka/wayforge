@@ -2,9 +2,10 @@ import type {
 	Hierarchy,
 	JoinToken,
 	MutableAtomToken,
+	PureSelectorFamilyToken,
 	RegularAtomFamilyToken,
 } from "atom.io"
-import { atomFamily, join, mutableAtom } from "atom.io"
+import { atomFamily, join, mutableAtom, selectorFamily } from "atom.io"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import type { Socket } from ".."
@@ -52,4 +53,14 @@ export const usersOfSockets: JoinToken<
 	cardinality: `1:1`,
 	isAType: (s): s is UserKey => s.startsWith(`user::`),
 	isBType: (s): s is SocketKey => s.startsWith(`socket::`),
+})
+
+export const userMutualSituationalAwarenessIndexes: PureSelectorFamilyToken<
+	UserKey[],
+	UserKey
+> = selectorFamily<UserKey[], UserKey>({
+	key: `userMutualSituationalAwarenessIndexes`,
+	get: (userId) => () => {
+		return [userId]
+	},
 })
