@@ -19,7 +19,10 @@ export class ChildSocket<
 
 	public id = `#####`
 
-	public process: ChildProcessWithoutNullStreams
+	public process: Pick<
+		ChildProcessWithoutNullStreams,
+		`pid` | `stderr` | `stdin` | `stdout`
+	>
 	public key: string
 	public logger: Pick<Console, `error` | `info` | `warn`>
 
@@ -43,7 +46,10 @@ export class ChildSocket<
 	}
 
 	public constructor(
-		process: ChildProcessWithoutNullStreams,
+		proc: Pick<
+			ChildProcessWithoutNullStreams,
+			`pid` | `stderr` | `stdin` | `stdout`
+		>,
 		key: string,
 		logger?: Pick<Console, `error` | `info` | `warn`>,
 	) {
@@ -61,7 +67,7 @@ export class ChildSocket<
 
 			return this
 		})
-		this.process = process
+		this.process = proc
 		this.key = key
 		this.logger = logger ?? {
 			info: (...args: unknown[]) => {
@@ -140,8 +146,8 @@ export class ChildSocket<
 				console.error(`❌❌❌️`)
 			}
 		})
-		if (process.pid) {
-			this.id = process.pid.toString()
+		if (proc.pid) {
+			this.id = proc.pid.toString()
 		}
 	}
 }
