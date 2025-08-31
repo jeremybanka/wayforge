@@ -6,7 +6,7 @@ import type { Socket } from "socket.io-client"
 export function pullAtom<J extends Json.Serializable>(
 	store: Store,
 	socket: Socket,
-	token: AtomIO.RegularAtomToken<J>,
+	token: AtomIO.RegularAtomToken<J, any, any>,
 ): () => void {
 	const setServedValue = (data: J) => {
 		setIntoStore(store, token, data)

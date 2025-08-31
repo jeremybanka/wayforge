@@ -38,6 +38,8 @@ export type RegularAtom<T, E> = Flat<
 		cleanup?: () => void
 		internalRoles?: InternalRole[]
 		catch?: readonly Ctor<E>[]
+		__T?: T
+		__E?: E
 	}
 >
 export type MutableAtom<T extends Transceiver<any, any, any>> = Flat<
@@ -45,6 +47,7 @@ export type MutableAtom<T extends Transceiver<any, any, any>> = Flat<
 		type: `mutable_atom`
 		class: ConstructorOf<T>
 		cleanup?: () => void
+		__T?: T
 	}
 >
 export type Atom<T, E> =
@@ -57,6 +60,7 @@ export type WritableHeldSelector<T> = Flat<
 		const: T
 		getFrom: (target: Store) => T
 		setSelf: (newValue: T) => void
+		__T?: T
 	}
 >
 export type ReadonlyHeldSelector<T> = Flat<
@@ -64,6 +68,7 @@ export type ReadonlyHeldSelector<T> = Flat<
 		type: `readonly_held_selector`
 		const: T
 		getFrom: (target: Store) => T
+		__T?: T
 	}
 >
 export type WritablePureSelector<T, E> = Flat<
@@ -72,6 +77,8 @@ export type WritablePureSelector<T, E> = Flat<
 		getFrom: (target: Store) => E | T
 		setSelf: (newValue: T) => void
 		catch?: readonly Ctor<E>[]
+		__T?: T
+		__E?: E
 	}
 >
 export type ReadonlyPureSelector<T, E> = Flat<
@@ -79,6 +86,8 @@ export type ReadonlyPureSelector<T, E> = Flat<
 		type: `readonly_pure_selector`
 		getFrom: (target: Store) => E | T
 		catch?: readonly Ctor<E>[]
+		__T?: T
+		__E?: E
 	}
 >
 export type ReadonlySelector<T, E> =
