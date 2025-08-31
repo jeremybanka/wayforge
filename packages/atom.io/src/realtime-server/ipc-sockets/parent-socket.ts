@@ -54,7 +54,7 @@ export class ParentSocket<
 	protected relayServices: ((
 		socket: SubjectSocket<any, any>,
 	) => (() => void) | void)[]
-	protected process: NodeJS.Process
+	protected process: Pick<NodeJS.Process, `pid` | `stderr` | `stdin` | `stdout`>
 
 	public id = `#####`
 
@@ -81,13 +81,15 @@ export class ParentSocket<
 		},
 	}
 
-	public constructor() {
+	public constructor(
+		proc: Pick<NodeJS.Process, `pid` | `stderr` | `stdin` | `stdout`>,
+	) {
 		super((event, ...args) => {
 			const stringifiedEvent = JSON.stringify([event, ...args])
 			this.process.stdout.write(stringifiedEvent + `\x03`)
 			return this
 		})
-		this.process = process
+		this.process = proc
 		this.process.stdin.resume()
 		this.relays = new Map()
 		this.relayServices = []

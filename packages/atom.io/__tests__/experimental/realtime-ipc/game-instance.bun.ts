@@ -7,7 +7,7 @@ import { gameContinuity, letterAtoms } from "./game-store"
 
 const LOGGING = false
 
-const parentSocket = new RTS.ParentSocket()
+const parentSocket = new RTS.ParentSocket(process)
 const ipcLog = {
 	info: (...args: unknown[]) => {
 		parentSocket.logger.info(...args)
