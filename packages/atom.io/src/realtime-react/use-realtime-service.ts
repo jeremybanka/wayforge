@@ -12,7 +12,7 @@ export function useRealtimeService(
 	onMount(() => {
 		let service = services?.get(key)
 		if (service) {
-			service[0]++
+			++service.consumerCount
 		} else {
 			let dispose: (() => void) | undefined
 			if (socket) {
@@ -20,14 +20,14 @@ export function useRealtimeService(
 			} else {
 				dispose = undefined
 			}
-			service = [1, dispose]
+			service = { consumerCount: 1, dispose }
 			services?.set(key, service)
 		}
 		return () => {
 			if (service) {
-				service[0]--
-				if (service[0] === 0) {
-					service[1]?.()
+				--service.consumerCount
+				if (service.consumerCount === 0) {
+					service.dispose?.()
 					services?.delete(key)
 				}
 			}
