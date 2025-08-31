@@ -39,6 +39,9 @@ function prefixLogger(store: Store, prefix: string) {
 				if (param instanceof SocketIO.Socket) {
 					params[idx] = `Socket:${param.id}`
 				}
+				if (param instanceof RTS.ChildSocket) {
+					params[idx] = `ChildSocket:${param.id}`
+				}
 				if (param instanceof SetRTX) {
 					params[idx] =
 						`SetRTX(${param.size}) {${[...param].join(`, `)}} at ${param.cacheIdx}`

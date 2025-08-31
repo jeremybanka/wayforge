@@ -16,7 +16,7 @@ import type { UserKey } from "atom.io/realtime-server"
 
 /* eslint-disable no-console */
 
-export class InvariantMap<K, V> extends Map<K, V> {
+export class InvariantMap<K, V> extends Map<K, V> implements ReadonlyMap<K, V> {
 	public set(key: K, value: V): this {
 		if (this.has(key)) {
 			console.warn(`Tried to set a key that already exists in an InvariantMap`, {
@@ -26,10 +26,6 @@ export class InvariantMap<K, V> extends Map<K, V> {
 			return this
 		}
 		return super.set(key, value)
-	}
-
-	public clear(): void {
-		throw new Error(`Cannot clear an InvariantMap`)
 	}
 }
 
