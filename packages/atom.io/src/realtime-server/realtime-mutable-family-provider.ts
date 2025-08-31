@@ -27,40 +27,63 @@ export function realtimeMutableFamilyProvider({
 		family: AtomIO.MutableAtomFamilyToken<T, K>,
 		index: AtomIO.ReadableToken<Iterable<K>>,
 	): () => void {
-		const unsubCallbacksByKey = new Map<string, () => void>()
+		const heldSubscriptionsByKey = new Map<string, () => void>()
 
 		const fillUnsubRequest = (key: string) => {
 			socket.off(`unsub:${key}`, fillUnsubRequest)
-			const unsub = unsubCallbacksByKey.get(key)
+			const unsub = heldSubscriptionsByKey.get(key)
 			if (unsub) {
 				unsub()
-				unsubCallbacksByKey.delete(key)
+				heldSubscriptionsByKey.delete(key)
 			}
+		}
+
+		const doExpose = (subKey: K) => {
+			const token = findInStore(store, family, subKey)
+			getFromStore(store, token)
+			const jsonToken = getJsonToken(store, token)
+			const updateToken = getUpdateToken(token)
+			socket.emit(`init:${token.key}`, getFromStore(store, jsonToken))
+			const unsubscribe = subscribeToState(
+				store,
+				updateToken,
+				`expose-family:${family.key}:${socket.id}`,
+				({ newValue }) => {
+					socket.emit(`next:${token.key}`, newValue)
+				},
+			)
+			heldSubscriptionsByKey.set(token.key, unsubscribe)
+			socket.on(`unsub:${token.key}`, () => {
+				fillUnsubRequest(token.key)
+			})
+		}
+
+		const isExposed = (exposedSubKeys: Iterable<K>, subKey: K): boolean => {
+			for (const exposedSubKey of exposedSubKeys) {
+				if (stringifyJson(exposedSubKey) === stringifyJson(subKey)) {
+					return true
+				}
+			}
+			return false
 		}
 
 		const fillSubRequest = (subKey: K) => {
 			const exposedSubKeys = getFromStore(store, index)
-			for (const exposedSubKey of exposedSubKeys) {
-				if (stringifyJson(exposedSubKey) === stringifyJson(subKey)) {
-					const token = findInStore(store, family, subKey)
-					getFromStore(store, token)
-					const jsonToken = getJsonToken(store, token)
-					const updateToken = getUpdateToken(token)
-					socket.emit(`init:${token.key}`, getFromStore(store, jsonToken))
-					const unsubscribe = subscribeToState(
-						store,
-						updateToken,
-						`expose-family:${family.key}:${socket.id}`,
-						({ newValue }) => {
-							socket.emit(`next:${token.key}`, newValue)
-						},
-					)
-					unsubCallbacksByKey.set(token.key, unsubscribe)
-					socket.on(`unsub:${token.key}`, () => {
-						fillUnsubRequest(token.key)
-					})
-					break
-				}
+			const shouldExpose = isExposed(exposedSubKeys, subKey)
+			if (shouldExpose) {
+				doExpose(subKey)
+			} else {
+				const indexSubscription = subscribeToState(
+					store,
+					index,
+					`expose-family:${family.key}:${socket.id}`,
+					({ newValue: newExposedSubKeys }) => {
+						if (isExposed(newExposedSubKeys, subKey)) {
+							doExpose(subKey)
+						}
+					},
+				)
+				heldSubscriptionsByKey.set(index.key, indexSubscription)
 			}
 		}
 
@@ -68,10 +91,10 @@ export function realtimeMutableFamilyProvider({
 
 		return () => {
 			socket.off(`sub:${family.key}`, fillSubRequest)
-			for (const [, unsub] of unsubCallbacksByKey) {
+			for (const [, unsub] of heldSubscriptionsByKey) {
 				unsub()
 			}
-			unsubCallbacksByKey.clear()
+			heldSubscriptionsByKey.clear()
 		}
 	}
 }

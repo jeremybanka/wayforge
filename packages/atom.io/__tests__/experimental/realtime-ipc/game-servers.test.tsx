@@ -1,5 +1,6 @@
 import { act } from "@testing-library/react"
-import { findInStore, getFromStore } from "atom.io/internal"
+import { findInStore, getFromStore, seekInStore } from "atom.io/internal"
+import { roomIndex } from "atom.io/realtime"
 import { roomSelectors } from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 
@@ -8,10 +9,10 @@ import { DatabaseManager } from "./database.node"
 import { SystemServer } from "./system-server.node"
 
 /* ❗❗❗ turn off the lights when you're done ❗❗❗ */
-console.info = () => undefined
-console.log = () => undefined
-console.warn = () => undefined
-console.error = () => undefined
+// console.info = () => undefined
+// console.log = () => undefined
+// console.warn = () => undefined
+// console.error = () => undefined
 const dbManager = new DatabaseManager()
 
 beforeAll(async () => {
@@ -26,6 +27,23 @@ beforeEach(async () => {
 })
 
 afterEach(async () => {
+	const roomIds = getFromStore(serverGlobal.silo.store, roomIndex)
+	console.log(`KILLING ROOMS`, [...roomIds])
+	await Promise.all(
+		[...roomIds].map(async (roomId) => {
+			const roomToken = seekInStore(
+				serverGlobal.silo.store,
+				roomSelectors,
+				roomId,
+			)
+			if (!roomToken) {
+				return
+			}
+			const room = await getFromStore(serverGlobal.silo.store, roomToken)
+			console.log(`KILLING ROOM ${roomId}`)
+			room.process.kill()
+		}),
+	)
 	await dbManager.dropSampleTables()
 })
 
@@ -33,6 +51,7 @@ afterAll(async () => {
 	await dbManager.dropDatabase()
 })
 
+let serverGlobal: RTTest.RealtimeTestServer
 describe(`multi-process realtime server`, () => {
 	const scenario = (port: number) => {
 		const { server, client, teardown } = RTTest.singleClient({
@@ -40,7 +59,7 @@ describe(`multi-process realtime server`, () => {
 			server: SystemServer,
 			client: BrowserGame,
 		})
-
+		serverGlobal = server
 		return { client, server, teardown }
 	}
 
@@ -79,7 +98,7 @@ describe(`multi-process realtime server`, () => {
 
 		await teardown()
 	})
-	it(`permits join and leave`, async () => {
+	it.only(`permits join and leave`, async () => {
 		const { client, teardown } = scenario(6362)
 		const app = client.init()
 		const createRoomButton = await app.renderResult.findByTestId(`create-room`)

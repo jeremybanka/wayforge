@@ -18,10 +18,13 @@ import type * as SocketIO from "socket.io"
 export const SystemServer = ({
 	socket,
 	silo: { store },
+	enableLogging,
 }: {
 	socket: SocketIO.Socket
 	silo: Silo
+	enableLogging: () => void
 }): void => {
+	enableLogging()
 	const shortId = socket.id.slice(0, 3)
 	const { username } = socket.handshake.auth
 	const exposeMutable = RTS.realtimeMutableProvider({ socket, store })
@@ -38,7 +41,11 @@ export const SystemServer = ({
 	)
 	const usersInRoomsAtoms = getInternalRelationsFromStore(RT.usersInRooms, store)
 	exposeMutableFamily(usersOfSocketsAtoms, RTS.socketIndex)
-	exposeMutable(findInStore(store, usersInRoomsAtoms, username))
+	exposeMutableFamily(
+		usersInRoomsAtoms,
+		RT.roomIndex,
+		// findInStore(store, usersInRoomsAtoms, username),
+	)
 
 	socket.on(`create-room`, async (roomId) => {
 		await actUponStore(store, RTS.createRoomTX, arbitrary())(roomId, `bun`, [
@@ -87,7 +94,7 @@ export const SystemServer = ({
 			actUponStore(store, RTS.destroyRoomTX, arbitrary())(roomId)
 		})
 		const leaveRoom = () => {
-			// console.log(`🥋 LEAVE ROOM RECEIVED`)
+			console.log(`🥋 LEAVE ROOM RECEIVED`)
 			socket.off(`leave-room`, leaveRoom)
 			socket.offAny(forward)
 			// roomSocket.dispose() IMPLEMENT ❗
@@ -99,7 +106,7 @@ export const SystemServer = ({
 	})
 
 	const handleDisconnect = async () => {
-		// console.log(`🥋 DISCONNECT RECEIVED`)
+		console.log(`🥋 DISCONNECT RECEIVED`)
 		socket.off(`disconnect`, handleDisconnect)
 		const roomKeyState = findRelationsInStore(
 			RT.usersInRooms,
