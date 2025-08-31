@@ -28,7 +28,7 @@ afterEach(async () => {
 	console.log(`KILLING ROOMS`, [...ROOMS.keys()])
 	for (const [roomId, room] of ROOMS) {
 		console.log(`KILLING ROOM ${roomId}`)
-		room.process.kill()
+		room.proc.kill()
 	}
 
 	await dbManager.dropSampleTables()

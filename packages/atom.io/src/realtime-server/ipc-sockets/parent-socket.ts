@@ -57,17 +57,18 @@ export class ParentSocket<
 		socket: SubjectSocket<any, any>,
 	) => (() => void) | void)[]
 	// protected process: Pick<NodeJS.Process, `pid` | `stderr` | `stdin` | `stdout`>
-	protected process: {
+	protected proc: {
 		pid: number
 		stdin: Readable
 		stdout: Writable
 		stderr: Writable
+		exit: (code?: number) => void
 	}
 
 	public id = `#####`
 
 	protected log(...args: any[]): void {
-		this.process.stderr.write(
+		this.proc.stderr.write(
 			stringifyJson(
 				args.map((arg) =>
 					arg instanceof SetRTX
@@ -96,20 +97,21 @@ export class ParentSocket<
 			stdin: Readable
 			stdout: Writable
 			stderr: Writable
+			exit: (code?: number) => void
 		},
 	) {
 		super((event, ...args) => {
 			const stringifiedEvent = JSON.stringify([event, ...args])
-			this.process.stdout.write(stringifiedEvent + `\x03`)
+			this.proc.stdout.write(stringifiedEvent + `\x03`)
 			return this
 		})
-		this.process = proc
-		this.process.stdin.resume()
+		this.proc = proc
+		this.proc.stdin.resume()
 		this.relays = new Map()
 		this.relayServices = []
 		// this.logger.info(`🔗`, `uplink`, process.pid)
 
-		this.process.stdin.on(
+		this.proc.stdin.on(
 			`data`,
 			<Event extends keyof I>(buffer: EventBuffer<string, I[Event]>) => {
 				const chunk = buffer.toString()
@@ -142,26 +144,11 @@ export class ParentSocket<
 
 		this.on(`exit`, () => {
 			this.logger.info(`🔥`, this.id, `received "exit"`)
-			process.exit(0)
-		})
-		process.on(`exit`, (code) => {
-			this.logger.info(`🔥`, this.id, `exited with code ${code}`)
-		})
-		process.on(`end`, () => {
-			this.logger.info(`🔥`, this.id, `ended`)
-			process.exit(0)
-		})
-		process.on(`SIGTERM`, () => {
-			this.logger.error(`🔥`, this.id, `terminated`)
-			process.exit(0)
-		})
-		process.on(`SIGINT`, () => {
-			this.logger.error(`🔥`, this.id, `interrupted`)
-			process.exit(0)
+			this.proc.exit(0)
 		})
 
-		if (process.pid) {
-			this.id = process.pid?.toString()
+		if (this.proc.pid) {
+			this.id = this.proc.pid?.toString()
 		}
 
 		this.on(`user-joins`, (username) => {
@@ -196,7 +183,7 @@ export class ParentSocket<
 			}
 		})
 
-		process.stdout.write(`ALIVE`)
+		this.proc.stdout.write(`ALIVE`)
 	}
 
 	public relay(
