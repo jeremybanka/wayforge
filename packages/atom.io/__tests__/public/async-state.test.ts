@@ -128,6 +128,11 @@ describe(`async selector`, () => {
 			})
 	})
 	server.listen(PORT)
+
+	afterAll(() => {
+		server.close()
+	})
+
 	test(`selector as a caching mechanism for async data`, async () => {
 		const { atom, selector, getState /* store */ } = new AtomIO.Silo({
 			name: `math`,
