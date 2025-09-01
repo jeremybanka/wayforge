@@ -3,7 +3,10 @@ import { spawn } from "node:child_process"
 
 import { ChildSocket } from "../ipc-sockets"
 
-export const ROOMS: Map<string, ChildSocket<any, any>> = new Map()
+export const ROOMS: Map<
+	string,
+	ChildSocket<any, any, ChildProcessWithoutNullStreams>
+> = new Map()
 
 export async function spawnRoom(
 	roomId: string,

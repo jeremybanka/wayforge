@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/only-throw-error */
+import type { ChildProcessWithoutNullStreams } from "node:child_process"
 import { execSync, spawn } from "node:child_process"
 import { createServer } from "node:http"
 import { homedir } from "node:os"
@@ -55,7 +56,8 @@ export class FlightDeck<S extends string = string> {
 	protected services: {
 		[service in S]: ChildSocket<
 			{ timeToStop: []; updatesReady: [] },
-			{ readyToUpdate: []; alive: [] }
+			{ readyToUpdate: []; alive: [] },
+			ChildProcessWithoutNullStreams
 		> | null
 	}
 	protected serviceIdx: { readonly [service in S]: number }
@@ -314,7 +316,7 @@ export class FlightDeck<S extends string = string> {
 			`${this.options.packageName}::${serviceName}`,
 			serviceLogger,
 		))
-		serviceLogger.processCode = service.process.pid ?? -1
+		serviceLogger.processCode = service.proc.pid ?? -1
 		this.services[serviceName].onAny((...messages) => {
 			serviceLogger.info(`💬`, ...messages)
 		})
@@ -331,7 +333,7 @@ export class FlightDeck<S extends string = string> {
 			}
 			this.dead.use(Promise.all(this.servicesDead))
 		})
-		this.services[serviceName].process.once(`close`, (exitCode) => {
+		this.services[serviceName].proc.once(`close`, (exitCode) => {
 			this.logger.info(
 				`Auto-respawn saw "${serviceName}" exit with code ${exitCode}`,
 			)
@@ -416,7 +418,7 @@ export class FlightDeck<S extends string = string> {
 			this.servicesDead[this.serviceIdx[serviceName]].use(
 				new Promise((pass) => {
 					service.emit(`timeToStop`)
-					service.process.once(`close`, (exitCode) => {
+					service.proc.once(`close`, (exitCode) => {
 						this.logger.info(
 							`Stopped service "${serviceName}"; exited with code ${exitCode}`,
 						)

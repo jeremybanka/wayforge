@@ -1,3 +1,4 @@
+import type { ChildProcessWithoutNullStreams } from "node:child_process"
 import { spawn } from "node:child_process"
 import { resolve } from "node:path"
 
@@ -14,7 +15,7 @@ export function worker(
 	from: ParentSocket<any, any>,
 	name: `${Role}.worker.${string}.${Runner}`,
 	logger: Pick<Console, `error` | `info` | `warn`> = from.logger,
-): ChildSocket<any, any> {
+): ChildSocket<any, any, ChildProcessWithoutNullStreams> {
 	const extension: Extension = env.RUN_WORKERS_FROM_SOURCE ? `ts` : `js`
 	const runner: Runner = name.endsWith(`.bun`) ? `bun` : `node`
 	const workerPath = resolve(import.meta.dir, `${name}.${extension}`)

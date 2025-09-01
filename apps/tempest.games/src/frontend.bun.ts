@@ -15,7 +15,7 @@ import {
 	serverIssueType,
 } from "./library/response-dictionary"
 
-const parentSocket = new ParentSocket()
+const parentSocket = new ParentSocket(process)
 const { logger } = parentSocket
 Object.assign(console, logger, { log: logger.info })
 logger.info(`ready`)
