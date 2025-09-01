@@ -209,7 +209,7 @@ describe(`mutable atoms in continuity`, () => {
 		)
 	}
 	test(`mutable initialization`, async () => {
-		const { client, server, addItemTX, myListAtom } = scenario()
+		const { client, server, addItemTX, myListAtom, teardown } = scenario()
 		const clientApp = client.init()
 		// clientApp.enableLogging()
 		await waitFor(() => {
@@ -232,5 +232,7 @@ describe(`mutable atoms in continuity`, () => {
 			Utils.throwUntil(() => server.silo.getState(myListAtom).has(`world`))
 		})
 		if (DEBUG_LOGGING) console.log(`📝 took ${performance.now() - time}ms`)
+
+		await teardown()
 	})
 })
