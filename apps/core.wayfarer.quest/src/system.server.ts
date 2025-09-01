@@ -110,7 +110,7 @@ pipe(
 					if (payload) toRoom(payload)
 				}
 
-				roomSocket.process.on(`close`, (code) => {
+				roomSocket.proc.on(`close`, (code) => {
 					logger.info(`[${shortId}]:${username}`, `room "${roomId}" closing`)
 					socket.emit(`room-close`, roomId, code)
 					runTransaction(RTS.destroyRoomTX)(roomId)
