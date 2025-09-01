@@ -72,6 +72,10 @@ describe(`complex async setup`, () => {
 	})
 	server.listen(PORT)
 
+	afterAll(() => {
+		server.close()
+	})
+
 	test(`complex chain of async selectors`, async () => {
 		const urlState = AtomIO.atom<AtomIO.Loadable<URL>>({
 			key: `url`,
