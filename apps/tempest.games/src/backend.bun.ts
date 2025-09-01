@@ -86,7 +86,7 @@ new WebSocketServer(httpServer, {
 async function gracefulExit() {
 	logger.info(`🧹 closing workers`)
 	const gameWorkerExit = new Promise((pass) =>
-		gameWorker.process.once(`close`, pass),
+		gameWorker.proc.once(`close`, pass),
 	)
 	gameWorker.emit(`timeToStop`)
 	await gameWorkerExit

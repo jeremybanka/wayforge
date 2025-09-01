@@ -1,4 +1,4 @@
-import type { ChildProcessWithoutNullStreams } from "node:child_process"
+import type { Readable, Writable } from "node:stream"
 
 import type { Json } from "atom.io/json"
 import { parseJson } from "atom.io/json"
@@ -8,9 +8,17 @@ import { CustomSocket } from "./custom-socket"
 
 /* eslint-disable no-console */
 
+export type ChildProcess = {
+	pid?: number | undefined
+	stdin: Writable
+	stdout: Readable
+	stderr: Readable
+}
+
 export class ChildSocket<
 	I extends Events,
 	O extends Events,
+	P extends ChildProcess = ChildProcess,
 > extends CustomSocket<I, O> {
 	protected incompleteData = ``
 	protected unprocessedEvents: string[] = []
@@ -19,7 +27,7 @@ export class ChildSocket<
 
 	public id = `#####`
 
-	public process: ChildProcessWithoutNullStreams
+	public proc: P
 	public key: string
 	public logger: Pick<Console, `error` | `info` | `warn`>
 
@@ -43,7 +51,7 @@ export class ChildSocket<
 	}
 
 	public constructor(
-		process: ChildProcessWithoutNullStreams,
+		proc: P,
 		key: string,
 		logger?: Pick<Console, `error` | `info` | `warn`>,
 	) {
@@ -51,17 +59,17 @@ export class ChildSocket<
 			const stringifiedEvent = JSON.stringify([event, ...args]) + `\x03`
 			const errorHandler = (err: { code: string }) => {
 				if (err.code === `EPIPE`) {
-					console.error(`EPIPE error during write`, this.process.stdin)
+					console.error(`EPIPE error during write`, this.proc.stdin)
 				}
-				this.process.stdin.removeListener(`error`, errorHandler)
+				this.proc.stdin.removeListener(`error`, errorHandler)
 			}
 
-			this.process.stdin.once(`error`, errorHandler)
-			this.process.stdin.write(stringifiedEvent)
+			this.proc.stdin.once(`error`, errorHandler)
+			this.proc.stdin.write(stringifiedEvent)
 
 			return this
 		})
-		this.process = process
+		this.proc = proc
 		this.key = key
 		this.logger = logger ?? {
 			info: (...args: unknown[]) => {
@@ -74,13 +82,13 @@ export class ChildSocket<
 				console.error(this.id, this.key, ...args)
 			},
 		}
-		this.process.stdout.on(
+		this.proc.stdout.on(
 			`data`,
 			<Event extends keyof I>(buffer: EventBuffer<string, I[Event]>) => {
 				const chunk = buffer.toString()
 
 				if (chunk === `ALIVE`) {
-					// console.log(chunk)
+					console.log(chunk)
 					return
 				}
 				this.unprocessedEvents.push(...chunk.split(`\x03`))
@@ -114,7 +122,7 @@ export class ChildSocket<
 				}
 			},
 		)
-		this.process.stderr.on(`data`, (buf) => {
+		this.proc.stderr.on(`data`, (buf) => {
 			const chunk = buf.toString()
 			this.unprocessedLogs.push(...chunk.split(`\x03`))
 			// console.log(`🤫`, chunk.length)
@@ -140,8 +148,8 @@ export class ChildSocket<
 				console.error(`❌❌❌️`)
 			}
 		})
-		if (process.pid) {
-			this.id = process.pid.toString()
+		if (proc.pid) {
+			this.id = proc.pid.toString()
 		}
 	}
 }
