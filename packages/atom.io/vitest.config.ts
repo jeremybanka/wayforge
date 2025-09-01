@@ -1,3 +1,4 @@
+import { cpus } from "node:os"
 import { resolve } from "node:path"
 
 import type { UserConfig } from "vite"
@@ -37,6 +38,12 @@ const vitestConfig: UserConfig = defineConfig({
 		target: `es2022`,
 	},
 	test: {
+		pool: `vmThreads`,
+		poolOptions: {
+			vmThreads: {
+				maxThreads: cpus().length - 1,
+			},
+		},
 		globals: true,
 		environment: `happy-dom`,
 		coverage: {
