@@ -4,7 +4,10 @@ import { defineConfig } from "vitest/config"
 
 const config: UserConfig = defineConfig({
 	plugins: [tsconfigPaths()],
-	test: { globals: true },
+	test: {
+		globals: true,
+		isolate: false,
+	},
 })
 
 export default config
