@@ -1,6 +1,6 @@
 import type { Json, stringified } from "atom.io/json"
 
-import type { Socket } from ".."
+import type { Socket } from "../socket-interface"
 
 export type Events = Json.Object<string, Json.Serializable[]>
 

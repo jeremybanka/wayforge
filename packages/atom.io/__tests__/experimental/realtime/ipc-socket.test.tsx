@@ -38,31 +38,27 @@ test(`inter-process communication`, async () => {
 		},
 	})
 
-	const gotPing = new Promise<[string]>((resolve) => {
+	const gotPing = new Promise<string>((resolve) => {
 		childsInterfaceToParent.on(`ping`, (msg: string) => {
-			resolve([msg])
+			resolve(msg)
 		})
 	})
 
 	parentsInterfaceToChild.emit(`ping`, `hello from parent`)
 
-	const [ping] = await gotPing
-
-	// console.log(`⛔⛔⛔⛔⛔ gotPing`, ping)
+	const ping = await gotPing
 
 	expect(ping).toBe(`hello from parent`)
 
-	const gotPong = new Promise<[string]>((resolve) => {
+	const gotPong = new Promise<string>((resolve) => {
 		parentsInterfaceToChild.on(`pong`, (msg: string) => {
-			resolve([msg])
+			resolve(msg)
 		})
 	})
 
 	childsInterfaceToParent.emit(`pong`, `hello from child`)
 
-	const [pong] = await gotPong
-
-	// console.log(`⛔⛔⛔⛔⛔ gotPing`, pong)
+	const pong = await gotPong
 
 	expect(pong).toBe(`hello from child`)
 })
