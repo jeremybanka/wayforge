@@ -4,31 +4,29 @@ import { ChildSocket, ParentSocket } from "atom.io/realtime-server"
 
 const logger: Pick<Console, `error` | `info` | `warn`> = console
 
+let parentToChild: ChildSocket<any, any>
+let childToParent: ParentSocket<any, any>
 beforeEach(() => {
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
-})
 
-test(`inter-process communication`, async () => {
 	const stdin = new PassThrough()
 	const stdout = new PassThrough()
 	const stderr = new PassThrough()
 	const pid = 1
 
-	const parentsInterfaceToChild = new ChildSocket(
+	parentToChild = new ChildSocket(
 		{
 			stdin,
 			stdout,
 			stderr,
 			pid,
-			kill: () => true,
-			on: () => {},
 		},
 		`child-socket`,
 	)
 
-	const childsInterfaceToParent = new ParentSocket({
+	childToParent = new ParentSocket({
 		stdin,
 		stdout,
 		stderr,
@@ -37,28 +35,38 @@ test(`inter-process communication`, async () => {
 			console.log(`exited`)
 		},
 	})
+})
 
-	const gotPing = new Promise<string>((resolve) => {
-		childsInterfaceToParent.on(`ping`, (msg: string) => {
-			resolve(msg)
+afterEach(() => {
+	parentToChild?.proc.stdin.destroy()
+	parentToChild?.proc.stdout.destroy()
+	parentToChild?.proc.stderr.destroy()
+})
+
+describe(`socket interface`, () => {
+	test(`inter-process communication`, async () => {
+		const gotPing = new Promise<string>((resolve) => {
+			childToParent.on(`ping`, (msg: string) => {
+				resolve(msg)
+			})
 		})
-	})
 
-	parentsInterfaceToChild.emit(`ping`, `hello from parent`)
+		parentToChild.emit(`ping`, `hello from parent`)
 
-	const ping = await gotPing
+		const ping = await gotPing
 
-	expect(ping).toBe(`hello from parent`)
+		expect(ping).toBe(`hello from parent`)
 
-	const gotPong = new Promise<string>((resolve) => {
-		parentsInterfaceToChild.on(`pong`, (msg: string) => {
-			resolve(msg)
+		const gotPong = new Promise<string>((resolve) => {
+			parentToChild.on(`pong`, (msg: string) => {
+				resolve(msg)
+			})
 		})
+
+		childToParent.emit(`pong`, `hello from child`)
+
+		const pong = await gotPong
+
+		expect(pong).toBe(`hello from child`)
 	})
-
-	childsInterfaceToParent.emit(`pong`, `hello from child`)
-
-	const pong = await gotPong
-
-	expect(pong).toBe(`hello from child`)
 })
