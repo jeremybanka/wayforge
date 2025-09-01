@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/only-throw-error */
+import type { ChildProcessWithoutNullStreams } from "node:child_process"
 import { execSync, spawn } from "node:child_process"
 import { createServer } from "node:http"
 import { homedir } from "node:os"
@@ -55,7 +56,8 @@ export class FlightDeck<S extends string = string> {
 	protected services: {
 		[service in S]: ChildSocket<
 			{ timeToStop: []; updatesReady: [] },
-			{ readyToUpdate: []; alive: [] }
+			{ readyToUpdate: []; alive: [] },
+			ChildProcessWithoutNullStreams
 		> | null
 	}
 	protected serviceIdx: { readonly [service in S]: number }

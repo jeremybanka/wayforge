@@ -8,9 +8,17 @@ import { CustomSocket } from "./custom-socket"
 
 /* eslint-disable no-console */
 
+export type ChildProcess = {
+	pid?: number | undefined
+	stdin: Writable
+	stdout: Readable
+	stderr: Readable
+}
+
 export class ChildSocket<
 	I extends Events,
 	O extends Events,
+	P extends ChildProcess = ChildProcess,
 > extends CustomSocket<I, O> {
 	protected incompleteData = ``
 	protected unprocessedEvents: string[] = []
@@ -19,14 +27,7 @@ export class ChildSocket<
 
 	public id = `#####`
 
-	public proc: {
-		pid?: number | undefined
-		stdin: Writable
-		stdout: Readable
-		stderr: Readable
-		kill: (signal?: NodeJS.Signals | number) => boolean
-		on: (event: `close`, listener: (code: number) => void) => void
-	}
+	public proc: P
 	public key: string
 	public logger: Pick<Console, `error` | `info` | `warn`>
 
@@ -50,14 +51,7 @@ export class ChildSocket<
 	}
 
 	public constructor(
-		proc: {
-			pid?: number | undefined
-			stdin: Writable
-			stdout: Readable
-			stderr: Readable
-			kill: (signal?: NodeJS.Signals | number) => boolean
-			on: (event: `close`, listener: (code: number) => void) => void
-		},
+		proc: P,
 		key: string,
 		logger?: Pick<Console, `error` | `info` | `warn`>,
 	) {
