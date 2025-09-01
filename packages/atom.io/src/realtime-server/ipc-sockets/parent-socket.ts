@@ -37,6 +37,14 @@ export class SubjectSocket<
 	}
 }
 
+export type ParentProcess = {
+	pid?: number | undefined
+	stdin: Readable
+	stdout: Writable
+	stderr: Writable
+	exit: (code?: number) => void
+}
+
 export class ParentSocket<
 	I extends Events & {
 		[id in string as `relay:${id}`]: [string, ...Json.Serializable[]]
@@ -49,6 +57,7 @@ export class ParentSocket<
 		"user-leaves": [string]
 		/* eslint-enable quotes */
 	},
+	P extends ParentProcess = ParentProcess,
 > extends CustomSocket<I, O> {
 	protected incompleteData = ``
 	protected unprocessedEvents: string[] = []
@@ -56,14 +65,7 @@ export class ParentSocket<
 	protected relayServices: ((
 		socket: SubjectSocket<any, any>,
 	) => (() => void) | void)[]
-	// protected process: Pick<NodeJS.Process, `pid` | `stderr` | `stdin` | `stdout`>
-	protected proc: {
-		pid: number
-		stdin: Readable
-		stdout: Writable
-		stderr: Writable
-		exit: (code?: number) => void
-	}
+	protected proc: P
 
 	public id = `#####`
 
@@ -90,16 +92,7 @@ export class ParentSocket<
 		},
 	}
 
-	public constructor(
-		// proc: Pick<NodeJS.Process, `pid` | `stderr` | `stdin` | `stdout`>,
-		proc: {
-			pid: number
-			stdin: Readable
-			stdout: Writable
-			stderr: Writable
-			exit: (code?: number) => void
-		},
-	) {
+	public constructor(proc: P) {
 		super((event, ...args) => {
 			const stringifiedEvent = JSON.stringify([event, ...args])
 			this.proc.stdout.write(stringifiedEvent + `\x03`)
