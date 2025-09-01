@@ -25,6 +25,7 @@ export class ChildSocket<
 		stdout: Readable
 		stderr: Readable
 		kill: (signal?: NodeJS.Signals | number) => boolean
+		on: (event: `close`, listener: (code: number) => void) => void
 	}
 	public key: string
 	public logger: Pick<Console, `error` | `info` | `warn`>
@@ -55,6 +56,7 @@ export class ChildSocket<
 			stdout: Readable
 			stderr: Readable
 			kill: (signal?: NodeJS.Signals | number) => boolean
+			on: (event: `close`, listener: (code: number) => void) => void
 		},
 		key: string,
 		logger?: Pick<Console, `error` | `info` | `warn`>,

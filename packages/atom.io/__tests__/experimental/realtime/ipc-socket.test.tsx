@@ -23,6 +23,7 @@ test(`inter-process communication`, async () => {
 			stderr,
 			pid,
 			kill: () => true,
+			on: () => {},
 		},
 		`child-socket`,
 	)
@@ -47,11 +48,10 @@ test(`inter-process communication`, async () => {
 
 	const [ping] = await gotPing
 
-	console.log(`⛔⛔⛔⛔⛔ gotPing`, ping)
+	// console.log(`⛔⛔⛔⛔⛔ gotPing`, ping)
 
 	expect(ping).toBe(`hello from parent`)
 
-	// and now test the reverse
 	const gotPong = new Promise<[string]>((resolve) => {
 		parentsInterfaceToChild.on(`pong`, (msg: string) => {
 			resolve([msg])
@@ -62,7 +62,7 @@ test(`inter-process communication`, async () => {
 
 	const [pong] = await gotPong
 
-	console.log(`⛔⛔⛔⛔⛔ gotPing`, pong)
+	// console.log(`⛔⛔⛔⛔⛔ gotPing`, pong)
 
 	expect(pong).toBe(`hello from child`)
 })
