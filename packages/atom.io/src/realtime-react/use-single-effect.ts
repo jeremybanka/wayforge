@@ -1,28 +1,25 @@
 /** biome-ignore-all lint/correctness/useHookAtTopLevel: intentional */
 
+import { isFn } from "atom.io/internal/is-fn"
 import * as React from "react"
-
-// @ts-expect-error this is a safe way to check a property on the global object
-const { NODE_ENV } = globalThis[`env`] ?? {}
-const IN_DEV = NODE_ENV === `development`
-
-function noop() {}
 
 export function useSingleEffect(
 	effect: () => (() => void) | undefined | void,
 	deps: unknown[],
 ): void {
-	if (IN_DEV) {
-		const cleanup = React.useRef<() => void>(noop)
+	const globalEnv = (globalThis as unknown as { env: any })[`env`]
+	const isInDev = globalEnv?.NODE_ENV === `development`
+	if (isInDev) {
+		const cleanupRef = React.useRef<boolean | (() => void)>(false)
 		React.useEffect(() => {
-			let dispose = cleanup.current
-			if (dispose === noop) {
-				dispose = effect() ?? noop
-				cleanup.current = dispose
+			let cleanupFn = cleanupRef.current
+			if (cleanupFn === false) {
+				cleanupFn = effect() ?? true
+				cleanupRef.current = cleanupFn
 			} else {
 				return () => {
-					dispose()
-					cleanup.current = noop
+					if (isFn(cleanupFn)) cleanupFn()
+					cleanupRef.current = false
 				}
 			}
 		}, deps)
