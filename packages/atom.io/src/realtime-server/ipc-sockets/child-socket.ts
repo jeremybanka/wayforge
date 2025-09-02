@@ -97,32 +97,49 @@ export class ChildSocket<
 				pieces[0] = this.incompleteData + initialMaybeWellFormed
 				let idx = 0
 				for (const piece of pieces) {
+					if (piece === ``) {
+						continue
+					}
 					try {
 						const jsonPiece = parseJson(piece as stringified<EventPayload<I, K>>)
 						this.handleEvent(...jsonPiece)
+						this.incompleteData = ``
 					} catch (thrown0) {
-						console.error(`⚠️----------------⚠️`)
-						console.error(initialMaybeWellFormed)
-						console.error(thrown0)
-						console.error(`⚠️----------------⚠️`)
+						const error = thrown0 instanceof Error ? thrown0 : undefined
+						console.error(
+							[
+								`❌ Malformed data received from child process`,
+								``,
+								piece,
+								``,
+								error?.message,
+							].join(`\n❌\t`),
+						)
 						try {
 							if (idx === 0) {
 								const maybeActualJsonPiece = parseJson(
 									initialMaybeWellFormed as stringified<StderrLog>,
 								)
 								this.handleLog(maybeActualJsonPiece)
+								this.incompleteData = ``
 							}
 							if (idx === pieces.length - 1) {
-								this.incompleteData = piece
+								this.incompleteData += piece
 							}
 						} catch (thrown1) {
-							console.error(`⚠️----------------⚠️`)
-							console.error(initialMaybeWellFormed)
-							console.error(thrown1)
-							console.error(`⚠️----------------⚠️`)
+							const error = thrown1 instanceof Error ? thrown1 : undefined
+							console.error(
+								[
+									`❌ Malformed data received from child process`,
+									``,
+									piece,
+									``,
+									error?.message,
+								].join(`\n❌\t`),
+							)
 						}
-						++idx
 					}
+					++idx
 				}
 			},
 		)
@@ -158,8 +175,8 @@ export class ChildSocket<
 						console.error(`❌❌❌️`)
 					}
 				}
-				++idx
 			}
+			++idx
 		})
 		if (proc.pid) {
 			this.id = proc.pid.toString()
