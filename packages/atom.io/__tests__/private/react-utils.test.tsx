@@ -1,5 +1,8 @@
 import { cleanup, render } from "@testing-library/react"
-import { useSingleEffect } from "atom.io/realtime-react"
+import { RealtimeContext, useSingleEffect } from "atom.io/realtime-react"
+import { useRealtimeService } from "atom.io/realtime-react/use-realtime-service"
+import { useId } from "react"
+import type { Socket } from "socket.io-client"
 import { vi } from "vitest"
 
 // Helper to force global env mode
@@ -82,5 +85,44 @@ describe(`useSingleEffect`, () => {
 
 		unmount()
 		expect(cleanupFn).toHaveBeenCalledTimes(2)
+	})
+})
+
+describe(`useRealtimeService`, () => {
+	beforeEach(() => {
+		cleanup()
+	})
+
+	const fakeSocket = {} as unknown as Socket
+
+	const services = new Map<
+		string,
+		{ consumerCount: number; dispose: () => void }
+	>()
+
+	const setupService = vi.fn((id: string) => () => {
+		console.log(`service: id`, id)
+	})
+
+	function ServiceConsumer() {
+		const userId = useId()
+		useRealtimeService(`a`, () => setupService(userId))
+
+		return <div data-testid="mounted" />
+	}
+
+	test(`refcounting`, () => {
+		setNodeEnv(`development`)
+
+		render(
+			<RealtimeContext.Provider value={{ socket: fakeSocket, services }}>
+				<ServiceConsumer />
+				<ServiceConsumer />
+			</RealtimeContext.Provider>,
+			{
+				reactStrictMode: true,
+			},
+		)
+		expect(setupService).toHaveBeenCalledTimes(1)
 	})
 })
