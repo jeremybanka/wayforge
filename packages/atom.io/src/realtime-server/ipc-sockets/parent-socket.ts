@@ -5,7 +5,7 @@ import type { Json } from "atom.io/json"
 import { parseJson, stringifyJson } from "atom.io/json"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
-import type { EventBuffer, Events } from "./custom-socket"
+import type { EventBuffer, EventPayload, Events } from "./custom-socket"
 import { CustomSocket } from "./custom-socket"
 import { StderrLog } from "./child-socket"
 
@@ -27,7 +27,7 @@ export class SubjectSocket<
 		this.in = new Subject()
 		this.out = new Subject()
 		this.in.subscribe(`socket`, (event) => {
-			this.handleEvent(...(event as [string, ...I[keyof I]]))
+			this.handleEvent(...(event as EventPayload<I>))
 		})
 	}
 
@@ -106,7 +106,7 @@ export class ParentSocket<
 
 		this.proc.stdin.on(
 			`data`,
-			<Event extends keyof I>(buffer: EventBuffer<string, I[Event]>) => {
+			<K extends string & keyof I>(buffer: EventBuffer<I, K>) => {
 				const chunk = buffer.toString()
 				const pieces = chunk.split(`\x03`)
 				const initialMaybeWellFormed = pieces[0]
@@ -116,25 +116,23 @@ export class ParentSocket<
 					try {
 						const jsonPiece = parseJson(piece)
 						this.logger.info(`🎰`, `received`, jsonPiece)
-						this.handleEvent(...(jsonPiece as [string, ...I[keyof I]]))
-					} catch (thrown) {
-						if (thrown instanceof Error) {
-							this.logger.error(`❗`, thrown.message, thrown.stack as string)
+						this.handleEvent(...(jsonPiece as EventPayload<I>))
+					} catch (thrown0) {
+						if (thrown0 instanceof Error) {
+							this.logger.error(`❗`, thrown0.message, thrown0.stack as string)
 						}
 						try {
 							if (idx === 0) {
 								const maybeActualJsonPiece = parseJson(initialMaybeWellFormed)
 								this.logger.info(`🎰`, `received`, maybeActualJsonPiece)
-								this.handleEvent(
-									...(maybeActualJsonPiece as [string, ...I[keyof I]]),
-								)
+								this.handleEvent(...(maybeActualJsonPiece as EventPayload<I>))
 							}
 							if (idx === pieces.length - 1) {
 								this.incompleteData = piece
 							}
-						} catch (thrown) {
-							if (thrown instanceof Error) {
-								this.logger.error(`❗`, thrown.message, thrown.stack as string)
+						} catch (thrown1) {
+							if (thrown1 instanceof Error) {
+								this.logger.error(`❗`, thrown1.message, thrown1.stack as string)
 							}
 						}
 					}
