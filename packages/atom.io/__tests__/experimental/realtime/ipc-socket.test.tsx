@@ -148,7 +148,9 @@ describe(`ParentSocket`, () => {
 	})
 
 	test(`stderr logs get parsed and sent to logger`, () => {
-		childToParent.logger.info(new SetRTX([1, 2, 3]))
+		childToParent.logger.info(
+			new SetRTX([1, 2, 3]) as unknown as Json.Serializable,
+		) // 👺 This is worth fixing. Custom logging serializer for IPC sockets?
 		childToParent.logger.warn(`warned`)
 		childToParent.logger.error(`bad`)
 
