@@ -113,26 +113,47 @@ export class ParentSocket<
 				pieces[0] = this.incompleteData + initialMaybeWellFormed
 				let idx = 0
 				for (const piece of pieces) {
+					if (piece === ``) {
+						continue
+					}
 					try {
 						const jsonPiece = parseJson(piece)
 						this.logger.info(`🎰`, `received`, jsonPiece)
 						this.handleEvent(...(jsonPiece as EventPayload<I>))
+						this.incompleteData = ``
 					} catch (thrown0) {
 						if (thrown0 instanceof Error) {
-							this.logger.error(`❗`, thrown0.message, thrown0.stack as string)
+							this.logger.error(
+								[
+									`received malformed data from parent process:`,
+									``,
+									piece,
+									``,
+									thrown0.message,
+								].join(`\n❌\t`),
+							)
 						}
 						try {
 							if (idx === 0) {
+								this.incompleteData = piece
 								const maybeActualJsonPiece = parseJson(initialMaybeWellFormed)
 								this.logger.info(`🎰`, `received`, maybeActualJsonPiece)
 								this.handleEvent(...(maybeActualJsonPiece as EventPayload<I>))
-							}
-							if (idx === pieces.length - 1) {
-								this.incompleteData = piece
+								this.incompleteData = ``
+							} else {
+								this.incompleteData += piece
 							}
 						} catch (thrown1) {
 							if (thrown1 instanceof Error) {
-								this.logger.error(`❗`, thrown1.message, thrown1.stack as string)
+								this.logger.error(
+									[
+										`received malformed data from parent process:`,
+										``,
+										initialMaybeWellFormed,
+										``,
+										thrown1.message,
+									].join(`\n❌\t`),
+								)
 							}
 						}
 					}
