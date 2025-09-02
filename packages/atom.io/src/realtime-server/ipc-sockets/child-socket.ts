@@ -3,7 +3,7 @@ import type { Readable, Writable } from "node:stream"
 import type { Json, stringified } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 
-import type { EventBuffer, Events } from "./custom-socket"
+import type { EventBuffer, EventPayload, Events } from "./custom-socket"
 import { CustomSocket } from "./custom-socket"
 
 /* eslint-disable no-console */
@@ -84,42 +84,76 @@ export class ChildSocket<
 		}
 		this.proc.stdout.on(
 			`data`,
-			<Event extends keyof I>(buffer: EventBuffer<string, I[Event]>) => {
+			<K extends keyof I & string>(buffer: EventBuffer<I, K>) => {
 				const chunk = buffer.toString()
 
 				if (chunk === `ALIVE`) {
-					console.log(chunk)
+					this.logger.info(chunk)
 					return
 				}
-				this.unprocessedEvents.push(...chunk.split(`\x03`))
-				// console.log(`🤓`, chunk.length)
-				// console.log(`🤓`, this.unprocessedEvents.length)
-				// console.log(`🤓`, ...this.unprocessedEvents.map((x) => x.length))
-				const newInput = this.unprocessedEvents.shift()
-				this.incompleteData += newInput ?? ``
-				try {
-					if (this.incompleteData.startsWith(`error`)) {
-						console.log(`❗`, this.incompleteData)
-					}
-					let parsedEvent = parseJson(this.incompleteData)
-					this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
-					while (this.unprocessedEvents.length > 0) {
-						const event = this.unprocessedEvents.shift()
-						if (event) {
-							if (this.unprocessedEvents.length === 0) {
-								this.incompleteData = event
+
+				const pieces = chunk.split(`\x03`)
+				const initialMaybeWellFormed = pieces[0]
+				pieces[0] = this.incompleteData + initialMaybeWellFormed
+				let idx = 0
+				for (const piece of pieces) {
+					try {
+						const jsonPiece = parseJson(piece as stringified<EventPayload<I, K>>)
+						this.handleEvent(...jsonPiece)
+					} catch (thrown0) {
+						console.error(`⚠️----------------⚠️`)
+						console.error(initialMaybeWellFormed)
+						console.error(thrown0)
+						console.error(`⚠️----------------⚠️`)
+						try {
+							if (idx === 0) {
+								const maybeActualJsonPiece = parseJson(
+									initialMaybeWellFormed as stringified<StderrLog>,
+								)
+								this.handleLog(maybeActualJsonPiece)
 							}
-							parsedEvent = parseJson(event)
-							this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
+							if (idx === pieces.length - 1) {
+								this.incompleteData = piece
+							}
+						} catch (thrown1) {
+							console.error(`⚠️----------------⚠️`)
+							console.error(initialMaybeWellFormed)
+							console.error(thrown1)
+							console.error(`⚠️----------------⚠️`)
 						}
+						++idx
 					}
-					this.incompleteData = ``
-				} catch (error) {
-					console.warn(`⚠️----------------⚠️`)
-					console.warn(this.incompleteData)
-					console.warn(`⚠️----------------⚠️`)
-					console.error(error)
 				}
+
+				// this.unprocessedEvents.push(...chunk.split(`\x03`))
+				// // console.log(`🤓`, chunk.length)
+				// // console.log(`🤓`, this.unprocessedEvents.length)
+				// // console.log(`🤓`, ...this.unprocessedEvents.map((x) => x.length))
+				// const newInput = this.unprocessedEvents.shift()
+				// this.incompleteData += newInput ?? ``
+				// try {
+				// 	if (this.incompleteData.startsWith(`error`)) {
+				// 		console.log(`❗`, this.incompleteData)
+				// 	}
+				// 	let parsedEvent = parseJson(this.incompleteData)
+				// 	this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
+				// 	while (this.unprocessedEvents.length > 0) {
+				// 		const event = this.unprocessedEvents.shift()
+				// 		if (event) {
+				// 			if (this.unprocessedEvents.length === 0) {
+				// 				this.incompleteData = event
+				// 			}
+				// 			parsedEvent = parseJson(event)
+				// 			this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
+				// 		}
+				// 	}
+				// 	this.incompleteData = ``
+				// } catch (error) {
+				// 	console.warn(`⚠️----------------⚠️`)
+				// 	console.warn(this.incompleteData)
+				// 	console.warn(`⚠️----------------⚠️`)
+				// 	console.error(error)
+				// }
 			},
 		)
 		this.proc.stderr.on(`data`, (buffer: Buffer) => {
@@ -141,6 +175,10 @@ export class ChildSocket<
 					const jsonPiece = parseJson(piece as stringified<StderrLog>)
 					this.handleLog(jsonPiece)
 				} catch (thrown) {
+					console.error(`❌❌❌`)
+					console.error(this.incompleteLog)
+					console.error(thrown)
+					console.error(`❌❌❌️`)
 					try {
 						if (idx === 0) {
 							const maybeActualJsonPiece = parseJson(
@@ -153,7 +191,7 @@ export class ChildSocket<
 						}
 					} catch (thrown) {
 						console.error(`❌❌❌`)
-						console.error(this.incompleteLog)
+						console.error(initialMaybeWellFormed)
 						console.error(thrown)
 						console.error(`❌❌❌️`)
 					}

@@ -4,16 +4,16 @@ import type { Socket } from "../socket-interface"
 
 export type Events = Json.Object<string, Json.Serializable[]>
 
-export type StringifiedEvent<
-	Key extends string,
-	Params extends Json.Serializable[],
-> = stringified<[Key, ...Params]>
+export type EventPayload<
+	E extends Events,
+	K extends string & keyof E = string & keyof E,
+> = [string, ...E[K]]
 
 export interface EventBuffer<
-	Key extends string,
-	Params extends Json.Serializable[],
+	E extends Events,
+	K extends string & keyof E = string & keyof E,
 > extends Buffer {
-	toString(): StringifiedEvent<Key, Params>
+	toString(): stringified<EventPayload<E, K>>
 }
 
 export abstract class CustomSocket<I extends Events, O extends Events>
@@ -21,17 +21,17 @@ export abstract class CustomSocket<I extends Events, O extends Events>
 {
 	protected listeners: Map<keyof O, Set<(...args: Json.Array) => void>>
 	protected globalListeners: Set<(event: string, ...args: Json.Array) => void>
-	protected handleEvent<Event extends keyof I>(
-		event: string,
-		...args: I[Event]
+	protected handleEvent<K extends string & keyof I>(
+		...args: EventPayload<I, K>
 	): void {
+		const [event, ...rest] = args
 		for (const listener of this.globalListeners) {
-			listener(event, ...args)
+			listener(event, ...rest)
 		}
 		const listeners = this.listeners.get(event)
 		if (listeners) {
 			for (const listener of listeners) {
-				listener(...args)
+				listener(...rest)
 			}
 		}
 	}
