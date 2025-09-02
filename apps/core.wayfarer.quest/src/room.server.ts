@@ -1,6 +1,7 @@
 import * as AtomIO from "atom.io"
 import { editRelations } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
+import type { Json } from "atom.io/json"
 import * as RT from "atom.io/realtime"
 import * as RTS from "atom.io/realtime-server"
 import { generateHeapSnapshot } from "bun"
@@ -15,13 +16,13 @@ const parentSocket = new RTS.ParentSocket(process)
 // const writer = LOG_FILE.writer()
 
 const ipcLog = {
-	info: (...args: unknown[]) => {
+	info: (...args: Json.Array) => {
 		parentSocket.logger.info(...args)
 	},
-	warn: (...args: unknown[]) => {
+	warn: (...args: Json.Array) => {
 		parentSocket.logger.warn(...args)
 	},
-	error: (...args: unknown[]) => {
+	error: (...args: Json.Array) => {
 		parentSocket.logger.error(...args)
 	},
 }

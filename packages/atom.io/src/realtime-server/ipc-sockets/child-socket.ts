@@ -15,7 +15,7 @@ export type ChildProcess = {
 	stderr: Readable
 }
 
-export type StderrLog = [`i` | `w` | `e`, ...Json.Array]
+export type StderrLog = [`e` | `i` | `w`, ...Json.Array]
 
 export class ChildSocket<
 	I extends Events,
@@ -84,7 +84,7 @@ export class ChildSocket<
 		}
 		this.proc.stdout.on(
 			`data`,
-			<K extends keyof I & string>(buffer: EventBuffer<I, K>) => {
+			<K extends string & keyof I>(buffer: EventBuffer<I, K>) => {
 				const chunk = buffer.toString()
 
 				if (chunk === `ALIVE`) {
