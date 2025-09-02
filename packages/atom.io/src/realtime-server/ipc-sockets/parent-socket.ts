@@ -13,8 +13,8 @@ export class SubjectSocket<
 	I extends Events,
 	O extends Events,
 > extends CustomSocket<I, O> {
-	public in: Subject<[string, ...Json.Serializable[]]>
-	public out: Subject<[string, ...Json.Serializable[]]>
+	public in: Subject<EventPayload<I>>
+	public out: Subject<EventPayload<O>>
 	public id = `no_id_retrieved`
 	public disposalFunctions: (() => void)[] = []
 
@@ -48,10 +48,10 @@ export type ParentProcess = {
 
 export class ParentSocket<
 	I extends Events & {
-		[id in string as `relay:${id}`]: [string, ...Json.Serializable[]]
+		[id in string as `relay:${id}`]: [string, ...Json.Array[]]
 	},
 	O extends Events & {
-		[id in string as `user:${id}`]: [string, ...Json.Serializable[]]
+		[id in string as `user:${id}`]: [string, ...Json.Array[]]
 	} & {
 		/* eslint-disable quotes */
 		"user-joins": [string]

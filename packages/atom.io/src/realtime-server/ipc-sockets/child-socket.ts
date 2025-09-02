@@ -124,47 +124,9 @@ export class ChildSocket<
 						++idx
 					}
 				}
-
-				// this.unprocessedEvents.push(...chunk.split(`\x03`))
-				// // console.log(`🤓`, chunk.length)
-				// // console.log(`🤓`, this.unprocessedEvents.length)
-				// // console.log(`🤓`, ...this.unprocessedEvents.map((x) => x.length))
-				// const newInput = this.unprocessedEvents.shift()
-				// this.incompleteData += newInput ?? ``
-				// try {
-				// 	if (this.incompleteData.startsWith(`error`)) {
-				// 		console.log(`❗`, this.incompleteData)
-				// 	}
-				// 	let parsedEvent = parseJson(this.incompleteData)
-				// 	this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
-				// 	while (this.unprocessedEvents.length > 0) {
-				// 		const event = this.unprocessedEvents.shift()
-				// 		if (event) {
-				// 			if (this.unprocessedEvents.length === 0) {
-				// 				this.incompleteData = event
-				// 			}
-				// 			parsedEvent = parseJson(event)
-				// 			this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
-				// 		}
-				// 	}
-				// 	this.incompleteData = ``
-				// } catch (error) {
-				// 	console.warn(`⚠️----------------⚠️`)
-				// 	console.warn(this.incompleteData)
-				// 	console.warn(`⚠️----------------⚠️`)
-				// 	console.error(error)
-				// }
 			},
 		)
 		this.proc.stderr.on(`data`, (buffer: Buffer) => {
-			// const chunk = buf.toString()
-			// this.unprocessedLogs.push(...chunk.split(`\x03`))
-			// // console.log(`🤫`, chunk.length)
-			// // console.log(`🤫`, this.unprocessedLogs.length)
-			// // console.log(`🤫`, ...this.unprocessedLogs.map((x) => x.length))
-			// const newInput = this.unprocessedLogs.shift()
-			// this.incompleteLog += newInput ?? ``
-
 			const chunk = buffer.toString()
 			const pieces = chunk.split(`\x03`)
 			const initialMaybeWellFormed = pieces[0]
@@ -198,23 +160,6 @@ export class ChildSocket<
 				}
 				++idx
 			}
-			// try {
-			// 	let parsedLog = parseJson(this.incompleteLog as stringified<StderrLog>)
-			// 	// console.log(`🤫`, parsedLog)
-			// 	this.handleLog(parsedLog)
-			// 	while (this.unprocessedLogs.length > 0) {
-			// 		this.incompleteLog = this.unprocessedLogs.shift() ?? ``
-			// 		if (this.incompleteLog) {
-			// 			parsedLog = parseJson(this.incompleteLog as stringified<StderrLog>)
-			// 			this.handleLog(parsedLog)
-			// 		}
-			// 	}
-			// } catch (error) {
-			// 	console.error(`❌❌❌`)
-			// 	console.error(this.incompleteLog)
-			// 	console.error(error)
-			// 	console.error(`❌❌❌️`)
-			// }
 		})
 		if (proc.pid) {
 			this.id = proc.pid.toString()
