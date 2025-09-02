@@ -1,6 +1,7 @@
 import type { LoggerIcon, TokenDenomination } from "atom.io"
 import { AtomIOLogger, editRelations, findState, setState } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
+import type { Json } from "atom.io/json"
 import * as RTS from "atom.io/realtime-server"
 
 import { gameContinuity, letterAtoms } from "./game-store"
@@ -9,13 +10,13 @@ const LOGGING = false
 
 const parentSocket = new RTS.ParentSocket(process)
 const ipcLog = {
-	info: (...args: unknown[]) => {
+	info: (...args: Json.Array) => {
 		parentSocket.logger.info(...args)
 	},
-	warn: (...args: unknown[]) => {
+	warn: (...args: Json.Array) => {
 		parentSocket.logger.warn(...args)
 	},
-	error: (...args: unknown[]) => {
+	error: (...args: Json.Array) => {
 		parentSocket.logger.error(...args)
 	},
 }
