@@ -1,9 +1,9 @@
 import type { Readable, Writable } from "node:stream"
 
-import type { Json } from "atom.io/json"
+import type { Json, stringified } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 
-import type { EventBuffer, Events } from "./custom-socket"
+import type { EventBuffer, EventPayload, Events } from "./custom-socket"
 import { CustomSocket } from "./custom-socket"
 
 /* eslint-disable no-console */
@@ -14,6 +14,8 @@ export type ChildProcess = {
 	stdout: Readable
 	stderr: Readable
 }
+
+export type StderrLog = [`e` | `i` | `w`, ...Json.Array]
 
 export class ChildSocket<
 	I extends Events,
@@ -31,9 +33,9 @@ export class ChildSocket<
 	public key: string
 	public logger: Pick<Console, `error` | `info` | `warn`>
 
-	protected handleLog(arg: Json.Serializable): void {
-		if (Array.isArray(arg)) {
-			const [level, ...rest] = arg
+	protected handleLog(log: StderrLog): void {
+		if (Array.isArray(log)) {
+			const [level, ...rest] = log
 			switch (level) {
 				case `i`:
 					this.logger.info(...rest)
@@ -44,8 +46,6 @@ export class ChildSocket<
 				case `e`:
 					this.logger.error(...rest)
 					break
-				default:
-					return
 			}
 		}
 	}
@@ -84,68 +84,119 @@ export class ChildSocket<
 		}
 		this.proc.stdout.on(
 			`data`,
-			<Event extends keyof I>(buffer: EventBuffer<string, I[Event]>) => {
+			<K extends string & keyof I>(buffer: EventBuffer<I, K>) => {
 				const chunk = buffer.toString()
 
 				if (chunk === `ALIVE`) {
-					console.log(chunk)
+					this.logger.info(chunk)
 					return
 				}
-				this.unprocessedEvents.push(...chunk.split(`\x03`))
-				// console.log(`🤓`, chunk.length)
-				// console.log(`🤓`, this.unprocessedEvents.length)
-				// console.log(`🤓`, ...this.unprocessedEvents.map((x) => x.length))
-				const newInput = this.unprocessedEvents.shift()
-				this.incompleteData += newInput ?? ``
-				try {
-					if (this.incompleteData.startsWith(`error`)) {
-						console.log(`❗`, this.incompleteData)
+
+				const pieces = chunk.split(`\x03`)
+				const initialMaybeWellFormed = pieces[0]
+				pieces[0] = this.incompleteData + initialMaybeWellFormed
+				let idx = 0
+				for (const piece of pieces) {
+					if (piece === ``) {
+						continue
 					}
-					let parsedEvent = parseJson(this.incompleteData)
-					this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
-					while (this.unprocessedEvents.length > 0) {
-						const event = this.unprocessedEvents.shift()
-						if (event) {
-							if (this.unprocessedEvents.length === 0) {
-								this.incompleteData = event
+					try {
+						const jsonPiece = parseJson(piece as stringified<EventPayload<I, K>>)
+						this.handleEvent(...jsonPiece)
+						this.incompleteData = ``
+					} catch (thrown0) {
+						if (thrown0 instanceof Error) {
+							console.error(
+								[
+									`❌ Malformed data received from child process`,
+									``,
+									piece,
+									``,
+									thrown0.message,
+								].join(`\n❌\t`),
+							)
+						}
+						try {
+							if (idx === 0) {
+								this.incompleteData = piece
+								const maybeActualJsonPiece = parseJson(
+									initialMaybeWellFormed as stringified<EventPayload<I, K>>,
+								)
+								this.handleEvent(...maybeActualJsonPiece)
+								this.incompleteData = ``
+							} else {
+								this.incompleteData += piece
 							}
-							parsedEvent = parseJson(event)
-							this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
+						} catch (thrown1) {
+							if (thrown1 instanceof Error) {
+								console.error(
+									[
+										`❌ Malformed data received from child process`,
+										``,
+										initialMaybeWellFormed,
+										``,
+										thrown1.message,
+									].join(`\n❌\t`),
+								)
+							}
 						}
 					}
-					this.incompleteData = ``
-				} catch (error) {
-					console.warn(`⚠️----------------⚠️`)
-					console.warn(this.incompleteData)
-					console.warn(`⚠️----------------⚠️`)
-					console.error(error)
+					++idx
 				}
 			},
 		)
-		this.proc.stderr.on(`data`, (buf) => {
-			const chunk = buf.toString()
-			this.unprocessedLogs.push(...chunk.split(`\x03`))
-			// console.log(`🤫`, chunk.length)
-			// console.log(`🤫`, this.unprocessedLogs.length)
-			// console.log(`🤫`, ...this.unprocessedLogs.map((x) => x.length))
-			const newInput = this.unprocessedLogs.shift()
-			this.incompleteLog += newInput ?? ``
-			try {
-				let parsedLog = parseJson(this.incompleteLog)
-				// console.log(`🤫`, parsedLog)
-				this.handleLog(parsedLog)
-				while (this.unprocessedLogs.length > 0) {
-					this.incompleteLog = this.unprocessedLogs.shift() ?? ``
-					if (this.incompleteLog) {
-						parsedLog = parseJson(this.incompleteLog)
-						this.handleLog(parsedLog)
+		this.proc.stderr.on(`data`, (buffer: Buffer) => {
+			const chunk = buffer.toString()
+			const pieces = chunk.split(`\x03`)
+			const initialMaybeWellFormed = pieces[0]
+			pieces[0] = this.incompleteData + initialMaybeWellFormed
+			let idx = 0
+			for (const piece of pieces) {
+				if (piece === ``) {
+					continue
+				}
+				try {
+					const jsonPiece = parseJson(piece as stringified<StderrLog>)
+					this.handleLog(jsonPiece)
+					this.incompleteData = ``
+				} catch (thrown0) {
+					if (thrown0 instanceof Error) {
+						console.error(
+							[
+								`❌ Malformed log received from child process`,
+								``,
+								piece,
+								``,
+								thrown0.message,
+							].join(`\n❌\t`),
+						)
+					}
+					try {
+						if (idx === 0) {
+							this.incompleteData = piece
+							const maybeActualJsonPiece = parseJson(
+								initialMaybeWellFormed as stringified<StderrLog>,
+							)
+							this.handleLog(maybeActualJsonPiece)
+							this.incompleteData = ``
+						} else {
+							this.incompleteData += piece
+						}
+					} catch (thrown1) {
+						if (thrown1 instanceof Error) {
+							console.error(
+								[
+									`❌ Malformed log received from child process...`,
+									``,
+									initialMaybeWellFormed,
+									``,
+									thrown1.message,
+								].join(`\n❌\t`),
+							)
+						}
 					}
 				}
-			} catch (error) {
-				console.error(`❌❌❌`)
-				console.error(this.incompleteLog)
-				console.error(error)
-				console.error(`❌❌❌️`)
+				++idx
 			}
 		})
 		if (proc.pid) {

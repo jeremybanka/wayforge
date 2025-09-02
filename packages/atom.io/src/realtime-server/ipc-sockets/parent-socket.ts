@@ -5,15 +5,16 @@ import type { Json } from "atom.io/json"
 import { parseJson, stringifyJson } from "atom.io/json"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
-import type { EventBuffer, Events } from "./custom-socket"
+import type { StderrLog } from "./child-socket"
+import type { EventBuffer, EventPayload, Events } from "./custom-socket"
 import { CustomSocket } from "./custom-socket"
 
 export class SubjectSocket<
 	I extends Events,
 	O extends Events,
 > extends CustomSocket<I, O> {
-	public in: Subject<[string, ...Json.Serializable[]]>
-	public out: Subject<[string, ...Json.Serializable[]]>
+	public in: Subject<EventPayload<I>>
+	public out: Subject<EventPayload<O>>
 	public id = `no_id_retrieved`
 	public disposalFunctions: (() => void)[] = []
 
@@ -26,7 +27,7 @@ export class SubjectSocket<
 		this.in = new Subject()
 		this.out = new Subject()
 		this.in.subscribe(`socket`, (event) => {
-			this.handleEvent(...(event as [string, ...I[keyof I]]))
+			this.handleEvent(...event)
 		})
 	}
 
@@ -47,10 +48,10 @@ export type ParentProcess = {
 
 export class ParentSocket<
 	I extends Events & {
-		[id in string as `relay:${id}`]: [string, ...Json.Serializable[]]
+		[id in string as `relay:${id}`]: [string, ...Json.Array[]]
 	},
 	O extends Events & {
-		[id in string as `user:${id}`]: [string, ...Json.Serializable[]]
+		[id in string as `user:${id}`]: [string, ...Json.Array[]]
 	} & {
 		/* eslint-disable quotes */
 		"user-joins": [string]
@@ -65,11 +66,11 @@ export class ParentSocket<
 	protected relayServices: ((
 		socket: SubjectSocket<any, any>,
 	) => (() => void) | void)[]
-	protected proc: P
+	public proc: P
 
 	public id = `#####`
 
-	protected log(...args: any[]): void {
+	protected log(...args: StderrLog): void {
 		this.proc.stderr.write(
 			stringifyJson(
 				args.map((arg) =>
@@ -81,13 +82,13 @@ export class ParentSocket<
 		)
 	}
 	public logger = {
-		info: (...args: any[]): void => {
+		info: (...args: Json.Array): void => {
 			this.log(`i`, ...args)
 		},
-		warn: (...args: any[]): void => {
+		warn: (...args: Json.Array): void => {
 			this.log(`w`, ...args)
 		},
-		error: (...args: any[]): void => {
+		error: (...args: Json.Array): void => {
 			this.log(`e`, ...args)
 		},
 	}
@@ -102,35 +103,61 @@ export class ParentSocket<
 		this.proc.stdin.resume()
 		this.relays = new Map()
 		this.relayServices = []
-		// this.logger.info(`🔗`, `uplink`, process.pid)
 
 		this.proc.stdin.on(
 			`data`,
-			<Event extends keyof I>(buffer: EventBuffer<string, I[Event]>) => {
+			<K extends string & keyof I>(buffer: EventBuffer<I, K>) => {
 				const chunk = buffer.toString()
-				this.unprocessedEvents.push(...chunk.split(`\x03`))
-				const newInput = this.unprocessedEvents.shift()
-				this.incompleteData += newInput ?? ``
-
-				try {
-					const parsedData = parseJson(this.incompleteData)
-					this.logger.info(`🎰`, `received`, parsedData)
-					this.handleEvent(...(parsedData as [string, ...I[keyof I]]))
-					while (this.unprocessedEvents.length > 0) {
-						const event = this.unprocessedEvents.shift()
-						if (event) {
-							if (this.unprocessedEvents.length === 0) {
-								this.incompleteData = event
+				const pieces = chunk.split(`\x03`)
+				const initialMaybeWellFormed = pieces[0]
+				pieces[0] = this.incompleteData + initialMaybeWellFormed
+				let idx = 0
+				for (const piece of pieces) {
+					if (piece === ``) {
+						continue
+					}
+					try {
+						const jsonPiece = parseJson(piece)
+						this.logger.info(`🎰`, `received`, jsonPiece)
+						this.handleEvent(...(jsonPiece as EventPayload<I>))
+						this.incompleteData = ``
+					} catch (thrown0) {
+						if (thrown0 instanceof Error) {
+							this.logger.error(
+								[
+									`received malformed data from parent process:`,
+									``,
+									piece,
+									``,
+									thrown0.message,
+								].join(`\n❌\t`),
+							)
+						}
+						try {
+							if (idx === 0) {
+								this.incompleteData = piece
+								const maybeActualJsonPiece = parseJson(initialMaybeWellFormed)
+								this.logger.info(`🎰`, `received`, maybeActualJsonPiece)
+								this.handleEvent(...(maybeActualJsonPiece as EventPayload<I>))
+								this.incompleteData = ``
+							} else {
+								this.incompleteData += piece
 							}
-							const parsedEvent = parseJson(event)
-							this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
+						} catch (thrown1) {
+							if (thrown1 instanceof Error) {
+								this.logger.error(
+									[
+										`received malformed data from parent process:`,
+										``,
+										initialMaybeWellFormed,
+										``,
+										thrown1.message,
+									].join(`\n❌\t`),
+								)
+							}
 						}
 					}
-					this.incompleteData = ``
-				} catch (thrown) {
-					if (thrown instanceof Error) {
-						this.logger.error(`❗`, thrown.message, thrown.cause, thrown.stack)
-					}
+					++idx
 				}
 			},
 		)
