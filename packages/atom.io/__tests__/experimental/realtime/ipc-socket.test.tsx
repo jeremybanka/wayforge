@@ -15,6 +15,9 @@ interface VirtualProcess {
 	pid: number
 }
 
+let stdin: PassThrough
+let stdout: PassThrough
+let stderr: PassThrough
 let parentToChild: ChildSocket<any, any, VirtualProcess>
 let childToParent: ParentSocket<any, any, VirtualProcess & { exit: () => void }>
 beforeEach(() => {
@@ -23,9 +26,9 @@ beforeEach(() => {
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(Utils, `stdout`)
 
-	const stdin = new PassThrough()
-	const stdout = new PassThrough()
-	const stderr = new PassThrough()
+	stdin = new PassThrough()
+	stdout = new PassThrough()
+	stderr = new PassThrough()
 	const pid = 1
 
 	parentToChild = new ChildSocket(
@@ -121,7 +124,6 @@ describe(`ChildSocket`, () => {
 			parentToChild.proc.stdin,
 		)
 
-		// Patch write to simulate EPIPE
 		parentToChild.proc.stdin.write = (() => {
 			parentToChild.proc.stdin.emit(`error`, { code: `EPIPE` })
 			return false
@@ -134,17 +136,21 @@ describe(`ChildSocket`, () => {
 			parentToChild.proc.stdin,
 		)
 
-		// restore
 		parentToChild.proc.stdin.write = origWrite
+	})
+
+	test.only(`parseErrors`, () => {
+		stdout.write(`["`)
+		stdout.write(`["hi",{}]\x03["there",{}]\x03`)
 	})
 })
 
 describe(`ParentSocket`, () => {
 	test(`handles incomplete data gracefully`, () => {
-		parentToChild.proc.stdin.write(`["hi",{}]\x03["there",{}]\x03["`)
+		childToParent.proc.stdin.write(`["hi",{}]\x03["there",{}]\x03["`)
 		expect(logger.error).toHaveBeenCalled()
-		parentToChild.proc.stdin.write(`you"`)
-		parentToChild.proc.stdin.write(`,{}]\x03`)
+		childToParent.proc.stdin.write(`you"`)
+		childToParent.proc.stdin.write(`,{}]\x03`)
 	})
 
 	test(`stderr logs get parsed and sent to logger`, () => {
