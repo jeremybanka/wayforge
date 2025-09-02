@@ -156,21 +156,11 @@ export class ChildSocket<
 					continue
 				}
 				try {
-					// console.warn(`try`, {
-					// 	piece,
-					// 	initialMaybeWellFormed,
-					// 	incomplete: this.incompleteData,
-					// })
 					const jsonPiece = parseJson(piece as stringified<StderrLog>)
 					this.handleLog(jsonPiece)
 					this.incompleteData = ``
 				} catch (thrown0) {
 					if (thrown0 instanceof Error) {
-						// console.warn(`catch 0`, {
-						// 	piece,
-						// 	initialMaybeWellFormed,
-						// 	incomplete: this.incompleteData,
-						// })
 						console.error(
 							[
 								`❌ Malformed log received from child process`,
@@ -183,21 +173,13 @@ export class ChildSocket<
 					}
 					try {
 						if (idx === 0) {
-							// if (piece === this.incompleteData) {
-							// 	continue
-							// }
-							// console.warn(`👺 0`)
-
 							this.incompleteData = piece
-							// console.log(`👺 incompleteData`, this.incompleteData)
 							const maybeActualJsonPiece = parseJson(
 								initialMaybeWellFormed as stringified<StderrLog>,
 							)
 							this.handleLog(maybeActualJsonPiece)
 							this.incompleteData = ``
 						} else {
-							// console.warn(`👺 idx`, idx)
-
 							this.incompleteData += piece
 						}
 					} catch (thrown1) {
