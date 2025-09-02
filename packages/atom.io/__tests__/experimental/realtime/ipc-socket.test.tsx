@@ -38,7 +38,7 @@ beforeEach(() => {
 			stderr,
 			pid,
 		},
-		`child-socket`,
+		`child`,
 	)
 
 	childToParent = new ParentSocket({
@@ -72,7 +72,12 @@ describe(`socket interface`, () => {
 
 		expect(ping).toBe(`hello from parent`)
 
-		const gotPong = new Promise<string>((resolve) => {
+		const gotPongA = new Promise<string>((resolve) => {
+			parentToChild.on(`pong`, (msg: string) => {
+				resolve(msg)
+			})
+		})
+		const gotPongB = new Promise<string>((resolve) => {
 			parentToChild.on(`pong`, (msg: string) => {
 				resolve(msg)
 			})
@@ -80,9 +85,9 @@ describe(`socket interface`, () => {
 
 		childToParent.emit(`pong`, `hello from child`)
 
-		const pong = await gotPong
+		const pong = await Promise.all([gotPongA, gotPongB])
 
-		expect(pong).toBe(`hello from child`)
+		expect(pong).toEqual([`hello from child`, `hello from child`])
 	})
 })
 
@@ -139,9 +144,31 @@ describe(`ChildSocket`, () => {
 		parentToChild.proc.stdin.write = origWrite
 	})
 
-	test.only(`parseErrors`, () => {
+	test(`handles incomplete data gracefully`, () => {
+		parentToChild.on(`hi`, logger.info)
+		parentToChild.on(`there`, logger.warn)
+		parentToChild.on(`you`, logger.error)
+
 		stdout.write(`["`)
-		stdout.write(`["hi",{}]\x03["there",{}]\x03`)
+		stdout.write(`["hi",{}]\x03`)
+		stdout.write(`["there",{}]\x03["`)
+		stdout.write(`you"`)
+		stdout.write(`,{}]\x03`)
+
+		expect(logger.info).toHaveBeenCalledWith({})
+		expect(logger.warn).toHaveBeenCalledWith({})
+		expect(logger.error).toHaveBeenCalledWith({})
+	})
+	test(`handles incomplete logs gracefully`, () => {
+		stderr.write(`["`)
+		stderr.write(`["i",{}]\x03`)
+		stderr.write(`["w",{}]\x03["`)
+		stderr.write(`e"`)
+		stderr.write(`,{}]\x03`)
+
+		expect(logger.info).toHaveBeenCalledWith(`1`, `child`, {})
+		expect(logger.warn).toHaveBeenCalledWith(`1`, `child`, {})
+		expect(logger.error).toHaveBeenCalledWith(`1`, `child`, {})
 	})
 })
 
@@ -151,22 +178,32 @@ describe(`ParentSocket`, () => {
 		expect(logger.error).toHaveBeenCalled()
 		childToParent.proc.stdin.write(`you"`)
 		childToParent.proc.stdin.write(`,{}]\x03`)
+
+		expect(logger.info).toHaveBeenCalledWith(`1`, `child`, `🎰`, `received`, [
+			`hi`,
+			{},
+		])
+		expect(logger.info).toHaveBeenCalledWith(`1`, `child`, `🎰`, `received`, [
+			`there`,
+			{},
+		])
+		expect(logger.info).toHaveBeenCalledWith(`1`, `child`, `🎰`, `received`, [
+			`you`,
+			{},
+		])
 	})
 
 	test(`stderr logs get parsed and sent to logger`, () => {
 		childToParent.logger.info(
-			new SetRTX([1, 2, 3]) as unknown as Json.Serializable,
-		) // 👺 This is worth fixing. Custom logging serializer for IPC sockets?
+			// @ts-expect-error 👺 Need custom logging serializer for IPC sockets
+			new SetRTX([1, 2, 3]),
+		)
 		childToParent.logger.warn(`warned`)
 		childToParent.logger.error(`bad`)
 
-		expect(logger.info).toHaveBeenCalledWith(
-			`1`,
-			`child-socket`,
-			`{ 1 | 2 | 3 }`,
-		)
-		expect(logger.warn).toHaveBeenCalledWith(`1`, `child-socket`, `warned`)
-		expect(logger.error).toHaveBeenCalledWith(`1`, `child-socket`, `bad`)
+		expect(logger.info).toHaveBeenCalledWith(`1`, `child`, `{ 1 | 2 | 3 }`)
+		expect(logger.warn).toHaveBeenCalledWith(`1`, `child`, `warned`)
+		expect(logger.error).toHaveBeenCalledWith(`1`, `child`, `bad`)
 	})
 
 	test(`logs JSON parse error`, () => {
@@ -176,13 +213,9 @@ describe(`ParentSocket`, () => {
 
 	test(`handles exit event`, () => {
 		parentToChild.emit(`exit`)
-		expect(logger.info).toHaveBeenCalledWith(
-			`1`,
-			`child-socket`,
-			`🎰`,
-			`received`,
-			[`exit`],
-		)
+		expect(logger.info).toHaveBeenCalledWith(`1`, `child`, `🎰`, `received`, [
+			`exit`,
+		])
 		expect(logger.info).toHaveBeenCalledWith(`exited`)
 	})
 
