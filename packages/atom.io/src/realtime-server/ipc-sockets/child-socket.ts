@@ -1,6 +1,6 @@
 import type { Readable, Writable } from "node:stream"
 
-import type { Json } from "atom.io/json"
+import type { Json, stringified } from "atom.io/json"
 import { parseJson } from "atom.io/json"
 
 import type { EventBuffer, Events } from "./custom-socket"
@@ -14,6 +14,8 @@ export type ChildProcess = {
 	stdout: Readable
 	stderr: Readable
 }
+
+export type StderrLog = [`i` | `w` | `e`, ...Json.Array]
 
 export class ChildSocket<
 	I extends Events,
@@ -31,9 +33,9 @@ export class ChildSocket<
 	public key: string
 	public logger: Pick<Console, `error` | `info` | `warn`>
 
-	protected handleLog(arg: Json.Serializable): void {
-		if (Array.isArray(arg)) {
-			const [level, ...rest] = arg
+	protected handleLog(log: StderrLog): void {
+		if (Array.isArray(log)) {
+			const [level, ...rest] = log
 			switch (level) {
 				case `i`:
 					this.logger.info(...rest)
@@ -44,8 +46,6 @@ export class ChildSocket<
 				case `e`:
 					this.logger.error(...rest)
 					break
-				default:
-					return
 			}
 		}
 	}
@@ -122,31 +122,61 @@ export class ChildSocket<
 				}
 			},
 		)
-		this.proc.stderr.on(`data`, (buf) => {
-			const chunk = buf.toString()
-			this.unprocessedLogs.push(...chunk.split(`\x03`))
-			// console.log(`🤫`, chunk.length)
-			// console.log(`🤫`, this.unprocessedLogs.length)
-			// console.log(`🤫`, ...this.unprocessedLogs.map((x) => x.length))
-			const newInput = this.unprocessedLogs.shift()
-			this.incompleteLog += newInput ?? ``
-			try {
-				let parsedLog = parseJson(this.incompleteLog)
-				// console.log(`🤫`, parsedLog)
-				this.handleLog(parsedLog)
-				while (this.unprocessedLogs.length > 0) {
-					this.incompleteLog = this.unprocessedLogs.shift() ?? ``
-					if (this.incompleteLog) {
-						parsedLog = parseJson(this.incompleteLog)
-						this.handleLog(parsedLog)
+		this.proc.stderr.on(`data`, (buffer: Buffer) => {
+			// const chunk = buf.toString()
+			// this.unprocessedLogs.push(...chunk.split(`\x03`))
+			// // console.log(`🤫`, chunk.length)
+			// // console.log(`🤫`, this.unprocessedLogs.length)
+			// // console.log(`🤫`, ...this.unprocessedLogs.map((x) => x.length))
+			// const newInput = this.unprocessedLogs.shift()
+			// this.incompleteLog += newInput ?? ``
+
+			const chunk = buffer.toString()
+			const pieces = chunk.split(`\x03`)
+			const initialMaybeWellFormed = pieces[0]
+			pieces[0] = this.incompleteData + initialMaybeWellFormed
+			let idx = 0
+			for (const piece of pieces) {
+				try {
+					const jsonPiece = parseJson(piece as stringified<StderrLog>)
+					this.handleLog(jsonPiece)
+				} catch (thrown) {
+					try {
+						if (idx === 0) {
+							const maybeActualJsonPiece = parseJson(
+								initialMaybeWellFormed as stringified<StderrLog>,
+							)
+							this.handleLog(maybeActualJsonPiece)
+						}
+						if (idx === pieces.length - 1) {
+							this.incompleteData = piece
+						}
+					} catch (thrown) {
+						console.error(`❌❌❌`)
+						console.error(this.incompleteLog)
+						console.error(thrown)
+						console.error(`❌❌❌️`)
 					}
 				}
-			} catch (error) {
-				console.error(`❌❌❌`)
-				console.error(this.incompleteLog)
-				console.error(error)
-				console.error(`❌❌❌️`)
+				++idx
 			}
+			// try {
+			// 	let parsedLog = parseJson(this.incompleteLog as stringified<StderrLog>)
+			// 	// console.log(`🤫`, parsedLog)
+			// 	this.handleLog(parsedLog)
+			// 	while (this.unprocessedLogs.length > 0) {
+			// 		this.incompleteLog = this.unprocessedLogs.shift() ?? ``
+			// 		if (this.incompleteLog) {
+			// 			parsedLog = parseJson(this.incompleteLog as stringified<StderrLog>)
+			// 			this.handleLog(parsedLog)
+			// 		}
+			// 	}
+			// } catch (error) {
+			// 	console.error(`❌❌❌`)
+			// 	console.error(this.incompleteLog)
+			// 	console.error(error)
+			// 	console.error(`❌❌❌️`)
+			// }
 		})
 		if (proc.pid) {
 			this.id = proc.pid.toString()
