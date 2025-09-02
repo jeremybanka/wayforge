@@ -1,6 +1,6 @@
 import type { AtomToken, SelectorToken } from "atom.io"
 import type { Store } from "atom.io/internal"
-import { getFamilyOfToken } from "atom.io/internal/families/get-family-of-token"
+import { getFamilyOfToken } from "atom.io/internal"
 import { parseJson } from "atom.io/json"
 import type { Socket } from "socket.io-client"
 
