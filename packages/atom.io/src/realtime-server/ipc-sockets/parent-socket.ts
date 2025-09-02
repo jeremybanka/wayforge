@@ -65,7 +65,7 @@ export class ParentSocket<
 	protected relayServices: ((
 		socket: SubjectSocket<any, any>,
 	) => (() => void) | void)[]
-	protected proc: P
+	public proc: P
 
 	public id = `#####`
 
