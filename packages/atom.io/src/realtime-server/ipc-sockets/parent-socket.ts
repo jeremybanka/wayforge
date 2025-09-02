@@ -5,9 +5,9 @@ import type { Json } from "atom.io/json"
 import { parseJson, stringifyJson } from "atom.io/json"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
+import type { StderrLog } from "./child-socket"
 import type { EventBuffer, EventPayload, Events } from "./custom-socket"
 import { CustomSocket } from "./custom-socket"
-import { StderrLog } from "./child-socket"
 
 export class SubjectSocket<
 	I extends Events,
@@ -27,7 +27,7 @@ export class SubjectSocket<
 		this.in = new Subject()
 		this.out = new Subject()
 		this.in.subscribe(`socket`, (event) => {
-			this.handleEvent(...(event as EventPayload<I>))
+			this.handleEvent(...event)
 		})
 	}
 
