@@ -143,8 +143,6 @@ describe(`ParentSocket`, () => {
 	test(`handles incomplete data gracefully`, () => {
 		parentToChild.proc.stdin.write(`["hi",{}]\x03["there",{}]\x03["`)
 		expect(logger.error).toHaveBeenCalled()
-		console.log(`unprocessed`, parentToChild.unprocessedEvents)
-		console.log(`incomplete`, parentToChild.incompleteData)
 		parentToChild.proc.stdin.write(`you"`)
 		parentToChild.proc.stdin.write(`,{}]\x03`)
 	})

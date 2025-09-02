@@ -7,6 +7,7 @@ import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import type { EventBuffer, Events } from "./custom-socket"
 import { CustomSocket } from "./custom-socket"
+import { StderrLog } from "./child-socket"
 
 export class SubjectSocket<
 	I extends Events,
@@ -69,7 +70,7 @@ export class ParentSocket<
 
 	public id = `#####`
 
-	protected log(...args: any[]): void {
+	protected log(...args: StderrLog): void {
 		this.proc.stderr.write(
 			stringifyJson(
 				args.map((arg) =>
@@ -81,13 +82,13 @@ export class ParentSocket<
 		)
 	}
 	public logger = {
-		info: (...args: any[]): void => {
+		info: (...args: Json.Array): void => {
 			this.log(`i`, ...args)
 		},
-		warn: (...args: any[]): void => {
+		warn: (...args: Json.Array): void => {
 			this.log(`w`, ...args)
 		},
-		error: (...args: any[]): void => {
+		error: (...args: Json.Array): void => {
 			this.log(`e`, ...args)
 		},
 	}
@@ -102,15 +103,14 @@ export class ParentSocket<
 		this.proc.stdin.resume()
 		this.relays = new Map()
 		this.relayServices = []
-		// this.logger.info(`🔗`, `uplink`, process.pid)
 
 		this.proc.stdin.on(
 			`data`,
 			<Event extends keyof I>(buffer: EventBuffer<string, I[Event]>) => {
 				const chunk = buffer.toString()
 				const pieces = chunk.split(`\x03`)
-				const maybeInitialWellFormed = pieces[0]
-				pieces[0] = this.incompleteData + maybeInitialWellFormed
+				const initialMaybeWellFormed = pieces[0]
+				pieces[0] = this.incompleteData + initialMaybeWellFormed
 				let idx = 0
 				for (const piece of pieces) {
 					try {
@@ -119,11 +119,11 @@ export class ParentSocket<
 						this.handleEvent(...(jsonPiece as [string, ...I[keyof I]]))
 					} catch (thrown) {
 						if (thrown instanceof Error) {
-							this.logger.error(`❗`, thrown.message, thrown.cause, thrown.stack)
+							this.logger.error(`❗`, thrown.message, thrown.stack as string)
 						}
 						try {
 							if (idx === 0) {
-								const maybeActualJsonPiece = parseJson(maybeInitialWellFormed)
+								const maybeActualJsonPiece = parseJson(initialMaybeWellFormed)
 								this.logger.info(`🎰`, `received`, maybeActualJsonPiece)
 								this.handleEvent(
 									...(maybeActualJsonPiece as [string, ...I[keyof I]]),
@@ -134,12 +134,7 @@ export class ParentSocket<
 							}
 						} catch (thrown) {
 							if (thrown instanceof Error) {
-								this.logger.error(
-									`❗`,
-									thrown.message,
-									thrown.cause,
-									thrown.stack,
-								)
+								this.logger.error(`❗`, thrown.message, thrown.stack as string)
 							}
 						}
 					}
