@@ -108,29 +108,42 @@ export class ParentSocket<
 			`data`,
 			<Event extends keyof I>(buffer: EventBuffer<string, I[Event]>) => {
 				const chunk = buffer.toString()
-				this.unprocessedEvents.push(...chunk.split(`\x03`))
-				const newInput = this.unprocessedEvents.shift()
-				this.incompleteData += newInput ?? ``
-
-				try {
-					const parsedData = parseJson(this.incompleteData)
-					this.logger.info(`🎰`, `received`, parsedData)
-					this.handleEvent(...(parsedData as [string, ...I[keyof I]]))
-					while (this.unprocessedEvents.length > 0) {
-						const event = this.unprocessedEvents.shift()
-						if (event) {
-							if (this.unprocessedEvents.length === 0) {
-								this.incompleteData = event
+				const pieces = chunk.split(`\x03`)
+				const maybeInitialWellFormed = pieces[0]
+				pieces[0] = this.incompleteData + maybeInitialWellFormed
+				let idx = 0
+				for (const piece of pieces) {
+					try {
+						const jsonPiece = parseJson(piece)
+						this.logger.info(`🎰`, `received`, jsonPiece)
+						this.handleEvent(...(jsonPiece as [string, ...I[keyof I]]))
+					} catch (thrown) {
+						if (thrown instanceof Error) {
+							this.logger.error(`❗`, thrown.message, thrown.cause, thrown.stack)
+						}
+						try {
+							if (idx === 0) {
+								const maybeActualJsonPiece = parseJson(maybeInitialWellFormed)
+								this.logger.info(`🎰`, `received`, maybeActualJsonPiece)
+								this.handleEvent(
+									...(maybeActualJsonPiece as [string, ...I[keyof I]]),
+								)
 							}
-							const parsedEvent = parseJson(event)
-							this.handleEvent(...(parsedEvent as [string, ...I[keyof I]]))
+							if (idx === pieces.length - 1) {
+								this.incompleteData = piece
+							}
+						} catch (thrown) {
+							if (thrown instanceof Error) {
+								this.logger.error(
+									`❗`,
+									thrown.message,
+									thrown.cause,
+									thrown.stack,
+								)
+							}
 						}
 					}
-					this.incompleteData = ``
-				} catch (thrown) {
-					if (thrown instanceof Error) {
-						this.logger.error(`❗`, thrown.message, thrown.cause, thrown.stack)
-					}
+					++idx
 				}
 			},
 		)
