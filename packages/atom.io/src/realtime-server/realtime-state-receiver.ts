@@ -21,10 +21,11 @@ export function realtimeStateReceiver({
 	socket,
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
-	return function stateReceiver<J extends Json.Serializable>(
-		token: WritableToken<J>,
+	return function stateReceiver<S extends Json.Serializable, C extends S>(
+		clientToken: WritableToken<C>,
+		serverToken: WritableToken<S> = clientToken,
 	): () => void {
-		const mutexAtom = findInStore(store, mutexAtoms, token.key)
+		const mutexAtom = findInStore(store, mutexAtoms, serverToken.key)
 
 		const subscriptions = new Set<() => void>()
 		const clearSubscriptions = () => {
@@ -35,12 +36,12 @@ export function realtimeStateReceiver({
 		const permitPublish = () => {
 			clearSubscriptions()
 			subscriptions.add(
-				employSocket(socket, `pub:${token.key}`, (newValue) => {
-					setIntoStore(store, token, newValue as J)
+				employSocket(socket, `pub:${clientToken.key}`, (newValue) => {
+					setIntoStore(store, serverToken, newValue as C)
 				}),
 			)
 			subscriptions.add(
-				employSocket(socket, `unclaim:${token.key}`, () => {
+				employSocket(socket, `unclaim:${clientToken.key}`, () => {
 					setIntoStore(store, mutexAtom, false)
 					clearSubscriptions()
 					start()
@@ -50,7 +51,7 @@ export function realtimeStateReceiver({
 
 		const start = () => {
 			subscriptions.add(
-				employSocket(socket, `claim:${token.key}`, () => {
+				employSocket(socket, `claim:${clientToken.key}`, () => {
 					if (getFromStore(store, mutexAtom)) {
 						clearSubscriptions()
 						subscriptions.add(
@@ -59,16 +60,16 @@ export function realtimeStateReceiver({
 								if (currentValue === false) {
 									operateOnStore(OWN_OP, store, mutexAtom, true)
 									permitPublish()
-									socket.emit(`claim-result:${token.key}`, true)
+									socket.emit(`claim-result:${clientToken.key}`, true)
 								}
 							}),
 						)
-						socket.emit(`claim-result:${token.key}`, false)
+						socket.emit(`claim-result:${clientToken.key}`, false)
 						return
 					}
 					setIntoStore(store, mutexAtom, true)
 					permitPublish()
-					socket.emit(`claim-result:${token.key}`, true)
+					socket.emit(`claim-result:${clientToken.key}`, true)
 				}),
 			)
 		}
