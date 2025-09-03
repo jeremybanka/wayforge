@@ -13,8 +13,15 @@ describe(`pushing state`, () => {
 			server: ({ socket, silo: { store } }) => {
 				const provideState = RTS.realtimeStateProvider({ socket, store })
 				const receiveState = RTS.realtimeStateReceiver({ socket, store })
-				provideState(countState)
-				receiveState(countState)
+				const socketServices = [
+					provideState(countState),
+					receiveState(countState),
+				]
+				return () => {
+					for (const unsub of socketServices) {
+						unsub()
+					}
+				}
 			},
 			clients: {
 				dave: () => {
