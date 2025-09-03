@@ -50,7 +50,6 @@ function RealtimeDisplay(): React.ReactNode {
 describe(`running transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
-			port: 4915,
 			server: ({ socket, silo: { store } }) => {
 				const exposeFamily = RTS.realtimeAtomFamilyProvider({
 					socket,

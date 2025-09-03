@@ -34,7 +34,6 @@ const addToNumbersCollectionTX = AtomIO.transaction<
 describe(`running transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
-			port: 2775,
 			server: ({ socket, silo: { store } }) => {
 				const exposeMutableFamily = RTS.realtimeMutableFamilyProvider({
 					socket,

@@ -16,7 +16,6 @@ import {
 } from "atom.io/internal"
 import { toEntries } from "atom.io/json"
 import * as AR from "atom.io/react"
-import * as RT from "atom.io/realtime"
 import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
@@ -69,7 +68,6 @@ function prefixLogger(store: Store, prefix: string) {
 }
 
 export type TestSetupOptions = {
-	port: number
 	immortal?: { server?: boolean }
 	server: (tools: {
 		socket: SocketIO.Socket
@@ -130,11 +128,11 @@ export const setupRealtimeTestServer = (
 		},
 		IMPLICIT.STORE,
 	)
-	prefixLogger(silo.store, `server`)
+	// prefixLogger(silo.store, `server`)
 	const socketRealm = new AtomIO.Realm<RTS.SocketSystemHierarchy>(silo.store)
 
 	const httpServer = http.createServer((_, res) => res.end(`Hello World!`))
-	const address = httpServer.listen(options.port).address()
+	const address = httpServer.listen().address()
 	const port =
 		typeof address === `string` ? null : address === null ? null : address.port
 	if (port === null) throw new Error(`Could not determine port for test server`)
