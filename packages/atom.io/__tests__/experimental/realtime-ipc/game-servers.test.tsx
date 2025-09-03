@@ -39,9 +39,8 @@ afterAll(async () => {
 })
 
 describe(`multi-process realtime server`, () => {
-	const scenario = (port: number) => {
+	const scenario = () => {
 		const { server, client, teardown } = RTTest.singleClient({
-			port,
 			server: SystemServer,
 			client: BrowserGame,
 		})
@@ -49,7 +48,7 @@ describe(`multi-process realtime server`, () => {
 	}
 
 	it(`permits manual creation and deletion of rooms`, async () => {
-		const { client, teardown } = scenario(6361)
+		const { client, teardown } = scenario()
 		const app = client.init()
 		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
 		act(() => {
@@ -64,7 +63,7 @@ describe(`multi-process realtime server`, () => {
 		await teardown()
 	})
 	it(`permits join and leave`, async () => {
-		const { client, teardown } = scenario(6362)
+		const { client, teardown } = scenario()
 		const app = client.init()
 		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
 		act(() => {

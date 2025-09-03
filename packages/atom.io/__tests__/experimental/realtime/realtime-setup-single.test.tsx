@@ -10,7 +10,6 @@ const countState = AtomIO.atom<number>({ key: `count`, default: 0 })
 describe(`single-client scenario`, () => {
 	const scenario = () => {
 		const { server, client, teardown } = RTTest.singleClient({
-			port: 6865,
 			server: ({ socket, silo: { store } }) => {
 				const exposeSingle = RTS.realtimeStateProvider({ socket, store })
 				exposeSingle(countState)

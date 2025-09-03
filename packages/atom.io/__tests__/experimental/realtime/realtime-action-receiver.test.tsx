@@ -16,7 +16,6 @@ const incrementTX = AtomIO.transaction({
 describe(`running transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
-			port: 2925,
 			server: ({ socket, silo: { store } }) => {
 				const exposeSingle = RTS.realtimeStateProvider({ socket, store })
 				const receiveTransaction = RTS.realtimeActionReceiver({ socket, store })

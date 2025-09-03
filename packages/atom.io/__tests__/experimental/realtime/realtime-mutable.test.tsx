@@ -25,7 +25,6 @@ const addToNumbersCollectionTX = AtomIO.transaction({
 describe(`running transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
-			port: 5445,
 			server: ({ socket, silo: { store } }) => {
 				const exposeMutable = RTS.realtimeMutableProvider({ socket, store })
 				const receiveTransaction = RTS.realtimeActionReceiver({ socket, store })
