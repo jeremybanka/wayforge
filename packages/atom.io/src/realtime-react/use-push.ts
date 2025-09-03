@@ -10,8 +10,10 @@ export function usePush<J extends Json.Serializable>(
 	token: AtomIO.WritableToken<J>,
 ): <New extends J>(next: New | ((old: J) => New)) => void {
 	const store = React.useContext(StoreContext)
-	useRealtimeService(`push:${token.key}`, (socket) =>
-		RTC.pushState(store, socket, token),
-	)
+	const claimSubject = React.useRef<AtomIO.Subject<boolean> | null>(null)
+	useRealtimeService(`push:${token.key}`, (socket) => {
+		const { claimSubject, stop } = RTC.pushState(store, socket, token)
+		RTC.pushState(store, socket, token)
+	})
 	return useI(token)
 }

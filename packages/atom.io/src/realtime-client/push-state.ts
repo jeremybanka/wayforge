@@ -1,20 +1,46 @@
 import type { WritableToken } from "atom.io"
-import type { Store } from "atom.io/internal"
+import type { Store, Subject } from "atom.io/internal"
 import { subscribeToState } from "atom.io/internal"
 import type { Json } from "atom.io/json"
+import { employSocket } from "atom.io/realtime-server/employ-socket"
 import type { Socket } from "socket.io-client"
 
 export function pushState<J extends Json.Serializable>(
 	store: Store,
 	socket: Socket,
 	token: WritableToken<J>,
-): () => void {
-	socket.emit(`claim:${token.key}`)
-	subscribeToState(store, token, `push`, ({ newValue }) => {
+): { claimSubject: Subject<boolean>; stop: () => void } {
+	const publish = (newValue: J) => {
 		socket.emit(`pub:${token.key}`, newValue)
-	})
+	}
+
+	const subscriptions = new Set<() => void>()
+	const clearSubscriptions = () => {
+		for (const unsub of subscriptions) unsub()
+		subscriptions.clear()
+	}
+
+	const init = () => {
+		subscriptions.add(
+			employSocket(socket, `claim-result:${token.key}`, (success: boolean) => {
+				if (!success) return
+
+				clearSubscriptions()
+				subscriptions.add(
+					subscribeToState(store, token, `push`, ({ newValue }) => {
+						publish(newValue)
+					}),
+				)
+			}),
+		)
+
+		socket.emit(`claim:${token.key}`)
+	}
+
+	init()
+
 	return () => {
-		socket.off(`pub:${token.key}`)
+		clearSubscriptions()
 		socket.emit(`unclaim:${token.key}`)
 	}
 }
