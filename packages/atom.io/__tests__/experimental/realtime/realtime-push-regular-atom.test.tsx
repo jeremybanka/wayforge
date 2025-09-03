@@ -54,8 +54,6 @@ describe(`pushing state`, () => {
 		)
 	}
 
-	const mutex = new Set<string>()
-
 	const scenario = () =>
 		RTTest.multiClient({
 			server: ({ socket, silo: { store }, enableLogging }) => {
@@ -64,7 +62,7 @@ describe(`pushing state`, () => {
 				}
 				const provideState = RTS.realtimeStateProvider({ socket, store })
 
-				const receiveState = RTS.realtimeStateReceiver({ socket, store, mutex })
+				const receiveState = RTS.realtimeStateReceiver({ socket, store })
 
 				const socketServices = [
 					provideState(countState),
