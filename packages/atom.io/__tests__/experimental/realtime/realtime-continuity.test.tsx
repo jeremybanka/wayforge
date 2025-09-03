@@ -194,7 +194,7 @@ describe(`mutable atoms in continuity`, () => {
 						socket,
 						store,
 					})
-					exposeContinuity(applicationContinuity)
+					return exposeContinuity(applicationContinuity)
 				},
 				client: () => {
 					RTR.useSyncContinuity(applicationContinuity)

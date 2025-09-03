@@ -40,8 +40,15 @@ describe(`running transactions`, () => {
 					store,
 				})
 				const receiveTransaction = RTS.realtimeActionReceiver({ socket, store })
-				exposeMutableFamily(numberCollectionAtoms, numbersCollectionIndex)
-				receiveTransaction(addToNumbersCollectionTX)
+				const socketServices = [
+					exposeMutableFamily(numberCollectionAtoms, numbersCollectionIndex),
+					receiveTransaction(addToNumbersCollectionTX),
+				]
+				return () => {
+					for (const unsub of socketServices) {
+						unsub()
+					}
+				}
 			},
 			clients: {
 				dave: () => {
