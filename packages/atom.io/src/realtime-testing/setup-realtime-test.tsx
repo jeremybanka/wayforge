@@ -73,7 +73,7 @@ export type TestSetupOptions = {
 		socket: SocketIO.Socket
 		silo: AtomIO.Silo
 		enableLogging: () => void
-	}) => void
+	}) => (() => void) | void
 }
 export type TestSetupOptions__SingleClient = TestSetupOptions & {
 	client: React.FC
@@ -162,6 +162,8 @@ export const setupRealtimeTestServer = (
 		}
 	})
 
+	const serviceDisposalFunctions: Array<() => void> = []
+
 	server.on(`connection`, (socket: SocketIO.Socket) => {
 		let userKey: string | null = null
 		function enableLogging() {
@@ -182,11 +184,18 @@ export const setupRealtimeTestServer = (
 				console.log(`${userKey} disconnected`)
 			})
 		}
-		options.server({ socket, enableLogging, silo })
+		const disposeServices = options.server({ socket, enableLogging, silo })
+		if (disposeServices) {
+			serviceDisposalFunctions.push(disposeServices)
+		}
 	})
 
 	const dispose = async () => {
+		for (const disposeSocketServices of serviceDisposalFunctions) {
+			disposeSocketServices()
+		}
 		await server.close()
+
 		// const roomKeys = getFromStore(silo.store, RT.roomIndex)
 		// for (const roomKey of roomKeys) {
 		// 	const roomState = findInStore(silo.store, RTS.roomSelectors, roomKey)
@@ -194,7 +203,7 @@ export const setupRealtimeTestServer = (
 		// 	if (room && !(room instanceof Promise)) {
 		// 		room.process.kill()
 		// 	}
-		// } // ❗ PROBABLY STILL NEEDED
+		// } // ❗ POSSIBLY STILL NEEDED
 		silo.store.valueMap.clear()
 	}
 
