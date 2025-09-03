@@ -1,7 +1,8 @@
 import type { WritableToken } from "atom.io"
-import type { Store, Subject } from "atom.io/internal"
-import { subscribeToState } from "atom.io/internal"
+import type { Store } from "atom.io/internal"
+import { setIntoStore, subscribeToState } from "atom.io/internal"
 import type { Json } from "atom.io/json"
+import { mutexAtoms } from "atom.io/realtime/mutex-store"
 import { employSocket } from "atom.io/realtime-server/employ-socket"
 import type { Socket } from "socket.io-client"
 
@@ -9,7 +10,7 @@ export function pushState<J extends Json.Serializable>(
 	store: Store,
 	socket: Socket,
 	token: WritableToken<J>,
-): { claimSubject: Subject<boolean>; stop: () => void } {
+): () => void {
 	const publish = (newValue: J) => {
 		socket.emit(`pub:${token.key}`, newValue)
 	}
@@ -26,6 +27,7 @@ export function pushState<J extends Json.Serializable>(
 				if (!success) return
 
 				clearSubscriptions()
+				setIntoStore(store, mutexAtoms, token.key, true)
 				subscriptions.add(
 					subscribeToState(store, token, `push`, ({ newValue }) => {
 						publish(newValue)
