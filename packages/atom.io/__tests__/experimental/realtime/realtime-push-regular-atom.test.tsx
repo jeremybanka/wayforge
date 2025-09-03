@@ -22,9 +22,8 @@ describe(`pushing state`, () => {
 	}
 
 	const Increment = () => {
-		RTR.usePush(countState)
-		const setCount = AR.useI(countState)
-		return (
+		const setCount = RTR.usePush(countState)
+		return setCount ? (
 			<button
 				type="button"
 				onClick={() => {
@@ -32,6 +31,8 @@ describe(`pushing state`, () => {
 				}}
 				data-testid={`increment`}
 			/>
+		) : (
+			<span data-testid={`waiting-for-mutex`} />
 		)
 	}
 
@@ -53,6 +54,8 @@ describe(`pushing state`, () => {
 		)
 	}
 
+	const mutex = new Set<string>()
+
 	const scenario = () =>
 		RTTest.multiClient({
 			server: ({ socket, silo: { store }, enableLogging }) => {
@@ -61,7 +64,6 @@ describe(`pushing state`, () => {
 				}
 				const provideState = RTS.realtimeStateProvider({ socket, store })
 
-				const mutex = new Set<string>()
 				const receiveState = RTS.realtimeStateReceiver({ socket, store, mutex })
 
 				const socketServices = [
@@ -91,21 +93,28 @@ describe(`pushing state`, () => {
 			dave.enableLogging()
 		}
 
-		dave.renderResult.getByTestId(`0`)
-		act(() => {
-			jane.renderResult.getByTestId(`switch`).click()
-		})
+		await waitFor(() => jane.renderResult.getByTestId(`waiting-for-mutex`))
+		await waitFor(() => jane.renderResult.getByTestId(`increment`))
 
-		await waitFor(() => jane.renderResult.getByTestId(`0`))
+		dave.renderResult.getByTestId(`0`)
 
 		act(() => {
 			dave.renderResult.getByTestId(`switch`).click()
 		})
 
+		await waitFor(() => dave.renderResult.getByTestId(`waiting-for-mutex`))
+
+		act(() => {
+			jane.renderResult.getByTestId(`switch`).click()
+		})
+
+		await waitFor(() => jane.renderResult.getByTestId(`0`))
+		await waitFor(() => dave.renderResult.getByTestId(`increment`))
+
 		act(() => {
 			dave.renderResult.getByTestId(`increment`).click()
 		})
-		await waitFor(() => jane.renderResult.getByTestId(`1`))
+		await waitFor(() => jane.renderResult.getByTestId(`1`), { timeout: 1000 })
 		await teardown()
 	})
 })
