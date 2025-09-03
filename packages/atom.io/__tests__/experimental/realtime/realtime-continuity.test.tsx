@@ -40,7 +40,6 @@ describe(`synchronizing transactions`, () => {
 
 		return Object.assign(
 			RTTest.multiClient({
-				port: 5465,
 				immortal: { server: true },
 				server: ({ socket, silo: { store } }) => {
 					// enableLogging()
@@ -189,7 +188,6 @@ describe(`mutable atoms in continuity`, () => {
 
 		return Object.assign(
 			RTTest.singleClient({
-				port: 5475,
 				server: ({ socket, silo: { store } }) => {
 					// enableLogging()
 					const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({

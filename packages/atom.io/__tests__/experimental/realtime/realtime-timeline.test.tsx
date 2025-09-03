@@ -10,7 +10,6 @@ describe(`undo/redo`, () => {
 	const countTL = AtomIO.timeline({ key: `countTL`, scope: [countState] })
 	const scenario = () =>
 		RTTest.singleClient({
-			port: 2855,
 			server: ({ socket, silo: { store } }) => {
 				const exposeSingle = RTS.realtimeStateProvider({ socket, store })
 				exposeSingle(countState)
