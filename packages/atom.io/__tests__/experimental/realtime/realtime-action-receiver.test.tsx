@@ -19,8 +19,15 @@ describe(`running transactions`, () => {
 			server: ({ socket, silo: { store } }) => {
 				const exposeSingle = RTS.realtimeStateProvider({ socket, store })
 				const receiveTransaction = RTS.realtimeActionReceiver({ socket, store })
-				exposeSingle(countState)
-				receiveTransaction(incrementTX)
+				const unsubFns = [
+					exposeSingle(countState),
+					receiveTransaction(incrementTX),
+				]
+				return () => {
+					for (const unsub of unsubFns) {
+						unsub()
+					}
+				}
 			},
 			clients: {
 				dave: () => {
