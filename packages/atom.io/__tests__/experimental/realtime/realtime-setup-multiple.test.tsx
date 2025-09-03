@@ -12,7 +12,7 @@ describe(`multi-client scenario`, () => {
 		RTTest.multiClient({
 			server: ({ socket, silo: { store } }) => {
 				const exposeSingle = RTS.realtimeStateProvider({ socket, store })
-				exposeSingle(countState)
+				return exposeSingle(countState)
 			},
 			clients: {
 				jim: () => {

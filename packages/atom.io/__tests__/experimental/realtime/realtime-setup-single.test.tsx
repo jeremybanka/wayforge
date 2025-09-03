@@ -12,7 +12,7 @@ describe(`single-client scenario`, () => {
 		const { server, client, teardown } = RTTest.singleClient({
 			server: ({ socket, silo: { store } }) => {
 				const exposeSingle = RTS.realtimeStateProvider({ socket, store })
-				exposeSingle(countState)
+				return exposeSingle(countState)
 			},
 			client: () => {
 				RTR.usePullAtom(countState)
