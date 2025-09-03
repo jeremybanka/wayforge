@@ -1,17 +1,18 @@
 import { cleanup, render } from "@testing-library/react"
-import { RealtimeContext, useSingleEffect } from "atom.io/realtime-react"
-import { useRealtimeService } from "atom.io/realtime-react/use-realtime-service"
+import {
+	RealtimeContext,
+	useRealtimeService,
+	useSingleEffect,
+} from "atom.io/realtime-react"
 import { useId } from "react"
 import type { Socket } from "socket.io-client"
 import { vi } from "vitest"
 
-// Helper to force global env mode
 function setNodeEnv(value: `development` | `production`) {
 	// @ts-expect-error – test override
 	globalThis.env = { NODE_ENV: value }
 }
 
-// A simple test component that runs the hook
 function TestComponent({
 	effect,
 	deps,
