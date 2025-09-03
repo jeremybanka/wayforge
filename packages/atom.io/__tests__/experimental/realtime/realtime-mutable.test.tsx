@@ -28,8 +28,15 @@ describe(`running transactions`, () => {
 			server: ({ socket, silo: { store } }) => {
 				const exposeMutable = RTS.realtimeMutableProvider({ socket, store })
 				const receiveTransaction = RTS.realtimeActionReceiver({ socket, store })
-				exposeMutable(numbersCollectionState)
-				receiveTransaction(addToNumbersCollectionTX)
+				const socketServices = [
+					exposeMutable(numbersCollectionState),
+					receiveTransaction(addToNumbersCollectionTX),
+				]
+				return () => {
+					for (const unsub of socketServices) {
+						unsub()
+					}
+				}
 			},
 			clients: {
 				dave: () => {
