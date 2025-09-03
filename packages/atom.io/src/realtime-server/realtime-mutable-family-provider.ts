@@ -8,10 +8,11 @@ import {
 	IMPLICIT,
 	subscribeToState,
 } from "atom.io/internal"
-import type { Canonical } from "atom.io/json"
+import type { Canonical, stringified } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import type { ServerConfig } from "."
+import { employSocket } from "./employ-socket"
 
 export type MutableFamilyProvider = ReturnType<
 	typeof realtimeMutableFamilyProvider
@@ -27,35 +28,54 @@ export function realtimeMutableFamilyProvider({
 		family: AtomIO.MutableAtomFamilyToken<T, K>,
 		index: AtomIO.ReadableToken<Iterable<K>>,
 	): () => void {
-		const heldSubscriptionsByKey = new Map<string, () => void>()
+		const coreSubscriptions = new Set<() => void>()
+		const clearCoreSubscriptions = () => {
+			for (const unsub of coreSubscriptions) unsub()
+			coreSubscriptions.clear()
+		}
+		const familyMemberSubscriptionsWanted = new Set<stringified<K>>()
+		const familyMemberSubscriptions = new Map<string, () => void>()
+		const clearFamilySubscriptions = () => {
+			for (const unsub of familyMemberSubscriptions.values()) unsub()
+			familyMemberSubscriptions.clear()
+		}
 
 		const fillUnsubRequest = (key: string) => {
-			socket.off(`unsub:${key}`, fillUnsubRequest)
-			const unsub = heldSubscriptionsByKey.get(key)
+			const unsubUnsub = familyMemberSubscriptions.get(`${key}:unsub`)
+			if (unsubUnsub) {
+				unsubUnsub()
+				familyMemberSubscriptions.delete(`${key}:unsub`)
+			}
+			const unsub = familyMemberSubscriptions.get(key)
 			if (unsub) {
 				unsub()
-				heldSubscriptionsByKey.delete(key)
+				familyMemberSubscriptions.delete(key)
 			}
 		}
 
-		const doExpose = (subKey: K) => {
+		const exposeFamilyMembers = (subKey: K) => {
 			const token = findInStore(store, family, subKey)
 			getFromStore(store, token)
 			const jsonToken = getJsonToken(store, token)
 			const updateToken = getUpdateToken(token)
 			socket.emit(`init:${token.key}`, getFromStore(store, jsonToken))
-			const unsubscribe = subscribeToState(
-				store,
-				updateToken,
-				`expose-family:${family.key}:${socket.id}`,
-				({ newValue }) => {
-					socket.emit(`next:${token.key}`, newValue)
-				},
+			familyMemberSubscriptions.set(
+				token.key,
+				subscribeToState(
+					store,
+					updateToken,
+					`expose-family:${family.key}:${socket.id}`,
+					({ newValue }) => {
+						socket.emit(`next:${token.key}`, newValue)
+					},
+				),
 			)
-			heldSubscriptionsByKey.set(token.key, unsubscribe)
-			socket.on(`unsub:${token.key}`, () => {
-				fillUnsubRequest(token.key)
-			})
+			familyMemberSubscriptions.set(
+				`${token.key}:unsub`,
+				employSocket(socket, `unsub:${token.key}`, () => {
+					fillUnsubRequest(token.key)
+				}),
+			)
 		}
 
 		const isAvailable = (exposedSubKeys: Iterable<K>, subKey: K): boolean => {
@@ -67,35 +87,39 @@ export function realtimeMutableFamilyProvider({
 			return false
 		}
 
-		const fillSubRequest = (subKey: K) => {
-			const exposedSubKeys = getFromStore(store, index)
-			const shouldExpose = isAvailable(exposedSubKeys, subKey)
-			if (shouldExpose) {
-				doExpose(subKey)
-			} else {
-				const indexSubscription = subscribeToState(
+		const start = () => {
+			coreSubscriptions.add(
+				employSocket(socket, `sub:${family.key}`, (subKey: K) => {
+					const exposedSubKeys = getFromStore(store, index)
+					const shouldExpose = isAvailable(exposedSubKeys, subKey)
+					if (shouldExpose) {
+						exposeFamilyMembers(subKey)
+					} else {
+						familyMemberSubscriptionsWanted.add(stringifyJson(subKey))
+					}
+				}),
+			)
+			coreSubscriptions.add(
+				subscribeToState(
 					store,
 					index,
 					`expose-family:${family.key}:${socket.id}`,
 					({ newValue: newExposedSubKeys }) => {
-						const shouldNowExpose = isAvailable(newExposedSubKeys, subKey)
-						if (shouldNowExpose) {
-							doExpose(subKey)
+						for (const subKey of newExposedSubKeys) {
+							if (familyMemberSubscriptionsWanted.has(stringifyJson(subKey))) {
+								exposeFamilyMembers(subKey)
+							}
 						}
 					},
-				)
-				heldSubscriptionsByKey.set(index.key, indexSubscription)
-			}
+				),
+			)
 		}
 
-		socket.on(`sub:${family.key}`, fillSubRequest)
+		start()
 
 		return () => {
-			socket.off(`sub:${family.key}`, fillSubRequest)
-			for (const [, unsub] of heldSubscriptionsByKey) {
-				unsub()
-			}
-			heldSubscriptionsByKey.clear()
+			clearCoreSubscriptions()
+			clearFamilySubscriptions()
 		}
 	}
 }
