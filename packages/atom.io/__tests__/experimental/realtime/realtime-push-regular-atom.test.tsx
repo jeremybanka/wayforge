@@ -4,15 +4,64 @@ import * as AR from "atom.io/react"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
+import * as React from "react"
+
+let LOGGING: boolean
+
+beforeEach(() => (LOGGING = false))
 
 const countState = AtomIO.atom<number>({ key: `count`, default: 0 })
 
 describe(`pushing state`, () => {
+	const Receiver = () => {
+		RTR.usePullAtom(countState)
+		const count = AR.useO(countState)
+		return <i data-testid={count} />
+	}
+
+	const Increment = () => {
+		const setCount = RTR.usePush(countState)
+		return setCount ? (
+			<button
+				type="button"
+				onClick={() => {
+					setCount((c) => c + 1)
+				}}
+				data-testid={`increment`}
+			/>
+		) : (
+			<span data-testid={`waiting-for-mutex`} />
+		)
+	}
+
+	const ModeSwitchingClient: React.FC<{
+		initialState: `client` | `server`
+	}> = ({ initialState }) => {
+		const [mode, setMode] = React.useState(initialState)
+		return (
+			<>
+				<button
+					type="button"
+					onClick={() => {
+						setMode((m) => (m === `client` ? `server` : `client`))
+					}}
+					data-testid={`switch`}
+				/>
+				{mode === `client` ? <Receiver /> : <Increment />}
+			</>
+		)
+	}
+
 	const scenario = () =>
 		RTTest.multiClient({
-			server: ({ socket, silo: { store } }) => {
+			server: ({ socket, silo: { store }, enableLogging }) => {
+				if (LOGGING) {
+					enableLogging()
+				}
 				const provideState = RTS.realtimeStateProvider({ socket, store })
+
 				const receiveState = RTS.realtimeStateReceiver({ socket, store })
+
 				const socketServices = [
 					provideState(countState),
 					receiveState(countState),
@@ -24,24 +73,8 @@ describe(`pushing state`, () => {
 				}
 			},
 			clients: {
-				dave: () => {
-					RTR.usePush(countState)
-					const setCount = AR.useI(countState)
-					return (
-						<button
-							type="button"
-							onClick={() => {
-								setCount((c) => c + 1)
-							}}
-							data-testid={`increment`}
-						/>
-					)
-				},
-				jane: () => {
-					RTR.usePullAtom(countState)
-					const count = AR.useO(countState)
-					return <i data-testid={count} />
-				},
+				dave: () => <ModeSwitchingClient initialState={`client`} />,
+				jane: () => <ModeSwitchingClient initialState={`server`} />,
 			},
 		})
 
@@ -51,11 +84,33 @@ describe(`pushing state`, () => {
 		const jane = clients.jane.init()
 		const dave = clients.dave.init()
 
-		jane.renderResult.getByTestId(`0`)
+		if (LOGGING) {
+			jane.enableLogging()
+			dave.enableLogging()
+		}
+
+		await waitFor(() => jane.renderResult.getByTestId(`waiting-for-mutex`))
+		await waitFor(() => jane.renderResult.getByTestId(`increment`))
+
+		dave.renderResult.getByTestId(`0`)
+
+		act(() => {
+			dave.renderResult.getByTestId(`switch`).click()
+		})
+
+		await waitFor(() => dave.renderResult.getByTestId(`waiting-for-mutex`))
+
+		act(() => {
+			jane.renderResult.getByTestId(`switch`).click()
+		})
+
+		await waitFor(() => jane.renderResult.getByTestId(`0`))
+		await waitFor(() => dave.renderResult.getByTestId(`increment`))
+
 		act(() => {
 			dave.renderResult.getByTestId(`increment`).click()
 		})
-		await waitFor(() => jane.renderResult.getByTestId(`1`))
+		await waitFor(() => jane.renderResult.getByTestId(`1`), { timeout: 1000 })
 		await teardown()
 	})
 })
