@@ -10,6 +10,7 @@ import {
 import type { Json } from "atom.io/json"
 
 import type { ServerConfig } from "."
+import { employSocket } from "./employ-socket"
 
 export type MutableProvider = ReturnType<typeof realtimeMutableProvider>
 export function realtimeMutableProvider({
@@ -19,35 +20,42 @@ export function realtimeMutableProvider({
 	return function mutableProvider<
 		Core extends Transceiver<any, Json.Serializable, Json.Serializable>,
 	>(token: AtomIO.MutableAtomToken<Core>): () => void {
-		let unsubscribeFromStateUpdates: (() => void) | null = null
+		const subscriptions = new Set<() => void>()
+		const clearSubscriptions = () => {
+			for (const unsub of subscriptions) unsub()
+			subscriptions.clear()
+		}
 
 		const jsonToken = getJsonToken(store, token)
 		const trackerToken = getUpdateToken(token)
 
-		const fillUnsubRequest = () => {
-			socket.off(`unsub:${token.key}`, fillUnsubRequest)
-			unsubscribeFromStateUpdates?.()
-			unsubscribeFromStateUpdates = null
-		}
-
-		const fillSubRequest = () => {
-			socket.emit(`init:${token.key}`, getFromStore(store, jsonToken))
-			unsubscribeFromStateUpdates = subscribeToState(
-				store,
-				trackerToken,
-				`expose-single:${socket.id}`,
-				({ newValue }) => {
-					socket.emit(`next:${token.key}`, newValue)
-				},
+		const start = () => {
+			subscriptions.add(
+				employSocket(socket, `sub:${token.key}`, () => {
+					clearSubscriptions()
+					socket.emit(`init:${token.key}`, getFromStore(store, jsonToken))
+					subscriptions.add(
+						subscribeToState(
+							store,
+							trackerToken,
+							`expose-single:${socket.id}`,
+							({ newValue }) => {
+								socket.emit(`next:${token.key}`, newValue)
+							},
+						),
+					)
+					subscriptions.add(
+						employSocket(socket, `unsub:${token.key}`, () => {
+							clearSubscriptions()
+							start()
+						}),
+					)
+				}),
 			)
-			socket.on(`unsub:${token.key}`, fillUnsubRequest)
 		}
 
-		socket.on(`sub:${token.key}`, fillSubRequest)
+		start()
 
-		return () => {
-			socket.off(`sub:${token.key}`, fillSubRequest)
-			unsubscribeFromStateUpdates?.()
-		}
+		return clearSubscriptions
 	}
 }
