@@ -1,6 +1,6 @@
 import type { AtomToken, SelectorToken } from "atom.io"
 import type { Store } from "atom.io/internal"
-import { getFamilyOfToken } from "atom.io/internal"
+import { getFamilyOfToken, subscribeToState } from "atom.io/internal"
 import { parseJson } from "atom.io/json"
 import type { Socket } from "socket.io-client"
 
@@ -13,41 +13,78 @@ export function pullSelectorRoots(
 	store: Store,
 	socket: Socket,
 	selectorToken: SelectorToken<any>,
-): (() => void)[] {
-	const atomKeys = store.selectorAtoms.getRelatedKeys(selectorToken.key)
-	const unsubscribes: Array<() => void> = []
-	if (atomKeys) {
-		for (const atomKey of atomKeys) {
-			const atom = store.atoms.get(atomKey) as AtomToken<any, any>
-			switch (atom.type) {
-				case `atom`: {
-					if (atom.family) {
-						const { subKey: serializedSubKey } = atom.family
-						const subKey = parseJson(serializedSubKey)
-						const family = getFamilyOfToken(store, atom)
-						unsubscribes.push(
-							pullAtomFamilyMember(store, socket, family, subKey),
-						)
-					} else {
-						unsubscribes.push(pullAtom(store, socket, atom))
-					}
-					break
+): () => void {
+	const atomSubscriptions = new Map<string, () => void>()
+	const clearAtomSubscriptions = () => {
+		for (const [, unsub] of atomSubscriptions) unsub()
+		atomSubscriptions.clear()
+	}
+
+	const start = () => {
+		const atomKeys = store.selectorAtoms.getRelatedKeys(selectorToken.key)
+		if (atomKeys) {
+			for (const [atomKey, unsub] of atomSubscriptions) {
+				if (!atomKeys.has(atomKey)) {
+					unsub()
+					atomSubscriptions.delete(atomKey)
 				}
-				case `mutable_atom`: {
-					if (atom.family) {
-						const { subKey: serializedSubKey } = atom.family
-						const subKey = parseJson(serializedSubKey)
-						const family = getFamilyOfToken(store, atom)
-						unsubscribes.push(
-							pullMutableAtomFamilyMember(store, socket, family, subKey),
-						)
-					} else {
-						unsubscribes.push(pullMutableAtom(store, socket, atom))
+			}
+
+			for (const atomKey of atomKeys) {
+				if (atomSubscriptions.has(atomKey)) {
+					continue
+				}
+				const atom = store.atoms.get(atomKey) as AtomToken<any, any>
+				switch (atom.type) {
+					case `atom`: {
+						if (atom.family) {
+							const { subKey: serializedSubKey } = atom.family
+							const subKey = parseJson(serializedSubKey)
+							const family = getFamilyOfToken(store, atom)
+							atomSubscriptions.set(
+								atomKey,
+								pullAtomFamilyMember(store, socket, family, subKey),
+							)
+						} else {
+							atomSubscriptions.set(atomKey, pullAtom(store, socket, atom))
+						}
+						break
 					}
-					break
+					case `mutable_atom`: {
+						if (atom.family) {
+							const { subKey: serializedSubKey } = atom.family
+							const subKey = parseJson(serializedSubKey)
+							const family = getFamilyOfToken(store, atom)
+							atomSubscriptions.set(
+								atomKey,
+								pullMutableAtomFamilyMember(store, socket, family, subKey),
+							)
+						} else {
+							atomSubscriptions.set(
+								atomKey,
+								pullMutableAtom(store, socket, atom),
+							)
+						}
+						break
+					}
 				}
 			}
 		}
 	}
-	return unsubscribes
+
+	const unsubFromSelector = subscribeToState(
+		store,
+		selectorToken,
+		`pull-watches-dependencies`,
+		() => {
+			start()
+		},
+	)
+
+	start()
+
+	return () => {
+		clearAtomSubscriptions()
+		unsubFromSelector()
+	}
 }
