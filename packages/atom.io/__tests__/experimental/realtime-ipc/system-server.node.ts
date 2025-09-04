@@ -55,8 +55,7 @@ export const SystemServer = ({
 
 	socket.on(`delete-room`, (roomId) => {
 		console.info(`[${shortId}]:${username}`, `deleting room "${roomId}"`)
-		RTS.deleteRoom(roomId)
-		setIntoStore(store, RT.roomIndex, (index) => (index.delete(roomId), index))
+		actUponStore(store, RTS.destroyRoomTX, arbitrary())(roomId)
 	})
 
 	socket.on(`join-room`, (roomId) => {
