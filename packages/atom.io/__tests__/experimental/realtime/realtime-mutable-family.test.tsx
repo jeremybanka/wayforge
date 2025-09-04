@@ -20,7 +20,7 @@ const numberCollectionAtoms = AtomIO.mutableAtomFamily<
 	class: SetRTX,
 })
 const exposedCollectionsIndex = AtomIO.atom<Set<CollectionName>>({
-	key: `numbersCollectionIndex`,
+	key: `exposedCollectionIndex`,
 	default: new Set([`foo`]),
 })
 const focusedCollectionNameState = AtomIO.atom<CollectionName>({
