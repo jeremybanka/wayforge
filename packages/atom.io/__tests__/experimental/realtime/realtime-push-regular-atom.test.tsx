@@ -6,9 +6,12 @@ import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import * as React from "react"
 
+console.log = () => undefined
+console.info = () => undefined
+console.warn = () => undefined
+console.error = () => undefined
 let LOGGING: boolean
-
-beforeEach(() => (LOGGING = false))
+beforeEach(() => (LOGGING = true))
 
 const countState = AtomIO.atom<number>({ key: `count`, default: 0 })
 
