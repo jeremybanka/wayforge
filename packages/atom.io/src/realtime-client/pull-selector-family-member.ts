@@ -13,10 +13,5 @@ export function pullSelectorFamilyMember<T, K extends Canonical>(
 	key: NoInfer<K>,
 ): () => void {
 	const token = findInStore(store, familyToken, key)
-	const unsubscribes = pullSelectorRoots(store, socket, token)
-	return () => {
-		for (const unsubscribe of unsubscribes) {
-			unsubscribe()
-		}
-	}
+	return pullSelectorRoots(store, socket, token)
 }

@@ -15,15 +15,6 @@ const numberCollectionAtoms = AtomIO.atomFamily<number[], string>({
 	key: `numbersCollection`,
 	default: [0],
 })
-// const findCollectionSumState = AtomIO.selectorFamily<number, string>({
-// 	key: `collectionSum`,
-// 	get:
-// 		(id) =>
-// 		({ find, get }) => {
-// 			const numbers = get(find(numberCollectionAtoms, id))
-// 			return numbers.reduce((a, b) => a + b, 0)
-// 		},
-// })
 const exposedCollectionIndex = AtomIO.atom<Set<string>>({
 	key: `exposedCollectionIndex`,
 	default: new Set([`foo`]),
