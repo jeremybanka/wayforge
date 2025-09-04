@@ -1,35 +1,81 @@
 import type { WritableToken } from "atom.io"
-import { IMPLICIT, setIntoStore } from "atom.io/internal"
+import {
+	findInStore,
+	getFromStore,
+	IMPLICIT,
+	setIntoStore,
+	subscribeToState,
+} from "atom.io/internal"
+import {
+	operateOnStore,
+	OWN_OP,
+} from "atom.io/internal/set-state/operate-on-store"
 import type { Json } from "atom.io/json"
+import { mutexAtoms } from "atom.io/realtime/mutex-store"
 
 import type { ServerConfig } from "."
+import { employSocket } from "./employ-socket"
 
 export type StateReceiver = ReturnType<typeof realtimeStateReceiver>
 export function realtimeStateReceiver({
 	socket,
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
-	return function stateReceiver<J extends Json.Serializable>(
-		token: WritableToken<J>,
+	return function stateReceiver<S extends Json.Serializable, C extends S>(
+		clientToken: WritableToken<C>,
+		serverToken: WritableToken<S> = clientToken,
 	): () => void {
-		const publish = (newValue: J) => {
-			setIntoStore(store, token, newValue)
+		const mutexAtom = findInStore(store, mutexAtoms, serverToken.key)
+
+		const subscriptions = new Set<() => void>()
+		const clearSubscriptions = () => {
+			for (const unsub of subscriptions) unsub()
+			subscriptions.clear()
 		}
 
-		const fillPubUnclaim = () => {
-			socket.off(`pub:${token.key}`, publish)
-			socket.off(`unclaim:${token.key}`, fillPubUnclaim)
-		}
-		const fillPubClaim = () => {
-			socket.on(`pub:${token.key}`, publish)
-			socket.on(`unclaim:${token.key}`, fillPubUnclaim)
+		const permitPublish = () => {
+			clearSubscriptions()
+			subscriptions.add(
+				employSocket(socket, `pub:${clientToken.key}`, (newValue) => {
+					setIntoStore(store, serverToken, newValue as C)
+				}),
+			)
+			subscriptions.add(
+				employSocket(socket, `unclaim:${clientToken.key}`, () => {
+					setIntoStore(store, mutexAtom, false)
+					clearSubscriptions()
+					start()
+				}),
+			)
 		}
 
-		socket.on(`claim:${token.key}`, fillPubClaim)
-
-		return () => {
-			socket.off(`claim:${token.key}`, fillPubClaim)
-			socket.off(`pub:${token.key}`, publish)
+		const start = () => {
+			subscriptions.add(
+				employSocket(socket, `claim:${clientToken.key}`, () => {
+					if (getFromStore(store, mutexAtom)) {
+						clearSubscriptions()
+						subscriptions.add(
+							subscribeToState(store, mutexAtom, socket.id!, () => {
+								const currentValue = getFromStore(store, mutexAtom)
+								if (currentValue === false) {
+									operateOnStore(OWN_OP, store, mutexAtom, true)
+									permitPublish()
+									socket.emit(`claim-result:${clientToken.key}`, true)
+								}
+							}),
+						)
+						socket.emit(`claim-result:${clientToken.key}`, false)
+						return
+					}
+					setIntoStore(store, mutexAtom, true)
+					permitPublish()
+					socket.emit(`claim-result:${clientToken.key}`, true)
+				}),
+			)
 		}
+
+		start()
+
+		return clearSubscriptions
 	}
 }

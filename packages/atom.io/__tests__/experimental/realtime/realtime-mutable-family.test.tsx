@@ -1,95 +1,105 @@
-import { act, waitFor } from "@testing-library/react"
+import { waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
 import * as AR from "atom.io/react"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { act } from "react"
 
-const numberCollectionAtoms = AtomIO.mutableAtomFamily<SetRTX<number>, string>({
+let LOGGING: boolean
+beforeEach(() => (LOGGING = false))
+
+type CollectionName = `bar` | `foo`
+
+const numberCollectionAtoms = AtomIO.mutableAtomFamily<
+	SetRTX<number>,
+	CollectionName
+>({
 	key: `numbersCollection`,
 	class: SetRTX,
-	effects: () => [
-		({ setSelf }) => {
-			setSelf((prev) => prev.add(0))
-		},
-	],
 })
-const numbersCollectionIndex = AtomIO.atom<Set<string>>({
+const exposedCollectionsIndex = AtomIO.atom<Set<CollectionName>>({
 	key: `numbersCollectionIndex`,
 	default: new Set([`foo`]),
 })
-const addToNumbersCollectionTX = AtomIO.transaction<
-	(collectionKey: string) => void
->({
-	key: `addToNumbersCollection`,
-	do: ({ set }, collectionKey) => {
-		set(numberCollectionAtoms, collectionKey, (ns) => {
-			ns.add(ns.size)
-			return ns
-		})
-	},
+const focusedCollectionNameState = AtomIO.atom<CollectionName>({
+	key: `focusedCollectionState`,
+	default: `foo`,
 })
 
 describe(`running transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
-			server: ({ socket, silo: { store } }) => {
+			server: ({ socket, silo: { store }, enableLogging }) => {
+				if (LOGGING) {
+					enableLogging()
+				}
 				const exposeMutableFamily = RTS.realtimeMutableFamilyProvider({
 					socket,
 					store,
 				})
-				const receiveTransaction = RTS.realtimeActionReceiver({ socket, store })
-				const socketServices = [
-					exposeMutableFamily(numberCollectionAtoms, numbersCollectionIndex),
-					receiveTransaction(addToNumbersCollectionTX),
-				]
-				return () => {
-					for (const unsub of socketServices) {
-						unsub()
-					}
-				}
+				return exposeMutableFamily(
+					numberCollectionAtoms,
+					exposedCollectionsIndex,
+				)
 			},
 			clients: {
-				dave: () => {
-					const addToNumbersCollection = RTR.useServerAction(
-						addToNumbersCollectionTX,
-					)
-
-					return (
-						<button
-							type="button"
-							onClick={() => {
-								addToNumbersCollection(`foo`)
-							}}
-							data-testid={`addNumber`}
-						/>
-					)
-				},
 				jane: () => {
-					RTR.usePullMutableAtomFamilyMember(numberCollectionAtoms, `foo`)
-					const numbers = AR.useJSON(numberCollectionAtoms, `foo`)
+					const name = AR.useO(focusedCollectionNameState)
+					RTR.usePullMutableAtomFamilyMember(numberCollectionAtoms, name)
+					const numbers = AR.useJSON(numberCollectionAtoms, name)
 					return (
-						<>
+						<ul data-testid={name}>
 							{numbers.members.map((n) => (
-								<i data-testid={n} key={n} />
+								<li data-testid={n} key={n} />
 							))}
-						</>
+						</ul>
 					)
 				},
 			},
 		})
 
-	test(`client 1 -> server -> client 2`, async () => {
-		const { clients, teardown } = scenario()
+	test(`subscribe to available family member`, async () => {
+		const { clients, server, teardown } = scenario()
 
 		const jane = clients.jane.init()
-		const dave = clients.dave.init()
 
-		jane.renderResult.getByTestId(`0`)
+		if (LOGGING) {
+			jane.enableLogging()
+		}
+
+		jane.renderResult.getByTestId(`foo`)
+		server.silo.setState(numberCollectionAtoms, `foo`, (prev) => prev.add(1))
+
+		await waitFor(() => jane.renderResult.getByTestId(`1`))
+
+		await teardown()
+	})
+	test(`subscribe to unavailable family member that becomes available`, async () => {
+		const { clients, server, teardown } = scenario()
+
+		const jane = clients.jane.init()
+
+		if (LOGGING) {
+			jane.enableLogging()
+		}
+
+		jane.renderResult.getByTestId(`foo`)
 		act(() => {
-			dave.renderResult.getByTestId(`addNumber`).click()
+			jane.silo.setState(focusedCollectionNameState, `bar`)
 		})
+		await waitFor(() => jane.renderResult.getByTestId(`bar`))
+
+		await new Promise<void>((resolve) => {
+			jane.socket.once(`unavailable:numbersCollection`, () => {
+				resolve()
+			})
+		})
+
+		server.silo.setState(exposedCollectionsIndex, (prev) => prev.add(`bar`))
+		server.silo.setState(numberCollectionAtoms, `bar`, (prev) => prev.add(1))
+
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
 		await teardown()
 	})
