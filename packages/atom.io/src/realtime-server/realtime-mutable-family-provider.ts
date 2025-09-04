@@ -96,6 +96,7 @@ export function realtimeMutableFamilyProvider({
 						exposeFamilyMembers(subKey)
 					} else {
 						familyMemberSubscriptionsWanted.add(stringifyJson(subKey))
+						socket.emit(`unavailable:${family.key}`, subKey)
 					}
 				}),
 			)
