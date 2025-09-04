@@ -99,7 +99,7 @@ describe(`running transactions`, () => {
 		})
 
 		await new Promise<void>((resolve) => {
-			jane.socket.once(`init:numbersCollection("foo")`, () => {
+			jane.socket.once(`serve:numbersCollection("foo")`, () => {
 				resolve()
 			})
 		})
