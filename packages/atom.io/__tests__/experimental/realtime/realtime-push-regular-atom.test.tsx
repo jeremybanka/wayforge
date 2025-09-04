@@ -8,9 +8,7 @@ import * as React from "react"
 
 let LOGGING: boolean
 
-beforeEach(() => {
-	LOGGING = true
-})
+beforeEach(() => (LOGGING = false))
 
 const countState = AtomIO.atom<number>({ key: `count`, default: 0 })
 
