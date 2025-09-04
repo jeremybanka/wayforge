@@ -6,82 +6,60 @@ import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import * as React from "react"
 
+let LOGGING: boolean
+beforeEach(() => (LOGGING = true))
+
+type CollectionName = `bar` | `foo`
+
 const numberCollectionAtoms = AtomIO.atomFamily<number[], string>({
 	key: `numbersCollection`,
 	default: [0],
 })
-const findCollectionSumState = AtomIO.selectorFamily<number, string>({
-	key: `collectionSum`,
-	get:
-		(id) =>
-		({ find, get }) => {
-			const numbers = get(find(numberCollectionAtoms, id))
-			return numbers.reduce((a, b) => a + b, 0)
-		},
-})
-const numbersCollectionIndex = AtomIO.atom<Set<string>>({
-	key: `numbersCollectionIndex`,
+// const findCollectionSumState = AtomIO.selectorFamily<number, string>({
+// 	key: `collectionSum`,
+// 	get:
+// 		(id) =>
+// 		({ find, get }) => {
+// 			const numbers = get(find(numberCollectionAtoms, id))
+// 			return numbers.reduce((a, b) => a + b, 0)
+// 		},
+// })
+const exposedCollectionIndex = AtomIO.atom<Set<string>>({
+	key: `exposedCollectionIndex`,
 	default: new Set([`foo`]),
 })
-const addToNumbersCollectionTX = AtomIO.transaction<
-	(collectionKey: string) => void
->({
-	key: `addToNumbersCollection`,
-	do: ({ set }, collectionKey) => {
-		set(numberCollectionAtoms, collectionKey, (ns) => {
-			return [...ns, ns.length]
-		})
-	},
+const focusedCollectionNameState = AtomIO.atom<CollectionName>({
+	key: `focusedCollectionState`,
+	default: `foo`,
 })
 
 function RealtimeDisplay(): React.ReactNode {
-	RTR.usePullAtomFamilyMember(numberCollectionAtoms, `foo`)
-	RTR.usePullSelectorFamilyMember(findCollectionSumState, `foo`)
-	const numbers = AR.useO(numberCollectionAtoms, `foo`)
+	const name = AR.useO(focusedCollectionNameState)
+	RTR.usePullAtomFamilyMember(numberCollectionAtoms, name)
+	const numbers = AR.useO(numberCollectionAtoms, name)
 	return (
-		<>
+		<ul data-testid={name}>
 			{numbers.map((n) => (
-				<i data-testid={n} key={n} />
+				<li data-testid={n} key={n} />
 			))}
-		</>
+		</ul>
 	)
 }
 
 describe(`running transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
-			server: ({ socket, silo: { store } }) => {
+			server: ({ socket, silo: { store }, enableLogging }) => {
+				if (LOGGING) {
+					enableLogging()
+				}
 				const exposeFamily = RTS.realtimeAtomFamilyProvider({
 					socket,
 					store,
 				})
-				const receiveTransaction = RTS.realtimeActionReceiver({ socket, store })
-				const socketServices = [
-					exposeFamily(numberCollectionAtoms, numbersCollectionIndex),
-					receiveTransaction(addToNumbersCollectionTX),
-				]
-				return () => {
-					for (const unsub of socketServices) {
-						unsub()
-					}
-				}
+				return exposeFamily(numberCollectionAtoms, exposedCollectionIndex)
 			},
 			clients: {
-				dave: () => {
-					const addToNumbersCollection = RTR.useServerAction(
-						addToNumbersCollectionTX,
-					)
-
-					return (
-						<button
-							type="button"
-							onClick={() => {
-								addToNumbersCollection(`foo`)
-							}}
-							data-testid={`addNumber`}
-						/>
-					)
-				},
 				jane: () => {
 					const [isShowingRealtimeDisplay, setShowingRealtimeDisplay] =
 						React.useState(false)
@@ -107,24 +85,66 @@ describe(`running transactions`, () => {
 			},
 		})
 
-	test(`client 1 -> server -> client 2`, async () => {
-		const { clients, teardown } = scenario()
+	test(`pull available family member`, async () => {
+		const { server, clients, teardown } = scenario()
 
 		const jane = clients.jane.init()
-		const dave = clients.dave.init()
+
+		if (LOGGING) {
+			jane.enableLogging()
+		}
 
 		act(() => {
 			jane.renderResult.getByTestId(`toggleRealtimeDisplay`).click()
 		})
-		jane.renderResult.getByTestId(`0`)
-		act(() => {
-			dave.renderResult.getByTestId(`addNumber`).click()
+
+		await new Promise<void>((resolve) => {
+			jane.socket.once(`init:numbersCollection("foo")`, () => {
+				resolve()
+			})
 		})
+
+		jane.renderResult.getByTestId(`foo`)
+		jane.renderResult.getByTestId(`0`)
+
+		server.silo.setState(numberCollectionAtoms, `foo`, (prev) => [...prev, 1])
+
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
 		act(() => {
 			jane.renderResult.getByTestId(`toggleRealtimeDisplay`).click()
 		})
 		await waitFor(() => jane.renderResult.getByTestId(`noRealtimeDisplay`))
+		await teardown()
+	})
+	test(`pull unavailable family member that becomes available`, async () => {
+		const { server, clients, teardown } = scenario()
+
+		const jane = clients.jane.init()
+
+		if (LOGGING) {
+			jane.enableLogging()
+		}
+
+		act(() => {
+			jane.renderResult.getByTestId(`toggleRealtimeDisplay`).click()
+		})
+		await waitFor(() => jane.renderResult.getByTestId(`foo`))
+
+		act(() => {
+			jane.silo.setState(focusedCollectionNameState, `bar`)
+		})
+		await waitFor(() => jane.renderResult.getByTestId(`bar`))
+
+		await new Promise<void>((resolve) => {
+			jane.socket.once(`unavailable:numbersCollection`, () => {
+				resolve()
+			})
+		})
+
+		server.silo.setState(exposedCollectionIndex, (prev) => prev.add(`bar`))
+		server.silo.setState(numberCollectionAtoms, `bar`, (prev) => [...prev, 1])
+
+		await waitFor(() => jane.renderResult.getByTestId(`1`))
 		await teardown()
 	})
 })
