@@ -51,7 +51,7 @@ export function realtimeAtomFamilyProvider({
 		const exposeFamilyMembers = (subKey: K) => {
 			const token = findInStore(store, family, subKey)
 			getFromStore(store, token)
-			socket.emit(`init:${token.key}`, getFromStore(store, token))
+			socket.emit(`serve:${token.key}`, getFromStore(store, token))
 			familyMemberSubscriptions.set(
 				token.key,
 				subscribeToState(
