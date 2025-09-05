@@ -80,8 +80,7 @@ pipe(
 
 			socket.on(`delete-room`, (roomId) => {
 				logger.info(`[${shortId}]:${username}`, `deleting room "${roomId}"`)
-				RTS.deleteRoom(roomId)
-				setState(RT.roomIndex, (index) => (index.delete(roomId), index))
+				runTransaction(RTS.destroyRoomTX)(roomId)
 			})
 
 			socket.on(`join-room`, (roomId) => {
