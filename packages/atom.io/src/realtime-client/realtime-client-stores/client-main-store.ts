@@ -16,5 +16,5 @@ export const myUsernameState: AtomIO.RegularAtomToken<string | null> =
 	AtomIO.atom<string | null>({
 		key: `myName`,
 		default: null,
-		effects: [persistSync(window.localStorage, JSON, `myUsername`)],
+		effects: [persistSync(globalThis.localStorage, JSON, `myUsername`)],
 	})
