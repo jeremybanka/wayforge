@@ -7,11 +7,16 @@ export type StringInterface<T> = {
 
 export const persistSync =
 	<T>(
-		storage: Storage,
+		storage: Storage | undefined,
 		{ stringify, parse }: StringInterface<T>,
 		key: string,
 	): AtomEffect<T> =>
 	({ setSelf, onSet }) => {
+		if (!storage) {
+			return
+
+		
+		}
 		const savedValue = storage.getItem(key)
 		if (savedValue != null) setSelf(parse(savedValue))
 
