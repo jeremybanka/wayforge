@@ -10,7 +10,7 @@ import type { ContinuityToken } from "atom.io/realtime"
 
 import type { ServerConfig, Socket } from ".."
 import { socketAtoms, usersOfSockets } from ".."
-import { userUnacknowledgedQueues } from "../realtime-server-stores"
+import { userUnacknowledgedQueues } from "./continuity-store"
 import { prepareToSendInitialPayload } from "./prepare-to-send-initial-payload"
 import { prepareToServeTransactionRequest } from "./prepare-to-serve-transaction-request"
 import { prepareToTrackClientAcknowledgement } from "./prepare-to-track-client-acknowledgement"

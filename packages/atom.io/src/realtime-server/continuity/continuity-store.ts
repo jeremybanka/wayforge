@@ -5,7 +5,7 @@ import type {
 } from "atom.io"
 import { atomFamily } from "atom.io"
 
-import type { UserKey } from "./server-user-store"
+import type { UserKey } from "../realtime-server-stores/server-user-store"
 
 // export const completeUpdateAtoms = atomFamily<
 // 	TransactionUpdate<any> | null,
