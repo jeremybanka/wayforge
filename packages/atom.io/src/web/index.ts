@@ -1,1 +1,1 @@
-export * from "./persist-sync"
+export * from "./storage-sync"

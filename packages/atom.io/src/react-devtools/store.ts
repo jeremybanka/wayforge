@@ -16,7 +16,7 @@ import type {
 	WritableTokenIndex,
 } from "atom.io/introspection"
 import { attachIntrospectionStates, isPlainObject } from "atom.io/introspection"
-import { persistSync } from "atom.io/web"
+import { storageSync } from "atom.io/web"
 import type { Context } from "react"
 import { createContext } from "react"
 
@@ -48,7 +48,7 @@ export function attachDevtoolsStates(
 				typeof window === `undefined`
 					? []
 					: [
-							persistSync(window.localStorage, JSON, `🔍 Devtools Are Hidden`),
+							storageSync(window.localStorage, JSON, `🔍 Devtools Are Hidden`),
 							({ setSelf }) => {
 								window.addEventListener(`keydown`, (e) => {
 									if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === `a`) {
@@ -70,7 +70,7 @@ export function attachDevtoolsStates(
 			effects:
 				typeof window === `undefined`
 					? []
-					: [persistSync(window.localStorage, JSON, `🔍 Devtools Are Open`)],
+					: [storageSync(window.localStorage, JSON, `🔍 Devtools Are Open`)],
 		},
 		undefined,
 	)
@@ -87,7 +87,7 @@ export function attachDevtoolsStates(
 			effects:
 				typeof window === `undefined`
 					? []
-					: [persistSync(window.localStorage, JSON, `🔍 Devtools View`)],
+					: [storageSync(window.localStorage, JSON, `🔍 Devtools View`)],
 		},
 		undefined,
 	)
@@ -104,7 +104,7 @@ export function attachDevtoolsStates(
 			effects:
 				typeof window === `undefined`
 					? []
-					: [persistSync(window.localStorage, JSON, `🔍 Devtools View Options`)],
+					: [storageSync(window.localStorage, JSON, `🔍 Devtools View Options`)],
 		},
 		undefined,
 	)
@@ -119,7 +119,7 @@ export function attachDevtoolsStates(
 		effects: (key) =>
 			typeof window === `undefined`
 				? []
-				: [persistSync(window.localStorage, JSON, `view-is-open:${key.join()}`)],
+				: [storageSync(window.localStorage, JSON, `view-is-open:${key.join()}`)],
 	})
 
 	const openCloseAllTX: TransactionToken<
