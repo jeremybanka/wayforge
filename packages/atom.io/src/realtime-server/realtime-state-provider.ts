@@ -3,6 +3,7 @@ import { getFromStore, IMPLICIT, subscribeToState } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
 import type { ServerConfig } from "."
+import { employSocket } from "./employ-socket"
 
 export type StateProvider = ReturnType<typeof realtimeStateProvider>
 export function realtimeStateProvider({
@@ -12,39 +13,39 @@ export function realtimeStateProvider({
 	return function stateProvider<J extends Json.Serializable>(
 		token: AtomIO.WritableToken<J>,
 	): () => void {
-		let unsubscribeFromStateUpdates: (() => void) | undefined
+		const subscriptions = new Set<() => void>()
+		const clearSubscriptions = () => {
+			for (const unsub of subscriptions) unsub()
+			subscriptions.clear()
+		}
 
-		const fillSubRequest = () => {
-			socket.emit(`serve:${token.key}`, getFromStore(store, token))
-
-			unsubscribeFromStateUpdates = subscribeToState(
-				store,
-				token,
-				`expose-single:${socket.id}`,
-				({ newValue }) => {
-					socket.emit(`serve:${token.key}`, newValue)
-				},
+		const start = () => {
+			subscriptions.add(
+				employSocket(socket, `sub:${token.key}`, () => {
+					clearSubscriptions()
+					socket.emit(`serve:${token.key}`, getFromStore(store, token))
+					subscriptions.add(
+						subscribeToState(
+							store,
+							token,
+							`expose-single:${socket.id}`,
+							({ newValue }) => {
+								socket.emit(`serve:${token.key}`, newValue)
+							},
+						),
+					)
+					subscriptions.add(
+						employSocket(socket, `unsub:${token.key}`, () => {
+							clearSubscriptions()
+							start()
+						}),
+					)
+				}),
 			)
-
-			const fillUnsubRequest = () => {
-				socket.off(`unsub:${token.key}`, fillUnsubRequest)
-				if (unsubscribeFromStateUpdates) {
-					unsubscribeFromStateUpdates()
-					unsubscribeFromStateUpdates = undefined
-				}
-			}
-
-			socket.on(`unsub:${token.key}`, fillUnsubRequest)
 		}
 
-		socket.on(`sub:${token.key}`, fillSubRequest)
+		start()
 
-		return () => {
-			socket.off(`sub:${token.key}`, fillSubRequest)
-			if (unsubscribeFromStateUpdates) {
-				unsubscribeFromStateUpdates()
-				unsubscribeFromStateUpdates = undefined
-			}
-		}
+		return clearSubscriptions
 	}
 }

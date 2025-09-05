@@ -7,8 +7,12 @@ import * as RTTest from "atom.io/realtime-testing"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import { act } from "react"
 
+console.log = () => undefined
+console.info = () => undefined
+console.warn = () => undefined
+console.error = () => undefined
 let LOGGING: boolean
-beforeEach(() => (LOGGING = false))
+beforeEach(() => (LOGGING = true))
 
 type CollectionName = `bar` | `foo`
 
@@ -20,7 +24,7 @@ const numberCollectionAtoms = AtomIO.mutableAtomFamily<
 	class: SetRTX,
 })
 const exposedCollectionsIndex = AtomIO.atom<Set<CollectionName>>({
-	key: `numbersCollectionIndex`,
+	key: `exposedCollectionIndex`,
 	default: new Set([`foo`]),
 })
 const focusedCollectionNameState = AtomIO.atom<CollectionName>({
