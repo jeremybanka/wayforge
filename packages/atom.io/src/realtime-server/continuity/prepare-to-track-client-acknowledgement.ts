@@ -2,11 +2,9 @@ import type { Store } from "atom.io/internal"
 import { setIntoStore } from "atom.io/internal"
 import type { ContinuityToken } from "atom.io/realtime"
 
-import type {
-	ContinuitySyncTransactionUpdate,
-	UserKey,
-} from "../realtime-server-stores"
-import { userUnacknowledgedQueues } from "../realtime-server-stores"
+import type { UserKey } from "../realtime-server-stores"
+import type { ContinuitySyncTransactionUpdate } from "./continuity-store"
+import { userUnacknowledgedQueues } from "./continuity-store"
 
 export function prepareToTrackClientAcknowledgement(
 	store: Store,

@@ -26,7 +26,7 @@ describe(`pull atom, observe selector`, () => {
 				return exposeSingle(countState)
 			},
 			client: () => {
-				RTR.usePullAtom(countState)
+				RTR.usePullSelector(countHundredfoldState)
 				const plusTen = AR.useO(countPlusTenState)
 				const hundredfold = AR.useO(countHundredfoldState)
 				return (

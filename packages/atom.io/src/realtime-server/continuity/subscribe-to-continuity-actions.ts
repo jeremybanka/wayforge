@@ -13,7 +13,7 @@ import type { Socket, UserKey } from ".."
 import {
 	redactTransactionUpdateContent,
 	userUnacknowledgedQueues,
-} from "../realtime-server-stores"
+} from "./continuity-store"
 
 export function subscribeToContinuityActions(
 	store: Store,

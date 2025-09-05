@@ -9,10 +9,5 @@ export function pullSelector<T>(
 	socket: Socket,
 	token: AtomIO.SelectorToken<T>,
 ): () => void {
-	const unsubscribes = pullSelectorRoots(store, socket, token)
-	return () => {
-		for (const unsubscribe of unsubscribes) {
-			unsubscribe()
-		}
-	}
+	return pullSelectorRoots(store, socket, token)
 }

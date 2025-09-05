@@ -1,10 +1,17 @@
-import { act, waitFor } from "@testing-library/react"
+import { waitFor } from "@testing-library/react"
 import * as AtomIO from "atom.io"
 import * as AR from "atom.io/react"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
+
+console.log = () => undefined
+console.info = () => undefined
+console.warn = () => undefined
+console.error = () => undefined
+let LOGGING: boolean
+beforeEach(() => (LOGGING = true))
 
 const numbersCollectionState = AtomIO.mutableAtom<SetRTX<number>>({
 	key: `numbersCollection`,
@@ -15,42 +22,18 @@ const numbersCollectionState = AtomIO.mutableAtom<SetRTX<number>>({
 		},
 	],
 })
-const addToNumbersCollectionTX = AtomIO.transaction({
-	key: `addToNumbersCollection`,
-	do: ({ set }) => {
-		set(numbersCollectionState, (ns) => ns.add(ns.size))
-	},
-})
 
 describe(`running transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
-			server: ({ socket, silo: { store } }) => {
-				const exposeMutable = RTS.realtimeMutableProvider({ socket, store })
-				const receiveTransaction = RTS.realtimeActionReceiver({ socket, store })
-				const socketServices = [
-					exposeMutable(numbersCollectionState),
-					receiveTransaction(addToNumbersCollectionTX),
-				]
-				return () => {
-					for (const unsub of socketServices) {
-						unsub()
-					}
+			server: ({ socket, silo: { store }, enableLogging }) => {
+				if (LOGGING) {
+					enableLogging()
 				}
+				const exposeMutable = RTS.realtimeMutableProvider({ socket, store })
+				return exposeMutable(numbersCollectionState)
 			},
 			clients: {
-				dave: () => {
-					const addToNumbersCollection = RTR.useServerAction(
-						addToNumbersCollectionTX,
-					)
-					return (
-						<button
-							type="button"
-							onClick={() => addToNumbersCollection()}
-							data-testid={`addNumber`}
-						/>
-					)
-				},
 				jane: () => {
 					RTR.usePullMutable(numbersCollectionState)
 					const numbers = AR.useJSON(numbersCollectionState)
@@ -65,15 +48,19 @@ describe(`running transactions`, () => {
 			},
 		})
 
-	test(`client 1 -> server -> client 2`, async () => {
-		const { clients, teardown } = scenario()
+	test(`pull updates`, async () => {
+		const { server, clients, teardown } = scenario()
 
 		const jane = clients.jane.init()
-		const dave = clients.dave.init()
 
-		act(() => {
-			dave.renderResult.getByTestId(`addNumber`).click()
-		})
+		if (LOGGING) {
+			jane.enableLogging()
+		}
+
+		jane.renderResult.getByTestId(`0`)
+
+		server.silo.setState(numbersCollectionState, (prev) => prev.add(1))
+
 		await waitFor(() => {
 			jane.renderResult.getByTestId(`1`)
 		})
