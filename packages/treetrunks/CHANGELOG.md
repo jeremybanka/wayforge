@@ -1,5 +1,11 @@
 # treetrunks
 
+## 0.1.4
+
+### Patch Changes
+
+- 089fb5f: 📝 Updated README; fixed broken "0 Dependencies" badge.
+
 ## 0.1.3
 
 ### Patch Changes
