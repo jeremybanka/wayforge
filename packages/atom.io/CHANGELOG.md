@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.40.7
+
+### Patch Changes
+
+- 089fb5f: 📝 Updated README; fixed broken "0 Dependencies" badge.
+
 ## 0.40.6
 
 ### Patch Changes
