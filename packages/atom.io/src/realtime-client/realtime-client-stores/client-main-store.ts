@@ -1,5 +1,5 @@
 import * as AtomIO from "atom.io"
-import { persistSync } from "atom.io/web"
+import { storageSync } from "atom.io/web"
 
 export const myIdState__INTERNAL: AtomIO.RegularAtomToken<string | undefined> =
 	AtomIO.atom<string | undefined>({
@@ -16,5 +16,5 @@ export const myUsernameState: AtomIO.RegularAtomToken<string | null> =
 	AtomIO.atom<string | null>({
 		key: `myName`,
 		default: null,
-		effects: [persistSync(globalThis.localStorage, JSON, `myUsername`)],
+		effects: [storageSync(globalThis.localStorage, JSON, `myUsername`)],
 	})
