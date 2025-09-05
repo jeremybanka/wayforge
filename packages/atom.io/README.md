@@ -19,7 +19,7 @@ npm i atom.io
     <img alt="NPM Version" src="https://img.shields.io/npm/v/atom.io?style=for-the-badge">
   </a>
   <a aria-label="Dependencies 0" href="https://www.npmjs.com/package/atom.io">
-    <img alt="Dependencies 0" src=" https://img.shields.io/badge/dependencies-0-0?style=for-the-badge">
+    <img alt="Dependencies 0" src="https://img.shields.io/badge/dependencies-0-0?style=for-the-badge">
   </a>
   <a aria-label="Types" href="https://www.npmjs.com/package/atom.io">
     <img alt="Types" src="https://img.shields.io/npm/types/atom.io?style=for-the-badge">
