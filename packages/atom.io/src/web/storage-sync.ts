@@ -5,7 +5,7 @@ export type StringInterface<T> = {
 	parse: (s: string) => T
 }
 
-export const persistSync =
+export const storageSync =
 	<T>(
 		storage: Storage | undefined,
 		{ stringify, parse }: StringInterface<T>,
@@ -14,8 +14,6 @@ export const persistSync =
 	({ setSelf, onSet }) => {
 		if (!storage) {
 			return
-
-		
 		}
 		const savedValue = storage.getItem(key)
 		if (savedValue != null) setSelf(parse(savedValue))
