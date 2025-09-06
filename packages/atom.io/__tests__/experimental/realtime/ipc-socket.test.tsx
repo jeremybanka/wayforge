@@ -6,6 +6,10 @@ import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import * as Utils from "../../__util__"
 
+console.log = () => undefined
+console.info = () => undefined
+console.warn = () => undefined
+console.error = () => undefined
 const logger: Pick<Console, `error` | `info` | `warn`> = console
 
 interface VirtualProcess {
