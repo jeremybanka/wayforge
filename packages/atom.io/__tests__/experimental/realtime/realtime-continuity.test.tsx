@@ -11,9 +11,12 @@ import * as React from "react"
 
 import * as Utils from "../../__util__"
 
+console.log = () => undefined
+console.info = () => undefined
 console.warn = () => undefined
 console.error = () => undefined
-const DEBUG_LOGGING = true
+let LOGGING: true
+beforeEach(() => (LOGGING = true))
 
 describe(`synchronizing transactions`, () => {
 	const runScenario = () => {
@@ -41,8 +44,10 @@ describe(`synchronizing transactions`, () => {
 		return Object.assign(
 			RTTest.multiClient({
 				immortal: { server: true },
-				server: ({ socket, silo: { store } }) => {
-					// enableLogging()
+				server: ({ socket, silo: { store }, enableLogging }) => {
+					if (LOGGING) {
+						enableLogging()
+					}
 					const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
 						socket,
 						store,
@@ -101,9 +106,14 @@ describe(`synchronizing transactions`, () => {
 		jane = scenario.clients.jane.init()
 		server = scenario.server
 		teardown = scenario.teardown
-		dave.silo.store.logger = Utils.createNullLogger()
-		jane.silo.store.logger = Utils.createNullLogger()
-		server.silo.store.logger = Utils.createNullLogger()
+		// dave.silo.store.logger = Utils.createNullLogger()
+		// jane.silo.store.logger = Utils.createNullLogger()
+		// server.silo.store.logger = Utils.createNullLogger()
+
+		if (LOGGING) {
+			jane.enableLogging()
+			dave.enableLogging()
+		}
 
 		vitest.spyOn(dave.silo.store.logger, `error`)
 		vitest.spyOn(dave.silo.store.logger, `warn`)
@@ -135,8 +145,6 @@ describe(`synchronizing transactions`, () => {
 	})
 	test(`rollback`, async () => {
 		const { countState } = scenario
-		// jane.enableLogging()
-		// dave.enableLogging()
 
 		await waitFor(() => {
 			Utils.throwUntil(jane.socket.connected)
@@ -229,7 +237,7 @@ describe(`mutable atoms in continuity`, () => {
 		await waitFor(() => {
 			Utils.throwUntil(() => server.silo.getState(myListAtom).has(`world`))
 		})
-		if (DEBUG_LOGGING) console.log(`📝 took ${performance.now() - time}ms`)
+		if (LOGGING) console.log(`📝 took ${performance.now() - time}ms`)
 
 		await teardown()
 	})
