@@ -1,6 +1,12 @@
 import type { LoggerIcon, TokenDenomination } from "atom.io"
-import { AtomIOLogger, editRelations, findState, setState } from "atom.io"
-import { IMPLICIT } from "atom.io/internal"
+import {
+	AtomIOLogger,
+	editRelations,
+	findState,
+	getState,
+	setState,
+} from "atom.io"
+import { findRelationsInStore, IMPLICIT } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import * as RTS from "atom.io/realtime-server"
 
@@ -59,5 +65,11 @@ parentSocket.relay((userSocket) => {
 	const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
 		socket: userSocket,
 	})
-	exposeContinuity(gameContinuity)
+	const userKeyState = findRelationsInStore(
+		RTS.usersOfSockets,
+		`socket::${userSocket.id}`,
+		IMPLICIT.STORE,
+	).userKeyOfSocket
+	const userKey = getState(userKeyState)!
+	exposeContinuity(gameContinuity, userKey)
 })
