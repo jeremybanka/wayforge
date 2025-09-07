@@ -156,14 +156,16 @@ export const setupRealtimeTestServer = (
 			setIntoStore(silo.store, RTS.socketIndex, (index) =>
 				index.add(socketClaim),
 			)
-			// console.log(`${username} connected on ${socket.id}`)
 			next()
 		} else {
 			next(new Error(`Authentication error`))
 		}
 	})
 
-	const serviceDisposalFunctions: Array<() => void> = []
+	const socketServices = new Set<() => void>()
+	const disposeAllSocketServices = () => {
+		for (const disposeService of socketServices) disposeService()
+	}
 
 	server.on(`connection`, (socket: SocketIO.Socket) => {
 		const userKeyState = findRelationsInStore(
@@ -191,14 +193,13 @@ export const setupRealtimeTestServer = (
 			userKey,
 		})
 		if (disposeServices) {
-			serviceDisposalFunctions.push(disposeServices)
+			socketServices.add(disposeServices)
+			socket.on(`disconnect`, disposeServices)
 		}
 	})
 
 	const dispose = async () => {
-		for (const disposeSocketServices of serviceDisposalFunctions) {
-			disposeSocketServices()
-		}
+		disposeAllSocketServices()
 		await server.close()
 
 		// const roomKeys = getFromStore(silo.store, RT.roomIndex)
