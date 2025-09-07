@@ -14,7 +14,7 @@ export function prepareToSendInitialPayload(
 	store: Store,
 	continuity: ContinuityToken,
 	userKey: UserKey,
-	socket: Socket | null,
+	socket: Socket,
 ): () => void {
 	const continuityKey = continuity.key
 	return function sendInitialPayload(): void {
@@ -49,6 +49,6 @@ export function prepareToSendInitialPayload(
 			? (store.transactionMeta.epoch.get(continuityKey) ?? null)
 			: null
 
-		socket?.emit(`continuity-init:${continuityKey}`, epoch, initialPayload)
+		socket.emit(`continuity-init:${continuityKey}`, epoch, initialPayload)
 	}
 }

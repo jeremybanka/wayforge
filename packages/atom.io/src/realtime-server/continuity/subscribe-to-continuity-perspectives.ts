@@ -15,9 +15,9 @@ export function subscribeToContinuityPerspectives(
 	continuity: ContinuityToken,
 	userKey: UserKey,
 	socket: Socket | null,
-): (() => void)[] {
+): () => void {
 	const continuityKey = continuity.key
-	const unsubFns: (() => void)[] = []
+	const unsubFns = new Set<() => void>()
 	for (const perspective of continuity.perspectives) {
 		const { viewAtoms } = perspective
 		const userViewState = findInStore(store, viewAtoms, userKey)
@@ -54,7 +54,9 @@ export function subscribeToContinuityPerspectives(
 				}
 			},
 		)
-		unsubFns.push(unsubscribeFromUserView)
+		unsubFns.add(unsubscribeFromUserView)
 	}
-	return unsubFns
+	return () => {
+		for (const unsubscribe of unsubFns) unsubscribe()
+	}
 }

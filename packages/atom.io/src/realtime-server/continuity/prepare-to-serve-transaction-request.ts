@@ -47,7 +47,7 @@ export function prepareToServeTransactionRequest(
 			performanceKeyStart,
 			performanceKeyEnd,
 		)
-		store?.logger.info(
+		store.logger.info(
 			`🚀`,
 			`transaction`,
 			transactionKey,
