@@ -16,6 +16,7 @@ import { prepareToServeTransactionRequest } from "./prepare-to-serve-transaction
 import { prepareToTrackClientAcknowledgement } from "./prepare-to-track-client-acknowledgement"
 import { subscribeToContinuityActions } from "./subscribe-to-continuity-actions"
 import { subscribeToContinuityPerspectives } from "./subscribe-to-continuity-perspectives"
+import { employSocket } from "../employ-socket"
 
 export type ExposeRealtimeContinuity = (
 	continuity: ContinuityToken,
@@ -36,9 +37,14 @@ export function prepareToExposeRealtimeContinuity({
 			store,
 		).socketKeyOfUser
 
-		const subscriptions: (() => void)[] = []
+		const coreSubscriptions = new Set<() => void>()
+		const socketSubscriptions = new Set<() => void>()
+		const clearSubscriptions = (subscriptions: Set<() => void>) => {
+			for (const unsubscribe of subscriptions) unsubscribe()
+			subscriptions.clear()
+		}
 
-		subscriptions.push(
+		coreSubscriptions.add(
 			subscribeToState(
 				store,
 				socketKeyState,
@@ -60,7 +66,12 @@ export function prepareToExposeRealtimeContinuity({
 						return
 					}
 					socket = getFromStore(store, socketAtoms, newSocketKey)
-					for (const unacknowledgedUpdate of userUnacknowledgedUpdates) {
+					const unacknowledgedUpdates = getFromStore(
+						store,
+						userUnacknowledgedUpdatesAtoms,
+						userKey,
+					)
+					for (const unacknowledgedUpdate of unacknowledgedUpdates) {
 						socket?.emit(
 							`tx-new:${continuityKey}`,
 							unacknowledgedUpdate as Json.Serializable,
@@ -70,12 +81,22 @@ export function prepareToExposeRealtimeContinuity({
 			),
 		)
 
-		subscriptions.push(
-			...subscribeToContinuityPerspectives(store, continuity, userKey, socket),
+		const perspectiveSubscriptions = subscribeToContinuityPerspectives(
+			store,
+			continuity,
+			userKey,
+			socket,
 		)
-		subscriptions.push(
-			...subscribeToContinuityActions(store, continuity, userKey, socket),
+		for (const unsubscribe of perspectiveSubscriptions)
+			coreSubscriptions.add(unsubscribe)
+		const actionSubscriptions = subscribeToContinuityActions(
+			store,
+			continuity,
+			userKey,
+			socket,
 		)
+		for (const unsubscribe of actionSubscriptions)
+			coreSubscriptions.add(unsubscribe)
 
 		const sendInitialPayload = prepareToSendInitialPayload(
 			store,
@@ -84,8 +105,9 @@ export function prepareToExposeRealtimeContinuity({
 			socket,
 		)
 
-		socket.off(`get:${continuityKey}`, sendInitialPayload)
-		socket.on(`get:${continuityKey}`, sendInitialPayload)
+		socketSubscriptions.add(
+			employSocket(socket, `get:${continuityKey}`, sendInitialPayload),
+		)
 
 		const fillTransactionRequest = prepareToServeTransactionRequest(
 			store,
@@ -93,8 +115,9 @@ export function prepareToExposeRealtimeContinuity({
 			userKey,
 		)
 
-		socket.off(`tx-run:${continuityKey}`, fillTransactionRequest)
-		socket.on(`tx-run:${continuityKey}`, fillTransactionRequest)
+		socketSubscriptions.add(
+			employSocket(socket, `tx-run:${continuityKey}`, fillTransactionRequest),
+		)
 
 		const trackClientAcknowledgement = prepareToTrackClientAcknowledgement(
 			store,
@@ -102,13 +125,13 @@ export function prepareToExposeRealtimeContinuity({
 			userKey,
 		)
 
-		socket?.on(`ack:${continuityKey}`, trackClientAcknowledgement)
+		socketSubscriptions.add(
+			employSocket(socket, `ack:${continuityKey}`, trackClientAcknowledgement),
+		)
 
 		return () => {
-			for (const unsubscribe of subscriptions) unsubscribe()
-			socket?.off(`ack:${continuityKey}`, trackClientAcknowledgement)
-			socket?.off(`get:${continuityKey}`, sendInitialPayload)
-			socket?.off(`tx-run:${continuityKey}`, fillTransactionRequest)
+			clearSubscriptions(coreSubscriptions)
+			clearSubscriptions(socketSubscriptions)
 		}
 	}
 }
