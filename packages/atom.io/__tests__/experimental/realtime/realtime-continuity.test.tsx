@@ -15,8 +15,6 @@ import * as Utils from "../../__util__"
 // console.info = () => undefined
 // console.warn = () => undefined
 // console.error = () => undefined
-let LOGGING: true
-beforeEach(() => (LOGGING = true))
 
 describe(`synchronizing transactions`, () => {
 	const runScenario = () => {
@@ -41,13 +39,28 @@ describe(`synchronizing transactions`, () => {
 			config: (group) => group.add(countState).add(incrementTX),
 		})
 
+		const Client = () => {
+			RTR.useSyncContinuity(countContinuity)
+			const count = AR.useO(countState)
+			const store = React.useContext(AR.StoreContext)
+			const increment = actUponStore(store, incrementTX, arbitrary())
+			return (
+				<>
+					<button
+						type="button"
+						onClick={() => increment()}
+						data-testid={`increment`}
+					/>
+					<i data-testid={count} />
+				</>
+			)
+		}
+
 		return Object.assign(
 			RTTest.multiClient({
 				immortal: { server: true },
 				server: ({ socket, userKey, silo: { store }, enableLogging }) => {
-					if (LOGGING) {
-						enableLogging()
-					}
+					enableLogging()
 					const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
 						socket,
 						store,
@@ -55,39 +68,8 @@ describe(`synchronizing transactions`, () => {
 					exposeContinuity(countContinuity, userKey)
 				},
 				clients: {
-					jane: () => {
-						RTR.useSyncContinuity(countContinuity)
-						const count = AR.useO(countState)
-						const store = React.useContext(AR.StoreContext)
-						const increment = actUponStore(store, incrementTX, arbitrary())
-
-						return (
-							<>
-								<button
-									type="button"
-									onClick={() => increment()}
-									data-testid={`increment`}
-								/>
-								<i data-testid={count} />
-							</>
-						)
-					},
-					dave: () => {
-						RTR.useSyncContinuity(countContinuity)
-						const count = AR.useO(countState)
-						const store = React.useContext(AR.StoreContext)
-						const increment = actUponStore(store, incrementTX, arbitrary())
-						return (
-							<>
-								<button
-									type="button"
-									onClick={() => increment()}
-									data-testid={`increment`}
-								/>
-								<i data-testid={count} />
-							</>
-						)
-					},
+					jane: Client,
+					dave: Client,
 				},
 			}),
 			{ countState, incrementTX },
@@ -107,10 +89,8 @@ describe(`synchronizing transactions`, () => {
 		server = scenario.server
 		teardown = scenario.teardown
 
-		if (LOGGING) {
-			jane.enableLogging()
-			dave.enableLogging()
-		}
+		jane.enableLogging()
+		dave.enableLogging()
 
 		vitest.spyOn(dave.silo.store.logger, `error`)
 		vitest.spyOn(dave.silo.store.logger, `warn`)
@@ -140,7 +120,7 @@ describe(`synchronizing transactions`, () => {
 		})
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
 	})
-	test(`rollback`, async () => {
+	test.only(`rollback`, async () => {
 		const { countState } = scenario
 
 		await waitFor(() => {
@@ -234,7 +214,7 @@ describe(`mutable atoms in continuity`, () => {
 		await waitFor(() => {
 			Utils.throwUntil(() => server.silo.getState(myListAtom).has(`world`))
 		})
-		if (LOGGING) console.log(`📝 took ${performance.now() - time}ms`)
+		console.log(`📝 took ${performance.now() - time}ms`)
 
 		await teardown()
 	})

@@ -20,9 +20,9 @@ export function subscribeToContinuityActions(
 	continuity: ContinuityToken,
 	userKey: UserKey,
 	socket: Socket | null,
-): (() => void)[] {
+): () => void {
 	const continuityKey = continuity.key
-	const unsubscribeFunctions: (() => void)[] = []
+	const unsubscribeFunctions = new Set<() => void>()
 
 	for (const transaction of continuity.actions) {
 		const unsubscribeFromTransaction = subscribeToTransaction(
@@ -103,7 +103,9 @@ export function subscribeToContinuityActions(
 				}
 			},
 		)
-		unsubscribeFunctions.push(unsubscribeFromTransaction)
+		unsubscribeFunctions.add(unsubscribeFromTransaction)
 	}
-	return unsubscribeFunctions
+	return () => {
+		for (const unsubscribe of unsubscribeFunctions) unsubscribe()
+	}
 }
