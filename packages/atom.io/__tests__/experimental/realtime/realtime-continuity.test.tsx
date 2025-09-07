@@ -11,10 +11,10 @@ import * as React from "react"
 
 import * as Utils from "../../__util__"
 
-console.log = () => undefined
-console.info = () => undefined
-console.warn = () => undefined
-console.error = () => undefined
+// console.log = () => undefined
+// console.info = () => undefined
+// console.warn = () => undefined
+// console.error = () => undefined
 let LOGGING: true
 beforeEach(() => (LOGGING = true))
 
@@ -44,7 +44,7 @@ describe(`synchronizing transactions`, () => {
 		return Object.assign(
 			RTTest.multiClient({
 				immortal: { server: true },
-				server: ({ socket, silo: { store }, enableLogging }) => {
+				server: ({ socket, userKey, silo: { store }, enableLogging }) => {
 					if (LOGGING) {
 						enableLogging()
 					}
@@ -52,7 +52,7 @@ describe(`synchronizing transactions`, () => {
 						socket,
 						store,
 					})
-					exposeContinuity(countContinuity)
+					exposeContinuity(countContinuity, userKey)
 				},
 				clients: {
 					jane: () => {
@@ -106,9 +106,6 @@ describe(`synchronizing transactions`, () => {
 		jane = scenario.clients.jane.init()
 		server = scenario.server
 		teardown = scenario.teardown
-		// dave.silo.store.logger = Utils.createNullLogger()
-		// jane.silo.store.logger = Utils.createNullLogger()
-		// server.silo.store.logger = Utils.createNullLogger()
 
 		if (LOGGING) {
 			jane.enableLogging()
@@ -136,12 +133,12 @@ describe(`synchronizing transactions`, () => {
 		await teardown()
 	})
 
-	test(`client 1 -> server -> client 2`, async () => {
+	test.only(`client 1 -> server -> client 2`, async () => {
 		jane.renderResult.getByTestId(`0`)
-		await act(async () => {
+		act(() => {
 			dave.renderResult.getByTestId(`increment`).click()
-			await waitFor(() => jane.renderResult.getByTestId(`1`))
 		})
+		await waitFor(() => jane.renderResult.getByTestId(`1`))
 	})
 	test(`rollback`, async () => {
 		const { countState } = scenario

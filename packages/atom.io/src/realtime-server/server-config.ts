@@ -5,5 +5,4 @@ import type { Socket } from "./socket-interface"
 export type ServerConfig = {
 	socket: Socket
 	store?: RootStore
-	mutex?: Set<string>
 }

@@ -89,7 +89,7 @@ export type ContinuitySyncTransactionUpdate = Pick<
 	TransactionOutcomeEvent<any>,
 	`epoch` | `id` | `output` | `subEvents` | `token`
 >
-export const userUnacknowledgedQueues: RegularAtomFamilyToken<
+export const userUnacknowledgedUpdatesAtoms: RegularAtomFamilyToken<
 	ContinuitySyncTransactionUpdate[],
 	UserKey
 > = atomFamily<ContinuitySyncTransactionUpdate[], UserKey>({

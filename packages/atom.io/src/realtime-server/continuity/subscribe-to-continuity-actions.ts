@@ -12,7 +12,7 @@ import type { ContinuityToken } from "atom.io/realtime"
 import type { Socket, UserKey } from ".."
 import {
 	redactTransactionUpdateContent,
-	userUnacknowledgedQueues,
+	userUnacknowledgedUpdatesAtoms,
 } from "./continuity-store"
 
 export function subscribeToContinuityActions(
@@ -65,21 +65,26 @@ export function subscribeToContinuityActions(
 						...update,
 						updates: redactedUpdates,
 					}
-					setIntoStore(store, userUnacknowledgedQueues, userKey, (updates) => {
-						if (redactedUpdate) {
-							updates.push(redactedUpdate)
-							updates.sort((a, b) => a.epoch - b.epoch)
-							store.logger.info(
-								`👍`,
-								`continuity`,
-								continuityKey,
-								`${userKey} unacknowledged update queue now has`,
-								updates.length,
-								`items`,
-							)
-						}
-						return updates
-					})
+					setIntoStore(
+						store,
+						userUnacknowledgedUpdatesAtoms,
+						userKey,
+						(updates) => {
+							if (redactedUpdate) {
+								updates.push(redactedUpdate)
+								updates.sort((a, b) => a.epoch - b.epoch)
+								store.logger.info(
+									`👍`,
+									`continuity`,
+									continuityKey,
+									`${userKey} unacknowledged update queue now has`,
+									updates.length,
+									`items`,
+								)
+							}
+							return updates
+						},
+					)
 
 					socket?.emit(
 						`tx-new:${continuityKey}`,

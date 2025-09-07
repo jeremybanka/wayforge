@@ -72,6 +72,7 @@ export type TestSetupOptions = {
 	server: (tools: {
 		socket: SocketIO.Socket
 		silo: AtomIO.Silo
+		userKey: RTS.UserKey
 		enableLogging: () => void
 	}) => (() => void) | void
 }
@@ -165,14 +166,13 @@ export const setupRealtimeTestServer = (
 	const serviceDisposalFunctions: Array<() => void> = []
 
 	server.on(`connection`, (socket: SocketIO.Socket) => {
-		let userKey: string | null = null
+		const userKeyState = findRelationsInStore(
+			RTS.usersOfSockets,
+			`socket::${socket.id}`,
+			silo.store,
+		).userKeyOfSocket
+		const userKey = getFromStore(silo.store, userKeyState)!
 		function enableLogging() {
-			const userKeyState = findRelationsInStore(
-				RTS.usersOfSockets,
-				`socket::${socket.id}`,
-				silo.store,
-			).userKeyOfSocket
-			userKey = getFromStore(silo.store, userKeyState)
 			prefixLogger(silo.store, `server`)
 			socket.onAny((event, ...args) => {
 				console.log(`🛰 `, userKey, event, ...args)
@@ -184,7 +184,12 @@ export const setupRealtimeTestServer = (
 				console.log(`${userKey} disconnected`)
 			})
 		}
-		const disposeServices = options.server({ socket, enableLogging, silo })
+		const disposeServices = options.server({
+			socket,
+			enableLogging,
+			silo,
+			userKey,
+		})
 		if (disposeServices) {
 			serviceDisposalFunctions.push(disposeServices)
 		}

@@ -8,110 +8,80 @@ import {
 import type { Json } from "atom.io/json"
 import type { ContinuityToken } from "atom.io/realtime"
 
-import type { ServerConfig, Socket } from ".."
+import type { ServerConfig, Socket, UserKey } from ".."
 import { socketAtoms, usersOfSockets } from ".."
-import { userUnacknowledgedQueues } from "./continuity-store"
+import { userUnacknowledgedUpdatesAtoms } from "./continuity-store"
 import { prepareToSendInitialPayload } from "./prepare-to-send-initial-payload"
 import { prepareToServeTransactionRequest } from "./prepare-to-serve-transaction-request"
 import { prepareToTrackClientAcknowledgement } from "./prepare-to-track-client-acknowledgement"
 import { subscribeToContinuityActions } from "./subscribe-to-continuity-actions"
-import { subscribeToContinuityPerspectives } from "./subscribe-to-continuity-perpectives"
 import { subscribeToContinuityPerspectives } from "./subscribe-to-continuity-perspectives"
 
 export type ExposeRealtimeContinuity = (
 	continuity: ContinuityToken,
+	userKey: UserKey,
 ) => () => void
 export function prepareToExposeRealtimeContinuity({
 	socket: initialSocket,
 	store = IMPLICIT.STORE,
 }: ServerConfig): ExposeRealtimeContinuity {
-	return function syncRealtimeContinuity(continuity) {
+	return function syncRealtimeContinuity(continuity, userKey) {
 		let socket: Socket | null = initialSocket
 
 		const continuityKey = continuity.key
-		const userKeyState = findRelationsInStore(
-			usersOfSockets,
-			`socket::${socket.id}`,
-			store,
-		).userKeyOfSocket
-		const userKey = getFromStore(store, userKeyState)
-		if (!userKey) {
-			store.logger.error(
-				`❌`,
-				`continuity`,
-				continuityKey,
-				`Tried to create a synchronizer for a socket (${socket.id}) that is not connected to a user.`,
-			)
-			return () => {}
-		}
 
 		const socketKeyState = findRelationsInStore(
 			usersOfSockets,
 			userKey,
 			store,
 		).socketKeyOfUser
-		const _unsubscribeFromSocketTracking = subscribeToState(
-			store,
-			socketKeyState,
-			`sync-continuity:${continuityKey}:${userKey}`,
-			({ newValue: newSocketKey }) => {
-				store.logger.info(
-					`👋`,
-					`continuity`,
-					continuityKey,
-					`seeing ${userKey} on new socket ${newSocketKey}`,
-				)
-				if (newSocketKey === null) {
-					store.logger.warn(
-						`❌`,
+
+		const subscriptions: (() => void)[] = []
+
+		subscriptions.push(
+			subscribeToState(
+				store,
+				socketKeyState,
+				`sync-continuity:${continuityKey}:${userKey}`,
+				({ newValue: newSocketKey }) => {
+					store.logger.info(
+						`👋`,
 						`continuity`,
 						continuityKey,
-						`User (${userKey}) is not connected to a socket, waiting for them to reappear.`,
+						`seeing ${userKey} on new socket ${newSocketKey}`,
 					)
-					return
-				}
-				const newSocketState = findInStore(store, socketAtoms, newSocketKey)
-				const newSocket = getFromStore(store, newSocketState)
-				socket = newSocket
-				for (const unacknowledgedUpdate of userUnacknowledgedUpdates) {
-					socket?.emit(
-						`tx-new:${continuityKey}`,
-						unacknowledgedUpdate as Json.Serializable,
-					)
-				}
-			},
+					if (newSocketKey === null) {
+						store.logger.warn(
+							`❌`,
+							`continuity`,
+							continuityKey,
+							`User (${userKey}) is not connected to a socket, waiting for them to reappear.`,
+						)
+						return
+					}
+					socket = getFromStore(store, socketAtoms, newSocketKey)
+					for (const unacknowledgedUpdate of userUnacknowledgedUpdates) {
+						socket?.emit(
+							`tx-new:${continuityKey}`,
+							unacknowledgedUpdate as Json.Serializable,
+						)
+					}
+				},
+			),
 		)
 
-		const userUnacknowledgedUpdates = getFromStore(
-			store,
-			userUnacknowledgedQueues,
-			userKey,
+		subscriptions.push(
+			...subscribeToContinuityPerspectives(store, continuity, userKey, socket),
 		)
-
-		const unsubscribeFunctions: (() => void)[] = []
-
-		const unsubscribeFromPerspectives = subscribeToContinuityPerspectives(
-			store,
-			continuity,
-			userKey,
-			socket,
-		)
-		const unsubscribeFromTransactions = subscribeToContinuityActions(
-			store,
-			continuity,
-			userKey,
-			socket,
-		)
-		unsubscribeFunctions.push(
-			...unsubscribeFromPerspectives,
-			...unsubscribeFromTransactions,
+		subscriptions.push(
+			...subscribeToContinuityActions(store, continuity, userKey, socket),
 		)
 
 		const sendInitialPayload = prepareToSendInitialPayload(
 			store,
 			continuity,
 			userKey,
-			initialSocket,
+			socket,
 		)
 
 		socket.off(`get:${continuityKey}`, sendInitialPayload)
@@ -130,14 +100,12 @@ export function prepareToExposeRealtimeContinuity({
 			store,
 			continuity,
 			userKey,
-			userUnacknowledgedUpdates,
 		)
 
 		socket?.on(`ack:${continuityKey}`, trackClientAcknowledgement)
 
 		return () => {
-			// clearInterval(retryTimeout)
-			for (const unsubscribe of unsubscribeFunctions) unsubscribe()
+			for (const unsubscribe of subscriptions) unsubscribe()
 			socket?.off(`ack:${continuityKey}`, trackClientAcknowledgement)
 			socket?.off(`get:${continuityKey}`, sendInitialPayload)
 			socket?.off(`tx-run:${continuityKey}`, fillTransactionRequest)
