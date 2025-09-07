@@ -133,7 +133,7 @@ describe(`synchronizing transactions`, () => {
 		await teardown()
 	})
 
-	test.only(`client 1 -> server -> client 2`, async () => {
+	test(`client 1 -> server -> client 2`, async () => {
 		jane.renderResult.getByTestId(`0`)
 		act(() => {
 			dave.renderResult.getByTestId(`increment`).click()
@@ -193,13 +193,13 @@ describe(`mutable atoms in continuity`, () => {
 
 		return Object.assign(
 			RTTest.singleClient({
-				server: ({ socket, silo: { store } }) => {
+				server: ({ socket, userKey, silo: { store } }) => {
 					// enableLogging()
 					const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
 						socket,
 						store,
 					})
-					return exposeContinuity(applicationContinuity)
+					return exposeContinuity(applicationContinuity, userKey)
 				},
 				client: () => {
 					RTR.useSyncContinuity(applicationContinuity)

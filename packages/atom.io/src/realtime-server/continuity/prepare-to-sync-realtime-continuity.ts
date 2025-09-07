@@ -1,41 +1,38 @@
-import {
-	findInStore,
-	findRelationsInStore,
-	getFromStore,
-	IMPLICIT,
-	subscribeToState,
-} from "atom.io/internal"
-import type { Json } from "atom.io/json"
+import { getFromStore, IMPLICIT } from "atom.io/internal"
 import type { ContinuityToken } from "atom.io/realtime"
 
-import type { ServerConfig, Socket, UserKey } from ".."
-import { socketAtoms, usersOfSockets } from ".."
-import { userUnacknowledgedUpdatesAtoms } from "./continuity-store"
+import type { ServerConfig, UserKey } from ".."
 import { prepareToSendInitialPayload } from "./prepare-to-send-initial-payload"
 import { prepareToServeTransactionRequest } from "./prepare-to-serve-transaction-request"
 import { prepareToTrackClientAcknowledgement } from "./prepare-to-track-client-acknowledgement"
 import { subscribeToContinuityActions } from "./subscribe-to-continuity-actions"
 import { subscribeToContinuityPerspectives } from "./subscribe-to-continuity-perspectives"
 import { employSocket } from "../employ-socket"
+import { userUnacknowledgedUpdatesAtoms } from "./continuity-store"
+import { Json } from "atom.io/json"
 
 export type ExposeRealtimeContinuity = (
 	continuity: ContinuityToken,
 	userKey: UserKey,
 ) => () => void
 export function prepareToExposeRealtimeContinuity({
-	socket: initialSocket,
+	socket,
 	store = IMPLICIT.STORE,
 }: ServerConfig): ExposeRealtimeContinuity {
 	return function syncRealtimeContinuity(continuity, userKey) {
-		let socket: Socket | null = initialSocket
-
 		const continuityKey = continuity.key
 
-		const socketKeyState = findRelationsInStore(
-			usersOfSockets,
-			userKey,
+		const unacknowledgedUpdates = getFromStore(
 			store,
-		).socketKeyOfUser
+			userUnacknowledgedUpdatesAtoms,
+			userKey,
+		)
+		for (const unacknowledgedUpdate of unacknowledgedUpdates) {
+			socket.emit(
+				`tx-new:${continuityKey}`,
+				unacknowledgedUpdate as Json.Serializable,
+			)
+		}
 
 		const coreSubscriptions = new Set<() => void>()
 		const socketSubscriptions = new Set<() => void>()
@@ -43,43 +40,6 @@ export function prepareToExposeRealtimeContinuity({
 			for (const unsubscribe of subscriptions) unsubscribe()
 			subscriptions.clear()
 		}
-
-		coreSubscriptions.add(
-			subscribeToState(
-				store,
-				socketKeyState,
-				`sync-continuity:${continuityKey}:${userKey}`,
-				({ newValue: newSocketKey }) => {
-					store.logger.info(
-						`👋`,
-						`continuity`,
-						continuityKey,
-						`seeing ${userKey} on new socket ${newSocketKey}`,
-					)
-					if (newSocketKey === null) {
-						store.logger.warn(
-							`❌`,
-							`continuity`,
-							continuityKey,
-							`User (${userKey}) is not connected to a socket, waiting for them to reappear.`,
-						)
-						return
-					}
-					socket = getFromStore(store, socketAtoms, newSocketKey)
-					const unacknowledgedUpdates = getFromStore(
-						store,
-						userUnacknowledgedUpdatesAtoms,
-						userKey,
-					)
-					for (const unacknowledgedUpdate of unacknowledgedUpdates) {
-						socket?.emit(
-							`tx-new:${continuityKey}`,
-							unacknowledgedUpdate as Json.Serializable,
-						)
-					}
-				},
-			),
-		)
 
 		const perspectiveSubscriptions = subscribeToContinuityPerspectives(
 			store,
