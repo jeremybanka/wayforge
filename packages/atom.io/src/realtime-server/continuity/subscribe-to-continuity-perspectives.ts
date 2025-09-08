@@ -10,11 +10,11 @@ import type { ContinuityToken } from "atom.io/realtime"
 import type { Socket } from ".."
 import type { UserKey } from "../realtime-server-stores"
 
-export function subscribeToContinuityPerspectives(
+export function trackPerspectives(
 	store: Store,
+	socket: Socket,
 	continuity: ContinuityToken,
 	userKey: UserKey,
-	socket: Socket | null,
 ): () => void {
 	const continuityKey = continuity.key
 	const unsubFns = new Set<() => void>()
@@ -47,10 +47,10 @@ export function subscribeToContinuityPerspectives(
 					{ oldKeys, newKeys, revealed, concealed },
 				)
 				if (revealed.length > 0) {
-					socket?.emit(`reveal:${continuityKey}`, revealed)
+					socket.emit(`reveal:${continuityKey}`, revealed)
 				}
 				if (concealed && concealed.length > 0) {
-					socket?.emit(`conceal:${continuityKey}`, concealed)
+					socket.emit(`conceal:${continuityKey}`, concealed)
 				}
 			},
 		)

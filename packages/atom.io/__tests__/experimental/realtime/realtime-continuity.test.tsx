@@ -120,7 +120,7 @@ describe(`synchronizing transactions`, () => {
 		})
 		await waitFor(() => jane.renderResult.getByTestId(`1`))
 	})
-	test.only(`rollback`, async () => {
+	test(`rollback`, async () => {
 		const { countState } = scenario
 
 		await waitFor(() => {

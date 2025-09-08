@@ -15,11 +15,11 @@ import {
 	userUnacknowledgedUpdatesAtoms,
 } from "./continuity-store"
 
-export function subscribeToContinuityActions(
+export function trackOutcomes(
 	store: Store,
+	socket: Socket,
 	continuity: ContinuityToken,
 	userKey: UserKey,
-	socket: Socket | null,
 ): () => void {
 	const continuityKey = continuity.key
 	const unsubscribeFunctions = new Set<() => void>()
@@ -29,7 +29,7 @@ export function subscribeToContinuityActions(
 			store,
 			transaction,
 			`sync-continuity:${continuityKey}:${userKey}`,
-			(update) => {
+			(outcomes) => {
 				try {
 					const visibleKeys = continuity.globals
 						.map((atom) => {
@@ -59,10 +59,10 @@ export function subscribeToContinuityActions(
 						)
 					const redactedUpdates = redactTransactionUpdateContent(
 						visibleKeys,
-						update.subEvents,
+						outcomes.subEvents,
 					)
 					const redactedUpdate = {
-						...update,
+						...outcomes,
 						updates: redactedUpdates,
 					}
 					setIntoStore(
@@ -86,7 +86,7 @@ export function subscribeToContinuityActions(
 						},
 					)
 
-					socket?.emit(
+					socket.emit(
 						`tx-new:${continuityKey}`,
 						redactedUpdate as Json.Serializable,
 					)

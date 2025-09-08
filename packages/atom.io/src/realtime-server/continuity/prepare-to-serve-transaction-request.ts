@@ -4,19 +4,23 @@ import { actUponStore } from "atom.io/internal"
 import type { Json, JsonIO } from "atom.io/json"
 import type { ContinuityToken } from "atom.io/realtime"
 
-export function prepareToServeTransactionRequest(
+import { employSocket } from "../employ-socket"
+import type { Socket } from "../socket-interface"
+
+export function serveActionRequests(
 	store: Store,
+	socket: Socket,
 	continuity: ContinuityToken,
 	userKey: string,
-): (
-	event: Json.Serializable &
-		Pick<
-			TransactionOutcomeEvent<TransactionToken<JsonIO>>,
-			`id` | `params` | `token`
-		>,
-) => void {
+): () => void {
 	const continuityKey = continuity.key
-	return function serveTransactionRequest(txOutcome) {
+	function serveTransactionRequest(
+		txOutcome: Json.Serializable &
+			Pick<
+				TransactionOutcomeEvent<TransactionToken<JsonIO>>,
+				`id` | `params` | `token`
+			>,
+	) {
 		store.logger.info(`🛎️`, `continuity`, continuityKey, `received`, txOutcome)
 		const transactionKey = txOutcome.token.key
 		const updateId = txOutcome.id
@@ -56,4 +60,5 @@ export function prepareToServeTransactionRequest(
 			metric.duration,
 		)
 	}
+	return employSocket(socket, `tx-run:${continuityKey}`, serveTransactionRequest)
 }
