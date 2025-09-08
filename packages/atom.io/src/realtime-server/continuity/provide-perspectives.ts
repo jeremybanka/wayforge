@@ -10,7 +10,7 @@ import type { ContinuityToken } from "atom.io/realtime"
 import type { Socket } from ".."
 import type { UserKey } from "../realtime-server-stores"
 
-export function trackPerspectives(
+export function providePerspectives(
 	store: Store,
 	socket: Socket,
 	continuity: ContinuityToken,

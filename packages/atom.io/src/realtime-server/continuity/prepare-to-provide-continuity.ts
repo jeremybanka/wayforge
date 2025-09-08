@@ -1,14 +1,14 @@
 import { getFromStore, IMPLICIT } from "atom.io/internal"
+import type { Json } from "atom.io/json"
 import type { ContinuityToken } from "atom.io/realtime"
 
 import type { ServerConfig, UserKey } from ".."
-import { serveStartupRequests } from "./prepare-to-send-initial-payload"
-import { trackAcknowledgement } from "./prepare-to-track-client-acknowledgement"
-import { trackOutcomes } from "./subscribe-to-continuity-actions"
-import { trackPerspectives } from "./subscribe-to-continuity-perspectives"
-import { userUnacknowledgedUpdatesAtoms } from "./continuity-store"
-import { Json } from "atom.io/json"
-import { serveActionRequests } from "./prepare-to-serve-transaction-request"
+import { unacknowledgedUpdatesAtoms } from "./continuity-store"
+import { provideOutcomes } from "./provide-outcomes"
+import { providePerspectives } from "./provide-perspectives"
+import { provideStartupPayloads } from "./provide-startup-payloads"
+import { receiveActionRequests } from "./receive-action-requests"
+import { trackAcknowledgements } from "./track-acknowledgements"
 
 export type ExposeRealtimeContinuity = (
 	continuity: ContinuityToken,
@@ -22,7 +22,7 @@ export function prepareToExposeRealtimeContinuity({
 		const continuityKey = continuity.key
 		const unacknowledgedUpdates = getFromStore(
 			store,
-			userUnacknowledgedUpdatesAtoms,
+			unacknowledgedUpdatesAtoms,
 			userKey,
 		)
 		for (const unacknowledgedUpdate of unacknowledgedUpdates) {
@@ -38,11 +38,11 @@ export function prepareToExposeRealtimeContinuity({
 			subscriptions.clear()
 		}
 
-		subscriptions.add(trackPerspectives(store, socket, continuity, userKey))
-		subscriptions.add(trackOutcomes(store, socket, continuity, userKey))
-		subscriptions.add(serveStartupRequests(store, socket, continuity, userKey))
-		subscriptions.add(serveActionRequests(store, socket, continuity, userKey))
-		subscriptions.add(trackAcknowledgement(store, socket, continuity, userKey))
+		subscriptions.add(providePerspectives(store, socket, continuity, userKey))
+		subscriptions.add(provideOutcomes(store, socket, continuity, userKey))
+		subscriptions.add(provideStartupPayloads(store, socket, continuity, userKey))
+		subscriptions.add(receiveActionRequests(store, socket, continuity, userKey))
+		subscriptions.add(trackAcknowledgements(store, socket, continuity, userKey))
 
 		return clearSubscriptions
 	}

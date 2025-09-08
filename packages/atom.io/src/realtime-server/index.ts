@@ -1,4 +1,4 @@
-export * from "./continuity/prepare-to-sync-realtime-continuity"
+export * from "./continuity/prepare-to-provide-continuity"
 export * from "./ipc-sockets"
 export * from "./realtime-family-provider"
 export * from "./realtime-mutable-family-provider"
