@@ -224,7 +224,7 @@ describe(`ParentSocket`, () => {
 	})
 
 	test(`user joins and leaves`, async () => {
-		childToParent.relay((userSocket) => {
+		childToParent.receiveRelay((userSocket) => {
 			console.log(`relaying`, userSocket)
 			userSocket.on(`ping`, () => {
 				userSocket.emit(`pong`)

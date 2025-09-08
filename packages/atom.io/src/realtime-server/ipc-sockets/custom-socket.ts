@@ -5,9 +5,9 @@ import type { Socket } from "../socket-interface"
 export type Events = Json.Object<string, Json.Serializable[]>
 
 export type EventPayload<
-	E extends Events,
-	K extends string & keyof E = string & keyof E,
-> = [string, ...E[K]]
+	receiveRelay extends Events,
+	K extends string & keyof receiveRelay = string & keyof receiveRelay,
+> = [string, ...receiveRelay[K]]
 
 export interface EventBuffer<
 	E extends Events,
