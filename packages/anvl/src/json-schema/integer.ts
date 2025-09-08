@@ -1,11 +1,9 @@
-import { pipe } from "../function"
-
 export type IntegerBrand = { readonly integer: unique symbol /* virtual */ }
 export type integer = IntegerBrand & number
 export const isInteger = (input: unknown): input is integer =>
 	Number.isInteger(input as number)
 
-export const parseInteger = (input: unknown): integer => {
+export const Int = (input: unknown): integer => {
 	if (isInteger(input)) return input
 	throw new IntegerParseError(input)
 }
@@ -19,8 +17,8 @@ export class Fraction extends Number {
 		if (d === 0) {
 			throw new Error(`Denominator cannot be zero`)
 		}
-		this.numerator = parseInteger(n)
-		this.denominator = parseInteger(d)
+		this.numerator = Int(n)
+		this.denominator = Int(d)
 	}
 	public readonly [Symbol.toPrimitive]: () => number = () =>
 		this.numerator / this.denominator
@@ -55,54 +53,6 @@ export type IntegerParseResult =
 			lower: integer
 			ratio: Fraction | null
 	  }
-
-export const Int = Object.assign((input: unknown) => parseInteger(input), {
-	from: (input: unknown): IntegerParseResult =>
-		pipe(input, String, Number.parseFloat, (num) =>
-			isInteger(num)
-				? {
-						value: num,
-						error: null,
-						round: null,
-						upper: null,
-						lower: null,
-						ratio: null,
-					}
-				: {
-						value: null,
-						error: new IntegerParseError(input),
-						round: Math.round(num) as integer,
-						upper: Math.ceil(num) as integer,
-						lower: Math.floor(num) as integer,
-						ratio: null,
-					},
-		),
-
-	formula: <
-		I extends Record<
-			PropertyKey,
-			Fraction | Fraction[] | integer | integer[] | number[] | number
-		>,
-		O extends Record<
-			PropertyKey,
-			Fraction | Fraction[] | integer | integer[] | number[] | number
-		>,
-	>(
-		fm: (
-			input: {
-				[K in keyof I]: I[K] extends (Fraction | integer)[] ? number[] : number
-			},
-		) => O,
-	) => {
-		return (input: I): O => {
-			return fm(
-				input as {
-					[K in keyof I]: I[K] extends (Fraction | integer)[] ? number[] : number
-				},
-			)
-		}
-	},
-})
 
 export function asNumber(input: Fraction | integer | number): number
 export function asNumber(input: Fraction[] | integer[] | number[]): number[]

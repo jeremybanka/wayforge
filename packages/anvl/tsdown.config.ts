@@ -1,6 +1,7 @@
+import type { UserConfig } from "tsdown"
 import { defineConfig } from "tsdown"
 
-export default defineConfig({
+const config: UserConfig = defineConfig({
 	dts: { sourcemap: true },
 	format: [`esm`],
 	sourcemap: true,
@@ -25,3 +26,4 @@ export default defineConfig({
 		`src/tree/index.ts`,
 	],
 })
+export default config
