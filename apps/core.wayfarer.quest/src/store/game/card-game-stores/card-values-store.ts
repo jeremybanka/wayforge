@@ -10,6 +10,7 @@ import {
 	selectorFamily,
 } from "atom.io"
 import type { Json } from "atom.io/json"
+import type { UserKey } from "atom.io/realtime-server"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import type { UList } from "atom.io/transceivers/u-list"
 
@@ -45,7 +46,7 @@ export const cardValueGlobalView = selector<
 })
 export const cardValueView = selectorFamily<
 	RegularAtomToken<Identified & Json.Object>[],
-	string
+	UserKey
 >({
 	key: `cardValueView`,
 	get:
