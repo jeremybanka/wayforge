@@ -1,5 +1,13 @@
 # break-check
 
+## 0.6.16
+
+### Patch Changes
+
+- f903d0e: ✨ Go-to-definition should now route to source files via source maps now shipped for type declarations.
+- Updated dependencies [f903d0e]
+  - comline@0.3.2
+
 ## 0.6.15
 
 ### Patch Changes

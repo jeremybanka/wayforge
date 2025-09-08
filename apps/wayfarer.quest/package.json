@@ -1,7 +1,7 @@
 {
 	"name": "wayfarer.quest",
 	"type": "module",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"private": true,
 	"scripts": {
 		"env": "[ -f .env.development ] && echo '.env.development already present' || cp .env.defaults .env",

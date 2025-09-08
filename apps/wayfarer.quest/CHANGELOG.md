@@ -1,5 +1,11 @@
 # wayfarer.quest
 
+## 0.1.2
+
+### Patch Changes
+
+- luum@0.0.17
+
 ## 0.1.1
 
 ### Patch Changes

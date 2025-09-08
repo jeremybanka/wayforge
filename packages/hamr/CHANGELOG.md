@@ -1,5 +1,14 @@
 # hamr
 
+## 3.0.3
+
+### Patch Changes
+
+- Updated dependencies [f903d0e]
+  - anvl@0.3.3
+  - luum@0.0.17
+  - atom.io@0.40.7
+
 ## 3.0.2
 
 ### Patch Changes

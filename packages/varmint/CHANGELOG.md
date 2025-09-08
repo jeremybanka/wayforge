@@ -1,5 +1,14 @@
 # varmint
 
+## 0.5.6
+
+### Patch Changes
+
+- f903d0e: ✨ Go-to-definition should now route to source files via source maps now shipped for type declarations.
+- Updated dependencies [f903d0e]
+  - safedeposit@0.1.2
+  - comline@0.3.2
+
 ## 0.5.5
 
 ### Patch Changes
