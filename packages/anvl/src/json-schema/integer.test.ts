@@ -1,4 +1,4 @@
-import { Frac, Int } from "./integer"
+import { Int } from "./integer"
 
 describe(`Int`, () => {
 	it(`parses integers`, () => {
@@ -22,18 +22,5 @@ describe(`Int`, () => {
 		expect(Int(1) * 2).toBe(2)
 		expect(Int(2) / 2).toBe(1)
 		expect(Int(2) % 2).toBe(0)
-	})
-})
-
-describe(`Fraction`, () => {
-	it(`parses fractions`, () => {
-		const oneHalf = Frac(1, 2)
-		expect(oneHalf.numerator).toBe(1)
-		expect(oneHalf.denominator).toBe(2)
-	})
-	it(`can behave as a number`, () => {
-		const a = Frac(1, 2)
-		const b = Frac(1, 2)
-		expect(+a + +b).toBe(1)
 	})
 })

@@ -44,7 +44,13 @@ export type ResourceIdentifierObject<
 	meta?: META
 }
 
-export const isResourceIdentifier = Object.assign(
+export const isResourceIdentifier: ((
+	thing: unknown,
+) => thing is ResourceIdentifierObject<any, any>) & {
+	whoseMeta: <META extends Json.Serializable | undefined>(
+		isMeta: Refinement<unknown, META>,
+	) => Refinement<unknown, ResourceIdentifierObject<any, META>>
+} = Object.assign(
 	(thing: unknown): thing is ResourceIdentifierObject<any, any> =>
 		hasExactProperties({
 			id: isString,

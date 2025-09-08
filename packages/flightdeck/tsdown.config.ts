@@ -3,7 +3,7 @@ import { defineConfig } from "tsdown"
 
 export const OPTIONS = {
 	clean: true,
-	dts: true,
+	dts: { sourcemap: true },
 	entry: [`src/lib.ts`, `src/flightdeck.x.ts`, `src/klaxon.x.ts`],
 	format: [`esm`],
 	outDir: `dist`,

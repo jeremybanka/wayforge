@@ -42,4 +42,7 @@ export function mustSatisfyAllOfTheFollowing<A>(
 	return checkTypes
 }
 
-export const isIntersection = mustSatisfyAllOfTheFollowing(canExist)
+export const isIntersection: {
+	(input: unknown): input is unknown
+	and: <B>(isTypeB: Refinement<unknown, B>) => ExtendsAll<unknown, B>
+} = mustSatisfyAllOfTheFollowing(canExist)

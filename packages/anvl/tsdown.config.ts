@@ -1,6 +1,13 @@
-import { defineConfig } from "tsup"
+import type { UserConfig } from "tsdown"
+import { defineConfig } from "tsdown"
 
-export default defineConfig({
+const config: UserConfig = defineConfig({
+	dts: { sourcemap: true },
+	format: [`esm`],
+	sourcemap: true,
+	treeshake: true,
+	tsconfig: `tsconfig.json`,
+	clean: true,
 	entry: [
 		`src/array/index.ts`,
 		`src/function/index.ts`,
@@ -18,9 +25,5 @@ export default defineConfig({
 		`src/string/index.ts`,
 		`src/tree/index.ts`,
 	],
-	dts: true,
-	format: [`esm`, `cjs`],
-	splitting: false,
-	sourcemap: true,
-	clean: true,
 })
+export default config

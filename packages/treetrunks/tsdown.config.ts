@@ -3,7 +3,7 @@ import { defineConfig } from "tsdown"
 
 export const config: UserConfig | UserConfigFn = defineConfig({
 	clean: true,
-	dts: true,
+	dts: { sourcemap: true },
 	entry: [`src/treetrunks.ts`],
 	format: [`esm`],
 	outDir: `dist`,

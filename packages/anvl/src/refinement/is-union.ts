@@ -39,4 +39,7 @@ export const mustSatisfyOneOfTheFollowing = <A>(
 	return checkTypes
 }
 
-export const isUnion = mustSatisfyOneOfTheFollowing(cannotExist)
+export const isUnion: {
+	(input: unknown): input is never
+	or: <B>(isTypeB: Refinement<unknown, B>) => ExtendsSome<never, B>
+} = mustSatisfyOneOfTheFollowing(cannotExist)

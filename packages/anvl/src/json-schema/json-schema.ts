@@ -1,9 +1,8 @@
 import { isArray } from "../array"
-import { JSON_TYPE_NAMES } from "../json"
 import { ifDefined } from "../nullish"
 import { doesExtend, isRecord } from "../object/refinement"
 import { isBoolean, isNumber, isString } from "../primitive"
-import type { Refinement } from "../refinement"
+import type { ExtendsAll, ExtendsSome, Refinement } from "../refinement"
 import {
 	isIntersection,
 	isLiteral,
@@ -19,11 +18,25 @@ import { isJsonSchemaRef } from "./refs"
 import type { JsonSchemaStringFormat } from "./string-formats"
 import { JSON_SCHEMA_STRING_FORMATS } from "./string-formats"
 
-export const JSON_SCHEMA_TYPE_NAMES = [...JSON_TYPE_NAMES, `integer`] as const
+export const JSON_SCHEMA_TYPE_NAMES = [
+	`integer`,
+	`number`,
+	`string`,
+	`boolean`,
+	`null`,
+	`array`,
+	`object`,
+] as const
 export type JsonSchemaTypeName = (typeof JSON_SCHEMA_TYPE_NAMES)[number]
 
 export const JSON_SCHEMA_META_TYPE_NAMES = [
-	...JSON_SCHEMA_TYPE_NAMES,
+	`integer`,
+	`number`,
+	`string`,
+	`boolean`,
+	`null`,
+	`array`,
+	`object`,
 	`any`,
 	`never`,
 ] as const
@@ -102,7 +115,29 @@ export type StringSchema = {
 	pattern?: string
 	format?: JsonSchemaStringFormat
 }
-export const stringSchemaStructure = {
+export const stringSchemaStructure: {
+	type: Refinement<unknown, `string`>
+	enum: Refinement<unknown, string[] | undefined>
+	minLength: Refinement<unknown, integer | undefined>
+	maxLength: Refinement<unknown, integer | undefined>
+	pattern: Refinement<unknown, string | undefined>
+	format: Refinement<
+		unknown,
+		| `date-time`
+		| `date`
+		| `email`
+		| `hostname`
+		| `ipv4`
+		| `ipv6`
+		| `regex`
+		| `time`
+		| `uri-reference`
+		| `uri-template`
+		| `uri`
+		| `uuid`
+		| undefined
+	>
+} = {
 	type: isLiteral(`string`),
 	enum: ifDefined(isArray(isString)),
 	minLength: ifDefined(isInteger),
@@ -114,7 +149,15 @@ export function isStringSchema(input: unknown): input is StringSchema {
 	return doesExtend(stringSchemaStructure)(input)
 }
 
-export const numberSchemaStructure = {
+export const numberSchemaStructure: {
+	type: Refinement<unknown, `number`>
+	enum: Refinement<unknown, number[] | undefined>
+	minimum: Refinement<unknown, number | undefined>
+	maximum: Refinement<unknown, number | undefined>
+	exclusiveMinimum: Refinement<unknown, number | undefined>
+	exclusiveMaximum: Refinement<unknown, number | undefined>
+	multipleOf: Refinement<unknown, number | undefined>
+} = {
 	type: isLiteral(`number`),
 	enum: ifDefined(isArray(isNumber)),
 	minimum: ifDefined(isNumber),
@@ -128,7 +171,15 @@ export function isNumberSchema(input: unknown): input is NumberSchema {
 	return doesExtend(numberSchemaStructure)(input)
 }
 
-export const integerSchemaStructure = {
+export const integerSchemaStructure: {
+	type: Refinement<unknown, `integer`>
+	enum: Refinement<unknown, number[] | undefined>
+	minimum: Refinement<unknown, number | undefined>
+	maximum: Refinement<unknown, number | undefined>
+	exclusiveMinimum: Refinement<unknown, number | undefined>
+	exclusiveMaximum: Refinement<unknown, number | undefined>
+	multipleOf: Refinement<unknown, number | undefined>
+} = {
 	type: isLiteral(`integer`),
 	enum: ifDefined(isArray(isInteger)),
 	minimum: ifDefined(isInteger),
@@ -142,7 +193,10 @@ export function isIntegerSchema(input: unknown): input is IntegerSchema {
 	return doesExtend(integerSchemaStructure)(input)
 }
 
-export const booleanSchemaStructure = {
+export const booleanSchemaStructure: {
+	type: Refinement<unknown, `boolean`>
+	enum: Refinement<unknown, boolean[] | undefined>
+} = {
 	type: isLiteral(`boolean`),
 	enum: ifDefined(isArray(isBoolean)),
 }
@@ -151,7 +205,7 @@ export function isBooleanSchema(input: unknown): input is BooleanSchema {
 	return doesExtend(booleanSchemaStructure)(input)
 }
 
-export const nullSchemaStructure = {
+export const nullSchemaStructure: { type: Refinement<unknown, `null`> } = {
 	type: isLiteral(`null`),
 }
 export type NullSchema = Refined<typeof nullSchemaStructure>
@@ -170,7 +224,16 @@ export type ObjectSchema = {
 	maxProperties?: integer
 	dependentSchemas?: Record<string, JsonSchema>
 }
-export const objectSchemaStructure = {
+export const objectSchemaStructure: {
+	type: Refinement<unknown, `object`>
+	properties: Refinement<unknown, Record<string, JsonSchema> | undefined>
+	required: Refinement<unknown, string[] | undefined>
+	additionalProperties: Refinement<unknown, JsonSchema | undefined>
+	propertyNames: Refinement<unknown, JsonSchema | undefined>
+	minProperties: Refinement<unknown, integer | undefined>
+	maxProperties: Refinement<unknown, integer | undefined>
+	dependentSchemas: Refinement<unknown, Record<string, JsonSchema> | undefined>
+} = {
 	type: isLiteral(`object`),
 	properties: ifDefined(isRecord(isString, isJsonSchema)),
 	required: ifDefined(isArray(isString)),
@@ -191,7 +254,13 @@ export type ArraySchema = {
 	maxItems?: integer
 	uniqueItems?: boolean
 }
-export const arraySchemaStructure = {
+export const arraySchemaStructure: {
+	type: Refinement<unknown, `array`>
+	items: Refinement<unknown, JsonSchema | JsonSchema[] | undefined>
+	minItems: Refinement<unknown, integer | undefined>
+	maxItems: Refinement<unknown, integer | undefined>
+	uniqueItems: Refinement<unknown, boolean | undefined>
+} = {
 	type: isLiteral(`array`),
 	items: ifDefined(
 		mustSatisfyOneOfTheFollowing(isJsonSchema).or(isArray(isJsonSchema)),
@@ -205,7 +274,9 @@ export function isArraySchema(input: unknown): input is ArraySchema {
 }
 
 export type UnionSchema = { anyOf: JsonSchema[] }
-export const unionSchemaStructure = { anyOf: isArray(isJsonSchema) }
+export const unionSchemaStructure: {
+	anyOf: (input: unknown) => input is JsonSchema[]
+} = { anyOf: isArray(isJsonSchema) }
 export function isUnionSchema(input: unknown): input is UnionSchema {
 	return doesExtend(unionSchemaStructure)(input)
 }
@@ -215,12 +286,16 @@ export type IntersectionSchema = {
 export type ExclusiveSchema = {
 	oneOf: JsonSchema[] | ReadonlyArray<JsonSchema>
 }
-export const exclusiveSchemaStructure = { oneOf: isArray(isJsonSchema) }
+export const exclusiveSchemaStructure: {
+	oneOf: (input: unknown) => input is JsonSchema[]
+} = { oneOf: isArray(isJsonSchema) }
 export function isExclusiveSchema(input: unknown): input is ExclusiveSchema {
 	return doesExtend(exclusiveSchemaStructure)(input)
 }
 
-export const intersectionSchemaStructure = { allOf: isArray(isJsonSchema) }
+export const intersectionSchemaStructure: {
+	allOf: (input: unknown) => input is JsonSchema[]
+} = { allOf: isArray(isJsonSchema) }
 export function isIntersectionSchema(
 	input: unknown,
 ): input is IntersectionSchema {
@@ -232,7 +307,11 @@ export type ConditionalSchema = {
 	then?: JsonSchema
 	else?: JsonSchema
 }
-export const conditionalSchemaStructure = {
+export const conditionalSchemaStructure: {
+	if: (input: unknown) => input is JsonSchema
+	then: Refinement<unknown, JsonSchema | undefined>
+	else: Refinement<unknown, JsonSchema | undefined>
+} = {
 	if: isJsonSchema,
 	then: ifDefined(isJsonSchema),
 	else: ifDefined(isJsonSchema),
@@ -242,7 +321,9 @@ export function isConditionalSchema(input: unknown): input is ConditionalSchema 
 }
 
 export type NegationSchema = { not: JsonSchema }
-export const negationSchemaStructure = { not: isJsonSchema }
+export const negationSchemaStructure: {
+	not: (input: unknown) => input is JsonSchema
+} = { not: isJsonSchema }
 export function isNegationSchema(input: unknown): input is NegationSchema {
 	return doesExtend(negationSchemaStructure)(input)
 }
@@ -259,7 +340,19 @@ export type MixedSchema = Partial<
 	type: ReadonlyArray<JsonSchemaTypeName>
 	enum?: ReadonlyArray<integer | boolean | number | string>
 }
-export const mixedSchemaStructure = {
+export const mixedSchemaStructure: Omit<
+	typeof arraySchemaStructure &
+		typeof booleanSchemaStructure &
+		typeof integerSchemaStructure &
+		typeof nullSchemaStructure &
+		typeof numberSchemaStructure &
+		typeof objectSchemaStructure &
+		typeof stringSchemaStructure,
+	`enum` | `type`
+> & {
+	type: Refinement<unknown, JsonSchemaTypeName[]>
+	enum: Refinement<unknown, unknown[] | undefined>
+} = {
 	...arraySchemaStructure,
 	...booleanSchemaStructure,
 	...integerSchemaStructure,
@@ -291,7 +384,7 @@ export type JsonSchemaCore =
 	| StringSchema
 	| UnionSchema
 
-export const isJsonSchemaCore = isUnion
+export const isJsonSchemaCore: ExtendsSome<unknown, unknown> = isUnion
 	.or(isArraySchema)
 	.or(isBooleanSchema)
 	.or(isConditionalSchema)
@@ -349,16 +442,26 @@ export type JsonSchemaRoot = {
 	definitions?: Record<string, JsonSchema>
 }
 
-export const isJsonSchemaRoot = doesExtend({
+export const isJsonSchemaRoot: Refinement<
+	unknown,
+	{
+		$id: string | undefined
+		$schema: string | undefined
+	}
+> = doesExtend({
 	$id: ifDefined(isString),
 	$schema: ifDefined(isString),
 })
 
 /* prettier-ignore */
 export type JsonSchemaObject = JsonSchemaCore & JsonSchemaRoot
-export const isJsonSchemaObject = isIntersection
-	.and(isJsonSchemaCore)
-	.and(isJsonSchemaRoot)
+export const isJsonSchemaObject: ExtendsAll<
+	unknown,
+	{
+		$id: string | undefined
+		$schema: string | undefined
+	}
+> = isIntersection.and(isJsonSchemaCore).and(isJsonSchemaRoot)
 
 export type JsonSchema = JsonSchemaObject | JsonSchemaRef | boolean
 export function isJsonSchema(input: unknown): input is JsonSchema {
