@@ -10,16 +10,17 @@ import { provideStartupPayloads } from "./provide-startup-payloads"
 import { receiveActionRequests } from "./receive-action-requests"
 import { trackAcknowledgements } from "./track-acknowledgements"
 
-export type ExposeRealtimeContinuity = (
+export type ProvideContinuity = (
 	continuity: ContinuityToken,
 	userKey: UserKey,
 ) => () => void
-export function prepareToExposeRealtimeContinuity({
+export function prepareToProvideContinuity({
 	socket,
 	store = IMPLICIT.STORE,
-}: ServerConfig): ExposeRealtimeContinuity {
+}: ServerConfig): ProvideContinuity {
 	return function syncRealtimeContinuity(continuity, userKey) {
 		const continuityKey = continuity.key
+
 		const unacknowledgedUpdates = getFromStore(
 			store,
 			unacknowledgedUpdatesAtoms,
