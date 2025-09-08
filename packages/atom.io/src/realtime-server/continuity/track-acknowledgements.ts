@@ -5,9 +5,9 @@ import type { ContinuityToken } from "atom.io/realtime"
 import { employSocket } from "../employ-socket"
 import type { UserKey } from "../realtime-server-stores"
 import type { Socket } from "../socket-interface"
-import { userUnacknowledgedUpdatesAtoms } from "./continuity-store"
+import { unacknowledgedUpdatesAtoms } from "./continuity-store"
 
-export function trackAcknowledgement(
+export function trackAcknowledgements(
 	store: Store,
 	socket: Socket,
 	continuity: ContinuityToken,
@@ -16,7 +16,7 @@ export function trackAcknowledgement(
 	const continuityKey = continuity.key
 	const userUnacknowledgedUpdates = getFromStore(
 		store,
-		userUnacknowledgedUpdatesAtoms,
+		unacknowledgedUpdatesAtoms,
 		userKey,
 	)
 	function trackClientAcknowledgement(epoch: number): void {
@@ -28,7 +28,7 @@ export function trackAcknowledgement(
 		)
 		const isUnacknowledged = userUnacknowledgedUpdates[0]?.epoch === epoch
 		if (isUnacknowledged) {
-			setIntoStore(store, userUnacknowledgedUpdatesAtoms, userKey, (updates) => {
+			setIntoStore(store, unacknowledgedUpdatesAtoms, userKey, (updates) => {
 				updates.shift()
 				store.logger.info(
 					`👍`,

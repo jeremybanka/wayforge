@@ -11,7 +11,7 @@ import type { ContinuityToken } from "atom.io/realtime"
 import type { Socket, UserKey } from ".."
 import { employSocket } from "../employ-socket"
 
-export function serveStartupRequests(
+export function provideStartupPayloads(
 	store: Store,
 	socket: Socket,
 	continuity: ContinuityToken,

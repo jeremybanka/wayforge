@@ -7,7 +7,7 @@ import type { ContinuityToken } from "atom.io/realtime"
 import { employSocket } from "../employ-socket"
 import type { Socket } from "../socket-interface"
 
-export function serveActionRequests(
+export function receiveActionRequests(
 	store: Store,
 	socket: Socket,
 	continuity: ContinuityToken,
