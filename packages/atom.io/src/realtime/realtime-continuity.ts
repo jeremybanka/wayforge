@@ -30,11 +30,17 @@ export class InvariantMap<K, V> extends Map<K, V> implements ReadonlyMap<K, V> {
 }
 
 /*
-Perspectives are all based on a ViewState, which is a state
+A Perspective is based on a ViewState Iterable<K>
 
 which family members in a transaction outcome can be emitted to a user
+- State has family?
+- family is assigned to a perspective?
+- ViewState assigned to family includes subKey of state?
 
-for certain members
+Filter user-visible indices
+- Is this State assigned to a perspective?
+- Is the value a SetRTX signal containing a key in the ViewState?
+
 
 */
 export type PerspectiveToken<F extends AtomFamilyToken<any>> = {
@@ -43,12 +49,19 @@ export type PerspectiveToken<F extends AtomFamilyToken<any>> = {
 	viewAtoms: ReadableFamilyToken<ReadableToken<TokenType<F>>[], UserKey>
 }
 
+export type FilterToken<K extends Canonical> = {
+	type: `realtime_filter`
+	resourcesToken: AtomFamilyToken<K, Canonical>
+	// viewAtoms: ReadableFamilyToken<ReadableToken<TokenType<K>>[], UserKey>
+}
+
 export type ContinuityToken = {
 	readonly type: `continuity`
 	readonly key: string
 	readonly globals: AtomToken<any>[]
 	readonly actions: TransactionToken<any>[]
 	readonly perspectives: PerspectiveToken<AtomFamilyToken<any, Canonical>>[]
+	// readonly filters:
 }
 
 export class SyncGroup {
