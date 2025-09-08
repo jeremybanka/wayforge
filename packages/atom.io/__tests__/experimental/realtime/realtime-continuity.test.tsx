@@ -11,10 +11,10 @@ import * as React from "react"
 
 import * as Utils from "../../__util__"
 
-// console.log = () => undefined
-// console.info = () => undefined
-// console.warn = () => undefined
-// console.error = () => undefined
+console.log = () => undefined
+console.info = () => undefined
+console.warn = () => undefined
+console.error = () => undefined
 
 describe(`synchronizing transactions`, () => {
 	const runScenario = () => {
