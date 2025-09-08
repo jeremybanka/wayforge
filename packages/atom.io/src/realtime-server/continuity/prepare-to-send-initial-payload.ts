@@ -9,15 +9,16 @@ import type { Json } from "atom.io/json"
 import type { ContinuityToken } from "atom.io/realtime"
 
 import type { Socket, UserKey } from ".."
+import { employSocket } from "../employ-socket"
 
-export function prepareToSendInitialPayload(
+export function serveStartupRequests(
 	store: Store,
+	socket: Socket,
 	continuity: ContinuityToken,
 	userKey: UserKey,
-	socket: Socket,
 ): () => void {
 	const continuityKey = continuity.key
-	return function sendInitialPayload(): void {
+	function sendInitialPayload(): void {
 		const initialPayload: Json.Serializable[] = []
 		for (const atom of continuity.globals) {
 			const resourceToken =
@@ -51,4 +52,5 @@ export function prepareToSendInitialPayload(
 
 		socket.emit(`continuity-init:${continuityKey}`, epoch, initialPayload)
 	}
+	return employSocket(socket, `get:${continuityKey}`, sendInitialPayload)
 }
