@@ -29,6 +29,14 @@ export class InvariantMap<K, V> extends Map<K, V> implements ReadonlyMap<K, V> {
 	}
 }
 
+/*
+Perspectives are all based on a ViewState, which is a state
+
+which family members in a transaction outcome can be emitted to a user
+
+for certain members
+
+*/
 export type PerspectiveToken<F extends AtomFamilyToken<any>> = {
 	type: `realtime_perspective`
 	resourceAtoms: F
@@ -75,7 +83,7 @@ export class SyncGroup {
 		T extends F extends AtomFamilyToken<infer U> ? U : never,
 	>(
 		family: AtomFamilyToken<T, any>,
-		index: ReadableFamilyToken<Iterable<AtomToken<T>>, string>,
+		index: ReadableFamilyToken<Iterable<AtomToken<T>>, UserKey>,
 	): SyncGroup
 	public add(
 		...args:

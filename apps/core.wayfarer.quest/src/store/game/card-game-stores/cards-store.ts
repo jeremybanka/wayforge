@@ -1,5 +1,6 @@
 import type { RegularAtomToken } from "atom.io"
 import { atomFamily, join, mutableAtom, selector, selectorFamily } from "atom.io"
+import type { UserKey } from "atom.io/realtime-server"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import { Perspective } from "occlusion"
 
@@ -43,7 +44,7 @@ export const globalCardView = selector<RegularAtomToken<Card>[]>({
 		return cardTokens
 	},
 })
-export const cardView = selectorFamily<RegularAtomToken<Card>[], string>({
+export const cardView = selectorFamily<RegularAtomToken<Card>[], UserKey>({
 	key: `cardView`,
 	get:
 		() =>
