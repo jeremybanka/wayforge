@@ -63,21 +63,16 @@ const atomIOSubprocessLogger = new AtomIO.AtomIOLogger(
 IMPLICIT.STORE.loggers[0] = atomIOSubprocessLogger
 // IMPLICIT.STORE.loggers[1] = atomIOFileLogger
 
-parentSocket.relay((socket) => {
+parentSocket.receiveRelay((socket, userKey) => {
 	const snapshot = generateHeapSnapshot()
 	void Bun.write(`heap.json`, JSON.stringify(snapshot, null, 2))
-	const username = socket.id.split(`:`)[1]
-	const userKey = `user::${username}` satisfies RTS.UserKey
-	const socketKey = `socket::${socket.id}` satisfies RTS.SocketKey
+	const socketKey = `socket::parent<<${socket.userId}` satisfies RTS.SocketKey
 	socket.onAny((event, ...args) => {
-		parentSocket.logger.info(username, `<< 🛰 `, event, ...args)
+		parentSocket.logger.info(socketKey, `<< 🛰 `, event, ...args)
 	})
-	AtomIO.setState(RT.usersInThisRoomIndex, (set) => set.add(username))
+	AtomIO.setState(RT.usersInThisRoomIndex, (set) => set.add(userKey))
 	socket.on(`leave-room`, () => {
-		AtomIO.setState(
-			RT.usersInThisRoomIndex,
-			(set) => (set.delete(username), set),
-		)
+		AtomIO.setState(RT.usersInThisRoomIndex, (set) => (set.delete(userKey), set))
 	})
 	editRelations(RTS.usersOfSockets, (relations) => {
 		relations.set(userKey, socketKey)
@@ -87,7 +82,7 @@ parentSocket.relay((socket) => {
 	const exposeMutable = RTS.realtimeMutableProvider({ socket })
 
 	const disposalFunctions = [
-		exposeContinuity(heartsContinuity),
+		exposeContinuity(heartsContinuity, userKey),
 		exposeMutable(RT.usersInThisRoomIndex),
 	]
 	return () => {
