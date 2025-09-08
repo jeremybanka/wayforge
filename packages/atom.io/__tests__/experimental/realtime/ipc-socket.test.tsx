@@ -6,6 +6,10 @@ import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 import * as Utils from "../../__util__"
 
+console.log = () => undefined
+console.info = () => undefined
+console.warn = () => undefined
+console.error = () => undefined
 const logger: Pick<Console, `error` | `info` | `warn`> = console
 
 interface VirtualProcess {
@@ -220,7 +224,7 @@ describe(`ParentSocket`, () => {
 	})
 
 	test(`user joins and leaves`, async () => {
-		childToParent.relay((userSocket) => {
+		childToParent.receiveRelay((userSocket) => {
 			console.log(`relaying`, userSocket)
 			userSocket.on(`ping`, () => {
 				userSocket.emit(`pong`)
@@ -239,7 +243,7 @@ describe(`ParentSocket`, () => {
 			})
 		})
 
-		parentToChild.emit(`user:alice`, `ping`)
+		parentToChild.emit(`user::alice`, `ping`)
 
 		await gotPong
 

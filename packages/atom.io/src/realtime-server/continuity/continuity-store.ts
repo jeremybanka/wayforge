@@ -7,14 +7,6 @@ import { atomFamily } from "atom.io"
 
 import type { UserKey } from "../realtime-server-stores/server-user-store"
 
-// export const completeUpdateAtoms = atomFamily<
-// 	TransactionUpdate<any> | null,
-// 	string
-// >({
-// 	key: `completeUpdate`,
-// 	default: null,
-// })
-
 export function redactTransactionUpdateContent(
 	visibleStateKeys: string[],
 	updates: TransactionSubEvent[],
@@ -67,29 +59,12 @@ export const redactorAtoms: RegularAtomFamilyToken<
 	key: `redactor`,
 	default: { occlude: (updates) => updates },
 })
-// export const redactedUpdateSelectors = selectorFamily<
-// 	TransactionUpdate<any> | null,
-// 	[transactionKey: string, updateId: string]
-// >({
-// 	key: `redactedUpdate`,
-// 	get:
-// 		([transactionKey, updateId]) =>
-// 		({ get, find }) => {
-// 			const update = get(find(completeUpdateAtoms, updateId))
-// 			const { filter } = get(find(transactionRedactorAtoms, transactionKey))
-
-// 			if (update && filter) {
-// 				return { ...update, updates: filter(update.updates) }
-// 			}
-// 			return null
-// 		},
-// })
 
 export type ContinuitySyncTransactionUpdate = Pick<
 	TransactionOutcomeEvent<any>,
 	`epoch` | `id` | `output` | `subEvents` | `token`
 >
-export const userUnacknowledgedQueues: RegularAtomFamilyToken<
+export const unacknowledgedUpdatesAtoms: RegularAtomFamilyToken<
 	ContinuitySyncTransactionUpdate[],
 	UserKey
 > = atomFamily<ContinuitySyncTransactionUpdate[], UserKey>({

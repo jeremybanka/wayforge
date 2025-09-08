@@ -5,6 +5,7 @@ import type { Json } from "atom.io/json"
 import { parseJson, stringifyJson } from "atom.io/json"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
+import type { UserKey } from "../realtime-server-stores"
 import type { StderrLog } from "./child-socket"
 import type { EventBuffer, EventPayload, Events } from "./custom-socket"
 import { CustomSocket } from "./custom-socket"
@@ -48,14 +49,14 @@ export type ParentProcess = {
 
 export class ParentSocket<
 	I extends Events & {
-		[id in string as `relay:${id}`]: [string, ...Json.Array[]]
+		[id in string as `relay::${id}`]: [string, ...Json.Array[]]
 	},
 	O extends Events & {
-		[id in string as `user:${id}`]: [string, ...Json.Array[]]
+		[id in string as `user::${id}`]: [string, ...Json.Array[]]
 	} & {
 		/* eslint-disable quotes */
-		"user-joins": [string]
-		"user-leaves": [string]
+		"user-joins": [key: UserKey]
+		"user-leaves": [key: UserKey]
 		/* eslint-enable quotes */
 	},
 	P extends ParentProcess = ParentProcess,
@@ -65,6 +66,7 @@ export class ParentSocket<
 	protected relays: Map<string, SubjectSocket<any, any>>
 	protected relayServices: ((
 		socket: SubjectSocket<any, any>,
+		userKey: UserKey,
 	) => (() => void) | void)[]
 	public proc: P
 
@@ -171,22 +173,23 @@ export class ParentSocket<
 			this.id = this.proc.pid?.toString()
 		}
 
-		this.on(`user-joins`, (username) => {
+		this.on(`user-joins`, (username: string) => {
 			this.logger.info(`👤`, `user`, username, `joined`)
-			const relay = new SubjectSocket(`user:${username}`)
+			const userKey = `user::${username}` satisfies UserKey
+			const relay = new SubjectSocket(userKey)
 			this.relays.set(username, relay)
 			this.logger.info(
 				`🔗`,
 				`attaching services:`,
 				`[${[...this.relayServices.keys()].join(`, `)}]`,
 			)
-			for (const attachServices of this.relayServices) {
-				const cleanup = attachServices(relay)
-				if (cleanup) {
-					relay.disposalFunctions.push(cleanup)
+			for (const attachRelay of this.relayServices) {
+				const cleanupRelay = attachRelay(relay, userKey)
+				if (cleanupRelay) {
+					relay.disposalFunctions.push(cleanupRelay)
 				}
 			}
-			this.on(`user:${username}`, (...data) => {
+			this.on(userKey, (...data) => {
 				relay.in.next(data)
 			})
 			relay.out.subscribe(`socket`, (data) => {
@@ -206,8 +209,11 @@ export class ParentSocket<
 		this.proc.stdout.write(`ALIVE`)
 	}
 
-	public relay(
-		attachServices: (socket: SubjectSocket<any, any>) => (() => void) | void,
+	public receiveRelay(
+		attachServices: (
+			socket: SubjectSocket<any, any>,
+			userKey: UserKey,
+		) => (() => void) | void,
 	): void {
 		this.logger.info(`🔗`, `running relay method`)
 		this.relayServices.push(attachServices)

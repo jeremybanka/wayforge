@@ -11,9 +11,10 @@ import * as React from "react"
 
 import * as Utils from "../../__util__"
 
+console.log = () => undefined
+console.info = () => undefined
 console.warn = () => undefined
 console.error = () => undefined
-const DEBUG_LOGGING = true
 
 describe(`synchronizing transactions`, () => {
 	const runScenario = () => {
@@ -38,51 +39,37 @@ describe(`synchronizing transactions`, () => {
 			config: (group) => group.add(countState).add(incrementTX),
 		})
 
+		const Client = () => {
+			RTR.useSyncContinuity(countContinuity)
+			const count = AR.useO(countState)
+			const store = React.useContext(AR.StoreContext)
+			const increment = actUponStore(store, incrementTX, arbitrary())
+			return (
+				<>
+					<button
+						type="button"
+						onClick={() => increment()}
+						data-testid={`increment`}
+					/>
+					<i data-testid={count} />
+				</>
+			)
+		}
+
 		return Object.assign(
 			RTTest.multiClient({
 				immortal: { server: true },
-				server: ({ socket, silo: { store } }) => {
-					// enableLogging()
-					const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
+				server: ({ socket, userKey, silo: { store }, enableLogging }) => {
+					enableLogging()
+					const exposeContinuity = RTS.prepareToProvideContinuity({
 						socket,
 						store,
 					})
-					exposeContinuity(countContinuity)
+					exposeContinuity(countContinuity, userKey)
 				},
 				clients: {
-					jane: () => {
-						RTR.useSyncContinuity(countContinuity)
-						const count = AR.useO(countState)
-						const store = React.useContext(AR.StoreContext)
-						const increment = actUponStore(store, incrementTX, arbitrary())
-
-						return (
-							<>
-								<button
-									type="button"
-									onClick={() => increment()}
-									data-testid={`increment`}
-								/>
-								<i data-testid={count} />
-							</>
-						)
-					},
-					dave: () => {
-						RTR.useSyncContinuity(countContinuity)
-						const count = AR.useO(countState)
-						const store = React.useContext(AR.StoreContext)
-						const increment = actUponStore(store, incrementTX, arbitrary())
-						return (
-							<>
-								<button
-									type="button"
-									onClick={() => increment()}
-									data-testid={`increment`}
-								/>
-								<i data-testid={count} />
-							</>
-						)
-					},
+					jane: Client,
+					dave: Client,
 				},
 			}),
 			{ countState, incrementTX },
@@ -101,9 +88,9 @@ describe(`synchronizing transactions`, () => {
 		jane = scenario.clients.jane.init()
 		server = scenario.server
 		teardown = scenario.teardown
-		dave.silo.store.logger = Utils.createNullLogger()
-		jane.silo.store.logger = Utils.createNullLogger()
-		server.silo.store.logger = Utils.createNullLogger()
+
+		jane.enableLogging()
+		dave.enableLogging()
 
 		vitest.spyOn(dave.silo.store.logger, `error`)
 		vitest.spyOn(dave.silo.store.logger, `warn`)
@@ -128,15 +115,13 @@ describe(`synchronizing transactions`, () => {
 
 	test(`client 1 -> server -> client 2`, async () => {
 		jane.renderResult.getByTestId(`0`)
-		await act(async () => {
+		act(() => {
 			dave.renderResult.getByTestId(`increment`).click()
-			await waitFor(() => jane.renderResult.getByTestId(`1`))
 		})
+		await waitFor(() => jane.renderResult.getByTestId(`1`))
 	})
 	test(`rollback`, async () => {
 		const { countState } = scenario
-		// jane.enableLogging()
-		// dave.enableLogging()
 
 		await waitFor(() => {
 			Utils.throwUntil(jane.socket.connected)
@@ -188,13 +173,13 @@ describe(`mutable atoms in continuity`, () => {
 
 		return Object.assign(
 			RTTest.singleClient({
-				server: ({ socket, silo: { store } }) => {
+				server: ({ socket, userKey, silo: { store } }) => {
 					// enableLogging()
-					const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
+					const exposeContinuity = RTS.prepareToProvideContinuity({
 						socket,
 						store,
 					})
-					return exposeContinuity(applicationContinuity)
+					return exposeContinuity(applicationContinuity, userKey)
 				},
 				client: () => {
 					RTR.useSyncContinuity(applicationContinuity)
@@ -209,7 +194,7 @@ describe(`mutable atoms in continuity`, () => {
 	test(`mutable initialization`, async () => {
 		const { client, server, addItemTX, myListAtom, teardown } = scenario()
 		const clientApp = client.init()
-		// clientApp.enableLogging()
+		clientApp.enableLogging()
 		await waitFor(() => {
 			Utils.throwUntil(clientApp.socket.connected)
 		})
@@ -229,7 +214,7 @@ describe(`mutable atoms in continuity`, () => {
 		await waitFor(() => {
 			Utils.throwUntil(() => server.silo.getState(myListAtom).has(`world`))
 		})
-		if (DEBUG_LOGGING) console.log(`📝 took ${performance.now() - time}ms`)
+		console.log(`📝 took ${performance.now() - time}ms`)
 
 		await teardown()
 	})

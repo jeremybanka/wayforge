@@ -52,12 +52,12 @@ setInterval(() => {
 	ipcLog.info(`letterAtoms`, letterAtoms)
 }, 1000)
 
-parentSocket.relay((userSocket) => {
+parentSocket.receiveRelay((socket, userKey) => {
 	editRelations(RTS.usersOfSockets, (relations) => {
-		relations.set(`user::relay:${userSocket.id}`, `socket::${userSocket.id}`)
+		relations.set(`user::relay:${socket.id}`, `socket::${socket.id}`)
 	})
-	const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
-		socket: userSocket,
+	const exposeContinuity = RTS.prepareToProvideContinuity({
+		socket,
 	})
-	exposeContinuity(gameContinuity)
+	exposeContinuity(gameContinuity, userKey)
 })
