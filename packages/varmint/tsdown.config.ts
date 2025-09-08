@@ -3,7 +3,7 @@ import { defineConfig } from "tsdown"
 
 const config: UserConfig | UserConfigFn = defineConfig({
 	clean: true,
-	dts: true,
+	dts: { sourcemap: true },
 	entry: [`src/index.ts`, `src/varmint.x.ts`],
 	format: [`esm`],
 	outDir: `dist`,
