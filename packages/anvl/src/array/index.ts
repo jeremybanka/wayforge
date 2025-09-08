@@ -79,7 +79,9 @@ export const every =
 	(a: I[]): boolean =>
 		a.every(f)
 
-export const allTrue = every((x: boolean) => x === true)
+export const allTrue: (arr: boolean[]) => boolean = every(
+	(x: boolean) => x === true,
+)
 
 export const addTo =
 	<I>(a: I[]) =>
