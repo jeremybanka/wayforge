@@ -1,5 +1,13 @@
 # jurist
 
+## 0.0.7
+
+### Patch Changes
+
+- f903d0e: ✨ Go-to-definition should now route to source files via source maps now shipped for type declarations.
+- Updated dependencies [f903d0e]
+  - treetrunks@0.1.5
+
 ## 0.0.6
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # anvl
 
+## 0.3.3
+
+### Patch Changes
+
+- f903d0e: ♻️ Build with tsdown; ship .d.ts.map file.
+
 ## 0.3.2
 
 ### Patch Changes
