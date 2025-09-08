@@ -7,6 +7,7 @@ import {
 	selector,
 	selectorFamily,
 } from "atom.io"
+import type { UserKey } from "atom.io/realtime-server"
 import { UList } from "atom.io/transceivers/u-list"
 
 import { cardIndex } from "./cards-store"
@@ -54,7 +55,7 @@ export const deckGlobalView = selector<RegularAtomToken<Deck>[]>({
 		return deckTokens
 	},
 })
-export const deckView = selectorFamily<RegularAtomToken<Deck>[], string>({
+export const deckView = selectorFamily<RegularAtomToken<Deck>[], UserKey>({
 	key: `deckView`,
 	get:
 		() =>
@@ -85,7 +86,7 @@ export const handGlobalView = selector<RegularAtomToken<Hand>[]>({
 		return handTokens
 	},
 })
-export const handView = selectorFamily<RegularAtomToken<Hand>[], string>({
+export const handView = selectorFamily<RegularAtomToken<Hand>[], UserKey>({
 	key: `handView`,
 	get:
 		() =>
@@ -116,7 +117,7 @@ export const pileGlobalView = selector<RegularAtomToken<Pile>[]>({
 		return pileTokens
 	},
 })
-export const pileView = selectorFamily<RegularAtomToken<Pile>[], string>({
+export const pileView = selectorFamily<RegularAtomToken<Pile>[], UserKey>({
 	key: `pileView`,
 	get:
 		() =>
@@ -144,7 +145,7 @@ export const trickGlobalView = selector<RegularAtomToken<Trick>[]>({
 		return trickTokens
 	},
 })
-export const trickView = selectorFamily<RegularAtomToken<Trick>[], string>({
+export const trickView = selectorFamily<RegularAtomToken<Trick>[], UserKey>({
 	key: `trickView`,
 	get:
 		() =>
