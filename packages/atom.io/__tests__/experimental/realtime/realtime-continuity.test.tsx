@@ -61,7 +61,7 @@ describe(`synchronizing transactions`, () => {
 				immortal: { server: true },
 				server: ({ socket, userKey, silo: { store }, enableLogging }) => {
 					enableLogging()
-					const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
+					const exposeContinuity = RTS.prepareToProvideContinuity({
 						socket,
 						store,
 					})
@@ -175,7 +175,7 @@ describe(`mutable atoms in continuity`, () => {
 			RTTest.singleClient({
 				server: ({ socket, userKey, silo: { store } }) => {
 					// enableLogging()
-					const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({
+					const exposeContinuity = RTS.prepareToProvideContinuity({
 						socket,
 						store,
 					})

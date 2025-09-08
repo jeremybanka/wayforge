@@ -78,7 +78,7 @@ parentSocket.receiveRelay((socket, userKey) => {
 		relations.set(userKey, socketKey)
 	})
 
-	const exposeContinuity = RTS.prepareToExposeRealtimeContinuity({ socket })
+	const exposeContinuity = RTS.prepareToProvideContinuity({ socket })
 	const exposeMutable = RTS.realtimeMutableProvider({ socket })
 
 	const disposalFunctions = [
