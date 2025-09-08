@@ -10,14 +10,14 @@ import type { ContinuityToken } from "atom.io/realtime"
 import type { Socket } from ".."
 import type { UserKey } from "../realtime-server-stores"
 
-export function subscribeToContinuityPerspectives(
+export function providePerspectives(
 	store: Store,
+	socket: Socket,
 	continuity: ContinuityToken,
 	userKey: UserKey,
-	socket: Socket | null,
-): (() => void)[] {
+): () => void {
 	const continuityKey = continuity.key
-	const unsubFns: (() => void)[] = []
+	const unsubFns = new Set<() => void>()
 	for (const perspective of continuity.perspectives) {
 		const { viewAtoms } = perspective
 		const userViewState = findInStore(store, viewAtoms, userKey)
@@ -47,14 +47,16 @@ export function subscribeToContinuityPerspectives(
 					{ oldKeys, newKeys, revealed, concealed },
 				)
 				if (revealed.length > 0) {
-					socket?.emit(`reveal:${continuityKey}`, revealed)
+					socket.emit(`reveal:${continuityKey}`, revealed)
 				}
 				if (concealed && concealed.length > 0) {
-					socket?.emit(`conceal:${continuityKey}`, concealed)
+					socket.emit(`conceal:${continuityKey}`, concealed)
 				}
 			},
 		)
-		unsubFns.push(unsubscribeFromUserView)
+		unsubFns.add(unsubscribeFromUserView)
 	}
-	return unsubFns
+	return () => {
+		for (const unsubscribe of unsubFns) unsubscribe()
+	}
 }

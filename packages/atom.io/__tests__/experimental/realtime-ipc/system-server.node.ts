@@ -77,7 +77,7 @@ export const SystemServer = ({
 		roomSocket.emit(`user-joins`, username)
 
 		toRoom = (payload) => {
-			roomSocket.emit(`user:${username}`, ...payload)
+			roomSocket.emit(`user::${username}`, ...payload)
 		}
 		while (roomQueue.length > 0) {
 			const payload = roomQueue.shift()

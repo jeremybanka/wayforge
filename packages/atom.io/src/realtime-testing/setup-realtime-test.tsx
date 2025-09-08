@@ -72,6 +72,7 @@ export type TestSetupOptions = {
 	server: (tools: {
 		socket: SocketIO.Socket
 		silo: AtomIO.Silo
+		userKey: RTS.UserKey
 		enableLogging: () => void
 	}) => (() => void) | void
 }
@@ -155,24 +156,25 @@ export const setupRealtimeTestServer = (
 			setIntoStore(silo.store, RTS.socketIndex, (index) =>
 				index.add(socketClaim),
 			)
-			// console.log(`${username} connected on ${socket.id}`)
 			next()
 		} else {
 			next(new Error(`Authentication error`))
 		}
 	})
 
-	const serviceDisposalFunctions: Array<() => void> = []
+	const socketServices = new Set<() => void>()
+	const disposeAllSocketServices = () => {
+		for (const disposeService of socketServices) disposeService()
+	}
 
 	server.on(`connection`, (socket: SocketIO.Socket) => {
-		let userKey: string | null = null
+		const userKeyState = findRelationsInStore(
+			RTS.usersOfSockets,
+			`socket::${socket.id}`,
+			silo.store,
+		).userKeyOfSocket
+		const userKey = getFromStore(silo.store, userKeyState)!
 		function enableLogging() {
-			const userKeyState = findRelationsInStore(
-				RTS.usersOfSockets,
-				`socket::${socket.id}`,
-				silo.store,
-			).userKeyOfSocket
-			userKey = getFromStore(silo.store, userKeyState)
 			prefixLogger(silo.store, `server`)
 			socket.onAny((event, ...args) => {
 				console.log(`🛰 `, userKey, event, ...args)
@@ -184,16 +186,20 @@ export const setupRealtimeTestServer = (
 				console.log(`${userKey} disconnected`)
 			})
 		}
-		const disposeServices = options.server({ socket, enableLogging, silo })
+		const disposeServices = options.server({
+			socket,
+			enableLogging,
+			silo,
+			userKey,
+		})
 		if (disposeServices) {
-			serviceDisposalFunctions.push(disposeServices)
+			socketServices.add(disposeServices)
+			socket.on(`disconnect`, disposeServices)
 		}
 	})
 
 	const dispose = async () => {
-		for (const disposeSocketServices of serviceDisposalFunctions) {
-			disposeSocketServices()
-		}
+		disposeAllSocketServices()
 		await server.close()
 
 		// const roomKeys = getFromStore(silo.store, RT.roomIndex)

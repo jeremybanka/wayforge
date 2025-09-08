@@ -12,24 +12,24 @@ import type { ContinuityToken } from "atom.io/realtime"
 import type { Socket, UserKey } from ".."
 import {
 	redactTransactionUpdateContent,
-	userUnacknowledgedQueues,
+	unacknowledgedUpdatesAtoms,
 } from "./continuity-store"
 
-export function subscribeToContinuityActions(
+export function provideOutcomes(
 	store: Store,
+	socket: Socket,
 	continuity: ContinuityToken,
 	userKey: UserKey,
-	socket: Socket | null,
-): (() => void)[] {
+): () => void {
 	const continuityKey = continuity.key
-	const unsubscribeFunctions: (() => void)[] = []
+	const unsubscribeFunctions = new Set<() => void>()
 
 	for (const transaction of continuity.actions) {
 		const unsubscribeFromTransaction = subscribeToTransaction(
 			store,
 			transaction,
 			`sync-continuity:${continuityKey}:${userKey}`,
-			(update) => {
+			(outcomes) => {
 				try {
 					const visibleKeys = continuity.globals
 						.map((atom) => {
@@ -59,13 +59,13 @@ export function subscribeToContinuityActions(
 						)
 					const redactedUpdates = redactTransactionUpdateContent(
 						visibleKeys,
-						update.subEvents,
+						outcomes.subEvents,
 					)
 					const redactedUpdate = {
-						...update,
+						...outcomes,
 						updates: redactedUpdates,
 					}
-					setIntoStore(store, userUnacknowledgedQueues, userKey, (updates) => {
+					setIntoStore(store, unacknowledgedUpdatesAtoms, userKey, (updates) => {
 						if (redactedUpdate) {
 							updates.push(redactedUpdate)
 							updates.sort((a, b) => a.epoch - b.epoch)
@@ -81,7 +81,7 @@ export function subscribeToContinuityActions(
 						return updates
 					})
 
-					socket?.emit(
+					socket.emit(
 						`tx-new:${continuityKey}`,
 						redactedUpdate as Json.Serializable,
 					)
@@ -98,7 +98,9 @@ export function subscribeToContinuityActions(
 				}
 			},
 		)
-		unsubscribeFunctions.push(unsubscribeFromTransaction)
+		unsubscribeFunctions.add(unsubscribeFromTransaction)
 	}
-	return unsubscribeFunctions
+	return () => {
+		for (const unsubscribe of unsubscribeFunctions) unsubscribe()
+	}
 }
