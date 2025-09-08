@@ -66,7 +66,7 @@ IMPLICIT.STORE.loggers[0] = atomIOSubprocessLogger
 parentSocket.receiveRelay((socket, userKey) => {
 	const snapshot = generateHeapSnapshot()
 	void Bun.write(`heap.json`, JSON.stringify(snapshot, null, 2))
-	const socketKey = `socket::parent<<${socket.userId}` satisfies RTS.SocketKey
+	const socketKey = `socket::parent<<${socket.id}` satisfies RTS.SocketKey
 	socket.onAny((event, ...args) => {
 		parentSocket.logger.info(socketKey, `<< 🛰 `, event, ...args)
 	})
