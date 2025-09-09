@@ -1,11 +1,16 @@
 import {
 	atomFamily,
+	editRelations,
 	findRelations,
 	getInternalRelations,
+	getState,
 	join,
 	mutableAtom,
+	mutableAtomFamily,
 	selectorFamily,
+	setState,
 } from "atom.io"
+import { IMPLICIT } from "atom.io/internal"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 describe(`join in perspective`, () => {
@@ -93,5 +98,57 @@ describe(`join in perspective`, () => {
 					return visible
 				},
 		})
+
+		const cardFacesAtoms = getInternalRelations(facesOfCards)
+		const cardFacesPlayerViewAtoms = mutableAtomFamily<
+			SetRTX<string>,
+			[`player::${string}`, string]
+		>({
+			key: `cardFacesAliasAtoms`,
+			class: SetRTX,
+			effects: ([playerKey, faceKey]) => [
+				({ setSelf }) => {
+					const internal = getState(cardFacesAtoms, faceKey)
+					internal.subject.subscribe(`?`, (update) => {
+						const [type, ...rest] = update.split(`:`)
+						const key = JSON.parse(rest.join(`:`))
+						const visible = getState(visibleCardKeys, playerKey)
+
+						console.log({ type, key, visible })
+
+						if (visible.includes(key)) {
+							setSelf((prev) => (prev.do(update), prev))
+						}
+					})
+				},
+			],
+		})
+
+		getState(cardFacesPlayerViewAtoms, [`player::alice`, `face::hearts-5`])
+		getState(cardFacesPlayerViewAtoms, [`player::alice`, `card::aaa`])
+		setState(cardKeysAtom, (keys) => keys.add(`card::aaa`))
+		editRelations(stacksOfCards, (relations) => {
+			relations.set(`stack-pile::deck-1`, `card::aaa`)
+		})
+		editRelations(facesOfCards, (relations) => {
+			relations.set(`face::hearts-5`, `card::aaa`)
+		})
+
+		console.log(
+			`alice 👁️ card::aaa`,
+			new Set(
+				IMPLICIT.STORE.valueMap.get(
+					`cardFacesAliasAtoms(["player::alice","card::aaa"])`,
+				),
+			),
+		)
+		console.log(
+			`alice 👁️ face::hearts-5`,
+			new Set(
+				IMPLICIT.STORE.valueMap.get(
+					`cardFacesAliasAtoms(["player::alice","face::hearts-5"])`,
+				),
+			),
+		)
 	})
 })
