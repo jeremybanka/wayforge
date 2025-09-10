@@ -20,7 +20,7 @@ import { vitest } from "vitest"
 import * as Utils from "../../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 2
+const CHOOSE = 3
 
 let logger: Logger
 
