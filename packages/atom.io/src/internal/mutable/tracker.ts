@@ -4,6 +4,7 @@ import { createRegularAtom } from "../atom"
 import { getFromStore } from "../get-state"
 import { newest } from "../lineage"
 import { setIntoStore } from "../set-state"
+import { JOIN_OP, operateOnStore } from "../set-state/operate-on-store"
 import type { Store } from "../store"
 import { subscribeToState, subscribeToTimeline } from "../subscribe"
 import { isChildStore } from "../transaction/is-root-store"
@@ -63,7 +64,7 @@ export class Tracker<T extends Transceiver<any, any, any>> {
 			: `main`
 		const subscriptionKey = `tracker:${storeName}:${storeStatus}:${stateKey}`
 		const trackerCapturesOutboundSignal = (update: SignalFrom<T>) => {
-			setIntoStore(target, latestSignalState, update)
+			operateOnStore(JOIN_OP, target, latestSignalState, update)
 		}
 		const originalInnerValue = getFromStore(target, mutableState)
 		this.unsubscribeFromInnerValue = originalInnerValue.subscribe(
