@@ -1,5 +1,6 @@
 import type { ReadableToken, StateUpdate, UpdateHandler } from "atom.io"
 
+import { hasRole } from "../atom"
 import { readOrComputeValue } from "../get-state"
 import { reduceReference } from "../get-state/reduce-reference"
 import { traceRootSelectorAtoms } from "../selector"
@@ -15,6 +16,14 @@ export function subscribeToState<T, E>(
 ): () => void {
 	function safelyHandleUpdate(update: StateUpdate<any>): void {
 		if (store.operation.open) {
+			if (
+				state?.type === `atom` &&
+				hasRole(state, `tracker:signal`) &&
+				`*` + store.operation.token.key === token.key &&
+				`inboundTracker` in handleUpdate
+			) {
+				return
+			}
 			const unsubscribe = store.on.operationClose.subscribe(
 				`state subscription ${key}`,
 				() => {

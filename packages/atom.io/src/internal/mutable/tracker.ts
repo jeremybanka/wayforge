@@ -1,4 +1,9 @@
-import type { FamilyMetadata, MutableAtomToken, RegularAtomToken } from "atom.io"
+import type {
+	FamilyMetadata,
+	MutableAtomToken,
+	RegularAtomToken,
+	StateUpdate,
+} from "atom.io"
 
 import { createRegularAtom } from "../atom"
 import { getFromStore } from "../get-state"
@@ -62,7 +67,7 @@ export class Tracker<T extends Transceiver<any, any, any>> {
 		const storeStatus = isChildStore(target)
 			? target.transactionMeta.update.token.key
 			: `main`
-		const subscriptionKey = `tracker:${storeName}:${storeStatus}:${stateKey}`
+		const subscriptionKey = `tracker-from-core:${storeName}:${storeStatus}:${stateKey}`
 		const trackerCapturesOutboundSignal = (update: SignalFrom<T>) => {
 			operateOnStore(JOIN_OP, target, latestSignalState, update)
 		}
@@ -92,60 +97,69 @@ export class Tracker<T extends Transceiver<any, any, any>> {
 		latestSignalState: RegularAtomToken<SignalFrom<T> | null>,
 		target: Store,
 	): void {
-		const subscriptionKey = `tracker:${target.config.name}:${
-			isChildStore(target) ? target.transactionMeta.update.token.key : `main`
-		}:${mutableState.key}`
+		const stateKey = mutableState.key
+		const storeName = target.config.name
+		const storeStatus = isChildStore(target)
+			? target.transactionMeta.update.token.key
+			: `main`
+		const subscriptionKey = `tracker-to-core:${storeName}:${storeStatus}:${stateKey}`
 		subscribeToState(
 			target,
 			latestSignalState,
 			subscriptionKey,
-			function trackerCapturesInboundSignal({ newValue, oldValue }) {
-				const timelineId = target.timelineTopics.getRelatedKey(
-					latestSignalState.key,
-				)
+			Object.assign(
+				function trackerCapturesInboundSignal({
+					newValue,
+					oldValue,
+				}: StateUpdate<SignalFrom<T> | null>) {
+					const timelineId = target.timelineTopics.getRelatedKey(
+						latestSignalState.key,
+					)
 
-				if (timelineId && target.timelines.get(timelineId)?.timeTraveling) {
-					const unsubscribe = subscribeToTimeline(
-						target,
-						{ key: timelineId, type: `timeline` },
-						subscriptionKey,
-						function trackerWaitsForTimeTravelToFinish(update) {
-							unsubscribe()
-							setIntoStore(target, mutableState, (transceiver) => {
-								if (update === `redo` && newValue) {
-									transceiver.do(newValue)
-								} else if (update === `undo` && oldValue) {
-									transceiver.undo(oldValue)
-								}
-								return transceiver
-							})
-						},
-					)
-					return
-				}
+					if (timelineId && target.timelines.get(timelineId)?.timeTraveling) {
+						const unsubscribe = subscribeToTimeline(
+							target,
+							{ key: timelineId, type: `timeline` },
+							subscriptionKey,
+							function trackerWaitsForTimeTravelToFinish(update) {
+								unsubscribe()
+								setIntoStore(target, mutableState, (transceiver) => {
+									if (update === `redo` && newValue) {
+										transceiver.do(newValue)
+									} else if (update === `undo` && oldValue) {
+										transceiver.undo(oldValue)
+									}
+									return transceiver
+								})
+							},
+						)
+						return
+					}
 
-				const mutable = getFromStore(target, mutableState)
-				const updateNumber = mutable.getUpdateNumber(newValue)
-				const eventOffset = updateNumber - mutable.cacheUpdateNumber
-				if (newValue && eventOffset === 1) {
-					setIntoStore(
-						target,
-						mutableState,
-						(transceiver) => (transceiver.do(newValue), transceiver),
-					)
-				} else {
-					const expected = mutable.cacheUpdateNumber + 1
-					target.logger.info(
-						`❌`,
-						`mutable_atom`,
-						mutableState.key,
-						`could not be updated. Expected update number`,
-						expected,
-						`but got`,
-						updateNumber,
-					)
-				}
-			},
+					const mutable = getFromStore(target, mutableState)
+					const updateNumber = mutable.getUpdateNumber(newValue)
+					const eventOffset = updateNumber - mutable.cacheUpdateNumber
+					if (newValue && eventOffset === 1) {
+						setIntoStore(
+							target,
+							mutableState,
+							(transceiver) => (transceiver.do(newValue), transceiver),
+						)
+					} else {
+						const expected = mutable.cacheUpdateNumber + 1
+						target.logger.info(
+							`❌`,
+							`mutable_atom`,
+							mutableState.key,
+							`could not be updated. Expected update number`,
+							expected,
+							`but got`,
+							updateNumber,
+						)
+					}
+				},
+				{ inboundTracker: true },
+			),
 		)
 	}
 
