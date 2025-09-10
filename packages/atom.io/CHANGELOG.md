@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.40.8
+
+### Patch Changes
+
+- 1ac962f: 🚀 Mutable atoms now set the state of their \*tracker states within the same operation. This is more efficient, and also means that the tracker does not attempt and fail a redundant update against the mutable.
+
 ## 0.40.7
 
 ### Patch Changes
