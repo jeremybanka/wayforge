@@ -669,10 +669,10 @@ importers:
     devDependencies:
       '@biomejs/js-api':
         specifier: 3.0.0
-        version: 3.0.0(@biomejs/wasm-nodejs@2.2.2)
+        version: 3.0.0(@biomejs/wasm-nodejs@2.2.4)
       '@biomejs/wasm-nodejs':
-        specifier: 2.2.2
-        version: 2.2.2
+        specifier: 2.2.4
+        version: 2.2.4
       '@types/bun':
         specifier: npm:bun-types@1.2.21
         version: bun-types@1.2.21(@types/react@19.1.12)
@@ -1808,8 +1808,8 @@ packages:
       '@biomejs/wasm-web':
         optional: true
 
-  '@biomejs/wasm-nodejs@2.2.2':
-    resolution: {integrity: sha512-GxI0ejyXaCjIq6SxBr9e4jyf3zmI5Eyyq5fF0dlb4nECVXwAgUAnT6hQ5502ZACvBxoWmreXw08im/l3APpvIw==}
+  '@biomejs/wasm-nodejs@2.2.4':
+    resolution: {integrity: sha512-ExHAa8W9uyinDhvxhe9CXA6V9bHka3RIs9jKQWlzOz7/LEt3IcFA+fo0O+9RdU30q7lmoo83VqUJwWPTLXeWiA==}
 
   '@bufbuild/protobuf@2.7.0':
     resolution: {integrity: sha512-qn6tAIZEw5i/wiESBF4nQxZkl86aY4KoO0IkUa2Lh+rya64oTOdJQFlZuMwI1Qz9VBJQrQC4QlSA2DNek5gCOA==}
@@ -8839,11 +8839,11 @@ snapshots:
   '@biomejs/cli-win32-x64@2.2.4':
     optional: true
 
-  '@biomejs/js-api@3.0.0(@biomejs/wasm-nodejs@2.2.2)':
+  '@biomejs/js-api@3.0.0(@biomejs/wasm-nodejs@2.2.4)':
     optionalDependencies:
-      '@biomejs/wasm-nodejs': 2.2.2
+      '@biomejs/wasm-nodejs': 2.2.4
 
-  '@biomejs/wasm-nodejs@2.2.2': {}
+  '@biomejs/wasm-nodejs@2.2.4': {}
 
   '@bufbuild/protobuf@2.7.0': {}
 
