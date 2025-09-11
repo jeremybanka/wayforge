@@ -5,7 +5,7 @@ import { stringifyJson } from "atom.io/json"
 
 export type SetUpdateType = `add` | `clear` | `del` | `tx`
 export type SetUpdate = `${SetUpdateType}:${string}`
-export type NumberedSetUpdate = `${number}=${SetUpdate}`
+export type NumberedSetUpdate = `${number | `*`}=${SetUpdate}`
 
 export interface SetRTXView<P extends primitive> extends ReadonlySet<P> {
 	readonly cache: ReadonlyArray<NumberedSetUpdate | null>
@@ -182,8 +182,8 @@ export class SetRTX<P extends primitive>
 		const updateNumber = Number(update.substring(0, breakpoint))
 		const eventOffset = updateNumber - this.cacheUpdateNumber
 		const isFuture = eventOffset > 0
-		if (isFuture) {
-			if (eventOffset === 1) {
+		if (isFuture || Number.isNaN(eventOffset)) {
+			if (eventOffset === 1 || Number.isNaN(eventOffset)) {
 				this.mode = `playback`
 				const innerUpdate = update.substring(breakpoint + 1) as SetUpdate
 				this.doStep(innerUpdate)
