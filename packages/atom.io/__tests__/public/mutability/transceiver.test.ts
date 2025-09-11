@@ -63,6 +63,14 @@ describe(`SetRTX`, () => {
 			set.do(`1=del:"x"`)
 			expect(set.has(`"x"`)).toBe(false)
 		})
+		it(`should handle de-sequenced updates`, () => {
+			const set = new SetRTX()
+			set.add(`x`)
+			set.do(`*=add:"x"`)
+			set.do(`*=add:"y"`)
+			expect(set.has(`x`)).toBe(true)
+			expect(set.has(`y`)).toBe(true)
+		})
 	})
 	describe(`undo`, () => {
 		it(`should add/delete a value from the set`, () => {
