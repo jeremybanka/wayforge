@@ -166,7 +166,7 @@
       flex-flow: column;
       gap: 8px;
       padding: 0px 0px;
-      &:contains(article) {
+      &:has(article) {
         padding: 100px;
       }
 
