@@ -1,6 +1,5 @@
 import nextMDX from "@next/mdx"
 import type { NextConfig } from "next"
-import rehypeSlug from "rehype-slug"
 
 const nextConfig = {
 	distDir: `dist`,
@@ -17,7 +16,7 @@ const nextConfig = {
 const withMDX = nextMDX({
 	extension: /\.mdx?$/,
 	options: {
-		rehypePlugins: [rehypeSlug],
+		rehypePlugins: [`rehype-slug`],
 	},
 })
 
