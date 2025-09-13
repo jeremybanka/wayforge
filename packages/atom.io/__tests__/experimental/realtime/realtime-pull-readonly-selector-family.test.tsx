@@ -3,7 +3,7 @@ import * as AtomIO from "atom.io"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 
 console.log = () => undefined
 console.info = () => undefined
@@ -16,28 +16,28 @@ const globalMultipliersEnabledAtom = AtomIO.atom<boolean>({
 	key: `globalMultipliersEnabled`,
 	default: false,
 })
-const globalMultipliersAtom = AtomIO.mutableAtom<SetRTX<number>>({
+const globalMultipliersAtom = AtomIO.mutableAtom<UList<number>>({
 	key: `globalMultiplier`,
-	class: SetRTX,
+	class: UList,
 })
 const countAtoms = AtomIO.atomFamily<number, `count:${number}`>({
 	key: `count`,
 	default: 0,
 })
 const countGroupsAtoms = AtomIO.mutableAtomFamily<
-	SetRTX<`count:${number}`>,
+	UList<`count:${number}`>,
 	`cluster:${number}`
 >({
 	key: `countGroup`,
-	class: SetRTX,
+	class: UList,
 })
 const countsExposedAtoms = AtomIO.atom<`count:${number}`[]>({
 	key: `countsExposed`,
 	default: [`count:0`, `count:1`, `count:2`],
 })
-const countsGroupsExposedAtom = AtomIO.mutableAtom<SetRTX<`cluster:${number}`>>({
+const countsGroupsExposedAtom = AtomIO.mutableAtom<UList<`cluster:${number}`>>({
 	key: `countsGroupsExposed`,
-	class: SetRTX,
+	class: UList,
 })
 const computationSelectors = AtomIO.selectorFamily<number, `cluster:${number}`>({
 	key: `computation`,

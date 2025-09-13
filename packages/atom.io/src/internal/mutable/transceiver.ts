@@ -9,8 +9,8 @@ export interface Transceiver<
 	do: (update: S) => number | `OUT_OF_RANGE` | null
 	undo: (update: S) => void
 	subscribe: (key: string, fn: (update: S) => void) => () => void
-	cacheUpdateNumber: number
-	getUpdateNumber: (update: S) => number
+	// cacheUpdateNumber: number
+	// getUpdateNumber: (update: S) => number
 	toJSON: () => J
 }
 
@@ -31,8 +31,8 @@ export function isTransceiver(
 		`do` in value &&
 		`undo` in value &&
 		`subscribe` in value &&
-		`cacheUpdateNumber` in value &&
-		`getUpdateNumber` in value &&
+		// `cacheUpdateNumber` in value &&
+		// `getUpdateNumber` in value &&
 		`READONLY_VIEW` in value &&
 		`toJSON` in value
 	)

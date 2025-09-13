@@ -3,7 +3,7 @@ import type { Readable, Writable } from "node:stream"
 import { Subject } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { parseJson, stringifyJson } from "atom.io/json"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 
 import type { UserKey } from "../realtime-server-stores"
 import type { StderrLog } from "./child-socket"
@@ -76,9 +76,7 @@ export class ParentSocket<
 		this.proc.stderr.write(
 			stringifyJson(
 				args.map((arg) =>
-					arg instanceof SetRTX
-						? `{ ${arg.toJSON().members.join(` | `)} }`
-						: arg,
+					arg instanceof UList ? `{ ${arg.toJSON().members.join(` | `)} }` : arg,
 				),
 			) + `\x03`,
 		)

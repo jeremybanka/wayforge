@@ -4,7 +4,7 @@ import * as AR from "atom.io/react"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 
 console.log = () => undefined
 console.info = () => undefined
@@ -13,9 +13,9 @@ console.error = () => undefined
 let LOGGING: boolean
 beforeEach(() => (LOGGING = true))
 
-const numbersCollectionState = AtomIO.mutableAtom<SetRTX<number>>({
+const numbersCollectionState = AtomIO.mutableAtom<UList<number>>({
 	key: `numbersCollection`,
-	class: SetRTX,
+	class: UList,
 	effects: [
 		({ setSelf }) => {
 			setSelf((prev) => prev.add(0))

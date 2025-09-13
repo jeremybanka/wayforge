@@ -18,7 +18,7 @@ import {
 	undo,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 import { vitest } from "vitest"
 
 import * as Utils from "../__util__"
@@ -225,9 +225,9 @@ describe(`two families may not have the same key`, () => {
 			`Overwriting an existing atom family "count" in store "IMPLICIT_STORE". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
 
-		mutableAtomFamily<SetRTX<string>, string>({
+		mutableAtomFamily<UList<string>, string>({
 			key: `count`,
-			class: SetRTX,
+			class: UList,
 		})
 
 		expect(logger.error).toHaveBeenLastCalledWith(

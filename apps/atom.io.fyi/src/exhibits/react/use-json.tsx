@@ -1,6 +1,6 @@
 import { mutableAtom } from "atom.io"
 import { useJSON } from "atom.io/react"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { SetRTX } from "../../../../../packages/atom.io/dist/transceivers/u-list/set-rtx"
 
 const numbersCollectionState = mutableAtom<SetRTX<string>>({
 	key: `numbersCollection::mutable`,

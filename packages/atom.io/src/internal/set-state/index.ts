@@ -1,5 +1,6 @@
 export * from "./become"
 export * from "./evict-downstream"
+export * from "./operate-on-store"
 export * from "./reset-atom-or-selector"
 export * from "./reset-in-store"
 export * from "./set-atom-or-selector"

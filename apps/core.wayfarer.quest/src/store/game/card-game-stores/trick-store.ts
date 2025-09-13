@@ -5,7 +5,7 @@ import {
 	selector,
 	selectorFamily,
 } from "atom.io"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 
 import { groupsOfCards } from "./card-groups-store"
 import { gamePlayerIndex } from "./game-players-store"
@@ -25,9 +25,9 @@ export const trickWinners = join({
 	isBType: (input): input is string => typeof input === `string`,
 })
 
-export const trickIndex = mutableAtom<SetRTX<string>>({
+export const trickIndex = mutableAtom<UList<string>>({
 	key: `trickIndex`,
-	class: SetRTX,
+	class: UList,
 })
 
 export type TrickContent = [playerId: string, cardId: string | undefined]

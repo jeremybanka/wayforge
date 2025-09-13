@@ -136,27 +136,27 @@ export class Tracker<T extends Transceiver<any, any, any>> {
 						return
 					}
 
-					const mutable = getFromStore(target, mutableState)
-					const updateNumber = mutable.getUpdateNumber(newValue)
-					const eventOffset = updateNumber - mutable.cacheUpdateNumber
-					if (newValue && eventOffset === 1) {
-						setIntoStore(
-							target,
-							mutableState,
-							(transceiver) => (transceiver.do(newValue), transceiver),
-						)
-					} else {
-						const expected = mutable.cacheUpdateNumber + 1
-						target.logger.info(
-							`❌`,
-							`mutable_atom`,
-							mutableState.key,
-							`could not be updated. Expected update number`,
-							expected,
-							`but got`,
-							updateNumber,
-						)
-					}
+					// const mutable = getFromStore(target, mutableState)
+					// const updateNumber = mutable.getUpdateNumber(newValue)
+					// const eventOffset = updateNumber - mutable.cacheUpdateNumber
+					// if (newValue && eventOffset === 1) {
+					setIntoStore(
+						target,
+						mutableState,
+						(transceiver) => (transceiver.do(newValue), transceiver),
+					)
+					// } else {
+					// 	const expected = mutable.cacheUpdateNumber + 1
+					// 	target.logger.info(
+					// 		`❌`,
+					// 		`mutable_atom`,
+					// 		mutableState.key,
+					// 		`could not be updated. Expected update number`,
+					// 		expected,
+					// 		`but got`,
+					// 		updateNumber,
+					// 	)
+					// }
 				},
 				{ inboundTracker: true },
 			),

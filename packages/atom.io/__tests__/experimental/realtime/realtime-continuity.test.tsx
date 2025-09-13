@@ -6,7 +6,7 @@ import * as RT from "atom.io/realtime"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 import * as React from "react"
 
 import * as Utils from "../../__util__"
@@ -154,9 +154,9 @@ describe(`synchronizing transactions`, () => {
 
 describe(`mutable atoms in continuity`, () => {
 	const scenario = () => {
-		const myListAtom = AtomIO.mutableAtom<SetRTX<string>>({
+		const myListAtom = AtomIO.mutableAtom<UList<string>>({
 			key: `myList`,
-			class: SetRTX,
+			class: UList,
 		})
 
 		const addItemTX = AtomIO.transaction<(item: string) => void>({

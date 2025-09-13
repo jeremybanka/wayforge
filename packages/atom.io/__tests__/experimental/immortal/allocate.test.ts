@@ -19,7 +19,7 @@ import {
 	undo,
 } from "atom.io"
 import { clearStore, IMPLICIT } from "atom.io/internal"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 
 import * as Utils from "../../__util__"
 
@@ -285,9 +285,9 @@ describe(`errors`, () => {
 	})
 	describe(`fallbacks/family defaults`, () => {
 		test(`mutable - only one SetRTX is used`, () => {
-			const listAtoms = mutableAtomFamily<SetRTX<string>, string>({
+			const listAtoms = mutableAtomFamily<UList<string>, string>({
 				key: `list`,
-				class: SetRTX,
+				class: UList,
 			})
 
 			const list0 = getState(listAtoms, `example`)

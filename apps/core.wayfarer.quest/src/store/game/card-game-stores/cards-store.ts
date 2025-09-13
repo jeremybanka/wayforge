@@ -1,6 +1,6 @@
 import type { RegularAtomToken } from "atom.io"
 import { atomFamily, join, mutableAtom, selector, selectorFamily } from "atom.io"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 import { Perspective } from "occlusion"
 
 export const cardOwners = join({
@@ -25,9 +25,9 @@ export const cardAtoms = atomFamily<Card, string>({
 		rotation: 0,
 	}),
 })
-export const cardIndex = mutableAtom<SetRTX<string>>({
+export const cardIndex = mutableAtom<UList<string>>({
 	key: `cardIndex`,
-	class: SetRTX,
+	class: UList,
 })
 
 export const globalCardView = selector<RegularAtomToken<Card>[]>({

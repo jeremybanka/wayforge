@@ -4,7 +4,7 @@ import * as AR from "atom.io/react"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 import { act } from "react"
 
 console.log = () => undefined
@@ -17,11 +17,11 @@ beforeEach(() => (LOGGING = true))
 type CollectionName = `bar` | `foo`
 
 const numberCollectionAtoms = AtomIO.mutableAtomFamily<
-	SetRTX<number>,
+	UList<number>,
 	CollectionName
 >({
 	key: `numbersCollection`,
-	class: SetRTX,
+	class: UList,
 })
 const exposedCollectionsIndex = AtomIO.atom<Set<CollectionName>>({
 	key: `exposedCollectionIndex`,
