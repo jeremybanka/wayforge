@@ -13,7 +13,7 @@ import {
 	transaction,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 import { vitest } from "vitest"
 
 import * as Utils from "../__util__"
@@ -273,9 +273,9 @@ describe(`nesting transactions`, () => {
 			key: `coffeeQuantity`,
 			default: 0,
 		})
-		const shoppingListState = mutableAtom<SetRTX<string>>({
+		const shoppingListState = mutableAtom<UList<string>>({
 			key: `shoppingList`,
-			class: SetRTX,
+			class: UList,
 		})
 		const addItemToShoppingListTX = transaction<(item: string) => void>({
 			key: `addItemToShoppingList`,
@@ -303,10 +303,10 @@ describe(`nesting transactions`, () => {
 				runTransaction(addCoffeeCreamerIfNeededTX)()
 			},
 		})
-		expect(getState(shoppingListState)).toEqual(new SetRTX<string>())
+		expect(getState(shoppingListState)).toEqual(new UList<string>())
 		runTransaction(refreshShoppingListTX)()
 		expect(getState(shoppingListState)).toEqual(
-			new SetRTX<string>([`coffee`, `coffee creamer`]),
+			new UList<string>([`coffee`, `coffee creamer`]),
 		)
 	})
 })

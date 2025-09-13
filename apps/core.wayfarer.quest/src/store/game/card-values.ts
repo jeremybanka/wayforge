@@ -1,7 +1,7 @@
 import type { Identified } from "anvl/id"
 import { atomFamily, join, mutableAtom } from "atom.io"
 import type { Json } from "atom.io/json"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { SetRTX } from "../../../../../packages/atom.io/dist/transceivers/u-list/set-rtx"
 
 export const findCardValueState = atomFamily<Identified & Json.Object, string>({
 	key: `cardValue`,

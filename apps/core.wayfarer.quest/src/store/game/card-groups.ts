@@ -1,5 +1,5 @@
 import { atomFamily, join, mutableAtomFamily, selectorFamily } from "atom.io"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { SetRTX } from "../../../../../packages/atom.io/dist/transceivers/u-list/set-rtx"
 
 export const groupsOfCards = join({
 	key: `groupsOfCards`,

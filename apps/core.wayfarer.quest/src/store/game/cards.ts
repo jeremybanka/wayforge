@@ -1,5 +1,5 @@
 import { atomFamily, join, mutableAtom } from "atom.io"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { SetRTX } from "../../../../../packages/atom.io/dist/transceivers/u-list/set-rtx"
 import { Perspective } from "occlusion"
 
 export const cardOwners = join({

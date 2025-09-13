@@ -6,7 +6,7 @@ import type {
 	RegularAtomFamilyToken,
 } from "atom.io"
 import { atomFamily, join, mutableAtom, selectorFamily } from "atom.io"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 
 import type { Socket } from ".."
 
@@ -29,17 +29,17 @@ export const socketAtoms: RegularAtomFamilyToken<Socket | null, SocketKey> =
 		default: null,
 	})
 
-export const socketIndex: MutableAtomToken<SetRTX<SocketKey>> = mutableAtom<
-	SetRTX<SocketKey>
+export const socketIndex: MutableAtomToken<UList<SocketKey>> = mutableAtom<
+	UList<SocketKey>
 >({
 	key: `socketsIndex`,
-	class: SetRTX,
+	class: UList,
 })
-export const userIndex: MutableAtomToken<SetRTX<UserKey>> = mutableAtom<
-	SetRTX<UserKey>
+export const userIndex: MutableAtomToken<UList<UserKey>> = mutableAtom<
+	UList<UserKey>
 >({
 	key: `usersIndex`,
-	class: SetRTX,
+	class: UList,
 })
 export const usersOfSockets: JoinToken<
 	`user`,

@@ -1,4 +1,5 @@
 export * from "./continuity/provide-continuity"
+export * from "./employ-socket"
 export * from "./ipc-sockets"
 export * from "./realtime-family-provider"
 export * from "./realtime-mutable-family-provider"

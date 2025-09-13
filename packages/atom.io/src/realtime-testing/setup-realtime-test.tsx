@@ -19,7 +19,7 @@ import * as AR from "atom.io/react"
 import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 import * as Happy from "happy-dom"
 import * as React from "react"
 import * as SocketIO from "socket.io"
@@ -45,9 +45,8 @@ function prefixLogger(store: Store, prefix: string) {
 				if (param instanceof ChildProcess) {
 					params[idx] = `ChildProcess:${param.pid}`
 				}
-				if (param instanceof SetRTX) {
-					params[idx] =
-						`SetRTX(${param.size}) {${[...param].join(`, `)}} at ${param.cacheIdx}`
+				if (param instanceof UList) {
+					params[idx] = `UList(${param.size}) {${[...param].join(`, `)}}`
 				}
 				idx++
 			}

@@ -10,7 +10,7 @@ import {
 } from "atom.io"
 import * as Internal from "atom.io/internal"
 import { Tracker } from "atom.io/internal"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 import { vitest } from "vitest"
 
 import * as Utils from "../__util__"
@@ -37,51 +37,51 @@ afterEach(() => {
 
 describe(`tracker`, () => {
 	test(`tracks the state of a mutable atom`, () => {
-		const mutableSetState = mutableAtom<SetRTX<string>>({
+		const mutableSetState = mutableAtom<UList<string>>({
 			key: `mutableSetState`,
-			class: SetRTX,
+			class: UList,
 		})
 		const { latestSignalToken } = new Tracker(
 			mutableSetState,
 			Internal.IMPLICIT.STORE,
 		)
 
-		expect(getState(mutableSetState)).toEqual(new SetRTX())
+		expect(getState(mutableSetState)).toEqual(new UList())
 		expect(getState(latestSignalToken)).toEqual(null)
-		setState(latestSignalToken, `0=add:"x"`)
-		expect(getState(latestSignalToken)).toEqual(`0=add:"x"`)
-		expect(getState(mutableSetState)).toEqual(new SetRTX([`x`]))
-		setState(latestSignalToken, `1=add:"y"`)
-		expect(getState(latestSignalToken)).toEqual(`1=add:"y"`)
-		expect(getState(mutableSetState)).toEqual(new SetRTX([`x`, `y`]))
+		setState(latestSignalToken, `add:"x"`)
+		expect(getState(latestSignalToken)).toEqual(`add:"x"`)
+		expect(getState(mutableSetState)).toEqual(new UList([`x`]))
+		setState(latestSignalToken, `add:"y"`)
+		expect(getState(latestSignalToken)).toEqual(`add:"y"`)
+		expect(getState(mutableSetState)).toEqual(new UList([`x`, `y`]))
 	})
 
 	test(`updates its core in a transaction`, () => {
-		const mutableSetState = mutableAtom<SetRTX<string>>({
+		const mutableSetState = mutableAtom<UList<string>>({
 			key: `mutableSetState`,
-			class: SetRTX,
+			class: UList,
 		})
 		const tracker = new Tracker(mutableSetState, Internal.IMPLICIT.STORE)
 		const updateTrackerTX = transaction({
 			key: `updateTrackerTX`,
 			do: ({ set }) => {
-				set(tracker.latestSignalToken, `0=add:"x"`)
-				set(tracker.latestSignalToken, `1=add:"y"`)
+				set(tracker.latestSignalToken, `add:"x"`)
+				set(tracker.latestSignalToken, `add:"y"`)
 			},
 		})
 
-		expect(getState(mutableSetState)).toEqual(new SetRTX())
+		expect(getState(mutableSetState)).toEqual(new UList())
 		expect(getState(tracker.latestSignalToken)).toEqual(null)
 		runTransaction(updateTrackerTX)()
-		expect(getState(mutableSetState)).toEqual(new SetRTX([`x`, `y`]))
+		expect(getState(mutableSetState)).toEqual(new UList([`x`, `y`]))
 	})
 })
 
 describe(`trackerFamily`, () => {
 	test(`tracks the state of a family of mutable atoms`, () => {
-		const setAtoms = mutableAtomFamily<SetRTX<string>, string>({
+		const setAtoms = mutableAtomFamily<UList<string>, string>({
 			key: `sets`,
-			class: SetRTX,
+			class: UList,
 		})
 
 		const latestUpdateStates = Internal.getUpdateFamily(
@@ -89,13 +89,13 @@ describe(`trackerFamily`, () => {
 			Internal.IMPLICIT.STORE,
 		)
 
-		expect(getState(setAtoms, `a`)).toEqual(new SetRTX())
+		expect(getState(setAtoms, `a`)).toEqual(new UList())
 		expect(getState(latestUpdateStates, `a`)).toEqual(null)
 	})
 	test(`updates the core of a new family member in a transaction`, () => {
-		const setAtoms = mutableAtomFamily<SetRTX<string>, string>({
+		const setAtoms = mutableAtomFamily<UList<string>, string>({
 			key: `findSetState`,
-			class: SetRTX,
+			class: UList,
 		})
 
 		const latestUpdateStates = Internal.getUpdateFamily(
@@ -106,15 +106,15 @@ describe(`trackerFamily`, () => {
 			key: `updateTrackerTX`,
 			do: ({ set }, key) => {
 				const trackerState = findState(latestUpdateStates, key)
-				set(trackerState, `0=add:"x"`)
+				set(trackerState, `add:"x"`)
 			},
 		})
 
-		expect(getState(findState(setAtoms, `a`))).toEqual(new SetRTX())
+		expect(getState(findState(setAtoms, `a`))).toEqual(new UList())
 		expect(getState(findState(latestUpdateStates, `a`))).toEqual(null)
 		runTransaction(updateTrackerTX)(`a`)
 
-		expect(getState(findState(setAtoms, `a`))).toEqual(new SetRTX([`x`]))
-		expect(getState(findState(setAtoms, `b`))).toEqual(new SetRTX())
+		expect(getState(findState(setAtoms, `a`))).toEqual(new UList([`x`]))
+		expect(getState(findState(setAtoms, `b`))).toEqual(new UList())
 	})
 })
