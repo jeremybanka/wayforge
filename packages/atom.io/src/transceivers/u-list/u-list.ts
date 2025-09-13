@@ -1,9 +1,9 @@
-import type { Lineage, Transceiver, TransceiverMode } from "atom.io/internal"
+import type { Transceiver, TransceiverMode } from "atom.io/internal"
 import { Subject } from "atom.io/internal"
 import type { Json, primitive } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
-export type UListUpdateType = `add` | `clear` | `del` | `tx`
+export type UListUpdateType = `add` | `clear` | `del`
 export type UListUpdate = `${UListUpdateType}:${string}`
 // export type NumberedSetUpdate = `${number | `*`}=${UListUpdate}`
 
@@ -130,12 +130,6 @@ export class UList<P extends primitive>
 	// 	}
 	// }
 
-	protected _subscribe(
-		key: string,
-		fn: (update: UListUpdate) => void,
-	): () => void {
-		return this.subject.subscribe(key, fn)
-	}
 	public subscribe(
 		key: string,
 		// fn: (update: NumberedSetUpdate) => void,
@@ -156,16 +150,11 @@ export class UList<P extends primitive>
 			case `add`:
 				this.add(JSON.parse(value))
 				break
-			case `clear`:
-				this.clear()
-				break
 			case `del`:
 				this.delete(JSON.parse(value))
 				break
-			case `tx`:
-				for (const subUpdate of value.split(`;`)) {
-					this.doStep(subUpdate as UListUpdate)
-				}
+			case `clear`:
+				this.clear()
 		}
 	}
 
@@ -232,13 +221,6 @@ export class UList<P extends primitive>
 			case `clear`: {
 				const values = JSON.parse(value) as P[]
 				for (const v of values) this.add(v)
-				break
-			}
-			case `tx`: {
-				const updates = value.split(`;`) as UListUpdate[]
-				for (let i = updates.length - 1; i >= 0; i--) {
-					this.undoStep(updates[i])
-				}
 			}
 		}
 	}
