@@ -7,6 +7,7 @@ import {
 	selector,
 	selectorFamily,
 } from "atom.io"
+import type { SetRTX } from "atom.io/transceivers/set-rtx"
 import { UList } from "atom.io/transceivers/u-list"
 
 import { cardIndex } from "./cards-store"
@@ -171,11 +172,11 @@ export const groupsOfCards = join({
 	isBType: (input): input is string => typeof input === `string`,
 })
 export const groupsOfCardsGlobalView = selector<
-	MutableAtomToken<UList<string>>[]
+	MutableAtomToken<SetRTX<string>>[]
 >({
 	key: `groupsOfCardsGlobalView`,
 	get: ({ find, get }) => {
-		const tokens: MutableAtomToken<UList<string>>[] = []
+		const tokens: MutableAtomToken<SetRTX<string>>[] = []
 		const groupIds = get(cardGroupIndex)
 		for (const groupId of groupIds) {
 			const token = find(getInternalRelations(groupsOfCards), groupId)
@@ -190,7 +191,7 @@ export const groupsOfCardsGlobalView = selector<
 	},
 })
 export const groupsOfCardsView = selectorFamily<
-	MutableAtomToken<UList<string>>[],
+	MutableAtomToken<SetRTX<string>>[],
 	string
 >({
 	key: `groupsOfCardsView`,
@@ -208,11 +209,11 @@ export const ownersOfGroups = join({
 	isBType: (input): input is string => typeof input === `string`,
 })
 export const ownersOfGroupsGlobalView = selector<
-	MutableAtomToken<UList<string>>[]
+	MutableAtomToken<SetRTX<string>>[]
 >({
 	key: `ownersOfGroupsGlobalView`,
 	get: ({ find, get }) => {
-		const tokens: MutableAtomToken<UList<string>>[] = []
+		const tokens: MutableAtomToken<SetRTX<string>>[] = []
 		const groupIds = get(cardGroupIndex)
 		for (const groupId of groupIds) {
 			const token = find(getInternalRelations(ownersOfGroups), groupId)
@@ -227,7 +228,7 @@ export const ownersOfGroupsGlobalView = selector<
 	},
 })
 export const ownersOfGroupsView = selectorFamily<
-	MutableAtomToken<UList<string>>[],
+	MutableAtomToken<SetRTX<string>>[],
 	string
 >({
 	key: `ownersOfGroupsView`,
