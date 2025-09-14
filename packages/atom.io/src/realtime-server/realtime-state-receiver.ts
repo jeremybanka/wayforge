@@ -9,10 +9,9 @@ import {
 	subscribeToState,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-import { mutexAtoms } from "atom.io/realtime"
+import { employSocket,mutexAtoms  } from "atom.io/realtime"
 
 import type { ServerConfig } from "."
-import { employSocket } from "atom.io/realtime"
 
 export type StateReceiver = ReturnType<typeof realtimeStateReceiver>
 export function realtimeStateReceiver({

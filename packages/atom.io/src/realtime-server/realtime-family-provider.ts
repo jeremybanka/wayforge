@@ -7,9 +7,9 @@ import {
 } from "atom.io/internal"
 import type { Canonical, Json, stringified } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
+import { employSocket } from "atom.io/realtime"
 
 import type { ServerConfig } from "."
-import { employSocket } from "atom.io/realtime"
 
 export type FamilyProvider = ReturnType<typeof realtimeAtomFamilyProvider>
 export function realtimeAtomFamilyProvider({
