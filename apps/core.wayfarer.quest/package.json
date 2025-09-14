@@ -27,7 +27,7 @@
 		"zod": "3.25.76"
 	},
 	"devDependencies": {
-		"@types/bun": "npm:bun-types@1.2.21",
+		"@types/bun": "npm:bun-types@1.2.22",
 		"@types/npmlog": "7.0.0",
 		"eslint": "9.35.0",
 		"vite": "7.1.5",
