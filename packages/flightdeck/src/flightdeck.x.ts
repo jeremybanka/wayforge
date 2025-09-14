@@ -47,7 +47,7 @@ const FLIGHTDECK_MANUAL = {
 			flag: `n`,
 			required: true,
 			description: `Name of the package.`,
-			example: `--packageName=\"my-app\"`,
+			example: `--packageName="my-app"`,
 		},
 		services: {
 			flag: `s`,
@@ -60,7 +60,7 @@ const FLIGHTDECK_MANUAL = {
 			flag: `d`,
 			required: true,
 			description: `Directory where the service is stored.`,
-			example: `--flightdeckRootDir=\"./services/sample/repo/my-app/current\"`,
+			example: `--flightdeckRootDir="./services/sample/repo/my-app/current"`,
 		},
 		scripts: {
 			flag: `r`,

@@ -6,11 +6,12 @@ import type {
 import { getInternalRelations, join, mutableAtom, selectorFamily } from "atom.io"
 import { UList } from "atom.io/transceivers/u-list"
 
-export const usersInThisRoomIndex: MutableAtomToken<UList<string>> =
-	mutableAtom<UList<string>>({
-		key: `usersInRoomIndex`,
-		class: UList,
-	})
+export const usersInThisRoomIndex: MutableAtomToken<UList<string>> = mutableAtom<
+	UList<string>
+>({
+	key: `usersInRoomIndex`,
+	class: UList,
+})
 
 export const roomIndex: MutableAtomToken<UList<string>> = mutableAtom<
 	UList<string>
