@@ -1,9 +1,9 @@
 import type * as AtomIO from "atom.io"
 import { getFromStore, IMPLICIT, subscribeToState } from "atom.io/internal"
 import type { Json } from "atom.io/json"
+import { employSocket } from "atom.io/realtime"
 
 import type { ServerConfig } from "."
-import { employSocket } from "atom.io/realtime"
 
 export type StateProvider = ReturnType<typeof realtimeStateProvider>
 export function realtimeStateProvider({

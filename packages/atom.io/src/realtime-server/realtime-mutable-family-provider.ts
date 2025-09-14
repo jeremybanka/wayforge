@@ -10,9 +10,9 @@ import {
 } from "atom.io/internal"
 import type { Canonical, stringified } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
+import { employSocket } from "atom.io/realtime"
 
 import type { ServerConfig } from "."
-import { employSocket } from "atom.io/realtime"
 
 export type MutableFamilyProvider = ReturnType<
 	typeof realtimeMutableFamilyProvider
