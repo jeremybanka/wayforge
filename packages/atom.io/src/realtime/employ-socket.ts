@@ -1,5 +1,5 @@
-import type { Events } from "./ipc-sockets"
-import type { Socket } from "./socket-interface"
+import type { Socket } from "atom.io/realtime"
+import type { Events } from "atom.io/realtime-server"
 
 export function employSocket<I extends Events, K extends string & keyof I>(
 	socket: Socket,

@@ -7,9 +7,9 @@ import {
 	subscribeToTransaction,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-import type { ContinuityToken } from "atom.io/realtime"
+import type { ContinuityToken, Socket } from "atom.io/realtime"
 
-import type { Socket, UserKey } from ".."
+import type { UserKey } from ".."
 import {
 	redactTransactionUpdateContent,
 	unacknowledgedUpdatesAtoms,

@@ -8,7 +8,7 @@ import type {
 import { atomFamily, join, mutableAtom, selectorFamily } from "atom.io"
 import { UList } from "atom.io/transceivers/u-list"
 
-import type { Socket } from ".."
+import type { Socket } from "atom.io/realtime"
 
 export type SocketKey = `socket::${string}`
 export type UserKey = `user::${string}`
