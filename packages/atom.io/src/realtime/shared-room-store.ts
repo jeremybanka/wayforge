@@ -4,19 +4,20 @@ import type {
 	ReadonlyPureSelectorFamilyToken,
 } from "atom.io"
 import { getInternalRelations, join, mutableAtom, selectorFamily } from "atom.io"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 
-export const usersInThisRoomIndex: MutableAtomToken<SetRTX<string>> =
-	mutableAtom<SetRTX<string>>({
-		key: `usersInRoomIndex`,
-		class: SetRTX,
-	})
+export const usersInThisRoomIndex: MutableAtomToken<UList<string>> = mutableAtom<
+	UList<string>
+>({
+	key: `usersInRoomIndex`,
+	class: UList,
+})
 
-export const roomIndex: MutableAtomToken<SetRTX<string>> = mutableAtom<
-	SetRTX<string>
+export const roomIndex: MutableAtomToken<UList<string>> = mutableAtom<
+	UList<string>
 >({
 	key: `roomIndex`,
-	class: SetRTX,
+	class: UList,
 })
 
 export type UserInRoomMeta = {
@@ -44,9 +45,9 @@ export const usersInRooms: JoinToken<
 )
 
 export const usersInMyRoomView: ReadonlyPureSelectorFamilyToken<
-	MutableAtomToken<SetRTX<string>>[],
+	MutableAtomToken<UList<string>>[],
 	string
-> = selectorFamily<MutableAtomToken<SetRTX<string>>[], string>({
+> = selectorFamily<MutableAtomToken<UList<string>>[], string>({
 	key: `usersInMyRoomView`,
 	get:
 		(myUsername) =>

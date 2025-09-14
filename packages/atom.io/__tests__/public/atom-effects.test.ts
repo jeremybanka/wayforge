@@ -11,7 +11,7 @@ import {
 	setState,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 import tmp from "tmp"
 import { vitest } from "vitest"
 
@@ -103,9 +103,9 @@ describe(`atom effects`, () => {
 	})
 	it(`resets itself (mutable)`, () => {
 		const mySubject = new Internal.Subject<string>()
-		const nameState = mutableAtom<SetRTX<string>>({
+		const nameState = mutableAtom<UList<string>>({
 			key: `name`,
-			class: SetRTX,
+			class: UList,
 			effects: [
 				({ resetSelf }) => {
 					mySubject.subscribe(`waiting to reset`, () => {

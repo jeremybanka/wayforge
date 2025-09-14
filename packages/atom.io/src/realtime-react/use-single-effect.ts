@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/correctness/useHookAtTopLevel: intentional */
 
-import { isFn } from "atom.io/internal/is-fn"
+import { isFn } from "atom.io/internal"
 import * as React from "react"
 
 export function useSingleEffect(

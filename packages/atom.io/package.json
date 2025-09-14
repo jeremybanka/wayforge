@@ -191,6 +191,10 @@
 			"import": "./dist/transceivers/set-rtx/index.js",
 			"types": "./dist/transceivers/set-rtx/index.d.ts"
 		},
+		"./transceivers/u-list": {
+			"import": "./dist/transceivers/u-list/index.js",
+			"types": "./dist/transceivers/u-list/index.d.ts"
+		},
 		"./web": {
 			"import": "./dist/web/index.js",
 			"types": "./dist/web/index.d.ts"

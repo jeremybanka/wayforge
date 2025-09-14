@@ -2,7 +2,7 @@ import { PassThrough } from "node:stream"
 
 import type { Json } from "atom.io/json"
 import { ChildSocket, ParentSocket } from "atom.io/realtime-server"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 
 import * as Utils from "../../__util__"
 
@@ -200,7 +200,7 @@ describe(`ParentSocket`, () => {
 	test(`stderr logs get parsed and sent to logger`, () => {
 		childToParent.logger.info(
 			// @ts-expect-error 👺 Need custom logging serializer for IPC sockets
-			new SetRTX([1, 2, 3]),
+			new UList([1, 2, 3]),
 		)
 		childToParent.logger.warn(`warned`)
 		childToParent.logger.error(`bad`)

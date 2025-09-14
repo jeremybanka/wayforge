@@ -7,11 +7,11 @@ import {
 	setEpochNumberOfContinuity,
 	setIntoStore,
 } from "atom.io/internal"
+import type { Socket } from "atom.io/realtime"
 import {
 	confirmedUpdateQueue,
 	optimisticUpdateQueue,
 } from "atom.io/realtime-client"
-import type { Socket } from "atom.io/realtime-server"
 
 export const useRegisterAndAttemptConfirmedUpdate =
 	(

@@ -2,10 +2,8 @@ import type { TransactionOutcomeEvent, TransactionToken } from "atom.io"
 import type { Store } from "atom.io/internal"
 import { actUponStore } from "atom.io/internal"
 import type { Json, JsonIO } from "atom.io/json"
-import type { ContinuityToken } from "atom.io/realtime"
-
-import { employSocket } from "../employ-socket"
-import type { Socket } from "../socket-interface"
+import type { ContinuityToken, Socket } from "atom.io/realtime"
+import { employSocket } from "atom.io/realtime"
 
 export function receiveActionRequests(
 	store: Store,
