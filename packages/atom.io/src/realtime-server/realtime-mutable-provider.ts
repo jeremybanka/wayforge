@@ -10,7 +10,7 @@ import {
 import type { Json } from "atom.io/json"
 
 import type { ServerConfig } from "."
-import { employSocket } from "./employ-socket"
+import { employSocket } from "atom.io/realtime"
 
 export type MutableProvider = ReturnType<typeof realtimeMutableProvider>
 export function realtimeMutableProvider({

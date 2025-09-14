@@ -3,7 +3,7 @@ import { getFromStore, IMPLICIT, subscribeToState } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
 import type { ServerConfig } from "."
-import { employSocket } from "./employ-socket"
+import { employSocket } from "atom.io/realtime"
 
 export type StateProvider = ReturnType<typeof realtimeStateProvider>
 export function realtimeStateProvider({

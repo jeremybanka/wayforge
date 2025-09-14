@@ -3,7 +3,7 @@ import type { Store } from "atom.io/internal"
 import { setIntoStore, subscribeToState } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import { mutexAtoms } from "atom.io/realtime"
-import { employSocket } from "atom.io/realtime-server"
+import { employSocket } from "atom.io/realtime"
 import type { Socket } from "socket.io-client"
 
 export function pushState<J extends Json.Serializable>(

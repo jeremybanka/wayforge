@@ -2,9 +2,9 @@ import type { Store } from "atom.io/internal"
 import { getFromStore, setIntoStore } from "atom.io/internal"
 import type { ContinuityToken } from "atom.io/realtime"
 
-import { employSocket } from "../employ-socket"
+import { employSocket } from "atom.io/realtime"
 import type { UserKey } from "../realtime-server-stores"
-import type { Socket } from "../socket-interface"
+import type { Socket } from "atom.io/realtime"
 import { unacknowledgedUpdatesAtoms } from "./continuity-store"
 
 export function trackAcknowledgements(

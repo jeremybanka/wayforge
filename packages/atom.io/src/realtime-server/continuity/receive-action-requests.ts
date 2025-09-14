@@ -4,8 +4,8 @@ import { actUponStore } from "atom.io/internal"
 import type { Json, JsonIO } from "atom.io/json"
 import type { ContinuityToken } from "atom.io/realtime"
 
-import { employSocket } from "../employ-socket"
-import type { Socket } from "../socket-interface"
+import { employSocket } from "atom.io/realtime"
+import type { Socket } from "atom.io/realtime"
 
 export function receiveActionRequests(
 	store: Store,
