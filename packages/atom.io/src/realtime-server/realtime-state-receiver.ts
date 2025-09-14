@@ -9,7 +9,7 @@ import {
 	subscribeToState,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-import { employSocket,mutexAtoms  } from "atom.io/realtime"
+import { employSocket, mutexAtoms } from "atom.io/realtime"
 
 import type { ServerConfig } from "."
 

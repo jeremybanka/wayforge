@@ -2,7 +2,7 @@ import type { WritableToken } from "atom.io"
 import type { Store } from "atom.io/internal"
 import { setIntoStore, subscribeToState } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-import { employSocket,mutexAtoms  } from "atom.io/realtime"
+import { employSocket, mutexAtoms } from "atom.io/realtime"
 import type { Socket } from "socket.io-client"
 
 export function pushState<J extends Json.Serializable>(
