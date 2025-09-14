@@ -1,3 +1,4 @@
+import { type primitive, type stringified, stringifyJson } from "atom.io/json"
 import type { UListUpdate } from "atom.io/transceivers/u-list"
 import { UList } from "atom.io/transceivers/u-list"
 
@@ -47,14 +48,15 @@ describe(`UList`, () => {
 	})
 	describe(`do`, () => {
 		it(`should add a value to the ul`, () => {
-			const ul = new UList()
+			const ul = new UList<string>()
 			ul.do(`add:"foo"`)
 			expect(ul.has(`foo`)).toBe(true)
 		})
 		it(`should clear the ul`, () => {
-			const ul = new UList()
+			const ul = new UList<string>()
 			ul.add(`y`)
-			ul.do(`clear:["y"]`)
+			const _ = `["x"]` satisfies stringified<`y`[]>
+			ul.do(`clear:${stringifyJson([`y`])}`)
 			expect(ul.size).toBe(0)
 		})
 		it(`should delete a value from the ul`, () => {
@@ -79,7 +81,7 @@ describe(`UList`, () => {
 		})
 		it(`should recover a clear`, () => {
 			const ul = new UList()
-			let lastUpdate: UListUpdate | null = null
+			let lastUpdate: UListUpdate<primitive> | null = null
 			ul.subscribe(`TEST`, (u) => (lastUpdate = u))
 			ul.add(`x`)
 			ul.add(`y`)
