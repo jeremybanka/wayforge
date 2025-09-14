@@ -11,7 +11,6 @@ import {
 } from "atom.io"
 import type { Json } from "atom.io/json"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
-import type { UList } from "atom.io/transceivers/u-list"
 
 import {
 	currentTrickIdState,
