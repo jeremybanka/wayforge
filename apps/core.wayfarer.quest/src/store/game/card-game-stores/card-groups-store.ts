@@ -7,7 +7,8 @@ import {
 	selector,
 	selectorFamily,
 } from "atom.io"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import type { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 
 import { cardIndex } from "./cards-store"
 import { gamePlayerIndex } from "./game-players-store"
@@ -38,9 +39,9 @@ export const deckAtoms = atomFamily<Deck, string>({
 		name: ``,
 	},
 })
-export const deckIndex = mutableAtom<SetRTX<string>>({
+export const deckIndex = mutableAtom<UList<string>>({
 	key: `deckIndex`,
-	class: SetRTX,
+	class: UList,
 })
 export const deckGlobalView = selector<RegularAtomToken<Deck>[]>({
 	key: `deckGlobalView`,
@@ -69,9 +70,9 @@ export const handAtoms = atomFamily<Hand, string>({
 		name: ``,
 	},
 })
-export const handIndex = mutableAtom<SetRTX<string>>({
+export const handIndex = mutableAtom<UList<string>>({
 	key: `handIndex`,
-	class: SetRTX,
+	class: UList,
 })
 export const handGlobalView = selector<RegularAtomToken<Hand>[]>({
 	key: `handGlobalView`,
@@ -100,9 +101,9 @@ export const pileStates = atomFamily<Pile, string>({
 		name: ``,
 	},
 })
-export const pileIndex = mutableAtom<SetRTX<string>>({
+export const pileIndex = mutableAtom<UList<string>>({
 	key: `pileIndex`,
-	class: SetRTX,
+	class: UList,
 })
 export const pileGlobalView = selector<RegularAtomToken<Pile>[]>({
 	key: `pileGlobalView`,

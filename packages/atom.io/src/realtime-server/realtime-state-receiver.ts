@@ -3,18 +3,15 @@ import {
 	findInStore,
 	getFromStore,
 	IMPLICIT,
+	operateOnStore,
+	OWN_OP,
 	setIntoStore,
 	subscribeToState,
 } from "atom.io/internal"
-import {
-	operateOnStore,
-	OWN_OP,
-} from "atom.io/internal/set-state/operate-on-store"
 import type { Json } from "atom.io/json"
-import { mutexAtoms } from "atom.io/realtime/mutex-store"
+import { employSocket, mutexAtoms } from "atom.io/realtime"
 
 import type { ServerConfig } from "."
-import { employSocket } from "./employ-socket"
 
 export type StateReceiver = ReturnType<typeof realtimeStateReceiver>
 export function realtimeStateReceiver({

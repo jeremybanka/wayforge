@@ -1,3 +1,5 @@
+export * from "./employ-socket"
 export * from "./mutex-store"
 export * from "./realtime-continuity"
 export * from "./shared-room-store"
+export type * from "./socket-interface"

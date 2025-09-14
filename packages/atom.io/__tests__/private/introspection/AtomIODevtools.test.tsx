@@ -3,7 +3,7 @@ import type { Logger } from "atom.io"
 import { Silo } from "atom.io"
 import * as AR from "atom.io/react"
 import { AtomIODevtools } from "atom.io/react-devtools"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 
 import * as Utils from "../../__util__"
 
@@ -281,9 +281,9 @@ describe(`editing selectors`, () => {
 	})
 
 	test(`selector that filters a SetRTX`, async () => {
-		const selectionsState = $.mutableAtom<SetRTX<string>>({
+		const selectionsState = $.mutableAtom<UList<string>>({
 			key: `selections`,
-			class: SetRTX,
+			class: UList,
 		})
 		const _selectionsWithoutGreenState = $.selector<Set<string>>({
 			key: `selectionsWithoutGreen`,

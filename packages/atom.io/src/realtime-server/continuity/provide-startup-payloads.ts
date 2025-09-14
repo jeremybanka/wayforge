@@ -6,10 +6,10 @@ import {
 	isRootStore,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-import type { ContinuityToken } from "atom.io/realtime"
+import type { ContinuityToken, Socket } from "atom.io/realtime"
+import { employSocket } from "atom.io/realtime"
 
-import type { Socket, UserKey } from ".."
-import { employSocket } from "../employ-socket"
+import type { UserKey } from ".."
 
 export function provideStartupPayloads(
 	store: Store,

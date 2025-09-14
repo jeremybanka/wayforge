@@ -5,7 +5,6 @@ import { filterProperties } from "../object"
 import { cannotExist, isWithin } from "../refinement"
 import type {
 	JsonApiResource,
-	Relationships,
 	Resource,
 	ResourceFlat,
 	ResourceObject,

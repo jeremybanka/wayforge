@@ -35,19 +35,19 @@ const BREAK_CHECK_MANUAL = {
 			flag: `v`,
 			required: false,
 			description: `String which, if found in a git tag, will be considered a release tag for your library.`,
-			example: `--tagPattern=\"my-library\"`,
+			example: `--tagPattern="my-library"`,
 		},
 		testPattern: {
 			flag: `p`,
 			required: true,
 			description: `The pattern to match test files that test the public API of the library.`,
-			example: `--pattern=\"*__public.test.ts\"`,
+			example: `--pattern="*__public.test.ts"`,
 		},
 		testCommand: {
 			flag: `t`,
 			required: true,
 			description: `Complete bash command that runs the tests for the library's public API.`,
-			example: `--testCommand=\"npm run test\"`,
+			example: `--testCommand="npm run test"`,
 		},
 		certifyCommand: {
 			flag: `c`,

@@ -1,10 +1,10 @@
 import { mutableAtom } from "atom.io"
 import { useJSON } from "atom.io/react"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 
-const numbersCollectionState = mutableAtom<SetRTX<string>>({
+const numbersCollectionState = mutableAtom<UList<string>>({
 	key: `numbersCollection::mutable`,
-	class: SetRTX,
+	class: UList,
 })
 
 export const Numbers: React.FC = () => {

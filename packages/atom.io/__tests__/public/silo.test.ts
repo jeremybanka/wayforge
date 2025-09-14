@@ -4,7 +4,7 @@ import type {
 	RegularAtomOptions,
 } from "atom.io"
 import { getState, Silo } from "atom.io"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 
 const hasImplicitStoreBeenCreated = () =>
 	globalThis.ATOM_IO_IMPLICIT_STORE !== undefined
@@ -56,11 +56,11 @@ describe(`silo`, () => {
 		const Dos = new Silo({ name: `dos`, lifespan: `ephemeral` })
 
 		const DEFAULT_LIST_ATOMS_CONFIG: MutableAtomFamilyOptions<
-			SetRTX<number>,
+			UList<number>,
 			string
 		> = {
 			key: `counts`,
-			class: SetRTX,
+			class: UList,
 		}
 		const DEFAULT_SIZE_SELECTORS_CONFIG: ReadonlyPureSelectorFamilyOptions<
 			number,
@@ -73,10 +73,10 @@ describe(`silo`, () => {
 					get(listAtoms__Uno, key).size,
 		}
 
-		const listAtoms__Uno = Uno.mutableAtomFamily<SetRTX<number>, string>(
+		const listAtoms__Uno = Uno.mutableAtomFamily<UList<number>, string>(
 			DEFAULT_LIST_ATOMS_CONFIG,
 		)
-		const listAtoms__Dos = Dos.mutableAtomFamily<SetRTX<number>, string>(
+		const listAtoms__Dos = Dos.mutableAtomFamily<UList<number>, string>(
 			DEFAULT_LIST_ATOMS_CONFIG,
 		)
 		const sizeSelectors__Uno = Uno.selectorFamily<number, string>(
@@ -94,24 +94,24 @@ describe(`silo`, () => {
 		const UnoDoubleCountValue = Uno.getState(sizeSelectors__Uno, `a`)
 		const DosDoubleCountValue = Dos.getState(sizeSelectors__Dos, `b`)
 
-		expect(UnoCountValue).toEqual(new SetRTX([]))
-		expect(DosCountValue).toEqual(new SetRTX([]))
+		expect(UnoCountValue).toEqual(new UList([]))
+		expect(DosCountValue).toEqual(new UList([]))
 		expect(UnoDoubleCountValue).toBe(0)
 		expect(DosDoubleCountValue).toBe(0)
 
 		Uno.setState(listState__Uno, (prev) => prev.add(1))
 		Dos.setState(listState__Dos, (prev) => (prev.add(1), prev.add(2)))
 
-		expect(Uno.getState(listState__Uno)).toEqual(new SetRTX([1]))
-		expect(Dos.getState(listState__Dos)).toEqual(new SetRTX([1, 2]))
+		expect(Uno.getState(listState__Uno)).toEqual(new UList([1]))
+		expect(Dos.getState(listState__Dos)).toEqual(new UList([1, 2]))
 		expect(Uno.getState(sizeSelectors__Uno, `a`)).toBe(1)
 		expect(Dos.getState(sizeSelectors__Dos, `b`)).toBe(2)
 
 		Uno.resetState(listState__Uno)
 		Dos.resetState(listState__Dos)
 
-		expect(Uno.getState(listState__Uno)).toEqual(new SetRTX([]))
-		expect(Dos.getState(listState__Dos)).toEqual(new SetRTX([]))
+		expect(Uno.getState(listState__Uno)).toEqual(new UList([]))
+		expect(Dos.getState(listState__Dos)).toEqual(new UList([]))
 		expect(Uno.getState(sizeSelectors__Uno, `a`)).toBe(0)
 		expect(Dos.getState(sizeSelectors__Dos, `b`)).toBe(0)
 
