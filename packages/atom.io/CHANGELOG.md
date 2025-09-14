@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.40.9
+
+### Patch Changes
+
+- 57d9a11: 🎁 `atom.io/transceivers/u-list` is a pared-down version of `SetRTX`. No numbered updates, no transactions; just a `Set` that transmits and receives.
+
 ## 0.40.8
 
 ### Patch Changes
