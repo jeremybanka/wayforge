@@ -55,7 +55,10 @@
 		"eslint-plugin-storybook": "10.2.3",
 		"jiti": "2.6.1",
 		"pin-dependencies-checker": "2.7.1",
+		"renovate": "41.113.2",
 		"turbo": "2.8.1",
+		"typescript": "5.9.2",
+		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "4.0.18"
 	}
 }
