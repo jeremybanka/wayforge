@@ -17,7 +17,7 @@ export default function Lobby(): React.ReactNode {
 	return (
 		<div>
 			<h2>Lobby</h2>
-			{roomKeys.members.map((roomId) => (
+			{roomKeys.map((roomId) => (
 				<React.Fragment key={roomId}>
 					<button
 						type="button"
