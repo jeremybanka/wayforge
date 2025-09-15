@@ -4,11 +4,11 @@ import type { Json, primitive } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 export type SetUpdateType = `add` | `clear` | `del` | `tx`
-export type SetUpdate = `${SetUpdateType}:${string}`
-export type NumberedSetUpdate = `${number | `*`}=${SetUpdate}`
+export type SetUpdateString = `${SetUpdateType}:${string}`
+export type NumberedSetUpdateString = `${number | `*`}=${SetUpdateString}`
 
 export interface SetRTXView<P extends primitive> extends ReadonlySet<P> {
-	readonly cache: ReadonlyArray<NumberedSetUpdate | null>
+	readonly cache: ReadonlyArray<NumberedSetUpdateString | null>
 	readonly cacheLimit: number
 	readonly cacheIdx: number
 	readonly cacheUpdateNumber: number
@@ -16,7 +16,7 @@ export interface SetRTXView<P extends primitive> extends ReadonlySet<P> {
 
 export interface SetRTXJson<P extends primitive> extends Json.Object {
 	members: P[]
-	cache: (NumberedSetUpdate | null)[]
+	cache: (NumberedSetUpdateString | null)[]
 	cacheLimit: number
 	cacheIdx: number
 	cacheUpdateNumber: number
@@ -24,13 +24,14 @@ export interface SetRTXJson<P extends primitive> extends Json.Object {
 export class SetRTX<P extends primitive>
 	extends Set<P>
 	implements
-		Transceiver<SetRTXView<P>, NumberedSetUpdate, SetRTXJson<P>>,
+		Transceiver<SetRTXView<P>, NumberedSetUpdateString, SetRTXJson<P>>,
 		Lineage
 {
 	public mode: TransceiverMode = `record`
-	public readonly subject: Subject<SetUpdate> = new Subject<SetUpdate>()
+	public readonly subject: Subject<SetUpdateString> =
+		new Subject<SetUpdateString>()
 	public cacheLimit = 0
-	public cache: (NumberedSetUpdate | null)[] = []
+	public cache: (NumberedSetUpdateString | null)[] = []
 	public cacheIdx = -1
 	public cacheUpdateNumber = -1
 
@@ -100,7 +101,7 @@ export class SetRTX<P extends primitive>
 
 	public readonly parent: SetRTX<P> | null = null
 	public child: SetRTX<P> | null = null
-	public transactionUpdates: SetUpdate[] | null = null
+	public transactionUpdates: SetUpdateString[] | null = null
 	public transaction(run: (child: SetRTX<P>) => boolean): void {
 		this.mode = `transaction`
 		this.transactionUpdates = []
@@ -134,24 +135,24 @@ export class SetRTX<P extends primitive>
 
 	protected _subscribe(
 		key: string,
-		fn: (update: SetUpdate) => void,
+		fn: (update: SetUpdateString) => void,
 	): () => void {
 		return this.subject.subscribe(key, fn)
 	}
 	public subscribe(
 		key: string,
-		fn: (update: NumberedSetUpdate) => void,
+		fn: (update: NumberedSetUpdateString) => void,
 	): () => void {
 		return this.subject.subscribe(key, (update) => {
 			fn(`${this.cacheUpdateNumber}=${update}`)
 		})
 	}
 
-	public emit(update: SetUpdate): void {
+	public emit(update: SetUpdateString): void {
 		this.subject.next(update)
 	}
 
-	private doStep(update: SetUpdate): void {
+	private doStep(update: SetUpdateString): void {
 		const typeValueBreak = update.indexOf(`:`)
 		const type = update.substring(0, typeValueBreak) as SetUpdateType
 		const value = update.substring(typeValueBreak + 1)
@@ -167,17 +168,17 @@ export class SetRTX<P extends primitive>
 				break
 			case `tx`:
 				for (const subUpdate of value.split(`;`)) {
-					this.doStep(subUpdate as SetUpdate)
+					this.doStep(subUpdate as SetUpdateString)
 				}
 		}
 	}
 
-	public getUpdateNumber(update: NumberedSetUpdate): number {
+	public getUpdateNumber(update: NumberedSetUpdateString): number {
 		const breakpoint = update.indexOf(`=`)
 		return Number(update.substring(0, breakpoint))
 	}
 
-	public do(update: NumberedSetUpdate): number | `OUT_OF_RANGE` | null {
+	public do(update: NumberedSetUpdateString): number | `OUT_OF_RANGE` | null {
 		const breakpoint = update.indexOf(`=`)
 		const updateNumber = Number(update.substring(0, breakpoint))
 		const eventOffset = updateNumber - this.cacheUpdateNumber
@@ -185,7 +186,7 @@ export class SetRTX<P extends primitive>
 		if (isFuture || Number.isNaN(eventOffset)) {
 			if (eventOffset === 1 || Number.isNaN(eventOffset)) {
 				this.mode = `playback`
-				const innerUpdate = update.substring(breakpoint + 1) as SetUpdate
+				const innerUpdate = update.substring(breakpoint + 1) as SetUpdateString
 				this.doStep(innerUpdate)
 				this.mode = `record`
 				this.cacheUpdateNumber = updateNumber
@@ -211,7 +212,7 @@ export class SetRTX<P extends primitive>
 				this.undo(u)
 				done = this.cacheIdx === eventIdx - 1
 			}
-			const innerUpdate = update.substring(breakpoint + 1) as SetUpdate
+			const innerUpdate = update.substring(breakpoint + 1) as SetUpdateString
 			this.doStep(innerUpdate)
 			this.mode = `record`
 			this.cacheUpdateNumber = updateNumber
@@ -220,7 +221,7 @@ export class SetRTX<P extends primitive>
 		return `OUT_OF_RANGE`
 	}
 
-	public undoStep(update: SetUpdate): void {
+	public undoStep(update: SetUpdateString): void {
 		const breakpoint = update.indexOf(`:`)
 		const type = update.substring(0, breakpoint) as SetUpdateType
 		const value = update.substring(breakpoint + 1)
@@ -237,7 +238,7 @@ export class SetRTX<P extends primitive>
 				break
 			}
 			case `tx`: {
-				const updates = value.split(`;`) as SetUpdate[]
+				const updates = value.split(`;`) as SetUpdateString[]
 				for (let i = updates.length - 1; i >= 0; i--) {
 					this.undoStep(updates[i])
 				}
@@ -245,12 +246,12 @@ export class SetRTX<P extends primitive>
 		}
 	}
 
-	public undo(update: NumberedSetUpdate): number | null {
+	public undo(update: NumberedSetUpdateString): number | null {
 		const breakpoint = update.indexOf(`=`)
 		const updateNumber = Number(update.substring(0, breakpoint))
 		if (updateNumber === this.cacheUpdateNumber) {
 			this.mode = `playback`
-			const innerUpdate = update.substring(breakpoint + 1) as SetUpdate
+			const innerUpdate = update.substring(breakpoint + 1) as SetUpdateString
 			this.undoStep(innerUpdate)
 			this.mode = `record`
 			this.cacheUpdateNumber--

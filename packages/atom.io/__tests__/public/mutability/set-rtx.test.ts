@@ -1,4 +1,4 @@
-import type { NumberedSetUpdate } from "atom.io/transceivers/set-rtx"
+import type { NumberedSetUpdateString } from "atom.io/transceivers/set-rtx"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 
 beforeEach(() => {
@@ -87,7 +87,7 @@ describe(`SetRTX`, () => {
 		})
 		it(`should recover a clear`, () => {
 			const set = new SetRTX()
-			let lastUpdate: NumberedSetUpdate | null = null
+			let lastUpdate: NumberedSetUpdateString | null = null
 			set.subscribe(`TEST`, (u) => (lastUpdate = u))
 			set.add(`x`)
 			if (DEBUG_LOGS) console.log(set.cacheUpdateNumber, set.cache)
@@ -140,7 +140,7 @@ describe(`SetRTX`, () => {
 		})
 		it(`can be undone`, () => {
 			const set = new SetRTX()
-			let update: NumberedSetUpdate | undefined
+			let update: NumberedSetUpdateString | undefined
 			set.subscribe(`TEST`, (u) => (update = u))
 			set.transaction((s) => {
 				s.add(`x`)
@@ -150,7 +150,7 @@ describe(`SetRTX`, () => {
 				s.delete(`y`)
 				return true
 			})
-			set.undo(update as NumberedSetUpdate)
+			set.undo(update as NumberedSetUpdateString)
 			expect(set.size).toBe(0)
 		})
 		it(`should not emit changes if the transaction is cancelled via throw`, () => {
