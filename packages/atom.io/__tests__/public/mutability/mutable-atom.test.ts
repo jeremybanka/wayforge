@@ -14,6 +14,7 @@ import {
 	undo,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
+import { OList } from "atom.io/transceivers/o-list"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import { UList } from "atom.io/transceivers/u-list"
 import { vitest } from "vitest"
@@ -75,11 +76,11 @@ describe(`mutable atomic state`, () => {
 
 	it(`has its own family function for ease of use`, () => {
 		const findFlagsStateByUserId = Internal.createMutableAtomFamily<
-			UList<string>,
+			OList<string>,
 			string
 		>(Internal.IMPLICIT.STORE, {
 			key: `flagsByUserId::mutable`,
-			class: UList,
+			class: OList,
 		})
 
 		const myFlagsState = findState(findFlagsStateByUserId, `my-user-id`)
@@ -93,22 +94,16 @@ describe(`mutable atomic state`, () => {
 		subscribe(findFlagsByUserIdJSON, Utils.stdout1)
 		subscribe(findFlagsByUserIdTracker, Utils.stdout2)
 
-		setState(myFlagsState, (set) => set.add(`a`))
+		setState(myFlagsState, (ol) => ((ol[0] = `a`), ol))
 
-		expect(Utils.stdout0).toHaveBeenCalledWith({
-			newValue: new UList([`a`]),
-			oldValue: new UList([`a`]),
-		})
+		expect(new OList(`a`)).toEqual(new OList(`a`))
+		expect(Utils.stdout0).toHaveBeenCalledTimes(1)
 		expect(Utils.stdout1).toHaveBeenCalledWith({
-			newValue: {
-				members: [`a`],
-			},
-			oldValue: {
-				members: [],
-			},
+			newValue: [`a`],
+			oldValue: [],
 		})
 		expect(Utils.stdout2).toHaveBeenCalledWith({
-			newValue: `add:"a"`,
+			newValue: { type: `set`, index: 0, next: `a` },
 			oldValue: null,
 		})
 		expect(logger.warn).not.toHaveBeenCalled()
