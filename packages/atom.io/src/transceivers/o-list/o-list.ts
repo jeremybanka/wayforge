@@ -2,7 +2,7 @@ import type { Fn, Transceiver, TransceiverMode } from "atom.io/internal"
 import { Subject } from "atom.io/internal"
 import type { primitive } from "atom.io/json"
 
-type ArrayMutations = Exclude<keyof Array<any>, keyof ReadonlyArray<any>>
+export type ArrayMutations = Exclude<keyof Array<any>, keyof ReadonlyArray<any>>
 export type ArrayUpdate<P extends primitive> =
 	| {
 			type: `copyWithin`
