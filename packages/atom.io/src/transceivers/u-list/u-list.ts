@@ -1,6 +1,6 @@
 import type { Transceiver, TransceiverMode } from "atom.io/internal"
 import { Subject } from "atom.io/internal"
-import type { Json, primitive, stringified } from "atom.io/json"
+import type { primitive, stringified } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 export type UListUpdateType = `add` | `clear` | `del`
@@ -8,12 +8,9 @@ export type UListUpdate<P extends primitive> =
 	| `${`add` | `del`}:${stringified<P>}`
 	| `clear:${stringified<P[]>}`
 
-export interface UListJson<P extends primitive> extends Json.Object {
-	members: P[]
-}
 export class UList<P extends primitive>
 	extends Set<P>
-	implements Transceiver<ReadonlySet<P>, UListUpdate<P>, UListJson<P>>
+	implements Transceiver<ReadonlySet<P>, UListUpdate<P>, ReadonlyArray<P>>
 {
 	public mode: TransceiverMode = `record`
 	public readonly subject: Subject<UListUpdate<P>> = new Subject<
@@ -28,14 +25,12 @@ export class UList<P extends primitive>
 
 	public readonly READONLY_VIEW: ReadonlySet<P> = this
 
-	public toJSON(): UListJson<P> {
-		return {
-			members: [...this],
-		}
+	public toJSON(): ReadonlyArray<P> {
+		return [...this]
 	}
 
-	public static fromJSON<P extends primitive>(json: UListJson<P>): UList<P> {
-		return new UList<P>(json.members)
+	public static fromJSON<P extends primitive>(json: ReadonlyArray<P>): UList<P> {
+		return new UList<P>(json)
 	}
 
 	public add(value: P): this {
