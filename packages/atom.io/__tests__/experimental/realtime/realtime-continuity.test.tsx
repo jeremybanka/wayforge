@@ -185,7 +185,7 @@ describe(`mutable atoms in continuity`, () => {
 					RTR.useSyncContinuity(applicationContinuity)
 					const myList = AR.useJSON(myListAtom)
 
-					return <span data-testid={`state`}>{myList.members.length}</span>
+					return <span data-testid={`state`}>{myList.length}</span>
 				},
 			}),
 			{ myListAtom, addItemTX },
