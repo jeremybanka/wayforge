@@ -1,5 +1,5 @@
 import { type primitive, type stringified, stringifyJson } from "atom.io/json"
-import type { UListUpdate } from "atom.io/transceivers/u-list"
+import type { SetUpdate } from "atom.io/transceivers/u-list"
 import { UList } from "atom.io/transceivers/u-list"
 
 beforeEach(() => {
@@ -35,7 +35,7 @@ describe(`UList`, () => {
 			const fn = vitest.fn()
 			ul.subscribe(`TEST`, fn)
 			ul.add(`z`)
-			expect(fn).toHaveBeenCalledWith(`add:"z"`)
+			expect(fn).toHaveBeenCalledWith({ type: `add`, value: `z` })
 		})
 		it(`should return a function that unsubscribes`, () => {
 			const ul = new UList()
@@ -46,53 +46,30 @@ describe(`UList`, () => {
 			expect(fn).not.toHaveBeenCalled()
 		})
 	})
-	describe(`do`, () => {
+	describe(`do/undo`, () => {
 		it(`should add a value to the ul`, () => {
 			const ul = new UList<string>()
-			ul.do(`add:"foo"`)
+			const update = { type: `add`, value: `foo` } satisfies SetUpdate<string>
+			ul.do(update)
 			expect(ul.has(`foo`)).toBe(true)
+			ul.undo(update)
+			expect(ul.has(`foo`)).toBe(false)
 		})
 		it(`should clear the ul`, () => {
-			const ul = new UList<string>()
-			ul.add(`y`)
-			const _ = `["x"]` satisfies stringified<`y`[]>
-			ul.do(`clear:${stringifyJson([`y`])}`)
+			const ul = new UList<string>(`y`)
+			const update = { type: `clear`, values: [`y`] } satisfies SetUpdate<string>
+			ul.do(update)
 			expect(ul.size).toBe(0)
+			ul.undo(update)
+			expect(ul.size).toBe(1)
 		})
 		it(`should delete a value from the ul`, () => {
-			const ul = new UList()
-			ul.add(`x`)
-			ul.do(`del:"x"`)
-			expect(ul.has(`"x"`)).toBe(false)
-		})
-	})
-	describe(`undo`, () => {
-		it(`should add/delete a value from the ul`, () => {
-			const ul = new UList()
-			ul.add(`x`)
-			ul.add(`y`)
-			ul.delete(`y`)
+			const ul = new UList(`x`)
+			const update = { type: `delete`, value: `x` } satisfies SetUpdate<string>
+			ul.do(update)
+			expect(ul.has(`x`)).toBe(false)
+			ul.undo(update)
 			expect(ul.has(`x`)).toBe(true)
-			expect(ul.has(`y`)).toBe(false)
-			ul.undo(`del:"y"`)
-			expect(ul.has(`y`)).toBe(true)
-			ul.undo(`add:"y"`)
-			expect(ul.has(`y`)).toBe(false)
-		})
-		it(`should recover a clear`, () => {
-			const ul = new UList()
-			let lastUpdate: UListUpdate<primitive> | null = null
-			ul.subscribe(`TEST`, (u) => (lastUpdate = u))
-			ul.add(`x`)
-			ul.add(`y`)
-			expect(ul.size).toBe(2)
-			ul.clear()
-			expect(ul.size).toBe(0)
-			if (DEBUG_LOGS) console.log(ul, lastUpdate)
-			let res: number | null = null
-			if (lastUpdate) res = ul.undo(lastUpdate)
-			if (DEBUG_LOGS) console.log(res)
-			expect(ul.size).toBe(2)
 		})
 	})
 
@@ -102,9 +79,7 @@ describe(`UList`, () => {
 			ul.add(`d`)
 			ul.delete(`a`)
 			const json = ul.toJSON()
-			expect(json).toEqual({
-				members: [`b`, `c`, `d`],
-			})
+			expect(json).toEqual([`b`, `c`, `d`])
 			const ul2 = UList.fromJSON(json)
 			expect(ul2).toEqual(ul)
 		})

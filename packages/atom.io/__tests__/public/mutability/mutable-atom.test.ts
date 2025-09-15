@@ -59,15 +59,11 @@ describe(`mutable atomic state`, () => {
 			oldValue: new UList([`a`]),
 		})
 		expect(Utils.stdout1).toHaveBeenCalledWith({
-			newValue: {
-				members: [`a`],
-			},
-			oldValue: {
-				members: [],
-			},
+			newValue: [`a`],
+			oldValue: [],
 		})
 		expect(Utils.stdout2).toHaveBeenCalledWith({
-			newValue: `add:"a"`,
+			newValue: { type: `add`, value: `a` },
 			oldValue: null,
 		})
 		expect(logger.warn).not.toHaveBeenCalled()
