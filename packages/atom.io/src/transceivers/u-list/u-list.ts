@@ -1,21 +1,35 @@
-import type { Transceiver, TransceiverMode } from "atom.io/internal"
+import type { Fn, Transceiver, TransceiverMode } from "atom.io/internal"
 import { Subject } from "atom.io/internal"
-import type { primitive, stringified } from "atom.io/json"
-import { stringifyJson } from "atom.io/json"
+import type { primitive } from "atom.io/json"
 
-export type UListUpdateType = `add` | `clear` | `del`
-export type UListUpdate<P extends primitive> =
-	| `${`add` | `del`}:${stringified<P>}`
-	| `clear:${stringified<P[]>}`
+export type SetMutations = Exclude<
+	keyof Set<any>,
+	keyof ReadonlySet<any> | symbol
+>
+export type SetUpdate<P extends primitive> =
+	| {
+			type: `add` | `delete`
+			value: P
+	  }
+	| {
+			type: `clear`
+			values: P[]
+	  }
+export type UListUpdateType = SetUpdate<any>[`type`]
+true satisfies SetMutations extends UListUpdateType
+	? true
+	: Exclude<SetMutations, UListUpdateType>
+
+export type SetMutationHandler = { [K in UListUpdateType]: Fn }
 
 export class UList<P extends primitive>
 	extends Set<P>
-	implements Transceiver<ReadonlySet<P>, UListUpdate<P>, ReadonlyArray<P>>
+	implements
+		Transceiver<ReadonlySet<P>, SetUpdate<P>, ReadonlyArray<P>>,
+		SetMutationHandler
 {
 	public mode: TransceiverMode = `record`
-	public readonly subject: Subject<UListUpdate<P>> = new Subject<
-		UListUpdate<P>
-	>()
+	public readonly subject: Subject<SetUpdate<P>> = new Subject<SetUpdate<P>>()
 
 	public constructor(values?: Iterable<P>) {
 		super(values)
@@ -36,7 +50,7 @@ export class UList<P extends primitive>
 	public add(value: P): this {
 		const result = super.add(value)
 		if (this.mode === `record`) {
-			this.emit(`add:${stringifyJson<P>(value)}`)
+			this.emit({ type: `add`, value })
 		}
 		return result
 	}
@@ -45,71 +59,62 @@ export class UList<P extends primitive>
 		const capturedContents = this.mode === `record` ? [...this] : null
 		super.clear()
 		if (capturedContents) {
-			this.emit(`clear:${stringifyJson(capturedContents)}`)
+			this.emit({ type: `clear`, values: capturedContents })
 		}
 	}
 
 	public delete(value: P): boolean {
 		const result = super.delete(value)
 		if (this.mode === `record`) {
-			this.emit(`del:${stringifyJson<P>(value)}`)
+			this.emit({ type: `delete`, value })
 		}
 		return result
 	}
 
-	public subscribe(
-		key: string,
-		fn: (update: UListUpdate<P>) => void,
-	): () => void {
+	public subscribe(key: string, fn: (update: SetUpdate<P>) => void): () => void {
 		return this.subject.subscribe(key, fn)
 	}
 
-	public emit(update: UListUpdate<P>): void {
+	public emit(update: SetUpdate<P>): void {
 		this.subject.next(update)
 	}
 
-	private doStep(update: UListUpdate<P>): void {
-		const typeValueBreak = update.indexOf(`:`)
-		const type = update.substring(0, typeValueBreak) as UListUpdateType
-		const value = update.substring(typeValueBreak + 1)
-		switch (type) {
+	private doStep(update: SetUpdate<P>): void {
+		switch (update.type) {
 			case `add`:
-				this.add(JSON.parse(value))
+				this.add(update.value)
 				break
-			case `del`:
-				this.delete(JSON.parse(value))
+			case `delete`:
+				this.delete(update.value)
 				break
 			case `clear`:
 				this.clear()
 		}
 	}
 
-	public do(update: UListUpdate<P>): null {
+	public do(update: SetUpdate<P>): null {
 		this.mode = `playback`
 		this.doStep(update)
 		this.mode = `record`
 		return null
 	}
 
-	public undoStep(update: UListUpdate<P>): void {
-		const breakpoint = update.indexOf(`:`)
-		const type = update.substring(0, breakpoint) as UListUpdateType
-		const value = update.substring(breakpoint + 1)
-		switch (type) {
+	public undoStep(update: SetUpdate<P>): void {
+		switch (update.type) {
 			case `add`:
-				this.delete(JSON.parse(value))
+				this.delete(update.value)
 				break
-			case `del`:
-				this.add(JSON.parse(value))
+			case `delete`:
+				this.add(update.value)
 				break
 			case `clear`: {
-				const values = JSON.parse(value) as P[]
+				const values = update.values
 				for (const v of values) this.add(v)
 			}
 		}
 	}
 
-	public undo(update: UListUpdate<P>): number | null {
+	public undo(update: SetUpdate<P>): number | null {
 		this.mode = `playback`
 		this.undoStep(update)
 		this.mode = `record`
