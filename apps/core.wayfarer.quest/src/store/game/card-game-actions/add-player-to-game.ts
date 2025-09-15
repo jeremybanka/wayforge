@@ -8,8 +8,7 @@ export const addPlayerToGameTX = transaction<(playerId: string) => void>({
 		const { set } = transactors
 
 		set(gamePlayerIndex, (current) => {
-			current.push(playerId)
-			return current
+			return [...current, playerId]
 		})
 	},
 })
