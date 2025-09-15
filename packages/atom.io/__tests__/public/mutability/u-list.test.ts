@@ -1,4 +1,3 @@
-import { type primitive, type stringified, stringifyJson } from "atom.io/json"
 import type { SetUpdate } from "atom.io/transceivers/u-list"
 import { UList } from "atom.io/transceivers/u-list"
 
@@ -6,8 +5,6 @@ beforeEach(() => {
 	console.warn = () => undefined
 	vitest.spyOn(console, `warn`)
 })
-
-const DEBUG_LOGS = false
 
 describe(`UList`, () => {
 	describe(`constructor`, () => {

@@ -4,7 +4,7 @@ import type { primitive } from "atom.io/json"
 
 export type SetMutations = Exclude<
 	keyof Set<any>,
-	keyof ReadonlySet<any> | symbol
+	symbol | keyof ReadonlySet<any>
 >
 export type SetUpdate<P extends primitive> =
 	| {
