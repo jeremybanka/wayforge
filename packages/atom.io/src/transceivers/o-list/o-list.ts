@@ -69,6 +69,7 @@ true satisfies ArrayMutations extends OListUpdateType
 
 export type PackedArrayUpdate<P extends primitive> = string & {
 	update?: ArrayUpdate<P>
+	type?: P
 }
 
 const ARRAY_UPDATES = [
@@ -208,7 +209,7 @@ export function unpackArrayUpdate<P extends primitive>(
 		}
 		case `copyWithin`: {
 			const [numbers, data] = tail.split(`\u001E\u001E`)
-			const prev = data.split(`\u001E`).map(unpackValue) as P[]
+			const prev = data ? (data.split(`\u001E`).map(unpackValue) as P[]) : []
 			const [t, s, e] = numbers.split(`\u001E`)
 			const target = +t
 			const start = +s
@@ -220,7 +221,7 @@ export function unpackArrayUpdate<P extends primitive>(
 		}
 		case `fill`: {
 			const [numbers, data] = tail.split(`\u001E\u001E`)
-			const prev = data.split(`\u001E`).map(unpackValue) as P[]
+			const prev = data ? (data.split(`\u001E`).map(unpackValue) as P[]) : []
 			const [v, s, e] = numbers.split(`\u001E`)
 			const value = unpackValue(v) as P
 			if (s === undefined && e === undefined) {
@@ -235,18 +236,19 @@ export function unpackArrayUpdate<P extends primitive>(
 		}
 		case `splice`: {
 			const [s, c, i, d] = tail.split(`\u001E\u001E`)
+
 			const start = +s
 			const deleteCount = +c
-			const items = i.split(`\u001E`).map(unpackValue) as P[]
-			const deleted = d.split(`\u001E`).map(unpackValue) as P[]
+			const items = i ? (i.split(`\u001E`).map(unpackValue) as P[]) : []
+			const deleted = d ? (d.split(`\u001E`).map(unpackValue) as P[]) : []
 			return { type, start, deleteCount, items, deleted }
 		}
 		case `reverse`:
 			return { type }
 		case `sort`: {
 			const [n, p] = tail.split(`\u001E\u001E`)
-			const next = n.split(`\u001E`).map(unpackValue) as P[]
-			const prev = p.split(`\u001E`).map(unpackValue) as P[]
+			const next = n ? (n.split(`\u001E`).map(unpackValue) as P[]) : []
+			const prev = p ? (p.split(`\u001E`).map(unpackValue) as P[]) : []
 			return { type, next, prev }
 		}
 	}
@@ -259,13 +261,11 @@ export type ArrayMutationHandler = {
 export class OList<P extends primitive>
 	extends Array<P>
 	implements
-		Transceiver<ReadonlyArray<P>, ArrayUpdate<P>, ReadonlyArray<P>>,
+		Transceiver<ReadonlyArray<P>, PackedArrayUpdate<P>, ReadonlyArray<P>>,
 		ArrayMutationHandler
 {
 	public mode: TransceiverMode = `record`
-	public readonly subject: Subject<ArrayUpdate<P>> = new Subject<
-		ArrayUpdate<P>
-	>()
+	public readonly subject: Subject<PackedArrayUpdate<P>> = new Subject()
 
 	public readonly READONLY_VIEW: ReadonlyArray<P> = this
 
@@ -467,13 +467,13 @@ export class OList<P extends primitive>
 
 	public subscribe(
 		key: string,
-		fn: (update: ArrayUpdate<P>) => void,
+		fn: (update: PackedArrayUpdate<P>) => void,
 	): () => void {
 		return this.subject.subscribe(key, fn)
 	}
 
 	public emit(update: ArrayUpdate<P>): void {
-		this.subject.next(update)
+		this.subject.next(packArrayUpdate(update))
 	}
 
 	private doStep(update: ArrayUpdate<P>): void {
@@ -521,9 +521,10 @@ export class OList<P extends primitive>
 		}
 	}
 
-	public do(update: ArrayUpdate<P>): null {
+	public do(update: PackedArrayUpdate<P>): null {
 		this.mode = `playback`
-		this.doStep(update)
+		const unpacked = unpackArrayUpdate(update)
+		this.doStep(unpacked)
 		this.mode = `record`
 		return null
 	}
@@ -602,9 +603,10 @@ export class OList<P extends primitive>
 		}
 	}
 
-	public undo(update: ArrayUpdate<P>): number | null {
+	public undo(update: PackedArrayUpdate<P>): number | null {
 		this.mode = `playback`
-		this.undoStep(update)
+		const unpacked = unpackArrayUpdate(update)
+		this.undoStep(unpacked)
 		this.mode = `record`
 		return null
 	}

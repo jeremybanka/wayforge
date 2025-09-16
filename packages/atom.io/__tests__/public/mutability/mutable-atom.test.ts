@@ -88,7 +88,11 @@ describe(`mutable atomic state`, () => {
 
 		subscribe(myFlagsState, Utils.stdout0)
 		subscribe(findFlagsByUserIdJSON, Utils.stdout1)
-		subscribe(findFlagsByUserIdTracker, Utils.stdout2)
+		subscribe(findFlagsByUserIdTracker, (u) => {
+			for (const k in u.newValue) console.log({ k })
+			console.log(Utils.toBytes(u.newValue))
+			Utils.stdout2(u)
+		})
 
 		setState(myFlagsState, (ol) => ((ol[0] = `a`), ol))
 
@@ -99,7 +103,7 @@ describe(`mutable atomic state`, () => {
 			oldValue: [],
 		})
 		expect(Utils.stdout2).toHaveBeenCalledWith({
-			newValue: { type: `set`, index: 0, next: `a` },
+			newValue: `0\u001F0\u001E\u0003a`,
 			oldValue: null,
 		})
 		expect(logger.warn).not.toHaveBeenCalled()
