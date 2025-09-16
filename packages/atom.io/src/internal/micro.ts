@@ -1,3 +1,5 @@
+import type { primitive } from "atom.io/json"
+
 import type { Flat } from "./utility-types"
 
 export type IndexOf<
@@ -33,4 +35,35 @@ export function enumeration<T extends readonly string[]>(
 		++i
 	}
 	return result as Enumeration<T>
+}
+
+const BOOL = `\u0001`
+const NULL = `\u0002`
+const STRING = `\u0003`
+const NUMBER = `\u0004`
+export const packValue = (value: primitive): string => {
+	const type = typeof value as `boolean` | `number` | `object` | `string`
+	switch (type) {
+		case `string`:
+			return STRING + value
+		case `number`:
+			return NUMBER + value
+		case `boolean`:
+			return BOOL + +(value as boolean)
+		case `object`:
+			return NULL
+	}
+}
+export const unpackValue = (value: string): primitive => {
+	const type = value[0] as `\u0001` | `\u0002` | `\u0003` | `\u0004`
+	switch (type) {
+		case STRING:
+			return value.slice(1)
+		case NUMBER:
+			return +value.slice(1)
+		case BOOL:
+			return value.slice(1) === `1`
+		case NULL:
+			return null
+	}
 }

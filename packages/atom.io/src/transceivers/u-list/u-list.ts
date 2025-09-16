@@ -4,7 +4,7 @@ import type {
 	Transceiver,
 	TransceiverMode,
 } from "atom.io/internal"
-import { enumeration, Subject } from "atom.io/internal"
+import { enumeration, packValue, Subject, unpackValue } from "atom.io/internal"
 import type { primitive } from "atom.io/json"
 
 export type SetMutations = Exclude<
@@ -29,11 +29,6 @@ export type PackedSetUpdate<P extends primitive> = string & {
 	update?: SetUpdate<P>
 }
 
-const BOOL = "\u0001"
-const NULL = "\u0002"
-const STRING = "\u0003"
-const NUMBER = "\u0004"
-
 export const SET_UPDATE_ENUM: Enumeration<[`add`, `delete`, `clear`]> =
 	enumeration([`add`, `delete`, `clear`] as const)
 
@@ -42,34 +37,9 @@ export function packSetUpdate<P extends primitive>(
 ): PackedSetUpdate<P> {
 	const head = SET_UPDATE_ENUM[update.type] + `\u001F`
 	if (update.type === `clear`) {
-		return (
-			head +
-			update.values
-				.map((value) => {
-					switch (typeof value) {
-						case `string`:
-							return STRING + value
-						case `number`:
-							return NUMBER + value
-						case `boolean`:
-							return BOOL + +value
-						case `object`:
-							return NULL
-					}
-				})
-				.join(`\u001E`)
-		)
+		return head + update.values.map(packValue).join(`\u001E`)
 	}
-	switch (typeof update.value) {
-		case `string`:
-			return head + STRING + update.value
-		case `number`:
-			return head + NUMBER + update.value
-		case `boolean`:
-			return head + BOOL + +update.value
-		case `object`:
-			return head + NULL
-	}
+	return head + packValue(update.value)
 }
 export function unpackSetUpdate<P extends primitive>(
 	packed: PackedSetUpdate<P>,
@@ -77,34 +47,10 @@ export function unpackSetUpdate<P extends primitive>(
 	const [type, tail] = packed.split(`\u001F`) as [0 | 1 | 2, string]
 	const head = SET_UPDATE_ENUM[type]
 	if (head === `clear`) {
-		const values = tail.split(`\u001E`).map((value) => {
-			switch (value[0]) {
-				case STRING:
-					return value.slice(1)
-				case NUMBER:
-					return +value.slice(1)
-				case BOOL:
-					return value.slice(1) === `1`
-				case NULL:
-					return null
-			}
-		}) as P[]
+		const values = tail.split(`\u001E`).map(unpackValue) as P[]
 		return { type: `clear`, values }
 	}
-	switch (head) {
-		case `add`:
-		case `delete`:
-			switch (tail[0] as `\u0001` | `\u0002` | `\u0003` | `\u0004`) {
-				case STRING:
-					return { type: head, value: tail.slice(1) as P }
-				case NUMBER:
-					return { type: head, value: +tail.slice(1) as P }
-				case BOOL:
-					return { type: head, value: (tail.slice(1) === `1`) as P }
-				case NULL:
-					return { type: head, value: null as P }
-			}
-	}
+	return { type: head, value: unpackValue(tail) as P }
 }
 
 export type SetMutationHandler = { [K in UListUpdateType]: Fn }
