@@ -198,6 +198,27 @@ export class OList<P extends primitive>
 		return this
 	}
 
+	public fill(value: P, start?: number, end?: number): this {
+		if (this.mode === `record`) {
+			this.mode = `playback`
+			const prev = this.slice(start, end)
+			super.fill(value, start, end)
+			if (start === undefined) {
+				this.emit({ type: `fill`, value, prev })
+			} else {
+				if (end === undefined) {
+					this.emit({ type: `fill`, value, start, prev })
+				} else {
+					this.emit({ type: `fill`, value, start, end, prev })
+				}
+			}
+			this.mode = `record`
+		} else {
+			super.fill(value, start, end)
+		}
+		return this
+	}
+
 	public sort(compareFn?: (a: P, b: P) => number): this {
 		if (this.mode === `record`) {
 			this.mode = `playback`
