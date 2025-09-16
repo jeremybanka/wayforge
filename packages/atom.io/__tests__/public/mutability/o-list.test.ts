@@ -454,6 +454,8 @@ describe(`OList`, () => {
 				type: `splice`,
 				start: 1,
 				deleted: [`b`, `c`],
+				deleteCount: 2,
+				items: [],
 			} satisfies ArrayUpdate<string>
 			ol.do(update)
 			expect(ol[0]).toBe(`a`)
@@ -470,6 +472,7 @@ describe(`OList`, () => {
 				type: `splice`,
 				start: 1,
 				deleteCount: 0,
+				deleted: [],
 				items: [`d`],
 			} satisfies ArrayUpdate<string>
 			ol.do(update)
