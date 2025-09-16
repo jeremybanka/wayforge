@@ -4,7 +4,7 @@ import type {
 	Transceiver,
 	TransceiverMode,
 } from "atom.io/internal"
-import { enumeration, packValue, Subject } from "atom.io/internal"
+import { enumeration, packValue, Subject, unpackValue } from "atom.io/internal"
 import type { primitive } from "atom.io/json"
 
 export type ArrayMutations = Exclude<keyof Array<any>, keyof ReadonlyArray<any>>
@@ -117,7 +117,7 @@ export function packArrayUpdate<P extends primitive>(
 		case `pop`:
 		case `shift`:
 			if (update.value !== undefined) {
-				packed += `\u001E` + packValue(update.value)
+				packed += packValue(update.value)
 			}
 			return packed
 		case `push`:
@@ -128,6 +128,7 @@ export function packArrayUpdate<P extends primitive>(
 			if (update.end !== undefined) {
 				packed += `\u001E` + update.end
 			}
+			packed += `\u001E\u001E` + update.prev.map(packValue).join(`\u001E`)
 			return packed
 		case `fill`:
 			packed += packValue(update.value)
@@ -137,6 +138,7 @@ export function packArrayUpdate<P extends primitive>(
 			if (update.end !== undefined) {
 				packed += `\u001E` + update.end
 			}
+			packed += `\u001E\u001E` + update.prev.map(packValue).join(`\u001E`)
 			return packed
 		case `splice`:
 			return (
@@ -158,6 +160,95 @@ export function packArrayUpdate<P extends primitive>(
 				`\u001E\u001E` +
 				update.prev.map(packValue).join(`\u001E`)
 			)
+	}
+}
+
+export function unpackArrayUpdate<P extends primitive>(
+	packed: PackedArrayUpdate<P>,
+): ArrayUpdate<P> {
+	const [head, tail] = packed.split(`\u001F`) as [
+		Extract<keyof typeof ARRAY_UPDATE_ENUM, number>,
+		string,
+	]
+	const type = ARRAY_UPDATE_ENUM[head]
+	switch (type) {
+		case `set`: {
+			const [i, n, p] = tail.split(`\u001E`)
+			const index = +i
+			const next = unpackValue(n) as P
+			if (p === undefined) {
+				return { type, index, next }
+			}
+			const prev = unpackValue(p) as P
+			return { type, index, next, prev }
+		}
+		case `truncate`: {
+			const [l, ...i] = tail.split(`\u001E`)
+			const length = +l
+			const items = i.map(unpackValue) as P[]
+			return { type, length, items }
+		}
+		case `extend`: {
+			const [n, p] = tail.split(`\u001E`)
+			const next = +n
+			const prev = +p
+			return { type, next, prev }
+		}
+		case `pop`:
+		case `shift`:
+			if (tail !== ``) {
+				const value = unpackValue(tail) as P
+				return { type, value }
+			}
+			return { type }
+		case `push`:
+		case `unshift`: {
+			const items = tail.split(`\u001E`).map(unpackValue) as P[]
+			return { type, items }
+		}
+		case `copyWithin`: {
+			const [numbers, data] = tail.split(`\u001E\u001E`)
+			const prev = data.split(`\u001E`).map(unpackValue) as P[]
+			const [t, s, e] = numbers.split(`\u001E`)
+			const target = +t
+			const start = +s
+			if (e === undefined) {
+				return { type, target, start, prev }
+			}
+			const end = +e
+			return { type, target, start, prev, end }
+		}
+		case `fill`: {
+			const [numbers, data] = tail.split(`\u001E\u001E`)
+			const prev = data.split(`\u001E`).map(unpackValue) as P[]
+			const [v, s, e] = numbers.split(`\u001E`)
+			const value = unpackValue(v) as P
+			if (s === undefined && e === undefined) {
+				return { type, value, prev }
+			}
+			const start = +s
+			if (e === undefined) {
+				return { type, value, prev, start }
+			}
+			const end = +e
+			return { type, value, prev, start, end }
+		}
+		case `splice`: {
+			const [s, c, i, d] = tail.split(`\u001E\u001E`)
+			const start = +s
+			const deleteCount = +c
+			const items = i.split(`\u001E`).map(unpackValue) as P[]
+			const deleted = d.split(`\u001E`).map(unpackValue) as P[]
+			return { type, start, deleteCount, items, deleted }
+		}
+		case `reverse`:
+			return { type }
+		case `sort`: {
+			const [n, p] = tail.split(`\u001E\u001E`)
+			const next = n.split(`\u001E`).map(unpackValue) as P[]
+			const prev = p.split(`\u001E`).map(unpackValue) as P[]
+			return { type, next, prev }
+		}
 	}
 }
 
