@@ -130,6 +130,39 @@ describe(`OList`, () => {
 			ol.reverse()
 			expect(U.stdout).toHaveBeenCalledExactlyOnceWith({ type: `reverse` })
 		})
+		it(`emits fill without start/end`, () => {
+			const ol = new OList<string>(`a`, `b`, `c`)
+			ol.subscribe(`TEST`, U.stdout)
+			ol.fill(`d`)
+			expect(U.stdout).toHaveBeenCalledExactlyOnceWith({
+				type: `fill`,
+				value: `d`,
+				prev: new OList<string>(`a`, `b`, `c`),
+			})
+		})
+		it(`emits fill with start`, () => {
+			const ol = new OList<string>(`a`, `b`, `c`)
+			ol.subscribe(`TEST`, U.stdout)
+			ol.fill(`d`, 1)
+			expect(U.stdout).toHaveBeenCalledExactlyOnceWith({
+				type: `fill`,
+				value: `d`,
+				start: 1,
+				prev: new OList<string>(`b`, `c`),
+			})
+		})
+		it(`emits fill with start and end`, () => {
+			const ol = new OList<string>(`a`, `b`, `c`, `d`)
+			ol.subscribe(`TEST`, U.stdout)
+			ol.fill(`d`, 1, 3)
+			expect(U.stdout).toHaveBeenCalledExactlyOnceWith({
+				type: `fill`,
+				value: `d`,
+				start: 1,
+				end: 3,
+				prev: new OList<string>(`b`, `c`),
+			})
+		})
 		it(`emits sort`, () => {
 			const ol = new OList(`c`, `b`, `a`)
 			ol.subscribe(`TEST`, U.stdout)
