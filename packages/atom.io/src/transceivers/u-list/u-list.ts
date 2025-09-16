@@ -1,18 +1,11 @@
-import type { Fn, Transceiver, TransceiverMode } from "atom.io/internal"
-import { Subject } from "atom.io/internal"
+import type {
+	Enumeration,
+	Fn,
+	Transceiver,
+	TransceiverMode,
+} from "atom.io/internal"
+import { enumeration, Subject } from "atom.io/internal"
 import type { primitive } from "atom.io/json"
-
-type Enumeration<T extends string> = Record<T, number> & Record<number, T>
-function enumeration<T extends string>(...values: T[]): Enumeration<T> {
-	const result: Record<any, any> = {}
-	let i = 0
-	for (const value of values) {
-		result[value] = i
-		result[i] = value
-		++i
-	}
-	return result
-}
 
 export type SetMutations = Exclude<
 	keyof Set<any>,
@@ -41,11 +34,8 @@ const NULL = "\u0002"
 const STRING = "\u0003"
 const NUMBER = "\u0004"
 
-export const SET_UPDATE_ENUM: Enumeration<UListUpdateType> = enumeration(
-	`add`,
-	`delete`,
-	`clear`,
-)
+export const SET_UPDATE_ENUM: Enumeration<[`add`, `delete`, `clear`]> =
+	enumeration([`add`, `delete`, `clear`] as const)
 
 export function packSetUpdate<P extends primitive>(
 	update: SetUpdate<P>,
@@ -84,7 +74,7 @@ export function packSetUpdate<P extends primitive>(
 export function unpackSetUpdate<P extends primitive>(
 	packed: PackedSetUpdate<P>,
 ): SetUpdate<P> {
-	const [type, tail] = packed.split(`\u001F`) as [number, string]
+	const [type, tail] = packed.split(`\u001F`) as [0 | 1 | 2, string]
 	const head = SET_UPDATE_ENUM[type]
 	if (head === `clear`) {
 		const values = tail.split(`\u001E`).map((value) => {
