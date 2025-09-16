@@ -122,11 +122,11 @@ export type SetMutationHandler = { [K in UListUpdateType]: Fn }
 export class UList<P extends primitive>
 	extends Set<P>
 	implements
-		Transceiver<ReadonlySet<P>, SetUpdate<P>, ReadonlyArray<P>>,
+		Transceiver<ReadonlySet<P>, PackedSetUpdate<P>, ReadonlyArray<P>>,
 		SetMutationHandler
 {
 	public mode: TransceiverMode = `record`
-	public readonly subject: Subject<SetUpdate<P>> = new Subject<SetUpdate<P>>()
+	public readonly subject: Subject<PackedSetUpdate<P>> = new Subject()
 
 	public constructor(values?: Iterable<P>) {
 		super(values)
@@ -168,16 +168,20 @@ export class UList<P extends primitive>
 		return result
 	}
 
-	public subscribe(key: string, fn: (update: SetUpdate<P>) => void): () => void {
+	public subscribe(
+		key: string,
+		fn: (update: PackedSetUpdate<P>) => void,
+	): () => void {
 		return this.subject.subscribe(key, fn)
 	}
 
 	public emit(update: SetUpdate<P>): void {
-		this.subject.next(update)
+		this.subject.next(packSetUpdate(update))
 	}
 
-	public do(update: SetUpdate<P>): null {
+	public do(packed: PackedSetUpdate<P>): null {
 		this.mode = `playback`
+		const update = unpackSetUpdate(packed)
 		switch (update.type) {
 			case `add`:
 				this.add(update.value)
@@ -192,7 +196,8 @@ export class UList<P extends primitive>
 		return null
 	}
 
-	public undo(update: SetUpdate<P>): number | null {
+	public undo(packed: PackedSetUpdate<P>): number | null {
+		const update = unpackSetUpdate(packed)
 		this.mode = `playback`
 		switch (update.type) {
 			case `add`:
