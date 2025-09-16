@@ -176,7 +176,8 @@ export class UList<P extends primitive>
 		this.subject.next(update)
 	}
 
-	private doStep(update: SetUpdate<P>): void {
+	public do(update: SetUpdate<P>): null {
+		this.mode = `playback`
 		switch (update.type) {
 			case `add`:
 				this.add(update.value)
@@ -187,16 +188,12 @@ export class UList<P extends primitive>
 			case `clear`:
 				this.clear()
 		}
-	}
-
-	public do(update: SetUpdate<P>): null {
-		this.mode = `playback`
-		this.doStep(update)
 		this.mode = `record`
 		return null
 	}
 
-	public undoStep(update: SetUpdate<P>): void {
+	public undo(update: SetUpdate<P>): number | null {
+		this.mode = `playback`
 		switch (update.type) {
 			case `add`:
 				this.delete(update.value)
@@ -209,11 +206,6 @@ export class UList<P extends primitive>
 				for (const v of values) this.add(v)
 			}
 		}
-	}
-
-	public undo(update: SetUpdate<P>): number | null {
-		this.mode = `playback`
-		this.undoStep(update)
 		this.mode = `record`
 		return null
 	}
