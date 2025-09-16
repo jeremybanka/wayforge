@@ -63,7 +63,7 @@ describe(`mutable atomic state`, () => {
 			oldValue: [],
 		})
 		expect(Utils.stdout2).toHaveBeenCalledWith({
-			newValue: { type: `add`, value: `a` },
+			newValue: `0\u001F\u0003a`,
 			oldValue: null,
 		})
 		expect(logger.warn).not.toHaveBeenCalled()
