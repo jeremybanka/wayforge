@@ -1,5 +1,15 @@
 # atom.io
 
+## 0.41.0
+
+### Minor Changes
+
+- 77794eb: 🚀 Added a custom serialization strategy for updates to `UList` and `OList`.
+
+### Patch Changes
+
+- 77794eb: ♻️ Simplified the JSON form of `UList` to simply be a `ReadonlyArray`.
+
 ## 0.40.10
 
 ### Patch Changes
