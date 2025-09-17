@@ -431,7 +431,7 @@ describe(`advanced performance tests`, () => {
 				key: `cardValues`,
 				between: [`value`, `card`],
 				cardinality: `1:n`,
-				isAType: (input): input is string => typeof input === `number`,
+				isAType: (_): _ is string => true,
 				isBType: (input): input is `${number}` =>
 					Number(input).toString() === input,
 			})
@@ -441,7 +441,6 @@ describe(`advanced performance tests`, () => {
 				key: `loopingBasic`,
 				do: (_, count) => {
 					for (let i = 0; i < count; i++) {
-						// cardValues.relations.set({ value: `a`, card: `${i}` })
 						editRelations(cardValues, (relations) => {
 							relations.set({ value: `a`, card: `${i}` })
 						})
