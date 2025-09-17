@@ -1,16 +1,12 @@
 import type { Fn, Subject } from "atom.io/internal"
 import type { ArrayUpdate } from "atom.io/transceivers/o-list"
-import {
-	OList,
-	packArrayUpdate,
-	unpackArrayUpdate,
-} from "atom.io/transceivers/o-list"
+import { OList } from "atom.io/transceivers/o-list"
 
 import * as U from "../../__util__"
 
 function handleUnpacked(subject: Subject<any>, handler: Fn): void {
 	subject.subscribe(`unpack`, (update: any) => {
-		handler(unpackArrayUpdate(update))
+		handler(OList.unpackUpdate(update))
 	})
 }
 
@@ -291,7 +287,7 @@ describe(`OList`, () => {
 	describe(`do and undo`, () => {
 		it(`set (overwrite existing)`, () => {
 			const ol = new OList<string>(`a`)
-			const update = packArrayUpdate({
+			const update = OList.packUpdate({
 				type: `set`,
 				index: 0,
 				next: `b`,
@@ -306,7 +302,7 @@ describe(`OList`, () => {
 		})
 		it(`set (insert new)`, () => {
 			const ol = new OList<string>(`a`)
-			const update = packArrayUpdate({
+			const update = OList.packUpdate({
 				type: `set`,
 				index: 1,
 				next: `b`,
@@ -321,7 +317,7 @@ describe(`OList`, () => {
 		})
 		it(`set (insert new, make sparse)`, () => {
 			const ol = new OList<string>(`a`)
-			const update = packArrayUpdate({
+			const update = OList.packUpdate({
 				type: `set`,
 				index: 9,
 				next: `b`,
@@ -337,7 +333,7 @@ describe(`OList`, () => {
 		})
 		it(`truncate`, () => {
 			const ol = new OList<string>(`a`, `b`, `c`)
-			const update = packArrayUpdate({
+			const update = OList.packUpdate({
 				type: `truncate`,
 				length: 2,
 				items: [`c`],
@@ -355,7 +351,7 @@ describe(`OList`, () => {
 		})
 		it(`extend`, () => {
 			const ol = new OList<string>(`a`, `b`, `c`)
-			const update = packArrayUpdate({
+			const update = OList.packUpdate({
 				type: `extend`,
 				next: 4,
 				prev: 3,
@@ -374,7 +370,7 @@ describe(`OList`, () => {
 		})
 		it(`fill without start/end`, () => {
 			const ol = new OList<string>(`a`, `b`, `c`)
-			const update = packArrayUpdate({
+			const update = OList.packUpdate({
 				type: `fill`,
 				value: `d`,
 				prev: [`a`, `b`, `c`],
@@ -392,7 +388,7 @@ describe(`OList`, () => {
 		})
 		it(`fill with start/end`, () => {
 			const ol = new OList<string>(`a`, `b`, `c`)
-			const update = packArrayUpdate({
+			const update = OList.packUpdate({
 				type: `fill`,
 				value: `d`,
 				start: 1,
@@ -412,7 +408,7 @@ describe(`OList`, () => {
 		})
 		it(`push`, () => {
 			const ol = new OList<string>()
-			const update = packArrayUpdate({
+			const update = OList.packUpdate({
 				type: `push`,
 				items: [`foo`],
 			} satisfies ArrayUpdate<string>)
@@ -423,7 +419,7 @@ describe(`OList`, () => {
 		})
 		it(`pop without value`, () => {
 			const ol = new OList<string>()
-			const update = packArrayUpdate({
+			const update = OList.packUpdate({
 				type: `pop`,
 			} as ArrayUpdate<string>)
 			ol.do(update)
@@ -433,7 +429,7 @@ describe(`OList`, () => {
 		})
 		it(`pop with value`, () => {
 			const ol = new OList<string>(`a`)
-			const update = packArrayUpdate({
+			const update = OList.packUpdate({
 				type: `pop`,
 				value: `a`,
 			} satisfies ArrayUpdate<string>)
@@ -445,7 +441,7 @@ describe(`OList`, () => {
 		})
 		it(`shift without value`, () => {
 			const ol = new OList<string>(`a`)
-			const update = packArrayUpdate({
+			const update = OList.packUpdate({
 				type: `shift`,
 			} as ArrayUpdate<string>)
 			ol.do(update)
@@ -455,7 +451,7 @@ describe(`OList`, () => {
 		})
 		it(`shift with value`, () => {
 			const ol = new OList<string>(`a`)
-			const update = packArrayUpdate({
+			const update = OList.packUpdate({
 				type: `shift`,
 				value: `a`,
 			} satisfies ArrayUpdate<string>)
@@ -467,7 +463,7 @@ describe(`OList`, () => {
 		})
 		it(`unshift`, () => {
 			const ol = new OList<string>()
-			const update = packArrayUpdate({
+			const update = OList.packUpdate({
 				type: `unshift`,
 				items: [`foo`],
 			} satisfies ArrayUpdate<string>)
@@ -478,7 +474,7 @@ describe(`OList`, () => {
 		})
 		it(`reverse`, () => {
 			const ol = new OList<string>(`a`, `b`, `c`)
-			const update = packArrayUpdate({
+			const update = OList.packUpdate({
 				type: `reverse`,
 			} as ArrayUpdate<string>)
 			ol.do(update)
@@ -492,7 +488,7 @@ describe(`OList`, () => {
 		})
 		it(`sort`, () => {
 			const ol = new OList<string>(`a`, `b`, `c`)
-			const update = packArrayUpdate({
+			const update = OList.packUpdate({
 				type: `sort`,
 				next: [`c`, `b`, `a`],
 				prev: [`a`, `b`, `c`],
@@ -508,7 +504,7 @@ describe(`OList`, () => {
 		})
 		it(`splice without deleteCount`, () => {
 			const ol = new OList<string>(`a`, `b`, `c`)
-			const update = packArrayUpdate({
+			const update = OList.packUpdate({
 				type: `splice`,
 				start: 1,
 				deleted: [`b`, `c`],
@@ -526,7 +522,7 @@ describe(`OList`, () => {
 		})
 		it(`splice with deleteCount 0 and items`, () => {
 			const ol = new OList<string>(`a`, `b`, `c`)
-			const update = packArrayUpdate({
+			const update = OList.packUpdate({
 				type: `splice`,
 				start: 1,
 				deleteCount: 0,
@@ -546,7 +542,7 @@ describe(`OList`, () => {
 		})
 		it(`splice with deleteCount 1 and items`, () => {
 			const ol = new OList<string>(`a`, `b`, `c`)
-			const update = packArrayUpdate({
+			const update = OList.packUpdate({
 				type: `splice`,
 				start: 0,
 				deleteCount: 1,
@@ -564,7 +560,7 @@ describe(`OList`, () => {
 		})
 		it(`copyWithin`, () => {
 			const ol = new OList<string>(`a`, `b`, `c`, `d`)
-			const update = packArrayUpdate({
+			const update = OList.packUpdate({
 				type: `copyWithin`,
 				prev: OList.fromJSON([`c`, `d`]),
 				target: 2,
