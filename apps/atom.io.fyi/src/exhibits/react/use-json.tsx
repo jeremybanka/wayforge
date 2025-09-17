@@ -11,7 +11,7 @@ export const Numbers: React.FC = () => {
 	const numbers = useJSON(numbersCollectionState)
 	return (
 		<>
-			{numbers.members.map((n) => (
+			{numbers.map((n) => (
 				<div key={n}>{n}</div>
 			))}
 		</>

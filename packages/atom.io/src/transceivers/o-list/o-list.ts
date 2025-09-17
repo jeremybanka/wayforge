@@ -1,8 +1,13 @@
-import type { Fn, Transceiver, TransceiverMode } from "atom.io/internal"
-import { Subject } from "atom.io/internal"
+import type {
+	Enumeration,
+	Fn,
+	Transceiver,
+	TransceiverMode,
+} from "atom.io/internal"
+import { enumeration, packValue, Subject, unpackValue } from "atom.io/internal"
 import type { primitive } from "atom.io/json"
 
-type ArrayMutations = Exclude<keyof Array<any>, keyof ReadonlyArray<any>>
+export type ArrayMutations = Exclude<keyof Array<any>, keyof ReadonlyArray<any>>
 export type ArrayUpdate<P extends primitive> =
 	| {
 			type: `copyWithin`
@@ -48,9 +53,9 @@ export type ArrayUpdate<P extends primitive> =
 	| {
 			type: `splice`
 			start: number
-			deleteCount?: number
-			items?: readonly P[]
-			deleted?: readonly P[]
+			deleteCount: number
+			items: readonly P[]
+			deleted: readonly P[]
 	  }
 	| {
 			type: `truncate`
@@ -62,6 +67,193 @@ true satisfies ArrayMutations extends OListUpdateType
 	? true
 	: Exclude<ArrayMutations, OListUpdateType>
 
+export type PackedArrayUpdate<P extends primitive> = string & {
+	update?: ArrayUpdate<P>
+	type?: P
+}
+
+const ARRAY_UPDATES = [
+	// virtual methods
+	`set`,
+	`truncate`,
+	`extend`,
+	// actual methods
+	`pop`,
+	`push`,
+	`shift`,
+	`unshift`,
+	`copyWithin`,
+	`fill`,
+	`splice`,
+	`reverse`,
+	`sort`,
+] as const
+true satisfies ArrayUpdate<any>[`type`] extends (typeof ARRAY_UPDATES)[number]
+	? true
+	: Exclude<ArrayUpdate<any>[`type`], (typeof ARRAY_UPDATES)[number]>
+
+export const ARRAY_UPDATE_ENUM: Enumeration<typeof ARRAY_UPDATES> =
+	enumeration(ARRAY_UPDATES)
+
+export function packArrayUpdate<P extends primitive>(
+	update: ArrayUpdate<P>,
+): PackedArrayUpdate<P> {
+	let packed = ARRAY_UPDATE_ENUM[update.type] + `\u001F`
+	switch (update.type) {
+		case `set`:
+			packed += update.index + `\u001E` + packValue(update.next)
+			if (update.prev !== undefined) {
+				packed += `\u001E` + packValue(update.prev)
+			}
+			return packed
+		case `truncate`:
+			return (
+				packed +
+				update.length +
+				`\u001E` +
+				update.items.map(packValue).join(`\u001E`)
+			)
+		case `extend`:
+			return packed + update.next + `\u001E` + update.prev
+		case `pop`:
+		case `shift`:
+			if (update.value !== undefined) {
+				packed += packValue(update.value)
+			}
+			return packed
+		case `push`:
+		case `unshift`:
+			return packed + update.items.map(packValue).join(`\u001E`)
+		case `copyWithin`:
+			packed += update.target + `\u001E` + update.start
+			if (update.end !== undefined) {
+				packed += `\u001E` + update.end
+			}
+			packed += `\u001E\u001E` + update.prev.map(packValue).join(`\u001E`)
+			return packed
+		case `fill`:
+			packed += packValue(update.value)
+			if (update.start !== undefined) {
+				packed += `\u001E` + update.start
+			}
+			if (update.end !== undefined) {
+				packed += `\u001E` + update.end
+			}
+			packed += `\u001E\u001E` + update.prev.map(packValue).join(`\u001E`)
+			return packed
+		case `splice`:
+			return (
+				packed +
+				update.start +
+				`\u001E\u001E` +
+				update.deleteCount +
+				`\u001E\u001E` +
+				update.items.map(packValue).join(`\u001E`) +
+				`\u001E\u001E` +
+				update.deleted.map(packValue).join(`\u001E`)
+			)
+		case `reverse`:
+			return packed
+		case `sort`:
+			return (
+				packed +
+				update.next.map(packValue).join(`\u001E`) +
+				`\u001E\u001E` +
+				update.prev.map(packValue).join(`\u001E`)
+			)
+	}
+}
+
+export function unpackArrayUpdate<P extends primitive>(
+	packed: PackedArrayUpdate<P>,
+): ArrayUpdate<P> {
+	const [head, tail] = packed.split(`\u001F`) as [
+		Extract<keyof typeof ARRAY_UPDATE_ENUM, number>,
+		string,
+	]
+	const type = ARRAY_UPDATE_ENUM[head]
+	switch (type) {
+		case `set`: {
+			const [i, n, p] = tail.split(`\u001E`)
+			const index = +i
+			const next = unpackValue(n) as P
+			if (p === undefined) {
+				return { type, index, next }
+			}
+			const prev = unpackValue(p) as P
+			return { type, index, next, prev }
+		}
+		case `truncate`: {
+			const [l, ...i] = tail.split(`\u001E`)
+			const length = +l
+			const items = i.map(unpackValue) as P[]
+			return { type, length, items }
+		}
+		case `extend`: {
+			const [n, p] = tail.split(`\u001E`)
+			const next = +n
+			const prev = +p
+			return { type, next, prev }
+		}
+		case `pop`:
+		case `shift`:
+			if (tail !== ``) {
+				const value = unpackValue(tail) as P
+				return { type, value }
+			}
+			return { type }
+		case `push`:
+		case `unshift`: {
+			const items = tail.split(`\u001E`).map(unpackValue) as P[]
+			return { type, items }
+		}
+		case `copyWithin`: {
+			const [numbers, data] = tail.split(`\u001E\u001E`)
+			const prev = data ? (data.split(`\u001E`).map(unpackValue) as P[]) : []
+			const [t, s, e] = numbers.split(`\u001E`)
+			const target = +t
+			const start = +s
+			if (e === undefined) {
+				return { type, target, start, prev }
+			}
+			const end = +e
+			return { type, target, start, prev, end }
+		}
+		case `fill`: {
+			const [numbers, data] = tail.split(`\u001E\u001E`)
+			const prev = data ? (data.split(`\u001E`).map(unpackValue) as P[]) : []
+			const [v, s, e] = numbers.split(`\u001E`)
+			const value = unpackValue(v) as P
+			if (s === undefined && e === undefined) {
+				return { type, value, prev }
+			}
+			const start = +s
+			if (e === undefined) {
+				return { type, value, prev, start }
+			}
+			const end = +e
+			return { type, value, prev, start, end }
+		}
+		case `splice`: {
+			const [s, c, i, d] = tail.split(`\u001E\u001E`)
+
+			const start = +s
+			const deleteCount = +c
+			const items = i ? (i.split(`\u001E`).map(unpackValue) as P[]) : []
+			const deleted = d ? (d.split(`\u001E`).map(unpackValue) as P[]) : []
+			return { type, start, deleteCount, items, deleted }
+		}
+		case `reverse`:
+			return { type }
+		case `sort`: {
+			const [n, p] = tail.split(`\u001E\u001E`)
+			const next = n ? (n.split(`\u001E`).map(unpackValue) as P[]) : []
+			const prev = p ? (p.split(`\u001E`).map(unpackValue) as P[]) : []
+			return { type, next, prev }
+		}
+	}
+}
+
 export type ArrayMutationHandler = {
 	[K in Exclude<OListUpdateType, `extend` | `set` | `truncate`>]: Fn
 }
@@ -69,13 +261,11 @@ export type ArrayMutationHandler = {
 export class OList<P extends primitive>
 	extends Array<P>
 	implements
-		Transceiver<ReadonlyArray<P>, ArrayUpdate<P>, ReadonlyArray<P>>,
+		Transceiver<ReadonlyArray<P>, PackedArrayUpdate<P>, ReadonlyArray<P>>,
 		ArrayMutationHandler
 {
 	public mode: TransceiverMode = `record`
-	public readonly subject: Subject<ArrayUpdate<P>> = new Subject<
-		ArrayUpdate<P>
-	>()
+	public readonly subject: Subject<PackedArrayUpdate<P>> = new Subject()
 
 	public readonly READONLY_VIEW: ReadonlyArray<P> = this
 
@@ -198,6 +388,27 @@ export class OList<P extends primitive>
 		return this
 	}
 
+	public fill(value: P, start?: number, end?: number): this {
+		if (this.mode === `record`) {
+			this.mode = `playback`
+			const prev = this.slice(start, end)
+			super.fill(value, start, end)
+			if (start === undefined) {
+				this.emit({ type: `fill`, value, prev })
+			} else {
+				if (end === undefined) {
+					this.emit({ type: `fill`, value, start, prev })
+				} else {
+					this.emit({ type: `fill`, value, start, end, prev })
+				}
+			}
+			this.mode = `record`
+		} else {
+			super.fill(value, start, end)
+		}
+		return this
+	}
+
 	public sort(compareFn?: (a: P, b: P) => number): this {
 		if (this.mode === `record`) {
 			this.mode = `playback`
@@ -256,13 +467,13 @@ export class OList<P extends primitive>
 
 	public subscribe(
 		key: string,
-		fn: (update: ArrayUpdate<P>) => void,
+		fn: (update: PackedArrayUpdate<P>) => void,
 	): () => void {
 		return this.subject.subscribe(key, fn)
 	}
 
 	public emit(update: ArrayUpdate<P>): void {
-		this.subject.next(update)
+		this.subject.next(packArrayUpdate(update))
 	}
 
 	private doStep(update: ArrayUpdate<P>): void {
@@ -296,11 +507,7 @@ export class OList<P extends primitive>
 				this.length = update.next.length
 				break
 			case `splice`:
-				if (update.deleteCount !== undefined && update.items) {
-					this.splice(update.start, update.deleteCount, ...update.items)
-				} else {
-					this.splice(update.start)
-				}
+				this.splice(update.start, update.deleteCount, ...update.items)
 				break
 			case `truncate`:
 				this.length = update.length
@@ -314,9 +521,10 @@ export class OList<P extends primitive>
 		}
 	}
 
-	public do(update: ArrayUpdate<P>): null {
+	public do(update: PackedArrayUpdate<P>): null {
 		this.mode = `playback`
-		this.doStep(update)
+		const unpacked = unpackArrayUpdate(update)
+		this.doStep(unpacked)
 		this.mode = `record`
 		return null
 	}
@@ -378,15 +586,7 @@ export class OList<P extends primitive>
 				}
 				break
 			case `splice`:
-				if (update.deleted) {
-					if (update.items) {
-						this.splice(update.start, update.items.length, ...update.deleted)
-					} else {
-						this.splice(update.start, 0, ...update.deleted)
-					}
-				} else if (update.items) {
-					this.splice(update.start, update.items.length)
-				}
+				this.splice(update.start, update.items.length, ...update.deleted)
 				break
 			case `truncate`:
 				this.push(...update.items)
@@ -403,9 +603,10 @@ export class OList<P extends primitive>
 		}
 	}
 
-	public undo(update: ArrayUpdate<P>): number | null {
+	public undo(update: PackedArrayUpdate<P>): number | null {
 		this.mode = `playback`
-		this.undoStep(update)
+		const unpacked = unpackArrayUpdate(update)
+		this.undoStep(unpacked)
 		this.mode = `record`
 		return null
 	}

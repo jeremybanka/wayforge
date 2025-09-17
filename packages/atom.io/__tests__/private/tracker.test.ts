@@ -48,11 +48,11 @@ describe(`tracker`, () => {
 
 		expect(getState(mutableSetState)).toEqual(new UList())
 		expect(getState(latestSignalToken)).toEqual(null)
-		setState(latestSignalToken, `add:"x"`)
-		expect(getState(latestSignalToken)).toEqual(`add:"x"`)
+		setState(latestSignalToken, `0\u001F\u0003x`)
+		expect(getState(latestSignalToken)).toEqual(`0\u001F\u0003x`)
 		expect(getState(mutableSetState)).toEqual(new UList([`x`]))
-		setState(latestSignalToken, `add:"y"`)
-		expect(getState(latestSignalToken)).toEqual(`add:"y"`)
+		setState(latestSignalToken, `0\u001F\u0003y`)
+		expect(getState(latestSignalToken)).toEqual(`0\u001F\u0003y`)
 		expect(getState(mutableSetState)).toEqual(new UList([`x`, `y`]))
 	})
 
@@ -65,8 +65,8 @@ describe(`tracker`, () => {
 		const updateTrackerTX = transaction({
 			key: `updateTrackerTX`,
 			do: ({ set }) => {
-				set(tracker.latestSignalToken, `add:"x"`)
-				set(tracker.latestSignalToken, `add:"y"`)
+				set(tracker.latestSignalToken, `0\u001F\u0003x`)
+				set(tracker.latestSignalToken, `0\u001F\u0003y`)
 			},
 		})
 
@@ -106,7 +106,7 @@ describe(`trackerFamily`, () => {
 			key: `updateTrackerTX`,
 			do: ({ set }, key) => {
 				const trackerState = findState(latestUpdateStates, key)
-				set(trackerState, `add:"x"`)
+				set(trackerState, `0\u001F\u0003x`)
 			},
 		})
 

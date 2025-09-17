@@ -67,7 +67,7 @@ export const completeTrickIndex = selector<string[]>({
 	key: `completeTrickIndex`,
 	get: ({ find, get, json }) => {
 		const trickIds = get(json(trickIndex))
-		const completeTrickIds = trickIds.members.filter((trickId) =>
+		const completeTrickIds = trickIds.filter((trickId) =>
 			get(find(trickIsCompleteState, trickId)),
 		)
 		return completeTrickIds
@@ -80,7 +80,7 @@ export const currentTrickIdState = selector<string | null>({
 		const completeTrickIds = get(completeTrickIndex)
 		const trickIds = get(json(trickIndex))
 
-		const currentTrickId = trickIds.members.at(-1)
+		const currentTrickId = trickIds.at(-1)
 		if (!currentTrickId || completeTrickIds.includes(currentTrickId)) {
 			return null
 		}

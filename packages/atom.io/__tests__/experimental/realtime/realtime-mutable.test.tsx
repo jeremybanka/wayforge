@@ -39,7 +39,7 @@ describe(`running transactions`, () => {
 					const numbers = AR.useJSON(numbersCollectionState)
 					return (
 						<>
-							{numbers.members.map((n) => (
+							{numbers.map((n) => (
 								<i data-testid={n} key={n} />
 							))}
 						</>
