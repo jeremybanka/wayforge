@@ -1,11 +1,8 @@
-import type {
-	Enumeration,
-	Fn,
-	Transceiver,
-	TransceiverMode,
-} from "atom.io/internal"
-import { enumeration, packValue, Subject, unpackValue } from "atom.io/internal"
+import type { Fn, Transceiver, TransceiverMode } from "atom.io/internal"
+import { Subject } from "atom.io/internal"
 import type { primitive } from "atom.io/json"
+import type { Enumeration } from "atom.io/struct"
+import { enumeration, packValue, unpackValue } from "atom.io/struct"
 
 export type ArrayMutations = Exclude<keyof Array<any>, keyof ReadonlyArray<any>>
 export type ArrayUpdate<P extends primitive> =
