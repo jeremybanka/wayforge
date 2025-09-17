@@ -89,7 +89,7 @@ describe(`mutable atomic state`, () => {
 		subscribe(myFlagsState, Utils.stdout0)
 		subscribe(findFlagsByUserIdJSON, Utils.stdout1)
 		subscribe(findFlagsByUserIdTracker, (u) => {
-			for (const k in u.newValue) console.log({ k })
+			for (const k of u.newValue) console.log({ k })
 			console.log(Utils.toBytes(u.newValue))
 			Utils.stdout2(u)
 		})
