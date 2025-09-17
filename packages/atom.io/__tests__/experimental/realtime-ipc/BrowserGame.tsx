@@ -32,11 +32,9 @@ function Lobby(): React.ReactNode {
 	const roomKeys = AR.useJSON(RT.roomIndex)
 	return (
 		<main>
-			{roomKeys.members.length === 0 ? (
-				<p data-testid="no-rooms">No rooms</p>
-			) : null}
+			{roomKeys.length === 0 ? <p data-testid="no-rooms">No rooms</p> : null}
 			<ul>
-				{roomKeys.members.map((roomKey) => (
+				{roomKeys.map((roomKey) => (
 					<li key={roomKey}>
 						<button
 							type="button"

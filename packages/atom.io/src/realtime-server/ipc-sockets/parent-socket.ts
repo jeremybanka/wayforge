@@ -76,7 +76,7 @@ export class ParentSocket<
 		this.proc.stderr.write(
 			stringifyJson(
 				args.map((arg) =>
-					arg instanceof UList ? `{ ${arg.toJSON().members.join(` | `)} }` : arg,
+					arg instanceof UList ? `{ ${arg.toJSON().join(` | `)} }` : arg,
 				),
 			) + `\x03`,
 		)

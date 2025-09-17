@@ -23,19 +23,19 @@ export const startGameTX = transaction<(input: StartGameInput) => void>({
 	do: (transactors, { handIds, trickId, deckId, cardIds, txId, shuffle }) => {
 		const { get, set, run, json } = transactors
 		run(spawnClassicDeckTX, `${txId}:spawnDeck`)(deckId, cardIds)
-		const { members } = get(json(usersInThisRoomIndex))
-		set(gamePlayerIndex, members)
+		const users = get(json(usersInThisRoomIndex))
+		set(gamePlayerIndex, users)
 		let i = 0
-		for (const playerId of members) {
+		for (const playerId of users) {
 			run(spawnHandTX, `${txId}:spawnHand:${playerId}`)(playerId, handIds[i])
 			i++
 		}
 		run(spawnTrickTX, `${txId}:spawnTrick`)(trickId)
 		run(shuffleDeckTX, `${txId}:shuffle`)(deckId, shuffle)
 		i = 52
-		const remainingCardCount = 52 % members.length
+		const remainingCardCount = 52 % users.length
 		while (i > remainingCardCount) {
-			const handIdx = i % members.length
+			const handIdx = i % users.length
 			const handId = handIds[handIdx]
 			run(dealCardsTX, `${txId}:deal:${i}`)(deckId, handId, 1)
 			i--

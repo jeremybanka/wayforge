@@ -1,6 +1,6 @@
 import { atom, atomFamily, selector } from "atom.io"
 
-export const gamePlayerIndex = atom<string[]>({
+export const gamePlayerIndex = atom<readonly string[]>({
 	key: `gamePlayerIndex`,
 	default: [],
 })
