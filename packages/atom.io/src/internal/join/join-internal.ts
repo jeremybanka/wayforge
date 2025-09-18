@@ -15,7 +15,7 @@ import type {
 import { Anarchy } from "atom.io"
 import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 
 import { capitalize } from "../capitalize"
 import {
@@ -142,7 +142,7 @@ export class Join<
 		Content
 	>
 	public core: {
-		relatedKeysAtoms: MutableAtomFamilyToken<SetRTX<string>, string>
+		relatedKeysAtoms: MutableAtomFamilyToken<UList<string>, string>
 	}
 	public transact(
 		toolkit: WriterToolkit,
@@ -188,19 +188,19 @@ export class Join<
 
 		const aSide: ASide = options.between[0]
 		const bSide: BSide = options.between[1]
-		const relatedKeysAtoms = createMutableAtomFamily<SetRTX<string>, string>(
+		const relatedKeysAtoms = createMutableAtomFamily<UList<string>, string>(
 			store,
 			{
 				key: `${options.key}/relatedKeys`,
-				class: SetRTX,
+				class: UList,
 			},
 			[`join`, `relations`],
 		)
 		this.core = { relatedKeysAtoms }
-		const getRelatedKeys: Read<
-			(key: string) => SetRTX<AType> | SetRTX<BType>
-		> = ({ get }, key) =>
-			get(relatedKeysAtoms, key) as SetRTX<AType> | SetRTX<BType>
+		const getRelatedKeys: Read<(key: string) => UList<AType> | UList<BType>> = (
+			{ get },
+			key,
+		) => get(relatedKeysAtoms, key) as UList<AType> | UList<BType>
 		const addRelation: Write<(a: string, b: string) => void> = (
 			{ set },
 			a,
@@ -246,42 +246,42 @@ export class Join<
 				})
 			}
 			set(relationsOfAState, (relationsOfA) => {
-				relationsOfA.transaction((nextRelationsOfA) => {
-					nextRelationsOfA.clear()
-					for (const newRelationB of newRelationsOfA) {
-						const relationsOfB = getRelatedKeys(toolkit, newRelationB)
-						const newRelationBIsAlreadyRelated = relationsOfB.has(a as AnyKey)
-						if (this.relations.cardinality === `1:n`) {
-							const previousOwnersToDispose: string[] = []
-							for (const previousOwner of relationsOfB) {
-								if (previousOwner === a) {
-									continue
-								}
-								const previousOwnerRelations = getRelatedKeys(
-									toolkit,
-									previousOwner,
-								)
-								previousOwnerRelations.delete(newRelationB as AnyKey)
-								if (previousOwnerRelations.size === 0) {
-									previousOwnersToDispose.push(previousOwner)
-								}
+				// relationsOfA.transaction((nextRelationsOfA) => {
+				relationsOfA.clear()
+				for (const newRelationB of newRelationsOfA) {
+					const relationsOfB = getRelatedKeys(toolkit, newRelationB)
+					const newRelationBIsAlreadyRelated = relationsOfB.has(a as AnyKey)
+					if (this.relations.cardinality === `1:n`) {
+						const previousOwnersToDispose: string[] = []
+						for (const previousOwner of relationsOfB) {
+							if (previousOwner === a) {
+								continue
 							}
-							if (!newRelationBIsAlreadyRelated && relationsOfB.size > 0) {
-								relationsOfB.clear()
-							}
-							for (const previousOwner of previousOwnersToDispose) {
-								const [x, y] = [newRelationB, previousOwner].sort()
-								const compositeKey = `${x}:${y}`
-								store.moleculeJoins.delete(compositeKey)
+							const previousOwnerRelations = getRelatedKeys(
+								toolkit,
+								previousOwner,
+							)
+							previousOwnerRelations.delete(newRelationB as AnyKey)
+							if (previousOwnerRelations.size === 0) {
+								previousOwnersToDispose.push(previousOwner)
 							}
 						}
-						if (!newRelationBIsAlreadyRelated) {
-							relationsOfB.add(a as AnyKey)
+						if (!newRelationBIsAlreadyRelated && relationsOfB.size > 0) {
+							relationsOfB.clear()
 						}
-						nextRelationsOfA.add(newRelationB)
+						for (const previousOwner of previousOwnersToDispose) {
+							const [x, y] = [newRelationB, previousOwner].sort()
+							const compositeKey = `${x}:${y}`
+							store.moleculeJoins.delete(compositeKey)
+						}
 					}
-					return true
-				})
+					if (!newRelationBIsAlreadyRelated) {
+						relationsOfB.add(a as AnyKey)
+					}
+					relationsOfA.add(newRelationB)
+				}
+				// return true
+				// })
 				return relationsOfA
 			})
 		}
@@ -290,12 +290,12 @@ export class Join<
 		> = (toolkit, a, newRelationsOfA) => {
 			const { set } = toolkit
 			set(relatedKeysAtoms, a, (relationsOfA) => {
-				relationsOfA.transaction((nextRelationsOfA) => {
-					for (const newRelationB of newRelationsOfA) {
-						nextRelationsOfA.add(newRelationB)
-					}
-					return true
-				})
+				// relationsOfA.transaction((nextRelationsOfA) => {
+				for (const newRelationB of newRelationsOfA) {
+					relationsOfA.add(newRelationB)
+				}
+				// return true
+				// })
 				return relationsOfA
 			})
 			for (const newRelationB of newRelationsOfA) {
@@ -416,7 +416,7 @@ export class Join<
 				[`join`, `keys`],
 			)
 		const getMultipleKeySelectorFamily = () => {
-			return createReadonlyPureSelectorFamily<string[], string, never>(
+			return createReadonlyPureSelectorFamily<readonly string[], string, never>(
 				store,
 				{
 					key: `${options.key}/multipleRelatedKeys`,
@@ -425,7 +425,7 @@ export class Join<
 						({ get }) => {
 							const jsonFamily = getJsonFamily(relatedKeysAtoms, store)
 							const json = get(jsonFamily, key)
-							return json.members
+							return json
 						},
 				},
 				[`join`, `keys`],
@@ -472,7 +472,7 @@ export class Join<
 						({ get }) => {
 							const jsonFamily = getJsonFamily(relatedKeysAtoms, store)
 							const json = get(jsonFamily, x)
-							return json.members.map((y) => {
+							return json.map((y) => {
 								let a = relations.isAType?.(x) ? x : undefined
 								let b = a === undefined ? (x as BType) : undefined
 								a ??= y as AType
