@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.41.1
+
+### Patch Changes
+
+- 44f90d8: ♻️ Improve seralization interface for `OList` and `UList`.
+
 ## 0.41.0
 
 ### Minor Changes
