@@ -1,6 +1,6 @@
 import type { primitive } from "atom.io/json"
 import type { SetUpdate } from "atom.io/transceivers/u-list"
-import { packSetUpdate, UList } from "atom.io/transceivers/u-list"
+import { UList } from "atom.io/transceivers/u-list"
 
 import * as U from "../../__util__"
 
@@ -93,7 +93,7 @@ describe(`UList`, () => {
 	describe(`do/undo`, () => {
 		it(`should add a value to the ul - strings`, () => {
 			const ul = new UList<string>()
-			const update = packSetUpdate({
+			const update = UList.packUpdate({
 				type: `add`,
 				value: `foo`,
 			} satisfies SetUpdate<string>)
@@ -104,7 +104,7 @@ describe(`UList`, () => {
 		})
 		it(`should add a value to the ul - numbers`, () => {
 			const ul = new UList<number>()
-			const update = packSetUpdate({
+			const update = UList.packUpdate({
 				type: `add`,
 				value: 5,
 			} satisfies SetUpdate<number>)
@@ -115,7 +115,7 @@ describe(`UList`, () => {
 		})
 		it(`should add a value to the ul - null`, () => {
 			const ul = new UList<null>()
-			const update = packSetUpdate({
+			const update = UList.packUpdate({
 				type: `add`,
 				value: null,
 			} satisfies SetUpdate<null>)
@@ -126,7 +126,7 @@ describe(`UList`, () => {
 		})
 		it(`should clear the ul - strings`, () => {
 			const ul = new UList<string>(`y`)
-			const update = packSetUpdate({
+			const update = UList.packUpdate({
 				type: `clear`,
 				values: [`y`],
 			} satisfies SetUpdate<string>)
@@ -137,7 +137,7 @@ describe(`UList`, () => {
 		})
 		it(`should clear the ul - assorted`, () => {
 			const ul = new UList<primitive>([3, `y`, null, false])
-			const update = packSetUpdate({
+			const update = UList.packUpdate({
 				type: `clear`,
 				values: [3, `y`, null, false],
 			} satisfies SetUpdate<primitive>)
@@ -148,7 +148,7 @@ describe(`UList`, () => {
 		})
 		it(`should delete a value from the ul`, () => {
 			const ul = new UList([true])
-			const update = packSetUpdate({
+			const update = UList.packUpdate({
 				type: `delete`,
 				value: true,
 			} satisfies SetUpdate<boolean>)
