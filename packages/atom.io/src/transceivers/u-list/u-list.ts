@@ -32,27 +32,6 @@ export type PackedSetUpdate<P extends primitive> = string & {
 export const SET_UPDATE_ENUM: Enumeration<[`add`, `delete`, `clear`]> =
 	enumeration([`add`, `delete`, `clear`] as const)
 
-export function packSetUpdate<P extends primitive>(
-	update: SetUpdate<P>,
-): PackedSetUpdate<P> {
-	const head = SET_UPDATE_ENUM[update.type] + `\u001F`
-	if (update.type === `clear`) {
-		return head + update.values.map(packValue).join(`\u001E`)
-	}
-	return head + packValue(update.value)
-}
-export function unpackSetUpdate<P extends primitive>(
-	packed: PackedSetUpdate<P>,
-): SetUpdate<P> {
-	const [type, tail] = packed.split(`\u001F`) as [0 | 1 | 2, string]
-	const head = SET_UPDATE_ENUM[type]
-	if (head === `clear`) {
-		const values = tail.split(`\u001E`).map(unpackValue) as P[]
-		return { type: `clear`, values }
-	}
-	return { type: head, value: unpackValue(tail) as P }
-}
-
 export type SetMutationHandler = { [K in UListUpdateType]: Fn }
 
 export class UList<P extends primitive>
@@ -112,12 +91,12 @@ export class UList<P extends primitive>
 	}
 
 	public emit(update: SetUpdate<P>): void {
-		this.subject.next(packSetUpdate(update))
+		this.subject.next(UList.packUpdate(update))
 	}
 
 	public do(packed: PackedSetUpdate<P>): null {
 		this.mode = `playback`
-		const update = unpackSetUpdate(packed)
+		const update = UList.unpackUpdate(packed)
 		switch (update.type) {
 			case `add`:
 				this.add(update.value)
@@ -133,7 +112,7 @@ export class UList<P extends primitive>
 	}
 
 	public undo(packed: PackedSetUpdate<P>): number | null {
-		const update = unpackSetUpdate(packed)
+		const update = UList.unpackUpdate(packed)
 		this.mode = `playback`
 		switch (update.type) {
 			case `add`:
@@ -149,5 +128,26 @@ export class UList<P extends primitive>
 		}
 		this.mode = `record`
 		return null
+	}
+
+	public static packUpdate<P extends primitive>(
+		update: SetUpdate<P>,
+	): PackedSetUpdate<P> {
+		const head = SET_UPDATE_ENUM[update.type] + `\u001F`
+		if (update.type === `clear`) {
+			return head + update.values.map(packValue).join(`\u001E`)
+		}
+		return head + packValue(update.value)
+	}
+	public static unpackUpdate<P extends primitive>(
+		packed: PackedSetUpdate<P>,
+	): SetUpdate<P> {
+		const [type, tail] = packed.split(`\u001F`) as [0 | 1 | 2, string]
+		const head = SET_UPDATE_ENUM[type]
+		if (head === `clear`) {
+			const values = tail.split(`\u001E`).map(unpackValue) as P[]
+			return { type: `clear`, values }
+		}
+		return { type: head, value: unpackValue(tail) as P }
 	}
 }
