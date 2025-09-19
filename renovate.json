@@ -1,5 +1,6 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": ["config:recommended", "customManagers:biomeVersions"],
-	"branchConcurrentLimit": 1
+	"branchConcurrentLimit": 1,
+	"prHourlyLimit": 10
 }
