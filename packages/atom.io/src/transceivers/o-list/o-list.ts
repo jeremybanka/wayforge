@@ -96,16 +96,23 @@ export type ArrayMutationHandler = {
 	[K in Exclude<OListUpdateType, `extend` | `set` | `truncate`>]: Fn
 }
 
+export type OListView<P extends primitive> = ReadonlyArray<P> & {
+	subscribe: (
+		key: string,
+		fn: (update: PackedArrayUpdate<P>) => void,
+	) => () => void
+}
+
 export class OList<P extends primitive>
 	extends Array<P>
 	implements
-		Transceiver<ReadonlyArray<P>, PackedArrayUpdate<P>, ReadonlyArray<P>>,
+		Transceiver<OListView<P>, PackedArrayUpdate<P>, ReadonlyArray<P>>,
 		ArrayMutationHandler
 {
 	public mode: TransceiverMode = `record`
 	public readonly subject: Subject<PackedArrayUpdate<P>> = new Subject()
 
-	public readonly READONLY_VIEW: ReadonlyArray<P> = this
+	public readonly READONLY_VIEW: OListView<P> = this
 
 	public constructor(arrayLength?: number)
 	public constructor(...items: P[])

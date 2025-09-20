@@ -127,7 +127,7 @@ export function dispatchOrDeferStateUpdate<T, E>(
 		if (hasRole(state, `tracker:signal`)) {
 			const keyOfMutable = key.slice(1)
 			const mutable = target.atoms.get(keyOfMutable) as MutableAtom<
-				Transceiver<unknown, any, any>
+				Transceiver<any, any, any>
 			>
 			const transceiver = readOrComputeValue<Transceiver<any, any, any>, never>(
 				target,
