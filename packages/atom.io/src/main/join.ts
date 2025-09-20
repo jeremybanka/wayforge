@@ -262,6 +262,6 @@ export function getInternalRelations<
 	Content extends Json.Object | null,
 >(
 	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
-): MutableAtomFamilyToken<UList<string>, string> {
+): MutableAtomFamilyToken<UList<AType> | UList<BType>, string> {
 	return getInternalRelationsFromStore(token, IMPLICIT.STORE)
 }
