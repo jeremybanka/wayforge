@@ -41,7 +41,7 @@
 		"eslint": "9.36.0",
 		"recoverage": "0.1.11",
 		"rimraf": "6.0.1",
-		"tsdown": "0.15.2",
+		"tsdown": "0.15.4",
 		"vite": "7.1.6",
 		"vitest": "3.2.4"
 	}

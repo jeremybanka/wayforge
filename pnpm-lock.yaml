@@ -412,8 +412,8 @@ importers:
         specifier: 9.36.0
         version: 9.36.0(jiti@2.5.1)
       tsdown:
-        specifier: 0.15.2
-        version: 0.15.2(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
+        specifier: 0.15.4
+        version: 0.15.4(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
       vite:
         specifier: 7.1.6
         version: 7.1.6(@types/node@24.5.2)(jiti@2.5.1)(sass-embedded@1.93.0)(sass@1.93.0)
@@ -545,8 +545,8 @@ importers:
         specifier: 0.2.5
         version: 0.2.5
       tsdown:
-        specifier: 0.15.2
-        version: 0.15.2(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
+        specifier: 0.15.4
+        version: 0.15.4(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
       typescript:
         specifier: 5.9.2
         version: 5.9.2
@@ -603,8 +603,8 @@ importers:
         specifier: 0.2.5
         version: 0.2.5
       tsdown:
-        specifier: 0.15.2
-        version: 0.15.2(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
+        specifier: 0.15.4
+        version: 0.15.4(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
 
   packages/comline:
     dependencies:
@@ -634,8 +634,8 @@ importers:
         specifier: 0.2.5
         version: 0.2.5
       tsdown:
-        specifier: 0.15.2
-        version: 0.15.2(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
+        specifier: 0.15.4
+        version: 0.15.4(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
       vite:
         specifier: 7.1.6
         version: 7.1.6(@types/node@24.5.2)(jiti@2.5.1)(sass-embedded@1.93.0)(sass@1.93.0)
@@ -698,8 +698,8 @@ importers:
         specifier: 0.2.5
         version: 0.2.5
       tsdown:
-        specifier: 0.15.2
-        version: 0.15.2(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
+        specifier: 0.15.4
+        version: 0.15.4(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
       varmint:
         specifier: workspace:*
         version: link:../varmint
@@ -786,8 +786,8 @@ importers:
         specifier: 1.93.0
         version: 1.93.0
       tsdown:
-        specifier: 0.15.2
-        version: 0.15.2(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
+        specifier: 0.15.4
+        version: 0.15.4(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
       vite-plugin-dts:
         specifier: 4.5.4
         version: 4.5.4(@types/node@24.5.2)(rollup@4.50.2)(typescript@5.9.2)(vite@7.1.6(@types/node@24.5.2)(jiti@2.5.1)(sass-embedded@1.93.0)(sass@1.93.0))
@@ -845,8 +845,8 @@ importers:
         specifier: 6.0.1
         version: 6.0.1
       tsdown:
-        specifier: 0.15.2
-        version: 0.15.2(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
+        specifier: 0.15.4
+        version: 0.15.4(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
       vite:
         specifier: 7.1.6
         version: 7.1.6(@types/node@24.5.2)(jiti@2.5.1)(sass-embedded@1.93.0)(sass@1.93.0)
@@ -922,8 +922,8 @@ importers:
         specifier: 9.36.0
         version: 9.36.0(jiti@2.5.1)
       tsdown:
-        specifier: 0.15.2
-        version: 0.15.2(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
+        specifier: 0.15.4
+        version: 0.15.4(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
       vite:
         specifier: 7.1.6
         version: 7.1.6(@types/node@24.5.2)(jiti@2.5.1)(sass-embedded@1.93.0)(sass@1.93.0)
@@ -946,8 +946,8 @@ importers:
         specifier: 2.16.11
         version: 2.16.11
       tsdown:
-        specifier: 0.15.2
-        version: 0.15.2(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
+        specifier: 0.15.4
+        version: 0.15.4(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
       tsup:
         specifier: 8.5.0
         version: 8.5.0(@microsoft/api-extractor@7.52.13(@types/node@24.5.2))(@swc/core@1.13.5)(jiti@2.5.1)(postcss@8.5.6)(typescript@5.9.2)
@@ -982,8 +982,8 @@ importers:
         specifier: 0.2.5
         version: 0.2.5
       tsdown:
-        specifier: 0.15.2
-        version: 0.15.2(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
+        specifier: 0.15.4
+        version: 0.15.4(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
       vite:
         specifier: 7.1.6
         version: 7.1.6(@types/node@24.5.2)(jiti@2.5.1)(sass-embedded@1.93.0)(sass@1.93.0)
@@ -1012,8 +1012,8 @@ importers:
         specifier: 6.0.1
         version: 6.0.1
       tsdown:
-        specifier: 0.15.2
-        version: 0.15.2(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
+        specifier: 0.15.4
+        version: 0.15.4(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
       vite:
         specifier: 7.1.6
         version: 7.1.6(@types/node@24.5.2)(jiti@2.5.1)(sass-embedded@1.93.0)(sass@1.93.0)
@@ -1055,8 +1055,8 @@ importers:
         specifier: 0.2.5
         version: 0.2.5
       tsdown:
-        specifier: 0.15.2
-        version: 0.15.2(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
+        specifier: 0.15.4
+        version: 0.15.4(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
       tsup:
         specifier: 8.5.0
         version: 8.5.0(@microsoft/api-extractor@7.52.13(@types/node@24.5.2))(@swc/core@1.13.5)(jiti@2.5.1)(postcss@8.5.6)(typescript@5.9.2)
@@ -1107,8 +1107,8 @@ importers:
         specifier: 0.2.5
         version: 0.2.5
       tsdown:
-        specifier: 0.15.2
-        version: 0.15.2(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
+        specifier: 0.15.4
+        version: 0.15.4(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
       vite:
         specifier: 7.1.6
         version: 7.1.6(@types/node@24.5.2)(jiti@2.5.1)(sass-embedded@1.93.0)(sass@1.93.0)
@@ -1143,8 +1143,8 @@ importers:
         specifier: 0.1.11
         version: 0.1.11(arktype@2.1.22)(typescript@5.9.2)
       tsdown:
-        specifier: 0.15.2
-        version: 0.15.2(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
+        specifier: 0.15.4
+        version: 0.15.4(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2)
       vite:
         specifier: 7.1.6
         version: 7.1.6(@types/node@24.5.2)(jiti@2.5.1)(sass-embedded@1.93.0)(sass@1.93.0)
@@ -6883,8 +6883,8 @@ packages:
     engines: {node: 20 || >=22}
     hasBin: true
 
-  rolldown-plugin-dts@0.16.5:
-    resolution: {integrity: sha512-bOAfJ7Tc11xK/Uou7KWYha25/Sy80G0DZkhX8WMYx6l8PUalR+bvVzQNuEqXafpKEisZfUHQrkhS2gZG76Xntw==}
+  rolldown-plugin-dts@0.16.7:
+    resolution: {integrity: sha512-9iDzS4MHXMyieisFbWxuz96i/idGJNpvWILqCH06mrEZvn8Q2el3Q63xxjOt7HJjTOUNFhB1isvZFy4dA87lPQ==}
     engines: {node: '>=20.18.0'}
     peerDependencies:
       '@ts-macro/tsc': ^0.3.6
@@ -7527,8 +7527,8 @@ packages:
     resolution: {integrity: sha512-NoZ4roiN7LnbKn9QqE1amc9DJfzvZXxF4xDavcOWt1BPkdx+m+0gJuPM+S0vCe7zTJMYUP0R8pO2XMr+Y8oLIg==}
     engines: {node: '>=6'}
 
-  tsdown@0.15.2:
-    resolution: {integrity: sha512-qPbWcVnI7Ekq5p4xPiLwuS9siczCGPAyZYsAzcS1xTcFvkkZIsDbh3ejlmUoe/ypLJl5+oQ4Rbwp63Zf+eWiMw==}
+  tsdown@0.15.4:
+    resolution: {integrity: sha512-aoFE8disBg8BgYcOgradr/5Yd+QDBRQ+6z8mXo/Ib7+GIaJwJsI5l/ppve05CZGcSDqwdhF4gdrA0HPHBtbBqA==}
     engines: {node: '>=20.19.0'}
     hasBin: true
     peerDependencies:
@@ -14234,7 +14234,7 @@ snapshots:
       glob: 11.0.3
       package-json-from-dist: 1.0.1
 
-  rolldown-plugin-dts@0.16.5(@typescript/native-preview@7.0.0-dev.20250920.1)(rolldown@1.0.0-beta.38)(typescript@5.9.2):
+  rolldown-plugin-dts@0.16.7(@typescript/native-preview@7.0.0-dev.20250920.1)(rolldown@1.0.0-beta.38)(typescript@5.9.2):
     dependencies:
       '@babel/generator': 7.28.3
       '@babel/parser': 7.28.4
@@ -14980,7 +14980,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tsdown@0.15.2(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2):
+  tsdown@0.15.4(@typescript/native-preview@7.0.0-dev.20250920.1)(typescript@5.9.2):
     dependencies:
       ansis: 4.1.0
       cac: 6.7.14
@@ -14990,7 +14990,7 @@ snapshots:
       empathic: 2.0.0
       hookable: 5.5.3
       rolldown: 1.0.0-beta.38
-      rolldown-plugin-dts: 0.16.5(@typescript/native-preview@7.0.0-dev.20250920.1)(rolldown@1.0.0-beta.38)(typescript@5.9.2)
+      rolldown-plugin-dts: 0.16.7(@typescript/native-preview@7.0.0-dev.20250920.1)(rolldown@1.0.0-beta.38)(typescript@5.9.2)
       semver: 7.7.2
       tinyexec: 1.0.1
       tinyglobby: 0.2.15
