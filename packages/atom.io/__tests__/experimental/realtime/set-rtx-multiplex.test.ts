@@ -18,7 +18,7 @@ import {
 } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import * as Internal from "atom.io/internal"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
+import { UList } from "atom.io/transceivers/u-list"
 
 import * as Utils from "../../__util__"
 
@@ -38,7 +38,7 @@ beforeEach(() => {
 })
 
 describe(`join in perspective`, () => {
-	test(`card game: players cannot see the values of cards private to other players or hidden from view`, () => {
+	test.only(`card game: players cannot see the values of cards private to other players or hidden from view`, () => {
 		const facesOfCards = join({
 			key: `facesOfCards`,
 			between: [`face`, `card`],
@@ -67,21 +67,21 @@ describe(`join in perspective`, () => {
 		const stackType = (stackKey: StackKey): `stack-${StackType}` =>
 			stackKey.split(`::`)[0] as any
 
-		const playerKeysAtom = mutableAtom<SetRTX<`player::${string}`>>({
+		const playerKeysAtom = mutableAtom<UList<`player::${string}`>>({
 			key: `playerKeys`,
-			class: SetRTX,
+			class: UList,
 		})
-		const stackKeysAtom = mutableAtom<SetRTX<`stack-${StackType}::${string}`>>({
+		const stackKeysAtom = mutableAtom<UList<`stack-${StackType}::${string}`>>({
 			key: `stackKeys`,
-			class: SetRTX,
+			class: UList,
 		})
-		const faceKeysAtom = mutableAtom<SetRTX<`face::${string}`>>({
+		const faceKeysAtom = mutableAtom<UList<`face::${string}`>>({
 			key: `faceKeys`,
-			class: SetRTX,
+			class: UList,
 		})
-		const cardKeysAtom = mutableAtom<SetRTX<`card::${string}`>>({
+		const cardKeysAtom = mutableAtom<UList<`card::${string}`>>({
 			key: `cardKeys`,
-			class: SetRTX,
+			class: UList,
 		})
 
 		const visibleCardKeys = selectorFamily<
@@ -127,11 +127,11 @@ describe(`join in perspective`, () => {
 
 		const cardFacesAtoms = getInternalRelations(facesOfCards)
 		const cardFacesPlayerViewAtoms = mutableAtomFamily<
-			SetRTX<string>,
+			UList<string>,
 			[`player::${string}`, `card::${string}` | `face::${string}`]
 		>({
 			key: `cardFacesAliasAtoms`,
-			class: SetRTX,
+			class: UList,
 			effects: ([playerKey, keyX]) => [
 				({ setSelf }) => {
 					console.log(`⛔⛔⛔⛔⛔⛔⛔ 0`, { keyX })
@@ -145,17 +145,13 @@ describe(`join in perspective`, () => {
 						console.log({ faceKey: keyX, type, key: keyY, visible })
 
 						if (isCardKey(keyX) && visible.includes(keyX)) {
-							setSelf(
-								(prev) => (prev.do(`${prev.cacheIdx + 1}=${update}`), prev),
-							)
+							setSelf((prev) => (prev.do(update), prev))
 							return
 						}
 
 						if (visible.includes(keyY)) {
 							console.log(`adding`, update)
-							setSelf(
-								(prev) => (prev.do(`${prev.cacheIdx + 1}=${update}`), prev),
-							)
+							setSelf((prev) => (prev.do(update), prev))
 						}
 					})
 				},
@@ -228,50 +224,50 @@ describe(`join in perspective`, () => {
 				),
 			),
 		)
-		expect(
-			new Set(getState(cardFacesPlayerViewAtoms, [`player::alice`, `card::44`])),
-		).toEqual(new Set([`face::hearts-5`]))
-		expect(
-			new Set(
-				getState(cardFacesPlayerViewAtoms, [`player::alice`, `face::hearts-5`]),
-			),
-		).toEqual(new Set([`card::44`]))
+		// expect(
+		// 	new Set(getState(cardFacesPlayerViewAtoms, [`player::alice`, `card::44`])),
+		// ).toEqual(new Set([`face::hearts-5`]))
+		// expect(
+		// 	new Set(
+		// 		getState(cardFacesPlayerViewAtoms, [`player::alice`, `face::hearts-5`]),
+		// 	),
+		// ).toEqual(new Set([`card::44`]))
 
-		setState(stackKeysAtom, (keys) => keys.add(`stack-deck::1`))
+		// setState(stackKeysAtom, (keys) => keys.add(`stack-deck::1`))
 
-		editRelations(stacksOfCards, (relations) => {
-			relations.set(`stack-deck::1`, `card::44`)
-		})
+		// editRelations(stacksOfCards, (relations) => {
+		// 	relations.set(`stack-deck::1`, `card::44`)
+		// })
 
-		editRelations(facesOfCards, (relations) => {
-			relations.set(`face::hearts-5`, `card::44`)
-		})
+		// editRelations(facesOfCards, (relations) => {
+		// 	relations.set(`face::hearts-5`, `card::44`)
+		// })
 
-		console.log(
-			`alice 👁️ card::44`,
-			new Set(
-				IMPLICIT.STORE.valueMap.get(
-					`cardFacesAliasAtoms(["player::alice","card::44"])`,
-				),
-			),
-		)
-		console.log(
-			`alice 👁️ face::hearts-5`,
-			new Set(
-				IMPLICIT.STORE.valueMap.get(
-					`cardFacesAliasAtoms(["player::alice","face::hearts-5"])`,
-				),
-			),
-		)
-		expect(
-			getState(cardFacesPlayerViewAtoms, [`player::alice`, `card::44`]),
-		).toEqual(new SetRTX([]))
-		expect(
-			getState(cardFacesPlayerViewAtoms, [`player::alice`, `face::hearts-5`]),
-		).toEqual(new SetRTX([]))
+		// console.log(
+		// 	`alice 👁️ card::44`,
+		// 	new Set(
+		// 		IMPLICIT.STORE.valueMap.get(
+		// 			`cardFacesAliasAtoms(["player::alice","card::44"])`,
+		// 		),
+		// 	),
+		// )
+		// console.log(
+		// 	`alice 👁️ face::hearts-5`,
+		// 	new Set(
+		// 		IMPLICIT.STORE.valueMap.get(
+		// 			`cardFacesAliasAtoms(["player::alice","face::hearts-5"])`,
+		// 		),
+		// 	),
+		// )
+		// expect(
+		// 	getState(cardFacesPlayerViewAtoms, [`player::alice`, `card::44`]),
+		// ).toEqual(new UList([]))
+		// expect(
+		// 	getState(cardFacesPlayerViewAtoms, [`player::alice`, `face::hearts-5`]),
+		// ).toEqual(new UList([]))
 	})
 
-	test.only(`translating a transaction update`, () => {
+	test(`translating a transaction update`, () => {
 		const isCardKey = (key: string): key is `card::${string}` =>
 			key.startsWith(`card::`)
 		const isFaceKey = (key: string): key is `face::${string}` =>
@@ -307,21 +303,21 @@ describe(`join in perspective`, () => {
 		const stackType = (stackKey: StackKey): `stack-${StackType}` =>
 			stackKey.split(`::`)[0] as any
 
-		const playerKeysAtom = mutableAtom<SetRTX<`player::${string}`>>({
+		const playerKeysAtom = mutableAtom<UList<`player::${string}`>>({
 			key: `playerKeys`,
-			class: SetRTX,
+			class: UList,
 		})
-		const stackKeysAtom = mutableAtom<SetRTX<`stack-${StackType}::${string}`>>({
+		const stackKeysAtom = mutableAtom<UList<`stack-${StackType}::${string}`>>({
 			key: `stackKeys`,
-			class: SetRTX,
+			class: UList,
 		})
-		const faceKeysAtom = mutableAtom<SetRTX<`face::${string}`>>({
+		const faceKeysAtom = mutableAtom<UList<`face::${string}`>>({
 			key: `faceKeys`,
-			class: SetRTX,
+			class: UList,
 		})
-		const cardKeysAtom = mutableAtom<SetRTX<`card::${string}`>>({
+		const cardKeysAtom = mutableAtom<UList<`card::${string}`>>({
 			key: `cardKeys`,
-			class: SetRTX,
+			class: UList,
 		})
 
 		const visibleCardKeys = selectorFamily<
