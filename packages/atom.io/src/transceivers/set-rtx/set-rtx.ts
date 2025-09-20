@@ -12,6 +12,10 @@ export interface SetRTXView<P extends primitive> extends ReadonlySet<P> {
 	readonly cacheLimit: number
 	readonly cacheIdx: number
 	readonly cacheUpdateNumber: number
+	readonly subscribe: (
+		key: string,
+		fn: (update: NumberedSetUpdateString) => void,
+	) => () => void
 }
 
 export interface SetRTXJson<P extends primitive> extends Json.Object {

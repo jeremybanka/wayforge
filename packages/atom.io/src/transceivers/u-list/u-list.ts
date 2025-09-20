@@ -31,10 +31,17 @@ export const SET_UPDATE_ENUM: Enumeration<[`add`, `delete`, `clear`]> =
 
 export type SetMutationHandler = { [K in UListUpdateType]: Fn }
 
+export type UListView<P extends primitive> = ReadonlySet<P> & {
+	subscribe: (
+		key: string,
+		fn: (update: PackedSetUpdate<P>) => void,
+	) => () => void
+}
+
 export class UList<P extends primitive>
 	extends Set<P>
 	implements
-		Transceiver<ReadonlySet<P>, PackedSetUpdate<P>, ReadonlyArray<P>>,
+		Transceiver<UListView<P>, PackedSetUpdate<P>, ReadonlyArray<P>>,
 		SetMutationHandler
 {
 	public mode: TransceiverMode = `record`
@@ -46,7 +53,7 @@ export class UList<P extends primitive>
 		}
 	}
 
-	public readonly READONLY_VIEW: ReadonlySet<P> = this
+	public readonly READONLY_VIEW: UListView<P> = this
 
 	public toJSON(): ReadonlyArray<P> {
 		return [...this]
