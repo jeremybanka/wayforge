@@ -3,7 +3,6 @@ import type {
 	getState,
 	JoinOptions,
 	MutableAtomFamilyToken,
-	Read,
 	ReadonlyPureSelectorFamilyToken,
 	setState,
 	Write,
@@ -128,38 +127,7 @@ export class Join<
 			[`join`, `relations`],
 		)
 		this.core = { relatedKeysAtoms }
-		const getRelatedKeys: Read<(key: string) => UList<AType> | UList<BType>> = (
-			{ get },
-			key,
-		) => get(relatedKeysAtoms, key) as UList<AType> | UList<BType>
-		const addRelation: Write<(a: string, b: string) => void> = (
-			{ set },
-			a,
-			b,
-		) => {
-			if (!this.store.molecules.has(stringifyJson(a))) {
-				this.realm.allocate(options.key, a)
-			}
-			set(relatedKeysAtoms, a, (aKeys) => aKeys.add(b))
-			set(relatedKeysAtoms, b, (bKeys) => bKeys.add(a))
-		}
-		const deleteRelation: Write<(a: string, b: string) => void> = (
-			{ set },
-			a,
-			b,
-		) => {
-			set(relatedKeysAtoms, a, (aKeys) => {
-				aKeys.delete(b)
-				return aKeys
-			})
-			set(relatedKeysAtoms, b, (bKeys) => {
-				bKeys.delete(a)
-				return bKeys
-			})
-			const [x, y] = [a, b].sort()
-			const compositeKey = `${x}:${y}`
-			this.store.moleculeJoins.delete(compositeKey)
-		}
+
 		const replaceRelationsSafely: Write<
 			(a: string, newRelationsOfA: string[]) => void
 		> = (toolkit, a, newRelationsOfA) => {
@@ -180,7 +148,8 @@ export class Join<
 				// relationsOfA.transaction((nextRelationsOfA) => {
 				relationsOfA.clear()
 				for (const newRelationB of newRelationsOfA) {
-					const relationsOfB = getRelatedKeys(toolkit, newRelationB)
+					const relationsOfBAtom = find(relatedKeysAtoms, newRelationB)
+					const relationsOfB = get(relationsOfBAtom)
 					const newRelationBIsAlreadyRelated = relationsOfB.has(a as AnyKey)
 					if (this.relations.cardinality === `1:n`) {
 						const previousOwnersToDispose: string[] = []
@@ -188,17 +157,26 @@ export class Join<
 							if (previousOwner === a) {
 								continue
 							}
-							const previousOwnerRelations = getRelatedKeys(
-								toolkit,
+							const previousOwnerRelationsAtom = find(
+								relatedKeysAtoms,
 								previousOwner,
 							)
-							previousOwnerRelations.delete(newRelationB as AnyKey)
+							const previousOwnerRelations = get(previousOwnerRelationsAtom)
+							// previousOwnerRelations.delete(newRelationB as AnyKey)
+
+							set(previousOwnerRelationsAtom, (relations) => {
+								relations.delete(newRelationB as AnyKey)
+								return relations
+							})
 							if (previousOwnerRelations.size === 0) {
 								previousOwnersToDispose.push(previousOwner)
 							}
 						}
 						if (!newRelationBIsAlreadyRelated && relationsOfB.size > 0) {
-							relationsOfB.clear()
+							set(relationsOfBAtom, (relations) => {
+								relations.clear()
+								return relations
+							})
 						}
 						for (const previousOwner of previousOwnersToDispose) {
 							const [x, y] = [newRelationB, previousOwner].sort()
@@ -207,7 +185,10 @@ export class Join<
 						}
 					}
 					if (!newRelationBIsAlreadyRelated) {
-						relationsOfB.add(a as AnyKey)
+						set(relationsOfBAtom, (relations) => {
+							relations.add(a as AnyKey)
+							return relations
+						})
 					}
 					relationsOfA.add(newRelationB)
 				}
@@ -237,19 +218,33 @@ export class Join<
 			}
 			return true
 		}
-		const has: Read<(a: string, b?: string) => boolean> = (toolkit, a, b) => {
-			const aKeys = getRelatedKeys(toolkit, a)
-			return b ? aKeys.has(b as AnyKey) : aKeys.size > 0
-		}
 		const baseExternalStoreConfiguration: BaseExternalStoreConfiguration = {
-			getRelatedKeys: (key) => getRelatedKeys(this.toolkit, key),
+			getRelatedKeys: (key) =>
+				this.toolkit.get(relatedKeysAtoms, key) as UList<AType> | UList<BType>,
 			addRelation: (a, b) => {
 				this.store.moleculeJoins.set(`"${a}"`, options.key)
 				this.store.moleculeJoins.set(`"${b}"`, options.key)
-				addRelation(this.toolkit, a, b)
+				if (!this.store.molecules.has(stringifyJson(a))) {
+					this.realm.allocate(options.key, a)
+				}
+				if (!this.store.molecules.has(stringifyJson(b))) {
+					this.realm.allocate(options.key, b)
+				}
+				this.toolkit.set(relatedKeysAtoms, a, (aKeys) => aKeys.add(b))
+				this.toolkit.set(relatedKeysAtoms, b, (bKeys) => bKeys.add(a))
 			},
 			deleteRelation: (a, b) => {
-				deleteRelation(this.toolkit, a, b)
+				this.toolkit.set(relatedKeysAtoms, a, (aKeys) => {
+					aKeys.delete(b)
+					return aKeys
+				})
+				this.toolkit.set(relatedKeysAtoms, b, (bKeys) => {
+					bKeys.delete(a)
+					return bKeys
+				})
+				const [x, y] = [a, b].sort()
+				const compositeKey = `${x}:${y}`
+				this.store.moleculeJoins.delete(compositeKey)
 			},
 			replaceRelationsSafely: (a, bs) => {
 				replaceRelationsSafely(this.toolkit, a, bs)
@@ -257,31 +252,34 @@ export class Join<
 			replaceRelationsUnsafely: (a, bs) => {
 				replaceRelationsUnsafely(this.toolkit, a, bs)
 			},
-			has: (a, b) => has(this.toolkit, a, b),
+			has: (a, b) => {
+				const aKeys = this.toolkit.get(relatedKeysAtoms, a)
+				return b ? aKeys.has(b as AnyKey) : aKeys.size > 0
+			},
 		}
 		const externalStore = baseExternalStoreConfiguration
 		const relations = new Junction<ASide, AType, BSide, BType>(options as any, {
 			externalStore,
 			isAType: options.isAType,
 			isBType: options.isBType,
-			makeContentKey: (...args) => {
-				const [a, b] = args
-				const [x, y] = args.sort()
-				const compositeKey = `${x}:${y}`
-				const aMolecule = store.molecules.get(stringifyJson(a))
-				const bMolecule = store.molecules.get(stringifyJson(b))
-				if (!aMolecule) {
-					this.realm.allocate(options.key, a)
-				}
-				if (!bMolecule) {
-					this.realm.allocate(options.key, b)
-				}
+			// makeContentKey: (...args) => {
+			// 	const [a, b] = args
+			// 	const [x, y] = args.sort()
+			// 	const compositeKey = `${x}:${y}`
+			// 	const aMolecule = store.molecules.get(stringifyJson(a))
+			// 	const bMolecule = store.molecules.get(stringifyJson(b))
+			// 	if (!aMolecule) {
+			// 		this.realm.allocate(options.key, a)
+			// 	}
+			// 	if (!bMolecule) {
+			// 		this.realm.allocate(options.key, b)
+			// 	}
 
-				this.realm.allocate(a, compositeKey, `all`)
-				this.realm.claim(b, compositeKey)
-				this.store.moleculeJoins.set(compositeKey, options.key)
-				return compositeKey
-			},
+			// 	this.realm.allocate(a, compositeKey, `all`)
+			// 	this.realm.claim(b, compositeKey)
+			// 	this.store.moleculeJoins.set(compositeKey, options.key)
+			// 	return compositeKey
+			// },
 		})
 
 		const createSingleKeySelectorFamily = () =>
