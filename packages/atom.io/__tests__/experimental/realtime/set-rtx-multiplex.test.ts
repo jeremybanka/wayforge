@@ -2,6 +2,7 @@ import { inspect } from "node:util"
 
 import type { Logger, TransactionOutcomeEvent } from "atom.io"
 import {
+	AtomIOLogger,
 	editRelations,
 	findRelations,
 	findState,
@@ -19,6 +20,7 @@ import {
 import { IMPLICIT } from "atom.io/internal"
 import * as Internal from "atom.io/internal"
 import { UList } from "atom.io/transceivers/u-list"
+import { Socket } from "socket.io-client"
 
 import * as Utils from "../../__util__"
 
@@ -30,7 +32,31 @@ let logger: Logger
 beforeEach(() => {
 	Internal.clearStore(Internal.IMPLICIT.STORE)
 	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = Internal.IMPLICIT.STORE.logger //= Utils.createNullLogger()
+	logger = Internal.IMPLICIT.STORE.logger = new AtomIOLogger(
+		`info`,
+		(...params) => {
+			if (
+				![
+					`🛬`,
+
+					// `⭕`, `🔴`, `🟢`, `🚫`, `❌`
+				].includes(params[0])
+			) {
+				return false
+			}
+			let idx = 0
+			for (const param of params) {
+				if (param instanceof Socket) {
+					params[idx] = `Socket:${param.id}`
+				}
+				idx++
+			}
+			return params
+		},
+		logger,
+	)
+
+	// = Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -38,7 +64,7 @@ beforeEach(() => {
 })
 
 describe(`join in perspective`, () => {
-	test.only(`card game: players cannot see the values of cards private to other players or hidden from view`, () => {
+	test(`card game: players cannot see the values of cards private to other players or hidden from view`, () => {
 		const facesOfCards = join({
 			key: `facesOfCards`,
 			between: [`face`, `card`],
@@ -136,22 +162,24 @@ describe(`join in perspective`, () => {
 				({ setSelf }) => {
 					console.log(`⛔⛔⛔⛔⛔⛔⛔ 0`, { keyX })
 					const internal = getState(cardFacesAtoms, keyX)
-					internal.subject.subscribe(`?`, (update) => {
+					internal.subscribe(`?`, (update) => {
 						console.log(`⛔⛔⛔⛔⛔⛔⛔⛔⛔⛔⛔⛔⛔⛔ 0`, { update })
 
-						const [type, ...rest] = update.split(`:`)
-						const keyY = JSON.parse(rest.join(`:`))
 						const visible = getState(visibleCardKeys, playerKey)
-						console.log({ faceKey: keyX, type, key: keyY, visible })
+						const unpacked = UList.unpackUpdate(update)
+						if (`value` in unpacked) {
+							const { type, value: keyY } = unpacked
+							console.log({ faceKey: keyX, type, key: keyY, visible })
 
-						if (isCardKey(keyX) && visible.includes(keyX)) {
-							setSelf((prev) => (prev.do(update), prev))
-							return
-						}
+							if (isCardKey(keyX) && visible.includes(keyX)) {
+								setSelf((prev) => (prev.do(update), prev))
+								return
+							}
 
-						if (visible.includes(keyY)) {
-							console.log(`adding`, update)
-							setSelf((prev) => (prev.do(update), prev))
+							if (isCardKey(keyY) && visible.includes(keyY)) {
+								console.log(`adding`, update)
+								setSelf((prev) => (prev.do(update), prev))
+							}
 						}
 					})
 				},
@@ -224,50 +252,50 @@ describe(`join in perspective`, () => {
 				),
 			),
 		)
-		// expect(
-		// 	new Set(getState(cardFacesPlayerViewAtoms, [`player::alice`, `card::44`])),
-		// ).toEqual(new Set([`face::hearts-5`]))
-		// expect(
-		// 	new Set(
-		// 		getState(cardFacesPlayerViewAtoms, [`player::alice`, `face::hearts-5`]),
-		// 	),
-		// ).toEqual(new Set([`card::44`]))
+		expect(
+			new Set(getState(cardFacesPlayerViewAtoms, [`player::alice`, `card::44`])),
+		).toEqual(new Set([`face::hearts-5`]))
+		expect(
+			new Set(
+				getState(cardFacesPlayerViewAtoms, [`player::alice`, `face::hearts-5`]),
+			),
+		).toEqual(new Set([`card::44`]))
 
-		// setState(stackKeysAtom, (keys) => keys.add(`stack-deck::1`))
+		setState(stackKeysAtom, (keys) => keys.add(`stack-deck::1`))
 
-		// editRelations(stacksOfCards, (relations) => {
-		// 	relations.set(`stack-deck::1`, `card::44`)
-		// })
+		editRelations(stacksOfCards, (relations) => {
+			relations.set(`stack-deck::1`, `card::44`)
+		})
 
-		// editRelations(facesOfCards, (relations) => {
-		// 	relations.set(`face::hearts-5`, `card::44`)
-		// })
+		editRelations(facesOfCards, (relations) => {
+			relations.set(`face::hearts-5`, `card::44`)
+		})
 
-		// console.log(
-		// 	`alice 👁️ card::44`,
-		// 	new Set(
-		// 		IMPLICIT.STORE.valueMap.get(
-		// 			`cardFacesAliasAtoms(["player::alice","card::44"])`,
-		// 		),
-		// 	),
-		// )
-		// console.log(
-		// 	`alice 👁️ face::hearts-5`,
-		// 	new Set(
-		// 		IMPLICIT.STORE.valueMap.get(
-		// 			`cardFacesAliasAtoms(["player::alice","face::hearts-5"])`,
-		// 		),
-		// 	),
-		// )
-		// expect(
-		// 	getState(cardFacesPlayerViewAtoms, [`player::alice`, `card::44`]),
-		// ).toEqual(new UList([]))
-		// expect(
-		// 	getState(cardFacesPlayerViewAtoms, [`player::alice`, `face::hearts-5`]),
-		// ).toEqual(new UList([]))
+		console.log(
+			`alice 👁️ card::44`,
+			new Set(
+				IMPLICIT.STORE.valueMap.get(
+					`cardFacesAliasAtoms(["player::alice","card::44"])`,
+				),
+			),
+		)
+		console.log(
+			`alice 👁️ face::hearts-5`,
+			new Set(
+				IMPLICIT.STORE.valueMap.get(
+					`cardFacesAliasAtoms(["player::alice","face::hearts-5"])`,
+				),
+			),
+		)
+		expect(
+			getState(cardFacesPlayerViewAtoms, [`player::alice`, `card::44`]),
+		).toEqual(new UList([]))
+		expect(
+			getState(cardFacesPlayerViewAtoms, [`player::alice`, `face::hearts-5`]),
+		).toEqual(new UList([]))
 	})
 
-	test(`translating a transaction update`, () => {
+	test.only(`translating a transaction update`, () => {
 		const isCardKey = (key: string): key is `card::${string}` =>
 			key.startsWith(`card::`)
 		const isFaceKey = (key: string): key is `face::${string}` =>
@@ -360,12 +388,12 @@ describe(`join in perspective`, () => {
 		})
 
 		const transferCardTx = transaction<
-			(cardKey: `card::${string}`, to: StackKey) => void
+			(cardKey: `card::${string}`, toStack: StackKey) => void
 		>({
 			key: `transferCard`,
-			do: (_, cardKey, to) => {
+			do: (_, cardKey, toStack) => {
 				editRelations(stacksOfCards, (relations) => {
-					relations.set(to, cardKey)
+					relations.set(toStack, cardKey)
 				})
 			},
 		})
@@ -387,8 +415,19 @@ describe(`join in perspective`, () => {
 			outcome = event
 		})
 
+		console.log(`🛂 transferCardTx`, transferCardTx)
+
 		runTransaction(transferCardTx)(`card::44`, `stack-deck::1`)
 
 		console.log(inspect(outcome, false, 10, true))
+		console.log(
+			inspect(
+				outcome?.subEvents.map((event) => event.type),
+				false,
+				10,
+				true,
+			),
+		)
+		console.log(IMPLICIT.STORE.moleculeGraph)
 	})
 })
