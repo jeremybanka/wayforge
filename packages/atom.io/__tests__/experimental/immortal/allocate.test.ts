@@ -530,17 +530,14 @@ describe(`integrations`, () => {
 		expect(IMPLICIT.STORE.moleculeGraph.contents).toEqual(sueConfiguration)
 	})
 	test(`join supports allocation pattern`, () => {
-		const roomPlayers = join(
-			{
-				key: `roomPlayers`,
-				between: [`room`, `player`],
-				cardinality: `1:1`,
-				isAType: (input): input is `arena` | `lobby` =>
-					[`lobby`, `arena`].includes(input),
-				isBType: (input): input is `joshua` => input === `joshua`,
-			},
-			{ joinedAt: Number.NaN },
-		)
+		const roomPlayers = join({
+			key: `roomPlayers`,
+			between: [`room`, `player`],
+			cardinality: `1:1`,
+			isAType: (input): input is `arena` | `lobby` =>
+				[`lobby`, `arena`].includes(input),
+			isBType: (input): input is `joshua` => input === `joshua`,
+		})
 		const anarchy = new Anarchy()
 		anarchy.allocate(`root`, `joshua`)
 		anarchy.allocate(`root`, `lobby`)
@@ -554,10 +551,7 @@ describe(`integrations`, () => {
 		expect(IMPLICIT.STORE.valueMap.size).toBe(0)
 
 		editRelations(roomPlayers, (relations) => {
-			relations.set(
-				{ player: `joshua`, room: `lobby` },
-				{ joinedAt: Date.now() },
-			)
+			relations.set({ player: `joshua`, room: `lobby` })
 		})
 		expect(IMPLICIT.STORE.molecules.size).toBe(5)
 		expect(IMPLICIT.STORE.moleculeGraph.relations.size).toBe(5)
