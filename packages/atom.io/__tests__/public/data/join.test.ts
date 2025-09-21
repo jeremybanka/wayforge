@@ -39,43 +39,28 @@ describe(`join with content`, () => {
 		expect(logger.error).not.toHaveBeenCalled()
 	})
 	test(`supports 1:1 relations`, () => {
-		const roomPlayers = join(
-			{
-				key: `roomPlayers`,
-				between: [`room`, `player`],
-				cardinality: `1:1`,
-				isAType: (input): input is `arena` | `lobby` =>
-					[`lobby`, `arena`].includes(input),
-				isBType: (input): input is `joshua` => input === `joshua`,
-			},
-			{ joinedAt: Number.NaN },
-		)
+		const roomPlayers = join({
+			key: `roomPlayers`,
+			between: [`room`, `player`],
+			cardinality: `1:1`,
+			isAType: (input): input is `arena` | `lobby` =>
+				[`lobby`, `arena`].includes(input),
+			isBType: (input): input is `joshua` => input === `joshua`,
+		})
 		const lobbyPlayerState = findRelations(roomPlayers, `lobby`).playerKeyOfRoom
 		const joshuaRoomState = findRelations(roomPlayers, `joshua`).roomKeyOfPlayer
 
 		const arenaPlayerState = findRelations(roomPlayers, `arena`).playerKeyOfRoom
-
-		const lobbyPlayerEntryState = findRelations(
-			roomPlayers,
-			`lobby`,
-		).playerEntryOfRoom
-		const joshuaRoomEntryState = findRelations(
-			roomPlayers,
-			`joshua`,
-		).roomEntryOfPlayer
 
 		subscribe(arenaPlayerState, Utils.stdout)
 
 		subscribe(lobbyPlayerState, Utils.stdout0)
 		subscribe(joshuaRoomState, Utils.stdout1)
 
-		subscribe(lobbyPlayerEntryState, Utils.stdout2)
-		subscribe(joshuaRoomEntryState, Utils.stdout3)
-
 		const joinedAt = Date.now()
 
 		editRelations(roomPlayers, (relations) => {
-			relations.set({ player: `joshua`, room: `lobby` }, { joinedAt })
+			relations.set({ player: `joshua`, room: `lobby` })
 		})
 
 		expect(Utils.stdout).toHaveBeenCalledTimes(0)
@@ -97,40 +82,27 @@ describe(`join with content`, () => {
 		})
 	})
 	test(`supports 1:n relations`, () => {
-		const roomPlayers = join(
-			{
-				key: `playersInRooms`,
-				between: [`room`, `player`],
-				cardinality: `1:n`,
-				isAType: (input): input is `arena` | `lobby` =>
-					[`lobby`, `arena`].includes(input),
-				isBType: (input): input is `joshua` => input === `joshua`,
-			},
-			{ joinedAt: Number.NaN },
-		)
+		const roomPlayers = join({
+			key: `playersInRooms`,
+			between: [`room`, `player`],
+			cardinality: `1:n`,
+			isAType: (input): input is `arena` | `lobby` =>
+				[`lobby`, `arena`].includes(input),
+			isBType: (input): input is `joshua` => input === `joshua`,
+		})
 		const lobbyPlayersState = findRelations(
 			roomPlayers,
 			`lobby`,
 		).playerKeysOfRoom
 		const joshuaRoomState = findRelations(roomPlayers, `joshua`).roomKeyOfPlayer
-		const lobbyPlayerEntriesState = findRelations(
-			roomPlayers,
-			`lobby`,
-		).playerEntriesOfRoom
-		const joshuaRoomEntryState = findRelations(
-			roomPlayers,
-			`joshua`,
-		).roomEntryOfPlayer
 
 		subscribe(lobbyPlayersState, Utils.stdout0)
 		subscribe(joshuaRoomState, Utils.stdout1)
-		subscribe(lobbyPlayerEntriesState, Utils.stdout2)
-		subscribe(joshuaRoomEntryState, Utils.stdout3)
 
 		const joinedAt = Date.now()
 
 		editRelations(roomPlayers, (relations) => {
-			relations.set({ player: `joshua`, room: `lobby` }, { joinedAt })
+			relations.set({ player: `joshua`, room: `lobby` })
 		})
 
 		expect(Utils.stdout0).toHaveBeenCalledWith({
@@ -151,18 +123,15 @@ describe(`join with content`, () => {
 		})
 	})
 	test(`supports n:n relations`, () => {
-		const roomPlayers = join(
-			{
-				key: `playersInRooms`,
-				between: [`room`, `player`],
-				cardinality: `n:n`,
-				isAType: (input): input is `room::arena` | `room::lobby` =>
-					[`lobby`, `arena`].includes(input),
-				isBType: (input): input is `player::josh` | `player::joshua` =>
-					[`josh`, `joshua`].includes(input),
-			},
-			{ joinedAt: Number.NaN },
-		)
+		const roomPlayers = join({
+			key: `playersInRooms`,
+			between: [`room`, `player`],
+			cardinality: `n:n`,
+			isAType: (input): input is `room::arena` | `room::lobby` =>
+				[`lobby`, `arena`].includes(input),
+			isBType: (input): input is `player::josh` | `player::joshua` =>
+				[`josh`, `joshua`].includes(input),
+		})
 
 		const lobbyPlayersState = findRelations(
 			roomPlayers,
@@ -172,26 +141,13 @@ describe(`join with content`, () => {
 			roomPlayers,
 			`player::joshua`,
 		).roomKeysOfPlayer
-		const lobbyPlayerEntriesState = findRelations(
-			roomPlayers,
-			`room::lobby`,
-		).playerEntriesOfRoom
-		const joshuaRoomsEntriesState = findRelations(
-			roomPlayers,
-			`player::joshua`,
-		).roomEntriesOfPlayer
 
 		subscribe(lobbyPlayersState, Utils.stdout0)
 		subscribe(joshuaRoomsState, Utils.stdout1)
-		subscribe(lobbyPlayerEntriesState, Utils.stdout2)
-		subscribe(joshuaRoomsEntriesState, Utils.stdout3)
 
 		const joinedAt = Date.now()
 		editRelations(roomPlayers, (relations) => {
-			relations.set(
-				{ room: `room::lobby`, player: `player::joshua` },
-				{ joinedAt },
-			)
+			relations.set({ room: `room::lobby`, player: `player::joshua` })
 			expect(relations.has(`player::josh`)).toBe(false)
 			expect(relations.has(`player::josh`, `room::lobby`)).toBe(false)
 			expect(relations.has(`player::joshua`)).toBe(true)

@@ -43,7 +43,7 @@ export const joinRoomTX: TransactionToken<
 		editRelationsInStore(
 			usersInRooms,
 			(relations) => {
-				relations.set({ room: roomId, user: userId }, meta)
+				relations.set({ room: roomId, user: userId })
 			},
 			tools.env().store,
 		)
