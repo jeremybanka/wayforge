@@ -1,33 +1,22 @@
 import type {
-	CompoundTypedKey,
 	findState,
 	getState,
 	JoinOptions,
 	MutableAtomFamilyToken,
 	Read,
 	ReadonlyPureSelectorFamilyToken,
-	RegularAtomFamilyToken,
 	setState,
-	ViewOf,
 	Write,
 	WriterToolkit,
 } from "atom.io"
 import { Anarchy } from "atom.io"
-import type { Json } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 import { UList } from "atom.io/transceivers/u-list"
 
 import { capitalize } from "../capitalize"
-import {
-	createReadonlyPureSelectorFamily,
-	createRegularAtomFamily,
-	findInStore,
-} from "../families"
+import { createReadonlyPureSelectorFamily, findInStore } from "../families"
 import { getFromStore } from "../get-state"
-import type {
-	BaseExternalStoreConfiguration,
-	ExternalStoreConfiguration,
-} from "../junction"
+import type { BaseExternalStoreConfiguration } from "../junction"
 import { Junction } from "../junction"
 import { createMutableAtomFamily, getJsonFamily, getJsonToken } from "../mutable"
 import { setIntoStore } from "../set-state"
@@ -41,21 +30,8 @@ export type JoinStateFamilies<
 	BSide extends string,
 	BType extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
-	Content extends Json.Object | null,
 > = Cardinality extends `1:1`
-	? (Content extends Json.Object
-			? {
-					readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlyPureSelectorFamilyToken<
-						[AType, Content] | null,
-						BType
-					>
-				} & {
-					readonly [B in BSide as `${B}EntryOf${Capitalize<ASide>}`]: ReadonlyPureSelectorFamilyToken<
-						[BType, Content] | null,
-						AType
-					>
-				}
-			: {}) & {
+	? {
 			readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlyPureSelectorFamilyToken<
 				AType | null,
 				BType
@@ -67,43 +43,14 @@ export type JoinStateFamilies<
 			>
 		}
 	: Cardinality extends `1:n`
-		? (Content extends Json.Object
-				? {
-						readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlyPureSelectorFamilyToken<
-							[AType, Content] | null,
-							BType
-						>
-					} & {
-						readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlyPureSelectorFamilyToken<
-							[BType, Content][],
-							AType
-						>
-					}
-				: {}) & {
-				readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlyPureSelectorFamilyToken<
-					AType | null,
-					BType
-				>
-			} & {
+		? {
 				readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlyPureSelectorFamilyToken<
 					BType[],
 					AType
 				>
 			}
 		: Cardinality extends `n:n`
-			? (Content extends Json.Object
-					? {
-							readonly [A in ASide as `${A}EntriesOf${Capitalize<BSide>}`]: ReadonlyPureSelectorFamilyToken<
-								[AType, Content][],
-								BType
-							>
-						} & {
-							readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlyPureSelectorFamilyToken<
-								[BType, Content][],
-								AType
-							>
-						}
-					: {}) & {
+			? {
 					readonly [A in ASide as `${A}KeysOf${Capitalize<BSide>}`]: ReadonlyPureSelectorFamilyToken<
 						AType[],
 						BType
@@ -122,31 +69,17 @@ export class Join<
 	const BSide extends string,
 	const BType extends string,
 	const Cardinality extends `1:1` | `1:n` | `n:n`,
-	const Content extends Json.Object | null = null,
-	const ContentKey extends CompoundTypedKey<
-		`content`,
-		ASide,
-		BSide
-	> = CompoundTypedKey<`content`, ASide, BSide>,
 > {
 	private toolkit: WriterToolkit
-	public options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>
-	public defaultContent: Content | undefined
-	public relations: Junction<ASide, AType, BSide, BType, Content>
-	public states: JoinStateFamilies<
-		ASide,
-		AType,
-		BSide,
-		BType,
-		Cardinality,
-		Content
-	>
+	public options: JoinOptions<ASide, AType, BSide, BType, Cardinality>
+	public relations: Junction<ASide, AType, BSide, BType>
+	public states: JoinStateFamilies<ASide, AType, BSide, BType, Cardinality>
 	public core: {
 		relatedKeysAtoms: MutableAtomFamilyToken<UList<string>, string>
 	}
 	public transact(
 		toolkit: WriterToolkit,
-		run: (join: Join<ASide, AType, BSide, BType, Cardinality, Content>) => void,
+		run: (join: Join<ASide, AType, BSide, BType, Cardinality>) => void,
 	): void {
 		const originalToolkit = this.toolkit
 		this.toolkit = toolkit
@@ -160,8 +93,7 @@ export class Join<
 	public [Symbol.dispose](): void {}
 
 	public constructor(
-		options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>,
-		defaultContent: Content | undefined,
+		options: JoinOptions<ASide, AType, BSide, BType, Cardinality>,
 		store: RootStore = IMPLICIT.STORE,
 	) {
 		type AnyKey = AType & BType
@@ -169,7 +101,6 @@ export class Join<
 		this.store = store
 		this.realm = new Anarchy(store)
 		this.options = options
-		this.defaultContent = defaultContent
 
 		this.store.miscResources.set(`join:${options.key}`, this)
 
@@ -328,75 +259,30 @@ export class Join<
 			},
 			has: (a, b) => has(this.toolkit, a, b),
 		}
-		let externalStore: ExternalStoreConfiguration<Content>
-		let contentAtoms: RegularAtomFamilyToken<Content, string>
+		const externalStore = baseExternalStoreConfiguration
+		const relations = new Junction<ASide, AType, BSide, BType>(options as any, {
+			externalStore,
+			isAType: options.isAType,
+			isBType: options.isBType,
+			makeContentKey: (...args) => {
+				const [a, b] = args
+				const [x, y] = args.sort()
+				const compositeKey = `${x}:${y}`
+				const aMolecule = store.molecules.get(stringifyJson(a))
+				const bMolecule = store.molecules.get(stringifyJson(b))
+				if (!aMolecule) {
+					this.realm.allocate(options.key, a)
+				}
+				if (!bMolecule) {
+					this.realm.allocate(options.key, b)
+				}
 
-		if (defaultContent) {
-			contentAtoms = createRegularAtomFamily<Content, ContentKey, never>(
-				store,
-				{
-					key: `${options.key}/content`,
-					default: defaultContent,
-				},
-				[`join`, `content`],
-			)
-
-			const getContent: Read<(key: string) => ViewOf<Content> | null> = (
-				{ get },
-				key,
-			) => get(contentAtoms, key)
-			const setContent: Write<(key: string, content: Content) => void> = (
-				{ set },
-				key,
-				content,
-			) => {
-				set(contentAtoms, key, content)
-			}
-
-			const externalStoreWithContentConfiguration = {
-				getContent: (contentKey: ContentKey) => {
-					const content = getContent(this.toolkit, contentKey)
-					return content
-				},
-				setContent: (contentKey: ContentKey, content: Content) => {
-					setContent(this.toolkit, contentKey, content)
-				},
-				deleteContent: (_: ContentKey) => {},
-			}
-			externalStore = Object.assign(
-				baseExternalStoreConfiguration,
-				externalStoreWithContentConfiguration,
-			) as ExternalStoreConfiguration<Content>
-		} else {
-			externalStore =
-				baseExternalStoreConfiguration as ExternalStoreConfiguration<Content>
-		}
-		const relations = new Junction<ASide, AType, BSide, BType, Content>(
-			options as any,
-			{
-				externalStore,
-				isAType: options.isAType,
-				isBType: options.isBType,
-				makeContentKey: (...args) => {
-					const [a, b] = args
-					const [x, y] = args.sort()
-					const compositeKey = `${x}:${y}`
-					const aMolecule = store.molecules.get(stringifyJson(a))
-					const bMolecule = store.molecules.get(stringifyJson(b))
-					if (!aMolecule) {
-						this.realm.allocate(options.key, a)
-					}
-					if (!bMolecule) {
-						this.realm.allocate(options.key, b)
-					}
-
-					this.realm.allocate(a, compositeKey, `all`)
-					this.realm.claim(b, compositeKey)
-					this.store.moleculeJoins.set(compositeKey, options.key)
-					return compositeKey
-				},
+				this.realm.allocate(a, compositeKey, `all`)
+				this.realm.claim(b, compositeKey)
+				this.store.moleculeJoins.set(compositeKey, options.key)
+				return compositeKey
 			},
-		)
+		})
 
 		const createSingleKeySelectorFamily = () =>
 			createReadonlyPureSelectorFamily<string | null, string, never>(
@@ -431,92 +317,17 @@ export class Join<
 				[`join`, `keys`],
 			)
 		}
-		const createSingleEntrySelectorFamily = () =>
-			createReadonlyPureSelectorFamily<
-				[string, ViewOf<Content>] | null,
-				string,
-				never
-			>(
-				store,
-				{
-					key: `${options.key}/singleRelatedEntry`,
-					get:
-						(x) =>
-						({ get }) => {
-							const relatedKeys = get(relatedKeysAtoms, x)
-							for (const y of relatedKeys) {
-								let a = relations.isAType?.(x) ? x : undefined
-								let b = a === undefined ? (x as BType) : undefined
-								a ??= y as AType
-								b ??= y as BType
-								const contentKey = relations.makeContentKey(a, b)
-								const content = get(contentAtoms, contentKey)
-								return [y, content]
-							}
-							return null
-						},
-				},
-				[`join`, `entries`],
-			)
-		const getMultipleEntrySelectorFamily = () =>
-			createReadonlyPureSelectorFamily<
-				[string, ViewOf<Content>][],
-				string,
-				never
-			>(
-				store,
-				{
-					key: `${options.key}/multipleRelatedEntries`,
-					get:
-						(x) =>
-						({ get }) => {
-							const jsonFamily = getJsonFamily(relatedKeysAtoms, store)
-							const json = get(jsonFamily, x)
-							return json.map((y) => {
-								let a = relations.isAType?.(x) ? x : undefined
-								let b = a === undefined ? (x as BType) : undefined
-								a ??= y as AType
-								b ??= y as BType
-								const contentKey = relations.makeContentKey(a, b)
-								const content = get(contentAtoms, contentKey)
-								return [y, content]
-							})
-						},
-				},
-				[`join`, `entries`],
-			)
 
 		switch (options.cardinality) {
 			case `1:1`: {
 				const singleRelatedKeySelectors = createSingleKeySelectorFamily()
 				const stateKeyA = `${aSide}KeyOf${capitalize(bSide)}` as const
 				const stateKeyB = `${bSide}KeyOf${capitalize(aSide)}` as const
-				const baseStates = {
+				this.relations = relations
+				this.states = {
 					[stateKeyA]: singleRelatedKeySelectors,
 					[stateKeyB]: singleRelatedKeySelectors,
-				} as JoinStateFamilies<ASide, AType, BSide, BType, Cardinality, Content>
-				let states: JoinStateFamilies<
-					ASide,
-					AType,
-					BSide,
-					BType,
-					Cardinality,
-					Content
-				>
-				if (defaultContent) {
-					const singleEntrySelectors = createSingleEntrySelectorFamily()
-					const entriesStateKeyA = `${aSide}EntryOf${capitalize(bSide)}` as const
-					const entriesStateKeyB = `${bSide}EntryOf${capitalize(aSide)}` as const
-					const contentStates = {
-						[entriesStateKeyA]: singleEntrySelectors,
-						[entriesStateKeyB]: singleEntrySelectors,
-					}
-					states = Object.assign(baseStates, contentStates)
-				} else {
-					states = baseStates
-				}
-				this.relations = relations
-				this.states = states
+				} as JoinStateFamilies<ASide, AType, BSide, BType, Cardinality>
 				break
 			}
 			case `1:n`: {
@@ -527,70 +338,21 @@ export class Join<
 				const baseStates = {
 					[stateKeyA]: singleRelatedKeySelectors,
 					[stateKeyB]: multipleRelatedKeysSelectors,
-				} as JoinStateFamilies<ASide, AType, BSide, BType, Cardinality, Content>
-				let states: JoinStateFamilies<
-					ASide,
-					AType,
-					BSide,
-					BType,
-					Cardinality,
-					Content
-				>
-				if (defaultContent) {
-					const singleRelatedEntrySelectors = createSingleEntrySelectorFamily()
-					const multipleRelatedEntriesSelectors =
-						getMultipleEntrySelectorFamily()
-					const entriesStateKeyA = `${aSide}EntryOf${capitalize(bSide)}` as const
-					const entriesStateKeyB = `${bSide}EntriesOf${capitalize(
-						aSide,
-					)}` as const
-					const contentStates = {
-						[entriesStateKeyA]: singleRelatedEntrySelectors,
-						[entriesStateKeyB]: multipleRelatedEntriesSelectors,
-					}
-					states = Object.assign(baseStates, contentStates)
-				} else {
-					states = baseStates
-				}
+				} as JoinStateFamilies<ASide, AType, BSide, BType, Cardinality>
+
 				this.relations = relations
-				this.states = states
+				this.states = baseStates
 				break
 			}
 			case `n:n`: {
 				const multipleRelatedKeysSelectors = getMultipleKeySelectorFamily()
 				const stateKeyA = `${aSide}KeysOf${capitalize(bSide)}` as const
 				const stateKeyB = `${bSide}KeysOf${capitalize(aSide)}` as const
-				const baseStates = {
+				this.relations = relations
+				this.states = {
 					[stateKeyA]: multipleRelatedKeysSelectors,
 					[stateKeyB]: multipleRelatedKeysSelectors,
-				} as JoinStateFamilies<ASide, AType, BSide, BType, Cardinality, Content>
-				let states: JoinStateFamilies<
-					ASide,
-					AType,
-					BSide,
-					BType,
-					Cardinality,
-					Content
-				>
-				if (defaultContent) {
-					const multipleRelatedEntriesSelectors =
-						getMultipleEntrySelectorFamily()
-					const entriesStateKeyA = `${aSide}EntriesOf${capitalize(
-						bSide,
-					)}` as const
-					const entriesStateKeyB = `${bSide}EntriesOf${capitalize(
-						aSide,
-					)}` as const
-					const contentStates = {
-						[entriesStateKeyA]: multipleRelatedEntriesSelectors,
-						[entriesStateKeyB]: multipleRelatedEntriesSelectors,
-					}
-					states = Object.assign(baseStates, contentStates)
-				} else {
-					states = baseStates
-				}
-				this.relations = relations
-				this.states = states
+				} as JoinStateFamilies<ASide, AType, BSide, BType, Cardinality>
 			}
 		}
 	}
