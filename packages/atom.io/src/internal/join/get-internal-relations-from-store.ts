@@ -8,7 +8,7 @@ export function getInternalRelationsFromStore<
 	AType extends string,
 	BType extends string,
 >(
-	token: JoinToken<any, AType, any, BType, any, any>,
+	token: JoinToken<any, AType, any, BType, any>,
 	store: RootStore,
 ): MutableAtomFamilyToken<UList<AType> | UList<BType>, string> {
 	const myJoin = getJoin(token, store)

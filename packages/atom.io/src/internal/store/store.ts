@@ -80,7 +80,7 @@ export class Store implements Lineage {
 		| PureSelectorFamily<any, any, any>
 		| RegularAtomFamily<any, any, any>
 	> = new Map()
-	public joins: Map<string, Join<any, any, any, any, any, any>> = new Map()
+	public joins: Map<string, Join<any, any, any, any, any>> = new Map()
 
 	public transactions: Map<string, Transaction<Fn>> = new Map()
 	public transactionMeta: TransactionEpoch | TransactionProgress<Fn> = {
