@@ -56,7 +56,7 @@ describe(`join with content`, () => {
 		subscribe(joshuaRoomState, Utils.stdout1)
 
 		editRelations(roomPlayers, (relations) => {
-			relations.set({ player: `joshua`, room: `lobby` })
+			relations.set(`lobby`, `joshua`)
 		})
 
 		expect(Utils.stdout).toHaveBeenCalledTimes(0)
