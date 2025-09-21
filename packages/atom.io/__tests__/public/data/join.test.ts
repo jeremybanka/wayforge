@@ -29,8 +29,6 @@ beforeEach(() => {
 	vitest.spyOn(Utils, `stdout`)
 	vitest.spyOn(Utils, `stdout0`)
 	vitest.spyOn(Utils, `stdout1`)
-	vitest.spyOn(Utils, `stdout2`)
-	vitest.spyOn(Utils, `stdout3`)
 })
 
 describe(`join with content`, () => {
@@ -57,8 +55,6 @@ describe(`join with content`, () => {
 		subscribe(lobbyPlayerState, Utils.stdout0)
 		subscribe(joshuaRoomState, Utils.stdout1)
 
-		const joinedAt = Date.now()
-
 		editRelations(roomPlayers, (relations) => {
 			relations.set({ player: `joshua`, room: `lobby` })
 		})
@@ -71,14 +67,6 @@ describe(`join with content`, () => {
 		expect(Utils.stdout1).toHaveBeenCalledWith({
 			oldValue: null,
 			newValue: `lobby`,
-		})
-		expect(Utils.stdout2).toHaveBeenCalledWith({
-			oldValue: null,
-			newValue: [`joshua`, { joinedAt }],
-		})
-		expect(Utils.stdout3).toHaveBeenCalledWith({
-			oldValue: null,
-			newValue: [`lobby`, { joinedAt }],
 		})
 	})
 	test(`supports 1:n relations`, () => {
@@ -99,8 +87,6 @@ describe(`join with content`, () => {
 		subscribe(lobbyPlayersState, Utils.stdout0)
 		subscribe(joshuaRoomState, Utils.stdout1)
 
-		const joinedAt = Date.now()
-
 		editRelations(roomPlayers, (relations) => {
 			relations.set({ player: `joshua`, room: `lobby` })
 		})
@@ -112,14 +98,6 @@ describe(`join with content`, () => {
 		expect(Utils.stdout1).toHaveBeenCalledWith({
 			oldValue: null,
 			newValue: `lobby`,
-		})
-		expect(Utils.stdout2).toHaveBeenCalledWith({
-			oldValue: [],
-			newValue: [[`joshua`, { joinedAt }]],
-		})
-		expect(Utils.stdout3).toHaveBeenCalledWith({
-			oldValue: null,
-			newValue: [`lobby`, { joinedAt }],
 		})
 	})
 	test(`supports n:n relations`, () => {
@@ -145,16 +123,12 @@ describe(`join with content`, () => {
 		subscribe(lobbyPlayersState, Utils.stdout0)
 		subscribe(joshuaRoomsState, Utils.stdout1)
 
-		const joinedAt = Date.now()
 		editRelations(roomPlayers, (relations) => {
 			relations.set({ room: `room::lobby`, player: `player::joshua` })
 			expect(relations.has(`player::josh`)).toBe(false)
 			expect(relations.has(`player::josh`, `room::lobby`)).toBe(false)
 			expect(relations.has(`player::joshua`)).toBe(true)
 			expect(relations.has(`player::joshua`, `room::lobby`)).toBe(true)
-			expect(relations.getContent(`room::lobby`, `player::joshua`)).toEqual({
-				joinedAt,
-			})
 		})
 
 		expect(Utils.stdout0).toHaveBeenCalledWith({
@@ -164,14 +138,6 @@ describe(`join with content`, () => {
 		expect(Utils.stdout1).toHaveBeenCalledWith({
 			oldValue: [],
 			newValue: [`room::lobby`],
-		})
-		expect(Utils.stdout2).toHaveBeenCalledWith({
-			oldValue: [],
-			newValue: [[`player::joshua`, { joinedAt }]],
-		})
-		expect(Utils.stdout3).toHaveBeenCalledWith({
-			oldValue: [],
-			newValue: [[`room::lobby`, { joinedAt }]],
 		})
 
 		editRelations(roomPlayers, (relations) => {

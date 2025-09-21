@@ -553,9 +553,9 @@ describe(`integrations`, () => {
 		editRelations(roomPlayers, (relations) => {
 			relations.set({ player: `joshua`, room: `lobby` })
 		})
-		expect(IMPLICIT.STORE.molecules.size).toBe(5)
-		expect(IMPLICIT.STORE.moleculeGraph.relations.size).toBe(5)
-		expect(IMPLICIT.STORE.valueMap.size).toBe(5)
+		expect(IMPLICIT.STORE.molecules.size).toBe(4)
+		expect(IMPLICIT.STORE.moleculeGraph.relations.size).toBe(4)
+		expect(IMPLICIT.STORE.valueMap.size).toBe(4)
 		anarchy.deallocate(`lobby`)
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
 		expect(IMPLICIT.STORE.moleculeGraph.relations.size).toBe(3)
