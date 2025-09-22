@@ -6,15 +6,15 @@ import { IMPLICIT } from "../store"
 import { Join } from "./join-internal"
 
 export function getJoin<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
+	AName extends string,
+	A extends string,
+	BName extends string,
+	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 >(
-	token: JoinToken<ASide, AType, BSide, BType, Cardinality>,
+	token: JoinToken<AName, A, BName, B, Cardinality>,
 	store: Store,
-): Join<ASide, AType, BSide, BType, Cardinality> {
+): Join<AName, A, BName, B, Cardinality> {
 	let myJoin = store.joins.get(token.key)
 	if (myJoin === undefined) {
 		const rootJoinMap = IMPLICIT.STORE.joins

@@ -17,31 +17,31 @@ import type { UList } from "atom.io/transceivers/u-list"
 
 // biome-ignore format: intersection
 export type JoinOptions<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
+	AName extends string,
+	A extends string,
+	BName extends string,
+	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 > =
 	Flat<
-		& JunctionSchemaBase<ASide, BSide>
+		& JunctionSchemaBase<AName, BName>
 		& {
 			/** Unique identifier of the join */
 			readonly key: string
 			/** How many relations are allowed in each direction? */
 			readonly cardinality: Cardinality
 			/** Type guard for the type of the left side */
-			readonly isAType: Refinement<string, AType>
+			readonly isAType: Refinement<string, A>
 			/** Type guard for the type of the right side */
-			readonly isBType: Refinement<string, BType>
+			readonly isBType: Refinement<string, B>
 		}
-	> & Partial<JunctionEntriesBase<AType, BType, null>>
+	> & Partial<JunctionEntriesBase<A, B, null>>
 
 export type JoinToken<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
+	AName extends string,
+	A extends string,
+	BName extends string,
+	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 > = {
 	/** Unique identifier of the join */
@@ -51,13 +51,13 @@ export type JoinToken<
 	/** How many relations are allowed in each direction? */
 	cardinality: Cardinality
 	/** Name of the join's left side */
-	a: ASide
+	a: AName
 	/** Name of the join's right side */
-	b: BSide
+	b: BName
 	/** Never present. This is a marker that preserves the type of the left side's keys */
-	__aType?: AType
+	__aType?: A
 	/** Never present. This is a marker that preserves the type of the right side's keys */
-	__bType?: BType
+	__bType?: B
 }
 
 /**
@@ -72,57 +72,57 @@ export type JoinToken<
  * A reference to the join created: a {@link JoinToken}
  */
 export function join<
-	const ASide extends string,
-	const AType extends string,
-	const BSide extends string,
-	const BType extends string,
+	const AName extends string,
+	const A extends string,
+	const BName extends string,
+	const B extends string,
 	const Cardinality extends `1:1` | `1:n` | `n:n`,
 >(
-	options: JoinOptions<ASide, AType, BSide, BType, Cardinality>,
-): JoinToken<ASide, AType, BSide, BType, Cardinality> {
+	options: JoinOptions<AName, A, BName, B, Cardinality>,
+): JoinToken<AName, A, BName, B, Cardinality> {
 	return createJoin(IMPLICIT.STORE, options)
 }
 
 export type JoinStates<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
+	AName extends string,
+	A extends string,
+	BName extends string,
+	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 > = Cardinality extends `1:1`
 	? {
-			readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlyPureSelectorToken<
-				AType | null,
-				BType
+			readonly [N in AName as `${N}KeyOf${Capitalize<BName>}`]: ReadonlyPureSelectorToken<
+				A | null,
+				B
 			>
 		} & {
-			readonly [B in BSide as `${B}KeyOf${Capitalize<ASide>}`]: ReadonlyPureSelectorToken<
-				BType | null,
-				AType
+			readonly [N in BName as `${N}KeyOf${Capitalize<AName>}`]: ReadonlyPureSelectorToken<
+				B | null,
+				A
 			>
 		}
 	: Cardinality extends `1:n`
 		? {
-				readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlyPureSelectorToken<
-					AType | null,
-					BType
+				readonly [N in AName as `${N}KeyOf${Capitalize<BName>}`]: ReadonlyPureSelectorToken<
+					A | null,
+					B
 				>
 			} & {
-				readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlyPureSelectorToken<
-					BType[],
-					AType
+				readonly [N in BName as `${N}KeysOf${Capitalize<AName>}`]: ReadonlyPureSelectorToken<
+					B[],
+					A
 				>
 			}
 		: Cardinality extends `n:n`
 			? {
-					readonly [A in ASide as `${A}KeysOf${Capitalize<BSide>}`]: ReadonlyPureSelectorToken<
-						AType[],
-						BType
+					readonly [N in AName as `${N}KeysOf${Capitalize<BName>}`]: ReadonlyPureSelectorToken<
+						A[],
+						B
 					>
 				} & {
-					readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlyPureSelectorToken<
-						BType[],
-						AType
+					readonly [N in BName as `${N}KeysOf${Capitalize<AName>}`]: ReadonlyPureSelectorToken<
+						B[],
+						A
 					>
 				}
 			: never
@@ -136,15 +136,15 @@ export type JoinStates<
  * @overload Default
  */
 export function findRelations<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
+	AName extends string,
+	A extends string,
+	BName extends string,
+	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 >(
-	token: JoinToken<ASide, AType, BSide, BType, Cardinality>,
-	key: AType | BType,
-): JoinStates<ASide, AType, BSide, BType, Cardinality> {
+	token: JoinToken<AName, A, BName, B, Cardinality>,
+	key: A | B,
+): JoinStates<AName, A, BName, B, Cardinality> {
 	return findRelationsInStore(token, key, IMPLICIT.STORE)
 }
 
@@ -154,14 +154,14 @@ export function findRelations<
  * @param change - A function that takes a {@link Junction} interface to edit the relations
  */
 export function editRelations<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
+	AName extends string,
+	A extends string,
+	BName extends string,
+	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 >(
-	token: JoinToken<ASide, AType, BSide, BType, Cardinality>,
-	change: (relations: Junction<ASide, AType, BSide, BType>) => void,
+	token: JoinToken<AName, A, BName, B, Cardinality>,
+	change: (relations: Junction<AName, A, BName, B>) => void,
 ): void {
 	editRelationsInStore(token, change, IMPLICIT.STORE)
 }
@@ -172,13 +172,13 @@ export function editRelations<
  * A {@link MutableAtomFamilyToken} to access the internal relations
  */
 export function getInternalRelations<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
+	AName extends string,
+	A extends string,
+	BName extends string,
+	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 >(
-	token: JoinToken<ASide, AType, BSide, BType, Cardinality>,
-): MutableAtomFamilyToken<UList<AType> | UList<BType>, string> {
+	token: JoinToken<AName, A, BName, B, Cardinality>,
+): MutableAtomFamilyToken<UList<A> | UList<B>, string> {
 	return getInternalRelationsFromStore(token, IMPLICIT.STORE)
 }

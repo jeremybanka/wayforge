@@ -4,17 +4,17 @@ import type { RootStore } from "../transaction"
 import { Join } from "./join-internal"
 
 export function createJoin<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
+	AName extends string,
+	A extends string,
+	BName extends string,
+	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 >(
 	store: RootStore,
-	options: JoinOptions<ASide, AType, BSide, BType, Cardinality>,
-): JoinToken<ASide, AType, BSide, BType, Cardinality> {
+	options: JoinOptions<AName, A, BName, B, Cardinality>,
+): JoinToken<AName, A, BName, B, Cardinality> {
 	store.joins.set(options.key, new Join(options))
-	const token: JoinToken<ASide, AType, BSide, BType, Cardinality> = {
+	const token: JoinToken<AName, A, BName, B, Cardinality> = {
 		key: options.key,
 		type: `join`,
 		a: options.between[0],

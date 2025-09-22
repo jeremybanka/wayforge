@@ -24,60 +24,60 @@ import { IMPLICIT } from "../store"
 import type { RootStore } from "../transaction"
 
 export type JoinStateFamilies<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
+	AName extends string,
+	A extends string,
+	BName extends string,
+	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 > = Cardinality extends `1:1`
 	? {
-			readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlyPureSelectorFamilyToken<
-				AType | null,
-				BType
+			readonly [N in AName as `${N}KeyOf${Capitalize<BName>}`]: ReadonlyPureSelectorFamilyToken<
+				A | null,
+				B
 			>
 		} & {
-			readonly [B in BSide as `${B}KeyOf${Capitalize<ASide>}`]: ReadonlyPureSelectorFamilyToken<
-				BType | null,
-				AType
+			readonly [N in BName as `${N}KeyOf${Capitalize<AName>}`]: ReadonlyPureSelectorFamilyToken<
+				B | null,
+				A
 			>
 		}
 	: Cardinality extends `1:n`
 		? {
-				readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlyPureSelectorFamilyToken<
-					BType[],
-					AType
+				readonly [N in BName as `${N}KeysOf${Capitalize<AName>}`]: ReadonlyPureSelectorFamilyToken<
+					B[],
+					A
 				>
 			}
 		: Cardinality extends `n:n`
 			? {
-					readonly [A in ASide as `${A}KeysOf${Capitalize<BSide>}`]: ReadonlyPureSelectorFamilyToken<
-						AType[],
-						BType
+					readonly [N in AName as `${N}KeysOf${Capitalize<BName>}`]: ReadonlyPureSelectorFamilyToken<
+						A[],
+						B
 					>
 				} & {
-					readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlyPureSelectorFamilyToken<
-						BType[],
-						AType
+					readonly [N in BName as `${N}KeysOf${Capitalize<AName>}`]: ReadonlyPureSelectorFamilyToken<
+						B[],
+						A
 					>
 				}
 			: never
 
 export class Join<
-	const ASide extends string,
-	const AType extends string,
-	const BSide extends string,
-	const BType extends string,
+	const AName extends string,
+	const A extends string,
+	const BName extends string,
+	const B extends string,
 	const Cardinality extends `1:1` | `1:n` | `n:n`,
 > {
 	private toolkit: WriterToolkit
-	public options: JoinOptions<ASide, AType, BSide, BType, Cardinality>
-	public relations: Junction<ASide, AType, BSide, BType>
-	public states: JoinStateFamilies<ASide, AType, BSide, BType, Cardinality>
+	public options: JoinOptions<AName, A, BName, B, Cardinality>
+	public relations: Junction<AName, A, BName, B>
+	public states: JoinStateFamilies<AName, A, BName, B, Cardinality>
 	public relatedKeysAtoms: MutableAtomFamilyToken<UList<string>, string>
 
 	public transact(
 		toolkit: WriterToolkit,
-		run: (join: Join<ASide, AType, BSide, BType, Cardinality>) => void,
+		run: (join: Join<AName, A, BName, B, Cardinality>) => void,
 	): void {
 		const originalToolkit = this.toolkit
 		this.toolkit = toolkit
@@ -91,10 +91,10 @@ export class Join<
 	public [Symbol.dispose](): void {}
 
 	public constructor(
-		options: JoinOptions<ASide, AType, BSide, BType, Cardinality>,
+		options: JoinOptions<AName, A, BName, B, Cardinality>,
 		store: RootStore = IMPLICIT.STORE,
 	) {
-		type AnyKey = AType & BType
+		type AB = A & B
 
 		this.store = store
 		this.realm = new Anarchy(store)
@@ -115,8 +115,8 @@ export class Join<
 			json: (token) => getJsonToken(store, token),
 		}
 
-		const aSide: ASide = options.between[0]
-		const bSide: BSide = options.between[1]
+		const aSide: AName = options.between[0]
+		const bSide: BName = options.between[1]
 		const relatedKeysAtoms = createMutableAtomFamily<UList<string>, string>(
 			store,
 			{
@@ -149,7 +149,7 @@ export class Join<
 				for (const newRelationB of newRelationsOfA) {
 					const relationsOfBAtom = find(relatedKeysAtoms, newRelationB)
 					const relationsOfB = get(relationsOfBAtom)
-					const newRelationBIsAlreadyRelated = relationsOfB.has(a as AnyKey)
+					const newRelationBIsAlreadyRelated = relationsOfB.has(a as AB)
 					if (this.relations.cardinality === `1:n`) {
 						const previousOwnersToDispose: string[] = []
 						for (const previousOwner of relationsOfB) {
@@ -163,7 +163,7 @@ export class Join<
 								relatedKeysAtoms,
 								previousOwner,
 								(relations) => {
-									relations.delete(newRelationB as AnyKey)
+									relations.delete(newRelationB as AB)
 									previousOwnerSize = relations.size
 									return relations
 								},
@@ -186,7 +186,7 @@ export class Join<
 					}
 					if (!newRelationBIsAlreadyRelated) {
 						set(relationsOfBAtom, (relations) => {
-							relations.add(a as AnyKey)
+							relations.add(a as AB)
 							return relations
 						})
 					}
@@ -220,7 +220,7 @@ export class Join<
 		}
 		const baseExternalStoreConfiguration: BaseExternalStoreConfiguration = {
 			getRelatedKeys: (key) =>
-				this.toolkit.get(relatedKeysAtoms, key) as UList<AType> | UList<BType>,
+				this.toolkit.get(relatedKeysAtoms, key) as UList<A> | UList<B>,
 			addRelation: (a, b) => {
 				this.store.moleculeJoins.set(`"${a}"`, options.key)
 				this.store.moleculeJoins.set(`"${b}"`, options.key)
@@ -254,11 +254,11 @@ export class Join<
 			},
 			has: (a, b) => {
 				const aKeys = this.toolkit.get(relatedKeysAtoms, a)
-				return b ? aKeys.has(b as AnyKey) : aKeys.size > 0
+				return b ? aKeys.has(b as AB) : aKeys.size > 0
 			},
 		}
 		const externalStore = baseExternalStoreConfiguration
-		const relations = new Junction<ASide, AType, BSide, BType>(options as any, {
+		const relations = new Junction<AName, A, BName, B>(options as any, {
 			externalStore,
 			isAType: options.isAType,
 			isBType: options.isBType,
@@ -325,7 +325,7 @@ export class Join<
 				this.states = {
 					[stateKeyA]: singleRelatedKeySelectors,
 					[stateKeyB]: singleRelatedKeySelectors,
-				} as JoinStateFamilies<ASide, AType, BSide, BType, Cardinality>
+				} as JoinStateFamilies<AName, A, BName, B, Cardinality>
 				break
 			}
 			case `1:n`: {
@@ -336,7 +336,7 @@ export class Join<
 				const baseStates = {
 					[stateKeyA]: singleRelatedKeySelectors,
 					[stateKeyB]: multipleRelatedKeysSelectors,
-				} as JoinStateFamilies<ASide, AType, BSide, BType, Cardinality>
+				} as JoinStateFamilies<AName, A, BName, B, Cardinality>
 
 				this.relations = relations
 				this.states = baseStates
@@ -350,7 +350,7 @@ export class Join<
 				this.states = {
 					[stateKeyA]: multipleRelatedKeysSelectors,
 					[stateKeyB]: multipleRelatedKeysSelectors,
-				} as JoinStateFamilies<ASide, AType, BSide, BType, Cardinality>
+				} as JoinStateFamilies<AName, A, BName, B, Cardinality>
 			}
 		}
 	}
