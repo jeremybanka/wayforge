@@ -7,14 +7,14 @@ import { isChildStore } from "../transaction"
 import { getJoin } from "./get-join"
 
 export function editRelationsInStore<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
+	AName extends string,
+	A extends string,
+	BName extends string,
+	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 >(
-	token: JoinToken<ASide, AType, BSide, BType, Cardinality>,
-	change: (relations: Junction<ASide, AType, BSide, BType>) => void,
+	token: JoinToken<AName, A, BName, B, Cardinality>,
+	change: (relations: Junction<AName, A, BName, B>) => void,
 	store: Store,
 ): void {
 	const myJoin = getJoin(token, store)

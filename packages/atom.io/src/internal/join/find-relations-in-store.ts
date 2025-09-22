@@ -6,18 +6,18 @@ import type { RootStore } from "../transaction"
 import { getJoin } from "./get-join"
 
 export function findRelationsInStore<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
+	AName extends string,
+	A extends string,
+	BName extends string,
+	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 >(
-	token: JoinToken<ASide, AType, BSide, BType, Cardinality>,
-	key: AType | BType,
+	token: JoinToken<AName, A, BName, B, Cardinality>,
+	key: A | B,
 	store: RootStore,
-): JoinStates<ASide, AType, BSide, BType, Cardinality> {
+): JoinStates<AName, A, BName, B, Cardinality> {
 	const myJoin = getJoin(token, store)
-	let relations: JoinStates<ASide, AType, BSide, BType, Cardinality>
+	let relations: JoinStates<AName, A, BName, B, Cardinality>
 	switch (token.cardinality satisfies `1:1` | `1:n` | `n:n`) {
 		case `1:1`: {
 			const keyAB = `${token.a}KeyOf${capitalize(token.b)}`
@@ -35,7 +35,7 @@ export function findRelationsInStore<
 					const state = findInStore(store, familyBA, key)
 					return state
 				},
-			} as JoinStates<ASide, AType, BSide, BType, Cardinality>
+			} as JoinStates<AName, A, BName, B, Cardinality>
 			break
 		}
 		case `1:n`: {
@@ -54,7 +54,7 @@ export function findRelationsInStore<
 					const state = findInStore(store, familyBA, key)
 					return state
 				},
-			} as JoinStates<ASide, AType, BSide, BType, Cardinality>
+			} as JoinStates<AName, A, BName, B, Cardinality>
 			break
 		}
 		case `n:n`: {
@@ -73,7 +73,7 @@ export function findRelationsInStore<
 					const state = findInStore(store, familyBA, key)
 					return state
 				},
-			} as JoinStates<ASide, AType, BSide, BType, Cardinality>
+			} as JoinStates<AName, A, BName, B, Cardinality>
 		}
 	}
 	return relations
