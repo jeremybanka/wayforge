@@ -73,9 +73,8 @@ export class Join<
 	public options: JoinOptions<ASide, AType, BSide, BType, Cardinality>
 	public relations: Junction<ASide, AType, BSide, BType>
 	public states: JoinStateFamilies<ASide, AType, BSide, BType, Cardinality>
-	public core: {
-		relatedKeysAtoms: MutableAtomFamilyToken<UList<string>, string>
-	}
+	public relatedKeysAtoms: MutableAtomFamilyToken<UList<string>, string>
+
 	public transact(
 		toolkit: WriterToolkit,
 		run: (join: Join<ASide, AType, BSide, BType, Cardinality>) => void,
@@ -126,7 +125,7 @@ export class Join<
 			},
 			[`join`, `relations`],
 		)
-		this.core = { relatedKeysAtoms }
+		this.relatedKeysAtoms = relatedKeysAtoms
 
 		const replaceRelationsSafely: Write<
 			(a: string, newRelationsOfA: string[]) => void

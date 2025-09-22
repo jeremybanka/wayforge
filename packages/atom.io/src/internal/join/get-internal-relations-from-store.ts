@@ -12,7 +12,7 @@ export function getInternalRelationsFromStore<
 	store: RootStore,
 ): MutableAtomFamilyToken<UList<AType> | UList<BType>, string> {
 	const myJoin = getJoin(token, store)
-	const family = myJoin.core.relatedKeysAtoms as MutableAtomFamilyToken<
+	const family = myJoin.relatedKeysAtoms as MutableAtomFamilyToken<
 		UList<AType> | UList<BType>,
 		string
 	>
