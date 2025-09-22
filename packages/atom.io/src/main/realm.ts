@@ -164,15 +164,15 @@ export type T$ = typeof T$
 export type TypeTag<T extends string> = `${T$}--${T}`
 export type SingularTypedKey<T extends string = string> = `${T}::${string}`
 export type CompoundTypedKey<
+	T extends string = string,
 	A extends string = string,
 	B extends string = string,
-	C extends string = string,
-> = `${TypeTag<A>}==${SingularTypedKey<B>}++${SingularTypedKey<C>}`
+> = `${TypeTag<T>}==${SingularTypedKey<A>}++${SingularTypedKey<B>}`
 export type TypedKey<
+	T extends string = string,
 	A extends string = string,
 	B extends string = string,
-	C extends string = string,
-> = CompoundTypedKey<A, B, C> | SingularTypedKey<A>
+> = CompoundTypedKey<T, A, B> | SingularTypedKey<T>
 type Scope = SingularTypedKey[]
 type MutualFealty = {
 	above: Scope

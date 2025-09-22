@@ -13,39 +13,36 @@ import {
 	getInternalRelationsFromStore,
 	IMPLICIT,
 } from "atom.io/internal"
-import type { Json } from "atom.io/json"
 import type { UList } from "atom.io/transceivers/u-list"
 
 // biome-ignore format: intersection
 export type JoinOptions<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
+	AName extends string,
+	A extends string,
+	BName extends string,
+	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
-	Content extends Json.Object | null,
 > =
 	Flat<
-		& JunctionSchemaBase<ASide, BSide>
+		& JunctionSchemaBase<AName, BName>
 		& {
 			/** Unique identifier of the join */
 			readonly key: string
 			/** How many relations are allowed in each direction? */
 			readonly cardinality: Cardinality
 			/** Type guard for the type of the left side */
-			readonly isAType: Refinement<string, AType>
+			readonly isAType: Refinement<string, A>
 			/** Type guard for the type of the right side */
-			readonly isBType: Refinement<string, BType>
+			readonly isBType: Refinement<string, B>
 		}
-	> & Partial<JunctionEntriesBase<AType, BType, Content>>
+	> & Partial<JunctionEntriesBase<A, B, null>>
 
 export type JoinToken<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
+	AName extends string,
+	A extends string,
+	BName extends string,
+	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
-	Content extends Json.Object | null = null,
 > = {
 	/** Unique identifier of the join */
 	key: string
@@ -54,15 +51,13 @@ export type JoinToken<
 	/** How many relations are allowed in each direction? */
 	cardinality: Cardinality
 	/** Name of the join's left side */
-	a: ASide
+	a: AName
 	/** Name of the join's right side */
-	b: BSide
+	b: BName
 	/** Never present. This is a marker that preserves the type of the left side's keys */
-	__aType?: AType
+	__aType?: A
 	/** Never present. This is a marker that preserves the type of the right side's keys */
-	__bType?: BType
-	/** Never present. This is a marker that preserves the type of the data present for each relation */
-	__content?: Content
+	__bType?: B
 }
 
 /**
@@ -73,136 +68,61 @@ export type JoinToken<
  * Under the hood, joins coordinate changes of multiple atoms to support that the desired relationships stay consistent.
  *
  * @param options - {@link JoinOptions}
- * @param defaultContent - (undefined)
  * @returns
  * A reference to the join created: a {@link JoinToken}
- * @overload No Content
  */
 export function join<
-	const ASide extends string,
-	const AType extends string,
-	const BSide extends string,
-	const BType extends string,
+	const AName extends string,
+	const A extends string,
+	const BName extends string,
+	const B extends string,
 	const Cardinality extends `1:1` | `1:n` | `n:n`,
 >(
-	options: JoinOptions<ASide, AType, BSide, BType, Cardinality, null>,
-	defaultContent?: undefined,
-): JoinToken<ASide, AType, BSide, BType, Cardinality, null>
-/**
- * Create a join, an interface for managing relations between two sets of keys.
- *
- * Use joins when it is important to view relationships from either side.
- *
- * Under the hood, joins coordinate changes of multiple atoms to support that the desired relationships stay consistent.
- *
- * @param options - {@link JoinOptions}
- * @param defaultContent - The default value for the content of each relation
- * @returns
- * A reference to the join created: a {@link JoinToken}
- * @overload With Content
- */
-export function join<
-	const ASide extends string,
-	const AType extends string,
-	const BSide extends string,
-	const BType extends string,
-	const Cardinality extends `1:1` | `1:n` | `n:n`,
-	const Content extends Json.Object,
->(
-	options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>,
-	defaultContent: Content,
-): JoinToken<ASide, AType, BSide, BType, Cardinality, Content>
-export function join<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
-	Cardinality extends `1:1` | `1:n` | `n:n`,
-	Content extends Json.Object,
->(
-	options: JoinOptions<ASide, AType, BSide, BType, Cardinality, Content>,
-	defaultContent: Content | undefined,
-): JoinToken<ASide, AType, BSide, BType, Cardinality, Content> {
-	return createJoin(IMPLICIT.STORE, options, defaultContent)
+	options: JoinOptions<AName, A, BName, B, Cardinality>,
+): JoinToken<AName, A, BName, B, Cardinality> {
+	return createJoin(IMPLICIT.STORE, options)
 }
 
 export type JoinStates<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
+	AName extends string,
+	A extends string,
+	BName extends string,
+	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
-	Content extends Json.Object | null,
 > = Cardinality extends `1:1`
-	? (Content extends Json.Object
-			? {
-					readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlyPureSelectorToken<
-						[AType, Content] | null,
-						BType
-					>
-				} & {
-					readonly [B in BSide as `${B}EntryOf${Capitalize<ASide>}`]: ReadonlyPureSelectorToken<
-						[BType, Content] | null,
-						AType
-					>
-				}
-			: {}) & {
-			readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlyPureSelectorToken<
-				AType | null,
-				BType
+	? {
+			readonly [N in AName as `${N}KeyOf${Capitalize<BName>}`]: ReadonlyPureSelectorToken<
+				A | null,
+				B
 			>
 		} & {
-			readonly [B in BSide as `${B}KeyOf${Capitalize<ASide>}`]: ReadonlyPureSelectorToken<
-				BType | null,
-				AType
+			readonly [N in BName as `${N}KeyOf${Capitalize<AName>}`]: ReadonlyPureSelectorToken<
+				B | null,
+				A
 			>
 		}
 	: Cardinality extends `1:n`
-		? (Content extends Json.Object
-				? {
-						readonly [A in ASide as `${A}EntryOf${Capitalize<BSide>}`]: ReadonlyPureSelectorToken<
-							[AType, Content] | null,
-							BType
-						>
-					} & {
-						readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlyPureSelectorToken<
-							[BType, Content][],
-							AType
-						>
-					}
-				: {}) & {
-				readonly [A in ASide as `${A}KeyOf${Capitalize<BSide>}`]: ReadonlyPureSelectorToken<
-					AType | null,
-					BType
+		? {
+				readonly [N in AName as `${N}KeyOf${Capitalize<BName>}`]: ReadonlyPureSelectorToken<
+					A | null,
+					B
 				>
 			} & {
-				readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlyPureSelectorToken<
-					BType[],
-					AType
+				readonly [N in BName as `${N}KeysOf${Capitalize<AName>}`]: ReadonlyPureSelectorToken<
+					B[],
+					A
 				>
 			}
 		: Cardinality extends `n:n`
-			? (Content extends Json.Object
-					? {
-							readonly [A in ASide as `${A}EntriesOf${Capitalize<BSide>}`]: ReadonlyPureSelectorToken<
-								[AType, Content][],
-								BType
-							>
-						} & {
-							readonly [B in BSide as `${B}EntriesOf${Capitalize<ASide>}`]: ReadonlyPureSelectorToken<
-								[BType, Content][],
-								AType
-							>
-						}
-					: {}) & {
-					readonly [A in ASide as `${A}KeysOf${Capitalize<BSide>}`]: ReadonlyPureSelectorToken<
-						AType[],
-						BType
+			? {
+					readonly [N in AName as `${N}KeysOf${Capitalize<BName>}`]: ReadonlyPureSelectorToken<
+						A[],
+						B
 					>
 				} & {
-					readonly [B in BSide as `${B}KeysOf${Capitalize<ASide>}`]: ReadonlyPureSelectorToken<
-						BType[],
-						AType
+					readonly [N in BName as `${N}KeysOf${Capitalize<AName>}`]: ReadonlyPureSelectorToken<
+						B[],
+						A
 					>
 				}
 			: never
@@ -216,16 +136,15 @@ export type JoinStates<
  * @overload Default
  */
 export function findRelations<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
+	AName extends string,
+	A extends string,
+	BName extends string,
+	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
-	Content extends Json.Object | null,
 >(
-	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
-	key: AType | BType,
-): JoinStates<ASide, AType, BSide, BType, Cardinality, Content> {
+	token: JoinToken<AName, A, BName, B, Cardinality>,
+	key: A | B,
+): JoinStates<AName, A, BName, B, Cardinality> {
 	return findRelationsInStore(token, key, IMPLICIT.STORE)
 }
 
@@ -235,15 +154,14 @@ export function findRelations<
  * @param change - A function that takes a {@link Junction} interface to edit the relations
  */
 export function editRelations<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
+	AName extends string,
+	A extends string,
+	BName extends string,
+	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
-	Content extends Json.Object | null,
 >(
-	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
-	change: (relations: Junction<ASide, AType, BSide, BType, Content>) => void,
+	token: JoinToken<AName, A, BName, B, Cardinality>,
+	change: (relations: Junction<AName, A, BName, B>) => void,
 ): void {
 	editRelationsInStore(token, change, IMPLICIT.STORE)
 }
@@ -254,14 +172,13 @@ export function editRelations<
  * A {@link MutableAtomFamilyToken} to access the internal relations
  */
 export function getInternalRelations<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
+	AName extends string,
+	A extends string,
+	BName extends string,
+	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
-	Content extends Json.Object | null,
 >(
-	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
-): MutableAtomFamilyToken<UList<AType> | UList<BType>, string> {
+	token: JoinToken<AName, A, BName, B, Cardinality>,
+): MutableAtomFamilyToken<UList<A> | UList<B>, string> {
 	return getInternalRelationsFromStore(token, IMPLICIT.STORE)
 }
