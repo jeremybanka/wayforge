@@ -18,7 +18,7 @@ import { getFromStore } from "../get-state"
 import type { BaseExternalStoreConfiguration } from "../junction"
 import { Junction } from "../junction"
 import { createMutableAtomFamily, getJsonFamily, getJsonToken } from "../mutable"
-import { setIntoStore } from "../set-state"
+import { JOIN_OP, operateOnStore, setIntoStore } from "../set-state"
 import type { Store } from "../store"
 import { IMPLICIT } from "../store"
 import type { RootStore } from "../transaction"
@@ -157,18 +157,19 @@ export class Join<
 							if (previousOwner === a) {
 								continue
 							}
-							const previousOwnerRelationsAtom = find(
+							let previousOwnerSize: number | undefined
+							operateOnStore(
+								JOIN_OP,
+								this.store,
 								relatedKeysAtoms,
 								previousOwner,
+								(relations) => {
+									relations.delete(newRelationB as AnyKey)
+									previousOwnerSize = relations.size
+									return relations
+								},
 							)
-							const previousOwnerRelations = get(previousOwnerRelationsAtom)
-							// previousOwnerRelations.delete(newRelationB as AnyKey)
-
-							set(previousOwnerRelationsAtom, (relations) => {
-								relations.delete(newRelationB as AnyKey)
-								return relations
-							})
-							if (previousOwnerRelations.size === 0) {
+							if (previousOwnerSize === 0) {
 								previousOwnersToDispose.push(previousOwner)
 							}
 						}
