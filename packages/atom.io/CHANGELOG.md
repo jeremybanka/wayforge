@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.42.0
+
+### Minor Changes
+
+- c2e8fb6: 💥 BREAKING CHANGE: `Join` no longer supports creating state for relation contents. Instead, just use atom families keyed to the compound keys of the join.
+
 ## 0.41.1
 
 ### Patch Changes
