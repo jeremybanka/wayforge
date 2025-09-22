@@ -20,7 +20,7 @@
 		"anvl": "workspace:*",
 		"atom.io": "workspace:*",
 		"fp-ts": "2.16.11",
-		"nanoid": "5.1.5",
+		"nanoid": "5.1.6",
 		"npmlog": "7.0.1",
 		"occlusion": "workspace:*",
 		"socket.io": "4.8.1",
