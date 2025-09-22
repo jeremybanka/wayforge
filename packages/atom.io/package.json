@@ -120,7 +120,7 @@
 		"tmp": "0.2.5",
 		"tsdown": "0.15.4",
 		"typescript": "5.9.2",
-		"vite": "7.1.6",
+		"vite": "7.1.7",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.2.4",
 		"zod": "3.25.76"
