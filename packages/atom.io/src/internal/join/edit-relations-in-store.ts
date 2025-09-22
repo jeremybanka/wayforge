@@ -1,5 +1,4 @@
 import type { JoinToken } from "atom.io"
-import type { Json } from "atom.io/json"
 
 import type { Junction } from "../junction"
 import { newest } from "../lineage"
@@ -8,15 +7,14 @@ import { isChildStore } from "../transaction"
 import { getJoin } from "./get-join"
 
 export function editRelationsInStore<
-	ASide extends string,
-	AType extends string,
-	BSide extends string,
-	BType extends string,
+	AName extends string,
+	A extends string,
+	BName extends string,
+	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
-	Content extends Json.Object | null,
 >(
-	token: JoinToken<ASide, AType, BSide, BType, Cardinality, Content>,
-	change: (relations: Junction<ASide, AType, BSide, BType, Content>) => void,
+	token: JoinToken<AName, A, BName, B, Cardinality>,
+	change: (relations: Junction<AName, A, BName, B>) => void,
 	store: Store,
 ): void {
 	const myJoin = getJoin(token, store)

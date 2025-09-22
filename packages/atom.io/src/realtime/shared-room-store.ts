@@ -26,23 +26,14 @@ export type UserInRoomMeta = {
 export const DEFAULT_USER_IN_ROOM_META: UserInRoomMeta = {
 	enteredAtEpoch: 0,
 }
-export const usersInRooms: JoinToken<
-	`room`,
-	string,
-	`user`,
-	string,
-	`1:n`,
-	UserInRoomMeta
-> = join(
-	{
+export const usersInRooms: JoinToken<`room`, string, `user`, string, `1:n`> =
+	join({
 		key: `usersInRooms`,
 		between: [`room`, `user`],
 		cardinality: `1:n`,
 		isAType: (input): input is string => typeof input === `string`,
 		isBType: (input): input is string => typeof input === `string`,
-	},
-	DEFAULT_USER_IN_ROOM_META,
-)
+	})
 
 export const usersInMyRoomView: ReadonlyPureSelectorFamilyToken<
 	MutableAtomToken<UList<string>>[],
