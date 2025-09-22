@@ -63,7 +63,7 @@
 		"atom.io": "workspace:*",
 		"cron": "4.3.3",
 		"drizzle-orm": "0.44.5",
-		"motion": "12.23.16",
+		"motion": "12.23.18",
 		"nanoid": "5.1.5",
 		"openai": "5.22.0",
 		"postgres": "3.4.7",
