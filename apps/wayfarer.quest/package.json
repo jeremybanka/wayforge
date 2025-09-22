@@ -24,7 +24,7 @@
 		"corners": "0.2.0",
 		"luum": "workspace:*",
 		"motion": "12.23.18",
-		"nanoid": "5.1.5",
+		"nanoid": "5.1.6",
 		"next": "15.5.3",
 		"occlusion": "workspace:*",
 		"react": "19.1.1",

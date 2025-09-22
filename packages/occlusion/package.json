@@ -22,7 +22,7 @@
 	"dependencies": {
 		"fp-ts": "2.16.11",
 		"io-ts": "2.2.22",
-		"nanoid": "5.1.5"
+		"nanoid": "5.1.6"
 	},
 	"devDependencies": {
 		"concurrently": "9.2.1",
