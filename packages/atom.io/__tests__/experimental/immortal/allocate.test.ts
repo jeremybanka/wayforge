@@ -4,8 +4,10 @@ import {
 	Anarchy,
 	atom,
 	atomFamily,
+	decomposeCompound,
 	disposeState,
 	editRelations,
+	findRelations,
 	getState,
 	join,
 	mutableAtomFamily,
@@ -532,33 +534,66 @@ describe(`integrations`, () => {
 	test(`join supports allocation pattern`, () => {
 		const roomPlayers = join({
 			key: `roomPlayers`,
-			between: [`room`, `player`],
+			between: [`room`, `user`],
 			cardinality: `1:1`,
-			isAType: (input): input is `arena` | `lobby` =>
-				[`lobby`, `arena`].includes(input),
-			isBType: (input): input is `joshua` => input === `joshua`,
+			isAType: (input): input is `room::arena` | `room::lobby` =>
+				[`room::lobby`, `room::arena`].includes(input),
+			isBType: (input): input is `user::joshua` => input === `user::joshua`,
 		})
 		const anarchy = new Anarchy()
-		anarchy.allocate(`root`, `joshua`)
-		anarchy.allocate(`root`, `lobby`)
+		anarchy.allocate(`root`, `user::joshua`)
+		anarchy.allocate(`root`, `room::lobby`)
 
 		expect([...IMPLICIT.STORE.molecules.keys()]).toEqual([
 			`"root"`,
-			`"joshua"`,
-			`"lobby"`,
+			`"user::joshua"`,
+			`"room::lobby"`,
 		])
 		expect(IMPLICIT.STORE.valueMap.size).toBe(0)
 
 		editRelations(roomPlayers, (relations) => {
-			relations.set({ player: `joshua`, room: `lobby` })
+			relations.set(`room::lobby`, `user::joshua`)
 		})
+		anarchy.fuse(`player`, `user::joshua`, `room::lobby`)
+		expect(IMPLICIT.STORE.molecules.size).toBe(4)
+		expect(IMPLICIT.STORE.moleculeGraph.relations.size).toBe(4)
+		expect(IMPLICIT.STORE.valueMap.size).toBe(4)
+
+		anarchy.deallocate(`T$--player==user::joshua++room::lobby`)
+
+		const room = getState(
+			findRelations(roomPlayers, `user::joshua`).roomKeyOfUser,
+		)
+		expect(room).toEqual(null)
+
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
 		expect(IMPLICIT.STORE.moleculeGraph.relations.size).toBe(3)
-		expect(IMPLICIT.STORE.valueMap.size).toBe(4)
-		anarchy.deallocate(`lobby`)
+		expect(IMPLICIT.STORE.valueMap.size).toBe(5)
+
+		anarchy.deallocate(`room::lobby`)
+
 		expect(IMPLICIT.STORE.molecules.size).toBe(2)
 		expect(IMPLICIT.STORE.moleculeGraph.relations.size).toBe(2)
-		expect(IMPLICIT.STORE.valueMap.size).toBe(2)
+		expect(IMPLICIT.STORE.valueMap.size).toBe(3)
+	})
+})
+
+describe(`decomposeCompound`, () => {
+	test(`decomposes compound keys`, () => {
+		const components = decomposeCompound(`T$--player==user::joshua++room::lobby`)
+		assert(components)
+		const [type, a, b] = components
+		expect(type).toBe(`player`)
+		expect(a).toBe(`user::joshua`)
+		expect(b).toBe(`room::lobby`)
+	})
+	test(`returns null if the key is not a compound`, () => {
+		const components0 = decomposeCompound(`my-key`)
+		expect(components0).toBe(null)
+		const components1 = decomposeCompound(`T$--player==user::joshua++`)
+		expect(components1).toBe(null)
+		const components2 = decomposeCompound(`T$--player==user::joshua`)
+		expect(components2).toBe(null)
 	})
 })
 
