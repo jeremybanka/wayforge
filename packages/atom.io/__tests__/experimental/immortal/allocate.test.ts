@@ -544,7 +544,6 @@ describe(`integrations`, () => {
 
 		expect([...IMPLICIT.STORE.molecules.keys()]).toEqual([
 			`"root"`,
-			`"roomPlayers"`,
 			`"joshua"`,
 			`"lobby"`,
 		])
@@ -553,12 +552,12 @@ describe(`integrations`, () => {
 		editRelations(roomPlayers, (relations) => {
 			relations.set({ player: `joshua`, room: `lobby` })
 		})
-		expect(IMPLICIT.STORE.molecules.size).toBe(4)
-		expect(IMPLICIT.STORE.moleculeGraph.relations.size).toBe(4)
-		expect(IMPLICIT.STORE.valueMap.size).toBe(4)
-		anarchy.deallocate(`lobby`)
 		expect(IMPLICIT.STORE.molecules.size).toBe(3)
 		expect(IMPLICIT.STORE.moleculeGraph.relations.size).toBe(3)
+		expect(IMPLICIT.STORE.valueMap.size).toBe(4)
+		anarchy.deallocate(`lobby`)
+		expect(IMPLICIT.STORE.molecules.size).toBe(2)
+		expect(IMPLICIT.STORE.moleculeGraph.relations.size).toBe(2)
 		expect(IMPLICIT.STORE.valueMap.size).toBe(2)
 	})
 })

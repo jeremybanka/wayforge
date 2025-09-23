@@ -1,12 +1,13 @@
-import type {
-	findState,
-	getState,
-	JoinOptions,
-	MutableAtomFamilyToken,
-	ReadonlyPureSelectorFamilyToken,
-	setState,
-	Write,
-	WriterToolkit,
+import {
+	type findState,
+	type getState,
+	type JoinOptions,
+	type MutableAtomFamilyToken,
+	type ReadonlyPureSelectorFamilyToken,
+	type setState,
+	simpleCompound,
+	type Write,
+	type WriterToolkit,
 } from "atom.io"
 import { UList } from "atom.io/transceivers/u-list"
 
@@ -173,9 +174,9 @@ export class Join<
 							})
 						}
 						for (const previousOwner of previousOwnersToDispose) {
-							const [x, y] = [newRelationB, previousOwner].sort()
-							const compositeKey = `${x}:${y}`
-							store.keyRefsInJoins.delete(compositeKey)
+							store.keyRefsInJoins.delete(
+								simpleCompound(newRelationB, previousOwner),
+							)
 						}
 					}
 					if (!newRelationBIsAlreadyRelated) {
@@ -218,6 +219,7 @@ export class Join<
 			addRelation: (a, b) => {
 				this.store.keyRefsInJoins.set(`"${a}"`, options.key)
 				this.store.keyRefsInJoins.set(`"${b}"`, options.key)
+				this.store.keyRefsInJoins.set(simpleCompound(a, b), options.key)
 				this.toolkit.set(relatedKeysAtoms, a, (aKeys) => aKeys.add(b))
 				this.toolkit.set(relatedKeysAtoms, b, (bKeys) => bKeys.add(a))
 			},
@@ -230,8 +232,7 @@ export class Join<
 					bKeys.delete(a)
 					return bKeys
 				})
-				const [x, y] = [a, b].sort()
-				const compositeKey = `${x}:${y}`
+				const compositeKey = simpleCompound(a, b)
 				this.store.keyRefsInJoins.delete(compositeKey)
 			},
 			replaceRelationsSafely: (a, bs) => {

@@ -1,15 +1,17 @@
-import type {
-	Above,
-	ValidKey,
-	CompoundFrom,
-	CompoundTypedKey,
-	Hierarchy,
-	MoleculeCreationEvent,
-	MoleculeDisposalEvent,
-	MoleculeTransferEvent,
-	SingularTypedKey,
-	TransactionToken,
-	Vassal,
+import {
+	type Above,
+	type CompoundFrom,
+	type CompoundTypedKey,
+	decomposeCompound,
+	type Hierarchy,
+	type MoleculeCreationEvent,
+	type MoleculeDisposalEvent,
+	type MoleculeTransferEvent,
+	simpleCompound,
+	type SingularTypedKey,
+	type TransactionToken,
+	type ValidKey,
+	type Vassal,
 } from "atom.io"
 import type { Canonical, stringified } from "atom.io/json"
 import { parseJson, stringifyJson } from "atom.io/json"
@@ -178,6 +180,18 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 			const join = target.joins.get(joinKey)
 			if (join) {
 				join.relations.delete(claim)
+			}
+		}
+	} else {
+		const compound = decomposeCompound(claim)
+		if (compound) {
+			const [, a, b] = compound
+			const joinKey = target.keyRefsInJoins.getRelatedKey(simpleCompound(a, b))
+			if (joinKey) {
+				const join = target.joins.get(joinKey)
+				if (join) {
+					join.relations.delete(a, b)
+				}
 			}
 		}
 	}
