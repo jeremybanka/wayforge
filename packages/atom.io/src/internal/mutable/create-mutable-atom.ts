@@ -5,7 +5,7 @@ import type {
 	UpdateHandler,
 } from "atom.io"
 
-import { newest } from "../lineage"
+import { eldest, newest } from "../lineage"
 import { createStandaloneSelector } from "../selector"
 import { resetInStore, setIntoStore } from "../set-state"
 import type { MutableAtom } from "../state-types"
@@ -71,6 +71,8 @@ export function createMutableAtom<T extends Transceiver<any, any, any>>(
 				},
 				onSet: (handle: UpdateHandler<T>) =>
 					subscribeToState(store, token, `effect[${effectIndex}]`, handle),
+				token,
+				store: eldest(store),
 			})
 			if (cleanup) {
 				cleanupFunctions.push(cleanup)

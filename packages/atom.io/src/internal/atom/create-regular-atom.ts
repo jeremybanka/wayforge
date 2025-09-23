@@ -6,7 +6,7 @@ import type {
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 
-import { newest } from "../lineage"
+import { eldest, newest } from "../lineage"
 import { resetInStore, setIntoStore } from "../set-state"
 import type { RegularAtom } from "../state-types"
 import type { Store } from "../store"
@@ -68,6 +68,8 @@ export function createRegularAtom<T, K extends Canonical, E>(
 				},
 				onSet: (handle: UpdateHandler<T>) =>
 					subscribeToState(store, token, `effect[${effectIndex}]`, handle),
+				token,
+				store: eldest(store),
 			})
 			if (cleanup) {
 				cleanupFunctions.push(cleanup)
