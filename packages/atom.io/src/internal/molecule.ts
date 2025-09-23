@@ -1,6 +1,6 @@
 import type {
 	Above,
-	Claim,
+	ValidKey,
 	CompoundFrom,
 	CompoundTypedKey,
 	Hierarchy,
@@ -50,7 +50,7 @@ export function allocateIntoStore<
 	provenance: A,
 	key: V,
 	dependsOn: `all` | `any` = `any`,
-): Claim<V> {
+): ValidKey<V> {
 	const origin = provenance as Canonical | [Canonical, Canonical]
 	const stringKey = stringifyJson(key)
 	const invalidKeys: stringified<Canonical>[] = []
@@ -109,7 +109,7 @@ export function allocateIntoStore<
 		)
 	}
 
-	return key as Claim<V>
+	return key as ValidKey<V>
 }
 
 export function fuseWithinStore<
@@ -123,7 +123,7 @@ export function fuseWithinStore<
 	type: T,
 	sideA: SingularTypedKey<A>,
 	sideB: SingularTypedKey<B>,
-): Claim<CompoundTypedKey<T, A, B>> {
+): ValidKey<CompoundTypedKey<T, A, B>> {
 	const compoundKey: CompoundTypedKey<T, A, B> =
 		`T$--${type}==${sideA}++${sideB}`
 	const above = [sideA, sideB] as Above<Vassal<H>, H>
@@ -139,10 +139,10 @@ export function fuseWithinStore<
 export function createDeallocateTX<
 	H extends Hierarchy,
 	V extends Exclude<Vassal<H>, CompoundTypedKey>,
->(store: RootStore): TransactionToken<(claim: Claim<V>) => void> {
+>(store: RootStore): TransactionToken<(claim: ValidKey<V>) => void> {
 	return createTransaction(store, {
 		key: `[Internal] deallocate`,
-		do: (_, claim: Claim<V>): void => {
+		do: (_, claim: ValidKey<V>): void => {
 			deallocateFromStore<H, V>(newest(store), claim)
 		},
 	})
@@ -150,7 +150,7 @@ export function createDeallocateTX<
 
 export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 	target: Store,
-	claim: Claim<V>,
+	claim: ValidKey<V>,
 ): void {
 	const stringKey = stringifyJson(claim)
 
@@ -244,7 +244,7 @@ export function createClaimTX<
 >(
 	store: RootStore,
 ): TransactionToken<
-	(newProvenance: A, claim: Claim<V>, exclusive?: `exclusive`) => void
+	(newProvenance: A, claim: ValidKey<V>, exclusive?: `exclusive`) => void
 > {
 	return createTransaction(store, {
 		key: `[Internal] claim`,
@@ -261,9 +261,9 @@ export function claimWithinStore<
 >(
 	store: Store,
 	newProvenance: A,
-	claim: Claim<V>,
+	claim: ValidKey<V>,
 	exclusive?: `exclusive`,
-): Claim<V> {
+): ValidKey<V> {
 	const stringKey = stringifyJson(claim)
 	const target = newest(store)
 	const molecule = target.molecules.get(stringKey)
