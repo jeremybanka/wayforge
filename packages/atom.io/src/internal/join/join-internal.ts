@@ -1,15 +1,14 @@
-import type {
-	findState,
-	getState,
-	JoinOptions,
-	MutableAtomFamilyToken,
-	ReadonlyPureSelectorFamilyToken,
-	setState,
-	Write,
-	WriterToolkit,
+import {
+	type findState,
+	type getState,
+	type JoinOptions,
+	type MutableAtomFamilyToken,
+	type ReadonlyPureSelectorFamilyToken,
+	type setState,
+	simpleCompound,
+	type Write,
+	type WriterToolkit,
 } from "atom.io"
-import { Anarchy } from "atom.io"
-import { stringifyJson } from "atom.io/json"
 import { UList } from "atom.io/transceivers/u-list"
 
 import { capitalize } from "../capitalize"
@@ -86,7 +85,6 @@ export class Join<
 	}
 
 	public store: Store
-	public realm: Anarchy
 
 	public [Symbol.dispose](): void {}
 
@@ -97,12 +95,9 @@ export class Join<
 		type AB = A & B
 
 		this.store = store
-		this.realm = new Anarchy(store)
 		this.options = options
 
 		this.store.miscResources.set(`join:${options.key}`, this)
-
-		this.realm.allocate(`root`, options.key)
 
 		this.toolkit = {
 			get: ((...ps: Parameters<typeof getState>) =>
@@ -179,9 +174,9 @@ export class Join<
 							})
 						}
 						for (const previousOwner of previousOwnersToDispose) {
-							const [x, y] = [newRelationB, previousOwner].sort()
-							const compositeKey = `${x}:${y}`
-							store.moleculeJoins.delete(compositeKey)
+							store.keyRefsInJoins.delete(
+								simpleCompound(newRelationB, previousOwner),
+							)
 						}
 					}
 					if (!newRelationBIsAlreadyRelated) {
@@ -222,14 +217,9 @@ export class Join<
 			getRelatedKeys: (key) =>
 				this.toolkit.get(relatedKeysAtoms, key) as UList<A> | UList<B>,
 			addRelation: (a, b) => {
-				this.store.moleculeJoins.set(`"${a}"`, options.key)
-				this.store.moleculeJoins.set(`"${b}"`, options.key)
-				if (!this.store.molecules.has(stringifyJson(a))) {
-					this.realm.allocate(options.key, a)
-				}
-				if (!this.store.molecules.has(stringifyJson(b))) {
-					this.realm.allocate(options.key, b)
-				}
+				this.store.keyRefsInJoins.set(`"${a}"`, options.key)
+				this.store.keyRefsInJoins.set(`"${b}"`, options.key)
+				this.store.keyRefsInJoins.set(simpleCompound(a, b), options.key)
 				this.toolkit.set(relatedKeysAtoms, a, (aKeys) => aKeys.add(b))
 				this.toolkit.set(relatedKeysAtoms, b, (bKeys) => bKeys.add(a))
 			},
@@ -242,9 +232,8 @@ export class Join<
 					bKeys.delete(a)
 					return bKeys
 				})
-				const [x, y] = [a, b].sort()
-				const compositeKey = `${x}:${y}`
-				this.store.moleculeJoins.delete(compositeKey)
+				const compositeKey = simpleCompound(a, b)
+				this.store.keyRefsInJoins.delete(compositeKey)
 			},
 			replaceRelationsSafely: (a, bs) => {
 				replaceRelationsSafely(this.toolkit, a, bs)
@@ -262,24 +251,6 @@ export class Join<
 			externalStore,
 			isAType: options.isAType,
 			isBType: options.isBType,
-			// makeContentKey: (...args) => {
-			// 	const [a, b] = args
-			// 	const [x, y] = args.sort()
-			// 	const compositeKey = `${x}:${y}`
-			// 	const aMolecule = store.molecules.get(stringifyJson(a))
-			// 	const bMolecule = store.molecules.get(stringifyJson(b))
-			// 	if (!aMolecule) {
-			// 		this.realm.allocate(options.key, a)
-			// 	}
-			// 	if (!bMolecule) {
-			// 		this.realm.allocate(options.key, b)
-			// 	}
-
-			// 	this.realm.allocate(a, compositeKey, `all`)
-			// 	this.realm.claim(b, compositeKey)
-			// 	this.store.moleculeJoins.set(compositeKey, options.key)
-			// 	return compositeKey
-			// },
 		})
 
 		const createSingleKeySelectorFamily = () =>

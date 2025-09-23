@@ -14,16 +14,20 @@ import type { Canonical } from "atom.io/json"
 
 import type { TransactionToken } from "./tokens"
 
-export const $claim: unique symbol = Symbol.for(`claim`)
-export type Claim<K extends Canonical> = K & { [$claim]?: true }
+export const $validatedKey: unique symbol = Symbol.for(`claim`)
+export type ValidKey<K extends Canonical> = K & { [$validatedKey]?: true }
+
+export function simpleCompound(a: string, b: string): string {
+	return [a, b].sort().join(`\u001F`)
+}
 
 export class Realm<H extends Hierarchy> {
 	public store: RootStore
-	public deallocateTX: TransactionToken<(claim: Claim<Vassal<H>>) => void>
+	public deallocateTX: TransactionToken<(claim: ValidKey<Vassal<H>>) => void>
 	public claimTX: TransactionToken<
 		<V extends Exclude<Vassal<H>, CompoundTypedKey>, A extends Above<V, H>>(
 			newProvenance: A,
-			claim: Claim<V>,
+			claim: ValidKey<V>,
 			exclusive?: `exclusive`,
 		) => void
 	>
@@ -42,13 +46,13 @@ export class Realm<H extends Hierarchy> {
 	 * @param key - A unique identifier for the new subject
 	 * @param attachmentStyle - The attachment style of new subject to its owner(s). `any` means that if any owners remain, the subject will be retained. `all` means that the subject be retained only if all owners remain .
 	 * @returns
-	 * The subject's key, given status as a true {@link Claim}
+	 * The subject's key, given status as a true {@link ValidKey}
 	 */
 	public allocate<V extends Vassal<H>, A extends Above<V, H>>(
 		provenance: A,
 		key: V,
 		attachmentStyle?: `all` | `any`,
-	): Claim<V> {
+	): ValidKey<V> {
 		return allocateIntoStore<H, V, A>(
 			this.store,
 			provenance,
@@ -62,7 +66,7 @@ export class Realm<H extends Hierarchy> {
 	 * @param reagentA - the left reagent of the compound
 	 * @param reagentB - the right reagent of the compound
 	 * @returns
-	 * The compound's key, given status as a true {@link Claim}
+	 * The compound's key, given status as a {@link ValidKey}
 	 */
 	public fuse<
 		C extends CompoundFrom<H>,
@@ -73,14 +77,14 @@ export class Realm<H extends Hierarchy> {
 		type: T,
 		reagentA: SingularTypedKey<A>,
 		reagentB: SingularTypedKey<B>,
-	): Claim<CompoundTypedKey<T, A, B>> {
+	): ValidKey<CompoundTypedKey<T, A, B>> {
 		return fuseWithinStore<H, C, T, A, B>(this.store, type, reagentA, reagentB)
 	}
 	/**
 	 * Remove a subject from the realm
 	 * @param claim - The subject to be deallocated
 	 */
-	public deallocate<V extends Vassal<H>>(claim: Claim<V>): void {
+	public deallocate<V extends Vassal<H>>(claim: ValidKey<V>): void {
 		actUponStore(this.store, this.deallocateTX, arbitrary())(claim)
 	}
 	/**
@@ -89,12 +93,12 @@ export class Realm<H extends Hierarchy> {
 	 * @param claim - The subject to be claimed
 	 * @param exclusive - Whether the subjects previous owners should be detached from it
 	 * @returns
-	 * The subject's key, given status as a true {@link Claim}
+	 * The subject's key, given status as a true {@link ValidKey}
 	 */
 	public claim<
 		V extends Exclude<Vassal<H>, CompoundTypedKey>,
 		A extends Above<V, H>,
-	>(newProvenance: A, claim: Claim<V>, exclusive?: `exclusive`): void {
+	>(newProvenance: A, claim: ValidKey<V>, exclusive?: `exclusive`): void {
 		actUponStore(this.store, this.claimTX, arbitrary())(
 			newProvenance,
 			claim,
@@ -157,10 +161,47 @@ export class Anarchy {
 	): void {
 		claimWithinStore<any, any, any>(this.store, newProvenance, key, exclusive)
 	}
+	/**
+	 * Fuse two reagents into a compound
+	 * @param type - the name of the compound that is being fused
+	 * @param reagentA - the left reagent of the compound
+	 * @param reagentB - the right reagent of the compound
+	 * @returns
+	 * The compound's key, given status as a {@link ValidKey}
+	 */
+	public fuse<T extends string, A extends string, B extends string>(
+		type: T,
+		reagentA: SingularTypedKey<A>,
+		reagentB: SingularTypedKey<B>,
+	): ValidKey<CompoundTypedKey<T, A, B>> {
+		return fuseWithinStore<any, any, T, A, B>(
+			this.store,
+			type,
+			reagentA,
+			reagentB,
+		)
+	}
 }
 
-export const T$ = `T$`
-export type T$ = typeof T$
+export function decomposeCompound(
+	compound: Canonical,
+): [type: string, a: string, b: string] | null {
+	if ((typeof compound === `string`) === false) {
+		return null
+	}
+	const [typeTag, components] = compound.split(`==`)
+	if (!components) {
+		return null
+	}
+	const type = typeTag.slice(4)
+	const [a, b] = components.split(`++`)
+	if (type && a && b) {
+		return [type, a, b]
+	}
+	return null
+}
+
+export type T$ = `T$`
 export type TypeTag<T extends string> = `${T$}--${T}`
 export type SingularTypedKey<T extends string = string> = `${T}::${string}`
 export type CompoundTypedKey<
