@@ -54,7 +54,7 @@ export const buildTransaction = (
 		molecules: new MapOverlay(parent.molecules),
 		moleculeGraph: parent.moleculeGraph.overlay(),
 		moleculeData: parent.moleculeData.overlay(),
-		moleculeJoins: parent.moleculeJoins.overlay(),
+		keyRefsInJoins: parent.keyRefsInJoins.overlay(),
 		miscResources: new MapOverlay(parent.miscResources),
 	}
 	const epoch = getEpochNumberOfAction(store, token.key)

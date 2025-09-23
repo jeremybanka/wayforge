@@ -172,7 +172,7 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 		return
 	}
 
-	const joinKeys = target.moleculeJoins.getRelatedKeys(stringKey)
+	const joinKeys = target.keyRefsInJoins.getRelatedKeys(stringKey)
 	if (joinKeys) {
 		for (const joinKey of joinKeys) {
 			const join = target.joins.get(joinKey)
@@ -181,7 +181,7 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 			}
 		}
 	}
-	target.moleculeJoins.delete(stringKey)
+	target.keyRefsInJoins.delete(stringKey)
 
 	const provenance: stringified<Canonical>[] = []
 
@@ -225,7 +225,7 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 	}
 
 	target.moleculeGraph.delete(molecule.stringKey)
-	target.moleculeJoins.delete(molecule.stringKey)
+	target.keyRefsInJoins.delete(molecule.stringKey)
 	target.moleculeData.delete(molecule.stringKey)
 
 	if (!isTransaction) {

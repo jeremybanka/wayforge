@@ -107,20 +107,7 @@ export class Store implements Lineage {
 		new CircularBuffer(100)
 
 	public molecules: Map<string, Molecule<Canonical>> = new Map()
-	public moleculeJoins: Junction<
-		`moleculeKey`,
-		stringified<Canonical>,
-		`joinKey`,
-		string
-	> = new Junction(
-		{
-			between: [`moleculeKey`, `joinKey`],
-			cardinality: `n:n`,
-		},
-		{
-			makeContentKey: (...keys) => keys.sort().join(`:`),
-		},
-	)
+
 	public moleculeGraph: Junction<
 		`upstreamMoleculeKey`,
 		stringified<Canonical> | `"root"`,
@@ -144,6 +131,20 @@ export class Store implements Lineage {
 	> = new Junction(
 		{
 			between: [`moleculeKey`, `stateFamilyKey`],
+			cardinality: `n:n`,
+		},
+		{
+			makeContentKey: (...keys) => keys.sort().join(`:`),
+		},
+	)
+	public keyRefsInJoins: Junction<
+		`moleculeKey`,
+		stringified<Canonical>,
+		`joinKey`,
+		string
+	> = new Junction(
+		{
+			between: [`moleculeKey`, `joinKey`],
 			cardinality: `n:n`,
 		},
 		{
