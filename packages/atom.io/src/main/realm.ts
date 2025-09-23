@@ -17,6 +17,10 @@ import type { TransactionToken } from "./tokens"
 export const $validatedKey: unique symbol = Symbol.for(`claim`)
 export type ValidKey<K extends Canonical> = K & { [$validatedKey]?: true }
 
+export function simpleCompound(a: string, b: string): string {
+	return [a, b].sort().join(`\u001F`)
+}
+
 export class Realm<H extends Hierarchy> {
 	public store: RootStore
 	public deallocateTX: TransactionToken<(claim: ValidKey<Vassal<H>>) => void>
@@ -157,6 +161,24 @@ export class Anarchy {
 	): void {
 		claimWithinStore<any, any, any>(this.store, newProvenance, key, exclusive)
 	}
+}
+
+export function decomposeCompound(
+	compound: Canonical,
+): [type: string, a: string, b: string] | null {
+	if ((typeof compound === `string`) === false) {
+		return null
+	}
+	const [typeTag, components] = compound.split(`==`)
+	if (!components) {
+		return null
+	}
+	const type = typeTag.slice(4)
+	const [a, b] = components.split(`++`)
+	if (type && a && b) {
+		return [type, a, b]
+	}
+	return null
 }
 
 export type T$ = `T$`
