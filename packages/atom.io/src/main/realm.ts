@@ -161,6 +161,26 @@ export class Anarchy {
 	): void {
 		claimWithinStore<any, any, any>(this.store, newProvenance, key, exclusive)
 	}
+	/**
+	 * Fuse two reagents into a compound
+	 * @param type - the name of the compound that is being fused
+	 * @param reagentA - the left reagent of the compound
+	 * @param reagentB - the right reagent of the compound
+	 * @returns
+	 * The compound's key, given status as a {@link ValidKey}
+	 */
+	public fuse<T extends string, A extends string, B extends string>(
+		type: T,
+		reagentA: SingularTypedKey<A>,
+		reagentB: SingularTypedKey<B>,
+	): ValidKey<CompoundTypedKey<T, A, B>> {
+		return fuseWithinStore<any, any, T, A, B>(
+			this.store,
+			type,
+			reagentA,
+			reagentB,
+		)
+	}
 }
 
 export function decomposeCompound(
