@@ -25,7 +25,7 @@
 		"luum": "workspace:*",
 		"motion": "12.23.19",
 		"nanoid": "5.1.6",
-		"next": "15.5.3",
+		"next": "15.5.4",
 		"occlusion": "workspace:*",
 		"react": "19.1.1",
 		"react-dom": "19.1.1",
@@ -39,7 +39,7 @@
 		"@types/react-dom": "19.1.9",
 		"concurrently": "9.2.1",
 		"eslint": "9.36.0",
-		"eslint-config-next": "15.5.3",
+		"eslint-config-next": "15.5.4",
 		"typescript": "5.9.2"
 	}
 }
