@@ -1,15 +1,17 @@
-import type {
-	Above,
-	Claim,
-	CompoundFrom,
-	CompoundTypedKey,
-	Hierarchy,
-	MoleculeCreationEvent,
-	MoleculeDisposalEvent,
-	MoleculeTransferEvent,
-	SingularTypedKey,
-	TransactionToken,
-	Vassal,
+import {
+	type Above,
+	type CompoundFrom,
+	type CompoundTypedKey,
+	decomposeCompound,
+	type Hierarchy,
+	type MoleculeCreationEvent,
+	type MoleculeDisposalEvent,
+	type MoleculeTransferEvent,
+	simpleCompound,
+	type SingularTypedKey,
+	type TransactionToken,
+	type ValidKey,
+	type Vassal,
 } from "atom.io"
 import type { Canonical, stringified } from "atom.io/json"
 import { parseJson, stringifyJson } from "atom.io/json"
@@ -50,7 +52,7 @@ export function allocateIntoStore<
 	provenance: A,
 	key: V,
 	dependsOn: `all` | `any` = `any`,
-): Claim<V> {
+): ValidKey<V> {
 	const origin = provenance as Canonical | [Canonical, Canonical]
 	const stringKey = stringifyJson(key)
 	const invalidKeys: stringified<Canonical>[] = []
@@ -109,7 +111,7 @@ export function allocateIntoStore<
 		)
 	}
 
-	return key as Claim<V>
+	return key as ValidKey<V>
 }
 
 export function fuseWithinStore<
@@ -123,7 +125,7 @@ export function fuseWithinStore<
 	type: T,
 	sideA: SingularTypedKey<A>,
 	sideB: SingularTypedKey<B>,
-): Claim<CompoundTypedKey<T, A, B>> {
+): ValidKey<CompoundTypedKey<T, A, B>> {
 	const compoundKey: CompoundTypedKey<T, A, B> =
 		`T$--${type}==${sideA}++${sideB}`
 	const above = [sideA, sideB] as Above<Vassal<H>, H>
@@ -139,10 +141,10 @@ export function fuseWithinStore<
 export function createDeallocateTX<
 	H extends Hierarchy,
 	V extends Exclude<Vassal<H>, CompoundTypedKey>,
->(store: RootStore): TransactionToken<(claim: Claim<V>) => void> {
+>(store: RootStore): TransactionToken<(claim: ValidKey<V>) => void> {
 	return createTransaction(store, {
 		key: `[Internal] deallocate`,
-		do: (_, claim: Claim<V>): void => {
+		do: (_, claim: ValidKey<V>): void => {
 			deallocateFromStore<H, V>(newest(store), claim)
 		},
 	})
@@ -150,7 +152,7 @@ export function createDeallocateTX<
 
 export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 	target: Store,
-	claim: Claim<V>,
+	claim: ValidKey<V>,
 ): void {
 	const stringKey = stringifyJson(claim)
 
@@ -172,7 +174,7 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 		return
 	}
 
-	const joinKeys = target.moleculeJoins.getRelatedKeys(stringKey)
+	const joinKeys = target.keyRefsInJoins.getRelatedKeys(stringKey)
 	if (joinKeys) {
 		for (const joinKey of joinKeys) {
 			const join = target.joins.get(joinKey)
@@ -180,8 +182,20 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 				join.relations.delete(claim)
 			}
 		}
+	} else {
+		const compound = decomposeCompound(claim)
+		if (compound) {
+			const [, a, b] = compound
+			const joinKey = target.keyRefsInJoins.getRelatedKey(simpleCompound(a, b))
+			if (joinKey) {
+				const join = target.joins.get(joinKey)
+				if (join) {
+					join.relations.delete(a, b)
+				}
+			}
+		}
 	}
-	target.moleculeJoins.delete(stringKey)
+	target.keyRefsInJoins.delete(stringKey)
 
 	const provenance: stringified<Canonical>[] = []
 
@@ -225,7 +239,7 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 	}
 
 	target.moleculeGraph.delete(molecule.stringKey)
-	target.moleculeJoins.delete(molecule.stringKey)
+	target.keyRefsInJoins.delete(molecule.stringKey)
 	target.moleculeData.delete(molecule.stringKey)
 
 	if (!isTransaction) {
@@ -244,7 +258,7 @@ export function createClaimTX<
 >(
 	store: RootStore,
 ): TransactionToken<
-	(newProvenance: A, claim: Claim<V>, exclusive?: `exclusive`) => void
+	(newProvenance: A, claim: ValidKey<V>, exclusive?: `exclusive`) => void
 > {
 	return createTransaction(store, {
 		key: `[Internal] claim`,
@@ -261,9 +275,9 @@ export function claimWithinStore<
 >(
 	store: Store,
 	newProvenance: A,
-	claim: Claim<V>,
+	claim: ValidKey<V>,
 	exclusive?: `exclusive`,
-): Claim<V> {
+): ValidKey<V> {
 	const stringKey = stringifyJson(claim)
 	const target = newest(store)
 	const molecule = target.molecules.get(stringKey)
