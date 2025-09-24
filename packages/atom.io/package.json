@@ -112,7 +112,7 @@
 		"preact": "10.27.2",
 		"react": "19.1.1",
 		"react-dom": "19.1.1",
-		"react-router-dom": "7.9.1",
+		"react-router-dom": "7.9.2",
 		"recoverage": "0.1.11",
 		"socket.io": "4.8.1",
 		"socket.io-client": "4.8.1",
