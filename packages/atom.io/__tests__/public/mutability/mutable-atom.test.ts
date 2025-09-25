@@ -338,6 +338,65 @@ describe(`mutable atom effects`, () => {
 		realm.deallocate(`item::1`)
 		expect(getState(myMutableState)).toEqual(new UList())
 	})
+	it(`automatically cleans up members that are disposed (transaction)`, () => {
+		const myMutableState = mutableAtom<UList<string>>({
+			key: `myMutableSet`,
+			class: UList,
+			effects: [
+				({ token, setSelf }) => {
+					const disposalSubscriptions = new Map<string, () => void>()
+					const value = getState(token)
+					value.subscribe(`watch-molecules`, (update) => {
+						const unpacked = UList.unpackUpdate(update)
+						switch (unpacked.type) {
+							case `add`:
+								{
+									const molecule = Internal.IMPLICIT.STORE.molecules.get(
+										stringifyJson(unpacked.value),
+									)
+									if (molecule) {
+										disposalSubscriptions.set(
+											unpacked.value,
+											molecule.subject.subscribe(token.key, () => {
+												setSelf((self) => {
+													self.delete(unpacked.value)
+													return self
+												})
+											}),
+										)
+									}
+								}
+								break
+							case `delete`:
+								disposalSubscriptions.get(unpacked.value)?.()
+								disposalSubscriptions.delete(unpacked.value)
+								break
+							case `clear`:
+								for (const unsub of disposalSubscriptions.values()) unsub()
+								disposalSubscriptions.clear()
+						}
+					})
+				},
+			],
+		})
+		expect(getState(myMutableState)).toEqual(new UList())
+
+		const realm = new Anarchy()
+		realm.allocate(`root`, `item::1`)
+
+		runTransaction(
+			transaction({
+				key: `hi`,
+				do: ({ set }) => {
+					set(myMutableState, (s) => s.add(`item::1`))
+				},
+			}),
+		)()
+		expect(getState(myMutableState)).toEqual(new UList([`item::1`]))
+
+		realm.deallocate(`item::1`)
+		expect(getState(myMutableState)).toEqual(new UList())
+	})
 })
 
 describe(`graceful handling of hmr/duplicate atom keys`, () => {
