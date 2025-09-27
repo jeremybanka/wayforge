@@ -35,7 +35,7 @@
 	"devDependencies": {
 		"concurrently": "9.2.1",
 		"eslint": "9.36.0",
-		"tsdown": "0.15.4",
+		"tsdown": "0.15.5",
 		"vite": "7.1.7",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.2.4"
