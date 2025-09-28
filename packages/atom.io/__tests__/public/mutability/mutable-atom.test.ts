@@ -18,7 +18,7 @@ import * as Internal from "atom.io/internal"
 import { stringifyJson } from "atom.io/json"
 import { OList } from "atom.io/transceivers/o-list"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
-import { UList } from "atom.io/transceivers/u-list"
+import { UList, uListAutoDeleteOnDispose } from "atom.io/transceivers/u-list"
 import { vitest } from "vitest"
 
 import * as Utils from "../../__util__"
@@ -342,47 +342,7 @@ describe(`mutable atom effects`, () => {
 		const myMutableState = mutableAtom<UList<string>>({
 			key: `myMutableSet`,
 			class: UList,
-			effects: [
-				function uListAutoDeleteOnDispose({ token, setSelf, store }) {
-					const disposalSubscriptions = new Map<string, () => void>()
-					const updateToken = Internal.getUpdateToken(token)
-					Internal.subscribeInStore(
-						store,
-						updateToken,
-						function setAutoDeletionTriggers({ newValue }) {
-							const unpacked = UList.unpackUpdate(newValue)
-							switch (unpacked.type) {
-								case `add`:
-									{
-										const molecule = Internal.IMPLICIT.STORE.molecules.get(
-											stringifyJson(unpacked.value),
-										)
-										if (molecule) {
-											disposalSubscriptions.set(
-												unpacked.value,
-												molecule.subject.subscribe(token.key, () => {
-													setSelf((self) => {
-														self.delete(unpacked.value)
-														return self
-													})
-												}),
-											)
-										}
-									}
-									break
-								case `delete`:
-									disposalSubscriptions.get(unpacked.value)?.()
-									disposalSubscriptions.delete(unpacked.value)
-									break
-								case `clear`:
-									for (const unsub of disposalSubscriptions.values()) unsub()
-									disposalSubscriptions.clear()
-							}
-						},
-						`set-auto-deletion-triggers`,
-					)
-				},
-			],
+			effects: [uListAutoDeleteOnDispose],
 		})
 		expect(getState(myMutableState)).toEqual(new UList())
 
