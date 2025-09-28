@@ -4,7 +4,7 @@ import { type primitive, stringifyJson } from "atom.io/json"
 
 import { UList } from "./u-list"
 
-export const uListAutoDeleteOnDispose: AtomEffect<UList<primitive>> = ({
+export const uListDisposedKeyCleanupEffect: AtomEffect<UList<primitive>> = ({
 	token,
 	setSelf,
 	store,

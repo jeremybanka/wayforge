@@ -17,7 +17,10 @@ import {
 import * as Internal from "atom.io/internal"
 import { OList } from "atom.io/transceivers/o-list"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
-import { UList, uListAutoDeleteOnDispose } from "atom.io/transceivers/u-list"
+import {
+	UList,
+	uListDisposedKeyCleanupEffect,
+} from "atom.io/transceivers/u-list"
 import { vitest } from "vitest"
 
 import * as Utils from "../../__util__"
@@ -291,7 +294,7 @@ describe(`mutable atom effects`, () => {
 		const myMutableState = mutableAtom<UList<string>>({
 			key: `myMutableSet`,
 			class: UList,
-			effects: [uListAutoDeleteOnDispose],
+			effects: [uListDisposedKeyCleanupEffect],
 		})
 		expect(getState(myMutableState)).toEqual(new UList())
 
@@ -310,7 +313,7 @@ describe(`mutable atom effects`, () => {
 		const myMutableState = mutableAtom<UList<string>>({
 			key: `myMutableSet`,
 			class: UList,
-			effects: [uListAutoDeleteOnDispose],
+			effects: [uListDisposedKeyCleanupEffect],
 		})
 		expect(getState(myMutableState)).toEqual(new UList())
 
