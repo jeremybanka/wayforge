@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/only-throw-error */
 import * as http from "node:http"
+import * as os from "node:os"
 
 import type { Json } from "atom.io/json"
 import { drizzle } from "drizzle-orm/postgres-js"
@@ -20,9 +21,12 @@ if (DB_NAME === undefined) {
 	throw new Error(`DB_NAME environment variable is not set`)
 }
 
+const osUser = os.userInfo().username
+const user = osUser === `runner` ? `postgres` : osUser
+
 const main = async () => {
 	const sql = postgres({
-		user: `postgres`,
+		user,
 		host: DB_HOST,
 		database: DB_NAME,
 		password: `your_password`,
