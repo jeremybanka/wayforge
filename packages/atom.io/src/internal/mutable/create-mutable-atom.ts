@@ -58,6 +58,18 @@ export function createMutableAtom<T extends Transceiver<any, any, any>>(
 	}
 	target.atoms.set(newAtom.key, newAtom)
 	const token = deposit(newAtom)
+
+	new Tracker(token, store)
+	if (!family) {
+		createStandaloneSelector(store, {
+			key: `${key}:JSON`,
+			get: ({ get }) => get(token).toJSON(),
+			set: ({ set }, newValue) => {
+				set(token, options.class.fromJSON(newValue))
+			},
+		})
+	}
+
 	if (options.effects) {
 		let effectIndex = 0
 		const cleanupFunctions: (() => void)[] = []
@@ -71,7 +83,7 @@ export function createMutableAtom<T extends Transceiver<any, any, any>>(
 				},
 				onSet: (handle: UpdateHandler<T>) =>
 					subscribeToState(store, token, `effect[${effectIndex}]`, handle),
-				token,
+				token: token as any,
 				store: eldest(store),
 			})
 			if (cleanup) {
@@ -86,16 +98,6 @@ export function createMutableAtom<T extends Transceiver<any, any, any>>(
 		}
 	}
 
-	new Tracker(token, store)
-	if (!family) {
-		createStandaloneSelector(store, {
-			key: `${key}:JSON`,
-			get: ({ get }) => get(token).toJSON(),
-			set: ({ set }, newValue) => {
-				set(token, options.class.fromJSON(newValue))
-			},
-		})
-	}
 	store.on.atomCreation.next(token)
 	return token
 }

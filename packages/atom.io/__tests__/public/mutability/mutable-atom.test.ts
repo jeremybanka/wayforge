@@ -338,44 +338,49 @@ describe(`mutable atom effects`, () => {
 		realm.deallocate(`item::1`)
 		expect(getState(myMutableState)).toEqual(new UList())
 	})
-	it.only(`automatically cleans up members that are disposed (transaction)`, () => {
+	it(`automatically cleans up members that are disposed (transaction)`, () => {
 		const myMutableState = mutableAtom<UList<string>>({
 			key: `myMutableSet`,
 			class: UList,
 			effects: [
-				function EFFECT__watchInnerValue({ token, setSelf }) {
+				function uListAutoDeleteOnDispose({ token, setSelf, store }) {
 					const disposalSubscriptions = new Map<string, () => void>()
-					const value = getState(token)
-					value.subscribe(`watch-molecules`, (update) => {
-						const unpacked = UList.unpackUpdate(update)
-						switch (unpacked.type) {
-							case `add`:
-								{
-									const molecule = Internal.IMPLICIT.STORE.molecules.get(
-										stringifyJson(unpacked.value),
-									)
-									if (molecule) {
-										disposalSubscriptions.set(
-											unpacked.value,
-											molecule.subject.subscribe(token.key, () => {
-												setSelf((self) => {
-													self.delete(unpacked.value)
-													return self
-												})
-											}),
+					const updateToken = Internal.getUpdateToken(token)
+					Internal.subscribeInStore(
+						store,
+						updateToken,
+						function setAutoDeletionTriggers({ newValue }) {
+							const unpacked = UList.unpackUpdate(newValue)
+							switch (unpacked.type) {
+								case `add`:
+									{
+										const molecule = Internal.IMPLICIT.STORE.molecules.get(
+											stringifyJson(unpacked.value),
 										)
+										if (molecule) {
+											disposalSubscriptions.set(
+												unpacked.value,
+												molecule.subject.subscribe(token.key, () => {
+													setSelf((self) => {
+														self.delete(unpacked.value)
+														return self
+													})
+												}),
+											)
+										}
 									}
-								}
-								break
-							case `delete`:
-								disposalSubscriptions.get(unpacked.value)?.()
-								disposalSubscriptions.delete(unpacked.value)
-								break
-							case `clear`:
-								for (const unsub of disposalSubscriptions.values()) unsub()
-								disposalSubscriptions.clear()
-						}
-					})
+									break
+								case `delete`:
+									disposalSubscriptions.get(unpacked.value)?.()
+									disposalSubscriptions.delete(unpacked.value)
+									break
+								case `clear`:
+									for (const unsub of disposalSubscriptions.values()) unsub()
+									disposalSubscriptions.clear()
+							}
+						},
+						`set-auto-deletion-triggers`,
+					)
 				},
 			],
 		})
