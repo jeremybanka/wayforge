@@ -9,7 +9,7 @@ atomFamily<number, string>({
 })
 
 test(`revealState`, () => {
-	console.log(IMPLICIT.STORE.atoms)
+	// console.log(IMPLICIT.STORE.atoms)
 	expect(IMPLICIT.STORE.atoms.size).toBe(8)
 	const revealState = useRevealState(IMPLICIT.STORE)
 	const concealState = useConcealState(IMPLICIT.STORE)
