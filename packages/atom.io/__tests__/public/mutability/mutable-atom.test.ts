@@ -15,7 +15,6 @@ import {
 	undo,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
-import { stringifyJson } from "atom.io/json"
 import { OList } from "atom.io/transceivers/o-list"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
 import { UList, uListAutoDeleteOnDispose } from "atom.io/transceivers/u-list"
@@ -292,42 +291,7 @@ describe(`mutable atom effects`, () => {
 		const myMutableState = mutableAtom<UList<string>>({
 			key: `myMutableSet`,
 			class: UList,
-			effects: [
-				({ token, setSelf }) => {
-					const disposalSubscriptions = new Map<string, () => void>()
-					const value = getState(token)
-					value.subscribe(`watch-molecules`, (update) => {
-						const unpacked = UList.unpackUpdate(update)
-						switch (unpacked.type) {
-							case `add`:
-								{
-									const molecule = Internal.IMPLICIT.STORE.molecules.get(
-										stringifyJson(unpacked.value),
-									)
-									if (molecule) {
-										disposalSubscriptions.set(
-											unpacked.value,
-											molecule.subject.subscribe(token.key, () => {
-												setSelf((self) => {
-													self.delete(unpacked.value)
-													return self
-												})
-											}),
-										)
-									}
-								}
-								break
-							case `delete`:
-								disposalSubscriptions.get(unpacked.value)?.()
-								disposalSubscriptions.delete(unpacked.value)
-								break
-							case `clear`:
-								for (const unsub of disposalSubscriptions.values()) unsub()
-								disposalSubscriptions.clear()
-						}
-					})
-				},
-			],
+			effects: [uListAutoDeleteOnDispose],
 		})
 		expect(getState(myMutableState)).toEqual(new UList())
 
@@ -337,6 +301,10 @@ describe(`mutable atom effects`, () => {
 		expect(getState(myMutableState)).toEqual(new UList([`item::1`]))
 		realm.deallocate(`item::1`)
 		expect(getState(myMutableState)).toEqual(new UList())
+
+		realm.allocate(`root`, `item::2`)
+		setState(myMutableState, (set) => set.add(`item::2`))
+		setState(myMutableState, (set) => (set.clear(), set))
 	})
 	it(`automatically cleans up members that are disposed (transaction)`, () => {
 		const myMutableState = mutableAtom<UList<string>>({
