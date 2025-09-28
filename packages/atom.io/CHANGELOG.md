@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.42.1
+
+### Patch Changes
+
+- 6a37bde: ✨ Add store and token as parameters to atom effects.
+- 6a37bde: ✨ Add `uListDisposedKeyCleanupEffect` to `atom.io/transceivers/u-list`. This effect is designed for a `UList` atom given the role of holding the keys of entities in your program. Whenever a new value is added to a `UList` with this effect, if that value has been previously allocated, it will be removed when it is disposed (deallocated).
+
 ## 0.42.0
 
 ### Minor Changes
