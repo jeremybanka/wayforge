@@ -1,5 +1,6 @@
 import type { Logger } from "atom.io"
 import {
+	Anarchy,
 	disposeState,
 	findState,
 	getState,
@@ -16,7 +17,10 @@ import {
 import * as Internal from "atom.io/internal"
 import { OList } from "atom.io/transceivers/o-list"
 import { SetRTX } from "atom.io/transceivers/set-rtx"
-import { UList } from "atom.io/transceivers/u-list"
+import {
+	UList,
+	uListDisposedKeyCleanupEffect,
+} from "atom.io/transceivers/u-list"
 import { vitest } from "vitest"
 
 import * as Utils from "../../__util__"
@@ -89,8 +93,8 @@ describe(`mutable atomic state`, () => {
 		subscribe(myFlagsState, Utils.stdout0)
 		subscribe(findFlagsByUserIdJSON, Utils.stdout1)
 		subscribe(findFlagsByUserIdTracker, (u) => {
-			for (const k of u.newValue) console.log({ k })
-			console.log(Utils.toBytes(u.newValue))
+			// for (const k of u.newValue) console.log({ k })
+			// console.log(Utils.toBytes(u.newValue))
 			Utils.stdout2(u)
 		})
 
@@ -285,6 +289,49 @@ describe(`mutable atom effects`, () => {
 		expect(getState(myMutableState)).toEqual(new UList([`A`]))
 		letterSubject.next({ letter: `B` })
 		expect(getState(myMutableState)).toEqual(new UList([`A`, `B`]))
+	})
+	it(`automatically cleans up members that are disposed`, () => {
+		const myMutableState = mutableAtom<UList<string>>({
+			key: `myMutableSet`,
+			class: UList,
+			effects: [uListDisposedKeyCleanupEffect],
+		})
+		expect(getState(myMutableState)).toEqual(new UList())
+
+		const realm = new Anarchy()
+		realm.allocate(`root`, `item::1`)
+		setState(myMutableState, (set) => set.add(`item::1`))
+		expect(getState(myMutableState)).toEqual(new UList([`item::1`]))
+		realm.deallocate(`item::1`)
+		expect(getState(myMutableState)).toEqual(new UList())
+
+		realm.allocate(`root`, `item::2`)
+		setState(myMutableState, (set) => set.add(`item::2`))
+		setState(myMutableState, (set) => (set.clear(), set))
+	})
+	it(`automatically cleans up members that are disposed (transaction)`, () => {
+		const myMutableState = mutableAtom<UList<string>>({
+			key: `myMutableSet`,
+			class: UList,
+			effects: [uListDisposedKeyCleanupEffect],
+		})
+		expect(getState(myMutableState)).toEqual(new UList())
+
+		const realm = new Anarchy()
+		realm.allocate(`root`, `item::1`)
+
+		runTransaction(
+			transaction({
+				key: `hi`,
+				do: ({ set }) => {
+					set(myMutableState, (s) => s.add(`item::1`))
+				},
+			}),
+		)()
+		expect(getState(myMutableState)).toEqual(new UList([`item::1`]))
+
+		realm.deallocate(`item::1`)
+		expect(getState(myMutableState)).toEqual(new UList())
 	})
 })
 
