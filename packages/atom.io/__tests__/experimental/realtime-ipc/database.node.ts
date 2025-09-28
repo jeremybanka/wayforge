@@ -1,14 +1,18 @@
-import path from "node:path"
+import * as os from "node:os"
+import * as path from "node:path"
 
 import { drizzle } from "drizzle-orm/postgres-js"
 import postgres from "postgres"
 
 import { cities, countries } from "./schema.node"
 
+const osUser = os.userInfo().username
+const user = osUser === `runner` ? `postgres` : osUser
+
 export class DatabaseManager {
 	public dbName: string = `test_db_` + Date.now()
 	private config = {
-		user: `postgres`,
+		user,
 		host: `localhost`,
 		database: `postgres`,
 		password: `your_password`,
