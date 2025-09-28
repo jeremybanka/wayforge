@@ -68,7 +68,7 @@ export function createRegularAtom<T, K extends Canonical, E>(
 				},
 				onSet: (handle: UpdateHandler<T>) =>
 					subscribeToState(store, token, `effect[${effectIndex}]`, handle),
-				token,
+				token: token as any,
 				store: eldest(store),
 			})
 			if (cleanup) {

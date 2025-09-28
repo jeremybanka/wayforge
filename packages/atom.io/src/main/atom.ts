@@ -82,9 +82,11 @@ export type Effectors<T, E = never> = {
 	 */
 	setSelf: <New extends T>(next: New | ((old: T) => New)) => void
 	/** Subscribe to changes to the atom */
-	onSet: (callback: (options: StateUpdate<T | E>) => void) => void
+	onSet: (callback: (options: StateUpdate<E | T>) => void) => void
 	/** The token of the atom */
-	token: AtomToken<T, any, E>
+	token: T extends Transceiver<any, any, any>
+		? MutableAtomToken<T>
+		: AtomToken<T, any, E>
 	/** The store in which the atom exists */
 	store: Store
 }
