@@ -21,6 +21,7 @@ import { getFromStore } from "./get-state"
 import { getTrace } from "./get-trace"
 import { newest } from "./lineage"
 import type { Store } from "./store"
+import { Subject } from "./subject"
 import type { RootStore } from "./transaction"
 import { createTransaction, isChildStore } from "./transaction"
 
@@ -28,6 +29,7 @@ export type Molecule<K extends Canonical> = {
 	readonly key: K
 	readonly stringKey: stringified<K>
 	readonly dependsOn: `all` | `any`
+	readonly subject: Subject<void>
 }
 
 export function makeRootMoleculeInStore<S extends string>(
@@ -38,6 +40,7 @@ export function makeRootMoleculeInStore<S extends string>(
 		key,
 		stringKey: stringifyJson(key),
 		dependsOn: `any`,
+		subject: new Subject(),
 	} satisfies Molecule<S>
 	store.molecules.set(stringifyJson(key), molecule)
 	return key
@@ -77,8 +80,9 @@ export function allocateIntoStore<
 			invalidKeys.push(claimString)
 		}
 	}
+	const subject = new Subject<void>()
 	if (invalidKeys.length === 0) {
-		target.molecules.set(stringKey, { key, stringKey, dependsOn })
+		target.molecules.set(stringKey, { key, stringKey, dependsOn, subject })
 	}
 
 	const creationEvent: MoleculeCreationEvent = {
@@ -173,6 +177,7 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 		)
 		return
 	}
+	molecule.subject.next()
 
 	const joinKeys = target.keyRefsInJoins.getRelatedKeys(stringKey)
 	if (joinKeys) {

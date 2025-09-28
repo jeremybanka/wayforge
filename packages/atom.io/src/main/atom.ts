@@ -1,4 +1,4 @@
-import type { ConstructorOf, Ctor, Transceiver } from "atom.io/internal"
+import type { ConstructorOf, Ctor, Store, Transceiver } from "atom.io/internal"
 import {
 	createMutableAtom,
 	createMutableAtomFamily,
@@ -10,6 +10,7 @@ import type { Canonical } from "atom.io/json"
 
 import type { StateUpdate } from "./events"
 import type {
+	AtomToken,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
 	RegularAtomFamilyToken,
@@ -22,7 +23,7 @@ export type RegularAtomOptions<T, E = never> = {
 	/** The starting value of the atom */
 	default: T | (() => T)
 	/** Hooks used to run side effects when the atom is set */
-	effects?: readonly AtomEffect<T>[]
+	effects?: readonly AtomEffect<T, E>[]
 	/** The classes of errors that might be thrown when deriving the atom's default value */
 	catch?: readonly Ctor<E>[]
 }
@@ -67,8 +68,10 @@ export function mutableAtom<T extends Transceiver<any, any, any>>(
  * @returns
  * Optionally, a cleanup function that will be called when the atom is disposed
  */
-export type AtomEffect<T> = (tools: Effectors<T>) => (() => void) | void
-export type Effectors<T> = {
+export type AtomEffect<T, E = never> = (
+	tools: Effectors<T, E>,
+) => (() => void) | void
+export type Effectors<T, E = never> = {
 	/**
 	 * Reset the value of the atom to its default
 	 */
@@ -79,7 +82,13 @@ export type Effectors<T> = {
 	 */
 	setSelf: <New extends T>(next: New | ((old: T) => New)) => void
 	/** Subscribe to changes to the atom */
-	onSet: (callback: (options: StateUpdate<T>) => void) => void
+	onSet: (callback: (options: StateUpdate<E | T>) => void) => void
+	/** The token of the atom */
+	token: T extends Transceiver<any, any, any>
+		? MutableAtomToken<T>
+		: AtomToken<T, any, E>
+	/** The store in which the atom exists */
+	store: Store
 }
 
 export type RegularAtomFamilyOptions<T, K extends Canonical, E = never> = {
@@ -88,7 +97,7 @@ export type RegularAtomFamilyOptions<T, K extends Canonical, E = never> = {
 	/** The starting value of the atom family */
 	default: T | ((key: K) => T)
 	/** Hooks used to run side effects when an atom in the family is set  */
-	effects?: (key: K) => AtomEffect<T>[]
+	effects?: (key: K) => AtomEffect<T, E>[]
 	/** The classes of errors that might be thrown when deriving the atom's default value */
 	catch?: readonly Ctor<E>[]
 }
