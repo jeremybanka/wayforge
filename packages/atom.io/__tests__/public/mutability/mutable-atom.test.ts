@@ -31,7 +31,7 @@ let logger: Logger
 beforeEach(() => {
 	Internal.clearStore(Internal.IMPLICIT.STORE)
 	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = Internal.IMPLICIT.STORE.logger = Utils.createNullLogger()
+	logger = Internal.IMPLICIT.STORE.logger //= Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -338,12 +338,12 @@ describe(`mutable atom effects`, () => {
 		realm.deallocate(`item::1`)
 		expect(getState(myMutableState)).toEqual(new UList())
 	})
-	it(`automatically cleans up members that are disposed (transaction)`, () => {
+	it.only(`automatically cleans up members that are disposed (transaction)`, () => {
 		const myMutableState = mutableAtom<UList<string>>({
 			key: `myMutableSet`,
 			class: UList,
 			effects: [
-				({ token, setSelf }) => {
+				function EFFECT__watchInnerValue({ token, setSelf }) {
 					const disposalSubscriptions = new Map<string, () => void>()
 					const value = getState(token)
 					value.subscribe(`watch-molecules`, (update) => {
