@@ -34,16 +34,16 @@ describe(`OList`, () => {
 	})
 	describe(`observe`, () => {
 		it(`emits set`, () => {
-			const ol = new OList<string>(`a`)
+			const ol = new OList<string>()
 			handleUnpacked(ol.subject, U.stdout1)
 			U.handleBytes(ol.subject, U.stdout2)
-			ol[1] = `b`
+			ol[0] = `b`
 			expect(U.stdout1).toHaveBeenCalledExactlyOnceWith({
 				type: `set`,
-				index: 1,
+				index: 0,
 				next: `b`,
 			})
-			expect(U.stdout2).toHaveBeenCalledExactlyOnceWith(48, 31, 49, 30, 3, 98)
+			expect(U.stdout2).toHaveBeenCalledExactlyOnceWith(48, 31, 48, 30, 3, 98)
 		})
 		it(`emits set with prev`, () => {
 			const ol = new OList<string>(`a`)
