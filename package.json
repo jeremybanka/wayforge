@@ -58,7 +58,7 @@
 		"jiti": "2.6.0",
 		"pin-dependencies-checker": "2.7.1",
 		"turbo": "2.5.8",
-		"typescript": "5.9.2",
+		"typescript": "5.9.3",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.2.4"
 	}
