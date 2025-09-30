@@ -1,5 +1,9 @@
 {
 	"$schema": "https://turbo.build/schema.json",
+	"remoteCache": {
+		"teamId": "team_test",
+		"apiUrl": "http://localhost:3000"
+	},
 	"ui": "tui",
 	"globalDependencies": ["tsconfig.json", ".bun-version", ".node-version"],
 	"tasks": {
