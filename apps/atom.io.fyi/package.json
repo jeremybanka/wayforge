@@ -49,6 +49,7 @@
 		"npmlog": "7.0.1",
 		"rehype-slug": "6.0.0",
 		"tsdoc.json": "workspace:*",
-		"typescript": "5.9.2"
+		"typescript": "5.9.2",
+		"wrangler": "4.40.2"
 	}
 }
