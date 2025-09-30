@@ -15,7 +15,7 @@
 		},
 		"atom.io.fyi#build": {
 			"dependsOn": ["atom.io#build", "tsdoc.json#build"],
-			"outputs": ["dist/**"],
+			"outputs": [".next/**"],
 			"inputs": ["**/package.json", "src/**"]
 		},
 		"test:build": {
