@@ -10,7 +10,11 @@
 		"build": "bun run build:tsdoc && bun run build:exhibits && bun run build:next",
 		"build:tsdoc": "./scripts/tsdoc.bun.ts",
 		"build:exhibits": "./scripts/exhibits.bun.ts once",
-		"build:next": "next build --turbo",
+		"build:next": "next build",
+		"preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+		"deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+		"upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+		"cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
 		"start": "next start -p 5454",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
@@ -24,8 +28,7 @@
 		"node": ">=22"
 	},
 	"dependencies": {
-		"@vercel/analytics": "1.5.0",
-		"@vercel/speed-insights": "1.2.0",
+		"@opennextjs/cloudflare": "1.9.0",
 		"atom.io": "workspace:*",
 		"next": "15.5.4",
 		"react": "19.1.1",
@@ -50,6 +53,7 @@
 		"npmlog": "7.0.1",
 		"rehype-slug": "6.0.0",
 		"tsdoc.json": "workspace:*",
-		"typescript": "5.9.2"
+		"typescript": "5.9.2",
+		"wrangler": "4.40.2"
 	}
 }

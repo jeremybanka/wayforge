@@ -2,7 +2,7 @@ import nextMDX from "@next/mdx"
 import type { NextConfig } from "next"
 
 const nextConfig = {
-	distDir: `dist`,
+	output: `standalone`,
 	pageExtensions: [`ts`, `tsx`, `js`, `jsx`, `md`, `mdx`],
 	reactStrictMode: true,
 	typescript: {
