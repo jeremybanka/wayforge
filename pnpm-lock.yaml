@@ -150,6 +150,9 @@ importers:
       typescript:
         specifier: 5.9.2
         version: 5.9.2
+      wrangler:
+        specifier: 4.40.2
+        version: 4.40.2
 
   apps/core.wayfarer.quest:
     dependencies:
