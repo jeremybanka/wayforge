@@ -1,7 +1,6 @@
 import "./code.scss"
 import "./globals.scss"
 
-import { Analytics } from "@vercel/analytics/react"
 import type { Metadata } from "next"
 
 import scss from "./layout.module.scss"
@@ -32,7 +31,6 @@ export default function RootLayout({
 					<Realtime>{children}</Realtime>
 				</main>
 				<footer />
-				<Analytics />
 			</body>
 		</html>
 	)
