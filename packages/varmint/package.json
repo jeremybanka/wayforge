@@ -52,7 +52,7 @@
 		"@types/tmp": "0.2.6",
 		"concurrently": "9.2.1",
 		"eslint": "9.36.0",
-		"openai": "6.0.0",
+		"openai": "6.0.1",
 		"tmp": "0.2.5",
 		"tsdown": "0.15.6",
 		"vite": "7.1.7",
