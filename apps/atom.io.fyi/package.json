@@ -31,8 +31,8 @@
 		"@opennextjs/cloudflare": "1.9.1",
 		"atom.io": "workspace:*",
 		"next": "15.5.4",
-		"react": "19.1.1",
-		"react-dom": "19.1.1",
+		"react": "19.2.0",
+		"react-dom": "19.2.0",
 		"react-syntax-highlighter": "15.6.6"
 	},
 	"devDependencies": {
