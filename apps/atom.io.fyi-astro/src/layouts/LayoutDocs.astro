@@ -7,7 +7,7 @@ import * as nav from "../components/nav"
 <Layout>
   <article class={scss.class}>
 		<aside>
-			<nav.SiteDirectory client:load />
+			<nav.SiteDirectory client:only />
 		</aside>
 		<main>
 			<slot />

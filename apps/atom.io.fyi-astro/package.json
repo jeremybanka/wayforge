@@ -1,7 +1,11 @@
 {
 	"name": "atom.io.fyi-astro",
 	"type": "module",
-	"version": "0.0.1",
+	"version": "0.2.0",
+	"private": true,
+	"engines": {
+		"node": "24.9.0"
+	},
 	"scripts": {
 		"dev": "concurrently \"bun:dev:*\"",
 		"dev:astro": "astro dev",
@@ -9,7 +13,8 @@
 		"build": "bun run build:exhibits && bun run build:astro",
 		"build:astro": "astro build",
 		"build:exhibits": "./scripts/exhibits.bun.ts once",
-		"preview": "astro preview",
+		"preview": "wrangler dev",
+		"deploy": "wrangler publish",
 		"astro": "astro",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
