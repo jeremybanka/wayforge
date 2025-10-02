@@ -160,25 +160,25 @@ importers:
   apps/atom.io.fyi-astro:
     dependencies:
       '@astrojs/mdx':
-        specifier: ^4.3.6
+        specifier: 4.3.6
         version: 4.3.6(astro@5.14.1(@types/node@24.6.2)(aws4fetch@1.0.20)(jiti@2.6.1)(rollup@4.52.4)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.16.9)(typescript@5.9.3)(yaml@2.8.1))
       '@astrojs/preact':
-        specifier: ^4.1.1
+        specifier: 4.1.1
         version: 4.1.1(@babel/core@7.28.4)(@types/node@24.6.2)(jiti@2.6.1)(preact@10.27.2)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.16.9)(yaml@2.8.1)
       astro:
-        specifier: ^5.14.1
+        specifier: 5.14.1
         version: 5.14.1(@types/node@24.6.2)(aws4fetch@1.0.20)(jiti@2.6.1)(rollup@4.52.4)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.16.9)(typescript@5.9.3)(yaml@2.8.1)
       atom.io:
         specifier: workspace:*
         version: link:../../packages/atom.io
       preact:
-        specifier: ^10.27.2
+        specifier: 10.27.2
         version: 10.27.2
       react:
-        specifier: npm:@preact/compat
+        specifier: npm:@preact/compat@18.3.1
         version: '@preact/compat@18.3.1(preact@10.27.2)'
       react-dom:
-        specifier: npm:@preact/compat
+        specifier: npm:@preact/compat@18.3.1
         version: '@preact/compat@18.3.1(preact@10.27.2)'
       react-syntax-highlighter:
         specifier: 15.6.6
