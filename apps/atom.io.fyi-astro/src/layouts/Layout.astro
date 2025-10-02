@@ -16,59 +16,36 @@ import packageJson from "../../../../packages/atom.io/package.json"
 		<title>Astro Basics</title>
 		<ClientRouter />
 	</head>
-	
 	<body>
-			<main class={scss.class}>
-		<Theme client:idle />
-		<header>
-			<nav>
-				<section>
-					<a href="/">atom.io.fyi</a>
-				</section>
-				<span class="gap" />
-				<section>
-					<a href="/docs">docs</a>
-					<a href="https://github.com/jeremybanka/wayforge/tree/main/packages/atom.io">
-						github
-					</a>
-				</section>
-			</nav>
-		</header>
-		<aside>
-			<span>🕊️ Free Palestine 🇵🇸</span>
-		</aside>
-		<main>
-			<slot />
+		<main class={scss.class}>
+			<Theme client:idle />
+			<header>
+				<nav>
+					<section>
+						<a href="/">atom.io.fyi</a>
+					</section>
+					<span class="gap" />
+					<section>
+						<a href="/docs">docs</a>
+						<a href="https://github.com/jeremybanka/wayforge/tree/main/packages/atom.io">
+							github
+						</a>
+					</section>
+				</nav>
+			</header>
+			<aside>
+				<span>🕊️ Free Palestine 🇵🇸</span>
+			</aside>
+			<main>
+				<slot />
+			</main>
+			<footer>
+				<span>
+					<code>{packageJson.version}</code>
+				</span>
+				<span>♥️ jeremybanka</span>
+			</footer>
+			<!-- <AtomIODevtools /> -->
 		</main>
-		<footer>
-			<span>
-				<code>{packageJson.version}</code>
-			</span>
-			<span>♥️ jeremybanka</span>
-		</footer>
-		<!-- <AtomIODevtools /> -->
-		 </main>
 	</body>
 </html>
-<!-- <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
-
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style> -->
