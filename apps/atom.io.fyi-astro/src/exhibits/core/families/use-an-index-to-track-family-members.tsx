@@ -1,6 +1,5 @@
 import { atom, findState } from "atom.io"
 import { useO } from "atom.io/react"
-import * as React from "react"
 
 import { Point, xAtoms, yAtoms } from "./declare-a-family"
 
@@ -9,7 +8,7 @@ export const pointIndex = atom<string[]>({
 	default: [],
 })
 
-export function AllPoints(): React.ReactNode {
+function AllPoints() {
 	const pointIds = useO(pointIndex)
 	return (
 		<>

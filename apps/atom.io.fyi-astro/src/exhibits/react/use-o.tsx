@@ -16,7 +16,7 @@ const urlState = atom<string>({
 	],
 })
 
-export const UrlDisplay: React.FC = () => {
+function UrlDisplay() {
 	const url = useO(urlState)
 	return <div>{url}</div>
 }

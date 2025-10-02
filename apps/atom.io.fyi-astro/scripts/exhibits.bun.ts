@@ -17,12 +17,12 @@ const inputDir = `./src/exhibits`
 const outputDir = `./src/exhibits-wrapped`
 
 function wrapCode(filename: string, code: string) {
-	return `'use client'
-/* eslint-disable quotes */
+	return `/* eslint-disable quotes */
 import * as React from 'react';
+import type { VNode } from 'preact';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 
-const Codeblock: React.FC = () => {
+const Codeblock = (): VNode => {
 	const myRef = React.useRef<HTMLSpanElement>(null);
 	React.useEffect(() => {
 		const me = myRef.current;

@@ -17,7 +17,7 @@ getState(xAtoms, `example`) // -> 0
 export function Point(props: {
 	xState: RegularAtomToken<number>
 	yState: RegularAtomToken<number>
-}): React.ReactNode {
+}) {
 	const x = useO(props.xState)
 	const y = useO(props.yState)
 
