@@ -1,8 +1,8 @@
 import type { RootStore } from "atom.io/internal"
 import { IMPLICIT } from "atom.io/internal"
-import * as React from "react"
+import { createContext } from "react"
 
-export const StoreContext: React.Context<RootStore> = React.createContext(
+export const StoreContext: React.Context<RootStore> = createContext(
 	IMPLICIT.STORE,
 )
 

@@ -3,7 +3,7 @@ import type { Loadable, ReadableFamilyToken, ReadableToken } from "atom.io"
 import { findInStore, type ReadableState, withdraw } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 import { StoreContext, useO } from "atom.io/react"
-import React from "react"
+import { useContext, useRef } from "react"
 
 export function useLoadable<T, E>(
 	token: ReadableToken<Loadable<T>, any, E>,
@@ -32,7 +32,7 @@ export function useLoadable(
 		| readonly [ReadableToken<any, any, any>, unknown]
 		| readonly [ReadableToken<any, any, any>]
 ): `LOADING` | { loading: boolean; value: unknown; error?: unknown } {
-	const store = React.useContext(StoreContext)
+	const store = useContext(StoreContext)
 
 	let value: unknown
 	let state: ReadableState<any, any>
@@ -65,12 +65,12 @@ export function useLoadable(
 
 	const isErr = `catch` in state && state.catch.some((E) => value instanceof E)
 
-	const wrapperRef = React.useRef<{
+	const wrapperRef = useRef<{
 		loading: boolean
 		value: unknown
 		error?: unknown
 	}>({ loading: false, value: null as unknown })
-	const lastLoadedRef = React.useRef(
+	const lastLoadedRef = useRef(
 		fallback ?? (value instanceof Promise ? `LOADING` : value),
 	)
 
