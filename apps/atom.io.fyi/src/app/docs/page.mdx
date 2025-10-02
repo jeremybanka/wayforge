@@ -28,7 +28,9 @@
       <td>
         <code>selector</code>
       </td>
-      <td>Declare a reactive variable derived from other reactive variables.</td>
+      <td>
+        Declare a reactive variable derived from other reactive variables.
+      </td>
     </tr>
     <tr>
       <td>
@@ -95,8 +97,8 @@
         <code>Silo</code>
       </td>
       <td>
-        An isolated store with all of the above functions bound to it. Useful for
-        testing.
+        An isolated store with all of the above functions bound to it. Useful
+        for testing.
       </td>
     </tr>
   </tbody>
@@ -104,11 +106,11 @@
 
 ## atom
 
-import DeclareAnAtom from "x/core/atom/declare-an-atom.gen"
-import AnAtomTokenIsAReference from "x/core/atom/an-atom-token-is-a-reference.gen"
-import GetAndSetAnAtom from "x/core/atom/get-and-set-an-atom.gen"
-import SubscribeToAnAtom from "x/core/atom/subscribe-to-an-atom.gen"
-import SubscribePowersIntegrations from "x/core/atom/subscribe-is-the-foundation-of-reactivity.gen"
+import DeclareAnAtom from "x/core/atom/declare-an-atom.gen";
+import AnAtomTokenIsAReference from "x/core/atom/an-atom-token-is-a-reference.gen";
+import GetAndSetAnAtom from "x/core/atom/get-and-set-an-atom.gen";
+import SubscribeToAnAtom from "x/core/atom/subscribe-to-an-atom.gen";
+import SubscribePowersIntegrations from "x/core/atom/subscribe-is-the-foundation-of-reactivity.gen";
 
 <DeclareAnAtom />
 Imagine an `atom` as a "reactive variable," with a key, a type, and a default value.
@@ -121,7 +123,8 @@ Instead, it returns an importable, serializable, and replaceable reference to th
 We call this an `AtomToken`. In this case, an `AtomToken<number>`.
 
 <GetAndSetAnAtom />
-An atom's value is accessed by calling `getState` and `setState` with the atom's token.
+An atom's value is accessed by calling `getState` and `setState` with the atom's
+token.
 
 TypeScript will discourage you from setting the wrong type of value.
 
@@ -135,8 +138,8 @@ atom.io to easily integrate with an observer like React. More on this later.
 
 ## selector
 
-import DeclareASelector from "x/core/selector/declare-a-selector.gen"
-import UseASelector from "x/core/selector/use-a-selector.gen"
+import DeclareASelector from "x/core/selector/declare-a-selector.gen";
+import UseASelector from "x/core/selector/use-a-selector.gen";
 
 <DeclareASelector />
 
@@ -148,8 +151,8 @@ In this example, we can see that by setting `dividendState` to a new value, the 
 
 ## families
 
-import DeclareAFamily from "x/core/families/declare-a-family.gen"
-import UseAnIndexToTrackFamilyMembers from "x/core/families/use-an-index-to-track-family-members.gen"
+import DeclareAFamily from "x/core/families/declare-a-family.gen";
+import UseAnIndexToTrackFamilyMembers from "x/core/families/use-an-index-to-track-family-members.gen";
 
 Sometimes you need a lot of the same type of atom or selector. The `atomFamily` and `selectorFamily` functions provide a convenient interface for declaring states dynamically.
 
@@ -175,9 +178,9 @@ Keen readers may recognize that collections generally extend `Object`, and that 
 
 ## transaction
 
-import CallAFamilyInATransaction from "x/core/transaction/use-a-family-in-a-transaction.gen"
-import IterateThroughAnIndexChangingTheValueOfSomeAtoms from "x/core/transaction/iterate-through-an-index-changing-the-value-of-some-atoms.gen"
-import TryCatchAFailedTransaction from "x/core/transaction/try-catch-a-failed-transaction.gen"
+import CallAFamilyInATransaction from "x/core/transaction/use-a-family-in-a-transaction.gen";
+import IterateThroughAnIndexChangingTheValueOfSomeAtoms from "x/core/transaction/iterate-through-an-index-changing-the-value-of-some-atoms.gen";
+import TryCatchAFailedTransaction from "x/core/transaction/try-catch-a-failed-transaction.gen";
 
 Transactions allow you to batch multiple atom changes into a single update. This is useful for validating a complex set of changes before it is applied to the store.
 
@@ -195,9 +198,9 @@ If a transaction throws, the state of the store is not changed. However, it is u
 
 ## timeline
 
-import CreateATimeline from "x/core/timeline/create-a-timeline.gen"
-import SubscribeToATimeline from "x/core/timeline/subscribe-to-a-timeline.gen"
-import UndoAndRedoChanges from "x/core/timeline/undo-and-redo-changes.gen"
+import CreateATimeline from "x/core/timeline/create-a-timeline.gen";
+import SubscribeToATimeline from "x/core/timeline/subscribe-to-a-timeline.gen";
+import UndoAndRedoChanges from "x/core/timeline/undo-and-redo-changes.gen";
 
 Timelines allow you to track the history of a group of atoms. If these atoms are set, or set as a group by a selector or transaction, the timeline will record the changes. A timeline can be used to undo and redo changes.
 
@@ -217,9 +220,9 @@ In this example, we undo and redo changes to the timeline.
 
 ### async
 
-import AwaitYourState from "x/core/advanced/async/await-your-state.gen"
-import LoadableSelector from "x/core/advanced/async/loadable-selector.gen"
-import AvoidRaceBetweenPromises from "x/core/advanced/async/avoid-race-between-promises.gen"
+import AwaitYourState from "x/core/advanced/async/await-your-state.gen";
+import LoadableSelector from "x/core/advanced/async/loadable-selector.gen";
+import AvoidRaceBetweenPromises from "x/core/advanced/async/avoid-race-between-promises.gen";
 
 Often, state is not immediately available. For example, if you are fetching data from a server, you might use the fetch function `atom.io` offers natural support for `Promise` and `async/await` patterns.
 

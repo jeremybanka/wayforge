@@ -180,6 +180,9 @@ importers:
       react-dom:
         specifier: npm:@preact/compat
         version: '@preact/compat@18.3.1(preact@10.27.2)'
+      react-syntax-highlighter:
+        specifier: 15.6.6
+        version: 15.6.6(@preact/compat@18.3.1(preact@10.27.2))
     devDependencies:
       '@types/react':
         specifier: 19.2.0
@@ -19227,6 +19230,16 @@ snapshots:
       set-cookie-parser: 2.7.1
     optionalDependencies:
       react-dom: 19.2.0(react@19.2.0)
+
+  react-syntax-highlighter@15.6.6(@preact/compat@18.3.1(preact@10.27.2)):
+    dependencies:
+      '@babel/runtime': 7.28.4
+      highlight.js: 10.7.3
+      highlightjs-vue: 1.0.0
+      lowlight: 1.20.0
+      prismjs: 1.30.0
+      react: '@preact/compat@18.3.1(preact@10.27.2)'
+      refractor: 3.6.0
 
   react-syntax-highlighter@15.6.6(react@19.2.0):
     dependencies:

@@ -5,15 +5,15 @@ import * as nav from "../components/nav"
 ---
 
 <Layout>
-  <article class={scss[`class`]}>
+  <article class={scss.class}>
 		<aside>
-			<nav.SiteDirectory />
+			<nav.SiteDirectory client:only />
 		</aside>
 		<main>
 			<slot />
 		</main>
 		<aside>
-			<nav.OnThisPage />
+			<nav.OnThisPage client:only />
 		</aside>
 	</article>
 </Layout>

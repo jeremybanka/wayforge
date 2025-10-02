@@ -15,7 +15,8 @@
 		"atom.io": "0.42.2",
 		"preact": "^10.27.2",
 		"react": "npm:@preact/compat",
-		"react-dom": "npm:@preact/compat"
+		"react-dom": "npm:@preact/compat",
+		"react-syntax-highlighter": "15.6.6"
 	},
 	"devDependencies": {
 		"@types/react": "19.2.0"

@@ -1,4 +1,4 @@
-@use "../_responsive";
+@use "../styles/responsive";
 
 article.class {
   position: relative;
@@ -93,7 +93,9 @@ article.class {
     top: 5.5em;
     width: 200px;
     z-index: 10;
-    > nav {
+
+    // not direct descendant of aside when astro does the island thing
+    nav {
       display: flex;
       flex-flow: column;
       border-radius: 1em;
@@ -173,11 +175,8 @@ article.class {
     box-shadow: 0 1px 20px 1px var(--bg-shadow-2);
     border-radius: 10px;
     z-index: -1;
-    transition:
-      width 0.2s ease-in-out,
-      height 0.2s ease-in-out,
-      top 0.2s ease-in-out,
-      left 0.2s ease-in-out;
+    transition: width 0.2s ease-in-out, height 0.2s ease-in-out,
+      top 0.2s ease-in-out, left 0.2s ease-in-out;
     ~ data {
       background: var(--bg-shade-2);
     }
@@ -187,10 +186,7 @@ article.class {
     border-radius: 5px;
     border: 1px solid var(--hyperlink-color);
     z-index: -1;
-    transition:
-      width 0.2s ease-in-out,
-      height 0.2s ease-in-out,
-      top 0.2s ease-in-out,
-      left 0.2s ease-in-out;
+    transition: width 0.2s ease-in-out, height 0.2s ease-in-out,
+      top 0.2s ease-in-out, left 0.2s ease-in-out;
   }
 }
