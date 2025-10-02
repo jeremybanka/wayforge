@@ -1,17 +1,19 @@
 {
-  "name": "atom.io.fyi-astro",
-  "type": "module",
-  "version": "0.0.1",
-  "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
-  "dependencies": {
-    "@astrojs/mdx": "^4.3.6",
-    "@astrojs/preact": "^4.1.1",
-    "astro": "^5.14.1",
-    "preact": "^10.27.2"
-  }
+	"name": "atom.io.fyi-astro",
+	"type": "module",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"astro": "astro"
+	},
+	"dependencies": {
+		"@astrojs/mdx": "^4.3.6",
+		"@astrojs/preact": "^4.1.1",
+		"astro": "^5.14.1",
+		"preact": "^10.27.2",
+		"react": "npm:@preact/compat",
+		"react-dom": "npm:@preact/compat"
+	}
 }

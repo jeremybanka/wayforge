@@ -171,6 +171,12 @@ importers:
       preact:
         specifier: ^10.27.2
         version: 10.27.2
+      react:
+        specifier: npm:@preact/compat
+        version: '@preact/compat@18.3.1(preact@10.27.2)'
+      react-dom:
+        specifier: npm:@preact/compat
+        version: '@preact/compat@18.3.1(preact@10.27.2)'
 
   apps/core.wayfarer.quest:
     dependencies:
@@ -3535,6 +3541,11 @@ packages:
 
   '@poppinss/exception@1.2.2':
     resolution: {integrity: sha512-m7bpKCD4QMlFCjA/nKTs23fuvoVFoA83brRKmObCUNmi/9tVu8Ve3w4YQAnJu4q3Tjf5fr685HYIC/IA2zHRSg==}
+
+  '@preact/compat@18.3.1':
+    resolution: {integrity: sha512-Kog4PSRxtT4COtOXjsuQPV1vMXpUzREQfv+6Dmcy9/rMk0HOPK0HTE9fspFjAmY8R80T/T8gtgmZ68u5bOSngw==}
+    peerDependencies:
+      preact: '*'
 
   '@preact/preset-vite@2.10.2':
     resolution: {integrity: sha512-K9wHlJOtkE+cGqlyQ5v9kL3Ge0Ql4LlIZjkUTL+1zf3nNdF88F9UZN6VTV8jdzBX9Fl7WSzeNMSDG7qECPmSmg==}
@@ -13329,6 +13340,10 @@ snapshots:
       supports-color: 10.2.2
 
   '@poppinss/exception@1.2.2': {}
+
+  '@preact/compat@18.3.1(preact@10.27.2)':
+    dependencies:
+      preact: 10.27.2
 
   '@preact/preset-vite@2.10.2(@babel/core@7.28.4)(preact@10.27.2)(vite@6.3.6(@types/node@24.6.2)(jiti@2.6.1)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.16.9)(yaml@2.8.1))':
     dependencies:
