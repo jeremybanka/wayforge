@@ -1,0 +1,19 @@
+---
+import Layout from "./Layout.astro"
+import scss from "../styles/layout-docs.module.scss"
+import * as nav from "../components/nav"
+---
+
+<Layout>
+  <article class={scss[`class`]}>
+		<aside>
+			<nav.SiteDirectory />
+		</aside>
+		<main>
+			<slot />
+		</main>
+		<aside>
+			<nav.OnThisPage />
+		</aside>
+	</article>
+</Layout>
