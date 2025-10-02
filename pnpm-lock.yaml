@@ -184,9 +184,21 @@ importers:
         specifier: 15.6.6
         version: 15.6.6(@preact/compat@18.3.1(preact@10.27.2))
     devDependencies:
+      '@types/npmlog':
+        specifier: 7.0.0
+        version: 7.0.0
       '@types/react':
         specifier: 19.2.0
         version: 19.2.0
+      chokidar:
+        specifier: 4.0.3
+        version: 4.0.3
+      concurrently:
+        specifier: 9.2.1
+        version: 9.2.1
+      npmlog:
+        specifier: 7.0.1
+        version: 7.0.1
 
   apps/core.wayfarer.quest:
     dependencies:
