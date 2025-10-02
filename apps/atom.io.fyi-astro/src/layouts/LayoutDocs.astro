@@ -7,13 +7,13 @@ import * as nav from "../components/nav"
 <Layout>
   <article class={scss.class}>
 		<aside>
-			<nav.SiteDirectory client:only />
+			<nav.SiteDirectory client:load />
 		</aside>
 		<main>
 			<slot />
 		</main>
 		<aside>
-			<nav.OnThisPage client:only />
+			<nav.OnThisPage client:load />
 		</aside>
 	</article>
 </Layout>
