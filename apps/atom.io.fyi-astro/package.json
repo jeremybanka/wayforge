@@ -3,8 +3,12 @@
 	"type": "module",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "astro dev",
-		"build": "astro build",
+		"dev": "concurrently \"bun:dev:*\"",
+		"dev:astro": "astro dev",
+		"dev:exhibits": "./scripts/exhibits.bun.ts watch",
+		"build": "bun run build:exhibits && bun run build:astro",
+		"build:astro": "astro build",
+		"build:exhibits": "./scripts/exhibits.bun.ts once",
 		"preview": "astro preview",
 		"astro": "astro"
 	},
