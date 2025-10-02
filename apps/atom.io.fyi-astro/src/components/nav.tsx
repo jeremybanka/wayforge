@@ -16,10 +16,10 @@ const menuToggleState = atom<boolean>({
 
 export const pathnameAtom = atom<string>({
 	key: `pathName`,
-	default: window.location.pathname,
+	default: globalThis.location?.pathname ?? ``,
 	effects: [
 		({ setSelf }) => {
-			document.addEventListener(`click`, (e) => {
+			globalThis.document?.addEventListener(`click`, (e) => {
 				const anchor = (e.target as HTMLElement).closest(`a`)
 				if (anchor && anchor instanceof HTMLAnchorElement) {
 					const url = anchor.getAttribute(`href`)
@@ -30,7 +30,7 @@ export const pathnameAtom = atom<string>({
 					}
 				}
 			})
-			window.addEventListener(`popstate`, () => {
+			globalThis.addEventListener?.(`popstate`, () => {
 				setSelf(window.location.pathname)
 			})
 		},
