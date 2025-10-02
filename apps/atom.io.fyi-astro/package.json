@@ -12,6 +12,7 @@
 		"@astrojs/mdx": "^4.3.6",
 		"@astrojs/preact": "^4.1.1",
 		"astro": "^5.14.1",
+		"atom.io": "0.42.2",
 		"preact": "^10.27.2",
 		"react": "npm:@preact/compat",
 		"react-dom": "npm:@preact/compat"
