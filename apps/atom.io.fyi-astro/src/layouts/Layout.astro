@@ -1,10 +1,12 @@
 ---
 import { ClientRouter } from "astro:transitions"
+import { AtomIODevtools } from "atom.io/react-devtools"
+import "atom.io/react-devtools/css"
+import packageJson from "atom.io/package.json"
 import { Theme } from "../components/Theme"
 import scss from "../styles/layout.module.scss"
 import "../styles/globals.scss"
 import "../styles/code.scss"
-import packageJson from "../../../../packages/atom.io/package.json"
 ---
 
 <html lang="en">
@@ -45,7 +47,7 @@ import packageJson from "../../../../packages/atom.io/package.json"
 				</span>
 				<span>♥️ jeremybanka</span>
 			</footer>
-			<!-- <AtomIODevtools /> -->
+			<AtomIODevtools hideByDefault={true} client:only />
 		</main>
 	</body>
 </html>
