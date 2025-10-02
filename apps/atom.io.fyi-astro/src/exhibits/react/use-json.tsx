@@ -7,7 +7,7 @@ const numbersCollectionState = mutableAtom<UList<string>>({
 	class: UList,
 })
 
-export const Numbers: React.FC = () => {
+function Numbers() {
 	const numbers = useJSON(numbersCollectionState)
 	return (
 		<>

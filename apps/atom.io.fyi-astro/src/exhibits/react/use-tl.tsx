@@ -2,7 +2,7 @@ import { useTL } from "atom.io/react"
 
 import { coordinatesTL } from "../core/timeline/create-a-timeline"
 
-export const UrlDisplay: React.FC = () => {
+export function UrlDisplay() {
 	const { at, length, undo, redo } = useTL(coordinatesTL)
 	return (
 		<>

@@ -6,7 +6,7 @@ const toggleState = atom<boolean>({
 	default: false,
 })
 
-export const UrlDisplay: React.FC = () => {
+function UrlDisplay() {
 	const setToggle = useI(toggleState)
 	const toggle = useO(toggleState)
 	return (
