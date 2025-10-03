@@ -122,7 +122,7 @@
 		"concurrently": "9.2.1",
 		"eslint": "9.36.0",
 		"tsdown": "0.15.6",
-		"vite": "7.1.8",
+		"vite": "7.1.9",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.2.4"
 	},
