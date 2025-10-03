@@ -1,10 +1,10 @@
 import { atom } from "atom.io"
-import { useI, useO } from "atom.io/react"
-import * as React from "react"
+import { useI, useO } from "atom.io/preact"
+import * as React from "preact/hooks"
 
 import { Spotlight } from "./Spotlight"
 import { Toggle } from "./Toggle"
-import type { VNode } from "preact"
+import type { RefObject, VNode } from "preact"
 
 const SUBMODULES = [``, `react`]
 const INCLUDE_LIST = [`H2`, `H3`, `H4`, `H5`, `H6`]
@@ -38,7 +38,7 @@ export const pathnameAtom = atom<string>({
 })
 
 export type ContentsProps = {
-	observe: React.RefObject<HTMLElement | null>
+	observe: RefObject<HTMLElement | null>
 }
 export function OnThisPage(): VNode {
 	const userHasToggled = useO(menuToggleState)
