@@ -44,7 +44,7 @@
 		"@types/node": "24.6.2",
 		"@types/tmp": "0.2.6",
 		"concurrently": "9.2.1",
-		"eslint": "9.36.0",
+		"eslint": "9.37.0",
 		"tmp": "0.2.5",
 		"tsdown": "0.15.6",
 		"vite": "7.1.9",
