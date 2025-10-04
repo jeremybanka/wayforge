@@ -156,10 +156,6 @@
 			"import": "./dist/json/index.js",
 			"types": "./dist/json/index.d.ts"
 		},
-		"./preact": {
-			"import": "./dist/preact/index.js",
-			"types": "./dist/preact/index.d.ts"
-		},
 		"./react": {
 			"import": "./dist/react/index.js",
 			"types": "./dist/react/index.d.ts"
