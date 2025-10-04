@@ -149,8 +149,14 @@ export function OnThisPage(): VNode {
 }
 
 export function SiteDirectory(): VNode {
-	console.log(`rendering site directory`)
+	useO(pathnameAtom)
+
+	return <SiteDirectoryInternal />
+}
+
+const SiteDirectoryInternal = (): VNode => {
 	const userHasToggled = useO(menuToggleState)
+	console.log(`consumer`, userHasToggled)
 	// const [, forceRender] = React.useState<void>()
 	// useEffect(() => {
 	// 	// globalThis.document?.addEventListener(`astro:page-load`, () => {
@@ -164,8 +170,11 @@ export function SiteDirectory(): VNode {
 	// }, [])
 	const pathname = useO(pathnameAtom)
 	console.log(`pathname`, pathname)
-	const pathnameId = pathname.replaceAll(`/`, `-`) + `-link`
-
+	const pathnameId =
+		(pathname.endsWith(`/`) ? pathname.slice(0, -1) : pathname).replaceAll(
+			`/`,
+			`-`,
+		) + `-link`
 	return (
 		<>
 			<Spotlight
@@ -202,26 +211,17 @@ export function SiteDirectory(): VNode {
 							</a>
 						</section>
 					</main>
-
-					<Consumer />
 				</section>
 			</nav>
+			{/* <button
+				type={`button`}
+				onClick={() => {
+					// forceRender()
+					setState(menuToggleState, (v) => !v)
+				}}
+			>
+				{userHasToggled ? `close` : `open`}
+			</button> */}
 		</>
-	)
-}
-
-const Consumer = (): VNode => {
-	const userHasToggled = useO(menuToggleState)
-	console.log(`consumer`, userHasToggled)
-	return (
-		<button
-			type={`button`}
-			onClick={() => {
-				// forceRender()
-				setState(menuToggleState, (v) => !v)
-			}}
-		>
-			{userHasToggled ? `close` : `open`}
-		</button>
 	)
 }
