@@ -196,6 +196,9 @@ importers:
       concurrently:
         specifier: 9.2.1
         version: 9.2.1
+      eslint:
+        specifier: 9.37.0
+        version: 9.37.0(jiti@2.6.1)
       npmlog:
         specifier: 7.0.1
         version: 7.0.1
