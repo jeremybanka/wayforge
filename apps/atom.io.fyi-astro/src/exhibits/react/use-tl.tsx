@@ -2,7 +2,7 @@ import { useTL } from "atom.io/react"
 
 import { coordinatesTL } from "../core/timeline/create-a-timeline"
 
-export function UrlDisplay() {
+export function UrlDisplay(): React.JSX.Element {
 	const { at, length, undo, redo } = useTL(coordinatesTL)
 	return (
 		<>
