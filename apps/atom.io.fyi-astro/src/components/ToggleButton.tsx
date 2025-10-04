@@ -1,8 +1,8 @@
 import * as React from "react"
 
 import type { ToggleProps } from "./Toggle"
-import label from "./Toggle.Button.module.scss"
 import type { VNode } from "preact"
+import label from "./ToggleButton.module.scss"
 
 export const setCssVars = (
 	vars: Record<`--${string}`, number | string>,
@@ -11,7 +11,7 @@ export const setCssVars = (
 export function Button({ children, checked, onChange }: ToggleProps): VNode {
 	return (
 		<label
-			className={label[`class`]}
+			className={label.class}
 			style={setCssVars({
 				"--width": `40px`,
 				"--height": `40px`,

@@ -1,4 +1,4 @@
-import { Button } from "./Toggle.Button"
+import { Button } from "./ToggleButton"
 
 export type ToggleProps = {
 	children: string
