@@ -7,7 +7,7 @@ import * as nav from "../components/nav"
 <Layout>
   <article class={scss.class}>
 		<aside>
-			<nav.SiteDirectory client:only transition:persist transition:name="site-directory" />
+			<nav.SiteDirectory client:load transition:persist />
 		</aside>
 		<main>
 			<slot />

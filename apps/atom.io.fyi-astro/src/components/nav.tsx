@@ -1,13 +1,11 @@
-import { atom, setState } from "atom.io"
+import { atom } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import * as React from "react"
 
 import { Spotlight } from "./Spotlight"
 import { Toggle } from "./Toggle"
 import type { RefObject, VNode } from "preact"
-import { useEffect } from "react"
 
-const SUBMODULES = [``, `react`]
 const INCLUDE_LIST = [`H2`, `H3`, `H4`, `H5`, `H6`]
 
 const menuToggleState = atom<boolean>({
@@ -21,7 +19,6 @@ export const pathnameAtom = atom<string>({
 	effects: [
 		({ setSelf }) => {
 			globalThis.document?.addEventListener(`astro:page-load`, () => {
-				console.log(`after swap:`, globalThis.location.pathname)
 				setSelf(window.location.pathname)
 			})
 		},
@@ -149,27 +146,14 @@ export function OnThisPage(): VNode {
 }
 
 export function SiteDirectory(): VNode {
-	useO(pathnameAtom)
+	useO(pathnameAtom) // weirdly important
 
 	return <SiteDirectoryInternal />
 }
 
 const SiteDirectoryInternal = (): VNode => {
 	const userHasToggled = useO(menuToggleState)
-	console.log(`consumer`, userHasToggled)
-	// const [, forceRender] = React.useState<void>()
-	// useEffect(() => {
-	// 	// globalThis.document?.addEventListener(`astro:page-load`, () => {
-	// 	// 	console.log(`after swap forcing render`)
-	// 	// 	forceRender()
-	// 	// })
-	// 	// setInterval(() => {
-	// 	// 	console.log(`after swap forcing render`)
-	// 	// 	forceRender()
-	// 	// }, 1000)
-	// }, [])
 	const pathname = useO(pathnameAtom)
-	console.log(`pathname`, pathname)
 	const pathnameId =
 		(pathname.endsWith(`/`) ? pathname.slice(0, -1) : pathname).replaceAll(
 			`/`,
@@ -213,15 +197,6 @@ const SiteDirectoryInternal = (): VNode => {
 					</main>
 				</section>
 			</nav>
-			{/* <button
-				type={`button`}
-				onClick={() => {
-					// forceRender()
-					setState(menuToggleState, (v) => !v)
-				}}
-			>
-				{userHasToggled ? `close` : `open`}
-			</button> */}
 		</>
 	)
 }
