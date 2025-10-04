@@ -1,0 +1,53 @@
+---
+import { ClientRouter } from "astro:transitions"
+import { AtomIODevtools } from "atom.io/react-devtools"
+import "atom.io/react-devtools/css"
+import packageJson from "atom.io/package.json"
+import { Theme } from "../components/Theme"
+import scss from "../styles/layout.module.scss"
+import "../styles/globals.scss"
+import "../styles/code.scss"
+---
+
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Atom.io</title>
+		<ClientRouter />
+	</head>
+	<body>
+		<main class={scss.class}>
+			<Theme client:idle />
+			<header>
+				<nav>
+					<section>
+						<a href="/">atom.io.fyi</a>
+					</section>
+					<span class="gap" />
+					<section>
+						<a href="/docs">docs</a>
+						<a href="https://github.com/jeremybanka/wayforge/tree/main/packages/atom.io">
+							github
+						</a>
+					</section>
+				</nav>
+			</header>
+			<aside>
+				<span>🕊️ Free Palestine 🇵🇸</span>
+			</aside>
+			<main>
+				<slot />
+			</main>
+			<footer>
+				<span>
+					<code>{packageJson.version}</code>
+				</span>
+				<span>♥️ jeremybanka</span>
+			</footer>
+			<AtomIODevtools hideByDefault={true} client:only />
+		</main>
+	</body>
+</html>
