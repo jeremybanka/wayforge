@@ -1,5 +1,5 @@
 import type { ReadableFamilyToken, ReadableToken } from "atom.io"
-import { getFromStore, IMPLICIT, subscribeToState } from "atom.io/internal"
+import { getFromStore, subscribeToState } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 import { useContext, useId, useSyncExternalStore } from "react"
 
@@ -18,8 +18,7 @@ export function useO<T, K extends Canonical, E>(
 		| [ReadableFamilyToken<T, K, E>, NoInfer<K>]
 		| [ReadableToken<T, any, E>]
 ): E | T {
-	// const store = useContext(StoreContext)
-	const store = IMPLICIT.STORE
+	const store = useContext(StoreContext)
 	const token = parseStateOverloads(store, ...params)
 	const id = useId()
 	return useSyncExternalStore<E | T>(
