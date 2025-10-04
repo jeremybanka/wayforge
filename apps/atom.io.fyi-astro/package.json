@@ -1,0 +1,43 @@
+{
+	"name": "atom.io.fyi-astro",
+	"type": "module",
+	"version": "0.2.0",
+	"private": true,
+	"engines": {
+		"node": "24.9.0"
+	},
+	"scripts": {
+		"dev": "concurrently \"bun:dev:*\"",
+		"dev:astro": "astro dev",
+		"dev:exhibits": "./scripts/exhibits.bun.ts watch",
+		"build": "bun run build:exhibits && bun run build:astro",
+		"build:astro": "astro build",
+		"build:exhibits": "./scripts/exhibits.bun.ts once",
+		"preview": "wrangler dev",
+		"deploy": "wrangler publish",
+		"astro": "astro",
+		"lint:biome": "biome check -- .",
+		"lint:eslint": "eslint -- .",
+		"lint:types": "tsgo --noEmit"
+	},
+	"dependencies": {
+		"@astrojs/cloudflare": "12.6.9",
+		"@astrojs/mdx": "4.3.6",
+		"@astrojs/preact": "4.1.1",
+		"astro": "5.14.1",
+		"atom.io": "workspace:*",
+		"preact": "10.27.2",
+		"react": "npm:@preact/compat@18.3.1",
+		"react-dom": "npm:@preact/compat@18.3.1",
+		"react-syntax-highlighter": "15.6.6"
+	},
+	"devDependencies": {
+		"@types/npmlog": "7.0.0",
+		"@types/react": "18.3.1",
+		"chokidar": "4.0.3",
+		"concurrently": "9.2.1",
+		"eslint": "9.37.0",
+		"npmlog": "7.0.1",
+		"wrangler": "4.40.3"
+	}
+}

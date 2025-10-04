@@ -1,5 +1,6 @@
 {
 	"recommendations": [
+		"astro-build.astro-vscode",
 		"bierner.color-info",
 		"biomejs.biome",
 		"christian-kohler.npm-intellisense",
