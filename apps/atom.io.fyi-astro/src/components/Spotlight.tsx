@@ -1,5 +1,3 @@
-"use client"
-
 import type { VNode } from "preact"
 import * as React from "react"
 
