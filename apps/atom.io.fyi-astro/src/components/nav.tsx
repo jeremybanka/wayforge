@@ -1,10 +1,10 @@
 import { atom } from "atom.io"
 import { useI, useO } from "atom.io/react"
+import type { RefObject, VNode } from "preact"
 import * as React from "react"
 
 import { Spotlight } from "./Spotlight"
 import { Toggle } from "./Toggle"
-import type { RefObject, VNode } from "preact"
 
 const INCLUDE_LIST = [`H2`, `H3`, `H4`, `H5`, `H6`]
 
