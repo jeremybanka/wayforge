@@ -6,14 +6,15 @@ import * as nav from "../components/nav"
 
 <Layout>
   <article class={scss.class}>
-		<aside>
+		<!-- <aside>
 			<nav.SiteDirectory client:load transition:persist />
-		</aside>
+		</aside> -->
+		<nav.Nav client:load transition:persist />
 		<main>
 			<slot />
 		</main>
-		<aside>
-			<nav.OnThisPage client:load />
-		</aside>
+		<!-- <aside>
+			<nav.OnThisPage client:load transition:persist />
+		</aside> -->
 	</article>
 </Layout>
