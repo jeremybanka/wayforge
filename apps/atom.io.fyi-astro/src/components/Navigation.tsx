@@ -1,6 +1,6 @@
 import { atom } from "atom.io"
 import { useI, useO } from "atom.io/react"
-import type { RefObject, VNode } from "preact"
+import type { VNode } from "preact"
 import * as React from "react"
 
 import { Spotlight } from "./Spotlight"
@@ -25,10 +25,22 @@ export const pathnameAtom = atom<string>({
 	],
 })
 
-export type ContentsProps = {
-	observe: RefObject<HTMLElement | null>
+export function Navigation(): VNode {
+	useO(pathnameAtom) // weirdly important
+
+	return (
+		<>
+			<aside>
+				<SiteDirectory />
+			</aside>
+			<aside>
+				<OnThisPage />
+			</aside>
+		</>
+	)
 }
-export function OnThisPage(): VNode {
+
+function OnThisPage(): VNode {
 	const userHasToggled = useO(menuToggleState)
 	const setUserHasToggled = useI(menuToggleState)
 
@@ -145,13 +157,7 @@ export function OnThisPage(): VNode {
 	)
 }
 
-export function SiteDirectory(): VNode {
-	useO(pathnameAtom) // weirdly important
-
-	return <SiteDirectoryInternal />
-}
-
-const SiteDirectoryInternal = (): VNode => {
+function SiteDirectory(): VNode {
 	const userHasToggled = useO(menuToggleState)
 	const pathname = useO(pathnameAtom)
 	const pathnameId =
