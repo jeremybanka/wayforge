@@ -1,20 +1,14 @@
 ---
 import Layout from "./Layout.astro"
+import { Navigation } from "../components/Navigation"
 import scss from "../styles/layout-docs.module.scss"
-import * as nav from "../components/nav"
 ---
 
 <Layout>
   <article class={scss.class}>
-		<!-- <aside>
-			<nav.SiteDirectory client:load transition:persist />
-		</aside> -->
-		<nav.Nav client:load transition:persist />
+		<Navigation client:load transition:persist />
 		<main>
 			<slot />
 		</main>
-		<!-- <aside>
-			<nav.OnThisPage client:load transition:persist />
-		</aside> -->
 	</article>
 </Layout>

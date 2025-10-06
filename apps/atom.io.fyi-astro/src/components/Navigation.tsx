@@ -1,6 +1,6 @@
 import { atom } from "atom.io"
 import { useI, useO } from "atom.io/react"
-import type { RefObject, VNode } from "preact"
+import type { VNode } from "preact"
 import * as React from "react"
 
 import { Spotlight } from "./Spotlight"
@@ -25,9 +25,8 @@ export const pathnameAtom = atom<string>({
 	],
 })
 
-export function Nav(): VNode {
-	const pathname = useO(pathnameAtom) // weirdly important
-	console.log(`Nav`, { pathname })
+export function Navigation(): VNode {
+	useO(pathnameAtom) // weirdly important
 
 	return (
 		<>
@@ -41,13 +40,7 @@ export function Nav(): VNode {
 	)
 }
 
-export function OnThisPage(): VNode {
-	const pathname = useO(pathnameAtom) // weirdly important
-	console.log(`OnThisPage`, { pathname })
-
-	return <OnThisPageInternal />
-}
-export function OnThisPageInternal(): VNode {
+function OnThisPage(): VNode {
 	const userHasToggled = useO(menuToggleState)
 	const setUserHasToggled = useI(menuToggleState)
 
@@ -57,7 +50,6 @@ export function OnThisPageInternal(): VNode {
 	const [currentId, setCurrentId] = React.useState<string | null>(null)
 	const pathname = useO(pathnameAtom)
 
-	console.log(`OnThisPageInternal`, { pathname, userHasToggled })
 	React.useEffect(() => {
 		setCurrentId(null)
 		const observer = new IntersectionObserver(
@@ -165,14 +157,7 @@ export function OnThisPageInternal(): VNode {
 	)
 }
 
-export function SiteDirectory(): VNode {
-	const pathname = useO(pathnameAtom) // weirdly important
-	console.log(`SiteDirectory`, { pathname })
-
-	return <SiteDirectoryInternal />
-}
-
-const SiteDirectoryInternal = (): VNode => {
+function SiteDirectory(): VNode {
 	const userHasToggled = useO(menuToggleState)
 	const pathname = useO(pathnameAtom)
 	const pathnameId =
@@ -180,7 +165,6 @@ const SiteDirectoryInternal = (): VNode => {
 			`/`,
 			`-`,
 		) + `-link`
-	console.log(`SiteDirectoryInternal`, { pathname, userHasToggled })
 	return (
 		<>
 			<Spotlight
