@@ -25,10 +25,29 @@ export const pathnameAtom = atom<string>({
 	],
 })
 
-export type ContentsProps = {
-	observe: RefObject<HTMLElement | null>
+export function Nav(): VNode {
+	const pathname = useO(pathnameAtom) // weirdly important
+	console.log(`Nav`, { pathname })
+
+	return (
+		<>
+			<aside>
+				<SiteDirectory />
+			</aside>
+			<aside>
+				<OnThisPage />
+			</aside>
+		</>
+	)
 }
+
 export function OnThisPage(): VNode {
+	const pathname = useO(pathnameAtom) // weirdly important
+	console.log(`OnThisPage`, { pathname })
+
+	return <OnThisPageInternal />
+}
+export function OnThisPageInternal(): VNode {
 	const userHasToggled = useO(menuToggleState)
 	const setUserHasToggled = useI(menuToggleState)
 
@@ -38,6 +57,7 @@ export function OnThisPage(): VNode {
 	const [currentId, setCurrentId] = React.useState<string | null>(null)
 	const pathname = useO(pathnameAtom)
 
+	console.log(`OnThisPageInternal`, { pathname, userHasToggled })
 	React.useEffect(() => {
 		setCurrentId(null)
 		const observer = new IntersectionObserver(
@@ -146,7 +166,8 @@ export function OnThisPage(): VNode {
 }
 
 export function SiteDirectory(): VNode {
-	useO(pathnameAtom) // weirdly important
+	const pathname = useO(pathnameAtom) // weirdly important
+	console.log(`SiteDirectory`, { pathname })
 
 	return <SiteDirectoryInternal />
 }
@@ -159,6 +180,7 @@ const SiteDirectoryInternal = (): VNode => {
 			`/`,
 			`-`,
 		) + `-link`
+	console.log(`SiteDirectoryInternal`, { pathname, userHasToggled })
 	return (
 		<>
 			<Spotlight
