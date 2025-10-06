@@ -96,6 +96,8 @@ table {
   line-height: 1.5;
 }
 :root {
+  scroll-behavior: smooth;
+
   color-scheme: light dark;
   --color-light: #fff;
   --color-dark: #111;
@@ -162,7 +164,6 @@ table {
     background-color: var(--bg-shade-2);
     min-height: 100vh;
     scroll-padding-top: 4.5em;
-    scroll-behavior: smooth;
 
     button {
       background-color: var(--bg-tint-1);
