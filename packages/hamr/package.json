@@ -63,7 +63,7 @@
 		"preact": "10.27.2",
 		"react": "19.2.0",
 		"react-dom": "19.2.0",
-		"react-router-dom": "7.9.3",
+		"react-router-dom": "7.9.4",
 		"sass": "1.93.2",
 		"tsdown": "0.15.6",
 		"vite-plugin-dts": "4.5.4",
