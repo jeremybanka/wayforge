@@ -22,7 +22,7 @@
 		"@t3-oss/env-nextjs": "0.13.8",
 		"corners": "0.2.0",
 		"luum": "workspace:*",
-		"motion": "12.23.22",
+		"motion": "12.23.24",
 		"nanoid": "5.1.6",
 		"next": "15.5.4",
 		"occlusion": "workspace:*",
