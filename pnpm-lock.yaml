@@ -81,8 +81,8 @@ importers:
   apps/atom.io.fyi:
     dependencies:
       '@opennextjs/cloudflare':
-        specifier: 1.10.0
-        version: 1.10.0(wrangler@4.42.2(@cloudflare/workers-types@4.20251008.0))
+        specifier: 1.10.1
+        version: 1.10.1(wrangler@4.42.2(@cloudflare/workers-types@4.20251008.0))
       atom.io:
         specifier: workspace:*
         version: link:../../packages/atom.io
@@ -3513,12 +3513,12 @@ packages:
     resolution: {integrity: sha512-nn5ozdjYQpUCZlWGuxcJY/KpxkWQs4DcbMCmKojjyrYDEAGy4Ce19NN4v5MduafTwJlbKc99UA8YhSVqq9yPZA==}
     engines: {node: '>=12.4.0'}
 
-  '@opennextjs/aws@3.8.2':
-    resolution: {integrity: sha512-cMTwI0OnXLpTwOQOuDUtXz503f0GMCvvpH339PVtkax/akXVMPQ/j/WzgwTo4SE0/LpDBocZrcx7k906me11FQ==}
+  '@opennextjs/aws@3.8.4':
+    resolution: {integrity: sha512-kREIlui1ZW725qG4p9GtRqR74Qe+ijZNmWhPiBTRx7p06c6Ak1Cy47hNJL/aM5aLmNiCEMu5CLk2OPZzcyVmHA==}
     hasBin: true
 
-  '@opennextjs/cloudflare@1.10.0':
-    resolution: {integrity: sha512-hG9o9wjsgbshLkOEuX1EVQ1GhgbFv8VU/nI8atxgCgOHT87+ypsLOsVA4/6ivctpBZ/PLU/E9+b/eYZnqMVd/w==}
+  '@opennextjs/cloudflare@1.10.1':
+    resolution: {integrity: sha512-a6jeigTTvolj8QEGWibbCyLUNyE67M6bW3IoT3v7M2bAOqDlzO197yWqZscrB2V2c5TWid5kF199+pfxdEYfaA==}
     hasBin: true
     peerDependencies:
       wrangler: ^4.38.0
@@ -13375,7 +13375,7 @@ snapshots:
 
   '@nolyfill/is-core-module@1.0.39': {}
 
-  '@opennextjs/aws@3.8.2':
+  '@opennextjs/aws@3.8.4':
     dependencies:
       '@ast-grep/napi': 0.35.0
       '@aws-sdk/client-cloudfront': 3.398.0
@@ -13398,10 +13398,10 @@ snapshots:
       - aws-crt
       - supports-color
 
-  '@opennextjs/cloudflare@1.10.0(wrangler@4.42.2(@cloudflare/workers-types@4.20251008.0))':
+  '@opennextjs/cloudflare@1.10.1(wrangler@4.42.2(@cloudflare/workers-types@4.20251008.0))':
     dependencies:
       '@dotenvx/dotenvx': 1.31.0
-      '@opennextjs/aws': 3.8.2
+      '@opennextjs/aws': 3.8.4
       cloudflare: 4.5.0
       enquirer: 2.4.1
       glob: 11.0.3
