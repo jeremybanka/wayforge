@@ -18,8 +18,8 @@ const outputDir = `./src/exhibits-wrapped`
 
 function wrapCode(filename: string, code: string) {
 	return `/* eslint-disable quotes */
-import * as React from 'react';
 import type { VNode } from 'preact';
+import * as React from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 
 const Codeblock = (): VNode => {
