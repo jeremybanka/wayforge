@@ -24,7 +24,7 @@ test(`laws`, () => {
 				`ownProjects_upTo3`,
 				`ownProjects_attachReports_upTo3`,
 				`ownProjects_attachTokens_upTo12`,
-			]),
+			] as const),
 		},
 	})
 
