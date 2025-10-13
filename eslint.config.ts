@@ -167,6 +167,7 @@ const commonRules = {
 const configs = [
 	{
 		ignores: [
+			"**/.astro/**",
 			`**/.wrangler/**`,
 			`**/_shared/**`,
 			`**/build/**`,
@@ -175,6 +176,7 @@ const configs = [
 			`**/gen/**`,
 			`**/node_modules/**`,
 			`**/.next/**`,
+			"**/.open-next/**",
 			`**/next-env.d.ts`,
 		],
 	},

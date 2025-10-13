@@ -31,7 +31,7 @@ export function createMutableAtom<T extends Transceiver<any, any, any>>(
 	const { key } = options
 	const existing = target.atoms.get(key)
 	const type = `mutable_atom`
-	if (existing && existing.type === type) {
+	if (existing?.type === type) {
 		store.logger.error(
 			`❌`,
 			type,
