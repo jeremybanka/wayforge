@@ -167,6 +167,7 @@ const commonRules = {
 const configs = [
 	{
 		ignores: [
+			"**/.astro/**",
 			`**/.wrangler/**`,
 			`**/_shared/**`,
 			`**/build/**`,
