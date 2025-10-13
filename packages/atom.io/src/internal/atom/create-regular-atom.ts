@@ -28,7 +28,7 @@ export function createRegularAtom<T, K extends Canonical, E>(
 
 	const target = newest(store)
 	const existing = target.atoms.get(key)
-	if (existing && existing.type === type) {
+	if (existing?.type === type) {
 		store.logger.error(
 			`❌`,
 			`atom`,
