@@ -28,7 +28,7 @@ export function createRegularAtomFamily<T, K extends Canonical, E>(
 	}
 
 	const existing = store.families.get(options.key)
-	if (existing) {
+	if (existing && store.config.warnings.has(`possible_duplicate_key`)) {
 		store.logger.error(
 			`❗`,
 			`atom_family`,
