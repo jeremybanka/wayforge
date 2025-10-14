@@ -33,7 +33,7 @@ export function createWritableHeldSelectorFamily<
 	} as const satisfies WritableHeldSelectorFamilyToken<T, K>
 
 	const existing = store.families.get(familyKey)
-	if (existing) {
+	if (existing && store.config.isProduction === true) {
 		store.logger.error(
 			`❗`,
 			type,

@@ -36,7 +36,7 @@ export function createWritablePureSelectorFamily<T, K extends Canonical, E>(
 	} as const satisfies WritablePureSelectorFamilyToken<T, K, E>
 
 	const existing = store.families.get(familyKey)
-	if (existing) {
+	if (existing && store.config.isProduction === true) {
 		store.logger.error(
 			`❗`,
 			type,
