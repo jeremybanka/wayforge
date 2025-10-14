@@ -174,7 +174,7 @@ export class Store implements Lineage {
 	} = {
 		name: `IMPLICIT_STORE`,
 		lifespan: `ephemeral`,
-		isProduction: process?.env?.[`NODE_ENV`] === `production`,
+		isProduction: globalThis.process?.env?.[`NODE_ENV`] === `production`,
 	}
 
 	public loggers: AtomIOLogger[] = [
