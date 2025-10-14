@@ -39,6 +39,6 @@
 		"concurrently": "9.2.1",
 		"eslint": "9.37.0",
 		"npmlog": "7.0.1",
-		"wrangler": "4.42.2"
+		"wrangler": "4.43.0"
 	}
 }
