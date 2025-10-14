@@ -17,7 +17,11 @@ let logger: Logger
 
 beforeEach(() => {
 	if (willClearLocalStorage) localStorage.clear()
-	$ = new Silo({ name: `react-store-${i}`, lifespan: `ephemeral` })
+	$ = new Silo({
+		name: `react-store-${i}`,
+		lifespan: `ephemeral`,
+		isProduction: false,
+	})
 	$.store.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
 	logger = $.store.logger = Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)

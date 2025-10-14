@@ -28,10 +28,7 @@ export function createRegularAtom<T, K extends Canonical, E>(
 
 	const target = newest(store)
 	const existing = target.atoms.get(key)
-	if (
-		existing?.type === type &&
-		store.config.warnings.has(`possible_duplicate_key`)
-	) {
+	if (existing?.type === type && store.config.isProduction === true) {
 		store.logger.error(
 			`❌`,
 			`atom`,
