@@ -11,6 +11,7 @@ const externalLogger: Logger = createNullLogger()
 
 beforeEach(() => {
 	Internal.clearStore(Internal.IMPLICIT.STORE)
+	Internal.IMPLICIT.STORE.config.isProduction = true
 	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
 	Internal.IMPLICIT.STORE.loggers[1] = internalLogger = new AtomIOLogger(
 		`info`,

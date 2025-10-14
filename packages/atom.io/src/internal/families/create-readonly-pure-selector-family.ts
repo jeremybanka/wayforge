@@ -35,7 +35,7 @@ export function createReadonlyPureSelectorFamily<T, K extends Canonical, E>(
 	} as const satisfies ReadonlyPureSelectorFamilyToken<T, K, E>
 
 	const existing = store.families.get(familyKey)
-	if (existing) {
+	if (existing && store.config.isProduction === true) {
 		store.logger.error(
 			`❗`,
 			type,

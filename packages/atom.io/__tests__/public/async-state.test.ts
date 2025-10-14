@@ -137,6 +137,7 @@ describe(`async selector`, () => {
 		const { atom, selector, getState /* store */ } = new AtomIO.Silo({
 			name: `math`,
 			lifespan: `ephemeral`,
+			isProduction: false,
 		})
 		// AtomIO.setLogLevel(`info`, store)
 		const dividendState = atom<number>({

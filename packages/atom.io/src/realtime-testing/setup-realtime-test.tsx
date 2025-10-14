@@ -125,6 +125,7 @@ export const setupRealtimeTestServer = (
 		{
 			name: `SERVER-${testNumber}`,
 			lifespan: options.immortal?.server ? `immortal` : `ephemeral`,
+			isProduction: false,
 		},
 		IMPLICIT.STORE,
 	)
@@ -229,7 +230,10 @@ export const setupRealtimeTestClient = (
 		const socket: ClientSocket = io(`http://localhost:${port}/`, {
 			auth: { token: `test`, username: `${name}-${testNumber}` },
 		})
-		const silo = new AtomIO.Silo({ name, lifespan: `ephemeral` }, IMPLICIT.STORE)
+		const silo = new AtomIO.Silo(
+			{ name, lifespan: `ephemeral`, isProduction: false },
+			IMPLICIT.STORE,
+		)
 		silo.setState(RTC.myUsernameState, `${name}-${testNumber}`)
 
 		const { document } = new Happy.Window()
