@@ -33,7 +33,7 @@ export function createWritableHeldSelectorFamily<
 	} as const satisfies WritableHeldSelectorFamilyToken<T, K>
 
 	const existing = store.families.get(familyKey)
-	if (existing && store.config.warnings.has(`possible_duplicate_key`)) {
+	if (existing && store.config.isProduction === true) {
 		store.logger.error(
 			`❗`,
 			type,

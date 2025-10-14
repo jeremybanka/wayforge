@@ -26,7 +26,11 @@ describe(`silo.install`, () => {
 			key: `count`,
 			default: 0,
 		})
-		const mySilo = new Silo({ name: `my-silo`, lifespan: `ephemeral` })
+		const mySilo = new Silo({
+			name: `my-silo`,
+			lifespan: `ephemeral`,
+			isProduction: false,
+		})
 		let caught: Error | undefined
 		try {
 			mySilo.getState(countAtoms, `example`)
@@ -42,7 +46,11 @@ describe(`silo.install`, () => {
 		expect(logger.error).not.toHaveBeenCalled()
 	})
 	it(`fails if one the silo store is undergoing a transaction`, () => {
-		const mySilo = new Silo({ name: `my-silo`, lifespan: `ephemeral` })
+		const mySilo = new Silo({
+			name: `my-silo`,
+			lifespan: `ephemeral`,
+			isProduction: false,
+		})
 		const targetLogger = (mySilo.store.logger = Utils.createNullLogger())
 		vitest.spyOn(targetLogger, `error`)
 		const countAtoms = atomFamily<number, string>({

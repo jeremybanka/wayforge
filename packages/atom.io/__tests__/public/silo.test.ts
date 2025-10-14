@@ -15,8 +15,16 @@ afterEach(() => {
 
 describe(`silo`, () => {
 	it(`creates stores with independent states`, () => {
-		const Uno = new Silo({ name: `uno`, lifespan: `ephemeral` })
-		const Dos = new Silo({ name: `dos`, lifespan: `ephemeral` })
+		const Uno = new Silo({
+			name: `uno`,
+			lifespan: `ephemeral`,
+			isProduction: false,
+		})
+		const Dos = new Silo({
+			name: `dos`,
+			lifespan: `ephemeral`,
+			isProduction: false,
+		})
 
 		const DEFAULT_COUNT_CONFIG: RegularAtomOptions<number> = {
 			key: `count`,
@@ -52,8 +60,16 @@ describe(`silo`, () => {
 		)
 	})
 	it(`creates stores with independent state families`, () => {
-		const Uno = new Silo({ name: `uno`, lifespan: `ephemeral` })
-		const Dos = new Silo({ name: `dos`, lifespan: `ephemeral` })
+		const Uno = new Silo({
+			name: `uno`,
+			lifespan: `ephemeral`,
+			isProduction: false,
+		})
+		const Dos = new Silo({
+			name: `dos`,
+			lifespan: `ephemeral`,
+			isProduction: false,
+		})
 
 		const DEFAULT_LIST_ATOMS_CONFIG: MutableAtomFamilyOptions<
 			UList<number>,

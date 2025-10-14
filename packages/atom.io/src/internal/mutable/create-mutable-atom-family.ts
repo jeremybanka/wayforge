@@ -34,7 +34,7 @@ export function createMutableAtomFamily<
 		}
 
 	const existing = store.families.get(options.key)
-	if (existing && store.config.warnings.has(`possible_duplicate_key`)) {
+	if (existing && store.config.isProduction === true) {
 		store.logger.error(
 			`❗`,
 			`mutable_atom_family`,
