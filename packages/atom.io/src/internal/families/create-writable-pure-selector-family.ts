@@ -36,7 +36,7 @@ export function createWritablePureSelectorFamily<T, K extends Canonical, E>(
 	} as const satisfies WritablePureSelectorFamilyToken<T, K, E>
 
 	const existing = store.families.get(familyKey)
-	if (existing) {
+	if (existing && store.config.warnings.has(`possible_duplicate_key`)) {
 		store.logger.error(
 			`❗`,
 			type,

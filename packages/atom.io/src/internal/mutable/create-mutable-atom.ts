@@ -31,7 +31,10 @@ export function createMutableAtom<T extends Transceiver<any, any, any>>(
 	const { key } = options
 	const existing = target.atoms.get(key)
 	const type = `mutable_atom`
-	if (existing?.type === type) {
+	if (
+		existing?.type === type &&
+		store.config.warnings.has(`possible_duplicate_key`)
+	) {
 		store.logger.error(
 			`❌`,
 			type,
