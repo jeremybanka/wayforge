@@ -40,8 +40,6 @@ import { isRootStore } from "../transaction"
 import type { Fn } from "../utility-types"
 import { CircularBuffer } from "./circular-buffer"
 
-export type ConfigurableWarnings = `possible_duplicate_key`
-
 export class Store implements Lineage {
 	public parent: ChildStore | RootStore | null = null
 	public child: ChildStore | null = null
@@ -172,11 +170,11 @@ export class Store implements Lineage {
 	public config: {
 		name: string
 		lifespan: `ephemeral` | `immortal`
-		warnings: Set<ConfigurableWarnings>
+		isProduction: boolean
 	} = {
 		name: `IMPLICIT_STORE`,
 		lifespan: `ephemeral`,
-		warnings: new Set([`possible_duplicate_key`]),
+		isProduction: process?.env?.[`NODE_ENV`] === `production`,
 	}
 
 	public loggers: AtomIOLogger[] = [
@@ -273,7 +271,7 @@ export const IMPLICIT: { readonly STORE: RootStore } = {
 		globalThis.ATOM_IO_IMPLICIT_STORE ??= new Store({
 			name: `IMPLICIT_STORE`,
 			lifespan: `ephemeral`,
-			warnings: new Set([`possible_duplicate_key`]),
+			isProduction: process?.env?.[`NODE_ENV`] === `production`,
 		}) as RootStore
 		return globalThis.ATOM_IO_IMPLICIT_STORE
 	},
