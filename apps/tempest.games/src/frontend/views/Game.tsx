@@ -26,19 +26,33 @@ export function GameView({
 export function GameIndex(): React.ReactNode {
 	return (
 		<nav>
-			<Anchor href="/game/clicker">Clicker</Anchor>
+			{GAMES.map((gameId) => (
+				<Anchor key={gameId} href={`/game/${gameId}`}>
+					{gameId}
+				</Anchor>
+			))}
 		</nav>
 	)
 }
 
-export type GameProps = {
-	gameId: `clicker`
+const GAMES = toEntries(ROUTES[1].game[1]).map(([gameId]) => gameId)
+type GameId = (typeof GAMES)[number]
+export type GameProps = { gameId: GameId }
+export function Game({ gameId }: GameProps): React.ReactNode {
+	switch (gameId) {
+		case `bug_rangers`: {
+			return <BugRangers />
+		}
+		case `clicker`: {
+			return <Clicker />
+		}
+	}
 }
 
-const GAMES = toEntries(ROUTES[1].game[1])
-
-export function Game({ gameId }: GameProps): React.ReactNode {
-	console.log(gameId)
+export function BugRangers(): React.ReactNode {
+	return null
+}
+export function Clicker(): React.ReactNode {
 	const count = useO(countAtom)
 	const increment = runTransaction(incrementTX)
 	useSyncContinuity(countContinuity)
