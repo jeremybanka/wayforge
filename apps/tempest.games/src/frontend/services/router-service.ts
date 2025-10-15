@@ -10,6 +10,7 @@ export const ROUTES = optional({
 	}),
 	game: optional({
 		clicker: null,
+		bug_rangers: null,
 	}),
 	account: null,
 	admin: null,
