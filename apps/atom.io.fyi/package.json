@@ -28,7 +28,7 @@
 		"node": "24.10.0"
 	},
 	"dependencies": {
-		"@opennextjs/cloudflare": "1.10.1",
+		"@opennextjs/cloudflare": "1.11.0",
 		"atom.io": "workspace:*",
 		"next": "15.5.5",
 		"react": "19.2.0",
