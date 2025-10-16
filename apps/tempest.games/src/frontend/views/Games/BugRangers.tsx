@@ -68,7 +68,7 @@ export default function Scene(): ReactNode {
 
 	return (
 		<Canvas
-			camera={{ position: [5, 5, 5], fov: 50 }}
+			camera={{ position: [15, 15, 15], fov: 50 }}
 			style={{
 				position: `fixed`,
 				top: 0,
@@ -102,13 +102,16 @@ export default function Scene(): ReactNode {
 			{/* <gridHelper args={[20, 20]} /> */}
 			<axesHelper args={[5]} />
 
-			<GameTile coordinates={{ x: 0, y: 0, z: 0 }} stackHeight={3} />
-			<GameTile coordinates={{ x: 1, y: 0, z: 0 }} color="red" />
-			<GameTile coordinates={{ x: 1, y: 0, z: 1 }} color="blue" />
+			<GameTile
+				coordinates={{ x: 0, y: 0, z: 0 }}
+				stackHeight={3}
+				onClick={handleObjectClick}
+			/>
 			<GameTile
 				coordinates={{ x: 1, y: -1, z: 0 }}
 				color="green"
 				stackHeight={2}
+				onClick={handleObjectClick}
 			/>
 			{/* <GameTile coordinates={{ x: -1, y: 2, z: -1 }} />
 			<GameTile coordinates={{ x: 2, y: -1, z: -1 }} />
