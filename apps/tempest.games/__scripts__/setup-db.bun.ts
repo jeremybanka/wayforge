@@ -5,6 +5,7 @@ import { resolve } from "node:path"
 
 import { drizzle } from "drizzle-orm/postgres-js"
 import { migrate } from "drizzle-orm/postgres-js/migrator"
+import type { Options as PostgresOptions } from "postgres"
 import postgres from "postgres"
 
 import type * as schema from "../src/database/tempest-db-schema.ts"
@@ -23,7 +24,7 @@ const postgresSetupCredentials = {
 	database: `postgres`,
 	host: env.POSTGRES_HOST,
 	port: env.POSTGRES_PORT,
-}
+} satisfies PostgresOptions<{}>
 
 console.log({ postgresSetupCredentials })
 
@@ -53,15 +54,15 @@ try {
 
 try {
 	console.log(
-		`🚀 Granting privileges to ${env.POSTGRES_USER} on ${env.POSTGRES_DATABASE}... `,
+		`🚀 Changing owner of ${env.POSTGRES_DATABASE} to ${env.POSTGRES_USER}...`,
 	)
-	await sql`GRANT ALL PRIVILEGES ON DATABASE ${sql(env.POSTGRES_DATABASE)} TO ${sql(
-		env.POSTGRES_USER,
-	)}`
+	await sql.unsafe(
+		`ALTER DATABASE ${env.POSTGRES_DATABASE} OWNER TO ${env.POSTGRES_USER}`,
+	)
 	console.log(`Done!`)
 } catch (thrown) {
 	if (thrown instanceof Error) {
-		console.error(`💥 Failed:`, thrown.message)
+		console.error(`💥 Failed to change ownership:`, thrown.message)
 	}
 }
 await sql.end()
