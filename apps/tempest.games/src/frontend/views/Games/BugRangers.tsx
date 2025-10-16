@@ -2,12 +2,13 @@
 
 import { useSpring } from "@react-spring/three"
 import * as Drei from "@react-three/drei"
-import { Canvas, extend, useThree } from "@react-three/fiber"
+import { Canvas, useThree } from "@react-three/fiber"
 import type { ReactNode } from "react"
 import { useRef, useState } from "react"
-import type { JSX } from "react/jsx-runtime"
 import * as THREE from "three"
 import type * as STD from "three-stdlib"
+
+import { HexGridHelper } from "./HexGridHelper"
 
 function CameraController({ target }: { target: number[] }) {
 	const controls = useRef<STD.OrbitControls>(null)
@@ -65,7 +66,16 @@ export default function Scene(): ReactNode {
 	}
 
 	return (
-		<Canvas camera={{ position: [5, 5, 5], fov: 50 }}>
+		<Canvas
+			camera={{ position: [5, 5, 5], fov: 50 }}
+			style={{
+				position: `fixed`,
+				top: 0,
+				left: 0,
+				width: `100vw`,
+				height: `100vh`,
+			}}
+		>
 			<ambientLight intensity={0.5} />
 			<directionalLight position={[5, 10, 5]} />
 
@@ -87,7 +97,8 @@ export default function Scene(): ReactNode {
 				onClick={handleObjectClick}
 			/>
 
-			<gridHelper args={[20, 20]} />
+			<HexGridHelper size={20} radius={1} color="#6f6f6f" opacity={0.5} />
+			{/* <gridHelper args={[20, 20]} /> */}
 			<axesHelper args={[5]} />
 		</Canvas>
 	)
