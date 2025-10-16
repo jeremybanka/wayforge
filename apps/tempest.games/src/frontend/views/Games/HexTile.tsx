@@ -17,11 +17,13 @@ export function HexTile({
 	height = 0.3,
 	position = [0, 0, 0],
 	color = `#ee5`,
+	onClick,
 }: {
 	radius?: number
 	height?: number
 	position?: [number, number, number]
 	color?: THREE.ColorRepresentation
+	onClick?: ((position: [x: number, y: number, z: number]) => void) | undefined
 }) {
 	// Build a hexagonal shape
 	const shape = useMemo(() => {
@@ -53,6 +55,9 @@ export function HexTile({
 			rotation={[-Math.PI / 2, 0, 0]}
 			castShadow
 			receiveShadow
+			onClick={() => {
+				onClick?.(position)
+			}}
 		>
 			<meshStandardMaterial color={color} />
 		</mesh>
@@ -63,10 +68,12 @@ export function GameTile({
 	coordinates,
 	stackHeight = 1,
 	color = `#ee5`,
+	onClick,
 }: {
 	coordinates: { x: number; y: number; z: number }
 	stackHeight?: 1 | 2 | 3
 	color?: THREE.ColorRepresentation
+	onClick?: (position: [x: number, y: number, z: number]) => void
 }) {
 	const { x: boardA, y: boardB, z: boardC } = coordinates
 	if (boardA + boardB + boardC !== 0) {
@@ -97,12 +104,12 @@ export function GameTile({
 
 	return (
 		<>
-			<HexTile position={[x, 0, z]} color={color} />
+			<HexTile position={[x, 0, z]} color={color} onClick={onClick} />
 			{stackHeight > 1 ? (
-				<HexTile position={[x, 0.33, z]} color={color} />
+				<HexTile position={[x, 0.33, z]} color={color} onClick={onClick} />
 			) : null}
 			{stackHeight > 2 ? (
-				<HexTile position={[x, 0.66, z]} color={color} />
+				<HexTile position={[x, 0.66, z]} color={color} onClick={onClick} />
 			) : null}
 		</>
 	)
