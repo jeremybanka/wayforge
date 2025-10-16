@@ -87,20 +87,20 @@ export default function Scene(): ReactNode {
 				color="red"
 				onClick={handleObjectClick}
 			/> */}
-			<SelectableObject
+			{/* <SelectableObject
 				position={[5, 0, 0]}
 				color="blue"
 				onClick={handleObjectClick}
-			/>
-			<SelectableObject
+			/> */}
+			{/* <SelectableObject
 				position={[0, 0, 5]}
 				color="green"
 				onClick={handleObjectClick}
-			/>
+			/> */}
 
 			<HexGridHelper size={20} radius={1} color="#6f6f6f" opacity={0.5} />
 			{/* <gridHelper args={[20, 20]} /> */}
-			<axesHelper args={[5]} />
+			{/* <axesHelper args={[5]} /> */}
 
 			<GameTile
 				coordinates={{ x: 0, y: 0, z: 0 }}
