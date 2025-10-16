@@ -101,14 +101,18 @@ export default function Scene(): ReactNode {
 			<HexGridHelper size={20} radius={1} color="#6f6f6f" opacity={0.5} />
 			{/* <gridHelper args={[20, 20]} /> */}
 			<axesHelper args={[5]} />
-			{/* <HexTile /> */}
-			{/* <GameTile coordinates={{ x: 1, y: -1, z: 0 }} /> */}
-			{/* <GameTile coordinates={{ x: 0, y: 1, z: 0 }} /> */}
-			<GameTile coordinates={{ x: 1, y: 0, z: 0 }} />
-			<GameTile coordinates={{ x: 0, y: 1, z: 0 }} />
-			<GameTile coordinates={{ x: 0, y: 0, z: 1 }} />
-			<GameTile coordinates={{ x: 0, y: 1, z: 1 }} />
-			{/* <GameTile coordinates={{ x: 1, y: 0, z: 1 }} /> */}
+
+			<GameTile coordinates={{ x: 0, y: 0, z: 0 }} stackHeight={3} />
+			<GameTile coordinates={{ x: 1, y: 0, z: 0 }} color="red" />
+			<GameTile coordinates={{ x: 1, y: 0, z: 1 }} color="blue" />
+			<GameTile
+				coordinates={{ x: 1, y: -1, z: 0 }}
+				color="green"
+				stackHeight={2}
+			/>
+			{/* <GameTile coordinates={{ x: -1, y: 2, z: -1 }} />
+			<GameTile coordinates={{ x: 2, y: -1, z: -1 }} />
+			<GameTile coordinates={{ x: -1, y: 1, z: 0 }} stackHeight={2} /> */}
 		</Canvas>
 	)
 }

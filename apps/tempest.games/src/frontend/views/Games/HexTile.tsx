@@ -61,11 +61,15 @@ export function HexTile({
 
 export function GameTile({
 	coordinates,
+	stackHeight = 1,
+	color = `#ee5`,
 }: {
 	coordinates: { x: number; y: number; z: number }
+	stackHeight?: 1 | 2 | 3
+	color?: THREE.ColorRepresentation
 }) {
 	const { x: boardA, y: boardB, z: boardC } = coordinates
-	// if (boardX + boardY + boardZ !== 0) {
+	// if (boardA + boardB + boardC !== 0) {
 	// 	console.error(`GameTile: bad coordinates did not add to zero`, coordinates)
 	// 	return null
 	// }
@@ -84,22 +88,22 @@ export function GameTile({
 
 	const sin120UA = uA * sin120
 	const cos120UA = uA * cos120
-	// const sin120UB = uB * sin120
-	// const cos120UB = uB * cos120
-	// const sin120UC = uC * sin120
-	// const cos120UC = uC * cos120
 
-	// const sin240UA = uA * sin240
-	// const cos240UA = uA * cos240
 	const sin240UB = uB * sin240
 	const cos240UB = uB * cos240
-	// const sin240UC = uC * sin240
-	// const cos240UC = uC * cos240
 
 	const x = sin120UA + sin240UB
 	const z = cos120UA + cos240UB + uC
 
-	// return <HexTile position={[0, 0, uC]} /> // works with z1
-	// return <HexTile position={[sin120UA, 0, cos120UA]} /> // works with x1
-	return <HexTile position={[x, 0, z]} /> // works with y1
+	return (
+		<>
+			<HexTile position={[x, 0, z]} color={color} />
+			{stackHeight > 1 ? (
+				<HexTile position={[x, 0.33, z]} color={color} />
+			) : null}
+			{stackHeight > 2 ? (
+				<HexTile position={[x, 0.66, z]} color={color} />
+			) : null}
+		</>
+	)
 }
