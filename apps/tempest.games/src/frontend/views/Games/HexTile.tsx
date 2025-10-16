@@ -1,5 +1,6 @@
 /** biome-ignore-all lint/a11y/noStaticElementInteractions: drei */
 
+import type { ReactNode } from "react"
 import { useMemo } from "react"
 import * as THREE from "three"
 
@@ -24,7 +25,7 @@ export function HexTile({
 	position?: [number, number, number]
 	color?: THREE.ColorRepresentation
 	onClick?: ((position: [x: number, y: number, z: number]) => void) | undefined
-}) {
+}): ReactNode {
 	// Build a hexagonal shape
 	const shape = useMemo(() => {
 		const s = new THREE.Shape()
@@ -74,7 +75,7 @@ export function GameTile({
 	stackHeight?: 1 | 2 | 3
 	color?: THREE.ColorRepresentation
 	onClick?: (position: [x: number, y: number, z: number]) => void
-}) {
+}): ReactNode {
 	const { x: boardA, y: boardB, z: boardC } = coordinates
 	if (boardA + boardB + boardC !== 0) {
 		console.error(`GameTile: bad coordinates did not add to zero`, coordinates)
