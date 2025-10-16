@@ -6,8 +6,6 @@
 //   <HexGridHelper size={20} radius={1} color="#6f6f6f" opacity={0.5} />
 // </Canvas>
 
-import { OrbitControls } from "@react-three/drei"
-import { Canvas } from "@react-three/fiber"
 import * as React from "react"
 import * as THREE from "three"
 
@@ -42,12 +40,12 @@ export function HexGridHelper({
 	opacity?: number
 	y?: number
 	dashed?: boolean
-}) {
-	const ref = React.useRef<THREE.LineSegments>(null!)
+}): React.ReactNode {
+	const ref = React.useRef<THREE.LineSegments>(null)
 
 	const { geometry, dashSize, gapSize } = React.useMemo(() => {
 		// --- math helpers for flat-top hexes ---
-		const TAU = Math.PI * 2
+		// const TAU = Math.PI * 2
 		const angles = [0, 60, 120, 180, 240, 300].map((a) => (a * Math.PI) / 180)
 		const cos = (a: number) => Math.cos(a)
 		const sin = (a: number) => Math.sin(a)
@@ -88,18 +86,18 @@ export function HexGridHelper({
 			}
 		}
 
-		const geometry = new THREE.BufferGeometry()
-		geometry.setAttribute(
+		const _geometry = new THREE.BufferGeometry()
+		_geometry.setAttribute(
 			`position`,
 			new THREE.Float32BufferAttribute(positions, 3),
 		)
-		geometry.computeBoundingSphere()
+		_geometry.computeBoundingSphere()
 
 		// Reasonable dashed defaults relative to radius
-		const dashSize = radius * 0.6
-		const gapSize = radius * 0.6
+		const _dashSize = radius * 0.6
+		const _gapSize = radius * 0.6
 
-		return { geometry, dashSize, gapSize }
+		return { geometry: _geometry, dashSize: _dashSize, gapSize: _gapSize }
 	}, [size, radius])
 
 	const material = React.useMemo(() => {
@@ -129,12 +127,12 @@ export function HexGridHelper({
 			const pos = g.getAttribute(`position`) as THREE.BufferAttribute
 			const lineDistances = new Float32Array(pos.count)
 			for (let i = 0; i < pos.count; i += 2) {
-				const ax = pos.getX(i),
-					ay = pos.getY(i),
-					az = pos.getZ(i)
-				const bx = pos.getX(i + 1),
-					by = pos.getY(i + 1),
-					bz = pos.getZ(i + 1)
+				const ax = pos.getX(i)
+				const ay = pos.getY(i)
+				const az = pos.getZ(i)
+				const bx = pos.getX(i + 1)
+				const by = pos.getY(i + 1)
+				const bz = pos.getZ(i + 1)
 				const d = Math.hypot(bx - ax, by - ay, bz - az)
 				lineDistances[i] = 0
 				lineDistances[i + 1] = d
@@ -155,29 +153,5 @@ export function HexGridHelper({
 				material={material}
 			/>
 		</group>
-	)
-}
-
-// --- Optional demo scene ---
-export default function Demo() {
-	return (
-		<Canvas camera={{ position: [10, 8, 10], fov: 45 }} shadows>
-			<ambientLight intensity={0.4} />
-			<directionalLight position={[5, 10, 5]} intensity={0.7} castShadow />
-			<mesh rotation-x={-Math.PI / 2} receiveShadow>
-				<planeGeometry args={[40, 40]} />
-				<meshStandardMaterial color="#1f1f1f" />
-			</mesh>
-
-			<HexGridHelper size={18} radius={1} color="#6f6f6f" opacity={0.6} />
-
-			{/* A little test object to check scale */}
-			<mesh position={[0, 0.5, 0]} castShadow>
-				<boxGeometry args={[1, 1, 1]} />
-				<meshStandardMaterial color="#8ab4f8" />
-			</mesh>
-
-			<OrbitControls makeDefault />
-		</Canvas>
 	)
 }

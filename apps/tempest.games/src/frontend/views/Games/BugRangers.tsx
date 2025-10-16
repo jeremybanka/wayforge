@@ -1,5 +1,3 @@
-/** biome-ignore-all lint/a11y/noStaticElementInteractions: drei */
-
 import { useSpring } from "@react-spring/three"
 import * as Drei from "@react-three/drei"
 import { Canvas, useThree } from "@react-three/fiber"
@@ -29,28 +27,6 @@ function CameraController({ target }: { target: number[] }) {
 	})
 
 	return <Drei.OrbitControls ref={controls} enableDamping dampingFactor={0.05} />
-}
-
-function SelectableObject({
-	position,
-	color,
-	onClick,
-}: {
-	position: [x: number, y: number, z: number]
-	color: string
-	onClick: (pos: number[]) => void
-}) {
-	return (
-		<mesh
-			position={position}
-			onClick={() => {
-				onClick(position)
-			}}
-		>
-			<boxGeometry args={[1, 1, 1]} />
-			<meshStandardMaterial color={color} />
-		</mesh>
-	)
 }
 
 export default function Scene(): ReactNode {
