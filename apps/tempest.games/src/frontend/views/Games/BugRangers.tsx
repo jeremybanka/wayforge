@@ -9,7 +9,7 @@ import * as THREE from "three"
 import type * as STD from "three-stdlib"
 
 import { HexGridHelper } from "./HexGridHelper"
-import { HexTile } from "./HexTile"
+import { GameTile, HexTile } from "./HexTile"
 
 function CameraController({ target }: { target: number[] }) {
 	const controls = useRef<STD.OrbitControls>(null)
@@ -101,7 +101,14 @@ export default function Scene(): ReactNode {
 			<HexGridHelper size={20} radius={1} color="#6f6f6f" opacity={0.5} />
 			{/* <gridHelper args={[20, 20]} /> */}
 			<axesHelper args={[5]} />
-			<HexTile />
+			{/* <HexTile /> */}
+			{/* <GameTile coordinates={{ x: 1, y: -1, z: 0 }} /> */}
+			{/* <GameTile coordinates={{ x: 0, y: 1, z: 0 }} /> */}
+			<GameTile coordinates={{ x: 1, y: 0, z: 0 }} />
+			<GameTile coordinates={{ x: 0, y: 1, z: 0 }} />
+			<GameTile coordinates={{ x: 0, y: 0, z: 1 }} />
+			<GameTile coordinates={{ x: 0, y: 1, z: 1 }} />
+			{/* <GameTile coordinates={{ x: 1, y: 0, z: 1 }} /> */}
 		</Canvas>
 	)
 }
