@@ -56,6 +56,9 @@
 		"@floating-ui/react": "0.27.16",
 		"@js-temporal/polyfill": "0.5.1",
 		"@react-email/components": "0.5.7",
+		"@react-spring/three": "10.0.3",
+		"@react-three/drei": "10.7.6",
+		"@react-three/fiber": "9.4.0",
 		"@t3-oss/env-core": "0.13.8",
 		"@trpc/client": "11.6.0",
 		"@trpc/server": "11.6.0",
@@ -75,6 +78,8 @@
 		"safegen": "0.7.0",
 		"socket.io": "4.8.1",
 		"socket.io-client": "4.8.1",
+		"three": "0.180.0",
+		"three-stdlib": "2.36.0",
 		"treetrunks": "workspace:*"
 	},
 	"devDependencies": {
@@ -85,6 +90,7 @@
 		"@types/node": "24.8.1",
 		"@types/react": "19.2.2",
 		"@types/react-dom": "19.2.2",
+		"@types/three": "0.180.0",
 		"@vitejs/plugin-react": "npm:@vitejs/plugin-react-swc@4.1.0",
 		"concurrently": "9.2.1",
 		"cors": "2.8.5",
