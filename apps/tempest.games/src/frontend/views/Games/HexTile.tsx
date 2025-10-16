@@ -69,31 +69,31 @@ export function GameTile({
 	color?: THREE.ColorRepresentation
 }) {
 	const { x: boardA, y: boardB, z: boardC } = coordinates
-	// if (boardA + boardB + boardC !== 0) {
-	// 	console.error(`GameTile: bad coordinates did not add to zero`, coordinates)
-	// 	return null
-	// }
+	if (boardA + boardB + boardC !== 0) {
+		console.error(`GameTile: bad coordinates did not add to zero`, coordinates)
+		return null
+	}
 
 	const unit = Math.sqrt(3)
-	const a120 = (Math.PI * 2) / 3
-	const a240 = a120 * 2
+	const a60 = Math.PI / 3
+	const a120 = a60 * 2
+	const sin60 = Math.sin(a60)
+	const cos60 = Math.cos(a60)
 	const sin120 = Math.sin(a120)
 	const cos120 = Math.cos(a120)
-	const sin240 = Math.sin(a240)
-	const cos240 = Math.cos(a240)
 
 	const uA = unit * boardA
 	const uB = unit * boardB
 	const uC = unit * boardC
 
-	const sin120UA = uA * sin120
-	const cos120UA = uA * cos120
+	const sin60UA = uA * sin60
+	const cos60UA = uA * cos60
 
-	const sin240UB = uB * sin240
-	const cos240UB = uB * cos240
+	const sin120UB = uB * sin120
+	const cos120UB = uB * cos120
 
-	const x = sin120UA + sin240UB
-	const z = cos120UA + cos240UB + uC
+	const x = sin60UA + sin120UB
+	const z = cos60UA + cos120UB + uC
 
 	return (
 		<>
