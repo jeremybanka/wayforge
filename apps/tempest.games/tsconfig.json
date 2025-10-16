@@ -4,7 +4,13 @@
 		"jsx": "react-jsx",
 		"jsxImportSource": "react",
 		"target": "ES2020",
-		"types": ["vitest/globals", "node"]
+		"types": [
+			"@react-three/drei",
+			"@react-three/fiber",
+			"@types/three",
+			"vitest/globals",
+			"node"
+		]
 	},
 	"include": [
 		"src",
