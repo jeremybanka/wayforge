@@ -334,8 +334,8 @@ importers:
         version: link:../../packages/treetrunks
     devDependencies:
       '@react-email/preview-server':
-        specifier: 4.3.0
-        version: 4.3.0(@emotion/is-prop-valid@1.4.0)(postcss@8.5.6)(sass@1.93.2)
+        specifier: 4.3.1
+        version: 4.3.1(@emotion/is-prop-valid@1.4.0)(postcss@8.5.6)(sass@1.93.2)
       '@types/bun':
         specifier: npm:bun-types@1.3.0
         version: bun-types@1.3.0(@types/react@19.2.2)
@@ -4217,8 +4217,8 @@ packages:
     peerDependencies:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
 
-  '@react-email/preview-server@4.3.0':
-    resolution: {integrity: sha512-cUaSrxezCzdg2hF6PzIxVrtagLdw3z3ovHeB3y2RDkmDZpp7EeIoNyJm22Ch2S0uAqTZNAgqu67aroLn3mFC1A==}
+  '@react-email/preview-server@4.3.1':
+    resolution: {integrity: sha512-3YdkWMCy5PyMLT/ShbGfmZ0qbYGE+IlMG1PkSe2KEvv+NUC0j3XFrk17Ej4VHZZ5ecR+pezuMSm5W7IX34GGyw==}
 
   '@react-email/preview@0.0.13':
     resolution: {integrity: sha512-F7j9FJ0JN/A4d7yr+aw28p4uX7VLWs7hTHtLo7WRyw4G+Lit6Zucq4UWKRxJC8lpsUdzVmG7aBJnKOT+urqs/w==}
@@ -15033,7 +15033,7 @@ snapshots:
       marked: 15.0.12
       react: 19.2.0
 
-  '@react-email/preview-server@4.3.0(@emotion/is-prop-valid@1.4.0)(postcss@8.5.6)(sass@1.93.2)':
+  '@react-email/preview-server@4.3.1(@emotion/is-prop-valid@1.4.0)(postcss@8.5.6)(sass@1.93.2)':
     dependencies:
       '@babel/core': 7.26.10
       '@babel/parser': 7.27.0
