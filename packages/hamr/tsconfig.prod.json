@@ -8,28 +8,6 @@
 			"hamr/*": ["./packages/hamr/*"]
 		}
 	},
-	"include": [
-		"__tests__",
-		"dist",
-		"src",
-		"dist",
-		"src",
-		"dist",
-		"src",
-		"dist",
-		"src",
-		"dist",
-		"src",
-		"dist",
-		"src",
-		"dist",
-		"src",
-		"dist",
-		"src",
-		"dist",
-		"src",
-		"dist",
-		"src"
-	],
+	"include": ["__tests__", "dist", "src"],
 	"exclude": ["src", "**/src"]
 }
