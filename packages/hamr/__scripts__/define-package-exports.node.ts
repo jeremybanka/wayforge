@@ -28,15 +28,7 @@ export default function main(mode: string): void {
 
 	const submodules = discoverSubmodules()
 
-	newPackageJson.files = [
-		...submodules.flatMap((folder) => [
-			// `${folder}/dist`,
-			// `${folder}/package.json`,
-			// `${folder}/src`,
-			`dist`,
-			`src`,
-		]),
-	]
+	newPackageJson.files = [`dist`, `src`]
 
 	newPackageJson.exports = {
 		"./package.json": null,
