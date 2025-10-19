@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.43.1
+
+### Patch Changes
+
+- f74e340: 🐛 Fix a case where `process` was accessed as a global instead of via `globalThis`.
+
 ## 0.43.0
 
 ### Minor Changes
