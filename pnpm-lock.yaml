@@ -341,6 +341,9 @@ importers:
       corners:
         specifier: 0.2.0
         version: 0.2.0(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      hamr:
+        specifier: workspace:*
+        version: link:../../packages/hamr
       luum:
         specifier: workspace:*
         version: link:../../packages/luum
@@ -19201,7 +19204,7 @@ snapshots:
 
   term-size@2.2.1: {}
 
-  terser-webpack-plugin@5.3.14(esbuild@0.25.10)(webpack@5.102.1):
+  terser-webpack-plugin@5.3.14(esbuild@0.25.10)(webpack@5.102.1(esbuild@0.25.10)):
     dependencies:
       '@jridgewell/trace-mapping': 0.3.31
       jest-worker: 27.5.1
@@ -19896,7 +19899,7 @@ snapshots:
       neo-async: 2.6.2
       schema-utils: 4.3.3
       tapable: 2.3.0
-      terser-webpack-plugin: 5.3.14(esbuild@0.25.10)(webpack@5.102.1)
+      terser-webpack-plugin: 5.3.14(esbuild@0.25.10)(webpack@5.102.1(esbuild@0.25.10))
       watchpack: 2.4.4
       webpack-sources: 3.3.3
     transitivePeerDependencies:
