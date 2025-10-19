@@ -11,7 +11,7 @@
 		"moduleResolution": "Bundler",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
-		"jsx": "preserve",
+		"jsx": "react-jsx",
 		"incremental": true,
 		"plugins": [
 			{
@@ -21,9 +21,6 @@
 		"paths": {
 			"core.wayfarer.quest/*": ["../core.wayfarer.quest/*"],
 			"wayfarer.quest/*": ["./src/*"],
-			"atom.io": ["../../packages/atom.io/src/main"],
-			"atom.io/*": ["../../packages/atom.io/src/*"],
-			"anvl/*": ["../../packages/anvl/src/*"],
 			"hamr/*": ["../../packages/hamr/src/*"]
 		},
 		"strict": false
