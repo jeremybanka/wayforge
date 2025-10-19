@@ -186,6 +186,9 @@ importers:
       react-syntax-highlighter:
         specifier: 15.6.6
         version: 15.6.6(@preact/compat@18.3.1(preact@10.27.2))
+      tsdoc.json:
+        specifier: workspace:*
+        version: link:../../packages/tsdoc.json
     devDependencies:
       '@types/npmlog':
         specifier: 7.0.0
