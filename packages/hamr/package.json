@@ -15,7 +15,7 @@
 		"directory": "packages/hamr"
 	},
 	"scripts": {
-		"manifest": "tsx __scripts__/manifest-build.node",
+		"manifest": "./__scripts__/manifest-build.node.ts",
 		"clean:build": "find . -type d -name 'dist' -not -path '*/node_modules/*' | xargs rm -rf",
 		"build": "tsdown",
 		"lint:biome": "biome check -- .",
@@ -25,7 +25,7 @@
 		"lint": "concurrently \"bun:lint:*\"",
 		"test": "vitest",
 		"test:once": "vitest run",
-		"test:manifest": "tsx __scripts__/manifest-test.node",
+		"test:manifest": "./__scripts__/manifest-test.node.ts",
 		"postversion": "biome format --write package.json"
 	},
 	"dependencies": {
@@ -72,108 +72,80 @@
 		"vitest": "3.2.4"
 	},
 	"files": [
-		"atom.io-combo/dist",
-		"atom.io-combo/package.json",
-		"atom.io-combo/src",
-		"atom.io-tools/dist",
-		"atom.io-tools/package.json",
-		"atom.io-tools/src",
-		"react-click-handlers/dist",
-		"react-click-handlers/package.json",
-		"react-click-handlers/src",
-		"react-css-vars/dist",
-		"react-css-vars/package.json",
-		"react-css-vars/src",
-		"react-data-designer/dist",
-		"react-data-designer/package.json",
-		"react-data-designer/src",
-		"react-elastic-input/dist",
-		"react-elastic-input/package.json",
-		"react-elastic-input/src",
-		"react-error-boundary/dist",
-		"react-error-boundary/package.json",
-		"react-error-boundary/src",
-		"react-id/dist",
-		"react-id/package.json",
-		"react-id/src",
-		"react-json-editor/dist",
-		"react-json-editor/package.json",
-		"react-json-editor/src",
-		"react-radial/dist",
-		"react-radial/package.json",
-		"react-radial/src"
+		"dist",
+		"src"
 	],
 	"exports": {
 		"./package.json": null,
 		"./atom.io-combo/package.json": "./atom.io-combo/package.json",
 		"./atom.io-combo": {
-			"types": "./atom.io-combo/dist/index.d.ts",
-			"browser": "./atom.io-combo/dist/index.js",
-			"import": "./atom.io-combo/dist/index.js",
-			"require": "./atom.io-combo/dist/index.cjs"
+			"types": "./dist/atom.io-combo/index.d.ts",
+			"browser": "./dist/atom.io-combo/index.js",
+			"import": "./dist/atom.io-combo/index.js",
+			"require": "./dist/atom.io-combo/index.cjs"
 		},
 		"./atom.io-tools/package.json": "./atom.io-tools/package.json",
 		"./atom.io-tools": {
-			"types": "./atom.io-tools/dist/index.d.ts",
-			"browser": "./atom.io-tools/dist/index.js",
-			"import": "./atom.io-tools/dist/index.js",
-			"require": "./atom.io-tools/dist/index.cjs"
+			"types": "./dist/atom.io-tools/index.d.ts",
+			"browser": "./dist/atom.io-tools/index.js",
+			"import": "./dist/atom.io-tools/index.js",
+			"require": "./dist/atom.io-tools/index.cjs"
 		},
 		"./react-click-handlers/package.json": "./react-click-handlers/package.json",
 		"./react-click-handlers": {
-			"types": "./react-click-handlers/dist/index.d.ts",
-			"browser": "./react-click-handlers/dist/index.js",
-			"import": "./react-click-handlers/dist/index.js",
-			"require": "./react-click-handlers/dist/index.cjs"
+			"types": "./dist/react-click-handlers/index.d.ts",
+			"browser": "./dist/react-click-handlers/index.js",
+			"import": "./dist/react-click-handlers/index.js",
+			"require": "./dist/react-click-handlers/index.cjs"
 		},
 		"./react-css-vars/package.json": "./react-css-vars/package.json",
 		"./react-css-vars": {
-			"types": "./react-css-vars/dist/index.d.ts",
-			"browser": "./react-css-vars/dist/index.js",
-			"import": "./react-css-vars/dist/index.js",
-			"require": "./react-css-vars/dist/index.cjs"
+			"types": "./dist/react-css-vars/index.d.ts",
+			"browser": "./dist/react-css-vars/index.js",
+			"import": "./dist/react-css-vars/index.js",
+			"require": "./dist/react-css-vars/index.cjs"
 		},
 		"./react-data-designer/package.json": "./react-data-designer/package.json",
 		"./react-data-designer": {
-			"types": "./react-data-designer/dist/index.d.ts",
-			"browser": "./react-data-designer/dist/index.js",
-			"import": "./react-data-designer/dist/index.js",
-			"require": "./react-data-designer/dist/index.cjs"
+			"types": "./dist/react-data-designer/index.d.ts",
+			"browser": "./dist/react-data-designer/index.js",
+			"import": "./dist/react-data-designer/index.js",
+			"require": "./dist/react-data-designer/index.cjs"
 		},
 		"./react-elastic-input/package.json": "./react-elastic-input/package.json",
 		"./react-elastic-input": {
-			"types": "./react-elastic-input/dist/index.d.ts",
-			"browser": "./react-elastic-input/dist/index.js",
-			"import": "./react-elastic-input/dist/index.js",
-			"require": "./react-elastic-input/dist/index.cjs"
+			"types": "./dist/react-elastic-input/index.d.ts",
+			"browser": "./dist/react-elastic-input/index.js",
+			"import": "./dist/react-elastic-input/index.js",
+			"require": "./dist/react-elastic-input/index.cjs"
 		},
 		"./react-error-boundary/package.json": "./react-error-boundary/package.json",
 		"./react-error-boundary": {
-			"types": "./react-error-boundary/dist/index.d.ts",
-			"browser": "./react-error-boundary/dist/index.js",
-			"import": "./react-error-boundary/dist/index.js",
-			"require": "./react-error-boundary/dist/index.cjs"
+			"types": "./dist/react-error-boundary/index.d.ts",
+			"browser": "./dist/react-error-boundary/index.js",
+			"import": "./dist/react-error-boundary/index.js",
+			"require": "./dist/react-error-boundary/index.cjs"
 		},
 		"./react-id/package.json": "./react-id/package.json",
 		"./react-id": {
-			"types": "./react-id/dist/index.d.ts",
-			"browser": "./react-id/dist/index.js",
-			"import": "./react-id/dist/index.js",
-			"require": "./react-id/dist/index.cjs"
+			"types": "./dist/react-id/index.d.ts",
+			"browser": "./dist/react-id/index.js",
+			"import": "./dist/react-id/index.js",
+			"require": "./dist/react-id/index.cjs"
 		},
 		"./react-json-editor/package.json": "./react-json-editor/package.json",
 		"./react-json-editor": {
-			"types": "./react-json-editor/dist/index.d.ts",
-			"browser": "./react-json-editor/dist/index.js",
-			"import": "./react-json-editor/dist/index.js",
-			"require": "./react-json-editor/dist/index.cjs"
+			"types": "./dist/react-json-editor/index.d.ts",
+			"browser": "./dist/react-json-editor/index.js",
+			"import": "./dist/react-json-editor/index.js",
+			"require": "./dist/react-json-editor/index.cjs"
 		},
 		"./react-radial/package.json": "./react-radial/package.json",
 		"./react-radial": {
-			"types": "./react-radial/dist/index.d.ts",
-			"browser": "./react-radial/dist/index.js",
-			"import": "./react-radial/dist/index.js",
-			"require": "./react-radial/dist/index.cjs"
+			"types": "./dist/react-radial/index.d.ts",
+			"browser": "./dist/react-radial/index.js",
+			"import": "./dist/react-radial/index.js",
+			"require": "./dist/react-radial/index.cjs"
 		}
 	}
 }
