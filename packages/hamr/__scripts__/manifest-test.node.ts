@@ -1,7 +1,7 @@
-import defineIntegrationScope from "./define-integration-scope.node"
-import definePackageExports from "./define-package-exports.node"
-import defineSubmoduleManifests from "./define-submodule-manifests.node"
+#!/usr/bin/env node
+
+import defineIntegrationScope from "./define-integration-scope.node.ts"
+import definePackageExports from "./define-package-exports.node.ts"
 
 definePackageExports(`test`)
 defineIntegrationScope(`test`)
-defineSubmoduleManifests(`test`)

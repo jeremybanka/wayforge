@@ -2,9 +2,9 @@ import { execSync } from "node:child_process"
 import fs from "node:fs"
 import url from "node:url"
 
-import { PACKAGE_JSON_PATH } from "./constants"
-import discoverSubmodules from "./discover-submodules.node"
-import { createLogger } from "./logger.node"
+import { PACKAGE_JSON_PATH } from "./constants.ts"
+import discoverSubmodules from "./discover-submodules.node.ts"
+import { createLogger } from "./logger.node.ts"
 
 const FILEPATH = url.fileURLToPath(import.meta.url)
 const SCRIPT_NAME = FILEPATH.split(`/`).pop()?.split(`.`)[0] ?? `unknown_file`
@@ -28,13 +28,7 @@ export default function main(mode: string): void {
 
 	const submodules = discoverSubmodules()
 
-	newPackageJson.files = [
-		...submodules.flatMap((folder) => [
-			`${folder}/dist`,
-			`${folder}/package.json`,
-			`${folder}/src`,
-		]),
-	]
+	newPackageJson.files = [`dist`, `src`]
 
 	newPackageJson.exports = {
 		"./package.json": null,
@@ -42,10 +36,10 @@ export default function main(mode: string): void {
 			(acc, folder) => {
 				acc[`./${folder}/package.json`] = `./${folder}/package.json`
 				acc[`./${folder}`] = {
-					types: `./${folder}/dist/index.d.ts`,
-					browser: `./${folder}/dist/index.js`,
-					import: `./${folder}/dist/index.js`,
-					require: `./${folder}/dist/index.cjs`,
+					types: `./dist/${folder}/index.d.ts`,
+					browser: `./dist/${folder}/index.js`,
+					import: `./dist/${folder}/index.js`,
+					require: `./dist/${folder}/index.cjs`,
 				}
 				return acc
 			},
