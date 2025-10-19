@@ -7,4 +7,9 @@ import { defineConfig } from "astro/config"
 export default defineConfig({
 	integrations: [preact({ compat: true }), mdx()],
 	adapter: cloudflare(),
+	server: {
+		port: 4321,
+		host: `0.0.0.0`,
+		allowedHosts: [`eris.local`],
+	},
 })
