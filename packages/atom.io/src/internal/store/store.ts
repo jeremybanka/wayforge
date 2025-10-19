@@ -271,7 +271,7 @@ export const IMPLICIT: { readonly STORE: RootStore } = {
 		globalThis.ATOM_IO_IMPLICIT_STORE ??= new Store({
 			name: `IMPLICIT_STORE`,
 			lifespan: `ephemeral`,
-			isProduction: process?.env?.[`NODE_ENV`] === `production`,
+			isProduction: globalThis.process?.env?.[`NODE_ENV`] === `production`,
 		}) as RootStore
 		return globalThis.ATOM_IO_IMPLICIT_STORE
 	},
