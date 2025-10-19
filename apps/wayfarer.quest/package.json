@@ -23,6 +23,7 @@
 		"anvl": "workspace:*",
 		"atom.io": "workspace:*",
 		"corners": "0.2.0",
+		"hamr": "workspace:*",
 		"luum": "workspace:*",
 		"motion": "12.23.24",
 		"nanoid": "5.1.6",
