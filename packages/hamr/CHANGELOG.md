@@ -1,5 +1,11 @@
 # hamr
 
+## 3.0.4
+
+### Patch Changes
+
+- 5d6a420: 🐛 Fix package layout.
+
 ## 3.0.3
 
 ### Patch Changes
