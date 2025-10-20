@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.43.2
+
+### Patch Changes
+
+- 396ed3b: 🐛 Fix issue where mutable atoms observed with `useO` from `atom.io/react` would be given an incorrect typing of `unknown`.
+
 ## 0.43.1
 
 ### Patch Changes
