@@ -6,14 +6,14 @@ import { useContext, useId, useSyncExternalStore } from "react"
 import { parseStateOverloads } from "./parse-state-overloads"
 import { StoreContext } from "./store-context"
 
-export function useO<T, E>(token: ReadableToken<T, any, E>): E | T
+export function useO<T, E = never>(token: ReadableToken<T, any, E>): E | T
 
-export function useO<T, K extends Canonical, E>(
+export function useO<T, K extends Canonical, E = never>(
 	token: ReadableFamilyToken<T, K, E>,
 	key: NoInfer<K>,
 ): E | T
 
-export function useO<T, K extends Canonical, E>(
+export function useO<T, K extends Canonical, E = never>(
 	...params:
 		| [ReadableFamilyToken<T, K, E>, NoInfer<K>]
 		| [ReadableToken<T, any, E>]
