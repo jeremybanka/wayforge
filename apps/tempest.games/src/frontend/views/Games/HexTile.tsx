@@ -1,5 +1,8 @@
 /** biome-ignore-all lint/a11y/noStaticElementInteractions: drei */
 
+import { atom, atomFamily, mutableAtom } from "atom.io"
+import { useO } from "atom.io/react"
+import { UList } from "atom.io/transceivers/u-list"
 import type { ReactNode } from "react"
 import { useMemo } from "react"
 import * as THREE from "three"
@@ -66,17 +69,17 @@ export function HexTile({
 }
 
 export function GameTile({
-	coordinates,
-	stackHeight = 1,
+	coordinatesSerialized,
 	color = `#ee5`,
 	onClick,
 }: {
-	coordinates: { x: number; y: number; z: number }
-	stackHeight?: 1 | 2 | 3
+	coordinatesSerialized: TileCoordinatesSerialized
 	color?: THREE.ColorRepresentation
 	onClick?: (position: [x: number, y: number, z: number]) => void
 }): ReactNode {
-	const { x: boardA, y: boardB, z: boardC } = coordinates
+	const coordinates = deserializeTileCoordinates(coordinatesSerialized)
+	const [boardA, boardB, boardC] = coordinates
+	const stackHeight = useO(gameTilesStackHeightAtoms, coordinates)
 	if (boardA + boardB + boardC !== 0) {
 		console.error(`GameTile: bad coordinates did not add to zero`, coordinates)
 		return null
@@ -112,6 +115,45 @@ export function GameTile({
 			{stackHeight > 2 ? (
 				<HexTile position={[x, 0.66, z]} color={color} onClick={onClick} />
 			) : null}
+		</>
+	)
+}
+
+export type TileCoordinates = [x: number, y: number, z: number]
+export type TileCoordinatesSerialized = `${number}_${number}_${number}`
+export function serializeTileCoordinates(
+	coordinates: TileCoordinates,
+): TileCoordinatesSerialized {
+	return `${coordinates[0]}_${coordinates[1]}_${coordinates[2]}`
+}
+
+export function deserializeTileCoordinates(
+	serialized: TileCoordinatesSerialized,
+): TileCoordinates {
+	return serialized.split(`_`).map(Number) as TileCoordinates
+}
+
+export const gameTilesAtom = mutableAtom<UList<TileCoordinatesSerialized>>({
+	key: `gameTiles`,
+	class: UList,
+})
+
+export const gameTilesStackHeightAtoms = atomFamily<number, TileCoordinates>({
+	key: `gameTilesStackHeightAtoms`,
+	default: 0,
+})
+
+export function GameTiles(): ReactNode {
+	const tiles = useO(gameTilesAtom)
+	return (
+		<>
+			{tiles.map((tileCoordinates, idx) => (
+				<GameTile
+					key={idx}
+					coordinatesSerialized={tileCoordinates}
+					color={`#${idx.toString(16).padStart(6, `0`)}`}
+				/>
+			))}
 		</>
 	)
 }
