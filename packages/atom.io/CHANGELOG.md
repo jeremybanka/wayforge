@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.44.0
+
+### Minor Changes
+
+- 35486b1: 🔨 Upgrade vitest to version 4, which required a slight rework to internal tests. No breaking changes.
+
 ## 0.43.2
 
 ### Patch Changes

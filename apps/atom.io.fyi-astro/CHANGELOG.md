@@ -1,5 +1,12 @@
 # atom.io.fyi-astro
 
+## 0.2.4
+
+### Patch Changes
+
+- Updated dependencies [35486b1]
+  - atom.io@0.44.0
+
 ## 0.2.3
 
 ### Patch Changes
