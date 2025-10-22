@@ -18,12 +18,12 @@ beforeEach(() => {
 		undefined,
 		externalLogger,
 	)
-	vitest.spyOn(internalLogger, `error`)
-	vitest.spyOn(internalLogger, `warn`)
-	vitest.spyOn(internalLogger, `info`)
-	vitest.spyOn(externalLogger, `error`)
-	vitest.spyOn(externalLogger, `warn`)
-	vitest.spyOn(externalLogger, `info`)
+	vitest.spyOn(internalLogger, `error`).mockReset()
+	vitest.spyOn(internalLogger, `warn`).mockReset()
+	vitest.spyOn(internalLogger, `info`).mockReset()
+	vitest.spyOn(externalLogger, `error`).mockReset()
+	vitest.spyOn(externalLogger, `warn`).mockReset()
+	vitest.spyOn(externalLogger, `info`).mockReset()
 })
 
 describe(`setLogLevel`, () => {

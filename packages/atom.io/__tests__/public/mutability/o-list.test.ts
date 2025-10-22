@@ -12,9 +12,9 @@ function handleUnpacked(subject: Subject<any>, handler: Fn): void {
 
 beforeEach(() => {
 	console.warn = () => undefined
-	vitest.spyOn(console, `warn`)
-	vitest.spyOn(U, `stdout1`)
-	vitest.spyOn(U, `stdout2`)
+	vitest.spyOn(console, `warn`).mockReset()
+	vitest.spyOn(U, `stdout1`).mockReset()
+	vitest.spyOn(U, `stdout2`).mockReset()
 })
 
 describe(`OList`, () => {

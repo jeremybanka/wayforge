@@ -15,7 +15,7 @@ const CHOOSE = 0
 beforeEach(() => {
 	Internal.clearStore(Internal.IMPLICIT.STORE)
 	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	vitest.spyOn(Utils, `stdout`)
+	vitest.spyOn(Utils, `stdout`).mockReset()
 })
 
 describe(`async atom`, async () => {

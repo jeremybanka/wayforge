@@ -21,11 +21,11 @@ beforeEach(() => {
 	Internal.clearStore(Internal.IMPLICIT.STORE)
 	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
 	logger = Internal.IMPLICIT.STORE.logger
-	vitest.spyOn(logger, `error`)
-	vitest.spyOn(logger, `warn`)
-	vitest.spyOn(logger, `info`)
-	vitest.spyOn(Utils, `stdout`)
-	vitest.spyOn(Utils, `stdout0`)
+	vitest.spyOn(logger, `error`).mockReset()
+	vitest.spyOn(logger, `warn`).mockReset()
+	vitest.spyOn(logger, `info`).mockReset()
+	vitest.spyOn(Utils, `stdout`).mockReset()
+	vitest.spyOn(Utils, `stdout0`).mockReset()
 })
 
 describe(`atom`, () => {

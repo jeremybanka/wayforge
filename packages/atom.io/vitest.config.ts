@@ -39,11 +39,7 @@ const vitestConfig: UserConfig = defineConfig({
 	},
 	test: {
 		pool: `vmThreads`,
-		poolOptions: {
-			vmThreads: {
-				maxThreads: cpus().length - 1,
-			},
-		},
+		maxWorkers: cpus().length - 1,
 		globals: true,
 		environment: `happy-dom`,
 		coverage: {

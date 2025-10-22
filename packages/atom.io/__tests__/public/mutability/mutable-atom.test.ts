@@ -31,13 +31,13 @@ beforeEach(() => {
 	Internal.IMPLICIT.STORE.config.isProduction = true
 	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
 	logger = Internal.IMPLICIT.STORE.logger = Utils.createNullLogger()
-	vitest.spyOn(logger, `error`)
-	vitest.spyOn(logger, `warn`)
-	vitest.spyOn(logger, `info`)
-	vitest.spyOn(Utils, `stdout`)
-	vitest.spyOn(Utils, `stdout0`)
-	vitest.spyOn(Utils, `stdout1`)
-	vitest.spyOn(Utils, `stdout2`)
+	vitest.spyOn(logger, `error`).mockReset()
+	vitest.spyOn(logger, `warn`).mockReset()
+	vitest.spyOn(logger, `info`).mockReset()
+	vitest.spyOn(Utils, `stdout`).mockReset()
+	vitest.spyOn(Utils, `stdout0`).mockReset()
+	vitest.spyOn(Utils, `stdout1`).mockReset()
+	vitest.spyOn(Utils, `stdout2`).mockReset()
 })
 
 describe(`mutable atomic state`, () => {
