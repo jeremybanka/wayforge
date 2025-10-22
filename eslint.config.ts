@@ -1,4 +1,3 @@
-import { default as NextPlugin } from "@next/eslint-plugin-next"
 import { default as TypeScriptPlugin } from "@typescript-eslint/eslint-plugin"
 import * as parser from "@typescript-eslint/parser"
 import type { ESLint, Linter } from "eslint"
@@ -191,30 +190,6 @@ const configs = [
 			"simple-import-sort": SimpleImportSortPlugin,
 		},
 		rules: commonRules,
-	},
-	{
-		files: [`apps/atom.io.fyi/**/*.ts{,x}`],
-		ignores: [`**/*.gen.tsx`, `**/dist/**`, `**/node_modules/**`],
-		plugins: { "@next/next": NextPlugin },
-		rules: {
-			...NextPlugin.configs.recommended.rules,
-			...NextPlugin.configs[`core-web-vitals`].rules,
-			"@next/next/no-duplicate-head": 0,
-			"@next/next/no-page-custom-font": 0,
-		},
-		settings: { next: { rootDir: `apps/atom.io.fyi/` } },
-	},
-	{
-		files: [`apps/wayfarer.quest/**/*.ts{,x}`],
-		ignores: [`**/generated/**`, `**/dist/**`, `**/node_modules/**`],
-		plugins: { "@next/next": NextPlugin },
-		rules: {
-			...NextPlugin.configs.recommended.rules,
-			...NextPlugin.configs[`core-web-vitals`].rules,
-			"@next/next/no-duplicate-head": 0,
-			"@next/next/no-page-custom-font": 0,
-		},
-		settings: { next: { rootDir: `apps/wayfarer.quest/` } },
 	},
 	{
 		languageOptions: {
