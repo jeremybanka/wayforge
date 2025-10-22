@@ -6,8 +6,8 @@ import * as U from "../../__util__"
 
 beforeEach(() => {
 	console.warn = () => undefined
-	vitest.spyOn(console, `warn`)
-	vitest.spyOn(U, `stdout`)
+	vitest.spyOn(console, `warn`).mockReset()
+	vitest.spyOn(U, `stdout`).mockReset()
 })
 
 describe(`UList`, () => {
