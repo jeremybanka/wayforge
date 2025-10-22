@@ -703,9 +703,9 @@ importers:
       eslint:
         specifier: 9.38.0
         version: 9.38.0(jiti@2.6.1)
-      tsup:
-        specifier: 8.5.0
-        version: 8.5.0(@microsoft/api-extractor@7.53.1(@types/node@24.9.1))(@swc/core@1.13.5(@swc/helpers@0.5.17))(jiti@2.6.1)(postcss@8.5.6)(typescript@5.9.3)(yaml@2.8.1)
+      tsdown:
+        specifier: 0.15.9
+        version: 0.15.9(@typescript/native-preview@7.0.0-dev.20251022.1)(typescript@5.9.3)
       vite:
         specifier: 7.1.11
         version: 7.1.11(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
