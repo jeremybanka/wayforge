@@ -65,6 +65,12 @@ ruleTester.run(`explicit-state-types`, rule, {
         })
       `,
 		},
+		{
+			name: `other method calls`,
+			code: `
+      foo.bar()
+      `,
+		},
 	],
 	invalid: [
 		{
