@@ -1,5 +1,6 @@
 import { Future } from "./future"
 import { Tracker, type Transceiver } from "./mutable"
+import type { OpenOperation } from "./operation"
 import { closeOperation, openOperation } from "./operation"
 import {
 	evictDownstreamFromAtom,
@@ -42,8 +43,8 @@ export function writeToCache<T, E>(
 			.then(function handleResolvedFuture(resolved) {
 				const current = target.valueMap.get(key)
 				if (current === future) {
-					openOperation(target, state)
-					writeToCache(target, state, resolved)
+					const opTarget = openOperation(target, state)
+					writeToCache(opTarget, state, resolved)
 					// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 					switch (type) {
 						case `atom`:
@@ -106,7 +107,10 @@ export function readFromCache<T, E>(
 	return value
 }
 
-export function evictCachedValue(target: Store, key: string): void {
+export function evictCachedValue(
+	target: Store & { operation: OpenOperation },
+	key: string,
+): void {
 	const currentValue = target.valueMap.get(key)
 	if (currentValue instanceof Future) {
 		const selector =
@@ -116,9 +120,7 @@ export function evictCachedValue(target: Store, key: string): void {
 		}
 		return
 	}
-	if (target.operation.open) {
-		target.operation.prev.set(key, currentValue)
-	}
+	target.operation.prev.set(key, currentValue)
 	target.valueMap.delete(key)
 	target.logger.info(`🗑`, `state`, key, `evicted`)
 }

@@ -1,14 +1,13 @@
 import { evictCachedValue } from "../caching"
-import { newest } from "../lineage"
+import type { OpenOperation } from "../operation"
 import { isDone, markDone } from "../operation"
 import type { Atom } from "../state-types"
 import type { Store } from "../store"
 
 export function evictDownstreamFromAtom(
-	store: Store,
+	target: Store & { operation: OpenOperation },
 	atom: Atom<any, any>,
 ): void {
-	const target = newest(store)
 	const { key, type } = atom
 	const downstreamKeys = target.selectorAtoms.getRelatedKeys(key)
 	target.logger.info(
@@ -40,10 +39,9 @@ export function evictDownstreamFromAtom(
 }
 
 export function evictDownstreamFromSelector(
-	store: Store,
+	target: Store & { operation: OpenOperation },
 	selectorKey: string,
 ): void {
-	const target = newest(store)
 	const relationEntries = target.selectorGraph
 		.getRelationEntries({
 			upstreamSelectorKey: selectorKey,
@@ -55,6 +53,6 @@ export function evictDownstreamFromSelector(
 		}
 		evictCachedValue(target, downstreamSelectorKey)
 		markDone(target, downstreamSelectorKey)
-		evictDownstreamFromSelector(store, downstreamSelectorKey)
+		evictDownstreamFromSelector(target, downstreamSelectorKey)
 	}
 }
