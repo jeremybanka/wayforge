@@ -39,7 +39,7 @@ jobs:
       - uses: actions/checkout@v5.0.0
       - uses: ./.github/actions/setup
       - run: pnpm run test
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         if: ${{ !cancelled() }}
         with:
           name: Varmint
