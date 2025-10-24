@@ -209,8 +209,8 @@ importers:
         version: link:../../packages/treetrunks
     devDependencies:
       '@react-email/preview-server':
-        specifier: 4.3.1
-        version: 4.3.1(@emotion/is-prop-valid@1.4.0)(postcss@8.5.6)(sass@1.93.2)
+        specifier: 4.3.2
+        version: 4.3.2(@emotion/is-prop-valid@1.4.0)(postcss@8.5.6)(sass@1.93.2)
       '@types/bun':
         specifier: npm:bun-types@1.3.1
         version: bun-types@1.3.1(@types/react@19.2.2)
@@ -3277,8 +3277,8 @@ packages:
     peerDependencies:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
 
-  '@react-email/preview-server@4.3.1':
-    resolution: {integrity: sha512-3YdkWMCy5PyMLT/ShbGfmZ0qbYGE+IlMG1PkSe2KEvv+NUC0j3XFrk17Ej4VHZZ5ecR+pezuMSm5W7IX34GGyw==}
+  '@react-email/preview-server@4.3.2':
+    resolution: {integrity: sha512-rBm2AJhOhfi8Fd8MAFN4DQ0FQtsqq38JjJIWvbHA0EYwbjNwODmtzRZCkbdp+8o6GL5PKiRcikF0FDzbOYAJ+w==}
 
   '@react-email/preview@0.0.13':
     resolution: {integrity: sha512-F7j9FJ0JN/A4d7yr+aw28p4uX7VLWs7hTHtLo7WRyw4G+Lit6Zucq4UWKRxJC8lpsUdzVmG7aBJnKOT+urqs/w==}
@@ -9030,9 +9030,9 @@ snapshots:
       '@babel/helper-compilation-targets': 7.27.2
       '@babel/helper-module-transforms': 7.28.3(@babel/core@7.26.10)
       '@babel/helpers': 7.28.4
-      '@babel/parser': 7.27.0
+      '@babel/parser': 7.28.5
       '@babel/template': 7.27.2
-      '@babel/traverse': 7.27.0
+      '@babel/traverse': 7.28.5
       '@babel/types': 7.28.5
       convert-source-map: 2.0.0
       debug: 4.4.3
@@ -9175,7 +9175,7 @@ snapshots:
     dependencies:
       '@babel/code-frame': 7.27.1
       '@babel/generator': 7.28.5
-      '@babel/parser': 7.27.0
+      '@babel/parser': 7.28.5
       '@babel/template': 7.27.2
       '@babel/types': 7.28.5
       debug: 4.4.3
@@ -10977,7 +10977,7 @@ snapshots:
       marked: 15.0.12
       react: 19.2.0
 
-  '@react-email/preview-server@4.3.1(@emotion/is-prop-valid@1.4.0)(postcss@8.5.6)(sass@1.93.2)':
+  '@react-email/preview-server@4.3.2(@emotion/is-prop-valid@1.4.0)(postcss@8.5.6)(sass@1.93.2)':
     dependencies:
       '@babel/core': 7.26.10
       '@babel/parser': 7.27.0
