@@ -6,6 +6,7 @@
 		"jsx": "react-jsx",
 		"jsxImportSource": "preact",
 		"paths": {
+			"c/*": ["./src/components/*"],
 			"x/*": ["./src/exhibits-wrapped/*"]
 		}
 	}
