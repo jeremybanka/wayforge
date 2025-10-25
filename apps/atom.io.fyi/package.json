@@ -11,7 +11,7 @@
 		"dev:astro": "astro dev",
 		"dev:exhibits": "./scripts/exhibits.bun.ts watch",
 		"build": "bun run build:exhibits && bun run build:astro",
-		"build:astro": "astro build",
+		"build:astro": "astro build && ls",
 		"build:exhibits": "./scripts/exhibits.bun.ts once",
 		"preview": "wrangler dev",
 		"deploy": "ls && wrangler deploy",
