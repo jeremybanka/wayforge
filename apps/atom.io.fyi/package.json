@@ -14,7 +14,7 @@
 		"build:astro": "astro build",
 		"build:exhibits": "./scripts/exhibits.bun.ts once",
 		"preview": "wrangler dev",
-		"deploy": "wrangler deploy",
+		"deploy": "ls && wrangler deploy",
 		"astro": "astro",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
