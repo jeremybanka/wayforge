@@ -9,14 +9,14 @@
 			"inputs": ["**/package.json", "**/*.config.ts", "src/**", "**/src/**"]
 		},
 		"tempest.games#build": {
-			"dependsOn": ["^build"],
+			"dependsOn": ["gen", "^build", "^gen"],
 			"outputs": ["app/**", "bin/**"],
 			"inputs": ["**/package.json", "src/**"]
 		},
 		"atom.io.fyi#build": {
-			"dependsOn": ["atom.io#build", "tsdoc.json#build"],
-			"outputs": [".next/**"],
-			"inputs": ["**/package.json", "src/**"]
+			"dependsOn": ["gen", "^build", "^gen"],
+			"outputs": [".astro/**", "dist/**"],
+			"inputs": ["**/package.json", "src/**", "public/**", "scripts/**"]
 		},
 		"test:build": {
 			"dependsOn": ["build"],
