@@ -1,5 +1,10 @@
 import Layout from "../../../layouts/LayoutDocs.astro";
 
+import UseO from "x/react/use-o.gen";
+import UseI from "x/react/use-i.gen";
+import UseJSON from "x/react/use-json.gen";
+import UseTL from "x/react/use-tl.gen";
+
 <Layout>
 
 # <span className="soft">atom.io</span>/react
@@ -41,34 +46,26 @@ import Layout from "../../../layouts/LayoutDocs.astro";
 
 ## useO
 
-import UseO from "x/react/use-o.gen";
-
 `useO` is a React hook that allows you to observe reactive variables in your React components.
 
-<UseO />
+<UseO client:load />
 
 ## useI
 
-import UseI from "x/react/use-i.gen";
-
 `useI` is a React hook that allows you to update reactive variables in your React components.
 
-<UseI />
+<UseI client:load />
 
 ## useJSON
 
-import UseJSON from "x/react/use-json.gen";
-
 `useJSON` is a React hook that makes working with mutable atoms in your react components more convenient.
 
-<UseJSON />
+<UseJSON client:load />
 
 ## useTL
 
-import UseTL from "x/react/use-tl.gen";
-
 `useTL` provides convenient access to the `undo` and `redo` utilities, as well as metadata representing how many events are on the timeline (`length`) and where the timeline is currently positioned (`at`).
 
-<UseTL />
+<UseTL client:load />
 
 </Layout>
