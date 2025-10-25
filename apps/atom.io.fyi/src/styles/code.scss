@@ -45,95 +45,98 @@ table {
   }
 }
 
-.codeblock {
-  margin-top: 1.5em;
-  box-sizing: border-box;
-  overflow: visible;
-  position: relative;
-  display: flex;
-  flex-flow: column;
-  border: var(--bg-soft-3) solid 1px;
-  box-shadow: 0 0px 6px 0px var(--bg-shade-2);
-  border-radius: 3px;
+astro-island {
+  .codeblock {
+    margin-top: 1.5em;
+    box-sizing: border-box;
+    overflow: visible;
+    position: relative;
+    display: flex;
+    flex-flow: column;
+    border: var(--bg-soft-3) solid 1px;
+    box-shadow: 0 0px 6px 0px var(--bg-shade-2);
+    border-radius: 3px;
+    width: 100%;
 
-  > header {
-    background: var(--bg-soft-2);
-    border-bottom: var(--bg-soft-3) solid 1px;
-    font-size: 15px;
-    line-height: 20px;
-    font-weight: 500;
-    color: var(--fg-soft-1);
-    padding: 2px 8px;
-  }
-
-  > pre.prismjs {
-    background-color: var(--bg-hard-1);
-    padding: 1em;
-    overflow: auto;
-    line-height: 1em;
-    * {
-      font-family: Theia;
-      font-weight: 500;
+    > header {
+      background: var(--bg-soft-2);
+      border-bottom: var(--bg-soft-3) solid 1px;
       font-size: 15px;
+      line-height: 20px;
+      font-weight: 500;
+      color: var(--fg-soft-1);
+      padding: 2px 8px;
     }
-    > code {
-      line-height: 1em !important;
-      span {
-        line-height: 22px !important;
-      }
-    }
-  }
 
-  color: var(--base-color) !important;
-  span {
-    text-shadow: 0px 1px 2px var(--bg-hard-2);
-    color: var(--base-color);
-    &.token {
-      &.comment {
-        color: var(--comment-color);
+    > pre.prismjs {
+      background-color: var(--bg-hard-1);
+      padding: 1em;
+      overflow: auto;
+      line-height: 1em;
+      * {
+        font-family: Theia;
+        font-weight: 500;
+        font-size: 15px;
       }
-      &.keyword {
-        color: var(--keyword-color);
+      > code {
+        line-height: 1em !important;
+        span {
+          line-height: 22px !important;
+        }
       }
-      &.generic-function {
-        color: var(--type-color);
-      }
-      &.constant {
-        color: var(--type-color);
-      }
-      &.class-name,
-      &.maybe-class-name,
-      &.builtin {
-        color: var(--type-color);
-      }
-      &.imports {
-        color: var(--function-color);
-      }
-      &.punctuation {
-        color: var(--punctuation-color);
-      }
-      &.operator {
-        color: var(--operator-color);
-      }
-      &.boolean {
-        color: var(--boolean-color);
-      }
-      &.null {
-        color: var(--null-color);
-      }
-      &.number {
-        color: var(--number-color);
-      }
-      &.string {
-        color: var(--string-color);
-      }
-      &.type {
-        color: var(--type-color);
-      }
-      &.function {
-        color: var(--function-color);
-        &.maybe-class-name {
-          color: var(--base-color);
+    }
+
+    color: var(--base-color) !important;
+    span {
+      text-shadow: 0px 1px 2px var(--bg-hard-2);
+      color: var(--base-color);
+      &.token {
+        &.comment {
+          color: var(--comment-color);
+        }
+        &.keyword {
+          color: var(--keyword-color);
+        }
+        &.generic-function {
+          color: var(--type-color);
+        }
+        &.constant {
+          color: var(--type-color);
+        }
+        &.class-name,
+        &.maybe-class-name,
+        &.builtin {
+          color: var(--type-color);
+        }
+        &.imports {
+          color: var(--function-color);
+        }
+        &.punctuation {
+          color: var(--punctuation-color);
+        }
+        &.operator {
+          color: var(--operator-color);
+        }
+        &.boolean {
+          color: var(--boolean-color);
+        }
+        &.null {
+          color: var(--null-color);
+        }
+        &.number {
+          color: var(--number-color);
+        }
+        &.string {
+          color: var(--string-color);
+        }
+        &.type {
+          color: var(--type-color);
+        }
+        &.function {
+          color: var(--function-color);
+          &.maybe-class-name {
+            color: var(--base-color);
+          }
         }
       }
     }
