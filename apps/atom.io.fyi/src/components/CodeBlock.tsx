@@ -18,6 +18,11 @@ export function CodeBlock({ filepath, children }: CodeBlockProps): VNode {
 				me.querySelectorAll(`.token.string`),
 				(element: any) => element.textContent.includes(`./`),
 			)
+
+		console.log({ filepath })
+		if (filepath === `declare-an-atom.ts`) {
+			console.log({ myElementsWithClassNameStringAndContainingDoubleQuotes })
+		}
 		for (const element of myElementsWithClassNameStringAndContainingDoubleQuotes) {
 			// get everything following the final '/'
 			const href = `#` + element.textContent.split(`/`).pop()
