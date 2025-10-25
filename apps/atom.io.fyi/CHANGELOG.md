@@ -1,4 +1,4 @@
-# atom.io.fyi-astro
+# atom.io.fyi
 
 ## 0.2.4
 
