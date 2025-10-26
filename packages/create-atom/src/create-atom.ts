@@ -71,7 +71,15 @@ export async function createAtom(
 	if (skipHint === false) {
 		const gettingStarted = `
 			${pico.dim(`$`)} ${pico.blueBright(`cd ${dir}`)}
-			${pico.dim(`$`)} ${pico.blueBright(`${packageManager === `npm` ? `npm run` : packageManager} dev`)}
+			${pico.dim(`$`)} ${pico.blueBright(
+				`${
+					packageManager === `npm`
+						? `npm run`
+						: packageManager === `bun`
+							? `bun run`
+							: packageManager
+				} dev`,
+			)}
 		`
 		prompts.note(
 			gettingStarted.trim().replace(/^\t\t\t/gm, ``),

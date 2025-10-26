@@ -9,7 +9,7 @@ import { createAtom } from "./create-atom.ts"
 
 const helper = helpOption()
 
-const BREAK_CHECK_MANUAL = {
+const CREATE_ATOM_OPTS = {
 	description: `Check for breaking changes in a package.`,
 	optionsSchema: z.object({
 		packageManager: z
@@ -45,8 +45,8 @@ const parse = cli(
 		cliName: `create-atom`,
 		routes: optional({ $projectName: null }),
 		routeOptions: {
-			"": BREAK_CHECK_MANUAL,
-			$projectName: BREAK_CHECK_MANUAL,
+			"": CREATE_ATOM_OPTS,
+			$projectName: CREATE_ATOM_OPTS,
 		},
 	},
 	{
