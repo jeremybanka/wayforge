@@ -25,24 +25,6 @@
 
 code {
   font-family: Theia, monospace !important;
-  font-weight: 500;
-  font-size: 15px;
-  box-sizing: border-box;
-  // color: var(--function-color);
-}
-p {
-  code {
-    box-sizing: border-box;
-    color: var(--fg-color);
-    background-color: var(--bg-soft-1);
-    // box-shadow: 0 0px 4px 0px var(--bg-shade-2);
-    border: 1px solid #0003;
-    border-radius: 3px;
-    padding: 1px 2px;
-    @-moz-document url-prefix() {
-      padding: 8px 4px 4px; /* Your Firefox-specific padding */
-    }
-  }
 }
 
 astro-island {
