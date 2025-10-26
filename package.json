@@ -39,7 +39,7 @@
 		"nv": "fnm use $(pnpm list -w --json | jq -r '.[0].path')"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.3.0",
+		"@biomejs/biome": "2.3.1",
 		"@changesets/cli": "2.29.7",
 		"@dotenvx/dotenvx": "1.51.0",
 		"@eslint/eslintrc": "3.3.1",
