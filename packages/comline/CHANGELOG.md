@@ -1,5 +1,11 @@
 # comline
 
+## 0.3.3
+
+### Patch Changes
+
+- 3893540: 🐛 Fix issue where the parsed `path` would incorrectly represent its type using the names of variables instead of the actual values of variables given.
+
 ## 0.3.2
 
 ### Patch Changes
