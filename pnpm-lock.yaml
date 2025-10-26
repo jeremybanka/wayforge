@@ -284,8 +284,8 @@ importers:
         specifier: 9.38.0
         version: 9.38.0(jiti@2.6.1)
       tsdown:
-        specifier: 0.15.9
-        version: 0.15.9(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
+        specifier: 0.15.10
+        version: 0.15.10(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
       vite:
         specifier: 7.1.12
         version: 7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
@@ -420,8 +420,8 @@ importers:
         specifier: 0.2.5
         version: 0.2.5
       tsdown:
-        specifier: 0.15.9
-        version: 0.15.9(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
+        specifier: 0.15.10
+        version: 0.15.10(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -481,8 +481,8 @@ importers:
         specifier: 0.2.5
         version: 0.2.5
       tsdown:
-        specifier: 0.15.9
-        version: 0.15.9(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
+        specifier: 0.15.10
+        version: 0.15.10(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
 
   packages/comline:
     dependencies:
@@ -515,8 +515,8 @@ importers:
         specifier: 0.2.5
         version: 0.2.5
       tsdown:
-        specifier: 0.15.9
-        version: 0.15.9(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
+        specifier: 0.15.10
+        version: 0.15.10(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
       vite:
         specifier: 7.1.12
         version: 7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
@@ -582,8 +582,8 @@ importers:
         specifier: 0.2.5
         version: 0.2.5
       tsdown:
-        specifier: 0.15.9
-        version: 0.15.9(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
+        specifier: 0.15.10
+        version: 0.15.10(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
       varmint:
         specifier: workspace:*
         version: link:../varmint
@@ -673,8 +673,8 @@ importers:
         specifier: 1.93.2
         version: 1.93.2
       tsdown:
-        specifier: 0.15.9
-        version: 0.15.9(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
+        specifier: 0.15.10
+        version: 0.15.10(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
       vite-plugin-dts:
         specifier: 4.5.4
         version: 4.5.4(@types/node@24.9.1)(rollup@4.52.5)(typescript@5.9.3)(vite@7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1))
@@ -704,8 +704,8 @@ importers:
         specifier: 9.38.0
         version: 9.38.0(jiti@2.6.1)
       tsdown:
-        specifier: 0.15.9
-        version: 0.15.9(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
+        specifier: 0.15.10
+        version: 0.15.10(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
       vite:
         specifier: 7.1.12
         version: 7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
@@ -735,8 +735,8 @@ importers:
         specifier: 6.0.1
         version: 6.0.1
       tsdown:
-        specifier: 0.15.9
-        version: 0.15.9(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
+        specifier: 0.15.10
+        version: 0.15.10(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
       vite:
         specifier: 7.1.12
         version: 7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
@@ -760,8 +760,8 @@ importers:
         specifier: 9.38.0
         version: 9.38.0(jiti@2.6.1)
       tsdown:
-        specifier: 0.15.9
-        version: 0.15.9(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
+        specifier: 0.15.10
+        version: 0.15.10(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
       vite:
         specifier: 7.1.12
         version: 7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
@@ -791,8 +791,8 @@ importers:
         specifier: 9.38.0
         version: 9.38.0(jiti@2.6.1)
       tsdown:
-        specifier: 0.15.9
-        version: 0.15.9(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
+        specifier: 0.15.10
+        version: 0.15.10(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
       vite:
         specifier: 7.1.12
         version: 7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
@@ -812,8 +812,8 @@ importers:
         specifier: 9.38.0
         version: 9.38.0(jiti@2.6.1)
       tsdown:
-        specifier: 0.15.9
-        version: 0.15.9(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
+        specifier: 0.15.10
+        version: 0.15.10(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
       vite:
         specifier: 7.1.12
         version: 7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
@@ -836,8 +836,8 @@ importers:
         specifier: 2.16.11
         version: 2.16.11
       tsdown:
-        specifier: 0.15.9
-        version: 0.15.9(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
+        specifier: 0.15.10
+        version: 0.15.10(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
       vite:
         specifier: 7.1.12
         version: 7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
@@ -869,8 +869,8 @@ importers:
         specifier: 0.2.5
         version: 0.2.5
       tsdown:
-        specifier: 0.15.9
-        version: 0.15.9(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
+        specifier: 0.15.10
+        version: 0.15.10(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
       vite:
         specifier: 7.1.12
         version: 7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
@@ -899,8 +899,8 @@ importers:
         specifier: 6.0.1
         version: 6.0.1
       tsdown:
-        specifier: 0.15.9
-        version: 0.15.9(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
+        specifier: 0.15.10
+        version: 0.15.10(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
       vite:
         specifier: 7.1.12
         version: 7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
@@ -942,8 +942,8 @@ importers:
         specifier: 0.2.5
         version: 0.2.5
       tsdown:
-        specifier: 0.15.9
-        version: 0.15.9(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
+        specifier: 0.15.10
+        version: 0.15.10(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -994,8 +994,8 @@ importers:
         specifier: 0.2.5
         version: 0.2.5
       tsdown:
-        specifier: 0.15.9
-        version: 0.15.9(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
+        specifier: 0.15.10
+        version: 0.15.10(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
       vite:
         specifier: 7.1.12
         version: 7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
@@ -1030,8 +1030,8 @@ importers:
         specifier: 0.1.11
         version: 0.1.11(arktype@2.1.23)(typescript@5.9.3)
       tsdown:
-        specifier: 0.15.9
-        version: 0.15.9(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
+        specifier: 0.15.10
+        version: 0.15.10(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3)
       vite:
         specifier: 7.1.12
         version: 7.1.12(@types/node@24.9.1)(jiti@2.6.1)(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
@@ -2689,6 +2689,10 @@ packages:
   '@oslojs/encoding@1.1.0':
     resolution: {integrity: sha512-70wQhgYmndg4GCPxPPxPGevRKqTIJ2Nh4OkiMWmDAVYsTQ+Ta7Sq+rPevXyXGdzr30/qZBnyOalCszoMxlyldQ==}
 
+  '@oxc-project/runtime@0.95.0':
+    resolution: {integrity: sha512-qJS5pNepwMGnafO9ayKGz7rfPQgUBuunHpnP1//9Qa0zK3oT3t1EhT+I+pV9MUA+ZKez//OFqxCxf1vijCKb2Q==}
+    engines: {node: ^20.19.0 || >=22.12.0}
+
   '@oxc-project/types@0.95.0':
     resolution: {integrity: sha512-vACy7vhpMPhjEJhULNxrdR0D943TkA/MigMpJCHmBHvMXxRStRi/dPtTlfQ3uDwWSzRpT8z+7ImjZVf8JWBocQ==}
 
@@ -2777,6 +2781,10 @@ packages:
   '@pkgjs/parseargs@0.11.0':
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
+
+  '@pkgr/core@0.2.9':
+    resolution: {integrity: sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA==}
+    engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
 
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
@@ -6404,6 +6412,9 @@ packages:
   magic-string@0.30.19:
     resolution: {integrity: sha512-2N21sPY9Ws53PZvsEpVtNuSW+ScYbQdp4b9qUaL+9QkHUrGFKo56Lg9Emg5s9V/qrtNBmiR01sYhUOwu3H+VOw==}
 
+  magic-string@0.30.21:
+    resolution: {integrity: sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==}
+
   magicast@0.3.5:
     resolution: {integrity: sha512-L0WhttDl+2BOsybvEOLK7fW3UA0OQ0IQ2d6Zl2x/a6vVRs3bAY0ECOSHHeL5jD+SbOpOCUEi0y1DgHEn9Qn1AQ==}
 
@@ -7464,13 +7475,13 @@ packages:
     engines: {node: 20 || >=22}
     hasBin: true
 
-  rolldown-plugin-dts@0.16.12:
-    resolution: {integrity: sha512-9dGjm5oqtKcbZNhpzyBgb8KrYiU616A7IqcFWG7Msp1RKAXQ/hapjivRg+g5IYWSiFhnk3OKYV5T4Ft1t8Cczg==}
+  rolldown-plugin-dts@0.17.1:
+    resolution: {integrity: sha512-dQfoYD9kwSau7UQPg0UubprCDcwWeEKYd9SU9O2MpOdKy3VHy3/DaDF+x6w9+KE/w6J8qxkHVjwG1K2QmmQAFA==}
     engines: {node: '>=20.18.0'}
     peerDependencies:
       '@ts-macro/tsc': ^0.3.6
       '@typescript/native-preview': '>=7.0.0-dev.20250601.1'
-      rolldown: ^1.0.0-beta.9
+      rolldown: ^1.0.0-beta.44
       typescript: ^5.0.0
       vue-tsc: ~3.1.0
     peerDependenciesMeta:
@@ -7951,6 +7962,10 @@ packages:
     resolution: {integrity: sha512-GTt8rSKje5FilG+wEdfCkOcLL7LWqpMlr2c3LRuKt/YXxcJ52aGSbGBAdI4L3aaqfrBt6y711El53ItyH1NWzg==}
     engines: {node: '>=16.0.0'}
 
+  synckit@0.11.11:
+    resolution: {integrity: sha512-MeQTA1r0litLUf0Rp/iisCaL8761lKAZHaimlbGK4j0HysC4PLfqygQj9srcs0m2RdtDYnF8UuYyKpbjHYp7Jw==}
+    engines: {node: ^14.18.0 || >=16.0.0}
+
   tabbable@6.3.0:
     resolution: {integrity: sha512-EIHvdY5bPLuWForiR/AN2Bxngzpuwn1is4asboytXtpTgsArc+WmSJKVLlhdh71u7jFcryDqB2A8lQvj78MkyQ==}
 
@@ -8111,8 +8126,8 @@ packages:
     resolution: {integrity: sha512-NoZ4roiN7LnbKn9QqE1amc9DJfzvZXxF4xDavcOWt1BPkdx+m+0gJuPM+S0vCe7zTJMYUP0R8pO2XMr+Y8oLIg==}
     engines: {node: '>=6'}
 
-  tsdown@0.15.9:
-    resolution: {integrity: sha512-C0EJYpXIYdlJokTumIL4lmv/wEiB20oa6iiYsXFE7Q0VKF3Ju6TQ7XAn4JQdm+2iQGEfl8cnEKcX5DB7iVR5Dw==}
+  tsdown@0.15.10:
+    resolution: {integrity: sha512-8zbSN4GW7ZzhjIYl/rWrruGzl1cJiDtAjb8l5XVF2cVme1+aDLVcExw+Ph4gNcfdGg6ZfYPh5kmcpIfh5xHisw==}
     engines: {node: '>=20.19.0'}
     hasBin: true
     peerDependencies:
@@ -8284,6 +8299,11 @@ packages:
 
   unrs-resolver@1.11.1:
     resolution: {integrity: sha512-bSjt9pjaEBnNiGgc9rUiHGKv5l4/TGzDmYw3RhnkJGtLhbnnA/5qJj7x3dNDCRx/PJxu774LlH8lCOlB4hEfKg==}
+
+  unrun@0.2.0:
+    resolution: {integrity: sha512-iaCxWG/6kmjP3wUTBheowjFm6LuI8fd/A3Uz7DbMoz8HvQsJThh7tWZKWJfVltOSK3LuIJFzepr7g6fbuhUasw==}
+    engines: {node: '>=20.19.0'}
+    hasBin: true
 
   unstorage@1.17.1:
     resolution: {integrity: sha512-KKGwRTT0iVBCErKemkJCLs7JdxNVfqTPc/85ae1XES0+bsHbc/sFBfVi5kJp156cc51BHinIH2l3k0EZ24vOBQ==}
@@ -10407,6 +10427,8 @@ snapshots:
 
   '@oslojs/encoding@1.1.0': {}
 
+  '@oxc-project/runtime@0.95.0': {}
+
   '@oxc-project/types@0.95.0': {}
 
   '@parcel/watcher-android-arm64@2.5.1':
@@ -10472,6 +10494,8 @@ snapshots:
 
   '@pkgjs/parseargs@0.11.0':
     optional: true
+
+  '@pkgr/core@0.2.9': {}
 
   '@polka/url@1.0.0-next.29': {}
 
@@ -14261,6 +14285,10 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
 
+  magic-string@0.30.21:
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.5.5
+
   magicast@0.3.5:
     dependencies:
       '@babel/parser': 7.28.5
@@ -15720,7 +15748,7 @@ snapshots:
       glob: 11.0.3
       package-json-from-dist: 1.0.1
 
-  rolldown-plugin-dts@0.16.12(@typescript/native-preview@7.0.0-dev.20251026.1)(rolldown@1.0.0-beta.44)(typescript@5.9.3):
+  rolldown-plugin-dts@0.17.1(@typescript/native-preview@7.0.0-dev.20251026.1)(rolldown@1.0.0-beta.44)(typescript@5.9.3):
     dependencies:
       '@babel/generator': 7.28.5
       '@babel/parser': 7.28.5
@@ -15730,7 +15758,7 @@ snapshots:
       debug: 4.4.3
       dts-resolver: 2.1.2
       get-tsconfig: 4.13.0
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       rolldown: 1.0.0-beta.44
     optionalDependencies:
       '@typescript/native-preview': 7.0.0-dev.20251026.1
@@ -16300,6 +16328,10 @@ snapshots:
 
   sync-message-port@1.1.3: {}
 
+  synckit@0.11.11:
+    dependencies:
+      '@pkgr/core': 0.2.9
+
   tabbable@6.3.0: {}
 
   tailwind-merge@3.2.0: {}
@@ -16446,7 +16478,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tsdown@0.15.9(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3):
+  tsdown@0.15.10(@typescript/native-preview@7.0.0-dev.20251026.1)(typescript@5.9.3):
     dependencies:
       ansis: 4.2.0
       cac: 6.7.14
@@ -16456,12 +16488,13 @@ snapshots:
       empathic: 2.0.0
       hookable: 5.5.3
       rolldown: 1.0.0-beta.44
-      rolldown-plugin-dts: 0.16.12(@typescript/native-preview@7.0.0-dev.20251026.1)(rolldown@1.0.0-beta.44)(typescript@5.9.3)
+      rolldown-plugin-dts: 0.17.1(@typescript/native-preview@7.0.0-dev.20251026.1)(rolldown@1.0.0-beta.44)(typescript@5.9.3)
       semver: 7.7.3
       tinyexec: 1.0.1
       tinyglobby: 0.2.15
       tree-kill: 1.2.2
       unconfig: 7.3.3
+      unrun: 0.2.0
     optionalDependencies:
       typescript: 5.9.3
     transitivePeerDependencies:
@@ -16651,6 +16684,12 @@ snapshots:
       '@unrs/resolver-binding-win32-arm64-msvc': 1.11.1
       '@unrs/resolver-binding-win32-ia32-msvc': 1.11.1
       '@unrs/resolver-binding-win32-x64-msvc': 1.11.1
+
+  unrun@0.2.0:
+    dependencies:
+      '@oxc-project/runtime': 0.95.0
+      rolldown: 1.0.0-beta.44
+      synckit: 0.11.11
 
   unstorage@1.17.1:
     dependencies:
