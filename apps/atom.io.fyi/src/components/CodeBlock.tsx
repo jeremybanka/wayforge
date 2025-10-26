@@ -31,7 +31,27 @@ export function CodeBlock({ filepath, children }: CodeBlockProps): VNode {
 	}, [myRef.current])
 	return (
 		<span className="codeblock" id={filepath.split(`.`)[0]} ref={myRef}>
-			<header>{filepath}</header>
+			<header>
+				<span>{filepath}</span>
+				<button
+					type="button"
+					onClick={async () => {
+						await navigator.clipboard.writeText(children)
+					}}
+				>
+					<svg viewBox="0 0 16 16">
+						<title>copy</title>
+						<path
+							d="M15,5v10H5V5h10M16,4H4v12h12V4h0Z"
+							fill="var(--icon-color)"
+						/>
+						<polygon
+							points="3 11 1 11 1 1 11 1 11 3 12 3 12 0 0 0 0 12 3 12 3 11"
+							fill="var(--icon-color)"
+						/>
+					</svg>
+				</button>
+			</header>
 			<SyntaxHighlighter language="tsx" useInlineStyles={false}>
 				{children}
 			</SyntaxHighlighter>

@@ -34,11 +34,12 @@ p,
 table {
   code {
     box-sizing: border-box;
-    color: var(--function-color);
+    color: var(--fg-color);
     background-color: var(--bg-soft-1);
-    box-shadow: 0 0px 4px 0px var(--bg-shade-2);
-    border-radius: 3px;
-    padding: 4px 4px 4px;
+    // box-shadow: 0 0px 4px 0px var(--bg-shade-2);
+    border: 1px solid var(--bg-shade-2);
+    border-radius: 2px;
+    padding: 1px 2px;
     @-moz-document url-prefix() {
       padding: 8px 4px 4px; /* Your Firefox-specific padding */
     }
@@ -53,35 +54,64 @@ astro-island {
     position: relative;
     display: flex;
     flex-flow: column;
-    border: var(--bg-soft-3) solid 1px;
-    box-shadow: 0 0px 6px 0px var(--bg-shade-2);
-    border-radius: 3px;
+    border: #0003 solid 1px;
+    border-radius: 4px;
     width: 100%;
 
     > header {
-      background: var(--bg-soft-2);
-      border-bottom: var(--bg-soft-3) solid 1px;
-      font-size: 15px;
-      line-height: 20px;
-      font-weight: 500;
-      color: var(--fg-soft-1);
-      padding: 2px 8px;
+      display: flex;
+      flex-flow: row;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-hard-1);
+      border-radius: 3px 3px 0px 0px;
+      > span {
+        font-size: 15px;
+        line-height: 20px;
+        font-weight: 500;
+        color: var(--fg-soft-1);
+        padding: 0 8px;
+      }
+      > button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        height: 25px;
+        width: 25px;
+        > svg {
+          --icon-color: var(--fg-color);
+          width: 16px;
+          height: 16px;
+        }
+        &:hover {
+          --icon-color: var(--fg-tint-1);
+          background: var(--bg-tint-1);
+        }
+        &:active {
+          --icon-color: var(--fg-hard-1);
+          background: var(--bg-shade-1);
+        }
+      }
     }
 
     > pre.prismjs {
+      border-radius: 0px 0px 3px 3px;
       background-color: var(--bg-hard-1);
       padding: 1em;
+      padding-top: 0.5em;
       overflow: auto;
       line-height: 1em;
       * {
         font-family: Theia;
         font-weight: 500;
-        font-size: 15px;
+        font-size: 13px;
       }
       > code {
         line-height: 1em !important;
         span {
-          line-height: 22px !important;
+          line-height: 17px !important;
         }
       }
     }
