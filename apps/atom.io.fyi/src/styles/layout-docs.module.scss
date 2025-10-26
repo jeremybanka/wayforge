@@ -61,18 +61,19 @@ article.class {
     margin-top: 1em;
     border-collapse: collapse;
     tbody {
+      background: var(--bg-hard-1);
+      border: #0003 solid 1px;
+      border-radius: 3px;
       * {
         border: none;
         box-sizing: border-box;
       }
       tr {
-        // border-bottom: 1px solid #0003;
         th {
           border: none;
-          background: var(--bg-hard-1);
+          // background: var(--bg-hard-1);
           padding: 6px 2px;
           text-align: left;
-          border: #0003 solid 1px;
           &:not(:first-of-type) {
             border-left: none;
           }
@@ -82,9 +83,8 @@ article.class {
         }
 
         td {
-          padding: 6px 2px;
-          // border-bottom: 1px solid #0003;
-          vertical-align: top;
+          padding: 6px 4px;
+          border-bottom: 1px solid #0003;
         }
       }
     }
