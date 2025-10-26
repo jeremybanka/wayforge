@@ -53,7 +53,7 @@ export type CliParseOutput<CLI extends CommandLineInterface<any>> = Flatten<
 		[K in keyof CLI[`routeOptions`]]: K extends string
 			? Readonly<{
 					case: K
-					path: Split<K, `/`>
+					path: TreePath<CLI[`routes`]>
 					opts: CLI[`routeOptions`][K] extends { optionsSchema: any }
 						? z.infer<CLI[`routeOptions`][K][`optionsSchema`]>
 						: null
