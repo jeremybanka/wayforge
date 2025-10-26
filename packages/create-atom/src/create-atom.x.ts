@@ -1,13 +1,7 @@
 #!/usr/bin/env node
 
 import type { OptionsGroup } from "comline"
-import {
-	cli,
-	encapsulate,
-	helpOption,
-	optional,
-	parseBooleanOption,
-} from "comline"
+import { cli, helpOption, optional, parseBooleanOption } from "comline"
 import { z } from "zod/v4"
 
 import type { CreateAtomOptionsPreloaded } from "./create-atom.ts"
@@ -55,12 +49,11 @@ const parse = cli(
 			$projectName: BREAK_CHECK_MANUAL,
 		},
 	},
-	console,
+	{
+		error: console.error.bind(console),
+		info: () => {},
+	},
 )
-const {
-	returnValue: { inputs },
-} = encapsulate(() => parse(process.argv), { console: false, stdout: false })
-
-console.log({ inputs })
+const { inputs } = parse(process.argv)
 
 await createAtom(inputs.path[0], inputs.opts)
