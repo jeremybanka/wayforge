@@ -1,10 +1,13 @@
-import { promises as fs } from "node:fs"
+import { existsSync, promises as fs } from "node:fs"
 import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 
 import * as prompts from "@clack/prompts"
-import * as pico from "picocolors"
+import picocolors from "picocolors"
+import type { Colors } from "picocolors/types"
 import { x } from "tinyexec"
+
+export const pico: Colors = picocolors.createColors(true)
 
 const s = prompts.spinner()
 
@@ -17,7 +20,7 @@ export type CreateAtomOptionsPreloaded = {
 } & { skipHints?: boolean | undefined }
 
 export async function createAtom(
-	argDir: string,
+	argDir: string | undefined,
 	options: CreateAtomOptionsPreloaded,
 ): Promise<void> {
 	const skipHint = options.skipHints ?? false
@@ -37,7 +40,9 @@ export async function createAtom(
 								if (value.length === 0) {
 									return `Directory name is required!`
 								}
-								return `Refusing to overwrite existing directory or file! Please provide a non-clashing name.`
+								if (existsSync(value)) {
+									return `Refusing to overwrite existing directory or file! Please provide a non-clashing name.`
+								}
 							},
 						}),
 		},
