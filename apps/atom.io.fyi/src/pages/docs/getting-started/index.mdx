@@ -4,20 +4,24 @@ import Layout from "../../../layouts/LayoutDocs.astro";
 
 # getting started
 
-## first things first
+This is a guide to getting started with `atom.io`.
 
-`atom.io` owes its existence to [Recoil](https://recoiljs.org/).
+We'll use `node` and `pnpm` for this guide, so make sure you have those installed.
 
-The [Recoil tutorial](https://recoiljs.org/docs) is generally applicable to `atom.io`, as long as keep in mind that
+- node: https://nodejs.org/en/download/
+- pnpm: https://pnpm.io/installation
 
-- `atom.io` reimplements the model of [`atom`](/docs#atom) and [`selector`](/docs#selector) directly from Recoil.
-- Like Recoil, `atom.io` is great in React apps, but
-  - [`useO`](/docs/react#use-o) `<-` `useRecoilValue`
-  - [`useI`](/docs/react#use-i) `<-` `useSetRecoilState`
-  - There's no `useRecoilState`
-  - You don't need `<AtomIOProvider/>` to use `atom.io` in a React app.
-- Unlike Recoil, `atom.io` is not bound to React.
-  - You can use `getState` and `setState` anywhere, not just in React components.
-- [`transaction`](/docs#transaction) is its own thing in `atom.io` and it's a stable part of the API
+## install
+
+```sh
+pnpm create vite-react-app my-atom-io-app
+cd my-atom-io-app
+```
+
+## install dependencies
+
+```sh
+pnpm install vite react react-dom atom.io
+```
 
 </Layout>
