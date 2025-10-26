@@ -1,0 +1,22 @@
+{
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"atom.io": "0.44.0",
+		"preact": "10.26.9"
+	},
+	"devDependencies": {
+		"@preact/preset-vite": "2.10.2",
+		"@typescript-eslint/eslint-plugin": "8.46.2",
+		"@typescript-eslint/parser": "8.46.2",
+		"eslint-config-preact": "2.0.0",
+		"eslint-plugin-import-x": "4.16.1",
+		"eslint-plugin-simple-import-sort": "12.1.1",
+		"vite": "7.1.12"
+	}
+}
