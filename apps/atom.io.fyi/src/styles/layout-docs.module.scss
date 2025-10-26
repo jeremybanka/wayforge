@@ -61,21 +61,30 @@ article.class {
     margin-top: 1em;
     border-collapse: collapse;
     tbody {
+      background: var(--bg-hard-1);
+      border: #0003 solid 1px;
+      border-radius: 3px;
       * {
         border: none;
         box-sizing: border-box;
       }
       tr {
-        border-bottom: 1px solid var(--fg-faint);
         th {
           border: none;
-          background: var(--bg-soft-3);
+          // background: var(--bg-hard-1);
           padding: 6px 2px;
           text-align: left;
+          &:not(:first-of-type) {
+            border-left: none;
+          }
+          &:not(:last-of-type) {
+            border-right: none;
+          }
         }
+
         td {
-          padding: 6px 2px;
-          border-bottom: 1px solid var(--fg-faint);
+          padding: 6px 4px;
+          border-bottom: 1px solid #0003;
         }
       }
     }
