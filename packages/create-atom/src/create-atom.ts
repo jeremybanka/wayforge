@@ -1,112 +1,55 @@
 import { promises as fs } from "node:fs"
 import { dirname, resolve } from "node:path"
-import type { PerformanceMark } from "node:perf_hooks"
 import { fileURLToPath } from "node:url"
 
 import * as prompts from "@clack/prompts"
 import * as pico from "picocolors"
 import { x } from "tinyexec"
 
-function useMarks(logger = console) {
-	const markers: PerformanceMark[] = []
-	function mark(text: string) {
-		const prev = markers.at(-1)
-		const next = performance.mark(text)
-		if (prev) {
-			const metric = performance.measure(
-				`${prev.name} -> ${next.name}`,
-				prev.name,
-				next.name,
-			)
-			logger.info(next.name, metric.duration)
-		}
-		markers.push(next)
-	}
-	function logMarks(): void {
-		const overall = performance.measure(
-			`overall`,
-			markers[0].name,
-			markers[markers.length - 1].name,
-		)
-		logger.info(`TOTAL TIME`, overall.duration)
-	}
-	return { mark, logMarks }
-}
-
 const s = prompts.spinner()
 
 export type CreateAtomOptions = {
 	packageManager: `bun` | `npm` | `pnpm` | `yarn`
-	useTS: boolean
-	useRouter: boolean
-	usePrerender: boolean
-	useESLint: boolean
 }
 
-export async function createAtom(options: CreateAtomOptions): Promise<void> {
-	const args = process.argv.slice(2)
+export type CreateAtomOptionsPreloaded = {
+	[K in keyof CreateAtomOptions]?: CreateAtomOptions[K] | undefined
+} & { skipHints?: boolean | undefined }
 
-	// Silences the 'Getting Started' info, mainly
-	// for use in other initializers that may wrap this
-	// one but provide their own scripts/instructions.
-	const skipHint = args.includes(`--skip-hints`)
-	const argDir = args.find((arg) => !arg.startsWith(`--`))
-	const packageManager = getPkgManager()
+export async function createAtom(
+	argDir: string,
+	options: CreateAtomOptionsPreloaded,
+): Promise<void> {
+	const skipHint = options.skipHints ?? false
+	const packageManager = options.packageManager ?? getPkgManager()
 
 	prompts.intro(pico.greenBright(`atom.io - Data Components for TypeScript`))
 
-	const { dir, language, useRouter, usePrerender, useESLint } =
-		await prompts.group(
-			{
-				dir: () =>
-					argDir
-						? Promise.resolve(argDir)
-						: prompts.text({
-								message: `Project directory:`,
-								placeholder: `my-preact-app`,
-								validate(value) {
-									if (value.length === 0) {
-										return `Directory name is required!`
-									}
-									return `Refusing to overwrite existing directory or file! Please provide a non-clashing name.`
-								},
-							}),
-				language: () =>
-					prompts.select({
-						message: `Project language:`,
-						initialValue: `js`,
-						options: [
-							{ value: `js`, label: `JavaScript` },
-							{ value: `ts`, label: `TypeScript` },
-						],
-					}),
-				useRouter: () =>
-					prompts.confirm({
-						message: `Use router?`,
-						initialValue: false,
-					}),
-				usePrerender: () =>
-					prompts.confirm({
-						message: `Prerender app (SSG)?`,
-						initialValue: false,
-					}),
-				useESLint: () =>
-					prompts.confirm({
-						message: `Use ESLint?`,
-						initialValue: false,
-					}),
+	const { dir } = await prompts.group(
+		{
+			dir: () =>
+				argDir
+					? Promise.resolve(argDir)
+					: prompts.text({
+							message: `Project directory:`,
+							placeholder: `my-preact-app`,
+							validate(value) {
+								if (value.length === 0) {
+									return `Directory name is required!`
+								}
+								return `Refusing to overwrite existing directory or file! Please provide a non-clashing name.`
+							},
+						}),
+		},
+		{
+			onCancel: () => {
+				prompts.cancel(pico.yellow(`Cancelled`))
+				process.exit(0)
 			},
-			{
-				onCancel: () => {
-					prompts.cancel(pico.yellow(`Cancelled`))
-					process.exit(0)
-				},
-			},
-		)
+		},
+	)
 	const targetDir = resolve(process.cwd(), dir)
-	const useTS = language === `ts`
-	/** @type {CreateAtomOptions} */
-	const opts = { packageManager, useTS, useRouter, usePrerender, useESLint }
+	const opts: CreateAtomOptions = { packageManager }
 
 	await useSpinner(
 		`Setting up your project directory...`,
@@ -120,7 +63,7 @@ export async function createAtom(options: CreateAtomOptions): Promise<void> {
 		`Installed project dependencies`,
 	)
 
-	if (!skipHint) {
+	if (skipHint === false) {
 		const gettingStarted = `
 			${pico.dim(`$`)} ${pico.blueBright(`cd ${dir}`)}
 			${pico.dim(`$`)} ${pico.blueBright(`${packageManager === `npm` ? `npm run` : packageManager} dev`)}
@@ -149,54 +92,6 @@ async function scaffold(to: string, opts: CreateAtomOptions): Promise<void> {
 
 	const __dirname = dirname(fileURLToPath(import.meta.url))
 	await templateDir(resolve(__dirname, `../templates`, `base`), to, opts)
-
-	if (opts.useRouter) {
-		await templateDir(
-			resolve(__dirname, `../templates`, `config`, `router`),
-			resolve(to, `src`),
-			opts,
-		)
-	}
-
-	if (opts.usePrerender) {
-		await templateDir(
-			resolve(
-				__dirname,
-				`../templates`,
-				`config`,
-				opts.useRouter ? `prerender-router` : `prerender`,
-			),
-			to,
-			opts,
-		)
-
-		const htmlPath = resolve(to, `index.html`)
-		const html = (await fs.readFile(htmlPath, `utf-8`)).replace(
-			`<script`,
-			`<script prerender`,
-		)
-		await fs.writeFile(htmlPath, html)
-	}
-
-	if (opts.useTS) {
-		await fs.rename(resolve(to, `jsconfig.json`), resolve(to, `tsconfig.json`))
-
-		const htmlPath = resolve(to, `index.html`)
-		const html = (await fs.readFile(htmlPath, `utf-8`)).replace(
-			`index.jsx`,
-			`index.tsx`,
-		)
-		await fs.writeFile(htmlPath, html)
-	}
-
-	if (opts.useESLint) {
-		const pkgPath = resolve(to, `package.json`)
-		const pkg = JSON.parse(await fs.readFile(pkgPath, `utf-8`))
-		pkg.eslintConfig = {
-			extends: `preact`,
-		}
-		await fs.writeFile(pkgPath, JSON.stringify(pkg, null, `\t`))
-	}
 }
 
 /**
@@ -217,13 +112,12 @@ async function templateDir(
 				await fs.mkdir(resolve(to, f), { recursive: true })
 				return templateDir(filename, resolve(to, f), opts)
 			}
-			if (opts.useTS && /\.jsx?$/.test(f)) f = f.replace(`.js`, `.ts`)
 			if (opts.packageManager !== `npm` && f === `README.md`) {
 				await fs.writeFile(
 					resolve(to, f),
 					(await fs.readFile(filename, `utf-8`)).replace(
 						/npm run/g,
-						opts.packageManager,
+						opts.packageManager === `bun` ? `bun run` : opts.packageManager,
 					),
 				)
 				return
@@ -238,19 +132,13 @@ async function templateDir(
 }
 
 async function installDeps(to: string, opts: CreateAtomOptions) {
-	const dependencies = []
-	const devDependencies = []
+	const dependencies: string[] = []
+	const devDependencies: string[] = []
 
 	const installOpts = {
 		packageManager: opts.packageManager,
 		to,
 	}
-
-	if (opts.useTS) devDependencies.push(`typescript`)
-	if (opts.useRouter) dependencies.push(`preact-iso`)
-	if (opts.usePrerender)
-		dependencies.push(`preact-iso`, `preact-render-to-string`)
-	if (opts.useESLint) devDependencies.push(`eslint`, `eslint-config-preact`)
 
 	await installPackages(dependencies, { ...installOpts })
 	devDependencies.length &&

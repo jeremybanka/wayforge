@@ -4,6 +4,7 @@ packages:
   - "apps/node/*"
   - "apps/web/*"
   - "packages/*"
+  - "packages/create-atom/templates/*"
 onlyBuiltDependencies:
   - "@biomejs/biome"
   - "@parcel/watcher"

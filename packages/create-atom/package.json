@@ -12,7 +12,7 @@
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/jeremybanka/wayforge.git",
-		"directory": "packages/break-check"
+		"directory": "packages/create-atom"
 	},
 	"type": "module",
 	"files": [
@@ -20,9 +20,9 @@
 		"dist",
 		"src"
 	],
-	"main": "dist/break-check.js",
-	"types": "dist/break-check.d.ts",
-	"bin": "./bin/break-check.bin.js",
+	"main": "dist/create-atom.js",
+	"types": "dist/create-atom.d.ts",
+	"bin": "./bin/create-atom.bin.js",
 	"dependencies": {
 		"@clack/prompts": "0.11.0",
 		"comline": "workspace:*",
@@ -31,8 +31,7 @@
 		"zod": "3.25.76"
 	},
 	"scripts": {
-		"build": "tsdown && rm -f dist/*.x.d.ts && pnpm run schema",
-		"schema": "bun src/break-check.x.ts --outdir=dist -- schema",
+		"build": "tsdown && rm -f dist/*.x.d.ts",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
 		"lint:types": "tsgo --noEmit",
