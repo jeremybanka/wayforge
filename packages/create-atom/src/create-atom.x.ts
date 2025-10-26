@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-import * as path from "node:path"
-
 import type { OptionsGroup } from "comline"
 import {
 	cli,
@@ -12,8 +10,8 @@ import {
 } from "comline"
 import { z } from "zod/v4"
 
-import type { CreateAtomOptionsPreloaded } from "./create-atom"
-import { createAtom } from "./create-atom"
+import type { CreateAtomOptionsPreloaded } from "./create-atom.ts"
+import { createAtom } from "./create-atom.ts"
 
 const helper = helpOption()
 
@@ -51,25 +49,18 @@ const BREAK_CHECK_MANUAL = {
 const parse = cli(
 	{
 		cliName: `create-atom`,
-		routes: optional({ projectName: null }),
+		routes: optional({ $projectName: null }),
 		routeOptions: {
 			"": BREAK_CHECK_MANUAL,
-			projectName: BREAK_CHECK_MANUAL,
-		},
-		discoverConfigPath: (args) => {
-			if (args[0] === `schema`) {
-				return
-			}
-			const configPath =
-				args[0] ?? path.join(process.cwd(), `create-atom.config.json`)
-			return configPath
+			$projectName: BREAK_CHECK_MANUAL,
 		},
 	},
 	console,
 )
-const { inputs } = parse(process.argv)
+const {
+	returnValue: { inputs },
+} = encapsulate(() => parse(process.argv), { console: false, stdout: false })
 
-await encapsulate(() => createAtom(inputs.case, inputs.opts), {
-	console: true,
-	stdout: true,
-})
+console.log({ inputs })
+
+await createAtom(inputs.path[0], inputs.opts)
