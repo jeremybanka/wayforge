@@ -4,7 +4,6 @@ import * as path from "node:path"
 import type {
 	Flatten,
 	Join,
-	Split,
 	Tree,
 	TreeMap,
 	TreePath,
