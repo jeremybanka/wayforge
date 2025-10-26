@@ -27,7 +27,7 @@
 		"@types/node": "24.9.1",
 		"concurrently": "9.2.1",
 		"eslint": "9.38.0",
-		"tsdown": "0.15.9",
+		"tsdown": "0.15.10",
 		"vite": "7.1.12",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "4.0.3"
