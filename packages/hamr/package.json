@@ -69,7 +69,7 @@
 		"tsdown": "0.15.10",
 		"vite-plugin-dts": "4.5.4",
 		"vite-tsconfig-paths": "5.1.4",
-		"vitest": "4.0.3"
+		"vitest": "4.0.4"
 	},
 	"files": [
 		"dist",
