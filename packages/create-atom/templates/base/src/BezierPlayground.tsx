@@ -74,10 +74,10 @@ function BezierInspector({ points }) {
 	}, [points])
 
 	return (
-		<div className="mt-4 grid gap-3 md:grid-cols-2">
-			<div className="rounded-2xl border p-3 bg-white shadow-sm">
-				<div className="text-sm font-semibold mb-2">Points</div>
-				<div className="grid grid-cols-2 gap-2 text-sm">
+		<div>
+			<div>
+				<div>Points</div>
+				<div>
 					<div>P0 (start)</div>
 					<div>{`{ x: ${p0.x.toFixed(1)}, y: ${p0.y.toFixed(1)} }`}</div>
 					<div>P1 (ctrl1)</div>
@@ -88,9 +88,9 @@ function BezierInspector({ points }) {
 					<div>{`{ x: ${p3.x.toFixed(1)}, y: ${p3.y.toFixed(1)} }`}</div>
 				</div>
 			</div>
-			<div className="rounded-2xl border p-3 bg-white shadow-sm">
-				<div className="text-sm font-semibold mb-2">Path markup</div>
-				<pre className="text-xs whitespace-pre-wrap leading-5">{code}</pre>
+			<div>
+				<div>Path markup</div>
+				<pre>{code}</pre>
 			</div>
 		</div>
 	)
@@ -190,31 +190,24 @@ export default function BezierPlayground({
 	const { p0, p1, p2, p3 } = points
 
 	return (
-		<div className="w-full max-w-5xl mx-auto p-4">
-			<div className="flex items-center justify-between mb-3">
-				<h1 className="text-xl font-semibold">
-					Cubic Bézier Curve — draggable SVG handles
-				</h1>
-				<div className="flex items-center gap-2">
-					<button
-						type="button"
-						onClick={reset}
-						className="px-3 py-1.5 rounded-xl border shadow-sm text-sm bg-white hover:bg-gray-50"
-					>
+		<div>
+			<div>
+				<h1>Cubic Bézier Curve — draggable SVG handles</h1>
+				<div>
+					<button type="button" onClick={reset}>
 						Reset
 					</button>
 					<a
 						href="https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths#bezier_curves"
 						target="_blank"
 						rel="noreferrer"
-						className="px-3 py-1.5 rounded-xl border shadow-sm text-sm bg-white hover:bg-gray-50"
 					>
 						MDN: Bézier in SVG
 					</a>
 				</div>
 			</div>
 
-			<div className="rounded-2xl border overflow-hidden bg-white shadow-sm">
+			<div>
 				<svg
 					ref={svgRef}
 					viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
@@ -293,18 +286,16 @@ export default function BezierPlayground({
 
 			<BezierInspector points={points} />
 
-			<details className="mt-4">
-				<summary className="cursor-pointer select-none font-medium">
-					Usage
-				</summary>
-				<div className="mt-2 text-sm leading-6">
+			<details>
+				<summary>Usage</summary>
+				<div>
 					<p>
 						Import this component into your React app and render{" "}
 						<code>&lt;BezierPlayground /&gt;</code>. Drag the anchors (P0/P3) and
 						control points (P1/P2) to reshape the curve. The component uses
 						Pointer Events so it works with mouse, pen, and touch.
 					</p>
-					<p className="mt-2">
+					<p>
 						You can also pass an <code>initial</code> prop to set starting points
 						and an <code>onChange</code> callback to receive updated coordinates
 						on every drag.
