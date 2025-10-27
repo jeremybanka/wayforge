@@ -2,14 +2,18 @@ import { render } from "preact"
 
 import preactLogo from "./assets/preact.svg"
 import "./style.css"
+import BezierPlayground from "./BezierPlayground.js"
 
 export function App() {
+	console.log({ preactLogo })
 	return (
 		<div>
-			<a href="https://preactjs.com" target="_blank" rel="noopener">
+			{/* <a href="https://preactjs.com" target="_blank" rel="noopener">
 				<img src={preactLogo} alt="Preact logo" height="160" width="160" />
-			</a>
+			</a> */}
 			<h1>Atom.io in Preact, served and built with Vite</h1>
+			{/* <div className="board"></div> */}
+			<BezierPlayground />
 			<section>
 				<Resource
 					title="Learn Preact"
