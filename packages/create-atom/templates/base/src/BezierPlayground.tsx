@@ -1,14 +1,7 @@
 import { atom, atomFamily, getState, setState } from "atom.io"
-import { useI, useO } from "atom.io/react"
+import { useO } from "atom.io/react"
 import { PointerEvent, PointerEventHandler } from "preact/compat"
-import {
-	useMemo,
-	useRef,
-	useState,
-	useCallback,
-	useEffect,
-	MutableRef,
-} from "preact/hooks"
+import { useRef, useCallback, useEffect, MutableRef } from "preact/hooks"
 
 import { type RegularAtomToken } from "atom.io"
 
@@ -79,12 +72,6 @@ const WIDTH = 800
 const HEIGHT = 500
 
 type PointXY = { x: number; y: number }
-const DEFAULT_POINTS = [
-	{ x: 130, y: 370 }, // start
-	{ x: 230, y: 130 }, // control 1
-	{ x: 530, y: 130 }, // control 2
-	{ x: 670, y: 370 }, // end
-]
 
 const pathKeysAtom = atom<string[]>({
 	key: "pathKeys",
@@ -105,52 +92,6 @@ const edgeAtoms = atomFamily<null | { c?: PointXY; s: PointXY }, string>({
 
 function clamp(n: number, min: number, max: number) {
 	return Math.max(min, Math.min(max, n))
-}
-
-function toPath([p0, p1, p2, p3]: PointXY[]) {
-	return `M ${p0.x},${p0.y} C ${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y}`
-}
-
-type HandleProps = {
-	cx: number
-	cy: number
-	label: string
-	onPointerDown: PointerEventHandler<SVGCircleElement>
-	fill?: string
-	stroke?: string
-}
-function Handle({
-	cx,
-	cy,
-	label,
-	onPointerDown,
-	fill = "white",
-	stroke = "currentColor",
-}: HandleProps) {
-	const r = 8
-	return (
-		<g>
-			<circle
-				cx={cx}
-				cy={cy}
-				r={r}
-				fill={fill}
-				stroke={stroke}
-				strokeWidth={2}
-				onPointerDown={onPointerDown}
-				style={{ cursor: "grab", touchAction: "none" }}
-			/>
-			<text
-				x={cx + 12}
-				y={cy - 12}
-				fontSize={12}
-				fill={stroke}
-				pointerEvents="none"
-			>
-				{label}
-			</text>
-		</g>
-	)
 }
 
 function InteractiveNode({ subpathKey }: { subpathKey: string }) {
