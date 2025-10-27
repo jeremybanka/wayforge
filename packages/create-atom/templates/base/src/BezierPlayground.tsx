@@ -14,6 +14,7 @@ import { useMemo, useRef, useState, useCallback } from "preact/hooks"
 const WIDTH = 800
 const HEIGHT = 500
 
+type PointXY = { x: number; y: number }
 const defaultPoints = {
 	p0: { x: 120, y: 380 }, // start
 	p1: { x: 220, y: 120 }, // control 1
@@ -21,14 +22,32 @@ const defaultPoints = {
 	p3: { x: 680, y: 380 }, // end
 }
 
-function clamp(n, min, max) {
+function clamp(n: number, min: number, max: number) {
 	return Math.max(min, Math.min(max, n))
 }
 
-function toPath({ p0, p1, p2, p3 }) {
+function toPath({
+	p0,
+	p1,
+	p2,
+	p3,
+}: {
+	p0: PointXY
+	p1: PointXY
+	p2: PointXY
+	p3: PointXY
+}) {
 	return `M ${p0.x},${p0.y} C ${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y}`
 }
 
+type HandleProps = {
+	cx: number
+	cy: number
+	label: string
+	onPointerDown: (evt: PointerEvent) => void
+	fill?: string
+	stroke?: string
+}
 function Handle({
 	cx,
 	cy,
@@ -36,7 +55,7 @@ function Handle({
 	onPointerDown,
 	fill = "white",
 	stroke = "currentColor",
-}) {
+}: HandleProps) {
 	const r = 8
 	return (
 		<g>
@@ -63,7 +82,15 @@ function Handle({
 	)
 }
 
-function BezierInspector({ points }) {
+type BezierInspectorProps = {
+	points: {
+		p0: PointXY
+		p1: PointXY
+		p2: PointXY
+		p3: PointXY
+	}
+}
+function BezierInspector({ points }: BezierInspectorProps) {
 	const { p0, p1, p2, p3 } = points
 	const code = useMemo(() => {
 		const d = toPath(points)
@@ -96,13 +123,24 @@ function BezierInspector({ points }) {
 	)
 }
 
+type BezierPlaygroundProps = {
+	initial?: {
+		p0: PointXY
+		p1: PointXY
+		p2: PointXY
+		p3: PointXY
+	}
+	onChange?: (points: {
+		p0: PointXY
+		p1: PointXY
+		p2: PointXY
+		p3: PointXY
+	}) => void
+}
 export default function BezierPlayground({
 	initial = defaultPoints,
 	onChange,
-}: {
-	initial?: { p0: any; p1: any; p2: any; p3: any }
-	onChange?: (points: { p0: any; p1: any; p2: any; p3: any }) => void
-}) {
+}: BezierPlaygroundProps) {
 	const svgRef = useRef(null)
 	const [points, setPoints] = useState(initial)
 	const dragRef = useRef(null) // { key: 'p0'|'p1'|'p2'|'p3' }
