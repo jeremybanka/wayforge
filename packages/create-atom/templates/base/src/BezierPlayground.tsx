@@ -1,32 +1,113 @@
+import { atom, atomFamily, getState, setState } from "atom.io"
+import { useI, useO } from "atom.io/react"
 import { PointerEvent, PointerEventHandler } from "preact/compat"
-import { useMemo, useRef, useState, useCallback } from "preact/hooks"
+import {
+	useMemo,
+	useRef,
+	useState,
+	useCallback,
+	useEffect,
+	MutableRef,
+} from "preact/hooks"
+
+import { type RegularAtomToken } from "atom.io"
+
+export default function BezierPlayground() {
+	const svgRef = useAtomicRef(svgRefAtom)
+	const onPointerUp: PointerEventHandler<SVGSVGElement> = useCallback((evt) => {
+		evt.currentTarget.releasePointerCapture(evt.pointerId)
+		setState(dragRefAtom, null)
+	}, [])
+
+	useEffect(reset, [])
+
+	return (
+		<div
+			style={{
+				display: "flex",
+				flexFlow: "column",
+				alignItems: "center",
+			}}
+		>
+			<svg
+				ref={svgRef}
+				viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+				width={WIDTH}
+				height={HEIGHT}
+				onPointerMove={onPointerMove}
+				onPointerUp={onPointerUp}
+				onPointerCancel={onPointerUp}
+				style={{
+					display: "block",
+					touchAction: "none",
+					background: "#fafafa",
+					border: "1px solid #ccc",
+					borderRadius: "12px",
+				}}
+			>
+				<title>Bezier Playground</title>
+				{gridPattern}
+				<rect x="0" y="0" width={WIDTH} height={HEIGHT} fill="url(#grid)" />
+				<rect
+					x="0"
+					y="0"
+					width={WIDTH}
+					height={HEIGHT}
+					fill="url(#grid-lg)"
+					opacity={0.4}
+				/>
+				<PathsDemo />
+			</svg>
+			<button type="button" onClick={reset}>
+				Reset
+			</button>
+		</div>
+	)
+}
+
+export function useAtomicRef<T>(
+	token: RegularAtomToken<T | null>,
+): MutableRef<T | null> {
+	const ref = useRef<T | null>(null)
+	useEffect(() => {
+		setState(token, ref.current)
+	}, [token])
+	return ref
+}
 
 const WIDTH = 800
 const HEIGHT = 500
 
 type PointXY = { x: number; y: number }
-const defaultPoints = {
-	p0: { x: 130, y: 370 }, // start
-	p1: { x: 230, y: 130 }, // control 1
-	p2: { x: 530, y: 130 }, // control 2
-	p3: { x: 670, y: 370 }, // end
-}
+const DEFAULT_POINTS = [
+	{ x: 130, y: 370 }, // start
+	{ x: 230, y: 130 }, // control 1
+	{ x: 530, y: 130 }, // control 2
+	{ x: 670, y: 370 }, // end
+]
+
+const pathKeysAtom = atom<string[]>({
+	key: "pathKeys",
+	default: [],
+})
+const subpathKeysAtoms = atomFamily<string[], string>({
+	key: "subpathKeys",
+	default: [],
+})
+const nodeAtoms = atomFamily<PointXY, string>({
+	key: "nodeAtoms",
+	default: { x: 0, y: 0 },
+})
+const edgeAtoms = atomFamily<null | { c?: PointXY; s: PointXY }, string>({
+	key: "edgeAtoms",
+	default: null,
+})
 
 function clamp(n: number, min: number, max: number) {
 	return Math.max(min, Math.min(max, n))
 }
 
-function toPath({
-	p0,
-	p1,
-	p2,
-	p3,
-}: {
-	p0: PointXY
-	p1: PointXY
-	p2: PointXY
-	p3: PointXY
-}) {
+function toPath([p0, p1, p2, p3]: PointXY[]) {
 	return `M ${p0.x},${p0.y} C ${p1.x},${p1.y} ${p2.x},${p2.y} ${p3.x},${p3.y}`
 }
 
@@ -72,6 +153,65 @@ function Handle({
 	)
 }
 
+function InteractiveNode({ subpathKey }: { subpathKey: string }) {
+	const { x, y } = useO(nodeAtoms, subpathKey)
+	return (
+		<circle
+			key={subpathKey}
+			cx={x}
+			cy={y}
+			r={5}
+			fill="red"
+			onPointerDown={(evt) => {
+				evt.currentTarget.setPointerCapture(evt.pointerId)
+				setState(dragRefAtom, { key: subpathKey })
+			}}
+		/>
+	)
+}
+
+function Subpath({ subpathKey, idx }: { subpathKey: string; idx?: number }) {
+	const node = useO(nodeAtoms, subpathKey)
+	const edge = useO(edgeAtoms, subpathKey)
+	if (idx === 0) {
+		return `M ${node.x} ${node.y}`
+	}
+	if (edge === null) {
+		return `L ${node.x} ${node.y}`
+	}
+	if (`c` in edge) {
+		return `C ${edge.c.x} ${edge.c.y} ${edge.s.x} ${edge.s.y} ${node.x} ${node.y} `
+	}
+	return `S ${edge.s.x} ${edge.s.y} ${node.x} ${node.y} `
+}
+
+function Path({ pathKey }: { pathKey: string }) {
+	const subpathKeys = useO(subpathKeysAtoms, pathKey)
+
+	return (
+		<>
+			<path
+				d={`${subpathKeys.map((spk, idx) => Subpath({ subpathKey: spk, idx })).join(" ")} Z`}
+				stroke="red"
+			/>
+			{subpathKeys.map((spk) => (
+				<InteractiveNode subpathKey={spk} />
+			))}
+		</>
+	)
+}
+
+function PathsDemo() {
+	const pathKeys = useO(pathKeysAtom)
+	return (
+		<>
+			{pathKeys.map((pathKey) => {
+				return <Path pathKey={pathKey} />
+			})}
+		</>
+	)
+}
+
 const gridPattern = (
 	<defs>
 		<pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
@@ -80,174 +220,34 @@ const gridPattern = (
 	</defs>
 )
 
-type BezierPlaygroundProps = {
-	initial?: {
-		p0: PointXY
-		p1: PointXY
-		p2: PointXY
-		p3: PointXY
+const svgRefAtom = atom<SVGSVGElement | null>({
+	key: "svgRef",
+	default: null,
+})
+const dragRefAtom = atom<null | { key: string }>({
+	key: "dragRef",
+	default: null,
+})
+
+function onPointerMove(evt: PointerEvent<SVGSVGElement>): void {
+	evt.preventDefault()
+	const { key } = getState(dragRefAtom) ?? {}
+	const svg = getState(svgRefAtom)
+	if (!svg || !key) {
+		return
 	}
-	onChange?: (points: {
-		p0: PointXY
-		p1: PointXY
-		p2: PointXY
-		p3: PointXY
-	}) => void
+	const pt = svg.createSVGPoint()
+	pt.x = evt.clientX
+	pt.y = evt.clientY
+	const ctm = svg.getScreenCTM()?.inverse()
+	const { x, y } = pt.matrixTransform(ctm)
+
+	setState(nodeAtoms, key, { x: clamp(x, 0, WIDTH), y: clamp(y, 0, HEIGHT) })
 }
-export default function BezierPlayground({
-	initial = defaultPoints,
-	onChange,
-}: BezierPlaygroundProps) {
-	const svgRef = useRef(null)
-	const [points, setPoints] = useState(initial)
-	const dragRef = useRef(null) // { key: 'p0'|'p1'|'p2'|'p3' }
 
-	const setPoint = useCallback(
-		(key: string, x: number, y: number) => {
-			setPoints((prev) => {
-				const next = {
-					...prev,
-					[key]: { x: clamp(x, 0, WIDTH), y: clamp(y, 0, HEIGHT) },
-				}
-				onChange?.(next)
-				return next
-			})
-		},
-		[onChange],
-	)
-
-	const getSVGCoords = useCallback(
-		(evt: PointerEvent<SVGSVGElement>): PointXY => {
-			const svg = svgRef.current
-			const pt = svg.createSVGPoint()
-			pt.x = evt.clientX
-			pt.y = evt.clientY
-			const ctm = svg.getScreenCTM().inverse()
-			const { x, y } = pt.matrixTransform(ctm)
-			return { x, y }
-		},
-		[],
-	)
-
-	const onPointerMove: PointerEventHandler<SVGSVGElement> = useCallback(
-		(evt) => {
-			if (!dragRef.current) return
-			evt.preventDefault()
-			const { key } = dragRef.current
-			const { x, y } = getSVGCoords(evt)
-			setPoint(key, x, y)
-		},
-		[getSVGCoords, setPoint],
-	)
-
-	const onPointerUp: PointerEventHandler<SVGSVGElement> = useCallback((evt) => {
-		if (!dragRef.current) return
-		evt.currentTarget.releasePointerCapture(evt.pointerId)
-		dragRef.current = null
-	}, [])
-
-	const beginDrag = useCallback(
-		(key: string): PointerEventHandler<SVGCircleElement> =>
-			(evt) => {
-				dragRef.current = { key }
-				evt.currentTarget.setPointerCapture(evt.pointerId)
-			},
-		[],
-	)
-
-	const pathD = useMemo(() => toPath(points), [points])
-
-	const reset = useCallback(() => setPoints(defaultPoints), [])
-
-	const { p0, p1, p2, p3 } = points
-
-	return (
-		<div>
-			<div>
-				<svg
-					ref={svgRef}
-					viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-					width={WIDTH}
-					height={HEIGHT}
-					onPointerMove={onPointerMove}
-					onPointerUp={onPointerUp}
-					onPointerCancel={onPointerUp}
-					style={{
-						touchAction: "none",
-						background: "#fafafa",
-						border: "1px solid #ccc",
-						borderRadius: "12px",
-					}}
-				>
-					<title>Bezier Playground</title>
-					{gridPattern}
-					<rect x="0" y="0" width={WIDTH} height={HEIGHT} fill="url(#grid)" />
-					<rect
-						x="0"
-						y="0"
-						width={WIDTH}
-						height={HEIGHT}
-						fill="url(#grid-lg)"
-						opacity={0.4}
-					/>
-					{/* Guide lines between anchors and controls */}
-					<line
-						x1={p0.x}
-						y1={p0.y}
-						x2={p1.x}
-						y2={p1.y}
-						stroke="#9ca3af"
-						strokeDasharray="4 4"
-					/>
-					<line
-						x1={p3.x}
-						y1={p3.y}
-						x2={p2.x}
-						y2={p2.y}
-						stroke="#9ca3af"
-						strokeDasharray="4 4"
-					/>
-					{/* The Bezier path */}
-					<path d={pathD} fill="none" stroke="#111827" strokeWidth={3} />
-					{/* Anchor points (solid) */}
-					<Handle
-						cx={p0.x}
-						cy={p0.y}
-						label="P0"
-						onPointerDown={beginDrag("p0")}
-						fill="#111827"
-						stroke="#111827"
-					/>
-					<Handle
-						cx={p3.x}
-						cy={p3.y}
-						label="P3"
-						onPointerDown={beginDrag("p3")}
-						fill="#111827"
-						stroke="#111827"
-					/>
-					{/* Control handles (hollow) */}
-					<Handle
-						cx={p1.x}
-						cy={p1.y}
-						label="P1"
-						onPointerDown={beginDrag("p1")}
-						fill="#ffffff"
-						stroke="#ef4444"
-					/>
-					<Handle
-						cx={p2.x}
-						cy={p2.y}
-						label="P2"
-						onPointerDown={beginDrag("p2")}
-						fill="#ffffff"
-						stroke="#3b82f6"
-					/>
-				</svg>
-			</div>
-			<button type="button" onClick={reset}>
-				Reset
-			</button>
-		</div>
-	)
+const reset = () => {
+	setState(nodeAtoms, "subpath0", { x: 110, y: 110 })
+	setState(nodeAtoms, "subpath1", { x: 150, y: 150 })
+	setState(subpathKeysAtoms, "path0", ["subpath0", "subpath1"])
+	setState(pathKeysAtom, ["path0"])
 }
