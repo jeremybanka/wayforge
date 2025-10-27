@@ -1,3 +1,4 @@
+import { PointerEvent, PointerEventHandler } from "preact/compat"
 import { useMemo, useRef, useState, useCallback } from "preact/hooks"
 
 /**
@@ -44,7 +45,7 @@ type HandleProps = {
 	cx: number
 	cy: number
 	label: string
-	onPointerDown: (evt: PointerEvent) => void
+	onPointerDown: PointerEventHandler<SVGCircleElement>
 	fill?: string
 	stroke?: string
 }
@@ -123,6 +124,23 @@ function BezierInspector({ points }: BezierInspectorProps) {
 	)
 }
 
+// Simple grid background
+const gridPattern = (
+	<defs>
+		<pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+			<path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e5e7eb" strokeWidth="1" />
+		</pattern>
+		<pattern id="grid-lg" width="100" height="100" patternUnits="userSpaceOnUse">
+			<path
+				d="M 100 0 L 0 0 0 100"
+				fill="none"
+				stroke="#d1d5db"
+				strokeWidth="1.25"
+			/>
+		</pattern>
+	</defs>
+)
+
 type BezierPlaygroundProps = {
 	initial?: {
 		p0: PointXY
@@ -146,7 +164,7 @@ export default function BezierPlayground({
 	const dragRef = useRef(null) // { key: 'p0'|'p1'|'p2'|'p3' }
 
 	const setPoint = useCallback(
-		(key, x, y) => {
+		(key: string, x: number, y: number) => {
 			setPoints((prev) => {
 				const next = {
 					...prev,
@@ -159,17 +177,20 @@ export default function BezierPlayground({
 		[onChange],
 	)
 
-	const getSVGCoords = useCallback((evt) => {
-		const svg = svgRef.current
-		const pt = svg.createSVGPoint()
-		pt.x = evt.clientX
-		pt.y = evt.clientY
-		const ctm = svg.getScreenCTM().inverse()
-		const { x, y } = pt.matrixTransform(ctm)
-		return { x, y }
-	}, [])
+	const getSVGCoords = useCallback(
+		(evt: PointerEvent<SVGSVGElement>): PointXY => {
+			const svg = svgRef.current
+			const pt = svg.createSVGPoint()
+			pt.x = evt.clientX
+			pt.y = evt.clientY
+			const ctm = svg.getScreenCTM().inverse()
+			const { x, y } = pt.matrixTransform(ctm)
+			return { x, y }
+		},
+		[],
+	)
 
-	const onPointerMove = useCallback(
+	const onPointerMove: PointerEventHandler<SVGSVGElement> = useCallback(
 		(evt) => {
 			if (!dragRef.current) return
 			evt.preventDefault()
@@ -180,50 +201,24 @@ export default function BezierPlayground({
 		[getSVGCoords, setPoint],
 	)
 
-	const onPointerUp = useCallback((evt) => {
+	const onPointerUp: PointerEventHandler<SVGSVGElement> = useCallback((evt) => {
 		if (!dragRef.current) return
 		evt.currentTarget.releasePointerCapture(evt.pointerId)
 		dragRef.current = null
 	}, [])
 
 	const beginDrag = useCallback(
-		(key) => (evt) => {
-			dragRef.current = { key }
-			evt.currentTarget.setPointerCapture(evt.pointerId)
-		},
+		(key: string): PointerEventHandler<SVGCircleElement> =>
+			(evt) => {
+				dragRef.current = { key }
+				evt.currentTarget.setPointerCapture(evt.pointerId)
+			},
 		[],
 	)
 
 	const pathD = useMemo(() => toPath(points), [points])
 
 	const reset = useCallback(() => setPoints(defaultPoints), [])
-
-	// Simple grid background
-	const gridPattern = (
-		<defs>
-			<pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-				<path
-					d="M 20 0 L 0 0 0 20"
-					fill="none"
-					stroke="#e5e7eb"
-					strokeWidth="1"
-				/>
-			</pattern>
-			<pattern
-				id="grid-lg"
-				width="100"
-				height="100"
-				patternUnits="userSpaceOnUse"
-			>
-				<path
-					d="M 100 0 L 0 0 0 100"
-					fill="none"
-					stroke="#d1d5db"
-					strokeWidth="1.25"
-				/>
-			</pattern>
-		</defs>
-	)
 
 	const { p0, p1, p2, p3 } = points
 
@@ -249,14 +244,15 @@ export default function BezierPlayground({
 				<svg
 					ref={svgRef}
 					viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-					width="100%"
-					height="auto"
+					width={WIDTH}
+					height={HEIGHT}
 					onPointerMove={onPointerMove}
 					onPointerUp={onPointerUp}
 					onPointerCancel={onPointerUp}
 					style={{ touchAction: "none", background: "#fff" }}
 				>
-					<title>Bezier Playground</title>f{gridPattern}
+					<title>Bezier Playground</title>
+					{gridPattern}
 					<rect x="0" y="0" width={WIDTH} height={HEIGHT} fill="url(#grid)" />
 					<rect
 						x="0"
