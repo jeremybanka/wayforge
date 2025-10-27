@@ -6,10 +6,10 @@ const HEIGHT = 500
 
 type PointXY = { x: number; y: number }
 const defaultPoints = {
-	p0: { x: 120, y: 380 }, // start
-	p1: { x: 220, y: 120 }, // control 1
-	p2: { x: 520, y: 120 }, // control 2
-	p3: { x: 680, y: 380 }, // end
+	p0: { x: 130, y: 370 }, // start
+	p1: { x: 230, y: 130 }, // control 1
+	p2: { x: 530, y: 130 }, // control 2
+	p3: { x: 670, y: 370 }, // end
 }
 
 function clamp(n: number, min: number, max: number) {
@@ -75,15 +75,7 @@ function Handle({
 const gridPattern = (
 	<defs>
 		<pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-			<path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e5e7eb" strokeWidth="1" />
-		</pattern>
-		<pattern id="grid-lg" width="100" height="100" patternUnits="userSpaceOnUse">
-			<path
-				d="M 100 0 L 0 0 0 100"
-				fill="none"
-				stroke="#d1d5db"
-				strokeWidth="1.25"
-			/>
+			<circle cx="10" cy="10" r="0.5" fill="none" stroke="#aaa" />
 		</pattern>
 	</defs>
 )
@@ -180,7 +172,12 @@ export default function BezierPlayground({
 					onPointerMove={onPointerMove}
 					onPointerUp={onPointerUp}
 					onPointerCancel={onPointerUp}
-					style={{ touchAction: "none", background: "#fff" }}
+					style={{
+						touchAction: "none",
+						background: "#fafafa",
+						border: "1px solid #ccc",
+						borderRadius: "12px",
+					}}
 				>
 					<title>Bezier Playground</title>
 					{gridPattern}
