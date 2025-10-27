@@ -1,17 +1,6 @@
 import { PointerEvent, PointerEventHandler } from "preact/compat"
 import { useMemo, useRef, useState, useCallback } from "preact/hooks"
 
-/**
- * BezierPlayground
- * A single-file React component that renders a cubic Bézier curve (P0—P3)
- * with draggable anchor points (P0, P3) and control handles (P1, P2).
- *
- * - Pure SVG; no external libs required
- * - Uses Pointer Events (mouse, pen, touch)
- * - setPointerCapture for smooth dragging
- * - Emits onChange with current points
- */
-
 const WIDTH = 800
 const HEIGHT = 500
 
@@ -83,48 +72,6 @@ function Handle({
 	)
 }
 
-type BezierInspectorProps = {
-	points: {
-		p0: PointXY
-		p1: PointXY
-		p2: PointXY
-		p3: PointXY
-	}
-}
-function BezierInspector({ points }: BezierInspectorProps) {
-	const { p0, p1, p2, p3 } = points
-	const code = useMemo(() => {
-		const d = toPath(points)
-		return (
-			`// SVG path for the current curve\n` +
-			`<path d="${d}" fill="none" stroke="#111" stroke-width="3" />`
-		)
-	}, [points])
-
-	return (
-		<div>
-			<div>
-				<div>Points</div>
-				<div>
-					<div>P0 (start)</div>
-					<div>{`{ x: ${p0.x.toFixed(1)}, y: ${p0.y.toFixed(1)} }`}</div>
-					<div>P1 (ctrl1)</div>
-					<div>{`{ x: ${p1.x.toFixed(1)}, y: ${p1.y.toFixed(1)} }`}</div>
-					<div>P2 (ctrl2)</div>
-					<div>{`{ x: ${p2.x.toFixed(1)}, y: ${p2.y.toFixed(1)} }`}</div>
-					<div>P3 (end)</div>
-					<div>{`{ x: ${p3.x.toFixed(1)}, y: ${p3.y.toFixed(1)} }`}</div>
-				</div>
-			</div>
-			<div>
-				<div>Path markup</div>
-				<pre>{code}</pre>
-			</div>
-		</div>
-	)
-}
-
-// Simple grid background
 const gridPattern = (
 	<defs>
 		<pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
@@ -225,22 +172,6 @@ export default function BezierPlayground({
 	return (
 		<div>
 			<div>
-				<h1>Cubic Bézier Curve — draggable SVG handles</h1>
-				<div>
-					<button type="button" onClick={reset}>
-						Reset
-					</button>
-					<a
-						href="https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/Paths#bezier_curves"
-						target="_blank"
-						rel="noreferrer"
-					>
-						MDN: Bézier in SVG
-					</a>
-				</div>
-			</div>
-
-			<div>
 				<svg
 					ref={svgRef}
 					viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
@@ -317,25 +248,9 @@ export default function BezierPlayground({
 					/>
 				</svg>
 			</div>
-
-			<BezierInspector points={points} />
-
-			<details>
-				<summary>Usage</summary>
-				<div>
-					<p>
-						Import this component into your React app and render{" "}
-						<code>&lt;BezierPlayground /&gt;</code>. Drag the anchors (P0/P3) and
-						control points (P1/P2) to reshape the curve. The component uses
-						Pointer Events so it works with mouse, pen, and touch.
-					</p>
-					<p>
-						You can also pass an <code>initial</code> prop to set starting points
-						and an <code>onChange</code> callback to receive updated coordinates
-						on every drag.
-					</p>
-				</div>
-			</details>
+			<button type="button" onClick={reset}>
+				Reset
+			</button>
 		</div>
 	)
 }
