@@ -1,11 +1,9 @@
 import { render } from "preact"
 
-import preactLogo from "./assets/preact.svg"
 import "./style.css"
-import BezierPlayground from "./BezierPlayground.js"
+import BezierPlayground from "./BezierPlayground.tsx"
 
 export function App() {
-	console.log({ preactLogo })
 	return (
 		<div>
 			{/* <a href="https://preactjs.com" target="_blank" rel="noopener">
