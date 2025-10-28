@@ -2,4 +2,4 @@
 "comline": minor
 ---
 
-💥 Drop support for Zod 3"
+💥 Drop support for Zod 3.
