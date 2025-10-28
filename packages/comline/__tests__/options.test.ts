@@ -1,4 +1,5 @@
 import { type } from "arktype"
+import z from "zod"
 
 import { cli } from "../src/cli"
 import { parseNumberOption, parseStringOption } from "../src/option-parsers"
@@ -9,7 +10,7 @@ describe(`options from cli`, () => {
 		routeOptions: {
 			"": {
 				description: `description`,
-				optionsSchema: type({ foo: `string`, bar: `number` }),
+				optionsSchema: z.object({ foo: z.string(), bar: z.number() }),
 				options: {
 					foo: {
 						description: `foo`,
