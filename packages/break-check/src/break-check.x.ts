@@ -2,6 +2,7 @@
 
 import * as path from "node:path"
 
+import { type } from "arktype"
 import type { OptionsGroup } from "comline"
 import {
 	cli,
@@ -9,28 +10,29 @@ import {
 	help,
 	helpOption,
 	optional,
+	options,
 	parseBooleanOption,
 } from "comline"
 import logger from "npmlog"
-import { z } from "zod/v4"
 
 import type { BreakCheckOptions } from "./break-check"
 import { breakCheck } from "./break-check"
 
 const helper = helpOption()
 
-const BREAK_CHECK_MANUAL = {
-	description: `Check for breaking changes in a package.`,
-	optionsSchema: z.object({
-		tagPattern: z.string().optional(),
-		testPattern: z.string(),
-		testCommand: z.string(),
-		certifyCommand: z.string(),
-		verbose: z.boolean().optional(),
-		help: z.boolean().optional(),
+const BREAK_CHECK_MANUAL = options(
+	`Check for breaking changes in a package.`,
+	type({
+		"tagPattern?": `string`,
+		testPattern: `string`,
+		testCommand: `string`,
+		certifyCommand: `string`,
+		"baseDirname?": `string`,
+		"verbose?": `boolean`,
+		"help?": `boolean`,
 	}),
-	options: {
-		...helper.options,
+	{
+		...helper.optionConfigs,
 		tagPattern: {
 			flag: `v`,
 			required: false,
@@ -55,6 +57,12 @@ const BREAK_CHECK_MANUAL = {
 			description: `Complete bash command that determines whether a major version bump for your package is indicated in the workspace. Exit code 0 indicates that a major version bump is indicated, and exit code 1 indicates that no major version bump is indicated.`,
 			example: `--certifyCommand=\tsx scripts/certify-major-version-bump.node`,
 		},
+		baseDirname: {
+			flag: `d`,
+			required: false,
+			description: `The base directory to run the command from.`,
+			example: `--baseDirname=./packages/my-package`,
+		},
 		verbose: {
 			flag: `v`,
 			required: false,
@@ -63,13 +71,12 @@ const BREAK_CHECK_MANUAL = {
 			parse: parseBooleanOption,
 		},
 	},
-} satisfies OptionsGroup<BreakCheckOptions & { help?: boolean | undefined }>
+) satisfies OptionsGroup<BreakCheckOptions & { help?: boolean | undefined }>
 
-const SCHEMA_MANUAL = {
-	optionsSchema: z.object({
-		outdir: z.string().optional(),
-	}),
-	options: {
+const SCHEMA_MANUAL = options(
+	`Create a copy of the schema for configuring break-check.`,
+	type({ "outdir?": `string` }),
+	{
 		outdir: {
 			flag: `o`,
 			required: false,
@@ -77,7 +84,7 @@ const SCHEMA_MANUAL = {
 			example: `--outdir=./dist`,
 		},
 	},
-} satisfies OptionsGroup<{ outdir?: string | undefined }>
+)
 
 const parse = cli(
 	{
