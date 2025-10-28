@@ -580,14 +580,20 @@ importers:
     dependencies:
       atom.io:
         specifier: 0.44.0
-        version: 0.44.0(@floating-ui/react-dom@2.1.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@floating-ui/react@0.27.16(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@testing-library/react@16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@typescript-eslint/parser@8.46.2(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.38.0(jiti@2.6.1))(happy-dom@20.0.10)(motion@12.23.24(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(socket.io-client@4.8.1)(socket.io@4.8.1)
+        version: 0.44.0(@floating-ui/react-dom@2.1.6(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2)))(@floating-ui/react@0.27.16(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2)))(@preact/compat@18.3.1(preact@10.27.2))(@testing-library/react@16.3.0(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))(@testing-library/dom@10.4.1)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2))(@typescript-eslint/parser@8.46.2(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.38.0(jiti@2.6.1))(happy-dom@20.0.10)(motion@12.23.24(@emotion/is-prop-valid@1.4.0)(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2)))(socket.io-client@4.8.1)(socket.io@4.8.1)
       preact:
-        specifier: 10.26.9
-        version: 10.26.9
+        specifier: 10.27.2
+        version: 10.27.2
+      react:
+        specifier: npm:@preact/compat@18.3.1
+        version: '@preact/compat@18.3.1(preact@10.27.2)'
+      react-dom:
+        specifier: npm:@preact/compat@18.3.1
+        version: '@preact/compat@18.3.1(preact@10.27.2)'
     devDependencies:
       '@preact/preset-vite':
         specifier: 2.10.2
-        version: 2.10.2(@babel/core@7.28.5)(preact@10.26.9)(vite@7.1.12(@types/node@24.9.2)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1))
+        version: 2.10.2(@babel/core@7.28.5)(preact@10.27.2)(vite@7.1.12(@types/node@24.9.2)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1))
       '@typescript-eslint/eslint-plugin':
         specifier: 8.46.2
         version: 8.46.2(@typescript-eslint/parser@8.46.2(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3)
@@ -7627,9 +7633,6 @@ packages:
     peerDependencies:
       preact: '>=10 || >= 11.0.0-0'
 
-  preact@10.26.9:
-    resolution: {integrity: sha512-SSjF9vcnF27mJK1XyFMNJzFd5u3pQiATFqoaDy03XuN00u4ziveVVEGt5RKJrDR8MHE/wJo9Nnad56RLzS2RMA==}
-
   preact@10.27.2:
     resolution: {integrity: sha512-5SYSgFKSyhCbk6SrXyMpqjb5+MQBgfvEKE/OC+PujcY34sOpqtr+0AZQtPYx5IA6VxynQ7rUPCtKzyovpj9Bpg==}
 
@@ -10622,6 +10625,13 @@ snapshots:
       '@floating-ui/core': 1.7.3
       '@floating-ui/utils': 0.2.10
 
+  '@floating-ui/react-dom@2.1.6(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))':
+    dependencies:
+      '@floating-ui/dom': 1.7.4
+      react: '@preact/compat@18.3.1(preact@10.27.2)'
+      react-dom: '@preact/compat@18.3.1(preact@10.27.2)'
+    optional: true
+
   '@floating-ui/react-dom@2.1.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
       '@floating-ui/dom': 1.7.4
@@ -10633,6 +10643,15 @@ snapshots:
       '@floating-ui/dom': 1.7.4
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
+
+  '@floating-ui/react@0.27.16(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))':
+    dependencies:
+      '@floating-ui/react-dom': 2.1.6(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))
+      '@floating-ui/utils': 0.2.10
+      react: '@preact/compat@18.3.1(preact@10.27.2)'
+      react-dom: '@preact/compat@18.3.1(preact@10.27.2)'
+      tabbable: 6.3.0
+    optional: true
 
   '@floating-ui/react@0.27.16(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
@@ -11172,22 +11191,6 @@ snapshots:
     dependencies:
       preact: 10.27.2
 
-  '@preact/preset-vite@2.10.2(@babel/core@7.28.5)(preact@10.26.9)(vite@7.1.12(@types/node@24.9.2)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1))':
-    dependencies:
-      '@babel/core': 7.28.5
-      '@babel/plugin-transform-react-jsx': 7.27.1(@babel/core@7.28.5)
-      '@babel/plugin-transform-react-jsx-development': 7.27.1(@babel/core@7.28.5)
-      '@prefresh/vite': 2.4.10(preact@10.26.9)(vite@7.1.12(@types/node@24.9.2)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1))
-      '@rollup/pluginutils': 4.2.1
-      babel-plugin-transform-hook-names: 1.0.2(@babel/core@7.28.5)
-      debug: 4.4.3
-      picocolors: 1.1.1
-      vite: 7.1.12(@types/node@24.9.2)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1)
-      vite-prerender-plugin: 0.5.12(vite@7.1.12(@types/node@24.9.2)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1))
-    transitivePeerDependencies:
-      - preact
-      - supports-color
-
   '@preact/preset-vite@2.10.2(@babel/core@7.28.5)(preact@10.27.2)(vite@6.4.1(@types/node@24.9.2)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1))':
     dependencies:
       '@babel/core': 7.28.5
@@ -11204,6 +11207,22 @@ snapshots:
       - preact
       - supports-color
 
+  '@preact/preset-vite@2.10.2(@babel/core@7.28.5)(preact@10.27.2)(vite@7.1.12(@types/node@24.9.2)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1))':
+    dependencies:
+      '@babel/core': 7.28.5
+      '@babel/plugin-transform-react-jsx': 7.27.1(@babel/core@7.28.5)
+      '@babel/plugin-transform-react-jsx-development': 7.27.1(@babel/core@7.28.5)
+      '@prefresh/vite': 2.4.10(preact@10.27.2)(vite@7.1.12(@types/node@24.9.2)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1))
+      '@rollup/pluginutils': 4.2.1
+      babel-plugin-transform-hook-names: 1.0.2(@babel/core@7.28.5)
+      debug: 4.4.3
+      picocolors: 1.1.1
+      vite: 7.1.12(@types/node@24.9.2)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1)
+      vite-prerender-plugin: 0.5.12(vite@7.1.12(@types/node@24.9.2)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1))
+    transitivePeerDependencies:
+      - preact
+      - supports-color
+
   '@preact/signals-core@1.12.1': {}
 
   '@preact/signals@2.3.2(preact@10.27.2)':
@@ -11213,27 +11232,11 @@ snapshots:
 
   '@prefresh/babel-plugin@0.5.2': {}
 
-  '@prefresh/core@1.5.8(preact@10.26.9)':
-    dependencies:
-      preact: 10.26.9
-
   '@prefresh/core@1.5.8(preact@10.27.2)':
     dependencies:
       preact: 10.27.2
 
   '@prefresh/utils@1.2.1': {}
-
-  '@prefresh/vite@2.4.10(preact@10.26.9)(vite@7.1.12(@types/node@24.9.2)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1))':
-    dependencies:
-      '@babel/core': 7.28.5
-      '@prefresh/babel-plugin': 0.5.2
-      '@prefresh/core': 1.5.8(preact@10.26.9)
-      '@prefresh/utils': 1.2.1
-      '@rollup/pluginutils': 4.2.1
-      preact: 10.26.9
-      vite: 7.1.12(@types/node@24.9.2)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1)
-    transitivePeerDependencies:
-      - supports-color
 
   '@prefresh/vite@2.4.10(preact@10.27.2)(vite@6.4.1(@types/node@24.9.2)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1))':
     dependencies:
@@ -11244,6 +11247,18 @@ snapshots:
       '@rollup/pluginutils': 4.2.1
       preact: 10.27.2
       vite: 6.4.1(@types/node@24.9.2)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1)
+    transitivePeerDependencies:
+      - supports-color
+
+  '@prefresh/vite@2.4.10(preact@10.27.2)(vite@7.1.12(@types/node@24.9.2)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1))':
+    dependencies:
+      '@babel/core': 7.28.5
+      '@prefresh/babel-plugin': 0.5.2
+      '@prefresh/core': 1.5.8(preact@10.27.2)
+      '@prefresh/utils': 1.2.1
+      '@rollup/pluginutils': 4.2.1
+      preact: 10.27.2
+      vite: 7.1.12(@types/node@24.9.2)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -12222,6 +12237,17 @@ snapshots:
       dom-accessibility-api: 0.6.3
       picocolors: 1.1.1
       redent: 3.0.0
+
+  '@testing-library/react@16.3.0(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))(@testing-library/dom@10.4.1)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)':
+    dependencies:
+      '@babel/runtime': 7.28.4
+      '@testing-library/dom': 10.4.1
+      react: '@preact/compat@18.3.1(preact@10.27.2)'
+      react-dom: '@preact/compat@18.3.1(preact@10.27.2)'
+    optionalDependencies:
+      '@types/react': 19.2.2
+      '@types/react-dom': 19.2.2(@types/react@19.2.2)
+    optional: true
 
   '@testing-library/react@16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
@@ -13234,6 +13260,19 @@ snapshots:
       happy-dom: 20.0.10
       motion: 12.23.24(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react: 19.2.0
+      socket.io: 4.8.1
+      socket.io-client: 4.8.1
+
+  atom.io@0.44.0(@floating-ui/react-dom@2.1.6(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2)))(@floating-ui/react@0.27.16(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2)))(@preact/compat@18.3.1(preact@10.27.2))(@testing-library/react@16.3.0(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))(@testing-library/dom@10.4.1)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2))(@typescript-eslint/parser@8.46.2(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.38.0(jiti@2.6.1))(happy-dom@20.0.10)(motion@12.23.24(@emotion/is-prop-valid@1.4.0)(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2)))(socket.io-client@4.8.1)(socket.io@4.8.1):
+    optionalDependencies:
+      '@floating-ui/react': 0.27.16(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))
+      '@floating-ui/react-dom': 2.1.6(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))
+      '@testing-library/react': 16.3.0(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))(@testing-library/dom@10.4.1)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)
+      '@typescript-eslint/parser': 8.46.2(eslint@9.38.0(jiti@2.6.1))(typescript@5.9.3)
+      eslint: 9.38.0(jiti@2.6.1)
+      happy-dom: 20.0.10
+      motion: 12.23.24(@emotion/is-prop-valid@1.4.0)(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))
+      react: '@preact/compat@18.3.1(preact@10.27.2)'
       socket.io: 4.8.1
       socket.io-client: 4.8.1
 
@@ -14527,6 +14566,17 @@ snapshots:
       '@emotion/is-prop-valid': 1.4.0
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
+
+  framer-motion@12.23.24(@emotion/is-prop-valid@1.4.0)(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2)):
+    dependencies:
+      motion-dom: 12.23.23
+      motion-utils: 12.23.6
+      tslib: 2.8.1
+    optionalDependencies:
+      '@emotion/is-prop-valid': 1.4.0
+      react: '@preact/compat@18.3.1(preact@10.27.2)'
+      react-dom: '@preact/compat@18.3.1(preact@10.27.2)'
+    optional: true
 
   framer-motion@12.23.24(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
@@ -16034,6 +16084,16 @@ snapshots:
 
   motion-utils@12.23.6: {}
 
+  motion@12.23.24(@emotion/is-prop-valid@1.4.0)(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2)):
+    dependencies:
+      framer-motion: 12.23.24(@emotion/is-prop-valid@1.4.0)(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))
+      tslib: 2.8.1
+    optionalDependencies:
+      '@emotion/is-prop-valid': 1.4.0
+      react: '@preact/compat@18.3.1(preact@10.27.2)'
+      react-dom: '@preact/compat@18.3.1(preact@10.27.2)'
+    optional: true
+
   motion@12.23.24(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
       framer-motion: 12.23.24(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -16528,8 +16588,6 @@ snapshots:
   preact-render-to-string@6.6.3(preact@10.27.2):
     dependencies:
       preact: 10.27.2
-
-  preact@10.26.9: {}
 
   preact@10.27.2: {}
 
@@ -18251,7 +18309,7 @@ snapshots:
   vite-prerender-plugin@0.5.12(vite@6.4.1(@types/node@24.9.2)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1)):
     dependencies:
       kolorist: 1.8.0
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       node-html-parser: 6.1.13
       simple-code-frame: 1.3.0
       source-map: 0.7.6
@@ -18261,7 +18319,7 @@ snapshots:
   vite-prerender-plugin@0.5.12(vite@7.1.12(@types/node@24.9.2)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1)):
     dependencies:
       kolorist: 1.8.0
-      magic-string: 0.30.19
+      magic-string: 0.30.21
       node-html-parser: 6.1.13
       simple-code-frame: 1.3.0
       source-map: 0.7.6
