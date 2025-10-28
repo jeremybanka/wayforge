@@ -1,7 +1,6 @@
 import { atom, atomFamily, getState, resetState, setState } from "atom.io"
 import { type RegularAtomToken } from "atom.io"
 import { useO } from "atom.io/react"
-import { fstat } from "fs"
 import { PointerEvent, PointerEventHandler } from "preact/compat"
 import { useRef, useCallback, useEffect, MutableRef } from "preact/hooks"
 
@@ -45,31 +44,33 @@ function clamp(n: number, min: number, max: number) {
 function InteractiveNode({ subpathKey }: { subpathKey: string }) {
 	const node = useO(nodeAtoms, subpathKey)
 	const edge = useO(edgeAtoms, subpathKey)
-	return node === null ? null : typeof edge === "boolean" ? (
-		<rect
-			key={subpathKey}
-			class="node"
-			x={node.x - 5}
-			y={node.y - 5}
-			width={10}
-			height={10}
-			onPointerDown={(evt) => {
-				evt.currentTarget.setPointerCapture(evt.pointerId)
-				setState(dragRefAtom, { key: subpathKey })
-			}}
-		/>
-	) : (
-		<circle
-			key={subpathKey}
-			class="node"
-			cx={node.x}
-			cy={node.y}
-			r={5}
-			onPointerDown={(evt) => {
-				evt.currentTarget.setPointerCapture(evt.pointerId)
-				setState(dragRefAtom, { key: subpathKey })
-			}}
-		/>
+	return node === null ? null : (
+		<>
+			{typeof edge === "boolean" ? (
+				<rect
+					key={subpathKey}
+					class="node"
+					x={node.x - 3}
+					y={node.y - 3}
+					width={6}
+					height={6}
+				/>
+			) : (
+				<circle key={subpathKey} class="node" cx={node.x} cy={node.y} r={3} />
+			)}
+			<circle
+				key={subpathKey}
+				class="node-draggable"
+				fill="transparent"
+				cx={node.x}
+				cy={node.y}
+				r={10}
+				onPointerDown={(evt) => {
+					evt.currentTarget.setPointerCapture(evt.pointerId)
+					setState(dragRefAtom, { key: subpathKey })
+				}}
+			/>
+		</>
 	)
 }
 
@@ -102,6 +103,7 @@ function Path({ pathKey }: { pathKey: string }) {
 			<path
 				d={`${subpathKeys.map((spk, idx) => Subpath({ subpathKey: spk, idx })).join(" ")} Z`}
 				class="path"
+				style={{ pointerEvents: "none" }}
 			/>
 			{subpathKeys.map((spk) => (
 				<InteractiveNode subpathKey={spk} />
