@@ -16,14 +16,18 @@
 body {
 	margin: 0;
 	display: flex;
+	flex-flow: column;
 	align-items: center;
+	justify-content: center;
 	min-height: 100vh;
+	width: 100vw;
 }
 
 #app {
-	max-width: 1280px;
-	margin: 0 auto;
 	text-align: center;
+	display: flex;
+	flex-flow: column;
+	align-items: center;
 }
 
 img {
@@ -34,11 +38,20 @@ img:hover {
 	filter: drop-shadow(0 0 2em #673ab8aa);
 }
 
-section {
+main {
+	display: flex;
+	flex-flow: column;
+	align-items: center;
+}
+
+article {
 	margin-top: 5rem;
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	column-gap: 1.5rem;
+	display: flex;
+	gap: 10px;
+	width: 100%;
+	justify-content: center;
+	align-items: stretch;
+	max-width: 1280px;
 }
 
 .resource {
@@ -49,6 +62,7 @@ section {
 	color: #222;
 	background-color: #f1f1f1;
 	border: 1px solid transparent;
+	flex: 1;
 }
 
 .resource:hover {
@@ -57,13 +71,8 @@ section {
 }
 
 @media (max-width: 639px) {
-	#app {
-		margin: 2rem;
-	}
-	section {
-		margin-top: 5rem;
-		grid-template-columns: 1fr;
-		row-gap: 1rem;
+	article {
+		flex-flow: column;
 	}
 }
 
@@ -96,4 +105,7 @@ button.flat {
 	font-size: 20px;
 	color: #fff;
 	border-radius: none;
+	position: absolute;
+	bottom: 10px;
+	right: 10px;
 }
