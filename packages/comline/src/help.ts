@@ -4,7 +4,7 @@ import picocolors from "picocolors"
 import type { Colors } from "picocolors/types"
 import type { ZodObject } from "zod"
 
-import type { CommandLineInterface, OptionsGroup } from "./cli"
+import { type CommandLineInterface, options, type OptionsGroup } from "./cli"
 import { parseBooleanOption } from "./option-parsers"
 
 const capitalize = <T extends string>(str: T): Capitalize<T> =>
@@ -137,9 +137,9 @@ function shallowlyStringifyJsonSchema(jsonSchema: JsonSchema): string {
 
 export function help(
 	cli: CommandLineInterface<any>,
-	options?: HelpOptions,
+	helpOptions?: HelpOptions,
 ): string {
-	const pico = picocolors.createColors(options?.forceColor)
+	const pico = picocolors.createColors(helpOptions?.forceColor)
 	return [
 		renderTable(
 			[[cli.cliName, cli.cliDescription ?? `cli`]],
@@ -162,9 +162,9 @@ export function help(
 					.map((s) => (s.includes(`$`) ? `<${s.replaceAll(`$`, ``)}>` : s))
 					.join(` `)
 				rows.push([`$`, cli.cliName, prettyRoute, value?.description ?? ``])
-				if (value?.options) {
+				if (value?.optionConfigs) {
 					rows.push(
-						...Object.entries(value.options).map(([key, option]) => {
+						...Object.entries(value.optionConfigs).map(([key, option]) => {
 							const flag = option.flag ? `-${option.flag}` : ` . `
 							const optionsSchema = value.optionsSchema
 
@@ -238,17 +238,13 @@ function assemble<T extends Object>(
 export function helpOption(
 	description = ``,
 ): OptionsGroup<{ help?: boolean | undefined }> {
-	return {
-		optionsSchema: type({ help: `boolean` }),
-		options: {
-			help: {
-				description: `show this help text`,
-				example: `--help`,
-				flag: `h`,
-				parse: parseBooleanOption,
-				required: false,
-			},
+	return options(description, type({ "help?": `boolean` }), {
+		help: {
+			description: `show this help text`,
+			example: `--help`,
+			flag: `h`,
+			parse: parseBooleanOption,
+			required: false,
 		},
-		description,
-	}
+	})
 }

@@ -56,22 +56,15 @@ describe(`complex options`, () => {
 	const testCli = cli({
 		cliName: `my-cli`,
 		routeOptions: {
-			"": {
-				optionsSchema: type({
-					rules: {
-						rule0: [`string`, `string`],
-					},
-				}),
-				options: {
-					rules: {
-						description: `rules`,
-						example: `--rules='{"rule0": ["a", "b"]}'`,
-						flag: `r`,
-						parse: JSON.parse,
-						required: true,
-					},
+			"": options(`example`, type({ rules: { rule0: [`string`, `string`] } }), {
+				rules: {
+					description: `rules`,
+					example: `--rules='{"rule0": ["a", "b"]}'`,
+					flag: `r`,
+					parse: JSON.parse,
+					required: true,
 				},
-			},
+			}),
 		},
 	})
 	test(`happy: all options`, () => {

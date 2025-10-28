@@ -4,24 +4,21 @@ import * as fs from "node:fs"
 
 import { type } from "arktype"
 
-import { cli } from "../../src/cli"
+import { cli, options } from "../../src/cli"
 import { parseStringOption } from "../../src/option-parsers"
 
 const parser = cli({
 	cliName: `read-file-length`,
 	routeOptions: {
-		"": {
-			optionsSchema: type({ file: `string` }),
-			options: {
-				file: {
-					description: `file`,
-					example: `--file="./example-file.md"`,
-					flag: `f`,
-					parse: parseStringOption,
-					required: true,
-				},
+		"": options(`blah`, type({ file: `string` }), {
+			file: {
+				description: `file`,
+				example: `--file="./example-file.md"`,
+				flag: `f`,
+				parse: parseStringOption,
+				required: true,
 			},
-		},
+		}),
 	},
 })
 
