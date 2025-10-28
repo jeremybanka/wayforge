@@ -65,11 +65,23 @@ export type CliParseOutput<CLI extends CommandLineInterface<any>> = Flatten<
 export type OptionsGroup<Options extends Record<string, CliOptionValue> | null> =
 	Options extends Record<string, CliOptionValue>
 		? {
-				description?: string
-				options: { [K in keyof Options]: CliOption<Options[K]> }
+				description: string
 				optionsSchema: Type<Options> | ZodType<Options>
+				optionConfigs: {
+					[K in keyof Options]-?: CliOption<Options[K]>
+				}
 			}
 		: null
+
+export function options<Options extends Record<string, CliOptionValue>>(
+	description: string,
+	optionsSchema: Type<Options> | ZodType<Options>,
+	optionConfigs: {
+		[K in keyof Options]-?: CliOption<Options[K]>
+	},
+): OptionsGroup<Options> {
+	return { description, optionsSchema, optionConfigs } as OptionsGroup<Options>
+}
 
 export type CommandLineInterface<Routes extends Tree> = {
 	cliName: string
@@ -148,7 +160,7 @@ export function cli<
 
 			const route: OptionsGroup<any> = routeOptions[positionalArgs.route]
 
-			const options = route?.options ?? {}
+			const optionConfigs = route?.optionConfigs ?? {}
 			const optionsSchema = route?.optionsSchema ?? type({})
 
 			if (route === undefined) {
@@ -174,7 +186,7 @@ export function cli<
 				}
 			}
 			logger.info?.(`options from config:`, optionsFromConfig)
-			const argumentEntries = Object.entries(options)
+			const argumentEntries = Object.entries(optionConfigs)
 			const optionsFromCommandLineEntries = argumentEntries
 				.map((entry: [string & keyof Options, CliOption<any>]) => {
 					const [key, config] = entry
@@ -272,8 +284,9 @@ export function noOptions(
 	description?: string,
 ): OptionsGroup<Record<never, never>> {
 	const optionsGroup: OptionsGroup<Record<never, never>> = {
+		description: ``,
 		optionsSchema: type({}),
-		options: {},
+		optionConfigs: {},
 	}
 	if (description) {
 		Object.assign(optionsGroup, { description })
