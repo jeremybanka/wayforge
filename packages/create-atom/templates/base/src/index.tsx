@@ -6,11 +6,7 @@ import BezierPlayground from "./BezierPlayground.tsx"
 export function App() {
 	return (
 		<div>
-			{/* <a href="https://preactjs.com" target="_blank" rel="noopener">
-				<img src={preactLogo} alt="Preact logo" height="160" width="160" />
-			</a> */}
-			<h1>Atom.io in Preact, served and built with Vite</h1>
-			{/* <div className="board"></div> */}
+			<h1>Atom.io in Preact on Vite</h1>
 			<BezierPlayground />
 			<section>
 				<Resource
