@@ -38,7 +38,7 @@
 		"concurrently": "9.2.1",
 		"eslint": "9.38.0",
 		"recoverage": "0.1.11",
-		"tsdown": "0.15.10",
+		"tsdown": "0.15.11",
 		"vite": "7.1.12",
 		"vitest": "4.0.4"
 	}
