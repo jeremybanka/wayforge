@@ -1,5 +1,5 @@
+import { type } from "arktype"
 import picocolors from "picocolors"
-import { z } from "zod/v4"
 
 import {
 	cli,
@@ -52,9 +52,9 @@ describe(`help`, () => {
 			"": helpOption(`rub your greasy hands together`),
 			"apply-more-grease": {
 				description: `put grease on your hands`,
-				optionsSchema: z.object({
-					type: z.string(),
-					amount: z.number().optional(),
+				optionsSchema: type({
+					type: `string`,
+					amount: `number`,
 				}),
 				options: {
 					type: {
