@@ -400,6 +400,10 @@ export default function BezierPlayground() {
 			style={{
 				display: "flex",
 				flexFlow: "column",
+				position: "relative",
+				overflow: "hidden",
+				maxWidth: "1280px",
+				width: "100vw",
 				alignItems: "center",
 			}}
 		>
