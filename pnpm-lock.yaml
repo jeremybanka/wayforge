@@ -440,6 +440,9 @@ importers:
 
   packages/break-check:
     dependencies:
+      arktype:
+        specifier: 2.1.25
+        version: 2.1.25
       comline:
         specifier: workspace:*
         version: link:../comline
@@ -452,9 +455,6 @@ importers:
       simple-git:
         specifier: 3.28.0
         version: 3.28.0
-      zod:
-        specifier: 3.25.76
-        version: 3.25.76
     devDependencies:
       '@types/bun':
         specifier: npm:bun-types@1.3.1

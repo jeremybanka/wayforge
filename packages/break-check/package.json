@@ -27,11 +27,11 @@
 		"break-check": "./bin/break-check.bin.js"
 	},
 	"dependencies": {
+		"arktype": "2.1.25",
 		"comline": "workspace:*",
 		"minimatch": "10.1.0",
 		"npmlog": "7.0.1",
-		"simple-git": "3.28.0",
-		"zod": "3.25.76"
+		"simple-git": "3.28.0"
 	},
 	"scripts": {
 		"build": "tsdown && rm -f dist/*.x.d.ts && pnpm run schema",
