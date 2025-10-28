@@ -444,8 +444,8 @@ importers:
         specifier: workspace:*
         version: link:../comline
       minimatch:
-        specifier: 10.0.3
-        version: 10.0.3
+        specifier: 10.1.0
+        version: 10.1.0
       npmlog:
         specifier: 7.0.1
         version: 7.0.1
@@ -6694,6 +6694,10 @@ packages:
 
   minimatch@10.0.3:
     resolution: {integrity: sha512-IPZ167aShDZZUMdRk66cyQAW3qr0WzbHkPdMYa8bzZhlHhO3jALbKdxcaak7W9FfT2rZNpQuUu4Od7ILEpXSaw==}
+    engines: {node: 20 || >=22}
+
+  minimatch@10.1.0:
+    resolution: {integrity: sha512-b19fOFtCjbY8n5gXaqXVt4BEfeT4t1OIH9IINtjssCOZCnXTGEcGNwWsoudT34nfa0IoMS4cc5zLNzBxQl7N5g==}
     engines: {node: 20 || >=22}
 
   minimatch@3.1.2:
@@ -13648,7 +13652,7 @@ snapshots:
     dependencies:
       foreground-child: 3.3.1
       jackspeak: 4.1.1
-      minimatch: 10.0.3
+      minimatch: 10.1.0
       minipass: 7.1.2
       package-json-from-dist: 1.0.1
       path-scurry: 2.0.0
@@ -14830,6 +14834,10 @@ snapshots:
       - utf-8-validate
 
   minimatch@10.0.3:
+    dependencies:
+      '@isaacs/brace-expansion': 5.0.0
+
+  minimatch@10.1.0:
     dependencies:
       '@isaacs/brace-expansion': 5.0.0
 
