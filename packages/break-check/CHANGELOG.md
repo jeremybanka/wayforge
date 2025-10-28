@@ -1,5 +1,15 @@
 # break-check
 
+## 0.6.18
+
+### Patch Changes
+
+- 9aa40f0: 🐛 fix issue where baseDirName wasn't included as an option
+- Updated dependencies [9aa40f0]
+- Updated dependencies [9aa40f0]
+- Updated dependencies [9aa40f0]
+  - comline@0.4.0
+
 ## 0.6.17
 
 ### Patch Changes
