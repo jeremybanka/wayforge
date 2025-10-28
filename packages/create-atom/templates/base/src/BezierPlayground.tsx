@@ -1,4 +1,4 @@
-import { atom, atomFamily, getState, setState } from "atom.io"
+import { atom, atomFamily, getState, resetState, setState } from "atom.io"
 import { type RegularAtomToken } from "atom.io"
 import { useO } from "atom.io/react"
 import { PointerEvent, PointerEventHandler } from "preact/compat"
@@ -142,6 +142,7 @@ function Subpath({ subpathKey, idx }: { subpathKey: string; idx?: number }) {
 
 function Path({ pathKey }: { pathKey: string }) {
 	const subpathKeys = useO(subpathKeysAtoms, pathKey)
+	console.log(`subpathKeys`, pathKey, subpathKeys)
 
 	return (
 		<>
@@ -159,6 +160,7 @@ function Path({ pathKey }: { pathKey: string }) {
 
 function PathsDemo() {
 	const pathKeys = useO(pathKeysAtom)
+	console.log(`pathKeys`, pathKeys)
 	return (
 		<>
 			{pathKeys.map((pathKey) => {
@@ -202,110 +204,149 @@ function onPointerMove(evt: PointerEvent<SVGSVGElement>): void {
 }
 
 const reset = () => {
-	fetch("/public/preact.svg")
+	fetch("preact.svg")
 		.then((res) => res.text())
 		.then((text) => {
-			const [a] = text
+			for (const pathKey of getState(pathKeysAtom)) {
+				resetState(subpathKeysAtoms, pathKey)
+			}
+			resetState(pathKeysAtom)
+
+			const [hexagon, northeastOval, northwestOval, circle] = text
 				.split("\n")
 				.filter((l) => l.startsWith("\t<path"))
 				.map((l) => l.split(`d="`)[1].slice(0, -9))
-
-			const CODES = [`m`, `M`, `l`, `L`, `c`, `C`, `v`, `V`, `z`, `Z`] as const
-			type Letter = Exclude<(typeof CODES)[number], `z` | `Z`>
-			let letter: Letter | undefined
-			let number = ``
-			let numbers: number[] = []
-			const instructions: { letter: Letter; numbers: number[] }[] = []
-			for (let i = 0; i < a.length; i++) {
-				const c = a[i]
-				if (CODES.includes(c as Letter)) {
-					if (number) {
-						numbers.push(Number.parseFloat(number))
-						number = ``
+				.map((raw, idx) => {
+					if (idx === 1 || idx === 2) {
+						return []
 					}
-					if (letter) {
-						instructions.push({ letter, numbers })
+					const CODES = [
+						`m`,
+						`M`,
+						`l`,
+						`L`,
+						`c`,
+						`C`,
+						`v`,
+						`V`,
+						`z`,
+						`Z`,
+					] as const
+					type Letter = Exclude<(typeof CODES)[number], `z` | `Z`>
+					let letter: Letter | undefined
+					let number = ``
+					let numbers: number[] = []
+
+					const instructions: { letter: Letter; numbers: number[] }[] = []
+					for (let i = 0; i < raw.length; i++) {
+						const c = raw[i]
+						if (CODES.includes(c as Letter)) {
+							if (number) {
+								numbers.push(Number.parseFloat(number))
+								number = ``
+							}
+							if (letter) {
+								instructions.push({ letter, numbers })
+							}
+							letter = c as Letter
+							numbers = []
+							continue
+						}
+						if (c === ` `) {
+							numbers.push(Number.parseFloat(number))
+							number = ``
+							continue
+						}
+						if (c === `-` && number) {
+							numbers.push(Number.parseFloat(number))
+							number = `-`
+							continue
+						}
+
+						number += c
+						console.log(number)
 					}
-					letter = c as Letter
-					numbers = []
-					continue
-				}
-				if (c === ` `) {
-					numbers.push(Number.parseFloat(number))
-					number = ``
-					continue
-				}
-
-				number += c
-			}
-			console.log(a)
-
-			let prev: PointXY = { x: 0, y: 0 }
-			const edgeNodes = instructions.map<{
-				edge: null | { c?: PointXY; s: PointXY }
-				node: PointXY
-			}>(({ letter, numbers }) => {
-				let node: PointXY
-				let edge: null | { c?: PointXY; s: PointXY }
-				switch (letter) {
-					case `m`:
-					case `M`:
-						node = { x: numbers[0], y: numbers[1] }
-						edge = null
-						break
-					case `l`:
-						node = { x: prev.x + numbers[0], y: prev.y + numbers[1] }
-						edge = null
-						break
-					case `L`:
-						node = { x: numbers[0], y: numbers[1] }
-						edge = null
-						break
-					case `c`:
-						node = { x: prev.x + numbers[4], y: prev.y + numbers[5] }
-						edge = {
-							c: { x: prev.x + numbers[0], y: prev.y + numbers[1] },
-							s: { x: prev.x + numbers[2], y: prev.y + numbers[3] },
+					console.log(raw)
+					// console.log("👺", JSON.stringify(instructions, null, 2))
+					// throw new Error("stop")
+					let prev: PointXY = { x: 0, y: 0 }
+					const edgeNodes = instructions.map<{
+						edge: null | { c?: PointXY; s: PointXY }
+						node: PointXY
+					}>(({ letter, numbers }) => {
+						let node: PointXY
+						let edge: null | { c?: PointXY; s: PointXY }
+						switch (letter) {
+							case `m`:
+							case `M`:
+								node = { x: numbers[0], y: numbers[1] }
+								edge = null
+								break
+							case `l`:
+								node = { x: prev.x + numbers[0], y: prev.y + numbers[1] }
+								edge = null
+								break
+							case `L`:
+								node = { x: numbers[0], y: numbers[1] }
+								edge = null
+								break
+							case `c`:
+								node = { x: prev.x + numbers[4], y: prev.y + numbers[5] }
+								edge = {
+									c: { x: prev.x + numbers[0], y: prev.y + numbers[1] },
+									s: { x: prev.x + numbers[2], y: prev.y + numbers[3] },
+								}
+								break
+							case `C`:
+								node = { x: numbers[4], y: numbers[5] }
+								edge = {
+									c: { x: numbers[0], y: numbers[1] },
+									s: { x: numbers[2], y: numbers[3] },
+								}
+								break
+							case `v`:
+								node = { x: prev.x, y: prev.y + numbers[0] }
+								edge = null
+								break
+							case `V`:
+								node = { x: prev.x, y: numbers[0] }
+								edge = null
 						}
-						break
-					case `C`:
-						node = { x: numbers[4], y: numbers[5] }
-						edge = {
-							c: { x: numbers[0], y: numbers[1] },
-							s: { x: numbers[2], y: numbers[3] },
-						}
-						break
-					case `v`:
-						node = { x: prev.x, y: prev.y + numbers[0] }
-						edge = null
-						break
-					case `V`:
-						node = { x: prev.x, y: numbers[0] }
-						edge = null
-				}
-				prev = node
-				console.log(
-					`letter: ${letter}, numbers: ${JSON.stringify(numbers)}, node: [${node.x},${node.y}], prev: [${prev.x},y:${prev.y}]`,
-				)
-				return { node, edge }
-			})
+						prev = node
+						console.log(
+							`letter: ${letter}, numbers: ${JSON.stringify(numbers)}, node: [${node.x},${node.y}], c:[${edge?.c?.x},${edge?.c?.y}], s:[${edge?.s?.x},${edge?.s?.y}], prev: [${prev.x},y:${prev.y}]`,
+						)
+						return { node, edge }
+					})
 
-			console.log(JSON.stringify(edgeNodes, null, 2))
+					console.log(JSON.stringify(edgeNodes, null, 2))
+					return edgeNodes
+				})
+			// throw new Error("stop")
 
 			let i = 0
-			for (const { node, edge } of edgeNodes) {
-				if (edge) {
-					setState(edgeAtoms, `${i}`, edge)
+			let j = 0
+			for (const shape of [circle, hexagon]) {
+				const jj = j
+				for (const { node, edge } of shape) {
+					if (edge) {
+						setState(edgeAtoms, `subpath${j}`, edge)
+					}
+					setState(nodeAtoms, `subpath${j}`, node)
+					j++
 				}
-				setState(nodeAtoms, `subpath${i}`, node)
+				const numberOfNodes = j - jj
+				setState(
+					subpathKeysAtoms,
+					`path${i}`,
+					Array.from(
+						{ length: numberOfNodes },
+						(_, nodeNum) => `subpath${jj + nodeNum}`,
+					),
+				)
+				setState(pathKeysAtom, (prev) => [...prev, `path${i}`])
 				i++
 			}
-			setState(
-				subpathKeysAtoms,
-				"path0",
-				Array.from({ length: i }, (_, i) => `subpath${i}`),
-			)
-			setState(pathKeysAtom, (prev) => [...prev, "path0"])
 		})
 }
 
