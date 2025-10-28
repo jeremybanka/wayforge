@@ -22,7 +22,16 @@
 	"main": "dist/cli.js",
 	"types": "dist/cli.d.ts",
 	"peerDependencies": {
-		"arktype": "^2.1.25"
+		"arktype": "^2.1.25",
+		"zod": "^4.1.12"
+	},
+	"peerDependenciesMeta": {
+		"arktype": {
+			"optional": true
+		},
+		"zod": {
+			"optional": true
+		}
 	},
 	"dependencies": {
 		"picocolors": "1.1.1",
@@ -50,6 +59,7 @@
 		"tmp": "0.2.5",
 		"tsdown": "0.15.11",
 		"vite": "7.1.12",
-		"vitest": "4.0.4"
+		"vitest": "4.0.4",
+		"zod": "4.1.12"
 	}
 }
