@@ -5,6 +5,7 @@ import {
 	cli,
 	noOptions,
 	optional,
+	options,
 	parseNumberOption,
 	parseStringOption,
 	required,
@@ -50,13 +51,10 @@ describe(`help`, () => {
 		}),
 		routeOptions: {
 			"": helpOption(`rub your greasy hands together`),
-			"apply-more-grease": {
-				description: `put grease on your hands`,
-				optionsSchema: type({
-					type: `string`,
-					amount: `number`,
-				}),
-				options: {
+			"apply-more-grease": options(
+				`put grease on your hands`,
+				type({ type: `string`, "amount?": `number` }),
+				{
 					type: {
 						description: `the type of grease to apply`,
 						example: `--grease-type=motor-oil`,
@@ -72,7 +70,7 @@ describe(`help`, () => {
 						required: false,
 					},
 				},
-			},
+			),
 			"touch/$target": noOptions(`touch the target and get it all greased up`),
 		},
 	})
