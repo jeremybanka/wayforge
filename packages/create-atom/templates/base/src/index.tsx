@@ -10,14 +10,14 @@ export function App() {
 			<BezierPlayground />
 			<section>
 				<Resource
+					title="Learn Atom.io"
+					description="Atom.io is where data lives."
+					href="https://atom.io.fyi/docs/getting-started"
+				/>
+				<Resource
 					title="Learn Preact"
 					description="If you're new to Preact, try the interactive tutorial to learn important concepts"
 					href="https://preactjs.com/tutorial"
-				/>
-				<Resource
-					title="Differences to React"
-					description="If you're coming from React, you may want to check out our docs to see where Preact differs"
-					href="https://preactjs.com/guide/v10/differences-to-react"
 				/>
 				<Resource
 					title="Learn Vite"
