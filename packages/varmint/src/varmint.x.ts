@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import { cli, help, helpOption, noOptions, optional } from "comline"
-import { z } from "zod/v4"
+import { type } from "arktype"
+import { cli, help, helpOption, noOptions, optional, options } from "comline"
 
 import { varmintWorkspaceManager } from "./varmint-workspace-manager"
 
@@ -18,9 +18,10 @@ const parse = cli(
 			track: noOptions(
 				`start tracking your workspace; see what varmint-managed files are touched`,
 			),
-			clean: {
-				description: `clean all files that varmint has tracked`,
-				options: {
+			clean: options(
+				`clean all files that varmint has tracked`,
+				type({ "ci-flag?": `string` }),
+				{
 					"ci-flag": {
 						flag: `c`,
 						required: false,
@@ -28,10 +29,7 @@ const parse = cli(
 						example: `--ci-flag=CI`,
 					},
 				},
-				optionsSchema: z.object({
-					"ci-flag": z.string().optional(),
-				}),
-			},
+			),
 		},
 	},
 	console,
