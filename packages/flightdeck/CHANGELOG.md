@@ -1,5 +1,15 @@
 # flightdeck
 
+## 0.2.90
+
+### Patch Changes
+
+- Updated dependencies [9aa40f0]
+- Updated dependencies [9aa40f0]
+- Updated dependencies [9aa40f0]
+  - comline@0.4.0
+  - atom.io@0.44.0
+
 ## 0.2.89
 
 ### Patch Changes
