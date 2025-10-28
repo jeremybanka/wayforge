@@ -1,6 +1,7 @@
 import { atom, atomFamily, getState, resetState, setState } from "atom.io"
 import { type RegularAtomToken } from "atom.io"
 import { useO } from "atom.io/react"
+import { fstat } from "fs"
 import { PointerEvent, PointerEventHandler } from "preact/compat"
 import { useRef, useCallback, useEffect, MutableRef } from "preact/hooks"
 
@@ -301,36 +302,24 @@ export default function BezierPlayground() {
 		>
 			<svg
 				ref={svgRef}
-				viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-				width={WIDTH}
-				height={HEIGHT}
+				viewBox={`-10 -10 ${WIDTH + 20} ${HEIGHT + 20}`}
+				width={1000}
+				height={500}
 				onPointerMove={onPointerMove}
 				onPointerUp={onPointerUp}
 				onPointerCancel={onPointerUp}
 			>
 				<title>Bezier Playground</title>
 				<defs>
-					<pattern
-						id="grid"
-						width="20"
-						height="20"
-						patternUnits="userSpaceOnUse"
-					>
-						<circle cx="0" cy="0" r="0.5" fill="none" stroke="#aaa" />
+					<pattern id="grid" width="5" height="5" patternUnits="userSpaceOnUse">
+						<circle cx="0" cy="0" r="0.25" fill="none" stroke="#aaa" />
 					</pattern>
 				</defs>
-				<rect x="0" y="0" width={WIDTH} height={HEIGHT} fill="url(#grid)" />
-				<rect
-					x="0"
-					y="0"
-					width={1000}
-					height={1000}
-					fill="url(#grid-lg)"
-					opacity={0.4}
-				/>
+				<rect x={0} y={0} width={WIDTH} height={HEIGHT} fill="#7771" />
+				<rect x={-1000} y={-1000} width={2000} height={2000} fill="url(#grid)" />
 				<PathsDemo />
 			</svg>
-			<button type="button" onClick={reset}>
+			<button type="button" class="flat" onClick={reset}>
 				Reset
 			</button>
 		</div>
