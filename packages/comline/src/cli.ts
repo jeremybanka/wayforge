@@ -11,6 +11,7 @@ import type {
 	TreePath,
 	TreePathName,
 } from "treetrunks"
+import { z, ZodType } from "zod"
 
 import type { Flag } from "./flag"
 import { parseStringOption } from "./option-parsers"
@@ -53,10 +54,9 @@ export type CliParseOutput<CLI extends CommandLineInterface<any>> = Flatten<
 			? Readonly<{
 					case: K
 					path: TreePath<CLI[`routes`]>
-					opts: CLI[`routeOptions`][K] extends { optionsSchema: Type<any> }
-						? // ? z.infer<CLI[`routeOptions`][K][`optionsSchema`]>
-							CLI[`routeOptions`][K][`optionsSchema`][`infer`]
-						: null
+					opts: CLI[`routeOptions`][K] extends OptionsGroup<infer Options>
+						? Options
+						: never
 				}>
 			: never
 	}>[keyof CLI[`routeOptions`]]
@@ -67,7 +67,7 @@ export type OptionsGroup<Options extends Record<string, CliOptionValue> | null> 
 		? {
 				description?: string
 				options: { [K in keyof Options]: CliOption<Options[K]> }
-				optionsSchema: Type<Options>
+				optionsSchema: Type<Options> | ZodType<Options>
 			}
 		: null
 
@@ -165,7 +165,11 @@ export function cli<
 						logger.info?.(`config file was found`)
 						const configText = fs.readFileSync(configFilePath, `utf-8`)
 						const optionsFromConfigJson = JSON.parse(configText)
-						optionsFromConfig = optionsSchema.assert(optionsFromConfigJson)
+						if (optionsSchema instanceof ZodType) {
+							optionsFromConfig = optionsSchema.parse(optionsFromConfigJson)
+						} else {
+							optionsFromConfig = optionsSchema.assert(optionsFromConfigJson)
+						}
 					}
 				}
 			}
@@ -221,7 +225,12 @@ export function cli<
 				optionsFromCommandLine,
 			)
 			logger.info?.(`options from command line:`, optionsFromCommandLine)
-			const suppliedOptions = optionsSchema.assert(suppliedOptionsUnparsed)
+			let suppliedOptions: Options
+			if (optionsSchema instanceof ZodType) {
+				suppliedOptions = optionsSchema.parse(suppliedOptionsUnparsed)
+			} else {
+				suppliedOptions = optionsSchema.assert(suppliedOptionsUnparsed)
+			}
 			logger.info?.(`final options parsed:`, suppliedOptions)
 			return {
 				inputs: {
@@ -237,9 +246,15 @@ export function cli<
 							continue
 						}
 						const safeRoute = unsafeRoute.replaceAll(`/`, `.`)
-						const jsonSchema =
-							optionsGroup.optionsSchema.toJsonSchema() as JsonSchema.Object
-						jsonSchema.additionalProperties = false
+						let jsonSchema: object
+						if (optionsGroup.optionsSchema instanceof ZodType) {
+							jsonSchema = z.toJSONSchema(optionsGroup.optionsSchema)
+						} else {
+							const arktypeJsonSchema =
+								optionsGroup.optionsSchema.toJsonSchema() as JsonSchema.Object
+							arktypeJsonSchema.additionalProperties = false
+							jsonSchema = arktypeJsonSchema
+						}
 						const filepath = path.resolve(
 							outdir,
 							`${cliName}.${safeRoute || `main`}.schema.json`,

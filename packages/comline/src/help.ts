@@ -1,8 +1,8 @@
 import type { JsonSchema } from "arktype"
-import { Type, type } from "arktype"
+import { type } from "arktype"
 import picocolors from "picocolors"
 import type { Colors } from "picocolors/types"
-import { json } from "stream/consumers"
+import type { ZodObject } from "zod"
 
 import type { CommandLineInterface, OptionsGroup } from "./cli"
 import { parseBooleanOption } from "./option-parsers"
@@ -167,18 +167,34 @@ export function help(
 						...Object.entries(value.options).map(([key, option]) => {
 							const flag = option.flag ? `-${option.flag}` : ` . `
 							const optionsSchema = value.optionsSchema
-							const jsonSchema = optionsSchema.toJsonSchema()
-							const propertySchema = (
-								jsonSchema as JsonSchema.Object & {
-									properties: Record<string, JsonSchema>
+
+							let typeString = `unknown`
+							if (`_def` in optionsSchema) {
+								const optionDef = (optionsSchema as ZodObject<any>).shape[key]
+									._def
+								console.log(optionDef)
+								typeString = optionDef.type as string
+
+								if (typeString === `optional`) {
+									typeString = optionDef.innerType._def.type as string
 								}
-							).properties[key]
-
-							let typeString = shallowlyStringifyJsonSchema(propertySchema)
-
-							if (option.required) {
-								typeString = `${typeString} (required)`
+								typeString = lower(typeString.replaceAll(`Zod`, ``))
+								if (option.required) {
+									typeString = `${typeString} (required)`
+								}
+							} else {
+								const jsonSchema = optionsSchema.toJsonSchema()
+								const propertySchema = (
+									jsonSchema as JsonSchema.Object & {
+										properties: Record<string, JsonSchema>
+									}
+								).properties[key]
+								typeString = shallowlyStringifyJsonSchema(propertySchema)
+								if (option.required) {
+									typeString = `${typeString} (required)`
+								}
 							}
+
 							return [
 								``,
 								``,
