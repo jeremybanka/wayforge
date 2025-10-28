@@ -1,4 +1,4 @@
-import { z } from "zod/v4"
+import { type } from "arktype"
 
 import { cli } from "../src/cli"
 import { parseNumberOption, parseStringOption } from "../src/option-parsers"
@@ -9,10 +9,7 @@ describe(`options from cli`, () => {
 		routeOptions: {
 			"": {
 				description: `description`,
-				optionsSchema: z.object({
-					foo: z.string(),
-					bar: z.number().optional(),
-				}),
+				optionsSchema: type({ foo: `string`, bar: `number` }),
 				options: {
 					foo: {
 						description: `foo`,
@@ -59,10 +56,10 @@ describe(`complex options`, () => {
 		cliName: `my-cli`,
 		routeOptions: {
 			"": {
-				optionsSchema: z.object({
-					rules: z.object({
-						rule0: z.tuple([z.string(), z.string()]),
-					}),
+				optionsSchema: type({
+					rules: {
+						rule0: [`string`, `string`],
+					},
 				}),
 				options: {
 					rules: {

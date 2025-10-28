@@ -1,5 +1,5 @@
+import { type } from "arktype"
 import { optional, required } from "treetrunks"
-import { z } from "zod/v4"
 
 import type { OptionsGroup } from "../src/cli"
 import { cli } from "../src/cli"
@@ -50,7 +50,7 @@ describe(`positional args from cli`, () => {
 
 describe(`options and positional args from cli`, () => {
 	const optionGroup = {
-		optionsSchema: z.object({ foo: z.string().optional() }),
+		optionsSchema: type({ "foo?": `string` }),
 		options: {
 			foo: {
 				description: `foo`,

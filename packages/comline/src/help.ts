@@ -1,6 +1,8 @@
+import type { JsonSchema } from "arktype"
+import { Type, type } from "arktype"
 import picocolors from "picocolors"
 import type { Colors } from "picocolors/types"
-import { z } from "zod/v4"
+import { json } from "stream/consumers"
 
 import type { CommandLineInterface, OptionsGroup } from "./cli"
 import { parseBooleanOption } from "./option-parsers"
@@ -117,6 +119,22 @@ export type HelpOptions = {
 	forceColor?: boolean
 }
 
+function shallowlyStringifyJsonSchema(jsonSchema: JsonSchema): string {
+	if (`type` in jsonSchema) {
+		if (typeof jsonSchema.type === `string`) {
+			return jsonSchema.type
+		}
+		return jsonSchema.type.join(` | `)
+	}
+	if (`enum` in jsonSchema) {
+		return jsonSchema.enum.map((e) => JSON.stringify(e)).join(` | `)
+	}
+	if (`const` in jsonSchema) {
+		return JSON.stringify(jsonSchema.const)
+	}
+	return `unknown`
+}
+
 export function help(
 	cli: CommandLineInterface<any>,
 	options?: HelpOptions,
@@ -148,23 +166,24 @@ export function help(
 					rows.push(
 						...Object.entries(value.options).map(([key, option]) => {
 							const flag = option.flag ? `-${option.flag}` : ` . `
-							const optionsSchema = value.optionsSchema as z.ZodObject<any>
-							const optionDef = optionsSchema.shape[key]._def
-							console.log(optionDef)
-							let type = optionDef.type as string
+							const optionsSchema = value.optionsSchema
+							const jsonSchema = optionsSchema.toJsonSchema()
+							const propertySchema = (
+								jsonSchema as JsonSchema.Object & {
+									properties: Record<string, JsonSchema>
+								}
+							).properties[key]
 
-							if (type === `optional`) {
-								type = optionDef.innerType._def.type as string
-							}
-							type = lower(type.replaceAll(`Zod`, ``))
+							let typeString = shallowlyStringifyJsonSchema(propertySchema)
+
 							if (option.required) {
-								type = `${type} (required)`
+								typeString = `${typeString} (required)`
 							}
 							return [
 								``,
 								``,
 								`${flag}, ${option.example}`,
-								`${type}: ${option.description ?? ``}`,
+								`${typeString}: ${option.description ?? ``}`,
 							]
 						}),
 					)
@@ -204,9 +223,7 @@ export function helpOption(
 	description = ``,
 ): OptionsGroup<{ help?: boolean | undefined }> {
 	return {
-		optionsSchema: z.object({
-			help: z.boolean().optional(),
-		}),
+		optionsSchema: type({ help: `boolean` }),
 		options: {
 			help: {
 				description: `show this help text`,

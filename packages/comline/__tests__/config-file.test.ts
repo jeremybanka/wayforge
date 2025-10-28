@@ -1,9 +1,9 @@
 import * as fs from "node:fs"
 import path from "node:path"
 
+import { type } from "arktype"
 import * as tmp from "tmp"
 import { required } from "treetrunks"
-import { z } from "zod/v4"
 
 import { cli } from "../src/cli"
 import { parseStringOption } from "../src/option-parsers"
@@ -24,7 +24,7 @@ describe(`options from file`, () => {
 		routes: required({ $config: null }),
 		routeOptions: {
 			$config: {
-				optionsSchema: z.object({ foo: z.string() }),
+				optionsSchema: type({ foo: `string` }),
 				options: {
 					foo: {
 						description: `foo`,
@@ -66,7 +66,7 @@ describe(`creating a config schema`, () => {
 		cliName: `my-cli`,
 		routeOptions: {
 			"": {
-				optionsSchema: z.object({ foo: z.string() }),
+				optionsSchema: type({ foo: `string` }),
 				options: {
 					foo: {
 						description: `foo`,
