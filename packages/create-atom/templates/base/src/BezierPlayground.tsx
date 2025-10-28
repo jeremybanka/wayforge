@@ -226,8 +226,8 @@ const reset = () => {
 			const shapes = text
 				.split("\n")
 				.filter((l) => l.startsWith("\t<path"))
-				.map((l) => l.split(`d="`)[1].slice(0, -9))
-				.map((raw, idx) => {
+				.map((path) => {
+					const raw = path.split(`d="`)[1].slice(0, -9)
 					const CODES = [
 						`m`,
 						`M`,
