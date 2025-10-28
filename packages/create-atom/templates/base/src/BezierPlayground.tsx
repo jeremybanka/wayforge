@@ -4,6 +4,28 @@ import { useO } from "atom.io/react"
 import { PointerEvent, PointerEventHandler } from "preact/compat"
 import { useRef, useCallback, useEffect, MutableRef } from "preact/hooks"
 
+const WIDTH = 800
+const HEIGHT = 500
+
+type PointXY = { x: number; y: number }
+
+const pathKeysAtom = atom<string[]>({
+	key: "pathKeys",
+	default: [],
+})
+const subpathKeysAtoms = atomFamily<string[], string>({
+	key: "subpathKeys",
+	default: [],
+})
+const nodeAtoms = atomFamily<PointXY | null, string>({
+	key: "nodeAtoms",
+	default: null,
+})
+const edgeAtoms = atomFamily<boolean | { c?: PointXY; s: PointXY }, string>({
+	key: "edgeAtoms",
+	default: true,
+})
+
 export default function BezierPlayground() {
 	const svgRef = useAtomicRef(svgRefAtom)
 	const onPointerUp: PointerEventHandler<SVGSVGElement> = useCallback((evt) => {
@@ -67,28 +89,6 @@ export function useAtomicRef<T>(
 	return ref
 }
 
-const WIDTH = 800
-const HEIGHT = 500
-
-type PointXY = { x: number; y: number }
-
-const pathKeysAtom = atom<string[]>({
-	key: "pathKeys",
-	default: [],
-})
-const subpathKeysAtoms = atomFamily<string[], string>({
-	key: "subpathKeys",
-	default: [],
-})
-const nodeAtoms = atomFamily<PointXY | null, string>({
-	key: "nodeAtoms",
-	default: null,
-})
-const edgeAtoms = atomFamily<null | { c?: PointXY; s: PointXY }, string>({
-	key: "edgeAtoms",
-	default: null,
-})
-
 function clamp(n: number, min: number, max: number) {
 	return Math.max(min, Math.min(max, n))
 }
@@ -96,7 +96,7 @@ function clamp(n: number, min: number, max: number) {
 function InteractiveNode({ subpathKey }: { subpathKey: string }) {
 	const node = useO(nodeAtoms, subpathKey)
 	const edge = useO(edgeAtoms, subpathKey)
-	return node === null ? null : edge === null ? (
+	return node === null ? null : edge === true ? (
 		<rect
 			key={subpathKey}
 			x={node.x - 5}
@@ -125,24 +125,20 @@ function InteractiveNode({ subpathKey }: { subpathKey: string }) {
 	)
 }
 
-function Subpath({
-	subpathKey,
-	prev,
-	idx,
-}: {
-	subpathKey: string
-	prev: string
-	idx: number
-}) {
+function Subpath({ subpathKey, idx }: { subpathKey: string; idx: number }) {
 	const node = useO(nodeAtoms, subpathKey)
 	const edge = useO(edgeAtoms, subpathKey)
+
 	if (node === null) {
 		return "Z"
 	}
-	if (idx === 0 || prev === null) {
+	if (idx === 0) {
 		return `M ${node.x} ${node.y}`
 	}
-	if (edge === null) {
+	if (edge === false) {
+		return `M ${node.x} ${node.y}`
+	}
+	if (edge === true) {
 		return `L ${node.x} ${node.y}`
 	}
 	if (`c` in edge) {
@@ -153,12 +149,12 @@ function Subpath({
 
 function Path({ pathKey }: { pathKey: string }) {
 	const subpathKeys = useO(subpathKeysAtoms, pathKey)
-	console.log(`subpathKeys`, pathKey, subpathKeys)
+	// console.log(`subpathKeys`, pathKey, subpathKeys)
 
 	return (
 		<>
 			<path
-				d={`${subpathKeys.map((spk, idx) => Subpath({ subpathKey: spk, prev: subpathKeys[idx - 1], idx })).join(" ")} Z`}
+				d={`${subpathKeys.map((spk, idx) => Subpath({ subpathKey: spk, idx })).join(" ")} Z`}
 				stroke="red"
 				fill="none"
 			/>
@@ -171,7 +167,7 @@ function Path({ pathKey }: { pathKey: string }) {
 
 function PathsDemo() {
 	const pathKeys = useO(pathKeysAtom)
-	console.log(`pathKeys`, pathKeys)
+	// console.log(`pathKeys`, pathKeys)
 	return (
 		<>
 			{pathKeys.map((pathKey) => {
@@ -214,7 +210,8 @@ function onPointerMove(evt: PointerEvent<SVGSVGElement>): void {
 	setState(nodeAtoms, key, { x: clamp(x, 0, WIDTH), y: clamp(y, 0, HEIGHT) })
 }
 
-const reset = () => {
+const CODES = [`m`, `M`, `l`, `L`, `c`, `C`, `v`, `V`, `z`, `Z`] as const
+function reset() {
 	fetch("preact.svg")
 		.then((res) => res.text())
 		.then((text) => {
@@ -228,18 +225,7 @@ const reset = () => {
 				.filter((l) => l.startsWith("\t<path"))
 				.map((path) => {
 					const raw = path.split(`d="`)[1].slice(0, -9)
-					const CODES = [
-						`m`,
-						`M`,
-						`l`,
-						`L`,
-						`c`,
-						`C`,
-						`v`,
-						`V`,
-						`z`,
-						`Z`,
-					] as const
+
 					type Letter = (typeof CODES)[number]
 					let letter: Letter | undefined
 					let number = ``
@@ -273,32 +259,33 @@ const reset = () => {
 
 						number += c
 					}
-					console.log(raw)
-					console.log("👺", JSON.stringify(instructions, null, 2))
+					// console.log(raw)
+					// console.log("👺", JSON.stringify(instructions, null, 2))
 					// throw new Error("stop")
 					let prev: PointXY = { x: 0, y: 0 }
 					const edgeNodes = instructions.map<{
 						node: null | PointXY
-						edge: null | { c?: PointXY; s: PointXY }
+						edge: boolean | { c?: PointXY; s: PointXY }
 					}>(({ letter, numbers }) => {
 						let node: null | PointXY
-						let edge: null | { c?: PointXY; s: PointXY }
+						let edge: boolean | { c?: PointXY; s: PointXY }
 						switch (letter) {
 							case `m`:
+								console.log(`m`, { prev, numbers })
 								node = { x: prev.x + numbers[0], y: prev.y + numbers[1] }
-								edge = null
+								edge = false
 								break
 							case `M`:
 								node = { x: numbers[0], y: numbers[1] }
-								edge = null
+								edge = false
 								break
 							case `l`:
 								node = { x: prev.x + numbers[0], y: prev.y + numbers[1] }
-								edge = null
+								edge = true
 								break
 							case `L`:
 								node = { x: numbers[0], y: numbers[1] }
-								edge = null
+								edge = true
 								break
 							case `c`:
 								node = { x: prev.x + numbers[4], y: prev.y + numbers[5] }
@@ -316,16 +303,16 @@ const reset = () => {
 								break
 							case `v`:
 								node = { x: prev.x, y: prev.y + numbers[0] }
-								edge = null
+								edge = true
 								break
 							case `V`:
 								node = { x: prev.x, y: numbers[0] }
-								edge = null
+								edge = true
 								break
 							case `z`:
 							case `Z`:
 								node = null
-								edge = null
+								edge = true
 						}
 						if (node) {
 							prev = node
@@ -336,7 +323,7 @@ const reset = () => {
 						return { node, edge }
 					})
 
-					console.log(JSON.stringify(edgeNodes, null, 2))
+					// console.log(JSON.stringify(edgeNodes, null, 2))
 					return edgeNodes
 				})
 			// throw new Error("stop")
@@ -346,9 +333,7 @@ const reset = () => {
 			for (const shape of shapes) {
 				const jj = j
 				for (const { node, edge } of shape) {
-					if (edge) {
-						setState(edgeAtoms, `subpath${j}`, edge)
-					}
+					setState(edgeAtoms, `subpath${j}`, edge)
 					setState(nodeAtoms, `subpath${j}`, node)
 					j++
 				}
