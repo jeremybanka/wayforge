@@ -1,10 +1,10 @@
+import { type } from "arktype"
 import type { Refinement } from "atom.io/internal"
 import { Junction } from "atom.io/internal"
 import { jsonRefinery } from "atom.io/introspection"
 import type { Json } from "atom.io/json"
 import { isJson } from "atom.io/json"
 import { vitest } from "vitest"
-import { z } from "zod/v4"
 
 console.warn = () => undefined
 const warn = vitest.spyOn(global.console, `warn`)
@@ -78,7 +78,7 @@ describe(`Junction.prototype.set`, () => {
 			},
 			{
 				isContent: (input): input is { amount: number } =>
-					z.object({ amount: z.number() }).safeParse(input).success,
+					type({ amount: `number` })(input) instanceof type.errors === false,
 			},
 		).set({ reagent: fire, reaction: fireAndWaterBecomeSteam }, { amount: 1 })
 		const amountOfFire = reactionReagents.getContent(
@@ -95,7 +95,7 @@ describe(`Junction.prototype.set`, () => {
 			},
 			{
 				isContent: (input): input is { amount: number } =>
-					z.object({ amount: z.number() }).safeParse(input).success,
+					type({ amount: `number` })(input) instanceof type.errors === false,
 			},
 		)
 		const fire = `03`
@@ -162,7 +162,7 @@ describe(`Junction.prototype.set1ToMany`, () => {
 			},
 			{
 				isContent: (input): input is { amount: number } =>
-					z.object({ amount: z.number() }).safeParse(input).success,
+					type({ amount: `number` })(input) instanceof type.errors === false,
 			},
 		)
 		const newReagents = reactionReagents
@@ -214,7 +214,7 @@ describe(`Junction.prototype.delete`, () => {
 			},
 			{
 				isContent: (input): input is { name: string } =>
-					z.object({ name: z.string() }).safeParse(input).success,
+					type({ name: `string` })(input) instanceof type.errors === false,
 			},
 		)
 			.set({ celebrity0: snad, celebrity1: cassilda }, { name: `snassilda` })
@@ -285,7 +285,7 @@ describe(`Junction.prototype.toJSON`, () => {
 			},
 			{
 				isContent: (input): input is { isDelta: boolean } =>
-					z.object({ isDelta: z.boolean() }).safeParse(input).success,
+					type({ isDelta: `boolean` })(input) instanceof type.errors === false,
 			},
 		)
 			.set({ type: `grass`, pokémon: `bulbasaur` }, { isDelta: true })
@@ -366,7 +366,7 @@ describe(`Junction.prototype.replaceRelations`, () => {
 						`🫙 ${string}`
 					>,
 					isContent: (input: unknown): input is { quantity: number } =>
-						z.object({ quantity: z.number() }).safeParse(input).success,
+						type({ quantity: `number` })(input) instanceof type.errors === false,
 				},
 			)
 				.set({ ingredient: `🫙 sugar`, candy: `gummi bears` }, { quantity: 1 })
@@ -442,7 +442,7 @@ describe(`Junction with external storage`, () => {
 				isAType: (input): input is string => typeof input === `string`,
 				isBType: (input): input is string => typeof input === `string`,
 				isContent: (input): input is { joinedAt: number } =>
-					z.object({ joinedAt: z.number() }).safeParse(input).success,
+					type({ joinedAt: `number` })(input) instanceof type.errors === false,
 				externalStore: {
 					getContent: (key: string) => contentMap.get(key),
 					setContent: (key: string, content: { joinedAt: number }) =>
