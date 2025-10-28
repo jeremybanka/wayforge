@@ -1,7 +1,7 @@
 import { render } from "preact"
 
 import "./style.css"
-import Designer from "./Designer.tsx"
+import BezierPlayground from "./BezierPlayground.tsx"
 
 export function App() {
 	return (
@@ -11,7 +11,7 @@ export function App() {
 			</a> */}
 			<h1>Atom.io in Preact, served and built with Vite</h1>
 			{/* <div className="board"></div> */}
-			<Designer />
+			<BezierPlayground />
 			<section>
 				<Resource
 					title="Learn Preact"
