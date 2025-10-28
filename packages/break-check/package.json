@@ -29,7 +29,7 @@
 	"dependencies": {
 		"arktype": "2.1.25",
 		"comline": "workspace:*",
-		"minimatch": "10.1.0",
+		"minimatch": "10.1.1",
 		"npmlog": "7.0.1",
 		"simple-git": "3.28.0"
 	},
