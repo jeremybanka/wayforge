@@ -956,6 +956,9 @@ importers:
 
   packages/varmint:
     dependencies:
+      arktype:
+        specifier: 2.1.25
+        version: 2.1.25
       cachedir:
         specifier: 2.4.0
         version: 2.4.0
@@ -995,7 +998,7 @@ importers:
         version: 9.38.0(jiti@2.6.1)
       openai:
         specifier: 6.7.0
-        version: 6.7.0(ws@8.18.3)(zod@3.25.76)
+        version: 6.7.0(ws@8.18.3)(zod@4.1.12)
       tmp:
         specifier: 0.2.5
         version: 0.2.5
@@ -1015,8 +1018,8 @@ importers:
         specifier: 1.0.0-pre.53
         version: 1.0.0-pre.53
       zod:
-        specifier: 3.25.76
-        version: 3.25.76
+        specifier: 4.1.12
+        version: 4.1.12
 
   packages/venerate:
     devDependencies:
@@ -15082,11 +15085,6 @@ snapshots:
       oniguruma-parser: 0.12.1
       regex: 6.0.1
       regex-recursion: 6.0.2
-
-  openai@6.7.0(ws@8.18.3)(zod@3.25.76):
-    optionalDependencies:
-      ws: 8.18.3
-      zod: 3.25.76
 
   openai@6.7.0(ws@8.18.3)(zod@4.1.12):
     optionalDependencies:

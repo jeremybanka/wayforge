@@ -39,6 +39,7 @@
 		"postversion": "biome format --write package.json"
 	},
 	"dependencies": {
+		"arktype": "2.1.25",
 		"cachedir": "2.4.0",
 		"comline": "workspace:*",
 		"diff": "8.0.2",
@@ -60,6 +61,6 @@
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "4.0.4",
 		"yalc": "1.0.0-pre.53",
-		"zod": "3.25.76"
+		"zod": "4.1.12"
 	}
 }
