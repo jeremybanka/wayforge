@@ -535,6 +535,9 @@ importers:
       '@t3-oss/env-core':
         specifier: 0.13.8
         version: 0.13.8(arktype@2.1.25)(typescript@5.9.3)(zod@3.25.76)
+      arktype:
+        specifier: 2.1.25
+        version: 2.1.25
       atom.io:
         specifier: workspace:*
         version: link:../atom.io

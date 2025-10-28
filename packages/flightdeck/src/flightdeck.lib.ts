@@ -12,7 +12,6 @@ import { fromEntries, toEntries } from "atom.io/json"
 import { ChildSocket } from "atom.io/realtime-server"
 import { CronJob } from "cron"
 import { FilesystemStorage } from "safedeposit"
-import { z } from "zod/v4"
 
 import type { LnavFormat } from "../gen/lnav-format-schema.gen"
 import { env } from "./flightdeck.env"
@@ -445,19 +444,17 @@ export const FLIGHTDECK_INFO = `info`
 export const FLIGHTDECK_WARN = `warn`
 export const FLIGHTDECK_ERROR = `ERR!`
 
-export const flightDeckLogSchema = z.object({
-	level: z.union([
-		z.literal(FLIGHTDECK_INFO),
-		z.literal(FLIGHTDECK_WARN),
-		z.literal(FLIGHTDECK_ERROR),
-	]),
-	timestamp: z.number(),
-	package: z.string(),
-	service: z.string().optional(),
-	process: z.number(),
-	body: z.string(),
-})
-export type FlightDeckLog = z.infer<typeof flightDeckLogSchema>
+export type FlightDeckLog = {
+	level:
+		| typeof FLIGHTDECK_ERROR
+		| typeof FLIGHTDECK_INFO
+		| typeof FLIGHTDECK_WARN
+	timestamp: number
+	package: string
+	service?: string
+	process: number
+	body: string
+}
 
 const LINE_FORMAT = `line-format` satisfies keyof LnavFormat
 const VALUE = `value` satisfies keyof LnavFormat
