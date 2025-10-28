@@ -51,13 +51,6 @@ export default function BezierPlayground() {
 				onPointerMove={onPointerMove}
 				onPointerUp={onPointerUp}
 				onPointerCancel={onPointerUp}
-				style={{
-					display: "block",
-					touchAction: "none",
-					background: "#fafafa",
-					border: "1px solid #ccc",
-					borderRadius: "12px",
-				}}
 			>
 				<title>Bezier Playground</title>
 				{gridPattern}
@@ -96,15 +89,14 @@ function clamp(n: number, min: number, max: number) {
 function InteractiveNode({ subpathKey }: { subpathKey: string }) {
 	const node = useO(nodeAtoms, subpathKey)
 	const edge = useO(edgeAtoms, subpathKey)
-	return node === null ? null : edge === true ? (
+	return node === null ? null : typeof edge === "boolean" ? (
 		<rect
 			key={subpathKey}
+			class="node"
 			x={node.x - 5}
 			y={node.y - 5}
 			width={10}
 			height={10}
-			fill="white"
-			stroke="red"
 			onPointerDown={(evt) => {
 				evt.currentTarget.setPointerCapture(evt.pointerId)
 				setState(dragRefAtom, { key: subpathKey })
@@ -113,10 +105,10 @@ function InteractiveNode({ subpathKey }: { subpathKey: string }) {
 	) : (
 		<circle
 			key={subpathKey}
+			class="node"
 			cx={node.x}
 			cy={node.y}
 			r={5}
-			fill="red"
 			onPointerDown={(evt) => {
 				evt.currentTarget.setPointerCapture(evt.pointerId)
 				setState(dragRefAtom, { key: subpathKey })
@@ -149,14 +141,11 @@ function Subpath({ subpathKey, idx }: { subpathKey: string; idx: number }) {
 
 function Path({ pathKey }: { pathKey: string }) {
 	const subpathKeys = useO(subpathKeysAtoms, pathKey)
-	// console.log(`subpathKeys`, pathKey, subpathKeys)
-
 	return (
 		<>
 			<path
 				d={`${subpathKeys.map((spk, idx) => Subpath({ subpathKey: spk, idx })).join(" ")} Z`}
-				stroke="red"
-				fill="none"
+				class="path"
 			/>
 			{subpathKeys.map((spk) => (
 				<InteractiveNode subpathKey={spk} />
@@ -167,7 +156,6 @@ function Path({ pathKey }: { pathKey: string }) {
 
 function PathsDemo() {
 	const pathKeys = useO(pathKeysAtom)
-	// console.log(`pathKeys`, pathKeys)
 	return (
 		<>
 			{pathKeys.map((pathKey) => {
@@ -259,9 +247,7 @@ function reset() {
 
 						number += c
 					}
-					// console.log(raw)
-					// console.log("👺", JSON.stringify(instructions, null, 2))
-					// throw new Error("stop")
+
 					let prev: PointXY = { x: 0, y: 0 }
 					const edgeNodes = instructions.map<{
 						node: null | PointXY
@@ -317,16 +303,12 @@ function reset() {
 						if (node) {
 							prev = node
 						}
-						// console.log(
-						// 	`letter: ${letter}, numbers: ${JSON.stringify(numbers)}, node: [${node.x},${node.y}], c:[${edge?.c?.x},${edge?.c?.y}], s:[${edge?.s?.x},${edge?.s?.y}], prev: [${prev.x},y:${prev.y}]`,
-						// )
+
 						return { node, edge }
 					})
 
-					// console.log(JSON.stringify(edgeNodes, null, 2))
 					return edgeNodes
 				})
-			// throw new Error("stop")
 
 			let i = 0
 			let j = 0
