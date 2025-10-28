@@ -80,3 +80,11 @@ section {
 		border: 1px solid #bbb;
 	}
 }
+.node {
+	fill: #673ab8;
+	stroke: #aaa;
+}
+.path {
+	fill: none;
+	stroke: #aaa;
+}
