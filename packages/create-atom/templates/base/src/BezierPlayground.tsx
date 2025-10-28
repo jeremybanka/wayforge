@@ -1,18 +1,11 @@
-import {
-	atom,
-	atomFamily,
-	getState,
-	resetState,
-	selectorFamily,
-	setState,
-} from "atom.io"
+import { atom, atomFamily, getState, resetState, setState } from "atom.io"
 import { type RegularAtomToken } from "atom.io"
 import { useO } from "atom.io/react"
 import { PointerEvent, PointerEventHandler } from "preact/compat"
 import { useRef, useCallback, useEffect, MutableRef } from "preact/hooks"
 
-const WIDTH = 800
-const HEIGHT = 500
+const WIDTH = 256
+const HEIGHT = 296
 
 type PointXY = { x: number; y: number }
 type EdgeXY = { c?: PointXY; s: PointXY }
@@ -29,100 +22,9 @@ const nodeAtoms = atomFamily<PointXY | null, string>({
 	key: "nodeAtoms",
 	default: null,
 })
-const edgeAtoms = atomFamily<boolean | { c?: PointXY; s: PointXY }, string>({
+const edgeAtoms = atomFamily<boolean | EdgeXY, string>({
 	key: "edgeAtoms",
 	default: true,
-})
-
-const zoomLevelAtom = atom<number>({
-	key: "zoomLevel",
-	default: 1.3,
-})
-const nodeProjectedSelectors = selectorFamily<PointXY | null, string>({
-	key: "nodeProjected",
-	get:
-		(subpathKey) =>
-		({ get }) => {
-			const zoomLevel = get(zoomLevelAtom)
-			const node = get(nodeAtoms, subpathKey)
-			if (node === null) {
-				return null
-			}
-			return {
-				x: node.x * zoomLevel,
-				y: node.y * zoomLevel,
-			}
-		},
-	set(key) {
-		return ({ get, set }) => {
-			const zoomLevel = get(zoomLevelAtom)
-			const node = get(nodeAtoms, key)
-			if (node === null) {
-				set(nodeAtoms, key, node)
-				return
-			}
-			set(nodeAtoms, key, {
-				x: node.x / zoomLevel,
-				y: node.y / zoomLevel,
-			})
-		}
-	},
-})
-const edgeProjectedSelectors = selectorFamily<
-	boolean | { c?: PointXY; s: PointXY },
-	string
->({
-	key: "edgeProjected",
-	get:
-		(subpathKey) =>
-		({ get }) => {
-			const zoomLevel = get(zoomLevelAtom)
-			const edge = get(edgeAtoms, subpathKey)
-			if (typeof edge === "boolean") {
-				return edge
-			}
-			const projectedEdge: EdgeXY = {
-				s: {
-					x: edge.s.x * zoomLevel,
-					y: edge.s.y * zoomLevel,
-				},
-			}
-			if (edge.c) {
-				projectedEdge.c = {
-					x: edge.c.x * zoomLevel,
-					y: edge.c.y * zoomLevel,
-				}
-			}
-			return projectedEdge
-		},
-
-	set(key) {
-		return ({ get, set }) => {
-			const zoomLevel = get(zoomLevelAtom)
-			const edge = get(edgeAtoms, key)
-			if (typeof edge === "boolean") {
-				set(edgeAtoms, key, edge)
-				return
-			}
-			if (edge.c) {
-				set(edgeAtoms, key, {
-					...edge,
-					c: {
-						x: edge.c.x / zoomLevel,
-						y: edge.c.y / zoomLevel,
-					},
-				})
-				return
-			}
-			set(edgeAtoms, key, {
-				...edge,
-				s: {
-					x: edge.s.x / zoomLevel,
-					y: edge.s.y / zoomLevel,
-				},
-			})
-		}
-	},
 })
 
 export function useAtomicRef<T>(
@@ -140,8 +42,8 @@ function clamp(n: number, min: number, max: number) {
 }
 
 function InteractiveNode({ subpathKey }: { subpathKey: string }) {
-	const node = useO(nodeProjectedSelectors, subpathKey)
-	const edge = useO(edgeProjectedSelectors, subpathKey)
+	const node = useO(nodeAtoms, subpathKey)
+	const edge = useO(edgeAtoms, subpathKey)
 	return node === null ? null : typeof edge === "boolean" ? (
 		<rect
 			key={subpathKey}
@@ -171,8 +73,8 @@ function InteractiveNode({ subpathKey }: { subpathKey: string }) {
 }
 
 function Subpath({ subpathKey, idx }: { subpathKey: string; idx: number }) {
-	const node = useO(nodeProjectedSelectors, subpathKey)
-	const edge = useO(edgeProjectedSelectors, subpathKey)
+	const node = useO(nodeAtoms, subpathKey)
+	const edge = useO(edgeAtoms, subpathKey)
 
 	if (node === null) {
 		return "Z"
@@ -218,14 +120,6 @@ function PathsDemo() {
 	)
 }
 
-const gridPattern = (
-	<defs>
-		<pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-			<circle cx="10" cy="10" r="0.5" fill="none" stroke="#aaa" />
-		</pattern>
-	</defs>
-)
-
 const svgRefAtom = atom<SVGSVGElement | null>({
 	key: "svgRef",
 	default: null,
@@ -248,10 +142,7 @@ function onPointerMove(evt: PointerEvent<SVGSVGElement>): void {
 	const ctm = svg.getScreenCTM()?.inverse()
 	const { x, y } = pt.matrixTransform(ctm)
 
-	setState(nodeProjectedSelectors, key, {
-		x: clamp(x, 0, WIDTH),
-		y: clamp(y, 0, HEIGHT),
-	})
+	setState(nodeAtoms, key, { x: clamp(x, 0, WIDTH), y: clamp(y, 0, HEIGHT) })
 }
 
 const CODES = [`m`, `M`, `l`, `L`, `c`, `C`, `v`, `V`, `z`, `Z`] as const
@@ -391,7 +282,7 @@ function reset() {
 		})
 }
 
-export default function Designer() {
+export default function BezierPlayground() {
 	const svgRef = useAtomicRef(svgRefAtom)
 	const onPointerUp: PointerEventHandler<SVGSVGElement> = useCallback((evt) => {
 		evt.currentTarget.releasePointerCapture(evt.pointerId)
@@ -418,13 +309,22 @@ export default function Designer() {
 				onPointerCancel={onPointerUp}
 			>
 				<title>Bezier Playground</title>
-				{gridPattern}
+				<defs>
+					<pattern
+						id="grid"
+						width="20"
+						height="20"
+						patternUnits="userSpaceOnUse"
+					>
+						<circle cx="0" cy="0" r="0.5" fill="none" stroke="#aaa" />
+					</pattern>
+				</defs>
 				<rect x="0" y="0" width={WIDTH} height={HEIGHT} fill="url(#grid)" />
 				<rect
 					x="0"
 					y="0"
-					width={WIDTH}
-					height={HEIGHT}
+					width={1000}
+					height={1000}
 					fill="url(#grid-lg)"
 					opacity={0.4}
 				/>
