@@ -1,4 +1,11 @@
-import { atom, atomFamily, getState, resetState, setState } from "atom.io"
+import {
+	atom,
+	atomFamily,
+	getState,
+	resetState,
+	selectorFamily,
+	setState,
+} from "atom.io"
 import { type RegularAtomToken } from "atom.io"
 import { useO } from "atom.io/react"
 import { PointerEvent, PointerEventHandler } from "preact/compat"
@@ -8,6 +15,7 @@ const WIDTH = 800
 const HEIGHT = 500
 
 type PointXY = { x: number; y: number }
+type EdgeXY = { c?: PointXY; s: PointXY }
 
 const pathKeysAtom = atom<string[]>({
 	key: "pathKeys",
@@ -26,51 +34,96 @@ const edgeAtoms = atomFamily<boolean | { c?: PointXY; s: PointXY }, string>({
 	default: true,
 })
 
-export default function BezierPlayground() {
-	const svgRef = useAtomicRef(svgRefAtom)
-	const onPointerUp: PointerEventHandler<SVGSVGElement> = useCallback((evt) => {
-		evt.currentTarget.releasePointerCapture(evt.pointerId)
-		setState(dragRefAtom, null)
-	}, [])
+const zoomLevelAtom = atom<number>({
+	key: "zoomLevel",
+	default: 1.3,
+})
+const nodeProjectedSelectors = selectorFamily<PointXY | null, string>({
+	key: "nodeProjected",
+	get:
+		(subpathKey) =>
+		({ get }) => {
+			const zoomLevel = get(zoomLevelAtom)
+			const node = get(nodeAtoms, subpathKey)
+			if (node === null) {
+				return null
+			}
+			return {
+				x: node.x * zoomLevel,
+				y: node.y * zoomLevel,
+			}
+		},
+	set(key) {
+		return ({ get, set }) => {
+			const zoomLevel = get(zoomLevelAtom)
+			const node = get(nodeAtoms, key)
+			if (node === null) {
+				set(nodeAtoms, key, node)
+				return
+			}
+			set(nodeAtoms, key, {
+				x: node.x / zoomLevel,
+				y: node.y / zoomLevel,
+			})
+		}
+	},
+})
+const edgeProjectedSelectors = selectorFamily<
+	boolean | { c?: PointXY; s: PointXY },
+	string
+>({
+	key: "edgeProjected",
+	get:
+		(subpathKey) =>
+		({ get }) => {
+			const zoomLevel = get(zoomLevelAtom)
+			const edge = get(edgeAtoms, subpathKey)
+			if (typeof edge === "boolean") {
+				return edge
+			}
+			const projectedEdge: EdgeXY = {
+				s: {
+					x: edge.s.x * zoomLevel,
+					y: edge.s.y * zoomLevel,
+				},
+			}
+			if (edge.c) {
+				projectedEdge.c = {
+					x: edge.c.x * zoomLevel,
+					y: edge.c.y * zoomLevel,
+				}
+			}
+			return projectedEdge
+		},
 
-	useEffect(reset, [])
-
-	return (
-		<div
-			style={{
-				display: "flex",
-				flexFlow: "column",
-				alignItems: "center",
-			}}
-		>
-			<svg
-				ref={svgRef}
-				viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
-				width={WIDTH}
-				height={HEIGHT}
-				onPointerMove={onPointerMove}
-				onPointerUp={onPointerUp}
-				onPointerCancel={onPointerUp}
-			>
-				<title>Bezier Playground</title>
-				{gridPattern}
-				<rect x="0" y="0" width={WIDTH} height={HEIGHT} fill="url(#grid)" />
-				<rect
-					x="0"
-					y="0"
-					width={WIDTH}
-					height={HEIGHT}
-					fill="url(#grid-lg)"
-					opacity={0.4}
-				/>
-				<PathsDemo />
-			</svg>
-			<button type="button" onClick={reset}>
-				Reset
-			</button>
-		</div>
-	)
-}
+	set(key) {
+		return ({ get, set }) => {
+			const zoomLevel = get(zoomLevelAtom)
+			const edge = get(edgeAtoms, key)
+			if (typeof edge === "boolean") {
+				set(edgeAtoms, key, edge)
+				return
+			}
+			if (edge.c) {
+				set(edgeAtoms, key, {
+					...edge,
+					c: {
+						x: edge.c.x / zoomLevel,
+						y: edge.c.y / zoomLevel,
+					},
+				})
+				return
+			}
+			set(edgeAtoms, key, {
+				...edge,
+				s: {
+					x: edge.s.x / zoomLevel,
+					y: edge.s.y / zoomLevel,
+				},
+			})
+		}
+	},
+})
 
 export function useAtomicRef<T>(
 	token: RegularAtomToken<T | null>,
@@ -87,8 +140,8 @@ function clamp(n: number, min: number, max: number) {
 }
 
 function InteractiveNode({ subpathKey }: { subpathKey: string }) {
-	const node = useO(nodeAtoms, subpathKey)
-	const edge = useO(edgeAtoms, subpathKey)
+	const node = useO(nodeProjectedSelectors, subpathKey)
+	const edge = useO(edgeProjectedSelectors, subpathKey)
 	return node === null ? null : typeof edge === "boolean" ? (
 		<rect
 			key={subpathKey}
@@ -118,8 +171,8 @@ function InteractiveNode({ subpathKey }: { subpathKey: string }) {
 }
 
 function Subpath({ subpathKey, idx }: { subpathKey: string; idx: number }) {
-	const node = useO(nodeAtoms, subpathKey)
-	const edge = useO(edgeAtoms, subpathKey)
+	const node = useO(nodeProjectedSelectors, subpathKey)
+	const edge = useO(edgeProjectedSelectors, subpathKey)
 
 	if (node === null) {
 		return "Z"
@@ -195,10 +248,14 @@ function onPointerMove(evt: PointerEvent<SVGSVGElement>): void {
 	const ctm = svg.getScreenCTM()?.inverse()
 	const { x, y } = pt.matrixTransform(ctm)
 
-	setState(nodeAtoms, key, { x: clamp(x, 0, WIDTH), y: clamp(y, 0, HEIGHT) })
+	setState(nodeProjectedSelectors, key, {
+		x: clamp(x, 0, WIDTH),
+		y: clamp(y, 0, HEIGHT),
+	})
 }
 
 const CODES = [`m`, `M`, `l`, `L`, `c`, `C`, `v`, `V`, `z`, `Z`] as const
+
 function reset() {
 	fetch("preact.svg")
 		.then((res) => res.text())
@@ -332,4 +389,50 @@ function reset() {
 				i++
 			}
 		})
+}
+
+export default function Designer() {
+	const svgRef = useAtomicRef(svgRefAtom)
+	const onPointerUp: PointerEventHandler<SVGSVGElement> = useCallback((evt) => {
+		evt.currentTarget.releasePointerCapture(evt.pointerId)
+		setState(dragRefAtom, null)
+	}, [])
+
+	useEffect(reset, [])
+
+	return (
+		<div
+			style={{
+				display: "flex",
+				flexFlow: "column",
+				alignItems: "center",
+			}}
+		>
+			<svg
+				ref={svgRef}
+				viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+				width={WIDTH}
+				height={HEIGHT}
+				onPointerMove={onPointerMove}
+				onPointerUp={onPointerUp}
+				onPointerCancel={onPointerUp}
+			>
+				<title>Bezier Playground</title>
+				{gridPattern}
+				<rect x="0" y="0" width={WIDTH} height={HEIGHT} fill="url(#grid)" />
+				<rect
+					x="0"
+					y="0"
+					width={WIDTH}
+					height={HEIGHT}
+					fill="url(#grid-lg)"
+					opacity={0.4}
+				/>
+				<PathsDemo />
+			</svg>
+			<button type="button" onClick={reset}>
+				Reset
+			</button>
+		</div>
+	)
 }
