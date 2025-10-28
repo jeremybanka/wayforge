@@ -1,17 +1,17 @@
 import { type } from "arktype"
 import z from "zod"
 
-import { cli } from "../src/cli"
+import { cli, options } from "../src/cli"
 import { parseNumberOption, parseStringOption } from "../src/option-parsers"
 
 describe(`options from cli`, () => {
 	const testCli = cli({
 		cliName: `my-cli`,
 		routeOptions: {
-			"": {
-				description: `description`,
-				optionsSchema: z.object({ foo: z.string(), bar: z.number() }),
-				options: {
+			"": options(
+				`description`,
+				z.object({ foo: z.string(), bar: z.number().optional() }),
+				{
 					foo: {
 						description: `foo`,
 						example: `--foo=hello`,
@@ -27,7 +27,7 @@ describe(`options from cli`, () => {
 						required: false,
 					},
 				},
-			},
+			),
 		},
 	})
 	test(`happy: all options`, () => {
