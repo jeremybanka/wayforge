@@ -1,8 +1,10 @@
+import type { JsonSchema } from "arktype"
+import { type } from "arktype"
 import picocolors from "picocolors"
 import type { Colors } from "picocolors/types"
-import { z } from "zod/v4"
+import type { ZodObject } from "zod"
 
-import type { CommandLineInterface, OptionsGroup } from "./cli"
+import { type CommandLineInterface, options, type OptionsGroup } from "./cli"
 import { parseBooleanOption } from "./option-parsers"
 
 const capitalize = <T extends string>(str: T): Capitalize<T> =>
@@ -117,11 +119,27 @@ export type HelpOptions = {
 	forceColor?: boolean
 }
 
+function shallowlyStringifyJsonSchema(jsonSchema: JsonSchema): string {
+	if (`type` in jsonSchema) {
+		if (typeof jsonSchema.type === `string`) {
+			return jsonSchema.type
+		}
+		return jsonSchema.type.join(` | `)
+	}
+	if (`enum` in jsonSchema) {
+		return jsonSchema.enum.map((e) => JSON.stringify(e)).join(` | `)
+	}
+	if (`const` in jsonSchema) {
+		return JSON.stringify(jsonSchema.const)
+	}
+	return `unknown`
+}
+
 export function help(
 	cli: CommandLineInterface<any>,
-	options?: HelpOptions,
+	helpOptions?: HelpOptions,
 ): string {
-	const pico = picocolors.createColors(options?.forceColor)
+	const pico = picocolors.createColors(helpOptions?.forceColor)
 	return [
 		renderTable(
 			[[cli.cliName, cli.cliDescription ?? `cli`]],
@@ -144,27 +162,44 @@ export function help(
 					.map((s) => (s.includes(`$`) ? `<${s.replaceAll(`$`, ``)}>` : s))
 					.join(` `)
 				rows.push([`$`, cli.cliName, prettyRoute, value?.description ?? ``])
-				if (value?.options) {
+				if (value?.optionConfigs) {
 					rows.push(
-						...Object.entries(value.options).map(([key, option]) => {
+						...Object.entries(value.optionConfigs).map(([key, option]) => {
 							const flag = option.flag ? `-${option.flag}` : ` . `
-							const optionsSchema = value.optionsSchema as z.ZodObject<any>
-							const optionDef = optionsSchema.shape[key]._def
-							console.log(optionDef)
-							let type = optionDef.type as string
+							const optionsSchema = value.optionsSchema
 
-							if (type === `optional`) {
-								type = optionDef.innerType._def.type as string
+							let typeString = `unknown`
+							if (`_def` in optionsSchema) {
+								const optionDef = (optionsSchema as ZodObject<any>).shape[key]
+									._def
+								console.log(optionDef)
+								typeString = optionDef.type as string
+
+								if (typeString === `optional`) {
+									typeString = optionDef.innerType._def.type as string
+								}
+								typeString = lower(typeString.replaceAll(`Zod`, ``))
+								if (option.required) {
+									typeString = `${typeString} (required)`
+								}
+							} else {
+								const jsonSchema = optionsSchema.toJsonSchema()
+								const propertySchema = (
+									jsonSchema as JsonSchema.Object & {
+										properties: Record<string, JsonSchema>
+									}
+								).properties[key]
+								typeString = shallowlyStringifyJsonSchema(propertySchema)
+								if (option.required) {
+									typeString = `${typeString} (required)`
+								}
 							}
-							type = lower(type.replaceAll(`Zod`, ``))
-							if (option.required) {
-								type = `${type} (required)`
-							}
+
 							return [
 								``,
 								``,
 								`${flag}, ${option.example}`,
-								`${type}: ${option.description ?? ``}`,
+								`${typeString}: ${option.description ?? ``}`,
 							]
 						}),
 					)
@@ -203,19 +238,13 @@ function assemble<T extends Object>(
 export function helpOption(
 	description = ``,
 ): OptionsGroup<{ help?: boolean | undefined }> {
-	return {
-		optionsSchema: z.object({
-			help: z.boolean().optional(),
-		}),
-		options: {
-			help: {
-				description: `show this help text`,
-				example: `--help`,
-				flag: `h`,
-				parse: parseBooleanOption,
-				required: false,
-			},
+	return options(description, type({ "help?": `boolean` }), {
+		help: {
+			description: `show this help text`,
+			example: `--help`,
+			flag: `h`,
+			parse: parseBooleanOption,
+			required: false,
 		},
-		description,
-	}
+	})
 }

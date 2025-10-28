@@ -1,8 +1,7 @@
+import { type } from "arktype"
 import { optional, required } from "treetrunks"
-import { z } from "zod/v4"
 
-import type { OptionsGroup } from "../src/cli"
-import { cli } from "../src/cli"
+import { cli, options } from "../src/cli"
 import { parseStringOption } from "../src/option-parsers"
 
 describe(`positional args from cli`, () => {
@@ -49,18 +48,15 @@ describe(`positional args from cli`, () => {
 })
 
 describe(`options and positional args from cli`, () => {
-	const optionGroup = {
-		optionsSchema: z.object({ foo: z.string().optional() }),
-		options: {
-			foo: {
-				description: `foo`,
-				example: `--foo=hello`,
-				flag: `f`,
-				parse: parseStringOption,
-				required: false,
-			},
+	const optionGroup = options(`blah`, type({ "foo?": `string` }), {
+		foo: {
+			description: `foo`,
+			example: `--foo=hello`,
+			flag: `f`,
+			parse: parseStringOption,
+			required: false,
 		},
-	} as OptionsGroup<{ foo?: string }>
+	})
 
 	const testCli = cli({
 		cliName: `my-cli`,
