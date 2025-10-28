@@ -2,9 +2,15 @@
 
 import * as path from "node:path"
 
+import { type } from "arktype"
 import type { OptionsGroup } from "comline"
-import { cli, optional, parseBooleanOption, parseNumberOption } from "comline"
-import { z } from "zod/v4"
+import {
+	cli,
+	optional,
+	options,
+	parseBooleanOption,
+	parseNumberOption,
+} from "comline"
 
 import type { FlightDeckOptions } from "./flightdeck.lib"
 import { FlightDeck, FlightDeckLogger } from "./flightdeck.lib"
@@ -19,23 +25,21 @@ Object.assign(console, {
 	error: CLI_LOGGER.error.bind(CLI_LOGGER),
 })
 
-const FLIGHTDECK_MANUAL = {
-	optionsSchema: z.object({
-		port: z.number().optional(),
-		packageName: z.string(),
-		services: z.record(
-			z.string(),
-			z.object({ run: z.string(), waitFor: z.boolean() }),
-		),
-		flightdeckRootDir: z.string(),
-		scripts: z.object({
-			download: z.string(),
-			install: z.string(),
-			checkAvailability: z.string(),
-		}),
-		jsonLogging: z.boolean().optional(),
+const FLIGHTDECK_MANUAL = options(
+	`Run the FlightDeck process manager.`,
+	type({
+		"port?": `number`,
+		packageName: `string`,
+		services: { "[string]": { run: `string`, waitFor: `boolean` } },
+		flightdeckRootDir: `string`,
+		scripts: {
+			download: `string`,
+			install: `string`,
+			checkAvailability: `string`,
+		},
+		"jsonLogging?": `boolean`,
 	}),
-	options: {
+	{
 		port: {
 			flag: `p`,
 			required: false,
@@ -77,13 +81,12 @@ const FLIGHTDECK_MANUAL = {
 			parse: parseBooleanOption,
 		},
 	},
-} satisfies OptionsGroup<FlightDeckOptions>
+) satisfies OptionsGroup<FlightDeckOptions>
 
-const SCHEMA_MANUAL = {
-	optionsSchema: z.object({
-		outdir: z.string().optional(),
-	}),
-	options: {
+const SCHEMA_MANUAL = options(
+	`Write a json schema for the FlightDeck options.`,
+	type({ "outdir?": `string` }),
+	{
 		outdir: {
 			flag: `o`,
 			required: false,
@@ -91,7 +94,7 @@ const SCHEMA_MANUAL = {
 			example: `--outdir=./dist`,
 		},
 	},
-} satisfies OptionsGroup<{ outdir?: string | undefined }>
+) satisfies OptionsGroup<{ outdir?: string | undefined }>
 
 const parse = cli(
 	{
