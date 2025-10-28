@@ -22,7 +22,16 @@
 	"main": "dist/cli.js",
 	"types": "dist/cli.d.ts",
 	"peerDependencies": {
-		"zod": "^3.25.0"
+		"arktype": "^2.1.25",
+		"zod": "^4.1.12"
+	},
+	"peerDependenciesMeta": {
+		"arktype": {
+			"optional": true
+		},
+		"zod": {
+			"optional": true
+		}
 	},
 	"dependencies": {
 		"picocolors": "1.1.1",
@@ -44,12 +53,13 @@
 		"@types/node": "24.9.2",
 		"@types/tmp": "0.2.6",
 		"@typescript/native-preview": "7.0.0-dev.20251027.1",
+		"arktype": "2.1.25",
 		"concurrently": "9.2.1",
 		"eslint": "9.38.0",
 		"tmp": "0.2.5",
 		"tsdown": "0.15.11",
 		"vite": "7.1.12",
 		"vitest": "4.0.4",
-		"zod": "3.25.76"
+		"zod": "4.1.12"
 	}
 }

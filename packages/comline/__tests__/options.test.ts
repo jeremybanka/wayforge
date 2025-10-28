@@ -1,19 +1,17 @@
-import { z } from "zod/v4"
+import { type } from "arktype"
+import z from "zod"
 
-import { cli } from "../src/cli"
+import { cli, options } from "../src/cli"
 import { parseNumberOption, parseStringOption } from "../src/option-parsers"
 
 describe(`options from cli`, () => {
 	const testCli = cli({
 		cliName: `my-cli`,
 		routeOptions: {
-			"": {
-				description: `description`,
-				optionsSchema: z.object({
-					foo: z.string(),
-					bar: z.number().optional(),
-				}),
-				options: {
+			"": options(
+				`description`,
+				z.object({ foo: z.string(), bar: z.number().optional() }),
+				{
 					foo: {
 						description: `foo`,
 						example: `--foo=hello`,
@@ -29,7 +27,7 @@ describe(`options from cli`, () => {
 						required: false,
 					},
 				},
-			},
+			),
 		},
 	})
 	test(`happy: all options`, () => {
@@ -58,22 +56,15 @@ describe(`complex options`, () => {
 	const testCli = cli({
 		cliName: `my-cli`,
 		routeOptions: {
-			"": {
-				optionsSchema: z.object({
-					rules: z.object({
-						rule0: z.tuple([z.string(), z.string()]),
-					}),
-				}),
-				options: {
-					rules: {
-						description: `rules`,
-						example: `--rules='{"rule0": ["a", "b"]}'`,
-						flag: `r`,
-						parse: JSON.parse,
-						required: true,
-					},
+			"": options(`example`, type({ rules: { rule0: [`string`, `string`] } }), {
+				rules: {
+					description: `rules`,
+					example: `--rules='{"rule0": ["a", "b"]}'`,
+					flag: `r`,
+					parse: JSON.parse,
+					required: true,
 				},
-			},
+			}),
 		},
 	})
 	test(`happy: all options`, () => {

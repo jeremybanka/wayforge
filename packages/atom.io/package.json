@@ -99,6 +99,7 @@
 		"@typescript/native-preview": "7.0.0-dev.20251027.1",
 		"@vitest/coverage-v8": "4.0.4",
 		"@vitest/ui": "4.0.4",
+		"arktype": "2.1.25",
 		"break-check": "workspace:*",
 		"concurrently": "9.2.1",
 		"drizzle-kit": "0.31.6",
@@ -123,8 +124,7 @@
 		"typescript": "5.9.3",
 		"vite": "7.1.12",
 		"vite-tsconfig-paths": "5.1.4",
-		"vitest": "4.0.4",
-		"zod": "3.25.76"
+		"vitest": "4.0.4"
 	},
 	"main": "./dist/main/index.js",
 	"files": [

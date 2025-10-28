@@ -27,12 +27,12 @@
 		"klaxon": "./bin/klaxon.bin.js"
 	},
 	"dependencies": {
+		"arktype": "2.1.25",
 		"@t3-oss/env-core": "0.13.8",
 		"atom.io": "workspace:*",
 		"comline": "workspace:*",
 		"cron": "4.3.3",
-		"safedeposit": "workspace:*",
-		"zod": "3.25.76"
+		"safedeposit": "workspace:*"
 	},
 	"scripts": {
 		"gen": "bun ./__scripts__/gen.bun.ts",
@@ -61,6 +61,7 @@
 		"tmp": "0.2.5",
 		"tsdown": "0.15.11",
 		"varmint": "workspace:*",
-		"vitest": "4.0.4"
+		"vitest": "4.0.4",
+		"zod": "4.1.12"
 	}
 }

@@ -1,11 +1,11 @@
 import * as fs from "node:fs"
 import path from "node:path"
 
+import { type } from "arktype"
 import * as tmp from "tmp"
 import { required } from "treetrunks"
-import { z } from "zod/v4"
 
-import { cli } from "../src/cli"
+import { cli, options } from "../src/cli"
 import { parseStringOption } from "../src/option-parsers"
 
 let tempDir: tmp.DirResult
@@ -23,18 +23,15 @@ describe(`options from file`, () => {
 		cliName: `my-cli`,
 		routes: required({ $config: null }),
 		routeOptions: {
-			$config: {
-				optionsSchema: z.object({ foo: z.string() }),
-				options: {
-					foo: {
-						description: `foo`,
-						example: `--foo=hello`,
-						flag: `f`,
-						parse: parseStringOption,
-						required: true,
-					},
+			$config: options(`blah`, type({ foo: `string` }), {
+				foo: {
+					description: `foo`,
+					example: `--foo=hello`,
+					flag: `f`,
+					parse: parseStringOption,
+					required: true,
 				},
-			},
+			}),
 		},
 		discoverConfigPath: (positionalArgs) => {
 			if (positionalArgs[0]) {
@@ -65,18 +62,15 @@ describe(`creating a config schema`, () => {
 	const testCli = cli({
 		cliName: `my-cli`,
 		routeOptions: {
-			"": {
-				optionsSchema: z.object({ foo: z.string() }),
-				options: {
-					foo: {
-						description: `foo`,
-						example: `--foo=hello`,
-						flag: `f`,
-						parse: parseStringOption,
-						required: true,
-					},
+			"": options(`blah`, type({ foo: `string` }), {
+				foo: {
+					description: `foo`,
+					example: `--foo=hello`,
+					flag: `f`,
+					parse: parseStringOption,
+					required: true,
 				},
-			},
+			}),
 		},
 	})
 	test(`happy: export a schema`, () => {
