@@ -1,5 +1,16 @@
 # comline
 
+## 0.4.0
+
+### Minor Changes
+
+- 9aa40f0: 💥 Drop support for Zod 3.
+
+### Patch Changes
+
+- 9aa40f0: ✨ Support ArkType for options.
+- 9aa40f0: ✨ Support Zod 4.
+
 ## 0.3.3
 
 ### Patch Changes
