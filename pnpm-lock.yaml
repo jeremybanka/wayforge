@@ -434,9 +434,6 @@ importers:
       vitest:
         specifier: 4.0.4
         version: 4.0.4(@types/debug@4.1.12)(@types/node@24.9.2)(@vitest/ui@4.0.4)(happy-dom@20.0.8)(jiti@2.6.1)(jsdom@27.0.1(postcss@8.5.6))(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
-      zod:
-        specifier: 3.25.76
-        version: 3.25.76
 
   packages/break-check:
     dependencies:
@@ -534,7 +531,7 @@ importers:
     dependencies:
       '@t3-oss/env-core':
         specifier: 0.13.8
-        version: 0.13.8(arktype@2.1.25)(typescript@5.9.3)(zod@3.25.76)
+        version: 0.13.8(arktype@2.1.25)(typescript@5.9.3)(zod@4.1.12)
       arktype:
         specifier: 2.1.25
         version: 2.1.25
@@ -550,9 +547,6 @@ importers:
       safedeposit:
         specifier: workspace:*
         version: link:../safedeposit
-      zod:
-        specifier: 3.25.76
-        version: 3.25.76
     devDependencies:
       '@biomejs/js-api':
         specifier: 4.0.0
@@ -596,6 +590,9 @@ importers:
       vitest:
         specifier: 4.0.4
         version: 4.0.4(@types/debug@4.1.12)(@types/node@24.9.2)(@vitest/ui@4.0.4)(happy-dom@20.0.8)(jiti@2.6.1)(jsdom@27.0.1(postcss@8.5.6))(sass-embedded@1.93.2)(sass@1.93.2)(terser@5.44.0)(yaml@2.8.1)
+      zod:
+        specifier: 4.1.12
+        version: 4.1.12
 
   packages/hamr:
     dependencies:
@@ -11536,12 +11533,6 @@ snapshots:
     optionalDependencies:
       typescript: 5.9.3
       zod: 3.25.7
-
-  '@t3-oss/env-core@0.13.8(arktype@2.1.25)(typescript@5.9.3)(zod@3.25.76)':
-    optionalDependencies:
-      arktype: 2.1.25
-      typescript: 5.9.3
-      zod: 3.25.76
 
   '@t3-oss/env-core@0.13.8(arktype@2.1.25)(typescript@5.9.3)(zod@4.1.12)':
     optionalDependencies:
