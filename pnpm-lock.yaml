@@ -408,8 +408,8 @@ importers:
         specifier: 7.9.4
         version: 7.9.4(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       recoverage:
-        specifier: 0.1.11
-        version: 0.1.11(arktype@2.1.25)(typescript@5.9.3)
+        specifier: 0.1.12
+        version: 0.1.12(typescript@5.9.3)(zod@4.1.12)
       socket.io:
         specifier: 4.8.1
         version: 4.8.1
@@ -899,8 +899,8 @@ importers:
         specifier: 9.38.0
         version: 9.38.0(jiti@2.6.1)
       recoverage:
-        specifier: 0.1.11
-        version: 0.1.11(arktype@2.1.25)(typescript@5.9.3)
+        specifier: 0.1.12
+        version: 0.1.12(typescript@5.9.3)(zod@4.1.12)
       rimraf:
         specifier: 6.0.1
         version: 6.0.1
@@ -1036,8 +1036,8 @@ importers:
         specifier: 9.38.0
         version: 9.38.0(jiti@2.6.1)
       recoverage:
-        specifier: 0.1.11
-        version: 0.1.11(arktype@2.1.25)(typescript@5.9.3)
+        specifier: 0.1.12
+        version: 0.1.12(typescript@5.9.3)(zod@4.1.12)
       tsdown:
         specifier: 0.15.11
         version: 0.15.11(@typescript/native-preview@7.0.0-dev.20251027.1)(typescript@5.9.3)
@@ -3865,21 +3865,6 @@ packages:
   '@swc/types@0.1.25':
     resolution: {integrity: sha512-iAoY/qRhNH8a/hBvm3zKj9qQ4oc2+3w1unPJa2XvTK3XjeLXtzcCingVPw/9e5mn1+0yPqxcBGp9Jf0pkfMb1g==}
 
-  '@t3-oss/env-core@0.13.4':
-    resolution: {integrity: sha512-zVOiYO0+CF7EnBScz8s0O5JnJLPTU0lrUi8qhKXfIxIJXvI/jcppSiXXsEJwfB4A6XZawY/Wg/EQGKANi/aPmQ==}
-    peerDependencies:
-      arktype: ^2.1.0
-      typescript: '>=5.0.0'
-      valibot: ^1.0.0-beta.7 || ^1.0.0
-      zod: ^3.24.0 || ^4.0.0-beta.0
-    peerDependenciesMeta:
-      typescript:
-        optional: true
-      valibot:
-        optional: true
-      zod:
-        optional: true
-
   '@t3-oss/env-core@0.13.8':
     resolution: {integrity: sha512-L1inmpzLQyYu4+Q1DyrXsGJYCXbtXjC4cICw1uAKv0ppYPQv656lhZPU91Qd1VS6SO/bou1/q5ufVzBGbNsUpw==}
     peerDependencies:
@@ -4995,15 +4980,21 @@ packages:
     resolution: {integrity: sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==}
     engines: {node: '>=0.1.90'}
 
-  comline@0.3.0:
-    resolution: {integrity: sha512-XdcuXqGaJ5aWCIJcRrkQT1DG6B1ghIkGnsnG9Z/E3IjiJz81eTu+RUSzK2h6FhAm/dL/SJOjjlE0q56nYQ33dg==}
-    peerDependencies:
-      zod: ^3.25.0
-
   comline@0.3.2:
     resolution: {integrity: sha512-L9ccRs1L6bcxufpPE6rqwztNHqJKFCwV/OWkrZTzP94cqfibDp9sDUwJnWPJPXlcM/jvbK8dfW7/b6/3fJmKvg==}
     peerDependencies:
       zod: ^3.25.0
+
+  comline@0.4.2:
+    resolution: {integrity: sha512-7vUbXnbzebwi8d260u6dE5EMyGBmQdQZUUaSlmml2Lc2illQ9Sp7iSGePvl08pAQXseBE4TTDmmXGYGQSrgiuQ==}
+    peerDependencies:
+      arktype: ^2.1.25
+      zod: ^4.1.12
+    peerDependenciesMeta:
+      arktype:
+        optional: true
+      zod:
+        optional: true
 
   comma-separated-tokens@2.0.3:
     resolution: {integrity: sha512-Fu4hJdvzeylCfQPp9SGWidpzrMs7tTrlu6Vb8XGaRGck8QSNZJJp538Wrb60Lax4fPwR64ViY468OIUTbRlGZg==}
@@ -5235,10 +5226,6 @@ packages:
 
   diff@5.2.0:
     resolution: {integrity: sha512-uIFDxqpRZGZ6ThOk84hEfqWoHx2devRFvpTZcTHur85vImfaxUbTW9Ryh4CpCuDnToOP1CEtXKIgytHBPVff5A==}
-    engines: {node: '>=0.3.1'}
-
-  diff@8.0.1:
-    resolution: {integrity: sha512-rEaM3KmVm78zE3dFZaop3aCQa2MTm+T4kcigUFLVU/KbOYdiY6JnL2g2puOYnct3QFw9pjZadaCbCZ1O8ArMlQ==}
     engines: {node: '>=0.3.1'}
 
   diff@8.0.2:
@@ -6251,10 +6238,6 @@ packages:
   istanbul-lib-source-maps@5.0.6:
     resolution: {integrity: sha512-yg2d+Em4KizZC5niWhQaIomgf5WlL4vOOjZ5xGCmF8SnPE/mDWWXgvRExdcpCgh9lLRRa1/fSYp2ymmbJ1pI+A==}
     engines: {node: '>=10'}
-
-  istanbul-reports@3.1.7:
-    resolution: {integrity: sha512-BewmUXImeuRk2YY0PVbxgKAysvhRPUQE0h5QRM++nVWyubKGV0l8qQ5op8+B2DOmwSe63Jivj0BjkPQVf8fP5g==}
-    engines: {node: '>=8'}
 
   istanbul-reports@3.2.0:
     resolution: {integrity: sha512-HGYWWS/ehqTV3xN10i23tkPkpH46MLCIMFNCaaKNavAXTF1RkqxawEPtnjnGZ6XKSInBKkiOA5BKS+aZiY3AvA==}
@@ -7370,8 +7353,8 @@ packages:
   recma-stringify@1.0.0:
     resolution: {integrity: sha512-cjwII1MdIIVloKvC9ErQ+OgAtwHBmcZ0Bg4ciz78FtbT8In39aAYbaA7zvxQ61xVMSPE8WxhLwLbhif4Js2C+g==}
 
-  recoverage@0.1.11:
-    resolution: {integrity: sha512-2/otu5zZxjk80aGUEK6dAfD0UAs3bzjmm4pLmhQ8WJdiobDWt7c4FDFYdgg6m1/4dwws4M4aXnW+Xb6ADfkE5g==}
+  recoverage@0.1.12:
+    resolution: {integrity: sha512-uqy1Xzr8U6kSfHwJkXzItKyCx2/P5uW1reQx2Jjy69Ohiu76nebPZ78WXXhdYUDT7FSfVz/U5e6oVSlBVxwmvw==}
     hasBin: true
 
   redent@3.0.0:
@@ -7767,9 +7750,6 @@ packages:
   simple-code-frame@1.3.0:
     resolution: {integrity: sha512-MB4pQmETUBlNs62BBeRjIFGeuy/x6gGKh7+eRUemn1rCFhqo7K+4slPqsyizCbcbYLnaYqaoZ2FWsZ/jN06D8w==}
 
-  simple-git@3.27.0:
-    resolution: {integrity: sha512-ivHoFS9Yi9GY49ogc6/YAi3Fl9ROnF4VyubNylgCkA+RVqLaKWnDSzXOVzya8csELIaWaYNutsEuAhZrtOjozA==}
-
   simple-git@3.28.0:
     resolution: {integrity: sha512-Rs/vQRwsn1ILH1oBUy8NucJlXmnnLeLCfcvbSehkPzbv3wwoFWIdtfd6Ndo6ZPhlPsCZ60CPI4rxurnwAa+a2w==}
 
@@ -8090,10 +8070,6 @@ packages:
     resolution: {integrity: sha512-Y1KQBgDd/NUc+LfOtKS6mNsC9CCaH+m2P1RoIZy7RAPo3C3/t8X45+zgut31cRZtZ3xKPjfn3TkGTrctC2TQIQ==}
     hasBin: true
 
-  tmp@0.2.3:
-    resolution: {integrity: sha512-nZD7m9iCPC5g0pYmcaxogYKggSfLsdxl8of3Q/oIbqCqLLIO9IAF0GWjX1z9NZRHPiXv8Wex4yDCaZsgEw0Y8w==}
-    engines: {node: '>=14.14'}
-
   tmp@0.2.5:
     resolution: {integrity: sha512-voyz6MApa1rQGUxT3E+BK7/ROe8itEx7vD8/HEvt4xwXucvQ5G5oeEiHkmHZJuBO21RpOf+YYm9MOivj709jow==}
     engines: {node: '>=14.14'}
@@ -8117,9 +8093,6 @@ packages:
   tree-kill@1.2.2:
     resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
     hasBin: true
-
-  treetrunks@0.1.3:
-    resolution: {integrity: sha512-jJc5zfHcpI6dgYWmncxlGJ/wuzKRD9TLHr7aqqp0EhTOslmI6oGNeZpPJBf7sKaNFrzZMts2U5q0PyWZa77ATg==}
 
   treetrunks@0.1.5:
     resolution: {integrity: sha512-X3zX+yYdW9mrzoZE5f1e2CLSAEUbS5Crw9D2JSL0EFt6rb8Jih95ZkP76oUZKR+EHnlZZEO/x9oVhXKccznYKw==}
@@ -8892,9 +8865,6 @@ packages:
 
   zod@3.24.3:
     resolution: {integrity: sha512-HhY1oqzWCQWuUqvBFnsyrtZRhyPeR7SUGv+C4+MsisMuVfSPx8HpwWqH8tRahSlt6M3PiFAcoeFhZAqIXTxoSg==}
-
-  zod@3.25.7:
-    resolution: {integrity: sha512-YGdT1cVRmKkOg6Sq7vY7IkxdphySKnXhaUmFI4r4FcuFVNgpCb9tZfNwXbT6BPjD5oz0nubFsoo9pIqKrDcCvg==}
 
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
@@ -11530,13 +11500,6 @@ snapshots:
     dependencies:
       '@swc/counter': 0.1.3
 
-  '@t3-oss/env-core@0.13.4(arktype@2.1.25)(typescript@5.9.3)(zod@3.25.7)':
-    dependencies:
-      arktype: 2.1.25
-    optionalDependencies:
-      typescript: 5.9.3
-      zod: 3.25.7
-
   '@t3-oss/env-core@0.13.8(arktype@2.1.25)(typescript@5.9.3)(zod@4.1.12)':
     optionalDependencies:
       arktype: 2.1.25
@@ -12767,16 +12730,18 @@ snapshots:
 
   colors@1.4.0: {}
 
-  comline@0.3.0(zod@3.25.7):
-    dependencies:
-      picocolors: 1.1.1
-      treetrunks: 0.1.3
-      zod: 3.25.7
-
   comline@0.3.2(zod@4.1.12):
     dependencies:
       picocolors: 1.1.1
       treetrunks: 0.1.5
+      zod: 4.1.12
+
+  comline@0.4.2(arktype@2.1.25)(zod@4.1.12):
+    dependencies:
+      picocolors: 1.1.1
+      treetrunks: 0.1.5
+    optionalDependencies:
+      arktype: 2.1.25
       zod: 4.1.12
 
   comma-separated-tokens@2.0.3: {}
@@ -12965,8 +12930,6 @@ snapshots:
   didyoumean@1.2.2: {}
 
   diff@5.2.0: {}
-
-  diff@8.0.1: {}
 
   diff@8.0.2: {}
 
@@ -14111,11 +14074,6 @@ snapshots:
       istanbul-lib-coverage: 3.2.2
     transitivePeerDependencies:
       - supports-color
-
-  istanbul-reports@3.1.7:
-    dependencies:
-      html-escaper: 2.0.2
-      istanbul-lib-report: 3.0.1
 
   istanbul-reports@3.2.0:
     dependencies:
@@ -15559,23 +15517,23 @@ snapshots:
       unified: 11.0.5
       vfile: 6.0.3
 
-  recoverage@0.1.11(arktype@2.1.25)(typescript@5.9.3):
+  recoverage@0.1.12(typescript@5.9.3)(zod@4.1.12):
     dependencies:
-      '@t3-oss/env-core': 0.13.4(arktype@2.1.25)(typescript@5.9.3)(zod@3.25.7)
+      '@t3-oss/env-core': 0.13.8(arktype@2.1.25)(typescript@5.9.3)(zod@4.1.12)
+      arktype: 2.1.25
       colors: 1.4.0
-      comline: 0.3.0(zod@3.25.7)
-      diff: 8.0.1
+      comline: 0.4.2(arktype@2.1.25)(zod@4.1.12)
+      diff: 8.0.2
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
-      istanbul-reports: 3.1.7
-      simple-git: 3.27.0
-      tmp: 0.2.3
-      zod: 3.25.7
+      istanbul-reports: 3.2.0
+      simple-git: 3.28.0
+      tmp: 0.2.5
     transitivePeerDependencies:
-      - arktype
       - supports-color
       - typescript
       - valibot
+      - zod
 
   redent@3.0.0:
     dependencies:
@@ -16098,14 +16056,6 @@ snapshots:
     dependencies:
       kolorist: 1.8.0
 
-  simple-git@3.27.0:
-    dependencies:
-      '@kwsites/file-exists': 1.1.1
-      '@kwsites/promise-deferred': 1.1.1
-      debug: 4.4.3
-    transitivePeerDependencies:
-      - supports-color
-
   simple-git@3.28.0:
     dependencies:
       '@kwsites/file-exists': 1.1.1
@@ -16460,8 +16410,6 @@ snapshots:
     dependencies:
       tldts-core: 7.0.17
 
-  tmp@0.2.3: {}
-
   tmp@0.2.5: {}
 
   to-regex-range@5.0.1:
@@ -16479,8 +16427,6 @@ snapshots:
       punycode: 2.3.1
 
   tree-kill@1.2.2: {}
-
-  treetrunks@0.1.3: {}
 
   treetrunks@0.1.5: {}
 
@@ -17221,8 +17167,6 @@ snapshots:
   zod@3.22.3: {}
 
   zod@3.24.3: {}
-
-  zod@3.25.7: {}
 
   zod@3.25.76: {}
 
