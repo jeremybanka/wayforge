@@ -36,13 +36,13 @@
 	},
 	"devDependencies": {
 		"@types/node": "24.9.2",
-		"@vitest/coverage-v8": "4.0.4",
+		"@vitest/coverage-v8": "4.0.5",
 		"concurrently": "9.2.1",
 		"eslint": "9.38.0",
 		"recoverage": "0.1.12",
 		"rimraf": "6.0.1",
 		"tsdown": "0.15.11",
 		"vite": "7.1.12",
-		"vitest": "4.0.4"
+		"vitest": "4.0.5"
 	}
 }
