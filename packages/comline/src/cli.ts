@@ -2,7 +2,7 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 
 import type { JsonSchema, Type } from "arktype"
-import { type } from "arktype"
+import { isPackageExists } from "local-pkg"
 import type {
 	Flatten,
 	Join,
@@ -11,7 +11,7 @@ import type {
 	TreePath,
 	TreePathName,
 } from "treetrunks"
-import { z, ZodType } from "zod"
+import type { ZodType } from "zod"
 
 import type { Flag } from "./flag"
 import { parseStringOption } from "./option-parsers"
@@ -22,6 +22,21 @@ export type * from "./flag"
 export * from "./help"
 export * from "./option-parsers"
 export * from "treetrunks"
+
+const hasArktype = isPackageExists(`arktype`)
+const hasZod = isPackageExists(`zod`)
+
+if (!hasArktype && !hasZod) {
+	throw new Error(
+		`You must have either "arktype" or "zod" installed to use comline.`,
+	)
+}
+
+const ark = hasArktype ? await import(`arktype`) : null
+const zod = hasZod ? await import(`zod`) : null
+const schemaPkg = ark ?? zod!
+const emptySchema =
+	`type` in schemaPkg ? schemaPkg.type({}) : schemaPkg.z.object({})
 
 export type CliOptionValue =
 	| Readonly<{ [key: string]: CliOptionValue }>
@@ -161,7 +176,7 @@ export function cli<
 			const route: OptionsGroup<any> = routeOptions[positionalArgs.route]
 
 			const optionConfigs = route?.optionConfigs ?? {}
-			const optionsSchema = route?.optionsSchema ?? type({})
+			const optionsSchema = route?.optionsSchema ?? emptySchema
 
 			if (route === undefined) {
 				throw new Error(
@@ -177,10 +192,14 @@ export function cli<
 						logger.info?.(`config file was found`)
 						const configText = fs.readFileSync(configFilePath, `utf-8`)
 						const optionsFromConfigJson = JSON.parse(configText)
-						if (optionsSchema instanceof ZodType) {
-							optionsFromConfig = optionsSchema.parse(optionsFromConfigJson)
-						} else {
-							optionsFromConfig = optionsSchema.assert(optionsFromConfigJson)
+						if (zod && optionsSchema instanceof zod.ZodType) {
+							optionsFromConfig = optionsSchema.parse(
+								optionsFromConfigJson,
+							) as Options
+						} else if (ark && optionsSchema instanceof ark.Type) {
+							optionsFromConfig = optionsSchema.assert(
+								optionsFromConfigJson,
+							) as Options
 						}
 					}
 				}
@@ -238,10 +257,14 @@ export function cli<
 			)
 			logger.info?.(`options from command line:`, optionsFromCommandLine)
 			let suppliedOptions: Options
-			if (optionsSchema instanceof ZodType) {
-				suppliedOptions = optionsSchema.parse(suppliedOptionsUnparsed)
+			if (zod && optionsSchema instanceof zod.ZodType) {
+				suppliedOptions = optionsSchema.parse(suppliedOptionsUnparsed) as Options
+			} else if (ark && optionsSchema instanceof ark.Type) {
+				suppliedOptions = optionsSchema.assert(
+					suppliedOptionsUnparsed,
+				) as Options
 			} else {
-				suppliedOptions = optionsSchema.assert(suppliedOptionsUnparsed)
+				throw new Error(`Unreachable? Indicates no install of arktype or zod.`)
 			}
 			logger.info?.(`final options parsed:`, suppliedOptions)
 			return {
@@ -259,13 +282,17 @@ export function cli<
 						}
 						const safeRoute = unsafeRoute.replaceAll(`/`, `.`)
 						let jsonSchema: object
-						if (optionsGroup.optionsSchema instanceof ZodType) {
-							jsonSchema = z.toJSONSchema(optionsGroup.optionsSchema)
-						} else {
+						if (zod && optionsGroup.optionsSchema instanceof zod.ZodType) {
+							jsonSchema = zod.z.toJSONSchema(optionsGroup.optionsSchema)
+						} else if (ark && optionsGroup.optionsSchema instanceof ark.Type) {
 							const arktypeJsonSchema =
 								optionsGroup.optionsSchema.toJsonSchema() as JsonSchema.Object
 							arktypeJsonSchema.additionalProperties = false
 							jsonSchema = arktypeJsonSchema
+						} else {
+							throw new Error(
+								`Unreachable? Indicates no install of arktype or zod.`,
+							)
 						}
 						const filepath = path.resolve(
 							outdir,
@@ -285,7 +312,7 @@ export function noOptions(
 ): OptionsGroup<Record<never, never>> {
 	const optionsGroup: OptionsGroup<Record<never, never>> = {
 		description: ``,
-		optionsSchema: type({}),
+		optionsSchema: emptySchema,
 		optionConfigs: {},
 	}
 	if (description) {
