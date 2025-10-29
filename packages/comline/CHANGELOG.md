@@ -1,5 +1,11 @@
 # comline
 
+## 0.4.1
+
+### Patch Changes
+
+- 442b401: 🐛 Fix bug where both `zod` and `arktype` needed to be installed. Now it should be fine to have just one.
+
 ## 0.4.0
 
 ### Minor Changes
