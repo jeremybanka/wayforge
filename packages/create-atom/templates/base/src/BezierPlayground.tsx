@@ -4,6 +4,7 @@ import {
 	getState,
 	Loadable,
 	resetState,
+	selectorFamily,
 	setState,
 } from "atom.io"
 import { type RegularAtomToken } from "atom.io"
@@ -29,6 +30,37 @@ const nodeAtoms = atomFamily<PointXY | null, string>({
 const edgeAtoms = atomFamily<boolean | EdgeXY, string>({
 	key: "edgeAtoms",
 	default: true,
+})
+const pathDrawSelectors = selectorFamily<string, string>({
+	key: "pathDrawSelectors",
+	get:
+		(pathKey) =>
+		({ get }) => {
+			const subpathKeys = get(subpathKeysAtoms, pathKey)
+			return subpathKeys
+				.map((subpathKey, idx) => {
+					const node = get(nodeAtoms, subpathKey)
+					const edge = get(edgeAtoms, subpathKey)
+
+					if (node === null) {
+						return "Z"
+					}
+					if (idx === 0) {
+						return `M ${node.x} ${node.y}`
+					}
+					if (edge === false) {
+						return `M ${node.x} ${node.y}`
+					}
+					if (edge === true) {
+						return `L ${node.x} ${node.y}`
+					}
+					if (`c` in edge) {
+						return `C ${edge.c.x} ${edge.c.y} ${edge.s.x} ${edge.s.y} ${node.x} ${node.y}`
+					}
+					return `S ${edge.s.x} ${edge.s.y} ${node.x} ${node.y}`
+				})
+				.join(" ")
+		},
 })
 
 export function useAtomicRef<T>(
@@ -148,36 +180,9 @@ function Node({
 	)
 }
 
-function Subpath({ subpathKey, idx }: { subpathKey: string; idx: number }) {
-	const node = useO(nodeAtoms, subpathKey)
-	const edge = useO(edgeAtoms, subpathKey)
-
-	if (node === null) {
-		return "Z"
-	}
-	if (idx === 0) {
-		return `M ${node.x} ${node.y}`
-	}
-	if (edge === false) {
-		return `M ${node.x} ${node.y}`
-	}
-	if (edge === true) {
-		return `L ${node.x} ${node.y}`
-	}
-	if (`c` in edge) {
-		return `C ${edge.c.x} ${edge.c.y} ${edge.s.x} ${edge.s.y} ${node.x} ${node.y}`
-	}
-	return `S ${edge.s.x} ${edge.s.y} ${node.x} ${node.y}`
-}
-
-function RenderedPath({ subpathKeys }: { subpathKeys: string[] }) {
-	return (
-		<path
-			d={`${subpathKeys.map((spk, idx) => Subpath({ subpathKey: spk, idx })).join(" ")} Z`}
-			class="path"
-			style={{ pointerEvents: "none" }}
-		/>
-	)
+function RenderedPath({ pathKey }: { pathKey: string }) {
+	const draw = useO(pathDrawSelectors, pathKey)
+	return <path d={`${draw} Z`} class="path" style={{ pointerEvents: "none" }} />
 }
 
 function Path({ pathKey }: { pathKey: string }) {
@@ -185,7 +190,7 @@ function Path({ pathKey }: { pathKey: string }) {
 	console.log(console.log(`render path`, subpathKeys))
 	return (
 		<>
-			<RenderedPath subpathKeys={subpathKeys} />
+			<RenderedPath pathKey={pathKey} />
 			{subpathKeys.toReversed().map((spk, idx, arr) => (
 				<Node subpathKey={spk} nextSubpathKey={arr[idx + 1] ?? arr[0]} />
 			))}
