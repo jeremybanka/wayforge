@@ -1,5 +1,11 @@
 # comline
 
+## 0.4.2
+
+### Patch Changes
+
+- c9803fd: 🐛 Further fix facilitating use of arktype/zod (not both)
+
 ## 0.4.1
 
 ### Patch Changes
