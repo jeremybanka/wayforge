@@ -2,7 +2,6 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 
 import type { JsonSchema, Type } from "arktype"
-import { isPackageExists } from "local-pkg"
 import type {
 	Flatten,
 	Join,
@@ -16,6 +15,7 @@ import type { ZodType } from "zod"
 import type { Flag } from "./flag"
 import { parseStringOption } from "./option-parsers"
 import { retrievePositionalArgs } from "./retrieve-positional-args"
+import { ark, schemaPkg, zod } from "./schema"
 
 export * from "./encapsulate"
 export type * from "./flag"
@@ -23,18 +23,6 @@ export * from "./help"
 export * from "./option-parsers"
 export * from "treetrunks"
 
-const hasArktype = isPackageExists(`arktype`)
-const hasZod = isPackageExists(`zod`)
-
-if (!hasArktype && !hasZod) {
-	throw new Error(
-		`You must have either "arktype" or "zod" installed to use comline.`,
-	)
-}
-
-const ark = hasArktype ? await import(`arktype`) : null
-const zod = hasZod ? await import(`zod`) : null
-const schemaPkg = ark ?? zod!
 const emptySchema =
 	`type` in schemaPkg ? schemaPkg.type({}) : schemaPkg.z.object({})
 
