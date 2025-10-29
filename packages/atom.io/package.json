@@ -115,7 +115,7 @@
 		"react": "19.2.0",
 		"react-dom": "19.2.0",
 		"react-router-dom": "7.9.4",
-		"recoverage": "0.1.11",
+		"recoverage": "0.1.12",
 		"socket.io": "4.8.1",
 		"socket.io-client": "4.8.1",
 		"storybook": "10.0.0",
