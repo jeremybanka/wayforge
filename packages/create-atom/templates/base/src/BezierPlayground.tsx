@@ -308,7 +308,6 @@ async function reset() {
 				let edge: boolean | { c?: PointXY; s: PointXY }
 				switch (letter) {
 					case `m`:
-						console.log(`m`, { prev, numbers })
 						node = { x: prev.x + numbers[0], y: prev.y + numbers[1] }
 						edge = false
 						break
@@ -422,7 +421,7 @@ export default function BezierPlayground() {
 						<circle cx="0" cy="0" r="0.25" fill="none" stroke="#aaa" />
 					</pattern>
 				</defs>
-				<rect x={0} y={0} width={WIDTH} height={HEIGHT} fill="#1118" />
+				<rect x={0} y={0} width={WIDTH} height={HEIGHT} fill="#aaa3" />
 				<rect
 					x={-185}
 					y={-10}
