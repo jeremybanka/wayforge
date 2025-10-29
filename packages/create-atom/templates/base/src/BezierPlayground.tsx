@@ -104,10 +104,10 @@ function Bezier({
 
 function Node({
 	subpathKey,
-	prevSubpathKey: prevSubpathKey,
+	nextSubpathKey,
 }: {
 	subpathKey: string
-	prevSubpathKey: string
+	nextSubpathKey: string
 }) {
 	const node = useO(nodeAtoms, subpathKey)
 	const edge = useO(edgeAtoms, subpathKey)
@@ -117,20 +117,20 @@ function Node({
 				<rect class="node" x={node.x - 3} y={node.y - 3} width={6} height={6} />
 			) : (
 				<>
-					<circle class="node" cx={node.x} cy={node.y} r={3} />
 					<Bezier
 						at={edge.s}
 						node={node}
 						subpathKey={subpathKey}
-						prevSubpathKey={prevSubpathKey}
+						prevSubpathKey={nextSubpathKey}
 					/>
 					{edge.c ? (
 						<Bezier
 							at={edge.c}
 							subpathKey={subpathKey}
-							prevSubpathKey={prevSubpathKey}
+							prevSubpathKey={nextSubpathKey}
 						/>
 					) : null}
+					<circle class="node" cx={node.x} cy={node.y} r={3} />
 				</>
 			)}
 			<circle
@@ -170,20 +170,24 @@ function Subpath({ subpathKey, idx }: { subpathKey: string; idx: number }) {
 	return `S ${edge.s.x} ${edge.s.y} ${node.x} ${node.y}`
 }
 
+function RenderedPath({ subpathKeys }: { subpathKeys: string[] }) {
+	return (
+		<path
+			d={`${subpathKeys.map((spk, idx) => Subpath({ subpathKey: spk, idx })).join(" ")} Z`}
+			class="path"
+			style={{ pointerEvents: "none" }}
+		/>
+	)
+}
+
 function Path({ pathKey }: { pathKey: string }) {
 	const subpathKeys = useO(subpathKeysAtoms, pathKey)
+	console.log(console.log(`render path`, subpathKeys))
 	return (
 		<>
-			<path
-				d={`${subpathKeys.map((spk, idx) => Subpath({ subpathKey: spk, idx })).join(" ")} Z`}
-				class="path"
-				style={{ pointerEvents: "none" }}
-			/>
-			{subpathKeys.map((spk, idx) => (
-				<Node
-					subpathKey={spk}
-					prevSubpathKey={subpathKeys[idx - 1] ?? subpathKeys.at(-1)}
-				/>
+			<RenderedPath subpathKeys={subpathKeys} />
+			{subpathKeys.toReversed().map((spk, idx, arr) => (
+				<Node subpathKey={spk} nextSubpathKey={arr[idx + 1] ?? arr[0]} />
 			))}
 		</>
 	)
@@ -418,7 +422,7 @@ export default function BezierPlayground() {
 				<title>Bezier Playground</title>
 				<defs>
 					<pattern id="grid" width="5" height="5" patternUnits="userSpaceOnUse">
-						<circle cx="0" cy="0" r="0.25" fill="none" stroke="#aaa" />
+						<rect x="0" y="0" width=".5" height=".5" fill="none" stroke="#aaa" />
 					</pattern>
 				</defs>
 				<rect x={0} y={0} width={WIDTH} height={HEIGHT} fill="#aaa3" />
