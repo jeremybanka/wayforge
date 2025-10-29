@@ -8,7 +8,7 @@ import {
 } from "atom.io"
 import { type RegularAtomToken } from "atom.io"
 import { useO } from "atom.io/react"
-import { PointerEvent, PointerEventHandler } from "preact/compat"
+import { PointerEventHandler, TargetedPointerEvent } from "preact"
 import { useRef, useCallback, useEffect, MutableRef } from "preact/hooks"
 
 type PointXY = { x: number; y: number }
@@ -209,7 +209,7 @@ const currentlyDraggingAtom = atom<null | { key: string; by?: `c` | `s` }>({
 	default: null,
 })
 
-function onPointerMove(evt: PointerEvent<SVGSVGElement>): void {
+function onPointerMove(evt: TargetedPointerEvent<SVGSVGElement>): void {
 	evt.preventDefault()
 	const { key: currentlyDragging, by: draggingBy } =
 		getState(currentlyDraggingAtom) ?? {}
