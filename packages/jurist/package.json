@@ -38,7 +38,7 @@
 		"@typescript/native-preview": "7.0.0-dev.20251030.1",
 		"concurrently": "9.2.1",
 		"eslint": "9.38.0",
-		"rimraf": "6.0.1",
+		"rimraf": "6.1.0",
 		"tsdown": "0.15.12",
 		"vite": "7.1.12",
 		"vitest": "4.0.5"
