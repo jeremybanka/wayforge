@@ -133,8 +133,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       wrangler:
-        specifier: 4.45.2
-        version: 4.45.2(@cloudflare/workers-types@4.20251014.0)
+        specifier: 4.45.3
+        version: 4.45.3(@cloudflare/workers-types@4.20251014.0)
 
   apps/tempest.games:
     dependencies:
@@ -8592,8 +8592,8 @@ packages:
       '@cloudflare/workers-types':
         optional: true
 
-  wrangler@4.45.2:
-    resolution: {integrity: sha512-+G24gD+Rh7iBus5QiVBhNgSLzyAiyuZSm+3Ih5li8+PEA+gosAXfDSZlNZwsVmXd8VJTjq+BR4vhUiruQRWgTw==}
+  wrangler@4.45.3:
+    resolution: {integrity: sha512-0ddEA9t4HeBgSVTVTcqtBHl7Z5CorWZ8tGgTQCP5XuL+9E1TJRwS6t/zzG51Ruwjb17SZYCaLchoM8V629S8cw==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     peerDependencies:
@@ -16825,7 +16825,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  wrangler@4.45.2(@cloudflare/workers-types@4.20251014.0):
+  wrangler@4.45.3(@cloudflare/workers-types@4.20251014.0):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.4.0
       '@cloudflare/unenv-preset': 2.7.8(unenv@2.0.0-rc.21)(workerd@1.20251011.0)
