@@ -31,7 +31,7 @@
 		"comline": "workspace:*",
 		"minimatch": "10.1.1",
 		"npmlog": "7.0.1",
-		"simple-git": "3.28.0"
+		"simple-git": "3.29.0"
 	},
 	"scripts": {
 		"build": "tsdown && rm -f dist/*.x.d.ts && pnpm run schema",
