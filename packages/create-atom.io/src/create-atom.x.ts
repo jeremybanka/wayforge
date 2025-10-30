@@ -1,29 +1,19 @@
 #!/usr/bin/env node
 
+import { type } from "arktype"
 import type { OptionsGroup } from "comline"
-import { cli, helpOption, optional, parseBooleanOption } from "comline"
-import { z } from "zod/v4"
+import { cli, optional, options, parseBooleanOption } from "comline"
 
 import type { CreateAtomOptionsPreloaded } from "./create-atom.ts"
 import { createAtom } from "./create-atom.ts"
 
-const helper = helpOption()
-
-const CREATE_ATOM_OPTS = {
-	description: `Check for breaking changes in a package.`,
-	optionsSchema: z.object({
-		packageManager: z
-			.union([
-				z.literal(`bun`),
-				z.literal(`npm`),
-				z.literal(`pnpm`),
-				z.literal(`yarn`),
-			])
-			.optional(),
-		skipHints: z.boolean().optional(),
+const CREATE_ATOM_OPTS = options(
+	`Create a new project with atom.io.`,
+	type({
+		"packageManager?": `"bun" | "npm" | "pnpm" | "yarn"`,
+		"skipHints?": `boolean`,
 	}),
-	options: {
-		...helper.options,
+	{
 		packageManager: {
 			flag: `m`,
 			required: false,
@@ -38,7 +28,7 @@ const CREATE_ATOM_OPTS = {
 			parse: parseBooleanOption,
 		},
 	},
-} satisfies OptionsGroup<CreateAtomOptionsPreloaded>
+) satisfies OptionsGroup<CreateAtomOptionsPreloaded>
 
 const parse = cli(
 	{
