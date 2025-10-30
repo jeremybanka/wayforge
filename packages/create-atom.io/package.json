@@ -1,5 +1,5 @@
 {
-	"name": "create-atom",
+	"name": "create-atom.io",
 	"version": "0.0.0",
 	"license": "MIT",
 	"author": {
@@ -18,7 +18,8 @@
 	"files": [
 		"bin",
 		"dist",
-		"src"
+		"src",
+		"templates"
 	],
 	"main": "dist/create-atom.js",
 	"types": "dist/create-atom.d.ts",
