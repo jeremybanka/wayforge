@@ -535,6 +535,9 @@ importers:
       '@clack/prompts':
         specifier: 0.11.0
         version: 0.11.0
+      arktype:
+        specifier: 2.1.25
+        version: 2.1.25
       comline:
         specifier: workspace:*
         version: link:../comline
@@ -544,9 +547,6 @@ importers:
       tinyexec:
         specifier: 1.0.1
         version: 1.0.1
-      zod:
-        specifier: 3.25.76
-        version: 3.25.76
     devDependencies:
       '@types/bun':
         specifier: npm:bun-types@1.3.1
