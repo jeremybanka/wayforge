@@ -26,10 +26,10 @@
 	"bin": "./bin/create-atom.bin.js",
 	"dependencies": {
 		"@clack/prompts": "0.11.0",
+		"arktype": "2.1.25",
 		"comline": "workspace:*",
 		"picocolors": "1.1.1",
-		"tinyexec": "1.0.1",
-		"zod": "3.25.76"
+		"tinyexec": "1.0.1"
 	},
 	"scripts": {
 		"build": "tsdown && rm -f dist/*.x.d.ts",
