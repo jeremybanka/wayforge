@@ -11,7 +11,7 @@ const CREATE_ATOM_OPTS = options(
 	`Create a new project with atom.io.`,
 	type({
 		"packageManager?": `"bun" | "npm" | "pnpm" | "yarn"`,
-		"templateName?": `"base"`,
+		"templateName?": `"preact-svg-editor"`,
 		"skipHints?": `boolean`,
 	}),
 	{
