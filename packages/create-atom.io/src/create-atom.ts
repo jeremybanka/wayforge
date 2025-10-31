@@ -11,9 +11,12 @@ export const pico: Colors = picocolors.createColors(true)
 
 const s = prompts.spinner()
 
+export type PackageManager = `bun` | `npm` | `pnpm` | `yarn`
+export type TemplateName = `preact-svg-editor`
+
 export type CreateAtomOptions = {
-	packageManager: `bun` | `npm` | `pnpm` | `yarn`
-	templateName: `base`
+	packageManager: PackageManager
+	templateName: TemplateName
 }
 
 export type CreateAtomOptionsPreloaded = {
@@ -29,16 +32,16 @@ export async function createAtom(
 
 	prompts.intro(pico.greenBright(`atom.io - Data Components for TypeScript`))
 
-	const { dir } = await prompts.group(
+	const { dir, templateName } = await prompts.group(
 		{
-			template: () =>
-				prompts.select({
+			templateName: () =>
+				prompts.select<TemplateName>({
 					message: `Template:`,
-					initialValue: `base`,
+					initialValue: `preact-svg-editor`,
 					options: [
 						{
 							label: `Preact SVG Editor`,
-							value: `base`,
+							value: `preact-svg-editor`,
 						},
 					],
 				}),
@@ -116,7 +119,11 @@ async function scaffold(to: string, opts: CreateAtomOptions): Promise<void> {
 	await fs.mkdir(to, { recursive: true })
 
 	const __dirname = dirname(fileURLToPath(import.meta.url))
-	await templateDir(resolve(__dirname, `../templates`, `base`), to, opts)
+	await templateDir(
+		resolve(__dirname, `../templates`, opts.templateName),
+		to,
+		opts,
+	)
 }
 
 /**
