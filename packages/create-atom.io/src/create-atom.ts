@@ -35,7 +35,7 @@ export async function createAtom(
 					? Promise.resolve(argDir)
 					: prompts.text({
 							message: `Project directory:`,
-							placeholder: `my-preact-app`,
+							placeholder: `my-app`,
 							validate(value) {
 								if (value.length === 0) {
 									return `Directory name is required!`
