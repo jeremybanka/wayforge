@@ -65,7 +65,7 @@
 		"react": "19.2.0",
 		"react-dom": "19.2.0",
 		"react-router-dom": "7.9.5",
-		"sass": "1.93.2",
+		"sass": "1.93.3",
 		"tsdown": "0.15.12",
 		"vite-plugin-dts": "4.5.4",
 		"vite-tsconfig-paths": "5.1.4",
