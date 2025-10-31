@@ -13,6 +13,7 @@ const s = prompts.spinner()
 
 export type CreateAtomOptions = {
 	packageManager: `bun` | `npm` | `pnpm` | `yarn`
+	templateName: `base`
 }
 
 export type CreateAtomOptionsPreloaded = {
@@ -30,6 +31,17 @@ export async function createAtom(
 
 	const { dir } = await prompts.group(
 		{
+			template: () =>
+				prompts.select({
+					message: `Template:`,
+					initialValue: `base`,
+					options: [
+						{
+							label: `Preact SVG Editor`,
+							value: `base`,
+						},
+					],
+				}),
 			dir: () =>
 				argDir
 					? Promise.resolve(argDir)
@@ -54,7 +66,7 @@ export async function createAtom(
 		},
 	)
 	const targetDir = resolve(process.cwd(), dir)
-	const opts: CreateAtomOptions = { packageManager }
+	const opts: CreateAtomOptions = { packageManager, templateName }
 
 	await useSpinner(
 		`Setting up your project directory...`,

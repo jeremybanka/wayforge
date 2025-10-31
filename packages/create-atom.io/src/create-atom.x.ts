@@ -11,6 +11,7 @@ const CREATE_ATOM_OPTS = options(
 	`Create a new project with atom.io.`,
 	type({
 		"packageManager?": `"bun" | "npm" | "pnpm" | "yarn"`,
+		"templateName?": `"base"`,
 		"skipHints?": `boolean`,
 	}),
 	{
@@ -19,6 +20,12 @@ const CREATE_ATOM_OPTS = options(
 			required: false,
 			description: `The package manager to use.`,
 			example: `--packageManager="npm"`,
+		},
+		templateName: {
+			flag: `t`,
+			required: false,
+			description: `The template to use.`,
+			example: `--templateName="base"`,
 		},
 		skipHints: {
 			flag: `k`,
