@@ -4,8 +4,10 @@ import {
 	getState,
 	Loadable,
 	resetState,
+	runTransaction,
 	selectorFamily,
 	setState,
+	transaction,
 } from "atom.io"
 import { type RegularAtomToken } from "atom.io"
 import { useO } from "atom.io/react"
@@ -261,136 +263,139 @@ const preactLogoAtom = atom<Loadable<string>>({
 	default: () => fetch("preact.svg").then((res) => res.text()),
 })
 
-async function reset() {
-	const logo = await getState(preactLogoAtom)
-	for (const pathKey of getState(pathKeysAtom)) {
-		resetState(subpathKeysAtoms, pathKey)
-	}
-	resetState(pathKeysAtom)
+const resetTX = transaction<() => Promise<void>>({
+	key: "reset",
+	do: async () => {
+		const logo = await getState(preactLogoAtom)
+		for (const pathKey of getState(pathKeysAtom)) {
+			resetState(subpathKeysAtoms, pathKey)
+		}
+		resetState(pathKeysAtom)
 
-	const shapes = logo
-		.split("\n")
-		.filter((l) => l.startsWith("\t<path"))
-		.map((logo) => {
-			const raw = logo.split(`d="`)[1].slice(0, -9)
+		const shapes = logo
+			.split("\n")
+			.filter((l) => l.startsWith("\t<path"))
+			.map((logo) => {
+				const raw = logo.split(`d="`)[1].slice(0, -9)
 
-			type Letter = (typeof CODES)[number]
-			let letter: Letter | undefined
-			let number = ``
-			let numbers: number[] = []
+				type Letter = (typeof CODES)[number]
+				let letter: Letter | undefined
+				let number = ``
+				let numbers: number[] = []
 
-			const instructions: { letter: Letter; numbers: number[] }[] = []
-			for (let i = 0; i < raw.length; i++) {
-				const c = raw[i]
-				if (CODES.includes(c as Letter)) {
-					if (number) {
+				const instructions: { letter: Letter; numbers: number[] }[] = []
+				for (let i = 0; i < raw.length; i++) {
+					const c = raw[i]
+					if (CODES.includes(c as Letter)) {
+						if (number) {
+							numbers.push(Number.parseFloat(number))
+							number = ``
+						}
+						if (letter) {
+							instructions.push({ letter, numbers })
+						}
+						letter = c as Letter
+						numbers = []
+						continue
+					}
+					if (c === ` `) {
 						numbers.push(Number.parseFloat(number))
 						number = ``
+						continue
 					}
-					if (letter) {
-						instructions.push({ letter, numbers })
+					if (c === `-` && number) {
+						numbers.push(Number.parseFloat(number))
+						number = `-`
+						continue
 					}
-					letter = c as Letter
-					numbers = []
-					continue
-				}
-				if (c === ` `) {
-					numbers.push(Number.parseFloat(number))
-					number = ``
-					continue
-				}
-				if (c === `-` && number) {
-					numbers.push(Number.parseFloat(number))
-					number = `-`
-					continue
+
+					number += c
 				}
 
-				number += c
-			}
+				let prev: PointXY = { x: 0, y: 0 }
+				const edgeNodes = instructions.map<{
+					node: null | PointXY
+					edge: boolean | { c?: PointXY; s: PointXY }
+				}>(({ letter, numbers }) => {
+					let node: null | PointXY
+					let edge: boolean | { c?: PointXY; s: PointXY }
+					switch (letter) {
+						case `m`:
+							node = { x: prev.x + numbers[0], y: prev.y + numbers[1] }
+							edge = false
+							break
+						case `M`:
+							node = { x: numbers[0], y: numbers[1] }
+							edge = false
+							break
+						case `l`:
+							node = { x: prev.x + numbers[0], y: prev.y + numbers[1] }
+							edge = true
+							break
+						case `L`:
+							node = { x: numbers[0], y: numbers[1] }
+							edge = true
+							break
+						case `c`:
+							node = { x: prev.x + numbers[4], y: prev.y + numbers[5] }
+							edge = {
+								c: { x: prev.x + numbers[0], y: prev.y + numbers[1] },
+								s: { x: prev.x + numbers[2], y: prev.y + numbers[3] },
+							}
+							break
+						case `C`:
+							node = { x: numbers[4], y: numbers[5] }
+							edge = {
+								c: { x: numbers[0], y: numbers[1] },
+								s: { x: numbers[2], y: numbers[3] },
+							}
+							break
+						case `v`:
+							node = { x: prev.x, y: prev.y + numbers[0] }
+							edge = true
+							break
+						case `V`:
+							node = { x: prev.x, y: numbers[0] }
+							edge = true
+							break
+						case `z`:
+						case `Z`:
+							node = null
+							edge = true
+					}
+					if (node) {
+						prev = node
+					}
 
-			let prev: PointXY = { x: 0, y: 0 }
-			const edgeNodes = instructions.map<{
-				node: null | PointXY
-				edge: boolean | { c?: PointXY; s: PointXY }
-			}>(({ letter, numbers }) => {
-				let node: null | PointXY
-				let edge: boolean | { c?: PointXY; s: PointXY }
-				switch (letter) {
-					case `m`:
-						node = { x: prev.x + numbers[0], y: prev.y + numbers[1] }
-						edge = false
-						break
-					case `M`:
-						node = { x: numbers[0], y: numbers[1] }
-						edge = false
-						break
-					case `l`:
-						node = { x: prev.x + numbers[0], y: prev.y + numbers[1] }
-						edge = true
-						break
-					case `L`:
-						node = { x: numbers[0], y: numbers[1] }
-						edge = true
-						break
-					case `c`:
-						node = { x: prev.x + numbers[4], y: prev.y + numbers[5] }
-						edge = {
-							c: { x: prev.x + numbers[0], y: prev.y + numbers[1] },
-							s: { x: prev.x + numbers[2], y: prev.y + numbers[3] },
-						}
-						break
-					case `C`:
-						node = { x: numbers[4], y: numbers[5] }
-						edge = {
-							c: { x: numbers[0], y: numbers[1] },
-							s: { x: numbers[2], y: numbers[3] },
-						}
-						break
-					case `v`:
-						node = { x: prev.x, y: prev.y + numbers[0] }
-						edge = true
-						break
-					case `V`:
-						node = { x: prev.x, y: numbers[0] }
-						edge = true
-						break
-					case `z`:
-					case `Z`:
-						node = null
-						edge = true
-				}
-				if (node) {
-					prev = node
-				}
+					return { node, edge }
+				})
 
-				return { node, edge }
+				return edgeNodes
 			})
 
-			return edgeNodes
-		})
-
-	let i = 0
-	let j = 0
-	for (const shape of shapes) {
-		const jj = j
-		for (const { node, edge } of shape) {
-			setState(edgeAtoms, `subpath${j}`, edge)
-			setState(nodeAtoms, `subpath${j}`, node)
-			j++
+		let i = 0
+		let j = 0
+		for (const shape of shapes) {
+			const jj = j
+			for (const { node, edge } of shape) {
+				setState(edgeAtoms, `subpath${j}`, edge)
+				setState(nodeAtoms, `subpath${j}`, node)
+				j++
+			}
+			const numberOfNodes = j - jj
+			setState(
+				subpathKeysAtoms,
+				`path${i}`,
+				Array.from(
+					{ length: numberOfNodes },
+					(_, nodeNum) => `subpath${jj + nodeNum}`,
+				),
+			)
+			setState(pathKeysAtom, (prev) => [...prev, `path${i}`])
+			i++
 		}
-		const numberOfNodes = j - jj
-		setState(
-			subpathKeysAtoms,
-			`path${i}`,
-			Array.from(
-				{ length: numberOfNodes },
-				(_, nodeNum) => `subpath${jj + nodeNum}`,
-			),
-		)
-		setState(pathKeysAtom, (prev) => [...prev, `path${i}`])
-		i++
-	}
-}
+	},
+})
 
 const WIDTH = 256
 const HEIGHT = 296
@@ -400,6 +405,8 @@ export default function BezierPlayground() {
 		evt.currentTarget.releasePointerCapture(evt.pointerId)
 		setState(currentlyDraggingAtom, null)
 	}, [])
+
+	const reset = runTransaction(resetTX)
 
 	useEffect(() => void reset(), [])
 
