@@ -43,5 +43,5 @@ const server = http.createServer((req, res) => {
 })
 
 server.listen(PORT, () => {
-	console.log(`Mock auth provider running at http://localhost:${PORT}`)
+	console.log(`Mock authenticator running at http://localhost:${PORT}`)
 })

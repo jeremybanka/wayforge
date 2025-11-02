@@ -22,11 +22,5 @@
 		"noFallthroughCasesInSwitch": true,
 		"noUncheckedSideEffectImports": true
 	},
-	"include": [
-		"vite.config.ts",
-		"eslint.config.ts",
-		"eslint.d.ts",
-		"server.node.ts",
-		"server-auth.node.ts"
-	]
+	"include": ["vite.config.ts", "eslint.config.ts", "eslint.d.ts", "node"]
 }

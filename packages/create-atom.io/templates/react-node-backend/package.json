@@ -4,10 +4,10 @@
 	"version": "0.0.0",
 	"type": "module",
 	"scripts": {
-		"dev": "concurrently vite ./server.node.ts",
+		"dev": "concurrently vite ./node/server.ts ./node/authenticator.ts",
 		"build": "vite build",
 		"lint": "eslint .",
-		"preview": "concurrently \"vite preview\" ./server.node.ts"
+		"preview": "concurrently \"vite preview\" ./node/server.ts ./node/authenticator.ts"
 	},
 	"dependencies": {
 		"atom.io": "0.44.0",
