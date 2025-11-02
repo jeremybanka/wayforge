@@ -1,9 +1,11 @@
+import "./style.css"
+
+import type { VNode } from "preact"
 import { render } from "preact"
 
 import BezierPlayground from "./BezierPlayground.tsx"
-import "./style.css"
 
-export function App() {
+export function App(): VNode {
 	return (
 		<>
 			<h1>Atom.io in Preact on Vite</h1>
@@ -38,11 +40,11 @@ type ResourceProps = {
 }
 function Resource(props: ResourceProps) {
 	return (
-		<a href={props.href} target="_blank" class="resource">
+		<a href={props.href} target="_blank" class="resource" rel="noreferrer">
 			<h2>{props.title}</h2>
 			<p>{props.description}</p>
 		</a>
 	)
 }
 
-render(<App />, document.getElementById("app")!)
+render(<App />, document.getElementById(`app`)!)

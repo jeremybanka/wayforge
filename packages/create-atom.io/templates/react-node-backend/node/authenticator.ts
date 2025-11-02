@@ -4,13 +4,13 @@ import http from "http"
 import { parse as parseUrl } from "url"
 
 const PORT = 4000
-const BACKEND_REDIRECT_URL = "http://localhost:3000/redirect"
+const BACKEND_REDIRECT_URL = `http://localhost:3000/redirect`
 
 const server = http.createServer((req, res) => {
 	const r = req as http.IncomingMessage & { url: string; method: string }
 	const { pathname, query } = parseUrl(r.url, true)
 
-	if (pathname === "/login" && r.method === "GET") {
+	if (pathname === `/login` && r.method === `GET`) {
 		const html = `
       <html>
         <body style="font-family: sans-serif; text-align: center; margin-top: 50px;">
@@ -22,24 +22,24 @@ const server = http.createServer((req, res) => {
         </body>
       </html>
     `
-		res.writeHead(200, { "Content-Type": "text/html" })
+		res.writeHead(200, { "Content-Type": `text/html` })
 		return res.end(html)
 	}
 
 	// --- /validate route ---
-	if (pathname === "/validate" && r.method === "GET") {
+	if (pathname === `/validate` && r.method === `GET`) {
 		const token = query.token
-		if (token === "SECRET") {
-			res.writeHead(200, { "Content-Type": "application/json" })
-			return res.end(JSON.stringify({ valid: true, user: "mock-user" }))
+		if (token === `SECRET`) {
+			res.writeHead(200, { "Content-Type": `application/json` })
+			return res.end(JSON.stringify({ valid: true, user: `mock-user` }))
 		}
-		res.writeHead(401, { "Content-Type": "application/json" })
-		return res.end(JSON.stringify({ valid: false, error: "Invalid token" }))
+		res.writeHead(401, { "Content-Type": `application/json` })
+		return res.end(JSON.stringify({ valid: false, error: `Invalid token` }))
 	}
 
 	// --- fallback 404 ---
-	res.writeHead(404, { "Content-Type": "application/json" })
-	res.end(JSON.stringify({ error: "Not found" }))
+	res.writeHead(404, { "Content-Type": `application/json` })
+	res.end(JSON.stringify({ error: `Not found` }))
 })
 
 server.listen(PORT, () => {

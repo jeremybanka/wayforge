@@ -26,6 +26,6 @@ declare module "@typescript-eslint/eslint-plugin" {
 declare module "eslint-config-preact" {
 	import type { Linter } from "eslint"
 
-	const config: Linter.Config
-	export = config
+	const configs: Linter.Config[]
+	export = configs
 }

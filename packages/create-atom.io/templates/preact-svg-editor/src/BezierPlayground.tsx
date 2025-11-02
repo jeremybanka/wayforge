@@ -1,40 +1,40 @@
+import type { Loadable, RegularAtomToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
 	getState,
-	Loadable,
 	resetState,
 	runTransaction,
 	selectorFamily,
 	setState,
 	transaction,
 } from "atom.io"
-import { type RegularAtomToken } from "atom.io"
 import { useO } from "atom.io/react"
-import { PointerEventHandler, TargetedPointerEvent } from "preact"
-import { useRef, useCallback, useEffect, MutableRef } from "preact/hooks"
+import type { PointerEventHandler, TargetedPointerEvent, VNode } from "preact"
+import type { MutableRef } from "preact/hooks"
+import { useCallback, useEffect, useRef } from "preact/hooks"
 
 type PointXY = { x: number; y: number }
 type EdgeXY = { c?: PointXY; s: PointXY }
 
 const pathKeysAtom = atom<string[]>({
-	key: "pathKeys",
+	key: `pathKeys`,
 	default: [],
 })
 const subpathKeysAtoms = atomFamily<string[], string>({
-	key: "subpathKeys",
+	key: `subpathKeys`,
 	default: [],
 })
 const nodeAtoms = atomFamily<PointXY | null, string>({
-	key: "nodeAtoms",
+	key: `nodeAtoms`,
 	default: null,
 })
-const edgeAtoms = atomFamily<boolean | EdgeXY, string>({
-	key: "edgeAtoms",
+const edgeAtoms = atomFamily<EdgeXY | boolean, string>({
+	key: `edgeAtoms`,
 	default: true,
 })
 const pathDrawSelectors = selectorFamily<string, string>({
-	key: "pathDrawSelectors",
+	key: `pathDrawSelectors`,
 	get:
 		(pathKey) =>
 		({ get }) => {
@@ -45,7 +45,7 @@ const pathDrawSelectors = selectorFamily<string, string>({
 					const edge = get(edgeAtoms, subpathKey)
 
 					if (node === null) {
-						return "Z"
+						return `Z`
 					}
 					if (idx === 0) {
 						return `M ${node.x} ${node.y}`
@@ -61,7 +61,7 @@ const pathDrawSelectors = selectorFamily<string, string>({
 					}
 					return `S ${edge.s.x} ${edge.s.y} ${node.x} ${node.y}`
 				})
-				.join(" ")
+				.join(` `)
 		},
 })
 
@@ -91,8 +91,10 @@ function Bezier({
 	node?: PointXY
 }) {
 	let node: PointXY | null
+	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 	switch (typeof maybeNode) {
-		case "undefined":
+		case `undefined`:
+			// eslint-disable-next-line react-hooks/rules-of-hooks
 			node = useO(nodeAtoms, prevSubpathKey)
 			break
 		default:
@@ -147,7 +149,7 @@ function Node({
 	const edge = useO(edgeAtoms, subpathKey)
 	return node === null ? null : (
 		<>
-			{typeof edge === "boolean" ? (
+			{typeof edge === `boolean` ? (
 				<rect class="node" x={node.x - 3} y={node.y - 3} width={6} height={6} />
 			) : (
 				<>
@@ -184,17 +186,20 @@ function Node({
 
 function RenderedPath({ pathKey }: { pathKey: string }) {
 	const draw = useO(pathDrawSelectors, pathKey)
-	return <path d={`${draw} Z`} class="path" style={{ pointerEvents: "none" }} />
+	return <path d={`${draw} Z`} class="path" style={{ pointerEvents: `none` }} />
 }
 
 function Path({ pathKey }: { pathKey: string }) {
 	const subpathKeys = useO(subpathKeysAtoms, pathKey)
-	console.log(console.log(`render path`, subpathKeys))
 	return (
 		<>
 			<RenderedPath pathKey={pathKey} />
 			{subpathKeys.toReversed().map((spk, idx, arr) => (
-				<Node subpathKey={spk} nextSubpathKey={arr[idx + 1] ?? arr[0]} />
+				<Node
+					subpathKey={spk}
+					nextSubpathKey={arr[idx + 1] ?? arr[0]}
+					key={spk}
+				/>
 			))}
 		</>
 	)
@@ -205,18 +210,18 @@ function PathsDemo() {
 	return (
 		<>
 			{pathKeys.map((pathKey) => {
-				return <Path pathKey={pathKey} />
+				return <Path pathKey={pathKey} key={pathKey} />
 			})}
 		</>
 	)
 }
 
 const svgRefAtom = atom<SVGSVGElement | null>({
-	key: "svgRef",
+	key: `svgRef`,
 	default: null,
 })
-const currentlyDraggingAtom = atom<null | { key: string; by?: `c` | `s` }>({
-	key: "currentlyDragging",
+const currentlyDraggingAtom = atom<{ key: string; by?: `c` | `s` } | null>({
+	key: `currentlyDragging`,
 	default: null,
 })
 
@@ -259,12 +264,12 @@ function onPointerMove(evt: TargetedPointerEvent<SVGSVGElement>): void {
 const CODES = [`m`, `M`, `l`, `L`, `c`, `C`, `v`, `V`, `z`, `Z`] as const
 
 const preactLogoAtom = atom<Loadable<string>>({
-	key: "preactLogo",
-	default: () => fetch("preact.svg").then((res) => res.text()),
+	key: `preactLogo`,
+	default: () => fetch(`preact.svg`).then((res) => res.text()),
 })
 
 const resetTX = transaction<() => Promise<void>>({
-	key: "reset",
+	key: `reset`,
 	do: async () => {
 		const logo = await getState(preactLogoAtom)
 		for (const pathKey of getState(pathKeysAtom)) {
@@ -273,10 +278,10 @@ const resetTX = transaction<() => Promise<void>>({
 		resetState(pathKeysAtom)
 
 		const shapes = logo
-			.split("\n")
-			.filter((l) => l.startsWith("\t<path"))
-			.map((logo) => {
-				const raw = logo.split(`d="`)[1].slice(0, -9)
+			.split(`\n`)
+			.filter((line) => line.startsWith(`\t<path`))
+			.map((line) => {
+				const raw = line.split(`d="`)[1].slice(0, -9)
 
 				type Letter = (typeof CODES)[number]
 				let letter: Letter | undefined
@@ -284,8 +289,7 @@ const resetTX = transaction<() => Promise<void>>({
 				let numbers: number[] = []
 
 				const instructions: { letter: Letter; numbers: number[] }[] = []
-				for (let i = 0; i < raw.length; i++) {
-					const c = raw[i]
+				for (const c of raw) {
 					if (CODES.includes(c as Letter)) {
 						if (number) {
 							numbers.push(Number.parseFloat(number))
@@ -314,48 +318,48 @@ const resetTX = transaction<() => Promise<void>>({
 
 				let prev: PointXY = { x: 0, y: 0 }
 				const edgeNodes = instructions.map<{
-					node: null | PointXY
+					node: PointXY | null
 					edge: boolean | { c?: PointXY; s: PointXY }
-				}>(({ letter, numbers }) => {
-					let node: null | PointXY
+				}>(({ letter: l, numbers: ns }) => {
+					let node: PointXY | null
 					let edge: boolean | { c?: PointXY; s: PointXY }
-					switch (letter) {
+					switch (l) {
 						case `m`:
-							node = { x: prev.x + numbers[0], y: prev.y + numbers[1] }
+							node = { x: prev.x + ns[0], y: prev.y + ns[1] }
 							edge = false
 							break
 						case `M`:
-							node = { x: numbers[0], y: numbers[1] }
+							node = { x: ns[0], y: ns[1] }
 							edge = false
 							break
 						case `l`:
-							node = { x: prev.x + numbers[0], y: prev.y + numbers[1] }
+							node = { x: prev.x + ns[0], y: prev.y + ns[1] }
 							edge = true
 							break
 						case `L`:
-							node = { x: numbers[0], y: numbers[1] }
+							node = { x: ns[0], y: ns[1] }
 							edge = true
 							break
 						case `c`:
-							node = { x: prev.x + numbers[4], y: prev.y + numbers[5] }
+							node = { x: prev.x + ns[4], y: prev.y + ns[5] }
 							edge = {
-								c: { x: prev.x + numbers[0], y: prev.y + numbers[1] },
-								s: { x: prev.x + numbers[2], y: prev.y + numbers[3] },
+								c: { x: prev.x + ns[0], y: prev.y + ns[1] },
+								s: { x: prev.x + ns[2], y: prev.y + ns[3] },
 							}
 							break
 						case `C`:
-							node = { x: numbers[4], y: numbers[5] }
+							node = { x: ns[4], y: ns[5] }
 							edge = {
-								c: { x: numbers[0], y: numbers[1] },
-								s: { x: numbers[2], y: numbers[3] },
+								c: { x: ns[0], y: ns[1] },
+								s: { x: ns[2], y: ns[3] },
 							}
 							break
 						case `v`:
-							node = { x: prev.x, y: prev.y + numbers[0] }
+							node = { x: prev.x, y: prev.y + ns[0] }
 							edge = true
 							break
 						case `V`:
-							node = { x: prev.x, y: numbers[0] }
+							node = { x: prev.x, y: ns[0] }
 							edge = true
 							break
 						case `z`:
@@ -396,30 +400,29 @@ const resetTX = transaction<() => Promise<void>>({
 		}
 	},
 })
+const reset = runTransaction(resetTX)
 
 const WIDTH = 256
 const HEIGHT = 296
-export default function BezierPlayground() {
+export default function BezierPlayground(): VNode {
 	const svgRef = useAtomicRef(svgRefAtom)
 	const onPointerUp: PointerEventHandler<SVGSVGElement> = useCallback((evt) => {
 		evt.currentTarget.releasePointerCapture(evt.pointerId)
 		setState(currentlyDraggingAtom, null)
 	}, [])
 
-	const reset = runTransaction(resetTX)
-
-	useEffect(() => void reset(), [])
+	useEffect(() => void reset(), [reset])
 
 	return (
 		<div
 			style={{
-				display: "flex",
-				flexFlow: "column",
-				position: "relative",
-				overflow: "hidden",
-				maxWidth: "1280px",
-				width: "100vw",
-				alignItems: "center",
+				display: `flex`,
+				flexFlow: `column`,
+				position: `relative`,
+				overflow: `hidden`,
+				maxWidth: `1280px`,
+				width: `100vw`,
+				alignItems: `center`,
 			}}
 		>
 			<svg
