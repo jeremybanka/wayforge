@@ -63,6 +63,7 @@ export function useLoadable(
 			fallback = params[2]
 	}
 
+	const hasFallback = fallback !== undefined
 	const isErr = `catch` in state && state.catch.some((E) => value instanceof E)
 
 	const wrapperRef = useRef<{
@@ -84,7 +85,7 @@ export function useLoadable(
 		if (lastLoaded === `LOADING`) {
 			return `LOADING`
 		}
-		if (wasErr && fallback) {
+		if (wasErr && hasFallback) {
 			wrapper = wrapperRef.current = {
 				loading: true,
 				value: fallback,
@@ -96,7 +97,7 @@ export function useLoadable(
 	} else {
 		lastLoadedRef.current = value
 		if (wrapper.loading === true) {
-			if (isErr && fallback) {
+			if (isErr && hasFallback) {
 				wrapper = wrapperRef.current = {
 					loading: false,
 					value: fallback,
@@ -106,7 +107,7 @@ export function useLoadable(
 				wrapper = wrapperRef.current = { loading: false, value: value }
 			}
 		} else {
-			if (isErr && fallback) {
+			if (isErr && hasFallback) {
 				wrapper.loading = false
 				wrapper.value = fallback
 				wrapper.error = value
