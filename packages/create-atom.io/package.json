@@ -38,8 +38,6 @@
 		"lint:types": "tsgo --noEmit",
 		"watch:types": "tsgo --watch --noEmit",
 		"lint": "concurrently \"bun:lint:*\"",
-		"test": "bun test --watch -- **/*.test.ts",
-		"test:once": "bun test -- **/*.test.ts",
 		"postversion": "biome format --write package.json"
 	},
 	"devDependencies": {
