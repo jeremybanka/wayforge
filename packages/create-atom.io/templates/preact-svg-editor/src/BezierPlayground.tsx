@@ -411,7 +411,7 @@ export default function BezierPlayground(): VNode {
 		setState(currentlyDraggingAtom, null)
 	}, [])
 
-	useEffect(() => void reset(), [reset])
+	useEffect(() => void reset(), [])
 
 	return (
 		<div
