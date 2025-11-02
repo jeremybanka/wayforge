@@ -1,34 +1,62 @@
-import { useState } from "react"
-import reactLogo from "./assets/react.svg"
-import viteLogo from "/vite.svg"
-import "./App.css"
+import { atom, type Loadable } from "atom.io"
+import { useLoadable } from "atom.io/react"
 
-function App() {
-	const [count, setCount] = useState(0)
+const SERVER_URL = `http://localhost:3000`
+const AUTHENTICATOR_URL = `http://localhost:4000`
+
+const randomAtom = atom<Loadable<number>, Error>({
+	key: `random`,
+	default: async () => {
+		const url = new URL(`/random`, SERVER_URL)
+		const response = await fetch(url, { credentials: `include` })
+		const data = (await response.json()) as unknown
+		if (typeof data === `number`) return data
+		console.error(`Unexpected response from server`, data)
+		return 0
+	},
+	catch: [Error],
+})
+
+function App(): React.JSX.Element {
+	const { error, value, loading } = useLoadable(randomAtom, 0)
+
+	console.log({ error, value, loading })
 
 	return (
-		<>
-			<div>
-				<a href="https://vite.dev" target="_blank" rel="noreferrer">
-					<img src={viteLogo} className="logo" alt="Vite logo" />
-				</a>
-				<a href="https://react.dev" target="_blank" rel="noreferrer">
-					<img src={reactLogo} className="logo react" alt="React logo" />
-				</a>
-			</div>
-			<h1>Vite + React</h1>
-			<div className="card">
-				<button type="button" onClick={() => setCount((count) => count + 1)}>
-					count is {count}
+		<main>
+			<header>
+				{error ? (
+					<div className="pfp signed-out" />
+				) : (
+					<>
+						<button
+							type="button"
+							onClick={() => {
+								window.location.href = `${AUTHENTICATOR_URL}/logout`
+							}}
+						>
+							Log out
+						</button>
+						<div className="pfp signed-in" />
+					</>
+				)}
+			</header>
+			{error ? (
+				<button
+					type="button"
+					onClick={() => {
+						window.location.href = `${AUTHENTICATOR_URL}/login`
+					}}
+				>
+					Log in
 				</button>
-				<p>
-					Edit <code>src/App.tsx</code> and save to test HMR
-				</p>
-			</div>
-			<p className="read-the-docs">
-				Click on the Vite and React logos to learn more
-			</p>
-		</>
+			) : (
+				<div className="data">
+					<span>{value}</span>
+					<span className="loader">{loading && `⏳`}</span>
+				</div>
+			)}
+		</main>
 	)
 }
 
