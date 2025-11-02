@@ -12,7 +12,7 @@ export const pico: Colors = picocolors.createColors(true)
 const s = prompts.spinner()
 
 export type PackageManager = `bun` | `npm` | `pnpm` | `yarn`
-export type TemplateName = `preact-svg-editor`
+export type TemplateName = `preact-svg-editor` | `react-node-backend`
 
 export type CreateAtomOptions = {
 	packageManager: PackageManager
@@ -42,6 +42,10 @@ export async function createAtom(
 						{
 							label: `Preact SVG Editor`,
 							value: `preact-svg-editor`,
+						},
+						{
+							label: `React Node Backend`,
+							value: `react-node-backend`,
 						},
 					],
 				}),
