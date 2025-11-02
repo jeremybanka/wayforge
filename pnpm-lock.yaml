@@ -613,7 +613,7 @@ importers:
         specifier: 7.1.12
         version: 7.1.12(@types/node@24.9.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1)
 
-  packages/create-atom.io/templates/react-express-backend:
+  packages/create-atom.io/templates/react-node-backend:
     dependencies:
       atom.io:
         specifier: 0.44.0
@@ -643,6 +643,9 @@ importers:
       babel-plugin-react-compiler:
         specifier: 1.0.0
         version: 1.0.0
+      concurrently:
+        specifier: 9.2.1
+        version: 9.2.1
       eslint:
         specifier: 9.39.0
         version: 9.39.0(jiti@2.6.1)
