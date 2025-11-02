@@ -22,7 +22,8 @@ declare module "@typescript-eslint/eslint-plugin" {
 	export = plugin
 }
 
-declare module `eslint-plugin-drizzle` {
+// eslint-disable-next-line quotes
+declare module "eslint-plugin-drizzle" {
 	import type { ESLint } from "eslint"
 
 	const plugin: ESLint.Plugin

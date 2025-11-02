@@ -177,6 +177,7 @@ const configs = [
 			`**/.next/**`,
 			`**/.open-next/**`,
 			`**/next-env.d.ts`,
+			`**/create-atom.io/templates/**`,
 		],
 	},
 	{
