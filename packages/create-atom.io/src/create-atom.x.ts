@@ -11,7 +11,7 @@ const CREATE_ATOM_OPTS = options(
 	`Create a new project with atom.io.`,
 	type({
 		"packageManager?": `"bun" | "npm" | "pnpm" | "yarn"`,
-		"templateName?": `"preact-svg-editor"`,
+		"templateName?": `"preact-svg-editor" | "react-node-backend"`,
 		"skipHints?": `boolean`,
 	}),
 	{
@@ -25,7 +25,7 @@ const CREATE_ATOM_OPTS = options(
 			flag: `t`,
 			required: false,
 			description: `The template to use.`,
-			example: `--templateName="base"`,
+			example: `--templateName="preact-svg-editor"`,
 		},
 		skipHints: {
 			flag: `k`,
