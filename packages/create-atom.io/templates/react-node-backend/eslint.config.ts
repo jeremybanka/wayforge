@@ -1,14 +1,14 @@
 import { default as TypeScriptPlugin } from "@typescript-eslint/eslint-plugin"
 import * as parser from "@typescript-eslint/parser"
-import type { ESLint, Linter } from "eslint"
+import AtomIOPlugin from "atom.io/eslint-plugin"
+import type { Linter } from "eslint"
 import * as ImportPlugin from "eslint-plugin-import-x"
 import { default as SimpleImportSortPlugin } from "eslint-plugin-simple-import-sort"
-import AtomIOPlugin from "atom.io/eslint-plugin"
 
 const ERROR = 2
 
 const parserOptions = {
-	project: [`./tsconfig.json`],
+	project: [`./tsconfig.app.json`, `./tsconfig.node.json`],
 	sourceType: `module`,
 } satisfies parser.ParserOptions
 
@@ -165,7 +165,7 @@ const configs: Linter.Config[] = [
 		files: [`**/*.ts{,x}`, `eslint.config.ts`],
 		plugins: {
 			"@typescript-eslint": TypeScriptPlugin,
-			"atom.io": AtomIOPlugin as ESLint.Plugin,
+			"atom.io": AtomIOPlugin,
 			import: ImportPlugin,
 			"simple-import-sort": SimpleImportSortPlugin,
 		},

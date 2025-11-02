@@ -34,10 +34,13 @@ function sendJSON(
 	res.end(body)
 }
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
 	const r = req as http.IncomingMessage & { url: string; method: string }
 
 	const { pathname, query } = parseUrl(r.url, true)
+
+	console.log(r.method, pathname, { ...query })
+
 	const cookies = parseCookies(r.headers.cookie)
 
 	if (req.method === "OPTIONS") {
@@ -58,8 +61,8 @@ const server = http.createServer((req, res) => {
 			}
 
 			// NOTE: SameSite=None required for cross-site cookies
-			res.writeHead(200, {
-				"Set-Cookie": `auth_token=${token}; HttpOnly; Path=/; SameSite=None; Secure`,
+			res.writeHead(302, {
+				"Set-Cookie": `auth_token=${token}; HttpOnly; Path=/; SameSite=None`,
 				"Access-Control-Allow-Origin": FRONTEND_ORIGIN,
 				"Access-Control-Allow-Credentials": "true",
 				Location: FRONTEND_ORIGIN,
@@ -67,13 +70,15 @@ const server = http.createServer((req, res) => {
 			return res.end()
 		}
 		case "/random": {
+			await new Promise((resolve) => setTimeout(resolve, 1000))
 			const token = cookies["auth_token"]
+			console.log({ token })
 			if (!token) {
-				return sendJSON(res, 401, { error: "Unauthenticated" })
+				return sendJSON(res, 401, { error: "Unauthenticated" }, true)
 			}
 
 			const random = Math.floor(Math.random() * 100)
-			return sendJSON(res, 200, { token, random })
+			return sendJSON(res, 200, random, true)
 		}
 	}
 

@@ -1,5 +1,5 @@
 :root {
-	font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+	font-family: Charter, serif;
 	line-height: 1.5;
 	font-weight: 400;
 
@@ -28,11 +28,52 @@ body {
 	place-items: center;
 	min-width: 320px;
 	min-height: 100vh;
-}
-
-h1 {
-	font-size: 3.2em;
-	line-height: 1.1;
+	#root {
+		display: flex;
+		width: 100%;
+		main {
+			display: flex;
+			width: 100%;
+			place-items: center;
+			flex-direction: column;
+			> header {
+				position: fixed;
+				top: 0;
+				left: 0;
+				display: flex;
+				width: 100%;
+				box-sizing: border-box;
+				padding: 20px;
+				justify-content: flex-end;
+				gap: 10px;
+				> .pfp {
+					display: flex;
+					place-items: center;
+					place-content: center;
+					border: 1px solid #ccc3;
+					width: 40px;
+					height: 40px;
+					border-radius: 50%;
+					&.signed-in::before {
+						content: "👤";
+					}
+				}
+			}
+			> .data {
+				font-size: 30px;
+				position: relative;
+				border: 1px solid #ccc3;
+				width: 60px;
+				text-align: center;
+				> .loader {
+					position: absolute;
+					top: -5px;
+					right: -5px;
+					font-size: 10px;
+				}
+			}
+		}
+	}
 }
 
 button {
@@ -45,13 +86,13 @@ button {
 	background-color: #1a1a1a;
 	cursor: pointer;
 	transition: border-color 0.25s;
-}
-button:hover {
-	border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-	outline: 4px auto -webkit-focus-ring-color;
+	&:hover {
+		border-color: #646cff;
+	}
+	&:focus,
+	&:focus-visible {
+		outline: 4px auto -webkit-focus-ring-color;
+	}
 }
 
 @media (prefers-color-scheme: light) {
