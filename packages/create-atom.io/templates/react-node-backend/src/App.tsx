@@ -9,6 +9,7 @@ const randomAtom = atom<Loadable<number>, Error>({
 	default: async () => {
 		const url = new URL(`/random`, SERVER_URL)
 		const response = await fetch(url, { credentials: `include` })
+		if (!response.ok) throw new Error(response.status.toString())
 		const data = (await response.json()) as unknown
 		if (typeof data === `number`) return data
 		console.error(`Unexpected response from server`, data)
@@ -24,15 +25,32 @@ function App(): React.JSX.Element {
 
 	return (
 		<main>
+			{error ? (
+				<article className="takeover">
+					<main className="card">
+						<h1>Signed Out</h1>
+						<button
+							type="button"
+							onClick={() => {
+								window.location.href = `${AUTHENTICATOR_URL}/login`
+							}}
+						>
+							Log in
+						</button>
+					</main>
+				</article>
+			) : null}
 			<header>
 				{error ? (
 					<div className="pfp signed-out" />
+				) : loading ? (
+					<div className="pfp loading" />
 				) : (
 					<>
 						<button
 							type="button"
 							onClick={() => {
-								window.location.href = `${AUTHENTICATOR_URL}/logout`
+								window.location.href = `${SERVER_URL}/logout`
 							}}
 						>
 							Log out
@@ -41,20 +59,10 @@ function App(): React.JSX.Element {
 					</>
 				)}
 			</header>
-			{error ? (
-				<button
-					type="button"
-					onClick={() => {
-						window.location.href = `${AUTHENTICATOR_URL}/login`
-					}}
-				>
-					Log in
-				</button>
+			{loading ? (
+				<div className="data loading">{value}</div>
 			) : (
-				<div className="data">
-					<span>{value}</span>
-					<span className="loader">{loading && `⏳`}</span>
-				</div>
+				<div className="data">{value}</div>
 			)}
 		</main>
 	)

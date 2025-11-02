@@ -60,9 +60,8 @@ const server = http.createServer(async (req, res) => {
 				return sendJSON(res, 400, { error: "Missing token" })
 			}
 
-			// NOTE: SameSite=None required for cross-site cookies
 			res.writeHead(302, {
-				"Set-Cookie": `auth_token=${token}; HttpOnly; Path=/; SameSite=None`,
+				"Set-Cookie": `auth_token=${token}; HttpOnly; Path=/; SameSite=Lax`,
 				"Access-Control-Allow-Origin": FRONTEND_ORIGIN,
 				"Access-Control-Allow-Credentials": "true",
 				Location: FRONTEND_ORIGIN,
@@ -79,6 +78,15 @@ const server = http.createServer(async (req, res) => {
 
 			const random = Math.floor(Math.random() * 100)
 			return sendJSON(res, 200, random, true)
+		}
+		case "/logout": {
+			res.writeHead(302, {
+				"Set-Cookie": `auth_token=null; HttpOnly; Path=/; SameSite=None`,
+				"Access-Control-Allow-Origin": FRONTEND_ORIGIN,
+				"Access-Control-Allow-Credentials": "true",
+				Location: FRONTEND_ORIGIN,
+			})
+			return res.end()
 		}
 	}
 
