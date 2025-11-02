@@ -10,7 +10,7 @@
 		"preview": "concurrently \"vite preview\" ./node/server.ts ./node/authenticator.ts"
 	},
 	"dependencies": {
-		"atom.io": "0.44.0",
+		"atom.io": "0.44.1",
 		"react": "19.2.0",
 		"react-dom": "19.2.0"
 	},
