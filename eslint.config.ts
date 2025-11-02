@@ -1,5 +1,6 @@
 import { default as TypeScriptPlugin } from "@typescript-eslint/eslint-plugin"
 import * as parser from "@typescript-eslint/parser"
+import type { RuleModuleWithMetaDocs } from "@typescript-eslint/utils/ts-eslint"
 import type { ESLint, Linter } from "eslint"
 import * as DrizzlePlugin from "eslint-plugin-drizzle"
 import * as ImportPlugin from "eslint-plugin-import-x"
@@ -7,7 +8,6 @@ import { default as SimpleImportSortPlugin } from "eslint-plugin-simple-import-s
 import StorybookPlugin from "eslint-plugin-storybook"
 
 import AtomIOPlugin from "./packages/atom.io/src/eslint-plugin"
-import { RuleModuleWithMetaDocs } from "@typescript-eslint/utils/ts-eslint"
 
 type StorybookRules = typeof StorybookPlugin.rules
 
@@ -166,7 +166,7 @@ const commonRules = {
 const configs = [
 	{
 		ignores: [
-			"**/.astro/**",
+			`**/.astro/**`,
 			`**/.wrangler/**`,
 			`**/_shared/**`,
 			`**/build/**`,
@@ -175,7 +175,7 @@ const configs = [
 			`**/gen/**`,
 			`**/node_modules/**`,
 			`**/.next/**`,
-			"**/.open-next/**",
+			`**/.open-next/**`,
 			`**/next-env.d.ts`,
 		],
 	},

@@ -4,13 +4,13 @@ import * as http from "node:http"
 import { parse as parseUrl } from "node:url"
 
 const PORT = process.env.PORT ?? 3000
-const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN ?? "http://localhost:5173"
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN ?? `http://localhost:5173`
 
-function parseCookies(cookieHeader = "") {
+function parseCookies(cookieHeader = ``) {
 	return Object.fromEntries(
 		cookieHeader
-			.split(";")
-			.map((c) => c.trim().split("="))
+			.split(`;`)
+			.map((c) => c.trim().split(`=`))
 			.filter(([k, v]) => k && v),
 	)
 }
@@ -23,12 +23,12 @@ function sendJSON(
 ) {
 	const body = JSON.stringify(data)
 	const headers: http.OutgoingHttpHeaders = {
-		"Content-Type": "application/json",
+		"Content-Type": `application/json`,
 		"Content-Length": Buffer.byteLength(body),
 	}
 	if (cors) {
-		headers["Access-Control-Allow-Origin"] = FRONTEND_ORIGIN
-		headers["Access-Control-Allow-Credentials"] = "true"
+		headers[`Access-Control-Allow-Origin`] = FRONTEND_ORIGIN
+		headers[`Access-Control-Allow-Credentials`] = `true`
 	}
 	res.writeHead(status, headers)
 	res.end(body)
@@ -43,54 +43,54 @@ const server = http.createServer(async (req, res) => {
 
 	const cookies = parseCookies(r.headers.cookie)
 
-	if (req.method === "OPTIONS") {
+	if (req.method === `OPTIONS`) {
 		res.writeHead(204, {
 			"Access-Control-Allow-Origin": FRONTEND_ORIGIN,
-			"Access-Control-Allow-Credentials": "true",
-			"Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-			"Access-Control-Allow-Headers": "Content-Type",
+			"Access-Control-Allow-Credentials": `true`,
+			"Access-Control-Allow-Methods": `GET,POST,OPTIONS`,
+			"Access-Control-Allow-Headers": `Content-Type`,
 		})
 		return res.end()
 	}
 
 	switch (pathname) {
-		case "/redirect": {
+		case `/redirect`: {
 			const token = query.token
 			if (!token) {
-				return sendJSON(res, 400, { error: "Missing token" })
+				sendJSON(res, 400, { error: `Missing token` }); return;
 			}
 
 			res.writeHead(302, {
 				"Set-Cookie": `auth_token=${token}; HttpOnly; Path=/; SameSite=Lax; Max-Age=10`,
 				"Access-Control-Allow-Origin": FRONTEND_ORIGIN,
-				"Access-Control-Allow-Credentials": "true",
+				"Access-Control-Allow-Credentials": `true`,
 				Location: FRONTEND_ORIGIN,
 			})
 			return res.end()
 		}
-		case "/random": {
+		case `/random`: {
 			await new Promise((resolve) => setTimeout(resolve, 1000))
-			const token = cookies["auth_token"]
+			const token = cookies[`auth_token`]
 			console.log({ token })
 			if (!token) {
-				return sendJSON(res, 401, { error: "Unauthenticated" }, true)
+				sendJSON(res, 401, { error: `Unauthenticated` }, true); return;
 			}
 
 			const random = Math.floor(Math.random() * 100)
-			return sendJSON(res, 200, random, true)
+			sendJSON(res, 200, random, true); return;
 		}
-		case "/logout": {
+		case `/logout`: {
 			res.writeHead(302, {
 				"Set-Cookie": `auth_token=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0`,
 				"Access-Control-Allow-Origin": FRONTEND_ORIGIN,
-				"Access-Control-Allow-Credentials": "true",
+				"Access-Control-Allow-Credentials": `true`,
 				Location: FRONTEND_ORIGIN,
 			})
 			return res.end()
 		}
 	}
 
-	sendJSON(res, 404, { error: "Not found" })
+	sendJSON(res, 404, { error: `Not found` })
 })
 
 // Start server

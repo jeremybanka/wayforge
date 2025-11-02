@@ -1,10 +1,10 @@
 import { default as TypeScriptPlugin } from "@typescript-eslint/eslint-plugin"
 import * as parser from "@typescript-eslint/parser"
+import AtomIOPlugin from "atom.io/eslint-plugin"
 import type { ESLint, Linter } from "eslint"
+import PreactConfig from "eslint-config-preact"
 import * as ImportPlugin from "eslint-plugin-import-x"
 import { default as SimpleImportSortPlugin } from "eslint-plugin-simple-import-sort"
-import AtomIOPlugin from "atom.io/eslint-plugin"
-import PreactConfig from "eslint-config-preact"
 
 const ERROR = 2
 
@@ -154,11 +154,12 @@ const commonRules = {
 	"simple-import-sort/exports": ERROR,
 
 	"no-mixed-spaces-and-tabs": 0,
+	"no-duplicate-imports": 0,
 	quotes: [ERROR, `backtick`],
 } satisfies Linter.Config[`rules`]
 
 const configs: Linter.Config[] = [
-	PreactConfig,
+	...PreactConfig,
 	{
 		ignores: [`**/dist/**`, `**/gen/**`, `**/node_modules/**`],
 	},

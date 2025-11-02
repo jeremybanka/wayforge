@@ -22,7 +22,7 @@ declare module "@typescript-eslint/eslint-plugin" {
 	export = plugin
 }
 
-declare module "eslint-plugin-drizzle" {
+declare module `eslint-plugin-drizzle` {
 	import type { ESLint } from "eslint"
 
 	const plugin: ESLint.Plugin
