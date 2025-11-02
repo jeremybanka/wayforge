@@ -23,9 +23,9 @@ declare module "@typescript-eslint/eslint-plugin" {
 }
 
 // eslint-disable-next-line quotes
-declare module "eslint-plugin-drizzle" {
-	import type { ESLint } from "eslint"
+declare module "eslint-config-preact" {
+	import type { Linter } from "eslint"
 
-	const plugin: ESLint.Plugin
-	export = plugin
+	const config: Linter.Config
+	export = config
 }

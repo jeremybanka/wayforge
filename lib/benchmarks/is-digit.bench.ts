@@ -1,11 +1,11 @@
 import * as v from "vitest"
 
 v.describe(`is stringified integer`, () => {
-	let ints: `${number}`[] = []
+	const ints: `${number}`[] = []
 	for (let i = 0; i < 100; i++) {
 		ints.push(`${i}`)
 	}
-	v.bench(`regex /^\d+$/.test(prop)`, () => {
+	v.bench(`regex /^d+$/.test(prop)`, () => {
 		for (const int of ints) /^\d+$/.test(int)
 	})
 	v.bench(`parseInt(prop, 10)`, () => {

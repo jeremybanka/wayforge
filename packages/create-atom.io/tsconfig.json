@@ -1,0 +1,12 @@
+{
+	"extends": "../../tsconfig.json",
+	"include": ["src", "__tests__", "**/*.config.ts"],
+	"exclude": ["templates"],
+	"compilerOptions": {
+		"allowJs": false,
+		"declaration": true,
+		"isolatedDeclarations": true,
+		"types": ["node", "vitest/globals"],
+		"target": "ES2022"
+	}
+}

@@ -15,6 +15,7 @@
 			"!**/.varmint",
 			"!**/.wrangler",
 			"!**/app/**/*",
+			"!**/.astro",
 			"!**/bin/**/*",
 			"!**/coverage",
 			"!**/dist/**/*",
