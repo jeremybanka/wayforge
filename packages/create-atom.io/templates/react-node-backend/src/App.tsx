@@ -21,8 +21,6 @@ const randomAtom = atom<Loadable<number>, Error>({
 function App(): React.JSX.Element {
 	const { error, value, loading } = useLoadable(randomAtom, 0)
 
-	console.log({ error, value, loading })
-
 	return (
 		<main>
 			{error ? (

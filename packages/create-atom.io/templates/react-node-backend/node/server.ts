@@ -81,7 +81,7 @@ const server = http.createServer(async (req, res) => {
 		}
 		case "/logout": {
 			res.writeHead(302, {
-				"Set-Cookie": `auth_token=; HttpOnly; Path=/; SameSite=None; Max-Age=0`,
+				"Set-Cookie": `auth_token=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0`,
 				"Access-Control-Allow-Origin": FRONTEND_ORIGIN,
 				"Access-Control-Allow-Credentials": "true",
 				Location: FRONTEND_ORIGIN,
