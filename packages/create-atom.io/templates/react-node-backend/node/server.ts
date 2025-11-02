@@ -53,11 +53,13 @@ const server = http.createServer(async (req, res) => {
 		return res.end()
 	}
 
+	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 	switch (pathname) {
 		case `/redirect`: {
 			const token = query.token
-			if (!token) {
-				sendJSON(res, 400, { error: `Missing token` }); return;
+			if (typeof token !== `string`) {
+				sendJSON(res, 400, { error: `Missing token` })
+				return
 			}
 
 			res.writeHead(302, {
@@ -73,11 +75,13 @@ const server = http.createServer(async (req, res) => {
 			const token = cookies[`auth_token`]
 			console.log({ token })
 			if (!token) {
-				sendJSON(res, 401, { error: `Unauthenticated` }, true); return;
+				sendJSON(res, 401, { error: `Unauthenticated` }, true)
+				return
 			}
 
 			const random = Math.floor(Math.random() * 100)
-			sendJSON(res, 200, random, true); return;
+			sendJSON(res, 200, random, true)
+			return
 		}
 		case `/logout`: {
 			res.writeHead(302, {
