@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.44.1
+
+### Patch Changes
+
+- f99df81: 🐛 `atom.io/react`: Fixed a bug with `useLoadable` where falsy values passed as a fallback would be treated as though a fallback had not been passed.
+
 ## 0.44.0
 
 ### Minor Changes
