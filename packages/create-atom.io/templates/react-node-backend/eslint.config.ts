@@ -4,7 +4,6 @@ import type { ESLint, Linter } from "eslint"
 import * as ImportPlugin from "eslint-plugin-import-x"
 import { default as SimpleImportSortPlugin } from "eslint-plugin-simple-import-sort"
 import AtomIOPlugin from "atom.io/eslint-plugin"
-import PreactConfig from "eslint-config-preact"
 
 const ERROR = 2
 
@@ -158,7 +157,6 @@ const commonRules = {
 } satisfies Linter.Config[`rules`]
 
 const configs: Linter.Config[] = [
-	PreactConfig,
 	{
 		ignores: [`**/dist/**`, `**/gen/**`, `**/node_modules/**`],
 	},

@@ -3,7 +3,8 @@
 import * as http from "node:http"
 import { parse as parseUrl } from "node:url"
 
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT ?? 3000
+const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN ?? "http://localhost:5173"
 
 function parseCookies(cookieHeader = "") {
 	return Object.fromEntries(
@@ -14,24 +15,40 @@ function parseCookies(cookieHeader = "") {
 	)
 }
 
-function sendJSON(res: http.ServerResponse, status: number, data: any) {
+function sendJSON(
+	res: http.ServerResponse,
+	status: number,
+	data: any,
+	cors = false,
+) {
 	const body = JSON.stringify(data)
-	res.writeHead(status, {
+	const headers: http.OutgoingHttpHeaders = {
 		"Content-Type": "application/json",
 		"Content-Length": Buffer.byteLength(body),
-	})
+	}
+	if (cors) {
+		headers["Access-Control-Allow-Origin"] = FRONTEND_ORIGIN
+		headers["Access-Control-Allow-Credentials"] = "true"
+	}
+	res.writeHead(status, headers)
 	res.end(body)
 }
 
 const server = http.createServer((req, res) => {
 	const r = req as http.IncomingMessage & { url: string; method: string }
 
-	if (r.url === undefined) {
-		return sendJSON(res, 400, { error: "Bad request" })
-	}
-
 	const { pathname, query } = parseUrl(r.url, true)
 	const cookies = parseCookies(r.headers.cookie)
+
+	if (req.method === "OPTIONS") {
+		res.writeHead(204, {
+			"Access-Control-Allow-Origin": FRONTEND_ORIGIN,
+			"Access-Control-Allow-Credentials": "true",
+			"Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+			"Access-Control-Allow-Headers": "Content-Type",
+		})
+		return res.end()
+	}
 
 	switch (pathname) {
 		case "/redirect": {
@@ -40,12 +57,14 @@ const server = http.createServer((req, res) => {
 				return sendJSON(res, 400, { error: "Missing token" })
 			}
 
-			// Set an HTTP-only cookie
+			// NOTE: SameSite=None required for cross-site cookies
 			res.writeHead(200, {
-				"Set-Cookie": `auth_token=${token}; HttpOnly; Path=/; SameSite=Lax`,
-				"Content-Type": "text/plain",
+				"Set-Cookie": `auth_token=${token}; HttpOnly; Path=/; SameSite=None; Secure`,
+				"Access-Control-Allow-Origin": FRONTEND_ORIGIN,
+				"Access-Control-Allow-Credentials": "true",
+				Location: FRONTEND_ORIGIN,
 			})
-			return res.end("Token set! You can now access /random")
+			return res.end()
 		}
 		case "/random": {
 			const token = cookies["auth_token"]
