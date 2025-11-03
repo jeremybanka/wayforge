@@ -41,7 +41,7 @@
 	},
 	"devDependencies": {
 		"concurrently": "9.2.1",
-		"eslint": "9.38.0",
+		"eslint": "9.39.1",
 		"fp-ts": "2.16.11",
 		"tsdown": "0.15.12",
 		"vite": "7.1.12",

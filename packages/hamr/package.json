@@ -57,7 +57,7 @@
 		"@typescript/native-preview": "7.0.0-dev.20251103.1",
 		"@vitejs/plugin-react": "5.1.0",
 		"concurrently": "9.2.1",
-		"eslint": "9.38.0",
+		"eslint": "9.39.1",
 		"happy-dom": "20.0.10",
 		"jsdom": "27.1.0",
 		"npmlog": "7.0.1",
