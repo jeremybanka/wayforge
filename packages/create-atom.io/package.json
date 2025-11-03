@@ -27,6 +27,7 @@
 	"dependencies": {
 		"@clack/prompts": "0.11.0",
 		"arktype": "2.1.25",
+		"atom.io": "workspace:*",
 		"comline": "workspace:*",
 		"picocolors": "1.1.1",
 		"tinyexec": "1.0.1"
@@ -38,7 +39,8 @@
 		"lint:types": "tsgo --noEmit",
 		"watch:types": "tsgo --watch --noEmit",
 		"lint": "concurrently \"bun:lint:*\"",
-		"postversion": "biome format --write package.json"
+		"test": "./__scripts__/sync-lib-version.node.ts test",
+		"version": "./__scripts__/sync-lib-version.node.ts make"
 	},
 	"devDependencies": {
 		"@types/node": "24.10.0",
