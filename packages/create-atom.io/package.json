@@ -39,7 +39,8 @@
 		"lint:types": "tsgo --noEmit",
 		"watch:types": "tsgo --watch --noEmit",
 		"lint": "concurrently \"bun:lint:*\"",
-		"postversion": "biome format --write package.json"
+		"test": "./__scripts__/sync-lib-version.node.ts test",
+		"version": "./__scripts__/sync-lib-version.node.ts make"
 	},
 	"devDependencies": {
 		"@types/node": "24.10.0",
