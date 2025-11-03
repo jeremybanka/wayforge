@@ -124,6 +124,11 @@
 				"__tests__/**",
 				"__scripts__/**"
 			]
+		},
+		"version": {
+			"dependsOn": ["^build"],
+			"inputs": [],
+			"outputs": ["templates/package.json"]
 		}
 	}
 }
