@@ -27,6 +27,7 @@
 	"dependencies": {
 		"@clack/prompts": "0.11.0",
 		"arktype": "2.1.25",
+		"atom.io": "workspace:*",
 		"comline": "workspace:*",
 		"picocolors": "1.1.1",
 		"tinyexec": "1.0.1"
