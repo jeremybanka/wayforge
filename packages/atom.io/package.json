@@ -104,7 +104,7 @@
 		"concurrently": "9.2.1",
 		"drizzle-kit": "0.31.6",
 		"drizzle-orm": "0.44.7",
-		"eslint": "9.38.0",
+		"eslint": "9.39.1",
 		"happy-dom": "20.0.10",
 		"http-proxy": "1.18.1",
 		"motion": "12.23.24",

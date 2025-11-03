@@ -53,7 +53,7 @@
 		"@types/tmp": "0.2.6",
 		"@typescript/native-preview": "7.0.0-dev.20251103.1",
 		"concurrently": "9.2.1",
-		"eslint": "9.38.0",
+		"eslint": "9.39.1",
 		"openai": "6.7.0",
 		"tmp": "0.2.5",
 		"tsdown": "0.15.12",
