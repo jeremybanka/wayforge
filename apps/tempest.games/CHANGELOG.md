@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.2.68
+
+### Patch Changes
+
+- 67e2c02: 🐛 Fixed bug where login emails wouldn't send.
+
 ## 0.2.67
 
 ### Patch Changes
