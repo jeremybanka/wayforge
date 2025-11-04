@@ -11,21 +11,24 @@ import {
 } from "@react-email/components"
 import * as React from "react"
 
-import { genAccountActionCode } from "../src/backend/account-actions"
+import {
+	genAccountActionCode,
+	summarizeAccountAction,
+} from "../src/backend/account-actions"
 import * as svg from "../src/frontend/<svg>"
 
 // biome-ignore lint/style/noNonNullAssertion: <explanation>
 const FRONTEND_ORIGIN = JSON.parse(process.env[`FRONTEND_ORIGINS`]!)[0] ?? ``
 
 interface ConfirmEmailProps {
-	subject: string
+	subjectInternal: string
 	summary: string
 	oneTimeCode: string
 	baseUrl?: string
 }
 
 function ConfirmAccountAction({
-	subject,
+	subjectInternal: subject,
 	summary,
 	oneTimeCode,
 	baseUrl = FRONTEND_ORIGIN,
@@ -86,13 +89,12 @@ function ConfirmAccountAction({
 
 					<Text style={text}>This code will expire in 15 minutes.</Text>
 					<Text style={text}>
-						If you didn't request this email, there's nothing to worry about, you
-						can safely ignore it.
+						If you didn't request this email, you can safely ignore it.
 					</Text>
 
 					<Section style={footerLogos}>
 						<Text style={footerText}>
-							@2022 Tempest Games, LLC
+							@2025 Tempest Games, LLC
 							<br />
 							<br />
 							ISC License
@@ -104,10 +106,15 @@ function ConfirmAccountAction({
 	)
 }
 
+const PREVIEW_CODE_ONLY = genAccountActionCode()
+
 ConfirmAccountAction.PreviewProps = {
-	subject: `Welcome`,
-	summary: `Your one-time code is: 1234567890`,
-	oneTimeCode: genAccountActionCode(),
+	...summarizeAccountAction({
+		username: `tiny_dog`,
+		oneTimeCode: PREVIEW_CODE_ONLY,
+		action: `confirmEmail`,
+	}),
+	oneTimeCode: PREVIEW_CODE_ONLY,
 	baseUrl: `https://tempest.games`,
 }
 

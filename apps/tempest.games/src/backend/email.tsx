@@ -23,7 +23,7 @@ export async function sendEmailToConfirmAccountAction({
 	oneTimeCode,
 	baseUrl,
 }: sendEmailToConfirmAccountActionData): Promise<void> {
-	const { subject, summary } = summarizeAccountAction({
+	const { subjectExternal, subjectInternal, summary } = summarizeAccountAction({
 		username,
 		action,
 		oneTimeCode,
@@ -32,10 +32,10 @@ export async function sendEmailToConfirmAccountAction({
 		await resend.emails.send({
 			from: `Tempest Games <noreply@tempest.games>`,
 			to,
-			subject,
+			subject: subjectExternal,
 			react: (
 				<ConfirmAccountAction
-					subject={subject}
+					subjectInternal={subjectInternal}
 					summary={summary}
 					oneTimeCode={oneTimeCode}
 					baseUrl={baseUrl}
