@@ -1,6 +1,6 @@
 {
 	"name": "rationality",
-	"version": "0.0.3",
+	"version": "0.1.0",
 	"type": "module",
 	"description": "Lossless numbers.",
 	"main": "./dist/index.js",
