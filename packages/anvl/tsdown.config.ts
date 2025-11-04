@@ -1,13 +1,7 @@
-import type { UserConfig } from "tsdown"
+import type { InlineConfig, UserConfig } from "tsdown"
 import { defineConfig } from "tsdown"
 
 const config: UserConfig = defineConfig({
-	dts: { sourcemap: true },
-	format: [`esm`],
-	sourcemap: true,
-	treeshake: true,
-	tsconfig: `tsconfig.json`,
-	clean: true,
 	entry: [
 		`src/array/index.ts`,
 		`src/function/index.ts`,
@@ -25,5 +19,15 @@ const config: UserConfig = defineConfig({
 		`src/string/index.ts`,
 		`src/tree/index.ts`,
 	],
-})
+
+	clean: true,
+	dts: { sourcemap: true },
+	fixedExtension: false,
+	format: `esm`,
+	platform: `neutral`,
+	sourcemap: true,
+	treeshake: true,
+	tsconfig: `tsconfig.json`,
+} satisfies InlineConfig)
+
 export default config

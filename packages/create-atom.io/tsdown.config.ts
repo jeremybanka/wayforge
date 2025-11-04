@@ -1,15 +1,18 @@
-import type { Options, UserConfig, UserConfigFn } from "tsdown"
+import type { InlineConfig, UserConfig } from "tsdown"
 import { defineConfig } from "tsdown"
 
-const config: UserConfig | UserConfigFn = defineConfig({
+const config: UserConfig = defineConfig({
+	entry: [`src/create-atom.ts`, `src/create-atom.x.ts`],
+
 	clean: true,
 	dts: { sourcemap: true },
-	entry: [`src/create-atom.ts`, `src/create-atom.x.ts`],
-	format: [`esm`],
+	fixedExtension: false,
+	format: `esm`,
 	outDir: `dist`,
+	platform: `node`,
 	sourcemap: true,
 	treeshake: true,
 	tsconfig: `tsconfig.json`,
-} satisfies Options)
+} satisfies InlineConfig)
 
 export default config
