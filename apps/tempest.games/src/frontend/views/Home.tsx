@@ -31,8 +31,19 @@ export function Home(): React.ReactNode {
 		`email` | `otc` | `password`
 	>(`email`)
 
+	const formId = `form-${React.useId()}`
+	React.useEffect(() => {
+		if (oneTimeCode.length === 6) {
+			const form = document.getElementById(formId)
+			if (form instanceof HTMLFormElement) {
+				form.requestSubmit()
+			}
+		}
+	}, [oneTimeCode])
+
 	return (
 		<form
+			id={formId}
 			onSubmit={async (e) => {
 				e.preventDefault()
 				const currentAuthTarget = getState(authTargetAtom)
@@ -135,7 +146,9 @@ export function Home(): React.ReactNode {
 						<span>One-time Code</span>
 						<input
 							id={oneTimeCodeInputId}
-							type="otc"
+							type="number"
+							inputMode="numeric"
+							enterKeyHint="go"
 							value={oneTimeCode}
 							onChange={(e) => {
 								setOneTimeCode(e.target.value)
