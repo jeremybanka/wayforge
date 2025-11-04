@@ -30,7 +30,7 @@
 		"atom.io": "workspace:*",
 		"comline": "workspace:*",
 		"picocolors": "1.1.1",
-		"tinyexec": "1.0.1"
+		"tinyexec": "1.0.2"
 	},
 	"scripts": {
 		"build": "tsdown && rm -f dist/*.x.d.ts",
