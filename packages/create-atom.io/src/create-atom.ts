@@ -7,7 +7,7 @@ import picocolors from "picocolors"
 import type { Colors } from "picocolors/types"
 import { x } from "tinyexec"
 
-export const pico: Colors = picocolors.createColors(true)
+const pico: Colors = picocolors.createColors(true)
 
 const s = prompts.spinner()
 
