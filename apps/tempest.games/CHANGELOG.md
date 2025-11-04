@@ -1,5 +1,13 @@
 # tempest.games
 
+## 0.2.69
+
+### Patch Changes
+
+- cc28a85: ✨ One-time passwords now show up at the beginning of emails' subject line.
+- cc28a85: ✨ One-time passwords are now shorter (six digits).
+- cc28a85: ✨ One-time passwords now auto-submit when the sixth character is typed.
+
 ## 0.2.68
 
 ### Patch Changes
