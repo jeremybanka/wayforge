@@ -1,8 +1,8 @@
 import type { AccountActionTypeActual } from "../database/tempest-db-schema"
-import { alphaRand } from "../library/alpha-rand"
+import { digitRand } from "../library/rand"
 
 export function genAccountActionCode(): string {
-	return alphaRand(4) + `_` + alphaRand(4)
+	return digitRand(6)
 }
 
 export type SummarizeAccountActionData = {
@@ -14,22 +14,27 @@ export function summarizeAccountAction({
 	action,
 	username,
 	oneTimeCode,
-}: SummarizeAccountActionData): { subject: string; summary: string } {
+}: SummarizeAccountActionData): {
+	subjectExternal: string
+	subjectInternal: string
+	summary: string
+} {
+	let subjectInternal: string
+	let summary: string
 	switch (action) {
 		case `confirmEmail`:
-			return {
-				subject: `Welcome`,
-				summary: `${oneTimeCode} is your one-time code to set up your account.`,
-			}
+			subjectInternal = `Welcome to Tempest!`
+			summary = `Your one-time code to set up your account.`
+			break
 		case `resetPassword`:
-			return {
-				subject: `Approve password reset?`,
-				summary: `${oneTimeCode} is your one-time code to make a new password.`,
-			}
+			subjectInternal = `Approve password reset?`
+			summary = `Your one-time code to make a new password.`
+
+			break
 		case `signIn`:
-			return {
-				subject: `Welcome back, ${username}`,
-				summary: `${oneTimeCode} is your one-time code to get signed in.`,
-			}
+			subjectInternal = `Welcome back, ${username}!`
+			summary = `Your one-time code to get signed in.`
 	}
+	const subjectExternal = `${oneTimeCode} ← ${subjectInternal}`
+	return { subjectExternal, subjectInternal, summary }
 }
