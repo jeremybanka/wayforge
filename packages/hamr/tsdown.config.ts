@@ -23,14 +23,17 @@ const ALL_ENTRIES = fromEntries(
 console.log({ SUBMODULE_NAMES, ALL_ENTRIES })
 
 const config: UserConfig | UserConfigFn = defineConfig({
-	external: EXTERNAL,
+	entry: ALL_ENTRIES,
+
+	clean: true,
 	dts: { sourcemap: true },
-	format: [`esm`],
+	external: EXTERNAL,
+	fixedExtension: false,
+	format: `esm`,
+	platform: `browser`,
+	outDir: `dist`,
 	sourcemap: false,
 	treeshake: true,
 	tsconfig: `tsconfig.json`,
-	clean: true,
-	outDir: `dist`,
-	entry: ALL_ENTRIES,
 })
 export default config

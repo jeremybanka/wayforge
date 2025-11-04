@@ -1,16 +1,19 @@
-import type { Options } from "tsdown"
+import type { InlineConfig } from "tsdown"
 import { defineConfig } from "tsdown"
 
 export const OPTIONS = {
+	entry: [`src/lib.ts`, `src/flightdeck.x.ts`, `src/klaxon.x.ts`],
+	external: [/^atom\.io/, `safedeposit`],
+
 	clean: true,
 	dts: { sourcemap: true },
-	entry: [`src/lib.ts`, `src/flightdeck.x.ts`, `src/klaxon.x.ts`],
-	format: [`esm`],
+	fixedExtension: false,
+	format: `esm`,
 	outDir: `dist`,
+	platform: `node`,
 	sourcemap: true,
 	treeshake: true,
 	tsconfig: `tsconfig.json`,
-	external: [/^atom\.io/, `safedeposit`],
-} satisfies Options
+} satisfies InlineConfig
 
 export default defineConfig(OPTIONS)
