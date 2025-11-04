@@ -6,7 +6,7 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"build": "tsdown src/index.ts --format esm --dts",
+		"build": "tsdown src/index.ts --format=esm --dts --platform=neutral",
 		"dev": "cd example && vite",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
