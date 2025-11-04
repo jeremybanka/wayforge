@@ -1,15 +1,18 @@
-import type { Options, UserConfig, UserConfigFn } from "tsdown"
+import type { InlineConfig, UserConfig } from "tsdown"
 import { defineConfig } from "tsdown"
 
-const config: UserConfig | UserConfigFn = defineConfig({
+const config: UserConfig = defineConfig({
+	entry: [`src/jurist.ts`],
+
 	clean: true,
 	dts: { sourcemap: true },
-	entry: [`src/jurist.ts`],
-	format: [`esm`],
+	fixedExtension: false,
+	format: `esm`,
 	outDir: `dist`,
+	platform: `neutral`,
 	sourcemap: true,
 	treeshake: true,
 	tsconfig: `tsconfig.json`,
-} satisfies Options)
+} satisfies InlineConfig)
 
 export default config

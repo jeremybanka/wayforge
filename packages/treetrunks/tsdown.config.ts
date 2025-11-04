@@ -1,15 +1,18 @@
-import type { Options, UserConfig, UserConfigFn } from "tsdown"
+import type { InlineConfig, UserConfig } from "tsdown"
 import { defineConfig } from "tsdown"
 
-export const config: UserConfig | UserConfigFn = defineConfig({
+export const config: UserConfig = defineConfig({
+	entry: [`src/treetrunks.ts`],
+
 	clean: true,
 	dts: { sourcemap: true },
-	entry: [`src/treetrunks.ts`],
-	format: [`esm`],
+	fixedExtension: false,
+	format: `esm`,
 	outDir: `dist`,
+	platform: `neutral`,
 	sourcemap: true,
 	treeshake: true,
 	tsconfig: `tsconfig.json`,
-} satisfies Options)
+} satisfies InlineConfig)
 
 export default config
