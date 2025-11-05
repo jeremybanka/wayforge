@@ -532,15 +532,18 @@ importers:
 
   packages/create-atom.io:
     dependencies:
+      '@atom.io/template-preact-svg-editor':
+        specifier: workspace:*
+        version: link:../../templates/preact-svg-editor
+      '@atom.io/template-react-node-backend':
+        specifier: workspace:*
+        version: link:../../templates/react-node-backend
       '@clack/prompts':
         specifier: 0.11.0
         version: 0.11.0
       arktype:
         specifier: 2.1.25
         version: 2.1.25
-      atom.io:
-        specifier: workspace:*
-        version: link:../atom.io
       comline:
         specifier: workspace:*
         version: link:../comline
@@ -578,98 +581,6 @@ importers:
       tsdown:
         specifier: 0.16.0
         version: 0.16.0(@typescript/native-preview@7.0.0-dev.20251104.1)(typescript@5.9.3)
-
-  packages/create-atom.io/templates/preact-svg-editor:
-    dependencies:
-      atom.io:
-        specifier: 0.44.1
-        version: 0.44.1(@floating-ui/react-dom@2.1.6(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2)))(@floating-ui/react@0.27.16(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2)))(@preact/compat@18.3.1(preact@10.27.2))(@testing-library/react@16.3.0(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))(@testing-library/dom@10.4.1)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2))(@typescript-eslint/parser@8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(happy-dom@20.0.10)(motion@12.23.24(@emotion/is-prop-valid@1.4.0)(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2)))(socket.io-client@4.8.1)(socket.io@4.8.1)
-      preact:
-        specifier: 10.27.2
-        version: 10.27.2
-      react:
-        specifier: npm:@preact/compat@18.3.1
-        version: '@preact/compat@18.3.1(preact@10.27.2)'
-      react-dom:
-        specifier: npm:@preact/compat@18.3.1
-        version: '@preact/compat@18.3.1(preact@10.27.2)'
-    devDependencies:
-      '@preact/preset-vite':
-        specifier: 2.10.2
-        version: 2.10.2(@babel/core@7.28.5)(preact@10.27.2)(vite@7.1.12(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1))
-      '@typescript-eslint/eslint-plugin':
-        specifier: 8.46.3
-        version: 8.46.3(@typescript-eslint/parser@8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
-      '@typescript-eslint/parser':
-        specifier: 8.46.3
-        version: 8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
-      eslint-config-preact:
-        specifier: 2.0.0
-        version: 2.0.0(eslint@9.39.1(jiti@2.6.1))
-      eslint-plugin-import-x:
-        specifier: 4.16.1
-        version: 4.16.1(@typescript-eslint/utils@8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))
-      eslint-plugin-simple-import-sort:
-        specifier: 12.1.1
-        version: 12.1.1(eslint@9.39.1(jiti@2.6.1))
-      vite:
-        specifier: 7.1.12
-        version: 7.1.12(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1)
-
-  packages/create-atom.io/templates/react-node-backend:
-    dependencies:
-      atom.io:
-        specifier: 0.44.1
-        version: 0.44.1(@floating-ui/react-dom@2.1.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@floating-ui/react@0.27.16(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@testing-library/react@16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@typescript-eslint/parser@8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(happy-dom@20.0.10)(motion@12.23.24(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(socket.io-client@4.8.1)(socket.io@4.8.1)
-      react:
-        specifier: 19.2.0
-        version: 19.2.0
-      react-dom:
-        specifier: 19.2.0
-        version: 19.2.0(react@19.2.0)
-    devDependencies:
-      '@eslint/js':
-        specifier: 9.39.1
-        version: 9.39.1
-      '@types/node':
-        specifier: 24.10.0
-        version: 24.10.0
-      '@types/react':
-        specifier: 19.2.2
-        version: 19.2.2
-      '@types/react-dom':
-        specifier: 19.2.2
-        version: 19.2.2(@types/react@19.2.2)
-      '@vitejs/plugin-react':
-        specifier: 5.1.0
-        version: 5.1.0(rolldown-vite@7.1.20(@types/node@24.10.0)(esbuild@0.25.11)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1))
-      babel-plugin-react-compiler:
-        specifier: 1.0.0
-        version: 1.0.0
-      concurrently:
-        specifier: 9.2.1
-        version: 9.2.1
-      eslint:
-        specifier: 9.39.1
-        version: 9.39.1(jiti@2.6.1)
-      eslint-plugin-react-hooks:
-        specifier: 7.0.1
-        version: 7.0.1(eslint@9.39.1(jiti@2.6.1))
-      eslint-plugin-react-refresh:
-        specifier: 0.4.24
-        version: 0.4.24(eslint@9.39.1(jiti@2.6.1))
-      globals:
-        specifier: 16.5.0
-        version: 16.5.0
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
-      typescript-eslint:
-        specifier: 8.46.3
-        version: 8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
-      vite:
-        specifier: npm:rolldown-vite@7.1.20
-        version: rolldown-vite@7.1.20(@types/node@24.10.0)(esbuild@0.25.11)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1)
 
   packages/flightdeck:
     dependencies:
@@ -1188,6 +1099,98 @@ importers:
       vitest:
         specifier: 4.0.7
         version: 4.0.7(@types/debug@4.1.12)(@types/node@24.10.0)(@vitest/ui@4.0.7)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@27.1.0(postcss@8.5.6))(lightningcss@1.30.2)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1)
+
+  templates/preact-svg-editor:
+    dependencies:
+      atom.io:
+        specifier: workspace:*
+        version: link:../../packages/atom.io
+      preact:
+        specifier: 10.27.2
+        version: 10.27.2
+      react:
+        specifier: npm:@preact/compat@18.3.1
+        version: '@preact/compat@18.3.1(preact@10.27.2)'
+      react-dom:
+        specifier: npm:@preact/compat@18.3.1
+        version: '@preact/compat@18.3.1(preact@10.27.2)'
+    devDependencies:
+      '@preact/preset-vite':
+        specifier: 2.10.2
+        version: 2.10.2(@babel/core@7.28.5)(preact@10.27.2)(vite@7.1.12(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1))
+      '@typescript-eslint/eslint-plugin':
+        specifier: 8.46.3
+        version: 8.46.3(@typescript-eslint/parser@8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
+      '@typescript-eslint/parser':
+        specifier: 8.46.3
+        version: 8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
+      eslint-config-preact:
+        specifier: 2.0.0
+        version: 2.0.0(eslint@9.39.1(jiti@2.6.1))
+      eslint-plugin-import-x:
+        specifier: 4.16.1
+        version: 4.16.1(@typescript-eslint/utils@8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))
+      eslint-plugin-simple-import-sort:
+        specifier: 12.1.1
+        version: 12.1.1(eslint@9.39.1(jiti@2.6.1))
+      vite:
+        specifier: 7.1.12
+        version: 7.1.12(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1)
+
+  templates/react-node-backend:
+    dependencies:
+      atom.io:
+        specifier: workspace:*
+        version: link:../../packages/atom.io
+      react:
+        specifier: 19.2.0
+        version: 19.2.0
+      react-dom:
+        specifier: 19.2.0
+        version: 19.2.0(react@19.2.0)
+    devDependencies:
+      '@eslint/js':
+        specifier: 9.39.1
+        version: 9.39.1
+      '@types/node':
+        specifier: 24.10.0
+        version: 24.10.0
+      '@types/react':
+        specifier: 19.2.2
+        version: 19.2.2
+      '@types/react-dom':
+        specifier: 19.2.2
+        version: 19.2.2(@types/react@19.2.2)
+      '@vitejs/plugin-react':
+        specifier: 5.1.0
+        version: 5.1.0(rolldown-vite@7.1.20(@types/node@24.10.0)(esbuild@0.25.11)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1))
+      babel-plugin-react-compiler:
+        specifier: 1.0.0
+        version: 1.0.0
+      concurrently:
+        specifier: 9.2.1
+        version: 9.2.1
+      eslint:
+        specifier: 9.39.1
+        version: 9.39.1(jiti@2.6.1)
+      eslint-plugin-react-hooks:
+        specifier: 7.0.1
+        version: 7.0.1(eslint@9.39.1(jiti@2.6.1))
+      eslint-plugin-react-refresh:
+        specifier: 0.4.24
+        version: 0.4.24(eslint@9.39.1(jiti@2.6.1))
+      globals:
+        specifier: 16.5.0
+        version: 16.5.0
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      typescript-eslint:
+        specifier: 8.46.3
+        version: 8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
+      vite:
+        specifier: npm:rolldown-vite@7.1.20
+        version: rolldown-vite@7.1.20(@types/node@24.10.0)(esbuild@0.25.11)(jiti@2.6.1)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.0)(yaml@2.8.1)
 
 packages:
 
@@ -4293,10 +4296,6 @@ packages:
       eslint: ^8.57.0 || ^9.0.0
       typescript: '>=4.8.4 <6.0.0'
 
-  '@typescript-eslint/types@8.46.2':
-    resolution: {integrity: sha512-lNCWCbq7rpg7qDsQrd3D6NyWYu+gkTENkG5IKYhUIcxSb59SQC/hEQ+MrG4sTgBVghTonNWq42bA/d4yYumldQ==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-
   '@typescript-eslint/types@8.46.3':
     resolution: {integrity: sha512-G7Ok9WN/ggW7e/tOf8TQYMaxgID3Iujn231hfi0Pc7ZheztIJVpO44ekY00b7akqc6nZcvregk0Jpah3kep6hA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -4876,41 +4875,6 @@ packages:
 
   atom.io@0.44.0:
     resolution: {integrity: sha512-n+EFGc9dzVREnZG/VTxQuzSF4EDHvOrYbwy7IDuM5zVKNO3VwGBpTXSccM7ysa4updCLaxcbS3CpUQh9tRpK6w==}
-    peerDependencies:
-      '@floating-ui/react': '>=0.25.0'
-      '@floating-ui/react-dom': '>=2.0.0'
-      '@testing-library/react': '>=14.0.0'
-      '@typescript-eslint/parser': '>=8.0.0'
-      eslint: '>=9.0.0'
-      happy-dom: '>=17.4.4'
-      motion: '>=11.0.0'
-      react: ^18.0.0 || ^19.0.0
-      socket.io: '>=4.0.0'
-      socket.io-client: '>=4.0.0'
-    peerDependenciesMeta:
-      '@floating-ui/react':
-        optional: true
-      '@floating-ui/react-dom':
-        optional: true
-      '@testing-library/react':
-        optional: true
-      '@typescript-eslint/parser':
-        optional: true
-      eslint:
-        optional: true
-      happy-dom:
-        optional: true
-      motion:
-        optional: true
-      react:
-        optional: true
-      socket.io:
-        optional: true
-      socket.io-client:
-        optional: true
-
-  atom.io@0.44.1:
-    resolution: {integrity: sha512-ZpXW3WtC+/jzzcLCYJkM5uTXxCGaeBfvJYOUCRrtyGbhH192C9q/AMDPw8OOUF37t0TS3DEGNaQyDG4fXI9asg==}
     peerDependencies:
       '@floating-ui/react': '>=0.25.0'
       '@floating-ui/react-dom': '>=2.0.0'
@@ -10788,13 +10752,6 @@ snapshots:
       '@floating-ui/core': 1.7.3
       '@floating-ui/utils': 0.2.10
 
-  '@floating-ui/react-dom@2.1.6(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))':
-    dependencies:
-      '@floating-ui/dom': 1.7.4
-      react: '@preact/compat@18.3.1(preact@10.27.2)'
-      react-dom: '@preact/compat@18.3.1(preact@10.27.2)'
-    optional: true
-
   '@floating-ui/react-dom@2.1.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
       '@floating-ui/dom': 1.7.4
@@ -10806,15 +10763,6 @@ snapshots:
       '@floating-ui/dom': 1.7.4
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
-
-  '@floating-ui/react@0.27.16(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))':
-    dependencies:
-      '@floating-ui/react-dom': 2.1.6(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))
-      '@floating-ui/utils': 0.2.10
-      react: '@preact/compat@18.3.1(preact@10.27.2)'
-      react-dom: '@preact/compat@18.3.1(preact@10.27.2)'
-      tabbable: 6.3.0
-    optional: true
 
   '@floating-ui/react@0.27.16(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
@@ -12405,17 +12353,6 @@ snapshots:
       picocolors: 1.1.1
       redent: 3.0.0
 
-  '@testing-library/react@16.3.0(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))(@testing-library/dom@10.4.1)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)':
-    dependencies:
-      '@babel/runtime': 7.28.4
-      '@testing-library/dom': 10.4.1
-      react: '@preact/compat@18.3.1(preact@10.27.2)'
-      react-dom: '@preact/compat@18.3.1(preact@10.27.2)'
-    optionalDependencies:
-      '@types/react': 19.2.2
-      '@types/react-dom': 19.2.2(@types/react@19.2.2)
-    optional: true
-
   '@testing-library/react@16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@babel/runtime': 7.28.4
@@ -12696,8 +12633,6 @@ snapshots:
       typescript: 5.9.3
     transitivePeerDependencies:
       - supports-color
-
-  '@typescript-eslint/types@8.46.2': {}
 
   '@typescript-eslint/types@8.46.3': {}
 
@@ -13418,32 +13353,6 @@ snapshots:
       socket.io-client: 4.8.1
 
   atom.io@0.44.0(@floating-ui/react-dom@2.1.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@floating-ui/react@0.27.16(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@testing-library/react@16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@typescript-eslint/parser@8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(happy-dom@20.0.10)(motion@12.23.24(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(socket.io-client@4.8.1)(socket.io@4.8.1):
-    optionalDependencies:
-      '@floating-ui/react': 0.27.16(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      '@floating-ui/react-dom': 2.1.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      '@testing-library/react': 16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      '@typescript-eslint/parser': 8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
-      eslint: 9.39.1(jiti@2.6.1)
-      happy-dom: 20.0.10
-      motion: 12.23.24(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
-      react: 19.2.0
-      socket.io: 4.8.1
-      socket.io-client: 4.8.1
-
-  atom.io@0.44.1(@floating-ui/react-dom@2.1.6(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2)))(@floating-ui/react@0.27.16(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2)))(@preact/compat@18.3.1(preact@10.27.2))(@testing-library/react@16.3.0(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))(@testing-library/dom@10.4.1)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2))(@typescript-eslint/parser@8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(happy-dom@20.0.10)(motion@12.23.24(@emotion/is-prop-valid@1.4.0)(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2)))(socket.io-client@4.8.1)(socket.io@4.8.1):
-    optionalDependencies:
-      '@floating-ui/react': 0.27.16(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))
-      '@floating-ui/react-dom': 2.1.6(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))
-      '@testing-library/react': 16.3.0(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))(@testing-library/dom@10.4.1)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)
-      '@typescript-eslint/parser': 8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
-      eslint: 9.39.1(jiti@2.6.1)
-      happy-dom: 20.0.10
-      motion: 12.23.24(@emotion/is-prop-valid@1.4.0)(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))
-      react: '@preact/compat@18.3.1(preact@10.27.2)'
-      socket.io: 4.8.1
-      socket.io-client: 4.8.1
-
-  atom.io@0.44.1(@floating-ui/react-dom@2.1.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@floating-ui/react@0.27.16(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@testing-library/react@16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@typescript-eslint/parser@8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(happy-dom@20.0.10)(motion@12.23.24(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(socket.io-client@4.8.1)(socket.io@4.8.1):
     optionalDependencies:
       '@floating-ui/react': 0.27.16(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@floating-ui/react-dom': 2.1.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -14413,7 +14322,7 @@ snapshots:
 
   eslint-plugin-import-x@4.16.1(@typescript-eslint/utils@8.46.3(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1)):
     dependencies:
-      '@typescript-eslint/types': 8.46.2
+      '@typescript-eslint/types': 8.46.3
       comment-parser: 1.4.1
       debug: 4.4.3
       eslint: 9.39.1(jiti@2.6.1)
@@ -14752,17 +14661,6 @@ snapshots:
       '@emotion/is-prop-valid': 1.4.0
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
-
-  framer-motion@12.23.24(@emotion/is-prop-valid@1.4.0)(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2)):
-    dependencies:
-      motion-dom: 12.23.23
-      motion-utils: 12.23.6
-      tslib: 2.8.1
-    optionalDependencies:
-      '@emotion/is-prop-valid': 1.4.0
-      react: '@preact/compat@18.3.1(preact@10.27.2)'
-      react-dom: '@preact/compat@18.3.1(preact@10.27.2)'
-    optional: true
 
   framer-motion@12.23.24(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:
@@ -16322,16 +16220,6 @@ snapshots:
       motion-utils: 12.23.6
 
   motion-utils@12.23.6: {}
-
-  motion@12.23.24(@emotion/is-prop-valid@1.4.0)(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2)):
-    dependencies:
-      framer-motion: 12.23.24(@emotion/is-prop-valid@1.4.0)(@preact/compat@18.3.1(preact@10.27.2))(@preact/compat@18.3.1(preact@10.27.2))
-      tslib: 2.8.1
-    optionalDependencies:
-      '@emotion/is-prop-valid': 1.4.0
-      react: '@preact/compat@18.3.1(preact@10.27.2)'
-      react-dom: '@preact/compat@18.3.1(preact@10.27.2)'
-    optional: true
 
   motion@12.23.24(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
     dependencies:

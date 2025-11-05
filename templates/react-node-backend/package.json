@@ -1,7 +1,9 @@
 {
-	"name": "react-node-backend",
-	"private": true,
+	"name": "@atom.io/template-react-node-backend",
 	"version": "0.0.0",
+	"publishConfig": {
+		"access": "public"
+	},
 	"type": "module",
 	"scripts": {
 		"dev": "concurrently vite ./node/server.ts ./node/authenticator.ts",
@@ -10,7 +12,7 @@
 		"preview": "concurrently \"vite preview\" ./node/server.ts ./node/authenticator.ts"
 	},
 	"dependencies": {
-		"atom.io": "0.44.1",
+		"atom.io": "workspace:*",
 		"react": "19.2.0",
 		"react-dom": "19.2.0"
 	},
