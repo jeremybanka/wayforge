@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env node --watch
 
 import * as http from "node:http"
 import { DatabaseSync } from "node:sqlite"
@@ -18,6 +18,7 @@ db.exec(`
 
 const insertStmt = db.prepare(`INSERT INTO todos (text) VALUES (?)`)
 const listStmt = db.prepare(`SELECT * FROM todos ORDER BY id`)
+const getOneStmt = db.prepare(`SELECT * FROM todos WHERE id = ?`)
 const updateStmt = db.prepare(`UPDATE todos SET done = ? WHERE id = ?`)
 const deleteStmt = db.prepare(`DELETE FROM todos WHERE id = ?`)
 
@@ -112,7 +113,15 @@ const server = http.createServer(async (req, res) => {
 					}
 					switch (r.method) {
 						case `GET`:
-							sendJSON(res, 200, { todos: listStmt.all() }, true)
+							{
+								const id = Number.parseInt(searchParams.get(`id`) as string, 10)
+								if (Number.isNaN(id)) {
+									sendJSON(res, 200, { todos: listStmt.all() }, true)
+								} else {
+									const todo = getOneStmt.get(id)
+									sendJSON(res, 200, { todo }, true)
+								}
+							}
 							return
 						case `POST`:
 							{
@@ -123,8 +132,10 @@ const server = http.createServer(async (req, res) => {
 									sendJSON(res, 400, { error: `Invalid text` }, true)
 									return
 								}
-								insertStmt.run(text)
-								sendJSON(res, 200, { success: true }, true)
+								const { lastInsertRowid: id } = insertStmt.run(text)
+								const todo = getOneStmt.get(id)
+								console.log({ todo })
+								sendJSON(res, 200, { todo }, true)
 							}
 							return
 						case `PUT`:
