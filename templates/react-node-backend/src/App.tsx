@@ -15,7 +15,7 @@ const SERVER_URL = `http://localhost:3000`
 const AUTHENTICATOR_URL = `http://localhost:4000`
 
 type Todo = {
-	id: number
+	id: number // real keys are integers; virtual keys are made with Math.random()
 	text: string
 	done: 0 | 1 // keeps things simple with sqlite
 }
@@ -139,7 +139,7 @@ async function deleteTodo() {
 }
 
 const TODO_FALLBACK: Todo = { id: 0, text: ``, done: 0 }
-const SKELETON_KEYS = Array.from({ length: 5 }).map((_) => Math.random())
+const SKELETON_KEYS = Array.from({ length: 5 }).map(Math.random)
 for (const key of SKELETON_KEYS) setState(todoAtoms, key, TODO_FALLBACK)
 
 export function App(): React.JSX.Element {
