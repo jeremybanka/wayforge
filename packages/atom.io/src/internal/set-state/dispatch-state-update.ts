@@ -21,10 +21,12 @@ import type { ProtoUpdate } from "./operate-on-store"
 export function dispatchOrDeferStateUpdate<T, E>(
 	target: Store & { operation: OpenOperation<any> },
 	state: WritableState<T, E>,
-	{ oldValue, newValue }: ProtoUpdate<E | T>,
+	proto: ProtoUpdate<E | T>,
 	stateIsNewlyCreated: boolean,
 	family?: WritableFamily<T, any, E>,
 ): void {
+	const { oldValue, newValue } = proto
+	const hasOldValue = `oldValue` in proto
 	const token = deposit(state)
 	if (stateIsNewlyCreated && family) {
 		state.subject.next({ newValue })
@@ -63,9 +65,16 @@ export function dispatchOrDeferStateUpdate<T, E>(
 	}
 	const { key, subject, type } = state
 
-	const update: StateUpdate<T> = {
-		oldValue: isTransceiver(oldValue) ? oldValue.READONLY_VIEW : oldValue,
-		newValue: isTransceiver(newValue) ? newValue.READONLY_VIEW : newValue,
+	let update: StateUpdate<T>
+	if (hasOldValue) {
+		update = {
+			oldValue: isTransceiver(oldValue) ? oldValue.READONLY_VIEW : oldValue,
+			newValue: isTransceiver(newValue) ? newValue.READONLY_VIEW : newValue,
+		}
+	} else {
+		update = {
+			newValue: isTransceiver(newValue) ? newValue.READONLY_VIEW : newValue,
+		}
 	}
 
 	if (isRootStore(target)) {
