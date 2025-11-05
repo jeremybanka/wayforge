@@ -1,10 +1,25 @@
 #!/usr/bin/env node
 
 import * as http from "node:http"
-import { parse as parseUrl } from "node:url"
+import { DatabaseSync } from "node:sqlite"
 
 const PORT = process.env.PORT ?? 3000
-const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN ?? `http://localhost:5173`
+const SERVER_ORIGIN = `http://localhost:3000`
+const FRONTEND_ORIGIN = `http://localhost:5173`
+
+const db = new DatabaseSync(`:memory:`)
+db.exec(`
+  CREATE TABLE todos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    text TEXT NOT NULL,
+    done INTEGER DEFAULT 0
+  )
+`)
+
+const insertStmt = db.prepare(`INSERT INTO todos (text) VALUES (?)`)
+const listStmt = db.prepare(`SELECT * FROM todos ORDER BY id`)
+const updateStmt = db.prepare(`UPDATE todos SET done = ? WHERE id = ?`)
+const deleteStmt = db.prepare(`DELETE FROM todos WHERE id = ?`)
 
 function parseCookies(cookieHeader = ``) {
 	return Object.fromEntries(
@@ -35,66 +50,124 @@ function sendJSON(
 }
 
 const server = http.createServer(async (req, res) => {
-	const r = req as http.IncomingMessage & { url: string; method: string }
+	try {
+		const r = req as http.IncomingMessage & { url: string; method: string }
 
-	const { pathname, query } = parseUrl(r.url, true)
+		const { pathname, searchParams } = new URL(r.url, SERVER_ORIGIN)
 
-	console.log(r.method, pathname, { ...query })
+		console.log(r.method, pathname, { ...searchParams })
 
-	const cookies = parseCookies(r.headers.cookie)
+		const cookies = parseCookies(r.headers.cookie)
 
-	if (req.method === `OPTIONS`) {
-		res.writeHead(204, {
-			"Access-Control-Allow-Origin": FRONTEND_ORIGIN,
-			"Access-Control-Allow-Credentials": `true`,
-			"Access-Control-Allow-Methods": `GET,POST,OPTIONS`,
-			"Access-Control-Allow-Headers": `Content-Type`,
-		})
-		return res.end()
-	}
-
-	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
-	switch (pathname) {
-		case `/redirect`: {
-			const token = query.token
-			if (typeof token !== `string`) {
-				sendJSON(res, 400, { error: `Missing token` })
-				return
-			}
-
-			res.writeHead(302, {
-				"Set-Cookie": `auth_token=${token}; HttpOnly; Path=/; SameSite=Lax; Max-Age=10`,
+		if (req.method === `OPTIONS`) {
+			res.writeHead(204, {
 				"Access-Control-Allow-Origin": FRONTEND_ORIGIN,
 				"Access-Control-Allow-Credentials": `true`,
-				Location: FRONTEND_ORIGIN,
+				"Access-Control-Allow-Methods": `GET,POST,PUT,DELETE,OPTIONS`,
+				"Access-Control-Allow-Headers": `Content-Type`,
 			})
 			return res.end()
 		}
-		case `/random`: {
-			await new Promise((resolve) => setTimeout(resolve, 1000))
-			const token = cookies[`auth_token`]
-			console.log({ token })
-			if (!token) {
-				sendJSON(res, 401, { error: `Unauthenticated` }, true)
+
+		// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
+		switch (pathname) {
+			case `/redirect`:
+				{
+					const token = searchParams.get(`token`)
+					if (typeof token !== `string`) {
+						sendJSON(res, 400, { error: `Missing token` })
+						return
+					}
+					res.writeHead(302, {
+						"Set-Cookie": `auth_token=${token}; HttpOnly; Path=/; SameSite=Lax; Max-Age=1000`,
+						"Access-Control-Allow-Origin": FRONTEND_ORIGIN,
+						"Access-Control-Allow-Credentials": `true`,
+						Location: FRONTEND_ORIGIN,
+					})
+					res.end()
+				}
 				return
-			}
+			case `/random`:
+				{
+					await new Promise((resolve) => setTimeout(resolve, 1000))
+					const token = cookies[`auth_token`]
+					console.log({ token })
+					if (!token) {
+						sendJSON(res, 401, { error: `Unauthenticated` }, true)
+						return
+					}
 
-			const random = Math.floor(Math.random() * 100)
-			sendJSON(res, 200, random, true)
-			return
+					const random = Math.floor(Math.random() * 100)
+					sendJSON(res, 200, random, true)
+				}
+				return
+			case `/todos`:
+				{
+					await new Promise((resolve) => setTimeout(resolve, 200))
+					const token = cookies[`auth_token`]
+					console.log({ token })
+					if (!token) {
+						sendJSON(res, 401, { error: `Unauthenticated` }, true)
+						return
+					}
+					switch (r.method) {
+						case `GET`:
+							sendJSON(res, 200, { todos: listStmt.all() }, true)
+							return
+						case `POST`:
+							{
+								let body = ``
+								for await (const chunk of r) body += chunk
+								const { text } = JSON.parse(body)
+								if (typeof text !== `string`) {
+									sendJSON(res, 400, { error: `Invalid text` }, true)
+									return
+								}
+								insertStmt.run(text)
+								sendJSON(res, 200, { success: true }, true)
+							}
+							return
+						case `PUT`:
+							{
+								const id = Number.parseInt(searchParams.get(`id`) as string, 10)
+								let body = ``
+								for await (const chunk of r) body += chunk
+								const { done } = JSON.parse(body)
+								updateStmt.run(done ? 1 : 0, id)
+								sendJSON(res, 200, { success: true }, true)
+							}
+							return
+						case `DELETE`:
+							{
+								const id = Number.parseInt(searchParams.get(`id`) as string, 10)
+								deleteStmt.run(id)
+								sendJSON(res, 200, { success: true }, true)
+							}
+							return
+						default:
+							sendJSON(res, 405, { error: `Method not allowed` }, true)
+					}
+				}
+				return
+
+			case `/logout`:
+				{
+					res.writeHead(302, {
+						"Set-Cookie": `auth_token=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0`,
+						"Access-Control-Allow-Origin": FRONTEND_ORIGIN,
+						"Access-Control-Allow-Credentials": `true`,
+						Location: FRONTEND_ORIGIN,
+					})
+					res.end()
+				}
+				return
 		}
-		case `/logout`: {
-			res.writeHead(302, {
-				"Set-Cookie": `auth_token=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0`,
-				"Access-Control-Allow-Origin": FRONTEND_ORIGIN,
-				"Access-Control-Allow-Credentials": `true`,
-				Location: FRONTEND_ORIGIN,
-			})
-			return res.end()
-		}
+
+		sendJSON(res, 404, { error: `Not found` })
+	} catch (thrown) {
+		console.error(thrown)
+		sendJSON(res, 500, null, true)
 	}
-
-	sendJSON(res, 404, { error: `Not found` })
 })
 
 // Start server
