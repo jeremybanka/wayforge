@@ -1,12 +1,13 @@
 import {
 	atom,
 	atomFamily,
+	getState,
 	type Loadable,
 	resetState,
 	selector,
 	setState,
 } from "atom.io"
-import { useLoadable } from "atom.io/react"
+import { useI, useLoadable, useO } from "atom.io/react"
 import { useCallback } from "react"
 
 const SERVER_URL = `http://localhost:3000`
@@ -91,7 +92,8 @@ const todosStatsSelector = selector<
 })
 
 async function addTodo() {
-	const text = `hello`
+	const text = getState(newTodoTextAtom)
+	setState(newTodoTextAtom, ``)
 	const url = new URL(`todos`, SERVER_URL)
 	const tempId = Math.random()
 	setState(todoAtoms, tempId, { id: tempId, text, done: 0 })
@@ -116,7 +118,7 @@ async function addTodo() {
 	})
 }
 
-function App(): React.JSX.Element {
+export function App(): React.JSX.Element {
 	const todoKeys = useLoadable(todoKeysAtom, [])
 	const stats = useLoadable(todosStatsSelector, { total: 0, done: 0 })
 
@@ -158,15 +160,17 @@ function App(): React.JSX.Element {
 			</header>
 			<main>
 				<header>
-					{stats.value.done}/{stats.value.total} items done
+					<h1>todo list</h1>
+					<span>
+						{stats.value.done}/{stats.value.total} items done
+					</span>
 				</header>
-				{todoKeys.value.map((todoKey) => (
-					<Todo key={todoKey} todoKey={todoKey} />
-				))}
-
-				<button type="button" onClick={addTodo}>
-					Add Todo
-				</button>
+				<main>
+					{todoKeys.value.map((todoKey) => (
+						<Todo key={todoKey} todoKey={todoKey} />
+					))}
+					<NewTodo />
+				</main>
 			</main>
 		</>
 	)
@@ -207,6 +211,34 @@ function Todo({ todoKey }: { todoKey: number }): React.JSX.Element {
 	)
 }
 
-const cn = (...c: (boolean | string)[]) => c.filter(Boolean).join(` `)
+const newTodoTextAtom = atom<string>({
+	key: `newTodo`,
+	default: ``,
+})
 
-export default App
+function NewTodo(): React.JSX.Element {
+	const text = useO(newTodoTextAtom)
+	const setText = useI(newTodoTextAtom)
+	const change = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+		setText(e.target.value)
+	}, [])
+	const submit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault()
+		void addTodo()
+	}, [])
+	return (
+		<form className="todo" onSubmit={submit}>
+			<input type="checkbox" checked={false} disabled />
+			<input
+				type="text"
+				contentEditable
+				suppressContentEditableWarning
+				value={text}
+				onChange={change}
+			/>
+			<button type="submit">Add Todo</button>
+		</form>
+	)
+}
+
+const cn = (...c: (boolean | string)[]) => c.filter(Boolean).join(` `)
