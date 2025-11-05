@@ -11,7 +11,7 @@ import type { ReadableFamilyToken, ReadableToken } from "."
  * @param token - The token of the state to dispose
  * @overload Default
  */
-export function disposeState(token: ReadableToken<any>): void
+export function disposeState(token: ReadableToken<any, any>): void
 /**
  * Disposes of a state in the implicit store.
  *
@@ -22,13 +22,13 @@ export function disposeState(token: ReadableToken<any>): void
  * @overload Streamlined
  */
 export function disposeState<K extends Canonical>(
-	token: ReadableFamilyToken<any, K>,
+	token: ReadableFamilyToken<any, K, any>,
 	key: K,
 ): void
 export function disposeState(
 	...params:
-		| [token: ReadableFamilyToken<any, any>, key: Canonical]
-		| [token: ReadableToken<any>]
+		| [token: ReadableFamilyToken<any, any, any>, key: Canonical]
+		| [token: ReadableToken<any, any>]
 ): void {
 	disposeFromStore(IMPLICIT.STORE, ...params)
 }
