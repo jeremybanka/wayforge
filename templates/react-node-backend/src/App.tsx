@@ -144,6 +144,8 @@ export function App(): React.JSX.Element {
 				</article>
 			) : null}
 			<header>
+				<LongLoadTimes />
+				<span className="spacer" />
 				{todoKeys.error ? (
 					<div className="pfp signed-out" />
 				) : todoKeys.loading ? (
@@ -241,6 +243,35 @@ function NewTodo(): React.JSX.Element {
 			/>
 			<button type="submit">Add Todo</button>
 		</form>
+	)
+}
+
+const longLoadTimesAtom = atom<Loadable<boolean>>({
+	key: `longLoadTimes`,
+	default: () =>
+		fetch(new URL(`/long-load-times`, SERVER_URL), {
+			credentials: `include`,
+		}).then(async (res) => res.json()),
+})
+
+function LongLoadTimes(): React.JSX.Element {
+	const longLoadTimes = useLoadable(longLoadTimesAtom, false)
+	const toggle = useCallback(async () => {
+		const url = new URL(`/long-load-times`, SERVER_URL)
+		const res = await fetch(url, {
+			method: `POST`,
+			credentials: `include`,
+		})
+		const newState = await res.json()
+		setState(longLoadTimesAtom, newState)
+	}, [longLoadTimes])
+	return (
+		<div className="long-load-times">
+			<label>
+				<input type="checkbox" checked={longLoadTimes.value} onChange={toggle} />
+				Enable long load times
+			</label>
+		</div>
 	)
 }
 

@@ -3,6 +3,8 @@
 import * as http from "node:http"
 import { DatabaseSync } from "node:sqlite"
 
+import { atom, getState, setState } from "atom.io"
+
 const PORT = process.env.PORT ?? 3000
 const SERVER_ORIGIN = `http://localhost:3000`
 const FRONTEND_ORIGIN = `http://localhost:5173`
@@ -21,6 +23,11 @@ const getAllStmt = db.prepare(`SELECT * FROM todos ORDER BY id`)
 const getOneStmt = db.prepare(`SELECT * FROM todos WHERE id = ?`)
 const updateStmt = db.prepare(`UPDATE todos SET done = ? WHERE id = ?`)
 const deleteStmt = db.prepare(`DELETE FROM todos WHERE id = ?`)
+
+const longLoadTimesAtom = atom<boolean>({
+	key: `longLoadTimes`,
+	default: false,
+})
 
 function parseCookies(cookieHeader = ``) {
 	return Object.fromEntries(
@@ -70,7 +77,6 @@ const server = http.createServer(async (req, res) => {
 			return res.end()
 		}
 
-		// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 		switch (pathname) {
 			case `/redirect`:
 				{
@@ -88,22 +94,26 @@ const server = http.createServer(async (req, res) => {
 					res.end()
 				}
 				return
-			case `/random`:
-				{
-					await new Promise((resolve) => setTimeout(resolve, 1000))
-					const token = cookies[`auth_token`]
-					if (!token) {
-						sendJSON(res, 401, { error: `Unauthenticated` }, true)
+			case `/long-load-times`:
+				switch (r.method) {
+					case `GET`:
+						break
+					case `POST`:
+						setState(longLoadTimesAtom, (prev) => !prev)
+						break
+					default:
+						sendJSON(res, 405, { error: `Method not allowed` }, true)
 						return
-					}
-
-					const random = Math.floor(Math.random() * 100)
-					sendJSON(res, 200, random, true)
 				}
+				sendJSON(res, 200, getState(longLoadTimesAtom), true)
 				return
+
 			case `/todos`:
 				{
-					await new Promise((resolve) => setTimeout(resolve, 2000))
+					const longLoadTimes = getState(longLoadTimesAtom)
+					if (longLoadTimes) {
+						await new Promise((resolve) => setTimeout(resolve, 1000))
+					}
 					const token = cookies[`auth_token`]
 					if (!token) {
 						sendJSON(res, 401, { error: `Unauthenticated` }, true)
@@ -156,7 +166,6 @@ const server = http.createServer(async (req, res) => {
 					}
 				}
 				return
-
 			case `/logout`:
 				{
 					res.writeHead(302, {
@@ -168,9 +177,9 @@ const server = http.createServer(async (req, res) => {
 					res.end()
 				}
 				return
+			default:
+				sendJSON(res, 404, { error: `Not found` })
 		}
-
-		sendJSON(res, 404, { error: `Not found` })
 	} catch (thrown) {
 		console.error(thrown)
 		sendJSON(res, 500, null, true)
