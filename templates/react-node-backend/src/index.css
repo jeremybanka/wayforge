@@ -117,10 +117,15 @@ body {
 					text-align: center;
 					gap: 5px;
 					padding: 0 3px;
-					> input[type="text"] {
+					> span,
+					input[type="text"] {
 						flex-grow: 1;
 						font-size: 18px;
 						font-family: Charter, serif;
+						text-align: left;
+					}
+					> button.delete::after {
+						content: "×";
 					}
 				}
 			}

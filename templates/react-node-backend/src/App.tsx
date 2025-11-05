@@ -1,8 +1,9 @@
+import type { Loadable } from "atom.io"
 import {
 	atom,
 	atomFamily,
+	disposeState,
 	getState,
-	type Loadable,
 	resetState,
 	selector,
 	setState,
@@ -118,6 +119,25 @@ async function addTodo() {
 	})
 }
 
+async function deleteTodo() {
+	const todoKeys = await getState(todoKeysAtom)
+	if (Error.isError(todoKeys)) return
+	const todoKey = todoKeys.find((key) => !Error.isError(key))
+	if (todoKey === undefined) return
+	setState(todoKeysAtom, async (loadable) => {
+		const prev = await loadable
+		if (Error.isError(prev)) return prev
+		return prev.filter((id) => id !== todoKey)
+	})
+	disposeState(todoAtoms, todoKey)
+	const url = new URL(`/todos`, SERVER_URL)
+	url.searchParams.set(`id`, todoKey.toString())
+	await fetch(url, {
+		method: `DELETE`,
+		credentials: `include`,
+	})
+}
+
 const TODO_FALLBACK: Todo = { id: 0, text: ``, done: 0 }
 const SKELETON_KEYS = Array.from({ length: 5 }).map((_) => Math.random())
 for (const key of SKELETON_KEYS) setState(todoAtoms, key, TODO_FALLBACK)
@@ -212,6 +232,7 @@ function Todo({ todoKey }: { todoKey: number }): React.JSX.Element {
 		>
 			<input type="checkbox" checked={Boolean(todo.done)} onChange={toggle} />
 			<span>{todo.text}</span>
+			<button type="button" className="delete" onClick={deleteTodo} />
 		</div>
 	)
 }
