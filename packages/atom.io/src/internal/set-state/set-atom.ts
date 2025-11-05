@@ -1,5 +1,6 @@
-import { writeToCache } from "../caching"
+import { readFromCache, writeToCache } from "../caching"
 import { readOrComputeValue } from "../get-state/read-or-compute-value"
+import { isFn } from "../is-fn"
 import type { OpenOperation } from "../operation"
 import { markDone } from "../operation"
 import type { Atom } from "../state-types"
@@ -13,11 +14,24 @@ export const setAtom = <T>(
 	atom: Atom<T, any>,
 	next: NoInfer<T> | ((oldValue: T) => NoInfer<T>),
 ): ProtoUpdate<T> => {
-	const oldValue = readOrComputeValue(target, atom, `mut`)
-	let newValue = become(next, oldValue)
+	// const oldValue = readOrComputeValue(target, atom, `mut`)
+	// let newValue = become(next, oldValue)
+	let oldValue: T | undefined
+	let newValue: T
+	if (isFn(next)) {
+		const prev = readOrComputeValue(target, atom, `mut`)
+		oldValue = prev
+		newValue = next(prev)
+	} else {
+		oldValue = readFromCache(target, atom, `mut`)
+		newValue = next
+	}
 	target.logger.info(`⭐`, `atom`, atom.key, `setting value`, newValue)
 	newValue = writeToCache(target, atom, newValue)
 	markDone(target, atom.key)
 	evictDownstreamFromAtom(target, atom)
-	return { oldValue, newValue }
+	if (oldValue) {
+		return { oldValue, newValue }
+	}
+	return { newValue }
 }
