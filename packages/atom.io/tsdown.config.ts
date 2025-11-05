@@ -7,6 +7,7 @@ import { fromEntries } from "./src/json/entries.ts"
 const SUBMODULE_NAMES = discoverSubmodules()
 
 const EXTERNAL = [
+	/^node:/,
 	/^eslint-/,
 	/^@eslint-/,
 	/^@typescript-eslint\//,
