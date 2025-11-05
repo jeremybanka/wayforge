@@ -58,7 +58,11 @@ body {
 			box-sizing: border-box;
 			padding: 20px;
 			justify-content: flex-end;
+			align-items: center;
 			gap: 10px;
+			> .spacer {
+				flex-grow: 1;
+			}
 			> .pfp {
 				position: relative;
 				display: flex;
