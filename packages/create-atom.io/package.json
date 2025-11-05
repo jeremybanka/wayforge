@@ -40,9 +40,7 @@
 		"lint:eslint": "eslint -- .",
 		"lint:types": "tsgo --noEmit",
 		"watch:types": "tsgo --watch --noEmit",
-		"lint": "concurrently \"bun:lint:*\"",
-		"test": "./__scripts__/sync-lib-version.node.ts test",
-		"version": "./__scripts__/sync-lib-version.node.ts make"
+		"lint": "concurrently \"bun:lint:*\""
 	},
 	"devDependencies": {
 		"@types/node": "24.10.0",
