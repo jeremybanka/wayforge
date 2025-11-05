@@ -17,7 +17,7 @@ db.exec(`
 `)
 
 const insertStmt = db.prepare(`INSERT INTO todos (text) VALUES (?)`)
-const listStmt = db.prepare(`SELECT * FROM todos ORDER BY id`)
+const getAllStmt = db.prepare(`SELECT * FROM todos ORDER BY id`)
 const getOneStmt = db.prepare(`SELECT * FROM todos WHERE id = ?`)
 const updateStmt = db.prepare(`UPDATE todos SET done = ? WHERE id = ?`)
 const deleteStmt = db.prepare(`DELETE FROM todos WHERE id = ?`)
@@ -56,7 +56,7 @@ const server = http.createServer(async (req, res) => {
 
 		const { pathname, searchParams } = new URL(r.url, SERVER_ORIGIN)
 
-		console.log(r.method, pathname, { ...searchParams })
+		console.log(r.method, pathname, [...searchParams.entries()])
 
 		const cookies = parseCookies(r.headers.cookie)
 
@@ -104,7 +104,7 @@ const server = http.createServer(async (req, res) => {
 				return
 			case `/todos`:
 				{
-					await new Promise((resolve) => setTimeout(resolve, 200))
+					await new Promise((resolve) => setTimeout(resolve, 2000))
 					const token = cookies[`auth_token`]
 					console.log({ token })
 					if (!token) {
@@ -116,7 +116,7 @@ const server = http.createServer(async (req, res) => {
 							{
 								const id = Number.parseInt(searchParams.get(`id`) as string, 10)
 								if (Number.isNaN(id)) {
-									sendJSON(res, 200, { todos: listStmt.all() }, true)
+									sendJSON(res, 200, { todos: getAllStmt.all() }, true)
 								} else {
 									const todo = getOneStmt.get(id)
 									sendJSON(res, 200, { todo }, true)
@@ -127,24 +127,22 @@ const server = http.createServer(async (req, res) => {
 							{
 								let body = ``
 								for await (const chunk of r) body += chunk
-								const { text } = JSON.parse(body)
-								if (typeof text !== `string`) {
-									sendJSON(res, 400, { error: `Invalid text` }, true)
-									return
-								}
-								const { lastInsertRowid: id } = insertStmt.run(text)
-								const todo = getOneStmt.get(id)
-								console.log({ todo })
+								const { lastInsertRowid } = insertStmt.run(body)
+								const todo = getOneStmt.get(lastInsertRowid)
 								sendJSON(res, 200, { todo }, true)
 							}
 							return
 						case `PUT`:
 							{
 								const id = Number.parseInt(searchParams.get(`id`) as string, 10)
+								if (Number.isNaN(id)) {
+									sendJSON(res, 400, { error: `Invalid id` }, true)
+									return
+								}
 								let body = ``
 								for await (const chunk of r) body += chunk
-								const { done } = JSON.parse(body)
-								updateStmt.run(done ? 1 : 0, id)
+								const nowChecked = JSON.parse(body)
+								updateStmt.run(nowChecked, id)
 								sendJSON(res, 200, { success: true }, true)
 							}
 							return

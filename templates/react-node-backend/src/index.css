@@ -12,6 +12,18 @@
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 }
+@media (prefers-color-scheme: light) {
+	:root {
+		color: #213547;
+		background-color: #ffffff;
+	}
+	a:hover {
+		color: #747bff;
+	}
+	button {
+		background-color: #f9f9f9;
+	}
+}
 
 a {
 	font-weight: 500;
@@ -31,73 +43,84 @@ body {
 	#root {
 		display: flex;
 		width: 100%;
-		> main {
+		place-items: center;
+		flex-direction: column;
+
+		> header {
+			position: fixed;
+			top: 0;
+			left: 0;
 			display: flex;
 			width: 100%;
-			place-items: center;
-			flex-direction: column;
-			> header {
-				position: fixed;
-				top: 0;
-				left: 0;
-				display: flex;
-				width: 100%;
-				box-sizing: border-box;
-				padding: 20px;
-				justify-content: flex-end;
-				gap: 10px;
-				> .pfp {
-					position: relative;
-					display: flex;
-					place-items: center;
-					place-content: center;
-					border: 1px solid #ccc3;
-					width: 40px;
-					height: 40px;
-					border-radius: 50%;
-					&.signed-in::before {
-						content: "👤";
-					}
-				}
-			}
-			> .todo {
-				font-size: 30px;
+			box-sizing: border-box;
+			padding: 20px;
+			justify-content: flex-end;
+			gap: 10px;
+			> .pfp {
 				position: relative;
-				border: 1px solid #ccc3;
-				width: 60px;
-				text-align: center;
-				&.loading {
-					color: #ccc3;
-				}
-			}
-
-			> .takeover {
-				z-index: 100;
-				position: fixed;
-				top: 0;
-				left: 0;
-				width: 100svw;
-				height: 100svh;
-				background-color: rgba(0, 0, 0, 0.5);
 				display: flex;
 				place-items: center;
 				place-content: center;
-				box-sizing: border-box;
-				padding-bottom: 60px;
-				> main.card {
-					display: flex;
-					flex-direction: column;
-					place-items: center;
-					gap: 10px;
-					background-color: #444;
-					@media (prefers-color-scheme: light) {
-						background-color: #fff;
-					}
-					width: 100%;
-					max-width: 200px;
-					padding: 20px;
-					border-radius: 8px;
+				border: 1px solid #ccc3;
+				width: 40px;
+				height: 40px;
+				border-radius: 50%;
+				&.signed-in::before {
+					content: "👤";
 				}
+			}
+		}
+		> main {
+			position: relative;
+			display: flex;
+			flex-direction: column;
+			width: 100%;
+			max-width: 600px;
+			gap: 5px;
+			> .todo {
+				display: flex;
+				width: 100%;
+				flex-flow: row;
+				place-items: center;
+				font-size: 18px;
+				position: relative;
+				border: 1px solid #ccc3;
+				box-sizing: border-box;
+				text-align: center;
+				gap: 5px;
+				padding: 0 3px;
+				/* &.loading {
+					background: #7771;
+				} */
+			}
+		}
+
+		> .takeover {
+			z-index: 100;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100svw;
+			height: 100svh;
+			background-color: rgba(0, 0, 0, 0.5);
+			display: flex;
+			place-items: center;
+			place-content: center;
+			box-sizing: border-box;
+			padding-bottom: 60px;
+			> main.card {
+				display: flex;
+				flex-direction: column;
+				place-items: center;
+				gap: 10px;
+				background-color: #444;
+				@media (prefers-color-scheme: light) {
+					background-color: #fff;
+				}
+				width: 100%;
+				max-width: 200px;
+				padding: 20px;
+				border-radius: 8px;
 			}
 		}
 	}
@@ -131,15 +154,20 @@ button {
 	}
 }
 
-@media (prefers-color-scheme: light) {
-	:root {
-		color: #213547;
-		background-color: #ffffff;
+.loading {
+	background: linear-gradient(90deg, #7773, #7771, #7773);
+	background-size: 200% 100%;
+	animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+	0% {
+		background-position: 200% 0;
 	}
-	a:hover {
-		color: #747bff;
+	50% {
+		background-position: 0% 0;
 	}
-	button {
-		background-color: #f9f9f9;
+	100% {
+		background-position: 200% 0;
 	}
 }

@@ -7,28 +7,15 @@ import {
 	setState,
 } from "atom.io"
 import { useLoadable } from "atom.io/react"
+import { useCallback } from "react"
 
 const SERVER_URL = `http://localhost:3000`
 const AUTHENTICATOR_URL = `http://localhost:4000`
 
-const randomAtom = atom<Loadable<number>, Error>({
-	key: `random`,
-	default: async () => {
-		const url = new URL(`/random`, SERVER_URL)
-		const response = await fetch(url, { credentials: `include` })
-		if (!response.ok) throw new Error(response.status.toString())
-		const data = (await response.json()) as unknown
-		if (typeof data === `number`) return data
-		console.error(`Unexpected response from server`, data)
-		return 0
-	},
-	catch: [Error],
-})
-
 type Todo = {
 	id: number
 	text: string
-	done: 0 | 1
+	done: 0 | 1 // keeps things simple with sqlite
 }
 const todoKeysAtom = atom<Loadable<number[]>, Error>({
 	key: `todoKeys`,
@@ -103,12 +90,38 @@ const todosStatsSelector = selector<
 	},
 })
 
+async function addTodo() {
+	const text = `hello`
+	const url = new URL(`todos`, SERVER_URL)
+	const tempId = Math.random()
+	setState(todoAtoms, tempId, { id: tempId, text, done: 0 })
+	setState(todoKeysAtom, async (loadable) => {
+		const prev = await loadable
+		if (Error.isError(prev)) return prev
+		return [...prev, tempId]
+	})
+	const res = await fetch(url, {
+		method: `POST`,
+		credentials: `include`,
+		body: text,
+	})
+	if (!res.ok) throw new Error(res.status.toString())
+	const { todo } = await res.json()
+	const realId = todo.id
+	setState(todoAtoms, realId, todo)
+	setState(todoKeysAtom, async (loadable) => {
+		const prev = await loadable
+		if (Error.isError(prev)) return prev
+		return prev.map((id) => (id === tempId ? realId : id))
+	})
+}
+
 function App(): React.JSX.Element {
 	const todoKeys = useLoadable(todoKeysAtom, [])
 	const stats = useLoadable(todosStatsSelector, { total: 0, done: 0 })
 
 	return (
-		<main>
+		<>
 			{todoKeys.error ? (
 				<article className="takeover">
 					<main className="card">
@@ -143,63 +156,57 @@ function App(): React.JSX.Element {
 					</>
 				)}
 			</header>
-			{todoKeys.value.map((todoKey) => (
-				<Todo key={todoKey} todoKey={todoKey} />
-			))}
+			<main>
+				<header>
+					{stats.value.done}/{stats.value.total} items done
+				</header>
+				{todoKeys.value.map((todoKey) => (
+					<Todo key={todoKey} todoKey={todoKey} />
+				))}
 
-			<button
-				type="button"
-				onClick={async () => {
-					const url = new URL(`todos`, SERVER_URL)
-					const res = await fetch(url, {
-						method: `POST`,
-						credentials: `include`,
-						body: JSON.stringify({ text: `hello` }),
-					})
-					if (!res.ok) throw new Error(res.status.toString())
-					const { todo } = await res.json()
-					setState(todoAtoms, todo.id, todo)
-					setState(todoKeysAtom, async (loadable) => {
-						const prev = await loadable
-						if (Error.isError(prev)) {
-							return prev
-						}
-						if (prev.includes(todo.id)) {
-							return prev
-						}
-						return [...prev, todo.id]
-					})
-				}}
-			>
-				Add Todo
-			</button>
-		</main>
+				<button type="button" onClick={addTodo}>
+					Add Todo
+				</button>
+			</main>
+		</>
 	)
 }
 
+const TODO_FALLBACK: Todo = { id: 0, text: ``, done: 0 }
 function Todo({ todoKey }: { todoKey: number }): React.JSX.Element {
-	const todo = useLoadable(todoAtoms, todoKey, { id: 0, text: ``, done: 0 })
+	const { loading, value: todo } = useLoadable(todoAtoms, todoKey, TODO_FALLBACK)
+	const toggle = useCallback(
+		async (e: React.ChangeEvent<HTMLInputElement>) => {
+			const url = new URL(`todos`, SERVER_URL)
+			url.searchParams.set(`id`, todo.id.toString())
+			const nowChecked = e.target.checked ? 1 : 0
+			setState(todoAtoms, todo.id, async (loadable) => {
+				const prev = await loadable
+				if (Error.isError(prev)) return prev
+				return { ...prev, done: nowChecked } satisfies Todo
+			})
+			await fetch(url, {
+				method: `PUT`,
+				credentials: `include`,
+				body: nowChecked.toString(),
+			})
+			resetState(todoAtoms, todoKey)
+		},
+		[todo],
+	)
 	return (
-		<div className={cn(`todo`, todo.loading && `loading`)}>
-			<input
-				type="checkbox"
-				checked={Boolean(todo.value.done)}
-				onChange={async (e) => {
-					const url = new URL(`todos`, SERVER_URL)
-					await fetch(url, {
-						method: `PUT`,
-						credentials: `include`,
-						body: JSON.stringify({ done: e.target.checked }),
-					})
-					resetState(todoAtoms, todo.value.id)
-				}}
-			/>
-			<span>{todo.value.text}</span>
+		<div
+			className={cn(
+				`todo`,
+				(loading || !Number.isInteger(todoKey)) && `loading`,
+			)}
+		>
+			<input type="checkbox" checked={Boolean(todo.done)} onChange={toggle} />
+			<span>{todo.text}</span>
 		</div>
 	)
 }
 
-const cn = (...classes: (boolean | string)[]) =>
-	classes.filter(Boolean).join(` `)
+const cn = (...c: (boolean | string)[]) => c.filter(Boolean).join(` `)
 
 export default App
