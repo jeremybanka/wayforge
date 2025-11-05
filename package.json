@@ -14,7 +14,8 @@
 	},
 	"workspaces": [
 		"apps/*",
-		"packages/*"
+		"packages/*",
+		"templates/*"
 	],
 	"scripts": {
 		"gen": "dotenvx run -- turbo run gen",
