@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.44.2
+
+### Patch Changes
+
+- 0e28cff: 🚀 When an atom that wasn't previously computed is set, it will not compute its default function unless a current value is needed to derive the new value.
+
 ## 0.44.1
 
 ### Patch Changes
