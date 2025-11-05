@@ -92,7 +92,6 @@ const server = http.createServer(async (req, res) => {
 				{
 					await new Promise((resolve) => setTimeout(resolve, 1000))
 					const token = cookies[`auth_token`]
-					console.log({ token })
 					if (!token) {
 						sendJSON(res, 401, { error: `Unauthenticated` }, true)
 						return
@@ -106,7 +105,6 @@ const server = http.createServer(async (req, res) => {
 				{
 					await new Promise((resolve) => setTimeout(resolve, 2000))
 					const token = cookies[`auth_token`]
-					console.log({ token })
 					if (!token) {
 						sendJSON(res, 401, { error: `Unauthenticated` }, true)
 						return
