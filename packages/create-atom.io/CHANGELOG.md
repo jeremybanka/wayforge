@@ -1,5 +1,14 @@
 # create-atom.io
 
+## 0.0.4
+
+### Patch Changes
+
+- e700fa6: ♻️ Extracted templates to be their own packages.
+- Updated dependencies [deec012]
+  - @atom.io/template-preact-svg-editor@0.0.1
+  - @atom.io/template-react-node-backend@0.0.1
+
 ## 0.0.3
 
 ### Patch Changes
