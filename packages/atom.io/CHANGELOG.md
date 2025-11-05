@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.44.3
+
+### Patch Changes
+
+- cc25032: 🏷️ Fix types for `disposeState` to permit the disposal of atoms with a `catch` property.
+
 ## 0.44.2
 
 ### Patch Changes
