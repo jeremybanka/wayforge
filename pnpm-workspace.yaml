@@ -1,10 +1,6 @@
 packages:
   - "apps/*"
-  - "apps/edge/*"
-  - "apps/node/*"
-  - "apps/web/*"
   - "packages/*"
-  - "packages/create-atom.io/templates/*"
   - "templates/*"
 onlyBuiltDependencies:
   - "@biomejs/biome"
