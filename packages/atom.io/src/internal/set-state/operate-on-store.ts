@@ -13,7 +13,7 @@ import { resetAtomOrSelector } from "./reset-atom-or-selector"
 import { RESET_STATE } from "./reset-in-store"
 import { setAtomOrSelector } from "./set-atom-or-selector"
 
-export type ProtoUpdate<T> = { oldValue: T; newValue: T }
+export type ProtoUpdate<T> = { oldValue?: T; newValue: T }
 
 export const OWN_OP: unique symbol = Symbol(`OWN_OP`)
 export const JOIN_OP: unique symbol = Symbol(`JOIN_OP`)
