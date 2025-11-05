@@ -124,7 +124,11 @@ async function scaffold(to: string, opts: CreateAtomOptions): Promise<void> {
 
 	const __dirname = dirname(fileURLToPath(import.meta.url))
 	await templateDir(
-		resolve(__dirname, `../templates`, opts.templateName),
+		resolve(
+			__dirname,
+			`../node_modules/@atom.io`,
+			`template-${opts.templateName}`,
+		),
 		to,
 		opts,
 	)
