@@ -54,6 +54,34 @@ describe(`async atom`, async () => {
 
 		expect(Utils.stdout).toHaveBeenCalledTimes(1)
 	})
+	test.only(`batch pre-loading`, async () => {
+		const countAtoms = AtomIO.atomFamily<Loadable<number>, number>({
+			key: `counts`,
+			default: (key) =>
+				new Promise((resolve) => {
+					setImmediate(() => {
+						console.log(`count`, key, `loading`)
+						resolve(1)
+					})
+				}),
+		})
+		const countIdsAtom = AtomIO.atom<Loadable<number[]>>({
+			key: `countIds`,
+			default: async () =>
+				new Promise((resolve) =>
+					setImmediate(() => {
+						console.log(`countIds`, `loading`)
+						const ids = [1, 2, 3]
+						for (let i = 0; i < ids.length; i++) {
+							AtomIO.setState(countAtoms, i, 1)
+						}
+						resolve(ids)
+					}),
+				),
+		})
+
+		const countIds = await AtomIO.getState(countIdsAtom)
+	})
 })
 
 describe(`async selector`, () => {
