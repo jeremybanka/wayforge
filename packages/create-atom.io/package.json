@@ -25,6 +25,8 @@
 	"types": "dist/create-atom.d.ts",
 	"bin": "./bin/create-atom.bin.js",
 	"dependencies": {
+		"@atom.io/template-preact-svg-editor": "workspace:*",
+		"@atom.io/template-react-node-backend": "workspace:*",
 		"@clack/prompts": "0.11.0",
 		"arktype": "2.1.25",
 		"atom.io": "workspace:*",

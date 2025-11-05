@@ -532,6 +532,12 @@ importers:
 
   packages/create-atom.io:
     dependencies:
+      '@atom.io/template-preact-svg-editor':
+        specifier: workspace:*
+        version: link:../../templates/preact-svg-editor
+      '@atom.io/template-react-node-backend':
+        specifier: workspace:*
+        version: link:../../templates/react-node-backend
       '@clack/prompts':
         specifier: 0.11.0
         version: 0.11.0
