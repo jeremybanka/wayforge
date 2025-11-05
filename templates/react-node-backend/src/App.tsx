@@ -118,8 +118,12 @@ async function addTodo() {
 	})
 }
 
+const TODO_FALLBACK: Todo = { id: 0, text: ``, done: 0 }
+const SKELETON_KEYS = Array.from({ length: 5 }).map((_) => Math.random())
+for (const key of SKELETON_KEYS) setState(todoAtoms, key, TODO_FALLBACK)
+
 export function App(): React.JSX.Element {
-	const todoKeys = useLoadable(todoKeysAtom, [])
+	const todoKeys = useLoadable(todoKeysAtom, SKELETON_KEYS)
 	const stats = useLoadable(todosStatsSelector, { total: 0, done: 0 })
 
 	return (
@@ -176,7 +180,6 @@ export function App(): React.JSX.Element {
 	)
 }
 
-const TODO_FALLBACK: Todo = { id: 0, text: ``, done: 0 }
 function Todo({ todoKey }: { todoKey: number }): React.JSX.Element {
 	const { loading, value: todo } = useLoadable(todoAtoms, todoKey, TODO_FALLBACK)
 	const toggle = useCallback(
