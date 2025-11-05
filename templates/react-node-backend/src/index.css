@@ -37,17 +37,20 @@ a:hover {
 body {
 	margin: 0;
 	display: flex;
+	flex-flow: column;
 	place-items: center;
 	min-width: 320px;
 	min-height: 100vh;
 	#root {
-		display: flex;
 		width: 100%;
+		height: 100%;
+		display: flex;
+		flex-flow: column;
 		place-items: center;
-		flex-direction: column;
 
 		> header {
 			position: fixed;
+			z-index: 100;
 			top: 0;
 			left: 0;
 			display: flex;
@@ -70,28 +73,51 @@ body {
 				}
 			}
 		}
+
 		> main {
 			position: relative;
 			display: flex;
 			flex-direction: column;
 			width: 100%;
 			max-width: 600px;
-			gap: 5px;
-			> .todo {
+			gap: 10px;
+			height: 100%;
+			> header {
+				height: 200px;
 				display: flex;
-				width: 100%;
-				flex-flow: row;
-				place-items: center;
-				font-size: 18px;
+				flex-flow: column;
+				justify-content: flex-end;
+				> h1 {
+					font-size: 72px;
+					line-height: 72px;
+					padding: 0;
+					margin: 0;
+				}
+			}
+			> main {
 				position: relative;
-				border: 1px solid #ccc3;
-				box-sizing: border-box;
-				text-align: center;
+				display: flex;
+				flex-flow: column;
 				gap: 5px;
-				padding: 0 3px;
-				/* &.loading {
-					background: #7771;
-				} */
+				height: 100%;
+				> .todo {
+					display: flex;
+					width: 100%;
+					flex-flow: row;
+					place-items: center;
+					font-size: 18px;
+					position: relative;
+					border: 1px solid #ccc3;
+					box-sizing: border-box;
+					text-align: center;
+					gap: 5px;
+					padding: 0 3px;
+					> input[type="text"] {
+						flex-grow: 1;
+						font-size: 18px;
+						font-family: Charter, serif;
+					}
+				}
 			}
 		}
 
@@ -126,38 +152,23 @@ body {
 	}
 }
 
-.loading::after {
-	content: "⏳";
-	position: absolute;
-	top: -5px;
-	right: -5px;
-	font-size: 10px;
-	color: #fff;
+.loading {
+	background: linear-gradient(90deg, #7773, #7771, #7773);
+	background-size: 200% 100%;
+	animation: pulse 2s ease-in-out infinite;
+	&::after {
+		content: "⏳";
+		position: absolute;
+		top: -5px;
+		right: -5px;
+		font-size: 10px;
+		color: #fff;
+	}
 }
 
 button {
 	border-radius: 8px;
 	border: 1px solid transparent;
-	padding: 0.6em 1.2em;
-	font-size: 1em;
-	font-weight: 500;
-	font-family: inherit;
-	background-color: #1a1a1a;
-	cursor: pointer;
-	transition: border-color 0.25s;
-	&:hover {
-		border-color: #646cff;
-	}
-	&:focus,
-	&:focus-visible {
-		outline: 4px auto -webkit-focus-ring-color;
-	}
-}
-
-.loading {
-	background: linear-gradient(90deg, #7773, #7771, #7773);
-	background-size: 200% 100%;
-	animation: pulse 2s ease-in-out infinite;
 }
 
 @keyframes pulse {
