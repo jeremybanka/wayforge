@@ -544,9 +544,6 @@ importers:
       arktype:
         specifier: 2.1.25
         version: 2.1.25
-      atom.io:
-        specifier: workspace:*
-        version: link:../atom.io
       comline:
         specifier: workspace:*
         version: link:../comline
