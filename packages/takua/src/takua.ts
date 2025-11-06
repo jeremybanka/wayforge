@@ -89,3 +89,6 @@ export class Logger implements LoggerInterface {
 		this.log(`error`, prefix, message, ...data)
 	}
 }
+
+const takua: Logger = new Logger({ colorEnabled: true })
+export default takua
