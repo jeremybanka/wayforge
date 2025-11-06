@@ -1,5 +1,11 @@
 # create-atom.io
 
+## 0.0.8
+
+### Patch Changes
+
+- ffd55df: 🐛 Resolve templates from the perspective of the process, then the running script.
+
 ## 0.0.7
 
 ### Patch Changes
