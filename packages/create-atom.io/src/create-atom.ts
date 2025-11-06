@@ -3,6 +3,7 @@ import { dirname, resolve } from "node:path"
 import { fileURLToPath } from "node:url"
 
 import * as prompts from "@clack/prompts"
+import { getPackageInfo } from "local-pkg"
 import picocolors from "picocolors"
 import type { Colors } from "picocolors/types"
 import { x } from "tinyexec"
@@ -122,16 +123,12 @@ async function useSpinner(
 async function scaffold(to: string, opts: CreateAtomOptions): Promise<void> {
 	await fs.mkdir(to, { recursive: true })
 
-	const __dirname = dirname(fileURLToPath(import.meta.url))
-	await templateDir(
-		resolve(
-			__dirname,
-			`../node_modules/@atom.io`,
-			`template-${opts.templateName}`,
-		),
-		to,
-		opts,
+	const templateInfo = await getPackageInfo(
+		`@atom.io/template-${opts.templateName}`,
 	)
+	if (!templateInfo) throw new Error(`Could not find template package`)
+	const { rootPath } = templateInfo
+	await templateDir(rootPath, to, opts)
 }
 
 /**
