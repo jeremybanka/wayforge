@@ -1,6 +1,5 @@
 import { existsSync, promises as fs } from "node:fs"
-import { dirname, resolve } from "node:path"
-import { fileURLToPath } from "node:url"
+import { resolve } from "node:path"
 
 import * as prompts from "@clack/prompts"
 import { getPackageInfo } from "local-pkg"
@@ -125,6 +124,9 @@ async function scaffold(to: string, opts: CreateAtomOptions): Promise<void> {
 
 	const templateInfo = await getPackageInfo(
 		`@atom.io/template-${opts.templateName}`,
+		{
+			paths: [process.cwd(), import.meta.dirname],
+		},
 	)
 	if (!templateInfo) throw new Error(`Could not find template package`)
 	const { rootPath } = templateInfo
