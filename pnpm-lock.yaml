@@ -404,9 +404,6 @@ importers:
       tsdown:
         specifier: 0.16.0
         version: 0.16.0(@typescript/native-preview@7.0.0-dev.20251105.1)(typescript@5.9.3)
-      typescript:
-        specifier: 5.9.3
-        version: 5.9.3
       vite:
         specifier: 7.2.1
         version: 7.2.1(@types/node@24.10.0)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.93.3)(sass@1.93.3)(terser@5.44.1)(yaml@2.8.1)
