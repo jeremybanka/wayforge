@@ -203,36 +203,39 @@ export function App(): React.JSX.Element {
 }
 
 function Todo({ todoKey }: { todoKey: number }): React.JSX.Element {
-	const { loading, value: todo } = useLoadable(todoAtoms, todoKey, TODO_FALLBACK)
-	const toggle = useCallback(
-		async (e: React.ChangeEvent<HTMLInputElement>) => {
-			const url = new URL(`todos`, SERVER_URL)
-			url.searchParams.set(`id`, todo.id.toString())
-			const nowChecked = e.target.checked ? 1 : 0
-			setState(todoAtoms, todo.id, async (loadable) => {
-				const prev = await loadable
-				if (Error.isError(prev)) return prev
-				return { ...prev, done: nowChecked } satisfies Todo
-			})
-			await fetch(url, {
-				method: `PUT`,
-				credentials: `include`,
-				body: nowChecked.toString(),
-			})
-			resetState(todoAtoms, todoKey)
-		},
-		[todo],
-	)
+	const todo = useLoadable(todoAtoms, todoKey, TODO_FALLBACK)
+	const isSuspended = todo.loading || !Number.isInteger(todoKey)
+	const toggle = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+		const url = new URL(`todos`, SERVER_URL)
+		url.searchParams.set(`id`, todo.value.id.toString())
+		const nowChecked = e.target.checked ? 1 : 0
+		setState(todoAtoms, todoKey, async (loadable) => {
+			const prev = await loadable
+			if (Error.isError(prev)) return prev
+			return { ...prev, done: nowChecked } satisfies Todo
+		})
+		await fetch(url, {
+			method: `PUT`,
+			credentials: `include`,
+			body: nowChecked.toString(),
+		})
+		resetState(todoAtoms, todoKey)
+	}, [])
 	return (
-		<div
-			className={cn(
-				`todo`,
-				(loading || !Number.isInteger(todoKey)) && `loading`,
-			)}
-		>
-			<input type="checkbox" checked={Boolean(todo.done)} onChange={toggle} />
-			<span>{todo.text}</span>
-			<button type="button" className="delete" onClick={deleteTodo} />
+		<div className={cn(`todo`, isSuspended && `loading`)}>
+			<input
+				type="checkbox"
+				checked={Boolean(todo.value.done)}
+				onChange={toggle}
+				disabled={isSuspended}
+			/>
+			<span>{todo.value.text}</span>
+			<button
+				type="button"
+				className="delete"
+				onClick={deleteTodo}
+				disabled={isSuspended}
+			/>
 		</div>
 	)
 }
