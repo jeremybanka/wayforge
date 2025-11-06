@@ -30,8 +30,8 @@
 		"arktype": "2.1.25",
 		"comline": "workspace:*",
 		"minimatch": "10.1.1",
-		"npmlog": "7.0.1",
-		"simple-git": "3.30.0"
+		"simple-git": "3.30.0",
+		"takua": "workspace:*"
 	},
 	"scripts": {
 		"build": "tsdown && rm -f dist/*.x.d.ts && pnpm run schema",
@@ -47,7 +47,6 @@
 	},
 	"devDependencies": {
 		"@types/bun": "npm:bun-types@1.3.1",
-		"@types/npmlog": "7.0.0",
 		"@types/tmp": "0.2.6",
 		"@typescript/native-preview": "7.0.0-dev.20251106.1",
 		"concurrently": "9.2.1",

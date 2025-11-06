@@ -1,14 +1,14 @@
-import npmlog from "npmlog"
+import takua from "takua"
 
 export function createLogger(
 	...context: string[]
-): Pick<typeof npmlog, `error` | `info`> {
+): Pick<typeof takua, `error` | `info`> {
 	const logger = {
 		info: (status: string, ...args: unknown[]) => {
-			npmlog.info(context.join(`:`), `\x1b[34m${status}\x1b[0m`, ...args)
+			takua.info(context.join(`:`), `\x1b[34m${status}\x1b[0m`, ...args)
 		},
 		error: (status: string, ...args: unknown[]) => {
-			npmlog.error(context.join(`:`), `\x1b[34m${status}\x1b[0m`, ...args)
+			takua.error(context.join(`:`), `\x1b[34m${status}\x1b[0m`, ...args)
 		},
 	}
 	return logger

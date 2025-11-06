@@ -13,7 +13,7 @@ import {
 	options,
 	parseBooleanOption,
 } from "comline"
-import logger from "npmlog"
+import logger from "takua"
 
 import type { BreakCheckOptions } from "./break-check"
 import { breakCheck } from "./break-check"
