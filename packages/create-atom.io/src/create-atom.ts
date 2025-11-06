@@ -131,6 +131,26 @@ async function scaffold(to: string, opts: CreateAtomOptions): Promise<void> {
 	if (!templateInfo) throw new Error(`Could not find template package`)
 	const { rootPath } = templateInfo
 	await templateDir(rootPath, to, opts)
+	const nodeDirPath = resolve(to, `node`)
+
+	try {
+		await fs.access(nodeDirPath)
+	} catch {
+		return
+	}
+
+	const nodeDir = await fs.stat(nodeDirPath)
+	if (!nodeDir.isDirectory()) return
+
+	const nodeFiles = await fs.readdir(nodeDirPath, { withFileTypes: true })
+
+	await Promise.all(
+		nodeFiles.map(async (dirent) => {
+			if (!dirent.isFile()) return
+			const filename = resolve(nodeDirPath, dirent.name)
+			await fs.chmod(filename, 0o755)
+		}),
+	)
 }
 
 /**
