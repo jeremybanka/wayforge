@@ -8,7 +8,6 @@ const SUBMODULE_NAMES = discoverSubmodules()
 
 const EXTERNAL = [
 	/^eslint-/,
-	/^@eslint-/,
 	/^@typescript-eslint\//,
 	`atom.io`,
 	...SUBMODULE_NAMES.map((submodule) => `atom.io/${submodule}`),
