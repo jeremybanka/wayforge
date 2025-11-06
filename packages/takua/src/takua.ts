@@ -77,7 +77,11 @@ export class Logger implements LoggerInterface {
 				output += `${wheatpaste} ${datumString}`
 			}
 		}
-		console.log(output)
+		if (output) {
+			console.log(output)
+		} else {
+			console.log(wheatpaste)
+		}
 	}
 	public info(prefix: string, message: string, ...data: unknown[]): void {
 		this.log(`info`, prefix, message, ...data)
