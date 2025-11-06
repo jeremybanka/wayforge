@@ -124,8 +124,14 @@ body {
 						font-family: Charter, serif;
 						text-align: left;
 					}
-					> button.delete::after {
-						content: "×";
+					> button.delete {
+						&:disabled {
+							opacity: 0.5;
+							background: transparent;
+						}
+						&::after {
+							content: "×";
+						}
 					}
 				}
 			}
