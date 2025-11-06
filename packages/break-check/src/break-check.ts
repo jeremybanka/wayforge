@@ -1,8 +1,8 @@
 import { exec } from "node:child_process"
 
 import { minimatch } from "minimatch"
-import logger from "npmlog"
 import simpleGit from "simple-git"
+import logger from "takua"
 
 function useMarks() {
 	const markers: PerformanceMark[] = []

@@ -1,0 +1,46 @@
+{
+	"name": "takua",
+	"version": "0.0.0",
+	"license": "MIT",
+	"author": {
+		"name": "Jeremy Banka",
+		"email": "hello@jeremybanka.com"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeremybanka/wayforge.git",
+		"directory": "packages/takua"
+	},
+	"type": "module",
+	"files": [
+		"dist",
+		"src"
+	],
+	"main": "dist/takua.js",
+	"scripts": {
+		"build": "tsdown",
+		"lint:biome": "biome check -- .",
+		"lint:eslint": "eslint -- .",
+		"lint:types": "tsgo --noEmit",
+		"watch:types": "tsgo --watch --noEmit",
+		"lint": "concurrently \"bun:lint:*\"",
+		"test": "vitest",
+		"test:once": "vitest run",
+		"postversion": "biome format --write package.json"
+	},
+	"dependencies": {
+		"picocolors": "1.1.1"
+	},
+	"devDependencies": {
+		"@typescript/native-preview": "7.0.0-dev.20251106.1",
+		"concurrently": "9.2.1",
+		"eslint": "9.39.1",
+		"rimraf": "6.1.0",
+		"tsdown": "0.16.0",
+		"vite": "7.2.1",
+		"vitest": "4.0.7"
+	}
+}
