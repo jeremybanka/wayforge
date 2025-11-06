@@ -6,13 +6,6 @@ import discoverSubmodules from "./__scripts__/discover-submodules.node.ts"
 
 const SUBMODULE_NAMES = discoverSubmodules()
 
-const EXTERNAL = [
-	/^eslint-/,
-	/^@typescript-eslint\//,
-	`atom.io`,
-	...SUBMODULE_NAMES.map((submodule) => `atom.io/${submodule}`),
-]
-
 const ALL_ENTRIES = fromEntries(
 	SUBMODULE_NAMES.map(
 		(name) => [`${name}/index`, `src/${name}/index.ts`] as const,
@@ -26,7 +19,6 @@ const config: UserConfig | UserConfigFn = defineConfig({
 
 	clean: true,
 	dts: { sourcemap: true },
-	external: EXTERNAL,
 	fixedExtension: false,
 	format: `esm`,
 	platform: `browser`,
