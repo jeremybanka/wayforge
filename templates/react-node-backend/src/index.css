@@ -171,7 +171,7 @@ body {
 .loading {
 	background: linear-gradient(90deg, #7773, #7771, #7773);
 	background-size: 200% 100%;
-	animation: pulse 2s ease-in-out infinite;
+	animation: pulse 4s ease-in-out infinite;
 	&::after {
 		content: "⏳";
 		position: absolute;
