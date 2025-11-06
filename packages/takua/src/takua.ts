@@ -26,7 +26,7 @@ export class Logger implements LoggerInterface {
 
 	public constructor({ colorEnabled }: LoggerConfig) {
 		this.colorEnabled = colorEnabled
-		this.color = picocolors.createColors(true)
+		this.color = picocolors.createColors(colorEnabled)
 	}
 
 	protected log(
