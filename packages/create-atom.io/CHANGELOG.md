@@ -1,5 +1,11 @@
 # create-atom.io
 
+## 0.0.7
+
+### Patch Changes
+
+- a213025: 🐛 Fix bug where templates wouldn't be resolved, causing a crash.
+
 ## 0.0.6
 
 ### Patch Changes
