@@ -4,12 +4,12 @@ import fs from "node:fs"
 import path from "node:path"
 
 import chokidar from "chokidar"
-import npmlog from "npmlog"
+import takua from "takua"
 
 const myArgs = process.argv.slice(2)
 const lastArgument = myArgs[myArgs.length - 1]
 if (!lastArgument) {
-	npmlog.error(`usage`, `No arguments provided: specify 'watch' or 'once'`)
+	takua.error(`usage`, `No arguments provided: specify 'watch' or 'once'`)
 	process.exit(1)
 }
 
@@ -44,11 +44,11 @@ function handleFile(filePath: string) {
 	)
 	const wrappedCode = wrapCode(filename, code)
 	try {
-		npmlog.info(`writing`, outputFilePath)
+		takua.info(`writing`, outputFilePath)
 		fs.writeFileSync(outputFilePath, wrappedCode)
 	} catch (thrown) {
 		if (thrown instanceof Error) {
-			npmlog.info(`directory`, path.dirname(outputFilePath))
+			takua.info(`directory`, path.dirname(outputFilePath))
 			fs.mkdirSync(path.dirname(outputFilePath), { recursive: true })
 			fs.writeFileSync(outputFilePath, wrappedCode)
 		} else {
@@ -60,33 +60,33 @@ function handleFile(filePath: string) {
 switch (lastArgument) {
 	// biome-ignore lint/suspicious/noFallthroughSwitchClause: good use case for fallthrough
 	case `watch`: {
-		npmlog.info(`watch`, inputDir)
+		takua.info(`watch`, inputDir)
 		const watcher = chokidar.watch(inputDir, { persistent: true })
 
 		watcher.on(`add`, (filePath) => {
-			npmlog.info(`add`, filePath)
+			takua.info(`add`, filePath)
 			handleFile(filePath)
 		})
 		watcher.on(`change`, (filePath) => {
-			npmlog.info(`change`, filePath)
+			takua.info(`change`, filePath)
 			handleFile(filePath)
 		})
 	}
 	case `once`: {
-		npmlog.info(`build`, inputDir)
+		takua.info(`build`, inputDir)
 		function buildAll(directory = inputDir) {
 			fs.readdir(directory, (err, files) => {
 				if (err) {
-					npmlog.error(`reading`, directory, err)
+					takua.error(`reading`, directory, err)
 					return
 				}
-				npmlog.info(`found`, `files`, files)
+				takua.info(`found`, `files`, files)
 
 				for (const file of files) {
 					const filePath = path.join(directory, file)
 					fs.stat(filePath, (error, stats) => {
 						if (error) {
-							npmlog.error(`building`, filePath, error)
+							takua.error(`building`, filePath, error)
 						}
 						if (stats.isFile()) {
 							handleFile(filePath)
