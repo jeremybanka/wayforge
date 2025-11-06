@@ -44,7 +44,7 @@
 		"eslint": "9.39.1",
 		"fp-ts": "2.16.11",
 		"tsdown": "0.16.0",
-		"vite": "7.2.0",
+		"vite": "7.2.1",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "4.0.7"
 	},
