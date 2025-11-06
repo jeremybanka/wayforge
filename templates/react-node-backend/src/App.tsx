@@ -10,41 +10,27 @@ import {
 } from "atom.io"
 import { useI, useLoadable, useO } from "atom.io/react"
 import { useCallback } from "react"
+import z from "zod"
 
 const SERVER_URL = `http://localhost:3000`
 const AUTHENTICATOR_URL = `http://localhost:4000`
 
-type Todo = {
-	id: number // real keys are integers; virtual keys are made with Math.random()
-	text: string
-	done: 0 | 1 // keeps things simple with sqlite
-}
+const todoSchema = z.object({
+	id: z.number(), // real keys are integers; virtual keys are made with Math.random()
+	text: z.string(),
+	done: z.union([z.literal(0), z.literal(1)]), // keeps things simple with sqlite
+})
+type Todo = z.infer<typeof todoSchema>
 const todoKeysAtom = atom<Loadable<number[]>, Error>({
 	key: `todoKeys`,
 	default: async () => {
 		const url = new URL(`/todos`, SERVER_URL)
 		const response = await fetch(url, { credentials: `include` })
 		if (!response.ok) throw new Error(response.status.toString())
-		const { todos } = (await response.json()) as { todos: unknown }
-		if (
-			Array.isArray(todos) &&
-			todos.every(
-				(todo): todo is Todo =>
-					typeof todo === `object` &&
-					todo !== null &&
-					`id` in todo &&
-					typeof todo.id === `number` &&
-					`text` in todo &&
-					typeof todo.text === `string` &&
-					`done` in todo &&
-					(todo.done === 0 || todo.done === 1),
-			)
-		) {
-			for (const todo of todos) setState(todoAtoms, todo.id, todo)
-			return todos.map((todo) => todo.id)
-		}
-		console.error(`Unexpected response from server`, todos)
-		return []
+		const json = (await response.json()) as { todos: unknown }
+		const todos = todoSchema.array().parse(json.todos)
+		for (const todo of todos) setState(todoAtoms, todo.id, todo)
+		return todos.map((todo) => todo.id)
 	},
 	catch: [Error],
 })
@@ -56,21 +42,9 @@ const todoAtoms = atomFamily<Loadable<Todo>, number, Error>({
 		url.searchParams.set(`id`, id.toString())
 		const response = await fetch(url, { credentials: `include` })
 		if (!response.ok) throw new Error(response.status.toString())
-		const { todo } = (await response.json()) as { todo: unknown }
-		if (
-			typeof todo === `object` &&
-			todo !== null &&
-			`id` in todo &&
-			typeof todo.id === `number` &&
-			`text` in todo &&
-			typeof todo.text === `string` &&
-			`done` in todo &&
-			(todo.done === 0 || todo.done === 1)
-		) {
-			return todo as Todo
-		}
-		console.error(`Unexpected response from server`, todo)
-		return { id, text: ``, done: 0 }
+		const json = (await response.json()) as { todo: unknown }
+		const todo = todoSchema.parse(json.todo)
+		return todo
 	},
 	catch: [Error],
 })
