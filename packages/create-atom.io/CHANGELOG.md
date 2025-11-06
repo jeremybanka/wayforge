@@ -1,5 +1,11 @@
 # create-atom.io
 
+## 0.0.9
+
+### Patch Changes
+
+- e711a8d: 🐛 Make server files executable for templates.
+
 ## 0.0.8
 
 ### Patch Changes
