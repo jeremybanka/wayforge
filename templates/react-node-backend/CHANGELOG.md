@@ -1,5 +1,11 @@
 # @atom.io/template-react-node-backend
 
+## 0.0.3
+
+### Patch Changes
+
+- 99152a5: ✨ Made a more realistic to-do list example including loadable atoms, atom families, selectors, get, set, reset, dispose, useLoadable, and more.
+
 ## 0.0.2
 
 ### Patch Changes
