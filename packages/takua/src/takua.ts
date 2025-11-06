@@ -3,7 +3,11 @@ import { inspect } from "node:util"
 import picocolors from "picocolors"
 import type { Colors } from "picocolors/types"
 
-export type LogFn = (prefix: string, message: string, ...data: unknown[]) => void
+export type LogFn = (
+	prefix: string,
+	message: number | string,
+	...data: unknown[]
+) => void
 
 export interface LoggerInterface
 	extends Pick<Console, `error` | `info` | `warn`> {
@@ -28,7 +32,7 @@ export class Logger implements LoggerInterface {
 	protected log(
 		level: keyof LoggerInterface,
 		prefix: string,
-		message: string,
+		message: number | string,
 		...data: unknown[]
 	): void {
 		let lvlColor: keyof Colors
@@ -83,13 +87,25 @@ export class Logger implements LoggerInterface {
 			console.log(wheatpaste)
 		}
 	}
-	public info(prefix: string, message: string, ...data: unknown[]): void {
+	public info(
+		prefix: string,
+		message: number | string,
+		...data: unknown[]
+	): void {
 		this.log(`info`, prefix, message, ...data)
 	}
-	public warn(prefix: string, message: string, ...data: unknown[]): void {
+	public warn(
+		prefix: string,
+		message: number | string,
+		...data: unknown[]
+	): void {
 		this.log(`warn`, prefix, message, ...data)
 	}
-	public error(prefix: string, message: string, ...data: unknown[]): void {
+	public error(
+		prefix: string,
+		message: number | string,
+		...data: unknown[]
+	): void {
 		this.log(`error`, prefix, message, ...data)
 	}
 }
