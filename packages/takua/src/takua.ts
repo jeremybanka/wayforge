@@ -9,11 +9,17 @@ export type LogFn = (
 	...data: unknown[]
 ) => void
 
-export interface LoggerInterface
-	extends Pick<Console, `error` | `info` | `warn`> {
+export type LogLevel = `error` | `info` | `warn`
+
+export interface Chronicle {
+	mark: (text: string) => void
+	logMarks: () => void
+}
+export interface LoggerInterface extends Pick<Console, LogLevel> {
 	info: LogFn
 	warn: LogFn
 	error: LogFn
+	chronicle: ({ inline }: { inline?: boolean }) => Chronicle
 }
 
 export type LoggerConfig = {
@@ -30,7 +36,7 @@ export class Logger implements LoggerInterface {
 	}
 
 	protected log(
-		level: keyof LoggerInterface,
+		level: LogLevel,
 		prefix: string,
 		message: number | string,
 		...data: unknown[]
@@ -107,6 +113,53 @@ export class Logger implements LoggerInterface {
 		...data: unknown[]
 	): void {
 		this.log(`error`, prefix, message, ...data)
+	}
+
+	public chronicle({ inline = false }: { inline?: boolean } = {}): {
+		mark: (text: string) => void
+		logMarks: () => void
+	} {
+		const markers: PerformanceMark[] = []
+		const logs: [event: string, duration: number][] = []
+		const logMark = (event: string, duration: number): void => {
+			const dur = duration.toFixed(2)
+			const space = 80 - 2 - event.length - dur.length
+			this.info(event, `.`.repeat(space), dur)
+		}
+
+		const mark = (text: string) => {
+			const prev = markers.at(-1)
+			const next = performance.mark(text)
+			if (prev) {
+				const metric = performance.measure(
+					`${prev.name} -> ${next.name}`,
+					prev.name,
+					next.name,
+				)
+				if (inline) {
+					logMark(next.name, metric.duration)
+				} else {
+					logs.push([next.name, metric.duration])
+				}
+			}
+			markers.push(next)
+		}
+
+		const logMarks = () => {
+			const overall = performance.measure(
+				`overall`,
+				markers[0].name,
+				markers[markers.length - 1].name,
+			)
+			if (!inline) {
+				for (const [event, duration] of logs) {
+					logMark(event, duration)
+				}
+			}
+			logMark(`TOTAL TIME`, overall.duration)
+			console.log()
+		}
+		return { mark, logMarks }
 	}
 }
 

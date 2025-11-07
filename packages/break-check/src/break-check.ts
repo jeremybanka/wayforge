@@ -2,33 +2,8 @@ import { exec } from "node:child_process"
 
 import { minimatch } from "minimatch"
 import simpleGit from "simple-git"
+import type { Chronicle } from "takua"
 import logger from "takua"
-
-function useMarks() {
-	const markers: PerformanceMark[] = []
-	function mark(text: string) {
-		const prev = markers.at(-1)
-		const next = performance.mark(text)
-		if (prev) {
-			const metric = performance.measure(
-				`${prev.name} -> ${next.name}`,
-				prev.name,
-				next.name,
-			)
-			logger.info(next.name, metric.duration)
-		}
-		markers.push(next)
-	}
-	function logMarks(): void {
-		const overall = performance.measure(
-			`overall`,
-			markers[0].name,
-			markers[markers.length - 1].name,
-		)
-		logger.info(`TOTAL TIME`, overall.duration)
-	}
-	return { mark, logMarks }
-}
 
 export type BreakCheckOptions = {
 	tagPattern?: string | undefined
@@ -81,12 +56,12 @@ export async function breakCheck({
 	baseDirname = process.cwd(),
 	verbose = false,
 }: BreakCheckOptions): Promise<BreakCheckOutcome & { summary: string }> {
-	let mark: ReturnType<typeof useMarks>[`mark`] | undefined
-	let logMarks: ReturnType<typeof useMarks>[`logMarks`] | undefined
+	let mark: Chronicle[`mark`] | undefined
+	let logMarks: Chronicle[`logMarks`] | undefined
 	if (verbose) {
-		const { mark: mark_, logMarks: logMarks_ } = useMarks()
-		mark = mark_
-		logMarks = logMarks_
+		const chronicle = logger.chronicle()
+		mark = chronicle.mark
+		logMarks = chronicle.logMarks
 	}
 	mark?.(`breakCheck`)
 	const git = simpleGit(baseDirname)
