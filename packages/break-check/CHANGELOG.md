@@ -1,5 +1,12 @@
 # break-check
 
+## 0.6.21
+
+### Patch Changes
+
+- Updated dependencies [93fd532]
+  - comline@0.4.3
+
 ## 0.6.20
 
 ### Patch Changes

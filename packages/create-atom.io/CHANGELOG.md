@@ -1,5 +1,12 @@
 # create-atom.io
 
+## 0.0.10
+
+### Patch Changes
+
+- Updated dependencies [93fd532]
+  - comline@0.4.3
+
 ## 0.0.9
 
 ### Patch Changes
