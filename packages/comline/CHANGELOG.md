@@ -1,5 +1,11 @@
 # comline
 
+## 0.4.3
+
+### Patch Changes
+
+- 93fd532: 🔊 Improve cli debug logging to include the name of the CLI, and clarify the expected type of the log functions needed.
+
 ## 0.4.2
 
 ### Patch Changes
