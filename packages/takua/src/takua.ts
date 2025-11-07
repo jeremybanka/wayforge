@@ -19,7 +19,8 @@ export interface LoggerInterface extends Pick<Console, LogLevel> {
 	info: LogFn
 	warn: LogFn
 	error: LogFn
-	chronicle: ({ inline }: { inline?: boolean }) => Chronicle
+	makeChronicle: ({ inline }: { inline?: boolean }) => Chronicle
+	chronicle: Chronicle | undefined
 }
 
 export type LoggerConfig = {
@@ -27,6 +28,7 @@ export type LoggerConfig = {
 }
 
 export class Logger implements LoggerInterface {
+	public chronicle: Chronicle | undefined
 	public readonly colorEnabled: boolean
 	protected readonly color: Colors
 
@@ -115,7 +117,7 @@ export class Logger implements LoggerInterface {
 		this.log(`error`, prefix, message, ...data)
 	}
 
-	public chronicle({ inline = false }: { inline?: boolean } = {}): {
+	public makeChronicle({ inline = false }: { inline?: boolean } = {}): {
 		mark: (text: string) => void
 		logMarks: () => void
 	} {
@@ -158,8 +160,10 @@ export class Logger implements LoggerInterface {
 			}
 			logMark(`TOTAL TIME`, overall.duration)
 			console.log()
+			this.chronicle = undefined
 		}
-		return { mark, logMarks }
+		const chronicle = (this.chronicle = { mark, logMarks })
+		return chronicle
 	}
 }
 
