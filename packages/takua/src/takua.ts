@@ -108,6 +108,53 @@ export class Logger implements LoggerInterface {
 	): void {
 		this.log(`error`, prefix, message, ...data)
 	}
+
+	public useMarks({ inline = false }: { inline?: boolean } = {}): {
+		mark: (text: string) => void
+		logMarks: () => void
+	} {
+		const markers: PerformanceMark[] = []
+		const logs: [event: string, duration: number][] = []
+		const logMark = (event: string, duration: number): void => {
+			const dur = duration.toFixed(2)
+			const space = 80 - 2 - event.length - dur.length
+			this.info(event, `.`.repeat(space), dur)
+		}
+
+		function mark(text: string) {
+			const prev = markers.at(-1)
+			const next = performance.mark(text)
+			if (prev) {
+				const metric = performance.measure(
+					`${prev.name} -> ${next.name}`,
+					prev.name,
+					next.name,
+				)
+				if (inline) {
+					logMark(next.name, metric.duration)
+				} else {
+					logs.push([next.name, metric.duration])
+				}
+			}
+			markers.push(next)
+		}
+
+		function logMarks(): void {
+			const overall = performance.measure(
+				`overall`,
+				markers[0].name,
+				markers[markers.length - 1].name,
+			)
+			if (!inline) {
+				for (const [event, duration] of logs) {
+					logMark(event, duration)
+				}
+			}
+			logMark(`TOTAL TIME`, overall.duration)
+			console.log()
+		}
+		return { mark, logMarks }
+	}
 }
 
 const takua: Logger = new Logger({ colorEnabled: true })
