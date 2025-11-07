@@ -116,12 +116,17 @@ function retrieveArgValue(argument: string, flag?: string): string {
 
 export type CliRoutes<CLI extends CommandLineInterface<any>> = CLI[`routes`]
 
+export type CliLogger = {
+	info?: (message: string, ...data: unknown[]) => void
+	error: (message: string, ...data: unknown[]) => void
+}
+
 export function cli<
 	CLI extends CommandLineInterface<Routes>,
 	Routes extends Tree = Exclude<CLI[`routes`], undefined>,
 >(
 	definition: CLI,
-	maybeLogger?: Pick<Console, `error` | `info`>,
+	logger: CliLogger = console,
 ): ((args: string[]) => {
 	inputs: CliParseOutput<CLI>
 	writeJsonSchema: (outdir: string) => void
@@ -134,20 +139,20 @@ export function cli<
 		discoverConfigPath = () =>
 			path.join(process.cwd(), `${cliName}.config.json`),
 	} = definition
-	const logger = maybeLogger ?? {
-		info: debugOutput
-			? (...args: any[]) => {
-					console.log(`[${cliName}]:`, ...args)
-				}
-			: undefined,
-		error: (...args: any[]) => {
-			console.error(`[${cliName}]:`, ...args)
+	const cliLogger: CliLogger = {
+		error: (message: string, ...args: unknown[]) => {
+			logger.error(`[${cliName}]:`, message, ...args)
 		},
+	}
+	if (debugOutput) {
+		cliLogger.info = (message: string, ...args: unknown[]) => {
+			logger.info?.(`[${cliName}]:`, message, ...args)
+		}
 	}
 
 	return Object.assign(
 		(passed = process.argv) => {
-			logger.info?.(`passed args:`, passed)
+			cliLogger.info?.(`passed args:`, passed)
 
 			type Options = CLI[`routeOptions`][keyof CLI[`routeOptions`]]
 
@@ -175,9 +180,9 @@ export function cli<
 			if (discoverConfigPath) {
 				const configFilePath = discoverConfigPath(positionalArgs.path)
 				if (configFilePath) {
-					logger.info?.(`looking for config file at:`, configFilePath)
+					cliLogger.info?.(`looking for config file at:`, configFilePath)
 					if (fs.existsSync(configFilePath)) {
-						logger.info?.(`config file was found`)
+						cliLogger.info?.(`config file was found`)
 						const configText = fs.readFileSync(configFilePath, `utf-8`)
 						const optionsFromConfigJson = JSON.parse(configText)
 						if (zod && optionsSchema instanceof zod.ZodType) {
@@ -192,7 +197,7 @@ export function cli<
 					}
 				}
 			}
-			logger.info?.(`options from config:`, optionsFromConfig)
+			cliLogger.info?.(`options from config:`, optionsFromConfig)
 			const argumentEntries = Object.entries(optionConfigs)
 			const optionsFromCommandLineEntries = argumentEntries
 				.map((entry: [string & keyof Options, CliOption<any>]) => {
@@ -210,7 +215,7 @@ export function cli<
 					switch (argumentInstances.length) {
 						case 0:
 							if (required && !optionsFromConfig) {
-								logger.error(
+								cliLogger.error(
 									`Missed:`,
 									key,
 									`\n\t${description} (required)\n\tExample usage:\n\t\t${example}`,
@@ -243,7 +248,7 @@ export function cli<
 				optionsFromConfig ?? {},
 				optionsFromCommandLine,
 			)
-			logger.info?.(`options from command line:`, optionsFromCommandLine)
+			cliLogger.info?.(`options from command line:`, optionsFromCommandLine)
 			let suppliedOptions: Options
 			if (zod && optionsSchema instanceof zod.ZodType) {
 				suppliedOptions = optionsSchema.parse(suppliedOptionsUnparsed) as Options
@@ -254,7 +259,7 @@ export function cli<
 			} else {
 				throw new Error(`Unreachable? Indicates no install of arktype or zod.`)
 			}
-			logger.info?.(`final options parsed:`, suppliedOptions)
+			cliLogger.info?.(`final options parsed:`, suppliedOptions)
 			return {
 				inputs: {
 					case: positionalArgs.route,
