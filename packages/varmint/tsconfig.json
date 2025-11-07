@@ -13,6 +13,6 @@
 		"declaration": true,
 		"isolatedDeclarations": true,
 		"types": ["vite/client", "vitest/globals"],
-		"target": "ES2022",
+		"target": "ES2022"
 	}
 }
