@@ -95,6 +95,7 @@ describe(`break-check`, () => {
 				testCommand: `bun test *__public.test.js`,
 				certifyCommand: `bun ./certify-major-version.ts`,
 				baseDirname: localRepoDirname,
+				verbose: true,
 			})
 		} catch (thrown) {
 			caught = thrown
