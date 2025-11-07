@@ -61,7 +61,7 @@
 		"@trpc/server": "11.7.1",
 		"arktype": "2.1.25",
 		"atom.io": "workspace:*",
-		"cron": "4.3.3",
+		"cron": "4.3.4",
 		"drizzle-orm": "0.44.7",
 		"motion": "12.23.24",
 		"nanoid": "5.1.6",
