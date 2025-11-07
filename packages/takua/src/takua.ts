@@ -9,11 +9,17 @@ export type LogFn = (
 	...data: unknown[]
 ) => void
 
-export interface LoggerInterface
-	extends Pick<Console, `error` | `info` | `warn`> {
+export type LogLevel = `error` | `info` | `warn`
+
+export interface Chronicle {
+	mark: (text: string) => void
+	logMarks: () => void
+}
+export interface LoggerInterface extends Pick<Console, LogLevel> {
 	info: LogFn
 	warn: LogFn
 	error: LogFn
+	chronicle: ({ inline }: { inline?: boolean }) => Chronicle
 }
 
 export type LoggerConfig = {
@@ -30,7 +36,7 @@ export class Logger implements LoggerInterface {
 	}
 
 	protected log(
-		level: keyof LoggerInterface,
+		level: LogLevel,
 		prefix: string,
 		message: number | string,
 		...data: unknown[]
@@ -109,7 +115,7 @@ export class Logger implements LoggerInterface {
 		this.log(`error`, prefix, message, ...data)
 	}
 
-	public useMarks({ inline = false }: { inline?: boolean } = {}): {
+	public chronicle({ inline = false }: { inline?: boolean } = {}): {
 		mark: (text: string) => void
 		logMarks: () => void
 	} {
@@ -121,7 +127,7 @@ export class Logger implements LoggerInterface {
 			this.info(event, `.`.repeat(space), dur)
 		}
 
-		function mark(text: string) {
+		const mark = (text: string) => {
 			const prev = markers.at(-1)
 			const next = performance.mark(text)
 			if (prev) {
@@ -139,7 +145,7 @@ export class Logger implements LoggerInterface {
 			markers.push(next)
 		}
 
-		function logMarks(): void {
+		const logMarks = () => {
 			const overall = performance.measure(
 				`overall`,
 				markers[0].name,
