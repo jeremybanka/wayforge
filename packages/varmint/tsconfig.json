@@ -13,10 +13,6 @@
 		"declaration": true,
 		"isolatedDeclarations": true,
 		"types": ["vite/client", "vitest/globals"],
-		"target": "ES2022",
-		"paths": {
-			"atom.io": ["../../packages/atom.io/src/main"],
-			"atom.io/*": ["../../packages/atom.io/src/*"]
-		}
+		"target": "ES2022"
 	}
 }
