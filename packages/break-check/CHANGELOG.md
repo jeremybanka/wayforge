@@ -1,5 +1,13 @@
 # break-check
 
+## 0.6.22
+
+### Patch Changes
+
+- 9b8aff4: ✨ Improved appearance of debug logging.
+- Updated dependencies [9b8aff4]
+  - takua@0.1.0
+
 ## 0.6.21
 
 ### Patch Changes
