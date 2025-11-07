@@ -1,5 +1,11 @@
 # takua
 
+## 0.1.1
+
+### Patch Changes
+
+- 619f89e: ✨ Keep `chronicle` as state.
+
 ## 0.1.0
 
 ### Minor Changes
