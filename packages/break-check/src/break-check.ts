@@ -2,7 +2,7 @@ import { exec } from "node:child_process"
 
 import { minimatch } from "minimatch"
 import simpleGit from "simple-git"
-import type { LogMarks, Mark } from "takua"
+import type { Chronicle } from "takua"
 import logger from "takua"
 
 export type BreakCheckOptions = {
@@ -56,8 +56,8 @@ export async function breakCheck({
 	baseDirname = process.cwd(),
 	verbose = false,
 }: BreakCheckOptions): Promise<BreakCheckOutcome & { summary: string }> {
-	let mark: Mark | undefined
-	let logMarks: LogMarks | undefined
+	let mark: Chronicle[`mark`] | undefined
+	let logMarks: Chronicle[`logMarks`] | undefined
 	if (verbose) {
 		const chronicle = logger.chronicle()
 		mark = chronicle.mark
