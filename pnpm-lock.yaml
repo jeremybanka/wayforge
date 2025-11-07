@@ -994,6 +994,9 @@ importers:
       '@typescript/native-preview':
         specifier: 7.0.0-dev.20251106.1
         version: 7.0.0-dev.20251106.1
+      atom.io:
+        specifier: workspace:*
+        version: link:../atom.io
       concurrently:
         specifier: 9.2.1
         version: 9.2.1
