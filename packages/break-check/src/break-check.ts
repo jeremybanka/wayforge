@@ -59,7 +59,7 @@ export async function breakCheck({
 	let mark: Chronicle[`mark`] | undefined
 	let logMarks: Chronicle[`logMarks`] | undefined
 	if (verbose) {
-		const chronicle = logger.chronicle()
+		const chronicle = logger.makeChronicle()
 		mark = chronicle.mark
 		logMarks = chronicle.logMarks
 	}
