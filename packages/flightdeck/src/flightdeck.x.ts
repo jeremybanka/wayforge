@@ -12,8 +12,8 @@ import {
 	parseNumberOption,
 } from "comline"
 
-import type { FlightDeckOptions } from "./flightdeck.lib"
-import { FlightDeck, FlightDeckLogger } from "./flightdeck.lib"
+import type { FlightDeckOptions } from "./flightdeck.lib.ts"
+import { FlightDeck, FlightDeckLogger } from "./flightdeck.lib.ts"
 
 const CLI_LOGGER = new FlightDeckLogger(`comline`, process.pid, undefined, {
 	jsonLogging: true,
@@ -83,6 +83,25 @@ const FLIGHTDECK_MANUAL = options(
 	},
 ) satisfies OptionsGroup<FlightDeckOptions>
 
+const KILL_MANUAL = options(
+	`Kill the FlightDeck process.`,
+	type({ flightdeckRootDir: `string`, packageName: `string` }),
+	{
+		flightdeckRootDir: {
+			flag: `d`,
+			required: true,
+			description: `Directory where the service is stored.`,
+			example: `--flightdeckRootDir="./services/sample/repo/my-app/current"`,
+		},
+		packageName: {
+			flag: `n`,
+			required: true,
+			description: `Name of the package.`,
+			example: `--packageName="my-app"`,
+		},
+	},
+)
+
 const SCHEMA_MANUAL = options(
 	`Write a json schema for the FlightDeck options.`,
 	type({ "outdir?": `string` }),
@@ -103,6 +122,7 @@ const parse = cli(
 		routeOptions: {
 			"": FLIGHTDECK_MANUAL,
 			$configPath: FLIGHTDECK_MANUAL,
+			kill: KILL_MANUAL,
 			schema: SCHEMA_MANUAL,
 		},
 		debugOutput: true,
@@ -127,11 +147,14 @@ switch (inputs.case) {
 			writeJsonSchema(outdir ?? `.`)
 		}
 		break
+	case `kill`:
+		{
+			const { flightdeckRootDir, packageName } = inputs.opts
+			await FlightDeck.kill(flightdeckRootDir, packageName)
+		}
+		break
 	case ``:
 	case `$configPath`: {
-		const flightDeck = new FlightDeck(inputs.opts)
-		process.on(`close`, async () => {
-			await flightDeck.stopAllServices()
-		})
+		new FlightDeck(inputs.opts)
 	}
 }

@@ -1,4 +1,4 @@
-export * from "./flightdeck.lib"
-import * as Klaxon from "./klaxon.lib"
+export * from "./flightdeck.lib.ts"
+import * as Klaxon from "./klaxon.lib.ts"
 
 export { Klaxon }

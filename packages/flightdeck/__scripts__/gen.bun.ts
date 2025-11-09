@@ -6,7 +6,7 @@ import { resolve } from "node:path"
 import { Biome, Distribution } from "@biomejs/js-api"
 import type { Json } from "atom.io/json"
 import { write } from "bun"
-import jsonSchemaToZod from "json-schema-to-zod"
+import { jsonSchemaToZod } from "json-schema-to-zod"
 import { Squirrel } from "varmint"
 
 const FLIGHTDECK_ROOT = resolve(import.meta.dirname, `..`)

@@ -2,7 +2,7 @@
 
 import { write } from "bun"
 
-import { FLIGHTDECK_LNAV_FORMAT } from "../src/lib"
+import { FLIGHTDECK_LNAV_FORMAT } from "../src/lib.ts"
 
 await write(
 	`./dist/flightdeck_log.json`,
