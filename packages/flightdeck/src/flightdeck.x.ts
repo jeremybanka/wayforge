@@ -150,13 +150,7 @@ switch (inputs.case) {
 	case `kill`:
 		{
 			const { flightdeckRootDir, packageName } = inputs.opts
-			const result = await FlightDeck.kill(flightdeckRootDir, packageName)
-			if (typeof result === `number`) {
-				console.info(`Killed FlightDeck instance with pid ${result}`)
-				process.exit(0)
-			}
-			console.error(result)
-			process.exit(1)
+			await FlightDeck.kill(flightdeckRootDir, packageName)
 		}
 		break
 	case ``:
