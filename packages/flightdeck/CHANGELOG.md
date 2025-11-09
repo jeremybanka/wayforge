@@ -1,5 +1,15 @@
 # flightdeck
 
+## 0.3.0
+
+### Minor Changes
+
+- b2007b9: ✨ `Flightdeck.kill()` (CLI: `flightdeck kill`) shuts down a flightdeck process running in the background.
+
+### Patch Changes
+
+- b2007b9: 💥 Instantiating Flightdeck through the TypeScript API now shuts down all services on process exit.
+
 ## 0.2.96
 
 ### Patch Changes
