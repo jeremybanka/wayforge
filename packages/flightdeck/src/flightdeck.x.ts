@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import * as path from "node:path"
+import { kill } from "node:process"
 
 import { type } from "arktype"
 import type { OptionsGroup } from "comline"
@@ -118,11 +119,16 @@ const SCHEMA_MANUAL = options(
 const parse = cli(
 	{
 		cliName: `flightdeck`,
-		routes: optional({ schema: null, $configPath: null }),
+		routes: optional({
+			schema: null,
+			kill: optional({ $configPath: null }),
+			$configPath: null,
+		}),
 		routeOptions: {
 			"": FLIGHTDECK_MANUAL,
 			$configPath: FLIGHTDECK_MANUAL,
 			kill: KILL_MANUAL,
+			"kill/$configPath": KILL_MANUAL,
 			schema: SCHEMA_MANUAL,
 		},
 		debugOutput: true,
@@ -130,8 +136,12 @@ const parse = cli(
 			if (args[0] === `schema`) {
 				return
 			}
+			let idx = 0
+			if (args[0] === `kill`) {
+				idx = 1
+			}
 			const configPath =
-				args[0] ?? path.join(process.cwd(), `flightdeck.config.json`)
+				args[idx] ?? path.join(process.cwd(), `flightdeck.config.json`)
 			return configPath
 		},
 	},
@@ -148,6 +158,7 @@ switch (inputs.case) {
 		}
 		break
 	case `kill`:
+	case `kill/$configPath`:
 		{
 			const { flightdeckRootDir, packageName } = inputs.opts
 			await FlightDeck.kill(flightdeckRootDir, packageName)
