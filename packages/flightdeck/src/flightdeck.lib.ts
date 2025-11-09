@@ -31,16 +31,16 @@ export function isVersionNumber(version: string): boolean {
 }
 
 export type FlightDeckOptions<S extends string = string> = {
-	packageName: string
-	services: { [service in S]: { run: string; waitFor: boolean } }
-	scripts: {
-		download: string
-		install: string
-		checkAvailability?: string
+	readonly packageName: string
+	readonly services: { [service in S]: { run: string; waitFor: boolean } }
+	readonly scripts: {
+		readonly download: string
+		readonly install: string
+		readonly checkAvailability?: string
 	}
-	port?: number | undefined
-	flightdeckRootDir?: string | undefined
-	jsonLogging?: boolean | undefined
+	readonly port?: number | undefined
+	readonly flightdeckRootDir?: string | undefined
+	readonly jsonLogging?: boolean | undefined
 }
 
 export class FlightDeck<S extends string = string> {
