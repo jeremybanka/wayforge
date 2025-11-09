@@ -113,12 +113,12 @@ parentSocket.on(`updatesReady`, () => {
 	logger.info(
 		`❗ backend server has sent signal "readyToUpdate"; now awaits signal "timeToStop"`,
 	)
-	parentSocket.on(`timeToStop`, async () => {
-		logger.info(
-			`❗ backend server received signal "timeToStop"; exiting gracefully`,
-		)
-		await gracefulExit()
-	})
+})
+parentSocket.on(`timeToStop`, async () => {
+	logger.info(
+		`❗ backend server received signal "timeToStop"; exiting gracefully`,
+	)
+	await gracefulExit()
 })
 
 const { version } = await Bun.file(
