@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.2.72
+
+### Patch Changes
+
+- b344b35: 🐛 Fixed a bug where the server wouldn't always shut down under intended conditions.
+
 ## 0.2.71
 
 ### Patch Changes
