@@ -3,7 +3,7 @@
 import { type Type, type } from "arktype"
 import { cli, options, required } from "comline"
 
-import * as Klaxon from "./klaxon.lib"
+import * as Klaxon from "./klaxon.lib.ts"
 
 const changesetsPublishedPackagesSchema: Type<Klaxon.ScrambleOptions> = type({
 	packageConfig: { "[string]": { endpoint: `string` } },
