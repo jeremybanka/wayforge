@@ -95,27 +95,24 @@ export class FlightDeck<S extends string = string> {
 	public static async kill(
 		flightdeckRootDir: string,
 		packageName: string,
-	): Promise<Error | number> {
-		console.info(`Killing FlightDeck instance for package ${packageName}`)
+	): Promise<number> {
+		console.info(`Killing FlightDeck instance of "${packageName}"`)
 		const storage = new FilesystemStorage<FlightDeckSaveData>({
 			path: resolve(flightdeckRootDir, `storage`, packageName),
 		})
-		const pid = Number(storage.getItem(`currentPid`))
-		if (Number.isNaN(pid)) {
-			return new Error(`No pid found in storage`)
+		const currentPid = storage.getItem(`currentPid`)
+		if (currentPid === null) {
+			throw new Error(`No pid for "${packageName}" found in storage`)
 		}
-		try {
-			const now = Date.now()
-			process.kill(pid, `SIGTERM`)
-			await waitForPidExit(pid, 1000, 5)
-			const elapsed = Date.now() - now
-			process.stdout.write(
-				`🌜 ${packageName} (running as process ${pid}) exited in ${elapsed}ms\n`,
-			)
-			return pid
-		} catch (thrown) {
-			return thrown as Error
-		}
+		const pid = Number(currentPid)
+		const now = Date.now()
+		process.kill(pid, `SIGTERM`)
+		await waitForPidExit(pid, 5000, 5)
+		const elapsed = Date.now() - now
+		process.stdout.write(
+			`🌜 "${packageName}" (running as process ${pid}) exited in ${elapsed}ms\n`,
+		)
+		return pid
 	}
 
 	public readonly options: FlightDeckOptions<S>
@@ -281,6 +278,7 @@ export class FlightDeck<S extends string = string> {
 		process.on(`SIGTERM`, async () => {
 			console.info(`Killed by SIGTERM`)
 			await this.stopAllServices()
+			this.storage.removeItem(`currentPid`)
 			process.exit(0)
 		})
 	}
