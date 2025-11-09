@@ -48,6 +48,7 @@ export class FlightDeck<S extends string = string> {
 	protected safety = 0
 
 	protected storage: FilesystemStorage<{
+		pid: `${number}`
 		setupPhase: FlightDeckSetupPhase
 		updatePhase: FlightDeckUpdatePhase
 		updateAwaitedVersion: string
