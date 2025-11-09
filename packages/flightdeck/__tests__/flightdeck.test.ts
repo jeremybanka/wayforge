@@ -2,7 +2,7 @@ import { resolve } from "node:path"
 
 import tmp from "tmp"
 
-import { FlightDeck, Klaxon } from "../src/lib"
+import { FlightDeck, Klaxon } from "../src/lib.ts"
 
 const testDirname = import.meta.dirname
 
@@ -17,9 +17,7 @@ beforeEach(() => {
 	tmp.setGracefulCleanup()
 })
 
-afterEach(async () => {
-	await flightDeck.stopAllServices()
-})
+afterEach(async () => {})
 
 describe(`FlightDeck`, () => {
 	it(`should start a service and keep it up to date`, async () => {
@@ -76,5 +74,7 @@ describe(`FlightDeck`, () => {
 		const [data2, data3] = await Promise.all([res2.text(), res3.text()])
 		expect(data2).toEqual(`I can see my house from here!`)
 		expect(data3).toEqual(`I can see my house from here!`)
+
+		await flightDeck.stopAllServices()
 	}, 25000)
 })

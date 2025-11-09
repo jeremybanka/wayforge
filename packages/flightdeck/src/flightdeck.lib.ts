@@ -13,8 +13,8 @@ import { ChildSocket } from "atom.io/realtime-server"
 import { CronJob } from "cron"
 import { FilesystemStorage } from "safedeposit"
 
-import type { LnavFormat } from "../gen/lnav-format-schema.gen"
-import { env } from "./flightdeck.env"
+import type { LnavFormat } from "../gen/lnav-format-schema.gen.ts"
+import { env } from "./flightdeck.env.ts"
 
 export const FLIGHTDECK_SETUP_PHASES = [`downloaded`, `installed`] as const
 
@@ -30,6 +30,13 @@ export function isVersionNumber(version: string): boolean {
 	)
 }
 
+export type FlightDeckSaveData = {
+	currentPid: `${number}`
+	setupPhase: FlightDeckSetupPhase
+	updatePhase: FlightDeckUpdatePhase
+	updateAwaitedVersion: string
+}
+
 export type FlightDeckOptions<S extends string = string> = {
 	readonly packageName: string
 	readonly services: { [service in S]: { run: string; waitFor: boolean } }
@@ -43,16 +50,78 @@ export type FlightDeckOptions<S extends string = string> = {
 	readonly jsonLogging?: boolean | undefined
 }
 
+async function waitForPidExit(pid: number, timeoutMs = 5000, intervalMs = 100) {
+	return new Promise<void>((pass, fail) => {
+		const start = Date.now()
+
+		const check = () => {
+			process.stdout.write(`.`)
+			try {
+				// check existence
+				process.kill(pid, 0)
+				// process still alive
+				if (Date.now() - start > timeoutMs) {
+					fail(new Error(`Timeout waiting for PID ${pid}`))
+					return
+				}
+				setTimeout(check, intervalMs)
+			} catch (err) {
+				if (err instanceof Error && `code` in err) {
+					if (err.code === `ESRCH`) {
+						pass()
+						return // exited
+					}
+					if (err.code === `EPERM`) {
+						// process is alive but protected
+						if (Date.now() - start > timeoutMs) {
+							fail(
+								new Error(`Timeout waiting for PID ${pid} (EPERM; still alive)`),
+							)
+							return
+						}
+						return setTimeout(check, intervalMs)
+					}
+				}
+				fail(err)
+				return // unexpected error
+			}
+		}
+
+		check()
+	})
+}
+
 export class FlightDeck<S extends string = string> {
+	public static async kill(
+		flightdeckRootDir: string,
+		packageName: string,
+	): Promise<Error | number> {
+		console.info(`Killing FlightDeck instance for package ${packageName}`)
+		const storage = new FilesystemStorage<FlightDeckSaveData>({
+			path: resolve(flightdeckRootDir, `storage`, packageName),
+		})
+		const pid = Number(storage.getItem(`currentPid`))
+		if (Number.isNaN(pid)) {
+			return new Error(`No pid found in storage`)
+		}
+		try {
+			const now = Date.now()
+			process.kill(pid, `SIGTERM`)
+			await waitForPidExit(pid, 1000, 5)
+			const elapsed = Date.now() - now
+			process.stdout.write(
+				`🌜 ${packageName} (running as process ${pid}) exited in ${elapsed}ms\n`,
+			)
+			return pid
+		} catch (thrown) {
+			return thrown as Error
+		}
+	}
+
 	public readonly options: FlightDeckOptions<S>
 	protected safety = 0
 
-	protected storage: FilesystemStorage<{
-		pid: `${number}`
-		setupPhase: FlightDeckSetupPhase
-		updatePhase: FlightDeckUpdatePhase
-		updateAwaitedVersion: string
-	}>
+	protected storage: FilesystemStorage<FlightDeckSaveData>
 	protected services: {
 		[service in S]: ChildSocket<
 			{ timeToStop: []; updatesReady: [] },
@@ -128,6 +197,8 @@ export class FlightDeck<S extends string = string> {
 		this.storage = new FilesystemStorage({
 			path: resolve(flightdeckRootDir, `storage`, options.packageName),
 		})
+
+		this.storage.setItem(`currentPid`, `${process.pid}`)
 
 		if (FLIGHTDECK_SECRET === undefined) {
 			this.logger.warn(
@@ -206,6 +277,12 @@ export class FlightDeck<S extends string = string> {
 					this.logger.error(`Failed to start all services:`, thrown.message)
 				}
 			})
+
+		process.on(`SIGTERM`, async () => {
+			console.info(`Killed by SIGTERM`)
+			await this.stopAllServices()
+			process.exit(0)
+		})
 	}
 
 	protected async seekUpdate(version: string): Promise<void> {
@@ -339,7 +416,7 @@ export class FlightDeck<S extends string = string> {
 			)
 			this.services[serviceName] = null
 			if (!this.autoRespawnDeadServices) {
-				this.logger.info(`Auto-respawn is off; "${serviceName}" rests.`)
+				this.logger.info(`😴 Auto-respawn is off; "${serviceName}" rests.`)
 				return
 			}
 			const updatePhase = this.storage.getItem(`updatePhase`)

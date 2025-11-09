@@ -5,7 +5,7 @@ import { serve } from "bun"
 
 const PORT = process.argv[2] ?? 4444
 const parentSocket = new ParentSocket(process)
-serve({
+const server = serve({
 	port: PORT,
 	fetch(req) {
 		parentSocket.logger.info(`🚀`, req.method, req.url)
@@ -13,11 +13,12 @@ serve({
 	},
 })
 
+parentSocket.logger.info(`🚀 Server started on port ${PORT}`)
 parentSocket.emit(`alive`)
 parentSocket.on(`updatesReady`, () => {
 	parentSocket.emit(`readyToUpdate`)
 })
-parentSocket.on(`timeToStop`, () => {
+parentSocket.on(`timeToStop`, async () => {
+	await server.stop()
 	process.exit(0)
 })
-parentSocket.logger.info(`🚀 Server started on port ${PORT}`)
