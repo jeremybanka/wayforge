@@ -1,6 +1,6 @@
 import { useSpring } from "@react-spring/three"
 import * as Drei from "@react-three/drei"
-import { Canvas, useThree } from "@react-three/fiber"
+import { Canvas, ThreeEvent, useFrame, useThree } from "@react-three/fiber"
 import { atom } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import type { ReactNode } from "react"
@@ -73,6 +73,80 @@ export default function Scene(): ReactNode {
 			<GameTile coordinatesSerialized={`-1_1_0`} color={`red`} />
 			<GameTile coordinatesSerialized={`-2_1_1`} color={`magenta`} />
 			<GameTile coordinatesSerialized={`2_-1_-1`} color={`cyan`} /> */}
+			<CameraAttachment>
+				<DraggableProbe />
+			</CameraAttachment>
 		</Canvas>
+	)
+}
+
+function CameraAttachment({ children }: { children: ReactNode }) {
+	const { camera } = useThree()
+	const group = useRef<THREE.Group>(null)
+
+	useFrame(() => {
+		if (group.current) {
+			// follow camera
+			group.current.position.copy(camera.position)
+			group.current.quaternion.copy(camera.quaternion)
+		}
+	})
+
+	return <group ref={group}>{children}</group>
+}
+
+const isDraggingAtom = atom<boolean>({
+	key: `isDragging`,
+	default: false,
+})
+
+function DraggableProbe() {
+	const mesh = useRef<THREE.Mesh>(null)
+	const { camera, scene, raycaster } = useThree()
+	const pointer = new THREE.Vector2()
+	const setDragging = useI(isDraggingAtom)
+	const dragging = useO(isDraggingAtom)
+
+	const onPointerDown = (e: PointerEvent) => {
+		if (e.buttons !== 1) return
+		setDragging(true)
+		e.stopPropagation()
+	}
+
+	const onPointerUp = (e: PointerEvent) => {
+		if (e.buttons !== 1) return
+		setDragging(false)
+		e.stopPropagation()
+	}
+
+	const onPointerMove = (e: PointerEvent) => {
+		if (!dragging) return
+		if (e.buttons !== 1) return // only while dragging
+
+		// convert screen pointer -> NDC → raycast
+		pointer.x = (e.clientX / window.innerWidth) * 2 - 1
+		pointer.y = -(e.clientY / window.innerHeight) * 2 + 1
+
+		raycaster.setFromCamera(pointer, camera)
+
+		// intersect with a ground plane (y = 0), or any custom plane
+		const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
+		const point = new THREE.Vector3()
+		raycaster.ray.intersectPlane(plane, point)
+
+		mesh.current?.position.copy(point)
+	}
+
+	return (
+		<mesh
+			ref={mesh}
+			position={[-0.5, -0.5, -2]} // 2 units in front of camera
+			onPointerDown={onPointerDown}
+			onPointerUp={onPointerUp}
+			onPointerMove={onPointerMove}
+		>
+			<sphereGeometry args={[0.15, 32, 32]} />
+			<meshStandardMaterial color="orange" />
+		</mesh>
 	)
 }
