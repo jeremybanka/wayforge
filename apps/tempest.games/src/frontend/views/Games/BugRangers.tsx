@@ -7,13 +7,12 @@ import * as THREE from "three"
 import type * as STD from "three-stdlib"
 
 import { HexGridHelper } from "./HexGridHelper"
-import { GameTiles } from "./HexTile"
+import { GameTiles, PlayableZones } from "./HexTile"
 
 function CameraController({ target }: { target: number[] }) {
 	const controls = useRef<STD.OrbitControls>(null)
 	const { camera } = useThree()
 
-	// Smoothly animate camera target and position
 	const { animatedTarget } = useSpring({
 		animatedTarget: target,
 		config: { mass: 1, tension: 170, friction: 26 },
@@ -58,41 +57,10 @@ export default function Scene(): ReactNode {
 
 			<CameraController target={target} />
 
-			{/* <SelectableObject
-				position={[0, 0, 0]}
-				color="red"
-				onClick={handleObjectClick}
-			/> */}
-			{/* <SelectableObject
-				position={[5, 0, 0]}
-				color="blue"
-				onClick={handleObjectClick}
-			/> */}
-			{/* <SelectableObject
-				position={[0, 0, 5]}
-				color="green"
-				onClick={handleObjectClick}
-			/> */}
-
 			<HexGridHelper size={20} radius={1} color="#6f6f6f" opacity={0.5} />
-			{/* <gridHelper args={[20, 20]} /> */}
-			{/* <axesHelper args={[5]} /> */}
 
 			<GameTiles />
-			{/* <GameTile
-				coordinates={{ x: 0, y: 0, z: 0 }}
-				stackHeight={3}
-				onClick={handleObjectClick}
-			/>
-			<GameTile
-				coordinates={{ x: 1, y: -1, z: 0 }}
-				color="green"
-				stackHeight={2}
-				onClick={handleObjectClick}
-			/> */}
-			{/* <GameTile coordinates={{ x: -1, y: 2, z: -1 }} />
-			<GameTile coordinates={{ x: 2, y: -1, z: -1 }} />
-			<GameTile coordinates={{ x: -1, y: 1, z: 0 }} stackHeight={2} /> */}
+			<PlayableZones />
 		</Canvas>
 	)
 }

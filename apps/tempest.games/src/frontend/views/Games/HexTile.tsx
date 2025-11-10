@@ -1,10 +1,10 @@
 /** biome-ignore-all lint/a11y/noStaticElementInteractions: drei */
 
-import { atomFamily, mutableAtom } from "atom.io"
+import { atomFamily, mutableAtom, setState } from "atom.io"
 import { useJSON, useO } from "atom.io/react"
 import { UList } from "atom.io/transceivers/u-list"
 import type { ReactNode } from "react"
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import * as THREE from "three"
 /// <reference types="@react-three/fiber" />
 
@@ -22,14 +22,18 @@ export function HexTile({
 	height = 0.3,
 	position = [0, 0, 0],
 	color = `#ee5`,
+	virtual = false,
 	onClick,
 }: {
 	radius?: number
 	height?: number
 	position?: [number, number, number]
 	color?: THREE.ColorRepresentation
+	virtual?: boolean
 	onClick?: ((position: [x: number, y: number, z: number]) => void) | undefined
 }): ReactNode {
+	const [hovered, setHovered] = useState(false)
+
 	// Build a hexagonal shape
 	const shape = useMemo(() => {
 		const s = new THREE.Shape()
@@ -62,9 +66,25 @@ export function HexTile({
 			receiveShadow
 			onClick={() => {
 				onClick?.(position)
+				if (virtual) {
+					setState(gameTilesAtom, (permanent) => {
+						permanent.add(serializeTileCoordinates(position))
+						return permanent
+					})
+				}
+			}}
+			onPointerOver={() => {
+				setHovered(true)
+			}}
+			onPointerOut={() => {
+				setHovered(false)
 			}}
 		>
-			<meshStandardMaterial color={color} />
+			<meshStandardMaterial
+				color={color}
+				transparent={virtual}
+				opacity={virtual ? (hovered ? 0.5 : 0.2) : 1}
+			/>
 		</mesh>
 	)
 }
@@ -72,10 +92,12 @@ export function HexTile({
 export function GameTile({
 	coordinatesSerialized,
 	color = `#ee5`,
+	virtual = false,
 	onClick,
 }: {
 	coordinatesSerialized: TileCoordinatesSerialized
 	color?: THREE.ColorRepresentation
+	virtual?: boolean
 	onClick?: (position: [x: number, y: number, z: number]) => void
 }): ReactNode {
 	const coordinates = deserializeTileCoordinates(coordinatesSerialized)
@@ -109,7 +131,12 @@ export function GameTile({
 
 	return (
 		<>
-			<HexTile position={[x, 0, z]} color={color} onClick={onClick} />
+			<HexTile
+				position={[x, 0, z]}
+				color={color}
+				onClick={onClick}
+				virtual={virtual}
+			/>
 			{stackHeight > 1 ? (
 				<HexTile position={[x, 0.33, z]} color={color} onClick={onClick} />
 			) : null}
@@ -146,15 +173,15 @@ export const gameTilesStackHeightAtoms = atomFamily<number, TileCoordinates>({
 
 export function GameTiles(): ReactNode {
 	const tiles = useJSON(gameTilesAtom)
-	return (
-		<>
-			{tiles.map((tileCoordinates, idx) => (
-				<GameTile
-					key={idx}
-					coordinatesSerialized={tileCoordinates}
-					color={`#${idx.toString(16).padStart(6, `0`)}`}
-				/>
-			))}
-		</>
-	)
+	return tiles.map((tileCoordinates, idx) => (
+		<GameTile
+			key={idx}
+			coordinatesSerialized={tileCoordinates}
+			color={`#${idx.toString(16).padStart(6, `0`)}`}
+		/>
+	))
+}
+
+export function PlayableZones(): ReactNode {
+	return <GameTile coordinatesSerialized={`0_0_0`} color={`#0ff`} virtual />
 }
