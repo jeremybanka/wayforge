@@ -3,6 +3,7 @@ import type { Loadable, Logger, TimelineToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
+	getState,
 	redo,
 	resetState,
 	selector,
@@ -13,7 +14,7 @@ import {
 import type { Fn } from "atom.io/internal"
 import { clearStore, IMPLICIT } from "atom.io/internal"
 import * as AR from "atom.io/react"
-import { type FC, useEffect } from "react"
+import { type FC, useEffect, useRef } from "react"
 
 import * as Utils from "../__util__"
 
@@ -758,5 +759,33 @@ describe(`useLoadable`, () => {
 		assert(utils.getByTestId(`D`))
 		expect(uniqueRefs).toHaveLength(4)
 		// /* ^ ❗ I don't have an opinion on this yet ❗ ^ */
+	})
+})
+
+describe(`useAtomicRef`, () => {
+	it(`makes an element available to use wherever`, () => {
+		const buttonAtom = atom<HTMLButtonElement | null>({
+			key: `button`,
+			default: null,
+		})
+		function MyButton() {
+			const ref = AR.useAtomicRef(buttonAtom, useRef)
+			return (
+				<button
+					type="button"
+					ref={ref}
+					onClick={() => {
+						Utils.stdout(`hi`)
+					}}
+				>
+					Click me
+				</button>
+			)
+		}
+		render(<MyButton />)
+
+		getState(buttonAtom)?.click()
+
+		expect(Utils.stdout).toHaveBeenCalledWith(`hi`)
 	})
 })
