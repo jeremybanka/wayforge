@@ -1,19 +1,44 @@
-import { useSpring } from "@react-spring/three"
+import { animated, useSpring } from "@react-spring/three"
 import * as Drei from "@react-three/drei"
 import { Canvas, ThreeEvent, useFrame, useThree } from "@react-three/fiber"
 import { atom } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import type { ReactNode } from "react"
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import * as THREE from "three"
 import type * as STD from "three-stdlib"
 
 import { HexGridHelper } from "./HexGridHelper"
 import { GameTiles, PlayableZones } from "./HexTile"
 
+export const controlsEnabledAtom = atom<boolean>({
+	key: `controlsEnabled`,
+	default: true,
+})
+
+// function CameraController({ target }: { target: number[] }) {
+// 	const controls = useRef<STD.OrbitControls>(null)
+// 	const { camera } = useThree()
+
+// 	const { animatedTarget } = useSpring({
+// 		animatedTarget: target,
+// 		config: { mass: 1, tension: 170, friction: 26 },
+// 		onChange: ({ value }) => {
+// 			controls.current?.target.lerp(
+// 				new THREE.Vector3(...value[`animatedTarget`]),
+// 				0.2,
+// 			)
+// 			controls.current?.update()
+// 		},
+// 	})
+
+// 	return <Drei.OrbitControls ref={controls} enableDamping dampingFactor={0.05} />
+// }
+
 function CameraController({ target }: { target: number[] }) {
 	const controls = useRef<STD.OrbitControls>(null)
 	const { camera } = useThree()
+	const controlsEnabled = useO(controlsEnabledAtom)
 
 	const { animatedTarget } = useSpring({
 		animatedTarget: target,
@@ -26,8 +51,16 @@ function CameraController({ target }: { target: number[] }) {
 			controls.current?.update()
 		},
 	})
+	console.log(`controlsEnabled`, controlsEnabled)
 
-	return <Drei.OrbitControls ref={controls} enableDamping dampingFactor={0.05} />
+	return (
+		<Drei.OrbitControls
+			ref={controls}
+			enableDamping
+			dampingFactor={0.05}
+			enabled={controlsEnabled}
+		/>
+	)
 }
 
 export const cameraTargetAtom = atom<[x: number, y: number, z: number]>({
@@ -73,9 +106,10 @@ export default function Scene(): ReactNode {
 			<GameTile coordinatesSerialized={`-1_1_0`} color={`red`} />
 			<GameTile coordinatesSerialized={`-2_1_1`} color={`magenta`} />
 			<GameTile coordinatesSerialized={`2_-1_-1`} color={`cyan`} /> */}
-			<CameraAttachment>
+			{/* <CameraAttachment>
 				<DraggableProbe />
-			</CameraAttachment>
+			</CameraAttachment> */}
+			<ProbeController />
 		</Canvas>
 	)
 }
@@ -148,5 +182,82 @@ function DraggableProbe() {
 			<sphereGeometry args={[0.15, 32, 32]} />
 			<meshStandardMaterial color="orange" />
 		</mesh>
+	)
+}
+
+function useProbeDestination(isDragging: boolean) {
+	const { camera, raycaster } = useThree()
+	const pointer = useRef(new THREE.Vector2()).current
+	const [destination, setDestination] = useState(() => new THREE.Vector3())
+
+	useFrame(({ mouse }) => {
+		if (isDragging) {
+			// Update pointer (NDC)
+			pointer.x = mouse.x
+			pointer.y = mouse.y
+
+			raycaster.setFromCamera(pointer, camera)
+
+			const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
+			const hit = new THREE.Vector3()
+
+			if (raycaster.ray.intersectPlane(plane, hit)) {
+				setDestination(hit.clone())
+			}
+		} else {
+			// Idle: position some distance in front of camera
+			const idlePoint = new THREE.Vector3(0, 0, -2)
+				.applyQuaternion(camera.quaternion)
+				.add(camera.position)
+
+			setDestination(idlePoint)
+		}
+	})
+
+	return destination
+}
+function Probe({ destination }: { destination: THREE.Vector3 }) {
+	const { pos } = useSpring({
+		pos: destination.toArray(),
+		config: { tension: 120, friction: 14, mass: 0.3 },
+	})
+
+	return (
+		<animated.mesh position={pos}>
+			<sphereGeometry args={[0.15, 32, 32]} />
+			<meshStandardMaterial color="orange" />
+		</animated.mesh>
+	)
+}
+function ProbeController() {
+	const [isDragging, setDragging] = useState(false)
+	const destination = useProbeDestination(isDragging)
+	const setControlsEnabled = useI(controlsEnabledAtom)
+
+	const handlePointerDown = () => {
+		console.log(`handlePointerDown`)
+		setControlsEnabled(false)
+		setDragging(true)
+	}
+	const handlePointerUp = () => {
+		setControlsEnabled(true)
+		setDragging(false)
+	}
+
+	return (
+		<group>
+			<Probe destination={destination} />
+
+			{/* Click-catcher for drag initiation */}
+			<mesh
+				position={[0, 0, 0]}
+				onPointerDown={handlePointerDown}
+				onPointerUp={handlePointerUp}
+				// onPointerLeave={handlePointerUp}
+			>
+				<sphereGeometry args={[0.25]} />
+				<meshBasicMaterial transparent opacity={0} />
+			</mesh>
+		</group>
 	)
 }
