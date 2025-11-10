@@ -1,11 +1,14 @@
 /** biome-ignore-all lint/a11y/noStaticElementInteractions: drei */
 
-import { atomFamily, mutableAtom, setState } from "atom.io"
+import { Text } from "@react-three/drei"
+import { atomFamily, mutableAtom, selector, setState } from "atom.io"
 import { useJSON, useO } from "atom.io/react"
 import { UList } from "atom.io/transceivers/u-list"
 import type { ReactNode } from "react"
 import { useMemo, useState } from "react"
 import * as THREE from "three"
+
+import { cameraTargetAtom } from "./BugRangers"
 /// <reference types="@react-three/fiber" />
 
 /**
@@ -20,14 +23,14 @@ import * as THREE from "three"
 export function HexTile({
 	radius = 1,
 	height = 0.3,
-	position = [0, 0, 0],
+	position3d = [0, 0, 0],
 	color = `#ee5`,
 	virtual = false,
 	onClick,
 }: {
 	radius?: number
 	height?: number
-	position?: [number, number, number]
+	position3d?: [number, number, number]
 	color?: THREE.ColorRepresentation
 	virtual?: boolean
 	onClick?: ((position: [x: number, y: number, z: number]) => void) | undefined
@@ -60,18 +63,13 @@ export function HexTile({
 	return (
 		<mesh
 			geometry={geom}
-			position={position}
+			position={position3d}
 			rotation={[-Math.PI / 2, 0, 0]}
 			castShadow
 			receiveShadow
 			onClick={() => {
-				onClick?.(position)
-				if (virtual) {
-					setState(gameTilesAtom, (permanent) => {
-						permanent.add(serializeTileCoordinates(position))
-						return permanent
-					})
-				}
+				setState(cameraTargetAtom, position3d)
+				onClick?.(position3d)
 			}}
 			onPointerOver={() => {
 				setHovered(true)
@@ -131,17 +129,28 @@ export function GameTile({
 
 	return (
 		<>
+			<Text position={[x, 0.5, z]} fontSize={0.5} color="white">
+				{coordinatesSerialized}
+			</Text>
 			<HexTile
-				position={[x, 0, z]}
+				position3d={[x, 0, z]}
 				color={color}
-				onClick={onClick}
+				onClick={() => {
+					if (virtual) {
+						setState(gameTilesAtom, (permanent) => {
+							console.log({ coordinates })
+							permanent.add(coordinatesSerialized)
+							return permanent
+						})
+					}
+				}}
 				virtual={virtual}
 			/>
 			{stackHeight > 1 ? (
-				<HexTile position={[x, 0.33, z]} color={color} onClick={onClick} />
+				<HexTile position3d={[x, 0.33, z]} color={color} onClick={onClick} />
 			) : null}
 			{stackHeight > 2 ? (
-				<HexTile position={[x, 0.66, z]} color={color} onClick={onClick} />
+				<HexTile position3d={[x, 0.66, z]} color={color} onClick={onClick} />
 			) : null}
 		</>
 	)
@@ -166,6 +175,28 @@ export const gameTilesAtom = mutableAtom<UList<TileCoordinatesSerialized>>({
 	class: UList,
 })
 
+export const playableZonesAtom = selector<TileCoordinatesSerialized[]>({
+	key: `playableZonesAtom`,
+	get: ({ get }) => {
+		const tiles = get(gameTilesAtom)
+		if (tiles.size === 0) return [`0_0_0`]
+		const playableZones = new Set<TileCoordinatesSerialized>()
+
+		console.log(`tiles`, tiles)
+
+		for (const tileCoordinates of tiles) {
+			const [x, y, z] = deserializeTileCoordinates(tileCoordinates)
+			playableZones.add(`${x + 1}_${y - 1}_${z}`)
+			playableZones.add(`${x + 1}_${y}_${z - 1}`)
+			playableZones.add(`${x - 1}_${y + 1}_${z}`)
+			playableZones.add(`${x - 1}_${y}_${z + 1}`)
+			playableZones.add(`${x + 2}_${y - 1}_${z - 1}`)
+			playableZones.add(`${x - 2}_${y + 1}_${z + 1}`)
+		}
+		return Array.from(playableZones)
+	},
+})
+
 export const gameTilesStackHeightAtoms = atomFamily<number, TileCoordinates>({
 	key: `gameTilesStackHeightAtoms`,
 	default: 0,
@@ -174,14 +205,27 @@ export const gameTilesStackHeightAtoms = atomFamily<number, TileCoordinates>({
 export function GameTiles(): ReactNode {
 	const tiles = useJSON(gameTilesAtom)
 	return tiles.map((tileCoordinates, idx) => (
-		<GameTile
-			key={idx}
-			coordinatesSerialized={tileCoordinates}
-			color={`#${idx.toString(16).padStart(6, `0`)}`}
-		/>
+		<GameTile key={idx} coordinatesSerialized={tileCoordinates} color={`#aa5`} />
 	))
 }
 
 export function PlayableZones(): ReactNode {
-	return <GameTile coordinatesSerialized={`0_0_0`} color={`#0ff`} virtual />
+	// return <GameTile coordinatesSerialized={`0_0_0`} color={`#0ff`} virtual />
+	const playableZones = useO(playableZonesAtom)
+	return playableZones.map((coordinatesSerialized, idx) => (
+		<GameTile
+			key={idx}
+			coordinatesSerialized={coordinatesSerialized}
+			color={`#0ff`}
+			virtual
+		/>
+	))
 }
+
+// if (virtual) {
+// 					setState(gameTilesAtom, (permanent) => {
+// 						console.log({ position })
+// 						permanent.add(serializeTileCoordinates(position))
+// 						return permanent
+// 					})
+// 				}
