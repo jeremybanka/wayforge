@@ -1,8 +1,10 @@
 import { useSpring } from "@react-spring/three"
 import * as Drei from "@react-three/drei"
 import { Canvas, useThree } from "@react-three/fiber"
+import { atom } from "atom.io"
+import { useI, useO } from "atom.io/react"
 import type { ReactNode } from "react"
-import { useRef, useState } from "react"
+import { useRef } from "react"
 import * as THREE from "three"
 import type * as STD from "three-stdlib"
 
@@ -28,17 +30,21 @@ function CameraController({ target }: { target: number[] }) {
 	return <Drei.OrbitControls ref={controls} enableDamping dampingFactor={0.05} />
 }
 
+export const cameraTargetAtom = atom<[x: number, y: number, z: number]>({
+	key: `cameraTarget`,
+	default: [0, 0, 0],
+})
+
 export default function Scene(): ReactNode {
-	const [target, setTarget] = useState<[x: number, y: number, z: number]>([
-		0, 0, 0,
-	])
+	const cameraTarget = useO(cameraTargetAtom)
+	const setCameraTarget = useI(cameraTargetAtom)
 	const { animatedCam } = useSpring({
-		animatedCam: target,
+		animatedCam: cameraTarget,
 		config: { mass: 1, tension: 170, friction: 26 },
 	})
 
 	const handleObjectClick = (pos: [x: number, y: number, z: number]) => {
-		setTarget(pos)
+		setCameraTarget(pos)
 	}
 
 	return (
@@ -55,12 +61,18 @@ export default function Scene(): ReactNode {
 			<ambientLight intensity={0.5} />
 			<directionalLight position={[5, 10, 5]} />
 
-			<CameraController target={target} />
+			<CameraController target={cameraTarget} />
 
 			<HexGridHelper size={20} radius={1} color="#6f6f6f" opacity={0.5} />
 
 			<GameTiles />
 			<PlayableZones />
+			{/* <GameTile coordinatesSerialized={`1_0_-1`} color={`purple`} />
+			<GameTile coordinatesSerialized={`-1_0_1`} color={`blue`} />
+			<GameTile coordinatesSerialized={`1_-1_0`} color={`green`} />
+			<GameTile coordinatesSerialized={`-1_1_0`} color={`red`} />
+			<GameTile coordinatesSerialized={`-2_1_1`} color={`magenta`} />
+			<GameTile coordinatesSerialized={`2_-1_-1`} color={`cyan`} /> */}
 		</Canvas>
 	)
 }
