@@ -1,4 +1,4 @@
-import type { Loadable, RegularAtomToken } from "atom.io"
+import type { Loadable } from "atom.io"
 import {
 	atom,
 	atomFamily,
@@ -9,9 +9,8 @@ import {
 	setState,
 	transaction,
 } from "atom.io"
-import { useO } from "atom.io/react"
+import { useO, useAtomicRef } from "atom.io/react"
 import type { PointerEventHandler, TargetedPointerEvent, VNode } from "preact"
-import type { MutableRef } from "preact/hooks"
 import { useCallback, useEffect, useRef } from "preact/hooks"
 
 type PointXY = { x: number; y: number }
@@ -64,16 +63,6 @@ const pathDrawSelectors = selectorFamily<string, string>({
 				.join(` `)
 		},
 })
-
-export function useAtomicRef<T>(
-	token: RegularAtomToken<T | null>,
-): MutableRef<T | null> {
-	const ref = useRef<T | null>(null)
-	useEffect(() => {
-		setState(token, ref.current)
-	}, [token])
-	return ref
-}
 
 function clamp(n: number, min: number, max: number) {
 	return Math.max(min, Math.min(max, n))
@@ -405,7 +394,7 @@ const reset = runTransaction(resetTX)
 const WIDTH = 256
 const HEIGHT = 296
 export default function BezierPlayground(): VNode {
-	const svgRef = useAtomicRef(svgRefAtom)
+	const svgRef = useAtomicRef(svgRefAtom, useRef)
 	const onPointerUp: PointerEventHandler<SVGSVGElement> = useCallback((evt) => {
 		evt.currentTarget.releasePointerCapture(evt.pointerId)
 		setState(currentlyDraggingAtom, null)
