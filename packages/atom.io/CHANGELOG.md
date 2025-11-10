@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.44.4
+
+### Patch Changes
+
+- caae14e: ✨ `atom.io/react`: Added new function `useAtomicRef`. This is a useful tool for making a rendered element available wherever you'd like to manage it.
+
 ## 0.44.3
 
 ### Patch Changes

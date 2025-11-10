@@ -1,5 +1,13 @@
 # @atom.io/template-preact-svg-editor
 
+## 0.0.3
+
+### Patch Changes
+
+- caae14e: ♻️ Using new `useAtomicRef` function from `atom.io/react`, instead of implementing it manually.
+- Updated dependencies [caae14e]
+  - atom.io@0.44.4
+
 ## 0.0.2
 
 ### Patch Changes
