@@ -1,7 +1,7 @@
 import { animated, useSpring } from "@react-spring/three"
 import * as Drei from "@react-three/drei"
 import { Canvas, ThreeEvent, useFrame, useThree } from "@react-three/fiber"
-import { atom } from "atom.io"
+import { atom, setState } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import type { ReactNode } from "react"
 import { useEffect, useRef, useState } from "react"
@@ -110,6 +110,7 @@ export default function Scene(): ReactNode {
 				<DraggableProbe />
 			</CameraAttachment> */}
 			<ProbeController />
+			<CameraAnchoredSphere />
 		</Canvas>
 	)
 }
@@ -133,57 +134,6 @@ const isDraggingAtom = atom<boolean>({
 	key: `isDragging`,
 	default: false,
 })
-
-function DraggableProbe() {
-	const mesh = useRef<THREE.Mesh>(null)
-	const { camera, scene, raycaster } = useThree()
-	const pointer = new THREE.Vector2()
-	const setDragging = useI(isDraggingAtom)
-	const dragging = useO(isDraggingAtom)
-
-	const onPointerDown = (e: PointerEvent) => {
-		if (e.buttons !== 1) return
-		setDragging(true)
-		e.stopPropagation()
-	}
-
-	const onPointerUp = (e: PointerEvent) => {
-		if (e.buttons !== 1) return
-		setDragging(false)
-		e.stopPropagation()
-	}
-
-	const onPointerMove = (e: PointerEvent) => {
-		if (!dragging) return
-		if (e.buttons !== 1) return // only while dragging
-
-		// convert screen pointer -> NDC → raycast
-		pointer.x = (e.clientX / window.innerWidth) * 2 - 1
-		pointer.y = -(e.clientY / window.innerHeight) * 2 + 1
-
-		raycaster.setFromCamera(pointer, camera)
-
-		// intersect with a ground plane (y = 0), or any custom plane
-		const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
-		const point = new THREE.Vector3()
-		raycaster.ray.intersectPlane(plane, point)
-
-		mesh.current?.position.copy(point)
-	}
-
-	return (
-		<mesh
-			ref={mesh}
-			position={[-0.5, -0.5, -2]} // 2 units in front of camera
-			onPointerDown={onPointerDown}
-			onPointerUp={onPointerUp}
-			onPointerMove={onPointerMove}
-		>
-			<sphereGeometry args={[0.15, 32, 32]} />
-			<meshStandardMaterial color="orange" />
-		</mesh>
-	)
-}
 
 function useProbeDestination(isDragging: boolean) {
 	const { camera, raycaster } = useThree()
@@ -216,48 +166,140 @@ function useProbeDestination(isDragging: boolean) {
 
 	return destination
 }
-function Probe({ destination }: { destination: THREE.Vector3 }) {
+
+const probeTargetPositionAtom = atom<THREE.Vector3>({
+	key: `probeTargetPosition`,
+	default: new THREE.Vector3(),
+})
+
+function Probe() {
+	const state = useO(probeStateAtom)
+	const shouldSpring = state !== `idle`
+	const { camera, raycaster, pointer } = useThree()
+	const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
+	const hitPoint = new THREE.Vector3()
+	const target = useO(probeTargetPositionAtom)
+	const setTarget = useI(probeTargetPositionAtom)
+
+	useFrame(() => {
+		switch (state) {
+			case `dragging`:
+				raycaster.setFromCamera(pointer, camera)
+				if (raycaster.ray.intersectPlane(plane, hitPoint)) {
+					setTarget(hitPoint.clone())
+					setTarget((pos: THREE.Vector3) => pos.copy(hitPoint))
+				}
+				return
+			case `idle`:
+			case `returning`:
+				{
+					// same idle point, but spring will be applied externally
+					const idlePoint = new THREE.Vector3(-1, 0, -10)
+						.applyQuaternion(camera.quaternion)
+						.add(camera.position)
+					setTarget(idlePoint)
+					// setTarget((pos: THREE.Vector3) =>
+					// 	pos
+					// 		.set(-1, 0, -10)
+					// 		.applyQuaternion(camera.quaternion)
+					// 		.add(camera.position),
+					// )
+				}
+				return
+		}
+	})
+
+	console.count(state)
+
 	const { pos } = useSpring({
-		pos: destination.toArray(),
-		config: { tension: 120, friction: 14, mass: 0.3 },
+		pos: target.toArray(),
+		immediate: !shouldSpring, // ✅ idle = NO SPRING
+		config: { tension: 130, friction: 16, mass: 0.4 },
+		// onRest: () => {
+		// 	console.count(`onRest`)
+		// 	if (state === `returning`) {
+		// 		// transition to full idle lock-in
+		// 		setState(probeStateAtom, `idle`)
+		// 	}
+		// },
 	})
 
 	return (
-		<animated.mesh position={pos}>
-			<sphereGeometry args={[0.15, 32, 32]} />
-			<meshStandardMaterial color="orange" />
+		<animated.mesh position={state === `idle` ? target : pos}>
+			<animated.sphereGeometry args={[0.2, 32, 32]} />
+			<animated.meshStandardMaterial color="orange" />
 		</animated.mesh>
 	)
 }
 function ProbeController() {
-	const [isDragging, setDragging] = useState(false)
-	const destination = useProbeDestination(isDragging)
 	const setControlsEnabled = useI(controlsEnabledAtom)
 
-	const handlePointerDown = () => {
-		console.log(`handlePointerDown`)
+	const startDrag = () => {
 		setControlsEnabled(false)
-		setDragging(true)
+		setState(probeStateAtom, `dragging`)
 	}
-	const handlePointerUp = () => {
+
+	const endDrag = () => {
 		setControlsEnabled(true)
-		setDragging(false)
+		setState(probeStateAtom, `returning`)
 	}
+
+	const target = useO(probeTargetPositionAtom)
 
 	return (
 		<group>
-			<Probe destination={destination} />
+			<Probe />
 
-			{/* Click-catcher for drag initiation */}
 			<mesh
-				position={[0, 0, 0]}
-				onPointerDown={handlePointerDown}
-				onPointerUp={handlePointerUp}
-				// onPointerLeave={handlePointerUp}
+				onPointerDown={startDrag}
+				onPointerUp={endDrag}
+				position={target}
+				// onPointerLeave={endDrag}
 			>
-				<sphereGeometry args={[0.25]} />
-				<meshBasicMaterial transparent opacity={0} />
+				<sphereGeometry args={[0.2, 32, 32]} />
+				<meshBasicMaterial color="orange" />
 			</mesh>
 		</group>
+	)
+}
+
+type ProbeState = `dragging` | `idle` | `returning`
+
+export const probeStateAtom = atom<ProbeState>({
+	key: `probeState`,
+	default: `idle`,
+})
+
+function CameraAnchoredSphere() {
+	const ref = useRef<THREE.Mesh>(null!)
+	const { camera } = useThree()
+	const setControlsEnabled = useI(controlsEnabledAtom)
+
+	const startDrag = () => {
+		setControlsEnabled(false)
+		setState(probeStateAtom, `dragging`)
+	}
+
+	const endDrag = () => {
+		setControlsEnabled(true)
+		setState(probeStateAtom, `returning`)
+	}
+
+	useFrame(() => {
+		// Position relative to camera (in camera space)
+		ref.current.position.set(0.3, -0.3, -1.2) // right, down, forward from camera
+		ref.current.quaternion.copy(camera.quaternion)
+	})
+
+	return (
+		<mesh
+			onPointerDown={startDrag}
+			onPointerUp={endDrag}
+			ref={ref}
+			// onPointerLeave={endDrag}
+		>
+			<sphereGeometry args={[0.2, 32, 32]} />
+			<meshBasicMaterial color="red" />
+		</mesh>
 	)
 }
