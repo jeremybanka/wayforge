@@ -1,11 +1,12 @@
 /** biome-ignore-all lint/a11y/noStaticElementInteractions: drei */
 
-import { atom, atomFamily, mutableAtom } from "atom.io"
-import { useO } from "atom.io/react"
+import { atomFamily, mutableAtom } from "atom.io"
+import { useJSON, useO } from "atom.io/react"
 import { UList } from "atom.io/transceivers/u-list"
 import type { ReactNode } from "react"
 import { useMemo } from "react"
 import * as THREE from "three"
+/// <reference types="@react-three/fiber" />
 
 /**
  * HexTile
@@ -144,7 +145,7 @@ export const gameTilesStackHeightAtoms = atomFamily<number, TileCoordinates>({
 })
 
 export function GameTiles(): ReactNode {
-	const tiles = useO(gameTilesAtom)
+	const tiles = useJSON(gameTilesAtom)
 	return (
 		<>
 			{tiles.map((tileCoordinates, idx) => (
