@@ -7,7 +7,7 @@ import * as THREE from "three"
 import type * as STD from "three-stdlib"
 
 import { HexGridHelper } from "./HexGridHelper"
-import { GameTile, HexTile } from "./HexTile"
+import { GameTiles } from "./HexTile"
 
 function CameraController({ target }: { target: number[] }) {
 	const controls = useRef<STD.OrbitControls>(null)
@@ -78,7 +78,8 @@ export default function Scene(): ReactNode {
 			{/* <gridHelper args={[20, 20]} /> */}
 			{/* <axesHelper args={[5]} /> */}
 
-			<GameTile
+			<GameTiles />
+			{/* <GameTile
 				coordinates={{ x: 0, y: 0, z: 0 }}
 				stackHeight={3}
 				onClick={handleObjectClick}
@@ -88,7 +89,7 @@ export default function Scene(): ReactNode {
 				color="green"
 				stackHeight={2}
 				onClick={handleObjectClick}
-			/>
+			/> */}
 			{/* <GameTile coordinates={{ x: -1, y: 2, z: -1 }} />
 			<GameTile coordinates={{ x: 2, y: -1, z: -1 }} />
 			<GameTile coordinates={{ x: -1, y: 1, z: 0 }} stackHeight={2} /> */}
