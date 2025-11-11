@@ -11,17 +11,16 @@ import type * as STD from "three-stdlib"
 import { HexGridHelper } from "./HexGridHelper"
 import { GameTiles, PlayableZones } from "./HexTile"
 
-export const controlsEnabledAtom = atom<boolean>({
+const controlsEnabledAtom = atom<boolean>({
 	key: `controlsEnabled`,
 	default: true,
 })
 
 function CameraController({ target }: { target: number[] }) {
 	const controls = useRef<STD.OrbitControls>(null)
-	const { camera } = useThree()
 	const controlsEnabled = useO(controlsEnabledAtom)
 
-	const { animatedTarget } = useSpring({
+	useSpring({
 		animatedTarget: target,
 		config: { mass: 1, tension: 170, friction: 26 },
 		onChange: ({ value }) => {
@@ -82,93 +81,14 @@ export default function Scene(): ReactNode {
 			<GameTiles />
 			<PlayableZones />
 
-			<ProbeController />
 			<CameraAnchoredSphere />
 		</Canvas>
 	)
 }
 
-const probeTargetPositionAtom = atom<THREE.Vector3>({
-	key: `probeTargetPosition`,
-	default: new THREE.Vector3(),
-})
-
-function Probe() {
-	const state = useO(probeStateAtom)
-	const shouldSpring = state !== `idle`
-	const { camera, raycaster, pointer } = useThree()
-	const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
-	const hitPoint = new THREE.Vector3()
-	const target = useO(probeTargetPositionAtom)
-	const setTarget = useI(probeTargetPositionAtom)
-
-	useFrame(() => {
-		switch (state) {
-			case `dragging`:
-				raycaster.setFromCamera(pointer, camera)
-				if (raycaster.ray.intersectPlane(plane, hitPoint)) {
-					setTarget(hitPoint.clone())
-					setTarget((pos: THREE.Vector3) => pos.copy(hitPoint))
-				}
-				return
-			case `idle`:
-			case `returning`:
-				{
-					const idlePoint = new THREE.Vector3(-1, 0, -10)
-						.applyQuaternion(camera.quaternion)
-						.add(camera.position)
-					setTarget(idlePoint)
-				}
-				return
-		}
-	})
-
-	const { pos } = useSpring({
-		pos: target.toArray(),
-		immediate: !shouldSpring, // ✅ idle = NO SPRING
-		config: { tension: 130, friction: 16, mass: 0.4 },
-		onRest: () => {
-			setState(probeStateAtom, `idle`)
-		},
-	})
-
-	return (
-		<animated.mesh position={state === `idle` ? target : pos}>
-			<animated.sphereGeometry args={[0.2, 32, 32]} />
-			<animated.meshStandardMaterial color="orange" />
-		</animated.mesh>
-	)
-}
-function ProbeController() {
-	const setControlsEnabled = useI(controlsEnabledAtom)
-
-	const startDrag = () => {
-		setControlsEnabled(false)
-		setState(probeStateAtom, `dragging`)
-	}
-
-	const endDrag = () => {
-		setControlsEnabled(true)
-		setState(probeStateAtom, `returning`)
-	}
-
-	const target = useO(probeTargetPositionAtom)
-
-	return (
-		<group>
-			<Probe />
-
-			<mesh onPointerDown={startDrag} onPointerUp={endDrag} position={target}>
-				<sphereGeometry args={[0.2, 32, 32]} />
-				<meshBasicMaterial color="orange" />
-			</mesh>
-		</group>
-	)
-}
-
 type ProbeState = `dragging` | `idle` | `returning`
 
-export const probeStateAtom = atom<ProbeState>({
+const probeStateAtom = atom<ProbeState>({
 	key: `probeState`,
 	default: `idle`,
 })
