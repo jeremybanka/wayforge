@@ -6,12 +6,46 @@ export type CubeTokenStackProps = {
 	count: number
 }
 export function CubeTokenStack({
-	position,
+	position: [x, y, z],
 	count,
 }: CubeTokenStackProps): ReactNode {
+	const layers: (1 | 2 | 3 | 4)[] = []
+	while (count > 0) {
+		if (count >= 4) {
+			layers.push(4)
+			count -= 4
+		} else {
+			layers.push(count as 1 | 2 | 3)
+			count = 0
+		}
+	}
+
+	return (
+		<>
+			{layers.map((layerCount, i) => (
+				<CubeTokenLayer
+					key={i}
+					position={new THREE.Vector3(x, y + i * 0.5, z)}
+					count={layerCount}
+					rotation={new THREE.Euler(0, (i * Math.PI) / 3, 0)}
+				/>
+			))}
+		</>
+	)
+}
+export type CubeTokenLayerProps = {
+	position: THREE.Vector3
+	rotation: THREE.Euler
+	count: 1 | 2 | 3 | 4
+}
+export function CubeTokenLayer({
+	position,
+	rotation: rOffset,
+	count,
+}: CubeTokenLayerProps): ReactNode {
 	const radius = count * 0.1 + 0.1
 	return (
-		<group position={position}>
+		<group position={position} rotation={rOffset}>
 			{count === 1 ? (
 				<CubeToken
 					color={`#f00`}
