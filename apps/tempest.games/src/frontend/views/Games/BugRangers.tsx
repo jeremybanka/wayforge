@@ -293,19 +293,20 @@ function CameraAnchoredSphere() {
 		setState(probeStateAtom, `returning`)
 	}
 
+	const fwd = new THREE.Vector3()
+	const right = new THREE.Vector3()
 	useFrame(() => {
-		// Position relative to camera (in camera space)
-		// ref.current?.position.copy(camera.position) // right, down, forward from camera
-		// ref.current?.quaternion.copy(camera.quaternion)
-		// ref.current?.position.add(new THREE.Vector3(0, 0, -10))
-		// ref.current?.position.set(-1, 0, -9)
 		if (!ref.current) return
-		const direction = new THREE.Vector3(0, 0, 0)
-		camera.getWorldDirection(direction) // normalized
+		camera.getWorldDirection(fwd) // normalized forward
 
-		// Compute target position
-		const camPos = camera.position.clone()
-		const targetPos = camPos.add(direction.multiplyScalar(10))
+		// camera’s right vector = forward × up
+		right.copy(fwd).cross(UP).normalize()
+
+		// compute final position
+		const targetPos = camera.position
+			.clone()
+			.add(fwd.multiplyScalar(10))
+			.add(right.multiplyScalar(-2))
 
 		// Move the sphere
 		ref.current.position.copy(targetPos)
@@ -314,7 +315,7 @@ function CameraAnchoredSphere() {
 	return (
 		<mesh onPointerDown={startDrag} onPointerUp={endDrag} ref={ref}>
 			<sphereGeometry args={[1, 32, 32]} />
-			<meshBasicMaterial color="red" />
+			<meshToonMaterial color="red" />
 		</mesh>
 	)
 }
