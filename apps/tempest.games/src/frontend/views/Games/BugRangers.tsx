@@ -1,7 +1,7 @@
 import { animated, useSpring } from "@react-spring/three"
 import * as Drei from "@react-three/drei"
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
-import { atom, setState } from "atom.io"
+import { atom, getState, setState } from "atom.io"
 import { useAtomicRef, useI, useO } from "atom.io/react"
 import type { ReactNode } from "react"
 import { useRef } from "react"
@@ -88,11 +88,6 @@ export default function Scene(): ReactNode {
 	)
 }
 
-const isDraggingAtom = atom<boolean>({
-	key: `isDragging`,
-	default: false,
-})
-
 const probeTargetPositionAtom = atom<THREE.Vector3>({
 	key: `probeTargetPosition`,
 	default: new THREE.Vector3(),
@@ -119,23 +114,14 @@ function Probe() {
 			case `idle`:
 			case `returning`:
 				{
-					// same idle point, but spring will be applied externally
 					const idlePoint = new THREE.Vector3(-1, 0, -10)
 						.applyQuaternion(camera.quaternion)
 						.add(camera.position)
 					setTarget(idlePoint)
-					// setTarget((pos: THREE.Vector3) =>
-					// 	pos
-					// 		.set(-1, 0, -10)
-					// 		.applyQuaternion(camera.quaternion)
-					// 		.add(camera.position),
-					// )
 				}
 				return
 		}
 	})
-
-	console.count(state)
 
 	const { pos } = useSpring({
 		pos: target.toArray(),
@@ -196,15 +182,17 @@ const forward = new THREE.Vector3()
 const right = new THREE.Vector3()
 const upWorld = new THREE.Vector3(0, 1, 0)
 const upCam = new THREE.Vector3()
+const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
 
 const distForward = 10
 const offsetRight = -2
-const offsetDown = 1
+const offsetUp = 1
+const hitPoint = new THREE.Vector3()
 
 function CameraAnchoredSphere() {
 	// const ref = useRef<THREE.Mesh>(null!)
 	const ref = useAtomicRef(cameraAnchoredSphereAtom, useRef)
-	const { camera } = useThree()
+	const { camera, raycaster, pointer } = useThree()
 	const setControlsEnabled = useI(controlsEnabledAtom)
 
 	const startDrag = () => {
@@ -219,24 +207,35 @@ function CameraAnchoredSphere() {
 
 	useFrame(() => {
 		if (!ref.current) return
-		// Forward vector
-		camera.getWorldDirection(forward) // normalized
+		const probeState = getState(probeStateAtom)
 
-		// Right vector (forward × worldUp)
-		right.copy(forward).cross(upWorld).normalize()
+		switch (probeState) {
+			case `idle`:
+			case `returning`:
+				// Forward vector
+				camera.getWorldDirection(forward) // normalized
 
-		// Camera-up vector (right × forward)
-		upCam.copy(right).cross(forward).normalize()
+				// Right vector (forward × worldUp)
+				right.copy(forward).cross(upWorld).normalize()
 
-		// Final position = forward + right − up
-		const pos = camera.position
-			.clone()
-			.add(forward.multiplyScalar(distForward))
-			.add(right.multiplyScalar(offsetRight))
-			.add(upCam.multiplyScalar(-offsetDown)) // negative = down
+				// Camera-up vector (right × forward)
+				upCam.copy(right).cross(forward).normalize()
 
-		// Move the sphere
-		ref.current.position.copy(pos)
+				// Move the sphere
+				ref.current.position.copy(
+					camera.position
+						.clone()
+						.add(forward.multiplyScalar(distForward))
+						.add(right.multiplyScalar(offsetRight))
+						.add(upCam.multiplyScalar(-offsetUp)),
+				)
+				break
+			case `dragging`:
+				raycaster.setFromCamera(pointer, camera)
+				if (raycaster.ray.intersectPlane(plane, hitPoint)) {
+					ref.current.position.copy(hitPoint.clone())
+				}
+		}
 	})
 
 	return (
