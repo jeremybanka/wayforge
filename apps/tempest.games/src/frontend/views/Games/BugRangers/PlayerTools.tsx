@@ -5,6 +5,7 @@ import type { ReactNode } from "react"
 import { useRef } from "react"
 import * as THREE from "three"
 
+import { CubeToken } from "./CubeToken"
 import { HexTile } from "./HexTile"
 import type { TileCubeCount } from "./store"
 import {
@@ -188,10 +189,5 @@ function PlayableCube(): ReactNode {
 		}
 	})
 
-	return (
-		<mesh ref={ref} onPointerDown={startDrag} onPointerUp={endDrag}>
-			<boxGeometry args={[0.5, 0.5, 0.5]} />
-			<meshStandardMaterial color="hotpink" />
-		</mesh>
-	)
+	return <CubeToken ref={ref} onPointerDown={startDrag} onPointerUp={endDrag} />
 }
