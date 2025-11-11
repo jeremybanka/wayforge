@@ -133,15 +133,15 @@ export function GameTile({
 		return null
 	}
 
-	const height = virtual ? 0.2 : stackHeight * 0.33 + 0.5
+	const height = virtual ? 0.2 : stackHeight * 0.33
 
 	return (
 		<>
-			<Text position={[x, height + 0.2, z]} fontSize={0.25} color="white">
+			<Text position={[x, height + 0.7, z]} fontSize={0.25} color="white">
 				{coordinatesSerialized}
 			</Text>
 			{!virtual && tileCubeCount > 0 ? (
-				<mesh position={[x, 0.55, z]}>
+				<mesh position={[x, height + 0.25, z]}>
 					<boxGeometry args={[0.5, 0.5, 0.5]} />
 					<meshStandardMaterial color="hotpink" />
 				</mesh>
