@@ -8,8 +8,10 @@ import * as THREE from "three"
 import { HexTile } from "./HexTile"
 import {
 	cameraAnchoredSphereAtom,
+	closestPlayableZoneSelector,
 	controlsEnabledAtom,
 	dragpointAtom,
+	gameTilesAtom,
 	probeStateAtom,
 } from "./store"
 
@@ -37,7 +39,14 @@ export function PlayerTools(): ReactNode {
 	const endDrag = () => {
 		setControlsEnabled(true)
 		setState(probeStateAtom, `returning`)
+		const closestPlayableZone = getState(closestPlayableZoneSelector)
 		setState(dragpointAtom, null)
+		if (closestPlayableZone) {
+			setState(gameTilesAtom, (permanent) => {
+				permanent.add(closestPlayableZone)
+				return permanent
+			})
+		}
 	}
 
 	useFrame(() => {
