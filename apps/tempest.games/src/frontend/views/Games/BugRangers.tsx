@@ -275,6 +275,8 @@ const cameraAnchoredSphereAtom = atom<THREE.Mesh | null>({
 	default: null,
 })
 
+const UP = new THREE.Vector3(0, 1, 0)
+
 function CameraAnchoredSphere() {
 	// const ref = useRef<THREE.Mesh>(null!)
 	const ref = useAtomicRef(cameraAnchoredSphereAtom, useRef)
@@ -293,18 +295,25 @@ function CameraAnchoredSphere() {
 
 	useFrame(() => {
 		// Position relative to camera (in camera space)
-		ref.current?.position.set(0.3, -0.3, -1.2) // right, down, forward from camera
-		ref.current?.quaternion.copy(camera.quaternion)
+		// ref.current?.position.copy(camera.position) // right, down, forward from camera
+		// ref.current?.quaternion.copy(camera.quaternion)
+		// ref.current?.position.add(new THREE.Vector3(0, 0, -10))
+		// ref.current?.position.set(-1, 0, -9)
+		if (!ref.current) return
+		const direction = new THREE.Vector3(0, 0, 0)
+		camera.getWorldDirection(direction) // normalized
+
+		// Compute target position
+		const camPos = camera.position.clone()
+		const targetPos = camPos.add(direction.multiplyScalar(10))
+
+		// Move the sphere
+		ref.current.position.copy(targetPos)
 	})
 
 	return (
-		<mesh
-			onPointerDown={startDrag}
-			onPointerUp={endDrag}
-			ref={ref}
-			// onPointerLeave={endDrag}
-		>
-			<sphereGeometry args={[0.2, 32, 32]} />
+		<mesh onPointerDown={startDrag} onPointerUp={endDrag} ref={ref}>
+			<sphereGeometry args={[1, 32, 32]} />
 			<meshBasicMaterial color="red" />
 		</mesh>
 	)
