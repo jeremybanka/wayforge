@@ -82,6 +82,40 @@ export const tile3dPositionSelectors = selectorFamily<
 	},
 })
 
+export const adjacentZonesSelector = selectorFamily<
+	TileCoordinatesSerialized[],
+	TileCoordinatesSerialized
+>({
+	key: `adjacentZones`,
+	get: (coordinatesSerialized) => () => {
+		const [x, y, z] = deserializeTileCoordinates(coordinatesSerialized)
+		const playableZones = new Set<TileCoordinatesSerialized>()
+
+		playableZones.add(`${x + 1}_${y - 1}_${z}`)
+		playableZones.add(`${x + 1}_${y}_${z - 1}`)
+		playableZones.add(`${x - 1}_${y + 1}_${z}`)
+		playableZones.add(`${x - 1}_${y}_${z + 1}`)
+		playableZones.add(`${x + 2}_${y - 1}_${z - 1}`)
+		playableZones.add(`${x - 2}_${y + 1}_${z + 1}`)
+
+		return Array.from(playableZones)
+	},
+})
+
+export const adjacentTilesSelector = selectorFamily<
+	TileCoordinatesSerialized[],
+	TileCoordinatesSerialized
+>({
+	key: `adjacentTiles`,
+	get:
+		(coordinatesSerialized) =>
+		({ get }) => {
+			const playableZones = get(adjacentZonesSelector, coordinatesSerialized)
+			const tiles = get(gameTilesAtom)
+			return playableZones.filter((adjacentZone) => tiles.has(adjacentZone))
+		},
+})
+
 export const playableZonesAtom = selector<TileCoordinatesSerialized[]>({
 	key: `playableZone`,
 	get: ({ get }) => {
@@ -89,21 +123,21 @@ export const playableZonesAtom = selector<TileCoordinatesSerialized[]>({
 		if (tiles.size === 0) return [`0_0_0`]
 		const playableZones = new Set<TileCoordinatesSerialized>()
 
-		console.log(`tiles`, tiles)
-
 		for (const tileCoordinates of tiles) {
-			const [x, y, z] = deserializeTileCoordinates(tileCoordinates)
-			playableZones.add(`${x + 1}_${y - 1}_${z}`)
-			playableZones.add(`${x + 1}_${y}_${z - 1}`)
-			playableZones.add(`${x - 1}_${y + 1}_${z}`)
-			playableZones.add(`${x - 1}_${y}_${z + 1}`)
-			playableZones.add(`${x + 2}_${y - 1}_${z - 1}`)
-			playableZones.add(`${x - 2}_${y + 1}_${z + 1}`)
+			const adjacentZones = get(adjacentZonesSelector, tileCoordinates)
+			for (const adjacentZone of adjacentZones) {
+				playableZones.add(adjacentZone)
+			}
 		}
 		for (const tileCoordinates of tiles) {
 			playableZones.delete(tileCoordinates)
 		}
-
+		for (const playableZone of playableZones) {
+			const adjacentTiles = get(adjacentTilesSelector, playableZone)
+			if (adjacentTiles.length >= 5) {
+				playableZones.delete(playableZone)
+			}
+		}
 		return Array.from(playableZones)
 	},
 })
