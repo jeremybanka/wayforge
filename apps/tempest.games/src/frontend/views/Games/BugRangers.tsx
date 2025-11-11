@@ -8,7 +8,7 @@ import * as THREE from "three"
 import type * as STD from "three-stdlib"
 
 import { HexGridHelper } from "./BugRangers/HexGridHelper"
-import { PlayerTools } from "./BugRangers/PlayerProps"
+import { PlayerTools } from "./BugRangers/PlayerTools"
 import { cameraTargetAtom, controlsEnabledAtom } from "./BugRangers/store"
 import { GameTiles, PlayableZones } from "./BugRangers/TilesAndZones"
 
