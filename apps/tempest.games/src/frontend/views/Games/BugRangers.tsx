@@ -45,7 +45,7 @@ export function BugRangers(): ReactNode {
 				<HexGridHelper size={20} radius={1} color="#6f6f6f" opacity={0.5} />
 
 				<GameTiles />
-				<PlayableZones />
+				{turnInProgress === null ? <PlayableZones /> : null}
 
 				<PlayerTools />
 			</Canvas>
@@ -89,7 +89,6 @@ function CameraController({ target }: { target: number[] }) {
 			controls.current?.update()
 		},
 	})
-	console.log(`controlsEnabled`, controlsEnabled)
 
 	return (
 		<Drei.OrbitControls
