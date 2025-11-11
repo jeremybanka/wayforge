@@ -12,11 +12,11 @@ export const controlsEnabledAtom = atom<boolean>({
 	default: true,
 })
 
-export type ProbeState = `dragging` | `idle` | `returning`
+export type DragState = `cube` | `tile` | null
 
-export const probeStateAtom = atom<ProbeState>({
-	key: `probeState`,
-	default: `idle`,
+export const dragStateAtom = atom<DragState>({
+	key: `dragState`,
+	default: null,
 })
 
 export const cameraAnchoredSphereAtom = atom<THREE.Mesh | null>({
