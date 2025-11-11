@@ -68,7 +68,6 @@ export function HexTile({
 			castShadow
 			receiveShadow
 			onClick={() => {
-				setState(cameraTargetAtom, position3d)
 				onClick?.(position3d)
 			}}
 			onPointerOver={() => {
@@ -135,7 +134,8 @@ export function GameTile({
 			<HexTile
 				position3d={[x, 0, z]}
 				color={color}
-				onClick={() => {
+				onClick={(position3d) => {
+					setState(cameraTargetAtom, position3d)
 					if (virtual) {
 						setState(gameTilesAtom, (permanent) => {
 							console.log({ coordinates })
