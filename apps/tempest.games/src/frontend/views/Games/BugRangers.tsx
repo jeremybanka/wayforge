@@ -275,7 +275,14 @@ const cameraAnchoredSphereAtom = atom<THREE.Mesh | null>({
 	default: null,
 })
 
-const UP = new THREE.Vector3(0, 1, 0)
+const forward = new THREE.Vector3()
+const right = new THREE.Vector3()
+const upWorld = new THREE.Vector3(0, 1, 0)
+const upCam = new THREE.Vector3()
+
+const distForward = 10
+const offsetRight = -2
+const offsetDown = 1
 
 function CameraAnchoredSphere() {
 	// const ref = useRef<THREE.Mesh>(null!)
@@ -293,23 +300,26 @@ function CameraAnchoredSphere() {
 		setState(probeStateAtom, `returning`)
 	}
 
-	const fwd = new THREE.Vector3()
-	const right = new THREE.Vector3()
 	useFrame(() => {
 		if (!ref.current) return
-		camera.getWorldDirection(fwd) // normalized forward
+		// Forward vector
+		camera.getWorldDirection(forward) // normalized
 
-		// camera’s right vector = forward × up
-		right.copy(fwd).cross(UP).normalize()
+		// Right vector (forward × worldUp)
+		right.copy(forward).cross(upWorld).normalize()
 
-		// compute final position
-		const targetPos = camera.position
+		// Camera-up vector (right × forward)
+		upCam.copy(right).cross(forward).normalize()
+
+		// Final position = forward + right − up
+		const pos = camera.position
 			.clone()
-			.add(fwd.multiplyScalar(10))
-			.add(right.multiplyScalar(-2))
+			.add(forward.multiplyScalar(distForward))
+			.add(right.multiplyScalar(offsetRight))
+			.add(upCam.multiplyScalar(-offsetDown)) // negative = down
 
 		// Move the sphere
-		ref.current.position.copy(targetPos)
+		ref.current.position.copy(pos)
 	})
 
 	return (
