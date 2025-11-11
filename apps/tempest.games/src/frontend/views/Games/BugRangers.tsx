@@ -1,10 +1,10 @@
 import { animated, useSpring } from "@react-spring/three"
 import * as Drei from "@react-three/drei"
-import { Canvas, ThreeEvent, useFrame, useThree } from "@react-three/fiber"
+import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { atom, setState } from "atom.io"
 import { useAtomicRef, useI, useO } from "atom.io/react"
 import type { ReactNode } from "react"
-import { useEffect, useRef, useState } from "react"
+import { useRef } from "react"
 import * as THREE from "three"
 import type * as STD from "three-stdlib"
 
@@ -15,25 +15,6 @@ export const controlsEnabledAtom = atom<boolean>({
 	key: `controlsEnabled`,
 	default: true,
 })
-
-// function CameraController({ target }: { target: number[] }) {
-// 	const controls = useRef<STD.OrbitControls>(null)
-// 	const { camera } = useThree()
-
-// 	const { animatedTarget } = useSpring({
-// 		animatedTarget: target,
-// 		config: { mass: 1, tension: 170, friction: 26 },
-// 		onChange: ({ value }) => {
-// 			controls.current?.target.lerp(
-// 				new THREE.Vector3(...value[`animatedTarget`]),
-// 				0.2,
-// 			)
-// 			controls.current?.update()
-// 		},
-// 	})
-
-// 	return <Drei.OrbitControls ref={controls} enableDamping dampingFactor={0.05} />
-// }
 
 function CameraController({ target }: { target: number[] }) {
 	const controls = useRef<STD.OrbitControls>(null)
@@ -100,72 +81,17 @@ export default function Scene(): ReactNode {
 
 			<GameTiles />
 			<PlayableZones />
-			{/* <GameTile coordinatesSerialized={`1_0_-1`} color={`purple`} />
-			<GameTile coordinatesSerialized={`-1_0_1`} color={`blue`} />
-			<GameTile coordinatesSerialized={`1_-1_0`} color={`green`} />
-			<GameTile coordinatesSerialized={`-1_1_0`} color={`red`} />
-			<GameTile coordinatesSerialized={`-2_1_1`} color={`magenta`} />
-			<GameTile coordinatesSerialized={`2_-1_-1`} color={`cyan`} /> */}
-			{/* <CameraAttachment>
-				<DraggableProbe />
-			</CameraAttachment> */}
+
 			<ProbeController />
 			<CameraAnchoredSphere />
 		</Canvas>
 	)
 }
 
-function CameraAttachment({ children }: { children: ReactNode }) {
-	const { camera } = useThree()
-	const group = useRef<THREE.Group>(null)
-
-	useFrame(() => {
-		if (group.current) {
-			// follow camera
-			group.current.position.copy(camera.position)
-			group.current.quaternion.copy(camera.quaternion)
-		}
-	})
-
-	return <group ref={group}>{children}</group>
-}
-
 const isDraggingAtom = atom<boolean>({
 	key: `isDragging`,
 	default: false,
 })
-
-function useProbeDestination(isDragging: boolean) {
-	const { camera, raycaster } = useThree()
-	const pointer = useRef(new THREE.Vector2()).current
-	const [destination, setDestination] = useState(() => new THREE.Vector3())
-
-	useFrame(({ mouse }) => {
-		if (isDragging) {
-			// Update pointer (NDC)
-			pointer.x = mouse.x
-			pointer.y = mouse.y
-
-			raycaster.setFromCamera(pointer, camera)
-
-			const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
-			const hit = new THREE.Vector3()
-
-			if (raycaster.ray.intersectPlane(plane, hit)) {
-				setDestination(hit.clone())
-			}
-		} else {
-			// Idle: position some distance in front of camera
-			const idlePoint = new THREE.Vector3(0, 0, -2)
-				.applyQuaternion(camera.quaternion)
-				.add(camera.position)
-
-			setDestination(idlePoint)
-		}
-	})
-
-	return destination
-}
 
 const probeTargetPositionAtom = atom<THREE.Vector3>({
 	key: `probeTargetPosition`,
@@ -215,13 +141,9 @@ function Probe() {
 		pos: target.toArray(),
 		immediate: !shouldSpring, // ✅ idle = NO SPRING
 		config: { tension: 130, friction: 16, mass: 0.4 },
-		// onRest: () => {
-		// 	console.count(`onRest`)
-		// 	if (state === `returning`) {
-		// 		// transition to full idle lock-in
-		// 		setState(probeStateAtom, `idle`)
-		// 	}
-		// },
+		onRest: () => {
+			setState(probeStateAtom, `idle`)
+		},
 	})
 
 	return (
@@ -250,12 +172,7 @@ function ProbeController() {
 		<group>
 			<Probe />
 
-			<mesh
-				onPointerDown={startDrag}
-				onPointerUp={endDrag}
-				position={target}
-				// onPointerLeave={endDrag}
-			>
+			<mesh onPointerDown={startDrag} onPointerUp={endDrag} position={target}>
 				<sphereGeometry args={[0.2, 32, 32]} />
 				<meshBasicMaterial color="orange" />
 			</mesh>
