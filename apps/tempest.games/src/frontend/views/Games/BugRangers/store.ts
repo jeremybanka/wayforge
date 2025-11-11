@@ -172,6 +172,47 @@ export const closestPlayableZoneSelector =
 		},
 	})
 
+export const ownedTilesSelector = selectorFamily<
+	TileCoordinatesSerialized[],
+	string
+>({
+	key: `ownedTiles`,
+	get:
+		(userKey) =>
+		({ get, json }) => {
+			const tiles = get(json(gameTilesAtom))
+			return tiles.filter(
+				(tileCoordinates) => get(tileOwnerAtoms, tileCoordinates) === userKey,
+			)
+		},
+})
+
+export const closestOwnedTileSelector = selectorFamily<
+	TileCoordinatesSerialized | null,
+	string
+>({
+	key: `closestOwnedTile`,
+	get:
+		(userKey) =>
+		({ get }) => {
+			const ownedTiles = get(ownedTilesSelector, userKey)
+			if (ownedTiles.length === 0) return null
+			const dragpoint = get(dragpointAtom)
+			if (!dragpoint) return null
+			let closestDistance = Number.POSITIVE_INFINITY
+			let closest: TileCoordinatesSerialized | null = null
+			for (const tileCoordinates of ownedTiles) {
+				const position = get(tile3dPositionSelectors, tileCoordinates)
+				const distance = dragpoint.distanceTo(position)
+				if (distance < closestDistance) {
+					closestDistance = distance
+					closest = tileCoordinates
+				}
+			}
+			return closest
+		},
+})
+
 export type TileCubeCount =
 	| 0
 	| 1
@@ -200,6 +241,11 @@ export const tileCubeCountAtoms = atomFamily<
 >({
 	key: `tileCubeCount`,
 	default: 1,
+})
+
+export const tileOwnerAtoms = atomFamily<string, TileCoordinatesSerialized>({
+	key: `tileOwner`,
+	default: ``,
 })
 
 export type TurnActionType = `arm` | `build` | `war`
