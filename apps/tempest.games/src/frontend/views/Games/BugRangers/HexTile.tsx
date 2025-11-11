@@ -15,6 +15,7 @@ import {
 	gameTilesAtom,
 	gameTilesStackHeightAtoms,
 	tile3dPositionSelectors,
+	tileCubeCountAtoms,
 } from "../BugRangers/store"
 /// <reference types="@react-three/fiber" />
 
@@ -119,7 +120,8 @@ export function GameTile({
 }): ReactNode {
 	const coordinates = deserializeTileCoordinates(coordinatesSerialized)
 	const [boardA, boardB, boardC] = coordinates
-	const stackHeight = useO(gameTilesStackHeightAtoms, coordinates)
+	const stackHeight = useO(gameTilesStackHeightAtoms, coordinatesSerialized)
+	const tileCubeCount = useO(tileCubeCountAtoms, coordinatesSerialized)
 
 	const tile3dPosition = getState(tile3dPositionSelectors, coordinatesSerialized)
 	const [x, _, z] = tile3dPosition
@@ -131,11 +133,19 @@ export function GameTile({
 		return null
 	}
 
+	const height = virtual ? 0.2 : stackHeight * 0.33 + 0.5
+
 	return (
 		<>
-			<Text position={[x, 0.5, z]} fontSize={0.5} color="white">
+			<Text position={[x, height + 0.2, z]} fontSize={0.25} color="white">
 				{coordinatesSerialized}
 			</Text>
+			{!virtual && tileCubeCount > 0 ? (
+				<mesh position={[x, 0.55, z]}>
+					<boxGeometry args={[0.5, 0.5, 0.5]} />
+					<meshStandardMaterial color="hotpink" />
+				</mesh>
+			) : null}
 			<HexTile
 				position3d={tile3dPosition}
 				color={isClosest ? `#f00` : color}
