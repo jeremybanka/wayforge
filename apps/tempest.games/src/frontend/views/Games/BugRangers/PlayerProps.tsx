@@ -5,9 +5,11 @@ import type { ReactNode } from "react"
 import { useRef } from "react"
 import * as THREE from "three"
 
+import { HexTile } from "./HexTile"
 import {
 	cameraAnchoredSphereAtom,
 	controlsEnabledAtom,
+	dragpointAtom,
 	probeStateAtom,
 } from "./store"
 
@@ -35,6 +37,7 @@ export function PlayerTools(): ReactNode {
 	const endDrag = () => {
 		setControlsEnabled(true)
 		setState(probeStateAtom, `returning`)
+		setState(dragpointAtom, null)
 	}
 
 	useFrame(() => {
@@ -65,15 +68,11 @@ export function PlayerTools(): ReactNode {
 			case `dragging`:
 				raycaster.setFromCamera(pointer, camera)
 				if (raycaster.ray.intersectPlane(plane, hitPoint)) {
-					ref.current.position.copy(hitPoint.clone())
+					setState(dragpointAtom, hitPoint)
+					ref.current.position.copy(hitPoint)
 				}
 		}
 	})
 
-	return (
-		<mesh onPointerDown={startDrag} onPointerUp={endDrag} ref={ref}>
-			<sphereGeometry args={[1, 32, 32]} />
-			<meshToonMaterial color="red" />
-		</mesh>
-	)
+	return <HexTile ref={ref} onPointerDown={startDrag} onPointerUp={endDrag} />
 }

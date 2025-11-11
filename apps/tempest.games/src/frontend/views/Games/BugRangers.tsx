@@ -8,9 +8,9 @@ import * as THREE from "three"
 import type * as STD from "three-stdlib"
 
 import { HexGridHelper } from "./BugRangers/HexGridHelper"
-import { GameTiles, PlayableZones } from "./BugRangers/HexTile"
 import { PlayerTools } from "./BugRangers/PlayerProps"
 import { cameraTargetAtom, controlsEnabledAtom } from "./BugRangers/store"
+import { GameTiles, PlayableZones } from "./BugRangers/TilesAndZones"
 
 export function BugRangers(): ReactNode {
 	const cameraTarget = useO(cameraTargetAtom)
