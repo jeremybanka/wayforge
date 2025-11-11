@@ -1,4 +1,4 @@
-import { animated, useSpring } from "@react-spring/three"
+import { useSpring } from "@react-spring/three"
 import * as Drei from "@react-three/drei"
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
 import { atom, getState, setState } from "atom.io"
@@ -50,15 +50,10 @@ export const cameraTargetAtom = atom<[x: number, y: number, z: number]>({
 
 export default function Scene(): ReactNode {
 	const cameraTarget = useO(cameraTargetAtom)
-	const setCameraTarget = useI(cameraTargetAtom)
-	const { animatedCam } = useSpring({
+	useSpring({
 		animatedCam: cameraTarget,
 		config: { mass: 1, tension: 170, friction: 26 },
 	})
-
-	const handleObjectClick = (pos: [x: number, y: number, z: number]) => {
-		setCameraTarget(pos)
-	}
 
 	return (
 		<Canvas
