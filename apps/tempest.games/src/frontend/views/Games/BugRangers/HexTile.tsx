@@ -17,6 +17,7 @@ import {
 	tile3dPositionSelectors,
 	tileCubeCountAtoms,
 } from "../BugRangers/store"
+import { CubeToken } from "./CubeToken"
 /// <reference types="@react-three/fiber" />
 
 /**
@@ -141,10 +142,7 @@ export function GameTile({
 				{coordinatesSerialized}
 			</Text>
 			{!virtual && tileCubeCount > 0 ? (
-				<mesh position={[x, height + 0.25, z]}>
-					<boxGeometry args={[0.5, 0.5, 0.5]} />
-					<meshStandardMaterial color="hotpink" />
-				</mesh>
+				<CubeToken position={new THREE.Vector3(x, height + 0.25, z)} />
 			) : null}
 			<HexTile
 				position3d={tile3dPosition}
