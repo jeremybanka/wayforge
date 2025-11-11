@@ -27,7 +27,7 @@
 		"klaxon": "./bin/klaxon.bin.js"
 	},
 	"dependencies": {
-		"arktype": "2.1.25",
+		"arktype": "2.1.26",
 		"@t3-oss/env-core": "0.13.8",
 		"atom.io": "workspace:*",
 		"comline": "workspace:*",
