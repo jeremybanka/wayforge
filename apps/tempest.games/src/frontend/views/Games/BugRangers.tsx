@@ -2,7 +2,7 @@ import { animated, useSpring } from "@react-spring/three"
 import * as Drei from "@react-three/drei"
 import { Canvas, ThreeEvent, useFrame, useThree } from "@react-three/fiber"
 import { atom, setState } from "atom.io"
-import { useI, useO } from "atom.io/react"
+import { useAtomicRef, useI, useO } from "atom.io/react"
 import type { ReactNode } from "react"
 import { useEffect, useRef, useState } from "react"
 import * as THREE from "three"
@@ -270,8 +270,14 @@ export const probeStateAtom = atom<ProbeState>({
 	default: `idle`,
 })
 
+const cameraAnchoredSphereAtom = atom<THREE.Mesh | null>({
+	key: `cameraAnchoredSphere`,
+	default: null,
+})
+
 function CameraAnchoredSphere() {
-	const ref = useRef<THREE.Mesh>(null!)
+	// const ref = useRef<THREE.Mesh>(null!)
+	const ref = useAtomicRef(cameraAnchoredSphereAtom, useRef)
 	const { camera } = useThree()
 	const setControlsEnabled = useI(controlsEnabledAtom)
 
@@ -287,8 +293,8 @@ function CameraAnchoredSphere() {
 
 	useFrame(() => {
 		// Position relative to camera (in camera space)
-		ref.current.position.set(0.3, -0.3, -1.2) // right, down, forward from camera
-		ref.current.quaternion.copy(camera.quaternion)
+		ref.current?.position.set(0.3, -0.3, -1.2) // right, down, forward from camera
+		ref.current?.quaternion.copy(camera.quaternion)
 	})
 
 	return (
