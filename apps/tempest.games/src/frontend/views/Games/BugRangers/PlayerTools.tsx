@@ -7,7 +7,7 @@ import * as THREE from "three"
 
 import { CubeToken } from "./CubeToken"
 import { HexTile } from "./HexTile"
-import type { TileCubeCount } from "./store"
+import type { StackHeight, TileCubeCount } from "./store"
 import {
 	cameraAnchoredSphereAtom,
 	closestOwnedTileSelector,
@@ -17,6 +17,7 @@ import {
 	dragStateAtom,
 	gameTilesAtom,
 	gameTilesStackHeightAtoms,
+	maximumStackHeightSelectors,
 	tileCubeCountAtoms,
 	turnInProgressAtom,
 } from "./store"
@@ -75,18 +76,20 @@ function PlayableHex(): ReactNode {
 				break
 			case `build`:
 				{
+					const maximumStackHeight = getState(
+						maximumStackHeightSelectors,
+						[turnInProgress.target, ``], // ❗ use real user key here
+					)
+					if (maximumStackHeight === 0) return
+					const stackHeight = getState(
+						gameTilesStackHeightAtoms,
+						turnInProgress.target,
+					)
+					if (stackHeight >= maximumStackHeight) return
 					setState(
 						gameTilesStackHeightAtoms,
 						turnInProgress.target,
-						(stackHeight) => {
-							switch (stackHeight) {
-								case 1:
-									return 2
-								case 2:
-								case 3:
-									return 3
-							}
-						},
+						(stackHeight + 1) as StackHeight,
 					)
 				}
 				break
