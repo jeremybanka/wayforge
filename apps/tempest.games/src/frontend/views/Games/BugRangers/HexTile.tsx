@@ -8,7 +8,7 @@ import type { ReactNode } from "react"
 import { useMemo, useState } from "react"
 import * as THREE from "three"
 
-import { cameraTargetAtom } from "./BugRangers"
+import { cameraTargetAtom } from "../BugRangers/store"
 /// <reference types="@react-three/fiber" />
 
 /**

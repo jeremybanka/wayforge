@@ -1,20 +1,21 @@
 import { useSpring } from "@react-spring/three"
 import * as Drei from "@react-three/drei"
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
-import { atom, getState, setState } from "atom.io"
+import { getState, setState } from "atom.io"
 import { useAtomicRef, useI, useO } from "atom.io/react"
 import type { ReactNode } from "react"
 import { useRef } from "react"
 import * as THREE from "three"
 import type * as STD from "three-stdlib"
 
-import { HexGridHelper } from "./HexGridHelper"
-import { GameTiles, PlayableZones } from "./HexTile"
-
-const controlsEnabledAtom = atom<boolean>({
-	key: `controlsEnabled`,
-	default: true,
-})
+import { HexGridHelper } from "./BugRangers/HexGridHelper"
+import { GameTiles, PlayableZones } from "./BugRangers/HexTile"
+import {
+	cameraAnchoredSphereAtom,
+	cameraTargetAtom,
+	controlsEnabledAtom,
+	probeStateAtom,
+} from "./BugRangers/store"
 
 function CameraController({ target }: { target: number[] }) {
 	const controls = useRef<STD.OrbitControls>(null)
@@ -43,12 +44,7 @@ function CameraController({ target }: { target: number[] }) {
 	)
 }
 
-export const cameraTargetAtom = atom<[x: number, y: number, z: number]>({
-	key: `cameraTarget`,
-	default: [0, 0, 0],
-})
-
-export default function Scene(): ReactNode {
+export function BugRangers(): ReactNode {
 	const cameraTarget = useO(cameraTargetAtom)
 	useSpring({
 		animatedCam: cameraTarget,
@@ -80,18 +76,6 @@ export default function Scene(): ReactNode {
 		</Canvas>
 	)
 }
-
-type ProbeState = `dragging` | `idle` | `returning`
-
-const probeStateAtom = atom<ProbeState>({
-	key: `probeState`,
-	default: `idle`,
-})
-
-const cameraAnchoredSphereAtom = atom<THREE.Mesh | null>({
-	key: `cameraAnchoredSphere`,
-	default: null,
-})
 
 const forward = new THREE.Vector3()
 const right = new THREE.Vector3()
