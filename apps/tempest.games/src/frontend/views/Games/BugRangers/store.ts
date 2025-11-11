@@ -142,8 +142,9 @@ export const playableZonesAtom = selector<TileCoordinatesSerialized[]>({
 	},
 })
 
+export type StackHeight = 1 | 2 | 3
 export const gameTilesStackHeightAtoms = atomFamily<
-	1 | 2 | 3,
+	StackHeight,
 	TileCoordinatesSerialized
 >({
 	key: `gameTilesStackHeight`,
@@ -199,4 +200,33 @@ export const tileCubeCountAtoms = atomFamily<
 >({
 	key: `tileCubeCount`,
 	default: 1,
+})
+
+export type TurnActionType = `arm` | `build` | `war`
+export type BuildAction = {
+	type: `build`
+	target: TileCoordinatesSerialized
+	count: TileCubeCount
+}
+export type ArmAction = {
+	type: `arm`
+	targets: [TileCoordinatesSerialized, TileCoordinatesSerialized]
+}
+export type ArmActionInProgress = {
+	type: `arm`
+	targets:
+		| []
+		| [TileCoordinatesSerialized, TileCoordinatesSerialized]
+		| [TileCoordinatesSerialized]
+}
+export type WarAction = {
+	type: `war`
+	path: TileCoordinatesSerialized[]
+	counts: number[]
+}
+export type TurnAction = ArmAction | BuildAction | WarAction
+export type TurnActionInProgress = ArmActionInProgress | BuildAction
+export const turnInProgressAtom = atom<TurnActionInProgress | null>({
+	key: `turnInProgress`,
+	default: null,
 })
