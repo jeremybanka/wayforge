@@ -276,3 +276,31 @@ export const turnInProgressAtom = atom<TurnActionInProgress | null>({
 	key: `turnInProgress`,
 	default: null,
 })
+
+export const maximumStackHeightSelectors = selectorFamily<
+	StackHeight | 0,
+	[tile: TileCoordinatesSerialized, userKey: string]
+>({
+	key: `maximumStackHeight`,
+	get:
+		([coordinatesSerialized, userKey]) =>
+		({ get }) => {
+			const isOwned = get(tileOwnerAtoms, coordinatesSerialized) === userKey
+			if (!isOwned) return 0
+			const adjacentTiles = get(adjacentTilesSelector, coordinatesSerialized)
+			const ownedAdjacentTiles = adjacentTiles.filter(
+				(adjacentTile) => get(tileOwnerAtoms, adjacentTile) === userKey,
+			)
+			let tallestOwnedAdjacentStackHeight: StackHeight | 0 = 0
+			for (const adjacentTile of ownedAdjacentTiles) {
+				const adjacentStackHeight = get(gameTilesStackHeightAtoms, adjacentTile)
+				if (adjacentStackHeight >= 2) {
+					return 3
+				}
+				if (adjacentStackHeight > tallestOwnedAdjacentStackHeight) {
+					tallestOwnedAdjacentStackHeight = adjacentStackHeight
+				}
+			}
+			return (tallestOwnedAdjacentStackHeight + 1) as StackHeight
+		},
+})
