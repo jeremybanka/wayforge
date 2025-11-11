@@ -100,6 +100,10 @@ export const playableZonesAtom = selector<TileCoordinatesSerialized[]>({
 			playableZones.add(`${x + 2}_${y - 1}_${z - 1}`)
 			playableZones.add(`${x - 2}_${y + 1}_${z + 1}`)
 		}
+		for (const tileCoordinates of tiles) {
+			playableZones.delete(tileCoordinates)
+		}
+
 		return Array.from(playableZones)
 	},
 })
