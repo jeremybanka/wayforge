@@ -144,7 +144,7 @@ export function GameTile({
 				// <CubeToken position={new THREE.Vector3(x, height + 0.25, z)} />
 				<CubeTokenStack
 					position={new THREE.Vector3(x, height + 0.25, z)}
-					count={9}
+					count={tileCubeCount}
 				/>
 			) : null}
 			<HexTile
