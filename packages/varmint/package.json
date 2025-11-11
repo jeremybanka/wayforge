@@ -39,7 +39,7 @@
 		"postversion": "biome format --write package.json"
 	},
 	"dependencies": {
-		"arktype": "2.1.25",
+		"arktype": "2.1.26",
 		"cachedir": "2.4.0",
 		"comline": "workspace:*",
 		"diff": "8.0.2",
