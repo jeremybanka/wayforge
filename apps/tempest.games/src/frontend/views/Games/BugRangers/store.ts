@@ -1,5 +1,6 @@
-import { atom } from "atom.io"
-import type * as THREE from "three"
+import { atom, atomFamily, mutableAtom, selector, selectorFamily } from "atom.io"
+import { UList } from "atom.io/transceivers/u-list"
+import * as THREE from "three"
 
 export const cameraTargetAtom = atom<[x: number, y: number, z: number]>({
 	key: `cameraTarget`,
@@ -22,3 +23,109 @@ export const cameraAnchoredSphereAtom = atom<THREE.Mesh | null>({
 	key: `cameraAnchoredSphere`,
 	default: null,
 })
+
+export const dragpointAtom = atom<THREE.Vector3 | null>({
+	key: `dragpoint`,
+	default: null,
+})
+
+export type TileCoordinates = [x: number, y: number, z: number]
+export type TileCoordinatesSerialized = `${number}_${number}_${number}`
+export function serializeTileCoordinates(
+	coordinates: TileCoordinates,
+): TileCoordinatesSerialized {
+	return `${coordinates[0]}_${coordinates[1]}_${coordinates[2]}`
+}
+
+export function deserializeTileCoordinates(
+	serialized: TileCoordinatesSerialized,
+): TileCoordinates {
+	return serialized.split(`_`).map(Number) as TileCoordinates
+}
+
+export const gameTilesAtom = mutableAtom<UList<TileCoordinatesSerialized>>({
+	key: `gameTiles`,
+	class: UList,
+})
+export const tile3dPositionSelectors = selectorFamily<
+	THREE.Vector3,
+	TileCoordinatesSerialized
+>({
+	key: `tile3dPosition`,
+	get: (coordinatesSerialized) => () => {
+		const [boardA, boardB, boardC] = deserializeTileCoordinates(
+			coordinatesSerialized,
+		)
+
+		const unit = Math.sqrt(3)
+		const a60 = Math.PI / 3
+		const a120 = a60 * 2
+		const sin60 = Math.sin(a60)
+		const cos60 = Math.cos(a60)
+		const sin120 = Math.sin(a120)
+		const cos120 = Math.cos(a120)
+
+		const uA = unit * boardA
+		const uB = unit * boardB
+		const uC = unit * boardC
+
+		const sin60UA = uA * sin60
+		const cos60UA = uA * cos60
+
+		const sin120UB = uB * sin120
+		const cos120UB = uB * cos120
+
+		const x = sin60UA + sin120UB
+		const z = cos60UA + cos120UB + uC
+
+		return new THREE.Vector3(x, 0, z)
+	},
+})
+
+export const playableZonesAtom = selector<TileCoordinatesSerialized[]>({
+	key: `playableZone`,
+	get: ({ get }) => {
+		const tiles = get(gameTilesAtom)
+		if (tiles.size === 0) return [`0_0_0`]
+		const playableZones = new Set<TileCoordinatesSerialized>()
+
+		console.log(`tiles`, tiles)
+
+		for (const tileCoordinates of tiles) {
+			const [x, y, z] = deserializeTileCoordinates(tileCoordinates)
+			playableZones.add(`${x + 1}_${y - 1}_${z}`)
+			playableZones.add(`${x + 1}_${y}_${z - 1}`)
+			playableZones.add(`${x - 1}_${y + 1}_${z}`)
+			playableZones.add(`${x - 1}_${y}_${z + 1}`)
+			playableZones.add(`${x + 2}_${y - 1}_${z - 1}`)
+			playableZones.add(`${x - 2}_${y + 1}_${z + 1}`)
+		}
+		return Array.from(playableZones)
+	},
+})
+
+export const gameTilesStackHeightAtoms = atomFamily<number, TileCoordinates>({
+	key: `gameTilesStackHeight`,
+	default: 0,
+})
+
+export const closestPlayableZoneSelector =
+	selector<TileCoordinatesSerialized | null>({
+		key: `closestPlayableZone`,
+		get: ({ get }) => {
+			const dragpoint = get(dragpointAtom)
+			if (!dragpoint) return null
+
+			let closest: TileCoordinatesSerialized | null = null
+			let closestDistance = Number.POSITIVE_INFINITY
+			for (const tileCoordinates of get(playableZonesAtom)) {
+				const position = get(tile3dPositionSelectors, tileCoordinates)
+				const distance = dragpoint.distanceTo(position)
+				if (distance < closestDistance) {
+					closestDistance = distance
+					closest = tileCoordinates
+				}
+			}
+			return closest
+		},
+	})
