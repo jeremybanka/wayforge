@@ -1,8 +1,7 @@
 import { useSpring } from "@react-spring/three"
 import * as Drei from "@react-three/drei"
-import { Canvas, useFrame, useThree } from "@react-three/fiber"
-import { getState, setState } from "atom.io"
-import { useAtomicRef, useI, useO } from "atom.io/react"
+import { Canvas } from "@react-three/fiber"
+import { useO } from "atom.io/react"
 import type { ReactNode } from "react"
 import { useRef } from "react"
 import * as THREE from "three"
@@ -10,39 +9,8 @@ import type * as STD from "three-stdlib"
 
 import { HexGridHelper } from "./BugRangers/HexGridHelper"
 import { GameTiles, PlayableZones } from "./BugRangers/HexTile"
-import {
-	cameraAnchoredSphereAtom,
-	cameraTargetAtom,
-	controlsEnabledAtom,
-	probeStateAtom,
-} from "./BugRangers/store"
-
-function CameraController({ target }: { target: number[] }) {
-	const controls = useRef<STD.OrbitControls>(null)
-	const controlsEnabled = useO(controlsEnabledAtom)
-
-	useSpring({
-		animatedTarget: target,
-		config: { mass: 1, tension: 170, friction: 26 },
-		onChange: ({ value }) => {
-			controls.current?.target.lerp(
-				new THREE.Vector3(...value[`animatedTarget`]),
-				0.2,
-			)
-			controls.current?.update()
-		},
-	})
-	console.log(`controlsEnabled`, controlsEnabled)
-
-	return (
-		<Drei.OrbitControls
-			ref={controls}
-			enableDamping
-			dampingFactor={0.05}
-			enabled={controlsEnabled}
-		/>
-	)
-}
+import { PlayerTools } from "./BugRangers/PlayerProps"
+import { cameraTargetAtom, controlsEnabledAtom } from "./BugRangers/store"
 
 export function BugRangers(): ReactNode {
 	const cameraTarget = useO(cameraTargetAtom)
@@ -72,75 +40,34 @@ export function BugRangers(): ReactNode {
 			<GameTiles />
 			<PlayableZones />
 
-			<CameraAnchoredSphere />
+			<PlayerTools />
 		</Canvas>
 	)
 }
 
-const forward = new THREE.Vector3()
-const right = new THREE.Vector3()
-const upWorld = new THREE.Vector3(0, 1, 0)
-const upCam = new THREE.Vector3()
-const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
+function CameraController({ target }: { target: number[] }) {
+	const controls = useRef<STD.OrbitControls>(null)
+	const controlsEnabled = useO(controlsEnabledAtom)
 
-const distForward = 10
-const offsetRight = -2
-const offsetUp = 1
-const hitPoint = new THREE.Vector3()
-
-function CameraAnchoredSphere() {
-	// const ref = useRef<THREE.Mesh>(null!)
-	const ref = useAtomicRef(cameraAnchoredSphereAtom, useRef)
-	const { camera, raycaster, pointer } = useThree()
-	const setControlsEnabled = useI(controlsEnabledAtom)
-
-	const startDrag = () => {
-		setControlsEnabled(false)
-		setState(probeStateAtom, `dragging`)
-	}
-
-	const endDrag = () => {
-		setControlsEnabled(true)
-		setState(probeStateAtom, `returning`)
-	}
-
-	useFrame(() => {
-		if (!ref.current) return
-		const probeState = getState(probeStateAtom)
-
-		switch (probeState) {
-			case `idle`:
-			case `returning`:
-				// Forward vector
-				camera.getWorldDirection(forward) // normalized
-
-				// Right vector (forward × worldUp)
-				right.copy(forward).cross(upWorld).normalize()
-
-				// Camera-up vector (right × forward)
-				upCam.copy(right).cross(forward).normalize()
-
-				// Move the sphere
-				ref.current.position.copy(
-					camera.position
-						.clone()
-						.add(forward.multiplyScalar(distForward))
-						.add(right.multiplyScalar(offsetRight))
-						.add(upCam.multiplyScalar(-offsetUp)),
-				)
-				break
-			case `dragging`:
-				raycaster.setFromCamera(pointer, camera)
-				if (raycaster.ray.intersectPlane(plane, hitPoint)) {
-					ref.current.position.copy(hitPoint.clone())
-				}
-		}
+	useSpring({
+		animatedTarget: target,
+		config: { mass: 1, tension: 170, friction: 26 },
+		onChange: ({ value }) => {
+			controls.current?.target.lerp(
+				new THREE.Vector3(...value[`animatedTarget`]),
+				0.2,
+			)
+			controls.current?.update()
+		},
 	})
+	console.log(`controlsEnabled`, controlsEnabled)
 
 	return (
-		<mesh onPointerDown={startDrag} onPointerUp={endDrag} ref={ref}>
-			<sphereGeometry args={[1, 32, 32]} />
-			<meshToonMaterial color="red" />
-		</mesh>
+		<Drei.OrbitControls
+			ref={controls}
+			enableDamping
+			dampingFactor={0.05}
+			enabled={controlsEnabled}
+		/>
 	)
 }
