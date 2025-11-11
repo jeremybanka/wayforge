@@ -8,7 +8,7 @@ import * as React from "react"
 import { countAtom, countContinuity, incrementTX } from "../../library/store"
 import { Anchor } from "../Anchor"
 import { type Route, ROUTES } from "../services/router-service"
-import Scene from "./Games/BugRangers"
+import { BugRangers } from "./Games/BugRangers"
 
 export type Tail<T extends any[]> = T extends [any, ...infer Rest] ? Rest : never
 
@@ -50,9 +50,6 @@ export function Game({ gameId }: GameProps): React.ReactNode {
 	}
 }
 
-export function BugRangers(): React.ReactNode {
-	return <Scene />
-}
 export function Clicker(): React.ReactNode {
 	const count = useO(countAtom)
 	const increment = runTransaction(incrementTX)
