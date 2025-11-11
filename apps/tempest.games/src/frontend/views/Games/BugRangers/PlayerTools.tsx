@@ -10,6 +10,7 @@ import { HexTile } from "./HexTile"
 import type { TileCubeCount } from "./store"
 import {
 	cameraAnchoredSphereAtom,
+	closestOwnedTileSelector,
 	closestPlayableZoneSelector,
 	controlsEnabledAtom,
 	dragpointAtom,
@@ -144,14 +145,45 @@ function PlayableCube(): ReactNode {
 	const endDrag = () => {
 		setControlsEnabled(true)
 		setState(dragStateAtom, null)
-		const closestPlayableZone = getState(closestPlayableZoneSelector)
-		setState(dragpointAtom, null)
-		if (closestPlayableZone) {
-			setState(
-				tileCubeCountAtoms,
-				closestPlayableZone,
-				(current) => (current + 1) as TileCubeCount,
-			)
+		const turnInProgress = getState(turnInProgressAtom)
+		switch (turnInProgress?.type) {
+			case null:
+			case undefined:
+				{
+					const closestOwnedTile = getState(closestOwnedTileSelector, ``) // ❗ use real user key here
+					if (closestOwnedTile) {
+						setState(turnInProgressAtom, {
+							type: `arm`,
+							targets: [closestOwnedTile],
+						})
+						setState(
+							tileCubeCountAtoms,
+							closestOwnedTile,
+							(current) => (current + 1) as TileCubeCount,
+						)
+					}
+				}
+				break
+			case `arm`:
+				{
+					const closestOwnedTile = getState(closestOwnedTileSelector, ``) // ❗ use real user key here
+					if (closestOwnedTile) {
+						setState(
+							tileCubeCountAtoms,
+							closestOwnedTile,
+							(current) => (current + 1) as TileCubeCount,
+						)
+					}
+				}
+				break
+			case `build`:
+				setState(
+					tileCubeCountAtoms,
+					turnInProgress.target,
+					(current) => (current + 1) as TileCubeCount,
+				)
+				setState(turnInProgressAtom, null)
+				break
 		}
 	}
 

@@ -240,7 +240,7 @@ export const tileCubeCountAtoms = atomFamily<
 	TileCoordinatesSerialized
 >({
 	key: `tileCubeCount`,
-	default: 1,
+	default: 0,
 })
 
 export const tileOwnerAtoms = atomFamily<string, TileCoordinatesSerialized>({
