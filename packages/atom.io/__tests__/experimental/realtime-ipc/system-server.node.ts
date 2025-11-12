@@ -2,14 +2,11 @@ import path from "node:path"
 
 import type { Silo } from "atom.io"
 import {
-	actUponStore,
-	arbitrary,
 	findInStore,
 	findRelationsInStore,
 	getFromStore,
 	getInternalRelationsFromStore,
 } from "atom.io/internal"
-import type { Json } from "atom.io/json"
 import * as RT from "atom.io/realtime"
 import * as RTS from "atom.io/realtime-server"
 import type * as SocketIO from "socket.io"
@@ -61,51 +58,20 @@ export const SystemServer = ({
 
 	socket.on(`join-room`, (roomId) => {
 		console.info(`[${shortId}]:${username}`, `joining room "${roomId}"`)
-		const roomQueue: [string, ...Json.Array][] = []
-		const pushToRoomQueue = (payload: [string, ...Json.Array]): void => {
-			roomQueue.push(payload)
-		}
-		let toRoom = pushToRoomQueue
-		const forward = (...payload: [string, ...Json.Array]) => {
-			toRoom(payload)
-		}
-		socket.onAny(forward)
 
-		RTS.joinRoom(roomId, username, store)
-
-		const roomSocket = RTS.ROOMS.get(roomId)!
-		roomSocket.onAny((...payload) => socket.emit(...payload))
-		roomSocket.emit(`user-joins`, username)
-
-		toRoom = (payload) => {
-			roomSocket.emit(`user::${username}`, ...payload)
-		}
-		while (roomQueue.length > 0) {
-			const payload = roomQueue.shift()
-			if (payload) toRoom(payload)
-		}
+		const { leave, roomSocket } = RTS.joinRoom(roomId, username, socket, store)
 
 		roomSocket.on(`close`, (code) => {
 			console.info(`[${shortId}]:${username}`, `room "${roomId}" closing`)
 			socket.emit(`room-close`, roomId, code)
 			RTS.destroyRoom(roomId, store)
 		})
-		const leave = () => {
-			console.log(`🥋 LEAVE ROOM RECEIVED`)
-			socket.off(`leave-room`, leave)
-			socket.offAny(forward)
-			// roomSocket.dispose() IMPLEMENT ❗
-			toRoom([`user-leaves`])
-			// actUponStore(store, RTS.leaveRoomTX, arbitrary())(roomId, username)
-			RTS.leaveRoom(roomId, username, store)
-		}
 
-		socket.on(`leave-room`, leave)
+		socket.once(`leave-room`, leave)
 	})
 
-	const handleDisconnect = () => {
+	socket.once(`disconnect`, () => {
 		console.log(`🥋 DISCONNECT RECEIVED`)
-		socket.off(`disconnect`, handleDisconnect)
 		const roomKeyState = findRelationsInStore(
 			RT.usersInRooms,
 			username,
@@ -117,8 +83,7 @@ export const SystemServer = ({
 		}
 		const roomSocket = RTS.ROOMS.get(roomKey)!
 		roomSocket?.emit(`leave-room`, username)
-		actUponStore(store, RTS.leaveRoomTX, arbitrary())(`*`, username)
+		RTS.leaveRoom(`*`, username, store)
 		console.info(`[${shortId}]:${username}`, `disconnected`)
-	}
-	socket.on(`disconnect`, handleDisconnect)
+	})
 }

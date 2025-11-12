@@ -1,15 +1,13 @@
 import type { ChildProcessWithoutNullStreams } from "node:child_process"
 import { spawn } from "node:child_process"
 
-import type { TransactionIO, TransactionToken } from "atom.io"
-import { setState, transaction } from "atom.io"
 import type { Store } from "atom.io/internal"
 import { editRelationsInStore, setIntoStore } from "atom.io/internal"
-import type { UserInRoomMeta } from "atom.io/realtime"
+import type { Json } from "atom.io/json"
+import type { Socket } from "atom.io/realtime"
 import { roomIndex, usersInRooms } from "atom.io/realtime"
 
 import { ChildSocket } from "../ipc-sockets"
-import type { RoomKey } from "./server-user-store"
 
 export const ROOMS: Map<
 	string,
@@ -36,10 +34,32 @@ export async function spawnRoom(
 	ROOMS.set(roomId, childSocket)
 	setIntoStore(store, roomIndex, (index) => (index.add(roomId), index))
 
+	childSocket.on(`close`, (code) => {
+		destroyRoom(roomId, store)
+	})
+
 	return childSocket
 }
 
-export function joinRoom(roomId: string, userId: string, store: Store): void {
+export function joinRoom(
+	roomId: string,
+	userId: string,
+	socket: Socket,
+	store: Store,
+): {
+	leave: () => void
+	roomSocket: ChildSocket<any, any, ChildProcessWithoutNullStreams>
+} {
+	const roomQueue: [string, ...Json.Array][] = []
+	const pushToRoomQueue = (payload: [string, ...Json.Array]): void => {
+		roomQueue.push(payload)
+	}
+	let toRoom = pushToRoomQueue
+	const forward = (...payload: [string, ...Json.Array]) => {
+		toRoom(payload)
+	}
+	socket.onAny(forward)
+
 	editRelationsInStore(
 		usersInRooms,
 		(relations) => {
@@ -47,6 +67,28 @@ export function joinRoom(roomId: string, userId: string, store: Store): void {
 		},
 		store,
 	)
+	const roomSocket = ROOMS.get(roomId)!
+	roomSocket.onAny((...payload) => {
+		socket.emit(...payload)
+	})
+	roomSocket.emit(`user-joins`, userId)
+
+	toRoom = (payload) => {
+		roomSocket.emit(`user::${userId}`, ...payload)
+	}
+	while (roomQueue.length > 0) {
+		const payload = roomQueue.shift()
+		if (payload) toRoom(payload)
+	}
+
+	const leave = () => {
+		socket.offAny(forward)
+		// roomSocket.dispose() IMPLEMENT ❗
+		toRoom([`user-leaves`])
+		leaveRoom(roomId, userId, store)
+	}
+
+	return { leave, roomSocket }
 }
 
 export function leaveRoom(roomId: string, userId: string, store: Store): void {
@@ -59,26 +101,6 @@ export function leaveRoom(roomId: string, userId: string, store: Store): void {
 	)
 }
 
-export const destroyRoomTX: TransactionToken<(roomKey: RoomKey) => void> =
-	transaction({
-		key: `destroyRoom`,
-		do: ({ set, env }, roomId) => {
-			editRelationsInStore(
-				usersInRooms,
-				(relations) => {
-					relations.delete({ room: roomId })
-				},
-				env().store,
-			)
-			set(roomIndex, (s) => (s.delete(roomId), s))
-			const room = ROOMS.get(roomId)
-			if (room) {
-				room.emit(`exit`)
-				ROOMS.delete(roomId)
-			}
-		},
-	})
-
 export function destroyRoom(roomId: string, store: Store): void {
 	editRelationsInStore(
 		usersInRooms,
@@ -87,7 +109,7 @@ export function destroyRoom(roomId: string, store: Store): void {
 		},
 		store,
 	)
-	setState(roomIndex, (s) => (s.delete(roomId), s))
+	setIntoStore(store, roomIndex, (s) => (s.delete(roomId), s))
 	const room = ROOMS.get(roomId)
 	if (room) {
 		room.emit(`exit`)
