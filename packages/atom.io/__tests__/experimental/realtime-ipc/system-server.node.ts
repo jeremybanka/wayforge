@@ -8,7 +8,6 @@ import {
 	findRelationsInStore,
 	getFromStore,
 	getInternalRelationsFromStore,
-	setIntoStore,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import * as RT from "atom.io/realtime"
@@ -47,15 +46,17 @@ export const SystemServer = ({
 	)
 
 	socket.on(`create-room`, async (roomId) => {
-		await RTS.spawnRoom(roomId, `bun`, [
-			path.join(__dirname, `game-instance.bun.ts`),
-		])
-		setIntoStore(store, RT.roomIndex, (index) => (index.add(roomId), index))
+		await RTS.spawnRoom(
+			roomId,
+			`bun`,
+			[path.join(__dirname, `game-instance.bun.ts`)],
+			store,
+		)
 	})
 
 	socket.on(`delete-room`, (roomId) => {
 		console.info(`[${shortId}]:${username}`, `deleting room "${roomId}"`)
-		actUponStore(store, RTS.destroyRoomTX, arbitrary())(roomId)
+		RTS.destroyRoom(roomId, store)
 	})
 
 	socket.on(`join-room`, (roomId) => {
@@ -70,7 +71,7 @@ export const SystemServer = ({
 		}
 		socket.onAny(forward)
 
-		actUponStore(store, RTS.joinRoomTX, arbitrary())(roomId, username, 0)
+		RTS.joinRoom(roomId, username, store)
 
 		const roomSocket = RTS.ROOMS.get(roomId)!
 		roomSocket.onAny((...payload) => socket.emit(...payload))
@@ -87,18 +88,19 @@ export const SystemServer = ({
 		roomSocket.on(`close`, (code) => {
 			console.info(`[${shortId}]:${username}`, `room "${roomId}" closing`)
 			socket.emit(`room-close`, roomId, code)
-			actUponStore(store, RTS.destroyRoomTX, arbitrary())(roomId)
+			RTS.destroyRoom(roomId, store)
 		})
-		const leaveRoom = () => {
+		const leave = () => {
 			console.log(`🥋 LEAVE ROOM RECEIVED`)
-			socket.off(`leave-room`, leaveRoom)
+			socket.off(`leave-room`, leave)
 			socket.offAny(forward)
 			// roomSocket.dispose() IMPLEMENT ❗
 			toRoom([`user-leaves`])
-			actUponStore(store, RTS.leaveRoomTX, arbitrary())(roomId, username)
+			// actUponStore(store, RTS.leaveRoomTX, arbitrary())(roomId, username)
+			RTS.leaveRoom(roomId, username, store)
 		}
 
-		socket.on(`leave-room`, leaveRoom)
+		socket.on(`leave-room`, leave)
 	})
 
 	const handleDisconnect = () => {

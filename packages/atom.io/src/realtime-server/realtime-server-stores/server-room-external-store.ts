@@ -2,8 +2,9 @@ import type { ChildProcessWithoutNullStreams } from "node:child_process"
 import { spawn } from "node:child_process"
 
 import type { TransactionIO, TransactionToken } from "atom.io"
-import { transaction } from "atom.io"
-import { editRelationsInStore } from "atom.io/internal"
+import { setState, transaction } from "atom.io"
+import type { Store } from "atom.io/internal"
+import { editRelationsInStore, setIntoStore } from "atom.io/internal"
 import type { UserInRoomMeta } from "atom.io/realtime"
 import { roomIndex, usersInRooms } from "atom.io/realtime"
 
@@ -17,11 +18,12 @@ export const ROOMS: Map<
 
 export async function spawnRoom(
 	roomId: string,
-	script: string,
-	options: string[],
+	command: string,
+	args: string[],
+	store: Store,
 ): Promise<ChildSocket<any, any>> {
 	const child = await new Promise<ChildProcessWithoutNullStreams>((resolve) => {
-		const room = spawn(script, options, { env: process.env })
+		const room = spawn(command, args, { env: process.env })
 		const resolver = (data: Buffer) => {
 			if (data.toString() === `ALIVE`) {
 				room.stdout.off(`data`, resolver)
@@ -30,43 +32,32 @@ export async function spawnRoom(
 		}
 		room.stdout.on(`data`, resolver)
 	})
-	ROOMS.set(roomId, new ChildSocket(child, roomId))
-	return new ChildSocket(child, roomId)
+	const childSocket = new ChildSocket(child, roomId)
+	ROOMS.set(roomId, childSocket)
+	setIntoStore(store, roomIndex, (index) => (index.add(roomId), index))
+
+	return childSocket
 }
 
-export const joinRoomTX: TransactionToken<
-	(roomId: string, userId: string, enteredAtEpoch: number) => UserInRoomMeta
-> = transaction({
-	key: `joinRoom`,
-	do: (tools, roomId, userId, enteredAtEpoch) => {
-		const meta = { enteredAtEpoch }
-		editRelationsInStore(
-			usersInRooms,
-			(relations) => {
-				relations.set({ room: roomId, user: userId })
-			},
-			tools.env().store,
-		)
-		return meta
-	},
-})
-export type JoinRoomIO = TransactionIO<typeof joinRoomTX>
+export function joinRoom(roomId: string, userId: string, store: Store): void {
+	editRelationsInStore(
+		usersInRooms,
+		(relations) => {
+			relations.set({ room: roomId, user: userId })
+		},
+		store,
+	)
+}
 
-export const leaveRoomTX: TransactionToken<
-	(roomId: string, userId: string) => void
-> = transaction({
-	key: `leaveRoom`,
-	do: ({ env }, roomId, userId) => {
-		editRelationsInStore(
-			usersInRooms,
-			(relations) => {
-				relations.delete({ room: roomId, user: userId })
-			},
-			env().store,
-		)
-	},
-})
-export type LeaveRoomIO = TransactionIO<typeof leaveRoomTX>
+export function leaveRoom(roomId: string, userId: string, store: Store): void {
+	editRelationsInStore(
+		usersInRooms,
+		(relations) => {
+			relations.delete({ room: roomId, user: userId })
+		},
+		store,
+	)
+}
 
 export const destroyRoomTX: TransactionToken<(roomKey: RoomKey) => void> =
 	transaction({
@@ -87,3 +78,19 @@ export const destroyRoomTX: TransactionToken<(roomKey: RoomKey) => void> =
 			}
 		},
 	})
+
+export function destroyRoom(roomId: string, store: Store): void {
+	editRelationsInStore(
+		usersInRooms,
+		(relations) => {
+			relations.delete({ room: roomId })
+		},
+		store,
+	)
+	setState(roomIndex, (s) => (s.delete(roomId), s))
+	const room = ROOMS.get(roomId)
+	if (room) {
+		room.emit(`exit`)
+		ROOMS.delete(roomId)
+	}
+}
