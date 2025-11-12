@@ -14,10 +14,8 @@ const config: UserConfig = defineConfig({
 		`src/number/index.ts`,
 		`src/object/index.ts`,
 		`src/primitive/index.ts`,
-		`src/reactivity/index.ts`,
 		`src/refinement/index.ts`,
 		`src/string/index.ts`,
-		`src/tree/index.ts`,
 	],
 
 	clean: true,
