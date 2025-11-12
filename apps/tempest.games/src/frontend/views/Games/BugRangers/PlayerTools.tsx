@@ -169,8 +169,13 @@ function PlayableCube(): ReactNode {
 				break
 			case `arm`:
 				{
+					if (turnInProgress.targets.length >= 2) return
 					const closestOwnedTile = getState(closestOwnedTileSelector, ``) // ❗ use real user key here
 					if (closestOwnedTile) {
+						setState(turnInProgressAtom, {
+							type: `arm`,
+							targets: [turnInProgress.targets[0]!, closestOwnedTile],
+						})
 						setState(
 							tileCubeCountAtoms,
 							closestOwnedTile,
