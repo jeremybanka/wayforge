@@ -30,15 +30,15 @@ export async function spawnRoom(
 		}
 		room.stdout.on(`data`, resolver)
 	})
-	const childSocket = new ChildSocket(child, roomId)
-	ROOMS.set(roomId, childSocket)
+	const roomSocket = new ChildSocket(child, roomId)
+	ROOMS.set(roomId, roomSocket)
 	setIntoStore(store, roomIndex, (index) => (index.add(roomId), index))
 
-	childSocket.on(`close`, (code) => {
+	roomSocket.on(`close`, () => {
 		destroyRoom(roomId, store)
 	})
 
-	return childSocket
+	return roomSocket
 }
 
 export function joinRoom(
@@ -83,7 +83,6 @@ export function joinRoom(
 
 	const leave = () => {
 		socket.offAny(forward)
-		// roomSocket.dispose() IMPLEMENT ❗
 		toRoom([`user-leaves`])
 		leaveRoom(roomId, userId, store)
 	}
