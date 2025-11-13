@@ -1,5 +1,11 @@
 # @atom.io/template-react-node-backend
 
+## 0.0.6
+
+### Patch Changes
+
+- 757da1f: 🐛 Fixed logic error where only the first todo item would be deleted.
+
 ## 0.0.5
 
 ### Patch Changes
