@@ -57,7 +57,7 @@ export const SystemServer = ({
 	socket.on(`join-room`, (roomId) => {
 		console.info(`[${shortId}]:${username}`, `joining room "${roomId}"`)
 
-		const { leave } = RTS.joinRoom(roomId, username, socket, store)
+		const { leave } = RTS.joinRoom(roomId, username, socket, store)!
 
 		socket.once(`leave-room`, leave)
 	})
