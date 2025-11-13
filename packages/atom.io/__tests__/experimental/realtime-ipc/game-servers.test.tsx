@@ -7,10 +7,10 @@ import { DatabaseManager } from "./database.node"
 import { SystemServer } from "./system-server.node"
 
 /* ❗❗❗ turn off the lights when you're done ❗❗❗ */
-console.info = () => undefined
-console.log = () => undefined
-console.warn = () => undefined
-console.error = () => undefined
+// console.info = () => undefined
+// console.log = () => undefined
+// console.warn = () => undefined
+// console.error = () => undefined
 const dbManager = new DatabaseManager()
 
 beforeAll(async () => {
