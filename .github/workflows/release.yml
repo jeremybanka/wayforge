@@ -2,8 +2,7 @@ name: Release
 
 on:
   push:
-    branches:
-      - main
+    branches: ["main"]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -18,35 +17,11 @@ jobs:
   Release:
     runs-on: ubuntu-latest
     timeout-minutes: 9
-    env:
-      NEXT_PUBLIC_REMOTE_ORIGIN: ${{ secrets.NEXT_PUBLIC_REMOTE_ORIGIN }}
-
     steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v5.0.0
-        with:
-          fetch-depth: 2
-
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v4.2.0
-
-      - name: Set up Node
-        uses: actions/setup-node@v6.0.0
-        with:
-          node-version-file: .node-version
-          cache: "pnpm"
-
-      - name: Set up Bun
-        uses: oven-sh/setup-bun@v2.0.2
-        with:
-          bun-version-file: .bun-version
-
-      - name: Install Dependencies
-        run: pnpm i
-
-      - name: Create Release Pull Request or Publish to npm
+      - uses: actions/checkout@v5.0.0
+      - uses: ./.github/actions/setup
+      - uses: changesets/action@v1.5.3
         id: changesets
-        uses: changesets/action@v1.5.3
         with:
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
           publish: pnpm release
@@ -54,8 +29,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.CHANGESETS_GITHUB_PAT }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-      - name: Klaxon
+      - name: klaxon
         if: steps.changesets.outputs.hasChangesets == 'false'
         run: |
           bun ./packages/flightdeck/src/klaxon.x.ts \
