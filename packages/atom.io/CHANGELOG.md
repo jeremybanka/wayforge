@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.44.5
+
+### Patch Changes
+
+- a844b25: ✨ `atom.io/realtime-server` updated experimental join/leave/create/delete room functionality to no longer use transactions. `joinRoom` now buffers additional messages until a connection to the room is established.
+
 ## 0.44.4
 
 ### Patch Changes
