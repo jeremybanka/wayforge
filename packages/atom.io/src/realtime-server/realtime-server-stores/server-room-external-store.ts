@@ -49,7 +49,7 @@ export function joinRoom(
 ): {
 	leave: () => void
 	roomSocket: ChildSocket<any, any, ChildProcessWithoutNullStreams>
-} {
+} | null {
 	const roomQueue: [string, ...Json.Array][] = []
 	const pushToRoomQueue = (payload: [string, ...Json.Array]): void => {
 		roomQueue.push(payload)
@@ -67,7 +67,11 @@ export function joinRoom(
 		},
 		store,
 	)
-	const roomSocket = ROOMS.get(roomId)!
+	const roomSocket = ROOMS.get(roomId)
+	if (!roomSocket) {
+		store.logger.error(`❌`, `unknown`, roomId, `no room found with this id`)
+		return null
+	}
 	roomSocket.onAny((...payload) => {
 		socket.emit(...payload)
 	})
