@@ -93,19 +93,19 @@ async function addTodo() {
 	})
 }
 
-async function deleteTodo() {
+async function deleteTodo(todoKey: number) {
 	const todoKeys = await getState(todoKeysAtom)
 	if (Error.isError(todoKeys)) return
-	const todoKey = todoKeys.find((key) => !Error.isError(key))
-	if (todoKey === undefined) return
+	const todoToDelete = todoKeys.find((key) => key === todoKey)
+	if (todoToDelete === undefined) return
 	setState(todoKeysAtom, async (loadable) => {
 		const prev = await loadable
 		if (Error.isError(prev)) return prev
-		return prev.filter((id) => id !== todoKey)
+		return prev.filter((id) => id !== todoToDelete)
 	})
-	disposeState(todoAtoms, todoKey)
+	disposeState(todoAtoms, todoToDelete)
 	const url = new URL(`/todos`, SERVER_URL)
-	url.searchParams.set(`id`, todoKey.toString())
+	url.searchParams.set(`id`, todoToDelete.toString())
 	await fetch(url, {
 		method: `DELETE`,
 		credentials: `include`,
@@ -179,35 +179,41 @@ export function App(): React.JSX.Element {
 function Todo({ todoKey }: { todoKey: number }): React.JSX.Element {
 	const todo = useLoadable(todoAtoms, todoKey, TODO_FALLBACK)
 	const isSuspended = todo.loading || !Number.isInteger(todoKey)
-	const toggle = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
-		const url = new URL(`todos`, SERVER_URL)
-		url.searchParams.set(`id`, todo.value.id.toString())
-		const nowChecked = e.target.checked ? 1 : 0
-		setState(todoAtoms, todoKey, async (loadable) => {
-			const prev = await loadable
-			if (Error.isError(prev)) return prev
-			return { ...prev, done: nowChecked } satisfies Todo
-		})
-		await fetch(url, {
-			method: `PUT`,
-			credentials: `include`,
-			body: nowChecked.toString(),
-		})
-		resetState(todoAtoms, todoKey)
+	const toggleDone = useCallback(
+		async (e: React.ChangeEvent<HTMLInputElement>) => {
+			const url = new URL(`todos`, SERVER_URL)
+			url.searchParams.set(`id`, todo.value.id.toString())
+			const nowChecked = e.target.checked ? 1 : 0
+			setState(todoAtoms, todoKey, async (loadable) => {
+				const prev = await loadable
+				if (Error.isError(prev)) return prev
+				return { ...prev, done: nowChecked } satisfies Todo
+			})
+			await fetch(url, {
+				method: `PUT`,
+				credentials: `include`,
+				body: nowChecked.toString(),
+			})
+			resetState(todoAtoms, todoKey)
+		},
+		[],
+	)
+	const deleteThisTodo = useCallback(async () => {
+		await deleteTodo(todoKey)
 	}, [])
 	return (
 		<div className={cn(`todo`, isSuspended && `loading`)}>
 			<input
 				type="checkbox"
 				checked={Boolean(todo.value.done)}
-				onChange={toggle}
+				onChange={toggleDone}
 				disabled={isSuspended}
 			/>
 			<span>{todo.value.text}</span>
 			<button
 				type="button"
 				className="delete"
-				onClick={deleteTodo}
+				onClick={deleteThisTodo}
 				disabled={isSuspended}
 			/>
 		</div>
