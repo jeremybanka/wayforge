@@ -15,10 +15,10 @@ export const ROOMS: Map<
 > = new Map()
 
 export async function spawnRoom(
+	store: Store,
 	roomId: string,
 	command: string,
 	args: string[],
-	store: Store,
 ): Promise<ChildSocket<any, any>> {
 	const child = await new Promise<ChildProcessWithoutNullStreams>((resolve) => {
 		const room = spawn(command, args, { env: process.env })
@@ -35,17 +35,17 @@ export async function spawnRoom(
 	setIntoStore(store, roomIndex, (index) => (index.add(roomId), index))
 
 	roomSocket.on(`close`, () => {
-		destroyRoom(roomId, store)
+		destroyRoom(store, roomId)
 	})
 
 	return roomSocket
 }
 
 export function joinRoom(
+	store: Store,
 	roomId: string,
 	userId: string,
 	socket: Socket,
-	store: Store,
 ): {
 	leave: () => void
 	roomSocket: ChildSocket<any, any, ChildProcessWithoutNullStreams>
@@ -88,13 +88,13 @@ export function joinRoom(
 	const leave = () => {
 		socket.offAny(forward)
 		toRoom([`user-leaves`])
-		leaveRoom(roomId, userId, store)
+		leaveRoom(store, roomId, userId)
 	}
 
 	return { leave, roomSocket }
 }
 
-export function leaveRoom(roomId: string, userId: string, store: Store): void {
+export function leaveRoom(store: Store, roomId: string, userId: string): void {
 	editRelationsInStore(
 		usersInRooms,
 		(relations) => {
@@ -104,7 +104,7 @@ export function leaveRoom(roomId: string, userId: string, store: Store): void {
 	)
 }
 
-export function destroyRoom(roomId: string, store: Store): void {
+export function destroyRoom(store: Store, roomId: string): void {
 	editRelationsInStore(
 		usersInRooms,
 		(relations) => {

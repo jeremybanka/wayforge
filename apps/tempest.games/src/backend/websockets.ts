@@ -1,3 +1,5 @@
+import { join } from "node:path"
+
 import {
 	editRelationsInStore,
 	findInStore,
@@ -6,10 +8,15 @@ import {
 	IMPLICIT,
 	setIntoStore,
 } from "atom.io/internal"
+import { roomIndex } from "atom.io/realtime"
 import type { SocketKey, UserKey } from "atom.io/realtime-server"
 import {
+	destroyRoom,
+	joinRoom,
+	realtimeMutableProvider,
 	socketAtoms,
 	socketIndex,
+	spawnRoom,
 	userIndex,
 	usersOfSockets,
 } from "atom.io/realtime-server"
@@ -92,11 +99,8 @@ export const sessionMiddleware: SocketServerMiddleware = async (
 }
 
 export const serveSocket = (socket: TempestServerSocket): void => {
-	// const syncContinuity = prepareToExposeRealtimeContinuity({
-	// 	socket,
-	// 	store: IMPLICIT.STORE,
-	// })
-	// const cleanup = syncContinuity(countContinuity)
+	const shortId = socket.id.slice(0, 3)
+	const { username } = socket.handshake.auth
 	const socketKey = `socket::${socket.id}` satisfies SocketKey
 	const userOfSocketSelector = findRelationsInStore(
 		usersOfSockets,
@@ -106,14 +110,33 @@ export const serveSocket = (socket: TempestServerSocket): void => {
 	const userKeyOfSocket = getFromStore(IMPLICIT.STORE, userOfSocketSelector)
 	const rawUserId = userKeyOfSocket?.replace(/^user::/, ``)
 
-	socket.on(`changeUsername`, async (username) => {
-		logger.info(`changing username to`, username)
+	const unsubs = [...[roomIndex].map(realtimeMutableProvider({ socket }))]
+
+	socket.on(`createRoom`, async (roomId) => {
+		logger.info(`[${shortId}]:${username}`, `creating room "${roomId}"`)
+		await spawnRoom(IMPLICIT.STORE, roomId, `bun`, [
+			join(__dirname, `game-instance.bun.ts`),
+		])
+		socket.once(`deleteRoom:${roomId}`, () => {
+			logger.info(`[${shortId}]:${username}`, `deleting room "${roomId}"`)
+			destroyRoom(IMPLICIT.STORE, roomId)
+		})
+	})
+
+	socket.on(`joinRoom`, (roomId) => {
+		logger.info(`[${shortId}]:${username}`, `joining room "${roomId}"`)
+		const { leave } = joinRoom(IMPLICIT.STORE, roomId, username, socket)!
+		socket.once(`leaveRoom:${roomId}`, leave)
+	})
+
+	socket.on(`changeUsername`, async (newUsername) => {
+		logger.info(`changing username to`, newUsername)
 		if (rawUserId) {
 			await db.drizzle
 				.update(users)
-				.set({ username })
+				.set({ username: newUsername })
 				.where(eq(users.id, rawUserId))
-			socket.emit(`usernameChanged`, username)
+			socket.emit(`usernameChanged`, newUsername)
 		}
 	})
 

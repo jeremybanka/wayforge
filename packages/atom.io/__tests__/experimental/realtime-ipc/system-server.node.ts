@@ -41,23 +41,20 @@ export const SystemServer = ({
 
 	socket.on(`create-room`, async (roomId) => {
 		console.info(`[${shortId}]:${username}`, `creating room "${roomId}"`)
-		await RTS.spawnRoom(
-			roomId,
-			`bun`,
-			[path.join(__dirname, `game-instance.bun.ts`)],
-			store,
-		)
+		await RTS.spawnRoom(store, roomId, `bun`, [
+			path.join(__dirname, `game-instance.bun.ts`),
+		])
 	})
 
 	socket.on(`delete-room`, (roomId) => {
 		console.info(`[${shortId}]:${username}`, `deleting room "${roomId}"`)
-		RTS.destroyRoom(roomId, store)
+		RTS.destroyRoom(store, roomId)
 	})
 
 	socket.on(`join-room`, (roomId) => {
 		console.info(`[${shortId}]:${username}`, `joining room "${roomId}"`)
 
-		const { leave } = RTS.joinRoom(roomId, username, socket, store)!
+		const { leave } = RTS.joinRoom(store, roomId, username, socket)!
 
 		socket.once(`leave-room`, leave)
 	})
