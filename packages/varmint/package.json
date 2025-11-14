@@ -51,7 +51,7 @@
 		"@types/bun": "npm:bun-types@1.3.2",
 		"@types/node": "24.10.1",
 		"@types/tmp": "0.2.6",
-		"@typescript/native-preview": "7.0.0-dev.20251113.1",
+		"@typescript/native-preview": "7.0.0-dev.20251114.1",
 		"atom.io": "workspace:*",
 		"concurrently": "9.2.1",
 		"eslint": "9.39.1",
