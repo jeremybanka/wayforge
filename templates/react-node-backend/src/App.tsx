@@ -27,8 +27,8 @@ const todoKeysAtom = atom<Loadable<number[]>, Error>({
 		const url = new URL(`/todos`, SERVER_URL)
 		const response = await fetch(url, { credentials: `include` })
 		if (!response.ok) throw new Error(response.status.toString())
-		const json = (await response.json()) as { todos: unknown }
-		const todos = todoSchema.array().parse(json.todos)
+		const json = await response.json()
+		const todos = todoSchema.array().parse(json)
 		for (const todo of todos) setState(todoAtoms, todo.id, todo)
 		return todos.map((todo) => todo.id)
 	},
@@ -42,8 +42,8 @@ const todoAtoms = atomFamily<Loadable<Todo>, number, Error>({
 		url.searchParams.set(`id`, id.toString())
 		const response = await fetch(url, { credentials: `include` })
 		if (!response.ok) throw new Error(response.status.toString())
-		const json = (await response.json()) as { todo: unknown }
-		const todo = todoSchema.parse(json.todo)
+		const json = await response.json()
+		const todo = todoSchema.parse(json)
 		return todo
 	},
 	catch: [Error],
@@ -83,7 +83,7 @@ async function addTodo() {
 		body: text,
 	})
 	if (!res.ok) throw new Error(res.status.toString())
-	const { todo } = await res.json()
+	const todo = await res.json()
 	const realId = todo.id
 	setState(todoAtoms, realId, todo)
 	setState(todoKeysAtom, async (loadable) => {
