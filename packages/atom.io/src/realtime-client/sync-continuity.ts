@@ -10,8 +10,8 @@ import {
 import type { Json } from "atom.io/json"
 import type { ContinuityToken } from "atom.io/realtime"
 import {
-	confirmedUpdateQueue,
-	optimisticUpdateQueue,
+	confirmedUpdateQueueAtom,
+	optimisticUpdateQueueAtom,
 } from "atom.io/realtime-client"
 import type { Socket } from "socket.io-client"
 
@@ -25,8 +25,8 @@ export function syncContinuity(
 	continuity: ContinuityToken,
 ): () => void {
 	const continuityKey = continuity.key
-	const optimisticUpdates = getFromStore(store, optimisticUpdateQueue)
-	const confirmedUpdates = getFromStore(store, confirmedUpdateQueue)
+	const optimisticUpdates = getFromStore(store, optimisticUpdateQueueAtom)
+	const confirmedUpdates = getFromStore(store, confirmedUpdateQueueAtom)
 
 	const initializeContinuity = (epoch: number, payload: Json.Array) => {
 		socket.off(`continuity-init:${continuityKey}`, initializeContinuity)
@@ -83,7 +83,7 @@ export function syncContinuity(
 						continuityKey,
 						`enqueuing new optimistic update`,
 					)
-					setIntoStore(store, optimisticUpdateQueue, (queue) => {
+					setIntoStore(store, optimisticUpdateQueueAtom, (queue) => {
 						queue.push(clientUpdate)
 						queue.sort((a, b) => a.epoch - b.epoch)
 						return queue
@@ -95,7 +95,7 @@ export function syncContinuity(
 						continuityKey,
 						`replacing existing optimistic update at index ${optimisticUpdateIndex}`,
 					)
-					setIntoStore(store, optimisticUpdateQueue, (queue) => {
+					setIntoStore(store, optimisticUpdateQueueAtom, (queue) => {
 						queue[optimisticUpdateIndex] = clientUpdate
 						return queue
 					})

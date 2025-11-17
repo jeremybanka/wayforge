@@ -9,8 +9,8 @@ import {
 } from "atom.io/internal"
 import type { Socket } from "atom.io/realtime"
 import {
-	confirmedUpdateQueue,
-	optimisticUpdateQueue,
+	confirmedUpdateQueueAtom,
+	optimisticUpdateQueueAtom,
 } from "atom.io/realtime-client"
 
 export const useRegisterAndAttemptConfirmedUpdate =
@@ -42,7 +42,7 @@ export const useRegisterAndAttemptConfirmedUpdate =
 				continuityKey,
 				`reconciling updates`,
 			)
-			setIntoStore(store, optimisticUpdateQueue, (queue) => {
+			setIntoStore(store, optimisticUpdateQueueAtom, (queue) => {
 				queue.shift()
 				return queue
 			})
@@ -172,7 +172,7 @@ export const useRegisterAndAttemptConfirmedUpdate =
 						`pushing confirmed update to queue`,
 						confirmed,
 					)
-					setIntoStore(store, confirmedUpdateQueue, (queue) => {
+					setIntoStore(store, confirmedUpdateQueueAtom, (queue) => {
 						queue.push(confirmed)
 						queue.sort((a, b) => a.epoch - b.epoch)
 						return queue
@@ -229,7 +229,7 @@ export const useRegisterAndAttemptConfirmedUpdate =
 						continuityKey,
 						`pushing confirmed update #${confirmed.epoch} to queue`,
 					)
-					setIntoStore(store, confirmedUpdateQueue, (queue) => {
+					setIntoStore(store, confirmedUpdateQueueAtom, (queue) => {
 						queue.push(confirmed)
 						queue.sort((a, b) => a.epoch - b.epoch)
 						return queue
