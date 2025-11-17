@@ -147,12 +147,12 @@ export function destroyRoom(store: Store, roomId: string): void {
 	}
 }
 
-export function useRooms<RoomNames extends string>(
+export function provideRooms<RoomNames extends string>(
 	{ store = IMPLICIT.STORE, socket }: ServerConfig,
 	resolveRoomScript: (path: string) => [string, string[]],
 ): void {
 	const socketKey = `socket::${socket.id}` satisfies SocketKey
-	const userKeyOfSocket = getFromStore(
+	const userKey = getFromStore(
 		store,
 		findRelationsInStore(usersOfSockets, socketKey, store).userKeyOfSocket,
 	)!
@@ -169,8 +169,9 @@ export function useRooms<RoomNames extends string>(
 	const usersWhoseRoomsCanBeSeenSelector = findInStore(
 		store,
 		selfListSelectors,
-		userKeyOfSocket,
+		userKey,
 	)
+
 	exposeMutableFamily(usersInRoomsAtoms, usersWhoseRoomsCanBeSeenSelector)
 	const usersOfSocketsAtoms = getInternalRelationsFromStore(
 		usersOfSockets,
@@ -190,17 +191,11 @@ export function useRooms<RoomNames extends string>(
 
 	socket.on(`joinRoom`, (roomId: string) => {
 		// logger.info(`[${shortId}]:${username}`, `joining room "${roomId}"`)
-		const { leave } = joinRoom(store, roomId, userKeyOfSocket, socket)!
+		const { leave } = joinRoom(store, roomId, userKey, socket)!
 		socket.on(`leaveRoom:${roomId}`, leave)
 	})
 
 	socket.on(`disconnect`, () => {
-		const userKeyState = findRelationsInStore(
-			usersOfSockets,
-			socketKey,
-			store,
-		).userKeyOfSocket
-		const userKey = getFromStore(store, userKeyState)
 		editRelationsInStore(
 			usersOfSockets,
 			(relations) => relations.delete(socketKey),
@@ -219,6 +214,5 @@ export function useRooms<RoomNames extends string>(
 			(index) => (index.delete(socketKey), index),
 		)
 		// logger.info(`${socket.id} disconnected`)
-		// cleanup()
 	})
 }
