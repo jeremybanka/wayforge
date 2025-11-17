@@ -71,7 +71,7 @@ function Lobby(): React.ReactNode {
 function View({
 	myUserKey: myUsername,
 }: {
-	myUserKey: string
+	myUserKey: RT.UserKey
 }): React.ReactNode {
 	const store = React.useContext(AR.StoreContext)
 	const myRoomKeyState = findRelationsInStore(

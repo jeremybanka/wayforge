@@ -7,6 +7,7 @@ import type {
 } from "atom.io"
 import { atomFamily, join, mutableAtom, selectorFamily } from "atom.io"
 import type { RoomKey, Socket, SocketKey, UserKey } from "atom.io/realtime"
+import { isSocketKey, isUserKey } from "atom.io/realtime"
 import { UList } from "atom.io/transceivers/u-list"
 
 export type SocketSystemHierarchy = Hierarchy<
@@ -46,8 +47,8 @@ export const usersOfSockets: JoinToken<
 	key: `usersOfSockets`,
 	between: [`user`, `socket`],
 	cardinality: `1:1`,
-	isAType: (s): s is UserKey => s.startsWith(`user::`),
-	isBType: (s): s is SocketKey => s.startsWith(`socket::`),
+	isAType: isUserKey,
+	isBType: isSocketKey,
 })
 
 export const selfListSelectors: PureSelectorFamilyToken<UserKey[], UserKey> =

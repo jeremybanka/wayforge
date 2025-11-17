@@ -12,7 +12,7 @@ import {
 	setIntoStore,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-import type { Socket, SocketKey } from "atom.io/realtime"
+import type { RoomKey, Socket, SocketKey, UserKey } from "atom.io/realtime"
 import { roomKeysAtom, usersInRooms } from "atom.io/realtime"
 
 import { ChildSocket } from "../ipc-sockets"
@@ -43,7 +43,7 @@ export const roomMeta: { count: number } = { count: 0 }
 
 export async function spawnRoom(
 	store: Store,
-	roomId: string,
+	roomKey: RoomKey,
 	command: string,
 	args: string[],
 ): Promise<ChildSocket<any, any>> {
@@ -57,12 +57,12 @@ export async function spawnRoom(
 		}
 		room.stdout.on(`data`, resolver)
 	})
-	const roomSocket = new ChildSocket(child, roomId)
-	ROOMS.set(roomId, roomSocket)
-	setIntoStore(store, roomKeysAtom, (index) => (index.add(roomId), index))
+	const roomSocket = new ChildSocket(child, roomKey)
+	ROOMS.set(roomKey, roomSocket)
+	setIntoStore(store, roomKeysAtom, (index) => (index.add(roomKey), index))
 
 	roomSocket.on(`close`, () => {
-		destroyRoom(store, roomId)
+		destroyRoom(store, roomKey)
 	})
 
 	return roomSocket
@@ -70,8 +70,8 @@ export async function spawnRoom(
 
 export function joinRoom(
 	store: Store,
-	roomId: string,
-	userId: string,
+	roomKey: RoomKey,
+	userKey: UserKey,
 	socket: Socket,
 ): {
 	leave: () => void
@@ -90,22 +90,22 @@ export function joinRoom(
 	editRelationsInStore(
 		usersInRooms,
 		(relations) => {
-			relations.set({ room: roomId, user: userId })
+			relations.set({ room: roomKey, user: userKey })
 		},
 		store,
 	)
-	const roomSocket = ROOMS.get(roomId)
+	const roomSocket = ROOMS.get(roomKey)
 	if (!roomSocket) {
-		store.logger.error(`❌`, `unknown`, roomId, `no room found with this id`)
+		store.logger.error(`❌`, `unknown`, roomKey, `no room found with this id`)
 		return null
 	}
 	roomSocket.onAny((...payload) => {
 		socket.emit(...payload)
 	})
-	roomSocket.emit(`user-joins`, userId)
+	roomSocket.emit(`user-joins`, userKey)
 
 	toRoom = (payload) => {
-		roomSocket.emit(`user::${userId}`, ...payload)
+		roomSocket.emit(`user::${userKey}`, ...payload)
 	}
 	while (roomQueue.length > 0) {
 		const payload = roomQueue.shift()
@@ -115,35 +115,39 @@ export function joinRoom(
 	const leave = () => {
 		socket.offAny(forward)
 		toRoom([`user-leaves`])
-		leaveRoom(store, roomId, userId)
+		leaveRoom(store, roomKey, userKey)
 	}
 
 	return { leave, roomSocket }
 }
 
-export function leaveRoom(store: Store, roomId: string, userId: string): void {
+export function leaveRoom(
+	store: Store,
+	roomKey: RoomKey,
+	userKey: UserKey,
+): void {
 	editRelationsInStore(
 		usersInRooms,
 		(relations) => {
-			relations.delete({ room: roomId, user: userId })
+			relations.delete({ room: roomKey, user: userKey })
 		},
 		store,
 	)
 }
 
-export function destroyRoom(store: Store, roomId: string): void {
-	setIntoStore(store, roomKeysAtom, (s) => (s.delete(roomId), s))
+export function destroyRoom(store: Store, roomKey: RoomKey): void {
+	setIntoStore(store, roomKeysAtom, (s) => (s.delete(roomKey), s))
 	editRelationsInStore(
 		usersInRooms,
 		(relations) => {
-			relations.delete({ room: roomId })
+			relations.delete({ room: roomKey })
 		},
 		store,
 	)
-	const room = ROOMS.get(roomId)
+	const room = ROOMS.get(roomKey)
 	if (room) {
 		room.emit(`exit`)
-		ROOMS.delete(roomId)
+		ROOMS.delete(roomKey)
 	}
 }
 
@@ -171,7 +175,6 @@ export function provideRooms<RoomNames extends string>(
 		selfListSelectors,
 		userKey,
 	)
-
 	exposeMutableFamily(usersInRoomsAtoms, usersWhoseRoomsCanBeSeenSelector)
 	const usersOfSocketsAtoms = getInternalRelationsFromStore(
 		usersOfSockets,
@@ -181,7 +184,7 @@ export function provideRooms<RoomNames extends string>(
 
 	socket.on(`createRoom`, async (roomName: RoomNames) => {
 		// logger.info(`[${shortId}]:${username}`, `creating room "${roomId}"`)
-		const roomId = `room::${roomMeta.count++}`
+		const roomId = `room::${roomMeta.count++}` satisfies RoomKey
 		await spawnRoom(store, roomId, ...resolveRoomScript(roomName))
 		socket.on(`deleteRoom:${roomId}`, () => {
 			// logger.info(`[${shortId}]:${username}`, `deleting room "${roomId}"`)
@@ -189,10 +192,10 @@ export function provideRooms<RoomNames extends string>(
 		})
 	})
 
-	socket.on(`joinRoom`, (roomId: string) => {
+	socket.on(`joinRoom`, (roomKey: RoomKey) => {
 		// logger.info(`[${shortId}]:${username}`, `joining room "${roomId}"`)
-		const { leave } = joinRoom(store, roomId, userKey, socket)!
-		socket.on(`leaveRoom:${roomId}`, leave)
+		const { leave } = joinRoom(store, roomKey, userKey, socket)!
+		socket.on(`leaveRoom:${roomKey}`, leave)
 	})
 
 	socket.on(`disconnect`, () => {

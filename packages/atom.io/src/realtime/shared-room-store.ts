@@ -6,6 +6,13 @@ import type {
 import { getInternalRelations, join, mutableAtom, selectorFamily } from "atom.io"
 import { UList } from "atom.io/transceivers/u-list"
 
+import {
+	isRoomKey,
+	isUserKey,
+	type RoomKey,
+	type UserKey,
+} from "./realtime-key-types"
+
 export type RoomSocketInterface<RoomNames extends string> = {
 	createRoom: (roomName: RoomNames) => void
 	joinRoom: (roomKey: string) => void
@@ -26,13 +33,13 @@ export type UserInRoomMeta = {
 export const DEFAULT_USER_IN_ROOM_META: UserInRoomMeta = {
 	enteredAtEpoch: 0,
 }
-export const usersInRooms: JoinToken<`room`, string, `user`, string, `1:n`> =
+export const usersInRooms: JoinToken<`room`, RoomKey, `user`, UserKey, `1:n`> =
 	join({
 		key: `usersInRooms`,
 		between: [`room`, `user`],
 		cardinality: `1:n`,
-		isAType: (input): input is string => typeof input === `string`,
-		isBType: (input): input is string => typeof input === `string`,
+		isAType: isRoomKey,
+		isBType: isUserKey,
 	})
 
 export const usersInMyRoomView: ReadonlyPureSelectorFamilyToken<
