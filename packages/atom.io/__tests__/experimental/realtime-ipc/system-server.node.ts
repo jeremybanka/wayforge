@@ -17,5 +17,5 @@ export const SystemServer = ({
 	enableLogging: () => void
 }): void => {
 	enableLogging()
-	RTS.useRooms({ store, socket }, resolveRoomScript)
+	RTS.provideRooms({ store, socket }, resolveRoomScript)
 }
