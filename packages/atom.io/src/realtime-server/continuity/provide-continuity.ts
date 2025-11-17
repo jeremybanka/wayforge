@@ -1,8 +1,8 @@
 import { getFromStore, IMPLICIT } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-import type { ContinuityToken } from "atom.io/realtime"
+import type { ContinuityToken, UserKey } from "atom.io/realtime"
 
-import type { ServerConfig, UserKey } from ".."
+import type { ServerConfig } from ".."
 import { unacknowledgedUpdatesAtoms } from "./continuity-store"
 import { provideOutcomes } from "./provide-outcomes"
 import { providePerspectives } from "./provide-perspectives"

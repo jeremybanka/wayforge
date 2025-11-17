@@ -16,6 +16,7 @@ import {
 } from "atom.io/internal"
 import { toEntries } from "atom.io/json"
 import * as AR from "atom.io/react"
+import type * as RT from "atom.io/realtime"
 import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
@@ -71,7 +72,7 @@ export type TestSetupOptions = {
 	server: (tools: {
 		socket: SocketIO.Socket
 		silo: AtomIO.Silo
-		userKey: RTS.UserKey
+		userKey: RT.UserKey
 		enableLogging: () => void
 	}) => (() => void) | void
 }
@@ -141,7 +142,7 @@ export const setupRealtimeTestServer = (
 	const server = new SocketIO.Server(httpServer).use((socket, next) => {
 		const { token, username } = socket.handshake.auth
 		if (token === `test` && socket.id) {
-			const userClaim = socketRealm.allocate(`root`, username as RTS.UserKey)
+			const userClaim = socketRealm.allocate(`root`, username as RT.UserKey)
 			const socketClaim = socketRealm.allocate(`root`, `socket::${socket.id}`)
 			const socketState = findInStore(silo.store, RTS.socketAtoms, socketClaim)
 			setIntoStore(silo.store, socketState, socket)

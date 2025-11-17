@@ -12,14 +12,13 @@ import {
 	setIntoStore,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-import type { Socket } from "atom.io/realtime"
-import { roomIndex, usersInRooms } from "atom.io/realtime"
+import type { Socket, SocketKey } from "atom.io/realtime"
+import { roomKeysAtom, usersInRooms } from "atom.io/realtime"
 
 import { ChildSocket } from "../ipc-sockets"
 import { realtimeMutableFamilyProvider } from "../realtime-mutable-family-provider"
 import { realtimeMutableProvider } from "../realtime-mutable-provider"
 import type { ServerConfig } from "../server-config"
-import type { SocketKey } from "./server-user-store"
 import {
 	selfListSelectors,
 	socketIndex,
@@ -60,7 +59,7 @@ export async function spawnRoom(
 	})
 	const roomSocket = new ChildSocket(child, roomId)
 	ROOMS.set(roomId, roomSocket)
-	setIntoStore(store, roomIndex, (index) => (index.add(roomId), index))
+	setIntoStore(store, roomKeysAtom, (index) => (index.add(roomId), index))
 
 	roomSocket.on(`close`, () => {
 		destroyRoom(store, roomId)
@@ -133,7 +132,7 @@ export function leaveRoom(store: Store, roomId: string, userId: string): void {
 }
 
 export function destroyRoom(store: Store, roomId: string): void {
-	setIntoStore(store, roomIndex, (s) => (s.delete(roomId), s))
+	setIntoStore(store, roomKeysAtom, (s) => (s.delete(roomId), s))
 	editRelationsInStore(
 		usersInRooms,
 		(relations) => {
@@ -164,7 +163,7 @@ export function useRooms<RoomNames extends string>(
 		store,
 	})
 
-	exposeMutable(roomIndex)
+	exposeMutable(roomKeysAtom)
 
 	const usersInRoomsAtoms = getInternalRelationsFromStore(usersInRooms, store)
 	const usersWhoseRoomsCanBeSeenSelector = findInStore(

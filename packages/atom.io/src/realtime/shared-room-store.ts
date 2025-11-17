@@ -4,7 +4,6 @@ import type {
 	ReadonlyPureSelectorFamilyToken,
 } from "atom.io"
 import { getInternalRelations, join, mutableAtom, selectorFamily } from "atom.io"
-import type { RoomKey } from "atom.io/realtime-server"
 import { UList } from "atom.io/transceivers/u-list"
 
 export type RoomSocketInterface<RoomNames extends string> = {
@@ -14,14 +13,7 @@ export type RoomSocketInterface<RoomNames extends string> = {
 	[deleteRoom: `deleteRoom:${string}`]: () => void
 }
 
-export const usersInThisRoomIndex: MutableAtomToken<UList<string>> = mutableAtom<
-	UList<string>
->({
-	key: `usersInRoomIndex`,
-	class: UList,
-})
-
-export const roomIndex: MutableAtomToken<UList<string>> = mutableAtom<
+export const roomKeysAtom: MutableAtomToken<UList<string>> = mutableAtom<
 	UList<string>
 >({
 	key: `roomIndex`,
