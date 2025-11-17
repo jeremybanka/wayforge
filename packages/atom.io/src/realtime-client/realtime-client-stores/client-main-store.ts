@@ -1,4 +1,5 @@
 import * as AtomIO from "atom.io"
+import type { UserKey } from "atom.io/realtime-server"
 import { storageSync } from "atom.io/web"
 
 export const myIdState__INTERNAL: AtomIO.RegularAtomToken<string | undefined> =
@@ -12,9 +13,9 @@ export const myIdState: AtomIO.ReadonlyPureSelectorToken<string | undefined> =
 		get: ({ get }) => get(myIdState__INTERNAL),
 	})
 
-export const myUsernameState: AtomIO.RegularAtomToken<string | null> =
-	AtomIO.atom<string | null>({
-		key: `myName`,
+export const myUserKeyAtom: AtomIO.RegularAtomToken<UserKey | null> =
+	AtomIO.atom<UserKey | null>({
+		key: `myUserKey`,
 		default: null,
-		effects: [storageSync(globalThis.localStorage, JSON, `myUsername`)],
+		effects: [storageSync(globalThis.localStorage, JSON, `myUserKey`)],
 	})

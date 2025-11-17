@@ -54,12 +54,8 @@ export const usersOfSockets: JoinToken<
 	isBType: (s): s is SocketKey => s.startsWith(`socket::`),
 })
 
-export const userMutualSituationalAwarenessIndexes: PureSelectorFamilyToken<
-	UserKey[],
-	UserKey
-> = selectorFamily<UserKey[], UserKey>({
-	key: `userMutualSituationalAwarenessIndexes`,
-	get: (userId) => () => {
-		return [userId]
-	},
-})
+export const selfListSelectors: PureSelectorFamilyToken<UserKey[], UserKey> =
+	selectorFamily<UserKey[], UserKey>({
+		key: `selfList`,
+		get: (userId) => () => [userId],
+	})

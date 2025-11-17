@@ -141,7 +141,7 @@ export const setupRealtimeTestServer = (
 	const server = new SocketIO.Server(httpServer).use((socket, next) => {
 		const { token, username } = socket.handshake.auth
 		if (token === `test` && socket.id) {
-			const userClaim = socketRealm.allocate(`root`, `user::${username}`)
+			const userClaim = socketRealm.allocate(`root`, username as RTS.UserKey)
 			const socketClaim = socketRealm.allocate(`root`, `socket::${socket.id}`)
 			const socketState = findInStore(silo.store, RTS.socketAtoms, socketClaim)
 			setIntoStore(silo.store, socketState, socket)
@@ -228,13 +228,13 @@ export const setupRealtimeTestClient = (
 	const testClient = { dispose: () => {} }
 	const init = () => {
 		const socket: ClientSocket = io(`http://localhost:${port}/`, {
-			auth: { token: `test`, username: `${name}-${testNumber}` },
+			auth: { token: `test`, username: `user::${name}-${testNumber}` },
 		})
 		const silo = new AtomIO.Silo(
 			{ name, lifespan: `ephemeral`, isProduction: false },
 			IMPLICIT.STORE,
 		)
-		silo.setState(RTC.myUsernameState, `${name}-${testNumber}`)
+		silo.setState(RTC.myUserKeyAtom, `user::${name}-${testNumber}`)
 
 		const { document } = new Happy.Window()
 		document.body.innerHTML = `<div id="app"></div>`
