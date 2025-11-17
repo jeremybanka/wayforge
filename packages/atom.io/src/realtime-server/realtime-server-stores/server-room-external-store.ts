@@ -4,8 +4,10 @@ import { spawn } from "node:child_process"
 import type { Store } from "atom.io/internal"
 import {
 	editRelationsInStore,
+	findInStore,
 	findRelationsInStore,
 	getFromStore,
+	getInternalRelationsFromStore,
 	IMPLICIT,
 	setIntoStore,
 } from "atom.io/internal"
@@ -14,9 +16,16 @@ import type { Socket } from "atom.io/realtime"
 import { roomIndex, usersInRooms } from "atom.io/realtime"
 
 import { ChildSocket } from "../ipc-sockets"
+import { realtimeMutableFamilyProvider } from "../realtime-mutable-family-provider"
+import { realtimeMutableProvider } from "../realtime-mutable-provider"
 import type { ServerConfig } from "../server-config"
 import type { SocketKey } from "./server-user-store"
-import { socketIndex, userIndex, usersOfSockets } from "./server-user-store"
+import {
+	selfListSelectors,
+	socketIndex,
+	userIndex,
+	usersOfSockets,
+} from "./server-user-store"
 
 export type RoomMap = Map<
 	string,
@@ -148,6 +157,28 @@ export function useRooms<RoomNames extends string>(
 		store,
 		findRelationsInStore(usersOfSockets, socketKey, store).userKeyOfSocket,
 	)!
+
+	const exposeMutable = realtimeMutableProvider({ socket, store })
+	const exposeMutableFamily = realtimeMutableFamilyProvider({
+		socket,
+		store,
+	})
+
+	exposeMutable(roomIndex)
+
+	const usersInRoomsAtoms = getInternalRelationsFromStore(usersInRooms, store)
+	const usersWhoseRoomsCanBeSeenSelector = findInStore(
+		store,
+		selfListSelectors,
+		userKeyOfSocket,
+	)
+	exposeMutableFamily(usersInRoomsAtoms, usersWhoseRoomsCanBeSeenSelector)
+	const usersOfSocketsAtoms = getInternalRelationsFromStore(
+		usersOfSockets,
+		store,
+	)
+	exposeMutableFamily(usersOfSocketsAtoms, socketIndex)
+
 	socket.on(`createRoom`, async (roomName: RoomNames) => {
 		// logger.info(`[${shortId}]:${username}`, `creating room "${roomId}"`)
 		const roomId = `room::${roomMeta.count++}`
