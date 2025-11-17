@@ -1,5 +1,5 @@
 import { act } from "@testing-library/react"
-import { ROOMS } from "atom.io/realtime-server"
+import { roomMeta, ROOMS } from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 
 import { BrowserGame } from "./BrowserGame"
@@ -7,10 +7,10 @@ import { DatabaseManager } from "./database.node"
 import { SystemServer } from "./system-server.node"
 
 /* ❗❗❗ turn off the lights when you're done ❗❗❗ */
-// console.info = () => undefined
-// console.log = () => undefined
-// console.warn = () => undefined
-// console.error = () => undefined
+console.info = () => undefined
+console.log = () => undefined
+console.warn = () => undefined
+console.error = () => undefined
 const dbManager = new DatabaseManager()
 
 beforeAll(async () => {
@@ -18,6 +18,7 @@ beforeAll(async () => {
 })
 
 beforeEach(async () => {
+	roomMeta.count = 0
 	console.log(`Creating sample tables`)
 	await dbManager.createSampleTables()
 	await dbManager.insertSampleData()
@@ -50,11 +51,13 @@ describe(`multi-process realtime server`, () => {
 	it(`permits manual creation and deletion of rooms`, async () => {
 		const { client, teardown } = scenario()
 		const app = client.init()
+		app.enableLogging()
 		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
 		act(() => {
 			createRoomButton.click()
 		})
-		const deleteRoomButton = await app.renderResult.findByTestId(`delete-room-1`)
+		const deleteRoomButton =
+			await app.renderResult.findByTestId(`delete-room::0`)
 		act(() => {
 			deleteRoomButton.click()
 		})
@@ -69,11 +72,11 @@ describe(`multi-process realtime server`, () => {
 		act(() => {
 			createRoomButton.click()
 		})
-		const joinRoomButton = await app.renderResult.findByTestId(`join-room-1`)
+		const joinRoomButton = await app.renderResult.findByTestId(`join-room::0`)
 		act(() => {
 			joinRoomButton.click()
 		})
-		await app.renderResult.findByTestId(`room-1`)
+		await app.renderResult.findByTestId(`room::0`)
 		await app.renderResult.findByTestId(`A`, undefined, { timeout: 3000 })
 		const leaveRoomButton = await app.renderResult.findByTestId(`leave-room`)
 		act(() => {
