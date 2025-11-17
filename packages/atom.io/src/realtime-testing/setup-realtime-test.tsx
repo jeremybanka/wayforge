@@ -153,8 +153,8 @@ export const setupRealtimeTestServer = (
 				},
 				silo.store,
 			)
-			setIntoStore(silo.store, RTS.userIndex, (index) => index.add(userClaim))
-			setIntoStore(silo.store, RTS.socketIndex, (index) =>
+			setIntoStore(silo.store, RTS.userKeysAtom, (index) => index.add(userClaim))
+			setIntoStore(silo.store, RTS.socketKeysAtom, (index) =>
 				index.add(socketClaim),
 			)
 			next()

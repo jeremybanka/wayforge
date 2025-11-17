@@ -1,15 +1,15 @@
 import * as AtomIO from "atom.io"
 
-export const optimisticUpdateQueue: AtomIO.RegularAtomToken<
+export const optimisticUpdateQueueAtom: AtomIO.RegularAtomToken<
 	AtomIO.TransactionOutcomeEvent<any>[]
 > = AtomIO.atom<AtomIO.TransactionOutcomeEvent<any>[]>({
-	key: `updateQueue`,
+	key: `optimisticUpdateQueue`,
 	default: () => [],
 })
 
-export const confirmedUpdateQueue: AtomIO.RegularAtomToken<
+export const confirmedUpdateQueueAtom: AtomIO.RegularAtomToken<
 	AtomIO.TransactionOutcomeEvent<any>[]
 > = AtomIO.atom<AtomIO.TransactionOutcomeEvent<any>[]>({
-	key: `serverConfirmedUpdateQueue`,
+	key: `confirmedUpdateQueue`,
 	default: () => [],
 })

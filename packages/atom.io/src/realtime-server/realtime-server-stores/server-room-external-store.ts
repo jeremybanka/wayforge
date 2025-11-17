@@ -21,8 +21,8 @@ import { realtimeMutableProvider } from "../realtime-mutable-provider"
 import type { ServerConfig } from "../server-config"
 import {
 	selfListSelectors,
-	socketIndex,
-	userIndex,
+	socketKeysAtom,
+	userKeysAtom,
 	usersOfSockets,
 } from "./server-user-store"
 
@@ -176,7 +176,7 @@ export function useRooms<RoomNames extends string>(
 		usersOfSockets,
 		store,
 	)
-	exposeMutableFamily(usersOfSocketsAtoms, socketIndex)
+	exposeMutableFamily(usersOfSocketsAtoms, socketKeysAtom)
 
 	socket.on(`createRoom`, async (roomName: RoomNames) => {
 		// logger.info(`[${shortId}]:${username}`, `creating room "${roomId}"`)
@@ -207,9 +207,17 @@ export function useRooms<RoomNames extends string>(
 			store,
 		)
 		if (userKey) {
-			setIntoStore(store, userIndex, (index) => (index.delete(userKey), index))
+			setIntoStore(
+				store,
+				userKeysAtom,
+				(index) => (index.delete(userKey), index),
+			)
 		}
-		setIntoStore(store, socketIndex, (index) => (index.delete(socketKey), index))
+		setIntoStore(
+			store,
+			socketKeysAtom,
+			(index) => (index.delete(socketKey), index),
+		)
 		// logger.info(`${socket.id} disconnected`)
 		// cleanup()
 	})

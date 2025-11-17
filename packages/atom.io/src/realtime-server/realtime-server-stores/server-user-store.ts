@@ -24,13 +24,13 @@ export const socketAtoms: RegularAtomFamilyToken<Socket | null, SocketKey> =
 		default: null,
 	})
 
-export const socketIndex: MutableAtomToken<UList<SocketKey>> = mutableAtom<
+export const socketKeysAtom: MutableAtomToken<UList<SocketKey>> = mutableAtom<
 	UList<SocketKey>
 >({
 	key: `socketsIndex`,
 	class: UList,
 })
-export const userIndex: MutableAtomToken<UList<UserKey>> = mutableAtom<
+export const userKeysAtom: MutableAtomToken<UList<UserKey>> = mutableAtom<
 	UList<UserKey>
 >({
 	key: `usersIndex`,
