@@ -6,12 +6,8 @@ import type {
 	RegularAtomFamilyToken,
 } from "atom.io"
 import { atomFamily, join, mutableAtom, selectorFamily } from "atom.io"
-import type { Socket } from "atom.io/realtime"
+import type { RoomKey, Socket, SocketKey, UserKey } from "atom.io/realtime"
 import { UList } from "atom.io/transceivers/u-list"
-
-export type SocketKey = `socket::${string}`
-export type UserKey = `user::${string}`
-export type RoomKey = `room::${string}`
 
 export type SocketSystemHierarchy = Hierarchy<
 	[

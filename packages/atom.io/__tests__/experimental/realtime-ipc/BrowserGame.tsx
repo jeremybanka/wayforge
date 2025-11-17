@@ -30,8 +30,8 @@ function Room({ roomId }: { roomId: string }): React.ReactNode {
 
 function Lobby(): React.ReactNode {
 	const socket = RTR.useRealtimeRooms<RoomNames>()
-	RTR.usePullMutable(RT.roomIndex)
-	const roomKeys = AR.useJSON(RT.roomIndex)
+	RTR.usePullMutable(RT.roomKeysAtom)
+	const roomKeys = AR.useJSON(RT.roomKeysAtom)
 	return (
 		<main>
 			{roomKeys.length === 0 ? <p data-testid="no-rooms">No rooms</p> : null}
@@ -68,7 +68,11 @@ function Lobby(): React.ReactNode {
 	)
 }
 
-function View({ myUsername }: { myUsername: string }): React.ReactNode {
+function View({
+	myUserKey: myUsername,
+}: {
+	myUserKey: string
+}): React.ReactNode {
 	const store = React.useContext(AR.StoreContext)
 	const myRoomKeyState = findRelationsInStore(
 		RT.usersInRooms,
@@ -80,8 +84,8 @@ function View({ myUsername }: { myUsername: string }): React.ReactNode {
 }
 
 export function BrowserGame(): React.ReactNode | null {
-	const socketId = AR.useO(RTC.myIdState)
-	const myUsername = AR.useO(RTC.myUserKeyAtom)
+	const mySocketKey = AR.useO(RTC.mySocketKeyAtom)
+	const myUserKey = AR.useO(RTC.myUserKeyAtom)
 
-	return socketId && myUsername ? <View myUsername={myUsername} /> : null
+	return mySocketKey && myUserKey ? <View myUserKey={myUserKey} /> : null
 }

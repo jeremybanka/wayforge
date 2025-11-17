@@ -5,9 +5,7 @@ import {
 	getJsonToken,
 	subscribeToState,
 } from "atom.io/internal"
-import type { ContinuityToken, Socket } from "atom.io/realtime"
-
-import type { UserKey } from "../realtime-server-stores"
+import type { ContinuityToken, Socket, UserKey } from "atom.io/realtime"
 
 export function providePerspectives(
 	store: Store,

@@ -1,5 +1,6 @@
 export * from "./employ-socket"
 export * from "./mutex-store"
 export * from "./realtime-continuity"
+export type * from "./realtime-key-types"
 export * from "./shared-room-store"
 export type * from "./socket-interface"
