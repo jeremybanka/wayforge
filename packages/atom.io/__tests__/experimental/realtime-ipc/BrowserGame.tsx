@@ -7,8 +7,10 @@ import * as React from "react"
 
 import { gameContinuity, letterAtoms } from "./game-store"
 
+type RoomNames = `game-instance.bun.ts`
+
 function Room({ roomId }: { roomId: string }): React.ReactNode {
-	const { socket } = React.useContext(RTR.RealtimeContext)
+	const socket = RTR.useRealtimeRooms<RoomNames>()
 	RTR.useSyncContinuity(gameContinuity)
 	const letter0 = AR.useO(letterAtoms, 0)
 	return (
@@ -19,7 +21,7 @@ function Room({ roomId }: { roomId: string }): React.ReactNode {
 				type="button"
 				data-testid="leave-room"
 				onClick={() => {
-					socket?.emit(`leave-room`)
+					socket?.emit(`leaveRoom:${roomId}`)
 				}}
 			/>
 		</main>
@@ -27,9 +29,9 @@ function Room({ roomId }: { roomId: string }): React.ReactNode {
 }
 
 function Lobby(): React.ReactNode {
-	const { socket } = React.useContext(RTR.RealtimeContext)
-	RTR.usePullMutable(RT.roomIndex)
-	const roomKeys = AR.useJSON(RT.roomIndex)
+	const socket = RTR.useRealtimeRooms<RoomNames>()
+	RTR.usePullMutable(RT.roomKeysAtom)
+	const roomKeys = AR.useJSON(RT.roomKeysAtom)
 	return (
 		<main>
 			{roomKeys.length === 0 ? <p data-testid="no-rooms">No rooms</p> : null}
@@ -40,14 +42,14 @@ function Lobby(): React.ReactNode {
 							type="button"
 							data-testid={`join-${roomKey}`}
 							onClick={() => {
-								socket?.emit(`join-room`, roomKey)
+								socket?.emit(`joinRoom`, roomKey)
 							}}
 						/>
 						<button
 							type="button"
 							data-testid={`delete-${roomKey}`}
 							onClick={() => {
-								socket?.emit(`delete-room`, roomKey)
+								socket?.emit(`deleteRoom:${roomKey}`)
 							}}
 						/>
 					</li>
@@ -57,7 +59,7 @@ function Lobby(): React.ReactNode {
 				type="button"
 				data-testid="create-room"
 				onClick={() => {
-					socket?.emit(`create-room`, `room-1`)
+					socket?.emit(`createRoom`, `game-instance.bun.ts`)
 				}}
 			>
 				Click me!
@@ -66,7 +68,11 @@ function Lobby(): React.ReactNode {
 	)
 }
 
-function View({ myUsername }: { myUsername: string }): React.ReactNode {
+function View({
+	myUserKey: myUsername,
+}: {
+	myUserKey: RT.UserKey
+}): React.ReactNode {
 	const store = React.useContext(AR.StoreContext)
 	const myRoomKeyState = findRelationsInStore(
 		RT.usersInRooms,
@@ -78,8 +84,8 @@ function View({ myUsername }: { myUsername: string }): React.ReactNode {
 }
 
 export function BrowserGame(): React.ReactNode | null {
-	const socketId = AR.useO(RTC.myIdState)
-	const myUsername = AR.useO(RTC.myUsernameState)
+	const mySocketKey = AR.useO(RTC.mySocketKeyAtom)
+	const myUserKey = AR.useO(RTC.myUserKeyAtom)
 
-	return socketId && myUsername ? <View myUsername={myUsername} /> : null
+	return mySocketKey && myUserKey ? <View myUserKey={myUserKey} /> : null
 }

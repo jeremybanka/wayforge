@@ -12,7 +12,8 @@ import {
 	setEpochNumberOfContinuity,
 } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
-import type { UserKey } from "atom.io/realtime-server"
+
+import type { UserKey } from "./realtime-key-types"
 
 /* eslint-disable no-console */
 

@@ -14,6 +14,18 @@ import { employSocket } from "atom.io/realtime"
 
 import type { ServerConfig } from "."
 
+const isAvailable = <K extends Canonical>(
+	exposedSubKeys: Iterable<K>,
+	subKey: K,
+): boolean => {
+	for (const exposedSubKey of exposedSubKeys) {
+		if (stringifyJson(exposedSubKey) === stringifyJson(subKey)) {
+			return true
+		}
+	}
+	return false
+}
+
 export type MutableFamilyProvider = ReturnType<
 	typeof realtimeMutableFamilyProvider
 >
@@ -76,15 +88,6 @@ export function realtimeMutableFamilyProvider({
 					fillUnsubRequest(token.key)
 				}),
 			)
-		}
-
-		const isAvailable = (exposedSubKeys: Iterable<K>, subKey: K): boolean => {
-			for (const exposedSubKey of exposedSubKeys) {
-				if (stringifyJson(exposedSubKey) === stringifyJson(subKey)) {
-					return true
-				}
-			}
-			return false
 		}
 
 		const start = () => {

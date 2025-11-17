@@ -6,12 +6,9 @@ import type {
 	RegularAtomFamilyToken,
 } from "atom.io"
 import { atomFamily, join, mutableAtom, selectorFamily } from "atom.io"
-import type { Socket } from "atom.io/realtime"
+import type { RoomKey, Socket, SocketKey, UserKey } from "atom.io/realtime"
+import { isSocketKey, isUserKey } from "atom.io/realtime"
 import { UList } from "atom.io/transceivers/u-list"
-
-export type SocketKey = `socket::${string}`
-export type UserKey = `user::${string}`
-export type RoomKey = `room::${string}`
 
 export type SocketSystemHierarchy = Hierarchy<
 	[
@@ -28,13 +25,13 @@ export const socketAtoms: RegularAtomFamilyToken<Socket | null, SocketKey> =
 		default: null,
 	})
 
-export const socketIndex: MutableAtomToken<UList<SocketKey>> = mutableAtom<
+export const socketKeysAtom: MutableAtomToken<UList<SocketKey>> = mutableAtom<
 	UList<SocketKey>
 >({
 	key: `socketsIndex`,
 	class: UList,
 })
-export const userIndex: MutableAtomToken<UList<UserKey>> = mutableAtom<
+export const userKeysAtom: MutableAtomToken<UList<UserKey>> = mutableAtom<
 	UList<UserKey>
 >({
 	key: `usersIndex`,
@@ -50,16 +47,12 @@ export const usersOfSockets: JoinToken<
 	key: `usersOfSockets`,
 	between: [`user`, `socket`],
 	cardinality: `1:1`,
-	isAType: (s): s is UserKey => s.startsWith(`user::`),
-	isBType: (s): s is SocketKey => s.startsWith(`socket::`),
+	isAType: isUserKey,
+	isBType: isSocketKey,
 })
 
-export const userMutualSituationalAwarenessIndexes: PureSelectorFamilyToken<
-	UserKey[],
-	UserKey
-> = selectorFamily<UserKey[], UserKey>({
-	key: `userMutualSituationalAwarenessIndexes`,
-	get: (userId) => () => {
-		return [userId]
-	},
-})
+export const selfListSelectors: PureSelectorFamilyToken<UserKey[], UserKey> =
+	selectorFamily<UserKey[], UserKey>({
+		key: `selfList`,
+		get: (userId) => () => [userId],
+	})

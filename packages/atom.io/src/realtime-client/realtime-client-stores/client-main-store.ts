@@ -1,20 +1,16 @@
 import * as AtomIO from "atom.io"
+import type { SocketKey, UserKey } from "atom.io/realtime"
 import { storageSync } from "atom.io/web"
 
-export const myIdState__INTERNAL: AtomIO.RegularAtomToken<string | undefined> =
-	AtomIO.atom<string | undefined>({
-		key: `mySocketId__INTERNAL`,
+export const mySocketKeyAtom: AtomIO.RegularAtomToken<SocketKey | undefined> =
+	AtomIO.atom<SocketKey | undefined>({
+		key: `mySocketKey`,
 		default: undefined,
 	})
-export const myIdState: AtomIO.ReadonlyPureSelectorToken<string | undefined> =
-	AtomIO.selector<string | undefined>({
-		key: `mySocketId`,
-		get: ({ get }) => get(myIdState__INTERNAL),
-	})
 
-export const myUsernameState: AtomIO.RegularAtomToken<string | null> =
-	AtomIO.atom<string | null>({
-		key: `myName`,
+export const myUserKeyAtom: AtomIO.RegularAtomToken<UserKey | null> =
+	AtomIO.atom<UserKey | null>({
+		key: `myUserKey`,
 		default: null,
-		effects: [storageSync(globalThis.localStorage, JSON, `myUsername`)],
+		effects: [storageSync(globalThis.localStorage, JSON, `myUserKey`)],
 	})

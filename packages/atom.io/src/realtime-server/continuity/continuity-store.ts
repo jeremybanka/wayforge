@@ -4,8 +4,7 @@ import type {
 	TransactionSubEvent,
 } from "atom.io"
 import { atomFamily } from "atom.io"
-
-import type { UserKey } from "../realtime-server-stores"
+import type { UserKey } from "atom.io/realtime"
 
 export function redactTransactionUpdateContent(
 	visibleStateKeys: string[],
