@@ -10,7 +10,7 @@ atomFamily<number, string>({
 
 test(`revealState`, () => {
 	// console.log(IMPLICIT.STORE.atoms)
-	expect(IMPLICIT.STORE.atoms.size).toBe(8)
+	expect(IMPLICIT.STORE.atoms.size).toBe(6)
 	const revealState = useRevealState(IMPLICIT.STORE)
 	const concealState = useConcealState(IMPLICIT.STORE)
 
@@ -22,8 +22,8 @@ test(`revealState`, () => {
 		}),
 	)
 	revealState(tokens.flatMap((token) => [token, Math.random()]))
-	expect(IMPLICIT.STORE.atoms.size).toBe(18)
+	expect(IMPLICIT.STORE.atoms.size).toBe(16)
 
 	concealState(tokens)
-	expect(IMPLICIT.STORE.atoms.size).toBe(8)
+	expect(IMPLICIT.STORE.atoms.size).toBe(6)
 })
