@@ -6,11 +6,11 @@ import {
 	IMPLICIT,
 	setIntoStore,
 } from "atom.io/internal"
-import type { SocketKey, UserKey } from "atom.io/realtime-server"
+import type { SocketKey, UserKey } from "atom.io/realtime"
 import {
 	socketAtoms,
-	socketIndex,
-	userIndex,
+	socketKeysAtom,
+	userKeysAtom,
 	usersOfSockets,
 } from "atom.io/realtime-server"
 import { CookieMap } from "bun"
@@ -81,8 +81,8 @@ export const sessionMiddleware: SocketServerMiddleware = async (
 			},
 			IMPLICIT.STORE,
 		)
-		setIntoStore(IMPLICIT.STORE, userIndex, (index) => index.add(userKey))
-		setIntoStore(IMPLICIT.STORE, socketIndex, (index) => index.add(socketKey))
+		setIntoStore(IMPLICIT.STORE, userKeysAtom, (index) => index.add(userKey))
+		setIntoStore(IMPLICIT.STORE, socketKeysAtom, (index) => index.add(socketKey))
 		logger.info(`${username} connected on ${socket.id}`)
 		next()
 	} else {
@@ -134,13 +134,13 @@ export const serveSocket = (socket: TempestServerSocket): void => {
 		if (userKey) {
 			setIntoStore(
 				IMPLICIT.STORE,
-				userIndex,
+				userKeysAtom,
 				(index) => (index.delete(userKey), index),
 			)
 		}
 		setIntoStore(
 			IMPLICIT.STORE,
-			socketIndex,
+			socketKeysAtom,
 			(index) => (index.delete(socketKey), index),
 		)
 		logger.info(`${socket.id} disconnected`)
