@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.44.6
+
+### Patch Changes
+
+- 98df48d: ✨ `atom.io/realtime-react` adds the `useRealtimeRooms` hook for managing the creation/joining/leaving/disposal of rooms.
+- 98df48d: ✨ `atom.io/realtime-server` adds the new `provideRooms` function useful for managing realtime experiences in separate processes.
+
 ## 0.44.5
 
 ### Patch Changes
