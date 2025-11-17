@@ -22,6 +22,13 @@ const todoSchema = z.object({
 })
 type Todo = z.infer<typeof todoSchema>
 
+/**
+ * This atom tells us what todos exist.
+ *
+ * `Loadable` means that the value of this atom may be a `Promise` sometimes.
+ *
+ * `useLoadable` from `"atom.io/react"` makes this easy to use in components.
+ */
 const todoKeysAtom = atom<Loadable<number[]>, Error>({
 	key: `todoKeys`,
 	default: async () => {
@@ -30,12 +37,26 @@ const todoKeysAtom = atom<Loadable<number[]>, Error>({
 		if (!response.ok) throw new Error(response.status.toString())
 		const json = await response.json()
 		const todos = todoSchema.array().parse(json)
+
+		/*
+			🚀	Performance hack!
+					We can make our client less chatty by pre-populating our todo atoms.
+					Comment out this line and watch the network tab to see the difference.
+		*/
 		for (const todo of todos) setState(todoAtoms, todo.id, todo)
+
 		return todos.map((todo) => todo.id)
 	},
 	catch: [Error],
 })
 
+/**
+ * This atom family holds the values of individual todos.
+ *
+ * A todo's default value is fetched from the server, but
+ * this only happens when you `resetState`, or `getState`
+ * when the atom has never been gotten or set before.
+ */
 const todoAtoms = atomFamily<Loadable<Todo>, number, Error>({
 	key: `todos`,
 	default: async (id) => {
@@ -50,6 +71,7 @@ const todoAtoms = atomFamily<Loadable<Todo>, number, Error>({
 	catch: [Error],
 })
 
+/** This selector computes the total number of todos and the number of done todos. */
 const todosStatsSelector = selector<
 	Loadable<{
 		total: number
@@ -219,6 +241,7 @@ function Todo({ todoKey }: { todoKey: number }): React.JSX.Element {
 	)
 }
 
+/** This atom holds the text of the new todo entry. */
 const newTodoTextAtom = atom<string>({
 	key: `newTodo`,
 	default: ``,
@@ -248,6 +271,7 @@ function NewTodo(): React.JSX.Element {
 	)
 }
 
+/** This atom holds whether long load times are enabled. */
 const longLoadTimesAtom = atom<Loadable<boolean>>({
 	key: `longLoadTimes`,
 	default: () =>
