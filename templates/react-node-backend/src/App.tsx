@@ -21,6 +21,7 @@ const todoSchema = z.object({
 	done: z.union([z.literal(0), z.literal(1)]), // keeps things simple with sqlite
 })
 type Todo = z.infer<typeof todoSchema>
+
 const todoKeysAtom = atom<Loadable<number[]>, Error>({
 	key: `todoKeys`,
 	default: async () => {
@@ -112,14 +113,29 @@ async function deleteTodo(todoKey: number) {
 	})
 }
 
+async function toggleTodoDone(todoKey: number, isNowDone: 0 | 1) {
+	const url = new URL(`todos`, SERVER_URL)
+	url.searchParams.set(`id`, todoKey.toString())
+	setState(todoAtoms, todoKey, async (loadable) => {
+		const prev = await loadable
+		if (Error.isError(prev)) return prev
+		return { ...prev, done: isNowDone } satisfies Todo
+	})
+	await fetch(url, {
+		method: `PUT`,
+		credentials: `include`,
+		body: isNowDone.toString(),
+	})
+	resetState(todoAtoms, todoKey)
+}
+
 const TODO_FALLBACK: Todo = { id: 0, text: ``, done: 0 }
 const SKELETON_KEYS = Array.from({ length: 5 }).map(Math.random)
-for (const key of SKELETON_KEYS) setState(todoAtoms, key, TODO_FALLBACK)
+for (const KEY of SKELETON_KEYS) setState(todoAtoms, KEY, TODO_FALLBACK)
 
 export function App(): React.JSX.Element {
 	const todoKeys = useLoadable(todoKeysAtom, SKELETON_KEYS)
 	const stats = useLoadable(todosStatsSelector, { total: 0, done: 0 })
-
 	return (
 		<>
 			{todoKeys.error ? (
@@ -179,28 +195,11 @@ export function App(): React.JSX.Element {
 function Todo({ todoKey }: { todoKey: number }): React.JSX.Element {
 	const todo = useLoadable(todoAtoms, todoKey, TODO_FALLBACK)
 	const isSuspended = todo.loading || !Number.isInteger(todoKey)
-	const toggleDone = useCallback(
-		async (e: React.ChangeEvent<HTMLInputElement>) => {
-			const url = new URL(`todos`, SERVER_URL)
-			url.searchParams.set(`id`, todo.value.id.toString())
-			const nowChecked = e.target.checked ? 1 : 0
-			setState(todoAtoms, todoKey, async (loadable) => {
-				const prev = await loadable
-				if (Error.isError(prev)) return prev
-				return { ...prev, done: nowChecked } satisfies Todo
-			})
-			await fetch(url, {
-				method: `PUT`,
-				credentials: `include`,
-				body: nowChecked.toString(),
-			})
-			resetState(todoAtoms, todoKey)
-		},
-		[],
-	)
-	const deleteThisTodo = useCallback(async () => {
-		await deleteTodo(todoKey)
+	const toggleDone = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+		const isNowDone = e.target.checked ? 1 : 0
+		void toggleTodoDone(todoKey, isNowDone)
 	}, [])
+	const deleteThisTodo = useCallback(() => deleteTodo(todoKey), [])
 	return (
 		<div className={cn(`todo`, isSuspended && `loading`)}>
 			<input
@@ -224,7 +223,6 @@ const newTodoTextAtom = atom<string>({
 	key: `newTodo`,
 	default: ``,
 })
-
 function NewTodo(): React.JSX.Element {
 	const text = useO(newTodoTextAtom)
 	const setText = useI(newTodoTextAtom)
@@ -257,7 +255,6 @@ const longLoadTimesAtom = atom<Loadable<boolean>>({
 			credentials: `include`,
 		}).then(async (res) => res.json()),
 })
-
 function LongLoadTimes(): React.JSX.Element {
 	const longLoadTimes = useLoadable(longLoadTimesAtom, false)
 	const toggle = useCallback(async () => {
