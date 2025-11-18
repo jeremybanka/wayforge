@@ -1,5 +1,13 @@
 # @atom.io/template-react-node-backend
 
+## 0.0.8
+
+### Patch Changes
+
+- 5bf20ba: 📝 Added comments explaining the different state declarations.
+- 5bf20ba: 📝 Improved consistency in callbacks.
+- 5bf20ba: ♻️ Simplified DTOs; eliminate type assertions.
+
 ## 0.0.7
 
 ### Patch Changes
