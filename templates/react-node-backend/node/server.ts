@@ -124,10 +124,10 @@ const server = http.createServer(async (req, res) => {
 							{
 								const id = Number.parseInt(searchParams.get(`id`) as string, 10)
 								if (Number.isNaN(id)) {
-									sendJSON(res, 200, { todos: getAllStmt.all() }, true)
+									sendJSON(res, 200, getAllStmt.all(), true)
 								} else {
 									const todo = getOneStmt.get(id)
-									sendJSON(res, 200, { todo }, true)
+									sendJSON(res, 200, todo, true)
 								}
 							}
 							return
@@ -137,7 +137,7 @@ const server = http.createServer(async (req, res) => {
 								for await (const chunk of r) body += chunk
 								const { lastInsertRowid } = insertStmt.run(body)
 								const todo = getOneStmt.get(lastInsertRowid)
-								sendJSON(res, 200, { todo }, true)
+								sendJSON(res, 200, todo, true)
 							}
 							return
 						case `PUT`:
