@@ -21,20 +21,42 @@ const todoSchema = z.object({
 	done: z.union([z.literal(0), z.literal(1)]), // keeps things simple with sqlite
 })
 type Todo = z.infer<typeof todoSchema>
+
+/**
+ * This atom tells us what todos exist.
+ *
+ * `Loadable` means that the value of this atom may be a `Promise` sometimes.
+ *
+ * `useLoadable` from `"atom.io/react"` makes this easy to use in components.
+ */
 const todoKeysAtom = atom<Loadable<number[]>, Error>({
 	key: `todoKeys`,
 	default: async () => {
 		const url = new URL(`/todos`, SERVER_URL)
 		const response = await fetch(url, { credentials: `include` })
 		if (!response.ok) throw new Error(response.status.toString())
-		const json = (await response.json()) as { todos: unknown }
-		const todos = todoSchema.array().parse(json.todos)
+		const json = await response.json()
+		const todos = todoSchema.array().parse(json)
+
+		/*
+			🚀	Performance hack!
+					We can make our client less chatty by pre-populating our todo atoms.
+					Comment out this line and watch the network tab to see the difference.
+		*/
 		for (const todo of todos) setState(todoAtoms, todo.id, todo)
+
 		return todos.map((todo) => todo.id)
 	},
 	catch: [Error],
 })
 
+/**
+ * This atom family holds the values of individual todos.
+ *
+ * A todo's default value is fetched from the server, but
+ * this only happens when you `resetState`, or `getState`
+ * when the atom has never been gotten or set before.
+ */
 const todoAtoms = atomFamily<Loadable<Todo>, number, Error>({
 	key: `todos`,
 	default: async (id) => {
@@ -42,13 +64,14 @@ const todoAtoms = atomFamily<Loadable<Todo>, number, Error>({
 		url.searchParams.set(`id`, id.toString())
 		const response = await fetch(url, { credentials: `include` })
 		if (!response.ok) throw new Error(response.status.toString())
-		const json = (await response.json()) as { todo: unknown }
-		const todo = todoSchema.parse(json.todo)
+		const json = await response.json()
+		const todo = todoSchema.parse(json)
 		return todo
 	},
 	catch: [Error],
 })
 
+/** This selector computes the total number of todos and the number of done todos. */
 const todosStatsSelector = selector<
 	Loadable<{
 		total: number
@@ -83,7 +106,7 @@ async function addTodo() {
 		body: text,
 	})
 	if (!res.ok) throw new Error(res.status.toString())
-	const { todo } = await res.json()
+	const todo = await res.json()
 	const realId = todo.id
 	setState(todoAtoms, realId, todo)
 	setState(todoKeysAtom, async (loadable) => {
@@ -112,14 +135,29 @@ async function deleteTodo(todoKey: number) {
 	})
 }
 
+async function toggleTodoDone(todoKey: number, isNowDone: 0 | 1) {
+	const url = new URL(`todos`, SERVER_URL)
+	url.searchParams.set(`id`, todoKey.toString())
+	setState(todoAtoms, todoKey, async (loadable) => {
+		const prev = await loadable
+		if (Error.isError(prev)) return prev
+		return { ...prev, done: isNowDone } satisfies Todo
+	})
+	await fetch(url, {
+		method: `PUT`,
+		credentials: `include`,
+		body: isNowDone.toString(),
+	})
+	resetState(todoAtoms, todoKey)
+}
+
 const TODO_FALLBACK: Todo = { id: 0, text: ``, done: 0 }
 const SKELETON_KEYS = Array.from({ length: 5 }).map(Math.random)
-for (const key of SKELETON_KEYS) setState(todoAtoms, key, TODO_FALLBACK)
+for (const KEY of SKELETON_KEYS) setState(todoAtoms, KEY, TODO_FALLBACK)
 
 export function App(): React.JSX.Element {
 	const todoKeys = useLoadable(todoKeysAtom, SKELETON_KEYS)
 	const stats = useLoadable(todosStatsSelector, { total: 0, done: 0 })
-
 	return (
 		<>
 			{todoKeys.error ? (
@@ -179,28 +217,11 @@ export function App(): React.JSX.Element {
 function Todo({ todoKey }: { todoKey: number }): React.JSX.Element {
 	const todo = useLoadable(todoAtoms, todoKey, TODO_FALLBACK)
 	const isSuspended = todo.loading || !Number.isInteger(todoKey)
-	const toggleDone = useCallback(
-		async (e: React.ChangeEvent<HTMLInputElement>) => {
-			const url = new URL(`todos`, SERVER_URL)
-			url.searchParams.set(`id`, todo.value.id.toString())
-			const nowChecked = e.target.checked ? 1 : 0
-			setState(todoAtoms, todoKey, async (loadable) => {
-				const prev = await loadable
-				if (Error.isError(prev)) return prev
-				return { ...prev, done: nowChecked } satisfies Todo
-			})
-			await fetch(url, {
-				method: `PUT`,
-				credentials: `include`,
-				body: nowChecked.toString(),
-			})
-			resetState(todoAtoms, todoKey)
-		},
-		[],
-	)
-	const deleteThisTodo = useCallback(async () => {
-		await deleteTodo(todoKey)
+	const toggleDone = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+		const isNowDone = e.target.checked ? 1 : 0
+		void toggleTodoDone(todoKey, isNowDone)
 	}, [])
+	const deleteThisTodo = useCallback(() => deleteTodo(todoKey), [])
 	return (
 		<div className={cn(`todo`, isSuspended && `loading`)}>
 			<input
@@ -220,11 +241,11 @@ function Todo({ todoKey }: { todoKey: number }): React.JSX.Element {
 	)
 }
 
+/** This atom holds the text of the new todo entry. */
 const newTodoTextAtom = atom<string>({
 	key: `newTodo`,
 	default: ``,
 })
-
 function NewTodo(): React.JSX.Element {
 	const text = useO(newTodoTextAtom)
 	const setText = useI(newTodoTextAtom)
@@ -250,6 +271,7 @@ function NewTodo(): React.JSX.Element {
 	)
 }
 
+/** This atom holds whether long load times are enabled. */
 const longLoadTimesAtom = atom<Loadable<boolean>>({
 	key: `longLoadTimes`,
 	default: () =>
@@ -257,7 +279,6 @@ const longLoadTimesAtom = atom<Loadable<boolean>>({
 			credentials: `include`,
 		}).then(async (res) => res.json()),
 })
-
 function LongLoadTimes(): React.JSX.Element {
 	const longLoadTimes = useLoadable(longLoadTimesAtom, false)
 	const toggle = useCallback(async () => {
