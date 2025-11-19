@@ -145,7 +145,7 @@ export function findRelations<
 	token: JoinToken<AName, A, BName, B, Cardinality>,
 	key: A | B,
 ): JoinStates<AName, A, BName, B, Cardinality> {
-	return findRelationsInStore(token, key, IMPLICIT.STORE)
+	return findRelationsInStore(IMPLICIT.STORE, token, key)
 }
 
 /**
@@ -163,7 +163,7 @@ export function editRelations<
 	token: JoinToken<AName, A, BName, B, Cardinality>,
 	change: (relations: Junction<AName, A, BName, B>) => void,
 ): void {
-	editRelationsInStore(token, change, IMPLICIT.STORE)
+	editRelationsInStore(IMPLICIT.STORE, token, change)
 }
 
 /**
@@ -180,5 +180,5 @@ export function getInternalRelations<
 >(
 	token: JoinToken<AName, A, BName, B, Cardinality>,
 ): MutableAtomFamilyToken<UList<A> | UList<B>, string> {
-	return getInternalRelationsFromStore(token, IMPLICIT.STORE)
+	return getInternalRelationsFromStore(IMPLICIT.STORE, token)
 }

@@ -13,11 +13,11 @@ export function editRelationsInStore<
 	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 >(
+	store: Store,
 	token: JoinToken<AName, A, BName, B, Cardinality>,
 	change: (relations: Junction<AName, A, BName, B>) => void,
-	store: Store,
 ): void {
-	const myJoin = getJoin(token, store)
+	const myJoin = getJoin(store, token)
 	const target = newest(store)
 	if (isChildStore(target)) {
 		const { toolkit } = target.transactionMeta
