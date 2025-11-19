@@ -72,7 +72,7 @@ export class Join<
 	public options: JoinOptions<AName, A, BName, B, Cardinality>
 	public relations: Junction<AName, A, BName, B>
 	public states: JoinStateFamilies<AName, A, BName, B, Cardinality>
-	public relatedKeysAtoms: MutableAtomFamilyToken<UList<string>, string>
+	public relatedKeysAtoms: MutableAtomFamilyToken<UList<A> | UList<B>, A | B>
 
 	public transact(
 		toolkit: WriterToolkit,
@@ -120,7 +120,10 @@ export class Join<
 			},
 			[`join`, `relations`],
 		)
-		this.relatedKeysAtoms = relatedKeysAtoms
+		this.relatedKeysAtoms = relatedKeysAtoms as MutableAtomFamilyToken<
+			UList<A> | UList<B>,
+			A | B
+		>
 
 		const replaceRelationsSafely: Write<
 			(a: string, newRelationsOfA: string[]) => void
