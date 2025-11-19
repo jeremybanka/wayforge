@@ -146,13 +146,9 @@ export const setupRealtimeTestServer = (
 			const socketClaim = socketRealm.allocate(`root`, `socket::${socket.id}`)
 			const socketState = findInStore(silo.store, RTS.socketAtoms, socketClaim)
 			setIntoStore(silo.store, socketState, socket)
-			editRelationsInStore(
-				RTS.usersOfSockets,
-				(relations) => {
-					relations.set(userClaim, socketClaim)
-				},
-				silo.store,
-			)
+			editRelationsInStore(silo.store, RTS.usersOfSockets, (relations) => {
+				relations.set(userClaim, socketClaim)
+			})
 			setIntoStore(silo.store, RTS.userKeysAtom, (index) => index.add(userClaim))
 			setIntoStore(silo.store, RTS.socketKeysAtom, (index) =>
 				index.add(socketClaim),
@@ -170,9 +166,9 @@ export const setupRealtimeTestServer = (
 
 	server.on(`connection`, (socket: SocketIO.Socket) => {
 		const userKeyState = findRelationsInStore(
+			silo.store,
 			RTS.usersOfSockets,
 			`socket::${socket.id}`,
-			silo.store,
 		).userKeyOfSocket
 		const userKey = getFromStore(silo.store, userKeyState)!
 		function enableLogging() {

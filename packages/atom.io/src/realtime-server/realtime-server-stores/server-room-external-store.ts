@@ -87,13 +87,9 @@ export function joinRoom(
 	}
 	socket.onAny(forward)
 
-	editRelationsInStore(
-		usersInRooms,
-		(relations) => {
-			relations.set({ room: roomKey, user: userKey })
-		},
-		store,
-	)
+	editRelationsInStore(store, usersInRooms, (relations) => {
+		relations.set({ room: roomKey, user: userKey })
+	})
 	const roomSocket = ROOMS.get(roomKey)
 	if (!roomSocket) {
 		store.logger.error(`❌`, `unknown`, roomKey, `no room found with this id`)
@@ -126,24 +122,16 @@ export function leaveRoom(
 	roomKey: RoomKey,
 	userKey: UserKey,
 ): void {
-	editRelationsInStore(
-		usersInRooms,
-		(relations) => {
-			relations.delete({ room: roomKey, user: userKey })
-		},
-		store,
-	)
+	editRelationsInStore(store, usersInRooms, (relations) => {
+		relations.delete({ room: roomKey, user: userKey })
+	})
 }
 
 export function destroyRoom(store: Store, roomKey: RoomKey): void {
 	setIntoStore(store, roomKeysAtom, (s) => (s.delete(roomKey), s))
-	editRelationsInStore(
-		usersInRooms,
-		(relations) => {
-			relations.delete({ room: roomKey })
-		},
-		store,
-	)
+	editRelationsInStore(store, usersInRooms, (relations) => {
+		relations.delete({ room: roomKey })
+	})
 	const room = ROOMS.get(roomKey)
 	if (room) {
 		room.emit(`exit`)
@@ -158,7 +146,7 @@ export function provideRooms<RoomNames extends string>(
 	const socketKey = `socket::${socket.id}` satisfies SocketKey
 	const userKey = getFromStore(
 		store,
-		findRelationsInStore(usersOfSockets, socketKey, store).userKeyOfSocket,
+		findRelationsInStore(store, usersOfSockets, socketKey).userKeyOfSocket,
 	)!
 
 	const exposeMutable = realtimeMutableProvider({ socket, store })
@@ -169,7 +157,7 @@ export function provideRooms<RoomNames extends string>(
 
 	exposeMutable(roomKeysAtom)
 
-	const usersInRoomsAtoms = getInternalRelationsFromStore(usersInRooms, store)
+	const usersInRoomsAtoms = getInternalRelationsFromStore(store, usersInRooms)
 	const usersWhoseRoomsCanBeSeenSelector = findInStore(
 		store,
 		selfListSelectors,
@@ -177,8 +165,8 @@ export function provideRooms<RoomNames extends string>(
 	)
 	exposeMutableFamily(usersInRoomsAtoms, usersWhoseRoomsCanBeSeenSelector)
 	const usersOfSocketsAtoms = getInternalRelationsFromStore(
-		usersOfSockets,
 		store,
+		usersOfSockets,
 	)
 	exposeMutableFamily(usersOfSocketsAtoms, socketKeysAtom)
 
@@ -199,10 +187,8 @@ export function provideRooms<RoomNames extends string>(
 	})
 
 	socket.on(`disconnect`, () => {
-		editRelationsInStore(
-			usersOfSockets,
-			(relations) => relations.delete(socketKey),
-			store,
+		editRelationsInStore(store, usersOfSockets, (relations) =>
+			relations.delete(socketKey),
 		)
 		if (userKey) {
 			setIntoStore(

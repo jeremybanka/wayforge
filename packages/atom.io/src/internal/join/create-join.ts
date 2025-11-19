@@ -13,7 +13,7 @@ export function createJoin<
 	store: RootStore,
 	options: JoinOptions<AName, A, BName, B, Cardinality>,
 ): JoinToken<AName, A, BName, B, Cardinality> {
-	store.joins.set(options.key, new Join(options))
+	store.joins.set(options.key, new Join(store, options))
 	const token: JoinToken<AName, A, BName, B, Cardinality> = {
 		key: options.key,
 		type: `join`,
