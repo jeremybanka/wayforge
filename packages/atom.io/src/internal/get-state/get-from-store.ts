@@ -6,20 +6,18 @@ import { getFallback } from "./get-fallback"
 import { readOrComputeValue } from "./read-or-compute-value"
 import { reduceReference } from "./reduce-reference"
 
-export function getFromStore<T>(store: Store, token: ReadableToken<T>): T
-
-export function getFromStore<T, E>(
+export function getFromStore<T, E = never>(
 	store: Store,
 	token: ReadableToken<T, any, E>,
 ): E | T
 
-export function getFromStore<T, K extends Canonical, E>(
+export function getFromStore<T, K extends Canonical, E = never>(
 	store: Store,
 	token: ReadableFamilyToken<T, K, E>,
 	key: NoInfer<K>,
 ): ViewOf<E | T>
 
-export function getFromStore<T, K extends Canonical, E>(
+export function getFromStore<T, K extends Canonical, E = never>(
 	store: Store,
 	...params:
 		| [token: ReadableFamilyToken<T, K, E>, key: NoInfer<K>]
