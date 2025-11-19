@@ -94,7 +94,7 @@
 		"eslint": "9.39.1",
 		"flightdeck": "workspace:*",
 		"globals": "16.5.0",
-		"rimraf": "6.1.0",
+		"rimraf": "6.1.2",
 		"sass-embedded": "1.93.3",
 		"varmint": "workspace:*",
 		"vite": "7.2.2",

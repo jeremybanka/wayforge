@@ -37,7 +37,7 @@
 		"@types/tmp": "0.2.6",
 		"concurrently": "9.2.1",
 		"eslint": "9.39.1",
-		"rimraf": "6.1.0",
+		"rimraf": "6.1.2",
 		"tmp": "0.2.5",
 		"tsdown": "0.16.5",
 		"vite": "7.2.2",
