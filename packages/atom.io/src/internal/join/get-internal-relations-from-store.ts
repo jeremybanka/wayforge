@@ -10,7 +10,14 @@ export function getInternalRelationsFromStore<
 >(
 	store: RootStore,
 	token: JoinToken<any, A, any, B, any>,
-): MutableAtomFamilyToken<UList<A> | UList<B>, A | B> {
+): [
+	atob: MutableAtomFamilyToken<UList<B>, A>,
+	btoa: MutableAtomFamilyToken<UList<A>, B>,
+] {
 	const myJoin = getJoin(store, token)
-	return myJoin.relatedKeysAtoms
+	const atoms = myJoin.relatedKeysAtoms
+	return [
+		atoms as MutableAtomFamilyToken<UList<B>, A>,
+		atoms as MutableAtomFamilyToken<UList<A>, B>,
+	]
 }

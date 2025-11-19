@@ -43,15 +43,15 @@ export const usersInRooms: JoinToken<`room`, RoomKey, `user`, UserKey, `1:n`> =
 	})
 
 export const usersInMyRoomView: ReadonlyPureSelectorFamilyToken<
-	MutableAtomToken<UList<UserKey>>[],
+	MutableAtomToken<UList<RoomKey>>[],
 	UserKey
-> = selectorFamily<MutableAtomToken<UList<UserKey>>[], UserKey>({
+> = selectorFamily<MutableAtomToken<UList<RoomKey>>[], UserKey>({
 	key: `usersInMyRoomView`,
 	get:
 		(myUsername) =>
 		({ find }) => {
-			const usersInRoomsAtoms = getInternalRelations(usersInRooms)
-			const myRoomIndex = find(usersInRoomsAtoms, myUsername)
+			const [, roomsOfUsersAtoms] = getInternalRelations(usersInRooms)
+			const myRoomIndex = find(roomsOfUsersAtoms, myUsername)
 			return [myRoomIndex]
 		},
 })

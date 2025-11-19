@@ -179,6 +179,9 @@ export function getInternalRelations<
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 >(
 	token: JoinToken<AName, A, BName, B, Cardinality>,
-): MutableAtomFamilyToken<UList<A> | UList<B>, string> {
+): [
+	atob: MutableAtomFamilyToken<UList<B>, A>,
+	btoa: MutableAtomFamilyToken<UList<A>, B>,
+] {
 	return getInternalRelationsFromStore(IMPLICIT.STORE, token)
 }
