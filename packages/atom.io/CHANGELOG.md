@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.44.7
+
+### Patch Changes
+
+- 0ad6180: 🐛 `atom.io/internal` Fixed bug where using `getFromStore()` would give an `unknown` return type when using the streamlined family get.
+- 0ad6180: 🏷️ Improved the accuracy of the type of a Join's `relatedKeysAtoms` family to be keyed by the Join's `A` and `B` keys.
+
 ## 0.44.6
 
 ### Patch Changes
