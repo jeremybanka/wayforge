@@ -5,16 +5,12 @@ import type { RootStore } from "../transaction"
 import { getJoin } from "./get-join"
 
 export function getInternalRelationsFromStore<
-	AName extends string,
-	BName extends string,
+	A extends string,
+	B extends string,
 >(
-	token: JoinToken<any, AName, any, BName, any>,
+	token: JoinToken<any, A, any, B, any>,
 	store: RootStore,
-): MutableAtomFamilyToken<UList<AName> | UList<BName>, string> {
+): MutableAtomFamilyToken<UList<A> | UList<B>, A | B> {
 	const myJoin = getJoin(token, store)
-	const family = myJoin.relatedKeysAtoms as MutableAtomFamilyToken<
-		UList<AName> | UList<BName>,
-		string
-	>
-	return family
+	return myJoin.relatedKeysAtoms
 }
