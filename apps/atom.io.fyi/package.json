@@ -22,9 +22,9 @@
 	},
 	"dependencies": {
 		"@astrojs/cloudflare": "12.6.11",
-		"@astrojs/mdx": "4.3.11",
+		"@astrojs/mdx": "4.3.12",
 		"@astrojs/preact": "4.1.3",
-		"astro": "5.15.9",
+		"astro": "5.16.0",
 		"atom.io": "workspace:*",
 		"preact": "10.27.2",
 		"react": "npm:@preact/compat@18.3.1",
