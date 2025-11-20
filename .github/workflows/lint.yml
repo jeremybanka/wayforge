@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 9
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.0
       - uses: ./.github/actions/setup
       - run: pnpm fmt
       - run: pnpm lint:biome
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 9
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.0
       - uses: ./.github/actions/setup
       - run: pnpm lint:deps
 
@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 9
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.0
       - uses: ./.github/actions/setup
       - run: pnpm lint:eslint
 
@@ -49,6 +49,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 9
     steps:
-      - uses: actions/checkout@v5.0.1
+      - uses: actions/checkout@v6.0.0
       - uses: ./.github/actions/setup
       - run: pnpm lint:types
