@@ -17,9 +17,29 @@ ruleTester.run(`explicit-state-types`, rule, {
     `,
 		},
 		{
+			name: `atom - top-level`,
+			options: [{ allowTopLevelTypeAnnotation: true }],
+			code: `
+      const countState: AtomToken<number> = atom({
+        key: "count",
+        default: 0,
+      })
+    `,
+		},
+		{
 			name: `atomFamily`,
 			code: `
       const countAtoms = atomFamily<number, string>({
+        key: "counts",
+        default: 0,
+      })
+    `,
+		},
+		{
+			name: `atomFamily - top-level`,
+			options: [{ allowTopLevelTypeAnnotation: true }],
+			code: `
+      const countAtoms: AtomFamilyToken<number, string> = atomFamily({
         key: "counts",
         default: 0,
       })
@@ -35,9 +55,29 @@ ruleTester.run(`explicit-state-types`, rule, {
     `,
 		},
 		{
+			name: `selector - top-level`,
+			options: [{ allowTopLevelTypeAnnotation: true }],
+			code: `
+      const doubleState: SelectorToken<number> = selector({
+        key: "double",
+        get: ({ get }) => get(countState),
+      })
+    `,
+		},
+		{
 			name: `selectorFamily`,
 			code: `
       const doubleSelectors = selectorFamily<number, string>({
+        key: "doubles",
+        default: (id) => ({ find, get }) => get(find(countAtoms, id)),
+      })
+    `,
+		},
+		{
+			name: `selectorFamily - top-level`,
+			options: [{ allowTopLevelTypeAnnotation: true }],
+			code: `
+      const doubleSelectors: SelectorFamilyToken<number, string> = selectorFamily({
         key: "doubles",
         default: (id) => ({ find, get }) => get(find(countAtoms, id)),
       })
@@ -69,12 +109,35 @@ ruleTester.run(`explicit-state-types`, rule, {
 	invalid: [
 		{
 			name: `atom`,
+			options: [{ allowTopLevelTypeAnnotation: false }],
 			code: `
         const count = atom({
           key: "count",
           default: 0,
         })
       `,
+			errors: [{ messageId: `noTypeArgument` }],
+		},
+		{
+			name: `atom - top-level option enabled, but no annotation or type argument`,
+			options: [{ allowTopLevelTypeAnnotation: true }],
+			code: `
+        const count = atom({
+          key: "count",
+          default: 0,
+        })
+      `,
+			errors: [{ messageId: `noTypeArgumentOrAnnotation` }],
+		},
+		{
+			name: `atom - top-level option disabled, with annotation`,
+			options: [{ allowTopLevelTypeAnnotation: false }],
+			code: `
+		    const countState: AtomToken<number> = atom({
+		      key: "count",
+		      default: 0,
+		    })
+		  `,
 			errors: [{ messageId: `noTypeArgument` }],
 		},
 		{
