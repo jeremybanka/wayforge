@@ -35,7 +35,7 @@
 		"picocolors": "1.1.1"
 	},
 	"devDependencies": {
-		"@typescript/native-preview": "7.0.0-dev.20251119.1",
+		"@typescript/native-preview": "7.0.0-dev.20251120.1",
 		"concurrently": "9.2.1",
 		"eslint": "9.39.1",
 		"rimraf": "6.1.2",
