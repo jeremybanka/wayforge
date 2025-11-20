@@ -25,15 +25,11 @@ export const socketAtoms: RegularAtomFamilyToken<Socket | null, SocketKey> =
 		default: null,
 	})
 
-export const socketKeysAtom: MutableAtomToken<UList<SocketKey>> = mutableAtom<
-	UList<SocketKey>
->({
+export const socketKeysAtom: MutableAtomToken<UList<SocketKey>> = mutableAtom({
 	key: `socketsIndex`,
 	class: UList,
 })
-export const userKeysAtom: MutableAtomToken<UList<UserKey>> = mutableAtom<
-	UList<UserKey>
->({
+export const userKeysAtom: MutableAtomToken<UList<UserKey>> = mutableAtom({
 	key: `usersIndex`,
 	class: UList,
 })
@@ -52,7 +48,7 @@ export const usersOfSockets: JoinToken<
 })
 
 export const selfListSelectors: PureSelectorFamilyToken<UserKey[], UserKey> =
-	selectorFamily<UserKey[], UserKey>({
+	selectorFamily({
 		key: `selfList`,
 		get: (userId) => () => [userId],
 	})

@@ -43,7 +43,7 @@ export const usersInRooms: JoinToken<`room`, RoomKey, `user`, UserKey, `1:n`> =
 export const usersInMyRoomView: ReadonlyPureSelectorFamilyToken<
 	MutableAtomToken<UList<RoomKey>>[],
 	UserKey
-> = selectorFamily<MutableAtomToken<UList<RoomKey>>[], UserKey>({
+> = selectorFamily({
 	key: `usersInMyRoomView`,
 	get:
 		(myUsername) =>
