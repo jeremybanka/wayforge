@@ -328,7 +328,7 @@ describe(`some practical use cases`, () => {
 			isBType: (input): input is `1` | `2` | `3` =>
 				[`1`, `2`, `3`].includes(input),
 		})
-		const [membersOfGroupsAtoms] = getInternalRelations(membersOfGroups)
+		const [membersOfGroupsAtoms] = getInternalRelations(membersOfGroups, `split`)
 		expect(membersOfGroupsAtoms.key).toEqual(`membersOfGroups/relatedKeys`)
 		expect(membersOfGroupsAtoms.type).toEqual(`mutable_atom_family`)
 	})

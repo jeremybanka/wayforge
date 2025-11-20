@@ -157,14 +157,14 @@ export function provideRooms<RoomNames extends string>(
 
 	exposeMutable(roomKeysAtom)
 
-	const [usersInRoomsAtoms] = getInternalRelationsFromStore(store, usersInRooms)
+	const usersInRoomsAtoms = getInternalRelationsFromStore(store, usersInRooms)
 	const usersWhoseRoomsCanBeSeenSelector = findInStore(
 		store,
 		selfListSelectors,
 		userKey,
 	)
 	exposeMutableFamily(usersInRoomsAtoms, usersWhoseRoomsCanBeSeenSelector)
-	const [usersOfSocketsAtoms] = getInternalRelationsFromStore(
+	const usersOfSocketsAtoms = getInternalRelationsFromStore(
 		store,
 		usersOfSockets,
 	)

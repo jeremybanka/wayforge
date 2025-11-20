@@ -50,7 +50,7 @@ export const usersInMyRoomView: ReadonlyPureSelectorFamilyToken<
 	get:
 		(myUsername) =>
 		({ find }) => {
-			const [, roomsOfUsersAtoms] = getInternalRelations(usersInRooms)
+			const [, roomsOfUsersAtoms] = getInternalRelations(usersInRooms, `split`)
 			const myRoomIndex = find(roomsOfUsersAtoms, myUsername)
 			return [myRoomIndex]
 		},

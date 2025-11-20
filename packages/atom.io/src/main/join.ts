@@ -171,17 +171,24 @@ export function editRelations<
  * @returns
  * A {@link MutableAtomFamilyToken} to access the internal relations
  */
-export function getInternalRelations<
-	AName extends string,
-	A extends string,
-	BName extends string,
-	B extends string,
-	Cardinality extends `1:1` | `1:n` | `n:n`,
->(
-	token: JoinToken<AName, A, BName, B, Cardinality>,
+export function getInternalRelations<A extends string, B extends string>(
+	token: JoinToken<any, A, any, B, any>,
+): MutableAtomFamilyToken<UList<A> | UList<B>, A | B>
+export function getInternalRelations<A extends string, B extends string>(
+	token: JoinToken<any, A, any, B, any>,
+	split: `split`,
 ): [
 	atob: MutableAtomFamilyToken<UList<B>, A>,
 	btoa: MutableAtomFamilyToken<UList<A>, B>,
-] {
-	return getInternalRelationsFromStore(IMPLICIT.STORE, token)
+]
+export function getInternalRelations<A extends string, B extends string>(
+	token: JoinToken<any, A, any, B, any>,
+	split?: `split`,
+):
+	| MutableAtomFamilyToken<UList<A> | UList<B>, A | B>
+	| [
+			atob: MutableAtomFamilyToken<UList<B>, A>,
+			btoa: MutableAtomFamilyToken<UList<A>, B>,
+	  ] {
+	return getInternalRelationsFromStore(IMPLICIT.STORE, token, split as `split`)
 }
