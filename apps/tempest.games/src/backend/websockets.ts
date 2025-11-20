@@ -74,13 +74,9 @@ export const sessionMiddleware: SocketServerMiddleware = async (
 	if (userSessions?.has(user.id, sessionKey)) {
 		const socketState = findInStore(IMPLICIT.STORE, socketAtoms, socketKey)
 		setIntoStore(IMPLICIT.STORE, socketState, socket)
-		editRelationsInStore(
-			usersOfSockets,
-			(relations) => {
-				relations.set(userKey, socketKey)
-			},
-			IMPLICIT.STORE,
-		)
+		editRelationsInStore(IMPLICIT.STORE, usersOfSockets, (relations) => {
+			relations.set(userKey, socketKey)
+		})
 		setIntoStore(IMPLICIT.STORE, userKeysAtom, (index) => index.add(userKey))
 		setIntoStore(IMPLICIT.STORE, socketKeysAtom, (index) => index.add(socketKey))
 		logger.info(`${username} connected on ${socket.id}`)
@@ -99,9 +95,9 @@ export const serveSocket = (socket: TempestServerSocket): void => {
 	// const cleanup = syncContinuity(countContinuity)
 	const socketKey = `socket::${socket.id}` satisfies SocketKey
 	const userOfSocketSelector = findRelationsInStore(
+		IMPLICIT.STORE,
 		usersOfSockets,
 		socketKey,
-		IMPLICIT.STORE,
 	).userKeyOfSocket
 	const userKeyOfSocket = getFromStore(IMPLICIT.STORE, userOfSocketSelector)
 	const rawUserId = userKeyOfSocket?.replace(/^user::/, ``)
@@ -119,18 +115,14 @@ export const serveSocket = (socket: TempestServerSocket): void => {
 
 	socket.on(`disconnect`, () => {
 		const userKeyState = findRelationsInStore(
+			IMPLICIT.STORE,
 			usersOfSockets,
 			socketKey,
-			IMPLICIT.STORE,
 		).userKeyOfSocket
 		const userKey = getFromStore(IMPLICIT.STORE, userKeyState)
-		editRelationsInStore(
-			usersOfSockets,
-			(relations) => {
-				relations.delete(socketKey)
-			},
-			IMPLICIT.STORE,
-		)
+		editRelationsInStore(IMPLICIT.STORE, usersOfSockets, (relations) => {
+			relations.delete(socketKey)
+		})
 		if (userKey) {
 			setIntoStore(
 				IMPLICIT.STORE,

@@ -145,7 +145,7 @@ export function findRelations<
 	token: JoinToken<AName, A, BName, B, Cardinality>,
 	key: A | B,
 ): JoinStates<AName, A, BName, B, Cardinality> {
-	return findRelationsInStore(token, key, IMPLICIT.STORE)
+	return findRelationsInStore(IMPLICIT.STORE, token, key)
 }
 
 /**
@@ -163,7 +163,7 @@ export function editRelations<
 	token: JoinToken<AName, A, BName, B, Cardinality>,
 	change: (relations: Junction<AName, A, BName, B>) => void,
 ): void {
-	editRelationsInStore(token, change, IMPLICIT.STORE)
+	editRelationsInStore(IMPLICIT.STORE, token, change)
 }
 
 /**
@@ -171,14 +171,24 @@ export function editRelations<
  * @returns
  * A {@link MutableAtomFamilyToken} to access the internal relations
  */
-export function getInternalRelations<
-	AName extends string,
-	A extends string,
-	BName extends string,
-	B extends string,
-	Cardinality extends `1:1` | `1:n` | `n:n`,
->(
-	token: JoinToken<AName, A, BName, B, Cardinality>,
-): MutableAtomFamilyToken<UList<A> | UList<B>, string> {
-	return getInternalRelationsFromStore(token, IMPLICIT.STORE)
+export function getInternalRelations<A extends string, B extends string>(
+	token: JoinToken<any, A, any, B, any>,
+): MutableAtomFamilyToken<UList<A> | UList<B>, A | B>
+export function getInternalRelations<A extends string, B extends string>(
+	token: JoinToken<any, A, any, B, any>,
+	split: `split`,
+): [
+	atob: MutableAtomFamilyToken<UList<B>, A>,
+	btoa: MutableAtomFamilyToken<UList<A>, B>,
+]
+export function getInternalRelations<A extends string, B extends string>(
+	token: JoinToken<any, A, any, B, any>,
+	split?: `split`,
+):
+	| MutableAtomFamilyToken<UList<A> | UList<B>, A | B>
+	| [
+			atob: MutableAtomFamilyToken<UList<B>, A>,
+			btoa: MutableAtomFamilyToken<UList<A>, B>,
+	  ] {
+	return getInternalRelationsFromStore(IMPLICIT.STORE, token, split as `split`)
 }

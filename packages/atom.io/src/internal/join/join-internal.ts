@@ -89,8 +89,8 @@ export class Join<
 	public [Symbol.dispose](): void {}
 
 	public constructor(
+		store: RootStore,
 		options: JoinOptions<AName, A, BName, B, Cardinality>,
-		store: RootStore = IMPLICIT.STORE,
 	) {
 		type AB = A & B
 
