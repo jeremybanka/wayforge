@@ -15,15 +15,14 @@ const STATE_FUNCTIONS = [
 	`selectorFamily`,
 ]
 
-// 1. Define the Rule Options Type
 type Options = [
 	{
-		allowTopLevelTypeAnnotation?: boolean
+		permitAnnotation?: boolean
 	},
 ]
 
 export const explicitStateTypes: ESLintUtils.RuleModule<
-	`noTypeArgument`,
+	`noTypeArgument` | `noTypeArgumentOrAnnotation`,
 	Options,
 	unknown,
 	ESLintUtils.RuleListener
@@ -36,15 +35,15 @@ export const explicitStateTypes: ESLintUtils.RuleModule<
 		},
 		messages: {
 			noTypeArgument: `State declarations must have generic type arguments directly passed to them.`,
+			noTypeArgumentOrAnnotation: `State declarations must have generic type arguments directly passed to them, or a top-level type annotation.`,
 		},
-		// 2. Define the Schema for the Opt-in Option
 		schema: [
 			{
 				type: `object`,
 				properties: {
-					allowTopLevelTypeAnnotation: {
+					permitAnnotation: {
 						type: `boolean`,
-						default: false, // Defaulting to 'false' makes it opt-in
+						default: false,
 					},
 				},
 				additionalProperties: false,
@@ -53,25 +52,18 @@ export const explicitStateTypes: ESLintUtils.RuleModule<
 	},
 	defaultOptions: [
 		{
-			allowTopLevelTypeAnnotation: false,
+			permitAnnotation: false,
 		},
-	], // Provide a default for options
+	],
 	create(context) {
-		// 3. Access the Opt-in Option
-		// const [{ allowTopLevelTypeAnnotation }] = context.options
 		const options = context.options[0]
-		const allowTopLevelTypeAnnotation =
-			options?.allowTopLevelTypeAnnotation ?? false
+		const permitAnnotation = options?.permitAnnotation ?? false
 
 		/**
 		 * Checks if the CallExpression is part of a variable declaration
 		 * with a top-level TypeAnnotation (e.g., const x: Type = call()).
 		 */
-		function hasTopLevelTypeAnnotation(node: TSESTree.CallExpression): boolean {
-			if (!allowTopLevelTypeAnnotation) {
-				return false // If the option is disabled, always return false
-			}
-
+		function hasTypeAnnotation(node: TSESTree.CallExpression): boolean {
 			// Check if the CallExpression is the initializer of a variable declarator
 			const parent = node.parent
 			if (
@@ -90,25 +82,26 @@ export const explicitStateTypes: ESLintUtils.RuleModule<
 			return false
 		}
 
-		// Helper to check if the function call is one of the targeted state functions
-		const isStateFunctionCall = (callee: TSESTree.Expression) => {
-			switch (callee.type) {
-				case `Identifier`:
-					return STATE_FUNCTIONS.includes(callee.name)
-				case `MemberExpression`:
-					return (
-						callee.property.type === `Identifier` &&
-						STATE_FUNCTIONS.includes(callee.property.name)
-					)
-				default:
-					return false
-			}
-		}
 		return {
 			CallExpression(node) {
-				// Check if the current node is a call to a state function
-				if (!isStateFunctionCall(node.callee)) {
-					return // Not a targeted function call, exit early
+				const callee = node.callee
+
+				switch (callee.type) {
+					case `Identifier`:
+						if (STATE_FUNCTIONS.includes(callee.name) === false) {
+							return
+						}
+						break
+					case `MemberExpression`:
+						if (
+							(callee.property.type === `Identifier` &&
+								STATE_FUNCTIONS.includes(callee.property.name)) === false
+						) {
+							return
+						}
+						break
+					default:
+						return
 				}
 
 				// Check for the *required* generic type argument first
@@ -116,13 +109,18 @@ export const explicitStateTypes: ESLintUtils.RuleModule<
 					return // Generic type argument is present, no error
 				}
 
-				// 4. Implement the new Carveout/Exception
 				// If generic arguments are missing, check if the top-level annotation exception is enabled AND present
-				if (allowTopLevelTypeAnnotation && hasTopLevelTypeAnnotation(node)) {
-					return // Exception met: type annotation is on the variable declaration
+				if (permitAnnotation) {
+					if (hasTypeAnnotation(node)) {
+						return // Exception met: type annotation is on the variable declaration
+					}
+					context.report({
+						node,
+						messageId: `noTypeArgumentOrAnnotation`,
+					})
+					return
 				}
 
-				// If all checks fail (no generic type, and no allowed top-level type), report the error
 				context.report({
 					node,
 					messageId: `noTypeArgument`,
