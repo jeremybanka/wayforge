@@ -75,9 +75,9 @@ function View({
 }): React.ReactNode {
 	const store = React.useContext(AR.StoreContext)
 	const myRoomKeyState = findRelationsInStore(
+		store,
 		RT.usersInRooms,
 		myUsername,
-		store,
 	).roomKeyOfUser
 	const myRoomKey = RTR.usePullSelector(myRoomKeyState)
 	return myRoomKey ? <Room roomId={myRoomKey} /> : <Lobby />

@@ -12,8 +12,8 @@ export function getJoin<
 	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 >(
-	token: JoinToken<AName, A, BName, B, Cardinality>,
 	store: Store,
+	token: JoinToken<AName, A, BName, B, Cardinality>,
 ): Join<AName, A, BName, B, Cardinality> {
 	let myJoin = store.joins.get(token.key)
 	if (myJoin === undefined) {
@@ -25,7 +25,7 @@ export function getJoin<
 			)
 		}
 		const root = eldest(store)
-		myJoin = new Join(rootJoin.options, root)
+		myJoin = new Join(root, rootJoin.options)
 		store.joins.set(token.key, myJoin)
 	}
 	return myJoin

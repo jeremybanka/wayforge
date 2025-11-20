@@ -8,9 +8,39 @@ export function getInternalRelationsFromStore<
 	A extends string,
 	B extends string,
 >(
-	token: JoinToken<any, A, any, B, any>,
 	store: RootStore,
-): MutableAtomFamilyToken<UList<A> | UList<B>, A | B> {
-	const myJoin = getJoin(token, store)
+	token: JoinToken<any, A, any, B, any>,
+): MutableAtomFamilyToken<UList<A> | UList<B>, A | B>
+export function getInternalRelationsFromStore<
+	A extends string,
+	B extends string,
+>(
+	store: RootStore,
+	token: JoinToken<any, A, any, B, any>,
+	split: `split`,
+): [
+	atob: MutableAtomFamilyToken<UList<B>, A>,
+	btoa: MutableAtomFamilyToken<UList<A>, B>,
+]
+export function getInternalRelationsFromStore<
+	A extends string,
+	B extends string,
+>(
+	store: RootStore,
+	token: JoinToken<any, A, any, B, any>,
+	split?: `split`,
+):
+	| MutableAtomFamilyToken<UList<A> | UList<B>, A | B>
+	| [
+			atob: MutableAtomFamilyToken<UList<B>, A>,
+			btoa: MutableAtomFamilyToken<UList<A>, B>,
+	  ] {
+	const myJoin = getJoin(store, token)
+	if (split === `split`) {
+		return [
+			myJoin.relatedKeysAtoms as MutableAtomFamilyToken<UList<B>, A>,
+			myJoin.relatedKeysAtoms as MutableAtomFamilyToken<UList<A>, B>,
+		]
+	}
 	return myJoin.relatedKeysAtoms
 }

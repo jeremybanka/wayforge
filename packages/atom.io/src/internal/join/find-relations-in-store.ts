@@ -12,11 +12,11 @@ export function findRelationsInStore<
 	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 >(
+	store: RootStore,
 	token: JoinToken<AName, A, BName, B, Cardinality>,
 	key: A | B,
-	store: RootStore,
 ): JoinStates<AName, A, BName, B, Cardinality> {
-	const myJoin = getJoin(token, store)
+	const myJoin = getJoin(store, token)
 	let relations: JoinStates<AName, A, BName, B, Cardinality>
 	switch (token.cardinality satisfies `1:1` | `1:n` | `n:n`) {
 		case `1:1`: {
