@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.44.8
+
+### Patch Changes
+
+- 3f1d98a: ✨ `getRelations` now accepts a `split` option, which returns two atom families instead of one. These families are actually the same family under the hood, but provide different type signatures from the a and b sides of the join.
+
 ## 0.44.7
 
 ### Patch Changes
