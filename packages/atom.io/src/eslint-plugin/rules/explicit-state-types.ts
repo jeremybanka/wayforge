@@ -58,7 +58,10 @@ export const explicitStateTypes: ESLintUtils.RuleModule<
 	], // Provide a default for options
 	create(context) {
 		// 3. Access the Opt-in Option
-		const [{ allowTopLevelTypeAnnotation }] = context.options
+		// const [{ allowTopLevelTypeAnnotation }] = context.options
+		const options = context.options[0]
+		const allowTopLevelTypeAnnotation =
+			options?.allowTopLevelTypeAnnotation ?? false
 
 		/**
 		 * Checks if the CallExpression is part of a variable declaration
