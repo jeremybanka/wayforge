@@ -90,23 +90,22 @@ export const explicitStateTypes: ESLintUtils.RuleModule<
 			return false
 		}
 
+		// Helper to check if the function call is one of the targeted state functions
+		const isStateFunctionCall = (callee: TSESTree.Expression) => {
+			switch (callee.type) {
+				case `Identifier`:
+					return STATE_FUNCTIONS.includes(callee.name)
+				case `MemberExpression`:
+					return (
+						callee.property.type === `Identifier` &&
+						STATE_FUNCTIONS.includes(callee.property.name)
+					)
+				default:
+					return false
+			}
+		}
 		return {
 			CallExpression(node) {
-				// Helper to check if the function call is one of the targeted state functions
-				const isStateFunctionCall = (callee: TSESTree.Expression) => {
-					switch (callee.type) {
-						case `Identifier`:
-							return STATE_FUNCTIONS.includes(callee.name)
-						case `MemberExpression`:
-							return (
-								callee.property.type === `Identifier` &&
-								STATE_FUNCTIONS.includes(callee.property.name)
-							)
-						default:
-							return false
-					}
-				}
-
 				// Check if the current node is a call to a state function
 				if (!isStateFunctionCall(node.callee)) {
 					return // Not a targeted function call, exit early
