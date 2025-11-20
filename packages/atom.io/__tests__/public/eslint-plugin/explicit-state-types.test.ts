@@ -18,7 +18,7 @@ ruleTester.run(`explicit-state-types`, rule, {
 		},
 		{
 			name: `atom - top-level`,
-			options: [{ allowTopLevelTypeAnnotation: true }],
+			options: [{ permitAnnotation: true }],
 			code: `
       const countState: AtomToken<number> = atom({
         key: "count",
@@ -37,7 +37,7 @@ ruleTester.run(`explicit-state-types`, rule, {
 		},
 		{
 			name: `atomFamily - top-level`,
-			options: [{ allowTopLevelTypeAnnotation: true }],
+			options: [{ permitAnnotation: true }],
 			code: `
       const countAtoms: AtomFamilyToken<number, string> = atomFamily({
         key: "counts",
@@ -56,7 +56,7 @@ ruleTester.run(`explicit-state-types`, rule, {
 		},
 		{
 			name: `selector - top-level`,
-			options: [{ allowTopLevelTypeAnnotation: true }],
+			options: [{ permitAnnotation: true }],
 			code: `
       const doubleState: SelectorToken<number> = selector({
         key: "double",
@@ -75,7 +75,7 @@ ruleTester.run(`explicit-state-types`, rule, {
 		},
 		{
 			name: `selectorFamily - top-level`,
-			options: [{ allowTopLevelTypeAnnotation: true }],
+			options: [{ permitAnnotation: true }],
 			code: `
       const doubleSelectors: SelectorFamilyToken<number, string> = selectorFamily({
         key: "doubles",
@@ -109,7 +109,7 @@ ruleTester.run(`explicit-state-types`, rule, {
 	invalid: [
 		{
 			name: `atom`,
-			options: [{ allowTopLevelTypeAnnotation: false }],
+			options: [{ permitAnnotation: false }],
 			code: `
         const count = atom({
           key: "count",
@@ -120,7 +120,7 @@ ruleTester.run(`explicit-state-types`, rule, {
 		},
 		{
 			name: `atom - top-level option enabled, but no annotation or type argument`,
-			options: [{ allowTopLevelTypeAnnotation: true }],
+			options: [{ permitAnnotation: true }],
 			code: `
         const count = atom({
           key: "count",
@@ -131,7 +131,7 @@ ruleTester.run(`explicit-state-types`, rule, {
 		},
 		{
 			name: `atom - top-level option disabled, with annotation`,
-			options: [{ allowTopLevelTypeAnnotation: false }],
+			options: [{ permitAnnotation: false }],
 			code: `
 		    const countState: AtomToken<number> = atom({
 		      key: "count",
