@@ -7,6 +7,7 @@ runs:
       uses: jdx/mise-action@v3.5.0
       with:
         version: 2025.11.7
+        cache: false
 
     - name: Install Dependencies
       shell: bash
