@@ -1,5 +1,10 @@
 name: Setup
 description: Download and install 3rd party software.
+inputs:
+  should-save-cache:
+    description: "Set to true to enable saving the cache for mise. Defaults to false."
+    required: false
+    default: "false" # Inputs are always strings, so 'false'
 runs:
   using: composite
   steps:
@@ -8,7 +13,7 @@ runs:
       with:
         version: 2025.11.7
         cache: true
-        cache-save: false
+        cache_save: false
 
     - name: Install Dependencies
       shell: bash
