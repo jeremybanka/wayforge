@@ -105,6 +105,13 @@ ruleTester.run(`explicit-state-types`, rule, {
         })
       `,
 		},
+		{
+			name: `Other`,
+			code: `
+        someEntity.someMethod()
+        super()
+      `,
+		},
 	],
 	invalid: [
 		{
