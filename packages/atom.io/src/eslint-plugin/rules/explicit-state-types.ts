@@ -59,29 +59,6 @@ export const explicitStateTypes: ESLintUtils.RuleModule<
 		const options = context.options[0]
 		const permitAnnotation = options?.permitAnnotation ?? false
 
-		/**
-		 * Checks if the CallExpression is part of a variable declaration
-		 * with a top-level TypeAnnotation (e.g., const x: Type = call()).
-		 */
-		function hasTypeAnnotation(node: TSESTree.CallExpression): boolean {
-			// Check if the CallExpression is the initializer of a variable declarator
-			const parent = node.parent
-			if (
-				parent?.type === AST_NODE_TYPES.VariableDeclarator &&
-				parent.init === node
-			) {
-				// Check if the VariableDeclarator has an id with a TypeAnnotation
-				const declaratorId = parent.id
-				if (declaratorId.type === AST_NODE_TYPES.Identifier) {
-					// Check for 'const myAtom: AtomToken<string> = ...'
-					return !!declaratorId.typeAnnotation
-				}
-			}
-
-			// For the purposes of this rule, we only check simple variable declarations
-			return false
-		}
-
 		return {
 			CallExpression(node) {
 				const callee = node.callee
@@ -111,7 +88,21 @@ export const explicitStateTypes: ESLintUtils.RuleModule<
 
 				// If generic arguments are missing, check if the top-level annotation exception is enabled AND present
 				if (permitAnnotation) {
-					if (hasTypeAnnotation(node)) {
+					let hasAnnotation = false
+					// Check if the CallExpression is the initializer of a variable declarator
+					const parent = node.parent
+					if (
+						parent?.type === AST_NODE_TYPES.VariableDeclarator &&
+						parent.init === node
+					) {
+						// Check if the VariableDeclarator has an id with a TypeAnnotation
+						const declaratorId = parent.id
+						if (declaratorId.type === AST_NODE_TYPES.Identifier) {
+							// Check for 'const myAtom: AtomToken<string> = ...'
+							hasAnnotation = Boolean(declaratorId.typeAnnotation)
+						}
+					}
+					if (hasAnnotation) {
 						return // Exception met: type annotation is on the variable declaration
 					}
 					context.report({
