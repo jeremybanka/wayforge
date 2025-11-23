@@ -7,10 +7,20 @@ const createRule = ESLintUtils.RuleCreator(
 	(name) => `https://atom.io.fyi/docs/eslint-plugin#${name}`,
 )
 
-const STATE_FUNCTIONS_WITH_CATCH = [`atom`, `atomFamily`]
+const STATE_FUNCTIONS_WITH_CATCH = [
+	`atom`,
+	`atomFamily`,
+	`selector`,
+	`selectorFamily`,
+]
+
+const FAMILY_FUNCTIONS = [`atomFamily`, `selectorFamily`]
+const STANDALONE_FUNCTIONS = [`atom`, `selector`]
 
 export const exactCatchTypes: ESLintUtils.RuleModule<
-	`invalidCatchConstructor` | `missingCatchProperty`, // Added new messageId
+	| `invalidCatchConstructor`
+	| `missingCatchProperty`
+	| `hasExtraneousCatchProperty`, // Added new messageId
 	[],
 	unknown,
 	ESLintUtils.RuleListener
@@ -29,6 +39,7 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 				`The constructor '{{constructorName}}' in the 'catch' array is not assignable ` +
 				`to the atom's declared error type '{{errorTypeName}}'. ` +
 				`It might catch errors that the atom is not designed to handle.`,
+			hasExtraneousCatchProperty: `A 'catch' property was provided to '{{functionName}}', but no error type parameter was provided.`,
 		},
 		schema: [], // No options needed
 	},
@@ -61,17 +72,48 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 
 				// 2. Check for explicit Error Type (E)
 				if (
-					typeArguments?.type !== AST_NODE_TYPES.TSTypeParameterInstantiation ||
-					typeArguments.params.length < 2
+					typeArguments?.type !== AST_NODE_TYPES.TSTypeParameterInstantiation
 				) {
 					return // Error type E is not explicitly provided (defaults to 'never')
 				}
 
-				// The second type argument is the error type E
-				const errorTypeNode = typeArguments.params[1]
 				const optionsObject = callArguments[0]
 
 				if (optionsObject?.type !== AST_NODE_TYPES.ObjectExpression) return
+
+				const standaloneNoErrorType =
+					STANDALONE_FUNCTIONS.includes(functionName) &&
+					typeArguments?.params.length < 2
+				const familyNoErrorType =
+					FAMILY_FUNCTIONS.includes(functionName) &&
+					typeArguments?.params.length < 3
+				if (standaloneNoErrorType || familyNoErrorType) {
+					let catchProperty: TSESTree.Property | undefined
+					optionsObject.properties.forEach((property) => {
+						if (property.type === AST_NODE_TYPES.Property) {
+							if (
+								(property.key.type === AST_NODE_TYPES.Identifier &&
+									property.key.name === `catch`) ||
+								(property.key.type === AST_NODE_TYPES.Literal &&
+									property.key.value === `catch`)
+							) {
+								catchProperty = property
+							}
+						}
+					})
+
+					if (catchProperty) {
+						context.report({
+							node,
+							messageId: `hasExtraneousCatchProperty`,
+							data: { functionName },
+						})
+						return
+					}
+				}
+
+				// The second type argument is the error type E
+				const errorTypeNode = typeArguments.params[1]
 
 				// --- Find the 'catch' property for the original check ---
 				let catchProperty: TSESTree.Property | undefined
