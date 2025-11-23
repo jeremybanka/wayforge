@@ -151,7 +151,7 @@ const commonRules = {
 	"@typescript-eslint/unbound-method": 0,
 	"@typescript-eslint/unified-signatures": ERROR,
 
-	"atom.io/explicit-state-types": ERROR,
+	"atom.io/explicit-state-types": [ERROR, { permitAnnotation: true }],
 
 	"import/newline-after-import": ERROR,
 	"import/no-duplicates": ERROR,

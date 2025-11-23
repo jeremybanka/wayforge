@@ -49,12 +49,7 @@ export const redactorAtoms: RegularAtomFamilyToken<
 		occlude: (updates: TransactionSubEvent[]) => TransactionSubEvent[]
 	},
 	UserKey
-> = atomFamily<
-	{
-		occlude: (updates: TransactionSubEvent[]) => TransactionSubEvent[]
-	},
-	UserKey
->({
+> = atomFamily({
 	key: `redactor`,
 	default: { occlude: (updates) => updates },
 })
@@ -66,7 +61,7 @@ export type ContinuitySyncTransactionUpdate = Pick<
 export const unacknowledgedUpdatesAtoms: RegularAtomFamilyToken<
 	ContinuitySyncTransactionUpdate[],
 	UserKey
-> = atomFamily<ContinuitySyncTransactionUpdate[], UserKey>({
+> = atomFamily({
 	key: `unacknowledgedUpdates`,
 	default: () => [],
 })

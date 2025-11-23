@@ -20,9 +20,7 @@ export type RoomSocketInterface<RoomNames extends string> = {
 	[deleteRoom: `deleteRoom:${string}`]: () => void
 }
 
-export const roomKeysAtom: MutableAtomToken<UList<string>> = mutableAtom<
-	UList<string>
->({
+export const roomKeysAtom: MutableAtomToken<UList<string>> = mutableAtom({
 	key: `roomIndex`,
 	class: UList,
 })
@@ -45,7 +43,7 @@ export const usersInRooms: JoinToken<`room`, RoomKey, `user`, UserKey, `1:n`> =
 export const usersInMyRoomView: ReadonlyPureSelectorFamilyToken<
 	MutableAtomToken<UList<RoomKey>>[],
 	UserKey
-> = selectorFamily<MutableAtomToken<UList<RoomKey>>[], UserKey>({
+> = selectorFamily({
 	key: `usersInMyRoomView`,
 	get:
 		(myUsername) =>
