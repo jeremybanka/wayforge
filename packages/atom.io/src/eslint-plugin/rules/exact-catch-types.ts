@@ -13,14 +13,12 @@ const STATE_FUNCTIONS_WITH_CATCH = [
 	`selector`,
 	`selectorFamily`,
 ]
-
-const FAMILY_FUNCTIONS = [`atomFamily`, `selectorFamily`]
 const STANDALONE_FUNCTIONS = [`atom`, `selector`]
 
 export const exactCatchTypes: ESLintUtils.RuleModule<
+	| `hasExtraneousCatchProperty`
 	| `invalidCatchConstructor`
-	| `missingCatchProperty`
-	| `hasExtraneousCatchProperty`, // Added new messageId
+	| `missingCatchProperty`, // Added new messageId
 	[],
 	unknown,
 	ESLintUtils.RuleListener
@@ -81,41 +79,12 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 
 				if (optionsObject?.type !== AST_NODE_TYPES.ObjectExpression) return
 
-				const standaloneNoErrorType =
-					STANDALONE_FUNCTIONS.includes(functionName) &&
-					typeArguments?.params.length < 2
-				const familyNoErrorType =
-					FAMILY_FUNCTIONS.includes(functionName) &&
-					typeArguments?.params.length < 3
-				if (standaloneNoErrorType || familyNoErrorType) {
-					let catchProperty: TSESTree.Property | undefined
-					optionsObject.properties.forEach((property) => {
-						if (property.type === AST_NODE_TYPES.Property) {
-							if (
-								(property.key.type === AST_NODE_TYPES.Identifier &&
-									property.key.name === `catch`) ||
-								(property.key.type === AST_NODE_TYPES.Literal &&
-									property.key.value === `catch`)
-							) {
-								catchProperty = property
-							}
-						}
-					})
+				const isStandalone = STANDALONE_FUNCTIONS.includes(functionName)
 
-					if (catchProperty) {
-						context.report({
-							node,
-							messageId: `hasExtraneousCatchProperty`,
-							data: { functionName },
-						})
-						return
-					}
-				}
+				const errorTypeNode = isStandalone
+					? typeArguments.params[1]
+					: typeArguments.params[2]
 
-				// The second type argument is the error type E
-				const errorTypeNode = typeArguments.params[1]
-
-				// --- Find the 'catch' property for the original check ---
 				let catchProperty: TSESTree.Property | undefined
 				optionsObject.properties.forEach((property) => {
 					if (property.type === AST_NODE_TYPES.Property) {
@@ -130,14 +99,25 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 					}
 				})
 
-				// 3. Perform the original 'missing catch' check
+				if (!errorTypeNode) {
+					if (catchProperty) {
+						context.report({
+							node,
+							messageId: `hasExtraneousCatchProperty`,
+							data: { functionName },
+						})
+						return
+					}
+					return
+				}
+
 				if (!catchProperty) {
 					context.report({
 						node,
 						messageId: `missingCatchProperty`,
 						data: { functionName },
 					})
-					return // Stop here if 'catch' is entirely missing
+					return
 				}
 
 				// --- New Validation: Check Constructor Types ---
@@ -154,6 +134,7 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 				const errorTypeTs = checker.getTypeFromTypeNode(typeNode)
 
 				const errorTypeName = checker.typeToString(errorTypeTs)
+				console.log(`errorTypeName`, errorTypeName)
 
 				// Iterate over each constructor reference in the 'catch' array
 				for (const element of catchArray.elements) {
@@ -167,6 +148,8 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 						parserServices.esTreeNodeToTSNodeMap.get(element)
 					const constructorType = checker.getTypeAtLocation(constructorTsNode)
 					const constructorName = element.name
+
+					console.log(`constructorName`, constructorName)
 
 					// Extract the instance type from the constructor type.
 					// e.g., turn 'typeof ClientError' into 'ClientError'
@@ -184,6 +167,9 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 
 					// If we couldn't get the instance type, skip the check
 					if (!instanceType) continue
+
+					console.log(`instanceType`, checker.typeToString(instanceType))
+					console.log(`errorTypeTs`, checker.typeToString(errorTypeTs))
 
 					// Check if the instance type is assignable to the declared error type E
 					// This is the key semantic check that detects the problem:
