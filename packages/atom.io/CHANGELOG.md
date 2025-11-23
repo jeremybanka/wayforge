@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.44.9
+
+### Patch Changes
+
+- 68f85c6: ✨ `atom.io/eslint-plugin`: Added an option to the rule `explicit-state-types` called `permitAnnotation`. When enabled, this rule is satisfied by deliberate, top-level annotations of your state variables. This may be the preferred style in codebases where `isolatedDeclarations` are required by TypeScript anyway, as it removes the redundant need for both annotations and type parameters on states.
+
 ## 0.44.8
 
 ### Patch Changes
