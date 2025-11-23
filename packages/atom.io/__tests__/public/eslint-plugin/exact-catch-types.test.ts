@@ -28,6 +28,15 @@ ruleTester.run(`exact-catch-types`, rule, {
       `,
 		},
 		{
+			name: `annotated atom with no E type`,
+			code: `
+        const countState: AtomToken<number> = atom({
+          key: "count",
+          default: 0,
+        })
+      `,
+		},
+		{
 			name: `atomFamily with no E type`,
 			code: `
         const countState = atomFamily<number>({
@@ -75,6 +84,16 @@ ruleTester.run(`exact-catch-types`, rule, {
 			name: `atom typed Error missing catch property`,
 			code: `
         const count = atom<number, Error>({
+          key: "count",
+          default: 0,
+        })
+      `,
+			errors: [{ messageId: `missingCatchProperty` }],
+		},
+		{
+			name: `annotated atom typed Error missing catch property`,
+			code: `
+        const count: AtomToken<number, Error> = atom({
           key: "count",
           default: 0,
         })

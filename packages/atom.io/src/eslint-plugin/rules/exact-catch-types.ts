@@ -49,7 +49,11 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 
 		return {
 			CallExpression(node) {
-				const { callee, typeArguments, arguments: callArguments } = node
+				const {
+					callee,
+					typeArguments: directTypeArguments,
+					arguments: callArguments,
+				} = node
 
 				// 1. Check if the function call is one of the targeted state functions
 				let functionName: string | null = null
@@ -68,11 +72,30 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 
 				if (!functionName) return
 
-				// 2. Check for explicit Error Type (E)
-				if (
-					typeArguments?.type !== AST_NODE_TYPES.TSTypeParameterInstantiation
-				) {
-					return // Error type E is not explicitly provided (defaults to 'never')
+				// Where do the type arguments come from?
+				let typeArguments: TSESTree.TSTypeParameterInstantiation | undefined
+				if (directTypeArguments) {
+					typeArguments = directTypeArguments
+				} else {
+					const parent = node.parent
+					if (
+						parent?.type === AST_NODE_TYPES.VariableDeclarator &&
+						parent.init === node
+					) {
+						// Check if the VariableDeclarator has an id with a TypeAnnotation
+						const declaratorId = parent.id
+						if (declaratorId.type === AST_NODE_TYPES.Identifier) {
+							// Check for 'const myAtom: AtomToken<string> = ...'
+							const typeAnnotation = declaratorId.typeAnnotation?.typeAnnotation
+							if (
+								typeAnnotation &&
+								`typeArguments` in typeAnnotation &&
+								typeAnnotation.typeArguments
+							) {
+								typeArguments = typeAnnotation.typeArguments
+							}
+						}
+					}
 				}
 
 				const optionsObject = callArguments[0]
@@ -81,9 +104,11 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 
 				const isStandalone = STANDALONE_FUNCTIONS.includes(functionName)
 
-				const errorTypeNode = isStandalone
-					? typeArguments.params[1]
-					: typeArguments.params[2]
+				const errorTypeNode = typeArguments
+					? isStandalone
+						? typeArguments.params[1]
+						: typeArguments.params[2]
+					: undefined
 
 				let catchProperty: TSESTree.Property | undefined
 				optionsObject.properties.forEach((property) => {
@@ -134,7 +159,7 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 				const errorTypeTs = checker.getTypeFromTypeNode(typeNode)
 
 				const errorTypeName = checker.typeToString(errorTypeTs)
-				console.log(`errorTypeName`, errorTypeName)
+				// console.log(`errorTypeName`, errorTypeName)
 
 				// Iterate over each constructor reference in the 'catch' array
 				for (const element of catchArray.elements) {
@@ -149,7 +174,7 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 					const constructorType = checker.getTypeAtLocation(constructorTsNode)
 					const constructorName = element.name
 
-					console.log(`constructorName`, constructorName)
+					// console.log(`constructorName`, constructorName)
 
 					// Extract the instance type from the constructor type.
 					// e.g., turn 'typeof ClientError' into 'ClientError'
@@ -168,8 +193,8 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 					// If we couldn't get the instance type, skip the check
 					if (!instanceType) continue
 
-					console.log(`instanceType`, checker.typeToString(instanceType))
-					console.log(`errorTypeTs`, checker.typeToString(errorTypeTs))
+					// console.log(`instanceType`, checker.typeToString(instanceType))
+					// console.log(`errorTypeTs`, checker.typeToString(errorTypeTs))
 
 					// Check if the instance type is assignable to the declared error type E
 					// This is the key semantic check that detects the problem:
