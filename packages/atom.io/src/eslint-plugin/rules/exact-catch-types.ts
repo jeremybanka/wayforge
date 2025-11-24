@@ -16,9 +16,7 @@ const STATE_FUNCTIONS_WITH_CATCH = [
 const STANDALONE_FUNCTIONS = [`atom`, `selector`]
 
 export const exactCatchTypes: ESLintUtils.RuleModule<
-	| `hasExtraneousCatchProperty`
-	| `invalidCatchConstructor`
-	| `missingCatchProperty`, // Added new messageId
+	`extraneousCatchProperty` | `invalidCatchProperty` | `missingCatchProperty`, // Added new messageId
 	[],
 	unknown,
 	ESLintUtils.RuleListener
@@ -33,11 +31,11 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 			missingCatchProperty:
 				`The error type (E) was explicitly provided to '{{functionName}}', ` +
 				`but the required 'catch' property is missing from the options object.`,
-			invalidCatchConstructor:
+			invalidCatchProperty:
 				`The constructor '{{constructorName}}' in the 'catch' array is not assignable ` +
 				`to the atom's declared error type '{{errorTypeName}}'. ` +
 				`It might catch errors that the atom is not designed to handle.`,
-			hasExtraneousCatchProperty: `A 'catch' property was provided to '{{functionName}}', but no error type parameter was provided.`,
+			extraneousCatchProperty: `A 'catch' property was provided to '{{functionName}}', but no error type parameter was provided.`,
 		},
 		schema: [], // No options needed
 	},
@@ -128,7 +126,7 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 					if (catchProperty) {
 						context.report({
 							node,
-							messageId: `hasExtraneousCatchProperty`,
+							messageId: `extraneousCatchProperty`,
 							data: { functionName },
 						})
 						return
@@ -160,6 +158,15 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 
 				const errorTypeName = checker.typeToString(errorTypeTs)
 				// console.log(`errorTypeName`, errorTypeName)
+
+				if (catchArray.elements.length === 0) {
+					context.report({
+						node: catchProperty,
+						messageId: `missingCatchProperty`,
+						data: { functionName },
+					})
+					return
+				}
 
 				// Iterate over each constructor reference in the 'catch' array
 				for (const element of catchArray.elements) {
@@ -196,14 +203,42 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 					// console.log(`instanceType`, checker.typeToString(instanceType))
 					// console.log(`errorTypeTs`, checker.typeToString(errorTypeTs))
 
-					// Check if the instance type is assignable to the declared error type E
-					// This is the key semantic check that detects the problem:
-					// Is 'Error' (the instance type) assignable to 'ClientError' (the errorTypeTs)? No.
-					// Is 'ClientError' assignable to 'ClientError'? Yes.
-					if (!checker.isTypeAssignableTo(instanceType, errorTypeTs)) {
+					// // Check if the instance type is assignable to the declared error type E
+					// // This is the key semantic check that detects the problem:
+					// // Is 'Error' (the instance type) assignable to 'ClientError' (the errorTypeTs)? No.
+					// // Is 'ClientError' assignable to 'ClientError'? Yes.
+					// if (!checker.isTypeAssignableTo(instanceType, errorTypeTs)) {
+					// 	context.report({
+					// 		node: element, // Report specifically on the problematic constructor
+					// 		messageId: `invalidCatchProperty`,
+					// 		data: {
+					// 			constructorName: constructorName,
+					// 			errorTypeName: errorTypeName,
+					// 		},
+					// 	})
+					// }
+
+					const constructorInstanceSymbol = instanceType?.getSymbol()
+
+					// Get the symbol for the declared error type E
+					const errorTypeSymbol = errorTypeTs.getSymbol()
+
+					// Check for symbol identity
+					if (
+						!constructorInstanceSymbol ||
+						!errorTypeSymbol ||
+						constructorInstanceSymbol !== errorTypeSymbol
+					) {
+						// If the symbols are NOT strictly identical, report the error.
+						// This handles the case: E=ClientError, catch:[Error]
+						// Symbol(ClientError) !== Symbol(Error) -> Fails the check, reports error.
+
+						// It also handles: E=ClientError, catch:[ClientError]
+						// Symbol(ClientError) === Symbol(ClientError) -> Passes the check.
+
 						context.report({
-							node: element, // Report specifically on the problematic constructor
-							messageId: `invalidCatchConstructor`,
+							node: element,
+							messageId: `invalidCatchProperty`, // Reuse message ID
 							data: {
 								constructorName: constructorName,
 								errorTypeName: errorTypeName,
