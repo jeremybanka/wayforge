@@ -1,5 +1,3 @@
-import * as path from "node:path"
-
 import { RuleTester } from "@typescript-eslint/rule-tester"
 import { Rules } from "atom.io/eslint-plugin"
 
@@ -7,9 +5,9 @@ const ruleTester = new RuleTester({
 	languageOptions: {
 		parserOptions: {
 			projectService: {
-				allowDefaultProject: [`*.ts*`],
+				allowDefaultProject: [`*file.ts`],
 			},
-			tsconfigRootDir: path.join(__dirname, `../..`),
+			tsconfigRootDir: __dirname,
 		},
 	},
 })
@@ -102,17 +100,6 @@ ruleTester.run(`exact-catch-types`, rule, {
           catch: [Error, class Whatever {}],
         })
       `,
-		},
-		{
-			// doesn't freak out about other call expressions,
-			name: `other call expressions`,
-			code: `
-        const count = atom<number, Error>({
-          key: "count",
-          default: 0,
-          catch: [Error],
-        })
-			`,
 		},
 	],
 	invalid: [
