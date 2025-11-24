@@ -34,11 +34,13 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 		messages: {
 			missingCatchProperty:
 				`This {{functionName}} was provided the error type \`{{errorTypeName}}\` ` +
-				`but the required 'catch' property is missing from its options.`,
+				`but the required 'catch' property is missing from its options. ` +
+				`Either remove \`{{errorTypeName}}\`, or add \`catch: [{{errorTypeName}}]\` to the options object.`,
 			invalidCatchProperty:
 				`This {{functionName}} was provided a catch array containing the class \`{{constructorName}}\`. ` +
-				`However, that class is not represented in the {{functionName}}'s error type, {{errorTypeName}}. ` +
-				`As a result, it might catch errors that the {{functionName}} is not designed to handle.`,
+				`However, that class is not represented in the {{functionName}}'s error type, \`{{errorTypeName}}\`. ` +
+				`As a result, it might catch errors that the {{functionName}} is not designed to handle. ` +
+				`Either include \`{{constructorName}}\` in the {{functionName}}'s error type, or remove it from the 'catch' array.`,
 			extraneousErrorTypes:
 				`This {{functionName}} was provided an error type including the class {{errorTypeName}}, ` +
 				`but its 'catch' property doesn't include a constructor for that class. ` +
