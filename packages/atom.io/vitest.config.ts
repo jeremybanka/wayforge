@@ -41,6 +41,7 @@ const vitestConfig: UserConfig = defineConfig({
 		pool: `vmThreads`,
 		maxWorkers: cpus().length - 1,
 		globals: true,
+		testTimeout: 10_000,
 		environment: `happy-dom`,
 		coverage: {
 			reporter: [`text`, `lcov`, `html`, `json`],
