@@ -42,9 +42,9 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 				`As a result, it might catch errors that the {{functionName}} is not designed to handle. ` +
 				`Either include \`{{constructorName}}\` in the {{functionName}}'s error type, or remove it from the 'catch' array.`,
 			extraneousErrorTypes:
-				`This {{functionName}} was provided an error type including the class {{errorTypeName}}, ` +
+				`This {{functionName}} was provided an error type including the class \`{{errorTypeName}}\`, ` +
 				`but its 'catch' property doesn't include a constructor for that class. ` +
-				`Either include a constructor for {{errorTypeName}} in the 'catch' array, or remove {{errorTypeName}} from the error type.`,
+				`Either include a constructor for \`{{errorTypeName}}\` in the 'catch' array, or remove \`{{errorTypeName}}\` as a possible error type.`,
 		},
 		schema: [],
 	},
