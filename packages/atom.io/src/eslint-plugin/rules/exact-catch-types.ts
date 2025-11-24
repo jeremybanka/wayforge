@@ -1,8 +1,12 @@
 import type { TSESTree } from "@typescript-eslint/utils"
 import { AST_NODE_TYPES, ESLintUtils } from "@typescript-eslint/utils"
-import type { InterfaceType, Type, TypeNode } from "typescript"
+import type {
+	InterfaceType,
+	Symbol as TsSymbol,
+	Type,
+	TypeNode,
+} from "typescript"
 
-// We'll rename the rule to be more descriptive of both checks
 const createRule = ESLintUtils.RuleCreator(
 	(name) => `https://atom.io.fyi/docs/eslint-plugin#${name}`,
 )
@@ -16,7 +20,7 @@ const STATE_FUNCTIONS_WITH_CATCH = [
 const STANDALONE_FUNCTIONS = [`atom`, `selector`]
 
 export const exactCatchTypes: ESLintUtils.RuleModule<
-	`extraneousCatchProperty` | `invalidCatchProperty` | `missingCatchProperty`, // Added new messageId
+	`extraneousCatchProperty` | `invalidCatchProperty` | `missingCatchProperty`,
 	[],
 	unknown,
 	ESLintUtils.RuleListener
@@ -29,18 +33,17 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 		},
 		messages: {
 			missingCatchProperty:
-				`The error type (E) was explicitly provided to '{{functionName}}', ` +
+				`The error type \`{{errorTypeName}}\` was explicitly provided to \`{{functionName}}\`, ` +
 				`but the required 'catch' property is missing from the options object.`,
 			invalidCatchProperty:
-				`The constructor '{{constructorName}}' in the 'catch' array is not assignable ` +
-				`to the atom's declared error type '{{errorTypeName}}'. ` +
+				`The constructor \`{{constructorName}}\` in the 'catch' array is not assignable ` +
+				`to the atom's declared error type \`{{errorTypeName}}\`. ` +
 				`It might catch errors that the atom is not designed to handle.`,
-			extraneousCatchProperty: `A 'catch' property was provided to '{{functionName}}', but no error type parameter was provided.`,
+			extraneousCatchProperty: `A 'catch' property was provided to \`{{functionName}}\`, but no error type parameter was provided.`,
 		},
-		schema: [], // No options needed
+		schema: [],
 	},
 	defaultOptions: [],
-	// IMPORTANT: This rule requires type information from the parser
 	create(context) {
 		const parserServices = ESLintUtils.getParserServices(context)
 		const checker = parserServices.program.getTypeChecker()
@@ -53,7 +56,7 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 					arguments: callArguments,
 				} = node
 
-				// 1. Check if the function call is one of the targeted state functions
+				// Check if the function call is one of the targeted state functions
 				let functionName: string | null = null
 				if (callee.type === AST_NODE_TYPES.Identifier) {
 					if (STATE_FUNCTIONS_WITH_CATCH.includes(callee.name)) {
@@ -134,11 +137,18 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 					return
 				}
 
+				const typeNode = parserServices.esTreeNodeToTSNodeMap.get(
+					errorTypeNode,
+				) as TypeNode
+				// Get the TypeScript Type object for E
+				const errorTypeTs = checker.getTypeFromTypeNode(typeNode)
+				const errorTypeName = checker.typeToString(errorTypeTs)
+
 				if (!catchProperty) {
 					context.report({
 						node,
 						messageId: `missingCatchProperty`,
-						data: { functionName },
+						data: { functionName, errorTypeName },
 					})
 					return
 				}
@@ -150,20 +160,31 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 					return
 				}
 
-				const typeNode = parserServices.esTreeNodeToTSNodeMap.get(
-					errorTypeNode,
-				) as TypeNode
-				// Get the TypeScript Type object for E
-				const errorTypeTs = checker.getTypeFromTypeNode(typeNode)
+				// 3. Collect all acceptable nominal symbols from E
+				const acceptableErrorSymbols: TsSymbol[] = []
 
-				const errorTypeName = checker.typeToString(errorTypeTs)
-				// console.log(`errorTypeName`, errorTypeName)
+				// Check if E is a Union Type
+				if (errorTypeTs.isUnion()) {
+					// Add the symbol of every member of the union (e.g., Symbol(SpecialError), Symbol(FancyError))
+					for (const memberType of errorTypeTs.types) {
+						const symbol = memberType.getSymbol()
+						if (symbol) {
+							acceptableErrorSymbols.push(symbol)
+						}
+					}
+				} else {
+					// E is a single type, add its symbol
+					const symbol = errorTypeTs.getSymbol()
+					if (symbol) {
+						acceptableErrorSymbols.push(symbol)
+					}
+				}
 
 				if (catchArray.elements.length === 0) {
 					context.report({
 						node: catchProperty,
 						messageId: `missingCatchProperty`,
-						data: { functionName },
+						data: { functionName, errorTypeName },
 					})
 					return
 				}
@@ -200,45 +221,16 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 					// If we couldn't get the instance type, skip the check
 					if (!instanceType) continue
 
-					// console.log(`instanceType`, checker.typeToString(instanceType))
-					// console.log(`errorTypeTs`, checker.typeToString(errorTypeTs))
-
-					// // Check if the instance type is assignable to the declared error type E
-					// // This is the key semantic check that detects the problem:
-					// // Is 'Error' (the instance type) assignable to 'ClientError' (the errorTypeTs)? No.
-					// // Is 'ClientError' assignable to 'ClientError'? Yes.
-					// if (!checker.isTypeAssignableTo(instanceType, errorTypeTs)) {
-					// 	context.report({
-					// 		node: element, // Report specifically on the problematic constructor
-					// 		messageId: `invalidCatchProperty`,
-					// 		data: {
-					// 			constructorName: constructorName,
-					// 			errorTypeName: errorTypeName,
-					// 		},
-					// 	})
-					// }
-
 					const constructorInstanceSymbol = instanceType?.getSymbol()
-
-					// Get the symbol for the declared error type E
-					const errorTypeSymbol = errorTypeTs.getSymbol()
 
 					// Check for symbol identity
 					if (
 						!constructorInstanceSymbol ||
-						!errorTypeSymbol ||
-						constructorInstanceSymbol !== errorTypeSymbol
+						!acceptableErrorSymbols.includes(constructorInstanceSymbol)
 					) {
-						// If the symbols are NOT strictly identical, report the error.
-						// This handles the case: E=ClientError, catch:[Error]
-						// Symbol(ClientError) !== Symbol(Error) -> Fails the check, reports error.
-
-						// It also handles: E=ClientError, catch:[ClientError]
-						// Symbol(ClientError) === Symbol(ClientError) -> Passes the check.
-
 						context.report({
 							node: element,
-							messageId: `invalidCatchProperty`, // Reuse message ID
+							messageId: `invalidCatchProperty`,
 							data: {
 								constructorName: constructorName,
 								errorTypeName: errorTypeName,
