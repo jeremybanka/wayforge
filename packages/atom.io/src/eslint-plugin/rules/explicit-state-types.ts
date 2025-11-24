@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/switch-exhaustiveness-check */
-import type { TSESTree } from "@typescript-eslint/utils"
 import { AST_NODE_TYPES, ESLintUtils } from "@typescript-eslint/utils"
 
 const createRule = ESLintUtils.RuleCreator(
