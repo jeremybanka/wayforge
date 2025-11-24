@@ -29,7 +29,7 @@ describe(`immediate states that throw`, () => {
 				throw new ClientError(`😤`)
 			}
 
-			const count = AtomIO.atom<number, ClientError>({
+			const count: AtomIO.AtomToken<number, null, ClientError> = AtomIO.atom({
 				key: `count`,
 				default: retrieveState,
 				catch: [ClientError],
