@@ -8,7 +8,7 @@ const ruleTester = new RuleTester({
 		parserOptions: {
 			projectService: {
 				allowDefaultProject: [`file.ts`],
-				defaultProject: path.join(__dirname, `tsconfig.json`),
+				defaultProject: path.join(__dirname, `../../../tsconfig.json`),
 			},
 			tsconfigRootDir: __dirname,
 		},
