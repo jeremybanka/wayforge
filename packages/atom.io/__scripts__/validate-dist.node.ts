@@ -42,7 +42,7 @@ for (const item of items) {
 }
 
 if (invalidItems.length > 0) {
-	console.error(`Invalid items found: ${invalidItems.join(`, `)}`)
+	console.error(`❌ Invalid items found: ${invalidItems.join(`, `)}`)
 	process.exit(1)
 }
 
