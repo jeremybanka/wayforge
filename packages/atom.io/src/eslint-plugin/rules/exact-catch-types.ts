@@ -20,7 +20,7 @@ const STATE_FUNCTIONS_WITH_CATCH = [
 const STANDALONE_FUNCTIONS = [`atom`, `selector`]
 
 export const exactCatchTypes: ESLintUtils.RuleModule<
-	`extraneousCatchProperty` | `invalidCatchProperty` | `missingCatchProperty`,
+	`invalidCatchProperty` | `missingCatchProperty`,
 	[],
 	unknown,
 	ESLintUtils.RuleListener
@@ -39,7 +39,6 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 				`The constructor \`{{constructorName}}\` in the 'catch' array is not assignable ` +
 				`to the atom's declared error type \`{{errorTypeName}}\`. ` +
 				`It might catch errors that the atom is not designed to handle.`,
-			extraneousCatchProperty: `A 'catch' property was provided to \`{{functionName}}\`, but no error type parameter was provided.`,
 		},
 		schema: [],
 	},
@@ -126,14 +125,6 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 				})
 
 				if (!errorTypeNode) {
-					if (catchProperty) {
-						context.report({
-							node,
-							messageId: `extraneousCatchProperty`,
-							data: { functionName },
-						})
-						return
-					}
 					return
 				}
 
