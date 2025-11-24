@@ -17,7 +17,7 @@ const STATE_FUNCTIONS_WITH_CATCH = [
 	`selector`,
 	`selectorFamily`,
 ]
-const STANDALONE_FUNCTIONS = [`atom`, `selector`]
+const FAMILY_FUNCTIONS = [`atomFamily`, `selectorFamily`]
 
 export const exactCatchTypes: ESLintUtils.RuleModule<
 	`extraneousErrorTypes` | `invalidCatchProperty` | `missingCatchProperty`,
@@ -42,9 +42,9 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 				`As a result, it might catch errors that the {{functionName}} is not designed to handle. ` +
 				`Either include \`{{constructorName}}\` in the {{functionName}}'s error type, or remove it from the 'catch' array.`,
 			extraneousErrorTypes:
-				`This {{functionName}} was provided an error type including the class {{errorTypeName}}, ` +
+				`This {{functionName}} was provided an error type including the class \`{{errorTypeName}}\`, ` +
 				`but its 'catch' property doesn't include a constructor for that class. ` +
-				`Either include a constructor for {{errorTypeName}} in the 'catch' array, or remove {{errorTypeName}} from the error type.`,
+				`Either include a constructor for \`{{errorTypeName}}\` in the 'catch' array, or remove \`{{errorTypeName}}\` as a possible error type.`,
 		},
 		schema: [],
 	},
@@ -60,6 +60,8 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 					typeArguments: directTypeArguments,
 					arguments: callArguments,
 				} = node
+
+				let errorParamIndex = 1
 
 				// Check if the function call is one of the targeted state functions
 				let functionName: string | null = null
@@ -99,6 +101,7 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 								typeAnnotation.typeArguments
 							) {
 								typeArguments = typeAnnotation.typeArguments
+								errorParamIndex = 2 // AtomToken<T, K, E>
 							}
 						}
 					}
@@ -108,13 +111,17 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 
 				if (optionsObject?.type !== AST_NODE_TYPES.ObjectExpression) return
 
-				const isStandalone = STANDALONE_FUNCTIONS.includes(functionName)
+				const isFamilyDeclaration = FAMILY_FUNCTIONS.includes(functionName)
+				if (isFamilyDeclaration) {
+					errorParamIndex = 2 // atomFamily<T, K, E>
+				}
 
 				const errorTypeNode = typeArguments
-					? isStandalone
-						? typeArguments.params[1]
-						: typeArguments.params[2]
+					? typeArguments.params[errorParamIndex]
 					: undefined
+				if (!errorTypeNode) {
+					return
+				}
 
 				let catchProperty: TSESTree.Property | undefined
 				optionsObject.properties.forEach((property) => {
@@ -129,10 +136,6 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 						}
 					}
 				})
-
-				if (!errorTypeNode) {
-					return
-				}
 
 				const typeNode = parserServices.esTreeNodeToTSNodeMap.get(
 					errorTypeNode,
