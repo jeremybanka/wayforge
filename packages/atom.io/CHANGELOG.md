@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.44.11
+
+### Patch Changes
+
+- f5d6f4d: 🐛 `atom.io/eslint-plugin` `::` `exact-catch-types` Fixed false error reports when validating the catch properties of top-level annotated atoms and selectors.
+- f5d6f4d: ✏️ Fixed a typo in an eslint error.
+
 ## 0.44.10
 
 ### Patch Changes
