@@ -6,8 +6,8 @@ export { Rules }
 
 const plugin: ESLint.Plugin = {
 	rules: {
+		"exact-catch-types": Rules.exactCatchTypes as any,
 		"explicit-state-types": Rules.explicitStateTypes as any,
-		"exact-catch-constructor-types": Rules.exactCatchTypes as any,
 	},
 } satisfies ESLint.Plugin
 
