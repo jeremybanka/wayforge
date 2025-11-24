@@ -93,13 +93,13 @@ ruleTester.run(`exact-catch-types`, rule, {
       `,
 		},
 		{
-			// this would be a silly thing to try, but there's a code path for handling it, so
+			// this would be a silly thing to do, but there's a code path for handling it, so
 			name: `atom with catch property element that's not an identifier`,
 			code: `
         const count = atom<number, Error>({
           key: "count",
           default: 0,
-          catch: [class Whatever {}],
+          catch: [Error, class Whatever {}],
         })
       `,
 		},
@@ -187,6 +187,23 @@ ruleTester.run(`exact-catch-types`, rule, {
 				})
 			`,
 			errors: [{ messageId: `invalidCatchProperty` }],
+		},
+		{
+			name: `atom with extraneous error type`,
+			code: `
+				class SpecialError extends Error {
+					special: true
+				}
+				class FancyError extends Error {
+					fancy: true
+				}
+				const count = atom<number, SpecialError | FancyError>({
+					key: "count",
+					default: 0,
+					catch: [SpecialError],
+				})
+			`,
+			errors: [{ messageId: `extraneousErrorTypes` }],
 		},
 	],
 })

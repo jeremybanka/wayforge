@@ -20,7 +20,7 @@ const STATE_FUNCTIONS_WITH_CATCH = [
 const STANDALONE_FUNCTIONS = [`atom`, `selector`]
 
 export const exactCatchTypes: ESLintUtils.RuleModule<
-	`invalidCatchProperty` | `missingCatchProperty`,
+	`extraneousErrorTypes` | `invalidCatchProperty` | `missingCatchProperty`,
 	[],
 	unknown,
 	ESLintUtils.RuleListener
@@ -33,12 +33,16 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 		},
 		messages: {
 			missingCatchProperty:
-				`The error type \`{{errorTypeName}}\` was explicitly provided to \`{{functionName}}\`, ` +
-				`but the required 'catch' property is missing from the options object.`,
+				`This {{functionName}} was provided the error type \`{{errorTypeName}}\` ` +
+				`but the required 'catch' property is missing from its options.`,
 			invalidCatchProperty:
-				`The constructor \`{{constructorName}}\` in the 'catch' array is not assignable ` +
-				`to the atom's declared error type \`{{errorTypeName}}\`. ` +
-				`It might catch errors that the atom is not designed to handle.`,
+				`This {{functionName}} was provided a catch array containing the class \`{{constructorName}}\`. ` +
+				`However, that class is not represented in the {{functionName}}'s error type, {{errorTypeName}}. ` +
+				`As a result, it might catch errors that the {{functionName}} is not designed to handle.`,
+			extraneousErrorTypes:
+				`This {{functionName}} was provided an error type including the class {{errorTypeName}}, ` +
+				`but its 'catch' property doesn't include a constructor for that class. ` +
+				`Either include a constructor for {{errorTypeName}} in the 'catch' array, or remove {{errorTypeName}} from the error type.`,
 		},
 		schema: [],
 	},
@@ -179,6 +183,7 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 					})
 					return
 				}
+				const errorSymbolsToRepresent = new Set(acceptableErrorSymbols)
 
 				// Iterate over each constructor reference in the 'catch' array
 				for (const element of catchArray.elements) {
@@ -210,24 +215,35 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 					}
 
 					// If we couldn't get the instance type, skip the check
-					if (!instanceType) continue
 
 					const constructorInstanceSymbol = instanceType?.getSymbol()
+					if (!constructorInstanceSymbol) continue
 
 					// Check for symbol identity
-					if (
-						!constructorInstanceSymbol ||
-						!acceptableErrorSymbols.includes(constructorInstanceSymbol)
-					) {
+					if (acceptableErrorSymbols.includes(constructorInstanceSymbol)) {
+						errorSymbolsToRepresent.delete(constructorInstanceSymbol)
+					} else {
 						context.report({
 							node: element,
 							messageId: `invalidCatchProperty`,
 							data: {
+								functionName,
 								constructorName: constructorName,
 								errorTypeName: errorTypeName,
 							},
 						})
 					}
+				}
+
+				for (const errorSymbol of errorSymbolsToRepresent) {
+					context.report({
+						node: catchProperty,
+						messageId: `extraneousErrorTypes`,
+						data: {
+							errorTypeName: checker.symbolToString(errorSymbol),
+							functionName,
+						},
+					})
 				}
 			},
 		}
