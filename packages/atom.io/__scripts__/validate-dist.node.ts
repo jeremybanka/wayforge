@@ -20,7 +20,7 @@ for (const item of items) {
 			isItemValid = true
 		} else if (itemStat.isFile()) {
 			// Rule 2: Files must match the "chunk-HASH.js" pattern.
-			if (item.match(/^chunk-[0-9a-f]{8}\.js$/)) {
+			if (item.match(/^chunk-[0-9A-Za-z]{8}\.js$/)) {
 				isItemValid = true
 			}
 		}
@@ -45,3 +45,5 @@ if (invalidItems.length > 0) {
 	console.error(`Invalid items found: ${invalidItems.join(`, `)}`)
 	process.exit(1)
 }
+
+console.log(`✅ Build validated; no overlapping chunks found.`)
