@@ -1,5 +1,5 @@
 import { useI } from "atom.io/react"
-import type { RoomSocketInterface } from "atom.io/realtime/shared-room-store"
+import type { RoomSocketInterface } from "atom.io/realtime"
 import * as RTC from "atom.io/realtime-client"
 import * as React from "react"
 import type { Socket } from "socket.io-client"
