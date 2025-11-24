@@ -66,15 +66,18 @@ ruleTester.run(`exact-catch-types`, rule, {
       `,
 		},
 		{
-			name: `atom typed with Error type with more specific catch property`,
+			name: `atom typed with union type with two error types`,
 			code: `
 			  class SpecialError extends Error {
 					special: true
 				}
-		    const count = atom<number, Error>({
+			  class FancyError extends Error {
+					fancy: true
+				}
+		    const count = atom<number, SpecialError | FancyError>({
 		      key: "count",
 		      default: 0,
-		      catch: [SpecialError],
+		      catch: [SpecialError, FancyError],
 		    })
 		  `,
 		},
@@ -163,7 +166,7 @@ ruleTester.run(`exact-catch-types`, rule, {
 		      catch: [Error],
 		    })
 		  `,
-			errors: [{ messageId: `hasExtraneousCatchProperty` }],
+			errors: [{ messageId: `extraneousCatchProperty` }],
 		},
 		{
 			name: `atom with insufficient catch property`,
@@ -174,10 +177,10 @@ ruleTester.run(`exact-catch-types`, rule, {
 				const count = atom<number, SpecialError>({
 					key: "count",
 					default: 0,
-					catch: [Error],
+					catch: [],
 				})
 			`,
-			errors: [{ messageId: `invalidCatchConstructor` }],
+			errors: [{ messageId: `missingCatchProperty` }],
 		},
 	],
 })
