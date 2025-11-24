@@ -119,7 +119,7 @@ ruleTester.run(`exact-catch-types`, rule, {
 		{
 			name: `annotated atom typed Error missing catch property`,
 			code: `
-        const count: AtomToken<number, Error> = atom({
+        const count: AtomToken<number, null, Error> = atom({
           key: "count",
           default: 0,
         })
