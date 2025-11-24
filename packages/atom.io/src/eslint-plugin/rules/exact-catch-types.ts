@@ -17,7 +17,7 @@ const STATE_FUNCTIONS_WITH_CATCH = [
 	`selector`,
 	`selectorFamily`,
 ]
-const STANDALONE_FUNCTIONS = [`atom`, `selector`]
+const FAMILY_FUNCTIONS = [`atomFamily`, `selectorFamily`]
 
 export const exactCatchTypes: ESLintUtils.RuleModule<
 	`extraneousErrorTypes` | `invalidCatchProperty` | `missingCatchProperty`,
@@ -61,6 +61,8 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 					arguments: callArguments,
 				} = node
 
+				let errorParamIndex = 1
+
 				// Check if the function call is one of the targeted state functions
 				let functionName: string | null = null
 				if (callee.type === AST_NODE_TYPES.Identifier) {
@@ -99,6 +101,7 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 								typeAnnotation.typeArguments
 							) {
 								typeArguments = typeAnnotation.typeArguments
+								errorParamIndex = 2 // AtomToken<T, K, E>
 							}
 						}
 					}
@@ -108,13 +111,17 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 
 				if (optionsObject?.type !== AST_NODE_TYPES.ObjectExpression) return
 
-				const isStandalone = STANDALONE_FUNCTIONS.includes(functionName)
+				const isFamilyDeclaration = FAMILY_FUNCTIONS.includes(functionName)
+				if (isFamilyDeclaration) {
+					errorParamIndex = 2 // atomFamily<T, K, E>
+				}
 
 				const errorTypeNode = typeArguments
-					? isStandalone
-						? typeArguments.params[1]
-						: typeArguments.params[2]
+					? typeArguments.params[errorParamIndex]
 					: undefined
+				if (!errorTypeNode) {
+					return
+				}
 
 				let catchProperty: TSESTree.Property | undefined
 				optionsObject.properties.forEach((property) => {
@@ -129,10 +136,6 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 						}
 					}
 				})
-
-				if (!errorTypeNode) {
-					return
-				}
 
 				const typeNode = parserServices.esTreeNodeToTSNodeMap.get(
 					errorTypeNode,
