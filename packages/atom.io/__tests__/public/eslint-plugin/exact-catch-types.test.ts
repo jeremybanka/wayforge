@@ -78,6 +78,39 @@ ruleTester.run(`exact-catch-types`, rule, {
 		    })
 		  `,
 		},
+		{
+			// technically 'valid', but typescript would error upstream
+			name: `atom with catch property that's not an array`,
+			code: `
+        const count = atom<number, Error>({
+          key: "count",
+          default: 0,
+          catch: Error,
+        })
+      `,
+		},
+		{
+			// this would be a silly thing to try, but there's a code path for handling it, so
+			name: `atom with catch property element that's not an identifier`,
+			code: `
+        const count = atom<number, Error>({
+          key: "count",
+          default: 0,
+          catch: [class Whatever {}],
+        })
+      `,
+		},
+		{
+			// doesn't freak out about other call expressions,
+			name: `other call expressions`,
+			code: `
+        const count = atom<number, Error>({
+          key: "count",
+          default: 0,
+          catch: [Error],
+        })
+			`,
+		},
 	],
 	invalid: [
 		{
