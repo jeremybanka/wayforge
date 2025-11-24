@@ -1,6 +1,5 @@
+import type { Flat } from "atom.io/internal"
 import type { primitive } from "atom.io/json"
-
-import type { Flat } from "../internal/utility-types"
 
 export type IndexOf<
 	T extends readonly unknown[],
