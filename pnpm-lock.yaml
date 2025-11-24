@@ -134,7 +134,7 @@ importers:
         version: 1.0.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@t3-oss/env-core':
         specifier: 0.13.8
-        version: 0.13.8(arktype@2.1.27)(typescript@5.9.3)(zod@4.1.12)
+        version: 0.13.8(arktype@2.1.27)(typescript@5.9.3)(zod@4.1.13)
       '@trpc/client':
         specifier: 11.7.2
         version: 11.7.2(@trpc/server@11.7.2(typescript@5.9.3))(typescript@5.9.3)
@@ -161,7 +161,7 @@ importers:
         version: 5.1.6
       openai:
         specifier: 6.9.1
-        version: 6.9.1(ws@8.18.3)(zod@4.1.12)
+        version: 6.9.1(ws@8.18.3)(zod@4.1.13)
       postgres:
         specifier: 3.4.7
         version: 3.4.7
@@ -182,7 +182,7 @@ importers:
         version: link:../../packages/safedeposit
       safegen:
         specifier: 0.8.2
-        version: 0.8.2(@floating-ui/react-dom@2.1.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@floating-ui/react@0.27.16(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@google/genai@1.30.0)(@testing-library/react@16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@typescript-eslint/parser@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(arktype@2.1.27)(eslint@9.39.1(jiti@2.6.1))(happy-dom@20.0.10)(motion@12.23.24(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12))(react@19.2.0)(socket.io-client@4.8.1)(socket.io@4.8.1)(zod@4.1.12)
+        version: 0.8.2(@floating-ui/react-dom@2.1.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@floating-ui/react@0.27.16(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@google/genai@1.30.0)(@testing-library/react@16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@typescript-eslint/parser@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(arktype@2.1.27)(eslint@9.39.1(jiti@2.6.1))(happy-dom@20.0.10)(motion@12.23.24(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.13))(react@19.2.0)(socket.io-client@4.8.1)(socket.io@4.8.1)(zod@4.1.13)
       socket.io:
         specifier: 4.8.1
         version: 4.8.1
@@ -376,7 +376,7 @@ importers:
         version: 7.9.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       recoverage:
         specifier: 0.1.13
-        version: 0.1.13(typescript@5.9.3)(zod@4.1.12)
+        version: 0.1.13(typescript@5.9.3)(zod@4.1.13)
       socket.io:
         specifier: 4.8.1
         version: 4.8.1
@@ -491,8 +491,8 @@ importers:
         specifier: 4.0.13
         version: 4.0.13(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/ui@4.0.13)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@27.2.0)(lightningcss@1.30.2)(sass-embedded@1.93.3)(sass@1.94.2)
       zod:
-        specifier: 4.1.12
-        version: 4.1.12
+        specifier: 4.1.13
+        version: 4.1.13
 
   packages/create-atom.io:
     dependencies:
@@ -553,7 +553,7 @@ importers:
     dependencies:
       '@t3-oss/env-core':
         specifier: 0.13.8
-        version: 0.13.8(arktype@2.1.27)(typescript@5.9.3)(zod@4.1.12)
+        version: 0.13.8(arktype@2.1.27)(typescript@5.9.3)(zod@4.1.13)
       arktype:
         specifier: 2.1.27
         version: 2.1.27
@@ -613,8 +613,8 @@ importers:
         specifier: 4.0.13
         version: 4.0.13(@types/debug@4.1.12)(@types/node@24.10.1)(@vitest/ui@4.0.13)(happy-dom@20.0.10)(jiti@2.6.1)(jsdom@27.2.0)(lightningcss@1.30.2)(sass-embedded@1.93.3)(sass@1.94.2)
       zod:
-        specifier: 4.1.12
-        version: 4.1.12
+        specifier: 4.1.13
+        version: 4.1.13
 
   packages/hamr:
     dependencies:
@@ -907,7 +907,7 @@ importers:
         version: 9.39.1(jiti@2.6.1)
       recoverage:
         specifier: 0.1.13
-        version: 0.1.13(typescript@5.9.3)(zod@4.1.12)
+        version: 0.1.13(typescript@5.9.3)(zod@4.1.13)
       rimraf:
         specifier: 6.1.2
         version: 6.1.2
@@ -1005,7 +1005,7 @@ importers:
         version: 9.39.1(jiti@2.6.1)
       openai:
         specifier: 6.9.1
-        version: 6.9.1(ws@8.18.3)(zod@4.1.12)
+        version: 6.9.1(ws@8.18.3)(zod@4.1.13)
       tmp:
         specifier: 0.2.5
         version: 0.2.5
@@ -1022,8 +1022,8 @@ importers:
         specifier: 1.0.0-pre.53
         version: 1.0.0-pre.53
       zod:
-        specifier: 4.1.12
-        version: 4.1.12
+        specifier: 4.1.13
+        version: 4.1.13
 
   packages/venerate:
     devDependencies:
@@ -1041,7 +1041,7 @@ importers:
         version: 9.39.1(jiti@2.6.1)
       recoverage:
         specifier: 0.1.13
-        version: 0.1.13(typescript@5.9.3)(zod@4.1.12)
+        version: 0.1.13(typescript@5.9.3)(zod@4.1.13)
       tsdown:
         specifier: 0.16.6
         version: 0.16.6(@typescript/native-preview@7.0.0-dev.20251123.1)(typescript@5.9.3)
@@ -1101,8 +1101,8 @@ importers:
         specifier: 19.2.0
         version: 19.2.0(react@19.2.0)
       zod:
-        specifier: 4.1.12
-        version: 4.1.12
+        specifier: 4.1.13
+        version: 4.1.13
     devDependencies:
       '@types/node':
         specifier: 24.10.1
@@ -8344,8 +8344,8 @@ packages:
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
-  zod@4.1.12:
-    resolution: {integrity: sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ==}
+  zod@4.1.13:
+    resolution: {integrity: sha512-AvvthqfqrAhNH9dnfmrfKzX5upOdjUVJYFqNSlkmGf64gRaTzlPwz99IHYnVs28qYAybvAlBV+H7pn0saFY4Ig==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
@@ -10458,17 +10458,17 @@ snapshots:
     dependencies:
       '@swc/counter': 0.1.3
 
-  '@t3-oss/env-core@0.13.8(arktype@2.1.25)(typescript@5.9.3)(zod@4.1.12)':
+  '@t3-oss/env-core@0.13.8(arktype@2.1.25)(typescript@5.9.3)(zod@4.1.13)':
     optionalDependencies:
       arktype: 2.1.25
       typescript: 5.9.3
-      zod: 4.1.12
+      zod: 4.1.13
 
-  '@t3-oss/env-core@0.13.8(arktype@2.1.27)(typescript@5.9.3)(zod@4.1.12)':
+  '@t3-oss/env-core@0.13.8(arktype@2.1.27)(typescript@5.9.3)(zod@4.1.13)':
     optionalDependencies:
       arktype: 2.1.27
       typescript: 5.9.3
-      zod: 4.1.12
+      zod: 4.1.13
 
   '@testing-library/dom@10.4.1':
     dependencies:
@@ -11574,13 +11574,13 @@ snapshots:
 
   colors@1.4.0: {}
 
-  comline@0.4.3(arktype@2.1.25)(zod@4.1.12):
+  comline@0.4.3(arktype@2.1.25)(zod@4.1.13):
     dependencies:
       picocolors: 1.1.1
       treetrunks: 0.1.5
     optionalDependencies:
       arktype: 2.1.25
-      zod: 4.1.12
+      zod: 4.1.13
 
   comma-separated-tokens@2.0.3: {}
 
@@ -12231,8 +12231,8 @@ snapshots:
       '@babel/parser': 7.28.5
       eslint: 9.39.1(jiti@2.6.1)
       hermes-parser: 0.25.1
-      zod: 4.1.12
-      zod-validation-error: 4.0.2(zod@4.1.12)
+      zod: 4.1.13
+      zod-validation-error: 4.0.2(zod@4.1.13)
     transitivePeerDependencies:
       - supports-color
 
@@ -14169,10 +14169,10 @@ snapshots:
       regex: 6.0.1
       regex-recursion: 6.0.2
 
-  openai@6.9.1(ws@8.18.3)(zod@4.1.12):
+  openai@6.9.1(ws@8.18.3)(zod@4.1.13):
     optionalDependencies:
       ws: 8.18.3
-      zod: 4.1.12
+      zod: 4.1.13
 
   optionator@0.9.4:
     dependencies:
@@ -14535,12 +14535,12 @@ snapshots:
       unified: 11.0.5
       vfile: 6.0.3
 
-  recoverage@0.1.13(typescript@5.9.3)(zod@4.1.12):
+  recoverage@0.1.13(typescript@5.9.3)(zod@4.1.13):
     dependencies:
-      '@t3-oss/env-core': 0.13.8(arktype@2.1.25)(typescript@5.9.3)(zod@4.1.12)
+      '@t3-oss/env-core': 0.13.8(arktype@2.1.25)(typescript@5.9.3)(zod@4.1.13)
       arktype: 2.1.25
       colors: 1.4.0
-      comline: 0.4.3(arktype@2.1.25)(zod@4.1.12)
+      comline: 0.4.3(arktype@2.1.25)(zod@4.1.13)
       diff: 8.0.2
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
@@ -14864,16 +14864,16 @@ snapshots:
 
   safedeposit@0.1.2: {}
 
-  safegen@0.8.2(@floating-ui/react-dom@2.1.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@floating-ui/react@0.27.16(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@google/genai@1.30.0)(@testing-library/react@16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@typescript-eslint/parser@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(arktype@2.1.27)(eslint@9.39.1(jiti@2.6.1))(happy-dom@20.0.10)(motion@12.23.24(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.12))(react@19.2.0)(socket.io-client@4.8.1)(socket.io@4.8.1)(zod@4.1.12):
+  safegen@0.8.2(@floating-ui/react-dom@2.1.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@floating-ui/react@0.27.16(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@google/genai@1.30.0)(@testing-library/react@16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@typescript-eslint/parser@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(arktype@2.1.27)(eslint@9.39.1(jiti@2.6.1))(happy-dom@20.0.10)(motion@12.23.24(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(openai@6.9.1(ws@8.18.3)(zod@4.1.13))(react@19.2.0)(socket.io-client@4.8.1)(socket.io@4.8.1)(zod@4.1.13):
     dependencies:
       '@google/genai': 1.30.0
       '@standard-schema/spec': 1.0.0
       atom.io: 0.44.5(@floating-ui/react-dom@2.1.6(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@floating-ui/react@0.27.16(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@testing-library/react@16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.6))(@types/react@19.2.6)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(@typescript-eslint/parser@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(happy-dom@20.0.10)(motion@12.23.24(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react@19.2.0)(socket.io-client@4.8.1)(socket.io@4.8.1)
-      varmint: 0.5.11(zod@4.1.12)
+      varmint: 0.5.11(zod@4.1.13)
     optionalDependencies:
       arktype: 2.1.27
-      openai: 6.9.1(ws@8.18.3)(zod@4.1.12)
-      zod: 4.1.12
+      openai: 6.9.1(ws@8.18.3)(zod@4.1.13)
+      zod: 4.1.13
     transitivePeerDependencies:
       - '@floating-ui/react'
       - '@floating-ui/react-dom'
@@ -15793,11 +15793,11 @@ snapshots:
 
   varint@6.0.0: {}
 
-  varmint@0.5.11(zod@4.1.12):
+  varmint@0.5.11(zod@4.1.13):
     dependencies:
       arktype: 2.1.25
       cachedir: 2.4.0
-      comline: 0.4.3(arktype@2.1.25)(zod@4.1.12)
+      comline: 0.4.3(arktype@2.1.25)(zod@4.1.13)
       diff: 8.0.2
       fastest-levenshtein: 1.0.16
       picocolors: 1.1.1
@@ -16200,14 +16200,14 @@ snapshots:
       typescript: 5.9.3
       zod: 3.25.76
 
-  zod-validation-error@4.0.2(zod@4.1.12):
+  zod-validation-error@4.0.2(zod@4.1.13):
     dependencies:
-      zod: 4.1.12
+      zod: 4.1.13
 
   zod@3.22.3: {}
 
   zod@3.25.76: {}
 
-  zod@4.1.12: {}
+  zod@4.1.13: {}
 
   zwitch@2.0.4: {}
