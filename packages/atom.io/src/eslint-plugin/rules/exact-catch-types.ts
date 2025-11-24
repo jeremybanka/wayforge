@@ -141,7 +141,7 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 
 				if (!catchProperty) {
 					context.report({
-						node,
+						node: optionsObject,
 						messageId: `missingCatchProperty`,
 						data: { functionName, errorTypeName },
 					})
