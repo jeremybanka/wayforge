@@ -169,7 +169,7 @@ ruleTester.run(`exact-catch-types`, rule, {
 			errors: [{ messageId: `extraneousCatchProperty` }],
 		},
 		{
-			name: `atom with insufficient catch property`,
+			name: `atom with insufficient catch property (empty)`,
 			code: `
 				class SpecialError extends Error {
 					special: true
@@ -181,6 +181,23 @@ ruleTester.run(`exact-catch-types`, rule, {
 				})
 			`,
 			errors: [{ messageId: `missingCatchProperty` }],
+		},
+		{
+			name: `atom with insufficient catch property (missed one)`,
+			code: `
+				class SpecialError extends Error {
+					special: true
+				}
+				class FancyError extends Error {
+					fancy: true
+				}
+				const count = atom<number, SpecialError>({
+					key: "count",
+					default: 0,
+					catch: [SpecialError, FancyError],
+				})
+			`,
+			errors: [{ messageId: `invalidCatchProperty` }],
 		},
 	],
 })
