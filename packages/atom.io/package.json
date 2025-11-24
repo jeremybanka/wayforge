@@ -17,7 +17,7 @@
 	},
 	"scripts": {
 		"manifest": "./__scripts__/manifest-build.node.ts",
-		"build": "tsdown",
+		"build": "tsdown && ./__scripts__/validate-dist.node.ts",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
 		"lint:types": "tsgo --noEmit",
