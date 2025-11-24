@@ -1,3 +1,5 @@
+import * as path from "node:path"
+
 import { RuleTester } from "@typescript-eslint/rule-tester"
 import { Rules } from "atom.io/eslint-plugin"
 
@@ -5,7 +7,8 @@ const ruleTester = new RuleTester({
 	languageOptions: {
 		parserOptions: {
 			projectService: {
-				allowDefaultProject: [`*file.ts`],
+				allowDefaultProject: [`file.ts`],
+				defaultProject: path.join(__dirname, `tsconfig.json`),
 			},
 			tsconfigRootDir: __dirname,
 		},
