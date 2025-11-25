@@ -8,8 +8,9 @@ import {
 	setIntoStore,
 } from "atom.io/internal"
 import type { SocketKey, UserKey } from "atom.io/realtime"
-import { roomIndex, usersInRooms } from "atom.io/realtime"
+import { roomKeysAtom, usersInRooms } from "atom.io/realtime"
 import {
+	provideRooms,
 	realtimeMutableFamilyProvider,
 	realtimeMutableProvider,
 	realtimeStateProvider,
@@ -18,14 +19,13 @@ import {
 	socketAtoms,
 	socketKeysAtom,
 	userKeysAtom,
-	useRooms,
 	usersOfSockets,
 } from "atom.io/realtime-server"
 import { CookieMap } from "bun"
 import { eq } from "drizzle-orm"
 import type { DefaultEventsMap, ExtendedError, Socket } from "socket.io"
 
-import { resolveWorker } from "../backend.worker"
+import { resolveRoomScript } from "../backend.worker"
 import { users } from "../database/tempest-db-schema"
 import type {
 	TempestSocketDown,
@@ -112,6 +112,13 @@ export const serveSocket = (socket: TempestServerSocket): void => {
 	const selfListSelector = findState(selfListSelectors, userKeyOfSocket)
 	const provideFamily = realtimeMutableFamilyProvider({ socket })
 
+	socket.onAny((event, ...args) => {
+		console.log(`🛰️ << 📡`, { event, args })
+	})
+	socket.onAnyOutgoing((event, ...args) => {
+		console.log(`🛰️ >> 📡`, { event, args })
+	})
+
 	console.log(`👺`, { userKeyOfSocket })
 	console.log(
 		`👺`,
@@ -119,14 +126,15 @@ export const serveSocket = (socket: TempestServerSocket): void => {
 	)
 	const unsubs = [
 		...[cpuCountAtom].map(realtimeStateProvider({ socket })),
-		...[roomIndex].map(realtimeMutableProvider({ socket })),
+		...[roomKeysAtom].map(realtimeMutableProvider({ socket })),
 		...[myRoomAtoms].map((atoms) => provideFamily(atoms, selfListSelector)),
 	]
 
-	useRooms(
-		{ socket, store: IMPLICIT.STORE },
-		resolveWorker,
-	)(`backend.worker.game.bun`)
+	provideRooms({
+		socket,
+		store: IMPLICIT.STORE,
+		resolveRoomScript,
+	})
 
 	socket.on(`changeUsername`, async (newUsername) => {
 		logger.info(`changing username to`, newUsername)

@@ -2,11 +2,13 @@ import type { ViewOf } from "atom.io"
 import { getInternalRelations, runTransaction } from "atom.io"
 import { toEntries } from "atom.io/json"
 import { useJSON, useO } from "atom.io/react"
+import type { UserKey } from "atom.io/realtime"
 import { roomKeysAtom, usersInRooms } from "atom.io/realtime"
 import {
 	usePullAtom,
 	usePullMutable,
 	usePullMutableAtomFamilyMember,
+	useRealtimeRooms,
 	useSyncContinuity,
 } from "atom.io/realtime-react"
 import * as React from "react"
@@ -19,7 +21,7 @@ import {
 } from "../../library/store"
 import { Anchor } from "../Anchor"
 import { type Route, ROUTES } from "../services/router-service"
-import { authAtom, socket } from "../services/socket-auth-service"
+import { authAtom } from "../services/socket-auth-service"
 import scss from "./Game.module.scss"
 import { BugRangers } from "./Games/BugRangers"
 
@@ -93,7 +95,7 @@ export function ServerControl(): React.ReactNode {
 	const cpuCount = usePullAtom(cpuCountAtom)
 	usePullMutable(roomKeysAtom)
 	const roomIds = useJSON(roomKeysAtom)
-	const userKey = `user::${useO(authAtom)!.userId}` as const
+	const userKey = `user::${useO(authAtom)!.userId}` satisfies UserKey
 	const [myRoomId] = [
 		...usePullMutableAtomFamilyMember(
 			getInternalRelations(usersInRooms),
@@ -107,6 +109,8 @@ export function ServerControl(): React.ReactNode {
 		myRoomId,
 	})
 
+	const roomSocket = useRealtimeRooms()
+
 	return (
 		<article>
 			{Array.from({ length: cpuCount }).map((_, i) => (
@@ -118,7 +122,7 @@ export function ServerControl(): React.ReactNode {
 						<button
 							type="button"
 							onClick={() => {
-								socket.emit(`leaveRoom:${roomIds[i]}`)
+								roomSocket.emit(`leaveRoom`)
 							}}
 						>
 							leave
@@ -127,7 +131,7 @@ export function ServerControl(): React.ReactNode {
 						<button
 							type="button"
 							onClick={() => {
-								socket.emit(`joinRoom`, roomIds[i])
+								roomSocket.emit(`joinRoom`, roomIds[i])
 							}}
 						>
 							join
@@ -138,7 +142,7 @@ export function ServerControl(): React.ReactNode {
 			<button
 				type="button"
 				onClick={() => {
-					socket.emit(`createRoom`, `my-room`)
+					roomSocket.emit(`createRoom`, `my-room`)
 				}}
 			>
 				create room
