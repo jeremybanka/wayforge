@@ -21,7 +21,7 @@ function Room({ roomId }: { roomId: string }): React.ReactNode {
 				type="button"
 				data-testid="leave-room"
 				onClick={() => {
-					socket?.emit(`leaveRoom:${roomId}`)
+					socket?.emit(`leaveRoom`)
 				}}
 			/>
 		</main>
@@ -49,7 +49,7 @@ function Lobby(): React.ReactNode {
 							type="button"
 							data-testid={`delete-${roomKey}`}
 							onClick={() => {
-								socket?.emit(`deleteRoom:${roomKey}`)
+								socket?.emit(`deleteRoom`, roomKey)
 							}}
 						/>
 					</li>
