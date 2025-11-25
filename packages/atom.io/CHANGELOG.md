@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.44.12
+
+### Patch Changes
+
+- a7d2b74: ✨ `atom.io/realtime-server` `::` `provideRooms` adds automatic reattachment to rooms for users.
+
 ## 0.44.11
 
 ### Patch Changes
