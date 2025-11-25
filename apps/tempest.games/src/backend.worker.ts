@@ -17,12 +17,12 @@ export function worker(
 	name: WorkerName,
 	logger: Pick<Console, `error` | `info` | `warn`> = from.logger,
 ): ChildSocket<any, any, ChildProcessWithoutNullStreams> {
-	const [runner, args] = resolveWorker(name)
+	const [runner, args] = resolveRoomScript(name)
 	const child = spawn(runner, args)
 	return new ChildSocket(child, name, logger)
 }
 
-export function resolveWorker(
+export function resolveRoomScript(
 	name: WorkerName,
 ): [runner: Runner, args: string[]] {
 	const extension: Extension = env.RUN_WORKERS_FROM_SOURCE ? `ts` : `js`
