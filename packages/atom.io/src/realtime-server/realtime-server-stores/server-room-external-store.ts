@@ -19,6 +19,7 @@ import type {
 	RoomSocketInterface,
 	Socket,
 	SocketKey,
+	TypedSocket,
 	UserKey,
 } from "atom.io/realtime"
 import { ownersOfRooms, roomKeysAtom, usersInRooms } from "atom.io/realtime"
@@ -174,7 +175,7 @@ export function provideRooms<RoomNames extends string>({
 		store,
 		findRelationsInStore(store, usersOfSockets, socketKey).userKeyOfSocket,
 	)!
-	const roomSocket = socket as Socket<RoomSocketInterface<RoomNames>, {}>
+	const roomSocket = socket as TypedSocket<RoomSocketInterface<RoomNames>, {}>
 
 	const exposeMutable = realtimeMutableProvider({ socket, store })
 	const exposeMutableFamily = realtimeMutableFamilyProvider({

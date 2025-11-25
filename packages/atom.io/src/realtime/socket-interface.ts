@@ -26,7 +26,7 @@ export type EventEmitter<EmitEvents extends EventsMap = EventsMap> = <
 	...args: Parameters<EmitEvents[E]>
 ) => void
 
-export type Socket<
+export type TypedSocket<
 	ListenEvents extends EventsMap = EventsMap,
 	EmitEvents extends EventsMap = EventsMap,
 > = {
@@ -38,7 +38,7 @@ export type Socket<
 	emit: EventEmitter<EmitEvents>
 }
 
-export type UntypedSocket = {
+export type Socket = {
 	id: string | undefined
 	on: (event: string, listener: (...args: Json.Serializable[]) => void) => void
 	onAny: (
