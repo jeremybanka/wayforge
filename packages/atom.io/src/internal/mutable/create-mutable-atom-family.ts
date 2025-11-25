@@ -6,7 +6,7 @@ import type {
 	MutableAtomToken,
 	StateLifecycleEvent,
 } from "atom.io"
-import { PRETTY_TOKEN_TYPES } from "atom.io"
+import { PRETTY_ENTITY_NAMES } from "atom.io"
 import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
@@ -39,7 +39,7 @@ export function createMutableAtomFamily<
 			`❗`,
 			`mutable_atom_family`,
 			options.key,
-			`Overwriting an existing ${PRETTY_TOKEN_TYPES[existing.type]} "${existing.key}" in store "${store.config.name}". You can safely ignore this warning if it is due to hot module replacement.`,
+			`Overwriting an existing ${PRETTY_ENTITY_NAMES[existing.type]} "${existing.key}" in store "${store.config.name}". You can safely ignore this warning if it is due to hot module replacement.`,
 		)
 	}
 
