@@ -304,3 +304,8 @@ export const maximumStackHeightSelectors = selectorFamily<
 			return (tallestOwnedAdjacentStackHeight + 1) as StackHeight
 		},
 })
+
+export const playerTurnAtom = atom<string>({
+	key: `playerTurn`,
+	default: ``,
+})

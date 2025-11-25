@@ -11,6 +11,7 @@ export const ROUTES = optional({
 	game: optional({
 		clicker: null,
 		bug_rangers: null,
+		server_control: null,
 	}),
 	account: null,
 	admin: null,
@@ -70,7 +71,9 @@ export const pathnameAtom = atom<Pathname | (string & {})>({
 						break
 					}
 					case `/game`:
-					case `/game/clicker`: {
+					case `/game/clicker`:
+					case `/game/bug_rangers`:
+					case `/game/server_control`: {
 						const auth = getState(authAtom)
 						if (auth?.verification === `unverified`) {
 							resolve(`/verify`)
