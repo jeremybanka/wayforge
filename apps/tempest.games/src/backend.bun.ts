@@ -35,7 +35,7 @@ export const tribunalDaily: CronJob = (() => {
 	return __tribunalDaily
 })()
 
-const gameWorker = worker(parentSocket, `backend.worker.game.bun`, logger)
+// const gameWorker = worker(parentSocket, `backend.worker.game.bun`, logger)
 
 IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
 	`info`,
@@ -84,13 +84,14 @@ new WebSocketServer(httpServer, {
 	.on(`connection`, serveSocket)
 
 async function gracefulExit() {
-	logger.info(`🧹 closing workers`)
-	const gameWorkerExit = new Promise((pass) =>
-		gameWorker.proc.once(`close`, pass),
-	)
-	gameWorker.emit(`timeToStop`)
-	await gameWorkerExit
+	// logger.info(`🧹 closing workers`)
+	// const gameWorkerExit = new Promise((pass) =>
+	// 	gameWorker.proc.once(`close`, pass),
+	// )
+	// gameWorker.emit(`timeToStop`)
+	// await gameWorkerExit
 	logger.info(`🛬 backend server exiting`)
+	await new Promise((pass) => setTimeout(pass, 10))
 	process.exit(0)
 }
 

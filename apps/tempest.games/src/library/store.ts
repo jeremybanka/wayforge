@@ -17,3 +17,18 @@ export const countContinuity = continuity({
 	key: `countContinuity`,
 	config: (group) => group.add(countAtom).add(incrementTX),
 })
+
+export const cpuCountAtom = atom<number>({
+	key: `cpuCount`,
+	default: 1,
+	effects: [
+		({ setSelf }) => {
+			const isBrowser = typeof window !== `undefined`
+			if (!isBrowser) {
+				void import(`node:os`).then(({ cpus }) => {
+					setSelf(cpus().length)
+				})
+			}
+		},
+	],
+})
