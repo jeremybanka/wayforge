@@ -87,5 +87,9 @@ export function BrowserGame(): React.ReactNode | null {
 	const mySocketKey = AR.useO(RTC.mySocketKeyAtom)
 	const myUserKey = AR.useO(RTC.myUserKeyAtom)
 
-	return mySocketKey && myUserKey ? <View myUserKey={myUserKey} /> : null
+	return mySocketKey && myUserKey ? (
+		<View myUserKey={myUserKey} />
+	) : (
+		<div data-testid="disconnected" />
+	)
 }
