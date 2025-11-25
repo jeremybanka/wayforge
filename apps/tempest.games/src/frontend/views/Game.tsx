@@ -1,13 +1,26 @@
 import type { ViewOf } from "atom.io"
-import { runTransaction } from "atom.io"
+import { getInternalRelations, runTransaction } from "atom.io"
 import { toEntries } from "atom.io/json"
-import { useO } from "atom.io/react"
-import { useSyncContinuity } from "atom.io/realtime-react"
+import { useJSON, useO } from "atom.io/react"
+import { roomKeysAtom, usersInRooms } from "atom.io/realtime"
+import {
+	usePullAtom,
+	usePullMutable,
+	usePullMutableAtomFamilyMember,
+	useSyncContinuity,
+} from "atom.io/realtime-react"
 import * as React from "react"
 
-import { countAtom, countContinuity, incrementTX } from "../../library/store"
+import {
+	countAtom,
+	countContinuity,
+	cpuCountAtom,
+	incrementTX,
+} from "../../library/store"
 import { Anchor } from "../Anchor"
 import { type Route, ROUTES } from "../services/router-service"
+import { authAtom, socket } from "../services/socket-auth-service"
+import scss from "./Game.module.scss"
 import { BugRangers } from "./Games/BugRangers"
 
 export type Tail<T extends any[]> = T extends [any, ...infer Rest] ? Rest : never
@@ -21,7 +34,11 @@ export type GameIndexProps = {
 export function GameView({
 	route: [, gameId],
 }: GameIndexProps): React.ReactNode {
-	return <article>{gameId ? <Game gameId={gameId} /> : <GameIndex />}</article>
+	return (
+		<article className={scss[`class`]}>
+			{gameId ? <Game gameId={gameId} /> : <GameIndex />}
+		</article>
+	)
 }
 
 export function GameIndex(): React.ReactNode {
@@ -47,6 +64,9 @@ export function Game({ gameId }: GameProps): React.ReactNode {
 		case `clicker`: {
 			return <Clicker />
 		}
+		case `server_control`: {
+			return <ServerControl />
+		}
 	}
 }
 
@@ -63,6 +83,65 @@ export function Clicker(): React.ReactNode {
 				}}
 			>
 				count is {count}
+			</button>
+			<p>Let's see how high we can count!</p>
+		</article>
+	)
+}
+
+export function ServerControl(): React.ReactNode {
+	const cpuCount = usePullAtom(cpuCountAtom)
+	usePullMutable(roomKeysAtom)
+	const roomIds = useJSON(roomKeysAtom)
+	const userKey = `user::${useO(authAtom)!.userId}` as const
+	const [myRoomId] = [
+		...usePullMutableAtomFamilyMember(
+			getInternalRelations(usersInRooms),
+			userKey,
+		),
+	]
+
+	console.log(`👺`, {
+		roomIds,
+		userKey,
+		myRoomId,
+	})
+
+	return (
+		<article>
+			{Array.from({ length: cpuCount }).map((_, i) => (
+				<div key={i}>
+					<span>
+						{i}: {roomIds[i]} {myRoomId === roomIds[i] ? `👍` : `👎`}
+					</span>
+					{roomIds[i] === undefined ? null : myRoomId === roomIds[i] ? (
+						<button
+							type="button"
+							onClick={() => {
+								socket.emit(`leaveRoom:${roomIds[i]}`)
+							}}
+						>
+							leave
+						</button>
+					) : (
+						<button
+							type="button"
+							onClick={() => {
+								socket.emit(`joinRoom`, roomIds[i])
+							}}
+						>
+							join
+						</button>
+					)}
+				</div>
+			))}
+			<button
+				type="button"
+				onClick={() => {
+					socket.emit(`createRoom`, `my-room`)
+				}}
+			>
+				create room
 			</button>
 			<p>Let's see how high we can count!</p>
 		</article>

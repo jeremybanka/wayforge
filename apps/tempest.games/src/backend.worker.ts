@@ -10,19 +10,23 @@ import { env } from "./library/env"
 export type Role = `backend` | `frontend`
 export type Extension = `js` | `ts`
 export type Runner = `bun` | `node`
+export type WorkerName = `${Role}.worker.${string}.${Runner}`
 
 export function worker(
 	from: ParentSocket<any, any>,
-	name: `${Role}.worker.${string}.${Runner}`,
+	name: WorkerName,
 	logger: Pick<Console, `error` | `info` | `warn`> = from.logger,
 ): ChildSocket<any, any, ChildProcessWithoutNullStreams> {
+	const [runner, args] = resolveWorker(name)
+	const child = spawn(runner, args)
+	return new ChildSocket(child, name, logger)
+}
+
+export function resolveWorker(
+	name: WorkerName,
+): [runner: Runner, args: string[]] {
 	const extension: Extension = env.RUN_WORKERS_FROM_SOURCE ? `ts` : `js`
 	const runner: Runner = name.endsWith(`.bun`) ? `bun` : `node`
 	const workerPath = resolve(import.meta.dir, `${name}.${extension}`)
-	const args: string[] = [workerPath]
-	if (runner === `node` && extension === `ts`) {
-		args.push(`--experimental-strip-types`)
-	}
-	const child = spawn(runner, args)
-	return new ChildSocket(child, name, logger)
+	return [runner, [workerPath]]
 }
