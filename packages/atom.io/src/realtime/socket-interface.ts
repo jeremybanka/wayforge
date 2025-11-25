@@ -19,6 +19,13 @@ export type AllEventsListener<ListenEvents extends EventsMap = EventsMap> = <
 	...args: Parameters<ListenEvents[E]>
 ) => void
 
+export type EventEmitter<EmitEvents extends EventsMap = EventsMap> = <
+	E extends keyof EmitEvents,
+>(
+	event: E,
+	...args: Parameters<EmitEvents[E]>
+) => void
+
 export type Socket<
 	ListenEvents extends EventsMap = EventsMap,
 	EmitEvents extends EventsMap = EventsMap,
@@ -28,10 +35,7 @@ export type Socket<
 	onAny: (listener: AllEventsListener<ListenEvents>) => void
 	off: ParticularEventListener<ListenEvents>
 	offAny: (listener: AllEventsListener<ListenEvents>) => void
-	emit: <E extends keyof EmitEvents>(
-		event: E,
-		...args: Parameters<EmitEvents[E]>
-	) => void
+	emit: EventEmitter<EmitEvents>
 }
 
 export type UntypedSocket = {
