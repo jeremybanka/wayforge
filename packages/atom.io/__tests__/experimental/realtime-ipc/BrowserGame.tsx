@@ -21,7 +21,7 @@ function Room({ roomId }: { roomId: string }): React.ReactNode {
 				type="button"
 				data-testid="leave-room"
 				onClick={() => {
-					socket?.emit(`leaveRoom:${roomId}`)
+					socket?.emit(`leaveRoom`)
 				}}
 			/>
 		</main>
@@ -49,7 +49,7 @@ function Lobby(): React.ReactNode {
 							type="button"
 							data-testid={`delete-${roomKey}`}
 							onClick={() => {
-								socket?.emit(`deleteRoom:${roomKey}`)
+								socket?.emit(`deleteRoom`, roomKey)
 							}}
 						/>
 					</li>
@@ -87,5 +87,9 @@ export function BrowserGame(): React.ReactNode | null {
 	const mySocketKey = AR.useO(RTC.mySocketKeyAtom)
 	const myUserKey = AR.useO(RTC.myUserKeyAtom)
 
-	return mySocketKey && myUserKey ? <View myUserKey={myUserKey} /> : null
+	return mySocketKey && myUserKey ? (
+		<View myUserKey={myUserKey} />
+	) : (
+		<div data-testid="disconnected" />
+	)
 }

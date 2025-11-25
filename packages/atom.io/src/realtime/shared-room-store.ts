@@ -15,12 +15,13 @@ import {
 
 export type RoomSocketInterface<RoomNames extends string> = {
 	createRoom: (roomName: RoomNames) => void
-	joinRoom: (roomKey: string) => void
-	[leaveRoom: `leaveRoom:${string}`]: () => void
-	[deleteRoom: `deleteRoom:${string}`]: () => void
+	joinRoom: (roomKey: RoomKey) => void
+	deleteRoom: (roomKey: RoomKey) => void
+	leaveRoom: () => void
+	// [leaveRoom: `leaveRoom:${string}`]: () => void
 }
 
-export const roomKeysAtom: MutableAtomToken<UList<string>> = mutableAtom({
+export const roomKeysAtom: MutableAtomToken<UList<RoomKey>> = mutableAtom({
 	key: `roomIndex`,
 	class: UList,
 })
@@ -38,6 +39,15 @@ export const usersInRooms: JoinToken<`room`, RoomKey, `user`, UserKey, `1:n`> =
 		cardinality: `1:n`,
 		isAType: isRoomKey,
 		isBType: isUserKey,
+	})
+
+export const ownersOfRooms: JoinToken<`user`, UserKey, `room`, RoomKey, `1:n`> =
+	join({
+		key: `ownersOfRooms`,
+		between: [`user`, `room`],
+		cardinality: `1:n`,
+		isAType: isUserKey,
+		isBType: isRoomKey,
 	})
 
 export const usersInMyRoomView: ReadonlyPureSelectorFamilyToken<

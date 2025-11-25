@@ -86,4 +86,33 @@ describe(`multi-process realtime server`, () => {
 
 		await teardown()
 	})
+	it(`reattaches to a room after disconnecting`, async () => {
+		const { client, teardown } = scenario()
+		const app = client.init()
+		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
+		act(() => {
+			createRoomButton.click()
+		})
+		const joinRoomButton = await app.renderResult.findByTestId(`join-room::0`)
+		act(() => {
+			joinRoomButton.click()
+		})
+		await app.renderResult.findByTestId(`room::0`)
+		await app.renderResult.findByTestId(`A`, undefined, { timeout: 3000 })
+
+		app.socket.disconnect()
+		await app.renderResult.findByTestId(`disconnected`)
+
+		app.socket.connect()
+		await app.renderResult.findByTestId(`room::0`)
+		await app.renderResult.findByTestId(`A`, undefined, { timeout: 3000 })
+
+		const leaveRoomButton = await app.renderResult.findByTestId(`leave-room`)
+		act(() => {
+			leaveRoomButton.click()
+		})
+		await app.renderResult.findByTestId(`create-room`)
+
+		await teardown()
+	})
 })
