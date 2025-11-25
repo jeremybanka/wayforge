@@ -50,6 +50,8 @@ const LOGGER_ICON_DICTIONARY = {
 	"📢": `Notify subscribers`,
 
 	// Realtime
+	"🛰️": `Server socket`,
+	"📡": `Client socket`,
 	"🚀": `Performance measure`,
 	"✅": `Realtime transaction success`,
 	"🔄": `Realtime transaction synchronized`,
@@ -64,7 +66,7 @@ const LOGGER_ICON_DICTIONARY = {
 	"👍": `Realtime acknowledgment`,
 } as const
 export type LoggerIcon = keyof typeof LOGGER_ICON_DICTIONARY
-export type TokenDenomination =
+export type EntityDenomination =
 	| `atom_family`
 	| `atom`
 	| `continuity`
@@ -75,6 +77,7 @@ export type TokenDenomination =
 	| `readonly_held_selector`
 	| `readonly_pure_selector_family`
 	| `readonly_pure_selector`
+	| `socket`
 	| `state`
 	| `timeline`
 	| `transaction`
@@ -84,7 +87,7 @@ export type TokenDenomination =
 	| `writable_pure_selector_family`
 	| `writable_pure_selector`
 
-export const PRETTY_TOKEN_TYPES: Record<TokenDenomination, string> = {
+export const PRETTY_ENTITY_NAMES: Record<EntityDenomination, string> = {
 	atom_family: `atom family`,
 	atom: `atom`,
 	continuity: `continuity`,
@@ -95,6 +98,7 @@ export const PRETTY_TOKEN_TYPES: Record<TokenDenomination, string> = {
 	readonly_held_selector: `selector [h]`,
 	readonly_pure_selector_family: `selector family`,
 	readonly_pure_selector: `selector`,
+	socket: `socket`,
 	state: `state`,
 	timeline: `timeline`,
 	transaction: `transaction`,
@@ -110,7 +114,7 @@ export type LogLevel = (typeof LOG_LEVELS)[number]
 
 export type LogFn = (
 	icon: LoggerIcon,
-	denomination: TokenDenomination,
+	denomination: EntityDenomination,
 	tokenKey: string,
 	message: string,
 	...rest: unknown[]
@@ -126,7 +130,7 @@ export const simpleLog =
 	(icon, denomination, tokenKey, message, ...rest) => {
 		/* eslint-disable-next-line no-console */
 		console[logLevel](
-			`${icon} ${PRETTY_TOKEN_TYPES[denomination]} \`${tokenKey}\` ${message}`,
+			`${icon} ${PRETTY_ENTITY_NAMES[denomination]} \`${tokenKey}\` ${message}`,
 			...rest,
 		)
 	}
