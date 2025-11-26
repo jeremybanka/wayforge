@@ -1,5 +1,13 @@
 # @atom.io/template-preact-svg-editor
 
+## 0.0.12
+
+### Patch Changes
+
+- Updated dependencies [8145d09]
+- Updated dependencies [09e6be8]
+  - atom.io@0.44.13
+
 ## 0.0.11
 
 ### Patch Changes
