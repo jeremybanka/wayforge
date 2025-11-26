@@ -35,6 +35,8 @@ import {
 	usersOfSockets,
 } from "./server-user-store"
 
+// REMOVE WHEN READY FOR RELEASE
+
 export type RoomMap = Map<
 	string,
 	ChildSocket<any, any, ChildProcessWithoutNullStreams>
