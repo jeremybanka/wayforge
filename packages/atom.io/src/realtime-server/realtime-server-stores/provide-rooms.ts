@@ -1,7 +1,7 @@
 import type { ChildProcessWithoutNullStreams } from "node:child_process"
 import { spawn } from "node:child_process"
 
-import type { RootStore, Store } from "atom.io/internal"
+import type { RootStore } from "atom.io/internal"
 import {
 	editRelationsInStore,
 	findInStore,
@@ -42,8 +42,6 @@ import {
 	userKeysAtom,
 	usersOfSockets,
 } from "./server-user-store"
-
-// REMOVE WHEN READY FOR RELEASE
 
 export type RoomMap = Map<
 	string,
