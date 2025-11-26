@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.44.13
+
+### Patch Changes
+
+- 8145d09: 🔊 `atom.io/realtime-server` `::` `provideRooms` Added logging to room events like creation/deletion/joining/leaving.
+- 09e6be8: ✨ `atom.io/realtime` `::` `castSocket` A new function that wraps a socket using standard schema to validate inputs.
+
 ## 0.44.12
 
 ### Patch Changes
