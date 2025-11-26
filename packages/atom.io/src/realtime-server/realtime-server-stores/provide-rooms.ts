@@ -1,7 +1,7 @@
 import type { ChildProcessWithoutNullStreams } from "node:child_process"
 import { spawn } from "node:child_process"
 
-import type { Store } from "atom.io/internal"
+import type { RootStore, Store } from "atom.io/internal"
 import {
 	editRelationsInStore,
 	findInStore,
@@ -35,6 +35,8 @@ import {
 	usersOfSockets,
 } from "./server-user-store"
 
+// REMOVE WHEN READY FOR RELEASE
+
 export type RoomMap = Map<
 	string,
 	ChildSocket<any, any, ChildProcessWithoutNullStreams>
@@ -43,57 +45,93 @@ export type RoomMap = Map<
 declare global {
 	var ATOM_IO_REALTIME_SERVER_ROOMS: RoomMap
 }
-
 export const ROOMS: RoomMap =
 	globalThis.ATOM_IO_REALTIME_SERVER_ROOMS ??
 	(globalThis.ATOM_IO_REALTIME_SERVER_ROOMS = new Map())
 
 export const roomMeta: { count: number } = { count: 0 }
 
-export async function spawnRoom(
-	store: Store,
-	userKey: UserKey,
-	roomKey: RoomKey,
-	command: string,
-	args: string[],
-): Promise<ChildSocket<any, any>> {
-	const child = await new Promise<ChildProcessWithoutNullStreams>((resolve) => {
-		const room = spawn(command, args, { env: process.env })
-		const resolver = (data: Buffer) => {
-			if (data.toString() === `ALIVE`) {
-				room.stdout.off(`data`, resolver)
-				resolve(room)
-			}
-		}
-		room.stdout.on(`data`, resolver)
-	})
-	const roomSocket = new ChildSocket(child, roomKey)
-	ROOMS.set(roomKey, roomSocket)
-	setIntoStore(store, roomKeysAtom, (index) => (index.add(roomKey), index))
+export type SpawnRoomConfig<RoomNames extends string> = {
+	store: RootStore
+	socket: Socket
+	userKey: UserKey
+	resolveRoomScript: (roomName: RoomNames) => [string, string[]]
+}
+export function spawnRoom<RoomNames extends string>({
+	store,
+	socket,
+	userKey,
+	resolveRoomScript,
+}: SpawnRoomConfig<RoomNames>): (
+	roomName: RoomNames,
+) => Promise<ChildSocket<any, any>> {
+	return async (roomName) => {
+		store.logger.info(
+			`📡`,
+			`socket`,
+			socket.id ?? `[ID MISSING?!]`,
+			`👤 ${userKey} spawns room ${roomName}`,
+		)
+		const roomKey = `room::${roomMeta.count++}` satisfies RoomKey
+		const [command, args] = resolveRoomScript(roomName)
+		const child = await new Promise<ChildProcessWithoutNullStreams>(
+			(resolve) => {
+				const room = spawn(command, args, { env: process.env })
+				const resolver = (data: Buffer) => {
+					if (data.toString() === `ALIVE`) {
+						room.stdout.off(`data`, resolver)
+						resolve(room)
+					}
+				}
+				room.stdout.on(`data`, resolver)
+			},
+		)
+		const roomSocket = new ChildSocket(child, roomKey)
+		ROOMS.set(roomKey, roomSocket)
+		setIntoStore(store, roomKeysAtom, (index) => (index.add(roomKey), index))
 
-	editRelationsInStore(store, ownersOfRooms, (relations) => {
-		relations.set({ room: roomKey, user: userKey })
-	})
+		editRelationsInStore(store, ownersOfRooms, (relations) => {
+			relations.set({ room: roomKey, user: userKey })
+		})
 
-	roomSocket.on(`close`, () => {
-		destroyRoom(store)(roomKey)
-	})
+		roomSocket.on(`close`, () => {
+			destroyRoom({ store, socket, userKey })(roomKey)
+		})
 
-	return roomSocket
+		return roomSocket
+	}
 }
 
-export function provideEnterAndExit(
-	store: Store,
-	userKey: UserKey,
-	socket: Socket,
-): {
-	enterRoom: (roomKey: RoomKey) => void
-} {
+export type ProvideEnterAndExitConfig = {
+	store: Store
+	socket: TypedSocket<RoomSocketInterface<any>, any>
+	userKey: UserKey
+}
+export function provideEnterAndExit({
+	store,
+	socket,
+	userKey,
+}: ProvideEnterAndExitConfig): (roomKey: RoomKey) => void {
 	const enterRoom = (roomKey: RoomKey) => {
+		store.logger.info(
+			`📡`,
+			`socket`,
+			socket.id ?? `[ID MISSING?!]`,
+			`👤 ${userKey} enters room ${roomKey}`,
+		)
+
 		const exitRoom = () => {
+			store.logger.info(
+				`📡`,
+				`socket`,
+				socket.id ?? `[ID MISSING?!]`,
+				`👤 ${userKey} leaves room ${roomKey}`,
+			)
 			socket.offAny(forward)
 			toRoom([`user-leaves`])
-			leaveRoom(store, roomKey, userKey)
+			editRelationsInStore(store, usersInRooms, (relations) => {
+				relations.delete({ room: roomKey, user: userKey })
+			})
 			socket.off(`leaveRoom`, exitRoom)
 			socket.on(`joinRoom`, enterRoom)
 		}
@@ -133,43 +171,66 @@ export function provideEnterAndExit(
 		}
 	}
 	socket.on(`joinRoom`, enterRoom)
-	return { enterRoom }
+	return enterRoom
 }
 
-export function leaveRoom(
-	store: Store,
-	roomKey: RoomKey,
-	userKey: UserKey,
-): void {
-	editRelationsInStore(store, usersInRooms, (relations) => {
-		relations.delete({ room: roomKey, user: userKey })
-	})
+export type DestroyRoomConfig = {
+	store: RootStore
+	socket: Socket
+	userKey: UserKey
 }
-
-export function destroyRoom(store: Store): (roomKey: RoomKey) => void {
+export function destroyRoom({
+	store,
+	socket,
+	userKey,
+}: DestroyRoomConfig): (roomKey: RoomKey) => void {
 	return (roomKey: RoomKey) => {
-		// logger.info(`[${shortId}]:${username}`, `deleting room "${roomId}"`)
-		setIntoStore(store, roomKeysAtom, (s) => (s.delete(roomKey), s))
-		editRelationsInStore(store, usersInRooms, (relations) => {
-			relations.delete({ room: roomKey })
-		})
-		const room = ROOMS.get(roomKey)
-		if (room) {
-			room.emit(`exit`)
-			ROOMS.delete(roomKey)
+		store.logger.info(
+			`📡`,
+			`socket`,
+			socket.id ?? `[ID MISSING?!]`,
+			`👤 ${userKey} attempts to delete room ${roomKey}`,
+		)
+		const owner = getFromStore(
+			store,
+			findRelationsInStore(store, ownersOfRooms, roomKey).userKeyOfRoom,
+		)
+		if (owner === userKey) {
+			store.logger.info(
+				`📡`,
+				`socket`,
+				socket.id ?? `[ID MISSING?!]`,
+				`👤 ${userKey} deletes room ${roomKey}`,
+			)
+			setIntoStore(store, roomKeysAtom, (s) => (s.delete(roomKey), s))
+			editRelationsInStore(store, usersInRooms, (relations) => {
+				relations.delete({ room: roomKey })
+			})
+			const room = ROOMS.get(roomKey)
+			if (room) {
+				room.emit(`exit`)
+				ROOMS.delete(roomKey)
+			}
+			return
 		}
+		store.logger.info(
+			`📡`,
+			`socket`,
+			socket.id ?? `[ID MISSING?!]`,
+			`👤 ${userKey} failed to delete room ${roomKey}; room owner is ${owner}`,
+		)
 	}
 }
 
-export type ProvideRoomsConfig = {
-	resolveRoomScript: (path: string) => [string, string[]]
+export type ProvideRoomsConfig<RoomNames extends string> = {
+	resolveRoomScript: (path: RoomNames) => [string, string[]]
 	roomTimeLimit?: number
 }
 export function provideRooms<RoomNames extends string>({
 	store = IMPLICIT.STORE,
 	socket,
 	resolveRoomScript,
-}: ProvideRoomsConfig & ServerConfig): void {
+}: ProvideRoomsConfig<RoomNames> & ServerConfig): void {
 	const socketKey = `socket::${socket.id}` satisfies SocketKey
 	const userKey = getFromStore(
 		store,
@@ -202,13 +263,7 @@ export function provideRooms<RoomNames extends string>({
 	)
 	exposeMutableFamily(usersOfSocketsAtoms, socketKeysAtom)
 
-	const createRoom = async (roomName: RoomNames) => {
-		// logger.info(`[${shortId}]:${username}`, `creating room "${roomId}"`)
-		const roomKey = `room::${roomMeta.count++}` satisfies RoomKey
-		await spawnRoom(store, userKey, roomKey, ...resolveRoomScript(roomName))
-	}
-
-	const { enterRoom } = provideEnterAndExit(store, userKey, roomSocket)
+	const enterRoom = provideEnterAndExit({ store, socket: roomSocket, userKey })
 
 	const userRoomSet = getFromStore(store, usersInRoomsAtoms, userKey)
 	for (const userRoomKey of userRoomSet) {
@@ -216,10 +271,18 @@ export function provideRooms<RoomNames extends string>({
 		break
 	}
 
-	roomSocket.on(`createRoom`, createRoom)
-	roomSocket.on(`deleteRoom`, destroyRoom(store))
+	roomSocket.on(
+		`createRoom`,
+		spawnRoom({ store, socket, userKey, resolveRoomScript }),
+	)
+	roomSocket.on(`deleteRoom`, destroyRoom({ store, socket, userKey }))
 	socket.on(`disconnect`, () => {
-		// logger.info(`${socket.id} disconnected`)
+		store.logger.info(
+			`📡`,
+			`socket`,
+			socket.id ?? `[ID MISSING?!]`,
+			`👤 ${userKey} disconnects`,
+		)
 		editRelationsInStore(store, usersOfSockets, (rel) => rel.delete(socketKey))
 		setIntoStore(store, userKeysAtom, (keys) => (keys.delete(userKey), keys))
 		setIntoStore(store, socketKeysAtom, (keys) => (keys.delete(socketKey), keys))

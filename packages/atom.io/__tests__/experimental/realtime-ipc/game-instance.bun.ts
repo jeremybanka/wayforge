@@ -1,4 +1,4 @@
-import type { LoggerIcon, TokenDenomination } from "atom.io"
+import type { EntityDenomination, LoggerIcon } from "atom.io"
 import { AtomIOLogger, editRelations, findState, setState } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import type { Json } from "atom.io/json"
@@ -25,7 +25,7 @@ const atomIOSubprocessLogger = new AtomIOLogger(
 	`warn`,
 	(_, tokenType, tokenKey, message) => {
 		const _allowedIcons: LoggerIcon[] = [`🛄`]
-		const ignoredTokenTypes: TokenDenomination[] = []
+		const ignoredTokenTypes: EntityDenomination[] = []
 		const ignoredTokens = [`actions`, `radialMode`, `windowMousePosition`]
 		const ignoredMessageContents: string[] = []
 		// if (!allowedIcons.includes(icon)) return false
