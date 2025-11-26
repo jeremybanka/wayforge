@@ -17,5 +17,10 @@ export const SystemServer = ({
 	enableLogging: () => void
 }): void => {
 	enableLogging()
-	RTS.provideRooms({ store, socket, resolveRoomScript })
+	RTS.provideRooms({
+		store,
+		socket,
+		resolveRoomScript,
+		roomNames: [`game-instance.bun.ts`],
+	})
 }
