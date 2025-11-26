@@ -11,7 +11,7 @@ export type SocketListeners<T extends TypedSocket> = T extends TypedSocket<
 	: never
 
 export type SocketGuard<L extends EventsMap> = {
-	[K in keyof L]: StandardSchemaV1<unknown, Parameters<L[K]>>
+	[K in keyof L]: StandardSchemaV1<Json.Array, Parameters<L[K]>>
 }
 
 export type Loaded<L extends Loadable<any>> = L extends Loadable<infer T>
@@ -40,7 +40,7 @@ export function castSocket<T extends TypedSocket>(
 	const guardedSocket: Socket = {
 		id: socket.id,
 		on: (event, listener) => {
-			const schema = guard[event] as StandardSchemaV1<unknown, Json.Array>
+			const schema = guard[event] as StandardSchemaV1<Json.Array, Json.Array>
 			socket.on(event, (...args) => {
 				const loadableResult = schema[`~standard`].validate(args)
 				onLoad(loadableResult, (result) => {
