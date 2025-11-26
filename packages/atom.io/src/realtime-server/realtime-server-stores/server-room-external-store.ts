@@ -68,8 +68,7 @@ export function spawnRoom<RoomNames extends string>({
 			`📡`,
 			`socket`,
 			socket.id ?? `[ID MISSING?!]`,
-			`spawning room`,
-			roomName,
+			`👤 ${userKey} spawns room ${roomName}`,
 		)
 		const roomKey = `room::${roomMeta.count++}` satisfies RoomKey
 		const [command, args] = resolveRoomScript(roomName)
@@ -116,8 +115,7 @@ export function provideEnterAndExit({
 			`📡`,
 			`socket`,
 			socket.id ?? `[ID MISSING?!]`,
-			`entering room`,
-			roomKey,
+			`👤 ${userKey} enters room ${roomKey}`,
 		)
 
 		const exitRoom = () => {
@@ -125,8 +123,7 @@ export function provideEnterAndExit({
 				`📡`,
 				`socket`,
 				socket.id ?? `[ID MISSING?!]`,
-				`leaving room`,
-				roomKey,
+				`👤 ${userKey} leaves room ${roomKey}`,
 			)
 			socket.offAny(forward)
 			toRoom([`user-leaves`])
@@ -190,8 +187,7 @@ export function destroyRoom({
 			`📡`,
 			`socket`,
 			socket.id ?? `[ID MISSING?!]`,
-			`attempts deleting room`,
-			roomKey,
+			`👤 ${userKey} attempts to delete room ${roomKey}`,
 		)
 		const owner = getFromStore(
 			store,
@@ -202,8 +198,7 @@ export function destroyRoom({
 				`📡`,
 				`socket`,
 				socket.id ?? `[ID MISSING?!]`,
-				`deleting room`,
-				roomKey,
+				`👤 ${userKey} deletes room ${roomKey}`,
 			)
 			setIntoStore(store, roomKeysAtom, (s) => (s.delete(roomKey), s))
 			editRelationsInStore(store, usersInRooms, (relations) => {
@@ -220,8 +215,7 @@ export function destroyRoom({
 			`📡`,
 			`socket`,
 			socket.id ?? `[ID MISSING?!]`,
-			`failed to delete room`,
-			roomKey,
+			`👤 ${userKey} failed to delete room ${roomKey}; room owner is ${owner}`,
 		)
 	}
 }
@@ -285,7 +279,7 @@ export function provideRooms<RoomNames extends string>({
 			`📡`,
 			`socket`,
 			socket.id ?? `[ID MISSING?!]`,
-			`disconnected`,
+			`👤 ${userKey} disconnects`,
 		)
 		editRelationsInStore(store, usersOfSockets, (rel) => rel.delete(socketKey))
 		setIntoStore(store, userKeysAtom, (keys) => (keys.delete(userKey), keys))
