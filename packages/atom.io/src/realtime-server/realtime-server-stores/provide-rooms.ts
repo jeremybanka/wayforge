@@ -18,11 +18,19 @@ import type {
 	RoomKey,
 	RoomSocketInterface,
 	Socket,
+	SocketGuard,
 	SocketKey,
+	StandardSchemaV1,
 	TypedSocket,
 	UserKey,
 } from "atom.io/realtime"
-import { ownersOfRooms, roomKeysAtom, usersInRooms } from "atom.io/realtime"
+import {
+	castSocket,
+	isRoomKey,
+	ownersOfRooms,
+	roomKeysAtom,
+	usersInRooms,
+} from "atom.io/realtime"
 
 import { ChildSocket } from "../ipc-sockets"
 import { realtimeMutableFamilyProvider } from "../realtime-mutable-family-provider"
@@ -103,13 +111,15 @@ export function spawnRoom<RoomNames extends string>({
 }
 
 export type ProvideEnterAndExitConfig = {
-	store: Store
-	socket: TypedSocket<RoomSocketInterface<any>, any>
+	store: RootStore
+	socket: Socket
+	roomSocket: TypedSocket<RoomSocketInterface<any>, any>
 	userKey: UserKey
 }
 export function provideEnterAndExit({
 	store,
 	socket,
+	roomSocket,
 	userKey,
 }: ProvideEnterAndExitConfig): (roomKey: RoomKey) => void {
 	const enterRoom = (roomKey: RoomKey) => {
@@ -132,12 +142,12 @@ export function provideEnterAndExit({
 			editRelationsInStore(store, usersInRooms, (relations) => {
 				relations.delete({ room: roomKey, user: userKey })
 			})
-			socket.off(`leaveRoom`, exitRoom)
-			socket.on(`joinRoom`, enterRoom)
+			roomSocket.off(`leaveRoom`, exitRoom)
+			roomSocket.on(`joinRoom`, enterRoom)
 		}
 
-		socket.on(`leaveRoom`, exitRoom)
-		socket.off(`joinRoom`, enterRoom)
+		roomSocket.on(`leaveRoom`, exitRoom)
+		roomSocket.off(`joinRoom`, enterRoom)
 
 		const roomQueue: [string, ...Json.Array][] = []
 		const pushToRoomQueue = (payload: [string, ...Json.Array]): void => {
@@ -152,25 +162,25 @@ export function provideEnterAndExit({
 		editRelationsInStore(store, usersInRooms, (relations) => {
 			relations.set({ room: roomKey, user: userKey })
 		})
-		const roomSocket = ROOMS.get(roomKey)
-		if (!roomSocket) {
+		const childSocket = ROOMS.get(roomKey)
+		if (!childSocket) {
 			store.logger.error(`❌`, `unknown`, roomKey, `no room found with this id`)
 			return null
 		}
-		roomSocket.onAny((...payload) => {
+		childSocket.onAny((...payload) => {
 			socket.emit(...payload)
 		})
-		roomSocket.emit(`user-joins`, userKey)
+		childSocket.emit(`user-joins`, userKey)
 
 		toRoom = (payload) => {
-			roomSocket.emit(`user::${userKey}`, ...payload)
+			childSocket.emit(`user::${userKey}`, ...payload)
 		}
 		while (roomQueue.length > 0) {
 			const payload = roomQueue.shift()
 			if (payload) toRoom(payload)
 		}
 	}
-	socket.on(`joinRoom`, enterRoom)
+	roomSocket.on(`joinRoom`, enterRoom)
 	return enterRoom
 }
 
@@ -224,19 +234,25 @@ export function destroyRoom({
 
 export type ProvideRoomsConfig<RoomNames extends string> = {
 	resolveRoomScript: (path: RoomNames) => [string, string[]]
+	roomNames: RoomNames[]
 	roomTimeLimit?: number
 }
 export function provideRooms<RoomNames extends string>({
 	store = IMPLICIT.STORE,
 	socket,
 	resolveRoomScript,
+	roomNames,
 }: ProvideRoomsConfig<RoomNames> & ServerConfig): void {
 	const socketKey = `socket::${socket.id}` satisfies SocketKey
 	const userKey = getFromStore(
 		store,
 		findRelationsInStore(store, usersOfSockets, socketKey).userKeyOfSocket,
 	)!
-	const roomSocket = socket as TypedSocket<RoomSocketInterface<RoomNames>, {}>
+	// const roomSocket = socket as TypedSocket<RoomSocketInterface<RoomNames>, {}>
+	const roomSocket = castSocket<TypedSocket<RoomSocketInterface<RoomNames>, {}>>(
+		socket,
+		createRoomSocketGuard(roomNames),
+	)
 
 	const exposeMutable = realtimeMutableProvider({ socket, store })
 	const exposeMutableFamily = realtimeMutableFamilyProvider({
@@ -263,7 +279,7 @@ export function provideRooms<RoomNames extends string>({
 	)
 	exposeMutableFamily(usersOfSocketsAtoms, socketKeysAtom)
 
-	const enterRoom = provideEnterAndExit({ store, socket: roomSocket, userKey })
+	const enterRoom = provideEnterAndExit({ store, socket, roomSocket, userKey })
 
 	const userRoomSet = getFromStore(store, usersInRoomsAtoms, userKey)
 	for (const userRoomKey of userRoomSet) {
@@ -287,4 +303,68 @@ export function provideRooms<RoomNames extends string>({
 		setIntoStore(store, userKeysAtom, (keys) => (keys.delete(userKey), keys))
 		setIntoStore(store, socketKeysAtom, (keys) => (keys.delete(socketKey), keys))
 	})
+}
+
+const roomKeySchema: StandardSchemaV1<Json.Array, [RoomKey]> = {
+	"~standard": {
+		version: 1,
+		vendor: `atom.io`,
+		validate: ([maybeRoomKey]: Json.Array) => {
+			if (typeof maybeRoomKey === `string`) {
+				if (isRoomKey(maybeRoomKey)) {
+					return { value: [maybeRoomKey] }
+				}
+				return {
+					issues: [
+						{
+							message: `Room key must start with "room::"`,
+						},
+					],
+				}
+			}
+			return {
+				issues: [
+					{
+						message: `Room key must be a string`,
+					},
+				],
+			}
+		},
+	},
+}
+
+function createRoomSocketGuard<RoomNames extends string>(
+	roomNames: RoomNames[],
+): SocketGuard<RoomSocketInterface<RoomNames>> {
+	return {
+		createRoom: {
+			"~standard": {
+				version: 1,
+				vendor: `atom.io`,
+				validate: ([maybeRoomName]) => {
+					if (roomNames.includes(maybeRoomName as RoomNames)) {
+						return { value: [maybeRoomName as RoomNames] }
+					}
+					return {
+						issues: [
+							{
+								message:
+									`Room name must be one of the following:\n - ` +
+									roomNames.join(`\n - `),
+							},
+						],
+					}
+				},
+			},
+		},
+		joinRoom: roomKeySchema,
+		deleteRoom: roomKeySchema,
+		leaveRoom: {
+			"~standard": {
+				version: 1,
+				vendor: `atom.io`,
+				validate: () => ({ value: [] }),
+			},
+		},
+	}
 }
