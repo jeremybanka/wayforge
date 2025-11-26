@@ -1,4 +1,4 @@
-import type { LoggerIcon, EntityDenomination } from "atom.io"
+import type { EntityDenomination, LoggerIcon } from "atom.io"
 import { AtomIOLogger, editRelations, findState, setState } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import type { Json } from "atom.io/json"
