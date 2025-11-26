@@ -20,7 +20,7 @@ export type AllEventsListener<ListenEvents extends EventsMap = EventsMap> = <
 ) => void
 
 export type EventEmitter<EmitEvents extends EventsMap = EventsMap> = <
-	E extends keyof EmitEvents,
+	E extends string & keyof EmitEvents,
 >(
 	event: E,
 	...args: Parameters<EmitEvents[E]>
