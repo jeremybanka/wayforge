@@ -1,2 +1,2 @@
-export * from "./server-room-external-store"
+export * from "./provide-rooms"
 export * from "./server-user-store"
