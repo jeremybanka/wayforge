@@ -1,7 +1,7 @@
 import type { ChildProcessWithoutNullStreams } from "node:child_process"
 import { spawn } from "node:child_process"
 
-import type { Store } from "atom.io/internal"
+import type { RootStore, Store } from "atom.io/internal"
 import {
 	editRelationsInStore,
 	findInStore,
@@ -43,7 +43,6 @@ export type RoomMap = Map<
 declare global {
 	var ATOM_IO_REALTIME_SERVER_ROOMS: RoomMap
 }
-
 export const ROOMS: RoomMap =
 	globalThis.ATOM_IO_REALTIME_SERVER_ROOMS ??
 	(globalThis.ATOM_IO_REALTIME_SERVER_ROOMS = new Map())
@@ -51,7 +50,7 @@ export const ROOMS: RoomMap =
 export const roomMeta: { count: number } = { count: 0 }
 
 export type SpawnRoomConfig<RoomNames extends string> = {
-	store: Store
+	store: RootStore
 	socket: Socket
 	userKey: UserKey
 	resolveRoomScript: (roomName: RoomNames) => [string, string[]]
@@ -65,8 +64,14 @@ export function spawnRoom<RoomNames extends string>({
 	roomName: RoomNames,
 ) => Promise<ChildSocket<any, any>> {
 	return async (roomName) => {
+		store.logger.info(
+			`📡`,
+			`socket`,
+			socket.id ?? `[ID MISSING?!]`,
+			`spawning room`,
+			roomName,
+		)
 		const roomKey = `room::${roomMeta.count++}` satisfies RoomKey
-		// await spawnRoom(store, userKey, roomKey, ...resolveRoomScript(roomName))
 		const [command, args] = resolveRoomScript(roomName)
 		const child = await new Promise<ChildProcessWithoutNullStreams>(
 			(resolve) => {
@@ -89,7 +94,7 @@ export function spawnRoom<RoomNames extends string>({
 		})
 
 		roomSocket.on(`close`, () => {
-			destroyRoom({ store, socket })(roomKey)
+			destroyRoom({ store, socket, userKey })(roomKey)
 		})
 
 		return roomSocket
@@ -107,7 +112,22 @@ export function provideEnterAndExit({
 	userKey,
 }: ProvideEnterAndExitConfig): (roomKey: RoomKey) => void {
 	const enterRoom = (roomKey: RoomKey) => {
+		store.logger.info(
+			`📡`,
+			`socket`,
+			socket.id ?? `[ID MISSING?!]`,
+			`entering room`,
+			roomKey,
+		)
+
 		const exitRoom = () => {
+			store.logger.info(
+				`📡`,
+				`socket`,
+				socket.id ?? `[ID MISSING?!]`,
+				`leaving room`,
+				roomKey,
+			)
 			socket.offAny(forward)
 			toRoom([`user-leaves`])
 			editRelationsInStore(store, usersInRooms, (relations) => {
@@ -156,31 +176,53 @@ export function provideEnterAndExit({
 }
 
 export type DestroyRoomConfig = {
-	store: Store
+	store: RootStore
 	socket: Socket
+	userKey: UserKey
 }
 export function destroyRoom({
 	store,
 	socket,
+	userKey,
 }: DestroyRoomConfig): (roomKey: RoomKey) => void {
 	return (roomKey: RoomKey) => {
-		// logger.info(`[${shortId}]:${username}`, `deleting room "${roomId}"`)
 		store.logger.info(
 			`📡`,
 			`socket`,
-			socket.id ?? `no-id`,
-			`deleting room`,
+			socket.id ?? `[ID MISSING?!]`,
+			`attempts deleting room`,
 			roomKey,
 		)
-		setIntoStore(store, roomKeysAtom, (s) => (s.delete(roomKey), s))
-		editRelationsInStore(store, usersInRooms, (relations) => {
-			relations.delete({ room: roomKey })
-		})
-		const room = ROOMS.get(roomKey)
-		if (room) {
-			room.emit(`exit`)
-			ROOMS.delete(roomKey)
+		const owner = getFromStore(
+			store,
+			findRelationsInStore(store, ownersOfRooms, roomKey).userKeyOfRoom,
+		)
+		if (owner === userKey) {
+			store.logger.info(
+				`📡`,
+				`socket`,
+				socket.id ?? `[ID MISSING?!]`,
+				`deleting room`,
+				roomKey,
+			)
+			setIntoStore(store, roomKeysAtom, (s) => (s.delete(roomKey), s))
+			editRelationsInStore(store, usersInRooms, (relations) => {
+				relations.delete({ room: roomKey })
+			})
+			const room = ROOMS.get(roomKey)
+			if (room) {
+				room.emit(`exit`)
+				ROOMS.delete(roomKey)
+			}
+			return
 		}
+		store.logger.info(
+			`📡`,
+			`socket`,
+			socket.id ?? `[ID MISSING?!]`,
+			`failed to delete room`,
+			roomKey,
+		)
 	}
 }
 
@@ -237,9 +279,14 @@ export function provideRooms<RoomNames extends string>({
 		`createRoom`,
 		spawnRoom({ store, socket, userKey, resolveRoomScript }),
 	)
-	roomSocket.on(`deleteRoom`, destroyRoom({ store, socket }))
+	roomSocket.on(`deleteRoom`, destroyRoom({ store, socket, userKey }))
 	socket.on(`disconnect`, () => {
-		store.logger.info(`📡`, `socket`, socket.id ?? `no-id`, `disconnected`)
+		store.logger.info(
+			`📡`,
+			`socket`,
+			socket.id ?? `[ID MISSING?!]`,
+			`disconnected`,
+		)
 		editRelationsInStore(store, usersOfSockets, (rel) => rel.delete(socketKey))
 		setIntoStore(store, userKeysAtom, (keys) => (keys.delete(userKey), keys))
 		setIntoStore(store, socketKeysAtom, (keys) => (keys.delete(socketKey), keys))
