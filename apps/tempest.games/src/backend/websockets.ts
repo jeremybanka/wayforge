@@ -25,7 +25,7 @@ import { CookieMap } from "bun"
 import { eq } from "drizzle-orm"
 import type { DefaultEventsMap, ExtendedError, Socket } from "socket.io"
 
-import { resolveRoomScript } from "../backend.worker"
+import { resolveRoomScript, workerNames } from "../backend.worker"
 import { users, userSessions } from "../database/tempest-db-schema"
 import type {
 	TempestSocketDown,
@@ -136,6 +136,7 @@ export const serveSocket = (socket: TempestServerSocket): void => {
 	provideRooms({
 		socket,
 		store: IMPLICIT.STORE,
+		roomNames: workerNames,
 		resolveRoomScript,
 	})
 
