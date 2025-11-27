@@ -54,11 +54,12 @@ export type UnionToIntersection<Union> = (
 /**
  * Get the “last” element of a union (order is arbitrary).
  */
-export type LastInUnion<Union> = UnionToIntersection<
-	Union extends any ? (x: Union) => void : never
-> extends (x: infer Last) => void
-	? Last
-	: never
+export type LastInUnion<Union> =
+	UnionToIntersection<Union extends any ? (x: Union) => void : never> extends (
+		x: infer Last,
+	) => void
+		? Last
+		: never
 
 /**
  * Convert a union to a tuple, order not guaranteed.
