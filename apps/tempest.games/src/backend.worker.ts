@@ -30,3 +30,8 @@ export function resolveRoomScript(
 	const workerPath = resolve(import.meta.dir, `${name}.${extension}`)
 	return [runner, [workerPath]]
 }
+
+export const workerNames = [
+	`backend.worker.game.bun`,
+] as const satisfies WorkerName[]
+export type ActualWorkerName = (typeof workerNames)[number]
