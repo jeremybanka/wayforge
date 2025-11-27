@@ -2,23 +2,11 @@ import type { Join, Tree, TreePathName } from "treetrunks"
 
 export * from "treetrunks"
 
-export type Roles<L extends Laws<any, any, any, any>> = L extends Laws<
-	infer Role,
-	any,
-	any,
-	any
->
-	? Role
-	: never
+export type Roles<L extends Laws<any, any, any, any>> =
+	L extends Laws<infer Role, any, any, any> ? Role : never
 
-export type Permissions<L extends Laws<any, any, any, any>> = L extends Laws<
-	any,
-	any,
-	infer Permission,
-	any
->
-	? Permission
-	: never
+export type Permissions<L extends Laws<any, any, any, any>> =
+	L extends Laws<any, any, infer Permission, any> ? Permission : never
 
 export type PermissionData<L extends Laws<any, any, any, any>, D> = Entries<
 	Permissions<L>,

@@ -62,11 +62,8 @@ describe(`experiments`, () => {
 			...params: any[]
 		) => N | string | null
 
-		type TreeFromVNode<N extends VNode<any> | string | null> = N extends VNode<
-			infer T
-		>
-			? T
-			: null
+		type TreeFromVNode<N extends VNode<any> | string | null> =
+			N extends VNode<infer T> ? T : null
 
 		type TreesFromComponentFn<F extends ComponentFn<any>> =
 			F extends ComponentFn<infer N> ? TreeFromVNode<N> : never
@@ -126,13 +123,12 @@ describe(`experiments`, () => {
 
 		type _ZZ = Distill<1 | 2 | 3>
 
-		type ComponentTree<F extends ComponentFn<any>> = Distill<
-			TreesFromComponentFn<F>
-		> extends Tree[]
-			? ReduceTrees<Distill<TreesFromComponentFn<F>>> extends Tree
-				? ReduceTrees<Distill<TreesFromComponentFn<F>>>
+		type ComponentTree<F extends ComponentFn<any>> =
+			Distill<TreesFromComponentFn<F>> extends Tree[]
+				? ReduceTrees<Distill<TreesFromComponentFn<F>>> extends Tree
+					? ReduceTrees<Distill<TreesFromComponentFn<F>>>
+					: never
 				: never
-			: never
 
 		type _ComponentTrees = Distill<TreesFromComponentFn<typeof myComponent>>
 

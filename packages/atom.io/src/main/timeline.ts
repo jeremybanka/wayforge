@@ -5,14 +5,12 @@ import type { AtomFamilyToken, AtomToken, TimelineToken } from "."
 export type TimelineManageable =
 	| AtomFamilyToken<any, any, any>
 	| AtomToken<any, any, any>
-export type AtomOnly<M extends TimelineManageable> = M extends AtomFamilyToken<
-	any,
-	any
->
-	? AtomToken<any, any, any>
-	: M extends AtomToken<any, any, any>
-		? M
-		: never
+export type AtomOnly<M extends TimelineManageable> =
+	M extends AtomFamilyToken<any, any>
+		? AtomToken<any, any, any>
+		: M extends AtomToken<any, any, any>
+			? M
+			: never
 
 /**
  * If there is an update ahead of the cursor (in the future of this {@link timeline}), apply it and move the cursor to the next update
