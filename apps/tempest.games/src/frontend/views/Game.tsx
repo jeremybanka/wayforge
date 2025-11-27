@@ -13,6 +13,7 @@ import {
 } from "atom.io/realtime-react"
 import * as React from "react"
 
+import type { ActualWorkerName } from "../../backend.worker"
 import {
 	countAtom,
 	countContinuity,
@@ -109,7 +110,7 @@ export function ServerControl(): React.ReactNode {
 		myRoomId,
 	})
 
-	const roomSocket = useRealtimeRooms()
+	const roomSocket = useRealtimeRooms<ActualWorkerName>()
 
 	return (
 		<article>
@@ -142,7 +143,7 @@ export function ServerControl(): React.ReactNode {
 			<button
 				type="button"
 				onClick={() => {
-					roomSocket.emit(`createRoom`, `my-room`)
+					roomSocket.emit(`createRoom`, `backend.worker.game.bun`)
 				}}
 			>
 				create room
