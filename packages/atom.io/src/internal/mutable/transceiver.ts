@@ -39,13 +39,8 @@ export type TransceiverMode = `playback` | `record` | `transaction`
 export type SignalFrom<T extends Transceiver<any, any, any>> =
 	T extends Transceiver<any, infer S, any> ? S : never
 
-export type AsJSON<T extends Transceiver<any, any, any>> = T extends Transceiver<
-	any,
-	any,
-	infer J
->
-	? J
-	: never
+export type AsJSON<T extends Transceiver<any, any, any>> =
+	T extends Transceiver<any, any, infer J> ? J : never
 
 export type ConstructorOf<T extends Transceiver<any, any, any>> =
 	TransceiverConstructor<AsJSON<T>, T>

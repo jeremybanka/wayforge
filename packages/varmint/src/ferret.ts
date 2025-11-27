@@ -16,11 +16,8 @@ export type Loadable<T> = Promise<T> | T
 
 export type StreamFunc = (...args: any[]) => Loadable<AsyncIterable<any>>
 
-export type StreamType<F extends StreamFunc> = Awaited<
-	ReturnType<F>
-> extends AsyncIterable<infer T>
-	? T
-	: never
+export type StreamType<F extends StreamFunc> =
+	Awaited<ReturnType<F>> extends AsyncIterable<infer T> ? T : never
 
 export type Promisified<T> = Promise<T extends Promise<unknown> ? Awaited<T> : T>
 

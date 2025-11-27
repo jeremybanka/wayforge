@@ -19,13 +19,14 @@ export type TokenType<
 		| ReadableFamilyToken<any, any, any>
 		| ReadableToken<any, any, any>
 		| TransactionToken<any>,
-> = Comparison extends ReadableToken<infer RepresentedValue>
-	? RepresentedValue
-	: Comparison extends ReadableFamilyToken<infer RepresentedValue, any>
+> =
+	Comparison extends ReadableToken<infer RepresentedValue>
 		? RepresentedValue
-		: Comparison extends TransactionToken<infer Fn>
-			? Fn
-			: never
+		: Comparison extends ReadableFamilyToken<infer RepresentedValue, any>
+			? RepresentedValue
+			: Comparison extends TransactionToken<infer Fn>
+				? Fn
+				: never
 
 export function isToken<KnownToken extends RegularAtomToken<any, any, any>>(
 	knownToken: KnownToken,

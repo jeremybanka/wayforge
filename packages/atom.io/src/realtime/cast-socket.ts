@@ -4,19 +4,15 @@ import type { Json } from "atom.io/json"
 import type { EventsMap, Socket, TypedSocket } from "./socket-interface"
 import type { StandardSchemaV1 } from "./standard-schema"
 
-export type SocketListeners<T extends TypedSocket> = T extends TypedSocket<
-	infer ListenEvents
->
-	? ListenEvents
-	: never
+export type SocketListeners<T extends TypedSocket> =
+	T extends TypedSocket<infer ListenEvents> ? ListenEvents : never
 
 export type SocketGuard<L extends EventsMap> = {
 	[K in keyof L]: StandardSchemaV1<Json.Array, Parameters<L[K]>>
 }
 
-export type Loaded<L extends Loadable<any>> = L extends Loadable<infer T>
-	? T
-	: never
+export type Loaded<L extends Loadable<any>> =
+	L extends Loadable<infer T> ? T : never
 
 function onLoad<L extends Loadable<any>>(
 	loadable: L,
