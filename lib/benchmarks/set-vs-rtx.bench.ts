@@ -1,6 +1,6 @@
 import * as v from "vitest"
 
-import { SetRTX } from "~/packages/atom.io/transceivers/set-rtx/src"
+import { SetRTX } from "../../packages/atom.io/src/transceivers/set-rtx"
 
 v.describe(`constructor`, () => {
 	v.bench(`new Set`, () => {
