@@ -4,6 +4,7 @@
 		{
 			"type": "node",
 			"request": "launch",
+			"runtimeExecutable": "/opt/homebrew/bin/node",
 			"name": "Debug Current Test File",
 			"autoAttachChildProcesses": true,
 			"skipFiles": ["<node_internals>/**", "**/node_modules/**"],
