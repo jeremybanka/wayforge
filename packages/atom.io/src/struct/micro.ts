@@ -50,12 +50,13 @@ export const packValue = (value: Canonical): string => {
 			return NUMBER + value
 		case `boolean`:
 			return BOOL + +value
-		case `object`:
+		case `object`: // array
 			return JSON.stringify(value)
 	}
 }
 export const unpackValue = (value: string): Canonical => {
-	const type = value[0]
+	const type = value[0] as `[` | `\u0001` | `\u0002` | `\u0003` | `\u0004`
+
 	switch (type) {
 		case STRING:
 			return value.slice(1)
@@ -65,7 +66,7 @@ export const unpackValue = (value: string): Canonical => {
 			return value.slice(1) === `1`
 		case NULL:
 			return null
-		default:
+		case `[`:
 			return JSON.parse(value)
 	}
 }
