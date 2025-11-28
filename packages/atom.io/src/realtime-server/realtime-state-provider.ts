@@ -10,9 +10,21 @@ export function realtimeStateProvider({
 	socket,
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
+	store.logger.info(
+		`🔌`,
+		`socket`,
+		socket.id ?? `[ID MISSING?!]`,
+		`initialized state provider`,
+	)
 	return function stateProvider<J extends Json.Serializable>(
 		token: AtomIO.WritableToken<J>,
 	): () => void {
+		store.logger.info(
+			`🔌`,
+			`socket`,
+			socket.id ?? `[ID MISSING?!]`,
+			`will provide state "${token.key}"`,
+		)
 		const subscriptions = new Set<() => void>()
 		const clearSubscriptions = () => {
 			for (const unsub of subscriptions) unsub()
