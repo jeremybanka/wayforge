@@ -1,5 +1,5 @@
 import type { Flat } from "atom.io/internal"
-import type { primitive } from "atom.io/json"
+import type { Canonical } from "atom.io/json"
 
 export type IndexOf<
 	T extends readonly unknown[],
@@ -40,21 +40,22 @@ const BOOL = `\u0001`
 const NULL = `\u0002`
 const STRING = `\u0003`
 const NUMBER = `\u0004`
-export const packValue = (value: primitive): string => {
-	const type = typeof value as `boolean` | `number` | `object` | `string`
-	switch (type) {
+export const packValue = (value: Canonical): string => {
+	if (value === null) return NULL
+	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
+	switch (typeof value) {
 		case `string`:
 			return STRING + value
 		case `number`:
 			return NUMBER + value
 		case `boolean`:
-			return BOOL + +(value as boolean)
+			return BOOL + +value
 		case `object`:
-			return NULL
+			return JSON.stringify(value)
 	}
 }
-export const unpackValue = (value: string): primitive => {
-	const type = value[0] as `\u0001` | `\u0002` | `\u0003` | `\u0004`
+export const unpackValue = (value: string): Canonical => {
+	const type = value[0]
 	switch (type) {
 		case STRING:
 			return value.slice(1)
@@ -64,5 +65,7 @@ export const unpackValue = (value: string): primitive => {
 			return value.slice(1) === `1`
 		case NULL:
 			return null
+		default:
+			return JSON.parse(value)
 	}
 }
