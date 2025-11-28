@@ -1,4 +1,4 @@
-import * as µ from "atom.io/struct/micro"
+import * as µ from "atom.io/struct"
 
 describe(`packValue`, () => {
 	const number10 = 1234567890
