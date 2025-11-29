@@ -17,7 +17,7 @@ export function useO<T, K extends Canonical, E = never>(
 	...params:
 		| [ReadableFamilyToken<T, K, E>, NoInfer<K>]
 		| [ReadableToken<T, any, E>]
-): E | T {
+): ViewOf<E | T> {
 	const store = useContext(StoreContext)
 	const token = parseStateOverloads(store, ...params)
 	const id = useId()

@@ -9,7 +9,7 @@ import { reduceReference } from "./reduce-reference"
 export function getFromStore<T, E = never>(
 	store: Store,
 	token: ReadableToken<T, any, E>,
-): E | T
+): ViewOf<E | T>
 
 export function getFromStore<T, K extends Canonical, E = never>(
 	store: Store,
