@@ -109,6 +109,7 @@ export function readFromCache<T, E>(
 export function evictCachedValue(target: Store, key: string): void {
 	const currentValue = target.valueMap.get(key)
 	if (currentValue instanceof Future) {
+		// ❓❓❓❓
 		const selector =
 			target.writableSelectors.get(key) ?? target.readonlySelectors.get(key)
 		if (selector) {

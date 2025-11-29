@@ -6,7 +6,6 @@ import type {
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 
-import { writeToCache } from "../caching"
 import { newest } from "../lineage"
 import type { WritablePureSelector } from "../state-types"
 import type { Store } from "../store"
@@ -41,10 +40,9 @@ export function createWritablePureSelector<T, K extends Canonical, E>(
 		}
 		innerTarget.selectorAtoms.delete(key)
 		const value = options.get(getterToolkit)
-		const cached = writeToCache(innerTarget, mySelector, value)
-		store.logger.info(`✨`, type, key, `=`, cached)
+		store.logger.info(`✨`, type, key, `=`, value)
 		covered.clear()
-		return cached
+		return value
 	}
 
 	const setSelf = (newValue: T): void => {
