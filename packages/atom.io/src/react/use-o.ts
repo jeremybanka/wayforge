@@ -1,18 +1,10 @@
 import type { ReadableFamilyToken, ReadableToken, ViewOf } from "atom.io"
 import { getFromStore, subscribeToState } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
-import {
-	useCallback,
-	useContext,
-	useId,
-	useRef,
-	useSyncExternalStore,
-} from "react"
+import { useCallback, useContext, useId, useSyncExternalStore } from "react"
 
 import { parseStateOverloads } from "./parse-state-overloads"
 import { StoreContext } from "./store-context"
-
-const UNSET = Symbol(`UNSET`)
 
 export function useO<T, E = never>(
 	token: ReadableToken<T, any, E>,
@@ -31,28 +23,11 @@ export function useO<T, K extends Canonical, E = never>(
 	const store = useContext(StoreContext)
 	const token = parseStateOverloads(store, ...params)
 	const id = useId()
-	const ref = useRef<ViewOf<E | T> | typeof UNSET>(UNSET)
 	const sub = useCallback(
 		(dispatch: () => void) =>
-			subscribeToState<T, E>(
-				store,
-				token,
-				`use-o:${id}`,
-				function trapValue({ newValue }) {
-					ref.current = newValue
-					dispatch()
-				},
-			),
-		[token],
+			subscribeToState<T, E>(store, token, `use-o:${id}`, dispatch),
+		[token.key],
 	)
-	const get = useCallback(() => {
-		let value: ViewOf<E | T>
-		if (ref.current === UNSET) {
-			value = ref.current = getFromStore(store, token)
-		} else {
-			value = ref.current
-		}
-		return value
-	}, [token])
+	const get = useCallback(() => getFromStore(store, token), [token.key])
 	return useSyncExternalStore<ViewOf<E | T>>(sub, get, get)
 }
