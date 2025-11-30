@@ -1,5 +1,13 @@
 # atom.io
 
+## 0.44.14
+
+### Patch Changes
+
+- 5ce6f7b: 🐛 `atom.io/react` Fixed an error that result in an error in the console: "The result of getSnapshot should be cached".
+- 5ce6f7b: 🚀 `atom.io/react` Fixed a performance mistake where unstable references were being passed to `React.useSyncExternalStore()`. As a result, each render would cause react to re-subscribe to any states being observed with `useO()` or `useLoadable()`.
+- 5ce6f7b: 🏷️ `atom.io/react` Fixed typing for `useO()` and `useLoadable()` to return `ViewOf<T>` instead of just `T`.
+
 ## 0.44.13
 
 ### Patch Changes
