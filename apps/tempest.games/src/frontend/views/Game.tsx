@@ -1,3 +1,4 @@
+import type { ViewOf } from "atom.io"
 import { runTransaction } from "atom.io"
 import { toEntries } from "atom.io/json"
 import { useO } from "atom.io/react"
@@ -13,7 +14,7 @@ export type Tail<T extends any[]> = T extends [any, ...infer Rest] ? Rest : neve
 export type GameRoute = Extract<Route, [`game`, ...any]>
 
 export type GameIndexProps = {
-	route: GameRoute
+	route: ViewOf<GameRoute>
 }
 
 export function GameView({

@@ -13,7 +13,7 @@ import {
 } from "atom.io/internal"
 import type {
 	IntrospectionStates,
-	WritableTokenIndex,
+	ReadonlyTokenIndex,
 } from "atom.io/introspection"
 import { attachIntrospectionStates, isPlainObject } from "atom.io/introspection"
 import { storageSync } from "atom.io/web"
@@ -131,8 +131,8 @@ export function attachDevtoolsStates(
 		do: ({ get, set }, path, current) => {
 			const currentView = get(devtoolsViewSelectionAtom)
 			let states:
-				| WritableTokenIndex<AtomToken<unknown, any, any>>
-				| WritableTokenIndex<SelectorToken<unknown, any, any>>
+				| ReadonlyTokenIndex<AtomToken<unknown, any, any>>
+				| ReadonlyTokenIndex<SelectorToken<unknown, any, any>>
 			switch (currentView) {
 				case `atoms`:
 					states = get(introspectionStates.atomIndex)

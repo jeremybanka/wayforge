@@ -18,10 +18,10 @@ export const useRegisterAndAttemptConfirmedUpdate =
 		store: RootStore,
 		continuityKey: string,
 		socket: Socket,
-		optimisticUpdates: AtomIO.TransactionOutcomeEvent<
+		optimisticUpdates: readonly AtomIO.TransactionOutcomeEvent<
 			AtomIO.TransactionToken<Fn>
 		>[],
-		confirmedUpdates: AtomIO.TransactionOutcomeEvent<
+		confirmedUpdates: readonly AtomIO.TransactionOutcomeEvent<
 			AtomIO.TransactionToken<Fn>
 		>[],
 	) =>

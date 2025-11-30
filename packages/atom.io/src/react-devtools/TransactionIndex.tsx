@@ -16,7 +16,7 @@ export const TransactionLog: FC<{
 	token: TransactionToken<Fn>
 	isOpenState: RegularAtomToken<boolean>
 	logState: ReadonlyPureSelectorToken<
-		TransactionOutcomeEvent<TransactionToken<Fn>>[]
+		readonly TransactionOutcomeEvent<TransactionToken<Fn>>[]
 	>
 }> = ({ token, isOpenState, logState }) => {
 	const log = useO(logState)

@@ -22,7 +22,7 @@ export type IntrospectionStates = {
 	selectorIndex: AtomToken<SelectorTokenIndex>
 	transactionIndex: AtomToken<TransactionToken<Fn>[]>
 	transactionLogSelectors: ReadonlyPureSelectorFamilyToken<
-		TransactionOutcomeEvent<TransactionToken<Fn>>[],
+		readonly TransactionOutcomeEvent<TransactionToken<Fn>>[],
 		string
 	>
 	timelineIndex: AtomToken<TimelineToken<any>[]>
