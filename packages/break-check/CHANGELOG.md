@@ -1,5 +1,11 @@
 # break-check
 
+## 0.6.24
+
+### Patch Changes
+
+- c45a4ce: ✨ Support RegExp syntax for `tagPattern`.
+
 ## 0.6.23
 
 ### Patch Changes
