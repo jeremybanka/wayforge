@@ -15,6 +15,7 @@ import type { ServerConfig } from "."
 export type MutableProvider = ReturnType<typeof realtimeMutableProvider>
 export function realtimeMutableProvider({
 	socket,
+	userKey,
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
 	return function mutableProvider<
@@ -30,8 +31,20 @@ export function realtimeMutableProvider({
 		const trackerToken = getUpdateToken(token)
 
 		const start = () => {
+			store.logger.info(
+				`👀`,
+				`user`,
+				userKey,
+				`can subscribe to state "${token.key}"`,
+			)
 			subscriptions.add(
 				employSocket(socket, `sub:${token.key}`, () => {
+					store.logger.info(
+						`👀`,
+						`user`,
+						userKey,
+						`subscribes to state "${token.key}"`,
+					)
 					clearSubscriptions()
 					socket.emit(`init:${token.key}`, getFromStore(store, jsonToken))
 					subscriptions.add(
@@ -46,6 +59,12 @@ export function realtimeMutableProvider({
 					)
 					subscriptions.add(
 						employSocket(socket, `unsub:${token.key}`, () => {
+							store.logger.info(
+								`🙈`,
+								`user`,
+								userKey,
+								`unsubscribes from state "${token.key}"`,
+							)
 							clearSubscriptions()
 							start()
 						}),
