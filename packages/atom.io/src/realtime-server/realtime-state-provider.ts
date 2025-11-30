@@ -34,7 +34,7 @@ export function realtimeStateProvider({
 						`👀`,
 						`user`,
 						userKey,
-						`subscribed to state "${token.key}"`,
+						`subscribes to state "${token.key}"`,
 					)
 					clearSubscriptions()
 					socket.emit(`serve:${token.key}`, getFromStore(store, token))
@@ -54,7 +54,7 @@ export function realtimeStateProvider({
 								`🙈`,
 								`user`,
 								userKey,
-								`unsubscribed from state "${token.key}"`,
+								`unsubscribes from state "${token.key}"`,
 							)
 							clearSubscriptions()
 							start()

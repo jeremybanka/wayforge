@@ -103,7 +103,7 @@ export function realtimeAtomFamilyProvider({
 							`👀`,
 							`user`,
 							userKey,
-							`was approved for a subscription to`,
+							`is approved for a subscription to`,
 							subKey,
 							`in family "${family.key}"`,
 						)
@@ -113,7 +113,7 @@ export function realtimeAtomFamilyProvider({
 							`❌`,
 							`user`,
 							userKey,
-							`was denied for a subscription to`,
+							`is denied for a subscription to`,
 							subKey,
 							`in family "${family.key}"`,
 						)
@@ -141,7 +141,7 @@ export function realtimeAtomFamilyProvider({
 									`👀`,
 									`user`,
 									userKey,
-									`was retroactively approved for a subscription to`,
+									`is retroactively approved for a subscription to`,
 									subKey,
 									`in family "${family.key}"`,
 								)
