@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.44.15
+
+### Patch Changes
+
+- d6fd8c2: 🔊 `atom.io/realtime` Added logging to state providers.
+
 ## 0.44.14
 
 ### Patch Changes
