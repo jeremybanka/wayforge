@@ -115,6 +115,9 @@ astro-island {
       }
       > code {
         line-height: 1em !important;
+        color: var(--base-color) !important;
+        text-shadow: none !important;
+        font-size: 13px !important;
         span {
           line-height: 17px !important;
         }
