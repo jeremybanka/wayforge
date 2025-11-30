@@ -65,17 +65,27 @@ const computationSelectors = AtomIO.selectorFamily<number, `cluster:${number}`>(
 describe(`pull atom, observe selector`, () => {
 	const scenario = () =>
 		RTTest.singleClient({
-			server: ({ socket, silo: { store }, enableLogging }) => {
+			server: ({ socket, userKey, silo: { store }, enableLogging }) => {
 				if (LOGGING) {
 					enableLogging()
 				}
-				const exposeSingle = RTS.realtimeStateProvider({ socket, store })
+				const exposeSingle = RTS.realtimeStateProvider({
+					socket,
+					userKey,
+					store,
+				})
 				const exposeMutable = RTS.realtimeMutableProvider({
+					userKey,
 					socket,
 					store,
 				})
-				const exposeFamily = RTS.realtimeAtomFamilyProvider({ socket, store })
+				const exposeFamily = RTS.realtimeAtomFamilyProvider({
+					socket,
+					userKey,
+					store,
+				})
 				const exposeMutableFamily = RTS.realtimeMutableFamilyProvider({
+					userKey,
 					socket,
 					store,
 				})

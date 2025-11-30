@@ -35,12 +35,13 @@ const focusedCollectionNameState = AtomIO.atom<CollectionName>({
 describe(`running transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
-			server: ({ socket, silo: { store }, enableLogging }) => {
+			server: ({ socket, userKey, silo: { store }, enableLogging }) => {
 				if (LOGGING) {
 					enableLogging()
 				}
 				const exposeMutableFamily = RTS.realtimeMutableFamilyProvider({
 					socket,
+					userKey,
 					store,
 				})
 				return exposeMutableFamily(

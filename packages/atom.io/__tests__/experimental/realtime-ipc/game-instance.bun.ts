@@ -58,6 +58,7 @@ parentSocket.receiveRelay((socket, userKey) => {
 	})
 	const exposeContinuity = RTS.prepareToProvideContinuity({
 		socket,
+		userKey,
 	})
 	exposeContinuity(gameContinuity, userKey)
 })
