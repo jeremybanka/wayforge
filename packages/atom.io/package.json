@@ -179,10 +179,6 @@
 			"import": "./dist/realtime-testing/index.js",
 			"types": "./dist/realtime-testing/index.d.ts"
 		},
-		"./struct": {
-			"import": "./dist/struct/index.js",
-			"types": "./dist/struct/index.d.ts"
-		},
 		"./transceivers/o-list": {
 			"import": "./dist/transceivers/o-list/index.js",
 			"types": "./dist/transceivers/o-list/index.d.ts"

@@ -1,4 +1,4 @@
-import * as µ from "atom.io/struct"
+import { packCanonical, unpackCanonical } from "atom.io/json"
 
 describe(`packValue`, () => {
 	const number10 = 1234567890
@@ -16,7 +16,7 @@ describe(`packValue`, () => {
 		array10,
 	]) {
 		test(`packValue(${JSON.stringify(value)})`, () => {
-			expect(µ.unpackValue(µ.packValue(value))).toEqual(value)
+			expect(unpackCanonical(packCanonical(value))).toEqual(value)
 		})
 	}
 })
