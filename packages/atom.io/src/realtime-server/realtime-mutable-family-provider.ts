@@ -31,6 +31,7 @@ export type MutableFamilyProvider = ReturnType<
 >
 export function realtimeMutableFamilyProvider({
 	socket,
+	userKey,
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
 	return function mutableFamilyProvider<
@@ -91,13 +92,35 @@ export function realtimeMutableFamilyProvider({
 		}
 
 		const start = () => {
+			store.logger.info(
+				`👀`,
+				`user`,
+				userKey,
+				`can subscribe to family "${family.key}"`,
+			)
 			coreSubscriptions.add(
 				employSocket(socket, `sub:${family.key}`, (subKey: K) => {
 					const exposedSubKeys = getFromStore(store, index)
 					const shouldExpose = isAvailable(exposedSubKeys, subKey)
 					if (shouldExpose) {
+						store.logger.info(
+							`👀`,
+							`user`,
+							userKey,
+							`is approved for a subscription to`,
+							subKey,
+							`in family "${family.key}"`,
+						)
 						exposeFamilyMembers(subKey)
 					} else {
+						store.logger.info(
+							`❌`,
+							`user`,
+							userKey,
+							`is denied for a subscription to`,
+							subKey,
+							`in family "${family.key}"`,
+						)
 						familyMemberSubscriptionsWanted.add(stringifyJson(subKey))
 						socket.emit(`unavailable:${family.key}`, subKey)
 					}
@@ -109,8 +132,23 @@ export function realtimeMutableFamilyProvider({
 					index,
 					`expose-family:${family.key}:${socket.id}`,
 					({ newValue: newExposedSubKeys }) => {
+						store.logger.info(
+							`👀`,
+							`user`,
+							userKey,
+							`has the following keys available for family "${family.key}"`,
+							newExposedSubKeys,
+						)
 						for (const subKey of newExposedSubKeys) {
 							if (familyMemberSubscriptionsWanted.has(stringifyJson(subKey))) {
+								store.logger.info(
+									`👀`,
+									`user`,
+									userKey,
+									`is retroactively approved for a subscription to`,
+									subKey,
+									`in family "${family.key}"`,
+								)
 								exposeFamilyMembers(subKey)
 							}
 						}
