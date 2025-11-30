@@ -252,10 +252,11 @@ export function provideRooms<RoomNames extends string>({
 		createRoomSocketGuard(roomNames),
 	)
 
-	const exposeMutable = realtimeMutableProvider({ socket, store })
+	const exposeMutable = realtimeMutableProvider({ socket, store, userKey })
 	const exposeMutableFamily = realtimeMutableFamilyProvider({
 		socket,
 		store,
+		userKey,
 	})
 
 	exposeMutable(roomKeysAtom)

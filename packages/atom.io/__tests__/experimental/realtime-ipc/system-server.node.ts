@@ -1,6 +1,7 @@
 import path from "node:path"
 
 import type { Silo } from "atom.io"
+import type { UserKey } from "atom.io/realtime"
 import * as RTS from "atom.io/realtime-server"
 import type * as SocketIO from "socket.io"
 
@@ -11,15 +12,18 @@ export const SystemServer = ({
 	socket,
 	silo: { store },
 	enableLogging,
+	userKey,
 }: {
 	socket: SocketIO.Socket
 	silo: Silo
 	enableLogging: () => void
+	userKey: UserKey
 }): void => {
 	enableLogging()
 	RTS.provideRooms({
 		store,
 		socket,
+		userKey,
 		resolveRoomScript,
 		roomNames: [`game-instance.bun.ts`],
 	})

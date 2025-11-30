@@ -57,13 +57,21 @@ describe(`pushing state`, () => {
 
 	const scenario = () =>
 		RTTest.multiClient({
-			server: ({ socket, silo: { store }, enableLogging }) => {
+			server: ({ socket, userKey, silo: { store }, enableLogging }) => {
 				if (LOGGING) {
 					enableLogging()
 				}
-				const provideState = RTS.realtimeStateProvider({ socket, store })
+				const provideState = RTS.realtimeStateProvider({
+					userKey,
+					socket,
+					store,
+				})
 
-				const receiveState = RTS.realtimeStateReceiver({ socket, store })
+				const receiveState = RTS.realtimeStateReceiver({
+					socket,
+					userKey,
+					store,
+				})
 
 				const socketServices = [
 					provideState(countState),
