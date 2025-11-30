@@ -1,3 +1,4 @@
+import type { ViewOf } from "atom.io"
 import { setState } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import { useEffect, useId } from "react"
@@ -9,7 +10,7 @@ import { trpcClient } from "../services/trpc-client-service"
 export type VerifyRoute = Extract<Route, [`verify`, ...any]>
 
 type VerifyProps = {
-	route: VerifyRoute
+	route: ViewOf<VerifyRoute>
 }
 
 export function Verify({

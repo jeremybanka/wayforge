@@ -135,7 +135,7 @@ export const openAIParamsSelectors: ReadonlySelectorFamilyToken<
 			const conversationMessages = get(find(conversationSelectors, key))
 			const orientation = get(find(orientationAtoms, key))
 			const agendaMessage = get(find(agendaSystemMessageSelectors, key))
-			const messages = await conversationMessages
+			const messages = [...(await conversationMessages)]
 			messages.push({
 				role: `system`,
 				content: orientation + `\n\nKeep messages short.`, // ❗
@@ -202,7 +202,9 @@ export type AgentCompletion<Update> = {
 }
 
 export type Agent<State = null, Update = null> = {
-	conversation: Loadable<(AssistantMessage | SystemMessage | UserMessage)[]>
+	conversation: Loadable<
+		readonly (AssistantMessage | SystemMessage | UserMessage)[]
+	>
 	state: Loadable<State>
 	stream?: (handleDelta: (delta: string) => void) => { release: () => void }
 	callAssistant: () => Promise<{
@@ -244,7 +246,7 @@ export class Grunt<State extends Agenda>
 	}
 
 	public get conversation(): Loadable<
-		(AssistantMessage | SystemMessage | UserMessage)[]
+		readonly (AssistantMessage | SystemMessage | UserMessage)[]
 	> {
 		const conversationLoadable = getState(
 			findState(conversationSelectors, this.id),
@@ -333,7 +335,7 @@ export type Evaluation = z.infer<typeof evaluationSchema>
 
 export type EvaluationOptions = {
 	testId: string
-	exchange: (Message | SystemMessage | UserMessage)[]
+	exchange: readonly (Message | SystemMessage | UserMessage)[]
 	statement: string
 }
 export async function evaluateAgentResponse({

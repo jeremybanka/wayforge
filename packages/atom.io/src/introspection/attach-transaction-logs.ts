@@ -9,7 +9,7 @@ import { createRegularAtomFamily, createSelectorFamily } from "atom.io/internal"
 export const attachTransactionLogs = (
 	store: RootStore,
 ): ReadonlyPureSelectorFamilyToken<
-	TransactionOutcomeEvent<TransactionToken<any>>[],
+	readonly TransactionOutcomeEvent<TransactionToken<any>>[],
 	string
 > => {
 	const transactionUpdateLogAtoms = createRegularAtomFamily<
@@ -31,7 +31,7 @@ export const attachTransactionLogs = (
 		],
 	})
 	const findTransactionUpdateLogState = createSelectorFamily<
-		TransactionOutcomeEvent<TransactionToken<any>>[],
+		readonly TransactionOutcomeEvent<TransactionToken<any>>[],
 		string,
 		never
 	>(store, {
