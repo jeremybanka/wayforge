@@ -54,15 +54,9 @@ function prefixLogger(store: Store, prefix: string) {
 			return params
 		},
 		{
-			info: (...params) => {
-				console.info(prefix, ...params)
-			},
-			warn: (...params) => {
-				console.warn(prefix, ...params)
-			},
-			error: (...params) => {
-				console.error(prefix, ...params)
-			},
+			info: AtomIO.simpleLog(`info`, prefix),
+			warn: AtomIO.simpleLog(`warn`, prefix),
+			error: AtomIO.simpleLog(`error`, prefix),
 		},
 	)
 }

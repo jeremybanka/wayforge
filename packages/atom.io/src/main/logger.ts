@@ -128,11 +128,11 @@ export type LogFilter = (
 export type Logger = Record<LogLevel, LogFn>
 
 export const simpleLog =
-	(logLevel: keyof Logger): LogFn =>
+	(logLevel: keyof Logger, prefix?: string): LogFn =>
 	(icon, denomination, tokenKey, message, ...rest) => {
 		/* eslint-disable-next-line no-console */
 		console[logLevel](
-			`${icon} ${PRETTY_ENTITY_NAMES[denomination]} \`${tokenKey}\` ${message}`,
+			`${prefix ? `${prefix} ` : ``}${icon} ${PRETTY_ENTITY_NAMES[denomination]} \`${tokenKey}\` ${message}`,
 			...rest,
 		)
 	}
