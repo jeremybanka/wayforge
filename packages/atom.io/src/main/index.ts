@@ -15,7 +15,6 @@ export * from "./timeline"
 export type * from "./tokens"
 export * from "./transaction"
 export * from "./validators"
-// REMOVE WHEN READY TO RELEASE
 /**
  * Loadable is used to type atoms or selectors that may at some point be initialized to or set to a {@link Promise}.
  *
