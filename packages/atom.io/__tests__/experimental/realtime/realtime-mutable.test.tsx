@@ -26,11 +26,15 @@ const numbersCollectionState = AtomIO.mutableAtom<UList<number>>({
 describe(`running transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
-			server: ({ socket, silo: { store }, enableLogging }) => {
+			server: ({ socket, userKey, silo: { store }, enableLogging }) => {
 				if (LOGGING) {
 					enableLogging()
 				}
-				const exposeMutable = RTS.realtimeMutableProvider({ socket, store })
+				const exposeMutable = RTS.realtimeMutableProvider({
+					socket,
+					userKey,
+					store,
+				})
 				return exposeMutable(numbersCollectionState)
 			},
 			clients: {
