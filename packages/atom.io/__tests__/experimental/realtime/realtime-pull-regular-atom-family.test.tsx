@@ -44,12 +44,13 @@ function RealtimeDisplay(): React.ReactNode {
 describe(`running transactions`, () => {
 	const scenario = () =>
 		RTTest.multiClient({
-			server: ({ socket, silo: { store }, enableLogging }) => {
+			server: ({ socket, userKey, silo: { store }, enableLogging }) => {
 				if (LOGGING) {
 					enableLogging()
 				}
 				const exposeFamily = RTS.realtimeAtomFamilyProvider({
 					socket,
+					userKey,
 					store,
 				})
 				return exposeFamily(numberCollectionAtoms, exposedCollectionIndex)
