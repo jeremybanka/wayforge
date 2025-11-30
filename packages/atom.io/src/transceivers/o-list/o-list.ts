@@ -1,8 +1,7 @@
 import type { Fn, Transceiver, TransceiverMode } from "atom.io/internal"
 import { Subject } from "atom.io/internal"
-import type { primitive } from "atom.io/json"
-import type { Enumeration } from "atom.io/struct"
-import { enumeration, packValue, unpackValue } from "atom.io/struct"
+import type { Enumeration, packed, primitive } from "atom.io/json"
+import { enumeration, packCanonical, unpackCanonical } from "atom.io/json"
 
 export type ArrayMutations = Exclude<keyof Array<any>, keyof ReadonlyArray<any>>
 export type ArrayUpdate<P extends primitive> =
@@ -462,9 +461,9 @@ export class OList<P extends primitive>
 		let packed = ARRAY_UPDATE_ENUM[update.type] + `\u001F`
 		switch (update.type) {
 			case `set`:
-				packed += update.index + `\u001E` + packValue(update.next)
+				packed += update.index + `\u001E` + packCanonical(update.next)
 				if (update.prev !== undefined) {
-					packed += `\u001E` + packValue(update.prev)
+					packed += `\u001E` + packCanonical(update.prev)
 				}
 				return packed
 			case `truncate`:
@@ -472,35 +471,35 @@ export class OList<P extends primitive>
 					packed +
 					update.length +
 					`\u001E` +
-					update.items.map(packValue).join(`\u001E`)
+					update.items.map(packCanonical).join(`\u001E`)
 				)
 			case `extend`:
 				return packed + update.next + `\u001E` + update.prev
 			case `pop`:
 			case `shift`:
 				if (update.value !== undefined) {
-					packed += packValue(update.value)
+					packed += packCanonical(update.value)
 				}
 				return packed
 			case `push`:
 			case `unshift`:
-				return packed + update.items.map(packValue).join(`\u001E`)
+				return packed + update.items.map(packCanonical).join(`\u001E`)
 			case `copyWithin`:
 				packed += update.target + `\u001E` + update.start
 				if (update.end !== undefined) {
 					packed += `\u001E` + update.end
 				}
-				packed += `\u001E\u001E` + update.prev.map(packValue).join(`\u001E`)
+				packed += `\u001E\u001E` + update.prev.map(packCanonical).join(`\u001E`)
 				return packed
 			case `fill`:
-				packed += packValue(update.value)
+				packed += packCanonical(update.value)
 				if (update.start !== undefined) {
 					packed += `\u001E` + update.start
 				}
 				if (update.end !== undefined) {
 					packed += `\u001E` + update.end
 				}
-				packed += `\u001E\u001E` + update.prev.map(packValue).join(`\u001E`)
+				packed += `\u001E\u001E` + update.prev.map(packCanonical).join(`\u001E`)
 				return packed
 			case `splice`:
 				return (
@@ -509,18 +508,18 @@ export class OList<P extends primitive>
 					`\u001E\u001E` +
 					update.deleteCount +
 					`\u001E\u001E` +
-					update.items.map(packValue).join(`\u001E`) +
+					update.items.map(packCanonical).join(`\u001E`) +
 					`\u001E\u001E` +
-					update.deleted.map(packValue).join(`\u001E`)
+					update.deleted.map(packCanonical).join(`\u001E`)
 				)
 			case `reverse`:
 				return packed
 			case `sort`:
 				return (
 					packed +
-					update.next.map(packValue).join(`\u001E`) +
+					update.next.map(packCanonical).join(`\u001E`) +
 					`\u001E\u001E` +
-					update.prev.map(packValue).join(`\u001E`)
+					update.prev.map(packCanonical).join(`\u001E`)
 				)
 		}
 	}
@@ -530,24 +529,24 @@ export class OList<P extends primitive>
 	): ArrayUpdate<P> {
 		const [head, tail] = packed.split(`\u001F`) as [
 			Extract<keyof typeof ARRAY_UPDATE_ENUM, number>,
-			string,
+			packed<P>,
 		]
 		const type = ARRAY_UPDATE_ENUM[head]
 		switch (type) {
 			case `set`: {
 				const [i, n, p] = tail.split(`\u001E`)
 				const index = +i
-				const next = unpackValue(n) as P
+				const next = unpackCanonical<P>(n)
 				if (p === undefined) {
 					return { type, index, next }
 				}
-				const prev = unpackValue(p) as P
+				const prev = unpackCanonical<P>(p)
 				return { type, index, next, prev }
 			}
 			case `truncate`: {
 				const [l, ...i] = tail.split(`\u001E`)
 				const length = +l
-				const items = i.map(unpackValue) as P[]
+				const items = i.map<P>(unpackCanonical)
 				return { type, length, items }
 			}
 			case `extend`: {
@@ -559,18 +558,18 @@ export class OList<P extends primitive>
 			case `pop`:
 			case `shift`:
 				if (tail !== ``) {
-					const value = unpackValue(tail) as P
+					const value = unpackCanonical(tail)
 					return { type, value }
 				}
 				return { type }
 			case `push`:
 			case `unshift`: {
-				const items = tail.split(`\u001E`).map(unpackValue) as P[]
+				const items = tail.split(`\u001E`).map<P>(unpackCanonical)
 				return { type, items }
 			}
 			case `copyWithin`: {
 				const [numbers, data] = tail.split(`\u001E\u001E`)
-				const prev = data ? (data.split(`\u001E`).map(unpackValue) as P[]) : []
+				const prev = data ? data.split(`\u001E`).map<P>(unpackCanonical) : []
 				const [t, s, e] = numbers.split(`\u001E`)
 				const target = +t
 				const start = +s
@@ -582,9 +581,9 @@ export class OList<P extends primitive>
 			}
 			case `fill`: {
 				const [numbers, data] = tail.split(`\u001E\u001E`)
-				const prev = data ? (data.split(`\u001E`).map(unpackValue) as P[]) : []
+				const prev = data ? data.split(`\u001E`).map<P>(unpackCanonical) : []
 				const [v, s, e] = numbers.split(`\u001E`)
-				const value = unpackValue(v) as P
+				const value = unpackCanonical<P>(v)
 				if (s === undefined && e === undefined) {
 					return { type, value, prev }
 				}
@@ -600,16 +599,16 @@ export class OList<P extends primitive>
 
 				const start = +s
 				const deleteCount = +c
-				const items = i ? (i.split(`\u001E`).map(unpackValue) as P[]) : []
-				const deleted = d ? (d.split(`\u001E`).map(unpackValue) as P[]) : []
+				const items = i ? i.split(`\u001E`).map<P>(unpackCanonical) : []
+				const deleted = d ? d.split(`\u001E`).map<P>(unpackCanonical) : []
 				return { type, start, deleteCount, items, deleted }
 			}
 			case `reverse`:
 				return { type }
 			case `sort`: {
 				const [n, p] = tail.split(`\u001E\u001E`)
-				const next = n ? (n.split(`\u001E`).map(unpackValue) as P[]) : []
-				const prev = p ? (p.split(`\u001E`).map(unpackValue) as P[]) : []
+				const next = n ? n.split(`\u001E`).map<P>(unpackCanonical) : []
+				const prev = p ? p.split(`\u001E`).map<P>(unpackCanonical) : []
 				return { type, next, prev }
 			}
 		}

@@ -13,7 +13,9 @@ export default function discoverSubmodules(): string[] {
 			const isLeaf = contents.includes(`index.ts`)
 			return isLeaf
 				? dirent.name
-				: contents.map((content) => path.join(dirent.name, content))
+				: contents.map((content) =>
+						path.join(dirent.name, content === `main` ? `` : content),
+					)
 		})
 	return folders
 	// 	.filter((dirent) => dirent.isDirectory())

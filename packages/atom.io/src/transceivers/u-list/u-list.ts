@@ -1,8 +1,7 @@
 import type { Fn, Transceiver, TransceiverMode } from "atom.io/internal"
 import { Subject } from "atom.io/internal"
-import type { primitive } from "atom.io/json"
-import type { Enumeration } from "atom.io/struct"
-import { enumeration, packValue, unpackValue } from "atom.io/struct"
+import type { Enumeration, packed, primitive } from "atom.io/json"
+import { enumeration, packCanonical, unpackCanonical } from "atom.io/json"
 
 export type SetMutations = Exclude<
 	keyof Set<any>,
@@ -139,19 +138,19 @@ export class UList<P extends primitive>
 	): PackedSetUpdate<P> {
 		const head = SET_UPDATE_ENUM[update.type] + `\u001F`
 		if (update.type === `clear`) {
-			return head + update.values.map(packValue).join(`\u001E`)
+			return head + update.values.map(packCanonical).join(`\u001E`)
 		}
-		return head + packValue(update.value)
+		return head + packCanonical(update.value)
 	}
 	public static unpackUpdate<P extends primitive>(
 		packed: PackedSetUpdate<P>,
 	): SetUpdate<P> {
-		const [type, tail] = packed.split(`\u001F`) as [0 | 1 | 2, string]
+		const [type, tail] = packed.split(`\u001F`) as [0 | 1 | 2, packed<P>]
 		const head = SET_UPDATE_ENUM[type]
 		if (head === `clear`) {
-			const values = tail.split(`\u001E`).map(unpackValue) as P[]
+			const values = tail.split(`\u001E`).map<P>(unpackCanonical)
 			return { type: `clear`, values }
 		}
-		return { type: head, value: unpackValue(tail) as P }
+		return { type: head, value: unpackCanonical(tail) }
 	}
 }
