@@ -22,4 +22,3 @@ export function UrlDisplay(): React.JSX.Element {
 		</div>
 	)
 }
-d
