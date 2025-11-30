@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import * as path from "node:path"
+import { inspect } from "node:util"
 
 import { type } from "arktype"
 import type { OptionsGroup } from "comline"
@@ -36,7 +37,7 @@ const BREAK_CHECK_MANUAL = options(
 		tagPattern: {
 			flag: `v`,
 			required: false,
-			description: `String which, if found in a git tag, will be considered a release tag for your library.`,
+			description: `RegExp which, if found matched to a git tag, will be considered a release tag for your library.`,
 			example: `--tagPattern="my-library"`,
 		},
 		testPattern: {
@@ -146,7 +147,9 @@ switch (inputs.case) {
 			}
 		} else {
 			process.stdout.write(
-				`💥 Break check failed to determine breaking changes.`,
+				`💥 Break check failed to determine breaking changes.` +
+					`\n` +
+					inspect(returnValue),
 			)
 			process.exit(2)
 		}

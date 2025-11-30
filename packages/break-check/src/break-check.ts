@@ -79,7 +79,7 @@ export async function breakCheck({
 	mark?.(`list remote tags`)
 	const allTagsRaw = tagsRemote.split(`\n`)
 	const tagsRawFiltered = tagPattern
-		? allTagsRaw.filter((tag) => tag.match(tagPattern))
+		? allTagsRaw.filter((tag) => tag?.match(new RegExp(tagPattern)))
 		: allTagsRaw
 	const tags = tagsRawFiltered
 		.map((tag) => tag.split(`\t`)[1].split(`^`)[0]) //.split(`/`)[2])
