@@ -14,6 +14,7 @@ import type { ServerConfig } from "."
 export type FamilyProvider = ReturnType<typeof realtimeAtomFamilyProvider>
 export function realtimeAtomFamilyProvider({
 	socket,
+	userKey,
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
 	return function familyProvider<
@@ -66,6 +67,12 @@ export function realtimeAtomFamilyProvider({
 			familyMemberSubscriptions.set(
 				`${token.key}:unsub`,
 				employSocket(socket, `unsub:${token.key}`, () => {
+					store.logger.info(
+						`🙈`,
+						`user`,
+						userKey,
+						`unsubscribed from state "${token.key}"`,
+					)
 					fillUnsubRequest(token.key)
 				}),
 			)
@@ -81,13 +88,35 @@ export function realtimeAtomFamilyProvider({
 		}
 
 		const start = () => {
+			store.logger.info(
+				`👀`,
+				`user`,
+				userKey,
+				`can subscribe to family "${family.key}"`,
+			)
 			coreSubscriptions.add(
 				employSocket(socket, `sub:${family.key}`, (subKey: K) => {
 					const exposedSubKeys = getFromStore(store, index)
 					const shouldExpose = isAvailable(exposedSubKeys, subKey)
 					if (shouldExpose) {
+						store.logger.info(
+							`👀`,
+							`user`,
+							userKey,
+							`was approved for a subscription to`,
+							subKey,
+							`in family "${family.key}"`,
+						)
 						exposeFamilyMembers(subKey)
 					} else {
+						store.logger.info(
+							`❌`,
+							`user`,
+							userKey,
+							`was denied for a subscription to`,
+							subKey,
+							`in family "${family.key}"`,
+						)
 						familyMemberSubscriptionsWanted.add(stringifyJson(subKey))
 						socket.emit(`unavailable:${family.key}`, subKey)
 					}
@@ -99,8 +128,23 @@ export function realtimeAtomFamilyProvider({
 					index,
 					`expose-family:${family.key}:${socket.id}`,
 					({ newValue: newExposedSubKeys }) => {
+						store.logger.info(
+							`👀`,
+							`user`,
+							userKey,
+							`has the following keys available for family "${family.key}"`,
+							newExposedSubKeys,
+						)
 						for (const subKey of newExposedSubKeys) {
 							if (familyMemberSubscriptionsWanted.has(stringifyJson(subKey))) {
+								store.logger.info(
+									`👀`,
+									`user`,
+									userKey,
+									`was retroactively approved for a subscription to`,
+									subKey,
+									`in family "${family.key}"`,
+								)
 								exposeFamilyMembers(subKey)
 							}
 						}
