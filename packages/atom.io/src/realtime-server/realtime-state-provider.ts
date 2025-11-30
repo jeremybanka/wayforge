@@ -8,6 +8,7 @@ import type { ServerConfig } from "."
 export type StateProvider = ReturnType<typeof realtimeStateProvider>
 export function realtimeStateProvider({
 	socket,
+	userKey,
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
 	store.logger.info(
