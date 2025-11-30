@@ -25,4 +25,12 @@ export * from "./validators"
  */
 export type Loadable<T> = Promise<T> | T
 
-export type ViewOf<T> = T extends { READONLY_VIEW: infer View } ? View : T
+export type ViewOf<T> = T extends { READONLY_VIEW: infer View }
+	? View
+	: T extends Array<any>
+		? readonly [...T]
+		: T extends Set<infer U>
+			? ReadonlySet<ViewOf<U>>
+			: T extends Map<infer K, infer V>
+				? ReadonlyMap<ViewOf<K>, ViewOf<V>>
+				: T

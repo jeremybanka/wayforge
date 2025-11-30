@@ -11,5 +11,8 @@ export type FamilyNode<Token extends ReadableToken<unknown, any, any>> = {
 	familyMembers: Map<string, Token>
 }
 
+export type ReadonlyTokenIndex<Token extends ReadableToken<unknown, any, any>> =
+	ReadonlyMap<string, FamilyNode<Token> | Token>
+
 export type WritableTokenIndex<Token extends ReadableToken<unknown, any, any>> =
 	Map<string, FamilyNode<Token> | Token>
