@@ -16,7 +16,7 @@ export function safeCompute<T, E>(
 			try {
 				val = state.getFrom(target)
 				if (val instanceof Promise) {
-					return (val as Promise<E & T>).catch((thrown) => {
+					val = (val as Promise<E & T>).catch((thrown) => {
 						target.logger.error(`💥`, type, key, `rejected:`, thrown)
 						if (canCatch) {
 							for (const Class of canCatch) {

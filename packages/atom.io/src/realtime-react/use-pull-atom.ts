@@ -8,7 +8,7 @@ import { useRealtimeService } from "./use-realtime-service"
 
 export function usePullAtom<J extends Json.Serializable>(
 	token: AtomIO.RegularAtomToken<J>,
-): J {
+): AtomIO.ViewOf<J> {
 	const store = React.useContext(StoreContext)
 	useRealtimeService(`pull:${token.key}`, (socket) =>
 		RTC.pullAtom(store, socket, token),
