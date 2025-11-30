@@ -82,6 +82,7 @@ export type EntityDenomination =
 	| `timeline`
 	| `transaction`
 	| `unknown`
+	| `user`
 	| `writable_held_selector_family`
 	| `writable_held_selector`
 	| `writable_pure_selector_family`
@@ -103,6 +104,7 @@ export const PRETTY_ENTITY_NAMES: Record<EntityDenomination, string> = {
 	timeline: `timeline`,
 	transaction: `transaction`,
 	unknown: `unknown`,
+	user: `👤`,
 	writable_held_selector_family: `selector family [wh]`,
 	writable_held_selector: `selector [wh]`,
 	writable_pure_selector_family: `selector family [w]`,
