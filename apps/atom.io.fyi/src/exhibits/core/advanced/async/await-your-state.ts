@@ -1,7 +1,7 @@
 import http from "node:http"
 
 import type { Loadable } from "atom.io"
-import { atom, getState } from "atom.io"
+import { atom, getState, resetState } from "atom.io"
 
 const server = http.createServer((req, res) => {
 	let data: Uint8Array[] = []
@@ -33,3 +33,5 @@ export const quoteState = atom<Loadable<Error | string>>({
 void getState(quoteState) // Promise { <pending> }
 await getState(quoteState) // "The best way to predict the future is to invent it."
 void getState(quoteState) // "The best way to predict the future is to invent it."
+resetState(quoteState)
+void getState(quoteState) // Promise { <pending> }

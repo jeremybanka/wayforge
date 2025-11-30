@@ -117,8 +117,15 @@ import AvoidRaceBetweenPromises from "x/core/advanced/async/avoid-race-between-p
       </td>
       <td>
         Set the value of a reactive variable. If the reactive variable is a
-        selector, the value is derived from other reactive variables.
+        selector, its `set` method is called, which should be written to result
+        in the appropriate changes to its dependencies.
       </td>
+    </tr>
+    <tr>
+      <td>
+        <code>resetState</code>
+      </td>
+      <td>Recompute a reactive variable and its dependencies from scratch.</td>
     </tr>
     <tr>
       <td>
@@ -184,7 +191,7 @@ This is the key to high-performance interactivity in atom.io: **the smaller the 
 
 If you want to update your states frequently, keep state primitive.
 
-<UseAnIndexToTrackFamilyMembers client:load />{" "}
+<UseAnIndexToTrackFamilyMembers client:load />
 
 In this example, we use a single `atom<string[]>` to track the members of our family.
 
@@ -228,7 +235,7 @@ In this example, we undo and redo changes to the timeline.
 
 ### async
 
-Often, state is not immediately available. For example, if you are fetching data from a server, you might use the fetch function `atom.io` offers natural support for `Promise` and `async/await` patterns.
+Often, the data you need is not immediately available. For example, if you are fetching data from a server, you might use the fetch function `atom.io` offers natural support for `Promise` and `async/await` patterns.
 
 <AwaitYourState client:load />
 

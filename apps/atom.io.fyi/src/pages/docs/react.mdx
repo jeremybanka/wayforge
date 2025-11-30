@@ -4,6 +4,8 @@ import UseO from "x/react/use-o.gen";
 import UseI from "x/react/use-i.gen";
 import UseJSON from "x/react/use-json.gen";
 import UseTL from "x/react/use-tl.gen";
+import UseLoadable from "x/react/use-loadable-bare.gen";
+import UseLoadableFallback from "x/react/use-loadable-fallback.gen";
 
 <Layout>
 
@@ -21,7 +23,7 @@ import UseTL from "x/react/use-tl.gen";
       <td>
         <code>useI</code>
       </td>
-      <td>Update a reactive variable.</td>
+      <td>Make an updater function for a reactive variable.</td>
     </tr>
     <tr>
       <td>
@@ -40,6 +42,15 @@ import UseTL from "x/react/use-tl.gen";
         <code>useTL</code>
       </td>
       <td>Control a timeline and observe its state.</td>
+    </tr>
+    <tr>
+      <td>
+        <code>useLoadable</code>
+      </td>
+      <td>
+        For a `Loadable` atom or selector, this hook provides a convenient
+        interface for observing its value, loading state, and error state.
+      </td>
     </tr>
   </tbody>
 </table>
@@ -67,5 +78,19 @@ import UseTL from "x/react/use-tl.gen";
 `useTL` provides convenient access to the `undo` and `redo` utilities, as well as metadata representing how many events are on the timeline (`length`) and where the timeline is currently positioned (`at`).
 
 <UseTL client:load />
+
+## useLoadable
+
+If you have a `Loadable` atom or selector, `useLoadable` is a great way to observe it in your React components.
+
+<UseLoadable client:load />
+
+In this example, we can see that the hook will return the string `"LOADING"` until the promise resolves. Then, it will return an object containing `value` with our data, and `loading` indicating whether new data is on its way.
+
+<UseLoadableFallback client:load />
+
+If you'd rather assume your data is loaded, simply pass a fallback parameter with same type as your loaded data.
+
+In this case, you don't have to deal with the possibility that your data is `"LOADING"`, and you'll also get a separate `error` property if the promise rejects.
 
 </Layout>
