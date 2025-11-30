@@ -31,7 +31,7 @@
 		"@t3-oss/env-core": "0.13.8",
 		"atom.io": "workspace:*",
 		"comline": "workspace:*",
-		"cron": "4.3.4",
+		"cron": "4.3.5",
 		"safedeposit": "workspace:*"
 	},
 	"scripts": {
