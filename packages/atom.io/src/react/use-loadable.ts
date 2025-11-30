@@ -1,5 +1,10 @@
 /** biome-ignore-all lint/correctness/useHookAtTopLevel: params are used in an invariant way */
-import type { Loadable, ReadableFamilyToken, ReadableToken } from "atom.io"
+import type {
+	Loadable,
+	ReadableFamilyToken,
+	ReadableToken,
+	ViewOf,
+} from "atom.io"
 import { findInStore, type ReadableState, withdraw } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 import { StoreContext, useO } from "atom.io/react"
@@ -7,23 +12,23 @@ import { useContext, useRef } from "react"
 
 export function useLoadable<T, E>(
 	token: ReadableToken<Loadable<T>, any, E>,
-): `LOADING` | { loading: boolean; value: E | T }
+): `LOADING` | { loading: boolean; value: ViewOf<E | T> }
 
 export function useLoadable<T, K extends Canonical, E>(
 	token: ReadableFamilyToken<Loadable<T>, K, E>,
 	key: NoInfer<K>,
-): `LOADING` | { loading: boolean; value: E | T }
+): `LOADING` | { loading: boolean; value: ViewOf<E | T> }
 
 export function useLoadable<T, F extends T, E>(
 	token: ReadableToken<Loadable<T>, any, E>,
 	fallback: F,
-): { loading: boolean; value: T; error?: E }
+): { loading: boolean; value: ViewOf<T>; error?: E }
 
 export function useLoadable<T, K extends Canonical, F extends T, E>(
 	token: ReadableFamilyToken<Loadable<T>, K, E>,
 	key: NoInfer<K>,
 	fallback: F,
-): { loading: boolean; value: T; error?: E }
+): { loading: boolean; value: ViewOf<T>; error?: E }
 
 export function useLoadable(
 	...params:

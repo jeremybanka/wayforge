@@ -11,6 +11,7 @@ import {
 	useRole,
 } from "@floating-ui/react"
 import { setState } from "atom.io"
+import { IMPLICIT } from "atom.io/internal"
 import { useO } from "atom.io/react"
 import * as React from "react"
 
@@ -28,6 +29,8 @@ import { Admin } from "./views/Admin"
 import { GameView } from "./views/Game"
 import { Home } from "./views/Home"
 import { Verify } from "./views/Verify"
+
+IMPLICIT.STORE.loggers[0].logLevel = `info`
 
 export function App(): React.ReactNode {
 	const route = useO(routeSelector)
