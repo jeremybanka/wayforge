@@ -6,7 +6,6 @@ import type {
 } from "atom.io"
 import type { Canonical } from "atom.io/json"
 
-import { writeToCache } from "../caching"
 import { newest } from "../lineage"
 import type { ReadonlyPureSelector } from "../state-types"
 import type { Store } from "../store"
@@ -40,10 +39,9 @@ export function createReadonlyPureSelector<T, K extends Canonical, E>(
 		}
 		innerTarget.selectorAtoms.delete(key)
 		const value = options.get({ get, find, json })
-		const cached = writeToCache(innerTarget, readonlySelector, value)
-		store.logger.info(`✨`, type, key, `=`, cached)
+		store.logger.info(`✨`, type, key, `=`, value)
 		covered.clear()
-		return cached
+		return value
 	}
 
 	const readonlySelector: ReadonlyPureSelector<T, E> = {
