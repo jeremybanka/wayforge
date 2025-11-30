@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import * as path from "node:path"
+import { inspect } from "node:util"
 
 import { type } from "arktype"
 import type { OptionsGroup } from "comline"
@@ -146,7 +147,9 @@ switch (inputs.case) {
 			}
 		} else {
 			process.stdout.write(
-				`💥 Break check failed to determine breaking changes.`,
+				`💥 Break check failed to determine breaking changes.` +
+					`\n` +
+					inspect(returnValue),
 			)
 			process.exit(2)
 		}
