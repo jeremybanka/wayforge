@@ -4,6 +4,7 @@ import {
 	atom,
 	atomFamily,
 	getState,
+	mutableAtom,
 	redo,
 	resetState,
 	selector,
@@ -14,19 +15,20 @@ import {
 import type { Fn } from "atom.io/internal"
 import { clearStore, IMPLICIT } from "atom.io/internal"
 import * as AR from "atom.io/react"
+import { UList } from "atom.io/transceivers/u-list"
 import { type FC, useEffect, useRef } from "react"
 
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 2
+const CHOOSE = 3
 
 let logger: Logger
 
 beforeEach(() => {
 	clearStore(IMPLICIT.STORE)
 	IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = IMPLICIT.STORE.logger = Utils.createNullLogger()
+	logger = IMPLICIT.STORE.logger //= Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
@@ -34,7 +36,7 @@ beforeEach(() => {
 })
 const onChange = [() => undefined, console.log][0]
 
-describe(`single atom`, () => {
+describe(`regular atom`, () => {
 	const setters: Fn[] = []
 	const scenario = () => {
 		const letterState = atom<string>({
@@ -72,6 +74,50 @@ describe(`single atom`, () => {
 		const changeStateButton = getByTestId(`changeStateButton`)
 		fireEvent.click(changeStateButton)
 		const option = getByTestId(`B`)
+		assert(option)
+		expect(setters.length).toBe(2)
+		expect(setters[0]).toBe(setters[1])
+	})
+})
+describe(`mutable atom`, () => {
+	const setters: Fn[] = []
+	const scenario = () => {
+		const lettersAtom = mutableAtom<UList<string>>({
+			key: `letters`,
+			class: UList,
+		})
+		const Letter: FC = () => {
+			const setLetter = AR.useI(lettersAtom)
+			const letters = AR.useO(lettersAtom)
+			setters.push(setLetter)
+			const includesA = letters.has(`A`) ? `yes` : `no`
+			return (
+				<>
+					<div data-testid={includesA} />
+					<button
+						type="button"
+						onClick={() => {
+							setLetter((self) => self.add(`A`))
+						}}
+						data-testid="changeStateButton"
+					/>
+				</>
+			)
+		}
+		const utils = render(
+			<AR.StoreProvider>
+				<Utils.Observer node={lettersAtom} onChange={onChange} />
+				<Letter />
+			</AR.StoreProvider>,
+		)
+		return { ...utils }
+	}
+
+	it(`accepts user input with externally managed state`, () => {
+		const { getByTestId } = scenario()
+		const changeStateButton = getByTestId(`changeStateButton`)
+		fireEvent.click(changeStateButton)
+		const option = getByTestId(`yes`)
 		assert(option)
 		expect(setters.length).toBe(2)
 		expect(setters[0]).toBe(setters[1])

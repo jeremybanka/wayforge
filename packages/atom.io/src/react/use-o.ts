@@ -1,7 +1,16 @@
+/** biome-ignore-all lint/correctness/useHookAtTopLevel: depends on the type of atom, which shouldn't change */
 import type { ReadableFamilyToken, ReadableToken, ViewOf } from "atom.io"
 import { getFromStore, subscribeToState } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
-import { useCallback, useContext, useId, useSyncExternalStore } from "react"
+import { useSingleEffect } from "atom.io/realtime-react"
+import {
+	useCallback,
+	useContext,
+	useId,
+	useRef,
+	useState,
+	useSyncExternalStore,
+} from "react"
 
 import { parseStateOverloads } from "./parse-state-overloads"
 import { StoreContext } from "./store-context"
@@ -23,6 +32,29 @@ export function useO<T, K extends Canonical, E = never>(
 	const store = useContext(StoreContext)
 	const token = parseStateOverloads(store, ...params)
 	const id = useId()
+
+	if (
+		token.type === `mutable_atom` ||
+		token.type === `readonly_held_selector` ||
+		token.type === `writable_held_selector`
+	) {
+		const [, dispatch] = useState<number>(0)
+		const valueRef = useRef<ViewOf<E | T>>(getFromStore(store, token))
+		useSingleEffect(() => {
+			const unsub = subscribeToState<T, E>(
+				store,
+				token,
+				`use-o:${id}`,
+				({ newValue }) => {
+					valueRef.current = newValue
+					dispatch((c) => c + 1)
+				},
+			)
+			return unsub
+		}, [token.key])
+		return valueRef.current
+	}
+
 	const sub = useCallback(
 		(dispatch: () => void) =>
 			subscribeToState<T, E>(store, token, `use-o:${id}`, dispatch),
