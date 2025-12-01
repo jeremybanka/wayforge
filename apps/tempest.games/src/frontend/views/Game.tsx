@@ -1,5 +1,5 @@
 import type { ViewOf } from "atom.io"
-import { getInternalRelations, runTransaction } from "atom.io"
+import { getInternalRelations, mutableAtomFamily, runTransaction } from "atom.io"
 import { toEntries } from "atom.io/json"
 import { useJSON, useO } from "atom.io/react"
 import type { UserKey } from "atom.io/realtime"
@@ -11,6 +11,7 @@ import {
 	useRealtimeRooms,
 	useSyncContinuity,
 } from "atom.io/realtime-react"
+import { UList } from "atom.io/transceivers/u-list"
 import * as React from "react"
 
 import type { ActualWorkerName } from "../../backend.worker"
@@ -95,19 +96,21 @@ export function Clicker(): React.ReactNode {
 export function ServerControl(): React.ReactNode {
 	const cpuCount = usePullAtom(cpuCountAtom)
 	usePullMutable(roomKeysAtom)
-	const roomIds = useJSON(roomKeysAtom)
+	const roomKeys = useJSON(roomKeysAtom)
 	const userKey = `user::${useO(authAtom)!.userId}` satisfies UserKey
-	const [myRoomId] = [
-		...usePullMutableAtomFamilyMember(
-			getInternalRelations(usersInRooms),
-			userKey,
-		),
-	]
+	usePullMutableAtomFamilyMember(
+		getInternalRelations(usersInRooms, `split`)[1],
+		userKey,
+	)
+	const myRoomKeys = useJSON(
+		getInternalRelations(usersInRooms, `split`)[1],
+		userKey,
+	)
 
 	console.log(`👺`, {
-		roomIds,
+		roomIds: roomKeys,
 		userKey,
-		myRoomId,
+		myRoomKeys,
 	})
 
 	const roomSocket = useRealtimeRooms<ActualWorkerName>()
@@ -117,9 +120,11 @@ export function ServerControl(): React.ReactNode {
 			{Array.from({ length: cpuCount }).map((_, i) => (
 				<div key={i}>
 					<span>
-						{i}: {roomIds[i]} {myRoomId === roomIds[i] ? `👍` : `👎`}
+						{i}: {roomKeys[i]} {myRoomKeys.includes(roomKeys[i]) ? `👍` : `👎`}
 					</span>
-					{roomIds[i] === undefined ? null : myRoomId === roomIds[i] ? (
+					{roomKeys[i] === undefined ? null : myRoomKeys.includes(
+							roomKeys[i],
+						) ? (
 						<button
 							type="button"
 							onClick={() => {
@@ -132,7 +137,7 @@ export function ServerControl(): React.ReactNode {
 						<button
 							type="button"
 							onClick={() => {
-								roomSocket.emit(`joinRoom`, roomIds[i])
+								roomSocket.emit(`joinRoom`, roomKeys[i])
 							}}
 						>
 							join
