@@ -1,8 +1,8 @@
+import { useSingleEffect } from "atom.io/react"
 import * as React from "react"
 import type { Socket } from "socket.io-client"
 
 import { RealtimeContext } from "./realtime-context"
-import { useSingleEffect } from "./use-single-effect"
 
 export function useRealtimeService(
 	key: string,

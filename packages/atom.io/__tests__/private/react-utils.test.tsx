@@ -1,9 +1,6 @@
 import { cleanup, render } from "@testing-library/react"
-import {
-	RealtimeContext,
-	useRealtimeService,
-	useSingleEffect,
-} from "atom.io/realtime-react"
+import { useSingleEffect } from "atom.io/react"
+import { RealtimeContext, useRealtimeService } from "atom.io/realtime-react"
 import { useId } from "react"
 import type { Socket } from "socket.io-client"
 import { vi } from "vitest"
