@@ -9,15 +9,15 @@ import {
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 import type { ContinuityToken } from "atom.io/realtime"
-import {
-	confirmedUpdateQueueAtom,
-	optimisticUpdateQueueAtom,
-} from "atom.io/realtime-client"
 import type { Socket } from "socket.io-client"
 
 import { useRegisterAndAttemptConfirmedUpdate } from "./continuity/register-and-attempt-confirmed-update"
 import { useConcealState } from "./continuity/use-conceal-state"
 import { useRevealState } from "./continuity/use-reveal-state"
+import {
+	confirmedUpdateQueueAtom,
+	optimisticUpdateQueueAtom,
+} from "./realtime-client-stores"
 
 export function syncContinuity(
 	store: RootStore,
