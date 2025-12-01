@@ -16,6 +16,5 @@ export function usePullSelectorFamilyMember<T, K extends Canonical>(
 	useRealtimeService(`pull:${token.key}`, (socket) =>
 		RTC.pullSelectorFamilyMember(store, socket, familyToken, key),
 	)
-
 	return useO(token)
 }
