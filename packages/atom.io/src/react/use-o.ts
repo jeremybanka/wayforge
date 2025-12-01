@@ -33,7 +33,11 @@ export function useO<T, K extends Canonical, E = never>(
 	const token = parseStateOverloads(store, ...params)
 	const id = useId()
 
-	if (token.type === `mutable_atom`) {
+	if (
+		token.type === `mutable_atom` ||
+		token.type === `readonly_held_selector` ||
+		token.type === `writable_held_selector`
+	) {
 		const [, dispatch] = useState<number>(0)
 		const valueRef = useRef<ViewOf<E | T>>(getFromStore(store, token))
 		useSingleEffect(() => {
