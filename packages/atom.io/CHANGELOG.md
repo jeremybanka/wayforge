@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.45.2
+
+### Patch Changes
+
+- bb3c09c: 🐛 `atom.io/react` Fixed bug where `atom.io/react` was loading `atom.io/realtime-react`. Now this no longer happens.
+
 ## 0.45.1
 
 ### Patch Changes
