@@ -12,7 +12,7 @@
 	},
 	"dependencies": {
 		"atom.io": "workspace:*",
-		"preact": "10.27.2",
+		"preact": "10.28.0",
 		"react": "npm:@preact/compat@18.3.1",
 		"react-dom": "npm:@preact/compat@18.3.1"
 	},
