@@ -8,10 +8,11 @@ import {
 	setIntoStore,
 } from "atom.io/internal"
 import type { Socket } from "atom.io/realtime"
+
 import {
 	confirmedUpdateQueueAtom,
 	optimisticUpdateQueueAtom,
-} from "atom.io/realtime-client"
+} from "../realtime-client-stores"
 
 export const useRegisterAndAttemptConfirmedUpdate =
 	(
