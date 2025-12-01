@@ -109,11 +109,11 @@ export const serveSocket = (socket: TempestServerSocket): void => {
 		usersOfSockets,
 		socketKey,
 	).userKeyOfSocket
-	const userKeyOfSocket = getFromStore(IMPLICIT.STORE, userOfSocketSelector)!
-	const rawUserId = userKeyOfSocket?.replace(/^user::/, ``)
+	const userKey = getFromStore(IMPLICIT.STORE, userOfSocketSelector)!
+	const rawUserId = userKey?.replace(/^user::/, ``)
 	const myRoomAtoms = getInternalRelations(usersInRooms)
-	const selfListSelector = findState(selfListSelectors, userKeyOfSocket)
-	const provideFamily = realtimeMutableFamilyProvider({ socket })
+	const selfListSelector = findState(selfListSelectors, userKey)
+	const provideFamily = realtimeMutableFamilyProvider({ socket, userKey })
 
 	socket.onAny((event, ...args) => {
 		console.log(`🛰️ << 📡`, { event, args })
@@ -122,19 +122,20 @@ export const serveSocket = (socket: TempestServerSocket): void => {
 		console.log(`🛰️ >> 📡`, { event, args })
 	})
 
-	console.log(`👺`, { userKeyOfSocket })
+	console.log(`👺`, { userKey })
 	console.log(
 		`👺`,
 		[...ROOMS.entries()].map(([k, v]) => [k, v.id]),
 	)
 	const unsubs = [
-		...[cpuCountAtom].map(realtimeStateProvider({ socket })),
-		...[roomKeysAtom].map(realtimeMutableProvider({ socket })),
+		...[cpuCountAtom].map(realtimeStateProvider({ socket, userKey })),
+		...[roomKeysAtom].map(realtimeMutableProvider({ socket, userKey })),
 		...[myRoomAtoms].map((atoms) => provideFamily(atoms, selfListSelector)),
 	]
 
 	provideRooms({
 		socket,
+		userKey,
 		store: IMPLICIT.STORE,
 		roomNames: workerNames,
 		resolveRoomScript,
