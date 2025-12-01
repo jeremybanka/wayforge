@@ -21,14 +21,14 @@ import { type FC, useEffect, useRef } from "react"
 import * as Utils from "../__util__"
 
 const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
-const CHOOSE = 2
+const CHOOSE = 3
 
 let logger: Logger
 
 beforeEach(() => {
 	clearStore(IMPLICIT.STORE)
 	IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
-	logger = IMPLICIT.STORE.logger = Utils.createNullLogger()
+	logger = IMPLICIT.STORE.logger //= Utils.createNullLogger()
 	vitest.spyOn(logger, `error`)
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
