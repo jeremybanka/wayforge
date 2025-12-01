@@ -18,14 +18,14 @@ export type ComboSelectionsAtom<T> = {
 	selectionsState: WritableToken<T[]>
 }
 export type ComboSelections<T> = {
-	selections: T[]
+	selections: readonly T[]
 	setSelections: (setterOrUpdater: T[] | ((oldValue: T[]) => T[])) => void
 }
 export type ComboOptionsAtom<T> = {
 	optionsState: ReadableToken<T[]>
 }
 export type ComboOptions<T> = {
-	options: T[]
+	options: readonly T[]
 }
 
 /* eslint-disable @typescript-eslint/sort-type-constituents */
@@ -191,8 +191,8 @@ const Combo_INTERNAL = <State,>({
 }
 
 export const Combo = <State,>(props: ComboProps<State>): ReactElement => {
-	let options: State[] = []
-	let selections: State[] = []
+	let options: readonly State[] = []
+	let selections: readonly State[] = []
 	let setSelections: (value: State[]) => void = () => {
 		console.warn(`no setSelections`)
 	}
