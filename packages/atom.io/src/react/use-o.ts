@@ -2,7 +2,6 @@
 import type { ReadableFamilyToken, ReadableToken, ViewOf } from "atom.io"
 import { getFromStore, subscribeToState } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
-import { useSingleEffect } from "./use-single-effect"
 import {
 	useCallback,
 	useContext,
@@ -14,6 +13,7 @@ import {
 
 import { parseStateOverloads } from "./parse-state-overloads"
 import { StoreContext } from "./store-context"
+import { useSingleEffect } from "./use-single-effect"
 
 export function useO<T, E = never>(
 	token: ReadableToken<T, any, E>,
