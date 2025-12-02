@@ -1,5 +1,14 @@
 # atom.io.fyi
 
+## 0.2.23
+
+### Patch Changes
+
+- Updated dependencies [cbc77d0]
+- Updated dependencies [cbc77d0]
+- Updated dependencies [cbc77d0]
+  - atom.io@0.45.3
+
 ## 0.2.22
 
 ### Patch Changes
