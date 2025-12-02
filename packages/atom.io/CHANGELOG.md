@@ -1,5 +1,13 @@
 # atom.io
 
+## 0.45.3
+
+### Patch Changes
+
+- cbc77d0: 🏷️ `atom.io/realtime-server` Fixed requirement for an accurately typed index when calling `realtimeFamilyProvider()` and `realtimeMutableFamilyProvider()`.
+- cbc77d0: 🏷️ `atom.io/react` Fixed requirement for matching key type when accessing a family member with `useJSON()`.
+- cbc77d0: ✨ `atom.io/realtime-server` Added automatic serving of `ownersOfRooms` for a user's `UserKey`. That is, the list of rooms they own.
+
 ## 0.45.2
 
 ### Patch Changes
