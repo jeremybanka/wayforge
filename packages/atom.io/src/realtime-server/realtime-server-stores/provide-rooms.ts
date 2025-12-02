@@ -272,11 +272,17 @@ export function provideRooms<RoomNames extends string>({
 		userKey,
 	)
 	exposeMutableFamily(usersInRoomsAtoms, usersWhoseRoomsCanBeSeenSelector)
-	const usersOfSocketsAtoms = getInternalRelationsFromStore(
+	// const usersOfSocketsAtoms = getInternalRelationsFromStore(
+	// 	store,
+	// 	usersOfSockets,
+	// )
+	// exposeMutableFamily(usersOfSocketsAtoms, socketKeysAtom)
+	const [ownersOfRoomsAtoms] = getInternalRelationsFromStore(
 		store,
-		usersOfSockets,
+		ownersOfRooms,
+		`split`,
 	)
-	exposeMutableFamily(usersOfSocketsAtoms, socketKeysAtom)
+	exposeMutableFamily(ownersOfRoomsAtoms, usersWhoseRoomsCanBeSeenSelector)
 
 	const enterRoom = provideEnterAndExit({ store, socket, roomSocket, userKey })
 
