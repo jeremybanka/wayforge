@@ -39,7 +39,7 @@ export function realtimeMutableFamilyProvider({
 		K extends Canonical,
 	>(
 		family: AtomIO.MutableAtomFamilyToken<T, K>,
-		index: AtomIO.ReadableToken<Iterable<K>>,
+		index: AtomIO.ReadableToken<Iterable<NoInfer<K>>>,
 	): () => void {
 		const coreSubscriptions = new Set<() => void>()
 		const clearCoreSubscriptions = () => {

@@ -14,7 +14,7 @@ export function useJSON<T extends Transceiver<any, any, any>>(
 export function useJSON<
 	T extends Transceiver<any, any, any>,
 	K extends Canonical,
->(token: MutableAtomFamilyToken<T, K>, key: K): AsJSON<T>
+>(token: MutableAtomFamilyToken<T, K>, key: NoInfer<K>): AsJSON<T>
 
 export function useJSON(
 	token: MutableAtomFamilyToken<any, any> | MutableAtomToken<any>,
