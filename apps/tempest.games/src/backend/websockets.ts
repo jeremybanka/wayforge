@@ -1,3 +1,4 @@
+import { findState, getInternalRelations } from "atom.io"
 import {
 	editRelationsInStore,
 	findInStore,
@@ -7,7 +8,14 @@ import {
 	setIntoStore,
 } from "atom.io/internal"
 import type { SocketKey, UserKey } from "atom.io/realtime"
+import { roomKeysAtom, usersInRooms } from "atom.io/realtime"
 import {
+	provideRooms,
+	realtimeMutableFamilyProvider,
+	realtimeMutableProvider,
+	realtimeStateProvider,
+	ROOMS,
+	selfListSelectors,
 	socketAtoms,
 	socketKeysAtom,
 	userKeysAtom,
@@ -17,12 +25,14 @@ import { CookieMap } from "bun"
 import { eq } from "drizzle-orm"
 import type { DefaultEventsMap, ExtendedError, Socket } from "socket.io"
 
+import { resolveRoomScript, workerNames } from "../backend.worker"
 import { users } from "../database/tempest-db-schema"
 import type {
 	TempestSocketDown,
 	TempestSocketServerSide,
 	TempestSocketUp,
 } from "../library/socket-interface"
+import { cpuCountAtom } from "../library/store"
 import { db } from "./db"
 import { logger } from "./logger"
 import { userSessions } from "./user-sessions"
@@ -88,54 +98,54 @@ export const sessionMiddleware: SocketServerMiddleware = async (
 }
 
 export const serveSocket = (socket: TempestServerSocket): void => {
-	// const syncContinuity = prepareToExposeRealtimeContinuity({
-	// 	socket,
-	// 	store: IMPLICIT.STORE,
-	// })
-	// const cleanup = syncContinuity(countContinuity)
+	const shortId = socket.id.slice(0, 3)
+	const { username } = socket.handshake.auth
 	const socketKey = `socket::${socket.id}` satisfies SocketKey
 	const userOfSocketSelector = findRelationsInStore(
 		IMPLICIT.STORE,
 		usersOfSockets,
 		socketKey,
 	).userKeyOfSocket
-	const userKeyOfSocket = getFromStore(IMPLICIT.STORE, userOfSocketSelector)
-	const rawUserId = userKeyOfSocket?.replace(/^user::/, ``)
+	const userKey = getFromStore(IMPLICIT.STORE, userOfSocketSelector)!
+	const rawUserId = userKey?.replace(/^user::/, ``)
+	const myRoomAtoms = getInternalRelations(usersInRooms)
+	const selfListSelector = findState(selfListSelectors, userKey)
+	const provideFamily = realtimeMutableFamilyProvider({ socket, userKey })
 
-	socket.on(`changeUsername`, async (username) => {
-		logger.info(`changing username to`, username)
+	socket.onAny((event, ...args) => {
+		console.log(`🛰️ << 📡`, { event, args })
+	})
+	socket.onAnyOutgoing((event, ...args) => {
+		console.log(`🛰️ >> 📡`, { event, args })
+	})
+
+	console.log(`👺`, { userKey })
+	console.log(
+		`👺`,
+		[...ROOMS.entries()].map(([k, v]) => [k, v.id]),
+	)
+	const unsubs = [
+		...[cpuCountAtom].map(realtimeStateProvider({ socket, userKey })),
+		...[roomKeysAtom].map(realtimeMutableProvider({ socket, userKey })),
+		...[myRoomAtoms].map((atoms) => provideFamily(atoms, selfListSelector)),
+	]
+
+	provideRooms({
+		socket,
+		userKey,
+		store: IMPLICIT.STORE,
+		roomNames: workerNames,
+		resolveRoomScript,
+	})
+
+	socket.on(`changeUsername`, async (newUsername) => {
+		logger.info(`changing username to`, newUsername)
 		if (rawUserId) {
 			await db.drizzle
 				.update(users)
-				.set({ username })
+				.set({ username: newUsername })
 				.where(eq(users.id, rawUserId))
-			socket.emit(`usernameChanged`, username)
+			socket.emit(`usernameChanged`, newUsername)
 		}
-	})
-
-	socket.on(`disconnect`, () => {
-		const userKeyState = findRelationsInStore(
-			IMPLICIT.STORE,
-			usersOfSockets,
-			socketKey,
-		).userKeyOfSocket
-		const userKey = getFromStore(IMPLICIT.STORE, userKeyState)
-		editRelationsInStore(IMPLICIT.STORE, usersOfSockets, (relations) => {
-			relations.delete(socketKey)
-		})
-		if (userKey) {
-			setIntoStore(
-				IMPLICIT.STORE,
-				userKeysAtom,
-				(index) => (index.delete(userKey), index),
-			)
-		}
-		setIntoStore(
-			IMPLICIT.STORE,
-			socketKeysAtom,
-			(index) => (index.delete(socketKey), index),
-		)
-		logger.info(`${socket.id} disconnected`)
-		// cleanup()
 	})
 }
