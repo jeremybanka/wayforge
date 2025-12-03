@@ -96,7 +96,7 @@
 		"@typescript/native-preview": "7.0.0-dev.20251203.1",
 		"@vitest/coverage-v8": "4.0.15",
 		"@vitest/ui": "4.0.15",
-		"arktype": "2.1.27",
+		"arktype": "2.1.28",
 		"break-check": "workspace:*",
 		"concurrently": "9.2.1",
 		"drizzle-kit": "0.31.7",
