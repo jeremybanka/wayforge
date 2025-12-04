@@ -160,8 +160,8 @@ importers:
         specifier: 5.1.6
         version: 5.1.6
       openai:
-        specifier: 6.9.1
-        version: 6.9.1(ws@8.18.3)(zod@4.1.13)
+        specifier: 6.10.0
+        version: 6.10.0(ws@8.18.3)(zod@4.1.13)
       postgres:
         specifier: 3.4.7
         version: 3.4.7
@@ -182,7 +182,7 @@ importers:
         version: link:../../packages/safedeposit
       safegen:
         specifier: 0.8.2
-        version: 0.8.2(@floating-ui/react-dom@2.1.6(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@floating-ui/react@0.27.16(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@google/genai@1.30.0)(@testing-library/react@16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@typescript-eslint/parser@8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(arktype@2.1.28)(eslint@9.39.1(jiti@2.6.1))(happy-dom@20.0.11)(motion@12.23.25(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(openai@6.9.1(ws@8.18.3)(zod@4.1.13))(react@19.2.1)(socket.io-client@4.8.1)(socket.io@4.8.1)(zod@4.1.13)
+        version: 0.8.2(@floating-ui/react-dom@2.1.6(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@floating-ui/react@0.27.16(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@google/genai@1.30.0)(@testing-library/react@16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@typescript-eslint/parser@8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(arktype@2.1.28)(eslint@9.39.1(jiti@2.6.1))(happy-dom@20.0.11)(motion@12.23.25(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(openai@6.10.0(ws@8.18.3)(zod@4.1.13))(react@19.2.1)(socket.io-client@4.8.1)(socket.io@4.8.1)(zod@4.1.13)
       socket.io:
         specifier: 4.8.1
         version: 4.8.1
@@ -1004,8 +1004,8 @@ importers:
         specifier: 9.39.1
         version: 9.39.1(jiti@2.6.1)
       openai:
-        specifier: 6.9.1
-        version: 6.9.1(ws@8.18.3)(zod@4.1.13)
+        specifier: 6.10.0
+        version: 6.10.0(ws@8.18.3)(zod@4.1.13)
       tmp:
         specifier: 0.2.5
         version: 0.2.5
@@ -6666,8 +6666,8 @@ packages:
   oniguruma-to-es@4.3.4:
     resolution: {integrity: sha512-3VhUGN3w2eYxnTzHn+ikMI+fp/96KoRSVK9/kMTcFqj1NRDh2IhQCKvYxDnWePKRXY/AqH+Fuiyb7VHSzBjHfA==}
 
-  openai@6.9.1:
-    resolution: {integrity: sha512-vQ5Rlt0ZgB3/BNmTa7bIijYFhz3YBceAA3Z4JuoMSBftBF9YqFHIEhZakSs+O/Ad7EaoEimZvHxD5ylRjN11Lg==}
+  openai@6.10.0:
+    resolution: {integrity: sha512-ITxOGo7rO3XRMiKA5l7tQ43iNNu+iXGFAcf2t+aWVzzqRaS0i7m1K2BhxNdaveB+5eENhO0VY1FkiZzhBk4v3A==}
     hasBin: true
     peerDependencies:
       ws: ^8.18.0
@@ -14461,7 +14461,7 @@ snapshots:
       regex: 6.0.1
       regex-recursion: 6.0.2
 
-  openai@6.9.1(ws@8.18.3)(zod@4.1.13):
+  openai@6.10.0(ws@8.18.3)(zod@4.1.13):
     optionalDependencies:
       ws: 8.18.3
       zod: 4.1.13
@@ -15157,7 +15157,7 @@ snapshots:
 
   safedeposit@0.1.2: {}
 
-  safegen@0.8.2(@floating-ui/react-dom@2.1.6(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@floating-ui/react@0.27.16(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@google/genai@1.30.0)(@testing-library/react@16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@typescript-eslint/parser@8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(arktype@2.1.28)(eslint@9.39.1(jiti@2.6.1))(happy-dom@20.0.11)(motion@12.23.25(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(openai@6.9.1(ws@8.18.3)(zod@4.1.13))(react@19.2.1)(socket.io-client@4.8.1)(socket.io@4.8.1)(zod@4.1.13):
+  safegen@0.8.2(@floating-ui/react-dom@2.1.6(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@floating-ui/react@0.27.16(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@google/genai@1.30.0)(@testing-library/react@16.3.0(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(@typescript-eslint/parser@8.48.1(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(arktype@2.1.28)(eslint@9.39.1(jiti@2.6.1))(happy-dom@20.0.11)(motion@12.23.25(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))(openai@6.10.0(ws@8.18.3)(zod@4.1.13))(react@19.2.1)(socket.io-client@4.8.1)(socket.io@4.8.1)(zod@4.1.13):
     dependencies:
       '@google/genai': 1.30.0
       '@standard-schema/spec': 1.0.0
@@ -15165,7 +15165,7 @@ snapshots:
       varmint: 0.5.11(zod@4.1.13)
     optionalDependencies:
       arktype: 2.1.28
-      openai: 6.9.1(ws@8.18.3)(zod@4.1.13)
+      openai: 6.10.0(ws@8.18.3)(zod@4.1.13)
       zod: 4.1.13
     transitivePeerDependencies:
       - '@floating-ui/react'
