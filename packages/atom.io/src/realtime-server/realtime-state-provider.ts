@@ -5,6 +5,15 @@ import { employSocket } from "atom.io/realtime"
 
 import type { ServerConfig } from "."
 
+function isReadableToken(input: unknown): input is AtomIO.ReadableToken<any> {
+	return (
+		typeof input === `object` &&
+		input !== null &&
+		`key` in input &&
+		`type` in input
+	)
+}
+
 export type StateProvider = ReturnType<typeof realtimeStateProvider>
 export function realtimeStateProvider({
 	socket,
@@ -13,8 +22,11 @@ export function realtimeStateProvider({
 }: ServerConfig) {
 	store.logger.info(`🔌`, `user`, userKey, `initialized state provider`)
 	return function stateProvider<J extends Json.Serializable>(
-		token: AtomIO.WritableToken<J>,
+		clientToken: AtomIO.WritableToken<J>,
+		serverData: AtomIO.ReadableToken<NoInfer<J>> | NoInfer<J> = clientToken,
 	): () => void {
+		const isStatic = !isReadableToken(serverData)
+
 		const subscriptions = new Set<() => void>()
 		const clearSubscriptions = () => {
 			for (const unsub of subscriptions) unsub()
@@ -22,44 +34,75 @@ export function realtimeStateProvider({
 		}
 
 		const start = () => {
-			store.logger.info(
-				`👀`,
-				`user`,
-				userKey,
-				`can subscribe to state "${token.key}"`,
-			)
+			if (isStatic) {
+				store.logger.info(
+					`👀`,
+					`user`,
+					userKey,
+					`serves`,
+					serverData,
+					`as "${clientToken.key}"`,
+				)
+			} else {
+				store.logger.info(
+					`👀`,
+					`user`,
+					userKey,
+					`can subscribe to state "${serverData.key}" as "${clientToken.key}"`,
+				)
+			}
 			subscriptions.add(
-				employSocket(socket, `sub:${token.key}`, () => {
-					store.logger.info(
-						`👀`,
-						`user`,
-						userKey,
-						`subscribes to state "${token.key}"`,
-					)
-					clearSubscriptions()
-					socket.emit(`serve:${token.key}`, getFromStore(store, token))
-					subscriptions.add(
-						subscribeToState(
-							store,
-							token,
-							`expose-single:${socket.id}`,
-							({ newValue }) => {
-								socket.emit(`serve:${token.key}`, newValue)
-							},
-						),
-					)
-					subscriptions.add(
-						employSocket(socket, `unsub:${token.key}`, () => {
-							store.logger.info(
-								`🙈`,
-								`user`,
-								userKey,
-								`unsubscribes from state "${token.key}"`,
-							)
-							clearSubscriptions()
-							start()
-						}),
-					)
+				employSocket(socket, `sub:${clientToken.key}`, () => {
+					if (isStatic) {
+						store.logger.info(
+							`👀`,
+							`user`,
+							userKey,
+							`requests`,
+							`"${clientToken.key}"`,
+						)
+						socket.emit(`serve:${clientToken.key}`, serverData)
+					} else {
+						store.logger.info(
+							`👀`,
+							`user`,
+							userKey,
+							`subscribes to state "${serverData.key}"`,
+							clientToken === serverData
+								? `directly`
+								: `as "${clientToken.key}"`,
+						)
+						clearSubscriptions()
+						socket.emit(
+							`serve:${clientToken.key}`,
+							getFromStore(store, serverData),
+						)
+						subscriptions.add(
+							subscribeToState(
+								store,
+								serverData,
+								`expose-single:${socket.id}`,
+								({ newValue }) => {
+									socket.emit(`serve:${clientToken.key}`, newValue)
+								},
+							),
+						)
+						subscriptions.add(
+							employSocket(socket, `unsub:${serverData.key}`, () => {
+								store.logger.info(
+									`🙈`,
+									`user`,
+									userKey,
+									`unsubscribes from state "${serverData.key}", served`,
+									clientToken === serverData
+										? `directly`
+										: `as "${clientToken.key}"`,
+								)
+								clearSubscriptions()
+								start()
+							}),
+						)
+					}
 				}),
 			)
 		}
