@@ -78,7 +78,7 @@
 		"treetrunks": "workspace:*"
 	},
 	"devDependencies": {
-		"@react-email/preview-server": "5.0.5",
+		"@react-email/preview-server": "5.0.6",
 		"@types/bun": "npm:bun-types@1.3.4",
 		"@types/cors": "2.8.19",
 		"@types/node": "24.10.1",
