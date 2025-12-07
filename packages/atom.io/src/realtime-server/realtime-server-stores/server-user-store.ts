@@ -52,11 +52,3 @@ export const selfListSelectors: PureSelectorFamilyToken<UserKey[], UserKey> =
 		key: `selfList`,
 		get: (userKey) => () => [userKey],
 	})
-
-export const mySocketKeySelectors: PureSelectorFamilyToken<
-	SocketKey[],
-	SocketKey
-> = selectorFamily({
-	key: `mySocketKey`,
-	get: (socketKey) => () => [socketKey],
-})
