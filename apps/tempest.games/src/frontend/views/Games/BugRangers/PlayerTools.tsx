@@ -1,6 +1,7 @@
 import { useFrame, useThree } from "@react-three/fiber"
 import { getState, setState } from "atom.io"
-import { useAtomicRef, useI } from "atom.io/react"
+import { useAtomicRef, useI, useO } from "atom.io/react"
+import { myUserKeyAtom } from "atom.io/realtime-client"
 import type { ReactNode } from "react"
 import { useRef } from "react"
 import * as THREE from "three"
@@ -19,6 +20,7 @@ import {
 	gameTilesStackHeightAtoms,
 	maximumStackHeightSelectors,
 	tileCubeCountAtoms,
+	tileOwnerAtoms,
 	turnInProgressAtom,
 } from "./store"
 
@@ -77,9 +79,10 @@ function PlayableHex(): ReactNode {
 				break
 			case `build`:
 				{
+					const userKey = getState(myUserKeyAtom)
 					const maximumStackHeight = getState(
 						maximumStackHeightSelectors,
-						[turnInProgress.target, ``], // ❗ use real user key here
+						[turnInProgress.target, userKey!], // ❗ use real user key here
 					)
 					if (maximumStackHeight === 0) return
 					const stackHeight = getState(
@@ -150,11 +153,13 @@ function PlayableCube(): ReactNode {
 		setControlsEnabled(true)
 		setState(dragStateAtom, null)
 		const turnInProgress = getState(turnInProgressAtom)
+		const myUserKey = getState(myUserKeyAtom)
+
 		switch (turnInProgress?.type) {
 			case null:
 			case undefined:
 				{
-					const closestOwnedTile = getState(closestOwnedTileSelector, ``) // ❗ use real user key here
+					const closestOwnedTile = getState(closestOwnedTileSelector, myUserKey!) // ❗ use real user key here
 					if (closestOwnedTile) {
 						setState(turnInProgressAtom, {
 							type: `arm`,
@@ -171,7 +176,7 @@ function PlayableCube(): ReactNode {
 			case `arm`:
 				{
 					if (turnInProgress.targets.length >= 2) return
-					const closestOwnedTile = getState(closestOwnedTileSelector, ``) // ❗ use real user key here
+					const closestOwnedTile = getState(closestOwnedTileSelector, myUserKey!) // ❗ use real user key here
 					if (closestOwnedTile) {
 						setState(turnInProgressAtom, {
 							type: `arm`,
@@ -191,6 +196,7 @@ function PlayableCube(): ReactNode {
 					turnInProgress.target,
 					(current) => (current + 1) as TileCubeCount,
 				)
+				setState(tileOwnerAtoms, turnInProgress.target, myUserKey)
 				setState(turnInProgressAtom, null)
 				break
 		}
