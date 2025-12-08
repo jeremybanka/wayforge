@@ -85,7 +85,7 @@ function View({
 
 export function BrowserGame(): React.ReactNode | null {
 	const mySocketKey = AR.useO(RTC.mySocketKeyAtom)
-	const myUserKey = AR.useO(RTC.myUserKeyAtom)
+	const myUserKey = RTR.usePullAtom(RTC.myUserKeyAtom)
 
 	return mySocketKey && myUserKey ? (
 		<View myUserKey={myUserKey} />

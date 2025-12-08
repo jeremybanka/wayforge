@@ -225,7 +225,6 @@ export const setupRealtimeTestClient = (
 			{ name, lifespan: `ephemeral`, isProduction: false },
 			IMPLICIT.STORE,
 		)
-		silo.setState(RTC.myUserKeyAtom, `user::${name}-${testNumber}`)
 
 		const { document } = new Happy.Window()
 		document.body.innerHTML = `<div id="app"></div>`
