@@ -1,5 +1,13 @@
 # atom.io
 
+## 0.45.4
+
+### Patch Changes
+
+- 07e23e2: ✨ `atom.io/realtime-server` Adds a `provideIdentity()` convenience function which allows a user to pull their `UserKey`.
+- 07e23e2: ✨ `atom.io/realtime-server` can now provide a static constant for the value for a state requested by a client.
+- 07e23e2: ✨ `atom.io/realtime-server` can now alias one provided state for another.
+
 ## 0.45.3
 
 ### Patch Changes
