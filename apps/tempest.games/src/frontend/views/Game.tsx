@@ -2,7 +2,8 @@ import type { ViewOf } from "atom.io"
 import { runTransaction } from "atom.io"
 import { toEntries } from "atom.io/json"
 import { useO } from "atom.io/react"
-import { useSyncContinuity } from "atom.io/realtime-react"
+import { myUserKeyAtom } from "atom.io/realtime-client"
+import { usePullAtom, useSyncContinuity } from "atom.io/realtime-react"
 import * as React from "react"
 
 import { countAtom, countContinuity, incrementTX } from "../../library/store"
@@ -23,6 +24,7 @@ export type GameIndexProps = {
 export function GameView({
 	route: [, gameId],
 }: GameIndexProps): React.ReactNode {
+	usePullAtom(myUserKeyAtom)
 	return (
 		<article className={scss[`class`]}>
 			{gameId ? <Game gameId={gameId} /> : <GameIndex />}
