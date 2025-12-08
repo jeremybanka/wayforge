@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.45.5
+
+### Patch Changes
+
+- 92769eb: 🐛 `atom.io/realtime-server` Fixed a bug with server rooms where messages from users would be forwarded double-wrapped with the `user::` prefix.
+
 ## 0.45.4
 
 ### Patch Changes
