@@ -50,5 +50,5 @@ export const usersOfSockets: JoinToken<
 export const selfListSelectors: PureSelectorFamilyToken<UserKey[], UserKey> =
 	selectorFamily({
 		key: `selfList`,
-		get: (userId) => () => [userId],
+		get: (userKey) => () => [userKey],
 	})
