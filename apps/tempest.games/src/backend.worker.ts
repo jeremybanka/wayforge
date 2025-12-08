@@ -28,7 +28,18 @@ export function resolveRoomScript(
 	const extension: Extension = env.RUN_WORKERS_FROM_SOURCE ? `ts` : `js`
 	const runner: Runner = name.endsWith(`.bun`) ? `bun` : `node`
 	const workerPath = resolve(import.meta.dir, `${name}.${extension}`)
-	return [runner, [workerPath]]
+	const args = [workerPath]
+	if (env.RUN_WORKERS_FROM_SOURCE) {
+		switch (runner) {
+			case `bun`:
+				args.unshift(`--hot`)
+				break
+			case `node`:
+				args.push(`--watch`)
+				break
+		}
+	}
+	return [runner, args]
 }
 
 export const workerNames = [
