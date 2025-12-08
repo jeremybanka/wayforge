@@ -1,4 +1,5 @@
 import { atom, atomFamily, mutableAtom, selector, selectorFamily } from "atom.io"
+import type { UserKey } from "atom.io/realtime"
 import { UList } from "atom.io/transceivers/u-list"
 import * as THREE from "three"
 
@@ -174,7 +175,7 @@ export const closestPlayableZoneSelector =
 
 export const ownedTilesSelector = selectorFamily<
 	TileCoordinatesSerialized[],
-	string
+	UserKey
 >({
 	key: `ownedTiles`,
 	get:
@@ -189,7 +190,7 @@ export const ownedTilesSelector = selectorFamily<
 
 export const closestOwnedTileSelector = selectorFamily<
 	TileCoordinatesSerialized | null,
-	string
+	UserKey
 >({
 	key: `closestOwnedTile`,
 	get:
@@ -243,9 +244,12 @@ export const tileCubeCountAtoms = atomFamily<
 	default: 0,
 })
 
-export const tileOwnerAtoms = atomFamily<string, TileCoordinatesSerialized>({
+export const tileOwnerAtoms = atomFamily<
+	UserKey | null,
+	TileCoordinatesSerialized
+>({
 	key: `tileOwner`,
-	default: ``,
+	default: null,
 })
 
 export type TurnActionType = `arm` | `build` | `war`
@@ -279,14 +283,14 @@ export const turnInProgressAtom = atom<TurnActionInProgress | null>({
 
 export const maximumStackHeightSelectors = selectorFamily<
 	StackHeight | 0,
-	[tile: TileCoordinatesSerialized, userKey: string]
+	[tile: TileCoordinatesSerialized, userKey: UserKey]
 >({
 	key: `maximumStackHeight`,
 	get:
 		([coordinatesSerialized, userKey]) =>
 		({ get }) => {
-			const isOwned = get(tileOwnerAtoms, coordinatesSerialized) === userKey
-			if (!isOwned) return 0
+			// const isOwned = get(tileOwnerAtoms, coordinatesSerialized) === userKey
+			// if (!isOwned) return 0
 			const adjacentTiles = get(adjacentTilesSelector, coordinatesSerialized)
 			const ownedAdjacentTiles = adjacentTiles.filter(
 				(adjacentTile) => get(tileOwnerAtoms, adjacentTile) === userKey,
