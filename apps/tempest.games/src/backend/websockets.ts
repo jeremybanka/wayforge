@@ -1,4 +1,4 @@
-import { findState, getInternalRelations } from "atom.io"
+import { findState, getInternalRelations, getState } from "atom.io"
 import {
 	editRelationsInStore,
 	findInStore,
@@ -102,8 +102,6 @@ export const sessionMiddleware: SocketServerMiddleware = async (
 }
 
 export const serveSocket = (socket: TempestServerSocket): void => {
-	const shortId = socket.id.slice(0, 3)
-	const { username } = socket.handshake.auth
 	const socketKey = `socket::${socket.id}` satisfies SocketKey
 	const userOfSocketSelector = findRelationsInStore(
 		IMPLICIT.STORE,
@@ -118,19 +116,16 @@ export const serveSocket = (socket: TempestServerSocket): void => {
 	const provideFamily = realtimeMutableFamilyProvider({ socket, userKey })
 
 	socket.onAny((event, ...args) => {
-		console.log(`🛰️ << 📡`, { event, args })
+		logger.info(`🛰️ << 📡`, { event, args })
 	})
 	socket.onAnyOutgoing((event, ...args) => {
-		console.log(`🛰️ >> 📡`, { event, args })
+		logger.info(`🛰️ >> 📡`, { event, args })
 	})
 
-	console.log(`👺`, { userKey })
-	console.log(
-		`👺`,
-		[...ROOMS.entries()].map(([k, v]) => [k, v.id]),
-	)
 	const unsubs = [
-		...[cpuCountAtom].map(realtimeStateProvider({ socket, userKey })),
+		...[cpuCountAtom].map((token) =>
+			realtimeStateProvider({ socket, userKey })(token),
+		),
 		...[roomKeysAtom].map(realtimeMutableProvider({ socket, userKey })),
 		...[myRoomAtoms].map((atoms) => provideFamily(atoms, selfListSelector)),
 	]
