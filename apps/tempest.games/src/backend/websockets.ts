@@ -10,6 +10,7 @@ import {
 import type { SocketKey, UserKey } from "atom.io/realtime"
 import { roomKeysAtom, usersInRooms } from "atom.io/realtime"
 import {
+	provideIdentity,
 	provideRooms,
 	realtimeMutableFamilyProvider,
 	realtimeMutableProvider,
@@ -133,6 +134,10 @@ export const serveSocket = (socket: TempestServerSocket): void => {
 		...[myRoomAtoms].map((atoms) => provideFamily(atoms, selfListSelector)),
 	]
 
+	provideIdentity({
+		socket,
+		userKey,
+	})
 	provideRooms({
 		socket,
 		userKey,
