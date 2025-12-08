@@ -3,8 +3,6 @@ import * as Drei from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
 import { setState } from "atom.io"
 import { useO } from "atom.io/react"
-import { usersInRooms } from "atom.io/realtime"
-import { usePullAtom } from "atom.io/realtime-react"
 import type { ReactNode } from "react"
 import { useRef } from "react"
 import * as THREE from "three"
@@ -42,7 +40,7 @@ export function BugRangers(): ReactNode {
 				<ambientLight intensity={0.5} />
 				<directionalLight position={[5, 10, 5]} />
 
-				<CameraController target={cameraTarget} />
+				<CameraController target={[...cameraTarget]} />
 
 				<HexGridHelper size={20} radius={1} color="#6f6f6f" opacity={0.5} />
 
