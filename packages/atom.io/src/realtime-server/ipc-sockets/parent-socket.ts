@@ -171,11 +171,10 @@ export class ParentSocket<
 			this.id = this.proc.pid?.toString()
 		}
 
-		this.on(`user-joins`, (username: string) => {
-			this.logger.info(`👤`, `user`, username, `joined`)
-			const userKey = `user::${username}` satisfies UserKey
+		this.on(`user-joins`, (userKey: UserKey) => {
+			this.logger.info(`👤`, `user`, userKey, `joined`)
 			const relay = new SubjectSocket(userKey)
-			this.relays.set(username, relay)
+			this.relays.set(userKey, relay)
 			this.logger.info(
 				`🔗`,
 				`attaching services:`,
