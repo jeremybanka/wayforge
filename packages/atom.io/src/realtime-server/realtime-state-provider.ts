@@ -39,7 +39,7 @@ export function realtimeStateProvider({
 					`👀`,
 					`user`,
 					userKey,
-					`serves`,
+					`will be served`,
 					serverData,
 					`as "${clientToken.key}"`,
 				)
