@@ -46,6 +46,7 @@ function PlayableHex(): ReactNode {
 	const ref = useAtomicRef(cameraAnchoredSphereAtom, useRef)
 	const { camera, raycaster, pointer } = useThree()
 	const setControlsEnabled = useI(controlsEnabledAtom)
+	const dragState = useO(dragStateAtom)
 
 	const startDrag = () => {
 		setControlsEnabled(false)
@@ -100,7 +101,6 @@ function PlayableHex(): ReactNode {
 
 	useFrame(() => {
 		if (!ref.current) return
-		const dragState = getState(dragStateAtom)
 
 		switch (dragState) {
 			case `tile`:
@@ -139,6 +139,7 @@ function PlayableCube(): ReactNode {
 	const ref = useAtomicRef(cameraAnchoredSphereAtom, useRef)
 	const { camera, raycaster, pointer } = useThree()
 	const setControlsEnabled = useI(controlsEnabledAtom)
+	const dragState = useO(dragStateAtom)
 
 	const startDrag = () => {
 		setControlsEnabled(false)
@@ -197,7 +198,6 @@ function PlayableCube(): ReactNode {
 
 	useFrame(() => {
 		if (!ref.current) return
-		const dragState = getState(dragStateAtom)
 
 		switch (dragState) {
 			case `cube`:
