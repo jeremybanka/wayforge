@@ -113,6 +113,7 @@ export const serveSocket = (socket: TempestServerSocket): void => {
 	const userKey = getFromStore(IMPLICIT.STORE, userOfSocketSelector)!
 	const rawUserId = userKey?.replace(/^user::/, ``)
 	const myRoomAtoms = getInternalRelations(usersInRooms)
+
 	const selfListSelector = findState(selfListSelectors, userKey)
 	const provideFamily = realtimeMutableFamilyProvider({ socket, userKey })
 
@@ -155,5 +156,9 @@ export const serveSocket = (socket: TempestServerSocket): void => {
 				.where(eq(users.id, rawUserId))
 			socket.emit(`usernameChanged`, newUsername)
 		}
+	})
+
+	socket.on(`disconnect`, () => {
+		for (const unsub of unsubs) unsub()
 	})
 }
