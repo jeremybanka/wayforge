@@ -171,7 +171,7 @@ export function provideEnterAndExit({
 		childSocket.emit(`user-joins`, userKey)
 
 		toRoom = (payload) => {
-			childSocket.emit(`user::${userKey}`, ...payload)
+			childSocket.emit(userKey, ...payload)
 		}
 		while (roomQueue.length > 0) {
 			const payload = roomQueue.shift()
