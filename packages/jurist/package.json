@@ -39,7 +39,7 @@
 		"concurrently": "9.2.1",
 		"eslint": "9.39.1",
 		"rimraf": "6.1.2",
-		"tsdown": "0.17.1",
+		"tsdown": "0.17.2",
 		"vite": "7.2.7",
 		"vitest": "4.0.15"
 	}
