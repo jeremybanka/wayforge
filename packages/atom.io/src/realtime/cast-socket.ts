@@ -61,6 +61,7 @@ export function castSocket<T extends TypedSocket>(
 				})
 			})
 		},
+		onAnyOutgoing: socket.onAnyOutgoing.bind(socket),
 		off: socket.off.bind(socket),
 		offAny: socket.offAny.bind(socket),
 		emit: socket.emit.bind(socket),

@@ -190,7 +190,7 @@ export class ParentSocket<
 				relay.in.next(data)
 			})
 			relay.out.subscribe(`socket`, (data) => {
-				this.emit(...(data as [string, ...I[keyof I]]))
+				this.emit(...(data as [string, ...I[string & keyof I]]))
 			})
 		})
 
