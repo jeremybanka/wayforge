@@ -28,11 +28,12 @@ export type EventEmitter<EmitEvents extends EventsMap = EventsMap> = <
 
 export type TypedSocket<
 	ListenEvents extends EventsMap = EventsMap,
-	EmitEvents extends EventsMap = EventsMap,
+	EmitEvents extends EventsMap = never,
 > = {
 	id: string | undefined
 	on: ParticularEventListener<ListenEvents>
 	onAny: (listener: AllEventsListener<ListenEvents>) => void
+	onAnyOutgoing: (listener: AllEventsListener<EmitEvents>) => void
 	off: ParticularEventListener<ListenEvents>
 	offAny: (listener: AllEventsListener<ListenEvents>) => void
 	emit: EventEmitter<EmitEvents>
@@ -42,6 +43,9 @@ export type Socket = {
 	id: string | undefined
 	on: (event: string, listener: (...args: Json.Serializable[]) => void) => void
 	onAny: (
+		listener: (event: string, ...args: Json.Serializable[]) => void,
+	) => void
+	onAnyOutgoing: (
 		listener: (event: string, ...args: Json.Serializable[]) => void,
 	) => void
 	off: (event: string, listener: (...args: Json.Serializable[]) => void) => void

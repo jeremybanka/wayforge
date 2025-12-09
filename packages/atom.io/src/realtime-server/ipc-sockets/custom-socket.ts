@@ -20,6 +20,9 @@ export abstract class CustomSocket<I extends Events, O extends Events>
 {
 	protected listeners: Map<keyof O, Set<(...args: Json.Array) => void>>
 	protected globalListeners: Set<(event: string, ...args: Json.Array) => void>
+	protected globalListenersOutgoing: Set<
+		(event: string, ...args: Json.Array) => void
+	>
 	protected handleEvent<K extends string & keyof I>(
 		...args: EventPayload<I, K>
 	): void {
@@ -36,7 +39,7 @@ export abstract class CustomSocket<I extends Events, O extends Events>
 	}
 
 	public id = `no_id_retrieved`
-	public emit: <Event extends keyof I>(
+	public emit: <Event extends string & keyof I>(
 		event: Event,
 		...args: I[Event]
 	) => CustomSocket<I, O>
@@ -47,9 +50,15 @@ export abstract class CustomSocket<I extends Events, O extends Events>
 			...args: I[Event]
 		) => CustomSocket<I, O>,
 	) {
-		this.emit = emit
+		this.emit = (...args) => {
+			for (const listener of this.globalListenersOutgoing) {
+				listener(...args)
+			}
+			return emit(...args)
+		}
 		this.listeners = new Map()
 		this.globalListeners = new Set()
+		this.globalListenersOutgoing = new Set()
 	}
 
 	public on<Event extends keyof O>(
@@ -67,6 +76,13 @@ export abstract class CustomSocket<I extends Events, O extends Events>
 
 	public onAny(listener: (event: string, ...args: Json.Array) => void): this {
 		this.globalListeners.add(listener)
+		return this
+	}
+
+	public onAnyOutgoing(
+		listener: (event: string, ...args: Json.Array) => void,
+	): this {
+		this.globalListenersOutgoing.add(listener)
 		return this
 	}
 
