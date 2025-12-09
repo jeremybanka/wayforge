@@ -9,7 +9,7 @@ import {
 	subscribeToState,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-import type { SocketKey } from "atom.io/realtime"
+import type { SocketKey, StandardSchemaV1 } from "atom.io/realtime"
 import { employSocket, mutexAtoms } from "atom.io/realtime"
 
 import type { ServerConfig } from "."
@@ -17,9 +17,11 @@ import type { ServerConfig } from "."
 export type StateReceiver = ReturnType<typeof realtimeStateReceiver>
 export function realtimeStateReceiver({
 	socket,
+	userKey,
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
 	return function stateReceiver<S extends Json.Serializable, C extends S>(
+		schema: StandardSchemaV1<unknown, C>,
 		clientToken: WritableToken<C>,
 		serverToken: WritableToken<S> = clientToken,
 	): () => void {
@@ -35,8 +37,20 @@ export function realtimeStateReceiver({
 		const permitPublish = () => {
 			clearSubscriptions()
 			subscriptions.add(
-				employSocket(socket, `pub:${clientToken.key}`, (newValue) => {
-					setIntoStore(store, serverToken, newValue as C)
+				employSocket(socket, `pub:${clientToken.key}`, async (newValue) => {
+					const parsed = await schema[`~standard`].validate(newValue)
+					if (parsed.issues) {
+						store.logger.error(
+							`❌`,
+							`user`,
+							userKey,
+							`attempted to publish invalid value`,
+							newValue,
+							`to state "${serverToken.key}"`,
+						)
+						return
+					}
+					setIntoStore(store, serverToken, parsed.value)
 				}),
 			)
 			subscriptions.add(

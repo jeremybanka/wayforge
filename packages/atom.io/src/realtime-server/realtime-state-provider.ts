@@ -21,9 +21,11 @@ export function realtimeStateProvider({
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
 	store.logger.info(`🔌`, `user`, userKey, `initialized state provider`)
-	return function stateProvider<S extends Json.Serializable, C extends S>(
+	return function stateProvider<C extends Json.Serializable, S extends C>(
 		clientToken: AtomIO.WritableToken<C>,
-		serverData: AtomIO.ReadableToken<S> | S = clientToken,
+		serverData:
+			| AtomIO.ReadableToken<S>
+			| S = clientToken as AtomIO.ReadableToken<S>,
 	): () => void {
 		const isStatic = !isReadableToken(serverData)
 
