@@ -9,6 +9,7 @@ import {
 	subscribeToState,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
+import type { SocketKey } from "atom.io/realtime"
 import { employSocket, mutexAtoms } from "atom.io/realtime"
 
 import type { ServerConfig } from "."
@@ -22,6 +23,7 @@ export function realtimeStateReceiver({
 		clientToken: WritableToken<C>,
 		serverToken: WritableToken<S> = clientToken,
 	): () => void {
+		const socketKey = `socket::${socket.id}` satisfies SocketKey
 		const mutexAtom = findInStore(store, mutexAtoms, serverToken.key)
 
 		const subscriptions = new Set<() => void>()
@@ -52,7 +54,7 @@ export function realtimeStateReceiver({
 					if (getFromStore(store, mutexAtom)) {
 						clearSubscriptions()
 						subscriptions.add(
-							subscribeToState(store, mutexAtom, socket.id!, () => {
+							subscribeToState(store, mutexAtom, socketKey, () => {
 								const currentValue = getFromStore(store, mutexAtom)
 								if (currentValue === false) {
 									operateOnStore(OWN_OP, store, mutexAtom, true)
