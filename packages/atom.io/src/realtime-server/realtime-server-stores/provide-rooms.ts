@@ -19,7 +19,6 @@ import type {
 	RoomSocketInterface,
 	Socket,
 	SocketGuard,
-	SocketKey,
 	StandardSchemaV1,
 	TypedSocket,
 	UserKey,
@@ -36,12 +35,7 @@ import { ChildSocket } from "../ipc-sockets"
 import { realtimeMutableFamilyProvider } from "../realtime-mutable-family-provider"
 import { realtimeMutableProvider } from "../realtime-mutable-provider"
 import type { ServerConfig } from "../server-config"
-import {
-	selfListSelectors,
-	socketKeysAtom,
-	userKeysAtom,
-	usersOfSockets,
-} from "./server-user-store"
+import { selfListSelectors } from "./server-user-store"
 
 export type RoomMap = Map<
 	string,
@@ -240,27 +234,13 @@ export function provideRooms<RoomNames extends string>({
 	socket,
 	resolveRoomScript,
 	roomNames,
-}: ProvideRoomsConfig<RoomNames> & ServerConfig): void {
-	const socketKey = `socket::${socket.id}` satisfies SocketKey
-	const userKey = getFromStore(
-		store,
-		findRelationsInStore(store, usersOfSockets, socketKey).userKeyOfSocket,
-	)!
-	// const roomSocket = socket as TypedSocket<RoomSocketInterface<RoomNames>, {}>
-	const roomSocket = castSocket<TypedSocket<RoomSocketInterface<RoomNames>, {}>>(
-		socket,
-		createRoomSocketGuard(roomNames),
-	)
-
+	userKey,
+}: ProvideRoomsConfig<RoomNames> & ServerConfig): () => void {
+	const roomSocket = castSocket<
+		TypedSocket<RoomSocketInterface<RoomNames>, never>
+	>(socket, createRoomSocketGuard(roomNames))
 	const exposeMutable = realtimeMutableProvider({ socket, store, userKey })
-	const exposeMutableFamily = realtimeMutableFamilyProvider({
-		socket,
-		store,
-		userKey,
-	})
-
-	exposeMutable(roomKeysAtom)
-
+	const unsubFromRoomKeys = exposeMutable(roomKeysAtom)
 	const [, usersInRoomsAtoms] = getInternalRelationsFromStore(
 		store,
 		usersInRooms,
@@ -271,19 +251,24 @@ export function provideRooms<RoomNames extends string>({
 		selfListSelectors,
 		userKey,
 	)
-	exposeMutableFamily(usersInRoomsAtoms, usersWhoseRoomsCanBeSeenSelector)
-	// const usersOfSocketsAtoms = getInternalRelationsFromStore(
-	// 	store,
-	// 	usersOfSockets,
-	// )
-	// exposeMutableFamily(usersOfSocketsAtoms, socketKeysAtom)
 	const [ownersOfRoomsAtoms] = getInternalRelationsFromStore(
 		store,
 		ownersOfRooms,
 		`split`,
 	)
-	exposeMutableFamily(ownersOfRoomsAtoms, usersWhoseRoomsCanBeSeenSelector)
-
+	const exposeMutableFamily = realtimeMutableFamilyProvider({
+		socket,
+		store,
+		userKey,
+	})
+	const unsubFromUsersInRooms = exposeMutableFamily(
+		usersInRoomsAtoms,
+		usersWhoseRoomsCanBeSeenSelector,
+	)
+	const unsubFromOwnersOfRooms = exposeMutableFamily(
+		ownersOfRoomsAtoms,
+		usersWhoseRoomsCanBeSeenSelector,
+	)
 	const enterRoom = provideEnterAndExit({ store, socket, roomSocket, userKey })
 
 	const userRoomSet = getFromStore(store, usersInRoomsAtoms, userKey)
@@ -291,23 +276,16 @@ export function provideRooms<RoomNames extends string>({
 		enterRoom(userRoomKey)
 		break
 	}
-
 	roomSocket.on(
 		`createRoom`,
 		spawnRoom({ store, socket, userKey, resolveRoomScript }),
 	)
 	roomSocket.on(`deleteRoom`, destroyRoom({ store, socket, userKey }))
-	socket.on(`disconnect`, () => {
-		store.logger.info(
-			`📡`,
-			`socket`,
-			socket.id ?? `[ID MISSING?!]`,
-			`👤 ${userKey} disconnects`,
-		)
-		editRelationsInStore(store, usersOfSockets, (rel) => rel.delete(socketKey))
-		setIntoStore(store, userKeysAtom, (keys) => (keys.delete(userKey), keys))
-		setIntoStore(store, socketKeysAtom, (keys) => (keys.delete(socketKey), keys))
-	})
+	return () => {
+		unsubFromRoomKeys()
+		unsubFromUsersInRooms()
+		unsubFromOwnersOfRooms()
+	}
 }
 
 const roomKeySchema: StandardSchemaV1<Json.Array, [RoomKey]> = {
