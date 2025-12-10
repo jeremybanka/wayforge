@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.0
+
+### Minor Changes
+
+- 954ec71: ♻️ Subscriptions are now fulfilled immediately, instead of waiting for the store's operation to close.
+
 ## 0.45.5
 
 ### Patch Changes
