@@ -1,6 +1,7 @@
 import type { IncomingHttpHeaders } from "node:http"
 import type { ParsedUrlQuery } from "node:querystring"
 
+import type { Loadable } from "atom.io"
 import { Realm } from "atom.io"
 import type { RootStore } from "atom.io/internal"
 import {
@@ -55,15 +56,15 @@ export type Handshake = {
 
 export function realtime(
 	server: Server,
-	auth: (handshake: Handshake) => Error | UserKey,
-	onConnect: (config: ServerConfig) => () => void,
+	auth: (handshake: Handshake) => Loadable<Error | UserKey>,
+	onConnect: (config: ServerConfig) => Loadable<() => Loadable<void>>,
 	store: RootStore = IMPLICIT.STORE,
 ): () => Promise<void> {
 	const socketRealm = new Realm<SocketSystemHierarchy>(store)
 
 	server
-		.use((socket, next) => {
-			const result = auth(socket.handshake)
+		.use(async (socket, next) => {
+			const result = await auth(socket.handshake)
 			if (result instanceof Error) {
 				next(result)
 				return
@@ -79,7 +80,7 @@ export function realtime(
 			setIntoStore(store, socketKeysAtom, (index) => index.add(socketClaim))
 			next()
 		})
-		.on(`connection`, (socket) => {
+		.on(`connection`, async (socket) => {
 			const socketKey = `socket::${socket.id}` satisfies SocketKey
 			const userKeyState = findRelationsInStore(
 				store,
@@ -94,11 +95,11 @@ export function realtime(
 				userKey,
 			)
 
-			const disposeServices = onConnect(serverConfig)
+			const disposeServices = await onConnect(serverConfig)
 
-			socket.on(`disconnect`, () => {
+			socket.on(`disconnect`, async () => {
 				store.logger.info(`📡`, `socket`, socketKey, `👤 ${userKey} disconnects`)
-				disposeServices()
+				await disposeServices()
 				unsubFromMyUserKey()
 				editRelationsInStore(store, usersOfSockets, (rel) =>
 					rel.delete(socketKey),
