@@ -2,10 +2,9 @@ import type {
 	Hierarchy,
 	JoinToken,
 	MutableAtomToken,
-	PureSelectorFamilyToken,
 	RegularAtomFamilyToken,
 } from "atom.io"
-import { atomFamily, join, mutableAtom, selectorFamily } from "atom.io"
+import { atomFamily, join, mutableAtom } from "atom.io"
 import type { RoomKey, Socket, SocketKey, UserKey } from "atom.io/realtime"
 import { isSocketKey, isUserKey } from "atom.io/realtime"
 import { UList } from "atom.io/transceivers/u-list"
@@ -46,9 +45,3 @@ export const usersOfSockets: JoinToken<
 	isAType: isUserKey,
 	isBType: isSocketKey,
 })
-
-export const selfListSelectors: PureSelectorFamilyToken<UserKey[], UserKey> =
-	selectorFamily({
-		key: `selfList`,
-		get: (userKey) => () => [userKey],
-	})

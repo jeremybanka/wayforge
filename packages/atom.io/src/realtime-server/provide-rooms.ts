@@ -29,13 +29,13 @@ import {
 	ownersOfRooms,
 	roomKeysAtom,
 	usersInRooms,
+	visibleUsersInRoomsSelector,
 } from "atom.io/realtime"
 
-import { ChildSocket } from "../ipc-sockets"
-import { realtimeMutableFamilyProvider } from "../realtime-mutable-family-provider"
-import { realtimeMutableProvider } from "../realtime-mutable-provider"
-import type { ServerConfig } from "../server-config"
-import { selfListSelectors } from "./server-user-store"
+import { ChildSocket } from "./ipc-sockets"
+import { realtimeMutableFamilyProvider } from "./realtime-mutable-family-provider"
+import { realtimeMutableProvider } from "./realtime-mutable-provider"
+import type { ServerConfig } from "./server-config"
 
 export type RoomMap = Map<
 	string,
@@ -241,21 +241,18 @@ export function provideRooms<RoomNames extends string>({
 	>(socket, createRoomSocketGuard(roomNames))
 	const exposeMutable = realtimeMutableProvider({ socket, store, userKey })
 	const unsubFromRoomKeys = exposeMutable(roomKeysAtom)
-	const [, usersInRoomsAtoms] = getInternalRelationsFromStore(
+	const usersInRoomsAtoms = getInternalRelationsFromStore(store, usersInRooms)
+	const [, usersInRoomsAtomsUsersOnly] = getInternalRelationsFromStore(
 		store,
 		usersInRooms,
 		`split`,
 	)
 	const usersWhoseRoomsCanBeSeenSelector = findInStore(
 		store,
-		selfListSelectors,
+		visibleUsersInRoomsSelector,
 		userKey,
 	)
-	const [ownersOfRoomsAtoms] = getInternalRelationsFromStore(
-		store,
-		ownersOfRooms,
-		`split`,
-	)
+	const ownersOfRoomsAtoms = getInternalRelationsFromStore(store, ownersOfRooms)
 	const exposeMutableFamily = realtimeMutableFamilyProvider({
 		socket,
 		store,
@@ -271,7 +268,7 @@ export function provideRooms<RoomNames extends string>({
 	)
 	const enterRoom = provideEnterAndExit({ store, socket, roomSocket, userKey })
 
-	const userRoomSet = getFromStore(store, usersInRoomsAtoms, userKey)
+	const userRoomSet = getFromStore(store, usersInRoomsAtomsUsersOnly, userKey)
 	for (const userRoomKey of userRoomSet) {
 		enterRoom(userRoomKey)
 		break
