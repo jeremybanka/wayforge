@@ -32,14 +32,11 @@ it(`filterOutInPlace`, () => {
 	const fruits = [`apple`, `banana`, `apple`, `orange`, `apple`]
 	filterOutInPlace(fruits, `apple`)
 	expect(fruits).toEqual([`banana`, `orange`])
+	expect(logger.warn).not.toHaveBeenCalled()
+	expect(logger.error).not.toHaveBeenCalled()
 })
 
 describe(`disposedKeyCleanup`, () => {
-	afterEach(() => {
-		expect(logger.warn).not.toHaveBeenCalled()
-		expect(logger.error).not.toHaveBeenCalled()
-	})
-
 	describe(`set array element`, () => {
 		test(`without previous value`, () => {
 			const myMutableState = mutableAtom<OList<string>>({
@@ -55,6 +52,8 @@ describe(`disposedKeyCleanup`, () => {
 			expect([...getState(myMutableState)]).toEqual([`item::1`])
 			realm.deallocate(`item::1`)
 			expect([...getState(myMutableState)]).toEqual([])
+			expect(logger.warn).not.toHaveBeenCalled()
+			expect(logger.error).not.toHaveBeenCalled()
 		})
 	})
 	test(`with previous value`, () => {
@@ -75,6 +74,8 @@ describe(`disposedKeyCleanup`, () => {
 		expect([...getState(myMutableState)]).toEqual([`item::1`])
 		realm.deallocate(`item::1`)
 		expect([...getState(myMutableState)]).toEqual([])
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
 	})
 
 	test(`truncate array element`, () => {
@@ -88,6 +89,8 @@ describe(`disposedKeyCleanup`, () => {
 		realm.allocate(`root`, `item::1`)
 		setState(myMutableState, (array) => ((array[0] = `item::1`), array))
 		setState(myMutableState, (array) => ((array.length = 0), array))
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
 	})
 
 	describe(`pop or shift array element`, () => {
@@ -106,6 +109,8 @@ describe(`disposedKeyCleanup`, () => {
 			expect([...getState(myMutableState)]).toEqual([])
 			realm.deallocate(`item::1`)
 			expect([...getState(myMutableState)]).toEqual([])
+			expect(logger.warn).not.toHaveBeenCalled()
+			expect(logger.error).not.toHaveBeenCalled()
 		})
 		test(`shift, item is not present`, () => {
 			const myMutableState = mutableAtom<OList<string>>({
@@ -116,6 +121,8 @@ describe(`disposedKeyCleanup`, () => {
 			expect([...getState(myMutableState)]).toEqual([])
 			setState(myMutableState, (array) => (array.shift(), array))
 			expect([...getState(myMutableState)]).toEqual([])
+			expect(logger.warn).not.toHaveBeenCalled()
+			expect(logger.error).not.toHaveBeenCalled()
 		})
 	})
 
@@ -131,6 +138,8 @@ describe(`disposedKeyCleanup`, () => {
 			expect([...getState(myMutableState)]).toEqual([])
 			setState(myMutableState, (array) => (array.push(`item::1`), array))
 			expect([...getState(myMutableState)]).toEqual([`item::1`])
+			expect(logger.warn).not.toHaveBeenCalled()
+			expect(logger.error).not.toHaveBeenCalled()
 		})
 		test(`unshift`, () => {
 			const myMutableState = mutableAtom<OList<string>>({
@@ -143,6 +152,8 @@ describe(`disposedKeyCleanup`, () => {
 			expect([...getState(myMutableState)]).toEqual([])
 			setState(myMutableState, (array) => (array.unshift(`item::1`), array))
 			expect([...getState(myMutableState)]).toEqual([`item::1`])
+			expect(logger.warn).not.toHaveBeenCalled()
+			expect(logger.error).not.toHaveBeenCalled()
 		})
 	})
 
@@ -164,6 +175,8 @@ describe(`disposedKeyCleanup`, () => {
 		expect([...getState(myMutableState)]).toEqual([`item::1`, `item::1`])
 		realm.deallocate(`item::1`)
 		expect([...getState(myMutableState)]).toEqual([])
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
 	})
 
 	test(`fill`, () => {
@@ -185,6 +198,8 @@ describe(`disposedKeyCleanup`, () => {
 		expect([...getState(myMutableState)]).toEqual([`item::3`, `item::3`])
 		realm.deallocate(`item::3`)
 		expect([...getState(myMutableState)]).toEqual([])
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
 	})
 
 	test(`splice`, () => {
@@ -206,6 +221,8 @@ describe(`disposedKeyCleanup`, () => {
 		expect([...getState(myMutableState)]).toEqual([`item::1`, `item::3`])
 		realm.deallocate(`item::1`)
 		expect([...getState(myMutableState)]).toEqual([`item::3`])
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
 	})
 
 	test(`non-value changing methods, e.g, extend`, () => {
@@ -230,6 +247,8 @@ describe(`disposedKeyCleanup`, () => {
 		])
 		realm.deallocate(`item::1`)
 		expect([...getState(myMutableState)]).toEqual([`item::2`, undefined])
+		expect(logger.warn).toHaveBeenCalledTimes(1)
+		expect(logger.error).not.toHaveBeenCalled()
 	})
 })
 
@@ -249,4 +268,5 @@ test(`disposed key cleanup (unhappy path)`, () => {
 		`myMutableSet`,
 		`Added "item::2" to myMutableSet but it has not been allocated.`,
 	)
+	expect(logger.error).not.toHaveBeenCalled()
 })
