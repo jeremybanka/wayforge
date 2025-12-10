@@ -14,14 +14,14 @@ import {
 import type { Socket, SocketKey, UserKey } from "atom.io/realtime"
 import type { Server } from "socket.io"
 
-import type { SocketSystemHierarchy } from "./realtime-server-stores/server-user-store"
+import { realtimeStateProvider } from "./realtime-state-provider"
+import type { SocketSystemHierarchy } from "./server-socket-state"
 import {
 	socketAtoms,
 	socketKeysAtom,
 	userKeysAtom,
 	usersOfSockets,
-} from "./realtime-server-stores/server-user-store"
-import { realtimeStateProvider } from "./realtime-state-provider"
+} from "./server-socket-state"
 
 export type ServerConfig = {
 	socket: Socket

@@ -1,6 +1,7 @@
 import type {
 	JoinToken,
 	MutableAtomToken,
+	PureSelectorFamilyToken,
 	ReadonlyPureSelectorFamilyToken,
 } from "atom.io"
 import { getInternalRelations, join, mutableAtom, selectorFamily } from "atom.io"
@@ -40,6 +41,20 @@ export const usersInRooms: JoinToken<`room`, RoomKey, `user`, UserKey, `1:n`> =
 		isAType: isRoomKey,
 		isBType: isUserKey,
 	})
+
+export const visibleUsersInRoomsSelector: PureSelectorFamilyToken<
+	(RoomKey | UserKey)[],
+	UserKey
+> = selectorFamily({
+	key: `selfList`,
+	get:
+		(userKey) =>
+		({ get }) => {
+			const [, roomsOfUsersAtoms] = getInternalRelations(usersInRooms, `split`)
+			const rooms = get(roomsOfUsersAtoms, userKey)
+			return [userKey, ...rooms]
+		},
+})
 
 export const ownersOfRooms: JoinToken<`user`, UserKey, `room`, RoomKey, `1:n`> =
 	join({
