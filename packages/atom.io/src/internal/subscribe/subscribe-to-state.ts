@@ -15,25 +15,16 @@ export function subscribeToState<T, E>(
 	handleUpdate: UpdateHandler<E | T>,
 ): () => void {
 	function safelyHandleUpdate(update: StateUpdate<any>): void {
-		if (store.operation.open) {
-			if (
-				state?.type === `atom` &&
-				hasRole(state, `tracker:signal`) &&
-				`*` + store.operation.token.key === token.key &&
-				`inboundTracker` in handleUpdate
-			) {
-				return
-			}
-			const unsubscribe = store.on.operationClose.subscribe(
-				`state subscription ${key}`,
-				() => {
-					unsubscribe()
-					handleUpdate(update)
-				},
-			)
-		} else {
-			handleUpdate(update)
+		if (
+			store.operation.open &&
+			state?.type === `atom` &&
+			hasRole(state, `tracker:signal`) &&
+			`*` + store.operation.token.key === token.key &&
+			`inboundTracker` in handleUpdate
+		) {
+			return
 		}
+		handleUpdate(update)
 	}
 	reduceReference(store, token)
 	const state = withdraw(store, token)
