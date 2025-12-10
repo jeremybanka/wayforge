@@ -1,5 +1,15 @@
 # atom.io
 
+## 0.46.1
+
+### Patch Changes
+
+- 773f333: 🏷️ `atom.io/realtime-server` Improved the type signature for `realtimeStateProvider()` to allow for the admission of looser-typed client states than server states.
+- 773f333: ✨ `atom.io/realtime-server` Adds the `realtime()` function. This simplifies the process of establishing user identities for realtime applications.
+- 773f333: 🐛 `atom.io/realtime-server` Fixed a bug where the other users in a user's rooms would not be revealed.
+- 773f333: 🏷️ `atom.io/realtime-server` Improved the type signature for `realtimeStateReceiver()` to allow for the admission of more narrowly typed client states than server states.
+- 773f333: ✨ `atom.io/realtime-server` Required a `StandardSchemaV1` for a `realtimeStateReceiver`.
+
 ## 0.46.0
 
 ### Minor Changes
