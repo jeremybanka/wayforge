@@ -94,7 +94,7 @@ export class ChildSocket<
 					return
 				}
 
-				if (chunk === `["i","${PROOF_OF_LIFE_SIGNAL}"]\x03`) {
+				if (chunk === PROOF_OF_LIFE_SIGNAL) {
 					return
 				}
 
