@@ -6,6 +6,7 @@ import { Temporal } from "@js-temporal/polyfill"
 import { createHTTPHandler } from "@trpc/server/adapters/standalone"
 import { AtomIOLogger } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
+import { realtime } from "atom.io/realtime-server"
 import cors from "cors"
 import { CronJob } from "cron"
 import { Server as WebSocketServer, Socket } from "socket.io"
@@ -73,15 +74,19 @@ const trpcHandler = createHTTPHandler({
 const httpServer = createServer(trpcHandler)
 httpServer.listen(env.BACKEND_PORT).address()
 
-new WebSocketServer(httpServer, {
-	cors: {
-		origin: env.FRONTEND_ORIGINS,
-		methods: [`GET`, `POST`],
-		credentials: true,
-	},
-})
-	.use(sessionMiddleware)
-	.on(`connection`, serveSocket)
+// .use(sessionMiddleware)
+// .on(`connection`, serveSocket)
+realtime(
+	new WebSocketServer(httpServer, {
+		cors: {
+			origin: env.FRONTEND_ORIGINS,
+			methods: [`GET`, `POST`],
+			credentials: true,
+		},
+	}),
+	sessionMiddleware,
+	serveSocket,
+)
 
 async function gracefulExit() {
 	// logger.info(`🧹 closing workers`)
