@@ -23,14 +23,6 @@ export function subscribeToState<T, E>(
 			`inboundTracker` in handleUpdate
 		) {
 			return
-
-			// const unsubscribe = store.on.operationClose.subscribe(
-			// 	`state subscription ${key}`,
-			// 	() => {
-			// 		unsubscribe()
-			// 		handleUpdate(update)
-			// 	},
-			// )
 		}
 		handleUpdate(update)
 	}
