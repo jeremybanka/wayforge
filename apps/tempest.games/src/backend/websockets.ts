@@ -1,30 +1,21 @@
-import { findState, getInternalRelations, getState } from "atom.io"
+import { findState, getInternalRelations } from "atom.io"
+import { IMPLICIT } from "atom.io/internal"
+import type { UserKey } from "atom.io/realtime"
 import {
-	editRelationsInStore,
-	findInStore,
-	findRelationsInStore,
-	getFromStore,
-	IMPLICIT,
-	setIntoStore,
-} from "atom.io/internal"
-import type { SocketKey, UserKey } from "atom.io/realtime"
-import { roomKeysAtom, usersInRooms } from "atom.io/realtime"
+	roomKeysAtom,
+	usersInRooms,
+	visibleUsersInRoomsSelector,
+} from "atom.io/realtime"
+import type { Handshake, ServerConfig } from "atom.io/realtime-server"
 import {
-	provideIdentity,
 	provideRooms,
 	realtimeMutableFamilyProvider,
 	realtimeMutableProvider,
 	realtimeStateProvider,
-	ROOMS,
-	selfListSelectors,
-	socketAtoms,
-	socketKeysAtom,
-	userKeysAtom,
-	usersOfSockets,
 } from "atom.io/realtime-server"
 import { CookieMap } from "bun"
 import { eq } from "drizzle-orm"
-import type { DefaultEventsMap, ExtendedError, Socket } from "socket.io"
+import type { Socket } from "socket.io"
 
 import { resolveRoomScript, workerNames } from "../backend.worker"
 import { users, userSessions } from "../database/tempest-db-schema"
@@ -47,37 +38,24 @@ export type TempestServerSocket = Socket<
 export interface EventsMap {
 	[event: string]: any
 }
-type SocketServerMiddleware<
-	ListenEvents extends EventsMap = DefaultEventsMap,
-	EmitEvents extends EventsMap = DefaultEventsMap,
-	ServerSideEvents extends EventsMap = DefaultEventsMap,
-	SocketData = any,
-> = (
-	socket: Socket<ListenEvents, EmitEvents, ServerSideEvents, SocketData>,
-	next: (err?: ExtendedError) => void,
-) => void
 
-export const sessionMiddleware: SocketServerMiddleware = async (
-	socket,
-	next,
-) => {
-	const { username } = socket.handshake.auth as { username: string }
+export const sessionMiddleware = async (
+	handshake: Handshake,
+): Promise<Error | UserKey> => {
+	const { username } = handshake.auth as { username: string }
 	if (!username) {
-		next(new Error(`No auth header provided`))
-		return
+		return new Error(`No auth header provided`)
 	}
-	const cookies = new CookieMap(socket.handshake.headers.cookie ?? ``)
+	const cookies = new CookieMap(handshake.headers.cookie ?? ``)
 	const sessionKey = cookies.get(`sessionKey`)
 	if (!sessionKey) {
-		next(new Error(`No session key provided`))
-		return
+		return new Error(`No session key provided`)
 	}
 	const user = await db.drizzle.query.users.findFirst({
 		where: eq(users.username, username),
 	})
 	if (!user?.emailVerified) {
-		next(new Error(`Email not verified`))
-		return
+		return new Error(`Email not verified`)
 	}
 	const userKey = `user::${user.id}` satisfies UserKey
 	const socketKey = `socket::${socket.id}` satisfies SocketKey
@@ -94,25 +72,18 @@ export const sessionMiddleware: SocketServerMiddleware = async (
 		setIntoStore(IMPLICIT.STORE, onlineUsersAtom, (index) => index.add(userKey))
 		setIntoStore(IMPLICIT.STORE, socketKeysAtom, (index) => index.add(socketKey))
 		logger.info(`${username} connected on ${socket.id}`)
-		next()
-	} else {
-		logger.info(`${username} couldn't authenticate`)
-		next(new Error(`Authentication error`))
+		return `user::${user.id}` satisfies UserKey
 	}
+	logger.info(`${username} couldn't authenticate`)
+	return new Error(`Authentication error`)
 }
 
-export const serveSocket = (socket: TempestServerSocket): void => {
-	const socketKey = `socket::${socket.id}` satisfies SocketKey
-	const userOfSocketSelector = findRelationsInStore(
-		IMPLICIT.STORE,
-		usersOfSockets,
-		socketKey,
-	).userKeyOfSocket
-	const userKey = getFromStore(IMPLICIT.STORE, userOfSocketSelector)!
+export const serveSocket = (config: ServerConfig): (() => void) => {
+	const { socket, userKey } = config
 	const rawUserId = userKey?.replace(/^user::/, ``)
 	const myRoomAtoms = getInternalRelations(usersInRooms)
 
-	const selfListSelector = findState(selfListSelectors, userKey)
+	const selfListSelector = findState(visibleUsersInRoomsSelector, userKey)
 	const provideFamily = realtimeMutableFamilyProvider({ socket, userKey })
 
 	socket.onAny((event, ...args) => {
@@ -130,10 +101,6 @@ export const serveSocket = (socket: TempestServerSocket): void => {
 		...[myRoomAtoms].map((atoms) => provideFamily(atoms, selfListSelector)),
 	]
 
-	provideIdentity({
-		socket,
-		userKey,
-	})
 	provideRooms({
 		socket,
 		userKey,
@@ -144,7 +111,7 @@ export const serveSocket = (socket: TempestServerSocket): void => {
 
 	socket.on(`changeUsername`, async (newUsername) => {
 		logger.info(`changing username to`, newUsername)
-		if (rawUserId) {
+		if (rawUserId && typeof newUsername === `string`) {
 			await db.drizzle
 				.update(users)
 				.set({ username: newUsername })
@@ -153,7 +120,7 @@ export const serveSocket = (socket: TempestServerSocket): void => {
 		}
 	})
 
-	socket.on(`disconnect`, () => {
+	return () => {
 		for (const unsub of unsubs) unsub()
-	})
+	}
 }
