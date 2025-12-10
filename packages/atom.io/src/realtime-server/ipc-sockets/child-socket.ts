@@ -5,6 +5,7 @@ import { parseJson } from "atom.io/json"
 
 import type { EventBuffer, EventPayload, Events } from "./custom-socket"
 import { CustomSocket } from "./custom-socket"
+import { PROOF_OF_LIFE_SIGNAL } from "./parent-socket"
 
 /* eslint-disable no-console */
 
@@ -87,8 +88,13 @@ export class ChildSocket<
 			<K extends string & keyof I>(buffer: EventBuffer<I, K>) => {
 				const chunk = buffer.toString()
 
-				if (chunk === `ALIVE`) {
-					this.logger.info(chunk)
+				if (chunk.includes(`\x1B`)) {
+					const bytes = new TextEncoder().encode(chunk)
+					this.logger.info(`STDOUT TERMINAL ESC SEQUENCE`, bytes)
+					return
+				}
+
+				if (chunk === `["i","${PROOF_OF_LIFE_SIGNAL}"]\x03`) {
 					return
 				}
 
@@ -147,6 +153,13 @@ export class ChildSocket<
 		)
 		this.proc.stderr.on(`data`, (buffer: Buffer) => {
 			const chunk = buffer.toString()
+
+			if (chunk.includes(`\x1B`)) {
+				const bytes = new TextEncoder().encode(chunk)
+				this.logger.info(`STDERR TERMINAL ESC SEQUENCE`, bytes)
+				return
+			}
+
 			const pieces = chunk.split(`\x03`)
 			const initialMaybeWellFormed = pieces[0]
 			pieces[0] = this.incompleteData + initialMaybeWellFormed

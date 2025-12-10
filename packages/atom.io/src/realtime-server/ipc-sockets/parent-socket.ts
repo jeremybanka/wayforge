@@ -10,6 +10,8 @@ import type { StderrLog } from "./child-socket"
 import type { EventBuffer, EventPayload, Events } from "./custom-socket"
 import { CustomSocket } from "./custom-socket"
 
+export const PROOF_OF_LIFE_SIGNAL = `$$_CHILD_ALIVE_$$`
+
 export class SubjectSocket<
 	I extends Events,
 	O extends Events,
@@ -203,7 +205,7 @@ export class ParentSocket<
 			}
 		})
 
-		this.proc.stdout.write(`ALIVE`)
+		this.logger.info(PROOF_OF_LIFE_SIGNAL)
 	}
 
 	public receiveRelay(

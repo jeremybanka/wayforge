@@ -32,7 +32,7 @@ import {
 	visibleUsersInRoomsSelector,
 } from "atom.io/realtime"
 
-import { ChildSocket } from "./ipc-sockets"
+import { ChildSocket, PROOF_OF_LIFE_SIGNAL } from "./ipc-sockets"
 import { realtimeMutableFamilyProvider } from "./realtime-mutable-family-provider"
 import { realtimeMutableProvider } from "./realtime-mutable-provider"
 import type { ServerConfig } from "./server-config"
@@ -78,12 +78,13 @@ export function spawnRoom<RoomNames extends string>({
 			(resolve) => {
 				const room = spawn(command, args, { env: process.env })
 				const resolver = (data: Buffer) => {
-					if (data.toString() === `ALIVE`) {
-						room.stdout.off(`data`, resolver)
+					const chunk = data.toString()
+					if (chunk === `["i","${PROOF_OF_LIFE_SIGNAL}"]\x03`) {
+						room.stderr.off(`data`, resolver)
 						resolve(room)
 					}
 				}
-				room.stdout.on(`data`, resolver)
+				room.stderr.on(`data`, resolver)
 			},
 		)
 		const roomSocket = new ChildSocket(child, roomKey)
