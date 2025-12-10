@@ -9,6 +9,7 @@ import {
 	subscribeToState,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
+import type { SocketKey, StandardSchemaV1 } from "atom.io/realtime"
 import { employSocket, mutexAtoms } from "atom.io/realtime"
 
 import type { ServerConfig } from "."
@@ -16,12 +17,15 @@ import type { ServerConfig } from "."
 export type StateReceiver = ReturnType<typeof realtimeStateReceiver>
 export function realtimeStateReceiver({
 	socket,
+	userKey,
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
 	return function stateReceiver<S extends Json.Serializable, C extends S>(
+		schema: StandardSchemaV1<unknown, C>,
 		clientToken: WritableToken<C>,
 		serverToken: WritableToken<S> = clientToken,
 	): () => void {
+		const socketKey = `socket::${socket.id}` satisfies SocketKey
 		const mutexAtom = findInStore(store, mutexAtoms, serverToken.key)
 
 		const subscriptions = new Set<() => void>()
@@ -33,8 +37,20 @@ export function realtimeStateReceiver({
 		const permitPublish = () => {
 			clearSubscriptions()
 			subscriptions.add(
-				employSocket(socket, `pub:${clientToken.key}`, (newValue) => {
-					setIntoStore(store, serverToken, newValue as C)
+				employSocket(socket, `pub:${clientToken.key}`, async (newValue) => {
+					const parsed = await schema[`~standard`].validate(newValue)
+					if (parsed.issues) {
+						store.logger.error(
+							`❌`,
+							`user`,
+							userKey,
+							`attempted to publish invalid value`,
+							newValue,
+							`to state "${serverToken.key}"`,
+						)
+						return
+					}
+					setIntoStore(store, serverToken, parsed.value)
 				}),
 			)
 			subscriptions.add(
@@ -52,7 +68,7 @@ export function realtimeStateReceiver({
 					if (getFromStore(store, mutexAtom)) {
 						clearSubscriptions()
 						subscriptions.add(
-							subscribeToState(store, mutexAtom, socket.id!, () => {
+							subscribeToState(store, mutexAtom, socketKey, () => {
 								const currentValue = getFromStore(store, mutexAtom)
 								if (currentValue === false) {
 									operateOnStore(OWN_OP, store, mutexAtom, true)

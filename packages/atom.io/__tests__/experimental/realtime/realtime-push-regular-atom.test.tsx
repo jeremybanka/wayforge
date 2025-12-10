@@ -1,4 +1,5 @@
 import { act, waitFor } from "@testing-library/react"
+import { type } from "arktype"
 import * as AtomIO from "atom.io"
 import * as AR from "atom.io/react"
 import * as RTR from "atom.io/realtime-react"
@@ -75,7 +76,7 @@ describe(`pushing state`, () => {
 
 				const socketServices = [
 					provideState(countState),
-					receiveState(countState),
+					receiveState(type(`number`), countState),
 				]
 				return () => {
 					for (const unsub of socketServices) {

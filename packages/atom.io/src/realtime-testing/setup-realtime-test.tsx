@@ -5,19 +5,10 @@ import type { RenderResult } from "@testing-library/react"
 import { prettyDOM, render } from "@testing-library/react"
 import * as AtomIO from "atom.io"
 import type { Store } from "atom.io/internal"
-import {
-	clearStore,
-	editRelationsInStore,
-	findInStore,
-	findRelationsInStore,
-	getFromStore,
-	IMPLICIT,
-	setIntoStore,
-} from "atom.io/internal"
+import { clearStore, IMPLICIT } from "atom.io/internal"
 import { toEntries } from "atom.io/json"
 import * as AR from "atom.io/react"
-import type * as RT from "atom.io/realtime"
-import * as RTC from "atom.io/realtime-client"
+import * as RT from "atom.io/realtime"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import { UList } from "atom.io/transceivers/u-list"
@@ -64,7 +55,7 @@ function prefixLogger(store: Store, prefix: string) {
 export type TestSetupOptions = {
 	immortal?: { server?: boolean }
 	server: (tools: {
-		socket: SocketIO.Socket
+		socket: RT.Socket
 		silo: AtomIO.Silo
 		userKey: RT.UserKey
 		enableLogging: () => void
@@ -124,8 +115,6 @@ export const setupRealtimeTestServer = (
 		},
 		IMPLICIT.STORE,
 	)
-	// prefixLogger(silo.store, `server`)
-	const socketRealm = new AtomIO.Realm<RTS.SocketSystemHierarchy>(silo.store)
 
 	const httpServer = http.createServer((_, res) => res.end(`Hello World!`))
 	const address = httpServer.listen().address()
@@ -133,76 +122,42 @@ export const setupRealtimeTestServer = (
 		typeof address === `string` ? null : address === null ? null : address.port
 	if (port === null) throw new Error(`Could not determine port for test server`)
 
-	const server = new SocketIO.Server(httpServer).use((socket, next) => {
-		const { token, username } = socket.handshake.auth
-		if (token === `test` && socket.id) {
-			const userClaim = socketRealm.allocate(`root`, username as RT.UserKey)
-			const socketClaim = socketRealm.allocate(`root`, `socket::${socket.id}`)
-			const socketState = findInStore(silo.store, RTS.socketAtoms, socketClaim)
-			setIntoStore(silo.store, socketState, socket)
-			editRelationsInStore(silo.store, RTS.usersOfSockets, (relations) => {
-				relations.set(userClaim, socketClaim)
+	const server = new SocketIO.Server(httpServer)
+	const dispose = RTS.realtime(
+		server,
+		(handshake) => {
+			const { token, username } = handshake.auth
+			if (RT.isUserKey(username) && token === `test`) {
+				return username
+			}
+			return new Error(`Authentication error`)
+		},
+		(config) => {
+			const { socket, userKey } = config
+			function enableLogging() {
+				prefixLogger(silo.store, `server`)
+				socket.onAny((event, ...args) => {
+					console.log(`🛰 `, userKey, event, ...args)
+				})
+				socket.onAnyOutgoing((event, ...args) => {
+					console.log(`🛰  >>`, userKey, event, ...args)
+				})
+				socket.on(`disconnect`, () => {
+					console.log(`${userKey} disconnected`)
+				})
+			}
+			const disposeServices = options.server({
+				socket: config.socket,
+				userKey: config.userKey,
+				enableLogging,
+				silo,
 			})
-			setIntoStore(silo.store, RTS.userKeysAtom, (index) => index.add(userClaim))
-			setIntoStore(silo.store, RTS.socketKeysAtom, (index) =>
-				index.add(socketClaim),
-			)
-			next()
-		} else {
-			next(new Error(`Authentication error`))
-		}
-	})
-
-	const socketServices = new Set<() => void>()
-	const disposeAllSocketServices = () => {
-		for (const disposeService of socketServices) disposeService()
-	}
-
-	server.on(`connection`, (socket: SocketIO.Socket) => {
-		const userKeyState = findRelationsInStore(
-			silo.store,
-			RTS.usersOfSockets,
-			`socket::${socket.id}`,
-		).userKeyOfSocket
-		const userKey = getFromStore(silo.store, userKeyState)!
-		function enableLogging() {
-			prefixLogger(silo.store, `server`)
-			socket.onAny((event, ...args) => {
-				console.log(`🛰 `, userKey, event, ...args)
-			})
-			socket.onAnyOutgoing((event, ...args) => {
-				console.log(`🛰  >>`, userKey, event, ...args)
-			})
-			socket.on(`disconnect`, () => {
-				console.log(`${userKey} disconnected`)
-			})
-		}
-		const disposeServices = options.server({
-			socket,
-			enableLogging,
-			silo,
-			userKey,
-		})
-		if (disposeServices) {
-			socketServices.add(disposeServices)
-			socket.on(`disconnect`, disposeServices)
-		}
-	})
-
-	const dispose = async () => {
-		disposeAllSocketServices()
-		await server.close()
-
-		// const roomKeys = getFromStore(silo.store, RT.roomIndex)
-		// for (const roomKey of roomKeys) {
-		// 	const roomState = findInStore(silo.store, RTS.roomSelectors, roomKey)
-		// 	const room = getFromStore(silo.store, roomState)
-		// 	if (room && !(room instanceof Promise)) {
-		// 		room.process.kill()
-		// 	}
-		// } // ❗ POSSIBLY STILL NEEDED
-		silo.store.valueMap.clear()
-	}
+			return () => {
+				disposeServices?.()
+			}
+		},
+		silo.store,
+	)
 
 	return {
 		name: `SERVER`,

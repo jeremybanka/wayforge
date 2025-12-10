@@ -20,11 +20,6 @@ export const SystemServer = ({
 	userKey: UserKey
 }): void => {
 	enableLogging()
-	RTS.provideIdentity({
-		store,
-		socket,
-		userKey,
-	})
 	RTS.provideRooms({
 		store,
 		socket,
