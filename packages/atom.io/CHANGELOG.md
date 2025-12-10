@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.2
+
+### Patch Changes
+
+- 63ed158: ✨ `atom.io/realtime-server` `::` `realtime()` The server setup function now supports async functions for `auth` and `onConnect`.
+
 ## 0.46.1
 
 ### Patch Changes
