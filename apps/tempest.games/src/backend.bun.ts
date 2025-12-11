@@ -136,4 +136,4 @@ const { version } = await Bun.file(
 ).json()
 logger.info(`🛫 backend v${version} ready on port ${env.BACKEND_PORT}`)
 
-parentSocket.emit(`alive`)
+if (!env.RUN_WORKERS_FROM_SOURCE) parentSocket.emit(`alive`)
