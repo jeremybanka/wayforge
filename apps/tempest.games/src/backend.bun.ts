@@ -32,6 +32,7 @@ export const tribunalDaily: CronJob = (() => {
 			logger.info(`⌛ tribunal daily cronjob stopped`)
 		})
 		logger.info(`⏳ tribunal daily cronjob started`)
+		;(globalThis as any).__tribunalDaily = __tribunalDaily
 	}
 	return __tribunalDaily
 })()
