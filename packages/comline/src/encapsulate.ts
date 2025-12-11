@@ -43,7 +43,7 @@ class FakeOut implements Pick<net.Socket, `write`> {
 }
 
 function encapsulateConsole(): {
-	mockConsoleCalls: { [K in keyof typeof console]?: any[][] }
+	mockConsoleCalls: { [K in keyof Console]?: any[][] }
 	restoreConsole: () => void
 } {
 	const createMockFn = () => {
@@ -53,20 +53,20 @@ function encapsulateConsole(): {
 		}
 		return [mock, calls] as const
 	}
-	const originalConsoleMethods: Partial<typeof console> = {}
-	const mockConsoleCalls: { [K in keyof typeof console]?: any[][] } = {}
+	const originalConsoleMethods: Partial<Console> = {}
+	const mockConsoleCalls: { -readonly [K in keyof Console]?: any[][] } = {}
 	for (const [key, value] of toEntries(console)) {
 		if (typeof value === `function`) {
 			// @ts-expect-error	this is a safe bind but hard to statically analyze
 			originalConsoleMethods[key] = value.bind(console)
 			const [mockFn, calls] = createMockFn()
 			mockConsoleCalls[key] = calls
-			console[key] = mockFn as any
+			;(console as any)[key] = mockFn as any
 		}
 	}
 	const restoreConsole = () => {
 		for (const [key, value] of toEntries(originalConsoleMethods)) {
-			console[key] = value as any
+			;(console as any)[key] = value as any
 		}
 	}
 	return { mockConsoleCalls, restoreConsole }
