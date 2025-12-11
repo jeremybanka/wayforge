@@ -2,7 +2,7 @@
 
 import { ParentSocket } from "atom.io/realtime-server"
 
-const parent = new ParentSocket(process)
+const parent = ((process as any).parentSocket ??= new ParentSocket(process))
 Object.assign(console, parent.logger, { log: parent.logger.info })
 
 parent.on(`timeToStop`, function gracefulExit() {
