@@ -27,7 +27,7 @@
 	"scripts": {
 		"dev": "bun run env:dev && concurrently \"bun:dev:*\"",
 		"dev:vite": "vite --port 3333",
-		"dev:backend": "bun --hot --env-file=.env.development ./src/backend.bun.ts",
+		"dev:backend": "bun --hot --no-clear-screen --env-file=.env.development ./src/backend.bun.ts",
 		"dev:email": "bun --env-file=.env.development email dev",
 		"dev:db": "pnpm run db:dev",
 		"build": "rimraf ./bin && ([ $PREVIEW ] && bun run env:pre || bun run env:prod) && concurrently \"bun:build:*\"",
