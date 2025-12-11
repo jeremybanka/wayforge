@@ -13,8 +13,8 @@
 	},
 	"dependencies": {
 		"atom.io": "workspace:*",
-		"react": "19.2.1",
-		"react-dom": "19.2.1",
+		"react": "19.2.2",
+		"react-dom": "19.2.2",
 		"zod": "4.1.13"
 	},
 	"devDependencies": {
