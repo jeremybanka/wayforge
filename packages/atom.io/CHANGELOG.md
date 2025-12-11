@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.3
+
+### Patch Changes
+
+- fa186d1: 🔇 `atom.io/realtime-server` Don't put noise in the console when a subprocess starts up.
+
 ## 0.46.2
 
 ### Patch Changes
