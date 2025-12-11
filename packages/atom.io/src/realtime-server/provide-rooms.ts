@@ -79,7 +79,6 @@ export function spawnRoom<RoomNames extends string>({
 				const room = spawn(command, args, { env: process.env })
 				const resolver = (data: Buffer) => {
 					const chunk = data.toString()
-					// if (chunk === `["i","${PROOF_OF_LIFE_SIGNAL}"]\x03`) {
 					if (chunk === PROOF_OF_LIFE_SIGNAL) {
 						room.stdout.off(`data`, resolver)
 						resolve(room)
