@@ -32,10 +32,10 @@ export function resolveRoomScript(
 	if (env.RUN_WORKERS_FROM_SOURCE) {
 		switch (runner) {
 			case `bun`:
-				args.unshift(`--hot`)
+				args.unshift(`--hot`, `--no-clear-screen`)
 				break
 			case `node`:
-				args.push(`--watch`)
+				args.unshift(`--watch`, `--watch-preserve-output`)
 				break
 		}
 	}
