@@ -36,7 +36,11 @@ export const tribunalDaily: CronJob = (() => {
 	return __tribunalDaily
 })()
 
-// const gameWorker = worker(parentSocket, `backend.worker.game.bun`, logger)
+// ;(process as any).gameWorker ??= worker(
+// 	parentSocket,
+// 	`backend.worker.game.bun`,
+// 	logger,
+// )
 
 IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
 	`info`,
