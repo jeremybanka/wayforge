@@ -95,7 +95,7 @@
 		"flightdeck": "workspace:*",
 		"globals": "16.5.0",
 		"rimraf": "6.1.2",
-		"sass-embedded": "1.95.1",
+		"sass-embedded": "1.96.0",
 		"varmint": "workspace:*",
 		"vite": "7.2.7",
 		"vitest": "4.0.15"
