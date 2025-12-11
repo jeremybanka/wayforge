@@ -78,8 +78,6 @@ const trpcHandler = createHTTPHandler({
 const httpServer = createServer(trpcHandler)
 httpServer.listen(env.BACKEND_PORT).address()
 
-// .use(sessionMiddleware)
-// .on(`connection`, serveSocket)
 realtime(
 	new WebSocketServer(httpServer, {
 		cors: {
@@ -93,12 +91,6 @@ realtime(
 )
 
 async function gracefulExit() {
-	// logger.info(`🧹 closing workers`)
-	// const gameWorkerExit = new Promise((pass) =>
-	// 	gameWorker.proc.once(`close`, pass),
-	// )
-	// gameWorker.emit(`timeToStop`)
-	// await gameWorkerExit
 	logger.info(`🛬 backend server exiting`)
 	await new Promise((pass) => setTimeout(pass, 10))
 	process.exit(0)
