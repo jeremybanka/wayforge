@@ -24,7 +24,7 @@
 		"io-ts": "2.2.22"
 	},
 	"devDependencies": {
-		"@types/node": "25.0.0",
+		"@types/node": "25.0.1",
 		"concurrently": "9.2.1",
 		"eslint": "9.39.1",
 		"tsdown": "0.17.2",
