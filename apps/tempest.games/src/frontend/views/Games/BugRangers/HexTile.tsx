@@ -7,17 +7,17 @@ import type { ReactNode, RefObject } from "react"
 import { useMemo, useState } from "react"
 import * as THREE from "three"
 
-import type { TileCoordinatesSerialized } from "./bug-rangers-client-state"
+import type { TileCoordinatesSerialized } from "../../../../library/bug-rangers-game-state"
 import {
-	cameraTargetAtom,
 	closestPlayableZoneSelector,
 	deserializeTileCoordinates,
 	gameTilesAtom,
 	gameTilesStackHeightAtoms,
 	tile3dPositionSelectors,
 	tileCubeCountAtoms,
-} from "./bug-rangers-client-state"
-import { CubeToken, CubeTokenStack } from "./CubeToken"
+} from "../../../../library/bug-rangers-game-state"
+import { cameraTargetAtom } from "./bug-rangers-client-state"
+import { CubeTokenStack } from "./CubeToken"
 
 /**
  * HexTile

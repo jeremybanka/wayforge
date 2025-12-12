@@ -6,14 +6,13 @@ import type { ReactNode } from "react"
 import { useRef } from "react"
 import * as THREE from "three"
 
-import { CubeToken } from "./CubeToken"
-import { HexTile } from "./HexTile"
-import type { StackHeight, TileCubeCount } from "./bug-rangers-client-state"
+import type {
+	StackHeight,
+	TileCubeCount,
+} from "../../../../library/bug-rangers-game-state"
 import {
-	cameraAnchoredSphereAtom,
 	closestOwnedTileSelector,
 	closestPlayableZoneSelector,
-	controlsEnabledAtom,
 	dragpointAtom,
 	dragStateAtom,
 	gameTilesAtom,
@@ -22,7 +21,13 @@ import {
 	tileCubeCountAtoms,
 	tileOwnerAtoms,
 	turnInProgressAtom,
+} from "../../../../library/bug-rangers-game-state"
+import {
+	cameraAnchoredSphereAtom,
+	controlsEnabledAtom,
 } from "./bug-rangers-client-state"
+import { CubeToken } from "./CubeToken"
+import { HexTile } from "./HexTile"
 
 export function PlayerTools(): ReactNode {
 	return (
