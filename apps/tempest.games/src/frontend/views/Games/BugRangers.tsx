@@ -8,10 +8,10 @@ import { useRef } from "react"
 import * as THREE from "three"
 import type * as STD from "three-stdlib"
 
+import { turnInProgressAtom } from "../../../library/bug-rangers-game-state"
 import {
 	cameraTargetAtom,
 	controlsEnabledAtom,
-	turnInProgressAtom,
 } from "./BugRangers/bug-rangers-client-state"
 import { HexGridHelper } from "./BugRangers/HexGridHelper"
 import { PlayerTools } from "./BugRangers/PlayerTools"

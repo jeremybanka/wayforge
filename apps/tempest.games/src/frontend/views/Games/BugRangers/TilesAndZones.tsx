@@ -1,8 +1,11 @@
 import { useJSON, useO } from "atom.io/react"
 import type { ReactNode } from "react"
 
+import {
+	gameTilesAtom,
+	playableZonesAtom,
+} from "../../../../library/bug-rangers-game-state"
 import { GameTile } from "./HexTile"
-import { gameTilesAtom, playableZonesAtom } from "./bug-rangers-client-state"
 
 export function GameTiles(): ReactNode {
 	const tiles = useJSON(gameTilesAtom)
