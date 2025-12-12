@@ -8,13 +8,13 @@ import { and, eq } from "drizzle-orm"
 
 import { resolveRoomScript, workerNames } from "../backend.worker"
 import { users, userSessions } from "../database/tempest-db-schema"
-// import { userSessions } from "./user-sessions"
+import { usernameType } from "../library/data-constraints"
 import { cpuCountAtom } from "../library/store"
 import { db } from "./db"
 import { logger } from "./logger"
 
 const handshakeSchema = type({
-	auth: type({ username: `string` }),
+	auth: type({ username: usernameType }),
 	headers: type({ cookie: `string` }),
 })
 
@@ -77,15 +77,17 @@ export const serveSocket = (config: ServerConfig): (() => void) => {
 	]
 
 	const rawUserId = userKey.replace(/^user::/, ``)
-	socket.on(`changeUsername`, async (username) => {
-		logger.info(`changing username to`, username)
-		if (typeof username === `string` && username.length < 20) {
-			await db.drizzle
-				.update(users)
-				.set({ username })
-				.where(eq(users.id, rawUserId))
-			socket.emit(`usernameChanged`, username)
+	socket.on(`changeUsername`, async (usernameAttempt) => {
+		const username = usernameType(usernameAttempt)
+		if (username instanceof type.errors) {
+			logger.error(`❌ invalid username`, username.summary)
+			return
 		}
+		await db.drizzle
+			.update(users)
+			.set({ username })
+			.where(eq(users.id, rawUserId))
+		socket.emit(`usernameChanged`, username)
 	})
 
 	return () => {

@@ -14,6 +14,7 @@ import {
 } from "drizzle-orm/pg-core"
 
 import type { ISO8601 } from "../backend/time"
+import type { Username } from "../library/data-constraints"
 
 function iso8601() {
 	return varchar({ length: 24 }).$type<ISO8601>()
@@ -31,7 +32,7 @@ export const users = pgTable(
 	`users`,
 	{
 		id: uuid().primaryKey().defaultRandom(),
-		username: varchar({ length: 16 }).notNull(),
+		username: varchar({ length: 16 }).$type<Username>().notNull(),
 		emailOffered: varchar({ length: 254 }).notNull(),
 		emailVerified: varchar({ length: 254 }),
 		password: varchar({ length: 254 }),
