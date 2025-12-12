@@ -7,7 +7,7 @@ import type { ReactNode, RefObject } from "react"
 import { useMemo, useState } from "react"
 import * as THREE from "three"
 
-import type { TileCoordinatesSerialized } from "../BugRangers/store"
+import type { TileCoordinatesSerialized } from "./bug-rangers-client-state"
 import {
 	cameraTargetAtom,
 	closestPlayableZoneSelector,
@@ -16,7 +16,7 @@ import {
 	gameTilesStackHeightAtoms,
 	tile3dPositionSelectors,
 	tileCubeCountAtoms,
-} from "../BugRangers/store"
+} from "./bug-rangers-client-state"
 import { CubeToken, CubeTokenStack } from "./CubeToken"
 
 /**

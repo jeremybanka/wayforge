@@ -8,7 +8,7 @@ import * as THREE from "three"
 
 import { CubeToken } from "./CubeToken"
 import { HexTile } from "./HexTile"
-import type { StackHeight, TileCubeCount } from "./store"
+import type { StackHeight, TileCubeCount } from "./bug-rangers-client-state"
 import {
 	cameraAnchoredSphereAtom,
 	closestOwnedTileSelector,
@@ -22,7 +22,7 @@ import {
 	tileCubeCountAtoms,
 	tileOwnerAtoms,
 	turnInProgressAtom,
-} from "./store"
+} from "./bug-rangers-client-state"
 
 export function PlayerTools(): ReactNode {
 	return (

@@ -8,13 +8,13 @@ import { useRef } from "react"
 import * as THREE from "three"
 import type * as STD from "three-stdlib"
 
-import { HexGridHelper } from "./BugRangers/HexGridHelper"
-import { PlayerTools } from "./BugRangers/PlayerTools"
 import {
 	cameraTargetAtom,
 	controlsEnabledAtom,
 	turnInProgressAtom,
-} from "./BugRangers/store"
+} from "./BugRangers/bug-rangers-client-state"
+import { HexGridHelper } from "./BugRangers/HexGridHelper"
+import { PlayerTools } from "./BugRangers/PlayerTools"
 import { GameTiles, PlayableZones } from "./BugRangers/TilesAndZones"
 
 export function BugRangers(): ReactNode {
