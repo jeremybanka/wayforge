@@ -116,7 +116,7 @@
 		"storybook": "10.1.7",
 		"takua": "workspace:*",
 		"tmp": "0.2.5",
-		"tsdown": "0.17.2",
+		"tsdown": "0.17.3",
 		"vite": "7.2.7",
 		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "4.0.15"
