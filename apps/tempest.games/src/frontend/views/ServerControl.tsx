@@ -54,7 +54,7 @@ export function ServerControl(): React.ReactNode {
 			<button
 				type="button"
 				onClick={() => {
-					roomSocket.emit(`createRoom`, `backend.worker.game.bun`)
+					roomSocket.emit(`createRoom`, `backend.worker.bug-rangers.bun`)
 				}}
 			>
 				create room

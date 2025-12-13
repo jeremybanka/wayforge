@@ -43,6 +43,6 @@ export function resolveRoomScript(
 }
 
 export const workerNames = [
-	`backend.worker.game.bun`,
+	`backend.worker.bug-rangers.bun`,
 ] as const satisfies WorkerName[]
 export type ActualWorkerName = (typeof workerNames)[number]
