@@ -114,10 +114,10 @@ export class ChildSocket<
 								[
 									`❌ Malformed data received from child process`,
 									``,
-									piece,
+									...piece.split(`\n`),
 									``,
 									thrown0.message,
-								].join(`\n❌\t`),
+								].join(`\n❌\t`) + `\n`,
 							)
 						}
 						try {
@@ -137,10 +137,10 @@ export class ChildSocket<
 									[
 										`❌ Malformed data received from child process`,
 										``,
-										initialMaybeWellFormed,
+										...initialMaybeWellFormed.split(`\n`),
 										``,
 										thrown1.message,
-									].join(`\n❌\t`),
+									].join(`\n❌\t`) + `\n`,
 								)
 							}
 						}
@@ -170,14 +170,14 @@ export class ChildSocket<
 					this.incompleteData = ``
 				} catch (thrown0) {
 					if (thrown0 instanceof Error) {
-						console.error(
+						this.logger.error(
 							[
 								`❌ Malformed log received from child process`,
 								``,
-								piece,
+								...piece.split(`\n`),
 								``,
 								thrown0.message,
-							].join(`\n❌\t`),
+							].join(`\n❌\t`) + `\n`,
 						)
 					}
 					try {
@@ -193,14 +193,14 @@ export class ChildSocket<
 						}
 					} catch (thrown1) {
 						if (thrown1 instanceof Error) {
-							console.error(
+							this.logger.error(
 								[
 									`❌ Malformed log received from child process...`,
 									``,
-									initialMaybeWellFormed,
+									...initialMaybeWellFormed.split(`\n`),
 									``,
 									thrown1.message,
-								].join(`\n❌\t`),
+								].join(`\n❌\t`) + `\n`,
 							)
 						}
 					}
