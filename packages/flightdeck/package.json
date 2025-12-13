@@ -55,7 +55,7 @@
 		"@types/tmp": "0.2.6",
 		"@typescript/native-preview": "7.0.0-dev.20251212.1",
 		"concurrently": "9.2.1",
-		"eslint": "9.39.1",
+		"eslint": "9.39.2",
 		"json-schema-to-zod": "2.7.0",
 		"rimraf": "6.1.2",
 		"tmp": "0.2.5",

@@ -38,7 +38,7 @@
 		"@types/react-syntax-highlighter": "15.5.13",
 		"chokidar": "5.0.0",
 		"concurrently": "9.2.1",
-		"eslint": "9.39.1",
+		"eslint": "9.39.2",
 		"takua": "workspace:*",
 		"wrangler": "4.54.0"
 	}
