@@ -1,5 +1,13 @@
 # atom.io
 
+## 0.46.4
+
+### Patch Changes
+
+- 85844b8: 🐛 `atom.io/realtime-server` Fixed a bug where colored text would not be logged by `ChildSocket`.
+- 85844b8: 🚀 `atom.io/realtime-server` Improved the performance of checking for a clear sequence.
+- 85844b8: 🔊 `atom.io/realtime-server` Improved the logging in `ChildSocket` when a chunk sent to stdout or stderr fails to parse.
+
 ## 0.46.3
 
 ### Patch Changes
