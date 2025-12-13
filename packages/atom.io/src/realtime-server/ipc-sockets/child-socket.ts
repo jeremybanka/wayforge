@@ -86,13 +86,11 @@ export class ChildSocket<
 		this.proc.stdout.on(
 			`data`,
 			<K extends string & keyof I>(buffer: EventBuffer<I, K>) => {
-				const chunk = buffer.toString()
-
-				if (chunk.includes(`\x1B`)) {
-					const bytes = new TextEncoder().encode(chunk)
-					this.logger.info(`STDOUT TERMINAL ESC SEQUENCE`, bytes)
+				if (buffer[0] === 27 && buffer[1] === 91 && buffer[2] === 50) {
+					this.logger.info(`STDOUT TERMINAL CLEAR`, buffer)
 					return
 				}
+				const chunk = buffer.toString()
 
 				if (chunk === PROOF_OF_LIFE_SIGNAL) {
 					return
@@ -116,10 +114,10 @@ export class ChildSocket<
 								[
 									`❌ Malformed data received from child process`,
 									``,
-									piece,
+									...piece.split(`\n`),
 									``,
 									thrown0.message,
-								].join(`\n❌\t`),
+								].join(`\n❌\t`) + `\n`,
 							)
 						}
 						try {
@@ -139,10 +137,10 @@ export class ChildSocket<
 									[
 										`❌ Malformed data received from child process`,
 										``,
-										initialMaybeWellFormed,
+										...initialMaybeWellFormed.split(`\n`),
 										``,
 										thrown1.message,
-									].join(`\n❌\t`),
+									].join(`\n❌\t`) + `\n`,
 								)
 							}
 						}
@@ -152,13 +150,11 @@ export class ChildSocket<
 			},
 		)
 		this.proc.stderr.on(`data`, (buffer: Buffer) => {
-			const chunk = buffer.toString()
-
-			if (chunk.includes(`\x1B`)) {
-				const bytes = new TextEncoder().encode(chunk)
-				this.logger.info(`STDERR TERMINAL ESC SEQUENCE`, bytes)
+			if (buffer[0] === 27 && buffer[1] === 91 && buffer[2] === 50) {
+				this.logger.info(`STDERR TERMINAL CLEAR`, buffer)
 				return
 			}
+			const chunk = buffer.toString()
 
 			const pieces = chunk.split(`\x03`)
 			const initialMaybeWellFormed = pieces[0]
@@ -174,14 +170,14 @@ export class ChildSocket<
 					this.incompleteData = ``
 				} catch (thrown0) {
 					if (thrown0 instanceof Error) {
-						console.error(
+						this.logger.error(
 							[
 								`❌ Malformed log received from child process`,
 								``,
-								piece,
+								...piece.split(`\n`),
 								``,
 								thrown0.message,
-							].join(`\n❌\t`),
+							].join(`\n❌\t`) + `\n`,
 						)
 					}
 					try {
@@ -197,14 +193,14 @@ export class ChildSocket<
 						}
 					} catch (thrown1) {
 						if (thrown1 instanceof Error) {
-							console.error(
+							this.logger.error(
 								[
 									`❌ Malformed log received from child process...`,
 									``,
-									initialMaybeWellFormed,
+									...initialMaybeWellFormed.split(`\n`),
 									``,
 									thrown1.message,
-								].join(`\n❌\t`),
+								].join(`\n❌\t`) + `\n`,
 							)
 						}
 					}
