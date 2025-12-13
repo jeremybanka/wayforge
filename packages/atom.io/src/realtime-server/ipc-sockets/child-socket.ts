@@ -86,13 +86,11 @@ export class ChildSocket<
 		this.proc.stdout.on(
 			`data`,
 			<K extends string & keyof I>(buffer: EventBuffer<I, K>) => {
-				const chunk = buffer.toString()
-
-				if (chunk.includes(`\x1B`)) {
-					const bytes = new TextEncoder().encode(chunk)
-					this.logger.info(`STDOUT TERMINAL ESC SEQUENCE`, bytes)
+				if (buffer[0] === 27 && buffer[1] === 91 && buffer[2] === 50) {
+					this.logger.info(`STDOUT TERMINAL CLEAR`, buffer)
 					return
 				}
+				const chunk = buffer.toString()
 
 				if (chunk === PROOF_OF_LIFE_SIGNAL) {
 					return
@@ -152,13 +150,11 @@ export class ChildSocket<
 			},
 		)
 		this.proc.stderr.on(`data`, (buffer: Buffer) => {
-			const chunk = buffer.toString()
-
-			if (chunk.includes(`\x1B`)) {
-				const bytes = new TextEncoder().encode(chunk)
-				this.logger.info(`STDERR TERMINAL ESC SEQUENCE`, bytes)
+			if (buffer[0] === 27 && buffer[1] === 91 && buffer[2] === 50) {
+				this.logger.info(`STDERR TERMINAL CLEAR`, buffer)
 				return
 			}
+			const chunk = buffer.toString()
 
 			const pieces = chunk.split(`\x03`)
 			const initialMaybeWellFormed = pieces[0]
