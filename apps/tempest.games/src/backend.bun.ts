@@ -39,7 +39,7 @@ export const tribunalDaily: CronJob = (() => {
 
 // ;(process as any).gameWorker ??= worker(
 // 	parentSocket,
-// 	`backend.worker.game.bun`,
+// 	`backend.worker.bug-rangers.bun`,
 // 	logger,
 // )
 
