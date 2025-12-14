@@ -2,11 +2,14 @@ import { useFrame, useThree } from "@react-three/fiber"
 import { getState, setState } from "atom.io"
 import { useAtomicRef, useI, useO } from "atom.io/react"
 import { myUserKeyAtom } from "atom.io/realtime-client"
+import { RealtimeContext } from "atom.io/realtime-react"
 import type { ReactNode } from "react"
-import { useRef } from "react"
+import React, { useRef } from "react"
+import type { Socket } from "socket.io-client"
 import * as THREE from "three"
 
 import type {
+	PlayerActions,
 	StackHeight,
 	TileCubeCount,
 } from "../../../../library/bug-rangers-game-state"
@@ -49,11 +52,17 @@ const offsetRight = -2
 const offsetUp = 1
 const hitPoint = new THREE.Vector3()
 
+export function usePlayerActions(): Socket<{}, PlayerActions> {
+	const { socket } = React.useContext(RealtimeContext)
+	return socket as Socket<{}, PlayerActions>
+}
+
 function PlayableHex(): ReactNode {
 	const ref = useAtomicRef(cameraAnchoredSphereAtom, useRef)
 	const { camera, raycaster, pointer } = useThree()
 	const setControlsEnabled = useI(controlsEnabledAtom)
 	const dragState = useO(dragStateAtom)
+	const socket = usePlayerActions()
 
 	const startDrag = () => {
 		setControlsEnabled(false)
@@ -79,6 +88,7 @@ function PlayableHex(): ReactNode {
 							target: closestPlayableZone,
 							count: 1,
 						})
+						socket.emit(`placeTile`, closestPlayableZone)
 					}
 				}
 				break
@@ -100,6 +110,7 @@ function PlayableHex(): ReactNode {
 						turnInProgress.target,
 						(stackHeight + 1) as StackHeight,
 					)
+					socket.emit(`placeTile`, turnInProgress.target)
 				}
 				break
 			case `arm`:

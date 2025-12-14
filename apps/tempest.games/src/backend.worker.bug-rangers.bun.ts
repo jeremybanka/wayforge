@@ -7,6 +7,7 @@ import { castSocket } from "atom.io/realtime"
 import {
 	ParentSocket,
 	realtimeAtomFamilyProvider,
+	realtimeMutableProvider,
 	realtimeStateProvider,
 } from "atom.io/realtime-server"
 
@@ -25,9 +26,8 @@ parent.on(`timeToStop`, function gracefulExit() {
 	process.exit(0)
 })
 
-const tileCoordinatesType = type(
-	/([0-9])_([0-9])_([0-9])/,
-).as<TileCoordinatesSerialized>()
+const tileCoordinatesType =
+	type(/^-?\d+_-?\d+_-?\d+$/).as<TileCoordinatesSerialized>()
 
 const bugRangersGuard: SocketGuard<PlayerActions> = {
 	placeTile: type([tileCoordinatesType]),
@@ -38,7 +38,7 @@ const bugRangersGuard: SocketGuard<PlayerActions> = {
 
 parent.receiveRelay((socket, userKey) => {
 	const exposeState = realtimeStateProvider({ socket, userKey })
-	const exposeMutable = realtimeStateProvider({ socket, userKey })
+	const exposeMutable = realtimeMutableProvider({ socket, userKey })
 	const exposeFamily = realtimeAtomFamilyProvider({ socket, userKey })
 
 	const unsubFunctions: (() => void)[] = []
