@@ -3,6 +3,13 @@ import type { UserKey } from "atom.io/realtime"
 import { UList } from "atom.io/transceivers/u-list"
 import * as THREE from "three"
 
+export type PlayerActions = {
+	placeTile: (tileCoordinates: TileCoordinatesSerialized) => void
+	placeCube: (tileCoordinates: TileCoordinatesSerialized) => void
+	turnRestart: () => void
+	turnEnd: () => void
+}
+
 export type DragState = `cube` | `tile` | null
 
 export const dragStateAtom = atom<DragState>({
