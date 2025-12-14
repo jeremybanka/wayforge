@@ -58,10 +58,10 @@ export const sessionMiddleware = async (
 export const serveSocket = (config: ServerConfig): (() => void) => {
 	const { socket, userKey } = config
 	socket.onAny((event, ...args) => {
-		logger.info(`🛰️ << 📡`, { event, args })
+		logger.info(`🛰️ << 📡`, userKey, { event, args })
 	})
 	socket.onAnyOutgoing((event, ...args) => {
-		logger.info(`🛰️ >> 📡`, { event, args })
+		logger.info(`🛰️ >> 📡`, userKey, { event, args })
 	})
 	const provideState = realtimeStateProvider(config)
 
