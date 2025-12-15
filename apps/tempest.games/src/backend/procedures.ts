@@ -1,11 +1,11 @@
+import { Temporal } from "@js-temporal/polyfill"
 import { TRPCError } from "@trpc/server"
 import { CookieMap } from "bun"
 import { eq } from "drizzle-orm"
 
-import { users } from "../database/tempest-db-schema"
+import { users, userSessions } from "../database/tempest-db-schema"
 import type { ContextAuth } from "./trpc-server"
 import { trpc } from "./trpc-server"
-import { userSessions } from "./user-sessions"
 
 export const loggedProcedure = trpc.procedure.use(async (opts) => {
 	const start = performance.now()
@@ -21,13 +21,25 @@ export const loggedProcedure = trpc.procedure.use(async (opts) => {
 	return result
 })
 
-export const userSessionProcedure = loggedProcedure.use((opts) => {
+export const userSessionProcedure = loggedProcedure.use(async (opts) => {
 	const cookieHeader = opts.ctx.req.headers.cookie ?? ``
 	const cookies = new CookieMap(cookieHeader)
 	const sessionKey = cookies.get(`sessionKey`)
 	let auth: ContextAuth | null = null
 	if (sessionKey) {
-		const userId = userSessions.getRelatedKey(sessionKey)
+		const [{ createdAtIso, userId }] =
+			await opts.ctx.db.drizzle.query.userSessions.findMany({
+				columns: { createdAtIso: true, userId: true },
+				where: eq(userSessions.sessionKey, sessionKey),
+			})
+		const aboutAWeekAgo = Temporal.Now.instant().subtract({ hours: 24 * 7 })
+		const createdAt = Temporal.Instant.from(createdAtIso)
+		const isExpired = Temporal.Instant.compare(createdAt, aboutAWeekAgo) <= 0
+		if (isExpired) {
+			await opts.ctx.db.drizzle
+				.delete(userSessions)
+				.where(eq(userSessions.sessionKey, sessionKey))
+		}
 		if (userId) {
 			auth = { userId, sessionKey }
 		}
@@ -48,16 +60,15 @@ export const verifiedUserProcedure = userSessionProcedure.use(async (opts) => {
 		where: eq(users.id, opts.ctx.userId),
 	})
 	if (!user) {
-		userSessions.delete(opts.ctx.sessionKey)
 		throw new TRPCError({
-			code: `FORBIDDEN`,
-			message: `You must be logged in to perform this action.`,
+			code: `UNPROCESSABLE_CONTENT`,
+			message: `User not found.`,
 		})
 	}
 	if (!user.emailVerified) {
 		throw new TRPCError({
 			code: `FORBIDDEN`,
-			message: `You must be logged in to perform this action.`,
+			message: `You must verify your email address before performing this action.`,
 		})
 	}
 	return opts.next({ ctx: { user } })

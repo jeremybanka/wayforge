@@ -1,62 +1,51 @@
 import { Temporal } from "@js-temporal/polyfill"
-import { Junction } from "atom.io/internal"
 import { CronJob } from "cron"
+import { eq } from "drizzle-orm"
 
+import { userSessions } from "../database/tempest-db-schema"
+import { db } from "./db"
 import { logger } from "./logger"
+import { instant, iso8601 } from "./time"
+import type { Context } from "./trpc-server"
 
-const ONE_WEEK_MS = 1000 * 60 * 60 * 24 * 7
-const TEN_MINUTES_MS = 1000 * 60 * 10
-
-declare global {
-	var __sessionData: SessionData
-}
-
-export type UserSessions = Junction<`user`, string, `session`, string>
-export type SessionData = [
-	sessionCreatedTimes: Map<string, Temporal.Instant>,
-	userSessions: UserSessions,
-]
-export const [sessionCreatedTimes, userSessions]: SessionData = (() => {
-	let { __sessionData } = global
-	if (!__sessionData) {
-		__sessionData = global.__sessionData = [
-			new Map(),
-			new Junction({
-				between: [`user`, `session`],
-				cardinality: `1:n`,
-			}),
-		]
-		const [createdTimes, sessions] = __sessionData
-		const autoExpiry = new CronJob(`00 00 03 * * *`, () => {
-			const aboutAWeekAgo = Temporal.Now.instant().subtract({ hours: 24 * 7 })
-			for (const [sessionId, sessionCreatedAt] of createdTimes.entries()) {
-				if (Temporal.Instant.compare(sessionCreatedAt, aboutAWeekAgo) <= 0) {
-					sessions.delete(sessionId)
-				}
-			}
-		})
-		autoExpiry.start()
-		process.on(`exit`, async () => {
-			await autoExpiry.stop()
-			logger.info(`🛬 autoExpiry stopped`)
-		})
-	}
-	return __sessionData
+export const sessionExpiry: CronJob = (() => {
+	const autoExpiry = new CronJob(`00 00 03 * * *`, async () => {
+		const aboutAWeekAgoInst = Temporal.Now.instant().subtract({ hours: 24 * 7 })
+		const aboutAWeekAgo = iso8601(aboutAWeekAgoInst)
+		await db.sql`DELETE FROM events WHERE created_at::timestamptz < ${aboutAWeekAgo}::timestamptz`
+	})
+	autoExpiry.start()
+	process.on(`exit`, async () => {
+		await autoExpiry.stop()
+		logger.info(`🛬 autoExpiry stopped`)
+	})
+	return autoExpiry
 })()
 
-export function createSession(userId: string, now: Temporal.Instant): string {
-	const sessionKey = crypto.randomUUID()
-	sessionCreatedTimes.set(sessionKey, now)
-	userSessions.set(userId, sessionKey)
+export async function createSession(
+	userId: string,
+	ctx: Context,
+): Promise<string> {
+	const [{ sessionKey }] = await ctx.db.drizzle
+		.insert(userSessions)
+		.values({
+			userId,
+			sessionKey: crypto.randomUUID(),
+			createdAtIso: iso8601(ctx.now),
+		})
+		.returning()
 	return sessionKey
 }
 
-export function isSessionRecent(
+export async function isSessionRecent(
 	sessionKey: string,
 	now: Temporal.Instant,
-): boolean {
-	const sessionCreatedAt = sessionCreatedTimes.get(sessionKey)
-	if (!sessionCreatedAt) return false
+): Promise<boolean> {
+	const session = await db.drizzle.query.userSessions.findFirst({
+		where: eq(userSessions.sessionKey, sessionKey),
+	})
+	if (!session) return false
+	const sessionCreatedAt = instant(session.createdAtIso)
 	const tenMinutesAgo = now.subtract({ minutes: 10 })
 	return Temporal.Instant.compare(sessionCreatedAt, tenMinutesAgo) >= 0
 }
