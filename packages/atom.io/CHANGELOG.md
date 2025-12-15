@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.5
+
+### Patch Changes
+
+- 9414e56: ✨ `atom.io/realtime-react` `::` `useRealtimeRooms()` Now pulls relevant room-related states from the server.
+
 ## 0.46.4
 
 ### Patch Changes
