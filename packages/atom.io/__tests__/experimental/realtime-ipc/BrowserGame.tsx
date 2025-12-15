@@ -69,10 +69,10 @@ function Lobby({
 
 function View({ myUserKey }: { myUserKey: RT.UserKey }): React.ReactNode {
 	const roomTools = RTR.useRealtimeRooms<RoomNames>(myUserKey)
-	return roomTools.myRoomKey !== `room::$_NONE_$` ? (
-		<Room {...roomTools} />
-	) : (
+	return roomTools.myRoomKey === undefined ? (
 		<Lobby {...roomTools} />
+	) : (
+		<Room {...roomTools} />
 	)
 }
 

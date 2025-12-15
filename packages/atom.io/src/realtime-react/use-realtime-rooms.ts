@@ -13,7 +13,7 @@ import { usePullMutableAtomFamilyMember } from "./use-pull-mutable-family-member
 
 export type RealtimeRoomsTools = {
 	socket: Socket<{}, RoomSocketInterface<string>>
-	myRoomKey: RoomKey
+	myRoomKey: RoomKey | undefined
 	myMutualsAtom: MutableAtomToken<UList<UserKey>>
 	myOwnedRoomsAtom: MutableAtomToken<UList<RoomKey>>
 	allRoomKeysAtom: MutableAtomToken<UList<RoomKey>>
@@ -33,12 +33,15 @@ export function useRealtimeRooms<RoomNames extends string>(
 
 	usePullMutableAtomFamilyMember(roomKeysFamily, userKey)
 	const myJoinedRoomKeys = useO(roomKeysFamily, userKey)
-	let myRoomKey: RoomKey = `room::$_NONE_$`
+	let myRoomKey: RoomKey | undefined
 	for (const roomKey of myJoinedRoomKeys) {
 		myRoomKey = roomKey
 		break
 	}
-	usePullMutableAtomFamilyMember(userKeysFamily, myRoomKey)
+
+	const roomKey = myRoomKey ?? `room::$_NONE_$`
+	const myMutualsAtom = findInStore(store, userKeysFamily, roomKey)
+	usePullMutableAtomFamilyMember(userKeysFamily, roomKey)
 
 	const [ownedRoomsFamily] = getInternalRelationsFromStore(
 		store,
@@ -50,9 +53,9 @@ export function useRealtimeRooms<RoomNames extends string>(
 
 	return {
 		socket: socket as Socket<{}, RoomSocketInterface<RoomNames>>,
-		myRoomKey: myRoomKey,
+		myRoomKey,
 		allRoomKeysAtom: roomKeysAtom,
-		myMutualsAtom: findInStore(store, userKeysFamily, myRoomKey),
+		myMutualsAtom,
 		myOwnedRoomsAtom,
 	}
 }
