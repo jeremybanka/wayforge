@@ -27,21 +27,22 @@ export const userSessionProcedure = loggedProcedure.use(async (opts) => {
 	const sessionKey = cookies.get(`sessionKey`)
 	let auth: ContextAuth | null = null
 	if (sessionKey) {
-		const [{ createdAtIso, userId }] =
-			await opts.ctx.db.drizzle.query.userSessions.findMany({
-				columns: { createdAtIso: true, userId: true },
-				where: eq(userSessions.sessionKey, sessionKey),
-			})
-		const aboutAWeekAgo = Temporal.Now.instant().subtract({ hours: 24 * 7 })
-		const createdAt = Temporal.Instant.from(createdAtIso)
-		const isExpired = Temporal.Instant.compare(createdAt, aboutAWeekAgo) <= 0
-		if (isExpired) {
-			await opts.ctx.db.drizzle
-				.delete(userSessions)
-				.where(eq(userSessions.sessionKey, sessionKey))
-		}
-		if (userId) {
-			auth = { userId, sessionKey }
+		const session = await opts.ctx.db.drizzle.query.userSessions.findFirst({
+			columns: { createdAtIso: true, userId: true },
+			where: eq(userSessions.sessionKey, sessionKey),
+		})
+		if (session) {
+			const { createdAtIso, userId } = session
+			const aboutAWeekAgo = Temporal.Now.instant().subtract({ hours: 24 * 7 })
+			const createdAt = Temporal.Instant.from(createdAtIso)
+			const isExpired = Temporal.Instant.compare(createdAt, aboutAWeekAgo) <= 0
+			if (isExpired) {
+				await opts.ctx.db.drizzle
+					.delete(userSessions)
+					.where(eq(userSessions.sessionKey, sessionKey))
+			} else if (userId) {
+				auth = { userId, sessionKey }
+			}
 		}
 	}
 	if (!auth) {
