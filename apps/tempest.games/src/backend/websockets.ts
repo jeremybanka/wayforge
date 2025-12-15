@@ -1,8 +1,13 @@
 import { type } from "arktype"
+import { findState } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
-import type { UserKey } from "atom.io/realtime"
+import { mutualUsersSelector, type UserKey } from "atom.io/realtime"
 import type { Handshake, ServerConfig } from "atom.io/realtime-server"
-import { provideRooms, realtimeStateProvider } from "atom.io/realtime-server"
+import {
+	provideRooms,
+	realtimeAtomFamilyProvider,
+	realtimeStateProvider,
+} from "atom.io/realtime-server"
 import { CookieMap } from "bun"
 import { and, eq } from "drizzle-orm"
 
@@ -10,6 +15,7 @@ import { resolveRoomScript, workerNames } from "../backend.worker"
 import { users, userSessions } from "../database/tempest-db-schema"
 import { usernameType } from "../library/data-constraints"
 import { cpuCountAtom } from "../library/store"
+import { usernameAtoms } from "../library/username-state"
 import { db } from "./db"
 import { logger } from "./logger"
 
@@ -64,9 +70,13 @@ export const serveSocket = (config: ServerConfig): (() => void) => {
 		logger.info(`🛰️ >> 📡`, userKey, { event, args })
 	})
 	const provideState = realtimeStateProvider(config)
+	const provideFamily = realtimeAtomFamilyProvider(config)
+
+	const mutualsSelector = findState(mutualUsersSelector, userKey)
 
 	const unsubFunctions = [
 		provideState(cpuCountAtom),
+		provideFamily(usernameAtoms, mutualsSelector),
 		provideRooms({
 			socket,
 			userKey,

@@ -1,14 +1,20 @@
 import { setState } from "atom.io"
 import { useJSON, useO } from "atom.io/react"
-import { useRealtimeRooms } from "atom.io/realtime-react"
-import type { ReactNode } from "react"
+import type { UserKey } from "atom.io/realtime"
+import {
+	usePullAtomFamilyMember,
+	useRealtimeRooms,
+} from "atom.io/realtime-react"
+import type { ReactElement, ReactNode } from "react"
 
 import {
 	playerTurnSelector,
 	turnInProgressAtom,
 	turnNumberAtom,
 } from "../../../../library/bug-rangers-game-state"
+import { usernameAtoms } from "../../../../library/username-state"
 import type { GameProps } from "../../Game"
+import scss from "./BugRangersUI.module.scss"
 
 export function BugRangersUI({ userKey }: GameProps): ReactNode {
 	const { myRoomKey, myMutualsAtom } = useRealtimeRooms(userKey)
@@ -18,27 +24,18 @@ export function BugRangersUI({ userKey }: GameProps): ReactNode {
 	const playerTurn = useO(playerTurnSelector)
 
 	return (
-		<div
-			style={{
-				position: `fixed`,
-				top: 0,
-				left: 0,
-				right: 0,
-				bottom: 0,
-				pointerEvents: `none`,
-				display: `flex`,
-				flexDirection: `column`,
-				alignItems: `center`,
-				justifyContent: `space-around`,
-			}}
-		>
-			<div>
-				<div>turn: {turnNumber}</div>
-				<div>players: {myMutuals.length}</div>
-				{myMutuals.map((mutualUserKey) => {
-					return <div key={mutualUserKey}>{mutualUserKey}</div>
-				})}
-			</div>
+		<main className={scss[`class`]}>
+			<article data-css="room-module">
+				<header>
+					<h1>{myRoomKey}</h1>
+					<span>Turn {turnNumber}</span>
+				</header>
+				<main>
+					{myMutuals.map((mutualUserKey) => {
+						return <Mutual key={mutualUserKey} mutualUserKey={mutualUserKey} />
+					})}
+				</main>
+			</article>
 			<button
 				type="button"
 				disabled={!turnInProgress}
@@ -49,6 +46,15 @@ export function BugRangersUI({ userKey }: GameProps): ReactNode {
 			>
 				end turn
 			</button>
-		</div>
+		</main>
 	)
+}
+
+export function Mutual({
+	mutualUserKey,
+}: {
+	mutualUserKey: UserKey
+}): ReactElement {
+	const username = usePullAtomFamilyMember(usernameAtoms, mutualUserKey)
+	return <div data-css="mutual">{username.slice(0, 1)}</div>
 }

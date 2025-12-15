@@ -322,3 +322,12 @@ export const playerTurnSelector = selector<UserKey | null>({
 		return playerTurnOrder[index]
 	},
 })
+
+export type PlayerReadyStatus =
+	| `notReady`
+	| `readyDoesNotWantFirst`
+	| `readyWantsFirst`
+export const playerReadyStatusAtoms = atomFamily<PlayerReadyStatus, UserKey>({
+	key: `playerReadyStatus`,
+	default: `notReady`,
+})
