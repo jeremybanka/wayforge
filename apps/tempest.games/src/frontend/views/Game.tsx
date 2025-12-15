@@ -55,7 +55,7 @@ export type GameProps = { gameId: GameId; userKey: UserKey }
 export function Game(props: GameProps): React.ReactNode {
 	switch (props.gameId) {
 		case `bug_rangers`: {
-			return <BugRangers />
+			return <BugRangers {...props} />
 		}
 		case `clicker`: {
 			return <Clicker />
