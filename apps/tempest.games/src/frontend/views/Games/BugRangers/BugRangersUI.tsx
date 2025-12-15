@@ -1,24 +1,20 @@
-import { useSpring } from "@react-spring/three"
 import { setState } from "atom.io"
-import { useO } from "atom.io/react"
+import { useJSON, useO } from "atom.io/react"
 import { useRealtimeRooms } from "atom.io/realtime-react"
 import type { ReactNode } from "react"
 
 import {
 	playerTurnSelector,
 	turnInProgressAtom,
+	turnNumberAtom,
 } from "../../../../library/bug-rangers-game-state"
 import type { GameProps } from "../../Game"
-import { cameraTargetAtom } from "../BugRangers/bug-rangers-client-state"
 
 export function BugRangersUI({ userKey }: GameProps): ReactNode {
-	const cameraTarget = useO(cameraTargetAtom)
-	useSpring({
-		animatedCam: cameraTarget,
-		config: { mass: 1, tension: 170, friction: 26 },
-	})
-	const { currentRoom } = useRealtimeRooms(userKey)
+	const { myRoomKey, myMutualsAtom } = useRealtimeRooms(userKey)
+	const myMutuals = useJSON(myMutualsAtom)
 	const turnInProgress = useO(turnInProgressAtom)
+	const turnNumber = useO(turnNumberAtom)
 	const playerTurn = useO(playerTurnSelector)
 
 	return (
@@ -36,7 +32,13 @@ export function BugRangersUI({ userKey }: GameProps): ReactNode {
 				justifyContent: `space-around`,
 			}}
 		>
-			<div>{playerTurn}</div>
+			<div>
+				<div>turn: {turnNumber}</div>
+				<div>players: {myMutuals.length}</div>
+				{myMutuals.map((mutualUserKey) => {
+					return <div key={mutualUserKey}>{mutualUserKey}</div>
+				})}
+			</div>
 			<button
 				type="button"
 				disabled={!turnInProgress}
