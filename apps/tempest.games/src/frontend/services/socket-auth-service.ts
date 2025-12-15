@@ -40,6 +40,7 @@ socket
 	})
 	.on(`connect_error`, () => {
 		console.log(`connect_error`)
+		setState(authAtom, null)
 	})
 	.on(`usernameChanged`, (username) => {
 		setState(authAtom, (auth) => (auth === null ? null : { ...auth, username }))
