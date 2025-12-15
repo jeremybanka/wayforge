@@ -8,15 +8,12 @@ import { gameContinuity, letterAtoms } from "./game-store"
 
 type RoomNames = `game-instance.bun.ts`
 
-function Room({
-	socket,
-	currentRoomKey,
-}: RTR.RealtimeRoomsTools): React.ReactNode {
+function Room({ socket, myRoomKey }: RTR.RealtimeRoomsTools): React.ReactNode {
 	RTR.useSyncContinuity(gameContinuity)
 	const letter0 = AR.useO(letterAtoms, 0)
 	return (
-		<main data-testid={currentRoomKey}>
-			<h1>{currentRoomKey}</h1>
+		<main data-testid={myRoomKey}>
+			<h1>{myRoomKey}</h1>
 			<p data-testid={letter0}>{letter0}</p>
 			<button
 				type="button"
@@ -72,7 +69,7 @@ function Lobby({
 
 function View({ myUserKey }: { myUserKey: RT.UserKey }): React.ReactNode {
 	const roomTools = RTR.useRealtimeRooms<RoomNames>(myUserKey)
-	return roomTools.currentRoomKey ? (
+	return roomTools.myRoomKey !== `room::$_NONE_$` ? (
 		<Room {...roomTools} />
 	) : (
 		<Lobby {...roomTools} />

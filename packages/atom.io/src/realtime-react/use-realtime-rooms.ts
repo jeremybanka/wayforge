@@ -1,6 +1,6 @@
 import type { MutableAtomToken } from "atom.io"
 import { findInStore, getInternalRelationsFromStore } from "atom.io/internal"
-import { StoreContext, useJSON, useO } from "atom.io/react"
+import { StoreContext, useO } from "atom.io/react"
 import type { RoomKey, RoomSocketInterface, UserKey } from "atom.io/realtime"
 import { ownersOfRooms, roomKeysAtom, usersInRooms } from "atom.io/realtime"
 import type { UList } from "atom.io/transceivers/u-list"
@@ -13,10 +13,10 @@ import { usePullMutableAtomFamilyMember } from "./use-pull-mutable-family-member
 
 export type RealtimeRoomsTools = {
 	socket: Socket<{}, RoomSocketInterface<string>>
-	currentRoomKey: RoomKey | null
+	myRoomKey: RoomKey
+	myMutualsAtom: MutableAtomToken<UList<UserKey>>
+	myOwnedRoomsAtom: MutableAtomToken<UList<RoomKey>>
 	allRoomKeysAtom: MutableAtomToken<UList<RoomKey>>
-	mutualsAtom: MutableAtomToken<UList<UserKey>>
-	ownedRoomsAtom: MutableAtomToken<UList<RoomKey>>
 }
 export function useRealtimeRooms<RoomNames extends string>(
 	userKey: UserKey,
@@ -45,14 +45,14 @@ export function useRealtimeRooms<RoomNames extends string>(
 		ownersOfRooms,
 		`split`,
 	)
-	const ownedRoomsToken = findInStore(store, ownedRoomsFamily, userKey)
+	const myOwnedRoomsAtom = findInStore(store, ownedRoomsFamily, userKey)
 	usePullMutableAtomFamilyMember(ownedRoomsFamily, userKey)
 
 	return {
 		socket: socket as Socket<{}, RoomSocketInterface<RoomNames>>,
-		currentRoomKey: myRoomKey ?? null,
+		myRoomKey: myRoomKey,
 		allRoomKeysAtom: roomKeysAtom,
-		mutualsAtom: findInStore(store, userKeysFamily, myRoomKey),
-		ownedRoomsAtom: ownedRoomsToken,
+		myMutualsAtom: findInStore(store, userKeysFamily, myRoomKey),
+		myOwnedRoomsAtom,
 	}
 }
