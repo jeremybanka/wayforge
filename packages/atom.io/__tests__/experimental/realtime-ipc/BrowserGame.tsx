@@ -1,6 +1,5 @@
-import { findRelationsInStore } from "atom.io/internal"
 import * as AR from "atom.io/react"
-import * as RT from "atom.io/realtime"
+import type * as RT from "atom.io/realtime"
 import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as React from "react"
@@ -9,13 +8,12 @@ import { gameContinuity, letterAtoms } from "./game-store"
 
 type RoomNames = `game-instance.bun.ts`
 
-function Room({ roomId }: { roomId: string }): React.ReactNode {
-	const socket = RTR.useRealtimeRooms<RoomNames>()
+function Room({ socket, myRoomKey }: RTR.RealtimeRoomsTools): React.ReactNode {
 	RTR.useSyncContinuity(gameContinuity)
 	const letter0 = AR.useO(letterAtoms, 0)
 	return (
-		<main data-testid={roomId}>
-			<h1>{roomId}</h1>
+		<main data-testid={myRoomKey}>
+			<h1>{myRoomKey}</h1>
 			<p data-testid={letter0}>{letter0}</p>
 			<button
 				type="button"
@@ -28,10 +26,11 @@ function Room({ roomId }: { roomId: string }): React.ReactNode {
 	)
 }
 
-function Lobby(): React.ReactNode {
-	const socket = RTR.useRealtimeRooms<RoomNames>()
-	RTR.usePullMutable(RT.roomKeysAtom)
-	const roomKeys = AR.useJSON(RT.roomKeysAtom)
+function Lobby({
+	allRoomKeysAtom,
+	socket,
+}: RTR.RealtimeRoomsTools): React.ReactNode {
+	const roomKeys = AR.useJSON(allRoomKeysAtom)
 	return (
 		<main>
 			{roomKeys.length === 0 ? <p data-testid="no-rooms">No rooms</p> : null}
@@ -68,19 +67,13 @@ function Lobby(): React.ReactNode {
 	)
 }
 
-function View({
-	myUserKey: myUsername,
-}: {
-	myUserKey: RT.UserKey
-}): React.ReactNode {
-	const store = React.useContext(AR.StoreContext)
-	const myRoomKeyState = findRelationsInStore(
-		store,
-		RT.usersInRooms,
-		myUsername,
-	).roomKeyOfUser
-	const myRoomKey = RTR.usePullSelector(myRoomKeyState)
-	return myRoomKey ? <Room roomId={myRoomKey} /> : <Lobby />
+function View({ myUserKey }: { myUserKey: RT.UserKey }): React.ReactNode {
+	const roomTools = RTR.useRealtimeRooms<RoomNames>(myUserKey)
+	return roomTools.myRoomKey === undefined ? (
+		<Lobby {...roomTools} />
+	) : (
+		<Room {...roomTools} />
+	)
 }
 
 export function BrowserGame(): React.ReactNode | null {
