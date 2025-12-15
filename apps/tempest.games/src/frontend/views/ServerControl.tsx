@@ -23,7 +23,7 @@ export function ServerControl({ userKey }: GameProps): React.ReactNode {
 		<article data-css="server-control">
 			{Array.from({ length: cpuCount }).map((_, i) => {
 				const roomKey: RoomKey | undefined = allRoomKeys[i]
-				const hasJoined = roomKey === currentRoom?.key
+				const hasJoined = roomKey === currentRoom?.key && Boolean(currentRoom)
 				const ownsRoom = myOwnedRoomKeys.has(roomKey)
 				return (
 					<Core
