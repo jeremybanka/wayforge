@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.2.96
+
+### Patch Changes
+
+- 69915d7: 🗃️ Persist user sessions between server restarts.
+
 ## 0.2.95
 
 ### Patch Changes
