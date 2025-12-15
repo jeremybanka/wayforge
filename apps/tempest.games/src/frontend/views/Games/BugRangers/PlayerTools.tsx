@@ -21,6 +21,7 @@ import {
 	gameTilesAtom,
 	gameTilesStackHeightAtoms,
 	maximumStackHeightSelectors,
+	playerTurnSelector,
 	tileCubeCountAtoms,
 	tileOwnerAtoms,
 	turnInProgressAtom,
@@ -28,6 +29,7 @@ import {
 import {
 	cameraAnchoredSphereAtom,
 	controlsEnabledAtom,
+	isMyTurnSelector,
 } from "./bug-rangers-client-state"
 import { CubeToken } from "./CubeToken"
 import { HexTile } from "./HexTile"
@@ -63,6 +65,7 @@ function PlayableHex(): ReactNode {
 	const setControlsEnabled = useI(controlsEnabledAtom)
 	const dragState = useO(dragStateAtom)
 	const socket = usePlayerActions()
+	const isMyTurn = useO(isMyTurnSelector)
 
 	const startDrag = () => {
 		setControlsEnabled(false)

@@ -1,44 +1,29 @@
-import { getInternalRelations } from "atom.io"
-import { useJSON, useO } from "atom.io/react"
-import type { RoomKey, UserKey } from "atom.io/realtime"
-import { ownersOfRooms, roomKeysAtom, usersInRooms } from "atom.io/realtime"
-import {
-	usePullAtom,
-	usePullMutable,
-	usePullMutableAtomFamilyMember,
-	useRealtimeRooms,
-} from "atom.io/realtime-react"
+import { useO } from "atom.io/react"
+import type { RoomKey } from "atom.io/realtime"
+import type { RealtimeRoomsTools } from "atom.io/realtime-react"
+import { usePullAtom, useRealtimeRooms } from "atom.io/realtime-react"
 import * as React from "react"
 
 import type { ActualWorkerName } from "../../backend.worker"
 import { cpuCountAtom } from "../../library/store"
-import { authAtom } from "../services/socket-auth-service"
+import type { GameProps } from "./Game"
 
-export function ServerControl(): React.ReactNode {
+export function ServerControl({ userKey }: GameProps): React.ReactNode {
 	const cpuCount = usePullAtom(cpuCountAtom)
-	usePullMutable(roomKeysAtom)
-	const roomKeys = useJSON(roomKeysAtom)
-	const userKey = `user::${useO(authAtom)!.userId}` satisfies UserKey
-	usePullMutableAtomFamilyMember(
-		getInternalRelations(usersInRooms, `split`)[1],
-		userKey,
-	)
-	const myJoinedRoomKeys = useJSON(
-		getInternalRelations(usersInRooms, `split`)[1],
-		userKey,
-	)
-	const myOwnedRoomKeys = usePullMutableAtomFamilyMember(
-		getInternalRelations(ownersOfRooms, `split`)[0],
-		userKey,
-	)
+	const {
+		currentRoom,
+		allRoomKeys,
+		ownedRoomsToken,
+		socket: roomSocket,
+	} = useRealtimeRooms<ActualWorkerName>(userKey)
 
-	const roomSocket = useRealtimeRooms<ActualWorkerName>()
+	const myOwnedRoomKeys = useO(ownedRoomsToken)
 
 	return (
 		<article data-css="server-control">
 			{Array.from({ length: cpuCount }).map((_, i) => {
-				const roomKey: RoomKey | undefined = roomKeys[i]
-				const hasJoined = myJoinedRoomKeys.includes(roomKey)
+				const roomKey: RoomKey | undefined = allRoomKeys[i]
+				const hasJoined = roomKey === currentRoom?.key
 				const ownsRoom = myOwnedRoomKeys.has(roomKey)
 				return (
 					<Core
@@ -68,7 +53,7 @@ type CoreProps = {
 	roomKey?: RoomKey
 	hasJoined?: boolean
 	ownsRoom?: boolean
-	roomSocket: ReturnType<typeof useRealtimeRooms>
+	roomSocket: RealtimeRoomsTools[`socket`]
 }
 function Core({
 	indexNumber,
