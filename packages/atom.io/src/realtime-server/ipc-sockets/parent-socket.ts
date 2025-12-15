@@ -66,10 +66,10 @@ export class ParentSocket<
 	protected incompleteData = ``
 	protected unprocessedEvents: string[] = []
 	protected relays: Map<string, SubjectSocket<any, any>>
-	protected relayServices: ((
+	protected initRelay: (
 		socket: SubjectSocket<any, any>,
 		userKey: UserKey,
-	) => (() => void) | void)[]
+	) => (() => void) | void
 	public proc: P
 
 	public id = `#####`
@@ -104,7 +104,9 @@ export class ParentSocket<
 		this.proc = proc
 		this.proc.stdin.resume()
 		this.relays = new Map()
-		this.relayServices = []
+		this.initRelay = () => {
+			this.logger.info(`🔗`, `nothing to relay`)
+		}
 
 		this.proc.stdin.on(
 			`data`,
@@ -174,20 +176,21 @@ export class ParentSocket<
 		}
 
 		this.on(`user-joins`, (userKey: UserKey) => {
-			this.logger.info(`👤`, `user`, userKey, `joined`)
+			this.logger.info(`👤`, userKey, `joined`)
 			const relay = new SubjectSocket(userKey)
 			this.relays.set(userKey, relay)
 			this.logger.info(
 				`🔗`,
-				`attaching services:`,
-				`[${[...this.relayServices.keys()].join(`, `)}]`,
+				`attaching services for user`,
+				userKey,
+				// `[${[...this.initRelay.keys()].join(`, `)}]`,
 			)
-			for (const attachRelay of this.relayServices) {
-				const cleanupRelay = attachRelay(relay, userKey)
-				if (cleanupRelay) {
-					relay.disposalFunctions.push(cleanupRelay)
-				}
+			// for (const attachRelay of this.initRelay) {
+			const cleanupRelay = this.initRelay(relay, userKey)
+			if (cleanupRelay) {
+				relay.disposalFunctions.push(cleanupRelay)
 			}
+			// }
 			this.on(userKey, (...data) => {
 				relay.in.next(data)
 			})
@@ -215,6 +218,6 @@ export class ParentSocket<
 		) => (() => void) | void,
 	): void {
 		this.logger.info(`🔗`, `running relay method`)
-		this.relayServices.push(attachServices)
+		this.initRelay = attachServices
 	}
 }
