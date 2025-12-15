@@ -67,7 +67,7 @@
 		"takua": "workspace:*",
 		"tsdown": "0.17.4",
 		"vite-plugin-dts": "4.5.4",
-		"vite-tsconfig-paths": "5.1.4",
+		"vite-tsconfig-paths": "6.0.0",
 		"vitest": "4.0.15"
 	},
 	"files": [

@@ -118,7 +118,7 @@
 		"tmp": "0.2.5",
 		"tsdown": "0.17.4",
 		"vite": "7.2.7",
-		"vite-tsconfig-paths": "5.1.4",
+		"vite-tsconfig-paths": "6.0.0",
 		"vitest": "4.0.15"
 	},
 	"main": "./dist/main/index.js",
