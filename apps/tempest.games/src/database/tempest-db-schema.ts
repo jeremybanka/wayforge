@@ -3,6 +3,7 @@ import { sql } from "drizzle-orm"
 import type { AnyPgColumn } from "drizzle-orm/pg-core"
 import {
 	boolean,
+	index,
 	integer,
 	pgEnum,
 	pgTable,
@@ -145,10 +146,14 @@ export const banishedIps = pgTable(`banishedIps`, {
 	banishedAtIso: iso8601().notNull().default(ISO_NOW),
 	banishedUntilIso: iso8601(),
 })
-export const userSessions = pgTable(`userSessions`, {
-	userId: uuid()
-		.notNull()
-		.references(() => users.id, { onDelete: `cascade` }),
-	sessionKey: uuid().notNull(),
-	createdAtIso: iso8601().notNull().default(ISO_NOW),
-})
+export const userSessions = pgTable(
+	`userSessions`,
+	{
+		sessionKey: uuid().notNull().primaryKey(),
+		userId: uuid()
+			.notNull()
+			.references(() => users.id, { onDelete: `cascade` }),
+		createdAtIso: iso8601().notNull().default(ISO_NOW),
+	},
+	(table) => [index(`userIdIndex`).on(table.userId)],
+)
