@@ -12,7 +12,7 @@ export const sessionExpiry: CronJob = (() => {
 	const autoExpiry = new CronJob(`00 00 03 * * *`, async () => {
 		const aboutAWeekAgoInst = Temporal.Now.instant().subtract({ hours: 24 * 7 })
 		const aboutAWeekAgo = iso8601(aboutAWeekAgoInst)
-		await db.sql`DELETE FROM events WHERE created_at::timestamptz < ${aboutAWeekAgo}::timestamptz`
+		await db.sql`DELETE FROM userSessions WHERE createdAtIso::timestamptz < ${aboutAWeekAgo}::timestamptz`
 	})
 	autoExpiry.start()
 	process.on(`exit`, async () => {
