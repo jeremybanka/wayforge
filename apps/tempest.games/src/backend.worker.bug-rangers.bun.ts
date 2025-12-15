@@ -15,7 +15,6 @@ import {
 	gameTilesAtom,
 	type PlayerActions,
 	playerTurnOrderAtom,
-	playerTurnSelector,
 	type TileCoordinatesSerialized,
 	turnNumberAtom,
 } from "./library/bug-rangers-game-state"
@@ -40,9 +39,10 @@ const bugRangersGuard: SocketGuard<PlayerActions> = {
 }
 
 parent.receiveRelay((socket, userKey) => {
-	const exposeState = realtimeStateProvider({ socket, userKey })
-	const exposeMutable = realtimeMutableProvider({ socket, userKey })
-	const exposeFamily = realtimeAtomFamilyProvider({ socket, userKey })
+	const config = { socket, userKey }
+	const exposeState = realtimeStateProvider(config)
+	const exposeMutable = realtimeMutableProvider(config)
+	const exposeFamily = realtimeAtomFamilyProvider(config)
 
 	const unsubFunctions: (() => void)[] = []
 	unsubFunctions.push(
