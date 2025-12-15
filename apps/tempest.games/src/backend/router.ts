@@ -14,6 +14,7 @@ import {
 	banishedIps,
 	signInHistory,
 	users,
+	userSessions,
 } from "../database/tempest-db-schema"
 import type { ClientAuthData } from "../library/data-constraints"
 import { credentialsType } from "../library/data-constraints"
@@ -26,12 +27,7 @@ import { decryptId, encryptId } from "./secrecy"
 import { instant, iso8601 } from "./time"
 import type { Context } from "./trpc-server"
 import { trpc } from "./trpc-server"
-import {
-	createSession,
-	isSessionRecent,
-	sessionCreatedTimes,
-	userSessions,
-} from "./user-sessions"
+import { createSession, isSessionRecent } from "./user-sessions"
 
 interface VerifyAccountActionResponse extends ClientAuthData {
 	action: AccountActionTypeActual
@@ -73,7 +69,7 @@ export const appRouter = trpc.router({
 			const { emailOffered } = input
 			const { userId, sessionKey, now } = ctx
 
-			const sessionIsRecent = isSessionRecent(sessionKey, now)
+			const sessionIsRecent = await isSessionRecent(sessionKey, now)
 			if (sessionIsRecent) {
 				void ctx.db.drizzle
 					.update(users)
@@ -203,7 +199,8 @@ export const appRouter = trpc.router({
 						message: `${attemptsRemaining} attempts remaining.`,
 					})
 				}
-				const sessionKey = createSession(userId, ctx.now)
+
+				const sessionKey = await createSession(userId, ctx)
 				successful = true
 				ctx.logger.info(`🔑 sign in successful as`, email)
 				ctx.res.setHeader(
@@ -233,8 +230,9 @@ export const appRouter = trpc.router({
 		.input(type({ username: `string` }))
 		.mutation(({ ctx }) => {
 			const { sessionKey } = ctx
-			userSessions.delete(sessionKey)
-			sessionCreatedTimes.delete(sessionKey)
+			ctx.db.drizzle
+				.delete(userSessions)
+				.where(eq(userSessions.sessionKey, sessionKey))
 		}),
 
 	verifyAccountAction: loggedProcedure
@@ -351,7 +349,7 @@ export const appRouter = trpc.router({
 				.delete(accountActions)
 				.where(eq(accountActions.userId, user.id))
 			const { username } = user
-			const sessionKey = createSession(user.id, ctx.now)
+			const sessionKey = await createSession(user.id, ctx)
 			ctx.res.setHeader(
 				`Set-Cookie`,
 				`sessionKey=${sessionKey}; HttpOnly; Expires=${60 * 60 * 24 * 7}; Path=/`,

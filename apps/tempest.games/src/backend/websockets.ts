@@ -17,7 +17,7 @@ import { CookieMap } from "bun"
 import { eq } from "drizzle-orm"
 import type { DefaultEventsMap, ExtendedError, Socket } from "socket.io"
 
-import { users } from "../database/tempest-db-schema"
+import { users, userSessions } from "../database/tempest-db-schema"
 import type {
 	TempestSocketDown,
 	TempestSocketServerSide,
@@ -25,7 +25,7 @@ import type {
 } from "../library/socket-interface"
 import { db } from "./db"
 import { logger } from "./logger"
-import { userSessions } from "./user-sessions"
+// import { userSessions } from "./user-sessions"
 
 export type TempestServerSocket = Socket<
 	TempestSocketUp,
@@ -70,8 +70,11 @@ export const sessionMiddleware: SocketServerMiddleware = async (
 	}
 	const userKey = `user::${user.id}` satisfies UserKey
 	const socketKey = `socket::${socket.id}` satisfies SocketKey
+	const session = await db.drizzle.query.userSessions.findFirst({
+		where: eq(userSessions.sessionKey, sessionKey),
+	})
 
-	if (userSessions?.has(user.id, sessionKey)) {
+	if (session) {
 		const socketState = findInStore(IMPLICIT.STORE, socketAtoms, socketKey)
 		setIntoStore(IMPLICIT.STORE, socketState, socket)
 		editRelationsInStore(IMPLICIT.STORE, usersOfSockets, (relations) => {
