@@ -15,7 +15,7 @@
 		"atom.io": "workspace:*",
 		"react": "19.2.3",
 		"react-dom": "19.2.3",
-		"zod": "4.1.13"
+		"zod": "4.2.0"
 	},
 	"devDependencies": {
 		"@types/node": "25.0.2",
