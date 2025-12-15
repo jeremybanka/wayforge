@@ -1,14 +1,19 @@
 import { useSpring } from "@react-spring/three"
 import * as Drei from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
-import { setState } from "atom.io"
+import { findRelations, setState } from "atom.io"
 import { useO } from "atom.io/react"
+import { usersInRooms } from "atom.io/realtime"
+import { useRealtimeRooms } from "atom.io/realtime-react"
 import type { ReactNode } from "react"
 import { useRef } from "react"
 import * as THREE from "three"
 import type * as STD from "three-stdlib"
 
-import { turnInProgressAtom } from "../../../library/bug-rangers-game-state"
+import {
+	playerTurnSelector,
+	turnInProgressAtom,
+} from "../../../library/bug-rangers-game-state"
 import {
 	cameraTargetAtom,
 	controlsEnabledAtom,
@@ -23,7 +28,10 @@ export function BugRangers(): ReactNode {
 		animatedCam: cameraTarget,
 		config: { mass: 1, tension: 170, friction: 26 },
 	})
+	useRealtimeRooms()
+	const fellows = useJSON(findRelations(usersInRooms))
 	const turnInProgress = useO(turnInProgressAtom)
+	const playerTurn = useO(playerTurnSelector)
 
 	return (
 		<>
@@ -57,8 +65,13 @@ export function BugRangers(): ReactNode {
 					right: 0,
 					bottom: 0,
 					pointerEvents: `none`,
+					display: `flex`,
+					flexDirection: `column`,
+					alignItems: `center`,
+					justifyContent: `space-around`,
 				}}
 			>
+				<div>{playerTurn}</div>
 				<button
 					type="button"
 					disabled={!turnInProgress}

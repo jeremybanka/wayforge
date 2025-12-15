@@ -1,5 +1,6 @@
 import { atom, atomFamily, mutableAtom, selector, selectorFamily } from "atom.io"
 import type { UserKey } from "atom.io/realtime"
+import { OList } from "atom.io/transceivers/o-list"
 import { UList } from "atom.io/transceivers/u-list"
 import * as THREE from "three"
 
@@ -301,7 +302,23 @@ export const maximumStackHeightSelectors = selectorFamily<
 		},
 })
 
-export const playerTurnAtom = atom<UserKey | null>({
+export const playerTurnOrderAtom = mutableAtom<OList<UserKey>>({
+	key: `playerTurnOrder`,
+	class: OList,
+})
+
+export const turnNumberAtom = atom<number>({
+	key: `turnNumber`,
+	default: 0,
+})
+
+export const playerTurnSelector = selector<UserKey | null>({
 	key: `playerTurn`,
-	default: null,
+	get: ({ get }) => {
+		const turnNumber = get(turnNumberAtom)
+		const playerTurnOrder = get(playerTurnOrderAtom)
+		if (playerTurnOrder.length === 0) return null
+		const index = turnNumber % playerTurnOrder.length
+		return playerTurnOrder[index]
+	},
 })

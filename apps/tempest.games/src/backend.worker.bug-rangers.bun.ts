@@ -14,7 +14,10 @@ import {
 import {
 	gameTilesAtom,
 	type PlayerActions,
+	playerTurnOrderAtom,
+	playerTurnSelector,
 	type TileCoordinatesSerialized,
+	turnNumberAtom,
 } from "./library/bug-rangers-game-state"
 
 const parent: ParentSocket<any, any, any> = ((process as any).parentSocket ??=
@@ -43,7 +46,11 @@ parent.receiveRelay((socket, userKey) => {
 
 	const unsubFunctions: (() => void)[] = []
 
-	unsubFunctions.push(exposeMutable(gameTilesAtom))
+	unsubFunctions.push(
+		exposeState(turnNumberAtom),
+		exposeMutable(playerTurnOrderAtom),
+		exposeMutable(gameTilesAtom),
+	)
 
 	const gameSocket = castSocket<TypedSocket<PlayerActions>>(
 		socket,
