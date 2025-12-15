@@ -145,3 +145,10 @@ export const banishedIps = pgTable(`banishedIps`, {
 	banishedAtIso: iso8601().notNull().default(ISO_NOW),
 	banishedUntilIso: iso8601(),
 })
+export const userSessions = pgTable(`userSessions`, {
+	userId: uuid()
+		.notNull()
+		.references(() => users.id, { onDelete: `cascade` }),
+	sessionKey: uuid().notNull(),
+	createdAtIso: iso8601().notNull().default(ISO_NOW),
+})
