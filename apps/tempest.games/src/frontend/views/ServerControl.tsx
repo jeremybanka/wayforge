@@ -1,5 +1,5 @@
-import { useO } from "atom.io/react"
-import type { RoomKey } from "atom.io/realtime"
+import { useJSON, useO } from "atom.io/react"
+import { type RoomKey, roomKeysAtom } from "atom.io/realtime"
 import type { RealtimeRoomsTools } from "atom.io/realtime-react"
 import { usePullAtom, useRealtimeRooms } from "atom.io/realtime-react"
 import * as React from "react"
@@ -10,20 +10,20 @@ import type { GameProps } from "./Game"
 
 export function ServerControl({ userKey }: GameProps): React.ReactNode {
 	const cpuCount = usePullAtom(cpuCountAtom)
+	const allRoomKeys = useJSON(roomKeysAtom)
 	const {
-		currentRoom,
-		allRoomKeys,
-		ownedRoomsToken,
+		myRoomKey,
+		myOwnedRoomsAtom,
 		socket: roomSocket,
 	} = useRealtimeRooms<ActualWorkerName>(userKey)
 
-	const myOwnedRoomKeys = useO(ownedRoomsToken)
+	const myOwnedRoomKeys = useO(myOwnedRoomsAtom)
 
 	return (
 		<article data-css="server-control">
 			{Array.from({ length: cpuCount }).map((_, i) => {
 				const roomKey: RoomKey | undefined = allRoomKeys[i]
-				const hasJoined = roomKey === currentRoom?.key && Boolean(currentRoom)
+				const hasJoined = roomKey === myRoomKey
 				const ownsRoom = myOwnedRoomKeys.has(roomKey)
 				return (
 					<Core

@@ -45,7 +45,6 @@ parent.receiveRelay((socket, userKey) => {
 	const exposeFamily = realtimeAtomFamilyProvider({ socket, userKey })
 
 	const unsubFunctions: (() => void)[] = []
-
 	unsubFunctions.push(
 		exposeState(turnNumberAtom),
 		exposeMutable(playerTurnOrderAtom),
