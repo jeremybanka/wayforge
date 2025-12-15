@@ -123,10 +123,6 @@ export function App(): React.ReactNode {
 								return <Home />
 							case `admin`:
 								return <Admin />
-							// case `sign_in`:
-							// 	return <SignIn />
-							// case `sign_up`:
-							// 	return <SignUp />
 							case `game`:
 								return <GameView route={route} />
 							case `verify`:
