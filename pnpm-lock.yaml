@@ -160,8 +160,8 @@ importers:
         specifier: 5.1.6
         version: 5.1.6
       openai:
-        specifier: 6.13.0
-        version: 6.13.0(ws@8.18.3)(zod@4.2.1)
+        specifier: 6.14.0
+        version: 6.14.0(ws@8.18.3)(zod@4.2.1)
       postgres:
         specifier: 3.4.7
         version: 3.4.7
@@ -182,7 +182,7 @@ importers:
         version: link:../../packages/safedeposit
       safegen:
         specifier: 0.8.3
-        version: 0.8.3(@floating-ui/react-dom@2.1.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@floating-ui/react@0.27.16(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@google/genai@1.33.0)(@testing-library/react@16.3.1(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(arktype@2.1.29)(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.0.11)(motion@12.23.26(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(openai@6.13.0(ws@8.18.3)(zod@4.2.1))(react@19.2.3)(socket.io-client@4.8.1)(socket.io@4.8.1)(zod@4.2.1)
+        version: 0.8.3(@floating-ui/react-dom@2.1.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@floating-ui/react@0.27.16(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@google/genai@1.33.0)(@testing-library/react@16.3.1(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(arktype@2.1.29)(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.0.11)(motion@12.23.26(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(openai@6.14.0(ws@8.18.3)(zod@4.2.1))(react@19.2.3)(socket.io-client@4.8.1)(socket.io@4.8.1)(zod@4.2.1)
       socket.io:
         specifier: 4.8.1
         version: 4.8.1
@@ -289,13 +289,13 @@ importers:
     devDependencies:
       '@storybook/addon-docs':
         specifier: 10.1.9
-        version: 10.1.9(@types/react@19.2.7)(esbuild@0.25.12)(rollup@4.53.4)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@7.3.0(@types/node@25.0.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.0)(sass@1.97.0))
+        version: 10.1.9(@types/react@19.2.7)(esbuild@0.27.1)(rollup@4.53.4)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@7.3.0(@types/node@25.0.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.0)(sass@1.97.0))
       '@storybook/addon-onboarding':
         specifier: 10.1.9
         version: 10.1.9(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
       '@storybook/react-vite':
         specifier: 10.1.9
-        version: 10.1.9(esbuild@0.25.12)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(rollup@4.53.4)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(typescript@5.9.3)(vite@7.3.0(@types/node@25.0.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.0)(sass@1.97.0))
+        version: 10.1.9(esbuild@0.27.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(rollup@4.53.4)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(typescript@5.9.3)(vite@7.3.0(@types/node@25.0.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.0)(sass@1.97.0))
       '@testing-library/react':
         specifier: 16.3.1
         version: 16.3.1(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -1007,8 +1007,8 @@ importers:
         specifier: 9.39.2
         version: 9.39.2(jiti@2.6.1)
       openai:
-        specifier: 6.13.0
-        version: 6.13.0(ws@8.18.3)(zod@4.2.1)
+        specifier: 6.14.0
+        version: 6.14.0(ws@8.18.3)(zod@4.2.1)
       tmp:
         specifier: 0.2.5
         version: 0.2.5
@@ -6866,8 +6866,8 @@ packages:
     resolution: {integrity: sha512-YgBpdJHPyQ2UE5x+hlSXcnejzAvD0b22U2OuAP+8OnlJT+PjWPxtgmGqKKc+RgTM63U9gN0YzrYc71R2WT/hTA==}
     engines: {node: '>=18'}
 
-  openai@6.13.0:
-    resolution: {integrity: sha512-yHbMo+EpNGPG3sRrXvmo0LhUPFN4bAURJw3G17bE+ax1G4tcTFCa9ZjvCWh3cvni0aHY0uWlk2IxcsPH4NR9Ow==}
+  openai@6.14.0:
+    resolution: {integrity: sha512-ZPD9MG5/sPpyGZ0idRoDK0P5MWEMuXe0Max/S55vuvoxqyEVkN94m9jSpE3YgNgz3WoESFvozs57dxWqAco31w==}
     hasBin: true
     peerDependencies:
       ws: ^8.18.0
@@ -10843,10 +10843,10 @@ snapshots:
 
   '@standard-schema/spec@1.0.0': {}
 
-  '@storybook/addon-docs@10.1.9(@types/react@19.2.7)(esbuild@0.25.12)(rollup@4.53.4)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@7.3.0(@types/node@25.0.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.0)(sass@1.97.0))':
+  '@storybook/addon-docs@10.1.9(@types/react@19.2.7)(esbuild@0.27.1)(rollup@4.53.4)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@7.3.0(@types/node@25.0.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.0)(sass@1.97.0))':
     dependencies:
       '@mdx-js/react': 3.1.1(@types/react@19.2.7)(react@19.2.3)
-      '@storybook/csf-plugin': 10.1.9(esbuild@0.25.12)(rollup@4.53.4)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@7.3.0(@types/node@25.0.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.0)(sass@1.97.0))
+      '@storybook/csf-plugin': 10.1.9(esbuild@0.27.1)(rollup@4.53.4)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@7.3.0(@types/node@25.0.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.0)(sass@1.97.0))
       '@storybook/icons': 2.0.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@storybook/react-dom-shim': 10.1.9(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))
       react: 19.2.3
@@ -10864,9 +10864,9 @@ snapshots:
     dependencies:
       storybook: 10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
 
-  '@storybook/builder-vite@10.1.9(esbuild@0.25.12)(rollup@4.53.4)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@7.3.0(@types/node@25.0.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.0)(sass@1.97.0))':
+  '@storybook/builder-vite@10.1.9(esbuild@0.27.1)(rollup@4.53.4)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@7.3.0(@types/node@25.0.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.0)(sass@1.97.0))':
     dependencies:
-      '@storybook/csf-plugin': 10.1.9(esbuild@0.25.12)(rollup@4.53.4)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@7.3.0(@types/node@25.0.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.0)(sass@1.97.0))
+      '@storybook/csf-plugin': 10.1.9(esbuild@0.27.1)(rollup@4.53.4)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@7.3.0(@types/node@25.0.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.0)(sass@1.97.0))
       '@vitest/mocker': 3.2.4(vite@7.3.0(@types/node@25.0.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.0)(sass@1.97.0))
       storybook: 10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       ts-dedent: 2.2.0
@@ -10877,12 +10877,12 @@ snapshots:
       - rollup
       - webpack
 
-  '@storybook/csf-plugin@10.1.9(esbuild@0.25.12)(rollup@4.53.4)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@7.3.0(@types/node@25.0.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.0)(sass@1.97.0))':
+  '@storybook/csf-plugin@10.1.9(esbuild@0.27.1)(rollup@4.53.4)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@7.3.0(@types/node@25.0.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.0)(sass@1.97.0))':
     dependencies:
       storybook: 10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       unplugin: 2.3.11
     optionalDependencies:
-      esbuild: 0.25.12
+      esbuild: 0.27.1
       rollup: 4.53.4
       vite: 7.3.0(@types/node@25.0.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.0)(sass@1.97.0)
 
@@ -10899,11 +10899,11 @@ snapshots:
       react-dom: 19.2.3(react@19.2.3)
       storybook: 10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
 
-  '@storybook/react-vite@10.1.9(esbuild@0.25.12)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(rollup@4.53.4)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(typescript@5.9.3)(vite@7.3.0(@types/node@25.0.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.0)(sass@1.97.0))':
+  '@storybook/react-vite@10.1.9(esbuild@0.27.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(rollup@4.53.4)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(typescript@5.9.3)(vite@7.3.0(@types/node@25.0.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.0)(sass@1.97.0))':
     dependencies:
       '@joshwooding/vite-plugin-react-docgen-typescript': 0.6.3(typescript@5.9.3)(vite@7.3.0(@types/node@25.0.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.0)(sass@1.97.0))
       '@rollup/pluginutils': 5.3.0(rollup@4.53.4)
-      '@storybook/builder-vite': 10.1.9(esbuild@0.25.12)(rollup@4.53.4)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@7.3.0(@types/node@25.0.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.0)(sass@1.97.0))
+      '@storybook/builder-vite': 10.1.9(esbuild@0.27.1)(rollup@4.53.4)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(vite@7.3.0(@types/node@25.0.2)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.0)(sass@1.97.0))
       '@storybook/react': 10.1.9(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(storybook@10.1.9(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(typescript@5.9.3)
       empathic: 2.0.0
       magic-string: 0.30.21
@@ -14792,7 +14792,7 @@ snapshots:
       is-inside-container: 1.0.0
       wsl-utils: 0.1.0
 
-  openai@6.13.0(ws@8.18.3)(zod@4.2.1):
+  openai@6.14.0(ws@8.18.3)(zod@4.2.1):
     optionalDependencies:
       ws: 8.18.3
       zod: 4.2.1
@@ -15490,7 +15490,7 @@ snapshots:
 
   safedeposit@0.1.2: {}
 
-  safegen@0.8.3(@floating-ui/react-dom@2.1.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@floating-ui/react@0.27.16(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@google/genai@1.33.0)(@testing-library/react@16.3.1(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(arktype@2.1.29)(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.0.11)(motion@12.23.26(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(openai@6.13.0(ws@8.18.3)(zod@4.2.1))(react@19.2.3)(socket.io-client@4.8.1)(socket.io@4.8.1)(zod@4.2.1):
+  safegen@0.8.3(@floating-ui/react-dom@2.1.6(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@floating-ui/react@0.27.16(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@google/genai@1.33.0)(@testing-library/react@16.3.1(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(@typescript-eslint/parser@8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(arktype@2.1.29)(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.0.11)(motion@12.23.26(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(openai@6.14.0(ws@8.18.3)(zod@4.2.1))(react@19.2.3)(socket.io-client@4.8.1)(socket.io@4.8.1)(zod@4.2.1):
     dependencies:
       '@google/genai': 1.33.0
       '@standard-schema/spec': 1.0.0
@@ -15498,7 +15498,7 @@ snapshots:
       varmint: 0.5.11(zod@4.2.1)
     optionalDependencies:
       arktype: 2.1.29
-      openai: 6.13.0(ws@8.18.3)(zod@4.2.1)
+      openai: 6.14.0(ws@8.18.3)(zod@4.2.1)
       zod: 4.2.1
     transitivePeerDependencies:
       - '@floating-ui/react'
