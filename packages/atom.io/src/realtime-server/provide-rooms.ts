@@ -87,19 +87,19 @@ export function spawnRoom<RoomNames extends string>({
 				room.stdout.on(`data`, resolver)
 			},
 		)
-		const roomSocket = new ChildSocket(child, roomKey)
-		ROOMS.set(roomKey, roomSocket)
+		const room = new ChildSocket(child, roomKey)
+		ROOMS.set(roomKey, room)
 		setIntoStore(store, roomKeysAtom, (index) => (index.add(roomKey), index))
 
 		editRelationsInStore(store, ownersOfRooms, (relations) => {
 			relations.set({ room: roomKey, user: userKey })
 		})
 
-		roomSocket.on(`close`, () => {
+		room.on(`close`, () => {
 			destroyRoom({ store, socket, userKey })(roomKey)
 		})
 
-		return roomSocket
+		return room
 	}
 }
 
