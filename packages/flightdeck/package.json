@@ -62,6 +62,6 @@
 		"tsdown": "0.18.0",
 		"varmint": "workspace:*",
 		"vitest": "4.0.15",
-		"zod": "4.2.0"
+		"zod": "4.2.1"
 	}
 }
