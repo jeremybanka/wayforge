@@ -71,21 +71,21 @@ describe(`pull atom, observe selector`, () => {
 				}
 				const exposeSingle = RTS.realtimeStateProvider({
 					socket,
-					userKey,
+					consumer: userKey,
 					store,
 				})
 				const exposeMutable = RTS.realtimeMutableProvider({
-					userKey,
+					consumer: userKey,
 					socket,
 					store,
 				})
 				const exposeFamily = RTS.realtimeAtomFamilyProvider({
 					socket,
-					userKey,
+					consumer: userKey,
 					store,
 				})
 				const exposeMutableFamily = RTS.realtimeMutableFamilyProvider({
-					userKey,
+					consumer: userKey,
 					socket,
 					store,
 				})

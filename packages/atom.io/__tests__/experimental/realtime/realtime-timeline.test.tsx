@@ -14,7 +14,7 @@ describe(`undo/redo`, () => {
 				const exposeSingle = RTS.realtimeStateProvider({
 					socket,
 					store,
-					userKey,
+					consumer: userKey,
 				})
 				return exposeSingle(countState)
 			},

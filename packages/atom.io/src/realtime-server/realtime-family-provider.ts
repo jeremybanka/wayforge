@@ -14,7 +14,7 @@ import type { ServerConfig } from "."
 export type FamilyProvider = ReturnType<typeof realtimeAtomFamilyProvider>
 export function realtimeAtomFamilyProvider({
 	socket,
-	userKey,
+	consumer,
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
 	return function familyProvider<
@@ -70,7 +70,7 @@ export function realtimeAtomFamilyProvider({
 					store.logger.info(
 						`🙈`,
 						`user`,
-						userKey,
+						consumer,
 						`unsubscribed from state "${token.key}"`,
 					)
 					fillUnsubRequest(token.key)
@@ -91,7 +91,7 @@ export function realtimeAtomFamilyProvider({
 			store.logger.info(
 				`👀`,
 				`user`,
-				userKey,
+				consumer,
 				`can subscribe to family "${family.key}"`,
 			)
 			coreSubscriptions.add(
@@ -102,7 +102,7 @@ export function realtimeAtomFamilyProvider({
 						store.logger.info(
 							`👀`,
 							`user`,
-							userKey,
+							consumer,
 							`is approved for a subscription to`,
 							subKey,
 							`in family "${family.key}"`,
@@ -112,7 +112,7 @@ export function realtimeAtomFamilyProvider({
 						store.logger.info(
 							`❌`,
 							`user`,
-							userKey,
+							consumer,
 							`is denied for a subscription to`,
 							subKey,
 							`in family "${family.key}"`,
@@ -131,7 +131,7 @@ export function realtimeAtomFamilyProvider({
 						store.logger.info(
 							`👀`,
 							`user`,
-							userKey,
+							consumer,
 							`has the following keys available for family "${family.key}"`,
 							newExposedSubKeys,
 						)
@@ -140,7 +140,7 @@ export function realtimeAtomFamilyProvider({
 								store.logger.info(
 									`👀`,
 									`user`,
-									userKey,
+									consumer,
 									`is retroactively approved for a subscription to`,
 									subKey,
 									`in family "${family.key}"`,

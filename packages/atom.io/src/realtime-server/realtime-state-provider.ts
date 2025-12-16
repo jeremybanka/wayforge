@@ -17,10 +17,10 @@ function isReadableToken(input: unknown): input is AtomIO.ReadableToken<any> {
 export type StateProvider = ReturnType<typeof realtimeStateProvider>
 export function realtimeStateProvider({
 	socket,
-	userKey,
+	consumer,
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
-	store.logger.info(`🔌`, `user`, userKey, `initialized state provider`)
+	store.logger.info(`🔌`, `user`, consumer, `initialized state provider`)
 	return function stateProvider<C extends Json.Serializable, S extends C>(
 		clientToken: AtomIO.WritableToken<C>,
 		serverData:
@@ -40,7 +40,7 @@ export function realtimeStateProvider({
 				store.logger.info(
 					`👀`,
 					`user`,
-					userKey,
+					consumer,
 					`will be served`,
 					serverData,
 					`as "${clientToken.key}"`,
@@ -49,7 +49,7 @@ export function realtimeStateProvider({
 				store.logger.info(
 					`👀`,
 					`user`,
-					userKey,
+					consumer,
 					`can subscribe to state "${serverData.key}" as "${clientToken.key}"`,
 				)
 			}
@@ -59,7 +59,7 @@ export function realtimeStateProvider({
 						store.logger.info(
 							`👀`,
 							`user`,
-							userKey,
+							consumer,
 							`requests`,
 							`"${clientToken.key}"`,
 						)
@@ -68,7 +68,7 @@ export function realtimeStateProvider({
 						store.logger.info(
 							`👀`,
 							`user`,
-							userKey,
+							consumer,
 							`subscribes to state "${serverData.key}"`,
 							clientToken === serverData
 								? `directly`
@@ -94,7 +94,7 @@ export function realtimeStateProvider({
 								store.logger.info(
 									`🙈`,
 									`user`,
-									userKey,
+									consumer,
 									`unsubscribes from state "${serverData.key}", served`,
 									clientToken === serverData
 										? `directly`
