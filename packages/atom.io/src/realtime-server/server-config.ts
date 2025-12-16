@@ -18,9 +18,9 @@ import type { Server } from "socket.io"
 import { realtimeStateProvider } from "./realtime-state-provider"
 import type { SocketSystemHierarchy } from "./server-socket-state"
 import {
+	onlineUsersAtom,
 	socketAtoms,
 	socketKeysAtom,
-	userKeysAtom,
 	usersOfSockets,
 } from "./server-socket-state"
 
@@ -76,7 +76,7 @@ export function realtime(
 			editRelationsInStore(store, usersOfSockets, (relations) => {
 				relations.set(userClaim, socketClaim)
 			})
-			setIntoStore(store, userKeysAtom, (index) => index.add(userClaim))
+			setIntoStore(store, onlineUsersAtom, (index) => index.add(userClaim))
 			setIntoStore(store, socketKeysAtom, (index) => index.add(socketClaim))
 			next()
 		})
@@ -104,7 +104,11 @@ export function realtime(
 				editRelationsInStore(store, usersOfSockets, (rel) =>
 					rel.delete(socketKey),
 				)
-				setIntoStore(store, userKeysAtom, (keys) => (keys.delete(userKey), keys))
+				setIntoStore(
+					store,
+					onlineUsersAtom,
+					(keys) => (keys.delete(userKey), keys),
+				)
 				setIntoStore(
 					store,
 					socketKeysAtom,
