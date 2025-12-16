@@ -63,7 +63,7 @@ describe(`synchronizing transactions`, () => {
 					enableLogging()
 					const exposeContinuity = RTS.prepareToProvideContinuity({
 						socket,
-						userKey,
+						consumer: userKey,
 						store,
 					})
 					exposeContinuity(countContinuity, userKey)
@@ -178,7 +178,7 @@ describe(`mutable atoms in continuity`, () => {
 					// enableLogging()
 					const exposeContinuity = RTS.prepareToProvideContinuity({
 						socket,
-						userKey,
+						consumer: userKey,
 						store,
 					})
 					return exposeContinuity(applicationContinuity, userKey)

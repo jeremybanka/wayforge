@@ -63,14 +63,14 @@ describe(`pushing state`, () => {
 					enableLogging()
 				}
 				const provideState = RTS.realtimeStateProvider({
-					userKey,
+					consumer: userKey,
 					socket,
 					store,
 				})
 
 				const receiveState = RTS.realtimeStateReceiver({
 					socket,
-					userKey,
+					consumer: userKey,
 					store,
 				})
 

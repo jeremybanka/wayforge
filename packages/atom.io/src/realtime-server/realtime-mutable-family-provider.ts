@@ -31,7 +31,7 @@ export type MutableFamilyProvider = ReturnType<
 >
 export function realtimeMutableFamilyProvider({
 	socket,
-	userKey,
+	consumer,
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
 	return function mutableFamilyProvider<
@@ -95,7 +95,7 @@ export function realtimeMutableFamilyProvider({
 			store.logger.info(
 				`👀`,
 				`user`,
-				userKey,
+				consumer,
 				`can subscribe to family "${family.key}"`,
 			)
 			coreSubscriptions.add(
@@ -106,7 +106,7 @@ export function realtimeMutableFamilyProvider({
 						store.logger.info(
 							`👀`,
 							`user`,
-							userKey,
+							consumer,
 							`is approved for a subscription to`,
 							subKey,
 							`in family "${family.key}"`,
@@ -116,7 +116,7 @@ export function realtimeMutableFamilyProvider({
 						store.logger.info(
 							`❌`,
 							`user`,
-							userKey,
+							consumer,
 							`is denied for a subscription to`,
 							subKey,
 							`in family "${family.key}"`,
@@ -135,7 +135,7 @@ export function realtimeMutableFamilyProvider({
 						store.logger.info(
 							`👀`,
 							`user`,
-							userKey,
+							consumer,
 							`has the following keys available for family "${family.key}"`,
 							newExposedSubKeys,
 						)
@@ -144,7 +144,7 @@ export function realtimeMutableFamilyProvider({
 								store.logger.info(
 									`👀`,
 									`user`,
-									userKey,
+									consumer,
 									`is retroactively approved for a subscription to`,
 									subKey,
 									`in family "${family.key}"`,

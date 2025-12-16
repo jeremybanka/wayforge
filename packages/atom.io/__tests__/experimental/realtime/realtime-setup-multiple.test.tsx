@@ -14,7 +14,7 @@ describe(`multi-client scenario`, () => {
 				const exposeSingle = RTS.realtimeStateProvider({
 					socket,
 					store,
-					userKey,
+					consumer: userKey,
 				})
 				return exposeSingle(countState)
 			},

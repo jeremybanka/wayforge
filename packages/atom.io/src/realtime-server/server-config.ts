@@ -12,7 +12,7 @@ import {
 	IMPLICIT,
 	setIntoStore,
 } from "atom.io/internal"
-import type { Socket, SocketKey, UserKey } from "atom.io/realtime"
+import type { RoomKey, Socket, SocketKey, UserKey } from "atom.io/realtime"
 import type { Server } from "socket.io"
 
 import { realtimeStateProvider } from "./realtime-state-provider"
@@ -26,7 +26,12 @@ import {
 
 export type ServerConfig = {
 	socket: Socket
-	userKey: UserKey
+	consumer: RoomKey | UserKey
+	store?: RootStore
+}
+export type UserServerConfig = {
+	socket: Socket
+	consumer: UserKey
 	store?: RootStore
 }
 
@@ -57,7 +62,7 @@ export type Handshake = {
 export function realtime(
 	server: Server,
 	auth: (handshake: Handshake) => Loadable<Error | UserKey>,
-	onConnect: (config: ServerConfig) => Loadable<() => Loadable<void>>,
+	onConnect: (config: UserServerConfig) => Loadable<() => Loadable<void>>,
 	store: RootStore = IMPLICIT.STORE,
 ): () => Promise<void> {
 	const socketRealm = new Realm<SocketSystemHierarchy>(store)
@@ -88,7 +93,7 @@ export function realtime(
 				socketKey,
 			).userKeyOfSocket
 			const userKey = getFromStore(store, userKeyState)!
-			const serverConfig: ServerConfig = { store, socket, userKey }
+			const serverConfig: UserServerConfig = { store, socket, consumer: userKey }
 			const provideState = realtimeStateProvider(serverConfig)
 			const unsubFromMyUserKey = provideState(
 				{ key: `myUserKey`, type: `atom` },
