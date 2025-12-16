@@ -23,7 +23,7 @@ export type RoomSocketInterface<RoomNames extends string> = {
 }
 
 export const roomKeysAtom: MutableAtomToken<UList<RoomKey>> = mutableAtom({
-	key: `roomIndex`,
+	key: `roomKeys`,
 	class: UList,
 })
 
@@ -46,13 +46,34 @@ export const visibleUsersInRoomsSelector: PureSelectorFamilyToken<
 	(RoomKey | UserKey)[],
 	UserKey
 > = selectorFamily({
-	key: `selfList`,
+	key: `visibleUsersInRooms`,
 	get:
 		(userKey) =>
 		({ get }) => {
 			const [, roomsOfUsersAtoms] = getInternalRelations(usersInRooms, `split`)
 			const rooms = get(roomsOfUsersAtoms, userKey)
 			return [userKey, ...rooms]
+		},
+})
+
+export const mutualUsersSelector: ReadonlyPureSelectorFamilyToken<
+	UserKey[],
+	UserKey
+> = selectorFamily({
+	key: `mutualUsers`,
+	get:
+		(userKey) =>
+		({ get }) => {
+			const [usersOfRoomsAtoms, roomsOfUsersAtoms] = getInternalRelations(
+				usersInRooms,
+				`split`,
+			)
+			const rooms = get(roomsOfUsersAtoms, userKey)
+			for (const room of rooms) {
+				const users = get(usersOfRoomsAtoms, room)
+				return [...users]
+			}
+			return []
 		},
 })
 
@@ -64,17 +85,3 @@ export const ownersOfRooms: JoinToken<`user`, UserKey, `room`, RoomKey, `1:n`> =
 		isAType: isUserKey,
 		isBType: isRoomKey,
 	})
-
-export const usersInMyRoomView: ReadonlyPureSelectorFamilyToken<
-	MutableAtomToken<UList<RoomKey>>[],
-	UserKey
-> = selectorFamily({
-	key: `usersInMyRoomView`,
-	get:
-		(myUsername) =>
-		({ find }) => {
-			const [, roomsOfUsersAtoms] = getInternalRelations(usersInRooms, `split`)
-			const myRoomIndex = find(roomsOfUsersAtoms, myUsername)
-			return [myRoomIndex]
-		},
-})
