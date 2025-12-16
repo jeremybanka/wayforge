@@ -115,13 +115,17 @@ export function provideEnterAndExit({
 	roomSocket,
 	userKey,
 }: ProvideEnterAndExitConfig): (roomKey: RoomKey) => void {
-	const enterRoom = (roomKey: RoomKey) => {
+	const enterRoom = (roomKey: RoomKey): void => {
 		store.logger.info(
 			`📡`,
 			`socket`,
 			socket.id ?? `[ID MISSING?!]`,
 			`👤 ${userKey} enters room ${roomKey}`,
 		)
+
+		const dcUserFromRoom = () => {
+			toRoom([`user-leaves`])
+		}
 
 		const exitRoom = () => {
 			store.logger.info(
@@ -131,16 +135,14 @@ export function provideEnterAndExit({
 				`👤 ${userKey} leaves room ${roomKey}`,
 			)
 			socket.offAny(forward)
-			toRoom([`user-leaves`])
+			dcUserFromRoom()
 			editRelationsInStore(store, usersInRooms, (relations) => {
 				relations.delete({ room: roomKey, user: userKey })
 			})
+
 			roomSocket.off(`leaveRoom`, exitRoom)
 			roomSocket.on(`joinRoom`, enterRoom)
 		}
-
-		roomSocket.on(`leaveRoom`, exitRoom)
-		roomSocket.off(`joinRoom`, enterRoom)
 
 		const roomQueue: [string, ...Json.Array][] = []
 		const pushToRoomQueue = (payload: [string, ...Json.Array]): void => {
@@ -158,7 +160,7 @@ export function provideEnterAndExit({
 		const childSocket = ROOMS.get(roomKey)
 		if (!childSocket) {
 			store.logger.error(`❌`, `unknown`, roomKey, `no room found with this id`)
-			return null
+			return
 		}
 		childSocket.onAny((...payload) => {
 			socket.emit(...payload)
@@ -172,6 +174,10 @@ export function provideEnterAndExit({
 			const payload = roomQueue.shift()
 			if (payload) toRoom(payload)
 		}
+
+		socket.on(`disconnect`, dcUserFromRoom)
+		roomSocket.on(`leaveRoom`, exitRoom)
+		roomSocket.off(`joinRoom`, enterRoom)
 	}
 	roomSocket.on(`joinRoom`, enterRoom)
 	return enterRoom
