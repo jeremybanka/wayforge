@@ -179,18 +179,11 @@ export class ParentSocket<
 			this.logger.info(`👤`, userKey, `joined`)
 			const relay = new SubjectSocket(userKey)
 			this.relays.set(userKey, relay)
-			this.logger.info(
-				`🔗`,
-				`attaching services for user`,
-				userKey,
-				// `[${[...this.initRelay.keys()].join(`, `)}]`,
-			)
-			// for (const attachRelay of this.initRelay) {
+			this.logger.info(`🔗`, `attaching services for user`, userKey)
 			const cleanupRelay = this.initRelay(relay, userKey)
 			if (cleanupRelay) {
 				relay.disposalFunctions.push(cleanupRelay)
 			}
-			// }
 			this.on(userKey, (...data) => {
 				relay.in.next(data)
 			})
