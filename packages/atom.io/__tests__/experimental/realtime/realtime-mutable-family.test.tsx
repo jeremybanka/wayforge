@@ -41,7 +41,7 @@ describe(`running transactions`, () => {
 				}
 				const exposeMutableFamily = RTS.realtimeMutableFamilyProvider({
 					socket,
-					userKey,
+					consumer: userKey,
 					store,
 				})
 				return exposeMutableFamily(

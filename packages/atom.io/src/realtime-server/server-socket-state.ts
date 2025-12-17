@@ -25,11 +25,11 @@ export const socketAtoms: RegularAtomFamilyToken<Socket | null, SocketKey> =
 	})
 
 export const socketKeysAtom: MutableAtomToken<UList<SocketKey>> = mutableAtom({
-	key: `socketsIndex`,
+	key: `socketKeys`,
 	class: UList,
 })
-export const userKeysAtom: MutableAtomToken<UList<UserKey>> = mutableAtom({
-	key: `usersIndex`,
+export const onlineUsersAtom: MutableAtomToken<UList<UserKey>> = mutableAtom({
+	key: `onlineUsers`,
 	class: UList,
 })
 export const usersOfSockets: JoinToken<

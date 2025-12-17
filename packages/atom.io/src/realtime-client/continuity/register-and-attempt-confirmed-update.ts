@@ -7,6 +7,7 @@ import {
 	setEpochNumberOfContinuity,
 	setIntoStore,
 } from "atom.io/internal"
+import type { Json } from "atom.io/json"
 import type { Socket } from "atom.io/realtime"
 
 import {
@@ -27,7 +28,8 @@ export const useRegisterAndAttemptConfirmedUpdate =
 		>[],
 	) =>
 	(
-		confirmed: AtomIO.TransactionOutcomeEvent<AtomIO.TransactionToken<Fn>>,
+		confirmed: AtomIO.TransactionOutcomeEvent<AtomIO.TransactionToken<Fn>> &
+			Json.Serializable,
 	): void => {
 		function reconcileEpoch(
 			optimisticUpdate: AtomIO.TransactionOutcomeEvent<

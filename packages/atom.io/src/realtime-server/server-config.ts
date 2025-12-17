@@ -12,21 +12,27 @@ import {
 	IMPLICIT,
 	setIntoStore,
 } from "atom.io/internal"
-import type { Socket, SocketKey, UserKey } from "atom.io/realtime"
+import type { RoomKey, Socket, SocketKey, UserKey } from "atom.io/realtime"
+import { myUserKeyAtom } from "atom.io/realtime-client"
 import type { Server } from "socket.io"
 
 import { realtimeStateProvider } from "./realtime-state-provider"
 import type { SocketSystemHierarchy } from "./server-socket-state"
 import {
+	onlineUsersAtom,
 	socketAtoms,
 	socketKeysAtom,
-	userKeysAtom,
 	usersOfSockets,
 } from "./server-socket-state"
 
 export type ServerConfig = {
 	socket: Socket
-	userKey: UserKey
+	consumer: RoomKey | UserKey
+	store?: RootStore
+}
+export type UserServerConfig = {
+	socket: Socket
+	consumer: UserKey
 	store?: RootStore
 }
 
@@ -57,7 +63,7 @@ export type Handshake = {
 export function realtime(
 	server: Server,
 	auth: (handshake: Handshake) => Loadable<Error | UserKey>,
-	onConnect: (config: ServerConfig) => Loadable<() => Loadable<void>>,
+	onConnect: (config: UserServerConfig) => Loadable<() => Loadable<void>>,
 	store: RootStore = IMPLICIT.STORE,
 ): () => Promise<void> {
 	const socketRealm = new Realm<SocketSystemHierarchy>(store)
@@ -76,24 +82,21 @@ export function realtime(
 			editRelationsInStore(store, usersOfSockets, (relations) => {
 				relations.set(userClaim, socketClaim)
 			})
-			setIntoStore(store, userKeysAtom, (index) => index.add(userClaim))
+			setIntoStore(store, onlineUsersAtom, (index) => index.add(userClaim))
 			setIntoStore(store, socketKeysAtom, (index) => index.add(socketClaim))
 			next()
 		})
 		.on(`connection`, async (socket) => {
 			const socketKey = `socket::${socket.id}` satisfies SocketKey
-			const userKeyState = findRelationsInStore(
+			const userKeySelector = findRelationsInStore(
 				store,
 				usersOfSockets,
 				socketKey,
 			).userKeyOfSocket
-			const userKey = getFromStore(store, userKeyState)!
-			const serverConfig: ServerConfig = { store, socket, userKey }
+			const userKey = getFromStore(store, userKeySelector)!
+			const serverConfig: UserServerConfig = { store, socket, consumer: userKey }
 			const provideState = realtimeStateProvider(serverConfig)
-			const unsubFromMyUserKey = provideState(
-				{ key: `myUserKey`, type: `atom` },
-				userKey,
-			)
+			const unsubFromMyUserKey = provideState(myUserKeyAtom, userKey)
 
 			const disposeServices = await onConnect(serverConfig)
 
@@ -104,7 +107,11 @@ export function realtime(
 				editRelationsInStore(store, usersOfSockets, (rel) =>
 					rel.delete(socketKey),
 				)
-				setIntoStore(store, userKeysAtom, (keys) => (keys.delete(userKey), keys))
+				setIntoStore(
+					store,
+					onlineUsersAtom,
+					(keys) => (keys.delete(userKey), keys),
+				)
 				setIntoStore(
 					store,
 					socketKeysAtom,

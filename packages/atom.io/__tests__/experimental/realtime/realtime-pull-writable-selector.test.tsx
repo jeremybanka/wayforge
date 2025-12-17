@@ -24,7 +24,7 @@ describe(`pull atom, observe selector`, () => {
 			server: ({ socket, userKey, silo: { store } }) => {
 				const exposeSingle = RTS.realtimeStateProvider({
 					socket,
-					userKey,
+					consumer: userKey,
 					store,
 				})
 				return exposeSingle(countState)
@@ -62,7 +62,7 @@ describe(`pull selector, observe atom`, () => {
 				const exposeSingle = RTS.realtimeStateProvider({
 					socket,
 					store,
-					userKey,
+					consumer: userKey,
 				})
 				exposeSingle(countState)
 			},

@@ -17,7 +17,7 @@ import type { ServerConfig } from "."
 export type StateReceiver = ReturnType<typeof realtimeStateReceiver>
 export function realtimeStateReceiver({
 	socket,
-	userKey,
+	consumer,
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
 	return function stateReceiver<S extends Json.Serializable, C extends S>(
@@ -43,7 +43,7 @@ export function realtimeStateReceiver({
 						store.logger.error(
 							`❌`,
 							`user`,
-							userKey,
+							consumer,
 							`attempted to publish invalid value`,
 							newValue,
 							`to state "${serverToken.key}"`,

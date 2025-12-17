@@ -11,7 +11,7 @@ import {
 	IMPLICIT,
 	setEpochNumberOfContinuity,
 } from "atom.io/internal"
-import type { Canonical } from "atom.io/json"
+import type { Canonical, Json, JsonIO } from "atom.io/json"
 
 import type { UserKey } from "./realtime-key-types"
 
@@ -40,7 +40,7 @@ export type ContinuityToken = {
 	readonly type: `continuity`
 	readonly key: string
 	readonly globals: AtomToken<any>[]
-	readonly actions: TransactionToken<any>[]
+	readonly actions: (Json.Serializable & TransactionToken<JsonIO>)[]
 	readonly perspectives: PerspectiveToken<AtomFamilyToken<any, Canonical>>[]
 }
 

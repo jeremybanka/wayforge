@@ -8,8 +8,7 @@ import {
 	subscribeToTransaction,
 } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-import type { ContinuityToken } from "atom.io/realtime"
-import type { Socket } from "socket.io-client"
+import type { ContinuityToken, Socket } from "atom.io/realtime"
 
 import { useRegisterAndAttemptConfirmedUpdate } from "./continuity/register-and-attempt-confirmed-update"
 import { useConcealState } from "./continuity/use-conceal-state"
