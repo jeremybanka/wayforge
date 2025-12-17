@@ -29,6 +29,7 @@ import {
 	ownersOfRooms,
 	roomKeysAtom,
 	usersInRooms,
+	visibilityFromRoomSelector,
 	visibleUsersInRoomsSelector,
 } from "atom.io/realtime"
 
@@ -86,15 +87,35 @@ export function spawnRoom<RoomNames extends string>({
 				room.stdout.on(`data`, resolver)
 			},
 		)
+
 		const room = new ChildSocket(child, roomKey)
 		ROOMS.set(roomKey, room)
 		setIntoStore(store, roomKeysAtom, (index) => (index.add(roomKey), index))
-
 		editRelationsInStore(store, ownersOfRooms, (relations) => {
 			relations.set({ room: roomKey, user: userKey })
 		})
 
+		const provideMutableFamily = realtimeMutableFamilyProvider({
+			socket: room,
+			consumer: roomKey,
+			store,
+		})
+		const ownersOfRoomsAtoms = getInternalRelationsFromStore(
+			store,
+			ownersOfRooms,
+		)
+		const unsubFromOwnerKeys = provideMutableFamily(ownersOfRoomsAtoms, [
+			roomKey,
+		])
+		const usersInRoomsAtoms = getInternalRelationsFromStore(store, usersInRooms)
+		const unsubFromUsersInRooms = provideMutableFamily(
+			usersInRoomsAtoms,
+			findInStore(store, visibilityFromRoomSelector, roomKey),
+		)
+
 		room.on(`close`, () => {
+			unsubFromOwnerKeys()
+			unsubFromUsersInRooms()
 			destroyRoom({ store, socket, userKey })(roomKey)
 		})
 
