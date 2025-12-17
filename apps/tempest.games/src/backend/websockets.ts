@@ -2,7 +2,7 @@ import { type } from "arktype"
 import { findState } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import { mutualUsersSelector, type UserKey } from "atom.io/realtime"
-import type { Handshake, ServerConfig } from "atom.io/realtime-server"
+import type { Handshake, UserServerConfig } from "atom.io/realtime-server"
 import {
 	provideRooms,
 	realtimeAtomFamilyProvider,
@@ -61,32 +61,32 @@ export const sessionMiddleware = async (
 	return `user::${user.id}` satisfies UserKey
 }
 
-export const serveSocket = (config: ServerConfig): (() => void) => {
-	const { socket, userKey } = config
+export const serveSocket = (config: UserServerConfig): (() => void) => {
+	const { socket, consumer } = config
 	socket.onAny((event, ...args) => {
-		logger.info(`🛰️ << 📡`, userKey, { event, args })
+		logger.info(`🛰️ << 📡`, consumer, { event, args })
 	})
 	socket.onAnyOutgoing((event, ...args) => {
-		logger.info(`🛰️ >> 📡`, userKey, { event, args })
+		logger.info(`🛰️ >> 📡`, consumer, { event, args })
 	})
 	const provideState = realtimeStateProvider(config)
 	const provideFamily = realtimeAtomFamilyProvider(config)
 
-	const mutualsSelector = findState(mutualUsersSelector, userKey)
+	const mutualsSelector = findState(mutualUsersSelector, consumer)
 
 	const unsubFunctions = [
 		provideState(cpuCountAtom),
 		provideFamily(usernameAtoms, mutualsSelector),
 		provideRooms({
 			socket,
-			userKey,
+			userKey: consumer,
 			store: IMPLICIT.STORE,
 			roomNames: workerNames,
 			resolveRoomScript,
 		}),
 	]
 
-	const rawUserId = userKey.replace(/^user::/, ``)
+	const rawUserId = consumer.replace(/^user::/, ``)
 	socket.on(`changeUsername`, async (usernameAttempt) => {
 		const username = usernameType(usernameAttempt)
 		if (username instanceof type.errors) {
