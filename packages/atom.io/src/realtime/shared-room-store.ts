@@ -43,7 +43,7 @@ export const usersInRooms: JoinToken<`room`, RoomKey, `user`, UserKey, `1:n`> =
 	})
 
 export const visibleUsersInRoomsSelector: PureSelectorFamilyToken<
-	(RoomKey | UserKey)[],
+	[self: UserKey, ...RoomKey[]],
 	UserKey
 > = selectorFamily({
 	key: `visibleUsersInRooms`,
@@ -53,6 +53,20 @@ export const visibleUsersInRoomsSelector: PureSelectorFamilyToken<
 			const [, roomsOfUsersAtoms] = getInternalRelations(usersInRooms, `split`)
 			const rooms = get(roomsOfUsersAtoms, userKey)
 			return [userKey, ...rooms]
+		},
+})
+
+export const visibilityFromRoomSelector: PureSelectorFamilyToken<
+	[self: RoomKey, ...UserKey[]],
+	RoomKey
+> = selectorFamily({
+	key: `visibilityFromRoom`,
+	get:
+		(roomKey) =>
+		({ get }) => {
+			const [usersOfRoomsAtoms] = getInternalRelations(usersInRooms, `split`)
+			const users = get(usersOfRoomsAtoms, roomKey)
+			return [roomKey, ...users]
 		},
 })
 
