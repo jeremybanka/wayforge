@@ -39,7 +39,7 @@ const bugRangersGuard: SocketGuard<PlayerActions> = {
 }
 
 parent.receiveRelay((socket, userKey) => {
-	const config = { socket, userKey }
+	const config = { socket, consumer: userKey }
 	const exposeState = realtimeStateProvider(config)
 	const exposeMutable = realtimeMutableProvider(config)
 	const exposeFamily = realtimeAtomFamilyProvider(config)
