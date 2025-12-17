@@ -1,5 +1,13 @@
 # atom.io
 
+## 0.46.6
+
+### Patch Changes
+
+- 8742047: ✨ `atom.io/realtime-server` Clean up services in room on user disconnect.
+- 8742047: 🐛 `atom.io/realtime-client` Removed dependency on browser environment.
+- 8742047: ✨ `atom.io/realtime-server` Provide `myRoomKeyAtom` and `usersInRooms` to rooms created with `provideRooms`.
+
 ## 0.46.5
 
 ### Patch Changes
