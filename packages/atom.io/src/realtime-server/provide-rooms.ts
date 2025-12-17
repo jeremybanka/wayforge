@@ -32,10 +32,12 @@ import {
 	visibilityFromRoomSelector,
 	visibleUsersInRoomsSelector,
 } from "atom.io/realtime"
+import { myRoomKeyAtom } from "atom.io/realtime-client"
 
 import { ChildSocket, PROOF_OF_LIFE_SIGNAL } from "./ipc-sockets"
 import { realtimeMutableFamilyProvider } from "./realtime-mutable-family-provider"
 import { realtimeMutableProvider } from "./realtime-mutable-provider"
+import { realtimeStateProvider } from "./realtime-state-provider"
 
 export type RoomMap = Map<
 	string,
@@ -100,6 +102,13 @@ export function spawnRoom<RoomNames extends string>({
 			consumer: roomKey,
 			store,
 		})
+		const provideState = realtimeStateProvider({
+			socket: room,
+			consumer: roomKey,
+			store,
+		})
+		const unsubFromRoomKey = provideState(myRoomKeyAtom, roomKey)
+
 		const ownersOfRoomsAtoms = getInternalRelationsFromStore(
 			store,
 			ownersOfRooms,
@@ -114,6 +123,7 @@ export function spawnRoom<RoomNames extends string>({
 		)
 
 		room.on(`close`, () => {
+			unsubFromRoomKey()
 			unsubFromOwnerKeys()
 			unsubFromUsersInRooms()
 			destroyRoom({ store, socket, userKey })(roomKey)
