@@ -133,7 +133,7 @@ export const setupRealtimeTestServer = (
 			return new Error(`Authentication error`)
 		},
 		(config) => {
-			const { socket, userKey } = config
+			const { socket, consumer: userKey } = config
 			function enableLogging() {
 				prefixLogger(silo.store, `server`)
 				socket.onAny((event, ...args) => {
@@ -148,7 +148,7 @@ export const setupRealtimeTestServer = (
 			}
 			const disposeServices = options.server({
 				socket: config.socket,
-				userKey: config.userKey,
+				userKey: config.consumer,
 				enableLogging,
 				silo,
 			})

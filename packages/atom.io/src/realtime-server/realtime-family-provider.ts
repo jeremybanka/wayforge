@@ -14,7 +14,7 @@ import type { ServerConfig } from "."
 export type FamilyProvider = ReturnType<typeof realtimeAtomFamilyProvider>
 export function realtimeAtomFamilyProvider({
 	socket,
-	userKey,
+	consumer,
 	store = IMPLICIT.STORE,
 }: ServerConfig) {
 	return function familyProvider<
@@ -22,8 +22,17 @@ export function realtimeAtomFamilyProvider({
 		K extends Canonical,
 	>(
 		family: AtomIO.RegularAtomFamilyToken<J, K>,
-		index: AtomIO.ReadableToken<Iterable<NoInfer<K>>>,
+		index: AtomIO.ReadableToken<Iterable<NoInfer<K>>> | Iterable<NoInfer<K>>,
 	): () => void {
+		const [dynamicIndex, staticIndex]:
+			| [AtomIO.ReadableToken<Iterable<NoInfer<K>>>, undefined]
+			| [undefined, Iterable<NoInfer<K>>] = (() => {
+			if (typeof index === `object` && `key` in index && `type` in index) {
+				return [index, undefined] as const
+			}
+			return [undefined, index] as const
+		})()
+
 		const coreSubscriptions = new Set<() => void>()
 		const clearCoreSubscriptions = () => {
 			for (const unsub of coreSubscriptions) unsub()
@@ -70,7 +79,7 @@ export function realtimeAtomFamilyProvider({
 					store.logger.info(
 						`🙈`,
 						`user`,
-						userKey,
+						consumer,
 						`unsubscribed from state "${token.key}"`,
 					)
 					fillUnsubRequest(token.key)
@@ -91,18 +100,23 @@ export function realtimeAtomFamilyProvider({
 			store.logger.info(
 				`👀`,
 				`user`,
-				userKey,
+				consumer,
 				`can subscribe to family "${family.key}"`,
 			)
 			coreSubscriptions.add(
 				employSocket(socket, `sub:${family.key}`, (subKey: K) => {
-					const exposedSubKeys = getFromStore(store, index)
+					let exposedSubKeys: Iterable<K>
+					if (dynamicIndex) {
+						exposedSubKeys = getFromStore(store, dynamicIndex)
+					} else {
+						exposedSubKeys = staticIndex
+					}
 					const shouldExpose = isAvailable(exposedSubKeys, subKey)
 					if (shouldExpose) {
 						store.logger.info(
 							`👀`,
 							`user`,
-							userKey,
+							consumer,
 							`is approved for a subscription to`,
 							subKey,
 							`in family "${family.key}"`,
@@ -112,7 +126,7 @@ export function realtimeAtomFamilyProvider({
 						store.logger.info(
 							`❌`,
 							`user`,
-							userKey,
+							consumer,
 							`is denied for a subscription to`,
 							subKey,
 							`in family "${family.key}"`,
@@ -122,35 +136,37 @@ export function realtimeAtomFamilyProvider({
 					}
 				}),
 			)
-			coreSubscriptions.add(
-				subscribeToState(
-					store,
-					index,
-					`expose-family:${family.key}:${socket.id}`,
-					({ newValue: newExposedSubKeys }) => {
-						store.logger.info(
-							`👀`,
-							`user`,
-							userKey,
-							`has the following keys available for family "${family.key}"`,
-							newExposedSubKeys,
-						)
-						for (const subKey of newExposedSubKeys) {
-							if (familyMemberSubscriptionsWanted.has(stringifyJson(subKey))) {
-								store.logger.info(
-									`👀`,
-									`user`,
-									userKey,
-									`is retroactively approved for a subscription to`,
-									subKey,
-									`in family "${family.key}"`,
-								)
-								exposeFamilyMembers(subKey)
+			if (dynamicIndex) {
+				coreSubscriptions.add(
+					subscribeToState(
+						store,
+						dynamicIndex,
+						`expose-family:${family.key}:${socket.id}`,
+						({ newValue: newExposedSubKeys }) => {
+							store.logger.info(
+								`👀`,
+								`user`,
+								consumer,
+								`has the following keys available for family "${family.key}"`,
+								newExposedSubKeys,
+							)
+							for (const subKey of newExposedSubKeys) {
+								if (familyMemberSubscriptionsWanted.has(stringifyJson(subKey))) {
+									store.logger.info(
+										`👀`,
+										`user`,
+										consumer,
+										`is retroactively approved for a subscription to`,
+										subKey,
+										`in family "${family.key}"`,
+									)
+									exposeFamilyMembers(subKey)
+								}
 							}
-						}
-					},
-				),
-			)
+						},
+					),
+				)
+			}
 		}
 
 		start()

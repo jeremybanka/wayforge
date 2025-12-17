@@ -82,7 +82,7 @@ export function provideOutcomes(
 
 					socket.emit(
 						`tx-new:${continuityKey}`,
-						redactedUpdate as Json.Serializable,
+						redactedUpdate as unknown as Json.Serializable,
 					)
 				} catch (thrown) {
 					if (thrown instanceof Error) {

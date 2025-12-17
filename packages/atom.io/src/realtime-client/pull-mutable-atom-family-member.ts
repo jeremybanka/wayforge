@@ -7,7 +7,7 @@ import {
 	setIntoStore,
 } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
-import type { Socket } from "socket.io-client"
+import type { Socket } from "atom.io/realtime"
 
 export function pullMutableAtomFamilyMember<
 	T extends Transceiver<any, any, any>,

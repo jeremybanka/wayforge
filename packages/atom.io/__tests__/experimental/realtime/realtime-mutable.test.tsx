@@ -32,7 +32,7 @@ describe(`running transactions`, () => {
 				}
 				const exposeMutable = RTS.realtimeMutableProvider({
 					socket,
-					userKey,
+					consumer: userKey,
 					store,
 				})
 				return exposeMutable(numbersCollectionState)

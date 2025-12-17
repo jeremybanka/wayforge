@@ -1,7 +1,7 @@
 import type * as AtomIO from "atom.io"
 import { setIntoStore, type Store } from "atom.io/internal"
 import type { Json } from "atom.io/json"
-import type { Socket } from "socket.io-client"
+import type { Socket } from "atom.io/realtime"
 
 export function pullAtom<J extends Json.Serializable>(
 	store: Store,

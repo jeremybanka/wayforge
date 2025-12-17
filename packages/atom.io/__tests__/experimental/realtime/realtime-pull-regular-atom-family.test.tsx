@@ -50,7 +50,7 @@ describe(`running transactions`, () => {
 				}
 				const exposeFamily = RTS.realtimeAtomFamilyProvider({
 					socket,
-					userKey,
+					consumer: userKey,
 					store,
 				})
 				return exposeFamily(numberCollectionAtoms, exposedCollectionIndex)

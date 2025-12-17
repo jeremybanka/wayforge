@@ -29,13 +29,15 @@ import {
 	ownersOfRooms,
 	roomKeysAtom,
 	usersInRooms,
+	visibilityFromRoomSelector,
 	visibleUsersInRoomsSelector,
 } from "atom.io/realtime"
+import { myRoomKeyAtom } from "atom.io/realtime-client"
 
 import { ChildSocket, PROOF_OF_LIFE_SIGNAL } from "./ipc-sockets"
 import { realtimeMutableFamilyProvider } from "./realtime-mutable-family-provider"
 import { realtimeMutableProvider } from "./realtime-mutable-provider"
-import type { ServerConfig } from "./server-config"
+import { realtimeStateProvider } from "./realtime-state-provider"
 
 export type RoomMap = Map<
 	string,
@@ -87,19 +89,47 @@ export function spawnRoom<RoomNames extends string>({
 				room.stdout.on(`data`, resolver)
 			},
 		)
-		const roomSocket = new ChildSocket(child, roomKey)
-		ROOMS.set(roomKey, roomSocket)
-		setIntoStore(store, roomKeysAtom, (index) => (index.add(roomKey), index))
 
+		const room = new ChildSocket(child, roomKey)
+		ROOMS.set(roomKey, room)
+		setIntoStore(store, roomKeysAtom, (index) => (index.add(roomKey), index))
 		editRelationsInStore(store, ownersOfRooms, (relations) => {
 			relations.set({ room: roomKey, user: userKey })
 		})
 
-		roomSocket.on(`close`, () => {
+		const provideMutableFamily = realtimeMutableFamilyProvider({
+			socket: room,
+			consumer: roomKey,
+			store,
+		})
+		const provideState = realtimeStateProvider({
+			socket: room,
+			consumer: roomKey,
+			store,
+		})
+		const unsubFromRoomKey = provideState(myRoomKeyAtom, roomKey)
+
+		const ownersOfRoomsAtoms = getInternalRelationsFromStore(
+			store,
+			ownersOfRooms,
+		)
+		const unsubFromOwnerKeys = provideMutableFamily(ownersOfRoomsAtoms, [
+			roomKey,
+		])
+		const usersInRoomsAtoms = getInternalRelationsFromStore(store, usersInRooms)
+		const unsubFromUsersInRooms = provideMutableFamily(
+			usersInRoomsAtoms,
+			findInStore(store, visibilityFromRoomSelector, roomKey),
+		)
+
+		room.on(`close`, () => {
+			unsubFromRoomKey()
+			unsubFromOwnerKeys()
+			unsubFromUsersInRooms()
 			destroyRoom({ store, socket, userKey })(roomKey)
 		})
 
-		return roomSocket
+		return room
 	}
 }
 
@@ -115,13 +145,17 @@ export function provideEnterAndExit({
 	roomSocket,
 	userKey,
 }: ProvideEnterAndExitConfig): (roomKey: RoomKey) => void {
-	const enterRoom = (roomKey: RoomKey) => {
+	const enterRoom = (roomKey: RoomKey): void => {
 		store.logger.info(
 			`📡`,
 			`socket`,
 			socket.id ?? `[ID MISSING?!]`,
 			`👤 ${userKey} enters room ${roomKey}`,
 		)
+
+		const dcUserFromRoom = () => {
+			toRoom([`user-leaves`])
+		}
 
 		const exitRoom = () => {
 			store.logger.info(
@@ -131,16 +165,14 @@ export function provideEnterAndExit({
 				`👤 ${userKey} leaves room ${roomKey}`,
 			)
 			socket.offAny(forward)
-			toRoom([`user-leaves`])
+			dcUserFromRoom()
 			editRelationsInStore(store, usersInRooms, (relations) => {
 				relations.delete({ room: roomKey, user: userKey })
 			})
+
 			roomSocket.off(`leaveRoom`, exitRoom)
 			roomSocket.on(`joinRoom`, enterRoom)
 		}
-
-		roomSocket.on(`leaveRoom`, exitRoom)
-		roomSocket.off(`joinRoom`, enterRoom)
 
 		const roomQueue: [string, ...Json.Array][] = []
 		const pushToRoomQueue = (payload: [string, ...Json.Array]): void => {
@@ -158,7 +190,7 @@ export function provideEnterAndExit({
 		const childSocket = ROOMS.get(roomKey)
 		if (!childSocket) {
 			store.logger.error(`❌`, `unknown`, roomKey, `no room found with this id`)
-			return null
+			return
 		}
 		childSocket.onAny((...payload) => {
 			socket.emit(...payload)
@@ -172,6 +204,10 @@ export function provideEnterAndExit({
 			const payload = roomQueue.shift()
 			if (payload) toRoom(payload)
 		}
+
+		socket.on(`disconnect`, dcUserFromRoom)
+		roomSocket.on(`leaveRoom`, exitRoom)
+		roomSocket.off(`joinRoom`, enterRoom)
 	}
 	roomSocket.on(`joinRoom`, enterRoom)
 	return enterRoom
@@ -229,6 +265,9 @@ export type ProvideRoomsConfig<RoomNames extends string> = {
 	resolveRoomScript: (path: RoomNames) => [string, string[]]
 	roomNames: RoomNames[]
 	roomTimeLimit?: number
+	userKey: UserKey
+	store: RootStore
+	socket: Socket
 }
 export function provideRooms<RoomNames extends string>({
 	store = IMPLICIT.STORE,
@@ -236,11 +275,15 @@ export function provideRooms<RoomNames extends string>({
 	resolveRoomScript,
 	roomNames,
 	userKey,
-}: ProvideRoomsConfig<RoomNames> & ServerConfig): () => void {
+}: ProvideRoomsConfig<RoomNames>): () => void {
 	const roomSocket = castSocket<
 		TypedSocket<RoomSocketInterface<RoomNames>, never>
 	>(socket, createRoomSocketGuard(roomNames))
-	const exposeMutable = realtimeMutableProvider({ socket, store, userKey })
+	const exposeMutable = realtimeMutableProvider({
+		socket,
+		store,
+		consumer: userKey,
+	})
 	const unsubFromRoomKeys = exposeMutable(roomKeysAtom)
 	const usersInRoomsAtoms = getInternalRelationsFromStore(store, usersInRooms)
 	const [, usersInRoomsAtomsUsersOnly] = getInternalRelationsFromStore(
@@ -257,7 +300,7 @@ export function provideRooms<RoomNames extends string>({
 	const exposeMutableFamily = realtimeMutableFamilyProvider({
 		socket,
 		store,
-		userKey,
+		consumer: userKey,
 	})
 	const unsubFromUsersInRooms = exposeMutableFamily(
 		usersInRoomsAtoms,
@@ -267,7 +310,12 @@ export function provideRooms<RoomNames extends string>({
 		ownersOfRoomsAtoms,
 		usersWhoseRoomsCanBeSeenSelector,
 	)
-	const enterRoom = provideEnterAndExit({ store, socket, roomSocket, userKey })
+	const enterRoom = provideEnterAndExit({
+		store,
+		socket,
+		roomSocket,
+		userKey,
+	})
 
 	const userRoomSet = getFromStore(store, usersInRoomsAtomsUsersOnly, userKey)
 	for (const userRoomKey of userRoomSet) {

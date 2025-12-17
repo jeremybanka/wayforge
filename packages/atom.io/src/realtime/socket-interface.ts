@@ -48,7 +48,7 @@ export type Socket = {
 	onAnyOutgoing: (
 		listener: (event: string, ...args: Json.Serializable[]) => void,
 	) => void
-	off: (event: string, listener: (...args: Json.Serializable[]) => void) => void
+	off: (event: string, listener?: (...args: Json.Serializable[]) => void) => void
 	offAny: (
 		listener: (event: string, ...args: Json.Serializable[]) => void,
 	) => void

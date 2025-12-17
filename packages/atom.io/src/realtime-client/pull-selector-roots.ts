@@ -2,7 +2,7 @@ import type { AtomToken, SelectorToken } from "atom.io"
 import type { Store } from "atom.io/internal"
 import { getFamilyOfToken, subscribeToState } from "atom.io/internal"
 import { parseJson } from "atom.io/json"
-import type { Socket } from "socket.io-client"
+import type { Socket } from "atom.io/realtime"
 
 import { pullAtom } from "./pull-atom"
 import { pullAtomFamilyMember } from "./pull-atom-family-member"
