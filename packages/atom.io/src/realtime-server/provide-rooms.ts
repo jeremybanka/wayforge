@@ -314,7 +314,7 @@ export function provideRooms<RoomNames extends string>({
 		store,
 		socket,
 		roomSocket,
-		userKey: userKey,
+		userKey,
 	})
 
 	const userRoomSet = getFromStore(store, usersInRoomsAtomsUsersOnly, userKey)
@@ -324,9 +324,9 @@ export function provideRooms<RoomNames extends string>({
 	}
 	roomSocket.on(
 		`createRoom`,
-		spawnRoom({ store, socket, userKey: userKey, resolveRoomScript }),
+		spawnRoom({ store, socket, userKey, resolveRoomScript }),
 	)
-	roomSocket.on(`deleteRoom`, destroyRoom({ store, socket, userKey: userKey }))
+	roomSocket.on(`deleteRoom`, destroyRoom({ store, socket, userKey }))
 	return () => {
 		unsubFromRoomKeys()
 		unsubFromUsersInRooms()
