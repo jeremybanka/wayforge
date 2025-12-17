@@ -62,7 +62,7 @@
 		"preact": "10.28.0",
 		"react": "19.2.3",
 		"react-dom": "19.2.3",
-		"react-router-dom": "7.10.1",
+		"react-router-dom": "7.11.0",
 		"sass": "1.97.0",
 		"takua": "workspace:*",
 		"tsdown": "0.18.0",
