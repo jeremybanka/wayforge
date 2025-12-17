@@ -1,5 +1,5 @@
 import * as AtomIO from "atom.io"
-import type { SocketKey, UserKey } from "atom.io/realtime"
+import type { RoomKey, SocketKey, UserKey } from "atom.io/realtime"
 
 export const mySocketKeyAtom: AtomIO.RegularAtomToken<SocketKey | undefined> =
 	AtomIO.atom<SocketKey | undefined>({
@@ -20,4 +20,10 @@ export const myUserKeyAtom: AtomIO.RegularAtomToken<UserKey | null> =
 				}
 			},
 		],
+	})
+
+export const myRoomKeyAtom: AtomIO.RegularAtomToken<RoomKey | null> =
+	AtomIO.atom<RoomKey | null>({
+		key: `myRoomKey`,
+		default: null,
 	})
