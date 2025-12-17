@@ -1,7 +1,20 @@
 import type { EntityDenomination, LoggerIcon } from "atom.io"
-import { AtomIOLogger, editRelations, findState, setState } from "atom.io"
+import {
+	AtomIOLogger,
+	editRelations,
+	findState,
+	getInternalRelations,
+	setState,
+	subscribe,
+} from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import type { Json } from "atom.io/json"
+import { usersInRooms } from "atom.io/realtime"
+import {
+	myRoomKeyAtom,
+	pullAtom,
+	pullMutableAtomFamilyMember,
+} from "atom.io/realtime-client"
 import * as RTS from "atom.io/realtime-server"
 
 import { gameContinuity, letterAtoms } from "./game-store"
@@ -51,6 +64,20 @@ if (LOGGING) ipcLog.error(`This is an error`)
 setInterval(() => {
 	ipcLog.info(`letterAtoms`, letterAtoms)
 }, 1000)
+
+const usersInRoomsAtoms = getInternalRelations(usersInRooms)
+pullAtom(IMPLICIT.STORE, parentSocket, myRoomKeyAtom)
+let unsubPullUsers: (() => void) | undefined
+subscribe(myRoomKeyAtom, ({ newValue: myRoomKey }) => {
+	unsubPullUsers?.()
+	if (!myRoomKey) return
+	unsubPullUsers = pullMutableAtomFamilyMember(
+		IMPLICIT.STORE,
+		parentSocket,
+		usersInRoomsAtoms,
+		myRoomKey,
+	)
+})
 
 parentSocket.receiveRelay((socket, userKey) => {
 	editRelations(RTS.usersOfSockets, (relations) => {
