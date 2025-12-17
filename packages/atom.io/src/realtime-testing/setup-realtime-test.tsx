@@ -148,7 +148,7 @@ export const setupRealtimeTestServer = (
 			}
 			const disposeServices = options.server({
 				socket: config.socket,
-				userKey: config.consumer as RT.UserKey,
+				userKey: config.consumer,
 				enableLogging,
 				silo,
 			})
