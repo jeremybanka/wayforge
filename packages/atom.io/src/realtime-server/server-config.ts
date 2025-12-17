@@ -13,6 +13,7 @@ import {
 	setIntoStore,
 } from "atom.io/internal"
 import type { RoomKey, Socket, SocketKey, UserKey } from "atom.io/realtime"
+import { myUserKeyAtom } from "atom.io/realtime-client"
 import type { Server } from "socket.io"
 
 import { realtimeStateProvider } from "./realtime-state-provider"
@@ -87,18 +88,15 @@ export function realtime(
 		})
 		.on(`connection`, async (socket) => {
 			const socketKey = `socket::${socket.id}` satisfies SocketKey
-			const userKeyState = findRelationsInStore(
+			const userKeySelector = findRelationsInStore(
 				store,
 				usersOfSockets,
 				socketKey,
 			).userKeyOfSocket
-			const userKey = getFromStore(store, userKeyState)!
+			const userKey = getFromStore(store, userKeySelector)!
 			const serverConfig: UserServerConfig = { store, socket, consumer: userKey }
 			const provideState = realtimeStateProvider(serverConfig)
-			const unsubFromMyUserKey = provideState(
-				{ key: `myUserKey`, type: `atom` },
-				userKey,
-			)
+			const unsubFromMyUserKey = provideState(myUserKeyAtom, userKey)
 
 			const disposeServices = await onConnect(serverConfig)
 

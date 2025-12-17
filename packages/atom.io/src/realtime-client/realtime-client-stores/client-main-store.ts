@@ -1,6 +1,5 @@
 import * as AtomIO from "atom.io"
 import type { SocketKey, UserKey } from "atom.io/realtime"
-import { storageSync } from "atom.io/web"
 
 export const mySocketKeyAtom: AtomIO.RegularAtomToken<SocketKey | undefined> =
 	AtomIO.atom<SocketKey | undefined>({
@@ -12,5 +11,13 @@ export const myUserKeyAtom: AtomIO.RegularAtomToken<UserKey | null> =
 	AtomIO.atom<UserKey | null>({
 		key: `myUserKey`,
 		default: null,
-		effects: [storageSync(globalThis.localStorage, JSON, `myUserKey`)],
+		effects: [
+			(userKey) => {
+				if (typeof window !== `undefined`) {
+					void import(`atom.io/web`).then(({ storageSync }) => {
+						storageSync(globalThis.localStorage, JSON, `myUserKey`)(userKey)
+					})
+				}
+			},
+		],
 	})
