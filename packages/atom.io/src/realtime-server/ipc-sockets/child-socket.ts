@@ -58,18 +58,10 @@ export class ChildSocket<
 	) {
 		super((event, ...args) => {
 			const stringifiedEvent = JSON.stringify([event, ...args]) + `\x03`
-			const errorHandler = (err: { code: string }) => {
-				if (err.code === `EPIPE`) {
-					console.error(`EPIPE error during write`, this.proc.stdin)
-				}
-				this.proc.stdin.removeListener(`error`, errorHandler)
-			}
-
-			this.proc.stdin.once(`error`, errorHandler)
 			this.proc.stdin.write(stringifiedEvent)
-
 			return this
 		})
+
 		this.proc = proc
 		this.key = key
 		this.logger = logger ?? {
@@ -206,6 +198,11 @@ export class ChildSocket<
 					}
 				}
 				++idx
+			}
+		})
+		this.proc.stdin.once(`error`, (err: { code: string }) => {
+			if (err.code === `EPIPE`) {
+				console.error(`EPIPE error during write`, this.proc.stdin)
 			}
 		})
 		if (proc.pid) {
