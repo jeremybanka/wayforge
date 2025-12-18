@@ -1118,7 +1118,7 @@ importers:
         version: 19.2.3(@types/react@19.2.7)
       '@vitejs/plugin-react':
         specifier: 5.1.2
-        version: 5.1.2(rolldown-vite@7.2.11(@types/node@25.0.3)(esbuild@0.25.12)(jiti@2.6.1)(sass-embedded@1.97.0)(sass@1.97.0))
+        version: 5.1.2(rolldown-vite@7.3.0(@types/node@25.0.3)(esbuild@0.27.1)(jiti@2.6.1)(sass-embedded@1.97.0)(sass@1.97.0))
       babel-plugin-react-compiler:
         specifier: 1.0.0
         version: 1.0.0
@@ -1144,8 +1144,8 @@ importers:
         specifier: 8.50.0
         version: 8.50.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       vite:
-        specifier: npm:rolldown-vite@7.2.11
-        version: rolldown-vite@7.2.11(@types/node@25.0.3)(esbuild@0.25.12)(jiti@2.6.1)(sass-embedded@1.97.0)(sass@1.97.0)
+        specifier: npm:rolldown-vite@7.3.0
+        version: rolldown-vite@7.3.0(@types/node@25.0.3)(esbuild@0.27.1)(jiti@2.6.1)(sass-embedded@1.97.0)(sass@1.97.0)
 
 packages:
 
@@ -7437,13 +7437,13 @@ packages:
       vue-tsc:
         optional: true
 
-  rolldown-vite@7.2.11:
-    resolution: {integrity: sha512-WwCantGLbztBNipg+WwcA+a1c3Mo9LPY0VZ35IFXnUsQyZzsMHtzmy+H5PqELPj3AOauI9L/HMCjoJZp3i9eFg==}
+  rolldown-vite@7.3.0:
+    resolution: {integrity: sha512-5hI5NCJwKBGtzWtdKB3c2fOEpI77Iaa0z4mSzZPU1cJ/OqrGbFafm90edVCd7T9Snz+Sh09TMAv4EQqyVLzuEg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
     peerDependencies:
       '@types/node': ^20.19.0 || >=22.12.0
-      esbuild: ^0.25.0
+      esbuild: ^0.27.0
       jiti: '>=1.21.0'
       less: ^4.0.0
       sass: ^1.70.0
@@ -11532,7 +11532,7 @@ snapshots:
     transitivePeerDependencies:
       - '@swc/helpers'
 
-  '@vitejs/plugin-react@5.1.2(rolldown-vite@7.2.11(@types/node@25.0.3)(esbuild@0.25.12)(jiti@2.6.1)(sass-embedded@1.97.0)(sass@1.97.0))':
+  '@vitejs/plugin-react@5.1.2(rolldown-vite@7.3.0(@types/node@25.0.3)(esbuild@0.27.1)(jiti@2.6.1)(sass-embedded@1.97.0)(sass@1.97.0))':
     dependencies:
       '@babel/core': 7.28.5
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.5)
@@ -11540,7 +11540,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.53
       '@types/babel__core': 7.20.5
       react-refresh: 0.18.0
-      vite: rolldown-vite@7.2.11(@types/node@25.0.3)(esbuild@0.25.12)(jiti@2.6.1)(sass-embedded@1.97.0)(sass@1.97.0)
+      vite: rolldown-vite@7.3.0(@types/node@25.0.3)(esbuild@0.27.1)(jiti@2.6.1)(sass-embedded@1.97.0)(sass@1.97.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -15525,7 +15525,7 @@ snapshots:
     transitivePeerDependencies:
       - oxc-resolver
 
-  rolldown-vite@7.2.11(@types/node@25.0.3)(esbuild@0.25.12)(jiti@2.6.1)(sass-embedded@1.97.0)(sass@1.97.0):
+  rolldown-vite@7.3.0(@types/node@25.0.3)(esbuild@0.27.1)(jiti@2.6.1)(sass-embedded@1.97.0)(sass@1.97.0):
     dependencies:
       '@oxc-project/runtime': 0.101.0
       fdir: 6.5.0(picomatch@4.0.3)
@@ -15536,7 +15536,7 @@ snapshots:
       tinyglobby: 0.2.15
     optionalDependencies:
       '@types/node': 25.0.3
-      esbuild: 0.25.12
+      esbuild: 0.27.1
       fsevents: 2.3.3
       jiti: 2.6.1
       sass: 1.97.0
