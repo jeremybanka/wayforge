@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.7
+
+### Patch Changes
+
+- 3e53dd1: 🐛 Fixed a bug where emitting to a `ChildSocket` would leak listeners onto stdin.
+
 ## 0.46.6
 
 ### Patch Changes
