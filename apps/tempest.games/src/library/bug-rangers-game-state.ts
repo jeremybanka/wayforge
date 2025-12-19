@@ -1,5 +1,13 @@
-import { atom, atomFamily, mutableAtom, selector, selectorFamily } from "atom.io"
-import type { UserKey } from "atom.io/realtime"
+import {
+	atom,
+	atomFamily,
+	getInternalRelations,
+	mutableAtom,
+	selector,
+	selectorFamily,
+} from "atom.io"
+import { type UserKey, usersInRooms } from "atom.io/realtime"
+import { myRoomKeyAtom } from "atom.io/realtime-client"
 import { OList } from "atom.io/transceivers/o-list"
 import { UList } from "atom.io/transceivers/u-list"
 import * as THREE from "three"
@@ -330,4 +338,40 @@ export type PlayerReadyStatus =
 export const playerReadyStatusAtoms = atomFamily<PlayerReadyStatus, UserKey>({
 	key: `playerReadyStatus`,
 	default: `notReady`,
+})
+
+export type GameState = `playing` | `recap` | `setup`
+export const gameStateAtom = atom<GameState>({
+	key: `gameState`,
+	default: `setup`,
+})
+
+export const setupGroupsSelector = selector<
+	Record<PlayerReadyStatus, UserKey[]>
+>({
+	key: `setupGroups`,
+	get: ({ get }) => {
+		const notReady: UserKey[] = []
+		const readyDoesNotWantFirst: UserKey[] = []
+		const readyWantsFirst: UserKey[] = []
+		const roomKey = get(myRoomKeyAtom)
+		if (!roomKey) return { notReady, readyDoesNotWantFirst, readyWantsFirst }
+		const [usersInRoomsAtoms] = getInternalRelations(usersInRooms, `split`)
+		const usersHere = get(usersInRoomsAtoms, roomKey)
+		for (const userKey of usersHere) {
+			const playerReadyStatus = get(playerReadyStatusAtoms, userKey)
+			switch (playerReadyStatus) {
+				case `notReady`:
+					notReady.push(userKey)
+					break
+				case `readyDoesNotWantFirst`:
+					readyDoesNotWantFirst.push(userKey)
+					break
+				case `readyWantsFirst`:
+					readyWantsFirst.push(userKey)
+					break
+			}
+		}
+		return { notReady, readyDoesNotWantFirst, readyWantsFirst }
+	},
 })
