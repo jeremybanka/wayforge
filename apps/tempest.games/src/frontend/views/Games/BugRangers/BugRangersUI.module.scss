@@ -29,17 +29,33 @@ main.class {
     }
     > main {
       display: flex;
-      align-items: center;
+      flex-direction: row;
       gap: 5px;
-      justify-content: center;
-      > div[data-css="mutual"] {
-        background: var(--bg-tint-2);
-        border: var(--fg-soft-2) solid 1px;
-        height: 30px;
-        width: 30px;
+      > section {
         display: flex;
-        align-items: center;
-        justify-content: center;
+        flex-flow: column;
+        flex-grow: 1;
+        align-items: flex-start;
+        gap: 5px;
+        justify-content: flex-start;
+        border: var(--fg-soft-2) solid 1px;
+        padding: 5px;
+        > header {
+        }
+        > main {
+          display: flex;
+          flex-direction: row;
+          gap: 5px;
+          > div[data-css="user"] {
+            background: var(--bg-tint-2);
+            border: var(--fg-soft-2) solid 1px;
+            height: 30px;
+            width: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
       }
     }
   }
