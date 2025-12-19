@@ -104,7 +104,7 @@ export class ChildSocket<
 						if (thrown0 instanceof Error) {
 							console.error(
 								[
-									`❌ Malformed data received from child process`,
+									`❌ Malformed data received from child process:`,
 									``,
 									...piece.split(`\n`),
 									``,
@@ -127,7 +127,7 @@ export class ChildSocket<
 							if (thrown1 instanceof Error) {
 								console.error(
 									[
-										`❌ Malformed data received from child process`,
+										`❌ Malformed data received from child process:`,
 										``,
 										...initialMaybeWellFormed.split(`\n`),
 										``,
@@ -164,7 +164,7 @@ export class ChildSocket<
 					if (thrown0 instanceof Error) {
 						this.logger.error(
 							[
-								`❌ Malformed log received from child process`,
+								`❌ Malformed log received from child process:`,
 								``,
 								...piece.split(`\n`),
 								``,
@@ -187,7 +187,7 @@ export class ChildSocket<
 						if (thrown1 instanceof Error) {
 							this.logger.error(
 								[
-									`❌ Malformed log received from child process...`,
+									`❌ Malformed log received from child process:`,
 									``,
 									...initialMaybeWellFormed.split(`\n`),
 									``,
