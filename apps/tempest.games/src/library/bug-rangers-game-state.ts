@@ -13,6 +13,13 @@ import { UList } from "atom.io/transceivers/u-list"
 import * as THREE from "three"
 
 export type PlayerActions = {
+	// DEBUG
+	startOver: () => void
+	// SETUP PHASE
+	wantFirst: () => void
+	wantNotFirst: () => void
+	startGame: () => void
+	// PLAYERS
 	placeTile: (tileCoordinates: TileCoordinatesSerialized) => void
 	placeCube: (tileCoordinates: TileCoordinatesSerialized) => void
 	turnRestart: () => void

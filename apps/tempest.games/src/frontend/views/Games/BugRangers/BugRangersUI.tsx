@@ -1,18 +1,23 @@
 import type { MutableAtomToken } from "atom.io"
 import { setState } from "atom.io"
 import { useJSON, useO } from "atom.io/react"
-import type { UserKey } from "atom.io/realtime"
+import type { TypedSocket, UserKey } from "atom.io/realtime"
 import { myRoomKeyAtom } from "atom.io/realtime-client"
 import {
+	RealtimeContext,
 	usePullAtom,
 	usePullAtomFamilyMember,
+	usePullSelector,
 	useRealtimeRooms,
 } from "atom.io/realtime-react"
 import type { UList } from "atom.io/transceivers/u-list"
 import { motion } from "motion/react"
-import type { ReactElement, ReactNode } from "react"
+import { type ReactElement, type ReactNode, useContext } from "react"
 
-import type { GameState } from "../../../../library/bug-rangers-game-state"
+import type {
+	GameState,
+	PlayerActions,
+} from "../../../../library/bug-rangers-game-state"
 import {
 	gameStateAtom,
 	playerTurnSelector,
@@ -43,6 +48,7 @@ export function BugRangersUI({ userKey }: GameProps): ReactNode {
 				<div>game state: {gameState}</div>
 				<GameSetup />
 				<GamePlaying gameState={gameState} myMutualsAtom={myMutualsAtom} />
+				<Controls />
 			</article>
 			<button
 				type="button"
@@ -58,8 +64,41 @@ export function BugRangersUI({ userKey }: GameProps): ReactNode {
 	)
 }
 
+function Controls(): ReactElement {
+	const { socket } = useContext(RealtimeContext)
+	const gameSocket = socket as unknown as TypedSocket<{}, PlayerActions>
+	return (
+		<div>
+			<button
+				type="button"
+				onClick={() => {
+					gameSocket.emit(`wantFirst`)
+				}}
+			>
+				want first
+			</button>
+			<button
+				type="button"
+				onClick={() => {
+					gameSocket.emit(`wantNotFirst`)
+				}}
+			>
+				want not first
+			</button>
+			<button
+				type="button"
+				onClick={() => {
+					gameSocket.emit(`startGame`)
+				}}
+			>
+				start game
+			</button>
+		</div>
+	)
+}
+
 function GameSetup(): ReactElement {
-	const setupGroups = useO(setupGroupsSelector)
+	const setupGroups = usePullSelector(setupGroupsSelector)
 	return (
 		<main data-css="setup">
 			<UserGroup
