@@ -1,9 +1,15 @@
 #!/usr/bin/env bun
 
 import { type } from "arktype"
-import { setState } from "atom.io"
+import { getInternalRelations, setState, subscribe } from "atom.io"
+import { IMPLICIT } from "atom.io/internal"
 import type { SocketGuard, TypedSocket } from "atom.io/realtime"
-import { castSocket } from "atom.io/realtime"
+import { castSocket, usersInRooms } from "atom.io/realtime"
+import {
+	myRoomKeyAtom,
+	pullAtom,
+	pullMutableAtomFamilyMember,
+} from "atom.io/realtime-client"
 import {
 	ParentSocket,
 	realtimeAtomFamilyProvider,
@@ -11,6 +17,7 @@ import {
 	realtimeStateProvider,
 } from "atom.io/realtime-server"
 
+import { parentSocket } from "./backend/logger"
 import {
 	gameTilesAtom,
 	type PlayerActions,
@@ -37,6 +44,20 @@ const bugRangersGuard: SocketGuard<PlayerActions> = {
 	turnRestart: type([]),
 	turnEnd: type([]),
 }
+
+const usersInRoomsAtoms = getInternalRelations(usersInRooms)
+pullAtom(IMPLICIT.STORE, parentSocket, myRoomKeyAtom)
+let unsubPullUsers: (() => void) | undefined
+subscribe(myRoomKeyAtom, ({ newValue: myRoomKey }) => {
+	unsubPullUsers?.()
+	if (!myRoomKey) return
+	unsubPullUsers = pullMutableAtomFamilyMember(
+		IMPLICIT.STORE,
+		parentSocket,
+		usersInRoomsAtoms,
+		myRoomKey,
+	)
+})
 
 parent.receiveRelay((socket, userKey) => {
 	const config = { socket, consumer: userKey }
