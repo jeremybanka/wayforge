@@ -34,7 +34,7 @@ export function createSubscriber<K extends string>(
 		const unsubTimer = unsubTimers.get(key)
 		if (unsubTimer) {
 			const timeout = new Promise<void>((resolve) => {
-				setTimeout(resolve, 1000)
+				setTimeout(resolve, 50)
 			})
 			unsubTimer.use(timeout)
 		}
