@@ -180,7 +180,7 @@ export function provideEnterAndExit({
 		}
 		let toRoom = pushToRoomQueue
 		const forward: AllEventsListener<EventsMap> = (...payload) => {
-			toRoom(payload)
+			toRoom([userKey, ...payload])
 		}
 		socket.onAny(forward)
 
@@ -198,7 +198,7 @@ export function provideEnterAndExit({
 		childSocket.emit(`user-joins`, userKey)
 
 		toRoom = (payload) => {
-			childSocket.emit(userKey, ...payload)
+			childSocket.emit(...payload)
 		}
 		while (roomQueue.length > 0) {
 			const payload = roomQueue.shift()
