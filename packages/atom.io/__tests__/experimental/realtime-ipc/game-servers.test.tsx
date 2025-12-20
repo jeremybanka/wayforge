@@ -7,10 +7,10 @@ import { DatabaseManager } from "./database.node"
 import { SystemServer } from "./system-server.node"
 
 /* ❗❗❗ turn off the lights when you're done ❗❗❗ */
-console.info = () => undefined
-console.log = () => undefined
-console.warn = () => undefined
-console.error = () => undefined
+// console.info = () => undefined
+// console.log = () => undefined
+// console.warn = () => undefined
+// console.error = () => undefined
 const dbManager = new DatabaseManager()
 
 beforeAll(async () => {
@@ -86,7 +86,7 @@ describe(`multi-process realtime server`, () => {
 
 		await teardown()
 	})
-	it(`reattaches to a room after disconnecting`, async () => {
+	it.only(`reattaches to a room after disconnecting`, async () => {
 		const { client, teardown } = scenario()
 		const app = client.init()
 		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
@@ -100,10 +100,14 @@ describe(`multi-process realtime server`, () => {
 		await app.renderResult.findByTestId(`room::0`)
 		await app.renderResult.findByTestId(`A`, undefined, { timeout: 3000 })
 
-		app.socket.disconnect()
+		act(() => {
+			app.socket.disconnect()
+		})
 		await app.renderResult.findByTestId(`disconnected`)
 
-		app.socket.connect()
+		act(() => {
+			app.socket.connect()
+		})
 		await app.renderResult.findByTestId(`room::0`)
 		await app.renderResult.findByTestId(`A`, undefined, { timeout: 3000 })
 
