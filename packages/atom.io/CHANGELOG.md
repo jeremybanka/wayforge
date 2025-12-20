@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.46.8
+
+### Patch Changes
+
+- 518d1c1: 🔊 Improved consistency between logs for `ChildSocket`.
+- 518d1c1: 🐛 `atom.io/realtime-server` Fixed issue where the `user-leave` event would not be properly transmitted to rooms.
+
 ## 0.46.7
 
 ### Patch Changes
