@@ -1,7 +1,9 @@
 import type * as AtomIO from "atom.io"
 import { findInStore, setIntoStore, type Store } from "atom.io/internal"
 import type { Canonical, Json } from "atom.io/json"
-import type { Socket } from "atom.io/realtime"
+import { employSocket, type Socket } from "atom.io/realtime"
+
+import { createSubscriber } from "./create-subscriber"
 
 export function pullAtomFamilyMember<
 	J extends Json.Serializable,
@@ -13,13 +15,18 @@ export function pullAtomFamilyMember<
 	key: NoInfer<K>,
 ): () => void {
 	const token = findInStore(store, family, key)
-	const setServedValue = (data: J) => {
-		setIntoStore(store, token, data)
-	}
-	socket?.on(`serve:${token.key}`, setServedValue)
-	socket?.emit(`sub:${family.key}`, key)
-	return () => {
-		socket?.off(`serve:${token.key}`, setServedValue)
-		socket?.emit(`unsub:${token.key}`)
-	}
+	return createSubscriber(socket, token.key, () => {
+		const stopWatching = employSocket(
+			socket,
+			`serve:${token.key}`,
+			(data: J) => {
+				setIntoStore(store, token, data)
+			},
+		)
+		socket.emit(`sub:${family.key}`, key)
+		return () => {
+			socket.emit(`unsub:${token.key}`)
+			stopWatching()
+		}
+	})
 }

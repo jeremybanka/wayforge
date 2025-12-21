@@ -15,10 +15,6 @@ export function pullSelectorRoots(
 	selectorToken: SelectorToken<any>,
 ): () => void {
 	const atomSubscriptions = new Map<string, () => void>()
-	const clearAtomSubscriptions = () => {
-		for (const [, unsub] of atomSubscriptions) unsub()
-		atomSubscriptions.clear()
-	}
 
 	const start = () => {
 		const atomKeys = store.selectorAtoms.getRelatedKeys(selectorToken.key)
@@ -84,7 +80,7 @@ export function pullSelectorRoots(
 	start()
 
 	return () => {
-		clearAtomSubscriptions()
+		for (const [, unsub] of atomSubscriptions) unsub()
 		unsubFromSelector()
 	}
 }
