@@ -38,7 +38,7 @@ export function createSubscriber<K extends string>(
 	}
 	return () => {
 		const timeout = new Promise<void>((resolve) => {
-			setTimeout(resolve, 50)
+			setTimeout(resolve, 25)
 		})
 		timer.use(timeout)
 	}
