@@ -1,4 +1,4 @@
-import { act } from "@testing-library/react"
+import { act, waitFor } from "@testing-library/react"
 import { roomMeta, ROOMS } from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 
@@ -7,10 +7,10 @@ import { DatabaseManager } from "./database.node"
 import { SystemServer } from "./system-server.node"
 
 /* ❗❗❗ turn off the lights when you're done ❗❗❗ */
-// console.info = () => undefined
-// console.log = () => undefined
-// console.warn = () => undefined
-// console.error = () => undefined
+console.info = () => undefined
+console.log = () => undefined
+console.warn = () => undefined
+console.error = () => undefined
 const dbManager = new DatabaseManager()
 
 beforeAll(async () => {
@@ -69,11 +69,17 @@ describe(`multi-process realtime server`, () => {
 		const { client, teardown } = scenario()
 		const app = client.init()
 		app.enableLogging()
-		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
+		const createRoomButton = await waitFor(
+			() => app.renderResult.getByTestId(`create-room`),
+			{ timeout: 3000 },
+		)
 		act(() => {
 			createRoomButton.click()
 		})
-		const joinRoomButton = await app.renderResult.findByTestId(`join-room::0`)
+		const joinRoomButton = await waitFor(
+			() => app.renderResult.getByTestId(`join-room::0`),
+			{ timeout: 3000 },
+		)
 		act(() => {
 			joinRoomButton.click()
 		})
@@ -117,7 +123,9 @@ describe(`multi-process realtime server`, () => {
 		act(() => {
 			leaveRoomButton.click()
 		})
-		await app.renderResult.findByTestId(`lobby`)
+		await waitFor(() => app.renderResult.getByTestId(`lobby`), {
+			timeout: 3000,
+		})
 
 		await teardown()
 	})
