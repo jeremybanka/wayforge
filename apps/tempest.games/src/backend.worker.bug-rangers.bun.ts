@@ -2,6 +2,7 @@
 
 import { type } from "arktype"
 import {
+	AtomIOLogger,
 	findRelations,
 	findState,
 	getInternalRelations,
@@ -11,7 +12,12 @@ import {
 } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import type { SocketGuard, TypedSocket } from "atom.io/realtime"
-import { castSocket, ownersOfRooms, usersInRooms } from "atom.io/realtime"
+import {
+	castSocket,
+	employSocket,
+	ownersOfRooms,
+	usersInRooms,
+} from "atom.io/realtime"
 import {
 	myRoomKeyAtom,
 	pullAtom,
@@ -23,6 +29,7 @@ import {
 	realtimeMutableProvider,
 	realtimeStateProvider,
 } from "atom.io/realtime-server"
+import { Socket } from "socket.io-client"
 
 import { parentSocket } from "./backend/logger"
 import {
@@ -45,6 +52,24 @@ parent.on(`timeToStop`, function gracefulExit() {
 	parent.logger.info(`🛬 game worker exiting`)
 	process.exit(0)
 })
+
+IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
+	`info`,
+	(...params) => {
+		if (![`⭕`, `🔴`, `🟢`, `🚫`, `❌`, `👀`, `🙈`].includes(params[0])) {
+			return false
+		}
+		let idx = 0
+		for (const param of params) {
+			if (param instanceof Socket) {
+				params[idx] = `Socket:${param.id}`
+			}
+			idx++
+		}
+		return params
+	},
+	parent.logger,
+)
 
 const tileCoordinatesType =
 	type(/^-?\d+_-?\d+_-?\d+$/).as<TileCoordinatesSerialized>()
@@ -96,6 +121,12 @@ parent.receiveRelay((socket, userKey) => {
 	const exposeMutable = realtimeMutableProvider(config)
 	const exposeFamily = realtimeAtomFamilyProvider(config)
 
+	const gameSocket = castSocket<TypedSocket<PlayerActions>>(
+		socket,
+		bugRangersGuard,
+		parent.logger.error,
+	)
+
 	const coreStack: (() => void)[] = []
 	coreStack.push(
 		exposeState(myRoomKeyAtom),
@@ -103,6 +134,50 @@ parent.receiveRelay((socket, userKey) => {
 		exposeState(gameStateAtom),
 		exposeMutable(playerTurnOrderAtom),
 		exposeMutable(gameTilesAtom),
+		employSocket(gameSocket, `wantFirst`, () => {
+			const gameState = getState(gameStateAtom)
+			if (gameState === `setup`) {
+				console.log(`setting ready first`, userKey)
+				setState(playerReadyStatusAtoms, userKey, `readyWantsFirst`)
+			}
+		}),
+		employSocket(gameSocket, `wantNotFirst`, () => {
+			const gameState = getState(gameStateAtom)
+			if (gameState === `setup`) {
+				setState(playerReadyStatusAtoms, userKey, `readyDoesNotWantFirst`)
+			}
+		}),
+		employSocket(gameSocket, `startGame`, () => {
+			const myRoomKey = getState(myRoomKeyAtom)
+			if (!myRoomKey) return
+			const ownerOfRoomSelector = findRelations(
+				ownersOfRooms,
+				myRoomKey,
+			).userKeyOfRoom
+			const ownerOfRoom = getState(ownerOfRoomSelector)
+			if (ownerOfRoom !== userKey) return
+			const gameState = getState(gameStateAtom)
+			if (gameState !== `setup`) return
+			setState(gameStateAtom, `playing`)
+			const setupGroups = getState(setupGroupsSelector)
+			const firstPlayersShuffled = pureShuffle(setupGroups.notReady)
+			const nextPlayersShuffled = pureShuffle(setupGroups.readyDoesNotWantFirst)
+			setState(playerTurnOrderAtom, (permanent) => {
+				for (const k of firstPlayersShuffled) {
+					permanent.push(k)
+				}
+				for (const k of nextPlayersShuffled) {
+					permanent.push(k)
+				}
+				return permanent
+			})
+		}),
+		employSocket(gameSocket, `placeTile`, (tileCoordinatesSerialized) => {
+			setState(gameTilesAtom, (tiles) => {
+				tiles.add(tileCoordinatesSerialized)
+				return tiles
+			})
+		}),
 	)
 
 	const roomStack: (() => void)[] = []
@@ -113,59 +188,13 @@ parent.receiveRelay((socket, userKey) => {
 		roomStack.push(exposeFamily(playerReadyStatusAtoms, usersHereAtom))
 	})
 
-	const gameSocket = castSocket<TypedSocket<PlayerActions>>(
-		socket,
-		bugRangersGuard,
-		parent.logger.error,
+	console.log(
+		`✨✨✨`,
+		IMPLICIT.STORE.atoms.get(`*gameTiles`)?.subject.subscribers,
 	)
 
-	// HANDLE ACTIONS
-	gameSocket.on(`wantFirst`, () => {
-		const gameState = getState(gameStateAtom)
-		if (gameState === `setup`) {
-			console.log(`setting ready first`, userKey)
-			setState(playerReadyStatusAtoms, userKey, `readyWantsFirst`)
-		}
-	})
-	gameSocket.on(`wantNotFirst`, () => {
-		const gameState = getState(gameStateAtom)
-		if (gameState === `setup`) {
-			setState(playerReadyStatusAtoms, userKey, `readyDoesNotWantFirst`)
-		}
-	})
-	gameSocket.on(`startGame`, () => {
-		const myRoomKey = getState(myRoomKeyAtom)
-		if (!myRoomKey) return
-		const ownerOfRoomSelector = findRelations(
-			ownersOfRooms,
-			myRoomKey,
-		).userKeyOfRoom
-		const ownerOfRoom = getState(ownerOfRoomSelector)
-		if (ownerOfRoom !== userKey) return
-		const gameState = getState(gameStateAtom)
-		if (gameState !== `setup`) return
-		setState(gameStateAtom, `playing`)
-		const setupGroups = getState(setupGroupsSelector)
-		const firstPlayersShuffled = pureShuffle(setupGroups.notReady)
-		const nextPlayersShuffled = pureShuffle(setupGroups.readyDoesNotWantFirst)
-		setState(playerTurnOrderAtom, (permanent) => {
-			for (const k of firstPlayersShuffled) {
-				permanent.push(k)
-			}
-			for (const k of nextPlayersShuffled) {
-				permanent.push(k)
-			}
-			return permanent
-		})
-	})
-	gameSocket.on(`placeTile`, (tileCoordinatesSerialized) => {
-		setState(gameTilesAtom, (tiles) => {
-			tiles.add(tileCoordinatesSerialized)
-			return tiles
-		})
-	})
-
 	return () => {
+		console.log(`👺👺👺👺👺👺👺 CLOSING RELAY`)
 		for (const unsub of coreStack) unsub()
 		for (const unsub of roomStack) unsub()
 		unsubRoomKey()
