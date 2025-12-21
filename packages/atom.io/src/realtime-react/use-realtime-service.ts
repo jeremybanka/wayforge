@@ -27,5 +27,5 @@ export function useRealtimeService(
 				}
 			}
 		}
-	}, [socket, socket?.id, key])
+	}, [socket, key])
 }

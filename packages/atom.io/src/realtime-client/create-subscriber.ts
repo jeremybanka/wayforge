@@ -20,6 +20,7 @@ export function createSubscriber<K extends string>(
 ): () => void {
 	const knownSocketId = socketIds.get(socket)
 	if (knownSocketId !== socket.id) {
+		console.log(`🦋🦋🦋🦋`, knownSocketId, `->`, socket.id)
 		socketIds.set(socket, socket.id)
 		subscriptions.delete(socket)
 	}
@@ -32,14 +33,19 @@ export function createSubscriber<K extends string>(
 		unsubTimers.set(key, timer)
 		const close = open(key)
 		void timer.then(() => {
+			console.log(`💀💀💀💀`, key)
 			close()
 			unsubTimers.delete(key)
 		})
 	}
 	return () => {
 		const timeout = new Promise<void>((resolve) => {
-			setTimeout(resolve, 50)
+			setTimeout(() => {
+				console.log(`🔪🔪🔪🔪`, key)
+				resolve()
+			}, 50)
 		})
+		console.log(`🐰🐰🐰🐰`, key)
 		timer.use(timeout)
 	}
 }

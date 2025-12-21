@@ -11,11 +11,17 @@ export function pullAtom<J extends Json.Serializable>(
 	token: AtomIO.RegularAtomToken<J, any, any>,
 ): () => void {
 	return createSubscriber(socket, token.key, (key) => {
+		if (token.key === `globalMultipliersEnabled`) {
+			console.log(`❗❗❗❗❗❗❗❗ adding globalMultipliersEnabled`)
+		}
 		const stopWatching = employSocket(socket, `serve:${key}`, (data: J) => {
 			setIntoStore(store, token, data)
 		})
 		socket.emit(`sub:${token.key}`)
 		return () => {
+			if (token.key === `globalMultipliersEnabled`) {
+				console.log(`❗❗❗❗❗❗❗❗ removing globalMultipliersEnabled`)
+			}
 			socket.emit(`unsub:${key}`)
 			stopWatching()
 		}
