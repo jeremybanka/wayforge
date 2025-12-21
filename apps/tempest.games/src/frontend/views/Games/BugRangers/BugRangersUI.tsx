@@ -30,12 +30,14 @@ import type { GameProps } from "../../Game"
 import scss from "./BugRangersUI.module.scss"
 
 export function BugRangersUI({ userKey }: GameProps): ReactNode {
-	const { myRoomKey, myMutualsAtom } = useRealtimeRooms(userKey)
+	const { myRoomKey, myMutualsAtom, socket, allRoomKeysAtom } =
+		useRealtimeRooms(userKey)
 	usePullAtom(myRoomKeyAtom)
 	const turnInProgress = useO(turnInProgressAtom)
 	const turnNumber = useO(turnNumberAtom)
 	const playerTurn = useO(playerTurnSelector)
 	const gameState = usePullAtom(gameStateAtom)
+	const allRoomKeys = useJSON(allRoomKeysAtom)
 
 	return (
 		<main className={scss[`class`]}>
@@ -46,6 +48,18 @@ export function BugRangersUI({ userKey }: GameProps): ReactNode {
 				</header>
 				<div>player turn: {playerTurn ?? `null`}</div>
 				<div>game state: {gameState}</div>
+				<button
+					type="button"
+					onClick={() => {
+						if (allRoomKeys.length === 0) {
+							socket?.emit(`createRoom`, `backend.worker.bug-rangers.bun`)
+						} else {
+							socket?.emit(`joinRoom`, allRoomKeys[0])
+						}
+					}}
+				>
+					{allRoomKeys.length === 0 ? `Create room` : `Join ${allRoomKeys[0]}`}
+				</button>
 				<GameSetup />
 				<GamePlaying gameState={gameState} myMutualsAtom={myMutualsAtom} />
 				<Controls />

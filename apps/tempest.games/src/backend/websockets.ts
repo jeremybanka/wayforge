@@ -64,10 +64,10 @@ export const sessionMiddleware = async (
 export const serveSocket = (config: UserServerConfig): (() => void) => {
 	const { socket, consumer } = config
 	socket.onAny((event, ...args) => {
-		logger.info(`🛰️ << 📡`, consumer, { event, args })
+		logger.info(`🛰️ << 📡`, socket.id, consumer, { event, args })
 	})
 	socket.onAnyOutgoing((event, ...args) => {
-		logger.info(`🛰️ >> 📡`, consumer, { event, args })
+		logger.info(`🛰️ >> 📡`, socket.id, consumer, { event, args })
 	})
 	const provideState = realtimeStateProvider(config)
 	const provideFamily = realtimeAtomFamilyProvider(config)
