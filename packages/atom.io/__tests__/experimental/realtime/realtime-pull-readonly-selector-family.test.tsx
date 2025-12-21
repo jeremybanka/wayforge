@@ -147,6 +147,7 @@ describe(`pull atom, observe selector`, () => {
 		server.silo.setState(globalMultipliersAtom, (prev) => prev.add(2))
 		server.silo.setState(globalMultipliersEnabledAtom, true)
 
+		console.log(`👺👺👺👺👺👺👺👺👺👺👺👺👺👺👺`)
 		await waitFor(() => client.renderResult.getByTestId(`computation:6`))
 
 		server.silo.setState(globalMultipliersEnabledAtom, false)

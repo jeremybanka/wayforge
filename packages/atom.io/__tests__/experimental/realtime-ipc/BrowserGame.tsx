@@ -32,7 +32,7 @@ function Lobby({
 }: RTR.RealtimeRoomsTools): React.ReactNode {
 	const roomKeys = AR.useJSON(allRoomKeysAtom)
 	return (
-		<main>
+		<main data-testid="lobby">
 			{roomKeys.length === 0 ? <p data-testid="no-rooms">No rooms</p> : null}
 			<ul>
 				{roomKeys.map((roomKey) => (
@@ -69,6 +69,7 @@ function Lobby({
 
 function View({ myUserKey }: { myUserKey: RT.UserKey }): React.ReactNode {
 	const roomTools = RTR.useRealtimeRooms<RoomNames>(myUserKey)
+	console.log(`🤠`, roomTools.myRoomKey)
 	return roomTools.myRoomKey === undefined ? (
 		<Lobby {...roomTools} />
 	) : (

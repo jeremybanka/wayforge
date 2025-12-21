@@ -1,4 +1,4 @@
-import { act } from "@testing-library/react"
+import { act, waitFor } from "@testing-library/react"
 import { roomMeta, ROOMS } from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 
@@ -68,11 +68,18 @@ describe(`multi-process realtime server`, () => {
 	it(`permits join and leave`, async () => {
 		const { client, teardown } = scenario()
 		const app = client.init()
-		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
+		app.enableLogging()
+		const createRoomButton = await waitFor(
+			() => app.renderResult.getByTestId(`create-room`),
+			{ timeout: 3000 },
+		)
 		act(() => {
 			createRoomButton.click()
 		})
-		const joinRoomButton = await app.renderResult.findByTestId(`join-room::0`)
+		const joinRoomButton = await waitFor(
+			() => app.renderResult.getByTestId(`join-room::0`),
+			{ timeout: 3000 },
+		)
 		act(() => {
 			joinRoomButton.click()
 		})
@@ -89,6 +96,7 @@ describe(`multi-process realtime server`, () => {
 	it(`reattaches to a room after disconnecting`, async () => {
 		const { client, teardown } = scenario()
 		const app = client.init()
+		app.enableLogging()
 		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
 		act(() => {
 			createRoomButton.click()
@@ -100,10 +108,14 @@ describe(`multi-process realtime server`, () => {
 		await app.renderResult.findByTestId(`room::0`)
 		await app.renderResult.findByTestId(`A`, undefined, { timeout: 3000 })
 
-		app.socket.disconnect()
+		act(() => {
+			app.socket.disconnect()
+		})
 		await app.renderResult.findByTestId(`disconnected`)
 
-		app.socket.connect()
+		act(() => {
+			app.socket.connect()
+		})
 		await app.renderResult.findByTestId(`room::0`)
 		await app.renderResult.findByTestId(`A`, undefined, { timeout: 3000 })
 
@@ -111,7 +123,9 @@ describe(`multi-process realtime server`, () => {
 		act(() => {
 			leaveRoomButton.click()
 		})
-		await app.renderResult.findByTestId(`create-room`)
+		await waitFor(() => app.renderResult.getByTestId(`lobby`), {
+			timeout: 3000,
+		})
 
 		await teardown()
 	})

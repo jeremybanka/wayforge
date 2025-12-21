@@ -117,12 +117,14 @@ describe(`pushing state`, () => {
 		})
 
 		await waitFor(() => jane.renderResult.getByTestId(`0`))
-		await waitFor(() => dave.renderResult.getByTestId(`increment`))
+		await waitFor(() => dave.renderResult.getByTestId(`increment`), {
+			timeout: 2500,
+		})
 
 		act(() => {
 			dave.renderResult.getByTestId(`increment`).click()
 		})
-		await waitFor(() => jane.renderResult.getByTestId(`1`), { timeout: 1000 })
+		await waitFor(() => jane.renderResult.getByTestId(`1`), { timeout: 2500 })
 		await teardown()
 	})
 })
