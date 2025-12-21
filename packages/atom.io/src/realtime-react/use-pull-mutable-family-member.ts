@@ -6,6 +6,7 @@ import { StoreContext, useO } from "atom.io/react"
 import * as RTC from "atom.io/realtime-client"
 import * as React from "react"
 
+import { RealtimeContext } from "./realtime-context"
 import { useRealtimeService } from "./use-realtime-service"
 
 export function usePullMutableAtomFamilyMember<
@@ -13,9 +14,17 @@ export function usePullMutableAtomFamilyMember<
 	K extends Canonical,
 >(familyToken: AtomIO.MutableAtomFamilyToken<T, K>, key: NoInfer<K>): T {
 	const store = React.useContext(StoreContext)
+	// const socket = React.useContext(RealtimeContext).socket
 	const token = findInStore(store, familyToken, key)
-	useRealtimeService(`pull:${token.key}`, (socket) =>
-		RTC.pullMutableAtomFamilyMember(store, socket, familyToken, key),
-	)
+	useRealtimeService(`pull:${token.key}`, (socket) => {
+		if (familyToken.key === `usersInRooms/relatedKeys`) {
+			console.log(`❗❗❗❗❗❗❗❗❗❗`, familyToken.key, key, socket.id)
+		}
+		return RTC.pullMutableAtomFamilyMember(store, socket, familyToken, key)
+	})
+	// React.useEffect(
+	// 	() => RTC.pullMutableAtomFamilyMember(store, socket, familyToken, key),
+	// 	[],
+	// )
 	return useO(token)
 }
