@@ -20,11 +20,12 @@ export const SystemServer = ({
 	userKey: UserKey
 }): void => {
 	enableLogging()
-	RTS.provideRooms({
+	const cleanup = RTS.provideRooms({
 		store,
 		socket,
 		userKey,
 		resolveRoomScript,
 		roomNames: [`game-instance.bun.ts`],
 	})
+	socket.on(`disconnect`, cleanup)
 }

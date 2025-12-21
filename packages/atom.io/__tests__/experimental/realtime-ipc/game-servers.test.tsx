@@ -68,6 +68,7 @@ describe(`multi-process realtime server`, () => {
 	it(`permits join and leave`, async () => {
 		const { client, teardown } = scenario()
 		const app = client.init()
+		app.enableLogging()
 		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
 		act(() => {
 			createRoomButton.click()
@@ -89,6 +90,7 @@ describe(`multi-process realtime server`, () => {
 	it.only(`reattaches to a room after disconnecting`, async () => {
 		const { client, teardown } = scenario()
 		const app = client.init()
+		app.enableLogging()
 		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
 		act(() => {
 			createRoomButton.click()
@@ -115,7 +117,10 @@ describe(`multi-process realtime server`, () => {
 		act(() => {
 			leaveRoomButton.click()
 		})
-		await app.renderResult.findByTestId(`create-room`)
+		// await new Promise<void>((resolve) => setTimeout(resolve, 1000))
+		// console.log(`👺👺👺👺👺👺👺👺👺👺👺👺👺👺👺`)
+		// throw new Error(`👺👺👺👺👺👺👺👺👺👺👺👺👺👺👺`)
+		await app.renderResult.findByTestId(`lobby`)
 
 		await teardown()
 	})
