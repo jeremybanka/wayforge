@@ -2,7 +2,7 @@ import { Future } from "atom.io/internal"
 import type { Socket } from "atom.io/realtime"
 
 const subscriptions: WeakMap<Socket, Map<string, Future<void>>> = new WeakMap()
-const socketIds: WeakMap<Socket, string> = new WeakMap()
+const socketIds: WeakMap<Socket, string | undefined> = new WeakMap()
 
 function getSubMap(socket: Socket): Map<string, Future<void>> {
 	let subMap = subscriptions.get(socket)
@@ -13,25 +13,19 @@ function getSubMap(socket: Socket): Map<string, Future<void>> {
 	return subMap
 }
 
-function validateSocket(socket: Socket): boolean {
-	const knownSocketId = socketIds.get(socket)
-	console.log(`👺👺👺👺👺👺👺👺👺👺👺👺👺👺👺`, knownSocketId, socket.id)
-	if (knownSocketId === undefined) {
-		socketIds.set(socket, socket.id!)
-		return true
-	}
-	return knownSocketId === socket.id
-}
-
 export function createSubscriber<K extends string>(
 	socket: Socket,
 	key: K,
 	open: (key: K) => () => void,
 ): () => void {
+	const knownSocketId = socketIds.get(socket)
+	if (knownSocketId !== socket.id) {
+		socketIds.set(socket, socket.id)
+		subscriptions.delete(socket)
+	}
 	const unsubTimers = getSubMap(socket)
-	const socketIdIsValid = validateSocket(socket)
 	let timer = unsubTimers.get(key)
-	if (timer && socketIdIsValid) {
+	if (timer) {
 		timer.use(new Promise<void>(() => {}))
 	} else {
 		timer = new Future<void>(() => {})
@@ -44,9 +38,7 @@ export function createSubscriber<K extends string>(
 	}
 	return () => {
 		const timeout = new Promise<void>((resolve) => {
-			setTimeout(() => {
-				resolve()
-			}, 50)
+			setTimeout(resolve, 50)
 		})
 		timer.use(timeout)
 	}

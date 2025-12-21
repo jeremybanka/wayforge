@@ -87,7 +87,7 @@ describe(`multi-process realtime server`, () => {
 
 		await teardown()
 	})
-	it.only(`reattaches to a room after disconnecting`, async () => {
+	it(`reattaches to a room after disconnecting`, async () => {
 		const { client, teardown } = scenario()
 		const app = client.init()
 		app.enableLogging()
@@ -117,9 +117,6 @@ describe(`multi-process realtime server`, () => {
 		act(() => {
 			leaveRoomButton.click()
 		})
-		// await new Promise<void>((resolve) => setTimeout(resolve, 1000))
-		// console.log(`👺👺👺👺👺👺👺👺👺👺👺👺👺👺👺`)
-		// throw new Error(`👺👺👺👺👺👺👺👺👺👺👺👺👺👺👺`)
 		await app.renderResult.findByTestId(`lobby`)
 
 		await teardown()
