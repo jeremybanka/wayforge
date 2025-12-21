@@ -18,12 +18,9 @@ export function pullSelectorRoots(
 
 	const start = () => {
 		const atomKeys = store.selectorAtoms.getRelatedKeys(selectorToken.key)
-		console.log(`❓❓❓❓❓❓❓❓❓❓❓, `, selectorToken.key, atomKeys)
 		if (atomKeys) {
 			for (const [atomKey, unsub] of atomSubscriptions) {
-				console.log(`❓`, atomKey)
 				if (!atomKeys.has(atomKey)) {
-					console.log(`🔪`, atomKey)
 					unsub()
 					atomSubscriptions.delete(atomKey)
 				}
@@ -83,10 +80,6 @@ export function pullSelectorRoots(
 	start()
 
 	return () => {
-		console.log(
-			`👺👺👺👺👺👺👺👺👺👺👺👺👺👺👺 CLEANUP PULL SELECTOR ROOTS`,
-			selectorToken.key,
-		)
 		for (const [, unsub] of atomSubscriptions) unsub()
 		unsubFromSelector()
 	}
