@@ -1,4 +1,4 @@
-import type { EntityDenomination, LoggerIcon } from "atom.io"
+import type { EntityDenomination } from "atom.io"
 import {
 	AtomIOLogger,
 	editRelations,
