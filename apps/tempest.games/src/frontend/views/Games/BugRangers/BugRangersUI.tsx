@@ -1,7 +1,7 @@
 import type { MutableAtomToken } from "atom.io"
-import { setState } from "atom.io"
+import { findRelations, setState } from "atom.io"
 import { useJSON, useO } from "atom.io/react"
-import type { TypedSocket, UserKey } from "atom.io/realtime"
+import { ownersOfRooms, type TypedSocket, type UserKey } from "atom.io/realtime"
 import {
 	RealtimeContext,
 	usePullAtom,
@@ -25,18 +25,14 @@ import {
 	turnNumberAtom,
 } from "../../../../library/bug-rangers-game-state"
 import { usernameAtoms } from "../../../../library/username-state"
-import type { GameProps } from "../../Game"
 import scss from "./BugRangersUI.module.scss"
 
-export function BugRangersUI({ userKey }: GameProps): ReactNode {
-	const { myRoomKey, myMutualsAtom, socket, allRoomKeysAtom } =
-		useRealtimeRooms(userKey)
+export function BugRangersUI(): ReactNode {
+	const { myRoomKey, myMutualsAtom } = useRealtimeRooms()
 	const turnInProgress = useO(turnInProgressAtom)
 	const turnNumber = useO(turnNumberAtom)
 	const playerTurn = useO(playerTurnSelector)
 	const gameState = usePullAtom(gameStateAtom)
-	const allRoomKeys = useJSON(allRoomKeysAtom)
-
 	return (
 		<main className={scss[`class`]}>
 			<article data-css="room-module">
@@ -46,21 +42,10 @@ export function BugRangersUI({ userKey }: GameProps): ReactNode {
 				</header>
 				<div>player turn: {playerTurn ?? `null`}</div>
 				<div>game state: {gameState}</div>
-				<button
-					type="button"
-					onClick={() => {
-						if (allRoomKeys.length === 0) {
-							socket?.emit(`createRoom`, `backend.worker.bug-rangers.bun`)
-						} else {
-							socket?.emit(`joinRoom`, allRoomKeys[0])
-						}
-					}}
-				>
-					{allRoomKeys.length === 0 ? `Create room` : `Join ${allRoomKeys[0]}`}
-				</button>
+				<RoomControls />
 				<GameSetup />
 				<GamePlaying gameState={gameState} myMutualsAtom={myMutualsAtom} />
-				<Controls />
+				<GameControls />
 			</article>
 			<button
 				type="button"
@@ -76,27 +61,52 @@ export function BugRangersUI({ userKey }: GameProps): ReactNode {
 	)
 }
 
-function Controls(): ReactElement {
+function RoomControls(): ReactElement {
+	const { roomSocket, allRoomKeysAtom, myRoomKey } = useRealtimeRooms()
+	const allRoomKeys = useJSON(allRoomKeysAtom)
+	return (
+		<section>
+			{myRoomKey ? (
+				<button
+					type="button"
+					onClick={() => {
+						roomSocket?.emit(`leaveRoom`)
+					}}
+				>
+					Leave {myRoomKey}
+				</button>
+			) : (
+				<button
+					type="button"
+					onClick={() => {
+						if (allRoomKeys.length === 0) {
+							roomSocket?.emit(`createRoom`, `backend.worker.bug-rangers.bun`)
+						} else {
+							roomSocket?.emit(`joinRoom`, allRoomKeys[0])
+						}
+					}}
+				>
+					{allRoomKeys.length === 0 ? `Create room` : `Join ${allRoomKeys[0]}`}
+				</button>
+			)}
+			{allRoomKeys.length === 0 ? null : (
+				<button
+					type="button"
+					onClick={() => {
+						roomSocket?.emit(`deleteRoom`, allRoomKeys[0])
+					}}
+				>
+					Delete {allRoomKeys[0]}
+				</button>
+			)}
+		</section>
+	)
+}
+function GameControls(): ReactElement {
 	const { socket } = useContext(RealtimeContext)
 	const gameSocket = socket as unknown as TypedSocket<{}, PlayerActions>
 	return (
-		<div>
-			<button
-				type="button"
-				onClick={() => {
-					gameSocket.emit(`wantFirst`)
-				}}
-			>
-				want first
-			</button>
-			<button
-				type="button"
-				onClick={() => {
-					gameSocket.emit(`wantNotFirst`)
-				}}
-			>
-				want not first
-			</button>
+		<section>
 			<button
 				type="button"
 				onClick={() => {
@@ -105,11 +115,13 @@ function Controls(): ReactElement {
 			>
 				start game
 			</button>
-		</div>
+		</section>
 	)
 }
 
 function GameSetup(): ReactElement {
+	const { socket } = useContext(RealtimeContext)
+	const gameSocket = socket as unknown as TypedSocket<{}, PlayerActions>
 	const setupGroups = usePullSelector(setupGroupsSelector)
 	return (
 		<main data-css="setup">
@@ -122,11 +134,17 @@ function GameSetup(): ReactElement {
 				groupName="Does not Want First"
 				dataCss="ready-does-not-want-first"
 				userKeys={setupGroups.readyDoesNotWantFirst}
+				onClick={() => {
+					gameSocket?.emit(`wantNotFirst`)
+				}}
 			/>
 			<UserGroup
 				groupName="Wants First"
 				dataCss="ready-wants-first"
 				userKeys={setupGroups.readyWantsFirst}
+				onClick={() => {
+					gameSocket?.emit(`wantFirst`)
+				}}
 			/>
 		</main>
 	)
@@ -155,13 +173,16 @@ function UserGroup({
 	groupName,
 	dataCss,
 	userKeys,
+	onClick,
 }: {
 	groupName: string
 	dataCss: string
 	userKeys: UserKey[]
+	onClick?: () => void
 }): ReactElement {
 	return (
 		<section data-css={dataCss}>
+			<button type="button" onClick={onClick} disabled={!onClick} />
 			<header>{groupName}</header>
 			<main>
 				{userKeys.map((userKey) => {
@@ -173,9 +194,17 @@ function UserGroup({
 }
 
 function User({ userKey }: { userKey: UserKey }): ReactElement {
+	const { myRoomKey } = useRealtimeRooms()
+	const relations = findRelations(ownersOfRooms, myRoomKey ?? `room::`)
+	const ownerKey = useO(relations.userKeyOfRoom)
+	const ownsMyRoom = ownerKey === userKey
 	const username = usePullAtomFamilyMember(usernameAtoms, userKey)
 	return (
-		<motion.div layoutId={userKey} data-css="user">
+		<motion.div
+			layoutId={userKey}
+			data-css-user
+			data-css-owner={ownsMyRoom ? `👑` : undefined}
+		>
 			{username.slice(0, 1)}
 		</motion.div>
 	)
