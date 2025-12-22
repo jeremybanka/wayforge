@@ -64,7 +64,7 @@ export const sessionMiddleware = async (
 export const serveSocket = (config: UserServerConfig): (() => void) => {
 	const { socket, consumer } = config
 	socket.onAny((event, ...args) => {
-		logger.info(`🛰️ << 📡`, socket.id, consumer, { event, args })
+		logger.info(`📡 >> 🛰️`, socket.id, consumer, { event, args })
 	})
 	socket.onAnyOutgoing((event, ...args) => {
 		logger.info(`🛰️ >> 📡`, socket.id, consumer, { event, args })
