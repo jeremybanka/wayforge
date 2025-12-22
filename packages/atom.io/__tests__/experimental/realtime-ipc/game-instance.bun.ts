@@ -5,21 +5,19 @@ import {
 	findState,
 	getInternalRelations,
 	setState,
-	subscribe,
 } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import type { Json } from "atom.io/json"
+import type { RoomKey } from "atom.io/realtime"
 import { usersInRooms } from "atom.io/realtime"
-import {
-	myRoomKeyAtom,
-	pullAtom,
-	pullMutableAtomFamilyMember,
-} from "atom.io/realtime-client"
+import { pullMutableAtomFamilyMember } from "atom.io/realtime-client"
 import * as RTS from "atom.io/realtime-server"
 
 import { gameContinuity, letterAtoms } from "./game-store"
 
 const LOGGING = false
+
+const MY_ROOM_KEY = process.env[`REALTIME_ROOM_KEY`] as RoomKey
 
 const parentSocket = new RTS.ParentSocket(process)
 const ipcLog = {
@@ -37,11 +35,9 @@ const ipcLog = {
 const atomIOSubprocessLogger = new AtomIOLogger(
 	`warn`,
 	(_, tokenType, tokenKey, message) => {
-		const _allowedIcons: LoggerIcon[] = [`🛄`]
 		const ignoredTokenTypes: EntityDenomination[] = []
 		const ignoredTokens = [`actions`, `radialMode`, `windowMousePosition`]
 		const ignoredMessageContents: string[] = []
-		// if (!allowedIcons.includes(icon)) return false
 		if (ignoredTokenTypes.includes(tokenType)) return false
 		if (ignoredTokens.includes(tokenKey)) return false
 		for (const ignoredMessageContent of ignoredMessageContents) {
@@ -66,18 +62,14 @@ setInterval(() => {
 }, 1000)
 
 const usersInRoomsAtoms = getInternalRelations(usersInRooms)
-pullAtom(IMPLICIT.STORE, parentSocket, myRoomKeyAtom)
 let unsubPullUsers: (() => void) | undefined
-subscribe(myRoomKeyAtom, ({ newValue: myRoomKey }) => {
-	unsubPullUsers?.()
-	if (!myRoomKey) return
-	unsubPullUsers = pullMutableAtomFamilyMember(
-		IMPLICIT.STORE,
-		parentSocket,
-		usersInRoomsAtoms,
-		myRoomKey,
-	)
-})
+unsubPullUsers?.()
+unsubPullUsers = pullMutableAtomFamilyMember(
+	IMPLICIT.STORE,
+	parentSocket,
+	usersInRoomsAtoms,
+	MY_ROOM_KEY,
+)
 
 parentSocket.receiveRelay((socket, userKey) => {
 	editRelations(RTS.usersOfSockets, (relations) => {
