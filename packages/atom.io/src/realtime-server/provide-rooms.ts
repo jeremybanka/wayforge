@@ -150,29 +150,15 @@ export function provideEnterAndExit({
 			`📡`,
 			`socket`,
 			socket.id ?? `[ID MISSING?!]`,
-			`👤 ${userKey} enters room ${roomKey}`,
+			`👤 ${userKey} enters ${roomKey}`,
 		)
-
-		const dcUserFromRoom = () => {
-			toRoom([`user-leaves`])
+		const childSocket = ROOMS.get(roomKey)
+		if (!childSocket) {
+			store.logger.error(`❌`, `unknown`, roomKey, `no room found with this id`)
+			return
 		}
-
-		const exitRoom = () => {
-			store.logger.info(
-				`📡`,
-				`socket`,
-				socket.id ?? `[ID MISSING?!]`,
-				`👤 ${userKey} leaves room ${roomKey}`,
-			)
-			socket.offAny(forward)
-			dcUserFromRoom()
-			editRelationsInStore(store, usersInRooms, (relations) => {
-				relations.delete({ room: roomKey, user: userKey })
-			})
-
-			roomSocket.off(`leaveRoom`, exitRoom)
-			roomSocket.on(`joinRoom`, enterRoom)
-		}
+		const toUser = socket.emit.bind(socket)
+		childSocket.on(userKey, toUser)
 
 		const roomQueue: [string, ...Json.Array][] = []
 		const pushToRoomQueue = (payload: [string, ...Json.Array]): void => {
@@ -184,17 +170,38 @@ export function provideEnterAndExit({
 		}
 		socket.onAny(forward)
 
+		const dcUserFromRoom = () => {
+			store.logger.info(
+				`📡`,
+				`socket`,
+				socket.id ?? `[ID MISSING?!]`,
+				`👤 ${userKey} is has lost connection to ${roomKey}`,
+			)
+			socket.offAny(forward)
+			childSocket.off(userKey, toUser)
+			toRoom([`user-leaves`, userKey])
+		}
+
+		const exitRoom = () => {
+			store.logger.info(
+				`📡`,
+				`socket`,
+				socket.id ?? `[ID MISSING?!]`,
+				`👤 ${userKey} leaves ${roomKey}`,
+			)
+			dcUserFromRoom()
+			editRelationsInStore(store, usersInRooms, (relations) => {
+				relations.delete({ room: roomKey, user: userKey })
+			})
+
+			roomSocket.off(`leaveRoom`, exitRoom)
+			roomSocket.on(`joinRoom`, enterRoom)
+		}
+
 		editRelationsInStore(store, usersInRooms, (relations) => {
 			relations.set({ room: roomKey, user: userKey })
 		})
-		const childSocket = ROOMS.get(roomKey)
-		if (!childSocket) {
-			store.logger.error(`❌`, `unknown`, roomKey, `no room found with this id`)
-			return
-		}
-		childSocket.onAny((...payload) => {
-			socket.emit(...payload)
-		})
+
 		childSocket.emit(`user-joins`, userKey)
 
 		toRoom = (payload) => {
@@ -228,7 +235,7 @@ export function destroyRoom({
 			`📡`,
 			`socket`,
 			socket.id ?? `[ID MISSING?!]`,
-			`👤 ${userKey} attempts to delete room ${roomKey}`,
+			`👤 ${userKey} attempts to delete ${roomKey}`,
 		)
 		const owner = getFromStore(
 			store,
@@ -239,7 +246,7 @@ export function destroyRoom({
 				`📡`,
 				`socket`,
 				socket.id ?? `[ID MISSING?!]`,
-				`👤 ${userKey} deletes room ${roomKey}`,
+				`👤 ${userKey} deletes ${roomKey}`,
 			)
 			setIntoStore(store, roomKeysAtom, (s) => (s.delete(roomKey), s))
 			editRelationsInStore(store, usersInRooms, (relations) => {
@@ -256,7 +263,7 @@ export function destroyRoom({
 			`📡`,
 			`socket`,
 			socket.id ?? `[ID MISSING?!]`,
-			`👤 ${userKey} failed to delete room ${roomKey}; room owner is ${owner}`,
+			`👤 ${userKey} failed to delete ${roomKey}; its owner is ${owner}`,
 		)
 	}
 }

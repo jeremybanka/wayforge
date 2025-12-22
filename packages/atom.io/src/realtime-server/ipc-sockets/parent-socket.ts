@@ -51,7 +51,7 @@ export type ParentProcess = {
 
 export class ParentSocket<
 	I extends Events & {
-		[id in string as `relay::${id}`]: [string, ...Json.Array[]]
+		[user: UserKey]: [string, ...Json.Array[]]
 	},
 	O extends Events & {
 		[id in string as `user::${id}`]: [string, ...Json.Array[]]
@@ -65,7 +65,7 @@ export class ParentSocket<
 > extends CustomSocket<I, O> {
 	protected incompleteData = ``
 	protected unprocessedEvents: string[] = []
-	protected relays: Map<string, SubjectSocket<any, any>>
+	protected relays: Map<UserKey, SubjectSocket<any, any>>
 	protected initRelay: (
 		socket: SubjectSocket<any, any>,
 		userKey: UserKey,
@@ -177,9 +177,13 @@ export class ParentSocket<
 
 		this.on(`user-joins`, (userKey: UserKey) => {
 			this.logger.info(`👤`, userKey, `joined`)
+			const existingRelay = this.relays.get(userKey)
+			if (existingRelay) {
+				return
+			}
 			const relay = new SubjectSocket(userKey)
 			this.relays.set(userKey, relay)
-			this.logger.info(`🔗`, `attaching services for user`, userKey)
+			this.logger.info(`🔗`, `attaching relay services for`, userKey)
 			const cleanupRelay = this.initRelay(relay, userKey)
 			if (cleanupRelay) {
 				relay.disposalFunctions.push(cleanupRelay)
@@ -187,17 +191,19 @@ export class ParentSocket<
 			this.on(userKey, (...data) => {
 				relay.in.next(data)
 			})
-			relay.out.subscribe(`socket`, (data) => {
-				this.emit(...(data as [string, ...I[string & keyof I]]))
-			})
+			relay.disposalFunctions.push(
+				relay.out.subscribe(`socket`, (data) => {
+					this.emit(userKey, ...(data as any))
+				}),
+			)
 		})
 
-		this.on(`user-leaves`, (username) => {
-			const relay = this.relays.get(username)
-			this.off(`relay:${username}`)
+		this.on(`user-leaves`, (userKey: UserKey) => {
+			const relay = this.relays.get(userKey)
+			this.off(userKey)
 			if (relay) {
 				relay.dispose()
-				this.relays.delete(username)
+				this.relays.delete(userKey)
 			}
 		})
 
@@ -210,7 +216,7 @@ export class ParentSocket<
 			userKey: UserKey,
 		) => (() => void) | void,
 	): void {
-		this.logger.info(`🔗`, `running relay method`)
 		this.initRelay = attachServices
+		this.logger.info(`🔗`, `ready to relay`)
 	}
 }
