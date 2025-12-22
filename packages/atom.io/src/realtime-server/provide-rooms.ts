@@ -78,7 +78,9 @@ export function spawnRoom<RoomNames extends string>({
 		const [command, args] = resolveRoomScript(roomName)
 		const child = await new Promise<ChildProcessWithoutNullStreams>(
 			(resolve) => {
-				const room = spawn(command, args, { env: process.env })
+				const room = spawn(command, args, {
+					env: { ...process.env, REALTIME_ROOM_KEY: roomKey },
+				})
 				const resolver = (data: Buffer) => {
 					const chunk = data.toString()
 					if (chunk === PROOF_OF_LIFE_SIGNAL) {
