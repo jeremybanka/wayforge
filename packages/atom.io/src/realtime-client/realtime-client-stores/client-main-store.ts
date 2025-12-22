@@ -1,5 +1,10 @@
 import * as AtomIO from "atom.io"
-import type { RoomKey, SocketKey, UserKey } from "atom.io/realtime"
+import {
+	type RoomKey,
+	type SocketKey,
+	type UserKey,
+	usersInRooms,
+} from "atom.io/realtime"
 
 export const mySocketKeyAtom: AtomIO.RegularAtomToken<SocketKey | undefined> =
 	AtomIO.atom<SocketKey | undefined>({
@@ -22,8 +27,26 @@ export const myUserKeyAtom: AtomIO.RegularAtomToken<UserKey | null> =
 		],
 	})
 
-export const myRoomKeyAtom: AtomIO.RegularAtomToken<RoomKey | null> =
-	AtomIO.atom<RoomKey | null>({
+export const myRoomKeySelector: AtomIO.ReadonlyPureSelectorToken<RoomKey | null> =
+	AtomIO.selector<RoomKey | null>({
 		key: `myRoomKey`,
-		default: null,
+		get: ({ get }) => {
+			if (
+				`env` in globalThis &&
+				`REALTIME_ROOM_KEY` in (globalThis as any).env
+			) {
+				// if a room running server-side wants its own key, this is where it lives
+				return (globalThis as any).env[`REALTIME_ROOM_KEY`]
+			}
+			const myUserKey = get(myUserKeyAtom)
+			if (!myUserKey) return null
+			const [, usersInRoomsAtoms] = AtomIO.getInternalRelations(
+				usersInRooms,
+				`split`,
+			)
+			const roomKeys = get(usersInRoomsAtoms, myUserKey)
+			for (const roomKey of roomKeys) {
+				return roomKey
+			}
+		},
 	})
