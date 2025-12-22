@@ -3,6 +3,7 @@ import { type } from "arktype"
 import type { Loadable } from "atom.io"
 import { atom, getState, selector, setState, subscribe } from "atom.io"
 import { parseJson, stringifyJson } from "atom.io/json"
+import { storageSync } from "atom.io/web"
 import type { Socket } from "socket.io-client"
 import { io } from "socket.io-client"
 
@@ -157,6 +158,7 @@ export const passwordIssuesSelector = selector<ArkErrors | null>({
 export const emailInputAtom = atom<string>({
 	key: `email`,
 	default: ``,
+	effects: [storageSync(localStorage, JSON, `email`)],
 })
 export const emailIssuesSelector = selector<ArkErrors | null>({
 	key: `emailIssues`,
