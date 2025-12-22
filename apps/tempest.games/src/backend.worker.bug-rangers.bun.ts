@@ -11,7 +11,7 @@ import {
 	subscribe,
 } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
-import type { SocketGuard, TypedSocket } from "atom.io/realtime"
+import type { RoomKey, SocketGuard, TypedSocket } from "atom.io/realtime"
 import {
 	castSocket,
 	employSocket,
@@ -88,31 +88,25 @@ const bugRangersGuard: SocketGuard<PlayerActions> = {
 	turnEnd: type([]),
 }
 
+const ROOM_KEY = process.env[`REALTIME_ROOM_KEY`] as RoomKey
 const usersInRoomsAtoms = getInternalRelations(usersInRooms)
 const ownersOfRoomsAtoms = getInternalRelations(ownersOfRooms)
 ;(function globalSetup() {
 	if ((process as any).globalSetupDone) return
 	;(process as any).globalSetupDone = true
 	pullAtom(IMPLICIT.STORE, parentSocket, myRoomKeyAtom)
-	let unsubPullOwner: (() => void) | undefined
-	let unsubPullUsers: (() => void) | undefined
-	subscribe(myRoomKeyAtom, ({ newValue: myRoomKey }) => {
-		unsubPullOwner?.()
-		unsubPullUsers?.()
-		if (!myRoomKey) return
-		unsubPullOwner = pullMutableAtomFamilyMember(
-			IMPLICIT.STORE,
-			parentSocket,
-			ownersOfRoomsAtoms,
-			myRoomKey,
-		)
-		unsubPullUsers = pullMutableAtomFamilyMember(
-			IMPLICIT.STORE,
-			parentSocket,
-			usersInRoomsAtoms,
-			myRoomKey,
-		)
-	})
+	pullMutableAtomFamilyMember(
+		IMPLICIT.STORE,
+		parentSocket,
+		usersInRoomsAtoms,
+		ROOM_KEY,
+	)
+	pullMutableAtomFamilyMember(
+		IMPLICIT.STORE,
+		parentSocket,
+		ownersOfRoomsAtoms,
+		ROOM_KEY,
+	)
 })()
 
 parent.receiveRelay((socket, userKey) => {
@@ -126,6 +120,7 @@ parent.receiveRelay((socket, userKey) => {
 		bugRangersGuard,
 		parent.logger.error,
 	)
+	const usersHereAtom = findState(usersInRoomsAtoms, ROOM_KEY)
 
 	const coreStack: (() => void)[] = []
 	coreStack.push(
@@ -134,6 +129,7 @@ parent.receiveRelay((socket, userKey) => {
 		exposeState(gameStateAtom),
 		exposeMutable(playerTurnOrderAtom),
 		exposeMutable(gameTilesAtom),
+		exposeFamily(playerReadyStatusAtoms, usersHereAtom),
 		employSocket(gameSocket, `wantFirst`, () => {
 			const gameState = getState(gameStateAtom)
 			if (gameState === `setup`) {
@@ -180,24 +176,8 @@ parent.receiveRelay((socket, userKey) => {
 		}),
 	)
 
-	const roomStack: (() => void)[] = []
-	const unsubRoomKey = subscribe(myRoomKeyAtom, ({ newValue: myRoomKey }) => {
-		while (roomStack.length) roomStack.pop()?.()
-		if (!myRoomKey) return
-		const usersHereAtom = findState(usersInRoomsAtoms, myRoomKey)
-		roomStack.push(exposeFamily(playerReadyStatusAtoms, usersHereAtom))
-	})
-
-	console.log(
-		`✨✨✨`,
-		IMPLICIT.STORE.atoms.get(`*gameTiles`)?.subject.subscribers,
-	)
-
 	return () => {
-		console.log(`👺👺👺👺👺👺👺 CLOSING RELAY`)
 		for (const unsub of coreStack) unsub()
-		for (const unsub of roomStack) unsub()
-		unsubRoomKey()
 	}
 })
 
