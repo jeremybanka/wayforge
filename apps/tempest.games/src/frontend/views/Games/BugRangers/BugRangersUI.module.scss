@@ -15,6 +15,9 @@ main.class {
     padding: 5px;
     width: calc(100% - 20px);
     max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 
     button {
       pointer-events: all;
@@ -39,13 +42,17 @@ main.class {
       > section {
         display: flex;
         flex-flow: column;
-        flex-grow: 1;
-        align-items: flex-start;
+        flex: 1;
+        height: 150px;
+        align-items: center;
+        justify-content: center;
         gap: 5px;
-        justify-content: flex-start;
         border: var(--fg-soft-2) solid 1px;
         padding: 5px;
+        position: relative;
         > header {
+          position: absolute;
+          top: 5px;
         }
         > main {
           display: flex;
