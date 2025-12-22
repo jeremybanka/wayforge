@@ -6,10 +6,10 @@ import { UList } from "atom.io/transceivers/u-list"
 
 import * as Utils from "../../__util__"
 
-console.log = () => undefined
-console.info = () => undefined
-console.warn = () => undefined
-console.error = () => undefined
+// console.log = () => undefined
+// console.info = () => undefined
+// console.warn = () => undefined
+// console.error = () => undefined
 const logger: Pick<Console, `error` | `info` | `warn`> = console
 
 interface VirtualProcess {
@@ -238,8 +238,10 @@ describe(`ParentSocket`, () => {
 		expect([...childToParent[`relays`].keys()]).toContain(`user::alice`)
 
 		const gotPong = new Promise<string>((resolve) => {
-			parentToChild.on(`pong`, (msg: string) => {
-				resolve(msg)
+			parentToChild.on(`user::alice`, (msg: string) => {
+				if (msg === `pong`) {
+					resolve(msg)
+				}
 			})
 		})
 
