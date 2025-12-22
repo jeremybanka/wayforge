@@ -1,5 +1,15 @@
 # atom.io
 
+## 0.46.9
+
+### Patch Changes
+
+- 0cf0dd4: ✨ `atom.io/realtime-client` Improved handling for client implementations like react that are likely to quickly oscillate between mounting and remounting a service before reaching stability.
+- 1c9ed67: ✨ `atom.io/realtime-server` Rooms spawned with `provideRooms()` now include an environment variable `REALTIME_ROOM_KEY` with their `RoomKey`.
+- 9e17723: 🐛 Fixed bug where messages from a room intended for specific users would be broadcast to all users.
+- c5c9562: 🔊 Added a log for when a `ChildSocket` emits to a parent.
+- 79d2a6d: 🐛 `atom.io/realtime-client` Fixed an issue where `myRoomKeyAtom` was being stored independently of `usersInRooms` such that the two might not agree. Replaced `myRoomKeyAtom` with `myRoomKeySelector`. Server-side, this selector uses only the new environment variable, `env["REALTIME_ROOM_KEY]"`, and no other states, if it is found.
+
 ## 0.46.8
 
 ### Patch Changes
