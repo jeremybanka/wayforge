@@ -98,6 +98,7 @@ export class ChildSocket<
 					}
 					try {
 						const jsonPiece = parseJson(piece as stringified<EventPayload<I, K>>)
+						this.logger.info(`💸`, `emitted`, jsonPiece)
 						this.handleEvent(...jsonPiece)
 						this.incompleteData = ``
 					} catch (thrown0) {
@@ -118,6 +119,7 @@ export class ChildSocket<
 								const maybeActualJsonPiece = parseJson(
 									initialMaybeWellFormed as stringified<EventPayload<I, K>>,
 								)
+								this.logger.info(`💸`, `emitted`, maybeActualJsonPiece)
 								this.handleEvent(...maybeActualJsonPiece)
 								this.incompleteData = ``
 							} else {
