@@ -1,7 +1,8 @@
-import { act, waitFor } from "@testing-library/react"
+import { waitFor } from "@testing-library/react"
 import { roomMeta, ROOMS } from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 
+import { actWithFakeTimers } from "../../__util__/"
 import { BrowserGame } from "./BrowserGame"
 import { DatabaseManager } from "./database.node"
 import { SystemServer } from "./system-server.node"
@@ -12,25 +13,6 @@ import { SystemServer } from "./system-server.node"
 // console.warn = () => undefined
 // console.error = () => undefined
 const dbManager = new DatabaseManager()
-
-import { vi } from "vitest"
-
-async function flushTimers(ms = 0) {
-	await vi.advanceTimersByTimeAsync(ms)
-	vi.runAllTicks()
-}
-
-async function actWithFakeTimers(fn: () => void) {
-	vi.useFakeTimers()
-	try {
-		act(() => {
-			fn()
-		})
-		await flushTimers(50)
-	} finally {
-		vi.useRealTimers()
-	}
-}
 
 beforeAll(async () => {
 	await dbManager.createDatabase()
@@ -79,12 +61,8 @@ describe(`multi-process realtime server`, () => {
 		const deleteRoomButton =
 			await app.renderResult.findByTestId(`delete-room::0`)
 
-		await actWithFakeTimers(async () => {
-			act(() => {
-				deleteRoomButton.click()
-			})
-
-			await flushTimers(50)
+		await actWithFakeTimers(() => {
+			deleteRoomButton.click()
 		})
 		await app.renderResult.findByTestId(`no-rooms`)
 
@@ -115,29 +93,29 @@ describe(`multi-process realtime server`, () => {
 		const app = client.init()
 		app.enableLogging()
 		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
-		act(() => {
+		await actWithFakeTimers(() => {
 			createRoomButton.click()
 		})
 		const joinRoomButton = await app.renderResult.findByTestId(`join-room::0`)
-		act(() => {
+		await actWithFakeTimers(() => {
 			joinRoomButton.click()
 		})
 		await app.renderResult.findByTestId(`room::0`)
 		await app.renderResult.findByTestId(`A`, undefined, { timeout: 3000 })
 
-		act(() => {
+		await actWithFakeTimers(() => {
 			app.socket.disconnect()
 		})
 		await app.renderResult.findByTestId(`disconnected`)
 
-		act(() => {
+		await actWithFakeTimers(() => {
 			app.socket.connect()
 		})
 		await app.renderResult.findByTestId(`room::0`)
 		await app.renderResult.findByTestId(`A`, undefined, { timeout: 3000 })
 
 		const leaveRoomButton = await app.renderResult.findByTestId(`leave-room`)
-		act(() => {
+		await actWithFakeTimers(() => {
 			leaveRoomButton.click()
 		})
 		await waitFor(() => app.renderResult.getByTestId(`lobby`), {
