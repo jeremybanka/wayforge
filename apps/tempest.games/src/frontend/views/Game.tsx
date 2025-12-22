@@ -2,9 +2,7 @@ import type { ViewOf } from "atom.io"
 import { runTransaction } from "atom.io"
 import { toEntries } from "atom.io/json"
 import { useO } from "atom.io/react"
-import type { UserKey } from "atom.io/realtime"
-import { myUserKeyAtom } from "atom.io/realtime-client"
-import { usePullAtom, useSyncContinuity } from "atom.io/realtime-react"
+import { useSyncContinuity } from "atom.io/realtime-react"
 import * as React from "react"
 
 import { countAtom, countContinuity, incrementTX } from "../../library/store"
@@ -25,14 +23,9 @@ export type GameIndexProps = {
 export function GameView({
 	route: [, gameId],
 }: GameIndexProps): React.ReactNode {
-	const userKey = usePullAtom(myUserKeyAtom)
 	return (
 		<article className={scss[`class`]}>
-			{gameId && userKey ? (
-				<Game gameId={gameId} userKey={userKey} />
-			) : (
-				<GameIndex />
-			)}
+			{gameId ? <Game gameId={gameId} /> : <GameIndex />}
 		</article>
 	)
 }
@@ -51,17 +44,17 @@ export function GameIndex(): React.ReactNode {
 
 const GAMES = toEntries(ROUTES[1].game[1]).map(([gameId]) => gameId)
 type GameId = (typeof GAMES)[number]
-export type GameProps = { gameId: GameId; userKey: UserKey }
+export type GameProps = { gameId: GameId }
 export function Game(props: GameProps): React.ReactNode {
 	switch (props.gameId) {
 		case `bug_rangers`: {
-			return <BugRangers {...props} />
+			return <BugRangers />
 		}
 		case `clicker`: {
 			return <Clicker />
 		}
 		case `server_control`: {
-			return <ServerControl {...props} />
+			return <ServerControl />
 		}
 	}
 }

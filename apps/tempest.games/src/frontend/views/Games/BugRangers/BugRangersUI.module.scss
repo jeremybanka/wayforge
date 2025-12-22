@@ -58,7 +58,7 @@ main.class {
           display: flex;
           flex-direction: row;
           gap: 5px;
-          > div[data-css="user"] {
+          > [data-css-user] {
             background: var(--bg-tint-2);
             border: var(--fg-soft-2) solid 1px;
             height: 30px;
@@ -66,7 +66,24 @@ main.class {
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            &[data-css-owner]::after {
+              position: absolute;
+              top: -14px;
+              align-self: center;
+              content: "👑";
+            }
           }
+        }
+        > section {
+        }
+        > button {
+          position: absolute;
+          top: 0;
+          right: 0;
+          left: 0;
+          bottom: 0;
+          z-index: -1;
         }
       }
     }
