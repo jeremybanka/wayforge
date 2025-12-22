@@ -2,7 +2,6 @@ import type { MutableAtomToken } from "atom.io"
 import { setState } from "atom.io"
 import { useJSON, useO } from "atom.io/react"
 import type { TypedSocket, UserKey } from "atom.io/realtime"
-import { myRoomKeyAtom } from "atom.io/realtime-client"
 import {
 	RealtimeContext,
 	usePullAtom,
@@ -32,7 +31,6 @@ import scss from "./BugRangersUI.module.scss"
 export function BugRangersUI({ userKey }: GameProps): ReactNode {
 	const { myRoomKey, myMutualsAtom, socket, allRoomKeysAtom } =
 		useRealtimeRooms(userKey)
-	usePullAtom(myRoomKeyAtom)
 	const turnInProgress = useO(turnInProgressAtom)
 	const turnNumber = useO(turnNumberAtom)
 	const playerTurn = useO(playerTurnSelector)

@@ -7,7 +7,7 @@ import {
 	selectorFamily,
 } from "atom.io"
 import { type UserKey, usersInRooms } from "atom.io/realtime"
-import { myRoomKeyAtom } from "atom.io/realtime-client"
+import { myRoomKeySelector } from "atom.io/realtime-client"
 import { OList } from "atom.io/transceivers/o-list"
 import { UList } from "atom.io/transceivers/u-list"
 import * as THREE from "three"
@@ -361,7 +361,7 @@ export const setupGroupsSelector = selector<
 		const notReady: UserKey[] = []
 		const readyDoesNotWantFirst: UserKey[] = []
 		const readyWantsFirst: UserKey[] = []
-		const roomKey = get(myRoomKeyAtom)
+		const roomKey = get(myRoomKeySelector)
 		if (!roomKey) return { notReady, readyDoesNotWantFirst, readyWantsFirst }
 		const [usersInRoomsAtoms] = getInternalRelations(usersInRooms, `split`)
 		const usersHere = get(usersInRoomsAtoms, roomKey)
