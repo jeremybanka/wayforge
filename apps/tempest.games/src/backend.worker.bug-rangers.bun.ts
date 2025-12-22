@@ -8,7 +8,6 @@ import {
 	getInternalRelations,
 	getState,
 	setState,
-	subscribe,
 } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import type { RoomKey, SocketGuard, TypedSocket } from "atom.io/realtime"
@@ -18,11 +17,7 @@ import {
 	ownersOfRooms,
 	usersInRooms,
 } from "atom.io/realtime"
-import {
-	myRoomKeyAtom,
-	pullAtom,
-	pullMutableAtomFamilyMember,
-} from "atom.io/realtime-client"
+import { pullMutableAtomFamilyMember } from "atom.io/realtime-client"
 import {
 	ParentSocket,
 	realtimeAtomFamilyProvider,
@@ -94,7 +89,6 @@ const ownersOfRoomsAtoms = getInternalRelations(ownersOfRooms)
 ;(function globalSetup() {
 	if ((process as any).globalSetupDone) return
 	;(process as any).globalSetupDone = true
-	pullAtom(IMPLICIT.STORE, parentSocket, myRoomKeyAtom)
 	pullMutableAtomFamilyMember(
 		IMPLICIT.STORE,
 		parentSocket,
@@ -124,7 +118,6 @@ parent.receiveRelay((socket, userKey) => {
 
 	const coreStack: (() => void)[] = []
 	coreStack.push(
-		exposeState(myRoomKeyAtom),
 		exposeState(turnNumberAtom),
 		exposeState(gameStateAtom),
 		exposeMutable(playerTurnOrderAtom),
@@ -133,7 +126,6 @@ parent.receiveRelay((socket, userKey) => {
 		employSocket(gameSocket, `wantFirst`, () => {
 			const gameState = getState(gameStateAtom)
 			if (gameState === `setup`) {
-				console.log(`setting ready first`, userKey)
 				setState(playerReadyStatusAtoms, userKey, `readyWantsFirst`)
 			}
 		}),
@@ -144,11 +136,9 @@ parent.receiveRelay((socket, userKey) => {
 			}
 		}),
 		employSocket(gameSocket, `startGame`, () => {
-			const myRoomKey = getState(myRoomKeyAtom)
-			if (!myRoomKey) return
 			const ownerOfRoomSelector = findRelations(
 				ownersOfRooms,
-				myRoomKey,
+				ROOM_KEY,
 			).userKeyOfRoom
 			const ownerOfRoom = getState(ownerOfRoomSelector)
 			if (ownerOfRoom !== userKey) return
