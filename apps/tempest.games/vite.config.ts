@@ -1,5 +1,6 @@
 import react from "@vitejs/plugin-react"
 import { loadEnv } from "vite"
+import tsconfigPaths from "vite-tsconfig-paths"
 import type { ViteUserConfig, ViteUserConfigFn } from "vitest/config"
 import { defineConfig } from "vitest/config"
 
@@ -10,7 +11,7 @@ export default defineConfig((async ({ mode }) => {
 	await import(`./src/library/env`)
 	const { httpsDev } = await import(`./dev/https-dev`)
 	const config: ViteUserConfig = {
-		plugins: [react()],
+		plugins: [react(), tsconfigPaths()],
 		build: { outDir: `app` },
 		// css: { preprocessorOptions: { scss: { api: `modern-compiler` } } },
 		server: {
