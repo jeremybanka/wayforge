@@ -6,16 +6,12 @@ import * as React from "react"
 
 import type { ActualWorkerName } from "../../backend.worker"
 import { cpuCountAtom } from "../../library/store"
-import type { GameProps } from "./Game"
 
-export function ServerControl({ userKey }: GameProps): React.ReactNode {
+export function ServerControl(): React.ReactNode {
 	const cpuCount = usePullAtom(cpuCountAtom)
 	const allRoomKeys = useJSON(roomKeysAtom)
-	const {
-		myRoomKey,
-		myOwnedRoomsAtom,
-		socket: roomSocket,
-	} = useRealtimeRooms<ActualWorkerName>(userKey)
+	const { myRoomKey, myOwnedRoomsAtom, roomSocket } =
+		useRealtimeRooms<ActualWorkerName>()
 
 	const myOwnedRoomKeys = useO(myOwnedRoomsAtom)
 
@@ -53,7 +49,7 @@ type CoreProps = {
 	roomKey?: RoomKey
 	hasJoined?: boolean
 	ownsRoom?: boolean
-	roomSocket: RealtimeRoomsTools[`socket`]
+	roomSocket: RealtimeRoomsTools[`roomSocket`]
 }
 function Core({
 	indexNumber,
