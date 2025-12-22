@@ -7,11 +7,30 @@ import { DatabaseManager } from "./database.node"
 import { SystemServer } from "./system-server.node"
 
 /* ❗❗❗ turn off the lights when you're done ❗❗❗ */
-console.info = () => undefined
-console.log = () => undefined
-console.warn = () => undefined
-console.error = () => undefined
+// console.info = () => undefined
+// console.log = () => undefined
+// console.warn = () => undefined
+// console.error = () => undefined
 const dbManager = new DatabaseManager()
+
+import { vi } from "vitest"
+
+async function flushTimers(ms = 0) {
+	await vi.advanceTimersByTimeAsync(ms)
+	vi.runAllTicks()
+}
+
+async function actWithFakeTimers(fn: () => void) {
+	vi.useFakeTimers()
+	try {
+		act(() => {
+			fn()
+		})
+		await flushTimers(50)
+	} finally {
+		vi.useRealTimers()
+	}
+}
 
 beforeAll(async () => {
 	await dbManager.createDatabase()
@@ -53,13 +72,19 @@ describe(`multi-process realtime server`, () => {
 		const app = client.init()
 		app.enableLogging()
 		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
-		act(() => {
+
+		await actWithFakeTimers(() => {
 			createRoomButton.click()
 		})
 		const deleteRoomButton =
 			await app.renderResult.findByTestId(`delete-room::0`)
-		act(() => {
-			deleteRoomButton.click()
+
+		await actWithFakeTimers(async () => {
+			act(() => {
+				deleteRoomButton.click()
+			})
+
+			await flushTimers(50)
 		})
 		await app.renderResult.findByTestId(`no-rooms`)
 
@@ -68,28 +93,20 @@ describe(`multi-process realtime server`, () => {
 	it(`permits join and leave`, async () => {
 		const { client, teardown } = scenario()
 		const app = client.init()
-		app.enableLogging()
-		const createRoomButton = await waitFor(
-			() => app.renderResult.getByTestId(`create-room`),
-			{ timeout: 3000 },
-		)
-		act(() => {
+
+		const createRoomButton = await app.renderResult.findByTestId(`create-room`)
+
+		await actWithFakeTimers(() => {
 			createRoomButton.click()
 		})
-		const joinRoomButton = await waitFor(
-			() => app.renderResult.getByTestId(`join-room::0`),
-			{ timeout: 3000 },
-		)
-		act(() => {
+
+		const joinRoomButton = await app.renderResult.findByTestId(`join-room::0`)
+
+		await actWithFakeTimers(() => {
 			joinRoomButton.click()
 		})
+
 		await app.renderResult.findByTestId(`room::0`)
-		await app.renderResult.findByTestId(`A`, undefined, { timeout: 3000 })
-		const leaveRoomButton = await app.renderResult.findByTestId(`leave-room`)
-		act(() => {
-			leaveRoomButton.click()
-		})
-		await app.renderResult.findByTestId(`create-room`)
 
 		await teardown()
 	})

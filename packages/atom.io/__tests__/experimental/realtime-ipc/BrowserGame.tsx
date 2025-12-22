@@ -69,7 +69,6 @@ function Lobby({
 
 function View({ myUserKey }: { myUserKey: RT.UserKey }): React.ReactNode {
 	const roomTools = RTR.useRealtimeRooms<RoomNames>(myUserKey)
-	console.log(`🤠`, roomTools.myRoomKey)
 	return roomTools.myRoomKey === undefined ? (
 		<Lobby {...roomTools} />
 	) : (
