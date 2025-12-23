@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.10
+
+### Patch Changes
+
+- 7aa3138: ✨ `atom.io/realtime-client` `::` `useRealtimeRooms()` No longer requires a `UserKey` as a parameter.
+
 ## 0.46.9
 
 ### Patch Changes
