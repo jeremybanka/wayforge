@@ -1,6 +1,8 @@
 import { atom, transaction } from "atom.io"
 import { continuity } from "atom.io/realtime"
 
+import { IS_SERVER } from "./env"
+
 export const countAtom = atom<number>({
 	key: `count`,
 	default: 0,
@@ -23,8 +25,7 @@ export const cpuCountAtom = atom<number>({
 	default: 1,
 	effects: [
 		({ setSelf }) => {
-			const isBrowser = typeof window !== `undefined`
-			if (!isBrowser) {
+			if (IS_SERVER) {
 				void import(`node:os`).then(({ cpus }) => {
 					setSelf(cpus().length)
 				})
