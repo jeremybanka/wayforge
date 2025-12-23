@@ -12,6 +12,8 @@
 			"node"
 		],
 		"paths": {
+			"@backend/*": ["./src/backend/*"],
+
 			"atom.io": ["../../packages/atom.io/src/main"],
 			"atom.io/json": ["../../packages/atom.io/src/json"],
 			"atom.io/react": ["../../packages/atom.io/src/react"],
