@@ -8,7 +8,7 @@ import { gameContinuity, letterAtoms } from "./game-store"
 type RoomNames = `game-instance.bun.ts`
 
 function Room({
-	roomSocket: socket,
+	roomSocket,
 	myRoomKey,
 }: RTR.RealtimeRoomsTools): React.ReactNode {
 	RTR.useSyncContinuity(gameContinuity)
@@ -21,7 +21,7 @@ function Room({
 				type="button"
 				data-testid="leave-room"
 				onClick={() => {
-					socket?.emit(`leaveRoom`)
+					roomSocket?.emit(`leaveRoom`)
 				}}
 			/>
 		</main>
@@ -30,7 +30,7 @@ function Room({
 
 function Lobby({
 	allRoomKeysAtom,
-	roomSocket: socket,
+	roomSocket,
 }: RTR.RealtimeRoomsTools): React.ReactNode {
 	const roomKeys = AR.useJSON(allRoomKeysAtom)
 	return (
@@ -43,14 +43,14 @@ function Lobby({
 							type="button"
 							data-testid={`join-${roomKey}`}
 							onClick={() => {
-								socket?.emit(`joinRoom`, roomKey)
+								roomSocket?.emit(`joinRoom`, roomKey)
 							}}
 						/>
 						<button
 							type="button"
 							data-testid={`delete-${roomKey}`}
 							onClick={() => {
-								socket?.emit(`deleteRoom`, roomKey)
+								roomSocket?.emit(`deleteRoom`, roomKey)
 							}}
 						/>
 					</li>
@@ -60,7 +60,7 @@ function Lobby({
 				type="button"
 				data-testid="create-room"
 				onClick={() => {
-					socket?.emit(`createRoom`, `game-instance.bun.ts`)
+					roomSocket?.emit(`createRoom`, `game-instance.bun.ts`)
 				}}
 			>
 				Click me!
