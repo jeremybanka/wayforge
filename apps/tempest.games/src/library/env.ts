@@ -3,13 +3,14 @@ import { type } from "arktype"
 
 export const BUILDING_WITH_VITE = `__vite_start_time` in globalThis
 export const HAS_WINDOW = typeof window !== `undefined`
+export const IS_SERVER = !BUILDING_WITH_VITE && !HAS_WINDOW
 export const IS_TEST = `vitest` in globalThis
 
 const str = type(`string`)
 const maybeBool = type(`"true" | "false" | undefined`)
 
 export const env = createEnv({
-	isServer: !BUILDING_WITH_VITE && !HAS_WINDOW,
+	isServer: IS_SERVER,
 
 	server: {
 		CI: type(`string | undefined`).pipe(Boolean),
