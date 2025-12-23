@@ -1,5 +1,4 @@
 import * as AR from "atom.io/react"
-import type * as RT from "atom.io/realtime"
 import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as React from "react"
@@ -8,7 +7,10 @@ import { gameContinuity, letterAtoms } from "./game-store"
 
 type RoomNames = `game-instance.bun.ts`
 
-function Room({ socket, myRoomKey }: RTR.RealtimeRoomsTools): React.ReactNode {
+function Room({
+	roomSocket: socket,
+	myRoomKey,
+}: RTR.RealtimeRoomsTools): React.ReactNode {
 	RTR.useSyncContinuity(gameContinuity)
 	const letter0 = AR.useO(letterAtoms, 0)
 	return (
@@ -28,7 +30,7 @@ function Room({ socket, myRoomKey }: RTR.RealtimeRoomsTools): React.ReactNode {
 
 function Lobby({
 	allRoomKeysAtom,
-	socket,
+	roomSocket: socket,
 }: RTR.RealtimeRoomsTools): React.ReactNode {
 	const roomKeys = AR.useJSON(allRoomKeysAtom)
 	return (
@@ -67,8 +69,8 @@ function Lobby({
 	)
 }
 
-function View({ myUserKey }: { myUserKey: RT.UserKey }): React.ReactNode {
-	const roomTools = RTR.useRealtimeRooms<RoomNames>(myUserKey)
+function View(): React.ReactNode {
+	const roomTools = RTR.useRealtimeRooms<RoomNames>()
 	return roomTools.myRoomKey === undefined ? (
 		<Lobby {...roomTools} />
 	) : (
@@ -80,9 +82,5 @@ export function BrowserGame(): React.ReactNode | null {
 	const mySocketKey = AR.useO(RTC.mySocketKeyAtom)
 	const myUserKey = RTR.usePullAtom(RTC.myUserKeyAtom)
 
-	return mySocketKey && myUserKey ? (
-		<View myUserKey={myUserKey} />
-	) : (
-		<div data-testid="disconnected" />
-	)
+	return mySocketKey && myUserKey ? <View /> : <div data-testid="disconnected" />
 }
