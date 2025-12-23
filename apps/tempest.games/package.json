@@ -73,8 +73,8 @@
 		"resend": "6.6.0",
 		"safedeposit": "workspace:*",
 		"safegen": "0.8.3",
-		"socket.io": "4.8.2",
-		"socket.io-client": "4.8.2",
+		"socket.io": "4.8.3",
+		"socket.io-client": "4.8.3",
 		"treetrunks": "workspace:*"
 	},
 	"devDependencies": {
