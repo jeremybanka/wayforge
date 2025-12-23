@@ -73,7 +73,7 @@ importers:
         version: 4.3.13(astro@5.16.6(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.53.4)(sass-embedded@1.97.1)(sass@1.97.1)(typescript@5.9.3))
       '@astrojs/preact':
         specifier: 4.1.3
-        version: 4.1.3(@babel/core@7.28.5)(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(preact@10.28.0)(sass-embedded@1.97.1)(sass@1.97.1)
+        version: 4.1.3(@babel/core@7.28.5)(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(preact@10.28.1)(sass-embedded@1.97.1)(sass@1.97.1)
       astro:
         specifier: 5.16.6
         version: 5.16.6(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(rollup@4.53.4)(sass-embedded@1.97.1)(sass@1.97.1)(typescript@5.9.3)
@@ -81,17 +81,17 @@ importers:
         specifier: workspace:*
         version: link:../../packages/atom.io
       preact:
-        specifier: 10.28.0
-        version: 10.28.0
+        specifier: 10.28.1
+        version: 10.28.1
       react:
         specifier: npm:@preact/compat@18.3.1
-        version: '@preact/compat@18.3.1(preact@10.28.0)'
+        version: '@preact/compat@18.3.1(preact@10.28.1)'
       react-dom:
         specifier: npm:@preact/compat@18.3.1
-        version: '@preact/compat@18.3.1(preact@10.28.0)'
+        version: '@preact/compat@18.3.1(preact@10.28.1)'
       react-syntax-highlighter:
         specifier: 16.1.0
-        version: 16.1.0(@preact/compat@18.3.1(preact@10.28.0))
+        version: 16.1.0(@preact/compat@18.3.1(preact@10.28.1))
       tsdoc.json:
         specifier: workspace:*
         version: link:../../packages/tsdoc.json
@@ -366,8 +366,8 @@ importers:
         specifier: 3.4.7
         version: 3.4.7
       preact:
-        specifier: 10.28.0
-        version: 10.28.0
+        specifier: 10.28.1
+        version: 10.28.1
       react:
         specifier: 19.2.3
         version: 19.2.3
@@ -680,8 +680,8 @@ importers:
         specifier: 27.3.0
         version: 27.3.0(postcss@8.5.6)
       preact:
-        specifier: 10.28.0
-        version: 10.28.0
+        specifier: 10.28.1
+        version: 10.28.1
       react:
         specifier: 19.2.3
         version: 19.2.3
@@ -1061,18 +1061,18 @@ importers:
         specifier: workspace:*
         version: link:../../packages/atom.io
       preact:
-        specifier: 10.28.0
-        version: 10.28.0
+        specifier: 10.28.1
+        version: 10.28.1
       react:
         specifier: npm:@preact/compat@18.3.1
-        version: '@preact/compat@18.3.1(preact@10.28.0)'
+        version: '@preact/compat@18.3.1(preact@10.28.1)'
       react-dom:
         specifier: npm:@preact/compat@18.3.1
-        version: '@preact/compat@18.3.1(preact@10.28.0)'
+        version: '@preact/compat@18.3.1(preact@10.28.1)'
     devDependencies:
       '@preact/preset-vite':
         specifier: 2.10.2
-        version: 2.10.2(@babel/core@7.28.5)(preact@10.28.0)(vite@7.3.0(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.1)(sass@1.97.1))
+        version: 2.10.2(@babel/core@7.28.5)(preact@10.28.1)(vite@7.3.0(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.1)(sass@1.97.1))
       '@typescript-eslint/eslint-plugin':
         specifier: 8.50.1
         version: 8.50.1(@typescript-eslint/parser@8.50.1(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
@@ -7143,8 +7143,8 @@ packages:
     peerDependencies:
       preact: '>=10 || >= 11.0.0-0'
 
-  preact@10.28.0:
-    resolution: {integrity: sha512-rytDAoiXr3+t6OIP3WGlDd0ouCUG1iCWzkcY3++Nreuoi17y6T5i/zRhe6uYfoVcxq6YU+sBtJouuRDsq8vvqA==}
+  preact@10.28.1:
+    resolution: {integrity: sha512-u1/ixq/lVQI0CakKNvLDEcW5zfCjUQfZdK9qqWuIJtsezuyG6pk9TWj75GMuI/EzRSZB/VAE43sNWWZfiy8psw==}
 
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
@@ -8922,12 +8922,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/preact@4.1.3(@babel/core@7.28.5)(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(preact@10.28.0)(sass-embedded@1.97.1)(sass@1.97.1)':
+  '@astrojs/preact@4.1.3(@babel/core@7.28.5)(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(preact@10.28.1)(sass-embedded@1.97.1)(sass@1.97.1)':
     dependencies:
-      '@preact/preset-vite': 2.10.2(@babel/core@7.28.5)(preact@10.28.0)(vite@6.4.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.1)(sass@1.97.1))
-      '@preact/signals': 2.5.1(preact@10.28.0)
-      preact: 10.28.0
-      preact-render-to-string: 6.6.4(preact@10.28.0)
+      '@preact/preset-vite': 2.10.2(@babel/core@7.28.5)(preact@10.28.1)(vite@6.4.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.1)(sass@1.97.1))
+      '@preact/signals': 2.5.1(preact@10.28.1)
+      preact: 10.28.1
+      preact-render-to-string: 6.6.4(preact@10.28.1)
       vite: 6.4.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.1)(sass@1.97.1)
     transitivePeerDependencies:
       - '@babel/core'
@@ -10490,16 +10490,16 @@ snapshots:
 
   '@poppinss/exception@1.2.3': {}
 
-  '@preact/compat@18.3.1(preact@10.28.0)':
+  '@preact/compat@18.3.1(preact@10.28.1)':
     dependencies:
-      preact: 10.28.0
+      preact: 10.28.1
 
-  '@preact/preset-vite@2.10.2(@babel/core@7.28.5)(preact@10.28.0)(vite@6.4.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.1)(sass@1.97.1))':
+  '@preact/preset-vite@2.10.2(@babel/core@7.28.5)(preact@10.28.1)(vite@6.4.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.1)(sass@1.97.1))':
     dependencies:
       '@babel/core': 7.28.5
       '@babel/plugin-transform-react-jsx': 7.27.1(@babel/core@7.28.5)
       '@babel/plugin-transform-react-jsx-development': 7.27.1(@babel/core@7.28.5)
-      '@prefresh/vite': 2.4.11(preact@10.28.0)(vite@6.4.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.1)(sass@1.97.1))
+      '@prefresh/vite': 2.4.11(preact@10.28.1)(vite@6.4.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.1)(sass@1.97.1))
       '@rollup/pluginutils': 4.2.1
       babel-plugin-transform-hook-names: 1.0.2(@babel/core@7.28.5)
       debug: 4.4.3
@@ -10510,12 +10510,12 @@ snapshots:
       - preact
       - supports-color
 
-  '@preact/preset-vite@2.10.2(@babel/core@7.28.5)(preact@10.28.0)(vite@7.3.0(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.1)(sass@1.97.1))':
+  '@preact/preset-vite@2.10.2(@babel/core@7.28.5)(preact@10.28.1)(vite@7.3.0(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.1)(sass@1.97.1))':
     dependencies:
       '@babel/core': 7.28.5
       '@babel/plugin-transform-react-jsx': 7.27.1(@babel/core@7.28.5)
       '@babel/plugin-transform-react-jsx-development': 7.27.1(@babel/core@7.28.5)
-      '@prefresh/vite': 2.4.11(preact@10.28.0)(vite@7.3.0(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.1)(sass@1.97.1))
+      '@prefresh/vite': 2.4.11(preact@10.28.1)(vite@7.3.0(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.1)(sass@1.97.1))
       '@rollup/pluginutils': 4.2.1
       babel-plugin-transform-hook-names: 1.0.2(@babel/core@7.28.5)
       debug: 4.4.3
@@ -10528,39 +10528,39 @@ snapshots:
 
   '@preact/signals-core@1.12.1': {}
 
-  '@preact/signals@2.5.1(preact@10.28.0)':
+  '@preact/signals@2.5.1(preact@10.28.1)':
     dependencies:
       '@preact/signals-core': 1.12.1
-      preact: 10.28.0
+      preact: 10.28.1
 
   '@prefresh/babel-plugin@0.5.2': {}
 
-  '@prefresh/core@1.5.9(preact@10.28.0)':
+  '@prefresh/core@1.5.9(preact@10.28.1)':
     dependencies:
-      preact: 10.28.0
+      preact: 10.28.1
 
   '@prefresh/utils@1.2.1': {}
 
-  '@prefresh/vite@2.4.11(preact@10.28.0)(vite@6.4.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.1)(sass@1.97.1))':
+  '@prefresh/vite@2.4.11(preact@10.28.1)(vite@6.4.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.1)(sass@1.97.1))':
     dependencies:
       '@babel/core': 7.28.5
       '@prefresh/babel-plugin': 0.5.2
-      '@prefresh/core': 1.5.9(preact@10.28.0)
+      '@prefresh/core': 1.5.9(preact@10.28.1)
       '@prefresh/utils': 1.2.1
       '@rollup/pluginutils': 4.2.1
-      preact: 10.28.0
+      preact: 10.28.1
       vite: 6.4.1(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.1)(sass@1.97.1)
     transitivePeerDependencies:
       - supports-color
 
-  '@prefresh/vite@2.4.11(preact@10.28.0)(vite@7.3.0(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.1)(sass@1.97.1))':
+  '@prefresh/vite@2.4.11(preact@10.28.1)(vite@7.3.0(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.1)(sass@1.97.1))':
     dependencies:
       '@babel/core': 7.28.5
       '@prefresh/babel-plugin': 0.5.2
-      '@prefresh/core': 1.5.9(preact@10.28.0)
+      '@prefresh/core': 1.5.9(preact@10.28.1)
       '@prefresh/utils': 1.2.1
       '@rollup/pluginutils': 4.2.1
-      preact: 10.28.0
+      preact: 10.28.1
       vite: 7.3.0(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.1)(sass@1.97.1)
     transitivePeerDependencies:
       - supports-color
@@ -15119,11 +15119,11 @@ snapshots:
 
   postgres@3.4.7: {}
 
-  preact-render-to-string@6.6.4(preact@10.28.0):
+  preact-render-to-string@6.6.4(preact@10.28.1):
     dependencies:
-      preact: 10.28.0
+      preact: 10.28.1
 
-  preact@10.28.0: {}
+  preact@10.28.1: {}
 
   prelude-ls@1.2.1: {}
 
@@ -15232,14 +15232,14 @@ snapshots:
     optionalDependencies:
       react-dom: 19.2.3(react@19.2.3)
 
-  react-syntax-highlighter@16.1.0(@preact/compat@18.3.1(preact@10.28.0)):
+  react-syntax-highlighter@16.1.0(@preact/compat@18.3.1(preact@10.28.1)):
     dependencies:
       '@babel/runtime': 7.28.4
       highlight.js: 10.7.3
       highlightjs-vue: 1.0.0
       lowlight: 1.20.0
       prismjs: 1.30.0
-      react: '@preact/compat@18.3.1(preact@10.28.0)'
+      react: '@preact/compat@18.3.1(preact@10.28.1)'
       refractor: 5.0.0
 
   react@19.2.3: {}
