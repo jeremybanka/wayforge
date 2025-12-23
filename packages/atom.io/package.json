@@ -107,7 +107,7 @@
 		"http-proxy": "1.18.1",
 		"motion": "12.23.26",
 		"postgres": "3.4.7",
-		"preact": "10.28.0",
+		"preact": "10.28.1",
 		"react": "19.2.3",
 		"react-dom": "19.2.3",
 		"react-router-dom": "7.11.0",

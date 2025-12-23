@@ -59,7 +59,7 @@
 		"eslint": "9.39.2",
 		"happy-dom": "20.0.11",
 		"jsdom": "27.3.0",
-		"preact": "10.28.0",
+		"preact": "10.28.1",
 		"react": "19.2.3",
 		"react-dom": "19.2.3",
 		"react-router-dom": "7.11.0",
