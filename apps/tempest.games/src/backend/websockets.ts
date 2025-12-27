@@ -1,144 +1,106 @@
+import { type } from "arktype"
+import { findState } from "atom.io"
+import { IMPLICIT } from "atom.io/internal"
+import { mutualUsersSelector, type UserKey } from "atom.io/realtime"
+import type { Handshake, UserServerConfig } from "atom.io/realtime-server"
 import {
-	editRelationsInStore,
-	findInStore,
-	findRelationsInStore,
-	getFromStore,
-	IMPLICIT,
-	setIntoStore,
-} from "atom.io/internal"
-import type { SocketKey, UserKey } from "atom.io/realtime"
-import {
-	onlineUsersAtom,
-	socketAtoms,
-	socketKeysAtom,
-	usersOfSockets,
+	provideRooms,
+	realtimeAtomFamilyProvider,
+	realtimeStateProvider,
 } from "atom.io/realtime-server"
 import { CookieMap } from "bun"
-import { eq } from "drizzle-orm"
-import type { DefaultEventsMap, ExtendedError, Socket } from "socket.io"
+import { and, eq } from "drizzle-orm"
 
+import { resolveRoomScript, workerNames } from "../backend.worker"
 import { users, userSessions } from "../database/tempest-db-schema"
-import type {
-	TempestSocketDown,
-	TempestSocketServerSide,
-	TempestSocketUp,
-} from "../library/socket-interface"
+import { usernameType } from "../library/data-constraints"
+import { cpuCountAtom } from "../library/store"
+import { usernameAtoms } from "../library/username-state"
 import { db } from "./db"
 import { logger } from "./logger"
-// import { userSessions } from "./user-sessions"
 
-export type TempestServerSocket = Socket<
-	TempestSocketUp,
-	TempestSocketDown,
-	TempestSocketServerSide
->
+const handshakeSchema = type({
+	auth: type({ username: usernameType }),
+	headers: type({ cookie: `string` }),
+})
 
-export interface EventsMap {
-	[event: string]: any
-}
-type SocketServerMiddleware<
-	ListenEvents extends EventsMap = DefaultEventsMap,
-	EmitEvents extends EventsMap = DefaultEventsMap,
-	ServerSideEvents extends EventsMap = DefaultEventsMap,
-	SocketData = any,
-> = (
-	socket: Socket<ListenEvents, EmitEvents, ServerSideEvents, SocketData>,
-	next: (err?: ExtendedError) => void,
-) => void
-
-export const sessionMiddleware: SocketServerMiddleware = async (
-	socket,
-	next,
-) => {
-	const { username } = socket.handshake.auth as { username: string }
-	if (!username) {
-		next(new Error(`No auth header provided`))
-		return
+export const sessionMiddleware = async (
+	handshake: Handshake,
+): Promise<Error | UserKey> => {
+	const handshakeResult = handshakeSchema(handshake)
+	if (handshakeResult instanceof type.errors) {
+		return new Error(`Handshake failed validation: ${handshakeResult.summary}`)
 	}
-	const cookies = new CookieMap(socket.handshake.headers.cookie ?? ``)
+	const {
+		auth: { username },
+		headers: { cookie },
+	} = handshakeResult
+	const cookies = new CookieMap(cookie)
 	const sessionKey = cookies.get(`sessionKey`)
-	if (!sessionKey) {
-		next(new Error(`No session key provided`))
-		return
+	if (sessionKey === null) {
+		return new Error(`No sessionKey cookie was provided`)
 	}
 	const user = await db.drizzle.query.users.findFirst({
 		where: eq(users.username, username),
 	})
-	if (!user?.emailVerified) {
-		next(new Error(`Email not verified`))
-		return
+	if (user === undefined) {
+		return new Error(`User not found`)
 	}
-	const userKey = `user::${user.id}` satisfies UserKey
-	const socketKey = `socket::${socket.id}` satisfies SocketKey
 	const session = await db.drizzle.query.userSessions.findFirst({
-		where: eq(userSessions.sessionKey, sessionKey),
+		where: and(
+			eq(userSessions.userId, user.id),
+			eq(userSessions.sessionKey, sessionKey),
+		),
 	})
-
-	if (session) {
-		const socketState = findInStore(IMPLICIT.STORE, socketAtoms, socketKey)
-		setIntoStore(IMPLICIT.STORE, socketState, socket)
-		editRelationsInStore(IMPLICIT.STORE, usersOfSockets, (relations) => {
-			relations.set(userKey, socketKey)
-		})
-		setIntoStore(IMPLICIT.STORE, onlineUsersAtom, (index) => index.add(userKey))
-		setIntoStore(IMPLICIT.STORE, socketKeysAtom, (index) => index.add(socketKey))
-		logger.info(`${username} connected on ${socket.id}`)
-		next()
-	} else {
-		logger.info(`${username} couldn't authenticate`)
-		next(new Error(`Authentication error`))
+	if (session === undefined) {
+		return new Error(`User passed an invalid sessionKey`)
 	}
+	if (user.emailVerified === null) {
+		return new Error(`User does not have a verified email`)
+	}
+	return `user::${user.id}` satisfies UserKey
 }
 
-export const serveSocket = (socket: TempestServerSocket): void => {
-	// const syncContinuity = prepareToExposeRealtimeContinuity({
-	// 	socket,
-	// 	store: IMPLICIT.STORE,
-	// })
-	// const cleanup = syncContinuity(countContinuity)
-	const socketKey = `socket::${socket.id}` satisfies SocketKey
-	const userOfSocketSelector = findRelationsInStore(
-		IMPLICIT.STORE,
-		usersOfSockets,
-		socketKey,
-	).userKeyOfSocket
-	const userKeyOfSocket = getFromStore(IMPLICIT.STORE, userOfSocketSelector)
-	const rawUserId = userKeyOfSocket?.replace(/^user::/, ``)
+export const serveSocket = (config: UserServerConfig): (() => void) => {
+	const { socket, consumer } = config
+	socket.onAny((event, ...args) => {
+		logger.info(`📡 >> 🛰️`, socket.id, consumer, { event, args })
+	})
+	socket.onAnyOutgoing((event, ...args) => {
+		logger.info(`🛰️ >> 📡`, socket.id, consumer, { event, args })
+	})
+	const provideState = realtimeStateProvider(config)
+	const provideFamily = realtimeAtomFamilyProvider(config)
 
-	socket.on(`changeUsername`, async (username) => {
-		logger.info(`changing username to`, username)
-		if (rawUserId) {
-			await db.drizzle
-				.update(users)
-				.set({ username })
-				.where(eq(users.id, rawUserId))
-			socket.emit(`usernameChanged`, username)
+	const mutualsSelector = findState(mutualUsersSelector, consumer)
+
+	const unsubFunctions = [
+		provideState(cpuCountAtom),
+		provideFamily(usernameAtoms, mutualsSelector),
+		provideRooms({
+			socket,
+			userKey: consumer,
+			store: IMPLICIT.STORE,
+			roomNames: workerNames,
+			resolveRoomScript,
+		}),
+	]
+
+	const rawUserId = consumer.replace(/^user::/, ``)
+	socket.on(`changeUsername`, async (usernameAttempt) => {
+		const username = usernameType(usernameAttempt)
+		if (username instanceof type.errors) {
+			logger.error(`❌ invalid username`, username.summary)
+			return
 		}
+		await db.drizzle
+			.update(users)
+			.set({ username })
+			.where(eq(users.id, rawUserId))
+		socket.emit(`usernameChanged`, username)
 	})
 
-	socket.on(`disconnect`, () => {
-		const userKeyState = findRelationsInStore(
-			IMPLICIT.STORE,
-			usersOfSockets,
-			socketKey,
-		).userKeyOfSocket
-		const userKey = getFromStore(IMPLICIT.STORE, userKeyState)
-		editRelationsInStore(IMPLICIT.STORE, usersOfSockets, (relations) => {
-			relations.delete(socketKey)
-		})
-		if (userKey) {
-			setIntoStore(
-				IMPLICIT.STORE,
-				onlineUsersAtom,
-				(index) => (index.delete(userKey), index),
-			)
-		}
-		setIntoStore(
-			IMPLICIT.STORE,
-			socketKeysAtom,
-			(index) => (index.delete(socketKey), index),
-		)
-		logger.info(`${socket.id} disconnected`)
-		// cleanup()
-	})
+	return () => {
+		for (const unsub of unsubFunctions) unsub()
+	}
 }

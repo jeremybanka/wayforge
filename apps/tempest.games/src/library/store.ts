@@ -1,6 +1,8 @@
 import { atom, transaction } from "atom.io"
 import { continuity } from "atom.io/realtime"
 
+import { IS_SERVER } from "./env"
+
 export const countAtom = atom<number>({
 	key: `count`,
 	default: 0,
@@ -16,4 +18,18 @@ export const incrementTX = transaction({
 export const countContinuity = continuity({
 	key: `countContinuity`,
 	config: (group) => group.add(countAtom).add(incrementTX),
+})
+
+export const cpuCountAtom = atom<number>({
+	key: `cpuCount`,
+	default: 1,
+	effects: [
+		({ setSelf }) => {
+			if (IS_SERVER) {
+				void import(`node:os`).then(({ cpus }) => {
+					setSelf(cpus().length)
+				})
+			}
+		},
+	],
 })

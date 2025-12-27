@@ -5,17 +5,14 @@ import { COMMON_PASSWORDS_NOT_ALLOWED } from "./common-passwords-not-allowed"
 export const USERNAME_MIN_LENGTH = 3
 export const USERNAME_MAX_LENGTH = 15
 export const USERNAME_ALLOWED_CHARS = /^[a-zA-Z0-9_-]+$/
-// export const usernameSchema = z
-// 	.string()
-// 	.min(USERNAME_MIN_LENGTH)
-// 	.max(USERNAME_MAX_LENGTH)
-// 	.regex(USERNAME_ALLOWED_CHARS)
 
 export const usernameType = type(USERNAME_ALLOWED_CHARS)
 	.pipe(
 		type(`string > ${USERNAME_MIN_LENGTH} & string < ${USERNAME_MAX_LENGTH}`),
 	)
 	.brand(`username`)
+
+export type Username = typeof usernameType.infer
 
 const MINIMUM_PASSWORD_COMPLEXITY = 20
 const LEET_SPEAK_DICTIONARY: { [key: string]: string } = {

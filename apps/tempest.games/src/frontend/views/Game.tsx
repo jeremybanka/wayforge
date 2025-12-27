@@ -8,6 +8,9 @@ import * as React from "react"
 import { countAtom, countContinuity, incrementTX } from "../../library/store"
 import { Anchor } from "../Anchor"
 import { type Route, ROUTES } from "../services/router-service"
+import scss from "./Game.module.scss"
+import { BugRangers } from "./Games/BugRangers"
+import { ServerControl } from "./ServerControl"
 
 export type Tail<T extends any[]> = T extends [any, ...infer Rest] ? Rest : never
 
@@ -20,25 +23,43 @@ export type GameIndexProps = {
 export function GameView({
 	route: [, gameId],
 }: GameIndexProps): React.ReactNode {
-	return <article>{gameId ? <Game gameId={gameId} /> : <GameIndex />}</article>
+	return (
+		<article className={scss[`class`]}>
+			{gameId ? <Game gameId={gameId} /> : <GameIndex />}
+		</article>
+	)
 }
 
 export function GameIndex(): React.ReactNode {
 	return (
 		<nav>
-			<Anchor href="/game/clicker">Clicker</Anchor>
+			{GAMES.map((gameId) => (
+				<Anchor key={gameId} href={`/game/${gameId}`}>
+					{gameId}
+				</Anchor>
+			))}
 		</nav>
 	)
 }
 
-export type GameProps = {
-	gameId: `clicker`
+const GAMES = toEntries(ROUTES[1].game[1]).map(([gameId]) => gameId)
+type GameId = (typeof GAMES)[number]
+export type GameProps = { gameId: GameId }
+export function Game(props: GameProps): React.ReactNode {
+	switch (props.gameId) {
+		case `bug_rangers`: {
+			return <BugRangers />
+		}
+		case `clicker`: {
+			return <Clicker />
+		}
+		case `server_control`: {
+			return <ServerControl />
+		}
+	}
 }
 
-const GAMES = toEntries(ROUTES[1].game[1])
-
-export function Game({ gameId }: GameProps): React.ReactNode {
-	console.log(gameId)
+export function Clicker(): React.ReactNode {
 	const count = useO(countAtom)
 	const increment = runTransaction(incrementTX)
 	useSyncContinuity(countContinuity)

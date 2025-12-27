@@ -4,10 +4,35 @@
 		"jsx": "react-jsx",
 		"jsxImportSource": "react",
 		"target": "ES2020",
-		"types": ["vitest/globals", "node"]
+		"types": [
+			"@react-three/drei",
+			"@react-three/fiber",
+			"@types/three",
+			"vitest/globals",
+			"node"
+		],
+		"paths": {
+			"@backend/*": ["./src/backend/*"],
+
+			"atom.io": ["../../packages/atom.io/src/main"],
+			"atom.io/json": ["../../packages/atom.io/src/json"],
+			"atom.io/react": ["../../packages/atom.io/src/react"],
+			"atom.io/realtime": ["../../packages/atom.io/src/realtime"],
+			"atom.io/realtime-client": ["../../packages/atom.io/src/realtime-client"],
+			"atom.io/realtime-react": ["../../packages/atom.io/src/realtime-react"],
+			"atom.io/realtime-server": ["../../packages/atom.io/src/realtime-server"],
+			"atom.io/transceivers/o-list": [
+				"../../packages/atom.io/src/transceivers/o-list"
+			],
+			"atom.io/transceivers/u-list": [
+				"../../packages/atom.io/src/transceivers/u-list"
+			],
+			"atom.io/web": ["../../packages/atom.io/src/web"]
+		}
 	},
 	"include": [
 		"src",
+		"types",
 		"__tests__",
 		"__scripts__",
 		"**/*.config.ts",

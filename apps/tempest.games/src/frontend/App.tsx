@@ -30,7 +30,7 @@ import { GameView } from "./views/Game"
 import { Home } from "./views/Home"
 import { Verify } from "./views/Verify"
 
-IMPLICIT.STORE.loggers[0].logLevel = `info`
+IMPLICIT.STORE.loggers[0].logLevel = `warn`
 
 export function App(): React.ReactNode {
 	const route = useO(routeSelector)
@@ -123,10 +123,6 @@ export function App(): React.ReactNode {
 								return <Home />
 							case `admin`:
 								return <Admin />
-							// case `sign_in`:
-							// 	return <SignIn />
-							// case `sign_up`:
-							// 	return <SignUp />
 							case `game`:
 								return <GameView route={route} />
 							case `verify`:
