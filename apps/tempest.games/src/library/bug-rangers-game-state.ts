@@ -281,14 +281,62 @@ export type ArmActionInProgress = {
 }
 export type WarAction = {
 	type: `war`
-	path: TileCoordinatesSerialized[]
-	counts: number[]
+	attacker: TileCoordinatesSerialized
+	targets: TileCoordinatesSerialized[]
 }
 export type TurnAction = ArmAction | BuildAction | WarAction
-export type TurnActionInProgress = ArmActionInProgress | BuildAction
+export type TurnActionInProgress = ArmActionInProgress | BuildAction | WarAction
 export const turnInProgressAtom = atom<TurnActionInProgress | null>({
 	key: `turnInProgress`,
 	default: null,
+})
+export const validWarDeclaratorsSelector = selectorFamily<
+	TileCoordinatesSerialized[],
+	UserKey
+>({
+	key: `validWarDeclarators`,
+	get:
+		(userKey) =>
+		({ get }) => {
+			const validWarDeclarators: TileCoordinatesSerialized[] = []
+			const turnAction = get(turnInProgressAtom)
+			const currentTurn = get(playerTurnSelector)
+			const isArming = currentTurn === userKey && turnAction?.type === `arm`
+			if (isArming) return validWarDeclarators
+			const allOwnedTiles = get(ownedTilesSelector, userKey)
+			for (const tileCoordinates of allOwnedTiles) {
+				const tileCubeCount = get(tileCubeCountAtoms, tileCoordinates)
+				if (tileCubeCount >= 4) {
+					validWarDeclarators.push(tileCoordinates)
+				}
+			}
+			return validWarDeclarators
+		},
+})
+export const validWarTargetsSelector = selectorFamily<
+	TileCoordinatesSerialized[],
+	UserKey
+>({
+	key: `validWarTargets`,
+	get:
+		(userKey) =>
+		({ get }) => {
+			const validWarTargets: TileCoordinatesSerialized[] = []
+			const turnAction = get(turnInProgressAtom)
+			if (turnAction?.type !== `war`) return validWarTargets
+			const attacker = turnAction.attacker
+			if (!attacker) return validWarTargets
+			const attackerAdjacentTiles = get(adjacentTilesSelector, attacker)
+			const unchecked = new Set<TileCoordinatesSerialized>()
+			for (const adjacentTile of attackerAdjacentTiles) {
+				const adjacentOwner = get(tileOwnerAtoms, adjacentTile)
+				if (adjacentOwner === userKey) {
+					unchecked.add(adjacentTile)
+				}
+				validWarTargets.push(adjacentTile)
+			}
+			return validWarTargets
+		},
 })
 
 export const maximumStackHeightSelectors = selectorFamily<

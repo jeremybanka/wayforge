@@ -8,6 +8,7 @@ import {
 	usePullAtom,
 	usePullAtomFamilyMember,
 	usePullSelector,
+	usePullSelectorFamilyMember,
 } from "atom.io/realtime-react"
 import type { ReactNode } from "react"
 import { useRef } from "react"
@@ -18,10 +19,13 @@ import {
 	playerColorAtoms,
 	playerTurnSelector,
 	turnInProgressAtom,
+	validWarDeclaratorsSelector,
+	validWarTargetsSelector,
 } from "../../../../library/bug-rangers-game-state"
 import {
 	cameraTargetAtom,
 	controlsEnabledAtom,
+	isMyTurnSelector,
 } from "../BugRangers/bug-rangers-client-state"
 import { HexGridHelper } from "../BugRangers/HexGridHelper"
 import { PlayerTools } from "../BugRangers/PlayerTools"
@@ -67,17 +71,34 @@ export function BugRangersInterior3D({
 	myUserKey: UserKey
 }): ReactNode {
 	const turnInProgress = usePullAtom(turnInProgressAtom)
-	const playerTurn = usePullSelector(playerTurnSelector)
+	const isMyTurn = usePullSelector(isMyTurnSelector)
 	const myColor = usePullAtomFamilyMember(playerColorAtoms, myUserKey)
+	const validWarDeclarators = usePullSelectorFamilyMember(
+		validWarDeclaratorsSelector,
+		myUserKey,
+	)
+	const validWarTargets = usePullSelectorFamilyMember(
+		validWarTargetsSelector,
+		myUserKey,
+	)
 
 	return (
 		<>
-			<GameTiles />
-			{myColor && turnInProgress === null && playerTurn === myUserKey ? (
+			<GameTiles
+				validWarDeclarators={validWarDeclarators}
+				validWarTargets={validWarTargets}
+			/>
+
+			{myColor &&
+			turnInProgress === null &&
+			isMyTurn &&
+			validWarDeclarators.length === 0 ? (
 				<PlayableZones />
 			) : null}
 
-			{myColor && playerTurn === myUserKey ? <PlayerTools /> : null}
+			{myColor && isMyTurn && validWarDeclarators.length === 0 ? (
+				<PlayerTools />
+			) : null}
 		</>
 	)
 }

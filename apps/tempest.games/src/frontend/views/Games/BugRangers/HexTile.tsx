@@ -3,7 +3,7 @@
 import { Text } from "@react-three/drei"
 import { getState, setState } from "atom.io"
 import { useO } from "atom.io/react"
-import { usePullAtomFamilyMember } from "atom.io/realtime-react"
+import { usePullAtom, usePullAtomFamilyMember } from "atom.io/realtime-react"
 import type { ReactNode, RefObject } from "react"
 import { useMemo, useState } from "react"
 import * as THREE from "three"
@@ -17,6 +17,7 @@ import {
 	tile3dPositionSelectors,
 	tileCubeCountAtoms,
 	tileOwnerAtoms,
+	turnInProgressAtom,
 } from "../../../../library/bug-rangers-game-state"
 import { cameraTargetAtom } from "./bug-rangers-client-state"
 import { CubeTokenStack } from "./CubeToken"
@@ -111,10 +112,8 @@ export function HexTile({
 
 export function GameTilePreview({
 	coordinatesSerialized,
-	color = `#ee5`,
 }: {
 	coordinatesSerialized: TileCoordinatesSerialized
-	color?: THREE.ColorRepresentation
 }): ReactNode {
 	const coordinates = deserializeTileCoordinates(coordinatesSerialized)
 	const [boardA, boardB, boardC] = coordinates
@@ -138,7 +137,7 @@ export function GameTilePreview({
 
 			<HexTile
 				position3d={tile3dPosition}
-				color={isClosest ? `#f00` : color}
+				color={isClosest ? `#f00` : `#0ff`}
 				onClick={(position3d) => {
 					setState(cameraTargetAtom, position3d.toArray())
 					setState(gameTilesAtom, (permanent) => {
@@ -154,12 +153,12 @@ export function GameTilePreview({
 }
 export function GameTileActual({
 	coordinatesSerialized,
-	color = `#ee5`,
-	onClick,
+	isDeclarator,
+	isTarget,
 }: {
 	coordinatesSerialized: TileCoordinatesSerialized
-	color?: THREE.ColorRepresentation
-	onClick?: (position: THREE.Vector3) => void
+	isDeclarator: boolean
+	isTarget: boolean
 }): ReactNode {
 	const coordinates = deserializeTileCoordinates(coordinatesSerialized)
 	const [boardA, boardB, boardC] = coordinates
@@ -175,8 +174,18 @@ export function GameTileActual({
 
 	const tile3dPosition = getState(tile3dPositionSelectors, coordinatesSerialized)
 	const [x, _, z] = tile3dPosition
-	const closestPlayableZone = useO(closestPlayableZoneSelector)
-	const isClosest = closestPlayableZone === coordinatesSerialized
+
+	const turnInProgress = usePullAtom(turnInProgressAtom)
+	const isAttacker =
+		turnInProgress?.type === `war` &&
+		turnInProgress.attacker === coordinatesSerialized
+	const color = isTarget
+		? `#664`
+		: isAttacker
+			? `#ee1`
+			: isDeclarator
+				? `#cc3`
+				: `#aa5`
 
 	if (boardA + boardB + boardC !== 0) {
 		console.error(`GameTile: bad coordinates did not add to zero`, coordinates)
@@ -199,18 +208,21 @@ export function GameTileActual({
 			) : null}
 			<HexTile
 				position3d={tile3dPosition}
-				color={isClosest ? `#f00` : color}
+				color={color}
 				onClick={(position3d) => {
 					setState(cameraTargetAtom, position3d.toArray())
+					if (isDeclarator) {
+						setState(turnInProgressAtom, {
+							type: `war`,
+							attacker: coordinatesSerialized,
+							targets: [],
+						})
+					}
 				}}
 				virtual={false}
 			/>
 			{stackHeight > 1 ? (
-				<HexTile
-					position3d={new THREE.Vector3(x, 0.33, z)}
-					color={color}
-					onClick={onClick}
-				/>
+				<HexTile position3d={new THREE.Vector3(x, 0.33, z)} color={color} />
 			) : null}
 			{stackHeight > 2 ? (
 				<HexTile position3d={new THREE.Vector3(x, 0.66, z)} color={color} />
@@ -220,25 +232,22 @@ export function GameTileActual({
 }
 export function GameTile({
 	coordinatesSerialized,
-	color = `#ee5`,
+	isDeclarator = false,
+	isTarget = false,
 	virtual = false,
-	onClick,
 }: {
 	coordinatesSerialized: TileCoordinatesSerialized
-	color?: THREE.ColorRepresentation
+	isDeclarator?: boolean
+	isTarget?: boolean
 	virtual?: boolean
-	onClick?: (position: THREE.Vector3) => void
 }): ReactNode {
 	return virtual ? (
-		<GameTilePreview
-			coordinatesSerialized={coordinatesSerialized}
-			color={color}
-		/>
+		<GameTilePreview coordinatesSerialized={coordinatesSerialized} />
 	) : (
 		<GameTileActual
 			coordinatesSerialized={coordinatesSerialized}
-			color={color}
-			onClick={onClick as VoidFunction}
+			isDeclarator={isDeclarator}
+			isTarget={isTarget}
 		/>
 	)
 }

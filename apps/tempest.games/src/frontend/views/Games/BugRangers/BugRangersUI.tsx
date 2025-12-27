@@ -58,7 +58,7 @@ export function Exterior(): ReactNode {
 
 export function Interior(): ReactNode {
 	const { myRoomKey, myMutualsAtom } = useRealtimeRooms()
-	const turnNumber = useO(turnNumberAtom)
+	const turnNumber = usePullAtom(turnNumberAtom)
 	const playerTurn = usePullSelector(playerTurnSelector)
 	const gameState = usePullAtom(gameStateAtom)
 	return (
