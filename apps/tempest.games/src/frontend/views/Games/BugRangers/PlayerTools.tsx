@@ -1,6 +1,7 @@
 import { useFrame, useThree } from "@react-three/fiber"
 import { getState, setState } from "atom.io"
 import { useAtomicRef, useI, useO } from "atom.io/react"
+import type { UserKey } from "atom.io/realtime"
 import { myUserKeyAtom } from "atom.io/realtime-client"
 import { RealtimeContext } from "atom.io/realtime-react"
 import type { ReactNode } from "react"
@@ -21,7 +22,7 @@ import {
 	gameTilesAtom,
 	gameTilesStackHeightAtoms,
 	maximumStackHeightSelectors,
-	playerTurnSelector,
+	playerColorAtoms,
 	tileCubeCountAtoms,
 	tileOwnerAtoms,
 	turnInProgressAtom,
@@ -29,18 +30,18 @@ import {
 import {
 	cameraAnchoredSphereAtom,
 	controlsEnabledAtom,
-	isMyTurnSelector,
 } from "./bug-rangers-client-state"
 import { CubeToken } from "./CubeToken"
 import { HexTile } from "./HexTile"
 
 export function PlayerTools(): ReactNode {
-	return (
+	const myUserKey = useO(myUserKeyAtom)
+	return myUserKey ? (
 		<>
-			<PlayableHex />
-			<PlayableCube />
+			<PlayableHex myUserKey={myUserKey} />
+			<PlayableCube myUserKey={myUserKey} />
 		</>
-	)
+	) : null
 }
 
 const forward = new THREE.Vector3()
@@ -59,13 +60,12 @@ export function usePlayerActions(): Socket<{}, PlayerActions> {
 	return socket as Socket<{}, PlayerActions>
 }
 
-function PlayableHex(): ReactNode {
+function PlayableHex({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 	const ref = useAtomicRef(cameraAnchoredSphereAtom, useRef)
 	const { camera, raycaster, pointer } = useThree()
 	const setControlsEnabled = useI(controlsEnabledAtom)
 	const dragState = useO(dragStateAtom)
 	const socket = usePlayerActions()
-	const isMyTurn = useO(isMyTurnSelector)
 
 	const startDrag = () => {
 		setControlsEnabled(false)
@@ -97,11 +97,10 @@ function PlayableHex(): ReactNode {
 				break
 			case `build`:
 				{
-					const userKey = getState(myUserKeyAtom)
-					const maximumStackHeight = getState(
-						maximumStackHeightSelectors,
-						[turnInProgress.target, userKey!], // ❗ use real user key here
-					)
+					const maximumStackHeight = getState(maximumStackHeightSelectors, [
+						turnInProgress.target,
+						myUserKey,
+					])
 					if (maximumStackHeight === 0) return
 					const stackHeight = getState(
 						gameTilesStackHeightAtoms,
@@ -157,11 +156,16 @@ function PlayableHex(): ReactNode {
 	return <HexTile ref={ref} onPointerDown={startDrag} onPointerUp={endDrag} />
 }
 
-function PlayableCube(): ReactNode {
+type PlayableCubeProps = {
+	myUserKey: UserKey
+}
+function PlayableCube({ myUserKey }: PlayableCubeProps): ReactNode {
 	const ref = useAtomicRef(cameraAnchoredSphereAtom, useRef)
 	const { camera, raycaster, pointer } = useThree()
 	const setControlsEnabled = useI(controlsEnabledAtom)
 	const dragState = useO(dragStateAtom)
+	const myColor = useO(playerColorAtoms, myUserKey)
+	const socket = usePlayerActions()
 
 	const startDrag = () => {
 		setControlsEnabled(false)
@@ -172,13 +176,12 @@ function PlayableCube(): ReactNode {
 		setControlsEnabled(true)
 		setState(dragStateAtom, null)
 		const turnInProgress = getState(turnInProgressAtom)
-		const myUserKey = getState(myUserKeyAtom)
 
 		switch (turnInProgress?.type) {
 			case null:
 			case undefined:
 				{
-					const closestOwnedTile = getState(closestOwnedTileSelector, myUserKey!) // ❗ use real user key here
+					const closestOwnedTile = getState(closestOwnedTileSelector, myUserKey)
 					if (closestOwnedTile) {
 						setState(turnInProgressAtom, {
 							type: `arm`,
@@ -195,7 +198,7 @@ function PlayableCube(): ReactNode {
 			case `arm`:
 				{
 					if (turnInProgress.targets.length >= 2) return
-					const closestOwnedTile = getState(closestOwnedTileSelector, myUserKey!) // ❗ use real user key here
+					const closestOwnedTile = getState(closestOwnedTileSelector, myUserKey)
 					if (closestOwnedTile) {
 						setState(turnInProgressAtom, {
 							type: `arm`,
@@ -217,6 +220,7 @@ function PlayableCube(): ReactNode {
 				)
 				setState(tileOwnerAtoms, turnInProgress.target, myUserKey)
 				setState(turnInProgressAtom, null)
+				socket.emit(`placeCube`, turnInProgress.target)
 				break
 		}
 	}
@@ -254,5 +258,12 @@ function PlayableCube(): ReactNode {
 		}
 	})
 
-	return <CubeToken ref={ref} onPointerDown={startDrag} onPointerUp={endDrag} />
+	return (
+		<CubeToken
+			ref={ref}
+			onPointerDown={startDrag}
+			onPointerUp={endDrag}
+			color={myColor ?? `#555`}
+		/>
+	)
 }

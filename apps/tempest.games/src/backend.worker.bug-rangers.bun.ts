@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 
-import { ArkErrors, type } from "arktype"
+import { type } from "arktype"
 import {
 	AtomIOLogger,
 	findRelations,
@@ -17,7 +17,10 @@ import {
 	ownersOfRooms,
 	usersInRooms,
 } from "atom.io/realtime"
-import { pullMutableAtomFamilyMember } from "atom.io/realtime-client"
+import {
+	myUserKeyAtom,
+	pullMutableAtomFamilyMember,
+} from "atom.io/realtime-client"
 import {
 	ParentSocket,
 	realtimeAtomFamilyProvider,
@@ -30,16 +33,26 @@ import { parentSocket } from "./backend/logger"
 import type {
 	PlayerActions,
 	PlayerColor,
+	StackHeight,
 	TileCoordinatesSerialized,
+	TileCubeCount,
 } from "./library/bug-rangers-game-state"
 import {
+	closestOwnedTileSelector,
 	gameStateAtom,
 	gameTilesAtom,
+	gameTilesStackHeightAtoms,
+	maximumStackHeightSelectors,
+	playableZonesAtom,
 	PLAYER_COLORS,
 	playerColorAtoms,
 	playerReadyStatusAtoms,
 	playerTurnOrderAtom,
+	playerTurnSelector,
 	setupGroupsSelector,
+	tileCubeCountAtoms,
+	tileOwnerAtoms,
+	turnInProgressAtom,
 	turnNumberAtom,
 } from "./library/bug-rangers-game-state"
 import { env } from "./library/env"
@@ -139,6 +152,9 @@ parent.receiveRelay((socket, userKey) => {
 		exposeMutable(gameTilesAtom),
 		exposeFamily(playerReadyStatusAtoms, usersHereAtom),
 		exposeFamily(playerColorAtoms, usersHereAtom),
+		exposeFamily(tileOwnerAtoms, gameTilesAtom),
+		exposeFamily(tileCubeCountAtoms, gameTilesAtom),
+		exposeFamily(gameTilesStackHeightAtoms, gameTilesAtom),
 		employSocket(gameSocket, `wantFirst`, () => {
 			const gameState = getState(gameStateAtom)
 			if (gameState === `setup`) {
@@ -164,7 +180,7 @@ parent.receiveRelay((socket, userKey) => {
 			setState(gameStateAtom, `playing`)
 			const firstPlayersShuffled = pureShuffle(setupGroups.readyWantsFirst)
 			const nextPlayersShuffled = pureShuffle(setupGroups.readyDoesNotWantFirst)
-			await new Promise((resolve) => setTimeout(resolve, 300))
+			await new Promise((resolve) => setTimeout(resolve, 600))
 			for (const k of firstPlayersShuffled) {
 				setState(playerTurnOrderAtom, (permanent) => {
 					permanent.push(k)
@@ -179,24 +195,110 @@ parent.receiveRelay((socket, userKey) => {
 				})
 				await new Promise((resolve) => setTimeout(resolve, 300))
 			}
-			// setState(playerTurnOrderAtom, (permanent) => {
-			// 	for (const k of firstPlayersShuffled) {
-			// 		permanent.push(k)
-			// 	}
-			// 	for (const k of nextPlayersShuffled) {
-			// 		permanent.push(k)
-			// 	}
-			// 	return permanent
-			// })
 		}),
 		employSocket(gameSocket, `chooseColor`, (color) => {
+			const playerWhoseTurnItIs = getState(playerTurnSelector)
+			if (playerWhoseTurnItIs !== userKey) return
 			setState(playerColorAtoms, userKey, color)
 		}),
 		employSocket(gameSocket, `placeTile`, (tileCoordinatesSerialized) => {
-			setState(gameTilesAtom, (tiles) => {
-				tiles.add(tileCoordinatesSerialized)
-				return tiles
-			})
+			const playerWhoseTurnItIs = getState(playerTurnSelector)
+			if (playerWhoseTurnItIs !== userKey) return
+
+			const turnInProgress = getState(turnInProgressAtom)
+			switch (turnInProgress?.type) {
+				case null:
+				case undefined:
+					{
+						const playableZones = getState(playableZonesAtom)
+						if (!playableZones.includes(tileCoordinatesSerialized)) return
+						setState(gameTilesAtom, (tiles) => {
+							tiles.add(tileCoordinatesSerialized)
+							return tiles
+						})
+						setState(turnInProgressAtom, {
+							type: `build`,
+							target: tileCoordinatesSerialized,
+							count: 1,
+						})
+					}
+					break
+				case `build`:
+					{
+						const maximumStackHeight = getState(maximumStackHeightSelectors, [
+							turnInProgress.target,
+							userKey,
+						])
+						if (maximumStackHeight === 0) return
+						const stackHeight = getState(
+							gameTilesStackHeightAtoms,
+							turnInProgress.target,
+						)
+						if (stackHeight >= maximumStackHeight) return
+						setState(
+							gameTilesStackHeightAtoms,
+							turnInProgress.target,
+							(stackHeight + 1) as StackHeight,
+						)
+						socket.emit(`placeTile`, turnInProgress.target)
+					}
+					break
+				case `arm`:
+					break
+			}
+		}),
+
+		employSocket(gameSocket, `placeCube`, (tileCoordinatesSerialized) => {
+			const playerWhoseTurnItIs = getState(playerTurnSelector)
+			if (playerWhoseTurnItIs !== userKey) return
+
+			const turnInProgress = getState(turnInProgressAtom)
+			switch (turnInProgress?.type) {
+				case null:
+				case undefined:
+					{
+						const closestOwnedTile = getState(closestOwnedTileSelector, userKey)
+						if (closestOwnedTile) {
+							setState(turnInProgressAtom, {
+								type: `arm`,
+								targets: [closestOwnedTile],
+							})
+							setState(
+								tileCubeCountAtoms,
+								closestOwnedTile,
+								(current) => (current + 1) as TileCubeCount,
+							)
+						}
+					}
+					break
+				case `arm`:
+					{
+						if (turnInProgress.targets.length >= 2) return
+						const closestOwnedTile = getState(closestOwnedTileSelector, userKey)
+						if (closestOwnedTile) {
+							setState(turnInProgressAtom, {
+								type: `arm`,
+								targets: [turnInProgress.targets[0]!, closestOwnedTile],
+							})
+							setState(
+								tileCubeCountAtoms,
+								closestOwnedTile,
+								(current) => (current + 1) as TileCubeCount,
+							)
+						}
+					}
+					break
+				case `build`:
+					setState(
+						tileCubeCountAtoms,
+						turnInProgress.target,
+						(current) => (current + 1) as TileCubeCount,
+					)
+					setState(tileOwnerAtoms, turnInProgress.target, userKey)
+					setState(turnInProgressAtom, null)
+					setState(turnNumberAtom, (current) => current + 1)
+					break
+			}
 		}),
 	)
 
