@@ -109,15 +109,56 @@ export function HexTile({
 	)
 }
 
-export function GameTile({
+export function GameTilePreview({
 	coordinatesSerialized,
 	color = `#ee5`,
-	virtual = false,
+}: {
+	coordinatesSerialized: TileCoordinatesSerialized
+	color?: THREE.ColorRepresentation
+}): ReactNode {
+	const coordinates = deserializeTileCoordinates(coordinatesSerialized)
+	const [boardA, boardB, boardC] = coordinates
+	const tile3dPosition = getState(tile3dPositionSelectors, coordinatesSerialized)
+	const [x, _, z] = tile3dPosition
+	const closestPlayableZone = useO(closestPlayableZoneSelector)
+	const isClosest = closestPlayableZone === coordinatesSerialized
+
+	if (boardA + boardB + boardC !== 0) {
+		console.error(`GameTile: bad coordinates did not add to zero`, coordinates)
+		return null
+	}
+
+	const height = 0.2
+
+	return (
+		<>
+			<Text position={[x, height + 0.7, z]} fontSize={0.25} color="white">
+				{coordinatesSerialized}
+			</Text>
+
+			<HexTile
+				position3d={tile3dPosition}
+				color={isClosest ? `#f00` : color}
+				onClick={(position3d) => {
+					setState(cameraTargetAtom, position3d.toArray())
+					setState(gameTilesAtom, (permanent) => {
+						console.log({ coordinates })
+						permanent.add(coordinatesSerialized)
+						return permanent
+					})
+				}}
+				virtual={true}
+			/>
+		</>
+	)
+}
+export function GameTileActual({
+	coordinatesSerialized,
+	color = `#ee5`,
 	onClick,
 }: {
 	coordinatesSerialized: TileCoordinatesSerialized
 	color?: THREE.ColorRepresentation
-	virtual?: boolean
 	onClick?: (position: THREE.Vector3) => void
 }): ReactNode {
 	const coordinates = deserializeTileCoordinates(coordinatesSerialized)
@@ -142,14 +183,14 @@ export function GameTile({
 		return null
 	}
 
-	const height = virtual ? 0.2 : stackHeight * 0.33
+	const height = stackHeight * 0.33
 
 	return (
 		<>
 			<Text position={[x, height + 0.7, z]} fontSize={0.25} color="white">
 				{coordinatesSerialized}
 			</Text>
-			{!virtual && ownerKey !== null && tileCubeCount > 0 ? (
+			{ownerKey !== null && tileCubeCount > 0 ? (
 				<CubeTokenStack
 					position={new THREE.Vector3(x, height + 0.25, z)}
 					count={tileCubeCount}
@@ -161,15 +202,8 @@ export function GameTile({
 				color={isClosest ? `#f00` : color}
 				onClick={(position3d) => {
 					setState(cameraTargetAtom, position3d.toArray())
-					if (virtual) {
-						setState(gameTilesAtom, (permanent) => {
-							console.log({ coordinates })
-							permanent.add(coordinatesSerialized)
-							return permanent
-						})
-					}
 				}}
-				virtual={virtual}
+				virtual={false}
 			/>
 			{stackHeight > 1 ? (
 				<HexTile
@@ -182,5 +216,30 @@ export function GameTile({
 				<HexTile position3d={new THREE.Vector3(x, 0.66, z)} color={color} />
 			) : null}
 		</>
+	)
+}
+export function GameTile({
+	coordinatesSerialized,
+	color = `#ee5`,
+	virtual = false,
+	onClick,
+}: {
+	coordinatesSerialized: TileCoordinatesSerialized
+	color?: THREE.ColorRepresentation
+	virtual?: boolean
+	onClick?: (position: THREE.Vector3) => void
+}): ReactNode {
+	return virtual ? (
+		<GameTilePreview
+			coordinatesSerialized={coordinatesSerialized}
+			color={color}
+			onClick={onClick as VoidFunction}
+		/>
+	) : (
+		<GameTileActual
+			coordinatesSerialized={coordinatesSerialized}
+			color={color}
+			onClick={onClick as VoidFunction}
+		/>
 	)
 }

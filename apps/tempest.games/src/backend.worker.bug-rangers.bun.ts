@@ -33,9 +33,9 @@ import { parentSocket } from "./backend/logger"
 import type {
 	PlayerActions,
 	PlayerColor,
-	StackHeight,
 	TileCoordinatesSerialized,
 	TileCubeCount,
+	TileStackHeight,
 } from "./library/bug-rangers-game-state"
 import {
 	closestOwnedTileSelector,
@@ -148,6 +148,7 @@ parent.receiveRelay((socket, userKey) => {
 	coreStack.push(
 		exposeState(turnNumberAtom),
 		exposeState(gameStateAtom),
+		exposeState(turnInProgressAtom),
 		exposeMutable(playerTurnOrderAtom),
 		exposeMutable(gameTilesAtom),
 		exposeFamily(playerReadyStatusAtoms, usersHereAtom),
@@ -238,7 +239,7 @@ parent.receiveRelay((socket, userKey) => {
 						setState(
 							gameTilesStackHeightAtoms,
 							turnInProgress.target,
-							(stackHeight + 1) as StackHeight,
+							(stackHeight + 1) as TileStackHeight,
 						)
 						socket.emit(`placeTile`, turnInProgress.target)
 					}
@@ -257,35 +258,29 @@ parent.receiveRelay((socket, userKey) => {
 				case null:
 				case undefined:
 					{
-						const closestOwnedTile = getState(closestOwnedTileSelector, userKey)
-						if (closestOwnedTile) {
-							setState(turnInProgressAtom, {
-								type: `arm`,
-								targets: [closestOwnedTile],
-							})
-							setState(
-								tileCubeCountAtoms,
-								closestOwnedTile,
-								(current) => (current + 1) as TileCubeCount,
-							)
-						}
+						setState(turnInProgressAtom, {
+							type: `arm`,
+							targets: [tileCoordinatesSerialized],
+						})
+						setState(
+							tileCubeCountAtoms,
+							tileCoordinatesSerialized,
+							(current) => (current + 1) as TileCubeCount,
+						)
 					}
 					break
 				case `arm`:
 					{
 						if (turnInProgress.targets.length >= 2) return
-						const closestOwnedTile = getState(closestOwnedTileSelector, userKey)
-						if (closestOwnedTile) {
-							setState(turnInProgressAtom, {
-								type: `arm`,
-								targets: [turnInProgress.targets[0]!, closestOwnedTile],
-							})
-							setState(
-								tileCubeCountAtoms,
-								closestOwnedTile,
-								(current) => (current + 1) as TileCubeCount,
-							)
-						}
+						setState(turnInProgressAtom, {
+							type: `arm`,
+							targets: [turnInProgress.targets[0]!, tileCoordinatesSerialized],
+						})
+						setState(
+							tileCubeCountAtoms,
+							tileCoordinatesSerialized,
+							(current) => (current + 1) as TileCubeCount,
+						)
 					}
 					break
 				case `build`:
@@ -295,6 +290,24 @@ parent.receiveRelay((socket, userKey) => {
 						(current) => (current + 1) as TileCubeCount,
 					)
 					setState(tileOwnerAtoms, turnInProgress.target, userKey)
+					setState(turnInProgressAtom, null)
+					setState(turnNumberAtom, (current) => current + 1)
+					break
+			}
+		}),
+
+		employSocket(gameSocket, `turnEnd`, () => {
+			const playerWhoseTurnItIs = getState(playerTurnSelector)
+			if (playerWhoseTurnItIs !== userKey) return
+
+			const turnInProgress = getState(turnInProgressAtom)
+			switch (turnInProgress?.type) {
+				case null:
+				case undefined:
+				case `build`:
+					break
+				case `arm`:
+					if (turnInProgress.targets.length === 0) return
 					setState(turnInProgressAtom, null)
 					setState(turnNumberAtom, (current) => current + 1)
 					break

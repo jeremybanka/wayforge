@@ -69,10 +69,17 @@ export function Interior(): ReactNode {
 			<article data-css="room-module">
 				<header>
 					<h1>{myRoomKey}</h1>
-					<span>Turn {turnNumber}</span>
+					<span>
+						{gameState === `setup` ? (
+							`Setup`
+						) : (
+							<>
+								<PlayerUsername userKey={playerTurn ?? `user::$_NONE_$`} />
+								{` `}playing turn {turnNumber}
+							</>
+						)}
+					</span>
 				</header>
-				<div>player turn: {playerTurn ?? `null`}</div>
-				<div>game state: {gameState}</div>
 				<RoomControls />
 				<motion.main layout>
 					<GameSetupPhase isCurrentPhase={gameState === `setup`} />
@@ -89,6 +96,11 @@ export function Interior(): ReactNode {
 			</article>
 		</main>
 	)
+}
+
+function PlayerUsername({ userKey }: { userKey: UserKey }): ReactElement {
+	const username = usePullAtomFamilyMember(usernameAtoms, userKey)
+	return <>{username.slice(0, 2)}</>
 }
 
 function PlayerTurnControls(): ReactElement {
@@ -115,10 +127,14 @@ function PlayerTurnControls(): ReactElement {
 			) : (
 				<button
 					type="button"
-					disabled={!turnInProgress}
+					disabled={
+						turnInProgress?.type !== `arm` ||
+						turnInProgress?.targets.length === 0
+					}
 					style={{ pointerEvents: `all` }}
 					onClick={() => {
 						setState(turnInProgressAtom, null)
+						socket?.emit(`turnEnd`)
 					}}
 				>
 					end turn
@@ -292,12 +308,12 @@ function User({ userKey }: { userKey: UserKey }): ReactElement {
 		<motion.div layoutId={userKey} data-css-user>
 			{userKey === myUserKey ? (
 				userKey === ownerKey ? (
-					<img src={LeaderMe} alt="it's you!" />
+					<img src={LeaderMe} alt="it's you, you're the room leader!" />
 				) : (
 					<img src={Me} alt="it's you!" />
 				)
 			) : userKey === ownerKey ? (
-				<img src={LeaderYou} alt={`it's ${username}!`} />
+				<img src={LeaderYou} alt={`it's ${username}, the room leader!`} />
 			) : (
 				<img src={You} alt={`it's ${username}!`} />
 			)}
