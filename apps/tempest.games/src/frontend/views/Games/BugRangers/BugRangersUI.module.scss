@@ -9,6 +9,20 @@ main.class {
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
+  > article[data-css="turn-controls"] {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    > button {
+      padding: 10px;
+      height: 40px;
+      &:disabled {
+        opacity: 0.5;
+      }
+    }
+  }
   > article[data-css="room-module"] {
     // background: var(--bg-tint-1);
     border: var(--fg-soft-1) solid 1px;

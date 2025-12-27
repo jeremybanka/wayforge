@@ -404,23 +404,35 @@ export const setupGroupsSelector = selector<
 })
 
 export const PLAYER_COLORS = [
-	`#f5a`,
-	`#fa5`,
-	`#af5`,
-	`#a5f`,
-	`#5fa`,
+	`#f46`,
+	`#f96`,
+	`#fe0`,
+	`#5a6`,
 	`#5af`,
+	`#a7e`,
 ] as const
 export type PlayerColor = (typeof PLAYER_COLORS)[number]
 export const PLAYER_COLOR_DISPLAY_NAMES = {
-	[`#f5a`]: `Red`,
-	[`#fa5`]: `Orange`,
-	[`#af5`]: `Yellow`,
-	[`#a5f`]: `Green`,
-	[`#5fa`]: `Blue`,
-	[`#5af`]: `Purple`,
+	[`#f46`]: `Red`,
+	[`#f96`]: `Orange`,
+	[`#fe0`]: `Yellow`,
+	[`#5a6`]: `Green`,
+	[`#5af`]: `Blue`,
+	[`#a7e`]: `Purple`,
 } as const satisfies Record<PlayerColor, string>
 export const playerColorAtoms = atomFamily<PlayerColor | null, UserKey>({
 	key: `playerColor`,
 	default: null,
+})
+export const colorsChosenSelector = selector<Set<PlayerColor>>({
+	key: `colorsChosen`,
+	get: ({ get }) => {
+		const chosen = new Set<PlayerColor>()
+		const turnOrder = get(playerTurnOrderAtom)
+		for (const userKey of turnOrder) {
+			const color = get(playerColorAtoms, userKey)
+			if (color) chosen.add(color)
+		}
+		return chosen
+	},
 })
