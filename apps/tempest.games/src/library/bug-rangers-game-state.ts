@@ -19,6 +19,8 @@ export type PlayerActions = {
 	wantFirst: () => void
 	wantNotFirst: () => void
 	startGame: () => void
+	// FIRST TURN
+	chooseColor: (color: PlayerColor) => void
 	// PLAYERS
 	placeTile: (tileCoordinates: TileCoordinatesSerialized) => void
 	placeCube: (tileCoordinates: TileCoordinatesSerialized) => void
@@ -322,6 +324,20 @@ export const playerTurnOrderAtom = mutableAtom<OList<UserKey>>({
 	class: OList,
 })
 
+export const spectatorsSelector = selector<UserKey[]>({
+	key: `spectators`,
+	get: ({ get }) => {
+		const order = get(playerTurnOrderAtom)
+		const myRoomKey = get(myRoomKeySelector)
+		const spectators: UserKey[] = []
+		if (!myRoomKey) return spectators
+		const [usersInRoomsAtoms] = getInternalRelations(usersInRooms, `split`)
+		const usersHere = get(usersInRoomsAtoms, myRoomKey)
+		for (const key of usersHere) if (!order.includes(key)) spectators.push(key)
+		return spectators
+	},
+})
+
 export const turnNumberAtom = atom<number>({
 	key: `turnNumber`,
 	default: 0,
@@ -361,12 +377,16 @@ export const setupGroupsSelector = selector<
 		const notReady: UserKey[] = []
 		const readyDoesNotWantFirst: UserKey[] = []
 		const readyWantsFirst: UserKey[] = []
+		const turnOrder = get(playerTurnOrderAtom)
 		const roomKey = get(myRoomKeySelector)
-		if (!roomKey) return { notReady, readyDoesNotWantFirst, readyWantsFirst }
+		if (!roomKey) {
+			return { notReady, readyDoesNotWantFirst, readyWantsFirst }
+		}
 		const [usersInRoomsAtoms] = getInternalRelations(usersInRooms, `split`)
 		const usersHere = get(usersInRoomsAtoms, roomKey)
 		for (const userKey of usersHere) {
 			const playerReadyStatus = get(playerReadyStatusAtoms, userKey)
+			if (turnOrder.includes(userKey)) continue
 			switch (playerReadyStatus) {
 				case `notReady`:
 					notReady.push(userKey)
@@ -381,4 +401,26 @@ export const setupGroupsSelector = selector<
 		}
 		return { notReady, readyDoesNotWantFirst, readyWantsFirst }
 	},
+})
+
+export const PLAYER_COLORS = [
+	`#f5a`,
+	`#fa5`,
+	`#af5`,
+	`#a5f`,
+	`#5fa`,
+	`#5af`,
+] as const
+export type PlayerColor = (typeof PLAYER_COLORS)[number]
+export const PLAYER_COLOR_DISPLAY_NAMES = {
+	[`#f5a`]: `Red`,
+	[`#fa5`]: `Orange`,
+	[`#af5`]: `Yellow`,
+	[`#a5f`]: `Green`,
+	[`#5fa`]: `Blue`,
+	[`#5af`]: `Purple`,
+} as const satisfies Record<PlayerColor, string>
+export const playerColorAtoms = atomFamily<PlayerColor | null, UserKey>({
+	key: `playerColor`,
+	default: null,
 })
