@@ -10,7 +10,7 @@ main.class {
   align-items: center;
   justify-content: space-around;
   > article[data-css="room-module"] {
-    background: var(--bg-tint-1);
+    // background: var(--bg-tint-1);
     border: var(--fg-soft-1) solid 1px;
     padding: 5px;
     width: calc(100% - 20px);
@@ -35,55 +35,78 @@ main.class {
         margin: 0;
       }
     }
-    > main {
+    > section {
       display: flex;
       flex-direction: row;
       gap: 5px;
+    }
+    > main {
+      display: flex;
       > section {
         display: flex;
-        flex-flow: column;
-        flex: 1;
-        height: 150px;
-        align-items: center;
-        justify-content: center;
+        flex-direction: row;
         gap: 5px;
-        border: var(--fg-soft-2) solid 1px;
-        padding: 5px;
-        position: relative;
-        > header {
-          position: absolute;
-          top: 5px;
-        }
-        > main {
-          display: flex;
-          flex-direction: row;
-          gap: 5px;
-          > [data-css-user] {
-            background: var(--bg-tint-2);
-            border: var(--fg-soft-2) solid 1px;
-            height: 30px;
-            width: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            &[data-css-owner]::after {
-              position: absolute;
-              top: -14px;
-              align-self: center;
-              content: "👑";
-            }
-          }
+        // border: 1px solid red;
+        flex: 0;
+        width: 0px;
+        overflow: hidden;
+        &[data-css-current="true"] {
+          flex: 1;
         }
         > section {
-        }
-        > button {
-          position: absolute;
-          top: 0;
-          right: 0;
-          left: 0;
-          bottom: 0;
-          z-index: -1;
+          display: flex;
+          flex-flow: column;
+          flex: 1;
+          height: 150px;
+          align-items: center;
+          justify-content: center;
+          gap: 5px;
+          border: var(--fg-soft-2) solid 1px;
+          padding: 5px;
+          position: relative;
+          > header {
+            position: absolute;
+            top: 5px;
+          }
+          > main {
+            display: flex;
+            flex-direction: row;
+            gap: 5px;
+            > [data-css-user] {
+              height: 50px;
+              width: 50px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              position: relative;
+              > img,
+              > span {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                text-align: center;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              }
+              > img {
+                mix-blend-mode: multiply;
+              }
+            }
+          }
+          > section {
+          }
+          > button {
+            position: absolute;
+            background: none;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            z-index: -1;
+          }
         }
       }
     }
