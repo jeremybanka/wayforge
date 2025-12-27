@@ -1,5 +1,13 @@
 # atom.io
 
+## 0.46.11
+
+### Patch Changes
+
+- efcba16: 🐛 `atom.io/realtime-client` `::` `myRoomKeySelector` Fixed bug where, used in a server-side room, this would look for an environment variable in an incorrect place.
+- efcba16: 🐛 `atom.io/realtime-server` `::` `ParentSocket` now reattaches relay services if an existing relay is found.
+- efcba16: 🐛 `atom.io/realtime-server` `::` `provideRooms()` Fixed a bug where a userKey would be redundantly added to a room that user was already present in, resulting in noise over the wire for other players in that room.
+
 ## 0.46.10
 
 ### Patch Changes
