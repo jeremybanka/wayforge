@@ -1,5 +1,14 @@
 # flightdeck
 
+## 0.3.31
+
+### Patch Changes
+
+- Updated dependencies [efcba16]
+- Updated dependencies [efcba16]
+- Updated dependencies [efcba16]
+  - atom.io@0.46.11
+
 ## 0.3.30
 
 ### Patch Changes
