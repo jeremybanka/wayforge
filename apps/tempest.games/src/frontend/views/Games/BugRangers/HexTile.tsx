@@ -233,7 +233,6 @@ export function GameTile({
 		<GameTilePreview
 			coordinatesSerialized={coordinatesSerialized}
 			color={color}
-			onClick={onClick as VoidFunction}
 		/>
 	) : (
 		<GameTileActual

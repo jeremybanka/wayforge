@@ -25,6 +25,7 @@ import type {
 	PlayerActions,
 } from "../../../../library/bug-rangers-game-state"
 import {
+	colorsChosenSelector,
 	gameStateAtom,
 	PLAYER_COLOR_DISPLAY_NAMES,
 	PLAYER_COLORS,
@@ -45,14 +46,9 @@ export function BugRangersUI(): ReactNode {
 }
 
 export function Exterior(): ReactNode {
-	const { myRoomKey } = useRealtimeRooms()
 	return (
 		<main className={scss[`class`]}>
 			<article data-css="room-module">
-				<header>
-					<h1>{myRoomKey}</h1>
-				</header>
-
 				<RoomControls />
 			</article>
 		</main>
@@ -91,7 +87,7 @@ export function Interior(): ReactNode {
 				</motion.main>
 				<GameControls />
 			</article>
-			<article>
+			<article data-css="turn-controls">
 				<PlayerTurnControls />
 			</article>
 		</main>
@@ -109,11 +105,14 @@ function PlayerTurnControls(): ReactElement {
 	const myColor = useO(playerColorAtoms, myUserKey as UserKey)
 	const { socket } = useContext(RealtimeContext)
 	const gameSocket = socket as unknown as TypedSocket<{}, PlayerActions>
+	const colorsChosen = useO(colorsChosenSelector)
 	return (
 		<>
 			{myColor === null ? (
 				PLAYER_COLORS.map((color, idx) => (
 					<button
+						data-css-color-choice
+						disabled={colorsChosen.has(color)}
 						key={idx}
 						type="button"
 						style={{ pointerEvents: `all`, background: color }}
