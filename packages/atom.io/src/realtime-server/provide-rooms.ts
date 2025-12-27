@@ -191,10 +191,17 @@ export function provideEnterAndExit({
 			roomSocket.on(`joinRoom`, enterRoom)
 		}
 
-		editRelationsInStore(store, usersInRooms, (relations) => {
-			relations.set({ room: roomKey, user: userKey })
-		})
+		const userIsAlreadyInRoom = getFromStore(
+			store,
+			getInternalRelationsFromStore(store, usersInRooms),
+			roomKey,
+		).has(userKey as any)
 
+		if (!userIsAlreadyInRoom) {
+			editRelationsInStore(store, usersInRooms, (relations) => {
+				relations.set({ room: roomKey, user: userKey })
+			})
+		}
 		childSocket.emit(`user-joins`, userKey)
 
 		toRoom = (payload) => {
