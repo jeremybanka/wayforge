@@ -19,7 +19,7 @@ export class SubjectSocket<
 	public in: Subject<EventPayload<I>>
 	public out: Subject<EventPayload<O>>
 	public id = `no_id_retrieved`
-	public disposalFunctions: (() => void)[] = []
+	public disposalEffects: (() => void)[] = []
 
 	public constructor(id: string) {
 		super((...args) => {
@@ -35,7 +35,7 @@ export class SubjectSocket<
 	}
 
 	public dispose(): void {
-		for (const dispose of this.disposalFunctions) {
+		for (const dispose of this.disposalEffects) {
 			dispose()
 		}
 	}
@@ -179,6 +179,19 @@ export class ParentSocket<
 			this.logger.info(`👤`, userKey, `joined`)
 			const existingRelay = this.relays.get(userKey)
 			if (existingRelay) {
+				this.logger.info(`🔗`, `reattaching relay services for`, userKey)
+				const cleanupRelay = this.initRelay(existingRelay, userKey)
+				if (cleanupRelay) {
+					existingRelay.disposalEffects.push(cleanupRelay)
+				}
+				this.on(userKey, (...data) => {
+					relay.in.next(data)
+				})
+				existingRelay.disposalEffects.push(
+					existingRelay.out.subscribe(`socket`, (data) => {
+						this.emit(userKey, ...(data as any))
+					}),
+				)
 				return
 			}
 			const relay = new SubjectSocket(userKey)
@@ -186,12 +199,12 @@ export class ParentSocket<
 			this.logger.info(`🔗`, `attaching relay services for`, userKey)
 			const cleanupRelay = this.initRelay(relay, userKey)
 			if (cleanupRelay) {
-				relay.disposalFunctions.push(cleanupRelay)
+				relay.disposalEffects.push(cleanupRelay)
 			}
 			this.on(userKey, (...data) => {
 				relay.in.next(data)
 			})
-			relay.disposalFunctions.push(
+			relay.disposalEffects.push(
 				relay.out.subscribe(`socket`, (data) => {
 					this.emit(userKey, ...(data as any))
 				}),
