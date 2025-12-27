@@ -2,14 +2,20 @@ import { useSpring } from "@react-spring/three"
 import * as Drei from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
 import { useO } from "atom.io/react"
+import type { UserKey } from "atom.io/realtime"
 import { myRoomKeySelector, myUserKeyAtom } from "atom.io/realtime-client"
-import { usePullAtom, usePullSelector } from "atom.io/realtime-react"
+import {
+	usePullAtom,
+	usePullAtomFamilyMember,
+	usePullSelector,
+} from "atom.io/realtime-react"
 import type { ReactNode } from "react"
 import { useRef } from "react"
 import * as THREE from "three"
 import type * as STD from "three-stdlib"
 
 import {
+	playerColorAtoms,
 	playerTurnSelector,
 	turnInProgressAtom,
 } from "../../../../library/bug-rangers-game-state"
@@ -23,9 +29,12 @@ import { GameTiles, PlayableZones } from "../BugRangers/TilesAndZones"
 
 export function BugRangers3D(): ReactNode {
 	const myRoomKey = useO(myRoomKeySelector)
+	const myUserKey = usePullAtom(myUserKeyAtom)
 	return (
 		<BugRangersExterior3D>
-			{myRoomKey ? <BugRangersInterior3D /> : null}
+			{myUserKey && myRoomKey ? (
+				<BugRangersInterior3D myUserKey={myUserKey} />
+			) : null}
 		</BugRangersExterior3D>
 	)
 }
@@ -62,19 +71,23 @@ export function BugRangersExterior3D({
 		</Canvas>
 	)
 }
-export function BugRangersInterior3D(): ReactNode {
+export function BugRangersInterior3D({
+	myUserKey,
+}: {
+	myUserKey: UserKey
+}): ReactNode {
 	const turnInProgress = usePullAtom(turnInProgressAtom)
 	const playerTurn = usePullSelector(playerTurnSelector)
-	const myUserKey = usePullAtom(myUserKeyAtom)
+	const myColor = usePullAtomFamilyMember(playerColorAtoms, myUserKey)
 
 	return (
 		<>
 			<GameTiles />
-			{turnInProgress === null && playerTurn === myUserKey ? (
+			{myColor && turnInProgress === null && playerTurn === myUserKey ? (
 				<PlayableZones />
 			) : null}
 
-			{playerTurn !== myUserKey ? null : <PlayerTools />}
+			{myColor === null || playerTurn !== myUserKey ? null : <PlayerTools />}
 		</>
 	)
 }
