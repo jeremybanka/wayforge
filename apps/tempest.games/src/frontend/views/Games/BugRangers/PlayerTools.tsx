@@ -11,8 +11,8 @@ import * as THREE from "three"
 
 import type {
 	PlayerActions,
-	StackHeight,
 	TileCubeCount,
+	TileStackHeight,
 } from "../../../../library/bug-rangers-game-state"
 import {
 	closestOwnedTileSelector,
@@ -110,7 +110,7 @@ function PlayableHex({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 					setState(
 						gameTilesStackHeightAtoms,
 						turnInProgress.target,
-						(stackHeight + 1) as StackHeight,
+						(stackHeight + 1) as TileStackHeight,
 					)
 					socket.emit(`placeTile`, turnInProgress.target)
 				}
@@ -192,6 +192,7 @@ function PlayableCube({ myUserKey }: PlayableCubeProps): ReactNode {
 							closestOwnedTile,
 							(current) => (current + 1) as TileCubeCount,
 						)
+						socket.emit(`placeCube`, closestOwnedTile)
 					}
 				}
 				break
@@ -209,6 +210,7 @@ function PlayableCube({ myUserKey }: PlayableCubeProps): ReactNode {
 							closestOwnedTile,
 							(current) => (current + 1) as TileCubeCount,
 						)
+						socket.emit(`placeCube`, closestOwnedTile)
 					}
 				}
 				break
