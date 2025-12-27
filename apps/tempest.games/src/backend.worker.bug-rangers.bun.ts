@@ -17,10 +17,7 @@ import {
 	ownersOfRooms,
 	usersInRooms,
 } from "atom.io/realtime"
-import {
-	myUserKeyAtom,
-	pullMutableAtomFamilyMember,
-} from "atom.io/realtime-client"
+import { pullMutableAtomFamilyMember } from "atom.io/realtime-client"
 import {
 	ParentSocket,
 	realtimeAtomFamilyProvider,
@@ -38,7 +35,6 @@ import type {
 	TileStackHeight,
 } from "./library/bug-rangers-game-state"
 import {
-	closestOwnedTileSelector,
 	gameStateAtom,
 	gameTilesAtom,
 	gameTilesStackHeightAtoms,
@@ -56,7 +52,7 @@ import {
 	turnNumberAtom,
 } from "./library/bug-rangers-game-state"
 import { env } from "./library/env"
-import { pureShuffle } from "./shuffle"
+import { pureShuffle } from "./library/shuffle"
 
 const parent: ParentSocket<any, any, any> = ((process as any).parentSocket ??=
 	new ParentSocket(process))
