@@ -37,6 +37,7 @@ import {
 	turnNumberAtom,
 } from "../../../../library/bug-rangers-game-state"
 import { usernameAtoms } from "../../../../library/username-state"
+import { isMyTurnSelector } from "./bug-rangers-client-state"
 import scss from "./BugRangersUI.module.scss"
 
 export function BugRangersUI(): ReactNode {
@@ -106,13 +107,14 @@ function PlayerTurnControls(): ReactElement {
 	const { socket } = useContext(RealtimeContext)
 	const gameSocket = socket as unknown as TypedSocket<{}, PlayerActions>
 	const colorsChosen = useO(colorsChosenSelector)
+	const isMyTurn = useO(isMyTurnSelector)
 	return (
 		<>
 			{myColor === null ? (
 				PLAYER_COLORS.map((color, idx) => (
 					<button
 						data-css-color-choice
-						disabled={colorsChosen.has(color)}
+						disabled={colorsChosen.has(color) || !isMyTurn}
 						key={idx}
 						type="button"
 						style={{ pointerEvents: `all`, background: color }}

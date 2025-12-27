@@ -28,22 +28,6 @@ import { PlayerTools } from "../BugRangers/PlayerTools"
 import { GameTiles, PlayableZones } from "../BugRangers/TilesAndZones"
 
 export function BugRangers3D(): ReactNode {
-	const myRoomKey = useO(myRoomKeySelector)
-	const myUserKey = usePullAtom(myUserKeyAtom)
-	return (
-		<BugRangersExterior3D>
-			{myUserKey && myRoomKey ? (
-				<BugRangersInterior3D myUserKey={myUserKey} />
-			) : null}
-		</BugRangersExterior3D>
-	)
-}
-
-export function BugRangersExterior3D({
-	children,
-}: {
-	children: ReactNode
-}): ReactNode {
 	const cameraTarget = useO(cameraTargetAtom)
 	useSpring({
 		animatedCam: cameraTarget,
@@ -63,13 +47,19 @@ export function BugRangersExterior3D({
 		>
 			<ambientLight intensity={0.5} />
 			<directionalLight position={[5, 10, 5]} />
-
 			<CameraController target={[...cameraTarget]} />
 			<HexGridHelper size={20} radius={1} color="#6f6f6f" opacity={0.5} />
-
-			{children as any}
+			<BugRangersExterior3D />
 		</Canvas>
 	)
+}
+
+export function BugRangersExterior3D(): ReactNode {
+	const myRoomKey = useO(myRoomKeySelector)
+	const myUserKey = usePullAtom(myUserKeyAtom)
+	return myUserKey && myRoomKey ? (
+		<BugRangersInterior3D myUserKey={myUserKey} />
+	) : null
 }
 export function BugRangersInterior3D({
 	myUserKey,
@@ -87,7 +77,7 @@ export function BugRangersInterior3D({
 				<PlayableZones />
 			) : null}
 
-			{myColor === null || playerTurn !== myUserKey ? null : <PlayerTools />}
+			{myColor && playerTurn === myUserKey ? <PlayerTools /> : null}
 		</>
 	)
 }
