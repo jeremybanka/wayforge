@@ -1,13 +1,19 @@
+import { useO } from "atom.io/react"
+import type { UserKey } from "atom.io/realtime"
 import type { ReactNode, Ref } from "react"
 import * as THREE from "three"
+
+import { playerColorAtoms } from "../../../../library/bug-rangers-game-state"
 
 export type CubeTokenStackProps = {
 	position: THREE.Vector3
 	count: number
+	ownerKey: UserKey
 }
 export function CubeTokenStack({
 	position: [x, y, z],
 	count,
+	ownerKey,
 }: CubeTokenStackProps): ReactNode {
 	const layers: (1 | 2 | 3 | 4)[] = []
 	while (count > 0) {
@@ -28,6 +34,7 @@ export function CubeTokenStack({
 					position={new THREE.Vector3(x, y + i * 0.5, z)}
 					count={layerCount}
 					rotation={new THREE.Euler(0, (i * Math.PI) / 3, 0)}
+					ownerKey={ownerKey}
 				/>
 			))}
 		</>
@@ -37,18 +44,21 @@ export type CubeTokenLayerProps = {
 	position: THREE.Vector3
 	rotation: THREE.Euler
 	count: 1 | 2 | 3 | 4
+	ownerKey: UserKey
 }
 export function CubeTokenLayer({
 	position,
 	rotation: rOffset,
 	count,
+	ownerKey,
 }: CubeTokenLayerProps): ReactNode {
 	const radius = count * 0.1 + 0.1
+	const color = useO(playerColorAtoms, ownerKey) ?? `#555`
 	return (
 		<group position={position} rotation={rOffset}>
 			{count === 1 ? (
 				<CubeToken
-					color={`#f00`}
+					color={color}
 					position={new THREE.Vector3(0, 0, 0)}
 					rotation={new THREE.Euler(0, 0, 0)}
 					onPointerDown={(pos) => {
@@ -63,15 +73,12 @@ export function CubeTokenLayer({
 					const angle = (i / count) * Math.PI * 2
 					const x = Math.cos(angle) * radius
 					const z = Math.sin(angle) * radius
-					// const rotation = new THREE.Euler(0, angle, 0)
 
 					console.log(`angle`, angle)
 
 					const rotation = new THREE.Euler(0, (Math.PI * 3) / 2 - angle, 0)
 
-					// const dir = new THREE.Vector3(0, 0, 2).applyEuler(rotation)
-
-					const color = i === 0 ? `#f00` : i === 1 ? `#0f0` : `#00f`
+					// const color = i === 0 ? `#f00` : i === 1 ? `#0f0` : `#00f`
 
 					return (
 						<CubeToken

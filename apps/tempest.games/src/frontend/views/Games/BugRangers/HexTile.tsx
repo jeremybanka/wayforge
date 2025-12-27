@@ -15,6 +15,7 @@ import {
 	gameTilesStackHeightAtoms,
 	tile3dPositionSelectors,
 	tileCubeCountAtoms,
+	tileOwnerAtoms,
 } from "../../../../library/bug-rangers-game-state"
 import { cameraTargetAtom } from "./bug-rangers-client-state"
 import { CubeTokenStack } from "./CubeToken"
@@ -122,6 +123,7 @@ export function GameTile({
 	const [boardA, boardB, boardC] = coordinates
 	const stackHeight = useO(gameTilesStackHeightAtoms, coordinatesSerialized)
 	const tileCubeCount = useO(tileCubeCountAtoms, coordinatesSerialized)
+	const ownerKey = useO(tileOwnerAtoms, coordinatesSerialized)
 
 	const tile3dPosition = getState(tile3dPositionSelectors, coordinatesSerialized)
 	const [x, _, z] = tile3dPosition
@@ -140,11 +142,11 @@ export function GameTile({
 			<Text position={[x, height + 0.7, z]} fontSize={0.25} color="white">
 				{coordinatesSerialized}
 			</Text>
-			{!virtual && tileCubeCount > 0 ? (
-				// <CubeToken position={new THREE.Vector3(x, height + 0.25, z)} />
+			{!virtual && ownerKey !== null && tileCubeCount > 0 ? (
 				<CubeTokenStack
 					position={new THREE.Vector3(x, height + 0.25, z)}
 					count={tileCubeCount}
+					ownerKey={ownerKey}
 				/>
 			) : null}
 			<HexTile
