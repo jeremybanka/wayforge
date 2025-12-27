@@ -2,12 +2,17 @@ import { useSpring } from "@react-spring/three"
 import * as Drei from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
 import { useO } from "atom.io/react"
+import { myRoomKeySelector, myUserKeyAtom } from "atom.io/realtime-client"
+import { usePullAtom, usePullSelector } from "atom.io/realtime-react"
 import type { ReactNode } from "react"
 import { useRef } from "react"
 import * as THREE from "three"
 import type * as STD from "three-stdlib"
 
-import { turnInProgressAtom } from "../../../../library/bug-rangers-game-state"
+import {
+	playerTurnSelector,
+	turnInProgressAtom,
+} from "../../../../library/bug-rangers-game-state"
 import {
 	cameraTargetAtom,
 	controlsEnabledAtom,
@@ -17,12 +22,24 @@ import { PlayerTools } from "../BugRangers/PlayerTools"
 import { GameTiles, PlayableZones } from "../BugRangers/TilesAndZones"
 
 export function BugRangers3D(): ReactNode {
+	const myRoomKey = useO(myRoomKeySelector)
+	return (
+		<BugRangersExterior3D>
+			{myRoomKey ? <BugRangersInterior3D /> : null}
+		</BugRangersExterior3D>
+	)
+}
+
+export function BugRangersExterior3D({
+	children,
+}: {
+	children: ReactNode
+}): ReactNode {
 	const cameraTarget = useO(cameraTargetAtom)
 	useSpring({
 		animatedCam: cameraTarget,
 		config: { mass: 1, tension: 170, friction: 26 },
 	})
-	const turnInProgress = useO(turnInProgressAtom)
 
 	return (
 		<Canvas
@@ -39,14 +56,26 @@ export function BugRangers3D(): ReactNode {
 			<directionalLight position={[5, 10, 5]} />
 
 			<CameraController target={[...cameraTarget]} />
-
 			<HexGridHelper size={20} radius={1} color="#6f6f6f" opacity={0.5} />
 
-			<GameTiles />
-			{turnInProgress === null ? <PlayableZones /> : null}
-
-			<PlayerTools />
+			{children as any}
 		</Canvas>
+	)
+}
+export function BugRangersInterior3D(): ReactNode {
+	const turnInProgress = usePullAtom(turnInProgressAtom)
+	const playerTurn = usePullSelector(playerTurnSelector)
+	const myUserKey = usePullAtom(myUserKeyAtom)
+
+	return (
+		<>
+			<GameTiles />
+			{turnInProgress === null && playerTurn === myUserKey ? (
+				<PlayableZones />
+			) : null}
+
+			{playerTurn !== myUserKey ? null : <PlayerTools />}
+		</>
 	)
 }
 

@@ -1,4 +1,5 @@
 import { useJSON, useO } from "atom.io/react"
+import { usePullMutable } from "atom.io/realtime-react"
 import type { ReactNode } from "react"
 
 import {
@@ -8,6 +9,7 @@ import {
 import { GameTile } from "./HexTile"
 
 export function GameTiles(): ReactNode {
+	usePullMutable(gameTilesAtom)
 	const tiles = useJSON(gameTilesAtom)
 	return tiles.map((tileCoordinates, idx) => (
 		<GameTile key={idx} coordinatesSerialized={tileCoordinates} color={`#aa5`} />

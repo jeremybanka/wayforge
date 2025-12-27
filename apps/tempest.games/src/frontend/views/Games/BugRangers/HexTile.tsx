@@ -3,6 +3,7 @@
 import { Text } from "@react-three/drei"
 import { getState, setState } from "atom.io"
 import { useO } from "atom.io/react"
+import { usePullAtomFamilyMember } from "atom.io/realtime-react"
 import type { ReactNode, RefObject } from "react"
 import { useMemo, useState } from "react"
 import * as THREE from "three"
@@ -121,9 +122,15 @@ export function GameTile({
 }): ReactNode {
 	const coordinates = deserializeTileCoordinates(coordinatesSerialized)
 	const [boardA, boardB, boardC] = coordinates
-	const stackHeight = useO(gameTilesStackHeightAtoms, coordinatesSerialized)
-	const tileCubeCount = useO(tileCubeCountAtoms, coordinatesSerialized)
-	const ownerKey = useO(tileOwnerAtoms, coordinatesSerialized)
+	const stackHeight = usePullAtomFamilyMember(
+		gameTilesStackHeightAtoms,
+		coordinatesSerialized,
+	)
+	const tileCubeCount = usePullAtomFamilyMember(
+		tileCubeCountAtoms,
+		coordinatesSerialized,
+	)
+	const ownerKey = usePullAtomFamilyMember(tileOwnerAtoms, coordinatesSerialized)
 
 	const tile3dPosition = getState(tile3dPositionSelectors, coordinatesSerialized)
 	const [x, _, z] = tile3dPosition
