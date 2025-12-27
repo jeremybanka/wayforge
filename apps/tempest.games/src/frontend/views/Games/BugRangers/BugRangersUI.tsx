@@ -104,7 +104,7 @@ function PlayerTurnControls(): ReactElement {
 					<button
 						key={idx}
 						type="button"
-						style={{ pointerEvents: `all` }}
+						style={{ pointerEvents: `all`, background: color }}
 						onClick={() => {
 							gameSocket.emit(`chooseColor`, color)
 						}}
@@ -289,7 +289,7 @@ function User({ userKey }: { userKey: UserKey }): ReactElement {
 	const color = usePullAtomFamilyMember(playerColorAtoms, userKey)
 	const currentTurn = useO(playerTurnSelector)
 	return (
-		<motion.div layoutId={userKey} data-css-user style={{ background: color }}>
+		<motion.div layoutId={userKey} data-css-user>
 			{userKey === myUserKey ? (
 				userKey === ownerKey ? (
 					<img src={LeaderMe} alt="it's you!" />
