@@ -2,11 +2,9 @@ import {
 	atom,
 	atomFamily,
 	getInternalRelations,
-	getState,
 	mutableAtom,
 	selector,
 	selectorFamily,
-	setState,
 } from "atom.io"
 import { type UserKey, usersInRooms } from "atom.io/realtime"
 import { myRoomKeySelector } from "atom.io/realtime-client"
@@ -155,9 +153,9 @@ export const playableZonesAtom = selector<TileCoordinatesSerialized[]>({
 	},
 })
 
-export type StackHeight = 1 | 2 | 3
+export type TileStackHeight = 1 | 2 | 3
 export const gameTilesStackHeightAtoms = atomFamily<
-	StackHeight,
+	TileStackHeight,
 	TileCoordinatesSerialized
 >({
 	key: `gameTilesStackHeight`,
@@ -268,7 +266,7 @@ export type TurnActionType = `arm` | `build` | `war`
 export type BuildAction = {
 	type: `build`
 	target: TileCoordinatesSerialized
-	count: TileCubeCount
+	count: TileStackHeight
 }
 export type ArmAction = {
 	type: `arm`
@@ -294,7 +292,7 @@ export const turnInProgressAtom = atom<TurnActionInProgress | null>({
 })
 
 export const maximumStackHeightSelectors = selectorFamily<
-	StackHeight | 0,
+	TileStackHeight | 0,
 	[tile: TileCoordinatesSerialized, userKey: UserKey]
 >({
 	key: `maximumStackHeight`,
@@ -307,7 +305,7 @@ export const maximumStackHeightSelectors = selectorFamily<
 			const ownedAdjacentTiles = adjacentTiles.filter(
 				(adjacentTile) => get(tileOwnerAtoms, adjacentTile) === userKey,
 			)
-			let tallestOwnedAdjacentStackHeight: StackHeight | 0 = 0
+			let tallestOwnedAdjacentStackHeight: TileStackHeight | 0 = 0
 			for (const adjacentTile of ownedAdjacentTiles) {
 				const adjacentStackHeight = get(gameTilesStackHeightAtoms, adjacentTile)
 				if (adjacentStackHeight >= 2) {
@@ -317,7 +315,7 @@ export const maximumStackHeightSelectors = selectorFamily<
 					tallestOwnedAdjacentStackHeight = adjacentStackHeight
 				}
 			}
-			return (tallestOwnedAdjacentStackHeight + 1) as StackHeight
+			return (tallestOwnedAdjacentStackHeight + 1) as TileStackHeight
 		},
 })
 
