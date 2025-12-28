@@ -500,3 +500,26 @@ export const colorsChosenSelector = selector<Set<PlayerColor>>({
 		return chosen
 	},
 })
+
+export const turnCanBeEndedSelector = selector<boolean>({
+	key: `turnCanBeEnded`,
+	get: ({ get }) => {
+		const turnInProgress = get(turnInProgressAtom)
+		switch (turnInProgress?.type) {
+			case `build`:
+			case undefined:
+			case null:
+				return false
+			case `arm`:
+				return turnInProgress.targets.length > 0
+			case `war`: {
+				const gameTiles = get(gameTilesAtom)
+				for (const tile of gameTiles) {
+					const tileCubeCount = get(tileCubeCountAtoms, tile)
+					if (tileCubeCount === 0) return false
+				}
+				return turnInProgress.targets.length > 0
+			}
+		}
+	},
+})
