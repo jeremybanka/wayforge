@@ -3,7 +3,6 @@
 import { Text } from "@react-three/drei"
 import { getState, setState } from "atom.io"
 import { useO } from "atom.io/react"
-import { myUserKeyAtom } from "atom.io/realtime-client"
 import {
 	usePullAtom,
 	usePullAtomFamilyMember,
@@ -13,10 +12,7 @@ import type { ReactNode, RefObject } from "react"
 import { useMemo, useState } from "react"
 import * as THREE from "three"
 
-import type {
-	TileCoordinatesSerialized,
-	TileCubeCount,
-} from "../../../../library/bug-rangers-game-state"
+import type { TileCoordinatesSerialized } from "../../../../library/bug-rangers-game-state"
 import {
 	closestPlayableZoneSelector,
 	deserializeTileCoordinates,
