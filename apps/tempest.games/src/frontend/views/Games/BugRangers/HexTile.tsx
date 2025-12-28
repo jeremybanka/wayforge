@@ -3,23 +3,36 @@
 import { Text } from "@react-three/drei"
 import { getState, setState } from "atom.io"
 import { useO } from "atom.io/react"
-import { usePullAtom, usePullAtomFamilyMember } from "atom.io/realtime-react"
+import { myUserKeyAtom } from "atom.io/realtime-client"
+import {
+	usePullAtom,
+	usePullAtomFamilyMember,
+	usePullSelector,
+} from "atom.io/realtime-react"
 import type { ReactNode, RefObject } from "react"
 import { useMemo, useState } from "react"
 import * as THREE from "three"
 
-import type { TileCoordinatesSerialized } from "../../../../library/bug-rangers-game-state"
+import type {
+	TileCoordinatesSerialized,
+	TileCubeCount,
+} from "../../../../library/bug-rangers-game-state"
 import {
 	closestPlayableZoneSelector,
 	deserializeTileCoordinates,
 	gameTilesAtom,
 	gameTilesStackHeightAtoms,
+	playerTurnSelector,
 	tile3dPositionSelectors,
 	tileCubeCountAtoms,
 	tileOwnerAtoms,
 	turnInProgressAtom,
 } from "../../../../library/bug-rangers-game-state"
-import { cameraTargetAtom } from "./bug-rangers-client-state"
+import {
+	cameraTargetAtom,
+	isMyTurnSelector,
+	usePlayerActions,
+} from "./bug-rangers-client-state"
 import { CubeTokenStack } from "./CubeToken"
 
 /**
@@ -160,6 +173,7 @@ export function GameTileActual({
 	isDeclarator: boolean
 	isTarget: boolean
 }): ReactNode {
+	const socket = usePlayerActions()
 	const coordinates = deserializeTileCoordinates(coordinatesSerialized)
 	const [boardA, boardB, boardC] = coordinates
 	const stackHeight = usePullAtomFamilyMember(
@@ -171,6 +185,8 @@ export function GameTileActual({
 		coordinatesSerialized,
 	)
 	const ownerKey = usePullAtomFamilyMember(tileOwnerAtoms, coordinatesSerialized)
+	const currentTurn = usePullSelector(playerTurnSelector)
+	const isMyTurn = usePullSelector(isMyTurnSelector)
 
 	const tile3dPosition = getState(tile3dPositionSelectors, coordinatesSerialized)
 	const [x, _, z] = tile3dPosition
@@ -211,12 +227,67 @@ export function GameTileActual({
 				color={color}
 				onClick={(position3d) => {
 					setState(cameraTargetAtom, position3d.toArray())
-					if (isDeclarator) {
+					if (isDeclarator && isMyTurn) {
 						setState(turnInProgressAtom, {
 							type: `war`,
 							attacker: coordinatesSerialized,
 							targets: [],
 						})
+						socket.emit(`chooseAttacker`, coordinatesSerialized)
+					}
+					if (isTarget && isMyTurn) {
+						if (
+							turnInProgress?.type !== `war` ||
+							turnInProgress.attacker === null
+						) {
+							return
+						}
+						setState(turnInProgressAtom, {
+							...turnInProgress,
+							targets: [...turnInProgress.targets, coordinatesSerialized],
+						})
+						let attackerDelta: number
+						let targetDelta: number
+						const targetIsMine = currentTurn === ownerKey
+						if (targetIsMine) {
+							attackerDelta = -1
+							targetDelta = 1
+						} else {
+							const attackerStackHeight = getState(
+								gameTilesStackHeightAtoms,
+								turnInProgress.attacker,
+							)
+
+							const feeAlreadyPaid = turnInProgress.targets.includes(
+								turnInProgress.attacker,
+							)
+							const entryFee = feeAlreadyPaid
+								? 0
+								: stackHeight > attackerStackHeight
+									? stackHeight - attackerStackHeight
+									: 0
+
+							attackerDelta = -1 - entryFee
+							targetDelta = -1
+						}
+						setState(
+							tileCubeCountAtoms,
+							coordinatesSerialized,
+							(current) => (current + targetDelta) as TileCubeCount,
+						)
+						setState(
+							tileCubeCountAtoms,
+							turnInProgress.attacker,
+							(current) => (current + attackerDelta) as TileCubeCount,
+						)
+						const targetCubeCount = getState(
+							tileCubeCountAtoms,
+							turnInProgress.attacker,
+						)
+						if (targetCubeCount === 0) {
+							setState(tileOwnerAtoms, coordinatesSerialized, currentTurn)
+						}
+						socket.emit(`chooseTarget`, coordinatesSerialized)
 					}
 				}}
 				virtual={false}

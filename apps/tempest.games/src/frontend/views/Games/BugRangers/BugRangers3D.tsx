@@ -73,14 +73,8 @@ export function BugRangersInterior3D({
 	const turnInProgress = usePullAtom(turnInProgressAtom)
 	const isMyTurn = usePullSelector(isMyTurnSelector)
 	const myColor = usePullAtomFamilyMember(playerColorAtoms, myUserKey)
-	const validWarDeclarators = usePullSelectorFamilyMember(
-		validWarDeclaratorsSelector,
-		myUserKey,
-	)
-	const validWarTargets = usePullSelectorFamilyMember(
-		validWarTargetsSelector,
-		myUserKey,
-	)
+	const validWarDeclarators = usePullSelector(validWarDeclaratorsSelector)
+	const validWarTargets = usePullSelector(validWarTargetsSelector)
 
 	return (
 		<>

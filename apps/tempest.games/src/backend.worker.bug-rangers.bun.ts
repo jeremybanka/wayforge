@@ -103,6 +103,8 @@ const bugRangersGuard: SocketGuard<PlayerActions> = {
 	// PLAYERS
 	placeTile: type([tileCoordinatesType]),
 	placeCube: type([tileCoordinatesType]),
+	chooseAttacker: type([tileCoordinatesType]),
+	chooseTarget: type([tileCoordinatesType]),
 	turnRestart: type([]),
 	turnEnd: type([]),
 }
@@ -204,6 +206,9 @@ parent.receiveRelay((socket, userKey) => {
 
 			const turnInProgress = getState(turnInProgressAtom)
 			switch (turnInProgress?.type) {
+				case `arm`:
+				case `war`:
+					break
 				case null:
 				case undefined:
 					{
@@ -240,8 +245,6 @@ parent.receiveRelay((socket, userKey) => {
 						socket.emit(`placeTile`, turnInProgress.target)
 					}
 					break
-				case `arm`:
-					break
 			}
 		}),
 
@@ -251,6 +254,8 @@ parent.receiveRelay((socket, userKey) => {
 
 			const turnInProgress = getState(turnInProgressAtom)
 			switch (turnInProgress?.type) {
+				case `war`:
+					break
 				case null:
 				case undefined:
 					{
@@ -301,6 +306,7 @@ parent.receiveRelay((socket, userKey) => {
 				case null:
 				case undefined:
 				case `build`:
+				case `war`:
 					break
 				case `arm`:
 					if (turnInProgress.targets.length === 0) return
