@@ -102,7 +102,6 @@ function PlayerUsername({ userKey }: { userKey: UserKey }): ReactElement {
 }
 
 function PlayerTurnControls(): ReactElement {
-	const turnInProgress = useO(turnInProgressAtom)
 	const myUserKey = useO(myUserKeyAtom)
 	const myColor = useO(playerColorAtoms, myUserKey as UserKey)
 	const { socket } = useContext(RealtimeContext)
@@ -133,6 +132,7 @@ function PlayerTurnControls(): ReactElement {
 						type="button"
 						disabled={!isMyTurn}
 						onClick={() => {
+							console.log(`😼😼😼😼😼😼 turnRestart`)
 							setState(turnInProgressAtom, null)
 							gameSocket.emit(`turnRestart`)
 						}}
@@ -142,7 +142,6 @@ function PlayerTurnControls(): ReactElement {
 					<button
 						type="button"
 						disabled={!turnEndable || !isMyTurn}
-						style={{ pointerEvents: `all` }}
 						onClick={() => {
 							setState(turnInProgressAtom, null)
 							gameSocket.emit(`turnEnd`)

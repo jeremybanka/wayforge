@@ -16,15 +16,16 @@ main.class {
     justify-content: center;
     gap: 5px;
     > button {
+      pointer-events: all;
       padding: 10px;
       height: 40px;
       &:disabled {
+        pointer-events: none;
         opacity: 0.5;
       }
     }
   }
   > article[data-css="room-module"] {
-    // background: var(--bg-tint-1);
     border: var(--fg-soft-1) solid 1px;
     padding: 5px;
     width: calc(100% - 20px);
