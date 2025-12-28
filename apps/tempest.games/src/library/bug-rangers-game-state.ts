@@ -24,6 +24,8 @@ export type PlayerActions = {
 	// PLAYERS
 	placeTile: (tileCoordinates: TileCoordinatesSerialized) => void
 	placeCube: (tileCoordinates: TileCoordinatesSerialized) => void
+	chooseAttacker: (tileCoordinates: TileCoordinatesSerialized) => void
+	chooseTarget: (tileCoordinates: TileCoordinatesSerialized) => void
 	turnRestart: () => void
 	turnEnd: () => void
 }
@@ -290,19 +292,22 @@ export const turnInProgressAtom = atom<TurnActionInProgress | null>({
 	key: `turnInProgress`,
 	default: null,
 })
-export const validWarDeclaratorsSelector = selectorFamily<
-	TileCoordinatesSerialized[],
-	UserKey
->({
-	key: `validWarDeclarators`,
-	get:
-		(userKey) =>
-		({ get }) => {
+export const validWarDeclaratorsSelector = selector<TileCoordinatesSerialized[]>(
+	{
+		key: `validWarDeclarators`,
+		get: ({ get }) => {
 			const validWarDeclarators: TileCoordinatesSerialized[] = []
+			const userKey = get(playerTurnSelector)
+			if (userKey === null) return validWarDeclarators
 			const turnAction = get(turnInProgressAtom)
-			const currentTurn = get(playerTurnSelector)
-			const isArming = currentTurn === userKey && turnAction?.type === `arm`
+			const isArming = turnAction?.type === `arm`
 			if (isArming) return validWarDeclarators
+			const isWarring =
+				turnAction?.type === `war` && turnAction.attacker !== null
+			if (isWarring) {
+				validWarDeclarators.push(turnAction.attacker)
+				return validWarDeclarators
+			}
 			const allOwnedTiles = get(ownedTilesSelector, userKey)
 			for (const tileCoordinates of allOwnedTiles) {
 				const tileCubeCount = get(tileCubeCountAtoms, tileCoordinates)
@@ -312,31 +317,41 @@ export const validWarDeclaratorsSelector = selectorFamily<
 			}
 			return validWarDeclarators
 		},
-})
-export const validWarTargetsSelector = selectorFamily<
-	TileCoordinatesSerialized[],
-	UserKey
->({
+	},
+)
+export const validWarTargetsSelector = selector<TileCoordinatesSerialized[]>({
 	key: `validWarTargets`,
-	get:
-		(userKey) =>
-		({ get }) => {
-			const validWarTargets: TileCoordinatesSerialized[] = []
-			const turnAction = get(turnInProgressAtom)
-			if (turnAction?.type !== `war`) return validWarTargets
-			const attacker = turnAction.attacker
-			if (!attacker) return validWarTargets
-			const attackerAdjacentTiles = get(adjacentTilesSelector, attacker)
-			const unchecked = new Set<TileCoordinatesSerialized>()
-			for (const adjacentTile of attackerAdjacentTiles) {
-				const adjacentOwner = get(tileOwnerAtoms, adjacentTile)
-				if (adjacentOwner === userKey) {
-					unchecked.add(adjacentTile)
-				}
-				validWarTargets.push(adjacentTile)
+	get: ({ get }) => {
+		const validWarTargets: TileCoordinatesSerialized[] = []
+		const userKey = get(playerTurnSelector)
+		const turnAction = get(turnInProgressAtom)
+		if (turnAction?.type !== `war`) return validWarTargets
+		const attacker = turnAction.attacker
+		if (!attacker) return validWarTargets
+		const attackerAdjacentTiles = get(adjacentTilesSelector, attacker)
+		const myTilesChecked = new Set<TileCoordinatesSerialized>()
+		const myTilesUnchecked: TileCoordinatesSerialized[] = []
+		for (const adjacentTile of attackerAdjacentTiles) {
+			const adjacentOwner = get(tileOwnerAtoms, adjacentTile)
+			if (adjacentOwner === userKey) {
+				myTilesUnchecked.push(adjacentTile)
 			}
-			return validWarTargets
-		},
+			validWarTargets.push(adjacentTile)
+		}
+		while (myTilesUnchecked.length > 0) {
+			const myTile = myTilesUnchecked.pop()!
+			myTilesChecked.add(myTile)
+			const adjacentTiles = get(adjacentTilesSelector, myTile)
+			for (const adjacentTile of adjacentTiles) {
+				const adjacentOwner = get(tileOwnerAtoms, adjacentTile)
+				if (adjacentOwner === userKey && !myTilesChecked.has(adjacentTile)) {
+					myTilesUnchecked.push(adjacentTile)
+				}
+			}
+		}
+		validWarTargets.push(...myTilesChecked)
+		return validWarTargets
+	},
 })
 
 export const maximumStackHeightSelectors = selectorFamily<

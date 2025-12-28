@@ -3,14 +3,11 @@ import { getState, setState } from "atom.io"
 import { useAtomicRef, useI, useO } from "atom.io/react"
 import type { UserKey } from "atom.io/realtime"
 import { myUserKeyAtom } from "atom.io/realtime-client"
-import { RealtimeContext } from "atom.io/realtime-react"
 import type { ReactNode } from "react"
-import React, { useRef } from "react"
-import type { Socket } from "socket.io-client"
+import { useRef } from "react"
 import * as THREE from "three"
 
 import type {
-	PlayerActions,
 	TileCubeCount,
 	TileStackHeight,
 } from "../../../../library/bug-rangers-game-state"
@@ -30,6 +27,7 @@ import {
 import {
 	cameraAnchoredSphereAtom,
 	controlsEnabledAtom,
+	usePlayerActions,
 } from "./bug-rangers-client-state"
 import { CubeToken } from "./CubeToken"
 import { HexTile } from "./HexTile"
@@ -55,11 +53,6 @@ const offsetRight = -2
 const offsetUp = 1
 const hitPoint = new THREE.Vector3()
 
-export function usePlayerActions(): Socket<{}, PlayerActions> {
-	const { socket } = React.useContext(RealtimeContext)
-	return socket as Socket<{}, PlayerActions>
-}
-
 function PlayableHex({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 	const ref = useAtomicRef(cameraAnchoredSphereAtom, useRef)
 	const { camera, raycaster, pointer } = useThree()
@@ -77,6 +70,9 @@ function PlayableHex({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 		setState(dragStateAtom, null)
 		const turnInProgress = getState(turnInProgressAtom)
 		switch (turnInProgress?.type) {
+			case `war`:
+			case `arm`:
+				break
 			case null:
 			case undefined:
 				{
@@ -115,7 +111,6 @@ function PlayableHex({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 					socket.emit(`placeTile`, turnInProgress.target)
 				}
 				break
-			case `arm`:
 		}
 		setState(dragpointAtom, null)
 	}
@@ -178,6 +173,8 @@ function PlayableCube({ myUserKey }: PlayableCubeProps): ReactNode {
 		const turnInProgress = getState(turnInProgressAtom)
 
 		switch (turnInProgress?.type) {
+			case `war`:
+				break
 			case null:
 			case undefined:
 				{
