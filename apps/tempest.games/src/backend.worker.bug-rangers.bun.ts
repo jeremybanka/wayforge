@@ -7,6 +7,7 @@ import {
 	findState,
 	getInternalRelations,
 	getState,
+	resetState,
 	setState,
 } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
@@ -46,8 +47,10 @@ import {
 	playerTurnOrderAtom,
 	playerTurnSelector,
 	setupGroupsSelector,
+	setWarTarget,
 	tileCubeCountAtoms,
 	tileOwnerAtoms,
+	turnCanBeEndedSelector,
 	turnInProgressAtom,
 	turnNumberAtom,
 } from "./library/bug-rangers-game-state"
@@ -247,7 +250,6 @@ parent.receiveRelay((socket, userKey) => {
 					break
 			}
 		}),
-
 		employSocket(gameSocket, `placeCube`, (tileCoordinatesSerialized) => {
 			const playerWhoseTurnItIs = getState(playerTurnSelector)
 			if (playerWhoseTurnItIs !== userKey) return
@@ -296,24 +298,135 @@ parent.receiveRelay((socket, userKey) => {
 					break
 			}
 		}),
-
+		employSocket(gameSocket, `chooseAttacker`, (tileCoordinatesSerialized) => {
+			const playerWhoseTurnItIs = getState(playerTurnSelector)
+			if (playerWhoseTurnItIs !== userKey) return
+			const turnInProgress = getState(turnInProgressAtom)
+			if (turnInProgress === null) {
+				setState(turnInProgressAtom, {
+					type: `war`,
+					attacker: tileCoordinatesSerialized,
+					targets: [],
+				})
+			}
+		}),
+		employSocket(gameSocket, `chooseTarget`, (tileCoordinatesSerialized) => {
+			const playerWhoseTurnItIs = getState(playerTurnSelector)
+			if (playerWhoseTurnItIs !== userKey) return
+			const turnInProgress = getState(turnInProgressAtom)
+			if (turnInProgress === null) return
+			switch (turnInProgress.type) {
+				case `arm`:
+				case `build`:
+					break
+				case `war`:
+					{
+						const tileOwner = getState(tileOwnerAtoms, tileCoordinatesSerialized)
+						const stackHeight = getState(
+							gameTilesStackHeightAtoms,
+							tileCoordinatesSerialized,
+						)
+						setWarTarget(
+							playerWhoseTurnItIs,
+							tileOwner,
+							stackHeight,
+							turnInProgress,
+							tileCoordinatesSerialized,
+						)
+					}
+					break
+			}
+		}),
+		employSocket(gameSocket, `turnRestart`, () => {
+			// console.log(`😼😼😼😼😼😼 turnRestart`)
+			const playerWhoseTurnItIs = getState(playerTurnSelector)
+			if (playerWhoseTurnItIs !== userKey) return
+			const turnInProgress = getState(turnInProgressAtom)
+			if (turnInProgress === null) return
+			switch (turnInProgress.type) {
+				case `arm`:
+					{
+						const { targets } = turnInProgress
+						for (const target of targets) {
+							setState(
+								tileCubeCountAtoms,
+								target,
+								(current) => (current - 1) as TileCubeCount,
+							)
+						}
+					}
+					break
+				case `build`:
+					{
+						const { target } = turnInProgress
+						setState(gameTilesStackHeightAtoms, target, 0 as TileStackHeight)
+						setState(tileCubeCountAtoms, target, 0 as TileCubeCount)
+						setState(tileOwnerAtoms, target, null)
+						setState(gameTilesAtom, (permanent) => {
+							permanent.delete(target)
+							return permanent
+						})
+					}
+					break
+				case `war`: {
+					const { attacker, targets } = turnInProgress
+					if (attacker === null) return
+					if (targets.length === 0) return
+					const enemiesVisited = new Set<TileCoordinatesSerialized>()
+					for (const target of targets) {
+						const ownerOfTarget = getState(tileOwnerAtoms, target)
+						if (ownerOfTarget === userKey) {
+							setState(
+								tileCubeCountAtoms,
+								target,
+								(current) => (current - 1) as TileCubeCount,
+							)
+							setState(
+								tileCubeCountAtoms,
+								attacker,
+								(current) => (current + 1) as TileCubeCount,
+							)
+						} else {
+							if (enemiesVisited.has(target)) {
+								setState(
+									tileCubeCountAtoms,
+									attacker,
+									(current) => (current + 1) as TileCubeCount,
+								)
+							} else {
+								const targetHeight = getState(gameTilesStackHeightAtoms, target)
+								const attackerHeight = getState(
+									gameTilesStackHeightAtoms,
+									attacker,
+								)
+								if (targetHeight > attackerHeight) {
+									const heightDiff = targetHeight - attackerHeight
+									setState(
+										gameTilesStackHeightAtoms,
+										attacker,
+										(current) => (current + heightDiff + 1) as TileStackHeight,
+									)
+								}
+								setState(
+									tileCubeCountAtoms,
+									target,
+									(current) => (current + 1) as TileCubeCount,
+								)
+							}
+							enemiesVisited.add(target)
+						}
+					}
+				}
+			}
+			setState(turnInProgressAtom, null)
+		}),
 		employSocket(gameSocket, `turnEnd`, () => {
 			const playerWhoseTurnItIs = getState(playerTurnSelector)
 			if (playerWhoseTurnItIs !== userKey) return
-
-			const turnInProgress = getState(turnInProgressAtom)
-			switch (turnInProgress?.type) {
-				case null:
-				case undefined:
-				case `build`:
-				case `war`:
-					break
-				case `arm`:
-					if (turnInProgress.targets.length === 0) return
-					setState(turnInProgressAtom, null)
-					setState(turnNumberAtom, (current) => current + 1)
-					break
-			}
+			const turnCanBeEnded = getState(turnCanBeEndedSelector)
+			if (!turnCanBeEnded) return
+			setState(turnInProgressAtom, null)
+			setState(turnNumberAtom, (current) => current + 1)
 		}),
 	)
 
@@ -331,6 +444,15 @@ parent.receiveRelay((socket, userKey) => {
 				for (const k of usersHere) {
 					setState(playerReadyStatusAtoms, k, `notReady`)
 				}
+				resetState(turnNumberAtom)
+				resetState(turnInProgressAtom)
+				resetState(playerTurnOrderAtom)
+				for (const tile of getState(gameTilesAtom)) {
+					resetState(tileCubeCountAtoms, tile)
+					resetState(tileOwnerAtoms, tile)
+					resetState(gameTilesStackHeightAtoms, tile)
+				}
+				resetState(gameTilesAtom)
 			}),
 		)
 	}

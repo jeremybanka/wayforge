@@ -23,6 +23,7 @@ import {
 	gameTilesAtom,
 	gameTilesStackHeightAtoms,
 	playerTurnSelector,
+	setWarTarget,
 	tile3dPositionSelectors,
 	tileCubeCountAtoms,
 	tileOwnerAtoms,
@@ -237,64 +238,18 @@ export function GameTileActual({
 					}
 					if (isTarget && isMyTurn) {
 						if (
-							turnInProgress?.type !== `war` ||
-							turnInProgress.attacker === null
+							turnInProgress?.type === `war` &&
+							turnInProgress.attacker !== null
 						) {
-							return
-						}
-
-						let attackerDelta: number
-						let targetDelta: number
-						const targetIsMine = currentTurn === ownerKey
-						if (targetIsMine) {
-							attackerDelta = -1
-							targetDelta = 1
-						} else {
-							const attackerStackHeight = getState(
-								gameTilesStackHeightAtoms,
-								turnInProgress.attacker,
+							setWarTarget(
+								currentTurn,
+								ownerKey,
+								stackHeight,
+								turnInProgress,
+								coordinatesSerialized,
 							)
+						}
 
-							const feeAlreadyPaid = turnInProgress.targets.includes(
-								turnInProgress.attacker,
-							)
-							const entryFee = feeAlreadyPaid
-								? 0
-								: stackHeight > attackerStackHeight
-									? stackHeight - attackerStackHeight
-									: 0
-
-							attackerDelta = -1 - entryFee
-							targetDelta = -1
-						}
-						const attackerCubeCount = getState(
-							tileCubeCountAtoms,
-							turnInProgress.attacker,
-						)
-						if (attackerCubeCount + attackerDelta <= 0) {
-							return
-						}
-						setState(turnInProgressAtom, {
-							...turnInProgress,
-							targets: [...turnInProgress.targets, coordinatesSerialized],
-						})
-						setState(
-							tileCubeCountAtoms,
-							coordinatesSerialized,
-							(current) => (current + targetDelta) as TileCubeCount,
-						)
-						setState(
-							tileCubeCountAtoms,
-							turnInProgress.attacker,
-							(current) => (current + attackerDelta) as TileCubeCount,
-						)
-						const targetCubeCount = getState(
-							tileCubeCountAtoms,
-							coordinatesSerialized,
-						)
-						if (targetCubeCount === 0) {
-							setState(tileOwnerAtoms, coordinatesSerialized, currentTurn)
-						}
 						socket.emit(`chooseTarget`, coordinatesSerialized)
 					}
 				}}

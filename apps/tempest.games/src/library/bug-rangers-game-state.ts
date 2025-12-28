@@ -2,9 +2,11 @@ import {
 	atom,
 	atomFamily,
 	getInternalRelations,
+	getState,
 	mutableAtom,
 	selector,
 	selectorFamily,
+	setState,
 } from "atom.io"
 import { type UserKey, usersInRooms } from "atom.io/realtime"
 import { myRoomKeySelector } from "atom.io/realtime-client"
@@ -523,3 +525,56 @@ export const turnCanBeEndedSelector = selector<boolean>({
 		}
 	},
 })
+
+export function setWarTarget(
+	currentTurn: UserKey | null,
+	ownerKey: UserKey | null,
+	stackHeight: TileStackHeight,
+	warAction: WarAction,
+	coordinatesSerialized: TileCoordinatesSerialized,
+): void {
+	let attackerDelta: number
+	let targetDelta: number
+	const targetIsMine = currentTurn === ownerKey
+	if (targetIsMine) {
+		attackerDelta = -1
+		targetDelta = 1
+	} else {
+		const attackerStackHeight = getState(
+			gameTilesStackHeightAtoms,
+			warAction.attacker,
+		)
+
+		const feeAlreadyPaid = warAction.targets.includes(warAction.attacker)
+		const entryFee = feeAlreadyPaid
+			? 0
+			: stackHeight > attackerStackHeight
+				? stackHeight - attackerStackHeight
+				: 0
+
+		attackerDelta = -1 - entryFee
+		targetDelta = -1
+	}
+	const attackerCubeCount = getState(tileCubeCountAtoms, warAction.attacker)
+	if (attackerCubeCount + attackerDelta <= 0) {
+		return
+	}
+	setState(turnInProgressAtom, {
+		...warAction,
+		targets: [...warAction.targets, coordinatesSerialized],
+	})
+	setState(
+		tileCubeCountAtoms,
+		coordinatesSerialized,
+		(current) => (current + targetDelta) as TileCubeCount,
+	)
+	setState(
+		tileCubeCountAtoms,
+		warAction.attacker,
+		(current) => (current + attackerDelta) as TileCubeCount,
+	)
+	const targetCubeCount = getState(tileCubeCountAtoms, coordinatesSerialized)
+	if (targetCubeCount === 0) {
+		setState(tileOwnerAtoms, coordinatesSerialized, currentTurn)
+	}
+}
