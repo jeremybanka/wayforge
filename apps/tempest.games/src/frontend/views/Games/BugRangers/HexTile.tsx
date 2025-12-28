@@ -242,10 +242,7 @@ export function GameTileActual({
 						) {
 							return
 						}
-						setState(turnInProgressAtom, {
-							...turnInProgress,
-							targets: [...turnInProgress.targets, coordinatesSerialized],
-						})
+
 						let attackerDelta: number
 						let targetDelta: number
 						const targetIsMine = currentTurn === ownerKey
@@ -270,6 +267,17 @@ export function GameTileActual({
 							attackerDelta = -1 - entryFee
 							targetDelta = -1
 						}
+						const attackerCubeCount = getState(
+							tileCubeCountAtoms,
+							turnInProgress.attacker,
+						)
+						if (attackerCubeCount + attackerDelta <= 0) {
+							return
+						}
+						setState(turnInProgressAtom, {
+							...turnInProgress,
+							targets: [...turnInProgress.targets, coordinatesSerialized],
+						})
 						setState(
 							tileCubeCountAtoms,
 							coordinatesSerialized,

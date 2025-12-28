@@ -33,6 +33,7 @@ import {
 	playerTurnOrderAtom,
 	playerTurnSelector,
 	setupGroupsSelector,
+	turnCanBeEndedSelector,
 	turnInProgressAtom,
 	turnNumberAtom,
 } from "../../../../library/bug-rangers-game-state"
@@ -108,6 +109,7 @@ function PlayerTurnControls(): ReactElement {
 	const gameSocket = socket as unknown as TypedSocket<{}, PlayerActions>
 	const colorsChosen = useO(colorsChosenSelector)
 	const isMyTurn = useO(isMyTurnSelector)
+	const turnEndable = useO(turnCanBeEndedSelector)
 	return (
 		<>
 			{myColor === null ? (
@@ -126,20 +128,29 @@ function PlayerTurnControls(): ReactElement {
 					</button>
 				))
 			) : (
-				<button
-					type="button"
-					disabled={
-						turnInProgress?.type !== `arm` ||
-						turnInProgress?.targets.length === 0
-					}
-					style={{ pointerEvents: `all` }}
-					onClick={() => {
-						setState(turnInProgressAtom, null)
-						socket?.emit(`turnEnd`)
-					}}
-				>
-					end turn
-				</button>
+				<>
+					<button
+						type="button"
+						disabled={!isMyTurn}
+						onClick={() => {
+							setState(turnInProgressAtom, null)
+							gameSocket.emit(`turnRestart`)
+						}}
+					>
+						restart turn
+					</button>
+					<button
+						type="button"
+						disabled={!turnEndable || !isMyTurn}
+						style={{ pointerEvents: `all` }}
+						onClick={() => {
+							setState(turnInProgressAtom, null)
+							gameSocket.emit(`turnEnd`)
+						}}
+					>
+						end turn
+					</button>
+				</>
 			)}
 		</>
 	)
