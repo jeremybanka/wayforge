@@ -108,7 +108,7 @@ function PlayerTurnControls(): ReactElement {
 	const gameSocket = socket as unknown as TypedSocket<{}, PlayerActions>
 	const colorsChosen = useO(colorsChosenSelector)
 	const isMyTurn = useO(isMyTurnSelector)
-	const turnEndable = useO(turnCanBeEndedSelector)
+	const turnCanBeEnded = useO(turnCanBeEndedSelector)
 	return (
 		<>
 			{myColor === null ? (
@@ -132,7 +132,6 @@ function PlayerTurnControls(): ReactElement {
 						type="button"
 						disabled={!isMyTurn}
 						onClick={() => {
-							console.log(`😼😼😼😼😼😼 turnRestart`)
 							setState(turnInProgressAtom, null)
 							gameSocket.emit(`turnRestart`)
 						}}
@@ -141,7 +140,7 @@ function PlayerTurnControls(): ReactElement {
 					</button>
 					<button
 						type="button"
-						disabled={!turnEndable || !isMyTurn}
+						disabled={!turnCanBeEnded || !isMyTurn}
 						onClick={() => {
 							setState(turnInProgressAtom, null)
 							gameSocket.emit(`turnEnd`)
