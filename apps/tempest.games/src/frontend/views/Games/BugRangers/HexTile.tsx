@@ -282,7 +282,7 @@ export function GameTileActual({
 						)
 						const targetCubeCount = getState(
 							tileCubeCountAtoms,
-							turnInProgress.attacker,
+							coordinatesSerialized,
 						)
 						if (targetCubeCount === 0) {
 							setState(tileOwnerAtoms, coordinatesSerialized, currentTurn)

@@ -349,6 +349,7 @@ export const validWarTargetsSelector = selector<TileCoordinatesSerialized[]>({
 				}
 			}
 		}
+		myTilesChecked.delete(attacker)
 		validWarTargets.push(...myTilesChecked)
 		return validWarTargets
 	},
