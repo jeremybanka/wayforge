@@ -10,17 +10,8 @@ export function usePullMutable<T extends Transceiver<any, any, any>>(
 	token: AtomIO.MutableAtomToken<T>,
 ): T {
 	const store = React.useContext(StoreContext)
-	useRealtimeService(`pull:${token.key}`, (socket) => {
-		const unsub = RTC.pullMutableAtom(store, socket, token)
-		return () => {
-			if (token.key === `gameTiles`) {
-				console.log(
-					`❗❗❗`,
-					`😼😼😼 removing gameTiles from direct subscription`,
-				)
-			}
-			unsub()
-		}
-	})
+	useRealtimeService(`pull:${token.key}`, (socket) =>
+		RTC.pullMutableAtom(store, socket, token),
+	)
 	return useO(token)
 }
