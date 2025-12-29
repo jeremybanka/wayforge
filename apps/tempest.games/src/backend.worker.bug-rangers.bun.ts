@@ -370,7 +370,10 @@ parent.receiveRelay((socket, userKey) => {
 				case `war`: {
 					const { attacker, targets } = turnInProgress
 					if (attacker === null) return
-					if (targets.length === 0) return
+					if (targets.length === 0) {
+						setState(turnInProgressAtom, null)
+						return
+					}
 					const enemiesVisited = new Set<TileCoordinatesSerialized>()
 					for (const target of targets) {
 						const ownerOfTarget = getState(tileOwnerAtoms, target)
