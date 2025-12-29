@@ -211,6 +211,9 @@ parent.receiveRelay((socket, userKey) => {
 			const playerWhoseTurnItIs = getState(playerTurnSelector)
 			if (playerWhoseTurnItIs !== userKey) return
 
+			const remainingTiles = getState(playerRemainingTilesAtoms, userKey)
+			if (remainingTiles <= 0) return
+
 			const turnInProgress = getState(turnInProgressAtom)
 			switch (turnInProgress?.type) {
 				case `arm`:
@@ -259,6 +262,9 @@ parent.receiveRelay((socket, userKey) => {
 		employSocket(gameSocket, `placeCube`, (tileCoordinatesSerialized) => {
 			const playerWhoseTurnItIs = getState(playerTurnSelector)
 			if (playerWhoseTurnItIs !== userKey) return
+
+			const remainingCubes = getState(playerRemainingCubesAtoms, userKey)
+			if (remainingCubes <= 0) return
 
 			const turnInProgress = getState(turnInProgressAtom)
 			switch (turnInProgress?.type) {
