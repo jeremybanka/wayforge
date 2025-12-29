@@ -389,11 +389,11 @@ export type TileStatus =
 	| `mayBeInvaded`
 	| `mayBeMoved`
 	| `mayInvade`
-export const hexActionSelector = selectorFamily<
+export const tileStatusSelectors = selectorFamily<
 	TileStatus | null,
 	TileCoordinatesSerialized
 >({
-	key: `hexAction`,
+	key: `tileStatus`,
 	get:
 		(coords) =>
 		({ get }) => {
