@@ -261,24 +261,3 @@ export function GameTileActual({
 		</>
 	)
 }
-export function GameTile({
-	coordinatesSerialized,
-	isDeclarator = false,
-	isTarget = false,
-	virtual = false,
-}: {
-	coordinatesSerialized: TileCoordinatesSerialized
-	isDeclarator?: boolean
-	isTarget?: boolean
-	virtual?: boolean
-}): ReactNode {
-	return virtual ? (
-		<GameTilePreview coordinatesSerialized={coordinatesSerialized} />
-	) : (
-		<GameTileActual
-			coordinatesSerialized={coordinatesSerialized}
-			isDeclarator={isDeclarator}
-			isTarget={isTarget}
-		/>
-	)
-}
