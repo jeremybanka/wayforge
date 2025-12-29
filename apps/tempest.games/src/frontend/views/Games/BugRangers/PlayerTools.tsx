@@ -81,8 +81,9 @@ function PlayableHex({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 		setState(dragStateAtom, null)
 		const turnInProgress = getState(turnInProgressAtom)
 		switch (turnInProgress?.type) {
-			case `war`:
 			case `arm`:
+			case `war`:
+			case `move`:
 				break
 			case null:
 			case undefined:
@@ -199,6 +200,7 @@ function PlayableCube({ myUserKey }: PlayableCubeProps): ReactNode {
 		const turnInProgress = getState(turnInProgressAtom)
 
 		switch (turnInProgress?.type) {
+			case `move`:
 			case `war`:
 				break
 			case null:

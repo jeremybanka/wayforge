@@ -251,6 +251,14 @@ export function GameTileActual({
 							socket.emit(`chooseTarget`, coordinatesSerialized)
 						}
 					}
+					if (isMyTurn && status === `mayBeMoved`) {
+						setState(turnInProgressAtom, {
+							type: `move`,
+							origin: coordinatesSerialized,
+							target: null,
+						})
+						socket.emit(`startMove`, coordinatesSerialized)
+					}
 				}}
 				virtual={false}
 			/>
