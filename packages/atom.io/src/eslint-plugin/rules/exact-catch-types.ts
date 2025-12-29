@@ -192,7 +192,7 @@ export const exactCatchTypes: ESLintUtils.RuleModule<
 
 				// Iterate over each constructor reference in the 'catch' array
 				for (const element of catchArray.elements) {
-					if (!element || element.type !== AST_NODE_TYPES.Identifier) {
+					if (element?.type !== AST_NODE_TYPES.Identifier) {
 						// Only check simple identifier references (e.g., [ClientError])
 						continue
 					}
