@@ -7,6 +7,7 @@ import {
 	usePullAtom,
 	usePullAtomFamilyMember,
 	usePullSelector,
+	usePullSelectorFamilyMember,
 } from "atom.io/realtime-react"
 import type { ReactNode, RefObject } from "react"
 import { useMemo, useState } from "react"
@@ -23,6 +24,7 @@ import {
 	tile3dPositionSelectors,
 	tileCubeCountAtoms,
 	tileOwnerAtoms,
+	tileStatusSelectors,
 	turnInProgressAtom,
 } from "../../../../library/bug-rangers-game-state"
 import {
@@ -163,12 +165,8 @@ export function GameTilePreview({
 }
 export function GameTileActual({
 	coordinatesSerialized,
-	isDeclarator,
-	isTarget,
 }: {
 	coordinatesSerialized: TileCoordinatesSerialized
-	isDeclarator: boolean
-	isTarget: boolean
 }): ReactNode {
 	const socket = usePlayerActions()
 	const coordinates = deserializeTileCoordinates(coordinatesSerialized)
@@ -189,16 +187,21 @@ export function GameTileActual({
 	const [x, _, z] = tile3dPosition
 
 	const turnInProgress = usePullAtom(turnInProgressAtom)
-	const isAttacker =
-		turnInProgress?.type === `war` &&
-		turnInProgress.attacker === coordinatesSerialized
-	const color = isTarget
-		? `#664`
-		: isAttacker
-			? `#ee1`
-			: isDeclarator
-				? `#cc3`
-				: `#aa5`
+
+	const status = usePullSelectorFamilyMember(
+		tileStatusSelectors,
+		coordinatesSerialized,
+	)
+	const color =
+		status === `mayBeInvaded`
+			? `#664`
+			: status === `isInvader`
+				? `#ee1`
+				: status === `mayInvade`
+					? `#cc3`
+					: status === `mayBeMoved`
+						? `#cc3`
+						: `#aa5`
 
 	if (boardA + boardB + boardC !== 0) {
 		console.error(`GameTile: bad coordinates did not add to zero`, coordinates)
@@ -224,7 +227,7 @@ export function GameTileActual({
 				color={color}
 				onClick={(position3d) => {
 					setState(cameraTargetAtom, position3d.toArray())
-					if (isDeclarator && isMyTurn) {
+					if (isMyTurn && status === `mayInvade`) {
 						setState(turnInProgressAtom, {
 							type: `war`,
 							attacker: coordinatesSerialized,
@@ -233,7 +236,7 @@ export function GameTileActual({
 						})
 						socket.emit(`chooseAttacker`, coordinatesSerialized)
 					}
-					if (isTarget && isMyTurn) {
+					if (isMyTurn && status === `mayBeInvaded`) {
 						if (
 							turnInProgress?.type === `war` &&
 							turnInProgress.attacker !== null
@@ -245,9 +248,8 @@ export function GameTileActual({
 								turnInProgress,
 								coordinatesSerialized,
 							)
+							socket.emit(`chooseTarget`, coordinatesSerialized)
 						}
-
-						socket.emit(`chooseTarget`, coordinatesSerialized)
 					}
 				}}
 				virtual={false}

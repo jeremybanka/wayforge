@@ -3,6 +3,7 @@ import { getState, setState } from "atom.io"
 import { useAtomicRef, useI, useO } from "atom.io/react"
 import type { UserKey } from "atom.io/realtime"
 import { myUserKeyAtom } from "atom.io/realtime-client"
+import { usePullAtomFamilyMember } from "atom.io/realtime-react"
 import type { ReactNode } from "react"
 import { useRef } from "react"
 import * as THREE from "three"
@@ -36,10 +37,18 @@ import { HexTile } from "./HexTile"
 
 export function PlayerTools(): ReactNode {
 	const myUserKey = useO(myUserKeyAtom)
+	const myRemainingTiles = usePullAtomFamilyMember(
+		playerRemainingTilesAtoms,
+		myUserKey ?? `user::$_NONE_$`,
+	)
+	const myRemainingCubes = usePullAtomFamilyMember(
+		playerRemainingCubesAtoms,
+		myUserKey ?? `user::$_NONE_$`,
+	)
 	return myUserKey ? (
 		<>
-			<PlayableHex myUserKey={myUserKey} />
-			<PlayableCube myUserKey={myUserKey} />
+			{myRemainingTiles > 0 ? <PlayableHex myUserKey={myUserKey} /> : null}
+			{myRemainingCubes > 0 ? <PlayableCube myUserKey={myUserKey} /> : null}
 		</>
 	) : null
 }

@@ -16,9 +16,9 @@ import type * as STD from "three-stdlib"
 
 import {
 	playerColorAtoms,
+	playerRemainingTilesAtoms,
 	turnInProgressAtom,
 	validWarDeclaratorsSelector,
-	validWarTargetsSelector,
 } from "../../../../library/bug-rangers-game-state"
 import {
 	cameraTargetAtom,
@@ -72,18 +72,19 @@ export function BugRangersInterior3D({
 	const isMyTurn = usePullSelector(isMyTurnSelector)
 	const myColor = usePullAtomFamilyMember(playerColorAtoms, myUserKey)
 	const validWarDeclarators = usePullSelector(validWarDeclaratorsSelector)
-	const validWarTargets = usePullSelector(validWarTargetsSelector)
+	const myRemainingTiles = usePullAtomFamilyMember(
+		playerRemainingTilesAtoms,
+		myUserKey,
+	)
 
 	return (
 		<>
-			<GameTiles
-				validWarDeclarators={validWarDeclarators}
-				validWarTargets={validWarTargets}
-			/>
+			<GameTiles />
 
 			{myColor &&
 			turnInProgress === null &&
 			isMyTurn &&
+			myRemainingTiles > 0 &&
 			validWarDeclarators.length === 0 ? (
 				<PlayableZones />
 			) : null}

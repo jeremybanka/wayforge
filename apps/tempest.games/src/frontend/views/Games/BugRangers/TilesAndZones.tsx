@@ -13,19 +13,11 @@ export type GameTilesProps = {
 	validWarDeclarators: readonly TileCoordinatesSerialized[]
 	validWarTargets: readonly TileCoordinatesSerialized[]
 }
-export function GameTiles({
-	validWarDeclarators,
-	validWarTargets,
-}: GameTilesProps): ReactNode {
+export function GameTiles(): ReactNode {
 	usePullMutable(gameTilesAtom)
 	const tiles = useJSON(gameTilesAtom)
 	return tiles.map((coords) => (
-		<GameTileActual
-			key={coords}
-			coordinatesSerialized={coords}
-			isDeclarator={validWarDeclarators.includes(coords)}
-			isTarget={validWarTargets.includes(coords)}
-		/>
+		<GameTileActual key={coords} coordinatesSerialized={coords} />
 	))
 }
 
