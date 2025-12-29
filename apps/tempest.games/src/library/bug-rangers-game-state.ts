@@ -287,6 +287,7 @@ export type WarAction = {
 	type: `war`
 	attacker: TileCoordinatesSerialized
 	targets: TileCoordinatesSerialized[]
+	originalOwners: Record<TileCoordinatesSerialized, UserKey>
 }
 export type TurnAction = ArmAction | BuildAction | WarAction
 export type TurnActionInProgress = ArmActionInProgress | BuildAction | WarAction
@@ -531,7 +532,7 @@ export function setWarTarget(
 	ownerKey: UserKey | null,
 	stackHeight: TileStackHeight,
 	warAction: WarAction,
-	coordinatesSerialized: TileCoordinatesSerialized,
+	target: TileCoordinatesSerialized,
 ): void {
 	let attackerDelta: number
 	let targetDelta: number
@@ -545,7 +546,7 @@ export function setWarTarget(
 			warAction.attacker,
 		)
 
-		const feeAlreadyPaid = warAction.targets.includes(warAction.attacker)
+		const feeAlreadyPaid = warAction.targets.includes(target)
 		const entryFee = feeAlreadyPaid
 			? 0
 			: stackHeight > attackerStackHeight
@@ -561,11 +562,11 @@ export function setWarTarget(
 	}
 	setState(turnInProgressAtom, {
 		...warAction,
-		targets: [...warAction.targets, coordinatesSerialized],
+		targets: [...warAction.targets, target],
 	})
 	setState(
 		tileCubeCountAtoms,
-		coordinatesSerialized,
+		target,
 		(current) => (current + targetDelta) as TileCubeCount,
 	)
 	setState(
@@ -573,8 +574,21 @@ export function setWarTarget(
 		warAction.attacker,
 		(current) => (current + attackerDelta) as TileCubeCount,
 	)
-	const targetCubeCount = getState(tileCubeCountAtoms, coordinatesSerialized)
+	const targetCubeCount = getState(tileCubeCountAtoms, target)
 	if (targetCubeCount === 0) {
-		setState(tileOwnerAtoms, coordinatesSerialized, currentTurn)
+		const originalOwner = getState(tileOwnerAtoms, target)
+		if (originalOwner !== null) {
+			warAction.originalOwners[target] = originalOwner
+		}
+		setState(tileOwnerAtoms, target, currentTurn)
 	}
 }
+
+export const playerRemainingTilesAtoms = atomFamily<number, UserKey>({
+	key: `playerRemainingTiles`,
+	default: 12,
+})
+export const playerRemainingCubesAtoms = atomFamily<number, UserKey>({
+	key: `playerRemainingCubes`,
+	default: 20,
+})

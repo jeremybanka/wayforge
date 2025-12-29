@@ -1,15 +1,38 @@
 main.class {
   position: fixed;
+  z-index: 1000;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+  margin: auto;
+  width: calc(100% - 20px);
+  max-width: 500px;
   pointer-events: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-around;
+  > article[data-css-counter] {
+    position: absolute;
+    bottom: 160px;
+    border: 1px solid var(--fg-soft-1);
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &[data-css-counter="tiles"] {
+      left: 20px;
+    }
+    &[data-css-counter="cubes"] {
+      right: 20px;
+    }
+  }
+
   > article[data-css="turn-controls"] {
+    position: absolute;
+    bottom: 60px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -26,9 +49,11 @@ main.class {
     }
   }
   > article[data-css="room-module"] {
+    position: absolute;
+    top: 60px;
     border: var(--fg-soft-1) solid 1px;
     padding: 5px;
-    width: calc(100% - 20px);
+    width: 100%;
     max-width: 500px;
     display: flex;
     flex-direction: column;

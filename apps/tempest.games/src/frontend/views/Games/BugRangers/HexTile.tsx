@@ -229,6 +229,7 @@ export function GameTileActual({
 							type: `war`,
 							attacker: coordinatesSerialized,
 							targets: [],
+							originalOwners: {},
 						})
 						socket.emit(`chooseAttacker`, coordinatesSerialized)
 					}
