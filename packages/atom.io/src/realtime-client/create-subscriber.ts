@@ -45,7 +45,7 @@ export function createSubscriber<K extends string>(
 
 		if (sub.refcount === 0) {
 			const timeout = new Promise<void>((resolve) => {
-				setTimeout(resolve, 1000)
+				setTimeout(resolve, 50)
 			})
 			sub.timer.use(timeout)
 		}
