@@ -163,23 +163,29 @@ export const tileIsStructuralSelectors = selectorFamily<
 >({
 	key: `tileIsStructural`,
 	get:
-		(coordinatesSerialized) =>
+		(coords) =>
 		({ get }) => {
 			const allTiles = get(gameTilesAtom)
 			const allTilesWithoutThisOne = new Set(allTiles)
-			allTilesWithoutThisOne.delete(coordinatesSerialized)
+			allTilesWithoutThisOne.delete(coords)
 			const seen = new Set<TileCoordinatesSerialized>()
-			const queue: TileCoordinatesSerialized[] = [`0_0_0`]
+			const queue: TileCoordinatesSerialized[] = []
+			for (const tile of allTilesWithoutThisOne) {
+				queue.push(tile)
+				break
+			}
 			while (queue.length > 0) {
 				const tile = queue.pop()!
 				seen.add(tile)
-				const adjacentTiles = get(adjacentTilesSelector, tile)
-				for (const adjacentTile of adjacentTiles) {
-					if (seen.has(adjacentTile)) continue
-					queue.push(adjacentTile)
+				const adjacentZones = get(adjacentZonesSelector, tile)
+				for (const adjacentZone of adjacentZones) {
+					if (allTilesWithoutThisOne.has(adjacentZone)) {
+						if (seen.has(adjacentZone)) continue
+						queue.push(adjacentZone)
+					}
 				}
 			}
-			return seen.size === allTilesWithoutThisOne.size
+			return seen.size !== allTilesWithoutThisOne.size
 		},
 })
 
@@ -410,13 +416,23 @@ export const tileStatusSelectors = selectorFamily<
 			if (validWarTargets.includes(coords)) {
 				return `mayBeInvaded`
 			}
+
 			if (turnInProgress !== null) return null
+
+			const validDeclarators = get(validWarDeclaratorsSelector)
+			if (validDeclarators.length > 0) return null
 
 			const playerTurn = get(playerTurnSelector)
 			if (playerTurn === null) return null
 
 			const playerTilesRemaining = get(playerRemainingTilesAtoms, playerTurn)
 			if (playerTilesRemaining > 0) return null
+
+			const ownerOfTile = get(tileOwnerAtoms, coords)
+			if (ownerOfTile !== playerTurn) return null
+
+			const tileHeight = get(gameTilesStackHeightAtoms, coords)
+			if (tileHeight !== 1) return null
 
 			const adjacentTiles = get(adjacentTilesSelector, coords)
 			if (adjacentTiles.length >= 5) return null
