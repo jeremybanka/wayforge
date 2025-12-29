@@ -74,8 +74,6 @@ export function CubeTokenLayer({
 					const x = Math.cos(angle) * radius
 					const z = Math.sin(angle) * radius
 
-					console.log(`angle`, angle)
-
 					const rotation = new THREE.Euler(0, (Math.PI * 3) / 2 - angle, 0)
 
 					// const color = i === 0 ? `#f00` : i === 1 ? `#0f0` : `#00f`
