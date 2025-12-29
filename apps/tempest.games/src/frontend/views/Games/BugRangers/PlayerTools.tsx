@@ -14,7 +14,7 @@ import type {
 import {
 	closestOwnedTileSelector,
 	closestPlayableZoneSelector,
-	dragpointAtom,
+	dragPointAtom,
 	dragStateAtom,
 	gameTilesAtom,
 	gameTilesStackHeightAtoms,
@@ -112,7 +112,7 @@ function PlayableHex({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 				}
 				break
 		}
-		setState(dragpointAtom, null)
+		setState(dragPointAtom, null)
 	}
 
 	useFrame(() => {
@@ -122,7 +122,7 @@ function PlayableHex({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 			case `tile`:
 				raycaster.setFromCamera(pointer, camera)
 				if (raycaster.ray.intersectPlane(plane, hitPoint)) {
-					setState(dragpointAtom, hitPoint)
+					setState(dragPointAtom, hitPoint)
 					ref.current.position.copy(hitPoint)
 				}
 				break
@@ -231,7 +231,7 @@ function PlayableCube({ myUserKey }: PlayableCubeProps): ReactNode {
 			case `cube`:
 				raycaster.setFromCamera(pointer, camera)
 				if (raycaster.ray.intersectPlane(plane, hitPoint)) {
-					setState(dragpointAtom, hitPoint)
+					setState(dragPointAtom, hitPoint)
 					ref.current.position.copy(hitPoint)
 				}
 				break

@@ -39,8 +39,8 @@ export const dragStateAtom = atom<DragState>({
 	default: null,
 })
 
-export const dragpointAtom = atom<THREE.Vector3 | null>({
-	key: `dragpoint`,
+export const dragPointAtom = atom<THREE.Vector3 | null>({
+	key: `dragPoint`,
 	default: null,
 })
 
@@ -170,14 +170,14 @@ export const closestPlayableZoneSelector =
 	selector<TileCoordinatesSerialized | null>({
 		key: `closestPlayableZone`,
 		get: ({ get }) => {
-			const dragpoint = get(dragpointAtom)
-			if (!dragpoint) return null
+			const dragPoint = get(dragPointAtom)
+			if (!dragPoint) return null
 
 			let closest: TileCoordinatesSerialized | null = null
 			let closestDistance = Number.POSITIVE_INFINITY
 			for (const tileCoordinates of get(playableZonesAtom)) {
 				const position = get(tile3dPositionSelectors, tileCoordinates)
-				const distance = dragpoint.distanceTo(position)
+				const distance = dragPoint.distanceTo(position)
 				if (distance < closestDistance) {
 					closestDistance = distance
 					closest = tileCoordinates
@@ -250,13 +250,13 @@ export const closestOwnedTileSelector = selectorFamily<
 		({ get }) => {
 			const ownedTiles = get(ownedTilesSelector, userKey)
 			if (ownedTiles.length === 0) return null
-			const dragpoint = get(dragpointAtom)
-			if (!dragpoint) return null
+			const dragPoint = get(dragPointAtom)
+			if (!dragPoint) return null
 			let closestDistance = Number.POSITIVE_INFINITY
 			let closest: TileCoordinatesSerialized | null = null
 			for (const tileCoordinates of ownedTiles) {
 				const position = get(tile3dPositionSelectors, tileCoordinates)
-				const distance = dragpoint.distanceTo(position)
+				const distance = dragPoint.distanceTo(position)
 				if (distance < closestDistance) {
 					closestDistance = distance
 					closest = tileCoordinates
