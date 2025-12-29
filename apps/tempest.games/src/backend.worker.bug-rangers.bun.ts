@@ -307,6 +307,7 @@ parent.receiveRelay((socket, userKey) => {
 						(current) => (current + 1) as TileCubeCount,
 					)
 					setState(tileOwnerAtoms, turnInProgress.target, userKey)
+					setState(playerRemainingCubesAtoms, userKey, (n) => n - 1)
 					setState(turnInProgressAtom, null)
 					setState(turnNumberAtom, (current) => current + 1)
 					break
