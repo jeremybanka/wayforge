@@ -110,6 +110,8 @@ const bugRangersGuard: SocketGuard<PlayerActions> = {
 	placeCube: type([tileCoordinatesType]),
 	chooseAttacker: type([tileCoordinatesType]),
 	chooseTarget: type([tileCoordinatesType]),
+	startMove: type([tileCoordinatesType]),
+	finishMove: type([tileCoordinatesType]),
 	turnRestart: type([]),
 	turnEnd: type([]),
 }
@@ -217,6 +219,7 @@ parent.receiveRelay((socket, userKey) => {
 			const turnInProgress = getState(turnInProgressAtom)
 			switch (turnInProgress?.type) {
 				case `arm`:
+				case `move`:
 				case `war`:
 					break
 				case null:
@@ -268,6 +271,7 @@ parent.receiveRelay((socket, userKey) => {
 
 			const turnInProgress = getState(turnInProgressAtom)
 			switch (turnInProgress?.type) {
+				case `move`:
 				case `war`:
 					break
 				case null:
@@ -334,6 +338,7 @@ parent.receiveRelay((socket, userKey) => {
 			switch (turnInProgress.type) {
 				case `arm`:
 				case `build`:
+				case `move`:
 					break
 				case `war`:
 					{
@@ -352,6 +357,36 @@ parent.receiveRelay((socket, userKey) => {
 					}
 					break
 			}
+		}),
+		employSocket(gameSocket, `startMove`, (origin) => {
+			const playerWhoseTurnItIs = getState(playerTurnSelector)
+			if (playerWhoseTurnItIs !== userKey) return
+			const turnInProgress = getState(turnInProgressAtom)
+			if (turnInProgress !== null) return
+			setState(turnInProgressAtom, {
+				type: `move`,
+				origin,
+				target: null,
+			})
+		}),
+		employSocket(gameSocket, `finishMove`, (target) => {
+			const playerWhoseTurnItIs = getState(playerTurnSelector)
+			if (playerWhoseTurnItIs !== userKey) return
+			const turnInProgress = getState(turnInProgressAtom)
+			if (turnInProgress?.type !== `move`) return
+			const { origin } = turnInProgress
+			setState(turnInProgressAtom, {
+				...turnInProgress,
+				target,
+			})
+			const originCubeCount = getState(tileCubeCountAtoms, origin)
+			setState(tileCubeCountAtoms, target, originCubeCount)
+			setState(tileCubeCountAtoms, target, 0)
+			setState(gameTilesAtom, (permanent) => {
+				permanent.delete(origin)
+				permanent.add(target)
+				return permanent
+			})
 		}),
 		employSocket(gameSocket, `turnRestart`, () => {
 			const playerWhoseTurnItIs = getState(playerTurnSelector)
@@ -385,6 +420,20 @@ parent.receiveRelay((socket, userKey) => {
 						setState(playerRemainingTilesAtoms, userKey, (n) => n + count)
 						setState(gameTilesAtom, (permanent) => {
 							permanent.delete(target)
+							return permanent
+						})
+					}
+					break
+				case `move`:
+					{
+						const { origin, target } = turnInProgress
+						if (target === null) break
+						const targetCubeCount = getState(tileCubeCountAtoms, target)
+						setState(tileCubeCountAtoms, origin, targetCubeCount)
+						setState(tileCubeCountAtoms, target, 0)
+						setState(gameTilesAtom, (permanent) => {
+							permanent.delete(target)
+							permanent.add(origin)
 							return permanent
 						})
 					}

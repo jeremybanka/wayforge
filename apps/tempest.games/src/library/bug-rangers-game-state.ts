@@ -28,6 +28,8 @@ export type PlayerActions = {
 	placeCube: (tileCoordinates: TileCoordinatesSerialized) => void
 	chooseAttacker: (tileCoordinates: TileCoordinatesSerialized) => void
 	chooseTarget: (tileCoordinates: TileCoordinatesSerialized) => void
+	startMove: (tileCoordinates: TileCoordinatesSerialized) => void
+	finishMove: (tileCoordinates: TileCoordinatesSerialized) => void
 	turnRestart: () => void
 	turnEnd: () => void
 }
@@ -298,7 +300,7 @@ export const closestOwnedTileSelector = selectorFamily<
 		},
 })
 
-export type TurnActionType = `arm` | `build` | `war`
+// export type TurnActionType = `arm` | `build` | `war`
 export type BuildAction = {
 	type: `build`
 	target: TileCoordinatesSerialized
@@ -321,8 +323,22 @@ export type WarAction = {
 	targets: TileCoordinatesSerialized[]
 	originalOwners: Record<TileCoordinatesSerialized, UserKey>
 }
-export type TurnAction = ArmAction | BuildAction | WarAction
-export type TurnActionInProgress = ArmActionInProgress | BuildAction | WarAction
+export type MoveActionInProgress = {
+	type: `move`
+	origin: TileCoordinatesSerialized
+	target: TileCoordinatesSerialized | null
+}
+export type MoveAction = {
+	type: `move`
+	origin: TileCoordinatesSerialized
+	target: TileCoordinatesSerialized
+}
+export type TurnAction = ArmAction | BuildAction | MoveAction | WarAction
+export type TurnActionInProgress =
+	| ArmActionInProgress
+	| BuildAction
+	| MoveActionInProgress
+	| WarAction
 export const turnInProgressAtom = atom<TurnActionInProgress | null>({
 	key: `turnInProgress`,
 	default: null,
@@ -600,6 +616,8 @@ export const turnCanBeEndedSelector = selector<boolean>({
 				return false
 			case `arm`:
 				return turnInProgress.targets.length > 0
+			case `move`:
+				return turnInProgress.target !== null
 			case `war`: {
 				const gameTiles = get(gameTilesAtom)
 				for (const tile of gameTiles) {
