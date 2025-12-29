@@ -13,6 +13,9 @@ export function pullMutableAtom<T extends Transceiver<any, any, any>>(
 	const jsonToken = getJsonToken(store, token)
 	const updateToken = getUpdateToken(token)
 	return createSubscriber(socket, token.key, () => {
+		if (token.key === `gameTiles`) {
+			console.log(`😽😽😽😽😽 pullMutableAtom ✨ subscriber hook ✨`, token.key)
+		}
 		const stopWatchingForInit = employSocket(
 			socket,
 			`init:${token.key}`,
@@ -29,6 +32,12 @@ export function pullMutableAtom<T extends Transceiver<any, any, any>>(
 		)
 		socket.emit(`sub:${token.key}`)
 		return () => {
+			if (token.key === `gameTiles`) {
+				console.log(
+					`😽😽😽😽😽 pullMutableAtom ✨ unsubscriber hook ✨`,
+					token.key,
+				)
+			}
 			socket.emit(`unsub:${token.key}`)
 			stopWatchingForInit()
 			stopWatchingForUpdate()
