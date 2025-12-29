@@ -81,6 +81,7 @@ export function pullSelectorRoots(
 
 	return () => {
 		for (const [, unsub] of atomSubscriptions) unsub()
+		atomSubscriptions.clear()
 		unsubFromSelector()
 	}
 }
