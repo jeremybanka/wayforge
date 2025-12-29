@@ -157,6 +157,32 @@ export const playableZonesAtom = selector<TileCoordinatesSerialized[]>({
 	},
 })
 
+export const tileIsStructuralSelectors = selectorFamily<
+	boolean,
+	TileCoordinatesSerialized
+>({
+	key: `tileIsStructural`,
+	get:
+		(coordinatesSerialized) =>
+		({ get }) => {
+			const allTiles = get(gameTilesAtom)
+			const allTilesWithoutThisOne = new Set(allTiles)
+			allTilesWithoutThisOne.delete(coordinatesSerialized)
+			const seen = new Set<TileCoordinatesSerialized>()
+			const queue: TileCoordinatesSerialized[] = [`0_0_0`]
+			while (queue.length > 0) {
+				const tile = queue.pop()!
+				seen.add(tile)
+				const adjacentTiles = get(adjacentTilesSelector, tile)
+				for (const adjacentTile of adjacentTiles) {
+					if (seen.has(adjacentTile)) continue
+					queue.push(adjacentTile)
+				}
+			}
+			return seen.size === allTilesWithoutThisOne.size
+		},
+})
+
 export type TileStackHeight = 1 | 2 | 3
 export const gameTilesStackHeightAtoms = atomFamily<
 	TileStackHeight,
@@ -356,6 +382,49 @@ export const validWarTargetsSelector = selector<TileCoordinatesSerialized[]>({
 		validWarTargets.push(...myTilesChecked)
 		return validWarTargets
 	},
+})
+
+export type TileStatus =
+	| `isInvader`
+	| `mayBeInvaded`
+	| `mayBeMoved`
+	| `mayInvade`
+export const hexActionSelector = selectorFamily<
+	TileStatus | null,
+	TileCoordinatesSerialized
+>({
+	key: `hexAction`,
+	get:
+		(coords) =>
+		({ get }) => {
+			const turnInProgress = get(turnInProgressAtom)
+			if (turnInProgress?.type === `war` && turnInProgress.attacker === coords) {
+				return `isInvader`
+			}
+			const validWarDeclarators = get(validWarDeclaratorsSelector)
+			if (validWarDeclarators.includes(coords)) {
+				return `mayInvade`
+			}
+
+			const validWarTargets = get(validWarTargetsSelector)
+			if (validWarTargets.includes(coords)) {
+				return `mayBeInvaded`
+			}
+			if (turnInProgress !== null) return null
+
+			const playerTurn = get(playerTurnSelector)
+			if (playerTurn === null) return null
+
+			const playerTilesRemaining = get(playerRemainingTilesAtoms, playerTurn)
+			if (playerTilesRemaining > 0) return null
+
+			const adjacentTiles = get(adjacentTilesSelector, coords)
+			if (adjacentTiles.length >= 5) return null
+			const tileIsStructural = get(tileIsStructuralSelectors, coords)
+			if (tileIsStructural) return null
+
+			return `mayBeMoved`
+		},
 })
 
 export const maximumStackHeightSelectors = selectorFamily<
