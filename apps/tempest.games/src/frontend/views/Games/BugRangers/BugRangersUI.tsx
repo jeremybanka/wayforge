@@ -30,6 +30,8 @@ import {
 	PLAYER_COLOR_DISPLAY_NAMES,
 	PLAYER_COLORS,
 	playerColorAtoms,
+	playerRemainingCubesAtoms,
+	playerRemainingTilesAtoms,
 	playerTurnOrderAtom,
 	playerTurnSelector,
 	setupGroupsSelector,
@@ -43,8 +45,12 @@ import scss from "./BugRangersUI.module.scss"
 
 export function BugRangersUI(): ReactNode {
 	const { myRoomKey } = useRealtimeRooms()
-
-	return myRoomKey ? <Interior /> : <Exterior />
+	const myUserKey = usePullAtom(myUserKeyAtom)
+	return myRoomKey && myUserKey ? (
+		<Interior myUserKey={myUserKey} />
+	) : (
+		<Exterior />
+	)
 }
 
 export function Exterior(): ReactNode {
@@ -57,11 +63,19 @@ export function Exterior(): ReactNode {
 	)
 }
 
-export function Interior(): ReactNode {
+export function Interior({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 	const { myRoomKey, myMutualsAtom } = useRealtimeRooms()
 	const turnNumber = usePullAtom(turnNumberAtom)
 	const playerTurn = usePullSelector(playerTurnSelector)
 	const gameState = usePullAtom(gameStateAtom)
+	const myRemainingTiles = usePullAtomFamilyMember(
+		playerRemainingTilesAtoms,
+		myUserKey,
+	)
+	const myRemainingCubes = usePullAtomFamilyMember(
+		playerRemainingCubesAtoms,
+		myUserKey,
+	)
 	return (
 		<main className={scss[`class`]}>
 			<article data-css="room-module">
@@ -92,6 +106,8 @@ export function Interior(): ReactNode {
 			<article data-css="turn-controls">
 				<PlayerTurnControls />
 			</article>
+			<article data-css-counter="tiles">{myRemainingTiles}</article>
+			<article data-css-counter="cubes">{myRemainingCubes}</article>
 		</main>
 	)
 }

@@ -44,6 +44,8 @@ import {
 	PLAYER_COLORS,
 	playerColorAtoms,
 	playerReadyStatusAtoms,
+	playerRemainingCubesAtoms,
+	playerRemainingTilesAtoms,
 	playerTurnOrderAtom,
 	playerTurnSelector,
 	setupGroupsSelector,
@@ -154,6 +156,8 @@ parent.receiveRelay((socket, userKey) => {
 		exposeMutable(gameTilesAtom),
 		exposeFamily(playerReadyStatusAtoms, usersHereAtom),
 		exposeFamily(playerColorAtoms, usersHereAtom),
+		exposeFamily(playerRemainingCubesAtoms, usersHereAtom),
+		exposeFamily(playerRemainingTilesAtoms, usersHereAtom),
 		exposeFamily(tileOwnerAtoms, gameTilesAtom),
 		exposeFamily(tileCubeCountAtoms, gameTilesAtom),
 		exposeFamily(gameTilesStackHeightAtoms, gameTilesAtom),
@@ -221,6 +225,7 @@ parent.receiveRelay((socket, userKey) => {
 							tiles.add(tileCoordinatesSerialized)
 							return tiles
 						})
+						setState(playerRemainingTilesAtoms, userKey, (n) => n - 1)
 						setState(turnInProgressAtom, {
 							type: `build`,
 							target: tileCoordinatesSerialized,
@@ -240,6 +245,7 @@ parent.receiveRelay((socket, userKey) => {
 							turnInProgress.target,
 						)
 						if (stackHeight >= maximumStackHeight) return
+						setState(playerRemainingTilesAtoms, userKey, (n) => n + 1)
 						setState(
 							gameTilesStackHeightAtoms,
 							turnInProgress.target,
@@ -265,6 +271,7 @@ parent.receiveRelay((socket, userKey) => {
 							type: `arm`,
 							targets: [tileCoordinatesSerialized],
 						})
+						setState(playerRemainingCubesAtoms, userKey, (n) => n - 1)
 						setState(
 							tileCubeCountAtoms,
 							tileCoordinatesSerialized,
@@ -275,15 +282,16 @@ parent.receiveRelay((socket, userKey) => {
 				case `arm`:
 					{
 						if (turnInProgress.targets.length >= 2) return
-						setState(turnInProgressAtom, {
-							type: `arm`,
-							targets: [turnInProgress.targets[0]!, tileCoordinatesSerialized],
-						})
 						setState(
 							tileCubeCountAtoms,
 							tileCoordinatesSerialized,
 							(current) => (current + 1) as TileCubeCount,
 						)
+						setState(playerRemainingCubesAtoms, userKey, (n) => n - 1)
+						setState(turnInProgressAtom, {
+							type: `arm`,
+							targets: [turnInProgress.targets[0]!, tileCoordinatesSerialized],
+						})
 					}
 					break
 				case `build`:
@@ -307,6 +315,7 @@ parent.receiveRelay((socket, userKey) => {
 					type: `war`,
 					attacker: tileCoordinatesSerialized,
 					targets: [],
+					originalOwners: {},
 				})
 			}
 		}),
@@ -350,17 +359,23 @@ parent.receiveRelay((socket, userKey) => {
 							setState(
 								tileCubeCountAtoms,
 								target,
-								(current) => (current - 1) as TileCubeCount,
+								(n) => (n - 1) as TileCubeCount,
 							)
 						}
+						setState(
+							playerRemainingCubesAtoms,
+							userKey,
+							(n) => n + targets.length,
+						)
 					}
 					break
 				case `build`:
 					{
-						const { target } = turnInProgress
+						const { target, count } = turnInProgress
 						setState(gameTilesStackHeightAtoms, target, 0 as TileStackHeight)
 						setState(tileCubeCountAtoms, target, 0 as TileCubeCount)
 						setState(tileOwnerAtoms, target, null)
+						setState(playerRemainingTilesAtoms, userKey, (n) => n + count)
 						setState(gameTilesAtom, (permanent) => {
 							permanent.delete(target)
 							return permanent
@@ -368,7 +383,7 @@ parent.receiveRelay((socket, userKey) => {
 					}
 					break
 				case `war`: {
-					const { attacker, targets } = turnInProgress
+					const { attacker, targets, originalOwners } = turnInProgress
 					if (attacker === null) return
 					if (targets.length === 0) {
 						setState(turnInProgressAtom, null)
@@ -376,8 +391,12 @@ parent.receiveRelay((socket, userKey) => {
 					}
 					const enemiesVisited = new Set<TileCoordinatesSerialized>()
 					for (const target of targets) {
+						if (getState(tileCubeCountAtoms, target) === 0) {
+							setState(tileOwnerAtoms, target, originalOwners[target])
+						}
 						const ownerOfTarget = getState(tileOwnerAtoms, target)
 						if (ownerOfTarget === userKey) {
+							// FRIENDLY
 							setState(
 								tileCubeCountAtoms,
 								target,
@@ -388,7 +407,14 @@ parent.receiveRelay((socket, userKey) => {
 								attacker,
 								(current) => (current + 1) as TileCubeCount,
 							)
+							// FRIENDLY
 						} else {
+							// ENEMY
+							setState(
+								tileCubeCountAtoms,
+								target,
+								(n) => (n + 1) as TileCubeCount,
+							)
 							if (enemiesVisited.has(target)) {
 								setState(
 									tileCubeCountAtoms,
@@ -404,18 +430,21 @@ parent.receiveRelay((socket, userKey) => {
 								if (targetHeight > attackerHeight) {
 									const heightDiff = targetHeight - attackerHeight
 									setState(
-										gameTilesStackHeightAtoms,
+										tileCubeCountAtoms,
 										attacker,
-										(current) => (current + heightDiff + 1) as TileStackHeight,
+										(n) => (n + heightDiff + 1) as TileCubeCount,
+									)
+								} else {
+									setState(
+										tileCubeCountAtoms,
+										attacker,
+										(n) => (n + 1) as TileCubeCount,
 									)
 								}
-								setState(
-									tileCubeCountAtoms,
-									target,
-									(current) => (current + 1) as TileCubeCount,
-								)
 							}
+
 							enemiesVisited.add(target)
+							// ENEMY
 						}
 					}
 				}
@@ -443,9 +472,11 @@ parent.receiveRelay((socket, userKey) => {
 				const usersHere = getState(
 					findRelations(usersInRooms, ROOM_KEY).userKeysOfRoom,
 				)
-				for (const k of usersHere) {
-					setState(playerReadyStatusAtoms, k, `notReady`)
-					setState(playerColorAtoms, k, null)
+				for (const u of usersHere) {
+					setState(playerReadyStatusAtoms, u, `notReady`)
+					setState(playerColorAtoms, u, null)
+					setState(playerRemainingCubesAtoms, u, 20)
+					setState(playerRemainingTilesAtoms, u, 12)
 				}
 				resetState(turnNumberAtom)
 				resetState(turnInProgressAtom)
@@ -455,7 +486,7 @@ parent.receiveRelay((socket, userKey) => {
 					resetState(tileOwnerAtoms, tile)
 					resetState(gameTilesStackHeightAtoms, tile)
 				}
-				resetState(gameTilesAtom)
+				setState(gameTilesAtom, (permanent) => (permanent.clear(), permanent))
 			}),
 		)
 	}

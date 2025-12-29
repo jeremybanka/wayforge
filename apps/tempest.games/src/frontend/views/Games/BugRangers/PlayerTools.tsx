@@ -20,6 +20,8 @@ import {
 	gameTilesStackHeightAtoms,
 	maximumStackHeightSelectors,
 	playerColorAtoms,
+	playerRemainingCubesAtoms,
+	playerRemainingTilesAtoms,
 	tileCubeCountAtoms,
 	tileOwnerAtoms,
 	turnInProgressAtom,
@@ -82,6 +84,11 @@ function PlayableHex({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 							permanent.add(closestPlayableZone)
 							return permanent
 						})
+						setState(
+							playerRemainingTilesAtoms,
+							myUserKey,
+							(current) => current - 1,
+						)
 						setState(turnInProgressAtom, {
 							type: `build`,
 							target: closestPlayableZone,
@@ -108,6 +115,16 @@ function PlayableHex({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 						turnInProgress.target,
 						(stackHeight + 1) as TileStackHeight,
 					)
+					setState(
+						playerRemainingTilesAtoms,
+						myUserKey,
+						(current) => current - 1,
+					)
+					setState(turnInProgressAtom, {
+						type: `build`,
+						target: turnInProgress.target,
+						count: (turnInProgress.count + 1) as TileStackHeight,
+					})
 					socket.emit(`placeTile`, turnInProgress.target)
 				}
 				break
@@ -198,15 +215,20 @@ function PlayableCube({ myUserKey }: PlayableCubeProps): ReactNode {
 					if (turnInProgress.targets.length >= 2) return
 					const closestOwnedTile = getState(closestOwnedTileSelector, myUserKey)
 					if (closestOwnedTile) {
-						setState(turnInProgressAtom, {
-							type: `arm`,
-							targets: [turnInProgress.targets[0]!, closestOwnedTile],
-						})
 						setState(
 							tileCubeCountAtoms,
 							closestOwnedTile,
 							(current) => (current + 1) as TileCubeCount,
 						)
+						setState(
+							playerRemainingCubesAtoms,
+							myUserKey,
+							(current) => current - 1,
+						)
+						setState(turnInProgressAtom, {
+							type: `arm`,
+							targets: [turnInProgress.targets[0]!, closestOwnedTile],
+						})
 						socket.emit(`placeCube`, closestOwnedTile)
 					}
 				}
@@ -217,6 +239,7 @@ function PlayableCube({ myUserKey }: PlayableCubeProps): ReactNode {
 					turnInProgress.target,
 					(current) => (current + 1) as TileCubeCount,
 				)
+				setState(playerRemainingCubesAtoms, myUserKey, (current) => current - 1)
 				setState(tileOwnerAtoms, turnInProgress.target, myUserKey)
 				setState(turnInProgressAtom, null)
 				socket.emit(`placeCube`, turnInProgress.target)
