@@ -445,6 +445,7 @@ parent.receiveRelay((socket, userKey) => {
 				)
 				for (const k of usersHere) {
 					setState(playerReadyStatusAtoms, k, `notReady`)
+					setState(playerColorAtoms, k, null)
 				}
 				resetState(turnNumberAtom)
 				resetState(turnInProgressAtom)
