@@ -7,7 +7,7 @@ import {
 	gameTilesAtom,
 	playableZonesAtom,
 } from "../../../../library/bug-rangers-game-state"
-import { GameTile } from "./HexTile"
+import { GameTileActual, GameTilePreview } from "./HexTile"
 
 export type GameTilesProps = {
 	validWarDeclarators: readonly TileCoordinatesSerialized[]
@@ -19,23 +19,19 @@ export function GameTiles({
 }: GameTilesProps): ReactNode {
 	usePullMutable(gameTilesAtom)
 	const tiles = useJSON(gameTilesAtom)
-	return tiles.map((tileCoordinates) => (
-		<GameTile
-			key={tileCoordinates}
-			coordinatesSerialized={tileCoordinates}
-			isDeclarator={validWarDeclarators.includes(tileCoordinates)}
-			isTarget={validWarTargets.includes(tileCoordinates)}
+	return tiles.map((coords) => (
+		<GameTileActual
+			key={coords}
+			coordinatesSerialized={coords}
+			isDeclarator={validWarDeclarators.includes(coords)}
+			isTarget={validWarTargets.includes(coords)}
 		/>
 	))
 }
 
 export function PlayableZones(): ReactNode {
 	const playableZones = useO(playableZonesAtom)
-	return playableZones.map((coordinatesSerialized) => (
-		<GameTile
-			key={coordinatesSerialized}
-			coordinatesSerialized={coordinatesSerialized}
-			virtual
-		/>
+	return playableZones.map((coords) => (
+		<GameTilePreview key={coords} coordinatesSerialized={coords} />
 	))
 }
