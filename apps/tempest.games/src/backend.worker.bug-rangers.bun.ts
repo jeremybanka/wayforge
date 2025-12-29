@@ -248,7 +248,7 @@ parent.receiveRelay((socket, userKey) => {
 							turnInProgress.target,
 						)
 						if (stackHeight >= maximumStackHeight) return
-						setState(playerRemainingTilesAtoms, userKey, (n) => n + 1)
+						setState(playerRemainingTilesAtoms, userKey, (n) => n - 1)
 						setState(
 							gameTilesStackHeightAtoms,
 							turnInProgress.target,
