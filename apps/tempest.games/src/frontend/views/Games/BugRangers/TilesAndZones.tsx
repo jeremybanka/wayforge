@@ -1,5 +1,5 @@
-import { useJSON, useO } from "atom.io/react"
-import { usePullMutable } from "atom.io/realtime-react"
+import { useJSON } from "atom.io/react"
+import { usePullMutable, usePullSelector } from "atom.io/realtime-react"
 import type { ReactNode } from "react"
 
 import type { TileCoordinatesSerialized } from "../../../../library/bug-rangers-game-state"
@@ -22,7 +22,7 @@ export function GameTiles(): ReactNode {
 }
 
 export function PlayableZones(): ReactNode {
-	const playableZones = useO(playableZonesSelector)
+	const playableZones = usePullSelector(playableZonesSelector)
 	return playableZones.map((coords) => (
 		<GameTilePreview key={coords} coordinatesSerialized={coords} />
 	))

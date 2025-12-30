@@ -127,6 +127,7 @@ export function GameTilePreview({
 }: {
 	coordinatesSerialized: TileCoordinatesSerialized
 }): ReactNode {
+	const socket = usePlayerActions()
 	const coordinates = deserializeTileCoordinates(coordinatesSerialized)
 	const [boardA, boardB, boardC] = coordinates
 	const tile3dPosition = getState(tile3dPositionSelectors, coordinatesSerialized)
@@ -148,17 +149,37 @@ export function GameTilePreview({
 			</Text>
 
 			<HexTile
+				virtual={true}
 				position3d={tile3dPosition}
 				color={isClosest ? `#f00` : `#0ff`}
 				onClick={(position3d) => {
 					setState(cameraTargetAtom, position3d.toArray())
-					setState(gameTilesAtom, (permanent) => {
-						console.log({ coordinates })
-						permanent.add(coordinatesSerialized)
-						return permanent
-					})
+
+					const turnInProgress = getState(turnInProgressAtom)
+					if (turnInProgress?.type === `move`) {
+						const { origin } = turnInProgress
+						const target = coordinatesSerialized
+						setState(turnInProgressAtom, {
+							...turnInProgress,
+							target,
+						})
+						const originCubeCount = getState(tileCubeCountAtoms, origin)
+						setState(tileCubeCountAtoms, target, originCubeCount)
+						setState(tileCubeCountAtoms, origin, 0)
+						setState(gameTilesAtom, (permanent) => {
+							permanent.delete(origin)
+							permanent.add(target)
+							return permanent
+						})
+						socket.emit(`finishMove`, target)
+					} else {
+						setState(gameTilesAtom, (permanent) => {
+							permanent.add(coordinatesSerialized)
+							return permanent
+						})
+						socket.emit(`placeTile`, coordinatesSerialized)
+					}
 				}}
-				virtual={true}
 			/>
 		</>
 	)
@@ -192,16 +213,25 @@ export function GameTileActual({
 		tileStatusSelectors,
 		coordinatesSerialized,
 	)
-	const color =
-		status === `mayBeInvaded`
-			? `#664`
-			: status === `isInvader`
-				? `#ee1`
-				: status === `mayInvade`
-					? `#cc3`
-					: status === `mayBeMoved`
-						? `#cc3`
-						: `#aa5`
+
+	let color: string
+	switch (status) {
+		case null:
+			color = `#aa5`
+			break
+		case `mayBeInvaded`:
+		case `isMovingToHere`:
+			color = `#664`
+			break
+		case `isInvader`:
+		case `isMovingFromHere`:
+			color = `#ee1`
+			break
+		case `mayInvade`:
+		case `mayBeMoved`:
+			color = `#cc3`
+			break
+	}
 
 	if (boardA + boardB + boardC !== 0) {
 		console.error(`GameTile: bad coordinates did not add to zero`, coordinates)

@@ -381,7 +381,9 @@ parent.receiveRelay((socket, userKey) => {
 			})
 			const originCubeCount = getState(tileCubeCountAtoms, origin)
 			setState(tileCubeCountAtoms, target, originCubeCount)
-			setState(tileCubeCountAtoms, target, 0)
+			setState(tileCubeCountAtoms, origin, 0)
+			setState(tileOwnerAtoms, target, userKey)
+			setState(tileOwnerAtoms, origin, null)
 			setState(gameTilesAtom, (permanent) => {
 				permanent.delete(origin)
 				permanent.add(target)
@@ -431,6 +433,8 @@ parent.receiveRelay((socket, userKey) => {
 						const targetCubeCount = getState(tileCubeCountAtoms, target)
 						setState(tileCubeCountAtoms, origin, targetCubeCount)
 						setState(tileCubeCountAtoms, target, 0)
+						setState(tileOwnerAtoms, origin, userKey)
+						setState(tileOwnerAtoms, target, null)
 						setState(gameTilesAtom, (permanent) => {
 							permanent.delete(target)
 							permanent.add(origin)
