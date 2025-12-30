@@ -133,7 +133,7 @@ export const adjacentTilesSelector = selectorFamily<
 		},
 })
 
-export const playableZonesAtom = selector<TileCoordinatesSerialized[]>({
+export const playableZonesSelector = selector<TileCoordinatesSerialized[]>({
 	key: `playableZone`,
 	get: ({ get }) => {
 		const tiles = get(gameTilesAtom)

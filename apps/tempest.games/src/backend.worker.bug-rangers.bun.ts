@@ -40,7 +40,7 @@ import {
 	gameTilesAtom,
 	gameTilesStackHeightAtoms,
 	maximumStackHeightSelectors,
-	playableZonesAtom,
+	playableZonesSelector,
 	PLAYER_COLORS,
 	playerColorAtoms,
 	playerReadyStatusAtoms,
@@ -225,7 +225,7 @@ parent.receiveRelay((socket, userKey) => {
 				case null:
 				case undefined:
 					{
-						const playableZones = getState(playableZonesAtom)
+						const playableZones = getState(playableZonesSelector)
 						if (!playableZones.includes(tileCoordinatesSerialized)) return
 						setState(gameTilesAtom, (tiles) => {
 							tiles.add(tileCoordinatesSerialized)
