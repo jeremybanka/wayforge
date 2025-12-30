@@ -1,5 +1,5 @@
 import type { MutableAtomToken } from "atom.io"
-import { findRelations, setState } from "atom.io"
+import { atom, findRelations, setState } from "atom.io"
 import { useJSON, useO } from "atom.io/react"
 import { ownersOfRooms, type TypedSocket, type UserKey } from "atom.io/realtime"
 import { myUserKeyAtom } from "atom.io/realtime-client"
@@ -13,7 +13,7 @@ import {
 } from "atom.io/realtime-react"
 import type { UList } from "atom.io/transceivers/u-list"
 import { motion } from "motion/react"
-import { type ReactElement, type ReactNode, useContext } from "react"
+import { type ReactElement, useContext } from "react"
 
 import type {
 	GameState,
@@ -39,30 +39,41 @@ import * as svg from "../../../<svg>"
 import { isMyTurnSelector } from "./bug-rangers-client-state"
 import scss from "./BugRangersUI.module.scss"
 
-export function BugRangersUI(): ReactNode {
+export function BugRangersUI(): ReactElement {
 	const { myRoomKey } = useRealtimeRooms()
 	const myUserKey = usePullAtom(myUserKeyAtom)
-	return myRoomKey && myUserKey ? (
-		<Interior myUserKey={myUserKey} />
-	) : (
-		<Exterior />
-	)
-}
-
-export function Exterior(): ReactNode {
 	return (
 		<main className={scss[`class`]}>
-			<article data-css="room-module">
-				<RoomControls />
-			</article>
+			{myUserKey ? <UserInterior myUserKey={myUserKey} /> : null}
+			{myUserKey && myRoomKey ? (
+				<Interior myUserKey={myUserKey} />
+			) : (
+				<Exterior />
+			)}
 		</main>
 	)
 }
 
-export function Interior({ myUserKey }: { myUserKey: UserKey }): ReactNode {
-	const { myRoomKey, myMutualsAtom } = useRealtimeRooms()
-	const turnNumber = usePullAtom(turnNumberAtom)
-	const playerTurn = usePullSelector(playerTurnSelector)
+function Exterior(): ReactElement {
+	const { roomSocket, allRoomKeysAtom } = useRealtimeRooms()
+	const allRoomKeys = useJSON(allRoomKeysAtom)
+	const mainRoomKey = allRoomKeys[0]
+	return (
+		<article data-css="room-exterior">
+			<button
+				type="button"
+				disabled={mainRoomKey === undefined}
+				onClick={() => {
+					roomSocket.emit(`joinRoom`, allRoomKeys[0])
+				}}
+			>
+				{mainRoomKey ? `Join Game` : `Waiting for host`}
+			</button>
+		</article>
+	)
+}
+
+function Interior({ myUserKey }: { myUserKey: UserKey }): ReactElement {
 	const gameState = usePullAtom(gameStateAtom)
 	const myRemainingTiles = usePullAtomFamilyMember(
 		playerRemainingTilesAtoms,
@@ -73,44 +84,103 @@ export function Interior({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 		myUserKey,
 	)
 	return (
-		<main className={scss[`class`]}>
-			<article data-css="room-module">
-				<header>
-					<h1>{myRoomKey}</h1>
-					<span>
-						{gameState === `setup` ? (
-							`Setup`
-						) : (
-							<>
-								<PlayerUsername userKey={playerTurn ?? `user::$_NONE_$`} />
-								{` `}playing turn {turnNumber}
-							</>
-						)}
-					</span>
-				</header>
-				<RoomControls />
-				<motion.main layout>
-					<GameSetupPhase isCurrentPhase={gameState === `setup`} />
-					<GamePlayingPhase
-						isCurrentPhase={gameState === `playing`}
-						gameState={gameState}
-						myMutualsAtom={myMutualsAtom}
-					/>
-				</motion.main>
-				<GameControls />
-			</article>
-			<article data-css="turn-controls">
-				<PlayerTurnControls />
-			</article>
-			<article data-css-counter="tiles">{myRemainingTiles}</article>
-			<article data-css-counter="cubes">{myRemainingCubes}</article>
-		</main>
+		<>
+			<RoomModule />
+
+			{gameState === `playing` ? (
+				<>
+					<PlayerTurnControls />
+					<article data-css-counter="tiles">{myRemainingTiles}</article>
+					<article data-css-counter="cubes">{myRemainingCubes}</article>
+				</>
+			) : null}
+		</>
+	)
+}
+
+function UserInterior({
+	myUserKey,
+}: {
+	myUserKey: UserKey
+}): ReactElement | null {
+	const myUsername = usePullAtomFamilyMember(usernameAtoms, myUserKey)
+	return myUsername === `jeremy` ? <Devtools /> : null
+}
+
+function RoomModule(): ReactElement {
+	const { myMutualsAtom } = useRealtimeRooms()
+
+	const gameState = usePullAtom(gameStateAtom)
+
+	return (
+		<article data-css="room-module">
+			<motion.main layout>
+				<GameSetupPhase isCurrentPhase={gameState === `setup`} />
+				<GamePlayingPhase
+					isCurrentPhase={gameState === `playing`}
+					gameState={gameState}
+					myMutualsAtom={myMutualsAtom}
+				/>
+			</motion.main>
+		</article>
+	)
+}
+
+const showBugRangersDevtoolsAtom = atom<boolean>({
+	key: `showBugRangersDevtools`,
+	default: false,
+})
+
+function Devtools(): ReactElement {
+	const showBugRangersDevtools = usePullAtom(showBugRangersDevtoolsAtom)
+	const { myRoomKey } = useRealtimeRooms()
+
+	return (
+		<>
+			<button
+				type="button"
+				data-css="devtools-toggle"
+				onClick={() => {
+					setState(showBugRangersDevtoolsAtom, (prev) => !prev)
+				}}
+			>
+				{showBugRangersDevtools ? `hide` : `show`} devtools
+			</button>
+			{showBugRangersDevtools ? (
+				<article data-css="devtools">
+					<h1>{myRoomKey ?? `null`}</h1>
+					<RoomControls />
+					{myRoomKey ? <DevtoolsInterior /> : null}
+				</article>
+			) : null}
+		</>
+	)
+}
+
+function DevtoolsInterior(): ReactElement {
+	const gameState = usePullAtom(gameStateAtom)
+	const turnNumber = usePullAtom(turnNumberAtom)
+	const playerTurn = usePullSelector(playerTurnSelector)
+	return (
+		<>
+			<span>
+				{gameState === `setup` ? (
+					`Setup`
+				) : (
+					<>
+						<PlayerUsername userKey={playerTurn ?? `user::$_NONE_$`} />
+						{` `}playing turn {turnNumber}
+					</>
+				)}
+			</span>
+			<GameControls />
+		</>
 	)
 }
 
 function PlayerUsername({ userKey }: { userKey: UserKey }): ReactElement {
 	const username = usePullAtomFamilyMember(usernameAtoms, userKey)
-	return <>{username.slice(0, 3)}</>
+	return <>{username}</>
 }
 
 function PlayerTurnControls(): ReactElement {
@@ -121,8 +191,9 @@ function PlayerTurnControls(): ReactElement {
 	const colorsChosen = useO(colorsChosenSelector)
 	const isMyTurn = useO(isMyTurnSelector)
 	const turnCanBeEnded = useO(turnCanBeEndedSelector)
+	const turnInProgress = usePullAtom(turnInProgressAtom)
 	return (
-		<>
+		<article data-css="turn-controls">
 			{myColor === null ? (
 				PLAYER_COLORS.map((color, idx) => (
 					<button
@@ -142,7 +213,7 @@ function PlayerTurnControls(): ReactElement {
 				<>
 					<button
 						type="button"
-						disabled={!isMyTurn}
+						disabled={!isMyTurn || turnInProgress === null}
 						onClick={() => {
 							setState(turnInProgressAtom, null)
 							gameSocket.emit(`turnRestart`)
@@ -162,7 +233,7 @@ function PlayerTurnControls(): ReactElement {
 					</button>
 				</>
 			)}
-		</>
+		</article>
 	)
 }
 
@@ -170,7 +241,7 @@ function RoomControls(): ReactElement {
 	const { roomSocket, allRoomKeysAtom, myRoomKey } = useRealtimeRooms()
 	const allRoomKeys = useJSON(allRoomKeysAtom)
 	return (
-		<section>
+		<section data-css="room-controls">
 			{myRoomKey ? (
 				<button
 					type="button"
