@@ -49,6 +49,9 @@
 *,
 *::before,
 *::after {
+  user-select: none;
+  -webkit-user-select: none; /* iOS Safari */
+  -webkit-touch-callout: none; /* disables long-press menu */
   box-sizing: border-box;
   font-size: 15px;
   line-height: calc(4 / 3);
