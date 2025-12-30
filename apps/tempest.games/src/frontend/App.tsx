@@ -59,7 +59,9 @@ export function App(): React.ReactNode {
 		<main className={scss[`class`]}>
 			<header>
 				<main>
-					<svg.tempest />
+					{typeof route === `object` && route[0] === `game` ? null : (
+						<svg.tempest />
+					)}
 					<span>
 						<Spinner input={appVersion} />
 					</span>
