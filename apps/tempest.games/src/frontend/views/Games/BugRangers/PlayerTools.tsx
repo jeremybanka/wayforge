@@ -149,8 +149,13 @@ function PlayableHex({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 			case `tile`:
 				raycaster.setFromCamera(pointer, camera)
 				if (raycaster.ray.intersectPlane(plane, hitPoint)) {
-					setState(dragPointAtom, hitPoint)
-					ref.current.position.copy(hitPoint)
+					const slightlyAboveHitPoint = new THREE.Vector3(
+						hitPoint.x,
+						hitPoint.y + 0.001,
+						hitPoint.z,
+					)
+					setState(dragPointAtom, slightlyAboveHitPoint)
+					ref.current.position.copy(slightlyAboveHitPoint)
 				}
 				break
 			case null:
