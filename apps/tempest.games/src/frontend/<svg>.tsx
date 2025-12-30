@@ -61,3 +61,90 @@ export function tempest(
 		</svg>
 	)
 }
+
+export type UserMarkerProps = { color: string }
+
+export function me(props: UserMarkerProps): React.ReactNode {
+	return (
+		<svg
+			id="uuid-4f76f6a9-ceb4-4471-8939-9eb09fc0c2a8"
+			xmlns="http://www.w3.org/2000/svg"
+			viewBox="0 0 142 142"
+		>
+			<title>Icon representing you</title>
+			<path
+				d="M129.74,83.26l12.26-12.26-12.26-12.26c-4.84-23.3-23.19-41.65-46.49-46.49L71,0l-12.26,12.26c-23.3,4.84-41.65,23.19-46.49,46.49L0,71l12.26,12.26c4.84,23.3,23.19,41.65,46.49,46.49l12.26,12.26,12.26-12.26c23.3-4.84,41.65-23.19,46.49-46.49Z"
+				style={{ fill: props.color }}
+			/>
+		</svg>
+	)
+}
+export function you(props: UserMarkerProps): React.ReactNode {
+	return (
+		<svg
+			id="uuid-d9fc88fe-cc37-4ad2-bbf2-ebb45c04a971"
+			xmlns="http://www.w3.org/2000/svg"
+			viewBox="0 0 142 142"
+		>
+			<title>Icon representing another player</title>
+			<circle cx="71" cy="71" r="60" style={{ fill: props.color }} />
+		</svg>
+	)
+}
+export function leaderMe(props: UserMarkerProps): React.ReactNode {
+	return (
+		<svg
+			id="uuid-b9c9c6cc-467c-4b5a-88f3-6a178603d697"
+			xmlns="http://www.w3.org/2000/svg"
+			viewBox="0 0 142 142"
+		>
+			<title>Icon representing you, the room leader</title>
+			<path
+				d="M129.74,58.74c-4.52-21.77-20.84-39.2-41.96-45.35V0l-8.39,8.39L71,0l-8.39,8.39L54.22,0v13.4c-21.13,6.14-37.44,23.58-41.96,45.35L0,71l12.26,12.26c4.84,23.3,23.19,41.65,46.49,46.49l12.26,12.26,12.26-12.26c23.3-4.84,41.65-23.19,46.49-46.49l12.26-12.26-12.26-12.26ZM71,21.78c-2.76,0-5-2.24-5-5s2.24-5,5-5,5,2.24,5,5-2.24,5-5,5Z"
+				style={{ fill: props.color }}
+			/>
+		</svg>
+	)
+}
+export function leaderYou(props: UserMarkerProps): React.ReactNode {
+	return (
+		<svg
+			id="uuid-b835d103-11a7-42fa-931f-c26a84d99689"
+			xmlns="http://www.w3.org/2000/svg"
+			viewBox="0 0 142 142"
+		>
+			<title>Icon representing the room leader</title>
+			<path
+				d="M87.78,13.4V0l-8.39,8.39L71,0l-8.39,8.39L54.22,0v13.4c-24.97,7.26-43.22,30.29-43.22,57.6,0,33.14,26.86,60,60,60s60-26.86,60-60c0-27.31-18.25-50.34-43.22-57.6ZM71,21.78c-2.76,0-5-2.24-5-5s2.24-5,5-5,5,2.24,5,5-2.24,5-5,5Z"
+				style={{ fill: props.color }}
+			/>
+		</svg>
+	)
+}
+export function current(props: UserMarkerProps): React.ReactNode {
+	return (
+		<svg
+			id="uuid-8b823876-d7ec-4e5b-9424-20645061b197"
+			xmlns="http://www.w3.org/2000/svg"
+			viewBox="0 0 142 142"
+		>
+			<title>Icon representing the current turn</title>
+			<path
+				d="M35.19,17h-18.19v18.19c4.79-7.21,10.98-13.4,18.19-18.19Z"
+				style={{ fill: props.color }}
+			/>
+			<path
+				d="M125,35.19v-18.19h-18.19c7.21,4.79,13.4,10.98,18.19,18.19Z"
+				style={{ fill: props.color }}
+			/>
+			<path
+				d="M17,106.81v18.19h18.19c-7.21-4.79-13.4-10.98-18.19-18.19Z"
+				style={{ fill: props.color }}
+			/>
+			<path
+				d="M106.81,125h18.19v-18.19c-4.79,7.21-10.98,13.4-18.19,18.19Z"
+				style={{ fill: props.color }}
+			/>
+		</svg>
+	)
+}

@@ -15,11 +15,6 @@ import type { UList } from "atom.io/transceivers/u-list"
 import { motion } from "motion/react"
 import { type ReactElement, type ReactNode, useContext } from "react"
 
-import Current from "../../../../../public/current.svg"
-import LeaderMe from "../../../../../public/leader-me.svg"
-import LeaderYou from "../../../../../public/leader-you.svg"
-import Me from "../../../../../public/me.svg"
-import You from "../../../../../public/you.svg"
 import type {
 	GameState,
 	PlayerActions,
@@ -40,6 +35,7 @@ import {
 	turnNumberAtom,
 } from "../../../../library/bug-rangers-game-state"
 import { usernameAtoms } from "../../../../library/username-state"
+import * as svg from "../../../<svg>"
 import { isMyTurnSelector } from "./bug-rangers-client-state"
 import scss from "./BugRangersUI.module.scss"
 
@@ -328,28 +324,22 @@ function User({ userKey }: { userKey: UserKey }): ReactElement {
 	const relations = findRelations(ownersOfRooms, myRoomKey ?? `room::`)
 	const ownerKey = useO(relations.userKeyOfRoom)
 	const username = usePullAtomFamilyMember(usernameAtoms, userKey)
-	const color = usePullAtomFamilyMember(playerColorAtoms, userKey)
+	const color = usePullAtomFamilyMember(playerColorAtoms, userKey) ?? `#555`
 	const currentTurn = useO(playerTurnSelector)
 	return (
 		<motion.div layoutId={userKey} data-css-user>
 			{userKey === myUserKey ? (
 				userKey === ownerKey ? (
-					<img src={LeaderMe} alt="it's you, you're the room leader!" />
+					<svg.leaderMe color={color} />
 				) : (
-					<img src={Me} alt="it's you!" />
+					<svg.me color={color} />
 				)
 			) : userKey === ownerKey ? (
-				<img src={LeaderYou} alt={`it's ${username}, the room leader!`} />
+				<svg.leaderYou color={color} />
 			) : (
-				<img src={You} alt={`it's ${username}!`} />
+				<svg.you color={color} />
 			)}
-			{userKey === currentTurn ? (
-				<motion.img
-					layoutId="current_turn"
-					src={Current}
-					alt={`it's ${userKey === myUserKey ? `your` : `their`} turn!`}
-				/>
-			) : null}
+			{userKey === currentTurn ? <svg.current color={color} /> : null}
 			<span>{username.slice(0, 2)}</span>
 		</motion.div>
 	)
