@@ -69,19 +69,21 @@ export const playableZonesVisibleSelector = selector<
 			case `war`:
 				return false
 			case `move`:
-				return `toMove`
+				{
+					if (turnInProgress.target === null) return `toMove`
+				}
+				break
 			case null:
 			case undefined: {
 				const myUserKey = get(myUserKeyAtom)
 				if (myUserKey === null) return false
-				console.log(`😼`, { myUserKey })
 				const validWarDeclarators = get(validWarDeclaratorsSelector)
 				if (validWarDeclarators.length > 0) return false
 				const myRemainingTiles = get(playerRemainingTilesAtoms, myUserKey)
 				if (myRemainingTiles > 0) return `toBuild`
-				return false
 			}
 		}
+		return false
 	},
 })
 
