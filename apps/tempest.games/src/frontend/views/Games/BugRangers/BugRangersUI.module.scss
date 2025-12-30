@@ -1,6 +1,6 @@
 main.class {
   position: fixed;
-  z-index: 1000;
+  z-index: 1;
   top: 0;
   left: 0;
   right: 0;
@@ -12,6 +12,38 @@ main.class {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  > article[data-css="room-exterior"] {
+    align-self: center;
+    justify-self: center;
+    > button {
+      pointer-events: all;
+    }
+  }
+  > button[data-css="devtools-toggle"] {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    z-index: 1000;
+    pointer-events: all;
+    height: 40px;
+  }
+  > article[data-css="devtools"] {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    z-index: 1000;
+    pointer-events: all;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    border: 1px solid var(--fg-soft-1);
+    background: var(--bg);
+    button {
+      pointer-events: all;
+      height: 40px;
+    }
+  }
   > article[data-css-counter] {
     position: absolute;
     bottom: 160px;
@@ -51,10 +83,8 @@ main.class {
   > article[data-css="room-module"] {
     position: absolute;
     top: 60px;
-    border: var(--fg-soft-1) solid 1px;
-    padding: 5px;
     width: 100%;
-    max-width: 500px;
+    max-width: 400px;
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -84,9 +114,8 @@ main.class {
       display: flex;
       > section {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         gap: 5px;
-        // border: 1px solid red;
         flex: 0;
         width: 0px;
         overflow: hidden;
@@ -96,8 +125,7 @@ main.class {
         > section {
           display: flex;
           flex-flow: column;
-          flex: 1;
-          height: 150px;
+          height: 100px;
           align-items: center;
           justify-content: center;
           gap: 5px;
