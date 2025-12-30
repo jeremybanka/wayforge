@@ -374,6 +374,7 @@ parent.receiveRelay((socket, userKey) => {
 			if (playerWhoseTurnItIs !== userKey) return
 			const turnInProgress = getState(turnInProgressAtom)
 			if (turnInProgress?.type !== `move`) return
+			if (turnInProgress.target !== null) return
 			const { origin } = turnInProgress
 			setState(turnInProgressAtom, {
 				...turnInProgress,
