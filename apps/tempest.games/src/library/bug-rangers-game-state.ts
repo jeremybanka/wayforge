@@ -106,16 +106,16 @@ export const adjacentZonesSelector = selectorFamily<
 	key: `adjacentZones`,
 	get: (coordinatesSerialized) => () => {
 		const [x, y, z] = deserializeTileCoordinates(coordinatesSerialized)
-		const playableZones = new Set<TileCoordinatesSerialized>()
+		const adjacent = new Set<TileCoordinatesSerialized>()
 
-		playableZones.add(`${x + 1}_${y - 1}_${z}`)
-		playableZones.add(`${x + 1}_${y}_${z - 1}`)
-		playableZones.add(`${x - 1}_${y + 1}_${z}`)
-		playableZones.add(`${x - 1}_${y}_${z + 1}`)
-		playableZones.add(`${x + 2}_${y - 1}_${z - 1}`)
-		playableZones.add(`${x - 2}_${y + 1}_${z + 1}`)
+		adjacent.add(`${x + 1}_${y - 1}_${z}`)
+		adjacent.add(`${x + 1}_${y}_${z - 1}`)
+		adjacent.add(`${x - 1}_${y + 1}_${z}`)
+		adjacent.add(`${x - 1}_${y}_${z + 1}`)
+		adjacent.add(`${x + 2}_${y - 1}_${z - 1}`)
+		adjacent.add(`${x - 2}_${y + 1}_${z + 1}`)
 
-		return Array.from(playableZones)
+		return Array.from(adjacent)
 	},
 })
 
@@ -127,9 +127,9 @@ export const adjacentTilesSelector = selectorFamily<
 	get:
 		(coordinatesSerialized) =>
 		({ get }) => {
-			const playableZones = get(adjacentZonesSelector, coordinatesSerialized)
+			const adjacent = get(adjacentZonesSelector, coordinatesSerialized)
 			const tiles = get(gameTilesAtom)
-			return playableZones.filter((adjacentZone) => tiles.has(adjacentZone))
+			return adjacent.filter((zone) => tiles.has(zone))
 		},
 })
 
@@ -155,6 +155,22 @@ export const playableZonesSelector = selector<TileCoordinatesSerialized[]>({
 				playableZones.delete(playableZone)
 			}
 		}
+		const turnInProgress = get(turnInProgressAtom)
+
+		if (turnInProgress?.type === `move`) {
+			playableZones.delete(turnInProgress.origin)
+			const originAdjacentZones = get(
+				adjacentZonesSelector,
+				turnInProgress.origin,
+			)
+			for (const adjacentZone of originAdjacentZones) {
+				const adjacentTiles = get(adjacentTilesSelector, adjacentZone)
+				if (adjacentTiles.length === 1) {
+					playableZones.delete(adjacentZone)
+				}
+			}
+		}
+
 		return Array.from(playableZones)
 	},
 })
@@ -209,7 +225,7 @@ export const closestPlayableZoneSelector =
 
 			let closest: TileCoordinatesSerialized | null = null
 			let closestDistance = Number.POSITIVE_INFINITY
-			for (const tileCoordinates of get(playableZonesAtom)) {
+			for (const tileCoordinates of get(playableZonesSelector)) {
 				const position = get(tile3dPositionSelectors, tileCoordinates)
 				const distance = dragPoint.distanceTo(position)
 				if (distance < closestDistance) {
@@ -408,6 +424,8 @@ export const validWarTargetsSelector = selector<TileCoordinatesSerialized[]>({
 
 export type TileStatus =
 	| `isInvader`
+	| `isMovingFromHere`
+	| `isMovingToHere`
 	| `mayBeInvaded`
 	| `mayBeMoved`
 	| `mayInvade`
@@ -433,6 +451,10 @@ export const tileStatusSelectors = selectorFamily<
 				return `mayBeInvaded`
 			}
 
+			if (turnInProgress?.type === `move`) {
+				if (turnInProgress.origin === coords) return `isMovingFromHere`
+				if (turnInProgress.target === coords) return `isMovingToHere`
+			}
 			if (turnInProgress !== null) return null
 
 			const validDeclarators = get(validWarDeclaratorsSelector)

@@ -2,28 +2,18 @@ import { useSpring } from "@react-spring/three"
 import * as Drei from "@react-three/drei"
 import { Canvas } from "@react-three/fiber"
 import { useO } from "atom.io/react"
-import type { UserKey } from "atom.io/realtime"
-import { myRoomKeySelector, myUserKeyAtom } from "atom.io/realtime-client"
-import {
-	usePullAtom,
-	usePullAtomFamilyMember,
-	usePullSelector,
-} from "atom.io/realtime-react"
+import { myRoomKeySelector } from "atom.io/realtime-client"
+import { usePullSelector } from "atom.io/realtime-react"
 import type { ReactNode } from "react"
 import { useRef } from "react"
 import * as THREE from "three"
 import type * as STD from "three-stdlib"
 
 import {
-	playerColorAtoms,
-	playerRemainingTilesAtoms,
-	turnInProgressAtom,
-	validWarDeclaratorsSelector,
-} from "../../../../library/bug-rangers-game-state"
-import {
 	cameraTargetAtom,
 	controlsEnabledAtom,
-	isMyTurnSelector,
+	playableZonesVisibleSelector,
+	playerToolsVisibleSelector,
 } from "../BugRangers/bug-rangers-client-state"
 import { HexGridHelper } from "../BugRangers/HexGridHelper"
 import { PlayerTools } from "../BugRangers/PlayerTools"
@@ -58,40 +48,19 @@ export function BugRangers3D(): ReactNode {
 
 export function BugRangersExterior3D(): ReactNode {
 	const myRoomKey = useO(myRoomKeySelector)
-	const myUserKey = usePullAtom(myUserKeyAtom)
-	return myUserKey && myRoomKey ? (
-		<BugRangersInterior3D myUserKey={myUserKey} />
-	) : null
+	return myRoomKey ? <BugRangersInterior3D /> : null
 }
-export function BugRangersInterior3D({
-	myUserKey,
-}: {
-	myUserKey: UserKey
-}): ReactNode {
-	const turnInProgress = usePullAtom(turnInProgressAtom)
-	const isMyTurn = usePullSelector(isMyTurnSelector)
-	const myColor = usePullAtomFamilyMember(playerColorAtoms, myUserKey)
-	const validWarDeclarators = usePullSelector(validWarDeclaratorsSelector)
-	const myRemainingTiles = usePullAtomFamilyMember(
-		playerRemainingTilesAtoms,
-		myUserKey,
-	)
+export function BugRangersInterior3D(): ReactNode {
+	const playableZonesVisible = usePullSelector(playableZonesVisibleSelector)
+	const playerToolsVisible = usePullSelector(playerToolsVisibleSelector)
 
 	return (
 		<>
 			<GameTiles />
 
-			{myColor &&
-			turnInProgress === null &&
-			isMyTurn &&
-			myRemainingTiles > 0 &&
-			validWarDeclarators.length === 0 ? (
-				<PlayableZones />
-			) : null}
+			{playableZonesVisible ? <PlayableZones /> : null}
 
-			{myColor && isMyTurn && validWarDeclarators.length === 0 ? (
-				<PlayerTools />
-			) : null}
+			{playerToolsVisible ? <PlayerTools /> : null}
 		</>
 	)
 }
