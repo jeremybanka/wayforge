@@ -70,7 +70,7 @@ export function App(): React.ReactNode {
 					ref={refs.setReference}
 					{...getReferenceProps()}
 				>
-					{auth?.username ? auth.username.slice(0, 2) : ``}
+					{auth?.username ? auth.username.slice(0, 3) : ``}
 				</button>
 				{accountPopOverIsOpen && auth && (
 					<FloatingFocusManager context={context} modal={false}>

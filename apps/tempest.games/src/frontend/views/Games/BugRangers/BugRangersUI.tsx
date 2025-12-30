@@ -110,7 +110,7 @@ export function Interior({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 
 function PlayerUsername({ userKey }: { userKey: UserKey }): ReactElement {
 	const username = usePullAtomFamilyMember(usernameAtoms, userKey)
-	return <>{username.slice(0, 2)}</>
+	return <>{username.slice(0, 3)}</>
 }
 
 function PlayerTurnControls(): ReactElement {
@@ -340,7 +340,7 @@ function User({ userKey }: { userKey: UserKey }): ReactElement {
 				<svg.you color={color} />
 			)}
 			{userKey === currentTurn ? <svg.current color={color} /> : null}
-			<span>{username.slice(0, 2)}</span>
+			<span>{username.slice(0, 3)}</span>
 		</motion.div>
 	)
 }
