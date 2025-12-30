@@ -5,7 +5,7 @@ import type { ReactNode } from "react"
 import type { TileCoordinatesSerialized } from "../../../../library/bug-rangers-game-state"
 import {
 	gameTilesAtom,
-	playableZonesAtom,
+	playableZonesSelector,
 } from "../../../../library/bug-rangers-game-state"
 import { GameTileActual, GameTilePreview } from "./HexTile"
 
@@ -22,7 +22,7 @@ export function GameTiles(): ReactNode {
 }
 
 export function PlayableZones(): ReactNode {
-	const playableZones = useO(playableZonesAtom)
+	const playableZones = useO(playableZonesSelector)
 	return playableZones.map((coords) => (
 		<GameTilePreview key={coords} coordinatesSerialized={coords} />
 	))
