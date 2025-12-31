@@ -57,7 +57,7 @@
 		"@js-temporal/polyfill": "0.5.1",
 		"@react-email/components": "1.0.3",
 		"@react-spring/three": "10.0.3",
-		"@react-three/drei": "10.7.6",
+		"@react-three/drei": "10.7.7",
 		"@react-three/fiber": "9.4.0",
 		"@t3-oss/env-core": "0.13.10",
 		"@trpc/client": "11.8.1",
