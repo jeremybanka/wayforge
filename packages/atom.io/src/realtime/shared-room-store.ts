@@ -87,7 +87,7 @@ export const mutualUsersSelector: ReadonlyPureSelectorFamilyToken<
 				const users = get(usersOfRoomsAtoms, room)
 				return [...users]
 			}
-			return []
+			return [userKey]
 		},
 })
 
