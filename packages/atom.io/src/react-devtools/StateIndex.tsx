@@ -44,6 +44,13 @@ export const StateIndexLeafNode: FC<{
 
 	const path = node.family ? [node.family.key, node.family.subKey] : [node.key]
 
+	let stringified: string
+	try {
+		stringified = JSON.stringify(state)
+	} catch (_) {
+		stringified = `?`
+	}
+
 	return (
 		<>
 			<header>
@@ -72,7 +79,7 @@ export const StateIndexLeafNode: FC<{
 					{isPrimitive ? (
 						<StoreEditor token={node} />
 					) : (
-						<div className="json_viewer">{JSON.stringify(state)}</div>
+						<div className="json_viewer">{stringified}</div>
 					)}
 					{dispose ? (
 						<DEFAULT_JSON_EDITOR_COMPONENTS.Button
