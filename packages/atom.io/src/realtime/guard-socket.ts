@@ -1,14 +1,14 @@
 import type { Loadable } from "atom.io"
 import type { Json } from "atom.io/json"
 
-import type { EventsMap, Socket, TypedSocket } from "./socket-interface"
+import type { EventsMap, GuardedSocket, Socket } from "./socket-interface"
 import type { StandardSchemaV1 } from "./standard-schema"
 
-export type SocketListeners<T extends TypedSocket> =
-	T extends TypedSocket<infer ListenEvents> ? ListenEvents : never
-
-export type SocketGuard<L extends EventsMap> = {
-	[K in keyof L]: StandardSchemaV1<Json.Array, Parameters<L[K]>>
+export type SocketGuard<ListenEvents extends EventsMap> = {
+	[K in keyof ListenEvents]: StandardSchemaV1<
+		Json.Array,
+		Parameters<ListenEvents[K]>
+	>
 }
 
 export type Loaded<L extends Loadable<any>> =
@@ -25,13 +25,13 @@ function onLoad<L extends Loadable<any>>(
 	}
 }
 
-export function castSocket<T extends TypedSocket>(
+export function guardSocket<ListenEvents extends EventsMap>(
 	socket: Socket,
-	guard: SocketGuard<SocketListeners<T>> | `TRUST`,
+	guard: SocketGuard<ListenEvents> | `TRUST`,
 	logError?: (error: unknown) => void,
-): T {
+): GuardedSocket<ListenEvents> {
 	if (guard === `TRUST`) {
-		return socket as T
+		return socket as GuardedSocket<ListenEvents>
 	}
 	const guardedSocket: Socket = {
 		id: socket.id,
@@ -66,5 +66,5 @@ export function castSocket<T extends TypedSocket>(
 		offAny: socket.offAny.bind(socket),
 		emit: socket.emit.bind(socket),
 	}
-	return guardedSocket as T
+	return guardedSocket as GuardedSocket<ListenEvents>
 }
