@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.3.1
+
+### Patch Changes
+
+- 13af706: 🐛 Fixed issue where obstructive devtools would overtake the view, only dismissable via the tiny hourglass in the corner.
+
 ## 0.3.0
 
 ### Minor Changes
