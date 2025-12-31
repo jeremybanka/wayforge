@@ -1,3 +1,5 @@
+import type { appRouter } from "@backend/router.ts"
+import { TRPCClientError } from "@trpc/client"
 import type { ArkErrors } from "arktype"
 import { type } from "arktype"
 import type { Loadable } from "atom.io"
@@ -21,6 +23,8 @@ import type {
 } from "../../library/socket-interface.ts"
 import { navigate } from "./router-service.ts"
 import { trpcClient } from "./trpc-client-service.ts"
+
+export type ClientError = TRPCClientError<typeof appRouter>
 
 export const socket: Socket<TempestSocketDown, TempestSocketUp> = io(
 	env.VITE_BACKEND_ORIGIN,
@@ -119,15 +123,21 @@ export const usernameDebounced100msAtom = atom<string | null>({
 		},
 	],
 })
-export const isUsernameTakenQuerySelector = selector<Loadable<boolean>>({
+export const isUsernameTakenQuerySelector = selector<
+	Loadable<boolean>,
+	ClientError
+>({
 	key: `isUsernameTakenQuery`,
 	get: ({ get }) => {
 		const username = get(usernameDebounced100msAtom)
 		if (!username) return false
 		const auth = getState(authAtom)
 		if (username === auth?.username) return false
+		const usernameIssues = getState(usernameIssuesSelector)
+		if (usernameIssues instanceof type.errors) return false
 		return trpcClient.isUsernameTaken.query({ username })
 	},
+	catch: [TRPCClientError],
 })
 export const usernameIssuesSelector = selector<ArkErrors | null>({
 	key: `usernameIssues`,

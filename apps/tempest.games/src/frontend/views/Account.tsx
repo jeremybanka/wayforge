@@ -55,7 +55,11 @@ export function Account(): React.ReactNode {
 					return input
 				}}
 				extraIssues={
-					usernameIsTaken ? <span>This username is taken.</span> : null
+					usernameIsTaken === true ? (
+						Error.isError(usernameIsTaken) ? null : (
+							<span>This username is taken.</span>
+						)
+					) : null
 				}
 			/>
 			<Form
