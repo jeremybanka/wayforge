@@ -3,18 +3,22 @@ import { readFileSync } from "node:fs"
 import type { RequestListener, Server } from "node:http"
 import { createServer as createHttpServer } from "node:http"
 import { createServer as createSecureServer } from "node:https"
+import * as os from "node:os"
 import { resolve } from "node:path"
 import { promisify } from "node:util"
 
-const execAsync = promisify(exec)
-
 import { env } from "../src/library/env"
+
+const platform = os.platform()
+
+const execAsync = promisify(exec)
 
 const devDir = resolve(import.meta.dirname, `../dev`)
 
-const localHostName = (
-	await execAsync(`scutil --get LocalHostName`)
-).stdout.trim()
+const localHostName =
+	platform === `darwin`
+		? (await execAsync(`scutil --get LocalHostName`)).stdout.trim()
+		: os.hostname()
 
 const bonjourName = `${localHostName}.local`
 
