@@ -16,7 +16,7 @@ createRoot(document.getElementById(`root`)!).render(
 	<StrictMode>
 		<RealtimeProvider socket={socket}>
 			<App />
-			<AtomIODevtools hideByDefault={!env.RUN_WORKERS_FROM_SOURCE} />
+			<AtomIODevtools hideByDefault={env.VITE_HIDE_DEVTOOLS} />
 		</RealtimeProvider>
 	</StrictMode>,
 )
