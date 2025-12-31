@@ -72,6 +72,13 @@ export function realtime(
 		.use(async (socket, next) => {
 			const result = await auth(socket.handshake)
 			if (result instanceof Error) {
+				store.logger.error(
+					`📡`,
+					`socket`,
+					socket.id,
+					`failed to authenticate`,
+					result.message,
+				)
 				next(result)
 				return
 			}

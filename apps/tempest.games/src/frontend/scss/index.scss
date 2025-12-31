@@ -49,6 +49,9 @@
 *,
 *::before,
 *::after {
+  user-select: none;
+  -webkit-user-select: none; /* iOS Safari */
+  -webkit-touch-callout: none; /* disables long-press menu */
   box-sizing: border-box;
   font-size: 15px;
   line-height: calc(4 / 3);
@@ -59,18 +62,18 @@
     --logo-color: #000;
 
     --fg-tint-3: #666;
-    --fg-hard-3: var(--fg-tint-3);
+    --fg-hard-3: var(--fg-dark-3);
     --fg-tint-2: #555;
-    --fg-hard-2: var(--fg-tint-2);
+    --fg-hard-2: var(--fg-dark-2);
     --fg-tint-1: #444;
-    --fg-hard-1: var(--fg-tint-1);
+    --fg-hard-1: var(--fg-dark-1);
     --fg: #333;
     --fg-dark-1: #222;
-    --fg-soft-1: var(--fg-dark-1);
+    --fg-soft-1: var(--fg-tint-1);
     --fg-dark-2: #111;
-    --fg-soft-2: var(--fg-dark-2);
+    --fg-soft-2: var(--fg-tint-2);
     --fg-dark-3: #000;
-    --fg-soft-3: var(--fg-dark-3);
+    --fg-soft-3: var(--fg-tint-3);
 
     --bg-tint-3: #fffefc;
     --bg-hard-3: var(--bg-tint-3);
