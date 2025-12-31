@@ -16,8 +16,8 @@ import {
 	users,
 	userSessions,
 } from "../database/tempest-db-schema"
-import type { ClientAuthData } from "../library/data-constraints"
-import { credentialsType } from "../library/data-constraints"
+import type { ClientAuthData, Username } from "../library/data-constraints"
+import { credentialsType, usernameType } from "../library/data-constraints"
 import { env } from "../library/env"
 import { simpleFormatMs } from "../library/simple-format-ms"
 import { genAccountActionCode } from "./account-actions"
@@ -452,7 +452,7 @@ export const appRouter = trpc.router({
 		}),
 
 	isUsernameTaken: loggedProcedure
-		.input(type({ username: `string` }))
+		.input(type({ username: usernameType }))
 		.query(async ({ input, ctx }): Promise<boolean> => {
 			const { username } = input
 			const maybeUser = await ctx.db.drizzle.query.users.findFirst({
@@ -485,7 +485,7 @@ export const appRouter = trpc.router({
 							emailOffered: email,
 							password: null,
 							createdIp: ctx.ip,
-							username: Math.random().toString(36).slice(2),
+							username: Math.random().toString(36).slice(2) as Username,
 						})
 						.returning()
 					ctx.logger.info(`🔑 user created:`, email)

@@ -6,6 +6,7 @@ import { Temporal } from "@js-temporal/polyfill"
 import { createHTTPHandler } from "@trpc/server/adapters/standalone"
 import { AtomIOLogger } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
+import { realtime } from "atom.io/realtime-server"
 import cors from "cors"
 import { CronJob } from "cron"
 import { Server as WebSocketServer, Socket } from "socket.io"
@@ -31,16 +32,21 @@ export const tribunalDaily: CronJob = (() => {
 			logger.info(`⌛ tribunal daily cronjob stopped`)
 		})
 		logger.info(`⏳ tribunal daily cronjob started`)
+		;(globalThis as any).__tribunalDaily = __tribunalDaily
 	}
 	return __tribunalDaily
 })()
 
-const gameWorker = worker(parentSocket, `backend.worker.game.bun`, logger)
+// ;(process as any).gameWorker ??= worker(
+// 	parentSocket,
+// 	`backend.worker.bug-rangers.bun`,
+// 	logger,
+// )
 
 IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
 	`info`,
 	(...params) => {
-		if (![`⭕`, `🔴`, `🟢`, `🚫`, `❌`].includes(params[0])) {
+		if (![`⭕`, `🔴`, `🟢`, `🚫`, `❌`, `👀`, `🙈`].includes(params[0])) {
 			return false
 		}
 		let idx = 0
@@ -73,24 +79,21 @@ const trpcHandler = createHTTPHandler({
 const httpServer = createServer(trpcHandler)
 httpServer.listen(env.BACKEND_PORT).address()
 
-new WebSocketServer(httpServer, {
-	cors: {
-		origin: env.FRONTEND_ORIGINS,
-		methods: [`GET`, `POST`],
-		credentials: true,
-	},
-})
-	.use(sessionMiddleware)
-	.on(`connection`, serveSocket)
+realtime(
+	new WebSocketServer(httpServer, {
+		cors: {
+			origin: env.FRONTEND_ORIGINS,
+			methods: [`GET`, `POST`],
+			credentials: true,
+		},
+	}),
+	sessionMiddleware,
+	serveSocket,
+)
 
 async function gracefulExit() {
-	logger.info(`🧹 closing workers`)
-	const gameWorkerExit = new Promise((pass) =>
-		gameWorker.proc.once(`close`, pass),
-	)
-	gameWorker.emit(`timeToStop`)
-	await gameWorkerExit
 	logger.info(`🛬 backend server exiting`)
+	await new Promise((pass) => setTimeout(pass, 10))
 	process.exit(0)
 }
 
@@ -126,4 +129,4 @@ const { version } = await Bun.file(
 ).json()
 logger.info(`🛫 backend v${version} ready on port ${env.BACKEND_PORT}`)
 
-parentSocket.emit(`alive`)
+if (!env.RUN_WORKERS_FROM_SOURCE) parentSocket.emit(`alive`)

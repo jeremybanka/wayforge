@@ -27,7 +27,7 @@
 	"scripts": {
 		"dev": "bun run env:dev && concurrently \"bun:dev:*\"",
 		"dev:vite": "vite --port 3333",
-		"dev:backend": "bun --hot --env-file=.env.development ./src/backend.bun.ts",
+		"dev:backend": "bun --hot --no-clear-screen --env-file=.env.development ./src/backend.bun.ts",
 		"dev:email": "bun --env-file=.env.development email dev",
 		"dev:db": "pnpm run db:dev",
 		"build": "rimraf ./bin && ([ $PREVIEW ] && bun run env:pre || bun run env:prod) && concurrently \"bun:build:*\"",
@@ -56,6 +56,9 @@
 		"@floating-ui/react": "0.27.16",
 		"@js-temporal/polyfill": "0.5.1",
 		"@react-email/components": "1.0.3",
+		"@react-spring/three": "10.0.3",
+		"@react-three/drei": "10.7.6",
+		"@react-three/fiber": "9.4.0",
 		"@t3-oss/env-core": "0.13.10",
 		"@trpc/client": "11.8.1",
 		"@trpc/server": "11.8.1",
@@ -75,6 +78,8 @@
 		"safegen": "0.8.3",
 		"socket.io": "4.8.3",
 		"socket.io-client": "4.8.3",
+		"three": "0.180.0",
+		"three-stdlib": "2.36.0",
 		"treetrunks": "workspace:*"
 	},
 	"devDependencies": {
@@ -84,6 +89,7 @@
 		"@types/node": "25.0.3",
 		"@types/react": "19.2.7",
 		"@types/react-dom": "19.2.3",
+		"@types/three": "0.180.0",
 		"@vitejs/plugin-react": "npm:@vitejs/plugin-react-swc@4.2.2",
 		"concurrently": "9.2.1",
 		"cors": "2.8.5",
@@ -98,6 +104,7 @@
 		"sass-embedded": "1.97.1",
 		"varmint": "workspace:*",
 		"vite": "7.3.0",
+		"vite-tsconfig-paths": "6.0.3",
 		"vitest": "4.0.16"
 	}
 }
