@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.3.0
+
+### Minor Changes
+
+- ac0bc87: ✨ Added a new game demo, `/games/bug_rangers`.
+
 ## 0.2.105
 
 ### Patch Changes
