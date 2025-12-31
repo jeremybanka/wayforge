@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.46.13
+
+### Patch Changes
+
+- a0f4ee4: 🐛 `atom.io/react-devtools` Fixed a crash when states were given values with circular internals, and devtools tried to `JSON.parse()` to display in the list.
+- a0f4ee4: ✨ `atom.io/realtime-server` `::` `mutualUsersSelector` Now always includes a user's own key, even when that user is not in a room.
+
 ## 0.46.12
 
 ### Patch Changes
