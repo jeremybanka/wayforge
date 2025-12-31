@@ -69,6 +69,13 @@ export const JsonEditor_INTERNAL = <T,>({
 	const dataIsTree = refined.type === `array` || refined.type === `object`
 	const dataIsExpandable = dataIsTree && isOpen !== undefined && setIsOpen
 
+	let stringified: string
+	try {
+		stringified = JSON.stringify(data)
+	} catch (_) {
+		stringified = `?`
+	}
+
 	return isHidden(path) ? null : (
 		<Components.ErrorBoundary>
 			<Components.EditorWrapper
@@ -105,7 +112,7 @@ export const JsonEditor_INTERNAL = <T,>({
 						{dataIsTree ? (
 							<>
 								{isOpen !== undefined && setIsOpen ? (
-									<span className="json_viewer">{JSON.stringify(data)}</span>
+									<span className="json_viewer">{stringified}</span>
 								) : null}
 								{recast ? (
 									<select
