@@ -13,7 +13,7 @@ import {
 	useRealtimeRooms,
 } from "atom.io/realtime-react"
 import type { UList } from "atom.io/transceivers/u-list"
-import { motion } from "motion/react"
+import { AnimatePresence, motion } from "motion/react"
 import { type ReactElement, useContext } from "react"
 import type { Socket } from "socket.io-client"
 
@@ -86,10 +86,11 @@ function Interior({ myUserKey }: { myUserKey: UserKey }): ReactElement {
 		playerRemainingCubesAtoms,
 		myUserKey,
 	)
+	const playerTurn = usePullSelector(playerTurnSelector)
 	return (
 		<>
 			<RoomModule />
-
+			{playerTurn ? <PlayerTurnControls /> : null}
 			{gameState === `playing` ? (
 				<>
 					<PlayerTurnControls />
@@ -422,5 +423,44 @@ function User({ userKey }: { userKey: UserKey }): ReactElement {
 			{userKey === currentTurn ? <svg.current color={color} /> : null}
 			<span>{username.slice(0, 3)}</span>
 		</motion.div>
+	)
+}
+
+function TurnBanner({ playerTurn }: { playerTurn: UserKey }): ReactElement {
+	const username = usePullAtomFamilyMember(usernameAtoms, playerTurn)
+	return (
+		<div className="overflow-hidden relative w-full h-32 bg-gray-900 flex items-center justify-center">
+			{/* AnimatePresence is optional here if you want the OLD banner 
+        to finish its exit animation while the NEW one enters. 
+        If you want them to overlap, use 'popLayout'.
+        If you want strictly one at a time, remove AnimatePresence 
+        and just rely on the key prop.
+      */}
+			<AnimatePresence mode="wait">
+				<motion.div
+					// 1. The Key: Changing this triggers the animation from scratch
+					key={playerTurn}
+					// 2. The Initial State
+					initial={{ x: `-100%` }}
+					// 3. The Animation Sequence
+					animate={{
+						x: [`-100%`, `0%`, `5%`, `150%`],
+					}}
+					// 4. The Transition Configuration
+					transition={{
+						duration: 3, // Total animation time
+						times: [0, 0.2, 0.8, 1], // Percentage of duration for each x value
+						ease: [
+							`circOut`, // Fast entry to slow
+							`linear`, // Constant slow drift
+							`easeIn`, // Accelerate out
+						],
+					}}
+					className="absolute bg-blue-500 text-white text-2xl font-bold px-8 py-4 rounded shadow-lg"
+				>
+					{username}'s Turn
+				</motion.div>
+			</AnimatePresence>
+		</div>
 	)
 }
