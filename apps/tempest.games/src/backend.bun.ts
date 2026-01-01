@@ -8,40 +8,15 @@ import { AtomIOLogger } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import { realtime } from "atom.io/realtime-server"
 import cors from "cors"
-import { CronJob } from "cron"
 import { Server as WebSocketServer, Socket } from "socket.io"
 
 import { createServer } from "../dev/https-dev"
-import { worker } from "./backend.worker"
 import { db } from "./backend/db"
 import { logger, parentSocket } from "./backend/logger"
 import { appRouter } from "./backend/router"
 import type { Context } from "./backend/trpc-server"
 import { serveSocket, sessionMiddleware } from "./backend/websockets"
 import { env } from "./library/env"
-
-export const tribunalDaily: CronJob = (() => {
-	let { __tribunalDaily } = globalThis as any
-	if (!__tribunalDaily) {
-		__tribunalDaily = new CronJob(`00 15 * * * *`, () => {
-			worker(parentSocket, `backend.worker.tribunal.bun`, logger)
-		})
-		__tribunalDaily.start()
-		process.on(`exit`, () => {
-			__tribunalDaily.stop()
-			logger.info(`⌛ tribunal daily cronjob stopped`)
-		})
-		logger.info(`⏳ tribunal daily cronjob started`)
-		;(globalThis as any).__tribunalDaily = __tribunalDaily
-	}
-	return __tribunalDaily
-})()
-
-// ;(process as any).gameWorker ??= worker(
-// 	parentSocket,
-// 	`backend.worker.bug-rangers.bun`,
-// 	logger,
-// )
 
 IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
 	`info`,
