@@ -3,7 +3,7 @@ import { getState, setState } from "atom.io"
 import { useAtomicRef, useI, useO } from "atom.io/react"
 import type { UserKey } from "atom.io/realtime"
 import { myUserKeyAtom } from "atom.io/realtime-client"
-import { usePullAtomFamilyMember } from "atom.io/realtime-react"
+import { usePullAtom, usePullSelector } from "atom.io/realtime-react"
 import type { ReactNode } from "react"
 import { useRef } from "react"
 import * as THREE from "three"
@@ -30,25 +30,21 @@ import {
 import {
 	cameraAnchoredSphereAtom,
 	controlsEnabledAtom,
+	mayPlaceCubeSelector,
+	mayPlaceTileSelector,
 	usePlayerActions,
 } from "./bug-rangers-client-state"
 import { CubeToken } from "./CubeToken"
 import { HexTile } from "./HexTile"
 
 export function PlayerTools(): ReactNode {
-	const myUserKey = useO(myUserKeyAtom)
-	const myRemainingTiles = usePullAtomFamilyMember(
-		playerRemainingTilesAtoms,
-		myUserKey ?? `user::$_NONE_$`,
-	)
-	const myRemainingCubes = usePullAtomFamilyMember(
-		playerRemainingCubesAtoms,
-		myUserKey ?? `user::$_NONE_$`,
-	)
+	const myUserKey = usePullAtom(myUserKeyAtom)
+	const mayPlaceTile = usePullSelector(mayPlaceTileSelector)
+	const mayPlaceCube = usePullSelector(mayPlaceCubeSelector)
 	return myUserKey ? (
 		<>
-			{myRemainingTiles > 0 ? <PlayableHex myUserKey={myUserKey} /> : null}
-			{myRemainingCubes > 0 ? <PlayableCube myUserKey={myUserKey} /> : null}
+			{mayPlaceTile ? <PlayableTile myUserKey={myUserKey} /> : null}
+			{mayPlaceCube ? <PlayableCube myUserKey={myUserKey} /> : null}
 		</>
 	) : null
 }
@@ -64,7 +60,7 @@ const offsetRight = -2
 const offsetUp = 1
 const hitPoint = new THREE.Vector3()
 
-function PlayableHex({ myUserKey }: { myUserKey: UserKey }): ReactNode {
+function PlayableTile({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 	const ref = useAtomicRef(cameraAnchoredSphereAtom, useRef)
 	const { camera, raycaster, pointer } = useThree()
 	const setControlsEnabled = useI(controlsEnabledAtom)
