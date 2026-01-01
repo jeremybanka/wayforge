@@ -11,10 +11,10 @@ import {
 	setState,
 } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
-import type { RoomKey, SocketGuard, TypedSocket } from "atom.io/realtime"
+import type { RoomKey, SocketGuard } from "atom.io/realtime"
 import {
-	castSocket,
 	employSocket,
+	guardSocket,
 	ownersOfRooms,
 	usersInRooms,
 } from "atom.io/realtime"
@@ -142,7 +142,7 @@ parent.receiveRelay((socket, userKey) => {
 	const exposeMutable = realtimeMutableProvider(config)
 	const exposeFamily = realtimeAtomFamilyProvider(config)
 
-	const gameSocket = castSocket<TypedSocket<PlayerActions>>(
+	const gameSocket = guardSocket<PlayerActions>(
 		socket,
 		bugRangersGuard,
 		parent.logger.error,

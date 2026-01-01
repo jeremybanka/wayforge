@@ -15,16 +15,16 @@ import type { Json } from "atom.io/json"
 import type {
 	AllEventsListener,
 	EventsMap,
+	GuardedSocket,
 	RoomKey,
 	RoomSocketInterface,
 	Socket,
 	SocketGuard,
 	StandardSchemaV1,
-	TypedSocket,
 	UserKey,
 } from "atom.io/realtime"
 import {
-	castSocket,
+	guardSocket,
 	isRoomKey,
 	ownersOfRooms,
 	roomKeysAtom,
@@ -129,7 +129,7 @@ export function spawnRoom<RoomNames extends string>({
 export type ProvideEnterAndExitConfig = {
 	store: RootStore
 	socket: Socket
-	roomSocket: TypedSocket<RoomSocketInterface<any>, any>
+	roomSocket: GuardedSocket<RoomSocketInterface<string>>
 	userKey: UserKey
 }
 export function provideEnterAndExit({
@@ -283,9 +283,10 @@ export function provideRooms<RoomNames extends string>({
 	roomNames,
 	userKey,
 }: ProvideRoomsConfig<RoomNames>): () => void {
-	const roomSocket = castSocket<
-		TypedSocket<RoomSocketInterface<RoomNames>, never>
-	>(socket, createRoomSocketGuard(roomNames))
+	const roomSocket = guardSocket<RoomSocketInterface<RoomNames>>(
+		socket,
+		createRoomSocketGuard(roomNames),
+	)
 	const exposeMutable = realtimeMutableProvider({
 		socket,
 		store,

@@ -1,5 +1,5 @@
-export * from "./cast-socket"
 export * from "./employ-socket"
+export * from "./guard-socket"
 export * from "./mutex-store"
 export * from "./realtime-continuity"
 export * from "./realtime-key-types"

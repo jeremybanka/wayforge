@@ -1,7 +1,8 @@
 import type { MutableAtomToken } from "atom.io"
 import { atom, findRelations, setState } from "atom.io"
 import { useJSON, useO } from "atom.io/react"
-import { ownersOfRooms, type TypedSocket, type UserKey } from "atom.io/realtime"
+import type { UserKey } from "atom.io/realtime"
+import { ownersOfRooms } from "atom.io/realtime"
 import { myUserKeyAtom } from "atom.io/realtime-client"
 import {
 	RealtimeContext,
@@ -14,6 +15,7 @@ import {
 import type { UList } from "atom.io/transceivers/u-list"
 import { motion } from "motion/react"
 import { type ReactElement, useContext } from "react"
+import type { Socket } from "socket.io-client"
 
 import type {
 	GameState,
@@ -187,7 +189,7 @@ function PlayerTurnControls(): ReactElement {
 	const myUserKey = useO(myUserKeyAtom)
 	const myColor = useO(playerColorAtoms, myUserKey as UserKey)
 	const { socket } = useContext(RealtimeContext)
-	const gameSocket = socket as unknown as TypedSocket<{}, PlayerActions>
+	const gameSocket = socket as Socket<{}, PlayerActions>
 	const colorsChosen = useO(colorsChosenSelector)
 	const isMyTurn = useO(isMyTurnSelector)
 	const turnCanBeEnded = useO(turnCanBeEndedSelector)
@@ -280,7 +282,7 @@ function RoomControls(): ReactElement {
 }
 function GameControls(): ReactElement {
 	const { socket } = useContext(RealtimeContext)
-	const gameSocket = socket as unknown as TypedSocket<{}, PlayerActions>
+	const gameSocket = socket as Socket<{}, PlayerActions>
 	return (
 		<section>
 			<button
@@ -309,7 +311,7 @@ function GameSetupPhase({
 	isCurrentPhase: boolean
 }): ReactElement {
 	const { socket } = useContext(RealtimeContext)
-	const gameSocket = socket as unknown as TypedSocket<{}, PlayerActions>
+	const gameSocket = socket as Socket<{}, PlayerActions>
 	const setupGroups = usePullSelector(setupGroupsSelector)
 	return (
 		<motion.section
