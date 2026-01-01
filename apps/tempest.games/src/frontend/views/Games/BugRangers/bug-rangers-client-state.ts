@@ -7,9 +7,13 @@ import type * as THREE from "three"
 
 import type { PlayerActions } from "../../../../library/bug-rangers-game-state"
 import {
+	gameTilesAtom,
+	maximumStackHeightSelectors,
 	playerColorAtoms,
+	playerRemainingCubesAtoms,
 	playerRemainingTilesAtoms,
 	playerTurnSelector,
+	tileOwnerAtoms,
 	turnInProgressAtom,
 	validWarDeclaratorsSelector,
 } from "../../../../library/bug-rangers-game-state"
@@ -94,5 +98,65 @@ export const playerToolsVisibleSelector = selector<boolean>({
 		if (!iAmReadyToPlay) return false
 		const validWarDeclarators = get(validWarDeclaratorsSelector)
 		return validWarDeclarators.length <= 0
+	},
+})
+
+export const mayPlaceTileSelector = selector<boolean>({
+	key: `mayPlaceTile`,
+	get: ({ get }) => {
+		const myUserKey = get(myUserKeyAtom)
+		if (myUserKey === null) return false
+		const myRemainingTiles = get(playerRemainingTilesAtoms, myUserKey)
+		if (myRemainingTiles <= 0) return false
+		const turnInProgress = get(turnInProgressAtom)
+		switch (turnInProgress?.type) {
+			case undefined:
+				return true
+			case `arm`:
+			case `move`:
+			case `war`:
+				return false
+			case `build`: {
+				const { count } = turnInProgress
+				const maximumStackHeight = get(maximumStackHeightSelectors, [
+					turnInProgress.target,
+					myUserKey,
+				])
+				return count < maximumStackHeight
+			}
+		}
+	},
+})
+
+export const mayPlaceCubeSelector = selector<boolean>({
+	key: `mayPlaceCube`,
+	get: ({ get }) => {
+		const myUserKey = get(myUserKeyAtom)
+		if (myUserKey === null) return false
+		const myRemainingCubes = get(playerRemainingCubesAtoms, myUserKey)
+		if (myRemainingCubes <= 0) return false
+		const turnInProgress = get(turnInProgressAtom)
+		switch (turnInProgress?.type) {
+			case `move`:
+			case `war`:
+				return false
+			case undefined: {
+				const gameTiles = get(gameTilesAtom)
+				for (const tile of gameTiles) {
+					const owner = get(tileOwnerAtoms, tile)
+					if (owner === myUserKey) return true
+				}
+				return false
+			}
+			case `arm`: {
+				const { targets } = turnInProgress
+				if (targets.length < 2) return true
+				return false
+			}
+			case `build`: {
+				const { count } = turnInProgress
+				return count >= 1
+			}
+		}
 	},
 })
