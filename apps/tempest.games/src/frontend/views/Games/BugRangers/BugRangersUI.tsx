@@ -40,6 +40,7 @@ import { usernameAtoms } from "../../../../library/username-state"
 import * as svg from "../../../<svg>"
 import { isMyTurnSelector } from "./bug-rangers-client-state"
 import scss from "./BugRangersUI.module.scss"
+import * as icon from "./Icons"
 
 export function BugRangersUI(): ReactElement {
 	const { myRoomKey } = useRealtimeRooms()
@@ -92,8 +93,14 @@ function Interior({ myUserKey }: { myUserKey: UserKey }): ReactElement {
 			{gameState === `playing` ? (
 				<>
 					<PlayerTurnControls />
-					<article data-css-counter="tiles">{myRemainingTiles}</article>
-					<article data-css-counter="cubes">{myRemainingCubes}</article>
+					<article data-css-counter="tiles">
+						<icon.tile stroke="var(--fg)" strokeWidth={2} />
+						<span>{myRemainingTiles}</span>
+					</article>
+					<article data-css-counter="cubes">
+						<icon.cube stroke="var(--fg)" strokeWidth={2} />
+						<span>{myRemainingCubes}</span>
+					</article>
 				</>
 			) : null}
 		</>
