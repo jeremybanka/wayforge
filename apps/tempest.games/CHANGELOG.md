@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.3.2
+
+### Patch Changes
+
+- 64ca79e: 🐛 Fixed an issue where the 0.3.1 patch failed to actually hide the devtools as intended.
+
 ## 0.3.1
 
 ### Patch Changes
