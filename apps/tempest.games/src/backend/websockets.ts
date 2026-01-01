@@ -1,5 +1,5 @@
 import { type } from "arktype"
-import { findState } from "atom.io"
+import { disposeState, findState, resetState, setState } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import { mutualUsersSelector, type UserKey } from "atom.io/realtime"
 import type { Handshake, UserServerConfig } from "atom.io/realtime-server"
@@ -97,10 +97,13 @@ export const serveSocket = (config: UserServerConfig): (() => void) => {
 			.update(users)
 			.set({ username })
 			.where(eq(users.id, rawUserId))
+		setState(usernameAtoms, consumer, username)
 		socket.emit(`usernameChanged`, username)
 	})
 
 	return () => {
 		for (const unsub of unsubFunctions) unsub()
+		disposeState(usernameAtoms, consumer)
+		disposeState(mutualUsersSelector, consumer)
 	}
 }
