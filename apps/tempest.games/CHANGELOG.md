@@ -1,5 +1,12 @@
 # tempest.games
 
+## 0.3.4
+
+### Patch Changes
+
+- ca52aae: ✨ Bug Rangers: If you can't play a tile, it won't be shown.
+- ca52aae: ✨ Bug Rangers: If you can't play a cube, it won't be shown.
+
 ## 0.3.3
 
 ### Patch Changes
