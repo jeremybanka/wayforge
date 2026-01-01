@@ -26,17 +26,30 @@ export type EventEmitter<EmitEvents extends EventsMap = EventsMap> = <
 	...args: Parameters<EmitEvents[E]>
 ) => void
 
-export type TypedSocket<
-	ListenEvents extends EventsMap = EventsMap,
-	EmitEvents extends EventsMap = never,
-> = {
+export interface GuardedSocket<ListenEvents extends EventsMap> extends Socket {
 	id: string | undefined
-	on: ParticularEventListener<ListenEvents>
-	onAny: (listener: AllEventsListener<ListenEvents>) => void
-	onAnyOutgoing: (listener: AllEventsListener<EmitEvents>) => void
-	off: ParticularEventListener<ListenEvents>
-	offAny: (listener: AllEventsListener<ListenEvents>) => void
-	emit: EventEmitter<EmitEvents>
+	on: <E extends string & keyof ListenEvents>(
+		event: E,
+		listener: ListenEvents[E],
+	) => void
+	onAny: (
+		listener: <E extends string & keyof ListenEvents>(
+			event: E,
+			...args: Parameters<ListenEvents[E]>
+		) => void,
+	) => void
+	onAnyOutgoing: (listener: AllEventsListener<EventsMap>) => void
+	off: <E extends string & keyof ListenEvents>(
+		event: E,
+		listener?: ListenEvents[E],
+	) => void
+	offAny: (
+		listener?: <E extends string & keyof ListenEvents>(
+			event: E,
+			...args: Parameters<ListenEvents[E]>
+		) => void,
+	) => void
+	emit: EventEmitter<EventsMap>
 }
 
 export type Socket = {
