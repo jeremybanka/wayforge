@@ -39,7 +39,7 @@
 		"env:dev": "[ -f .env.development ] && echo '.env.development already present' || cp .env.defaults .env.development",
 		"env:pre": "[ -f .env.preview ] && echo '.env.preview already present' || cp .env.defaults .env.preview",
 		"env:test": "[ -f .env.test ] && echo '.env.test already present' || cp .env.defaults .env.test",
-		"env:prod": "[ -f .env.production ] && echo '.env.production already present' || echo 'VITE_BACKEND_ORIGIN=https://realtime.tempest.games' >> .env.production",
+		"env:prod": "[ -f .env.production ] && echo '.env.production already present' || echo 'VITE_BACKEND_ORIGIN=https://realtime.tempest.games' >> .env.production && echo 'VITE_HIDE_DEVTOOLS=true' >> .env.production",
 		"test": "bun env:test && vitest",
 		"test:once": "bun env:test && varmint track && vitest run; varmint clean --ci-flag=CI",
 		"lint:biome": "biome check -- .",

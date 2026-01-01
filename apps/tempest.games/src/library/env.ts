@@ -7,7 +7,10 @@ export const IS_SERVER = !BUILDING_WITH_VITE && !HAS_WINDOW
 export const IS_TEST = `vitest` in globalThis
 
 const str = type(`string`)
-const maybeBool = type(`"true" | "false" | undefined`)
+const requiredBool = type(`"true" | "false"`).pipe((s) => s === `true`)
+const optionalBool = type(`"true" | "false" | undefined`).pipe(
+	(s) => s === `true`,
+)
 
 export const env = createEnv({
 	isServer: IS_SERVER,
@@ -20,7 +23,7 @@ export const env = createEnv({
 		POSTGRES_HOST: str,
 		POSTGRES_PORT: str.pipe((s) => Number.parseInt(s, 10)),
 		BACKEND_PORT: str.pipe((s) => Number.parseInt(s, 10)),
-		RUN_WORKERS_FROM_SOURCE: maybeBool.pipe((s) => s === `true`),
+		RUN_WORKERS_FROM_SOURCE: optionalBool,
 		FRONTEND_PORT: str.pipe((s) => Number.parseInt(s, 10)),
 		FRONTEND_ORIGINS: str.pipe.try((s) => JSON.parse(s), type(`string[]`)),
 		API_KEY_OPENAI: type(`string | undefined`),
@@ -34,10 +37,10 @@ export const env = createEnv({
 	clientPrefix: `VITE_`,
 
 	client: {
-		VITE_HIDE_DEVTOOLS: type(`string | undefined`).pipe((s) => s === `true`),
+		VITE_HIDE_DEVTOOLS: requiredBool,
 		VITE_BACKEND_ORIGIN: str,
 		VITE_DEV_FRONTEND_HOST: type(`string | undefined`),
-		VITE_DEV_HTTPS: maybeBool.pipe((s) => s === `true`),
+		VITE_DEV_HTTPS: optionalBool,
 	},
 
 	/**
