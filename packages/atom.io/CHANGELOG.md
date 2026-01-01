@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.14
+
+### Patch Changes
+
+- a061ed7: 🏷️ `atom.io/realtime-server` Renamed `castSocket()` to more descriptive `guardSocket()` and simplified associated typings and inferences.
+
 ## 0.46.13
 
 ### Patch Changes
