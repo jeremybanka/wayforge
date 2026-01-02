@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.3.5
+
+### Patch Changes
+
+- d8e344e: 💄 Added icons for the remaining quantities of tiles and cubes.
+
 ## 0.3.4
 
 ### Patch Changes
