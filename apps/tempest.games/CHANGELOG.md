@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.3.6
+
+### Patch Changes
+
+- 3a76447: ✨ Bug Rangers: Added banner announcing player turn.
+
 ## 0.3.5
 
 ### Patch Changes
