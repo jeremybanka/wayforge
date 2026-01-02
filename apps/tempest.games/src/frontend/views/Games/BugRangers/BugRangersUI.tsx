@@ -13,7 +13,7 @@ import {
 	useRealtimeRooms,
 } from "atom.io/realtime-react"
 import type { UList } from "atom.io/transceivers/u-list"
-import { motion } from "motion/react"
+import { AnimatePresence, motion } from "motion/react"
 import { type ReactElement, useContext } from "react"
 import type { Socket } from "socket.io-client"
 
@@ -86,10 +86,12 @@ function Interior({ myUserKey }: { myUserKey: UserKey }): ReactElement {
 		playerRemainingCubesAtoms,
 		myUserKey,
 	)
+	const playerTurn = usePullSelector(playerTurnSelector)
+	console.log(`😼`, { playerTurn })
 	return (
 		<>
 			<RoomModule />
-
+			{playerTurn ? <TurnBanner playerTurn={playerTurn} /> : null}
 			{gameState === `playing` ? (
 				<>
 					<PlayerTurnControls />
@@ -422,5 +424,80 @@ function User({ userKey }: { userKey: UserKey }): ReactElement {
 			{userKey === currentTurn ? <svg.current color={color} /> : null}
 			<span>{username.slice(0, 3)}</span>
 		</motion.div>
+	)
+}
+
+function TurnBanner({ playerTurn }: { playerTurn: UserKey }): ReactElement {
+	const username = usePullAtomFamilyMember(usernameAtoms, playerTurn)
+	const playerColor = usePullAtomFamilyMember(playerColorAtoms, playerTurn)
+	const myUserKey = useO(myUserKeyAtom)
+	return (
+		<article data-css="turn-banner">
+			<AnimatePresence mode="wait">
+				<motion.div
+					key={playerTurn}
+					initial={{ x: `-1500%`, skewX: `-50deg`, width: `20vw` }}
+					animate={{
+						x: [`-1500%`, `2%`, `4%`, `1500%`],
+						skewX: [`-50deg`, `-5deg`, `-5deg`, `-50deg`],
+						width: [`20vw`, `90vw`, `90vw`, `10vw`],
+					}}
+					transition={{
+						duration: 3,
+						times: [0, 0.1, 0.77, 1],
+						ease: [`circOut`, `linear`, `easeIn`],
+					}}
+				/>
+				<motion.span
+					data-css="top"
+					style={{ backgroundColor: playerColor ?? `#555` }}
+					key={playerTurn}
+					initial={{ x: `-1500%`, skewX: `-50deg`, width: `20vw` }}
+					animate={{
+						x: [`-1500%`, `2%`, `4%`, `1500%`],
+						skewX: [`-50deg`, `-5deg`, `-5deg`, `-50deg`],
+						width: [`20vw`, `20vw`, `100vw`, `10vw`],
+					}}
+					transition={{
+						duration: 3,
+						times: [0, 0.1, 0.7, 1],
+						ease: [`circOut`, `linear`, `easeIn`],
+					}}
+				/>
+				<motion.span
+					data-css="bottom"
+					key={playerTurn}
+					initial={{ x: `-1500%`, skewX: `-50deg`, width: `20vw` }}
+					animate={{
+						x: [`1500%`, `4%`, `2%`, `-1500%`],
+						skewX: [`-50deg`, `-5deg`, `-5deg`, `-50deg`],
+						width: [`20vw`, `20vw`, `100vw`, `10vw`],
+					}}
+					transition={{
+						duration: 3,
+						times: [0, 0.1, 0.7, 1],
+						ease: [`circOut`, `linear`, `easeIn`],
+					}}
+				/>
+
+				<motion.h1
+					style={{ backgroundColor: playerColor ?? `#555` }}
+					key={playerTurn}
+					initial={{ x: `-1500%`, skewX: `-50deg`, width: `20vw` }}
+					animate={{
+						x: [`-1500%`, `5%`, `10%`, `1500%`],
+						skewX: [`-50deg`, `-5deg`, `-5deg`, `-50deg`],
+						width: [`20vw`, `80vw`, `80vw`, `10vw`],
+					}}
+					transition={{
+						duration: 3,
+						times: [0, 0.2, 0.75, 1],
+						ease: [`circOut`, `linear`, `easeIn`],
+					}}
+				>
+					{playerTurn === myUserKey ? `your turn` : `${username}'s turn`}
+				</motion.h1>
+			</AnimatePresence>
+		</article>
 	)
 }
