@@ -70,6 +70,54 @@ main.class {
     }
   }
 
+  > article[data-css="turn-banner"] {
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    pointer-events: all;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    pointer-events: none;
+    > h1 {
+      position: absolute;
+      overflow: hidden;
+      white-space: nowrap;
+      top: 150px;
+      height: 100px;
+      color: var(--fg);
+      font-size: 48px;
+      padding: 24px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    > div {
+      position: absolute;
+      top: 135px;
+      height: 100px;
+      background: var(--fg);
+    }
+    > span[data-css="top"] {
+      position: absolute;
+      top: 120px;
+      height: 20px;
+    }
+    > span[data-css="bottom"] {
+      position: absolute;
+      top: 320px;
+      height: 20px;
+      background: var(--fg);
+      align-self: flex-end;
+    }
+  }
+
   > article[data-css="turn-controls"] {
     position: absolute;
     bottom: 60px;
