@@ -1,29 +1,10 @@
-import type { ChildProcessWithoutNullStreams } from "node:child_process"
-import { spawn } from "node:child_process"
 import { resolve } from "node:path"
 
-import type { ParentSocket } from "atom.io/realtime-server"
-import { ChildSocket } from "atom.io/realtime-server"
-
 import { env } from "./library/env"
-
-export type Role = `backend` | `frontend`
-export type Extension = `js` | `ts`
-export type Runner = `bun` | `node`
-export type WorkerName = `${Role}.worker.${string}.${Runner}`
-
-export function worker(
-	from: ParentSocket<any, any>,
-	name: WorkerName,
-	logger: Pick<Console, `error` | `info` | `warn`> = from.logger,
-): ChildSocket<any, any, ChildProcessWithoutNullStreams> {
-	const [runner, args] = resolveRoomScript(name)
-	const child = spawn(runner, args)
-	return new ChildSocket(child, name, logger)
-}
+import type { Extension, RoomName, Runner } from "./library/room-names"
 
 export function resolveRoomScript(
-	name: WorkerName,
+	name: RoomName,
 ): [runner: Runner, args: string[]] {
 	const extension: Extension = env.RUN_WORKERS_FROM_SOURCE ? `ts` : `js`
 	const runner: Runner = name.endsWith(`.bun`) ? `bun` : `node`
@@ -41,8 +22,3 @@ export function resolveRoomScript(
 	}
 	return [runner, args]
 }
-
-export const workerNames = [
-	`backend.worker.bug-rangers.bun`,
-] as const satisfies WorkerName[]
-export type ActualWorkerName = (typeof workerNames)[number]

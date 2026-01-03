@@ -13,8 +13,8 @@ import { usePullAtom } from "./use-pull-atom"
 import { usePullMutable } from "./use-pull-mutable-atom"
 import { usePullMutableAtomFamilyMember } from "./use-pull-mutable-family-member"
 
-export type RealtimeRoomsTools = {
-	roomSocket: Socket<{}, RoomSocketInterface<string>>
+export type RealtimeRoomsTools<RoomNames extends string> = {
+	roomSocket: Socket<{}, RoomSocketInterface<RoomNames>>
 	myRoomKey: RoomKey | undefined
 	myMutualsAtom: MutableAtomToken<UList<UserKey>>
 	myOwnedRoomsAtom: MutableAtomToken<UList<RoomKey>>
@@ -22,7 +22,7 @@ export type RealtimeRoomsTools = {
 }
 export function useRealtimeRooms<
 	RoomNames extends string,
->(): RealtimeRoomsTools {
+>(): RealtimeRoomsTools<RoomNames> {
 	const store = React.useContext(StoreContext)
 	const { socket } = React.useContext(RealtimeContext)
 	usePullMutable(roomKeysAtom)
