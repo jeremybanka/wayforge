@@ -447,6 +447,8 @@ function TurnBanner({ playerTurn }: { playerTurn: UserKey }): ReactElement {
 						ease: [`circOut`, `linear`, `easeIn`],
 					}}
 				/>
+			</AnimatePresence>
+			<AnimatePresence mode="wait">
 				<motion.span
 					data-css="top"
 					style={{ backgroundColor: playerColor ?? `#555` }}
@@ -463,6 +465,8 @@ function TurnBanner({ playerTurn }: { playerTurn: UserKey }): ReactElement {
 						ease: [`circOut`, `linear`, `easeIn`],
 					}}
 				/>
+			</AnimatePresence>
+			<AnimatePresence mode="wait">
 				<motion.span
 					data-css="bottom"
 					key={playerTurn}
@@ -478,7 +482,8 @@ function TurnBanner({ playerTurn }: { playerTurn: UserKey }): ReactElement {
 						ease: [`circOut`, `linear`, `easeIn`],
 					}}
 				/>
-
+			</AnimatePresence>
+			<AnimatePresence mode="wait">
 				<motion.h1
 					style={{ backgroundColor: playerColor ?? `#555` }}
 					key={playerTurn}
