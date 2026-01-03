@@ -33,11 +33,9 @@ export function GameView({
 export function GameIndex(): React.ReactNode {
 	return (
 		<nav>
-			{GAMES.map((gameId) => (
-				<Anchor key={gameId} href={`/game/${gameId}`}>
-					{gameId}
-				</Anchor>
-			))}
+			<Anchor href={`/game/hexiom`}>
+				<h1>HEXIOM</h1>
+			</Anchor>
 		</nav>
 	)
 }
@@ -47,7 +45,7 @@ type GameId = (typeof GAMES)[number]
 export type GameProps = { gameId: GameId }
 export function Game(props: GameProps): React.ReactNode {
 	switch (props.gameId) {
-		case `bug_rangers`: {
+		case `hexiom`: {
 			return <BugRangers />
 		}
 		case `clicker`: {
