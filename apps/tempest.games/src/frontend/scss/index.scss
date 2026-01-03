@@ -94,21 +94,20 @@
     --hyperlink-color: #08f;
     --hyperlink-hover-color: #04f;
   }
-  a:hover {
-    color: #08f;
-  }
   button {
     background-color: #f9f9f9;
   }
 }
 
 a {
+  --interactive-color: var(--hyperlink-color);
+  color: var(--interactive-color);
   font-weight: 500;
-  color: var(--hyperlink-color);
   text-decoration: inherit;
   &:hover {
-    color: var(--hyperlink-hover-color);
-    text-decoration: underline;
+    --interactive-color: var(--hyperlink-hover-color);
+    text-decoration-color: var(--interactive-color);
+    text-decoration-line: underline;
   }
 }
 
