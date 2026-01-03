@@ -87,7 +87,6 @@ function Interior({ myUserKey }: { myUserKey: UserKey }): ReactElement {
 		myUserKey,
 	)
 	const playerTurn = usePullSelector(playerTurnSelector)
-	console.log(`😼`, { playerTurn })
 	return (
 		<>
 			<RoomModule />
@@ -448,6 +447,8 @@ function TurnBanner({ playerTurn }: { playerTurn: UserKey }): ReactElement {
 						ease: [`circOut`, `linear`, `easeIn`],
 					}}
 				/>
+			</AnimatePresence>
+			<AnimatePresence mode="wait">
 				<motion.span
 					data-css="top"
 					style={{ backgroundColor: playerColor ?? `#555` }}
@@ -464,6 +465,8 @@ function TurnBanner({ playerTurn }: { playerTurn: UserKey }): ReactElement {
 						ease: [`circOut`, `linear`, `easeIn`],
 					}}
 				/>
+			</AnimatePresence>
+			<AnimatePresence mode="wait">
 				<motion.span
 					data-css="bottom"
 					key={playerTurn}
@@ -479,7 +482,8 @@ function TurnBanner({ playerTurn }: { playerTurn: UserKey }): ReactElement {
 						ease: [`circOut`, `linear`, `easeIn`],
 					}}
 				/>
-
+			</AnimatePresence>
+			<AnimatePresence mode="wait">
 				<motion.h1
 					style={{ backgroundColor: playerColor ?? `#555` }}
 					key={playerTurn}
