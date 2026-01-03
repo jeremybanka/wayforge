@@ -3,6 +3,18 @@ article.class {
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    padding-bottom: 35px;
+    > a {
+      border: 2px solid var(--interactive-color);
+      padding: 5px;
+      padding-top: 35px;
+      > h1 {
+        color: var(--interactive-color);
+        margin: 0;
+        font-size: 24px;
+        font-weight: normal;
+      }
+    }
   }
   > article[data-css="server-control"] {
     display: flex;
@@ -11,8 +23,6 @@ article.class {
     > div {
       border: 1px solid var(--fg-soft-3);
       padding: 5px;
-    }
-    > button {
     }
   }
 }
