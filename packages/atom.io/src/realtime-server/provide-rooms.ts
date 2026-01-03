@@ -72,7 +72,7 @@ export function spawnRoom<RoomNames extends string>({
 			socket.id ?? `[ID MISSING?!]`,
 			`👤 ${userKey} spawns room ${roomName}`,
 		)
-		const roomKey = `room::${roomMeta.count++}` satisfies RoomKey
+		const roomKey = `room::${roomMeta.count++}-${roomName}` satisfies RoomKey
 		const [command, args] = resolveRoomScript(roomName)
 		const child = await new Promise<ChildProcessWithoutNullStreams>(
 			(resolve) => {
