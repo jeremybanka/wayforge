@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.3.7
+
+### Patch Changes
+
+- 173b2ca: ✨ Updated "Games" index to be more presentable.
+
 ## 0.3.6
 
 ### Patch Changes
