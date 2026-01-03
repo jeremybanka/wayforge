@@ -1,11 +1,7 @@
 import type { ViewOf } from "atom.io"
-import { runTransaction } from "atom.io"
 import { toEntries } from "atom.io/json"
-import { useO } from "atom.io/react"
-import { useSyncContinuity } from "atom.io/realtime-react"
 import * as React from "react"
 
-import { countAtom, countContinuity, incrementTX } from "../../library/store"
 import { Anchor } from "../Anchor"
 import { type Route, ROUTES } from "../services/router-service"
 import scss from "./Game.module.scss"
@@ -48,30 +44,8 @@ export function Game(props: GameProps): React.ReactNode {
 		case `hexiom`: {
 			return <BugRangers />
 		}
-		case `clicker`: {
-			return <Clicker />
-		}
 		case `server_control`: {
 			return <ServerControl />
 		}
 	}
-}
-
-export function Clicker(): React.ReactNode {
-	const count = useO(countAtom)
-	const increment = runTransaction(incrementTX)
-	useSyncContinuity(countContinuity)
-	return (
-		<article>
-			<button
-				type="button"
-				onClick={() => {
-					increment()
-				}}
-			>
-				count is {count}
-			</button>
-			<p>Let's see how high we can count!</p>
-		</article>
-	)
 }
