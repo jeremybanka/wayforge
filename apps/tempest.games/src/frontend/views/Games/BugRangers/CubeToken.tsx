@@ -61,12 +61,6 @@ export function CubeTokenLayer({
 					color={color}
 					position={new THREE.Vector3(0, 0, 0)}
 					rotation={new THREE.Euler(0, 0, 0)}
-					onPointerDown={(pos) => {
-						console.log(`onPointerDown`, pos)
-					}}
-					onPointerUp={(pos) => {
-						console.log(`onPointerUp`, pos)
-					}}
 				/>
 			) : (
 				Array.from({ length: count }).map((_, i) => {
@@ -76,20 +70,12 @@ export function CubeTokenLayer({
 
 					const rotation = new THREE.Euler(0, (Math.PI * 3) / 2 - angle, 0)
 
-					// const color = i === 0 ? `#f00` : i === 1 ? `#0f0` : `#00f`
-
 					return (
 						<CubeToken
 							key={i}
 							color={color}
 							position={new THREE.Vector3(x, 0, z)}
 							rotation={rotation}
-							onPointerDown={(pos) => {
-								console.log(`onPointerDown`, pos)
-							}}
-							onPointerUp={(pos) => {
-								console.log(`onPointerUp`, pos)
-							}}
 						/>
 					)
 				})

@@ -87,7 +87,6 @@ function Interior({ myUserKey }: { myUserKey: UserKey }): ReactElement {
 		myUserKey,
 	)
 	const playerTurn = usePullSelector(playerTurnSelector)
-	console.log(`😼`, { playerTurn })
 	return (
 		<>
 			<RoomModule />
