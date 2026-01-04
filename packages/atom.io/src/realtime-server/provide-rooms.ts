@@ -1,6 +1,7 @@
 import type { ChildProcessWithoutNullStreams } from "node:child_process"
 import { spawn } from "node:child_process"
 
+import type { ReadableFamilyToken } from "atom.io"
 import type { RootStore } from "atom.io/internal"
 import {
 	editRelationsInStore,
@@ -270,6 +271,7 @@ export function destroyRoom({
 
 export type ProvideRoomsConfig<RoomNames extends string> = {
 	resolveRoomScript: (path: RoomNames) => [string, string[]]
+	roomAdminsToken: ReadableFamilyToken<boolean, UserKey>
 	roomNames: RoomNames[]
 	roomTimeLimit?: number
 	userKey: UserKey
@@ -277,12 +279,14 @@ export type ProvideRoomsConfig<RoomNames extends string> = {
 	socket: Socket
 }
 export function provideRooms<RoomNames extends string>({
-	store = IMPLICIT.STORE,
-	socket,
 	resolveRoomScript,
+	roomAdminsToken,
 	roomNames,
+	socket,
+	store = IMPLICIT.STORE,
 	userKey,
 }: ProvideRoomsConfig<RoomNames>): () => void {
+	const isAdmin = getFromStore(store, roomAdminsToken, userKey)
 	const roomSocket = guardSocket<RoomSocketInterface<RoomNames>>(
 		socket,
 		createRoomSocketGuard(roomNames),
@@ -330,11 +334,13 @@ export function provideRooms<RoomNames extends string>({
 		enterRoom(userRoomKey)
 		break
 	}
-	roomSocket.on(
-		`createRoom`,
-		spawnRoom({ store, socket, userKey, resolveRoomScript }),
-	)
-	roomSocket.on(`deleteRoom`, destroyRoom({ store, socket, userKey }))
+	if (isAdmin) {
+		roomSocket.on(
+			`createRoom`,
+			spawnRoom({ store, socket, userKey, resolveRoomScript }),
+		)
+		roomSocket.on(`deleteRoom`, destroyRoom({ store, socket, userKey }))
+	}
 	return () => {
 		unsubFromRoomKeys()
 		unsubFromUsersInRooms()
