@@ -16,7 +16,7 @@ import { users, userSessions } from "../database/tempest-db-schema"
 import { usernameType } from "../library/data-constraints"
 import { env } from "../library/env"
 import { roomNames } from "../library/room-names"
-import { cpuCountAtom } from "../library/store"
+import { cpuCountAtom, isAdminAtom } from "../library/store"
 import { usernameAtoms } from "../library/username-state"
 import { db } from "./db"
 import { logger } from "./logger"
@@ -88,6 +88,7 @@ export const serveSocket = (config: UserServerConfig): (() => void) => {
 	const mutualsSelector = findState(mutualUsersSelector, consumer)
 
 	const unsubFunctions = [
+		provideState(isAdminAtom, findState(roomAdminsSelectors, consumer)),
 		provideState(cpuCountAtom),
 		provideFamily(usernameAtoms, mutualsSelector),
 		provideRooms({
