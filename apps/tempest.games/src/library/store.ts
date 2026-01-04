@@ -33,3 +33,8 @@ export const cpuCountAtom = atom<number>({
 		},
 	],
 })
+
+export const isAdminAtom = atom<boolean>({
+	key: `isAdmin`,
+	default: false,
+})
