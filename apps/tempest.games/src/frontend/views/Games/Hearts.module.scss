@@ -1,0 +1,29 @@
+.class {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100dvw;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-grow: 1;
+  background-color: var(--bg-darkest);
+  user-select: none;
+  > section {
+    width: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    flex: 1 0 0;
+    min-height: 0;
+    &[data-css="enemy-domains"] {
+      flex-grow: 4;
+    }
+    &[data-css="public"] {
+      flex-grow: 10;
+    }
+    &[data-css="my-domain"] {
+      flex-grow: 5;
+    }
+  }
+}

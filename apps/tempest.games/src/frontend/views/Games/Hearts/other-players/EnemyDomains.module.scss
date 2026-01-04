@@ -1,0 +1,53 @@
+div.class {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  justify-content: flex-end;
+  > main {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    height: 100%;
+    gap: 10px;
+    padding: 10px;
+    padding-bottom: 15px;
+    > [data-css="enemy"] {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-flow: column;
+      width: 100%;
+      flex: 1 0 0;
+      min-width: 0;
+      > [data-css="their-pfp"] {
+        position: relative;
+        width: 100%;
+        display: flex;
+        flex-grow: 1;
+        justify-content: center;
+        align-items: flex-start;
+        > [data-css="profile-picture"] {
+          height: 120%;
+        }
+      }
+      > [data-css="their-stuff"] {
+        position: relative;
+        width: 100%;
+        flex: 6 0 0;
+        max-width: 500px;
+      }
+    }
+  }
+  > [data-css="tabletop"] {
+    --background-color: var(--table-far);
+    position: absolute !important;
+    z-index: -1 !important;
+    bottom: 0;
+    left: 0;
+    height: 50%;
+    width: 100%;
+  }
+}
