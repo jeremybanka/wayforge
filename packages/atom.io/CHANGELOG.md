@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.15
+
+### Patch Changes
+
+- c38ed7f: ✨ `atom.io/realtime-server` Included room name in a room's key.
+
 ## 0.46.14
 
 ### Patch Changes
