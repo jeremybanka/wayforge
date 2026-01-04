@@ -1,5 +1,13 @@
 # tempest.games
 
+## 0.3.9
+
+### Patch Changes
+
+- 0c6ef46: 🐛 Rooms can only be created/destroyed by the owner of the server.
+- Updated dependencies [0c6ef46]
+  - atom.io@0.46.16
+
 ## 0.3.8
 
 ### Patch Changes
