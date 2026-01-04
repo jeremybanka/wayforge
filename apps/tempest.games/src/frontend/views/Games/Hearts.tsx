@@ -1,6 +1,5 @@
 import type { RoomKey } from "atom.io/realtime"
-import { myRoomKeySelector } from "atom.io/realtime-client"
-import { usePullSelector } from "atom.io/realtime-react"
+import { useRealtimeRooms } from "atom.io/realtime-react"
 import type { ReactElement } from "react"
 
 import scss from "./Hearts.module.scss"
@@ -9,7 +8,7 @@ import { EnemyDomains } from "./Hearts/other-players/EnemyDomains"
 import { Public } from "./Hearts/public/Public"
 
 export function Hearts(): ReactElement | null {
-	const myRoomKey = usePullSelector(myRoomKeySelector)
+	const { myRoomKey } = useRealtimeRooms()
 	return myRoomKey ? <HeartsInterior roomKey={myRoomKey} /> : null
 }
 

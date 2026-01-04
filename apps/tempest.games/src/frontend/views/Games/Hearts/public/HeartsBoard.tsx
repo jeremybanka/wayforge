@@ -4,7 +4,7 @@ import { deckIndex, trickIndex } from "../../../../../library/topdeck"
 import type { HeartsInteriorProps } from "../../Hearts"
 import { Deck } from "../game-pieces/Deck"
 import { Trick } from "../game-pieces/Trick"
-import scss from "./Hearts.module.scss"
+import scss from "./HeartsBoard.module.scss"
 
 export function Hearts({ roomKey }: HeartsInteriorProps): React.ReactNode {
 	return (

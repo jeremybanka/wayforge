@@ -16,7 +16,7 @@ import { addPlayerToGameTX } from "../../../../../library/topdeck/card-game-acti
 import { startGameTX } from "../../../../../library/topdeck/hearts"
 import { h3 } from "../components/hX"
 import { useRadial } from "../peripherals/radial"
-import { Hearts } from "./Hearts"
+import { Hearts } from "./HeartsBoard"
 import scss from "./Public.module.scss"
 
 export function Public({ roomKey }: { roomKey: RoomKey }): React.ReactNode {
