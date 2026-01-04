@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.3.10
+
+### Patch Changes
+
+- e42b54a: 🐛 Fixed crash.
+
 ## 0.3.9
 
 ### Patch Changes
