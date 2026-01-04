@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.16
+
+### Patch Changes
+
+- 0c6ef46: ✨ `atom.io/realtime-server` Added control over room administration (creating/deleting rooms).
+
 ## 0.46.15
 
 ### Patch Changes
