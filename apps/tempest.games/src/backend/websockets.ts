@@ -1,5 +1,5 @@
 import { type } from "arktype"
-import { disposeState, findState, setState } from "atom.io"
+import { disposeState, findState, selectorFamily, setState } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import { mutualUsersSelector, type UserKey } from "atom.io/realtime"
 import type { Handshake, UserServerConfig } from "atom.io/realtime-server"
@@ -14,6 +14,7 @@ import { and, eq } from "drizzle-orm"
 import { resolveRoomScript } from "../backend.worker"
 import { users, userSessions } from "../database/tempest-db-schema"
 import { usernameType } from "../library/data-constraints"
+import { env } from "../library/env"
 import { roomNames } from "../library/room-names"
 import { cpuCountAtom } from "../library/store"
 import { usernameAtoms } from "../library/username-state"
@@ -62,6 +63,17 @@ export const sessionMiddleware = async (
 	return `user::${user.id}` satisfies UserKey
 }
 
+export const roomAdminsSelectors = selectorFamily<boolean, UserKey>({
+	key: `roomAdmins`,
+	get:
+		(userKey) =>
+		({ get }) => {
+			const userName = get(usernameAtoms, userKey)
+			if (userName === env.ROOT_USERNAME) return true
+			return false
+		},
+})
+
 export const serveSocket = (config: UserServerConfig): (() => void) => {
 	const { socket, consumer } = config
 	socket.onAny((event, ...args) => {
@@ -84,6 +96,7 @@ export const serveSocket = (config: UserServerConfig): (() => void) => {
 			store: IMPLICIT.STORE,
 			roomNames: roomNames,
 			resolveRoomScript,
+			roomAdminsToken: roomAdminsSelectors,
 		}),
 	]
 
