@@ -153,6 +153,9 @@ importers:
       atom.io:
         specifier: workspace:*
         version: link:../../packages/atom.io
+      corners:
+        specifier: 0.2.0
+        version: 0.2.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       cron:
         specifier: 4.4.0
         version: 4.4.0

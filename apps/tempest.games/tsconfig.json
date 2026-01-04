@@ -27,7 +27,11 @@
 			"atom.io/transceivers/u-list": [
 				"../../packages/atom.io/src/transceivers/u-list"
 			],
-			"atom.io/web": ["../../packages/atom.io/src/web"]
+			"atom.io/web": ["../../packages/atom.io/src/web"],
+			"hamr": ["../../packages/hamr/src/main"],
+			"hamr/react-css-vars": ["../../packages/hamr/src/react-css-vars"],
+			"hamr/react-id": ["../../packages/hamr/src/react-id"],
+			"hamr/react-radial": ["../../packages/hamr/src/react-radial"]
 		}
 	},
 	"include": [

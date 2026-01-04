@@ -1,0 +1,16 @@
+span.class {
+  --background-color: #000;
+  position: relative;
+  background-color: var(--background-color);
+  min-width: 20px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: var(--bg-color) 1px solid;
+  > [data-css="identity"] {
+    border: var(--background-color) 1px solid;
+
+    position: absolute;
+    top: 8px;
+    right: calc(50% - 40px);
+  }
+}
