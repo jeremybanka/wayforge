@@ -1,6 +1,6 @@
 import path from "node:path"
 
-import type { Silo } from "atom.io"
+import { selectorFamily, type Silo } from "atom.io"
 import type { UserKey } from "atom.io/realtime"
 import * as RTS from "atom.io/realtime-server"
 import type * as SocketIO from "socket.io"
@@ -8,6 +8,10 @@ import type * as SocketIO from "socket.io"
 function resolveRoomScript(name: string): [string, string[]] {
 	return [`bun`, [path.join(__dirname, name)]]
 }
+const isRoomAdminSelectors = selectorFamily<boolean, UserKey>({
+	key: `isRoomAdminSelector`,
+	get: () => () => true,
+})
 export const SystemServer = ({
 	socket,
 	silo: { store },
@@ -26,6 +30,7 @@ export const SystemServer = ({
 		userKey,
 		resolveRoomScript,
 		roomNames: [`game-instance.bun.ts`],
+		roomAdminsToken: isRoomAdminSelectors,
 	})
 	socket.on(`disconnect`, cleanup)
 }

@@ -36,6 +36,7 @@ import {
 	turnInProgressAtom,
 	turnNumberAtom,
 } from "../../../../library/bug-rangers-game-state"
+import { env } from "../../../../library/env"
 import { usernameAtoms } from "../../../../library/username-state"
 import * as svg from "../../../<svg>"
 import { isMyTurnSelector } from "./bug-rangers-client-state"
@@ -114,7 +115,7 @@ function UserInterior({
 	myUserKey: UserKey
 }): ReactElement | null {
 	const myUsername = usePullAtomFamilyMember(usernameAtoms, myUserKey)
-	return myUsername === `jeremy` ? <Devtools /> : null
+	return myUsername === env.ROOT_USERNAME ? <Devtools /> : null
 }
 
 function RoomModule(): ReactElement {
