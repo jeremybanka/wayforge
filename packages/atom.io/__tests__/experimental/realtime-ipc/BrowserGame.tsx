@@ -10,7 +10,7 @@ type RoomNames = `game-instance.bun.ts`
 function Room({
 	roomSocket,
 	myRoomKey,
-}: RTR.RealtimeRoomsTools): React.ReactNode {
+}: RTR.RealtimeRoomsTools<RoomNames>): React.ReactNode {
 	RTR.useSyncContinuity(gameContinuity)
 	const letter0 = AR.useO(letterAtoms, 0)
 	return (
@@ -31,7 +31,7 @@ function Room({
 function Lobby({
 	allRoomKeysAtom,
 	roomSocket,
-}: RTR.RealtimeRoomsTools): React.ReactNode {
+}: RTR.RealtimeRoomsTools<RoomNames>): React.ReactNode {
 	const roomKeys = AR.useJSON(allRoomKeysAtom)
 	return (
 		<main data-testid="lobby">

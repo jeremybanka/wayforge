@@ -58,8 +58,9 @@ describe(`multi-process realtime server`, () => {
 		await actWithFakeTimers(() => {
 			createRoomButton.click()
 		})
-		const deleteRoomButton =
-			await app.renderResult.findByTestId(`delete-room::0`)
+		const deleteRoomButton = await app.renderResult.findByTestId(
+			`delete-room::0-game-instance.bun.ts`,
+		)
 
 		await actWithFakeTimers(() => {
 			deleteRoomButton.click()
@@ -78,13 +79,15 @@ describe(`multi-process realtime server`, () => {
 			createRoomButton.click()
 		})
 
-		const joinRoomButton = await app.renderResult.findByTestId(`join-room::0`)
+		const joinRoomButton = await app.renderResult.findByTestId(
+			`join-room::0-game-instance.bun.ts`,
+		)
 
 		await actWithFakeTimers(() => {
 			joinRoomButton.click()
 		})
 
-		await app.renderResult.findByTestId(`room::0`)
+		await app.renderResult.findByTestId(`room::0-game-instance.bun.ts`)
 
 		await teardown()
 	})
@@ -96,11 +99,13 @@ describe(`multi-process realtime server`, () => {
 		await actWithFakeTimers(() => {
 			createRoomButton.click()
 		})
-		const joinRoomButton = await app.renderResult.findByTestId(`join-room::0`)
+		const joinRoomButton = await app.renderResult.findByTestId(
+			`join-room::0-game-instance.bun.ts`,
+		)
 		await actWithFakeTimers(() => {
 			joinRoomButton.click()
 		})
-		await app.renderResult.findByTestId(`room::0`)
+		await app.renderResult.findByTestId(`room::0-game-instance.bun.ts`)
 		await app.renderResult.findByTestId(`A`, undefined, { timeout: 3000 })
 
 		await actWithFakeTimers(() => {
@@ -111,7 +116,7 @@ describe(`multi-process realtime server`, () => {
 		await actWithFakeTimers(() => {
 			app.socket.connect()
 		})
-		await app.renderResult.findByTestId(`room::0`)
+		await app.renderResult.findByTestId(`room::0-game-instance.bun.ts`)
 		await app.renderResult.findByTestId(`A`, undefined, { timeout: 3000 })
 
 		const leaveRoomButton = await app.renderResult.findByTestId(`leave-room`)

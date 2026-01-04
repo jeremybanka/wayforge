@@ -4,14 +4,14 @@ import type { RealtimeRoomsTools } from "atom.io/realtime-react"
 import { usePullAtom, useRealtimeRooms } from "atom.io/realtime-react"
 import * as React from "react"
 
-import type { ActualWorkerName } from "../../backend.worker"
+import type { ActualRoomName } from "../../library/room-names"
 import { cpuCountAtom } from "../../library/store"
 
 export function ServerControl(): React.ReactNode {
 	const cpuCount = usePullAtom(cpuCountAtom)
 	const allRoomKeys = useJSON(roomKeysAtom)
 	const { myRoomKey, myOwnedRoomsAtom, roomSocket } =
-		useRealtimeRooms<ActualWorkerName>()
+		useRealtimeRooms<ActualRoomName>()
 
 	const myOwnedRoomKeys = useO(myOwnedRoomsAtom)
 
@@ -49,7 +49,7 @@ type CoreProps = {
 	roomKey?: RoomKey
 	hasJoined?: boolean
 	ownsRoom?: boolean
-	roomSocket: RealtimeRoomsTools[`roomSocket`]
+	roomSocket: RealtimeRoomsTools<ActualRoomName>[`roomSocket`]
 }
 function Core({
 	indexNumber,
