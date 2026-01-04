@@ -16,6 +16,7 @@ export const env = createEnv({
 	isServer: IS_SERVER,
 
 	server: {
+		ROOT_USERNAME: str,
 		CI: type(`string | undefined`).pipe(Boolean),
 		POSTGRES_USER: str,
 		POSTGRES_PASSWORD: str,
