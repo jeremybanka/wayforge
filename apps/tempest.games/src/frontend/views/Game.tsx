@@ -6,6 +6,7 @@ import { Anchor } from "../Anchor"
 import { type Route, ROUTES } from "../services/router-service"
 import scss from "./Game.module.scss"
 import { BugRangers } from "./Games/BugRangers"
+import { Hearts } from "./Games/Hearts"
 import { ServerControl } from "./ServerControl"
 
 export type Tail<T extends any[]> = T extends [any, ...infer Rest] ? Rest : never
@@ -29,6 +30,9 @@ export function GameView({
 export function GameIndex(): React.ReactNode {
 	return (
 		<nav>
+			<Anchor href={`/game/hearts`}>
+				<h1>HEARTS</h1>
+			</Anchor>
 			<Anchor href={`/game/hexiom`}>
 				<h1>HEXIOM</h1>
 			</Anchor>
@@ -43,6 +47,9 @@ export function Game(props: GameProps): React.ReactNode {
 	switch (props.gameId) {
 		case `hexiom`: {
 			return <BugRangers />
+		}
+		case `hearts`: {
+			return <Hearts />
 		}
 		case `server_control`: {
 			return <ServerControl />
