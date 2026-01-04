@@ -1,5 +1,5 @@
 import { type } from "arktype"
-import { disposeState, findState, resetState, setState } from "atom.io"
+import { disposeState, findState, setState } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import { mutualUsersSelector, type UserKey } from "atom.io/realtime"
 import type { Handshake, UserServerConfig } from "atom.io/realtime-server"
@@ -11,9 +11,10 @@ import {
 import { CookieMap } from "bun"
 import { and, eq } from "drizzle-orm"
 
-import { resolveRoomScript, workerNames } from "../backend.worker"
+import { resolveRoomScript } from "../backend.worker"
 import { users, userSessions } from "../database/tempest-db-schema"
 import { usernameType } from "../library/data-constraints"
+import { roomNames } from "../library/room-names"
 import { cpuCountAtom } from "../library/store"
 import { usernameAtoms } from "../library/username-state"
 import { db } from "./db"
@@ -81,7 +82,7 @@ export const serveSocket = (config: UserServerConfig): (() => void) => {
 			socket,
 			userKey: consumer,
 			store: IMPLICIT.STORE,
-			roomNames: workerNames,
+			roomNames: roomNames,
 			resolveRoomScript,
 		}),
 	]

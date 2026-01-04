@@ -60,17 +60,17 @@ export function BugRangersUI(): ReactElement {
 function Exterior(): ReactElement {
 	const { roomSocket, allRoomKeysAtom } = useRealtimeRooms()
 	const allRoomKeys = useJSON(allRoomKeysAtom)
-	const mainRoomKey = allRoomKeys[0]
+	const gameRoomKey = allRoomKeys.find((key) => key.includes(`bug-rangers`))
 	return (
 		<article data-css="room-exterior">
 			<button
 				type="button"
-				disabled={mainRoomKey === undefined}
+				disabled={gameRoomKey === undefined}
 				onClick={() => {
 					roomSocket.emit(`joinRoom`, allRoomKeys[0])
 				}}
 			>
-				{mainRoomKey ? `Join Game` : `Waiting for host`}
+				{gameRoomKey ? `Join Game` : `Waiting for Host`}
 			</button>
 		</article>
 	)
@@ -249,7 +249,9 @@ function PlayerTurnControls(): ReactElement {
 
 function RoomControls(): ReactElement {
 	const { roomSocket, allRoomKeysAtom, myRoomKey } = useRealtimeRooms()
-	const allRoomKeys = useJSON(allRoomKeysAtom)
+	const bugRangersRoomKey = useJSON(allRoomKeysAtom).find((key) =>
+		key.includes(`bug-rangers`),
+	)
 	return (
 		<section data-css="room-controls">
 			{myRoomKey ? (
@@ -265,26 +267,26 @@ function RoomControls(): ReactElement {
 				<button
 					type="button"
 					onClick={() => {
-						if (allRoomKeys.length === 0) {
-							roomSocket?.emit(`createRoom`, `backend.worker.bug-rangers.bun`)
+						if (bugRangersRoomKey) {
+							roomSocket?.emit(`joinRoom`, bugRangersRoomKey)
 						} else {
-							roomSocket?.emit(`joinRoom`, allRoomKeys[0])
+							roomSocket?.emit(`createRoom`, `backend.worker.bug-rangers.bun`)
 						}
 					}}
 				>
-					{allRoomKeys.length === 0 ? `Create room` : `Join ${allRoomKeys[0]}`}
+					{bugRangersRoomKey ? `Join ${bugRangersRoomKey}` : `Create room`}
 				</button>
 			)}
-			{allRoomKeys.length === 0 ? null : (
+			{bugRangersRoomKey ? (
 				<button
 					type="button"
 					onClick={() => {
-						roomSocket?.emit(`deleteRoom`, allRoomKeys[0])
+						roomSocket?.emit(`deleteRoom`, bugRangersRoomKey)
 					}}
 				>
-					Delete {allRoomKeys[0]}
+					Delete {bugRangersRoomKey}
 				</button>
-			)}
+			) : null}
 		</section>
 	)
 }
