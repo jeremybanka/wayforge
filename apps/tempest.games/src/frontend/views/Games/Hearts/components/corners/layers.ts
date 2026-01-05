@@ -36,12 +36,12 @@ export const LAYER: Readonly<Record<string, Fragment<Layer>>> = {
 	},
 	BG_IN_FG: {
 		className: `bg-in-fg`,
-		color: `var(--bg-color)`,
+		color: `var(--bg)`,
 		stroke: { width: 2, color: `var(--fg-color)` },
 	},
 	BG: {
 		className: `bg`,
-		color: `var(--bg-color)`,
+		color: `var(--bg)`,
 	},
 	FG: {
 		className: `fg`,
