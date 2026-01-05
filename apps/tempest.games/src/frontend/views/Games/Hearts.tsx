@@ -1,5 +1,5 @@
 import { atom, setState } from "atom.io"
-import { useJSON, useO } from "atom.io/react"
+import { useI, useJSON, useO } from "atom.io/react"
 import type { RoomKey } from "atom.io/realtime"
 import { myUserKeyAtom } from "atom.io/realtime-client"
 import {
@@ -7,12 +7,15 @@ import {
 	usePullAtom,
 	useRealtimeRooms,
 } from "atom.io/realtime-react"
+import { Radial } from "hamr/react-radial"
 import { type ReactElement, useContext } from "react"
 
 import { isAdminAtom } from "../../../library/store"
 import scss from "./Hearts.module.scss"
 import { MyDomain } from "./Hearts/my-domain/MyDomain"
 import { EnemyDomains } from "./Hearts/other-players/EnemyDomains"
+import { windowMousePositionAtom } from "./Hearts/peripherals/mouse-position"
+import { actionsAtom, radialModeAtom } from "./Hearts/peripherals/radial"
 import { Public } from "./Hearts/public/Public"
 
 export function Hearts(): ReactElement | null {
@@ -34,6 +37,10 @@ export type HeartsInteriorProps = {
 	roomKey: RoomKey
 }
 export function HeartsInterior({ roomKey }: HeartsInteriorProps): ReactElement {
+	const radialMode = useO(radialModeAtom)
+	const setRadialMode = useI(radialModeAtom)
+	const actions = useO(actionsAtom)
+	const windowMousePosition = useO(windowMousePositionAtom)
 	return (
 		<>
 			<section data-css="enemy-domains">
@@ -45,6 +52,11 @@ export function HeartsInterior({ roomKey }: HeartsInteriorProps): ReactElement {
 			<section data-css="my-domain">
 				<MyDomain />
 			</section>
+			<Radial
+				useMode={() => [radialMode, setRadialMode]}
+				useActions={() => actions}
+				useMousePosition={() => windowMousePosition}
+			/>
 		</>
 	)
 }

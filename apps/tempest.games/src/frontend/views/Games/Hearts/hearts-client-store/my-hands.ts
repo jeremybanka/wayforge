@@ -1,11 +1,10 @@
-import * as AtomIO from "atom.io"
-import { findRelations } from "atom.io"
+import { findRelations, selector } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import { myUserKeyAtom } from "atom.io/realtime-client"
 
 import { handIndex, ownersOfGroups } from "../../../../../library/topdeck"
 
-export const myHandsIndex = AtomIO.selector<string[]>({
+export const myHandsSelector = selector<string[]>({
 	key: `myHands`,
 	get: ({ get }) => {
 		const myUserKey = get(myUserKeyAtom)

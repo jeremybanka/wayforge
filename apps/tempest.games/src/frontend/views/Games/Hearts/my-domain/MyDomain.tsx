@@ -3,12 +3,12 @@ import * as React from "react"
 
 import { span } from "../components/span"
 import { Hand } from "../game-pieces/Hand"
-import { myHandsIndex } from "../hearts-client-store/my-hands-index"
+import { myHandsSelector } from "../hearts-client-store/my-hands"
 import { Me } from "../my-domain/Me"
 import scss from "./MyDomain.module.scss"
 
 export const MyDomain: React.FC = () => {
-	const myHands = useO(myHandsIndex)
+	const myHands = useO(myHandsSelector)
 	return (
 		<div className={scss[`class`]}>
 			<section data-css="me">

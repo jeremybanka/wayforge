@@ -7,8 +7,8 @@ import {
 } from "atom.io"
 import { UList } from "atom.io/transceivers/u-list"
 
+import { playerTurnOrderAtom } from "../../bug-rangers-game-state"
 import { groupsOfCards } from "./card-groups-store"
-import { gamePlayerIndex } from "./game-players-store"
 
 export const trickContributions = join({
 	key: `trickContributions`,
@@ -25,8 +25,8 @@ export const trickWinners = join({
 	isBType: (input): input is string => typeof input === `string`,
 })
 
-export const trickIndex = mutableAtom<UList<string>>({
-	key: `trickIndex`,
+export const trickKeysAtom = mutableAtom<UList<string>>({
+	key: `trickKeys`,
 	class: UList,
 })
 
@@ -36,11 +36,11 @@ export const trickContentsStates = selectorFamily<TrickContent[], string>({
 	get:
 		(trickId) =>
 		({ get }) => {
-			const playerIdsInGame = get(gamePlayerIndex)
+			const playerTurnOrder = get(playerTurnOrderAtom)
 			const cardIdsInTrick = get(
 				findRelations(groupsOfCards, trickId).cardKeysOfGroup,
 			)
-			const trickContents = playerIdsInGame.map<TrickContent>((playerId) => {
+			const trickContents = playerTurnOrder.map<TrickContent>((playerId) => {
 				const cardsThisPlayerHasInTricks = get(
 					findRelations(trickContributions, playerId).cardKeysOfPlayer,
 				)
@@ -66,7 +66,7 @@ export const trickIsCompleteState = selectorFamily<boolean, string>({
 export const completeTrickIndex = selector<string[]>({
 	key: `completeTrickIndex`,
 	get: ({ find, get, json }) => {
-		const trickIds = get(json(trickIndex))
+		const trickIds = get(json(trickKeysAtom))
 		const completeTrickIds = trickIds.filter((trickId) =>
 			get(find(trickIsCompleteState, trickId)),
 		)
@@ -78,7 +78,7 @@ export const currentTrickIdState = selector<string | null>({
 	key: `currentTrick`,
 	get: ({ get, json }) => {
 		const completeTrickIds = get(completeTrickIndex)
-		const trickIds = get(json(trickIndex))
+		const trickIds = get(json(trickKeysAtom))
 
 		const currentTrickId = trickIds.at(-1)
 		if (!currentTrickId || completeTrickIds.includes(currentTrickId)) {

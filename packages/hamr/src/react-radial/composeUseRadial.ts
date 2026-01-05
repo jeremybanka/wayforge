@@ -38,6 +38,7 @@ export const composeUseRadial =
 			onMouseMove: () => (mouseHasMoved.current = true),
 			...makeMouseHandlers({
 				onMouseDownR: () => {
+					console.log(`mouse down`)
 					mouseHasMoved.current = false
 					setTimeout(() => (mouseHasMoved.current = true), 333)
 					setRadialMode(`held`)

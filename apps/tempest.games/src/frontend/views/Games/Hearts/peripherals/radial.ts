@@ -2,26 +2,26 @@ import { atom, getState, setState } from "atom.io"
 import type { RadialAction, RadialMode } from "hamr/react-radial"
 import { composeUseRadial } from "hamr/react-radial"
 
-import { windowMousePositionState } from "./mouse-position"
+import { windowMousePositionAtom } from "./mouse-position"
 
-export const actionsState = atom<RadialAction[]>({
+export const actionsAtom = atom<RadialAction[]>({
 	key: `actions`,
 	default: [],
 })
-export const radialModeState = atom<RadialMode>({
+export const radialModeAtom = atom<RadialMode>({
 	key: `radialMode`,
 	default: `idle`,
 })
 
 export const useRadial = composeUseRadial(
 	(v) => {
-		setState(actionsState, v)
+		setState(actionsAtom, v)
 	},
-	() => getState(radialModeState),
+	() => getState(radialModeAtom),
 	(v) => {
-		setState(radialModeState, v)
+		setState(radialModeAtom, v)
 	},
 	(v) => {
-		setState(windowMousePositionState, v)
+		setState(windowMousePositionAtom, v)
 	},
 )

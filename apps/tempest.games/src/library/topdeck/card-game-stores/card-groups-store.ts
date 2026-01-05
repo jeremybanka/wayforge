@@ -9,9 +9,9 @@ import {
 } from "atom.io"
 import { UList } from "atom.io/transceivers/u-list"
 
+import { playerTurnOrderAtom } from "../../bug-rangers-game-state"
 import { cardIndex } from "./cards-store"
-import { gamePlayerIndex } from "./game-players-store"
-import { trickIndex } from "./trick-store"
+import { trickKeysAtom } from "./trick-store"
 
 export type CardGroup = {
 	type: `deck` | `hand` | `pile` | `trick`
@@ -145,7 +145,7 @@ export const trickGlobalView = selector<RegularAtomToken<Trick>[]>({
 	key: `trickGlobalView`,
 	get: ({ get, find }) => {
 		const trickTokens: RegularAtomToken<Trick>[] = []
-		const trickIds = get(trickIndex)
+		const trickIds = get(trickKeysAtom)
 		for (const trickId of trickIds) {
 			const trickToken = find(trickStates, trickId)
 			trickTokens.push(trickToken)
@@ -170,7 +170,7 @@ export const cardGroupIndex = selector<string[]>({
 		const deckIds = get(deckIndex)
 		const handIds = get(handIndex)
 		const pileIds = get(pileIndex)
-		const trickIds = get(trickIndex)
+		const trickIds = get(trickKeysAtom)
 		return [...deckIds, ...handIds, ...pileIds, ...trickIds]
 	},
 })
@@ -230,9 +230,9 @@ export const ownersOfGroupsGlobalView = selector<
 			const token = find(getInternalRelations(ownersOfGroups), groupId)
 			tokens.push(token)
 		}
-		const playerIds = get(gamePlayerIndex)
-		for (const playerId of playerIds) {
-			const token = find(getInternalRelations(ownersOfGroups), playerId)
+		const userKeys = get(playerTurnOrderAtom)
+		for (const userKey of userKeys) {
+			const token = find(getInternalRelations(ownersOfGroups), userKey)
 			tokens.push(token)
 		}
 		return tokens

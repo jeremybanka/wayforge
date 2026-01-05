@@ -1,19 +1,16 @@
 import { transaction } from "atom.io"
 
-import * as CardGroups from "../card-groups"
+import { trickKeysAtom, trickStates } from "../card-game-stores"
 
-export const spawnTrickTX = transaction<
-	(gameId: string, trickId: string) => void
->({
+export const spawnTrickTX = transaction<(trickId: string) => void>({
 	key: `spawnTrick`,
-	do: (transactors, gameId, trickId) => {
-		const { set, find } = transactors
-		set(CardGroups.trickStates, trickId, {
+	do: (transactors, trickId) => {
+		const { set } = transactors
+		set(trickStates, trickId, {
 			type: `trick`,
 			name: ``,
 		})
-		const trickIndex = find(CardGroups.trickIndices, gameId)
-		set(trickIndex, (current) => {
+		set(trickKeysAtom, (current) => {
 			const next = current.add(trickId)
 			return next
 		})
