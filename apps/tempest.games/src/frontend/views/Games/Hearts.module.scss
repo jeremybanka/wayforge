@@ -8,8 +8,37 @@
   flex-direction: column;
   align-items: center;
   flex-grow: 1;
-  background-color: var(--bg-darkest);
+  background-color: var(--bg-dark-3);
   user-select: none;
+  --table-close: var(--bg-tint-2);
+  --table-middle: var(--bg-dark-2);
+  --table-far: var(--bg-dark-1);
+
+  > button[data-css="devtools-toggle"] {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    z-index: 1000;
+    pointer-events: all;
+    height: 40px;
+  }
+  > article[data-css="devtools"] {
+    position: absolute;
+    top: 70px;
+    left: 0;
+    z-index: 1000;
+    pointer-events: all;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    border: 1px solid var(--fg-soft-1);
+    background: var(--bg);
+    button {
+      pointer-events: all;
+      height: 40px;
+    }
+  }
+
   > section {
     width: 100%;
     display: flex;

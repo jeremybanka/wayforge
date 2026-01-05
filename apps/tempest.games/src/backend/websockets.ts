@@ -95,7 +95,7 @@ export const serveSocket = (config: UserServerConfig): (() => void) => {
 			socket,
 			userKey: consumer,
 			store: IMPLICIT.STORE,
-			roomNames: roomNames,
+			roomNames,
 			resolveRoomScript,
 			roomAdminsToken: roomAdminsSelectors,
 		}),

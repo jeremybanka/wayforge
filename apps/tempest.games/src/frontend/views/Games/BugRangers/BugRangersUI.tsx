@@ -139,7 +139,7 @@ const showBugRangersDevtoolsAtom = atom<boolean>({
 })
 
 function Devtools(): ReactElement {
-	const showBugRangersDevtools = usePullAtom(showBugRangersDevtoolsAtom)
+	const showBugRangersDevtools = useO(showBugRangersDevtoolsAtom)
 	const { myRoomKey } = useRealtimeRooms()
 
 	return (
@@ -165,6 +165,8 @@ function Devtools(): ReactElement {
 }
 
 function DevtoolsInterior(): ReactElement {
+	const { socket } = useContext(RealtimeContext)
+	const gameSocket = socket as Socket<{}, PlayerActions>
 	const gameState = usePullAtom(gameStateAtom)
 	const turnNumber = usePullAtom(turnNumberAtom)
 	const playerTurn = usePullSelector(playerTurnSelector)
@@ -180,7 +182,24 @@ function DevtoolsInterior(): ReactElement {
 					</>
 				)}
 			</span>
-			<GameControls />
+			<section>
+				<button
+					type="button"
+					onClick={() => {
+						gameSocket.emit(`startGame`)
+					}}
+				>
+					start game
+				</button>
+				<button
+					type="button"
+					onClick={() => {
+						socket?.emit(`RESET_GAME`)
+					}}
+				>
+					reset game
+				</button>
+			</section>
 		</>
 	)
 }
@@ -284,30 +303,6 @@ function RoomControls(): ReactElement {
 					Delete {bugRangersRoomKey}
 				</button>
 			) : null}
-		</section>
-	)
-}
-function GameControls(): ReactElement {
-	const { socket } = useContext(RealtimeContext)
-	const gameSocket = socket as Socket<{}, PlayerActions>
-	return (
-		<section>
-			<button
-				type="button"
-				onClick={() => {
-					gameSocket.emit(`startGame`)
-				}}
-			>
-				start game
-			</button>
-			<button
-				type="button"
-				onClick={() => {
-					socket?.emit(`RESET_GAME`)
-				}}
-			>
-				reset game
-			</button>
 		</section>
 	)
 }
