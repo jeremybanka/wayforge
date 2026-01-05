@@ -1,11 +1,10 @@
-import * as AtomIO from "atom.io"
-import { findRelations } from "atom.io"
+import { findRelations, selector } from "atom.io"
 import { myRoomKeySelector, myUserKeyAtom } from "atom.io/realtime-client"
 
-import { ownersOfGroups, trickIndex } from "../../../../../library/topdeck"
+import { ownersOfGroups, trickKeysAtom } from "../../../../../library/topdeck"
 
-export const publicTrickIndex = AtomIO.selector<string[]>({
-	key: `publicTrickIndex`,
+export const publicTrickSelector = selector<string[]>({
+	key: `publicTrickKeys`,
 	get: ({ get }) => {
 		const myUserKey = get(myUserKeyAtom)
 		if (!myUserKey) {
@@ -15,7 +14,7 @@ export const publicTrickIndex = AtomIO.selector<string[]>({
 		if (!myRoomKey) {
 			return []
 		}
-		const trickIds = get(trickIndex)
+		const trickIds = get(trickKeysAtom)
 		const unownedTrickIds = [...trickIds].filter((trickId) => {
 			const { playerKeyOfGroup } = findRelations(ownersOfGroups, trickId)
 			const ownerOfTrick = get(playerKeyOfGroup)

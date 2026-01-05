@@ -10,7 +10,7 @@ import { header } from "./<header>"
 
 export type RadialProps = {
 	mouseActivationMethod?: string
-	useActions: () => RadialAction[]
+	useActions: () => readonly RadialAction[]
 	useMousePosition: () => {
 		x: number
 		y: number

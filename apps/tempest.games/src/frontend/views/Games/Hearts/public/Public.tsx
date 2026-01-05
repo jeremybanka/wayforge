@@ -12,7 +12,6 @@ import {
 	spawnHandTX,
 	spawnTrickTX,
 } from "../../../../../library/topdeck"
-import { addPlayerToGameTX } from "../../../../../library/topdeck/card-game-actions/add-player-to-game"
 import { startGameTX } from "../../../../../library/topdeck/hearts"
 import { h3 } from "../components/hX"
 import { useRadial } from "../peripherals/radial"
@@ -22,7 +21,6 @@ import scss from "./Public.module.scss"
 export function Public({ roomKey }: { roomKey: RoomKey }): React.ReactNode {
 	const { socket } = useContext(RealtimeContext)
 	const myUsername = useO(myUserKeyAtom)
-	const addPlayerToGame = runTransaction(addPlayerToGameTX)
 	const spawnHand = runTransaction(spawnHandTX)
 	const spawnClassicDeck = runTransaction(spawnClassicDeckTX)
 	const createTrick = runTransaction(spawnTrickTX)
@@ -35,16 +33,6 @@ export function Public({ roomKey }: { roomKey: RoomKey }): React.ReactNode {
 				const deckId = nanoid()
 				const cardIds = Array.from({ length: 52 }).map(() => nanoid())
 				spawnClassicDeck(deckId, cardIds)
-			},
-		},
-		{
-			label: `Join Game`,
-			do: () => {
-				if (!myUsername) {
-					console.error(`Tried to join a game without being in a room.`)
-					return
-				}
-				addPlayerToGame(myUsername)
 			},
 		},
 		{

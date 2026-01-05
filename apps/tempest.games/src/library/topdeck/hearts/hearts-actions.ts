@@ -2,6 +2,7 @@ import { getInternalRelations, transaction } from "atom.io"
 import { usersInRooms } from "atom.io/realtime"
 import { myRoomKeySelector } from "atom.io/realtime-client"
 
+import { playerTurnOrderAtom } from "../../bug-rangers-game-state"
 import {
 	dealCardsTX,
 	shuffleDeckTX,
@@ -9,7 +10,6 @@ import {
 	spawnHandTX,
 	spawnTrickTX,
 } from "../card-game-actions"
-import { gamePlayerIndex } from "../card-game-stores"
 
 export type StartGameInput = {
 	handIds: string[]
@@ -28,7 +28,12 @@ export const startGameTX = transaction<(input: StartGameInput) => void>({
 		if (!roomKey) throw new Error(`No room key`)
 		const [usersInRoomsAtoms] = getInternalRelations(usersInRooms, `split`)
 		const users = get(usersInRoomsAtoms, roomKey)
-		set(gamePlayerIndex, [...users])
+		set(playerTurnOrderAtom, (prev) => {
+			for (const playerId of users) {
+				prev.push(playerId)
+			}
+			return prev
+		})
 		let i = 0
 		for (const playerId of users) {
 			run(spawnHandTX, `${txId}:spawnHand:${playerId}`)(playerId, handIds[i])

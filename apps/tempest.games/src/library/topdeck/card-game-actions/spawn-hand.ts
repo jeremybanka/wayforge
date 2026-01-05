@@ -1,16 +1,17 @@
 import { editRelations, transaction } from "atom.io"
+import type { UserKey } from "atom.io/realtime"
 
-import { gamePlayerIndex } from "../card-game-stores"
+import { playerTurnOrderAtom } from "../../bug-rangers-game-state"
 import * as CardGroups from "../card-game-stores/card-groups-store"
 
 export const spawnHandTX = transaction<
-	(playerId: string, handId: string) => void
+	(userKey: UserKey, handId: string) => void
 >({
 	key: `spawnHand`,
-	do: (transactors, playerId, handId) => {
+	do: (transactors, userKey, handId) => {
 		const { get, set, find } = transactors
-		const playerIds = get(gamePlayerIndex)
-		if (!playerIds.includes(playerId)) {
+		const userKeys = get(playerTurnOrderAtom)
+		if (!userKeys.includes(userKey)) {
 			return
 		}
 		const handState = find(CardGroups.handAtoms, handId)
@@ -23,7 +24,7 @@ export const spawnHandTX = transaction<
 			return next
 		})
 		editRelations(CardGroups.ownersOfGroups, (relations) => {
-			relations.set({ player: playerId, group: handId })
+			relations.set({ player: userKey, group: handId })
 		})
 	},
 })

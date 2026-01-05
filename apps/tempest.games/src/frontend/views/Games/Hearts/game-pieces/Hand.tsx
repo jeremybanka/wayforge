@@ -6,8 +6,8 @@ import { AnimatePresence, motion } from "motion/react"
 
 import { dealCardsTX, groupsOfCards } from "../../../../../library/topdeck"
 import { memoize } from "../components/memoize"
-import { myHandsIndex } from "../hearts-client-store/my-hands-index"
-import { publicDeckIndex } from "../hearts-client-store/public-deck-index"
+import { myHandsSelector } from "../hearts-client-store/my-hands"
+import { publicDeckKeysSelector } from "../hearts-client-store/public-decks"
 import { Count } from "../labels/Count"
 import { useRadial } from "../peripherals/radial"
 import { useDOMRect } from "../peripherals/use-dimensions"
@@ -18,9 +18,9 @@ export const Hand = memoize<{ id: string; detailed?: boolean }>(
 	`Hand`,
 	({ id: handId, detailed }) => {
 		const { myRoomKey } = useRealtimeRooms()
-		const isMyHand = useO(myHandsIndex).includes(handId)
+		const isMyHand = useO(myHandsSelector).includes(handId)
 		const cardIds = useO(findRelations(groupsOfCards, handId).cardKeysOfGroup)
-		const publicDeckIds = useO(publicDeckIndex)
+		const publicDeckIds = useO(publicDeckKeysSelector)
 
 		const dealCards = runTransaction(dealCardsTX)
 

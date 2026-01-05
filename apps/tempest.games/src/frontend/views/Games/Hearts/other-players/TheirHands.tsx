@@ -7,7 +7,6 @@ import scss from "./TheirHands.module.scss"
 
 export const TheirHands: React.FC<{ playerId: string }> = ({ playerId }) => {
 	const theirHands = useO(handsOfPlayerSelectors, playerId)
-
 	return (
 		<div className={scss[`class`]}>
 			{theirHands.map((id) => (

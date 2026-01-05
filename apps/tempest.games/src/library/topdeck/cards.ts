@@ -12,21 +12,21 @@ export const cardOwners = join({
 export type Card = {
 	rotation: number
 }
-export const findCardState = atomFamily<Card, string>({
+export const cardAtoms = atomFamily<Card, string>({
 	key: `card`,
 	default: () => ({
 		rotation: 0,
 	}),
 })
-export const cardIndex = mutableAtom<SetRTX<string>>({
-	key: `cardIndex`,
+export const cardKeysAtom = mutableAtom<SetRTX<string>>({
+	key: `cardKeys`,
 	class: SetRTX,
 })
 
 export type CardCycle = {
 	name: string
 }
-export const findCardCycleState = atomFamily<CardCycle, string>({
+export const cardCycleAtoms = atomFamily<CardCycle, string>({
 	key: `cardCycle`,
 	default: () => ({
 		name: ``,

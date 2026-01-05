@@ -7,7 +7,7 @@ import { scrollPositionAtoms } from "./scroll-position"
 let lastEmitTime = 0
 const throttleTime = 50 // milliseconds
 
-export const windowMousePositionState = AtomIO.atom<Point2d>({
+export const windowMousePositionAtom = AtomIO.atom<Point2d>({
 	key: `windowMousePosition`,
 	default: { x: 0, y: 0 },
 	effects: [
