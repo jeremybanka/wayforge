@@ -105,7 +105,7 @@
 		"eslint": "9.39.2",
 		"happy-dom": "20.0.11",
 		"http-proxy": "1.18.1",
-		"motion": "12.24.0",
+		"motion": "12.24.7",
 		"postgres": "3.4.7",
 		"preact": "10.28.1",
 		"react": "19.2.3",
