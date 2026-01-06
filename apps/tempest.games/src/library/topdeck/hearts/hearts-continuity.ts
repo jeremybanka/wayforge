@@ -10,11 +10,9 @@ import {
 } from "../card-game-actions"
 import {
 	cardAtoms,
-	cardIndex,
 	cardValueAtoms,
 	cardValueIndex,
 	cardValueView,
-	cardView,
 	deckAtoms,
 	deckIndex,
 	deckView,

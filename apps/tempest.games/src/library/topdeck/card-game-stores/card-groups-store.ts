@@ -10,7 +10,7 @@ import {
 import { UList } from "atom.io/transceivers/u-list"
 
 import { playerTurnOrderAtom } from "../../bug-rangers-game-state"
-import { cardIndex } from "./cards-store"
+import { cardKeysAtom } from "./cards-store"
 import { trickKeysAtom } from "./trick-store"
 
 export type CardGroup = {
@@ -193,9 +193,9 @@ export const groupsOfCardsGlobalView = selector<
 			const token = find(getInternalRelations(groupsOfCards), groupId)
 			tokens.push(token)
 		}
-		const cardIds = get(cardIndex)
-		for (const cardId of cardIds) {
-			const token = find(getInternalRelations(groupsOfCards), cardId)
+		const cardKeys = get(cardKeysAtom)
+		for (const carKey of cardKeys) {
+			const token = find(getInternalRelations(groupsOfCards), carKey)
 			tokens.push(token)
 		}
 		return tokens

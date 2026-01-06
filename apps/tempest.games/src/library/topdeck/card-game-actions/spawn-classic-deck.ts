@@ -1,11 +1,11 @@
 import { editRelations, transaction } from "atom.io"
 
+import { cardKeysAtom } from "../card-game-stores"
 import * as CardGroups from "../card-game-stores/card-groups-store"
 import {
 	cardValueIndex,
 	valuesOfCards,
 } from "../card-game-stores/card-values-store"
-import { cardIndex } from "../card-game-stores/cards-store"
 import { CARD_VALUES } from "../playing-card-data"
 
 export const spawnClassicDeckTX = transaction<
@@ -14,7 +14,7 @@ export const spawnClassicDeckTX = transaction<
 	key: `spawnClassicDeck`,
 	do: (transactors, deckId, cardIds) => {
 		if (cardIds.length !== 52) {
-			throw new Error(`${cardIds.length} cards were provided. 3 were expected`)
+			throw new Error(`${cardIds.length} cards were provided. 52 were expected`)
 		}
 		const { set, find } = transactors
 		const deckState = find(CardGroups.deckAtoms, deckId)
@@ -33,30 +33,23 @@ export const spawnClassicDeckTX = transaction<
 			}
 		})
 
-		set(cardIndex, (current) => {
-			current.transaction((next) => {
-				for (const cardId of cardIds) {
-					next.add(cardId)
-				}
-				return true
-			})
-			return current
+		set(cardKeysAtom, (permanent) => {
+			for (const cardId of cardIds) {
+				permanent.add(cardId)
+			}
+			return permanent
 		})
-		set(cardValueIndex, (current) => {
-			current.transaction((next) => {
-				for (const { id: cardValueId } of CARD_VALUES) {
-					next.add(cardValueId)
-				}
-				return true
-			})
-			return current
+		set(cardValueIndex, (permanent) => {
+			for (const { id: cardValueId } of CARD_VALUES) {
+				permanent.add(cardValueId)
+			}
+			return permanent
 		})
 
-		// CardGroups.groupsOfCards.transact(transactors, ({ relations }) => {
-		// 	relations.replaceRelations(deckId, cardIds)
-		// })
 		editRelations(CardGroups.groupsOfCards, (relations) => {
-			relations.replaceRelations(deckId, cardIds)
+			for (const cardId of cardIds) {
+				relations.set({ card: cardId, group: deckId })
+			}
 		})
 	},
 })
