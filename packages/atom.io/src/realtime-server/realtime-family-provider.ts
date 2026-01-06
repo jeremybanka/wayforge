@@ -22,10 +22,12 @@ export function realtimeAtomFamilyProvider({
 		K extends Canonical,
 	>(
 		family: AtomIO.RegularAtomFamilyToken<J, K>,
-		index: AtomIO.ReadableToken<Iterable<NoInfer<K>>> | Iterable<NoInfer<K>>,
+		index:
+			| AtomIO.ReadableToken<Iterable<NoInfer<K>> | null>
+			| Iterable<NoInfer<K>>,
 	): () => void {
 		const [dynamicIndex, staticIndex]:
-			| [AtomIO.ReadableToken<Iterable<NoInfer<K>>>, undefined]
+			| [AtomIO.ReadableToken<Iterable<NoInfer<K>> | null>, undefined]
 			| [undefined, Iterable<NoInfer<K>>] = (() => {
 			if (typeof index === `object` && `key` in index && `type` in index) {
 				return [index, undefined] as const
@@ -105,13 +107,14 @@ export function realtimeAtomFamilyProvider({
 			)
 			coreSubscriptions.add(
 				employSocket(socket, `sub:${family.key}`, (subKey: K) => {
-					let exposedSubKeys: Iterable<K>
+					let exposedSubKeys: Iterable<K> | null
 					if (dynamicIndex) {
 						exposedSubKeys = getFromStore(store, dynamicIndex)
 					} else {
 						exposedSubKeys = staticIndex
 					}
-					const shouldExpose = isAvailable(exposedSubKeys, subKey)
+					const shouldExpose =
+						exposedSubKeys && isAvailable(exposedSubKeys, subKey)
 					if (shouldExpose) {
 						store.logger.info(
 							`👀`,
@@ -150,6 +153,7 @@ export function realtimeAtomFamilyProvider({
 								`has the following keys available for family "${family.key}"`,
 								newExposedSubKeys,
 							)
+							if (newExposedSubKeys === null) return
 							for (const subKey of newExposedSubKeys) {
 								if (familyMemberSubscriptionsWanted.has(stringifyJson(subKey))) {
 									store.logger.info(
