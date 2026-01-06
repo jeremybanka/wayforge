@@ -27,29 +27,31 @@ import type {
 	TileStackHeight,
 } from "./library/bug-rangers-game-state"
 import {
-	gameStateAtom,
 	gameTilesAtom,
 	gameTilesStackHeightAtoms,
 	maximumStackHeightSelectors,
 	playableZonesSelector,
 	PLAYER_COLORS,
 	playerColorAtoms,
-	playerReadyStatusAtoms,
 	playerRemainingCubesAtoms,
 	playerRemainingTilesAtoms,
-	playerTurnOrderAtom,
-	playerTurnSelector,
 	playerWinningTilesSelectors,
-	setupGroupsSelector,
 	setWarTarget,
 	tileCubeCountAtoms,
 	tileOwnerAtoms,
 	turnCanBeEndedSelector,
 	turnInProgressAtom,
-	turnNumberAtom,
 } from "./library/bug-rangers-game-state"
 import { env } from "./library/env"
 import { pureShuffle } from "./library/shuffle"
+import {
+	gameStateAtom,
+	playerReadyStatusAtoms,
+	playerTurnOrderAtom,
+	playerTurnSelector,
+	setupGroupsSelector,
+	turnNumberAtom,
+} from "./library/topdeck/stores/game-setup-turn-order-and-spectators"
 
 const parent: ParentSocket<any, any, any> = ((process as any).PS ??=
 	new ParentSocket(process))

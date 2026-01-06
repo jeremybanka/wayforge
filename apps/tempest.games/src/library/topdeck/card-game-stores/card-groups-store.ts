@@ -9,7 +9,7 @@ import {
 } from "atom.io"
 import { UList } from "atom.io/transceivers/u-list"
 
-import { playerTurnOrderAtom } from "../../bug-rangers-game-state"
+import { playerTurnOrderAtom } from "../stores/game-setup-turn-order-and-spectators"
 import { cardKeysAtom } from "./cards-store"
 import { trickKeysAtom } from "./trick-store"
 
@@ -230,8 +230,8 @@ export const ownersOfGroupsGlobalView = selector<
 			const token = find(getInternalRelations(ownersOfGroups), groupId)
 			tokens.push(token)
 		}
-		const userKeys = get(playerTurnOrderAtom)
-		for (const userKey of userKeys) {
+		const turnOrder = get(playerTurnOrderAtom)
+		for (const userKey of turnOrder) {
 			const token = find(getInternalRelations(ownersOfGroups), userKey)
 			tokens.push(token)
 		}

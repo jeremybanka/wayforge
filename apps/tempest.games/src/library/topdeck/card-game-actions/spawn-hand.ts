@@ -1,8 +1,8 @@
 import { editRelations, transaction } from "atom.io"
 import type { UserKey } from "atom.io/realtime"
 
-import { playerTurnOrderAtom } from "../../bug-rangers-game-state"
 import * as CardGroups from "../card-game-stores/card-groups-store"
+import { playerTurnOrderAtom } from "../stores/game-setup-turn-order-and-spectators"
 
 export const spawnHandTX = transaction<
 	(userKey: UserKey, handId: string) => void

@@ -7,7 +7,7 @@ import {
 } from "atom.io"
 import { UList } from "atom.io/transceivers/u-list"
 
-import { playerTurnOrderAtom } from "../../bug-rangers-game-state"
+import { playerTurnOrderAtom } from "../stores/game-setup-turn-order-and-spectators"
 import { groupsOfCards } from "./card-groups-store"
 
 export const trickContributions = join({

@@ -19,7 +19,6 @@ import {
 	deserializeTileCoordinates,
 	gameTilesAtom,
 	gameTilesStackHeightAtoms,
-	playerTurnSelector,
 	setWarTarget,
 	tile3dPositionSelectors,
 	tileCubeCountAtoms,
@@ -28,6 +27,7 @@ import {
 	turnInProgressAtom,
 	winningTilesSelector,
 } from "../../../../library/bug-rangers-game-state"
+import { playerTurnSelector } from "../../../../library/topdeck/stores/game-setup-turn-order-and-spectators"
 import {
 	cameraTargetAtom,
 	isMyTurnSelector,
