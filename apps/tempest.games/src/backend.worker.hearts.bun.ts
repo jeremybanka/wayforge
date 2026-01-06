@@ -18,7 +18,10 @@ import {
 	ownersOfRooms,
 	usersInRooms,
 } from "atom.io/realtime"
-import { pullMutableAtomFamilyMember } from "atom.io/realtime-client"
+import {
+	pullMutableAtomFamilyMember,
+	roomOwnerSelector,
+} from "atom.io/realtime-client"
 import {
 	ParentSocket,
 	realtimeAtomFamilyProvider,
@@ -28,26 +31,26 @@ import {
 import { Socket } from "socket.io-client"
 
 import { parentSocket } from "./backend/logger"
-import type { PlayerColor } from "./library/bug-rangers-game-state"
 import {
-	gameStateAtom,
 	gameTilesAtom,
 	gameTilesStackHeightAtoms,
-	PLAYER_COLORS,
 	playerColorAtoms,
-	playerReadyStatusAtoms,
 	playerRemainingCubesAtoms,
 	playerRemainingTilesAtoms,
-	playerTurnOrderAtom,
-	setupGroupsSelector,
 	tileCubeCountAtoms,
 	tileOwnerAtoms,
 	turnInProgressAtom,
-	turnNumberAtom,
 } from "./library/bug-rangers-game-state"
 import { env } from "./library/env"
 import { pureShuffle } from "./library/shuffle"
 import type { HeartsActions } from "./library/topdeck/actions"
+import {
+	gameStateAtom,
+	playerReadyStatusAtoms,
+	playerTurnOrderAtom,
+	setupGroupsSelector,
+	turnNumberAtom,
+} from "./library/topdeck/stores/game-setup-turn-order-and-spectators"
 
 const parent: ParentSocket<any, any, any> = ((process as any).parentSocket ??=
 	new ParentSocket(process))
@@ -123,29 +126,21 @@ parent.receiveRelay((socket, userKey) => {
 		exposeMutable(playerTurnOrderAtom),
 		exposeFamily(playerReadyStatusAtoms, usersHereAtom),
 		exposeFamily(playerColorAtoms, usersHereAtom),
-		exposeFamily(tileCubeCountAtoms, gameTilesAtom),
-		exposeFamily(gameTilesStackHeightAtoms, gameTilesAtom),
 		employSocket(gameSocket, `wantFirst`, () => {
 			const gameState = getState(gameStateAtom)
-			if (gameState === `setup`) {
-				setState(playerReadyStatusAtoms, userKey, `readyWantsFirst`)
-			}
+			if (gameState !== `setup`) return
+			setState(playerReadyStatusAtoms, userKey, `readyWantsFirst`)
 		}),
 		employSocket(gameSocket, `wantNotFirst`, () => {
 			const gameState = getState(gameStateAtom)
-			if (gameState === `setup`) {
-				setState(playerReadyStatusAtoms, userKey, `readyDoesNotWantFirst`)
-			}
+			if (gameState !== `setup`) return
+			setState(playerReadyStatusAtoms, userKey, `readyDoesNotWantFirst`)
 		}),
 		employSocket(gameSocket, `startGame`, async () => {
-			const ownerOfRoomSelector = findRelations(
-				ownersOfRooms,
-				ROOM_KEY,
-			).userKeyOfRoom
-			const ownerOfRoom = getState(ownerOfRoomSelector)
 			const gameState = getState(gameStateAtom)
-			if (ownerOfRoom !== userKey) return
 			if (gameState !== `setup`) return
+			const ownerOfRoom = getState(roomOwnerSelector)
+			if (ownerOfRoom !== userKey) return
 			const setupGroups = getState(setupGroupsSelector)
 			setState(gameStateAtom, `playing`)
 			const firstPlayersShuffled = pureShuffle(setupGroups.readyWantsFirst)

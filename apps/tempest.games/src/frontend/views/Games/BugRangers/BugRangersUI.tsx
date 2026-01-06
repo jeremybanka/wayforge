@@ -17,26 +17,26 @@ import { AnimatePresence, motion } from "motion/react"
 import { type ReactElement, useContext } from "react"
 import type { Socket } from "socket.io-client"
 
-import type {
-	GameState,
-	PlayerActions,
-} from "../../../../library/bug-rangers-game-state"
+import type { PlayerActions } from "../../../../library/bug-rangers-game-state"
 import {
 	colorsChosenSelector,
-	gameStateAtom,
 	PLAYER_COLOR_DISPLAY_NAMES,
 	PLAYER_COLORS,
 	playerColorAtoms,
 	playerRemainingCubesAtoms,
 	playerRemainingTilesAtoms,
+	turnCanBeEndedSelector,
+	turnInProgressAtom,
+} from "../../../../library/bug-rangers-game-state"
+import { isAdminAtom } from "../../../../library/store"
+import type { GameState } from "../../../../library/topdeck/stores/game-setup-turn-order-and-spectators"
+import {
+	gameStateAtom,
 	playerTurnOrderAtom,
 	playerTurnSelector,
 	setupGroupsSelector,
-	turnCanBeEndedSelector,
-	turnInProgressAtom,
 	turnNumberAtom,
-} from "../../../../library/bug-rangers-game-state"
-import { isAdminAtom } from "../../../../library/store"
+} from "../../../../library/topdeck/stores/game-setup-turn-order-and-spectators"
 import { usernameAtoms } from "../../../../library/username-state"
 import * as svg from "../../../<svg>"
 import { isMyTurnSelector } from "./bug-rangers-client-state"

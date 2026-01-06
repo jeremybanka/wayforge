@@ -2,7 +2,6 @@ import { getInternalRelations, transaction } from "atom.io"
 import { usersInRooms } from "atom.io/realtime"
 import { myRoomKeySelector } from "atom.io/realtime-client"
 
-import { playerTurnOrderAtom } from "../../bug-rangers-game-state"
 import {
 	dealCardsTX,
 	shuffleDeckTX,
@@ -10,6 +9,7 @@ import {
 	spawnHandTX,
 	spawnTrickTX,
 } from "../card-game-actions"
+import { playerTurnOrderAtom } from "../stores/game-setup-turn-order-and-spectators"
 
 export type StartGameInput = {
 	handIds: string[]

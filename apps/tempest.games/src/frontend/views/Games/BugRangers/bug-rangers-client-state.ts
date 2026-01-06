@@ -12,11 +12,11 @@ import {
 	playerColorAtoms,
 	playerRemainingCubesAtoms,
 	playerRemainingTilesAtoms,
-	playerTurnSelector,
 	tileOwnerAtoms,
 	turnInProgressAtom,
 	validWarDeclaratorsSelector,
 } from "../../../../library/bug-rangers-game-state"
+import { playerTurnSelector } from "../../../../library/topdeck/stores/game-setup-turn-order-and-spectators"
 
 export function usePlayerActions(): Socket<{}, PlayerActions> {
 	const { socket } = React.useContext(RealtimeContext)
