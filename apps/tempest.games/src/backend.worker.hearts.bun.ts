@@ -28,10 +28,7 @@ import {
 import { Socket } from "socket.io-client"
 
 import { parentSocket } from "./backend/logger"
-import type {
-	PlayerColor,
-	TileCoordinatesSerialized,
-} from "./library/bug-rangers-game-state"
+import type { PlayerColor } from "./library/bug-rangers-game-state"
 import {
 	gameStateAtom,
 	gameTilesAtom,
@@ -42,12 +39,14 @@ import {
 	playerRemainingCubesAtoms,
 	playerRemainingTilesAtoms,
 	playerTurnOrderAtom,
+	setupGroupsSelector,
 	tileCubeCountAtoms,
 	tileOwnerAtoms,
 	turnInProgressAtom,
 	turnNumberAtom,
 } from "./library/bug-rangers-game-state"
 import { env } from "./library/env"
+import { pureShuffle } from "./library/shuffle"
 import type { HeartsActions } from "./library/topdeck/actions"
 
 const parent: ParentSocket<any, any, any> = ((process as any).parentSocket ??=
@@ -77,14 +76,12 @@ IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
 	parent.logger,
 )
 
-const playerColorType = type(/^#([0-9a-f]{3})$/).pipe((maybeColor) => {
-	if (PLAYER_COLORS.includes(maybeColor as PlayerColor)) {
-		return maybeColor as PlayerColor
-	}
-	throw new Error(`invalid color: ${maybeColor}`)
-})
-
-const heartsGuard: SocketGuard<HeartsActions> = {}
+const heartsGuard: SocketGuard<HeartsActions> = {
+	// SETUP PHASE
+	wantFirst: type([]),
+	wantNotFirst: type([]),
+	startGame: type([]),
+}
 
 const ROOM_KEY = process.env[`REALTIME_ROOM_KEY`] as RoomKey
 const usersInRoomsAtoms = getInternalRelations(usersInRooms)
@@ -128,6 +125,47 @@ parent.receiveRelay((socket, userKey) => {
 		exposeFamily(playerColorAtoms, usersHereAtom),
 		exposeFamily(tileCubeCountAtoms, gameTilesAtom),
 		exposeFamily(gameTilesStackHeightAtoms, gameTilesAtom),
+		employSocket(gameSocket, `wantFirst`, () => {
+			const gameState = getState(gameStateAtom)
+			if (gameState === `setup`) {
+				setState(playerReadyStatusAtoms, userKey, `readyWantsFirst`)
+			}
+		}),
+		employSocket(gameSocket, `wantNotFirst`, () => {
+			const gameState = getState(gameStateAtom)
+			if (gameState === `setup`) {
+				setState(playerReadyStatusAtoms, userKey, `readyDoesNotWantFirst`)
+			}
+		}),
+		employSocket(gameSocket, `startGame`, async () => {
+			const ownerOfRoomSelector = findRelations(
+				ownersOfRooms,
+				ROOM_KEY,
+			).userKeyOfRoom
+			const ownerOfRoom = getState(ownerOfRoomSelector)
+			const gameState = getState(gameStateAtom)
+			if (ownerOfRoom !== userKey) return
+			if (gameState !== `setup`) return
+			const setupGroups = getState(setupGroupsSelector)
+			setState(gameStateAtom, `playing`)
+			const firstPlayersShuffled = pureShuffle(setupGroups.readyWantsFirst)
+			const nextPlayersShuffled = pureShuffle(setupGroups.readyDoesNotWantFirst)
+			await new Promise((resolve) => setTimeout(resolve, 600))
+			for (const k of firstPlayersShuffled) {
+				setState(playerTurnOrderAtom, (permanent) => {
+					permanent.push(k)
+					return permanent
+				})
+				await new Promise((resolve) => setTimeout(resolve, 300))
+			}
+			for (const k of nextPlayersShuffled) {
+				setState(playerTurnOrderAtom, (permanent) => {
+					permanent.push(k)
+					return permanent
+				})
+				await new Promise((resolve) => setTimeout(resolve, 300))
+			}
+		}),
 	)
 
 	if (env.RUN_WORKERS_FROM_SOURCE === true) {
