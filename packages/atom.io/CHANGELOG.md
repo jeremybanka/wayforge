@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.46.17
+
+### Patch Changes
+
+- b211c6c: ✨ `atom.io/realtime-client` Added `roomOwnerSelector` and `usersHereSelector` to make working with rooms more convenient.
+- b211c6c: `atom.io/realtime-server` Allow null for the key index values gived to family providers.
+
 ## 0.46.16
 
 ### Patch Changes
