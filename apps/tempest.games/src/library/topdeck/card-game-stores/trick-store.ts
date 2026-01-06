@@ -53,7 +53,7 @@ export const trickContentsStates = selectorFamily<TrickContent[], string>({
 		},
 })
 
-export const trickIsCompleteState = selectorFamily<boolean, string>({
+export const trickIsCompleteSelector = selectorFamily<boolean, string>({
 	key: `trickIsComplete`,
 	get:
 		(trickId) =>
@@ -63,21 +63,21 @@ export const trickIsCompleteState = selectorFamily<boolean, string>({
 		},
 })
 
-export const completeTrickIndex = selector<string[]>({
-	key: `completeTrickIndex`,
+export const completeTrickKeysSelector = selector<string[]>({
+	key: `completeTrickKeys`,
 	get: ({ find, get, json }) => {
 		const trickIds = get(json(trickKeysAtom))
 		const completeTrickIds = trickIds.filter((trickId) =>
-			get(find(trickIsCompleteState, trickId)),
+			get(find(trickIsCompleteSelector, trickId)),
 		)
 		return completeTrickIds
 	},
 })
 
-export const currentTrickIdState = selector<string | null>({
+export const currentTrickSelector = selector<string | null>({
 	key: `currentTrick`,
 	get: ({ get, json }) => {
-		const completeTrickIds = get(completeTrickIndex)
+		const completeTrickIds = get(completeTrickKeysSelector)
 		const trickIds = get(json(trickKeysAtom))
 
 		const currentTrickId = trickIds.at(-1)

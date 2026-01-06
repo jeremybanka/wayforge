@@ -9,12 +9,11 @@ import {
 	selectorFamily,
 } from "atom.io"
 import type { Json } from "atom.io/json"
-import { SetRTX } from "atom.io/transceivers/set-rtx"
-import type { UList } from "atom.io/transceivers/u-list"
+import { UList } from "atom.io/transceivers/u-list"
 
 import type { Identified } from "../../utility-types"
 import {
-	currentTrickIdState,
+	currentTrickSelector,
 	groupsOfCards,
 	handIndex,
 	ownersOfGroups,
@@ -25,9 +24,9 @@ export const cardValueAtoms = atomFamily<Identified & Json.Object, string>({
 	key: `cardValue`,
 	default: () => ({ id: `` }),
 })
-export const cardValueIndex = mutableAtom<SetRTX<string>>({
+export const cardValueIndex = mutableAtom<UList<string>>({
 	key: `cardValuesIndex`,
-	class: SetRTX,
+	class: UList,
 })
 export const cardValueGlobalView = selector<
 	RegularAtomToken<Identified & Json.Object>[]
@@ -80,7 +79,7 @@ export const visibleCardIndices = selectorFamily<string[], string>({
 				}
 			}
 
-			const currentTrickId = get(currentTrickIdState)
+			const currentTrickId = get(currentTrickSelector)
 			if (currentTrickId) {
 				const trickCardIndex = findRelations(
 					groupsOfCards,
