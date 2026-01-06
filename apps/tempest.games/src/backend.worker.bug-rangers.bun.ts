@@ -18,7 +18,10 @@ import {
 	ownersOfRooms,
 	usersInRooms,
 } from "atom.io/realtime"
-import { pullMutableAtomFamilyMember } from "atom.io/realtime-client"
+import {
+	pullMutableAtomFamilyMember,
+	roomOwnerSelector,
+} from "atom.io/realtime-client"
 import {
 	ParentSocket,
 	realtimeAtomFamilyProvider,
@@ -165,25 +168,19 @@ parent.receiveRelay((socket, userKey) => {
 		exposeFamily(gameTilesStackHeightAtoms, gameTilesAtom),
 		employSocket(gameSocket, `wantFirst`, () => {
 			const gameState = getState(gameStateAtom)
-			if (gameState === `setup`) {
-				setState(playerReadyStatusAtoms, userKey, `readyWantsFirst`)
-			}
+			if (gameState !== `setup`) return
+			setState(playerReadyStatusAtoms, userKey, `readyWantsFirst`)
 		}),
 		employSocket(gameSocket, `wantNotFirst`, () => {
 			const gameState = getState(gameStateAtom)
-			if (gameState === `setup`) {
-				setState(playerReadyStatusAtoms, userKey, `readyDoesNotWantFirst`)
-			}
+			if (gameState !== `setup`) return
+			setState(playerReadyStatusAtoms, userKey, `readyDoesNotWantFirst`)
 		}),
 		employSocket(gameSocket, `startGame`, async () => {
-			const ownerOfRoomSelector = findRelations(
-				ownersOfRooms,
-				ROOM_KEY,
-			).userKeyOfRoom
-			const ownerOfRoom = getState(ownerOfRoomSelector)
 			const gameState = getState(gameStateAtom)
-			if (ownerOfRoom !== userKey) return
 			if (gameState !== `setup`) return
+			const ownerOfRoom = getState(roomOwnerSelector)
+			if (ownerOfRoom !== userKey) return
 			const setupGroups = getState(setupGroupsSelector)
 			setState(gameStateAtom, `playing`)
 			const firstPlayersShuffled = pureShuffle(setupGroups.readyWantsFirst)
@@ -212,10 +209,8 @@ parent.receiveRelay((socket, userKey) => {
 		employSocket(gameSocket, `placeTile`, (tileCoordinatesSerialized) => {
 			const playerWhoseTurnItIs = getState(playerTurnSelector)
 			if (playerWhoseTurnItIs !== userKey) return
-
 			const remainingTiles = getState(playerRemainingTilesAtoms, userKey)
 			if (remainingTiles <= 0) return
-
 			const turnInProgress = getState(turnInProgressAtom)
 			switch (turnInProgress?.type) {
 				case `arm`:
@@ -265,10 +260,8 @@ parent.receiveRelay((socket, userKey) => {
 		employSocket(gameSocket, `placeCube`, (tileCoordinatesSerialized) => {
 			const playerWhoseTurnItIs = getState(playerTurnSelector)
 			if (playerWhoseTurnItIs !== userKey) return
-
 			const remainingCubes = getState(playerRemainingCubesAtoms, userKey)
 			if (remainingCubes <= 0) return
-
 			const turnInProgress = getState(turnInProgressAtom)
 			switch (turnInProgress?.type) {
 				case `move`:

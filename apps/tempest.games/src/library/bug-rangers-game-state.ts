@@ -9,7 +9,7 @@ import {
 	setState,
 } from "atom.io"
 import { type UserKey, usersInRooms } from "atom.io/realtime"
-import { myRoomKeySelector } from "atom.io/realtime-client"
+import { myRoomKeySelector, usersHereSelector } from "atom.io/realtime-client"
 import { OList } from "atom.io/transceivers/o-list"
 import { UList } from "atom.io/transceivers/u-list"
 import * as THREE from "three"
@@ -572,8 +572,10 @@ export const setupGroupsSelector = selector<
 		if (!roomKey) {
 			return { notReady, readyDoesNotWantFirst, readyWantsFirst }
 		}
-		const [usersInRoomsAtoms] = getInternalRelations(usersInRooms, `split`)
-		const usersHere = get(usersInRoomsAtoms, roomKey)
+		const usersHere = get(usersHereSelector)
+		if (usersHere === null) {
+			return { notReady, readyDoesNotWantFirst, readyWantsFirst }
+		}
 		for (const userKey of usersHere) {
 			const playerReadyStatus = get(playerReadyStatusAtoms, userKey)
 			if (turnOrder.includes(userKey)) continue
