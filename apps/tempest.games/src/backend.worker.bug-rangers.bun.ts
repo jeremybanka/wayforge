@@ -1,24 +1,15 @@
 #!/usr/bin/env bun
 
 import { type } from "arktype"
-import {
-	AtomIOLogger,
-	findRelations,
-	findState,
-	getInternalRelations,
-	getState,
-	resetState,
-	setState,
-} from "atom.io"
+import { AtomIOLogger, getState, resetState, setState } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
-import type { RoomKey, SocketGuard } from "atom.io/realtime"
+import type { SocketGuard } from "atom.io/realtime"
+import { employSocket, guardSocket } from "atom.io/realtime"
 import {
-	employSocket,
-	guardSocket,
-	ownersOfRooms,
-	usersInRooms,
-} from "atom.io/realtime"
-import { pullMutableAtomFamilyMember } from "atom.io/realtime-client"
+	pullSelector,
+	roomOwnerSelector,
+	usersHereSelector,
+} from "atom.io/realtime-client"
 import {
 	ParentSocket,
 	realtimeAtomFamilyProvider,
@@ -59,7 +50,7 @@ import {
 import { env } from "./library/env"
 import { pureShuffle } from "./library/shuffle"
 
-const parent: ParentSocket<any, any, any> = ((process as any).parentSocket ??=
+const parent: ParentSocket<any, any, any> = ((process as any).PS ??=
 	new ParentSocket(process))
 Object.assign(console, parent.logger, { log: parent.logger.info })
 
@@ -67,6 +58,13 @@ parent.on(`timeToStop`, function gracefulExit() {
 	parent.logger.info(`🛬 game worker exiting`)
 	process.exit(0)
 })
+
+;(function globalSetup() {
+	if ((process as any).globalSetupDone) return
+	;(process as any).globalSetupDone = true
+	pullSelector(IMPLICIT.STORE, parentSocket, usersHereSelector)
+	pullSelector(IMPLICIT.STORE, parentSocket, roomOwnerSelector)
+})()
 
 IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
 	`info`,
@@ -116,26 +114,6 @@ const bugRangersGuard: SocketGuard<PlayerActions> = {
 	turnEnd: type([]),
 }
 
-const ROOM_KEY = process.env[`REALTIME_ROOM_KEY`] as RoomKey
-const usersInRoomsAtoms = getInternalRelations(usersInRooms)
-const ownersOfRoomsAtoms = getInternalRelations(ownersOfRooms)
-;(function globalSetup() {
-	if ((process as any).globalSetupDone) return
-	;(process as any).globalSetupDone = true
-	pullMutableAtomFamilyMember(
-		IMPLICIT.STORE,
-		parentSocket,
-		usersInRoomsAtoms,
-		ROOM_KEY,
-	)
-	pullMutableAtomFamilyMember(
-		IMPLICIT.STORE,
-		parentSocket,
-		ownersOfRoomsAtoms,
-		ROOM_KEY,
-	)
-})()
-
 parent.receiveRelay((socket, userKey) => {
 	const config = { socket, consumer: userKey }
 	const exposeState = realtimeStateProvider(config)
@@ -147,7 +125,6 @@ parent.receiveRelay((socket, userKey) => {
 		bugRangersGuard,
 		parent.logger.error,
 	)
-	const usersHereAtom = findState(usersInRoomsAtoms, ROOM_KEY)
 
 	const coreStack: (() => void)[] = []
 	coreStack.push(
@@ -156,34 +133,28 @@ parent.receiveRelay((socket, userKey) => {
 		exposeState(turnInProgressAtom),
 		exposeMutable(playerTurnOrderAtom),
 		exposeMutable(gameTilesAtom),
-		exposeFamily(playerReadyStatusAtoms, usersHereAtom),
-		exposeFamily(playerColorAtoms, usersHereAtom),
-		exposeFamily(playerRemainingCubesAtoms, usersHereAtom),
-		exposeFamily(playerRemainingTilesAtoms, usersHereAtom),
+		exposeFamily(playerReadyStatusAtoms, usersHereSelector),
+		exposeFamily(playerColorAtoms, usersHereSelector),
+		exposeFamily(playerRemainingCubesAtoms, usersHereSelector),
+		exposeFamily(playerRemainingTilesAtoms, usersHereSelector),
 		exposeFamily(tileOwnerAtoms, gameTilesAtom),
 		exposeFamily(tileCubeCountAtoms, gameTilesAtom),
 		exposeFamily(gameTilesStackHeightAtoms, gameTilesAtom),
 		employSocket(gameSocket, `wantFirst`, () => {
 			const gameState = getState(gameStateAtom)
-			if (gameState === `setup`) {
-				setState(playerReadyStatusAtoms, userKey, `readyWantsFirst`)
-			}
+			if (gameState !== `setup`) return
+			setState(playerReadyStatusAtoms, userKey, `readyWantsFirst`)
 		}),
 		employSocket(gameSocket, `wantNotFirst`, () => {
 			const gameState = getState(gameStateAtom)
-			if (gameState === `setup`) {
-				setState(playerReadyStatusAtoms, userKey, `readyDoesNotWantFirst`)
-			}
+			if (gameState !== `setup`) return
+			setState(playerReadyStatusAtoms, userKey, `readyDoesNotWantFirst`)
 		}),
 		employSocket(gameSocket, `startGame`, async () => {
-			const ownerOfRoomSelector = findRelations(
-				ownersOfRooms,
-				ROOM_KEY,
-			).userKeyOfRoom
-			const ownerOfRoom = getState(ownerOfRoomSelector)
 			const gameState = getState(gameStateAtom)
-			if (ownerOfRoom !== userKey) return
 			if (gameState !== `setup`) return
+			const ownerOfRoom = getState(roomOwnerSelector)
+			if (ownerOfRoom !== userKey) return
 			const setupGroups = getState(setupGroupsSelector)
 			setState(gameStateAtom, `playing`)
 			const firstPlayersShuffled = pureShuffle(setupGroups.readyWantsFirst)
@@ -212,10 +183,8 @@ parent.receiveRelay((socket, userKey) => {
 		employSocket(gameSocket, `placeTile`, (tileCoordinatesSerialized) => {
 			const playerWhoseTurnItIs = getState(playerTurnSelector)
 			if (playerWhoseTurnItIs !== userKey) return
-
 			const remainingTiles = getState(playerRemainingTilesAtoms, userKey)
 			if (remainingTiles <= 0) return
-
 			const turnInProgress = getState(turnInProgressAtom)
 			switch (turnInProgress?.type) {
 				case `arm`:
@@ -265,10 +234,8 @@ parent.receiveRelay((socket, userKey) => {
 		employSocket(gameSocket, `placeCube`, (tileCoordinatesSerialized) => {
 			const playerWhoseTurnItIs = getState(playerTurnSelector)
 			if (playerWhoseTurnItIs !== userKey) return
-
 			const remainingCubes = getState(playerRemainingCubesAtoms, userKey)
 			if (remainingCubes <= 0) return
-
 			const turnInProgress = getState(turnInProgressAtom)
 			switch (turnInProgress?.type) {
 				case `move`:
@@ -530,9 +497,8 @@ parent.receiveRelay((socket, userKey) => {
 					playerTurnOrderAtom,
 					(permanent) => ((permanent.length = 0), permanent),
 				)
-				const usersHere = getState(
-					findRelations(usersInRooms, ROOM_KEY).userKeysOfRoom,
-				)
+				const usersHere = getState(usersHereSelector)
+				if (usersHere === null) return
 				for (const u of usersHere) {
 					setState(playerReadyStatusAtoms, u, `notReady`)
 					setState(playerColorAtoms, u, null)
