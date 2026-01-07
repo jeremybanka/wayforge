@@ -25,7 +25,7 @@ export function createReadonlyPureSelector<T, K extends Canonical, E>(
 	const type = `readonly_pure_selector` as const
 	store.logger.info(`🔨`, type, key, `is being created`)
 
-	const { get, find, json } = registerSelector(target, type, key, covered)
+	const { get, find, json, rel } = registerSelector(target, type, key, covered)
 
 	const getFrom = () => {
 		const innerTarget = newest(store)
@@ -38,7 +38,7 @@ export function createReadonlyPureSelector<T, K extends Canonical, E>(
 			}
 		}
 		innerTarget.selectorAtoms.delete(key)
-		const value = options.get({ get, find, json })
+		const value = options.get({ get, find, json, rel })
 		store.logger.info(`✨`, type, key, `=`, value)
 		covered.clear()
 		return value
