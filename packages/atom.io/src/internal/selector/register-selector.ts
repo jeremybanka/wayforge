@@ -1,5 +1,8 @@
 import type {
+	editRelations,
+	findRelations,
 	findState,
+	getInternalRelations,
 	ReadableFamilyToken,
 	ReadableToken,
 	setState,
@@ -13,6 +16,11 @@ import { findInStore } from "../families"
 import { getFallback } from "../get-state/get-fallback"
 import { readOrComputeValue } from "../get-state/read-or-compute-value"
 import { reduceReference } from "../get-state/reduce-reference"
+import {
+	editRelationsInStore,
+	findRelationsInStore,
+	getInternalRelationsFromStore,
+} from "../join"
 import { newest } from "../lineage"
 import { getJsonToken } from "../mutable"
 import { JOIN_OP, operateOnStore } from "../set-state/operate-on-store"
@@ -85,5 +93,17 @@ export function registerSelector(
 		find: ((...args: Parameters<typeof findState>) =>
 			findInStore(store, ...args)) as typeof findState,
 		json: (token) => getJsonToken(store, token),
+		rel: {
+			edit: ((...ps: Parameters<typeof editRelations>) => {
+				editRelationsInStore(store, ...ps)
+			}) as typeof editRelations,
+			find: ((...ps: Parameters<typeof findRelations>) =>
+				findRelationsInStore(store, ...ps)) as typeof findRelations,
+			internal: ((...ps: Parameters<typeof getInternalRelations>) =>
+				getInternalRelationsFromStore(
+					store,
+					...ps,
+				)) as typeof getInternalRelations,
+		},
 	}
 }

@@ -25,8 +25,8 @@ export function createWritableHeldSelector<T extends object>(
 	store.logger.info(`🔨`, type, key, `is being created`)
 
 	const setterToolkit = registerSelector(target, type, key, covered)
-	const { find, get, json } = setterToolkit
-	const getterToolkit = { find, get, json }
+	const { find, get, json, rel } = setterToolkit
+	const getterToolkit = { find, get, json, rel }
 
 	const getFrom = (innerTarget: Store): T => {
 		const upstreamStates = innerTarget.selectorGraph.getRelationEntries({

@@ -1,14 +1,17 @@
-import {
-	type findState,
-	type getState,
-	type JoinOptions,
-	type MutableAtomFamilyToken,
-	type ReadonlyPureSelectorFamilyToken,
-	type setState,
-	simpleCompound,
-	type Write,
-	type WriterToolkit,
+import type {
+	editRelations,
+	findRelations,
+	findState,
+	getInternalRelations,
+	getState,
+	JoinOptions,
+	MutableAtomFamilyToken,
+	ReadonlyPureSelectorFamilyToken,
+	setState,
+	Write,
+	WriterToolkit,
 } from "atom.io"
+import { simpleCompound } from "atom.io"
 import { UList } from "atom.io/transceivers/u-list"
 
 import { capitalize } from "../capitalize"
@@ -19,8 +22,10 @@ import { Junction } from "../junction"
 import { createMutableAtomFamily, getJsonFamily, getJsonToken } from "../mutable"
 import { JOIN_OP, operateOnStore, setIntoStore } from "../set-state"
 import type { Store } from "../store"
-import { IMPLICIT } from "../store"
 import type { RootStore } from "../transaction"
+import { editRelationsInStore } from "./edit-relations-in-store"
+import { findRelationsInStore } from "./find-relations-in-store"
+import { getInternalRelationsFromStore } from "./get-internal-relations-from-store"
 
 export type JoinStateFamilies<
 	AName extends string,
@@ -108,6 +113,18 @@ export class Join<
 			find: ((...ps: Parameters<typeof findState>) =>
 				findInStore(store, ...ps)) as typeof findState,
 			json: (token) => getJsonToken(store, token),
+			rel: {
+				edit: ((...ps: Parameters<typeof editRelations>) => {
+					editRelationsInStore(store, ...ps)
+				}) as typeof editRelations,
+				find: ((...ps: Parameters<typeof findRelations>) =>
+					findRelationsInStore(store, ...ps)) as typeof findRelations,
+				internal: ((...ps: Parameters<typeof getInternalRelations>) =>
+					getInternalRelationsFromStore(
+						store,
+						...ps,
+					)) as typeof getInternalRelations,
+			},
 		}
 
 		const aSide: AName = options.between[0]
