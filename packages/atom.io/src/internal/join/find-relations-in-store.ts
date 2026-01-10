@@ -2,7 +2,7 @@ import type { JoinStates, JoinToken } from "atom.io"
 
 import { capitalize } from "../capitalize"
 import { findInStore } from "../families"
-import type { RootStore } from "../transaction"
+import type { Store } from "../store"
 import { getJoin } from "./get-join"
 
 export function findRelationsInStore<
@@ -12,7 +12,7 @@ export function findRelationsInStore<
 	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
 >(
-	store: RootStore,
+	store: Store,
 	token: JoinToken<AName, A, BName, B, Cardinality>,
 	key: A | B,
 ): JoinStates<AName, A, BName, B, Cardinality> {

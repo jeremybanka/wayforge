@@ -1,6 +1,9 @@
 import type {
 	disposeState,
+	editRelations,
+	findRelations,
 	findState,
+	getInternalRelations,
 	getState,
 	resetState,
 	setState,
@@ -11,6 +14,11 @@ import { arbitrary } from "../arbitrary"
 import { disposeFromStore, findInStore } from "../families"
 import { getEnvironmentData } from "../get-environment-data"
 import { getFromStore } from "../get-state"
+import {
+	editRelationsInStore,
+	findRelationsInStore,
+	getInternalRelationsFromStore,
+} from "../join"
 import { newest } from "../lineage"
 import { getJsonToken } from "../mutable"
 import { MapOverlay } from "../overlays/map-overlay"
@@ -58,6 +66,7 @@ export const buildTransaction = (
 		miscResources: new MapOverlay(parent.miscResources),
 	}
 	const epoch = getEpochNumberOfAction(store, token.key)
+
 	const transactionMeta: TransactionProgress<Fn> = {
 		phase: `building`,
 		update: {
@@ -87,6 +96,17 @@ export const buildTransaction = (
 				disposeFromStore(child, ...ps)
 			}) as typeof disposeState,
 			env: () => getEnvironmentData(child),
+			relations: {
+				edit: ((...ps: Parameters<typeof editRelations>) => {
+					editRelationsInStore(child, ...ps)
+				}) as typeof editRelations,
+				find: ((...ps: Parameters<typeof findRelations>) => {
+					return findRelationsInStore(child, ...ps)
+				}) as typeof findRelations,
+				internal: ((...ps: Parameters<typeof getInternalRelations>) => {
+					return getInternalRelationsFromStore(child, ...ps)
+				}) as typeof getInternalRelations,
+			},
 		},
 	}
 	const child: ChildStore = Object.assign(childBase, {

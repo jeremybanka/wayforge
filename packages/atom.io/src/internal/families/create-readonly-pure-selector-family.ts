@@ -1,6 +1,8 @@
 import type {
 	FamilyMetadata,
+	findRelations,
 	findState,
+	getInternalRelations,
 	getState,
 	ReadonlyPureSelectorFamilyOptions,
 	ReadonlyPureSelectorFamilyToken,
@@ -13,6 +15,7 @@ import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import { getFromStore } from "../get-state"
+import { findRelationsInStore, getInternalRelationsFromStore } from "../join"
 import { newest } from "../lineage"
 import { getJsonToken } from "../mutable"
 import { createReadonlyPureSelector } from "../selector"
@@ -79,11 +82,16 @@ export function createReadonlyPureSelectorFamily<T, K extends Canonical, E>(
 		default: (key: K) => {
 			const getFn = options.get(key)
 			return getFn({
-				get: ((...args: Parameters<typeof getState>) =>
-					getFromStore(store, ...args)) as typeof getState,
-				find: ((...args: Parameters<typeof findState>) =>
-					findInStore(store, ...args)) as typeof findState,
+				get: getFromStore.bind(null, store) as typeof getState,
+				find: findInStore.bind(null, store) as typeof findState,
 				json: (token) => getJsonToken(store, token),
+				relations: {
+					find: findRelationsInStore.bind(null, store) as typeof findRelations,
+					internal: getInternalRelationsFromStore.bind(
+						null,
+						store,
+					) as typeof getInternalRelations,
+				},
 			})
 		},
 	}
