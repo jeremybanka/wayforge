@@ -111,8 +111,8 @@ export function realtime(
 				store.logger.info(`📡`, `socket`, socketKey, `👤 ${userKey} disconnects`)
 				await disposeServices()
 				unsubFromMyUserKey()
-				editRelationsInStore(store, usersOfSockets, (rel) =>
-					rel.delete(socketKey),
+				editRelationsInStore(store, usersOfSockets, (relations) =>
+					relations.delete(socketKey),
 				)
 				setIntoStore(
 					store,

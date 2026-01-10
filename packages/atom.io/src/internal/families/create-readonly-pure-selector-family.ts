@@ -85,7 +85,7 @@ export function createReadonlyPureSelectorFamily<T, K extends Canonical, E>(
 				get: getFromStore.bind(null, store) as typeof getState,
 				find: findInStore.bind(null, store) as typeof findState,
 				json: (token) => getJsonToken(store, token),
-				rel: {
+				relations: {
 					find: findRelationsInStore.bind(null, store) as typeof findRelations,
 					internal: getInternalRelationsFromStore.bind(
 						null,

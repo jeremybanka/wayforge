@@ -96,7 +96,7 @@ export const buildTransaction = (
 				disposeFromStore(child, ...ps)
 			}) as typeof disposeState,
 			env: () => getEnvironmentData(child),
-			rel: {
+			relations: {
 				edit: ((...ps: Parameters<typeof editRelations>) => {
 					editRelationsInStore(child, ...ps)
 				}) as typeof editRelations,

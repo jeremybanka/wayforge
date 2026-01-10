@@ -196,10 +196,10 @@ describe(`some practical use cases`, () => {
 		})
 		const failingTX = transaction<() => void>({
 			key: `I ALWAYS FAIL`,
-			do: ({ rel }) => {
-				rel.edit(cardValues, (relations) => {
+			do: ({ relations }) => {
+				relations.edit(cardValues, (cvs) => {
 					for (let i = 0; i < 100; i++) {
-						relations.set({ value: `a`, card: `${i}` })
+						cvs.set({ value: `a`, card: `${i}` })
 						if (i === 99) {
 							throw new Error(`whoops!`)
 						}

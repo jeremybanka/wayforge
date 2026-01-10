@@ -93,7 +93,7 @@ export function registerSelector(
 		find: ((...args: Parameters<typeof findState>) =>
 			findInStore(store, ...args)) as typeof findState,
 		json: (token) => getJsonToken(store, token),
-		rel: {
+		relations: {
 			edit: ((...ps: Parameters<typeof editRelations>) => {
 				editRelationsInStore(store, ...ps)
 			}) as typeof editRelations,

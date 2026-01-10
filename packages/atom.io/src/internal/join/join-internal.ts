@@ -113,7 +113,7 @@ export class Join<
 			find: ((...ps: Parameters<typeof findState>) =>
 				findInStore(store, ...ps)) as typeof findState,
 			json: (token) => getJsonToken(store, token),
-			rel: {
+			relations: {
 				edit: ((...ps: Parameters<typeof editRelations>) => {
 					editRelationsInStore(store, ...ps)
 				}) as typeof editRelations,
