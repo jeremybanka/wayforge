@@ -24,7 +24,12 @@ export function createReadonlyHeldSelector<T extends object>(
 	const type = `readonly_held_selector` as const
 	store.logger.info(`🔨`, type, key, `is being created`)
 
-	const { get, find, json, rel } = registerSelector(target, type, key, covered)
+	const { get, find, json, relations } = registerSelector(
+		target,
+		type,
+		key,
+		covered,
+	)
 
 	const getFrom = (innerTarget: Store) => {
 		const upstreamStates = innerTarget.selectorGraph.getRelationEntries({
@@ -36,7 +41,7 @@ export function createReadonlyHeldSelector<T extends object>(
 			}
 		}
 		innerTarget.selectorAtoms.delete(key)
-		options.get({ get, find, json, rel }, constant)
+		options.get({ get, find, json, relations }, constant)
 		writeToCache(innerTarget, readonlySelector, constant)
 		store.logger.info(`✨`, type, key, `=`, constant)
 		covered.clear()

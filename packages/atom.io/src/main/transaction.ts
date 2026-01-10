@@ -19,11 +19,11 @@ import type {
 } from "./tokens"
 
 export type ReaderToolkit = Pick<ActorToolkit, `find` | `get` | `json`> & {
-	rel: Pick<RelationsToolkit, `find` | `internal`>
+	relations: Pick<RelationsToolkit, `find` | `internal`>
 }
 export type WriterToolkit = Pick<
 	ActorToolkit,
-	`find` | `get` | `json` | `rel` | `set`
+	`find` | `get` | `json` | `relations` | `set`
 >
 export type ActorToolkit = Readonly<{
 	get: typeof getState
@@ -36,7 +36,7 @@ export type ActorToolkit = Readonly<{
 	dispose: typeof disposeState
 	run: typeof runTransaction
 	env: () => EnvironmentData
-	rel: RelationsToolkit
+	relations: RelationsToolkit
 }>
 
 export type RelationsToolkit = {

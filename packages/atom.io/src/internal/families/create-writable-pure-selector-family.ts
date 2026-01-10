@@ -88,7 +88,7 @@ export function createWritablePureSelectorFamily<T, K extends Canonical, E>(
 				find: ((...ps: Parameters<typeof findState>) =>
 					findInStore(store, ...ps)) as typeof findState,
 				json: (token) => getJsonToken(store, token),
-				rel: {
+				relations: {
 					find: ((...ps: Parameters<typeof findRelations>) =>
 						findRelationsInStore(store, ...ps)) as typeof findRelations,
 					internal: ((...ps: Parameters<typeof getInternalRelations>) =>
