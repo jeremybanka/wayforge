@@ -1,10 +1,12 @@
 ---
-"atom.io": minor
+"atom.io": patch
 ---
 
 ✨ Added tools for working with a `join` to the toolkit for selectors and transactions. These tools are nested under the `relations` property of the toolkit.
 
 ```ts
+import { join, transaction } from "atom.io"
+
 const userGroups = join({
   key: `userGroups`,
   between: [`user`, `group`],
@@ -13,13 +15,11 @@ const userGroups = join({
 })
 
 const removeUserFromAllGroupsTX = transaction<
-  (user: string) => void
+  (userKey: `user::${string}`) => void
 >({
   key: `removeUserFromAllGroups`,
-  do: ({ relations }) => {
-    relations.edit(userGroups, (ugs) => {
-      ugs.delete(`user::${user}`)
-    })
+  do: ({ relations }, userKey) => {
+    relations.edit(userGroups, (ugs) => ugs.delete(userKey))
   },
 })
 ```
