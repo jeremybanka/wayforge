@@ -9,6 +9,7 @@ import {
 import type { disposeState } from "./dispose-state"
 import type { findState } from "./find-state"
 import type { getState } from "./get-state"
+import type { editRelations, findRelations, getInternalRelations } from "./join"
 import type { resetState } from "./reset-state"
 import type { setState } from "./set-state"
 import type {
@@ -17,8 +18,13 @@ import type {
 	WritablePureSelectorToken,
 } from "./tokens"
 
-export type ReaderToolkit = Pick<ActorToolkit, `find` | `get` | `json`>
-export type WriterToolkit = Pick<ActorToolkit, `find` | `get` | `json` | `set`>
+export type ReaderToolkit = Pick<ActorToolkit, `find` | `get` | `json`> & {
+	relations: Pick<RelationsToolkit, `find` | `internal`>
+}
+export type WriterToolkit = Pick<
+	ActorToolkit,
+	`find` | `get` | `json` | `relations` | `set`
+>
 export type ActorToolkit = Readonly<{
 	get: typeof getState
 	set: typeof setState
@@ -30,7 +36,14 @@ export type ActorToolkit = Readonly<{
 	dispose: typeof disposeState
 	run: typeof runTransaction
 	env: () => EnvironmentData
+	relations: RelationsToolkit
 }>
+
+export type RelationsToolkit = {
+	edit: typeof editRelations
+	find: typeof findRelations
+	internal: typeof getInternalRelations
+}
 
 export type Read<F extends Fn> = (
 	toolkit: ReaderToolkit,

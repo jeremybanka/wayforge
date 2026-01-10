@@ -1,6 +1,8 @@
 import type {
 	FamilyMetadata,
+	findRelations,
 	findState,
+	getInternalRelations,
 	getState,
 	StateLifecycleEvent,
 	WritablePureSelectorFamilyOptions,
@@ -13,6 +15,7 @@ import type { Canonical } from "atom.io/json"
 import { stringifyJson } from "atom.io/json"
 
 import { getFromStore } from "../get-state"
+import { findRelationsInStore, getInternalRelationsFromStore } from "../join"
 import { newest } from "../lineage"
 import { getJsonToken } from "../mutable"
 import { createWritablePureSelector } from "../selector"
@@ -80,11 +83,20 @@ export function createWritablePureSelectorFamily<T, K extends Canonical, E>(
 		default: (key: K) => {
 			const getFn = options.get(key)
 			return getFn({
-				get: ((...args: Parameters<typeof getState>) =>
-					getFromStore(store, ...args)) as typeof getState,
-				find: ((...args: Parameters<typeof findState>) =>
-					findInStore(store, ...args)) as typeof findState,
+				get: ((...ps: Parameters<typeof getState>) =>
+					getFromStore(store, ...ps)) as typeof getState,
+				find: ((...ps: Parameters<typeof findState>) =>
+					findInStore(store, ...ps)) as typeof findState,
 				json: (token) => getJsonToken(store, token),
+				relations: {
+					find: ((...ps: Parameters<typeof findRelations>) =>
+						findRelationsInStore(store, ...ps)) as typeof findRelations,
+					internal: ((...ps: Parameters<typeof getInternalRelations>) =>
+						getInternalRelationsFromStore(
+							store,
+							...ps,
+						)) as typeof getInternalRelations,
+				},
 			})
 		},
 	}
