@@ -6,19 +6,19 @@
 		"christian-kohler.npm-intellisense",
 		"christian-kohler.path-intellisense",
 		"dbaeumer.vscode-eslint",
-		"esbenp.prettier-vscode",
 		"github.vscode-github-actions",
 		"kuscamara.remove-unused-imports",
 		"oven.bun-vscode",
+		"prettier.prettier-vscode",
 		"redhat.vscode-yaml",
 		"ryanluker.vscode-coverage-gutters",
 		"streetsidesoftware.code-spell-checker",
 		"tamasfe.even-better-toml",
 		"timonwong.shellcheck",
 		"tyriar.sort-lines",
+		"unifiedjs.vscode-mdx",
 		"vunguyentuan.vscode-css-variables",
 		"yoavbls.pretty-ts-errors",
-		"yutengjing.open-in-external-app",
-		"unifiedjs.vscode-mdx"
+		"yutengjing.open-in-external-app"
 	]
 }
