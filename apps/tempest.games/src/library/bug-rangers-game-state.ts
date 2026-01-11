@@ -719,3 +719,163 @@ export const playerRemainingCubesAtoms = atomFamily<number, UserKey>({
 	key: `playerRemainingCubes`,
 	default: 20,
 })
+
+const HEX_AXES = [`middle`, `double`, `final`] as const
+type HexAxis = (typeof HEX_AXES)[number]
+
+function getDirectionalAdjacent(
+	axis: HexAxis,
+	direction: `negative` | `positive`,
+	coordinates: TileCoordinates,
+): TileCoordinates {
+	const [x, y, z] = coordinates
+	switch (axis) {
+		case `middle`:
+			switch (direction) {
+				case `positive`:
+					return [x + 1, y, z - 1]
+				case `negative`:
+					return [x - 1, y, z + 1]
+			}
+			break
+		case `double`:
+			switch (direction) {
+				case `positive`:
+					return [x + 2, y - 1, z - 1]
+				case `negative`:
+					return [x - 2, y + 1, z + 1]
+			}
+			break
+		case `final`:
+			switch (direction) {
+				case `positive`:
+					return [x + 1, y - 1, z]
+				case `negative`:
+					return [x - 1, y + 1, z]
+			}
+	}
+}
+
+export const lineWinSelectors = selectorFamily<
+	ReadonlySet<TileCoordinatesSerialized> | null,
+	[axis: HexAxis, tile: TileCoordinatesSerialized]
+>({
+	key: `middleLineWin`,
+	get:
+		([axis, coordinatesSerialized]) =>
+		({ get }) => {
+			const coordinates = deserializeTileCoordinates(coordinatesSerialized)
+			const ownerKey = get(tileOwnerAtoms, coordinatesSerialized)
+			const tiles = new Set<TileCoordinatesSerialized>()
+			while (true) {
+				const adjacent = getDirectionalAdjacent(axis, `positive`, coordinates)
+				const adjacentSerialized = serializeTileCoordinates(adjacent)
+				const adjacentOwnerKey = get(tileOwnerAtoms, adjacentSerialized)
+				if (adjacentOwnerKey !== ownerKey) break
+				tiles.add(adjacentSerialized)
+			}
+			if (tiles.size >= 6) return tiles
+			return null
+		},
+})
+
+export const ringWinSelectors = selectorFamily<
+	ReadonlySet<TileCoordinatesSerialized> | null,
+	TileCoordinatesSerialized
+>({
+	key: `ringWin`,
+	get:
+		(coordinates0) =>
+		({ get }) => {
+			const coordinates = deserializeTileCoordinates(coordinates0)
+			const ownerKey = get(tileOwnerAtoms, coordinates0)
+			const [x, y, z] = coordinates
+			const coordinates1 = serializeTileCoordinates([x + 2, y - 1, z - 1])
+			const owner1 = get(tileOwnerAtoms, coordinates1)
+			if (owner1 !== ownerKey) return null
+			const coordinates2 = serializeTileCoordinates([x + 3, y - 2, z - 1])
+			const owner2 = get(tileOwnerAtoms, coordinates2)
+			if (owner2 !== ownerKey) return null
+			const coordinates3 = serializeTileCoordinates([x + 2, y - 2, z])
+			const owner3 = get(tileOwnerAtoms, coordinates3)
+			if (owner3 !== ownerKey) return null
+			const coordinates4 = serializeTileCoordinates([x, y - 1, z + 1])
+			const owner4 = get(tileOwnerAtoms, coordinates4)
+			if (owner4 !== ownerKey) return null
+			const coordinates5 = serializeTileCoordinates([x - 1, y, z + 1])
+			const owner5 = get(tileOwnerAtoms, coordinates5)
+			if (owner5 !== ownerKey) return null
+			const winningTiles = new Set([
+				coordinates0,
+				coordinates1,
+				coordinates2,
+				coordinates3,
+				coordinates4,
+				coordinates5,
+			])
+			return winningTiles
+		},
+})
+export const triangleWinSelectors = selectorFamily<
+	ReadonlySet<TileCoordinatesSerialized> | null,
+	TileCoordinatesSerialized
+>({
+	key: `triangleWin`,
+	get:
+		(coordinates0) =>
+		({ get }) => {
+			const coordinates = deserializeTileCoordinates(coordinates0)
+			const ownerKey = get(tileOwnerAtoms, coordinates0)
+			const [x, y, z] = coordinates
+			const coordinates1 = serializeTileCoordinates([x + 2, y - 1, z - 1])
+			const owner1 = get(tileOwnerAtoms, coordinates1)
+			if (owner1 !== ownerKey) return null
+			const coordinates2 = serializeTileCoordinates([x + 1, y - 1, z])
+			const owner2 = get(tileOwnerAtoms, coordinates2)
+			if (owner2 !== ownerKey) return null
+			const coordinates3 = serializeTileCoordinates([x, y - 1, z + 1])
+			const owner3 = get(tileOwnerAtoms, coordinates3)
+			if (owner3 !== ownerKey) return null
+			const coordinates4 = serializeTileCoordinates([x - 1, y, z + 1])
+			const owner4 = get(tileOwnerAtoms, coordinates4)
+			if (owner4 !== ownerKey) return null
+			const coordinates5 = serializeTileCoordinates([x - 2, y + 1, z + 1])
+			const owner5 = get(tileOwnerAtoms, coordinates5)
+			if (owner5 !== ownerKey) return null
+			const winningTiles = new Set([
+				coordinates0,
+				coordinates1,
+				coordinates2,
+				coordinates3,
+				coordinates4,
+				coordinates5,
+			])
+			return winningTiles
+		},
+})
+
+export const playerDidWinSelectors = selectorFamily<
+	ReadonlySet<TileCoordinatesSerialized> | null,
+	UserKey
+>({
+	key: `playerDidWin`,
+	get:
+		(userKey) =>
+		({ get }) => {
+			const allTiles = get(gameTilesAtom)
+			const userOwnedTiles = [...allTiles].filter(
+				(tile) => get(tileOwnerAtoms, tile) === userKey,
+			)
+			for (const tile of userOwnedTiles) {
+				for (const axis of HEX_AXES) {
+					const lineWin = get(lineWinSelectors, [axis, tile])
+					if (lineWin !== null) return lineWin
+				}
+				const ringWin = get(ringWinSelectors, tile)
+				if (ringWin !== null) return ringWin
+				const triangleWin = get(triangleWinSelectors, tile)
+				if (triangleWin !== null) return triangleWin
+			}
+			return null
+		},
+})
