@@ -873,11 +873,11 @@ export const tilesByOwnerSelector = selector<
 	},
 })
 
-export const playerDidWinSelectors = selectorFamily<
+export const playerWinningTilesSelectors = selectorFamily<
 	ReadonlySet<TileCoordinatesSerialized> | null,
 	UserKey
 >({
-	key: `playerDidWin`,
+	key: `playerWinningTiles`,
 	get:
 		(userKey) =>
 		({ get }) => {
@@ -903,7 +903,7 @@ export const winningTilesSelector =
 		get: ({ get }) => {
 			const players = get(playerTurnOrderAtom)
 			for (const userKey of players) {
-				const playerDidWin = get(playerDidWinSelectors, userKey)
+				const playerDidWin = get(playerWinningTilesSelectors, userKey)
 				if (playerDidWin !== null) return playerDidWin
 			}
 			return null
