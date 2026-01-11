@@ -764,15 +764,17 @@ export const lineWinSelectors = selectorFamily<
 	get:
 		([axis, coordinatesSerialized]) =>
 		({ get }) => {
-			const coordinates = deserializeTileCoordinates(coordinatesSerialized)
+			let coordinates = deserializeTileCoordinates(coordinatesSerialized)
 			const ownerKey = get(tileOwnerAtoms, coordinatesSerialized)
-			const tiles = new Set<TileCoordinatesSerialized>()
+			if (ownerKey === null) return null
+			const tiles = new Set<TileCoordinatesSerialized>([coordinatesSerialized])
 			while (true) {
 				const adjacent = getDirectionalAdjacent(axis, `positive`, coordinates)
 				const adjacentSerialized = serializeTileCoordinates(adjacent)
 				const adjacentOwnerKey = get(tileOwnerAtoms, adjacentSerialized)
 				if (adjacentOwnerKey !== ownerKey) break
 				tiles.add(adjacentSerialized)
+				coordinates = adjacent
 			}
 			if (tiles.size >= 6) return tiles
 			return null
@@ -854,6 +856,23 @@ export const triangleWinSelectors = selectorFamily<
 		},
 })
 
+export const tilesByOwnerSelector = selector<
+	Record<UserKey, TileCoordinatesSerialized[]>
+>({
+	key: `tilesByOwner`,
+	get: ({ get }) => {
+		const tiles = get(gameTilesAtom)
+		const tilesByOwner: Record<UserKey, TileCoordinatesSerialized[]> = {}
+		for (const tile of tiles) {
+			const owner = get(tileOwnerAtoms, tile)
+			if (owner === null) continue
+			const tilesOwned = (tilesByOwner[owner] ??= [])
+			tilesOwned.push(tile)
+		}
+		return tilesByOwner
+	},
+})
+
 export const playerDidWinSelectors = selectorFamily<
 	ReadonlySet<TileCoordinatesSerialized> | null,
 	UserKey
@@ -862,10 +881,8 @@ export const playerDidWinSelectors = selectorFamily<
 	get:
 		(userKey) =>
 		({ get }) => {
-			const allTiles = get(gameTilesAtom)
-			const userOwnedTiles = [...allTiles].filter(
-				(tile) => get(tileOwnerAtoms, tile) === userKey,
-			)
+			const tilesByOwner = get(tilesByOwnerSelector)
+			const userOwnedTiles = tilesByOwner[userKey] ?? []
 			for (const tile of userOwnedTiles) {
 				for (const axis of HEX_AXES) {
 					const lineWin = get(lineWinSelectors, [axis, tile])
@@ -879,3 +896,16 @@ export const playerDidWinSelectors = selectorFamily<
 			return null
 		},
 })
+
+export const winningTilesSelector =
+	selector<ReadonlySet<TileCoordinatesSerialized> | null>({
+		key: `winningTiles`,
+		get: ({ get }) => {
+			const players = get(playerTurnOrderAtom)
+			for (const userKey of players) {
+				const playerDidWin = get(playerDidWinSelectors, userKey)
+				if (playerDidWin !== null) return playerDidWin
+			}
+			return null
+		},
+	})
