@@ -26,6 +26,7 @@ import {
 	tileOwnerAtoms,
 	tileStatusSelectors,
 	turnInProgressAtom,
+	winningTilesSelector,
 } from "../../../../library/bug-rangers-game-state"
 import {
 	cameraTargetAtom,
@@ -214,23 +215,33 @@ export function GameTileActual({
 		coordinatesSerialized,
 	)
 
+	const winningTiles = usePullSelector(winningTilesSelector)
+
 	let color: string
-	switch (status) {
-		case null:
-			color = `#aa5`
-			break
-		case `mayBeInvaded`:
-		case `isMovingToHere`:
-			color = `#664`
-			break
-		case `isInvader`:
-		case `isMovingFromHere`:
-			color = `#ee1`
-			break
-		case `mayInvade`:
-		case `mayBeMoved`:
-			color = `#cc3`
-			break
+	if (winningTiles === null) {
+		switch (status) {
+			case null:
+				color = `#aa5`
+				break
+			case `mayBeInvaded`:
+			case `isMovingToHere`:
+				color = `#664`
+				break
+			case `isInvader`:
+			case `isMovingFromHere`:
+				color = `#ee1`
+				break
+			case `mayInvade`:
+			case `mayBeMoved`:
+				color = `#cc3`
+				break
+		}
+	} else {
+		if (winningTiles.has(coordinatesSerialized)) {
+			color = `#ff0`
+		} else {
+			color = `#00f`
+		}
 	}
 
 	if (boardA + boardB + boardC !== 0) {
