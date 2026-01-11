@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.19
+
+### Patch Changes
+
+- a47c12a: 🏷️ `atom.io/realtime-client` Don't require JSON type for selectors accessed with `pullSelector`.
+
 ## 0.46.18
 
 ### Patch Changes
