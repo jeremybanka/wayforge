@@ -1,5 +1,13 @@
 # tempest.games
 
+## 0.3.13
+
+### Patch Changes
+
+- a47c12a: ✨ Hexiom: Implemented win conditions.
+- Updated dependencies [a47c12a]
+  - atom.io@0.46.19
+
 ## 0.3.12
 
 ### Patch Changes
