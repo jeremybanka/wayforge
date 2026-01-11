@@ -39,6 +39,7 @@ import {
 	playerRemainingTilesAtoms,
 	playerTurnOrderAtom,
 	playerTurnSelector,
+	playerWinningTilesSelectors,
 	setupGroupsSelector,
 	setWarTarget,
 	tileCubeCountAtoms,
@@ -243,33 +244,31 @@ parent.receiveRelay((socket, userKey) => {
 					break
 				case null:
 				case undefined:
-					{
-						setState(turnInProgressAtom, {
-							type: `arm`,
-							targets: [tileCoordinatesSerialized],
-						})
-						setState(playerRemainingCubesAtoms, userKey, (n) => n - 1)
-						setState(
-							tileCubeCountAtoms,
-							tileCoordinatesSerialized,
-							(current) => (current + 1) as TileCubeCount,
-						)
-					}
+					setState(turnInProgressAtom, {
+						type: `arm`,
+						targets: [tileCoordinatesSerialized],
+					})
+					setState(playerRemainingCubesAtoms, userKey, (n) => n - 1)
+					setState(
+						tileCubeCountAtoms,
+						tileCoordinatesSerialized,
+						(current) => (current + 1) as TileCubeCount,
+					)
+
 					break
 				case `arm`:
-					{
-						if (turnInProgress.targets.length >= 2) return
-						setState(
-							tileCubeCountAtoms,
-							tileCoordinatesSerialized,
-							(current) => (current + 1) as TileCubeCount,
-						)
-						setState(playerRemainingCubesAtoms, userKey, (n) => n - 1)
-						setState(turnInProgressAtom, {
-							type: `arm`,
-							targets: [turnInProgress.targets[0]!, tileCoordinatesSerialized],
-						})
-					}
+					if (turnInProgress.targets.length >= 2) return
+					setState(
+						tileCubeCountAtoms,
+						tileCoordinatesSerialized,
+						(current) => (current + 1) as TileCubeCount,
+					)
+					setState(playerRemainingCubesAtoms, userKey, (n) => n - 1)
+					setState(turnInProgressAtom, {
+						type: `arm`,
+						targets: [turnInProgress.targets[0]!, tileCoordinatesSerialized],
+					})
+
 					break
 				case `build`:
 					setState(
@@ -280,6 +279,16 @@ parent.receiveRelay((socket, userKey) => {
 					setState(tileOwnerAtoms, turnInProgress.target, userKey)
 					setState(playerRemainingCubesAtoms, userKey, (n) => n - 1)
 					setState(turnInProgressAtom, null)
+					{
+						const playerWinningTiles = getState(
+							playerWinningTilesSelectors,
+							userKey,
+						)
+						if (playerWinningTiles !== null) {
+							setState(gameStateAtom, `recap`)
+							return
+						}
+					}
 					setState(turnNumberAtom, (current) => current + 1)
 					break
 			}
@@ -485,6 +494,11 @@ parent.receiveRelay((socket, userKey) => {
 			const turnCanBeEnded = getState(turnCanBeEndedSelector)
 			if (!turnCanBeEnded) return
 			setState(turnInProgressAtom, null)
+			const playerWinningTiles = getState(playerWinningTilesSelectors, userKey)
+			if (playerWinningTiles !== null) {
+				setState(gameStateAtom, `recap`)
+				return
+			}
 			setState(turnNumberAtom, (current) => current + 1)
 		}),
 	)
