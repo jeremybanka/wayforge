@@ -42,7 +42,7 @@
 		"arktype": "2.1.29",
 		"cachedir": "2.4.0",
 		"comline": "workspace:*",
-		"diff": "8.0.2",
+		"diff": "8.0.3",
 		"fastest-levenshtein": "1.0.16",
 		"picocolors": "1.1.1",
 		"safedeposit": "workspace:*"
