@@ -51,7 +51,7 @@
 		"@biomejs/js-api": "4.0.0",
 		"@biomejs/wasm-nodejs": "2.3.11",
 		"@types/bun": "npm:bun-types@1.3.6",
-		"@types/node": "25.0.7",
+		"@types/node": "25.0.8",
 		"@types/tmp": "0.2.6",
 		"@typescript/native-preview": "7.0.0-dev.20260114.1",
 		"concurrently": "9.2.1",
