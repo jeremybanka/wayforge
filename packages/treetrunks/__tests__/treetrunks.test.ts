@@ -36,7 +36,7 @@ describe(`utility types`, () => {
 	test(`union distillation`, () => {
 		type Union = 1 | 2 | 3 | 4
 		type Distilled = Distill<Union>
-		;[2, 1, 3, 4] satisfies Distilled
+		;[1, 2, 3, 4] satisfies Distilled
 	})
 })
 

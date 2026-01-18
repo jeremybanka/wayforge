@@ -24,8 +24,8 @@
 		"build": "tsdown",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
-		"lint:types": "tsc --noEmit",
-		"watch:types": "tsc --watch --noEmit",
+		"lint:types": "tsgo --noEmit",
+		"watch:types": "tsgo --watch --noEmit",
 		"lint": "concurrently \"bun:lint:*\"",
 		"test": "vitest",
 		"test:coverage:once": "vitest run --coverage",
@@ -36,6 +36,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "25.0.9",
+		"@typescript/native-preview": "7.0.0-dev.20260117.1",
 		"@vitest/coverage-v8": "4.0.17",
 		"concurrently": "9.2.1",
 		"eslint": "9.39.2",
