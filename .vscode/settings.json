@@ -1,7 +1,7 @@
 {
 	// FILE FORMATTING ////////////////////////////////////////////////////////////
 	"editor.formatOnSave": true,
-	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.defaultFormatter": "prettier.prettier-vscode",
 	"[json][jsonc][typescript][typescriptreact][css][astro]": {
 		"editor.defaultFormatter": "biomejs.biome"
 	},
@@ -35,6 +35,5 @@
 		"**/app/**/page.tsx": "${dirname}/page.tsx",
 		"**/app/**/page.mdx": "${dirname}/page.tsx",
 		"**/app/**/layout.tsx": "${dirname}/layout.tsx"
-	},
-	"cSpell.words": ["hexiom"]
+	}
 }
