@@ -5,41 +5,44 @@ import {
 	selector,
 	selectorFamily,
 } from "atom.io"
+import type { UserKey } from "atom.io/realtime"
+import { isUserKey } from "atom.io/realtime"
 import { UList } from "atom.io/transceivers/u-list"
 
 import { playerTurnOrderAtom } from "../game-setup-turn-order-and-spectators"
-import { groupsOfCards } from "./card-groups-store"
+import type { TrickKey } from "./card-collections-store"
+import { cardCollectionAtoms, isTrickKey } from "./card-collections-store"
+import type { CardKey } from "./cards-store"
+import { isCardKey } from "./cards-store"
 
 export const trickContributions = join({
 	key: `trickContributions`,
 	between: [`player`, `card`],
 	cardinality: `1:n`,
-	isAType: (input): input is string => typeof input === `string`,
-	isBType: (input): input is string => typeof input === `string`,
+	isAType: isUserKey,
+	isBType: isCardKey,
 })
 export const trickWinners = join({
 	key: `trickWinners`,
 	between: [`player`, `trick`],
 	cardinality: `1:n`,
-	isAType: (input): input is string => typeof input === `string`,
-	isBType: (input): input is string => typeof input === `string`,
+	isAType: isUserKey,
+	isBType: isTrickKey,
 })
 
-export const trickKeysAtom = mutableAtom<UList<string>>({
+export const trickKeysAtom = mutableAtom<UList<TrickKey>>({
 	key: `trickKeys`,
 	class: UList,
 })
 
-export type TrickContent = [playerId: string, cardId: string | undefined]
-export const trickContentsSelectors = selectorFamily<TrickContent[], string>({
+export type TrickContent = [UserKey, CardKey | undefined]
+export const trickContentsSelectors = selectorFamily<TrickContent[], TrickKey>({
 	key: `trickContents`,
 	get:
-		(trickId) =>
+		(trickKey) =>
 		({ get }) => {
 			const playerTurnOrder = get(playerTurnOrderAtom)
-			const cardIdsInTrick = get(
-				findRelations(groupsOfCards, trickId).cardKeysOfGroup,
-			)
+			const cardIdsInTrick = get(cardCollectionAtoms, trickKey)
 			const trickContents = playerTurnOrder.map<TrickContent>((playerId) => {
 				const cardsThisPlayerHasInTricks = get(
 					findRelations(trickContributions, playerId).cardKeysOfPlayer,
@@ -53,12 +56,12 @@ export const trickContentsSelectors = selectorFamily<TrickContent[], string>({
 		},
 })
 
-export const trickIsCompleteSelector = selectorFamily<boolean, string>({
+export const trickIsCompleteSelector = selectorFamily<boolean, TrickKey>({
 	key: `trickIsComplete`,
 	get:
-		(trickId) =>
-		({ find, get }) => {
-			const trickContents = get(find(trickContentsSelectors, trickId))
+		(key) =>
+		({ get }) => {
+			const trickContents = get(trickContentsSelectors, key)
 			return trickContents.every(([, cardId]) => cardId !== undefined)
 		},
 })

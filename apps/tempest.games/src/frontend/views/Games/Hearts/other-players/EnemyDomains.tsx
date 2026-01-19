@@ -21,7 +21,7 @@ export const EnemyDomains: React.FC = () => {
 							<ProfilePicture userKey={key} detailed />
 						</section>
 						<section data-css="their-stuff">
-							<TheirStuff playerId={key} />
+							<TheirStuff userKey={key} />
 						</section>
 					</div>
 				))}

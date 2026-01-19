@@ -8,15 +8,15 @@ import { Me } from "../my-domain/Me"
 import scss from "./MyDomain.module.scss"
 
 export const MyDomain: React.FC = () => {
-	const myHands = useO(myHandsSelector)
+	const myHandKeys = useO(myHandsSelector)
 	return (
 		<div className={scss[`class`]}>
 			<section data-css="me">
 				<Me />
 			</section>
 			<section data-css="my-hands">
-				{myHands.map((id) => (
-					<Hand key={id} id={id} />
+				{myHandKeys.map((key) => (
+					<Hand key={key} />
 				))}
 			</section>
 			<span.chamferedTop data-css="tabletop" />

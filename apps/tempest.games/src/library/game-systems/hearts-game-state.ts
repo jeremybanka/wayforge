@@ -1,16 +1,15 @@
-import { atom, getInternalRelations, transaction } from "atom.io"
-import { usersInRooms } from "atom.io/realtime"
-import { myRoomKeySelector } from "atom.io/realtime-client"
+import { atom, transaction } from "atom.io"
+import { usersHereSelector } from "atom.io/realtime-client"
 
 import {
-	dealCardsTX,
+	createClassicDeckTX,
+	createHandTX,
+	dealTX,
 	shuffleDeckTX,
-	spawnClassicDeckTX,
-	spawnHandTX,
 	spawnTrickTX,
 } from "./card-game-actions"
+import type { CardKey, HandKey } from "./card-game-stores"
 import { playerTurnOrderAtom } from "./game-setup-turn-order-and-spectators"
-import type { CardKey } from "./standard-deck-game-state"
 
 export type HeartsPublicGameState<PlayerId extends string = string> = {
 	leftoverCardCount: number
@@ -60,42 +59,37 @@ export type HeartsGameResponse = {
 }
 
 export type StartGameInput = {
-	handIds: string[]
-	trickId: string
-	deckId: string
-	cardIds: string[]
-	txId: string
 	shuffle: number
 }
 export const startGameTX = transaction<(input: StartGameInput) => void>({
 	key: `startGame`,
-	do: (transactors, { handIds, trickId, deckId, cardIds, txId, shuffle }) => {
+	do: (transactors, { shuffle }) => {
 		const { get, set, run } = transactors
-		run(spawnClassicDeckTX, `${txId}:spawnDeck`)(deckId, cardIds)
-		const roomKey = get(myRoomKeySelector)
-		if (!roomKey) throw new Error(`No room key`)
-		const [usersInRoomsAtoms] = getInternalRelations(usersInRooms, `split`)
-		const users = get(usersInRoomsAtoms, roomKey)
+		const deckKey = run(createClassicDeckTX)()
+		const userKeys = get(usersHereSelector)
+		if (!userKeys) throw new Error(`Not in a room`)
 		set(playerTurnOrderAtom, (prev) => {
-			for (const playerId of users) {
+			for (const playerId of userKeys) {
 				prev.push(playerId)
 			}
 			return prev
 		})
-		let i = 0
-		for (const playerId of users) {
-			run(spawnHandTX, `${txId}:spawnHand:${playerId}`)(playerId, handIds[i])
-			i++
+		const handKeys: HandKey[] = []
+		const createHand = run(createHandTX)
+		for (const userKey of userKeys) {
+			const handKey = createHand(userKey)
+			handKeys.push(handKey)
 		}
-		run(spawnTrickTX, `${txId}:spawnTrick`)(trickId)
-		run(shuffleDeckTX, `${txId}:shuffle`)(deckId, shuffle)
-		i = 52
-		const remainingCardCount = 52 % users.size
+		run(spawnTrickTX)()
+		run(shuffleDeckTX)(deckKey, shuffle)
+		let i = 52
+		const remainingCardCount = 52 % userKeys.size
+		const deal = run(dealTX)
 		while (i > remainingCardCount) {
-			const handIdx = i % users.size
-			const handId = handIds[handIdx]
-			run(dealCardsTX, `${txId}:deal:${i}`)(deckId, handId, 1)
-			i--
+			const handIdx = i % handKeys.length
+			const handId = handKeys[handIdx]
+			deal(deckKey, handId)
+			--i
 		}
 	},
 })
