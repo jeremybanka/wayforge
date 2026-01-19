@@ -19,5 +19,5 @@ export const CARD_VALUES = CARD_RANKS.flatMap((rank) =>
 )
 export type CardRank = (typeof CARD_RANKS)[number]
 export type CardSuit = (typeof CARD_SUITS)[number]
-export type CardId = `${CardRank}${CardSuit}`
-export type CardValue = { rank: CardRank; suit: CardSuit; id: CardId }
+export type CardKey = `${CardRank}${CardSuit}`
+export type CardValue = { rank: CardRank; suit: CardSuit; id: CardKey }

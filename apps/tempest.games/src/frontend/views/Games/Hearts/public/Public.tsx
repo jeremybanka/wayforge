@@ -11,8 +11,8 @@ import {
 	spawnClassicDeckTX,
 	spawnHandTX,
 	spawnTrickTX,
-} from "../../../../../library/topdeck"
-import { startGameTX } from "../../../../../library/topdeck/hearts"
+} from "../../../../../library/game-systems/card-game-actions"
+import { startGameTX } from "../../../../../library/game-systems/hearts-game-state"
 import { h3 } from "../components/hX"
 import { useRadial } from "../peripherals/radial"
 import { Hearts } from "./HeartsBoard"

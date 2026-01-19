@@ -14,7 +14,7 @@ import * as THREE from "three"
 import {
 	playerTurnOrderAtom,
 	playerTurnSelector,
-} from "./topdeck/stores/game-setup-turn-order-and-spectators"
+} from "./game-setup-turn-order-and-spectators"
 
 export type PlayerActions = {
 	// DEBUG

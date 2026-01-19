@@ -1,6 +1,9 @@
 import { useO } from "atom.io/react"
 
-import { deckIndex, trickKeysAtom } from "../../../../../library/topdeck"
+import {
+	deckKeysAtom,
+	trickKeysAtom,
+} from "../../../../../library/game-systems/card-game-stores"
 import type { HeartsInteriorProps } from "../../Hearts"
 import { Deck } from "../game-pieces/Deck"
 import { Trick } from "../game-pieces/Trick"
@@ -19,7 +22,7 @@ export function Hearts({ roomKey }: HeartsInteriorProps): React.ReactNode {
 	)
 }
 function GameDeck(): React.ReactNode | null {
-	const deckId = [...useO(deckIndex)][0]
+	const deckId = [...useO(deckKeysAtom)][0]
 	return deckId ? <Deck id={deckId} /> : null
 }
 function CurrentTrick({ roomKey }: HeartsInteriorProps): React.ReactNode | null {

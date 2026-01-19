@@ -7,7 +7,7 @@ import {
 } from "atom.io"
 import { UList } from "atom.io/transceivers/u-list"
 
-import { playerTurnOrderAtom } from "../stores/game-setup-turn-order-and-spectators"
+import { playerTurnOrderAtom } from "../game-setup-turn-order-and-spectators"
 import { groupsOfCards } from "./card-groups-store"
 
 export const trickContributions = join({
@@ -31,7 +31,7 @@ export const trickKeysAtom = mutableAtom<UList<string>>({
 })
 
 export type TrickContent = [playerId: string, cardId: string | undefined]
-export const trickContentsStates = selectorFamily<TrickContent[], string>({
+export const trickContentsSelectors = selectorFamily<TrickContent[], string>({
 	key: `trickContents`,
 	get:
 		(trickId) =>
@@ -58,7 +58,7 @@ export const trickIsCompleteSelector = selectorFamily<boolean, string>({
 	get:
 		(trickId) =>
 		({ find, get }) => {
-			const trickContents = get(find(trickContentsStates, trickId))
+			const trickContents = get(find(trickContentsSelectors, trickId))
 			return trickContents.every(([, cardId]) => cardId !== undefined)
 		},
 })

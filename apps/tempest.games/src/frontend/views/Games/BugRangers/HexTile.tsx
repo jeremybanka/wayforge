@@ -13,7 +13,7 @@ import type { ReactNode, RefObject } from "react"
 import { useMemo, useState } from "react"
 import * as THREE from "three"
 
-import type { TileCoordinatesSerialized } from "../../../../library/bug-rangers-game-state"
+import type { TileCoordinatesSerialized } from "../../../../library/game-systems/bug-rangers-game-state"
 import {
 	closestPlayableZoneSelector,
 	deserializeTileCoordinates,
@@ -26,8 +26,8 @@ import {
 	tileStatusSelectors,
 	turnInProgressAtom,
 	winningTilesSelector,
-} from "../../../../library/bug-rangers-game-state"
-import { playerTurnSelector } from "../../../../library/topdeck/stores/game-setup-turn-order-and-spectators"
+} from "../../../../library/game-systems/bug-rangers-game-state"
+import { playerTurnSelector } from "../../../../library/game-systems/game-setup-turn-order-and-spectators"
 import {
 	cameraTargetAtom,
 	isMyTurnSelector,

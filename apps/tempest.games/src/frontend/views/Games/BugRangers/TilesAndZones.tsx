@@ -2,11 +2,11 @@ import { useJSON } from "atom.io/react"
 import { usePullMutable, usePullSelector } from "atom.io/realtime-react"
 import type { ReactNode } from "react"
 
-import type { TileCoordinatesSerialized } from "../../../../library/bug-rangers-game-state"
+import type { TileCoordinatesSerialized } from "../../../../library/game-systems/bug-rangers-game-state"
 import {
 	gameTilesAtom,
 	playableZonesSelector,
-} from "../../../../library/bug-rangers-game-state"
+} from "../../../../library/game-systems/bug-rangers-game-state"
 import { GameTileActual, GameTilePreview } from "./HexTile"
 
 export type GameTilesProps = {

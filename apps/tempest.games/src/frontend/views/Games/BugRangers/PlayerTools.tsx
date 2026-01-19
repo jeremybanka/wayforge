@@ -11,7 +11,7 @@ import * as THREE from "three"
 import type {
 	TileCubeCount,
 	TileStackHeight,
-} from "../../../../library/bug-rangers-game-state"
+} from "../../../../library/game-systems/bug-rangers-game-state"
 import {
 	closestOwnedTileSelector,
 	closestPlayableZoneSelector,
@@ -26,7 +26,7 @@ import {
 	tileCubeCountAtoms,
 	tileOwnerAtoms,
 	turnInProgressAtom,
-} from "../../../../library/bug-rangers-game-state"
+} from "../../../../library/game-systems/bug-rangers-game-state"
 import {
 	cameraAnchoredSphereAtom,
 	controlsEnabledAtom,

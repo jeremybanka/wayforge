@@ -1,6 +1,9 @@
 import { editRelations, findRelations, transaction } from "atom.io"
 
-import { deckIndex, groupsOfCards } from "../card-game-stores/card-groups-store"
+import {
+	deckKeysAtom,
+	groupsOfCards,
+} from "../card-game-stores/card-groups-store"
 
 class LinearCongruentialGenerator {
 	private multiplier: number
@@ -37,7 +40,7 @@ export const shuffleDeckTX = transaction<
 	do: (transactors, deckId, shuffleSeed) => {
 		const { get } = transactors
 		const rng = new LinearCongruentialGenerator(shuffleSeed)
-		const deckDoesExist = get(deckIndex).has(deckId)
+		const deckDoesExist = get(deckKeysAtom).has(deckId)
 		if (!deckDoesExist) {
 			throw new Error(`Deck does not exist`)
 		}
@@ -47,21 +50,7 @@ export const shuffleDeckTX = transaction<
 		editRelations(groupsOfCards, (relations) => {
 			relations.replaceRelations(deckId, shuffledCardIds)
 		})
-		// IMPLICIT.STORE.logger.info(
-		// 	`🎲`,
-		// 	`transaction`,
-		// 	`shuffleDeck`,
-		// 	deckId,
-		// 	`seed:`,
-		// 	shuffleSeed,
-		// 	cardIds.join(` `),
-		// 	`->`,
-		// 	shuffledCardIds.join(` `),
-		// 	rngOut.join(` `),
-		// )
 		if (typeof global !== `undefined`) {
-			// process.stderr.write(`Shuffled deck "${deckId}"`)
-			// process.stderr.write(`🎲 ${rngOut.join(` `)}`)
 		}
 	},
 })
