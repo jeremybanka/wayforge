@@ -9,7 +9,7 @@ import {
 } from "atom.io"
 import { UList } from "atom.io/transceivers/u-list"
 
-import { playerTurnOrderAtom } from "../stores/game-setup-turn-order-and-spectators"
+import { playerTurnOrderAtom } from "../game-setup-turn-order-and-spectators"
 import { cardKeysAtom } from "./cards-store"
 import { trickKeysAtom } from "./trick-store"
 
@@ -38,7 +38,7 @@ export const deckAtoms = atomFamily<Deck, string>({
 		name: ``,
 	},
 })
-export const deckIndex = mutableAtom<UList<string>>({
+export const deckKeysAtom = mutableAtom<UList<string>>({
 	key: `deckIndex`,
 	class: UList,
 })
@@ -46,7 +46,7 @@ export const deckGlobalView = selector<RegularAtomToken<Deck>[]>({
 	key: `deckGlobalView`,
 	get: ({ get, find }) => {
 		const deckTokens: RegularAtomToken<Deck>[] = []
-		const deckValueIds = get(deckIndex)
+		const deckValueIds = get(deckKeysAtom)
 		for (const deckValueId of deckValueIds) {
 			const deckToken = find(deckAtoms, deckValueId)
 			deckTokens.push(deckToken)
@@ -167,7 +167,7 @@ export const trickView = selectorFamily<
 export const cardGroupIndex = selector<string[]>({
 	key: `cardGroupIndex`,
 	get: ({ get }) => {
-		const deckIds = get(deckIndex)
+		const deckIds = get(deckKeysAtom)
 		const handIds = get(handIndex)
 		const pileIds = get(pileIndex)
 		const trickIds = get(trickKeysAtom)

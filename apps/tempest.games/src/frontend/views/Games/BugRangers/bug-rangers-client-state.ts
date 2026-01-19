@@ -5,7 +5,7 @@ import React from "react"
 import type { Socket } from "socket.io-client"
 import type * as THREE from "three"
 
-import type { PlayerActions } from "../../../../library/bug-rangers-game-state"
+import type { PlayerActions } from "../../../../library/game-systems/bug-rangers-game-state"
 import {
 	gameTilesAtom,
 	maximumStackHeightSelectors,
@@ -15,8 +15,8 @@ import {
 	tileOwnerAtoms,
 	turnInProgressAtom,
 	validWarDeclaratorsSelector,
-} from "../../../../library/bug-rangers-game-state"
-import { playerTurnSelector } from "../../../../library/topdeck/stores/game-setup-turn-order-and-spectators"
+} from "../../../../library/game-systems/bug-rangers-game-state"
+import { playerTurnSelector } from "../../../../library/game-systems/game-setup-turn-order-and-spectators"
 
 export function usePlayerActions(): Socket<{}, PlayerActions> {
 	const { socket } = React.useContext(RealtimeContext)

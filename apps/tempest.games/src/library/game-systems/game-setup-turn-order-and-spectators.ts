@@ -9,6 +9,12 @@ import { type UserKey, usersInRooms } from "atom.io/realtime"
 import { myRoomKeySelector, usersHereSelector } from "atom.io/realtime-client"
 import { OList } from "atom.io/transceivers/o-list"
 
+export type TurnBasedGameActions = {
+	wantFirst: () => void
+	wantNotFirst: () => void
+	startGame: () => void
+}
+
 export const playerTurnOrderAtom = mutableAtom<OList<UserKey>>({
 	key: `playerTurnOrder`,
 	class: OList,

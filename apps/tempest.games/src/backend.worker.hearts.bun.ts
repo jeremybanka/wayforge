@@ -3,11 +3,9 @@
 import { type } from "arktype"
 import {
 	AtomIOLogger,
-	findRelations,
 	findState,
 	getInternalRelations,
 	getState,
-	resetState,
 	setState,
 } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
@@ -31,26 +29,16 @@ import {
 import { Socket } from "socket.io-client"
 
 import { parentSocket } from "./backend/logger"
-import {
-	gameTilesAtom,
-	gameTilesStackHeightAtoms,
-	playerColorAtoms,
-	playerRemainingCubesAtoms,
-	playerRemainingTilesAtoms,
-	tileCubeCountAtoms,
-	tileOwnerAtoms,
-	turnInProgressAtom,
-} from "./library/bug-rangers-game-state"
-import { env } from "./library/env"
-import { pureShuffle } from "./library/shuffle"
-import type { HeartsActions } from "./library/topdeck/actions"
+import { playerColorAtoms } from "./library/game-systems/bug-rangers-game-state"
 import {
 	gameStateAtom,
 	playerReadyStatusAtoms,
 	playerTurnOrderAtom,
 	setupGroupsSelector,
+	type TurnBasedGameActions,
 	turnNumberAtom,
-} from "./library/topdeck/stores/game-setup-turn-order-and-spectators"
+} from "./library/game-systems/game-setup-turn-order-and-spectators"
+import { pureShuffle } from "./library/shuffle"
 
 const parent: ParentSocket<any, any, any> = ((process as any).parentSocket ??=
 	new ParentSocket(process))
@@ -79,7 +67,7 @@ IMPLICIT.STORE.loggers[0] = new AtomIOLogger(
 	parent.logger,
 )
 
-const heartsGuard: SocketGuard<HeartsActions> = {
+const heartsGuard: SocketGuard<TurnBasedGameActions> = {
 	// SETUP PHASE
 	wantFirst: type([]),
 	wantNotFirst: type([]),
@@ -112,7 +100,7 @@ parent.receiveRelay((socket, userKey) => {
 	const exposeMutable = realtimeMutableProvider(config)
 	const exposeFamily = realtimeAtomFamilyProvider(config)
 
-	const gameSocket = guardSocket<HeartsActions>(
+	const gameSocket = guardSocket<TurnBasedGameActions>(
 		socket,
 		heartsGuard,
 		parent.logger.error,
@@ -162,36 +150,6 @@ parent.receiveRelay((socket, userKey) => {
 			}
 		}),
 	)
-
-	if (env.RUN_WORKERS_FROM_SOURCE === true) {
-		coreStack.push(
-			employSocket(socket, `RESET_GAME`, () => {
-				setState(gameStateAtom, `setup`)
-				setState(
-					playerTurnOrderAtom,
-					(permanent) => ((permanent.length = 0), permanent),
-				)
-				const usersHere = getState(
-					findRelations(usersInRooms, ROOM_KEY).userKeysOfRoom,
-				)
-				for (const u of usersHere) {
-					setState(playerReadyStatusAtoms, u, `notReady`)
-					setState(playerColorAtoms, u, null)
-					setState(playerRemainingCubesAtoms, u, 20)
-					setState(playerRemainingTilesAtoms, u, 12)
-				}
-				resetState(turnNumberAtom)
-				resetState(turnInProgressAtom)
-				resetState(playerTurnOrderAtom)
-				for (const tile of getState(gameTilesAtom)) {
-					resetState(tileCubeCountAtoms, tile)
-					resetState(tileOwnerAtoms, tile)
-					resetState(gameTilesStackHeightAtoms, tile)
-				}
-				setState(gameTilesAtom, (permanent) => (permanent.clear(), permanent))
-			}),
-		)
-	}
 
 	return () => {
 		for (const unsub of coreStack) unsub()

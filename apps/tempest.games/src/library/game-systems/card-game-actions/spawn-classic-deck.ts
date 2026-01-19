@@ -6,7 +6,7 @@ import {
 	cardValueIndex,
 	valuesOfCards,
 } from "../card-game-stores/card-values-store"
-import { CARD_VALUES } from "../playing-card-data"
+import { CARD_VALUES } from "../standard-deck-game-state"
 
 export const spawnClassicDeckTX = transaction<
 	(deckId: string, cardIds: string[]) => void
@@ -20,7 +20,7 @@ export const spawnClassicDeckTX = transaction<
 		const deckState = find(CardGroups.deckAtoms, deckId)
 		set(deckState, { type: `deck`, name: `Classic 52-Card Deck` })
 
-		set(CardGroups.deckIndex, (current) => {
+		set(CardGroups.deckKeysAtom, (current) => {
 			current.add(deckId)
 			return current
 		})

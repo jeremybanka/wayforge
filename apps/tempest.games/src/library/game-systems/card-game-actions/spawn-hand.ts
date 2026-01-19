@@ -2,7 +2,7 @@ import { editRelations, transaction } from "atom.io"
 import type { UserKey } from "atom.io/realtime"
 
 import * as CardGroups from "../card-game-stores/card-groups-store"
-import { playerTurnOrderAtom } from "../stores/game-setup-turn-order-and-spectators"
+import { playerTurnOrderAtom } from "../game-setup-turn-order-and-spectators"
 
 export const spawnHandTX = transaction<
 	(userKey: UserKey, handId: string) => void

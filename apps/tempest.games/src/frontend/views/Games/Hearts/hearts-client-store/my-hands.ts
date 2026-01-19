@@ -2,7 +2,10 @@ import { findRelations, selector } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 import { myUserKeyAtom } from "atom.io/realtime-client"
 
-import { handIndex, ownersOfGroups } from "../../../../../library/topdeck"
+import {
+	handIndex,
+	ownersOfGroups,
+} from "../../../../../library/game-systems/card-game-stores"
 
 export const myHandsSelector = selector<string[]>({
 	key: `myHands`,

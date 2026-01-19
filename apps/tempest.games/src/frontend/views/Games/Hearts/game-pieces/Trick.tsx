@@ -3,7 +3,7 @@ import { setCssVars } from "hamr/react-css-vars"
 import { Id } from "hamr/react-id"
 import { AnimatePresence, motion } from "motion/react"
 
-import { trickContentsStates } from "../../../../../library/topdeck"
+import { trickContentsSelectors } from "../../../../../library/game-systems/card-game-stores"
 import { memoize } from "../components/memoize"
 import { Count } from "../labels/Count"
 import { useRadial } from "../peripherals/radial"
@@ -14,7 +14,7 @@ import scss from "./Trick.module.scss"
 export const Trick = memoize<{ id: string; gameId: string; detailed?: boolean }>(
 	`Trick`,
 	({ id: trickId, detailed }) => {
-		const trickContent = useO(trickContentsStates, trickId)
+		const trickContent = useO(trickContentsSelectors, trickId)
 		const handlers = useRadial([])
 
 		const [ref, rect] = useDOMRect()

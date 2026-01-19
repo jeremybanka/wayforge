@@ -3,7 +3,7 @@ import type { UserKey } from "atom.io/realtime"
 import type { ReactNode, Ref } from "react"
 import * as THREE from "three"
 
-import { playerColorAtoms } from "../../../../library/bug-rangers-game-state"
+import { playerColorAtoms } from "../../../../library/game-systems/bug-rangers-game-state"
 
 export type CubeTokenStackProps = {
 	position: THREE.Vector3

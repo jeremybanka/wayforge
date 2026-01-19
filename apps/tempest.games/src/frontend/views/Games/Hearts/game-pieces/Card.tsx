@@ -3,7 +3,7 @@ import { useO } from "atom.io/react"
 import { AnimatePresence } from "motion/react"
 import type { FC } from "react"
 
-import { valuesOfCards } from "../../../../../library/topdeck"
+import { valuesOfCards } from "../../../../../library/game-systems/card-game-stores"
 import { article } from "../components/article"
 import scss from "./Card.module.scss"
 

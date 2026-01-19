@@ -19,13 +19,14 @@ import {
 import { Socket } from "socket.io-client"
 
 import { parentSocket } from "./backend/logger"
+import { env } from "./library/env"
 import type {
 	PlayerActions,
 	PlayerColor,
 	TileCoordinatesSerialized,
 	TileCubeCount,
 	TileStackHeight,
-} from "./library/bug-rangers-game-state"
+} from "./library/game-systems/bug-rangers-game-state"
 import {
 	gameTilesAtom,
 	gameTilesStackHeightAtoms,
@@ -41,9 +42,7 @@ import {
 	tileOwnerAtoms,
 	turnCanBeEndedSelector,
 	turnInProgressAtom,
-} from "./library/bug-rangers-game-state"
-import { env } from "./library/env"
-import { pureShuffle } from "./library/shuffle"
+} from "./library/game-systems/bug-rangers-game-state"
 import {
 	gameStateAtom,
 	playerReadyStatusAtoms,
@@ -51,7 +50,8 @@ import {
 	playerTurnSelector,
 	setupGroupsSelector,
 	turnNumberAtom,
-} from "./library/topdeck/stores/game-setup-turn-order-and-spectators"
+} from "./library/game-systems/game-setup-turn-order-and-spectators"
+import { pureShuffle } from "./library/shuffle"
 
 const parent: ParentSocket<any, any, any> = ((process as any).PS ??=
 	new ParentSocket(process))
