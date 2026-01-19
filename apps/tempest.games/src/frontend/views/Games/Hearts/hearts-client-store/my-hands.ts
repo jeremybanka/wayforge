@@ -1,26 +1,30 @@
 import { findRelations, selector } from "atom.io"
-import { IMPLICIT } from "atom.io/internal"
 import { myUserKeyAtom } from "atom.io/realtime-client"
 
+import type { HandKey } from "../../../../../library/game-systems/card-game-stores"
 import {
-	handIndex,
-	ownersOfGroups,
+	handKeysAtom,
+	isHandKey,
+	ownersOfCollections,
 } from "../../../../../library/game-systems/card-game-stores"
 
-export const myHandsSelector = selector<string[]>({
+export const myHandsSelector = selector<HandKey[]>({
 	key: `myHands`,
 	get: ({ get }) => {
+		const myHandKeys: HandKey[] = []
 		const myUserKey = get(myUserKeyAtom)
 		if (!myUserKey) {
-			return []
+			return myHandKeys
 		}
-		console.log(`❗❗❗❗❗`, IMPLICIT.STORE)
-		const myCardGroupIds = get(
-			findRelations(ownersOfGroups, myUserKey).groupKeysOfPlayer,
+		const myCollectionKeys = get(
+			findRelations(ownersOfCollections, myUserKey).collectionKeysOfOwner,
 		)
-		const allHandIds = get(handIndex)
-		const myHandIds = myCardGroupIds.filter((handId) => allHandIds.has(handId))
-		console.log(`❗❗❗❗❗`, { myHandIds, myCardGroupIds, allHandIds })
-		return myHandIds
+		const allHandKeys = get(handKeysAtom)
+		for (const collectionKey of myCollectionKeys) {
+			if (isHandKey(collectionKey) && allHandKeys.has(collectionKey)) {
+				myHandKeys.push(collectionKey)
+			}
+		}
+		return myHandKeys
 	},
 })

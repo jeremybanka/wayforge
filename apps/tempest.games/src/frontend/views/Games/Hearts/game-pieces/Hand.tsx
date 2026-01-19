@@ -1,11 +1,12 @@
-import { findRelations, runTransaction } from "atom.io"
+import { runTransaction } from "atom.io"
 import { useO } from "atom.io/react"
 import { useRealtimeRooms } from "atom.io/realtime-react"
 import { setCssVars } from "hamr/react-css-vars"
 import { AnimatePresence, motion } from "motion/react"
 
-import { dealCardsTX } from "../../../../../library/game-systems/card-game-actions"
-import { groupsOfCards } from "../../../../../library/game-systems/card-game-stores"
+import { dealTX } from "../../../../../library/game-systems/card-game-actions"
+import type { HandKey } from "../../../../../library/game-systems/card-game-stores"
+import { cardCollectionAtoms } from "../../../../../library/game-systems/card-game-stores"
 import { memoize } from "../components/memoize"
 import { myHandsSelector } from "../hearts-client-store/my-hands"
 import { publicDeckKeysSelector } from "../hearts-client-store/public-decks"
@@ -15,15 +16,15 @@ import { useDOMRect } from "../peripherals/use-dimensions"
 import { CardBack, CardFace, CardSlot } from "./Card"
 import scss from "./Hand.module.scss"
 
-export const Hand = memoize<{ id: string; detailed?: boolean }>(
+export const Hand = memoize<{ key: HandKey; detailed?: boolean }>(
 	`Hand`,
-	({ id: handId, detailed }) => {
+	({ key, detailed }) => {
 		const { myRoomKey } = useRealtimeRooms()
-		const isMyHand = useO(myHandsSelector).includes(handId)
-		const cardIds = useO(findRelations(groupsOfCards, handId).cardKeysOfGroup)
+		const isMyHand = useO(myHandsSelector).includes(key)
+		const cardIds = useO(cardCollectionAtoms, key)
 		const publicDeckIds = useO(publicDeckKeysSelector)
 
-		const dealCards = runTransaction(dealCardsTX)
+		const dealCards = runTransaction(dealTX)
 
 		const handlers = useRadial([
 			{
@@ -34,7 +35,7 @@ export const Hand = memoize<{ id: string; detailed?: boolean }>(
 						console.error(`Tried to deal cards without being in a room.`)
 						return
 					}
-					dealCards(deckId, handId, 1)
+					dealCards(deckId, key)
 				},
 			},
 		])
@@ -55,7 +56,7 @@ export const Hand = memoize<{ id: string; detailed?: boolean }>(
 					{detailed ? <div>Hand ({cardIds.length})</div> : null}
 					<motion.article
 						ref={ref}
-						layoutId={handId}
+						layoutId={key}
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						exit={{ opacity: 0 }}
@@ -63,9 +64,9 @@ export const Hand = memoize<{ id: string; detailed?: boolean }>(
 						{cardIds.length === 0 ? (
 							<CardSlot />
 						) : isMyHand ? (
-							cardIds.map((cardId) => <CardFace key={cardId} id={cardId} />)
+							cardIds.map((cardId) => <CardFace key={cardId} />)
 						) : (
-							cardIds.map((cardId) => <CardBack key={cardId} id={cardId} />)
+							cardIds.map((cardId) => <CardBack key={cardId} />)
 						)}
 						{detailed ? null : <Count amount={cardIds.length} />}
 					</motion.article>

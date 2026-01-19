@@ -48,18 +48,17 @@ export const myRoomKeySelector: ReadonlyPureSelectorToken<RoomKey | null> =
 		},
 	})
 
-export const usersHereSelector: ReadonlyPureSelectorToken<
-	ViewOf<UList<UserKey> | null>
-> = selector({
-	key: `usersHere`,
-	get: ({ get, find }) => {
-		const myRoomKey = get(myRoomKeySelector)
-		if (!myRoomKey) return null
-		const [usersInRoomsAtoms] = getInternalRelations(usersInRooms, `split`)
-		const users = get(find(usersInRoomsAtoms, myRoomKey))
-		return users
-	},
-})
+export const usersHereSelector: ReadonlyPureSelectorToken<ReadonlySet<UserKey> | null> =
+	selector({
+		key: `usersHere`,
+		get: ({ get, find }) => {
+			const myRoomKey = get(myRoomKeySelector)
+			if (!myRoomKey) return null
+			const [usersInRoomsAtoms] = getInternalRelations(usersInRooms, `split`)
+			const users = get(find(usersInRoomsAtoms, myRoomKey))
+			return users
+		},
+	})
 
 export const roomOwnerSelector: ReadonlyPureSelectorToken<UserKey | null> =
 	selector({

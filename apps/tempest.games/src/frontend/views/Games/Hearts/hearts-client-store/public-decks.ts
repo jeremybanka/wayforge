@@ -1,26 +1,29 @@
 import { findRelations, selector } from "atom.io"
 import { myRoomKeySelector } from "atom.io/realtime-client"
 
+import type { DeckKey } from "../../../../../library/game-systems/card-game-stores"
 import {
 	deckKeysAtom,
-	ownersOfGroups,
+	ownersOfCollections,
 } from "../../../../../library/game-systems/card-game-stores"
 
-export const publicDeckKeysSelector = selector<string[]>({
+export const publicDeckKeysSelector = selector<DeckKey[]>({
 	key: `publicDeckKeys`,
 	get: ({ get }) => {
+		const publicDeckKeys: DeckKey[] = []
 		const myRoomKey = get(myRoomKeySelector)
 		if (!myRoomKey) {
-			return []
+			return publicDeckKeys
 		}
-		const deckIds = get(deckKeysAtom)
-		const unownedDeckIds = [...deckIds].filter((deckId) => {
+		const deckKeys = get(deckKeysAtom)
+		for (const deckKey of deckKeys) {
 			const ownerOfDeck = get(
-				findRelations(ownersOfGroups, deckId).playerKeyOfGroup,
+				findRelations(ownersOfCollections, deckKey).ownerKeyOfCollection,
 			)
-			const deckIsNotOwned = ownerOfDeck === null
-			return deckIsNotOwned
-		})
-		return unownedDeckIds
+			if (ownerOfDeck === null) {
+				publicDeckKeys.push(deckKey)
+			}
+		}
+		return publicDeckKeys
 	},
 })

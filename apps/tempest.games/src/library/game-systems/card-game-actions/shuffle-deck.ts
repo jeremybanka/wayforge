@@ -1,9 +1,10 @@
-import { editRelations, findRelations, transaction } from "atom.io"
+import { transaction } from "atom.io"
 
+import type { DeckKey } from "../card-game-stores/card-collections-store"
 import {
+	cardCollectionAtoms,
 	deckKeysAtom,
-	groupsOfCards,
-} from "../card-game-stores/card-groups-store"
+} from "../card-game-stores/card-collections-store"
 
 class LinearCongruentialGenerator {
 	private multiplier: number
@@ -25,32 +26,27 @@ class LinearCongruentialGenerator {
 	}
 }
 
-function fisherYatesShuffle<T>(array: T[], rng: () => number): T[] {
+function fisherYatesShuffle(array: unknown[], rng: () => number): void {
 	for (let i = array.length - 1; i > 0; i--) {
 		const j = Math.floor(rng() * (i + 1))
 		;[array[i], array[j]] = [array[j], array[i]]
 	}
-	return array
 }
 
 export const shuffleDeckTX = transaction<
-	(deckId: string, shuffleSeed: number) => void
+	(key: DeckKey, shuffleSeed: number) => void
 >({
 	key: `shuffleDeck`,
-	do: (transactors, deckId, shuffleSeed) => {
-		const { get } = transactors
+	do: (transactors, deckKey, shuffleSeed) => {
+		const { get, set } = transactors
 		const rng = new LinearCongruentialGenerator(shuffleSeed)
-		const deckDoesExist = get(deckKeysAtom).has(deckId)
+		const deckDoesExist = get(deckKeysAtom).has(deckKey)
 		if (!deckDoesExist) {
 			throw new Error(`Deck does not exist`)
 		}
-		const deckCardIndex = findRelations(groupsOfCards, deckId).cardKeysOfGroup
-		const cardIds = get(deckCardIndex)
-		const shuffledCardIds = fisherYatesShuffle([...cardIds], rng.next)
-		editRelations(groupsOfCards, (relations) => {
-			relations.replaceRelations(deckId, shuffledCardIds)
+		set(cardCollectionAtoms, deckKey, (permanent) => {
+			fisherYatesShuffle(permanent, rng.next.bind(rng))
+			return permanent
 		})
-		if (typeof global !== `undefined`) {
-		}
 	},
 })

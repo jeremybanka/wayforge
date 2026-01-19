@@ -1,29 +1,33 @@
 import { findRelations, selector } from "atom.io"
 import { myRoomKeySelector, myUserKeyAtom } from "atom.io/realtime-client"
 
+import type { TrickKey } from "../../../../../library/game-systems/card-game-stores"
 import {
-	ownersOfGroups,
+	ownersOfCollections,
 	trickKeysAtom,
 } from "../../../../../library/game-systems/card-game-stores"
 
-export const publicTrickSelector = selector<string[]>({
+export const publicTrickSelector = selector<TrickKey[]>({
 	key: `publicTrickKeys`,
 	get: ({ get }) => {
+		const publicTrickKeys: TrickKey[] = []
 		const myUserKey = get(myUserKeyAtom)
 		if (!myUserKey) {
-			return []
+			return publicTrickKeys
 		}
 		const myRoomKey = get(myRoomKeySelector)
 		if (!myRoomKey) {
-			return []
+			return publicTrickKeys
 		}
-		const trickIds = get(trickKeysAtom)
-		const unownedTrickIds = [...trickIds].filter((trickId) => {
-			const { playerKeyOfGroup } = findRelations(ownersOfGroups, trickId)
-			const ownerOfTrick = get(playerKeyOfGroup)
-			const trickIsNotOwned = ownerOfTrick === null
-			return trickIsNotOwned
-		})
-		return unownedTrickIds
+		const trickKeys = get(trickKeysAtom)
+		for (const trickKey of trickKeys) {
+			const ownerOfTrick = get(
+				findRelations(ownersOfCollections, trickKey).ownerKeyOfCollection,
+			)
+			if (ownerOfTrick === null) {
+				publicTrickKeys.push(trickKey)
+			}
+		}
+		return publicTrickKeys
 	},
 })

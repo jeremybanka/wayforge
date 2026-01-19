@@ -1,15 +1,15 @@
 import { transaction } from "atom.io"
+import { nanoid } from "nanoid"
 
-import { trickKeysAtom, trickStates } from "../card-game-stores"
+import { TrickKey, trickKeysAtom } from "../card-game-stores"
 
-export const spawnTrickTX = transaction<(trickId: string) => void>({
+export const spawnTrickTX = transaction<() => void>({
 	key: `spawnTrick`,
-	do: (transactors, trickId) => {
-		const { set, find } = transactors
-		const trickState = find(trickStates, trickId)
-		set(trickState, { type: `trick`, name: `` })
+	do: (transactors) => {
+		const { set } = transactors
+		const trickKey = TrickKey(nanoid)
 		set(trickKeysAtom, (current) => {
-			const next = current.add(trickId)
+			const next = current.add(trickKey)
 			return next
 		})
 	},
