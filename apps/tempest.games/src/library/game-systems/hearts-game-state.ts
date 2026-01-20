@@ -6,10 +6,10 @@ import {
 	createHandTX,
 	dealTX,
 	shuffleDeckTX,
-	spawnTrickTX,
 } from "./card-game-actions"
-import type { CardKey, HandKey } from "./card-game-stores"
-import { playerTurnOrderAtom } from "./game-setup-turn-order-and-spectators"
+import type { CardKey, HandKey } from "./card-game-state"
+import { spawnTrickTX } from "./trick-taker-game-state"
+import { playerTurnOrderAtom } from "./turn-based-game-state"
 
 export type HeartsPublicGameState<PlayerId extends string = string> = {
 	leftoverCardCount: number

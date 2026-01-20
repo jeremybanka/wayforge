@@ -8,9 +8,10 @@ import { useContext } from "react"
 import {
 	createClassicDeckTX,
 	createHandTX,
-	spawnTrickTX,
-} from "../../../../../library/game-systems/card-game-actions"
-import { startGameTX } from "../../../../../library/game-systems/hearts-game-state"
+} from "~library/game-systems/card-game-actions"
+import { startGameTX } from "~library/game-systems/hearts-game-state"
+import { spawnTrickTX } from "~library/game-systems/trick-taker-game-state"
+
 import { h3 } from "../components/hX"
 import { useRadial } from "../peripherals/radial"
 import { Hearts } from "./HeartsBoard"

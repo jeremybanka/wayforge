@@ -1,6 +1,6 @@
 import { atomFamily } from "atom.io"
 
-import type { CardKey } from "./card-game-stores"
+import type { CardKey } from "./card-game-state"
 
 export const PLAYING_CARD_RANKS = [
 	`2`,

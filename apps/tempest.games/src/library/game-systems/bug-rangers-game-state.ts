@@ -11,10 +11,7 @@ import type { UserKey } from "atom.io/realtime"
 import { UList } from "atom.io/transceivers/u-list"
 import * as THREE from "three"
 
-import {
-	playerTurnOrderAtom,
-	playerTurnSelector,
-} from "./game-setup-turn-order-and-spectators"
+import { playerTurnOrderAtom, playerTurnSelector } from "./turn-based-game-state"
 
 export type PlayerActions = {
 	// DEBUG

@@ -16,7 +16,7 @@ import {
 	turnInProgressAtom,
 	validWarDeclaratorsSelector,
 } from "../../../../library/game-systems/bug-rangers-game-state"
-import { playerTurnSelector } from "../../../../library/game-systems/game-setup-turn-order-and-spectators"
+import { playerTurnSelector } from "../../../../library/game-systems/turn-based-game-state"
 
 export function usePlayerActions(): Socket<{}, PlayerActions> {
 	const { socket } = React.useContext(RealtimeContext)

@@ -3,7 +3,24 @@ import { isUserKey } from "atom.io/realtime"
 import { OList } from "atom.io/transceivers/o-list"
 import { UList } from "atom.io/transceivers/u-list"
 
-import type { CardKey } from "./cards-store"
+export type CardKey = `card::${string}`
+export const CardKey = (key: string | (() => string)): CardKey =>
+	`card::${typeof key === `function` ? key() : key}`
+export const isCardKey = (key: string): key is CardKey =>
+	key.startsWith(`card::`)
+
+export const cardOwners = join({
+	key: `ownersOfCards`,
+	between: [`owner`, `card`],
+	cardinality: `1:n`,
+	isAType: isUserKey,
+	isBType: isCardKey,
+})
+
+export const cardKeysAtom = mutableAtom<UList<CardKey>>({
+	key: `cardKeys`,
+	class: UList,
+})
 
 export type DeckKey = `cc-deck::${string}`
 export const DeckKey = (key: string | (() => string)): DeckKey =>
@@ -24,7 +41,7 @@ export type TrickKey = `cc-trick::${string}`
 export const TrickKey = (key: string | (() => string)): TrickKey =>
 	`cc-trick::${typeof key === `function` ? key() : key}`
 export const isTrickKey = (key: string): key is TrickKey =>
-	key.startsWith(`trick::`)
+	key.startsWith(`cc-trick::`)
 export type CardCollectionKey = DeckKey | HandKey | PileKey | TrickKey
 export const isCardCollectionKey = (key: string): key is CardCollectionKey =>
 	key.startsWith(`cc-`)

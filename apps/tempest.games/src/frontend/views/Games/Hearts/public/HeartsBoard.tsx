@@ -1,9 +1,8 @@
 import { useO } from "atom.io/react"
 
-import {
-	deckKeysAtom,
-	trickKeysAtom,
-} from "../../../../../library/game-systems/card-game-stores"
+import { deckKeysAtom } from "~library/game-systems/card-game-state"
+import { trickKeysAtom } from "~library/game-systems/trick-taker-game-state"
+
 import { Deck } from "../game-pieces/Deck"
 import { Trick } from "../game-pieces/Trick"
 import scss from "./HeartsBoard.module.scss"
