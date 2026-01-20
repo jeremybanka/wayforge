@@ -4,16 +4,33 @@ import {
 	mutableAtom,
 	selector,
 	selectorFamily,
+	transaction,
 } from "atom.io"
 import type { UserKey } from "atom.io/realtime"
 import { isUserKey } from "atom.io/realtime"
 import { UList } from "atom.io/transceivers/u-list"
+import { nanoid } from "nanoid"
 
-import { playerTurnOrderAtom } from "../game-setup-turn-order-and-spectators"
-import type { TrickKey } from "./card-collections-store"
-import { cardCollectionAtoms, isTrickKey } from "./card-collections-store"
-import type { CardKey } from "./cards-store"
-import { isCardKey } from "./cards-store"
+import type { CardKey } from "./card-game-state"
+import {
+	cardCollectionAtoms,
+	isCardKey,
+	isTrickKey,
+	TrickKey,
+} from "./card-game-state"
+import { playerTurnOrderAtom } from "./turn-based-game-state"
+
+export const spawnTrickTX = transaction<() => void>({
+	key: `spawnTrick`,
+	do: (transactors) => {
+		const { set } = transactors
+		const trickKey = TrickKey(nanoid)
+		set(trickKeysAtom, (current) => {
+			const next = current.add(trickKey)
+			return next
+		})
+	},
+})
 
 export const trickContributions = join({
 	key: `trickContributions`,
@@ -43,14 +60,14 @@ export const trickContentsSelectors = selectorFamily<TrickContent[], TrickKey>({
 		({ get }) => {
 			const playerTurnOrder = get(playerTurnOrderAtom)
 			const cardIdsInTrick = get(cardCollectionAtoms, trickKey)
-			const trickContents = playerTurnOrder.map<TrickContent>((playerId) => {
+			const trickContents = playerTurnOrder.map<TrickContent>((playerKey) => {
 				const cardsThisPlayerHasInTricks = get(
-					findRelations(trickContributions, playerId).cardKeysOfPlayer,
+					findRelations(trickContributions, playerKey).cardKeysOfPlayer,
 				)
-				const cardId = cardsThisPlayerHasInTricks.find((id) =>
-					cardIdsInTrick.includes(id),
+				const cardKey = cardsThisPlayerHasInTricks.find((key) =>
+					cardIdsInTrick.includes(key),
 				)
-				return [playerId, cardId]
+				return [playerKey, cardKey]
 			})
 			return trickContents
 		},
@@ -68,10 +85,10 @@ export const trickIsCompleteSelector = selectorFamily<boolean, TrickKey>({
 
 export const completeTrickKeysSelector = selector<string[]>({
 	key: `completeTrickKeys`,
-	get: ({ find, get, json }) => {
-		const trickIds = get(json(trickKeysAtom))
-		const completeTrickIds = trickIds.filter((trickId) =>
-			get(find(trickIsCompleteSelector, trickId)),
+	get: ({ get, json }) => {
+		const trickKeys = get(json(trickKeysAtom))
+		const completeTrickIds = trickKeys.filter((trickId) =>
+			get(trickIsCompleteSelector, trickId),
 		)
 		return completeTrickIds
 	},
@@ -80,13 +97,13 @@ export const completeTrickKeysSelector = selector<string[]>({
 export const currentTrickSelector = selector<string | null>({
 	key: `currentTrick`,
 	get: ({ get, json }) => {
-		const completeTrickIds = get(completeTrickKeysSelector)
-		const trickIds = get(json(trickKeysAtom))
+		const completeTrickKeys = get(completeTrickKeysSelector)
+		const trickKeys = get(json(trickKeysAtom))
 
-		const currentTrickId = trickIds.at(-1)
-		if (!currentTrickId || completeTrickIds.includes(currentTrickId)) {
+		const currentTrickKey = trickKeys.at(-1)
+		if (!currentTrickKey || completeTrickKeys.includes(currentTrickKey)) {
 			return null
 		}
-		return currentTrickId
+		return currentTrickKey
 	},
 })

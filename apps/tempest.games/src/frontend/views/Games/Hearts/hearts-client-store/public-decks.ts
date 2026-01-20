@@ -1,11 +1,11 @@
 import { findRelations, selector } from "atom.io"
 import { myRoomKeySelector } from "atom.io/realtime-client"
 
-import type { DeckKey } from "../../../../../library/game-systems/card-game-stores"
+import type { DeckKey } from "~library/game-systems/card-game-state"
 import {
 	deckKeysAtom,
 	ownersOfCollections,
-} from "../../../../../library/game-systems/card-game-stores"
+} from "~library/game-systems/card-game-state"
 
 export const publicDeckKeysSelector = selector<DeckKey[]>({
 	key: `publicDeckKeys`,

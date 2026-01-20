@@ -12,6 +12,7 @@
 			"node"
 		],
 		"paths": {
+			"~library/*": ["./src/library/*"],
 			"@backend/*": ["./src/backend/*"],
 
 			"atom.io": ["../../packages/atom.io/src/main"],

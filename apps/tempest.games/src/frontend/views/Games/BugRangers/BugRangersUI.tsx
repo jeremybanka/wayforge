@@ -28,14 +28,14 @@ import {
 	turnCanBeEndedSelector,
 	turnInProgressAtom,
 } from "../../../../library/game-systems/bug-rangers-game-state"
-import type { GameState } from "../../../../library/game-systems/game-setup-turn-order-and-spectators"
+import type { GameState } from "../../../../library/game-systems/turn-based-game-state"
 import {
 	gameStateAtom,
 	playerTurnOrderAtom,
 	playerTurnSelector,
 	setupGroupsSelector,
 	turnNumberAtom,
-} from "../../../../library/game-systems/game-setup-turn-order-and-spectators"
+} from "../../../../library/game-systems/turn-based-game-state"
 import { isAdminAtom } from "../../../../library/store"
 import { usernameAtoms } from "../../../../library/username-state"
 import * as svg from "../../../<svg>"

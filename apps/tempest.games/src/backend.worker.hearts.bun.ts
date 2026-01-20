@@ -37,7 +37,7 @@ import {
 	setupGroupsSelector,
 	type TurnBasedGameActions,
 	turnNumberAtom,
-} from "./library/game-systems/game-setup-turn-order-and-spectators"
+} from "./library/game-systems/turn-based-game-state"
 import { pureShuffle } from "./library/shuffle"
 
 const parent: ParentSocket<any, any, any> = ((process as any).parentSocket ??=

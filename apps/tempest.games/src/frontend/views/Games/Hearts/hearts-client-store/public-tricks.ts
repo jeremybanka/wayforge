@@ -1,11 +1,9 @@
 import { findRelations, selector } from "atom.io"
 import { myRoomKeySelector, myUserKeyAtom } from "atom.io/realtime-client"
 
-import type { TrickKey } from "../../../../../library/game-systems/card-game-stores"
-import {
-	ownersOfCollections,
-	trickKeysAtom,
-} from "../../../../../library/game-systems/card-game-stores"
+import type { TrickKey } from "~library/game-systems/card-game-state"
+import { ownersOfCollections } from "~library/game-systems/card-game-state"
+import { trickKeysAtom } from "~library/game-systems/trick-taker-game-state"
 
 export const publicTrickSelector = selector<TrickKey[]>({
 	key: `publicTrickKeys`,

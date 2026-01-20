@@ -27,7 +27,7 @@ import {
 	turnInProgressAtom,
 	winningTilesSelector,
 } from "../../../../library/game-systems/bug-rangers-game-state"
-import { playerTurnSelector } from "../../../../library/game-systems/game-setup-turn-order-and-spectators"
+import { playerTurnSelector } from "../../../../library/game-systems/turn-based-game-state"
 import {
 	cameraTargetAtom,
 	isMyTurnSelector,

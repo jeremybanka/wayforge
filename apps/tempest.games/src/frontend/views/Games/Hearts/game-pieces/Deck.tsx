@@ -4,8 +4,10 @@ import { setCssVars } from "hamr/react-css-vars"
 import { AnimatePresence, motion } from "motion/react"
 
 import { shuffleDeckTX } from "../../../../../library/game-systems/card-game-actions"
-import type { DeckKey } from "../../../../../library/game-systems/card-game-stores"
-import { cardCollectionAtoms } from "../../../../../library/game-systems/card-game-stores"
+import {
+	cardCollectionAtoms,
+	type DeckKey,
+} from "../../../../../library/game-systems/card-game-state"
 import { memoize } from "../components/memoize"
 import { Count } from "../labels/Count"
 import { useRadial } from "../peripherals/radial"
