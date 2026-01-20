@@ -4,9 +4,10 @@ import { useRealtimeRooms } from "atom.io/realtime-react"
 import { setCssVars } from "hamr/react-css-vars"
 import { AnimatePresence, motion } from "motion/react"
 
-import { dealTX } from "../../../../../library/game-systems/card-game-actions"
-import type { HandKey } from "../../../../../library/game-systems/card-game-state"
-import { cardCollectionAtoms } from "../../../../../library/game-systems/card-game-state"
+import { dealTX } from "~library/game-systems/card-game-actions"
+import type { HandKey } from "~library/game-systems/card-game-state"
+import { cardCollectionAtoms } from "~library/game-systems/card-game-state"
+
 import { memoize } from "../components/memoize"
 import { myHandsSelector } from "../hearts-client-store/my-hands"
 import { publicDeckKeysSelector } from "../hearts-client-store/public-decks"

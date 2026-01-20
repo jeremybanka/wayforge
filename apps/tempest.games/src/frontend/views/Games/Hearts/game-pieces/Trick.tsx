@@ -3,8 +3,9 @@ import { setCssVars } from "hamr/react-css-vars"
 import { Id } from "hamr/react-id"
 import { AnimatePresence, motion } from "motion/react"
 
-import type { TrickKey } from "../../../../../library/game-systems/card-game-state"
-import { trickContentsSelectors } from "../../../../../library/game-systems/trick-taker-game-state"
+import type { TrickKey } from "~library/game-systems/card-game-state"
+import { trickContentsSelectors } from "~library/game-systems/trick-taker-game-state"
+
 import { memoize } from "../components/memoize"
 import { Count } from "../labels/Count"
 import { useRadial } from "../peripherals/radial"

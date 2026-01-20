@@ -2,8 +2,9 @@ import { useO } from "atom.io/react"
 import { AnimatePresence } from "motion/react"
 import type { FC } from "react"
 
-import type { CardKey } from "../../../../../library/game-systems/card-game-state"
-import { playingCardValueAtoms } from "../../../../../library/game-systems/standard-deck-game-state"
+import type { CardKey } from "~library/game-systems/card-game-state"
+import { playingCardValueAtoms } from "~library/game-systems/standard-deck-game-state"
+
 import { article } from "../components/article"
 import scss from "./Card.module.scss"
 
