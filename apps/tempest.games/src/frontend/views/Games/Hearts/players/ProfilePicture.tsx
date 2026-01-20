@@ -5,7 +5,8 @@ import { usePullMutableAtomFamilyMember } from "atom.io/realtime-react"
 import { setCssVars } from "hamr/react-css-vars"
 import * as React from "react"
 
-import { stringToColor } from "../../../../../library/string-to-color"
+import { stringToColor } from "~library/string-to-color"
+
 import { Identity } from "../labels/Identity"
 import scss from "./ProfilePicture.module.scss"
 

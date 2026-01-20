@@ -1,12 +1,12 @@
 import { findRelations, selector } from "atom.io"
 import { myUserKeyAtom } from "atom.io/realtime-client"
 
-import type { HandKey } from "../../../../../library/game-systems/card-game-state"
+import type { HandKey } from "~library/game-systems/card-game-state"
 import {
 	handKeysAtom,
 	isHandKey,
 	ownersOfCollections,
-} from "../../../../../library/game-systems/card-game-state"
+} from "~library/game-systems/card-game-state"
 
 export const myHandsSelector = selector<HandKey[]>({
 	key: `myHands`,

@@ -1,11 +1,11 @@
 import { findRelations, selectorFamily } from "atom.io"
 import type { UserKey } from "atom.io/realtime"
 
-import type { HandKey } from "../../../../../library/game-systems/card-game-state"
+import type { HandKey } from "~library/game-systems/card-game-state"
 import {
 	isHandKey,
 	ownersOfCollections,
-} from "../../../../../library/game-systems/card-game-state"
+} from "~library/game-systems/card-game-state"
 
 export const handsOfPlayerSelectors = selectorFamily<
 	readonly HandKey[],

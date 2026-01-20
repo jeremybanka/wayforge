@@ -3,11 +3,12 @@ import { useO } from "atom.io/react"
 import { setCssVars } from "hamr/react-css-vars"
 import { AnimatePresence, motion } from "motion/react"
 
-import { shuffleDeckTX } from "../../../../../library/game-systems/card-game-actions"
+import { shuffleDeckTX } from "~library/game-systems/card-game-actions"
 import {
 	cardCollectionAtoms,
 	type DeckKey,
-} from "../../../../../library/game-systems/card-game-state"
+} from "~library/game-systems/card-game-state"
+
 import { memoize } from "../components/memoize"
 import { Count } from "../labels/Count"
 import { useRadial } from "../peripherals/radial"
