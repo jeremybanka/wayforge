@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6.0.1
       - uses: ./.github/actions/setup
-      - uses: changesets/action@v1.5.3
+      - uses: changesets/action@v1.6.0
         id: changesets
         with:
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
