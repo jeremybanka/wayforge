@@ -88,7 +88,7 @@
 		"@types/eslint": "9.6.1",
 		"@types/estree": "1.0.8",
 		"@types/http-proxy": "1.17.17",
-		"@types/node": "25.0.9",
+		"@types/node": "25.0.10",
 		"@types/react": "19.2.9",
 		"@types/tmp": "0.2.6",
 		"@typescript-eslint/parser": "8.53.1",
