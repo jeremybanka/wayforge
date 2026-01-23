@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import * as path from "node:path"
-import { kill } from "node:process"
 
 import { type } from "arktype"
 import type { OptionsGroup } from "comline"

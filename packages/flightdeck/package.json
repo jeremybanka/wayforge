@@ -26,9 +26,12 @@
 		"flightdeck": "./bin/flightdeck.bin.js",
 		"klaxon": "./bin/klaxon.bin.js"
 	},
+	"peerDependencies": {
+		"zod": "^4"
+	},
 	"dependencies": {
-		"arktype": "2.1.29",
 		"@t3-oss/env-core": "0.13.10",
+		"arktype": "2.1.29",
 		"atom.io": "workspace:*",
 		"comline": "workspace:*",
 		"cron": "4.4.0",
@@ -59,7 +62,7 @@
 		"json-schema-to-zod": "2.7.0",
 		"rimraf": "6.1.2",
 		"tmp": "0.2.5",
-		"tsdown": "0.20.0",
+		"tsdown": "0.20.1",
 		"varmint": "workspace:*",
 		"vitest": "4.0.18",
 		"zod": "4.3.5"
