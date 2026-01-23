@@ -1,5 +1,12 @@
 # atom.io.fyi
 
+## 0.2.46
+
+### Patch Changes
+
+- Updated dependencies [d693474]
+  - tsdoc.json@0.6.7
+
 ## 0.2.45
 
 ### Patch Changes

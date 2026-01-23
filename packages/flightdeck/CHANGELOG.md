@@ -1,5 +1,11 @@
 # flightdeck
 
+## 0.3.40
+
+### Patch Changes
+
+- d693474: 🐛 Removed zod from bundled type declaration; added zod 4 as peer dependency.
+
 ## 0.3.39
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # tsdoc.json
 
+## 0.6.7
+
+### Patch Changes
+
+- d693474: 🐛 Removed several large dependencies from bundle.
+
 ## 0.6.6
 
 ### Patch Changes
