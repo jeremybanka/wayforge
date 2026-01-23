@@ -3,7 +3,15 @@ import { defineConfig } from "tsdown"
 
 export const OPTIONS = {
 	entry: [`src/lib.ts`, `src/flightdeck.x.ts`, `src/klaxon.x.ts`],
-	external: [/^atom\.io/, `safedeposit`],
+	external: [
+		`@t3-oss/env-core`,
+		`arktype`,
+		/^atom\.io/,
+		`comline`,
+		`cron`,
+		`safedeposit`,
+		`zod`,
+	],
 
 	clean: true,
 	dts: { sourcemap: true },
