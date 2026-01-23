@@ -1,7 +1,7 @@
 {
 	// FILE FORMATTING ////////////////////////////////////////////////////////////
 	"editor.formatOnSave": true,
-	"editor.defaultFormatter": "prettier.prettier-vscode",
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"[json][jsonc][typescript][typescriptreact][css][astro]": {
 		"editor.defaultFormatter": "biomejs.biome"
 	},
