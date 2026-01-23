@@ -33,6 +33,9 @@
 	},
 	"main": "dist/main/index.js",
 	"types": "dist/main/index.d.ts",
+	"peerDependencies": {
+		"react": "^19"
+	},
 	"dependencies": {
 		"@microsoft/tsdoc": "0.16.0",
 		"colors": "1.4.0"

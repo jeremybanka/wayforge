@@ -6,7 +6,7 @@ const config: UserConfig = defineConfig({
 		"main/index": `src/main/index.ts`,
 		"react/index": `src/react/index.ts`,
 	},
-	external: [`tsdoc.json`],
+	external: [`react`, `typescript`, `tsdoc.json`],
 
 	clean: true,
 	dts: { sourcemap: true },
