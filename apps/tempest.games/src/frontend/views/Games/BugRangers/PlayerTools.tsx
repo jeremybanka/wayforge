@@ -239,7 +239,7 @@ function PlayableCube({ myUserKey }: PlayableCubeProps): ReactNode {
 						)
 						setState(turnInProgressAtom, {
 							type: `arm`,
-							targets: [turnInProgress.targets[0]!, closestOwnedTile],
+							targets: [turnInProgress.targets[0], closestOwnedTile],
 						})
 						socket.emit(`placeCube`, closestOwnedTile)
 					}
