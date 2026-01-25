@@ -221,12 +221,15 @@ parent.receiveRelay((socket, userKey) => {
 							turnInProgress.target,
 						)
 						if (stackHeight >= maximumStackHeight) return
+						const { target } = turnInProgress
+						const newStackHeight = (stackHeight + 1) as TileStackHeight
 						setState(playerRemainingTilesAtoms, userKey, (n) => n - 1)
-						setState(
-							gameTilesStackHeightAtoms,
-							turnInProgress.target,
-							(stackHeight + 1) as TileStackHeight,
-						)
+						setState(gameTilesStackHeightAtoms, target, newStackHeight)
+						setState(turnInProgressAtom, {
+							type: `build`,
+							target,
+							count: newStackHeight,
+						})
 						socket.emit(`placeTile`, turnInProgress.target)
 					}
 					break
