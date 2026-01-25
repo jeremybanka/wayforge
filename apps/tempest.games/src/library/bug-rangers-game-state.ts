@@ -329,7 +329,6 @@ export type ArmAction = {
 export type ArmActionInProgress = {
 	type: `arm`
 	targets:
-		| []
 		| [TileCoordinatesSerialized, TileCoordinatesSerialized]
 		| [TileCoordinatesSerialized]
 }

@@ -266,7 +266,7 @@ parent.receiveRelay((socket, userKey) => {
 					setState(playerRemainingCubesAtoms, userKey, (n) => n - 1)
 					setState(turnInProgressAtom, {
 						type: `arm`,
-						targets: [turnInProgress.targets[0]!, tileCoordinatesSerialized],
+						targets: [turnInProgress.targets[0], tileCoordinatesSerialized],
 					})
 
 					break
