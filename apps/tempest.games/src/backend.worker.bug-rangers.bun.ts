@@ -221,12 +221,15 @@ parent.receiveRelay((socket, userKey) => {
 							turnInProgress.target,
 						)
 						if (stackHeight >= maximumStackHeight) return
+						const { target } = turnInProgress
+						const newStackHeight = (stackHeight + 1) as TileStackHeight
 						setState(playerRemainingTilesAtoms, userKey, (n) => n - 1)
-						setState(
-							gameTilesStackHeightAtoms,
-							turnInProgress.target,
-							(stackHeight + 1) as TileStackHeight,
-						)
+						setState(gameTilesStackHeightAtoms, target, newStackHeight)
+						setState(turnInProgressAtom, {
+							type: `build`,
+							target,
+							count: newStackHeight,
+						})
 						socket.emit(`placeTile`, turnInProgress.target)
 					}
 					break
@@ -266,7 +269,7 @@ parent.receiveRelay((socket, userKey) => {
 					setState(playerRemainingCubesAtoms, userKey, (n) => n - 1)
 					setState(turnInProgressAtom, {
 						type: `arm`,
-						targets: [turnInProgress.targets[0]!, tileCoordinatesSerialized],
+						targets: [turnInProgress.targets[0], tileCoordinatesSerialized],
 					})
 
 					break
@@ -393,8 +396,8 @@ parent.receiveRelay((socket, userKey) => {
 				case `build`:
 					{
 						const { target, count } = turnInProgress
-						setState(gameTilesStackHeightAtoms, target, 0 as TileStackHeight)
-						setState(tileCubeCountAtoms, target, 0 as TileCubeCount)
+						setState(gameTilesStackHeightAtoms, target, 1)
+						setState(tileCubeCountAtoms, target, 0)
 						setState(tileOwnerAtoms, target, null)
 						setState(playerRemainingTilesAtoms, userKey, (n) => n + count)
 						setState(gameTilesAtom, (permanent) => {
