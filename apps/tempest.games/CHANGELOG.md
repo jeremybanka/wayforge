@@ -1,5 +1,12 @@
 # tempest.games
 
+## 0.3.14
+
+### Patch Changes
+
+- 0bdcbf7: 🐛 Hexiom: Fixed bug where stacks could have their values set to zero after resetting your turn.
+- 0bdcbf7: 🐛 Hexiom: Fixed bug where not all tiles would be returned when you reset your turn.
+
 ## 0.3.13
 
 ### Patch Changes
