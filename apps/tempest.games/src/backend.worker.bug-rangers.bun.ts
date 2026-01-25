@@ -393,8 +393,8 @@ parent.receiveRelay((socket, userKey) => {
 				case `build`:
 					{
 						const { target, count } = turnInProgress
-						setState(gameTilesStackHeightAtoms, target, 0 as TileStackHeight)
-						setState(tileCubeCountAtoms, target, 0 as TileCubeCount)
+						setState(gameTilesStackHeightAtoms, target, 1)
+						setState(tileCubeCountAtoms, target, 0)
 						setState(tileOwnerAtoms, target, null)
 						setState(playerRemainingTilesAtoms, userKey, (n) => n + count)
 						setState(gameTilesAtom, (permanent) => {
