@@ -22,7 +22,7 @@ const PLURAL_DICTIONARY = {
 
 type StateFunctionName = keyof typeof SUFFIX_DICTIONARY
 
-export const consistentAtomNamesAndKeys: {
+export const namingConvention: {
 	meta: {
 		type: RuleType
 		docs: {
@@ -39,7 +39,7 @@ export const consistentAtomNamesAndKeys: {
 	meta: {
 		type: `problem`,
 		docs: {
-			description: `enforce atom variable names to match their key property`,
+			description: `The variable names given to atoms, selectors, and their respective families should match their given key property, and should follow a consistent format`,
 			category: `Best Practices`,
 			recommended: false,
 			url: ``,

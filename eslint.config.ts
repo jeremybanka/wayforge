@@ -153,7 +153,7 @@ const commonRules = {
 
 	"atom.io/exact-catch-types": ERROR,
 	"atom.io/explicit-state-types": [ERROR, { permitAnnotation: true }],
-	"atom.io/consistent-keys": ERROR,
+	"atom.io/naming-convention": ERROR,
 
 	"import/newline-after-import": ERROR,
 	"import/no-duplicates": ERROR,
