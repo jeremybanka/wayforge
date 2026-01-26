@@ -4,7 +4,7 @@ import { RuleTester } from "eslint"
 
 const ruleTester = new RuleTester({ languageOptions: { parser } })
 Object.assign(ruleTester, { describe, it })
-const rule = Rules.consistentAtomNamesAndKeys
+const rule = Rules.namingConvention
 
 ruleTester.run(`atom`, rule, {
 	valid: [
