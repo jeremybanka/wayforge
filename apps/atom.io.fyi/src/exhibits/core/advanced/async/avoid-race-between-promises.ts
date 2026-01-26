@@ -1,13 +1,13 @@
 import type { Loadable } from "atom.io"
 import { atom, getState, setState } from "atom.io"
 
-export const nameState = atom<Loadable<string>>({
+export const nameAtom = atom<Loadable<string>>({
 	key: `name`,
 	default: ``,
 })
 // resolve in 2 seconds
 setState(
-	nameState,
+	nameAtom,
 	new Promise<string>((resolve) =>
 		setTimeout(() => {
 			resolve(`one`)
@@ -16,7 +16,7 @@ setState(
 )
 // resolve in 1 second
 setState(
-	nameState,
+	nameAtom,
 	new Promise<string>((resolve) =>
 		setTimeout(() => {
 			resolve(`two`)
@@ -27,4 +27,4 @@ setState(
 // promise for "one" is set to be ignored
 // "one" resolves, but is ignored
 await new Promise((resolve) => setTimeout(resolve, 3000))
-void getState(nameState) // "two"
+void getState(nameAtom) // "two"

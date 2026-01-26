@@ -28,14 +28,14 @@ export const agendaAtoms: RegularAtomFamilyToken<Agenda, string> = atomFamily<
 	Agenda,
 	string
 >({
-	key: `agendas`,
+	key: `agenda`,
 	default: {},
 })
 export const agendaSystemMessageSelectors: ReadonlySelectorFamilyToken<
 	SystemMessage | null,
 	string
 > = selectorFamily<SystemMessage | null, string>({
-	key: `agendaPrompts`,
+	key: `agendaSystemMessage`,
 	get:
 		(agendaKey) =>
 		({ find, get }) => {
@@ -85,17 +85,19 @@ export const orientationAtoms: RegularAtomFamilyToken<string, string> =
 		default: `You are an AI assistant designed to assist with tasks.`,
 	})
 
-export const messageIndices: RegularAtomFamilyToken<string[], string> =
-	atomFamily<string[], string>({
-		key: `messageIndices`,
-		default: [],
-	})
+export const messageAtoms: RegularAtomFamilyToken<string[], string> = atomFamily<
+	string[],
+	string
+>({
+	key: `message`,
+	default: [],
+})
 
 export const chatMessageAtoms: RegularAtomFamilyToken<
 	Loadable<Omit<Message, `id`>>,
 	string
 > = atomFamily<Loadable<Omit<Message, `id`>>, string>({
-	key: `messages`,
+	key: `chatMessage`,
 	default: {
 		role: `user`,
 		content: ``,
@@ -109,11 +111,11 @@ export const conversationSelectors: ReadonlySelectorFamilyToken<
 	Loadable<(AssistantMessage | SystemMessage | UserMessage)[]>,
 	string
 >({
-	key: `conversationMessages`,
+	key: `conversation`,
 	get:
 		(conversationKey) =>
 		({ find, get }) => {
-			const messageIds = get(find(messageIndices, conversationKey))
+			const messageIds = get(find(messageAtoms, conversationKey))
 			const allMessages = Promise.all(
 				messageIds.map((messageId) => get(find(chatMessageAtoms, messageId))),
 			)
@@ -237,7 +239,7 @@ export class Grunt<State extends Agenda>
 				messageIds.push(messageId)
 				setState(findState(chatMessageAtoms, id), message)
 			}
-			setState(findState(messageIndices, id), messageIds)
+			setState(findState(messageAtoms, id), messageIds)
 		}
 		if (initialState) {
 			setState(findState(agendaAtoms, id), initialState)
@@ -262,7 +264,7 @@ export class Grunt<State extends Agenda>
 	public async callAssistant(): Promise<AgentCompletion<Partial<State>>> {
 		const messageId = `${this.id}-${crypto.randomUUID()}`
 		const messageAtom = findState(chatMessageAtoms, messageId)
-		const messageIndex = findState(messageIndices, this.id)
+		const messageIndex = findState(messageAtoms, this.id)
 		const agendaAtom = findState(agendaAtoms, this.id)
 		const paramsLoadable = getState(findState(openAIParamsSelectors, this.id))
 		const params = await paramsLoadable
@@ -303,7 +305,7 @@ export class Grunt<State extends Agenda>
 
 	public addUserMessage(content: string): void {
 		const messageId = `${this.id}-${crypto.randomUUID()}`
-		setState(findState(messageIndices, this.id), (messageIds) => [
+		setState(findState(messageAtoms, this.id), (messageIds) => [
 			...messageIds,
 			messageId,
 		])

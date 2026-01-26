@@ -1,11 +1,15 @@
 import { getState, setState } from "atom.io"
 
-import { dividendState, divisorState, quotientState } from "./declare-a-selector"
+import {
+	dividendAtom,
+	divisorAtom,
+	quotientSelector,
+} from "./declare-a-selector"
 
-getState(dividendState) // -> 0
-getState(divisorState) // -> 2
-getState(quotientState) // -> 0
+getState(dividendAtom) // -> 0
+getState(divisorAtom) // -> 2
+getState(quotientSelector) // -> 0
 
-setState(dividendState, 4)
+setState(dividendAtom, 4)
 
-getState(quotientState) // -> 2
+getState(quotientSelector) // -> 2

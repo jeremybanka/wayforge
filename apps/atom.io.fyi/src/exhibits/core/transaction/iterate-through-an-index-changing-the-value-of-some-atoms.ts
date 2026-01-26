@@ -1,6 +1,6 @@
 import { atom, atomFamily, selectorFamily, transaction } from "atom.io"
 
-export const nowState = atom<number>({
+export const nowAtom = atom<number>({
 	key: `now`,
 	default: Date.now(),
 	effects: [
@@ -15,27 +15,27 @@ export const nowState = atom<number>({
 	],
 })
 
-export const timerIndex = atom<string[]>({
-	key: `timerIndex`,
+export const timerKeysAtom = atom<string[]>({
+	key: `timerKeys`,
 	default: [],
 })
 
-export const findTimerStartedState = atomFamily<number, string>({
+export const timerStartedAtoms = atomFamily<number, string>({
 	key: `timerStarted`,
 	default: 0,
 })
-export const findTimerLengthState = atomFamily<number, string>({
+export const timerLengthAtoms = atomFamily<number, string>({
 	key: `timerLength`,
 	default: 60_000,
 })
-const findTimerRemainingState = selectorFamily<number, string>({
+const timerRemainingSelectors = selectorFamily<number, string>({
 	key: `timerRemaining`,
 	get:
 		(id) =>
 		({ get }) => {
-			const now = get(nowState)
-			const started = get(findTimerStartedState, id)
-			const length = get(findTimerLengthState, id)
+			const now = get(nowAtom)
+			const started = get(timerStartedAtoms, id)
+			const length = get(timerLengthAtoms, id)
 			return Math.max(0, length - (now - started))
 		},
 })
@@ -43,10 +43,10 @@ const findTimerRemainingState = selectorFamily<number, string>({
 export const addOneMinuteToAllRunningTimersTX = transaction({
 	key: `addOneMinuteToAllRunningTimers`,
 	do: ({ get, set }) => {
-		const timerIds = get(timerIndex)
+		const timerIds = get(timerKeysAtom)
 		for (const timerId of timerIds) {
-			if (get(findTimerRemainingState, timerId) > 0) {
-				set(findTimerLengthState, timerId, (current) => current + 60_000)
+			if (get(timerRemainingSelectors, timerId) > 0) {
+				set(timerLengthAtoms, timerId, (current) => current + 60_000)
 			}
 		}
 	},

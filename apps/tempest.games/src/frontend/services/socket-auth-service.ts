@@ -98,11 +98,11 @@ export const authAtom = atom<ClientAuthData | null>({
 	],
 })
 export const usernameInputAtom = atom<string>({
-	key: `username`,
+	key: `usernameInput`,
 	default: getState(authAtom)?.username ?? ``,
 })
 export const usernameQueryReadyAtom = atom<boolean>({
-	key: `usernameDebounce`,
+	key: `usernameQueryReady`,
 	default: true,
 })
 export const usernameDebounced100msAtom = atom<string | null>({
@@ -151,11 +151,11 @@ export const usernameIssuesSelector = selector<ArkErrors | null>({
 	},
 })
 export const passwordInputAtom = atom<string>({
-	key: `password0`,
+	key: `passwordInput`,
 	default: ``,
 })
 export const passwordIssuesSelector = selector<ArkErrors | null>({
-	key: `password0Issues`,
+	key: `passwordIssues`,
 	get: ({ get }) => {
 		const password0 = get(passwordInputAtom)
 		const parsed = passwordType(password0)
@@ -166,7 +166,7 @@ export const passwordIssuesSelector = selector<ArkErrors | null>({
 	},
 })
 export const emailInputAtom = atom<string>({
-	key: `email`,
+	key: `emailInput`,
 	default: ``,
 	effects: [storageSync(localStorage, JSON, `email`)],
 })
@@ -182,7 +182,7 @@ export const emailIssuesSelector = selector<ArkErrors | null>({
 	},
 })
 export const signUpReadySelector = selector<boolean>({
-	key: `signupReady`,
+	key: `signUpReady`,
 	get: ({ get }) => {
 		const usernameIssues = get(usernameIssuesSelector)
 		const password0Issues = get(passwordIssuesSelector)
@@ -192,11 +192,11 @@ export const signUpReadySelector = selector<boolean>({
 })
 
 export const oneTimeCodeInputAtom = atom<string>({
-	key: `oneTimeCode`,
+	key: `oneTimeCodeInput`,
 	default: ``,
 })
 export const oneTimeCodeNewEmailInputAtom = atom<string>({
-	key: `oneTimeCodeNewEmail`,
+	key: `oneTimeCodeNewEmailInput`,
 	default: ``,
 })
 

@@ -1,6 +1,6 @@
 import { atom } from "atom.io"
 
-export const countState = atom<number>({
+export const countAtom = atom<number>({
 	key: `count`,
 	default: 0,
 })
