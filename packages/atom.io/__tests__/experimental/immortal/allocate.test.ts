@@ -266,23 +266,23 @@ describe(`errors`, () => {
 		expect(logger.error).toHaveBeenCalledTimes(1)
 	})
 	test(`getting a disposed claim`, () => {
-		const countStates = atomFamily<number, string>({
+		const countAtoms = atomFamily<number, string>({
 			key: `count`,
 			default: 0,
 		})
-		const sqrtState = selectorFamily<number, string>({
+		const sqrtSelectors = selectorFamily<number, string>({
 			key: `sqrt`,
 			get:
 				(key) =>
 				({ get }) =>
-					Math.sqrt(get(countStates, key)),
+					Math.sqrt(get(countAtoms, key)),
 		})
 		const anarchy = new Anarchy()
 		anarchy.allocate(`root`, `myself`)
 		anarchy.deallocate(`myself`)
-		getState(sqrtState, `myself`)
+		getState(sqrtSelectors, `myself`)
 		expect(logger.error).toHaveBeenCalledTimes(2)
-		getState(sqrtState, `myself`)
+		getState(sqrtSelectors, `myself`)
 		expect(logger.error).toHaveBeenCalledTimes(3)
 	})
 	describe(`fallbacks/family defaults`, () => {
@@ -407,7 +407,7 @@ describe(`integrations`, () => {
 		const documentRealm = new Realm<DocumentHierarchy>(IMPLICIT.STORE)
 
 		const documentAtoms = atomFamily<string, DocumentKey>({
-			key: `doc`,
+			key: `document`,
 			default: ``,
 		})
 
@@ -601,7 +601,7 @@ describe(`counterfeits and error logging`, () => {
 	test(`logs an error when a disposed state is set`, () => {
 		const anarchy = new Anarchy()
 		const priceAtoms = atomFamily<number, string>({
-			key: `count`,
+			key: `price`,
 			default: 0,
 		})
 		anarchy.allocate(`root`, `item1`)

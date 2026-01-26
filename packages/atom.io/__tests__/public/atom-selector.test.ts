@@ -30,141 +30,141 @@ beforeEach(() => {
 
 describe(`atom`, () => {
 	it(`can be modified and retrieved`, () => {
-		const count = atom<number>({
+		const countAtom = atom<number>({
 			key: `count`,
 			default: 0,
 		})
-		setState(count, 1)
-		expect(getState(count)).toBe(1)
-		setState(count, 2)
-		expect(getState(count)).toBe(2)
+		setState(countAtom, 1)
+		expect(getState(countAtom)).toBe(1)
+		setState(countAtom, 2)
+		expect(getState(countAtom)).toBe(2)
 	})
 	it(`can be subscribed to`, () => {
-		const name = atom<string>({
+		const nameAtom = atom<string>({
 			key: `name`,
 			default: `John`,
 		})
-		subscribe(name, Utils.stdout)
-		setState(name, `Jane`)
+		subscribe(nameAtom, Utils.stdout)
+		setState(nameAtom, `Jane`)
 		expect(Utils.stdout).toHaveBeenCalledWith({
 			newValue: `Jane`,
 			oldValue: `John`,
 		})
 	})
 	it(`can use a function as a default value`, () => {
-		const count = atom<number>({
+		const countAtom = atom<number>({
 			key: `count`,
 			default: () => 0,
 		})
-		expect(getState(count)).toBe(0)
+		expect(getState(countAtom)).toBe(0)
 	})
 	it(`can be reset to its default value`, () => {
-		const stats = atom<Record<number, number>>({
-			key: `count`,
+		const statsAtom = atom<Record<number, number>>({
+			key: `stats`,
 			default: () => ({ 0: 0, 1: 0, 2: 0 }),
 		})
-		expect(getState(stats)).toStrictEqual({ 0: 0, 1: 0, 2: 0 })
+		expect(getState(statsAtom)).toStrictEqual({ 0: 0, 1: 0, 2: 0 })
 
-		setState(stats, { 0: 1, 1: 0, 2: 0 })
-		expect(getState(stats)).toStrictEqual({ 0: 1, 1: 0, 2: 0 })
+		setState(statsAtom, { 0: 1, 1: 0, 2: 0 })
+		expect(getState(statsAtom)).toStrictEqual({ 0: 1, 1: 0, 2: 0 })
 
-		resetState(stats)
-		expect(getState(stats)).toStrictEqual({ 0: 0, 1: 0, 2: 0 })
+		resetState(statsAtom)
+		expect(getState(statsAtom)).toStrictEqual({ 0: 0, 1: 0, 2: 0 })
 	})
 })
 
 describe(`selector`, () => {
 	it(`can be modified and retrieved`, () => {
-		const count = atom<number>({
+		const countAtom = atom<number>({
 			key: `count`,
 			default: 0,
 		})
-		const double = selector<number>({
+		const doubleSelector = selector<number>({
 			key: `double`,
-			get: ({ get }) => get(count) * 2,
+			get: ({ get }) => get(countAtom) * 2,
 		})
-		setState(count, 1)
-		expect(getState(double)).toBe(2)
-		setState(count, 2)
-		expect(getState(double)).toBe(4)
+		setState(countAtom, 1)
+		expect(getState(doubleSelector)).toBe(2)
+		setState(countAtom, 2)
+		expect(getState(doubleSelector)).toBe(4)
 	})
 	it(`can be subscribed to`, () => {
-		const count = atom<number>({
+		const countAtom = atom<number>({
 			key: `count`,
 			default: 0,
 		})
-		const double = selector<number>({
+		const doubleSelector = selector<number>({
 			key: `double`,
-			get: ({ get }) => get(count) * 2,
+			get: ({ get }) => get(countAtom) * 2,
 		})
-		subscribe(double, Utils.stdout)
-		setState(count, 1)
+		subscribe(doubleSelector, Utils.stdout)
+		setState(countAtom, 1)
 		expect(Utils.stdout).toHaveBeenCalledWith({ newValue: 2, oldValue: 0 })
 	})
 	it(`can be set, propagating changes to all related atoms`, () => {
-		const count = atom<number>({
+		const countAtom = atom<number>({
 			key: `count`,
 			default: 0,
 		})
-		const double = selector<number>({
+		const doubleSelector = selector<number>({
 			key: `double`,
-			get: ({ get }) => get(count) * 2,
+			get: ({ get }) => get(countAtom) * 2,
 			set: ({ set }, newValue) => {
-				set(count, newValue / 2)
+				set(countAtom, newValue / 2)
 			},
 		})
-		const triple = selector<number>({
+		const tripleSelector = selector<number>({
 			key: `triple`,
-			get: ({ get }) => get(count) * 3,
+			get: ({ get }) => get(countAtom) * 3,
 		})
-		const doublePlusOne = selector<number>({
+		const doublePlusOneSelector = selector<number>({
 			key: `doublePlusOne`,
-			get: ({ get }) => get(double) + 1,
+			get: ({ get }) => get(doubleSelector) + 1,
 			set: ({ set }, newValue) => {
-				set(double, newValue - 1)
+				set(doubleSelector, newValue - 1)
 			},
 		})
-		setState(double, 20)
-		expect(getState(count)).toBe(10)
-		expect(getState(double)).toBe(20)
-		expect(getState(triple)).toBe(30)
-		expect(getState(doublePlusOne)).toBe(21)
-		setState(doublePlusOne, 43)
-		expect(getState(count)).toBe(21)
+		setState(doubleSelector, 20)
+		expect(getState(countAtom)).toBe(10)
+		expect(getState(doubleSelector)).toBe(20)
+		expect(getState(tripleSelector)).toBe(30)
+		expect(getState(doublePlusOneSelector)).toBe(21)
+		setState(doublePlusOneSelector, 43)
+		expect(getState(countAtom)).toBe(21)
 	})
 	it(`can be reset to its default value`, () => {
-		const count = atom<number>({
+		const countAtom = atom<number>({
 			key: `count`,
 			default: 0,
 		})
-		const double = selector<number>({
+		const doubleSelector = selector<number>({
 			key: `double`,
-			get: ({ get }) => get(count) * 2,
+			get: ({ get }) => get(countAtom) * 2,
 			set: ({ set }, newValue) => {
-				set(count, newValue / 2)
+				set(countAtom, newValue / 2)
 			},
 		})
-		setState(count, 1)
-		expect(getState(double)).toBe(2)
-		resetState(double)
-		expect(getState(double)).toBe(0)
+		setState(countAtom, 1)
+		expect(getState(doubleSelector)).toBe(2)
+		resetState(doubleSelector)
+		expect(getState(doubleSelector)).toBe(0)
 	})
 	it(`may depend on more than one atom or selector`, () => {
-		const firstNameState = atom<string>({
+		const firstNameAtom = atom<string>({
 			key: `firstName`,
 			default: `John`,
 		})
-		const lastNameState = atom<string>({
+		const lastNameAtom = atom<string>({
 			key: `lastName`,
 			default: `Doe`,
 		})
-		const fullNameState = selector<string>({
+		const fullNameSelector = selector<string>({
 			key: `fullName`,
-			get: ({ get }) => `${get(firstNameState)} ${get(lastNameState)}`,
+			get: ({ get }) => `${get(firstNameAtom)} ${get(lastNameAtom)}`,
 		})
-		expect(getState(fullNameState)).toBe(`John Doe`)
-		setState(firstNameState, `Jane`)
-		expect(getState(fullNameState)).toBe(`Jane Doe`)
+		expect(getState(fullNameSelector)).toBe(`John Doe`)
+		setState(firstNameAtom, `Jane`)
+		expect(getState(fullNameSelector)).toBe(`Jane Doe`)
 
 		type Gender = `female` | `male` | `other`
 		const TITLES: Record<Gender, string> = {
@@ -173,31 +173,31 @@ describe(`selector`, () => {
 			other: `Mx.`,
 		} as const
 
-		const genderState = atom<Gender>({
+		const genderAtom = atom<Gender>({
 			key: `gender`,
 			default: `other`,
 		})
-		const modeOfAddressState = atom<`formal` | `informal`>({
+		const modeOfAddressAtom = atom<`formal` | `informal`>({
 			key: `modeOfAddress`,
 			default: `informal`,
 		})
-		const greetingState = selector<string>({
-			key: `greetingState`,
+		const greetingSelector = selector<string>({
+			key: `greeting`,
 			get: ({ get }) => {
-				const modeOfAddress = get(modeOfAddressState)
+				const modeOfAddress = get(modeOfAddressAtom)
 				if (modeOfAddress === `formal`) {
-					return `Dear ${TITLES[get(genderState)]} ${get(lastNameState)},`
+					return `Dear ${TITLES[get(genderAtom)]} ${get(lastNameAtom)},`
 				}
-				return `Hi ${get(firstNameState)}!`
+				return `Hi ${get(firstNameAtom)}!`
 			},
 		})
-		expect(getState(greetingState)).toBe(`Hi Jane!`)
-		setState(firstNameState, `Janice`)
-		expect(getState(greetingState)).toBe(`Hi Janice!`)
-		setState(modeOfAddressState, `formal`)
-		expect(getState(greetingState)).toBe(`Dear Mx. Doe,`)
-		setState(genderState, `female`)
-		expect(getState(greetingState)).toBe(`Dear Ms. Doe,`)
+		expect(getState(greetingSelector)).toBe(`Hi Jane!`)
+		setState(firstNameAtom, `Janice`)
+		expect(getState(greetingSelector)).toBe(`Hi Janice!`)
+		setState(modeOfAddressAtom, `formal`)
+		expect(getState(greetingSelector)).toBe(`Dear Mx. Doe,`)
+		setState(genderAtom, `female`)
+		expect(getState(greetingSelector)).toBe(`Dear Ms. Doe,`)
 	})
 	it(`may have conditional dependencies`, () => {
 		const countAtom = atom<number>({
@@ -205,7 +205,7 @@ describe(`selector`, () => {
 			default: 0,
 		})
 		const countIsTrackedAtom = atom<boolean>({
-			key: `shouldConsiderCount`,
+			key: `countIsTracked`,
 			default: false,
 		})
 		const trackedCountSelector = selector<number | null>({
@@ -240,21 +240,21 @@ describe(`selector`, () => {
 		expect(Utils.stdout0).toHaveBeenCalledTimes(3)
 	})
 	it(`(covers "covered" in trace-selector-atoms) won't trace the same node twice`, () => {
-		const countSelector = atom<number>({
+		const countAtom = atom<number>({
 			key: `count`,
 			default: 0,
 		})
 
 		const countPlusTenSelector = selector<number>({
 			key: `countPlusTen`,
-			get: ({ get }) => get(countSelector) + 10,
+			get: ({ get }) => get(countAtom) + 10,
 		})
 		const countPlusFiveSelector = selector<number>({
 			key: `countPlusFive`,
-			get: ({ get }) => get(countSelector) + 5,
+			get: ({ get }) => get(countAtom) + 5,
 		})
 		const doubleCountPlusFifteenSelector = selector<number>({
-			key: `countPlusFifteen`,
+			key: `doubleCountPlusFifteen`,
 			get: ({ get }) => {
 				const plusTen = get(countPlusTenSelector)
 				const plusFive = get(countPlusFiveSelector)
@@ -262,7 +262,7 @@ describe(`selector`, () => {
 			},
 		})
 		const tripleCountPlusTwentySelector = selector<number>({
-			key: `countPlusTwenty`,
+			key: `tripleCountPlusTwenty`,
 			get: ({ get }) => {
 				const doublePlusFifteen = get(doubleCountPlusFifteenSelector)
 				const plusFive = get(countPlusFiveSelector)
@@ -285,7 +285,7 @@ describe(`selector`, () => {
 			default: 0,
 		})
 		const myDivergentSelector = selector<number>({
-			key: `myDivergentSelector`,
+			key: `myDivergent`,
 			get: ({ get }) => {
 				Utils.stdout(`evaluated`)
 				const fallback = get(fallbackAtom)

@@ -6,8 +6,8 @@ import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 
 describe(`undo/redo`, () => {
-	const countState = AtomIO.atom<number>({ key: `count`, default: 0 })
-	const countTL = AtomIO.timeline({ key: `countTL`, scope: [countState] })
+	const countAtom = AtomIO.atom<number>({ key: `count`, default: 0 })
+	const countTL = AtomIO.timeline({ key: `countTL`, scope: [countAtom] })
 	const scenario = () =>
 		RTTest.singleClient({
 			server: ({ socket, userKey, silo: { store } }) => {
@@ -16,11 +16,11 @@ describe(`undo/redo`, () => {
 					store,
 					consumer: userKey,
 				})
-				return exposeSingle(countState)
+				return exposeSingle(countAtom)
 			},
 			client: () => {
-				RTR.usePullAtom(countState)
-				const count = AR.useO(countState)
+				RTR.usePullAtom(countAtom)
+				const count = AR.useO(countAtom)
 				return <i data-testid={`count:${count}`} />
 			},
 		})
@@ -30,7 +30,7 @@ describe(`undo/redo`, () => {
 		const app = client.init()
 		app.renderResult.getByTestId(`count:0`)
 		act(() => {
-			server.silo.setState(countState, 1)
+			server.silo.setState(countAtom, 1)
 		})
 		await waitFor(() => app.renderResult.getByTestId(`count:1`))
 		act(() => {

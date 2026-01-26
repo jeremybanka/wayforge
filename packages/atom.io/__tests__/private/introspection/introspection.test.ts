@@ -30,12 +30,12 @@ test(`attachIntrospectionStates`, () => {
 		key: `letter`,
 		default: `A`,
 	})
-	const letterSelector = selectorFamily<string, string>({
+	const letterSelectors = selectorFamily<string, string>({
 		key: `letter`,
 		get:
 			() =>
 			({ get }) =>
 				get(letterAtom),
 	})
-	getState(letterSelector, `foo`)
+	getState(letterSelectors, `foo`)
 })

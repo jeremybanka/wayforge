@@ -20,7 +20,7 @@ export type SocketSystemHierarchy = Hierarchy<
 
 export const socketAtoms: RegularAtomFamilyToken<Socket | null, SocketKey> =
 	atomFamily({
-		key: `sockets`,
+		key: `socket`,
 		default: null,
 	})
 

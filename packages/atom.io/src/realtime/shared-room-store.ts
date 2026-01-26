@@ -42,7 +42,7 @@ export const usersInRooms: JoinToken<`room`, RoomKey, `user`, UserKey, `1:n`> =
 		isBType: isUserKey,
 	})
 
-export const visibleUsersInRoomsSelector: PureSelectorFamilyToken<
+export const visibleUsersInRoomsSelectors: PureSelectorFamilyToken<
 	[self: UserKey, ...RoomKey[]],
 	UserKey
 > = selectorFamily({
@@ -56,7 +56,7 @@ export const visibleUsersInRoomsSelector: PureSelectorFamilyToken<
 		},
 })
 
-export const visibilityFromRoomSelector: PureSelectorFamilyToken<
+export const visibilityFromRoomSelectors: PureSelectorFamilyToken<
 	[self: RoomKey, ...UserKey[]],
 	RoomKey
 > = selectorFamily({
@@ -70,7 +70,7 @@ export const visibilityFromRoomSelector: PureSelectorFamilyToken<
 		},
 })
 
-export const mutualUsersSelector: ReadonlyPureSelectorFamilyToken<
+export const mutualUsersSelectors: ReadonlyPureSelectorFamilyToken<
 	UserKey[],
 	UserKey
 > = selectorFamily({
