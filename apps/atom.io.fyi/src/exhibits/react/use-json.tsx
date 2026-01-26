@@ -2,13 +2,13 @@ import { mutableAtom } from "atom.io"
 import { useJSON } from "atom.io/react"
 import { UList } from "atom.io/transceivers/u-list"
 
-const numbersCollectionState = mutableAtom<UList<string>>({
-	key: `numbersCollection::mutable`,
+const numbersCollectionAtom = mutableAtom<UList<string>>({
+	key: `numbersCollection`,
 	class: UList,
 })
 
 function Numbers() {
-	const numbers = useJSON(numbersCollectionState)
+	const numbers = useJSON(numbersCollectionAtom)
 	return (
 		<>
 			{numbers.map((n) => (

@@ -99,7 +99,7 @@ export const tile3dPositionSelectors = selectorFamily<
 	},
 })
 
-export const adjacentZonesSelector = selectorFamily<
+export const adjacentZonesSelectors = selectorFamily<
 	TileCoordinatesSerialized[],
 	TileCoordinatesSerialized
 >({
@@ -119,7 +119,7 @@ export const adjacentZonesSelector = selectorFamily<
 	},
 })
 
-export const adjacentTilesSelector = selectorFamily<
+export const adjacentTilesSelectors = selectorFamily<
 	TileCoordinatesSerialized[],
 	TileCoordinatesSerialized
 >({
@@ -127,21 +127,21 @@ export const adjacentTilesSelector = selectorFamily<
 	get:
 		(coordinatesSerialized) =>
 		({ get }) => {
-			const adjacent = get(adjacentZonesSelector, coordinatesSerialized)
+			const adjacent = get(adjacentZonesSelectors, coordinatesSerialized)
 			const tiles = get(gameTilesAtom)
 			return adjacent.filter((zone) => tiles.has(zone))
 		},
 })
 
 export const playableZonesSelector = selector<TileCoordinatesSerialized[]>({
-	key: `playableZone`,
+	key: `playableZones`,
 	get: ({ get }) => {
 		const tiles = get(gameTilesAtom)
 		if (tiles.size === 0) return [`0_0_0`]
 		const playableZones = new Set<TileCoordinatesSerialized>()
 
 		for (const tileCoordinates of tiles) {
-			const adjacentZones = get(adjacentZonesSelector, tileCoordinates)
+			const adjacentZones = get(adjacentZonesSelectors, tileCoordinates)
 			for (const adjacentZone of adjacentZones) {
 				playableZones.add(adjacentZone)
 			}
@@ -150,7 +150,7 @@ export const playableZonesSelector = selector<TileCoordinatesSerialized[]>({
 			playableZones.delete(tileCoordinates)
 		}
 		for (const playableZone of playableZones) {
-			const adjacentTiles = get(adjacentTilesSelector, playableZone)
+			const adjacentTiles = get(adjacentTilesSelectors, playableZone)
 			if (adjacentTiles.length >= 5) {
 				playableZones.delete(playableZone)
 			}
@@ -160,11 +160,11 @@ export const playableZonesSelector = selector<TileCoordinatesSerialized[]>({
 		if (turnInProgress?.type === `move`) {
 			playableZones.delete(turnInProgress.origin)
 			const originAdjacentZones = get(
-				adjacentZonesSelector,
+				adjacentZonesSelectors,
 				turnInProgress.origin,
 			)
 			for (const adjacentZone of originAdjacentZones) {
-				const adjacentTiles = get(adjacentTilesSelector, adjacentZone)
+				const adjacentTiles = get(adjacentTilesSelectors, adjacentZone)
 				if (adjacentTiles.length === 1) {
 					playableZones.delete(adjacentZone)
 				}
@@ -195,7 +195,7 @@ export const tileIsStructuralSelectors = selectorFamily<
 			while (queue.length > 0) {
 				const tile = queue.pop()!
 				seen.add(tile)
-				const adjacentZones = get(adjacentZonesSelector, tile)
+				const adjacentZones = get(adjacentZonesSelectors, tile)
 				for (const adjacentZone of adjacentZones) {
 					if (allTilesWithoutThisOne.has(adjacentZone)) {
 						if (seen.has(adjacentZone)) continue
@@ -237,7 +237,7 @@ export const closestPlayableZoneSelector =
 		},
 	})
 
-export const ownedTilesSelector = selectorFamily<
+export const ownedTilesSelectors = selectorFamily<
 	TileCoordinatesSerialized[],
 	UserKey
 >({
@@ -290,7 +290,7 @@ export const tileOwnerAtoms = atomFamily<
 	default: null,
 })
 
-export const closestOwnedTileSelector = selectorFamily<
+export const closestOwnedTileSelectors = selectorFamily<
 	TileCoordinatesSerialized | null,
 	UserKey
 >({
@@ -298,7 +298,7 @@ export const closestOwnedTileSelector = selectorFamily<
 	get:
 		(userKey) =>
 		({ get }) => {
-			const ownedTiles = get(ownedTilesSelector, userKey)
+			const ownedTiles = get(ownedTilesSelectors, userKey)
 			if (ownedTiles.length === 0) return null
 			const dragPoint = get(dragPointAtom)
 			if (!dragPoint) return null
@@ -374,7 +374,7 @@ export const validWarDeclaratorsSelector = selector<TileCoordinatesSerialized[]>
 				validWarDeclarators.push(turnAction.attacker)
 				return validWarDeclarators
 			}
-			const allOwnedTiles = get(ownedTilesSelector, userKey)
+			const allOwnedTiles = get(ownedTilesSelectors, userKey)
 			for (const tileCoordinates of allOwnedTiles) {
 				const tileCubeCount = get(tileCubeCountAtoms, tileCoordinates)
 				if (tileCubeCount >= 4) {
@@ -394,7 +394,7 @@ export const validWarTargetsSelector = selector<TileCoordinatesSerialized[]>({
 		if (turnAction?.type !== `war`) return validWarTargets
 		const attacker = turnAction.attacker
 		if (!attacker) return validWarTargets
-		const attackerAdjacentTiles = get(adjacentTilesSelector, attacker)
+		const attackerAdjacentTiles = get(adjacentTilesSelectors, attacker)
 		const myTilesChecked = new Set<TileCoordinatesSerialized>()
 		const myTilesUnchecked: TileCoordinatesSerialized[] = []
 		for (const adjacentTile of attackerAdjacentTiles) {
@@ -407,7 +407,7 @@ export const validWarTargetsSelector = selector<TileCoordinatesSerialized[]>({
 		while (myTilesUnchecked.length > 0) {
 			const myTile = myTilesUnchecked.pop()!
 			myTilesChecked.add(myTile)
-			const adjacentTiles = get(adjacentTilesSelector, myTile)
+			const adjacentTiles = get(adjacentTilesSelectors, myTile)
 			for (const adjacentTile of adjacentTiles) {
 				const adjacentOwner = get(tileOwnerAtoms, adjacentTile)
 				if (adjacentOwner === userKey && !myTilesChecked.has(adjacentTile)) {
@@ -471,7 +471,7 @@ export const tileStatusSelectors = selectorFamily<
 			const tileHeight = get(gameTilesStackHeightAtoms, coords)
 			if (tileHeight !== 1) return null
 
-			const adjacentTiles = get(adjacentTilesSelector, coords)
+			const adjacentTiles = get(adjacentTilesSelectors, coords)
 			if (adjacentTiles.length >= 5) return null
 			const tileIsStructural = get(tileIsStructuralSelectors, coords)
 			if (tileIsStructural) return null
@@ -490,7 +490,7 @@ export const maximumStackHeightSelectors = selectorFamily<
 		({ get }) => {
 			// const isOwned = get(tileOwnerAtoms, coordinatesSerialized) === userKey
 			// if (!isOwned) return 0
-			const adjacentTiles = get(adjacentTilesSelector, coordinatesSerialized)
+			const adjacentTiles = get(adjacentTilesSelectors, coordinatesSerialized)
 			const ownedAdjacentTiles = adjacentTiles.filter(
 				(adjacentTile) => get(tileOwnerAtoms, adjacentTile) === userKey,
 			)
@@ -759,7 +759,7 @@ export const lineWinSelectors = selectorFamily<
 	ReadonlySet<TileCoordinatesSerialized> | null,
 	[axis: HexAxis, tile: TileCoordinatesSerialized]
 >({
-	key: `middleLineWin`,
+	key: `lineWin`,
 	get:
 		([axis, coordinatesSerialized]) =>
 		({ get }) => {

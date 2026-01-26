@@ -38,7 +38,7 @@ export function navigate(pathname: Pathname): void {
 }
 
 export const pathnameAtom = atom<Pathname | (string & {})>({
-	key: `pathName`,
+	key: `pathname`,
 	default: window.location.pathname,
 	effects: [
 		({ onSet, setSelf }) => {

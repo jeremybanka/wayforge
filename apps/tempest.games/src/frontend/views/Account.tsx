@@ -20,7 +20,7 @@ import { trpcClient } from "../services/trpc-client-service"
 import {
 	accountEditingAtom,
 	emailInputElementAtom,
-	password0InputElementAtom,
+	passwordInputElementAtom,
 	usernameInputElementAtom,
 } from "./Account/account-state"
 import { Form } from "./Account/Form"
@@ -150,7 +150,7 @@ export function Account(): React.ReactNode {
 				label="new-password"
 				inputToken={passwordInputAtom}
 				issuesToken={passwordIssuesSelector}
-				inputElementToken={password0InputElementAtom}
+				inputElementToken={passwordInputElementAtom}
 				initialState={
 					auth.password ? [`new-password`, `otcVerify`] : [`new-password`]
 				}

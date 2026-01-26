@@ -1,7 +1,7 @@
 import { subscribe } from "atom.io"
 
-import { countState } from "./declare-an-atom"
+import { countAtom } from "./declare-an-atom"
 
-subscribe(countState, (count) => {
+subscribe(countAtom, (count) => {
 	console.log(`count is now ${count.newValue}`)
 })

@@ -1,14 +1,14 @@
 import { atom } from "atom.io"
 import { useI, useO } from "atom.io/react"
 
-const toggleState = atom<boolean>({
+const toggleAtom = atom<boolean>({
 	key: `toggle`,
 	default: false,
 })
 
 function UrlDisplay() {
-	const setToggle = useI(toggleState)
-	const toggle = useO(toggleState)
+	const setToggle = useI(toggleAtom)
+	const toggle = useO(toggleAtom)
 	return (
 		<input
 			type="checkbox"

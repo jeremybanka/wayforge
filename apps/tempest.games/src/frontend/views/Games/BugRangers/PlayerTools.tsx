@@ -13,7 +13,7 @@ import type {
 	TileStackHeight,
 } from "../../../../library/bug-rangers-game-state"
 import {
-	closestOwnedTileSelector,
+	closestOwnedTileSelectors,
 	closestPlayableZoneSelector,
 	dragPointAtom,
 	dragStateAtom,
@@ -207,7 +207,7 @@ function PlayableCube({ myUserKey }: PlayableCubeProps): ReactNode {
 			case null:
 			case undefined:
 				{
-					const closestOwnedTile = getState(closestOwnedTileSelector, myUserKey)
+					const closestOwnedTile = getState(closestOwnedTileSelectors, myUserKey)
 					if (closestOwnedTile) {
 						setState(turnInProgressAtom, {
 							type: `arm`,
@@ -225,7 +225,7 @@ function PlayableCube({ myUserKey }: PlayableCubeProps): ReactNode {
 			case `arm`:
 				{
 					if (turnInProgress.targets.length >= 2) return
-					const closestOwnedTile = getState(closestOwnedTileSelector, myUserKey)
+					const closestOwnedTile = getState(closestOwnedTileSelectors, myUserKey)
 					if (closestOwnedTile) {
 						setState(
 							tileCubeCountAtoms,
