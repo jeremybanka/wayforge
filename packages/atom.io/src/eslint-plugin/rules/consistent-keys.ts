@@ -2,6 +2,24 @@ import type { RuleType } from "@eslint/core"
 import type { Rule } from "eslint"
 import type * as ESTree from "estree"
 
+const SUFFIX_DICTIONARY = {
+	atom: `Atom`,
+	atomFamily: `Atoms`,
+	mutableAtom: `Atom`,
+	mutableAtomFamily: `Atoms`,
+	selector: `Selector`,
+	selectorFamily: `Selectors`,
+} as const
+
+const PLURAL_DICTIONARY = {
+	atom: `atoms`,
+	atomFamily: `atom families`,
+	mutableAtom: `atoms`,
+	mutableAtomFamily: `atom families`,
+	selector: `selectors`,
+	selectorFamily: `selector families`,
+}
+
 export const consistentAtomNamesAndKeys: {
 	meta: {
 		type: RuleType
@@ -32,8 +50,20 @@ export const consistentAtomNamesAndKeys: {
 		return {
 			CallExpression(node) {
 				// atom(...)
-				if (node.callee.type !== `Identifier` || node.callee.name !== `atom`) {
+				if (node.callee.type !== `Identifier`) {
 					return
+				}
+
+				switch (node.callee.name) {
+					case `atom`:
+					case `atomFamily`:
+					case `mutableAtom`:
+					case `mutableAtomFamily`:
+					case `selector`:
+					case `selectorFamily`:
+						break // ^ targets of this rule
+					default:
+						return
 				}
 
 				// Must be assigned: const x = atom(...)
@@ -41,18 +71,22 @@ export const consistentAtomNamesAndKeys: {
 				if (node.parent.init !== node) return
 				if (node.parent.id.type !== `Identifier`) return
 
+				const calleeName = node.callee.name as keyof typeof SUFFIX_DICTIONARY
+				const suffix = SUFFIX_DICTIONARY[calleeName]
+				const plural = PLURAL_DICTIONARY[calleeName]
+
 				const variableName = node.parent.id.name
 
 				// Enforce FooAtom naming
-				if (!variableName.endsWith(`Atom`)) {
+				if (!variableName.endsWith(suffix)) {
 					context.report({
 						node: node.parent.id,
-						message: `Names of atoms should end with 'Atom'.`,
+						message: `Names of ${plural} should end with '${suffix}'.`,
 					})
 					return
 				}
 
-				const expectedKey = variableName.slice(0, -4)
+				const expectedKey = variableName.slice(0, -suffix.length)
 
 				// Must have first argument object
 				const arg = node.arguments[0]
@@ -87,7 +121,7 @@ export const consistentAtomNamesAndKeys: {
 				) {
 					context.report({
 						node: keyProp.value,
-						message: `Keys of atoms should be consistent with the names of their variables.`,
+						message: `Keys of ${plural} should be consistent with the names of their variables.`,
 						fix(fixer) {
 							return fixer.replaceText(
 								keyProp.value,
