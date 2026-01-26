@@ -6,6 +6,7 @@ export { Rules }
 
 const plugin: ESLint.Plugin = {
 	rules: {
+		"consistent-keys": Rules.consistentAtomNamesAndKeys as any,
 		"exact-catch-types": Rules.exactCatchTypes as any,
 		"explicit-state-types": Rules.explicitStateTypes as any,
 	},
