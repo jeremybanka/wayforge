@@ -9,7 +9,7 @@ function resolveRoomScript(name: string): [string, string[]] {
 	return [`bun`, [path.join(__dirname, name)]]
 }
 const isRoomAdminSelectors = selectorFamily<boolean, UserKey>({
-	key: `isRoomAdminSelector`,
+	key: `isRoomAdmin`,
 	get: () => () => true,
 })
 export const SystemServer = ({

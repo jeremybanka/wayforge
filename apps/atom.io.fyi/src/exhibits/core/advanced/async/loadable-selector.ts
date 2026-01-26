@@ -5,7 +5,7 @@ function discoverCoinId() {
 	const urlParams = new URLSearchParams(window.location.search)
 	return urlParams.get(`coinId`) ?? `bitcoin`
 }
-export const coinIdState = atom<string>({
+export const coinIdAtom = atom<string>({
 	key: `coinId`,
 	default: discoverCoinId,
 	effects: [
@@ -17,10 +17,10 @@ export const coinIdState = atom<string>({
 	],
 })
 
-export const findCoinPriceState = selector<Loadable<number>>({
+export const coinPriceSelector = selector<Loadable<number>>({
 	key: `coinPrice`,
 	get: async ({ get }) => {
-		const coinId = get(coinIdState)
+		const coinId = get(coinIdAtom)
 		const response = await fetch(
 			`https://api.coingecko.com/api/v3/coins/${coinId}`,
 		)

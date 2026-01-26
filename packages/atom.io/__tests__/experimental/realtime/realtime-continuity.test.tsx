@@ -18,9 +18,9 @@ console.error = () => undefined
 
 describe(`synchronizing transactions`, () => {
 	const runScenario = () => {
-		const countState = AtomIO.atom<number>({ key: `count`, default: 0 })
-		const userActionCountServerState = AtomIO.atom<number>({
-			key: `server:userActionCount`,
+		const countAtom = AtomIO.atom<number>({ key: `count`, default: 0 })
+		const userActionCountServerAtom = AtomIO.atom<number>({
+			key: `userActionCountServer`,
 			default: 0,
 		})
 
@@ -29,19 +29,19 @@ describe(`synchronizing transactions`, () => {
 			do: ({ set, env }) => {
 				const { name } = env().store.config
 				if (name === `SERVER`) {
-					set(userActionCountServerState, (c) => c + 1)
+					set(userActionCountServerAtom, (c) => c + 1)
 				}
-				set(countState, (c) => c + 1)
+				set(countAtom, (c) => c + 1)
 			},
 		})
 		const countContinuity = RT.continuity({
 			key: `count`,
-			config: (group) => group.add(countState).add(incrementTX),
+			config: (group) => group.add(countAtom).add(incrementTX),
 		})
 
 		const Client = () => {
 			RTR.useSyncContinuity(countContinuity)
-			const count = AR.useO(countState)
+			const count = AR.useO(countAtom)
 			const store = React.useContext(AR.StoreContext)
 			const increment = actUponStore(store, incrementTX, arbitrary())
 			return (
@@ -73,7 +73,7 @@ describe(`synchronizing transactions`, () => {
 					dave: Client,
 				},
 			}),
-			{ countState, incrementTX },
+			{ countState: countAtom, incrementTX },
 		)
 	}
 

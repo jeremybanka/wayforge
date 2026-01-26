@@ -4,7 +4,7 @@ import { useO } from "atom.io/react"
 function discoverUrl() {
 	return new URL(window.location.href)
 }
-const urlState = atom<string>({
+const urlAtom = atom<string>({
 	key: `url`,
 	default: () => discoverUrl().toString(),
 	effects: [
@@ -17,6 +17,6 @@ const urlState = atom<string>({
 })
 
 function UrlDisplay() {
-	const url = useO(urlState)
+	const url = useO(urlAtom)
 	return <div>{url}</div>
 }

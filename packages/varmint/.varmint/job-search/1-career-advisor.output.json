@@ -1,0 +1,36 @@
+{
+	"id": "chatcmpl-D2KpsSrHXF9sIADVXSd8UkVyA9SKS",
+	"object": "chat.completion",
+	"created": 1769449120,
+	"model": "gpt-4-turbo-2024-04-09",
+	"choices": [
+		{
+			"index": 0,
+			"message": {
+				"role": "assistant",
+				"content": "Hello Max Broadbeam! That's a truly unique and memorable name you've got. How can I assist you with your job search today?\n\nAGENDA_JSON{ \"Complement the job seeker on their weird name\": true }",
+				"refusal": null,
+				"annotations": []
+			},
+			"logprobs": null,
+			"finish_reason": "stop"
+		}
+	],
+	"usage": {
+		"prompt_tokens": 137,
+		"completion_tokens": 46,
+		"total_tokens": 183,
+		"prompt_tokens_details": {
+			"cached_tokens": 0,
+			"audio_tokens": 0
+		},
+		"completion_tokens_details": {
+			"reasoning_tokens": 0,
+			"audio_tokens": 0,
+			"accepted_prediction_tokens": 0,
+			"rejected_prediction_tokens": 0
+		}
+	},
+	"service_tier": "default",
+	"system_fingerprint": "fp_de235176ee"
+}

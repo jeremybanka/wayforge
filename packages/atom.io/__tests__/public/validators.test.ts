@@ -9,12 +9,12 @@ beforeEach(() => {
 describe(`validators`, () => {
 	describe(`isToken`, () => {
 		it(`returns true for a match, and infers the type`, () => {
-			const knownToken: RegularAtomToken<number> = atom<number>({
+			const countAtom: RegularAtomToken<number> = atom<number>({
 				key: `count`,
 				default: 0,
 			})
 			const unknownToken: ReadableToken<number> = { type: `atom`, key: `count` }
-			const result = isToken(knownToken, unknownToken)
+			const result = isToken(countAtom, unknownToken)
 			expect(result).toBe(true)
 			if (result) {
 				setState(unknownToken, 5)
@@ -33,7 +33,7 @@ describe(`validators`, () => {
 
 	describe(`belongsTo`, () => {
 		it(`returns true for a match, and infers the type`, () => {
-			const family = atomFamily<number, string>({
+			const countAtoms = atomFamily<number, string>({
 				key: `count`,
 				default: 0,
 			})
@@ -42,11 +42,11 @@ describe(`validators`, () => {
 				key: `count("a")`,
 				family: { key: `count`, subKey: `"a"` },
 			}
-			const result = belongsTo(family, unknownToken)
+			const result = belongsTo(countAtoms, unknownToken)
 			expect(result).toBe(true)
 		})
 		it(`returns false for a mismatch`, () => {
-			const family = atomFamily<number, string>({
+			const countAtoms = atomFamily<number, string>({
 				key: `count`,
 				default: 0,
 			})
@@ -55,7 +55,7 @@ describe(`validators`, () => {
 				key: `name("a")`,
 				family: { key: `name`, subKey: `"a"` },
 			}
-			expect(belongsTo(family, unknownToken)).toBe(false)
+			expect(belongsTo(countAtoms, unknownToken)).toBe(false)
 		})
 	})
 })

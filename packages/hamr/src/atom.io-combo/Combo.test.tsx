@@ -22,15 +22,15 @@ const AtomObserver: FC<AtomObserverProps> = ({ node, onChange }) => {
 	return null
 }
 
-const lettersState = atom<string[]>({
+const lettersAtom = atom<string[]>({
 	key: `letters`,
 	default: [],
 })
 
 const scenarioA_Managed = () => {
 	const Managed: FC = () => {
-		const letters = useO(lettersState)
-		const setLetters = useI(lettersState)
+		const letters = useO(lettersAtom)
+		const setLetters = useI(lettersAtom)
 		return (
 			<main>
 				<Combo
@@ -45,7 +45,7 @@ const scenarioA_Managed = () => {
 	}
 	const utils = render(
 		<StoreProvider>
-			<AtomObserver node={lettersState} onChange={handleChange} />
+			<AtomObserver node={lettersAtom} onChange={handleChange} />
 			<Managed />
 		</StoreProvider>,
 	)
@@ -71,15 +71,11 @@ it(`accepts user input with externally managed state`, () => {
 
 const scenarioB_SelfManaged = () => {
 	const SelfManaged: FC = () => (
-		<Combo
-			options={[`a`]}
-			selectionsState={lettersState}
-			testId="self-managed"
-		/>
+		<Combo options={[`a`]} selectionsState={lettersAtom} testId="self-managed" />
 	)
 	const utils = render(
 		<StoreProvider>
-			<AtomObserver node={lettersState} onChange={handleChange} />
+			<AtomObserver node={lettersAtom} onChange={handleChange} />
 			<SelfManaged />
 		</StoreProvider>,
 	)

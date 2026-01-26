@@ -39,13 +39,13 @@ const onChange = [() => undefined, console.log][0]
 describe(`regular atom`, () => {
 	const setters: Fn[] = []
 	const scenario = () => {
-		const letterState = atom<string>({
+		const letterAtom = atom<string>({
 			key: `letter`,
 			default: `A`,
 		})
 		const Letter: FC = () => {
-			const setLetter = AR.useI(letterState)
-			const letter = AR.useO(letterState)
+			const setLetter = AR.useI(letterAtom)
+			const letter = AR.useO(letterAtom)
 			setters.push(setLetter)
 			return (
 				<>
@@ -62,7 +62,7 @@ describe(`regular atom`, () => {
 		}
 		const utils = render(
 			<AR.StoreProvider>
-				<Utils.Observer node={letterState} onChange={onChange} />
+				<Utils.Observer node={letterAtom} onChange={onChange} />
 				<Letter />
 			</AR.StoreProvider>,
 		)
@@ -126,17 +126,17 @@ describe(`mutable atom`, () => {
 describe(`timeline`, () => {
 	const setters: Fn[] = []
 	const scenario = () => {
-		const letterState = atom<string>({
+		const letterAtom = atom<string>({
 			key: `letter`,
 			default: `A`,
 		})
 		const letterTL = timeline({
 			key: `letterTL`,
-			scope: [letterState],
+			scope: [letterAtom],
 		})
 		const Letter: FC = () => {
-			const setLetter = AR.useI(letterState)
-			const letter = AR.useO(letterState)
+			const setLetter = AR.useI(letterAtom)
+			const letter = AR.useO(letterAtom)
 			const letterTimeline = AR.useTL(letterTL)
 			setters.push(setLetter)
 			return (
@@ -177,7 +177,7 @@ describe(`timeline`, () => {
 		}
 		const utils = render(
 			<AR.StoreProvider>
-				<Utils.Observer node={letterState} onChange={onChange} />
+				<Utils.Observer node={letterAtom} onChange={onChange} />
 				<Letter />
 			</AR.StoreProvider>,
 		)
@@ -221,40 +221,40 @@ describe(`timeline`, () => {
 })
 describe(`timeline (dynamic)`, () => {
 	const scenario = () => {
-		const letterState = atom<string>({
+		const letterAtom = atom<string>({
 			key: `letter`,
 			default: `A`,
 		})
-		const numberState = atom<number>({
+		const numberAtom = atom<number>({
 			key: `number`,
 			default: 1,
 		})
 		const letterTL = timeline({
 			key: `letterTL`,
-			scope: [letterState],
+			scope: [letterAtom],
 		})
 		const numberTL = timeline({
 			key: `numberTL`,
-			scope: [numberState],
+			scope: [numberAtom],
 		})
-		const whichTimelineState = atom<string>({
+		const whichTimelineAtom = atom<string>({
 			key: `whichTimeline`,
 			default: `letter`,
 		})
-		const timelineState = selector<TimelineToken<unknown>>({
+		const timelineSelector = selector<TimelineToken<unknown>>({
 			key: `timeline`,
 			get: ({ get }) => {
-				const whichTimeline = get(whichTimelineState)
+				const whichTimeline = get(whichTimelineAtom)
 				return whichTimeline === `letter` ? letterTL : numberTL
 			},
 		})
 		const Letter: FC = () => {
-			const setLetter = AR.useI(letterState)
-			const setNumber = AR.useI(numberState)
-			const setWhichTimeline = AR.useI(whichTimelineState)
-			const letter = AR.useO(letterState)
-			const number = AR.useO(numberState)
-			const tl = AR.useTL(AR.useO(timelineState))
+			const setLetter = AR.useI(letterAtom)
+			const setNumber = AR.useI(numberAtom)
+			const setWhichTimeline = AR.useI(whichTimelineAtom)
+			const letter = AR.useO(letterAtom)
+			const number = AR.useO(numberAtom)
+			const tl = AR.useTL(AR.useO(timelineSelector))
 			return (
 				<>
 					<div data-testid={letter}>{letter}</div>
@@ -303,7 +303,7 @@ describe(`timeline (dynamic)`, () => {
 		}
 		const utils = render(
 			<AR.StoreProvider>
-				<Utils.Observer node={letterState} onChange={onChange} />
+				<Utils.Observer node={letterAtom} onChange={onChange} />
 				<Letter />
 			</AR.StoreProvider>,
 		)

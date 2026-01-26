@@ -13,7 +13,7 @@ console.error = () => undefined
 let LOGGING: boolean
 beforeEach(() => (LOGGING = true))
 
-const numbersCollectionState = AtomIO.mutableAtom<UList<number>>({
+const numbersCollectionAtom = AtomIO.mutableAtom<UList<number>>({
 	key: `numbersCollection`,
 	class: UList,
 	effects: [
@@ -35,12 +35,12 @@ describe(`running transactions`, () => {
 					consumer: userKey,
 					store,
 				})
-				return exposeMutable(numbersCollectionState)
+				return exposeMutable(numbersCollectionAtom)
 			},
 			clients: {
 				jane: () => {
-					RTR.usePullMutable(numbersCollectionState)
-					const numbers = AR.useJSON(numbersCollectionState)
+					RTR.usePullMutable(numbersCollectionAtom)
+					const numbers = AR.useJSON(numbersCollectionAtom)
 					return (
 						<>
 							{numbers.map((n) => (
@@ -63,7 +63,7 @@ describe(`running transactions`, () => {
 
 		jane.renderResult.getByTestId(`0`)
 
-		server.silo.setState(numbersCollectionState, (prev) => prev.add(1))
+		server.silo.setState(numbersCollectionAtom, (prev) => prev.add(1))
 
 		await waitFor(() => {
 			jane.renderResult.getByTestId(`1`)

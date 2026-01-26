@@ -20,15 +20,15 @@ const numberCollectionAtoms = AtomIO.mutableAtomFamily<
 	UList<number>,
 	CollectionName
 >({
-	key: `numbersCollection`,
+	key: `numberCollection`,
 	class: UList,
 })
-const exposedCollectionsIndex = AtomIO.atom<Set<CollectionName>>({
-	key: `exposedCollectionIndex`,
+const exposedCollectionsAtom = AtomIO.atom<Set<CollectionName>>({
+	key: `exposedCollections`,
 	default: new Set([`foo`]),
 })
-const focusedCollectionNameState = AtomIO.atom<CollectionName>({
-	key: `focusedCollectionState`,
+const focusedCollectionNameAtom = AtomIO.atom<CollectionName>({
+	key: `focusedCollectionName`,
 	default: `foo`,
 })
 
@@ -44,14 +44,11 @@ describe(`running transactions`, () => {
 					consumer: userKey,
 					store,
 				})
-				return exposeMutableFamily(
-					numberCollectionAtoms,
-					exposedCollectionsIndex,
-				)
+				return exposeMutableFamily(numberCollectionAtoms, exposedCollectionsAtom)
 			},
 			clients: {
 				jane: () => {
-					const name = AR.useO(focusedCollectionNameState)
+					const name = AR.useO(focusedCollectionNameAtom)
 					RTR.usePullMutableAtomFamilyMember(numberCollectionAtoms, name)
 					const numbers = AR.useJSON(numberCollectionAtoms, name)
 					return (
@@ -92,17 +89,17 @@ describe(`running transactions`, () => {
 
 		jane.renderResult.getByTestId(`foo`)
 		act(() => {
-			jane.silo.setState(focusedCollectionNameState, `bar`)
+			jane.silo.setState(focusedCollectionNameAtom, `bar`)
 		})
 		await waitFor(() => jane.renderResult.getByTestId(`bar`))
 
 		await new Promise<void>((resolve) => {
-			jane.socket.once(`unavailable:numbersCollection`, () => {
+			jane.socket.once(`unavailable:numberCollection`, () => {
 				resolve()
 			})
 		})
 
-		server.silo.setState(exposedCollectionsIndex, (prev) => prev.add(`bar`))
+		server.silo.setState(exposedCollectionsAtom, (prev) => prev.add(`bar`))
 		server.silo.setState(numberCollectionAtoms, `bar`, (prev) => prev.add(1))
 
 		await waitFor(() => jane.renderResult.getByTestId(`1`))

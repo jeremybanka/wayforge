@@ -1,8 +1,8 @@
 import { useO } from "atom.io/react"
 
-import { countState } from "./declare-an-atom"
+import { countAtom } from "./declare-an-atom"
 
 function Component() {
-	const count = useO(countState)
+	const count = useO(countAtom)
 	return <>{count}</>
 }

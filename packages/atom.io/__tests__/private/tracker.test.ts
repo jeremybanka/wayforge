@@ -37,31 +37,31 @@ afterEach(() => {
 
 describe(`tracker`, () => {
 	test(`tracks the state of a mutable atom`, () => {
-		const mutableSetState = mutableAtom<UList<string>>({
-			key: `mutableSetState`,
+		const myMutableAtom = mutableAtom<UList<string>>({
+			key: `myMutable`,
 			class: UList,
 		})
 		const { latestSignalToken } = new Tracker(
-			mutableSetState,
+			myMutableAtom,
 			Internal.IMPLICIT.STORE,
 		)
 
-		expect(getState(mutableSetState)).toEqual(new UList())
+		expect(getState(myMutableAtom)).toEqual(new UList())
 		expect(getState(latestSignalToken)).toEqual(null)
 		setState(latestSignalToken, `0\u001F\u0003x`)
 		expect(getState(latestSignalToken)).toEqual(`0\u001F\u0003x`)
-		expect(getState(mutableSetState)).toEqual(new UList([`x`]))
+		expect(getState(myMutableAtom)).toEqual(new UList([`x`]))
 		setState(latestSignalToken, `0\u001F\u0003y`)
 		expect(getState(latestSignalToken)).toEqual(`0\u001F\u0003y`)
-		expect(getState(mutableSetState)).toEqual(new UList([`x`, `y`]))
+		expect(getState(myMutableAtom)).toEqual(new UList([`x`, `y`]))
 	})
 
 	test(`updates its core in a transaction`, () => {
-		const mutableSetState = mutableAtom<UList<string>>({
-			key: `mutableSetState`,
+		const myMutableAtom = mutableAtom<UList<string>>({
+			key: `myMutable`,
 			class: UList,
 		})
-		const tracker = new Tracker(mutableSetState, Internal.IMPLICIT.STORE)
+		const tracker = new Tracker(myMutableAtom, Internal.IMPLICIT.STORE)
 		const updateTrackerTX = transaction({
 			key: `updateTrackerTX`,
 			do: ({ set }) => {
@@ -70,17 +70,17 @@ describe(`tracker`, () => {
 			},
 		})
 
-		expect(getState(mutableSetState)).toEqual(new UList())
+		expect(getState(myMutableAtom)).toEqual(new UList())
 		expect(getState(tracker.latestSignalToken)).toEqual(null)
 		runTransaction(updateTrackerTX)()
-		expect(getState(mutableSetState)).toEqual(new UList([`x`, `y`]))
+		expect(getState(myMutableAtom)).toEqual(new UList([`x`, `y`]))
 	})
 })
 
 describe(`trackerFamily`, () => {
 	test(`tracks the state of a family of mutable atoms`, () => {
 		const setAtoms = mutableAtomFamily<UList<string>, string>({
-			key: `sets`,
+			key: `set`,
 			class: UList,
 		})
 
@@ -94,7 +94,7 @@ describe(`trackerFamily`, () => {
 	})
 	test(`updates the core of a new family member in a transaction`, () => {
 		const setAtoms = mutableAtomFamily<UList<string>, string>({
-			key: `findSetState`,
+			key: `set`,
 			class: UList,
 		})
 

@@ -35,7 +35,7 @@ describe(`setLogLevel`, () => {
 		})
 		expect(externalLogger.info).not.toHaveBeenCalled()
 		Internal.IMPLICIT.STORE.loggers[1].logLevel = `info`
-		const countState = atom<number>({
+		const countAtom = atom<number>({
 			key: `count`,
 			default: 0,
 		})
@@ -43,7 +43,7 @@ describe(`setLogLevel`, () => {
 		Internal.IMPLICIT.STORE.loggers[1].logLevel = `error`
 		const countTL = timeline({
 			key: `count`,
-			scope: [countState],
+			scope: [countAtom],
 		})
 		undo(countTL)
 		expect(externalLogger.warn).not.toHaveBeenCalled()
@@ -53,7 +53,7 @@ describe(`setLogLevel`, () => {
 	})
 	it(`filters out messages based on a predicate`, () => {
 		internalLogger.filter = (icon) => icon === `📖`
-		const countState = atom<number>({
+		const countAtom = atom<number>({
 			key: `count`,
 			default: 0,
 		})
@@ -67,13 +67,13 @@ describe(`setLogLevel`, () => {
 		expect(externalLogger.error).not.toHaveBeenCalled()
 		const countTL = timeline({
 			key: `count`,
-			scope: [countState],
+			scope: [countAtom],
 		})
 		undo(countTL)
 		expect(internalLogger.warn).toHaveBeenCalledOnce()
 		expect(externalLogger.warn).not.toHaveBeenCalled()
-		getState(countState)
-		getState(countState)
+		getState(countAtom)
+		getState(countAtom)
 		expect(externalLogger.info).toHaveBeenCalledOnce()
 		internalLogger.filter = (icon) => icon === `❌`
 		atom<number>({

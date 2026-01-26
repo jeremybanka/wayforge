@@ -42,19 +42,19 @@ beforeEach(() => {
 
 describe(`mutable atomic state`, () => {
 	it(`must hold a Transceiver whose changes can be tracked`, () => {
-		const myMutableState = mutableAtom<UList<string>>({
-			key: `myMutableSet`,
+		const myMutableAtom = mutableAtom<UList<string>>({
+			key: `myMutable`,
 			class: UList,
 		})
 		const myJsonState = Internal.getJsonToken(
 			Internal.IMPLICIT.STORE,
-			myMutableState,
+			myMutableAtom,
 		)
-		const myTrackerState = Internal.getUpdateToken(myMutableState)
-		subscribe(myMutableState, Utils.stdout0)
+		const myTrackerState = Internal.getUpdateToken(myMutableAtom)
+		subscribe(myMutableAtom, Utils.stdout0)
 		subscribe(myJsonState, Utils.stdout1)
 		subscribe(myTrackerState, Utils.stdout2)
-		setState(myMutableState, (set) => set.add(`a`))
+		setState(myMutableAtom, (set) => set.add(`a`))
 		expect(Utils.stdout0).toHaveBeenCalledWith({
 			newValue: new UList([`a`]),
 			oldValue: new UList([`a`]),
@@ -112,15 +112,15 @@ describe(`mutable atomic state`, () => {
 	})
 
 	it(`can recover from a failed transaction`, () => {
-		const myMutableState = mutableAtom<SetRTX<string>>({
-			key: `my::mutable`,
+		const myMutableAtom = mutableAtom<SetRTX<string>>({
+			key: `myMutable`,
 			class: SetRTX,
 		})
 
 		const myTransaction = transaction({
 			key: `myTx`,
 			do: ({ set }) => {
-				set(myMutableState, (mySet) => {
+				set(myMutableAtom, (mySet) => {
 					mySet.transaction((next) => {
 						next.add(`a`)
 						next.add(`b`)
@@ -135,7 +135,7 @@ describe(`mutable atomic state`, () => {
 
 		const myJsonState = Internal.getJsonToken(
 			Internal.IMPLICIT.STORE,
-			myMutableState,
+			myMutableAtom,
 		)
 		subscribe(myJsonState, Utils.stdout)
 
@@ -150,7 +150,7 @@ describe(`mutable atomic state`, () => {
 				oldValue: [],
 				newValue: [`a`, `b`],
 			})
-			const myMutable = getState(myMutableState)
+			const myMutable = getState(myMutableAtom)
 			expect(myMutable).toEqual(new SetRTX())
 		}
 	})
@@ -162,76 +162,76 @@ describe(`mutable time traveling`, () => {
 		expect(logger.error).not.toHaveBeenCalled()
 	})
 	it(`can travel back and forward in time`, () => {
-		const myMutableStates = mutableAtomFamily<UList<string>, string>({
+		const myMutableAtoms = mutableAtomFamily<UList<string>, string>({
 			key: `myMutable`,
 			class: UList,
 		})
-		const myMutableState = findState(myMutableStates, `example`)
+		const myMutableAtom = findState(myMutableAtoms, `example`)
 		const myTL = timeline({
 			key: `myTimeline`,
-			scope: [myMutableStates],
+			scope: [myMutableAtoms],
 		})
 		const myJsonState = Internal.getJsonToken(
 			Internal.IMPLICIT.STORE,
-			myMutableState,
+			myMutableAtom,
 		)
-		const myTrackerState = Internal.getUpdateToken(myMutableState)
-		subscribe(myMutableState, Utils.stdout0)
+		const myTrackerState = Internal.getUpdateToken(myMutableAtom)
+		subscribe(myMutableAtom, Utils.stdout0)
 		subscribe(myJsonState, Utils.stdout1)
 		subscribe(myTrackerState, Utils.stdout2)
 
-		expect(getState(myMutableState)).toEqual(new UList())
-		setState(myMutableState, (set) => set.add(`a`))
-		expect(getState(myMutableState)).toEqual(new UList([`a`]))
-		setState(myMutableState, (set) => set.add(`b`))
-		expect(getState(myMutableState)).toEqual(new UList([`a`, `b`]))
+		expect(getState(myMutableAtom)).toEqual(new UList())
+		setState(myMutableAtom, (set) => set.add(`a`))
+		expect(getState(myMutableAtom)).toEqual(new UList([`a`]))
+		setState(myMutableAtom, (set) => set.add(`b`))
+		expect(getState(myMutableAtom)).toEqual(new UList([`a`, `b`]))
 		undo(myTL)
-		expect(getState(myMutableState)).toEqual(new UList([`a`]))
+		expect(getState(myMutableAtom)).toEqual(new UList([`a`]))
 		undo(myTL)
-		expect(getState(myMutableState)).toEqual(new UList())
+		expect(getState(myMutableAtom)).toEqual(new UList())
 		redo(myTL)
-		expect(getState(myMutableState)).toEqual(new UList([`a`]))
+		expect(getState(myMutableAtom)).toEqual(new UList([`a`]))
 		redo(myTL)
-		expect(getState(myMutableState)).toEqual(new UList([`a`, `b`]))
+		expect(getState(myMutableAtom)).toEqual(new UList([`a`, `b`]))
 	})
 	it(`can travel back and forward in time with a transaction`, () => {
-		const myMutableState = mutableAtom<UList<string>>({
-			key: `myMutableSet`,
+		const myMutableAtom = mutableAtom<UList<string>>({
+			key: `myMutable`,
 			class: UList,
 		})
 		const myTL = timeline({
 			key: `myTimeline`,
-			scope: [myMutableState],
+			scope: [myMutableAtom],
 		})
 		const myTX = transaction<(newItem: string) => void>({
 			key: `myTransaction`,
 			do: ({ set }, newItem) => {
-				set(myMutableState, (s) => s.add(newItem))
+				set(myMutableAtom, (s) => s.add(newItem))
 			},
 		})
 
 		const myJsonState = Internal.getJsonToken(
 			Internal.IMPLICIT.STORE,
-			myMutableState,
+			myMutableAtom,
 		)
-		const myTrackerState = Internal.getUpdateToken(myMutableState)
-		subscribe(myMutableState, Utils.stdout0)
+		const myTrackerState = Internal.getUpdateToken(myMutableAtom)
+		subscribe(myMutableAtom, Utils.stdout0)
 		subscribe(myJsonState, Utils.stdout1)
 		subscribe(myTrackerState, Utils.stdout2)
 
-		expect(getState(myMutableState)).toEqual(new UList())
+		expect(getState(myMutableAtom)).toEqual(new UList())
 		runTransaction(myTX)(`a`)
-		expect(getState(myMutableState)).toEqual(new UList([`a`]))
+		expect(getState(myMutableAtom)).toEqual(new UList([`a`]))
 		runTransaction(myTX)(`b`)
-		expect(getState(myMutableState)).toEqual(new UList([`a`, `b`]))
+		expect(getState(myMutableAtom)).toEqual(new UList([`a`, `b`]))
 		undo(myTL)
-		expect(getState(myMutableState)).toEqual(new UList([`a`]))
+		expect(getState(myMutableAtom)).toEqual(new UList([`a`]))
 		undo(myTL)
-		expect(getState(myMutableState)).toEqual(new UList())
+		expect(getState(myMutableAtom)).toEqual(new UList())
 		redo(myTL)
-		expect(getState(myMutableState)).toEqual(new UList([`a`]))
+		expect(getState(myMutableAtom)).toEqual(new UList([`a`]))
 		redo(myTL)
-		expect(getState(myMutableState)).toEqual(new UList([`a`, `b`]))
+		expect(getState(myMutableAtom)).toEqual(new UList([`a`, `b`]))
 	})
 })
 
@@ -243,7 +243,7 @@ describe(`mutable atom effects`, () => {
 	it(`runs a callback when the atom is set`, () => {
 		let setSize = 0
 		const myMutableAtoms = mutableAtomFamily<UList<string>, string>({
-			key: `myMutableAtoms`,
+			key: `myMutable`,
 			class: UList,
 			effects: () => [
 				({ onSet }) => {
@@ -266,8 +266,8 @@ describe(`mutable atom effects`, () => {
 		const letterSubject = new Internal.StatefulSubject<{ letter: string }>({
 			letter: `A`,
 		})
-		const myMutableState = mutableAtom<UList<string>>({
-			key: `myMutableSet`,
+		const myMutableAtom = mutableAtom<UList<string>>({
+			key: `myMutable`,
 			class: UList,
 			effects: [
 				({ setSelf }) => {
@@ -283,28 +283,28 @@ describe(`mutable atom effects`, () => {
 		})
 
 		letterSubject.next({ letter: `A` })
-		expect(getState(myMutableState)).toEqual(new UList([`A`]))
+		expect(getState(myMutableAtom)).toEqual(new UList([`A`]))
 		letterSubject.next({ letter: `B` })
-		expect(getState(myMutableState)).toEqual(new UList([`A`, `B`]))
+		expect(getState(myMutableAtom)).toEqual(new UList([`A`, `B`]))
 	})
 })
 
 describe(`graceful handling of hmr/duplicate atom keys`, () => {
 	it(`logs an error if an atom is created with the same key as an existing atom`, () => {
-		const myMutableState = mutableAtom<UList<string>>({
-			key: `myMutableSet`,
+		const myMutableAtom = mutableAtom<UList<string>>({
+			key: `myMutable`,
 			class: UList,
 		})
 		mutableAtom<UList<string>>({
-			key: `myMutableSet`,
+			key: `myMutable`,
 			class: UList,
 		})
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).toHaveBeenCalledTimes(1)
 		expect(logger.error).toHaveBeenCalledWith(
 			`❌`,
-			myMutableState.type,
-			myMutableState.key,
+			myMutableAtom.type,
+			myMutableAtom.key,
 			`Tried to create atom, but it already exists in the store.`,
 		)
 	})

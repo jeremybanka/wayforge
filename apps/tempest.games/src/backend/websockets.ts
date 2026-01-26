@@ -1,7 +1,7 @@
 import { type } from "arktype"
 import { disposeState, findState, selectorFamily, setState } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
-import { mutualUsersSelector, type UserKey } from "atom.io/realtime"
+import { mutualUsersSelectors, type UserKey } from "atom.io/realtime"
 import type { Handshake, UserServerConfig } from "atom.io/realtime-server"
 import {
 	provideRooms,
@@ -85,7 +85,7 @@ export const serveSocket = (config: UserServerConfig): (() => void) => {
 	const provideState = realtimeStateProvider(config)
 	const provideFamily = realtimeAtomFamilyProvider(config)
 
-	const mutualsSelector = findState(mutualUsersSelector, consumer)
+	const mutualsSelector = findState(mutualUsersSelectors, consumer)
 
 	const unsubFunctions = [
 		provideState(isAdminAtom, findState(roomAdminsSelectors, consumer)),
@@ -119,6 +119,6 @@ export const serveSocket = (config: UserServerConfig): (() => void) => {
 	return () => {
 		for (const unsub of unsubFunctions) unsub()
 		disposeState(usernameAtoms, consumer)
-		disposeState(mutualUsersSelector, consumer)
+		disposeState(mutualUsersSelectors, consumer)
 	}
 }

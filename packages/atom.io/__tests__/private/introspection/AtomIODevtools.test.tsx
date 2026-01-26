@@ -46,7 +46,7 @@ const scenario = () =>
 
 describe(`editing primitive atoms of a variety of types`, () => {
 	test(`string`, () => {
-		const stringAtom = $.atom<string>({ key: `myString`, default: `A` })
+		const myStringAtom = $.atom<string>({ key: `myString`, default: `A` })
 
 		const { getByTestId } = scenario()
 
@@ -55,11 +55,11 @@ describe(`editing primitive atoms of a variety of types`, () => {
 			fireEvent.change(myStringInput, { target: { value: `hello` } })
 		})
 
-		expect($.getState(stringAtom)).toBe(`hello`)
+		expect($.getState(myStringAtom)).toBe(`hello`)
 	})
 
 	test(`number`, () => {
-		const numberAtom = $.atom<number>({ key: `myNumber`, default: 0 })
+		const myNumberAtom = $.atom<number>({ key: `myNumber`, default: 0 })
 
 		const { getByTestId } = scenario()
 
@@ -68,13 +68,13 @@ describe(`editing primitive atoms of a variety of types`, () => {
 			fireEvent.change(myNumberInput, { target: { value: `1` } })
 		})
 
-		expect($.getState(numberAtom)).toBe(1)
+		expect($.getState(myNumberAtom)).toBe(1)
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
 	})
 
 	test(`boolean`, () => {
-		const booleanAtom = $.atom<boolean>({ key: `myBoolean`, default: false })
+		const myBooleanAtom = $.atom<boolean>({ key: `myBoolean`, default: false })
 
 		const { getByTestId } = scenario()
 
@@ -83,11 +83,11 @@ describe(`editing primitive atoms of a variety of types`, () => {
 			fireEvent.click(myBooleanInput)
 		})
 
-		expect($.getState(booleanAtom)).toBe(true)
+		expect($.getState(myBooleanAtom)).toBe(true)
 	})
 
 	test(`null`, () => {
-		const nullAtom = $.atom<null>({ key: `myNull`, default: null })
+		const myNullAtom = $.atom<null>({ key: `myNull`, default: null })
 
 		const { getByTestId } = scenario()
 
@@ -96,13 +96,13 @@ describe(`editing primitive atoms of a variety of types`, () => {
 			fireEvent.click(myNullInput)
 		})
 
-		expect($.getState(nullAtom)).toBe(null)
+		expect($.getState(myNullAtom)).toBe(null)
 	})
 })
 
 describe(`editing an object atom`, () => {
 	test(`object`, async () => {
-		const objectAtom = $.atom<Record<string, number>>({
+		const myObjectAtom = $.atom<Record<string, number>>({
 			key: `myObject`,
 			default: { a: 1, b: 2 },
 		})
@@ -129,7 +129,7 @@ describe(`editing an object atom`, () => {
 		)
 
 		debug()
-		expect($.getState(objectAtom)).toEqual({ b: 2, c: 1 })
+		expect($.getState(myObjectAtom)).toEqual({ b: 2, c: 1 })
 
 		act(() => {
 			fireEvent.change(
@@ -140,19 +140,19 @@ describe(`editing an object atom`, () => {
 			)
 		})
 
-		expect($.getState(objectAtom)).toEqual({ b: 2, c: 3 })
+		expect($.getState(myObjectAtom)).toEqual({ b: 2, c: 3 })
 
-		expect(JSON.stringify($.getState(objectAtom))).toBe(`{"c":3,"b":2}`)
+		expect(JSON.stringify($.getState(myObjectAtom))).toBe(`{"c":3,"b":2}`)
 		act(() => {
 			getByTestId(`myObject-state-editor-sort-properties`).click()
 		})
-		expect(JSON.stringify($.getState(objectAtom))).toBe(`{"b":2,"c":3}`)
+		expect(JSON.stringify($.getState(myObjectAtom))).toBe(`{"b":2,"c":3}`)
 
 		act(() => {
 			getByTestId(`myObject-state-editor-property-c-delete`).click()
 		})
 
-		expect($.getState(objectAtom)).toEqual({ b: 2 })
+		expect($.getState(myObjectAtom)).toEqual({ b: 2 })
 
 		act(() => {
 			getByTestId(`myObject-state-editor-add-property`).click()
@@ -168,7 +168,7 @@ describe(`editing an object atom`, () => {
 		})
 
 		await waitFor(() => getByTestId(`myObject-state-editor-property-e`))
-		expect($.getState(objectAtom)).toEqual({ b: 2, e: `` })
+		expect($.getState(myObjectAtom)).toEqual({ b: 2, e: `` })
 
 		act(() => {
 			fireEvent.change(getByTestId(`myObject-state-editor-property-e-recast`), {
@@ -176,10 +176,10 @@ describe(`editing an object atom`, () => {
 			})
 		})
 
-		expect($.getState(objectAtom)).toEqual({ b: 2, e: 0 })
+		expect($.getState(myObjectAtom)).toEqual({ b: 2, e: 0 })
 	})
 	test(`nested object`, async () => {
-		const objectAtom = $.atom<Record<string, Record<string, number>>>({
+		const myObjectAtom = $.atom<Record<string, Record<string, number>>>({
 			key: `myObject`,
 			default: { a: { b: 1 } },
 		})
@@ -188,7 +188,7 @@ describe(`editing an object atom`, () => {
 
 		await waitFor(() => getByTestId(`open-close-state-myObject`))
 
-		expect($.getState(objectAtom)).toEqual({ a: { b: 1 } })
+		expect($.getState(myObjectAtom)).toEqual({ a: { b: 1 } })
 
 		act(() => {
 			getByTestId(`open-close-state-myObject`).click()
@@ -210,7 +210,7 @@ describe(`editing an object atom`, () => {
 
 describe(`editing an array atom`, () => {
 	test(`array`, async () => {
-		const arrayAtom = $.atom<string[]>({ key: `myArray`, default: [`A`] })
+		const myArrayAtom = $.atom<string[]>({ key: `myArray`, default: [`A`] })
 
 		const { getByTestId /* debug */ } = scenario()
 
@@ -231,12 +231,12 @@ describe(`editing an array atom`, () => {
 			)
 		})
 
-		expect($.getState(arrayAtom)).toEqual([`B`])
+		expect($.getState(myArrayAtom)).toEqual([`B`])
 
 		act(() => {
 			getByTestId(`myArray-state-editor-add-element`).click()
 		})
-		expect($.getState(arrayAtom)).toEqual([`B`, ``])
+		expect($.getState(myArrayAtom)).toEqual([`B`, ``])
 
 		// recast to number
 		act(() => {
@@ -244,12 +244,12 @@ describe(`editing an array atom`, () => {
 				target: { value: `number` },
 			})
 		})
-		expect($.getState(arrayAtom)).toEqual([`B`, 0])
+		expect($.getState(myArrayAtom)).toEqual([`B`, 0])
 
 		act(() => {
 			getByTestId(`myArray-state-editor-element-1-delete`).click()
 		})
-		expect($.getState(arrayAtom)).toEqual([`B`])
+		expect($.getState(myArrayAtom)).toEqual([`B`])
 
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
@@ -270,10 +270,10 @@ describe(`displaying non-JSON`, () => {
 
 describe(`editing selectors`, () => {
 	test(`selector that depends on an atom`, async () => {
-		const letterState = $.atom<string>({ key: `letter`, default: `A` })
-		const _doubleLetterState = $.selector<string>({
-			key: `doubleLetter`,
-			get: ({ get }) => get(letterState) + get(letterState),
+		const letterAtom = $.atom<string>({ key: `letter`, default: `A` })
+		const _doubleLetterSelector = $.selector<string>({
+			key: `_doubleLetter`,
+			get: ({ get }) => get(letterAtom) + get(letterAtom),
 		})
 
 		const { getByTestId } = scenario()
@@ -281,18 +281,18 @@ describe(`editing selectors`, () => {
 		act(() => {
 			getByTestId(`view-selectors`).click()
 		})
-		await waitFor(() => getByTestId(`state-doubleLetter`))
+		await waitFor(() => getByTestId(`state-_doubleLetter`))
 	})
 
 	test(`selector that filters a SetRTX`, async () => {
-		const selectionsState = $.mutableAtom<UList<string>>({
+		const selectionsAtom = $.mutableAtom<UList<string>>({
 			key: `selections`,
 			class: UList,
 		})
-		const _selectionsWithoutGreenState = $.selector<Set<string>>({
-			key: `selectionsWithoutGreen`,
+		const _selectionsWithoutGreenSelector = $.selector<Set<string>>({
+			key: `_selectionsWithoutGreen`,
 			get: ({ get }) => {
-				const selectionsWithGreen = get(selectionsState)
+				const selectionsWithGreen = get(selectionsAtom)
 				const selectionsWithoutGreen = new Set(selectionsWithGreen)
 				selectionsWithoutGreen.delete(`green`)
 				return selectionsWithoutGreen
@@ -304,19 +304,19 @@ describe(`editing selectors`, () => {
 		act(() => {
 			getByTestId(`view-selectors`).click()
 		})
-		await waitFor(() => getByTestId(`state-selectionsWithoutGreen`))
+		await waitFor(() => getByTestId(`state-_selectionsWithoutGreen`))
 	})
 })
 
 describe(`displaying readonly selectors`, () => {
 	test(`array selector`, async () => {
-		const selectionsState = $.atom<number[]>({
+		const selectionsAtom = $.atom<number[]>({
 			key: `selections`,
 			default: [1, 2, 3],
 		})
-		const _evenSelectionsState = $.selector<number[]>({
-			key: `evenSelections`,
-			get: ({ get }) => get(selectionsState).filter((n) => n % 2 === 0),
+		const _evenSelectionsSelector = $.selector<number[]>({
+			key: `_evenSelections`,
+			get: ({ get }) => get(selectionsAtom).filter((n) => n % 2 === 0),
 		})
 
 		const { getByTestId } = scenario()
@@ -325,12 +325,12 @@ describe(`displaying readonly selectors`, () => {
 			getByTestId(`view-selectors`).click()
 		})
 
-		await waitFor(() => getByTestId(`open-close-state-evenSelections`))
+		await waitFor(() => getByTestId(`open-close-state-_evenSelections`))
 		act(() => {
-			getByTestId(`open-close-state-evenSelections`).click()
+			getByTestId(`open-close-state-_evenSelections`).click()
 		})
 
-		await waitFor(() => getByTestId(`evenSelections-state-editor-element-0`))
+		await waitFor(() => getByTestId(`_evenSelections-state-editor-element-0`))
 
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
@@ -364,11 +364,11 @@ describe(`working with families`, () => {
 
 describe(`working with transactions`, () => {
 	test(`simple transaction`, async () => {
-		const letterState = $.atom<string>({ key: `letter`, default: `A` })
+		const letterAtom = $.atom<string>({ key: `letter`, default: `A` })
 		const setLetterTX = $.transaction<(newLetter: string) => void>({
 			key: `setLetter`,
 			do: ({ set }, newLetter) => {
-				set(letterState, newLetter)
+				set(letterAtom, newLetter)
 			},
 		})
 

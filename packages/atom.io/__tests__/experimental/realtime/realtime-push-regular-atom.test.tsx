@@ -14,17 +14,17 @@ console.error = () => undefined
 let LOGGING: boolean
 beforeEach(() => (LOGGING = true))
 
-const countState = AtomIO.atom<number>({ key: `count`, default: 0 })
+const countAtom = AtomIO.atom<number>({ key: `count`, default: 0 })
 
 describe(`pushing state`, () => {
 	const Receiver = () => {
-		RTR.usePullAtom(countState)
-		const count = AR.useO(countState)
+		RTR.usePullAtom(countAtom)
+		const count = AR.useO(countAtom)
 		return <i data-testid={count} />
 	}
 
 	const Increment = () => {
-		const setCount = RTR.usePush(countState)
+		const setCount = RTR.usePush(countAtom)
 		return setCount ? (
 			<button
 				type="button"
@@ -75,8 +75,8 @@ describe(`pushing state`, () => {
 				})
 
 				const socketServices = [
-					provideState(countState),
-					receiveState(type(`number`), countState),
+					provideState(countAtom),
+					receiveState(type(`number`), countAtom),
 				]
 				return () => {
 					for (const unsub of socketServices) {
