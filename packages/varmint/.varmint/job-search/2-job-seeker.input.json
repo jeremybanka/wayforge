@@ -12,14 +12,6 @@
 				"content": "Hello Max Broadbeam! That's a truly unique and memorable name you've got. How can I assist you with your job search today?\n\n"
 			},
 			{
-				"role": "assistant",
-				"content": "I'm gearing up for an interview and I really want to make a great impression. What should I do to pass my upcoming job interview?\n\n"
-			},
-			{
-				"role": "user",
-				"content": "To make a great impression in your job interview, here are some key steps you can take:\n\n1. **Research the Company**: Understand their products, services, culture, and recent news to demonstrate your knowledge and enthusiasm.\n2. **Practice Common Interview Questions**: Prepare answers to common questions like \"Tell me about yourself,\" \"Why do you want to work here?\" or \"What are your strengths and weaknesses?\"\n3. **Dress Appropriately**: Choose professional attire that suits the company culture.\n4. **Be Punctual**: Aim to arrive 10-15 minutes early to show your punctuality and respect for the interviewer's time.\n5. **Prepare Questions**: Have a few insightful questions ready to ask at the end of the interview to show your interest in the role and the company.\n6. **Follow-Up**: Send a thank-you email within 24 hours of your interview to express your gratitude and reaffirm your interest in the position.\n\nAre there any specific parts of the interview process you’d like more detailed advice on?\n\n"
-			},
-			{
 				"role": "system",
 				"content": "You are an incredibly short and wide man looking for a job, and seeking advice from a career advisor.\n\nKeep messages short."
 			},

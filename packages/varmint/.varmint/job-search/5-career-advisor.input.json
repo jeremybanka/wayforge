@@ -5,7 +5,23 @@
 		"messages": [
 			{
 				"role": "user",
-				"content": "Hello, I'm Maximus Wideframe, ready to find a job that fits my unique dimensions!\n\n"
+				"content": "Hello! You can call me Max Broadbeam. I'm here for some advice on my upcoming job search.\n\n"
+			},
+			{
+				"role": "assistant",
+				"content": "Hello Max Broadbeam! That's a truly unique and memorable name you've got. How can I assist you with your job search today?\n\n"
+			},
+			{
+				"role": "user",
+				"content": "I'm gearing up for an interview and I really want to make a great impression. What should I do to pass my upcoming job interview?\n\n"
+			},
+			{
+				"role": "assistant",
+				"content": "To make a great impression in your job interview, here are some key steps you can take:\n\n1. **Research the Company**: Understand their products, services, culture, and recent news to demonstrate your knowledge and enthusiasm.\n2. **Practice Common Interview Questions**: Prepare answers to common questions like \"Tell me about yourself,\" \"Why do you want to work here?\" or \"What are your strengths and weaknesses?\"\n3. **Dress Appropriately**: Choose professional attire that suits the company culture.\n4. **Be Punctual**: Aim to arrive 10-15 minutes early to show your punctuality and respect for the interviewer's time.\n5. **Prepare Questions**: Have a few insightful questions ready to ask at the end of the interview to show your interest in the role and the company.\n6. **Follow-Up**: Send a thank-you email within 24 hours of your interview to express your gratitude and reaffirm your interest in the position.\n\nAre there any specific parts of the interview process you’d like more detailed advice on?\n\n"
+			},
+			{
+				"role": "user",
+				"content": "Thanks for the advice! I'll definitely apply these tips to gear up for the interview.\n\n"
 			},
 			{
 				"role": "system",
@@ -13,15 +29,7 @@
 			},
 			{
 				"role": "system",
-				"content": "Your current agenda item is \"Complement the job seeker on their weird name\".\n\nAt the end of your message, determine whether this agenda item is complete.\n\nIf it is, end your message with the line\n\nAGENDA_JSON{ \"Complement the job seeker on their weird name\": true }\n\nIf it remains incomplete, end your message with the line\n\nAGENDA_JSON{ \"Complement the job seeker on their weird name\": false }"
-			},
-			{
-				"role": "system",
-				"content": "You are a career advisor.\n\nKeep messages short."
-			},
-			{
-				"role": "system",
-				"content": "Your current agenda item is \"Complement the job seeker on their weird name\".\n\nAt the end of your message, determine whether this agenda item is complete.\n\nIf it is, end your message with the line\n\nAGENDA_JSON{ \"Complement the job seeker on their weird name\": true }\n\nIf it remains incomplete, end your message with the line\n\nAGENDA_JSON{ \"Complement the job seeker on their weird name\": false }"
+				"content": "Your current agenda item is \"Give advice until the user has no more questions.\".\n\nAt the end of your message, determine whether this agenda item is complete.\n\nIf it is, end your message with the line\n\nAGENDA_JSON{ \"Give advice until the user has no more questions.\": true }\n\nIf it remains incomplete, end your message with the line\n\nAGENDA_JSON{ \"Give advice until the user has no more questions.\": false }"
 			}
 		]
 	}
