@@ -20,6 +20,8 @@ const PLURAL_DICTIONARY = {
 	selectorFamily: `selector families`,
 }
 
+type StateFunctionName = keyof typeof SUFFIX_DICTIONARY
+
 export const consistentAtomNamesAndKeys: {
 	meta: {
 		type: RuleType
@@ -50,11 +52,32 @@ export const consistentAtomNamesAndKeys: {
 		return {
 			CallExpression(node) {
 				// atom(...)
-				if (node.callee.type !== `Identifier`) {
+				if (
+					node.callee.type !== `Identifier` &&
+					node.callee.type !== `MemberExpression`
+				) {
 					return
 				}
+				// Must be assigned: const x = atom(...)
+				if (node.parent?.type !== `VariableDeclarator`) return
+				if (node.parent.init !== node) return
+				if (node.parent.id.type !== `Identifier`) return
 
-				switch (node.callee.name) {
+				let calleeName: StateFunctionName
+
+				switch (node.callee.type) {
+					case `Identifier`:
+						calleeName = node.callee.name as StateFunctionName
+						break
+					case `MemberExpression`:
+						if (node.callee.property.type !== `Identifier`) return
+						calleeName = node.callee.property.name as StateFunctionName
+						break
+					default:
+						return
+				}
+
+				switch (calleeName) {
 					case `atom`:
 					case `atomFamily`:
 					case `mutableAtom`:
@@ -66,12 +89,6 @@ export const consistentAtomNamesAndKeys: {
 						return
 				}
 
-				// Must be assigned: const x = atom(...)
-				if (node.parent?.type !== `VariableDeclarator`) return
-				if (node.parent.init !== node) return
-				if (node.parent.id.type !== `Identifier`) return
-
-				const calleeName = node.callee.name as keyof typeof SUFFIX_DICTIONARY
 				const suffix = SUFFIX_DICTIONARY[calleeName]
 				const plural = PLURAL_DICTIONARY[calleeName]
 
