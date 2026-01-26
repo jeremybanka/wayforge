@@ -1,0 +1,36 @@
+{
+	"id": "chatcmpl-D2KpyQvRUHhyvAH3NIoezDSCz8k9D",
+	"object": "chat.completion",
+	"created": 1769449126,
+	"model": "gpt-4-turbo-2024-04-09",
+	"choices": [
+		{
+			"index": 0,
+			"message": {
+				"role": "assistant",
+				"content": "To make a great impression in your job interview, here are some key steps you can take:\n\n1. **Research the Company**: Understand their products, services, culture, and recent news to demonstrate your knowledge and enthusiasm.\n2. **Practice Common Interview Questions**: Prepare answers to common questions like \"Tell me about yourself,\" \"Why do you want to work here?\" or \"What are your strengths and weaknesses?\"\n3. **Dress Appropriately**: Choose professional attire that suits the company culture.\n4. **Be Punctual**: Aim to arrive 10-15 minutes early to show your punctuality and respect for the interviewer's time.\n5. **Prepare Questions**: Have a few insightful questions ready to ask at the end of the interview to show your interest in the role and the company.\n6. **Follow-Up**: Send a thank-you email within 24 hours of your interview to express your gratitude and reaffirm your interest in the position.\n\nAre there any specific parts of the interview process you’d like more detailed advice on?\n\nAGENDA_JSON{ \"Give advice until the user has no more questions.\": false }",
+				"refusal": null,
+				"annotations": []
+			},
+			"logprobs": null,
+			"finish_reason": "stop"
+		}
+	],
+	"usage": {
+		"prompt_tokens": 204,
+		"completion_tokens": 227,
+		"total_tokens": 431,
+		"prompt_tokens_details": {
+			"cached_tokens": 0,
+			"audio_tokens": 0
+		},
+		"completion_tokens_details": {
+			"reasoning_tokens": 0,
+			"audio_tokens": 0,
+			"accepted_prediction_tokens": 0,
+			"rejected_prediction_tokens": 0
+		}
+	},
+	"service_tier": "default",
+	"system_fingerprint": "fp_de235176ee"
+}
