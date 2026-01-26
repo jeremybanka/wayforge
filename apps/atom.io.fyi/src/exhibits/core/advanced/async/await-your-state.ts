@@ -15,7 +15,7 @@ const server = http.createServer((req, res) => {
 })
 server.listen(3000)
 
-export const quoteState = atom<Loadable<Error | string>>({
+export const quoteAtom = atom<Loadable<Error | string>>({
 	key: `quote`,
 	default: async () => {
 		try {
@@ -30,8 +30,8 @@ export const quoteState = atom<Loadable<Error | string>>({
 	},
 })
 
-void getState(quoteState) // Promise { <pending> }
-await getState(quoteState) // "The best way to predict the future is to invent it."
-void getState(quoteState) // "The best way to predict the future is to invent it."
-resetState(quoteState)
-void getState(quoteState) // Promise { <pending> }
+void getState(quoteAtom) // Promise { <pending> }
+await getState(quoteAtom) // "The best way to predict the future is to invent it."
+void getState(quoteAtom) // "The best way to predict the future is to invent it."
+resetState(quoteAtom)
+void getState(quoteAtom) // Promise { <pending> }

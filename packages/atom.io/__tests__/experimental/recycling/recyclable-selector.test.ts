@@ -31,8 +31,8 @@ beforeEach(() => {
 
 describe(`standalone selectors held`, () => {
 	test(`readonly held selector`, () => {
-		const myAtom = atom<{ a: number[]; b: number[]; c: number[] }>({
-			key: `myAtom`,
+		const abcListsAtom = atom<{ a: number[]; b: number[]; c: number[] }>({
+			key: `abcLists`,
 			default: {
 				a: [],
 				b: [],
@@ -40,36 +40,36 @@ describe(`standalone selectors held`, () => {
 			},
 		})
 
-		const mySelector = selector<{
+		const abcLengthsSelector = selector<{
 			a: number
 			b: number
 			c: number
 		}>({
-			key: `mySelector`,
+			key: `abcLengths`,
 			const: { a: 0, b: 0, c: 0 },
 			get: ({ get }, self) => {
-				const { a, b, c } = get(myAtom)
+				const { a, b, c } = get(abcListsAtom)
 				self.a = a.reduce((acc, cur) => acc + cur, 0)
 				self.b = b.reduce((acc, cur) => acc + cur, 0)
 				self.c = c.reduce((acc, cur) => acc + cur, 0)
 			},
 		})
 
-		const valueInitial = getState(mySelector)
+		const valueInitial = getState(abcLengthsSelector)
 		expect(valueInitial).toEqual({
 			a: 0,
 			b: 0,
 			c: 0,
 		})
 
-		setState(myAtom, (state) => {
+		setState(abcListsAtom, (state) => {
 			state.a.push(1, 2)
 			state.b.push(2, 2, 2)
 			state.c.push(3, 6)
 			return state
 		})
 
-		const valueAfter = getState(mySelector)
+		const valueAfter = getState(abcLengthsSelector)
 		expect(valueAfter).toEqual({
 			a: 3,
 			b: 6,
@@ -79,8 +79,8 @@ describe(`standalone selectors held`, () => {
 	})
 
 	test(`writable held selector`, () => {
-		const myAtom = atom<{ a: number[]; b: number[]; c: number[] }>({
-			key: `myAtom`,
+		const abcListsAtom = atom<{ a: number[]; b: number[]; c: number[] }>({
+			key: `abcLists`,
 			default: {
 				a: [],
 				b: [],
@@ -88,21 +88,21 @@ describe(`standalone selectors held`, () => {
 			},
 		})
 
-		const mySelector = selector<{
+		const abcLengthsSelector = selector<{
 			a: number
 			b: number
 			c: number
 		}>({
-			key: `mySelector`,
+			key: `abcLengths`,
 			const: { a: 0, b: 0, c: 0 },
 			get: ({ get }, self) => {
-				const { a, b, c } = get(myAtom)
+				const { a, b, c } = get(abcListsAtom)
 				self.a = a.reduce((acc, cur) => acc + cur, 0)
 				self.b = b.reduce((acc, cur) => acc + cur, 0)
 				self.c = c.reduce((acc, cur) => acc + cur, 0)
 			},
 			set: ({ set }, newValue) => {
-				set(myAtom, (state) => {
+				set(abcListsAtom, (state) => {
 					state.a = Array.from({ length: newValue.a }).map(() => 1)
 					state.b = Array.from({ length: newValue.b }).map(() => 1)
 					state.c = Array.from({ length: newValue.c }).map(() => 1)
@@ -111,19 +111,19 @@ describe(`standalone selectors held`, () => {
 			},
 		})
 
-		const valueInitial = getState(mySelector)
+		const valueInitial = getState(abcLengthsSelector)
 		expect(valueInitial).toEqual({
 			a: 0,
 			b: 0,
 			c: 0,
 		})
-		setState(mySelector, (state) => {
+		setState(abcLengthsSelector, (state) => {
 			state.a = 3
 			state.b = 6
 			state.c = 9
 			return state
 		})
-		const valueAfter = getState(mySelector)
+		const valueAfter = getState(abcLengthsSelector)
 		expect(valueAfter).toEqual({
 			a: 3,
 			b: 6,
@@ -135,11 +135,11 @@ describe(`standalone selectors held`, () => {
 
 describe(`family selectors held`, () => {
 	test(`readonly held selector family`, () => {
-		const myAtomFamily = atomFamily<
+		const abcListsAtoms = atomFamily<
 			{ a: number[]; b: number[]; c: number[] },
 			boolean
 		>({
-			key: `myAtom`,
+			key: `abcLists`,
 			default: {
 				a: [],
 				b: [],
@@ -147,7 +147,7 @@ describe(`family selectors held`, () => {
 			},
 		})
 
-		const mySelectorFamily = selectorFamily<
+		const abcLengthsSelectors = selectorFamily<
 			{
 				a: number
 				b: number
@@ -155,33 +155,33 @@ describe(`family selectors held`, () => {
 			},
 			boolean
 		>({
-			key: `mySelector`,
+			key: `abcLengths`,
 			const: () => ({ a: 0, b: 0, c: 0 }),
 			get:
 				(key) =>
 				({ get }, self) => {
-					const { a, b, c } = get(myAtomFamily, key)
+					const { a, b, c } = get(abcListsAtoms, key)
 					self.a = a.reduce((acc, cur) => acc + cur, 0)
 					self.b = b.reduce((acc, cur) => acc + cur, 0)
 					self.c = c.reduce((acc, cur) => acc + cur, 0)
 				},
 		})
 
-		const valueInitial = getState(mySelectorFamily, true)
+		const valueInitial = getState(abcLengthsSelectors, true)
 		expect(valueInitial).toEqual({
 			a: 0,
 			b: 0,
 			c: 0,
 		})
 
-		setState(myAtomFamily, true, (state) => {
+		setState(abcListsAtoms, true, (state) => {
 			state.a.push(1, 2)
 			state.b.push(2, 2, 2)
 			state.c.push(3, 6)
 			return state
 		})
 
-		const valueAfter = getState(mySelectorFamily, true)
+		const valueAfter = getState(abcLengthsSelectors, true)
 		expect(valueAfter).toEqual({
 			a: 3,
 			b: 6,
@@ -190,22 +190,22 @@ describe(`family selectors held`, () => {
 
 		expect(valueInitial).toBe(valueAfter)
 
-		const valueAlt = getState(mySelectorFamily, false)
+		const valueAlt = getState(abcLengthsSelectors, false)
 
 		expect(valueInitial).not.toBe(valueAlt)
 
-		disposeState(mySelectorFamily, false)
+		disposeState(abcLengthsSelectors, false)
 
-		const valueRecreated = getState(mySelectorFamily, false)
+		const valueRecreated = getState(abcLengthsSelectors, false)
 		expect(valueRecreated).not.toBe(valueInitial)
 	})
 
 	test(`writable held selector family`, () => {
-		const myAtomFamily = atomFamily<
+		const abcListsAtoms = atomFamily<
 			{ a: number[]; b: number[]; c: number[] },
 			boolean
 		>({
-			key: `myAtom`,
+			key: `abcLists`,
 			default: () => ({
 				a: [],
 				b: [],
@@ -213,7 +213,7 @@ describe(`family selectors held`, () => {
 			}),
 		})
 
-		const mySelectorFamily = selectorFamily<
+		const abcLengthsSelectors = selectorFamily<
 			{
 				a: number
 				b: number
@@ -221,19 +221,19 @@ describe(`family selectors held`, () => {
 			},
 			boolean
 		>({
-			key: `mySelector`,
+			key: `abcLengths`,
 			const: () => ({ a: 0, b: 0, c: 0 }),
 			get:
 				(key) =>
 				({ get }, self) => {
-					self.a = get(myAtomFamily, key).a.reduce((acc, cur) => acc + cur, 0)
-					self.b = get(myAtomFamily, key).b.reduce((acc, cur) => acc + cur, 0)
-					self.c = get(myAtomFamily, key).c.reduce((acc, cur) => acc + cur, 0)
+					self.a = get(abcListsAtoms, key).a.reduce((acc, cur) => acc + cur, 0)
+					self.b = get(abcListsAtoms, key).b.reduce((acc, cur) => acc + cur, 0)
+					self.c = get(abcListsAtoms, key).c.reduce((acc, cur) => acc + cur, 0)
 				},
 			set:
 				(key) =>
 				({ set }, self) => {
-					set(myAtomFamily, key, (state) => {
+					set(abcListsAtoms, key, (state) => {
 						state.a = Array.from({ length: self.a }).map(() => 1)
 						state.b = Array.from({ length: self.b }).map(() => 1)
 						state.c = Array.from({ length: self.c }).map(() => 1)
@@ -242,21 +242,21 @@ describe(`family selectors held`, () => {
 				},
 		})
 
-		const valueInitial = getState(mySelectorFamily, true)
+		const valueInitial = getState(abcLengthsSelectors, true)
 		expect(valueInitial).toEqual({
 			a: 0,
 			b: 0,
 			c: 0,
 		})
 
-		setState(myAtomFamily, true, (state) => {
+		setState(abcListsAtoms, true, (state) => {
 			state.a.push(1, 2)
 			state.b.push(2, 2, 2)
 			state.c.push(3, 6)
 			return state
 		})
 
-		const valueAfter = getState(mySelectorFamily, true)
+		const valueAfter = getState(abcLengthsSelectors, true)
 		expect(valueAfter).toEqual({
 			a: 3,
 			b: 6,
@@ -265,29 +265,29 @@ describe(`family selectors held`, () => {
 
 		expect(valueInitial).toBe(valueAfter)
 
-		const valueAlt = getState(mySelectorFamily, false)
+		const valueAlt = getState(abcLengthsSelectors, false)
 
 		expect(valueInitial).not.toBe(valueAlt)
 
-		disposeState(mySelectorFamily, true)
+		disposeState(abcLengthsSelectors, true)
 
-		const valueRecreated = getState(mySelectorFamily, true)
+		const valueRecreated = getState(abcLengthsSelectors, true)
 		expect(valueRecreated).not.toBe(valueInitial)
 
-		setState(myAtomFamily, true, (state) => {
+		setState(abcListsAtoms, true, (state) => {
 			state.a = [11, 230]
 			state.b = [306, 32]
 			state.c = [330, 6]
 			return state
 		})
-		getState(mySelectorFamily, true)
+		getState(abcLengthsSelectors, true)
 		expect(valueRecreated).toEqual({
 			a: 241,
 			b: 338,
 			c: 336,
 		})
-		resetState(mySelectorFamily, true)
-		console.log(getState(mySelectorFamily, true))
+		resetState(abcLengthsSelectors, true)
+		console.log(getState(abcLengthsSelectors, true))
 
 		expect(valueRecreated).toEqual({
 			a: 0,

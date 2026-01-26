@@ -17,21 +17,21 @@ const globalMultipliersEnabledAtom = AtomIO.atom<boolean>({
 	default: false,
 })
 const globalMultipliersAtom = AtomIO.mutableAtom<UList<number>>({
-	key: `globalMultiplier`,
+	key: `globalMultipliers`,
 	class: UList,
 })
 const countAtoms = AtomIO.atomFamily<number, `count:${number}`>({
 	key: `count`,
 	default: 0,
 })
-const countGroupsAtoms = AtomIO.mutableAtomFamily<
+const countGroupAtoms = AtomIO.mutableAtomFamily<
 	UList<`count:${number}`>,
 	`cluster:${number}`
 >({
 	key: `countGroup`,
 	class: UList,
 })
-const countsExposedAtoms = AtomIO.atom<`count:${number}`[]>({
+const countsExposedAtom = AtomIO.atom<`count:${number}`[]>({
 	key: `countsExposed`,
 	default: [`count:0`, `count:1`, `count:2`],
 })
@@ -44,7 +44,7 @@ const computationSelectors = AtomIO.selectorFamily<number, `cluster:${number}`>(
 	get:
 		(key) =>
 		({ get }) => {
-			const group = get(countGroupsAtoms, key)
+			const group = get(countGroupAtoms, key)
 			let sum = 0
 			for (const count of group) {
 				sum += get(countAtoms, count)
@@ -92,8 +92,8 @@ describe(`pull atom, observe selector`, () => {
 				const subscriptions = [
 					exposeSingle(globalMultipliersEnabledAtom),
 					exposeMutable(globalMultipliersAtom),
-					exposeFamily(countAtoms, countsExposedAtoms),
-					exposeMutableFamily(countGroupsAtoms, countsGroupsExposedAtom),
+					exposeFamily(countAtoms, countsExposedAtom),
+					exposeMutableFamily(countGroupAtoms, countsGroupsExposedAtom),
 				]
 				return () => {
 					for (const unsub of subscriptions) unsub()
@@ -138,7 +138,7 @@ describe(`pull atom, observe selector`, () => {
 		})
 
 		server.silo.setState(countAtoms, `count:1`, 3)
-		server.silo.setState(countGroupsAtoms, `cluster:1`, (prev) =>
+		server.silo.setState(countGroupAtoms, `cluster:1`, (prev) =>
 			prev.add(`count:1`),
 		)
 

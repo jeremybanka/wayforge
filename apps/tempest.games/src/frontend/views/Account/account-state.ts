@@ -30,7 +30,7 @@ export type AccountEditingState = TreePath<typeof ACCOUNT_EDITING_STATES>
 export type AccountString = `email` | `new-password` | `username`
 export type AccountConfirmationField = `otcLogin` | `otcVerify` | `passwordLogin`
 export const accountEditingAtom = atom<AccountEditingState>({
-	key: `editing`,
+	key: `accountEditing`,
 	default: [],
 	effects: [
 		({ onSet }) => {
@@ -41,7 +41,7 @@ export const accountEditingAtom = atom<AccountEditingState>({
 						break
 					}
 					case `new-password`: {
-						getState(password0InputElementAtom)?.focus()
+						getState(passwordInputElementAtom)?.focus()
 						break
 					}
 					case `username`: {
@@ -61,8 +61,8 @@ export const emailInputElementAtom = atom<HTMLInputElement | null>({
 	key: `emailInputElement`,
 	default: null,
 })
-export const password0InputElementAtom = atom<HTMLInputElement | null>({
-	key: `password0InputElement`,
+export const passwordInputElementAtom = atom<HTMLInputElement | null>({
+	key: `passwordInputElement`,
 	default: null,
 })
 export const usernameInputElementAtom = atom<HTMLInputElement | null>({

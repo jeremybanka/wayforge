@@ -10,8 +10,8 @@ export const publicUserAtoms = atomFamily<PublicUser, string>({
 	default: (id) => ({ id, displayName: `` }),
 })
 
-export const userIndex = atom<string[]>({
-	key: `userIndex`,
+export const userKeysAtom = atom<string[]>({
+	key: `userKeys`,
 	default: [],
 })
 
@@ -19,8 +19,8 @@ export const addUserTX = transaction<(user: PublicUser) => void>({
 	key: `addUser`,
 	do: ({ get, set }, user) => {
 		set(publicUserAtoms, user.id, user)
-		if (!get(userIndex).includes(user.id)) {
-			set(userIndex, (current) => [...current, user.id])
+		if (!get(userKeysAtom).includes(user.id)) {
+			set(userKeysAtom, (current) => [...current, user.id])
 		}
 	},
 })

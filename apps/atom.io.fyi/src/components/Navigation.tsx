@@ -8,13 +8,13 @@ import { Toggle } from "./Toggle"
 
 const INCLUDE_LIST = [`H2`, `H3`, `H4`, `H5`, `H6`]
 
-const menuToggleState = atom<boolean>({
-	key: `menuToggleState`,
+const menuToggleAtom = atom<boolean>({
+	key: `menuToggle`,
 	default: false,
 })
 
 export const pathnameAtom = atom<string>({
-	key: `pathName`,
+	key: `pathname`,
 	default: globalThis.location?.pathname ?? ``,
 	effects: [
 		({ setSelf }) => {
@@ -41,8 +41,8 @@ export function Navigation(): VNode {
 }
 
 function OnThisPage(): VNode {
-	const userHasToggled = useO(menuToggleState)
-	const setUserHasToggled = useI(menuToggleState)
+	const userHasToggled = useO(menuToggleAtom)
+	const setUserHasToggled = useI(menuToggleAtom)
 
 	const [headings, setHeadings] = React.useState<
 		{ id: string; content: string | null; level: number }[]
@@ -158,7 +158,7 @@ function OnThisPage(): VNode {
 }
 
 function SiteDirectory(): VNode {
-	const userHasToggled = useO(menuToggleState)
+	const userHasToggled = useO(menuToggleAtom)
 	const pathname = useO(pathnameAtom)
 	const pathnameId =
 		(pathname.endsWith(`/`) ? pathname.slice(0, -1) : pathname).replaceAll(

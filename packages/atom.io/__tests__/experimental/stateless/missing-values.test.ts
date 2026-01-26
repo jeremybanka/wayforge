@@ -46,7 +46,7 @@ beforeEach(() => {
 describe(`stateless data persistence strategies`, () => {
 	describe(`effect strategy`, () => {
 		test(`manual implementation`, async () => {
-			const count = atom<Loadable<number>>({
+			const countAtom = atom<Loadable<number>>({
 				key: `count`,
 				default: async () => {
 					try {
@@ -106,17 +106,17 @@ describe(`stateless data persistence strategies`, () => {
 				],
 			})
 
-			expect(await getState(count)).toBe(0)
+			expect(await getState(countAtom)).toBe(0)
 			clearValueMap()
-			setState(count, 1)
-			await waitForQueuedUpdate(count, 1)
+			setState(countAtom, 1)
+			await waitForQueuedUpdate(countAtom, 1)
 			clearValueMap()
-			expect(await getState(count)).toBe(1)
+			expect(await getState(countAtom)).toBe(1)
 			clearValueMap()
-			setState(count, 2)
-			await waitForQueuedUpdate(count, 2)
+			setState(countAtom, 2)
+			await waitForQueuedUpdate(countAtom, 2)
 			clearValueMap()
-			expect(await getState(count)).toBe(2)
+			expect(await getState(countAtom)).toBe(2)
 			expect(logger.warn).not.toHaveBeenCalled()
 			expect(logger.error).not.toHaveBeenCalled()
 		})

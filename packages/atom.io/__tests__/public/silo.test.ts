@@ -31,31 +31,31 @@ describe(`silo`, () => {
 			default: 0,
 		}
 
-		const countState__Uno = Uno.atom<number>(DEFAULT_COUNT_CONFIG)
-		const countState__Dos = Dos.atom<number>(DEFAULT_COUNT_CONFIG)
+		const UNO__countAtom = Uno.atom<number>(DEFAULT_COUNT_CONFIG)
+		const DOS__countAtom = Dos.atom<number>(DEFAULT_COUNT_CONFIG)
 
-		const UnoCountValue = Uno.getState(countState__Uno)
-		const DosCountValue = Dos.getState(countState__Dos)
+		const UnoCountValue = Uno.getState(UNO__countAtom)
+		const DosCountValue = Dos.getState(DOS__countAtom)
 
 		expect(UnoCountValue).toBe(0)
 		expect(DosCountValue).toBe(0)
 
 		const subUno = vitest.fn()
 		const subDos = vitest.fn()
-		Uno.subscribe(countState__Uno, subUno)
-		Dos.subscribe(countState__Dos, subDos)
+		Uno.subscribe(UNO__countAtom, subUno)
+		Dos.subscribe(DOS__countAtom, subDos)
 
-		Uno.setState(countState__Uno, 1)
-		Dos.setState(countState__Dos, 2)
+		Uno.setState(UNO__countAtom, 1)
+		Dos.setState(DOS__countAtom, 2)
 
-		expect(Uno.getState(countState__Uno)).toBe(1)
-		expect(Dos.getState(countState__Dos)).toBe(2)
+		expect(Uno.getState(UNO__countAtom)).toBe(1)
+		expect(Dos.getState(DOS__countAtom)).toBe(2)
 
 		expect(subUno).toHaveBeenCalledWith({ newValue: 1, oldValue: 0 })
 		expect(subDos).toHaveBeenCalledWith({ newValue: 2, oldValue: 0 })
 
 		expect(hasImplicitStoreBeenCreated()).toBe(false)
-		expect(() => getState(countState__Uno)).toThrowError(
+		expect(() => getState(UNO__countAtom)).toThrowError(
 			`atom "count" not found in store "IMPLICIT_STORE".`,
 		)
 	})
@@ -86,29 +86,29 @@ describe(`silo`, () => {
 			get:
 				(key) =>
 				({ get }) =>
-					get(listAtoms__Uno, key).size,
+					get(UNO__listAtoms, key).size,
 		}
 
-		const listAtoms__Uno = Uno.mutableAtomFamily<UList<number>, string>(
+		const UNO__listAtoms = Uno.mutableAtomFamily<UList<number>, string>(
 			DEFAULT_LIST_ATOMS_CONFIG,
 		)
-		const listAtoms__Dos = Dos.mutableAtomFamily<UList<number>, string>(
+		const DOS__listAtoms = Dos.mutableAtomFamily<UList<number>, string>(
 			DEFAULT_LIST_ATOMS_CONFIG,
 		)
-		const sizeSelectors__Uno = Uno.selectorFamily<number, string>(
+		const UNO__sizeSelectors = Uno.selectorFamily<number, string>(
 			DEFAULT_SIZE_SELECTORS_CONFIG,
 		)
-		const sizeSelectors__Dos = Dos.selectorFamily<number, string>(
+		const DOS__sizeSelectors = Dos.selectorFamily<number, string>(
 			DEFAULT_SIZE_SELECTORS_CONFIG,
 		)
 
-		const listState__Uno = Uno.findState(listAtoms__Uno, `a`)
-		const listState__Dos = Dos.findState(listAtoms__Dos, `b`)
+		const listState__Uno = Uno.findState(UNO__listAtoms, `a`)
+		const listState__Dos = Dos.findState(DOS__listAtoms, `b`)
 
 		const UnoCountValue = Uno.getState(listState__Uno)
 		const DosCountValue = Dos.getState(listState__Dos)
-		const UnoDoubleCountValue = Uno.getState(sizeSelectors__Uno, `a`)
-		const DosDoubleCountValue = Dos.getState(sizeSelectors__Dos, `b`)
+		const UnoDoubleCountValue = Uno.getState(UNO__sizeSelectors, `a`)
+		const DosDoubleCountValue = Dos.getState(DOS__sizeSelectors, `b`)
 
 		expect(UnoCountValue).toEqual(new UList([]))
 		expect(DosCountValue).toEqual(new UList([]))
@@ -120,16 +120,16 @@ describe(`silo`, () => {
 
 		expect(Uno.getState(listState__Uno)).toEqual(new UList([1]))
 		expect(Dos.getState(listState__Dos)).toEqual(new UList([1, 2]))
-		expect(Uno.getState(sizeSelectors__Uno, `a`)).toBe(1)
-		expect(Dos.getState(sizeSelectors__Dos, `b`)).toBe(2)
+		expect(Uno.getState(UNO__sizeSelectors, `a`)).toBe(1)
+		expect(Dos.getState(DOS__sizeSelectors, `b`)).toBe(2)
 
 		Uno.resetState(listState__Uno)
 		Dos.resetState(listState__Dos)
 
 		expect(Uno.getState(listState__Uno)).toEqual(new UList([]))
 		expect(Dos.getState(listState__Dos)).toEqual(new UList([]))
-		expect(Uno.getState(sizeSelectors__Uno, `a`)).toBe(0)
-		expect(Dos.getState(sizeSelectors__Dos, `b`)).toBe(0)
+		expect(Uno.getState(UNO__sizeSelectors, `a`)).toBe(0)
+		expect(Dos.getState(DOS__sizeSelectors, `b`)).toBe(0)
 
 		Uno.disposeState(listState__Uno)
 		Dos.disposeState(listState__Dos)

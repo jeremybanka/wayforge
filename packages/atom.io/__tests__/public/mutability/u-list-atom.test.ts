@@ -41,31 +41,31 @@ describe(`effects`, () => {
 	})
 
 	it(`disposed key cleanup`, () => {
-		const myMutableState = mutableAtom<UList<string>>({
-			key: `myMutableSet`,
+		const myMutableAtom = mutableAtom<UList<string>>({
+			key: `myMutable`,
 			class: UList,
 			effects: [uListDisposedKeyCleanupEffect],
 		})
-		expect(getState(myMutableState)).toEqual(new UList())
+		expect(getState(myMutableAtom)).toEqual(new UList())
 
 		const realm = new Anarchy()
 		realm.allocate(`root`, `item::1`)
-		setState(myMutableState, (set) => set.add(`item::1`))
-		expect(getState(myMutableState)).toEqual(new UList([`item::1`]))
+		setState(myMutableAtom, (set) => set.add(`item::1`))
+		expect(getState(myMutableAtom)).toEqual(new UList([`item::1`]))
 		realm.deallocate(`item::1`)
-		expect(getState(myMutableState)).toEqual(new UList())
+		expect(getState(myMutableAtom)).toEqual(new UList())
 
 		realm.allocate(`root`, `item::2`)
-		setState(myMutableState, (set) => set.add(`item::2`))
-		setState(myMutableState, (set) => (set.clear(), set))
+		setState(myMutableAtom, (set) => set.add(`item::2`))
+		setState(myMutableAtom, (set) => (set.clear(), set))
 	})
 	it(`disposed key cleanup (transaction)`, () => {
-		const myMutableState = mutableAtom<UList<string>>({
-			key: `myMutableSet`,
+		const myMutableAtom = mutableAtom<UList<string>>({
+			key: `myMutable`,
 			class: UList,
 			effects: [uListDisposedKeyCleanupEffect],
 		})
-		expect(getState(myMutableState)).toEqual(new UList())
+		expect(getState(myMutableAtom)).toEqual(new UList())
 
 		const realm = new Anarchy()
 		realm.allocate(`root`, `item::1`)
@@ -74,13 +74,13 @@ describe(`effects`, () => {
 			transaction({
 				key: `hi`,
 				do: ({ set }) => {
-					set(myMutableState, (s) => s.add(`item::1`))
+					set(myMutableAtom, (s) => s.add(`item::1`))
 				},
 			}),
 		)()
-		expect(getState(myMutableState)).toEqual(new UList([`item::1`]))
+		expect(getState(myMutableAtom)).toEqual(new UList([`item::1`]))
 
 		realm.deallocate(`item::1`)
-		expect(getState(myMutableState)).toEqual(new UList())
+		expect(getState(myMutableAtom)).toEqual(new UList())
 	})
 })

@@ -5,16 +5,16 @@ import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 
-const countState = AtomIO.atom<number>({ key: `count`, default: 0 })
-const countPlusTenState = AtomIO.selector<number>({
-	key: `plusTen`,
-	get: ({ get }) => get(countState) + 10,
+const countAtom = AtomIO.atom<number>({ key: `count`, default: 0 })
+const countPlusTenSelector = AtomIO.selector<number>({
+	key: `countPlusTen`,
+	get: ({ get }) => get(countAtom) + 10,
 })
-const countHundredfoldState = AtomIO.selector<number>({
-	key: `hundredfold`,
-	get: ({ get }) => get(countState) * 100,
+const countHundredfoldSelector = AtomIO.selector<number>({
+	key: `countHundredfold`,
+	get: ({ get }) => get(countAtom) * 100,
 	set: ({ set }, value) => {
-		set(countState, value / 100)
+		set(countAtom, value / 100)
 	},
 })
 
@@ -27,12 +27,12 @@ describe(`pull atom, observe selector`, () => {
 					consumer: userKey,
 					store,
 				})
-				return exposeSingle(countState)
+				return exposeSingle(countAtom)
 			},
 			client: () => {
-				RTR.usePullSelector(countHundredfoldState)
-				const plusTen = AR.useO(countPlusTenState)
-				const hundredfold = AR.useO(countHundredfoldState)
+				RTR.usePullSelector(countHundredfoldSelector)
+				const plusTen = AR.useO(countPlusTenSelector)
+				const hundredfold = AR.useO(countHundredfoldSelector)
 				return (
 					<>
 						<i data-testid={`plusTen:` + plusTen} />
@@ -47,7 +47,7 @@ describe(`pull atom, observe selector`, () => {
 		const client = uninitializedClient.init()
 		client.renderResult.getByTestId(`plusTen:10`)
 		act(() => {
-			server.silo.setState(countState, 1)
+			server.silo.setState(countAtom, 1)
 		})
 		await waitFor(() => client.renderResult.getByTestId(`plusTen:11`))
 		await waitFor(() => client.renderResult.getByTestId(`hundredfold:100`))
@@ -64,12 +64,12 @@ describe(`pull selector, observe atom`, () => {
 					store,
 					consumer: userKey,
 				})
-				exposeSingle(countState)
+				exposeSingle(countAtom)
 			},
 			client: () => {
-				RTR.usePullSelector(countHundredfoldState)
-				const count = AR.useO(countState)
-				const countPlusTen = AR.useO(countPlusTenState)
+				RTR.usePullSelector(countHundredfoldSelector)
+				const count = AR.useO(countAtom)
+				const countPlusTen = AR.useO(countPlusTenSelector)
 				return (
 					<>
 						<i data-testid={`count:` + count} />
@@ -84,7 +84,7 @@ describe(`pull selector, observe atom`, () => {
 		const client = uninitializedClient.init()
 		client.renderResult.getByTestId(`count:0`)
 		act(() => {
-			server.silo.setState(countHundredfoldState, 2000)
+			server.silo.setState(countHundredfoldSelector, 2000)
 		})
 		await waitFor(() => client.renderResult.getByTestId(`count:20`))
 		await waitFor(() => client.renderResult.getByTestId(`countPlusTen:30`))

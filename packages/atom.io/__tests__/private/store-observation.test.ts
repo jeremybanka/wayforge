@@ -37,13 +37,13 @@ describe(`store observation`, () => {
 		Internal.IMPLICIT.STORE.on.atomCreation.subscribe(`test`, (atomToken) => {
 			Utils.stdout(atomToken)
 		})
-		const atoms = atomFamily<number, string>({
-			key: `atoms`,
+		const countAtoms = atomFamily<number, string>({
+			key: `count`,
 			default: 0,
 		})
-		const a = findState(atoms, `a`)
+		const a = findState(countAtoms, `a`)
 		getState(a)
-		const b = findState(atoms, `b`)
+		const b = findState(countAtoms, `b`)
 		getState(b)
 		expect(Utils.stdout).toHaveBeenCalledWith(a)
 		expect(Utils.stdout).toHaveBeenCalledWith(b)
@@ -55,13 +55,13 @@ describe(`store observation`, () => {
 				Utils.stdout(selectorToken)
 			},
 		)
-		const selectors = selectorFamily<number, string>({
-			key: `selectors`,
+		const zeroSelectors = selectorFamily<number, string>({
+			key: `zero`,
 			get: () => () => 0,
 		})
-		const c = findState(selectors, `c`)
+		const c = findState(zeroSelectors, `c`)
 		getState(c)
-		const d = findState(selectors, `d`)
+		const d = findState(zeroSelectors, `d`)
 		getState(d)
 		expect(Utils.stdout).toHaveBeenCalledWith(c)
 		expect(Utils.stdout).toHaveBeenCalledWith(d)

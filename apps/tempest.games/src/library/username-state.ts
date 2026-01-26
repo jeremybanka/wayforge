@@ -7,7 +7,7 @@ import type { Username } from "./data-constraints"
 import { IS_SERVER } from "./env"
 
 export const usernameAtoms = atomFamily<Username, UserKey>({
-	key: `usernames`,
+	key: `username`,
 	default: (userKey) => userKey.slice(6, 12) as Username,
 	effects: (userKey) => [
 		({ setSelf }) => {

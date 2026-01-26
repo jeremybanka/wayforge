@@ -16,20 +16,20 @@ beforeEach(() => (LOGGING = true))
 type CollectionName = `bar` | `foo`
 
 const numberCollectionAtoms = AtomIO.atomFamily<number[], string>({
-	key: `numbersCollection`,
+	key: `numberCollection`,
 	default: [0],
 })
-const exposedCollectionIndex = AtomIO.atom<Set<string>>({
-	key: `exposedCollectionIndex`,
+const exposedCollectionAtom = AtomIO.atom<Set<string>>({
+	key: `exposedCollection`,
 	default: new Set([`foo`]),
 })
-const focusedCollectionNameState = AtomIO.atom<CollectionName>({
-	key: `focusedCollectionState`,
+const focusedCollectionNameAtom = AtomIO.atom<CollectionName>({
+	key: `focusedCollectionName`,
 	default: `foo`,
 })
 
 function RealtimeDisplay(): React.ReactNode {
-	const name = AR.useO(focusedCollectionNameState)
+	const name = AR.useO(focusedCollectionNameAtom)
 	RTR.usePullAtomFamilyMember(numberCollectionAtoms, name)
 	const numbers = AR.useO(numberCollectionAtoms, name)
 	return (
@@ -53,7 +53,7 @@ describe(`running transactions`, () => {
 					consumer: userKey,
 					store,
 				})
-				return exposeFamily(numberCollectionAtoms, exposedCollectionIndex)
+				return exposeFamily(numberCollectionAtoms, exposedCollectionAtom)
 			},
 			clients: {
 				jane: () => {
@@ -95,7 +95,7 @@ describe(`running transactions`, () => {
 		})
 
 		await new Promise<void>((resolve) => {
-			jane.socket.once(`serve:numbersCollection("foo")`, () => {
+			jane.socket.once(`serve:numberCollection("foo")`, () => {
 				resolve()
 			})
 		})
@@ -127,17 +127,17 @@ describe(`running transactions`, () => {
 		await waitFor(() => jane.renderResult.getByTestId(`foo`))
 
 		act(() => {
-			jane.silo.setState(focusedCollectionNameState, `bar`)
+			jane.silo.setState(focusedCollectionNameAtom, `bar`)
 		})
 		await waitFor(() => jane.renderResult.getByTestId(`bar`))
 
 		await new Promise<void>((resolve) => {
-			jane.socket.once(`unavailable:numbersCollection`, () => {
+			jane.socket.once(`unavailable:numberCollection`, () => {
 				resolve()
 			})
 		})
 
-		server.silo.setState(exposedCollectionIndex, (prev) => prev.add(`bar`))
+		server.silo.setState(exposedCollectionAtom, (prev) => prev.add(`bar`))
 		server.silo.setState(numberCollectionAtoms, `bar`, (prev) => [...prev, 1])
 
 		await waitFor(() => jane.renderResult.getByTestId(`1`))

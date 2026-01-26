@@ -38,7 +38,7 @@ beforeEach(() => {
 
 describe(`atom effects`, () => {
 	it(`runs a function onSet`, () => {
-		const coordinateStates = atomFamily<{ x: number; y: number }, string>({
+		const coordinateAtoms = atomFamily<{ x: number; y: number }, string>({
 			key: `coordinate`,
 			default: { x: 0, y: 0 },
 			effects: (key) => [
@@ -49,11 +49,11 @@ describe(`atom effects`, () => {
 				},
 			],
 		})
-		setState(findState(coordinateStates, `a`), { x: 1, y: 1 })
+		setState(findState(coordinateAtoms, `a`), { x: 1, y: 1 })
 		expect(Utils.stdout).toHaveBeenCalledWith(`onSet`, `a`, {
 			newValue: { x: 1, y: 1 },
 		})
-		setState(coordinateStates, `a`, { x: 2, y: 2 })
+		setState(coordinateAtoms, `a`, { x: 2, y: 2 })
 		expect(Utils.stdout).toHaveBeenCalledWith(`onSet`, `a`, {
 			newValue: { x: 2, y: 2 },
 			oldValue: { x: 1, y: 1 },
@@ -62,7 +62,7 @@ describe(`atom effects`, () => {
 		expect(logger.error).not.toHaveBeenCalled()
 	})
 	it(`sets itself from the file-system, then writes to the file-system onSet`, () => {
-		const nameState = atom<string>({
+		const nameAtom = atom<string>({
 			key: `name`,
 			default: ``,
 			effects: [
@@ -75,15 +75,15 @@ describe(`atom effects`, () => {
 				},
 			],
 		})
-		expect(getState(nameState)).toBe(`Mavis`)
-		setState(nameState, `Mavis2`)
+		expect(getState(nameAtom)).toBe(`Mavis`)
+		setState(nameAtom, `Mavis2`)
 		expect(readFileSync(`${tmpDir.name}/name.txt`, `utf8`)).toBe(`Mavis2`)
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
 	})
 	it(`resets itself`, () => {
 		const mySubject = new Internal.Subject<string>()
-		const nameState = atom<string>({
+		const nameAtom = atom<string>({
 			key: `name`,
 			default: ``,
 			effects: [
@@ -94,16 +94,16 @@ describe(`atom effects`, () => {
 				},
 			],
 		})
-		setState(nameState, `Mavis`)
-		expect(getState(nameState)).toBe(`Mavis`)
+		setState(nameAtom, `Mavis`)
+		expect(getState(nameAtom)).toBe(`Mavis`)
 		mySubject.next(`reset`)
-		expect(getState(nameState)).toBe(``)
+		expect(getState(nameAtom)).toBe(``)
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
 	})
 	it(`resets itself (mutable)`, () => {
 		const mySubject = new Internal.Subject<string>()
-		const nameState = mutableAtom<UList<string>>({
+		const nameAtom = mutableAtom<UList<string>>({
 			key: `name`,
 			class: UList,
 			effects: [
@@ -114,10 +114,10 @@ describe(`atom effects`, () => {
 				},
 			],
 		})
-		setState(nameState, (current) => current.add(`Cat`))
-		const setOriginal = getState(nameState)
+		setState(nameAtom, (current) => current.add(`Cat`))
+		const setOriginal = getState(nameAtom)
 		mySubject.next(`reset`)
-		const setNew = getState(nameState)
+		const setNew = getState(nameAtom)
 		expect(setNew).not.toBe(setOriginal)
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
@@ -126,7 +126,7 @@ describe(`atom effects`, () => {
 
 describe(`atom effect cleanup`, () => {
 	test(`an effect can return a cleanup function`, () => {
-		const coordinateStates = atomFamily<{ x: number; y: number }, string>({
+		const coordinateAtoms = atomFamily<{ x: number; y: number }, string>({
 			key: `coordinate`,
 			default: { x: 0, y: 0 },
 			effects: (key) => [
@@ -140,11 +140,11 @@ describe(`atom effect cleanup`, () => {
 				},
 			],
 		})
-		setState(findState(coordinateStates, `a`), { x: 1, y: 1 })
+		setState(findState(coordinateAtoms, `a`), { x: 1, y: 1 })
 		expect(Utils.stdout).toHaveBeenCalledWith(`onSet`, `a`, {
 			newValue: { x: 1, y: 1 },
 		})
-		disposeState(findState(coordinateStates, `a`))
+		disposeState(findState(coordinateAtoms, `a`))
 		expect(Utils.stdout).toHaveBeenCalledWith(`cleanup`, `a`)
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()

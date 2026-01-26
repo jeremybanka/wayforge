@@ -3,13 +3,13 @@ import { useO } from "atom.io/react"
 
 import { Point, xAtoms, yAtoms } from "./declare-a-family"
 
-export const pointIndex = atom<string[]>({
-	key: `pointIndex`,
+export const pointKeysAtom = atom<string[]>({
+	key: `pointKeys`,
 	default: [],
 })
 
 function AllPoints() {
-	const pointIds = useO(pointIndex)
+	const pointIds = useO(pointKeysAtom)
 	return (
 		<>
 			{pointIds.map((pointId) => {

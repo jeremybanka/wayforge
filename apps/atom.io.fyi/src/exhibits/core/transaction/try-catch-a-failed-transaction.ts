@@ -4,7 +4,7 @@ import { atom, atomFamily, runTransaction, transaction } from "atom.io"
 export type GameItems = { coins: number }
 export type Inventory = Partial<Readonly<GameItems>>
 
-export const myIdState = atom<Loadable<string>>({
+export const myIdAtom = atom<Loadable<string>>({
 	key: `myId`,
 	default: async () => {
 		const response = await fetch(`https://io.fyi/api/myId`)
@@ -14,7 +14,7 @@ export const myIdState = atom<Loadable<string>>({
 })
 
 export const playerInventoryAtoms = atomFamily<Inventory, string>({
-	key: `inventory`,
+	key: `playerInventory`,
 	default: {},
 })
 
@@ -23,7 +23,7 @@ export const giveCoinsTX = transaction<
 >({
 	key: `giveCoins`,
 	do: async ({ get, set }, playerId, amount) => {
-		const myId = await get(myIdState)
+		const myId = await get(myIdAtom)
 		const myInventory = get(playerInventoryAtoms, myId)
 		if (!myInventory.coins) {
 			throw new Error(`Your inventory is missing coins`)

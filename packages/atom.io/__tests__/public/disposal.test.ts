@@ -30,26 +30,26 @@ beforeEach(() => {
 
 describe(`disposeState`, () => {
 	it(`does not delete a standalone atom`, () => {
-		const countState = atom<number>({
+		const countAtom = atom<number>({
 			key: `count`,
 			default: 0,
 		})
-		disposeState(countState)
+		disposeState(countAtom)
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).toHaveBeenCalledTimes(1)
 		expect(logger.error).toHaveBeenCalledWith(
 			`❌`,
-			countState.type,
-			countState.key,
+			countAtom.type,
+			countAtom.key,
 			`Standalone atoms cannot be disposed.`,
 		)
 	})
 	it(`deletes atoms that belong to a family`, () => {
-		const countStates = atomFamily<number, string>({
-			key: `findCount`,
+		const countAtoms = atomFamily<number, string>({
+			key: `count`,
 			default: 0,
 		})
-		const countState = findState(countStates, `count`)
+		const countState = findState(countAtoms, `count`)
 		getState(countState)
 		disposeState(countState)
 		expect(Internal.IMPLICIT.STORE.atoms.has(countState.key)).toBe(false)
@@ -58,8 +58,8 @@ describe(`disposeState`, () => {
 		expect(logger.error).not.toHaveBeenCalled()
 	})
 	it(`does not delete downstream selectors from atom`, () => {
-		const countIndex = atom<string[]>({
-			key: `countIdx`,
+		const countKeysAtom = atom<string[]>({
+			key: `countKeys`,
 			default: [],
 		})
 		const countAtoms = atomFamily<number, string>({
@@ -75,15 +75,16 @@ describe(`disposeState`, () => {
 		})
 		const allDoublesSelector = selector<number[]>({
 			key: `allDoubles`,
-			get: ({ get }) => get(countIndex).map((key) => get(doubleSelectors, key)),
+			get: ({ get }) =>
+				get(countKeysAtom).map((key) => get(doubleSelectors, key)),
 		})
 		const countAtom = findState(countAtoms, `my-key`)
 		const doubleSelector = findState(doubleSelectors, `my-key`)
 		setState(countAtom, 2)
-		setState(countIndex, (current) => [...current, `my-key`])
+		setState(countKeysAtom, (current) => [...current, `my-key`])
 		expect(getState(allDoublesSelector)).toEqual([4])
 		disposeState(countAtoms, `my-key`)
-		setState(countIndex, (current) => [...current, `my-key`])
+		setState(countKeysAtom, (current) => [...current, `my-key`])
 		expect(logger.error).not.toHaveBeenCalled()
 		expect(Internal.IMPLICIT.STORE.atoms.has(countAtom.key)).toBe(false)
 		expect(Internal.IMPLICIT.STORE.valueMap.has(countAtom.key)).toBe(false)
@@ -116,21 +117,21 @@ describe(`disposeState`, () => {
 	})
 
 	it(`does not delete a standalone selector`, () => {
-		const countState = atom<number>({
+		const countAtom = atom<number>({
 			key: `count`,
 			default: 0,
 		})
-		const doubledState = selector<number>({
-			key: `doubled`,
-			get: ({ get }) => get(countState),
+		const doubleSelector = selector<number>({
+			key: `double`,
+			get: ({ get }) => get(countAtom),
 		})
-		disposeState(doubledState)
+		disposeState(doubleSelector)
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).toHaveBeenCalledTimes(1)
 		expect(logger.error).toHaveBeenCalledWith(
 			`❌`,
-			doubledState.type,
-			doubledState.key,
+			doubleSelector.type,
+			doubleSelector.key,
 			`Standalone selectors cannot be disposed.`,
 		)
 	})
