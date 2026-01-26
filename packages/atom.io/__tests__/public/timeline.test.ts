@@ -38,80 +38,80 @@ beforeEach(() => {
 
 describe(`timeline`, () => {
 	it(`tracks the state of all atoms in its scope`, () => {
-		const a = atom<number>({
+		const aAtom = atom<number>({
 			key: `a`,
 			default: 5,
 		})
-		const b = atom<number>({
+		const bAtom = atom<number>({
 			key: `b`,
 			default: 0,
 		})
-		const c = atom<number>({
+		const cAtom = atom<number>({
 			key: `c`,
 			default: 0,
 		})
 
-		const product_abc = selector<number>({
-			key: `product of a, b, & c`,
+		const product_abcSelector = selector<number>({
+			key: `product_abc`,
 			get: ({ get }) => {
-				return get(a) * get(b) * get(c)
+				return get(aAtom) * get(bAtom) * get(cAtom)
 			},
 		})
 
 		const tl_abc = timeline({
 			key: `a, b, & c`,
-			scope: [a, b, c],
+			scope: [aAtom, bAtom, cAtom],
 		})
 
 		const tx_ab = transaction<() => void>({
 			key: `increment a & b`,
 			do: ({ set }) => {
-				set(a, (n) => n + 1)
-				set(b, (n) => n + 1)
+				set(aAtom, (n) => n + 1)
+				set(bAtom, (n) => n + 1)
 			},
 		})
 
 		const tx_bc = transaction<(plus: number) => void>({
 			key: `increment b & c`,
 			do: ({ set }, add = 1) => {
-				set(b, (n) => n + add)
-				set(c, (n) => n + add)
+				set(bAtom, (n) => n + add)
+				set(cAtom, (n) => n + add)
 			},
 		})
 
 		subscribe(tl_abc, Utils.stdout0)
 
 		const expectation0 = () => {
-			expect(getState(a)).toBe(5)
-			expect(getState(b)).toBe(0)
-			expect(getState(c)).toBe(0)
-			expect(getState(product_abc)).toBe(0)
+			expect(getState(aAtom)).toBe(5)
+			expect(getState(bAtom)).toBe(0)
+			expect(getState(cAtom)).toBe(0)
+			expect(getState(product_abcSelector)).toBe(0)
 		}
 		expectation0()
 
-		setState(a, 1)
+		setState(aAtom, 1)
 		const expectation1 = () => {
-			expect(getState(a)).toBe(1)
-			expect(getState(b)).toBe(0)
-			expect(getState(c)).toBe(0)
-			expect(getState(product_abc)).toBe(0)
+			expect(getState(aAtom)).toBe(1)
+			expect(getState(bAtom)).toBe(0)
+			expect(getState(cAtom)).toBe(0)
+			expect(getState(product_abcSelector)).toBe(0)
 		}
 		expectation1()
 
 		runTransaction(tx_ab)()
 		const expectation2 = () => {
-			expect(getState(a)).toBe(2)
-			expect(getState(b)).toBe(1)
-			expect(getState(c)).toBe(0)
-			expect(getState(product_abc)).toBe(0)
+			expect(getState(aAtom)).toBe(2)
+			expect(getState(bAtom)).toBe(1)
+			expect(getState(cAtom)).toBe(0)
+			expect(getState(product_abcSelector)).toBe(0)
 		}
 		expectation2()
 
 		runTransaction(tx_bc)(2)
 		const expectation3 = () => {
-			expect(getState(a)).toBe(2)
-			expect(getState(b)).toBe(3)
-			expect(getState(c)).toBe(2)
+			expect(getState(aAtom)).toBe(2)
+			expect(getState(bAtom)).toBe(3)
+			expect(getState(cAtom)).toBe(2)
 		}
 		expectation3()
 
@@ -137,7 +137,7 @@ describe(`timeline`, () => {
 		expect(Utils.stdout0).toHaveBeenCalledTimes(8)
 	})
 	test(`time traveling with nested transactions`, () => {
-		const a = atom<number>({
+		const aAtom = atom<number>({
 			key: `a`,
 			default: 0,
 		})
@@ -150,7 +150,7 @@ describe(`timeline`, () => {
 
 		const aTL = timeline({
 			key: `a`,
-			scope: [a],
+			scope: [aAtom],
 		})
 		const incrementTimesTX = transaction<
 			(state: WritableToken<number>, times: number) => void
@@ -162,168 +162,171 @@ describe(`timeline`, () => {
 				}
 			},
 		})
-		runTransaction(incrementTimesTX)(a, 3)
-		expect(getState(a)).toBe(3)
+		runTransaction(incrementTimesTX)(aAtom, 3)
+		expect(getState(aAtom)).toBe(3)
 		undo(aTL)
-		expect(getState(a)).toBe(0)
+		expect(getState(aAtom)).toBe(0)
 		redo(aTL)
-		expect(getState(a)).toBe(3)
+		expect(getState(aAtom)).toBe(3)
 	})
 	test(`subscriptions when time-traveling`, () => {
-		const a = atom<number>({
+		const aAtom = atom<number>({
 			key: `a`,
 			default: 3,
 		})
-		const b = atom<number>({
+		const bAtom = atom<number>({
 			key: `b`,
 			default: 6,
 		})
 
-		const product_ab = selector<number>({
-			key: `product of a & b`,
+		const product_abSelector = selector<number>({
+			key: `product_ab`,
 			get: ({ get }) => {
-				return get(a) * get(b)
+				return get(aAtom) * get(bAtom)
 			},
 			set: ({ set }, value) => {
-				set(a, Math.sqrt(value))
-				set(b, Math.sqrt(value))
+				set(aAtom, Math.sqrt(value))
+				set(bAtom, Math.sqrt(value))
 			},
 		})
 
 		const timeline_ab = timeline({
 			key: `a & b`,
-			scope: [a, b],
+			scope: [aAtom, bAtom],
 		})
 
-		subscribe(a, Utils.stdout)
+		subscribe(aAtom, Utils.stdout)
 
-		setState(product_ab, 1)
+		setState(product_abSelector, 1)
 
 		undo(timeline_ab)
 
-		expect(getState(a)).toBe(3)
+		expect(getState(aAtom)).toBe(3)
 
 		expect(Utils.stdout).toHaveBeenCalledWith({ oldValue: 3, newValue: 1 })
 		expect(Utils.stdout).toHaveBeenCalledWith({ oldValue: 1, newValue: 3 })
 
 		redo(timeline_ab)
 
-		expect(getState(a)).toBe(1)
-		expect(getState(b)).toBe(1)
+		expect(getState(aAtom)).toBe(1)
+		expect(getState(bAtom)).toBe(1)
 	})
 	test(`creating selectors with setState`, () => {
-		const numbers = atomFamily<number, string>({
+		const numberAtoms = atomFamily<number, string>({
 			key: `number`,
 			default: 0,
 		})
 
-		const products = selectorFamily<number, [a: string, b: string]>({
+		const productSelectors = selectorFamily<number, [a: string, b: string]>({
 			key: `product`,
 			get:
 				([a, b]) =>
 				({ get }) =>
-					get(numbers, a) * get(numbers, b),
+					get(numberAtoms, a) * get(numberAtoms, b),
 			set:
 				([a, b]) =>
 				({ set }, value) => {
-					set(numbers, a, Math.sqrt(value))
-					set(numbers, b, Math.sqrt(value))
+					set(numberAtoms, a, Math.sqrt(value))
+					set(numberAtoms, b, Math.sqrt(value))
 				},
 		})
 
-		const productSquareRoots = selectorFamily<number, [a: string, b: string]>({
-			key: `product root`,
+		const productSquareRootSelectors = selectorFamily<
+			number,
+			[a: string, b: string]
+		>({
+			key: `productSquareRoot`,
 			get:
 				(key) =>
 				({ get }) =>
-					Math.sqrt(get(products, key)),
+					Math.sqrt(get(productSelectors, key)),
 			set:
 				(key) =>
 				({ set }, value) => {
-					set(products, key, value ** 2)
+					set(productSelectors, key, value ** 2)
 				},
 		})
 
 		const timeline_ab = timeline({
 			key: `numbers over time`,
-			scope: [numbers],
+			scope: [numberAtoms],
 		})
 
-		setState(productSquareRoots, [`a`, `b`], 3)
+		setState(productSquareRootSelectors, [`a`, `b`], 3)
 
 		expect(I.withdraw(I.IMPLICIT.STORE, timeline_ab).history).toHaveLength(1)
 		undo(timeline_ab)
 	})
 	test(`history erasure from the past`, () => {
-		const nameState = atom<string>({
+		const nameAtom = atom<string>({
 			key: `name`,
 			default: `josie`,
 		})
-		const nameCapitalizedState = selector<string>({
-			key: `name_capitalized`,
+		const nameCapitalizedSelector = selector<string>({
+			key: `nameCapitalized`,
 			get: ({ get }) => {
-				return get(nameState).toUpperCase()
+				return get(nameAtom).toUpperCase()
 			},
 			set: ({ set }, value) => {
-				set(nameState, value.toLowerCase())
+				set(nameAtom, value.toLowerCase())
 			},
 		})
 		const setName = transaction<(s: string) => void>({
 			key: `set name`,
 			do: ({ set }, name) => {
-				set(nameCapitalizedState, name)
+				set(nameCapitalizedSelector, name)
 			},
 		})
 
 		const nameHistory = timeline({
 			key: `name history`,
-			scope: [nameState],
+			scope: [nameAtom],
 		})
 
-		expect(getState(nameState)).toBe(`josie`)
+		expect(getState(nameAtom)).toBe(`josie`)
 
-		setState(nameState, `vance`)
-		setState(nameCapitalizedState, `JON`)
+		setState(nameAtom, `vance`)
+		setState(nameCapitalizedSelector, `JON`)
 		runTransaction(setName)(`Sylvia`)
 
 		const timelineData = I.IMPLICIT.STORE.timelines.get(nameHistory.key)
 
 		if (!timelineData) throw new Error(`timeline data not found`)
 
-		expect(getState(nameState)).toBe(`sylvia`)
+		expect(getState(nameAtom)).toBe(`sylvia`)
 		expect(timelineData.at).toBe(3)
 		expect(timelineData.history.length).toBe(3)
 
 		undo(nameHistory)
-		expect(getState(nameState)).toBe(`jon`)
+		expect(getState(nameAtom)).toBe(`jon`)
 		expect(timelineData.at).toBe(2)
 		expect(timelineData.history.length).toBe(3)
 
 		undo(nameHistory)
-		expect(getState(nameState)).toBe(`vance`)
+		expect(getState(nameAtom)).toBe(`vance`)
 		expect(timelineData.at).toBe(1)
 		expect(timelineData.history.length).toBe(3)
 
 		undo(nameHistory)
-		expect(getState(nameState)).toBe(`josie`)
+		expect(getState(nameAtom)).toBe(`josie`)
 		expect(timelineData.at).toBe(0)
 		expect(timelineData.history.length).toBe(3)
 
 		runTransaction(setName)(`Mr. Jason Gold`)
 
-		expect(getState(nameState)).toBe(`mr. jason gold`)
+		expect(getState(nameAtom)).toBe(`mr. jason gold`)
 		expect(timelineData.at).toBe(1)
 		expect(timelineData.history.length).toBe(1)
 	})
 	it(`adds members of a family already created`, () => {
-		const findCountState = atomFamily<number, string>({
-			key: `find count`,
+		const countAtoms = atomFamily<number, string>({
+			key: `count`,
 			default: 0,
 		})
-		const myCountState = findState(findCountState, `foo`)
+		const myCountState = findState(countAtoms, `foo`)
 		const countsTL = timeline({
 			key: `counts`,
-			scope: [findCountState],
+			scope: [countAtoms],
 		})
 		expect(getState(myCountState)).toBe(0)
 		setState(myCountState, 1)
@@ -332,53 +335,51 @@ describe(`timeline`, () => {
 		expect(getState(myCountState)).toBe(0)
 	})
 	it(`passes over non-write events`, () => {
-		const counts = atomFamily<number, string>({
+		const countAtoms = atomFamily<number, string>({
 			key: `count`,
 			default: 0,
 		})
 
 		const countTL = timeline({
 			key: `count`,
-			scope: [counts],
+			scope: [countAtoms],
 		})
 
-		setState(counts, `a`, 1)
-		getState(counts, `b`)
+		setState(countAtoms, `a`, 1)
+		getState(countAtoms, `b`)
 
 		undo(countTL)
-		expect(getState(counts, `a`)).toBe(0)
+		expect(getState(countAtoms, `a`)).toBe(0)
 
 		undo(countTL)
 
-		setState(counts, `a`, 1)
-		getState(counts, `b`)
+		setState(countAtoms, `a`, 1)
+		getState(countAtoms, `b`)
 
 		undo(countTL)
 		redo(countTL)
-		expect(getState(counts, `a`)).toBe(1)
+		expect(getState(countAtoms, `a`)).toBe(1)
 	})
 })
 
 describe(`timeline state lifecycle`, () => {
 	test(`states may be disposed via undo/redo`, () => {
-		const countStates = atomFamily<number, string>({
+		const countAtoms = atomFamily<number, string>({
 			key: `count`,
 			default: 0,
 		})
 		const countsTL = timeline({
 			key: `counts`,
-			scope: [countStates],
+			scope: [countAtoms],
 		})
-		setState(countStates, `my-key`, 1)
-		expect(getState(countStates, `my-key`)).toBe(1)
-		disposeState(countStates, `my-key`)
+		setState(countAtoms, `my-key`, 1)
+		expect(getState(countAtoms, `my-key`)).toBe(1)
+		disposeState(countAtoms, `my-key`)
 		undo(countsTL)
 
-		expect(I.seekInStore(I.IMPLICIT.STORE, countStates, `my-key`)).toBe(
-			undefined,
-		)
+		expect(I.seekInStore(I.IMPLICIT.STORE, countAtoms, `my-key`)).toBe(undefined)
 		redo(countsTL)
-		expect(I.seekInStore(I.IMPLICIT.STORE, countStates, `my-key`)).toEqual({
+		expect(I.seekInStore(I.IMPLICIT.STORE, countAtoms, `my-key`)).toEqual({
 			family: {
 				key: `count`,
 				subKey: `"my-key"`,

@@ -43,7 +43,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 IMPLICIT.STORE.loggers[0].logLevel = "info"
-const countState = atom<number>({
+const countAtom = atom<number>({
 	key: "count",
 	default: 0,
 })
@@ -82,7 +82,7 @@ atom<Loadable<unknown>>({
 })
 
 const countAtoms = atomFamily<number, string>({
-	key: "counts",
+	key: "count",
 	default: 0,
 })
 findState(countAtoms, "A")
@@ -92,7 +92,7 @@ const userAtoms = atomFamily<
 	{ name: { first: string; last: string }; stats: Record<string, number> },
 	string
 >({
-	key: "users",
+	key: "user",
 	default: { name: { first: "John", last: "Doe" }, stats: { a: 1, b: 2, c: 3 } },
 })
 findState(userAtoms, "A")
@@ -111,19 +111,19 @@ atom<{ a: number[]; b: { num: number } }>({
 	},
 })
 
-const selectionsState = atom<number[]>({
+const selectionsAtom = atom<number[]>({
 	key: "selections",
 	default: [1, 2, 3],
 })
-const evenSelectionsState = selector<number[]>({
+const evenSelectionsSelector = selector<number[]>({
 	key: "evenSelections",
-	get: ({ get }) => get(selectionsState).filter((n) => n % 2 === 0),
+	get: ({ get }) => get(selectionsAtom).filter((n) => n % 2 === 0),
 })
 selector<Record<string, number>>({
 	key: "objSelector",
 	get: ({ get }) => {
-		const selections = get(selectionsState)
-		const evenSelections = get(evenSelectionsState)
+		const selections = get(selectionsAtom)
+		const evenSelections = get(evenSelectionsSelector)
 		return {
 			a: selections[0],
 			b: evenSelections[0],
@@ -133,8 +133,8 @@ selector<Record<string, number>>({
 const myTX = transaction<(param: object) => object>({
 	key: "myTX",
 	do: ({ set }) => {
-		set(countState, 0)
-		set(selectionsState, (prev) => [...prev, 4])
+		set(countAtom, 0)
+		set(selectionsAtom, (prev) => [...prev, 4])
 		return {
 			a: 1,
 			b: 2,

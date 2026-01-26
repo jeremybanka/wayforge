@@ -5,7 +5,7 @@ import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import * as RTTest from "atom.io/realtime-testing"
 
-const countState = AtomIO.atom<number>({ key: `count`, default: 0 })
+const countAtom = AtomIO.atom<number>({ key: `count`, default: 0 })
 
 describe(`multi-client scenario`, () => {
 	const scenario = () =>
@@ -16,17 +16,17 @@ describe(`multi-client scenario`, () => {
 					store,
 					consumer: userKey,
 				})
-				return exposeSingle(countState)
+				return exposeSingle(countAtom)
 			},
 			clients: {
 				jim: () => {
-					RTR.usePullAtom(countState)
-					const count = AR.useO(countState)
+					RTR.usePullAtom(countAtom)
+					const count = AR.useO(countAtom)
 					return <i data-testid={count} />
 				},
 				lee: () => {
-					RTR.usePullAtom(countState)
-					const count = AR.useO(countState)
+					RTR.usePullAtom(countAtom)
+					const count = AR.useO(countAtom)
 					return <i data-testid={count} />
 				},
 			},
@@ -41,7 +41,7 @@ describe(`multi-client scenario`, () => {
 		jim.renderResult.getByTestId(`0`)
 		lee.renderResult.getByTestId(`0`)
 		act(() => {
-			server.silo.setState(countState, 1)
+			server.silo.setState(countAtom, 1)
 		})
 		await waitFor(() => jim.renderResult.getByTestId(`1`))
 		await waitFor(() => lee.renderResult.getByTestId(`1`))

@@ -82,32 +82,32 @@ describe(`Internal.NotFoundError is thrown`, () => {
 
 describe(`nested setState withing a setState callback`, () => {
 	test(`the inner call is deferred, and a logger(info) is given`, () => {
-		const a = atom<number>({
+		const aAtom = atom<number>({
 			key: `a`,
 			default: 0,
 		})
-		const b = atom<boolean>({
+		const bAtom = atom<boolean>({
 			key: `b`,
 			default: false,
 		})
-		const c = atom<string>({
+		const cAtom = atom<string>({
 			key: `c`,
 			default: `hi`,
 		})
-		const _s = selector<number>({
-			key: `s`,
+		const _sSelector = selector<number>({
+			key: `_s`,
 			get: ({ get }) => {
-				return get(b) ? get(a) + 1 : 0
+				return get(bAtom) ? get(aAtom) + 1 : 0
 			},
 			set: ({ set }, n) => {
-				set(a, n)
-				set(b, true)
-				set(c, `bye`)
+				set(aAtom, n)
+				set(bAtom, true)
+				set(cAtom, `bye`)
 			},
 		})
 		let rejectionTime = ``
-		setState(a, (n) => {
-			setState(b, true)
+		setState(aAtom, (n) => {
+			setState(bAtom, true)
 			rejectionTime =
 				[
 					...Internal.IMPLICIT.STORE.on.operationClose.subscribers.keys(),
@@ -117,13 +117,13 @@ describe(`nested setState withing a setState callback`, () => {
 
 		expect(logger.info).toHaveBeenCalledWith(
 			`🚫`,
-			b.type,
-			b.key,
-			`deferring setState at ${rejectionTime} until setState for "${a.key}" is done`,
+			bAtom.type,
+			bAtom.key,
+			`deferring setState at ${rejectionTime} until setState for "${aAtom.key}" is done`,
 		)
 
-		expect(getState(a)).toBe(1)
-		expect(getState(b)).toBe(true)
+		expect(getState(aAtom)).toBe(1)
+		expect(getState(bAtom)).toBe(true)
 
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
@@ -131,20 +131,20 @@ describe(`nested setState withing a setState callback`, () => {
 })
 describe(`two timelines attempt to own the same atom`, () => {
 	test(`second timeline does not get ownership, and a logger(error) is given`, () => {
-		const countState = atom<number>({
+		const countAtom = atom<number>({
 			key: `count`,
 			default: 0,
 		})
 		// biome-ignore lint/correctness/noUnusedVariables: intentional for readability
 		const countTimeline000 = timeline({
 			key: `count_history`,
-			scope: [countState],
+			scope: [countAtom],
 		})
 		const countTimeline001 = timeline({
 			key: `count_history_too`,
-			scope: [countState],
+			scope: [countAtom],
 		})
-		setState(countState, 1)
+		setState(countAtom, 1)
 		const countTimeline0Data =
 			Internal.IMPLICIT.STORE.timelines.get(`count_history`)
 		const countTimeline1Data =
@@ -162,15 +162,15 @@ describe(`two timelines attempt to own the same atom`, () => {
 		expect(logger.warn).not.toHaveBeenCalled()
 	})
 	test(`if a family is owned by a timeline, so all are its members`, () => {
-		const countStates = atomFamily<number, string>({
-			key: `counts`,
+		const countAtoms = atomFamily<number, string>({
+			key: `count`,
 			default: 0,
 		})
 		const countTimeline = timeline({
 			key: `counts_history`,
-			scope: [countStates],
+			scope: [countAtoms],
 		})
-		const aCount = findState(countStates, `a`)
+		const aCount = findState(countAtoms, `a`)
 		const aCountTimeline = timeline({
 			key: `a_count_history`,
 			scope: [aCount],
@@ -187,7 +187,7 @@ describe(`two timelines attempt to own the same atom`, () => {
 			`❌`,
 			aCountTimeline.type,
 			aCountTimeline.key,
-			`Failed to add atom "counts("a")" because its family "counts" already belongs to timeline "counts_history"`,
+			`Failed to add atom "count("a")" because its family "count" already belongs to timeline "counts_history"`,
 		)
 		expect(countTimelineData?.history).toHaveLength(1)
 		expect(aCountTimelineData?.history).toHaveLength(0)
@@ -313,14 +313,14 @@ describe(`two families may not have the same key`, () => {
 describe(`recipes`, () => {
 	describe(`timeline family recipe`, () => {
 		it(`creates a timeline for each atom in the family`, () => {
-			const f = atomFamily<number, string>({
-				key: `f`,
+			const countAtoms = atomFamily<number, string>({
+				key: `count`,
 				default: 0,
 			})
 			const ftl = (
 				key: string,
 			): [state: RegularAtomToken<number>, timeline: TimelineToken<any>] => {
-				const writableToken = findState(f, key)
+				const writableToken = findState(countAtoms, key)
 				const timelineToken = timeline({
 					key: `timeline for ${writableToken.key}`,
 					scope: [writableToken],

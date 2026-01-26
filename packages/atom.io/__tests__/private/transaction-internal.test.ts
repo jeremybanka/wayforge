@@ -37,33 +37,33 @@ describe(`transaction implementation specifics`, () => {
 			antenna: `antennae`,
 		} as const
 		type Plural = (typeof PLURALS)[Noun]
-		const countState = atom<number>({
+		const countAtom = atom<number>({
 			key: `count`,
 			default: 2,
 		})
-		const nounState = atom<Noun>({
+		const nounAtom = atom<Noun>({
 			key: `noun`,
 			default: `cat`,
 		})
-		const pluralState = selector<Plural>({
+		const pluralSelector = selector<Plural>({
 			key: `plural`,
 			get: ({ get }) => {
-				const noun = get(nounState)
+				const noun = get(nounAtom)
 				return PLURALS[noun]
 			},
 			set: ({ set }, newValue) => {
 				const noun = Object.keys(PLURALS).find(
 					(n) => PLURALS[n as Noun] === newValue,
 				) as Noun
-				set(nounState, noun)
+				set(nounAtom, noun)
 			},
 		})
-		const expressionState = selector<`${number} ${Noun | Plural}`>({
+		const expressionSelector = selector<`${number} ${Noun | Plural}`>({
 			key: `expression`,
 			get: ({ get }) => {
-				const count = get(countState)
-				const nounPhrase = count === 1 ? get(nounState) : get(pluralState)
-				return `${get(countState)} ${nounPhrase}`
+				const count = get(countAtom)
+				const nounPhrase = count === 1 ? get(nounAtom) : get(pluralSelector)
+				return `${get(countAtom)} ${nounPhrase}`
 			},
 		})
 
@@ -74,7 +74,7 @@ describe(`transaction implementation specifics`, () => {
 				if (Number.isNaN(newCount)) {
 					throw new Error(`Invalid expression: ${newExpression} is not a number`)
 				}
-				set(countState, newCount)
+				set(countAtom, newCount)
 				const newNoun = newExpression.split(` `)[1] as Noun | Plural
 				if (
 					!NOUNS.includes(newNoun as Noun) &&
@@ -84,14 +84,14 @@ describe(`transaction implementation specifics`, () => {
 						`Invalid expression: ${newNoun} is not a recognized noun`,
 					)
 				}
-				set(pluralState, newExpression.split(` `)[1] as Plural)
+				set(pluralSelector, newExpression.split(` `)[1] as Plural)
 				return true
 			},
 		})
 
-		expect(getState(expressionState)).toEqual(`2 cats`)
+		expect(getState(expressionSelector)).toEqual(`2 cats`)
 		vitest.spyOn(Utils, `stdout`)
-		subscribe(expressionState, Utils.stdout)
+		subscribe(expressionSelector, Utils.stdout)
 
 		runTransaction(modifyExpression)(`3 children`)
 		// 2 atoms were set, therefore 2 updates were made to the selector
@@ -99,9 +99,9 @@ describe(`transaction implementation specifics`, () => {
 		// captured, one atom at a time. An all-at-once strategy can be
 		// more performant in some cases, so it may be added in the future.
 		expect(Utils.stdout).toHaveBeenCalledTimes(2)
-		expect(getState(countState)).toEqual(3)
-		expect(getState(pluralState)).toEqual(`children`)
-		expect(getState(nounState)).toEqual(`child`)
+		expect(getState(countAtom)).toEqual(3)
+		expect(getState(pluralSelector)).toEqual(`children`)
+		expect(getState(nounAtom)).toEqual(`child`)
 
 		// but what if the transaction fails?
 		let caught: unknown
@@ -118,9 +118,9 @@ describe(`transaction implementation specifics`, () => {
 		}
 		// the transaction failed, so no updates were made
 		expect(Utils.stdout).toHaveBeenCalledTimes(2)
-		expect(getState(countState)).toEqual(3)
-		expect(getState(pluralState)).toEqual(`children`)
-		expect(getState(nounState)).toEqual(`child`)
+		expect(getState(countAtom)).toEqual(3)
+		expect(getState(pluralSelector)).toEqual(`children`)
+		expect(getState(nounAtom)).toEqual(`child`)
 
 		expect(logger.warn).toBeCalledTimes(1)
 		expect(logger.error).not.toHaveBeenCalled()

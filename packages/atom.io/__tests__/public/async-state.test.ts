@@ -20,35 +20,35 @@ beforeEach(() => {
 
 describe(`async atom`, async () => {
 	it(`hits the subscriber twice`, async () => {
-		const count = AtomIO.atom<Loadable<number>>({
+		const countAtom = AtomIO.atom<Loadable<number>>({
 			key: `count`,
 			default: 0,
 		})
-		AtomIO.subscribe(count, (update) => {
+		AtomIO.subscribe(countAtom, (update) => {
 			Utils.stdout(`count`, update)
 		})
 		const getNumber = async () => 1
-		AtomIO.setState(count, getNumber())
-		const countValueInitial = AtomIO.getState(count)
+		AtomIO.setState(countAtom, getNumber())
+		const countValueInitial = AtomIO.getState(countAtom)
 		expect(countValueInitial).toBeInstanceOf(Promise)
 		expect(countValueInitial).toBeInstanceOf(Internal.Future)
-		const countValueAwaited = await AtomIO.getState(count)
+		const countValueAwaited = await AtomIO.getState(countAtom)
 		expect(countValueAwaited).toBe(1)
 		expect(Utils.stdout).toHaveBeenCalledTimes(2)
 	})
 	it(`handles a rejected promise`, async () => {
-		const count = AtomIO.atom<Loadable<number>>({
+		const countAtom = AtomIO.atom<Loadable<number>>({
 			key: `count`,
 			default: 0,
 		})
-		AtomIO.subscribe(count, ({ newValue, oldValue }) => {
+		AtomIO.subscribe(countAtom, ({ newValue, oldValue }) => {
 			Utils.stdout(`count`, { newValue, oldValue })
 		})
 		const getNumber = async (): Promise<number> => {
 			throw new Error(`😤`)
 		}
-		AtomIO.setState(count, getNumber())
-		const countValueInitial = AtomIO.getState(count)
+		AtomIO.setState(countAtom, getNumber())
+		const countValueInitial = AtomIO.getState(countAtom)
 		expect(countValueInitial).toBeInstanceOf(Promise)
 		expect(countValueInitial).toBeInstanceOf(Internal.Future)
 
@@ -58,7 +58,7 @@ describe(`async atom`, async () => {
 		const wastefulLoads: number[] = []
 
 		const countAtoms = AtomIO.atomFamily<Loadable<number>, number>({
-			key: `counts`,
+			key: `count`,
 			default: () =>
 				new Promise((resolve) => {
 					setImmediate(() => {
@@ -175,19 +175,19 @@ describe(`async selector`, () => {
 			isProduction: false,
 		})
 		// AtomIO.setLogLevel(`info`, store)
-		const dividendState = atom<number>({
+		const dividendAtom = atom<number>({
 			key: `dividend`,
 			default: 0,
 		})
-		const divisorState = atom<number>({
+		const divisorAtom = atom<number>({
 			key: `divisor`,
 			default: 0,
 		})
-		const quotientState = selector<Error | Promise<Error | number> | number>({
+		const quotientSelector = selector<Error | Promise<Error | number> | number>({
 			key: `quotient`,
 			get: async ({ get }) => {
-				const dividend = get(dividendState)
-				const divisor = get(divisorState)
+				const dividend = get(dividendAtom)
+				const divisor = get(divisorAtom)
 				const response = await fetch(`${ORIGIN}/divide`, {
 					method: `POST`,
 					headers: {
@@ -206,15 +206,15 @@ describe(`async selector`, () => {
 				return Error(`quotient is not a string`)
 			},
 		})
-		const quotient0 = getState(quotientState)
+		const quotient0 = getState(quotientSelector)
 		expect(quotient0).toBeInstanceOf(Promise)
 		expect(quotient0).toBeInstanceOf(Internal.Future)
 
-		const quotient1 = await getState(quotientState)
+		const quotient1 = await getState(quotientSelector)
 
 		expect(quotient1).toBe(Number.POSITIVE_INFINITY)
 
-		const quotient2 = getState(quotientState)
+		const quotient2 = getState(quotientSelector)
 		expect(quotient2).toBe(Number.POSITIVE_INFINITY)
 	})
 })
@@ -231,7 +231,7 @@ describe(`downstream from async`, () => {
 				),
 		})
 		const typeSelector = AtomIO.selector<string>({
-			key: `doubled`,
+			key: `type`,
 			get: ({ get }) => {
 				const count = get(countAtom)
 				return typeof count
@@ -260,7 +260,7 @@ describe(`downstream from async`, () => {
 			},
 		})
 		const typeSelector = AtomIO.selector<string>({
-			key: `tripled`,
+			key: `type`,
 			get: ({ get }) => {
 				const doubled = get(doubledSelector)
 				return typeof doubled
@@ -299,7 +299,7 @@ describe(`downstream from async`, () => {
 				}),
 		})
 		const itemAtoms = AtomIO.atomFamily<Loadable<{ data: string }>, number>({
-			key: `items`,
+			key: `item`,
 			default: (key) =>
 				new Promise<{ data: string }>((resolve) => {
 					loadItems[key] = () => {

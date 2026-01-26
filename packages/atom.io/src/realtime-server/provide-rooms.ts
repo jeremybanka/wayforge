@@ -30,8 +30,8 @@ import {
 	ownersOfRooms,
 	roomKeysAtom,
 	usersInRooms,
-	visibilityFromRoomSelector,
-	visibleUsersInRoomsSelector,
+	visibilityFromRoomSelectors,
+	visibleUsersInRoomsSelectors,
 } from "atom.io/realtime"
 
 import { ChildSocket, PROOF_OF_LIFE_SIGNAL } from "./ipc-sockets"
@@ -114,7 +114,7 @@ export function spawnRoom<RoomNames extends string>({
 		const usersInRoomsAtoms = getInternalRelationsFromStore(store, usersInRooms)
 		const unsubFromUsersInRooms = provideMutableFamily(
 			usersInRoomsAtoms,
-			findInStore(store, visibilityFromRoomSelector, roomKey),
+			findInStore(store, visibilityFromRoomSelectors, roomKey),
 		)
 
 		room.on(`close`, () => {
@@ -305,7 +305,7 @@ export function provideRooms<RoomNames extends string>({
 	)
 	const usersWhoseRoomsCanBeSeenSelector = findInStore(
 		store,
-		visibleUsersInRoomsSelector,
+		visibleUsersInRoomsSelectors,
 		userKey,
 	)
 	const ownersOfRoomsAtoms = getInternalRelationsFromStore(store, ownersOfRooms)
