@@ -73,7 +73,7 @@
 		"react": "19.2.4",
 		"react-dom": "19.2.4",
 		"react-email": "5.2.5",
-		"resend": "6.8.0",
+		"resend": "6.9.1",
 		"safedeposit": "workspace:*",
 		"safegen": "0.8.3",
 		"socket.io": "4.8.3",
