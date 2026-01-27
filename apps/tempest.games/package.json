@@ -53,7 +53,7 @@
 		"db:setup": "./__scripts__/setup-db.bun.ts"
 	},
 	"dependencies": {
-		"@floating-ui/react": "0.27.16",
+		"@floating-ui/react": "0.27.17",
 		"@js-temporal/polyfill": "0.5.1",
 		"@react-email/components": "1.0.6",
 		"@react-spring/three": "10.0.3",

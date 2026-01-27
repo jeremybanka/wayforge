@@ -29,7 +29,7 @@
 		"postversion": "biome format --write package.json"
 	},
 	"dependencies": {
-		"@floating-ui/react": "0.27.16",
+		"@floating-ui/react": "0.27.17",
 		"@floating-ui/react-dom": "2.1.6",
 		"anvl": "workspace:*",
 		"corners": "0.2.0",
