@@ -56,7 +56,7 @@ export async function createAtom(
 							message: `Project directory:`,
 							placeholder: `my-app`,
 							validate(value) {
-								if (value.length === 0) {
+								if (value === undefined || value.length === 0) {
 									return `Directory name is required!`
 								}
 								if (existsSync(value)) {
