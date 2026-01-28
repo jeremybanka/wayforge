@@ -1,5 +1,11 @@
 # create-atom.io
 
+## 0.1.0
+
+### Minor Changes
+
+- 8dcbcb4: ⬆️ Upgrade to `@clack/prompts` version 1.
+
 ## 0.0.52
 
 ### Patch Changes
