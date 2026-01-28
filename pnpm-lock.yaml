@@ -58,7 +58,7 @@ importers:
         version: 2.7.6
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.3.9)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.4.0)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
   apps/atom.io.fyi:
     dependencies:
@@ -188,7 +188,7 @@ importers:
         version: link:../../packages/safedeposit
       safegen:
         specifier: 0.8.3
-        version: 0.8.3(@floating-ui/react-dom@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@google/genai@1.35.0)(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.10))(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(arktype@2.1.29)(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.3.9)(motion@12.29.2(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(openai@6.16.0(ws@8.19.0)(zod@4.3.6))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3)(zod@4.3.6)
+        version: 0.8.3(@floating-ui/react-dom@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@google/genai@1.35.0)(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.10))(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(arktype@2.1.29)(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.4.0)(motion@12.29.2(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(openai@6.16.0(ws@8.19.0)(zod@4.3.6))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3)(zod@4.3.6)
       socket.io:
         specifier: 4.8.3
         version: 4.8.3
@@ -273,7 +273,7 @@ importers:
         version: 6.0.5(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.3.9)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.4.0)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
   packages/anvl:
     devDependencies:
@@ -294,7 +294,7 @@ importers:
         version: 6.0.5(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.3.9)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.4.0)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
   packages/atom.io:
     dependencies:
@@ -375,8 +375,8 @@ importers:
         specifier: 9.39.2
         version: 9.39.2(jiti@2.6.1)
       happy-dom:
-        specifier: 20.3.9
-        version: 20.3.9
+        specifier: 20.4.0
+        version: 20.4.0
       http-proxy:
         specifier: 1.18.1
         version: 1.18.1
@@ -430,7 +430,7 @@ importers:
         version: 6.0.5(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.3.9)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.4.0)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
   packages/break-check:
     dependencies:
@@ -516,7 +516,7 @@ importers:
         version: 7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.3.9)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.4.0)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       zod:
         specifier: 4.3.6
         version: 4.3.6
@@ -638,7 +638,7 @@ importers:
         version: link:../varmint
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.3.9)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.4.0)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       zod:
         specifier: 4.3.6
         version: 4.3.6
@@ -659,7 +659,7 @@ importers:
         version: link:../anvl
       atom.io:
         specifier: ^0.40.7
-        version: 0.40.10(@floating-ui/react-dom@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.10))(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.3.9)(motion@12.29.2(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3)
+        version: 0.40.10(@floating-ui/react-dom@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.10))(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.4.0)(motion@12.29.2(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3)
       corners:
         specifier: 0.2.0
         version: 0.2.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -698,8 +698,8 @@ importers:
         specifier: 9.39.2
         version: 9.39.2(jiti@2.6.1)
       happy-dom:
-        specifier: 20.3.9
-        version: 20.3.9
+        specifier: 20.4.0
+        version: 20.4.0
       jsdom:
         specifier: 27.4.0
         version: 27.4.0
@@ -732,7 +732,7 @@ importers:
         version: 6.0.5(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.3.9)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.4.0)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
   packages/ingt:
     dependencies:
@@ -763,7 +763,7 @@ importers:
         version: 6.0.5(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.3.9)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.4.0)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
   packages/jurist:
     dependencies:
@@ -791,7 +791,7 @@ importers:
         version: 7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.3.9)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.4.0)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
   packages/luum:
     dependencies:
@@ -816,7 +816,7 @@ importers:
         version: 7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.3.9)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.4.0)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
   packages/rationality:
     devDependencies:
@@ -834,7 +834,7 @@ importers:
         version: 7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.3.9)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.4.0)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
   packages/rel8:
     devDependencies:
@@ -858,7 +858,7 @@ importers:
         version: 6.0.5(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.3.9)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.4.0)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
   packages/safedeposit:
     devDependencies:
@@ -888,7 +888,7 @@ importers:
         version: 7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.3.9)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.4.0)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
   packages/takua:
     dependencies:
@@ -916,7 +916,7 @@ importers:
         version: 7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.3.9)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.4.0)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
   packages/treetrunks:
     devDependencies:
@@ -949,7 +949,7 @@ importers:
         version: 7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.3.9)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.4.0)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
   packages/tsdoc.json:
     dependencies:
@@ -1047,7 +1047,7 @@ importers:
         version: 7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.3.9)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.4.0)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       yalc:
         specifier: 1.0.0-pre.53
         version: 1.0.0-pre.53
@@ -1080,7 +1080,7 @@ importers:
         version: 7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
       vitest:
         specifier: 4.0.18
-        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.3.9)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+        version: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.4.0)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
   templates/preact-svg-editor:
     dependencies:
@@ -6121,8 +6121,8 @@ packages:
   h3@1.15.5:
     resolution: {integrity: sha512-xEyq3rSl+dhGX2Lm0+eFQIAzlDN6Fs0EcC4f7BNUmzaRX/PTzeuM+Tr2lHB8FoXggsQIeXLj8EDVgs5ywxyxmg==}
 
-  happy-dom@20.3.9:
-    resolution: {integrity: sha512-OIoj0PcK2JaxQuANHxWkxFRSNXAuSgO1vCzCT66KItE0W/ieZLG+/iW8OetlxB+F9EaPB7DoFYKAubFG1f4Mvw==}
+  happy-dom@20.4.0:
+    resolution: {integrity: sha512-RDeQm3dT9n0A5f/TszjUmNCLEuPnMGv3Tv4BmNINebz/h17PA6LMBcxJ5FrcqltNBMh9jA/8ufgDdBYUdBt+eg==}
     engines: {node: '>=20.0.0'}
 
   has-bigints@1.1.0:
@@ -12191,7 +12191,7 @@ snapshots:
       obug: 2.1.1
       std-env: 3.10.0
       tinyrainbow: 3.0.3
-      vitest: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.3.9)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+      vitest: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.4.0)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
   '@vitest/expect@3.2.4':
     dependencies:
@@ -12252,7 +12252,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vitest: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.3.9)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
+      vitest: 4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.4.0)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
   '@vitest/utils@3.2.4':
     dependencies:
@@ -12623,27 +12623,27 @@ snapshots:
 
   async-function@1.0.0: {}
 
-  atom.io@0.40.10(@floating-ui/react-dom@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.10))(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.3.9)(motion@12.29.2(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3):
+  atom.io@0.40.10(@floating-ui/react-dom@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.10))(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.4.0)(motion@12.29.2(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3):
     optionalDependencies:
       '@floating-ui/react': 0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@floating-ui/react-dom': 2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@testing-library/react': 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.10))(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@typescript-eslint/parser': 8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       eslint: 9.39.2(jiti@2.6.1)
-      happy-dom: 20.3.9
+      happy-dom: 20.4.0
       motion: 12.29.2(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react: 19.2.4
       socket.io: 4.8.3
       socket.io-client: 4.8.3
 
-  atom.io@0.46.5(@floating-ui/react-dom@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.10))(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.3.9)(motion@12.29.2(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3):
+  atom.io@0.46.5(@floating-ui/react-dom@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.10))(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.4.0)(motion@12.29.2(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3):
     optionalDependencies:
       '@floating-ui/react': 0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@floating-ui/react-dom': 2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@testing-library/react': 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.10))(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@typescript-eslint/parser': 8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3)
       eslint: 9.39.2(jiti@2.6.1)
-      happy-dom: 20.3.9
+      happy-dom: 20.4.0
       motion: 12.29.2(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       react: 19.2.4
       socket.io: 4.8.3
@@ -14096,7 +14096,7 @@ snapshots:
       ufo: 1.6.3
       uncrypto: 0.1.3
 
-  happy-dom@20.3.9:
+  happy-dom@20.4.0:
     dependencies:
       '@types/node': 25.0.10
       '@types/whatwg-mimetype': 3.0.2
@@ -16336,11 +16336,11 @@ snapshots:
 
   safedeposit@0.1.2: {}
 
-  safegen@0.8.3(@floating-ui/react-dom@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@google/genai@1.35.0)(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.10))(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(arktype@2.1.29)(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.3.9)(motion@12.29.2(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(openai@6.16.0(ws@8.19.0)(zod@4.3.6))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3)(zod@4.3.6):
+  safegen@0.8.3(@floating-ui/react-dom@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@google/genai@1.35.0)(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.10))(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(arktype@2.1.29)(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.4.0)(motion@12.29.2(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(openai@6.16.0(ws@8.19.0)(zod@4.3.6))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3)(zod@4.3.6):
     dependencies:
       '@google/genai': 1.35.0
       '@standard-schema/spec': 1.0.0
-      atom.io: 0.46.5(@floating-ui/react-dom@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.10))(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.3.9)(motion@12.29.2(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3)
+      atom.io: 0.46.5(@floating-ui/react-dom@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.10))(@types/react@19.2.10)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.4.0)(motion@12.29.2(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3)
       varmint: 0.5.11(zod@4.3.6)
     optionalDependencies:
       arktype: 2.1.29
@@ -17412,7 +17412,7 @@ snapshots:
     optionalDependencies:
       vite: 6.4.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)
 
-  vitest@4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.3.9)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3):
+  vitest@4.0.18(@types/node@25.0.10)(@vitest/ui@4.0.18)(happy-dom@20.4.0)(jiti@2.6.1)(jsdom@27.4.0)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3):
     dependencies:
       '@vitest/expect': 4.0.18
       '@vitest/mocker': 4.0.18(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3))
@@ -17437,7 +17437,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 25.0.10
       '@vitest/ui': 4.0.18(vitest@4.0.18)
-      happy-dom: 20.3.9
+      happy-dom: 20.4.0
       jsdom: 27.4.0
     transitivePeerDependencies:
       - jiti
