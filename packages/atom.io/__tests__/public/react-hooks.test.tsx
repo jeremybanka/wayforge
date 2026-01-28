@@ -834,4 +834,29 @@ describe(`useAtomicRef`, () => {
 
 		expect(Utils.stdout).toHaveBeenCalledWith(`hi`)
 	})
+	it(`makes an element available to use wherever (family overload)`, () => {
+		const buttonAtoms = atomFamily<HTMLButtonElement | null, string>({
+			key: `button`,
+			default: null,
+		})
+		function MyButton() {
+			const ref = AR.useAtomicRef(buttonAtoms, `myCoolButton`, useRef)
+			return (
+				<button
+					type="button"
+					ref={ref}
+					onClick={() => {
+						Utils.stdout(`hi`)
+					}}
+				>
+					Click me
+				</button>
+			)
+		}
+		render(<MyButton />)
+
+		getState(buttonAtoms, `myCoolButton`)?.click()
+
+		expect(Utils.stdout).toHaveBeenCalledWith(`hi`)
+	})
 })
