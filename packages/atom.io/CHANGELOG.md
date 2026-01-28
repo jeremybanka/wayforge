@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.21
+
+### Patch Changes
+
+- 585391e: ✨ `atom.io/react` Added an streamlined (familyToken, key, ...) to `useAtomicRef()`.
+
 ## 0.46.20
 
 ### Patch Changes
