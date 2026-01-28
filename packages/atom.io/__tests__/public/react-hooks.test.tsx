@@ -834,7 +834,7 @@ describe(`useAtomicRef`, () => {
 
 		expect(Utils.stdout).toHaveBeenCalledWith(`hi`)
 	})
-	it(`makes an element available to use wherever`, () => {
+	it(`makes an element available to use wherever (family overload)`, () => {
 		const buttonAtoms = atomFamily<HTMLButtonElement | null, string>({
 			key: `button`,
 			default: null,
