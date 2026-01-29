@@ -20,7 +20,7 @@ export function useAtomicRef<
 	K extends Canonical,
 	R extends { current: T | null },
 >(
-	token: RegularAtomFamilyToken<T | null, string>,
+	token: RegularAtomFamilyToken<T | null, K>,
 	key: NoInfer<K>,
 	useRef: <TT>(initialValue: TT | null) => R,
 ): R
