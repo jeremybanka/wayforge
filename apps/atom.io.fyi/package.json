@@ -4,7 +4,7 @@
 	"version": "0.2.48",
 	"private": true,
 	"engines": {
-		"node": "25.4.0"
+		"node": "25.5.0"
 	},
 	"scripts": {
 		"dev": "concurrently \"bun:dev:*\"",
