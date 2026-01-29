@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.22
+
+### Patch Changes
+
+- 3bf1ad0: 🐛 `atom.io/react`: Fixed bug where the streamlined family-key overload for `useAtomicRef()` would only accept families with a key type of `string`.
+
 ## 0.46.21
 
 ### Patch Changes
