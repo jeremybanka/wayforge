@@ -162,6 +162,13 @@
       "when": 1765784169584,
       "tag": "0022_glossy_night_nurse",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1769814039752,
+      "tag": "0023_clever_texas_twister",
+      "breakpoints": true
     }
   ]
 }

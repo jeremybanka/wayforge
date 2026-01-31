@@ -4,6 +4,7 @@
 		"arktype",
 		"biomejs",
 		"cachedir",
+		"carbiter",
 		"Cardstock",
 		"Cdnl",
 		"comline",
@@ -47,9 +48,10 @@
 		"testid",
 		"treeshake",
 		"treetrunks",
+		"TRPC",
 		"tsdoc",
-		"tsgo",
 		"tsdown",
+		"tsgo",
 		"tsup",
 		"unrs",
 		"unsub",
@@ -59,7 +61,6 @@
 		"wheatpaste",
 		"workerd",
 		"yalc",
-		"zustand",
-		"TRPC"
+		"zustand"
 	]
 }

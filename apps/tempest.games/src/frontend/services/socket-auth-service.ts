@@ -1,4 +1,4 @@
-import type { appRouter } from "@backend/router.ts"
+import type { appRouter } from "@backend/trpc-app-router.ts"
 import { TRPCClientError } from "@trpc/client"
 import type { ArkErrors } from "arktype"
 import { type } from "arktype"
