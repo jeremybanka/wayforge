@@ -56,7 +56,7 @@ serve({
 
 			const fileExists = await file(normalizedPath).exists()
 			if (!fileExists) {
-				return Response.redirect(`/`)
+				return new Response(Bun.file(resolve(appDir, `index.html`)))
 			}
 			return new Response(file(normalizedPath))
 		} catch (thrown) {
