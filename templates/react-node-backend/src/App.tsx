@@ -252,7 +252,7 @@ function NewTodo(): React.JSX.Element {
 	const change = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
 		setText(e.target.value)
 	}, [])
-	const submit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
+	const submit = useCallback((e: React.SubmitEvent<HTMLFormElement>) => {
 		e.preventDefault()
 		void addTodo()
 	}, [])

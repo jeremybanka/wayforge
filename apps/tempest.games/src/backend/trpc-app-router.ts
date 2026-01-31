@@ -21,6 +21,7 @@ import { credentialsType, usernameType } from "../library/data-constraints"
 import { env } from "../library/env"
 import { simpleFormatMs } from "../library/simple-format-ms"
 import { genAccountActionCode } from "./account-actions"
+import { carbiterRouter } from "./carbiter/trpc-carbiter-router"
 import { sendEmailToConfirmAccountAction } from "./email"
 import { loggedProcedure, userSessionProcedure } from "./procedures"
 import { decryptId, encryptId } from "./secrecy"
@@ -41,6 +42,8 @@ type AuthTriageResponse = {
 export type AppRouter = typeof appRouter
 
 export const appRouter = trpc.router({
+	carbiter: carbiterRouter,
+
 	version: loggedProcedure.query(async () => {
 		const relative = env.RUN_WORKERS_FROM_SOURCE ? `../..` : `..`
 		const { version } = await Bun.file(
