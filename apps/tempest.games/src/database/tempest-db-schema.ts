@@ -158,3 +158,26 @@ export const userSessions = pgTable(
 	},
 	(table) => [index(`userIdIndex`).on(table.userId)],
 )
+
+// carbiter
+
+export const meal = pgEnum(`meal`, [
+	`breakfast`,
+	`brunch`,
+	`lunch`,
+	`tea`,
+	`dinner`,
+	`supper`,
+])
+
+export const foodItems = pgTable(`foodItem`, {
+	userId: uuid().references(() => users.id, { onDelete: `cascade` }),
+	id: uuid().primaryKey().defaultRandom(),
+	year: integer().notNull(),
+	month: integer().notNull(),
+	day: integer().notNull(),
+	meal: meal().notNull(),
+	name: varchar({ length: 254 }).notNull(),
+	carbs: integer().notNull(),
+	protein: integer().notNull(),
+})
