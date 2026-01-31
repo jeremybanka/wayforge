@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.3.19
+
+### Patch Changes
+
+- 30c15b5: 🐛 Fixed bug where routes would not be accessible from the browser url bar.
+
 ## 0.3.18
 
 ### Patch Changes
