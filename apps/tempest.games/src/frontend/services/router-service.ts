@@ -9,6 +9,7 @@ export const ROUTES = optional({
 		$token: null,
 	}),
 	game: optional({
+		carbiter: null,
 		hexiom: null,
 		server_control: null,
 	}),
@@ -70,6 +71,7 @@ export const pathnameAtom = atom<Pathname | (string & {})>({
 						break
 					}
 					case `/game`:
+					case `/game/carbiter`:
 					case `/game/hexiom`:
 					case `/game/server_control`: {
 						const auth = getState(authAtom)

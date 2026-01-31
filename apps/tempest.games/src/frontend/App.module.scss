@@ -55,9 +55,14 @@ main.class {
   }
   > main {
     width: 100%;
-    max-width: 512px;
     flex-grow: 1;
-    align-content: end;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: flex-end;
+    > span {
+      flex-grow: 1;
+    }
     > form {
       display: flex;
       flex-flow: row wrap;
@@ -168,6 +173,7 @@ main.class {
     > article {
       width: 100%;
       overflow: visible;
+      max-width: 512px;
       > h1 {
         margin: -36px 0 -36px -6px;
         font-size: 144px;

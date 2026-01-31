@@ -13,6 +13,7 @@
 		],
 		"paths": {
 			"@backend/*": ["./src/backend/*"],
+			"@database/*": ["./src/database/*"],
 
 			"atom.io": ["../../packages/atom.io/src/main"],
 			"atom.io/json": ["../../packages/atom.io/src/json"],

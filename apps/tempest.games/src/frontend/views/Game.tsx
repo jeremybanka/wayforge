@@ -6,6 +6,7 @@ import { Anchor } from "../Anchor"
 import { type Route, ROUTES } from "../services/router-service"
 import scss from "./Game.module.scss"
 import { BugRangers } from "./Games/BugRangers"
+import { Carbiter } from "./Games/Carbiter"
 import { ServerControl } from "./ServerControl"
 
 export type Tail<T extends any[]> = T extends [any, ...infer Rest] ? Rest : never
@@ -19,20 +20,18 @@ export type GameIndexProps = {
 export function GameView({
 	route: [, gameId],
 }: GameIndexProps): React.ReactNode {
-	return (
-		<article className={scss[`class`]}>
-			{gameId ? <Game gameId={gameId} /> : <GameIndex />}
-		</article>
-	)
+	return gameId ? <Game gameId={gameId} /> : <GameIndex />
 }
 
 export function GameIndex(): React.ReactNode {
 	return (
-		<nav>
-			<Anchor href={`/game/hexiom`}>
-				<h1>HEXIOM</h1>
-			</Anchor>
-		</nav>
+		<article className={scss[`class`]}>
+			<nav>
+				<Anchor href={`/game/hexiom`}>
+					<h1>HEXIOM</h1>
+				</Anchor>
+			</nav>
+		</article>
 	)
 }
 
@@ -46,6 +45,9 @@ export function Game(props: GameProps): React.ReactNode {
 		}
 		case `server_control`: {
 			return <ServerControl />
+		}
+		case `carbiter`: {
+			return <Carbiter />
 		}
 	}
 }
