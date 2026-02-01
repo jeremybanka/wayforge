@@ -208,7 +208,7 @@ export const appRouter = trpc.router({
 				ctx.logger.info(`🔑 sign in successful as`, email)
 				ctx.res.setHeader(
 					`Set-Cookie`,
-					`sessionKey=${sessionKey}; HttpOnly; Expires=${60 * 60 * 24 * 7}; Path=/`,
+					`sessionKey=${sessionKey}; HttpOnly; Max-Age=${60 * 60 * 24 * 7}; Path=/`,
 				)
 				return {
 					userId,
@@ -355,7 +355,7 @@ export const appRouter = trpc.router({
 			const sessionKey = await createSession(user.id, ctx)
 			ctx.res.setHeader(
 				`Set-Cookie`,
-				`sessionKey=${sessionKey}; HttpOnly; Expires=${60 * 60 * 24 * 7}; Path=/`,
+				`sessionKey=${sessionKey}; HttpOnly; Max-Age=${60 * 60 * 24 * 7}; Path=/`,
 			)
 			return {
 				userId,
