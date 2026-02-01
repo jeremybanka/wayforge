@@ -22,7 +22,11 @@ import scss from "./App.module.scss"
 import Spinner from "./components/Spinner"
 import { appVersionSelector } from "./services/patchnotes-service"
 import { navigate, routeSelector } from "./services/router-service"
-import { authAtom, socket } from "./services/socket-auth-service"
+import {
+	authAtom,
+	connectionErrorAtom,
+	socket,
+} from "./services/socket-auth-service"
 import { trpcClient } from "./services/trpc-client-service"
 import { Account } from "./views/Account"
 import { Admin } from "./views/Admin"
@@ -35,6 +39,7 @@ IMPLICIT.STORE.loggers[0].logLevel = `warn`
 export function App(): React.ReactNode {
 	const route = useO(routeSelector)
 	const auth = useO(authAtom)
+	const connectionError = useO(connectionErrorAtom)
 
 	const [accountPopOverIsOpen, setAccountPopOverOpen] = React.useState(false)
 	const { refs, floatingStyles, context } = useFloating({
@@ -135,6 +140,16 @@ export function App(): React.ReactNode {
 					})()
 				)}
 			</main>
+			{connectionError ? (
+				<aside>
+					<main>
+						<h1>Disconnected</h1>
+						<button type="button" onClick={() => socket.connect()}>
+							Reconnect
+						</button>
+					</main>
+				</aside>
+			) : null}
 		</main>
 	)
 }
