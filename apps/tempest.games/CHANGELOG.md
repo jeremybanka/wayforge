@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.3.20
+
+### Patch Changes
+
+- edf52d8: 🐛 Made auth less inconvenient.
+
 ## 0.3.19
 
 ### Patch Changes
