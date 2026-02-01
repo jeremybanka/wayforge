@@ -42,14 +42,24 @@ export const socket: Socket<TempestSocketDown, TempestSocketUp> = io(
 socket
 	.on(`connect`, () => {
 		console.log(`connected`)
+		setState(connectionErrorAtom, null)
 	})
-	.on(`connect_error`, () => {
-		console.log(`connect_error`)
-		setState(authAtom, null)
+	.on(`connect_error`, (error) => {
+		console.log(`connect_error`, error)
+		if (error.message.includes(`Handshake failed validation`)) {
+			setState(authAtom, null)
+		} else {
+			setState(connectionErrorAtom, error.message)
+		}
 	})
 	.on(`usernameChanged`, (username) => {
 		setState(authAtom, (auth) => (auth === null ? null : { ...auth, username }))
 	})
+
+export const connectionErrorAtom = atom<string | null>({
+	key: `connectionError`,
+	default: null,
+})
 
 export const authAtom = atom<ClientAuthData | null>({
 	key: `auth`,
