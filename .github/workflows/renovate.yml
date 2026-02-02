@@ -19,7 +19,8 @@ defaults:
     shell: bash
 
 jobs:
-  renovate:
+  discoverUpgrades:
+    name: Discover Upgrades
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6.0.2
