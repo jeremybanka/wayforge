@@ -24,5 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5.0.0
       - uses: renovatebot/github-action@v46.0.1
+        env:
+          LOG_LEVEL: debug
         with:
           token: ${{ secrets.RENOVATE_PAT }}
