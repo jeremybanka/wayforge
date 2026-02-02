@@ -8,7 +8,7 @@ on:
 
   push:
     branches:
-      - main
+      - self-host-renovate
 
   pull_request:
     types: [opened, synchronize]
@@ -26,5 +26,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5.0.0
-      - uses: ./.github/actions/setup
-      - run: pnpm renovate
+      - uses: renovatebot/github-action@v46.0.1
+        with:
+          token: ${{ secrets.RENOVATE_PAT }}
