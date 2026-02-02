@@ -27,4 +27,5 @@ jobs:
         env:
           LOG_LEVEL: debug
         with:
+          configurationFile: renovate.json
           token: ${{ secrets.RENOVATE_PAT }}
