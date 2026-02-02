@@ -22,7 +22,7 @@ jobs:
   renovate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5.0.0
+      - uses: actions/checkout@v6.0.2
       - uses: renovatebot/github-action@v46.0.1
         env:
           LOG_LEVEL: debug
