@@ -9,6 +9,7 @@ import {
 	authAtom,
 	authTargetAtom,
 	emailInputAtom,
+	emailLowercaseSelector,
 	oneTimeCodeInputAtom,
 	passwordInputAtom,
 	socket,
@@ -19,7 +20,7 @@ export function Home(): React.ReactNode {
 	const setEmail = useI(emailInputAtom)
 	const setPassword = useI(passwordInputAtom)
 	const setOneTimeCode = useI(oneTimeCodeInputAtom)
-	const email = useO(emailInputAtom)
+	const email = useO(emailLowercaseSelector)
 	const password = useO(passwordInputAtom)
 	const oneTimeCode = useO(oneTimeCodeInputAtom)
 	const emailInputId = `email-${React.useId()}`
