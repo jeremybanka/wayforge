@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.3.21
+
+### Patch Changes
+
+- 9326d49: 🐛 Fixed a bug where emails could be entered with uppercase letters.
+
 ## 0.3.20
 
 ### Patch Changes
