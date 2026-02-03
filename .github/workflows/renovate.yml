@@ -1,0 +1,34 @@
+name: Renovate
+
+on:
+  schedule:
+    - cron: "0 * * * *"
+
+  workflow_dispatch:
+
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  discoverUpgrades:
+    name: Discover Upgrades
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6.0.2
+      - uses: renovatebot/github-action@v46.0.1
+        env:
+          LOG_LEVEL: debug
+          RENOVATE_ALLOW_PLUGINS: true
+          RENOVATE_REPOSITORIES: jeremybanka/wayforge
+        with:
+          configurationFile: renovate.json
+          token: ${{ secrets.RENOVATE_PAT }}
