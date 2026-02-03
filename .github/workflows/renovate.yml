@@ -28,7 +28,7 @@ jobs:
         env:
           LOG_LEVEL: debug
           RENOVATE_ALLOW_PLUGINS: true
-          RENOVATE_REPOSITORIES: "[wayforge]"
+          RENOVATE_REPOSITORIES: jeremybanka/wayforge
         with:
           configurationFile: renovate.json
           token: ${{ secrets.RENOVATE_PAT }}
