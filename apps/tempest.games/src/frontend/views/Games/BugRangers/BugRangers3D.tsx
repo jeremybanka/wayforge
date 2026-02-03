@@ -19,6 +19,13 @@ import { HexGridHelper } from "../BugRangers/HexGridHelper"
 import { PlayerTools } from "../BugRangers/PlayerTools"
 import { GameTiles, PlayableZones } from "../BugRangers/TilesAndZones"
 
+// eslint-disable-next-line quotes
+declare module "@react-three/fiber" {
+	export interface CanvasProps {
+		style?: React.CSSProperties
+	}
+}
+
 export function BugRangers3D(): ReactNode {
 	const cameraTarget = useO(cameraTargetAtom)
 	useSpring({
