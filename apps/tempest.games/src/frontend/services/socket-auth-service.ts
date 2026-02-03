@@ -180,6 +180,10 @@ export const emailInputAtom = atom<string>({
 	default: ``,
 	effects: [storageSync(localStorage, JSON, `email`)],
 })
+export const emailLowercaseSelector = selector<string>({
+	key: `emailLowercase`,
+	get: ({ get }) => get(emailInputAtom).toLowerCase(),
+})
 export const emailIssuesSelector = selector<ArkErrors | null>({
 	key: `emailIssues`,
 	get: ({ get }) => {
