@@ -8,7 +8,7 @@ on:
 
   push:
     branches:
-      - self-host-renovate
+      - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
