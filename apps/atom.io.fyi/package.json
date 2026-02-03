@@ -40,6 +40,6 @@
 		"concurrently": "9.2.1",
 		"eslint": "9.39.2",
 		"takua": "workspace:*",
-		"wrangler": "4.61.1"
+		"wrangler": "4.62.0"
 	}
 }
