@@ -57,7 +57,7 @@
 		"pin-dependencies-checker": "2.7.1",
 		"turbo": "2.8.2",
 		"typescript": "5.9.3",
-		"vite-tsconfig-paths": "5.1.4",
+		"vite-tsconfig-paths": "6.0.5",
 		"vitest": "4.0.18"
 	}
 }
