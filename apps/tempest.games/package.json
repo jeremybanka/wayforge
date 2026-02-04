@@ -55,7 +55,7 @@
 	"dependencies": {
 		"@floating-ui/react": "0.27.17",
 		"@js-temporal/polyfill": "0.5.1",
-		"@react-email/components": "1.0.6",
+		"@react-email/components": "1.0.7",
 		"@react-spring/three": "10.0.3",
 		"@react-three/drei": "10.7.7",
 		"@react-three/fiber": "9.5.0",
@@ -72,7 +72,7 @@
 		"postgres": "3.4.8",
 		"react": "19.2.4",
 		"react-dom": "19.2.4",
-		"react-email": "5.2.5",
+		"react-email": "5.2.6",
 		"resend": "6.9.1",
 		"safedeposit": "workspace:*",
 		"safegen": "0.8.3",
@@ -83,7 +83,7 @@
 		"treetrunks": "workspace:*"
 	},
 	"devDependencies": {
-		"@react-email/preview-server": "5.2.5",
+		"@react-email/preview-server": "5.2.6",
 		"@types/bun": "npm:bun-types@1.3.8",
 		"@types/cors": "2.8.19",
 		"@types/node": "25.0.10",
