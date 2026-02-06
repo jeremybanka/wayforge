@@ -36,7 +36,7 @@
 		"@types/node": "25.0.10",
 		"@vitest/coverage-v8": "4.0.18",
 		"concurrently": "9.2.1",
-		"eslint": "9.39.2",
+		"eslint": "10.0.0",
 		"recoverage": "0.1.13",
 		"tsdown": "0.20.3",
 		"vite": "7.3.1",

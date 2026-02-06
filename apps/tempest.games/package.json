@@ -97,7 +97,7 @@
 		"dotenv": "17.2.4",
 		"dotenv-cli": "11.0.0",
 		"drizzle-kit": "0.31.8",
-		"eslint": "9.39.2",
+		"eslint": "10.0.0",
 		"flightdeck": "workspace:*",
 		"globals": "17.3.0",
 		"rimraf": "6.1.2",
