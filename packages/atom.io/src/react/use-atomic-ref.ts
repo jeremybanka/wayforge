@@ -3,8 +3,7 @@ import type {
 	RegularAtomFamilyToken,
 	RegularAtomToken,
 } from "atom.io"
-import { setState } from "atom.io"
-import { findInStore } from "atom.io/internal"
+import { findInStore, setIntoStore } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
 import { useContext, useEffect } from "react"
 
@@ -52,7 +51,7 @@ export function useAtomicRef<
 	}
 	const ref = useRef(null)
 	useEffect(() => {
-		setState(token, ref.current)
+		setIntoStore(store, token, ref.current)
 	}, [token])
 	return ref
 }
