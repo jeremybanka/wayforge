@@ -27,7 +27,6 @@ export const namingConvention: {
 		type: RuleType
 		docs: {
 			description: string
-			category: string
 			recommended: boolean
 			url: string
 		}
@@ -40,7 +39,6 @@ export const namingConvention: {
 		type: `problem`,
 		docs: {
 			description: `The variable names given to atoms, selectors, and their respective families should match their given key property, and should follow a consistent format`,
-			category: `Best Practices`,
 			recommended: false,
 			url: ``,
 		},
