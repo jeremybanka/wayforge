@@ -193,8 +193,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/safedeposit
       safegen:
-        specifier: 0.8.3
-        version: 0.8.3(@floating-ui/react-dom@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@google/genai@1.35.0)(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(arktype@2.1.29)(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.5.0)(motion@12.33.0(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(openai@6.18.0(ws@8.19.0)(zod@4.3.6))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3)(zod@4.3.6)
+        specifier: 0.8.4
+        version: 0.8.4(@floating-ui/react-dom@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@google/genai@1.35.0)(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(arktype@2.1.29)(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.5.0)(motion@12.33.0(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(openai@6.18.0(ws@8.19.0)(zod@4.3.6))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3)(zod@4.3.6)
       socket.io:
         specifier: 4.8.3
         version: 4.8.3
@@ -4091,9 +4091,6 @@ packages:
   '@stablelib/base64@1.0.1':
     resolution: {integrity: sha512-1bnPQqSxSuc3Ii6MhBysoWCg58j97aUjuCSZrGSmDxNqtytIi0k8utUenAwTZN4V5mXXYGsVUI9zeBqy+jBOSQ==}
 
-  '@standard-schema/spec@1.0.0':
-    resolution: {integrity: sha512-m2bOd0f2RT9k8QJx1JN85cZYyH1RqFBdlwtkSlf4tBDYLCiiZnv1fIIwacK6cqwXavOydf0NPToMQgpKq+dVlA==}
-
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
 
@@ -5007,8 +5004,8 @@ packages:
       socket.io-client:
         optional: true
 
-  atom.io@0.46.5:
-    resolution: {integrity: sha512-/ewaiG9+Ajrt1C+kFvaNEBXG5VLDHIBQbJWchC963j9JPnvr80aQlzwmR0aPZ5MbIY5T/59rhCCuMvLjj0QoeQ==}
+  atom.io@0.46.22:
+    resolution: {integrity: sha512-pfufdg4J7N7Y901qQ277JB9csHb+QWxHeHxNNksVEslc5o8p4idbyTljwv0NNqBPWQk0DYCpzw/2GVzU4eiiIw==}
     peerDependencies:
       '@floating-ui/react': '>=0.25.0'
       '@floating-ui/react-dom': '>=2.0.0'
@@ -8178,8 +8175,8 @@ packages:
   safedeposit@0.1.2:
     resolution: {integrity: sha512-XbBgdsid1m9zlket6HalF4v6J+cIg6ctduHGvzuIE1uiBv/kRVSQoTtj3/Y8fa9VekpxAwOe+vrCoJrauiMlJg==}
 
-  safegen@0.8.3:
-    resolution: {integrity: sha512-wmYDdTSF9tZOrmIbjGu2NUCs19uNNsVgDyfi8TgDF97ls65aSFfiumgY5MQsKKf8LZeyarG4IGX7FCVxYmWnWw==}
+  safegen@0.8.4:
+    resolution: {integrity: sha512-vCbUynVGDVcoe+ziJQ06dTxMpJNPDRefWBEnMXzeXZ3e4fr0JWuXLZnZ5mjwtH5+1BdWAWTh3s2YsBpWiwgy2A==}
     peerDependencies:
       '@anthropic-ai/sdk': '>=0.60.0'
       '@google/genai': ^1.13.0
@@ -12081,8 +12078,6 @@ snapshots:
 
   '@stablelib/base64@1.0.1': {}
 
-  '@standard-schema/spec@1.0.0': {}
-
   '@standard-schema/spec@1.1.0': {}
 
   '@storybook/addon-docs@10.2.7(@types/react@19.2.13)(esbuild@0.27.2)(rollup@4.55.1)(storybook@10.2.7(@testing-library/dom@10.4.1)(prettier@3.7.4)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1))':
@@ -13132,7 +13127,7 @@ snapshots:
       socket.io: 4.8.3
       socket.io-client: 4.8.3
 
-  atom.io@0.46.5(@floating-ui/react-dom@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.5.0)(motion@12.33.0(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3):
+  atom.io@0.46.22(@floating-ui/react-dom@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.5.0)(motion@12.33.0(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3):
     optionalDependencies:
       '@floating-ui/react': 0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@floating-ui/react-dom': 2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -16983,11 +16978,11 @@ snapshots:
 
   safedeposit@0.1.2: {}
 
-  safegen@0.8.3(@floating-ui/react-dom@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@google/genai@1.35.0)(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(arktype@2.1.29)(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.5.0)(motion@12.33.0(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(openai@6.18.0(ws@8.19.0)(zod@4.3.6))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3)(zod@4.3.6):
+  safegen@0.8.4(@floating-ui/react-dom@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@google/genai@1.35.0)(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(arktype@2.1.29)(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.5.0)(motion@12.33.0(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(openai@6.18.0(ws@8.19.0)(zod@4.3.6))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3)(zod@4.3.6):
     dependencies:
       '@google/genai': 1.35.0
-      '@standard-schema/spec': 1.0.0
-      atom.io: 0.46.5(@floating-ui/react-dom@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.5.0)(motion@12.33.0(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3)
+      '@standard-schema/spec': 1.1.0
+      atom.io: 0.46.22(@floating-ui/react-dom@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.17(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.13))(@types/react@19.2.13)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.54.0(eslint@9.39.2(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.2(jiti@2.6.1))(happy-dom@20.5.0)(motion@12.33.0(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3)
       varmint: 0.5.11(zod@4.3.6)
     optionalDependencies:
       arktype: 2.1.29
