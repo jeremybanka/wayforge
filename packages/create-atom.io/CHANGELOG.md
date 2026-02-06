@@ -1,5 +1,12 @@
 # create-atom.io
 
+## 0.1.2
+
+### Patch Changes
+
+- @atom.io/template-preact-svg-editor@0.0.44
+- @atom.io/template-react-node-backend@0.0.47
+
 ## 0.1.1
 
 ### Patch Changes

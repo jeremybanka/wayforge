@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.23
+
+### Patch Changes
+
+- 7b7227e: 🐛 `atom.io/react` Fixed bug where `useAtomicRef()` couldn't target contexts with a `Store` other than the `IMPLICIT.STORE`.
+
 ## 0.46.22
 
 ### Patch Changes
