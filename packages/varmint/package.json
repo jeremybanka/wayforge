@@ -49,7 +49,7 @@
 	},
 	"devDependencies": {
 		"@types/bun": "npm:bun-types@1.3.8",
-		"@types/node": "25.0.10",
+		"@types/node": "25.2.2",
 		"@types/tmp": "0.2.6",
 		"@typescript/native-preview": "7.0.0-dev.20260205.1",
 		"atom.io": "workspace:*",
