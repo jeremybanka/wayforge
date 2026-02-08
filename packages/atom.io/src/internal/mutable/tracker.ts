@@ -80,7 +80,10 @@ export class Tracker<T extends Transceiver<any, any, any>> {
 			target,
 			mutableState,
 			subscriptionKey,
-			function trackerLooksForNewReference(update: SignalFrom<T>) {
+			function trackerLooksForNewReference(
+				this: Tracker<T>,
+				update: SignalFrom<T>,
+			) {
 				if (update.newValue !== update.oldValue) {
 					this.unsubscribeFromInnerValue()
 					this.unsubscribeFromInnerValue = update.newValue.subscribe(

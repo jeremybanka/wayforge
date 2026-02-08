@@ -11,7 +11,7 @@
 		"moduleResolution": "Bundler",
 		"noEmit": true,
 		"noImplicitAny": true,
-		"noImplicitThis": false,
+		"noImplicitThis": true,
 		"noPropertyAccessFromIndexSignature": true,
 		"noUnusedParameters": true,
 		"resolveJsonModule": true,

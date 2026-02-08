@@ -1,23 +1,24 @@
-/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
 export interface Lineage {
-	parent: typeof this | null
-	child: typeof this | null
+	parent: Lineage | null
+	child: Lineage | null
 }
 
 export function newest<T extends Lineage>(
-	scion: T,
+	origin: T,
 ): Exclude<T[`child`], null> | T {
+	let scion: Exclude<T[`child`], null> | T = origin
 	while (scion.child !== null) {
-		scion = scion.child
+		scion = scion.child as Exclude<T[`child`], null>
 	}
 	return scion
 }
 
 export function eldest<T extends Lineage>(
-	scion: T,
+	origin: T,
 ): Exclude<T[`parent`], T[`child`] | null> {
+	let scion: Exclude<T[`parent`], T[`child`] | null> | T = origin
 	while (scion.parent !== null) {
-		scion = scion.parent
+		scion = scion.parent as Exclude<T[`parent`], T[`child`] | null>
 	}
 	return scion as Exclude<T[`parent`], T[`child`] | null>
 }

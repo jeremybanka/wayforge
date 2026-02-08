@@ -283,6 +283,9 @@ importers:
 
   packages/anvl:
     devDependencies:
+      '@typescript/native-preview':
+        specifier: 7.0.0-dev.20260207.1
+        version: 7.0.0-dev.20260207.1
       concurrently:
         specifier: 9.2.1
         version: 9.2.1
