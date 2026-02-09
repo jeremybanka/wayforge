@@ -1,7 +1,7 @@
 import type { WritableFamilyToken, WritableToken } from "atom.io"
 import { setIntoStore } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
-import { useCallback, useContext, useRef } from "react"
+import { useCallback, useContext } from "react"
 
 import { parseStateOverloads } from "./parse-state-overloads"
 import { StoreContext } from "./store-context"
