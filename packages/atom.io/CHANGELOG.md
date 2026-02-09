@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.24
+
+### Patch Changes
+
+- db9547a: 🐛 `atom.io/react` Fixed a bug with `useI()` where the target state would not be updated when this hook was used in "streamlined" (familyToken, key) mode and the passed key changed.
+
 ## 0.46.23
 
 ### Patch Changes
