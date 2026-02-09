@@ -96,7 +96,7 @@
 		"cross-env": "10.1.0",
 		"dotenv": "17.2.4",
 		"dotenv-cli": "11.0.0",
-		"drizzle-kit": "0.31.8",
+		"drizzle-kit": "0.31.9",
 		"eslint": "10.0.0",
 		"flightdeck": "workspace:*",
 		"globals": "17.3.0",
