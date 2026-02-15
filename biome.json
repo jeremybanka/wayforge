@@ -9,6 +9,7 @@
 			"!**/metafile-*",
 			"!**/*.gen.ts",
 			"!**/*.gen.tsx",
+			"!**/*.scss",
 			"!**/*.tsdoc.json",
 			"!**/.next",
 			"!**/.turbo",
