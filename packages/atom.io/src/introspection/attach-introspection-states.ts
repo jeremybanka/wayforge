@@ -6,7 +6,7 @@ import type {
 	TransactionOutcomeEvent,
 	TransactionToken,
 } from "atom.io"
-import type { Fn, RootStore, Store, Timeline } from "atom.io/internal"
+import type { Fn, RootStore, Timeline } from "atom.io/internal"
 
 import { type AtomTokenIndex, attachAtomIndex } from "./attach-atom-index"
 import type { SelectorTokenIndex } from "./attach-selector-index"

@@ -1,7 +1,7 @@
 import type { AtomToken } from "atom.io"
 import { atomFamily } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
-import { useConcealState, useRevealState } from "atom.io/realtime-client"
+import { createRevealState, useConcealState } from "atom.io/realtime-client"
 
 atomFamily<number, string>({
 	key: `count`,
@@ -10,7 +10,7 @@ atomFamily<number, string>({
 
 test(`revealState`, () => {
 	expect(IMPLICIT.STORE.atoms.size).toBe(6)
-	const revealState = useRevealState(IMPLICIT.STORE)
+	const revealState = createRevealState(IMPLICIT.STORE)
 	const concealState = useConcealState(IMPLICIT.STORE)
 
 	const tokens = Array.from({ length: 10 }).map(
