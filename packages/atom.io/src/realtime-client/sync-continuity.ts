@@ -10,9 +10,9 @@ import {
 import type { Json } from "atom.io/json"
 import type { ContinuityToken, Socket } from "atom.io/realtime"
 
-import { useRegisterAndAttemptConfirmedUpdate } from "./continuity/register-and-attempt-confirmed-update"
-import { useConcealState } from "./continuity/use-conceal-state"
-import { useRevealState } from "./continuity/use-reveal-state"
+import { useRegisterAndAttemptConfirmedUpdate as initRegisterAndAttemptConfirmedUpdate } from "./continuity/register-and-attempt-confirmed-update"
+import { useConcealState as initConcealState } from "./continuity/use-conceal-state"
+import { createRevealState as initRevealState } from "./continuity/use-reveal-state"
 import {
 	confirmedUpdateQueueAtom,
 	optimisticUpdateQueueAtom,
@@ -49,13 +49,14 @@ export function syncContinuity(
 	socket.off(`continuity-init:${continuityKey}`)
 	socket.on(`continuity-init:${continuityKey}`, initializeContinuity)
 
-	const registerAndAttemptConfirmedUpdate = useRegisterAndAttemptConfirmedUpdate(
-		store,
-		continuityKey,
-		socket,
-		optimisticUpdates,
-		confirmedUpdates,
-	)
+	const registerAndAttemptConfirmedUpdate =
+		initRegisterAndAttemptConfirmedUpdate(
+			store,
+			continuityKey,
+			socket,
+			optimisticUpdates,
+			confirmedUpdates,
+		)
 	socket.off(`tx-new:${continuityKey}`)
 	socket.on(`tx-new:${continuityKey}`, registerAndAttemptConfirmedUpdate)
 
@@ -109,8 +110,8 @@ export function syncContinuity(
 		return unsubscribeFromTransactionUpdates
 	})
 
-	const revealState = useRevealState(store)
-	const concealState = useConcealState(store)
+	const revealState = initRevealState(store)
+	const concealState = initConcealState(store)
 	socket.on(`reveal:${continuityKey}`, revealState)
 	socket.on(`conceal:${continuityKey}`, concealState)
 

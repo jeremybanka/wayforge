@@ -1,7 +1,7 @@
 import { setIntoStore, type Store } from "atom.io/internal"
 import type { Json } from "atom.io/json"
 
-export function useRevealState(store: Store) {
+export function createRevealState(store: Store) {
 	return (revealed: Json.Array): void => {
 		let i = 0
 		let k: any
