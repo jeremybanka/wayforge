@@ -55,7 +55,7 @@
 	"dependencies": {
 		"@floating-ui/react": "0.27.18",
 		"@js-temporal/polyfill": "0.5.1",
-		"@react-email/components": "1.0.7",
+		"@react-email/components": "1.0.8",
 		"@react-spring/three": "10.0.3",
 		"@react-three/drei": "10.7.7",
 		"@react-three/fiber": "9.5.0",
