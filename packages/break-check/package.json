@@ -30,7 +30,7 @@
 		"arktype": "2.1.29",
 		"comline": "workspace:*",
 		"minimatch": "10.2.2",
-		"simple-git": "3.31.1",
+		"simple-git": "3.32.1",
 		"takua": "workspace:*"
 	},
 	"scripts": {
