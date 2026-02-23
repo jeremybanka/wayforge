@@ -30,8 +30,8 @@ importers:
         specifier: 8.56.0
         version: 8.56.0(eslint@10.0.1(jiti@2.6.1))(typescript@5.9.3)
       '@typescript/native-preview':
-        specifier: 7.0.0-dev.20260222.1
-        version: 7.0.0-dev.20260222.1
+        specifier: 7.0.0-dev.20260223.1
+        version: 7.0.0-dev.20260223.1
       cross-env:
         specifier: 10.1.0
         version: 10.1.0
@@ -109,8 +109,8 @@ importers:
         specifier: 15.5.13
         version: 15.5.13
       '@typescript/native-preview':
-        specifier: 7.0.0-dev.20260222.1
-        version: 7.0.0-dev.20260222.1
+        specifier: 7.0.0-dev.20260223.1
+        version: 7.0.0-dev.20260223.1
       chokidar:
         specifier: 5.0.0
         version: 5.0.0
@@ -287,8 +287,8 @@ importers:
   packages/anvl:
     devDependencies:
       '@typescript/native-preview':
-        specifier: 7.0.0-dev.20260222.1
-        version: 7.0.0-dev.20260222.1
+        specifier: 7.0.0-dev.20260223.1
+        version: 7.0.0-dev.20260223.1
       concurrently:
         specifier: 9.2.1
         version: 9.2.1
@@ -297,7 +297,7 @@ importers:
         version: 10.0.1(jiti@2.6.1)
       tsdown:
         specifier: 0.20.3
-        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260222.1)(typescript@5.9.3)
+        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260223.1)(typescript@5.9.3)
       vite:
         specifier: 7.3.1
         version: 7.3.1(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1)
@@ -360,8 +360,8 @@ importers:
         specifier: 8.56.0
         version: 8.56.0(eslint@10.0.1(jiti@2.6.1))(typescript@5.9.3)
       '@typescript/native-preview':
-        specifier: 7.0.0-dev.20260222.1
-        version: 7.0.0-dev.20260222.1
+        specifier: 7.0.0-dev.20260223.1
+        version: 7.0.0-dev.20260223.1
       '@vitest/coverage-v8':
         specifier: 4.0.18
         version: 4.0.18(vitest@4.0.18)
@@ -430,7 +430,7 @@ importers:
         version: 0.2.5
       tsdown:
         specifier: 0.20.3
-        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260222.1)(typescript@5.9.3)
+        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260223.1)(typescript@5.9.3)
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -469,8 +469,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       '@typescript/native-preview':
-        specifier: 7.0.0-dev.20260222.1
-        version: 7.0.0-dev.20260222.1
+        specifier: 7.0.0-dev.20260223.1
+        version: 7.0.0-dev.20260223.1
       concurrently:
         specifier: 9.2.1
         version: 9.2.1
@@ -485,7 +485,7 @@ importers:
         version: 0.2.5
       tsdown:
         specifier: 0.20.3
-        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260222.1)(typescript@5.9.3)
+        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260223.1)(typescript@5.9.3)
 
   packages/comline:
     dependencies:
@@ -506,8 +506,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       '@typescript/native-preview':
-        specifier: 7.0.0-dev.20260222.1
-        version: 7.0.0-dev.20260222.1
+        specifier: 7.0.0-dev.20260223.1
+        version: 7.0.0-dev.20260223.1
       arktype:
         specifier: 2.1.29
         version: 2.1.29
@@ -522,7 +522,7 @@ importers:
         version: 0.2.5
       tsdown:
         specifier: 0.20.3
-        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260222.1)(typescript@5.9.3)
+        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260223.1)(typescript@5.9.3)
       vite:
         specifier: 7.3.1
         version: 7.3.1(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1)
@@ -570,8 +570,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       '@typescript/native-preview':
-        specifier: 7.0.0-dev.20260222.1
-        version: 7.0.0-dev.20260222.1
+        specifier: 7.0.0-dev.20260223.1
+        version: 7.0.0-dev.20260223.1
       concurrently:
         specifier: 9.2.1
         version: 9.2.1
@@ -586,7 +586,7 @@ importers:
         version: 0.2.5
       tsdown:
         specifier: 0.20.3
-        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260222.1)(typescript@5.9.3)
+        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260223.1)(typescript@5.9.3)
 
   packages/flightdeck:
     dependencies:
@@ -625,8 +625,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       '@typescript/native-preview':
-        specifier: 7.0.0-dev.20260222.1
-        version: 7.0.0-dev.20260222.1
+        specifier: 7.0.0-dev.20260223.1
+        version: 7.0.0-dev.20260223.1
       concurrently:
         specifier: 9.2.1
         version: 9.2.1
@@ -644,7 +644,7 @@ importers:
         version: 0.2.5
       tsdown:
         specifier: 0.20.3
-        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260222.1)(typescript@5.9.3)
+        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260223.1)(typescript@5.9.3)
       varmint:
         specifier: workspace:*
         version: link:../varmint
@@ -698,8 +698,8 @@ importers:
         specifier: 19.2.14
         version: 19.2.14
       '@typescript/native-preview':
-        specifier: 7.0.0-dev.20260222.1
-        version: 7.0.0-dev.20260222.1
+        specifier: 7.0.0-dev.20260223.1
+        version: 7.0.0-dev.20260223.1
       '@vitejs/plugin-react':
         specifier: 5.1.4
         version: 5.1.4(vite@7.3.1(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1))
@@ -735,7 +735,7 @@ importers:
         version: link:../takua
       tsdown:
         specifier: 0.20.3
-        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260222.1)(typescript@5.9.3)
+        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260223.1)(typescript@5.9.3)
       vite-plugin-dts:
         specifier: 4.5.4
         version: 4.5.4(@types/node@25.3.0)(rollup@4.55.1)(typescript@5.9.3)(vite@7.3.1(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1))
@@ -766,7 +766,7 @@ importers:
         version: 10.0.1(jiti@2.6.1)
       tsdown:
         specifier: 0.20.3
-        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260222.1)(typescript@5.9.3)
+        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260223.1)(typescript@5.9.3)
       vite:
         specifier: 7.3.1
         version: 7.3.1(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1)
@@ -784,8 +784,8 @@ importers:
         version: link:../treetrunks
     devDependencies:
       '@typescript/native-preview':
-        specifier: 7.0.0-dev.20260222.1
-        version: 7.0.0-dev.20260222.1
+        specifier: 7.0.0-dev.20260223.1
+        version: 7.0.0-dev.20260223.1
       concurrently:
         specifier: 9.2.1
         version: 9.2.1
@@ -797,7 +797,7 @@ importers:
         version: 6.1.3
       tsdown:
         specifier: 0.20.3
-        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260222.1)(typescript@5.9.3)
+        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260223.1)(typescript@5.9.3)
       vite:
         specifier: 7.3.1
         version: 7.3.1(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1)
@@ -822,7 +822,7 @@ importers:
         version: 10.0.1(jiti@2.6.1)
       tsdown:
         specifier: 0.20.3
-        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260222.1)(typescript@5.9.3)
+        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260223.1)(typescript@5.9.3)
       vite:
         specifier: 7.3.1
         version: 7.3.1(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1)
@@ -833,8 +833,8 @@ importers:
   packages/rationality:
     devDependencies:
       '@typescript/native-preview':
-        specifier: 7.0.0-dev.20260222.1
-        version: 7.0.0-dev.20260222.1
+        specifier: 7.0.0-dev.20260223.1
+        version: 7.0.0-dev.20260223.1
       concurrently:
         specifier: 9.2.1
         version: 9.2.1
@@ -843,7 +843,7 @@ importers:
         version: 10.0.1(jiti@2.6.1)
       tsdown:
         specifier: 0.20.3
-        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260222.1)(typescript@5.9.3)
+        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260223.1)(typescript@5.9.3)
       vite:
         specifier: 7.3.1
         version: 7.3.1(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1)
@@ -864,7 +864,7 @@ importers:
         version: 2.16.11
       tsdown:
         specifier: 0.20.3
-        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260222.1)(typescript@5.9.3)
+        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260223.1)(typescript@5.9.3)
       vite:
         specifier: 7.3.1
         version: 7.3.1(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1)
@@ -884,8 +884,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       '@typescript/native-preview':
-        specifier: 7.0.0-dev.20260222.1
-        version: 7.0.0-dev.20260222.1
+        specifier: 7.0.0-dev.20260223.1
+        version: 7.0.0-dev.20260223.1
       concurrently:
         specifier: 9.2.1
         version: 9.2.1
@@ -900,7 +900,7 @@ importers:
         version: 0.2.5
       tsdown:
         specifier: 0.20.3
-        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260222.1)(typescript@5.9.3)
+        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260223.1)(typescript@5.9.3)
       vite:
         specifier: 7.3.1
         version: 7.3.1(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1)
@@ -915,8 +915,8 @@ importers:
         version: 1.1.1
     devDependencies:
       '@typescript/native-preview':
-        specifier: 7.0.0-dev.20260222.1
-        version: 7.0.0-dev.20260222.1
+        specifier: 7.0.0-dev.20260223.1
+        version: 7.0.0-dev.20260223.1
       concurrently:
         specifier: 9.2.1
         version: 9.2.1
@@ -928,7 +928,7 @@ importers:
         version: 6.1.3
       tsdown:
         specifier: 0.20.3
-        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260222.1)(typescript@5.9.3)
+        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260223.1)(typescript@5.9.3)
       vite:
         specifier: 7.3.1
         version: 7.3.1(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1)
@@ -942,8 +942,8 @@ importers:
         specifier: 25.3.0
         version: 25.3.0
       '@typescript/native-preview':
-        specifier: 7.0.0-dev.20260222.1
-        version: 7.0.0-dev.20260222.1
+        specifier: 7.0.0-dev.20260223.1
+        version: 7.0.0-dev.20260223.1
       '@vitest/coverage-v8':
         specifier: 4.0.18
         version: 4.0.18(vitest@4.0.18)
@@ -961,7 +961,7 @@ importers:
         version: 6.1.3
       tsdown:
         specifier: 0.20.3
-        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260222.1)(typescript@5.9.3)
+        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260223.1)(typescript@5.9.3)
       vite:
         specifier: 7.3.1
         version: 7.3.1(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1)
@@ -1001,7 +1001,7 @@ importers:
         version: 0.2.5
       tsdown:
         specifier: 0.20.3
-        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260222.1)(typescript@5.9.3)
+        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260223.1)(typescript@5.9.3)
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -1040,8 +1040,8 @@ importers:
         specifier: 0.2.6
         version: 0.2.6
       '@typescript/native-preview':
-        specifier: 7.0.0-dev.20260222.1
-        version: 7.0.0-dev.20260222.1
+        specifier: 7.0.0-dev.20260223.1
+        version: 7.0.0-dev.20260223.1
       atom.io:
         specifier: workspace:*
         version: link:../atom.io
@@ -1059,7 +1059,7 @@ importers:
         version: 0.2.5
       tsdown:
         specifier: 0.20.3
-        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260222.1)(typescript@5.9.3)
+        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260223.1)(typescript@5.9.3)
       vite:
         specifier: 7.3.1
         version: 7.3.1(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1)
@@ -1092,7 +1092,7 @@ importers:
         version: 0.1.13(typescript@5.9.3)(zod@4.3.6)
       tsdown:
         specifier: 0.20.3
-        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260222.1)(typescript@5.9.3)
+        version: 0.20.3(@typescript/native-preview@7.0.0-dev.20260223.1)(typescript@5.9.3)
       vite:
         specifier: 7.3.1
         version: 7.3.1(@types/node@25.3.0)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1)
@@ -4543,43 +4543,43 @@ packages:
     resolution: {integrity: sha512-q+SL+b+05Ud6LbEE35qe4A99P+htKTKVbyiNEe45eCbJFyh/HVK9QXwlrbz+Q4L8SOW4roxSVwXYj4DMBT7Ieg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260222.1':
-    resolution: {integrity: sha512-aXfK/s3QlbzXvZoFQ07KJDNx86q61nCITSreqLytnqjhjsXUUuMACsxjy/YsReLG2bdii+mHTA2WB2IB0LKKGA==}
+  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260223.1':
+    resolution: {integrity: sha512-uDvCfIGr3PR8iKBA6OCNq6w0b2WMvmtkS8KUZVy04CH8ieFsxChYStLiyFTDX4GZs9BtWKeth/7qGDZewY20sQ==}
     cpu: [arm64]
     os: [darwin]
 
-  '@typescript/native-preview-darwin-x64@7.0.0-dev.20260222.1':
-    resolution: {integrity: sha512-+bHnCeONX47pmVXTt6kuwxiLayDVqkLtshjqpqthXMWFFGk+1K/5ASbFEb2FumSABgB9hQ/xqkjj5QHUgGmbPg==}
+  '@typescript/native-preview-darwin-x64@7.0.0-dev.20260223.1':
+    resolution: {integrity: sha512-hOKQicSgd1DhFbsqdpC5fMgg0R46sYbbtVjfXgYTAHg/WO6whfZ2SfPy9IIzsQ/CXYUZuwoJElCnc9DTcd66+w==}
     cpu: [x64]
     os: [darwin]
 
-  '@typescript/native-preview-linux-arm64@7.0.0-dev.20260222.1':
-    resolution: {integrity: sha512-Usm9oJzLPqK7Z7echSSaHnmTXhr3knLXycoyVZwRrmWC33aX2efZb+XrdaV/SMhdYjYHCZ6mE60qcK4nEaXdng==}
+  '@typescript/native-preview-linux-arm64@7.0.0-dev.20260223.1':
+    resolution: {integrity: sha512-oRt0l3O/itqBEwd5rhfDAyziEzbSgWar1NShduK4n2mHWTHCI1I7mFsbSPbox2pdrqOwOr0QW8xu7xEgDWWRXA==}
     cpu: [arm64]
     os: [linux]
 
-  '@typescript/native-preview-linux-arm@7.0.0-dev.20260222.1':
-    resolution: {integrity: sha512-bavfJlI3JNH2F/7BX0drZ4JCSjLsCc2Dy5e2s6pc2wuLIzJ6hIjFaXIeB9TDbVYJE+MlLf6rtQF9nP9iSsgk9g==}
+  '@typescript/native-preview-linux-arm@7.0.0-dev.20260223.1':
+    resolution: {integrity: sha512-FVq6XjzqtLC1MVgQiumwpuW7Ug+S+WVEbvCUJQhrs8Szbf6fIFU/6+D6fOGCKzzo9SAD6zq2RNHtejBw74JSFA==}
     cpu: [arm]
     os: [linux]
 
-  '@typescript/native-preview-linux-x64@7.0.0-dev.20260222.1':
-    resolution: {integrity: sha512-JaOwNBJ2nA0C/MBfMXilrVNv+hUpIzs7JtpSgpOsXa3Hq7BL2rnoO6WMuCo8IHz7v8+Lr+MPJufXVEHfrOtf5A==}
+  '@typescript/native-preview-linux-x64@7.0.0-dev.20260223.1':
+    resolution: {integrity: sha512-qpFTW7q8Vvq1v/0bzfT8+D0wLjqydIP0qKlomrEGLlMnCCAnPodo2oLc2JCtacc40TSMZZARvhctTszCn1gWBA==}
     cpu: [x64]
     os: [linux]
 
-  '@typescript/native-preview-win32-arm64@7.0.0-dev.20260222.1':
-    resolution: {integrity: sha512-Mngr3qdeO7Ey3DtsHe4oqIghXYcjOr9pVQtKXbijfT0slRtVPeF1TmEb/eH+Z+LsY1SOW8c/Cig1G4NDXZnghw==}
+  '@typescript/native-preview-win32-arm64@7.0.0-dev.20260223.1':
+    resolution: {integrity: sha512-HHu63F8cDhgIlqFGBnqBVQn7HSiORxyT0M6yPzG4tG4gdzx+aFUdogbYily0nzN5b6NolQTrFfh3Q85UfHCHqg==}
     cpu: [arm64]
     os: [win32]
 
-  '@typescript/native-preview-win32-x64@7.0.0-dev.20260222.1':
-    resolution: {integrity: sha512-8Gps/FPcQiyoHeDhRY3RXhJSJwQQuUIP5lepYO3+2xvCPPeeNBoOueiLoGKxno4CYbS4O2fPdVmymboX0ApjZA==}
+  '@typescript/native-preview-win32-x64@7.0.0-dev.20260223.1':
+    resolution: {integrity: sha512-vSis36O5qT+vOYfei7GtfWWzvIoaNdmxa1zDypBKkGGCCHt/c5vp0pXls85+8jBVS11Ep6p7ECcHlt+R5CBaug==}
     cpu: [x64]
     os: [win32]
 
-  '@typescript/native-preview@7.0.0-dev.20260222.1':
-    resolution: {integrity: sha512-Uxon0iNhNqH/HkWvKmTmr7d5TJp6yomoyFHNpLIEghy91/DNWEtKMuLjNDYPFcoNxWpuJW9vuWTWeu3mcqT94Q==}
+  '@typescript/native-preview@7.0.0-dev.20260223.1':
+    resolution: {integrity: sha512-NEifR9F/0khbTQRztM4Yuxcj9dFuK9ubWIXJwLSmKMlncSp4u1fzRnlfv1vlNKKrXB7BUXoANFHpsM5BEXJ06w==}
     hasBin: true
 
   '@ungap/structured-clone@1.3.0':
@@ -12524,36 +12524,36 @@ snapshots:
       '@typescript-eslint/types': 8.56.0
       eslint-visitor-keys: 5.0.0
 
-  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260222.1':
+  '@typescript/native-preview-darwin-arm64@7.0.0-dev.20260223.1':
     optional: true
 
-  '@typescript/native-preview-darwin-x64@7.0.0-dev.20260222.1':
+  '@typescript/native-preview-darwin-x64@7.0.0-dev.20260223.1':
     optional: true
 
-  '@typescript/native-preview-linux-arm64@7.0.0-dev.20260222.1':
+  '@typescript/native-preview-linux-arm64@7.0.0-dev.20260223.1':
     optional: true
 
-  '@typescript/native-preview-linux-arm@7.0.0-dev.20260222.1':
+  '@typescript/native-preview-linux-arm@7.0.0-dev.20260223.1':
     optional: true
 
-  '@typescript/native-preview-linux-x64@7.0.0-dev.20260222.1':
+  '@typescript/native-preview-linux-x64@7.0.0-dev.20260223.1':
     optional: true
 
-  '@typescript/native-preview-win32-arm64@7.0.0-dev.20260222.1':
+  '@typescript/native-preview-win32-arm64@7.0.0-dev.20260223.1':
     optional: true
 
-  '@typescript/native-preview-win32-x64@7.0.0-dev.20260222.1':
+  '@typescript/native-preview-win32-x64@7.0.0-dev.20260223.1':
     optional: true
 
-  '@typescript/native-preview@7.0.0-dev.20260222.1':
+  '@typescript/native-preview@7.0.0-dev.20260223.1':
     optionalDependencies:
-      '@typescript/native-preview-darwin-arm64': 7.0.0-dev.20260222.1
-      '@typescript/native-preview-darwin-x64': 7.0.0-dev.20260222.1
-      '@typescript/native-preview-linux-arm': 7.0.0-dev.20260222.1
-      '@typescript/native-preview-linux-arm64': 7.0.0-dev.20260222.1
-      '@typescript/native-preview-linux-x64': 7.0.0-dev.20260222.1
-      '@typescript/native-preview-win32-arm64': 7.0.0-dev.20260222.1
-      '@typescript/native-preview-win32-x64': 7.0.0-dev.20260222.1
+      '@typescript/native-preview-darwin-arm64': 7.0.0-dev.20260223.1
+      '@typescript/native-preview-darwin-x64': 7.0.0-dev.20260223.1
+      '@typescript/native-preview-linux-arm': 7.0.0-dev.20260223.1
+      '@typescript/native-preview-linux-arm64': 7.0.0-dev.20260223.1
+      '@typescript/native-preview-linux-x64': 7.0.0-dev.20260223.1
+      '@typescript/native-preview-win32-arm64': 7.0.0-dev.20260223.1
+      '@typescript/native-preview-win32-x64': 7.0.0-dev.20260223.1
 
   '@ungap/structured-clone@1.3.0': {}
 
@@ -16796,7 +16796,7 @@ snapshots:
       glob: 13.0.3
       package-json-from-dist: 1.0.1
 
-  rolldown-plugin-dts@0.22.1(@typescript/native-preview@7.0.0-dev.20260222.1)(rolldown@1.0.0-rc.3)(typescript@5.9.3):
+  rolldown-plugin-dts@0.22.1(@typescript/native-preview@7.0.0-dev.20260223.1)(rolldown@1.0.0-rc.3)(typescript@5.9.3):
     dependencies:
       '@babel/generator': 8.0.0-rc.1
       '@babel/helper-validator-identifier': 8.0.0-rc.1
@@ -16809,7 +16809,7 @@ snapshots:
       obug: 2.1.1
       rolldown: 1.0.0-rc.3
     optionalDependencies:
-      '@typescript/native-preview': 7.0.0-dev.20260222.1
+      '@typescript/native-preview': 7.0.0-dev.20260223.1
       typescript: 5.9.3
     transitivePeerDependencies:
       - oxc-resolver
@@ -17649,7 +17649,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tsdown@0.20.3(@typescript/native-preview@7.0.0-dev.20260222.1)(typescript@5.9.3):
+  tsdown@0.20.3(@typescript/native-preview@7.0.0-dev.20260223.1)(typescript@5.9.3):
     dependencies:
       ansis: 4.2.0
       cac: 6.7.14
@@ -17660,7 +17660,7 @@ snapshots:
       obug: 2.1.1
       picomatch: 4.0.3
       rolldown: 1.0.0-rc.3
-      rolldown-plugin-dts: 0.22.1(@typescript/native-preview@7.0.0-dev.20260222.1)(rolldown@1.0.0-rc.3)(typescript@5.9.3)
+      rolldown-plugin-dts: 0.22.1(@typescript/native-preview@7.0.0-dev.20260223.1)(rolldown@1.0.0-rc.3)(typescript@5.9.3)
       semver: 7.7.3
       tinyexec: 1.0.2
       tinyglobby: 0.2.15
