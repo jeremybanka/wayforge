@@ -108,6 +108,9 @@ importers:
       '@types/react-syntax-highlighter':
         specifier: 15.5.13
         version: 15.5.13
+      '@typescript/native-preview':
+        specifier: 7.0.0-dev.20260222.1
+        version: 7.0.0-dev.20260222.1
       chokidar:
         specifier: 5.0.0
         version: 5.0.0
