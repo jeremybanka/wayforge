@@ -11,5 +11,11 @@
 			"atom.io/*": ["../atom.io/src/*"]
 		}
 	},
-	"include": ["**/src", "__scripts__", "__experimental__", "**/*.config.ts"]
+	"include": [
+		"**/src",
+		"__scripts__",
+		"__experimental__",
+		"**/*.config.ts",
+		"css.d.ts"
+	]
 }

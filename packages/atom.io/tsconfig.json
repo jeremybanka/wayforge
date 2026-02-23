@@ -21,6 +21,7 @@
 		"__scripts__",
 		"__stories__",
 		"__unstable__",
-		".storybook/*.ts"
+		".storybook/*.ts",
+		"css.d.ts"
 	]
 }

@@ -94,7 +94,8 @@
 				"src/**",
 				"**/src/**",
 				"__tests__/**",
-				"__scripts__/**"
+				"__scripts__/**",
+				"**/*.d.ts"
 			]
 		},
 		"watch:types": {
