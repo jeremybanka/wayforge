@@ -35,7 +35,7 @@
 	"devDependencies": {
 		"@typescript/native-preview": "7.0.0-dev.20260223.1",
 		"concurrently": "9.2.1",
-		"eslint": "10.0.1",
+		"eslint": "10.0.2",
 		"tsdown": "0.20.3",
 		"vite": "7.3.1",
 		"vitest": "4.0.18"
