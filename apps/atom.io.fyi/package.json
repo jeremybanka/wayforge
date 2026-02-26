@@ -27,8 +27,8 @@
 		"astro": "5.18.0",
 		"atom.io": "workspace:*",
 		"preact": "10.28.4",
-		"react": "npm:@preact/compat@18.3.1",
-		"react-dom": "npm:@preact/compat@18.3.1",
+		"react": "npm:@preact/compat@18.3.2",
+		"react-dom": "npm:@preact/compat@18.3.2",
 		"react-syntax-highlighter": "16.1.0",
 		"tsdoc.json": "workspace:*"
 	},

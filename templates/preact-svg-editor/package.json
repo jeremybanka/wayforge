@@ -18,8 +18,8 @@
 	"dependencies": {
 		"atom.io": "workspace:*",
 		"preact": "10.28.4",
-		"react": "npm:@preact/compat@18.3.1",
-		"react-dom": "npm:@preact/compat@18.3.1"
+		"react": "npm:@preact/compat@18.3.2",
+		"react-dom": "npm:@preact/compat@18.3.2"
 	},
 	"devDependencies": {
 		"@preact/preset-vite": "2.10.3",
