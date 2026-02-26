@@ -87,14 +87,14 @@ importers:
         specifier: 10.28.4
         version: 10.28.4
       react:
-        specifier: npm:@preact/compat@18.3.1
-        version: '@preact/compat@18.3.1(preact@10.28.4)'
+        specifier: npm:@preact/compat@18.3.2
+        version: '@preact/compat@18.3.2(preact@10.28.4)'
       react-dom:
         specifier: npm:@preact/compat@18.3.1
         version: '@preact/compat@18.3.1(preact@10.28.4)'
       react-syntax-highlighter:
         specifier: 16.1.0
-        version: 16.1.0(@preact/compat@18.3.1(preact@10.28.4))
+        version: 16.1.0(@preact/compat@18.3.2(preact@10.28.4))
       tsdoc.json:
         specifier: workspace:*
         version: link:../../packages/tsdoc.json
@@ -1109,8 +1109,8 @@ importers:
         specifier: 10.28.4
         version: 10.28.4
       react:
-        specifier: npm:@preact/compat@18.3.1
-        version: '@preact/compat@18.3.1(preact@10.28.4)'
+        specifier: npm:@preact/compat@18.3.2
+        version: '@preact/compat@18.3.2(preact@10.28.4)'
       react-dom:
         specifier: npm:@preact/compat@18.3.1
         version: '@preact/compat@18.3.1(preact@10.28.4)'
@@ -3425,6 +3425,11 @@ packages:
 
   '@preact/compat@18.3.1':
     resolution: {integrity: sha512-Kog4PSRxtT4COtOXjsuQPV1vMXpUzREQfv+6Dmcy9/rMk0HOPK0HTE9fspFjAmY8R80T/T8gtgmZ68u5bOSngw==}
+    peerDependencies:
+      preact: '*'
+
+  '@preact/compat@18.3.2':
+    resolution: {integrity: sha512-5vSl55K5yLMvocT7PBKxDOHGgYPjMrKQqqr6roSNjIXcJOtSgDDMjpiCAF3s7klRdmGrN75b/Przmjw8gmlg/w==}
     peerDependencies:
       preact: '*'
 
@@ -11481,6 +11486,10 @@ snapshots:
     dependencies:
       preact: 10.28.4
 
+  '@preact/compat@18.3.2(preact@10.28.4)':
+    dependencies:
+      preact: 10.28.4
+
   '@preact/preset-vite@2.10.2(@babel/core@7.29.0)(preact@10.28.4)(vite@6.4.1(@types/node@25.3.1)(jiti@2.6.1)(lightningcss@1.30.2)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1))':
     dependencies:
       '@babel/core': 7.29.0
@@ -16511,14 +16520,14 @@ snapshots:
     optionalDependencies:
       react-dom: 19.2.4(react@19.2.4)
 
-  react-syntax-highlighter@16.1.0(@preact/compat@18.3.1(preact@10.28.4)):
+  react-syntax-highlighter@16.1.0(@preact/compat@18.3.2(preact@10.28.4)):
     dependencies:
       '@babel/runtime': 7.28.4
       highlight.js: 10.7.3
       highlightjs-vue: 1.0.0
       lowlight: 1.20.0
       prismjs: 1.30.0
-      react: '@preact/compat@18.3.1(preact@10.28.4)'
+      react: '@preact/compat@18.3.2(preact@10.28.4)'
       refractor: 5.0.0
 
   react-use-measure@2.1.7(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
