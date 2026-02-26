@@ -90,8 +90,8 @@ importers:
         specifier: npm:@preact/compat@18.3.2
         version: '@preact/compat@18.3.2(preact@10.28.4)'
       react-dom:
-        specifier: npm:@preact/compat@18.3.1
-        version: '@preact/compat@18.3.1(preact@10.28.4)'
+        specifier: npm:@preact/compat@18.3.2
+        version: '@preact/compat@18.3.2(preact@10.28.4)'
       react-syntax-highlighter:
         specifier: 16.1.0
         version: 16.1.0(@preact/compat@18.3.2(preact@10.28.4))
@@ -1112,8 +1112,8 @@ importers:
         specifier: npm:@preact/compat@18.3.2
         version: '@preact/compat@18.3.2(preact@10.28.4)'
       react-dom:
-        specifier: npm:@preact/compat@18.3.1
-        version: '@preact/compat@18.3.1(preact@10.28.4)'
+        specifier: npm:@preact/compat@18.3.2
+        version: '@preact/compat@18.3.2(preact@10.28.4)'
     devDependencies:
       '@preact/preset-vite':
         specifier: 2.10.3
@@ -3422,11 +3422,6 @@ packages:
 
   '@poppinss/exception@1.2.3':
     resolution: {integrity: sha512-dCED+QRChTVatE9ibtoaxc+WkdzOSjYTKi/+uacHWIsfodVfpsueo3+DKpgU5Px8qXjgmXkSvhXvSCz3fnP9lw==}
-
-  '@preact/compat@18.3.1':
-    resolution: {integrity: sha512-Kog4PSRxtT4COtOXjsuQPV1vMXpUzREQfv+6Dmcy9/rMk0HOPK0HTE9fspFjAmY8R80T/T8gtgmZ68u5bOSngw==}
-    peerDependencies:
-      preact: '*'
 
   '@preact/compat@18.3.2':
     resolution: {integrity: sha512-5vSl55K5yLMvocT7PBKxDOHGgYPjMrKQqqr6roSNjIXcJOtSgDDMjpiCAF3s7klRdmGrN75b/Przmjw8gmlg/w==}
@@ -11481,10 +11476,6 @@ snapshots:
       supports-color: 10.2.2
 
   '@poppinss/exception@1.2.3': {}
-
-  '@preact/compat@18.3.1(preact@10.28.4)':
-    dependencies:
-      preact: 10.28.4
 
   '@preact/compat@18.3.2(preact@10.28.4)':
     dependencies:
