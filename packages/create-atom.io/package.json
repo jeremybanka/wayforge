@@ -28,7 +28,7 @@
 		"@atom.io/template-preact-svg-editor": "workspace:*",
 		"@atom.io/template-react-node-backend": "workspace:*",
 		"@clack/prompts": "1.1.0",
-		"arktype": "2.1.29",
+		"arktype": "2.2.0",
 		"comline": "workspace:*",
 		"local-pkg": "1.1.2",
 		"picocolors": "1.1.1",
