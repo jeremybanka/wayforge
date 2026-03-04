@@ -62,7 +62,7 @@
 		"@t3-oss/env-core": "0.13.10",
 		"@trpc/client": "11.11.0",
 		"@trpc/server": "11.11.0",
-		"arktype": "2.1.29",
+		"arktype": "2.2.0",
 		"atom.io": "workspace:*",
 		"cron": "4.4.0",
 		"drizzle-orm": "0.45.1",
