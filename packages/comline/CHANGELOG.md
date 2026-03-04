@@ -1,5 +1,12 @@
 # comline
 
+## 0.4.4
+
+### Patch Changes
+
+- Updated dependencies [f619282]
+  - treetrunks@0.1.6
+
 ## 0.4.3
 
 ### Patch Changes
