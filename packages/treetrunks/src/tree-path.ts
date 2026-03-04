@@ -64,7 +64,7 @@ export function isTreePath<T extends Tree>(
 			const wildcard = Object.keys(branches).find((key) => key.startsWith(`$`))
 			if (wildcard) {
 				const wildcardSubTree = branches[wildcard]
-				if (wildcardSubTree) {
+				if (wildcardSubTree !== undefined) {
 					treesDiscovered.push(wildcardSubTree)
 				}
 			}
