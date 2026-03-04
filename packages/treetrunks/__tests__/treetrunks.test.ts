@@ -83,6 +83,10 @@ describe(`paths`, () => {
 		expect(isTreePath(tree, [`b`])).toBe(false)
 		expect(isTreePath(tree, [])).toBe(true)
 	})
+	test(`isTreePath - final wildcard`, () => {
+		const tree = optional({ a: optional({ $b: null }) }) satisfies Tree
+		expect(isTreePath(tree, [`a`, `whatever`])).toBe(true)
+	})
 })
 
 test(`mergeTrees`, () => {
