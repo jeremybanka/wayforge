@@ -6,8 +6,9 @@ const config: UserConfig = defineConfig({
 		"main/index": `src/main/index.ts`,
 		"react/index": `src/react/index.ts`,
 	},
-	external: [`react`, `typescript`, `tsdoc.json`],
-
+	deps: {
+		neverBundle: [`react`, `typescript`, `tsdoc.json`],
+	},
 	clean: true,
 	dts: { sourcemap: true },
 	fixedExtension: false,

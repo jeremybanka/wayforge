@@ -6,7 +6,7 @@ import { fromEntries } from "./src/json/entries.ts"
 
 const SUBMODULE_NAMES = discoverSubmodules()
 
-const EXTERNAL = [
+const NEVER_BUNDLE = [
 	/^node:/,
 	/^eslint-/,
 	/^@eslint\//,
@@ -28,7 +28,9 @@ console.log({ SUBMODULE_NAMES, ALL_ENTRIES })
 
 const config: UserConfig | UserConfigFn = defineConfig({
 	entry: ALL_ENTRIES,
-	external: EXTERNAL,
+	deps: {
+		neverBundle: NEVER_BUNDLE,
+	},
 
 	clean: true,
 	dts: { sourcemap: true },
