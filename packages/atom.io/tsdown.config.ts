@@ -31,6 +31,9 @@ const config: UserConfig | UserConfigFn = defineConfig({
 	deps: {
 		neverBundle: NEVER_BUNDLE,
 	},
+	css: {
+		splitting: true,
+	},
 
 	clean: true,
 	dts: { sourcemap: true },
