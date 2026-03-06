@@ -35,7 +35,7 @@
 	"devDependencies": {
 		"@types/node": "25.3.5",
 		"@types/tmp": "0.2.6",
-		"@typescript/native-preview": "7.0.0-dev.20260305.1",
+		"@typescript/native-preview": "7.0.0-dev.20260306.1",
 		"concurrently": "9.2.1",
 		"eslint": "10.0.2",
 		"rimraf": "6.1.3",
