@@ -1,5 +1,11 @@
 # @atom.io/template-preact-svg-editor
 
+## 0.0.46
+
+### Patch Changes
+
+- edd6dac: 🔧 Enable ESLint rules `atom.io/exact-catch-types` and `atom.io/naming-convention`.
+
 ## 0.0.45
 
 ### Patch Changes

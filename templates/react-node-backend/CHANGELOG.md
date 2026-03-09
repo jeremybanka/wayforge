@@ -1,5 +1,11 @@
 # @atom.io/template-react-node-backend
 
+## 0.0.49
+
+### Patch Changes
+
+- edd6dac: 🔧 Enable ESLint rules `atom.io/exact-catch-types` and `atom.io/naming-convention`.
+
 ## 0.0.48
 
 ### Patch Changes
