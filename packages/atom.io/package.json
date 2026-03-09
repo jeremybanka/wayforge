@@ -86,6 +86,7 @@
 		"@storybook/addon-onboarding": "10.2.16",
 		"@storybook/react-vite": "10.2.16",
 		"@testing-library/react": "16.3.2",
+		"@tsdown/css": "0.21.1",
 		"@types/eslint": "9.6.1",
 		"@types/estree": "1.0.8",
 		"@types/http-proxy": "1.17.17",
