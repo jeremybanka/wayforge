@@ -58,7 +58,7 @@ const todoKeysAtom = atom<Loadable<number[]>, Error>({
  * when the atom has never been gotten or set before.
  */
 const todoAtoms = atomFamily<Loadable<Todo>, number, Error>({
-	key: `todos`,
+	key: `todo`,
 	default: async (id) => {
 		const url = new URL(`/todos`, SERVER_URL)
 		url.searchParams.set(`id`, id.toString())
@@ -243,7 +243,7 @@ function Todo({ todoKey }: { todoKey: number }): React.JSX.Element {
 
 /** This atom holds the text of the new todo entry. */
 const newTodoTextAtom = atom<string>({
-	key: `newTodo`,
+	key: `newTodoText`,
 	default: ``,
 })
 function NewTodo(): React.JSX.Element {
