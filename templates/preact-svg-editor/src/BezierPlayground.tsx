@@ -25,15 +25,15 @@ const subpathKeysAtoms = atomFamily<string[], string>({
 	default: [],
 })
 const nodeAtoms = atomFamily<PointXY | null, string>({
-	key: `nodeAtoms`,
+	key: `node`,
 	default: null,
 })
 const edgeAtoms = atomFamily<EdgeXY | boolean, string>({
-	key: `edgeAtoms`,
+	key: `edge`,
 	default: true,
 })
 const pathDrawSelectors = selectorFamily<string, string>({
-	key: `pathDrawSelectors`,
+	key: `pathDraw`,
 	get:
 		(pathKey) =>
 		({ get }) => {
