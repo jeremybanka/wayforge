@@ -70,16 +70,16 @@ importers:
     dependencies:
       '@astrojs/cloudflare':
         specifier: 12.6.13
-        version: 12.6.13(@types/node@25.4.0)(astro@6.0.1(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.55.1)(sass-embedded@1.97.3)(sass@1.97.3)(typescript@5.9.3)(yaml@2.8.1))(jiti@2.6.1)(lightningcss@1.32.0)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1)
+        version: 12.6.13(@types/node@25.4.0)(astro@6.0.2(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.55.1)(sass-embedded@1.97.3)(sass@1.97.3)(typescript@5.9.3)(yaml@2.8.1))(jiti@2.6.1)(lightningcss@1.32.0)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1)
       '@astrojs/mdx':
         specifier: 4.3.14
-        version: 4.3.14(astro@6.0.1(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.55.1)(sass-embedded@1.97.3)(sass@1.97.3)(typescript@5.9.3)(yaml@2.8.1))
+        version: 4.3.14(astro@6.0.2(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.55.1)(sass-embedded@1.97.3)(sass@1.97.3)(typescript@5.9.3)(yaml@2.8.1))
       '@astrojs/preact':
         specifier: 5.0.0
         version: 5.0.0(@babel/core@7.29.0)(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.32.0)(preact@10.29.0)(rollup@4.55.1)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1)
       astro:
-        specifier: 6.0.1
-        version: 6.0.1(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.55.1)(sass-embedded@1.97.3)(sass@1.97.3)(typescript@5.9.3)(yaml@2.8.1)
+        specifier: 6.0.2
+        version: 6.0.2(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.55.1)(sass-embedded@1.97.3)(sass@1.97.3)(typescript@5.9.3)(yaml@2.8.1)
       atom.io:
         specifier: workspace:*
         version: link:../../packages/atom.io
@@ -4670,8 +4670,8 @@ packages:
     resolution: {integrity: sha512-LElXdjswlqjWrPpJFg1Fx4wpkOCxj1TDHlSV4PlaRxHGWko024xICaa97ZkMfs6DRKlCguiAI+rbXv5GWwXIkg==}
     hasBin: true
 
-  astro@6.0.1:
-    resolution: {integrity: sha512-G6AGlYMYlRmOq8kh3wKcVwwvGwNias6wZuD1n9qmhdOKR3W3sgi/L7bq5VPaN1GS1MMygBTdUYzsOFGeGTaFPQ==}
+  astro@6.0.2:
+    resolution: {integrity: sha512-aYCU9QcaV3QlOxO+JU2lR4xazVuPaH7oFhc990H/fhbWLMm1MWlRnjfnti1gYMm9N9l7gqPb3t7JsQBlUEQXIg==}
     engines: {node: ^20.19.1 || >=22.12.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -5845,10 +5845,6 @@ packages:
 
   fontace@0.4.1:
     resolution: {integrity: sha512-lDMvbAzSnHmbYMTEld5qdtvNH2/pWpICOqpean9IgC7vUbUJc3k+k5Dokp85CegamqQpFbXf0rAVkbzpyTA8aw==}
-
-  fontkitten@1.0.0:
-    resolution: {integrity: sha512-b0RdzQeztiiUFWEDzq6Ka26qkNVNLCehoRtifOIGNbQ4CfxyYRh73fyWaQX/JshPVcueITOEeoSWPy5XQv8FUg==}
-    engines: {node: '>=20'}
 
   fontkitten@1.0.3:
     resolution: {integrity: sha512-Wp1zXWPVUPBmfoa3Cqc9ctaKuzKAV6uLstRqlR56kSjplf5uAce+qeyYym7F+PHbGTk+tCEdkCW6RD7DX/gBZw==}
@@ -9226,12 +9222,12 @@ snapshots:
 
   '@asamuzakjp/nwsapi@2.3.9': {}
 
-  '@astrojs/cloudflare@12.6.13(@types/node@25.4.0)(astro@6.0.1(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.55.1)(sass-embedded@1.97.3)(sass@1.97.3)(typescript@5.9.3)(yaml@2.8.1))(jiti@2.6.1)(lightningcss@1.32.0)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1)':
+  '@astrojs/cloudflare@12.6.13(@types/node@25.4.0)(astro@6.0.2(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.55.1)(sass-embedded@1.97.3)(sass@1.97.3)(typescript@5.9.3)(yaml@2.8.1))(jiti@2.6.1)(lightningcss@1.32.0)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1)':
     dependencies:
       '@astrojs/internal-helpers': 0.7.6
       '@astrojs/underscore-redirects': 1.0.0
       '@cloudflare/workers-types': 4.20260310.1
-      astro: 6.0.1(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.55.1)(sass-embedded@1.97.3)(sass@1.97.3)(typescript@5.9.3)(yaml@2.8.1)
+      astro: 6.0.2(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.55.1)(sass-embedded@1.97.3)(sass@1.97.3)(typescript@5.9.3)(yaml@2.8.1)
       tinyglobby: 0.2.15
       vite: 6.4.1(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.32.0)(sass-embedded@1.97.3)(sass@1.97.3)(yaml@2.8.1)
       wrangler: 4.59.2(@cloudflare/workers-types@4.20260310.1)
@@ -9278,7 +9274,7 @@ snapshots:
       smol-toml: 1.6.0
       unified: 11.0.5
       unist-util-remove-position: 5.0.0
-      unist-util-visit: 5.0.0
+      unist-util-visit: 5.1.0
       unist-util-visit-parents: 6.0.2
       vfile: 6.0.3
     transitivePeerDependencies:
@@ -9309,12 +9305,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/mdx@4.3.14(astro@6.0.1(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.55.1)(sass-embedded@1.97.3)(sass@1.97.3)(typescript@5.9.3)(yaml@2.8.1))':
+  '@astrojs/mdx@4.3.14(astro@6.0.2(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.55.1)(sass-embedded@1.97.3)(sass@1.97.3)(typescript@5.9.3)(yaml@2.8.1))':
     dependencies:
       '@astrojs/markdown-remark': 6.3.11
       '@mdx-js/mdx': 3.1.1
       acorn: 8.16.0
-      astro: 6.0.1(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.55.1)(sass-embedded@1.97.3)(sass@1.97.3)(typescript@5.9.3)(yaml@2.8.1)
+      astro: 6.0.2(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.55.1)(sass-embedded@1.97.3)(sass@1.97.3)(typescript@5.9.3)(yaml@2.8.1)
       es-module-lexer: 1.7.0
       estree-util-visit: 2.0.0
       hast-util-to-html: 9.0.5
@@ -9687,7 +9683,7 @@ snapshots:
 
   '@capsizecss/unpack@4.0.0':
     dependencies:
-      fontkitten: 1.0.0
+      fontkitten: 1.0.3
 
   '@changesets/apply-release-plan@7.1.0':
     dependencies:
@@ -10752,7 +10748,7 @@ snapshots:
       unified: 11.0.5
       unist-util-position-from-estree: 2.0.0
       unist-util-stringify-position: 4.0.0
-      unist-util-visit: 5.0.0
+      unist-util-visit: 5.1.0
       vfile: 6.0.3
     transitivePeerDependencies:
       - supports-color
@@ -12438,7 +12434,7 @@ snapshots:
 
   astring@1.9.0: {}
 
-  astro@6.0.1(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.55.1)(sass-embedded@1.97.3)(sass@1.97.3)(typescript@5.9.3)(yaml@2.8.1):
+  astro@6.0.2(@types/node@25.4.0)(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.55.1)(sass-embedded@1.97.3)(sass@1.97.3)(typescript@5.9.3)(yaml@2.8.1):
     dependencies:
       '@astrojs/compiler': 3.0.0
       '@astrojs/internal-helpers': 0.8.0
@@ -13797,10 +13793,6 @@ snapshots:
     dependencies:
       fontkitten: 1.0.3
 
-  fontkitten@1.0.0:
-    dependencies:
-      tiny-inflate: 1.0.3
-
   fontkitten@1.0.3:
     dependencies:
       tiny-inflate: 1.0.3
@@ -14114,7 +14106,7 @@ snapshots:
       mdast-util-to-hast: 13.2.1
       parse5: 7.3.0
       unist-util-position: 5.0.0
-      unist-util-visit: 5.0.0
+      unist-util-visit: 5.1.0
       vfile: 6.0.3
       web-namespaces: 2.0.1
       zwitch: 2.0.4
@@ -14805,7 +14797,7 @@ snapshots:
     dependencies:
       '@types/mdast': 4.0.4
       '@types/unist': 3.0.3
-      unist-util-visit: 5.0.0
+      unist-util-visit: 5.1.0
 
   mdast-util-find-and-replace@3.0.2:
     dependencies:
@@ -14951,7 +14943,7 @@ snapshots:
       micromark-util-sanitize-uri: 2.0.1
       trim-lines: 3.0.1
       unist-util-position: 5.0.0
-      unist-util-visit: 5.0.0
+      unist-util-visit: 5.1.0
       vfile: 6.0.3
 
   mdast-util-to-markdown@2.1.2:
@@ -14963,7 +14955,7 @@ snapshots:
       mdast-util-to-string: 4.0.0
       micromark-util-classify-character: 2.0.1
       micromark-util-decode-string: 2.0.1
-      unist-util-visit: 5.0.0
+      unist-util-visit: 5.1.0
       zwitch: 2.0.4
 
   mdast-util-to-string@4.0.0:
@@ -16093,7 +16085,7 @@ snapshots:
       retext: 9.0.0
       retext-smartypants: 6.2.0
       unified: 11.0.5
-      unist-util-visit: 5.0.0
+      unist-util-visit: 5.1.0
 
   remark-stringify@11.0.0:
     dependencies:
@@ -16147,7 +16139,7 @@ snapshots:
     dependencies:
       '@types/nlcst': 2.0.3
       nlcst-to-string: 4.0.0
-      unist-util-visit: 5.0.0
+      unist-util-visit: 5.1.0
 
   retext-stringify@4.0.0:
     dependencies:
@@ -17177,7 +17169,7 @@ snapshots:
   unist-util-remove-position@5.0.0:
     dependencies:
       '@types/unist': 3.0.3
-      unist-util-visit: 5.0.0
+      unist-util-visit: 5.1.0
 
   unist-util-stringify-position@4.0.0:
     dependencies:
