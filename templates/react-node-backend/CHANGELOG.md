@@ -1,5 +1,11 @@
 # @atom.io/template-react-node-backend
 
+## 0.0.50
+
+### Patch Changes
+
+- f250a88: ♻️ Replaced dependency on `rolldown-vite` with regular `vite`.
+
 ## 0.0.49
 
 ### Patch Changes

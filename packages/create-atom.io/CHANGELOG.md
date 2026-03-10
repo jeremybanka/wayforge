@@ -1,5 +1,12 @@
 # create-atom.io
 
+## 0.1.6
+
+### Patch Changes
+
+- Updated dependencies [f250a88]
+  - @atom.io/template-react-node-backend@0.0.50
+
 ## 0.1.5
 
 ### Patch Changes
