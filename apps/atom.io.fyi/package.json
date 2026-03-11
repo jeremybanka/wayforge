@@ -21,8 +21,8 @@
 		"lint:types": "tsgo --noEmit"
 	},
 	"dependencies": {
-		"@astrojs/cloudflare": "12.6.13",
-		"@astrojs/mdx": "4.3.14",
+		"@astrojs/cloudflare": "13.0.2",
+		"@astrojs/mdx": "5.0.0",
 		"@astrojs/preact": "5.0.0",
 		"astro": "6.0.2",
 		"atom.io": "workspace:*",
