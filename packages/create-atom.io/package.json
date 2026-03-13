@@ -32,7 +32,7 @@
 		"comline": "workspace:*",
 		"local-pkg": "1.1.2",
 		"picocolors": "1.1.1",
-		"tinyexec": "1.0.2"
+		"tinyexec": "1.0.4"
 	},
 	"scripts": {
 		"build": "tsdown && rm -f dist/*.x.d.ts",
