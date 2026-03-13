@@ -55,7 +55,7 @@
 		"atom.io": "workspace:*",
 		"concurrently": "9.2.1",
 		"eslint": "10.0.3",
-		"openai": "6.27.0",
+		"openai": "6.28.0",
 		"tmp": "0.2.5",
 		"tsdown": "0.21.2",
 		"vite": "8.0.0",
