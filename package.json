@@ -40,7 +40,7 @@
 		"version": "dotenvx run -- turbo run version"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.4.6",
+		"@biomejs/biome": "2.4.7",
 		"@changesets/cli": "2.30.0",
 		"@dotenvx/dotenvx": "1.54.1",
 		"@types/eslint": "9.6.1",
