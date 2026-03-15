@@ -1,0 +1,28 @@
+{
+	"name": "@atom.io/template-solid-rationality-playground",
+	"version": "0.0.1",
+	"publishConfig": {
+		"access": "public"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeremybanka/wayforge.git",
+		"directory": "templates/solid-rationality-playground"
+	},
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build",
+		"preview": "vite preview"
+	},
+	"dependencies": {
+		"atom.io": "workspace:*",
+		"rationality": "workspace:*",
+		"solid-js": "1.9.11"
+	},
+	"devDependencies": {
+		"typescript": "5.9.3",
+		"vite": "8.0.0",
+		"vite-plugin-solid": "2.11.8"
+	}
+}
