@@ -45,6 +45,7 @@
 		"happy-dom": ">=17.4.4",
 		"motion": ">=11.0.0",
 		"react": "^18.0.0 || ^19.0.0",
+		"solid-js": "^1.9.0",
 		"socket.io": ">=4.0.0",
 		"socket.io-client": ">=4.0.0"
 	},
@@ -62,6 +63,9 @@
 			"optional": true
 		},
 		"react": {
+			"optional": true
+		},
+		"solid-js": {
 			"optional": true
 		},
 		"eslint": {
@@ -116,6 +120,7 @@
 		"recoverage": "0.1.13",
 		"socket.io": "4.8.3",
 		"socket.io-client": "4.8.3",
+		"solid-js": "1.9.11",
 		"storybook": "10.2.19",
 		"takua": "workspace:*",
 		"tmp": "0.2.5",
@@ -155,6 +160,10 @@
 		"./react": {
 			"import": "./dist/react/index.js",
 			"types": "./dist/react/index.d.ts"
+		},
+		"./solid": {
+			"import": "./dist/solid/index.js",
+			"types": "./dist/solid/index.d.ts"
 		},
 		"./react-devtools": {
 			"import": "./dist/react-devtools/index.js",
