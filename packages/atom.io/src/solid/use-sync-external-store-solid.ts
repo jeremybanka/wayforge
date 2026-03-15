@@ -4,10 +4,12 @@ export function useSyncExternalStore<Snapshot>(
 	subscribe: (onStoreChange: () => void) => () => void,
 	getSnapshot: () => Snapshot,
 ): () => Snapshot {
-	const [state, setState] = createSignal<Snapshot>(getSnapshot())
+	const [state, setState] = createSignal<Snapshot>(getSnapshot(), {
+		equals: false,
+	})
 
 	createEffect(() => {
-		const update = () => setState(getSnapshot() as any)
+		const update = () => setState(() => getSnapshot())
 		const unsubscribe = subscribe(update)
 
 		update()
@@ -17,5 +19,8 @@ export function useSyncExternalStore<Snapshot>(
 		})
 	})
 
-	return state
+	return () => {
+		state()
+		return getSnapshot()
+	}
 }

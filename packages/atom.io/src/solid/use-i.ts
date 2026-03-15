@@ -1,7 +1,7 @@
 import type { WritableFamilyToken, WritableToken } from "atom.io"
 import { setIntoStore } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
-import { useContext, useRef } from "react"
+import { useContext } from "solid-js"
 
 import { parseStateOverloads } from "./parse-state-overloads"
 import { StoreContext } from "./store-context"
@@ -22,11 +22,7 @@ export function useI<T, K extends Canonical>(
 ): <New extends T>(next: New | ((old: T) => New)) => void {
 	const store = useContext(StoreContext)
 	const token = parseStateOverloads(store, ...params)
-	const setter: React.RefObject<
-		(<New extends T>(next: New | ((old: T) => New)) => void) | null
-	> = useRef(null)
-	setter.current ??= (next) => {
+	return (next) => {
 		setIntoStore(store, token, next)
 	}
-	return setter.current
 }
