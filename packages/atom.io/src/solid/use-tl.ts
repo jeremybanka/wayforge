@@ -1,9 +1,10 @@
 import type { TimelineToken } from "atom.io"
 import { redo, undo } from "atom.io"
-import { subscribeToTimeline, withdraw } from "atom.io/internal"
-import { useContext, useId, useRef, useSyncExternalStore } from "react"
+import { arbitrary, subscribeToTimeline, withdraw } from "atom.io/internal"
+import { useContext } from "solid-js"
 
 import { StoreContext } from "./store-context"
+import { useSyncExternalStore } from "./use-sync-external-store-solid"
 
 export type TimelineMeta = {
 	at: number
@@ -12,12 +13,11 @@ export type TimelineMeta = {
 	redo: () => void
 }
 
-export function useTL(token: TimelineToken<any>): TimelineMeta {
+export function useTL(token: TimelineToken<any>): () => TimelineMeta {
 	const store = useContext(StoreContext)
-	const id = useId()
-	const timeline = withdraw(store, token)
-	const tokenRef = useRef(token)
-	const rebuildMeta = () => {
+	const id = arbitrary()
+	const getSnapshot = (): TimelineMeta => {
+		const timeline = withdraw(store, token)
 		return {
 			at: timeline.at,
 			length: timeline.history.length,
@@ -29,21 +29,7 @@ export function useTL(token: TimelineToken<any>): TimelineMeta {
 			},
 		}
 	}
-	const meta = useRef<TimelineMeta>(rebuildMeta())
-	const retrieve = () => {
-		if (
-			meta.current.at !== timeline?.at ||
-			meta.current.length !== timeline?.history.length ||
-			tokenRef.current !== token
-		) {
-			tokenRef.current = token
-			meta.current = rebuildMeta()
-		}
-		return meta.current
-	}
-	return useSyncExternalStore<TimelineMeta>(
-		(dispatch) => subscribeToTimeline(store, token, `use-tl:${id}`, dispatch),
-		retrieve,
-		retrieve,
-	)
+	return useSyncExternalStore<TimelineMeta>((dispatch) => {
+		return subscribeToTimeline(store, token, `use-tl:${id}`, dispatch)
+	}, getSnapshot)
 }

@@ -5,7 +5,7 @@ import type {
 } from "atom.io"
 import { findInStore, setIntoStore } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
-import { useContext, useEffect } from "react"
+import { onMount, useContext } from "solid-js"
 
 import { StoreContext } from "./store-context"
 
@@ -50,8 +50,8 @@ export function useAtomicRef<
 		useRef = params[1]
 	}
 	const ref = useRef(null)
-	useEffect(() => {
+	onMount(() => {
 		setIntoStore(store, token, ref.current)
-	}, [token])
+	})
 	return ref
 }
