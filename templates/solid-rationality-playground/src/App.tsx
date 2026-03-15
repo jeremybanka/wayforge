@@ -80,7 +80,8 @@ const parseFractionDraft = (
 	| { ok: true; numerator: bigint; denominator: bigint }
 	| { ok: false; reason: string } => {
 	const numerator = parseBigIntText(numeratorText)
-	if (numerator === null) return { ok: false, reason: `Numerator must be an integer.` }
+	if (numerator === null)
+		return { ok: false, reason: `Numerator must be an integer.` }
 	const denominator = parseBigIntText(denominatorText)
 	if (denominator === null) {
 		return { ok: false, reason: `Denominator must be an integer.` }
@@ -140,22 +141,34 @@ const compareRightAtom = atom<RationalId>({
 
 const simplifiedSelectors = selectorFamily<number, RationalId>({
 	key: `simplifiedValue`,
-	get: (id) => ({ get }) => approximate(get(rationalAtoms, id)),
+	get:
+		(id) =>
+		({ get }) =>
+			approximate(get(rationalAtoms, id)),
 })
 
 const simplifiedTextSelectors = selectorFamily<string, RationalId>({
 	key: `simplifiedText`,
-	get: (id) => ({ get }) => formatSimplified(get(rationalAtoms, id)),
+	get:
+		(id) =>
+		({ get }) =>
+			formatSimplified(get(rationalAtoms, id)),
 })
 
 const consolidatedTextSelectors = selectorFamily<string, RationalId>({
 	key: `consolidatedText`,
-	get: (id) => ({ get }) => formatConsolidated(get(rationalAtoms, id)),
+	get:
+		(id) =>
+		({ get }) =>
+			formatConsolidated(get(rationalAtoms, id)),
 })
 
 const termSelectors = selectorFamily<string[], RationalId>({
 	key: `rationalTerms`,
-	get: (id) => ({ get }) => describeTerms(get(rationalAtoms, id)),
+	get:
+		(id) =>
+		({ get }) =>
+			describeTerms(get(rationalAtoms, id)),
 })
 
 const factorSelectors = selectorFamily<
@@ -163,14 +176,16 @@ const factorSelectors = selectorFamily<
 	RationalId
 >({
 	key: `rationalFactors`,
-	get: (id) => ({ get }) => {
-		const rational = get(rationalAtoms, id)
-		const [numerator, denominator] = rational.simplify()
-		return {
-			numerator: describePrimeFactors(numerator),
-			denominator: describePrimeFactors(denominator),
-		}
-	},
+	get:
+		(id) =>
+		({ get }) => {
+			const rational = get(rationalAtoms, id)
+			const [numerator, denominator] = rational.simplify()
+			return {
+				numerator: describePrimeFactors(numerator),
+				denominator: describePrimeFactors(denominator),
+			}
+		},
 })
 
 const expressionSummarySelector = selector<{
@@ -275,9 +290,9 @@ export function App() {
 				<div class="eyebrow">solid + atom.io/solid + rationality</div>
 				<h1>Rational Lab</h1>
 				<p>
-					Build exact fractions, let them accumulate term-by-term, then send
-					them through chained multiplication and division without losing a
-					single bit.
+					Build exact fractions, let them accumulate term-by-term, then send them
+					through chained multiplication and division without losing a single
+					bit.
 				</p>
 			</header>
 
@@ -399,7 +414,9 @@ function RationalCard(props: {
 			</div>
 
 			<div class="term-strip">
-				<For each={terms()}>{(term) => <span class="term-pill">{term}</span>}</For>
+				<For each={terms()}>
+					{(term) => <span class="term-pill">{term}</span>}
+				</For>
 			</div>
 
 			<div class="editor">
@@ -527,7 +544,9 @@ function ExpressionWorkbench() {
 					<span>start from</span>
 					<select
 						value={base()}
-						onChange={(event) => setBase(event.currentTarget.value as RationalId)}
+						onChange={(event) =>
+							setBase(event.currentTarget.value as RationalId)
+						}
 					>
 						<For each={RATIONAL_IDS}>
 							{(id) => <option value={id}>{id}</option>}
@@ -645,7 +664,9 @@ function ComparisonPanel() {
 					<span>left</span>
 					<select
 						value={left()}
-						onChange={(event) => setLeft(event.currentTarget.value as RationalId)}
+						onChange={(event) =>
+							setLeft(event.currentTarget.value as RationalId)
+						}
 					>
 						<For each={RATIONAL_IDS}>
 							{(id) => <option value={id}>{id}</option>}
@@ -659,7 +680,9 @@ function ComparisonPanel() {
 					<span>right</span>
 					<select
 						value={right()}
-						onChange={(event) => setRight(event.currentTarget.value as RationalId)}
+						onChange={(event) =>
+							setRight(event.currentTarget.value as RationalId)
+						}
 					>
 						<For each={RATIONAL_IDS}>
 							{(id) => <option value={id}>{id}</option>}
