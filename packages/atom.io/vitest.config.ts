@@ -18,7 +18,20 @@ const vitestConfig: UserConfig = defineConfig({
 		}),
 	],
 	resolve: {
+		conditions: [`browser`, `development`],
 		alias: [
+			{
+				find: /^solid-js\/web$/,
+				replacement: resolve(__dirname, `./node_modules/solid-js/web/dist/web.js`),
+			},
+			{
+				find: /^solid-js\/h$/,
+				replacement: resolve(__dirname, `./node_modules/solid-js/h/dist/h.js`),
+			},
+			{
+				find: /^solid-js$/,
+				replacement: resolve(__dirname, `./node_modules/solid-js/dist/solid.js`),
+			},
 			{
 				find: `~`,
 				replacement: resolve(__dirname, `../..`),
