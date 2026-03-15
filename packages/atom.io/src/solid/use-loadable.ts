@@ -91,12 +91,26 @@ export function useLoadable(
 				return `LOADING`
 			}
 			if (wasErr && hasFallback) {
+				if (
+					wrapper.loading === true &&
+					wrapper.value === fallback &&
+					wrapper.error === lastLoaded
+				) {
+					return wrapper
+				}
 				wrapper = {
 					loading: true,
 					value: fallback,
 					error: lastLoaded,
 				}
 			} else {
+				if (
+					wrapper.loading === true &&
+					wrapper.value === lastLoaded &&
+					wrapper.error === undefined
+				) {
+					return wrapper
+				}
 				wrapper = { loading: true, value: lastLoaded }
 			}
 			return wrapper
