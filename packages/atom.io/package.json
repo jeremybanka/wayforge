@@ -161,10 +161,6 @@
 			"import": "./dist/react/index.js",
 			"types": "./dist/react/index.d.ts"
 		},
-		"./solid": {
-			"import": "./dist/solid/index.js",
-			"types": "./dist/solid/index.d.ts"
-		},
 		"./react-devtools": {
 			"import": "./dist/react-devtools/index.js",
 			"types": "./dist/react-devtools/index.d.ts"
@@ -191,6 +187,10 @@
 		"./realtime-testing": {
 			"import": "./dist/realtime-testing/index.js",
 			"types": "./dist/realtime-testing/index.d.ts"
+		},
+		"./solid": {
+			"import": "./dist/solid/index.js",
+			"types": "./dist/solid/index.d.ts"
 		},
 		"./transceivers/o-list": {
 			"import": "./dist/transceivers/o-list/index.js",
