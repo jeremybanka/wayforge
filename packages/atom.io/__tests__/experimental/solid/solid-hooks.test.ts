@@ -6,6 +6,7 @@ import {
 	atomFamily,
 	getState,
 	mutableAtom,
+	mutableAtomFamily,
 	redo,
 	resetState,
 	selector,
@@ -478,6 +479,36 @@ describe(`timeline (dynamic)`, () => {
 })
 
 describe(`useLoadable`, () => {
+	test(`standalone, immediately available without a fallback`, async () => {
+		const letterAtom = atom<Loadable<string>>({
+			key: `letter`,
+			default: `A`,
+		})
+		const { dispose, host } = await mountWithProvider(({ AS, Solid, host }) => {
+			const Letter = () => {
+				const letter = AS.useLoadable(letterAtom)
+				const root = document.createElement(`div`)
+				const child = createDisplay()
+				root.append(child)
+				Solid.createEffect(() => {
+					const value = letter()
+					if (value === `LOADING`) {
+						setContainerState(root, `loading`)
+						return
+					}
+					setContainerState(root, value.loading ? `loading` : `not-loading`)
+					setDisplay(child, `${value.value}`)
+				})
+				return root
+			}
+			host.append(Letter())
+		})
+		assert(getByTestId(host, `not-loading`))
+		assert(getByTestId(host, `A`))
+		dispose()
+		host.remove()
+	})
+
 	test(`standalone, without a fallback`, async () => {
 		let loadLetter = (_: string) => {
 			console.warn(`loadLetter not attached`)
@@ -805,6 +836,54 @@ describe(`useLoadable`, () => {
 		host.remove()
 	})
 
+	test(`preserves loading wrapper identity after an error when fallback is present`, async () => {
+		const failIndex: Record<number, () => void> = {}
+		const uniqueRefs: unknown[] = []
+		const indexAtoms = atomFamily<Loadable<number[]>, number, Error>({
+			key: `index`,
+			default: (key) =>
+				new Promise((_, reject) => {
+					failIndex[key] = () => {
+						reject(new Error(`💥`))
+					}
+				}),
+			catch: [Error],
+		})
+		const { dispose, host } = await mountWithProvider(({ AS, Solid, host }) => {
+			const Letter = () => {
+				const ids = AS.useLoadable(indexAtoms, 0, [4, 5, 6])
+				const stableIds = Solid.createMemo(() => ids())
+				const root = document.createElement(`div`)
+				Solid.createEffect(() => {
+					uniqueRefs.push(stableIds())
+				})
+				Solid.createEffect(() => {
+					const value = ids()
+					setContainerState(root, value.loading ? `loading` : `not-loading`)
+					fillContainerWithIds(root, value.value as number[])
+				})
+				return root
+			}
+			host.append(Letter())
+		})
+		expect(uniqueRefs).toHaveLength(1)
+		failIndex[0]()
+		await waitForAsyncState()
+		expect(uniqueRefs).toHaveLength(2)
+		resetState(indexAtoms, 0)
+		await flush()
+		expect(uniqueRefs).toHaveLength(3)
+		resetState(indexAtoms, 0)
+		await flush()
+		expect(uniqueRefs).toHaveLength(3)
+		assert(getByTestId(host, `loading`))
+		assert(getByTestId(host, `4`))
+		assert(getByTestId(host, `5`))
+		assert(getByTestId(host, `6`))
+		dispose()
+		host.remove()
+	})
+
 	test(`referential identity`, async () => {
 		const uniqueRefs: unknown[] = []
 		const loaders: ((letter: string) => void)[] = []
@@ -875,6 +954,58 @@ describe(`useLoadable`, () => {
 		assert(getByTestId(host, `not-loading`))
 		assert(getByTestId(host, `D`))
 		expect(uniqueRefs).toHaveLength(4)
+		dispose()
+		host.remove()
+	})
+})
+
+describe(`useJSON`, () => {
+	it(`reads the json value of a mutable atom`, async () => {
+		const numbersAtom = mutableAtom<UList<number>>({
+			key: `numbers`,
+			class: UList,
+		})
+		const { dispose, host } = await mountWithProvider(({ AS, Solid, host }) => {
+			const Numbers = () => {
+				const numbers = AS.useJSON(numbersAtom)
+				const root = document.createElement(`div`)
+				const display = createDisplay()
+				root.append(display)
+				Solid.createEffect(() => {
+					setDisplay(display, JSON.stringify(numbers()))
+				})
+				return root
+			}
+			host.append(Numbers())
+		})
+		setState(numbersAtom, (current) => current.add(1).add(2))
+		await flush()
+		assert(getByTestId(host, `[1,2]`))
+		dispose()
+		host.remove()
+	})
+
+	it(`reads the json value of a mutable atom family member`, async () => {
+		const numbersAtoms = mutableAtomFamily<UList<number>, string>({
+			key: `numbers`,
+			class: UList,
+		})
+		const { dispose, host } = await mountWithProvider(({ AS, Solid, host }) => {
+			const Numbers = () => {
+				const numbers = AS.useJSON(numbersAtoms, `family`)
+				const root = document.createElement(`div`)
+				const display = createDisplay()
+				root.append(display)
+				Solid.createEffect(() => {
+					setDisplay(display, JSON.stringify(numbers()))
+				})
+				return root
+			}
+			host.append(Numbers())
+		})
+		setState(numbersAtoms, `family`, (current) => current.add(3).add(4))
+		await flush()
+		assert(getByTestId(host, `[3,4]`))
 		dispose()
 		host.remove()
 	})
