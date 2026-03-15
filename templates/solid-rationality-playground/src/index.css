@@ -18,8 +18,16 @@
 		"Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, serif;
 	color: var(--ink);
 	background:
-		radial-gradient(circle at top left, rgba(216, 141, 31, 0.16), transparent 28%),
-		radial-gradient(circle at right center, rgba(23, 36, 51, 0.12), transparent 30%),
+		radial-gradient(
+			circle at top left,
+			rgba(216, 141, 31, 0.16),
+			transparent 28%
+		),
+		radial-gradient(
+			circle at right center,
+			rgba(23, 36, 51, 0.12),
+			transparent 30%
+		),
 		linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
 }
 
@@ -233,13 +241,19 @@ code {
 }
 
 .rational-card-gold {
-	background:
-		linear-gradient(180deg, rgba(255, 250, 242, 0.92), rgba(255, 246, 231, 0.86));
+	background: linear-gradient(
+		180deg,
+		rgba(255, 250, 242, 0.92),
+		rgba(255, 246, 231, 0.86)
+	);
 }
 
 .rational-card-ink {
-	background:
-		linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(245, 248, 250, 0.88));
+	background: linear-gradient(
+		180deg,
+		rgba(255, 255, 255, 0.92),
+		rgba(245, 248, 250, 0.88)
+	);
 }
 
 .chip {
@@ -406,7 +420,11 @@ code {
 	margin-top: 1.2rem;
 	padding: 1rem;
 	border-radius: var(--radius-lg);
-	background: linear-gradient(135deg, rgba(23, 36, 51, 0.94), rgba(53, 66, 80, 0.94));
+	background: linear-gradient(
+		135deg,
+		rgba(23, 36, 51, 0.94),
+		rgba(53, 66, 80, 0.94)
+	);
 	color: white;
 	display: grid;
 	grid-template-columns: minmax(0, 1.3fr) minmax(10rem, 0.9fr);
