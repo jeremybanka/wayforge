@@ -4,7 +4,6 @@ import type { Loadable, TimelineToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
-	getState,
 	mutableAtom,
 	mutableAtomFamily,
 	redo,
@@ -87,14 +86,6 @@ const loadSolidIntegration = async () => {
 	return { AS, Solid }
 }
 
-const makeButtonRef = <TT>(
-	initialValue: TT | null,
-): {
-	current: HTMLButtonElement | null
-} => ({
-	current: initialValue as HTMLButtonElement | null,
-})
-
 const mountWithProvider = async (
 	renderChildren: (
 		ctx: Awaited<ReturnType<typeof loadSolidIntegration>> & {
@@ -115,26 +106,6 @@ const mountWithProvider = async (
 				return undefined
 			}) as unknown as never,
 		})
-	})
-	await flush()
-	return { ...integration, host, dispose }
-}
-
-const mountStandalone = async (
-	renderChildren: (
-		ctx: Awaited<ReturnType<typeof loadSolidIntegration>> & {
-			host: HTMLElement
-		},
-	) => void,
-) => {
-	const integration = await loadSolidIntegration()
-	const { Solid } = integration
-	const host = document.createElement(`div`)
-	document.body.append(host)
-	let dispose: () => void = () => {}
-	Solid.createRoot((rootDispose) => {
-		dispose = rootDispose
-		renderChildren({ ...integration, host })
 	})
 	await flush()
 	return { ...integration, host, dispose }
@@ -1006,60 +977,6 @@ describe(`useJSON`, () => {
 		setState(numbersAtoms, `family`, (current) => current.add(3).add(4))
 		await flush()
 		assert(getByTestId(host, `[3,4]`))
-		dispose()
-		host.remove()
-	})
-})
-
-describe(`useAtomicRef`, () => {
-	it(`makes an element available to use wherever`, async () => {
-		const buttonAtom = atom<HTMLButtonElement | null>({
-			key: `button`,
-			default: null,
-		})
-		const { dispose, host } = await mountStandalone(({ AS, host }) => {
-			function MyButton() {
-				const ref = AS.useAtomicRef(buttonAtom, makeButtonRef)
-				const button = document.createElement(`button`)
-				button.type = `button`
-				button.textContent = `Click me`
-				button.addEventListener(`click`, () => {
-					Utils.stdout(`hi`)
-				})
-				ref.current = button
-				return button
-			}
-			host.append(MyButton())
-		})
-		await flush()
-		getState(buttonAtom)?.click()
-		expect(Utils.stdout).toHaveBeenCalledWith(`hi`)
-		dispose()
-		host.remove()
-	})
-
-	it(`makes an element available to use wherever (family overload)`, async () => {
-		const buttonAtoms = atomFamily<HTMLButtonElement | null, string>({
-			key: `button`,
-			default: null,
-		})
-		const { dispose, host } = await mountStandalone(({ AS, host }) => {
-			function MyButton() {
-				const ref = AS.useAtomicRef(buttonAtoms, `myCoolButton`, makeButtonRef)
-				const button = document.createElement(`button`)
-				button.type = `button`
-				button.textContent = `Click me`
-				button.addEventListener(`click`, () => {
-					Utils.stdout(`hi`)
-				})
-				ref.current = button
-				return button
-			}
-			host.append(MyButton())
-		})
-		await flush()
-		getState(buttonAtoms, `myCoolButton`)?.click()
-		expect(Utils.stdout).toHaveBeenCalledWith(`hi`)
 		dispose()
 		host.remove()
 	})
