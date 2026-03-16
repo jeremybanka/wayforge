@@ -57,7 +57,7 @@
 		"concurrently": "9.2.1",
 		"eslint": "10.0.3",
 		"tmp": "0.2.5",
-		"tsdown": "0.21.2",
+		"tsdown": "0.21.3",
 		"vite": "8.0.0",
 		"vitest": "4.1.0",
 		"zod": "4.3.6"
