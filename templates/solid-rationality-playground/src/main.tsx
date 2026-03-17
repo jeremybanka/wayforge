@@ -2,7 +2,7 @@ import { StoreProvider } from "atom.io/solid"
 import { render } from "solid-js/web"
 
 import { App } from "./App"
-import "./index.css"
+import "./globals.css"
 
 render(
 	() => (
