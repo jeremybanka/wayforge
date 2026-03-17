@@ -196,8 +196,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/safedeposit
       safegen:
-        specifier: 0.8.6
-        version: 0.8.6(@floating-ui/react-dom@2.1.8(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.19(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@google/genai@1.35.0)(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.57.1(eslint@10.0.3(jiti@2.6.1))(typescript@5.9.3))(arktype@2.2.0)(eslint@10.0.3(jiti@2.6.1))(happy-dom@20.8.4)(motion@12.38.0(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3)(zod@4.3.6)
+        specifier: 0.8.7
+        version: 0.8.7(@floating-ui/react-dom@2.1.8(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.19(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@google/genai@1.35.0)(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.57.1(eslint@10.0.3(jiti@2.6.1))(typescript@5.9.3))(arktype@2.2.0)(eslint@10.0.3(jiti@2.6.1))(happy-dom@20.8.4)(motion@12.38.0(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3)(zod@4.3.6)
       socket.io:
         specifier: 4.8.3
         version: 4.8.3
@@ -7415,8 +7415,8 @@ packages:
   safedeposit@0.1.2:
     resolution: {integrity: sha512-XbBgdsid1m9zlket6HalF4v6J+cIg6ctduHGvzuIE1uiBv/kRVSQoTtj3/Y8fa9VekpxAwOe+vrCoJrauiMlJg==}
 
-  safegen@0.8.6:
-    resolution: {integrity: sha512-3MWgdn5DioYcd5oqk9P7oC2xqzAI2OPQDG9Tae4IISczd/ngnUfPvV3tS26DfSOCWbbAu9rzVDjObmTNYPmNJw==}
+  safegen@0.8.7:
+    resolution: {integrity: sha512-dQvOhy1sHZPRPvDvbCbGRrGtce3KzONGrl9W09b6ZyaCnaMd2mMabQ9mxDEWEszFVpXGRrzHSIB4MDS6XHXrqw==}
     peerDependencies:
       '@anthropic-ai/sdk': '>=0.60.0'
       '@google/genai': ^1.13.0
@@ -13302,7 +13302,7 @@ snapshots:
       foreground-child: 3.3.1
       jackspeak: 3.4.3
       minimatch: 9.0.5
-      minipass: 7.1.2
+      minipass: 7.1.3
       package-json-from-dist: 1.0.1
       path-scurry: 1.11.1
 
@@ -14998,7 +14998,7 @@ snapshots:
   path-scurry@1.11.1:
     dependencies:
       lru-cache: 10.4.3
-      minipass: 7.1.2
+      minipass: 7.1.3
 
   path-scurry@2.0.1:
     dependencies:
@@ -15610,7 +15610,7 @@ snapshots:
 
   safedeposit@0.1.2: {}
 
-  safegen@0.8.6(@floating-ui/react-dom@2.1.8(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.19(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@google/genai@1.35.0)(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.57.1(eslint@10.0.3(jiti@2.6.1))(typescript@5.9.3))(arktype@2.2.0)(eslint@10.0.3(jiti@2.6.1))(happy-dom@20.8.4)(motion@12.38.0(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3)(zod@4.3.6):
+  safegen@0.8.7(@floating-ui/react-dom@2.1.8(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@floating-ui/react@0.27.19(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@google/genai@1.35.0)(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(@typescript-eslint/parser@8.57.1(eslint@10.0.3(jiti@2.6.1))(typescript@5.9.3))(arktype@2.2.0)(eslint@10.0.3(jiti@2.6.1))(happy-dom@20.8.4)(motion@12.38.0(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(openai@6.32.0(ws@8.19.0)(zod@4.3.6))(react@19.2.4)(socket.io-client@4.8.3)(socket.io@4.8.3)(zod@4.3.6):
     dependencies:
       '@google/genai': 1.35.0
       '@standard-schema/spec': 1.1.0
