@@ -5,9 +5,10 @@ import type {
 } from "atom.io"
 import { findInStore, setIntoStore } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"
-import { useContext, useEffect } from "react"
+import { useContext } from "react"
 
 import { StoreContext } from "./store-context"
+import { useSingleEffect } from "./use-single-effect"
 
 export function useAtomicRef<T, R extends { current: T | null }>(
 	token: RegularAtomToken<T | null>,
@@ -50,8 +51,12 @@ export function useAtomicRef<
 		useRef = params[1]
 	}
 	const ref = useRef(null)
-	useEffect(() => {
+
+	useSingleEffect(() => {
 		setIntoStore(store, token, ref.current)
-	}, [token])
+		return () => {
+			setIntoStore(store, token, null)
+		}
+	}, [token, ref.current])
 	return ref
 }

@@ -837,14 +837,23 @@ describe(`useLoadable`, () => {
 
 describe(`useAtomicRef`, () => {
 	it(`makes an element available to use wherever`, () => {
+		const buttonWillRenderAtom = atom<boolean>({
+			key: `buttonWillRender`,
+			default: true,
+		})
 		const buttonAtom = atom<HTMLButtonElement | null>({
 			key: `button`,
 			default: null,
 		})
+		function MyApp() {
+			const buttonWillRender = AR.useO(buttonWillRenderAtom)
+			return buttonWillRender ? <MyButton /> : null
+		}
 		function MyButton() {
 			const ref = AR.useAtomicRef(buttonAtom, useRef)
 			return (
 				<button
+					data-testid="button"
 					type="button"
 					ref={ref}
 					onClick={() => {
@@ -855,11 +864,24 @@ describe(`useAtomicRef`, () => {
 				</button>
 			)
 		}
-		render(<MyButton />)
-
-		getState(buttonAtom)?.click()
+		const utils = render(<MyApp />)
+		const button = getState(buttonAtom)
+		assert(button)
+		button?.click()
 
 		expect(Utils.stdout).toHaveBeenCalledWith(`hi`)
+
+		act(() => {
+			setState(buttonWillRenderAtom, false)
+		})
+		expect(() => utils.getByTestId(`button`)).toThrow(Error)
+		expect(getState(buttonAtom)).toBe(null)
+
+		act(() => {
+			setState(buttonWillRenderAtom, true)
+		})
+
+		expect(utils.getByTestId(`button`)).toBe(getState(buttonAtom))
 	})
 	it(`makes an element available to use wherever (family overload)`, () => {
 		const buttonAtoms = atomFamily<HTMLButtonElement | null, string>({
