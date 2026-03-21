@@ -1,5 +1,5 @@
 {
-	"name": "@atom.io/template-solid-rationality-playground",
+	"name": "@atom.io/template-solid-lossless-numbers",
 	"version": "0.0.1",
 	"publishConfig": {
 		"access": "public"
