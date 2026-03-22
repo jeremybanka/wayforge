@@ -1,0 +1,101 @@
+/** biome-ignore-all lint/correctness/noUnknownTypeSelector: <explanation> */
+app.class {
+	--line: rgba(23, 36, 51, 0.14);
+
+	& /* local globals */,
+	* {
+		display: flex;
+	}
+
+	flex-direction: column;
+
+	fraction,
+	fieldset {
+		flex-flow: column;
+		font-size: 24px;
+		border: none;
+		padding: 0;
+		> numerator,
+		> denominator,
+		> input {
+			margin: 0;
+			height: 36px;
+			flex-grow: 1;
+			align-items: center;
+			justify-content: center;
+			&[data-css="one"] {
+				color: #0002;
+			}
+		}
+		> solidus {
+			height: 2px;
+			background: #000;
+		}
+	}
+
+	> header {
+		align-items: center;
+		justify-content: space-between;
+		padding: 12px;
+		> h1 {
+		}
+		> button {
+			align-items: center;
+			justify-content: center;
+		}
+	}
+	> main {
+		padding: 2px;
+		gap: 2px;
+		flex-flow: column;
+		> rational-breakdown {
+			border: 1px solid #0002;
+			padding: 2px 12px;
+			> fraction-list {
+				flex-grow: 1;
+				> plus {
+					font-size: 30px;
+					color: #0002;
+					align-items: center;
+				}
+				> infix-buttons {
+					flex-flow: column;
+				}
+			}
+			> equals {
+				font-size: 48px;
+				align-items: center;
+				color: #0002;
+			}
+			> fraction {
+			}
+			> quotient {
+				align-items: center;
+				font-size: 48px;
+				position: relative;
+				> quotient-bits {
+					width: 40px;
+					position: absolute;
+					top: 0;
+					right: 0;
+					flex-wrap: wrap;
+					align-items: flex-start;
+					justify-content: flex-start;
+					justify-items: flex-start;
+					align-content: flex-start;
+					> bit {
+						flex-shrink: 0;
+						flex-grow: 0;
+						height: 5px;
+						width: 5px;
+						background: none;
+						border: 1px solid #0002;
+						&[data-css="one"] {
+							background: #0002;
+						}
+					}
+				}
+			}
+		}
+	}
+}
