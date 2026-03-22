@@ -12,7 +12,10 @@ const pico: Colors = picocolors.createColors(true)
 const s = prompts.spinner()
 
 export type PackageManager = `bun` | `npm` | `pnpm` | `yarn`
-export type TemplateName = `preact-svg-editor` | `react-node-backend`
+export type TemplateName =
+	| `preact-svg-editor`
+	| `react-node-backend`
+	| `solid-lossless-numbers`
 
 export type CreateAtomOptions = {
 	packageManager: PackageManager
@@ -46,6 +49,10 @@ export async function createAtom(
 						{
 							label: `React Node Backend`,
 							value: `react-node-backend`,
+						},
+						{
+							label: `Solid Lossless Numbers`,
+							value: `solid-lossless-numbers`,
 						},
 					],
 				}),
