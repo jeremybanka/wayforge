@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.25
+
+### Patch Changes
+
+- 7bc5a4c: 🏷️ `atom.io/realtime-server` Updated types for `realtimeStateProvider()` and `realtimeStateReceiver()` to be a bit more ergonomic.
+
 ## 0.46.24
 
 ### Patch Changes
