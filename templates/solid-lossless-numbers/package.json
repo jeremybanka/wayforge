@@ -7,7 +7,7 @@
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/jeremybanka/wayforge.git",
-		"directory": "templates/solid-rationality-playground"
+		"directory": "templates/solid-lossless-numbers"
 	},
 	"type": "module",
 	"scripts": {
