@@ -63,9 +63,10 @@ export const select =
 			{} as Pick<Obj, Key>,
 		)(args)
 
-export const treeShake =
-	(shouldDiscard: (val: unknown, key: PropertyKey) => boolean = isUndefined) =>
-	<T extends object>(
+export function treeShake(
+	shouldDiscard: (val: unknown, key: PropertyKey) => boolean = isUndefined,
+) {
+	return <T extends object>(
 		obj: T,
 	): T extends Record<PropertyKey, unknown> ? T : Partial<T> => {
 		const newObj = {} as T
@@ -77,7 +78,7 @@ export const treeShake =
 		}
 		return newObj as T extends Record<PropertyKey, unknown> ? T : Partial<T>
 	}
-
+}
 export type KeysExtending<T, V> = keyof {
 	[K in keyof T]: T[K] extends V ? K : never
 }
