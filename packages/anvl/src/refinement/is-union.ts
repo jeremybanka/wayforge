@@ -4,14 +4,14 @@ import type { Refinement } from "./refinement"
 export type ExtendsSome<A, B> = Refinement<unknown, A | B> & {
 	or: <C>(isType: Refinement<unknown, C>) => ExtendsSome<unknown, A | B | C>
 }
-export const mustSatisfyOneOfTheFollowing = <A>(
+export function mustSatisfyOneOfTheFollowing<A>(
 	isTypeA: Refinement<unknown, A>,
 	logging = false,
 	refinements: Refinement<unknown, any>[] = [isTypeA],
 ): {
 	(input: unknown): input is A
 	or: <B>(isTypeB: Refinement<unknown, B>) => ExtendsSome<A, B>
-} => {
+} {
 	const name = `(${refinements.map((r) => r?.name || `anon`).join(` | `)})`
 	const _ = {
 		[name]: (input: unknown): input is A =>
