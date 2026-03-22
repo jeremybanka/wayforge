@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.26
+
+### Patch Changes
+
+- 7706a15: 🎁 `atom.io/solid` is a new integration with Solid (https://solidjs.com), with the same interface as `atom.io/react`.
+
 ## 0.46.25
 
 ### Patch Changes
