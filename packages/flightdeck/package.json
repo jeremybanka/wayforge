@@ -30,7 +30,7 @@
 		"zod": "^4"
 	},
 	"dependencies": {
-		"@t3-oss/env-core": "0.13.10",
+		"@t3-oss/env-core": "0.13.11",
 		"arktype": "2.2.0",
 		"atom.io": "workspace:*",
 		"comline": "workspace:*",

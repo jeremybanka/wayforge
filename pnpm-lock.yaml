@@ -148,8 +148,8 @@ importers:
         specifier: 9.5.0
         version: 9.5.0(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(three@0.183.2)
       '@t3-oss/env-core':
-        specifier: 0.13.10
-        version: 0.13.10(arktype@2.2.0)(typescript@5.9.3)(zod@4.3.6)
+        specifier: 0.13.11
+        version: 0.13.11(arktype@2.2.0)(typescript@5.9.3)(zod@4.3.6)
       '@trpc/client':
         specifier: 11.14.1
         version: 11.14.1(@trpc/server@11.14.1(typescript@5.9.3))(typescript@5.9.3)
@@ -600,8 +600,8 @@ importers:
   packages/flightdeck:
     dependencies:
       '@t3-oss/env-core':
-        specifier: 0.13.10
-        version: 0.13.10(arktype@2.2.0)(typescript@5.9.3)(zod@4.3.6)
+        specifier: 0.13.11
+        version: 0.13.11(arktype@2.2.0)(typescript@5.9.3)(zod@4.3.6)
       arktype:
         specifier: 2.2.0
         version: 2.2.0
@@ -3725,8 +3725,8 @@ packages:
   '@swc/types@0.1.25':
     resolution: {integrity: sha512-iAoY/qRhNH8a/hBvm3zKj9qQ4oc2+3w1unPJa2XvTK3XjeLXtzcCingVPw/9e5mn1+0yPqxcBGp9Jf0pkfMb1g==}
 
-  '@t3-oss/env-core@0.13.10':
-    resolution: {integrity: sha512-NNFfdlJ+HmPHkLi2HKy7nwuat9SIYOxei9K10lO2YlcSObDILY7mHZNSHsieIM3A0/5OOzw/P/b+yLvPdaG52g==}
+  '@t3-oss/env-core@0.13.11':
+    resolution: {integrity: sha512-sM7GYY+KL7H/Hl0BE0inWfk3nRHZOLhmVn7sHGxaZt9FAR6KqREXAE+6TqKfiavfXmpRxO/OZ2QgKRd+oiBYRQ==}
     peerDependencies:
       arktype: ^2.1.0
       typescript: '>=5.0.0'
@@ -11340,7 +11340,7 @@ snapshots:
     dependencies:
       '@swc/counter': 0.1.3
 
-  '@t3-oss/env-core@0.13.10(arktype@2.2.0)(typescript@5.9.3)(zod@4.3.6)':
+  '@t3-oss/env-core@0.13.11(arktype@2.2.0)(typescript@5.9.3)(zod@4.3.6)':
     optionalDependencies:
       arktype: 2.2.0
       typescript: 5.9.3
