@@ -1,23 +1,35 @@
+import type { AtomToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
+	findState,
+	getState,
 	mutableAtom,
+	resetState,
 	runTransaction,
-	selector,
 	selectorFamily,
 	setState,
 	transaction,
 } from "atom.io"
 import { useI, useO } from "atom.io/solid"
 import { OList } from "atom.io/transceivers/o-list"
-import { getPrimeFactors, Rational } from "rationality"
+import { Rational } from "rationality"
 import type { JSX } from "solid-js"
 import { For, Show } from "solid-js"
 
 import css from "./App.tsx.module.css"
 
 type RationalKey = `rat::${string}`
+const arbitrary = () => Math.random().toString(36).slice(2)
 
+const newRationalNumeratorAtom = atom<bigint>({
+	key: `newRationalNumerator`,
+	default: 1n,
+})
+const newRationalDenominatorAtom = atom<bigint>({
+	key: `newRationalDenominator`,
+	default: 1n,
+})
 const newNumeratorAtoms = atomFamily<bigint, RationalKey>({
 	key: `newNumerator`,
 	default: 1n,
@@ -34,7 +46,7 @@ const rationalListAtom = mutableAtom<OList<RationalKey>>({
 
 const rationalAtoms = atomFamily<Rational, RationalKey>({
 	key: `rational`,
-	default: new Rational(3n, 10n),
+	default: () => new Rational(0n, 1n),
 })
 const simplifiedSelectors = selectorFamily<
 	[numerator: bigint, denominator: bigint],
@@ -57,14 +69,21 @@ const floatSelectors = selectorFamily<number, RationalKey>({
 			return Number(numerator) / Number(denominator)
 		},
 })
-const floatDescriptionSelectors = selectorFamily<FloatDescription, RationalKey>({
-	key: `floatDescription`,
+const numberBitsSelectors = selectorFamily<(`0` | `1`)[], RationalKey>({
+	key: `numberBits`,
 	get:
 		(key) =>
 		({ get }) => {
 			const [numerator, denominator] = get(simplifiedSelectors, key)
 			const value = Number(numerator) / Number(denominator)
-			return inspectFloat64(value)
+			const buffer = new ArrayBuffer(8)
+			const view = new DataView(buffer)
+			view.setFloat64(0, value, false) // big-endian
+			const bytes = new Uint8Array(buffer)
+			const bits = Array.from(bytes)
+				.map((b) => b.toString(2).padStart(8, `0`))
+				.join(``)
+			return [...bits].map((bit) => (bit === `1` ? `1` : `0`))
 		},
 })
 const isFloatPreciseSelectors = selectorFamily<boolean, RationalKey>({
@@ -93,12 +112,12 @@ const combineIntoRationalTx = transaction<
 	(key: RationalKey, operation: `add` | `div` | `mul` | `sub`) => void
 >({
 	key: `combineIntoRationalTx`,
-	do: ({ get, set }, key, operation) => {
+	do: ({ get, set, reset }, key, operation) => {
 		const num = get(newNumeratorAtoms, key)
 		const den = get(newDenominatorAtoms, key)
 		set(rationalAtoms, key, get(rationalAtoms, key)[operation](num, den))
-		set(newNumeratorAtoms, key, 1n)
-		set(newDenominatorAtoms, key, 1n)
+		reset(newNumeratorAtoms, key)
+		reset(newDenominatorAtoms, key)
 	},
 })
 
@@ -108,22 +127,31 @@ export function App(): JSX.Element {
 		<app class={css.class}>
 			<header>
 				<h1>Rationality Playground</h1>
-				<button
-					type="button"
-					onClick={() => {
-						setState(
-							rationalListAtom,
-							(list) => (
-								list.push(`rat::${Math.random().toString(36).slice(2)}`), list
-							),
-						)
-					}}
-				>
-					Add
-				</button>
 			</header>
 			<main>
 				<For each={rationals()}>{(key) => <RationalBreakdown key={key} />}</For>
+				<new-rational>
+					<RationalFields
+						numeratorAtom={newRationalNumeratorAtom}
+						denominatorAtom={newRationalDenominatorAtom}
+					/>
+					<button
+						type="button"
+						onClick={() => {
+							const key: RationalKey = `rat::${arbitrary()}`
+							runTransaction(combineIntoRationalTx)(key, `add`)
+							const newNumerator = getState(newRationalNumeratorAtom)
+							const newDenominator = getState(newRationalDenominatorAtom)
+							const rational = new Rational(newNumerator, newDenominator)
+							setState(rationalAtoms, key, rational)
+							setState(rationalListAtom, (list) => (list.push(key), list))
+							resetState(newRationalNumeratorAtom)
+							resetState(newRationalDenominatorAtom)
+						}}
+					>
+						Add
+					</button>
+				</new-rational>
 			</main>
 		</app>
 	)
@@ -135,7 +163,7 @@ export function RationalBreakdown(props: { key: RationalKey }): JSX.Element {
 	const float = useO(floatSelectors, props.key)
 	const isFloatPrecise = useO(isFloatPreciseSelectors, props.key)
 	const approximateValue = useO(approximateValueSelectors, props.key)
-	const floatDescription = useO(floatDescriptionSelectors, props.key)
+	const bits = useO(numberBitsSelectors, props.key)
 	return (
 		<rational-breakdown>
 			<fraction-list>
@@ -185,7 +213,7 @@ export function RationalBreakdown(props: { key: RationalKey }): JSX.Element {
 						×
 					</button>
 				</infix-buttons>
-				<FractionForm key={props.key} />
+				<RationalCombineFields key={props.key} />
 			</fraction-list>
 
 			<equals>=</equals>
@@ -193,7 +221,7 @@ export function RationalBreakdown(props: { key: RationalKey }): JSX.Element {
 			<equals>{isFloatPrecise() ? `=` : `≈`}</equals>
 			<quotient>
 				<quotient-bits>
-					<For each={[...floatDescription().bits]}>
+					<For each={bits()}>
 						{(bit) => <bit data-css={bit === `1` ? `one` : undefined} />}
 					</For>
 				</quotient-bits>
@@ -220,16 +248,37 @@ export function Fraction(props: {
 	)
 }
 
-export function FractionForm({ key }: { key: RationalKey }): JSX.Element {
-	const setDenominator = useI(newDenominatorAtoms, key)
-	const denominator = useO(simplifiedSelectors, key)
-	const setNumerator = useI(newNumeratorAtoms, key)
-	const numerator = useO(simplifiedSelectors, key)
+export function RationalCombineFields({
+	key,
+}: {
+	key: RationalKey
+}): JSX.Element {
+	const numeratorAtom = findState(newNumeratorAtoms, key)
+	const denominatorAtom = findState(newDenominatorAtoms, key)
+	return (
+		<RationalFields
+			numeratorAtom={numeratorAtom}
+			denominatorAtom={denominatorAtom}
+		/>
+	)
+}
+
+export function RationalFields({
+	numeratorAtom,
+	denominatorAtom,
+}: {
+	numeratorAtom: AtomToken<bigint>
+	denominatorAtom: AtomToken<bigint>
+}): JSX.Element {
+	const numerator = useO(numeratorAtom)
+	const setNumerator = useI(numeratorAtom)
+	const denominator = useO(denominatorAtom)
+	const setDenominator = useI(denominatorAtom)
 	return (
 		<fieldset>
 			<input
 				type="number"
-				value={numerator().toString()}
+				value={numerator().toString() === `1` ? `` : numerator().toString()}
 				onInput={(event) => {
 					setNumerator(BigInt(event.currentTarget.value))
 				}}
@@ -238,7 +287,7 @@ export function FractionForm({ key }: { key: RationalKey }): JSX.Element {
 			<solidus />
 			<input
 				type="number"
-				value={denominator().toString()}
+				value={denominator().toString() === `1` ? `` : denominator().toString()}
 				onInput={(event) => {
 					setDenominator(BigInt(event.currentTarget.value))
 				}}
@@ -246,67 +295,4 @@ export function FractionForm({ key }: { key: RationalKey }): JSX.Element {
 			/>
 		</fieldset>
 	)
-}
-
-type FloatDescription = {
-	value: number
-	bits: string
-	sign: string
-	exponent: {
-		bits: string
-		raw: number
-		unbiased: number
-	}
-	mantissa: {
-		bits: string
-	}
-	significand: string
-	formula: string
-}
-function inspectFloat64(value: number): FloatDescription {
-	const buffer = new ArrayBuffer(8)
-	const view = new DataView(buffer)
-	view.setFloat64(0, value, false) // big-endian
-
-	const bytes = new Uint8Array(buffer)
-
-	// Build full 64-bit binary string
-	const bits = Array.from(bytes)
-		.map((b) => b.toString(2).padStart(8, `0`))
-		.join(``)
-
-	const sign = bits[0]
-	const exponentBits = bits.slice(1, 12)
-	const mantissaBits = bits.slice(12)
-
-	const exponentRaw = Number.parseInt(exponentBits, 2)
-	const exponentUnbiased = exponentRaw - 1023
-
-	const isSubnormal = exponentRaw === 0
-
-	const significand = isSubnormal ? `0.${mantissaBits}` : `1.${mantissaBits}`
-
-	return {
-		value,
-
-		bits,
-
-		sign,
-
-		exponent: {
-			bits: exponentBits,
-			raw: exponentRaw,
-			unbiased: exponentUnbiased,
-		},
-
-		mantissa: {
-			bits: mantissaBits,
-		},
-
-		significand,
-
-		formula: isSubnormal
-			? `(-1)^${sign} × 2^(${1 - 1023}) × 0.${mantissaBits}`
-			: `(-1)^${sign} × 2^(${exponentUnbiased}) × 1.${mantissaBits}`,
-	}
 }
