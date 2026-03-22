@@ -14,21 +14,21 @@ function isReadableToken(input: unknown): input is AtomIO.ReadableToken<any> {
 	)
 }
 
-export type StateProvider = ReturnType<typeof realtimeStateProvider>
+export type StateProvider = <C extends Json.Serializable, S extends C>(
+	clientToken: AtomIO.WritableToken<C>,
+	serverData?: AtomIO.ReadableToken<S> | S,
+) => () => void
 export function realtimeStateProvider({
 	socket,
 	consumer,
 	store = IMPLICIT.STORE,
-}: ServerConfig) {
+}: ServerConfig): StateProvider {
 	store.logger.info(`🔌`, `user`, consumer, `initialized state provider`)
-	return function stateProvider<C extends Json.Serializable, S extends C>(
-		clientToken: AtomIO.WritableToken<C>,
-		serverData:
-			| AtomIO.ReadableToken<S>
-			| S = clientToken as AtomIO.ReadableToken<S>,
+	return function stateProvider(
+		clientToken,
+		serverData = clientToken as AtomIO.ReadableToken<any>,
 	): () => void {
 		const isStatic = !isReadableToken(serverData)
-
 		const subscriptions = new Set<() => void>()
 		const clearSubscriptions = () => {
 			for (const unsub of subscriptions) unsub()

@@ -75,7 +75,7 @@ export const sortByDesc =
 		a.sort((x, y) => f(y) - f(x))
 
 export const every =
-	<I>(f: (value: I, index: number, array: I[]) => boolean = Boolean) =>
+	<I>(f: (value: I, index: number, array: I[]) => boolean) =>
 	(a: I[]): boolean =>
 		a.every(f)
 

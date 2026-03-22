@@ -19,7 +19,11 @@ const onlyTrue: BooleanSchema = {
 	enum: [true],
 }
 
-export const SAMPLE_SCHEMAS = {
+export const SAMPLE_SCHEMAS: {
+	integerFrom2To8: IntegerSchema
+	number123: NumberSchema
+	onlyTrue: BooleanSchema
+} = {
 	integerFrom2To8,
 	number123,
 	onlyTrue,

@@ -14,16 +14,20 @@ import { employSocket, mutexAtoms } from "atom.io/realtime"
 
 import type { ServerConfig } from "."
 
-export type StateReceiver = ReturnType<typeof realtimeStateReceiver>
+export type StateReceiver = <S extends Json.Serializable, C extends S>(
+	schema: StandardSchemaV1<unknown, C>,
+	clientToken: WritableToken<C>,
+	serverToken?: WritableToken<S>,
+) => () => void
 export function realtimeStateReceiver({
 	socket,
 	consumer,
 	store = IMPLICIT.STORE,
-}: ServerConfig) {
-	return function stateReceiver<S extends Json.Serializable, C extends S>(
-		schema: StandardSchemaV1<unknown, C>,
-		clientToken: WritableToken<C>,
-		serverToken: WritableToken<S> = clientToken,
+}: ServerConfig): StateReceiver {
+	return function stateReceiver(
+		schema,
+		clientToken,
+		serverToken = clientToken,
 	): () => void {
 		const socketKey = `socket::${socket.id}` satisfies SocketKey
 		const mutexAtom = findInStore(store, mutexAtoms, serverToken.key)

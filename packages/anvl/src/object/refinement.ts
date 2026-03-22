@@ -30,12 +30,12 @@ export const isRecord =
 export type HasPropertiesOptions = {
 	readonly allowExtraProperties?: boolean
 }
-export const hasProperties = <OBJ extends object>(
+export function hasProperties<OBJ extends object>(
 	isValue: {
 		[K in keyof OBJ]: Refinement<unknown, OBJ[K]>
 	},
 	options: HasPropertiesOptions = { allowExtraProperties: false },
-): Refinement<unknown, OBJ> => {
+): Refinement<unknown, OBJ> {
 	const name = `{${recordToEntries(
 		isValue as Record<PropertyKey, Refinement<any, any>>,
 	)

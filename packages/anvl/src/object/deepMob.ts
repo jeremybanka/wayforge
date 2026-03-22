@@ -4,7 +4,7 @@ import { sprawl } from "atom.io/introspection"
 import { reduce, slice } from "../array"
 import { pipe } from "../function"
 
-export const deepMob = <Tree extends Array<unknown> | object>(
+export function deepMob<Tree extends Array<unknown> | object>(
 	tree: Tree,
 	fn: (
 		child: unknown,
@@ -13,7 +13,7 @@ export const deepMob = <Tree extends Array<unknown> | object>(
 	) => { data?: unknown; meta?: InspectionResult } = (child) => ({
 		data: child,
 	}),
-): Tree => {
+): Tree {
 	const newTree = Array.isArray(tree) ? [...tree] : { ...tree }
 	const getNewNode = reduce<string, Tree>((acc, key) => {
 		if (Array.isArray(acc)) return acc[Number(key)]
