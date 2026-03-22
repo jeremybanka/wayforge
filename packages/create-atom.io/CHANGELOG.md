@@ -1,5 +1,14 @@
 # create-atom.io
 
+## 0.1.8
+
+### Patch Changes
+
+- 7706a15: ✨ Added a new template `atom.io/solid-lossless-numbers`, showcasing atom.io's new integration with Solid.
+  - @atom.io/template-preact-svg-editor@0.0.48
+  - @atom.io/template-react-node-backend@0.0.52
+  - @atom.io/template-solid-lossless-numbers@0.0.2
+
 ## 0.1.7
 
 ### Patch Changes
