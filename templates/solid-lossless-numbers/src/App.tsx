@@ -22,21 +22,21 @@ import css from "./App.tsx.module.css"
 type RationalKey = `rat::${string}`
 const arbitrary = () => Math.random().toString(36).slice(2)
 
-const newRationalNumeratorAtom = atom<bigint>({
+const newRationalNumeratorAtom = atom<bigint | undefined>({
 	key: `newRationalNumerator`,
-	default: 1n,
+	default: undefined,
 })
-const newRationalDenominatorAtom = atom<bigint>({
+const newRationalDenominatorAtom = atom<bigint | undefined>({
 	key: `newRationalDenominator`,
-	default: 1n,
+	default: undefined,
 })
-const newNumeratorAtoms = atomFamily<bigint, RationalKey>({
+const newNumeratorAtoms = atomFamily<bigint | undefined, RationalKey>({
 	key: `newNumerator`,
-	default: 1n,
+	default: undefined,
 })
-const newDenominatorAtoms = atomFamily<bigint, RationalKey>({
+const newDenominatorAtoms = atomFamily<bigint | undefined, RationalKey>({
 	key: `newDenominator`,
-	default: 1n,
+	default: undefined,
 })
 
 const rationalListAtom = mutableAtom<OList<RationalKey>>({
@@ -113,8 +113,8 @@ const combineIntoRationalTx = transaction<
 >({
 	key: `combineIntoRationalTx`,
 	do: ({ get, set, reset }, key, operation) => {
-		const num = get(newNumeratorAtoms, key)
-		const den = get(newDenominatorAtoms, key)
+		const num = get(newNumeratorAtoms, key) ?? 1n
+		const den = get(newDenominatorAtoms, key) ?? 1n
 		set(rationalAtoms, key, get(rationalAtoms, key)[operation](num, den))
 		reset(newNumeratorAtoms, key)
 		reset(newDenominatorAtoms, key)
@@ -140,8 +140,8 @@ export function App(): JSX.Element {
 						onClick={() => {
 							const key: RationalKey = `rat::${arbitrary()}`
 							runTransaction(combineIntoRationalTx)(key, `add`)
-							const newNumerator = getState(newRationalNumeratorAtom)
-							const newDenominator = getState(newRationalDenominatorAtom)
+							const newNumerator = getState(newRationalNumeratorAtom) ?? 1n
+							const newDenominator = getState(newRationalDenominatorAtom) ?? 1n
 							const rational = new Rational(newNumerator, newDenominator)
 							setState(rationalAtoms, key, rational)
 							setState(rationalListAtom, (list) => (list.push(key), list))
@@ -267,8 +267,8 @@ export function RationalFields({
 	numeratorAtom,
 	denominatorAtom,
 }: {
-	numeratorAtom: AtomToken<bigint>
-	denominatorAtom: AtomToken<bigint>
+	numeratorAtom: AtomToken<bigint | undefined>
+	denominatorAtom: AtomToken<bigint | undefined>
 }): JSX.Element {
 	const numerator = useO(numeratorAtom)
 	const setNumerator = useI(numeratorAtom)
@@ -278,7 +278,7 @@ export function RationalFields({
 		<fieldset>
 			<input
 				type="number"
-				value={numerator().toString() === `1` ? `` : numerator().toString()}
+				value={numerator()?.toString()}
 				onInput={(event) => {
 					setNumerator(BigInt(event.currentTarget.value))
 				}}
@@ -287,7 +287,7 @@ export function RationalFields({
 			<solidus />
 			<input
 				type="number"
-				value={denominator().toString() === `1` ? `` : denominator().toString()}
+				value={denominator()?.toString()}
 				onInput={(event) => {
 					setDenominator(BigInt(event.currentTarget.value))
 				}}
