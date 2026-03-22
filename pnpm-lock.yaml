@@ -547,6 +547,9 @@ importers:
       '@atom.io/template-react-node-backend':
         specifier: workspace:*
         version: link:../../templates/react-node-backend
+      '@atom.io/template-solid-lossless-numbers':
+        specifier: workspace:*
+        version: link:../../templates/solid-lossless-numbers
       '@clack/prompts':
         specifier: 1.1.0
         version: 1.1.0
