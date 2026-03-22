@@ -4,7 +4,7 @@ runs:
   using: composite
   steps:
     - name: Install Mise
-      uses: jdx/mise-action@v4.0.0
+      uses: jdx/mise-action@v4.0.1
       with:
         version: 2026.2.8
 
