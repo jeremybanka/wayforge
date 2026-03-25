@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.27
+
+### Patch Changes
+
+- cfa5d27: 🐛 `atom.io` Fixed an issue where certain `Loadable` selectors, downstream of other `Loadable` selectors, would keep stale values in the cache.
+
 ## 0.46.26
 
 ### Patch Changes
