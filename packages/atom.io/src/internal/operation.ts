@@ -67,7 +67,7 @@ export function closeOperation(store: Store): void {
 	store.on.operationClose.next(store.operation)
 }
 
-export const isDone = (store: Store, key: string): boolean => {
+export function isDone(store: Store, key: string): boolean {
 	if (!store.operation.open) {
 		store.logger.error(
 			`🐞`,
@@ -79,7 +79,7 @@ export const isDone = (store: Store, key: string): boolean => {
 	}
 	return store.operation.done.has(key)
 }
-export const markDone = (store: Store, key: string): void => {
+export function markDone(store: Store, key: string): void {
 	if (!store.operation.open) {
 		store.logger.error(
 			`🐞`,

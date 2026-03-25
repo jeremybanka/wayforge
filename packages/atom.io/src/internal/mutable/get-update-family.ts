@@ -6,13 +6,13 @@ import type { RegularAtomFamily } from "../state-types"
 import type { Store } from "../store"
 import type { SignalFrom, Transceiver } from "./transceiver"
 
-export const getUpdateFamily = <
+export function getUpdateFamily<
 	T extends Transceiver<any, Json.Serializable, Json.Serializable>,
 	K extends string,
 >(
 	mutableAtomFamily: MutableAtomFamilyToken<T, K>,
 	store: Store,
-): RegularAtomFamily<SignalFrom<T>, K, never> => {
+): RegularAtomFamily<SignalFrom<T>, K, never> {
 	const target = newest(store)
 	const key = `*${mutableAtomFamily.key}`
 	const updateFamily = target.families.get(key) as RegularAtomFamily<

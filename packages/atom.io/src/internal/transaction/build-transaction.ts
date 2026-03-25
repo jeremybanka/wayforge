@@ -29,12 +29,12 @@ import { getEpochNumberOfAction } from "./get-epoch-number"
 import type { ChildStore, RootStore } from "./is-root-store"
 import type { TransactionProgress } from "./transaction-meta-progress"
 
-export const buildTransaction = (
+export function buildTransaction(
 	store: RootStore,
 	token: TransactionToken<any>,
 	params: any[],
 	id: string,
-): ChildStore => {
+): ChildStore {
 	const parent = newest(store)
 	const childBase: Omit<ChildStore, `transactionMeta`> = {
 		parent,
