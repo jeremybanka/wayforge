@@ -6,13 +6,13 @@ import type { WritablePureSelectorFamily } from "../state-types"
 import type { Store } from "../store"
 import type { Transceiver } from "./transceiver"
 
-export const getJsonFamily = <
+export function getJsonFamily<
 	Core extends Transceiver<any, Json.Serializable, Json.Serializable>,
 	Key extends Canonical,
 >(
 	mutableAtomFamily: MutableAtomFamilyToken<Core, Key>,
 	store: Store,
-): WritablePureSelectorFamily<ReturnType<Core[`toJSON`]>, Key, never> => {
+): WritablePureSelectorFamily<ReturnType<Core[`toJSON`]>, Key, never> {
 	const target = newest(store)
 	const key = `${mutableAtomFamily.key}:JSON`
 	const jsonFamily = target.families.get(key) as WritablePureSelectorFamily<

@@ -277,7 +277,7 @@ export const IMPLICIT: { readonly STORE: RootStore } = {
 	},
 }
 
-export const clearStore = (store: Store): void => {
+export function clearStore(store: Store): void {
 	const { config } = store
 	for (const disposable of store.miscResources.values()) {
 		disposable[Symbol.dispose]()

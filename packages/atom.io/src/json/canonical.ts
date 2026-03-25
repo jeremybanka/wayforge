@@ -9,9 +9,7 @@ const BOOL = `\u0001`
 const NULL = `\u0002`
 const STRING = `\u0003`
 const NUMBER = `\u0004`
-export const packCanonical = <C extends Canonical>(
-	value: Canonical,
-): packed<C> => {
+export function packCanonical<C extends Canonical>(value: Canonical): packed<C> {
 	if (value === null) return NULL
 	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
 	switch (typeof value) {
@@ -25,7 +23,7 @@ export const packCanonical = <C extends Canonical>(
 			return JSON.stringify(value)
 	}
 }
-export const unpackCanonical = <C extends Canonical>(value: packed<C>): C => {
+export function unpackCanonical<C extends Canonical>(value: packed<C>): C {
 	const type = value[0] as `[` | `\u0001` | `\u0002` | `\u0003` | `\u0004`
 	switch (type) {
 		case STRING:

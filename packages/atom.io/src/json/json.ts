@@ -91,7 +91,7 @@ const JSON_PROTOTYPES = [
 	Object.prototype,
 	String.prototype,
 ] as const
-export const isJson = (input: unknown): input is Json.Tree.Node => {
+export function isJson(input: unknown): input is Json.Tree.Node {
 	if (input === null) return true
 	if (input === undefined) return false
 	const prototype = Object.getPrototypeOf(input)
