@@ -1,11 +1,12 @@
 import { Future } from "./future"
 import { Tracker, type Transceiver } from "./mutable"
 import { closeOperation, openOperation } from "./operation"
+import { safeCompute } from "./safe-compute"
 import {
 	evictDownstreamFromAtom,
 	evictDownstreamFromSelector,
 } from "./set-state/evict-downstream"
-import type { ReadableState } from "./state-types"
+import type { PureSelector, ReadableState } from "./state-types"
 import type { Store } from "./store"
 import { isChildStore } from "./transaction"
 
@@ -109,6 +110,12 @@ export function readFromCache<T, E>(
 export function evictCachedValue(target: Store, key: string): void {
 	const currentValue = target.valueMap.get(key)
 	if (currentValue instanceof Future) {
+		const readonly = target.readonlySelectors.get(key)
+		const writable = target.writableSelectors.get(key)
+		const selector = readonly ?? writable
+		const recomputed = safeCompute(target, selector as PureSelector<any, any>)
+		// This is needed for certain edge cases where a loadable selector is downstream of another loadable selector
+		currentValue.use(recomputed)
 		return
 	}
 	if (target.operation.open) {
