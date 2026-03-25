@@ -1,6 +1,6 @@
 import type { ChildStore } from "./is-root-store"
 
-export const abortTransaction = (target: ChildStore): void => {
+export function abortTransaction(target: ChildStore): void {
 	target.logger.info(
 		`🪂`,
 		`transaction`,

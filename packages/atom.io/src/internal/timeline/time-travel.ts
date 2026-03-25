@@ -9,11 +9,11 @@ import {
 } from "../events"
 import type { Store } from "../store"
 
-export const timeTravel = (
+export function timeTravel(
 	store: Store,
 	action: `redo` | `undo`,
 	token: TimelineToken<any>,
-): void => {
+): void {
 	store.logger.info(
 		action === `redo` ? `⏩` : `⏪`,
 		`timeline`,

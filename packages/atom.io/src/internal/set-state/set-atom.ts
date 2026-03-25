@@ -10,11 +10,11 @@ import type { ProtoUpdate } from "./operate-on-store"
 
 const UNSET = Symbol(`UNSET`)
 
-export const setAtom = <T>(
+export function setAtom<T>(
 	target: Store & { operation: OpenOperation<any> },
 	atom: Atom<T, any>,
 	next: NoInfer<T> | ((oldValue: T) => NoInfer<T>),
-): ProtoUpdate<T> => {
+): ProtoUpdate<T> {
 	let oldValue: T | typeof UNSET
 	let newValue: T
 	if (isFn(next)) {

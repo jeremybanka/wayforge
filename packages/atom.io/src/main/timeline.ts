@@ -16,14 +16,14 @@ export type AtomOnly<M extends TimelineManageable> =
  * If there is an update ahead of the cursor (in the future of this {@link timeline}), apply it and move the cursor to the next update
  * @param timeline - A {@link TimelineToken}
  */
-export const redo = (timeline: TimelineToken<any>): void => {
+export function redo(timeline: TimelineToken<any>): void {
 	timeTravel(IMPLICIT.STORE, `redo`, timeline)
 }
 /**
  * Reverse the last update on the {@link timeline} and move the cursor to the previous update
  * @param timeline - A {@link TimelineToken}
  */
-export const undo = (timeline: TimelineToken<any>): void => {
+export function undo(timeline: TimelineToken<any>): void {
 	timeTravel(IMPLICIT.STORE, `undo`, timeline)
 }
 
@@ -39,8 +39,8 @@ export type TimelineOptions<ManagedAtom extends TimelineManageable> = {
  * @param options - {@link TimelineOptions}
  * @returns A reference to the timeline created: a {@link TimelineToken}
  */
-export const timeline = <ManagedAtom extends TimelineManageable>(
+export function timeline<ManagedAtom extends TimelineManageable>(
 	options: TimelineOptions<ManagedAtom>,
-): TimelineToken<ManagedAtom> => {
+): TimelineToken<ManagedAtom> {
 	return createTimeline(IMPLICIT.STORE, options)
 }

@@ -3,11 +3,11 @@ import type { Atom, Selector } from "../state-types"
 import type { Store } from "../store"
 import { recallState } from "./recall-state"
 
-export const subscribeToRootDependency = (
+export function subscribeToRootDependency(
 	target: Store,
 	selector: Selector<any, any>,
 	atom: Atom<any, any>,
-): (() => void) => {
+): () => void {
 	return atom.subject.subscribe(
 		`${selector.type}:${selector.key}`,
 		(atomChange) => {
