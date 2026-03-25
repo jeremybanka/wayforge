@@ -13,18 +13,18 @@ export type AtomOnly<M extends TimelineManageable> =
 			: never
 
 /**
- * If there is an update ahead of the cursor (in the future of this {@link timeline}), apply it and move the cursor to the next update
- * @param timeline - A {@link TimelineToken}
+ * If there is an update ahead of the cursor (in the future of this {@link timelineToken}), apply it and move the cursor to the next update
+ * @param timelineToken - A {@link TimelineToken}
  */
-export const redo = (timeline: TimelineToken<any>): void => {
-	timeTravel(IMPLICIT.STORE, `redo`, timeline)
+export function redo(timelineToken: TimelineToken<any>): void {
+	timeTravel(IMPLICIT.STORE, `redo`, timelineToken)
 }
 /**
- * Reverse the last update on the {@link timeline} and move the cursor to the previous update
- * @param timeline - A {@link TimelineToken}
+ * Reverse the last update on the {@link timelineToken} and move the cursor to the previous update
+ * @param timelineToken - A {@link TimelineToken}
  */
-export const undo = (timeline: TimelineToken<any>): void => {
-	timeTravel(IMPLICIT.STORE, `undo`, timeline)
+export function undo(timelineToken: TimelineToken<any>): void {
+	timeTravel(IMPLICIT.STORE, `undo`, timelineToken)
 }
 
 export type TimelineOptions<ManagedAtom extends TimelineManageable> = {
@@ -39,8 +39,8 @@ export type TimelineOptions<ManagedAtom extends TimelineManageable> = {
  * @param options - {@link TimelineOptions}
  * @returns A reference to the timeline created: a {@link TimelineToken}
  */
-export const timeline = <ManagedAtom extends TimelineManageable>(
+export function timeline<ManagedAtom extends TimelineManageable>(
 	options: TimelineOptions<ManagedAtom>,
-): TimelineToken<ManagedAtom> => {
+): TimelineToken<ManagedAtom> {
 	return createTimeline(IMPLICIT.STORE, options)
 }

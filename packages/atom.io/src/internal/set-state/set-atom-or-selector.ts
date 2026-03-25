@@ -5,11 +5,11 @@ import type { ProtoUpdate } from "./operate-on-store"
 import { setAtom } from "./set-atom"
 import { setSelector } from "./set-selector"
 
-export const setAtomOrSelector = <T>(
+export function setAtomOrSelector<T>(
 	target: Store & { operation: OpenOperation },
 	state: WritableState<T, any>,
 	value: NoInfer<T> | ((oldValue: T) => NoInfer<T>),
-): ProtoUpdate<T> => {
+): ProtoUpdate<T> {
 	let protoUpdate: ProtoUpdate<T>
 	switch (state.type) {
 		case `atom`:
