@@ -38,6 +38,7 @@ const LOGGER_ICON_DICTIONARY = {
 	"⏮️": `Transaction undo`,
 	"⏳": `Timeline event partially captured`,
 	"⏸️": `Time-travel complete`,
+	"🧼": `Timeline cleared`,
 	// Problems
 	"💣": `Dangerous action likely to cause bad errors down the line`,
 	"❗": `Dangerous action unless in development mode`,
