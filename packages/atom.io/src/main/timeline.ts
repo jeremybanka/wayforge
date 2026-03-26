@@ -1,5 +1,5 @@
 import {
-	clearTimeline as clearTimelineInStore,
+	clearTimelineInStore,
 	createTimeline,
 	IMPLICIT,
 	timeTravel,
