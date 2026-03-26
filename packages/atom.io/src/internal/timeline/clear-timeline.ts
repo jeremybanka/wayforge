@@ -2,7 +2,10 @@ import type { TimelineToken } from "atom.io"
 
 import type { Store } from "../store"
 
-export function clearTimeline(store: Store, token: TimelineToken<any>): void {
+export function clearTimelineInStore(
+	store: Store,
+	token: TimelineToken<any>,
+): void {
 	store.logger.info(`🧹`, `timeline`, token.key, `clear`)
 	const timelineData = store.timelines.get(token.key)
 	if (!timelineData) {
