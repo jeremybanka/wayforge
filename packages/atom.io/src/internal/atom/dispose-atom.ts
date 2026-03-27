@@ -19,7 +19,7 @@ export function disposeAtom(
 	if (!family) {
 		store.logger.error(`❌`, `atom`, key, `Standalone atoms cannot be disposed.`)
 	} else {
-		void atom.cleanup?.()
+		atom.cleanup?.()
 		const lastValue = store.valueMap.get(atom.key)
 		const familyToken = getFamilyOfToken(store, atomToken)
 		const atomFamily = withdraw(store, familyToken)
