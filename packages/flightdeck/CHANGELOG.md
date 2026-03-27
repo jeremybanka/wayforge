@@ -1,5 +1,11 @@
 # flightdeck
 
+## 0.4.0
+
+### Minor Changes
+
+- f61612e: 💥 Upgraded the schema for lnav format to zod 4.
+
 ## 0.3.50
 
 ### Patch Changes
