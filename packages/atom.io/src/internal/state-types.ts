@@ -1,5 +1,6 @@
 import type {
 	FamilyMetadata,
+	Loadable,
 	MutableAtomFamilyToken,
 	MutableAtomToken,
 	ReadonlyHeldSelectorFamilyToken,

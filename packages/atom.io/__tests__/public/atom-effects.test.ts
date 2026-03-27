@@ -1,4 +1,5 @@
 import { readFileSync, writeFileSync } from "node:fs"
+import { readFile } from "node:fs/promises"
 
 import type { Logger } from "atom.io"
 import {
@@ -81,6 +82,26 @@ describe(`atom effects`, () => {
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
 	})
+	it(`allows async effect setup to initialize an atom`, async () => {
+		const jobDone = new Internal.Future(() => {})
+		const nameAtom = atom<string>({
+			key: `name`,
+			default: ``,
+			effects: [
+				async ({ setSelf }) => {
+					const name = await readFile(`${tmpDir.name}/name.txt`, `utf8`)
+					jobDone.use(Promise.resolve())
+					setSelf(name)
+				},
+			],
+		})
+
+		expect(getState(nameAtom)).toBe(``)
+		await jobDone
+		expect(getState(nameAtom)).toBe(`Mavis`)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
+	})
 	it(`resets itself`, () => {
 		const mySubject = new Internal.Subject<string>()
 		const nameAtom = atom<string>({
@@ -145,6 +166,37 @@ describe(`atom effect cleanup`, () => {
 			newValue: { x: 1, y: 1 },
 		})
 		disposeState(findState(coordinateAtoms, `a`))
+		expect(Utils.stdout).toHaveBeenCalledWith(`cleanup`, `a`)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
+	})
+	test(`an async effect cleanup still runs if the atom is disposed before setup resolves`, async () => {
+		const setup = new Internal.Future<void>(() => {})
+		const coordinateAtoms = atomFamily<{ x: number; y: number }, string>({
+			key: `coordinate`,
+			default: { x: 0, y: 0 },
+			effects: (key) => [
+				async () => {
+					await setup
+					Utils.stdout(`setup done`, `a`)
+					return () => {
+						Utils.stdout(`cleanup`, key)
+					}
+				},
+			],
+		})
+
+		setState(coordinateAtoms, `a`, { x: 1, y: 1 })
+		disposeState(coordinateAtoms, `a`)
+
+		setup.use(Promise.resolve())
+
+		await Promise.resolve()
+		await Promise.resolve()
+		await Promise.resolve()
+		await Promise.resolve()
+
+		expect(Utils.stdout).toHaveBeenCalledWith(`setup done`, `a`)
 		expect(Utils.stdout).toHaveBeenCalledWith(`cleanup`, `a`)
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
