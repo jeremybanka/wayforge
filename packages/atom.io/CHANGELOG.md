@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.28
+
+### Patch Changes
+
+- fbde1a3: ✨ Allow for async atom effects.
+
 ## 0.46.27
 
 ### Patch Changes
