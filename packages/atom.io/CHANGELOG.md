@@ -1,5 +1,12 @@
 # atom.io
 
+## 0.46.29
+
+### Patch Changes
+
+- 40c001b: ✨ `clearTimeline()` is a new utility to remove all history from a timeline.
+- 40c001b: `atom.io/react` and `atom.io/solid` The `useTL()` function adds a new `clear()` utility for removing all history.
+
 ## 0.46.28
 
 ### Patch Changes
