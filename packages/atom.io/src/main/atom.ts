@@ -1,3 +1,4 @@
+import type { Loadable } from "atom.io"
 import type { ConstructorOf, Ctor, Store, Transceiver } from "atom.io/internal"
 import {
 	createMutableAtom,
@@ -70,7 +71,7 @@ export function mutableAtom<T extends Transceiver<any, any, any>>(
  */
 export type AtomEffect<T, E = never> = (
 	tools: Effectors<T, E>,
-) => (() => void) | void
+) => Loadable<(() => void) | void>
 export type Effectors<T, E = never> = {
 	/**
 	 * Reset the value of the atom to its default
