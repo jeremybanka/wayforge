@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.0.4
+
+### Patch Changes
+
+- Updated dependencies [fbde1a3]
+  - atom.io@0.46.28
+
 ## 0.0.3
 
 ### Patch Changes
