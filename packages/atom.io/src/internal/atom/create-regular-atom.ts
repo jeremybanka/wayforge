@@ -1,5 +1,6 @@
 import type {
 	FamilyMetadata,
+	Loadable,
 	RegularAtomOptions,
 	RegularAtomToken,
 	UpdateHandler,
@@ -57,7 +58,7 @@ export function createRegularAtom<T, K extends Canonical, E>(
 	const token = deposit(newAtom) as RegularAtomToken<T, K, E>
 	if (options.effects) {
 		let effectIndex = 0
-		const cleanupFunctions: (() => void)[] = []
+		const cleanupFunctions: (Promise<(() => void) | void> | (() => void))[] = []
 		for (const effect of options.effects) {
 			const cleanup = effect({
 				resetSelf: () => {
@@ -78,7 +79,11 @@ export function createRegularAtom<T, K extends Canonical, E>(
 		}
 		newAtom.cleanup = () => {
 			for (const cleanup of cleanupFunctions) {
-				cleanup()
+				if (cleanup instanceof Promise) {
+					void cleanup.then((loaded) => loaded?.())
+				} else {
+					cleanup()
+				}
 			}
 		}
 	}

@@ -72,7 +72,7 @@ export function createMutableAtom<T extends Transceiver<any, any, any>>(
 
 	if (options.effects) {
 		let effectIndex = 0
-		const cleanupFunctions: (() => void)[] = []
+		const cleanupFunctions: (Promise<(() => void) | void> | (() => void))[] = []
 		for (const effect of options.effects) {
 			const cleanup = effect({
 				resetSelf: () => {
@@ -93,7 +93,11 @@ export function createMutableAtom<T extends Transceiver<any, any, any>>(
 		}
 		newAtom.cleanup = () => {
 			for (const cleanup of cleanupFunctions) {
-				cleanup()
+				if (cleanup instanceof Promise) {
+					void cleanup.then((loaded) => loaded?.())
+				} else {
+					cleanup()
+				}
 			}
 		}
 	}
