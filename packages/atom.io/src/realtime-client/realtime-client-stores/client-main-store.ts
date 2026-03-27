@@ -17,11 +17,10 @@ export const myUserKeyAtom: RegularAtomToken<UserKey | null> = atom({
 	key: `myUserKey`,
 	default: null,
 	effects: [
-		(userKey) => {
+		async (userKey) => {
 			if (typeof window !== `undefined`) {
-				void import(`atom.io/web`).then(({ storageSync }) => {
-					storageSync(globalThis.localStorage, JSON, `myUserKey`)(userKey)
-				})
+				const { storageSync } = await import(`atom.io/web`)
+				await storageSync(globalThis.localStorage, JSON, `myUserKey`)(userKey)
 			}
 		},
 	],
