@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.0.5
+
+### Patch Changes
+
+- Updated dependencies [40c001b]
+- Updated dependencies [40c001b]
+  - atom.io@0.46.29
+
 ## 0.0.4
 
 ### Patch Changes
