@@ -166,8 +166,8 @@ importers:
         specifier: 4.4.0
         version: 4.4.0
       drizzle-orm:
-        specifier: 0.45.1
-        version: 0.45.1(@cloudflare/workers-types@4.20260310.1)(@opentelemetry/api@1.9.0)(better-sqlite3@12.2.0)(bun-types@1.3.11)(postgres@3.4.8)
+        specifier: 0.45.2
+        version: 0.45.2(@cloudflare/workers-types@4.20260310.1)(@opentelemetry/api@1.9.0)(better-sqlite3@12.2.0)(bun-types@1.3.11)(postgres@3.4.8)
       motion:
         specifier: 12.38.0
         version: 12.38.0(@emotion/is-prop-valid@1.4.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -384,8 +384,8 @@ importers:
         specifier: 0.31.10
         version: 0.31.10
       drizzle-orm:
-        specifier: 0.45.1
-        version: 0.45.1(@cloudflare/workers-types@4.20260310.1)(@opentelemetry/api@1.9.0)(better-sqlite3@12.2.0)(bun-types@1.3.11)(postgres@3.4.8)
+        specifier: 0.45.2
+        version: 0.45.2(@cloudflare/workers-types@4.20260310.1)(@opentelemetry/api@1.9.0)(better-sqlite3@12.2.0)(bun-types@1.3.11)(postgres@3.4.8)
       eslint:
         specifier: 10.1.0
         version: 10.1.0(jiti@2.6.1)
@@ -5055,8 +5055,8 @@ packages:
     resolution: {integrity: sha512-7OZcmQUrdGI+DUNNsKBn1aW8qSoKuTH7d0mYgSP8bAzdFzKoovxEFnoGQp2dVs82EOJeYycqRtciopszwUf8bw==}
     hasBin: true
 
-  drizzle-orm@0.45.1:
-    resolution: {integrity: sha512-Te0FOdKIistGNPMq2jscdqngBRfBpC8uMFVwqjf6gtTVJHIQ/dosgV/CLBU2N4ZJBsXL5savCba9b0YJskKdcA==}
+  drizzle-orm@0.45.2:
+    resolution: {integrity: sha512-kY0BSaTNYWnoDMVoyY8uxmyHjpJW1geOmBMdSSicKo9CIIWkSxMIj2rkeSR51b8KAPB7m+qysjuHme5nKP+E5Q==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=4'
@@ -12670,7 +12670,7 @@ snapshots:
       esbuild: 0.25.12
       tsx: 4.21.0
 
-  drizzle-orm@0.45.1(@cloudflare/workers-types@4.20260310.1)(@opentelemetry/api@1.9.0)(better-sqlite3@12.2.0)(bun-types@1.3.11)(postgres@3.4.8):
+  drizzle-orm@0.45.2(@cloudflare/workers-types@4.20260310.1)(@opentelemetry/api@1.9.0)(better-sqlite3@12.2.0)(bun-types@1.3.11)(postgres@3.4.8):
     optionalDependencies:
       '@cloudflare/workers-types': 4.20260310.1
       '@opentelemetry/api': 1.9.0
