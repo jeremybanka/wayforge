@@ -1,5 +1,5 @@
 import type { TimelineToken } from "atom.io"
-import { redo, undo } from "atom.io"
+import { clearTimeline, redo, undo } from "atom.io"
 import { subscribeToTimeline, withdraw } from "atom.io/internal"
 import { useContext, useId, useRef, useSyncExternalStore } from "react"
 
@@ -10,6 +10,7 @@ export type TimelineMeta = {
 	length: number
 	undo: () => void
 	redo: () => void
+	clear: () => void
 }
 
 export function useTL(token: TimelineToken<any>): TimelineMeta {
@@ -26,6 +27,9 @@ export function useTL(token: TimelineToken<any>): TimelineMeta {
 			},
 			redo: () => {
 				redo(token)
+			},
+			clear: () => {
+				clearTimeline(token)
 			},
 		}
 	}

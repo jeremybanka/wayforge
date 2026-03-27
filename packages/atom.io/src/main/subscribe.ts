@@ -50,7 +50,7 @@ export function subscribe<F extends Fn>(
  */
 export function subscribe<M extends TimelineManageable>(
 	token: TimelineToken<M>,
-	handleUpdate: (update: TimelineEvent<M> | `redo` | `undo`) => void,
+	handleUpdate: (update: TimelineEvent<M> | `clear` | `redo` | `undo`) => void,
 	key?: string,
 ): () => void
 export function subscribe(

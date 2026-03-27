@@ -172,6 +172,13 @@ describe(`timeline`, () => {
 						}}
 						data-testid="redoButton"
 					/>
+					<button
+						type="button"
+						onClick={() => {
+							letterTimeline.clear()
+						}}
+						data-testid="clearButton"
+					/>
 				</>
 			)
 		}
@@ -217,6 +224,27 @@ describe(`timeline`, () => {
 		fireEvent.click(redoButton)
 		expect(timelineAt.textContent).toEqual(`2`)
 		expect(timelineLength.textContent).toEqual(`2`)
+	})
+	it(`clears metadata and captures new history`, () => {
+		const { getByTestId } = scenario()
+		const changeStateButtonB = getByTestId(`changeStateButtonB`)
+		const changeStateButtonC = getByTestId(`changeStateButtonC`)
+		const clearButton = getByTestId(`clearButton`)
+		const timelineAt = getByTestId(`timelineAt`)
+		const timelineLength = getByTestId(`timelineLength`)
+
+		fireEvent.click(changeStateButtonB)
+		fireEvent.click(changeStateButtonC)
+		expect(timelineAt.textContent).toEqual(`2`)
+		expect(timelineLength.textContent).toEqual(`2`)
+
+		fireEvent.click(clearButton)
+		expect(timelineAt.textContent).toEqual(`0`)
+		expect(timelineLength.textContent).toEqual(`0`)
+
+		fireEvent.click(changeStateButtonB)
+		expect(timelineAt.textContent).toEqual(`1`)
+		expect(timelineLength.textContent).toEqual(`1`)
 	})
 })
 describe(`timeline (dynamic)`, () => {

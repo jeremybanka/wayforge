@@ -1,4 +1,9 @@
-import { createTimeline, IMPLICIT, timeTravel } from "atom.io/internal"
+import {
+	clearTimelineInStore,
+	createTimeline,
+	IMPLICIT,
+	timeTravel,
+} from "atom.io/internal"
 
 import type { AtomFamilyToken, AtomToken, TimelineToken } from "."
 
@@ -25,6 +30,13 @@ export function redo(timelineToken: TimelineToken<any>): void {
  */
 export function undo(timelineToken: TimelineToken<any>): void {
 	timeTravel(IMPLICIT.STORE, `undo`, timelineToken)
+}
+/**
+ * Remove all recorded history from the {@link timelineToken} and reset its cursor to the beginning
+ * @param timelineToken - A {@link TimelineToken}
+ */
+export function clearTimeline(timelineToken: TimelineToken<any>): void {
+	clearTimelineInStore(IMPLICIT.STORE, timelineToken)
 }
 
 export type TimelineOptions<ManagedAtom extends TimelineManageable> = {
