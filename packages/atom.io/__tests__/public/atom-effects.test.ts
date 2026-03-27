@@ -9,6 +9,7 @@ import {
 	findState,
 	getState,
 	mutableAtom,
+	mutableAtomFamily,
 	setState,
 } from "atom.io"
 import * as Internal from "atom.io/internal"
@@ -102,6 +103,28 @@ describe(`atom effects`, () => {
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
 	})
+	it(`allows async effect setup to register onSet`, async () => {
+		const jobDone = new Internal.Future(() => {})
+		const nameAtom = atom<string>({
+			key: `name`,
+			default: ``,
+			effects: [
+				async ({ onSet }) => {
+					await Promise.resolve()
+					onSet((change) => {
+						writeFileSync(`${tmpDir.name}/name.txt`, change.newValue)
+					})
+					jobDone.use(Promise.resolve())
+				},
+			],
+		})
+
+		await jobDone
+		setState(nameAtom, `Mavis2`)
+		expect(readFileSync(`${tmpDir.name}/name.txt`, `utf8`)).toBe(`Mavis2`)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
+	})
 	it(`resets itself`, () => {
 		const mySubject = new Internal.Subject<string>()
 		const nameAtom = atom<string>({
@@ -140,6 +163,51 @@ describe(`atom effects`, () => {
 		mySubject.next(`reset`)
 		const setNew = getState(nameAtom)
 		expect(setNew).not.toBe(setOriginal)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
+	})
+	it(`allows async effect setup to initialize a mutable atom`, async () => {
+		const jobDone = new Internal.Future(() => {})
+		const nameAtom = mutableAtom<UList<string>>({
+			key: `name`,
+			class: UList,
+			effects: [
+				async ({ setSelf }) => {
+					await Promise.resolve()
+					setSelf(new UList([`Cat`]))
+					jobDone.use(Promise.resolve())
+				},
+			],
+		})
+
+		expect(getState(nameAtom)).toEqual(new UList())
+		await jobDone
+		expect(getState(nameAtom)).toEqual(new UList([`Cat`]))
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
+	})
+	it(`allows mutable effects to subscribe with onSet and clean up`, () => {
+		const listAtoms = mutableAtomFamily<UList<string>, string>({
+			key: `list`,
+			class: UList,
+			effects: (key) => [
+				({ onSet }) => {
+					onSet((update) => {
+						Utils.stdout(`onSet`, key, [...update.newValue])
+					})
+					return () => {
+						Utils.stdout(`cleanup`, key)
+					}
+				},
+			],
+		})
+
+		const atomA = findState(listAtoms, `a`)
+		setState(atomA, (list) => list.add(`Cat`))
+		disposeState(atomA)
+
+		expect(Utils.stdout).toHaveBeenCalledWith(`onSet`, `a`, [`Cat`])
+		expect(Utils.stdout).toHaveBeenCalledWith(`cleanup`, `a`)
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
 	})
@@ -188,6 +256,38 @@ describe(`atom effect cleanup`, () => {
 
 		setState(coordinateAtoms, `a`, { x: 1, y: 1 })
 		disposeState(coordinateAtoms, `a`)
+
+		setup.use(Promise.resolve())
+
+		await Promise.resolve()
+		await Promise.resolve()
+		await Promise.resolve()
+		await Promise.resolve()
+
+		expect(Utils.stdout).toHaveBeenCalledWith(`setup done`, `a`)
+		expect(Utils.stdout).toHaveBeenCalledWith(`cleanup`, `a`)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
+	})
+	test(`a mutable atom can run async cleanup after disposal`, async () => {
+		const setup = new Internal.Future<void>(() => {})
+		const listAtoms = mutableAtomFamily<UList<string>, string>({
+			key: `list`,
+			class: UList,
+			effects: (key) => [
+				async () => {
+					await setup
+					Utils.stdout(`setup done`, key)
+					return () => {
+						Utils.stdout(`cleanup`, key)
+					}
+				},
+			],
+		})
+
+		const atomA = findState(listAtoms, `a`)
+		setState(atomA, (list) => list.add(`Cat`))
+		disposeState(atomA)
 
 		setup.use(Promise.resolve())
 
