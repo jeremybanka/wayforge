@@ -2,7 +2,6 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "atom-io-fyi",
 	"compatibility_date": "2025-10-01",
-	"main": "./dist/server/entry.mjs",
 	"assets": {
 		"directory": "./dist/client"
 	}
