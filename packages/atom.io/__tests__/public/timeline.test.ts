@@ -2,6 +2,7 @@ import type { Logger, WritableToken } from "atom.io"
 import {
 	atom,
 	atomFamily,
+	clearTimeline,
 	disposeState,
 	findState,
 	getState,
@@ -359,6 +360,37 @@ describe(`timeline`, () => {
 		undo(countTL)
 		redo(countTL)
 		expect(getState(countAtoms, `a`)).toBe(1)
+	})
+	test(`history can be cleared explicitly`, () => {
+		const letterAtom = atom<string>({
+			key: `letter`,
+			default: `A`,
+		})
+		const letterTL = timeline({
+			key: `letter-history`,
+			scope: [letterAtom],
+		})
+
+		setState(letterAtom, `B`)
+		setState(letterAtom, `C`)
+
+		let timelineData = I.IMPLICIT.STORE.timelines.get(letterTL.key)
+		if (!timelineData) throw new Error(`timeline data not found`)
+		expect(timelineData.at).toBe(2)
+		expect(timelineData.history.length).toBe(2)
+
+		clearTimeline(letterTL)
+
+		timelineData = I.IMPLICIT.STORE.timelines.get(letterTL.key)
+		if (!timelineData) throw new Error(`timeline data not found`)
+		expect(timelineData.at).toBe(0)
+		expect(timelineData.history.length).toBe(0)
+
+		setState(letterAtom, `D`)
+
+		expect(timelineData.at).toBe(1)
+		expect(timelineData.history.length).toBe(1)
+		expect(getState(letterAtom)).toBe(`D`)
 	})
 })
 

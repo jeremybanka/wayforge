@@ -3,6 +3,7 @@ import type { RootStore } from "atom.io/internal"
 import {
 	actUponStore,
 	arbitrary,
+	clearTimelineInStore,
 	createMutableAtom,
 	createMutableAtomFamily,
 	createRegularAtom,
@@ -25,6 +26,7 @@ import {
 
 import type {
 	AtomIOToken,
+	clearTimeline,
 	disposeState,
 	getState,
 	redo,
@@ -56,6 +58,7 @@ export class Silo {
 	public subscribe: typeof subscribe
 	public undo: typeof undo
 	public redo: typeof redo
+	public clearTimeline: typeof clearTimeline
 	public runTransaction: typeof runTransaction
 	public install: (tokens: AtomIOToken[], store?: RootStore) => void
 
@@ -96,6 +99,9 @@ export class Silo {
 		}
 		this.redo = (token) => {
 			timeTravel(s, `redo`, token)
+		}
+		this.clearTimeline = (token) => {
+			clearTimelineInStore(s, token)
 		}
 		this.runTransaction = (token, id = arbitrary()) => actUponStore(s, token, id)
 		this.install = (tokens, source = IMPLICIT.STORE) => {

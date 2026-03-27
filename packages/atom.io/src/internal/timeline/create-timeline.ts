@@ -33,7 +33,7 @@ export type Timeline<ManagedAtom extends TimelineManageable> = {
 	selectorTime: number | null
 	transactionKey: string | null
 	install: (store: RootStore) => void
-	subject: Subject<TimelineEvent<ManagedAtom> | `redo` | `undo`>
+	subject: Subject<TimelineEvent<ManagedAtom> | `clear` | `redo` | `undo`>
 	subscriptions: Map<string, () => void>
 }
 

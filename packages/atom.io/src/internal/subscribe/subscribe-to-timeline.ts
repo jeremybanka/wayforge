@@ -7,7 +7,7 @@ export function subscribeToTimeline<ManagedAtom extends TimelineManageable>(
 	store: Store,
 	token: TimelineToken<ManagedAtom>,
 	key: string,
-	handleUpdate: (update: TimelineEvent<any> | `redo` | `undo`) => void,
+	handleUpdate: (update: TimelineEvent<any> | `clear` | `redo` | `undo`) => void,
 ): () => void {
 	const tl = withdraw(store, token)
 	store.logger.info(`👀`, `timeline`, token.key, `Adding subscription "${key}"`)

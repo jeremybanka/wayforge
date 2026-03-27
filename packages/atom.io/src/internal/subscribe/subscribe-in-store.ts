@@ -30,7 +30,7 @@ export function subscribeInStore<F extends Fn>(
 export function subscribeInStore<M extends TimelineManageable>(
 	store: Store,
 	token: TimelineToken<M>,
-	handleUpdate: (update: TimelineEvent<M> | `redo` | `undo`) => void,
+	handleUpdate: (update: TimelineEvent<M> | `clear` | `redo` | `undo`) => void,
 	key?: string,
 ): () => void
 export function subscribeInStore<M extends TimelineManageable>(
@@ -39,7 +39,7 @@ export function subscribeInStore<M extends TimelineManageable>(
 	handleUpdate:
 		| TransactionUpdateHandler<any>
 		| UpdateHandler<any>
-		| ((update: TimelineEvent<M> | `redo` | `undo`) => void),
+		| ((update: TimelineEvent<M> | `clear` | `redo` | `undo`) => void),
 	key?: string,
 ): () => void
 export function subscribeInStore(
