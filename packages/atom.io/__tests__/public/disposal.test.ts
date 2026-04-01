@@ -57,6 +57,25 @@ describe(`disposeState`, () => {
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
 	})
+	it(`deletes all atoms in a family when given only the family token`, () => {
+		const countAtoms = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		const alpha = findState(countAtoms, `alpha`)
+		const beta = findState(countAtoms, `beta`)
+		getState(alpha)
+		getState(beta)
+
+		disposeState(countAtoms)
+
+		expect(Internal.IMPLICIT.STORE.atoms.has(alpha.key)).toBe(false)
+		expect(Internal.IMPLICIT.STORE.atoms.has(beta.key)).toBe(false)
+		expect(Internal.IMPLICIT.STORE.valueMap.has(alpha.key)).toBe(false)
+		expect(Internal.IMPLICIT.STORE.valueMap.has(beta.key)).toBe(false)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
+	})
 	it(`does not delete downstream selectors from atom`, () => {
 		const countKeysAtom = atom<string[]>({
 			key: `countKeys`,
@@ -184,6 +203,32 @@ describe(`disposeState`, () => {
 			false,
 		)
 		expect(Internal.IMPLICIT.STORE.valueMap.has(tripledState.key)).toBe(false)
+		expect(logger.warn).not.toHaveBeenCalled()
+		expect(logger.error).not.toHaveBeenCalled()
+	})
+	it(`deletes all selectors in a family when given only the family token`, () => {
+		const countAtoms = atomFamily<number, string>({
+			key: `count`,
+			default: 0,
+		})
+		const doubledSelectors = selectorFamily<number, string>({
+			key: `doubled`,
+			get:
+				(id) =>
+				({ find, get }) =>
+					get(find(countAtoms, id)) * 2,
+		})
+		const alpha = findState(doubledSelectors, `alpha`)
+		const beta = findState(doubledSelectors, `beta`)
+		getState(alpha)
+		getState(beta)
+
+		disposeState(doubledSelectors)
+
+		expect(Internal.IMPLICIT.STORE.readonlySelectors.has(alpha.key)).toBe(false)
+		expect(Internal.IMPLICIT.STORE.readonlySelectors.has(beta.key)).toBe(false)
+		expect(Internal.IMPLICIT.STORE.valueMap.has(alpha.key)).toBe(false)
+		expect(Internal.IMPLICIT.STORE.valueMap.has(beta.key)).toBe(false)
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
 	})
