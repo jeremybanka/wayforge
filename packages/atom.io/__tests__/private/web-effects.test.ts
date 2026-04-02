@@ -1,6 +1,6 @@
 import type { Logger, RegularAtomOptions } from "atom.io"
 import { Silo } from "atom.io"
-import { queryParamSync, storageSync } from "atom.io/web"
+import { searchParamSync, storageSync } from "atom.io/web"
 
 import * as Utils from "../__util__"
 
@@ -72,17 +72,13 @@ describe(`storageSync`, () => {
 	})
 })
 
-describe(`queryParamSync`, () => {
+describe(`searchParamSync`, () => {
 	it(`should sync a value to the URL query params`, () => {
-		window.history.replaceState(
-			null,
-			``,
-			`/?myString=%22B%22&keep=%22C%22#hash`,
-		)
+		window.history.replaceState(null, ``, `/?myString=%22B%22&keep=%22C%22#hash`)
 		const myStringAtomOptions = {
 			key: `myString`,
 			default: `A`,
-			effects: [queryParamSync(JSON, `myString`)],
+			effects: [searchParamSync(JSON, `myString`)],
 		} satisfies RegularAtomOptions<string | null>
 		let myStringAtom = $.atom<string | null>(myStringAtomOptions)
 		expect($.getState(myStringAtom)).toBe(`B`)
