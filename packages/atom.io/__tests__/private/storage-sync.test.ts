@@ -1,6 +1,6 @@
 import type { Logger, RegularAtomOptions } from "atom.io"
 import { Silo } from "atom.io"
-import { storageSync } from "atom.io/web"
+import { queryParamSync, storageSync } from "atom.io/web"
 
 import * as Utils from "../__util__"
 
@@ -14,6 +14,7 @@ let logger: Logger
 
 beforeEach(() => {
 	if (willClearLocalStorage) localStorage.clear()
+	window.history.replaceState(null, ``, `/`)
 	$ = new Silo({
 		name: `react-store-${i}`,
 		lifespan: `ephemeral`,
@@ -68,5 +69,34 @@ describe(`storageSync`, () => {
 		})
 		myStringAtom = $.atom<string | null>(myStringAtomOptions)
 		expect($.getState(myStringAtom)).toBe(`A`)
+	})
+})
+
+describe(`queryParamSync`, () => {
+	it(`should sync a value to the URL query params`, () => {
+		window.history.replaceState(
+			null,
+			``,
+			`/?myString=%22B%22&keep=%22C%22#hash`,
+		)
+		const myStringAtomOptions = {
+			key: `myString`,
+			default: `A`,
+			effects: [queryParamSync(JSON, `myString`)],
+		} satisfies RegularAtomOptions<string | null>
+		let myStringAtom = $.atom<string | null>(myStringAtomOptions)
+		expect($.getState(myStringAtom)).toBe(`B`)
+		$.setState(myStringAtom, `D`)
+		expect(window.location.search).toBe(`?myString=%22D%22&keep=%22C%22`)
+		expect(window.location.hash).toBe(`#hash`)
+		$ = new Silo({
+			name: `react-store-${i}`,
+			lifespan: `ephemeral`,
+			isProduction: false,
+		})
+		myStringAtom = $.atom<string | null>(myStringAtomOptions)
+		expect($.getState(myStringAtom)).toBe(`D`)
+		$.setState(myStringAtom, null)
+		expect(window.location.search).toBe(`?keep=%22C%22`)
 	})
 })
