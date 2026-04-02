@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.30
+
+### Patch Changes
+
+- 67d68ff: ✨ `atom.io/web` added `searchParamSync()`. A new effect similar to `storageSync()`, except using `URLSearchParams` instead of a browser `Storage` interface.
+
 ## 0.46.29
 
 ### Patch Changes
