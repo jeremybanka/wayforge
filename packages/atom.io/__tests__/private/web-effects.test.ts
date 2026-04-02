@@ -95,4 +95,70 @@ describe(`searchParamSync`, () => {
 		$.setState(myStringAtom, null)
 		expect(window.location.search).toBe(`?keep=%22C%22`)
 	})
+
+	it(`leaves the atom at its default when the search param is absent`, () => {
+		window.history.replaceState(null, ``, `/?keep=%22C%22#hash`)
+		const myStringAtom = $.atom<string | null>({
+			key: `myString`,
+			default: `A`,
+			effects: [searchParamSync(JSON, `myString`)],
+		})
+		expect($.getState(myStringAtom)).toBe(`A`)
+		expect(window.location.search).toBe(`?keep=%22C%22`)
+		expect(window.location.hash).toBe(`#hash`)
+	})
+
+	it(`is okay when browser globals are unavailable, as they might be in SSR`, () => {
+		const originalWindow = Object.getOwnPropertyDescriptor(globalThis, `window`)
+		const setSelf = vitest.fn()
+		const onSet = vitest.fn()
+
+		Object.defineProperty(globalThis, `window`, {
+			value: undefined,
+			configurable: true,
+			writable: true,
+		})
+
+		try {
+			const effect = searchParamSync(JSON, `myString`)
+			expect(effect({ setSelf, onSet } as never)).toBeUndefined()
+			expect(setSelf).not.toHaveBeenCalled()
+			expect(onSet).not.toHaveBeenCalled()
+		} finally {
+			if (originalWindow) {
+				Object.defineProperty(globalThis, `window`, originalWindow)
+			}
+		}
+	})
+
+	it(`is okay when location or history are unavailable`, () => {
+		const originalWindow = Object.getOwnPropertyDescriptor(globalThis, `window`)
+		const setSelf = vitest.fn()
+		const onSet = vitest.fn()
+
+		try {
+			Object.defineProperty(globalThis, `window`, {
+				value: { location: undefined, history: {} },
+				configurable: true,
+				writable: true,
+			})
+			const effectWithoutLocation = searchParamSync(JSON, `myString`)
+			expect(effectWithoutLocation({ setSelf, onSet } as never)).toBeUndefined()
+
+			Object.defineProperty(globalThis, `window`, {
+				value: { location: {}, history: undefined },
+				configurable: true,
+				writable: true,
+			})
+			const effectWithoutHistory = searchParamSync(JSON, `myString`)
+			expect(effectWithoutHistory({ setSelf, onSet } as never)).toBeUndefined()
+
+			expect(setSelf).not.toHaveBeenCalled()
+			expect(onSet).not.toHaveBeenCalled()
+		} finally {
+			if (originalWindow) {
+				Object.defineProperty(globalThis, `window`, originalWindow)
+			}
+		}
+	})
 })
