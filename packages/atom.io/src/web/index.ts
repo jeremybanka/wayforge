@@ -1,2 +1,2 @@
-export * from "./query-param-sync"
+export * from "./search-param-sync"
 export * from "./storage-sync"

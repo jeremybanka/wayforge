@@ -2,11 +2,8 @@ import type { AtomEffect } from "atom.io"
 
 import type { StringInterface } from "./storage-sync"
 
-export const queryParamSync =
-	<T>(
-		{ stringify, parse }: StringInterface<T>,
-		key: string,
-	): AtomEffect<T> =>
+export const searchParamSync =
+	<T>({ stringify, parse }: StringInterface<T>, key: string): AtomEffect<T> =>
 	({ setSelf, onSet }) => {
 		if (
 			typeof window === `undefined` ||
