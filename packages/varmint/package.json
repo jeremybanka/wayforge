@@ -54,7 +54,7 @@
 		"@typescript/native-preview": "7.0.0-dev.20260403.1",
 		"atom.io": "workspace:*",
 		"concurrently": "9.2.1",
-		"eslint": "10.1.0",
+		"eslint": "10.2.0",
 		"openai": "6.33.0",
 		"tmp": "0.2.5",
 		"tsdown": "0.21.7",
