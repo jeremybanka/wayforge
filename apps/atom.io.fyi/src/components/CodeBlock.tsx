@@ -6,6 +6,25 @@ type CodeBlockProps = {
 	filepath: string
 	children: string
 }
+
+function getLanguage(filepath: string): string {
+	const extension = filepath.split(`.`).pop()
+	switch (extension) {
+		case `sh`:
+			return `bash`
+		case `ts`:
+			return `ts`
+		case `tsx`:
+			return `tsx`
+		case `js`:
+			return `javascript`
+		case `jsx`:
+			return `jsx`
+		default:
+			return `tsx`
+	}
+}
+
 export function CodeBlock({ filepath, children }: CodeBlockProps): VNode {
 	const myRef = React.useRef<HTMLSpanElement>(null)
 	React.useEffect(() => {
@@ -52,7 +71,10 @@ export function CodeBlock({ filepath, children }: CodeBlockProps): VNode {
 					</svg>
 				</button>
 			</header>
-			<SyntaxHighlighter language="tsx" useInlineStyles={false}>
+			<SyntaxHighlighter
+				language={getLanguage(filepath)}
+				useInlineStyles={false}
+			>
 				{children}
 			</SyntaxHighlighter>
 		</span>
