@@ -189,15 +189,11 @@ Counterintuitively, it is likely a performance win in highly interactive applica
 
 This is the key to high-performance interactivity in atom.io: **the smaller the state, the better**.
 
-If you need to update state frequently, keep it primitive when you can.
-
 <UseAnIndexToTrackFamilyMembers client:load />
 
 In this example, we use a single `atom<string[]>` to track the members of the family.
 
 It is up to you to decide how to track the members of the families you create. `atom.io` does not do this for you, because different kinds of collections have different performance characteristics. There is no one-size-fits-all solution.
-
-Keen readers may recognize that collections generally extend `Object`, and that `Object` is **not** primitive. If you use a lot of collections in your store, or if those collections change frequently, you may want to use `mutable` atoms for them. More on this in the advanced section.
 
 ## transaction
 
