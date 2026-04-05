@@ -1,4 +1,4 @@
-import { atom, findState } from "atom.io"
+import { atom } from "atom.io"
 import { useO } from "atom.io/react"
 
 import { Point, xAtoms, yAtoms } from "./declare-a-family"
@@ -13,9 +13,7 @@ function AllPoints() {
 	return (
 		<>
 			{pointIds.map((pointId) => {
-				const xAtom = findState(xAtoms, pointId)
-				const yAtom = findState(yAtoms, pointId)
-				return <Point key={pointId} xState={xAtom} yState={yAtom} />
+				return <Point key={pointId} pointId={pointId} />
 			})}
 		</>
 	)
