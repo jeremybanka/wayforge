@@ -1,4 +1,15 @@
 import Layout from "../../layouts/LayoutDocs.astro";
+import CreateAProject from "x/getting-started/create-a-project.gen";
+import StartTheDevServer from "x/getting-started/start-the-dev-server.gen";
+import ScanTheCoreDeclarations from "x/getting-started/scan-the-core-declarations.gen";
+import ChangeTheStageSize from "x/getting-started/change-the-stage-size.gen";
+import ChangeTheStageFill from "x/getting-started/change-the-stage-fill.gen";
+import ChangeTheGridFill from "x/getting-started/change-the-grid-fill.gen";
+import AddASnapHelper from "x/getting-started/add-a-snap-helper.gen";
+import SnapCoordinatesBeforeWritingState from "x/getting-started/snap-coordinates-before-writing-state.gen";
+import NoticeTheFamilyPattern from "x/getting-started/notice-the-family-pattern.gen";
+import LookForResetTransaction from "x/getting-started/look-for-reset-transaction.gen";
+import LookForResetButton from "x/getting-started/look-for-reset-button.gen";
 
 <Layout>
 
@@ -27,9 +38,7 @@ This guide uses `node` and `pnpm`.
 
 Start a new app:
 
-```sh
-pnpm create atom.io
-```
+<CreateAProject client:load />
 
 When prompted, choose:
 
@@ -38,10 +47,7 @@ When prompted, choose:
 
 Then start the dev server:
 
-```sh
-cd my-atom-app
-pnpm dev
-```
+<StartTheDevServer client:load />
 
 Open the local app in your browser. You should see a draggable SVG playground built with `atom.io`, Preact, and Vite.
 
@@ -59,26 +65,7 @@ That file is a good first tour of the library:
 
 If you are new to the code, start by scanning these declarations near the top of the file:
 
-```ts
-const pathKeysAtom = atom<string[]>({
-	key: `pathKeys`,
-	default: [],
-})
-
-const nodeAtoms = atomFamily<PointXY | null, string>({
-	key: `node`,
-	default: null,
-})
-
-const pathDrawSelectors = selectorFamily<string, string>({
-	key: `pathDraw`,
-	get:
-		(pathKey) =>
-		({ get }) => {
-			// derive the SVG path string from the current state
-		},
-})
-```
+<ScanTheCoreDeclarations client:load />
 
 The important mental model is:
 
@@ -92,10 +79,7 @@ Start with something visible and low-risk: change the stage size.
 
 In `src/BezierPlayground.tsx`, find:
 
-```ts
-const WIDTH = 256
-const HEIGHT = 296
-```
+<ChangeTheStageSize client:load />
 
 Try changing those values, then save and drag a few points around. This shows an important property of `atom.io`: your UI can be driven by a few small state primitives, while the rendered result is derived from them.
 
@@ -105,21 +89,11 @@ Next, personalize the playground.
 
 Inside the `svg`, try changing the fill and grid styling:
 
-```tsx
-<rect x={0} y={0} width={WIDTH} height={HEIGHT} fill="#aaa3" />
-```
+<ChangeTheStageFill client:load />
 
 and:
 
-```tsx
-<rect
-	x={-185}
-	y={-10}
-	width={WIDTH + 370}
-	height={HEIGHT + 20}
-	fill="url(#grid)"
-/>
-```
+<ChangeTheGridFill client:load />
 
 This is a small step, but it gives a fast reward: the project starts feeling like yours instead of a demo.
 
@@ -129,18 +103,11 @@ Now make a behavior change that teaches how updates flow through state.
 
 Find the `clamp` helper and add a `snap` helper beside it:
 
-```ts
-function snap(n: number, size: number) {
-	return Math.round(n / size) * size
-}
-```
+<AddASnapHelper client:load />
 
 Then, inside `onPointerMove`, snap `x` and `y` before they are written into state:
 
-```ts
-const snappedX = snap(x, 8)
-const snappedY = snap(y, 8)
-```
+<SnapCoordinatesBeforeWritingState client:load />
 
 Use `snappedX` and `snappedY` in the `setState(...)` calls instead of the raw coordinates.
 
@@ -158,12 +125,7 @@ The template uses `atomFamily` because there are many nodes and edges, not just 
 
 For example:
 
-```ts
-const nodeAtoms = atomFamily<PointXY | null, string>({
-	key: `node`,
-	default: null,
-})
-```
+<NoticeTheFamilyPattern client:load />
 
 This means each node can be looked up by a key such as `subpath12`, while still sharing one declaration.
 
@@ -175,22 +137,11 @@ The template already includes a `Reset` button backed by a transaction. That mak
 
 Look for:
 
-```ts
-const resetTX = transaction<() => Promise<void>>({
-	key: `reset`,
-	do: async () => {
-		// ...
-	},
-})
-```
+<LookForResetTransaction client:load />
 
 Then find:
 
-```tsx
-<button type="button" class="flat" onClick={reset}>
-	Reset
-</button>
-```
+<LookForResetButton client:load />
 
 Add a second button for an experiment of your own. Good starter ideas:
 
