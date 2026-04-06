@@ -2,7 +2,7 @@ import type { VNode } from "preact"
 import * as React from "react"
 
 import type { ToggleProps } from "./Toggle"
-import label from "./ToggleButton.module.scss"
+import label from "./ToggleButton.module.css"
 
 export const setCssVars = (
 	vars: Record<`--${string}`, number | string>,

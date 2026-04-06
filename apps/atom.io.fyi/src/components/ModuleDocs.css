@@ -1,11 +1,4 @@
 .tsdoc-styles {
-  // code,
-  // span {
-  //   mix-blend-mode: color-dodge;
-  //   @media (prefers-color-scheme: light) {
-  //     mix-blend-mode: multiply;
-  //   }
-  // }
   span {
     color: var(--fg-color);
   }
@@ -26,7 +19,6 @@
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
-    // letter-spacing: 0.5px;
     color: var(--fg-soft-1);
   }
   display: flex;

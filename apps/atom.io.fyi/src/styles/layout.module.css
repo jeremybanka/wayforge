@@ -1,5 +1,3 @@
-@use "_responsive";
-
 main.class {
   position: relative;
   overflow-x: hidden;
@@ -9,7 +7,7 @@ main.class {
   height: auto;
   > * {
     padding: 1em 0.25em;
-    @media screen and (min-width: responsive.$viewport-medium-width) {
+    @media screen and (min-width: 960px) {
       padding: 1em;
     }
   }
@@ -27,15 +25,15 @@ main.class {
     background: var(--nav-background);
     backdrop-filter: var(--nav-backdrop-filter);
     box-shadow: var(--nav-box-shadow);
-    @media screen and (max-width: responsive.$viewport-medium-width) {
+    @media screen and (max-width: 960px) {
       margin-top: 0.75em;
     }
-    @media screen and (min-width: responsive.$viewport-medium-width) {
+    @media screen and (min-width: 960px) {
       background: none;
       backdrop-filter: none;
       box-shadow: none;
       width: 100%;
-      margin: none;
+      margin: 0;
       padding: 1em;
       > nav > section {
         padding: 1em 1.5em;
@@ -81,7 +79,7 @@ main.class {
       font-weight: 600;
       box-shadow: 0 1px 10px 1px var(--bg-shadow-1);
     }
-    @media screen and (min-width: responsive.$viewport-medium-width) {
+    @media screen and (min-width: 960px) {
       top: -12px;
       > span {
         background: none;

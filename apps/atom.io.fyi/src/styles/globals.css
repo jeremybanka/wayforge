@@ -59,22 +59,6 @@
   font-size: 17px;
   line-height: 21px;
 }
-// h1,
-// h2,
-// h3,
-// h4,
-// h5,
-// h6,
-// p,
-// ul,
-// ol,
-// li {
-//   mix-blend-mode: screen;
-//   @media (prefers-color-scheme: light) {
-//     mix-blend-mode: multiply;
-//   }
-// }
-
 h1 {
   font-size: 48px;
   line-height: 54px;
