@@ -1,16 +1,27 @@
 ---
 import Layout from "../layouts/Layout.astro"
-import scss from "../styles/page.module.scss"
+import packageJson from "atom.io/package.json"
+import "../styles/page.css"
 ---
 
 <Layout>
-  <main class={scss.class}>
-    <h1>
-      <span>atom</span>
-      <span>.io</span>
-    </h1>
+  <main class="home-page">
     <section>
-      Batteries-included data framework for any ECMAScript environment.
+      <h1>
+        <span>atom</span>
+        <span>.io</span>
+      </h1>
+      <span class="description"></span>
+        {packageJson.description}
+      </span>
+      <footer>
+        <a href="/docs/getting-started" class="primary">
+          Get Started
+        </a>
+        <a href="/docs" class="secondary">
+          Read the Docs
+        </a>
+      </footer>
     </section>
   </main>
 </Layout>

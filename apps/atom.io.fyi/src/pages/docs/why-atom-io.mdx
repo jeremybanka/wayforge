@@ -1,0 +1,60 @@
+import Layout from "../../layouts/LayoutDocs.astro";
+
+<Layout>
+
+# why atom.io
+
+If `atom.io` reminds you of Recoil, that is not an accident.
+
+It shares the same broad mental model:
+
+- atoms for source-of-truth state
+- selectors for derived state
+- families for dynamic state
+- fine-grained subscriptions so components update only when the state they read changes
+
+That style is still excellent.
+
+The difference is that `atom.io` aims to carry that model forward as a maintained, batteries-included TypeScript library.
+
+## why not jotai?
+
+`Jotai` is elegant because it stays small. If you want a minimal atom abstraction and prefer assembling the rest yourself from utilities, it is a strong choice.
+
+`atom.io` takes a different approach. It ships more of the workflow in the core library, so you spend less time inventing surrounding patterns for larger apps.
+
+In practice, that means `atom.io` gives you first-class support for things like:
+
+- transactions
+- timelines with undo and redo
+- subscriptions at the core level, not only through UI hooks
+- a clear split between portable state primitives and framework adapters
+
+So when people say `atom.io` has more features than `Jotai`, the point is not that `Jotai` is missing the basics.
+
+The point is that `atom.io` includes more built-in structure for applications that need coordination, history, testing, and portability, while `Jotai` is optimized for staying lightweight.
+
+## why not recoil?
+
+If you like the Recoil style, `atom.io` is the closer fit.
+
+It keeps the familiar atom-selector-family way of modeling state, but unlike Recoil, it is maintained.
+
+The official Recoil repository was archived and made read-only on January 1, 2025.
+
+That matters because state management libraries sit near the center of an application. Over time, you want active maintenance for:
+
+- new TypeScript releases
+- React ecosystem changes
+- bug fixes and performance work
+- documentation and examples
+
+`atom.io` is for people who still want the Recoil mental model, but do not want to build on an archived foundation.
+
+## the short version
+
+Choose `Jotai` if you want the smallest possible atom-based toolkit and you are happy to compose more of the surrounding patterns yourself.
+
+Choose `atom.io` if you want a Recoil-like model with more built-in capabilities.
+
+</Layout>

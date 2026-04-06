@@ -1,13 +1,68 @@
-import type { VNode } from "preact"
+import { type ComponentChildren, toChildArray, type VNode } from "preact"
 import * as React from "react"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 
 type CodeBlockProps = {
-	filepath: string
-	children: string
+	filepath?: string
+	label?: string
+	code?: string
+	children: ComponentChildren
 }
-export function CodeBlock({ filepath, children }: CodeBlockProps): VNode {
+
+function getLanguage(filepath?: string): string {
+	if (!filepath) {
+		return `tsx`
+	}
+	const extension = filepath.split(`.`).pop()
+	switch (extension) {
+		case `sh`:
+			return `bash`
+		case `ts`:
+			return `ts`
+		case `tsx`:
+			return `tsx`
+		case `js`:
+			return `javascript`
+		case `jsx`:
+			return `jsx`
+		case undefined:
+			return `tsx`
+		default:
+			return `tsx`
+	}
+}
+
+function getCodeBlockId(label: string): string {
+	return label
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, `-`)
+		.replace(/^-+|-+$/g, ``)
+}
+
+function flattenChildrenToString(children: ComponentChildren): string {
+	return toChildArray(children)
+		.map((child) => {
+			if (typeof child === `string` || typeof child === `number`) {
+				return String(child)
+			}
+			if (Array.isArray(child)) {
+				return flattenChildrenToString(child)
+			}
+			return ``
+		})
+		.join(``)
+}
+
+export function CodeBlock({
+	filepath,
+	label,
+	code: codeProp,
+	children,
+}: CodeBlockProps): VNode {
 	const myRef = React.useRef<HTMLSpanElement>(null)
+	const displayLabel = label ?? filepath ?? `code`
+	const code = codeProp ?? flattenChildrenToString(children)
+
 	React.useEffect(() => {
 		const me = myRef.current
 		if (me === null) {
@@ -19,24 +74,20 @@ export function CodeBlock({ filepath, children }: CodeBlockProps): VNode {
 				(element: any) => element.textContent.includes(`./`),
 			)
 
-		console.log({ filepath })
-		if (filepath === `declare-an-atom.ts`) {
-			console.log({ myElementsWithClassNameStringAndContainingDoubleQuotes })
-		}
 		for (const element of myElementsWithClassNameStringAndContainingDoubleQuotes) {
 			// get everything following the final '/'
 			const href = `#` + element.textContent.split(`/`).pop()
 			element.innerHTML = `<a href="${href}">${element.textContent}</a>`
 		}
-	}, [myRef.current])
+	}, [code, filepath])
 	return (
-		<span className="codeblock" id={filepath.split(`.`)[0]} ref={myRef}>
+		<span className="codeblock" id={getCodeBlockId(displayLabel)} ref={myRef}>
 			<header>
-				<span>{filepath}</span>
+				<span>{displayLabel}</span>
 				<button
 					type="button"
 					onClick={async () => {
-						await navigator.clipboard.writeText(children)
+						await navigator.clipboard.writeText(code)
 					}}
 				>
 					<svg viewBox="0 0 16 16">
@@ -52,8 +103,11 @@ export function CodeBlock({ filepath, children }: CodeBlockProps): VNode {
 					</svg>
 				</button>
 			</header>
-			<SyntaxHighlighter language="tsx" useInlineStyles={false}>
-				{children}
+			<SyntaxHighlighter
+				language={getLanguage(filepath)}
+				useInlineStyles={false}
+			>
+				{code}
 			</SyntaxHighlighter>
 		</span>
 	)
