@@ -117,6 +117,16 @@
     display: flex;
     flex-flow: row;
     justify-content: space-between;
+    a {
+      color: inherit;
+      &:visited {
+        color: inherit;
+      }
+      &:hover {
+        color: inherit;
+        text-decoration: underline;
+      }
+    }
     code {
       color: var(--fg-soft-3);
     }
