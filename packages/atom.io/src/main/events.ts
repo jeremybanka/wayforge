@@ -124,3 +124,10 @@ export type TimelineEvent<ManagedAtom extends TimelineManageable> = {
 	| TimelineSelectorUpdateEvent<ManagedAtom>
 	| TransactionOutcomeEvent<TransactionToken<any>>
 )
+
+export type TimelineUpdate<ManagedAtom extends TimelineManageable> = {
+	type: `timeline_update`
+	event: TimelineEvent<ManagedAtom> | `clear` | `redo` | `undo`
+	at: number
+	length: number
+}
