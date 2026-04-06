@@ -1,11 +1,11 @@
 ---
 import Layout from "../layouts/Layout.astro"
-import scss from "../styles/page.module.css"
 import packageJson from "atom.io/package.json"
+import "../styles/page.css"
 ---
 
 <Layout>
-  <main class={scss.class}>
+  <main class="home-page">
     <section>
       <h1>
         <span>atom</span>
@@ -15,10 +15,10 @@ import packageJson from "atom.io/package.json"
         {packageJson.description}
       </span>
       <footer>
-        <a href="/docs/getting-started" class={scss.primary}>
+        <a href="/docs/getting-started" class="primary">
           Get Started
         </a>
-        <a href="/docs" class={scss.secondary}>
+        <a href="/docs" class="secondary">
           Read the Docs
         </a>
       </footer>
