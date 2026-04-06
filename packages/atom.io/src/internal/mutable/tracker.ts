@@ -127,9 +127,9 @@ export class Tracker<T extends Transceiver<any, any, any>> {
 							function trackerWaitsForTimeTravelToFinish(update) {
 								unsubscribe()
 								setIntoStore(target, mutableState, (transceiver) => {
-									if (update === `redo` && newValue) {
+									if (update.event === `redo` && newValue) {
 										transceiver.do(newValue)
-									} else if (update === `undo` && oldValue) {
+									} else if (update.event === `undo` && oldValue) {
 										transceiver.undo(oldValue)
 									}
 									return transceiver
