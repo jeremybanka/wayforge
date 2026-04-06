@@ -3,6 +3,7 @@ import type {
 	TimelineEvent,
 	TimelineManageable,
 	TimelineToken,
+	TimelineUpdate,
 	TransactionToken,
 	TransactionUpdateHandler,
 	UpdateHandler,
@@ -39,7 +40,7 @@ export function subscribeInStore<M extends TimelineManageable>(
 	handleUpdate:
 		| TransactionUpdateHandler<any>
 		| UpdateHandler<any>
-		| ((update: TimelineEvent<M> | `clear` | `redo` | `undo`) => void),
+		| ((update: TimelineUpdate<M>) => void),
 	key?: string,
 ): () => void
 export function subscribeInStore(
