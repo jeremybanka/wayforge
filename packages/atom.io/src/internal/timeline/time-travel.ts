@@ -94,7 +94,12 @@ export function timeTravel(
 		}
 	}
 
-	timelineData.subject.next(action)
+	timelineData.subject.next({
+		type: `timeline_update`,
+		event: action,
+		at: timelineData.at,
+		length: timelineData.history.length,
+	})
 	timelineData.timeTraveling = null
 	store.logger.info(
 		`⏸️`,

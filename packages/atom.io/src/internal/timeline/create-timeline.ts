@@ -10,6 +10,7 @@ import type {
 	TimelineOptions,
 	TimelineSelectorUpdateEvent,
 	TimelineToken,
+	TimelineUpdate,
 	TransactionOutcomeEvent,
 	TransactionSubEvent,
 	TransactionToken,
@@ -33,7 +34,7 @@ export type Timeline<ManagedAtom extends TimelineManageable> = {
 	selectorTime: number | null
 	transactionKey: string | null
 	install: (store: RootStore) => void
-	subject: Subject<TimelineEvent<ManagedAtom> | `clear` | `redo` | `undo`>
+	subject: Subject<TimelineUpdate<ManagedAtom>>
 	subscriptions: Map<string, () => void>
 }
 
@@ -288,10 +289,10 @@ function buildSelectorUpdate(
 	currentSelectorToken: WritablePureSelectorToken<any>,
 	currentSelectorTime: number,
 ) {
-	let latestUpdate: TimelineEvent<any> | undefined = tl.history.at(-1)
+	let latestEvent: TimelineEvent<any> | undefined = tl.history.at(-1)
 	if (currentSelectorTime !== tl.selectorTime) {
 		const selectorUpdate: TimelineEvent<any> & TimelineSelectorUpdateEvent<any> =
-			(latestUpdate = {
+			(latestEvent = {
 				checkpoint: true,
 				type: `selector_update`,
 				timestamp: currentSelectorTime,
@@ -299,9 +300,9 @@ function buildSelectorUpdate(
 				subEvents: [],
 			})
 		if (`type` in eventOrUpdate) {
-			latestUpdate.subEvents.push(eventOrUpdate)
+			latestEvent.subEvents.push(eventOrUpdate)
 		} else {
-			latestUpdate.subEvents.push({
+			latestEvent.subEvents.push({
 				type: `atom_update`,
 				token: atomToken,
 				update: eventOrUpdate,
@@ -309,7 +310,7 @@ function buildSelectorUpdate(
 			})
 		}
 
-		addToHistory(tl, latestUpdate)
+		addToHistory(tl, latestEvent)
 		tl.selectorTime = currentSelectorTime
 
 		store.logger.info(
@@ -317,7 +318,7 @@ function buildSelectorUpdate(
 			`timeline`,
 			tl.key,
 			`got a selector_update "${currentSelectorToken.key}" with`,
-			latestUpdate.subEvents.map((event) => event.token.key),
+			latestEvent.subEvents.map((event) => event.token.key),
 		)
 
 		const operation = store.operation
@@ -334,11 +335,11 @@ function buildSelectorUpdate(
 			},
 		)
 	} else {
-		if (latestUpdate?.type === `selector_update`) {
+		if (latestEvent?.type === `selector_update`) {
 			if (`type` in eventOrUpdate) {
-				latestUpdate.subEvents.push(eventOrUpdate)
+				latestEvent.subEvents.push(eventOrUpdate)
 			} else {
-				latestUpdate.subEvents.push({
+				latestEvent.subEvents.push({
 					type: `atom_update`,
 					token: atomToken,
 					update: eventOrUpdate,
@@ -350,12 +351,17 @@ function buildSelectorUpdate(
 				`timeline`,
 				tl.key,
 				`set selector_update "${currentSelectorToken.key}" to`,
-				latestUpdate?.subEvents.map((event) => event.token.key),
+				latestEvent?.subEvents.map((event) => event.token.key),
 			)
 		}
 	}
-	if (latestUpdate) {
-		tl.subject.next(latestUpdate)
+	if (latestEvent) {
+		tl.subject.next({
+			type: `timeline_update`,
+			event: latestEvent,
+			at: tl.at,
+			length: tl.history.length,
+		})
 	}
 }
 
@@ -461,5 +467,10 @@ function addToHistory(tl: Timeline<any>, event: TimelineEvent<any>): void {
 	}
 	tl.history.push(event)
 	tl.at = tl.history.length
-	tl.subject.next(event)
+	tl.subject.next({
+		type: `timeline_update`,
+		event,
+		at: tl.at,
+		length: tl.history.length,
+	})
 }

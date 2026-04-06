@@ -1,4 +1,4 @@
-import type { TimelineEvent, TimelineManageable, TimelineToken } from "atom.io"
+import type { TimelineManageable, TimelineToken, TimelineUpdate } from "atom.io"
 
 import type { Store } from "../store/store"
 import { withdraw } from "../store/withdraw"
@@ -7,7 +7,7 @@ export function subscribeToTimeline<ManagedAtom extends TimelineManageable>(
 	store: Store,
 	token: TimelineToken<ManagedAtom>,
 	key: string,
-	handleUpdate: (update: TimelineEvent<any> | `clear` | `redo` | `undo`) => void,
+	handleUpdate: (update: TimelineUpdate<ManagedAtom>) => void,
 ): () => void {
 	const tl = withdraw(store, token)
 	store.logger.info(`👀`, `timeline`, token.key, `Adding subscription "${key}"`)
