@@ -185,6 +185,11 @@ function SiteDirectory(): VNode {
 								getting started
 							</a>
 						</section>
+						<section>
+							<a id="-docs-why-atom-io-link" href="/docs/why-atom-io">
+								why atom.io
+							</a>
+						</section>
 					</main>
 				</section>
 				<section>
