@@ -4,9 +4,9 @@ import { AtomIODevtools } from "atom.io/react-devtools"
 import "atom.io/react-devtools/css"
 import packageJson from "atom.io/package.json"
 import { Theme } from "../components/Theme"
-import scss from "../styles/layout.module.css"
 import "../styles/globals.css"
 import "../styles/code.css"
+import "../styles/layout.css"
 ---
 
 <html lang="en">
@@ -24,7 +24,7 @@ import "../styles/code.css"
 		<ClientRouter />
 	</head>
 	<body>
-		<main class={scss.class}>
+		<main class="layout-shell">
 			<Theme client:idle />
 			<header>
 				<nav>
