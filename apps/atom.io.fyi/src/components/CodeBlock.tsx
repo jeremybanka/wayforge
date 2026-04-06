@@ -1,4 +1,4 @@
-import { toChildArray, type ComponentChildren, type VNode } from "preact"
+import { type ComponentChildren, toChildArray, type VNode } from "preact"
 import * as React from "react"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 
@@ -25,6 +25,8 @@ function getLanguage(filepath?: string): string {
 			return `javascript`
 		case `jsx`:
 			return `jsx`
+		case undefined:
+			return `tsx`
 		default:
 			return `tsx`
 	}
