@@ -4,9 +4,9 @@ import { AtomIODevtools } from "atom.io/react-devtools"
 import "atom.io/react-devtools/css"
 import packageJson from "atom.io/package.json"
 import { Theme } from "../components/Theme"
-import scss from "../styles/layout.module.scss"
-import "../styles/globals.scss"
-import "../styles/code.scss"
+import "../styles/globals.css"
+import "../styles/code.css"
+import "../styles/layout.css"
 ---
 
 <html lang="en">
@@ -24,7 +24,7 @@ import "../styles/code.scss"
 		<ClientRouter />
 	</head>
 	<body>
-		<main class={scss.class}>
+		<main class="layout-shell">
 			<Theme client:idle />
 			<header>
 				<nav>
@@ -48,9 +48,13 @@ import "../styles/code.scss"
 			</main>
 			<footer>
 				<span>
-					<code>{packageJson.version}</code>
+					<a href="https://www.npmjs.com/package/atom.io">
+						<code>{packageJson.version}</code>
+					</a>
 				</span>
-				<span>♥️ jeremybanka</span>
+				<span>
+					♥️ <a href="https://github.com/jeremybanka">jeremybanka</a>
+				</span>
 			</footer>
 			<AtomIODevtools hideByDefault={true} client:only />
 		</main>

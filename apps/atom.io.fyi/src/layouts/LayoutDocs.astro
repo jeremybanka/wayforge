@@ -1,11 +1,11 @@
 ---
 import Layout from "./Layout.astro"
 import { Navigation } from "../components/Navigation"
-import scss from "../styles/layout-docs.module.scss"
+import "../styles/layout-docs.css"
 ---
 
 <Layout>
-  <article class={scss.class}>
+  <article class="docs-layout">
 		<Navigation client:load transition:persist />
 		<main>
 			<slot />

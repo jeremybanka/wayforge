@@ -1,0 +1,86 @@
+import Layout from "../../layouts/LayoutDocs.astro";
+import SyncWithLocalStorage from "x/web/sync-with-local-storage.gen";
+import SyncWithSessionStorage from "x/web/sync-with-session-storage.gen";
+import SyncWithTheUrl from "x/web/sync-with-the-url.gen";
+import StringInterface from "x/web/string-interface.gen";
+
+<Layout>
+
+# <span className="soft">atom.io</span>/web
+
+`atom.io/web` provides browser-specific atom effects.
+
+Right now, that means:
+
+- `storageSync`: keep an atom in sync with `localStorage`, `sessionStorage`, or any compatible `Storage`
+- `searchParamSync`: keep an atom in sync with a URL search parameter
+
+These tools are useful when some state should survive refreshes or be shareable through the URL.
+
+## package contents
+
+<table>
+  <tbody>
+    <tr>
+      <td>
+        <code>storageSync</code>
+      </td>
+      <td>Sync an atom with a browser storage interface.</td>
+    </tr>
+    <tr>
+      <td>
+        <code>searchParamSync</code>
+      </td>
+      <td>Sync an atom with a query parameter in the current URL.</td>
+    </tr>
+  </tbody>
+</table>
+
+## storageSync
+
+`storageSync` hydrates an atom from browser storage when the atom is created, then writes future changes back to storage.
+
+<SyncWithLocalStorage client:load />
+
+The second parameter is any object with `stringify` and `parse` methods. In many cases, `JSON` is exactly what you want.
+
+When the atom is set to `null`, the stored item is removed.
+
+Because the storage object is passed in directly, this also works with `sessionStorage`:
+
+<SyncWithSessionStorage client:load />
+
+If storage is unavailable, such as during SSR, the effect simply does nothing.
+
+## searchParamSync
+
+`searchParamSync` reads from the current page URL, then keeps one search parameter updated as the atom changes.
+
+<SyncWithTheUrl client:load />
+
+If the current URL is `/?tab="settings"`, the atom initializes to `"settings"`.
+
+Later, if the atom changes to `"billing"`, the URL is updated in place using `history.replaceState`, so the page does not reload.
+
+If the atom is set to `null`, that search parameter is removed from the URL.
+
+`searchParamSync` preserves the rest of the URL, including unrelated query params and the hash fragment.
+
+## serialization
+
+Both effects take the same kind of serializer:
+
+<StringInterface client:load />
+
+That means you can use `JSON`, or define your own format if you want cleaner URLs or custom parsing rules.
+
+## ssr behavior
+
+Both effects are safe to include in code that also runs on the server.
+
+- `storageSync` does nothing when the storage object is `undefined`
+- `searchParamSync` does nothing when `window`, `location`, or `history` are unavailable
+
+This makes it straightforward to declare one atom and use it in both browser and SSR contexts.
+
+</Layout>
