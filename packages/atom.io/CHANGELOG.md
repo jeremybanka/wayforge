@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.31
+
+### Patch Changes
+
+- 579b866: ✨ `subscribe()`, when used on a `timeline`, now includes metadata like `length` and `at` for each update.
+
 ## 0.46.30
 
 ### Patch Changes
