@@ -22,7 +22,12 @@ export function clearTimelineInStore(
 	timelineData.selectorTime = null
 	timelineData.timeTraveling = null
 	timelineData.transactionKey = null
-	timelineData.subject.next(`clear`)
+	timelineData.subject.next({
+		type: `timeline_update`,
+		event: `clear`,
+		at: 0,
+		length: 0,
+	})
 	store.logger.info(
 		`🧼`,
 		`timeline`,
