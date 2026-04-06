@@ -3,7 +3,7 @@ import { arbitrary, IMPLICIT, subscribeInStore } from "atom.io/internal"
 
 import type {
 	StateUpdate,
-	TimelineEvent,
+	TimelineUpdate,
 	TransactionOutcomeEvent,
 } from "./events"
 import type { TimelineManageable } from "./timeline"
@@ -50,7 +50,7 @@ export function subscribe<F extends Fn>(
  */
 export function subscribe<M extends TimelineManageable>(
 	token: TimelineToken<M>,
-	handleUpdate: (update: TimelineEvent<M> | `clear` | `redo` | `undo`) => void,
+	handleUpdate: (update: TimelineUpdate<M>) => void,
 	key?: string,
 ): () => void
 export function subscribe(
