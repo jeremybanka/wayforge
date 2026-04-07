@@ -35,14 +35,17 @@ function handleFile(filePath: string) {
 	const directory = path.dirname(filePath)
 	const relativeDirectory = path.relative(inputDir, directory)
 	const filename = path.basename(filePath)
-	const filenameWithoutExtension = filename.split(`.`)[0]
+	const displayFilename = filename.endsWith(`.txt`)
+		? filename.slice(0, -`.txt`.length)
+		: filename
+	const filenameWithoutExtension = displayFilename.replace(/\.[^.]+$/, ``)
 	const outputFilename = `${filenameWithoutExtension}.gen.tsx`
 	const outputFilePath = path.resolve(
 		outputDir,
 		relativeDirectory,
 		outputFilename,
 	)
-	const wrappedCode = wrapCode(filename, code)
+	const wrappedCode = wrapCode(displayFilename, code)
 	try {
 		takua.info(`writing`, outputFilePath)
 		fs.writeFileSync(outputFilePath, wrappedCode)

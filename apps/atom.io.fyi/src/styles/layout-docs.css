@@ -58,8 +58,7 @@ article.docs-layout {
 				font-weight: 500;
 				font-size: 15px;
 				color: var(--fg-soft-1);
-				background-color: var(--bg-soft-1);
-				border: 0.5px solid #7777;
+				background-color: var(--bg-soft-2);
 				border-radius: 3px;
 				padding: 1px 2px;
 			}

@@ -217,6 +217,16 @@ function SiteDirectory(): VNode {
 						</section>
 					</main>
 				</section>
+				<section>
+					<header>Tooling</header>
+					<main>
+						<section>
+							<a id="-docs-eslint-plugin-link" href={`/docs/eslint-plugin`}>
+								<span className="soft">atom.io</span>/eslint-plugin
+							</a>
+						</section>
+					</main>
+				</section>
 			</nav>
 		</>
 	)
