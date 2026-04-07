@@ -5,6 +5,7 @@ import AnAtomTokenIsAReference from "x/core/atom/an-atom-token-is-a-reference.ge
 import GetAndSetAnAtom from "x/core/atom/get-and-set-an-atom.gen";
 import SubscribeToAnAtom from "x/core/atom/subscribe-to-an-atom.gen";
 import SubscribePowersIntegrations from "x/core/atom/subscribe-is-the-foundation-of-reactivity.gen";
+import DeclareAMutableAtom from "x/core/mutable/declare-a-mutable-atom.gen";
 
 import DeclareASelector from "x/core/selector/declare-a-selector.gen";
 import UseASelector from "x/core/selector/use-a-selector.gen";
@@ -55,6 +56,15 @@ import ReplacePlaylistTracks from "x/core/advanced/join/replace-playlist-tracks.
         <code>atom</code>
       </td>
       <td>Declare a reactive variable.</td>
+    </tr>
+    <tr>
+      <td>
+        <code>mutableAtom</code>
+      </td>
+      <td>
+        Declare a reactive variable backed by a mutable, trackable data
+        structure.
+      </td>
     </tr>
     <tr>
       <td>
@@ -174,6 +184,32 @@ to the subscription will be called whenever the atom is set to a new value.
 <SubscribePowersIntegrations client:load />
 This is an example of the **observer pattern**. Following the observer pattern allows
 atom.io to integrate cleanly with an observer like React. More on this later.
+
+## mutable atom
+
+Most atom.io state should be modeled with regular immutable atoms. Sometimes, though, a
+large collection changes frequently enough that copying the whole structure on every
+update is not a good tradeoff.
+
+For those cases, use `mutableAtom`.
+
+<DeclareAMutableAtom client:load />
+
+A mutable atom holds a `Transceiver`: a mutable object that knows how to report its own
+changes to atom.io.
+
+The built-in transceivers are:
+
+- `UList` from `atom.io/transceivers/u-list`: a trackable unordered set
+- `OList` from `atom.io/transceivers/o-list`: a trackable ordered array
+- `SetRTX` from `atom.io/transceivers/set-rtx`: a trackable set with a replay cache for realtime synchronization
+
+Read mutable atoms the same way you read regular atoms: with `getState`, `subscribe`,
+or a UI adapter like `useO`.
+
+When writing one, prefer the setter callback form. Mutate the value inside the callback
+and return it. That lets atom.io capture the transceiver's fine-grained update instead
+of requiring you to replace the entire collection.
 
 ## selector
 
