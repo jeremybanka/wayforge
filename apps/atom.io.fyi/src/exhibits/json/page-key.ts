@@ -1,1 +1,1 @@
-type PageKey = [documentId: string, pageIndex: number]
+export type PageKey = [documentId: string, pageIndex: number]
