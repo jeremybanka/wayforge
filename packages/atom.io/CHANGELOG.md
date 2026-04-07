@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.33
+
+### Patch Changes
+
+- 6f5afb3: 🐛 Fixed bug from the 0.46.30 release where the external signature to `subscribe()` for the timeline overload was not correctly updated to use the new `TimelineUpdate` type.
+
 ## 0.46.32
 
 ### Patch Changes
