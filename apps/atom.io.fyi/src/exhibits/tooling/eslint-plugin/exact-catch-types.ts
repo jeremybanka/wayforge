@@ -7,9 +7,9 @@ type Profile = {
 class RequestError extends Error {}
 
 export const profileAtom = atom<Profile, RequestError>({
-	key: "profile",
+	key: `profile`,
 	default: async () => {
-		const response = await fetch("/api/profile")
+		const response = await fetch(`/api/profile`)
 		if (!response.ok) {
 			throw new RequestError()
 		}
