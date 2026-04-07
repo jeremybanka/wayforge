@@ -185,32 +185,6 @@ to the subscription will be called whenever the atom is set to a new value.
 This is an example of the **observer pattern**. Following the observer pattern allows
 atom.io to integrate cleanly with an observer like React. More on this later.
 
-## mutable atom
-
-Most atom.io state should be modeled with regular immutable atoms. Sometimes, though, a
-large collection changes frequently enough that copying the whole structure on every
-update is not a good tradeoff.
-
-For those cases, use `mutableAtom`.
-
-<DeclareAMutableAtom client:load />
-
-A mutable atom holds a `Transceiver`: a mutable object that knows how to report its own
-changes to atom.io.
-
-The built-in transceivers are:
-
-- `UList` from `atom.io/transceivers/u-list`: a trackable unordered set
-- `OList` from `atom.io/transceivers/o-list`: a trackable ordered array
-- `SetRTX` from `atom.io/transceivers/set-rtx`: a trackable set with a replay cache for realtime synchronization
-
-Read mutable atoms the same way you read regular atoms: with `getState`, `subscribe`,
-or a UI adapter like `useO`.
-
-When writing one, prefer the setter callback form. Mutate the value inside the callback
-and return it. That lets atom.io capture the transceiver's fine-grained update instead
-of requiring you to replace the entire collection.
-
 ## selector
 
 <DeclareASelector client:load />
@@ -275,6 +249,32 @@ In this example, we undo and redo changes to the timeline.
 
 ## advanced
 
+### mutable atom
+
+Most atom.io state should be modeled with regular immutable atoms. Sometimes, though, a
+large collection changes frequently enough that copying the whole structure on every
+update is not a good tradeoff.
+
+For those cases, use `mutableAtom`.
+
+<DeclareAMutableAtom client:load />
+
+A mutable atom holds a `Transceiver`: a mutable object that knows how to report its own
+changes to atom.io.
+
+The built-in transceivers are:
+
+- `UList` from `atom.io/transceivers/u-list`: a trackable unordered set
+- `OList` from `atom.io/transceivers/o-list`: a trackable ordered array
+- `SetRTX` from `atom.io/transceivers/set-rtx`: a trackable set with a replay cache for realtime synchronization
+
+Read mutable atoms the same way you read regular atoms: with `getState`, `subscribe`,
+or a UI adapter like `useO`.
+
+When writing one, prefer the setter callback form. Mutate the value inside the callback
+and return it. That lets atom.io capture the transceiver's fine-grained update instead
+of requiring you to replace the entire collection.
+
 ### async
 
 Often, the data you need is not immediately available. For example, you may need to fetch it from a server. `atom.io` offers natural support for `Promise` and `async/await` patterns.
@@ -316,8 +316,6 @@ Then you can reconfigure the relation without denormalizing either entity.
 The join keeps both directions consistent. If the road trip playlist changes, `tracksInRoadTripState` updates. If a track appears in or disappears from a playlist, `playlistsUsingDreamsState` updates too.
 
 Use `join` when you need that bidirectional consistency to be reactive, typed, and safe to reconfigure from the frontend.
-
-{/* ### mutable */}
 
 {/* By default, `atom.io` assumes that the values of atoms are immutable data, always to be copied when changed. However, this constant copying can lead to poor performance, and in particular, a lot of work for your engine's garbage collector. Mutable atoms provide a path to optimization through less garbage creation. */}
 

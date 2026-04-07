@@ -69,9 +69,19 @@ import UseLoadableFallback from "x/react/use-loadable-fallback.gen";
 
 ## useJSON
 
-`useJSON` is a React hook that makes working with mutable atoms in your react components more convenient.
+`useJSON` is a React hook that makes working with mutable atoms in your React components more convenient.
+
+Mutable atoms hold transceivers, such as `UList`, `OList`, or `SetRTX`. Those values are
+useful when you are updating them, but they are usually not the shape you want to render
+directly.
+
+`useJSON` observes the mutable atom's JSON view instead. For example, a `UList<string>`
+becomes a readonly `string[]`, which is usually easier to map over in JSX.
 
 <UseJSON client:load />
+
+Use `useJSON` when you want to render a mutable atom. Use `useI` when you want to update
+one.
 
 ## useTL
 
