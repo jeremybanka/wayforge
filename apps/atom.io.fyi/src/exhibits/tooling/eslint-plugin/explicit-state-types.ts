@@ -6,11 +6,11 @@ type User = {
 }
 
 export const countAtom = atom<number>({
-	key: "count",
+	key: `count`,
 	default: 0,
 })
 
 export const userAtoms = atomFamily<User, string>({
-	key: "user",
-	default: (id) => ({ id, name: "" }),
+	key: `user`,
+	default: (id) => ({ id, name: `` }),
 })

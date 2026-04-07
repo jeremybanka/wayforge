@@ -15,11 +15,12 @@ function SelectedTags() {
 		<>
 			<button
 				type="button"
-				onClick={() =>
-					setSelectedTagKeys((selectedTagKeys) =>
-						selectedTagKeys.add(`typescript`),
-					)
-				}
+				onClick={() => {
+					setSelectedTagKeys((tagKeys) => {
+						tagKeys.add(`typescript`)
+						return tagKeys
+					})
+				}}
 			>
 				Add TypeScript
 			</button>
