@@ -23,6 +23,10 @@ import UndoAndRedoChanges from "x/core/timeline/undo-and-redo-changes.gen";
 import AwaitYourState from "x/core/advanced/async/await-your-state.gen";
 import LoadableSelector from "x/core/advanced/async/loadable-selector.gen";
 import AvoidRaceBetweenPromises from "x/core/advanced/async/avoid-race-between-promises.gen";
+import DeclarePlaylistTracks from "x/core/advanced/join/declare-playlist-tracks.gen";
+import FindTracksInPlaylist from "x/core/advanced/join/find-tracks-in-playlist.gen";
+import FindPlaylistsForTrack from "x/core/advanced/join/find-playlists-for-track.gen";
+import ReplacePlaylistTracks from "x/core/advanced/join/replace-playlist-tracks.gen";
 
 <Layout>
 
@@ -92,6 +96,12 @@ import AvoidRaceBetweenPromises from "x/core/advanced/async/avoid-race-between-p
         <code>timeline</code>
       </td>
       <td>Track the history of a group of reactive variables.</td>
+    </tr>
+    <tr>
+      <td>
+        <code>join</code>
+      </td>
+      <td>Manage bidirectional relations between two sets of keys.</td>
     </tr>
     <tr>
       <td>
@@ -245,7 +255,31 @@ Here is an example where we read a query parameter from the URL, then use it to 
 
 If we update an async state more quickly than its promises resolve, only the last resolved value will be set into the state. All previous results will be discarded.
 
-{/* ### relations */}
+### join
+
+Use `join` when a relationship needs to be its own state.
+
+You will not always need this. But for apps that need fluid, frontend-reconfigurable relations, `join` is a powerful fit.
+
+For example, imagine a playlist editor. Tracks are their own entities, and playlists are their own entities. A track can appear in many playlists, and a playlist can contain many tracks.
+
+The tracks do not belong to the playlist object, and the playlists do not belong to the track object. The relationship is its own state, so the UI can reshape it freely.
+
+<DeclarePlaylistTracks client:load />
+
+You can read the relation from either side.
+
+<FindTracksInPlaylist client:load />
+
+<FindPlaylistsForTrack client:load />
+
+Then you can reconfigure the relation without denormalizing either entity.
+
+<ReplacePlaylistTracks client:load />
+
+The join keeps both directions consistent. If the road trip playlist changes, `tracksInRoadTripState` updates. If a track appears in or disappears from a playlist, `playlistsUsingDreamsState` updates too.
+
+Use `join` when you need that bidirectional consistency to be reactive, typed, and safe to reconfigure from the frontend.
 
 {/* ### mutable */}
 

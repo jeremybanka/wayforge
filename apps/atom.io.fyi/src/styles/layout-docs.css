@@ -53,17 +53,15 @@ article.docs-layout {
 			@media (prefers-color-scheme: light) {
 				font-weight: 500;
 			}
-			p {
-				code {
-					box-sizing: border-box;
-					font-weight: 500;
-					font-size: 15px;
-					color: var(--fg-color);
-					background-color: var(--bg-soft-1);
-					border: 1px solid #0003;
-					border-radius: 3px;
-					padding: 1px 2px;
-				}
+			code {
+				box-sizing: border-box;
+				font-weight: 500;
+				font-size: 15px;
+				color: var(--fg-soft-1);
+				background-color: var(--bg-soft-1);
+				border: 0.5px solid #7777;
+				border-radius: 3px;
+				padding: 1px 2px;
 			}
 		}
 	}
@@ -136,7 +134,7 @@ article.docs-layout {
 							padding-left: 1em;
 						}
 						> a {
-							padding: 0.2em 0.4em 0.3em;
+							padding: 0.2em 0.4em 0.25em;
 							user-select: none;
 						}
 					}
