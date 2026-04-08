@@ -33,6 +33,10 @@ main.home-page {
 			}
 		}
 
+		> span {
+			margin: 24px 10px 4px;
+		}
+
 		> footer {
 			display: flex;
 			flex-flow: row;

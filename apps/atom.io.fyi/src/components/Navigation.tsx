@@ -190,6 +190,14 @@ function SiteDirectory(): VNode {
 								why atom.io
 							</a>
 						</section>
+						<section>
+							<a
+								id="-docs-understand-atom-io-link"
+								href="/docs/understand-atom-io"
+							>
+								understand atom.io
+							</a>
+						</section>
 					</main>
 				</section>
 				<section>
@@ -223,6 +231,11 @@ function SiteDirectory(): VNode {
 						<section>
 							<a id="-docs-eslint-plugin-link" href={`/docs/eslint-plugin`}>
 								<span className="soft">atom.io</span>/eslint-plugin
+							</a>
+						</section>
+						<section>
+							<a id="-docs-react-devtools-link" href={`/docs/react-devtools`}>
+								<span className="soft">atom.io</span>/react-devtools
 							</a>
 						</section>
 					</main>

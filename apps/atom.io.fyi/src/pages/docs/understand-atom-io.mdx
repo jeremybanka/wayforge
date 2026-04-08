@@ -1,0 +1,83 @@
+import Layout from "../../layouts/LayoutDocs.astro";
+import Laziness from "x/guides/understand-atom-io/laziness.gen";
+import Testability from "x/guides/understand-atom-io/counter-test.gen";
+import BrowserPathSync from "x/guides/understand-atom-io/browser-path-sync.gen";
+import NodeConfigSync from "x/guides/understand-atom-io/node-config-sync.gen";
+import BatteriesIncluded from "x/guides/understand-atom-io/transactions-and-timelines.gen";
+import SearchBox from "x/guides/understand-atom-io/search-box.gen";
+
+<Layout>
+
+# understand atom.io
+
+`atom.io` is built around a few practical goals. They are less about forcing one
+architecture and more about making state easy to reason about as an app grows.
+
+## laziness
+
+Never compute derived state until something actually asks for it.
+
+This keeps derived state cheap enough to use freely, even when selectors are stacked on
+top of other selectors.
+
+<Laziness client:load />
+
+`doubledSelector` is never computed until something reads it with `getState`, `useO`, or a
+subscription. If its cached value is later evicted, atom.io only recomputes it when
+someone is still subscribed or a new read asks for it.
+
+## testability
+
+Write unit tests for your store without mocking a UI framework.
+
+The core API works directly against a store, so tests can exercise state logic with
+`getState`, `setState`, and transactions in isolation.
+
+<Testability client:load />
+
+That makes it easier to test behavior at the state layer instead of only through rendered
+components.
+
+## portability
+
+Run the same store logic in the browser, on the server, or in a worker.
+
+State declarations live in plain TypeScript modules, so they are not tied to React or to a
+particular runtime.
+
+<BrowserPathSync client:load />
+
+The browser version can lean on `window.location` to keep a piece of state in sync with
+the current pathname.
+
+<NodeConfigSync client:load />
+
+The Node version uses the same atom API, but its effect reads from and writes to a config
+file in `~/.config/my-app`.
+
+## batteries included
+
+Solve common state-management jobs like coordinated updates and history without wiring them
+from scratch every time.
+
+Transactions and timelines are part of the core module because they come up often in real
+apps.
+
+<BatteriesIncluded client:load />
+
+You can start small with atoms and selectors, then bring in transactions or time travel
+when the app needs them.
+
+## composability
+
+Build a store out of small pieces, declare them near the code that owns them, and compose
+them later.
+
+This keeps state modular instead of forcing everything into one giant store object.
+
+<SearchBox client:load />
+
+That atom does not need to be exported or lifted into a giant central file. It can live
+right next to the React component that observes it with `useO` and updates it with `useI`.
+
+</Layout>

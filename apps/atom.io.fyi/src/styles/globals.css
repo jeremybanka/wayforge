@@ -155,7 +155,7 @@ table {
 		--hyperlink-visited-color: #99f;
 
 		background-color: var(--bg-shade-2);
-		min-height: 100vh;
+		min-height: 100svh;
 		scroll-padding-top: 4.5em;
 
 		button {
