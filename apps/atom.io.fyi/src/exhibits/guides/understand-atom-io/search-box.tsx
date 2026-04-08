@@ -1,5 +1,6 @@
 import { atom } from "atom.io"
 import { useI, useO } from "atom.io/react"
+import type { JSX } from "preact/jsx-runtime"
 
 const searchBoxDraftAtom = atom<string>({
 	key: `searchBoxDraft`,
