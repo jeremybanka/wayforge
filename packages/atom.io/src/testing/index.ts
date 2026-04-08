@@ -12,9 +12,8 @@ export type Snapshot = {
 /**
  * Capture the current store structure and return a function that restores it.
  */
-export function takeSnapshot(): Snapshot {
-	const store = IMPLICIT.STORE
-	const baseConfig = store.config
+export function takeSnapshot(store: RootStore = IMPLICIT.STORE): Snapshot {
+	const baseConfig = IMPLICIT.STORE.config
 	const templateConfig = { ...baseConfig, name: `TEMPLATE` }
 	const template = new Store(templateConfig, store) as RootStore
 	return {
