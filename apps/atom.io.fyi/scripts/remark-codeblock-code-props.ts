@@ -22,10 +22,10 @@ type StaticCodeAttribute = MdxAttribute & {
 	value: {
 		value: string
 		data: {
-				estree: {
-					body: [
-						{
-							expression: MdxNode & {
+			estree: {
+				body: [
+					{
+						expression: MdxNode & {
 							type: unknown
 							expressions?: unknown[]
 							quasis?: unknown[]
