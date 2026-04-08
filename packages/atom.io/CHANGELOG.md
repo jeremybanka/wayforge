@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.33
+
+### Patch Changes
+
+- 3ae1221: 🎁 New submodule! `atom.io/testing` exposes the new `takeSnapshot()` function for testing against application state in the implicit store.
+
 ## 0.46.32
 
 ### Patch Changes
