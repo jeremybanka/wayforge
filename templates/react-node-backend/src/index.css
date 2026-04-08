@@ -40,7 +40,7 @@ body {
 	flex-flow: column;
 	place-items: center;
 	min-width: 320px;
-	min-height: 100vh;
+	min-height: 100svh;
 	#root {
 		width: 100%;
 		height: 100%;
