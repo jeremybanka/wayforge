@@ -1,5 +1,5 @@
 import { atom, getState, selector, setState } from "atom.io"
-import { resetImplicitStore } from "atom.io/testing"
+import { takeSnapshot } from "atom.io/testing"
 import { afterEach, expect, test } from "vitest"
 
 const countAtom = atom<number>({
@@ -12,7 +12,11 @@ const doubledSelector = selector<number>({
 	get: ({ get }) => get(countAtom) * 2,
 })
 
-resetImplicitStore(afterEach)
+const snapshot = takeSnapshot()
+
+afterEach(() => {
+	snapshot.restore()
+})
 
 test(`doubledSelector can be tested without React`, () => {
 	setState(countAtom, 3)
