@@ -40,6 +40,12 @@ import { isRootStore } from "../transaction"
 import type { Fn } from "../utility-types"
 import { CircularBuffer } from "./circular-buffer"
 
+export type StoreConfig = {
+	name: string
+	lifespan: `ephemeral` | `immortal`
+	isProduction: boolean
+}
+
 export class Store implements Lineage {
 	public parent: ChildStore | RootStore | null = null
 	public child: ChildStore | null = null
@@ -167,11 +173,7 @@ export class Store implements Lineage {
 	}
 	public operation: OperationProgress = { open: false }
 
-	public config: {
-		name: string
-		lifespan: `ephemeral` | `immortal`
-		isProduction: boolean
-	} = {
+	public config: StoreConfig = {
 		name: `IMPLICIT_STORE`,
 		lifespan: `ephemeral`,
 		isProduction: globalThis.process?.env?.[`NODE_ENV`] === `production`,
