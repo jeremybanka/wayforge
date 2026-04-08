@@ -1,0 +1,65 @@
+import Layout from "../../layouts/LayoutDocs.astro";
+import TakeSnapshot from "x/tooling/testing/take-snapshot.gen";
+import CustomStore from "x/tooling/testing/custom-store.gen";
+
+<Layout>
+
+# <span className="soft">atom.io</span>/testing
+
+`atom.io/testing` provides a small helper for tests that use the implicit store.
+
+Use it when your tests declare atoms, selectors, or families at module scope and you want
+each test to start from the same assembled store without rebuilding that setup by hand.
+
+## package contents
+
+<table>
+  <tbody>
+    <tr>
+      <td>
+        <code>takeSnapshot</code>
+      </td>
+      <td>Capture a store and return an object that can restore it later.</td>
+    </tr>
+    <tr>
+      <td>
+        <code>Snapshot</code>
+      </td>
+      <td>A snapshot object with <code>store</code> and <code>restore()</code>.</td>
+    </tr>
+  </tbody>
+</table>
+
+## takeSnapshot
+
+`takeSnapshot` captures the current shape of a store and returns a `Snapshot`.
+
+For the common case, call it once at module scope after your test states are declared,
+then restore it in `afterEach`.
+
+<TakeSnapshot client:load />
+
+That pattern keeps the test file visually familiar: setup at the top, then a normal
+`afterEach` block.
+
+## snapshot.store
+
+The returned `Snapshot` also exposes the snapshotted store as `snapshot.store`.
+
+That is useful when you want to inspect the captured template store directly. For example,
+you can read the snapshotted value of a state from `snapshot.store` before restoring it.
+
+<CustomStore client:load />
+
+## when to use it
+
+Use `atom.io/testing` when:
+
+- your tests rely on the implicit store
+- your states are declared once and reused across many tests
+- you want each test to begin from the same installed atoms, selectors, and families
+
+If you are already creating isolated stores with `Silo`, you may prefer to construct a
+fresh store per test instead.
+
+</Layout>

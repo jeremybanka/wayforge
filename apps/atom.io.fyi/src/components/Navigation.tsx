@@ -238,6 +238,11 @@ function SiteDirectory(): VNode {
 								<span className="soft">atom.io</span>/react-devtools
 							</a>
 						</section>
+						<section>
+							<a id="-docs-testing-link" href={`/docs/testing`}>
+								<span className="soft">atom.io</span>/testing
+							</a>
+						</section>
 					</main>
 				</section>
 			</nav>

@@ -192,6 +192,10 @@
 			"import": "./dist/solid/index.js",
 			"types": "./dist/solid/index.d.ts"
 		},
+		"./testing": {
+			"import": "./dist/testing/index.js",
+			"types": "./dist/testing/index.d.ts"
+		},
 		"./transceivers/o-list": {
 			"import": "./dist/transceivers/o-list/index.js",
 			"types": "./dist/transceivers/o-list/index.d.ts"
