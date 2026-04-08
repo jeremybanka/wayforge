@@ -3,7 +3,7 @@ import { getFromStore } from "atom.io/internal"
 import { takeSnapshot } from "atom.io/testing"
 
 const countAtom = atom<number>({
-	key: "count",
+	key: `count`,
 	default: 0,
 })
 
