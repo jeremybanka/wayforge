@@ -1,18 +1,31 @@
 import { mutableAtom } from "atom.io"
-import { useJSON } from "atom.io/react"
+import { useI, useJSON } from "atom.io/react"
 import { UList } from "atom.io/transceivers/u-list"
 
-const numbersCollectionAtom = mutableAtom<UList<string>>({
-	key: `numbersCollection`,
+const selectedTagKeysAtom = mutableAtom<UList<string>>({
+	key: `selectedTagKeys`,
 	class: UList,
 })
 
-function Numbers() {
-	const numbers = useJSON(numbersCollectionAtom)
+function SelectedTags() {
+	const selectedTagKeys = useJSON(selectedTagKeysAtom)
+	const setSelectedTagKeys = useI(selectedTagKeysAtom)
+
 	return (
 		<>
-			{numbers.map((n) => (
-				<div key={n}>{n}</div>
+			<button
+				type="button"
+				onClick={() => {
+					setSelectedTagKeys((tagKeys) => {
+						tagKeys.add(`typescript`)
+						return tagKeys
+					})
+				}}
+			>
+				Add TypeScript
+			</button>
+			{selectedTagKeys.map((tagKey) => (
+				<div key={tagKey}>{tagKey}</div>
 			))}
 		</>
 	)

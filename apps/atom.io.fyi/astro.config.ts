@@ -3,9 +3,14 @@ import mdx from "@astrojs/mdx"
 import preact from "@astrojs/preact"
 import { defineConfig, sessionDrivers } from "astro/config"
 
+import { preserveCodeBlockCodeProps } from "./scripts/remark-codeblock-code-props"
+
 // https://astro.build/config
 export default defineConfig({
-	integrations: [preact({ compat: true }), mdx()],
+	integrations: [
+		preact({ compat: true }),
+		mdx({ remarkPlugins: [preserveCodeBlockCodeProps] }),
+	],
 	adapter: cloudflare(),
 	session: {
 		// Keep session storage self-contained so Astro does not auto-provision

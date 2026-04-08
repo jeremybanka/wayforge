@@ -1,0 +1,73 @@
+import Layout from "../../layouts/LayoutDocs.astro";
+import { CodeBlock } from "../../components/CodeBlock";
+import MinimalFlatConfig from "x/tooling/eslint-plugin/eslint.config.gen";
+import ExplicitStateTypes from "x/tooling/eslint-plugin/explicit-state-types.gen";
+import ExactCatchTypes from "x/tooling/eslint-plugin/exact-catch-types.gen";
+
+<Layout>
+
+# <span className="soft">atom.io</span>/eslint-plugin
+
+`atom.io/eslint-plugin` provides rules that keep atom.io state declarations explicit,
+consistent, and safe around typed errors.
+
+## install
+
+If your project already depends on `atom.io`, the plugin is already available from that
+package. For a minimal TypeScript flat config, you also need ESLint and
+`typescript-eslint`:
+
+<CodeBlock
+  client:load
+  filepath="sample.sh"
+  label="install eslint"
+  code={`pnpm add -D eslint typescript-eslint`}
+/>
+
+## minimal flat config
+
+Here is a small `eslint.config.ts` that starts from `typescript-eslint`'s recommended
+type-checked rules and adds the atom.io rules.
+
+<MinimalFlatConfig client:load />
+
+Why use `recommendedTypeChecked` instead of plain `recommended`?
+
+`atom.io/exact-catch-types` needs TypeScript type information so it can compare an
+atom's error type with its `catch` constructors. If you want a syntax-only ESLint setup,
+use `typescript-eslint`'s plain recommended config and leave out
+`atom.io/exact-catch-types`.
+
+## rules
+
+### explicit-state-types
+
+`atom.io/explicit-state-types` requires state declarations to include explicit type
+arguments.
+
+<ExplicitStateTypes client:load />
+
+This keeps important state types visible at the declaration site, where they are easiest
+to audit.
+
+### naming-convention
+
+`atom.io/naming-convention` keeps declaration variable names and state keys aligned.
+
+<ExplicitStateTypes client:load />
+
+For example, `countAtom` should use `key: "count"`, and `userAtoms` should use
+`key: "user"`. The same pattern applies to `selector`, `selectorFamily`,
+`mutableAtom`, and `mutableAtomFamily`.
+
+### exact-catch-types
+
+`atom.io/exact-catch-types` checks that a state declaration's typed error channel
+matches the constructors listed in its `catch` option.
+
+<ExactCatchTypes client:load />
+
+This helps prevent state from advertising that it may catch one error type while actually
+catching another.
+
+</Layout>

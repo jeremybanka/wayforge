@@ -6,7 +6,7 @@ type CodeBlockProps = {
 	filepath?: string
 	label?: string
 	code?: string
-	children: ComponentChildren
+	children?: ComponentChildren
 }
 
 function getLanguage(filepath?: string): string {
