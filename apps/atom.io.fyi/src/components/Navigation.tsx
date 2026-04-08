@@ -225,6 +225,11 @@ function SiteDirectory(): VNode {
 								<span className="soft">atom.io</span>/eslint-plugin
 							</a>
 						</section>
+						<section>
+							<a id="-docs-react-devtools-link" href={`/docs/react-devtools`}>
+								<span className="soft">atom.io</span>/react-devtools
+							</a>
+						</section>
 					</main>
 				</section>
 			</nav>
