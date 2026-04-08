@@ -1,5 +1,12 @@
 # atom.io.fyi
 
+## 0.2.60
+
+### Patch Changes
+
+- Updated dependencies [3ae1221]
+  - atom.io@0.46.33
+
 ## 0.2.59
 
 ### Patch Changes
