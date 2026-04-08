@@ -12,7 +12,11 @@ const doubledSelector = selector<number>({
 })
 
 test(`doubledSelector can be tested without React`, () => {
-	const store = new Silo()
+	const store = new Silo({
+		name: `guide-test`,
+		lifespan: `ephemeral`,
+		isProduction: false,
+	})
 
 	store.setState(countAtom, 3)
 

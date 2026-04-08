@@ -1,6 +1,10 @@
 import { atom, selector, Silo } from "atom.io"
 
-const store = new Silo()
+const store = new Silo({
+	name: `guide-laziness`,
+	lifespan: `ephemeral`,
+	isProduction: false,
+})
 
 const countAtom = atom<number>({
 	key: `count`,
