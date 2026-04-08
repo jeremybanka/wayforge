@@ -1,14 +1,14 @@
 import { atom } from "atom.io"
 import { useI, useO } from "atom.io/react"
 
-const draftAtom = atom<string>({
-	key: `SearchBox/draft`,
+const searchBoxDraftAtom = atom<string>({
+	key: `searchBoxDraft`,
 	default: ``,
 })
 
-export function SearchBox() {
-	const draft = useO(draftAtom)
-	const setDraft = useI(draftAtom)
+export function SearchBox(): JSX.Element {
+	const draft = useO(searchBoxDraftAtom)
+	const setDraft = useI(searchBoxDraftAtom)
 
 	return (
 		<input
