@@ -33,15 +33,15 @@ import ReplacePlaylistTracks from "x/core/advanced/join/replace-playlist-tracks.
 
 # atom.io
 
-## overview
+## core module
 
-`atom.io` is a data management library for TypeScript with the following goals:
+`atom.io` is the core state module: it gives you primitives to declare reactive state,
+derive more state from it, subscribe to changes, and operate on a store directly from
+TypeScript.
 
-1. Laziness: only recompute values that are being observed, whose dependencies have changed
-2. Testability: write unit tests for your store without mocking
-3. Portability: run your store in the browser, on the server, or in a web worker
-4. Batteries Included: solve common use cases like transactions and time travel
-5. Composability: build your store out of small, reusable pieces. Declare them anywhere, import them where you need them, and organize later
+Start with `atom`, `selector`, `getState`, and `setState`. Add families when you need many
+similar states, transactions when updates need coordination, and timelines when you want
+history.
 
 ## package contents
 
@@ -162,7 +162,8 @@ import ReplacePlaylistTracks from "x/core/advanced/join/replace-playlist-tracks.
 ## atom
 
 <DeclareAnAtom client:load />
-Imagine an `atom` as a "reactive variable," with a key, a type, and a default value.
+Imagine an `atom` as a "reactive variable," with a key, a type, and a default
+value.
 
 <AnAtomTokenIsAReference client:load />
 As you can see, what is returned from `atom` does not contain the value itself.
@@ -178,12 +179,13 @@ token.
 TypeScript will discourage you from setting the wrong type of value.
 
 <SubscribeToAnAtom client:load />
-Unlike a standard variable, you can `subscribe` to an atom. The callback you pass
-to the subscription will be called whenever the atom is set to a new value.
+Unlike a standard variable, you can `subscribe` to an atom. The callback you
+pass to the subscription will be called whenever the atom is set to a new value.
 
 <SubscribePowersIntegrations client:load />
-This is an example of the **observer pattern**. Following the observer pattern allows
-atom.io to integrate cleanly with an observer like React. More on this later.
+This is an example of the **observer pattern**. Following the observer pattern
+allows atom.io to integrate cleanly with an observer like React. More on this
+later.
 
 ## selector
 
@@ -275,13 +277,13 @@ When writing one, prefer the setter callback form. Mutate the value inside the c
 and return it. That lets atom.io capture the transceiver's fine-grained update instead
 of requiring you to replace the entire collection.
 
-### async
+### async loadable state
 
 Often, the data you need is not immediately available. For example, you may need to fetch it from a server. `atom.io` offers natural support for `Promise` and `async/await` patterns.
 
 <AwaitYourState client:load />
 
-`Loadable` is a shorthand that means "this value may be a `Promise`". This is useful because `await` is harmless when the value is not a Promise. When the Promise does resolve, the value is set into the value map, allowing for maximum flexibility in Suspenseful environments.
+`Loadable` is a shorthand that means "this value may be a `Promise`". This is useful because `await` is harmless when the value is not a `Promise`. When the Promise does resolve, the value is set into the value map, allowing for maximum flexibility in Suspenseful environments.
 
 <LoadableSelector client:load />
 

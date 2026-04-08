@@ -1,0 +1,22 @@
+import { atom } from "atom.io"
+import { useI, useO } from "atom.io/react"
+
+const draftAtom = atom<string>({
+	key: `SearchBox/draft`,
+	default: ``,
+})
+
+export function SearchBox() {
+	const draft = useO(draftAtom)
+	const setDraft = useI(draftAtom)
+
+	return (
+		<input
+			value={draft}
+			onInput={(event) => {
+				setDraft(event.currentTarget.value)
+			}}
+			placeholder="Filter results"
+		/>
+	)
+}
