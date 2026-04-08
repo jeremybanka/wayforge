@@ -4,12 +4,7 @@ import path from "node:path"
 
 import { atom } from "atom.io"
 
-const configFile = path.join(
-	os.homedir(),
-	`.config`,
-	`my-app`,
-	`session.json`,
-)
+const configFile = path.join(os.homedir(), `.config`, `my-app`, `session.json`)
 
 export const sessionAtom = atom<string | null>({
 	key: `session`,
