@@ -1,7 +1,6 @@
 import { atom, getState, selector, setState } from "atom.io"
 import { type RootStore, Store } from "atom.io/internal"
-import { afterEach, beforeEach } from "bun:test"
-import { expect, test } from "vitest"
+import { afterEach, beforeEach, expect, test } from "vitest"
 
 let STORE_TEMPLATE: Store
 export function testWithClientStore(
