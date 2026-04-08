@@ -264,11 +264,12 @@ For those cases, use `mutableAtom`.
 A mutable atom holds a `Transceiver`: a mutable object that knows how to report its own
 changes to atom.io.
 
-The built-in transceivers are:
+Read more in [the transceivers guide](/transceivers).
+
+The built-in transceivers you will typically use are:
 
 - `UList` from `atom.io/transceivers/u-list`: a trackable unordered set
 - `OList` from `atom.io/transceivers/o-list`: a trackable ordered array
-- `SetRTX` from `atom.io/transceivers/set-rtx`: a trackable set with a replay cache for realtime synchronization
 
 Read mutable atoms the same way you read regular atoms: with `getState`, `subscribe`,
 or a UI adapter like `useO`.
