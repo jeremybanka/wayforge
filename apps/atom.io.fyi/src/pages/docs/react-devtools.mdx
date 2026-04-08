@@ -1,0 +1,81 @@
+import Layout from "../../layouts/LayoutDocs.astro";
+import BasicSetup from "x/tooling/react-devtools/basic-setup.gen";
+import HideByDefault from "x/tooling/react-devtools/hide-by-default.gen";
+
+<Layout>
+
+# <span className="soft">atom.io</span>/react-devtools
+
+`atom.io/react-devtools` gives you a draggable inspector for your atom.io store.
+It can browse atoms, selectors, transactions, and timelines, and it can edit JSON-shaped
+state directly from the panel.
+
+## install
+
+If your project already depends on `atom.io`, the devtools package is already available.
+To render with the intended styles, import both the component and its CSS:
+
+<BasicSetup client:load />
+
+Render the devtools somewhere inside the same React tree as your `atom.io/react`
+provider. `AtomIODevtools` reads the current store from `StoreContext`, so it attaches to
+whichever store your app is already using.
+
+If you have created a siloed store, you can mount the devtools inside that store's
+`StoreContext.Provider` so they inspect that store instead of the implicit one.
+
+## hide by default
+
+If you want the devtools available without showing them immediately, pass
+`hideByDefault={true}`:
+
+<HideByDefault client:load />
+
+When hidden, the panel can be toggled with `ctrl` + `shift` + `a`.
+See [try it here](#try-it-here) for the full show/hide flow on this site.
+
+## try it here
+
+This site mounts the devtools with `hideByDefault={true}`.
+
+To show them on `atom.io.fyi`:
+
+- press `ctrl` + `shift` + `a`
+- click the magnifying glass in the lower right corner
+
+You can also force the hidden state through browser storage:
+
+- open browser devtools
+- open `Application` > `Local Storage`
+- edit `"🔍 Devtools Are Hidden"`
+- set it to `false` to show the panel after reload
+- set it to `true` to keep it hidden after reload
+- reload the page
+
+## what it shows
+
+The devtools can switch between four views:
+
+- atoms
+- selectors
+- transactions
+- timelines
+
+Open state editors to inspect current values, expand nested JSON, and edit values that can
+be represented as JSON.
+
+## persistence
+
+The devtools remember their hidden state, open state, selected view, and expanded editors
+in `localStorage`. This makes the panel feel consistent across reloads while you debug.
+
+## in atom.io.fyi
+
+This site embeds the devtools in its base layout:
+
+- [Layout.astro](/Users/jem/dojo/wayforge/apps/atom.io.fyi/src/layouts/Layout.astro)
+
+That setup imports `atom.io/react-devtools/css` once and mounts
+`<AtomIODevtools hideByDefault={true} client:only />` at the end of the shell.
+
+</Layout>
