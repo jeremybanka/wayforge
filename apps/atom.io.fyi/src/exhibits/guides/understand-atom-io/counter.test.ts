@@ -1,22 +1,6 @@
 import { atom, getState, selector, setState } from "atom.io"
-import { type RootStore, Store } from "atom.io/internal"
-import { afterEach, beforeEach, expect, test } from "vitest"
-
-let STORE_TEMPLATE: Store
-export function testWithClientStore(
-	store: Store = ATOM_IO_IMPLICIT_STORE!,
-): void {
-	STORE_TEMPLATE = new Store(
-		{ isProduction: false, lifespan: `ephemeral`, name: `TEMPLATE` },
-		store,
-	)
-	afterEach(() => {
-		globalThis.ATOM_IO_IMPLICIT_STORE = new Store(
-			{ isProduction: false, lifespan: `ephemeral`, name: `TEST` },
-			STORE_TEMPLATE,
-		) as RootStore
-	})
-}
+import { resetImplicitStore } from "atom.io/testing"
+import { afterEach, expect, test } from "vitest"
 
 const countAtom = atom<number>({
 	key: `count`,
@@ -28,9 +12,13 @@ const doubledSelector = selector<number>({
 	get: ({ get }) => get(countAtom) * 2,
 })
 
-beforeEach(() => {})
+resetImplicitStore(afterEach)
 
 test(`doubledSelector can be tested without React`, () => {
 	setState(countAtom, 3)
 	expect(getState(doubledSelector)).toBe(6)
+})
+
+test(`the implicit store is reset after each test`, () => {
+	expect(getState(doubledSelector)).toBe(0)
 })
