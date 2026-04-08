@@ -1,17 +1,28 @@
-import type { RootStore, StoreConfig } from "atom.io/internal"
+import type { RootStore } from "atom.io/internal"
 import { IMPLICIT, Store } from "atom.io/internal"
 
-export type AfterEach = (callback: () => void) => unknown
+/**
+ * A snapshot of the store state that can be restored.
+ */
+export type Snapshot = {
+	restore(): void
+	store: RootStore
+}
 
 /**
- * Rebuild the implicit store after each test while preserving the states that
- * were installed at setup time.
+ * Capture the current store structure and return a function that restores it.
  */
-export function resetImplicitStore(afterEach: AfterEach): void {
-	const implicitStore = IMPLICIT.STORE
-	const config: StoreConfig = implicitStore.config
-	const template = new Store(config, implicitStore)
-	afterEach(() => {
-		globalThis.ATOM_IO_IMPLICIT_STORE = new Store(config, template) as RootStore
-	})
+export function takeSnapshot(store: RootStore = IMPLICIT.STORE): Snapshot {
+	const baseConfig = store.config
+	const templateConfig = { ...baseConfig, name: `TEMPLATE` }
+	const template = new Store(templateConfig, store) as RootStore
+	return {
+		restore(): void {
+			globalThis.ATOM_IO_IMPLICIT_STORE = new Store(
+				baseConfig,
+				template,
+			) as RootStore
+		},
+		store: template,
+	}
 }
