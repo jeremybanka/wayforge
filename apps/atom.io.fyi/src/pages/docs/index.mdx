@@ -22,6 +22,10 @@ import SubscribeToATimeline from "x/core/timeline/subscribe-to-a-timeline.gen";
 import UndoAndRedoChanges from "x/core/timeline/undo-and-redo-changes.gen";
 
 import AwaitYourState from "x/core/advanced/async/await-your-state.gen";
+import HydrateAnAtomWithSetSelf from "x/core/advanced/effects/hydrate-an-atom-with-set-self.gen";
+import ReactToChangesWithOnSet from "x/core/advanced/effects/react-to-changes-with-on-set.gen";
+import CatchAnAtom from "x/core/advanced/catching/catch-an-atom.gen";
+import CatchASelector from "x/core/advanced/catching/catch-a-selector.gen";
 import LoadableSelector from "x/core/advanced/async/loadable-selector.gen";
 import AvoidRaceBetweenPromises from "x/core/advanced/async/avoid-race-between-promises.gen";
 import DeclarePlaylistTracks from "x/core/advanced/join/declare-playlist-tracks.gen";
@@ -249,51 +253,7 @@ In this example, we subscribe to the timeline. Above are the structures of timel
 
 In this example, we undo and redo changes to the timeline.
 
-## advanced
-
-### mutable atom
-
-Most atom.io state should be modeled with regular immutable atoms. Sometimes, though, a
-large collection changes frequently enough that copying the whole structure on every
-update is not a good tradeoff.
-
-For those cases, use `mutableAtom`.
-
-<DeclareAMutableAtom client:load />
-
-A mutable atom holds a `Transceiver`: a mutable object that knows how to report its own
-changes to atom.io.
-
-The built-in transceivers are:
-
-- `UList` from `atom.io/transceivers/u-list`: a trackable unordered set
-- `OList` from `atom.io/transceivers/o-list`: a trackable ordered array
-- `SetRTX` from `atom.io/transceivers/set-rtx`: a trackable set with a replay cache for realtime synchronization
-
-Read mutable atoms the same way you read regular atoms: with `getState`, `subscribe`,
-or a UI adapter like `useO`.
-
-When writing one, prefer the setter callback form. Mutate the value inside the callback
-and return it. That lets atom.io capture the transceiver's fine-grained update instead
-of requiring you to replace the entire collection.
-
-### async loadable state
-
-Often, the data you need is not immediately available. For example, you may need to fetch it from a server. `atom.io` offers natural support for `Promise` and `async/await` patterns.
-
-<AwaitYourState client:load />
-
-`Loadable` is a shorthand that means "this value may be a `Promise`". This is useful because `await` is harmless when the value is not a `Promise`. When the Promise does resolve, the value is set into the value map, allowing for maximum flexibility in Suspenseful environments.
-
-<LoadableSelector client:load />
-
-Here is an example where we read a query parameter from the URL, then use it to fetch data from a server. This is a great pattern, because the selector's value will be cached as long as the URL parameter does not change.
-
-<AvoidRaceBetweenPromises client:load />
-
-If we update an async state more quickly than its promises resolve, only the last resolved value will be set into the state. All previous results will be discarded.
-
-### join
+## join
 
 Use `join` when a relationship needs to be its own state.
 
@@ -320,5 +280,87 @@ The join keeps both directions consistent. If the road trip playlist changes, `t
 Use `join` when you need that bidirectional consistency to be reactive, typed, and safe to reconfigure from the frontend.
 
 {/* By default, `atom.io` assumes that the values of atoms are immutable data, always to be copied when changed. However, this constant copying can lead to poor performance, and in particular, a lot of work for your engine's garbage collector. Mutable atoms provide a path to optimization through less garbage creation. */}
+
+## advanced
+
+### atom effects
+
+Atoms can declare `effects`, which are setup hooks that run when the atom is created.
+
+Use `setSelf` when an external source should initialize or push values into the atom:
+
+<HydrateAnAtomWithSetSelf client:load />
+
+Use `onSet` when you want to react to changes after the atom updates:
+
+<ReactToChangesWithOnSet client:load />
+
+These patterns are useful on their own, and `atom.io/web` builds on them with ready-made
+browser effects such as storage and URL synchronization. See
+[`atom.io/web`](/docs/web) for more examples of preincluded effects.
+
+### async state
+
+Often, the data you need is not immediately available. For example, you may need to fetch it from a server. `atom.io` offers natural support for `Promise` and `async/await` patterns.
+
+<AwaitYourState client:load />
+
+`Loadable` is a shorthand that means "this value may be a `Promise`". This is useful because `await` is harmless when the value is not a `Promise`. When the Promise does resolve, the value is set into the value map, allowing for maximum flexibility in Suspenseful environments.
+
+<LoadableSelector client:load />
+
+Here is an example where we read a query parameter from the URL, then use it to fetch data from a server. This is a great pattern, because the selector's value will be cached as long as the URL parameter does not change.
+
+<AvoidRaceBetweenPromises client:load />
+
+If we update an async state more quickly than its promises resolve, only the last resolved value will be set into the state. All previous results will be discarded.
+
+### catching errors
+
+Regular atoms and pure selectors can declare a `catch` option.
+
+When a matching error class is thrown, atom.io stores that error in the state instead of
+rethrowing it. This gives the state a typed error channel, so code that reads it can
+handle the expected failure case explicitly.
+
+To make sure your declared error type stays aligned with the constructors in `catch`, use
+[`atom.io/exact-catch-types`](/docs/eslint-plugin#exact-catch-types).
+
+<CatchAnAtom client:load />
+
+The same pattern works for selectors:
+
+<CatchASelector client:load />
+
+This is especially helpful for `Loadable` state. If you read a caught loadable value with
+[`useLoadable`](/docs/react#error-handling), the hook can expose the caught error
+separately from the fallback value.
+
+### mutable atoms
+
+Most atom.io state should be modeled with regular immutable atoms. Sometimes, though, a
+large collection changes frequently enough that copying the whole structure on every
+update is not a good tradeoff.
+
+For those cases, use `mutableAtom`.
+
+<DeclareAMutableAtom client:load />
+
+A mutable atom holds a `Transceiver`: a mutable object that knows how to report its own
+changes to atom.io.
+
+Read more in [the transceivers guide](/transceivers).
+
+The built-in transceivers you will typically use are:
+
+- `UList` from `atom.io/transceivers/u-list`: a trackable unordered set
+- `OList` from `atom.io/transceivers/o-list`: a trackable ordered array
+
+Read mutable atoms the same way you read regular atoms: with `getState`, `subscribe`,
+or a UI adapter like `useO`.
+
+When writing one, prefer the setter callback form. Mutate the value inside the callback
+and return it. That lets atom.io capture the transceiver's fine-grained update instead
+of requiring you to replace the entire collection.
 
 </Layout>

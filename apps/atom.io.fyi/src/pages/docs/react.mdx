@@ -5,6 +5,7 @@ import UseI from "x/react/use-i.gen";
 import UseJSON from "x/react/use-json.gen";
 import UseTL from "x/react/use-tl.gen";
 import UseLoadable from "x/react/use-loadable-bare.gen";
+import UseLoadableCatch from "x/react/use-loadable-catch.gen";
 import UseLoadableFallback from "x/react/use-loadable-fallback.gen";
 
 <Layout>
@@ -71,9 +72,11 @@ import UseLoadableFallback from "x/react/use-loadable-fallback.gen";
 
 `useJSON` is a React hook that makes working with mutable atoms in your React components more convenient.
 
-Mutable atoms hold transceivers, such as `UList`, `OList`, or `SetRTX`. Those values are
+Mutable atoms hold transceivers, such as `UList` or `OList`. Those values are
 useful when you are updating them, but they are usually not the shape you want to render
 directly.
+
+If you want more background on transceivers, see [the transceivers guide](/transceivers).
 
 `useJSON` observes the mutable atom's JSON view instead. For example, a `UList<string>`
 becomes a readonly `string[]`, which is usually easier to map over in JSX.
@@ -102,5 +105,19 @@ In this example, we can see that the hook will return the string `"LOADING"` unt
 If you'd rather assume your data is loaded, simply pass a fallback parameter with same type as your loaded data.
 
 In this case, you don't have to deal with the possibility that your data is `"LOADING"`, and you'll also get a separate `error` property if the promise rejects.
+
+### error handling
+
+If the atom or selector declares a [`catch` option](/docs#catching), `useLoadable`'s
+fallback form gives you a typed `error?: E` property alongside the fallback-backed
+`value`.
+
+<UseLoadableCatch client:load />
+
+In this example, `value` stays usable as `{ name: string }`, while `error` is available as
+`RequestError | undefined`. That lets your component keep rendering with fallback data
+while still reacting to the handled failure case.
+
+See [catching](/docs#catching) for how to declare that error channel on atoms and selectors.
 
 </Layout>
