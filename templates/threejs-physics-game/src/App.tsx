@@ -16,7 +16,15 @@ type ControlKey =
 	| `ShiftLeft`
 	| `Space`
 
-type AxisKey = `ArrowDown` | `ArrowLeft` | `ArrowRight` | `ArrowUp` | `KeyA` | `KeyD` | `KeyS` | `KeyW`
+type AxisKey =
+	| `ArrowDown`
+	| `ArrowLeft`
+	| `ArrowRight`
+	| `ArrowUp`
+	| `KeyA`
+	| `KeyD`
+	| `KeyS`
+	| `KeyW`
 
 type PlayerPhysics = {
 	isGrounded: boolean
@@ -27,6 +35,7 @@ type PlayerPhysics = {
 const PLAYER_RADIUS = 0.45
 const PLAYER_HEIGHT = 1.6
 const PLAYER_Y = PLAYER_HEIGHT * 0.5
+const CROUCH_HEIGHT_SCALE = 0.5
 const GRAVITY = 24
 const MOVE_SPEED = 6
 const SPRINT_MULTIPLIER = 1.65
@@ -40,18 +49,23 @@ const WEIGHT_MAX = 150
 const WEIGHT_DEFAULT = 85
 const CONTROL_GAIN = 12
 const BASE_MOTOR_FORCE = 1650
+const CROUCH_SPEED_MULTIPLIER = 0.6
+const CROUCH_DRIVE_MULTIPLIER = 0.25
 const GROUND_FRICTION_MIN = 0
-const GROUND_FRICTION_MAX = 24
+const GROUND_FRICTION_MAX = 100
 const GROUND_FRICTION_DEFAULT = 12
 const AIR_FRICTION_MIN = 0
 const AIR_FRICTION_MAX = 6
 const AIR_FRICTION_DEFAULT = 1.1
+const SLIDE_FRICTION_MIN = 0
+const SLIDE_FRICTION_MAX = 12
+const SLIDE_FRICTION_DEFAULT = 1.4
 const STAMINA_MAX = 100
 const STAMINA_RECOVERY_PER_SECOND = 20
 const CAMERA_DISTANCE = 8.5
 const CAMERA_PITCH_MAX = Math.PI * 0.42
 const CAMERA_PITCH_MIN = Math.PI * 0.12
-const CAMERA_LOOK_OFFSET = new THREE.Vector3(0, 1.1, 0)
+const CAMERA_ORBIT_HEIGHT = PLAYER_HEIGHT * 0.7
 const CAMERA_DRAG_SENSITIVITY_X = 0.006
 const CAMERA_DRAG_SENSITIVITY_Y = 0.0045
 const PLANAR_DELTA_VELOCITY = new THREE.Vector2()
@@ -72,6 +86,16 @@ const weightAtom = atom<number>({
 	default: WEIGHT_DEFAULT,
 })
 
+const isCrouchingAtom = atom<boolean>({
+	key: `isCrouching`,
+	default: false,
+})
+
+const planarSpeedAtom = atom<number>({
+	key: `planarSpeed`,
+	default: 0,
+})
+
 const groundFrictionAtom = atom<number>({
 	key: `groundFriction`,
 	default: GROUND_FRICTION_DEFAULT,
@@ -82,9 +106,32 @@ const airFrictionAtom = atom<number>({
 	default: AIR_FRICTION_DEFAULT,
 })
 
+const slideFrictionAtom = atom<number>({
+	key: `slideFriction`,
+	default: SLIDE_FRICTION_DEFAULT,
+})
+
 const jumpReadySelector = selector<boolean>({
 	key: `jumpReady`,
 	get: ({ get }) => get(isGroundedAtom) && get(staminaAtom) >= JUMP_STAMINA_MIN,
+})
+
+const baseCrouchSpeedSelector = selector<number>({
+	key: `baseCrouchSpeed`,
+	get: () => {
+		const crouchWalkSpeed = MOVE_SPEED * CROUCH_SPEED_MULTIPLIER
+		const crouchSprintSpeed =
+			MOVE_SPEED * SPRINT_MULTIPLIER * CROUCH_SPEED_MULTIPLIER
+		return (crouchWalkSpeed + crouchSprintSpeed) * 0.5
+	},
+})
+
+const isSlidingSelector = selector<boolean>({
+	key: `isSliding`,
+	get: ({ get }) => {
+		if (get(isCrouchingAtom) === false) return false
+		return get(planarSpeedAtom) > get(baseCrouchSpeedSelector)
+	},
 })
 
 function spendJumpStamina(): number {
@@ -142,9 +189,12 @@ function createArena(scene: THREE.Scene): void {
 	}
 }
 
-function applyGroundCollision(player: PlayerPhysics): void {
-	if (player.position.y <= PLAYER_Y) {
-		player.position.y = PLAYER_Y
+function applyGroundCollision(
+	player: PlayerPhysics,
+	stanceCenterY: number,
+): void {
+	if (player.position.y <= stanceCenterY) {
+		player.position.y = stanceCenterY
 		player.velocity.y = 0
 		player.isGrounded = true
 		return
@@ -157,8 +207,12 @@ export function App(): JSX.Element {
 	const jumpReady = useO(jumpReadySelector)
 	const grounded = useO(isGroundedAtom)
 	const weight = useO(weightAtom)
+	const isCrouching = useO(isCrouchingAtom)
+	const baseCrouchSpeed = useO(baseCrouchSpeedSelector)
+	const isSliding = useO(isSlidingSelector)
 	const groundFriction = useO(groundFrictionAtom)
 	const airFriction = useO(airFrictionAtom)
+	const slideFriction = useO(slideFrictionAtom)
 
 	let host!: HTMLDivElement
 
@@ -198,7 +252,12 @@ export function App(): JSX.Element {
 		createArena(scene)
 
 		const player = new THREE.Mesh(
-			new THREE.CylinderGeometry(PLAYER_RADIUS, PLAYER_RADIUS, PLAYER_HEIGHT, 20),
+			new THREE.CylinderGeometry(
+				PLAYER_RADIUS,
+				PLAYER_RADIUS,
+				PLAYER_HEIGHT,
+				20,
+			),
 			new THREE.MeshStandardMaterial({
 				color: `#1f3d5b`,
 				roughness: 0.45,
@@ -236,6 +295,7 @@ export function App(): JSX.Element {
 		const currentPlanarVelocity = new THREE.Vector2()
 		const targetPlanarVelocity = new THREE.Vector2()
 		const cameraOffset = new THREE.Vector3()
+		const cameraAnchor = new THREE.Vector3()
 		const cameraTarget = new THREE.Vector3()
 		const lookTarget = new THREE.Vector3()
 		const clock = new THREE.Clock()
@@ -290,6 +350,7 @@ export function App(): JSX.Element {
 			pointerId = event.pointerId
 			previousPointerX = event.clientX
 			previousPointerY = event.clientY
+			setState(isCrouchingAtom, true)
 			host.setPointerCapture(event.pointerId)
 		}
 
@@ -311,6 +372,7 @@ export function App(): JSX.Element {
 			if (event.pointerId !== pointerId) return
 			isOrbiting = false
 			pointerId = null
+			setState(isCrouchingAtom, false)
 			if (host.hasPointerCapture(event.pointerId)) {
 				host.releasePointerCapture(event.pointerId)
 			}
@@ -331,6 +393,8 @@ export function App(): JSX.Element {
 
 		const frame = (): void => {
 			const deltaSeconds = Math.min(clock.getDelta(), 0.033)
+			const crouchingNow = getState(isCrouchingAtom)
+			const stanceCenterY = getStanceCenterY(crouchingNow)
 			moveDirection.set(0, 0, 0)
 			cameraForward.set(
 				Math.sin(cameraYaw + Math.PI),
@@ -345,10 +409,22 @@ export function App(): JSX.Element {
 			moveDirection
 				.addScaledVector(cameraRight, resolveAxisDirection(horizontalInputs))
 				.addScaledVector(cameraForward, -resolveAxisDirection(verticalInputs))
-
-			const speedMultiplier = keys.has(`ShiftLeft`) ? SPRINT_MULTIPLIER : 1
+			player.scale.y = crouchingNow ? CROUCH_HEIGHT_SCALE : 1
 			if (physics.isGrounded) {
-				const groundedSpeed = MOVE_SPEED * speedMultiplier
+				player.position.y = stanceCenterY
+			}
+
+			const speedMultiplier =
+				crouchingNow || keys.has(`ShiftLeft`) === false ? 1 : SPRINT_MULTIPLIER
+			setState(
+				planarSpeedAtom,
+				Math.hypot(physics.velocity.x, physics.velocity.z),
+			)
+			if (physics.isGrounded) {
+				const groundedSpeed =
+					MOVE_SPEED *
+					speedMultiplier *
+					(crouchingNow ? CROUCH_SPEED_MULTIPLIER : 1)
 				currentPlanarVelocity.set(physics.velocity.x, physics.velocity.z)
 				targetPlanarVelocity.set(0, 0)
 				if (moveDirection.lengthSq() > 0) {
@@ -358,11 +434,15 @@ export function App(): JSX.Element {
 						moveDirection.z * groundedSpeed,
 					)
 				}
+				const effectiveGroundFriction = getState(isSlidingSelector)
+					? getState(slideFrictionAtom)
+					: getState(groundFrictionAtom)
 				easePlanarVelocityPhysics(
 					currentPlanarVelocity,
 					targetPlanarVelocity,
 					getState(weightAtom),
-					getState(groundFrictionAtom),
+					effectiveGroundFriction,
+					crouchingNow ? CROUCH_DRIVE_MULTIPLIER : 1,
 					deltaSeconds,
 				)
 				physics.velocity.x = currentPlanarVelocity.x
@@ -386,7 +466,7 @@ export function App(): JSX.Element {
 			physics.position.x += physics.velocity.x * deltaSeconds
 			physics.position.z += physics.velocity.z * deltaSeconds
 			physics.position.y += physics.velocity.y * deltaSeconds
-			applyGroundCollision(physics)
+			applyGroundCollision(physics, stanceCenterY)
 
 			const arenaRadius = 16.75
 			const planarDistance = Math.hypot(physics.position.x, physics.position.z)
@@ -400,16 +480,19 @@ export function App(): JSX.Element {
 			setState(isGroundedAtom, physics.isGrounded)
 
 			shadow.position.set(player.position.x, 0.02, player.position.z)
-			shadow.scale.setScalar(1 - Math.min((player.position.y - PLAYER_Y) / 6, 0.45))
+			shadow.scale.setScalar(
+				1 - Math.min((player.position.y - PLAYER_Y) / 6, 0.45),
+			)
 
 			cameraOffset.setFromSphericalCoords(
 				CAMERA_DISTANCE,
 				cameraPitch,
 				cameraYaw,
 			)
-			cameraTarget.copy(player.position).add(cameraOffset)
+			cameraAnchor.set(player.position.x, CAMERA_ORBIT_HEIGHT, player.position.z)
+			cameraTarget.copy(cameraAnchor).add(cameraOffset)
 			camera.position.lerp(cameraTarget, 1 - Math.pow(0.0001, deltaSeconds))
-			lookTarget.copy(player.position).add(CAMERA_LOOK_OFFSET)
+			lookTarget.copy(cameraAnchor)
 			camera.lookAt(lookTarget)
 
 			renderer.render(scene, camera)
@@ -454,8 +537,9 @@ export function App(): JSX.Element {
 					<p class="eyebrow">threejs-physics-game</p>
 					<h1>Cylinder Training Grounds</h1>
 					<p class="copy">
-						Move with <kbd>WASD</kbd> or arrow keys, sprint with <kbd>Shift</kbd>,
-						and jump with <kbd>Space</kbd>.
+						Move with <kbd>WASD</kbd> or arrow keys, sprint with <kbd>Shift</kbd>
+						, jump with <kbd>Space</kbd>, and hold right mouse to orbit while
+						crouching.
 					</p>
 				</div>
 				<div class="panel status">
@@ -464,15 +548,20 @@ export function App(): JSX.Element {
 						<strong>{stamina().toFixed(0)} / 100</strong>
 					</div>
 					<div class="meter">
-						<div
-							class="meter-fill"
-							style={{ width: `${stamina()}%` }}
-						/>
+						<div class="meter-fill" style={{ width: `${stamina()}%` }} />
 					</div>
 					<p class="copy small">
-						Space spends stamina to create jump impulse. {jumpReady() ? `Jump ready.` : `Recharge to at least 18.`}
+						Space spends stamina to create jump impulse.{` `}
+						{jumpReady() ? `Jump ready.` : `Recharge to at least 18.`}
 					</p>
 					<p class="copy small">{grounded() ? `Grounded` : `Airborne`}</p>
+					<p class="copy small">
+						{isCrouching()
+							? isSliding()
+								? `Sliding`
+								: `Crouching`
+							: `Standing`}
+					</p>
 				</div>
 				<div class="panel status">
 					<div class="meter-row">
@@ -497,6 +586,16 @@ export function App(): JSX.Element {
 				</div>
 				<div class="panel status">
 					<div class="meter-row">
+						<span>Crouch Base Speed</span>
+						<strong>{baseCrouchSpeed().toFixed(2)}</strong>
+					</div>
+					<p class="copy small">
+						Sliding begins when crouching speed exceeds this selector-fed
+						baseline.
+					</p>
+				</div>
+				<div class="panel status">
+					<div class="meter-row">
 						<span>Ground Friction</span>
 						<strong>{groundFriction().toFixed(1)}</strong>
 					</div>
@@ -513,8 +612,8 @@ export function App(): JSX.Element {
 					/>
 					<p class="copy small">
 						Ground friction controls traction. Low friction limits how much
-						horizontal acceleration or braking force can reach the ground, so
-						you slide.
+						horizontal acceleration or braking force can reach the ground, so you
+						slide.
 					</p>
 				</div>
 				<div class="panel status">
@@ -534,15 +633,33 @@ export function App(): JSX.Element {
 						}}
 					/>
 					<p class="copy small">
-						Air friction behaves like drag on horizontal velocity while
-						airborne, gradually bleeding off jump carry.
+						Air friction behaves like drag on horizontal velocity while airborne,
+						gradually bleeding off jump carry.
+					</p>
+				</div>
+				<div class="panel status">
+					<div class="meter-row">
+						<span>Slide Friction</span>
+						<strong>{slideFriction().toFixed(1)}</strong>
+					</div>
+					<input
+						type="range"
+						min={SLIDE_FRICTION_MIN}
+						max={SLIDE_FRICTION_MAX}
+						step="0.1"
+						value={slideFriction()}
+						onInput={(event) => {
+							const nextFriction = Number(event.currentTarget.value)
+							setState(slideFrictionAtom, nextFriction)
+						}}
+					/>
+					<p class="copy small">
+						When crouching above the slide threshold, this lower friction takes
+						over and lets momentum carry.
 					</p>
 				</div>
 			</div>
-			<div
-				ref={host}
-				class="viewport"
-			/>
+			<div ref={host} class="viewport" />
 		</main>
 	)
 }
@@ -563,11 +680,18 @@ function isControlKey(code: string): code is ControlKey {
 }
 
 function isHorizontalAxisKey(key: AxisKey): boolean {
-	return key === `ArrowLeft` || key === `ArrowRight` || key === `KeyA` || key === `KeyD`
+	return (
+		key === `ArrowLeft` ||
+		key === `ArrowRight` ||
+		key === `KeyA` ||
+		key === `KeyD`
+	)
 }
 
 function isVerticalAxisKey(key: AxisKey): boolean {
-	return key === `ArrowUp` || key === `ArrowDown` || key === `KeyW` || key === `KeyS`
+	return (
+		key === `ArrowUp` || key === `ArrowDown` || key === `KeyW` || key === `KeyS`
+	)
 }
 
 function isAxisKey(code: ControlKey): code is AxisKey {
@@ -614,7 +738,11 @@ function normalizeAngle(angle: number): number {
 	return THREE.MathUtils.euclideanModulo(angle + Math.PI, Math.PI * 2) - Math.PI
 }
 
-function turnTowardAngle(current: number, target: number, maxDelta: number): number {
+function turnTowardAngle(
+	current: number,
+	target: number,
+	maxDelta: number,
+): number {
 	const delta = normalizeAngle(target - current)
 	if (Math.abs(delta) <= maxDelta) return target
 	return current + Math.sign(delta) * maxDelta
@@ -625,13 +753,15 @@ function easePlanarVelocityPhysics(
 	targetVelocity: THREE.Vector2,
 	weight: number,
 	friction: number,
+	driveMultiplier: number,
 	deltaSeconds: number,
 ): void {
 	const mass = weight
 	PLANAR_DELTA_VELOCITY.copy(targetVelocity).sub(currentVelocity)
 	PLANAR_ACCELERATION.copy(PLANAR_DELTA_VELOCITY).multiplyScalar(CONTROL_GAIN)
-	const motorAccelerationCap = BASE_MOTOR_FORCE / mass
-	const tractionAccelerationCap = getGroundTractionCoefficient(friction) * GRAVITY
+	const motorAccelerationCap = (BASE_MOTOR_FORCE * driveMultiplier) / mass
+	const tractionAccelerationCap =
+		getGroundTractionCoefficient(friction) * GRAVITY
 	const maxPlanarAcceleration = Math.min(
 		motorAccelerationCap,
 		tractionAccelerationCap,
@@ -667,4 +797,8 @@ function applyAirDragPhysics(
 
 function getGroundTractionCoefficient(friction: number): number {
 	return THREE.MathUtils.lerp(0.08, 1.8, friction / GROUND_FRICTION_MAX)
+}
+
+function getStanceCenterY(isCrouching: boolean): number {
+	return isCrouching ? PLAYER_Y * CROUCH_HEIGHT_SCALE : PLAYER_Y
 }
