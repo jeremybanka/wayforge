@@ -20,6 +20,7 @@ type AxisKey = `ArrowDown` | `ArrowLeft` | `ArrowRight` | `ArrowUp` | `KeyA` | `
 
 type PlayerPhysics = {
 	isGrounded: boolean
+	planarVelocity: THREE.Vector2
 	position: THREE.Vector3
 	velocity: THREE.Vector3
 }
@@ -33,6 +34,7 @@ const SPRINT_MULTIPLIER = 1.65
 const JUMP_STAMINA_MIN = 18
 const JUMP_STAMINA_MAX = 28
 const JUMP_IMPULSE_PER_STAMINA = 0.21
+const JUMP_FORWARD_IMPULSE = 1.35
 const STAMINA_MAX = 100
 const STAMINA_RECOVERY_PER_SECOND = 20
 const CAMERA_FOLLOW = new THREE.Vector3(0, 4.2, 7.4)
@@ -111,7 +113,9 @@ function createArena(scene: THREE.Scene): void {
 function applyGroundCollision(player: PlayerPhysics): void {
 	if (player.position.y <= PLAYER_Y) {
 		player.position.y = PLAYER_Y
+		player.velocity.x = 0
 		player.velocity.y = 0
+		player.velocity.z = 0
 		player.isGrounded = true
 		return
 	}
@@ -190,6 +194,7 @@ export function App(): JSX.Element {
 		const verticalInputs: AxisKey[] = []
 		const physics: PlayerPhysics = {
 			isGrounded: true,
+			planarVelocity: new THREE.Vector2(),
 			position: player.position,
 			velocity: new THREE.Vector3(),
 		}
@@ -212,6 +217,10 @@ export function App(): JSX.Element {
 				if (physics.isGrounded) {
 					const spent = spendJumpStamina()
 					if (spent > 0) {
+						physics.velocity.x =
+							physics.planarVelocity.x * JUMP_FORWARD_IMPULSE
+						physics.velocity.z =
+							physics.planarVelocity.y * JUMP_FORWARD_IMPULSE
 						physics.velocity.y += spent * JUMP_IMPULSE_PER_STAMINA
 						physics.isGrounded = false
 					}
@@ -246,14 +255,25 @@ export function App(): JSX.Element {
 			moveDirection.z = resolveAxisDirection(verticalInputs)
 
 			const speedMultiplier = keys.has(`ShiftLeft`) ? SPRINT_MULTIPLIER : 1
-			if (moveDirection.lengthSq() > 0) {
+			if (physics.isGrounded && moveDirection.lengthSq() > 0) {
 				moveDirection.normalize()
-				physics.position.x += moveDirection.x * MOVE_SPEED * speedMultiplier * deltaSeconds
-				physics.position.z += moveDirection.z * MOVE_SPEED * speedMultiplier * deltaSeconds
+				const groundedSpeed = MOVE_SPEED * speedMultiplier
+				physics.planarVelocity.set(
+					moveDirection.x * groundedSpeed,
+					moveDirection.z * groundedSpeed,
+				)
+				physics.position.x += physics.planarVelocity.x * deltaSeconds
+				physics.position.z += physics.planarVelocity.y * deltaSeconds
 				player.rotation.y = Math.atan2(moveDirection.x, moveDirection.z)
+			} else if (physics.isGrounded) {
+				physics.planarVelocity.set(0, 0)
 			}
 
 			physics.velocity.y -= GRAVITY * deltaSeconds
+			if (physics.isGrounded === false) {
+				physics.position.x += physics.velocity.x * deltaSeconds
+				physics.position.z += physics.velocity.z * deltaSeconds
+			}
 			physics.position.y += physics.velocity.y * deltaSeconds
 			applyGroundCollision(physics)
 
