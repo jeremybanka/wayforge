@@ -69,7 +69,7 @@ const AIR_FRICTION_MAX = 6
 const AIR_FRICTION_DEFAULT = 1.1
 const SLIDE_FRICTION_MIN = 0
 const SLIDE_FRICTION_MAX = 12
-const SLIDE_FRICTION_DEFAULT = 1.4
+const SLIDE_FRICTION_DEFAULT = 2.1
 const STAMINA_MAX = 100
 const STAMINA_RECOVERY_PER_SECOND = 20
 const SPRINT_STAMINA_DRAIN_PER_SECOND = 24
@@ -200,9 +200,14 @@ function createArena(scene: THREE.Scene): void {
 function applyGroundCollision(
 	player: PlayerPhysics,
 	stanceCenterY: number,
+	landingPlanarDamping: number,
 ): void {
 	if (player.position.y <= stanceCenterY) {
 		player.position.y = stanceCenterY
+		if (player.isGrounded === false) {
+			player.velocity.x *= landingPlanarDamping
+			player.velocity.z *= landingPlanarDamping
+		}
 		player.velocity.y = 0
 		player.isGrounded = true
 		return
@@ -509,8 +514,7 @@ export function App(): JSX.Element {
 				keys.has(`ShiftLeft`) &&
 				forwardIntent > 0 &&
 				getState(staminaAtom) > 0
-			const speedMultiplier =
-				isSprinting ? SPRINT_MULTIPLIER : 1
+			const speedMultiplier = isSprinting ? SPRINT_MULTIPLIER : 1
 			setState(
 				planarSpeedAtom,
 				Math.hypot(physics.velocity.x, physics.velocity.z),
@@ -561,7 +565,15 @@ export function App(): JSX.Element {
 			physics.position.x += physics.velocity.x * deltaSeconds
 			physics.position.z += physics.velocity.z * deltaSeconds
 			physics.position.y += physics.velocity.y * deltaSeconds
-			applyGroundCollision(physics, stanceCenterY)
+			applyGroundCollision(
+				physics,
+				stanceCenterY,
+				getLandingPlanarDamping(
+					getState(isSlidingSelector)
+						? getState(slideFrictionAtom)
+						: getState(groundFrictionAtom),
+				),
+			)
 
 			const arenaRadius = 16.75 * WORLD_SCALE
 			const planarDistance = Math.hypot(physics.position.x, physics.position.z)
@@ -933,6 +945,15 @@ function applyAirDragPhysics(
 
 function getGroundTractionCoefficient(friction: number): number {
 	return THREE.MathUtils.lerp(0.08, 1.8, friction / GROUND_FRICTION_MAX)
+}
+
+function getLandingPlanarDamping(friction: number): number {
+	const normalizedFriction = THREE.MathUtils.clamp(
+		friction / GROUND_FRICTION_MAX,
+		0,
+		1,
+	)
+	return THREE.MathUtils.lerp(0.94, 0.58, normalizedFriction)
 }
 
 function spawnSlideParticle(
