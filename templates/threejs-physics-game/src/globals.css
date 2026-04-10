@@ -38,6 +38,12 @@ kbd {
 	font: inherit;
 }
 
+input[type="range"] {
+	accent-color: var(--accent);
+	padding: 0;
+	background: transparent;
+}
+
 kbd {
 	display: inline-flex;
 	align-items: center;
