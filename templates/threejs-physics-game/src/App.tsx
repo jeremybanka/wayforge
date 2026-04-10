@@ -32,6 +32,18 @@ type PlayerPhysics = {
 	velocity: THREE.Vector3
 }
 
+type SlideParticle = {
+	age: number
+	mesh: THREE.Mesh<THREE.SphereGeometry, THREE.MeshBasicMaterial>
+	velocity: THREE.Vector3
+}
+
+type EnergyOrb = {
+	age: number
+	mesh: THREE.Mesh<THREE.SphereGeometry, THREE.MeshStandardMaterial>
+	velocity: THREE.Vector3
+}
+
 const PLAYER_RADIUS = 0.45
 const PLAYER_HEIGHT = 1.6
 const PLAYER_Y = PLAYER_HEIGHT * 0.5
@@ -68,6 +80,13 @@ const CAMERA_PITCH_MIN = Math.PI * 0.12
 const CAMERA_ORBIT_HEIGHT = PLAYER_HEIGHT * 0.7
 const CAMERA_DRAG_SENSITIVITY_X = 0.006
 const CAMERA_DRAG_SENSITIVITY_Y = 0.0045
+const TARGET_CYLINDER_RADIUS = 20
+const TARGET_CYLINDER_HEIGHT = 100
+const ENERGY_ORB_SPEED = 18
+const ENERGY_ORB_LIFETIME = 10
+const SLIDE_PARTICLE_INTERVAL = 0.045
+const SLIDE_PARTICLE_LIFETIME = 0.42
+const SLIDE_PARTICLE_LIMIT = 40
 const PLANAR_DELTA_VELOCITY = new THREE.Vector2()
 const PLANAR_ACCELERATION = new THREE.Vector2()
 
@@ -261,6 +280,30 @@ export function App(): JSX.Element {
 		player.receiveShadow = true
 		scene.add(player)
 
+		const blaster = new THREE.Mesh(
+			createBlasterGeometry(),
+			new THREE.MeshStandardMaterial({
+				color: `#dce3ea`,
+				emissive: `#365d7a`,
+				roughness: 0.24,
+				metalness: 0.42,
+			}),
+		)
+		blaster.position.set(PLAYER_RADIUS + 0.42, 0.26, 0)
+		player.add(blaster)
+
+		const facingIndicator = new THREE.Mesh(
+			new THREE.ConeGeometry(0.18, 0.48, 16),
+			new THREE.MeshStandardMaterial({
+				color: `#f8f4eb`,
+				emissive: `#6e5730`,
+				roughness: 0.32,
+			}),
+		)
+		facingIndicator.rotation.x = Math.PI * 0.5
+		facingIndicator.position.set(0, 0.1, PLAYER_RADIUS + 0.28)
+		player.add(facingIndicator)
+
 		const shadow = new THREE.Mesh(
 			new THREE.CircleGeometry(0.85, 32),
 			new THREE.MeshBasicMaterial({
@@ -272,6 +315,39 @@ export function App(): JSX.Element {
 		shadow.rotation.x = -Math.PI * 0.5
 		shadow.position.y = 0.02
 		scene.add(shadow)
+
+		const targetBackdrop = createTargetBackdrop()
+		scene.add(targetBackdrop)
+
+		const targetPointMarker = new THREE.Mesh(
+			new THREE.SphereGeometry(0.45, 18, 18),
+			new THREE.MeshBasicMaterial({
+				color: `#ff4d4d`,
+				transparent: true,
+				opacity: 0.95,
+			}),
+		)
+		scene.add(targetPointMarker)
+
+		const aimRayGeometry = new THREE.BufferGeometry()
+		aimRayGeometry.setAttribute(
+			`position`,
+			new THREE.BufferAttribute(new Float32Array(6), 3),
+		)
+		const aimRay = new THREE.Line(
+			aimRayGeometry,
+			new THREE.LineBasicMaterial({
+				color: `#7fd6ff`,
+				opacity: 0.75,
+				transparent: true,
+			}),
+		)
+		scene.add(aimRay)
+
+		const energyOrbGeometry = new THREE.SphereGeometry(0.22, 16, 16)
+		const energyOrbs: EnergyOrb[] = []
+		const slideParticleGeometry = new THREE.SphereGeometry(0.18, 10, 10)
+		const slideParticles: SlideParticle[] = []
 
 		const keys = new Set<ControlKey>()
 		const horizontalInputs: AxisKey[] = []
@@ -290,6 +366,15 @@ export function App(): JSX.Element {
 		const cameraAnchor = new THREE.Vector3()
 		const cameraTarget = new THREE.Vector3()
 		const lookTarget = new THREE.Vector3()
+		const blasterOrigin = new THREE.Vector3()
+		const blasterDirection = new THREE.Vector3()
+		const targetPoint = new THREE.Vector3()
+		const fallbackTarget = new THREE.Vector3()
+		const mouseNdc = new THREE.Vector2()
+		const mouseHasMoved = { current: false }
+		const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
+		const groundHit = new THREE.Vector3()
+		const raycaster = new THREE.Raycaster()
 		const clock = new THREE.Clock()
 		let cameraYaw = Math.PI
 		let cameraPitch = Math.PI * 0.3
@@ -298,6 +383,7 @@ export function App(): JSX.Element {
 		let previousPointerX = 0
 		let previousPointerY = 0
 		let frameId = 0
+		let slideParticleAccumulator = 0
 
 		const resize = (): void => {
 			const { clientHeight, clientWidth } = host
@@ -335,6 +421,7 @@ export function App(): JSX.Element {
 		}
 
 		const onPointerDown = (event: PointerEvent): void => {
+			updateMouseNdc(event, host, mouseNdc)
 			if (event.button !== 2) return
 			isOrbiting = true
 			pointerId = event.pointerId
@@ -345,6 +432,8 @@ export function App(): JSX.Element {
 		}
 
 		const onPointerMove = (event: PointerEvent): void => {
+			updateMouseNdc(event, host, mouseNdc)
+			mouseHasMoved.current = true
 			if (isOrbiting === false || event.pointerId !== pointerId) return
 			const deltaX = event.clientX - previousPointerX
 			const deltaY = event.clientY - previousPointerY
@@ -372,9 +461,21 @@ export function App(): JSX.Element {
 			event.preventDefault()
 		}
 
+		const onClick = (event: MouseEvent): void => {
+			if (event.button !== 0) return
+			spawnEnergyOrb(
+				scene,
+				energyOrbs,
+				energyOrbGeometry,
+				blasterOrigin,
+				blasterDirection,
+			)
+		}
+
 		window.addEventListener(`resize`, resize)
 		window.addEventListener(`keydown`, onKeyDown)
 		window.addEventListener(`keyup`, onKeyUp)
+		host.addEventListener(`click`, onClick)
 		host.addEventListener(`pointerdown`, onPointerDown)
 		host.addEventListener(`pointermove`, onPointerMove)
 		host.addEventListener(`pointerup`, onPointerUp)
@@ -403,6 +504,7 @@ export function App(): JSX.Element {
 			if (physics.isGrounded) {
 				player.position.y = stanceCenterY
 			}
+			targetBackdrop.position.set(player.position.x, 0, player.position.z)
 
 			const speedMultiplier =
 				crouchingNow || keys.has(`ShiftLeft`) === false ? 1 : SPRINT_MULTIPLIER
@@ -468,11 +570,45 @@ export function App(): JSX.Element {
 
 			recoverStamina(deltaSeconds)
 			setState(isGroundedAtom, physics.isGrounded)
+			updateBlasterTarget(
+				camera,
+				raycaster,
+				mouseHasMoved.current,
+				mouseNdc,
+				targetBackdrop,
+				groundPlane,
+				groundHit,
+				targetPoint,
+				fallbackTarget,
+				blaster,
+				blasterOrigin,
+				blasterDirection,
+				aimRay,
+				targetPointMarker,
+			)
+			updateEnergyOrbs(energyOrbs, deltaSeconds)
 
 			shadow.position.set(player.position.x, 0.02, player.position.z)
 			shadow.scale.setScalar(
 				1 - Math.min((player.position.y - PLAYER_Y) / 6, 0.45),
 			)
+			updateSlideParticles(slideParticles, deltaSeconds)
+			if (getState(isSlidingSelector) && physics.isGrounded) {
+				slideParticleAccumulator += deltaSeconds
+				while (slideParticleAccumulator >= SLIDE_PARTICLE_INTERVAL) {
+					slideParticleAccumulator -= SLIDE_PARTICLE_INTERVAL
+					spawnSlideParticle(
+						scene,
+						slideParticles,
+						slideParticleGeometry,
+						player.position,
+						physics.velocity,
+						crouchingNow,
+					)
+				}
+			} else {
+				slideParticleAccumulator = 0
+			}
 
 			cameraOffset.setFromSphericalCoords(
 				CAMERA_DISTANCE,
@@ -497,11 +633,14 @@ export function App(): JSX.Element {
 			window.removeEventListener(`resize`, resize)
 			window.removeEventListener(`keydown`, onKeyDown)
 			window.removeEventListener(`keyup`, onKeyUp)
+			host.removeEventListener(`click`, onClick)
 			host.removeEventListener(`pointerdown`, onPointerDown)
 			host.removeEventListener(`pointermove`, onPointerMove)
 			host.removeEventListener(`pointerup`, onPointerUp)
 			host.removeEventListener(`pointercancel`, onPointerUp)
 			host.removeEventListener(`contextmenu`, onContextMenu)
+			energyOrbGeometry.dispose()
+			slideParticleGeometry.dispose()
 			renderer.dispose()
 			scene.traverse((object) => {
 				if (!(object instanceof THREE.Mesh)) return
@@ -789,6 +928,174 @@ function getGroundTractionCoefficient(friction: number): number {
 	return THREE.MathUtils.lerp(0.08, 1.8, friction / GROUND_FRICTION_MAX)
 }
 
+function spawnSlideParticle(
+	scene: THREE.Scene,
+	slideParticles: SlideParticle[],
+	geometry: THREE.SphereGeometry,
+	playerPosition: THREE.Vector3,
+	playerVelocity: THREE.Vector3,
+	isCrouching: boolean,
+): void {
+	if (slideParticles.length >= SLIDE_PARTICLE_LIMIT) {
+		const oldest = slideParticles.shift()
+		if (oldest) {
+			oldest.mesh.removeFromParent()
+			oldest.mesh.material.dispose()
+		}
+	}
+	const material = new THREE.MeshBasicMaterial({
+		color: `#ffffff`,
+		opacity: 0.88,
+		transparent: true,
+	})
+	const mesh = new THREE.Mesh(geometry, material)
+	const angle = Math.random() * Math.PI * 2
+	const radius = PLAYER_RADIUS * (0.45 + Math.random() * 0.9)
+	mesh.position.set(
+		playerPosition.x + Math.cos(angle) * radius,
+		getStanceCenterY(isCrouching) * 0.28 + Math.random() * 0.08,
+		playerPosition.z + Math.sin(angle) * radius,
+	)
+	mesh.scale.setScalar(0.7 + Math.random() * 0.9)
+	const velocity = new THREE.Vector3(
+		playerVelocity.x * 0.08 + (Math.random() - 0.5) * 1.8,
+		0.8 + Math.random() * 0.5,
+		playerVelocity.z * 0.08 + (Math.random() - 0.5) * 1.8,
+	)
+	scene.add(mesh)
+	slideParticles.push({ age: 0, mesh, velocity })
+}
+
+function updateSlideParticles(
+	slideParticles: SlideParticle[],
+	deltaSeconds: number,
+): void {
+	for (let index = slideParticles.length - 1; index >= 0; index -= 1) {
+		const particle = slideParticles[index]
+		particle.age += deltaSeconds
+		particle.mesh.position.addScaledVector(particle.velocity, deltaSeconds)
+		particle.velocity.y += 1.6 * deltaSeconds
+		particle.mesh.scale.multiplyScalar(1 + deltaSeconds * 1.8)
+		particle.mesh.material.opacity = Math.max(
+			0,
+			0.88 * (1 - particle.age / SLIDE_PARTICLE_LIFETIME),
+		)
+		if (particle.age >= SLIDE_PARTICLE_LIFETIME) {
+			particle.mesh.removeFromParent()
+			particle.mesh.material.dispose()
+			slideParticles.splice(index, 1)
+		}
+	}
+}
+
+function updateMouseNdc(
+	event: PointerEvent,
+	host: HTMLDivElement,
+	mouseNdc: THREE.Vector2,
+): void {
+	const bounds = host.getBoundingClientRect()
+	mouseNdc.x = ((event.clientX - bounds.left) / bounds.width) * 2 - 1
+	mouseNdc.y = -(((event.clientY - bounds.top) / bounds.height) * 2 - 1)
+}
+
+function updateBlasterTarget(
+	camera: THREE.PerspectiveCamera,
+	raycaster: THREE.Raycaster,
+	mouseHasMoved: boolean,
+	mouseNdc: THREE.Vector2,
+	targetBackdrop: THREE.Group,
+	groundPlane: THREE.Plane,
+	groundHit: THREE.Vector3,
+	targetPoint: THREE.Vector3,
+	fallbackTarget: THREE.Vector3,
+	blaster: THREE.Mesh,
+	blasterOrigin: THREE.Vector3,
+	blasterDirection: THREE.Vector3,
+	aimRay: THREE.Line<THREE.BufferGeometry, THREE.LineBasicMaterial>,
+	targetPointMarker: THREE.Mesh,
+): void {
+	blaster.getWorldPosition(blasterOrigin)
+	if (mouseHasMoved) {
+		raycaster.setFromCamera(mouseNdc, camera)
+		const cylinderHit = raycaster.intersectObject(targetBackdrop, true)[0]
+		const hasGroundHit =
+			raycaster.ray.intersectPlane(groundPlane, groundHit) !== null
+		const groundDistance = hasGroundHit
+			? raycaster.ray.origin.distanceToSquared(groundHit)
+			: Number.POSITIVE_INFINITY
+		const cylinderDistance = cylinderHit
+			? raycaster.ray.origin.distanceToSquared(cylinderHit.point)
+			: Number.POSITIVE_INFINITY
+		if (cylinderDistance < groundDistance) {
+			targetPoint.copy(cylinderHit!.point)
+		} else if (hasGroundHit) {
+			targetPoint.copy(groundHit)
+		}
+	} else {
+		fallbackTarget.copy(blasterOrigin).add(new THREE.Vector3(0, 0, -12))
+		targetPoint.copy(fallbackTarget)
+	}
+	blaster.worldToLocal(targetPoint)
+	blaster.lookAt(targetPoint)
+	blaster.localToWorld(targetPoint)
+	blasterDirection
+		.set(0, 0, -1)
+		.applyQuaternion(blaster.getWorldQuaternion(new THREE.Quaternion()))
+		.normalize()
+	updateAimRay(aimRay, blasterOrigin, targetPoint)
+	targetPointMarker.position.copy(targetPoint)
+}
+
+function updateAimRay(
+	aimRay: THREE.Line<THREE.BufferGeometry, THREE.LineBasicMaterial>,
+	origin: THREE.Vector3,
+	target: THREE.Vector3,
+): void {
+	const positions = aimRay.geometry.getAttribute(
+		`position`,
+	) as THREE.BufferAttribute
+	positions.setXYZ(0, origin.x, origin.y, origin.z)
+	positions.setXYZ(1, target.x, target.y, target.z)
+	positions.needsUpdate = true
+}
+
+function spawnEnergyOrb(
+	scene: THREE.Scene,
+	energyOrbs: EnergyOrb[],
+	geometry: THREE.SphereGeometry,
+	origin: THREE.Vector3,
+	direction: THREE.Vector3,
+): void {
+	const material = new THREE.MeshStandardMaterial({
+		color: `#9fe8ff`,
+		emissive: `#56d6ff`,
+		emissiveIntensity: 1.2,
+		roughness: 0.16,
+		metalness: 0.05,
+	})
+	const mesh = new THREE.Mesh(geometry, material)
+	mesh.position.copy(origin).addScaledVector(direction, 0.5)
+	scene.add(mesh)
+	energyOrbs.push({
+		age: 0,
+		mesh,
+		velocity: direction.clone().multiplyScalar(ENERGY_ORB_SPEED),
+	})
+}
+
+function updateEnergyOrbs(energyOrbs: EnergyOrb[], deltaSeconds: number): void {
+	for (let index = energyOrbs.length - 1; index >= 0; index -= 1) {
+		const orb = energyOrbs[index]
+		orb.age += deltaSeconds
+		orb.mesh.position.addScaledVector(orb.velocity, deltaSeconds)
+		if (orb.mesh.position.y <= 0 || orb.age >= ENERGY_ORB_LIFETIME) {
+			orb.mesh.removeFromParent()
+			orb.mesh.material.dispose()
+			energyOrbs.splice(index, 1)
+		}
+	}
+}
+
 function createGroundTexture(): THREE.CanvasTexture {
 	const canvas = document.createElement(`canvas`)
 	canvas.width = 512
@@ -825,6 +1132,110 @@ function createGroundTexture(): THREE.CanvasTexture {
 	return texture
 }
 
+function createBlasterGeometry(): THREE.BufferGeometry {
+	const barrel = new THREE.CylinderGeometry(0.12, 0.12, 0.9, 18)
+	barrel.rotateZ(Math.PI * 0.5)
+	barrel.translate(0, 0, -0.2)
+
+	const body = new THREE.CylinderGeometry(0.16, 0.2, 0.42, 18)
+	body.rotateZ(Math.PI * 0.5)
+	body.translate(0, 0, 0.32)
+
+	const muzzle = new THREE.CylinderGeometry(0.14, 0.14, 0.08, 18)
+	muzzle.rotateZ(Math.PI * 0.5)
+	muzzle.translate(0, 0, -0.66)
+
+	return mergeBufferGeometries([barrel, body, muzzle])
+}
+
+function createTargetBackdrop(): THREE.Group {
+	const group = new THREE.Group()
+	const shellMaterial = new THREE.MeshBasicMaterial({
+		color: `#7fd6ff`,
+		opacity: 0.12,
+		transparent: true,
+		side: THREE.DoubleSide,
+		depthWrite: false,
+	})
+	const sideLength = 2 * TARGET_CYLINDER_RADIUS * Math.tan(Math.PI / 8)
+	const wallGeometry = new THREE.PlaneGeometry(
+		sideLength,
+		TARGET_CYLINDER_HEIGHT,
+	)
+	const apothem = TARGET_CYLINDER_RADIUS * Math.cos(Math.PI / 8)
+	for (let index = 0; index < 8; index += 1) {
+		const angle = (index / 8) * Math.PI * 2
+		const wall = new THREE.Mesh(wallGeometry, shellMaterial)
+		wall.position.set(
+			Math.cos(angle) * apothem,
+			TARGET_CYLINDER_HEIGHT * 0.5,
+			Math.sin(angle) * apothem,
+		)
+		wall.rotation.y = Math.PI * 0.5 - angle
+		group.add(wall)
+	}
+
+	// const footprint = new THREE.Mesh(
+	// 	new THREE.RingGeometry(
+	// 		TARGET_CYLINDER_RADIUS - 0.9,
+	// 		TARGET_CYLINDER_RADIUS,
+	// 		96,
+	// 	),
+	// 	new THREE.MeshBasicMaterial({
+	// 		color: `#74d6ff`,
+	// 		opacity: 0.42,
+	// 		transparent: true,
+	// 		side: THREE.DoubleSide,
+	// 		depthWrite: false,
+	// 	}),
+	// )
+	// footprint.rotation.x = -Math.PI * 0.5
+	// footprint.position.y = 0.03
+	// group.add(footprint)
+
+	const centerGuideMaterial = new THREE.LineBasicMaterial({
+		color: `#d9fbff`,
+		opacity: 0.7,
+		transparent: true,
+	})
+	const xGuide = new THREE.Line(
+		new THREE.BufferGeometry().setFromPoints([
+			new THREE.Vector3(-TARGET_CYLINDER_RADIUS, 0.04, 0),
+			new THREE.Vector3(TARGET_CYLINDER_RADIUS, 0.04, 0),
+		]),
+		centerGuideMaterial,
+	)
+	const zGuide = new THREE.Line(
+		new THREE.BufferGeometry().setFromPoints([
+			new THREE.Vector3(0, 0.04, -TARGET_CYLINDER_RADIUS),
+			new THREE.Vector3(0, 0.04, TARGET_CYLINDER_RADIUS),
+		]),
+		centerGuideMaterial,
+	)
+	group.add(xGuide, zGuide)
+
+	const guideMaterial = new THREE.LineBasicMaterial({
+		color: `#dff8ff`,
+		opacity: 0.55,
+		transparent: true,
+	})
+	for (let index = 0; index < 8; index += 1) {
+		const angle = (index / 8) * Math.PI * 2
+		const x = Math.cos(angle) * TARGET_CYLINDER_RADIUS
+		const z = Math.sin(angle) * TARGET_CYLINDER_RADIUS
+		const guide = new THREE.Line(
+			new THREE.BufferGeometry().setFromPoints([
+				new THREE.Vector3(x, 0, z),
+				new THREE.Vector3(x, TARGET_CYLINDER_HEIGHT, z),
+			]),
+			guideMaterial,
+		)
+		group.add(guide)
+	}
+
+	return group
+}
+
 function populateArena(scene: THREE.Scene): void {
 	const totalProps = 96
 	const innerRadius = 24
@@ -856,7 +1267,11 @@ function populateArena(scene: THREE.Scene): void {
 			mesh.position.y = (5 * mesh.scale.y) / 2
 		} else if (shape === 1) {
 			const scale = THREE.MathUtils.lerp(0.7, 1.5, Math.random())
-			mesh.scale.set(scale, THREE.MathUtils.lerp(0.75, 1.8, Math.random()), scale)
+			mesh.scale.set(
+				scale,
+				THREE.MathUtils.lerp(0.75, 1.8, Math.random()),
+				scale,
+			)
 			mesh.position.y = (18 * mesh.scale.y) / 2
 		} else {
 			mesh.scale.set(
@@ -873,6 +1288,66 @@ function populateArena(scene: THREE.Scene): void {
 		mesh.receiveShadow = true
 		scene.add(mesh)
 	}
+}
+
+function mergeBufferGeometries(
+	geometries: THREE.BufferGeometry[],
+): THREE.BufferGeometry {
+	const mergedPositions: number[] = []
+	const mergedNormals: number[] = []
+	const mergedUvs: number[] = []
+	const mergedIndices: number[] = []
+	let vertexOffset = 0
+
+	for (const geometry of geometries) {
+		const position = geometry.getAttribute(`position`)
+		const normal = geometry.getAttribute(`normal`)
+		const uv = geometry.getAttribute(`uv`)
+		const index = geometry.getIndex()
+
+		mergedPositions.push(...position.array)
+		mergedNormals.push(...normal.array)
+		mergedUvs.push(...uv.array)
+
+		if (index) {
+			for (let cursor = 0; cursor < index.count; cursor += 1) {
+				mergedIndices.push(index.array[cursor] + vertexOffset)
+			}
+		} else {
+			for (let cursor = 0; cursor < position.count; cursor += 1) {
+				mergedIndices.push(cursor + vertexOffset)
+			}
+		}
+		vertexOffset += position.count
+	}
+
+	const merged = new THREE.BufferGeometry()
+	merged.setAttribute(
+		`position`,
+		new THREE.Float32BufferAttribute(mergedPositions, 3),
+	)
+	merged.setAttribute(
+		`normal`,
+		new THREE.Float32BufferAttribute(mergedNormals, 3),
+	)
+	merged.setAttribute(`uv`, new THREE.Float32BufferAttribute(mergedUvs, 2))
+	merged.setIndex(mergedIndices)
+	return merged
+}
+
+function makeRingPoints(y: number): THREE.Vector3[] {
+	const points: THREE.Vector3[] = []
+	for (let index = 0; index < 64; index += 1) {
+		const angle = (index / 64) * Math.PI * 2
+		points.push(
+			new THREE.Vector3(
+				Math.cos(angle) * TARGET_CYLINDER_RADIUS,
+				y,
+				Math.sin(angle) * TARGET_CYLINDER_RADIUS,
+			),
+		)
+	}
+	return points
 }
 
 function getStanceCenterY(isCrouching: boolean): number {
