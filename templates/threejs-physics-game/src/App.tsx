@@ -43,7 +43,6 @@ const SPRINT_MULTIPLIER = 1.65
 const JUMP_STAMINA_MIN = 18
 const JUMP_STAMINA_MAX = 28
 const JUMP_IMPULSE_PER_STAMINA = 0.21
-const JUMP_FORWARD_IMPULSE = 1.35
 const TURN_RATE = Math.PI * 4
 const WEIGHT_MIN = 50
 const WEIGHT_MAX = 150
@@ -313,8 +312,6 @@ export function App(): JSX.Element {
 				if (physics.isGrounded) {
 					const spent = spendJumpStamina()
 					if (spent > 0) {
-						physics.velocity.x *= JUMP_FORWARD_IMPULSE
-						physics.velocity.z *= JUMP_FORWARD_IMPULSE
 						physics.velocity.y += spent * JUMP_IMPULSE_PER_STAMINA
 						physics.isGrounded = false
 					}
