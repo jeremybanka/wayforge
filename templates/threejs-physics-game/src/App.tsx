@@ -36,6 +36,7 @@ const PLAYER_RADIUS = 0.45
 const PLAYER_HEIGHT = 1.6
 const PLAYER_Y = PLAYER_HEIGHT * 0.5
 const CROUCH_HEIGHT_SCALE = 0.5
+const WORLD_SCALE = 20
 const GRAVITY = 24
 const MOVE_SPEED = 6
 const SPRINT_MULTIPLIER = 1.65
@@ -149,9 +150,11 @@ function recoverStamina(deltaSeconds: number): void {
 }
 
 function createArena(scene: THREE.Scene): void {
-	const floorGeometry = new THREE.CircleGeometry(24, 64)
+	const groundTexture = createGroundTexture()
+	const floorGeometry = new THREE.CircleGeometry(24 * WORLD_SCALE, 128)
 	const floorMaterial = new THREE.MeshStandardMaterial({
 		color: `#8a9b72`,
+		map: groundTexture,
 		roughness: 0.95,
 		metalness: 0.05,
 	})
@@ -160,7 +163,12 @@ function createArena(scene: THREE.Scene): void {
 	floor.receiveShadow = true
 	scene.add(floor)
 
-	const ringGeometry = new THREE.TorusGeometry(18, 0.15, 16, 96)
+	const ringGeometry = new THREE.TorusGeometry(
+		18 * WORLD_SCALE,
+		0.15 * WORLD_SCALE,
+		16,
+		192,
+	)
 	const ringMaterial = new THREE.MeshStandardMaterial({
 		color: `#d8c1a0`,
 		emissive: `#24170a`,
@@ -171,22 +179,7 @@ function createArena(scene: THREE.Scene): void {
 	ring.position.y = 0.02
 	scene.add(ring)
 
-	const boxGeometry = new THREE.BoxGeometry(1.6, 1.6, 1.6)
-	for (let index = 0; index < 18; index += 1) {
-		const angle = (index / 18) * Math.PI * 2
-		const radius = 11 + (index % 2 === 0 ? 0.8 : -0.3)
-		const box = new THREE.Mesh(
-			boxGeometry,
-			new THREE.MeshStandardMaterial({
-				color: index % 3 === 0 ? `#bf7b4d` : `#7086a4`,
-				roughness: 0.88,
-			}),
-		)
-		box.position.set(Math.cos(angle) * radius, 0.8, Math.sin(angle) * radius)
-		box.castShadow = true
-		box.receiveShadow = true
-		scene.add(box)
-	}
+	populateArena(scene)
 }
 
 function applyGroundCollision(
@@ -468,7 +461,7 @@ export function App(): JSX.Element {
 			physics.position.y += physics.velocity.y * deltaSeconds
 			applyGroundCollision(physics, stanceCenterY)
 
-			const arenaRadius = 16.75
+			const arenaRadius = 16.75 * WORLD_SCALE
 			const planarDistance = Math.hypot(physics.position.x, physics.position.z)
 			if (planarDistance > arenaRadius) {
 				const clamp = arenaRadius / planarDistance
@@ -797,6 +790,92 @@ function applyAirDragPhysics(
 
 function getGroundTractionCoefficient(friction: number): number {
 	return THREE.MathUtils.lerp(0.08, 1.8, friction / GROUND_FRICTION_MAX)
+}
+
+function createGroundTexture(): THREE.CanvasTexture {
+	const canvas = document.createElement(`canvas`)
+	canvas.width = 512
+	canvas.height = 512
+	const context = canvas.getContext(`2d`)
+	if (!context) throw new Error(`Could not create ground texture context`)
+
+	context.fillStyle = `#8a9b72`
+	context.fillRect(0, 0, canvas.width, canvas.height)
+
+	context.fillStyle = `rgba(234, 240, 214, 0.85)`
+	for (let y = 24; y < canvas.height; y += 32) {
+		for (let x = 24; x < canvas.width; x += 32) {
+			context.beginPath()
+			context.arc(x, y, 3.5, 0, Math.PI * 2)
+			context.fill()
+		}
+	}
+
+	context.fillStyle = `rgba(67, 87, 58, 0.2)`
+	for (let y = 8; y < canvas.height; y += 64) {
+		context.fillRect(0, y, canvas.width, 1)
+	}
+	for (let x = 8; x < canvas.width; x += 64) {
+		context.fillRect(x, 0, 1, canvas.height)
+	}
+
+	const texture = new THREE.CanvasTexture(canvas)
+	texture.colorSpace = THREE.SRGBColorSpace
+	texture.wrapS = THREE.RepeatWrapping
+	texture.wrapT = THREE.RepeatWrapping
+	texture.repeat.set(WORLD_SCALE * 3, WORLD_SCALE * 3)
+	texture.anisotropy = 8
+	return texture
+}
+
+function populateArena(scene: THREE.Scene): void {
+	const totalProps = 96
+	const innerRadius = 24
+	const outerRadius = 15.5 * WORLD_SCALE
+	const boxGeometry = new THREE.BoxGeometry(5, 5, 5)
+	const columnGeometry = new THREE.CylinderGeometry(2.2, 2.8, 18, 12)
+	const slabGeometry = new THREE.BoxGeometry(10, 2.6, 4)
+	const colors = [`#bf7b4d`, `#7086a4`, `#d0c4a3`, `#5f7d68`]
+
+	for (let index = 0; index < totalProps; index += 1) {
+		const angle = Math.random() * Math.PI * 2
+		const radius = THREE.MathUtils.lerp(innerRadius, outerRadius, Math.random())
+		const x = Math.cos(angle) * radius
+		const z = Math.sin(angle) * radius
+		const color = colors[index % colors.length]
+		const material = new THREE.MeshStandardMaterial({
+			color,
+			roughness: 0.88,
+		})
+		const shape = index % 3
+		const mesh =
+			shape === 0
+				? new THREE.Mesh(boxGeometry, material)
+				: shape === 1
+					? new THREE.Mesh(columnGeometry, material)
+					: new THREE.Mesh(slabGeometry, material)
+		if (shape === 0) {
+			mesh.scale.setScalar(THREE.MathUtils.lerp(0.8, 1.8, Math.random()))
+			mesh.position.y = (5 * mesh.scale.y) / 2
+		} else if (shape === 1) {
+			const scale = THREE.MathUtils.lerp(0.7, 1.5, Math.random())
+			mesh.scale.set(scale, THREE.MathUtils.lerp(0.75, 1.8, Math.random()), scale)
+			mesh.position.y = (18 * mesh.scale.y) / 2
+		} else {
+			mesh.scale.set(
+				THREE.MathUtils.lerp(0.9, 1.9, Math.random()),
+				THREE.MathUtils.lerp(0.8, 1.6, Math.random()),
+				THREE.MathUtils.lerp(0.8, 1.6, Math.random()),
+			)
+			mesh.position.y = (2.6 * mesh.scale.y) / 2
+			mesh.rotation.y = Math.random() * Math.PI
+		}
+		mesh.position.x = x
+		mesh.position.z = z
+		mesh.castShadow = true
+		mesh.receiveShadow = true
+		scene.add(mesh)
+	}
 }
 
 function getStanceCenterY(isCrouching: boolean): number {
