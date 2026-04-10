@@ -1,7 +1,7 @@
 import { atom, getState, selector, setState } from "atom.io"
 import { useO } from "atom.io/solid"
 import type { JSX } from "solid-js"
-import { onCleanup, onMount } from "solid-js"
+import { createSignal, onCleanup, onMount } from "solid-js"
 import * as THREE from "three"
 
 type ControlKey =
@@ -86,6 +86,8 @@ const ENERGY_ORB_LIFETIME = 10
 const SLIDE_PARTICLE_INTERVAL = 0.045
 const SLIDE_PARTICLE_LIFETIME = 0.42
 const SLIDE_PARTICLE_LIMIT = 40
+const RETICLE_SPREAD = 18
+const RETICLE_PRECISION_SPREAD = 10
 const PLANAR_DELTA_VELOCITY = new THREE.Vector2()
 const PLANAR_ACCELERATION = new THREE.Vector2()
 
@@ -226,6 +228,10 @@ export function App(): JSX.Element {
 	const groundFriction = useO(groundFrictionAtom)
 	const airFriction = useO(airFrictionAtom)
 	const slideFriction = useO(slideFrictionAtom)
+	const [reticleX, setReticleX] = createSignal(0)
+	const [reticleY, setReticleY] = createSignal(0)
+	const [pointerLocked, setPointerLocked] = createSignal(false)
+	const [orbiting, setOrbiting] = createSignal(false)
 
 	let host!: HTMLDivElement
 
@@ -375,8 +381,9 @@ export function App(): JSX.Element {
 		const blasterDirection = new THREE.Vector3()
 		const targetPoint = new THREE.Vector3()
 		const fallbackTarget = new THREE.Vector3()
-		const mouseNdc = new THREE.Vector2()
-		const mouseHasMoved = { current: false }
+		const reticleNdc = new THREE.Vector2()
+		const virtualMouse = new THREE.Vector2()
+		let mouseHasMoved = false
 		const groundPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
 		const groundHit = new THREE.Vector3()
 		const raycaster = new THREE.Raycaster()
@@ -395,6 +402,13 @@ export function App(): JSX.Element {
 			camera.aspect = clientWidth / clientHeight
 			camera.updateProjectionMatrix()
 			renderer.setSize(clientWidth, clientHeight)
+			if (mouseHasMoved === false) {
+				virtualMouse.set(clientWidth * 0.5, clientHeight * 0.5)
+				syncReticle(virtualMouse, host, reticleNdc, setReticleX, setReticleY)
+			} else {
+				clampVirtualMouse(virtualMouse, host)
+				syncReticle(virtualMouse, host, reticleNdc, setReticleX, setReticleY)
+			}
 		}
 
 		const onKeyDown = (event: KeyboardEvent): void => {
@@ -423,22 +437,39 @@ export function App(): JSX.Element {
 		}
 
 		const onPointerDown = (event: PointerEvent): void => {
-			updateMouseNdc(event, host, mouseNdc)
+			void host.requestPointerLock()
 			if (event.button !== 2) return
 			isOrbiting = true
+			setOrbiting(true)
 			pointerId = event.pointerId
 			previousPointerX = event.clientX
 			previousPointerY = event.clientY
 			setState(isCrouchingAtom, true)
-			host.setPointerCapture(event.pointerId)
 		}
 
 		const onPointerMove = (event: PointerEvent): void => {
-			updateMouseNdc(event, host, mouseNdc)
-			mouseHasMoved.current = true
+			if (document.pointerLockElement === host) {
+				if (isOrbiting === false) {
+					virtualMouse.x += event.movementX
+					virtualMouse.y += event.movementY
+					clampVirtualMouse(virtualMouse, host)
+				}
+				mouseHasMoved = true
+				syncReticle(virtualMouse, host, reticleNdc, setReticleX, setReticleY)
+			} else {
+				primeVirtualMouse(event, host, virtualMouse)
+				mouseHasMoved = true
+				syncReticle(virtualMouse, host, reticleNdc, setReticleX, setReticleY)
+			}
 			if (isOrbiting === false || event.pointerId !== pointerId) return
-			const deltaX = event.clientX - previousPointerX
-			const deltaY = event.clientY - previousPointerY
+			const deltaX =
+				document.pointerLockElement === host
+					? event.movementX
+					: event.clientX - previousPointerX
+			const deltaY =
+				document.pointerLockElement === host
+					? event.movementY
+					: event.clientY - previousPointerY
 			previousPointerX = event.clientX
 			previousPointerY = event.clientY
 			cameraYaw -= deltaX * CAMERA_DRAG_SENSITIVITY_X
@@ -452,15 +483,17 @@ export function App(): JSX.Element {
 		const onPointerUp = (event: PointerEvent): void => {
 			if (event.pointerId !== pointerId) return
 			isOrbiting = false
+			setOrbiting(false)
 			pointerId = null
 			setState(isCrouchingAtom, false)
-			if (host.hasPointerCapture(event.pointerId)) {
-				host.releasePointerCapture(event.pointerId)
-			}
 		}
 
 		const onContextMenu = (event: MouseEvent): void => {
 			event.preventDefault()
+		}
+
+		const onPointerLockChange = (): void => {
+			setPointerLocked(document.pointerLockElement === host)
 		}
 
 		const onClick = (event: MouseEvent): void => {
@@ -477,6 +510,7 @@ export function App(): JSX.Element {
 		window.addEventListener(`resize`, resize)
 		window.addEventListener(`keydown`, onKeyDown)
 		window.addEventListener(`keyup`, onKeyUp)
+		document.addEventListener(`pointerlockchange`, onPointerLockChange)
 		host.addEventListener(`click`, onClick)
 		host.addEventListener(`pointerdown`, onPointerDown)
 		host.addEventListener(`pointermove`, onPointerMove)
@@ -592,8 +626,8 @@ export function App(): JSX.Element {
 			updateBlasterTarget(
 				camera,
 				raycaster,
-				mouseHasMoved.current,
-				mouseNdc,
+				mouseHasMoved,
+				reticleNdc,
 				targetBackdropWalls,
 				groundPlane,
 				groundHit,
@@ -652,6 +686,7 @@ export function App(): JSX.Element {
 			window.removeEventListener(`resize`, resize)
 			window.removeEventListener(`keydown`, onKeyDown)
 			window.removeEventListener(`keyup`, onKeyUp)
+			document.removeEventListener(`pointerlockchange`, onPointerLockChange)
 			host.removeEventListener(`click`, onClick)
 			host.removeEventListener(`pointerdown`, onPointerDown)
 			host.removeEventListener(`pointermove`, onPointerMove)
@@ -807,7 +842,20 @@ export function App(): JSX.Element {
 					</p>
 				</div>
 			</div>
-			<div ref={host} class="viewport" />
+			<div ref={host} class="viewport">
+				<div
+					class={`reticle ${orbiting() ? `precision` : ``} ${pointerLocked() ? `locked` : ``}`}
+					style={{
+						left: `${reticleX()}px`,
+						top: `${reticleY()}px`,
+					}}
+				>
+					<span class="reticle-line up" />
+					<span class="reticle-line right" />
+					<span class="reticle-line down" />
+					<span class="reticle-line left" />
+				</div>
+			</div>
 		</main>
 	)
 }
@@ -1016,21 +1064,43 @@ function updateSlideParticles(
 	}
 }
 
-function updateMouseNdc(
+function primeVirtualMouse(
 	event: PointerEvent,
 	host: HTMLDivElement,
-	mouseNdc: THREE.Vector2,
+	virtualMouse: THREE.Vector2,
 ): void {
 	const bounds = host.getBoundingClientRect()
-	mouseNdc.x = ((event.clientX - bounds.left) / bounds.width) * 2 - 1
-	mouseNdc.y = -(((event.clientY - bounds.top) / bounds.height) * 2 - 1)
+	virtualMouse.x = event.clientX - bounds.left
+	virtualMouse.y = event.clientY - bounds.top
+	clampVirtualMouse(virtualMouse, host)
+}
+
+function clampVirtualMouse(
+	virtualMouse: THREE.Vector2,
+	host: HTMLDivElement,
+): void {
+	virtualMouse.x = THREE.MathUtils.clamp(virtualMouse.x, 0, host.clientWidth)
+	virtualMouse.y = THREE.MathUtils.clamp(virtualMouse.y, 0, host.clientHeight)
+}
+
+function syncReticle(
+	virtualMouse: THREE.Vector2,
+	host: HTMLDivElement,
+	reticleNdc: THREE.Vector2,
+	setReticleX: (value: number) => void,
+	setReticleY: (value: number) => void,
+): void {
+	setReticleX(virtualMouse.x)
+	setReticleY(virtualMouse.y)
+	reticleNdc.x = (virtualMouse.x / host.clientWidth) * 2 - 1
+	reticleNdc.y = -((virtualMouse.y / host.clientHeight) * 2 - 1)
 }
 
 function updateBlasterTarget(
 	camera: THREE.PerspectiveCamera,
 	raycaster: THREE.Raycaster,
 	mouseHasMoved: boolean,
-	mouseNdc: THREE.Vector2,
+	reticleNdc: THREE.Vector2,
 	targetBackdropWalls: THREE.Object3D[],
 	groundPlane: THREE.Plane,
 	groundHit: THREE.Vector3,
@@ -1044,7 +1114,7 @@ function updateBlasterTarget(
 ): void {
 	blaster.getWorldPosition(blasterOrigin)
 	if (mouseHasMoved) {
-		raycaster.setFromCamera(mouseNdc, camera)
+		raycaster.setFromCamera(reticleNdc, camera)
 		const cylinderHit = raycaster.intersectObjects(targetBackdropWalls, false)[0]
 		const hasGroundHit =
 			raycaster.ray.intersectPlane(groundPlane, groundHit) !== null

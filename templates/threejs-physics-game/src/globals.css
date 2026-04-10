@@ -148,6 +148,65 @@ h1 {
 	height: 100%;
 }
 
+.reticle {
+	--reticle-spread: 20px;
+	--reticle-line-length: 10px;
+	pointer-events: none;
+	position: absolute;
+	width: 0;
+	height: 0;
+	transform: translate(-50%, -50%);
+	z-index: 3;
+	> .reticle-line {
+		position: absolute;
+		display: block;
+		background: rgba(255, 244, 233, 0.96);
+		box-shadow: 0 0 12px rgba(110, 215, 255, 0.45);
+		&.up,
+		&.down {
+			left: -1px;
+			width: 2px;
+			height: var(--reticle-line-length);
+		}
+
+		&.left,
+		&.right {
+			top: -1px;
+			width: var(--reticle-line-length);
+			height: 2px;
+		}
+
+		&.up {
+			transform: translateY(
+				calc(-1 * (var(--reticle-spread) + var(--reticle-line-length)))
+			);
+			background-color: yellow;
+		}
+		&.right {
+			transform: translateX(var(--reticle-spread));
+			background-color: red;
+		}
+		&.down {
+			transform: translateY(var(--reticle-spread));
+			background-color: blue;
+		}
+		&.left {
+			transform: translateX(
+				calc(-1 * (var(--reticle-spread) + var(--reticle-line-length)))
+			);
+			background-color: green;
+		}
+	}
+
+	&.precision {
+		--reticle-spread: 10px;
+	}
+
+	&.locked .reticle-line {
+		background: rgba(255, 251, 245, 1);
+	}
+}
+
 @media (max-width: 860px) {
 	.shell {
 		grid-template-columns: 1fr;
