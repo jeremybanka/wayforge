@@ -16,6 +16,8 @@ type ControlKey =
 	| `ShiftLeft`
 	| `Space`
 
+type AxisKey = `ArrowDown` | `ArrowLeft` | `ArrowRight` | `ArrowUp` | `KeyA` | `KeyD` | `KeyS` | `KeyW`
+
 type PlayerPhysics = {
 	isGrounded: boolean
 	position: THREE.Vector3
@@ -184,6 +186,8 @@ export function App(): JSX.Element {
 		scene.add(shadow)
 
 		const keys = new Set<ControlKey>()
+		const horizontalInputs: AxisKey[] = []
+		const verticalInputs: AxisKey[] = []
 		const physics: PlayerPhysics = {
 			isGrounded: true,
 			position: player.position,
@@ -214,6 +218,10 @@ export function App(): JSX.Element {
 				}
 			}
 			if (isControlKey(event.code)) {
+				if (event.repeat === false) {
+					pushAxisInput(horizontalInputs, event.code, isHorizontalAxisKey)
+					pushAxisInput(verticalInputs, event.code, isVerticalAxisKey)
+				}
 				keys.add(event.code)
 			}
 		}
@@ -221,6 +229,8 @@ export function App(): JSX.Element {
 		const onKeyUp = (event: KeyboardEvent): void => {
 			if (isControlKey(event.code)) {
 				keys.delete(event.code)
+				removeAxisInput(horizontalInputs, event.code)
+				removeAxisInput(verticalInputs, event.code)
 			}
 		}
 
@@ -232,18 +242,8 @@ export function App(): JSX.Element {
 			const deltaSeconds = Math.min(clock.getDelta(), 0.033)
 			moveDirection.set(0, 0, 0)
 
-			if (keys.has(`KeyW`) || keys.has(`ArrowUp`)) {
-				moveDirection.z -= 1
-			}
-			if (keys.has(`KeyS`) || keys.has(`ArrowDown`)) {
-				moveDirection.z += 1
-			}
-			if (keys.has(`KeyA`) || keys.has(`ArrowLeft`)) {
-				moveDirection.x -= 1
-			}
-			if (keys.has(`KeyD`) || keys.has(`ArrowRight`)) {
-				moveDirection.x += 1
-			}
+			moveDirection.x = resolveAxisDirection(horizontalInputs)
+			moveDirection.z = resolveAxisDirection(verticalInputs)
 
 			const speedMultiplier = keys.has(`ShiftLeft`) ? SPRINT_MULTIPLIER : 1
 			if (moveDirection.lengthSq() > 0) {
@@ -355,4 +355,52 @@ function isControlKey(code: string): code is ControlKey {
 		code === `ShiftLeft` ||
 		code === `Space`
 	)
+}
+
+function isHorizontalAxisKey(key: AxisKey): boolean {
+	return key === `ArrowLeft` || key === `ArrowRight` || key === `KeyA` || key === `KeyD`
+}
+
+function isVerticalAxisKey(key: AxisKey): boolean {
+	return key === `ArrowUp` || key === `ArrowDown` || key === `KeyW` || key === `KeyS`
+}
+
+function isAxisKey(code: ControlKey): code is AxisKey {
+	return code !== `ShiftLeft` && code !== `Space`
+}
+
+function pushAxisInput(
+	axisInputs: AxisKey[],
+	code: ControlKey,
+	matchesAxis: (key: AxisKey) => boolean,
+): void {
+	if (isAxisKey(code) === false) return
+	if (matchesAxis(code) === false) return
+	removeAxisInput(axisInputs, code)
+	axisInputs.push(code)
+}
+
+function removeAxisInput(axisInputs: AxisKey[], code: ControlKey): void {
+	if (isAxisKey(code) === false) return
+	const index = axisInputs.lastIndexOf(code)
+	if (index >= 0) {
+		axisInputs.splice(index, 1)
+	}
+}
+
+function resolveAxisDirection(axisInputs: AxisKey[]): number {
+	const latest = axisInputs.at(-1)
+	if (!latest) return 0
+	switch (latest) {
+		case `ArrowLeft`:
+		case `KeyA`:
+		case `ArrowUp`:
+		case `KeyW`:
+			return -1
+		case `ArrowRight`:
+		case `KeyD`:
+		case `ArrowDown`:
+		case `KeyS`:
+			return 1
+	}
 }
