@@ -28,6 +28,7 @@
 		"@atom.io/template-preact-svg-editor": "workspace:*",
 		"@atom.io/template-react-node-backend": "workspace:*",
 		"@atom.io/template-solid-lossless-numbers": "workspace:*",
+		"@atom.io/template-threejs-physics-game": "workspace:*",
 		"@clack/prompts": "1.2.0",
 		"arktype": "2.2.0",
 		"comline": "workspace:*",
