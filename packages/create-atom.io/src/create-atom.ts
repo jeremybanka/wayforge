@@ -16,6 +16,7 @@ export type TemplateName =
 	| `preact-svg-editor`
 	| `react-node-backend`
 	| `solid-lossless-numbers`
+	| `threejs-physics-game`
 
 export type CreateAtomOptions = {
 	packageManager: PackageManager
@@ -53,6 +54,10 @@ export async function createAtom(
 						{
 							label: `Solid Lossless Numbers`,
 							value: `solid-lossless-numbers`,
+						},
+						{
+							label: `Three.js Physics Game`,
+							value: `threejs-physics-game`,
 						},
 					],
 				}),
