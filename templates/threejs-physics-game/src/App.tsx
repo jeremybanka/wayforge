@@ -317,6 +317,9 @@ export function App(): JSX.Element {
 		scene.add(shadow)
 
 		const targetBackdrop = createTargetBackdrop()
+		const targetBackdropWalls = targetBackdrop.children.filter(
+			(child) => child.userData.kind === `target-wall`,
+		)
 		scene.add(targetBackdrop)
 
 		const targetPointMarker = new THREE.Mesh(
@@ -575,7 +578,7 @@ export function App(): JSX.Element {
 				raycaster,
 				mouseHasMoved.current,
 				mouseNdc,
-				targetBackdrop,
+				targetBackdropWalls,
 				groundPlane,
 				groundHit,
 				targetPoint,
@@ -1003,7 +1006,7 @@ function updateBlasterTarget(
 	raycaster: THREE.Raycaster,
 	mouseHasMoved: boolean,
 	mouseNdc: THREE.Vector2,
-	targetBackdrop: THREE.Group,
+	targetBackdropWalls: THREE.Object3D[],
 	groundPlane: THREE.Plane,
 	groundHit: THREE.Vector3,
 	targetPoint: THREE.Vector3,
@@ -1017,7 +1020,7 @@ function updateBlasterTarget(
 	blaster.getWorldPosition(blasterOrigin)
 	if (mouseHasMoved) {
 		raycaster.setFromCamera(mouseNdc, camera)
-		const cylinderHit = raycaster.intersectObject(targetBackdrop, true)[0]
+		const cylinderHit = raycaster.intersectObjects(targetBackdropWalls, false)[0]
 		const hasGroundHit =
 			raycaster.ray.intersectPlane(groundPlane, groundHit) !== null
 		const groundDistance = hasGroundHit
@@ -1035,9 +1038,7 @@ function updateBlasterTarget(
 		fallbackTarget.copy(blasterOrigin).add(new THREE.Vector3(0, 0, -12))
 		targetPoint.copy(fallbackTarget)
 	}
-	blaster.worldToLocal(targetPoint)
 	blaster.lookAt(targetPoint)
-	blaster.localToWorld(targetPoint)
 	blasterDirection
 		.set(0, 0, -1)
 		.applyQuaternion(blaster.getWorldQuaternion(new THREE.Quaternion()))
@@ -1074,12 +1075,12 @@ function spawnEnergyOrb(
 		metalness: 0.05,
 	})
 	const mesh = new THREE.Mesh(geometry, material)
-	mesh.position.copy(origin).addScaledVector(direction, 0.5)
+	mesh.position.copy(origin).addScaledVector(direction, -0.5)
 	scene.add(mesh)
 	energyOrbs.push({
 		age: 0,
 		mesh,
-		velocity: direction.clone().multiplyScalar(ENERGY_ORB_SPEED),
+		velocity: direction.clone().multiplyScalar(-ENERGY_ORB_SPEED),
 	})
 }
 
@@ -1134,15 +1135,15 @@ function createGroundTexture(): THREE.CanvasTexture {
 
 function createBlasterGeometry(): THREE.BufferGeometry {
 	const barrel = new THREE.CylinderGeometry(0.12, 0.12, 0.9, 18)
-	barrel.rotateZ(Math.PI * 0.5)
+	barrel.rotateX(-Math.PI * 0.5)
 	barrel.translate(0, 0, -0.2)
 
 	const body = new THREE.CylinderGeometry(0.16, 0.2, 0.42, 18)
-	body.rotateZ(Math.PI * 0.5)
+	body.rotateX(-Math.PI * 0.5)
 	body.translate(0, 0, 0.32)
 
 	const muzzle = new THREE.CylinderGeometry(0.14, 0.14, 0.08, 18)
-	muzzle.rotateZ(Math.PI * 0.5)
+	muzzle.rotateX(-Math.PI * 0.5)
 	muzzle.translate(0, 0, -0.66)
 
 	return mergeBufferGeometries([barrel, body, muzzle])
@@ -1172,6 +1173,7 @@ function createTargetBackdrop(): THREE.Group {
 			Math.sin(angle) * apothem,
 		)
 		wall.rotation.y = Math.PI * 0.5 - angle
+		wall.userData.kind = `target-wall`
 		group.add(wall)
 	}
 
