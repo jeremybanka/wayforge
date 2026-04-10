@@ -36,6 +36,11 @@ const JUMP_STAMINA_MAX = 28
 const JUMP_IMPULSE_PER_STAMINA = 0.21
 const JUMP_FORWARD_IMPULSE = 1.35
 const TURN_RATE = Math.PI * 4
+const WEIGHT_MIN = 50
+const WEIGHT_MAX = 150
+const WEIGHT_DEFAULT = 85
+const MOVE_RESPONSE_LIGHT = 18
+const MOVE_RESPONSE_HEAVY = 4.5
 const STAMINA_MAX = 100
 const STAMINA_RECOVERY_PER_SECOND = 20
 const CAMERA_DISTANCE = 8.5
@@ -53,6 +58,11 @@ const staminaAtom = atom<number>({
 const isGroundedAtom = atom<boolean>({
 	key: `isGrounded`,
 	default: true,
+})
+
+const weightAtom = atom<number>({
+	key: `weight`,
+	default: WEIGHT_DEFAULT,
 })
 
 const jumpReadySelector = selector<boolean>({
@@ -118,6 +128,9 @@ function createArena(scene: THREE.Scene): void {
 function applyGroundCollision(player: PlayerPhysics): void {
 	if (player.position.y <= PLAYER_Y) {
 		player.position.y = PLAYER_Y
+		if (player.isGrounded === false) {
+			player.planarVelocity.set(player.velocity.x, player.velocity.z)
+		}
 		player.velocity.x = 0
 		player.velocity.y = 0
 		player.velocity.z = 0
@@ -131,6 +144,7 @@ export function App(): JSX.Element {
 	const stamina = useO(staminaAtom)
 	const jumpReady = useO(jumpReadySelector)
 	const grounded = useO(isGroundedAtom)
+	const weight = useO(weightAtom)
 
 	let host!: HTMLDivElement
 
@@ -206,6 +220,7 @@ export function App(): JSX.Element {
 		const cameraForward = new THREE.Vector3()
 		const cameraRight = new THREE.Vector3()
 		const moveDirection = new THREE.Vector3()
+		const targetPlanarVelocity = new THREE.Vector2()
 		const cameraOffset = new THREE.Vector3()
 		const cameraTarget = new THREE.Vector3()
 		const lookTarget = new THREE.Vector3()
@@ -320,17 +335,21 @@ export function App(): JSX.Element {
 				.addScaledVector(cameraForward, -resolveAxisDirection(verticalInputs))
 
 			const speedMultiplier = keys.has(`ShiftLeft`) ? SPRINT_MULTIPLIER : 1
-			if (physics.isGrounded && moveDirection.lengthSq() > 0) {
-				moveDirection.normalize()
+			if (physics.isGrounded) {
 				const groundedSpeed = MOVE_SPEED * speedMultiplier
-				physics.planarVelocity.set(
-					moveDirection.x * groundedSpeed,
-					moveDirection.z * groundedSpeed,
-				)
+				targetPlanarVelocity.set(0, 0)
+				if (moveDirection.lengthSq() > 0) {
+					moveDirection.normalize()
+					targetPlanarVelocity.set(
+						moveDirection.x * groundedSpeed,
+						moveDirection.z * groundedSpeed,
+					)
+				}
+				const response = getMoveResponse(getState(weightAtom))
+				const easing = 1 - Math.exp(-response * deltaSeconds)
+				physics.planarVelocity.lerp(targetPlanarVelocity, easing)
 				physics.position.x += physics.planarVelocity.x * deltaSeconds
 				physics.position.z += physics.planarVelocity.y * deltaSeconds
-			} else if (physics.isGrounded) {
-				physics.planarVelocity.set(0, 0)
 			}
 
 			player.rotation.y = turnTowardAngle(
@@ -433,6 +452,27 @@ export function App(): JSX.Element {
 					</p>
 					<p class="copy small">{grounded() ? `Grounded` : `Airborne`}</p>
 				</div>
+				<div class="panel status">
+					<div class="meter-row">
+						<span>Weight</span>
+						<strong>{weight().toFixed(0)} kg</strong>
+					</div>
+					<input
+						type="range"
+						min={WEIGHT_MIN}
+						max={WEIGHT_MAX}
+						step="1"
+						value={weight()}
+						onInput={(event) => {
+							const nextWeight = Number(event.currentTarget.value)
+							setState(weightAtom, nextWeight)
+						}}
+					/>
+					<p class="copy small">
+						Heavier characters ease into momentum changes more slowly, so starts,
+						stops, and reversals carry more inertia.
+					</p>
+				</div>
 			</div>
 			<div
 				ref={host}
@@ -513,4 +553,17 @@ function turnTowardAngle(current: number, target: number, maxDelta: number): num
 	const delta = normalizeAngle(target - current)
 	if (Math.abs(delta) <= maxDelta) return target
 	return current + Math.sign(delta) * maxDelta
+}
+
+function getMoveResponse(weight: number): number {
+	const normalizedWeight = THREE.MathUtils.clamp(
+		(weight - WEIGHT_MIN) / (WEIGHT_MAX - WEIGHT_MIN),
+		0,
+		1,
+	)
+	return THREE.MathUtils.lerp(
+		MOVE_RESPONSE_LIGHT,
+		MOVE_RESPONSE_HEAVY,
+		normalizedWeight,
+	)
 }
