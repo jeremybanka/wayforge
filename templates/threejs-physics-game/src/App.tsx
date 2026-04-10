@@ -42,6 +42,8 @@ const CAMERA_DISTANCE = 8.5
 const CAMERA_PITCH_MAX = Math.PI * 0.42
 const CAMERA_PITCH_MIN = Math.PI * 0.12
 const CAMERA_LOOK_OFFSET = new THREE.Vector3(0, 1.1, 0)
+const CAMERA_DRAG_SENSITIVITY_X = 0.006
+const CAMERA_DRAG_SENSITIVITY_Y = 0.0045
 
 const staminaAtom = atom<number>({
 	key: `stamina`,
@@ -270,9 +272,9 @@ export function App(): JSX.Element {
 			const deltaY = event.clientY - previousPointerY
 			previousPointerX = event.clientX
 			previousPointerY = event.clientY
-			cameraYaw -= deltaX * 0.008
+			cameraYaw -= deltaX * CAMERA_DRAG_SENSITIVITY_X
 			cameraPitch = THREE.MathUtils.clamp(
-				cameraPitch - deltaY * 0.006,
+				cameraPitch - deltaY * CAMERA_DRAG_SENSITIVITY_Y,
 				CAMERA_PITCH_MIN,
 				CAMERA_PITCH_MAX,
 			)
