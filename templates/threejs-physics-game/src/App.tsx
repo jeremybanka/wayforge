@@ -35,6 +35,7 @@ const JUMP_STAMINA_MIN = 18
 const JUMP_STAMINA_MAX = 28
 const JUMP_IMPULSE_PER_STAMINA = 0.21
 const JUMP_FORWARD_IMPULSE = 1.35
+const TURN_RATE = Math.PI * 4
 const STAMINA_MAX = 100
 const STAMINA_RECOVERY_PER_SECOND = 20
 const CAMERA_DISTANCE = 8.5
@@ -200,6 +201,8 @@ export function App(): JSX.Element {
 			position: player.position,
 			velocity: new THREE.Vector3(),
 		}
+		const cameraForward = new THREE.Vector3()
+		const cameraRight = new THREE.Vector3()
 		const moveDirection = new THREE.Vector3()
 		const cameraOffset = new THREE.Vector3()
 		const cameraTarget = new THREE.Vector3()
@@ -300,9 +303,19 @@ export function App(): JSX.Element {
 		const frame = (): void => {
 			const deltaSeconds = Math.min(clock.getDelta(), 0.033)
 			moveDirection.set(0, 0, 0)
-
-			moveDirection.x = resolveAxisDirection(horizontalInputs)
-			moveDirection.z = resolveAxisDirection(verticalInputs)
+			cameraForward.set(
+				Math.sin(cameraYaw + Math.PI),
+				0,
+				Math.cos(cameraYaw + Math.PI),
+			)
+			cameraRight.set(
+				Math.sin(cameraYaw + Math.PI * 0.5),
+				0,
+				Math.cos(cameraYaw + Math.PI * 0.5),
+			)
+			moveDirection
+				.addScaledVector(cameraRight, resolveAxisDirection(horizontalInputs))
+				.addScaledVector(cameraForward, -resolveAxisDirection(verticalInputs))
 
 			const speedMultiplier = keys.has(`ShiftLeft`) ? SPRINT_MULTIPLIER : 1
 			if (physics.isGrounded && moveDirection.lengthSq() > 0) {
@@ -314,10 +327,15 @@ export function App(): JSX.Element {
 				)
 				physics.position.x += physics.planarVelocity.x * deltaSeconds
 				physics.position.z += physics.planarVelocity.y * deltaSeconds
-				player.rotation.y = Math.atan2(moveDirection.x, moveDirection.z)
 			} else if (physics.isGrounded) {
 				physics.planarVelocity.set(0, 0)
 			}
+
+			player.rotation.y = turnTowardAngle(
+				player.rotation.y,
+				normalizeAngle(cameraYaw),
+				TURN_RATE * deltaSeconds,
+			)
 
 			physics.velocity.y -= GRAVITY * deltaSeconds
 			if (physics.isGrounded === false) {
@@ -483,4 +501,14 @@ function resolveAxisDirection(axisInputs: AxisKey[]): number {
 		case `KeyS`:
 			return 1
 	}
+}
+
+function normalizeAngle(angle: number): number {
+	return THREE.MathUtils.euclideanModulo(angle + Math.PI, Math.PI * 2) - Math.PI
+}
+
+function turnTowardAngle(current: number, target: number, maxDelta: number): number {
+	const delta = normalizeAngle(target - current)
+	if (Math.abs(delta) <= maxDelta) return target
+	return current + Math.sign(delta) * maxDelta
 }
