@@ -51,10 +51,8 @@ const CROUCH_HEIGHT_SCALE = 0.5
 const WORLD_SCALE = 20
 const GRAVITY = 24
 const MOVE_SPEED = 6
-const SPRINT_MULTIPLIER = 1.65
-const JUMP_STAMINA_MIN = 18
-const JUMP_STAMINA_MAX = 28
-const JUMP_IMPULSE_PER_STAMINA = 0.21
+const SPRINT_MULTIPLIER = 2.2
+const JUMP_IMPULSE = 5.2
 const TURN_RATE = Math.PI * 4
 const WEIGHT_MIN = 50
 const WEIGHT_MAX = 150
@@ -74,6 +72,7 @@ const SLIDE_FRICTION_MAX = 12
 const SLIDE_FRICTION_DEFAULT = 1.4
 const STAMINA_MAX = 100
 const STAMINA_RECOVERY_PER_SECOND = 20
+const SPRINT_STAMINA_DRAIN_PER_SECOND = 24
 const CAMERA_DISTANCE = 8.5
 const CAMERA_PITCH_MAX = Math.PI * 0.42
 const CAMERA_PITCH_MIN = Math.PI * 0.12
@@ -130,9 +129,9 @@ const slideFrictionAtom = atom<number>({
 	default: SLIDE_FRICTION_DEFAULT,
 })
 
-const jumpReadySelector = selector<boolean>({
-	key: `jumpReady`,
-	get: ({ get }) => get(isGroundedAtom) && get(staminaAtom) >= JUMP_STAMINA_MIN,
+const sprintReadySelector = selector<boolean>({
+	key: `sprintReady`,
+	get: ({ get }) => get(staminaAtom) > 0,
 })
 
 const baseCrouchSpeedSelector = selector<number>({
@@ -153,17 +152,15 @@ const isSlidingSelector = selector<boolean>({
 	},
 })
 
-function spendJumpStamina(): number {
-	const stamina = getState(staminaAtom)
-	if (stamina < JUMP_STAMINA_MIN) return 0
-	const spent = Math.min(stamina, JUMP_STAMINA_MAX)
-	setState(staminaAtom, stamina - spent)
-	return spent
-}
-
 function recoverStamina(deltaSeconds: number): void {
 	setState(staminaAtom, (stamina) =>
 		Math.min(STAMINA_MAX, stamina + deltaSeconds * STAMINA_RECOVERY_PER_SECOND),
+	)
+}
+
+function drainSprintStamina(deltaSeconds: number): void {
+	setState(staminaAtom, (stamina) =>
+		Math.max(0, stamina - deltaSeconds * SPRINT_STAMINA_DRAIN_PER_SECOND),
 	)
 }
 
@@ -215,7 +212,7 @@ function applyGroundCollision(
 
 export function App(): JSX.Element {
 	const stamina = useO(staminaAtom)
-	const jumpReady = useO(jumpReadySelector)
+	const sprintReady = useO(sprintReadySelector)
 	const grounded = useO(isGroundedAtom)
 	const weight = useO(weightAtom)
 	const isCrouching = useO(isCrouchingAtom)
@@ -399,11 +396,8 @@ export function App(): JSX.Element {
 			if (event.code === `Space`) {
 				event.preventDefault()
 				if (physics.isGrounded) {
-					const spent = spendJumpStamina()
-					if (spent > 0) {
-						physics.velocity.y += spent * JUMP_IMPULSE_PER_STAMINA
-						physics.isGrounded = false
-					}
+					physics.velocity.y += JUMP_IMPULSE
+					physics.isGrounded = false
 				}
 			}
 			if (isControlKey(event.code)) {
@@ -509,8 +503,14 @@ export function App(): JSX.Element {
 			}
 			targetBackdrop.position.set(player.position.x, 0, player.position.z)
 
+			const forwardIntent = Math.max(0, -resolveAxisDirection(verticalInputs))
+			const isSprinting =
+				crouchingNow === false &&
+				keys.has(`ShiftLeft`) &&
+				forwardIntent > 0 &&
+				getState(staminaAtom) > 0
 			const speedMultiplier =
-				crouchingNow || keys.has(`ShiftLeft`) === false ? 1 : SPRINT_MULTIPLIER
+				isSprinting ? SPRINT_MULTIPLIER : 1
 			setState(
 				planarSpeedAtom,
 				Math.hypot(physics.velocity.x, physics.velocity.z),
@@ -571,7 +571,11 @@ export function App(): JSX.Element {
 				physics.position.z *= clamp
 			}
 
-			recoverStamina(deltaSeconds)
+			if (isSprinting) {
+				drainSprintStamina(deltaSeconds)
+			} else {
+				recoverStamina(deltaSeconds)
+			}
 			setState(isGroundedAtom, physics.isGrounded)
 			updateBlasterTarget(
 				camera,
@@ -683,8 +687,8 @@ export function App(): JSX.Element {
 						<div class="meter-fill" style={{ width: `${stamina()}%` }} />
 					</div>
 					<p class="copy small">
-						Space spends stamina to create jump impulse.{` `}
-						{jumpReady() ? `Jump ready.` : `Recharge to at least 18.`}
+						Jumping is free. Sprinting forward spends stamina over time.{` `}
+						{sprintReady() ? `Sprint ready.` : `Recharge to sprint again.`}
 					</p>
 					<p class="copy small">{grounded() ? `Grounded` : `Airborne`}</p>
 					<p class="copy small">
