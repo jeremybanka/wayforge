@@ -20,7 +20,6 @@ type AxisKey = `ArrowDown` | `ArrowLeft` | `ArrowRight` | `ArrowUp` | `KeyA` | `
 
 type PlayerPhysics = {
 	isGrounded: boolean
-	planarVelocity: THREE.Vector2
 	position: THREE.Vector3
 	velocity: THREE.Vector3
 }
@@ -39,8 +38,14 @@ const TURN_RATE = Math.PI * 4
 const WEIGHT_MIN = 50
 const WEIGHT_MAX = 150
 const WEIGHT_DEFAULT = 85
-const MOVE_RESPONSE_LIGHT = 18
-const MOVE_RESPONSE_HEAVY = 4.5
+const CONTROL_GAIN = 12
+const BASE_MOTOR_FORCE = 1650
+const GROUND_FRICTION_MIN = 0
+const GROUND_FRICTION_MAX = 24
+const GROUND_FRICTION_DEFAULT = 12
+const AIR_FRICTION_MIN = 0
+const AIR_FRICTION_MAX = 6
+const AIR_FRICTION_DEFAULT = 1.1
 const STAMINA_MAX = 100
 const STAMINA_RECOVERY_PER_SECOND = 20
 const CAMERA_DISTANCE = 8.5
@@ -49,6 +54,8 @@ const CAMERA_PITCH_MIN = Math.PI * 0.12
 const CAMERA_LOOK_OFFSET = new THREE.Vector3(0, 1.1, 0)
 const CAMERA_DRAG_SENSITIVITY_X = 0.006
 const CAMERA_DRAG_SENSITIVITY_Y = 0.0045
+const PLANAR_DELTA_VELOCITY = new THREE.Vector2()
+const PLANAR_ACCELERATION = new THREE.Vector2()
 
 const staminaAtom = atom<number>({
 	key: `stamina`,
@@ -63,6 +70,16 @@ const isGroundedAtom = atom<boolean>({
 const weightAtom = atom<number>({
 	key: `weight`,
 	default: WEIGHT_DEFAULT,
+})
+
+const groundFrictionAtom = atom<number>({
+	key: `groundFriction`,
+	default: GROUND_FRICTION_DEFAULT,
+})
+
+const airFrictionAtom = atom<number>({
+	key: `airFriction`,
+	default: AIR_FRICTION_DEFAULT,
 })
 
 const jumpReadySelector = selector<boolean>({
@@ -128,12 +145,7 @@ function createArena(scene: THREE.Scene): void {
 function applyGroundCollision(player: PlayerPhysics): void {
 	if (player.position.y <= PLAYER_Y) {
 		player.position.y = PLAYER_Y
-		if (player.isGrounded === false) {
-			player.planarVelocity.set(player.velocity.x, player.velocity.z)
-		}
-		player.velocity.x = 0
 		player.velocity.y = 0
-		player.velocity.z = 0
 		player.isGrounded = true
 		return
 	}
@@ -145,6 +157,8 @@ export function App(): JSX.Element {
 	const jumpReady = useO(jumpReadySelector)
 	const grounded = useO(isGroundedAtom)
 	const weight = useO(weightAtom)
+	const groundFriction = useO(groundFrictionAtom)
+	const airFriction = useO(airFrictionAtom)
 
 	let host!: HTMLDivElement
 
@@ -213,13 +227,13 @@ export function App(): JSX.Element {
 		const verticalInputs: AxisKey[] = []
 		const physics: PlayerPhysics = {
 			isGrounded: true,
-			planarVelocity: new THREE.Vector2(),
 			position: player.position,
 			velocity: new THREE.Vector3(),
 		}
 		const cameraForward = new THREE.Vector3()
 		const cameraRight = new THREE.Vector3()
 		const moveDirection = new THREE.Vector3()
+		const currentPlanarVelocity = new THREE.Vector2()
 		const targetPlanarVelocity = new THREE.Vector2()
 		const cameraOffset = new THREE.Vector3()
 		const cameraTarget = new THREE.Vector3()
@@ -246,10 +260,8 @@ export function App(): JSX.Element {
 				if (physics.isGrounded) {
 					const spent = spendJumpStamina()
 					if (spent > 0) {
-						physics.velocity.x =
-							physics.planarVelocity.x * JUMP_FORWARD_IMPULSE
-						physics.velocity.z =
-							physics.planarVelocity.y * JUMP_FORWARD_IMPULSE
+						physics.velocity.x *= JUMP_FORWARD_IMPULSE
+						physics.velocity.z *= JUMP_FORWARD_IMPULSE
 						physics.velocity.y += spent * JUMP_IMPULSE_PER_STAMINA
 						physics.isGrounded = false
 					}
@@ -337,6 +349,7 @@ export function App(): JSX.Element {
 			const speedMultiplier = keys.has(`ShiftLeft`) ? SPRINT_MULTIPLIER : 1
 			if (physics.isGrounded) {
 				const groundedSpeed = MOVE_SPEED * speedMultiplier
+				currentPlanarVelocity.set(physics.velocity.x, physics.velocity.z)
 				targetPlanarVelocity.set(0, 0)
 				if (moveDirection.lengthSq() > 0) {
 					moveDirection.normalize()
@@ -345,11 +358,22 @@ export function App(): JSX.Element {
 						moveDirection.z * groundedSpeed,
 					)
 				}
-				const response = getMoveResponse(getState(weightAtom))
-				const easing = 1 - Math.exp(-response * deltaSeconds)
-				physics.planarVelocity.lerp(targetPlanarVelocity, easing)
-				physics.position.x += physics.planarVelocity.x * deltaSeconds
-				physics.position.z += physics.planarVelocity.y * deltaSeconds
+				easePlanarVelocityPhysics(
+					currentPlanarVelocity,
+					targetPlanarVelocity,
+					getState(weightAtom),
+					getState(groundFrictionAtom),
+					deltaSeconds,
+				)
+				physics.velocity.x = currentPlanarVelocity.x
+				physics.velocity.z = currentPlanarVelocity.y
+			} else {
+				applyAirDragPhysics(
+					physics.velocity,
+					getState(weightAtom),
+					getState(airFrictionAtom),
+					deltaSeconds,
+				)
 			}
 
 			player.rotation.y = turnTowardAngle(
@@ -359,10 +383,8 @@ export function App(): JSX.Element {
 			)
 
 			physics.velocity.y -= GRAVITY * deltaSeconds
-			if (physics.isGrounded === false) {
-				physics.position.x += physics.velocity.x * deltaSeconds
-				physics.position.z += physics.velocity.z * deltaSeconds
-			}
+			physics.position.x += physics.velocity.x * deltaSeconds
+			physics.position.z += physics.velocity.z * deltaSeconds
 			physics.position.y += physics.velocity.y * deltaSeconds
 			applyGroundCollision(physics)
 
@@ -469,8 +491,51 @@ export function App(): JSX.Element {
 						}}
 					/>
 					<p class="copy small">
-						Heavier characters ease into momentum changes more slowly, so starts,
-						stops, and reversals carry more inertia.
+						Weight is treated as mass. Heavier characters need more force to
+						change velocity, so starts, stops, and reversals all feel slower.
+					</p>
+				</div>
+				<div class="panel status">
+					<div class="meter-row">
+						<span>Ground Friction</span>
+						<strong>{groundFriction().toFixed(1)}</strong>
+					</div>
+					<input
+						type="range"
+						min={GROUND_FRICTION_MIN}
+						max={GROUND_FRICTION_MAX}
+						step="0.1"
+						value={groundFriction()}
+						onInput={(event) => {
+							const nextFriction = Number(event.currentTarget.value)
+							setState(groundFrictionAtom, nextFriction)
+						}}
+					/>
+					<p class="copy small">
+						Ground friction controls traction. Low friction limits how much
+						horizontal acceleration or braking force can reach the ground, so
+						you slide.
+					</p>
+				</div>
+				<div class="panel status">
+					<div class="meter-row">
+						<span>Air Friction</span>
+						<strong>{airFriction().toFixed(1)}</strong>
+					</div>
+					<input
+						type="range"
+						min={AIR_FRICTION_MIN}
+						max={AIR_FRICTION_MAX}
+						step="0.1"
+						value={airFriction()}
+						onInput={(event) => {
+							const nextFriction = Number(event.currentTarget.value)
+							setState(airFrictionAtom, nextFriction)
+						}}
+					/>
+					<p class="copy small">
+						Air friction behaves like drag on horizontal velocity while
+						airborne, gradually bleeding off jump carry.
 					</p>
 				</div>
 			</div>
@@ -555,15 +620,51 @@ function turnTowardAngle(current: number, target: number, maxDelta: number): num
 	return current + Math.sign(delta) * maxDelta
 }
 
-function getMoveResponse(weight: number): number {
-	const normalizedWeight = THREE.MathUtils.clamp(
-		(weight - WEIGHT_MIN) / (WEIGHT_MAX - WEIGHT_MIN),
-		0,
-		1,
+function easePlanarVelocityPhysics(
+	currentVelocity: THREE.Vector2,
+	targetVelocity: THREE.Vector2,
+	weight: number,
+	friction: number,
+	deltaSeconds: number,
+): void {
+	const mass = weight
+	PLANAR_DELTA_VELOCITY.copy(targetVelocity).sub(currentVelocity)
+	PLANAR_ACCELERATION.copy(PLANAR_DELTA_VELOCITY).multiplyScalar(CONTROL_GAIN)
+	const motorAccelerationCap = BASE_MOTOR_FORCE / mass
+	const tractionAccelerationCap = getGroundTractionCoefficient(friction) * GRAVITY
+	const maxPlanarAcceleration = Math.min(
+		motorAccelerationCap,
+		tractionAccelerationCap,
 	)
-	return THREE.MathUtils.lerp(
-		MOVE_RESPONSE_LIGHT,
-		MOVE_RESPONSE_HEAVY,
-		normalizedWeight,
-	)
+	if (
+		PLANAR_ACCELERATION.lengthSq() >
+		maxPlanarAcceleration * maxPlanarAcceleration
+	) {
+		PLANAR_ACCELERATION.setLength(maxPlanarAcceleration)
+	}
+	currentVelocity.addScaledVector(PLANAR_ACCELERATION, deltaSeconds)
+	if (currentVelocity.lengthSq() < 0.0001) {
+		currentVelocity.set(0, 0)
+	}
+}
+
+function applyAirDragPhysics(
+	velocity: THREE.Vector3,
+	weight: number,
+	friction: number,
+	deltaSeconds: number,
+): void {
+	if (friction <= 0) return
+	const mass = weight
+	const dragAccelerationScale = friction / mass
+	velocity.x -= velocity.x * dragAccelerationScale * deltaSeconds
+	velocity.z -= velocity.z * dragAccelerationScale * deltaSeconds
+	if (velocity.x * velocity.x + velocity.z * velocity.z < 0.0001) {
+		velocity.x = 0
+		velocity.z = 0
+	}
+}
+
+function getGroundTractionCoefficient(friction: number): number {
+	return THREE.MathUtils.lerp(0.08, 1.8, friction / GROUND_FRICTION_MAX)
 }
