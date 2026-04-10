@@ -37,7 +37,9 @@ const JUMP_IMPULSE_PER_STAMINA = 0.21
 const JUMP_FORWARD_IMPULSE = 1.35
 const STAMINA_MAX = 100
 const STAMINA_RECOVERY_PER_SECOND = 20
-const CAMERA_FOLLOW = new THREE.Vector3(0, 4.2, 7.4)
+const CAMERA_DISTANCE = 8.5
+const CAMERA_PITCH_MAX = Math.PI * 0.42
+const CAMERA_PITCH_MIN = Math.PI * 0.12
 const CAMERA_LOOK_OFFSET = new THREE.Vector3(0, 1.1, 0)
 
 const staminaAtom = atom<number>({
@@ -199,9 +201,16 @@ export function App(): JSX.Element {
 			velocity: new THREE.Vector3(),
 		}
 		const moveDirection = new THREE.Vector3()
+		const cameraOffset = new THREE.Vector3()
 		const cameraTarget = new THREE.Vector3()
 		const lookTarget = new THREE.Vector3()
 		const clock = new THREE.Clock()
+		let cameraYaw = Math.PI
+		let cameraPitch = Math.PI * 0.3
+		let isOrbiting = false
+		let pointerId: number | null = null
+		let previousPointerX = 0
+		let previousPointerY = 0
 		let frameId = 0
 
 		const resize = (): void => {
@@ -243,9 +252,50 @@ export function App(): JSX.Element {
 			}
 		}
 
+		const onPointerDown = (event: PointerEvent): void => {
+			if (event.button !== 2) return
+			isOrbiting = true
+			pointerId = event.pointerId
+			previousPointerX = event.clientX
+			previousPointerY = event.clientY
+			host.setPointerCapture(event.pointerId)
+		}
+
+		const onPointerMove = (event: PointerEvent): void => {
+			if (isOrbiting === false || event.pointerId !== pointerId) return
+			const deltaX = event.clientX - previousPointerX
+			const deltaY = event.clientY - previousPointerY
+			previousPointerX = event.clientX
+			previousPointerY = event.clientY
+			cameraYaw -= deltaX * 0.008
+			cameraPitch = THREE.MathUtils.clamp(
+				cameraPitch - deltaY * 0.006,
+				CAMERA_PITCH_MIN,
+				CAMERA_PITCH_MAX,
+			)
+		}
+
+		const onPointerUp = (event: PointerEvent): void => {
+			if (event.pointerId !== pointerId) return
+			isOrbiting = false
+			pointerId = null
+			if (host.hasPointerCapture(event.pointerId)) {
+				host.releasePointerCapture(event.pointerId)
+			}
+		}
+
+		const onContextMenu = (event: MouseEvent): void => {
+			event.preventDefault()
+		}
+
 		window.addEventListener(`resize`, resize)
 		window.addEventListener(`keydown`, onKeyDown)
 		window.addEventListener(`keyup`, onKeyUp)
+		host.addEventListener(`pointerdown`, onPointerDown)
+		host.addEventListener(`pointermove`, onPointerMove)
+		host.addEventListener(`pointerup`, onPointerUp)
+		host.addEventListener(`pointercancel`, onPointerUp)
+		host.addEventListener(`contextmenu`, onContextMenu)
 
 		const frame = (): void => {
 			const deltaSeconds = Math.min(clock.getDelta(), 0.033)
@@ -291,7 +341,12 @@ export function App(): JSX.Element {
 			shadow.position.set(player.position.x, 0.02, player.position.z)
 			shadow.scale.setScalar(1 - Math.min((player.position.y - PLAYER_Y) / 6, 0.45))
 
-			cameraTarget.copy(player.position).add(CAMERA_FOLLOW)
+			cameraOffset.setFromSphericalCoords(
+				CAMERA_DISTANCE,
+				cameraPitch,
+				cameraYaw,
+			)
+			cameraTarget.copy(player.position).add(cameraOffset)
 			camera.position.lerp(cameraTarget, 1 - Math.pow(0.0001, deltaSeconds))
 			lookTarget.copy(player.position).add(CAMERA_LOOK_OFFSET)
 			camera.lookAt(lookTarget)
@@ -308,6 +363,11 @@ export function App(): JSX.Element {
 			window.removeEventListener(`resize`, resize)
 			window.removeEventListener(`keydown`, onKeyDown)
 			window.removeEventListener(`keyup`, onKeyUp)
+			host.removeEventListener(`pointerdown`, onPointerDown)
+			host.removeEventListener(`pointermove`, onPointerMove)
+			host.removeEventListener(`pointerup`, onPointerUp)
+			host.removeEventListener(`pointercancel`, onPointerUp)
+			host.removeEventListener(`contextmenu`, onContextMenu)
 			renderer.dispose()
 			scene.traverse((object) => {
 				if (!(object instanceof THREE.Mesh)) return
