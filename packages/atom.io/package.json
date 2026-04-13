@@ -100,7 +100,7 @@
 		"@typescript-eslint/parser": "8.58.1",
 		"@typescript-eslint/rule-tester": "8.58.1",
 		"@typescript-eslint/utils": "8.58.1",
-		"@typescript/native-preview": "7.0.0-dev.20260412.1",
+		"@typescript/native-preview": "7.0.0-dev.20260413.1",
 		"@vitest/coverage-v8": "4.1.4",
 		"@vitest/ui": "4.1.4",
 		"arktype": "2.2.0",
