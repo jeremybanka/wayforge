@@ -1,5 +1,6 @@
 {
 	"name": "treetrunks",
+	"description": "Type and runtime representations of tree structures.",
 	"version": "0.1.6",
 	"license": "MIT",
 	"author": {
