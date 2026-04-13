@@ -58,7 +58,7 @@
 		"@react-email/components": "1.0.12",
 		"@react-spring/three": "10.0.3",
 		"@react-three/drei": "10.7.7",
-		"@react-three/fiber": "9.5.0",
+		"@react-three/fiber": "9.6.0",
 		"@t3-oss/env-core": "0.13.11",
 		"@trpc/client": "11.16.0",
 		"@trpc/server": "11.16.0",
