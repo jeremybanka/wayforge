@@ -43,7 +43,7 @@
 		"concurrently": "9.2.1",
 		"eslint": "10.2.0",
 		"fp-ts": "2.16.11",
-		"tsdown": "0.21.7",
+		"tsdown": "0.21.8",
 		"vite": "8.0.8",
 		"vite-tsconfig-paths": "6.1.1",
 		"vitest": "4.1.4"
