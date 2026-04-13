@@ -1,5 +1,11 @@
 # treetrunks
 
+## 0.1.7
+
+### Patch Changes
+
+- a5a7cdc: 📝 Added package description.
+
 ## 0.1.6
 
 ### Patch Changes
