@@ -1,5 +1,12 @@
 # jurist
 
+## 0.0.9
+
+### Patch Changes
+
+- Updated dependencies [a5a7cdc]
+  - treetrunks@0.1.7
+
 ## 0.0.8
 
 ### Patch Changes
