@@ -23,6 +23,8 @@ jobs:
     timeout-minutes: 9
     steps:
       - uses: actions/checkout@v6.0.2
+        with:
+          token: ${{ secrets.CHANGESETS_GITHUB_PAT }}
       - uses: ./.github/actions/setup
       - uses: changesets/action@v1.7.0
         id: changesets
