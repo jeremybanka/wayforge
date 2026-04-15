@@ -190,8 +190,8 @@ importers:
         specifier: 5.2.10
         version: 5.2.10
       resend:
-        specifier: 6.11.0
-        version: 6.11.0(@react-email/render@2.0.6(react-dom@19.2.5(react@19.2.5))(react@19.2.5))
+        specifier: 6.12.0
+        version: 6.12.0(@react-email/render@2.0.6(react-dom@19.2.5(react@19.2.5))(react@19.2.5))
       safedeposit:
         specifier: workspace:*
         version: link:../../packages/safedeposit
@@ -7553,8 +7553,8 @@ packages:
   requires-port@1.0.0:
     resolution: {integrity: sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ==}
 
-  resend@6.11.0:
-    resolution: {integrity: sha512-S9gxOccfwc+E6Cr3q28Gu8NkiIjYlYPlj9rqk4zkIuzlEoh8sWu/IvJSg7U7t+o3g0Ov2IOCzcneUaCi/M/WdQ==}
+  resend@6.12.0:
+    resolution: {integrity: sha512-CaxEvX1z+/MGbgnhsM/bvmkbnZd1v1sEXELAjBNSDBQNMaB7MgqOyrBgI27CYikEgdaDnBrXghAXYWTBs/h5Bw==}
     engines: {node: '>=20'}
     peerDependencies:
       '@react-email/render': '*'
@@ -15874,7 +15874,7 @@ snapshots:
 
   requires-port@1.0.0: {}
 
-  resend@6.11.0(@react-email/render@2.0.6(react-dom@19.2.5(react@19.2.5))(react@19.2.5)):
+  resend@6.12.0(@react-email/render@2.0.6(react-dom@19.2.5(react@19.2.5))(react@19.2.5)):
     dependencies:
       postal-mime: 2.7.4
       svix: 1.90.0
