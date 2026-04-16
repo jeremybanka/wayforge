@@ -1,3 +1,4 @@
+import * as React from "react"
 import {
 	Body,
 	CodeBlock,
@@ -8,8 +9,7 @@ import {
 	Preview,
 	Section,
 	Text,
-} from "@react-email/components"
-import * as React from "react"
+} from "react-email"
 
 import {
 	genAccountActionCode,
