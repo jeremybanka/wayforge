@@ -55,7 +55,7 @@
 		"@typescript/native-preview": "7.0.0-dev.20260417.1",
 		"arktype": "2.2.0",
 		"concurrently": "9.2.1",
-		"eslint": "10.2.0",
+		"eslint": "10.2.1",
 		"tmp": "0.2.5",
 		"tsdown": "0.21.9",
 		"vite": "8.0.8",
