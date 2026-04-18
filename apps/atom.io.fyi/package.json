@@ -24,7 +24,7 @@
 		"@astrojs/cloudflare": "13.1.10",
 		"@astrojs/mdx": "5.0.3",
 		"@astrojs/preact": "5.1.1",
-		"astro": "6.1.7",
+		"astro": "6.1.8",
 		"atom.io": "workspace:*",
 		"preact": "10.29.1",
 		"react": "npm:@preact/compat@18.3.2",
