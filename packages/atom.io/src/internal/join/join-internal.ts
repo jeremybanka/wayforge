@@ -97,8 +97,6 @@ export class Join<
 		store: RootStore,
 		options: JoinOptions<AName, A, BName, B, Cardinality>,
 	) {
-		type AB = A & B
-
 		this.store = store
 		this.options = options
 
@@ -164,7 +162,7 @@ export class Join<
 				for (const newRelationB of newRelationsOfA) {
 					const relationsOfBAtom = find(relatedKeysAtoms, newRelationB)
 					const relationsOfB = get(relationsOfBAtom)
-					const newRelationBIsAlreadyRelated = relationsOfB.has(a as AB)
+					const newRelationBIsAlreadyRelated = relationsOfB.has(a)
 					if (this.relations.cardinality === `1:n`) {
 						const previousOwnersToDispose: string[] = []
 						for (const previousOwner of relationsOfB) {
@@ -178,7 +176,7 @@ export class Join<
 								relatedKeysAtoms,
 								previousOwner,
 								(relations) => {
-									relations.delete(newRelationB as AB)
+									relations.delete(newRelationB)
 									previousOwnerSize = relations.size
 									return relations
 								},
@@ -201,7 +199,7 @@ export class Join<
 					}
 					if (!newRelationBIsAlreadyRelated) {
 						set(relationsOfBAtom, (relations) => {
-							relations.add(a as AB)
+							relations.add(a)
 							return relations
 						})
 					}
@@ -263,7 +261,7 @@ export class Join<
 			},
 			has: (a, b) => {
 				const aKeys = this.toolkit.get(relatedKeysAtoms, a)
-				return b ? aKeys.has(b as AB) : aKeys.size > 0
+				return b ? aKeys.has(b) : aKeys.size > 0
 			},
 		}
 		const externalStore = baseExternalStoreConfiguration

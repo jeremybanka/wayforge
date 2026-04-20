@@ -7,7 +7,7 @@ import type { ToggleProps } from "./Toggle"
 
 export const setCssVars = (
 	vars: Record<`--${string}`, number | string>,
-): Partial<React.CSSProperties> => vars as any
+): Partial<React.CSSProperties> => vars
 
 export function Button({ children, checked, onChange }: ToggleProps): VNode {
 	return (

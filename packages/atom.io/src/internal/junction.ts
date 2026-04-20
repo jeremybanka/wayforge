@@ -141,7 +141,7 @@ export class Junction<
 	protected replaceRelationsUnsafely(a: A, bs: B[]): void
 	protected replaceRelationsUnsafely(b: B, as: A[]): void
 	protected replaceRelationsUnsafely(x: A | B, ys: A[] | B[]): void {
-		this.relations.set(x as A, new Set(ys as B[]))
+		this.relations.set(x, new Set(ys as B[]))
 		for (const y of ys) {
 			const yRelations = new Set<A>().add(x as A)
 			this.relations.set(y, yRelations)
@@ -368,6 +368,7 @@ export class Junction<
 		b?: A | B,
 	): this {
 		// @ts-expect-error we deduce that this.b may index x
+		// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
 		b = typeof b === `string` ? (b as B) : (x[this.b] as B | undefined)
 		const a =
 			// @ts-expect-error we deduce that this.a may index x

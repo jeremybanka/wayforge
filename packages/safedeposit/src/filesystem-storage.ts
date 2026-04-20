@@ -64,7 +64,7 @@ export class FilesystemStorage<
 			const bStat = statSync(b)
 			return bStat.ctimeMs - aStat.ctimeMs
 		})
-		return (filePathsByDateCreated[index] as string & keyof T) ?? null
+		return filePathsByDateCreated[index] ?? null
 	}
 
 	public clear(): void {

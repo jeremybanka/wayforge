@@ -38,9 +38,7 @@ export const redactDeep =
 						meta: { pathComplete: true },
 					}
 				: {
-						data: isPlainObject(node)
-							? redact(...args)(node as Record<PropertyKey, any>)
-							: node,
+						data: isPlainObject(node) ? redact(...args)(node as O) : node,
 					},
 		)
 
