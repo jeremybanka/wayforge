@@ -48,7 +48,7 @@ function toJSONSafe(value: unknown, seen = new WeakSet()): JSONValue {
 	if (Array.isArray(value)) {
 		if (seen.has(value as object)) return null
 		seen.add(value as object)
-		return value.map((v) => toJSONSafe(v, seen)) as JSONArray
+		return value.map((v) => toJSONSafe(v, seen))
 	}
 	if (typeof value === `object`) {
 		if (!value) return null

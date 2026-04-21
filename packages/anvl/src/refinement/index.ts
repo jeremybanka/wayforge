@@ -16,7 +16,7 @@ export const isLiteral =
 export const isWithin =
 	<Options extends ReadonlyArray<any>>(args: Options) =>
 	(input: unknown): input is Options[number] =>
-		args.includes(input as Options[number])
+		args.includes(input)
 
 export const ensure =
 	<T>(isType: Refinement<unknown, T>) =>

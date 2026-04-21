@@ -584,7 +584,7 @@ describe(`useLoadable`, () => {
 						return
 					}
 					setContainerState(root, `not-loading`)
-					fillContainerWithIds(root, value.value as number[])
+					fillContainerWithIds(root, value.value)
 				})
 				return root
 			}
@@ -619,7 +619,7 @@ describe(`useLoadable`, () => {
 				Solid.createEffect(() => {
 					const value = ids()
 					setContainerState(root, value.loading ? `loading` : `not-loading`)
-					fillContainerWithIds(root, value.value as number[])
+					fillContainerWithIds(root, value.value)
 				})
 				return root
 			}
@@ -678,7 +678,7 @@ describe(`useLoadable`, () => {
 						setDisplay(error, `error`, `Error...`)
 						return
 					}
-					fillContainerWithIds(root, value.value as number[])
+					fillContainerWithIds(root, value.value)
 					if (value.loading) setContainerState(root, `reloading`)
 				})
 				return root
@@ -831,7 +831,7 @@ describe(`useLoadable`, () => {
 				Solid.createEffect(() => {
 					const value = ids()
 					setContainerState(root, value.loading ? `loading` : `not-loading`)
-					fillContainerWithIds(root, value.value as number[])
+					fillContainerWithIds(root, value.value)
 				})
 				return root
 			}

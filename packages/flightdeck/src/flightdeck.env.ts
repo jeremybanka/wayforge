@@ -5,6 +5,6 @@ export const env = createEnv({
 	server: { FLIGHTDECK_SECRET: type(`string`, `|`, `undefined`) },
 	clientPrefix: `NEVER`,
 	client: {},
-	runtimeEnv: import.meta.env as Record<string, string>,
+	runtimeEnv: import.meta.env,
 	emptyStringAsUndefined: true,
 })

@@ -66,8 +66,8 @@ export class Silo {
 		const s = (this.store = new Store(config, fromStore) as RootStore)
 		this.atom = ((options: Parameters<typeof atom>[0]) =>
 			createRegularAtom(s, options, undefined)) as typeof atom
-		this.mutableAtom = ((options: Parameters<typeof mutableAtom>[0]) =>
-			createMutableAtom(s, options, undefined)) as typeof mutableAtom
+		this.mutableAtom = (options: Parameters<typeof mutableAtom>[0]) =>
+			createMutableAtom(s, options, undefined)
 		this.atomFamily = ((options: Parameters<typeof atomFamily>[0]) =>
 			createRegularAtomFamily(s, options)) as typeof atomFamily
 		this.mutableAtomFamily = ((
