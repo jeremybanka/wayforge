@@ -75,7 +75,7 @@ export function useLoadable(
 		loading: boolean
 		value: unknown
 		error?: unknown
-	} = { loading: false, value: null as unknown }
+	} = { loading: false, value: null }
 	let lastLoaded = fallback
 
 	return () => {

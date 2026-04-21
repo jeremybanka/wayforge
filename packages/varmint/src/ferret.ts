@@ -245,7 +245,7 @@ export class Ferret {
 					}
 				}
 				return {
-					get: (...args: Parameters<F>) => {
+					get: (...args: Parameters<F>): Promisified<ReturnType<F>> => {
 						let subKey = unSafeSubKey
 						if (this.mode !== `off`) {
 							let cachedSubKey = this.filenameCache.get(unSafeSubKey)
@@ -268,19 +268,25 @@ export class Ferret {
 							case `off`: {
 								const stream = getStream(...args)
 								if (stream instanceof Promise) {
-									return stream
+									return stream as Promisified<ReturnType<F>>
 								}
-								return Promise.resolve(stream)
+								return Promise.resolve(stream) as Promisified<ReturnType<F>>
 							}
 							case `read`: {
-								return this.read<F>(key, subKey, args)
+								return this.read<F>(key, subKey, args) as unknown as Promisified<
+									ReturnType<F>
+								>
 							}
 							case `write`: {
-								return this.write<F>(key, subKey, args, getStream) as any
+								return this.write<F>(key, subKey, args, getStream)
 							}
 							case `read-write`: {
 								try {
-									return this.read<F>(key, subKey, args)
+									return this.read<F>(
+										key,
+										subKey,
+										args,
+									) as unknown as Promisified<ReturnType<F>>
 								} catch (thrown) {
 									if (thrown instanceof Error) {
 										return this.write<F>(key, subKey, args, getStream)

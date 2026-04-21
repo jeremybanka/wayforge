@@ -212,7 +212,7 @@ export const validateByLogicMode: {
 									? validationResults.flatMap((result) =>
 											result.violations.map(({ schema }) => schema),
 										)
-									: (opts.schema.oneOf as ReadonlyArray<JsonSchema>),
+									: opts.schema.oneOf,
 						},
 						problem: `${
 							validationResults.filter((result) => result.isValid).length
@@ -318,7 +318,7 @@ export const collectPropertyViolations =
 		if (schema.properties && isPlainObject(instance)) {
 			const isValid = Object.entries(schema.properties).every(
 				([key, propertySchema]) => {
-					const propertyInstance = (instance as Record<string, unknown>)[key]
+					const propertyInstance = instance[key]
 					const validationResult = validateBy(propertySchema)({
 						instance: propertyInstance,
 						refMap,

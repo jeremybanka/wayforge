@@ -3,13 +3,10 @@ import type { Refinement } from "../refinement"
 export const isUndefined = (input: unknown): input is undefined =>
 	input === undefined
 
-export const ifDefined = <T>(
-	validate: Refinement<unknown, T>,
-): Refinement<unknown, T | undefined> =>
-	((input) => isUndefined(input) || validate(input)) as Refinement<
-		unknown,
-		T | undefined
-	>
+export const ifDefined =
+	<T>(validate: Refinement<unknown, T>): Refinement<unknown, T | undefined> =>
+	(input) =>
+		isUndefined(input) || validate(input)
 
 export const isNull = (input: unknown): input is null => input === null
 

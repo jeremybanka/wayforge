@@ -1,7 +1,7 @@
 export type IntegerBrand = { readonly integer: unique symbol /* virtual */ }
 export type integer = IntegerBrand & number
 export const isInteger = (input: unknown): input is integer =>
-	Number.isInteger(input as number)
+	Number.isInteger(input)
 
 export const Int = (input: unknown): integer => {
 	if (isInteger(input)) return input
@@ -67,5 +67,5 @@ export function asNumber<
 	[K in keyof R]: R[K] extends Fraction | integer | number ? number : number[]
 }
 export function asNumber(input: unknown): unknown {
-	return input as any
+	return input
 }

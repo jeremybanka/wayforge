@@ -351,11 +351,11 @@ describe(`OList`, () => {
 		})
 		it(`extend`, () => {
 			const ol = new OList<string>(`a`, `b`, `c`)
-			const update = OList.packUpdate({
+			const update = OList.packUpdate<string>({
 				type: `extend`,
 				next: 4,
 				prev: 3,
-			} as ArrayUpdate<string>)
+			})
 			ol.do(update)
 			expect(ol.length).toBe(4)
 			expect(ol[0]).toBe(`a`)
@@ -419,9 +419,9 @@ describe(`OList`, () => {
 		})
 		it(`pop without value`, () => {
 			const ol = new OList<string>()
-			const update = OList.packUpdate({
+			const update = OList.packUpdate<string>({
 				type: `pop`,
-			} as ArrayUpdate<string>)
+			})
 			ol.do(update)
 			expect(ol.length).toBe(0)
 			ol.undo(update)
@@ -441,9 +441,9 @@ describe(`OList`, () => {
 		})
 		it(`shift without value`, () => {
 			const ol = new OList<string>(`a`)
-			const update = OList.packUpdate({
+			const update = OList.packUpdate<string>({
 				type: `shift`,
-			} as ArrayUpdate<string>)
+			})
 			ol.do(update)
 			expect(ol.length).toBe(0)
 			ol.undo(update)
@@ -474,9 +474,9 @@ describe(`OList`, () => {
 		})
 		it(`reverse`, () => {
 			const ol = new OList<string>(`a`, `b`, `c`)
-			const update = OList.packUpdate({
+			const update = OList.packUpdate<string>({
 				type: `reverse`,
-			} as ArrayUpdate<string>)
+			})
 			ol.do(update)
 			expect(ol[0]).toBe(`c`)
 			expect(ol[1]).toBe(`b`)

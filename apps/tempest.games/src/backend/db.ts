@@ -5,6 +5,6 @@ import { logger } from "./logger"
 
 export const db = new DatabaseManager({
 	logQuery(query, params) {
-		logger.info(`📝 query`, query, params as Json.Serializable)
+		logger.info(`📝 query`, query, params)
 	},
 })
