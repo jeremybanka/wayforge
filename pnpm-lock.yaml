@@ -859,6 +859,9 @@ importers:
 
   packages/rel8:
     devDependencies:
+      '@typescript/native-preview':
+        specifier: 7.0.0-dev.20260420.1
+        version: 7.0.0-dev.20260420.1
       concurrently:
         specifier: 9.2.1
         version: 9.2.1
