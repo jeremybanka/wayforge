@@ -21,7 +21,7 @@
 		"lint:types": "tsgo --noEmit"
 	},
 	"dependencies": {
-		"@astrojs/cloudflare": "13.2.0",
+		"@astrojs/cloudflare": "13.2.1",
 		"@astrojs/mdx": "5.0.4",
 		"@astrojs/preact": "5.1.2",
 		"astro": "6.1.9",
