@@ -20,6 +20,7 @@ const parserOptions = {
 } satisfies parser.ParserOptions
 
 const commonRules = {
+	/*
 	"@typescript-eslint/adjacent-overload-signatures": ERROR,
 	"@typescript-eslint/array-type": 0,
 	"@typescript-eslint/await-thenable": 0,
@@ -150,6 +151,7 @@ const commonRules = {
 	"@typescript-eslint/typedef": 0,
 	"@typescript-eslint/unbound-method": 0,
 	"@typescript-eslint/unified-signatures": ERROR,
+	*/
 
 	"atom.io/exact-catch-types": ERROR,
 	"atom.io/explicit-state-types": [ERROR, { permitAnnotation: true }],
