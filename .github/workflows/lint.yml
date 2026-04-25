@@ -48,6 +48,14 @@ jobs:
       - uses: ./.github/actions/setup
       - run: pnpm lint:eslint
 
+  Oxlint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v6.0.2
+      - uses: ./.github/actions/setup
+      - run: pnpm lint:oxlint
+
   Types:
     runs-on: ubuntu-latest
     timeout-minutes: 9
