@@ -43,6 +43,7 @@
 		"build": "tsdown",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
+		"lint:oxlint": "oxlint --type-aware -c ../../.oxlintrc.jsonc .",
 		"lint:types": "tsc --noEmit",
 		"watch:types": "tsc --watch --noEmit",
 		"lint": "concurrently \"bun:lint:*\"",
