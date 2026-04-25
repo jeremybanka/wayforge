@@ -15,7 +15,7 @@ const WARN = 1
 const ERROR = 2
 
 const parserOptions = {
-	project: [`./tsconfig.json`],
+	projectService: true,
 	sourceType: `module`,
 } satisfies parser.ParserOptions
 
