@@ -25,7 +25,7 @@ export default defineConfig({
 		react(),
 		tsconfigPaths(),
 		dts({
-			outDir: `dist`,
+			outDirs: `dist`,
 			include: [`src/**/*`],
 			insertTypesEntry: true,
 		}),
