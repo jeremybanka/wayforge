@@ -58,7 +58,7 @@
 		"concurrently": "9.2.1",
 		"eslint": "10.2.1",
 		"happy-dom": "20.9.0",
-		"jsdom": "29.1.0",
+		"jsdom": "29.1.1",
 		"preact": "10.29.1",
 		"react": "19.2.5",
 		"react-dom": "19.2.5",
