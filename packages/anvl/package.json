@@ -121,7 +121,7 @@
 	"devDependencies": {
 		"@typescript/native-preview": "7.0.0-dev.20260501.1",
 		"concurrently": "9.2.1",
-		"eslint": "10.2.1",
+		"eslint": "10.3.0",
 		"tsdown": "0.21.10",
 		"vite": "8.0.10",
 		"vite-tsconfig-paths": "6.1.1",
