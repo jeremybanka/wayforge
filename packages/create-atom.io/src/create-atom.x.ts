@@ -11,8 +11,9 @@ const CREATE_ATOM_OPTS = options(
 	`Create a new project with atom.io.`,
 	type({
 		"packageManager?": `"bun" | "npm" | "pnpm" | "yarn"`,
-		"templateName?": `"preact-svg-editor" | "react-node-backend"`,
+		"templateName?": `"preact-svg-editor" | "react-node-backend" | "solid-lossless-numbers"`,
 		"skipHints?": `boolean`,
+		"useMise?": `boolean`,
 	}),
 	{
 		packageManager: {
@@ -32,6 +33,12 @@ const CREATE_ATOM_OPTS = options(
 			required: false,
 			description: `Silences the 'Getting Started' info, mainly for use in other initializers that may wrap this one but provide their own scripts/instructions.`,
 			example: `--skipHints`,
+			parse: parseBooleanOption,
+		},
+		useMise: {
+			required: false,
+			description: `Include mise.toml for managing the project environment.`,
+			example: `--useMise=true`,
 			parse: parseBooleanOption,
 		},
 	},
