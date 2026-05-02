@@ -105,11 +105,7 @@ export async function createAtom(
 	if (skipHint === false) {
 		const gettingStarted = `
 			${pico.dim(`$`)} ${pico.blueBright(`cd ${dir}`)}
-			${
-				useMise
-					? `${pico.dim(`$`)} ${pico.blueBright(`mise install`)}`
-					: ``
-			}
+			${useMise ? `${pico.dim(`$`)} ${pico.blueBright(`mise install`)}` : ``}
 			${pico.dim(`$`)} ${pico.blueBright(
 				`${
 					packageManager === `npm`
