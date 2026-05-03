@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.10
+
+### Patch Changes
+
+- 0e0e2f5: ✨ Added optional mise environment setup to generated projects.
+
 ## 0.0.9
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @atom.io/template-react-node-backend
 
+## 0.0.60
+
+### Patch Changes
+
+- 0e0e2f5: ✨ Added optional mise environment setup to generated projects.
+
 ## 0.0.59
 
 ### Patch Changes
