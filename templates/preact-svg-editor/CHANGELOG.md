@@ -1,5 +1,11 @@
 # @atom.io/template-preact-svg-editor
 
+## 0.0.56
+
+### Patch Changes
+
+- 0e0e2f5: ✨ Added optional mise environment setup to generated projects.
+
 ## 0.0.55
 
 ### Patch Changes

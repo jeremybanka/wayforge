@@ -1,5 +1,15 @@
 # create-atom.io
 
+## 0.1.17
+
+### Patch Changes
+
+- 0e0e2f5: ✨ Added optional mise environment setup to generated projects.
+- Updated dependencies [0e0e2f5]
+  - @atom.io/template-preact-svg-editor@0.0.56
+  - @atom.io/template-react-node-backend@0.0.60
+  - @atom.io/template-solid-lossless-numbers@0.0.10
+
 ## 0.1.16
 
 ### Patch Changes
