@@ -20,6 +20,7 @@ export type TemplateName =
 export type CreateAtomOptions = {
 	packageManager: PackageManager
 	templateName: TemplateName
+	useMise: boolean
 }
 
 export type CreateAtomOptionsPreloaded = {
@@ -35,7 +36,7 @@ export async function createAtom(
 
 	prompts.intro(pico.greenBright(`atom.io - Data Components for TypeScript`))
 
-	const { dir, templateName } = await prompts.group(
+	const { dir, templateName, useMise } = await prompts.group(
 		{
 			templateName: () =>
 				prompts.select<TemplateName>({
@@ -71,6 +72,13 @@ export async function createAtom(
 								}
 							},
 						}),
+			useMise: () =>
+				options.useMise === undefined
+					? prompts.confirm({
+							message: `Would you like to use mise to manage your environment? (https://mise.jdx.dev)`,
+							initialValue: true,
+						})
+					: Promise.resolve(options.useMise),
 		},
 		{
 			onCancel: () => {
@@ -80,7 +88,7 @@ export async function createAtom(
 		},
 	)
 	const targetDir = resolve(process.cwd(), dir)
-	const opts: CreateAtomOptions = { packageManager, templateName }
+	const opts: CreateAtomOptions = { packageManager, templateName, useMise }
 
 	await useSpinner(
 		`Setting up your project directory...`,
@@ -97,6 +105,7 @@ export async function createAtom(
 	if (skipHint === false) {
 		const gettingStarted = `
 			${pico.dim(`$`)} ${pico.blueBright(`cd ${dir}`)}
+			${useMise ? `${pico.dim(`$`)} ${pico.blueBright(`mise install`)}` : ``}
 			${pico.dim(`$`)} ${pico.blueBright(
 				`${
 					packageManager === `npm`
@@ -188,6 +197,7 @@ async function templateDir(
 				)
 				return
 			}
+			if (opts.useMise === false && f === `mise.toml`) return
 			// Publishing to npm renames the .gitignore to .npmignore
 			// https://github.com/npm/npm/issues/7252#issuecomment-253339460
 			if (f === `_gitignore`) f = `.gitignore`
