@@ -2,14 +2,14 @@ packages:
   - "apps/*"
   - "packages/*"
   - "templates/*"
-onlyBuiltDependencies:
-  - "@biomejs/biome"
-  - "@parcel/watcher"
-  - "@swc/core"
-  - "@vercel/speed-insights"
-  - "bun"
-  - "esbuild"
-  - "rolldown"
-  - "sharp"
-  - "unrs-resolver"
-  - "workerd"
+allowBuilds:
+  "@biomejs/biome": true
+  "@parcel/watcher": true
+  "@swc/core": true
+  "@vercel/speed-insights": true
+  "bun": true
+  "esbuild": true
+  "rolldown": true
+  "sharp": true
+  "unrs-resolver": true
+  "workerd": true
