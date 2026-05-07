@@ -6,7 +6,7 @@ runs:
     - name: Install Mise
       uses: jdx/mise-action@v4.0.1
       with:
-        version: 2026.2.8
+        version: 2026.5.2
 
     - name: Install Dependencies
       shell: bash
