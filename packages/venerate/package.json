@@ -33,7 +33,7 @@
 		"postversion": "biome format --write package.json"
 	},
 	"devDependencies": {
-		"@types/node": "25.6.1",
+		"@types/node": "25.6.2",
 		"@vitest/coverage-v8": "4.1.5",
 		"concurrently": "9.2.1",
 		"eslint": "10.3.0",
