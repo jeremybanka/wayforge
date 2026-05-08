@@ -33,7 +33,7 @@
 		"postversion": "biome format --write package.json"
 	},
 	"devDependencies": {
-		"@typescript/native-preview": "7.0.0-dev.20260507.1",
+		"@typescript/native-preview": "7.0.0-dev.20260508.1",
 		"concurrently": "9.2.1",
 		"eslint": "10.3.0",
 		"tsdown": "0.22.0",
