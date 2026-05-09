@@ -52,7 +52,7 @@
 		"@types/bun": "npm:bun-types@1.3.13",
 		"@types/node": "25.6.2",
 		"@types/tmp": "0.2.6",
-		"@typescript/native-preview": "7.0.0-dev.20260508.1",
+		"@typescript/native-preview": "7.0.0-dev.20260509.2",
 		"arktype": "2.2.0",
 		"concurrently": "9.2.1",
 		"eslint": "10.3.0",
