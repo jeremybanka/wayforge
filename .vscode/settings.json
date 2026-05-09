@@ -22,6 +22,10 @@
 		{
 			"fileMatch": ["**/flightdeck.config.json"],
 			"url": "./packages/flightdeck/dist/flightdeck.main.schema.json"
+		},
+		{
+			"fileMatch": ["**/renovate.json"],
+			"url": "./packages/renovate/dist/renovate.main.schema.json"
 		}
 	],
 	// EDITOR DISPLAY AND BEHAVIOR ////////////////////////////////////////////////
