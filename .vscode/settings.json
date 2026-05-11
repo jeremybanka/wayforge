@@ -14,6 +14,11 @@
 		".env.*": "properties",
 		"*.css": "css"
 	},
+	"json.schemaDownload.trustedDomains": {
+		"https://biomejs.dev/": true,
+		"https://docs.renovatebot.com/": true,
+		"https://turbo.build/": true
+	},
 	"json.schemas": [
 		{
 			"fileMatch": ["**/break-check.config.json"],
@@ -24,8 +29,8 @@
 			"url": "./packages/flightdeck/dist/flightdeck.main.schema.json"
 		},
 		{
-			"fileMatch": ["**/renovate.json"],
-			"url": "./packages/renovate/dist/renovate.main.schema.json"
+			"fileMatch": ["**/.changeset/config.json"],
+			"url": "https://unpkg.com/@changesets/config@3.0.3/schema.json"
 		}
 	],
 	// EDITOR DISPLAY AND BEHAVIOR ////////////////////////////////////////////////
