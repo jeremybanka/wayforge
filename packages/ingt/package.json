@@ -30,7 +30,7 @@
 		"tsdown": "0.22.0",
 		"vite": "8.0.12",
 		"vite-tsconfig-paths": "6.1.1",
-		"vitest": "4.1.5"
+		"vitest": "4.1.6"
 	},
 	"peerDependencies": {
 		"fp-ts": "^2.13.1",
