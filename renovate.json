@@ -1,6 +1,18 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
 	"extends": ["config:recommended", "customManagers:biomeVersions"],
+	"customManagers": [
+		{
+			"customType": "regex",
+			"managerFilePatterns": ["/^\\.github\\/actions\\/setup\\/action\\.yml$/"],
+			"matchStrings": [
+				"uses: jdx\\/mise-action@v\\S+\\s+      with:\\s+        version: (?<currentValue>\\S+)"
+			],
+			"depNameTemplate": "jdx/mise",
+			"datasourceTemplate": "github-releases",
+			"versioningTemplate": "semver-coerced"
+		}
+	],
 	"branchConcurrentLimit": 1,
 	"prHourlyLimit": 10
 }
