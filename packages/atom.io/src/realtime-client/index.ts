@@ -1,4 +1,5 @@
 export * from "./continuity"
+export * from "./observe-socket-wind-down"
 export * from "./pull-atom"
 export * from "./pull-atom-family-member"
 export * from "./pull-mutable-atom"
