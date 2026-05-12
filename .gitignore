@@ -23,3 +23,5 @@ repomix-output.xml
 
 *storybook.log
 storybook-static
+
+packages/atom.io/__reports__/
