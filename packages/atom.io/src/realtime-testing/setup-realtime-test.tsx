@@ -9,6 +9,7 @@ import { clearStore, IMPLICIT } from "atom.io/internal"
 import { toEntries } from "atom.io/json"
 import * as AR from "atom.io/react"
 import * as RT from "atom.io/realtime"
+import * as RTC from "atom.io/realtime-client"
 import * as RTR from "atom.io/realtime-react"
 import * as RTS from "atom.io/realtime-server"
 import { UList } from "atom.io/transceivers/u-list"
@@ -82,11 +83,12 @@ export type RealtimeTestClient = RealtimeTestTools & {
 	socket: ClientSocket
 }
 export type RealtimeTestClientBuilder = {
-	dispose: () => void
+	dispose: () => Promise<void>
 	init: () => RealtimeTestClient
 }
 
 export type RealtimeTestServer = RealtimeTestTools & {
+	awaitEvent: (consumer: RT.UserKey, event: string) => Promise<void>
 	dispose: () => Promise<void>
 	port: number
 }
@@ -107,6 +109,40 @@ export const setupRealtimeTestServer = (
 	options: TestSetupOptions,
 ): RealtimeTestServer => {
 	++testNumber
+	const observedEvents = new Map<RT.UserKey, Set<string>>()
+	const eventWaiters = new Map<RT.UserKey, Map<string, Set<() => void>>>()
+	const recordEvent = (consumer: RT.UserKey, event: string) => {
+		let consumerEvents = observedEvents.get(consumer)
+		if (consumerEvents === undefined) {
+			consumerEvents = new Set()
+			observedEvents.set(consumer, consumerEvents)
+		}
+		consumerEvents.add(event)
+
+		const waiters = eventWaiters.get(consumer)?.get(event)
+		if (waiters) {
+			for (const resolve of waiters) resolve()
+			eventWaiters.get(consumer)?.delete(event)
+		}
+	}
+	const awaitEvent = (consumer: RT.UserKey, event: string): Promise<void> => {
+		if (observedEvents.get(consumer)?.has(event)) {
+			return Promise.resolve()
+		}
+		return new Promise((resolve) => {
+			let consumerWaiters = eventWaiters.get(consumer)
+			if (consumerWaiters === undefined) {
+				consumerWaiters = new Map()
+				eventWaiters.set(consumer, consumerWaiters)
+			}
+			let waiters = consumerWaiters.get(event)
+			if (waiters === undefined) {
+				waiters = new Set()
+				consumerWaiters.set(event, waiters)
+			}
+			waiters.add(resolve)
+		})
+	}
 	const silo = new AtomIO.Silo(
 		{
 			name: `SERVER-${testNumber}`,
@@ -134,6 +170,9 @@ export const setupRealtimeTestServer = (
 		},
 		(config) => {
 			const { socket, consumer: userKey } = config
+			socket.onAny((event) => {
+				recordEvent(userKey, event)
+			})
 			function enableLogging() {
 				prefixLogger(silo.store, `server`)
 				socket.onAny((event, ...args) => {
@@ -160,6 +199,7 @@ export const setupRealtimeTestServer = (
 	)
 
 	return {
+		awaitEvent,
 		name: `SERVER`,
 		silo,
 		dispose,
@@ -169,12 +209,17 @@ export const setupRealtimeTestServer = (
 export const setupRealtimeTestClient = (
 	options: TestSetupOptions__SingleClient,
 	name: string,
-	port: number,
+	server: RealtimeTestServer,
 ): RealtimeTestClientBuilder => {
-	const testClient = { dispose: () => {} }
+	const testClient = { dispose: async () => {} }
 	const init = () => {
-		const socket: ClientSocket = io(`http://localhost:${port}/`, {
-			auth: { token: `test`, username: `user::${name}-${testNumber}` },
+		const userKey = `user::${name}-${testNumber}` as RT.UserKey
+		const socket: ClientSocket = io(`http://localhost:${server.port}/`, {
+			auth: { token: `test`, username: userKey },
+		})
+		const outgoingEvents: string[] = []
+		socket.onAnyOutgoing((event) => {
+			outgoingEvents.push(event)
 		})
 		const silo = new AtomIO.Silo(
 			{ name, lifespan: `ephemeral`, isProduction: false },
@@ -208,8 +253,14 @@ export const setupRealtimeTestClient = (
 			})
 		}
 
-		const dispose = () => {
+		const dispose = async () => {
+			const outgoingEventCount = outgoingEvents.length
 			renderResult.unmount()
+			await RTC.observeSocketWindDown(socket)
+			const emittedDuringTeardown = outgoingEvents.slice(outgoingEventCount)
+			await Promise.all(
+				emittedDuringTeardown.map((event) => server.awaitEvent(userKey, event)),
+			)
 			socket.disconnect()
 			clearStore(silo.store)
 		}
@@ -231,14 +282,14 @@ export const singleClient = (
 	options: TestSetupOptions__SingleClient,
 ): RealtimeTestAPI__SingleClient => {
 	const server = setupRealtimeTestServer(options)
-	const client = setupRealtimeTestClient(options, `CLIENT`, server.port)
+	const client = setupRealtimeTestClient(options, `CLIENT`, server)
 
 	return {
 		client,
 		server,
 		teardown: async () => {
+			await client.dispose()
 			await server.dispose()
-			client.dispose()
 		},
 	}
 }
@@ -252,7 +303,7 @@ export const multiClient = <ClientNames extends string>(
 			clientRecord[name] = setupRealtimeTestClient(
 				{ ...options, client },
 				name,
-				server.port,
+				server,
 			)
 			return clientRecord
 		},
@@ -263,10 +314,10 @@ export const multiClient = <ClientNames extends string>(
 		clients,
 		server,
 		teardown: async () => {
-			await server.dispose()
 			for (const [, client] of toEntries(clients)) {
-				client.dispose()
+				await client.dispose()
 			}
+			await server.dispose()
 		},
 	}
 }
