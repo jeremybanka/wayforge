@@ -1,6 +1,6 @@
 {
 	"name": "@atom.io/template-preact-svg-editor",
-	"version": "0.0.56",
+	"version": "0.0.57",
 	"publishConfig": {
 		"access": "public"
 	},

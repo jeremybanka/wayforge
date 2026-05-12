@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.46.34
+
+### Patch Changes
+
+- 32c0c0c: 🧪 Improved realtime test stability by making test teardown wait for client cleanup before disposing the server.
+
 ## 0.46.33
 
 ### Patch Changes
