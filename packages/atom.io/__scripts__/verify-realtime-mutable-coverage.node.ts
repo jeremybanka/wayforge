@@ -49,10 +49,7 @@ for (const run of [1, 2, 3]) {
 
 	const coverageFile = JSON.parse(
 		readFileSync(join(OUTPUT_DIR, `coverage-${run}.json`), `utf8`),
-	) as Record<
-		string,
-		CoverageEntry
-	>
+	) as Record<string, CoverageEntry>
 	const entry = coverageFile[TARGET_FILE]
 	const coveredLines = new Set<number>()
 	for (const [statementId, location] of Object.entries(entry.statementMap)) {

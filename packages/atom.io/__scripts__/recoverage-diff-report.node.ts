@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
+import { execFileSync } from "node:child_process"
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import { dirname, join, resolve } from "node:path"
-import { execFileSync } from "node:child_process"
 
 type GhRun = {
 	conclusion: string
@@ -24,7 +24,7 @@ type GhJob = {
 }
 
 type ParsedDiffRow = {
-	sign: `+` | `-`
+	sign: `-` | `+`
 	file: string
 	statements: string
 	branches: string
@@ -36,7 +36,7 @@ type ParsedDiffRow = {
 type ParsedDiff = {
 	baseRef: string
 	currentRef: string
-	change: `increased` | `decreased`
+	change: `decreased` | `increased`
 	rows: ParsedDiffRow[]
 }
 
@@ -56,7 +56,7 @@ type CoverageSample = {
 
 type AggregateEntry = {
 	signature: string
-	sign: `+` | `-`
+	sign: `-` | `+`
 	file: string
 	uncovered: string
 	occurrences: number
@@ -108,6 +108,7 @@ function parseOptions(argv: string[]): ScriptOptions {
 }
 
 function stripAnsi(text: string): string {
+	// biome-ignore lint/suspicious/noControlCharactersInRegex: purely internal script
 	return text.replace(/\x1b\[[0-9;]*m/g, ``)
 }
 
@@ -163,7 +164,9 @@ export function parseRecoverageDiff(logText: string): ParsedDiff | null {
 		return null
 	}
 	const header = normalizeLogLine(lines[diffHeaderIndex])
-	const match = header.match(/coverage diff between ([0-9a-f+]+) and ([0-9a-f+]+):/)
+	const match = header.match(
+		/coverage diff between ([0-9a-f+]+) and ([0-9a-f+]+):/,
+	)
 	if (!match) {
 		return null
 	}
@@ -205,7 +208,9 @@ function runGh(args: string[]): string {
 }
 
 function fetchCoverageJob(runId: number): GhJob | null {
-	const payload = JSON.parse(runGh([`run`, `view`, String(runId), `--json`, `jobs`])) as {
+	const payload = JSON.parse(
+		runGh([`run`, `view`, String(runId), `--json`, `jobs`]),
+	) as {
 		jobs: GhJob[]
 	}
 	return payload.jobs.find((job) => job.name === `Coverage`) ?? null
@@ -233,7 +238,7 @@ function summarize(samples: CoverageSample[]) {
 	const changedSamples = samples.filter((sample) => sample.diff !== null)
 	const aggregate = new Map<string, AggregateEntry>()
 	for (const sample of changedSamples) {
-		for (const row of sample.diff.rows) {
+		for (const row of sample.diff?.rows ?? []) {
 			const signature = `${row.sign} ${row.file} | ${row.uncovered}`
 			const known = aggregate.get(signature)
 			if (known) {
@@ -299,23 +304,30 @@ function summarize(samples: CoverageSample[]) {
 	return {
 		totalRuns: samples.length,
 		runsWithCoverageDiff: changedSamples.length,
-		coverageFailures: samples.filter((sample) => sample.coverageConclusion === `failure`)
-			.length,
-		coverageSuccesses: samples.filter((sample) => sample.coverageConclusion === `success`)
-			.length,
+		coverageFailures: samples.filter(
+			(sample) => sample.coverageConclusion === `failure`,
+		).length,
+		coverageSuccesses: samples.filter(
+			(sample) => sample.coverageConclusion === `success`,
+		).length,
 		bySignature,
 		byFile,
 	}
 }
 
-function renderMarkdown(samples: CoverageSample[], summary: ReturnType<typeof summarize>): string {
+function renderMarkdown(
+	samples: CoverageSample[],
+	summary: ReturnType<typeof summarize>,
+): string {
 	const lines: string[] = []
 	lines.push(`# Recoverage Diff Sample`)
 	lines.push(``)
 	lines.push(`Range: ${RANGE_START} to ${RANGE_END}`)
 	lines.push(``)
 	lines.push(`- Coverage jobs sampled: ${summary.totalRuns}`)
-	lines.push(`- Jobs with a recoverage diff table: ${summary.runsWithCoverageDiff}`)
+	lines.push(
+		`- Jobs with a recoverage diff table: ${summary.runsWithCoverageDiff}`,
+	)
 	lines.push(`- Coverage failures: ${summary.coverageFailures}`)
 	lines.push(`- Coverage successes: ${summary.coverageSuccesses}`)
 	lines.push(``)
@@ -387,11 +399,14 @@ function main(): void {
 			`[${index + 1}/${runs.length}] run ${run.databaseId} ${run.createdAt} ${run.headBranch}`,
 		)
 		const coverageJob = fetchCoverageJob(run.databaseId)
-		if (coverageJob === null || coverageJob.status !== `completed`) {
+		if (coverageJob?.status !== `completed`) {
 			continue
 		}
 		const logText = fetchCoverageLog(coverageJob.databaseId)
-		const logPath = join(logsDir, `${run.databaseId}-${coverageJob.databaseId}.log`)
+		const logPath = join(
+			logsDir,
+			`${run.databaseId}-${coverageJob.databaseId}.log`,
+		)
 		writeText(logPath, logText)
 		samples.push({
 			runId: run.databaseId,
@@ -411,7 +426,10 @@ function main(): void {
 	const summary = summarize(samples)
 	writeJson(join(options.outputRoot, `runs.json`), samples)
 	writeJson(join(options.outputRoot, `summary.json`), summary)
-	writeText(join(options.outputRoot, `README.md`), renderMarkdown(samples, summary))
+	writeText(
+		join(options.outputRoot, `README.md`),
+		renderMarkdown(samples, summary),
+	)
 	console.log(
 		JSON.stringify(
 			{
