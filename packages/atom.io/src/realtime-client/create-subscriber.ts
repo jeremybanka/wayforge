@@ -3,10 +3,12 @@ import type { Socket } from "atom.io/realtime"
 
 type SubData = { refcount: number; timer: Future<void> }
 
+const SUBSCRIPTION_COALESCE_MS = 50
+
 const subscriptions: WeakMap<Socket, Map<string, SubData>> = new WeakMap()
 const socketIds: WeakMap<Socket, string | undefined> = new WeakMap()
 
-function getSubMap(socket: Socket): Map<string, SubData> {
+export function getSubMap(socket: Socket): Map<string, SubData> {
 	let subMap = subscriptions.get(socket)
 	if (subMap === undefined) {
 		subMap = new Map()
@@ -45,7 +47,7 @@ export function createSubscriber<K extends string>(
 
 		if (sub.refcount === 0) {
 			const timeout = new Promise<void>((resolve) => {
-				setTimeout(resolve, 50)
+				setTimeout(resolve, SUBSCRIPTION_COALESCE_MS)
 			})
 			sub.timer.use(timeout)
 		}
