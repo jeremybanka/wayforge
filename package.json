@@ -7,7 +7,7 @@
 	"author": "jeremybanka",
 	"license": "GPL-3.0",
 	"private": true,
-	"packageManager": "pnpm@11.1.0",
+	"packageManager": "pnpm@11.1.1",
 	"engines": {
 		"node": "25.9.0"
 	},
