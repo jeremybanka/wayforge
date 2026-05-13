@@ -6,6 +6,9 @@ on:
   pull_request:
     types: [opened, synchronize]
 
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -35,10 +38,10 @@ jobs:
         options: >-
           --health-cmd pg_isready --health-interval 1s --health-timeout 0.5s --health-retries 30
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - run: pnpm run test
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         if: ${{ !cancelled() }}
         with:
           name: Varmint
@@ -49,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 9
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - run: pnpm run build
 
@@ -68,15 +71,12 @@ jobs:
         options: >-
           --health-cmd pg_isready --health-interval 1s --health-timeout 0.5s --health-retries 30
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
-      - run: |
-          printenv > packages/atom.io/.env
-          printenv > packages/treetrunks/.env
-        env:
-          RECOVERAGE_CLOUD_TOKEN: ${{ secrets.RECOVERAGE_CLOUD_TOKEN }}
       - run: git rev-parse HEAD > git.sha
       - run: pnpm test:coverage:increased
+        env:
+          RECOVERAGE_CLOUD_TOKEN: ${{ secrets.RECOVERAGE_CLOUD_TOKEN }}
 
   BreakCheck:
     name: Break Check
@@ -94,6 +94,6 @@ jobs:
         options: >-
           --health-cmd pg_isready --health-interval 1s --health-timeout 0.5s --health-retries 30
     steps:
-      - uses: actions/checkout@v6.0.2
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
       - run: pnpm test:semver
