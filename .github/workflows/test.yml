@@ -73,13 +73,10 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: ./.github/actions/setup
-      - run: |
-          printenv > packages/atom.io/.env
-          printenv > packages/treetrunks/.env
-        env:
-          RECOVERAGE_CLOUD_TOKEN: ${{ secrets.RECOVERAGE_CLOUD_TOKEN }}
       - run: git rev-parse HEAD > git.sha
       - run: pnpm test:coverage:increased
+        env:
+          RECOVERAGE_CLOUD_TOKEN: ${{ secrets.RECOVERAGE_CLOUD_TOKEN }}
 
   BreakCheck:
     name: Break Check
