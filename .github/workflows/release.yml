@@ -11,15 +11,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  TURBO_API: ${{ secrets.TURBO_API }}
-  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-  TURBO_TEAMID: ${{ vars.TURBO_TEAMID }}
-
-permissions:
-  contents: write
-  id-token: write
-
 jobs:
   Release:
     runs-on: ubuntu-latest
