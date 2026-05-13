@@ -214,13 +214,13 @@ async function templateDir(
 function createMiseToml(packageManager: PackageManager): string {
 	switch (packageManager) {
 		case `bun`:
-			return ["[tools]", 'bun = "@latest"', ""].join(`\n`)
+			return [`[tools]`, `bun = "@latest"`, ``].join(`\n`)
 		case `npm`:
-			return ["[tools]", 'node = "@latest"', 'npm = "@latest"', ""].join(`\n`)
+			return [`[tools]`, `node = "@latest"`, `npm = "@latest"`, ``].join(`\n`)
 		case `pnpm`:
-			return ["[tools]", 'node = "@latest"', 'pnpm = "@latest"', ""].join(`\n`)
+			return [`[tools]`, `node = "@latest"`, `pnpm = "@latest"`, ``].join(`\n`)
 		case `yarn`:
-			return ["[tools]", 'node = "@latest"', 'yarn = "@latest"', ""].join(`\n`)
+			return [`[tools]`, `node = "@latest"`, `yarn = "@latest"`, ``].join(`\n`)
 	}
 }
 
