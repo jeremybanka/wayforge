@@ -1,5 +1,11 @@
 # @atom.io/template-react-node-backend
 
+## 0.0.62
+
+### Patch Changes
+
+- 8e25352: ✨ Only populate mise.toml with chosen tools.
+
 ## 0.0.61
 
 ### Patch Changes

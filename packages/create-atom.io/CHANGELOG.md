@@ -1,5 +1,15 @@
 # create-atom.io
 
+## 0.1.19
+
+### Patch Changes
+
+- 8e25352: ✨ Only populate mise.toml with chosen tools.
+- Updated dependencies [8e25352]
+  - @atom.io/template-solid-lossless-numbers@0.0.12
+  - @atom.io/template-react-node-backend@0.0.62
+  - @atom.io/template-preact-svg-editor@0.0.58
+
 ## 0.1.18
 
 ### Patch Changes
