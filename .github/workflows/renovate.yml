@@ -23,8 +23,8 @@ jobs:
     name: Discover Upgrades
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6.0.2
-      - uses: renovatebot/github-action@v46.1.14
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: renovatebot/github-action@693b9ef15eec82123529a37c782242f091365961 # v46.1.14
         env:
           LOG_LEVEL: debug
           RENOVATE_ALLOW_PLUGINS: true
