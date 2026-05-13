@@ -1,5 +1,11 @@
 # @atom.io/template-preact-svg-editor
 
+## 0.0.58
+
+### Patch Changes
+
+- 8e25352: ✨ Only populate mise.toml with chosen tools.
+
 ## 0.0.57
 
 ### Patch Changes

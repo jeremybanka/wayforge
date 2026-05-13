@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.12
+
+### Patch Changes
+
+- 8e25352: ✨ Only populate mise.toml with chosen tools.
+
 ## 0.0.11
 
 ### Patch Changes
