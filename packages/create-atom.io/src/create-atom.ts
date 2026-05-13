@@ -198,6 +198,10 @@ async function templateDir(
 				return
 			}
 			if (opts.useMise === false && f === `mise.toml`) return
+			if (f === `mise.toml`) {
+				await fs.writeFile(resolve(to, f), createMiseToml(opts.packageManager))
+				return
+			}
 			// Publishing to npm renames the .gitignore to .npmignore
 			// https://github.com/npm/npm/issues/7252#issuecomment-253339460
 			if (f === `_gitignore`) f = `.gitignore`
@@ -205,6 +209,19 @@ async function templateDir(
 		}),
 	)
 	return results.flat(99)
+}
+
+function createMiseToml(packageManager: PackageManager): string {
+	switch (packageManager) {
+		case `bun`:
+			return [`[tools]`, `bun = "@latest"`, ``].join(`\n`)
+		case `npm`:
+			return [`[tools]`, `node = "@latest"`, `npm = "@latest"`, ``].join(`\n`)
+		case `pnpm`:
+			return [`[tools]`, `node = "@latest"`, `pnpm = "@latest"`, ``].join(`\n`)
+		case `yarn`:
+			return [`[tools]`, `node = "@latest"`, `yarn = "@latest"`, ``].join(`\n`)
+	}
 }
 
 async function installDeps(to: string, opts: CreateAtomOptions) {
