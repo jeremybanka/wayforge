@@ -6,7 +6,7 @@
 			"customType": "regex",
 			"managerFilePatterns": ["/^\\.github\\/actions\\/setup\\/action\\.yml$/"],
 			"matchStrings": [
-				"uses: jdx\\/mise-action@v\\S+\\s+      with:\\s+        version: (?<currentValue>\\S+)"
+				"uses: jdx\\/mise-action@\\S+(?:\\s+#.*)?\\s+      with:\\s+        version: (?<currentValue>\\S+)"
 			],
 			"depNameTemplate": "jdx/mise",
 			"datasourceTemplate": "github-releases",
