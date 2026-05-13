@@ -53,7 +53,8 @@
 		},
 		"test:coverage:increased": {
 			"dependsOn": ["test:coverage:once"],
-			"cache": false
+			"cache": false,
+			"passThroughEnv": ["RECOVERAGE_CLOUD_TOKEN"]
 		},
 		"test:semver": {
 			"dependsOn": ["^build"],
