@@ -18,7 +18,7 @@
 	"dependencies": {
 		"atom.io": "workspace:*",
 		"rationality": "workspace:*",
-		"solid-js": "1.9.12"
+		"solid-js": "1.9.13"
 	},
 	"devDependencies": {
 		"eslint": "10.3.0",
