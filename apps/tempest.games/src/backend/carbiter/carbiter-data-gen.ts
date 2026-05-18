@@ -1,10 +1,5 @@
 import { createOpenAI } from "@ai-sdk/openai"
-import {
-	generateText,
-	type LanguageModel,
-	type ModelMessage,
-	Output,
-} from "ai"
+import { generateText, type LanguageModel, type ModelMessage, Output } from "ai"
 import type { distill, Type } from "arktype"
 import { type } from "arktype"
 import { Squirrel } from "varmint"
