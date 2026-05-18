@@ -1,7 +1,13 @@
+blockExoticSubdeps: true
+minimumReleaseAge: 1440
+minimumReleaseAgeExclude: []
+autoInstallPeers: false
+
 packages:
   - "apps/*"
   - "packages/*"
   - "templates/*"
+
 allowBuilds:
   "@biomejs/biome": true
   "@parcel/watcher": true
@@ -13,4 +19,3 @@ allowBuilds:
   "sharp": true
   "unrs-resolver": true
   "workerd": true
-blockExoticSubdeps: true
