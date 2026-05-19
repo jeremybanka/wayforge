@@ -37,7 +37,8 @@
 		"notes": "changeset",
 		"nuke": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name 'dist' -type d -prune -exec rm -rf '{}' + && rm pnpm-lock.yaml",
 		"nv": "fnm use $(pnpm list -w --json | jq -r '.[0].path')",
-		"version": "dotenvx run -- turbo run version"
+		"version": "dotenvx run -- turbo run version",
+		"upgrade-workflows": "bun lib/update-workflows.bun.ts"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.15",
