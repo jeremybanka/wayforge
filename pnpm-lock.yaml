@@ -73,16 +73,16 @@ importers:
     dependencies:
       '@astrojs/cloudflare':
         specifier: 13.5.2
-        version: 13.5.2(@types/node@25.9.0)(astro@6.3.4(@types/node@25.9.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.4)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1))(jiti@2.7.0)(lightningcss@1.32.0)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1)(workerd@1.20260515.1)(wrangler@4.92.0)
+        version: 13.5.2(@types/node@25.9.0)(astro@6.3.5(@types/node@25.9.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.4)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1))(jiti@2.7.0)(lightningcss@1.32.0)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1)(workerd@1.20260515.1)(wrangler@4.92.0)
       '@astrojs/mdx':
         specifier: 5.0.6
-        version: 5.0.6(astro@6.3.4(@types/node@25.9.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.4)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1))
+        version: 5.0.6(astro@6.3.5(@types/node@25.9.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.4)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1))
       '@astrojs/preact':
         specifier: 5.1.3
         version: 5.1.3(@babel/core@7.29.0)(@types/node@25.9.0)(jiti@2.7.0)(lightningcss@1.32.0)(preact@10.29.2)(rollup@4.60.4)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1)
       astro:
-        specifier: 6.3.4
-        version: 6.3.4(@types/node@25.9.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.4)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1)
+        specifier: 6.3.5
+        version: 6.3.5(@types/node@25.9.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.4)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1)
       atom.io:
         specifier: workspace:*
         version: link:../../packages/atom.io
@@ -4614,8 +4614,8 @@ packages:
     resolution: {integrity: sha512-LElXdjswlqjWrPpJFg1Fx4wpkOCxj1TDHlSV4PlaRxHGWko024xICaa97ZkMfs6DRKlCguiAI+rbXv5GWwXIkg==}
     hasBin: true
 
-  astro@6.3.4:
-    resolution: {integrity: sha512-TXUu9Z6HE/M9MkUEbwIQBnBY2jhcuCalz0ACDb+dUeV27iXf3/aZ3uYjLXgn92W/JxImPA1oG+nZx+N9o0+B+Q==}
+  astro@6.3.5:
+    resolution: {integrity: sha512-gU+4KedkbTuVgz7YoVAN+9Ftnq0GaYwejxK2NbqDzB0M9dWd0f3kXZBuaM9hzbchRFoRAJfJjFtdX9LK6Ir7ZA==}
     engines: {node: '>=22.12.0', npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -8751,12 +8751,12 @@ snapshots:
 
   '@asamuzakjp/nwsapi@2.3.9': {}
 
-  '@astrojs/cloudflare@13.5.2(@types/node@25.9.0)(astro@6.3.4(@types/node@25.9.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.4)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1))(jiti@2.7.0)(lightningcss@1.32.0)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1)(workerd@1.20260515.1)(wrangler@4.92.0)':
+  '@astrojs/cloudflare@13.5.2(@types/node@25.9.0)(astro@6.3.5(@types/node@25.9.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.4)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1))(jiti@2.7.0)(lightningcss@1.32.0)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1)(workerd@1.20260515.1)(wrangler@4.92.0)':
     dependencies:
       '@astrojs/internal-helpers': 0.9.1
       '@astrojs/underscore-redirects': 1.0.3
       '@cloudflare/vite-plugin': 1.37.1(vite@7.3.3(@types/node@25.9.0)(jiti@2.7.0)(lightningcss@1.32.0)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1))(workerd@1.20260515.1)(wrangler@4.92.0)
-      astro: 6.3.4(@types/node@25.9.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.4)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1)
+      astro: 6.3.5(@types/node@25.9.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.4)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1)
       piccolore: 0.1.3
       tinyglobby: 0.2.16
       vite: 7.3.3(@types/node@25.9.0)(jiti@2.7.0)(lightningcss@1.32.0)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1)
@@ -8809,12 +8809,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/mdx@5.0.6(astro@6.3.4(@types/node@25.9.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.4)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1))':
+  '@astrojs/mdx@5.0.6(astro@6.3.5(@types/node@25.9.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.4)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1))':
     dependencies:
       '@astrojs/markdown-remark': 7.1.2
       '@mdx-js/mdx': 3.1.1
       acorn: 8.16.0
-      astro: 6.3.4(@types/node@25.9.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.4)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1)
+      astro: 6.3.5(@types/node@25.9.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.4)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1)
       es-module-lexer: 2.1.0
       estree-util-visit: 2.0.0
       hast-util-to-html: 9.0.5
@@ -11666,7 +11666,7 @@ snapshots:
 
   astring@1.9.0: {}
 
-  astro@6.3.4(@types/node@25.9.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.4)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1):
+  astro@6.3.5(@types/node@25.9.0)(jiti@2.7.0)(lightningcss@1.32.0)(rollup@4.60.4)(sass-embedded@1.99.0)(sass@1.99.0)(tsx@4.22.1):
     dependencies:
       '@astrojs/compiler': 4.0.0
       '@astrojs/internal-helpers': 0.9.1
