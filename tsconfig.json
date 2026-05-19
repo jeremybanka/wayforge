@@ -21,7 +21,7 @@
 		"strictFunctionTypes": false,
 		"strictNullChecks": true,
 		"strictPropertyInitialization": true,
-		"target": "ES2017",
+		"target": "ES2018",
 		"useUnknownInCatchVariables": true
 	},
 	"include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/.storybook/*.ts"],
