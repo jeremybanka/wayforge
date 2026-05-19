@@ -62,7 +62,7 @@
 		"@t3-oss/env-core": "0.13.11",
 		"@trpc/client": "11.17.0",
 		"@trpc/server": "11.17.0",
-		"ai": "6.0.184",
+		"ai": "6.0.185",
 		"arktype": "2.2.0",
 		"atom.io": "workspace:*",
 		"cron": "4.4.0",
