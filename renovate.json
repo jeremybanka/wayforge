@@ -18,6 +18,10 @@
 	],
 	"packageRules": [
 		{
+			"matchPackageNames": ["@typescript/*"],
+			"minimumReleaseAge": null
+		},
+		{
 			"matchManagers": ["github-actions"],
 			"dependencyDashboardApproval": true
 		},
