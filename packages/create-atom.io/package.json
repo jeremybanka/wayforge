@@ -31,7 +31,7 @@
 		"@clack/prompts": "1.4.0",
 		"arktype": "2.2.0",
 		"comline": "workspace:*",
-		"local-pkg": "1.1.2",
+		"local-pkg": "1.2.0",
 		"picocolors": "1.1.1",
 		"tinyexec": "1.1.2"
 	},
