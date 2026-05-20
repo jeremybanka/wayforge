@@ -70,9 +70,9 @@ const MISE_VERSION_PATTERN =
 	/^(?<prefix>\s*version:\s+)(?<version>\d+\.\d+\.\d+)\s*$/
 const ANSI = {
 	reset: `\x1b[0m`,
-	white: `\x1b[97m`,
+	white: `\x1b[37m`,
 	green: `\x1b[32m`,
-	grey: `\x1b[90m`,
+	cyan: `\x1b[36m`,
 }
 
 async function main(): Promise<void> {
@@ -95,11 +95,11 @@ async function main(): Promise<void> {
 	for (const update of updates) {
 		if (update.hasUpdate) {
 			console.log(
-				`${colorWhite(update.depName)} ${colorGreen(update.currentVersion)} ${colorGrey(`(${update.currentShortRef})`)} ${colorGrey(`->`)} ${colorGreen(update.targetVersion)} ${colorGrey(`(${shortSha(update.targetRef)})`)} ✨`,
+				`${colorWhite(update.depName)} ${colorGreen(update.currentVersion)} ${colorCyan(`(${update.currentShortRef})`)} ${colorCyan(`->`)} ${colorGreen(update.targetVersion)} ${colorCyan(`(${shortSha(update.targetRef)})`)} ✨`,
 			)
 		} else {
 			console.log(
-				`${colorWhite(update.depName)} ${colorGreen(update.currentVersion)} ${colorGrey(`(${update.currentShortRef})`)}`,
+				`${colorWhite(update.depName)} ${colorGreen(update.currentVersion)} ${colorCyan(`(${update.currentShortRef})`)}`,
 			)
 		}
 	}
@@ -107,7 +107,7 @@ async function main(): Promise<void> {
 	for (const update of miseUpdates) {
 		if (update.hasUpdate) {
 			console.log(
-				`${colorWhite(update.depName)} ${colorGreen(update.currentVersion)} ${colorGrey(`->`)} ${colorGreen(update.targetVersion)} ✨`,
+				`${colorWhite(update.depName)} ${colorGreen(update.currentVersion)} ${colorCyan(`->`)} ${colorGreen(update.targetVersion)} ✨`,
 			)
 		} else {
 			console.log(
@@ -550,8 +550,8 @@ function colorGreen(value: string): string {
 	return colorize(ANSI.green, value)
 }
 
-function colorGrey(value: string): string {
-	return colorize(ANSI.grey, value)
+function colorCyan(value: string): string {
+	return colorize(ANSI.cyan, value)
 }
 
 function colorize(color: string, value: string): string {
