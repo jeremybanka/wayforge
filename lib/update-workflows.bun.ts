@@ -499,7 +499,7 @@ function findMiseVersionUse(
 		}
 
 		const currentIndent = leadingWhitespace(line).length
-		if (currentIndent <= actionIndent) {
+		if (currentIndent < actionIndent) {
 			return null
 		}
 
