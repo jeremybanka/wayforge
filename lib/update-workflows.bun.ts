@@ -1,5 +1,6 @@
 #!/usr/bin/env bun
 import path from "node:path"
+
 import { $ } from "bun"
 
 type WorkflowUse = {
@@ -164,7 +165,7 @@ async function main(): Promise<void> {
 	}
 
 	for (const [filePath, fileLines] of filesToWrite) {
-		await Bun.write(filePath, `${fileLines.join(`\n`)}\n`)
+		await Bun.write(filePath, fileLines.join(`\n`))
 	}
 
 	console.log(`Updated ${filesToWrite.size} file(s)`)
@@ -197,10 +198,10 @@ async function collectWorkflowInventory(
 				continue
 			}
 
-			const actionName = match.groups["action"]
-			const prefix = match.groups["prefix"]
-			const currentRef = match.groups["ref"]
-			const originalComment = match.groups["comment"]?.trim() ?? null
+			const actionName = match.groups[`action`]
+			const prefix = match.groups[`prefix`]
+			const currentRef = match.groups[`ref`]
+			const originalComment = match.groups[`comment`]?.trim() ?? null
 			if (!actionName || !originalComment || !currentRef || !prefix) {
 				continue
 			}
@@ -428,10 +429,10 @@ function parseVersion(value: string): ParsedVersion | null {
 	const segments = normalized.split(`-`)[0]?.split(`.`).length ?? 0
 
 	return {
-		major: Number(match.groups["major"]),
-		minor: Number(match.groups["minor"] ?? 0),
-		patch: Number(match.groups["patch"] ?? 0),
-		prerelease: match.groups["prerelease"] ?? null,
+		major: Number(match.groups[`major`]),
+		minor: Number(match.groups[`minor`] ?? 0),
+		patch: Number(match.groups[`patch`] ?? 0),
+		prerelease: match.groups[`prerelease`] ?? null,
 		segments,
 	}
 }
@@ -499,18 +500,18 @@ function findMiseVersionUse(
 		}
 
 		const currentIndent = leadingWhitespace(line).length
-		if (currentIndent <= actionIndent) {
+		if (currentIndent < actionIndent) {
 			return null
 		}
 
 		const versionMatch = MISE_VERSION_PATTERN.exec(line)
 
 		if (versionMatch?.groups) {
-			const prefix = versionMatch.groups["prefix"]
+			const prefix = versionMatch.groups[`prefix`]
 			if (!prefix) {
 				return null
 			}
-			const currentVersion = versionMatch.groups["version"]
+			const currentVersion = versionMatch.groups[`version`]
 			if (!currentVersion) {
 				return null
 			}
@@ -554,7 +555,7 @@ function colorGrey(value: string): string {
 }
 
 function colorize(color: string, value: string): string {
-	if (process.env["NO_COLOR"]) {
+	if (process.env[`NO_COLOR`]) {
 		return value
 	}
 
