@@ -2,7 +2,7 @@
 	// FILE FORMATTING ////////////////////////////////////////////////////////////
 	"editor.formatOnSave": true,
 	"editor.defaultFormatter": "dprint.dprint",
-	"dprint.path": "/home/jem/wayforge/node_modules/.bin/dprint",
+	"dprint.path": "node_modules/.bin/dprint",
 	"[astro]": {
 		"editor.defaultFormatter": "astro-build.astro-vscode"
 	},
