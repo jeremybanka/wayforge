@@ -4,7 +4,7 @@
 	"useTabs": true,
 	"indentWidth": 2,
 	"includes": [
-		"**/*.{ts,tsx,js,jsx,mjs,cjs,json,jsonc,md,mdx,css}"
+		"**/*.{ts,tsx,js,jsx,mjs,cjs,json,jsonc,md,mdx,css,astro}"
 	],
 	"excludes": [
 		"**/metafile-*",
@@ -41,10 +41,18 @@
 	"malva": {
 		"associations": ["**/*.css"]
 	},
+	"markup": {
+		"associations": ["**/*.astro"],
+		"useTabs": true,
+		"indentWidth": 2,
+		"printWidth": 81,
+		"scriptFormatter": "biome"
+	},
 	"plugins": [
 		"./node_modules/@dprint/oxc/plugin.wasm",
 		"./node_modules/@dprint/json/plugin.wasm",
 		"./node_modules/@dprint/markdown/plugin.wasm",
-		"./node_modules/dprint-plugin-malva/plugin.wasm"
+		"./node_modules/dprint-plugin-malva/plugin.wasm",
+		"./node_modules/dprint-plugin-markup/plugin.wasm"
 	]
 }

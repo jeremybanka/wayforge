@@ -50,6 +50,9 @@ importers:
       dprint-plugin-malva:
         specifier: 0.15.3
         version: 0.15.3
+      dprint-plugin-markup:
+        specifier: 0.27.1
+        version: 0.27.1
       eslint-plugin-drizzle:
         specifier: 0.2.3
         version: 0.2.3(eslint@10.4.1(jiti@2.7.0))
@@ -5203,6 +5206,9 @@ packages:
 
   dprint-plugin-malva@0.15.3:
     resolution: {integrity: sha512-rDBVztvpSa5Y2wqlYPvAP8kCEZdab2RovEWXPO+pE2gu3F8jJg/IjV0cKVSO7blIzP8iKmlD9u/TDnsZUHPoFg==}
+
+  dprint-plugin-markup@0.27.1:
+    resolution: {integrity: sha512-CXIWXTkom3zaAGiVhn6hMZhohL0f3vtznhJIuYtqhXhLrMMb0RhdsCSWF8Gd1vkAPtibwH4UfkWhbk1f9LZyoQ==}
 
   dprint@0.54.0:
     resolution: {integrity: sha512-sIy25poR2gRP/tWPTgP0MPeJoJcpv0xzYDcsboapvthbEt1Qw3Al252CA0xFyIh2cYEGGKyBJtKokryv4ERlJw==}
@@ -11854,6 +11860,8 @@ snapshots:
   dotenv@17.4.2: {}
 
   dprint-plugin-malva@0.15.3: {}
+
+  dprint-plugin-markup@0.27.1: {}
 
   dprint@0.54.0:
     optionalDependencies:
