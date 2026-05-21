@@ -3,9 +3,6 @@
 	"editor.formatOnSave": true,
 	"editor.defaultFormatter": "dprint.dprint",
 	"dprint.path": "node_modules/.bin/dprint",
-	"[astro]": {
-		"editor.defaultFormatter": "astro-build.astro-vscode"
-	},
 	"editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" },
 	"js/ts.tsdk.path": "node_modules/typescript/lib",
 	"coverage-gutters.coverageBaseDir": "**/coverage/",
