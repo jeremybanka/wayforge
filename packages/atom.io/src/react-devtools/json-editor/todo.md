@@ -1,4 +1,3 @@
-
 - [x] add an ErrorBoundary to the Components prop
   - [x] wrap each JsonEditor_INTERNAL in an ErrorBoundary
 - [ ] add display of miscast properties with button to fix

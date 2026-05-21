@@ -15,8 +15,8 @@ export interface JunctionEntries<
 	A extends string,
 	B extends string,
 	Content extends Json.Object | null,
-> extends Json.Object,
-		JunctionEntriesBase<A, B, Content> {}
+>
+	extends Json.Object, JunctionEntriesBase<A, B, Content> {}
 
 export type JunctionSchemaBase<AName extends string, BName extends string> = {
 	/** Description of the relationship between the two sides */
@@ -25,8 +25,7 @@ export type JunctionSchemaBase<AName extends string, BName extends string> = {
 	readonly cardinality: `1:1` | `1:n` | `n:n`
 }
 export interface JunctionSchema<ASide extends string, BSide extends string>
-	extends Json.Object,
-		JunctionSchemaBase<ASide, BSide> {}
+	extends Json.Object, JunctionSchemaBase<ASide, BSide> {}
 
 export type BaseExternalStoreConfiguration = {
 	addRelation: (a: string, b: string) => void

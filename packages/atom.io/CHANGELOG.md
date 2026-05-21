@@ -132,25 +132,24 @@
 - 89fa483: ✨ Added tools for working with a `join` to the toolkit for selectors and transactions. These tools are nested under the `relations` property of the toolkit.
 
   ```ts
-  import { join, transaction } from "atom.io";
+  import { join, transaction } from "atom.io"
 
   const userGroups = join({
-    key: `userGroups`,
-    between: [`user`, `group`],
-    cardinality: `n:n`,
-    isAType: (input): input is `user::${string}` => input.startsWith(`user::`),
-    isBType: (input): input is `group::${string}` =>
-      input.startsWith(`group::`),
-  });
+  	key: `userGroups`,
+  	between: [`user`, `group`],
+  	cardinality: `n:n`,
+  	isAType: (input): input is `user::${string}` => input.startsWith(`user::`),
+  	isBType: (input): input is `group::${string}` => input.startsWith(`group::`),
+  })
 
   const removeUserFromAllGroupsTX = transaction<
-    (userKey: `user::${string}`) => void
+  	(userKey: `user::${string}`) => void
   >({
-    key: `removeUserFromAllGroups`,
-    do: ({ relations }, userKey) => {
-      relations.edit(userGroups, (ugs) => ugs.delete(userKey));
-    },
-  });
+  	key: `removeUserFromAllGroups`,
+  	do: ({ relations }, userKey) => {
+  		relations.edit(userGroups, (ugs) => ugs.delete(userKey))
+  	},
+  })
   ```
 
   This makes joins more implicitly portable between stores.
@@ -337,21 +336,21 @@
   The previous definition of `ViewOf<T>` was:
 
   ```ts
-  type ViewOf<T> = T extends { READONLY_VIEW: infer View } ? View : T;
+  type ViewOf<T> = T extends { READONLY_VIEW: infer View } ? View : T
   ```
 
   The new definition is:
 
   ```ts
   type ViewOf<T> = T extends { READONLY_VIEW: infer View }
-    ? View
-    : T extends Array<any>
-      ? readonly [...T]
-      : T extends Set<infer U>
-        ? ReadonlySet<ViewOf<U>>
-        : T extends Map<infer K, infer V>
-          ? ReadonlyMap<ViewOf<K>, ViewOf<V>>
-          : T;
+  	? View
+  	: T extends Array<any>
+  		? readonly [...T]
+  		: T extends Set<infer U>
+  			? ReadonlySet<ViewOf<U>>
+  			: T extends Map<infer K, infer V>
+  				? ReadonlyMap<ViewOf<K>, ViewOf<V>>
+  				: T
   ```
 
 - 3ae92e2: 💥 Removed the disused submodule `atom.io/data`.
@@ -485,7 +484,7 @@
   The sensible default value is safely acquired as follows:
 
   ```ts
-  globalThis.process?.env?.[`NODE_ENV`] === `production`;
+  globalThis.process?.env?.[`NODE_ENV`] === `production`
   ```
 
   ### Motivation
@@ -501,10 +500,10 @@
   For instance,
 
   ```ts
-  import { IMPLICIT } from "atom.io/internal";
-  import { env } from "./env";
+  import { IMPLICIT } from "atom.io/internal"
+  import { env } from "./env"
 
-  IMPLICIT.STORE.config.isProduction = env.MODE === `prod`;
+  IMPLICIT.STORE.config.isProduction = env.MODE === `prod`
   ```
 
 ## 0.42.2
@@ -599,14 +598,14 @@
 
   ```ts
   const orgMembersAtoms = AtomIO.atomFamily<
-    Loadable<User[]>,
-    OrgId,
-    TRPCClientError
+  	Loadable<User[]>,
+  	OrgId,
+  	TRPCClientError
   >({
-    key: `orgMembers`,
-    get: trpcClient.getOrgMembers,
-    default: [TRPCClientError],
-  });
+  	key: `orgMembers`,
+  	get: trpcClient.getOrgMembers,
+  	default: [TRPCClientError],
+  })
   ```
 
   With this, we can establish specifically what kinds of errors we want to catch as each atom resolves.
@@ -614,7 +613,7 @@
   Kind of like Python's nice `try/except` blocks!
 
   ```ts
-  const orgMembers = useLoadable(orgMembersAtoms, orgId);
+  const orgMembers = useLoadable(orgMembersAtoms, orgId)
   /*
   | "LOADING"
   | { loading: boolean; value: TRPCClientError }
@@ -767,28 +766,28 @@
   This is how mutable atoms have been created previously:
 
   ```typescript
-  import { atom } from "atom.io";
+  import { atom } from "atom.io"
 
   const myAtom = atom<SetRTX<string>, SetRTXJson<string>>({
-    key: "myAtom",
-    default: 0,
-    mutable: true,
-    toJson: (set) => set.toJSON(),
-    fromJson: (json) => SetRTX.fromJSON(json),
-  });
+  	key: "myAtom",
+  	default: 0,
+  	mutable: true,
+  	toJson: (set) => set.toJSON(),
+  	fromJson: (json) => SetRTX.fromJSON(json),
+  })
   ```
 
   Now, this is done instead:
 
   ```typescript
-  import { mutableAtom } from "atom.io";
+  import { mutableAtom } from "atom.io"
 
   const myAtom = mutableAtom<SetRTX<string>, SetRTXJson<string>>({
-    key: "myAtom",
-    default: 0,
-    toJson: (set) => set.toJSON(),
-    fromJson: (json) => SetRTX.fromJSON(json),
-  });
+  	key: "myAtom",
+  	default: 0,
+  	toJson: (set) => set.toJSON(),
+  	fromJson: (json) => SetRTX.fromJSON(json),
+  })
   ```
 
 ## 0.34.2
@@ -932,28 +931,28 @@
 
   ```ts
   const myAtom = atom<{ a: number[]; b: number[]; c: number[] }>({
-    key: `myAtom`,
-    default: {
-      a: [],
-      b: [],
-      c: [],
-    },
-  });
+  	key: `myAtom`,
+  	default: {
+  		a: [],
+  		b: [],
+  		c: [],
+  	},
+  })
 
   const mySelector = selector<{
-    a: number;
-    b: number;
-    c: number;
+  	a: number
+  	b: number
+  	c: number
   }>({
-    key: `mySelector`,
-    const: { a: 0, b: 0, c: 0 },
-    get: ({ get }, self) => {
-      const { a, b, c } = get(myAtom);
-      self.a = a.reduce((acc, cur) => acc + cur, 0);
-      self.b = b.reduce((acc, cur) => acc + cur, 0);
-      self.c = c.reduce((acc, cur) => acc + cur, 0);
-    },
-  });
+  	key: `mySelector`,
+  	const: { a: 0, b: 0, c: 0 },
+  	get: ({ get }, self) => {
+  		const { a, b, c } = get(myAtom)
+  		self.a = a.reduce((acc, cur) => acc + cur, 0)
+  		self.b = b.reduce((acc, cur) => acc + cur, 0)
+  		self.c = c.reduce((acc, cur) => acc + cur, 0)
+  	},
+  })
   ```
 
   A held selector requires a `const` value to be initialized. The `get` function for a held selector passes the held value of the selector to the getter function as a second parameter following the `GetterToolkit` interface. The expectation is that the getter mutates the held value and returns `void`.
@@ -1132,19 +1131,19 @@
   Say for example, you have index atom, a family of atoms, and an selector that maps the index to the values of the atoms in the family.
 
   ```ts
-  const indexAtom = atom<string[]>({ key: `index`, default: [] });
-  const countAtoms = atomFamily<number, string>({ key: `count`, default: 0 });
+  const indexAtom = atom<string[]>({ key: `index`, default: [] })
+  const countAtoms = atomFamily<number, string>({ key: `count`, default: 0 })
   const allCountsSelector = selector<number[]>({
-    key: `allCounts`,
-    get: ({ get }) => get(indexAtom).map((key) => get(countAtoms, key)),
-  });
+  	key: `allCounts`,
+  	get: ({ get }) => get(indexAtom).map((key) => get(countAtoms, key)),
+  })
   ```
 
   I create an atom with "my-key" as the key, and then I set the index to include "my-key".
 
   ```ts
-  const myState = findState(countAtoms, `my-key`);
-  setState(indexAtom, (current) => [...current, `my-key`]);
+  const myState = findState(countAtoms, `my-key`)
+  setState(indexAtom, (current) => [...current, `my-key`])
   ```
 
   Now, the `allCountsSelector` will hold `[2]` when retrieved.
@@ -1156,9 +1155,9 @@
   We can fix this in the cascading-delete paradigm if we force the selector to recompute, but that's quite unintuitive and incurs an arbitrary performance penalty.
 
   ```ts
-  setState(indexAtom, (current) => current.filter((key) => key !== `my-key`));
-  getState(allCountsSelector); // []
-  disposeState(myState);
+  setState(indexAtom, (current) => current.filter((key) => key !== `my-key`))
+  getState(allCountsSelector) // []
+  disposeState(myState)
   ```
 
   Suffice to say, cascading disposal is a major footgun, because "dependents" of a disposed state at the time of their last computation are not necessarily dependents at disposal time.
@@ -1290,13 +1289,13 @@
 
   ```ts
   const countAtoms = atomFamily<number, string>({
-    key: `count`,
-    default: 0,
-  });
+  	key: `count`,
+  	default: 0,
+  })
 
-  getState(countAtoms, `find-me`); // -> 0
-  setState(countAtoms, `find-me`, 1);
-  getState(countAtoms, `find-me`); // -> 1
+  getState(countAtoms, `find-me`) // -> 0
+  setState(countAtoms, `find-me`, 1)
+  getState(countAtoms, `find-me`) // -> 1
   ```
 
   ⚠️ Note that, if the family member is not found, this will throw a `NotFoundError` in `immortal` stores.
@@ -1479,24 +1478,24 @@
 
   ```ts
   const urlAtom = atom<string>({
-    key: `url`,
-    default: `https://example.com`,
-  });
+  	key: `url`,
+  	default: `https://example.com`,
+  })
   const fetchResponseSelector = selector<Loadable<Response>>({
-    key: `fetch`,
-    get: async ({ get }) => {
-      const url = get(urlAtom);
-      return await fetch(url);
-    },
-  });
+  	key: `fetch`,
+  	get: async ({ get }) => {
+  		const url = get(urlAtom)
+  		return await fetch(url)
+  	},
+  })
   const fetchedJsonSelector = selector<Loadable<Json.Serializable>>({
-    key: `fetchedJson`,
-    get: async ({ get }) => {
-      const responseLoadable = get(fetchResponseSelector);
-      const response = await responseLoadable; // <-- ❗ this might never resolve if the urlAtom changes
-      return await response.json();
-    },
-  });
+  	key: `fetchedJson`,
+  	get: async ({ get }) => {
+  		const responseLoadable = get(fetchResponseSelector)
+  		const response = await responseLoadable // <-- ❗ this might never resolve if the urlAtom changes
+  		return await response.json()
+  	},
+  })
   ```
 
   The problem here is that, if the `urlAtom` changes while `fetchedJsonSelector`'s getter is running, the `fetchResponseSelector`'s current future value will be cancelled and will never resolve, leading to a getter will hang forever.
@@ -1540,13 +1539,13 @@
   ### Creating a join is still the same.
 
   ```ts
-  import { join } from "atom.io/data";
+  import { join } from "atom.io/data"
 
   const followersOfInfluencers = join({
-    key: `followersOfInfluencers`,
-    between: [`influencer`, `followers`],
-    cardinality: `n:n`,
-  });
+  	key: `followersOfInfluencers`,
+  	between: [`influencer`, `followers`],
+  	cardinality: `n:n`,
+  })
   ```
 
   ⚠️ **However**, the type that it returns is now a fully serializable `JoinToken`, not a `Join`.
@@ -1556,23 +1555,23 @@
   Before:
 
   ```ts
-  import { findState } from "atom.io";
+  import { findState } from "atom.io"
 
   const influencersIFollowToken = findState(
-    followersOfInfluencers.states.influencerKeysOfFollower,
-    myUsername,
-  );
+  	followersOfInfluencers.states.influencerKeysOfFollower,
+  	myUsername,
+  )
   ```
 
   After:
 
   ```ts
-  import { findRelations } from "atom.io/data";
+  import { findRelations } from "atom.io/data"
 
   const influencersIFollowToken = findRelations(
-    followersOfInfluencers,
-    myUsername,
-  ).influencerKeysOfFollower;
+  	followersOfInfluencers,
+  	myUsername,
+  ).influencerKeysOfFollower
   ```
 
   ### Setting relations has changed.
@@ -1581,9 +1580,9 @@
 
   ```ts
   followersOfInfluencers.set({
-    influencer: myUsername,
-    follower: anotherUsername,
-  });
+  	influencer: myUsername,
+  	follower: anotherUsername,
+  })
   ```
 
   After:
@@ -1639,15 +1638,15 @@
 
   ```ts
   const countAtoms = atomFamily<number, string>({
-    key: `count`,
-    default: 0,
-  });
+  	key: `count`,
+  	default: 0,
+  })
 
   // Deprecated
-  const countState = countAtoms("find-me");
+  const countState = countAtoms("find-me")
 
   // Use this instead
-  const countState = findState(countAtoms, "find-me");
+  const countState = findState(countAtoms, "find-me")
   ```
 
 ## 0.17.0
@@ -1689,28 +1688,28 @@
   ### Isolated
 
   Used for data that is controlled by a single user. This data can safely be persisted to the server and relayed to other users without any additional synchronization logic.
-  | | Get | Set |
+  |            | Get                                                                                                        | Set                              |
   | ---------- | ---------------------------------------------------------------------------------------------------------- | -------------------------------- |
-  | **React** | `usePull` `usePullMutable` `usePullFamilyMember` `usePullFamilyMember` | `usePush` (variants coming soon) |
-  | **Client** | `pullState` `pullMutable` `pullFamilyMember` `pullMutableFamilyMember` | `pushState` |
-  | **Server** | `realtimeStateProvider` `realtimeMutableProvider` `realtimeFamilyProvider` `realtimeMutableFamilyProvider` | `realtimeStateReceiver` |
+  | **React**  | `usePull` `usePullMutable` `usePullFamilyMember` `usePullFamilyMember`                                     | `usePush` (variants coming soon) |
+  | **Client** | `pullState` `pullMutable` `pullFamilyMember` `pullMutableFamilyMember`                                     | `pushState`                      |
+  | **Server** | `realtimeStateProvider` `realtimeMutableProvider` `realtimeFamilyProvider` `realtimeMutableFamilyProvider` | `realtimeStateReceiver`          |
 
   ### Shared
 
   Used for low-complexity data that is shared between multiple users. Updated on the server via transactions, and updated on the client via state subscriptions.
-  | | Get | Set |
+  |            | Get                                                                                                        | Set                      |
   | ---------- | ---------------------------------------------------------------------------------------------------------- | ------------------------ |
-  | **React** | `usePull` `usePullMutable` `usePullFamilyMember` `usePullFamilyMember` | `useServerAction` |
-  | **Client** | `pullState` `pullMutable` `pullFamilyMember` `pullMutableFamilyMember` | `serverAction` |
+  | **React**  | `usePull` `usePullMutable` `usePullFamilyMember` `usePullFamilyMember`                                     | `useServerAction`        |
+  | **Client** | `pullState` `pullMutable` `pullFamilyMember` `pullMutableFamilyMember`                                     | `serverAction`           |
   | **Server** | `realtimeStateProvider` `realtimeMutableProvider` `realtimeFamilyProvider` `realtimeMutableFamilyProvider` | `realtimeActionReceiver` |
 
   ### Adversarial
 
   Best for situations where speed and the ability to rollback is necessary. Updated on the server via transactions, reconciled on the client.
-  | | Get | Set |
+  |            | Get                                       | Set                          |
   | ---------- | ----------------------------------------- | ---------------------------- |
-  | **React** | `useSyncState` (coming soon) | `useSyncAction` |
-  | **Client** | `syncState` (coming soon) | `syncAction` |
+  | **React**  | `useSyncState` (coming soon)              | `useSyncAction`              |
+  | **Client** | `syncState` (coming soon)                 | `syncAction`                 |
   | **Server** | `realtimeStateSynchronizer` (coming soon) | `realtimeActionSynchronizer` |
 
 - 636b095: 💥 BREAKING CHANGE: `atom.io/data`: `join.findState` becomes `join.states`
@@ -1831,22 +1830,22 @@
 
   ```ts
   const userGroups = join({
-    key: `userGroups`,
-    between: [`user`, `group`],
-    cardinality: `n:n`,
-  });
+  	key: `userGroups`,
+  	between: [`user`, `group`],
+  	cardinality: `n:n`,
+  })
   const addUsersToGroupTX = transaction<
-    (groupKey: string, userKeys: string[]) => void
+  	(groupKey: string, userKeys: string[]) => void
   >({
-    key: `addUsersToGroup`,
-    do: (transactors, groupKey, userKeys) => {
-      userGroups.transact(transactors, ({ relations }) => {
-        for (const userKey of userKeys) {
-          relations.add(groupKey, userKey);
-        }
-      });
-    },
-  });
+  	key: `addUsersToGroup`,
+  	do: (transactors, groupKey, userKeys) => {
+  		userGroups.transact(transactors, ({ relations }) => {
+  			for (const userKey of userKeys) {
+  				relations.add(groupKey, userKey)
+  			}
+  		})
+  	},
+  })
   ```
 
 - a7e72ea: 🐛 The `set` transactor now enforces the type of your state properly, which could lead to type errors in existing `transactor` and `selector` code.
@@ -2081,20 +2080,20 @@
   For example, you might use `fetch` to get data from a server:
 
   ```ts
-  import { atom } from "atom.io";
-  import type { Fated } from "atom.io/internal";
+  import { atom } from "atom.io"
+  import type { Fated } from "atom.io/internal"
 
-  import { isUser, type User } from "~/store";
+  import { isUser, type User } from "~/store"
 
   const userState = atom<Fateful<User>>({
-    key: `user`,
-    default: async () => {
-      const response = await fetch("/api/user");
-      const parsed = await response.json();
-      const user = isUser(parsed) ? parsed : null;
-      return user;
-    },
-  });
+  	key: `user`,
+  	default: async () => {
+  		const response = await fetch("/api/user")
+  		const parsed = await response.json()
+  		const user = isUser(parsed) ? parsed : null
+  		return user
+  	},
+  })
   ```
 
   In this example, we initialize the atom with a function that returns a Promise. The atom will call the function and set its state to the function's return value: a Promise. When the promise resolves, the atom will update its state to the resolved value.

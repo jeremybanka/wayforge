@@ -2,10 +2,10 @@
 	"$schema": "./node_modules/oxlint/configuration_schema.json",
 	"plugins": ["typescript"],
 	"options": {
-		"typeAware": true
+		"typeAware": true,
 	},
 	"categories": {
-		"correctness": "off"
+		"correctness": "off",
 	},
 	"ignorePatterns": [
 		"**/.astro/**",
@@ -19,7 +19,7 @@
 		"**/.next/**",
 		"**/.open-next/**",
 		"**/next-env.d.ts",
-		"**/create-atom.io/templates/**"
+		"**/create-atom.io/templates/**",
 	],
 	"rules": {
 		"typescript/adjacent-overload-signatures": "error",
@@ -30,14 +30,14 @@
 			"error",
 			{
 				"fixStyle": "separate-type-imports",
-				"prefer": "type-imports"
-			}
+				"prefer": "type-imports",
+			},
 		],
 		"typescript/default-param-last": "error",
 		"typescript/explicit-member-accessibility": "error",
 		"typescript/explicit-module-boundary-types": [
 			"error",
-			{ "allowArgumentsExplicitlyTypedAsAny": true }
+			{ "allowArgumentsExplicitlyTypedAsAny": true },
 		],
 		"typescript/no-array-constructor": "error",
 		"typescript/no-array-delete": "error",
@@ -90,9 +90,9 @@
 		"typescript/return-await": "error",
 		"typescript/switch-exhaustiveness-check": [
 			"error",
-			{ "requireDefaultForNonUnion": true }
+			{ "requireDefaultForNonUnion": true },
 		],
 		"typescript/triple-slash-reference": "error",
-		"typescript/unified-signatures": "error"
-	}
+		"typescript/unified-signatures": "error",
+	},
 }

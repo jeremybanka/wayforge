@@ -24,26 +24,26 @@ treetrunks is a convenient way to define type-safe routers.
 a tree structure affords many possible routes through the tree
 
 ```typescript
-import type { Tree, TreePath } from "treetrunks";
-import { optional, required } from "treetrunks";
+import type { Tree, TreePath } from "treetrunks"
+import { optional, required } from "treetrunks"
 
 const greetingTree = required({
-  hello: optional({
-    world: null,
-    $name: optional({
-      good: required({
-        morning: null,
-      }),
-    }),
-  }),
-}) satisfies Tree;
+	hello: optional({
+		world: null,
+		$name: optional({
+			good: required({
+				morning: null,
+			}),
+		}),
+	}),
+}) satisfies Tree
 
 const validPaths: TreePath<typeof greetingTree>[] = [
-  [`hello`],
-  [`hello`, `world`],
-  [`hello`, `jeremybanka`],
-  [`hello`, `treetrunks`, `good`, `morning`],
-];
+	[`hello`],
+	[`hello`, `world`],
+	[`hello`, `jeremybanka`],
+	[`hello`, `treetrunks`, `good`, `morning`],
+]
 ```
 
 the `optional` and `required` functions help determine what routes are valid.

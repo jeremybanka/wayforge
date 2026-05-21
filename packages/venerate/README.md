@@ -19,15 +19,15 @@ venerate is a small, pure library implementing venn diagram logic for iterables.
 ## usage
 
 ```ts
-import * as V from "venerate";
+import * as V from "venerate"
 
-const a = [1, 2, 3];
-const b = new Set([2, 3, 4]);
+const a = [1, 2, 3]
+const b = new Set([2, 3, 4])
 const c = (function* () {
-  yield 3;
-  yield 4;
-  yield 5;
-})();
+	yield 3
+	yield 4
+	yield 5
+})()
 
-const union = [...V.union(a, b, c)]; // [1, 2, 3, 4, 5]
+const union = [...V.union(a, b, c)] // [1, 2, 3, 4, 5]
 ```

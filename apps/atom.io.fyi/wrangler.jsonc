@@ -3,6 +3,6 @@
 	"name": "atom-io-fyi",
 	"compatibility_date": "2025-10-01",
 	"assets": {
-		"directory": "./dist/client"
-	}
+		"directory": "./dist/client",
+	},
 }

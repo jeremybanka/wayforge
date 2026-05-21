@@ -32,8 +32,10 @@ import {
 } from "./json-schema"
 import { isJsonSchemaRef, retrieveRef } from "./refs"
 
-export interface JsonSchemaMetaTypes
-	extends Record<JsonSchemaMetaTypeName, any> {
+export interface JsonSchemaMetaTypes extends Record<
+	JsonSchemaMetaTypeName,
+	any
+> {
 	integer: integer
 	number: number
 	string: string

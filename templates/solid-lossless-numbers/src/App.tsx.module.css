@@ -37,8 +37,7 @@ app.class {
 		align-items: center;
 		justify-content: space-between;
 		padding: 12px;
-		> h1 {
-		}
+		> h1 {}
 		> button {
 			align-items: center;
 			justify-content: center;
@@ -67,8 +66,7 @@ app.class {
 				align-items: center;
 				color: #0002;
 			}
-			> fraction {
-			}
+			> fraction {}
 			> quotient {
 				align-items: center;
 				font-size: 48px;

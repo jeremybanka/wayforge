@@ -5,6 +5,7 @@
 .DS_STORE
 .env
 .turbo
+.cache
 coverage
 dist
 node_modules
