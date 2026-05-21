@@ -54,13 +54,12 @@ export type JsonApiDocument_Optional = {
 	links?: Links
 }
 
-/* prettier-ignore */
+// dprint-ignore
 export type JsonApiDocument<
 	DATA extends JsonApiResource | JsonApiResource[],
 	META extends Json.Serializable | undefined = undefined,
 	ERROR extends ErrorObject | undefined = undefined,
 > = JsonApiDocument_Optional & JsonApiDocument_Required<DATA, META, ERROR>
-/* prettier-ignore-end */
 
 export type JsonApiUpdate<RESOURCE extends JsonApiResource> = {
 	data: ResourceUpdate<RESOURCE>
