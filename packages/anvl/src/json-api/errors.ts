@@ -21,7 +21,7 @@ export type ErrorObject_Optional<
 
 export type ErrorKey = keyof ErrorObject_Optional
 
-/* prettier-ignore */
+// dprint-ignore
 export type ErrorObject<
 	REQUIRED extends ErrorKey | undefined = undefined,
 	META extends Json.Serializable | undefined = undefined,

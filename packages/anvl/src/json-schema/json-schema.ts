@@ -455,7 +455,7 @@ export const isJsonSchemaRoot: Refinement<
 	$schema: ifDefined(isString),
 })
 
-/* prettier-ignore */
+// dprint-ignore
 export type JsonSchemaObject = JsonSchemaCore & JsonSchemaRoot
 export const isJsonSchemaObject: ExtendsAll<
 	unknown,
