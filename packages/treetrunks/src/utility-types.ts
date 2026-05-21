@@ -44,9 +44,7 @@ export type Flatten<Record extends { [K in PropertyKey]: any }> = {
  * Convert a union (`|`) to an intersection (`&` ).
  */
 export type UnionToIntersection<Union> = (
-	Union extends any
-		? (x: Union) => void
-		: never
+	Union extends any ? (x: Union) => void : never
 ) extends (x: infer Item) => void
 	? Item
 	: never

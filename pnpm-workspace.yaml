@@ -15,6 +15,7 @@ allowBuilds:
   "@swc/core": true
   "@vercel/speed-insights": true
   "bun": true
+  dprint: true
   "esbuild": true
   "rolldown": true
   "sharp": true

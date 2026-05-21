@@ -216,9 +216,10 @@ export type Agent<State = null, Update = null> = {
 	addUserMessage: (content: string) => void
 }
 
-export class Grunt<State extends Agenda>
-	implements Agent<State, Partial<State>>
-{
+export class Grunt<State extends Agenda> implements Agent<
+	State,
+	Partial<State>
+> {
 	public id: string
 	public testId: string | undefined
 	private completions: Squirreled<typeof aiComplete>

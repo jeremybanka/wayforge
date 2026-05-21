@@ -73,7 +73,7 @@ export const passwordType = type(`string`)
 		return complexity >= MINIMUM_PASSWORD_COMPLEXITY
 			? true
 			: ctx.mustBe(
-					`Of complexity ${MINIMUM_PASSWORD_COMPLEXITY} or more. Was ${(complexity).toFixed(2)}.`,
+					`Of complexity ${MINIMUM_PASSWORD_COMPLEXITY} or more. Was ${complexity.toFixed(2)}.`,
 				)
 	})
 	.brand(`password`)

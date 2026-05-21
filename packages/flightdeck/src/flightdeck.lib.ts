@@ -628,9 +628,10 @@ export const FLIGHTDECK_LNAV_FORMAT = {
 	},
 } as const satisfies FlightDeckFormat & LnavFormat
 
-export class FlightDeckLogger
-	implements Pick<Console, `error` | `info` | `warn`>
-{
+export class FlightDeckLogger implements Pick<
+	Console,
+	`error` | `info` | `warn`
+> {
 	public readonly packageName: string
 	public readonly serviceName?: string
 	public readonly jsonLogging: boolean

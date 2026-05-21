@@ -3,6 +3,7 @@
 lightweight process manager and updater for Node.js applications.
 
 ## flightdeck's cycle
+
 - install an application
 - spawn a process running the application
 - await a web hook that says "a new version is ready!"

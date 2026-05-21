@@ -32,7 +32,7 @@
 		}
 	},
 	"formatter": {
-		"enabled": true,
+		"enabled": false,
 		"formatWithErrors": false,
 		"indentStyle": "tab",
 		"indentWidth": 2,

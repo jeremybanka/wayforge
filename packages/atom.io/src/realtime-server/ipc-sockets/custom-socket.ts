@@ -15,9 +15,10 @@ export interface EventBuffer<
 	toString(): stringified<EventPayload<E, K>>
 }
 
-export abstract class CustomSocket<I extends Events, O extends Events>
-	implements Socket
-{
+export abstract class CustomSocket<
+	I extends Events,
+	O extends Events,
+> implements Socket {
 	protected listeners: Map<keyof O, Set<(...args: Json.Array) => void>>
 	protected globalListeners: Set<(event: string, ...args: Json.Array) => void>
 	protected globalListenersOutgoing: Set<

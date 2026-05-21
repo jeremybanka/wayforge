@@ -15,27 +15,26 @@ import {
 } from "atom.io/internal"
 import type { UList } from "atom.io/transceivers/u-list"
 
-// biome-ignore format: intersection
+// dprint-ignore
 export type JoinOptions<
 	AName extends string,
 	A extends string,
 	BName extends string,
 	B extends string,
 	Cardinality extends `1:1` | `1:n` | `n:n`,
-> =
-	Flat<
-		& JunctionSchemaBase<AName, BName>
-		& {
-			/** Unique identifier of the join */
-			readonly key: string
-			/** How many relations are allowed in each direction? */
-			readonly cardinality: Cardinality
-			/** Type guard for the type of the left side */
-			readonly isAType: Refinement<string, A>
-			/** Type guard for the type of the right side */
-			readonly isBType: Refinement<string, B>
-		}
-	> & Partial<JunctionEntriesBase<A, B, null>>
+> = Flat<
+	JunctionSchemaBase<AName, BName> & {
+		/** Unique identifier of the join */
+		readonly key: string
+		/** How many relations are allowed in each direction? */
+		readonly cardinality: Cardinality
+		/** Type guard for the type of the left side */
+		readonly isAType: Refinement<string, A>
+		/** Type guard for the type of the right side */
+		readonly isBType: Refinement<string, B>
+	}
+> &
+	Partial<JunctionEntriesBase<A, B, null>>
 
 export type JoinToken<
 	AName extends string,

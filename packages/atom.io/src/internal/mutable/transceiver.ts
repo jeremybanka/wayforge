@@ -12,13 +12,11 @@ export interface Transceiver<
 	toJSON: () => J
 }
 
-// biome-ignore format: intersection
+// dprint-ignore
 export type TransceiverConstructor<
-  J extends Json.Serializable,
-  T extends Transceiver<any, any, J>
-> =
-	& ( new () => T )
-	& { fromJSON: (json: J) => T }
+	J extends Json.Serializable,
+	T extends Transceiver<any, any, J>,
+> = (new () => T) & { fromJSON: (json: J) => T }
 
 export function isTransceiver(
 	value: unknown,

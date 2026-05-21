@@ -23,7 +23,7 @@
 
 ### Minor Changes
 
-- a0f5095b: 🔥 Remove `reactivity` subpackage. The `Subject` implementation now lives in `atom.io/internal, and all `Transceiver`implementations will now live in`atom.io/transceivers/\*` subpackages.
+- a0f5095b: 🔥 Remove `reactivity` subpackage. The `Subject` implementation now lives in `atom.io/internal, and all`Transceiver`implementations will now live in`atom.io/transceivers/\*` subpackages.
 - a0f5095b: 💥 Rename `anvl/refinement` members: `mustBe` ➡️ `mustSatisfyAllOfTheFollowing` and `couldBe` ➡️ `mustSatisfyOneOfTheFollowing`.
 
 ### Patch Changes

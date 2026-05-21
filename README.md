@@ -11,7 +11,7 @@
 ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
 ```
 
-- [atom.io](https://github.com/jeremybanka/wayforge/tree/main/packages/atom.io) `npm install atom.io` 
+- [atom.io](https://github.com/jeremybanka/wayforge/tree/main/packages/atom.io) `npm install atom.io`
   - state management for node and the browser with an API similar to recoil.js
 - [break-check](https://github.com/jeremybanka/wayforge/tree/main/packages/break-check) `npm install break-check`
   - test your code for breaking changes

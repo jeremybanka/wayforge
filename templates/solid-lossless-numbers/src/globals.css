@@ -24,10 +24,10 @@
 			transparent 28%
 		),
 		radial-gradient(
-			circle at right center,
-			rgba(23, 36, 51, 0.12),
-			transparent 30%
-		),
+		circle at right center,
+		rgba(23, 36, 51, 0.12),
+		transparent 30%
+	),
 		linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
 }
 

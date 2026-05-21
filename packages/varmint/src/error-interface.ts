@@ -17,10 +17,7 @@ interface ErrorAsJSON {
 // Pick which built-ins you want to reconstruct specially
 const ctorByName: Record<
 	string,
-	new (
-		message?: string,
-		options?: { cause?: unknown },
-	) => Error
+	new (message?: string, options?: { cause?: unknown }) => Error
 > = {
 	Error,
 	TypeError,

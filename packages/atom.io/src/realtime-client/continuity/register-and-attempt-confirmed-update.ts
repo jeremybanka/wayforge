@@ -39,12 +39,7 @@ export const useRegisterAndAttemptConfirmedUpdate =
 				AtomIO.TransactionToken<Fn>
 			>,
 		): void {
-			store.logger.info(
-				`🧑‍⚖️`,
-				`continuity`,
-				continuityKey,
-				`reconciling updates`,
-			)
+			store.logger.info(`🧑‍⚖️`, `continuity`, continuityKey, `reconciling updates`)
 			setIntoStore(store, optimisticUpdateQueueAtom, (queue) => {
 				queue.shift()
 				return queue
