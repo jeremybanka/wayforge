@@ -83,14 +83,22 @@ type FindingDraft = Finding & {
 	issueKeys: Set<string>
 }
 
+type DebugLogger = {
+	enabled: boolean
+	group(title: string, write: () => void): void
+	json(title: string, value: unknown): void
+	log(message: string): void
+}
+
 type CliOptions = {
+	debug: boolean
 	dryRun: boolean
 	json: boolean
 	testbedPath: string | null
 }
 
 const GENERATED_CHANGESET_PREFIX = `vigilance-bot-`
-const HIGH_IMPACT_SEVERITIES = new Set([`high`, `critical`])
+const RELEASE_WORTHY_SEVERITIES = new Set([`moderate`, `high`, `critical`])
 const PRODUCTION_DEPENDENCY_FIELDS = [
 	`dependencies`,
 	`optionalDependencies`,
@@ -99,15 +107,20 @@ const ROOT_IMPORTER_PATH = `.`
 
 async function main(): Promise<void> {
 	const options = parseCliOptions(process.argv.slice(2))
+	const debug = createDebugLogger(options.debug)
 	const workspaceRoot = process.cwd()
 	const rootPackageJson = await readPackageJson(
 		path.join(workspaceRoot, `package.json`),
 	)
+	debug.log(`workspace root: ${workspaceRoot}`)
 	const workspacePackages = await collectWorkspacePackages(workspaceRoot)
+	debug.json(`workspace packages`, workspacePackages)
 	const publishedPackages = await collectPublishedPackages(
 		workspaceRoot,
 		workspacePackages,
+		debug,
 	)
+	debug.json(`npm-published workspace packages`, publishedPackages)
 
 	if (publishedPackages.length === 0) {
 		console.log(`No npm-published workspace packages were visible from npm.`)
@@ -125,26 +138,51 @@ async function main(): Promise<void> {
 			`${path.basename(workspaceRoot)}-vigilance-testbed`,
 		)
 
-	await prepareTestbed(testbedPath, rootPackageJson, publishedPackages)
+	await prepareTestbed(testbedPath, rootPackageJson, publishedPackages, debug)
 
 	console.log(
 		`Auditing ${publishedPackages.length} npm-published package(s) in ${testbedPath}`,
 	)
-	const publishedAuditReport = await runAudit(testbedPath)
-	const currentAuditReport = await runAudit(workspaceRoot)
+	const publishedAuditReport = await runAudit(
+		testbedPath,
+		`published npm testbed`,
+		debug,
+	)
+	const currentAuditReport = await runAudit(
+		workspaceRoot,
+		`current workspace`,
+		debug,
+	)
 	const packageNames = new Set(publishedPackages.map((pkg) => pkg.name))
-	const publishedIssues = parseAuditIssues(publishedAuditReport, packageNames)
-	const currentIssues = parseAuditIssues(currentAuditReport, packageNames)
+	const publishedIssues = parseAuditIssues(
+		publishedAuditReport,
+		packageNames,
+		`published npm testbed`,
+		debug,
+	)
+	const currentIssues = parseAuditIssues(
+		currentAuditReport,
+		packageNames,
+		`current workspace`,
+		debug,
+	)
 
 	const publishedGraph = await readPackageGraph(testbedPath, [])
 	const currentGraph = await readPackageGraph(workspaceRoot, workspacePackages)
+	debug.json(
+		`published npm testbed lockfile summary`,
+		summarizeGraph(publishedGraph),
+	)
+	debug.json(`current workspace lockfile summary`, summarizeGraph(currentGraph))
 	const findings = buildFindings({
 		currentGraph,
 		currentIssues,
+		debug,
 		publishedGraph,
 		publishedIssues,
 		publishedPackages,
 	})
+	debug.json(`final findings`, findings)
 
 	if (options.json) {
 		console.log(JSON.stringify(findings, null, `\t`))
@@ -152,7 +190,7 @@ async function main(): Promise<void> {
 
 	if (findings.length === 0) {
 		console.log(
-			`No stale high or critical production vulnerabilities were found in published packages.`,
+			`No stale moderate, high, or critical production vulnerabilities were found in published packages.`,
 		)
 		if (!options.dryRun) {
 			await clearGeneratedChangesets(workspaceRoot)
@@ -174,6 +212,7 @@ async function main(): Promise<void> {
 
 function parseCliOptions(args: string[]): CliOptions {
 	const options: CliOptions = {
+		debug: false,
 		dryRun: false,
 		json: false,
 		testbedPath: null,
@@ -184,6 +223,10 @@ function parseCliOptions(args: string[]): CliOptions {
 
 		if (arg === `--dry-run`) {
 			options.dryRun = true
+			continue
+		}
+		if (arg === `--debug`) {
+			options.debug = true
 			continue
 		}
 		if (arg === `--json`) {
@@ -255,6 +298,7 @@ async function collectWorkspacePackages(
 async function collectPublishedPackages(
 	workspaceRoot: string,
 	workspacePackages: WorkspacePackage[],
+	debug: DebugLogger,
 ): Promise<PublishedPackage[]> {
 	const publishedPackages = await Promise.all(
 		workspacePackages.map((workspacePackage) =>
@@ -265,6 +309,12 @@ async function collectPublishedPackages(
 	return publishedPackages
 		.filter((pkg): pkg is PublishedPackage => Boolean(pkg))
 		.sort((left, right) => left.name.localeCompare(right.name))
+		.map((pkg) => {
+			debug.log(
+				`npm published: ${pkg.name} workspace=${pkg.version} latest=${pkg.latestPublishedVersion}`,
+			)
+			return pkg
+		})
 }
 
 async function resolvePublishedPackage(
@@ -314,6 +364,7 @@ async function prepareTestbed(
 	testbedPath: string,
 	rootPackageJson: PackageJson,
 	publishedPackages: PublishedPackage[],
+	debug: DebugLogger,
 ): Promise<void> {
 	await fs.rm(testbedPath, { force: true, recursive: true })
 	await fs.mkdir(testbedPath, { recursive: true })
@@ -327,25 +378,37 @@ async function prepareTestbed(
 		dependencies,
 	}
 
+	debug.json(`testbed package.json`, packageJson)
 	await fs.writeFile(
 		path.join(testbedPath, `package.json`),
 		`${JSON.stringify(packageJson, null, `\t`)}\n`,
 	)
-	await runCommand(
+	const installResult = await runCommand(
 		`pnpm`,
 		[`install`, `--ignore-scripts`, `--prod`],
 		testbedPath,
 		{ timeoutMs: 5 * 60_000 },
 	)
+	debug.json(
+		`testbed pnpm install result`,
+		summarizeCommandResult(installResult),
+	)
 }
 
-async function runAudit(cwd: string): Promise<unknown> {
-	const result = await runCommand(
-		`pnpm`,
-		[`audit`, `--prod`, `--audit-level`, `high`, `--json`],
+async function runAudit(
+	cwd: string,
+	label: string,
+	debug: DebugLogger,
+): Promise<unknown> {
+	const auditArgs = [`audit`, `--prod`, `--audit-level`, `moderate`, `--json`]
+	debug.json(`${label} pnpm audit command`, {
+		args: [`pnpm`, ...auditArgs],
 		cwd,
-		{ allowFailure: true, timeoutMs: 2 * 60_000 },
-	)
+	})
+	const result = await runCommand(`pnpm`, auditArgs, cwd, {
+		allowFailure: true,
+		timeoutMs: 2 * 60_000,
+	})
 
 	if (!result.stdout.trim()) {
 		if (result.exitCode === 0) {
@@ -356,7 +419,13 @@ async function runAudit(cwd: string): Promise<unknown> {
 		)
 	}
 
-	return parseJson(result.stdout, `pnpm audit output from ${cwd}`)
+	const auditReport = parseJson(result.stdout, `pnpm audit output from ${cwd}`)
+	debug.json(`${label} pnpm audit --json command result`, {
+		...summarizeCommandResult(result),
+		stdoutBytes: result.stdout.length,
+	})
+	debug.json(`${label} pnpm audit --json`, auditReport)
+	return auditReport
 }
 
 async function readPackageGraph(
@@ -381,6 +450,7 @@ async function readPackageGraph(
 function buildFindings(input: {
 	currentGraph: PackageGraph
 	currentIssues: AuditIssue[]
+	debug: DebugLogger
 	publishedGraph: PackageGraph
 	publishedIssues: AuditIssue[]
 	publishedPackages: PublishedPackage[]
@@ -392,6 +462,7 @@ function buildFindings(input: {
 		input.publishedPackages.map((pkg) => [pkg.name, pkg]),
 	)
 	const findingDrafts = new Map<string, FindingDraft>()
+	const decisions: unknown[] = []
 
 	for (const issue of input.publishedIssues) {
 		const affectedPackages =
@@ -410,6 +481,12 @@ function buildFindings(input: {
 						)
 						.map((pkg) => pkg.name)
 
+		decisions.push({
+			affectedPackages,
+			issue: serializeIssue(issue),
+			phase: `affected package discovery`,
+		})
+
 		for (const packageName of affectedPackages) {
 			const publishedVersions = collectPackageVersions(
 				input.publishedGraph,
@@ -423,12 +500,26 @@ function buildFindings(input: {
 					: setIntersection(publishedVersions, issue.vulnerableVersions)
 
 			if (vulnerablePublishedVersions.size === 0) {
+				decisions.push({
+					decision: `skip`,
+					packageName,
+					phase: `published version check`,
+					publishedVersions: [...publishedVersions],
+					reason: `published graph did not resolve a vulnerable version from pnpm audit`,
+					vulnerableVersionsFromAudit: [...issue.vulnerableVersions],
+				})
 				continue
 			}
 
 			const workspacePackage =
 				input.currentGraph.workspacePackagesByName.get(packageName)
 			if (!workspacePackage) {
+				decisions.push({
+					decision: `skip`,
+					packageName,
+					phase: `workspace package lookup`,
+					reason: `package was not found in the current workspace package map`,
+				})
 				continue
 			}
 
@@ -439,6 +530,13 @@ function buildFindings(input: {
 					currentIssue.affectedTopPackages.has(packageName))
 
 			if (isStillAffected) {
+				decisions.push({
+					currentIssue: serializeIssue(currentIssue),
+					decision: `skip`,
+					packageName,
+					phase: `current audit comparison`,
+					reason: `current workspace audit still reports this package as affected`,
+				})
 				continue
 			}
 
@@ -455,6 +553,14 @@ function buildFindings(input: {
 				currentVersions.size > 0 ? formatVersionSet(currentVersions) : null
 
 			if (currentSafeDependencyVersion === vulnerableLastPublishedVersion) {
+				decisions.push({
+					currentSafeDependencyVersion,
+					decision: `skip`,
+					packageName,
+					phase: `resolved version comparison`,
+					reason: `current and published graphs resolve the same vulnerable dependency version`,
+					vulnerableLastPublishedVersion,
+				})
 				continue
 			}
 
@@ -482,12 +588,23 @@ function buildFindings(input: {
 				issuesAddressed,
 				issueKeys: new Set([issueKey(issue)]),
 			})
+			decisions.push({
+				currentSafeDependencyVersion,
+				decision: `finding`,
+				packageName,
+				phase: `resolved version comparison`,
+				vulnerableLastPublishedVersion,
+			})
 		}
 	}
 
-	return mergeCompatibleFindings([...findingDrafts.values()]).map(
+	input.debug.json(`finding construction decisions`, decisions)
+
+	const findings = mergeCompatibleFindings([...findingDrafts.values()]).map(
 		({ issueKeys: _issueKeys, ...finding }) => finding,
 	)
+	input.debug.json(`merged finding drafts`, findings)
+	return findings
 }
 
 function mergeCompatibleFindings(findings: FindingDraft[]): FindingDraft[] {
@@ -530,10 +647,13 @@ function mergeCompatibleFindings(findings: FindingDraft[]): FindingDraft[] {
 function parseAuditIssues(
 	auditReport: unknown,
 	ourPackageNames: Set<string>,
+	label: string,
+	debug: DebugLogger,
 ): AuditIssue[] {
 	const report = asRecord(auditReport)
 	const issues = new Map<string, AuditIssue>()
 	const advisories = asRecord(report[`advisories`])
+	const parseDecisions: unknown[] = []
 
 	for (const [advisoryId, advisoryValue] of Object.entries(advisories)) {
 		const advisory = asRecord(advisoryValue)
@@ -543,7 +663,15 @@ function parseAuditIssues(
 			getString(advisory[`moduleName`]) ??
 			getString(advisory[`name`])
 
-		if (!severity || !packageName || !HIGH_IMPACT_SEVERITIES.has(severity)) {
+		if (!severity || !packageName || !RELEASE_WORTHY_SEVERITIES.has(severity)) {
+			parseDecisions.push({
+				advisoryId,
+				packageName,
+				phase: `advisories`,
+				reason: `missing package/severity or severity below moderate`,
+				severity,
+				status: `ignored`,
+			})
 			continue
 		}
 
@@ -566,6 +694,12 @@ function parseAuditIssues(
 		for (const auditPath of collectFindingPaths(advisory)) {
 			addAffectedTopPackage(issue, auditPath, ourPackageNames)
 		}
+		parseDecisions.push({
+			advisoryId,
+			issue: serializeIssue(issue),
+			phase: `advisories`,
+			status: `kept`,
+		})
 	}
 
 	const actions = Array.isArray(report[`actions`]) ? report[`actions`] : []
@@ -595,7 +729,14 @@ function parseAuditIssues(
 	)) {
 		const vulnerability = asRecord(vulnerabilityValue)
 		const severity = getString(vulnerability[`severity`])?.toLowerCase()
-		if (!severity || !HIGH_IMPACT_SEVERITIES.has(severity)) {
+		if (!severity || !RELEASE_WORTHY_SEVERITIES.has(severity)) {
+			parseDecisions.push({
+				packageName,
+				phase: `vulnerabilities`,
+				reason: `missing severity or severity below moderate`,
+				severity,
+				status: `ignored`,
+			})
 			continue
 		}
 
@@ -605,23 +746,35 @@ function parseAuditIssues(
 			.filter((via): via is Record<string, unknown> => Boolean(via))
 
 		if (advisoryVias.length === 0) {
-			upsertIssue(issues, {
+			const issue = upsertIssue(issues, {
 				id: packageName,
 				packageName,
 				severity,
 				title: null,
 				url: null,
 			})
+			parseDecisions.push({
+				issue: serializeIssue(issue),
+				phase: `vulnerabilities`,
+				status: `kept without advisory via`,
+			})
 			continue
 		}
 
 		for (const via of advisoryVias) {
 			const viaSeverity = getString(via[`severity`])?.toLowerCase() ?? severity
-			if (!HIGH_IMPACT_SEVERITIES.has(viaSeverity)) {
+			if (!RELEASE_WORTHY_SEVERITIES.has(viaSeverity)) {
+				parseDecisions.push({
+					packageName,
+					phase: `vulnerabilities.via`,
+					reason: `via severity below moderate`,
+					severity: viaSeverity,
+					status: `ignored`,
+				})
 				continue
 			}
 
-			upsertIssue(issues, {
+			const issue = upsertIssue(issues, {
 				id:
 					getString(via[`github_advisory_id`]) ??
 					getString(via[`source`]) ??
@@ -633,12 +786,23 @@ function parseAuditIssues(
 				title: getString(via[`title`]),
 				url: getString(via[`url`]),
 			})
+			parseDecisions.push({
+				issue: serializeIssue(issue),
+				phase: `vulnerabilities.via`,
+				status: `kept`,
+			})
 		}
 	}
 
-	return [...issues.values()].sort((left, right) =>
+	const parsedIssues = [...issues.values()].sort((left, right) =>
 		issueKey(left).localeCompare(issueKey(right)),
 	)
+	debug.json(`${label} audit issue parser decisions`, parseDecisions)
+	debug.json(`${label} normalized moderate+ audit issues`, {
+		count: parsedIssues.length,
+		issues: parsedIssues.map(serializeIssue),
+	})
+	return parsedIssues
 }
 
 function upsertIssue(
@@ -1042,7 +1206,7 @@ function renderChangeset(packageNames: string[], findings: Finding[]): string {
 		.map((packageName) => `${JSON.stringify(packageName)}: patch`)
 		.join(`\n`)
 	const bodyLines = [
-		`Release a patched production dependency graph for high and critical advisories that were still present in the latest npm-published packages.`,
+		`Release a patched production dependency graph for moderate, high, and critical advisories that were still present in the latest npm-published packages.`,
 		``,
 	]
 
@@ -1075,6 +1239,121 @@ function formatIssue(issue: AuditIssue): string {
 	const title = issue.title ? `: ${issue.title}` : ``
 	const url = issue.url ? ` (${issue.url})` : ``
 	return `${issue.severity} ${issue.id} in ${issue.packageName}${title}${url}`
+}
+
+function serializeIssue(issue: AuditIssue): Record<string, unknown> {
+	return {
+		affectedTopPackages: [...issue.affectedTopPackages].sort((left, right) =>
+			left.localeCompare(right),
+		),
+		id: issue.id,
+		packageName: issue.packageName,
+		severity: issue.severity,
+		title: issue.title,
+		url: issue.url,
+		vulnerableVersions: [...issue.vulnerableVersions].sort((left, right) =>
+			left.localeCompare(right),
+		),
+	}
+}
+
+function summarizeGraph(graph: PackageGraph): Record<string, unknown> {
+	const importers = Object.entries(graph.lockfile.importers ?? {}).map(
+		([importerPath, importer]) => ({
+			importerPath,
+			productionDependencies: productionDependencies(importer).map(
+				([name, entry]) => ({
+					name,
+					version: dependencyVersion(entry),
+				}),
+			),
+		}),
+	)
+
+	return {
+		importerCount: Object.keys(graph.lockfile.importers ?? {}).length,
+		importers,
+		packageCount: Object.keys(graph.lockfile.packages ?? {}).length,
+		snapshotCount: Object.keys(graph.lockfile.snapshots ?? {}).length,
+		workspacePackages: [...graph.workspacePackagesByName.values()].map(
+			(pkg) => ({
+				importerPath: pkg.importerPath,
+				name: pkg.name,
+				version: pkg.version,
+			}),
+		),
+	}
+}
+
+function summarizeCommandResult(result: CommandResult): Record<string, unknown> {
+	return {
+		exitCode: result.exitCode,
+		stderr: limitDebugText(result.stderr.trim()),
+		timedOut: result.timedOut,
+	}
+}
+
+function createDebugLogger(enabled: boolean): DebugLogger {
+	const useGitHubGroups = process.env.GITHUB_ACTIONS === `true`
+	const group = (title: string, write: () => void): void => {
+		if (!enabled) {
+			return
+		}
+
+		if (useGitHubGroups) {
+			console.log(`::group::${title}`)
+		} else {
+			console.log(`\n[vigilance] ${title}`)
+		}
+
+		try {
+			write()
+		} finally {
+			if (useGitHubGroups) {
+				console.log(`::endgroup::`)
+			}
+		}
+	}
+
+	return {
+		enabled,
+		group,
+		json(title, value) {
+			group(title, () => {
+				console.log(JSON.stringify(toDebugJson(value), null, `\t`))
+			})
+		},
+		log(message) {
+			if (enabled) {
+				console.log(`[vigilance] ${message}`)
+			}
+		},
+	}
+}
+
+function toDebugJson(value: unknown): unknown {
+	if (value instanceof Set) {
+		return [...value].map(toDebugJson)
+	}
+	if (value instanceof Map) {
+		return Object.fromEntries(
+			[...value.entries()].map(([key, item]) => [key, toDebugJson(item)]),
+		)
+	}
+	if (Array.isArray(value)) {
+		return value.map(toDebugJson)
+	}
+	if (value && typeof value === `object`) {
+		return Object.fromEntries(
+			Object.entries(value).map(([key, item]) => [key, toDebugJson(item)]),
+		)
+	}
+	return value
+}
+
+function limitDebugText(text: string): string {
+	const maxLength = 4_000
+	return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text
 }
 
 function issueKey(issue: AuditIssue): string {
