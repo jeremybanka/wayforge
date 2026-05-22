@@ -35,6 +35,7 @@
 		"test:semver": "cross-env CI=true dotenvx run -- turbo run test:semver",
 		"release": "bun run build && changeset publish",
 		"notes": "changeset",
+		"vigilance": "bun lib/vigilance-bot.bun.ts",
 		"nuke": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name 'dist' -type d -prune -exec rm -rf '{}' + && rm pnpm-lock.yaml",
 		"nv": "fnm use $(pnpm list -w --json | jq -r '.[0].path')",
 		"version": "dotenvx run -- turbo run version",

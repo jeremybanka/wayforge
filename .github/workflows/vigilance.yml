@@ -1,0 +1,52 @@
+name: Vigilance
+
+on:
+  schedule:
+    - cron: "17 9 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  SecurityRelease:
+    name: Security Release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        id: app-token
+        with:
+          client-id: ${{ vars.VIGILANCE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.VIGILANCE_APP_PRIVATE_KEY }}
+          owner: jeremybanka
+          repositories: wayforge
+          permission-contents: write
+          permission-pull-requests: write
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+      - uses: ./.github/actions/setup
+      - run: pnpm vigilance --debug
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          add-paths: .changeset
+          author: jeremybanka-vigilance-bot <jeremybanka-vigilance-worker[bot]@users.noreply.github.com>
+          branch: vigilance-bot-never-sleeps
+          commit-message: Add security release changesets
+          committer: jeremybanka-vigilance-bot <jeremybanka-vigilance-worker[bot]@users.noreply.github.com>
+          delete-branch: true
+          title: Release patched dependency graphs
+          body: |
+            This automated PR releases packages whose latest npm-published versions still install moderate, high, or critical production dependency vulnerabilities that are no longer present in the current workspace graph.
+
+            The generated changesets list the affected advisories and the dependency versions that were expunged.
