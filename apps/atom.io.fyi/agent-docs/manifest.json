@@ -1,0 +1,571 @@
+{
+	"version": "0.46.34",
+	"concepts": [
+		{
+			"output": "concepts/atom.md",
+			"packages": [
+				"atom.io"
+			],
+			"related": [
+				"selector",
+				"atom-family",
+				"store"
+			],
+			"slug": "atom",
+			"source": "src/concepts/atom.md",
+			"summary": "A reactive source-of-truth value identified by a stable key.",
+			"title": "Atom"
+		},
+		{
+			"output": "concepts/atom-family.md",
+			"packages": [
+				"atom.io"
+			],
+			"related": [
+				"atom",
+				"selector-family",
+				"transaction"
+			],
+			"slug": "atom-family",
+			"source": "src/concepts/atom-family.md",
+			"summary": "A function that creates related atoms from parameter keys.",
+			"title": "Atom Family"
+		},
+		{
+			"output": "concepts/catch.md",
+			"packages": [
+				"atom.io",
+				"atom.io/react"
+			],
+			"related": [
+				"loadable",
+				"selector",
+				"effect"
+			],
+			"slug": "catch",
+			"source": "src/concepts/catch.md",
+			"summary": "A typed error channel for atoms and selectors.",
+			"title": "Catch"
+		},
+		{
+			"output": "concepts/effect.md",
+			"packages": [
+				"atom.io"
+			],
+			"related": [
+				"atom",
+				"catch",
+				"store"
+			],
+			"slug": "effect",
+			"source": "src/concepts/effect.md",
+			"summary": "Setup logic that can hydrate an atom or react to atom changes.",
+			"title": "Effect"
+		},
+		{
+			"output": "concepts/join.md",
+			"packages": [
+				"atom.io"
+			],
+			"related": [
+				"selector-family",
+				"atom-family",
+				"transaction"
+			],
+			"slug": "join",
+			"source": "src/concepts/join.md",
+			"summary": "A helper for managing bidirectional relations between keys.",
+			"title": "Join"
+		},
+		{
+			"output": "concepts/loadable.md",
+			"packages": [
+				"atom.io",
+				"atom.io/react"
+			],
+			"related": [
+				"selector",
+				"catch",
+				"effect"
+			],
+			"slug": "loadable",
+			"source": "src/concepts/loadable.md",
+			"summary": "A reactive value that may still be waiting on asynchronous work.",
+			"title": "Loadable"
+		},
+		{
+			"output": "concepts/mutable-atom.md",
+			"packages": [
+				"atom.io",
+				"atom.io/json"
+			],
+			"related": [
+				"atom",
+				"transceiver",
+				"timeline"
+			],
+			"slug": "mutable-atom",
+			"source": "src/concepts/mutable-atom.md",
+			"summary": "An atom backed by a mutable transceiver value.",
+			"title": "Mutable Atom"
+		},
+		{
+			"output": "concepts/selector.md",
+			"packages": [
+				"atom.io"
+			],
+			"related": [
+				"atom",
+				"selector-family",
+				"loadable"
+			],
+			"slug": "selector",
+			"source": "src/concepts/selector.md",
+			"summary": "A reactive value derived from atoms or other selectors.",
+			"title": "Selector"
+		},
+		{
+			"output": "concepts/selector-family.md",
+			"packages": [
+				"atom.io"
+			],
+			"related": [
+				"selector",
+				"atom-family",
+				"join"
+			],
+			"slug": "selector-family",
+			"source": "src/concepts/selector-family.md",
+			"summary": "A function that creates related selectors from parameter keys.",
+			"title": "Selector Family"
+		},
+		{
+			"output": "concepts/silo.md",
+			"packages": [
+				"atom.io",
+				"atom.io/testing"
+			],
+			"related": [
+				"store",
+				"atom",
+				"transaction"
+			],
+			"slug": "silo",
+			"source": "src/concepts/silo.md",
+			"summary": "An isolated atom.io store with bound state utilities.",
+			"title": "Silo"
+		},
+		{
+			"output": "concepts/store.md",
+			"packages": [
+				"atom.io"
+			],
+			"related": [
+				"atom",
+				"selector",
+				"silo"
+			],
+			"slug": "store",
+			"source": "src/concepts/store.md",
+			"summary": "The runtime state container that holds atom and selector values.",
+			"title": "Store"
+		},
+		{
+			"output": "concepts/timeline.md",
+			"packages": [
+				"atom.io",
+				"atom.io/react"
+			],
+			"related": [
+				"transaction",
+				"mutable-atom",
+				"transceiver"
+			],
+			"slug": "timeline",
+			"source": "src/concepts/timeline.md",
+			"summary": "A history tracker for undoing and redoing state changes.",
+			"title": "Timeline"
+		},
+		{
+			"output": "concepts/transaction.md",
+			"packages": [
+				"atom.io"
+			],
+			"related": [
+				"atom",
+				"atom-family",
+				"timeline"
+			],
+			"slug": "transaction",
+			"source": "src/concepts/transaction.md",
+			"summary": "A coordinated update that batches multiple state changes.",
+			"title": "Transaction"
+		},
+		{
+			"output": "concepts/transceiver.md",
+			"packages": [
+				"atom.io",
+				"atom.io/json"
+			],
+			"related": [
+				"mutable-atom",
+				"timeline",
+				"transaction"
+			],
+			"slug": "transceiver",
+			"source": "src/concepts/transceiver.md",
+			"summary": "A mutable object that reports its updates to atom.io.",
+			"title": "Transceiver"
+		}
+	],
+	"docs": [
+		{
+			"output": "packages/getting-started.md",
+			"source": "src/pages/docs/getting-started.mdx",
+			"title": "getting started",
+			"url": "/docs/getting-started"
+		},
+		{
+			"output": "packages/why-atom-io.md",
+			"source": "src/pages/docs/why-atom-io.mdx",
+			"title": "why atom.io",
+			"url": "/docs/why-atom-io"
+		},
+		{
+			"output": "packages/understand-atom-io.md",
+			"source": "src/pages/docs/understand-atom-io.mdx",
+			"title": "understand atom.io",
+			"url": "/docs/understand-atom-io"
+		},
+		{
+			"output": "packages/atom.io.md",
+			"source": "src/pages/docs/index.mdx",
+			"title": "atom.io",
+			"url": "/docs"
+		},
+		{
+			"output": "packages/atom.io-react.md",
+			"source": "src/pages/docs/react.mdx",
+			"title": "atom.io/react",
+			"url": "/docs/react"
+		},
+		{
+			"output": "packages/atom.io-json.md",
+			"source": "src/pages/docs/json.mdx",
+			"title": "atom.io/json",
+			"url": "/docs/json"
+		},
+		{
+			"output": "packages/atom.io-web.md",
+			"source": "src/pages/docs/web.mdx",
+			"title": "atom.io/web",
+			"url": "/docs/web"
+		},
+		{
+			"output": "packages/atom.io-transceivers.md",
+			"source": "src/pages/transceivers.mdx",
+			"title": "atom.io/transceivers",
+			"url": "/transceivers"
+		},
+		{
+			"output": "packages/atom.io-eslint-plugin.md",
+			"source": "src/pages/docs/eslint-plugin.mdx",
+			"title": "atom.io/eslint-plugin",
+			"url": "/docs/eslint-plugin"
+		},
+		{
+			"output": "packages/atom.io-react-devtools.md",
+			"source": "src/pages/docs/react-devtools.mdx",
+			"title": "atom.io/react-devtools",
+			"url": "/docs/react-devtools"
+		},
+		{
+			"output": "packages/atom.io-testing.md",
+			"source": "src/pages/docs/testing.mdx",
+			"title": "atom.io/testing",
+			"url": "/docs/testing"
+		}
+	],
+	"examples": [
+		{
+			"output": "examples/core/advanced/async/avoid-race-between-promises.md",
+			"source": "src/exhibits/core/advanced/async/avoid-race-between-promises.ts",
+			"title": "avoid race between promises"
+		},
+		{
+			"output": "examples/core/advanced/async/await-your-state.md",
+			"source": "src/exhibits/core/advanced/async/await-your-state.ts",
+			"title": "await your state"
+		},
+		{
+			"output": "examples/core/advanced/async/loadable-selector.md",
+			"source": "src/exhibits/core/advanced/async/loadable-selector.ts",
+			"title": "loadable selector"
+		},
+		{
+			"output": "examples/core/advanced/catching/catch-a-selector.md",
+			"source": "src/exhibits/core/advanced/catching/catch-a-selector.ts",
+			"title": "catch a selector"
+		},
+		{
+			"output": "examples/core/advanced/catching/catch-an-atom.md",
+			"source": "src/exhibits/core/advanced/catching/catch-an-atom.ts",
+			"title": "catch an atom"
+		},
+		{
+			"output": "examples/core/advanced/effects/hydrate-an-atom-with-set-self.md",
+			"source": "src/exhibits/core/advanced/effects/hydrate-an-atom-with-set-self.ts",
+			"title": "hydrate an atom with set self"
+		},
+		{
+			"output": "examples/core/advanced/effects/react-to-changes-with-on-set.md",
+			"source": "src/exhibits/core/advanced/effects/react-to-changes-with-on-set.ts",
+			"title": "react to changes with on set"
+		},
+		{
+			"output": "examples/core/advanced/join/declare-playlist-tracks.md",
+			"source": "src/exhibits/core/advanced/join/declare-playlist-tracks.ts",
+			"title": "declare playlist tracks"
+		},
+		{
+			"output": "examples/core/advanced/join/find-playlists-for-track.md",
+			"source": "src/exhibits/core/advanced/join/find-playlists-for-track.ts",
+			"title": "find playlists for track"
+		},
+		{
+			"output": "examples/core/advanced/join/find-tracks-in-playlist.md",
+			"source": "src/exhibits/core/advanced/join/find-tracks-in-playlist.ts",
+			"title": "find tracks in playlist"
+		},
+		{
+			"output": "examples/core/advanced/join/replace-playlist-tracks.md",
+			"source": "src/exhibits/core/advanced/join/replace-playlist-tracks.ts",
+			"title": "replace playlist tracks"
+		},
+		{
+			"output": "examples/core/atom/an-atom-token-is-a-reference.md",
+			"source": "src/exhibits/core/atom/an-atom-token-is-a-reference.ts",
+			"title": "an atom token is a reference"
+		},
+		{
+			"output": "examples/core/atom/declare-an-atom.md",
+			"source": "src/exhibits/core/atom/declare-an-atom.ts",
+			"title": "declare an atom"
+		},
+		{
+			"output": "examples/core/atom/get-and-set-an-atom.md",
+			"source": "src/exhibits/core/atom/get-and-set-an-atom.ts",
+			"title": "get and set an atom"
+		},
+		{
+			"output": "examples/core/atom/subscribe-is-the-foundation-of-reactivity.md",
+			"source": "src/exhibits/core/atom/subscribe-is-the-foundation-of-reactivity.tsx",
+			"title": "subscribe is the foundation of reactivity"
+		},
+		{
+			"output": "examples/core/atom/subscribe-to-an-atom.md",
+			"source": "src/exhibits/core/atom/subscribe-to-an-atom.ts",
+			"title": "subscribe to an atom"
+		},
+		{
+			"output": "examples/core/families/declare-a-family.md",
+			"source": "src/exhibits/core/families/declare-a-family.tsx",
+			"title": "declare a family"
+		},
+		{
+			"output": "examples/core/families/use-an-index-to-track-family-members.md",
+			"source": "src/exhibits/core/families/use-an-index-to-track-family-members.tsx",
+			"title": "use an index to track family members"
+		},
+		{
+			"output": "examples/core/mutable/declare-a-mutable-atom.md",
+			"source": "src/exhibits/core/mutable/declare-a-mutable-atom.ts",
+			"title": "declare a mutable atom"
+		},
+		{
+			"output": "examples/core/selector/declare-a-selector.md",
+			"source": "src/exhibits/core/selector/declare-a-selector.ts",
+			"title": "declare a selector"
+		},
+		{
+			"output": "examples/core/selector/get-and-set-a-selector.md",
+			"source": "src/exhibits/core/selector/get-and-set-a-selector.ts",
+			"title": "get and set a selector"
+		},
+		{
+			"output": "examples/core/selector/use-a-selector.md",
+			"source": "src/exhibits/core/selector/use-a-selector.ts",
+			"title": "use a selector"
+		},
+		{
+			"output": "examples/core/timeline/create-a-timeline.md",
+			"source": "src/exhibits/core/timeline/create-a-timeline.ts",
+			"title": "create a timeline"
+		},
+		{
+			"output": "examples/core/timeline/subscribe-to-a-timeline.md",
+			"source": "src/exhibits/core/timeline/subscribe-to-a-timeline.ts",
+			"title": "subscribe to a timeline"
+		},
+		{
+			"output": "examples/core/timeline/undo-and-redo-changes.md",
+			"source": "src/exhibits/core/timeline/undo-and-redo-changes.ts",
+			"title": "undo and redo changes"
+		},
+		{
+			"output": "examples/core/transaction/iterate-through-an-index-changing-the-value-of-some-atoms.md",
+			"source": "src/exhibits/core/transaction/iterate-through-an-index-changing-the-value-of-some-atoms.ts",
+			"title": "iterate through an index changing the value of some atoms"
+		},
+		{
+			"output": "examples/core/transaction/try-catch-a-failed-transaction.md",
+			"source": "src/exhibits/core/transaction/try-catch-a-failed-transaction.ts",
+			"title": "try catch a failed transaction"
+		},
+		{
+			"output": "examples/core/transaction/use-a-family-in-a-transaction.md",
+			"source": "src/exhibits/core/transaction/use-a-family-in-a-transaction.ts",
+			"title": "use a family in a transaction"
+		},
+		{
+			"output": "examples/guides/understand-atom-io/browser-path-sync.md",
+			"source": "src/exhibits/guides/understand-atom-io/browser-path-sync.ts",
+			"title": "browser path sync"
+		},
+		{
+			"output": "examples/guides/understand-atom-io/counter.test.md",
+			"source": "src/exhibits/guides/understand-atom-io/counter.test.ts",
+			"title": "counter.test"
+		},
+		{
+			"output": "examples/guides/understand-atom-io/laziness.md",
+			"source": "src/exhibits/guides/understand-atom-io/laziness.ts",
+			"title": "laziness"
+		},
+		{
+			"output": "examples/guides/understand-atom-io/node-config-sync.md",
+			"source": "src/exhibits/guides/understand-atom-io/node-config-sync.ts",
+			"title": "node config sync"
+		},
+		{
+			"output": "examples/guides/understand-atom-io/search-box.md",
+			"source": "src/exhibits/guides/understand-atom-io/search-box.tsx",
+			"title": "search box"
+		},
+		{
+			"output": "examples/guides/understand-atom-io/transactions-and-timelines.md",
+			"source": "src/exhibits/guides/understand-atom-io/transactions-and-timelines.ts",
+			"title": "transactions and timelines"
+		},
+		{
+			"output": "examples/json/page-atoms.md",
+			"source": "src/exhibits/json/page-atoms.ts",
+			"title": "page atoms"
+		},
+		{
+			"output": "examples/json/page-key.md",
+			"source": "src/exhibits/json/page-key.ts",
+			"title": "page key"
+		},
+		{
+			"output": "examples/react/use-i.md",
+			"source": "src/exhibits/react/use-i.tsx",
+			"title": "use i"
+		},
+		{
+			"output": "examples/react/use-json.md",
+			"source": "src/exhibits/react/use-json.tsx",
+			"title": "use json"
+		},
+		{
+			"output": "examples/react/use-loadable-bare.md",
+			"source": "src/exhibits/react/use-loadable-bare.tsx",
+			"title": "use loadable bare"
+		},
+		{
+			"output": "examples/react/use-loadable-catch.md",
+			"source": "src/exhibits/react/use-loadable-catch.tsx",
+			"title": "use loadable catch"
+		},
+		{
+			"output": "examples/react/use-loadable-fallback.md",
+			"source": "src/exhibits/react/use-loadable-fallback.tsx",
+			"title": "use loadable fallback"
+		},
+		{
+			"output": "examples/react/use-o.md",
+			"source": "src/exhibits/react/use-o.tsx",
+			"title": "use o"
+		},
+		{
+			"output": "examples/react/use-tl.md",
+			"source": "src/exhibits/react/use-tl.tsx",
+			"title": "use tl"
+		},
+		{
+			"output": "examples/tooling/eslint-plugin/eslint.config.md",
+			"source": "src/exhibits/tooling/eslint-plugin/eslint.config.ts.txt",
+			"title": "eslint.config"
+		},
+		{
+			"output": "examples/tooling/eslint-plugin/exact-catch-types.md",
+			"source": "src/exhibits/tooling/eslint-plugin/exact-catch-types.ts",
+			"title": "exact catch types"
+		},
+		{
+			"output": "examples/tooling/eslint-plugin/explicit-state-types.md",
+			"source": "src/exhibits/tooling/eslint-plugin/explicit-state-types.ts",
+			"title": "explicit state types"
+		},
+		{
+			"output": "examples/tooling/react-devtools/basic-setup.md",
+			"source": "src/exhibits/tooling/react-devtools/basic-setup.tsx.txt",
+			"title": "basic setup"
+		},
+		{
+			"output": "examples/tooling/react-devtools/hide-by-default.md",
+			"source": "src/exhibits/tooling/react-devtools/hide-by-default.tsx.txt",
+			"title": "hide by default"
+		},
+		{
+			"output": "examples/tooling/testing/custom-store.md",
+			"source": "src/exhibits/tooling/testing/custom-store.ts",
+			"title": "custom store"
+		},
+		{
+			"output": "examples/tooling/testing/take-snapshot.md",
+			"source": "src/exhibits/tooling/testing/take-snapshot.ts",
+			"title": "take snapshot"
+		},
+		{
+			"output": "examples/transceivers/o-list.md",
+			"source": "src/exhibits/transceivers/o-list.ts",
+			"title": "o list"
+		},
+		{
+			"output": "examples/transceivers/u-list.md",
+			"source": "src/exhibits/transceivers/u-list.ts",
+			"title": "u list"
+		},
+		{
+			"output": "examples/web/string-interface.md",
+			"source": "src/exhibits/web/string-interface.ts",
+			"title": "string interface"
+		},
+		{
+			"output": "examples/web/sync-with-local-storage.md",
+			"source": "src/exhibits/web/sync-with-local-storage.ts",
+			"title": "sync with local storage"
+		},
+		{
+			"output": "examples/web/sync-with-session-storage.md",
+			"source": "src/exhibits/web/sync-with-session-storage.ts",
+			"title": "sync with session storage"
+		},
+		{
+			"output": "examples/web/sync-with-the-url.md",
+			"source": "src/exhibits/web/sync-with-the-url.ts",
+			"title": "sync with the url"
+		}
+	]
+}

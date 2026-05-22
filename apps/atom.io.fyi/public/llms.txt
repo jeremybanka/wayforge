@@ -1,0 +1,13 @@
+# atom.io
+
+atom.io is a versatile state engine for TypeScript applications.
+
+Agent documentation:
+
+- Full generated corpus: /llms-full.txt
+- Concepts glossary: /docs/concepts
+- Main docs: /docs
+- React bindings: /docs/react
+- JSON and transceivers: /docs/json and /transceivers
+
+The generated corpus is segmented in the repository at apps/atom.io.fyi/agent-docs and shipped in the atom.io package at docs/agent.

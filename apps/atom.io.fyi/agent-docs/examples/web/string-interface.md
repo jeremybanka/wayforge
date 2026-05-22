@@ -1,0 +1,10 @@
+# string interface
+
+Source: src/exhibits/web/string-interface.ts
+
+```ts
+type StringInterface<T> = {
+	stringify: (t: T) => string
+	parse: (s: string) => T
+}
+```
