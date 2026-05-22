@@ -1,0 +1,55 @@
+---
+import Layout from "../../layouts/LayoutDocs.astro"
+
+type ConceptModule = {
+	Content: () => unknown
+	frontmatter: {
+		packages?: string[]
+		related?: string[]
+		slug: string
+		summary: string
+		title: string
+	}
+}
+
+const conceptModules = import.meta.glob<ConceptModule>("../../concepts/*.md", {
+	eager: true,
+})
+const concepts = Object.values(conceptModules)
+	.map((concept) => ({
+		Content: concept.Content,
+		frontmatter: concept.frontmatter,
+	}))
+	.sort((a, b) => a.frontmatter.title.localeCompare(b.frontmatter.title))
+---
+
+<Layout>
+	<h1>concepts</h1>
+	<p>
+		A glossary for the main atom.io ideas: what each concept means, where it
+		appears, and which nearby concepts to learn next.
+	</p>
+	{
+		concepts.map(({ Content, frontmatter }) => (
+			<section id={frontmatter.slug}>
+				<h2>{frontmatter.title}</h2>
+				<p>{frontmatter.summary}</p>
+				<p>
+					<strong>Packages:</strong> {frontmatter.packages?.join(", ") ?? "atom.io"}
+				</p>
+				<Content />
+				{frontmatter.related && frontmatter.related.length > 0 && (
+					<p>
+						<strong>Related:</strong>{" "}
+						{frontmatter.related.map((slug, index) => (
+							<>
+								{index > 0 && ", "}
+								<a href={`#${slug}`}>{slug}</a>
+							</>
+						))}
+					</p>
+				)}
+			</section>
+		))
+	}
+</Layout>
