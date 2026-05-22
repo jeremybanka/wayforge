@@ -3,8 +3,10 @@ name: Vigilance
 on:
   schedule:
     - cron: "17 9 * * *"
-
   workflow_dispatch:
+
+  push:
+    branches: ["needs-security-release-action"]
 
 permissions:
   contents: read
