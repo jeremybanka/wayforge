@@ -1294,7 +1294,7 @@ function summarizeCommandResult(result: CommandResult): Record<string, unknown> 
 }
 
 function createDebugLogger(enabled: boolean): DebugLogger {
-	const useGitHubGroups = process.env.GITHUB_ACTIONS === `true`
+	const useGitHubGroups = process.env[`GITHUB_ACTIONS`] === `true`
 	const group = (title: string, write: () => void): void => {
 		if (!enabled) {
 			return
