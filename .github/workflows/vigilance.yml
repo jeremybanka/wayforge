@@ -38,7 +38,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: ./.github/actions/setup
-      - run: pnpm vigilance
+      - run: pnpm vigilance --debug
       - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           token: ${{ steps.app-token.outputs.token }}
@@ -50,6 +50,6 @@ jobs:
           delete-branch: true
           title: Release patched dependency graphs
           body: |
-            This automated PR releases packages whose latest npm-published versions still install high or critical production dependency vulnerabilities that are no longer present in the current workspace graph.
+            This automated PR releases packages whose latest npm-published versions still install moderate, high, or critical production dependency vulnerabilities that are no longer present in the current workspace graph.
 
             The generated changesets list the affected advisories and the dependency versions that were expunged.
