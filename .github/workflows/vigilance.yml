@@ -38,39 +38,17 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
       - uses: ./.github/actions/setup
       - run: pnpm vigilance
-      - name: Publish Vigilance PR
-        env:
-          BRANCH_NAME: vigilance-bot-never-sleeps
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-        run: |
-          if [ -z "$(git status --porcelain -- .changeset)" ]; then
-            echo "No security release changesets were generated."
-            exit 0
-          fi
+      - uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          add-paths: .changeset
+          author: jeremybanka-vigilance-bot <jeremybanka-vigilance-worker[bot]@users.noreply.github.com>
+          branch: vigilance-bot-never-sleeps
+          commit-message: Add security release changesets
+          committer: jeremybanka-vigilance-bot <jeremybanka-vigilance-worker[bot]@users.noreply.github.com>
+          delete-branch: true
+          title: Release patched dependency graphs
+          body: |
+            This automated PR releases packages whose latest npm-published versions still install high or critical production dependency vulnerabilities that are no longer present in the current workspace graph.
 
-          git config user.email "vigilance-bot@users.noreply.github.com"
-          git config user.name "vigilance-bot"
-          git switch -C "${BRANCH_NAME}"
-          git add .changeset
-          git commit -m "Add security release changesets"
-          git push --force origin "HEAD:${BRANCH_NAME}"
-
-          cat > /tmp/vigilance-pr-body.md <<'BODY'
-          This automated PR releases packages whose latest npm-published versions still install high or critical production dependency vulnerabilities that are no longer present in the current workspace graph.
-
-          The generated changesets list the affected advisories and the dependency versions that were expunged.
-          BODY
-
-          if gh pr view "${BRANCH_NAME}" --repo "${GITHUB_REPOSITORY}" >/dev/null 2>&1; then
-            gh pr edit "${BRANCH_NAME}" \
-              --repo "${GITHUB_REPOSITORY}" \
-              --title "Release patched dependency graphs" \
-              --body-file /tmp/vigilance-pr-body.md
-          else
-            gh pr create \
-              --repo "${GITHUB_REPOSITORY}" \
-              --base main \
-              --head "${BRANCH_NAME}" \
-              --title "Release patched dependency graphs" \
-              --body-file /tmp/vigilance-pr-body.md
-          fi
+            The generated changesets list the affected advisories and the dependency versions that were expunged.
