@@ -118,7 +118,7 @@
 		"react": "19.2.6",
 		"react-dom": "19.2.6",
 		"react-router-dom": "7.15.1",
-		"recoverage": "0.1.13",
+		"recoverage": "0.1.14",
 		"socket.io": "4.8.3",
 		"socket.io-client": "4.8.3",
 		"solid-js": "1.9.13",
