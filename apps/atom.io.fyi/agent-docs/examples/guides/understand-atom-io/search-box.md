@@ -1,6 +1,6 @@
 # search box
 
-Source: src/exhibits/guides/understand-atom-io/search-box.tsx
+Source: docs/source/exhibits/guides/understand-atom-io/search-box.tsx
 
 ```tsx
 import { atom } from "atom.io"

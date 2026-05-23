@@ -1,6 +1,6 @@
 # sync with local storage
 
-Source: src/exhibits/web/sync-with-local-storage.ts
+Source: docs/source/exhibits/web/sync-with-local-storage.ts
 
 ```ts
 import { atom } from "atom.io"

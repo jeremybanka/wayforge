@@ -1,6 +1,6 @@
 # atom.io/testing
 
-Source: src/pages/docs/testing.mdx
+Source: docs/source/pages/docs/testing.mdx
 URL: /docs/testing
 
 # atom.io/testing
@@ -25,7 +25,7 @@ For the common case, call it once at module scope after your test states are dec
 then restore it in `afterEach`.
 
 ### take snapshot
-Source: src/exhibits/tooling/testing/take-snapshot.ts
+Source: docs/source/exhibits/tooling/testing/take-snapshot.ts
 
 ```ts
 import { atom, getState, selector, setState } from "atom.io"
@@ -69,7 +69,7 @@ That is useful when you want to inspect the captured template store directly. Fo
 you can read the snapshotted value of a state from `snapshot.store` before restoring it.
 
 ### custom store
-Source: src/exhibits/tooling/testing/custom-store.ts
+Source: docs/source/exhibits/tooling/testing/custom-store.ts
 
 ```ts
 import { atom } from "atom.io"

@@ -1,6 +1,6 @@
 # atom.io
 
-Source: src/pages/docs/index.mdx
+Source: docs/source/pages/docs/index.mdx
 URL: /docs
 
 # atom.io
@@ -36,7 +36,7 @@ history.
 ## atom
 
 ### declare an atom
-Source: src/exhibits/core/atom/declare-an-atom.ts
+Source: docs/source/exhibits/core/atom/declare-an-atom.ts
 
 ```ts
 import { atom } from "atom.io"
@@ -51,7 +51,7 @@ Imagine an `atom` as a "reactive variable," with a key, a type, and a default
 value.
 
 ### an atom token is a reference
-Source: src/exhibits/core/atom/an-atom-token-is-a-reference.ts
+Source: docs/source/exhibits/core/atom/an-atom-token-is-a-reference.ts
 
 ```ts
 import { getState } from "atom.io"
@@ -70,7 +70,7 @@ Instead, it returns an importable, serializable, and replaceable reference to th
 We call this an `AtomToken`. In this case, an `AtomToken<number>`.
 
 ### get and set an atom
-Source: src/exhibits/core/atom/get-and-set-an-atom.ts
+Source: docs/source/exhibits/core/atom/get-and-set-an-atom.ts
 
 ```ts
 import { getState, setState } from "atom.io"
@@ -91,7 +91,7 @@ token.
 TypeScript will discourage you from setting the wrong type of value.
 
 ### subscribe to an atom
-Source: src/exhibits/core/atom/subscribe-to-an-atom.ts
+Source: docs/source/exhibits/core/atom/subscribe-to-an-atom.ts
 
 ```ts
 import { subscribe } from "atom.io"
@@ -107,7 +107,7 @@ Unlike a standard variable, you can `subscribe` to an atom. The callback you
 pass to the subscription will be called whenever the atom is set to a new value.
 
 ### subscribe is the foundation of reactivity
-Source: src/exhibits/core/atom/subscribe-is-the-foundation-of-reactivity.tsx
+Source: docs/source/exhibits/core/atom/subscribe-is-the-foundation-of-reactivity.tsx
 
 ```tsx
 import { useO } from "atom.io/react"
@@ -127,7 +127,7 @@ later.
 ## selector
 
 ### declare a selector
-Source: src/exhibits/core/selector/declare-a-selector.ts
+Source: docs/source/exhibits/core/selector/declare-a-selector.ts
 
 ```ts
 import { atom, selector } from "atom.io"
@@ -155,7 +155,7 @@ export const quotientSelector = selector<number>({
 A selector is also a reactive variable, but its value is derived from other atoms or selectors.
 
 ### use a selector
-Source: src/exhibits/core/selector/use-a-selector.ts
+Source: docs/source/exhibits/core/selector/use-a-selector.ts
 
 ```ts
 import { getState, setState } from "atom.io"
@@ -182,7 +182,7 @@ In this example, we can see that by setting `dividendState` to a new value, the 
 Sometimes you need a lot of the same type of atom or selector. The `atomFamily` and `selectorFamily` functions provide a convenient interface for declaring states dynamically.
 
 ### declare a family
-Source: src/exhibits/core/families/declare-a-family.tsx
+Source: docs/source/exhibits/core/families/declare-a-family.tsx
 
 ```tsx
 import { atomFamily, getState } from "atom.io"
@@ -217,7 +217,7 @@ Counterintuitively, it is likely a performance win in highly interactive applica
 This is the key to high-performance interactivity in atom.io: **the smaller the state, the better**.
 
 ### use an index to track family members
-Source: src/exhibits/core/families/use-an-index-to-track-family-members.tsx
+Source: docs/source/exhibits/core/families/use-an-index-to-track-family-members.tsx
 
 ```tsx
 import { atom } from "atom.io"
@@ -251,7 +251,7 @@ It is up to you to decide how to track the members of the families you create. `
 Transactions allow you to batch multiple atom changes into a single update. This is useful for validating a complex set of changes before it is applied to the store.
 
 ### use a family in a transaction
-Source: src/exhibits/core/transaction/use-a-family-in-a-transaction.ts
+Source: docs/source/exhibits/core/transaction/use-a-family-in-a-transaction.ts
 
 ```ts
 import { atom, atomFamily, transaction } from "atom.io"
@@ -285,7 +285,7 @@ export const addUserTX = transaction<(user: PublicUser) => void>({
 A common use case is creating some new state using a family and adding it to an index tracking members of that family.
 
 ### iterate through an index changing the value of some atoms
-Source: src/exhibits/core/transaction/iterate-through-an-index-changing-the-value-of-some-atoms.ts
+Source: docs/source/exhibits/core/transaction/iterate-through-an-index-changing-the-value-of-some-atoms.ts
 
 ```ts
 import { atom, atomFamily, selectorFamily, transaction } from "atom.io"
@@ -346,7 +346,7 @@ export const addOneMinuteToAllRunningTimersTX = transaction({
 In this example, we add a minute to all running timers.
 
 ### try catch a failed transaction
-Source: src/exhibits/core/transaction/try-catch-a-failed-transaction.ts
+Source: docs/source/exhibits/core/transaction/try-catch-a-failed-transaction.ts
 
 ```ts
 import type { Loadable } from "atom.io"
@@ -413,7 +413,7 @@ If a transaction throws, the state of the store is not changed. However, it is u
 Timelines allow you to track the history of a group of atoms. If these atoms are set, or set as a group by a selector or transaction, the timeline will record the changes. A timeline can be used to undo and redo changes.
 
 ### create a timeline
-Source: src/exhibits/core/timeline/create-a-timeline.ts
+Source: docs/source/exhibits/core/timeline/create-a-timeline.ts
 
 ```ts
 import { timeline } from "atom.io"
@@ -429,7 +429,7 @@ export const coordinatesTL = timeline({
 In this example, we create a timeline that tracks the history of two families of atoms.
 
 ### subscribe to a timeline
-Source: src/exhibits/core/timeline/subscribe-to-a-timeline.ts
+Source: docs/source/exhibits/core/timeline/subscribe-to-a-timeline.ts
 
 ```ts
 import { setState, subscribe } from "atom.io"
@@ -458,7 +458,7 @@ setState(xAtoms, `sample_key`, 1)
 In this example, we subscribe to the timeline. Above are the structures of timeline updates.
 
 ### undo and redo changes
-Source: src/exhibits/core/timeline/undo-and-redo-changes.ts
+Source: docs/source/exhibits/core/timeline/undo-and-redo-changes.ts
 
 ```ts
 import { getState, redo, setState, subscribe, undo } from "atom.io"
@@ -493,7 +493,7 @@ For example, imagine a playlist editor. Tracks are their own entities, and playl
 The tracks do not belong to the playlist object, and the playlists do not belong to the track object. The relationship is its own state, so the UI can reshape it freely.
 
 ### declare playlist tracks
-Source: src/exhibits/core/advanced/join/declare-playlist-tracks.ts
+Source: docs/source/exhibits/core/advanced/join/declare-playlist-tracks.ts
 
 ```ts
 import { join } from "atom.io"
@@ -513,7 +513,7 @@ export const playlistTracks = join({
 You can read the relation from either side.
 
 ### find tracks in playlist
-Source: src/exhibits/core/advanced/join/find-tracks-in-playlist.ts
+Source: docs/source/exhibits/core/advanced/join/find-tracks-in-playlist.ts
 
 ```ts
 import { findRelations } from "atom.io"
@@ -527,7 +527,7 @@ const tracksInRoadTripState = findRelations(
 ```
 
 ### find playlists for track
-Source: src/exhibits/core/advanced/join/find-playlists-for-track.ts
+Source: docs/source/exhibits/core/advanced/join/find-playlists-for-track.ts
 
 ```ts
 import { findRelations } from "atom.io"
@@ -543,7 +543,7 @@ const playlistsUsingDreamsState = findRelations(
 Then you can reconfigure the relation without denormalizing either entity.
 
 ### replace playlist tracks
-Source: src/exhibits/core/advanced/join/replace-playlist-tracks.ts
+Source: docs/source/exhibits/core/advanced/join/replace-playlist-tracks.ts
 
 ```ts
 import { editRelations } from "atom.io"
@@ -572,7 +572,7 @@ Atoms can declare `effects`, which are setup hooks that run when the atom is cre
 Use `setSelf` when an external source should initialize or push values into the atom:
 
 ### hydrate an atom with set self
-Source: src/exhibits/core/advanced/effects/hydrate-an-atom-with-set-self.ts
+Source: docs/source/exhibits/core/advanced/effects/hydrate-an-atom-with-set-self.ts
 
 ```ts
 import { atom } from "atom.io"
@@ -594,7 +594,7 @@ export const sidebarOpenAtom = atom<boolean>({
 Use `onSet` when you want to react to changes after the atom updates:
 
 ### react to changes with on set
-Source: src/exhibits/core/advanced/effects/react-to-changes-with-on-set.ts
+Source: docs/source/exhibits/core/advanced/effects/react-to-changes-with-on-set.ts
 
 ```ts
 import { atom } from "atom.io"
@@ -621,7 +621,7 @@ browser effects such as storage and URL synchronization. See
 Often, the data you need is not immediately available. For example, you may need to fetch it from a server. `atom.io` offers natural support for `Promise` and `async/await` patterns.
 
 ### await your state
-Source: src/exhibits/core/advanced/async/await-your-state.ts
+Source: docs/source/exhibits/core/advanced/async/await-your-state.ts
 
 ```ts
 import http from "node:http"
@@ -666,7 +666,7 @@ void getState(quoteAtom) // Promise { <pending> }
 `Loadable` is a shorthand that means "this value may be a `Promise`". This is useful because `await` is harmless when the value is not a `Promise`. When the Promise does resolve, the value is set into the value map, allowing for maximum flexibility in Suspenseful environments.
 
 ### loadable selector
-Source: src/exhibits/core/advanced/async/loadable-selector.ts
+Source: docs/source/exhibits/core/advanced/async/loadable-selector.ts
 
 ```ts
 import type { Loadable } from "atom.io"
@@ -704,7 +704,7 @@ export const coinPriceSelector = selector<Loadable<number>>({
 Here is an example where we read a query parameter from the URL, then use it to fetch data from a server. This is a great pattern, because the selector's value will be cached as long as the URL parameter does not change.
 
 ### avoid race between promises
-Source: src/exhibits/core/advanced/async/avoid-race-between-promises.ts
+Source: docs/source/exhibits/core/advanced/async/avoid-race-between-promises.ts
 
 ```ts
 import type { Loadable } from "atom.io"
@@ -753,7 +753,7 @@ To make sure your declared error type stays aligned with the constructors in `ca
 [`atom.io/exact-catch-types`](/docs/eslint-plugin#exact-catch-types).
 
 ### catch an atom
-Source: src/exhibits/core/advanced/catching/catch-an-atom.ts
+Source: docs/source/exhibits/core/advanced/catching/catch-an-atom.ts
 
 ```ts
 import { atom, getState } from "atom.io"
@@ -783,7 +783,7 @@ if (result instanceof MissingSessionError) {
 The same pattern works for selectors:
 
 ### catch a selector
-Source: src/exhibits/core/advanced/catching/catch-a-selector.ts
+Source: docs/source/exhibits/core/advanced/catching/catch-a-selector.ts
 
 ```ts
 import { atom, getState, selector } from "atom.io"
@@ -832,7 +832,7 @@ update is not a good tradeoff.
 For those cases, use `mutableAtom`.
 
 ### declare a mutable atom
-Source: src/exhibits/core/mutable/declare-a-mutable-atom.ts
+Source: docs/source/exhibits/core/mutable/declare-a-mutable-atom.ts
 
 ```ts
 import { getState, mutableAtom, setState } from "atom.io"

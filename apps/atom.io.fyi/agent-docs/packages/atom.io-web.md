@@ -1,6 +1,6 @@
 # atom.io/web
 
-Source: src/pages/docs/web.mdx
+Source: docs/source/pages/docs/web.mdx
 URL: /docs/web
 
 # atom.io/web
@@ -26,7 +26,7 @@ These tools are useful when some state should survive refreshes or be shareable 
 `storageSync` hydrates an atom from browser storage when the atom is created, then writes future changes back to storage.
 
 ### sync with local storage
-Source: src/exhibits/web/sync-with-local-storage.ts
+Source: docs/source/exhibits/web/sync-with-local-storage.ts
 
 ```ts
 import { atom } from "atom.io"
@@ -46,7 +46,7 @@ When the atom is set to `null`, the stored item is removed.
 Because the storage object is passed in directly, this also works with `sessionStorage`:
 
 ### sync with session storage
-Source: src/exhibits/web/sync-with-session-storage.ts
+Source: docs/source/exhibits/web/sync-with-session-storage.ts
 
 ```ts
 import { storageSync } from "atom.io/web"
@@ -61,7 +61,7 @@ If storage is unavailable, such as during SSR, the effect simply does nothing.
 `searchParamSync` reads from the current page URL, then keeps one search parameter updated as the atom changes.
 
 ### sync with the url
-Source: src/exhibits/web/sync-with-the-url.ts
+Source: docs/source/exhibits/web/sync-with-the-url.ts
 
 ```ts
 import { atom } from "atom.io"
@@ -87,7 +87,7 @@ If the atom is set to `null`, that search parameter is removed from the URL.
 Both effects take the same kind of serializer:
 
 ### string interface
-Source: src/exhibits/web/string-interface.ts
+Source: docs/source/exhibits/web/string-interface.ts
 
 ```ts
 type StringInterface<T> = {

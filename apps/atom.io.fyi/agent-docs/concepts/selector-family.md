@@ -2,7 +2,7 @@
 
 A function that creates related selectors from parameter keys.
 
-Source: src/concepts/selector-family.md
+Source: docs/source/concepts/selector-family.md
 Packages: atom.io
 Related: selector, atom-family, join
 

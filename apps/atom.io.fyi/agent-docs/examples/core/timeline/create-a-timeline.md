@@ -1,6 +1,6 @@
 # create a timeline
 
-Source: src/exhibits/core/timeline/create-a-timeline.ts
+Source: docs/source/exhibits/core/timeline/create-a-timeline.ts
 
 ```ts
 import { timeline } from "atom.io"

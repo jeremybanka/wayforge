@@ -1,6 +1,6 @@
 # u list
 
-Source: src/exhibits/transceivers/u-list.ts
+Source: docs/source/exhibits/transceivers/u-list.ts
 
 ```ts
 import { getState, mutableAtom, setState } from "atom.io"

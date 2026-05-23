@@ -11,7 +11,7 @@
 		"dev:astro": "astro dev",
 		"dev:exhibits": "./scripts/exhibits.bun.ts watch",
 		"build": "bun run build:agent-docs && bun run build:exhibits && bun run build:astro",
-		"build:agent-docs": "./scripts/agent-docs.bun.ts",
+		"build:agent-docs": "../../packages/atom.io/__scripts__/agent-docs.bun.ts --site",
 		"build:astro": "astro build",
 		"build:exhibits": "./scripts/exhibits.bun.ts once",
 		"preview": "wrangler dev",
@@ -41,11 +41,7 @@
 		"chokidar": "5.0.0",
 		"concurrently": "9.2.1",
 		"eslint": "10.4.0",
-		"remark-mdx": "3.1.1",
-		"remark-parse": "11.0.0",
-		"remark-stringify": "11.0.0",
 		"takua": "workspace:*",
-		"unified": "11.0.5",
 		"wrangler": "4.94.0"
 	}
 }

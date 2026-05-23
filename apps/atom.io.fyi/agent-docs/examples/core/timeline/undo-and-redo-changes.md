@@ -1,6 +1,6 @@
 # undo and redo changes
 
-Source: src/exhibits/core/timeline/undo-and-redo-changes.ts
+Source: docs/source/exhibits/core/timeline/undo-and-redo-changes.ts
 
 ```ts
 import { getState, redo, setState, subscribe, undo } from "atom.io"

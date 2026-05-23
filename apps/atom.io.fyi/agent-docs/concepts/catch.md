@@ -2,7 +2,7 @@
 
 A typed error channel for atoms and selectors.
 
-Source: src/concepts/catch.md
+Source: docs/source/concepts/catch.md
 Packages: atom.io, atom.io/react
 Related: loadable, selector, effect
 

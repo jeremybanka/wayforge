@@ -1,6 +1,6 @@
 # string interface
 
-Source: src/exhibits/web/string-interface.ts
+Source: docs/source/exhibits/web/string-interface.ts
 
 ```ts
 type StringInterface<T> = {

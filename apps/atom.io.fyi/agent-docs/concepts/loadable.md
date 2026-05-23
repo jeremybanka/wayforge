@@ -2,7 +2,7 @@
 
 A reactive value that may still be waiting on asynchronous work.
 
-Source: src/concepts/loadable.md
+Source: docs/source/concepts/loadable.md
 Packages: atom.io, atom.io/react
 Related: selector, catch, effect
 

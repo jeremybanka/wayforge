@@ -1,6 +1,6 @@
 # use a selector
 
-Source: src/exhibits/core/selector/use-a-selector.ts
+Source: docs/source/exhibits/core/selector/use-a-selector.ts
 
 ```ts
 import { getState, setState } from "atom.io"

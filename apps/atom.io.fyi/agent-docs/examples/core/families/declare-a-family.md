@@ -1,6 +1,6 @@
 # declare a family
 
-Source: src/exhibits/core/families/declare-a-family.tsx
+Source: docs/source/exhibits/core/families/declare-a-family.tsx
 
 ```tsx
 import { atomFamily, getState } from "atom.io"

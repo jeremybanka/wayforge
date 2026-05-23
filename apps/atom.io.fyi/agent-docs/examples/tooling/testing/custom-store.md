@@ -1,6 +1,6 @@
 # custom store
 
-Source: src/exhibits/tooling/testing/custom-store.ts
+Source: docs/source/exhibits/tooling/testing/custom-store.ts
 
 ```ts
 import { atom } from "atom.io"

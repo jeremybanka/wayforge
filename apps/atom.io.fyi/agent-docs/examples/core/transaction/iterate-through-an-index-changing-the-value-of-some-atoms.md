@@ -1,6 +1,6 @@
 # iterate through an index changing the value of some atoms
 
-Source: src/exhibits/core/transaction/iterate-through-an-index-changing-the-value-of-some-atoms.ts
+Source: docs/source/exhibits/core/transaction/iterate-through-an-index-changing-the-value-of-some-atoms.ts
 
 ```ts
 import { atom, atomFamily, selectorFamily, transaction } from "atom.io"

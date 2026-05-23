@@ -1,6 +1,6 @@
 # atom.io/react-devtools
 
-Source: src/pages/docs/react-devtools.mdx
+Source: docs/source/pages/docs/react-devtools.mdx
 URL: /docs/react-devtools
 
 # atom.io/react-devtools
@@ -15,7 +15,7 @@ If your project already depends on `atom.io`, the devtools package is already av
 To render with the intended styles, import both the component and its CSS:
 
 ### basic setup
-Source: src/exhibits/tooling/react-devtools/basic-setup.tsx.txt
+Source: docs/source/exhibits/tooling/react-devtools/basic-setup.tsx.txt
 
 ```tsx
 import { AtomIODevtools } from "atom.io/react-devtools"
@@ -44,7 +44,7 @@ If you want the devtools available without showing them immediately, pass
 `hideByDefault={true}`:
 
 ### hide by default
-Source: src/exhibits/tooling/react-devtools/hide-by-default.tsx.txt
+Source: docs/source/exhibits/tooling/react-devtools/hide-by-default.tsx.txt
 
 ```tsx
 import { AtomIODevtools } from "atom.io/react-devtools"

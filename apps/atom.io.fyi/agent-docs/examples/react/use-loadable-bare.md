@@ -1,6 +1,6 @@
 # use loadable bare
 
-Source: src/exhibits/react/use-loadable-bare.tsx
+Source: docs/source/exhibits/react/use-loadable-bare.tsx
 
 ```tsx
 import { atom, type Loadable } from "atom.io"

@@ -1,6 +1,6 @@
 # counter.test
 
-Source: src/exhibits/guides/understand-atom-io/counter.test.ts
+Source: docs/source/exhibits/guides/understand-atom-io/counter.test.ts
 
 ```ts
 import { atom, getState, selector, setState } from "atom.io"

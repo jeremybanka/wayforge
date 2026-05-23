@@ -1,6 +1,6 @@
 # why atom.io
 
-Source: src/pages/docs/why-atom-io.mdx
+Source: docs/source/pages/docs/why-atom-io.mdx
 URL: /docs/why-atom-io
 
 # why atom.io

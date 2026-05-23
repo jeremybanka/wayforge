@@ -1,6 +1,6 @@
 # laziness
 
-Source: src/exhibits/guides/understand-atom-io/laziness.ts
+Source: docs/source/exhibits/guides/understand-atom-io/laziness.ts
 
 ```ts
 import { atom, selector, Silo } from "atom.io"

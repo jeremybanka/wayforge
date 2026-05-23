@@ -2,7 +2,7 @@
 
 An atom backed by a mutable transceiver value.
 
-Source: src/concepts/mutable-atom.md
+Source: docs/source/concepts/mutable-atom.md
 Packages: atom.io, atom.io/json
 Related: atom, transceiver, timeline
 

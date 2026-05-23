@@ -1,6 +1,6 @@
 # node config sync
 
-Source: src/exhibits/guides/understand-atom-io/node-config-sync.ts
+Source: docs/source/exhibits/guides/understand-atom-io/node-config-sync.ts
 
 ```ts
 import fs from "node:fs"

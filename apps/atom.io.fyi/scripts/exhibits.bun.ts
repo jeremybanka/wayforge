@@ -13,7 +13,7 @@ if (!lastArgument) {
 	process.exit(1)
 }
 
-const inputDir = `./src/exhibits`
+const inputDir = `../../packages/atom.io/docs/source/exhibits`
 const outputDir = `./src/exhibits-wrapped`
 
 function wrapCode(filename: string, code: string) {

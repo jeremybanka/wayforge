@@ -1,6 +1,6 @@
 # atom.io agent docs
 
-This directory is generated from atom.io.fyi MDX docs, concept Markdown, and exhibit source files.
+This directory is generated from atom.io-owned docs source: MDX docs, concept Markdown, and exhibit source files.
 
 Start with:
 
@@ -10,4 +10,4 @@ Start with:
 - packages/atom.io-react.md for React bindings
 - examples/ for original exhibit source files
 
-The source of truth remains the authored MDX docs and files under src/exhibits.
+The source of truth remains the authored files under docs/source in the atom.io package.

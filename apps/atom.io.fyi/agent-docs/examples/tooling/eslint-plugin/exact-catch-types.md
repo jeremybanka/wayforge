@@ -1,6 +1,6 @@
 # exact catch types
 
-Source: src/exhibits/tooling/eslint-plugin/exact-catch-types.ts
+Source: docs/source/exhibits/tooling/eslint-plugin/exact-catch-types.ts
 
 ```ts
 import { atom } from "atom.io"

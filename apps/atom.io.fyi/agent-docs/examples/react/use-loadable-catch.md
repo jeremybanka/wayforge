@@ -1,18 +1,18 @@
 # use loadable catch
 
-Source: src/exhibits/react/use-loadable-catch.tsx
+Source: docs/source/exhibits/react/use-loadable-catch.tsx
 
 ```tsx
 import { atom, type Loadable } from "atom.io"
 import { useLoadable } from "atom.io/react"
 
 class RequestError extends Error {
-	public constructor(
-		public readonly status: number,
-		message: string,
-	) {
+	public readonly status: number
+
+	public constructor(status: number, message: string) {
 		super(message)
 		this.name = `RequestError`
+		this.status = status
 	}
 }
 

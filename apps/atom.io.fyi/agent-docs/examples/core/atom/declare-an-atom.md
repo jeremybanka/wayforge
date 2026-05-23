@@ -1,6 +1,6 @@
 # declare an atom
 
-Source: src/exhibits/core/atom/declare-an-atom.ts
+Source: docs/source/exhibits/core/atom/declare-an-atom.ts
 
 ```ts
 import { atom } from "atom.io"

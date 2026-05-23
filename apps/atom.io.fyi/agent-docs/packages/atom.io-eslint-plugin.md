@@ -1,6 +1,6 @@
 # atom.io/eslint-plugin
 
-Source: src/pages/docs/eslint-plugin.mdx
+Source: docs/source/pages/docs/eslint-plugin.mdx
 URL: /docs/eslint-plugin
 
 # atom.io/eslint-plugin
@@ -26,7 +26,7 @@ Here is a small `eslint.config.ts` that starts from `typescript-eslint`'s recomm
 type-checked rules and adds the atom.io rules.
 
 ### eslint
-Source: src/exhibits/tooling/eslint-plugin/eslint.config.ts.txt
+Source: docs/source/exhibits/tooling/eslint-plugin/eslint.config.ts.txt
 
 ```ts
 import atomIO from "atom.io/eslint-plugin"
@@ -72,7 +72,7 @@ use `typescript-eslint`'s plain recommended config and leave out
 arguments.
 
 ### explicit state types
-Source: src/exhibits/tooling/eslint-plugin/explicit-state-types.ts
+Source: docs/source/exhibits/tooling/eslint-plugin/explicit-state-types.ts
 
 ```ts
 import { atom, atomFamily } from "atom.io"
@@ -101,7 +101,7 @@ to audit.
 `atom.io/naming-convention` keeps declaration variable names and state keys aligned.
 
 ### explicit state types
-Source: src/exhibits/tooling/eslint-plugin/explicit-state-types.ts
+Source: docs/source/exhibits/tooling/eslint-plugin/explicit-state-types.ts
 
 ```ts
 import { atom, atomFamily } from "atom.io"
@@ -132,7 +132,7 @@ For example, `countAtom` should use `key: "count"`, and `userAtoms` should use
 matches the constructors listed in its `catch` option.
 
 ### exact catch types
-Source: src/exhibits/tooling/eslint-plugin/exact-catch-types.ts
+Source: docs/source/exhibits/tooling/eslint-plugin/exact-catch-types.ts
 
 ```ts
 import { atom } from "atom.io"

@@ -2,7 +2,7 @@
 
 A helper for managing bidirectional relations between keys.
 
-Source: src/concepts/join.md
+Source: docs/source/concepts/join.md
 Packages: atom.io
 Related: selector-family, atom-family, transaction
 

@@ -1,6 +1,6 @@
 # page atoms
 
-Source: src/exhibits/json/page-atoms.ts
+Source: docs/source/exhibits/json/page-atoms.ts
 
 ```ts
 import { atomFamily } from "atom.io"

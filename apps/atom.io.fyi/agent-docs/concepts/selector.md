@@ -2,7 +2,7 @@
 
 A reactive value derived from atoms or other selectors.
 
-Source: src/concepts/selector.md
+Source: docs/source/concepts/selector.md
 Packages: atom.io
 Related: atom, selector-family, loadable
 

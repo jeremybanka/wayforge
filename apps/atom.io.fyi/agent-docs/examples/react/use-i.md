@@ -1,6 +1,6 @@
 # use i
 
-Source: src/exhibits/react/use-i.tsx
+Source: docs/source/exhibits/react/use-i.tsx
 
 ```tsx
 import { atom } from "atom.io"

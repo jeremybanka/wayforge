@@ -1,6 +1,6 @@
 # subscribe to a timeline
 
-Source: src/exhibits/core/timeline/subscribe-to-a-timeline.ts
+Source: docs/source/exhibits/core/timeline/subscribe-to-a-timeline.ts
 
 ```ts
 import { setState, subscribe } from "atom.io"

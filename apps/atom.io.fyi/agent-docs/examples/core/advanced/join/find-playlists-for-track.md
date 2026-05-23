@@ -1,6 +1,6 @@
 # find playlists for track
 
-Source: src/exhibits/core/advanced/join/find-playlists-for-track.ts
+Source: docs/source/exhibits/core/advanced/join/find-playlists-for-track.ts
 
 ```ts
 import { findRelations } from "atom.io"

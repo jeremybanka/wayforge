@@ -1,6 +1,6 @@
 # declare a selector
 
-Source: src/exhibits/core/selector/declare-a-selector.ts
+Source: docs/source/exhibits/core/selector/declare-a-selector.ts
 
 ```ts
 import { atom, selector } from "atom.io"

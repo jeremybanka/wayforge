@@ -1,6 +1,6 @@
 # sync with the url
 
-Source: src/exhibits/web/sync-with-the-url.ts
+Source: docs/source/exhibits/web/sync-with-the-url.ts
 
 ```ts
 import { atom } from "atom.io"
