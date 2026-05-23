@@ -1,6 +1,6 @@
 # getting started
 
-Source: src/pages/docs/getting-started.mdx
+Source: docs/source/pages/docs/getting-started.mdx
 URL: /docs/getting-started
 
 # getting started

@@ -1,6 +1,6 @@
 # atom.io/transceivers
 
-Source: src/pages/transceivers.mdx
+Source: docs/source/pages/transceivers.mdx
 URL: /transceivers
 
 # transceivers
@@ -26,7 +26,7 @@ The built-in transceivers you will usually reach for are `UList` and `OList`.
 Use it when membership matters, but order does not.
 
 ### u list
-Source: src/exhibits/transceivers/u-list.ts
+Source: docs/source/exhibits/transceivers/u-list.ts
 
 ```ts
 import { getState, mutableAtom, setState } from "atom.io"
@@ -53,7 +53,7 @@ getState(selectedTagKeysAtom).has(`typescript`) // -> true
 Use it when order matters.
 
 ### o list
-Source: src/exhibits/transceivers/o-list.ts
+Source: docs/source/exhibits/transceivers/o-list.ts
 
 ```ts
 import { getState, mutableAtom, setState } from "atom.io"

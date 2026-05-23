@@ -1,6 +1,6 @@
 # avoid race between promises
 
-Source: src/exhibits/core/advanced/async/avoid-race-between-promises.ts
+Source: docs/source/exhibits/core/advanced/async/avoid-race-between-promises.ts
 
 ```ts
 import type { Loadable } from "atom.io"

@@ -1,6 +1,6 @@
 # try catch a failed transaction
 
-Source: src/exhibits/core/transaction/try-catch-a-failed-transaction.ts
+Source: docs/source/exhibits/core/transaction/try-catch-a-failed-transaction.ts
 
 ```ts
 import type { Loadable } from "atom.io"

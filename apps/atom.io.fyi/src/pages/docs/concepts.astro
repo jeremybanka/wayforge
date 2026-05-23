@@ -12,9 +12,10 @@ type ConceptModule = {
 	}
 }
 
-const conceptModules = import.meta.glob<ConceptModule>("../../concepts/*.md", {
-	eager: true,
-})
+const conceptModules = import.meta.glob<ConceptModule>(
+	"../../../../../packages/atom.io/docs/source/concepts/*.md",
+	{ eager: true },
+)
 const concepts = Object.values(conceptModules)
 	.map((concept) => ({
 		Content: concept.Content,

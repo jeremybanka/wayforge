@@ -1,6 +1,6 @@
 # react to changes with on set
 
-Source: src/exhibits/core/advanced/effects/react-to-changes-with-on-set.ts
+Source: docs/source/exhibits/core/advanced/effects/react-to-changes-with-on-set.ts
 
 ```ts
 import { atom } from "atom.io"

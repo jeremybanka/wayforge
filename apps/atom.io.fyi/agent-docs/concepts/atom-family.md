@@ -2,7 +2,7 @@
 
 A function that creates related atoms from parameter keys.
 
-Source: src/concepts/atom-family.md
+Source: docs/source/concepts/atom-family.md
 Packages: atom.io
 Related: atom, selector-family, transaction
 

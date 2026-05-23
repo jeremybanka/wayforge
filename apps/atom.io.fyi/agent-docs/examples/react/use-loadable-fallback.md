@@ -1,6 +1,6 @@
 # use loadable fallback
 
-Source: src/exhibits/react/use-loadable-fallback.tsx
+Source: docs/source/exhibits/react/use-loadable-fallback.tsx
 
 ```tsx
 import { atom, type Loadable } from "atom.io"

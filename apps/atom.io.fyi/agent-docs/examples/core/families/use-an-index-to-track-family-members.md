@@ -1,6 +1,6 @@
 # use an index to track family members
 
-Source: src/exhibits/core/families/use-an-index-to-track-family-members.tsx
+Source: docs/source/exhibits/core/families/use-an-index-to-track-family-members.tsx
 
 ```tsx
 import { atom } from "atom.io"

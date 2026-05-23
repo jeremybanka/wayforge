@@ -1,6 +1,6 @@
 # take snapshot
 
-Source: src/exhibits/tooling/testing/take-snapshot.ts
+Source: docs/source/exhibits/tooling/testing/take-snapshot.ts
 
 ```ts
 import { atom, getState, selector, setState } from "atom.io"

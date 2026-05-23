@@ -1,6 +1,6 @@
 # hide by default
 
-Source: src/exhibits/tooling/react-devtools/hide-by-default.tsx.txt
+Source: docs/source/exhibits/tooling/react-devtools/hide-by-default.tsx.txt
 
 ```tsx
 import { AtomIODevtools } from "atom.io/react-devtools"

@@ -1,6 +1,6 @@
 # atom.io/react
 
-Source: src/pages/docs/react.mdx
+Source: docs/source/pages/docs/react.mdx
 URL: /docs/react
 
 # atom.io/react
@@ -20,7 +20,7 @@ URL: /docs/react
 `useO` is a React hook that allows you to observe reactive variables in your React components.
 
 ### use o
-Source: src/exhibits/react/use-o.tsx
+Source: docs/source/exhibits/react/use-o.tsx
 
 ```tsx
 import { atom } from "atom.io"
@@ -52,7 +52,7 @@ function UrlDisplay() {
 `useI` is a React hook that allows you to update reactive variables in your React components.
 
 ### use i
-Source: src/exhibits/react/use-i.tsx
+Source: docs/source/exhibits/react/use-i.tsx
 
 ```tsx
 import { atom } from "atom.io"
@@ -92,7 +92,7 @@ If you want more background on transceivers, see [the transceivers guide](/trans
 becomes a readonly `string[]`, which is usually easier to map over in JSX.
 
 ### use json
-Source: src/exhibits/react/use-json.tsx
+Source: docs/source/exhibits/react/use-json.tsx
 
 ```tsx
 import { mutableAtom } from "atom.io"
@@ -137,7 +137,7 @@ one.
 `useTL` provides convenient access to the `undo` and `redo` utilities, as well as metadata representing how many events are on the timeline (`length`) and where the timeline is currently positioned (`at`).
 
 ### use tl
-Source: src/exhibits/react/use-tl.tsx
+Source: docs/source/exhibits/react/use-tl.tsx
 
 ```tsx
 import { useTL } from "atom.io/react"
@@ -166,7 +166,7 @@ export function UrlDisplay(): React.JSX.Element {
 If you have a `Loadable` atom or selector, `useLoadable` is a great way to observe it in your React components.
 
 ### use loadable bare
-Source: src/exhibits/react/use-loadable-bare.tsx
+Source: docs/source/exhibits/react/use-loadable-bare.tsx
 
 ```tsx
 import { atom, type Loadable } from "atom.io"
@@ -199,7 +199,7 @@ export function UrlDisplay(): React.JSX.Element {
 In this example, we can see that the hook will return the string `"LOADING"` until the promise resolves. Then, it will return an object containing `value` with our data, and `loading` indicating whether new data is on its way.
 
 ### use loadable fallback
-Source: src/exhibits/react/use-loadable-fallback.tsx
+Source: docs/source/exhibits/react/use-loadable-fallback.tsx
 
 ```tsx
 import { atom, type Loadable } from "atom.io"
@@ -239,19 +239,19 @@ fallback form gives you a typed `error?: E` property alongside the fallback-back
 `value`.
 
 ### use loadable catch
-Source: src/exhibits/react/use-loadable-catch.tsx
+Source: docs/source/exhibits/react/use-loadable-catch.tsx
 
 ```tsx
 import { atom, type Loadable } from "atom.io"
 import { useLoadable } from "atom.io/react"
 
 class RequestError extends Error {
-	public constructor(
-		public readonly status: number,
-		message: string,
-	) {
+	public readonly status: number
+
+	public constructor(status: number, message: string) {
 		super(message)
 		this.name = `RequestError`
+		this.status = status
 	}
 }
 

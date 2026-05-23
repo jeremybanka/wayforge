@@ -2,7 +2,7 @@
 
 A reactive source-of-truth value identified by a stable key.
 
-Source: src/concepts/atom.md
+Source: docs/source/concepts/atom.md
 Packages: atom.io
 Related: selector, atom-family, store
 

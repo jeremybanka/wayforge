@@ -1,6 +1,6 @@
 # get and set an atom
 
-Source: src/exhibits/core/atom/get-and-set-an-atom.ts
+Source: docs/source/exhibits/core/atom/get-and-set-an-atom.ts
 
 ```ts
 import { getState, setState } from "atom.io"

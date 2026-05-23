@@ -1,6 +1,6 @@
 # await your state
 
-Source: src/exhibits/core/advanced/async/await-your-state.ts
+Source: docs/source/exhibits/core/advanced/async/await-your-state.ts
 
 ```ts
 import http from "node:http"

@@ -1,6 +1,6 @@
 # catch an atom
 
-Source: src/exhibits/core/advanced/catching/catch-an-atom.ts
+Source: docs/source/exhibits/core/advanced/catching/catch-an-atom.ts
 
 ```ts
 import { atom, getState } from "atom.io"

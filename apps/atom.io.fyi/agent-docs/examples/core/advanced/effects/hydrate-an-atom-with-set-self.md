@@ -1,6 +1,6 @@
 # hydrate an atom with set self
 
-Source: src/exhibits/core/advanced/effects/hydrate-an-atom-with-set-self.ts
+Source: docs/source/exhibits/core/advanced/effects/hydrate-an-atom-with-set-self.ts
 
 ```ts
 import { atom } from "atom.io"

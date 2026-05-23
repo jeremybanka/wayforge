@@ -2,7 +2,7 @@
 
 Setup logic that can hydrate an atom or react to atom changes.
 
-Source: src/concepts/effect.md
+Source: docs/source/concepts/effect.md
 Packages: atom.io
 Related: atom, catch, store
 

@@ -3,13 +3,6 @@
 import fs from "node:fs/promises"
 import path from "node:path"
 
-import remarkMdx from "remark-mdx"
-import remarkParse from "remark-parse"
-import remarkStringify from "remark-stringify"
-import { unified } from "unified"
-
-import { ATOM_IO_FYI_ROOT } from "./constants"
-
 type Concept = {
 	body: string
 	file: string
@@ -35,85 +28,84 @@ type ExampleDoc = {
 	title: string
 }
 
-const WORKSPACE_ROOT = path.resolve(ATOM_IO_FYI_ROOT, `../..`)
-const ATOM_IO_ROOT = path.join(WORKSPACE_ROOT, `packages`, `atom.io`)
-const AGENT_DOCS_ROOT = path.join(ATOM_IO_FYI_ROOT, `agent-docs`)
+const SCRIPT_ROOT = path.dirname(new URL(import.meta.url).pathname)
+const ATOM_IO_ROOT = path.resolve(SCRIPT_ROOT, `..`)
+const WORKSPACE_ROOT = path.resolve(ATOM_IO_ROOT, `../..`)
+const ATOM_IO_FYI_ROOT = path.join(WORKSPACE_ROOT, `apps`, `atom.io.fyi`)
+const DOCS_SOURCE_ROOT = path.join(ATOM_IO_ROOT, `docs`, `source`)
 const PACKAGE_AGENT_DOCS_ROOT = path.join(ATOM_IO_ROOT, `docs`, `agent`)
+const SITE_AGENT_DOCS_ROOT = path.join(ATOM_IO_FYI_ROOT, `agent-docs`)
 const PUBLIC_ROOT = path.join(ATOM_IO_FYI_ROOT, `public`)
-const CONCEPTS_ROOT = path.join(ATOM_IO_FYI_ROOT, `src`, `concepts`)
-const EXHIBITS_ROOT = path.join(ATOM_IO_FYI_ROOT, `src`, `exhibits`)
+const CONCEPTS_ROOT = path.join(DOCS_SOURCE_ROOT, `concepts`)
+const EXHIBITS_ROOT = path.join(DOCS_SOURCE_ROOT, `exhibits`)
 const BACKTICK = `\``
 const FENCE = BACKTICK.repeat(3)
-
-const markdownProcessor = unified()
-	.use(remarkParse)
-	.use(remarkMdx)
-	.use(remarkStringify)
+const SHOULD_WRITE_SITE_OUTPUT = process.argv.includes(`--site`)
 
 const DOC_PAGES: DocPage[] = [
 	{
 		output: `getting-started.md`,
-		source: `src/pages/docs/getting-started.mdx`,
+		source: `docs/source/pages/docs/getting-started.mdx`,
 		title: `getting started`,
 		url: `/docs/getting-started`,
 	},
 	{
 		output: `why-atom-io.md`,
-		source: `src/pages/docs/why-atom-io.mdx`,
+		source: `docs/source/pages/docs/why-atom-io.mdx`,
 		title: `why atom.io`,
 		url: `/docs/why-atom-io`,
 	},
 	{
 		output: `understand-atom-io.md`,
-		source: `src/pages/docs/understand-atom-io.mdx`,
+		source: `docs/source/pages/docs/understand-atom-io.mdx`,
 		title: `understand atom.io`,
 		url: `/docs/understand-atom-io`,
 	},
 	{
 		output: `atom.io.md`,
-		source: `src/pages/docs/index.mdx`,
+		source: `docs/source/pages/docs/index.mdx`,
 		title: `atom.io`,
 		url: `/docs`,
 	},
 	{
 		output: `atom.io-react.md`,
-		source: `src/pages/docs/react.mdx`,
+		source: `docs/source/pages/docs/react.mdx`,
 		title: `atom.io/react`,
 		url: `/docs/react`,
 	},
 	{
 		output: `atom.io-json.md`,
-		source: `src/pages/docs/json.mdx`,
+		source: `docs/source/pages/docs/json.mdx`,
 		title: `atom.io/json`,
 		url: `/docs/json`,
 	},
 	{
 		output: `atom.io-web.md`,
-		source: `src/pages/docs/web.mdx`,
+		source: `docs/source/pages/docs/web.mdx`,
 		title: `atom.io/web`,
 		url: `/docs/web`,
 	},
 	{
 		output: `atom.io-transceivers.md`,
-		source: `src/pages/transceivers.mdx`,
+		source: `docs/source/pages/transceivers.mdx`,
 		title: `atom.io/transceivers`,
 		url: `/transceivers`,
 	},
 	{
 		output: `atom.io-eslint-plugin.md`,
-		source: `src/pages/docs/eslint-plugin.mdx`,
+		source: `docs/source/pages/docs/eslint-plugin.mdx`,
 		title: `atom.io/eslint-plugin`,
 		url: `/docs/eslint-plugin`,
 	},
 	{
 		output: `atom.io-react-devtools.md`,
-		source: `src/pages/docs/react-devtools.mdx`,
+		source: `docs/source/pages/docs/react-devtools.mdx`,
 		title: `atom.io/react-devtools`,
 		url: `/docs/react-devtools`,
 	},
 	{
 		output: `atom.io-testing.md`,
-		source: `src/pages/docs/testing.mdx`,
+		source: `docs/source/pages/docs/testing.mdx`,
 		title: `atom.io/testing`,
 		url: `/docs/testing`,
 	},
@@ -214,9 +206,10 @@ function parseFrontmatter(contents: string): {
 			activeListKey = key
 			continue
 		}
-		frontmatter[key] = value.includes(`,`) || value.startsWith(`[`)
-			? parseListValue(value)
-			: value.replace(/^["']|["']$/g, ``)
+		frontmatter[key] =
+			value.includes(`,`) || value.startsWith(`[`)
+				? parseListValue(value)
+				: value.replace(/^["']|["']$/g, ``)
 		activeListKey = null
 	}
 
@@ -225,23 +218,23 @@ function parseFrontmatter(contents: string): {
 
 function readConcept(contents: string, file: string): Concept {
 	const { body, frontmatter } = parseFrontmatter(contents)
-	const packages = frontmatter.packages ?? `atom.io`
-	const related = frontmatter.related ?? ``
+	const packages = frontmatter[`packages`] ?? `atom.io`
+	const related = frontmatter[`related`] ?? ``
 	return {
 		body,
 		file,
 		frontmatter: {
 			packages: Array.isArray(packages) ? packages : parseListValue(packages),
 			related: Array.isArray(related) ? related : parseListValue(related),
-			slug: Array.isArray(frontmatter.slug)
+			slug: Array.isArray(frontmatter[`slug`])
 				? path.basename(file, `.md`)
-				: (frontmatter.slug ?? path.basename(file, `.md`)),
-			summary: Array.isArray(frontmatter.summary)
+				: (frontmatter[`slug`] ?? path.basename(file, `.md`)),
+			summary: Array.isArray(frontmatter[`summary`])
 				? ``
-				: (frontmatter.summary ?? ``),
-			title: Array.isArray(frontmatter.title)
+				: (frontmatter[`summary`] ?? ``),
+			title: Array.isArray(frontmatter[`title`])
 				? slugToTitle(file)
-				: (frontmatter.title ?? slugToTitle(file)),
+				: (frontmatter[`title`] ?? slugToTitle(file)),
 		},
 	}
 }
@@ -308,7 +301,10 @@ function findSelfClosingTagEnd(contents: string, start: number): number {
 	return -1
 }
 
-function readQuotedAttribute(attributes: string, name: string): string | undefined {
+function readQuotedAttribute(
+	attributes: string,
+	name: string,
+): string | undefined {
 	const match = attributes.match(new RegExp(`${name}="([^"]*)"`))
 	return match?.[1]
 }
@@ -409,11 +405,18 @@ function replaceCodeBlocks(contents: string): string {
 		const label = readQuotedAttribute(attributes, `label`)
 		const expression = readCodeExpression(attributes)
 		if (expression) {
-			output += `\n${renderCodeBlock({
+			const codeBlockOptions: {
+				code: string
+				filepath: string
+				label?: string
+			} = {
 				code: cookCodeExpression(expression),
 				filepath,
-				label,
-			})}\n`
+			}
+			if (label !== undefined) {
+				codeBlockOptions.label = label
+			}
+			output += `\n${renderCodeBlock(codeBlockOptions)}\n`
 		} else {
 			output += `\n[interactive/example omitted: CodeBlock]\n`
 		}
@@ -423,7 +426,9 @@ function replaceCodeBlocks(contents: string): string {
 	return output
 }
 
-async function resolveExhibitSource(relativeImport: string): Promise<string | null> {
+async function resolveExhibitSource(
+	relativeImport: string,
+): Promise<string | null> {
 	const candidates = [
 		`.ts`,
 		`.tsx`,
@@ -474,7 +479,7 @@ async function replaceExhibits(
 		}
 
 		const code = await fs.readFile(sourcePath, `utf8`)
-		const source = path.relative(ATOM_IO_FYI_ROOT, sourcePath)
+		const source = path.relative(ATOM_IO_ROOT, sourcePath)
 		output += `\n${renderCodeBlock({
 			code,
 			filepath: path.basename(sourcePath).replace(/\.txt$/, ``),
@@ -549,12 +554,11 @@ function normalizeMarkdown(contents: string): string {
 		.replaceAll(/\n{3,}/g, `\n\n`)
 		.trim()
 
-	markdownProcessor.parse(normalized)
 	return `${normalized}\n`
 }
 
 async function renderDocPage(page: DocPage): Promise<string> {
-	const sourcePath = path.join(ATOM_IO_FYI_ROOT, page.source)
+	const sourcePath = path.join(ATOM_IO_ROOT, page.source)
 	const raw = await fs.readFile(sourcePath, `utf8`)
 	const importMap = extractImportMap(raw)
 	const stripped = stripMdxBoilerplate(raw)
@@ -562,29 +566,33 @@ async function renderDocPage(page: DocPage): Promise<string> {
 	const withCodeBlocks = replaceCodeBlocks(withTables)
 	const withExhibits = await replaceExhibits(withCodeBlocks, importMap)
 	const withoutJsx = omitUnknownJsx(withExhibits)
-	return normalizeMarkdown([
-		`# ${page.title}`,
-		``,
-		`Source: ${page.source}`,
-		`URL: ${page.url}`,
-		``,
-		withoutJsx,
-	].join(`\n`))
+	return normalizeMarkdown(
+		[
+			`# ${page.title}`,
+			``,
+			`Source: ${page.source}`,
+			`URL: ${page.url}`,
+			``,
+			withoutJsx,
+		].join(`\n`),
+	)
 }
 
 function renderConcept(concept: Concept): string {
 	const { frontmatter } = concept
-	return normalizeMarkdown([
-		`# ${frontmatter.title}`,
-		``,
-		frontmatter.summary,
-		``,
-		`Source: ${concept.file}`,
-		`Packages: ${frontmatter.packages.join(`, `)}`,
-		`Related: ${frontmatter.related.join(`, `) || `none`}`,
-		``,
-		concept.body,
-	].join(`\n`))
+	return normalizeMarkdown(
+		[
+			`# ${frontmatter.title}`,
+			``,
+			frontmatter.summary,
+			``,
+			`Source: ${concept.file}`,
+			`Packages: ${frontmatter.packages.join(`, `)}`,
+			`Related: ${frontmatter.related.join(`, `) || `none`}`,
+			``,
+			concept.body,
+		].join(`\n`),
+	)
 }
 
 async function renderExampleDoc(sourcePath: string): Promise<{
@@ -592,21 +600,23 @@ async function renderExampleDoc(sourcePath: string): Promise<{
 	entry: ExampleDoc
 }> {
 	const code = await fs.readFile(sourcePath, `utf8`)
-	const source = path.relative(ATOM_IO_FYI_ROOT, sourcePath)
+	const source = path.relative(ATOM_IO_ROOT, sourcePath)
 	const output = source
-		.replace(/^src\/exhibits\//, ``)
+		.replace(/^docs\/source\/exhibits\//, ``)
 		.replace(/\.txt$/, ``)
 		.replace(/\.[^.]+$/, `.md`)
 	const title = slugToTitle(output)
-	const doc = normalizeMarkdown([
-		`# ${title}`,
-		``,
-		`Source: ${source}`,
-		``,
-		`${FENCE}${getLanguage(sourcePath)}`,
-		code.trimEnd(),
-		FENCE,
-	].join(`\n`))
+	const doc = normalizeMarkdown(
+		[
+			`# ${title}`,
+			``,
+			`Source: ${source}`,
+			``,
+			`${FENCE}${getLanguage(sourcePath)}`,
+			code.trimEnd(),
+			FENCE,
+		].join(`\n`),
+	)
 	return { doc, entry: { output, source, title } }
 }
 
@@ -653,7 +663,7 @@ async function readPackageVersion(): Promise<string> {
 }
 
 async function main(): Promise<void> {
-	await resetDirectory(AGENT_DOCS_ROOT)
+	await resetDirectory(PACKAGE_AGENT_DOCS_ROOT)
 
 	const conceptFiles = (await listFiles(CONCEPTS_ROOT)).filter((file) =>
 		file.endsWith(`.md`),
@@ -662,7 +672,7 @@ async function main(): Promise<void> {
 		conceptFiles.map(async (file) => {
 			return readConcept(
 				await fs.readFile(file, `utf8`),
-				path.relative(ATOM_IO_FYI_ROOT, file),
+				path.relative(ATOM_IO_ROOT, file),
 			)
 		}),
 	)
@@ -670,7 +680,11 @@ async function main(): Promise<void> {
 
 	for (const concept of concepts) {
 		await writeFile(
-			path.join(AGENT_DOCS_ROOT, `concepts`, `${concept.frontmatter.slug}.md`),
+			path.join(
+				PACKAGE_AGENT_DOCS_ROOT,
+				`concepts`,
+				`${concept.frontmatter.slug}.md`,
+			),
 			renderConcept(concept),
 		)
 	}
@@ -678,7 +692,10 @@ async function main(): Promise<void> {
 	const docEntries = []
 	for (const page of DOC_PAGES) {
 		const contents = await renderDocPage(page)
-		await writeFile(path.join(AGENT_DOCS_ROOT, `packages`, page.output), contents)
+		await writeFile(
+			path.join(PACKAGE_AGENT_DOCS_ROOT, `packages`, page.output),
+			contents,
+		)
 		docEntries.push({
 			output: `packages/${page.output}`,
 			source: page.source,
@@ -693,7 +710,10 @@ async function main(): Promise<void> {
 	const exampleEntries: ExampleDoc[] = []
 	for (const exampleFile of exampleFiles) {
 		const { doc, entry } = await renderExampleDoc(exampleFile)
-		await writeFile(path.join(AGENT_DOCS_ROOT, `examples`, entry.output), doc)
+		await writeFile(
+			path.join(PACKAGE_AGENT_DOCS_ROOT, `examples`, entry.output),
+			doc,
+		)
 		exampleEntries.push({
 			...entry,
 			output: `examples/${entry.output}`,
@@ -716,55 +736,61 @@ async function main(): Promise<void> {
 		examples: exampleEntries.sort((a, b) => a.output.localeCompare(b.output)),
 	}
 
-	const readme = normalizeMarkdown([
-		`# atom.io agent docs`,
-		``,
-		`This directory is generated from atom.io.fyi MDX docs, concept Markdown, and exhibit source files.`,
-		``,
-		`Start with:`,
-		``,
-		`- concepts/atom.md for the core state primitive`,
-		`- concepts/selector.md for derived state`,
-		`- packages/atom.io.md for the main package docs`,
-		`- packages/atom.io-react.md for React bindings`,
-		`- examples/ for original exhibit source files`,
-		``,
-		`The source of truth remains the authored MDX docs and files under src/exhibits.`,
-	].join(`\n`))
-	await writeFile(path.join(AGENT_DOCS_ROOT, `README.md`), readme)
+	const readme = normalizeMarkdown(
+		[
+			`# atom.io agent docs`,
+			``,
+			`This directory is generated from atom.io-owned docs source: MDX docs, concept Markdown, and exhibit source files.`,
+			``,
+			`Start with:`,
+			``,
+			`- concepts/atom.md for the core state primitive`,
+			`- concepts/selector.md for derived state`,
+			`- packages/atom.io.md for the main package docs`,
+			`- packages/atom.io-react.md for React bindings`,
+			`- examples/ for original exhibit source files`,
+			``,
+			`The source of truth remains the authored files under docs/source in the atom.io package.`,
+		].join(`\n`),
+	)
+	await writeFile(path.join(PACKAGE_AGENT_DOCS_ROOT, `README.md`), readme)
 	await writeFile(
-		path.join(AGENT_DOCS_ROOT, `manifest.json`),
+		path.join(PACKAGE_AGENT_DOCS_ROOT, `manifest.json`),
 		`${JSON.stringify(manifest, null, `\t`)}\n`,
 	)
 
-	const llmsTxt = normalizeMarkdown([
-		`# atom.io`,
-		``,
-		`atom.io is a versatile state engine for TypeScript applications.`,
-		``,
-		`Agent documentation:`,
-		``,
-		`- Full generated corpus: /llms-full.txt`,
-		`- Concepts glossary: /docs/concepts`,
-		`- Main docs: /docs`,
-		`- React bindings: /docs/react`,
-		`- JSON and transceivers: /docs/json and /transceivers`,
-		``,
-		`The generated corpus is segmented in the repository at apps/atom.io.fyi/agent-docs and shipped in the atom.io package at docs/agent.`,
-	].join(`\n`))
-	await writeFile(path.join(PUBLIC_ROOT, `llms.txt`), llmsTxt)
+	if (SHOULD_WRITE_SITE_OUTPUT) {
+		await copyDirectory(PACKAGE_AGENT_DOCS_ROOT, SITE_AGENT_DOCS_ROOT)
 
-	const llmsFullParts = [
-		readme,
-		...concepts.map(renderConcept),
-		...(await Promise.all(DOC_PAGES.map(renderDocPage))),
-	]
-	await writeFile(
-		path.join(PUBLIC_ROOT, `llms-full.txt`),
-		normalizeMarkdown(llmsFullParts.join(`\n\n---\n\n`)),
-	)
+		const llmsTxt = normalizeMarkdown(
+			[
+				`# atom.io`,
+				``,
+				`atom.io is a versatile state engine for TypeScript applications.`,
+				``,
+				`Agent documentation:`,
+				``,
+				`- Full generated corpus: /llms-full.txt`,
+				`- Concepts glossary: /docs/concepts`,
+				`- Main docs: /docs`,
+				`- React bindings: /docs/react`,
+				`- JSON and transceivers: /docs/json and /transceivers`,
+				``,
+				`The generated corpus is owned by atom.io, shipped in the atom.io package at docs/agent, and mirrored on atom.io.fyi for web access.`,
+			].join(`\n`),
+		)
+		await writeFile(path.join(PUBLIC_ROOT, `llms.txt`), llmsTxt)
 
-	await copyDirectory(AGENT_DOCS_ROOT, PACKAGE_AGENT_DOCS_ROOT)
+		const llmsFullParts = [
+			readme,
+			...concepts.map(renderConcept),
+			...(await Promise.all(DOC_PAGES.map(renderDocPage))),
+		]
+		await writeFile(
+			path.join(PUBLIC_ROOT, `llms-full.txt`),
+			normalizeMarkdown(llmsFullParts.join(`\n\n---\n\n`)),
+		)
+	}
 }
 
 await main()

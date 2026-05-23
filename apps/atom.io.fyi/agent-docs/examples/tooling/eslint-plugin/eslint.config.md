@@ -1,6 +1,6 @@
 # eslint.config
 
-Source: src/exhibits/tooling/eslint-plugin/eslint.config.ts.txt
+Source: docs/source/exhibits/tooling/eslint-plugin/eslint.config.ts.txt
 
 ```ts
 import atomIO from "atom.io/eslint-plugin"

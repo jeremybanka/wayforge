@@ -1,6 +1,6 @@
 # transactions and timelines
 
-Source: src/exhibits/guides/understand-atom-io/transactions-and-timelines.ts
+Source: docs/source/exhibits/guides/understand-atom-io/transactions-and-timelines.ts
 
 ```ts
 import { atom, timeline, transaction } from "atom.io"

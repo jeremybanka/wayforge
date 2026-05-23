@@ -2,7 +2,7 @@
 
 The runtime state container that holds atom and selector values.
 
-Source: src/concepts/store.md
+Source: docs/source/concepts/store.md
 Packages: atom.io
 Related: atom, selector, silo
 

@@ -1,6 +1,6 @@
 # subscribe to an atom
 
-Source: src/exhibits/core/atom/subscribe-to-an-atom.ts
+Source: docs/source/exhibits/core/atom/subscribe-to-an-atom.ts
 
 ```ts
 import { subscribe } from "atom.io"

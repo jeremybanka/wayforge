@@ -1,6 +1,6 @@
 # an atom token is a reference
 
-Source: src/exhibits/core/atom/an-atom-token-is-a-reference.ts
+Source: docs/source/exhibits/core/atom/an-atom-token-is-a-reference.ts
 
 ```ts
 import { getState } from "atom.io"

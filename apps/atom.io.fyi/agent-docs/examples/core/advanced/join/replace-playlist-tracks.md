@@ -1,6 +1,6 @@
 # replace playlist tracks
 
-Source: src/exhibits/core/advanced/join/replace-playlist-tracks.ts
+Source: docs/source/exhibits/core/advanced/join/replace-playlist-tracks.ts
 
 ```ts
 import { editRelations } from "atom.io"

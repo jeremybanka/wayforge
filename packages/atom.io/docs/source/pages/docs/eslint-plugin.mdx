@@ -1,10 +1,7 @@
-import Layout from "../../layouts/LayoutDocs.astro";
-import { CodeBlock } from "../../components/CodeBlock";
+import { CodeBlock } from "c/CodeBlock";
 import MinimalFlatConfig from "x/tooling/eslint-plugin/eslint.config.gen";
 import ExplicitStateTypes from "x/tooling/eslint-plugin/explicit-state-types.gen";
 import ExactCatchTypes from "x/tooling/eslint-plugin/exact-catch-types.gen";
-
-<Layout>
 
 # <span className="soft">atom.io</span>/eslint-plugin
 
@@ -70,4 +67,3 @@ matches the constructors listed in its `catch` option.
 This helps prevent state from advertising that it may catch one error type while actually
 catching another.
 
-</Layout>

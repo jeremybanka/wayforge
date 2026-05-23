@@ -1,6 +1,6 @@
 # declare playlist tracks
 
-Source: src/exhibits/core/advanced/join/declare-playlist-tracks.ts
+Source: docs/source/exhibits/core/advanced/join/declare-playlist-tracks.ts
 
 ```ts
 import { join } from "atom.io"

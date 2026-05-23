@@ -1,6 +1,6 @@
 # use a family in a transaction
 
-Source: src/exhibits/core/transaction/use-a-family-in-a-transaction.ts
+Source: docs/source/exhibits/core/transaction/use-a-family-in-a-transaction.ts
 
 ```ts
 import { atom, atomFamily, transaction } from "atom.io"

@@ -1,6 +1,6 @@
 # browser path sync
 
-Source: src/exhibits/guides/understand-atom-io/browser-path-sync.ts
+Source: docs/source/exhibits/guides/understand-atom-io/browser-path-sync.ts
 
 ```ts
 import { atom } from "atom.io"

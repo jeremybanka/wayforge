@@ -1,6 +1,6 @@
 # use tl
 
-Source: src/exhibits/react/use-tl.tsx
+Source: docs/source/exhibits/react/use-tl.tsx
 
 ```tsx
 import { useTL } from "atom.io/react"

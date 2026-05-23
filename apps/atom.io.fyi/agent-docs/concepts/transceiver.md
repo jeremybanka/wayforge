@@ -2,7 +2,7 @@
 
 A mutable object that reports its updates to atom.io.
 
-Source: src/concepts/transceiver.md
+Source: docs/source/concepts/transceiver.md
 Packages: atom.io, atom.io/json
 Related: mutable-atom, timeline, transaction
 

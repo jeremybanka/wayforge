@@ -2,7 +2,7 @@
 
 An isolated atom.io store with bound state utilities.
 
-Source: src/concepts/silo.md
+Source: docs/source/concepts/silo.md
 Packages: atom.io, atom.io/testing
 Related: store, atom, transaction
 

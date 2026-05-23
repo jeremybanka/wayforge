@@ -2,7 +2,7 @@
 
 A coordinated update that batches multiple state changes.
 
-Source: src/concepts/transaction.md
+Source: docs/source/concepts/transaction.md
 Packages: atom.io
 Related: atom, atom-family, timeline
 

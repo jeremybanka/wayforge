@@ -1,6 +1,6 @@
 # atom.io/json
 
-Source: src/pages/docs/json.mdx
+Source: docs/source/pages/docs/json.mdx
 URL: /docs/json
 
 # atom.io/json
@@ -44,7 +44,7 @@ Tuples are usually a better shape for compound keys.
 For example, if a document owns many pages, the key for a page could be:
 
 ### page key
-Source: src/exhibits/json/page-key.ts
+Source: docs/source/exhibits/json/page-key.ts
 
 ```ts
 export type PageKey = [documentId: string, pageIndex: number]
@@ -53,7 +53,7 @@ export type PageKey = [documentId: string, pageIndex: number]
 That tuple type can be used directly as the `K` type of an `atomFamily`.
 
 ### page atoms
-Source: src/exhibits/json/page-atoms.ts
+Source: docs/source/exhibits/json/page-atoms.ts
 
 ```ts
 import { atomFamily } from "atom.io"

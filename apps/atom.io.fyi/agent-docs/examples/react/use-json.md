@@ -1,6 +1,6 @@
 # use json
 
-Source: src/exhibits/react/use-json.tsx
+Source: docs/source/exhibits/react/use-json.tsx
 
 ```tsx
 import { mutableAtom } from "atom.io"

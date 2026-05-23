@@ -1,6 +1,6 @@
 # explicit state types
 
-Source: src/exhibits/tooling/eslint-plugin/explicit-state-types.ts
+Source: docs/source/exhibits/tooling/eslint-plugin/explicit-state-types.ts
 
 ```ts
 import { atom, atomFamily } from "atom.io"

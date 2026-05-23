@@ -2,7 +2,7 @@
 
 A history tracker for undoing and redoing state changes.
 
-Source: src/concepts/timeline.md
+Source: docs/source/concepts/timeline.md
 Packages: atom.io, atom.io/react
 Related: transaction, mutable-atom, transceiver
 

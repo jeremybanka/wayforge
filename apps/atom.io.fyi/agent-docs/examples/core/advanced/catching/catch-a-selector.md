@@ -1,6 +1,6 @@
 # catch a selector
 
-Source: src/exhibits/core/advanced/catching/catch-a-selector.ts
+Source: docs/source/exhibits/core/advanced/catching/catch-a-selector.ts
 
 ```ts
 import { atom, getState, selector } from "atom.io"

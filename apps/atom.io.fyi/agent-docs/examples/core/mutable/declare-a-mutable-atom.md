@@ -1,6 +1,6 @@
 # declare a mutable atom
 
-Source: src/exhibits/core/mutable/declare-a-mutable-atom.ts
+Source: docs/source/exhibits/core/mutable/declare-a-mutable-atom.ts
 
 ```ts
 import { getState, mutableAtom, setState } from "atom.io"

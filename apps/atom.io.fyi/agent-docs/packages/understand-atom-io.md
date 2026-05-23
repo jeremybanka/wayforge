@@ -1,6 +1,6 @@
 # understand atom.io
 
-Source: src/pages/docs/understand-atom-io.mdx
+Source: docs/source/pages/docs/understand-atom-io.mdx
 URL: /docs/understand-atom-io
 
 # understand atom.io
@@ -16,7 +16,7 @@ This keeps derived state cheap enough to use freely, even when selectors are sta
 top of other selectors.
 
 ### laziness
-Source: src/exhibits/guides/understand-atom-io/laziness.ts
+Source: docs/source/exhibits/guides/understand-atom-io/laziness.ts
 
 ```ts
 import { atom, selector, Silo } from "atom.io"
@@ -59,7 +59,7 @@ The core API works directly against a store, so tests can exercise state logic w
 `getState`, `setState`, and transactions in isolation.
 
 ### counter
-Source: src/exhibits/guides/understand-atom-io/counter.test.ts
+Source: docs/source/exhibits/guides/understand-atom-io/counter.test.ts
 
 ```ts
 import { atom, getState, selector, setState } from "atom.io"
@@ -103,7 +103,7 @@ State declarations live in plain TypeScript modules, so they are not tied to Rea
 particular runtime.
 
 ### browser path sync
-Source: src/exhibits/guides/understand-atom-io/browser-path-sync.ts
+Source: docs/source/exhibits/guides/understand-atom-io/browser-path-sync.ts
 
 ```ts
 import { atom } from "atom.io"
@@ -137,7 +137,7 @@ The browser version can lean on `window.location` to keep a piece of state in sy
 the current pathname.
 
 ### node config sync
-Source: src/exhibits/guides/understand-atom-io/node-config-sync.ts
+Source: docs/source/exhibits/guides/understand-atom-io/node-config-sync.ts
 
 ```ts
 import fs from "node:fs"
@@ -178,7 +178,7 @@ Transactions and timelines are part of the core module because they come up ofte
 apps.
 
 ### transactions and timelines
-Source: src/exhibits/guides/understand-atom-io/transactions-and-timelines.ts
+Source: docs/source/exhibits/guides/understand-atom-io/transactions-and-timelines.ts
 
 ```ts
 import { atom, timeline, transaction } from "atom.io"
@@ -218,7 +218,7 @@ them later.
 This keeps state modular instead of forcing everything into one giant store object.
 
 ### search box
-Source: src/exhibits/guides/understand-atom-io/search-box.tsx
+Source: docs/source/exhibits/guides/understand-atom-io/search-box.tsx
 
 ```tsx
 import { atom } from "atom.io"

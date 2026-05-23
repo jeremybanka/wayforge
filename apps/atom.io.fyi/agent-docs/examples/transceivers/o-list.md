@@ -1,6 +1,6 @@
 # o list
 
-Source: src/exhibits/transceivers/o-list.ts
+Source: docs/source/exhibits/transceivers/o-list.ts
 
 ```ts
 import { getState, mutableAtom, setState } from "atom.io"

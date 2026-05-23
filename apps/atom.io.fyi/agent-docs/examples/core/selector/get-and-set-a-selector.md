@@ -1,6 +1,6 @@
 # get and set a selector
 
-Source: src/exhibits/core/selector/get-and-set-a-selector.ts
+Source: docs/source/exhibits/core/selector/get-and-set-a-selector.ts
 
 ```ts
 import { getState, setState } from "atom.io"
