@@ -3,6 +3,7 @@
 	"version": "0.46.34",
 	"description": "Versatile state engine for TypeScript applications.",
 	"homepage": "https://atom.io.fyi",
+	"agentDocs": "./docs/agent/README.md",
 	"sideEffects": false,
 	"type": "module",
 	"license": "MIT",
