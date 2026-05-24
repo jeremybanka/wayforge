@@ -1,14 +1,20 @@
 # atom.io agent docs
 
-This directory is generated from atom.io-owned docs source: MDX docs, concept Markdown, and exhibit source files.
+This directory is generated from atom.io-owned docs source for AI agents working in projects that use atom.io.
+Use these files when you need to implement, debug, review, or repair atom.io code without browsing the web.
+The corpus is plain Markdown, easy to grep, and organized around concepts, package guides, and source-linked examples.
 
 Start with:
 
 - concepts/atom.md for the core state primitive
 - concepts/selector.md for derived state
+- concepts/transaction.md for coordinated state changes
+- concepts/timeline.md for undo and redo
+- concepts/join.md for relations across atom families
 - packages/atom.io.md for the main package docs
 - packages/atom.io-react.md for React bindings
 - examples/ for original exhibit source files
+- manifest.json for a deterministic index of every generated doc
 
 The source of truth remains the authored files under docs/source in the atom.io package.
 
@@ -16,7 +22,7 @@ The source of truth remains the authored files under docs/source in the atom.io 
 
 # Atom
 
-A reactive source-of-truth value identified by a stable key.
+An independently established source-of-truth value identified by a stable key.
 
 Source: docs/source/concepts/atom.md
 Packages: atom.io
@@ -25,13 +31,16 @@ Related: selector, atom-family, store
 An atom is the smallest source-of-truth state primitive in atom.io. It has a
 key, a TypeScript value type, and a default value.
 
+Use an atom when the new state is independently established: data that has its
+own source of truth and is not merely a computed view of atoms or selectors.
+
 Calling `atom` returns an atom token. The token is a reference to state, not the
 state value itself. Read it with `getState`, update it with `setState`, observe
 it with `subscribe`, or pass it to framework bindings such as `useO`.
 
-Use atoms for values that can change independently. Smaller atoms usually make
-interactive code easier to update efficiently because subscribers only react to
-the state they actually read.
+If the value can be derived from one or more existing states, use a selector
+instead. Keep atoms small so interactive code can update efficiently and
+subscribers only react to the state they actually read.
 
 ---
 
@@ -151,7 +160,7 @@ especially when transactions or timelines are involved.
 
 # Selector
 
-A reactive value derived from atoms or other selectors.
+A value that follows from atoms or other selectors instead of being stored separately.
 
 Source: docs/source/concepts/selector.md
 Packages: atom.io
@@ -159,6 +168,10 @@ Related: atom, selector-family, loadable
 
 A selector is a reactive value computed from other reactive values. Its `get`
 function reads atoms or selectors and returns the derived result.
+
+Use a selector when the new state follows from one or more atoms or selectors.
+Do not store that value separately in an atom unless it has its own independent
+source of truth.
 
 Selectors stay connected to their dependencies. When a dependency changes, the
 selector can be recomputed and its subscribers can observe the new value.
