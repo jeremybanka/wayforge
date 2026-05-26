@@ -1,7 +1,4 @@
-import { inspect } from "node:util"
-
-import picocolors from "picocolors"
-import type { Colors } from "picocolors/types"
+import { inspect, styleText } from "node:util"
 
 export const INTENTIONALLY_LEFT_BLANK: unique symbol = Symbol(
 	`INTENTIONALLY_LEFT_BLANK`,
@@ -34,11 +31,9 @@ export type LoggerConfig = {
 export class Logger implements LoggerInterface {
 	public chronicle: Chronicle | undefined
 	public readonly colorEnabled: boolean
-	protected readonly color: Colors
 
 	public constructor({ colorEnabled }: LoggerConfig) {
 		this.colorEnabled = colorEnabled
-		this.color = picocolors.createColors(colorEnabled)
 	}
 
 	protected log(
@@ -47,8 +42,8 @@ export class Logger implements LoggerInterface {
 		message: number | string,
 		datum: unknown = INTENTIONALLY_LEFT_BLANK,
 	): void {
-		let lvlColor: keyof Colors
-		let preColor: keyof Colors
+		let lvlColor: Parameters<typeof styleText>[0]
+		let preColor: Parameters<typeof styleText>[0]
 		let lvl: string
 		switch (level) {
 			case `info`:
@@ -69,9 +64,10 @@ export class Logger implements LoggerInterface {
 		}
 		let wheatpaste: string
 		if (this.colorEnabled) {
-			const c0 = this.color[lvlColor]
-			const c1 = this.color[preColor]
-			wheatpaste = `${c0(lvl)} ${c1(prefix)} ${c1(message)}`
+			wheatpaste = `${styleText(lvlColor, lvl)} ${styleText(
+				preColor,
+				prefix,
+			)} ${styleText(preColor, String(message))}`
 		} else {
 			wheatpaste = `${lvl} ${prefix} ${message}`
 		}
