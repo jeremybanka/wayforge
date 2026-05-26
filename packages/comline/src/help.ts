@@ -1,7 +1,7 @@
+import { styleText } from "node:util"
+
 import type { JsonSchema } from "arktype"
 import { type } from "arktype"
-import picocolors from "picocolors"
-import type { Colors } from "picocolors/types"
 import type { ZodObject } from "zod"
 
 import { type CommandLineInterface, options, type OptionsGroup } from "./cli"
@@ -24,6 +24,12 @@ export type TerminalColor =
 	| `reset`
 	| `white`
 	| `yellow`
+export type TerminalBackgroundColor =
+	`bg${Capitalize<Exclude<TerminalColor, `bold` | `reset`>>}`
+export type TerminalColors = Record<
+	TerminalBackgroundColor | TerminalColor,
+	(text: string) => string
+>
 export type CellFormat = {
 	fill?: string
 	align: `left` | `right`
@@ -43,10 +49,29 @@ export type CellContext = {
 }
 export type FormatCell = (ctx: CellContext) => CellFormat
 
+function formatText(
+	format: TerminalBackgroundColor | TerminalColor,
+	text: string,
+	colors?: TerminalColors | boolean,
+): string {
+	if (typeof colors === `object`) {
+		return colors[format](text)
+	}
+	if (colors === false) {
+		return text
+	}
+	if (colors === true) {
+		return styleText(format, text, {
+			validateStream: false,
+		})
+	}
+	return styleText(format, text)
+}
+
 export function renderTable(
 	table: string[][],
 	format: FormatCell,
-	pico: Colors,
+	colors?: TerminalColors | boolean,
 ): string {
 	const longestRow = table.reduce(
 		(acc, row) => (acc.length > row.length ? acc : row),
@@ -102,10 +127,14 @@ export function renderTable(
 			}
 			const { foregroundColor, backgroundColor } = cellFormat
 			if (foregroundColor) {
-				cellText = pico[foregroundColor](cellText ?? ``)
+				cellText = formatText(foregroundColor, cellText ?? ``, colors)
 			}
 			if (backgroundColor) {
-				cellText = pico[`bg${capitalize(backgroundColor)}`](cellText)
+				cellText = formatText(
+					`bg${capitalize(backgroundColor)}`,
+					cellText,
+					colors,
+				)
 			}
 			cellText = `${padLeft}${cellText}${padRight}`
 
@@ -139,7 +168,6 @@ export function help(
 	cli: CommandLineInterface<any>,
 	helpOptions?: HelpOptions,
 ): string {
-	const pico = picocolors.createColors(helpOptions?.forceColor)
 	return [
 		renderTable(
 			[[cli.cliName, cli.cliDescription ?? `cli`]],
@@ -151,7 +179,7 @@ export function help(
 					},
 					[x === 0, { foregroundColor: `bold` }],
 				),
-			pico,
+			helpOptions?.forceColor,
 		),
 		`USAGE`,
 		renderTable(
@@ -218,7 +246,7 @@ export function help(
 				)
 			},
 
-			pico,
+			helpOptions?.forceColor,
 		),
 	].join(`\n`)
 }

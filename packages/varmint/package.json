@@ -44,7 +44,6 @@
 		"comline": "workspace:*",
 		"diff": "9.0.0",
 		"fastest-levenshtein": "1.0.16",
-		"picocolors": "1.1.1",
 		"safedeposit": "workspace:*"
 	},
 	"devDependencies": {

@@ -31,9 +31,6 @@
 		"test:once": "vitest run",
 		"postversion": "biome format --write package.json"
 	},
-	"dependencies": {
-		"picocolors": "1.1.1"
-	},
 	"devDependencies": {
 		"@typescript/native-preview": "7.0.0-dev.20260525.1",
 		"concurrently": "9.2.1",
