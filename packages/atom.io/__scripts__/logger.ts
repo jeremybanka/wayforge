@@ -1,14 +1,24 @@
-import takua from "takua"
+import { styleText } from "node:util"
+
+import takua, { INTENTIONALLY_LEFT_BLANK } from "takua"
 
 export function createLogger(
 	...context: string[]
 ): Pick<typeof takua, `error` | `info`> {
 	const logger = {
-		info: (status: string, ...args: unknown[]) => {
-			takua.info(context.join(`:`), `\x1b[34m${status}\x1b[0m`, ...args)
+		info: (status: string, message: string, datum?: unknown) => {
+			takua.info(
+				[...context, styleText([`blue`], status)].join(`:`),
+				message,
+				datum === undefined ? INTENTIONALLY_LEFT_BLANK : datum,
+			)
 		},
-		error: (status: string, ...args: unknown[]) => {
-			takua.error(context.join(`:`), `\x1b[34m${status}\x1b[0m`, ...args)
+		error: (status: string, message: string, datum?: unknown) => {
+			takua.error(
+				[...context, styleText([`blue`], status)].join(`:`),
+				message,
+				datum === undefined ? INTENTIONALLY_LEFT_BLANK : datum,
+			)
 		},
 	}
 	return logger
