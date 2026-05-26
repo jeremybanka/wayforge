@@ -1,5 +1,12 @@
 # break-check
 
+## 0.6.27
+
+### Patch Changes
+
+- Updated dependencies [882df63]
+  - takua@0.2.0
+
 ## 0.6.26
 
 ### Patch Changes
