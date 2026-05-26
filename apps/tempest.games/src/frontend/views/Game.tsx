@@ -4,7 +4,7 @@ import * as React from "react"
 
 import { Anchor } from "../Anchor"
 import { type Route, ROUTES } from "../services/router-service"
-import scss from "./Game.module.scss"
+import css from "./Game.module.css"
 import { BugRangers } from "./Games/BugRangers"
 import { Carbiter } from "./Games/Carbiter"
 import { ServerControl } from "./ServerControl"
@@ -25,7 +25,7 @@ export function GameView({
 
 export function GameIndex(): React.ReactNode {
 	return (
-		<article className={scss[`class`]}>
+		<article className={css[`class`]}>
 			<nav>
 				<Anchor href={`/game/hexiom`}>
 					<h1>HEXIOM</h1>
