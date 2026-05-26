@@ -1,6 +1,5 @@
-import { wrapInto } from "anvl/number"
-
 import type { Degree, Filter } from ".."
+import { wrapInto } from "../utils/internal"
 
 export default (hue: Degree, filter: Filter): number => {
 	// 430

@@ -1,11 +1,3 @@
-import { content, each, isArray, join, map } from "anvl/array"
-import type { Modifier, OneOrMany } from "anvl/function"
-import { isModifier, pipe } from "anvl/function"
-import { isUndefined } from "anvl/nullish"
-import { key } from "anvl/object"
-import { isString } from "anvl/primitive"
-import type { Refinement } from "anvl/refinement"
-
 import {
 	type Filter,
 	type FilterPoint,
@@ -14,6 +6,21 @@ import {
 	specToHex,
 } from ".."
 import { defaultSpec } from "../constants/luum-spec"
+import {
+	content,
+	each,
+	isArray,
+	isModifier,
+	isString,
+	isUndefined,
+	join,
+	key,
+	map,
+	type Modifier,
+	type OneOrMany,
+	pipe,
+	type Refinement,
+} from "../utils/internal"
 
 // export type InteractiveStates = `active` | `base` | `disabled` | `hover`
 
