@@ -1,8 +1,10 @@
-import { diffChars, diffLines, diffWords } from "diff"
-import picocolors from "picocolors"
-import type { Colors } from "picocolors/types"
+import { styleText } from "node:util"
 
-export const pico: Colors = picocolors.createColors(true)
+import { diffChars, diffLines, diffWords } from "diff"
+
+const color = (format: Parameters<typeof styleText>[0], text: string): string =>
+	styleText(format, text, { validateStream: false })
+
 type Options = {
 	showContext?: number // number of unchanged context lines to keep around changes; default: Infinity (show all)
 	wordBoundary?: boolean // use word-aware diff or character diff; default: true
@@ -27,10 +29,10 @@ export function prettyPrintDiffInline(
 		for (const s of segs) {
 			if (s.added) {
 				// Appears only on the RIGHT side (new)
-				right += pico.bgGreen(pico.black(s.value))
+				right += color(`bgGreen`, color(`black`, s.value))
 			} else if (s.removed) {
 				// Appears only on the LEFT side (old)
-				left += pico.bgRed(pico.black(s.value))
+				left += color(`bgRed`, color(`black`, s.value))
 			} else {
 				// Common text
 				left += s.value
@@ -39,8 +41,8 @@ export function prettyPrintDiffInline(
 		}
 
 		return {
-			left: pico.red(`- ${left}`),
-			right: pico.green(`+ ${right}`),
+			left: color(`red`, `- ${left}`),
+			right: color(`green`, `+ ${right}`),
 		}
 	}
 
@@ -56,7 +58,8 @@ export function prettyPrintDiffInline(
 			const tail = buffer.slice(-showContext)
 			linesOut.push(
 				...head,
-				pico.dim(
+				color(
+					`dim`,
 					`… ${buffer.length - head.length - tail.length} lines unchanged …`,
 				),
 				...tail,
@@ -88,7 +91,8 @@ export function prettyPrintDiffInline(
 			} else {
 				// Pure addition block
 				flushBuffer()
-				for (const l of addedLines) if (l) linesOut.push(pico.green(`+ ${l}`))
+				for (const l of addedLines)
+					if (l) linesOut.push(color(`green`, `+ ${l}`))
 			}
 			continue
 		}
@@ -103,7 +107,8 @@ export function prettyPrintDiffInline(
 		if (pendingRemoved) {
 			// Removed with no following added → render as plain deletions
 			flushBuffer()
-			for (const l of pendingRemoved) if (l) linesOut.push(pico.red(`- ${l}`))
+			for (const l of pendingRemoved)
+				if (l) linesOut.push(color(`red`, `- ${l}`))
 			pendingRemoved = null
 		}
 		// Accumulate unchanged lines for possible context collapsing
@@ -114,7 +119,7 @@ export function prettyPrintDiffInline(
 	// Tail cleanup
 	if (pendingRemoved) {
 		flushBuffer()
-		for (const l of pendingRemoved) if (l) linesOut.push(pico.red(`- ${l}`))
+		for (const l of pendingRemoved) if (l) linesOut.push(color(`red`, `- ${l}`))
 	}
 	flushBuffer()
 

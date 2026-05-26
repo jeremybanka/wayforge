@@ -1,13 +1,13 @@
 import { existsSync, promises as fs } from "node:fs"
 import { resolve } from "node:path"
+import { styleText } from "node:util"
 
 import * as prompts from "@clack/prompts"
 import { getPackageInfo } from "local-pkg"
-import picocolors from "picocolors"
-import type { Colors } from "picocolors/types"
 import { x } from "tinyexec"
 
-const pico: Colors = picocolors.createColors(true)
+const color = (format: Parameters<typeof styleText>[0], text: string): string =>
+	styleText(format, text, { validateStream: false })
 
 const s = prompts.spinner()
 
@@ -34,7 +34,7 @@ export async function createAtom(
 	const skipHint = options.skipHints ?? false
 	const packageManager = options.packageManager ?? getPkgManager()
 
-	prompts.intro(pico.greenBright(`atom.io - Data Components for TypeScript`))
+	prompts.intro(color(`greenBright`, `atom.io - Data Components for TypeScript`))
 
 	const { dir, templateName, useMise } = await prompts.group(
 		{
@@ -82,7 +82,7 @@ export async function createAtom(
 		},
 		{
 			onCancel: () => {
-				prompts.cancel(pico.yellow(`Cancelled`))
+				prompts.cancel(color(`yellow`, `Cancelled`))
 				process.exit(0)
 			},
 		},
@@ -104,9 +104,10 @@ export async function createAtom(
 
 	if (skipHint === false) {
 		const gettingStarted = `
-			${pico.dim(`$`)} ${pico.blueBright(`cd ${dir}`)}
-			${useMise ? `${pico.dim(`$`)} ${pico.blueBright(`mise install`)}` : ``}
-			${pico.dim(`$`)} ${pico.blueBright(
+			${color(`dim`, `$`)} ${color(`blueBright`, `cd ${dir}`)}
+			${useMise ? `${color(`dim`, `$`)} ${color(`blueBright`, `mise install`)}` : ``}
+			${color(`dim`, `$`)} ${color(
+				`blueBright`,
 				`${
 					packageManager === `npm`
 						? `npm run`
@@ -122,7 +123,7 @@ export async function createAtom(
 		)
 	}
 
-	prompts.outro(pico.green(`You're all set!`))
+	prompts.outro(color(`green`, `You're all set!`))
 }
 
 async function useSpinner(
@@ -132,7 +133,7 @@ async function useSpinner(
 ): Promise<void> {
 	s.start(startMessage)
 	await fn()
-	s.stop(pico.green(finishMessage))
+	s.stop(color(`green`, finishMessage))
 }
 
 async function scaffold(to: string, opts: CreateAtomOptions): Promise<void> {

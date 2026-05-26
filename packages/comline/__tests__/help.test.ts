@@ -1,5 +1,4 @@
 import { type } from "arktype"
-import picocolors from "picocolors"
 
 import {
 	cli,
@@ -34,7 +33,7 @@ test(`renderTable`, () => {
 				}
 				return base
 			},
-			picocolors.createColors(true),
+			true,
 		),
 	)
 })
