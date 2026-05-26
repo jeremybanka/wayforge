@@ -1,5 +1,11 @@
 # comline
 
+## 0.4.6
+
+### Patch Changes
+
+- 7a2d506: Use Node's built-in `styleText` for terminal colors instead of depending on `picocolors`.
+
 ## 0.4.5
 
 ### Patch Changes
