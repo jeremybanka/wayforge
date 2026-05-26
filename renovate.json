@@ -18,10 +18,6 @@
 	],
 	"packageRules": [
 		{
-			"matchPackageNames": ["sass", "sass-embedded"],
-			"groupName": "sass packages"
-		},
-		{
 			"matchPackageNames": ["@typescript/*"],
 			"minimumReleaseAge": null
 		},

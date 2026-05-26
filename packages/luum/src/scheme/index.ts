@@ -409,7 +409,7 @@ export const luumToCss = (rule: LuumCssRule): string => {
 	return rootSelectors ? join(LF)([rootSelectors, attributes, `}`]) : attributes
 }
 
-// export const luumToScss = (rule: LuumScssRule): string => {
+// export const luumToCss = (rule: LuumCssRule): string => {
 //   const {
 //     rootSelectors: maybeOneOrManyRootSelectors,
 //     root,
@@ -426,10 +426,10 @@ export const luumToCss = (rule: LuumCssRule): string => {
 //   return ``
 // }
 
-// export const luumToScss = (rule: LuumScssRule): string => {
+// export const luumToCss = (rule: LuumCssRule): string => {
 //   const { rootSelector, root, filter, attributes, states, children } = rule
-//   let scss = ``
+//   let css = ``
 //   const depth = 0
-//   if (rootSelector) scss += `${rootSelector} {`
+//   if (rootSelector) css += `${rootSelector} {`
 //   return ``
 // }

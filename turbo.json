@@ -63,8 +63,8 @@
 				"../../packages/break-check/src/**/*.ts",
 				"break-check.config.json",
 				"**/package.json",
-				"src/**/*.{ts,tsx,scss,mdx}",
-				"**/src/**/*.{ts,tsx,scss,mdx}",
+				"src/**/*.{ts,tsx,css,mdx}",
+				"**/src/**/*.{ts,tsx,css,mdx}",
 				"__tests__/public/**/*.test.{ts,tsx}",
 				"__scripts__/**/*.ts"
 			]
