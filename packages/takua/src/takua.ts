@@ -3,6 +3,10 @@ import { inspect } from "node:util"
 import picocolors from "picocolors"
 import type { Colors } from "picocolors/types"
 
+export const INTENTIONALLY_LEFT_BLANK: unique symbol = Symbol(
+	`INTENTIONALLY_LEFT_BLANK`,
+)
+
 export type LogFn = (
 	prefix: string,
 	message: number | string,
@@ -41,7 +45,7 @@ export class Logger implements LoggerInterface {
 		level: LogLevel,
 		prefix: string,
 		message: number | string,
-		...data: unknown[]
+		datum: unknown = INTENTIONALLY_LEFT_BLANK,
 	): void {
 		let lvlColor: keyof Colors
 		let preColor: keyof Colors
@@ -72,22 +76,22 @@ export class Logger implements LoggerInterface {
 			wheatpaste = `${lvl} ${prefix} ${message}`
 		}
 		let output = ``
-		for (const datum of data) {
-			let datumString: string
-			if (typeof datum === `string`) {
-				datumString = datum
-			} else {
-				datumString = inspect(datum, false, null, this.colorEnabled)
+		let datumString: string
+		if (datum === INTENTIONALLY_LEFT_BLANK) {
+			datumString = ``
+		} else if (typeof datum === `string`) {
+			datumString = datum
+		} else {
+			datumString = inspect(datum, false, null, this.colorEnabled)
+		}
+		if (datumString.includes(`\n`)) {
+			const lines = datumString.split(`\n`)
+			output += `${wheatpaste} ${lines[0]}`
+			for (let i = 1; i < lines.length; ++i) {
+				output += `\n${wheatpaste} ${lines[i]}`
 			}
-			if (datumString.includes(`\n`)) {
-				const lines = datumString.split(`\n`)
-				output += `${wheatpaste} ${lines[0]}`
-				for (let i = 1; i < lines.length; ++i) {
-					output += `\n${wheatpaste} ${lines[i]}`
-				}
-			} else {
-				output += `${wheatpaste} ${datumString}`
-			}
+		} else {
+			output += `${wheatpaste} ${datumString}`
 		}
 		if (output) {
 			console.log(output)
@@ -95,26 +99,14 @@ export class Logger implements LoggerInterface {
 			console.log(wheatpaste)
 		}
 	}
-	public info(
-		prefix: string,
-		message: number | string,
-		...data: unknown[]
-	): void {
-		this.log(`info`, prefix, message, ...data)
+	public info(prefix: string, message: number | string, datum?: unknown): void {
+		this.log(`info`, prefix, message, datum)
 	}
-	public warn(
-		prefix: string,
-		message: number | string,
-		...data: unknown[]
-	): void {
-		this.log(`warn`, prefix, message, ...data)
+	public warn(prefix: string, message: number | string, datum?: unknown): void {
+		this.log(`warn`, prefix, message, datum)
 	}
-	public error(
-		prefix: string,
-		message: number | string,
-		...data: unknown[]
-	): void {
-		this.log(`error`, prefix, message, ...data)
+	public error(prefix: string, message: number | string, datum?: unknown): void {
+		this.log(`error`, prefix, message, datum)
 	}
 
 	public makeChronicle({ inline = false }: { inline?: boolean } = {}): {
