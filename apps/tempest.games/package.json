@@ -30,7 +30,7 @@
 		"dev:backend": "bun --hot --no-clear-screen --env-file=.env.development ./src/backend.bun.ts",
 		"dev:email": "bun --env-file=.env.development email dev",
 		"dev:db": "pnpm run db:dev",
-		"build": "rimraf ./bin && ([ $PREVIEW ] && bun run env:pre || bun run env:prod) && concurrently \"bun:build:*\"",
+		"build": "rm -rf ./bin && ([ $PREVIEW ] && bun run env:pre || bun run env:prod) && concurrently \"bun:build:*\"",
 		"build:bun": "./build.bun.ts",
 		"build:vite": "[ $PREVIEW ] && vite build --mode preview || vite build --mode production",
 		"preview": "cross-env PREVIEW=true nr build && concurrently \"bun:preview:*\"",
@@ -101,7 +101,6 @@
 		"eslint": "10.4.0",
 		"flightdeck": "workspace:*",
 		"globals": "17.6.0",
-		"rimraf": "6.1.3",
 		"vite": "8.0.14",
 		"vite-tsconfig-paths": "6.1.1",
 		"vitest": "4.1.7"
