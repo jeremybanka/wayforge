@@ -1,7 +1,7 @@
 import * as os from "node:os"
+import { styleText } from "node:util"
 
 import * as tsdoc from "@microsoft/tsdoc"
-import colors from "colors"
 import type TS from "typescript"
 
 import type { DiscoveredResource } from "./library"
@@ -35,15 +35,18 @@ function parseTSDoc(foundComment: DiscoveredResource): void {
 	if (!foundComment.textRange) {
 		console.log(
 			os.EOL +
-				colors.red(`Error: No code comments were found in the input file`) +
+				styleText(
+					`red`,
+					`Error: No code comments were found in the input file`,
+				) +
 				os.EOL,
 		)
 		return
 	}
-	console.log(os.EOL + colors.green(`Comment to be parsed:`) + os.EOL)
-	console.log(colors.gray(`<<<<<<`))
+	console.log(os.EOL + styleText(`green`, `Comment to be parsed:`) + os.EOL)
+	console.log(styleText(`gray`, `<<<<<<`))
 	console.log(foundComment.textRange.toString())
-	console.log(colors.gray(`>>>>>>`))
+	console.log(styleText(`gray`, `>>>>>>`))
 
 	const customConfiguration: tsdoc.TSDocConfiguration =
 		new tsdoc.TSDocConfiguration()
@@ -88,7 +91,7 @@ function parseTSDoc(foundComment: DiscoveredResource): void {
 	)
 	const docComment: tsdoc.DocComment = parserContext.docComment
 
-	console.log(os.EOL + colors.green(`Parser Log Messages:`) + os.EOL)
+	console.log(os.EOL + styleText(`green`, `Parser Log Messages:`) + os.EOL)
 
 	if (parserContext.log.messages.length === 0) {
 		console.log(`No errors or warnings.`)
@@ -109,20 +112,24 @@ function parseTSDoc(foundComment: DiscoveredResource): void {
 	if (parserContext.docComment.modifierTagSet.hasTag(customModifierDefinition)) {
 		console.log(
 			os.EOL +
-				colors.cyan(
+				styleText(
+					`cyan`,
 					`The ${customModifierDefinition.tagName} modifier was FOUND.`,
 				),
 		)
 	} else {
 		console.log(
 			os.EOL +
-				colors.cyan(
+				styleText(
+					`cyan`,
 					`The ${customModifierDefinition.tagName} modifier was NOT FOUND.`,
 				),
 		)
 	}
 
-	console.log(os.EOL + colors.green(`Visiting TSDoc's DocNode tree`) + os.EOL)
+	console.log(
+		os.EOL + styleText(`green`, `Visiting TSDoc's DocNode tree`) + os.EOL,
+	)
 	dumpTSDocTree(docComment, ``)
 }
 
@@ -131,8 +138,8 @@ function dumpTSDocTree(docNode: tsdoc.DocNode, indent: string): void {
 	if (docNode instanceof tsdoc.DocExcerpt) {
 		const content: string = docNode.content.toString()
 		dumpText +=
-			colors.gray(`${indent}* ${docNode.excerptKind}=`) +
-			colors.cyan(JSON.stringify(content))
+			styleText(`gray`, `${indent}* ${docNode.excerptKind}=`) +
+			styleText(`cyan`, JSON.stringify(content))
 	} else {
 		dumpText += `${indent}- ${docNode.kind}`
 	}
