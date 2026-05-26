@@ -1,29 +1,30 @@
 import { execSync, spawn } from "node:child_process"
+import { mkdtempSync, rmSync } from "node:fs"
+import { tmpdir } from "node:os"
 import { resolve } from "node:path"
-
-import tmp from "tmp"
 
 import { FlightDeck } from "../src/flightdeck.lib.ts"
 
 const testDirname = import.meta.dirname
 
-let tmpDir: tmp.DirResult
+let tmpDir: string
 
 beforeEach(() => {
 	vitest.spyOn(console, `error`)
 	vitest.spyOn(console, `warn`)
 	vitest.spyOn(console, `log`)
-	tmpDir = tmp.dirSync({ unsafeCleanup: true })
-	tmp.setGracefulCleanup()
+	tmpDir = mkdtempSync(resolve(tmpdir(), `flightdeck-`))
 })
 
-afterEach(() => {})
+afterEach(() => {
+	rmSync(tmpDir, { recursive: true, force: true })
+})
 
 describe(`FlightDeck`, () => {
 	it(`should kill a flightdeck instance in the background`, async () => {
 		const childProcess = spawn(
 			resolve(testDirname, `fixtures`, `flightdeck-proc.node.ts`),
-			[tmpDir.name, testDirname],
+			[tmpDir, testDirname],
 		)
 
 		childProcess.stderr.on(`data`, (data) => {
@@ -42,7 +43,7 @@ describe(`FlightDeck`, () => {
 			})
 		})
 
-		await FlightDeck.kill(tmpDir.name, `my-app`)
+		await FlightDeck.kill(tmpDir, `my-app`)
 
 		try {
 			execSync(`lsof -ti :7777`)

@@ -1,13 +1,12 @@
 import * as fs from "node:fs"
 import * as http from "node:http"
+import { tmpdir } from "node:os"
 import path from "node:path"
-
-import * as tmp from "tmp"
 
 import { Squirrel } from "../src"
 
 let server: http.Server
-let tempDir: tmp.DirResult
+let tempDir: string
 const utils = { put: (..._: unknown[]) => undefined }
 
 beforeEach(() => {
@@ -26,16 +25,16 @@ beforeEach(() => {
 	})
 	server.listen(12500)
 
-	tempDir = tmp.dirSync({ unsafeCleanup: true })
+	tempDir = fs.mkdtempSync(path.join(tmpdir(), `varmint-`))
 })
 afterEach(() => {
 	server.close()
-	tempDir.removeCallback()
+	fs.rmSync(tempDir, { recursive: true, force: true })
 })
 
 describe(`Filebox`, () => {
 	test(`mode:off`, async () => {
-		const squirrel = new Squirrel(`off`, tempDir.name)
+		const squirrel = new Squirrel(`off`, tempDir)
 		const responses = squirrel.add(`responses`, async (url: string) => {
 			return fetch(url).then((response) => response.text())
 		})
@@ -44,7 +43,7 @@ describe(`Filebox`, () => {
 		expect(utils.put).toHaveBeenCalledTimes(1)
 	})
 	test(`mode:read`, async () => {
-		const squirrel = new Squirrel(`read`, tempDir.name)
+		const squirrel = new Squirrel(`read`, tempDir)
 		const fetcher = squirrel.add(`hello`, async (url: string) => {
 			return fetch(url).then((response) => response.text())
 		})
@@ -60,13 +59,13 @@ describe(`Filebox`, () => {
 			expect(caught).toBeInstanceOf(Error)
 			expect(utils.put).toHaveBeenCalledTimes(0)
 		}
-		fs.mkdirSync(path.join(tempDir.name, `hello`))
+		fs.mkdirSync(path.join(tempDir, `hello`))
 		fs.writeFileSync(
-			path.join(tempDir.name, `hello/home.input.json`),
+			path.join(tempDir, `hello/home.input.json`),
 			`[\n\t"http://localhost:12500"\n]`,
 		)
 		fs.writeFileSync(
-			path.join(tempDir.name, `hello/home.output.json`),
+			path.join(tempDir, `hello/home.output.json`),
 			`"The best way to predict the future is to invent it."`,
 		)
 
