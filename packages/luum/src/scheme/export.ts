@@ -29,19 +29,19 @@
 // const createCssProperty = (key: string, value: string, gen = 0) =>
 //   indent(1 + gen, `${key}: ${value};\n`)
 
-// export const paletteToScssDeclarationStatic = (
+// export const paletteToCssDeclarationStatic = (
 //   palette: NonInteractivePalette<any>,
 //   generation: number
 // ): string => {
-//   let scssDeclaration = ``
+//   let cssDeclaration = ``
 //   for (const [attribute, { dry: hex }]
 //   of Object.entries(palette.attributes)) {
-//     scssDeclaration += createCssProperty(attribute, hex, generation)
+//     cssDeclaration += createCssProperty(attribute, hex, generation)
 //   }
-//   return scssDeclaration
+//   return cssDeclaration
 // }
 
-// export const paletteToScssDeclarationInteractive = (
+// export const paletteToCssDeclarationInteractive = (
 //   palette: InteractivePalette<any>,
 //   gen: number
 // ): string => {
@@ -69,13 +69,13 @@
 //   return declaration
 // }
 
-// export const paletteToScssDeclaration = <T extends Scheme>(
+// export const paletteToCssDeclaration = <T extends Scheme>(
 //   palette: Palette<T>,
 //   generation: number
 // ): string =>
 //   isInteractivePalette(palette)
-//     ? paletteToScssDeclarationInteractive(palette, generation)
-//     : paletteToScssDeclarationStatic(palette, generation)
+//     ? paletteToCssDeclarationInteractive(palette, generation)
+//     : paletteToCssDeclarationStatic(palette, generation)
 
 // export const nestChildRules = (
 //   palette: Palette<any>,
@@ -85,29 +85,29 @@
 //   if (palette.children) {
 //     for (const child of Object.entries(palette.children)) {
 //       const [selector, childPalette] = child as [CssSelector, Palette<any>]
-//       nestedRules += paletteToScssRule(selector, childPalette, generation + 1)
+//       nestedRules += paletteToCssRule(selector, childPalette, generation + 1)
 //     }
 //   }
 //   return nestedRules
 // }
 
-// export const paletteToScssRule = (
+// export const paletteToCssRule = (
 //   selector: CssSelector,
 //   palette: Palette<any>,
 //   generation = 0
 // ): string => {
-//   let scssBlock = openCssRule(generation, selector)
-//   scssBlock += paletteToScssDeclaration(palette, generation)
-//   scssBlock += nestChildRules(palette, generation)
-//   scssBlock += closeCssRule(generation)
-//   return scssBlock
+//   let cssBlock = openCssRule(generation, selector)
+//   cssBlock += paletteToCssDeclaration(palette, generation)
+//   cssBlock += nestChildRules(palette, generation)
+//   cssBlock += closeCssRule(generation)
+//   return cssBlock
 // }
 
-// export type SchemeToScssRule =
+// export type SchemeToCssRule =
 // (selector: CssSelector, scheme: Scheme) => string
 
-// export const schemeToScssRule: SchemeToScssRule = (selector, scheme) => {
+// export const schemeToCssRule: SchemeToCssRule = (selector, scheme) => {
 //   const palette = mixPalette(scheme)
-//   const scss = paletteToScssRule(selector, palette)
-//   return scss
+//   const css = paletteToCssRule(selector, palette)
+//   return css
 // }

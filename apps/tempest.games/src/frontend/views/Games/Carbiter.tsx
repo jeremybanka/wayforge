@@ -20,7 +20,7 @@ import { nanoid } from "nanoid"
 import { useCallback } from "react"
 
 import { trpcClient } from "../../services/trpc-client-service"
-import scss from "./Carbiter.module.scss"
+import css from "./Carbiter.module.css"
 
 type FoodItem = Pick<
 	InferSelectModel<typeof foodItems>,
@@ -70,7 +70,7 @@ export function Carbiter(): React.ReactNode {
 	const totalDailyCarbs = useLoadable(totalDailyCarbsSelector, 0)
 	const totalDailyProtein = useLoadable(totalDailyProteinSelector, 0)
 	return (
-		<main data-css="Carbiter" className={scss[`class`]}>
+		<main data-css="Carbiter" className={css[`class`]}>
 			<header>
 				<nav>
 					<button

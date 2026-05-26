@@ -1,5 +1,5 @@
-import "./scss/index.scss"
-import "./scss/font-face.scss"
+import "./css/index.css"
+import "./css/font-face.css"
 import "atom.io/react-devtools/css"
 
 import { AtomIODevtools } from "atom.io/react-devtools"

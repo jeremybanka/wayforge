@@ -40,14 +40,14 @@ import { isAdminAtom } from "../../../../library/store"
 import { usernameAtoms } from "../../../../library/username-state"
 import * as svg from "../../../<svg>"
 import { isMyTurnSelector } from "./bug-rangers-client-state"
-import scss from "./BugRangersUI.module.scss"
+import css from "./BugRangersUI.module.css"
 import * as icon from "./Icons"
 
 export function BugRangersUI(): ReactElement {
 	const { myRoomKey } = useRealtimeRooms()
 	const myUserKey = usePullAtom(myUserKeyAtom)
 	return (
-		<main className={scss[`class`]}>
+		<main className={css[`class`]}>
 			{myUserKey ? <UserInterior /> : null}
 			{myUserKey && myRoomKey ? (
 				<Interior myUserKey={myUserKey} />

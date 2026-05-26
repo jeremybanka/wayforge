@@ -18,7 +18,7 @@ import * as React from "react"
 import { RESPONSE_DICTIONARY } from "../library/response-dictionary"
 import * as svg from "./<svg>"
 import { Anchor } from "./Anchor"
-import scss from "./App.module.scss"
+import css from "./App.module.css"
 import Spinner from "./components/Spinner"
 import { appVersionSelector } from "./services/patchnotes-service"
 import { navigate, routeSelector } from "./services/router-service"
@@ -61,7 +61,7 @@ export function App(): React.ReactNode {
 	const appVersion = useO(appVersionSelector)
 
 	return (
-		<main className={scss[`class`]}>
+		<main className={css[`class`]}>
 			<header>
 				<main>
 					{typeof route === `object` && route[0] === `game` ? null : (

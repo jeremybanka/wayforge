@@ -13,7 +13,6 @@ export default defineConfig((async ({ mode }) => {
 	const config: ViteUserConfig = {
 		plugins: [react(), tsconfigPaths()],
 		build: { outDir: `app`, rollupOptions: { external: [`@backend/db`] } },
-		// css: { preprocessorOptions: { scss: { api: `modern-compiler` } } },
 		server: {
 			port: 3333,
 			...(httpsDev ? { https: httpsDev } : undefined),
