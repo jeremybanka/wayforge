@@ -1,5 +1,7 @@
-import { readFileSync, writeFileSync } from "node:fs"
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { readFile } from "node:fs/promises"
+import { tmpdir } from "node:os"
+import path from "node:path"
 
 import type { Logger } from "atom.io"
 import {
@@ -14,7 +16,6 @@ import {
 } from "atom.io"
 import * as Internal from "atom.io/internal"
 import { UList } from "atom.io/transceivers/u-list"
-import tmp from "tmp"
 import { vitest } from "vitest"
 
 import * as Utils from "../__util__"
@@ -23,7 +24,7 @@ const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
 
 let logger: Logger
-let tmpDir: tmp.DirResult
+let tmpDir: string
 
 beforeEach(() => {
 	Internal.clearStore(Internal.IMPLICIT.STORE)
@@ -33,9 +34,12 @@ beforeEach(() => {
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
 	vitest.spyOn(Utils, `stdout`)
-	tmpDir = tmp.dirSync({ unsafeCleanup: true })
-	writeFileSync(`${tmpDir.name}/name.txt`, `Mavis`)
-	tmp.setGracefulCleanup()
+	tmpDir = mkdtempSync(path.join(tmpdir(), `atom-io-`))
+	writeFileSync(`${tmpDir}/name.txt`, `Mavis`)
+})
+
+afterEach(() => {
+	rmSync(tmpDir, { recursive: true, force: true })
 })
 
 describe(`atom effects`, () => {
@@ -69,17 +73,17 @@ describe(`atom effects`, () => {
 			default: ``,
 			effects: [
 				({ setSelf, onSet }) => {
-					const name = readFileSync(`${tmpDir.name}/name.txt`, `utf8`)
+					const name = readFileSync(`${tmpDir}/name.txt`, `utf8`)
 					setSelf(name)
 					onSet((change) => {
-						writeFileSync(`${tmpDir.name}/name.txt`, change.newValue)
+						writeFileSync(`${tmpDir}/name.txt`, change.newValue)
 					})
 				},
 			],
 		})
 		expect(getState(nameAtom)).toBe(`Mavis`)
 		setState(nameAtom, `Mavis2`)
-		expect(readFileSync(`${tmpDir.name}/name.txt`, `utf8`)).toBe(`Mavis2`)
+		expect(readFileSync(`${tmpDir}/name.txt`, `utf8`)).toBe(`Mavis2`)
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
 	})
@@ -90,7 +94,7 @@ describe(`atom effects`, () => {
 			default: ``,
 			effects: [
 				async ({ setSelf }) => {
-					const name = await readFile(`${tmpDir.name}/name.txt`, `utf8`)
+					const name = await readFile(`${tmpDir}/name.txt`, `utf8`)
 					jobDone.use(Promise.resolve())
 					setSelf(name)
 				},
@@ -112,7 +116,7 @@ describe(`atom effects`, () => {
 				async ({ onSet }) => {
 					await Promise.resolve()
 					onSet((change) => {
-						writeFileSync(`${tmpDir.name}/name.txt`, change.newValue)
+						writeFileSync(`${tmpDir}/name.txt`, change.newValue)
 					})
 					jobDone.use(Promise.resolve())
 				},
@@ -121,7 +125,7 @@ describe(`atom effects`, () => {
 
 		await jobDone
 		setState(nameAtom, `Mavis2`)
-		expect(readFileSync(`${tmpDir.name}/name.txt`, `utf8`)).toBe(`Mavis2`)
+		expect(readFileSync(`${tmpDir}/name.txt`, `utf8`)).toBe(`Mavis2`)
 		expect(logger.warn).not.toHaveBeenCalled()
 		expect(logger.error).not.toHaveBeenCalled()
 	})

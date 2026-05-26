@@ -1,44 +1,43 @@
 import { spawn } from "node:child_process"
 import * as fs from "node:fs"
+import { tmpdir } from "node:os"
 import path from "node:path"
 
-import * as tmp from "tmp"
-
-let tempDir: tmp.DirResult
+let tempDir: string
 const utils = { put: (..._: unknown[]) => undefined }
 
 beforeEach(() => {
 	vitest.spyOn(utils, `put`).mockReset()
-	tempDir = tmp.dirSync({ unsafeCleanup: true })
+	tempDir = fs.mkdtempSync(path.join(tmpdir(), `varmint-`))
 })
 afterEach(() => {
-	tempDir.removeCallback()
+	fs.rmSync(tempDir, { recursive: true, force: true })
 })
 
 describe(`flushing with workspace manager`, () => {
 	test(`flushing untouched files`, async () => {
-		const setup = spawn(`node`, [`global-setup.node.ts`, tempDir.name], {
+		const setup = spawn(`node`, [`global-setup.node.ts`, tempDir], {
 			stdio: `inherit`,
 			cwd: path.join(import.meta.dirname, `isolation-flush`),
 		})
 		await new Promise((resolve) => setup.on(`exit`, resolve))
-		fs.mkdirSync(path.join(tempDir.name, `other`))
-		console.log(`tempDir contents:`, fs.readdirSync(tempDir.name))
+		fs.mkdirSync(path.join(tempDir, `other`))
+		console.log(`tempDir contents:`, fs.readdirSync(tempDir))
 		fs.writeFileSync(
-			path.join(tempDir.name, `rand`, `some-random-file.whatever`),
+			path.join(tempDir, `rand`, `some-random-file.whatever`),
 			`{}`,
 		)
 		fs.writeFileSync(
-			path.join(tempDir.name, `myStreamer`, `another-random-file.whatever`),
+			path.join(tempDir, `myStreamer`, `another-random-file.whatever`),
 			`{}`,
 		)
-		expect(fs.readdirSync(tempDir.name)).toEqual([`myStreamer`, `other`, `rand`])
-		expect(fs.readdirSync(path.join(tempDir.name, `rand`))).toEqual([
+		expect(fs.readdirSync(tempDir)).toEqual([`myStreamer`, `other`, `rand`])
+		expect(fs.readdirSync(path.join(tempDir, `rand`))).toEqual([
 			`my-rand.input.json`,
 			`my-rand.output.json`,
 			`some-random-file.whatever`,
 		])
-		expect(fs.readdirSync(path.join(tempDir.name, `myStreamer`))).toEqual([
+		expect(fs.readdirSync(path.join(tempDir, `myStreamer`))).toEqual([
 			`another-random-file.whatever`,
 			`myAsyncIterable.input.json`,
 			`myAsyncIterable.stream.txt`,
@@ -48,12 +47,12 @@ describe(`flushing with workspace manager`, () => {
 			cwd: path.join(import.meta.dirname, `isolation-flush`),
 		})
 		await new Promise((resolve) => teardown.on(`exit`, resolve))
-		expect(fs.readdirSync(tempDir.name)).toEqual([`myStreamer`, `rand`])
-		expect(fs.readdirSync(path.join(tempDir.name, `rand`))).toEqual([
+		expect(fs.readdirSync(tempDir)).toEqual([`myStreamer`, `rand`])
+		expect(fs.readdirSync(path.join(tempDir, `rand`))).toEqual([
 			`my-rand.input.json`,
 			`my-rand.output.json`,
 		])
-		expect(fs.readdirSync(path.join(tempDir.name, `myStreamer`))).toEqual([
+		expect(fs.readdirSync(path.join(tempDir, `myStreamer`))).toEqual([
 			`myAsyncIterable.input.json`,
 			`myAsyncIterable.stream.txt`,
 		])

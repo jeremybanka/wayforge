@@ -1,9 +1,10 @@
 import fsp from "node:fs/promises"
+import { tmpdir } from "node:os"
+import path from "node:path"
 
 import type { Loadable, Logger, RegularAtomToken } from "atom.io"
 import { atom, getState, setState } from "atom.io"
 import * as Internal from "atom.io/internal"
-import tmp from "tmp"
 import { vitest } from "vitest"
 
 import * as Utils from "../../__util__"
@@ -14,7 +15,7 @@ const LOG_LEVELS = [null, `error`, `warn`, `info`] as const
 const CHOOSE = 2
 
 let logger: Logger
-let tmpDir: tmp.DirResult
+let tmpDir: string
 
 function clearValueMap() {
 	Internal.IMPLICIT.STORE.valueMap = new Map()
@@ -31,7 +32,7 @@ async function waitForQueuedUpdate<T>(token: RegularAtomToken<T>, newValue: T) {
 	}
 }
 
-beforeEach(() => {
+beforeEach(async () => {
 	Internal.clearStore(Internal.IMPLICIT.STORE)
 	Internal.IMPLICIT.STORE.loggers[0].logLevel = LOG_LEVELS[CHOOSE]
 	logger = Internal.IMPLICIT.STORE.logger = Utils.createNullLogger()
@@ -39,8 +40,11 @@ beforeEach(() => {
 	vitest.spyOn(logger, `warn`)
 	vitest.spyOn(logger, `info`)
 	vitest.spyOn(Utils, `stdout`)
-	tmpDir = tmp.dirSync({ unsafeCleanup: true })
-	tmp.setGracefulCleanup()
+	tmpDir = await fsp.mkdtemp(path.join(tmpdir(), `atom-io-`))
+})
+
+afterEach(async () => {
+	await fsp.rm(tmpDir, { recursive: true, force: true })
 })
 
 describe(`stateless data persistence strategies`, () => {
@@ -50,10 +54,10 @@ describe(`stateless data persistence strategies`, () => {
 				key: `count`,
 				default: async () => {
 					try {
-						const data = await fsp.readFile(`${tmpDir.name}/count.txt`, `utf8`)
+						const data = await fsp.readFile(`${tmpDir}/count.txt`, `utf8`)
 						return Number.parseInt(data, 10)
 					} catch (_) {
-						await fsp.writeFile(`${tmpDir.name}/count.txt`, `0`)
+						await fsp.writeFile(`${tmpDir}/count.txt`, `0`)
 						return 0
 					}
 				},
@@ -76,7 +80,7 @@ describe(`stateless data persistence strategies`, () => {
 											setSelf(
 												(async () => {
 													await fsp.writeFile(
-														`${tmpDir.name}/count.txt`,
+														`${tmpDir}/count.txt`,
 														newValue.toString(),
 													)
 													return newValue
@@ -93,7 +97,7 @@ describe(`stateless data persistence strategies`, () => {
 									setSelf(
 										(async (): Promise<number> => {
 											await fsp.writeFile(
-												`${tmpDir.name}/count.txt`,
+												`${tmpDir}/count.txt`,
 												newValue.toString(),
 											)
 											return newValue

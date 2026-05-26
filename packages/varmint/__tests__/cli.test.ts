@@ -1,18 +1,20 @@
 import { execSync, spawn } from "node:child_process"
+import { mkdtempSync, rmSync } from "node:fs"
 import { readFile, writeFile } from "node:fs/promises"
+import { tmpdir } from "node:os"
+import path from "node:path"
 
-import tmp from "tmp"
 import * as Yalc from "yalc"
 
-let tmpDir: tmp.DirResult
+let tmpDir: string
 
 beforeAll(() => {
-	tmpDir = tmp.dirSync({ unsafeCleanup: true })
+	tmpDir = mkdtempSync(path.join(tmpdir(), `varmint-`))
 	console.log(`created tmpDir`)
 })
 
 afterAll(() => {
-	tmpDir.removeCallback()
+	rmSync(tmpDir, { recursive: true, force: true })
 	console.log(`removed tmpDir`)
 })
 
@@ -32,7 +34,7 @@ describe(`cli`, () => {
 		await Yalc.publishPackage({ workingDir: `.` })
 		await Yalc.publishPackage({ workingDir: `../comline` })
 		await Yalc.publishPackage({ workingDir: `../treetrunks` })
-		process.chdir(tmpDir.name)
+		process.chdir(tmpDir)
 		const projectInit = spawn(`bun`, [`init`, `-y`], { stdio: `inherit` })
 		await new Promise((resolve) => projectInit.on(`exit`, resolve))
 		expect(projectInit.exitCode).toBe(0)

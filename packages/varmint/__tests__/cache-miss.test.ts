@@ -2,14 +2,13 @@ import type { ChildProcess } from "node:child_process"
 import { spawn } from "node:child_process"
 import * as fs from "node:fs"
 import * as http from "node:http"
+import { tmpdir } from "node:os"
 import path from "node:path"
-
-import * as tmp from "tmp"
 
 import { Squirrel } from "../src"
 
 let server: http.Server
-let tempDir: tmp.DirResult
+let tempDir: string
 const utils = { put: (..._: unknown[]) => undefined }
 
 beforeEach(() => {
@@ -27,19 +26,19 @@ beforeEach(() => {
 			})
 	})
 	server.listen(13555)
-	tempDir = tmp.dirSync({ unsafeCleanup: true })
+	tempDir = fs.mkdtempSync(path.join(tmpdir(), `varmint-`))
 })
 afterEach(() => {
 	server.close()
-	tempDir.removeCallback()
+	fs.rmSync(tempDir, { recursive: true, force: true })
 })
 
 describe(`cache miss`, () => {
 	test(`error contents`, async () => {
-		const squirrel = new Squirrel(`read`, tempDir.name)
-		fs.mkdirSync(path.join(tempDir.name, `hello`))
+		const squirrel = new Squirrel(`read`, tempDir)
+		fs.mkdirSync(path.join(tempDir, `hello`))
 		fs.writeFileSync(
-			path.join(tempDir.name, `hello/casa.input.json`),
+			path.join(tempDir, `hello/casa.input.json`),
 			`[\n\t"http://localhost:13555"\n]`,
 		)
 		const fetcher = squirrel.add(`hello`, async (url: string) => {
@@ -61,7 +60,7 @@ describe(`cache miss`, () => {
 	test(`flushing untouched files`, async () => {
 		let setup: ChildProcess
 		try {
-			setup = spawn(`node`, [`global-setup.node.ts`, tempDir.name], {
+			setup = spawn(`node`, [`global-setup.node.ts`, tempDir], {
 				stdio: `inherit`,
 				cwd: path.join(import.meta.dirname, `isolation-cache-miss`),
 			})
@@ -69,10 +68,10 @@ describe(`cache miss`, () => {
 			console.error(`💥`, thrown)
 		}
 		await new Promise((resolve) => setup.on(`exit`, resolve))
-		console.log(`tempDir contents:`, fs.readdirSync(tempDir.name))
+		console.log(`tempDir contents:`, fs.readdirSync(tempDir))
 
-		expect(fs.readdirSync(tempDir.name)).toEqual([`rand`])
-		expect(fs.readdirSync(path.join(tempDir.name, `rand`))).toEqual([
+		expect(fs.readdirSync(tempDir)).toEqual([`rand`])
+		expect(fs.readdirSync(path.join(tempDir, `rand`))).toEqual([
 			`my-rand.input.json`,
 			`my-rand.output.json`,
 		])
