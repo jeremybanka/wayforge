@@ -1,21 +1,21 @@
 import * as fs from "node:fs"
+import { tmpdir } from "node:os"
 import path from "node:path"
 
 import { type } from "arktype"
-import * as tmp from "tmp"
 import { required } from "treetrunks"
 
 import { cli, options } from "../src/cli"
 import { parseStringOption } from "../src/option-parsers"
 
-let tempDir: tmp.DirResult
+let tempDir: string
 
 // eslint-disable-next-line @typescript-eslint/require-await
 beforeEach(async () => {
-	tempDir = tmp.dirSync({ unsafeCleanup: true })
+	tempDir = fs.mkdtempSync(path.join(tmpdir(), `comline-`))
 })
 afterEach(() => {
-	tempDir.removeCallback()
+	fs.rmSync(tempDir, { recursive: true, force: true })
 })
 
 describe(`options from file`, () => {
@@ -36,22 +36,22 @@ describe(`options from file`, () => {
 		discoverConfigPath: (positionalArgs) => {
 			if (positionalArgs[0]) {
 				const configPath = positionalArgs[0]
-				return `${tempDir.name}/${configPath}`
+				return `${tempDir}/${configPath}`
 			}
 		},
 	})
 	test(`happy: all options`, () => {
-		fs.writeFileSync(`${tempDir.name}/config.json`, `{"foo":"hello"}`)
+		fs.writeFileSync(`${tempDir}/config.json`, `{"foo":"hello"}`)
 		const { inputs } = testCli([`--`, `config.json`])
 		expect(inputs.opts).toEqual({ foo: `hello` })
 		expect(inputs.path).toEqual([`config.json`])
 	})
 	test(`error: missing required options in file`, () => {
-		fs.writeFileSync(`${tempDir.name}/config.json`, `{}`)
+		fs.writeFileSync(`${tempDir}/config.json`, `{}`)
 		expect(() => testCli([`--`, `config.json`])).toThrow()
 	})
 	test(`happy: override options from file with cli options`, () => {
-		fs.writeFileSync(`${tempDir.name}/config.json`, `{"foo":"hello"}`)
+		fs.writeFileSync(`${tempDir}/config.json`, `{"foo":"hello"}`)
 		const { inputs } = testCli([`--foo=goodbye`, `--`, `config.json`])
 		expect(inputs.opts).toEqual({ foo: `goodbye` })
 		expect(inputs.path).toEqual([`config.json`])
@@ -75,9 +75,9 @@ describe(`creating a config schema`, () => {
 	})
 	test(`happy: export a schema`, () => {
 		const { writeJsonSchema } = testCli([`--foo=hello`])
-		writeJsonSchema(`${tempDir.name}`)
+		writeJsonSchema(`${tempDir}`)
 		const jsonSchemaContents = JSON.parse(
-			fs.readFileSync(`${tempDir.name}/my-cli.main.schema.json`, `utf-8`),
+			fs.readFileSync(`${tempDir}/my-cli.main.schema.json`, `utf-8`),
 		)
 		const jsonSchemaFixtureLocation = path.join(
 			import.meta.dirname,

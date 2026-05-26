@@ -1,22 +1,24 @@
+import { mkdtempSync, rmSync } from "node:fs"
 import { mkdir } from "node:fs/promises"
+import { tmpdir } from "node:os"
+import path from "node:path"
 
 import { afterEach, beforeEach, describe, expect, it } from "bun:test"
 import simpleGit from "simple-git"
-import tmp from "tmp"
 
 import type { BreakCheckOutcome } from "../src/break-check"
 import { breakCheck } from "../src/break-check"
 import { bunCopyFile } from "./utilities"
 
-let tempDir: tmp.DirResult
+let tempDir: string
 let localRepoDirname: string
 let remoteRepoDirname: string
 const testDirname = import.meta.dir
 
 beforeEach(async () => {
-	tempDir = tmp.dirSync({ unsafeCleanup: true })
-	localRepoDirname = `${tempDir.name}/my-library`
-	remoteRepoDirname = `${tempDir.name}/my-library.git`
+	tempDir = mkdtempSync(path.join(tmpdir(), `break-check-`))
+	localRepoDirname = `${tempDir}/my-library`
+	remoteRepoDirname = `${tempDir}/my-library.git`
 	await mkdir(remoteRepoDirname)
 
 	const remoteGit = simpleGit(remoteRepoDirname)
@@ -53,7 +55,7 @@ beforeEach(async () => {
 	)
 })
 afterEach(() => {
-	tempDir.removeCallback()
+	rmSync(tempDir, { recursive: true, force: true })
 })
 
 describe(`break-check`, () => {

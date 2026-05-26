@@ -1,23 +1,24 @@
+import { mkdtempSync, rmSync } from "node:fs"
+import { tmpdir } from "node:os"
 import { resolve } from "node:path"
-
-import tmp from "tmp"
 
 import { FlightDeck, Klaxon } from "../src/lib.ts"
 
 const testDirname = import.meta.dirname
 
 let flightDeck: FlightDeck
-let tmpDir: tmp.DirResult
+let tmpDir: string
 
 beforeEach(() => {
 	vitest.spyOn(console, `error`)
 	vitest.spyOn(console, `warn`)
 	vitest.spyOn(console, `log`)
-	tmpDir = tmp.dirSync({ unsafeCleanup: true })
-	tmp.setGracefulCleanup()
+	tmpDir = mkdtempSync(resolve(tmpdir(), `flightdeck-`))
 })
 
-afterEach(async () => {})
+afterEach(() => {
+	rmSync(tmpDir, { recursive: true, force: true })
+})
 
 describe(`FlightDeck`, () => {
 	it(`should start a service and keep it up to date`, async () => {
@@ -29,13 +30,13 @@ describe(`FlightDeck`, () => {
 				frontend: { run: `./frontend 7777`, waitFor: false },
 				backend: { run: `./backend 8888`, waitFor: true },
 			},
-			flightdeckRootDir: tmpDir.name,
+			flightdeckRootDir: tmpDir,
 			get scripts() {
 				return {
 					download: [
-						`bun build ${testDirname}/fixtures/app@v${version}.ts --bundle --outfile ${resolve(tmpDir.name, `frontend`)}`,
+						`bun build ${testDirname}/fixtures/app@v${version}.ts --bundle --outfile ${resolve(tmpDir, `frontend`)}`,
 						`&&`,
-						`bun build ${testDirname}/fixtures/app@v${version}.ts --bundle --outfile ${resolve(tmpDir.name, `backend`)}`,
+						`bun build ${testDirname}/fixtures/app@v${version}.ts --bundle --outfile ${resolve(tmpDir, `backend`)}`,
 					].join(` `),
 					install: `echo "Hello from the install script!"`,
 					checkAvailability: `${testDirname}/fixtures/check-available-version.ts`,
