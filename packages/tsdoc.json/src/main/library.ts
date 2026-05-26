@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/switch-exhaustiveness-check */
 import * as os from "node:os"
 import * as path from "node:path"
+import { styleText } from "node:util"
 
 import * as tsdoc from "@microsoft/tsdoc"
-import colors from "colors"
 import TS from "typescript"
 
 import type { TSD } from "./namespace"
@@ -152,13 +152,14 @@ function walkCompilerAstAndDiscoverResources(
 
 			switch (comments.length) {
 				case 0:
-					foundCommentsSuffix = colors.cyan(`  (NO COMMENTS)`)
+					foundCommentsSuffix = styleText(`cyan`, `  (NO COMMENTS)`)
 					break
 				case 1:
-					foundCommentsSuffix = colors.cyan(`  (FOUND 1 COMMENT)`)
+					foundCommentsSuffix = styleText(`cyan`, `  (FOUND 1 COMMENT)`)
 					break
 				default:
-					foundCommentsSuffix = colors.cyan(
+					foundCommentsSuffix = styleText(
+						`cyan`,
 						`  (FOUND ${comments.length} COMMENTS)`,
 					)
 					break
@@ -171,8 +172,8 @@ function walkCompilerAstAndDiscoverResources(
 			const name = nameNode(node)
 			if (DEBUG_LOGGING) {
 				console.log(
-					colors.cyan(`${indent}^ ${name} `) +
-						colors.magenta(`(${isNested ? `NESTED` : `EXPORTED`})`),
+					styleText(`cyan`, `${indent}^ ${name} `) +
+						styleText(`magenta`, `(${isNested ? `NESTED` : `EXPORTED`})`),
 				)
 			}
 
@@ -284,7 +285,7 @@ function walkCompilerAstAndDiscoverResources(
 }
 
 function makeParagraph(node: tsdoc.DocNode): TSD.Paragraph {
-	if (DEBUG_LOGGING) console.log(colors.blue(` Paragraph`))
+	if (DEBUG_LOGGING) console.log(styleText(`blue`, ` Paragraph`))
 	const paragraph: TSD.Paragraph = {
 		type: `paragraph`,
 		content: [],
@@ -293,7 +294,7 @@ function makeParagraph(node: tsdoc.DocNode): TSD.Paragraph {
 		if (DEBUG_LOGGING) console.log(`  ` + paragraphChild.kind)
 		switch (paragraphChild.kind) {
 			case `PlainText`:
-				if (DEBUG_LOGGING) console.log(colors.blue(`  PlainText`))
+				if (DEBUG_LOGGING) console.log(styleText(`blue`, `  PlainText`))
 				for (const textChild of paragraphChild.getChildNodes()) {
 					if (textChild instanceof tsdoc.DocExcerpt) {
 						const text = textChild.content.toString().trim()
@@ -310,7 +311,7 @@ function makeParagraph(node: tsdoc.DocNode): TSD.Paragraph {
 					if (linkChild.kind === `DeclarationReference`) {
 						let excerpt: tsdoc.DocExcerpt | undefined
 						if (DEBUG_LOGGING)
-							console.log(colors.blue(`   DeclarationReference`))
+							console.log(styleText(`blue`, `   DeclarationReference`))
 
 						let currentNode = linkChild
 						while (!excerpt) {
@@ -331,7 +332,7 @@ function makeParagraph(node: tsdoc.DocNode): TSD.Paragraph {
 				}
 				break
 			case `SoftBreak`:
-				if (DEBUG_LOGGING) console.log(colors.blue(`  SoftBreak`))
+				if (DEBUG_LOGGING) console.log(styleText(`blue`, `  SoftBreak`))
 				paragraph.content.push({
 					type: `softBreak`,
 				})
@@ -342,7 +343,7 @@ function makeParagraph(node: tsdoc.DocNode): TSD.Paragraph {
 }
 
 function makeDocSection(docNode: tsdoc.DocNode): TSD.DocSection {
-	if (DEBUG_LOGGING) console.log(colors.blue(`Section`))
+	if (DEBUG_LOGGING) console.log(styleText(`blue`, `Section`))
 	const section: TSD.DocSection = {
 		type: `section`,
 		content: [],
@@ -362,7 +363,7 @@ function makeDocSection(docNode: tsdoc.DocNode): TSD.DocSection {
 function makeFunctionDocParameter(
 	paramBlockNode: tsdoc.DocNode,
 ): TSD.ParamBlock {
-	if (DEBUG_LOGGING) console.log(colors.blue(` ParamBlock`))
+	if (DEBUG_LOGGING) console.log(styleText(`blue`, ` ParamBlock`))
 	const param: TSD.ParamBlock = {
 		type: `paramBlock`,
 		name: `???`,
@@ -374,7 +375,8 @@ function makeFunctionDocParameter(
 			paramBlockChild instanceof tsdoc.DocExcerpt &&
 			paramBlockChild.excerptKind === `ParamBlock_ParameterName`
 		) {
-			if (DEBUG_LOGGING) console.log(colors.blue(`  ParamBlock_ParameterName`))
+			if (DEBUG_LOGGING)
+				console.log(styleText(`blue`, `  ParamBlock_ParameterName`))
 			param.name = paramBlockChild.content.toString()
 			nameSet = true
 		}
@@ -388,7 +390,7 @@ function makeFunctionDocParameter(
 }
 
 function makeDocBlock(docBlockNode: tsdoc.DocNode): TSD.DocBlock {
-	if (DEBUG_LOGGING) console.log(colors.blue(` Block`))
+	if (DEBUG_LOGGING) console.log(styleText(`blue`, ` Block`))
 	const block: TSD.DocBlock = {
 		type: `block`,
 		name: `???`,
@@ -398,7 +400,7 @@ function makeDocBlock(docBlockNode: tsdoc.DocNode): TSD.DocBlock {
 		switch (blockChild.kind) {
 			case `BlockTag`:
 				{
-					if (DEBUG_LOGGING) console.log(colors.blue(`  BlockTag`))
+					if (DEBUG_LOGGING) console.log(styleText(`blue`, `  BlockTag`))
 					const blockTag = blockChild.getChildNodes()[0]
 					if (blockTag instanceof tsdoc.DocExcerpt) {
 						block.name = blockTag.content.toString()
@@ -407,7 +409,7 @@ function makeDocBlock(docBlockNode: tsdoc.DocNode): TSD.DocBlock {
 				break
 			case `Section`:
 				{
-					if (DEBUG_LOGGING) console.log(colors.blue(`  Section`))
+					if (DEBUG_LOGGING) console.log(styleText(`blue`, `  Section`))
 					const paragraph = blockChild.getChildNodes()[0]
 					const desc = makeParagraph(paragraph)
 					block.desc = desc
@@ -419,7 +421,7 @@ function makeDocBlock(docBlockNode: tsdoc.DocNode): TSD.DocBlock {
 }
 
 function makeModifierTag(modifierTagNode: tsdoc.DocNode): string | undefined {
-	if (DEBUG_LOGGING) console.log(colors.blue(` BlockTag`))
+	if (DEBUG_LOGGING) console.log(styleText(`blue`, ` BlockTag`))
 	const blockTag = modifierTagNode.getChildNodes()[0]
 	if (blockTag instanceof tsdoc.DocExcerpt) {
 		const tagName = blockTag.content.toString()
@@ -644,7 +646,7 @@ export type CompileDocsOptions = {
 	tsconfigPath: string
 }
 export function compileDocs(options: CompileDocsOptions): TSD.Doc[] {
-	console.log(colors.yellow(`*** Compiling Docs ***`) + os.EOL, options)
+	console.log(styleText(`yellow`, `*** Compiling Docs ***`) + os.EOL, options)
 
 	const configFile = TS.readConfigFile(options.tsconfigPath, TS.sys.readFile)
 
@@ -690,9 +692,9 @@ export function compileDocs(options: CompileDocsOptions): TSD.Doc[] {
 					`${diagnostic.file.fileName}(${location.line + 1},${
 						location.character + 1
 					}):` + ` [TypeScript] ${message}`
-				console.log(colors.red(formattedMessage))
+				console.log(styleText(`red`, formattedMessage))
 			} else {
-				console.log(colors.red(message))
+				console.log(styleText(`red`, message))
 			}
 		}
 	} else {
@@ -708,7 +710,7 @@ export function compileDocs(options: CompileDocsOptions): TSD.Doc[] {
 
 	console.log(
 		os.EOL +
-			colors.green(`Scanning compiler AST for first code comment...`) +
+			styleText(`green`, `Scanning compiler AST for first code comment...`) +
 			os.EOL,
 	)
 
@@ -730,7 +732,7 @@ export function compileDocs(options: CompileDocsOptions): TSD.Doc[] {
 	if (DEBUG_LOGGING) {
 		console.log(
 			os.EOL +
-				colors.cyan(`Files Found:`) +
+				styleText(`cyan`, `Files Found:`) +
 				os.EOL +
 				` - ` +
 				subPackageSourceFilenames.join(os.EOL + ` - `) +

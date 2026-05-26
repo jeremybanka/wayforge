@@ -38,13 +38,19 @@
 		</findings>
 	</target>
 
-	<target name="colors" priority="high" status="pending">
+	<target name="colors" priority="high" status="completed">
 		<rationale>
 			Node util.styleText provides stable platform-native terminal styling.
 		</rationale>
 		<findings>
 			<finding>Used only by tsdoc.json in library.ts and verbose.ts.</finding>
+			<finding>colors remains transitive through recoverage until that target is handled.</finding>
 		</findings>
+		<plan>
+			<step status="completed">Replace colors calls with node:util styleText.</step>
+			<step status="completed">Remove the direct colors dependency.</step>
+			<step status="completed">Refresh pnpm-lock.yaml.</step>
+		</plan>
 	</target>
 
 	<target name="cross-env" priority="medium" status="pending">
@@ -90,6 +96,7 @@
 			<finding>Used by coverage scripts in atom.io and treetrunks.</finding>
 			<finding>Also declared by venerate.</finding>
 			<finding>pnpm-lock.yaml still contains tmp@0.2.5 through this dependency path.</finding>
+			<finding>pnpm-lock.yaml still contains colors@1.4.0 through this dependency path.</finding>
 		</findings>
 	</target>
 
