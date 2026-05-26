@@ -1,5 +1,13 @@
 # create-atom.io
 
+## 0.1.20
+
+### Patch Changes
+
+- 7a2d506: Use Node's built-in `styleText` for terminal colors instead of depending on `picocolors`.
+- Updated dependencies [7a2d506]
+  - comline@0.4.6
+
 ## 0.1.19
 
 ### Patch Changes

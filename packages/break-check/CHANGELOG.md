@@ -1,5 +1,13 @@
 # break-check
 
+## 0.6.28
+
+### Patch Changes
+
+- Updated dependencies [7a2d506]
+  - comline@0.4.6
+  - takua@0.2.1
+
 ## 0.6.27
 
 ### Patch Changes
