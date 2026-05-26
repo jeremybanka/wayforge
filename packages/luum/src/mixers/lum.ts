@@ -1,9 +1,6 @@
-import type { Modifier } from "anvl/function"
-import { become, pipe } from "anvl/function"
-import { clampInto } from "anvl/number"
-
 import type { HSL, LuumSpec } from ".."
 import { hexToSpec, specToHex } from ".."
+import { become, clampInto, type Modifier, pipe } from "../utils/internal"
 import type { LuumApplicator } from "."
 
 export const resetColor = (color: LuumSpec): LuumSpec =>

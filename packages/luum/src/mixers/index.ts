@@ -1,6 +1,5 @@
-import type { Applicator } from "anvl/function"
-
 import type { LuumSpec } from ".."
+import type { Applicator } from "../utils/internal"
 
 export type LuumApplicator<X> = Applicator<X, LuumSpec>
 

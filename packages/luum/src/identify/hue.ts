@@ -1,6 +1,5 @@
-import { wrapInto } from "anvl/number"
-
 import type { Degree } from ".."
+import { wrapInto } from "../utils/internal"
 
 type NamingPoint = { hue: Degree; name: string }
 
