@@ -1,6 +1,5 @@
-import { wrapInto } from "anvl/number"
-
 import type { Degree, Fraction } from ".."
+import { wrapInto } from "../utils/internal"
 
 /**
  * Gives us the relative values of the channels,
