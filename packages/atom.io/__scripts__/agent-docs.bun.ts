@@ -756,7 +756,7 @@ async function main(): Promise<void> {
 			`- examples/ for original exhibit source files`,
 			`- manifest.json for a deterministic index of every generated doc`,
 			``,
-			`The source of truth remains the authored files under docs/source in the atom.io package.`,
+			`The source of truth remains the authored files under packages/atom.io/docs/source in the atom.io repository.`,
 		].join(`\n`),
 	)
 	await writeFile(path.join(PACKAGE_AGENT_DOCS_ROOT, `README.md`), readme)
