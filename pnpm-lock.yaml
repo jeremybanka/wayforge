@@ -18,8 +18,8 @@ importers:
         specifier: 3.1.4
         version: 3.1.4
       '@dotenvx/dotenvx':
-        specifier: 1.69.0
-        version: 1.69.0
+        specifier: 1.69.1
+        version: 1.69.1
       '@types/eslint':
         specifier: 9.6.1
         version: 9.6.1
@@ -1629,8 +1629,8 @@ packages:
   '@dimforge/rapier3d-compat@0.12.0':
     resolution: {integrity: sha512-uekIGetywIgopfD97oDL5PfeezkFpNhwlzlaEYNOA0N6ghdsOvh/HYjSMek5Q2O1PYvRSDFcqFVJl4r4ZBwOow==}
 
-  '@dotenvx/dotenvx@1.69.0':
-    resolution: {integrity: sha512-7nIwHRWK85lbMVdupwG8xACevhEOEWVcEb3JEdwthoQePojSrelG36TA03t8SMmOw1FRYUKSDh7OLea/vLx+qg==}
+  '@dotenvx/dotenvx@1.69.1':
+    resolution: {integrity: sha512-kwQB5KcAegxw/+NGUgXAo5ovyOSjlMhoXSSnSEpDhoHJwzMcMO0HE1U0VCYZ7jbAeCMGamed9XdWzOA5ixtTNg==}
     hasBin: true
 
   '@drizzle-team/brocli@0.10.2':
@@ -9175,7 +9175,7 @@ snapshots:
 
   '@dimforge/rapier3d-compat@0.12.0': {}
 
-  '@dotenvx/dotenvx@1.69.0':
+  '@dotenvx/dotenvx@1.69.1':
     dependencies:
       commander: 11.1.0
       dotenv: 17.4.2
