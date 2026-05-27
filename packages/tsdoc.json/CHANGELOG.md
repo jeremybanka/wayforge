@@ -1,5 +1,11 @@
 # tsdoc.json
 
+## 0.6.8
+
+### Patch Changes
+
+- cbf71b9: Drop the direct `colors` dependency in favor of `styleText` from `node:util`.
+
 ## 0.6.7
 
 ### Patch Changes
