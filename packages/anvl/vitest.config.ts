@@ -1,9 +1,10 @@
 import type { UserConfig } from "vite"
-import tsconfigPaths from "vite-tsconfig-paths"
 import { defineConfig } from "vitest/config"
 
 const config: UserConfig = defineConfig({
-	plugins: [tsconfigPaths()],
+	resolve: {
+		tsconfigPaths: true,
+	},
 	test: {
 		globals: true,
 		isolate: false,
