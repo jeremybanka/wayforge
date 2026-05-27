@@ -619,6 +619,8 @@ async function initiateAccountAction(arg: {
 			action,
 			oneTimeCode: accountActionCode,
 			baseUrl: env.FRONTEND_ORIGINS[0],
+		}).catch((err) => {
+			ctx.logger.error(`🔑 failed to send email to confirm account action:`, err)
 		})
 	}
 }
