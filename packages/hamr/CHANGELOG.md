@@ -1,5 +1,13 @@
 # hamr
 
+## 4.0.0
+
+### Patch Changes
+
+- Updated dependencies [0d983bd]
+- Updated dependencies [228d4bf]
+  - atom.io@0.47.0
+
 ## 3.0.4
 
 ### Patch Changes
