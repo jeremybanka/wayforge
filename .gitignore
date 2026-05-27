@@ -27,3 +27,5 @@ storybook-static
 packages/atom.io/__reports__/
 packages/atom.io/docs/agent/
 apps/atom.io.fyi/agent-docs/
+apps/atom.io.fyi/public/llms.txt
+apps/atom.io.fyi/public/llms-full.txt
