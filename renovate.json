@@ -28,6 +28,10 @@
 		{
 			"matchDepNames": ["jdx/mise"],
 			"dependencyDashboardApproval": true
+		},
+		{
+			"matchPackageNames": ["@biomejs/biome", "@biomejs/wasm-nodejs"],
+			"groupName": "biome"
 		}
 	]
 }
