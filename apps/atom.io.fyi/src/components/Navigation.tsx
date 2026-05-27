@@ -198,6 +198,11 @@ function SiteDirectory(): VNode {
 								understand atom.io
 							</a>
 						</section>
+						<section>
+							<a id="-docs-concepts-link" href="/docs/concepts">
+								concepts
+							</a>
+						</section>
 					</main>
 				</section>
 				<section>

@@ -3,6 +3,7 @@
 	"version": "0.46.34",
 	"description": "Versatile state engine for TypeScript applications.",
 	"homepage": "https://atom.io.fyi",
+	"agentDocs": "./docs/agent/README.md",
 	"sideEffects": false,
 	"type": "module",
 	"license": "MIT",
@@ -17,7 +18,8 @@
 	},
 	"scripts": {
 		"manifest": "./__scripts__/manifest-build.node.ts",
-		"build": "tsdown && ./__scripts__/validate-dist.node.ts",
+		"build": "bun run build:agent-docs && tsdown && ./__scripts__/validate-dist.node.ts",
+		"build:agent-docs": "./__scripts__/agent-docs.bun.ts",
 		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
 		"lint:types": "tsgo --noEmit",
@@ -132,7 +134,9 @@
 	"main": "./dist/main/index.js",
 	"files": [
 		"dist",
-		"src"
+		"src",
+		"docs/README.md",
+		"docs/agent"
 	],
 	"exports": {
 		"./package.json": "./package.json",

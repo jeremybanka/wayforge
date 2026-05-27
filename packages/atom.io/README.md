@@ -39,3 +39,7 @@ npm i atom.io
 <h3 align="center">
   <a href="https://atom.io.fyi">📖 Read the docs at atom.io.fyi</a>
 </h3>
+
+## 🤖 Building with an AI Agent?
+
+`atom.io` ships easy-to-grep documentation inside its own SDK. After installing, point your agent at `node_modules/atom.io/docs/agent/` for concepts, package guides, and source-linked examples.

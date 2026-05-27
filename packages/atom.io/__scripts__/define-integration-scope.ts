@@ -31,6 +31,9 @@ export default function main(mode: string): void {
 		packageJson.files.every((filepath: unknown) => typeof filepath === `string`)
 			? packageJson.files
 			: []
+	const typecheckFilepaths = distributionFilepaths.filter(
+		(filepath) => !filepath.startsWith(`docs`),
+	)
 	const tsconfigJsonText = fs.readFileSync(TSCONFIG_JSON_PATH, `utf-8`)
 	const oldTsconfigJson = JSON.parse(tsconfigJsonText)
 	if (
@@ -40,7 +43,7 @@ export default function main(mode: string): void {
 	) {
 		const newTsconfigJson = { ...oldTsconfigJson }
 
-		newTsconfigJson.include = [`__tests__`, ...distributionFilepaths]
+		newTsconfigJson.include = [`__tests__`, ...typecheckFilepaths]
 
 		const oldText = JSON.stringify(oldTsconfigJson, null, 2)
 		const newText = JSON.stringify(newTsconfigJson, null, 2)
