@@ -1,5 +1,3 @@
-import Layout from "../../layouts/LayoutDocs.astro";
-
 import DeclareAnAtom from "x/core/atom/declare-an-atom.gen";
 import AnAtomTokenIsAReference from "x/core/atom/an-atom-token-is-a-reference.gen";
 import GetAndSetAnAtom from "x/core/atom/get-and-set-an-atom.gen";
@@ -32,8 +30,6 @@ import DeclarePlaylistTracks from "x/core/advanced/join/declare-playlist-tracks.
 import FindTracksInPlaylist from "x/core/advanced/join/find-tracks-in-playlist.gen";
 import FindPlaylistsForTrack from "x/core/advanced/join/find-playlists-for-track.gen";
 import ReplacePlaylistTracks from "x/core/advanced/join/replace-playlist-tracks.gen";
-
-<Layout>
 
 # atom.io
 
@@ -363,4 +359,3 @@ When writing one, prefer the setter callback form. Mutate the value inside the c
 and return it. That lets atom.io capture the transceiver's fine-grained update instead
 of requiring you to replace the entire collection.
 
-</Layout>
