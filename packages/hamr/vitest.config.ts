@@ -2,7 +2,6 @@ import { resolve } from "node:path"
 
 import react from "@vitejs/plugin-react"
 import dts from "vite-plugin-dts"
-import tsconfigPaths from "vite-tsconfig-paths"
 import { defineConfig } from "vitest/config"
 
 const entry = Object.fromEntries(
@@ -23,13 +22,15 @@ console.log(entry)
 export default defineConfig({
 	plugins: [
 		react(),
-		tsconfigPaths(),
 		dts({
 			outDirs: `dist`,
 			include: [`src/**/*`],
 			insertTypesEntry: true,
 		}),
 	],
+	resolve: {
+		tsconfigPaths: true,
+	},
 	esbuild: {
 		define: {
 			this: `window`,

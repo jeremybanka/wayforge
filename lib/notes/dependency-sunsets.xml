@@ -27,7 +27,7 @@
 		</plan>
 	</target>
 
-	<target name="vite-tsconfig-paths" priority="high" status="pending">
+	<target name="vite-tsconfig-paths" priority="high" status="partially-completed">
 		<rationale>
 			Vite has native resolve.tsconfigPaths support, so the plugin can likely be
 			replaced in Vite and Vitest configs.
@@ -35,7 +35,14 @@
 		<findings>
 			<finding>Direct dependency in root, hamr, ingt, rel8, anvl, atom.io, and tempest.games.</finding>
 			<finding>Imported by several Vite/Vitest configs.</finding>
+			<finding>atom.io keeps the plugin for now because it dynamically selects a tsconfig project.</finding>
 		</findings>
+		<plan>
+			<step status="completed">Replace plain tsconfigPaths() usages with resolve.tsconfigPaths.</step>
+			<step status="completed">Remove direct dependencies where native Vite support is enough.</step>
+			<step status="completed">Refresh pnpm-lock.yaml.</step>
+			<step status="pending">Keep atom.io on vite-tsconfig-paths until native Vite supports dynamic project selection or the config is simplified.</step>
+		</plan>
 	</target>
 
 	<target name="colors" priority="high" status="completed">
@@ -53,7 +60,7 @@
 		</plan>
 	</target>
 
-	<target name="cross-env" priority="medium" status="pending">
+	<target name="cross-env" priority="medium" status="completed">
 		<rationale>
 			The repo already relies on shell syntax in scripts, so simple environment
 			assignments may be enough if Windows shell compatibility is not a goal.
@@ -62,10 +69,16 @@
 			<finding>Root scripts use it for CI=true.</finding>
 			<finding>tempest.games uses it for PREVIEW=true.</finding>
 			<finding>atom.io scripts use cross-env without declaring it directly.</finding>
+			<finding>cross-env remains transitive through @react-three/drei.</finding>
 		</findings>
+		<plan>
+			<step status="completed">Replace cross-env usages with POSIX environment assignments.</step>
+			<step status="completed">Remove direct cross-env devDependencies.</step>
+			<step status="completed">Refresh pnpm-lock.yaml.</step>
+		</plan>
 	</target>
 
-	<target name="dotenv-and-dotenv-cli" priority="medium" status="pending">
+	<target name="dotenv-and-dotenv-cli" priority="medium" status="completed">
 		<rationale>
 			The repo already uses dotenvx at the root, and Bun scripts can load env files
 			directly with --env-file.
@@ -73,7 +86,13 @@
 		<findings>
 			<finding>tempest.games uses dotenv-cli in two database scripts.</finding>
 			<finding>The direct dotenv package did not show source imports in the audit.</finding>
+			<finding>dotenv remains transitive through @dotenvx/dotenvx.</finding>
 		</findings>
+		<plan>
+			<step status="completed">Replace dotenv-cli script usage with dotenvx run -f.</step>
+			<step status="completed">Remove direct dotenv and dotenv-cli devDependencies.</step>
+			<step status="completed">Refresh pnpm-lock.yaml.</step>
+		</plan>
 	</target>
 
 	<target name="fp-ts-and-io-ts" priority="medium" status="pending">
