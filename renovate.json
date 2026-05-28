@@ -36,6 +36,10 @@
 		{
 			"matchPackageNames": ["tsdown", "@tsdown/css"],
 			"groupName": "tsdown"
+		},
+		{
+			"matchPackageNames": ["ai", "@ai-sdk/openai"],
+			"groupName": "Vercel AI SDK"
 		}
 	]
 }
