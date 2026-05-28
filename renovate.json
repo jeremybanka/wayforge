@@ -32,6 +32,10 @@
 		{
 			"matchPackageNames": ["@biomejs/biome", "@biomejs/wasm-nodejs"],
 			"groupName": "biome"
+		},
+		{
+			"matchPackageNames": ["tsdown", "@tsdown/css"],
+			"groupName": "tsdown"
 		}
 	]
 }
