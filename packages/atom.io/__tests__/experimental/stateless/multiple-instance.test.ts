@@ -14,22 +14,18 @@ const childProcesses: ChildProcess[] = []
 const dbManager = new DatabaseManager()
 let proxyServer: Server | undefined
 
-const hopByHopHeaders = new Set([
-	"connection",
-	"keep-alive",
-	"proxy-authenticate",
-	"proxy-authorization",
-	"te",
-	"trailer",
-	"transfer-encoding",
-	"upgrade",
-])
-
 const filterHopByHopHeaders = (headers: IncomingHttpHeaders) => {
-	const filtered = { ...headers }
-	for (const header of hopByHopHeaders) {
-		delete filtered[header]
-	}
+	const {
+		connection,
+		"keep-alive": keepAlive,
+		"proxy-authenticate": proxyAuthenticate,
+		"proxy-authorization": proxyAuthorization,
+		te,
+		trailer,
+		"transfer-encoding": transferEncoding,
+		upgrade,
+		...filtered
+	} = headers
 	return filtered
 }
 
