@@ -379,9 +379,6 @@ importers:
       react-dom:
         specifier: 19.2.6
         version: 19.2.6(react@19.2.6)
-      react-router-dom:
-        specifier: 7.15.1
-        version: 7.15.1(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
       recoverage:
         specifier: 0.1.16
         version: 0.1.16(typescript@6.0.3)(zod@4.4.3)
