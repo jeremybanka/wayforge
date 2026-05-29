@@ -39,7 +39,7 @@
 		"@types/node": "25.9.1",
 		"@typescript/native-preview": "7.0.0-dev.20260527.2",
 		"@vitest/coverage-v8": "4.1.7",
-		"concurrently": "9.2.1",
+		"concurrently": "10.0.0",
 		"eslint": "10.4.0",
 		"recoverage": "0.1.16",
 		"tsdown": "0.22.1",
