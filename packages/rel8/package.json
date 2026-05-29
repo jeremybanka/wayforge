@@ -44,7 +44,7 @@
 		"concurrently": "9.2.1",
 		"eslint": "10.4.0",
 		"fp-ts": "2.16.11",
-		"tsdown": "0.22.0",
+		"tsdown": "0.22.1",
 		"vite": "8.0.14",
 		"vitest": "4.1.7"
 	},
