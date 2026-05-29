@@ -175,8 +175,8 @@ importers:
         specifier: 5.1.11
         version: 5.1.11
       openai:
-        specifier: 6.39.0
-        version: 6.39.0(ws@8.20.1)(zod@4.4.3)
+        specifier: 6.39.1
+        version: 6.39.1(ws@8.20.1)(zod@4.4.3)
       postgres:
         specifier: 3.4.9
         version: 3.4.9
@@ -929,8 +929,8 @@ importers:
         specifier: 10.4.0
         version: 10.4.0(jiti@2.7.0)
       openai:
-        specifier: 6.39.0
-        version: 6.39.0(ws@8.20.1)(zod@4.4.3)
+        specifier: 6.39.1
+        version: 6.39.1(ws@8.20.1)(zod@4.4.3)
       tsdown:
         specifier: 0.22.1
         version: 0.22.1(@tsdown/css@0.22.1)(@typescript/native-preview@7.0.0-dev.20260527.2)(oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0))(tsx@4.22.1)(typescript@6.0.3)
@@ -6647,8 +6647,8 @@ packages:
     resolution: {integrity: sha512-YgBpdJHPyQ2UE5x+hlSXcnejzAvD0b22U2OuAP+8OnlJT+PjWPxtgmGqKKc+RgTM63U9gN0YzrYc71R2WT/hTA==}
     engines: {node: '>=18'}
 
-  openai@6.39.0:
-    resolution: {integrity: sha512-O61LIsimY3acVabwvomwFhwrnN36yvHY2quIfy9keEcFytGgWeV35yLHQ6NVMLSBxRpHmcg2yuhCnlu2HT4pLQ==}
+  openai@6.39.1:
+    resolution: {integrity: sha512-z3dO9fEWOXBzlXynVb/xZ/tujzUjFWQWn3C0n0mw6Vo0zJTbEkaN4b2cLWjhJ6haJQx8LlREoafHRl+Gu/Hl+A==}
     hasBin: true
     peerDependencies:
       ws: ^8.18.0
@@ -14040,7 +14040,7 @@ snapshots:
       is-inside-container: 1.0.0
       wsl-utils: 0.1.0
 
-  openai@6.39.0(ws@8.20.1)(zod@4.4.3):
+  openai@6.39.1(ws@8.20.1)(zod@4.4.3):
     optionalDependencies:
       ws: 8.20.1
       zod: 4.4.3
