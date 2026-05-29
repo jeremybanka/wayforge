@@ -1,9 +1,8 @@
 import type { ChildProcess } from "node:child_process"
 import { spawn } from "node:child_process"
+import type { IncomingHttpHeaders, Server } from "node:http"
 import http from "node:http"
 import path from "node:path"
-
-import httpProxy from "http-proxy"
 
 import { DatabaseManager } from "./database.node"
 
@@ -13,6 +12,64 @@ console.error = () => undefined
 
 const childProcesses: ChildProcess[] = []
 const dbManager = new DatabaseManager()
+let proxyServer: Server | undefined
+
+const hopByHopHeaders = new Set([
+	"connection",
+	"keep-alive",
+	"proxy-authenticate",
+	"proxy-authorization",
+	"te",
+	"trailer",
+	"transfer-encoding",
+	"upgrade",
+])
+
+const filterHopByHopHeaders = (headers: IncomingHttpHeaders) => {
+	const filtered = { ...headers }
+	for (const header of hopByHopHeaders) {
+		delete filtered[header]
+	}
+	return filtered
+}
+
+const createRoundRobinProxyServer = (targets: string[]) => {
+	let targetIndex = 0
+
+	return http.createServer((req, res) => {
+		const target = new URL(req.url ?? `/`, targets[targetIndex])
+		targetIndex = (targetIndex + 1) % targets.length
+
+		const proxyReq = http.request(
+			target,
+			{
+				headers: filterHopByHopHeaders(req.headers),
+				method: req.method,
+			},
+			(proxyRes) => {
+				res.writeHead(
+					proxyRes.statusCode ?? 502,
+					proxyRes.statusMessage,
+					filterHopByHopHeaders(proxyRes.headers),
+				)
+				proxyRes.pipe(res)
+			},
+		)
+
+		proxyReq.on(`error`, (error) => {
+			if (!res.headersSent) {
+				res.writeHead(502, { "content-type": `text/plain` })
+			}
+			res.end(`Proxy request failed: ${error.message}`)
+		})
+
+		req.on(`aborted`, () => {
+			proxyReq.destroy()
+		})
+
+		req.pipe(proxyReq)
+	})
+}
 
 beforeAll(async () => {
 	await dbManager.createDatabase()
@@ -39,20 +96,12 @@ beforeAll(async () => {
 		})
 	}
 
-	const addresses = Array.from({ length: NUM_SERVERS }, (_, i) => ({
-		target: `http://localhost:${6260 + i}`,
-	}))
+	const addresses = Array.from(
+		{ length: NUM_SERVERS },
+		(_, i) => `http://localhost:${6260 + i}`,
+	)
 
-	let i = 0
-
-	const proxy = httpProxy.createProxyServer()
-
-	http
-		.createServer((req, res) => {
-			proxy.web(req, res, addresses[i])
-			i = (i + 1) % addresses.length // Round-robin
-		})
-		.listen(8000)
+	proxyServer = createRoundRobinProxyServer(addresses).listen(8000)
 
 	const serversReadyPromises = childProcesses.map((server, index) => {
 		return new Promise((resolve) => {
@@ -83,6 +132,19 @@ afterAll(async () => {
 	for (const child of childProcesses) {
 		child.kill()
 	}
+	await new Promise<void>((resolve, reject) => {
+		if (!proxyServer) {
+			resolve()
+			return
+		}
+		proxyServer.close((error) => {
+			if (error) {
+				reject(error)
+			} else {
+				resolve()
+			}
+		})
+	})
 	await dbManager.dropDatabase()
 })
 
