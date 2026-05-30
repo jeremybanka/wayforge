@@ -32,7 +32,7 @@
 		"arktype": "2.2.0",
 		"comline": "workspace:*",
 		"local-pkg": "1.2.1",
-		"tinyexec": "1.2.2"
+		"tinyexec": "1.2.3"
 	},
 	"scripts": {
 		"build": "tsdown && rm -f dist/*.x.d.ts",
