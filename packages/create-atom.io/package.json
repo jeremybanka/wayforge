@@ -28,7 +28,7 @@
 		"@atom.io/template-preact-svg-editor": "workspace:*",
 		"@atom.io/template-react-node-backend": "workspace:*",
 		"@atom.io/template-solid-lossless-numbers": "workspace:*",
-		"@clack/prompts": "1.4.0",
+		"@clack/prompts": "1.5.0",
 		"arktype": "2.2.0",
 		"comline": "workspace:*",
 		"local-pkg": "1.2.1",
