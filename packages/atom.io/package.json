@@ -102,8 +102,8 @@
 		"@typescript-eslint/rule-tester": "8.60.0",
 		"@typescript-eslint/utils": "8.60.0",
 		"@typescript/native-preview": "7.0.0-dev.20260602.1",
-		"@vitest/coverage-v8": "4.1.7",
-		"@vitest/ui": "4.1.7",
+		"@vitest/coverage-v8": "4.1.8",
+		"@vitest/ui": "4.1.8",
 		"arktype": "2.2.0",
 		"break-check": "workspace:*",
 		"concurrently": "10.0.1",
@@ -126,7 +126,7 @@
 		"typescript": "6.0.3",
 		"vite": "8.0.16",
 		"vite-tsconfig-paths": "6.1.1",
-		"vitest": "4.1.7"
+		"vitest": "4.1.8"
 	},
 	"main": "./dist/main/index.js",
 	"files": [
