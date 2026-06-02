@@ -64,7 +64,7 @@
 		"react-router-dom": "7.16.0",
 		"takua": "workspace:*",
 		"tsdown": "0.22.1",
-		"vite-plugin-dts": "5.0.1",
+		"vite-plugin-dts": "5.0.2",
 		"vitest": "4.1.7"
 	},
 	"files": [
