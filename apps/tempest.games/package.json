@@ -92,7 +92,7 @@
 		"@types/react-dom": "19.2.3",
 		"@types/three": "0.184.1",
 		"@vitejs/plugin-react": "npm:@vitejs/plugin-react-swc@4.3.1",
-		"concurrently": "10.0.0",
+		"concurrently": "10.0.1",
 		"cors": "2.8.6",
 		"drizzle-kit": "0.31.10",
 		"eslint": "10.4.1",
