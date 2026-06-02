@@ -29,7 +29,7 @@
 		"eslint": "10.4.1",
 		"tsdown": "0.22.1",
 		"vite": "8.0.16",
-		"vitest": "4.1.7"
+		"vitest": "4.1.8"
 	},
 	"peerDependencies": {
 		"fp-ts": "^2.13.1",

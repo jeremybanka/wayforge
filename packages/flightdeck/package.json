@@ -61,7 +61,7 @@
 		"json-schema-to-zod": "2.8.1",
 		"tsdown": "0.22.1",
 		"varmint": "workspace:*",
-		"vitest": "4.1.7",
+		"vitest": "4.1.8",
 		"zod": "4.4.3"
 	}
 }
