@@ -1140,7 +1140,10 @@ async function probeLatestPackageRemediation(input: {
 		return cached
 	}
 
-	const probe = runLatestPackageProbe(input)
+	const probe = runLatestPackageProbe(input).catch((error) => {
+		input.probeCache.delete(cacheKey)
+		throw error
+	})
 	input.probeCache.set(cacheKey, probe)
 	return probe
 }
@@ -1153,7 +1156,10 @@ async function runLatestPackageProbe(input: {
 }): Promise<RemediationProbe> {
 	const probePath = path.join(
 		input.probeRoot,
-		createHash(`sha256`).update(input.packageName).digest(`hex`).slice(0, 12),
+		createHash(`sha256`)
+			.update(`${input.packageName}\0${issueKey(input.issue)}`)
+			.digest(`hex`)
+			.slice(0, 12),
 	)
 	await fs.rm(probePath, { force: true, recursive: true })
 	await fs.mkdir(probePath, { recursive: true })
@@ -1446,7 +1452,8 @@ function directDependencySegment(pathSegments: string[]): string | null {
 }
 
 function severityRank(severity: string): number {
-	return [`critical`, `high`, `moderate`].indexOf(severity)
+	const rank = [`critical`, `high`, `moderate`].indexOf(severity)
+	return rank === -1 ? Number.POSITIVE_INFINITY : rank
 }
 
 function mergeCompatibleFindings(findings: FindingDraft[]): FindingDraft[] {
