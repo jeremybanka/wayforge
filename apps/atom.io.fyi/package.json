@@ -1,7 +1,7 @@
 {
 	"name": "atom.io.fyi",
 	"type": "module",
-	"version": "0.2.62",
+	"version": "0.2.63",
 	"private": true,
 	"engines": {
 		"node": "26.2.0"
