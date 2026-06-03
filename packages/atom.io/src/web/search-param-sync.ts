@@ -2,9 +2,11 @@ import type { AtomEffect } from "atom.io"
 
 import type { StringInterface } from "./storage-sync"
 
-export const searchParamSync =
-	<T>({ stringify, parse }: StringInterface<T>, key: string): AtomEffect<T> =>
-	({ setSelf, onSet }) => {
+export const searchParamSync = <T>(
+	{ stringify, parse }: StringInterface<T>,
+	key: string,
+): AtomEffect<T> =>
+	function searchParamSyncInit({ setSelf, onSet }) {
 		if (
 			typeof window === `undefined` ||
 			typeof window.location === `undefined` ||
@@ -16,7 +18,7 @@ export const searchParamSync =
 		const savedValue = new URLSearchParams(window.location.search).get(key)
 		if (savedValue != null) setSelf(parse(savedValue))
 
-		onSet(({ newValue }) => {
+		onSet(function searchParamSyncOnSet({ newValue }) {
 			const url = new URL(window.location.href)
 			if (newValue == null) {
 				url.searchParams.delete(key)
