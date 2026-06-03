@@ -1,5 +1,11 @@
 # atom.io
 
+## 0.47.1
+
+### Patch Changes
+
+- d7f959a: 🎨 `atom.io/web` Gave clear names for the callbacks in `storageSync()` and `searchParamSync()`, making the stack traces for any errors thrown within these effects easier to read.
+
 ## 0.47.0
 
 ### Minor Changes
