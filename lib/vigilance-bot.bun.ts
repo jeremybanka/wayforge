@@ -794,12 +794,17 @@ function summarizeIssuePaths(
 	directDependencyName: string | null
 	path: string
 	topPackageName: string | null
-}[] {
-	const summaries = new Map<string, {
-		directDependencyName: string | null
-		path: string
-		topPackageName: string | null
-	}>()
+	}[] {
+		const rawSummaries = new Map<string, {
+			directDependencyName: string | null
+			path: string
+			topPackageName: string | null
+		}>()
+		const reconstructedSummaries = new Map<string, {
+			directDependencyName: string | null
+			path: string
+			topPackageName: string | null
+		}>()
 
 	for (const auditPath of issue.auditPaths) {
 		const segments = normalizeAuditPath(auditPath)
@@ -815,11 +820,11 @@ function summarizeIssuePaths(
 				topPackage.version ? `@${topPackage.version}` : ``
 			}`
 		}
-		const pathText = pathSegments.length > 0 ? pathSegments.join(` -> `) : auditPath
-		summaries.set(pathText, {
-			directDependencyName: directDependencyName(pathSegments),
-			path: pathText,
-			topPackageName: topPackage?.name ?? null,
+			const pathText = pathSegments.length > 0 ? pathSegments.join(` -> `) : auditPath
+			rawSummaries.set(pathText, {
+				directDependencyName: directDependencyName(pathSegments),
+				path: pathText,
+				topPackageName: topPackage?.name ?? null,
 		})
 	}
 
@@ -845,10 +850,10 @@ function summarizeIssuePaths(
 							`${topPackage.name}${
 								topPackage.version ? `@${topPackage.version}` : ``
 							}`,
-							...pathSegments,
-						]
+				...pathSegments,
+			]
 			const pathText = rootedPathSegments.join(` -> `)
-			summaries.set(pathText, {
+			reconstructedSummaries.set(pathText, {
 				directDependencyName: directDependencyName(rootedPathSegments),
 				path: pathText,
 				topPackageName: topPackage.name,
@@ -856,7 +861,19 @@ function summarizeIssuePaths(
 		}
 	}
 
-	return [...summaries.values()].sort((left, right) =>
+	const reconstructedChainKeys = new Set(
+		[...reconstructedSummaries.values()].map((summary) =>
+			unversionedPathKey(summary.path),
+		),
+	)
+	const summaries = [
+		...reconstructedSummaries.values(),
+		...[...rawSummaries.values()].filter(
+			(summary) => !reconstructedChainKeys.has(unversionedPathKey(summary.path)),
+		),
+	]
+
+	return summaries.sort((left, right) =>
 		left.path.localeCompare(right.path),
 	)
 }
@@ -1023,7 +1040,14 @@ function normalizeAuditPath(auditPath: string): string[] {
 			return nodeModulesIndex === -1
 				? segment
 				: segment.slice(nodeModulesIndex + `node_modules/`.length)
-		})
+			})
+}
+
+function unversionedPathKey(pathText: string): string {
+	return pathText
+		.split(` -> `)
+		.map((segment) => stripVersionSuffix(segment.trim()))
+		.join(` -> `)
 }
 
 function findTopPackageForAuditPath(
