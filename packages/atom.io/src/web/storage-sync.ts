@@ -5,20 +5,19 @@ export type StringInterface<T> = {
 	parse: (s: string) => T
 }
 
-export const storageSync =
-	<T>(
-		storage: Storage | undefined,
-		{ stringify, parse }: StringInterface<T>,
-		key: string,
-	): AtomEffect<T> =>
-	({ setSelf, onSet }) => {
+export const storageSync = <T>(
+	storage: Storage | undefined,
+	{ stringify, parse }: StringInterface<T>,
+	key: string,
+): AtomEffect<T> =>
+	function storageSyncInit({ setSelf, onSet }) {
 		if (!storage) {
 			return
 		}
 		const savedValue = storage.getItem(key)
 		if (savedValue != null) setSelf(parse(savedValue))
 
-		onSet(({ newValue }) => {
+		onSet(function storageSyncOnSet({ newValue }) {
 			if (newValue == null) {
 				storage.removeItem(key)
 				return
