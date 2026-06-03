@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 import { spawn } from "node:child_process"
 import { createHash } from "node:crypto"
+import type { Dirent } from "node:fs"
 import fs from "node:fs/promises"
 import path from "node:path"
 
@@ -64,6 +65,7 @@ type PackageGraph = {
 
 type AuditIssue = {
 	affectedTopPackages: Set<string>
+	auditPaths: Set<string>
 	id: string
 	packageName: string
 	severity: string
@@ -81,6 +83,26 @@ type Finding = {
 
 type FindingDraft = Finding & {
 	issueKeys: Set<string>
+}
+
+type PathSummary = {
+	directDependencySegment: string | null
+	path: string
+	topPackageName: string | null
+	topPackageSegment: string | null
+}
+
+type RemediationProbe = {
+	affectedVersions: string[]
+	latestVersion: string | null
+	packageName: string
+	safe: boolean
+}
+
+type RemediationLadder = {
+	buckStopsAt: string
+	path: string
+	steps: string[]
 }
 
 type DebugLogger = {
@@ -169,11 +191,35 @@ async function main(): Promise<void> {
 
 	const publishedGraph = await readPackageGraph(testbedPath, [])
 	const currentGraph = await readPackageGraph(workspaceRoot, workspacePackages)
+	const probeCache = new Map<string, Promise<RemediationProbe>>()
+	const probePackage = (packageName: string, issue: AuditIssue) =>
+		probeLatestPackageRemediation({
+			issue,
+			packageManager: rootPackageJson.packageManager,
+			packageName,
+			probeCache,
+			probeRoot: path.join(testbedPath, `.vigilance-remediation-probes`),
+		})
 	debug.json(
 		`published npm testbed lockfile summary`,
 		summarizeGraph(publishedGraph),
 	)
 	debug.json(`current workspace lockfile summary`, summarizeGraph(currentGraph))
+	await debugAuditSummary(
+		`published npm testbed`,
+		publishedIssues,
+		publishedGraph,
+		{
+			debug,
+			probePackage,
+			topPackages: publishedPackages,
+		},
+	)
+	await debugAuditSummary(`current workspace`, currentIssues, currentGraph, {
+		debug,
+		probePackage,
+		topPackages: workspacePackages,
+	})
 	const findings = buildFindings({
 		currentGraph,
 		currentIssues,
@@ -463,6 +509,12 @@ function buildFindings(input: {
 	)
 	const findingDrafts = new Map<string, FindingDraft>()
 	const decisions: unknown[] = []
+	debugPublishedActionCandidates({
+		debug: input.debug,
+		publishedGraph: input.publishedGraph,
+		publishedIssues: input.publishedIssues,
+		publishedPackages: input.publishedPackages,
+	})
 
 	for (const issue of input.publishedIssues) {
 		const affectedPackages =
@@ -605,6 +657,803 @@ function buildFindings(input: {
 	)
 	input.debug.json(`merged finding drafts`, findings)
 	return findings
+}
+
+function debugPublishedActionCandidates(input: {
+	debug: DebugLogger
+	publishedGraph: PackageGraph
+	publishedIssues: AuditIssue[]
+	publishedPackages: PublishedPackage[]
+}): void {
+	input.debug.group(`published npm actionability candidates`, () => {
+		const candidates = collectPublishedActionCandidates(input)
+		if (candidates.length === 0) {
+			console.log(
+				`No moderate, high, or critical notices were traced to published package production dependency graphs.`,
+			)
+			return
+		}
+
+		for (const candidate of candidates) {
+			console.log(
+				`- ${candidate.packageName}: ${candidate.issue.severity} ${candidate.issue.packageName} (${candidate.issue.id})`,
+			)
+			console.log(
+				`  direct dependency: ${candidate.directDependencyName ?? candidate.packageName}`,
+			)
+			console.log(
+				`  vulnerable versions in latest published graph: ${
+					candidate.vulnerablePublishedVersions || `unknown`
+				}`,
+			)
+			for (const auditPath of candidate.auditPaths) {
+				console.log(`  path: ${auditPath}`)
+			}
+		}
+	})
+}
+
+function collectPublishedActionCandidates(input: {
+	publishedGraph: PackageGraph
+	publishedIssues: AuditIssue[]
+	publishedPackages: PublishedPackage[]
+}): {
+	auditPaths: string[]
+	directDependencyName: string | null
+	issue: AuditIssue
+	packageName: string
+	vulnerablePublishedVersions: string
+}[] {
+	const publishedPackagesByName = new Map(
+		input.publishedPackages.map((pkg) => [pkg.name, pkg]),
+	)
+	const candidates: {
+		auditPaths: string[]
+		directDependencyName: string | null
+		issue: AuditIssue
+		packageName: string
+		vulnerablePublishedVersions: string
+	}[] = []
+
+	for (const issue of input.publishedIssues) {
+		const affectedPackages =
+			issue.affectedTopPackages.size > 0
+				? [...issue.affectedTopPackages].filter((pkgName) =>
+						publishedPackagesByName.has(pkgName),
+					)
+				: input.publishedPackages
+						.filter((pkg) =>
+							packageGraphContains(
+								input.publishedGraph,
+								ROOT_IMPORTER_PATH,
+								pkg.name,
+								issue.packageName,
+							),
+						)
+						.map((pkg) => pkg.name)
+
+		for (const packageName of affectedPackages) {
+			const publishedVersions = collectPackageVersions(
+				input.publishedGraph,
+				ROOT_IMPORTER_PATH,
+				packageName,
+				issue.packageName,
+			)
+			const vulnerablePublishedVersions =
+				issue.vulnerableVersions.size === 0
+					? publishedVersions
+					: setIntersection(publishedVersions, issue.vulnerableVersions)
+
+			if (vulnerablePublishedVersions.size === 0) {
+				continue
+			}
+
+			const auditPaths = summarizeIssuePaths(issue, input.publishedGraph, [
+				{
+					importerPath: ROOT_IMPORTER_PATH,
+					name: packageName,
+				},
+			])
+			candidates.push({
+				auditPaths: auditPaths.map((auditPath) => auditPath.path),
+				directDependencyName: stripVersionSuffix(
+					auditPaths[0]?.directDependencySegment ?? issue.packageName,
+				),
+				issue,
+				packageName,
+				vulnerablePublishedVersions: formatVersionSet(
+					vulnerablePublishedVersions,
+				),
+			})
+		}
+	}
+
+	return candidates.sort(
+		(left, right) =>
+			left.packageName.localeCompare(right.packageName) ||
+			severityRank(left.issue.severity) - severityRank(right.issue.severity) ||
+			left.issue.packageName.localeCompare(right.issue.packageName),
+	)
+}
+
+async function debugAuditSummary(
+	label: string,
+	issues: AuditIssue[],
+	graph: PackageGraph,
+	input: {
+		debug: DebugLogger
+		probePackage: (
+			packageName: string,
+			issue: AuditIssue,
+		) => Promise<RemediationProbe>
+		topPackages: { importerPath: string; name: string; version?: string }[]
+	},
+): Promise<void> {
+	if (!input.debug.enabled) {
+		return
+	}
+
+	input.debug.group(`${label} pnpm audit summary by severity`, () => {
+		if (issues.length === 0) {
+			console.log(`No moderate, high, or critical production notices reported.`)
+			return
+		}
+
+		for (const severity of [`critical`, `high`, `moderate`]) {
+			console.log(
+				`${severity}: ${
+					issues.filter((issue) => issue.severity === severity).length
+				}`,
+			)
+		}
+	})
+
+	if (issues.length === 0) {
+		return
+	}
+
+	for (const severity of [`critical`, `high`, `moderate`]) {
+		const issuesForSeverity = issues
+			.filter((issue) => issue.severity === severity)
+			.sort((left, right) => issueKey(left).localeCompare(issueKey(right)))
+
+		for (const issue of issuesForSeverity) {
+			const paths = summarizeIssuePaths(issue, graph, input.topPackages)
+			const versions =
+				issue.vulnerableVersions.size > 0
+					? ` vulnerable versions: ${formatVersionSet(issue.vulnerableVersions)}`
+					: ``
+
+			input.debug.group(
+				`${label} ${severity} ${issue.packageName} ${issue.id}`,
+				() => {
+					console.log(`- ${formatIssue(issue)}${versions}`)
+
+					if (paths.length === 0) {
+						console.log(
+							`  path: pnpm audit did not report a maintained-package path, and none was reconstructed from the production lockfile graph.`,
+						)
+					}
+				},
+			)
+
+			if (paths.length === 0) {
+				continue
+			}
+
+			const ladders = await summarizeRemediationLadders(
+				paths,
+				issue,
+				input.probePackage,
+			)
+			input.debug.group(
+				`${label} ${severity} ${issue.packageName} remediation ladder`,
+				() => {
+					for (const exposure of summarizeExposureEntrypoints(paths)) {
+						console.log(
+							`exposure: ${exposure.topPackage} reaches ${exposure.vulnerableDependency} through direct dependency ${exposure.directDependency} (${formatPathCount(exposure.pathCount)})`,
+						)
+					}
+
+					for (const focus of summarizeUpgradeFocuses(paths)) {
+						console.log(
+							`upgrade focus: ${focus.parentDependency} resolves ${focus.vulnerableDependency} (${formatPathCount(focus.pathCount)}; exposed through ${focus.directDependencies.join(`, `)})`,
+						)
+					}
+
+					for (const ladder of ladders) {
+						console.log(`buck stops: ${ladder.buckStopsAt}`)
+						console.log(`  ladder: ${ladder.steps.join(` -> `)}`)
+						console.log(`  path: ${ladder.path}`)
+					}
+				},
+			)
+		}
+	}
+}
+
+function summarizeIssuePaths(
+	issue: AuditIssue,
+	graph: PackageGraph,
+	topPackages: { importerPath: string; name: string; version?: string }[],
+): PathSummary[] {
+	const rawSummaries = new Map<string, PathSummary>()
+	const reconstructedSummaries = new Map<string, PathSummary>()
+
+	for (const auditPath of issue.auditPaths) {
+		const segments = normalizeAuditPath(auditPath)
+		const topPackage = findTopPackageForAuditPath(auditPath, topPackages)
+		const topIndex = topPackage
+			? segments.findIndex((segment) =>
+					isAuditPathSegmentForTopPackage(segment, topPackage),
+				)
+			: -1
+		const pathSegments = topIndex === -1 ? segments : segments.slice(topIndex)
+
+		if (topPackage && pathSegments.length > 0) {
+			pathSegments[0] = `${topPackage.name}${
+				topPackage.version ? `@${topPackage.version}` : ``
+			}`
+		}
+
+		const pathText =
+			pathSegments.length > 0 ? pathSegments.join(` -> `) : auditPath
+		rawSummaries.set(pathText, {
+			directDependencySegment: directDependencySegment(pathSegments),
+			path: pathText,
+			topPackageName: topPackage?.name ?? null,
+			topPackageSegment: pathSegments[0] ?? null,
+		})
+	}
+
+	for (const topPackage of topPackages) {
+		if (
+			issue.affectedTopPackages.size > 0 &&
+			!issue.affectedTopPackages.has(topPackage.name)
+		) {
+			continue
+		}
+
+		for (const pathSegments of collectDependencyPaths(
+			graph,
+			topPackage.importerPath,
+			topPackage.name,
+			issue.packageName,
+			issue.vulnerableVersions,
+		)) {
+			const rootedPathSegments =
+				stripVersionSuffix(pathSegments[0] ?? ``) === topPackage.name
+					? pathSegments
+					: [
+							`${topPackage.name}${
+								topPackage.version ? `@${topPackage.version}` : ``
+							}`,
+							...pathSegments,
+						]
+			const pathText = rootedPathSegments.join(` -> `)
+			reconstructedSummaries.set(pathText, {
+				directDependencySegment: directDependencySegment(rootedPathSegments),
+				path: pathText,
+				topPackageName: topPackage.name,
+				topPackageSegment: rootedPathSegments[0] ?? topPackage.name,
+			})
+		}
+	}
+
+	const reconstructedChainKeys = new Set(
+		[...reconstructedSummaries.values()].map((summary) =>
+			unversionedPathKey(summary.path),
+		),
+	)
+	const summaries = [
+		...reconstructedSummaries.values(),
+		...[...rawSummaries.values()].filter(
+			(summary) => !reconstructedChainKeys.has(unversionedPathKey(summary.path)),
+		),
+	]
+
+	return summaries.sort((left, right) => left.path.localeCompare(right.path))
+}
+
+function summarizeExposureEntrypoints(paths: PathSummary[]): {
+	directDependency: string
+	pathCount: number
+	topPackage: string
+	vulnerableDependency: string
+}[] {
+	const exposures = new Map<
+		string,
+		{
+			directDependency: string
+			pathCount: number
+			topPackage: string
+			vulnerableDependency: string
+		}
+	>()
+
+	for (const pathSummary of paths) {
+		const pathSegments = pathSummary.path.split(` -> `)
+		const topPackage =
+			pathSummary.topPackageSegment ?? pathSummary.topPackageName ?? `unknown`
+		const directDependency =
+			pathSummary.directDependencySegment ??
+			pathSegments[1] ??
+			pathSegments[0] ??
+			`unknown`
+		const vulnerableDependency =
+			pathSegments[pathSegments.length - 1] ?? `unknown`
+		const key = [topPackage, directDependency, vulnerableDependency].join(`\0`)
+		const exposure = exposures.get(key)
+
+		if (exposure) {
+			exposure.pathCount += 1
+			continue
+		}
+
+		exposures.set(key, {
+			directDependency,
+			pathCount: 1,
+			topPackage,
+			vulnerableDependency,
+		})
+	}
+
+	return [...exposures.values()].sort(
+		(left, right) =>
+			left.topPackage.localeCompare(right.topPackage) ||
+			left.directDependency.localeCompare(right.directDependency) ||
+			left.vulnerableDependency.localeCompare(right.vulnerableDependency),
+	)
+}
+
+function summarizeUpgradeFocuses(paths: PathSummary[]): {
+	directDependencies: string[]
+	parentDependency: string
+	pathCount: number
+	vulnerableDependency: string
+}[] {
+	const focuses = new Map<
+		string,
+		{
+			directDependencies: Set<string>
+			parentDependency: string
+			pathCount: number
+			vulnerableDependency: string
+		}
+	>()
+
+	for (const pathSummary of paths) {
+		const pathSegments = pathSummary.path.split(` -> `)
+		const vulnerableDependency =
+			pathSegments[pathSegments.length - 1] ?? `unknown`
+		const parentDependency =
+			pathSegments.length > 1
+				? (pathSegments[pathSegments.length - 2] ?? `unknown`)
+				: `unknown`
+		const directDependency =
+			pathSummary.directDependencySegment ??
+			pathSegments[1] ??
+			pathSegments[0] ??
+			`unknown`
+		const key = [parentDependency, vulnerableDependency].join(`\0`)
+		const focus = focuses.get(key)
+
+		if (focus) {
+			focus.directDependencies.add(directDependency)
+			focus.pathCount += 1
+			continue
+		}
+
+		focuses.set(key, {
+			directDependencies: new Set([directDependency]),
+			parentDependency,
+			pathCount: 1,
+			vulnerableDependency,
+		})
+	}
+
+	return [...focuses.values()]
+		.map((focus) => ({
+			...focus,
+			directDependencies: [...focus.directDependencies].sort((left, right) =>
+				left.localeCompare(right),
+			),
+		}))
+		.sort(
+			(left, right) =>
+				left.parentDependency.localeCompare(right.parentDependency) ||
+				left.vulnerableDependency.localeCompare(right.vulnerableDependency),
+		)
+}
+
+function formatPathCount(pathCount: number): string {
+	return `${pathCount} ${pathCount === 1 ? `path` : `paths`}`
+}
+
+async function summarizeRemediationLadders(
+	paths: PathSummary[],
+	issue: AuditIssue,
+	probePackage: (
+		packageName: string,
+		issue: AuditIssue,
+	) => Promise<RemediationProbe>,
+): Promise<RemediationLadder[]> {
+	const ladders = await Promise.all(
+		paths.map(async (pathSummary) => {
+			const pathSegments = pathSummary.path.split(` -> `)
+			const topPackage = pathSegments[0] ?? `current package`
+			const packageSegments = pathSegments.slice(1).reverse()
+			const steps: string[] = []
+			let buckStopsAt: string | null = null
+
+			for (const packageSegment of packageSegments) {
+				const packageName = stripVersionSuffix(packageSegment)
+				const probe = await probePackage(packageName, issue)
+				const status = probe.safe ? `[safe]` : `[blocked]`
+				const latestVersion = probe.latestVersion ?? `unknown`
+				const affectedVersions =
+					probe.affectedVersions.length > 0
+						? `; still affected: ${probe.affectedVersions.join(`, `)}`
+						: ``
+				steps.push(
+					`${packageName} ${status} latest ${latestVersion}${affectedVersions}`,
+				)
+
+				if (!probe.safe && !buckStopsAt) {
+					buckStopsAt = `${packageName} latest ${latestVersion} still reports ${issue.packageName}`
+				}
+			}
+
+			return {
+				buckStopsAt:
+					buckStopsAt ??
+					`${topPackage} workspace lockfile still pins a stale dependency edge`,
+				path: pathSummary.path,
+				steps,
+			}
+		}),
+	)
+
+	const seen = new Set<string>()
+	return ladders
+		.filter((ladder) => {
+			const key = `${ladder.buckStopsAt}\0${ladder.steps.join(`\0`)}`
+			if (seen.has(key)) {
+				return false
+			}
+			seen.add(key)
+			return true
+		})
+		.sort((left, right) => left.buckStopsAt.localeCompare(right.buckStopsAt))
+}
+
+async function probeLatestPackageRemediation(input: {
+	issue: AuditIssue
+	packageManager: string | undefined
+	packageName: string
+	probeCache: Map<string, Promise<RemediationProbe>>
+	probeRoot: string
+}): Promise<RemediationProbe> {
+	const cacheKey = `${input.packageName}\0${issueKey(input.issue)}`
+	const cached = input.probeCache.get(cacheKey)
+	if (cached) {
+		return cached
+	}
+
+	const probe = runLatestPackageProbe(input).catch((error) => {
+		input.probeCache.delete(cacheKey)
+		throw error
+	})
+	input.probeCache.set(cacheKey, probe)
+	return probe
+}
+
+async function runLatestPackageProbe(input: {
+	issue: AuditIssue
+	packageManager: string | undefined
+	packageName: string
+	probeRoot: string
+}): Promise<RemediationProbe> {
+	const probePath = path.join(
+		input.probeRoot,
+		createHash(`sha256`)
+			.update(`${input.packageName}\0${issueKey(input.issue)}`)
+			.digest(`hex`)
+			.slice(0, 12),
+	)
+	await fs.rm(probePath, { force: true, recursive: true })
+	await fs.mkdir(probePath, { recursive: true })
+	await fs.writeFile(
+		path.join(probePath, `package.json`),
+		`${JSON.stringify(
+			{
+				name: `wayforge-vigilance-probe`,
+				private: true,
+				packageManager: input.packageManager,
+				dependencies: { [input.packageName]: `latest` },
+			},
+			null,
+			`\t`,
+		)}\n`,
+	)
+
+	await runCommand(
+		`pnpm`,
+		[`install`, `--ignore-scripts`, `--prod`],
+		probePath,
+		{
+			timeoutMs: 5 * 60_000,
+		},
+	)
+	const graph = await readPackageGraph(probePath, [])
+	const auditReport = await runAudit(
+		probePath,
+		`latest ${input.packageName} remediation probe`,
+		createDebugLogger(false),
+	)
+	const probeIssues = parseAuditIssues(
+		auditReport,
+		new Set([input.packageName]),
+		`latest ${input.packageName} remediation probe`,
+		createDebugLogger(false),
+	)
+	const matchingIssues = probeIssues.filter((probeIssue) =>
+		isSameAuditIssue(probeIssue, input.issue),
+	)
+	const affectedVersions = uniqueStrings(
+		matchingIssues.flatMap((probeIssue) => [...probeIssue.vulnerableVersions]),
+	).sort((left, right) => left.localeCompare(right))
+	const latestVersions = collectPackageVersions(
+		graph,
+		ROOT_IMPORTER_PATH,
+		input.packageName,
+		input.packageName,
+	)
+
+	return {
+		affectedVersions,
+		latestVersion: formatVersionSet(latestVersions) || null,
+		packageName: input.packageName,
+		safe: matchingIssues.length === 0,
+	}
+}
+
+function isSameAuditIssue(left: AuditIssue, right: AuditIssue): boolean {
+	if (left.packageName !== right.packageName) {
+		return false
+	}
+
+	const leftIds = auditIssueIds(left)
+	const rightIds = auditIssueIds(right)
+	return (
+		leftIds.size === 0 ||
+		rightIds.size === 0 ||
+		[...leftIds].some((id) => rightIds.has(id))
+	)
+}
+
+function auditIssueIds(issue: AuditIssue): Set<string> {
+	return new Set(
+		issue.id
+			.split(`,`)
+			.map((id) => id.trim())
+			.filter(Boolean),
+	)
+}
+
+function collectDependencyPaths(
+	graph: PackageGraph,
+	importerPath: string,
+	topPackageName: string,
+	targetPackageName: string,
+	vulnerableVersions: Set<string>,
+): string[][] {
+	const importer = graph.lockfile.importers?.[importerPath]
+	if (!importer) {
+		return []
+	}
+
+	const paths: string[][] = []
+	for (const [dependencyName, dependencyEntry] of productionDependencies(
+		importer,
+	)) {
+		const startsFromTestbedRoot = importerPath === ROOT_IMPORTER_PATH
+		if (startsFromTestbedRoot && dependencyName !== topPackageName) {
+			continue
+		}
+
+		traverseDependencyPaths({
+			dependencyName,
+			graph,
+			importerPath,
+			pathSegments: [],
+			paths,
+			targetPackageName,
+			visited: new Set(),
+			vulnerableVersions,
+			version: dependencyVersion(dependencyEntry),
+		})
+	}
+
+	return paths
+}
+
+function traverseDependencyPaths(input: {
+	dependencyName: string
+	graph: PackageGraph
+	importerPath: string
+	pathSegments: string[]
+	paths: string[][]
+	targetPackageName: string
+	version: string | null
+	vulnerableVersions: Set<string>
+	visited: Set<string>
+}): void {
+	if (!input.version) {
+		return
+	}
+
+	if (input.version.startsWith(`link:`)) {
+		const linkedImporterPath = resolveLinkedImporterPath(
+			input.importerPath,
+			input.version,
+		)
+		const workspacePackage =
+			input.graph.workspacePackagesByImporterPath.get(linkedImporterPath)
+		if (!workspacePackage) {
+			return
+		}
+
+		const visitKey = `workspace:${workspacePackage.importerPath}`
+		if (input.visited.has(visitKey)) {
+			return
+		}
+		input.visited.add(visitKey)
+		const nextPath = [
+			...input.pathSegments,
+			`${workspacePackage.name}@${workspacePackage.version}`,
+		]
+
+		if (
+			workspacePackage.name === input.targetPackageName &&
+			isVulnerableVersion(workspacePackage.version, input.vulnerableVersions)
+		) {
+			input.paths.push(nextPath)
+		}
+
+		const importer =
+			input.graph.lockfile.importers?.[workspacePackage.importerPath]
+		if (!importer) {
+			return
+		}
+
+		for (const [childName, childEntry] of productionDependencies(importer)) {
+			traverseDependencyPaths({
+				dependencyName: childName,
+				graph: input.graph,
+				importerPath: workspacePackage.importerPath,
+				pathSegments: nextPath,
+				paths: input.paths,
+				targetPackageName: input.targetPackageName,
+				version: dependencyVersion(childEntry),
+				vulnerableVersions: input.vulnerableVersions,
+				visited: new Set(input.visited),
+			})
+		}
+		return
+	}
+
+	const packageKey = packageKeyForDependency(input.dependencyName, input.version)
+	const packageInfo = parsePackageKey(packageKey)
+	if (!packageInfo) {
+		return
+	}
+
+	const visitKey = `registry:${packageKey}`
+	if (input.visited.has(visitKey)) {
+		return
+	}
+	input.visited.add(visitKey)
+	const nextPath = [
+		...input.pathSegments,
+		`${packageInfo.name}@${packageInfo.version}`,
+	]
+
+	if (
+		packageInfo.name === input.targetPackageName &&
+		isVulnerableVersion(packageInfo.version, input.vulnerableVersions)
+	) {
+		input.paths.push(nextPath)
+	}
+
+	const snapshot =
+		input.graph.lockfile.snapshots?.[packageKey] ??
+		(input.graph.lockfile.packages?.[packageKey] as LockSnapshot | undefined)
+	if (!snapshot) {
+		return
+	}
+
+	for (const [childName, childVersion] of snapshotDependencies(snapshot)) {
+		traverseDependencyPaths({
+			dependencyName: childName,
+			graph: input.graph,
+			importerPath: input.importerPath,
+			pathSegments: nextPath,
+			paths: input.paths,
+			targetPackageName: input.targetPackageName,
+			version: childVersion,
+			vulnerableVersions: input.vulnerableVersions,
+			visited: new Set(input.visited),
+		})
+	}
+}
+
+function isVulnerableVersion(
+	version: string,
+	vulnerableVersions: Set<string>,
+): boolean {
+	return vulnerableVersions.size === 0 || vulnerableVersions.has(version)
+}
+
+function normalizeAuditPath(auditPath: string): string[] {
+	return auditPath
+		.split(`>`)
+		.map((segment) => segment.trim())
+		.filter(Boolean)
+		.map((segment) => {
+			const nodeModulesIndex = segment.lastIndexOf(`node_modules/`)
+			return nodeModulesIndex === -1
+				? segment
+				: segment.slice(nodeModulesIndex + `node_modules/`.length)
+		})
+}
+
+function unversionedPathKey(pathText: string): string {
+	return pathText
+		.split(` -> `)
+		.map((segment) => stripVersionSuffix(segment.trim()))
+		.join(` -> `)
+}
+
+function findTopPackageForAuditPath(
+	auditPath: string,
+	topPackages: { importerPath: string; name: string; version?: string }[],
+): { importerPath: string; name: string; version?: string } | null {
+	const segments = normalizeAuditPath(auditPath)
+
+	for (const segment of segments) {
+		for (const topPackage of topPackages) {
+			if (isAuditPathSegmentForTopPackage(segment, topPackage)) {
+				return topPackage
+			}
+		}
+	}
+
+	return null
+}
+
+function isAuditPathSegmentForTopPackage(
+	segment: string,
+	topPackage: { importerPath: string; name: string },
+): boolean {
+	const packageName = stripVersionSuffix(segment)
+	const importerAlias = topPackage.importerPath.replaceAll(`/`, `__`)
+	return (
+		packageName === topPackage.name ||
+		packageName === topPackage.importerPath ||
+		packageName === importerAlias ||
+		packageName.endsWith(`__${topPackage.name}`)
+	)
+}
+
+function directDependencySegment(pathSegments: string[]): string | null {
+	const directDependency = pathSegments[1] ?? pathSegments[0]
+	return directDependency ?? null
+}
+
+function severityRank(severity: string): number {
+	const rank = [`critical`, `high`, `moderate`].indexOf(severity)
+	return rank === -1 ? Number.POSITIVE_INFINITY : rank
 }
 
 function mergeCompatibleFindings(findings: FindingDraft[]): FindingDraft[] {
@@ -824,6 +1673,7 @@ function upsertIssue(
 	const issue: AuditIssue = {
 		...input,
 		affectedTopPackages: new Set(),
+		auditPaths: new Set(),
 		vulnerableVersions: new Set(),
 	}
 	issues.set(key, issue)
@@ -866,6 +1716,7 @@ function addAffectedTopPackage(
 	auditPath: string,
 	ourPackageNames: Set<string>,
 ): void {
+	issue.auditPaths.add(auditPath)
 	const packageName = findTopPackageName(auditPath, ourPackageNames)
 	if (packageName) {
 		issue.affectedTopPackages.add(packageName)
@@ -888,6 +1739,11 @@ function findTopPackageName(
 		const packageName = normalizeAuditPathSegment(segment)
 		if (packageName && ourPackageNames.has(packageName)) {
 			return packageName
+		}
+		for (const ourPackageName of ourPackageNames) {
+			if (packageName?.endsWith(`__${ourPackageName}`)) {
+				return ourPackageName
+			}
 		}
 	}
 
@@ -1246,6 +2102,9 @@ function serializeIssue(issue: AuditIssue): Record<string, unknown> {
 		affectedTopPackages: [...issue.affectedTopPackages].sort((left, right) =>
 			left.localeCompare(right),
 		),
+		auditPaths: [...issue.auditPaths].sort((left, right) =>
+			left.localeCompare(right),
+		),
 		id: issue.id,
 		packageName: issue.packageName,
 		severity: issue.severity,
@@ -1382,9 +2241,7 @@ async function readPackageJson(filePath: string): Promise<PackageJson> {
 	return parseJson(await fs.readFile(filePath, `utf8`), filePath) as PackageJson
 }
 
-async function safeReadDir(
-	filePath: string,
-): Promise<import("node:fs").Dirent[]> {
+async function safeReadDir(filePath: string): Promise<Dirent[]> {
 	try {
 		return await fs.readdir(filePath, { withFileTypes: true })
 	} catch (error) {
