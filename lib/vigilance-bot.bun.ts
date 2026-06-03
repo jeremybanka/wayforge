@@ -205,11 +205,16 @@ async function main(): Promise<void> {
 		summarizeGraph(publishedGraph),
 	)
 	debug.json(`current workspace lockfile summary`, summarizeGraph(currentGraph))
-	await debugAuditSummary(`published npm testbed`, publishedIssues, publishedGraph, {
-		debug,
-		probePackage,
-		topPackages: publishedPackages,
-	})
+	await debugAuditSummary(
+		`published npm testbed`,
+		publishedIssues,
+		publishedGraph,
+		{
+			debug,
+			probePackage,
+			topPackages: publishedPackages,
+		},
+	)
 	await debugAuditSummary(`current workspace`, currentIssues, currentGraph, {
 		debug,
 		probePackage,
@@ -749,14 +754,13 @@ function collectPublishedActionCandidates(input: {
 					name: packageName,
 				},
 			])
-				candidates.push({
-					auditPaths: auditPaths.map((auditPath) => auditPath.path),
-					directDependencyName:
-						stripVersionSuffix(
-							auditPaths[0]?.directDependencySegment ?? issue.packageName,
-						),
-					issue,
-					packageName,
+			candidates.push({
+				auditPaths: auditPaths.map((auditPath) => auditPath.path),
+				directDependencyName: stripVersionSuffix(
+					auditPaths[0]?.directDependencySegment ?? issue.packageName,
+				),
+				issue,
+				packageName,
 				vulnerablePublishedVersions: formatVersionSet(
 					vulnerablePublishedVersions,
 				),
@@ -820,15 +824,18 @@ async function debugAuditSummary(
 					? ` vulnerable versions: ${formatVersionSet(issue.vulnerableVersions)}`
 					: ``
 
-			input.debug.group(`${label} ${severity} ${issue.packageName} ${issue.id}`, () => {
-				console.log(`- ${formatIssue(issue)}${versions}`)
+			input.debug.group(
+				`${label} ${severity} ${issue.packageName} ${issue.id}`,
+				() => {
+					console.log(`- ${formatIssue(issue)}${versions}`)
 
-				if (paths.length === 0) {
-					console.log(
-						`  path: pnpm audit did not report a maintained-package path, and none was reconstructed from the production lockfile graph.`,
-					)
-				}
-			})
+					if (paths.length === 0) {
+						console.log(
+							`  path: pnpm audit did not report a maintained-package path, and none was reconstructed from the production lockfile graph.`,
+						)
+					}
+				},
+			)
 
 			if (paths.length === 0) {
 				continue
@@ -839,25 +846,28 @@ async function debugAuditSummary(
 				issue,
 				input.probePackage,
 			)
-			input.debug.group(`${label} ${severity} ${issue.packageName} remediation ladder`, () => {
-				for (const exposure of summarizeExposureEntrypoints(paths)) {
-					console.log(
-						`exposure: ${exposure.topPackage} reaches ${exposure.vulnerableDependency} through direct dependency ${exposure.directDependency} (${formatPathCount(exposure.pathCount)})`,
-					)
-				}
+			input.debug.group(
+				`${label} ${severity} ${issue.packageName} remediation ladder`,
+				() => {
+					for (const exposure of summarizeExposureEntrypoints(paths)) {
+						console.log(
+							`exposure: ${exposure.topPackage} reaches ${exposure.vulnerableDependency} through direct dependency ${exposure.directDependency} (${formatPathCount(exposure.pathCount)})`,
+						)
+					}
 
-				for (const focus of summarizeUpgradeFocuses(paths)) {
-					console.log(
-						`upgrade focus: ${focus.parentDependency} resolves ${focus.vulnerableDependency} (${formatPathCount(focus.pathCount)}; exposed through ${focus.directDependencies.join(`, `)})`,
-					)
-				}
+					for (const focus of summarizeUpgradeFocuses(paths)) {
+						console.log(
+							`upgrade focus: ${focus.parentDependency} resolves ${focus.vulnerableDependency} (${formatPathCount(focus.pathCount)}; exposed through ${focus.directDependencies.join(`, `)})`,
+						)
+					}
 
-				for (const ladder of ladders) {
-					console.log(`buck stops: ${ladder.buckStopsAt}`)
-					console.log(`  ladder: ${ladder.steps.join(` -> `)}`)
-					console.log(`  path: ${ladder.path}`)
-				}
-			})
+					for (const ladder of ladders) {
+						console.log(`buck stops: ${ladder.buckStopsAt}`)
+						console.log(`  ladder: ${ladder.steps.join(` -> `)}`)
+						console.log(`  path: ${ladder.path}`)
+					}
+				},
+			)
 		}
 	}
 }
@@ -886,7 +896,8 @@ function summarizeIssuePaths(
 			}`
 		}
 
-		const pathText = pathSegments.length > 0 ? pathSegments.join(` -> `) : auditPath
+		const pathText =
+			pathSegments.length > 0 ? pathSegments.join(` -> `) : auditPath
 		rawSummaries.set(pathText, {
 			directDependencySegment: directDependencySegment(pathSegments),
 			path: pathText,
@@ -967,9 +978,10 @@ function summarizeExposureEntrypoints(paths: PathSummary[]): {
 		const directDependency =
 			pathSummary.directDependencySegment ??
 			pathSegments[1] ??
-				pathSegments[0] ??
-				`unknown`
-		const vulnerableDependency = pathSegments[pathSegments.length - 1] ?? `unknown`
+			pathSegments[0] ??
+			`unknown`
+		const vulnerableDependency =
+			pathSegments[pathSegments.length - 1] ?? `unknown`
 		const key = [topPackage, directDependency, vulnerableDependency].join(`\0`)
 		const exposure = exposures.get(key)
 
@@ -1012,7 +1024,8 @@ function summarizeUpgradeFocuses(paths: PathSummary[]): {
 
 	for (const pathSummary of paths) {
 		const pathSegments = pathSummary.path.split(` -> `)
-		const vulnerableDependency = pathSegments[pathSegments.length - 1] ?? `unknown`
+		const vulnerableDependency =
+			pathSegments[pathSegments.length - 1] ?? `unknown`
 		const parentDependency =
 			pathSegments.length > 1
 				? (pathSegments[pathSegments.length - 2] ?? `unknown`)
@@ -1082,20 +1095,22 @@ async function summarizeRemediationLadders(
 					probe.affectedVersions.length > 0
 						? `; still affected: ${probe.affectedVersions.join(`, `)}`
 						: ``
-				steps.push(`${packageName} ${status} latest ${latestVersion}${affectedVersions}`)
+				steps.push(
+					`${packageName} ${status} latest ${latestVersion}${affectedVersions}`,
+				)
 
 				if (!probe.safe && !buckStopsAt) {
 					buckStopsAt = `${packageName} latest ${latestVersion} still reports ${issue.packageName}`
 				}
 			}
 
-				return {
-					buckStopsAt:
-						buckStopsAt ??
-						`${topPackage} workspace lockfile still pins a stale dependency edge`,
-					path: pathSummary.path,
-					steps,
-				}
+			return {
+				buckStopsAt:
+					buckStopsAt ??
+					`${topPackage} workspace lockfile still pins a stale dependency edge`,
+				path: pathSummary.path,
+				steps,
+			}
 		}),
 	)
 
@@ -1156,9 +1171,14 @@ async function runLatestPackageProbe(input: {
 		)}\n`,
 	)
 
-	await runCommand(`pnpm`, [`install`, `--ignore-scripts`, `--prod`], probePath, {
-		timeoutMs: 5 * 60_000,
-	})
+	await runCommand(
+		`pnpm`,
+		[`install`, `--ignore-scripts`, `--prod`],
+		probePath,
+		{
+			timeoutMs: 5 * 60_000,
+		},
+	)
 	const graph = await readPackageGraph(probePath, [])
 	const auditReport = await runAudit(
 		probePath,
@@ -1175,9 +1195,7 @@ async function runLatestPackageProbe(input: {
 		isSameAuditIssue(probeIssue, input.issue),
 	)
 	const affectedVersions = uniqueStrings(
-		matchingIssues.flatMap((probeIssue) => [
-			...probeIssue.vulnerableVersions,
-		]),
+		matchingIssues.flatMap((probeIssue) => [...probeIssue.vulnerableVersions]),
 	).sort((left, right) => left.localeCompare(right))
 	const latestVersions = collectPackageVersions(
 		graph,
@@ -1230,7 +1248,9 @@ function collectDependencyPaths(
 	}
 
 	const paths: string[][] = []
-	for (const [dependencyName, dependencyEntry] of productionDependencies(importer)) {
+	for (const [dependencyName, dependencyEntry] of productionDependencies(
+		importer,
+	)) {
 		const startsFromTestbedRoot = importerPath === ROOT_IMPORTER_PATH
 		if (startsFromTestbedRoot && dependencyName !== topPackageName) {
 			continue
@@ -1379,7 +1399,7 @@ function normalizeAuditPath(auditPath: string): string[] {
 			return nodeModulesIndex === -1
 				? segment
 				: segment.slice(nodeModulesIndex + `node_modules/`.length)
-			})
+		})
 }
 
 function unversionedPathKey(pathText: string): string {
@@ -2214,9 +2234,7 @@ async function readPackageJson(filePath: string): Promise<PackageJson> {
 	return parseJson(await fs.readFile(filePath, `utf8`), filePath) as PackageJson
 }
 
-async function safeReadDir(
-	filePath: string,
-): Promise<Dirent[]> {
+async function safeReadDir(filePath: string): Promise<Dirent[]> {
 	try {
 		return await fs.readdir(filePath, { withFileTypes: true })
 	} catch (error) {
