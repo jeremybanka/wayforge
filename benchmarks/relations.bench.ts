@@ -1,9 +1,9 @@
 import { Join } from "anvl/join"
 import * as v from "vitest"
 
-import type { EmptyObject } from "~/packages/anvl/src/object"
-import { isEmptyObject } from "~/packages/anvl/src/object"
-import { Junction } from "~/packages/rel8/junction/src"
+import type { EmptyObject } from "../packages/anvl/src/object"
+import { isEmptyObject } from "../packages/anvl/src/object"
+import { Junction } from "../packages/rel8/junction/src"
 
 v.describe(`constructor`, () => {
 	const str = `a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y`

@@ -1,6 +1,6 @@
 import * as v from "vitest"
 
-import * as µ from "../../packages/atom.io/src/struct/micro"
+import * as µ from "../packages/atom.io/src/struct/micro"
 
 const number10 = 1234567890
 const string26 = `abcdefghijklmnopqrstuvwxyz`
