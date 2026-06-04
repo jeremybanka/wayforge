@@ -23,9 +23,17 @@ declare module "@typescript-eslint/eslint-plugin" {
 }
 
 // eslint-disable-next-line quotes
-declare module "eslint-config-preact" {
-	import type { Linter } from "eslint"
+declare module "@eslint-react/eslint-plugin" {
+	import type { ESLint, Linter } from "eslint"
 
-	const configs: Linter.Config[]
-	export = configs
+	type Config = Linter.Config & {
+		settings?: Record<string, Record<string, unknown>>
+	}
+
+	const plugin: ESLint.Plugin & {
+		configs: Record<string, Config> & {
+			[`recommended-typescript`]: Config
+		}
+	}
+	export default plugin
 }
