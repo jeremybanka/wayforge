@@ -1,8 +1,10 @@
 import { dirname, join, resolve } from "node:path"
+import { fileURLToPath } from "node:url"
 
 import type { StorybookConfig } from "@storybook/react-vite"
 import { mergeConfig } from "vite"
-import tsconfigPaths from "vite-tsconfig-paths"
+
+const STORYBOOK_ROOT = dirname(fileURLToPath(import.meta.url))
 
 /**
  * This function is used to resolve the absolute path of a package.
@@ -23,7 +25,25 @@ const config: StorybookConfig = {
 	},
 	viteFinal: (cfg) =>
 		mergeConfig(cfg, {
-			plugins: [tsconfigPaths({ projects: [`./tsconfig.json`] })],
+			resolve: {
+				alias: [
+					{
+						find: /^atom\.io\/react-devtools\/css$/,
+						replacement: resolve(
+							STORYBOOK_ROOT,
+							`../src/react-devtools/devtools.css`,
+						),
+					},
+					{
+						find: /^atom\.io$/,
+						replacement: resolve(STORYBOOK_ROOT, `../src/main`),
+					},
+					{
+						find: /^atom\.io\/(.*)$/,
+						replacement: resolve(STORYBOOK_ROOT, `../src/$1`),
+					},
+				],
+			},
 		}),
 }
 export default config
