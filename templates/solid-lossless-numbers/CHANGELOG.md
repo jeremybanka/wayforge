@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.0.15
+
+### Patch Changes
+
+- 95e41d3: Migrate React linting templates to `@eslint-react/eslint-plugin` and ship local ESLint React typings.
+- 0d8377d: Add the missing Node type definitions to the Solid lossless numbers template.
+
 ## 0.0.14
 
 ### Patch Changes
