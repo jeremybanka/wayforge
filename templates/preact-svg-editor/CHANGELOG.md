@@ -1,5 +1,11 @@
 # @atom.io/template-preact-svg-editor
 
+## 0.0.61
+
+### Patch Changes
+
+- 95e41d3: Migrate React linting templates to `@eslint-react/eslint-plugin` and ship local ESLint React typings.
+
 ## 0.0.60
 
 ### Patch Changes
