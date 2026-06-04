@@ -2,23 +2,26 @@ import { cpus } from "node:os"
 import { resolve } from "node:path"
 
 import type { UserConfig } from "vite"
-import tsconfigPaths from "vite-tsconfig-paths"
 import { defineConfig } from "vitest/config"
 
-const DEVELOPMENT_TSCONFIG = `./tsconfig.json`
-const PRODUCTION_TSCONFIG = `./tsconfig.prod.json`
-
 const shouldTestDistFolder = process.env[`IMPORT`] === `dist`
-const project = shouldTestDistFolder ? PRODUCTION_TSCONFIG : DEVELOPMENT_TSCONFIG
+const atomIoAliases = shouldTestDistFolder
+	? []
+	: [
+			{
+				find: /^atom\.io$/,
+				replacement: resolve(__dirname, `./src/main`),
+			},
+			{
+				find: /^atom\.io\/(.*)$/,
+				replacement: resolve(__dirname, `./src/$1`),
+			},
+		]
 
 const vitestConfig: UserConfig = defineConfig({
-	plugins: [
-		tsconfigPaths({
-			projects: [project],
-		}),
-	],
 	resolve: {
 		alias: [
+			...atomIoAliases,
 			{
 				find: `~`,
 				replacement: resolve(__dirname, `../..`),
