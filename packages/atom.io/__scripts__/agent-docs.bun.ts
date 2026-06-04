@@ -44,28 +44,28 @@ const SHOULD_WRITE_SITE_OUTPUT = process.argv.includes(`--site`)
 
 const DOC_PAGES: DocPage[] = [
 	{
-		output: `getting-started.md`,
-		source: `docs/source/pages/docs/getting-started.mdx`,
-		title: `getting started`,
-		url: `/docs/getting-started`,
+		output: `tutorial.md`,
+		source: `docs/source/pages/docs/tutorial.mdx`,
+		title: `tutorial`,
+		url: `/docs/tutorial`,
 	},
 	{
-		output: `why-atom-io.md`,
-		source: `docs/source/pages/docs/why-atom-io.mdx`,
-		title: `why atom.io`,
-		url: `/docs/why-atom-io`,
+		output: `atom-io-vs-others.md`,
+		source: `docs/source/pages/docs/atom-io-vs-others.mdx`,
+		title: `atom.io vs others`,
+		url: `/docs/atom-io-vs-others`,
 	},
 	{
 		output: `understand-atom-io.md`,
 		source: `docs/source/pages/docs/understand-atom-io.mdx`,
 		title: `understand atom.io`,
-		url: `/docs/understand-atom-io`,
+		url: `/docs`,
 	},
 	{
 		output: `atom.io.md`,
 		source: `docs/source/pages/docs/index.mdx`,
 		title: `atom.io`,
-		url: `/docs`,
+		url: `/docs/atom-io`,
 	},
 	{
 		output: `atom.io-react.md`,

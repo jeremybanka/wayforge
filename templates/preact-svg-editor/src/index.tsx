@@ -15,7 +15,7 @@ export function App(): VNode {
 					<Resource
 						title="Learn Atom.io"
 						description="Atom.io is where data lives."
-						href="https://atom.io.fyi/docs/getting-started"
+						href="https://atom.io.fyi/docs/tutorial"
 					/>
 					<Resource
 						title="Learn Preact"
