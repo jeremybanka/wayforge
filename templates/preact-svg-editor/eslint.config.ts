@@ -1,8 +1,8 @@
+import eslintReact from "@eslint-react/eslint-plugin"
 import { default as TypeScriptPlugin } from "@typescript-eslint/eslint-plugin"
 import * as parser from "@typescript-eslint/parser"
 import AtomIOPlugin from "atom.io/eslint-plugin"
 import type { ESLint, Linter } from "eslint"
-import PreactConfig from "eslint-config-preact"
 import * as ImportPlugin from "eslint-plugin-import-x"
 import { default as SimpleImportSortPlugin } from "eslint-plugin-simple-import-sort"
 
@@ -160,10 +160,25 @@ const commonRules = {
 	quotes: [ERROR, `backtick`],
 } satisfies Linter.Config[`rules`]
 
+const eslintReactConfig = eslintReact.configs[
+	`recommended-typescript`
+] satisfies Linter.Config
+
 const configs: Linter.Config[] = [
-	...PreactConfig,
 	{
 		ignores: [`**/dist/**`, `**/gen/**`, `**/node_modules/**`],
+	},
+	{
+		...eslintReactConfig,
+		files: [`**/*.ts{,x}`],
+		settings: {
+			...eslintReactConfig.settings,
+			"react-x": {
+				...eslintReactConfig.settings?.[`react-x`],
+				importSource: `preact`,
+				version: `detect`,
+			},
+		},
 	},
 	{
 		languageOptions: { parser, parserOptions },
