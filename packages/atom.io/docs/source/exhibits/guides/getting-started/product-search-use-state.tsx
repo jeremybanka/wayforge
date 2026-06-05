@@ -1,6 +1,7 @@
 import * as React from "react"
+import type { JSX } from "react/jsx-runtime"
 
-export function ProductSearch() {
+export function ProductSearch(): JSX.Element {
 	const [query, setQuery] = React.useState(``)
 	const normalizedQuery = query.trim().toLowerCase()
 	const searchLabel = normalizedQuery || `everything`
