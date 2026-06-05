@@ -10,6 +10,8 @@ import LastSavedIntervalUseEffect from "x/guides/getting-started/last-saved-inte
 import LastSavedTimerAtomEffect from "x/guides/getting-started/last-saved-timer-atom-effect.gen";
 import TicketFilterContextProvider from "x/guides/getting-started/ticket-filter-context-provider.gen";
 import TicketFilterAtom from "x/guides/getting-started/ticket-filter-atom.gen";
+import TaskBoardUseCallbackRollback from "x/guides/getting-started/task-board-use-callback-rollback.gen";
+import TaskBoardTransaction from "x/guides/getting-started/task-board-transaction.gen";
 
 # getting started
 
@@ -89,6 +91,24 @@ The two components still share the same state, but there is no provider wrapper 
 context hook to maintain.
 
 <TicketFilterAtom client:load />
+
+<h2 id="replace-react-use-callback">replace React useCallback</h2>
+
+Some event handlers update more than one independent state. In a task board, marking a
+task done might remove it from one list and add it to another. If validation can throw
+between those writes, the callback has to restore both states by hand.
+
+<TaskBoardUseCallbackRollback client:load />
+
+<h3 id="replace-the-callback-with-a-transaction">
+  replace the callback with a transaction
+</h3>
+
+Move the coordinated writes into a transaction, and keep the error message in atom state
+too. If the transaction throws, `atom.io` aborts it: the intermediate changes stay in the
+transaction store and never reach the store React observes.
+
+<TaskBoardTransaction client:load />
 
 <h2 id="replace-react-localStorage-effect">
   {`replace React localStorage effect`}
