@@ -12,6 +12,7 @@ import TicketFilterContextProvider from "x/guides/getting-started/ticket-filter-
 import TicketFilterAtom from "x/guides/getting-started/ticket-filter-atom.gen";
 import TaskBoardUseCallbackRollback from "x/guides/getting-started/task-board-use-callback-rollback.gen";
 import TaskBoardTransaction from "x/guides/getting-started/task-board-transaction.gen";
+import TaskBoardNestedTransaction from "x/guides/getting-started/task-board-nested-transaction.gen";
 
 # getting started
 
@@ -109,6 +110,16 @@ too. If the transaction throws, `atom.io` aborts it: the intermediate changes st
 transaction store and never reach the store React observes.
 
 <TaskBoardTransaction client:load />
+
+<h3 id="move-the-handler-into-a-nested-transaction">
+  move the handler into a nested transaction
+</h3>
+
+Finally, make the handler itself a transaction. It clears the error, `run`s the
+error-prone transaction, catches any failure, and writes the error message. The component
+only observes state and starts the transaction.
+
+<TaskBoardNestedTransaction client:load />
 
 <h2 id="replace-react-localStorage-effect">
   {`replace React localStorage effect`}
