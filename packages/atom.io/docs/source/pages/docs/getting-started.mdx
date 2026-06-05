@@ -8,6 +8,8 @@ import SidebarLocalStorageUseEffect from "x/guides/getting-started/sidebar-local
 import SidebarLocalStorageEffectHooks from "x/guides/getting-started/sidebar-local-storage-effect-hooks.gen";
 import LastSavedIntervalUseEffect from "x/guides/getting-started/last-saved-interval-use-effect.gen";
 import LastSavedTimerAtomEffect from "x/guides/getting-started/last-saved-timer-atom-effect.gen";
+import TicketFilterContextProvider from "x/guides/getting-started/ticket-filter-context-provider.gen";
+import TicketFilterAtom from "x/guides/getting-started/ticket-filter-atom.gen";
 
 # getting started
 
@@ -70,6 +72,23 @@ editable value and one selector for the value derived from it.
 
 You can keep both tokens private to this file, or export either token later if another
 component needs to observe or update the same state.
+
+<h2 id="replace-react-context-state">replace React context state</h2>
+
+React context is often the next step after `useState`: one component controls a value,
+another component reads it, and a provider gets added so they can stay in sync.
+
+<TicketFilterContextProvider client:load />
+
+<h3 id="replace-the-context-wrapper-with-an-atom">
+  replace the context wrapper with an atom
+</h3>
+
+Move the shared value into an atom, then read or update it directly from each component.
+The two components still share the same state, but there is no provider wrapper or custom
+context hook to maintain.
+
+<TicketFilterAtom client:load />
 
 <h2 id="replace-react-localStorage-effect">
   {`replace React localStorage effect`}
