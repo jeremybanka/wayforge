@@ -118,10 +118,18 @@ table {
 	--bg-soft-glass-1: #333a;
 	--bg-soft-glass-2: #333c;
 	--bg-soft-glass-3: #333e;
+	--noise-opacity: 0.2;
+	--fill-hard-blend-mode: multiply;
+	--fill-hard-opacity: 0.33;
+	--fill-hard-color: var(--bg-hard-1);
+	--fill-soft-blend-mode: screen;
+	--fill-soft-opacity: 0.25;
+	--fill-soft-color: #555;
+
 	--hyperlink-color: #09f;
 	--hyperlink-hover-color: #0df;
 	--hyperlink-visited-color: #99f;
-	--noise-opacity: 0.2;
+
 	@media (prefers-color-scheme: light) {
 		--color-light: #f9f9f9;
 		--color-dark: #333;
@@ -149,6 +157,12 @@ table {
 		--bg-soft-glass-2: #fffa;
 		--bg-soft-glass-3: #fffc;
 		--noise-opacity: 0.5;
+		--fill-hard-blend-mode: soft-light;
+		--fill-hard-color: var(--bg-hard-1);
+		--fill-hard-opacity: 0.75;
+		--fill-soft-blend-mode: multiply;
+		--fill-soft-opacity: 0.75;
+		--fill-soft-color: var(--bg-soft-2);
 
 		--hyperlink-color: #08f;
 		--hyperlink-hover-color: #04f;

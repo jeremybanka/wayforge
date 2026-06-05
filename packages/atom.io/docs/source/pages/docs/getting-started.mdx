@@ -37,7 +37,7 @@ Add `atom.io` to the app you already have:
 Most React apps have a component like this: a local input value, a derived display value,
 and an event handler that updates state.
 
-<ProductSearchUseState client:load />
+<ProductSearchUseState client:load soft />
 
 <h3 id="extract-state-to-an-atom">model state with atom</h3>
 
@@ -45,7 +45,7 @@ First, add an atom just outside the component. Keeping it in the same file is a 
 step: the token is module-local, so this does not create a new public state API for the
 rest of the app.
 
-<ProductSearchWithAtom client:load />
+<ProductSearchWithAtom client:load soft />
 
 <h3 id="replace-use-state-with-use-i-and-use-o">
   {`replace useState with useI and useO`}
@@ -54,7 +54,7 @@ rest of the app.
 Then replace `useState` with `useO` and `useI`. `useO` reads the atom's current value.
 `useI` returns the setter for that atom.
 
-<ProductSearchAtomHooks client:load />
+<ProductSearchAtomHooks client:load soft />
 
 The component should behave the same way it did before. The difference is that the state
 now has a stable token.
@@ -64,7 +64,7 @@ now has a stable token.
 Next, move the derived search label into a selector. Like the atom, this selector can stay
 private to the module until another component needs it.
 
-<ProductSearchWithSelector client:load />
+<ProductSearchWithSelector client:load soft />
 
 <h3 id="read-the-selector-with-use-o">read the selector with useO</h3>
 
@@ -81,10 +81,10 @@ component needs to observe or update the same state.
 React context is often the next step after `useState`: one component controls a value,
 another component reads it, and a provider gets added so they can stay in sync.
 
-<TicketFilterContextProvider client:load />
+<TicketFilterContextProvider client:load soft />
 
 <h3 id="replace-the-context-wrapper-with-an-atom">
-  replace the context wrapper with an atom
+  {`replace the context wrapper with an atom`}
 </h3>
 
 Move the shared value into an atom, then read or update it directly from each component.
@@ -99,17 +99,17 @@ Some event handlers update more than one independent state. In a task board, mar
 task done might remove it from one list and add it to another. If validation can throw
 between those writes, the callback has to restore both states by hand.
 
-<TaskBoardUseCallbackRollback client:load />
+<TaskBoardUseCallbackRollback client:load soft />
 
 <h3 id="replace-the-callback-with-a-transaction">
-  replace the callback with a transaction
+  {`replace the callback with a transaction`}
 </h3>
 
 Move the coordinated writes into a transaction, and keep the error message in atom state
 too. If the transaction throws, `atom.io` aborts it: the intermediate changes stay in the
 transaction store and never reach the store React observes.
 
-<TaskBoardTransaction client:load />
+<TaskBoardTransaction client:load soft />
 
 <h3 id="move-the-handler-into-a-nested-transaction">
   move the handler into a nested transaction
@@ -129,7 +129,7 @@ Another common React pattern is synchronizing local UI state with a browser API.
 example, a sidebar preference might read from `localStorage` when the component mounts,
 then write back whenever the user changes it.
 
-<SidebarLocalStorageUseEffect client:load />
+<SidebarLocalStorageUseEffect client:load soft />
 
 <h3 id="replace-use-effect-with-storage-sync">
   {`replace useEffect with storageSync`}
@@ -147,7 +147,7 @@ the state definition instead of in the render tree.
 Timers are another common effect hiding inside React components. A last-saved indicator,
 for example, might keep a ticking `now` value just so the label can update every second.
 
-<LastSavedIntervalUseEffect client:load />
+<LastSavedIntervalUseEffect client:load soft />
 
 <h3 id="replace-use-effect-with-timer-atom">
   {`replace useEffect with a timer atom`}
