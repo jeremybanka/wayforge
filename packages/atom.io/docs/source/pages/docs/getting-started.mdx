@@ -6,6 +6,8 @@ import ProductSearchWithSelector from "x/guides/getting-started/product-search-w
 import ProductSearchSelectorHooks from "x/guides/getting-started/product-search-selector-hooks.gen";
 import SidebarLocalStorageUseEffect from "x/guides/getting-started/sidebar-local-storage-use-effect.gen";
 import SidebarLocalStorageEffectHooks from "x/guides/getting-started/sidebar-local-storage-effect-hooks.gen";
+import LastSavedIntervalUseEffect from "x/guides/getting-started/last-saved-interval-use-effect.gen";
+import LastSavedTimerAtomEffect from "x/guides/getting-started/last-saved-timer-atom-effect.gen";
 
 # getting started
 
@@ -41,7 +43,7 @@ rest of the app.
 <ProductSearchWithAtom client:load />
 
 <h3 id="replace-use-state-with-use-i-and-use-o">
-  replace useState with useI and useO
+  {`replace useState with useI and useO`}
 </h3>
 
 Then replace `useState` with `useO` and `useI`. `useO` reads the atom's current value.
@@ -70,7 +72,7 @@ You can keep both tokens private to this file, or export either token later if a
 component needs to observe or update the same state.
 
 <h2 id="replace-react-localStorage-effect">
-  replace React localStorage effect
+  {`replace React localStorage effect`}
 </h2>
 
 Another common React pattern is synchronizing local UI state with a browser API. For
@@ -87,3 +89,22 @@ Now the component only reads and updates atom state. The local-storage behavior 
 the state definition instead of in the render tree.
 
 <SidebarLocalStorageEffectHooks client:load />
+
+<h2 id="replace-react-setInterval-effect">
+  {`replace React setInterval effect`}
+</h2>
+
+Timers are another common effect hiding inside React components. A last-saved indicator,
+for example, might keep a ticking `now` value just so the label can update every second.
+
+<LastSavedIntervalUseEffect client:load />
+
+<h3 id="replace-use-effect-with-timer-atom">
+  {`replace useEffect with a timer atom`}
+</h3>
+
+Move the interval into a custom atom effect, then derive the display label with a selector.
+The component only reads the selector, while the timer and cleanup behavior live with the
+state definition.
+
+<LastSavedTimerAtomEffect client:load />
