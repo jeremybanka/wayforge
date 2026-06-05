@@ -63,7 +63,7 @@
 		"react-dom": "19.2.7",
 		"react-router-dom": "7.16.0",
 		"takua": "workspace:*",
-		"tsdown": "0.22.1",
+		"tsdown": "0.22.2",
 		"vite-plugin-dts": "5.0.2",
 		"vitest": "4.1.8"
 	},
