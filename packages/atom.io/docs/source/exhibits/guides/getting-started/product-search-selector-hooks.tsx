@@ -1,5 +1,6 @@
 import { atom, selector } from "atom.io"
 import { useI, useO } from "atom.io/react"
+import type { JSX } from "react/jsx-runtime"
 
 const productSearchQueryAtom = atom<string>({
 	key: `productSearchQuery`,
@@ -15,7 +16,7 @@ const productSearchLabelSelector = selector<string>({
 	},
 })
 
-export function ProductSearch() {
+export function ProductSearch(): JSX.Element {
 	const query = useO(productSearchQueryAtom)
 	const setQuery = useI(productSearchQueryAtom)
 	const searchLabel = useO(productSearchLabelSelector)

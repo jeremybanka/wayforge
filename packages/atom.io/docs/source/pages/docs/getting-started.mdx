@@ -4,6 +4,8 @@ import ProductSearchWithAtom from "x/guides/getting-started/product-search-with-
 import ProductSearchAtomHooks from "x/guides/getting-started/product-search-atom-hooks.gen";
 import ProductSearchWithSelector from "x/guides/getting-started/product-search-with-selector.gen";
 import ProductSearchSelectorHooks from "x/guides/getting-started/product-search-selector-hooks.gen";
+import SidebarLocalStorageUseEffect from "x/guides/getting-started/sidebar-local-storage-use-effect.gen";
+import SidebarLocalStorageEffectHooks from "x/guides/getting-started/sidebar-local-storage-effect-hooks.gen";
 
 # getting started
 
@@ -23,7 +25,7 @@ Add `atom.io` to the app you already have:
   code={`pnpm add atom.io`}
 />
 
-<h2 id="replace-react-usestate">replace React.useState</h2>
+<h2 id="replace-react-use-state">replace React.useState</h2>
 
 Most React apps have a component like this: a local input value, a derived display value,
 and an event handler that updates state.
@@ -38,7 +40,7 @@ rest of the app.
 
 <ProductSearchWithAtom client:load />
 
-<h3 id="replace-usestate-with-use-i-and-use-o">
+<h3 id="replace-use-state-with-use-i-and-use-o">
   replace useState with useI and useO
 </h3>
 
@@ -57,7 +59,7 @@ private to the module until another component needs it.
 
 <ProductSearchWithSelector client:load />
 
-<h3 id="read-the-selector-with-useo">read the selector with useO</h3>
+<h3 id="read-the-selector-with-use-o">read the selector with useO</h3>
 
 Finally, read the selector with `useO` too. The component now observes one atom for the
 editable value and one selector for the value derived from it.
@@ -66,3 +68,22 @@ editable value and one selector for the value derived from it.
 
 You can keep both tokens private to this file, or export either token later if another
 component needs to observe or update the same state.
+
+<h2 id="replace-react-localStorage-effect">
+  replace React localStorage effect
+</h2>
+
+Another common React pattern is synchronizing local UI state with a browser API. For
+example, a sidebar preference might read from `localStorage` when the component mounts,
+then write back whenever the user changes it.
+
+<SidebarLocalStorageUseEffect client:load />
+
+<h3 id="replace-use-effect-with-storage-sync">
+  {`replace useEffect with storageSync`}
+</h3>
+
+Now the component only reads and updates atom state. The local-storage behavior lives with
+the state definition instead of in the render tree.
+
+<SidebarLocalStorageEffectHooks client:load />
