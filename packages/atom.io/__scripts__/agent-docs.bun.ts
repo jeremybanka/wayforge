@@ -44,6 +44,12 @@ const SHOULD_WRITE_SITE_OUTPUT = process.argv.includes(`--site`)
 
 const DOC_PAGES: DocPage[] = [
 	{
+		output: `getting-started.md`,
+		source: `docs/source/pages/docs/getting-started.mdx`,
+		title: `getting started`,
+		url: `/docs/getting-started`,
+	},
+	{
 		output: `tutorial.md`,
 		source: `docs/source/pages/docs/tutorial.mdx`,
 		title: `tutorial`,

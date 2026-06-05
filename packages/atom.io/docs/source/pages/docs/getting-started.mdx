@@ -1,0 +1,68 @@
+import { CodeBlock } from "c/CodeBlock";
+import ProductSearchUseState from "x/guides/getting-started/product-search-use-state.gen";
+import ProductSearchWithAtom from "x/guides/getting-started/product-search-with-atom.gen";
+import ProductSearchAtomHooks from "x/guides/getting-started/product-search-atom-hooks.gen";
+import ProductSearchWithSelector from "x/guides/getting-started/product-search-with-selector.gen";
+import ProductSearchSelectorHooks from "x/guides/getting-started/product-search-selector-hooks.gen";
+
+# getting started
+
+This guide is for evaluating `atom.io` inside an existing React app.
+
+Start with one small state that already exists in your app. The best first move is often
+to replace a familiar `React.useState` call without changing the component's behavior.
+
+<h2 id="install">install</h2>
+
+Add `atom.io` to the app you already have:
+
+<CodeBlock
+  client:load
+  filepath="sample.sh"
+  label="install"
+  code={`pnpm add atom.io`}
+/>
+
+<h2 id="replace-react-usestate">replace React.useState</h2>
+
+Most React apps have a component like this: a local input value, a derived display value,
+and an event handler that updates state.
+
+<ProductSearchUseState client:load />
+
+<h3 id="extract-state-to-an-atom">model state with atom</h3>
+
+First, add an atom just outside the component. Keeping it in the same file is a good first
+step: the token is module-local, so this does not create a new public state API for the
+rest of the app.
+
+<ProductSearchWithAtom client:load />
+
+<h3 id="replace-usestate-with-use-i-and-use-o">
+  replace useState with useI and useO
+</h3>
+
+Then replace `useState` with `useO` and `useI`. `useO` reads the atom's current value.
+`useI` returns the setter for that atom.
+
+<ProductSearchAtomHooks client:load />
+
+The component should behave the same way it did before. The difference is that the state
+now has a stable token.
+
+<h3 id="view-data-with-selector">derive a view with selector</h3>
+
+Next, move the derived search label into a selector. Like the atom, this selector can stay
+private to the module until another component needs it.
+
+<ProductSearchWithSelector client:load />
+
+<h3 id="read-the-selector-with-useo">read the selector with useO</h3>
+
+Finally, read the selector with `useO` too. The component now observes one atom for the
+editable value and one selector for the value derived from it.
+
+<ProductSearchSelectorHooks client:load />
+
+You can keep both tokens private to this file, or export either token later if another
+component needs to observe or update the same state.

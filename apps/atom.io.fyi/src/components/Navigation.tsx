@@ -186,6 +186,11 @@ function SiteDirectory(): VNode {
 							</a>
 						</section>
 						<section>
+							<a id="-docs-getting-started-link" href="/docs/getting-started">
+								getting started
+							</a>
+						</section>
+						<section>
 							<a id="-docs-tutorial-link" href="/docs/tutorial">
 								tutorial
 							</a>
