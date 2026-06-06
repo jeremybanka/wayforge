@@ -1,7 +1,7 @@
 import * as React from "react"
 import type { JSX } from "react/jsx-runtime"
 
-type TicketStatus = `open` | `closed`
+type TicketStatus = `closed` | `open`
 
 type TicketFilterContextValue = {
 	status: TicketStatus
