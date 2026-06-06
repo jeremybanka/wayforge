@@ -13,6 +13,8 @@ import TicketFilterAtom from "x/guides/getting-started/ticket-filter-atom.gen";
 import TaskBoardUseCallbackRollback from "x/guides/getting-started/task-board-use-callback-rollback.gen";
 import TaskBoardTransaction from "x/guides/getting-started/task-board-transaction.gen";
 import TaskBoardNestedTransaction from "x/guides/getting-started/task-board-nested-transaction.gen";
+import DashboardSummaryReactQuery from "x/guides/getting-started/dashboard-summary-react-query.gen";
+import DashboardSummaryLoadableAtom from "x/guides/getting-started/dashboard-summary-loadable-atom.gen";
 
 # getting started
 
@@ -120,6 +122,23 @@ error-prone transaction, catches any failure, and writes the error message. The 
 only observes state and starts the transaction.
 
 <TaskBoardNestedTransaction client:load />
+
+<h2 id="replace-react-query">replace React Query</h2>
+
+React Query is a common first home for server state: a query function, a query key, and
+component branches for loading, error, and refresh states.
+
+<DashboardSummaryReactQuery client:load soft />
+
+<h3 id="replace-use-query-with-a-loadable-atom">
+  {`replace useQuery with a Loadable atom`}
+</h3>
+
+Move the query function into a `Loadable` atom, then read it with `useLoadable`. The
+component still gets a value, a loading flag, and an error, but the loading state now has
+an `atom.io` token that other components can share.
+
+<DashboardSummaryLoadableAtom client:load />
 
 <h2 id="replace-react-localStorage-effect">
   {`replace React localStorage effect`}
