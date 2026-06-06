@@ -15,6 +15,8 @@ import TaskBoardTransaction from "x/guides/getting-started/task-board-transactio
 import TaskBoardNestedTransaction from "x/guides/getting-started/task-board-nested-transaction.gen";
 import DashboardSummaryReactQuery from "x/guides/getting-started/dashboard-summary-react-query.gen";
 import DashboardSummaryLoadableAtom from "x/guides/getting-started/dashboard-summary-loadable-atom.gen";
+import ShoppingCartZustandStore from "x/guides/getting-started/shopping-cart-zustand-store.gen";
+import ShoppingCartAtomIO from "x/guides/getting-started/shopping-cart-atom-io.gen";
 
 # getting started
 
@@ -95,6 +97,23 @@ context hook to maintain.
 
 <TicketFilterAtom client:load />
 
+<h2 id="replace-zustand-store">replace Zustand store</h2>
+
+If you have Zustand in the app, you probably introduced it for exactly this kind of
+state: shared values, selectors, and actions living together in one hook-shaped store.
+
+<ShoppingCartZustandStore client:load soft />
+
+<h3 id="split-the-store-into-atoms-selectors-and-transactions">
+  {`split the store into atoms, selectors, and transactions`}
+</h3>
+
+Move collection keys into one atom, each item into an atom family, derived views into
+selectors, and store actions into transactions. Components still subscribe to exactly
+the state they need, but each piece now has its own `atom.io` token.
+
+<ShoppingCartAtomIO client:load />
+
 <h2 id="replace-react-use-callback">replace React useCallback</h2>
 
 Some event handlers update more than one independent state. In a task board, marking a
@@ -114,7 +133,7 @@ transaction store and never reach the store React observes.
 <TaskBoardTransaction client:load soft />
 
 <h3 id="move-the-handler-into-a-nested-transaction">
-  move the handler into a nested transaction
+  {`move the handler into a nested transaction`}
 </h3>
 
 Finally, make the handler itself a transaction. It clears the error, `run`s the
