@@ -2,7 +2,7 @@ import { atom } from "atom.io"
 import { useI, useO } from "atom.io/react"
 import type { JSX } from "react/jsx-runtime"
 
-type TicketStatus = `open` | `closed`
+type TicketStatus = `closed` | `open`
 
 const ticketStatusAtom = atom<TicketStatus>({
 	key: `ticketStatus`,
