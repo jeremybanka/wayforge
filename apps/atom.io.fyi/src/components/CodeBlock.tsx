@@ -6,6 +6,7 @@ type CodeBlockProps = {
 	filepath?: string
 	label?: string
 	code?: string
+	soft?: boolean
 	children?: ComponentChildren
 }
 
@@ -57,6 +58,7 @@ export function CodeBlock({
 	filepath,
 	label,
 	code: codeProp,
+	soft = false,
 	children,
 }: CodeBlockProps): VNode {
 	const myRef = React.useRef<HTMLSpanElement>(null)
@@ -82,6 +84,7 @@ export function CodeBlock({
 	}, [code, filepath])
 	return (
 		<span className="codeblock" id={getCodeBlockId(displayLabel)} ref={myRef}>
+			<back-fill className={soft ? `soft` : `hard`} />
 			<header>
 				<span>{displayLabel}</span>
 				<button
