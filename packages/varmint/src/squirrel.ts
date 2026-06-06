@@ -115,7 +115,6 @@ export class Squirrel {
 			const {
 				filename: mostSimilarInputFilename,
 				contents: mostSimilarInputRawContent,
-				// biome-ignore lint/style/noNonNullAssertion: the way this is set up, it's guaranteed to be there
 			} = allInputsMap.get(mostSimilarInputPlain)!
 			const mostSimilarInputContentsColor = `\t\t${inspect(
 				JSON.parse(mostSimilarInputRawContent),

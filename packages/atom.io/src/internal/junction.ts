@@ -327,7 +327,6 @@ export class Junction<
 			}
 		}
 		switch (this.cardinality) {
-			// biome-ignore lint/suspicious/noFallthroughSwitchClause: perfect here
 			case `1:1`: {
 				const bPrev = this.getRelatedKey(a)
 				if (bPrev && bPrev !== b) this.delete(a, bPrev)

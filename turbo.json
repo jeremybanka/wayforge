@@ -69,9 +69,6 @@
 				"__scripts__/**/*.ts"
 			]
 		},
-		"lint:biome": {
-			"cache": false
-		},
 		"lint:eslint": {
 			"dependsOn": ["atom.io#build", "gen"],
 			"inputs": [

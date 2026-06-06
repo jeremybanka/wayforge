@@ -259,7 +259,6 @@ function joinTransaction(
 				unsubscribe()
 				tl.transactionKey = null
 				if (tl.timeTraveling === null && currentTxInstanceId) {
-					// biome-ignore lint/style/noNonNullAssertion: we are in the context of this timeline
 					const timelineTopics = store.timelineTopics.getRelatedKeys(tl.key)!
 
 					const subEventsFiltered = filterTransactionSubEvents(

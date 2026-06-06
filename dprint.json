@@ -4,13 +4,14 @@
 	"useTabs": true,
 	"indentWidth": 2,
 	"includes": [
-		"**/*.{ts,tsx,js,jsx,mjs,cjs,json,jsonc,md,mdx,css,astro}"
+		"**/*.{ts,tsx,js,jsx,mjs,cjs,json,jsonc,md,mdx,css,astro,yml,yaml}"
 	],
 	"excludes": [
 		"**/metafile-*",
 		"**/*.cache.json",
 		"**/*.gen.ts",
 		"**/*.gen.tsx",
+		"**/pnpm-lock.yaml",
 		"**/*.scss",
 		"**/*.tsdoc.json",
 		"**/.astro/**",
@@ -46,13 +47,17 @@
 		"useTabs": true,
 		"indentWidth": 2,
 		"printWidth": 81,
-		"scriptFormatter": "biome"
+		"scriptFormatter": "dprint"
+	},
+	"yaml": {
+		"associations": ["**/*.{yml,yaml}"]
 	},
 	"plugins": [
 		"./node_modules/@dprint/oxc/plugin.wasm",
 		"./node_modules/@dprint/json/plugin.wasm",
 		"./node_modules/@dprint/markdown/plugin.wasm",
 		"./node_modules/dprint-plugin-malva/plugin.wasm",
-		"./node_modules/dprint-plugin-markup/plugin.wasm"
+		"./node_modules/dprint-plugin-markup/plugin.wasm",
+		"./node_modules/dprint-plugin-yaml/plugin.wasm"
 	]
 }

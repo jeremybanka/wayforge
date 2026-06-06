@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-shadow */ // need host on both sides
-/** biome-ignore-all lint/correctness/useHookAtTopLevel: not react hooks */
 import type { Loadable, TimelineToken } from "atom.io"
 import {
 	atom,

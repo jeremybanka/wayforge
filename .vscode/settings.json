@@ -13,7 +13,7 @@
 		"*.css": "css"
 	},
 	"json.schemaDownload.trustedDomains": {
-		"https://biomejs.dev/": true,
+		"https://dprint.dev": true,
 		"https://docs.renovatebot.com/": true,
 		"https://turbo.build/": true
 	},

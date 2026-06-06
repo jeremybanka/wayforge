@@ -81,7 +81,7 @@ export default function main(mode: string): void {
 						TSCONFIG_JSON_PATH,
 						JSON.stringify(newTsconfigJson, null, 2),
 					)
-					execSync(`biome format tsconfig.prod.json --write`)
+					execSync(`dprint fmt tsconfig.prod.json`)
 					logger.info(`included`, newTsconfigJson.include)
 					logger.info(`done`, `Updated tsconfig.prod.json`)
 				}
