@@ -20,10 +20,15 @@ import ShoppingCartAtomIO from "x/guides/getting-started/shopping-cart-atom-io.g
 
 # getting started
 
-This guide is for evaluating `atom.io` inside an existing React app.
+We think React is the habitat where the need for `atom.io` tends to form: local state
+spreads across components, effects turn into synchronization logic, and wrapper hooks
+start carrying more architecture than they meant to. So these guides are oriented around
+common situations in an existing React app.
 
-Start with one small state that already exists in your app. The best first move is often
-to replace a familiar `React.useState` call without changing the component's behavior.
+`atom.io` is not React-only. You can use it with Preact, Solid, and non-browser runtimes
+too. But if you are evaluating it from a React codebase, start with
+[one small state](#replace-react-use-state) that already exists in your app and port it
+without changing the component's behavior.
 
 <h2 id="install">install</h2>
 
@@ -35,6 +40,8 @@ Add `atom.io` to the app you already have:
   label="install"
   code={`pnpm add atom.io`}
 />
+
+That's it! `atom.io` delivers its entire SDK in one package. (And it ships all the docs on this website in an easy-to-read format.)
 
 <h2 id="replace-react-use-state">replace React.useState</h2>
 
