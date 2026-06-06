@@ -36,7 +36,7 @@
 		"postversion": "biome format --write package.json"
 	},
 	"devDependencies": {
-		"@types/node": "25.9.1",
+		"@types/node": "25.9.2",
 		"@typescript/native-preview": "7.0.0-dev.20260606.1",
 		"@vitest/coverage-v8": "4.1.8",
 		"concurrently": "10.0.3",
