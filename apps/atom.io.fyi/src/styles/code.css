@@ -122,6 +122,7 @@ astro-island {
 		}
 
 		> pre.prismjs {
+			mix-blend-mode: var(--fill-soft-blend-mode);
 			z-index: 0;
 			border-radius: 0px 0px 3px 3px;
 			/* background-color: var(--bg-soft-glass-1); */
@@ -194,8 +195,22 @@ astro-island {
 				&.number {
 					color: var(--number-color);
 				}
+				&.plain-text {
+					color: var(--string-color);
+				}
 				&.string {
 					color: var(--string-color);
+				}
+				&.tag {
+					&:not(.language-javascript, .attr-name, .attr-value, .punctuation) {
+						color: var(--function-color);
+					}
+					&.attr-value:not(.attr-equals) {
+						color: var(--string-color);
+					}
+					&.class-name {
+						color: var(--type-color);
+					}
 				}
 				&.type {
 					color: var(--type-color);
@@ -206,6 +221,15 @@ astro-island {
 						color: var(--base-color);
 					}
 				}
+			}
+		}
+		span.token.tag > span.token.tag {
+			color: var(--function-color);
+			> span.token.class-name {
+				color: var(--function-color);
+			}
+			> span.token.punctuation {
+				color: var(--punctuation-color);
 			}
 		}
 	}
