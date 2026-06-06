@@ -58,18 +58,18 @@ article.docs-layout {
 				font-weight: 500;
 				font-size: 15px;
 				color: var(--fg-soft-1);
-				background-color: var(--bg-soft-2);
 				border-radius: 3px;
 				padding: 1px 2px;
 			}
 		}
 	}
 	table {
+		mix-blend-mode: var(--fill-soft-blend-mode);
 		margin-top: 1em;
 		border-collapse: collapse;
 		tbody {
 			background: var(--bg-hard-1);
-			border: #0003 solid 1px;
+			border: var(--bg-soft-3) solid 2px;
 			border-radius: 3px;
 			* {
 				border: none;
@@ -90,7 +90,10 @@ article.docs-layout {
 
 				td {
 					padding: 6px 4px;
-					border-bottom: 1px solid #0003;
+					border-bottom: 2px solid var(--bg-soft-3);
+					> code {
+						background-color: transparent;
+					}
 				}
 			}
 		}

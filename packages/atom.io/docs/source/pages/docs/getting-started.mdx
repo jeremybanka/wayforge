@@ -1,290 +1,205 @@
 import { CodeBlock } from "c/CodeBlock";
+import ProductSearchUseState from "x/guides/getting-started/before-product-search-use-state.gen";
+import ProductSearchWithAtom from "x/guides/getting-started/wip-product-search-atom.gen";
+import ProductSearchAtomHooks from "x/guides/getting-started/wip-product-search-atom-hooks.gen";
+import ProductSearchWithSelector from "x/guides/getting-started/wip-product-search-selector.gen";
+import ProductSearchSelectorHooks from "x/guides/getting-started/after-product-search-selector-hooks.gen";
+import SidebarLocalStorageUseEffect from "x/guides/getting-started/before-sidebar-local-storage-use-effect.gen";
+import SidebarLocalStorageEffectHooks from "x/guides/getting-started/after-sidebar-local-storage-sync-atom.gen";
+import LastSavedIntervalUseEffect from "x/guides/getting-started/before-last-saved-interval-use-effect.gen";
+import LastSavedTimerAtomEffect from "x/guides/getting-started/after-last-saved-timer-atom-selector.gen";
+import TicketFilterContextProvider from "x/guides/getting-started/before-ticket-filter-context-provider.gen";
+import TicketFilterAtom from "x/guides/getting-started/after-ticket-filter-atom.gen";
+import TaskBoardUseCallbackRollback from "x/guides/getting-started/before-task-board-use-callback-rollback.gen";
+import TaskBoardTransaction from "x/guides/getting-started/wip-task-board-transaction.gen";
+import TaskBoardNestedTransaction from "x/guides/getting-started/after-task-board-nested-transaction.gen";
+import DashboardSummaryReactQuery from "x/guides/getting-started/before-dashboard-summary-react-query.gen";
+import DashboardSummaryLoadableAtom from "x/guides/getting-started/after-dashboard-summary-loadable-atom.gen";
+import ShoppingCartZustandStore from "x/guides/getting-started/before-shopping-cart-zustand-store.gen";
+import ShoppingCartAtomIO from "x/guides/getting-started/after-shopping-cart-atoms-selectors-transactions.gen";
 
 # getting started
 
-The fastest way to understand `atom.io` is to start with something interactive.
+We think React is the habitat where the need for `atom.io` tends to form: local state
+spreads across components, effects turn into synchronization logic, and wrapper hooks
+start carrying more architecture than they meant to. So these guides are oriented around
+common situations in an existing React app.
 
-In this guide, we'll create the `Preact SVG Editor` template, run it locally, and make a few small changes that show how `atom.io` models state.
+`atom.io` is not React-only. You can use it with Preact, Solid, and non-browser runtimes
+too. But if you are evaluating it from a React codebase, start with
+[one small state](#replace-react-use-state) that already exists in your app and port it
+without changing the component's behavior.
 
-By the end, you'll have seen:
+<h2 id="install">install</h2>
 
-- `atom`: one piece of reactive state
-- `atomFamily`: many related pieces of state
-- `selectorFamily`: derived state
-- `transaction`: coordinated updates
-- `useO`: reading reactive state into UI
-
-## before you begin
-
-This guide uses `node` and `pnpm`.
-
-- node: https://nodejs.org/en/download/
-- pnpm: https://pnpm.io/installation
-
-## create a project
-
-Start a new app:
+Add `atom.io` to the app you already have:
 
 <CodeBlock
-	client:load
-	filepath="sample.sh"
-	label="create a project"
-	code={`pnpm create atom.io`}
+  client:load
+  filepath="sample.sh"
+  label="install"
+  code={`pnpm add atom.io`}
 />
 
-When prompted, choose:
+That's it! `atom.io` delivers its entire SDK in one package. (And it ships all the docs on this website in an easy-to-read format.)
 
-- `Preact SVG Editor`
-- a new project directory such as `my-atom-app`
+<h2 id="replace-react-use-state">replace React.useState</h2>
 
-Then start the dev server:
+Most React apps have a component like this: a local input value, a derived display value,
+and an event handler that updates state.
 
-<CodeBlock
-	client:load
-	filepath="sample.sh"
-	label="start the dev server"
-	code={`cd my-atom-app
-pnpm dev`}
-/>
+<ProductSearchUseState client:load soft />
 
-Open the local app in your browser. You should see a draggable SVG playground built with `atom.io`, Preact, and Vite.
+<h3 id="extract-state-to-an-atom">model state with atom</h3>
 
-## how this template is organized
+First, add an atom just outside the component. Keeping it in the same file is a good first
+step: the token is module-local, so this does not create a new public state API for the
+rest of the app.
 
-The main behavior lives in `src/BezierPlayground.tsx`.
+<ProductSearchWithAtom client:load soft />
 
-That file is a good first tour of the library:
+<h3 id="replace-use-state-with-use-i-and-use-o">
+  {`replace useState with useI and useO`}
+</h3>
 
-- path ids are tracked in an `atom`
-- node positions are stored in `atomFamily`
-- SVG path strings are derived with `selectorFamily`
-- the initial scene is loaded through a `transaction`
-- the UI reads state with `useO`
+Then replace `useState` with `useO` and `useI`. `useO` reads the atom's current value.
+`useI` returns the setter for that atom.
 
-If you are new to the code, start by scanning these declarations near the top of the file:
+<ProductSearchAtomHooks client:load soft />
 
-<CodeBlock
-	client:load
-	filepath="sample.ts"
-	label="core declarations"
-	code={`const pathKeysAtom = atom<string[]>({
-	key: \`pathKeys\`,
-	default: [],
-})
-const subpathKeysAtoms = atomFamily<string[], string>({
-	key: \`subpathKeys\`,
-	default: [],
-})
-const nodeAtoms = atomFamily<PointXY | null, string>({
-	key: \`node\`,
-	default: null,
-})
-const edgeAtoms = atomFamily<EdgeXY | boolean, string>({
-	key: \`edge\`,
-	default: true,
-})
-const pathDrawSelectors = selectorFamily<string, string>({
-	key: \`pathDraw\`,
-	get:
-		(pathKey) =>
-		({ get }) => {
-			const subpathKeys = get(subpathKeysAtoms, pathKey)
-			return subpathKeys
-				.map((subpathKey, idx) => {
-					// ...
-				})
-				.join(\` \`)
-		},
-})`}
-/>
+The component should behave the same way it did before. The difference is that the state
+now has a stable token.
 
-The important mental model is:
+<h3 id="view-data-with-selector">derive a view with selector</h3>
 
-- atoms hold source-of-truth state
-- selectors derive useful views of that state
-- components subscribe to exactly what they read
+Next, move the derived search label into a selector. Like the atom, this selector can stay
+private to the module until another component needs it.
 
-## make your first change
+<ProductSearchWithSelector client:load soft />
 
-Start with something visible and low-risk: change the stage size.
+<h3 id="read-the-selector-with-use-o">read the selector with useO</h3>
 
-In `src/BezierPlayground.tsx`, find:
+Finally, read the selector with `useO` too. The component now observes one atom for the
+editable value and one selector for the value derived from it.
 
-<CodeBlock
-	client:load
-	filepath="sample.ts"
-	label="stage size"
-	code={`const WIDTH = 256
-const HEIGHT = 296`}
-/>
+<ProductSearchSelectorHooks client:load />
 
-Try changing those values, then save and drag a few points around. This shows an important property of `atom.io`: your UI can be driven by a few small state primitives, while the rendered result is derived from them.
+You can keep both tokens private to this file, or export either token later if another
+component needs to observe or update the same state.
 
-## change the look
+<h2 id="replace-react-context-state">replace React context state</h2>
 
-Next, personalize the playground.
+React context is often the next step after `useState`: one component controls a value,
+another component reads it, and a provider gets added so they can stay in sync.
 
-Inside the `svg`, try changing the fill and grid styling:
+<TicketFilterContextProvider client:load soft />
 
-<CodeBlock
-	client:load
-	filepath="sample.tsx"
-	label="stage fill"
-	code={`<rect x={0} y={0} width={WIDTH} height={HEIGHT} fill="#aaa3" />`}
-/>
+<h3 id="replace-the-context-wrapper-with-an-atom">
+  {`replace the context wrapper with an atom`}
+</h3>
 
-and:
+Move the shared value into an atom, then read or update it directly from each component.
+The two components still share the same state, but there is no provider wrapper or custom
+context hook to maintain.
 
-<CodeBlock
-	client:load
-	filepath="sample.tsx"
-	label="grid fill"
-	code={`<rect
-	x={-185}
-	y={-10}
-	width={WIDTH + 370}
-	height={HEIGHT + 20}
-	fill="url(#grid)"
-/>`}
-/>
+<TicketFilterAtom client:load />
 
-This is a small step, but it gives a fast reward: the project starts feeling like yours instead of a demo.
+<h2 id="replace-zustand-store">replace Zustand store</h2>
 
-## add snapping while dragging
+If you have Zustand in the app, you probably introduced it for exactly this kind of
+state: shared values, selectors, and actions living together in one hook-shaped store.
 
-Now make a behavior change that teaches how updates flow through state.
+<ShoppingCartZustandStore client:load soft />
 
-Find the `clamp` helper and add a `snap` helper beside it:
+<h3 id="split-the-store-into-atoms-selectors-and-transactions">
+  {`split the store into atoms, selectors, and transactions`}
+</h3>
 
-<CodeBlock
-	client:load
-	filepath="sample.ts"
-	label="snap helper"
-	code={`function snap(n: number, size: number) {
-	return Math.round(n / size) * size
-}`}
-/>
+Move collection keys into one atom, each item into an atom family, derived views into
+selectors, and store actions into transactions. Components still subscribe to exactly
+the state they need, but each piece now has its own `atom.io` token.
 
-Then, inside `onPointerMove`, snap `x` and `y` before they are written into state:
+<ShoppingCartAtomIO client:load />
 
-<CodeBlock
-	client:load
-	filepath="sample.ts"
-	label="snap before writing state"
-	code={`const { x, y } = pt.matrixTransform(ctm)
-const snappedX = snap(x, 8)
-const snappedY = snap(y, 8)
+<h2 id="replace-react-use-callback">replace React useCallback</h2>
 
-switch (draggingBy) {
-	case undefined:
-		setState(nodeAtoms, currentlyDragging, {
-			x: clamp(snappedX, -185, WIDTH + 185),
-			y: clamp(snappedY, -10, HEIGHT + 10),
-		})
-		break
-	case \`s\`:
-		setState(edgeAtoms, currentlyDragging, (prev) => ({
-			...(prev as EdgeXY),
-			s: {
-				x: clamp(snappedX, -185, WIDTH + 185),
-				y: clamp(snappedY, -10, HEIGHT + 10),
-			},
-		}))
-		break
-}`}
-/>
+Some event handlers update more than one independent state. In a task board, marking a
+task done might remove it from one list and add it to another. If validation can throw
+between those writes, the callback has to restore both states by hand.
 
-Use `snappedX` and `snappedY` in the `setState(...)` calls instead of the raw coordinates.
+<TaskBoardUseCallbackRollback client:load soft />
 
-Why this is a good first edit:
+<h3 id="replace-the-callback-with-a-transaction">
+  {`replace the callback with a transaction`}
+</h3>
 
-- dragging writes to atoms
-- selectors recompute from those atoms
-- subscribed UI updates automatically
+Move the coordinated writes into a transaction, and keep the error message in atom state
+too. If the transaction throws, `atom.io` aborts it: the intermediate changes stay in the
+transaction store and never reach the store React observes.
 
-You don't need to manually synchronize the path string with the points. That is exactly the job of derived state.
+<TaskBoardTransaction client:load soft />
 
-## notice the family pattern
+<h3 id="move-the-handler-into-a-nested-transaction">
+  {`move the handler into a nested transaction`}
+</h3>
 
-The template uses `atomFamily` because there are many nodes and edges, not just one.
+Finally, make the handler itself a transaction. It clears the error, `run`s the
+error-prone transaction, catches any failure, and writes the error message. The component
+only observes state and starts the transaction.
 
-For example:
+<TaskBoardNestedTransaction client:load />
 
-<CodeBlock
-	client:load
-	filepath="sample.ts"
-	label="atom family"
-	code={`const nodeAtoms = atomFamily<PointXY | null, string>({
-	key: \`node\`,
-	default: null,
-})`}
-/>
+<h2 id="replace-react-query">replace React Query</h2>
 
-This means each node can be looked up by a key such as `subpath12`, while still sharing one declaration.
+React Query is a common first home for server state: a query function, a query key, and
+component branches for loading, error, and refresh states.
 
-As a user, this is one of the nicest parts of `atom.io`: you can model many small pieces of state without collapsing everything into one giant object.
+<DashboardSummaryReactQuery client:load soft />
 
-## add one button with a transaction
+<h3 id="replace-use-query-with-a-loadable-atom">
+  {`replace useQuery with a Loadable atom`}
+</h3>
 
-The template already includes a `Reset` button backed by a transaction. That makes it a great place to learn coordinated updates.
+Move the query function into a `Loadable` atom, then read it with `useLoadable`. The
+component still gets a value, a loading flag, and an error, but the loading state now has
+an `atom.io` token that other components can share.
 
-Look for:
+<DashboardSummaryLoadableAtom client:load />
 
-<CodeBlock
-	client:load
-	filepath="sample.ts"
-	label="reset transaction"
-	code={`const resetTX = transaction<() => Promise<void>>({
-	key: \`reset\`,
-	do: async () => {
-		const logo = await getState(preactLogoAtom)
-		for (const pathKey of getState(pathKeysAtom)) {
-			resetState(subpathKeysAtoms, pathKey)
-		}
-		resetState(pathKeysAtom)
+<h2 id="replace-react-localStorage-effect">
+  {`replace React localStorage effect`}
+</h2>
 
-		// parse the SVG and rebuild all the related atoms
-	},
-})
-const reset = runTransaction(resetTX)`}
-/>
+Another common React pattern is synchronizing local UI state with a browser API. For
+example, a sidebar preference might read from `localStorage` when the component mounts,
+then write back whenever the user changes it.
 
-Then find:
+<SidebarLocalStorageUseEffect client:load soft />
 
-<CodeBlock
-	client:load
-	filepath="sample.tsx"
-	label="reset button"
-	code={`<button type="button" class="flat" onClick={reset}>
-	Reset
-</button>`}
-/>
+<h3 id="replace-use-effect-with-storage-sync">
+  {`replace useEffect with storageSync`}
+</h3>
 
-Add a second button for an experiment of your own. Good starter ideas:
+Now the component only reads and updates atom state. The local-storage behavior lives with
+the state definition instead of in the render tree.
 
-- randomize all node positions
-- mirror the current drawing horizontally
-- nudge every point by a fixed amount
+<SidebarLocalStorageEffectHooks client:load />
 
-If the action updates many atoms, a transaction is usually the right shape for it.
+<h2 id="replace-react-setInterval-effect">
+  {`replace React setInterval effect`}
+</h2>
 
-## what to read next
+Timers are another common effect hiding inside React components. A last-saved indicator,
+for example, might keep a ticking `now` value just so the label can update every second.
 
-Once this template feels comfortable, the rest of the docs will land much better:
+<LastSavedIntervalUseEffect client:load soft />
 
-- [docs](/docs): core APIs and concepts
-- [react docs](/docs/react): React bindings and patterns
+<h3 id="replace-use-effect-with-timer-atom">
+  {`replace useEffect with a timer atom`}
+</h3>
 
-If you want a different style of example afterward:
+Move the interval into a custom atom effect, then derive the display label with a selector.
+The component only reads the selector, while the timer and cleanup behavior live with the
+state definition.
 
-- `React Node Backend`: a fuller app shape with a frontend and Node server
-- `Solid Lossless Numbers`: a data-heavy example with exact rational arithmetic
-
-## one useful takeaway
-
-If you only remember one thing after this guide, make it this:
-
-Keep your state small and explicit, then derive everything else.
-
-That is the core rhythm of `atom.io`.
-
+<LastSavedTimerAtomEffect client:load />

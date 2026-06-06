@@ -39,12 +39,32 @@ astro-island {
 		border-radius: 4px;
 		width: 100%;
 
+		back-fill {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			z-index: 0;
+			&.hard {
+				background-color: var(--bg-hard-1);
+				mix-blend-mode: var(--fill-hard-blend-mode);
+				opacity: var(--fill-hard-opacity);
+			}
+			&.soft {
+				background-color: var(--bg-soft-1);
+				mix-blend-mode: var(--fill-soft-blend-mode);
+				opacity: var(--fill-soft-opacity);
+			}
+		}
+
 		> header {
+			z-index: 0;
 			display: flex;
 			flex-flow: row;
 			justify-content: space-between;
 			align-items: center;
-			background: var(--bg-hard-1);
+			/* background-color: var(--bg-soft-glass-1); */
 			border-radius: 3px 3px 0px 0px;
 			> span {
 				font-size: 15px;
@@ -102,8 +122,10 @@ astro-island {
 		}
 
 		> pre.prismjs {
+			mix-blend-mode: var(--fill-soft-blend-mode);
+			z-index: 0;
 			border-radius: 0px 0px 3px 3px;
-			background-color: var(--bg-hard-1);
+			/* background-color: var(--bg-soft-glass-1); */
 			padding: 1em;
 			padding-top: 0.5em;
 			overflow: auto;
@@ -123,6 +145,15 @@ astro-island {
 				}
 			}
 		}
+
+		/* &.codeblock-soft {
+			> header {
+				background: var(--bg-soft-glass-1);
+			}
+			> pre.prismjs {
+				background-color: var(--bg-soft-glass-1);
+			}
+		} */
 
 		color: var(--base-color) !important;
 		span {
@@ -164,8 +195,22 @@ astro-island {
 				&.number {
 					color: var(--number-color);
 				}
+				&.plain-text {
+					color: var(--string-color);
+				}
 				&.string {
 					color: var(--string-color);
+				}
+				&.tag {
+					&:not(.language-javascript, .attr-name, .attr-value, .punctuation) {
+						color: var(--function-color);
+					}
+					&.attr-value:not(.attr-equals) {
+						color: var(--string-color);
+					}
+					&.class-name {
+						color: var(--type-color);
+					}
 				}
 				&.type {
 					color: var(--type-color);
@@ -176,6 +221,15 @@ astro-island {
 						color: var(--base-color);
 					}
 				}
+			}
+		}
+		span.token.tag > span.token.tag {
+			color: var(--function-color);
+			> span.token.class-name {
+				color: var(--function-color);
+			}
+			> span.token.punctuation {
+				color: var(--punctuation-color);
 			}
 		}
 	}

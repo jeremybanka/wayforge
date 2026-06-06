@@ -1,0 +1,289 @@
+import { CodeBlock } from "c/CodeBlock";
+
+# tutorial
+
+The fastest way to understand `atom.io` is to start with something interactive.
+
+In this guide, we'll create the `Preact SVG Editor` template, run it locally, and make a few small changes that show how `atom.io` models state.
+
+By the end, you'll have seen:
+
+- `atom`: one piece of reactive state
+- `atomFamily`: many related pieces of state
+- `selectorFamily`: derived state
+- `transaction`: coordinated updates
+- `useO`: reading reactive state into UI
+
+## before you begin
+
+This guide uses `node` and `pnpm`.
+
+- node: https://nodejs.org/en/download/
+- pnpm: https://pnpm.io/installation
+
+## create a project
+
+Start a new app:
+
+<CodeBlock
+	client:load
+	filepath="sample.sh"
+	label="create a project"
+	code={`pnpm create atom.io`}
+/>
+
+When prompted, choose:
+
+- `Preact SVG Editor`
+- a new project directory such as `my-atom-app`
+
+Then start the dev server:
+
+<CodeBlock
+	client:load
+	filepath="sample.sh"
+	label="start the dev server"
+	code={`cd my-atom-app
+pnpm dev`}
+/>
+
+Open the local app in your browser. You should see a draggable SVG playground built with `atom.io`, Preact, and Vite.
+
+## how this template is organized
+
+The main behavior lives in `src/BezierPlayground.tsx`.
+
+That file is a good first tour of the library:
+
+- path ids are tracked in an `atom`
+- node positions are stored in `atomFamily`
+- SVG path strings are derived with `selectorFamily`
+- the initial scene is loaded through a `transaction`
+- the UI reads state with `useO`
+
+If you are new to the code, start by scanning these declarations near the top of the file:
+
+<CodeBlock
+	client:load
+	filepath="sample.ts"
+	label="core declarations"
+	code={`const pathKeysAtom = atom<string[]>({
+	key: \`pathKeys\`,
+	default: [],
+})
+const subpathKeysAtoms = atomFamily<string[], string>({
+	key: \`subpathKeys\`,
+	default: [],
+})
+const nodeAtoms = atomFamily<PointXY | null, string>({
+	key: \`node\`,
+	default: null,
+})
+const edgeAtoms = atomFamily<EdgeXY | boolean, string>({
+	key: \`edge\`,
+	default: true,
+})
+const pathDrawSelectors = selectorFamily<string, string>({
+	key: \`pathDraw\`,
+	get:
+		(pathKey) =>
+		({ get }) => {
+			const subpathKeys = get(subpathKeysAtoms, pathKey)
+			return subpathKeys
+				.map((subpathKey, idx) => {
+					// ...
+				})
+				.join(\` \`)
+		},
+})`}
+/>
+
+The important mental model is:
+
+- atoms hold source-of-truth state
+- selectors derive useful views of that state
+- components subscribe to exactly what they read
+
+## make your first change
+
+Start with something visible and low-risk: change the stage size.
+
+In `src/BezierPlayground.tsx`, find:
+
+<CodeBlock
+	client:load
+	filepath="sample.ts"
+	label="stage size"
+	code={`const WIDTH = 256
+const HEIGHT = 296`}
+/>
+
+Try changing those values, then save and drag a few points around. This shows an important property of `atom.io`: your UI can be driven by a few small state primitives, while the rendered result is derived from them.
+
+## change the look
+
+Next, personalize the playground.
+
+Inside the `svg`, try changing the fill and grid styling:
+
+<CodeBlock
+	client:load
+	filepath="sample.tsx"
+	label="stage fill"
+	code={`<rect x={0} y={0} width={WIDTH} height={HEIGHT} fill="#aaa3" />`}
+/>
+
+and:
+
+<CodeBlock
+	client:load
+	filepath="sample.tsx"
+	label="grid fill"
+	code={`<rect
+	x={-185}
+	y={-10}
+	width={WIDTH + 370}
+	height={HEIGHT + 20}
+	fill="url(#grid)"
+/>`}
+/>
+
+This is a small step, but it gives a fast reward: the project starts feeling like yours instead of a demo.
+
+## add snapping while dragging
+
+Now make a behavior change that teaches how updates flow through state.
+
+Find the `clamp` helper and add a `snap` helper beside it:
+
+<CodeBlock
+	client:load
+	filepath="sample.ts"
+	label="snap helper"
+	code={`function snap(n: number, size: number) {
+	return Math.round(n / size) * size
+}`}
+/>
+
+Then, inside `onPointerMove`, snap `x` and `y` before they are written into state:
+
+<CodeBlock
+	client:load
+	filepath="sample.ts"
+	label="snap before writing state"
+	code={`const { x, y } = pt.matrixTransform(ctm)
+const snappedX = snap(x, 8)
+const snappedY = snap(y, 8)
+
+switch (draggingBy) {
+	case undefined:
+		setState(nodeAtoms, currentlyDragging, {
+			x: clamp(snappedX, -185, WIDTH + 185),
+			y: clamp(snappedY, -10, HEIGHT + 10),
+		})
+		break
+	case \`s\`:
+		setState(edgeAtoms, currentlyDragging, (prev) => ({
+			...(prev as EdgeXY),
+			s: {
+				x: clamp(snappedX, -185, WIDTH + 185),
+				y: clamp(snappedY, -10, HEIGHT + 10),
+			},
+		}))
+		break
+}`}
+/>
+
+Use `snappedX` and `snappedY` in the `setState(...)` calls instead of the raw coordinates.
+
+Why this is a good first edit:
+
+- dragging writes to atoms
+- selectors recompute from those atoms
+- subscribed UI updates automatically
+
+You don't need to manually synchronize the path string with the points. That is exactly the job of derived state.
+
+## notice the family pattern
+
+The template uses `atomFamily` because there are many nodes and edges, not just one.
+
+For example:
+
+<CodeBlock
+	client:load
+	filepath="sample.ts"
+	label="atom family"
+	code={`const nodeAtoms = atomFamily<PointXY | null, string>({
+	key: \`node\`,
+	default: null,
+})`}
+/>
+
+This means each node can be looked up by a key such as `subpath12`, while still sharing one declaration.
+
+As a user, this is one of the nicest parts of `atom.io`: you can model many small pieces of state without collapsing everything into one giant object.
+
+## add one button with a transaction
+
+The template already includes a `Reset` button backed by a transaction. That makes it a great place to learn coordinated updates.
+
+Look for:
+
+<CodeBlock
+	client:load
+	filepath="sample.ts"
+	label="reset transaction"
+	code={`const resetTX = transaction<() => Promise<void>>({
+	key: \`reset\`,
+	do: async () => {
+		const logo = await getState(preactLogoAtom)
+		for (const pathKey of getState(pathKeysAtom)) {
+			resetState(subpathKeysAtoms, pathKey)
+		}
+		resetState(pathKeysAtom)
+
+		// parse the SVG and rebuild all the related atoms
+	},
+})
+const reset = runTransaction(resetTX)`}
+/>
+
+Then find:
+
+<CodeBlock
+	client:load
+	filepath="sample.tsx"
+	label="reset button"
+	code={`<button type="button" class="flat" onClick={reset}>
+	Reset
+</button>`}
+/>
+
+Add a second button for an experiment of your own. Good starter ideas:
+
+- randomize all node positions
+- mirror the current drawing horizontally
+- nudge every point by a fixed amount
+
+If the action updates many atoms, a transaction is usually the right shape for it.
+
+## what to read next
+
+Once this template feels comfortable, the rest of the docs will land much better:
+
+- [docs](/docs/atom-io): core APIs and concepts
+- [react docs](/docs/react): React bindings and patterns
+
+If you want a different style of example afterward:
+
+- `React Node Backend`: a fuller app shape with a frontend and Node server
+- `Solid Lossless Numbers`: a data-heavy example with exact rational arithmetic
+
+## one useful takeaway
+
+If you only remember one thing after this guide, make it this:
+
+Keep your state small and explicit, then derive everything else.
+
+That is the core rhythm of `atom.io`.

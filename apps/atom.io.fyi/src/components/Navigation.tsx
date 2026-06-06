@@ -181,21 +181,26 @@ function SiteDirectory(): VNode {
 					<header>Guide</header>
 					<main>
 						<section>
+							<a id="-docs-link" href="/docs">
+								understand atom.io
+							</a>
+						</section>
+						<section>
 							<a id="-docs-getting-started-link" href="/docs/getting-started">
 								getting started
 							</a>
 						</section>
 						<section>
-							<a id="-docs-why-atom-io-link" href="/docs/why-atom-io">
-								why atom.io
+							<a id="-docs-tutorial-link" href="/docs/tutorial">
+								tutorial
 							</a>
 						</section>
 						<section>
 							<a
-								id="-docs-understand-atom-io-link"
-								href="/docs/understand-atom-io"
+								id="-docs-atom-io-vs-others-link"
+								href="/docs/atom-io-vs-others"
 							>
-								understand atom.io
+								atom.io vs others
 							</a>
 						</section>
 						<section>
@@ -209,7 +214,7 @@ function SiteDirectory(): VNode {
 					<header>Interface</header>
 					<main>
 						<section>
-							<a id="-docs-link" href={`/docs`}>
+							<a id="-docs-atom-io-link" href={`/docs/atom-io`}>
 								atom.io
 							</a>
 						</section>
