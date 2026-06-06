@@ -19,13 +19,11 @@
 	"scripts": {
 		"gen": "dotenvx run -- turbo run gen",
 		"lint": "dotenvx run -- turbo run lint",
-		"lint:biome": "dotenvx run -- turbo run lint:biome",
 		"lint:deps": "pin-checker --ignore-workspaces",
 		"lint:eslint": "dotenvx run -- turbo run lint:eslint",
 		"lint:oxlint": "dotenvx run -- turbo run lint:oxlint",
 		"lint:types": "dotenvx run -- turbo run lint:types",
 		"watch:types": "dotenvx run -- turbo run watch:types --concurrency=30",
-		"lint:fix:biome": "biome check --write *",
 		"lint:fix:eslint": "eslint --fix .",
 		"fmt": "cross-env DPRINT_CACHE_DIR=$PWD/.cache/dprint dprint check .",
 		"fmt:fix": "cross-env DPRINT_CACHE_DIR=$PWD/.cache/dprint dprint fmt .",
@@ -43,7 +41,6 @@
 		"upgrade-workflows": "bun scripts/update-workflows.bun.ts"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.4.16",
 		"@changesets/cli": "2.31.0",
 		"@changesets/config": "3.1.4",
 		"@dotenvx/dotenvx": "1.71.0",
@@ -58,6 +55,7 @@
 		"dprint": "0.54.0",
 		"dprint-plugin-malva": "0.15.3",
 		"dprint-plugin-markup": "0.27.1",
+		"dprint-plugin-yaml": "0.6.0",
 		"eslint-plugin-drizzle": "0.2.3",
 		"eslint-plugin-import-x": "4.16.2",
 		"eslint-plugin-simple-import-sort": "13.0.0",

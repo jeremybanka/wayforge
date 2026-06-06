@@ -10,7 +10,7 @@ packages:
   - "templates/*"
 
 allowBuilds:
-  "@biomejs/biome": true
+  '@biomejs/biome': set this to true or false
   "@parcel/watcher": true
   "@swc/core": true
   "@vercel/speed-insights": true

@@ -108,7 +108,6 @@ function parseOptions(argv: string[]): ScriptOptions {
 }
 
 function stripAnsi(text: string): string {
-	// biome-ignore lint/suspicious/noControlCharactersInRegex: purely internal script
 	return text.replace(/\x1b\[[0-9;]*m/g, ``)
 }
 

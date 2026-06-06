@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/switch-exhaustiveness-check */
+/* oxlint-disable typescript/switch-exhaustiveness-check */
 import * as os from "node:os"
 import * as path from "node:path"
 import { styleText } from "node:util"
@@ -686,7 +686,6 @@ export function compileDocs(options: CompileDocsOptions): TSD.Doc[] {
 			)
 			if (diagnostic.file) {
 				const location: TS.LineAndCharacter =
-					// biome-ignore lint/style/noNonNullAssertion: The compiler is not null-safe.
 					diagnostic.file.getLineAndCharacterOfPosition(diagnostic.start!)
 				const formattedMessage: string =
 					`${diagnostic.file.fileName}(${location.line + 1},${

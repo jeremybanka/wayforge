@@ -54,7 +54,6 @@ export function getFamilyOfToken(
 	token: ReadableToken<any, any, any>,
 ): ReadableFamily<any, any, any> {
 	return withdraw(store, {
-		// biome-ignore lint/style/noNonNullAssertion: family is required
 		key: token.family!.key,
 		type: `${token.type}_family`,
 	})

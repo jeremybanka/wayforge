@@ -203,16 +203,13 @@ export const Combo = <State,>(props: ComboProps<State>): ReactElement => {
 	if (`options` in props) {
 		options = props.options
 	} else if (`optionsState` in props) {
-		// biome-ignore lint: intentional
 		options = useO(props.optionsState)
 	}
 	if (`selections` in props) {
 		selections = props.selections
 		setSelections = props.setSelections
 	} else if (`selectionsState` in props) {
-		// biome-ignore lint: intentional
 		selections = useO(props.selectionsState)
-		// biome-ignore lint: intentional
 		setSelections = useI(props.selectionsState)
 	}
 

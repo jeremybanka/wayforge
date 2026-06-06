@@ -117,7 +117,6 @@ export class OList<P extends primitive>
 	public constructor(...items: P[])
 	public constructor(...items: P[]) {
 		super(...items)
-		// biome-ignore lint/correctness/noConstructorReturn: this is chill
 		return new Proxy(this, {
 			set: (target, prop, value, receiver) => {
 				if (

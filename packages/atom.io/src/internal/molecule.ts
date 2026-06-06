@@ -222,7 +222,6 @@ export function deallocateFromStore<H extends Hierarchy, V extends Vassal<H>>(
 	const familyKeys = target.moleculeData.getRelatedKeys(molecule.stringKey)
 	if (familyKeys) {
 		for (const familyKey of familyKeys) {
-			// biome-ignore lint/style/noNonNullAssertion: tokens of molecules must have a family
 			const family = target.families.get(familyKey)!
 			const value = getFromStore(target, family, claim)
 			values.push([family.key, value])
