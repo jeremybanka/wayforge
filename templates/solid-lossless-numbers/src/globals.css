@@ -15,7 +15,11 @@
 	--radius-md: 14px;
 	--radius-sm: 10px;
 	font-family:
-		"Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, serif;
+		"Iowan Old Style",
+		"Palatino Linotype",
+		"Book Antiqua",
+		Palatino,
+		serif;
 	color: var(--ink);
 	background:
 		radial-gradient(
@@ -94,6 +98,11 @@ select {
 
 code {
 	font-family:
-		"SFMono-Regular", "Cascadia Code", "Fira Code", Menlo, Consolas, monospace;
+		"SFMono-Regular",
+		"Cascadia Code",
+		"Fira Code",
+		Menlo,
+		Consolas,
+		monospace;
 	font-size: 0.9em;
 }
