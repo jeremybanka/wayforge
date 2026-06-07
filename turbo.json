@@ -123,7 +123,7 @@
 			]
 		},
 		"lint": {
-			"dependsOn": ["lint:biome", "lint:eslint", "lint:oxlint", "lint:types"]
+			"dependsOn": ["lint:eslint", "lint:oxlint", "lint:types"]
 		},
 		"gen": {
 			"dependsOn": ["^build"],

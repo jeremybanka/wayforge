@@ -7,7 +7,7 @@ import { OList } from "./o-list"
 export function filterOutInPlace<T>(arr: T[], toRemove: T): T[] {
 	let writeIndex = 0
 
-	// eslint-disable-next-line @typescript-eslint/prefer-for-of
+	// oxlint-disable-next-line typescript/prefer-for-of
 	for (let readIndex = 0; readIndex < arr.length; readIndex++) {
 		if (toRemove !== arr[readIndex]) {
 			arr[writeIndex] = arr[readIndex]

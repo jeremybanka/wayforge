@@ -25,5 +25,4 @@ export type Refined<
 	OptionalProperties = {
 		[OPK in keyof PossiblyUndefinedProperties]+?: PossiblyUndefinedProperties[OPK]
 	},
-	/* eslint-disable-next-line @typescript-eslint/sort-type-constituents */
 > = RequiredProperties & OptionalProperties

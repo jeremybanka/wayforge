@@ -11,7 +11,7 @@ const STRING = `\u0003`
 const NUMBER = `\u0004`
 export function packCanonical<C extends Canonical>(value: Canonical): packed<C> {
 	if (value === null) return NULL
-	// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
+	// oxlint-disable-next-line typescript/switch-exhaustiveness-check
 	switch (typeof value) {
 		case `string`:
 			return STRING + value

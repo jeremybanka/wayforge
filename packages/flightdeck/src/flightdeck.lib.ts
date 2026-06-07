@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/only-throw-error */
+/* oxlint-disable typescript/only-throw-error */
 import type { ChildProcessWithoutNullStreams } from "node:child_process"
 import { execSync, spawn } from "node:child_process"
 import { createServer } from "node:http"
