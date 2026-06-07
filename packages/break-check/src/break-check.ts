@@ -15,12 +15,11 @@ export type BreakCheckOptions = {
 }
 
 export type BreakCheckOutcome =
-| {
-		gitWasClean: true
-		lastReleaseFound: false
-	
-}
 	| { gitWasClean: false }
+	| {
+			gitWasClean: true
+			lastReleaseFound: false
+	  }
 	| {
 			gitWasClean: true
 			lastReleaseFound: true

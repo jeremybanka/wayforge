@@ -17,18 +17,18 @@
   For example, a higher-level logger can compose a consistent prefix while preserving its optional local `datum` parameter:
 
   ```ts
-  import takua, { INTENTIONALLY_LEFT_BLANK } from "takua";
+  import takua, { INTENTIONALLY_LEFT_BLANK } from "takua"
 
   function createAnalysisLogger(...context: string[]) {
-    return {
-      info(status: string, message: string, datum?: unknown) {
-        takua.info(
-          [...context, status].join(`:`),
-          message,
-          datum === undefined ? INTENTIONALLY_LEFT_BLANK : datum,
-        );
-      },
-    };
+  	return {
+  		info(status: string, message: string, datum?: unknown) {
+  			takua.info(
+  				[...context, status].join(`:`),
+  				message,
+  				datum === undefined ? INTENTIONALLY_LEFT_BLANK : datum,
+  			)
+  		},
+  	}
   }
   ```
 
