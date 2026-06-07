@@ -29,17 +29,17 @@
 		"fmt": "biome format .",
 		"fmt:fix": "biome format --write .",
 		"build": "dotenvx run -- turbo run build",
-		"bench": "cd lib && vitest bench",
+		"bench": "vitest bench --config benchmarks/vitest.config.ts benchmarks",
 		"test": "CI=true dotenvx run -- turbo run test:once --concurrency=2",
 		"test:coverage:increased": "CI=true turbo run test:coverage:increased",
 		"test:semver": "CI=true dotenvx run -- turbo run test:semver",
 		"release": "bun run build && changeset publish",
 		"notes": "changeset",
-		"vigilance": "bun lib/vigilance-bot.bun.ts",
+		"vigilance": "bun scripts/vigilance-bot.bun.ts",
 		"nuke": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name 'dist' -type d -prune -exec rm -rf '{}' + && rm pnpm-lock.yaml",
 		"nv": "fnm use $(pnpm list -w --json | jq -r '.[0].path')",
 		"version": "dotenvx run -- turbo run version",
-		"upgrade-workflows": "bun lib/update-workflows.bun.ts"
+		"upgrade-workflows": "bun scripts/update-workflows.bun.ts"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.4.16",
