@@ -8,17 +8,18 @@ import StorybookPlugin from "eslint-plugin-storybook"
 
 import AtomIOPlugin from "./packages/atom.io/src/eslint-plugin"
 
+type Rules = Linter.Config[`rules`]
 type StorybookRules = typeof StorybookPlugin.rules
 
 const WARN = 1
 const ERROR = 2
 
-const parserOptions = {
+const PARSER_OPTIONS = {
 	projectService: true,
 	sourceType: `module`,
 } satisfies parser.ParserOptions
 
-const commonRules = {
+const COMMON_RULES: Rules = {
 	"atom.io/exact-catch-types": ERROR,
 	"atom.io/explicit-state-types": [ERROR, { permitAnnotation: true }],
 	"atom.io/naming-convention": ERROR,
@@ -31,116 +32,101 @@ const commonRules = {
 
 	"no-mixed-spaces-and-tabs": 0,
 	quotes: [ERROR, `backtick`],
-} satisfies Linter.Config[`rules`]
+}
 
-const configs = [
-	{
-		ignores: [
-			`**/.astro/**`,
-			`**/.wrangler/**`,
-			`**/_shared/**`,
-			`**/build/**`,
-			`**/coverage/**`,
-			`**/dist/**`,
-			`**/gen/**`,
-			`**/node_modules/**`,
-			`**/.next/**`,
-			`**/.open-next/**`,
-			`**/next-env.d.ts`,
-			`**/create-atom.io/templates/**`,
-		],
+const IGNORES: Linter.Config = {
+	ignores: [
+		`**/.astro/**`,
+		`**/.wrangler/**`,
+		`**/_shared/**`,
+		`**/build/**`,
+		`**/coverage/**`,
+		`**/create-atom.io/templates/**`,
+		`**/dist/**`,
+		`**/gen/**`,
+		`**/next-env.d.ts`,
+		`**/node_modules/**`,
+		`**/storybook-static/**`,
+	],
+}
+
+const COMMON: Linter.Config = {
+	languageOptions: { parser, parserOptions: PARSER_OPTIONS },
+	files: [`**/*.ts{,x}`, `eslint.config.ts`],
+	plugins: {
+		"atom.io": AtomIOPlugin as ESLint.Plugin,
+		import: ImportPlugin,
+		"simple-import-sort": SimpleImportSortPlugin,
 	},
-	{
-		languageOptions: { parser, parserOptions },
-		ignores: [`apps/edge/viceroy-htmx/**`],
-		files: [`**/*.ts{,x}`, `eslint.config.ts`],
-		plugins: {
-			"atom.io": AtomIOPlugin as ESLint.Plugin,
-			import: ImportPlugin,
-			"simple-import-sort": SimpleImportSortPlugin,
-		},
-		rules: commonRules,
+	rules: COMMON_RULES,
+}
+
+const NO_CONSOLE: Linter.Config = {
+	files: [
+		`packages/atom.io/**/src/**/*.ts{,x}`,
+		`apps/tempest.games/src/**/*.ts{,x}`,
+	],
+	ignores: [`apps/tempest.games/src/frontend/**/*.ts{,x}`, `**/*.test.ts`],
+	rules: {
+		"no-console": ERROR,
 	},
-	{
-		languageOptions: {
-			parser,
-			parserOptions: {
-				project:
-					process.cwd().split(`/`)[process.cwd().split(`/`).length - 1] ===
-					`viceroy-htmx`
-						? `./tsconfig.json`
-						: `./apps/edge/viceroy-htmx/tsconfig.json`,
+}
+
+const STORYBOOK: Linter.Config = {
+	files: [`packages/atom.io/**/*.stories.ts{,x}`],
+	plugins: { storybook: StorybookPlugin as any as ESLint.Plugin },
+	rules: {
+		quotes: [ERROR, `double`],
+		...({
+			"storybook/await-interactions": ERROR,
+			"storybook/context-in-play-function": ERROR,
+			"storybook/csf-component": 0,
+			"storybook/default-exports": ERROR,
+			"storybook/hierarchy-separator": WARN,
+			"storybook/meta-inline-properties": 0,
+			"storybook/meta-satisfies-type": 0,
+			"storybook/no-redundant-story-name": WARN,
+			"storybook/no-renderer-packages": ERROR,
+			"storybook/no-stories-of": 0,
+			"storybook/no-title-property-in-meta": 0,
+			"storybook/no-uninstalled-addons": 0,
+			"storybook/prefer-pascal-case": WARN,
+			"storybook/story-exports": ERROR,
+			"storybook/use-storybook-expect": ERROR,
+			"storybook/use-storybook-testing-library": ERROR,
+		} satisfies {
+			// https://storybook.js.org/docs/configure/integration/eslint-plugin
+			[K in keyof StorybookRules as `storybook/${K}`]: StorybookRules[K] extends RuleModuleWithMetaDocs<
+				any,
+				infer Options
+			>
+				? 0 | 1 | 2 | [0 | 1 | 2, Options]
+				: 0 | 1 | 2
+		}),
+	},
+}
+
+const DRIZZLE: Linter.Config = {
+	files: [`apps/tempest.games/src/**/*.ts{,x}`],
+	plugins: {
+		drizzle: DrizzlePlugin,
+	},
+	ignores: [`apps/tempest.games/src/frontend/**/*.ts{,x}`, `**/*.test.ts`],
+	rules: {
+		"drizzle/enforce-update-with-where": ERROR,
+		"drizzle/enforce-delete-with-where": [
+			ERROR,
+			{
+				drizzleObjectName: `db.drizzle`,
 			},
-		},
-		files: [`apps/edge/viceroy-htmx/**/*.ts{,x}`],
-		ignores: [`**/bin/**`, `**/dist/**`, `**/*.gen.ts`, `**/node_modules/**`],
-		plugins: {
-			"atom.io": AtomIOPlugin as ESLint.Plugin,
-			import: ImportPlugin,
-			"simple-import-sort": SimpleImportSortPlugin,
-		},
-		rules: commonRules,
-	},
-	{
-		files: [
-			`packages/atom.io/**/src/**/*.ts{,x}`,
-			`apps/tempest.games/src/**/*.ts{,x}`,
 		],
-		ignores: [`apps/tempest.games/src/frontend/**/*.ts{,x}`, `**/*.test.ts`],
-		rules: {
-			"no-console": ERROR,
-		},
 	},
-	{
-		files: [`packages/atom.io/**/*.stories.ts{,x}`],
-		plugins: { storybook: StorybookPlugin as any as ESLint.Plugin },
-		rules: {
-			quotes: [ERROR, `double`],
-			...({
-				"storybook/await-interactions": ERROR,
-				"storybook/context-in-play-function": ERROR,
-				"storybook/csf-component": 0,
-				"storybook/default-exports": ERROR,
-				"storybook/hierarchy-separator": WARN,
-				"storybook/meta-inline-properties": 0,
-				"storybook/meta-satisfies-type": 0,
-				"storybook/no-redundant-story-name": WARN,
-				"storybook/no-renderer-packages": ERROR,
-				"storybook/no-stories-of": 0,
-				"storybook/no-title-property-in-meta": 0,
-				"storybook/no-uninstalled-addons": 0,
-				"storybook/prefer-pascal-case": WARN,
-				"storybook/story-exports": ERROR,
-				"storybook/use-storybook-expect": ERROR,
-				"storybook/use-storybook-testing-library": ERROR,
-			} satisfies {
-				// https://storybook.js.org/docs/configure/integration/eslint-plugin
-				[K in keyof StorybookRules as `storybook/${K}`]: StorybookRules[K] extends RuleModuleWithMetaDocs<
-					any,
-					infer Options
-				>
-					? 0 | 1 | 2 | [0 | 1 | 2, Options]
-					: 0 | 1 | 2
-			}),
-		},
-	},
-	{
-		files: [`apps/tempest.games/src/**/*.ts{,x}`],
-		plugins: {
-			drizzle: DrizzlePlugin,
-		},
-		ignores: [`apps/tempest.games/src/frontend/**/*.ts{,x}`, `**/*.test.ts`],
-		rules: {
-			"drizzle/enforce-update-with-where": ERROR,
-			"drizzle/enforce-delete-with-where": [
-				ERROR,
-				{
-					drizzleObjectName: `db.drizzle`,
-				},
-			],
-		},
-	},
-	// ...storybook.configs["flat/recommended"],
-] satisfies Linter.Config[]
+}
 
-export default configs
+export default [
+	IGNORES,
+	COMMON,
+	NO_CONSOLE,
+	STORYBOOK,
+	DRIZZLE,
+] satisfies Linter.Config[]
