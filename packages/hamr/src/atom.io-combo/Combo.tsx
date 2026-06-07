@@ -28,7 +28,6 @@ export type ComboOptions<T> = {
 	options: readonly T[]
 }
 
-/* eslint-disable @typescript-eslint/sort-type-constituents */
 export type ComboProps<T> = ComboPropsCore<T> &
 	(T extends string ? {} : { getName: (value: T) => string }) &
 	(ComboOptions<T> | ComboOptionsAtom<T>) &
@@ -36,7 +35,6 @@ export type ComboProps<T> = ComboPropsCore<T> &
 export type ComboProps_INTERNAL<T> = ComboPropsCore<T> &
 	ComboOptions<T> &
 	ComboSelections<T> & { getName: (value: T) => string }
-/* eslint-enable @typescript-eslint/sort-type-constituents */
 
 const Combo_INTERNAL = <State,>({
 	onSetSelections,

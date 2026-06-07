@@ -77,7 +77,7 @@ function hasStaticTemplateLiteral(
 }
 
 function cookStaticTemplateLiteral(value: string): string {
-	// eslint-disable-next-line @typescript-eslint/no-implied-eval
+	// oxlint-disable-next-line typescript/no-implied-eval
 	return Function(`return ${value}`)() as string
 }
 

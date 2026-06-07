@@ -366,7 +366,7 @@ export class Junction<
 		b?: A | B,
 	): this {
 		// @ts-expect-error we deduce that this.b may index x
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+		// oxlint-disable-next-line typescript/no-unnecessary-type-assertion
 		b = typeof b === `string` ? (b as B) : (x[this.b] as B | undefined)
 		const a =
 			// @ts-expect-error we deduce that this.a may index x

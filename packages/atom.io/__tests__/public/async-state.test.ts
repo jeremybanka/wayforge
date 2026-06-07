@@ -1,5 +1,5 @@
-/* eslint-disable @typescript-eslint/only-throw-error */
-/* eslint-disable @typescript-eslint/require-await */
+/* oxlint-disable typescript/only-throw-error */
+/* oxlint-disable typescript/require-await */
 import * as http from "node:http"
 
 import type { Loadable } from "atom.io"

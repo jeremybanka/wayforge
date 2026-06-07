@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/only-throw-error */
+/* oxlint-disable typescript/only-throw-error */
 import * as http from "node:http"
 import * as os from "node:os"
 

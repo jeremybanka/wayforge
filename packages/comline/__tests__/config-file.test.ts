@@ -10,7 +10,7 @@ import { parseStringOption } from "../src/option-parsers"
 
 let tempDir: string
 
-// eslint-disable-next-line @typescript-eslint/require-await
+// oxlint-disable-next-line typescript/require-await
 beforeEach(async () => {
 	tempDir = fs.mkdtempSync(path.join(tmpdir(), `comline-`))
 })

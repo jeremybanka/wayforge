@@ -1,6 +1,6 @@
 import type { Json } from "atom.io/json"
 
-/* eslint-disable @typescript-eslint/no-dynamic-delete */
+/* oxlint-disable typescript/no-dynamic-delete */
 import { map } from "../array"
 import { pipe } from "../function"
 import { entriesToRecord, recordToEntries } from "./entries"

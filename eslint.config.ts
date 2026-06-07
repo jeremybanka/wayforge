@@ -1,4 +1,3 @@
-// import { default as TypeScriptPlugin } from "@typescript-eslint/eslint-plugin"
 import * as parser from "@typescript-eslint/parser"
 import type { RuleModuleWithMetaDocs } from "@typescript-eslint/utils/ts-eslint"
 import type { ESLint, Linter } from "eslint"
@@ -56,7 +55,6 @@ const configs = [
 		ignores: [`apps/edge/viceroy-htmx/**`],
 		files: [`**/*.ts{,x}`, `eslint.config.ts`],
 		plugins: {
-			// "@typescript-eslint": TypeScriptPlugin,
 			"atom.io": AtomIOPlugin as ESLint.Plugin,
 			import: ImportPlugin,
 			"simple-import-sort": SimpleImportSortPlugin,
@@ -77,7 +75,6 @@ const configs = [
 		files: [`apps/edge/viceroy-htmx/**/*.ts{,x}`],
 		ignores: [`**/bin/**`, `**/dist/**`, `**/*.gen.ts`, `**/node_modules/**`],
 		plugins: {
-			// "@typescript-eslint": TypeScriptPlugin,
 			"atom.io": AtomIOPlugin as ESLint.Plugin,
 			import: ImportPlugin,
 			"simple-import-sort": SimpleImportSortPlugin,

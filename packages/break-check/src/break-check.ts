@@ -15,12 +15,12 @@ export type BreakCheckOptions = {
 }
 
 export type BreakCheckOutcome =
-	// eslint-disable-next-line @typescript-eslint/sort-type-constituents
+| {
+		gitWasClean: true
+		lastReleaseFound: false
+	
+}
 	| { gitWasClean: false }
-	| {
-			gitWasClean: true
-			lastReleaseFound: false
-	  }
 	| {
 			gitWasClean: true
 			lastReleaseFound: true

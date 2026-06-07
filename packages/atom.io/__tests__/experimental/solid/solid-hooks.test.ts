@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-shadow */ // need host on both sides
+/* oxlint-disable typescript/no-shadow */ // need host on both sides
 import type { Loadable, TimelineToken } from "atom.io"
 import {
 	atom,
