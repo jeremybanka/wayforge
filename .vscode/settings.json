@@ -2,7 +2,9 @@
 	// FILE FORMATTING ////////////////////////////////////////////////////////////
 	"editor.formatOnSave": true,
 	"editor.defaultFormatter": "dprint.dprint",
-	"dprint.path": "node_modules/.bin/dprint",
+	"dprint.path": "~/wayforge/node_modules/.bin/dprint",   
+	"dprint.verbose": true,
+	"dprint.experimentalLsp": true,
 	"editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" },
 	"js/ts.tsdk.path": "node_modules/typescript/lib",
 	"coverage-gutters.coverageBaseDir": "**/coverage/",
