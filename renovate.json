@@ -30,7 +30,7 @@
 			"dependencyDashboardApproval": true
 		},
 		{
-			"matchPackageNames": ["@biomejs/biome", "@biomejs/wasm-nodejs"],
+			"matchPackageNames": ["@biomejs/js-api", "@biomejs/wasm-nodejs"],
 			"groupName": "biome"
 		},
 		{
