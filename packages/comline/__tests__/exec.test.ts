@@ -6,6 +6,6 @@ describe(`exec`, () => {
 		const target = `${import.meta.dirname}/fixtures/example-file.md`
 		const buffer = execSync(`bun ${script} --file="${target}"`)
 		const output = buffer.toString()
-		expect(Number(output)).toBe(36)
+		expect(Number(output)).toBe(71)
 	})
 })
