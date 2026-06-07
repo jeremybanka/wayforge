@@ -51,8 +51,8 @@ importers:
         specifier: 0.54.0
         version: 0.54.0
       dprint-plugin-malva:
-        specifier: 0.15.3
-        version: 0.15.3
+        specifier: 0.16.0
+        version: 0.16.0
       dprint-plugin-markup:
         specifier: 0.27.3
         version: 0.27.3
@@ -5159,8 +5159,8 @@ packages:
     resolution: {integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==}
     engines: {node: '>=12'}
 
-  dprint-plugin-malva@0.15.3:
-    resolution: {integrity: sha512-rDBVztvpSa5Y2wqlYPvAP8kCEZdab2RovEWXPO+pE2gu3F8jJg/IjV0cKVSO7blIzP8iKmlD9u/TDnsZUHPoFg==}
+  dprint-plugin-malva@0.16.0:
+    resolution: {integrity: sha512-cHisdhrNcBHfvTG/jgHUkVyL6zeY+C5yLO+E/UyiTbp6wzauB3d25YyPZeMlsd7M/PDT8W4Yre8jKJ/xMwthiw==}
 
   dprint-plugin-markup@0.27.3:
     resolution: {integrity: sha512-uN0An1G9qyETguOTGg50JKsOeX77HJ3wLpTLYFeFNqBgVDN63eSxh4kU/S95MskpY1iBzMTsXG233ummLue9iw==}
@@ -11786,7 +11786,7 @@ snapshots:
 
   dotenv@17.4.2: {}
 
-  dprint-plugin-malva@0.15.3: {}
+  dprint-plugin-malva@0.16.0: {}
 
   dprint-plugin-markup@0.27.3: {}
 
