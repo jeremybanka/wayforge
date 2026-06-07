@@ -119,7 +119,7 @@
 		}
 	},
 	"devDependencies": {
-		"@typescript/native-preview": "7.0.0-dev.20260606.1",
+		"@typescript/native-preview": "7.0.0-dev.20260607.1",
 		"concurrently": "10.0.3",
 		"eslint": "10.4.1",
 		"tsdown": "0.22.2",
