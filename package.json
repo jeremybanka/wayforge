@@ -28,7 +28,6 @@
 		"fmt": "cross-env DPRINT_CACHE_DIR=$PWD/.cache/dprint dprint check .",
 		"fmt:fix": "cross-env DPRINT_CACHE_DIR=$PWD/.cache/dprint dprint fmt .",
 		"build": "dotenvx run -- turbo run build",
-		"bench": "vitest bench --config benchmarks/vitest.config.ts benchmarks",
 		"test": "CI=true dotenvx run -- turbo run test:once --concurrency=2",
 		"test:coverage:increased": "CI=true turbo run test:coverage:increased",
 		"test:semver": "CI=true dotenvx run -- turbo run test:semver",
