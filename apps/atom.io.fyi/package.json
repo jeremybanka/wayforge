@@ -17,8 +17,8 @@
 		"preview": "wrangler dev",
 		"deploy": "wrangler deploy",
 		"astro": "astro",
-		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
+		"lint:oxlint": "oxlint --type-aware -c ../../.oxlintrc.jsonc .",
 		"lint:types": "tsgo --noEmit"
 	},
 	"dependencies": {

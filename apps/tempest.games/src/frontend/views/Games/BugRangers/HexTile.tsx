@@ -1,5 +1,3 @@
-/** biome-ignore-all lint/a11y/noStaticElementInteractions: drei */
-
 import { Text } from "@react-three/drei"
 import { getState, setState } from "atom.io"
 import { useO } from "atom.io/react"

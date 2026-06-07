@@ -16,8 +16,7 @@ export type FilesystemStorageOptions = {
 
 export class FilesystemStorage<
 	T extends Record<string, string> = Record<string, string>,
-> implements Storage
-{
+> implements Storage {
 	public rootDir: string
 	public get initialized(): boolean {
 		return existsSync(this.rootDir)

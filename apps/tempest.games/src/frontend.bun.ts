@@ -50,7 +50,7 @@ serve({
 
 			// Ensure the requested path is still within distDir
 			if (!normalizedPath.startsWith(appDir)) {
-				// eslint-disable-next-line @typescript-eslint/only-throw-error
+				// oxlint-disable-next-line typescript/only-throw-error
 				throw [403, `Access Denied`]
 			}
 

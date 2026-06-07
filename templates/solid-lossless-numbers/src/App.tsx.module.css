@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/correctness/noUnknownTypeSelector: <explanation> */
 app.class {
 	--line: rgba(23, 36, 51, 0.14);
 
@@ -37,8 +36,7 @@ app.class {
 		align-items: center;
 		justify-content: space-between;
 		padding: 12px;
-		> h1 {
-		}
+		> h1 {}
 		> button {
 			align-items: center;
 			justify-content: center;
@@ -67,8 +65,7 @@ app.class {
 				align-items: center;
 				color: #0002;
 			}
-			> fraction {
-			}
+			> fraction {}
 			> quotient {
 				align-items: center;
 				font-size: 48px;

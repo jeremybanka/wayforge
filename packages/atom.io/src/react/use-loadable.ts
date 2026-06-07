@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/correctness/useHookAtTopLevel: params are used in an invariant way */
 import type {
 	Loadable,
 	ReadableFamilyToken,

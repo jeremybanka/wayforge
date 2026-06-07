@@ -51,8 +51,10 @@ export const JSON_SCHEMA_LOGIC_MODES = [
 ] as const
 export type JsonSchemaLogicMode = (typeof JSON_SCHEMA_LOGIC_MODES)[number]
 
-export interface JsonSchemaSystem
-	extends Record<JsonSchemaLogicMode & JsonSchemaMetaTypeName, any> {
+export interface JsonSchemaSystem extends Record<
+	JsonSchemaLogicMode & JsonSchemaMetaTypeName,
+	any
+> {
 	array: ArraySchema
 	boolean: BooleanSchema
 	integer: IntegerSchema
@@ -453,7 +455,7 @@ export const isJsonSchemaRoot: Refinement<
 	$schema: ifDefined(isString),
 })
 
-/* prettier-ignore */
+// dprint-ignore
 export type JsonSchemaObject = JsonSchemaCore & JsonSchemaRoot
 export const isJsonSchemaObject: ExtendsAll<
 	unknown,

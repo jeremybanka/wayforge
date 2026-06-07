@@ -1,4 +1,5 @@
 # CLIENT ACTS AND REPORTS
+
 - [x] input event fires
 - [x] event handler runs transaction
   - [x] client store updates optimistically
@@ -9,18 +10,21 @@
   - [ ] client emits TransactionRequest { key, params, transactionId }
 
 # SERVER VALIDATES, INTEGRATES, AND BROADCASTS
+
 ## use
+
 - [x] server receives TransactionRequest
   - `{ key, params, transactionId }`
 - [ ] verify `transactionId` is unique
 - [ ] server adds timestamp to `TransactionRequest`
   - `{ key, params, transactionId, timestamp }`
 - [ ] server runs transaction, computing `TransactionUpdate` in the process
-  - [ ] emit `TransactionUpdate` 
+  - [ ] emit `TransactionUpdate`
     - `{ key, params, transactionId, timestamp, atomUpdates, output }`
 - [ ] server adds `TransactionUpdate` to TimelineData.history
 
 # CLIENT BEHOLDS AND REACTS
+
 - [ ] client receives official TransactionUpdate
   - [ ] client retrieves its own TransactionUpdate from optimisticTransactions map
   - [ ] client compares official and optimistic TransactionUpdates

@@ -5,9 +5,11 @@
 .DS_STORE
 .env
 .turbo
+.cache
 coverage
 dist
 node_modules
+.pnpm-store
 package-lock.json
 projects
 metafile-*

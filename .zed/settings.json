@@ -1,36 +1,96 @@
 {
 	"languages": {
-		"TypeScript": {
+		"Astro": {
 			"formatter": {
-				"language_server": {
-					"name": "biome"
+				"external": {
+					"command": "node_modules/.bin/dprint",
+					"arguments": ["fmt", "--stdin", "{buffer_path}"]
 				}
-			},
-			"code_actions_on_format": {
-				"source.fixAll.eslint": true
 			}
 		},
-		"TSX": {
+		"CSS": {
 			"formatter": {
-				"language_server": {
-					"name": "biome"
+				"external": {
+					"command": "node_modules/.bin/dprint",
+					"arguments": ["fmt", "--stdin", "{buffer_path}"]
 				}
-			},
-			"code_actions_on_format": {
-				"source.fixAll.eslint": true
+			}
+		},
+		"JavaScript": {
+			"formatter": {
+				"external": {
+					"command": "node_modules/.bin/dprint",
+					"arguments": ["fmt", "--stdin", "{buffer_path}"]
+				}
 			}
 		},
 		"JSON": {
 			"formatter": {
-				"language_server": {
-					"name": "biome"
+				"external": {
+					"command": "node_modules/.bin/dprint",
+					"arguments": ["fmt", "--stdin", "{buffer_path}"]
 				}
 			}
 		},
 		"JSONC": {
 			"formatter": {
-				"language_server": {
-					"name": "biome"
+				"external": {
+					"command": "node_modules/.bin/dprint",
+					"arguments": ["fmt", "--stdin", "{buffer_path}"]
+				}
+			}
+		},
+		"Markdown": {
+			"formatter": {
+				"external": {
+					"command": "node_modules/.bin/dprint",
+					"arguments": ["fmt", "--stdin", "{buffer_path}"]
+				}
+			}
+		},
+		"MDX": {
+			"formatter": {
+				"external": {
+					"command": "node_modules/.bin/dprint",
+					"arguments": ["fmt", "--stdin", "{buffer_path}"]
+				}
+			}
+		},
+		"TOML": {
+			"formatter": {
+				"external": {
+					"command": "node_modules/.bin/dprint",
+					"arguments": ["fmt", "--stdin", "{buffer_path}"]
+				}
+			}
+		},
+		"TSX": {
+			"formatter": {
+				"external": {
+					"command": "node_modules/.bin/dprint",
+					"arguments": ["fmt", "--stdin", "{buffer_path}"]
+				}
+			},
+			"code_actions_on_format": {
+				"source.fixAll.eslint": true
+			}
+		},
+		"TypeScript": {
+			"formatter": {
+				"external": {
+					"command": "node_modules/.bin/dprint",
+					"arguments": ["fmt", "--stdin", "{buffer_path}"]
+				}
+			},
+			"code_actions_on_format": {
+				"source.fixAll.eslint": true
+			}
+		},
+		"YAML": {
+			"formatter": {
+				"external": {
+					"command": "node_modules/.bin/dprint",
+					"arguments": ["fmt", "--stdin", "{buffer_path}"]
 				}
 			}
 		}

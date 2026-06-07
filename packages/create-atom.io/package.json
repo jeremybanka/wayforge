@@ -36,8 +36,8 @@
 	},
 	"scripts": {
 		"build": "tsdown && rm -f dist/*.x.d.ts",
-		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
+		"lint:oxlint": "oxlint --type-aware -c ../../.oxlintrc.jsonc .",
 		"lint:types": "tsgo --noEmit",
 		"watch:types": "tsgo --watch --noEmit",
 		"lint": "concurrently \"bun:lint:*\""

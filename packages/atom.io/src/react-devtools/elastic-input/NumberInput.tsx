@@ -55,9 +55,9 @@ export const DEFAULT_NUMBER_CONSTRAINTS: NumberConstraints = {
 }
 
 const initRefinery =
-	<Constraints extends NumberConstraints>(
-		constraints: { [K in keyof Constraints]?: Constraints[K] | undefined },
-	) =>
+	<Constraints extends NumberConstraints>(constraints: {
+		[K in keyof Constraints]?: Constraints[K] | undefined
+	}) =>
 	(
 		input: number | null,
 	): Constraints extends { nullable: true | undefined }

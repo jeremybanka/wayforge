@@ -747,7 +747,6 @@ describe(`useLoadable`, () => {
 		const loaders: ((letter: string) => void)[] = []
 		function loadLetter(...params: string[]) {
 			for (const letter of params) {
-				// biome-ignore lint/style/noNonNullAssertion: test will fail
 				loaders.shift()!(letter)
 			}
 		}

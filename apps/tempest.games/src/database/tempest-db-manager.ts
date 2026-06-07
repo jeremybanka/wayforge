@@ -32,7 +32,6 @@ export class DatabaseManager {
 			const recordId = messageParts[1]
 			const completeKey = `${tableName}("${recordId}")`
 			if (this.observers.has(completeKey)) {
-				// biome-ignore lint/style/noNonNullAssertion: has
 				this.observers.get(completeKey)!.next(completeKey)
 			}
 		})
@@ -57,7 +56,6 @@ export class DatabaseManager {
 		if (!this.observers.has(completeKey)) {
 			this.observers.set(completeKey, new Subject<string>())
 		}
-		// biome-ignore lint/style/noNonNullAssertion: has
 		this.observers.get(completeKey)!.subscribe(`SINGLETON`, callback)
 	}
 }

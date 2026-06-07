@@ -1,6 +1,6 @@
 {
 	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"extends": ["config:recommended", "customManagers:biomeVersions"],
+	"extends": ["config:recommended"],
 	"minimumReleaseAge": "1 day",
 	"branchConcurrentLimit": 1,
 	"prHourlyLimit": 10,
@@ -30,7 +30,7 @@
 			"dependencyDashboardApproval": true
 		},
 		{
-			"matchPackageNames": ["@biomejs/biome", "@biomejs/wasm-nodejs"],
+			"matchPackageNames": ["@biomejs/js-api", "@biomejs/wasm-nodejs"],
 			"groupName": "biome"
 		},
 		{

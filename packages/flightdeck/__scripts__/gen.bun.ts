@@ -3,7 +3,6 @@
 import { existsSync, mkdirSync } from "node:fs"
 import { resolve } from "node:path"
 
-import { Biome, Distribution } from "@biomejs/js-api"
 import type { Json } from "atom.io/json"
 import { write } from "bun"
 import { jsonSchemaToZod } from "json-schema-to-zod"
@@ -45,25 +44,33 @@ const content = [
 	`export type LnavFormat = z.infer<typeof lnavFormatSchema>`,
 ].join(`\n\n`)
 
-const biome = await Biome.create({ distribution: Distribution.NODE })
-
-const { projectKey } = biome.openProject(REPO_ROOT)
-
-const formatted = biome.formatContent(projectKey, content, {
-	filePath: LNAV_FORMAT_SCHEMA_FILENAME,
+const dprint = Bun.spawn({
+	cmd: [
+		resolve(REPO_ROOT, `node_modules/.bin/dprint`),
+		`fmt`,
+		`--stdin`,
+		LNAV_FORMAT_SCHEMA_FILENAME,
+	],
+	cwd: REPO_ROOT,
+	env: {
+		...process.env,
+		DPRINT_CACHE_DIR: resolve(REPO_ROOT, `.cache/dprint`),
+	},
+	stdin: `pipe`,
+	stdout: `pipe`,
+	stderr: `inherit`,
 })
 
-const result = biome.lintContent(projectKey, formatted.content, {
-	filePath: LNAV_FORMAT_SCHEMA_FILENAME,
-	fixFileMode: `safeAndUnsafeFixes`,
-})
+await dprint.stdin.write(content)
+await dprint.stdin.end()
 
-biome.printDiagnostics(result.diagnostics, {
-	filePath: LNAV_FORMAT_SCHEMA_FILENAME,
-	fileSource: formatted.content,
-})
+const formatted = await new Response(dprint.stdout).text()
+const exitCode = await dprint.exited
+if (exitCode !== 0) {
+	throw new Error(`dprint failed with exit code ${exitCode}`)
+}
 
 if (!existsSync(FLIGHTDECK_GEN_PATH)) {
 	mkdirSync(FLIGHTDECK_GEN_PATH, { recursive: true })
 }
-await write(LNAV_FORMAT_SCHEMA_PATH, result.content)
+await write(LNAV_FORMAT_SCHEMA_PATH, formatted)

@@ -1,7 +1,7 @@
 .react_radial_0123456790 {
 	pointer-events: none;
-	top: calc((var(--y)) - var(--ring-size) / 2);
-	left: calc((var(--x)) - var(--ring-size) / 2);
+	top: calc(var(--y) - var(--ring-size) / 2);
+	left: calc(var(--x) - var(--ring-size) / 2);
 	height: var(--ring-size);
 	width: var(--ring-size);
 	position: fixed;
@@ -47,25 +47,25 @@
 			}
 		}
 		--opt-ratio: calc(var(--idx) / var(--action-count));
-		--opt-angle: calc(90deg + (-360deg * var(--opt-ratio)));
+		--opt-angle: calc(90deg + -360deg * var(--opt-ratio));
 		--yy: sin(var(--opt-angle));
 		--xx: cos(var(--opt-angle));
 		height: var(--option-size);
 		width: var(--option-size);
 		bottom: calc(
-			((var(--ring-size) / 2) - var(--option-size) / 2) +
-			(var(--yy) * var(--ring-size) / 2)
+			var(--ring-size) / 2 - var(--option-size) / 2 +
+				var(--yy) * var(--ring-size) / 2
 		);
 		left: calc(
-			((var(--ring-size) / 2) - var(--option-size) / 2) +
-			(var(--xx) * var(--ring-size) / 2)
+			var(--ring-size) / 2 - var(--option-size) / 2 +
+				var(--xx) * var(--ring-size) / 2
 		);
 	}
 }
 footer.react_radial_0123456790__info {
 	pointer-events: none;
 	position: fixed;
-	top: calc(var(--y) - (100px + (var(--size) / 2)));
+	top: calc(var(--y) - (100px + var(--size) / 2));
 	left: calc(var(--x) - 250px);
 	width: 500px;
 	height: var(--size);

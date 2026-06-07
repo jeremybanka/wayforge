@@ -68,15 +68,11 @@ export function hasProperties<OBJ extends object>(
 }
 
 export const ALLOW_EXTENSION = { allowExtraProperties: true }
-export const doesExtend = <OBJ extends object>(
-	isValue: {
-		[K in keyof OBJ]: Refinement<unknown, OBJ[K]>
-	},
-): Refinement<unknown, OBJ> => hasProperties(isValue, ALLOW_EXTENSION)
+export const doesExtend = <OBJ extends object>(isValue: {
+	[K in keyof OBJ]: Refinement<unknown, OBJ[K]>
+}): Refinement<unknown, OBJ> => hasProperties(isValue, ALLOW_EXTENSION)
 
 export const DO_NOT_ALLOW_EXTENSION = { allowExtraProperties: false }
-export const hasExactProperties = <OBJ extends object>(
-	isValue: {
-		[K in keyof OBJ]: Refinement<unknown, OBJ[K]>
-	},
-): Refinement<unknown, OBJ> => hasProperties(isValue, DO_NOT_ALLOW_EXTENSION)
+export const hasExactProperties = <OBJ extends object>(isValue: {
+	[K in keyof OBJ]: Refinement<unknown, OBJ[K]>
+}): Refinement<unknown, OBJ> => hasProperties(isValue, DO_NOT_ALLOW_EXTENSION)

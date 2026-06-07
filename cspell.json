@@ -2,7 +2,6 @@
 	"words": [
 		"anvl",
 		"arktype",
-		"biomejs",
 		"cachedir",
 		"carbiter",
 		"Cardstock",
@@ -32,6 +31,7 @@
 		"npmlog",
 		"outdir",
 		"outfile",
+		"Oxlint",
 		"postversion",
 		"preact",
 		"Recasters",
@@ -52,6 +52,7 @@
 		"tsdoc",
 		"tsdown",
 		"tsgo",
+		"tsgolint",
 		"tsup",
 		"unrs",
 		"unsub",

@@ -4,9 +4,9 @@ export type primitive = boolean | number | string | null
 
 export namespace Json {
 	export namespace Tree {
-		// eslint-disable-next-line @typescript-eslint/no-shadow
+		// oxlint-disable-next-line typescript/no-shadow
 		export type Array<Element = unknown> = ReadonlyArray<Element>
-		// eslint-disable-next-line @typescript-eslint/no-shadow
+		// oxlint-disable-next-line typescript/no-shadow
 		export type Object<K extends string = string, V = unknown> = Record<K, V>
 		export type Fork = Array | Object
 		export type Leaf = primitive
@@ -29,39 +29,37 @@ export namespace Json {
 }
 
 /** A generic that retains the type information of a {@link Json.Serializable} value while in string form */
-// biome-ignore format: long silly ternary
-export type stringified<J extends Json.Serializable> = (
-      J extends string
-    ? `"${J}"`
-    : J extends number
-    ? `${J}`
-    : J extends true
-    ? `true`
-    : J extends false
-    ? `false`
-    : J extends boolean
-    ? `false` | `true`
-    : J extends null
-    ? `null`
-    : J extends []
-    ? `[]`
-    : J extends [infer Element extends Json.Serializable]
-    ? `[${stringified<Element>}]`
-    : J extends [
-					infer Element1 extends Json.Serializable,
-					infer Element2 extends Json.Serializable,
-				]
-    ? `[${stringified<Element1>}, ${stringified<Element2>}]`
-    : J extends [
-					infer Element1 extends Json.Serializable,
-					infer Element2 extends Json.Serializable,
-					infer Element3 extends Json.Serializable,
-				]
-    ? `[${stringified<Element1>}, ${stringified<Element2>}, ${stringified<Element3>}]`
-    : J extends any[]
-    ? `[${string}]` & { __json?: J }
-    : string & { __json?: J }
-  )
+// dprint-ignore
+export type stringified<J extends Json.Serializable> = J extends string
+	? `"${J}"`
+	: J extends number
+		? `${J}`
+		: J extends true
+			? `true`
+			: J extends false
+				? `false`
+				: J extends boolean
+					? `false` | `true`
+					: J extends null
+						? `null`
+						: J extends []
+							? `[]`
+							: J extends [infer Element extends Json.Serializable]
+								? `[${stringified<Element>}]`
+								: J extends [
+											infer Element1 extends Json.Serializable,
+											infer Element2 extends Json.Serializable,
+									  ]
+									? `[${stringified<Element1>}, ${stringified<Element2>}]`
+									: J extends [
+												infer Element1 extends Json.Serializable,
+												infer Element2 extends Json.Serializable,
+												infer Element3 extends Json.Serializable,
+										  ]
+										? `[${stringified<Element1>}, ${stringified<Element2>}, ${stringified<Element3>}]`
+										: J extends any[]
+											? `[${string}]` & { __json?: J }
+											: string & { __json?: J }
 
 /** Type-safe wrapper for {@link JSON.parse} */
 export function parseJson<J extends Json.Serializable>(str: stringified<J>): J

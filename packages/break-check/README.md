@@ -5,7 +5,7 @@ command line tooling to detect breaking changes before you ship them
 ## can i use break-check?
 
 break check is a tool for projects where
- 
+
 1. releases must follow semantic versioning
 2. source code and tests are kept in separate files
 3. new releases are associated to git tags
@@ -26,6 +26,7 @@ break check introduces the following requirements/model for your project:
 ## example
 
 ### single-project repository
+
 ```bash
 npx break-check 
   --testPattern="*__public.test.ts" 
@@ -37,6 +38,7 @@ this command will check out all files matching the pattern `*__public.test.ts` f
 if the tests fail, break-check will exit with a non-zero status code, indicating that you have breaking changes in your project at the current commit
 
 ### multi-project monorepo
+
 ```bash
 npx break-check 
   --tagPattern="my-library" 

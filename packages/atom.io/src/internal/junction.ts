@@ -15,8 +15,8 @@ export interface JunctionEntries<
 	A extends string,
 	B extends string,
 	Content extends Json.Object | null,
-> extends Json.Object,
-		JunctionEntriesBase<A, B, Content> {}
+>
+	extends Json.Object, JunctionEntriesBase<A, B, Content> {}
 
 export type JunctionSchemaBase<AName extends string, BName extends string> = {
 	/** Description of the relationship between the two sides */
@@ -25,8 +25,7 @@ export type JunctionSchemaBase<AName extends string, BName extends string> = {
 	readonly cardinality: `1:1` | `1:n` | `n:n`
 }
 export interface JunctionSchema<ASide extends string, BSide extends string>
-	extends Json.Object,
-		JunctionSchemaBase<ASide, BSide> {}
+	extends Json.Object, JunctionSchemaBase<ASide, BSide> {}
 
 export type BaseExternalStoreConfiguration = {
 	addRelation: (a: string, b: string) => void
@@ -328,7 +327,6 @@ export class Junction<
 			}
 		}
 		switch (this.cardinality) {
-			// biome-ignore lint/suspicious/noFallthroughSwitchClause: perfect here
 			case `1:1`: {
 				const bPrev = this.getRelatedKey(a)
 				if (bPrev && bPrev !== b) this.delete(a, bPrev)
@@ -368,7 +366,7 @@ export class Junction<
 		b?: A | B,
 	): this {
 		// @ts-expect-error we deduce that this.b may index x
-		// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+		// oxlint-disable-next-line typescript/no-unnecessary-type-assertion
 		b = typeof b === `string` ? (b as B) : (x[this.b] as B | undefined)
 		const a =
 			// @ts-expect-error we deduce that this.a may index x

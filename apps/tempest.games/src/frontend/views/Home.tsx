@@ -137,7 +137,6 @@ export function Home(): React.ReactNode {
 							}}
 							autoComplete="current-password"
 							autoCapitalize="none"
-							// biome-ignore lint/a11y/noAutofocus: this is really the best place to focus
 							autoFocus={currentlyEntering === `password`}
 						/>
 					</label>
@@ -156,7 +155,6 @@ export function Home(): React.ReactNode {
 							}}
 							autoComplete="one-time-code"
 							autoCapitalize="none"
-							// biome-ignore lint/a11y/noAutofocus: this is really the best place to focus
 							autoFocus={currentlyEntering === `otc`}
 						/>
 					</label>

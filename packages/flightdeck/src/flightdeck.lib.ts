@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/only-throw-error */
+/* oxlint-disable typescript/only-throw-error */
 import type { ChildProcessWithoutNullStreams } from "node:child_process"
 import { execSync, spawn } from "node:child_process"
 import { createServer } from "node:http"
@@ -628,9 +628,10 @@ export const FLIGHTDECK_LNAV_FORMAT = {
 	},
 } as const satisfies FlightDeckFormat & LnavFormat
 
-export class FlightDeckLogger
-	implements Pick<Console, `error` | `info` | `warn`>
-{
+export class FlightDeckLogger implements Pick<
+	Console,
+	`error` | `info` | `warn`
+> {
 	public readonly packageName: string
 	public readonly serviceName?: string
 	public readonly jsonLogging: boolean
