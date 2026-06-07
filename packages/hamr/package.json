@@ -18,15 +18,15 @@
 		"manifest": "./__scripts__/manifest-build.node.ts",
 		"clean:build": "find . -type d -name 'dist' -not -path '*/node_modules/*' | xargs rm -rf",
 		"build": "tsdown",
-		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
+		"lint:oxlint": "oxlint --type-aware -c ../../.oxlintrc.jsonc .",
 		"lint:types": "tsgo --noEmit",
 		"watch:types": "tsgo --watch --noEmit",
 		"lint": "concurrently \"bun:lint:*\"",
 		"test": "vitest",
 		"test:once": "vitest run",
 		"test:manifest": "./__scripts__/manifest-test.node.ts",
-		"postversion": "biome format --write package.json"
+		"postversion": "dprint fmt package.json"
 	},
 	"dependencies": {
 		"@floating-ui/react": "0.27.19",

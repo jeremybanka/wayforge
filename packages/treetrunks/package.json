@@ -23,8 +23,8 @@
 	"main": "dist/treetrunks.js",
 	"scripts": {
 		"build": "tsdown",
-		"lint:biome": "biome check -- .",
 		"lint:eslint": "eslint -- .",
+		"lint:oxlint": "oxlint --type-aware -c ../../.oxlintrc.jsonc .",
 		"lint:types": "tsgo --noEmit",
 		"watch:types": "tsgo --watch --noEmit",
 		"lint": "concurrently \"bun:lint:*\"",
@@ -33,7 +33,7 @@
 		"test:coverage:increased": "recoverage",
 		"test:coverage": "pnpm test:coverage:once && pnpm test:coverage:increased",
 		"test:once": "vitest run",
-		"postversion": "biome format --write package.json"
+		"postversion": "dprint fmt package.json"
 	},
 	"devDependencies": {
 		"@types/node": "25.9.2",

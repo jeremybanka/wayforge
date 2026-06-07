@@ -1,6 +1,6 @@
 import type { Json } from "atom.io/json"
 
-/* eslint-disable @typescript-eslint/no-dynamic-delete */
+/* oxlint-disable typescript/no-dynamic-delete */
 import { map } from "../array"
 import { pipe } from "../function"
 import { entriesToRecord, recordToEntries } from "./entries"
@@ -20,7 +20,8 @@ export interface DictionaryOptions<
 	B extends string,
 	NameOfA extends string,
 	NameOfB extends string,
-> extends Json.Object {
+>
+	extends Json.Object {
 	base: Record<A, B>
 	from: NameOfA
 	into: NameOfB
@@ -54,11 +55,9 @@ export class Dictionary<
 		) as S extends A ? B : A
 	}
 
-	public getPairOf<Name extends NameOfA | NameOfB>(
-		item: {
-			[K in Name]: Name extends NameOfA ? A : B
-		},
-	): Name extends NameOfA
+	public getPairOf<Name extends NameOfA | NameOfB>(item: {
+		[K in Name]: Name extends NameOfA ? A : B
+	}): Name extends NameOfA
 		? { [BK in NameOfB]: B | undefined }
 		: { [AK in NameOfA]: A | undefined } {
 		const [name, value] = recordToEntries(item as { [K in Name]: A | B })[0]
@@ -71,11 +70,9 @@ export class Dictionary<
 		} as Name extends NameOfA ? { [BK in NameOfB]: B } : { [AK in NameOfA]: A }
 	}
 
-	public add(
-		pair: {
-			[N in NameOfA | NameOfB]: N extends NameOfA ? A : B
-		},
-	): this {
+	public add(pair: {
+		[N in NameOfA | NameOfB]: N extends NameOfA ? A : B
+	}): this {
 		const a = pair[this.nameOfA] as A
 		const b = pair[this.nameOfB] as B
 		if (a in this.aSide) delete this.aSide[a]
@@ -85,11 +82,9 @@ export class Dictionary<
 		return this
 	}
 
-	public remove<Name extends NameOfA | NameOfB>(
-		item: {
-			[K in Name]: Name extends NameOfA ? A : B
-		},
-	): this {
+	public remove<Name extends NameOfA | NameOfB>(item: {
+		[K in Name]: Name extends NameOfA ? A : B
+	}): this {
 		const [name, value] = recordToEntries(item as { [K in Name]: A | B })[0]
 		if (name === this.nameOfA) {
 			const b = this.aSide[value as A]

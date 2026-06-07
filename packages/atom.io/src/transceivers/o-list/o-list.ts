@@ -117,7 +117,6 @@ export class OList<P extends primitive>
 	public constructor(...items: P[])
 	public constructor(...items: P[]) {
 		super(...items)
-		// biome-ignore lint/correctness/noConstructorReturn: this is chill
 		return new Proxy(this, {
 			set: (target, prop, value, receiver) => {
 				if (
@@ -419,7 +418,7 @@ export class OList<P extends primitive>
 				if (update.prev) {
 					this[update.index] = update.prev
 				} else {
-					// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+					// oxlint-disable-next-line typescript/no-dynamic-delete
 					delete this[update.index]
 					const firstEmptyIndex = this.findIndex(
 						(_, i) => !Object.hasOwn(this, i),

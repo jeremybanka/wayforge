@@ -1,4 +1,3 @@
-/** biome-ignore-all lint/correctness/useHookAtTopLevel: depends on the type of atom, which shouldn't change */
 import type { ReadableFamilyToken, ReadableToken, ViewOf } from "atom.io"
 import { getFromStore, subscribeToState } from "atom.io/internal"
 import type { Canonical } from "atom.io/json"

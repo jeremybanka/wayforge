@@ -17,7 +17,7 @@ import {
 } from "../src/backend/account-actions"
 import * as svg from "../src/frontend/<svg>"
 
-// biome-ignore lint/style/noNonNullAssertion: <explanation>
+// oxlint-disable-next-line typescript/no-unnecessary-type-assertion -- mirrors current typescript-eslint behavior before JSON.parse.
 const FRONTEND_ORIGIN = JSON.parse(process.env[`FRONTEND_ORIGINS`]!)[0] ?? ``
 
 interface ConfirmEmailProps {

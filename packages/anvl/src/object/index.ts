@@ -18,7 +18,7 @@ export * from "./refinement"
 export const redact =
 	<K extends PropertyKey>(...args: K[]) =>
 	<O extends Record<K, any>>(obj: O): Omit<O, K> =>
-		// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+		// oxlint-disable-next-line typescript/no-dynamic-delete
 		reduce<K, O>((acc, key) => (delete acc[key], acc), obj)(args)
 
 export type Redacted<Holder, RedactProp extends PropertyKey> = Omit<

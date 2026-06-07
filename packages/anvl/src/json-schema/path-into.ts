@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/switch-exhaustiveness-check */
+/* oxlint-disable typescript/switch-exhaustiveness-check */
 export const expandPathForSchema = (
 	path: PropertyKey[],
 ): (number | string)[] | Error => {

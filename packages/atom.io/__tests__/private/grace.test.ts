@@ -135,7 +135,6 @@ describe(`two timelines attempt to own the same atom`, () => {
 			key: `count`,
 			default: 0,
 		})
-		// biome-ignore lint/correctness/noUnusedVariables: intentional for readability
 		const countTimeline000 = timeline({
 			key: `count_history`,
 			scope: [countAtom],

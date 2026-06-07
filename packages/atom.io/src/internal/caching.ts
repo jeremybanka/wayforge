@@ -45,7 +45,7 @@ export function writeToCache<T, E>(
 				if (current === future) {
 					openOperation(target, state)
 					writeToCache(target, state, resolved)
-					// eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
+					// oxlint-disable-next-line typescript/switch-exhaustiveness-check
 					switch (type) {
 						case `atom`:
 							evictDownstreamFromAtom(target, state)

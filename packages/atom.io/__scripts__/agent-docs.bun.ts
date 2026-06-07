@@ -365,7 +365,7 @@ function readCodeExpression(attributes: string): string | undefined {
 function cookCodeExpression(expression: string): string {
 	// Static docs literals are trusted source files and may contain escaped
 	// template text that is easier to decode through the JavaScript parser.
-	// eslint-disable-next-line @typescript-eslint/no-implied-eval
+	// oxlint-disable-next-line @typescript-eslint/no-implied-eval
 	return Function(`return (${expression})`)() as string
 }
 

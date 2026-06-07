@@ -11,7 +11,6 @@ import { env } from "../library/env.ts"
 import { App } from "./App.tsx"
 import { socket } from "./services/socket-auth-service.ts"
 
-// biome-ignore lint/style/noNonNullAssertion: I believe we will find the root
 createRoot(document.getElementById(`root`)!).render(
 	<StrictMode>
 		<RealtimeProvider socket={socket}>

@@ -101,7 +101,7 @@ export default function main(mode: string): void {
 					PACKAGE_JSON_PATH,
 					JSON.stringify(newPackageJson, null, 2),
 				)
-				execSync(`biome format package.json --write`)
+				execSync(`dprint fmt package.json`)
 				logger.info(
 					`done`,
 					`Updated package.json to include ${submodules.length} submodules`,

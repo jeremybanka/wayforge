@@ -16,8 +16,7 @@ export class Join<
 	CONTENT extends Json.Object | null = null,
 	A extends string = `from`,
 	B extends string = `to`,
-> implements RelationData<CONTENT, A, B>
-{
+> implements RelationData<CONTENT, A, B> {
 	public readonly relationType!: `1:1` | `1:n` | `n:n`
 	public readonly a: A = `from` as A
 	public readonly b: B = `to` as B

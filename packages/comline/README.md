@@ -17,49 +17,49 @@ let's say we have the following function defined in `greet.ts`:
  * @returns {string}
  */
 function greet(name: string, age: number): string {
-  return `Hello, ${name}!`;
+	return `Hello, ${name}!`
 }
 ```
 
 create a `greet.x.ts` file with the following contents:
 
 ```typescript
-import { greet } from "./greet";
+import { greet } from "./greet"
 
-import { cli, parseNumberArg, parseStringArg } from "comline";
-import { z } from "zod/v4";
+import { cli, parseNumberArg, parseStringArg } from "comline"
+import { z } from "zod/v4"
 
 const greetCli = cli({
-  cliName: "greet",
-  discoverConfigPath: (positionalArgs) =>
-    path.join(process.cwd(), `.greet-config.json`),
-  optionsSchema: z.object({
-    name: z.string(),
-    age: z.number(),
-  }),
-  options: {
-    name: {
-      description: `name`,
-      example: `--name=hello`,
-      flag: `n`,
-      parse: parseStringArg,
-      required: true,
-    },
-    age: {
-      description: `age`,
-      example: `--age=1`,
-      flag: `a`,
-      parse: parseNumberArg,
-      required: true,
-    },
-  },
-});
+	cliName: "greet",
+	discoverConfigPath: (positionalArgs) =>
+		path.join(process.cwd(), `.greet-config.json`),
+	optionsSchema: z.object({
+		name: z.string(),
+		age: z.number(),
+	}),
+	options: {
+		name: {
+			description: `name`,
+			example: `--name=hello`,
+			flag: `n`,
+			parse: parseStringArg,
+			required: true,
+		},
+		age: {
+			description: `age`,
+			example: `--age=1`,
+			flag: `a`,
+			parse: parseNumberArg,
+			required: true,
+		},
+	},
+})
 
 const {
-  suppliedOptions: { name, age },
-} = greetCli(process.argv);
-const output = greet(name, age);
-process.stdout.write(output);
+	suppliedOptions: { name, age },
+} = greetCli(process.argv)
+const output = greet(name, age)
+process.stdout.write(output)
 ```
 
 then, run the file `greet.x.ts` with the following command:
@@ -92,26 +92,26 @@ this will print `Hello, jeremybanka!`
   - validated as a "route" into the tree of positional arguments
 
   ```typescript
-  import type { Tree, TreePath } from "comline";
-  import { optional, required } from "comline";
+  import type { Tree, TreePath } from "comline"
+  import { optional, required } from "comline"
 
   const myTree = required({
-    hello: optional({
-      world: null,
-      $name: optional({
-        good: required({
-          morning: null,
-        }),
-      }),
-    }),
-  }) satisfies Tree;
+  	hello: optional({
+  		world: null,
+  		$name: optional({
+  			good: required({
+  				morning: null,
+  			}),
+  		}),
+  	}),
+  }) satisfies Tree
 
   const validPaths: TreePath<typeof myTree>[] = [
-    [`hello`],
-    [`hello`, `world`],
-    [`hello`, `jeremybanka`],
-    [`hello`, `jeremybanka`, `good`, `morning`],
-  ];
+  	[`hello`],
+  	[`hello`, `world`],
+  	[`hello`, `jeremybanka`],
+  	[`hello`, `jeremybanka`, `good`, `morning`],
+  ]
   ```
 
 ## limitations

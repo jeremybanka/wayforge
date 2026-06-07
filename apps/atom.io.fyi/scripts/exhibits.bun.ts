@@ -65,7 +65,6 @@ function handleFile(filePath: string) {
 }
 
 switch (lastArgument) {
-	// biome-ignore lint/suspicious/noFallthroughSwitchClause: good use case for fallthrough
 	case `watch`: {
 		takua.info(`watch`, inputDir)
 		const watcher = chokidar.watch(inputDir, { persistent: true })

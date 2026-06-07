@@ -69,14 +69,24 @@
 				"__scripts__/**/*.ts"
 			]
 		},
-		"lint:biome": {
-			"cache": false
-		},
 		"lint:eslint": {
 			"dependsOn": ["atom.io#build", "gen"],
 			"inputs": [
 				"../../package.json",
 				"../../eslint.config.ts",
+				"**/package.json",
+				"tsconfig.json",
+				"src/**",
+				"**/src/**",
+				"__tests__/**",
+				"__scripts__/**"
+			]
+		},
+		"lint:oxlint": {
+			"dependsOn": ["atom.io#build", "gen"],
+			"inputs": [
+				"../../package.json",
+				"../../.oxlintrc.jsonc",
 				"**/package.json",
 				"tsconfig.json",
 				"src/**",
@@ -113,7 +123,7 @@
 			]
 		},
 		"lint": {
-			"dependsOn": ["lint:biome", "lint:eslint", "lint:types"]
+			"dependsOn": ["lint:eslint", "lint:oxlint", "lint:types"]
 		},
 		"gen": {
 			"dependsOn": ["^build"],

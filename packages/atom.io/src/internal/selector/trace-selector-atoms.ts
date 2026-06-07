@@ -13,7 +13,6 @@ export function traceRootSelectorAtoms(
 	const roots = new Map<string, Atom<unknown, unknown>>()
 
 	while (dependencies.length > 0) {
-		// biome-ignore lint/style/noNonNullAssertion: just checked length ^^^
 		const dependencyKey = dependencies.pop()!
 		if (covered.has(dependencyKey)) {
 			continue

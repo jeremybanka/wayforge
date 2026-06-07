@@ -1,5 +1,5 @@
 /* eslint-disable quotes */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
+/* oxlint-disable typescript/consistent-type-imports */
 
 export let ark: typeof import("arktype") | undefined
 export let zod: typeof import("zod") | undefined

@@ -165,7 +165,6 @@ export function attachDevtoolsStates(
 								}
 								return
 							}
-							// biome-ignore lint/style/noNonNullAssertion: fine here
 							const token = item.familyMembers.get(path[1] as string)!
 							value = get(token)
 							segments = path.slice(2, -1)

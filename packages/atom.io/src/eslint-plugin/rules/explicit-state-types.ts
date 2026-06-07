@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/switch-exhaustiveness-check */
+/* oxlint-disable typescript/switch-exhaustiveness-check */
 import { AST_NODE_TYPES, ESLintUtils } from "@typescript-eslint/utils"
 
 const createRule = ESLintUtils.RuleCreator(
