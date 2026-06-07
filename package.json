@@ -54,7 +54,7 @@
 		"@typescript/native-preview": "7.0.0-dev.20260606.1",
 		"cross-env": "10.1.0",
 		"dprint": "0.54.0",
-		"dprint-plugin-malva": "0.15.3",
+		"dprint-plugin-malva": "0.16.0",
 		"dprint-plugin-markup": "0.27.3",
 		"dprint-plugin-yaml": "0.6.0",
 		"eslint-plugin-drizzle": "0.2.3",
