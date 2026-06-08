@@ -1,8 +1,4 @@
-import type {
-	AtomToken,
-	RegularAtomFamilyToken,
-	RegularAtomToken,
-} from "atom.io"
+import type { RegularAtomFamilyToken, RegularAtomToken } from "atom.io"
 import {
 	type CoalescedSubscriberData,
 	createCoalescedSubscriber,
@@ -20,8 +16,8 @@ import { useSingleEffect } from "./use-single-effect"
 const ATOMIC_REF_CLEAR_COALESCE_MS = 20
 
 type StoreShadow<T> = WeakMap<Store, T>
-type AtomicRefToken = object
 type AtomicRefValue = unknown
+type AtomicRefToken = RegularAtomToken<unknown>
 type RefSubscriptions = WeakMap<AtomicRefToken, CoalescedSubscriberData>
 type ActiveRefElements = Map<AtomicRefValue, number>
 type ActiveRefElementsByToken = WeakMap<AtomicRefToken, ActiveRefElements>
@@ -51,7 +47,7 @@ function getStoreElementMap(store: Store): ActiveRefElementsByToken {
 
 function getActiveElements(
 	store: Store,
-	token: AtomToken<unknown>,
+	token: AtomicRefToken,
 ): ActiveRefElements {
 	const storeElementMap = getStoreElementMap(store)
 	let elements = storeElementMap.get(token)
@@ -73,7 +69,7 @@ function getLastSeenElements(store: Store): LastSeenRefElements {
 
 function publishAtomicRef<T>(
 	store: Store,
-	token: AtomToken<T | null>,
+	token: RegularAtomToken<T | null>,
 	element: T,
 ): void {
 	getLastSeenElements(store).set(token, element)
@@ -110,7 +106,7 @@ function removeActiveElement(
 	}
 }
 
-function closeAtomicRef(store: Store, token: AtomToken<unknown>): void {
+function closeAtomicRef(store: Store, token: AtomicRefToken): void {
 	const elements = getActiveElements(store, token)
 	const activeElement = getLastActiveElement(elements)
 	if (activeElement !== undefined) {
@@ -152,7 +148,7 @@ export function useAtomicRef<
 		  ]
 		| [RegularAtomToken<T | null>, <TT>(initialValue: TT | null) => R]
 ): R {
-	let token: AtomToken<T | null>
+	let token: RegularAtomToken<T | null>
 	let useRef: <TT>(initialValue: TT | null) => R
 	const store = useContext(StoreContext)
 	if (params.length === 3) {
