@@ -19,15 +19,15 @@ import { useSingleEffect } from "./use-single-effect"
 
 const ATOMIC_REF_CLEAR_COALESCE_MS = 20
 
-const refSubscriptions: WeakMap<
+const REF_SUBSCRIPTIONS: WeakMap<
 	Store,
 	WeakMap<object, CoalescedSubscriberData>
 > = new WeakMap()
-const activeRefElements: WeakMap<
+const ACTIVE_REF_ELEMENTS: WeakMap<
 	Store,
 	WeakMap<object, Map<unknown, number>>
 > = new WeakMap()
-const lastPublishedRefElements: WeakMap<
+const LAST_PUBLISHED_REF_ELEMENTS: WeakMap<
 	Store,
 	WeakMap<object, unknown>
 > = new WeakMap()
@@ -35,10 +35,10 @@ const lastPublishedRefElements: WeakMap<
 function getRefSubscriptions(
 	store: Store,
 ): WeakMap<object, CoalescedSubscriberData> {
-	let subscriptions = refSubscriptions.get(store)
+	let subscriptions = REF_SUBSCRIPTIONS.get(store)
 	if (subscriptions === undefined) {
 		subscriptions = new WeakMap()
-		refSubscriptions.set(store, subscriptions)
+		REF_SUBSCRIPTIONS.set(store, subscriptions)
 	}
 	return subscriptions
 }
@@ -46,10 +46,10 @@ function getRefSubscriptions(
 function getStoreElementMap(
 	store: Store,
 ): WeakMap<object, Map<unknown, number>> {
-	let storeElementMap = activeRefElements.get(store)
+	let storeElementMap = ACTIVE_REF_ELEMENTS.get(store)
 	if (storeElementMap === undefined) {
 		storeElementMap = new WeakMap()
-		activeRefElements.set(store, storeElementMap)
+		ACTIVE_REF_ELEMENTS.set(store, storeElementMap)
 	}
 	return storeElementMap
 }
@@ -68,10 +68,10 @@ function getActiveElements(
 }
 
 function getLastPublishedElements(store: Store): WeakMap<object, unknown> {
-	let elements = lastPublishedRefElements.get(store)
+	let elements = LAST_PUBLISHED_REF_ELEMENTS.get(store)
 	if (elements === undefined) {
 		elements = new WeakMap()
-		lastPublishedRefElements.set(store, elements)
+		LAST_PUBLISHED_REF_ELEMENTS.set(store, elements)
 	}
 	return elements
 }
