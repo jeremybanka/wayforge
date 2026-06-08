@@ -1,14 +1,18 @@
-import { Future } from "atom.io/internal"
+import {
+	type CoalescedSubscriberData,
+	createCoalescedSubscriber,
+} from "atom.io/internal"
 import type { Socket } from "atom.io/realtime"
-
-type SubData = { refcount: number; timer: Future<void> }
 
 const SUBSCRIPTION_COALESCE_MS = 50
 
-const subscriptions: WeakMap<Socket, Map<string, SubData>> = new WeakMap()
+const subscriptions: WeakMap<
+	Socket,
+	Map<string, CoalescedSubscriberData>
+> = new WeakMap()
 const socketIds: WeakMap<Socket, string | undefined> = new WeakMap()
 
-export function getSubMap(socket: Socket): Map<string, SubData> {
+export function getSubMap(socket: Socket): Map<string, CoalescedSubscriberData> {
 	let subMap = subscriptions.get(socket)
 	if (subMap === undefined) {
 		subMap = new Map()
@@ -28,28 +32,5 @@ export function createSubscriber<K extends string>(
 		subscriptions.delete(socket)
 	}
 	const subMap = getSubMap(socket)
-	let sub = subMap.get(key)
-
-	if (sub) {
-		sub.timer.use(new Promise<void>(() => {}))
-		sub.refcount++
-	} else {
-		sub = { refcount: 1, timer: new Future<void>(() => {}) }
-		subMap.set(key, sub)
-		const close = open(key)
-		void sub.timer.then(() => {
-			close()
-			subMap.delete(key)
-		})
-	}
-	return () => {
-		sub.refcount--
-
-		if (sub.refcount === 0) {
-			const timeout = new Promise<void>((resolve) => {
-				setTimeout(resolve, SUBSCRIPTION_COALESCE_MS)
-			})
-			sub.timer.use(timeout)
-		}
-	}
+	return createCoalescedSubscriber(subMap, key, open, SUBSCRIPTION_COALESCE_MS)
 }

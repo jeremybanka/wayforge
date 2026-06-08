@@ -4,6 +4,8 @@ import type {
 	RegularAtomToken,
 } from "atom.io"
 import {
+	type CoalescedSubscriberData,
+	createCoalescedSubscriber,
 	findInStore,
 	getFromStore,
 	setIntoStore,
@@ -17,50 +19,114 @@ import { useSingleEffect } from "./use-single-effect"
 
 const ATOMIC_REF_CLEAR_COALESCE_MS = 20
 
-const clearTimers: WeakMap<
+const refSubscriptions: WeakMap<
 	Store,
-	WeakMap<object, ReturnType<typeof setTimeout>>
+	WeakMap<object, CoalescedSubscriberData>
+> = new WeakMap()
+const activeRefElements: WeakMap<
+	Store,
+	WeakMap<object, Map<unknown, number>>
+> = new WeakMap()
+const lastPublishedRefElements: WeakMap<
+	Store,
+	WeakMap<object, unknown>
 > = new WeakMap()
 
-function getClearTimers(
+function getRefSubscriptions(
 	store: Store,
-): WeakMap<object, ReturnType<typeof setTimeout>> {
-	let timers = clearTimers.get(store)
-	if (timers === undefined) {
-		timers = new WeakMap()
-		clearTimers.set(store, timers)
+): WeakMap<object, CoalescedSubscriberData> {
+	let subscriptions = refSubscriptions.get(store)
+	if (subscriptions === undefined) {
+		subscriptions = new WeakMap()
+		refSubscriptions.set(store, subscriptions)
 	}
-	return timers
+	return subscriptions
 }
 
-function cancelPendingClear(store: Store, token: AtomToken<unknown>): void {
-	const timers = getClearTimers(store)
-	const timer = timers.get(token)
-	if (timer) {
-		clearTimeout(timer)
-		timers.delete(token)
+function getStoreElementMap(
+	store: Store,
+): WeakMap<object, Map<unknown, number>> {
+	let storeElementMap = activeRefElements.get(store)
+	if (storeElementMap === undefined) {
+		storeElementMap = new WeakMap()
+		activeRefElements.set(store, storeElementMap)
 	}
+	return storeElementMap
 }
 
-function scheduleClear<T>(
+function getActiveElements(
+	store: Store,
+	token: AtomToken<unknown>,
+): Map<unknown, number> {
+	const storeElementMap = getStoreElementMap(store)
+	let elements = storeElementMap.get(token)
+	if (elements === undefined) {
+		elements = new Map()
+		storeElementMap.set(token, elements)
+	}
+	return elements
+}
+
+function getLastPublishedElements(store: Store): WeakMap<object, unknown> {
+	let elements = lastPublishedRefElements.get(store)
+	if (elements === undefined) {
+		elements = new WeakMap()
+		lastPublishedRefElements.set(store, elements)
+	}
+	return elements
+}
+
+function publishAtomicRef<T>(
 	store: Store,
 	token: AtomToken<T | null>,
-	element: T | null,
+	element: T,
 ): void {
-	if (element === null) {
+	getLastPublishedElements(store).set(token, element)
+	setIntoStore(store, token, element)
+}
+
+function getLastActiveElement(elements: Map<unknown, number>): unknown {
+	let lastElement: unknown
+	for (const element of elements.keys()) {
+		lastElement = element
+	}
+	return lastElement
+}
+
+function addActiveElement(
+	elements: Map<unknown, number>,
+	element: unknown,
+): void {
+	elements.set(element, (elements.get(element) ?? 0) + 1)
+}
+
+function removeActiveElement(
+	elements: Map<unknown, number>,
+	element: unknown,
+): void {
+	const count = elements.get(element)
+	if (count === undefined) {
 		return
 	}
-	const timers = getClearTimers(store)
-	cancelPendingClear(store, token)
-	timers.set(
-		token,
-		setTimeout(() => {
-			if (getFromStore(store, token) === element) {
-				setIntoStore(store, token, null)
-			}
-			timers.delete(token)
-		}, ATOMIC_REF_CLEAR_COALESCE_MS),
-	)
+	if (count === 1) {
+		elements.delete(element)
+	} else {
+		elements.set(element, count - 1)
+	}
+}
+
+function closeAtomicRef(store: Store, token: AtomToken<unknown>): void {
+	const elements = getActiveElements(store, token)
+	const activeElement = getLastActiveElement(elements)
+	if (activeElement !== undefined) {
+		publishAtomicRef(store, token, activeElement)
+		return
+	}
+	const lastPublished = getLastPublishedElements(store).get(token)
+	if (getFromStore(store, token) === lastPublished) {
+		setIntoStore(store, token, null)
+	}
+	getLastPublishedElements(store).delete(token)
 }
 
 export function useAtomicRef<T, R extends { current: T | null }>(
@@ -106,11 +172,31 @@ export function useAtomicRef<
 	const ref = useRef(null)
 
 	useSingleEffect(() => {
-		cancelPendingClear(store, token)
 		const element = ref.current
-		setIntoStore(store, token, element)
+		if (element === null) {
+			setIntoStore(store, token, null)
+			return
+		}
+		const elements = getActiveElements(store, token)
+		addActiveElement(elements, element)
+		const unsubscribe = createCoalescedSubscriber(
+			getRefSubscriptions(store),
+			token,
+			() => () => {
+				closeAtomicRef(store, token)
+			},
+			ATOMIC_REF_CLEAR_COALESCE_MS,
+		)
+		publishAtomicRef(store, token, element)
 		return () => {
-			scheduleClear(store, token, element)
+			removeActiveElement(elements, element)
+			if (getFromStore(store, token) === element) {
+				const activeElement = getLastActiveElement(elements)
+				if (activeElement !== undefined) {
+					publishAtomicRef(store, token, activeElement as T)
+				}
+			}
+			unsubscribe()
 		}
 	}, [token, ref.current])
 	return ref

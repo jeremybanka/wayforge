@@ -915,6 +915,61 @@ describe(`useAtomicRef`, () => {
 			vitest.useRealTimers()
 		}
 	})
+	it(`falls back to another active element for the same atom`, async () => {
+		const aWillRenderAtom = atom<boolean>({
+			key: `aWillRender`,
+			default: true,
+		})
+		const bWillRenderAtom = atom<boolean>({
+			key: `bWillRender`,
+			default: true,
+		})
+		const buttonAtom = atom<HTMLButtonElement | null>({
+			key: `button`,
+			default: null,
+		})
+		function MyApp() {
+			const aWillRender = AR.useO(aWillRenderAtom)
+			const bWillRender = AR.useO(bWillRenderAtom)
+			return (
+				<>
+					{aWillRender ? <MyButton id="a" /> : null}
+					{bWillRender ? <MyButton id="b" /> : null}
+				</>
+			)
+		}
+		function MyButton({ id }: { id: string }) {
+			const ref = AR.useAtomicRef(buttonAtom, useRef)
+			return <button data-testid={`button-${id}`} type="button" ref={ref} />
+		}
+		vitest.useFakeTimers()
+		try {
+			const utils = render(<MyApp />)
+			expect(getState(buttonAtom)).toBe(utils.getByTestId(`button-b`))
+
+			act(() => {
+				setState(bWillRenderAtom, false)
+			})
+			expect(getState(buttonAtom)).toBe(utils.getByTestId(`button-a`))
+
+			await act(async () => {
+				await vitest.advanceTimersByTimeAsync(25)
+			})
+			expect(getState(buttonAtom)).toBe(utils.getByTestId(`button-a`))
+
+			act(() => {
+				setState(aWillRenderAtom, false)
+			})
+			expect(getState(buttonAtom)).not.toBe(null)
+
+			await act(async () => {
+				await vitest.advanceTimersByTimeAsync(25)
+			})
+			expect(getState(buttonAtom)).toBe(null)
+		} finally {
+			vitest.useRealTimers()
+		}
+	})
 	it(`makes an element available to use wherever (family overload)`, () => {
 		const buttonAtoms = atomFamily<HTMLButtonElement | null, string>({
 			key: `button`,
