@@ -9,6 +9,7 @@ import {
 	resetState,
 	selector,
 	setState,
+	subscribe,
 	timeline,
 	undo,
 } from "atom.io"
@@ -836,7 +837,7 @@ describe(`useLoadable`, () => {
 })
 
 describe(`useAtomicRef`, () => {
-	it(`makes an element available to use wherever`, () => {
+	it(`makes an element available to use wherever`, async () => {
 		const buttonWillRenderAtom = atom<boolean>({
 			key: `buttonWillRender`,
 			default: true,
@@ -864,6 +865,11 @@ describe(`useAtomicRef`, () => {
 				</button>
 			)
 		}
+		const updates: (HTMLButtonElement | null)[] = []
+		const unsubscribe = subscribe(buttonAtom, ({ newValue }) => {
+			updates.push(newValue)
+		})
+		vitest.useFakeTimers()
 		const utils = render(<MyApp />)
 		const button = getState(buttonAtom)
 		assert(button)
@@ -871,17 +877,43 @@ describe(`useAtomicRef`, () => {
 
 		expect(Utils.stdout).toHaveBeenCalledWith(`hi`)
 
-		act(() => {
-			setState(buttonWillRenderAtom, false)
-		})
-		expect(() => utils.getByTestId(`button`)).toThrow(Error)
-		expect(getState(buttonAtom)).toBe(null)
+		try {
+			act(() => {
+				setState(buttonWillRenderAtom, false)
+			})
+			expect(() => utils.getByTestId(`button`)).toThrow(Error)
+			expect(getState(buttonAtom)).toBe(button)
+			expect(updates).not.toContain(null)
 
-		act(() => {
-			setState(buttonWillRenderAtom, true)
-		})
+			act(() => {
+				setState(buttonWillRenderAtom, true)
+			})
 
-		expect(utils.getByTestId(`button`)).toBe(getState(buttonAtom))
+			const nextButton = utils.getByTestId(`button`)
+			expect(nextButton).toBe(getState(buttonAtom))
+			expect(updates).not.toContain(null)
+
+			await act(async () => {
+				await vitest.advanceTimersByTimeAsync(25)
+			})
+			expect(getState(buttonAtom)).toBe(nextButton)
+			expect(updates).not.toContain(null)
+
+			act(() => {
+				setState(buttonWillRenderAtom, false)
+			})
+			expect(() => utils.getByTestId(`button`)).toThrow(Error)
+			expect(getState(buttonAtom)).toBe(nextButton)
+
+			await act(async () => {
+				await vitest.advanceTimersByTimeAsync(25)
+			})
+			expect(getState(buttonAtom)).toBe(null)
+			expect(updates).toContain(null)
+		} finally {
+			unsubscribe()
+			vitest.useRealTimers()
+		}
 	})
 	it(`makes an element available to use wherever (family overload)`, () => {
 		const buttonAtoms = atomFamily<HTMLButtonElement | null, string>({
