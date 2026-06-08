@@ -19,22 +19,19 @@ import { useSingleEffect } from "./use-single-effect"
 
 const ATOMIC_REF_CLEAR_COALESCE_MS = 20
 
-const REF_SUBSCRIPTIONS: WeakMap<
-	Store,
-	WeakMap<object, CoalescedSubscriberData>
-> = new WeakMap()
-const ACTIVE_REF_ELEMENTS: WeakMap<
-	Store,
-	WeakMap<object, Map<unknown, number>>
-> = new WeakMap()
-const LAST_PUBLISHED_REF_ELEMENTS: WeakMap<
-	Store,
-	WeakMap<object, unknown>
-> = new WeakMap()
+type StoreShadow<T> = WeakMap<Store, T>
+type AtomicRefToken = object
+type AtomicRefValue = unknown
+type RefSubscriptions = WeakMap<AtomicRefToken, CoalescedSubscriberData>
+type ActiveRefElements = Map<AtomicRefValue, number>
+type ActiveRefElementsByToken = WeakMap<AtomicRefToken, ActiveRefElements>
+type LastSeenRefElements = WeakMap<AtomicRefToken, AtomicRefValue>
 
-function getRefSubscriptions(
-	store: Store,
-): WeakMap<object, CoalescedSubscriberData> {
+const REF_SUBSCRIPTIONS: StoreShadow<RefSubscriptions> = new WeakMap()
+const ACTIVE_REF_ELEMENTS: StoreShadow<ActiveRefElementsByToken> = new WeakMap()
+const LAST_SEEN_REF_ELEMENTS: StoreShadow<LastSeenRefElements> = new WeakMap()
+
+function getRefSubscriptions(store: Store): RefSubscriptions {
 	let subscriptions = REF_SUBSCRIPTIONS.get(store)
 	if (subscriptions === undefined) {
 		subscriptions = new WeakMap()
@@ -43,9 +40,7 @@ function getRefSubscriptions(
 	return subscriptions
 }
 
-function getStoreElementMap(
-	store: Store,
-): WeakMap<object, Map<unknown, number>> {
+function getStoreElementMap(store: Store): ActiveRefElementsByToken {
 	let storeElementMap = ACTIVE_REF_ELEMENTS.get(store)
 	if (storeElementMap === undefined) {
 		storeElementMap = new WeakMap()
@@ -57,7 +52,7 @@ function getStoreElementMap(
 function getActiveElements(
 	store: Store,
 	token: AtomToken<unknown>,
-): Map<unknown, number> {
+): ActiveRefElements {
 	const storeElementMap = getStoreElementMap(store)
 	let elements = storeElementMap.get(token)
 	if (elements === undefined) {
@@ -67,11 +62,11 @@ function getActiveElements(
 	return elements
 }
 
-function getLastPublishedElements(store: Store): WeakMap<object, unknown> {
-	let elements = LAST_PUBLISHED_REF_ELEMENTS.get(store)
+function getLastSeenElements(store: Store): LastSeenRefElements {
+	let elements = LAST_SEEN_REF_ELEMENTS.get(store)
 	if (elements === undefined) {
 		elements = new WeakMap()
-		LAST_PUBLISHED_REF_ELEMENTS.set(store, elements)
+		LAST_SEEN_REF_ELEMENTS.set(store, elements)
 	}
 	return elements
 }
@@ -81,12 +76,12 @@ function publishAtomicRef<T>(
 	token: AtomToken<T | null>,
 	element: T,
 ): void {
-	getLastPublishedElements(store).set(token, element)
+	getLastSeenElements(store).set(token, element)
 	setIntoStore(store, token, element)
 }
 
-function getLastActiveElement(elements: Map<unknown, number>): unknown {
-	let lastElement: unknown
+function getLastActiveElement(elements: ActiveRefElements): AtomicRefValue {
+	let lastElement: AtomicRefValue
 	for (const element of elements.keys()) {
 		lastElement = element
 	}
@@ -94,15 +89,15 @@ function getLastActiveElement(elements: Map<unknown, number>): unknown {
 }
 
 function addActiveElement(
-	elements: Map<unknown, number>,
-	element: unknown,
+	elements: ActiveRefElements,
+	element: AtomicRefValue,
 ): void {
 	elements.set(element, (elements.get(element) ?? 0) + 1)
 }
 
 function removeActiveElement(
-	elements: Map<unknown, number>,
-	element: unknown,
+	elements: ActiveRefElements,
+	element: AtomicRefValue,
 ): void {
 	const count = elements.get(element)
 	if (count === undefined) {
@@ -122,11 +117,11 @@ function closeAtomicRef(store: Store, token: AtomToken<unknown>): void {
 		publishAtomicRef(store, token, activeElement)
 		return
 	}
-	const lastPublished = getLastPublishedElements(store).get(token)
-	if (getFromStore(store, token) === lastPublished) {
+	const lastSeen = getLastSeenElements(store).get(token)
+	if (getFromStore(store, token) === lastSeen) {
 		setIntoStore(store, token, null)
 	}
-	getLastPublishedElements(store).delete(token)
+	getLastSeenElements(store).delete(token)
 }
 
 export function useAtomicRef<T, R extends { current: T | null }>(
