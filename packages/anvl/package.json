@@ -31,6 +31,9 @@
 		"test:once": "vitest run",
 		"postversion": "dprint fmt package.json"
 	},
+	"dependencies": {
+		"atom.io": "0.47.2"
+	},
 	"exports": {
 		"./package.json": "./package.json",
 		"./array": {

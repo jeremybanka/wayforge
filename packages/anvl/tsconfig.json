@@ -7,9 +7,7 @@
 		"allowJs": false,
 		"isolatedDeclarations": true,
 		"paths": {
-			"anvl/*": ["./src/*"],
-			"atom.io": ["../atom.io/src/main"],
-			"atom.io/*": ["../atom.io/src/*"]
+			"anvl/*": ["./src/*"]
 		}
 	}
 }

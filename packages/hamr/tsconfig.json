@@ -6,9 +6,7 @@
 		"types": ["vitest/globals"],
 		"noEmit": true,
 		"paths": {
-			"hamr/*": ["./src/*"],
-			"atom.io": ["../atom.io/src/main"],
-			"atom.io/*": ["../atom.io/src/*"]
+			"hamr/*": ["./src/*"]
 		}
 	},
 	"include": [

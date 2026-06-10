@@ -20,6 +20,7 @@
 		"postversion": "dprint fmt package.json"
 	},
 	"dependencies": {
+		"atom.io": "0.47.2",
 		"fp-ts": "2.16.11",
 		"io-ts": "2.2.22"
 	},
