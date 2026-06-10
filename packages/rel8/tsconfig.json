@@ -3,10 +3,6 @@
 	"include": ["./**/*.ts"],
 	"compilerOptions": {
 		"target": "ES2023",
-		"lib": ["ESNext", "DOM"],
-		"paths": {
-			"atom.io": ["../atom.io/src/main"],
-			"atom.io/*": ["../atom.io/src/*"]
-		}
+		"lib": ["ESNext", "DOM"]
 	}
 }

@@ -24,6 +24,6 @@
 		"target": "ES2018",
 		"useUnknownInCatchVariables": true
 	},
-	"include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/.storybook/*.ts"],
+	"include": ["**/*.ts", "**/*.tsx", "**/*.js"],
 	"exclude": ["**/dist"]
 }

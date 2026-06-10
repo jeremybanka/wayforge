@@ -1,2 +1,10 @@
-export * from "../../../../packages/atom.io/src/react-devtools/error-boundary"
+export {
+	DefaultFallback,
+	ErrorBoundary,
+} from "atom.io/react-devtools"
+export type {
+	ErrorBoundaryProps,
+	ErrorBoundaryState,
+	FallbackProps,
+} from "atom.io/react-devtools"
 export * from "./RecoverableErrorBoundary"

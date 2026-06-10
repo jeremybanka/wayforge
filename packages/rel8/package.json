@@ -39,6 +39,9 @@
 		"test:once": "echo 'no tests yet'",
 		"postversion": "dprint fmt package.json"
 	},
+	"dependencies": {
+		"atom.io": "0.47.2"
+	},
 	"devDependencies": {
 		"@typescript/native-preview": "7.0.0-dev.20260608.1",
 		"concurrently": "10.0.3",
