@@ -1,4 +1,5 @@
-import { fireEvent, prettyDOM, render } from "@testing-library/react"
+import { fireEvent, prettyDOM } from "@testing-library/dom"
+import { render } from "@testing-library/react"
 import type { ReadableToken } from "atom.io"
 import { atom } from "atom.io"
 import { StoreProvider, useI, useO } from "atom.io/react"
