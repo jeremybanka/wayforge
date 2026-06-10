@@ -1,4 +1,3 @@
-export { Junction } from "atom.io/internal"
 export type {
 	BaseExternalStoreConfiguration,
 	ExternalStoreConfiguration,
@@ -10,3 +9,4 @@ export type {
 	JunctionSchema,
 	JunctionSchemaBase,
 } from "atom.io/internal"
+export { Junction } from "atom.io/internal"

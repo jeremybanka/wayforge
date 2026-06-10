@@ -80,9 +80,4 @@ const DRIZZLE: Linter.Config = {
 	},
 }
 
-export default [
-	IGNORES,
-	COMMON,
-	NO_CONSOLE,
-	DRIZZLE,
-] satisfies Linter.Config[]
+export default [IGNORES, COMMON, NO_CONSOLE, DRIZZLE] satisfies Linter.Config[]
