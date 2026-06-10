@@ -13,11 +13,6 @@
 			"outputs": ["app/**", "bin/**"],
 			"inputs": ["**/package.json", "src/**"]
 		},
-		"atom.io.fyi#build": {
-			"dependsOn": ["gen", "^build", "^gen"],
-			"outputs": [".astro/**", "dist/**"],
-			"inputs": ["**/package.json", "src/**", "public/**", "scripts/**"]
-		},
 		"test:build": {
 			"dependsOn": ["build"],
 			"inputs": [
@@ -70,7 +65,7 @@
 			]
 		},
 		"lint:eslint": {
-			"dependsOn": ["atom.io#build", "gen"],
+			"dependsOn": ["gen"],
 			"inputs": [
 				"../../package.json",
 				"../../eslint.config.ts",
@@ -83,7 +78,7 @@
 			]
 		},
 		"lint:oxlint": {
-			"dependsOn": ["atom.io#build", "gen"],
+			"dependsOn": ["gen"],
 			"inputs": [
 				"../../package.json",
 				"../../.oxlintrc.jsonc",
@@ -140,7 +135,7 @@
 		"version": {
 			"dependsOn": ["^build"],
 			"inputs": [],
-			"outputs": ["templates/package.json"]
+			"outputs": []
 		}
 	}
 }

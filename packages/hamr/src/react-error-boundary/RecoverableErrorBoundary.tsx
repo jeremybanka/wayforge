@@ -1,14 +1,10 @@
-import type { FC } from "react"
-import { useState } from "react"
-
 import type {
 	ErrorBoundaryProps,
 	ErrorBoundaryState,
-} from "../../../atom.io/src/react-devtools/error-boundary"
-import {
-	DefaultFallback,
-	ErrorBoundary,
-} from "../../../atom.io/src/react-devtools/error-boundary"
+} from "atom.io/react-devtools"
+import { DefaultFallback, ErrorBoundary } from "atom.io/react-devtools"
+import type { FC } from "react"
+import { useState } from "react"
 
 export const RecoverableErrorBoundary: FC<ErrorBoundaryProps> = ({
 	children,

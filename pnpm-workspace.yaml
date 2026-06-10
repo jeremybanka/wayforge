@@ -7,7 +7,6 @@ autoInstallPeers: false
 packages:
   - "apps/*"
   - "packages/*"
-  - "templates/*"
 
 allowBuilds:
   "@swc/core": true
