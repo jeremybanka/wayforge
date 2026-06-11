@@ -1,5 +1,11 @@
 # varmint
 
+## 0.5.15
+
+### Patch Changes
+
+- comline@0.4.7
+
 ## 0.5.14
 
 ### Patch Changes
