@@ -1,6 +1,6 @@
 {
 	"name": "treetrunks",
-	"description": "Type and runtime representations of tree structures.",
+	"description": "Lean utilities to build type-safe trees and validate routes through them.",
 	"version": "0.1.7",
 	"license": "MIT",
 	"author": {
@@ -17,6 +17,8 @@
 	},
 	"type": "module",
 	"files": [
+		"AGENTS.md",
+		"__tests__",
 		"dist",
 		"src"
 	],

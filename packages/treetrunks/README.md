@@ -17,7 +17,7 @@
 npm i treetrunks
 ```
 
-treetrunks is a convenient way to define type-safe routers.
+Lean utilities to build type-safe trees and validate routes through them.
 
 ## overview
 
