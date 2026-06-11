@@ -1,5 +1,11 @@
 # break-check
 
+## 0.6.29
+
+### Patch Changes
+
+- comline@0.4.7
+
 ## 0.6.28
 
 ### Patch Changes
