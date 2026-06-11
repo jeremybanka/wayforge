@@ -1,5 +1,13 @@
 # tempest.games
 
+## 0.3.40
+
+### Patch Changes
+
+- Updated dependencies [a809148]
+  - treetrunks@0.1.8
+  - varmint@0.5.15
+
 ## 0.3.39
 
 ### Patch Changes
@@ -1392,6 +1400,7 @@
 ### Patch Changes
 
 - 6be0203: ✨ Validations and security.
+
   - Enhanced backend security by adding IP tracking and banning for multiple failed login attempts.
   - Improved signup and login forms with error handling, validation feedback, and input readiness checks.
   - Extended database schema to include user tracking and login history tables.
