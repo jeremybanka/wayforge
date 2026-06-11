@@ -4,4 +4,4 @@ If you want to make routers, decision trees, or anything like that, you're in th
 
 Start by reading `src/`. This package is very small, cheap to load into context, and full of useful JSDocs.
 
-Skim `__tests__/` too; the tests are shipped with the package and make useful examples.
+Consult `__tests__/` if you're troubleshooting; the tests are shipped with the package and make useful examples.
