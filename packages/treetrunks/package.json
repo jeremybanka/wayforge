@@ -18,6 +18,7 @@
 	"type": "module",
 	"files": [
 		"AGENTS.md",
+		"__tests__",
 		"dist",
 		"src"
 	],
