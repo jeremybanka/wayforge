@@ -3,19 +3,16 @@ name: Renovate
 on:
   schedule:
     - cron: "0 * * * *"
-
   workflow_dispatch:
-
   push:
-    branches:
-      - main
+    branches: ["main"]
 
 permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
 
 defaults:
   run:
@@ -38,6 +35,8 @@ jobs:
           permission-issues: write
           permission-statuses: write
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          ref: main
       - uses: renovatebot/github-action@8217b3fc286df088d7c27f3255fe8414463bc0fd # v46.1.15
         env:
           LOG_LEVEL: debug
