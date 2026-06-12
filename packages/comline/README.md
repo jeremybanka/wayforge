@@ -4,7 +4,8 @@
 bun i comline
 ```
 
-comline makes it easy to turn a typescript function into a command line tool.
+comline makes it easy to turn a TypeScript function into a command line
+tool.
 
 ## usage
 
@@ -24,40 +25,49 @@ function greet(name: string, age: number): string {
 create a `greet.x.ts` file with the following contents:
 
 ```typescript
-import { greet } from "./greet"
+import * as path from "node:path"
 
-import { cli, parseNumberArg, parseStringArg } from "comline"
+import { cli, options, parseNumberOption, parseStringOption } from "comline"
 import { z } from "zod/v4"
+
+import { greet } from "./greet"
 
 const greetCli = cli({
 	cliName: "greet",
-	discoverConfigPath: (positionalArgs) =>
-		path.join(process.cwd(), `.greet-config.json`),
-	optionsSchema: z.object({
-		name: z.string(),
-		age: z.number(),
-	}),
-	options: {
-		name: {
-			description: `name`,
-			example: `--name=hello`,
-			flag: `n`,
-			parse: parseStringArg,
-			required: true,
-		},
-		age: {
-			description: `age`,
-			example: `--age=1`,
-			flag: `a`,
-			parse: parseNumberArg,
-			required: true,
-		},
+	discoverConfigPath: () => path.join(process.cwd(), `.greet-config.json`),
+	routeOptions: {
+		"": options(
+			`greet someone`,
+			z.object({
+				name: z.string(),
+				age: z.number(),
+			}),
+			{
+				name: {
+					description: `name`,
+					example: `--name=jeremybanka`,
+					flag: `n`,
+					parse: parseStringOption,
+					required: true,
+				},
+				age: {
+					description: `age`,
+					example: `--age=1`,
+					flag: `a`,
+					parse: parseNumberOption,
+					required: true,
+				},
+			},
+		),
 	},
 })
 
 const {
-	suppliedOptions: { name, age },
+	inputs: {
+		opts: { name, age },
+	},
 } = greetCli(process.argv)
+
 const output = greet(name, age)
 process.stdout.write(output)
 ```
@@ -70,23 +80,49 @@ bun greet.x.ts --name=jeremybanka --age=1
 
 this will print `Hello, jeremybanka!`
 
+`cli()` is configured with `routeOptions`. The root route is the empty string
+`""`; named positional routes use slash-delimited route names like
+`"hello/world"`.
+
+Use `options(description, schema, optionConfigs)` to attach a schema and parser
+configuration to a route. The schema may be a Zod schema or an Arktype type.
+Routes without options may use `null` or `noOptions(description)`.
+
+Calling a configured CLI returns:
+
+- `inputs.case`: the matched route key, such as `""` or `"hello/$name"`
+- `inputs.path`: the positional argument path supplied by the user
+- `inputs.opts`: parsed and schema-validated options for that route
+- `writeJsonSchema(outdir)`: writes JSON Schema files for each route with
+  options
+
+```typescript
+const { inputs, writeJsonSchema } = greetCli(process.argv)
+
+if (process.env.WRITE_CONFIG_SCHEMA) {
+	writeJsonSchema(`./schemas`)
+}
+
+greet(inputs.opts.name, inputs.opts.age)
+```
+
 ## features
 
 - [x] switches (`--age`)
-  - `""` will be provided to the parse function for `age` in this case
+  - `""` will be provided to the option parser for `age` in this case
 - [x] switches with values (`--age=1`)
-  - `"1"` will be provided to the parse function for `age` in this case
+  - `"1"` will be provided to the option parser for `age` in this case
 - [x] multiple instances of the same switch (`--age=1 --age=2`)
-  - `"1,2"` will be provided to the parse function for `age` in this case
+  - `"1,2"` will be provided to the option parser for `age` in this case
 - [x] flags (`-a`)
-  - `""` will be provided to the parse function for `age` in this case
+  - `""` will be provided to the option parser for `age` in this case
 - [x] multiple instances of the same flag (`-aa`)
-  - `","` will be provided to the parse function for `age` in this case
+  - `","` will be provided to the option parser for `age` in this case
 - [x] flags with values (`-a=1`)
-  - `"1"` will be provided to the parse function for `age` in this case
+  - `"1"` will be provided to the option parser for `age` in this case
 - [x] combined flags (`-na`)
-  - `""` will be provided to the parse function for `name` in this case
-  - `""` will be provided to the parse function for `age` in this case
+  - `""` will be provided to the option parser for `name` in this case
+  - `""` will be provided to the option parser for `age` in this case
 - [x] positional arguments (`my-cli -- positional`)
 
   - validated as a "route" into the tree of positional arguments
@@ -113,6 +149,32 @@ this will print `Hello, jeremybanka!`
   	[`hello`, `jeremybanka`, `good`, `morning`],
   ]
   ```
+
+  route options are keyed by the route path:
+
+  ```typescript
+  const myCli = cli({
+  	cliName: `my-cli`,
+  	routes: myTree,
+  	routeOptions: {
+  		hello: null,
+  		"hello/world": null,
+  		"hello/$name": null,
+  		"hello/$name/good/morning": null,
+  	},
+  })
+  ```
+
+## option parsers
+
+comline exports these parser helpers:
+
+- `parseStringOption`: returns the raw option value
+- `parseNumberOption`: parses a number; blank switches parse as `1`, and
+  repeated bare flags like `-aaa` parse as the repeat count
+- `parseBooleanOption`: treats `false` and `0` as `false`, and other values as
+  `true`
+- `parseArrayOption`: splits the option value on spaces
 
 ## limitations
 
