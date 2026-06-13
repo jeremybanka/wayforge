@@ -53,7 +53,7 @@
 		"db:setup": "./__scripts__/setup-db.bun.ts"
 	},
 	"dependencies": {
-		"@ai-sdk/openai": "3.0.70",
+		"@ai-sdk/openai": "3.0.71",
 		"@floating-ui/react": "0.27.19",
 		"@js-temporal/polyfill": "0.5.1",
 		"@react-spring/three": "10.1.1",
@@ -62,7 +62,7 @@
 		"@t3-oss/env-core": "0.13.11",
 		"@trpc/client": "11.17.0",
 		"@trpc/server": "11.17.0",
-		"ai": "6.0.202",
+		"ai": "6.0.203",
 		"arktype": "2.2.0",
 		"atom.io": "0.47.4",
 		"cron": "4.4.0",
