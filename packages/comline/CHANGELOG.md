@@ -1,5 +1,12 @@
 # comline
 
+## 0.4.8
+
+### Patch Changes
+
+- 523a6bd: Update the README to document the current route options, option parsers, parser
+  outputs, and JSON Schema writing API.
+
 ## 0.4.7
 
 ### Patch Changes
