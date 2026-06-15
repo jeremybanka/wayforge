@@ -211,6 +211,26 @@ describe(`options before positional args from cli`, () => {
 		expect(inputs.path).toEqual([`set`, `true`])
 	})
 
+	test(`happy: boolean switch value without equals before positional args`, () => {
+		const testCli = cli({
+			cliName: `my-cli`,
+			routes: required({ set: required({ $enabled: null }) }),
+			routeOptions: {
+				"set/$enabled": switchOptionGroup,
+			},
+		})
+		const { inputs } = testCli([
+			`/some-random-path/my-cli`,
+			`--dry-run`,
+			`false`,
+			`set`,
+			`true`,
+		])
+		expect(inputs.case).toEqual(`set/$enabled`)
+		expect(inputs.opts).toEqual({ "dry-run": false })
+		expect(inputs.path).toEqual([`set`, `true`])
+	})
+
 	test(`happy: bare boolean flag before positional args`, () => {
 		const testCli = cli({
 			cliName: `my-cli`,
@@ -222,6 +242,26 @@ describe(`options before positional args from cli`, () => {
 		const { inputs } = testCli([`/some-random-path/my-cli`, `-d`, `set`, `true`])
 		expect(inputs.case).toEqual(`set/$enabled`)
 		expect(inputs.opts).toEqual({ "dry-run": true })
+		expect(inputs.path).toEqual([`set`, `true`])
+	})
+
+	test(`happy: boolean flag value without equals before positional args`, () => {
+		const testCli = cli({
+			cliName: `my-cli`,
+			routes: required({ set: required({ $enabled: null }) }),
+			routeOptions: {
+				"set/$enabled": switchOptionGroup,
+			},
+		})
+		const { inputs } = testCli([
+			`/some-random-path/my-cli`,
+			`-d`,
+			`false`,
+			`set`,
+			`true`,
+		])
+		expect(inputs.case).toEqual(`set/$enabled`)
+		expect(inputs.opts).toEqual({ "dry-run": false })
 		expect(inputs.path).toEqual([`set`, `true`])
 	})
 
