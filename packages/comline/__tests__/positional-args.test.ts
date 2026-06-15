@@ -2,7 +2,7 @@ import { type } from "arktype"
 import { optional, required } from "treetrunks"
 
 import { cli, options } from "../src/cli"
-import { parseStringOption } from "../src/option-parsers"
+import { parseBooleanOption, parseStringOption } from "../src/option-parsers"
 
 describe(`positional args from cli`, () => {
 	const testCli = cli({
@@ -108,8 +108,12 @@ describe(`options without equals signs and positional args from cli`, () => {
 
 	const testCli = cli({
 		cliName: `my-cli`,
-		routes: required({ "do-thing": null }),
+		routes: required({
+			deploy: required({ $target: required({ $environment: null }) }),
+			"do-thing": null,
+		}),
 		routeOptions: {
+			"deploy/$target/$environment": optionGroup,
 			"do-thing": optionGroup,
 		},
 	})
@@ -124,6 +128,19 @@ describe(`options without equals signs and positional args from cli`, () => {
 		expect(inputs.opts).toEqual({ "with-option": `so-and-so` })
 		expect(inputs.path).toEqual([`do-thing`])
 	})
+	test(`happy: more positional args with option values separated by spaces`, () => {
+		const { inputs } = testCli([
+			`/some-random-path/my-cli`,
+			`deploy`,
+			`my-app`,
+			`production`,
+			`--with-option`,
+			`so-and-so`,
+		])
+		expect(inputs.case).toEqual(`deploy/$target/$environment`)
+		expect(inputs.opts).toEqual({ "with-option": `so-and-so` })
+		expect(inputs.path).toEqual([`deploy`, `my-app`, `production`])
+	})
 	test(`happy: positional args with option values separated by equals signs`, () => {
 		const { inputs } = testCli([
 			`/some-random-path/my-cli`,
@@ -133,5 +150,65 @@ describe(`options without equals signs and positional args from cli`, () => {
 		expect(inputs.case).toEqual(`do-thing`)
 		expect(inputs.opts).toEqual({ "with-option": `so-and-so` })
 		expect(inputs.path).toEqual([`do-thing`])
+	})
+})
+
+describe(`options before positional args from cli`, () => {
+	const switchOptionGroup = options(`blah`, type({ "dry-run?": `boolean` }), {
+		"dry-run": {
+			description: `dry run`,
+			example: `--dry-run`,
+			flag: `d`,
+			parse: parseBooleanOption,
+			required: false,
+		},
+	})
+	const flagOptionGroup = options(`blah`, type({ "name?": `string` }), {
+		name: {
+			description: `name`,
+			example: `--name=example`,
+			flag: `n`,
+			parse: parseStringOption,
+			required: false,
+		},
+	})
+
+	test(`happy: bare boolean switch before positional args`, () => {
+		const testCli = cli({
+			cliName: `my-cli`,
+			routes: required({ set: required({ $enabled: null }) }),
+			routeOptions: {
+				"set/$enabled": switchOptionGroup,
+			},
+		})
+		const { inputs } = testCli([
+			`/some-random-path/my-cli`,
+			`--dry-run`,
+			`set`,
+			`true`,
+		])
+		expect(inputs.case).toEqual(`set/$enabled`)
+		expect(inputs.opts).toEqual({ "dry-run": true })
+		expect(inputs.path).toEqual([`set`, `true`])
+	})
+
+	test(`happy: flag value before non-boolean positional args`, () => {
+		const testCli = cli({
+			cliName: `my-cli`,
+			routes: required({ inspect: required({ $target: null }) }),
+			routeOptions: {
+				"inspect/$target": flagOptionGroup,
+			},
+		})
+		const { inputs } = testCli([
+			`/some-random-path/my-cli`,
+			`-n`,
+			`example`,
+			`inspect`,
+			`service-a`,
+		])
+		expect(inputs.case).toEqual(`inspect/$target`)
+		expect(inputs.opts).toEqual({ name: `example` })
+		expect(inputs.path).toEqual([`inspect`, `service-a`])
 	})
 })
