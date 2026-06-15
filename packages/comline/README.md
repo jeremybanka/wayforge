@@ -120,6 +120,12 @@ greet(inputs.opts.name, inputs.opts.age)
   - `","` will be provided to the option parser for `age` in this case
 - [x] flags with values (`-a=1`, `-a 1`)
   - `"1"` will be provided to the option parser for `age` in this case
+- [ ] JSON Schema composition in value-consuming option heuristics
+  - recognize boolean-like option schemas through wrappers like `anyOf`, `oneOf`,
+    and `allOf`
+  - for example, a CLI author could model a nullable boolean option as
+    `z.boolean().nullable().optional()` and still have `my-cli --dry-run start`
+    treat `--dry-run` as a bare boolean switch instead of consuming `start`
 - [x] combined flags (`-na`)
   - `""` will be provided to the option parser for `name` in this case
   - `""` will be provided to the option parser for `age` in this case
