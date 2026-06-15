@@ -3,9 +3,9 @@ import { readdirSync, readFileSync, writeFileSync } from "node:fs"
 import type { ResourceIdentifierObject } from "anvl/json-api"
 import type { Entries } from "anvl/object"
 import { entriesToRecord } from "anvl/object"
+import type { Json } from "atom.io/foundations/json"
+import { parseJson } from "atom.io/foundations/json"
 import { jsonRefinery } from "atom.io/introspection"
-import type { Json } from "atom.io/json"
-import { parseJson } from "atom.io/json"
 
 export const getJsonFileNames = (dir: string): string[] => {
 	const fileNames = readdirSync(dir)

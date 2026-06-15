@@ -1,5 +1,5 @@
 import type { ViewOf } from "atom.io"
-import { toEntries } from "atom.io/json"
+import { toEntries } from "atom.io/foundations/entries"
 import * as React from "react"
 
 import { Anchor } from "../Anchor"

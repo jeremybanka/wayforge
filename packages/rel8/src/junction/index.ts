@@ -8,5 +8,5 @@ export type {
 	JunctionJSON,
 	JunctionSchema,
 	JunctionSchemaBase,
-} from "atom.io/internal"
-export { Junction } from "atom.io/internal"
+} from "atom.io/foundations/junction"
+export { Junction } from "atom.io/foundations/junction"

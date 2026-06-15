@@ -3,7 +3,7 @@
 import { existsSync, mkdirSync } from "node:fs"
 import { resolve } from "node:path"
 
-import type { Json } from "atom.io/json"
+import type { Json } from "atom.io/foundations/json"
 import { write } from "bun"
 import { jsonSchemaToZod } from "json-schema-to-zod"
 import { Squirrel } from "varmint"

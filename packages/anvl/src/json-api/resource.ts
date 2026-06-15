@@ -1,5 +1,5 @@
-import type { Json } from "atom.io/json"
-import { isJson } from "atom.io/json"
+import type { Json } from "atom.io/foundations/json"
+import { isJson } from "atom.io/foundations/json"
 
 import { ifDefined } from "../nullish"
 import type { EmptyObject, PlainObject } from "../object"

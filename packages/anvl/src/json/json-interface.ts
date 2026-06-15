@@ -1,4 +1,4 @@
-import type { Json, JsonInterface } from "atom.io/json"
+import type { Json, JsonInterface } from "atom.io/foundations/json"
 
 export const stringSetJsonInterface: JsonInterface<
 	Set<string>,

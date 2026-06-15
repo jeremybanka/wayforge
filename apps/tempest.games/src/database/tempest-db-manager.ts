@@ -1,6 +1,6 @@
 import path from "node:path"
 
-import { Subject } from "atom.io/internal"
+import { Subject } from "atom.io/foundations/subject"
 import type { Logger } from "drizzle-orm"
 import { getTableName } from "drizzle-orm"
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js"

@@ -1,4 +1,4 @@
-import type { Json } from "atom.io/json"
+import type { Json } from "atom.io/foundations/json"
 
 import { DatabaseManager } from "../database/tempest-db-manager"
 import { logger } from "./logger"

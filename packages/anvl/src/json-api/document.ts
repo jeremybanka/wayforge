@@ -1,4 +1,4 @@
-import type { Json } from "atom.io/json"
+import type { Json } from "atom.io/foundations/json"
 
 import type { ErrorObject } from "./errors"
 import type { JsonApiResource, ResourceObject, ResourceUpdate } from "./resource"

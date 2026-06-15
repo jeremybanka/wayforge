@@ -3,7 +3,7 @@ import { mkdirSync, renameSync, writeFileSync } from "node:fs"
 import type { Identified } from "anvl/id"
 import { identify } from "anvl/id"
 import { doesExtend } from "anvl/object"
-import type { Json } from "atom.io/json"
+import type { Json } from "atom.io/foundations/json"
 import { pipe } from "fp-ts/function"
 import { isString } from "fp-ts/string"
 

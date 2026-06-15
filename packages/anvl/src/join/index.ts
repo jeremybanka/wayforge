@@ -1,4 +1,4 @@
-import type { Json, JsonInterface } from "atom.io/json"
+import type { Json, JsonInterface } from "atom.io/foundations/json"
 
 import type { Identified } from "../id"
 import type { NullSafeRest, NullSafeUnion } from "../nullish"
