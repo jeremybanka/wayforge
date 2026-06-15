@@ -1,5 +1,6 @@
 import { type } from "arktype"
 import { optional, required } from "treetrunks"
+import z from "zod"
 
 import { cli, options } from "../src/cli"
 import { parseBooleanOption, parseStringOption } from "../src/option-parsers"
@@ -283,5 +284,64 @@ describe(`options before positional args from cli`, () => {
 		expect(inputs.case).toEqual(`inspect/$target`)
 		expect(inputs.opts).toEqual({ name: `example` })
 		expect(inputs.path).toEqual([`inspect`, `service-a`])
+	})
+})
+
+describe(`zod boolean options before positional args from cli`, () => {
+	const makeTestCli = (
+		optionGroup: ReturnType<typeof options<{ "dry-run"?: boolean | undefined }>>,
+	) =>
+		cli({
+			cliName: `my-cli`,
+			routes: required({ set: required({ $enabled: null }) }),
+			routeOptions: {
+				"set/$enabled": optionGroup,
+			},
+		})
+
+	test(`happy: optional boolean switch before positional args`, () => {
+		const testCli = makeTestCli(
+			options(`blah`, z.object({ "dry-run": z.boolean().optional() }), {
+				"dry-run": {
+					description: `dry run`,
+					example: `--dry-run`,
+					flag: `d`,
+					parse: parseBooleanOption,
+					required: false,
+				},
+			}),
+		)
+		const { inputs } = testCli([
+			`/some-random-path/my-cli`,
+			`--dry-run`,
+			`set`,
+			`true`,
+		])
+		expect(inputs.case).toEqual(`set/$enabled`)
+		expect(inputs.opts).toEqual({ "dry-run": true })
+		expect(inputs.path).toEqual([`set`, `true`])
+	})
+
+	test(`happy: defaulted boolean switch before positional args`, () => {
+		const testCli = makeTestCli(
+			options(`blah`, z.object({ "dry-run": z.boolean().default(false) }), {
+				"dry-run": {
+					description: `dry run`,
+					example: `--dry-run`,
+					flag: `d`,
+					parse: parseBooleanOption,
+					required: false,
+				},
+			}),
+		)
+		const { inputs } = testCli([
+			`/some-random-path/my-cli`,
+			`--dry-run`,
+			`set`,
+			`true`,
+		])
+		expect(inputs.case).toEqual(`set/$enabled`)
+		expect(inputs.opts).toEqual({ "dry-run": true })
+		expect(inputs.path).toEqual([`set`, `true`])
 	})
 })
