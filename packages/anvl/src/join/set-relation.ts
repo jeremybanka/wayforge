@@ -1,4 +1,4 @@
-import type { Json } from "atom.io/json"
+import type { Json } from "atom.io/foundations/json"
 
 import { addTo, isEmptyArray } from "../array"
 import type { NullSafeRest } from "../nullish"

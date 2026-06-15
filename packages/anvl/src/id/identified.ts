@@ -1,5 +1,5 @@
+import type { Json } from "atom.io/foundations/json"
 import type { Refinement } from "atom.io/internal"
-import type { Json } from "atom.io/json"
 
 export type Identified = { id: string }
 export type Branded<TypeName extends string> = { type: TypeName }

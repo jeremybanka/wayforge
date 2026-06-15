@@ -3,8 +3,8 @@
 import path, { join, normalize, resolve } from "node:path"
 
 import { type } from "arktype"
+import type { Json } from "atom.io/foundations/json"
 import { discoverType } from "atom.io/introspection"
-import type { Json } from "atom.io/json"
 import { ParentSocket } from "atom.io/realtime-server"
 import { file, serve } from "bun"
 
