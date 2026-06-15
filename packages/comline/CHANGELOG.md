@@ -1,5 +1,15 @@
 # comline
 
+## 0.5.0
+
+### Minor Changes
+
+- 06c0f4a: Allow long switches and short flags to accept values from the following command
+  line argument, so `--option value` and `-o value` work the same as
+  `--option=value` and `-o=value`.
+- 06c0f4a: Use Standard Schema and Standard JSON Schema as the shared integration point for
+  schema validation, help output, JSON Schema export, and option arity detection.
+
 ## 0.4.8
 
 ### Patch Changes
