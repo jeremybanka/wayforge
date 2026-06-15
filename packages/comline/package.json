@@ -34,6 +34,7 @@
 		}
 	},
 	"dependencies": {
+		"@standard-schema/spec": "1.1.0",
 		"treetrunks": "workspace:*"
 	},
 	"scripts": {

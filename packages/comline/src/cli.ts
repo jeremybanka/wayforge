@@ -1,7 +1,6 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
 
-import type { JsonSchema, Type } from "arktype"
 import type {
 	Flatten,
 	Join,
@@ -10,21 +9,23 @@ import type {
 	TreePath,
 	TreePathName,
 } from "treetrunks"
-import type { ZodObject, ZodType } from "zod"
 
 import type { Flag } from "./flag"
 import { parseStringOption } from "./option-parsers"
 import { retrievePositionalArgs } from "./retrieve-positional-args"
-import { ark, schemaPkg, zod } from "./schema"
+import {
+	emptySchema,
+	type JsonSchema,
+	type OptionsSchema,
+	retrieveInputJsonSchema,
+	validateOptionsSchema,
+} from "./schema"
 
 export * from "./encapsulate"
 export type * from "./flag"
 export * from "./help"
 export * from "./option-parsers"
 export * from "treetrunks"
-
-const emptySchema =
-	`type` in schemaPkg ? schemaPkg.type({}) : schemaPkg.z.object({})
 
 export type CliOptionValue =
 	| Readonly<{ [key: string]: CliOptionValue }>
@@ -46,7 +47,7 @@ export type CliOption<T extends CliOptionValue> = (T extends string
 				parse: (arg: string) => T
 			}) & {
 	flag?: Flag
-	required: T extends undefined ? false : true
+	required: boolean
 	description: string
 	example: string
 }
@@ -69,7 +70,7 @@ export type OptionsGroup<Options extends Record<string, CliOptionValue> | null> 
 	Options extends Record<string, CliOptionValue>
 		? {
 				description: string
-				optionsSchema: Type<Options> | ZodType<Options>
+				optionsSchema: OptionsSchema<Options>
 				optionConfigs: {
 					[K in keyof Options]-?: CliOption<Options[K]>
 				}
@@ -78,7 +79,7 @@ export type OptionsGroup<Options extends Record<string, CliOptionValue> | null> 
 
 export function options<Options extends Record<string, CliOptionValue>>(
 	description: string,
-	optionsSchema: Type<Options> | ZodType<Options>,
+	optionsSchema: OptionsSchema<Options>,
 	optionConfigs: {
 		[K in keyof Options]-?: CliOption<Options[K]>
 	},
@@ -229,17 +230,6 @@ function retrieveArgumentInstances(
 	return instances
 }
 
-function retrieveZodOptionType(
-	optionsSchema: ZodType<any>,
-	key: string,
-): string | undefined {
-	const optionDef = (optionsSchema as ZodObject<any>).shape[key]?._def
-	if (optionDef?.type === `optional`) {
-		return optionDef.innerType._def.type
-	}
-	return optionDef?.type
-}
-
 function jsonSchemaTypeIsBoolean(jsonSchema: JsonSchema | undefined): boolean {
 	if (jsonSchema === undefined || !(`type` in jsonSchema)) {
 		return false
@@ -255,17 +245,12 @@ function optionSchemaIsBoolean(
 	optionsGroup: Exclude<OptionsGroup<any>, null>,
 	key: string,
 ): boolean {
-	const optionsSchema = optionsGroup.optionsSchema
-	if (zod && optionsSchema instanceof zod.ZodType) {
-		return retrieveZodOptionType(optionsSchema, key) === `boolean`
-	}
-	if (ark && optionsSchema instanceof ark.Type) {
-		const jsonSchema = optionsSchema.toJsonSchema() as JsonSchema.Object & {
-			properties?: Record<string, JsonSchema>
-		}
+	try {
+		const jsonSchema = retrieveInputJsonSchema(optionsGroup.optionsSchema)
 		return jsonSchemaTypeIsBoolean(jsonSchema.properties?.[key])
+	} catch {
+		return false
 	}
-	return false
 }
 
 function retrieveOptionValueKind(
@@ -416,15 +401,10 @@ export function cli<
 						cliLogger.info?.(`config file was found`)
 						const configText = fs.readFileSync(configFilePath, `utf-8`)
 						const optionsFromConfigJson = JSON.parse(configText)
-						if (zod && optionsSchema instanceof zod.ZodType) {
-							optionsFromConfig = optionsSchema.parse(
-								optionsFromConfigJson,
-							) as Options
-						} else if (ark && optionsSchema instanceof ark.Type) {
-							optionsFromConfig = optionsSchema.assert(
-								optionsFromConfigJson,
-							) as Options
-						}
+						optionsFromConfig = validateOptionsSchema(
+							optionsSchema,
+							optionsFromConfigJson,
+						) as Options
 					}
 				}
 			}
@@ -482,16 +462,10 @@ export function cli<
 				optionsFromCommandLine,
 			)
 			cliLogger.info?.(`options from command line:`, optionsFromCommandLine)
-			let suppliedOptions: Options
-			if (zod && optionsSchema instanceof zod.ZodType) {
-				suppliedOptions = optionsSchema.parse(suppliedOptionsUnparsed) as Options
-			} else if (ark && optionsSchema instanceof ark.Type) {
-				suppliedOptions = optionsSchema.assert(
-					suppliedOptionsUnparsed,
-				) as Options
-			} else {
-				throw new Error(`Unreachable? Indicates no install of arktype or zod.`)
-			}
+			const suppliedOptions = validateOptionsSchema(
+				optionsSchema,
+				suppliedOptionsUnparsed,
+			) as Options
 			cliLogger.info?.(`final options parsed:`, suppliedOptions)
 			return {
 				inputs: {
@@ -507,19 +481,9 @@ export function cli<
 							continue
 						}
 						const safeRoute = unsafeRoute.replaceAll(`/`, `.`)
-						let jsonSchema: object
-						if (zod && optionsGroup.optionsSchema instanceof zod.ZodType) {
-							jsonSchema = zod.z.toJSONSchema(optionsGroup.optionsSchema)
-						} else if (ark && optionsGroup.optionsSchema instanceof ark.Type) {
-							const arktypeJsonSchema =
-								optionsGroup.optionsSchema.toJsonSchema() as JsonSchema.Object
-							arktypeJsonSchema.additionalProperties = false
-							jsonSchema = arktypeJsonSchema
-						} else {
-							throw new Error(
-								`Unreachable? Indicates no install of arktype or zod.`,
-							)
-						}
+						const jsonSchema = retrieveInputJsonSchema(
+							optionsGroup.optionsSchema,
+						)
 						const filepath = path.resolve(
 							outdir,
 							`${cliName}.${safeRoute || `main`}.schema.json`,

@@ -1,17 +1,15 @@
 import { styleText } from "node:util"
 
-import type { JsonSchema } from "arktype"
-import { type } from "arktype"
-import type { ZodObject } from "zod"
-
 import { type CommandLineInterface, options, type OptionsGroup } from "./cli"
 import { parseBooleanOption } from "./option-parsers"
+import {
+	type JsonSchema,
+	type OptionsSchema,
+	retrieveInputJsonSchema,
+} from "./schema"
 
 const capitalize = <T extends string>(str: T): Capitalize<T> =>
 	(str[0].toUpperCase() + str.slice(1)) as Capitalize<T>
-
-const lower = <T extends string>(str: T): Lowercase<T> =>
-	(str[0].toLowerCase() + str.slice(1)) as Lowercase<T>
 
 export type TerminalColor =
 	| `black`
@@ -148,7 +146,12 @@ export type HelpOptions = {
 	forceColor?: boolean
 }
 
-function shallowlyStringifyJsonSchema(jsonSchema: JsonSchema): string {
+function shallowlyStringifyJsonSchema(
+	jsonSchema: JsonSchema | undefined,
+): string {
+	if (jsonSchema === undefined) {
+		return `unknown`
+	}
 	if (`type` in jsonSchema) {
 		if (typeof jsonSchema.type === `string`) {
 			return jsonSchema.type
@@ -197,30 +200,13 @@ export function help(
 							const optionsSchema = value.optionsSchema
 
 							let typeString = `unknown`
-							if (`_def` in optionsSchema) {
-								const optionDef = (optionsSchema as ZodObject<any>).shape[key]
-									._def
-								console.log(optionDef)
-								typeString = optionDef.type as string
-
-								if (typeString === `optional`) {
-									typeString = optionDef.innerType._def.type as string
-								}
-								typeString = lower(typeString.replaceAll(`Zod`, ``))
-								if (option.required) {
-									typeString = `${typeString} (required)`
-								}
-							} else {
-								const jsonSchema = optionsSchema.toJsonSchema()
-								const propertySchema = (
-									jsonSchema as JsonSchema.Object & {
-										properties: Record<string, JsonSchema>
-									}
-								).properties[key]
+							try {
+								const jsonSchema = retrieveInputJsonSchema(optionsSchema)
+								const propertySchema = jsonSchema.properties?.[key]
 								typeString = shallowlyStringifyJsonSchema(propertySchema)
-								if (option.required) {
-									typeString = `${typeString} (required)`
-								}
+							} catch {}
+							if (option.required) {
+								typeString = `${typeString} (required)`
 							}
 
 							return [
@@ -260,10 +246,44 @@ function assemble<T extends Object>(
 		.reduce((acc, [, ext]) => Object.assign(acc, ext), base)
 }
 
+const helpOptionsJsonSchema: JsonSchema = {
+	$schema: `https://json-schema.org/draft/2020-12/schema`,
+	additionalProperties: false,
+	type: `object`,
+	properties: {
+		help: {
+			type: `boolean`,
+		},
+	},
+}
+
+const helpOptionsSchema: OptionsSchema<{ help?: boolean | undefined }> = {
+	"~standard": {
+		version: 1,
+		vendor: `comline`,
+		validate: (value) => {
+			if (typeof value !== `object` || value === null || Array.isArray(value)) {
+				return { issues: [{ message: `Expected an object.` }] }
+			}
+			const helpValue = (value as { help?: unknown }).help
+			if (helpValue !== undefined && typeof helpValue !== `boolean`) {
+				return {
+					issues: [{ message: `Expected a boolean.`, path: [`help`] }],
+				}
+			}
+			return { value: helpValue === undefined ? {} : { help: helpValue } }
+		},
+		jsonSchema: {
+			input: () => helpOptionsJsonSchema,
+			output: () => helpOptionsJsonSchema,
+		},
+	},
+}
+
 export function helpOption(
 	description = ``,
 ): OptionsGroup<{ help?: boolean | undefined }> {
-	return options(description, type({ "help?": `boolean` }), {
+	return options(description, helpOptionsSchema, {
 		help: {
 			description: `show this help text`,
 			example: `--help`,
