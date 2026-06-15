@@ -98,7 +98,7 @@ export type CommandLineInterface<Routes extends Tree> = {
 type CliOptionConfigEntry = readonly [
 	key: string,
 	config: CliOption<any>,
-	consumesNextArg: boolean,
+	valueKind: OptionValueKind,
 ]
 
 type ArgumentInstance = {
@@ -106,8 +106,16 @@ type ArgumentInstance = {
 	valueIndex?: number
 }
 
+type OptionValueKind = `boolean` | `value`
+
+type KnownOptionTokens = {
+	flags: ReadonlySet<string>
+	switches: ReadonlySet<string>
+}
+
 type RetrieveArgumentInstancesOptions = {
-	consumesNextArg?: boolean
+	knownOptionTokens?: KnownOptionTokens
+	valueKind?: OptionValueKind
 }
 
 function splitOptionValue(
@@ -120,8 +128,39 @@ function splitOptionValue(
 	return [argument.slice(0, equalsIndex), argument.slice(equalsIndex + 1)]
 }
 
-function shouldConsumeNextArg(arg: string | undefined): arg is string {
-	return arg !== undefined && arg !== `--` && !arg.startsWith(`-`)
+function isBooleanLiteral(arg: string): boolean {
+	return arg === `true` || arg === `false` || arg === `0` || arg === `1`
+}
+
+function isKnownOptionToken(
+	arg: string,
+	knownOptionTokens: KnownOptionTokens,
+): boolean {
+	if (!arg.startsWith(`-`)) {
+		return false
+	}
+	const [optionName] = splitOptionValue(arg)
+	if (optionName.startsWith(`--`)) {
+		return knownOptionTokens.switches.has(optionName)
+	}
+	return optionName
+		.slice(1)
+		.split(``)
+		.some((flag) => knownOptionTokens.flags.has(flag))
+}
+
+function shouldConsumeNextArg(
+	arg: string | undefined,
+	valueKind: OptionValueKind,
+	knownOptionTokens: KnownOptionTokens,
+): arg is string {
+	if (arg === undefined || arg === `--`) {
+		return false
+	}
+	if (valueKind === `boolean`) {
+		return isBooleanLiteral(arg)
+	}
+	return !isKnownOptionToken(arg, knownOptionTokens)
 }
 
 function retrieveRepeatedFlagValue(argument: string, flag: string): string {
@@ -139,14 +178,20 @@ function retrieveArgumentInstances(
 	flag?: string,
 	retrieveOptions: RetrieveArgumentInstancesOptions = {},
 ): ArgumentInstance[] {
-	const { consumesNextArg = true } = retrieveOptions
+	const {
+		knownOptionTokens = {
+			flags: new Set<string>(),
+			switches: new Set<string>(),
+		},
+		valueKind = `value`,
+	} = retrieveOptions
 	const instances: ArgumentInstance[] = []
 	const switchName = `--${key}`
 	const switchNameWithValue = `${switchName}=`
 	for (const [index, argument] of passed.entries()) {
 		if (argument === switchName) {
 			const nextArg = passed[index + 1]
-			if (consumesNextArg && shouldConsumeNextArg(nextArg)) {
+			if (shouldConsumeNextArg(nextArg, valueKind, knownOptionTokens)) {
 				instances.push({ value: nextArg, valueIndex: index + 1 })
 			} else {
 				instances.push({ value: `` })
@@ -172,9 +217,9 @@ function retrieveArgumentInstances(
 			instances.push({ value })
 			continue
 		}
-		if (consumesNextArg && flagGroup === `-${flag}`) {
+		if (flagGroup === `-${flag}`) {
 			const nextArg = passed[index + 1]
-			if (shouldConsumeNextArg(nextArg)) {
+			if (shouldConsumeNextArg(nextArg, valueKind, knownOptionTokens)) {
 				instances.push({ value: nextArg, valueIndex: index + 1 })
 				continue
 			}
@@ -223,6 +268,13 @@ function optionSchemaIsBoolean(
 	return false
 }
 
+function retrieveOptionValueKind(
+	optionsGroup: Exclude<OptionsGroup<any>, null>,
+	key: string,
+): OptionValueKind {
+	return optionSchemaIsBoolean(optionsGroup, key) ? `boolean` : `value`
+}
+
 function retrieveOptionConfigEntries(
 	routeOptions: Record<string, OptionsGroup<any> | null>,
 ): CliOptionConfigEntry[] {
@@ -233,16 +285,30 @@ function retrieveOptionConfigEntries(
 			continue
 		}
 		for (const [key, config] of Object.entries(optionsGroup.optionConfigs)) {
-			const consumesNextArg = !optionSchemaIsBoolean(optionsGroup, key)
-			const signature = `${key}\0${config.flag ?? ``}\0${consumesNextArg}`
+			const valueKind = retrieveOptionValueKind(optionsGroup, key)
+			const signature = `${key}\0${config.flag ?? ``}\0${valueKind}`
 			if (seenOptions.has(signature)) {
 				continue
 			}
 			seenOptions.add(signature)
-			entries.push([key, config, consumesNextArg])
+			entries.push([key, config, valueKind])
 		}
 	}
 	return entries
+}
+
+function retrieveKnownOptionTokens(
+	optionConfigEntries: CliOptionConfigEntry[],
+): KnownOptionTokens {
+	const flags = new Set<string>()
+	const switches = new Set<string>()
+	for (const [key, config] of optionConfigEntries) {
+		switches.add(`--${key}`)
+		if (config.flag) {
+			flags.add(config.flag)
+		}
+	}
+	return { flags, switches }
 }
 
 function retrieveConsumedValueIndexes(
@@ -250,12 +316,13 @@ function retrieveConsumedValueIndexes(
 	optionConfigEntries: CliOptionConfigEntry[],
 ): Set<number> {
 	const indexes = new Set<number>()
-	for (const [key, config, consumesNextArg] of optionConfigEntries) {
+	const knownOptionTokens = retrieveKnownOptionTokens(optionConfigEntries)
+	for (const [key, config, valueKind] of optionConfigEntries) {
 		for (const argumentInstance of retrieveArgumentInstances(
 			passed,
 			key,
 			config.flag,
-			{ consumesNextArg },
+			{ knownOptionTokens, valueKind },
 		)) {
 			if (argumentInstance.valueIndex !== undefined) {
 				indexes.add(argumentInstance.valueIndex)
@@ -320,6 +387,7 @@ export function cli<
 				passed,
 				allOptionConfigEntries,
 			)
+			const knownOptionTokens = retrieveKnownOptionTokens(allOptionConfigEntries)
 			if (routes) {
 				positionalArgs = retrievePositionalArgs(
 					cliName,
@@ -372,8 +440,9 @@ export function cli<
 						key,
 						flag,
 						{
-							consumesNextArg:
-								route === null ? true : !optionSchemaIsBoolean(route, key),
+							knownOptionTokens,
+							valueKind:
+								route === null ? `value` : retrieveOptionValueKind(route, key),
 						},
 					)
 					switch (argumentInstances.length) {

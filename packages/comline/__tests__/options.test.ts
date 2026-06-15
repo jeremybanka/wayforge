@@ -44,6 +44,20 @@ describe(`options from cli`, () => {
 			bar: 1,
 		})
 	})
+	test(`happy: negative number values without equals signs`, () => {
+		const { inputs } = testCli([`--foo`, `hello`, `--bar`, `-1`])
+		expect(inputs.opts).toEqual({
+			foo: `hello`,
+			bar: -1,
+		})
+	})
+	test(`happy: dash-prefixed string values without equals signs`, () => {
+		const { inputs } = testCli([`--foo`, `-literal`, `--bar`, `1`])
+		expect(inputs.opts).toEqual({
+			foo: `-literal`,
+			bar: 1,
+		})
+	})
 	test(`happy: repeated options with mixed value separators`, () => {
 		const { inputs } = testCli([`--foo`, `one`, `--foo=two`])
 		expect(inputs.opts).toEqual({
