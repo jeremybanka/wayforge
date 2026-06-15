@@ -10,7 +10,7 @@ import type {
 	TreePath,
 	TreePathName,
 } from "treetrunks"
-import type { ZodType } from "zod"
+import type { ZodObject, ZodType } from "zod"
 
 import type { Flag } from "./flag"
 import { parseStringOption } from "./option-parsers"
@@ -95,11 +95,19 @@ export type CommandLineInterface<Routes extends Tree> = {
 	discoverConfigPath?: (positionalArgs: TreePath<Routes>) => string | undefined
 }
 
-type CliOptionConfigEntry = readonly [key: string, config: CliOption<any>]
+type CliOptionConfigEntry = readonly [
+	key: string,
+	config: CliOption<any>,
+	consumesNextArg: boolean,
+]
 
 type ArgumentInstance = {
 	value: string
 	valueIndex?: number
+}
+
+type RetrieveArgumentInstancesOptions = {
+	consumesNextArg?: boolean
 }
 
 function splitOptionValue(
@@ -129,14 +137,16 @@ function retrieveArgumentInstances(
 	passed: string[],
 	key: string,
 	flag?: string,
+	retrieveOptions: RetrieveArgumentInstancesOptions = {},
 ): ArgumentInstance[] {
+	const { consumesNextArg = true } = retrieveOptions
 	const instances: ArgumentInstance[] = []
 	const switchName = `--${key}`
 	const switchNameWithValue = `${switchName}=`
 	for (const [index, argument] of passed.entries()) {
 		if (argument === switchName) {
 			const nextArg = passed[index + 1]
-			if (shouldConsumeNextArg(nextArg)) {
+			if (consumesNextArg && shouldConsumeNextArg(nextArg)) {
 				instances.push({ value: nextArg, valueIndex: index + 1 })
 			} else {
 				instances.push({ value: `` })
@@ -162,7 +172,7 @@ function retrieveArgumentInstances(
 			instances.push({ value })
 			continue
 		}
-		if (flagGroup === `-${flag}`) {
+		if (consumesNextArg && flagGroup === `-${flag}`) {
 			const nextArg = passed[index + 1]
 			if (shouldConsumeNextArg(nextArg)) {
 				instances.push({ value: nextArg, valueIndex: index + 1 })
@@ -172,6 +182,45 @@ function retrieveArgumentInstances(
 		instances.push({ value: retrieveRepeatedFlagValue(flagGroup, flag) })
 	}
 	return instances
+}
+
+function retrieveZodOptionType(
+	optionsSchema: ZodType<any>,
+	key: string,
+): string | undefined {
+	const optionDef = (optionsSchema as ZodObject<any>).shape[key]?._def
+	if (optionDef?.type === `optional`) {
+		return optionDef.innerType._def.type
+	}
+	return optionDef?.type
+}
+
+function jsonSchemaTypeIsBoolean(jsonSchema: JsonSchema | undefined): boolean {
+	if (jsonSchema === undefined || !(`type` in jsonSchema)) {
+		return false
+	}
+	const { type } = jsonSchema
+	if (typeof type === `string`) {
+		return type === `boolean`
+	}
+	return type.length > 0 && type.every((t) => t === `boolean`)
+}
+
+function optionSchemaIsBoolean(
+	optionsGroup: Exclude<OptionsGroup<any>, null>,
+	key: string,
+): boolean {
+	const optionsSchema = optionsGroup.optionsSchema
+	if (zod && optionsSchema instanceof zod.ZodType) {
+		return retrieveZodOptionType(optionsSchema, key) === `boolean`
+	}
+	if (ark && optionsSchema instanceof ark.Type) {
+		const jsonSchema = optionsSchema.toJsonSchema() as JsonSchema.Object & {
+			properties?: Record<string, JsonSchema>
+		}
+		return jsonSchemaTypeIsBoolean(jsonSchema.properties?.[key])
+	}
+	return false
 }
 
 function retrieveOptionConfigEntries(
@@ -184,12 +233,13 @@ function retrieveOptionConfigEntries(
 			continue
 		}
 		for (const [key, config] of Object.entries(optionsGroup.optionConfigs)) {
-			const signature = `${key}\0${config.flag ?? ``}`
+			const consumesNextArg = !optionSchemaIsBoolean(optionsGroup, key)
+			const signature = `${key}\0${config.flag ?? ``}\0${consumesNextArg}`
 			if (seenOptions.has(signature)) {
 				continue
 			}
 			seenOptions.add(signature)
-			entries.push([key, config])
+			entries.push([key, config, consumesNextArg])
 		}
 	}
 	return entries
@@ -200,11 +250,12 @@ function retrieveConsumedValueIndexes(
 	optionConfigEntries: CliOptionConfigEntry[],
 ): Set<number> {
 	const indexes = new Set<number>()
-	for (const [key, config] of optionConfigEntries) {
+	for (const [key, config, consumesNextArg] of optionConfigEntries) {
 		for (const argumentInstance of retrieveArgumentInstances(
 			passed,
 			key,
 			config.flag,
+			{ consumesNextArg },
 		)) {
 			if (argumentInstance.valueIndex !== undefined) {
 				indexes.add(argumentInstance.valueIndex)
@@ -316,7 +367,15 @@ export function cli<
 					const [key, config] = entry
 					const { flag, required, description, example } = config
 					const parse = `parse` in config ? config.parse : parseStringOption
-					const argumentInstances = retrieveArgumentInstances(passed, key, flag)
+					const argumentInstances = retrieveArgumentInstances(
+						passed,
+						key,
+						flag,
+						{
+							consumesNextArg:
+								route === null ? true : !optionSchemaIsBoolean(route, key),
+						},
+					)
 					switch (argumentInstances.length) {
 						case 0:
 							if (required && !optionsFromConfig) {
