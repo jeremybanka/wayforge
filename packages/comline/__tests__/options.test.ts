@@ -44,6 +44,12 @@ describe(`options from cli`, () => {
 			bar: 1,
 		})
 	})
+	test(`happy: repeated options with mixed value separators`, () => {
+		const { inputs } = testCli([`--foo`, `one`, `--foo=two`])
+		expect(inputs.opts).toEqual({
+			foo: `one,two`,
+		})
+	})
 	test(`happy: flags with values without equals signs`, () => {
 		const { inputs } = testCli([`-f`, `hello`, `-b`, `1`])
 		expect(inputs.opts).toEqual({
