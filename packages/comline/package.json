@@ -22,8 +22,8 @@
 	"main": "dist/cli.js",
 	"types": "dist/cli.d.ts",
 	"peerDependencies": {
-		"arktype": "^2.1.25",
-		"zod": "^4.1.12"
+		"arktype": "^2.1.28",
+		"zod": "^4.2.0"
 	},
 	"peerDependenciesMeta": {
 		"arktype": {
@@ -34,6 +34,7 @@
 		}
 	},
 	"dependencies": {
+		"@standard-schema/spec": "1.1.0",
 		"treetrunks": "workspace:*"
 	},
 	"scripts": {

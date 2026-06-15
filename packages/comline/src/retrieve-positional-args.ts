@@ -4,6 +4,7 @@ export function retrievePositionalArgs<PositionalArgTree extends Tree>(
 	cliName: string,
 	positionalArgTree: PositionalArgTree,
 	passed: string[],
+	ignoredArgIndexes: ReadonlySet<number> = new Set<number>(),
 ): {
 	path: TreePath<PositionalArgTree>
 	route: Join<TreePathName<PositionalArgTree>>
@@ -14,7 +15,10 @@ export function retrievePositionalArgs<PositionalArgTree extends Tree>(
 	if (endOfOptionsDelimiterIndex === -1) {
 		if (cliInvocationIndex !== -1) {
 			const allArgs = passed.slice(cliInvocationIndex + 1)
-			positionalArgs = allArgs.filter((arg) => !arg.startsWith(`-`))
+			positionalArgs = allArgs.filter((arg, index) => {
+				const passedIndex = cliInvocationIndex + 1 + index
+				return !ignoredArgIndexes.has(passedIndex) && !arg.startsWith(`-`)
+			})
 		}
 	} else {
 		positionalArgs = passed.slice(endOfOptionsDelimiterIndex + 1)

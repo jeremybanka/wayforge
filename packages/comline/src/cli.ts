@@ -1,7 +1,6 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
 
-import type { JsonSchema, Type } from "arktype"
 import type {
 	Flatten,
 	Join,
@@ -10,21 +9,23 @@ import type {
 	TreePath,
 	TreePathName,
 } from "treetrunks"
-import type { ZodType } from "zod"
 
 import type { Flag } from "./flag"
 import { parseStringOption } from "./option-parsers"
 import { retrievePositionalArgs } from "./retrieve-positional-args"
-import { ark, schemaPkg, zod } from "./schema"
+import {
+	emptySchema,
+	type JsonSchema,
+	type OptionsSchema,
+	retrieveInputJsonSchema,
+	validateOptionsSchema,
+} from "./schema"
 
 export * from "./encapsulate"
 export type * from "./flag"
 export * from "./help"
 export * from "./option-parsers"
 export * from "treetrunks"
-
-const emptySchema =
-	`type` in schemaPkg ? schemaPkg.type({}) : schemaPkg.z.object({})
 
 export type CliOptionValue =
 	| Readonly<{ [key: string]: CliOptionValue }>
@@ -46,7 +47,7 @@ export type CliOption<T extends CliOptionValue> = (T extends string
 				parse: (arg: string) => T
 			}) & {
 	flag?: Flag
-	required: T extends undefined ? false : true
+	required: boolean
 	description: string
 	example: string
 }
@@ -69,7 +70,7 @@ export type OptionsGroup<Options extends Record<string, CliOptionValue> | null> 
 	Options extends Record<string, CliOptionValue>
 		? {
 				description: string
-				optionsSchema: Type<Options> | ZodType<Options>
+				optionsSchema: OptionsSchema<Options>
 				optionConfigs: {
 					[K in keyof Options]-?: CliOption<Options[K]>
 				}
@@ -78,7 +79,7 @@ export type OptionsGroup<Options extends Record<string, CliOptionValue> | null> 
 
 export function options<Options extends Record<string, CliOptionValue>>(
 	description: string,
-	optionsSchema: Type<Options> | ZodType<Options>,
+	optionsSchema: OptionsSchema<Options>,
 	optionConfigs: {
 		[K in keyof Options]-?: CliOption<Options[K]>
 	},
@@ -95,23 +96,225 @@ export type CommandLineInterface<Routes extends Tree> = {
 	discoverConfigPath?: (positionalArgs: TreePath<Routes>) => string | undefined
 }
 
-function retrieveArgValue(argument: string, flag?: string): string {
-	const isSwitch = argument.startsWith(`--`)
-	const [key, value] = argument.split(`=`)
-	let retrievedValue = value
-	if (retrievedValue === undefined) {
-		if (isSwitch) {
-			retrievedValue = ``
-		} else if (flag) {
-			retrievedValue = key
-				.split(``)
-				.filter((s) => s === flag)
-				.map(() => `,`)
-				.join(``)
-				.substring(1)
+type CliOptionConfigEntry = readonly [
+	key: string,
+	config: CliOption<any>,
+	valueKind: OptionValueKind,
+]
+
+type ArgumentInstance = {
+	value: string
+	valueIndex?: number
+}
+
+type OptionValueKind = `boolean` | `value`
+
+type KnownOptionTokens = {
+	flags: ReadonlySet<string>
+	switches: ReadonlySet<string>
+}
+
+type RetrieveArgumentInstancesOptions = {
+	knownOptionTokens?: KnownOptionTokens
+	valueKind?: OptionValueKind
+}
+
+function splitOptionValue(
+	argument: string,
+): [optionName: string, value?: string] {
+	const equalsIndex = argument.indexOf(`=`)
+	if (equalsIndex === -1) {
+		return [argument]
+	}
+	return [argument.slice(0, equalsIndex), argument.slice(equalsIndex + 1)]
+}
+
+function isBooleanLiteral(arg: string): boolean {
+	return arg === `true` || arg === `false` || arg === `0` || arg === `1`
+}
+
+function isKnownOptionToken(
+	arg: string,
+	knownOptionTokens: KnownOptionTokens,
+): boolean {
+	if (!arg.startsWith(`-`)) {
+		return false
+	}
+	const [optionName] = splitOptionValue(arg)
+	if (optionName.startsWith(`--`)) {
+		return knownOptionTokens.switches.has(optionName)
+	}
+	return optionName
+		.slice(1)
+		.split(``)
+		.some((flag) => knownOptionTokens.flags.has(flag))
+}
+
+function shouldConsumeNextArg(
+	arg: string | undefined,
+	valueKind: OptionValueKind,
+	knownOptionTokens: KnownOptionTokens,
+): arg is string {
+	if (arg === undefined || arg === `--`) {
+		return false
+	}
+	if (valueKind === `boolean`) {
+		return isBooleanLiteral(arg)
+	}
+	return !isKnownOptionToken(arg, knownOptionTokens)
+}
+
+function retrieveRepeatedFlagValue(argument: string, flag: string): string {
+	return argument
+		.split(``)
+		.filter((s) => s === flag)
+		.map(() => `,`)
+		.join(``)
+		.substring(1)
+}
+
+function retrieveArgumentInstances(
+	passed: string[],
+	key: string,
+	flag?: string,
+	retrieveOptions: RetrieveArgumentInstancesOptions = {},
+): ArgumentInstance[] {
+	const {
+		knownOptionTokens = {
+			flags: new Set<string>(),
+			switches: new Set<string>(),
+		},
+		valueKind = `value`,
+	} = retrieveOptions
+	const instances: ArgumentInstance[] = []
+	const switchName = `--${key}`
+	const switchNameWithValue = `${switchName}=`
+	for (const [index, argument] of passed.entries()) {
+		if (argument === switchName) {
+			const nextArg = passed[index + 1]
+			if (shouldConsumeNextArg(nextArg, valueKind, knownOptionTokens)) {
+				instances.push({ value: nextArg, valueIndex: index + 1 })
+			} else {
+				instances.push({ value: `` })
+			}
+			continue
+		}
+		if (argument.startsWith(switchNameWithValue)) {
+			instances.push({ value: argument.slice(switchNameWithValue.length) })
+			continue
+		}
+		if (
+			flag === undefined ||
+			!argument.startsWith(`-`) ||
+			argument.startsWith(`--`)
+		) {
+			continue
+		}
+		const [flagGroup, value] = splitOptionValue(argument)
+		if (!flagGroup.includes(flag)) {
+			continue
+		}
+		if (value !== undefined) {
+			instances.push({ value })
+			continue
+		}
+		if (flagGroup === `-${flag}`) {
+			const nextArg = passed[index + 1]
+			if (shouldConsumeNextArg(nextArg, valueKind, knownOptionTokens)) {
+				instances.push({ value: nextArg, valueIndex: index + 1 })
+				continue
+			}
+		}
+		instances.push({ value: retrieveRepeatedFlagValue(flagGroup, flag) })
+	}
+	return instances
+}
+
+function jsonSchemaTypeIsBoolean(jsonSchema: JsonSchema | undefined): boolean {
+	if (jsonSchema === undefined || !(`type` in jsonSchema)) {
+		return false
+	}
+	const { type } = jsonSchema
+	if (typeof type === `string`) {
+		return type === `boolean`
+	}
+	return type.length > 0 && type.every((t) => t === `boolean`)
+}
+
+function optionSchemaIsBoolean(
+	optionsGroup: Exclude<OptionsGroup<any>, null>,
+	key: string,
+): boolean {
+	try {
+		const jsonSchema = retrieveInputJsonSchema(optionsGroup.optionsSchema)
+		return jsonSchemaTypeIsBoolean(jsonSchema.properties?.[key])
+	} catch {
+		return false
+	}
+}
+
+function retrieveOptionValueKind(
+	optionsGroup: Exclude<OptionsGroup<any>, null>,
+	key: string,
+): OptionValueKind {
+	return optionSchemaIsBoolean(optionsGroup, key) ? `boolean` : `value`
+}
+
+function retrieveOptionConfigEntries(
+	routeOptions: Record<string, OptionsGroup<any> | null>,
+): CliOptionConfigEntry[] {
+	const seenOptions = new Set<string>()
+	const entries: CliOptionConfigEntry[] = []
+	for (const optionsGroup of Object.values(routeOptions)) {
+		if (optionsGroup === null) {
+			continue
+		}
+		for (const [key, config] of Object.entries(optionsGroup.optionConfigs)) {
+			const valueKind = retrieveOptionValueKind(optionsGroup, key)
+			const signature = `${key}\0${config.flag ?? ``}\0${valueKind}`
+			if (seenOptions.has(signature)) {
+				continue
+			}
+			seenOptions.add(signature)
+			entries.push([key, config, valueKind])
 		}
 	}
-	return retrievedValue
+	return entries
+}
+
+function retrieveKnownOptionTokens(
+	optionConfigEntries: CliOptionConfigEntry[],
+): KnownOptionTokens {
+	const flags = new Set<string>()
+	const switches = new Set<string>()
+	for (const [key, config] of optionConfigEntries) {
+		switches.add(`--${key}`)
+		if (config.flag) {
+			flags.add(config.flag)
+		}
+	}
+	return { flags, switches }
+}
+
+function retrieveConsumedValueIndexes(
+	passed: string[],
+	optionConfigEntries: CliOptionConfigEntry[],
+): Set<number> {
+	const indexes = new Set<number>()
+	const knownOptionTokens = retrieveKnownOptionTokens(optionConfigEntries)
+	for (const [key, config, valueKind] of optionConfigEntries) {
+		for (const argumentInstance of retrieveArgumentInstances(
+			passed,
+			key,
+			config.flag,
+			{ knownOptionTokens, valueKind },
+		)) {
+			if (argumentInstance.valueIndex !== undefined) {
+				indexes.add(argumentInstance.valueIndex)
+			}
+		}
+	}
+	return indexes
 }
 
 export type CliRoutes<CLI extends CommandLineInterface<any>> = CLI[`routes`]
@@ -162,8 +365,21 @@ export function cli<
 				path: [] as TreePath<Routes>,
 				route: `` as Join<TreePathName<Routes>>,
 			}
+			const allOptionConfigEntries = retrieveOptionConfigEntries(
+				routeOptions as Record<string, OptionsGroup<any> | null>,
+			)
+			const consumedValueIndexes = retrieveConsumedValueIndexes(
+				passed,
+				allOptionConfigEntries,
+			)
+			const knownOptionTokens = retrieveKnownOptionTokens(allOptionConfigEntries)
 			if (routes) {
-				positionalArgs = retrievePositionalArgs(cliName, routes, passed)
+				positionalArgs = retrievePositionalArgs(
+					cliName,
+					routes,
+					passed,
+					consumedValueIndexes,
+				)
 			}
 
 			const route: OptionsGroup<any> = routeOptions[positionalArgs.route]
@@ -185,15 +401,10 @@ export function cli<
 						cliLogger.info?.(`config file was found`)
 						const configText = fs.readFileSync(configFilePath, `utf-8`)
 						const optionsFromConfigJson = JSON.parse(configText)
-						if (zod && optionsSchema instanceof zod.ZodType) {
-							optionsFromConfig = optionsSchema.parse(
-								optionsFromConfigJson,
-							) as Options
-						} else if (ark && optionsSchema instanceof ark.Type) {
-							optionsFromConfig = optionsSchema.assert(
-								optionsFromConfigJson,
-							) as Options
-						}
+						optionsFromConfig = validateOptionsSchema(
+							optionsSchema,
+							optionsFromConfigJson,
+						) as Options
 					}
 				}
 			}
@@ -204,13 +415,15 @@ export function cli<
 					const [key, config] = entry
 					const { flag, required, description, example } = config
 					const parse = `parse` in config ? config.parse : parseStringOption
-					const argumentInstances = passed.filter(
-						(arg) =>
-							arg.startsWith(`--${key}`) ||
-							(arg.startsWith(`-`) &&
-								!arg.startsWith(`--`) &&
-								flag &&
-								arg.split(`=`)[0].includes(flag)),
+					const argumentInstances = retrieveArgumentInstances(
+						passed,
+						key,
+						flag,
+						{
+							knownOptionTokens,
+							valueKind:
+								route === null ? `value` : retrieveOptionValueKind(route, key),
+						},
 					)
 					switch (argumentInstances.length) {
 						case 0:
@@ -224,12 +437,12 @@ export function cli<
 							}
 							return [key, undefined]
 						case 1: {
-							const retrievedValue = retrieveArgValue(argumentInstances[0], flag)
+							const retrievedValue = argumentInstances[0].value
 							return [key, parse(retrievedValue)]
 						}
 						default: {
 							const retrievedValues = argumentInstances
-								.map((arg) => retrieveArgValue(arg, flag))
+								.map((arg) => arg.value)
 								.join(`,`)
 							return [key, parse(retrievedValues)]
 						}
@@ -249,16 +462,10 @@ export function cli<
 				optionsFromCommandLine,
 			)
 			cliLogger.info?.(`options from command line:`, optionsFromCommandLine)
-			let suppliedOptions: Options
-			if (zod && optionsSchema instanceof zod.ZodType) {
-				suppliedOptions = optionsSchema.parse(suppliedOptionsUnparsed) as Options
-			} else if (ark && optionsSchema instanceof ark.Type) {
-				suppliedOptions = optionsSchema.assert(
-					suppliedOptionsUnparsed,
-				) as Options
-			} else {
-				throw new Error(`Unreachable? Indicates no install of arktype or zod.`)
-			}
+			const suppliedOptions = validateOptionsSchema(
+				optionsSchema,
+				suppliedOptionsUnparsed,
+			) as Options
 			cliLogger.info?.(`final options parsed:`, suppliedOptions)
 			return {
 				inputs: {
@@ -274,19 +481,9 @@ export function cli<
 							continue
 						}
 						const safeRoute = unsafeRoute.replaceAll(`/`, `.`)
-						let jsonSchema: object
-						if (zod && optionsGroup.optionsSchema instanceof zod.ZodType) {
-							jsonSchema = zod.z.toJSONSchema(optionsGroup.optionsSchema)
-						} else if (ark && optionsGroup.optionsSchema instanceof ark.Type) {
-							const arktypeJsonSchema =
-								optionsGroup.optionsSchema.toJsonSchema() as JsonSchema.Object
-							arktypeJsonSchema.additionalProperties = false
-							jsonSchema = arktypeJsonSchema
-						} else {
-							throw new Error(
-								`Unreachable? Indicates no install of arktype or zod.`,
-							)
-						}
+						const jsonSchema = retrieveInputJsonSchema(
+							optionsGroup.optionsSchema,
+						)
 						const filepath = path.resolve(
 							outdir,
 							`${cliName}.${safeRoute || `main`}.schema.json`,
