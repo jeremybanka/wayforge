@@ -32,7 +32,7 @@
 	"dependencies": {
 		"@t3-oss/env-core": "0.13.11",
 		"arktype": "2.2.0",
-		"atom.io": "0.47.4",
+		"atom.io": "0.48.0",
 		"comline": "workspace:*",
 		"cron": "4.4.0",
 		"safedeposit": "workspace:*"
