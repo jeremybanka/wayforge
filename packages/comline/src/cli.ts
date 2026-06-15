@@ -95,23 +95,123 @@ export type CommandLineInterface<Routes extends Tree> = {
 	discoverConfigPath?: (positionalArgs: TreePath<Routes>) => string | undefined
 }
 
-function retrieveArgValue(argument: string, flag?: string): string {
-	const isSwitch = argument.startsWith(`--`)
-	const [key, value] = argument.split(`=`)
-	let retrievedValue = value
-	if (retrievedValue === undefined) {
-		if (isSwitch) {
-			retrievedValue = ``
-		} else if (flag) {
-			retrievedValue = key
-				.split(``)
-				.filter((s) => s === flag)
-				.map(() => `,`)
-				.join(``)
-				.substring(1)
+type CliOptionConfigEntry = readonly [key: string, config: CliOption<any>]
+
+type ArgumentInstance = {
+	value: string
+	valueIndex?: number
+}
+
+function splitOptionValue(
+	argument: string,
+): [optionName: string, value?: string] {
+	const equalsIndex = argument.indexOf(`=`)
+	if (equalsIndex === -1) {
+		return [argument]
+	}
+	return [argument.slice(0, equalsIndex), argument.slice(equalsIndex + 1)]
+}
+
+function shouldConsumeNextArg(arg: string | undefined): arg is string {
+	return arg !== undefined && arg !== `--` && !arg.startsWith(`-`)
+}
+
+function retrieveRepeatedFlagValue(argument: string, flag: string): string {
+	return argument
+		.split(``)
+		.filter((s) => s === flag)
+		.map(() => `,`)
+		.join(``)
+		.substring(1)
+}
+
+function retrieveArgumentInstances(
+	passed: string[],
+	key: string,
+	flag?: string,
+): ArgumentInstance[] {
+	const instances: ArgumentInstance[] = []
+	const switchName = `--${key}`
+	const switchNameWithValue = `${switchName}=`
+	for (const [index, argument] of passed.entries()) {
+		if (argument === switchName) {
+			const nextArg = passed[index + 1]
+			if (shouldConsumeNextArg(nextArg)) {
+				instances.push({ value: nextArg, valueIndex: index + 1 })
+			} else {
+				instances.push({ value: `` })
+			}
+			continue
+		}
+		if (argument.startsWith(switchNameWithValue)) {
+			instances.push({ value: argument.slice(switchNameWithValue.length) })
+			continue
+		}
+		if (
+			flag === undefined ||
+			!argument.startsWith(`-`) ||
+			argument.startsWith(`--`)
+		) {
+			continue
+		}
+		const [flagGroup, value] = splitOptionValue(argument)
+		if (!flagGroup.includes(flag)) {
+			continue
+		}
+		if (value !== undefined) {
+			instances.push({ value })
+			continue
+		}
+		if (flagGroup === `-${flag}`) {
+			const nextArg = passed[index + 1]
+			if (shouldConsumeNextArg(nextArg)) {
+				instances.push({ value: nextArg, valueIndex: index + 1 })
+				continue
+			}
+		}
+		instances.push({ value: retrieveRepeatedFlagValue(flagGroup, flag) })
+	}
+	return instances
+}
+
+function retrieveOptionConfigEntries(
+	routeOptions: Record<string, OptionsGroup<any> | null>,
+): CliOptionConfigEntry[] {
+	const seenOptions = new Set<string>()
+	const entries: CliOptionConfigEntry[] = []
+	for (const optionsGroup of Object.values(routeOptions)) {
+		if (optionsGroup === null) {
+			continue
+		}
+		for (const [key, config] of Object.entries(optionsGroup.optionConfigs)) {
+			const signature = `${key}\0${config.flag ?? ``}`
+			if (seenOptions.has(signature)) {
+				continue
+			}
+			seenOptions.add(signature)
+			entries.push([key, config])
 		}
 	}
-	return retrievedValue
+	return entries
+}
+
+function retrieveConsumedValueIndexes(
+	passed: string[],
+	optionConfigEntries: CliOptionConfigEntry[],
+): Set<number> {
+	const indexes = new Set<number>()
+	for (const [key, config] of optionConfigEntries) {
+		for (const argumentInstance of retrieveArgumentInstances(
+			passed,
+			key,
+			config.flag,
+		)) {
+			if (argumentInstance.valueIndex !== undefined) {
+				indexes.add(argumentInstance.valueIndex)
+			}
+		}
+	}
+	return indexes
 }
 
 export type CliRoutes<CLI extends CommandLineInterface<any>> = CLI[`routes`]
@@ -162,8 +262,20 @@ export function cli<
 				path: [] as TreePath<Routes>,
 				route: `` as Join<TreePathName<Routes>>,
 			}
+			const allOptionConfigEntries = retrieveOptionConfigEntries(
+				routeOptions as Record<string, OptionsGroup<any> | null>,
+			)
+			const consumedValueIndexes = retrieveConsumedValueIndexes(
+				passed,
+				allOptionConfigEntries,
+			)
 			if (routes) {
-				positionalArgs = retrievePositionalArgs(cliName, routes, passed)
+				positionalArgs = retrievePositionalArgs(
+					cliName,
+					routes,
+					passed,
+					consumedValueIndexes,
+				)
 			}
 
 			const route: OptionsGroup<any> = routeOptions[positionalArgs.route]
@@ -204,14 +316,7 @@ export function cli<
 					const [key, config] = entry
 					const { flag, required, description, example } = config
 					const parse = `parse` in config ? config.parse : parseStringOption
-					const argumentInstances = passed.filter(
-						(arg) =>
-							arg.startsWith(`--${key}`) ||
-							(arg.startsWith(`-`) &&
-								!arg.startsWith(`--`) &&
-								flag &&
-								arg.split(`=`)[0].includes(flag)),
-					)
+					const argumentInstances = retrieveArgumentInstances(passed, key, flag)
 					switch (argumentInstances.length) {
 						case 0:
 							if (required && !optionsFromConfig) {
@@ -224,12 +329,12 @@ export function cli<
 							}
 							return [key, undefined]
 						case 1: {
-							const retrievedValue = retrieveArgValue(argumentInstances[0], flag)
+							const retrievedValue = argumentInstances[0].value
 							return [key, parse(retrievedValue)]
 						}
 						default: {
 							const retrievedValues = argumentInstances
-								.map((arg) => retrieveArgValue(arg, flag))
+								.map((arg) => arg.value)
 								.join(`,`)
 							return [key, parse(retrievedValues)]
 						}
