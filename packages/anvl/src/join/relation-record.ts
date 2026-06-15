@@ -1,4 +1,4 @@
-import type { Json } from "atom.io/json"
+import type { Json } from "atom.io/foundations/json"
 
 import type { RelationData } from "./core-relation-data"
 import { getRelatedIds } from "./get-related-ids"

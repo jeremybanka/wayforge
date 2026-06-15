@@ -1,6 +1,6 @@
 import { readdirSync, renameSync } from "node:fs"
 
-import type { Json } from "atom.io/json"
+import type { Json } from "atom.io/foundations/json"
 
 import type { FilestoreOptions } from "./options"
 import type { ReadIndex } from "./read"
