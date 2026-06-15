@@ -4,6 +4,7 @@ import path from "node:path"
 
 import { type } from "arktype"
 import { required } from "treetrunks"
+import z from "zod"
 
 import { cli, options } from "../src/cli"
 import { parseStringOption } from "../src/option-parsers"
@@ -59,21 +60,28 @@ describe(`options from file`, () => {
 })
 
 describe(`creating a config schema`, () => {
-	const testCli = cli({
+	const optionConfigs = {
+		foo: {
+			description: `foo`,
+			example: `--foo=hello`,
+			flag: `f` as const,
+			parse: parseStringOption,
+			required: true,
+		},
+	}
+	const arktypeTestCli = cli({
 		cliName: `my-cli`,
 		routeOptions: {
-			"": options(`blah`, type({ foo: `string` }), {
-				foo: {
-					description: `foo`,
-					example: `--foo=hello`,
-					flag: `f`,
-					parse: parseStringOption,
-					required: true,
-				},
-			}),
+			"": options(`blah`, type({ foo: `string` }), optionConfigs),
 		},
 	})
-	test(`happy: export a schema`, () => {
+	const zodTestCli = cli({
+		cliName: `my-cli`,
+		routeOptions: {
+			"": options(`blah`, z.object({ foo: z.string() }), optionConfigs),
+		},
+	})
+	function expectWritesExampleSchema(testCli: ReturnType<typeof cli>): void {
 		const { writeJsonSchema } = testCli([`--foo=hello`])
 		writeJsonSchema(`${tempDir}`)
 		const jsonSchemaContents = JSON.parse(
@@ -89,5 +97,11 @@ describe(`creating a config schema`, () => {
 		)
 		const jsonSchemaFixture = JSON.parse(jsonSchemaFixtureContentsString)
 		expect(jsonSchemaContents).toEqual(jsonSchemaFixture)
+	}
+	test(`happy: export an arktype schema`, () => {
+		expectWritesExampleSchema(arktypeTestCli)
+	})
+	test(`happy: export a zod schema`, () => {
+		expectWritesExampleSchema(zodTestCli)
 	})
 })

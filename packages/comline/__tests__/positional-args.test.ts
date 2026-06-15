@@ -289,7 +289,9 @@ describe(`options before positional args from cli`, () => {
 
 describe(`zod boolean options before positional args from cli`, () => {
 	const makeTestCli = (
-		optionGroup: ReturnType<typeof options<{ "dry-run"?: boolean | undefined }>>,
+		optionGroup: ReturnType<
+			typeof options<Partial<Record<`dry-run`, boolean | undefined>>>
+		>,
 	) =>
 		cli({
 			cliName: `my-cli`,
