@@ -110,15 +110,15 @@ greet(inputs.opts.name, inputs.opts.age)
 
 - [x] switches (`--age`)
   - `""` will be provided to the option parser for `age` in this case
-- [x] switches with values (`--age=1`)
+- [x] switches with values (`--age=1`, `--age 1`)
   - `"1"` will be provided to the option parser for `age` in this case
-- [x] multiple instances of the same switch (`--age=1 --age=2`)
+- [x] multiple instances of the same switch (`--age=1 --age 2`)
   - `"1,2"` will be provided to the option parser for `age` in this case
 - [x] flags (`-a`)
   - `""` will be provided to the option parser for `age` in this case
 - [x] multiple instances of the same flag (`-aa`)
   - `","` will be provided to the option parser for `age` in this case
-- [x] flags with values (`-a=1`)
+- [x] flags with values (`-a=1`, `-a 1`)
   - `"1"` will be provided to the option parser for `age` in this case
 - [x] combined flags (`-na`)
   - `""` will be provided to the option parser for `name` in this case
@@ -179,5 +179,4 @@ comline exports these parser helpers:
 ## limitations
 
 - comline supports positional arguments, but only following the `--` convention.
-- comline supports options with values, but only when using `=` to separate the option name from the value.
 - flags are supported, but they must be single characters, either uppercase or lowercase.

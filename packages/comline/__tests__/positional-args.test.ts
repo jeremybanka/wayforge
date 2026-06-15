@@ -95,3 +95,43 @@ describe(`options and positional args from cli`, () => {
 		expect(inputs.path).toEqual([`yo`])
 	})
 })
+
+describe(`options without equals signs and positional args from cli`, () => {
+	const optionGroup = options(`blah`, type({ "with-option": `string` }), {
+		"with-option": {
+			description: `with option`,
+			example: `--with-option=so-and-so`,
+			parse: parseStringOption,
+			required: true,
+		},
+	})
+
+	const testCli = cli({
+		cliName: `my-cli`,
+		routes: required({ "do-thing": null }),
+		routeOptions: {
+			"do-thing": optionGroup,
+		},
+	})
+	test(`happy: positional args with option values separated by spaces`, () => {
+		const { inputs } = testCli([
+			`/some-random-path/my-cli`,
+			`do-thing`,
+			`--with-option`,
+			`so-and-so`,
+		])
+		expect(inputs.case).toEqual(`do-thing`)
+		expect(inputs.opts).toEqual({ "with-option": `so-and-so` })
+		expect(inputs.path).toEqual([`do-thing`])
+	})
+	test(`happy: positional args with option values separated by equals signs`, () => {
+		const { inputs } = testCli([
+			`/some-random-path/my-cli`,
+			`do-thing`,
+			`--with-option=so-and-so`,
+		])
+		expect(inputs.case).toEqual(`do-thing`)
+		expect(inputs.opts).toEqual({ "with-option": `so-and-so` })
+		expect(inputs.path).toEqual([`do-thing`])
+	})
+})
