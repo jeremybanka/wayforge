@@ -40,12 +40,12 @@
 	"devDependencies": {
 		"@types/node": "25.9.3",
 		"@typescript/native-preview": "7.0.0-dev.20260615.1",
-		"@vitest/coverage-v8": "4.1.8",
+		"@vitest/coverage-v8": "4.1.9",
 		"concurrently": "10.0.3",
 		"eslint": "10.5.0",
 		"recoverage": "0.1.16",
 		"tsdown": "0.22.2",
 		"vite": "8.0.16",
-		"vitest": "4.1.8"
+		"vitest": "4.1.9"
 	}
 }

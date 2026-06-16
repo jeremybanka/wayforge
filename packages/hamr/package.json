@@ -68,7 +68,7 @@
 		"takua": "workspace:*",
 		"tsdown": "0.22.2",
 		"vite-plugin-dts": "5.0.2",
-		"vitest": "4.1.8"
+		"vitest": "4.1.9"
 	},
 	"files": [
 		"dist",
