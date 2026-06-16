@@ -50,7 +50,7 @@
 		"@typescript-eslint/eslint-plugin": "8.61.0",
 		"@typescript-eslint/parser": "8.61.0",
 		"@typescript-eslint/utils": "8.61.0",
-		"@typescript/native-preview": "7.0.0-dev.20260615.1",
+		"@typescript/native-preview": "7.0.0-dev.20260616.1",
 		"atom.io": "0.49.0",
 		"cross-env": "10.1.0",
 		"dprint": "0.54.0",
