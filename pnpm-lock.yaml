@@ -156,8 +156,8 @@ importers:
         specifier: 19.2.7
         version: 19.2.7(react@19.2.7)
       react-email:
-        specifier: 6.6.1
-        version: 6.6.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: 6.6.2
+        version: 6.6.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       resend:
         specifier: 6.12.4
         version: 6.12.4(@react-email/render@2.0.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7))
@@ -184,8 +184,8 @@ importers:
         version: link:../../packages/varmint
     devDependencies:
       '@react-email/ui':
-        specifier: 6.6.1
-        version: 6.6.1(@opentelemetry/api@1.9.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        specifier: 6.6.2
+        version: 6.6.2(@opentelemetry/api@1.9.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@types/bun':
         specifier: npm:bun-types@1.3.14
         version: bun-types@1.3.14
@@ -2135,8 +2135,8 @@ packages:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^18.0 || ^19.0 || ^19.0.0-rc
 
-  '@react-email/ui@6.6.1':
-    resolution: {integrity: sha512-xFRoej3P5L9KWpRTB/+SaogbY3D2s256N77Mqp5QFV2To7mGH3TQajrWCcpzdHQWt5n933ihJzTJNsmMAySltA==}
+  '@react-email/ui@6.6.2':
+    resolution: {integrity: sha512-9sPVr9yWYhnEGWYvwzco9QQAqFcNTzOXLKh+F+WU9NhzJSOBE1MUf1Nv4svyMvwlFh7KoiveMYfFGPpLv/ryTA==}
 
   '@react-hook/latest@1.0.3':
     resolution: {integrity: sha512-dy6duzl+JnAZcDbNTfmaP3xHiKtbXYOaz3G51MGVljh548Y8MWzTr+PHLOfvpypEVW9zwvl+VyKjbWKEVbV1Rg==}
@@ -4717,8 +4717,8 @@ packages:
     peerDependencies:
       react: ^19.2.7
 
-  react-email@6.6.1:
-    resolution: {integrity: sha512-xzFHf61ajgWu135aSdbRBjpGpiVRmGOBYYvPYtsoPqgupjW6AuogZYhx5cSIrnpoeRHS/vqm1GFIRt39d0gQDg==}
+  react-email@6.6.2:
+    resolution: {integrity: sha512-rCrcGTdTIaRMheDQXK00wkenPrDyjGmCSTCNXDqvF/+MdTmCBr5BwqF2ZdVt0kwu7ZmWe92q9BEeliNSs4I5iQ==}
     engines: {node: '>=20.0.0'}
     hasBin: true
     peerDependencies:
@@ -6554,7 +6554,7 @@ snapshots:
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
 
-  '@react-email/ui@6.6.1(@opentelemetry/api@1.9.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@react-email/ui@6.6.2(@opentelemetry/api@1.9.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
       esbuild: 0.28.0
       next: 16.2.6(@opentelemetry/api@1.9.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -8831,7 +8831,7 @@ snapshots:
       react: 19.2.7
       scheduler: 0.27.0
 
-  react-email@6.6.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
+  react-email@6.6.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7):
     dependencies:
       '@babel/parser': 7.27.0
       '@babel/traverse': 7.27.0
