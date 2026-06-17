@@ -59,7 +59,7 @@
 		"concurrently": "10.0.3",
 		"eslint": "10.5.0",
 		"json-schema-to-zod": "2.8.1",
-		"tsdown": "0.22.2",
+		"tsdown": "0.22.3",
 		"varmint": "workspace:*",
 		"vitest": "4.1.9",
 		"zod": "4.4.3"
