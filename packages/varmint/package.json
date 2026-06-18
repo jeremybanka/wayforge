@@ -53,7 +53,7 @@
 		"atom.io": "0.49.2",
 		"concurrently": "10.0.3",
 		"eslint": "10.5.0",
-		"openai": "6.43.0",
+		"openai": "6.44.0",
 		"tsdown": "0.22.3",
 		"vite": "8.0.16",
 		"vitest": "4.1.9",
