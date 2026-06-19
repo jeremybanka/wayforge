@@ -32,7 +32,7 @@
 		"postversion": "dprint fmt package.json"
 	},
 	"devDependencies": {
-		"@typescript/native-preview": "7.0.0-dev.20260618.1",
+		"@typescript/native-preview": "7.0.0-dev.20260619.1",
 		"concurrently": "10.0.3",
 		"eslint": "10.5.0",
 		"tsdown": "0.22.3",
