@@ -38,7 +38,7 @@
 		"postversion": "dprint fmt package.json"
 	},
 	"devDependencies": {
-		"@types/node": "25.9.3",
+		"@types/node": "25.9.4",
 		"@typescript/native-preview": "7.0.0-dev.20260619.1",
 		"@vitest/coverage-v8": "4.1.9",
 		"concurrently": "10.0.3",
