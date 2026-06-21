@@ -141,8 +141,8 @@ importers:
         specifier: 12.40.0
         version: 12.40.0(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       nanoid:
-        specifier: 5.1.14
-        version: 5.1.14
+        specifier: 5.1.15
+        version: 5.1.15
       openai:
         specifier: 6.44.0
         version: 6.44.0(ws@8.21.0)(zod@4.4.3)
@@ -4397,8 +4397,8 @@ packages:
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
-  nanoid@5.1.14:
-    resolution: {integrity: sha512-5c8l8kVzqpnDPaicbEop/fV0Q1w16FmbWtVhMqugTozAwYdlIQojWH5a/M7UfziFmGdQRrUdV+EPzc9Xng3VAQ==}
+  nanoid@5.1.15:
+    resolution: {integrity: sha512-kBg3RpGtIe+RpTbyXwoI6pk5yD7KUiI3sygUqgeBMRst42KmhB4RZC7eiO9Wa1HIpaCCtpE2DJ6OI4Wi5ebwFw==}
     engines: {node: ^18 || >=20}
     hasBin: true
 
@@ -8565,7 +8565,7 @@ snapshots:
 
   nanoid@3.3.12: {}
 
-  nanoid@5.1.14: {}
+  nanoid@5.1.15: {}
 
   napi-postinstall@0.3.4: {}
 
