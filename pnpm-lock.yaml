@@ -223,8 +223,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/flightdeck
       globals:
-        specifier: 17.6.0
-        version: 17.6.0
+        specifier: 17.7.0
+        version: 17.7.0
       vite:
         specifier: 8.0.16
         version: 8.0.16(@types/node@25.9.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.1)
@@ -3884,8 +3884,8 @@ packages:
     resolution: {integrity: sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA==}
     engines: {node: '>=4'}
 
-  globals@17.6.0:
-    resolution: {integrity: sha512-sepffkT8stwnIYbsMBpoCHJuJM5l98FUF2AnE07hfvE0m/qp3R586hw4jF4uadbhvg1ooIdzuu7CsfD2jzCaNA==}
+  globals@17.7.0:
+    resolution: {integrity: sha512-Czmyns5dUsq4seFBR/Kdydhmo8y9kC79hiSkPn0YcGtNnYWnrgt0vjrSjx9tspoDGWm2CMarffRuLjM4xUz8xg==}
     engines: {node: '>=18'}
 
   globby@11.1.0:
@@ -8126,7 +8126,7 @@ snapshots:
 
   globals@11.12.0: {}
 
-  globals@17.6.0: {}
+  globals@17.7.0: {}
 
   globby@11.1.0:
     dependencies:
