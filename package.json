@@ -58,7 +58,7 @@
 		"dprint-plugin-markup": "0.27.3",
 		"dprint-plugin-yaml": "0.6.0",
 		"eslint-plugin-drizzle": "0.2.3",
-		"eslint-plugin-import-x": "4.16.2",
+		"eslint-plugin-import-x": "4.17.0",
 		"eslint-plugin-simple-import-sort": "13.0.0",
 		"jiti": "2.7.0",
 		"oxlint": "1.71.0",
