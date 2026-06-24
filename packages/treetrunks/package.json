@@ -39,7 +39,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "25.9.4",
-		"@typescript/native-preview": "7.0.0-dev.20260623.1",
+		"@typescript/native-preview": "7.0.0-dev.20260624.1",
 		"@vitest/coverage-v8": "4.1.9",
 		"concurrently": "10.0.3",
 		"eslint": "10.5.0",
