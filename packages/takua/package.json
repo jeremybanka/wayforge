@@ -24,7 +24,7 @@
 		"build": "tsdown",
 		"lint:eslint": "eslint -- .",
 		"lint:oxlint": "oxlint --type-aware -c ../../.oxlintrc.jsonc .",
-		"lint:types": "bash ../../scripts/ci-bin-probe.bash takua-types tsgo && tsgo --noEmit",
+		"lint:types": "tsgo --noEmit",
 		"watch:types": "tsgo --watch --noEmit",
 		"lint": "concurrently \"bun:lint:*\"",
 		"test": "vitest",
