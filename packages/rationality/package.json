@@ -29,7 +29,7 @@
 		"watch:types": "tsgo --watch --noEmit",
 		"lint": "concurrently \"bun:lint:*\"",
 		"test": "vitest",
-		"test:once": "vitest run",
+		"test:once": "bash ../../scripts/ci-bin-probe.bash rationality-test vitest && vitest run",
 		"postversion": "dprint fmt package.json"
 	},
 	"devDependencies": {

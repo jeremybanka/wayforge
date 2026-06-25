@@ -53,6 +53,8 @@ jobs:
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: ./.github/actions/setup
+      - run: bash ../../scripts/ci-bin-probe.bash pre-turbo-varmint oxlint
+        working-directory: packages/varmint
       - run: pnpm lint:oxlint
 
   Types:
@@ -61,4 +63,6 @@ jobs:
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: ./.github/actions/setup
+      - run: bash ../../scripts/ci-bin-probe.bash pre-turbo-takua tsgo
+        working-directory: packages/takua
       - run: pnpm lint:types

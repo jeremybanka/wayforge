@@ -31,7 +31,7 @@
 		"watch:types": "tsgo --watch --noEmit",
 		"lint": "concurrently \"bun:lint:*\"",
 		"test": "vitest",
-		"test:coverage:once": "vitest run --coverage",
+		"test:coverage:once": "bash ../../scripts/ci-bin-probe.bash treetrunks-coverage vitest && vitest run --coverage",
 		"test:coverage:increased": "recoverage",
 		"test:coverage": "pnpm test:coverage:once && pnpm test:coverage:increased",
 		"test:once": "vitest run",
