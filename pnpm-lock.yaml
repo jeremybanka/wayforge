@@ -769,6 +769,9 @@ importers:
       '@types/node':
         specifier: 25.9.4
         version: 25.9.4
+      '@typescript/native-preview':
+        specifier: 7.0.0-dev.20260624.1
+        version: 7.0.0-dev.20260624.1
       '@vitest/coverage-v8':
         specifier: 4.1.9
         version: 4.1.9(vitest@4.1.9)
