@@ -468,8 +468,8 @@ importers:
         specifier: 0.22.3
         version: 0.22.3(@tsdown/css@0.22.3)(@typescript/native-preview@7.0.0-dev.20260624.1)(tsx@4.22.1)(typescript@6.0.3)
       vite-plugin-dts:
-        specifier: 5.0.2
-        version: 5.0.2(esbuild@0.28.0)(rolldown@1.1.1)(typescript@6.0.3)(vite@8.1.0(@types/node@25.9.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.1))
+        specifier: 5.0.3
+        version: 5.0.3(esbuild@0.28.0)(rolldown@1.1.2)(typescript@6.0.3)(vite@8.1.0(@types/node@25.9.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.1))
       vitest:
         specifier: 4.1.9
         version: 4.1.9(@opentelemetry/api@1.9.1)(@types/node@25.9.4)(@vitest/coverage-v8@4.1.9)(esbuild@0.28.0)(happy-dom@20.10.6)(jiti@2.7.0)(jsdom@29.1.1)(tsx@4.22.1)
@@ -5193,12 +5193,12 @@ packages:
     resolution: {integrity: sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==}
     engines: {node: '>= 4.0.0'}
 
-  unplugin-dts@1.0.2:
-    resolution: {integrity: sha512-VbNiMD0LMl/t6nJueGtrCp79N7ZO1nquxj/FUybJDnKwZGsnW2wjdwBSzA3QEHujoxmxZIptsG43hL7LzXE96w==}
+  unplugin-dts@1.0.3:
+    resolution: {integrity: sha512-/GR887wfG4r1cWyt1UZsLRuMIjsmEbGkS9yJrz+0dsToHAYUD5CTyP3JMGVLv25j9K0mJcwAVvZno/aTuSUvNg==}
     peerDependencies:
       '@microsoft/api-extractor': '>=7'
       '@rspack/core': ^1
-      '@vue/language-core': ~3.1.5
+      '@vue/language-core': ^3.1.5
       esbuild: '*'
       rolldown: '*'
       rollup: '>=3'
@@ -5246,8 +5246,8 @@ packages:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
 
-  vite-plugin-dts@5.0.2:
-    resolution: {integrity: sha512-lNeHS+dwGju6eRmNvZQt8Shwv9j3m98hbHse/lIbLq9q3yE2DcIOBBYQEVUF6tS0kOmv+VA9Z5FqmzFnGe4U8g==}
+  vite-plugin-dts@5.0.3:
+    resolution: {integrity: sha512-gIth6NdCEHWPiiRMCK3N6C8WjvdsrtEQrmsiG8h6Ov+lFP+b07Y+wcs9H0H7n146l0PDTYK4cQN1vgeG1pMdRQ==}
     peerDependencies:
       '@microsoft/api-extractor': '>=7'
       rollup: '>=3'
@@ -9370,7 +9370,7 @@ snapshots:
 
   universalify@0.1.2: {}
 
-  unplugin-dts@1.0.2(esbuild@0.28.0)(rolldown@1.1.1)(typescript@6.0.3)(vite@8.1.0(@types/node@25.9.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.1)):
+  unplugin-dts@1.0.3(esbuild@0.28.0)(rolldown@1.1.2)(typescript@6.0.3)(vite@8.1.0(@types/node@25.9.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.1)):
     dependencies:
       '@rollup/pluginutils': 5.3.0
       '@volar/typescript': 2.4.28
@@ -9383,7 +9383,7 @@ snapshots:
       unplugin: 2.3.11
     optionalDependencies:
       esbuild: 0.28.0
-      rolldown: 1.1.1
+      rolldown: 1.1.2
       vite: 8.1.0(@types/node@25.9.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.1)
     transitivePeerDependencies:
       - supports-color
@@ -9431,9 +9431,9 @@ snapshots:
 
   vary@1.1.2: {}
 
-  vite-plugin-dts@5.0.2(esbuild@0.28.0)(rolldown@1.1.1)(typescript@6.0.3)(vite@8.1.0(@types/node@25.9.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.1)):
+  vite-plugin-dts@5.0.3(esbuild@0.28.0)(rolldown@1.1.2)(typescript@6.0.3)(vite@8.1.0(@types/node@25.9.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.1)):
     dependencies:
-      unplugin-dts: 1.0.2(esbuild@0.28.0)(rolldown@1.1.1)(typescript@6.0.3)(vite@8.1.0(@types/node@25.9.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.1))
+      unplugin-dts: 1.0.3(esbuild@0.28.0)(rolldown@1.1.2)(typescript@6.0.3)(vite@8.1.0(@types/node@25.9.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.1))
     optionalDependencies:
       vite: 8.1.0(@types/node@25.9.4)(esbuild@0.28.0)(jiti@2.7.0)(tsx@4.22.1)
     transitivePeerDependencies:
