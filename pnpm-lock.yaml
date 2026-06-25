@@ -144,8 +144,8 @@ importers:
         specifier: 5.1.16
         version: 5.1.16
       openai:
-        specifier: 6.44.0
-        version: 6.44.0(ws@8.21.0)(zod@4.4.3)
+        specifier: 6.45.0
+        version: 6.45.0(ws@8.21.0)(zod@4.4.3)
       postgres:
         specifier: 3.4.9
         version: 3.4.9
@@ -746,8 +746,8 @@ importers:
         specifier: 10.5.0
         version: 10.5.0(jiti@2.7.0)
       openai:
-        specifier: 6.44.0
-        version: 6.44.0(ws@8.21.0)(zod@4.4.3)
+        specifier: 6.45.0
+        version: 6.45.0(ws@8.21.0)(zod@4.4.3)
       tsdown:
         specifier: 0.22.3
         version: 0.22.3(@tsdown/css@0.22.3)(@typescript/native-preview@7.0.0-dev.20260624.1)(tsx@4.22.1)(typescript@6.0.3)
@@ -4479,12 +4479,21 @@ packages:
     resolution: {integrity: sha512-7x81NCL719oNbsq/3mh+hVrAWmFuEYUqrq/Iw3kUzH8ReypT9QQ0BLoJS7/G9k6N81XjW4qHWtjWwe/9eLy1EQ==}
     engines: {node: '>=12'}
 
-  openai@6.44.0:
-    resolution: {integrity: sha512-09/gH+8jH0RgUwsgWHAaxsKGRT5zVZ95IaJUnqAWj6XejIBmnFRwq2WUIF37VtDEsmGrtPmvCs5+yBSeZGWvkA==}
+  openai@6.45.0:
+    resolution: {integrity: sha512-5DQVNErssk0afNpTTHUm/qZPU4iKR9OYdNid8Ib4puq4gHNNvGWZht2zY4h9a8JMF949Ik6m8gQutllVPbjdnw==}
     peerDependencies:
+      '@aws-sdk/credential-provider-node': '>=3.972.0 <4'
+      '@smithy/hash-node': '>=4.3.0 <5'
+      '@smithy/signature-v4': '>=5.4.0 <6'
       ws: ^8.18.0
       zod: ^3.25 || ^4.0
     peerDependenciesMeta:
+      '@aws-sdk/credential-provider-node':
+        optional: true
+      '@smithy/hash-node':
+        optional: true
+      '@smithy/signature-v4':
+        optional: true
       ws:
         optional: true
       zod:
@@ -8626,7 +8635,7 @@ snapshots:
       is-docker: 2.2.1
       is-wsl: 2.2.0
 
-  openai@6.44.0(ws@8.21.0)(zod@4.4.3):
+  openai@6.45.0(ws@8.21.0)(zod@4.4.3):
     optionalDependencies:
       ws: 8.21.0
       zod: 4.4.3
