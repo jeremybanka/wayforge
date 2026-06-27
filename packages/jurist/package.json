@@ -35,7 +35,7 @@
 		"treetrunks": "workspace:*"
 	},
 	"devDependencies": {
-		"@typescript/native-preview": "7.0.0-dev.20260626.1",
+		"@typescript/native-preview": "7.0.0-dev.20260627.2",
 		"concurrently": "10.0.3",
 		"eslint": "10.5.0",
 		"tsdown": "0.22.3",
