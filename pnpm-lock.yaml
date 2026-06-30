@@ -96,8 +96,8 @@ importers:
   apps/tempest.games:
     dependencies:
       '@ai-sdk/openai':
-        specifier: 4.0.2
-        version: 4.0.2(zod@4.4.3)
+        specifier: 4.0.3
+        version: 4.0.3(zod@4.4.3)
       '@floating-ui/react':
         specifier: 0.27.19
         version: 0.27.19(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -123,8 +123,8 @@ importers:
         specifier: 11.18.0
         version: 11.18.0(typescript@6.0.3)
       ai:
-        specifier: 7.0.4
-        version: 7.0.4(zod@4.4.3)
+        specifier: 7.0.5
+        version: 7.0.5(zod@4.4.3)
       arktype:
         specifier: 2.2.1
         version: 2.2.1
@@ -805,8 +805,8 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/openai@4.0.2':
-    resolution: {integrity: sha512-/oxY+VpWgTrmqCOho1AD/jF5ZaHizkAEsrEVBhIHEzxSHpbJI0Ws8VSpfJPPBeTF7Ebz6eaNGOvKm2RzN5EcdQ==}
+  '@ai-sdk/openai@4.0.3':
+    resolution: {integrity: sha512-VA4R08RZf/vOwY6YtJu0p6tc8tW6ONw2BoHz8f+9qTRJHu9ID4E1u1JHC+pKG0FVVvSLQAFRm2m09ILoh89Qjg==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -3033,8 +3033,8 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  ai@7.0.4:
-    resolution: {integrity: sha512-mZub080RWRxpWg8OY56KVnI3AoMVniccSWG+dwVb3nH81+GiNMDYBIdP41RLUivLpmU49pB7ssD7tvfIUaSaCA==}
+  ai@7.0.5:
+    resolution: {integrity: sha512-kQH1brEjTsvKBxJ5uvUyZMcGNZFQgfOcy5OjIdVb6F0d6fGDt0B14gUezKLl22xTt99RiuqTC9H/H1j0iitNcg==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -5555,7 +5555,7 @@ snapshots:
       '@vercel/oidc': 3.2.0
       zod: 4.4.3
 
-  '@ai-sdk/openai@4.0.2(zod@4.4.3)':
+  '@ai-sdk/openai@4.0.3(zod@4.4.3)':
     dependencies:
       '@ai-sdk/provider': 4.0.0
       '@ai-sdk/provider-utils': 5.0.1(zod@4.4.3)
@@ -7341,7 +7341,7 @@ snapshots:
 
   acorn@8.16.0: {}
 
-  ai@7.0.4(zod@4.4.3):
+  ai@7.0.5(zod@4.4.3):
     dependencies:
       '@ai-sdk/gateway': 4.0.4(zod@4.4.3)
       '@ai-sdk/provider': 4.0.0
