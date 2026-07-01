@@ -365,9 +365,7 @@ export function cli<
 				path: [] as TreePath<Routes>,
 				route: `` as Join<TreePathName<Routes>>,
 			}
-			const allOptionConfigEntries = retrieveOptionConfigEntries(
-				routeOptions as Record<string, OptionsGroup<any> | null>,
-			)
+			const allOptionConfigEntries = retrieveOptionConfigEntries(routeOptions)
 			const consumedValueIndexes = retrieveConsumedValueIndexes(
 				passed,
 				allOptionConfigEntries,

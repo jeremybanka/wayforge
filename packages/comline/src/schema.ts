@@ -65,7 +65,7 @@ export function retrieveInputJsonSchema(
 	optionsSchema: OptionsSchema<any>,
 ): JsonSchema {
 	return disallowAdditionalProperties(
-		optionsSchema[`~standard`].jsonSchema.input(jsonSchemaOptions) as JsonSchema,
+		optionsSchema[`~standard`].jsonSchema.input(jsonSchemaOptions),
 	)
 }
 
