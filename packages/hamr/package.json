@@ -54,7 +54,7 @@
 		"@tsdown/css": "0.22.3",
 		"@types/jsdom": "28.0.3",
 		"@types/react": "19.2.17",
-		"@typescript/native-preview": "7.0.0-dev.20260701.1",
+		"@typescript/native-preview": "7.0.0-dev.20260702.3",
 		"@vitejs/plugin-react": "6.0.3",
 		"atom.io": "0.49.5",
 		"concurrently": "10.0.3",
