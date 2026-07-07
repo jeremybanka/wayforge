@@ -43,7 +43,7 @@
 		"atom.io": "0.49.6"
 	},
 	"devDependencies": {
-		"@typescript/native-preview": "7.0.0-dev.20260706.1",
+		"@typescript/native-preview": "7.0.0-dev.20260707.2",
 		"concurrently": "10.0.3",
 		"eslint": "10.6.0",
 		"fp-ts": "2.16.11",
