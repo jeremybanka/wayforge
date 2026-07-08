@@ -39,7 +39,7 @@
 		"postversion": "dprint fmt package.json"
 	},
 	"dependencies": {
-		"arktype": "2.2.2",
+		"arktype": "2.2.3",
 		"cachedir": "2.4.0",
 		"comline": "workspace:*",
 		"diff": "9.0.0",
