@@ -450,8 +450,8 @@ importers:
         specifier: 29.1.1
         version: 29.1.1
       preact:
-        specifier: 10.29.4
-        version: 10.29.4
+        specifier: 10.29.5
+        version: 10.29.5
       react:
         specifier: 19.2.7
         version: 19.2.7
@@ -4707,8 +4707,8 @@ packages:
   potpack@1.0.2:
     resolution: {integrity: sha512-choctRBIV9EMT9WGAZHn3V7t0Z2pMQyl0EZE6pFc/6ml3ssw7Dlf/oAOvFwjm1HVsqfQN8GfeFyJ+d8tRzqueQ==}
 
-  preact@10.29.4:
-    resolution: {integrity: sha512-GMpwh9+NJ8tSmqwIaVyFRQkiKfBEzQ+k7r7tle4W+kaJ+7wJiB9hFz9BixAomMtenPPSBfM4bZhXozGxhf0uFQ==}
+  preact@10.29.5:
+    resolution: {integrity: sha512-zIai7HLEIz9c4GNfqpiuu5K9I1szXNtx0Ykr8f1Vbm1NasSVIvXGRxc8R8alLC+G+zonAt0TiUUBMn4+CiTgaA==}
 
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
@@ -8872,7 +8872,7 @@ snapshots:
 
   potpack@1.0.2: {}
 
-  preact@10.29.4: {}
+  preact@10.29.5: {}
 
   prelude-ls@1.2.1: {}
 
