@@ -50,7 +50,7 @@
 		"@types/bun": "npm:bun-types@1.3.14",
 		"@types/node": "25.9.4",
 		"@typescript/native-preview": "7.0.0-dev.20260707.2",
-		"atom.io": "0.49.6",
+		"atom.io": "0.49.7",
 		"concurrently": "10.0.3",
 		"eslint": "10.6.0",
 		"openai": "6.45.0",
