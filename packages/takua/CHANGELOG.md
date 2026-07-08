@@ -1,5 +1,11 @@
 # takua
 
+## 0.2.2
+
+### Patch Changes
+
+- 8f28409: Add configurable log sinks so integrations like LSPs can route formatted output without writing to process stdout.
+
 ## 0.2.1
 
 ### Patch Changes
