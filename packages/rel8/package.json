@@ -40,7 +40,7 @@
 		"postversion": "dprint fmt package.json"
 	},
 	"dependencies": {
-		"atom.io": "0.49.6"
+		"atom.io": "0.49.7"
 	},
 	"devDependencies": {
 		"@typescript/native-preview": "7.0.0-dev.20260707.2",

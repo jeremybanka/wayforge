@@ -51,7 +51,7 @@
 		"@typescript-eslint/parser": "8.63.0",
 		"@typescript-eslint/utils": "8.63.0",
 		"@typescript/native-preview": "7.0.0-dev.20260707.2",
-		"atom.io": "0.49.6",
+		"atom.io": "0.49.7",
 		"cross-env": "10.1.0",
 		"dprint": "0.55.1",
 		"dprint-plugin-malva": "0.16.0",
