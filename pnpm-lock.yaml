@@ -18,8 +18,8 @@ importers:
         specifier: 2.1.5
         version: 2.1.5
       '@dprint/json':
-        specifier: 0.22.0
-        version: 0.22.0
+        specifier: 0.23.0
+        version: 0.23.0
       '@dprint/markdown':
         specifier: 0.22.1
         version: 0.22.1
@@ -1057,8 +1057,8 @@ packages:
     cpu: [x64]
     os: [darwin]
 
-  '@dprint/json@0.22.0':
-    resolution: {integrity: sha512-FjZQmlljXGXIautrYgcBdO/QQSO9e4n+3/tz23nwY4CTCfrgBx8Z2I2vOS5ERUBCAwqRbkZ37DLj7y2LWyC9gA==}
+  '@dprint/json@0.23.0':
+    resolution: {integrity: sha512-FYFbZyrBr343JzCNkwa87+Lk2YnElpv0gzl+i5CXfMjixXzWWAKK2vEuzKoeCsJys4B3bfxmi0ByJ/xW2CY2jw==}
 
   '@dprint/linux-arm64-glibc@0.55.1':
     resolution: {integrity: sha512-vt7w+aL2MjtD3RRfnUTDuK/b7xg1/feBe3WoV0S2rGNmPEJI+K7wwBXkOl/I77V9w3PP2zvN/aRY5dMOZrkbSg==}
@@ -5917,7 +5917,7 @@ snapshots:
   '@dprint/darwin-x64@0.55.1':
     optional: true
 
-  '@dprint/json@0.22.0': {}
+  '@dprint/json@0.23.0': {}
 
   '@dprint/linux-arm64-glibc@0.55.1':
     optional: true
