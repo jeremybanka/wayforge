@@ -12,6 +12,14 @@ export type LogFn = (
 
 export type LogLevel = `error` | `info` | `warn`
 
+export type LogSink = {
+	debug?: (message: string) => void
+	error: (message: string) => void
+	info: (message: string) => void
+	log?: (message: string) => void
+	warn: (message: string) => void
+}
+
 export interface Chronicle {
 	mark: (text: string) => void
 	logMarks: () => void
@@ -25,15 +33,44 @@ export interface LoggerInterface extends Pick<Console, LogLevel> {
 }
 
 export type LoggerConfig = {
-	colorEnabled: boolean
+	colorEnabled?: boolean
+	sink?: LogSink
+}
+
+const defaultLogSink: LogSink = {
+	debug: (message: string) => {
+		console.log(message)
+	},
+	error: (message: string) => {
+		console.log(message)
+	},
+	info: (message: string) => {
+		console.log(message)
+	},
+	log: (message: string) => {
+		console.log(message)
+	},
+	warn: (message: string) => {
+		console.log(message)
+	},
 }
 
 export class Logger implements LoggerInterface {
 	public chronicle: Chronicle | undefined
 	public readonly colorEnabled: boolean
+	protected readonly sink: LogSink
 
-	public constructor({ colorEnabled }: LoggerConfig) {
+	public constructor({
+		colorEnabled = true,
+		sink = defaultLogSink,
+	}: LoggerConfig = {}) {
 		this.colorEnabled = colorEnabled
+		this.sink = sink
+	}
+
+	protected write(level: LogLevel | `log`, message: string): void {
+		const write = this.sink[level] ?? this.sink.log ?? this.sink.info
+		write(message)
 	}
 
 	protected log(
@@ -90,9 +127,9 @@ export class Logger implements LoggerInterface {
 			output += `${wheatpaste} ${datumString}`
 		}
 		if (output) {
-			console.log(output)
+			this.write(level, output)
 		} else {
-			console.log(wheatpaste)
+			this.write(level, wheatpaste)
 		}
 	}
 	public info(prefix: string, message: number | string, datum?: unknown): void {
@@ -147,7 +184,7 @@ export class Logger implements LoggerInterface {
 				}
 			}
 			logMark(`TOTAL TIME`, overall.duration)
-			console.log()
+			this.write(`log`, ``)
 			this.chronicle = undefined
 		}
 		const chronicle = (this.chronicle = { mark, logMarks })
