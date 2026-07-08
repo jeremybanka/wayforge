@@ -27,7 +27,7 @@
 		"break-check": "./bin/break-check.bin.js"
 	},
 	"dependencies": {
-		"arktype": "2.2.2",
+		"arktype": "2.2.3",
 		"comline": "workspace:*",
 		"minimatch": "10.2.5",
 		"simple-git": "3.36.0",
