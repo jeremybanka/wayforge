@@ -50,6 +50,6 @@
 		"@typescript/native-preview": "7.0.0-dev.20260707.2",
 		"concurrently": "10.0.3",
 		"eslint": "10.6.0",
-		"tsdown": "0.22.3"
+		"tsdown": "0.22.4"
 	}
 }
