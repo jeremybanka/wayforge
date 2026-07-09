@@ -196,7 +196,7 @@ export function help(
 				if (value?.optionConfigs) {
 					rows.push(
 						...Object.entries(value.optionConfigs).map(([key, option]) => {
-							const flag = option.flag ? `-${option.flag}` : ` . `
+							const flag = option.flag ? `-${option.flag}` : `  `
 							const optionsSchema = value.optionsSchema
 
 							let typeString = `unknown`
