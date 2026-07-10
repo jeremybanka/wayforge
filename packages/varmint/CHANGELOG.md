@@ -1,5 +1,12 @@
 # varmint
 
+## 0.5.18
+
+### Patch Changes
+
+- Updated dependencies [b4c93d6]
+  - comline@0.5.1
+
 ## 0.5.17
 
 ### Patch Changes

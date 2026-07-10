@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.3.43
+
+### Patch Changes
+
+- varmint@0.5.18
+
 ## 0.3.42
 
 ### Patch Changes
