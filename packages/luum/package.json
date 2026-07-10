@@ -10,8 +10,8 @@
 		"dev": "cd example && vite",
 		"lint:eslint": "eslint -- .",
 		"lint:oxlint": "oxlint --type-aware -c ../../.oxlintrc.jsonc .",
-		"lint:types": "tsgo --noEmit",
-		"watch:types": "tsgo --watch --noEmit",
+		"lint:types": "tsc --noEmit",
+		"watch:types": "tsc --watch --noEmit",
 		"lint": "concurrently \"bun:lint:*\"",
 		"test": "vitest",
 		"test:once": "vitest run",
@@ -22,6 +22,7 @@
 		"concurrently": "10.0.3",
 		"eslint": "10.6.0",
 		"tsdown": "0.22.4",
+		"typescript": "7.0.2",
 		"vite": "8.1.4",
 		"vitest": "4.1.10"
 	},
