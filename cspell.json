@@ -51,7 +51,6 @@
 		"TRPC",
 		"tsdoc",
 		"tsdown",
-		"tsgo",
 		"tsgolint",
 		"tsup",
 		"unrs",
