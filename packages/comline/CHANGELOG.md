@@ -1,5 +1,11 @@
 # comline
 
+## 0.5.1
+
+### Patch Changes
+
+- b4c93d6: Improve the appearance of help output for options without short flags.
+
 ## 0.5.0
 
 ### Minor Changes
