@@ -44,8 +44,8 @@
 		"test:once": "bun env:test && varmint track && vitest run; varmint clean --ci-flag=CI",
 		"lint:eslint": "eslint -- .",
 		"lint:oxlint": "oxlint --type-aware -c ../../.oxlintrc.jsonc .",
-		"lint:types": "tsgo --noEmit",
-		"watch:types": "tsgo --watch --noEmit",
+		"lint:types": "tsc --noEmit",
+		"watch:types": "tsc --watch --noEmit",
 		"lint": "concurrently \"bun:lint:*\"",
 		"db:dev": "dotenvx run -f .env.development -- ./__scripts__/interactive-db.bun.ts",
 		"db:gen": "dotenvx run -f .env.development -- drizzle-kit generate",
@@ -98,6 +98,7 @@
 		"eslint": "10.6.0",
 		"flightdeck": "workspace:*",
 		"globals": "17.7.0",
+		"typescript": "7.0.2",
 		"vite": "8.1.4",
 		"vitest": "4.1.10"
 	}

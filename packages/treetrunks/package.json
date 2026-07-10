@@ -23,12 +23,13 @@
 		"src"
 	],
 	"main": "dist/treetrunks.js",
+	"types": "dist/treetrunks.d.ts",
 	"scripts": {
 		"build": "tsdown",
 		"lint:eslint": "eslint -- .",
 		"lint:oxlint": "oxlint --type-aware -c ../../.oxlintrc.jsonc .",
-		"lint:types": "tsgo --noEmit",
-		"watch:types": "tsgo --watch --noEmit",
+		"lint:types": "tsc --noEmit",
+		"watch:types": "tsc --watch --noEmit",
 		"lint": "concurrently \"bun:lint:*\"",
 		"test": "vitest",
 		"test:coverage:once": "vitest run --coverage",
@@ -39,7 +40,7 @@
 	},
 	"devDependencies": {
 		"@types/node": "25.9.5",
-		"@typescript/native-preview": "7.0.0-dev.20260707.2",
+		"typescript": "7.0.2",
 		"@vitest/coverage-v8": "4.1.10",
 		"concurrently": "10.0.3",
 		"eslint": "10.6.0",

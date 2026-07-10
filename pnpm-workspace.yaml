@@ -1,8 +1,13 @@
 blockExoticSubdeps: true
 minimumReleaseAge: 1440
 minimumReleaseAgeExclude:
+  - rolldown-plugin-dts@0.27.4
+  - typescript@7.0.2
   - "@typescript/*"
 autoInstallPeers: false
+
+overrides:
+  rolldown-plugin-dts: 0.27.4
 
 packages:
   - "apps/*"
@@ -16,3 +21,7 @@ allowBuilds:
   "sharp": true
   "unrs-resolver": true
   "workerd": true
+
+peerDependencyRules:
+  allowedVersions:
+    typescript: ^5.0.0 || ^6.0.0 || ^7.0.0
