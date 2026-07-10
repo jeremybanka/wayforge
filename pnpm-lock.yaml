@@ -20,8 +20,8 @@ importers:
         specifier: 3.1.4
         version: 3.1.4
       '@dotenvx/dotenvx':
-        specifier: 2.3.2
-        version: 2.3.2
+        specifier: 2.3.3
+        version: 2.3.3
       '@dprint/json':
         specifier: 0.23.0
         version: 0.23.0
@@ -1020,12 +1020,15 @@ packages:
   '@dimforge/rapier3d-compat@0.12.0':
     resolution: {integrity: sha512-uekIGetywIgopfD97oDL5PfeezkFpNhwlzlaEYNOA0N6ghdsOvh/HYjSMek5Q2O1PYvRSDFcqFVJl4r4ZBwOow==}
 
-  '@dotenvx/dotenvx@2.3.2':
-    resolution: {integrity: sha512-LIWOHNW25EV8G3PscWXuw4POBp3J5B5/Q1FxOkYY9NQjUlJZ8N0h/H2+RaUqVraGDh0z8iYy+EKYGmZGXXUI4w==}
+  '@dotenvx/dotenvx@2.3.3':
+    resolution: {integrity: sha512-IJ4Jw8QagVIMXEfpg+7EjQAy+64jSFHbWBUUQ+hNBoyMMS/JsA9sHPppmqeIdMf2IuL9EwrafnaautXWDTu/wQ==}
     hasBin: true
 
   '@dotenvx/primitives@1.7.2':
     resolution: {integrity: sha512-mTLQg+V5Fanvkthhy7RkbIMMQRhAwUgjfpbswtDUp0n3Z9nSsbAdfldZ6Ul9nFR+WXw3F4PVOQAXT+QM9wl1mA==}
+
+  '@dotenvx/tooling@0.2.0':
+    resolution: {integrity: sha512-BjhrGaXFDifVNZivDRWuAfJ0GCEm13ywwyMKVgrjylENbHfrFtiVIHHuhPcODQMfNe31OWSI9CAPlYRB4bty+Q==}
 
   '@dprint/android-arm64@0.55.1':
     resolution: {integrity: sha512-H1UQIcBJEo1dA8AVrkPnw5AYMMGHNe4w0lq9rEDSY3Lds0VUKACu2MK3JLNARpjljh3WKeO109J26Wpq8PTuGQ==}
@@ -3374,10 +3377,6 @@ packages:
       zod:
         optional: true
 
-  commander@11.1.0:
-    resolution: {integrity: sha512-yPVavfyCcRhmorC7rWlkHn15b4wDVgVmBA7kV4QVBsF7kv/9TKJAbAXVTxvTnwP8HHKjRCJDClKbciiYS7p0DQ==}
-    engines: {node: '>=16'}
-
   commander@13.1.0:
     resolution: {integrity: sha512-/rFeCpNJQbhSZjGVwO9RFV3xPqbnERS8MmIQzCtD/zl6gpJuV/bMLuN92oG3F7d8oDEHHRrujSXNUr8fpjntKw==}
     engines: {node: '>=18'}
@@ -3555,10 +3554,6 @@ packages:
   dot-prop@6.0.1:
     resolution: {integrity: sha512-tE7ztYzXHIeyvc7N+hR3oi7FIbf/NIjVP9hmAt3yMXzrQ072/fpjGLx2GxNxGxUl5V73MEqYzioOMoVhGMJ5cA==}
     engines: {node: '>=10'}
-
-  dotenv@17.4.2:
-    resolution: {integrity: sha512-nI4U3TottKAcAD9LLud4Cb7b2QztQMUEfHbvhTH09bqXTxnSie8WnjPALV/WMCrJZ6UV/qHJ6L03OqO3LcdYZw==}
-    engines: {node: '>=12'}
 
   dprint-plugin-malva@0.16.0:
     resolution: {integrity: sha512-cHisdhrNcBHfvTG/jgHUkVyL6zeY+C5yLO+E/UyiTbp6wzauB3d25YyPZeMlsd7M/PDT8W4Yre8jKJ/xMwthiw==}
@@ -5948,12 +5943,11 @@ snapshots:
 
   '@dimforge/rapier3d-compat@0.12.0': {}
 
-  '@dotenvx/dotenvx@2.3.2':
+  '@dotenvx/dotenvx@2.3.3':
     dependencies:
       '@dotenvx/primitives': 1.7.2
-      commander: 11.1.0
+      '@dotenvx/tooling': 0.2.0
       conf: 10.2.0
-      dotenv: 17.4.2
       enquirer: 2.4.1
       env-paths: 2.2.1
       execa: 5.1.1
@@ -5969,6 +5963,8 @@ snapshots:
       yocto-spinner: 1.2.0
 
   '@dotenvx/primitives@1.7.2': {}
+
+  '@dotenvx/tooling@0.2.0': {}
 
   '@dprint/android-arm64@0.55.1':
     optional: true
@@ -7678,8 +7674,6 @@ snapshots:
       arktype: 2.2.0
       zod: 4.4.3
 
-  commander@11.1.0: {}
-
   commander@13.1.0: {}
 
   comment-parser@1.4.6: {}
@@ -7850,8 +7844,6 @@ snapshots:
   dot-prop@6.0.1:
     dependencies:
       is-obj: 2.0.0
-
-  dotenv@17.4.2: {}
 
   dprint-plugin-malva@0.16.0: {}
 
