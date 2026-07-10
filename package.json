@@ -41,7 +41,7 @@
 	"devDependencies": {
 		"@changesets/cli": "2.31.0",
 		"@changesets/config": "3.1.4",
-		"@dotenvx/dotenvx": "2.3.3",
+		"@dotenvx/dotenvx": "2.3.4",
 		"@dprint/json": "0.23.0",
 		"@dprint/markdown": "0.22.1",
 		"@dprint/oxc": "0.28.0",
