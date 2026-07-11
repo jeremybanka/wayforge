@@ -54,7 +54,7 @@
 		"typescript": "7.0.2",
 		"arktype": "2.2.3",
 		"concurrently": "10.0.3",
-		"eslint": "10.6.0",
+		"eslint": "10.7.0",
 		"tsdown": "0.22.4",
 		"vite": "8.1.4",
 		"vitest": "4.1.10",
