@@ -37,7 +37,7 @@
 		"typescript": "7.0.2",
 		"@vitest/coverage-v8": "4.1.10",
 		"concurrently": "10.0.3",
-		"eslint": "10.6.0",
+		"eslint": "10.7.0",
 		"recoverage": "0.1.16",
 		"tsdown": "0.22.4",
 		"vite": "8.1.4",
