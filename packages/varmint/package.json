@@ -54,7 +54,7 @@
 		"concurrently": "10.0.3",
 		"eslint": "10.7.0",
 		"openai": "6.46.0",
-		"tsdown": "0.22.4",
+		"tsdown": "0.22.5",
 		"vite": "8.1.4",
 		"vitest": "4.1.10",
 		"yalc": "1.0.0-pre.53",
