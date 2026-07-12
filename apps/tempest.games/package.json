@@ -54,7 +54,7 @@
 	},
 	"dependencies": {
 		"@ai-sdk/openai": "4.0.11",
-		"@floating-ui/react": "0.27.19",
+		"@floating-ui/react": "0.27.20",
 		"@js-temporal/polyfill": "0.5.1",
 		"@react-spring/three": "10.1.2",
 		"@react-three/drei": "10.7.7",
