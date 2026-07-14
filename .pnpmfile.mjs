@@ -12,7 +12,7 @@ const isRolldownPluginDts = (packageJson) =>
 
 const needsTypescript6 = (packageJson) =>
 	packageJson.name === "@typescript-eslint/typescript-estree" &&
-	packageJson.version?.startsWith("8.63.") === true &&
+	packageJson.version?.startsWith("8.64.") === true &&
 	packageJson.peerDependencies?.typescript !== undefined
 
 const needsTypescript6Fallback = (packageJson) =>
