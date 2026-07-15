@@ -47,8 +47,8 @@ importers:
         specifier: 8.64.0
         version: 8.64.0(eslint@10.7.0(jiti@2.7.0))(typescript@7.0.2)
       atom.io:
-        specifier: 0.49.9
-        version: 0.49.9(@floating-ui/react-dom@2.1.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@floating-ui/react@0.27.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@typescript-eslint/parser@8.64.0(eslint@10.7.0(jiti@2.7.0))(typescript@7.0.2))(eslint@10.7.0(jiti@2.7.0))(happy-dom@20.10.6)(motion@12.42.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(socket.io-client@4.8.3)(socket.io@4.8.3)
+        specifier: 0.49.10
+        version: 0.49.10(@floating-ui/react-dom@2.1.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@floating-ui/react@0.27.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@typescript-eslint/parser@8.64.0(eslint@10.7.0(jiti@2.7.0))(typescript@7.0.2))(eslint@10.7.0(jiti@2.7.0))(happy-dom@20.10.6)(motion@12.42.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(socket.io-client@4.8.3)(socket.io@4.8.3)
       cross-env:
         specifier: 10.1.0
         version: 10.1.0
@@ -131,8 +131,8 @@ importers:
         specifier: 2.2.3
         version: 2.2.3
       atom.io:
-        specifier: 0.49.9
-        version: 0.49.9(@floating-ui/react-dom@2.1.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@floating-ui/react@0.27.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@typescript-eslint/parser@8.64.0(eslint@10.7.0(jiti@2.7.0))(typescript@7.0.2))(eslint@10.7.0(jiti@2.7.0))(happy-dom@20.10.6)(motion@12.42.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(socket.io-client@4.8.3)(socket.io@4.8.3)
+        specifier: 0.49.10
+        version: 0.49.10(@floating-ui/react-dom@2.1.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@floating-ui/react@0.27.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@typescript-eslint/parser@8.64.0(eslint@10.7.0(jiti@2.7.0))(typescript@7.0.2))(eslint@10.7.0(jiti@2.7.0))(happy-dom@20.10.6)(motion@12.42.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(socket.io-client@4.8.3)(socket.io@4.8.3)
       cron:
         specifier: 4.4.0
         version: 4.4.0
@@ -240,8 +240,8 @@ importers:
   packages/anvl:
     dependencies:
       atom.io:
-        specifier: 0.49.9
-        version: 0.49.9(@floating-ui/react-dom@2.1.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@floating-ui/react@0.27.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@typescript-eslint/parser@8.64.0(eslint@10.7.0(jiti@2.7.0))(typescript@7.0.2))(eslint@10.7.0(jiti@2.7.0))(happy-dom@20.10.6)(motion@12.42.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(socket.io-client@4.8.3)(socket.io@4.8.3)
+        specifier: 0.49.10
+        version: 0.49.10(@floating-ui/react-dom@2.1.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@floating-ui/react@0.27.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@typescript-eslint/parser@8.64.0(eslint@10.7.0(jiti@2.7.0))(typescript@7.0.2))(eslint@10.7.0(jiti@2.7.0))(happy-dom@20.10.6)(motion@12.42.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(socket.io-client@4.8.3)(socket.io@4.8.3)
     devDependencies:
       concurrently:
         specifier: 10.0.3
@@ -345,8 +345,8 @@ importers:
         specifier: 2.2.3
         version: 2.2.3
       atom.io:
-        specifier: 0.49.9
-        version: 0.49.9(@floating-ui/react-dom@2.1.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@floating-ui/react@0.27.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@typescript-eslint/parser@8.64.0(eslint@10.7.0(jiti@2.7.0))(typescript@7.0.2))(eslint@10.7.0(jiti@2.7.0))(happy-dom@20.10.6)(motion@12.42.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(socket.io-client@4.8.3)(socket.io@4.8.3)
+        specifier: 0.49.10
+        version: 0.49.10(@floating-ui/react-dom@2.1.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@floating-ui/react@0.27.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@typescript-eslint/parser@8.64.0(eslint@10.7.0(jiti@2.7.0))(typescript@7.0.2))(eslint@10.7.0(jiti@2.7.0))(happy-dom@20.10.6)(motion@12.42.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(socket.io-client@4.8.3)(socket.io@4.8.3)
       comline:
         specifier: workspace:*
         version: link:../comline
@@ -437,8 +437,8 @@ importers:
         specifier: 6.0.3
         version: 6.0.3(vite@8.1.4(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.1))
       atom.io:
-        specifier: 0.49.9
-        version: 0.49.9(@floating-ui/react-dom@2.1.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@floating-ui/react@0.27.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@typescript-eslint/parser@8.64.0(eslint@10.7.0(jiti@2.7.0))(typescript@7.0.2))(eslint@10.7.0(jiti@2.7.0))(happy-dom@20.10.6)(motion@12.42.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(socket.io-client@4.8.3)(socket.io@4.8.3)
+        specifier: 0.49.10
+        version: 0.49.10(@floating-ui/react-dom@2.1.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@floating-ui/react@0.27.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@typescript-eslint/parser@8.64.0(eslint@10.7.0(jiti@2.7.0))(typescript@7.0.2))(eslint@10.7.0(jiti@2.7.0))(happy-dom@20.10.6)(motion@12.42.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(socket.io-client@4.8.3)(socket.io@4.8.3)
       concurrently:
         specifier: 10.0.3
         version: 10.0.3
@@ -485,8 +485,8 @@ importers:
         specifier: workspace:*
         version: link:../anvl
       atom.io:
-        specifier: 0.49.9
-        version: 0.49.9(@floating-ui/react-dom@2.1.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@floating-ui/react@0.27.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@typescript-eslint/parser@8.64.0(eslint@10.7.0(jiti@2.7.0))(typescript@7.0.2))(eslint@10.7.0(jiti@2.7.0))(happy-dom@20.10.6)(motion@12.42.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(socket.io-client@4.8.3)(socket.io@4.8.3)
+        specifier: 0.49.10
+        version: 0.49.10(@floating-ui/react-dom@2.1.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@floating-ui/react@0.27.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@typescript-eslint/parser@8.64.0(eslint@10.7.0(jiti@2.7.0))(typescript@7.0.2))(eslint@10.7.0(jiti@2.7.0))(happy-dom@20.10.6)(motion@12.42.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(socket.io-client@4.8.3)(socket.io@4.8.3)
       fp-ts:
         specifier: 2.16.11
         version: 2.16.11
@@ -589,8 +589,8 @@ importers:
   packages/rel8:
     dependencies:
       atom.io:
-        specifier: 0.49.9
-        version: 0.49.9(@floating-ui/react-dom@2.1.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@floating-ui/react@0.27.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@typescript-eslint/parser@8.64.0(eslint@10.7.0(jiti@2.7.0))(typescript@7.0.2))(eslint@10.7.0(jiti@2.7.0))(happy-dom@20.10.6)(motion@12.42.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(socket.io-client@4.8.3)(socket.io@4.8.3)
+        specifier: 0.49.10
+        version: 0.49.10(@floating-ui/react-dom@2.1.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@floating-ui/react@0.27.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@typescript-eslint/parser@8.64.0(eslint@10.7.0(jiti@2.7.0))(typescript@7.0.2))(eslint@10.7.0(jiti@2.7.0))(happy-dom@20.10.6)(motion@12.42.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(socket.io-client@4.8.3)(socket.io@4.8.3)
     devDependencies:
       concurrently:
         specifier: 10.0.3
@@ -745,8 +745,8 @@ importers:
         specifier: 25.9.5
         version: 25.9.5
       atom.io:
-        specifier: 0.49.9
-        version: 0.49.9(@floating-ui/react-dom@2.1.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@floating-ui/react@0.27.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@typescript-eslint/parser@8.64.0(eslint@10.7.0(jiti@2.7.0))(typescript@7.0.2))(eslint@10.7.0(jiti@2.7.0))(happy-dom@20.10.6)(motion@12.42.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(socket.io-client@4.8.3)(socket.io@4.8.3)
+        specifier: 0.49.10
+        version: 0.49.10(@floating-ui/react-dom@2.1.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@floating-ui/react@0.27.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@typescript-eslint/parser@8.64.0(eslint@10.7.0(jiti@2.7.0))(typescript@7.0.2))(eslint@10.7.0(jiti@2.7.0))(happy-dom@20.10.6)(motion@12.42.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(socket.io-client@4.8.3)(socket.io@4.8.3)
       concurrently:
         specifier: 10.0.3
         version: 10.0.3
@@ -3212,8 +3212,8 @@ packages:
   ast-v8-to-istanbul@1.0.0:
     resolution: {integrity: sha512-1fSfIwuDICFA4LKkCzRPO7F0hzFf0B7+Xqrl27ynQaa+Rh0e1Es0v6kWHPott3lU10AyAr7oKHa65OppjLn3Rg==}
 
-  atom.io@0.49.9:
-    resolution: {integrity: sha512-UW5YH7/KFP9HJa9DjH1F2FLpKqTfVSfB0/E1yFsElFLmZwzQetbPCULtfFgiryWIFZ9IxrEASXq+pNZVI6ovdQ==}
+  atom.io@0.49.10:
+    resolution: {integrity: sha512-jb2gScUVO2uFmnsfINJao0btsMDhejTjr8s3lCXx/cCi+cetWZudC24yI9KJ7GBCTZpB9UMY7yxNMSguCjxiAg==}
     peerDependencies:
       '@floating-ui/react': '>=0.25.0'
       '@floating-ui/react-dom': '>=2.0.0'
@@ -7406,7 +7406,7 @@ snapshots:
       estree-walker: 3.0.3
       js-tokens: 10.0.0
 
-  atom.io@0.49.9(@floating-ui/react-dom@2.1.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@floating-ui/react@0.27.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@typescript-eslint/parser@8.64.0(eslint@10.7.0(jiti@2.7.0))(typescript@7.0.2))(eslint@10.7.0(jiti@2.7.0))(happy-dom@20.10.6)(motion@12.42.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(socket.io-client@4.8.3)(socket.io@4.8.3):
+  atom.io@0.49.10(@floating-ui/react-dom@2.1.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@floating-ui/react@0.27.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(@typescript-eslint/parser@8.64.0(eslint@10.7.0(jiti@2.7.0))(typescript@7.0.2))(eslint@10.7.0(jiti@2.7.0))(happy-dom@20.10.6)(motion@12.42.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7))(react@19.2.7)(socket.io-client@4.8.3)(socket.io@4.8.3):
     optionalDependencies:
       '@floating-ui/react': 0.27.20(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@floating-ui/react-dom': 2.1.9(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
