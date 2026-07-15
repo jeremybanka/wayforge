@@ -69,7 +69,7 @@ export class Escalator<
 	S extends EscalatorStyle,
 	L extends Laws<any, any, any, any>,
 	P extends PermissionData<L, any>,
-	D extends P extends PermissionData<L, infer d> ? d : never,
+	D extends (P extends PermissionData<L, infer d> ? d : never),
 	F,
 > {
 	public readonly style: S
