@@ -20,8 +20,8 @@ importers:
         specifier: 3.1.4
         version: 3.1.4
       '@dotenvx/dotenvx':
-        specifier: 2.11.1
-        version: 2.11.1
+        specifier: 2.11.2
+        version: 2.11.2
       '@dprint/json':
         specifier: 0.23.0
         version: 0.23.0
@@ -1024,12 +1024,12 @@ packages:
   '@dimforge/rapier3d-compat@0.12.0':
     resolution: {integrity: sha512-uekIGetywIgopfD97oDL5PfeezkFpNhwlzlaEYNOA0N6ghdsOvh/HYjSMek5Q2O1PYvRSDFcqFVJl4r4ZBwOow==}
 
-  '@dotenvx/dotenvx@2.11.1':
-    resolution: {integrity: sha512-9GjzU+kiJnQitTghYkq5tQVBm+R2Oi8GglSZ9Te4OTJMAP7aTLe9zVtPEYCzSsGMM3/VjMoJbp7WhMo3WD5GqA==}
+  '@dotenvx/dotenvx@2.11.2':
+    resolution: {integrity: sha512-K9uQguj9gyLDUy2QNRRtAgIdqLq54Y4KMqeUujvs6IJaKYdEmVlthqZNXPINw/+JzP0pXtaVMsEFFNV27B41bw==}
     hasBin: true
 
-  '@dotenvx/primitives@1.8.1':
-    resolution: {integrity: sha512-xcEkhZDDA9E/ElU27Ft6ZaBBZN4EkXDmD0H4kZB7CcEMfQr43P6RMb7AMU6xYvqLyg2zT8rb0lEuaE8gUlUEiw==}
+  '@dotenvx/primitives@1.10.0':
+    resolution: {integrity: sha512-QhA2HUFiL7FJTUklspNRt2B/hVoBaQGt4tkWuOTI/NMLuohNOG9CR8wVOhVQyJPBIQMK/HhdmUklRjDKzhS7Nw==}
 
   '@dotenvx/tooling@1.0.2':
     resolution: {integrity: sha512-yf4VwIZUzSqlLy2pe0kH2xk6dME73oYW5XqcHE7M1zA1H0RX/dSUThsSRmpCjp622iW9f6VGQl5Aa6szt5Xc0w==}
@@ -5916,13 +5916,13 @@ snapshots:
 
   '@dimforge/rapier3d-compat@0.12.0': {}
 
-  '@dotenvx/dotenvx@2.11.1':
+  '@dotenvx/dotenvx@2.11.2':
     dependencies:
-      '@dotenvx/primitives': 1.8.1
+      '@dotenvx/primitives': 1.10.0
       '@dotenvx/tooling': 1.0.2
       yocto-spinner: 1.2.1
 
-  '@dotenvx/primitives@1.8.1': {}
+  '@dotenvx/primitives@1.10.0': {}
 
   '@dotenvx/tooling@1.0.2': {}
 
