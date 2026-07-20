@@ -250,8 +250,8 @@ importers:
         specifier: 10.7.0
         version: 10.7.0(jiti@2.7.0)(supports-color@10.2.2)
       tsdown:
-        specifier: 0.22.11
-        version: 0.22.11(@tsdown/css@0.22.11)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
+        specifier: 0.22.12
+        version: 0.22.12(@tsdown/css@0.22.12)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -290,8 +290,8 @@ importers:
         specifier: 10.7.0
         version: 10.7.0(jiti@2.7.0)(supports-color@10.2.2)
       tsdown:
-        specifier: 0.22.11
-        version: 0.22.11(@tsdown/css@0.22.11)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
+        specifier: 0.22.12
+        version: 0.22.12(@tsdown/css@0.22.12)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -321,8 +321,8 @@ importers:
         specifier: 10.7.0
         version: 10.7.0(jiti@2.7.0)(supports-color@10.2.2)
       tsdown:
-        specifier: 0.22.11
-        version: 0.22.11(@tsdown/css@0.22.11)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
+        specifier: 0.22.12
+        version: 0.22.12(@tsdown/css@0.22.12)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -379,8 +379,8 @@ importers:
         specifier: 2.8.1
         version: 2.8.1
       tsdown:
-        specifier: 0.22.11
-        version: 0.22.11(@tsdown/css@0.22.11)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
+        specifier: 0.22.12
+        version: 0.22.12(@tsdown/css@0.22.12)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -425,8 +425,8 @@ importers:
         specifier: 16.3.2
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@tsdown/css':
-        specifier: 0.22.11
-        version: 0.22.11(jiti@2.7.0)(postcss@8.5.19)(tsdown@0.22.11)(tsx@4.22.1)
+        specifier: 0.22.12
+        version: 0.22.12(jiti@2.7.0)(postcss@8.5.19)(tsdown@0.22.12)(tsx@4.22.1)
       '@types/jsdom':
         specifier: 28.0.3
         version: 28.0.3
@@ -467,8 +467,8 @@ importers:
         specifier: workspace:*
         version: link:../takua
       tsdown:
-        specifier: 0.22.11
-        version: 0.22.11(@tsdown/css@0.22.11)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
+        specifier: 0.22.12
+        version: 0.22.12(@tsdown/css@0.22.12)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -504,8 +504,8 @@ importers:
         specifier: 10.7.0
         version: 10.7.0(jiti@2.7.0)(supports-color@10.2.2)
       tsdown:
-        specifier: 0.22.11
-        version: 0.22.11(@tsdown/css@0.22.11)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
+        specifier: 0.22.12
+        version: 0.22.12(@tsdown/css@0.22.12)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -529,8 +529,8 @@ importers:
         specifier: 10.7.0
         version: 10.7.0(jiti@2.7.0)(supports-color@10.2.2)
       tsdown:
-        specifier: 0.22.11
-        version: 0.22.11(@tsdown/css@0.22.11)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
+        specifier: 0.22.12
+        version: 0.22.12(@tsdown/css@0.22.12)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -553,8 +553,8 @@ importers:
         specifier: 10.7.0
         version: 10.7.0(jiti@2.7.0)(supports-color@10.2.2)
       tsdown:
-        specifier: 0.22.11
-        version: 0.22.11(@tsdown/css@0.22.11)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
+        specifier: 0.22.12
+        version: 0.22.12(@tsdown/css@0.22.12)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -574,8 +574,8 @@ importers:
         specifier: 10.7.0
         version: 10.7.0(jiti@2.7.0)(supports-color@10.2.2)
       tsdown:
-        specifier: 0.22.11
-        version: 0.22.11(@tsdown/css@0.22.11)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
+        specifier: 0.22.12
+        version: 0.22.12(@tsdown/css@0.22.12)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -602,8 +602,8 @@ importers:
         specifier: 2.16.11
         version: 2.16.11
       tsdown:
-        specifier: 0.22.11
-        version: 0.22.11(@tsdown/css@0.22.11)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
+        specifier: 0.22.12
+        version: 0.22.12(@tsdown/css@0.22.12)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -626,8 +626,8 @@ importers:
         specifier: 10.7.0
         version: 10.7.0(jiti@2.7.0)(supports-color@10.2.2)
       tsdown:
-        specifier: 0.22.11
-        version: 0.22.11(@tsdown/css@0.22.11)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
+        specifier: 0.22.12
+        version: 0.22.12(@tsdown/css@0.22.12)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -647,8 +647,8 @@ importers:
         specifier: 10.7.0
         version: 10.7.0(jiti@2.7.0)(supports-color@10.2.2)
       tsdown:
-        specifier: 0.22.11
-        version: 0.22.11(@tsdown/css@0.22.11)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
+        specifier: 0.22.12
+        version: 0.22.12(@tsdown/css@0.22.12)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -677,8 +677,8 @@ importers:
         specifier: 0.1.16
         version: 0.1.16(supports-color@10.2.2)(typescript@7.0.2)(zod@4.4.3)
       tsdown:
-        specifier: 0.22.11
-        version: 0.22.11(@tsdown/css@0.22.11)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
+        specifier: 0.22.12
+        version: 0.22.12(@tsdown/css@0.22.12)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -711,8 +711,8 @@ importers:
         specifier: 19.2.7
         version: 19.2.7
       tsdown:
-        specifier: 0.22.11
-        version: 0.22.11(@tsdown/css@0.22.11)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@6.0.3)
+        specifier: 0.22.12
+        version: 0.22.12(@tsdown/css@0.22.12)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@6.0.3)
       typescript:
         specifier: 6.0.3
         version: 6.0.3
@@ -757,8 +757,8 @@ importers:
         specifier: 6.48.0
         version: 6.48.0(ws@8.21.0)(zod@4.4.3)
       tsdown:
-        specifier: 0.22.11
-        version: 0.22.11(@tsdown/css@0.22.11)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
+        specifier: 0.22.12
+        version: 0.22.12(@tsdown/css@0.22.12)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -793,8 +793,8 @@ importers:
         specifier: 0.1.16
         version: 0.1.16(supports-color@10.2.2)(typescript@7.0.2)(zod@4.4.3)
       tsdown:
-        specifier: 0.22.11
-        version: 0.22.11(@tsdown/css@0.22.11)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
+        specifier: 0.22.12
+        version: 0.22.12(@tsdown/css@0.22.12)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -2598,8 +2598,8 @@ packages:
     peerDependencies:
       typescript: '>=5.7.2'
 
-  '@tsdown/css@0.22.11':
-    resolution: {integrity: sha512-YpDperLeI96/84Mq4YBiy/WA+Q+ZQCRaTfG7rchE2k7njnihCfQdKiFnS5GDlkR8ZZmKM+6MBJYUx5mychVXUA==}
+  '@tsdown/css@0.22.12':
+    resolution: {integrity: sha512-y7UMif5Fi96wZ8h9nRUIfxicLdmpIFl89CZNRi3suvyZCfBfPN9zQgUAUjtDK5yYKlGJlJM81LYf/XNLJ0mxWA==}
     engines: {node: ^22.18.0 || >=24.11.0}
     peerDependencies:
       postcss: ^8.4.0
@@ -2607,7 +2607,7 @@ packages:
       postcss-modules: ^6.0.0
       sass: '*'
       sass-embedded: '*'
-      tsdown: 0.22.11
+      tsdown: 0.22.12
     peerDependenciesMeta:
       postcss:
         optional: true
@@ -5208,14 +5208,14 @@ packages:
     resolution: {integrity: sha512-NoZ4roiN7LnbKn9QqE1amc9DJfzvZXxF4xDavcOWt1BPkdx+m+0gJuPM+S0vCe7zTJMYUP0R8pO2XMr+Y8oLIg==}
     engines: {node: '>=6'}
 
-  tsdown@0.22.11:
-    resolution: {integrity: sha512-BERdQpqAltv3vYGC0pE4n+mRGPIN91T/on+Ud73bYRkbptknelFm27tJgBBUz4RJ5d3VNeVH90HfjBo1Ouj8yQ==}
+  tsdown@0.22.12:
+    resolution: {integrity: sha512-IzGRfGwSsufXJWOcQ0tmECKMG/dbxhUwDOySTS7JE1AM8pkB9+bpcTPs8bTxxSNrSvGocSczrBlOh97tZObq9Q==}
     engines: {node: ^22.18.0 || >=24.11.0}
     hasBin: true
     peerDependencies:
       '@arethetypeswrong/core': ^0.18.1
-      '@tsdown/css': 0.22.11
-      '@tsdown/exe': 0.22.11
+      '@tsdown/css': 0.22.12
+      '@tsdown/exe': 0.22.12
       '@vitejs/devtools': '*'
       publint: ^0.3.8
       tsx: '*'
@@ -5351,6 +5351,10 @@ packages:
   vary@1.1.2:
     resolution: {integrity: sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==}
     engines: {node: '>= 0.8'}
+
+  verkit@0.1.1:
+    resolution: {integrity: sha512-cZkglQpdcADQLTV88UEB8ogySmvby1H//AIbq8Se5BzUKYR8Jc6C05c1ABYgjyHkOakUG/GYmgUJdGktjMnxzw==}
+    engines: {node: ^22.18.0 || >=24.11.0}
 
   vite-plugin-dts@5.0.3:
     resolution: {integrity: sha512-gIth6NdCEHWPiiRMCK3N6C8WjvdsrtEQrmsiG8h6Ov+lFP+b07Y+wcs9H0H7n146l0PDTYK4cQN1vgeG1pMdRQ==}
@@ -7000,12 +7004,12 @@ snapshots:
     dependencies:
       typescript: 7.0.2
 
-  '@tsdown/css@0.22.11(jiti@2.7.0)(postcss@8.5.19)(tsdown@0.22.11)(tsx@4.22.1)':
+  '@tsdown/css@0.22.12(jiti@2.7.0)(postcss@8.5.19)(tsdown@0.22.12)(tsx@4.22.1)':
     dependencies:
       lightningcss: 1.32.0
       postcss-load-config: 6.0.1(jiti@2.7.0)(postcss@8.5.19)(tsx@4.22.1)
       rolldown: 1.2.0
-      tsdown: 0.22.11(@tsdown/css@0.22.11)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
+      tsdown: 0.22.12(@tsdown/css@0.22.12)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2)
     optionalDependencies:
       postcss: 8.5.19
     transitivePeerDependencies:
@@ -9392,7 +9396,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tsdown@0.22.11(@tsdown/css@0.22.11)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@6.0.3):
+  tsdown@0.22.12(@tsdown/css@0.22.12)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@6.0.3):
     dependencies:
       ansis: 4.3.1
       cac: 7.0.0
@@ -9404,13 +9408,13 @@ snapshots:
       picomatch: 4.0.5
       rolldown: 1.2.0
       rolldown-plugin-dts: 0.27.12(@volar/typescript@2.4.28)(rolldown@1.2.0)(typescript@6.0.3)
-      semver: 7.8.5
       tinyexec: 1.2.4
       tinyglobby: 0.2.17
       tree-kill: 1.2.2
       unconfig-core: 7.5.0
+      verkit: 0.1.1
     optionalDependencies:
-      '@tsdown/css': 0.22.11(jiti@2.7.0)(postcss@8.5.19)(tsdown@0.22.11)(tsx@4.22.1)
+      '@tsdown/css': 0.22.12(jiti@2.7.0)(postcss@8.5.19)(tsdown@0.22.12)(tsx@4.22.1)
       tsx: 4.22.1
       typescript: 6.0.3
     transitivePeerDependencies:
@@ -9418,7 +9422,7 @@ snapshots:
       - oxc-resolver
       - vue-tsc
 
-  tsdown@0.22.11(@tsdown/css@0.22.11)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2):
+  tsdown@0.22.12(@tsdown/css@0.22.12)(@volar/typescript@2.4.28)(tsx@4.22.1)(typescript@7.0.2):
     dependencies:
       ansis: 4.3.1
       cac: 7.0.0
@@ -9430,13 +9434,13 @@ snapshots:
       picomatch: 4.0.5
       rolldown: 1.2.0
       rolldown-plugin-dts: 0.27.12(@volar/typescript@2.4.28)(rolldown@1.2.0)(typescript@7.0.2)
-      semver: 7.8.5
       tinyexec: 1.2.4
       tinyglobby: 0.2.17
       tree-kill: 1.2.2
       unconfig-core: 7.5.0
+      verkit: 0.1.1
     optionalDependencies:
-      '@tsdown/css': 0.22.11(jiti@2.7.0)(postcss@8.5.19)(tsdown@0.22.11)(tsx@4.22.1)
+      '@tsdown/css': 0.22.12(jiti@2.7.0)(postcss@8.5.19)(tsdown@0.22.12)(tsx@4.22.1)
       tsx: 4.22.1
       typescript: 7.0.2
     transitivePeerDependencies:
@@ -9580,6 +9584,8 @@ snapshots:
   utility-types@3.11.0: {}
 
   vary@1.1.2: {}
+
+  verkit@0.1.1: {}
 
   vite-plugin-dts@5.0.3(esbuild@0.28.1)(rolldown@1.2.0)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.1.5(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.1)):
     dependencies:
