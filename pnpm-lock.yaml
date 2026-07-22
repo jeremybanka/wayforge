@@ -125,8 +125,8 @@ importers:
         specifier: 11.18.0
         version: 11.18.0(typescript@7.0.2)
       ai:
-        specifier: 7.0.33
-        version: 7.0.33(zod@4.4.3)
+        specifier: 7.0.34
+        version: 7.0.34(zod@4.4.3)
       arktype:
         specifier: 2.2.3
         version: 2.2.3
@@ -810,8 +810,8 @@ packages:
   '@adobe/css-tools@4.4.4':
     resolution: {integrity: sha512-Elp+iwUx5rN5+Y8xLt5/GRoG20WGoDCQ/1Fb+1LiGtvwbDavuSk0jhD/eZdckHAuzcDzccnkv+rEjyWfRx18gg==}
 
-  '@ai-sdk/gateway@4.0.25':
-    resolution: {integrity: sha512-HhRLsdmvOCbFK7kJ1NdaE9f3ce2IYZlaAsTYXI7IMFj9G66BaXbR6d4zraulJPGqCbZ6TEltaSSLG9GFQH8Xdg==}
+  '@ai-sdk/gateway@4.0.26':
+    resolution: {integrity: sha512-b/nc3COKtk8IxzgcCi418IoZFky/Bw+Jg8+J0/SBBnu/mOXA4bkIKCu81coEtJAWuH2g5Fvvsa0ar7EpmzNWTw==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -3239,8 +3239,8 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  ai@7.0.33:
-    resolution: {integrity: sha512-31X29OiXn7OBUcar1RRf1q75FirvGXCL/xL3VykeLG+Lp3AcZkeG0tthO6hvNM/jZo3h/0g32fhgHVYekiBAZQ==}
+  ai@7.0.34:
+    resolution: {integrity: sha512-jDqclWYqPGFKcUG4CQiKcBiwi5XqVMqvYy6eJdujVpvE1SDoB6j7RtjrGYz3Bn5B1dzTj1StAlrOebY//WK9/Q==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -5635,7 +5635,7 @@ snapshots:
 
   '@adobe/css-tools@4.4.4': {}
 
-  '@ai-sdk/gateway@4.0.25(zod@4.4.3)':
+  '@ai-sdk/gateway@4.0.26(zod@4.4.3)':
     dependencies:
       '@ai-sdk/provider': 4.0.3
       '@ai-sdk/provider-utils': 5.0.12(zod@4.4.3)
@@ -7507,9 +7507,9 @@ snapshots:
 
   acorn@8.16.0: {}
 
-  ai@7.0.33(zod@4.4.3):
+  ai@7.0.34(zod@4.4.3):
     dependencies:
-      '@ai-sdk/gateway': 4.0.25(zod@4.4.3)
+      '@ai-sdk/gateway': 4.0.26(zod@4.4.3)
       '@ai-sdk/provider': 4.0.3
       '@ai-sdk/provider-utils': 5.0.12(zod@4.4.3)
       zod: 4.4.3
