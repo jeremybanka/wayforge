@@ -22,6 +22,7 @@
 		"varmint": "bin/varmint.bin.js"
 	},
 	"files": [
+		"AGENTS.md",
 		"dist",
 		"src",
 		"CHANGELOG.md"
