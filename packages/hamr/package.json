@@ -55,7 +55,7 @@
 		"@types/jsdom": "28.0.3",
 		"@types/react": "19.2.17",
 		"typescript": "7.0.2",
-		"@vitejs/plugin-react": "6.0.3",
+		"@vitejs/plugin-react": "6.0.4",
 		"atom.io": "0.50.1",
 		"concurrently": "10.0.3",
 		"eslint": "10.7.0",
