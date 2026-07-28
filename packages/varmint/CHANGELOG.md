@@ -1,5 +1,11 @@
 # varmint
 
+## 0.5.19
+
+### Patch Changes
+
+- 97fc3dd: Ship an AGENTS.md guide with the package.
+
 ## 0.5.18
 
 ### Patch Changes
