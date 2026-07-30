@@ -5,7 +5,7 @@ import type { Dirent } from "node:fs"
 import fs from "node:fs/promises"
 import path from "node:path"
 
-type CommandResult = {
+export type CommandResult = {
 	exitCode: number | null
 	stderr: string
 	stdout: string
@@ -63,7 +63,7 @@ type PackageGraph = {
 	workspacePackagesByName: Map<string, WorkspacePackage>
 }
 
-type AuditIssue = {
+export type AuditIssue = {
 	affectedTopPackages: Set<string>
 	auditPaths: Set<string>
 	id: string
@@ -92,11 +92,12 @@ type PathSummary = {
 	topPackageSegment: string | null
 }
 
-type RemediationProbe = {
+export type RemediationProbe = {
 	affectedVersions: string[]
+	error: string | null
 	latestVersion: string | null
 	packageName: string
-	safe: boolean
+	safe: boolean | null
 }
 
 type RemediationLadder = {
@@ -191,6 +192,11 @@ async function main(): Promise<void> {
 
 	const publishedGraph = await readPackageGraph(testbedPath, [])
 	const currentGraph = await readPackageGraph(workspaceRoot, workspacePackages)
+	const probeRoot = remediationProbeRoot(testbedPath)
+	if (debug.enabled) {
+		await fs.rm(probeRoot, { force: true, recursive: true })
+		await fs.mkdir(probeRoot, { recursive: true })
+	}
 	const probeCache = new Map<string, Promise<RemediationProbe>>()
 	const probePackage = (packageName: string, issue: AuditIssue) =>
 		probeLatestPackageRemediation({
@@ -198,7 +204,7 @@ async function main(): Promise<void> {
 			packageManager: rootPackageJson.packageManager,
 			packageName,
 			probeCache,
-			probeRoot: path.join(testbedPath, `.vigilance-remediation-probes`),
+			probeRoot,
 		})
 	debug.json(
 		`published npm testbed lockfile summary`,
@@ -693,6 +699,13 @@ function debugPublishedActionCandidates(input: {
 	})
 }
 
+export function remediationProbeRoot(testbedPath: string): string {
+	return path.join(
+		path.dirname(testbedPath),
+		`${path.basename(testbedPath)}-remediation-probes`,
+	)
+}
+
 function collectPublishedActionCandidates(input: {
 	publishedGraph: PackageGraph
 	publishedIssues: AuditIssue[]
@@ -1085,28 +1098,39 @@ async function summarizeRemediationLadders(
 			const packageSegments = pathSegments.slice(1).reverse()
 			const steps: string[] = []
 			let buckStopsAt: string | null = null
+			let probeFailedAt: string | null = null
 
 			for (const packageSegment of packageSegments) {
 				const packageName = stripVersionSuffix(packageSegment)
 				const probe = await probePackage(packageName, issue)
-				const status = probe.safe ? `[safe]` : `[blocked]`
+				const status =
+					probe.safe === null
+						? `[unavailable]`
+						: probe.safe
+							? `[safe]`
+							: `[blocked]`
 				const latestVersion = probe.latestVersion ?? `unknown`
 				const affectedVersions =
 					probe.affectedVersions.length > 0
 						? `; still affected: ${probe.affectedVersions.join(`, `)}`
 						: ``
+				const error = probe.error ? `; probe failed: ${probe.error}` : ``
 				steps.push(
-					`${packageName} ${status} latest ${latestVersion}${affectedVersions}`,
+					`${packageName} ${status} latest ${latestVersion}${affectedVersions}${error}`,
 				)
 
-				if (!probe.safe && !buckStopsAt) {
+				if (probe.safe === false && !buckStopsAt) {
 					buckStopsAt = `${packageName} latest ${latestVersion} still reports ${issue.packageName}`
+				}
+				if (probe.safe === null && !probeFailedAt) {
+					probeFailedAt = `${packageName} remediation probe was unavailable`
 				}
 			}
 
 			return {
 				buckStopsAt:
 					buckStopsAt ??
+					probeFailedAt ??
 					`${topPackage} workspace lockfile still pins a stale dependency edge`,
 				path: pathSummary.path,
 				steps,
@@ -1127,12 +1151,13 @@ async function summarizeRemediationLadders(
 		.sort((left, right) => left.buckStopsAt.localeCompare(right.buckStopsAt))
 }
 
-async function probeLatestPackageRemediation(input: {
+export async function probeLatestPackageRemediation(input: {
 	issue: AuditIssue
 	packageManager: string | undefined
 	packageName: string
 	probeCache: Map<string, Promise<RemediationProbe>>
 	probeRoot: string
+	runProbe?: typeof runLatestPackageProbe
 }): Promise<RemediationProbe> {
 	const cacheKey = `${input.packageName}\0${issueKey(input.issue)}`
 	const cached = input.probeCache.get(cacheKey)
@@ -1140,10 +1165,17 @@ async function probeLatestPackageRemediation(input: {
 		return cached
 	}
 
-	const probe = runLatestPackageProbe(input).catch((error) => {
-		input.probeCache.delete(cacheKey)
-		throw error
-	})
+	const probe = (input.runProbe ?? runLatestPackageProbe)(input).catch(
+		(error): RemediationProbe => ({
+			affectedVersions: [],
+			error: limitDebugText(
+				error instanceof Error ? error.message : String(error),
+			).replaceAll(`\n`, ` | `),
+			latestVersion: null,
+			packageName: input.packageName,
+			safe: null,
+		}),
+	)
 	input.probeCache.set(cacheKey, probe)
 	return probe
 }
@@ -1177,14 +1209,22 @@ async function runLatestPackageProbe(input: {
 		)}\n`,
 	)
 
-	await runCommand(
+	const installResult = await runCommand(
 		`pnpm`,
-		[`install`, `--ignore-scripts`, `--prod`],
+		[
+			`install`,
+			`--ignore-scripts`,
+			`--prod`,
+			`--no-frozen-lockfile`,
+			`--lockfile-dir`,
+			probePath,
+		],
 		probePath,
 		{
 			timeoutMs: 5 * 60_000,
 		},
 	)
+	await assertProbeLockfile(probePath, installResult)
 	const graph = await readPackageGraph(probePath, [])
 	const auditReport = await runAudit(
 		probePath,
@@ -1212,9 +1252,42 @@ async function runLatestPackageProbe(input: {
 
 	return {
 		affectedVersions,
+		error: null,
 		latestVersion: formatVersionSet(latestVersions) || null,
 		packageName: input.packageName,
 		safe: matchingIssues.length === 0,
+	}
+}
+
+export async function assertProbeLockfile(
+	probePath: string,
+	installResult: CommandResult,
+): Promise<void> {
+	const lockfilePath = path.join(probePath, `pnpm-lock.yaml`)
+	if (await pathExists(lockfilePath)) {
+		return
+	}
+
+	throw new Error(
+		[
+			`pnpm install completed without creating ${lockfilePath}.`,
+			installResult.stdout.trim(),
+			installResult.stderr.trim(),
+		]
+			.filter(Boolean)
+			.join(`\n`),
+	)
+}
+
+async function pathExists(filePath: string): Promise<boolean> {
+	try {
+		await fs.access(filePath)
+		return true
+	} catch (error) {
+		if (isNodeError(error) && error.code === `ENOENT`) {
+			return false
+		}
+		throw error
 	}
 }
 
@@ -2388,4 +2461,6 @@ async function runCommand(
 	return result
 }
 
-await main()
+if (import.meta.main) {
+	await main()
+}
