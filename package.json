@@ -47,9 +47,10 @@
 		"@dprint/oxc": "0.32.0",
 		"@dprint/toml": "0.7.0",
 		"@types/eslint": "9.6.1",
-		"@typescript-eslint/eslint-plugin": "8.64.0",
-		"@typescript-eslint/parser": "8.64.0",
-		"@typescript-eslint/utils": "8.64.0",
+		"@typescript/native": "npm:typescript@7.0.2",
+		"@typescript-eslint/eslint-plugin": "8.65.0",
+		"@typescript-eslint/parser": "8.65.0",
+		"@typescript-eslint/utils": "8.65.0",
 		"atom.io": "0.50.1",
 		"cross-env": "10.1.0",
 		"dprint": "0.55.2",
@@ -64,7 +65,7 @@
 		"oxlint-tsgolint": "7.0.2001",
 		"pin-dependencies-checker": "2.7.1",
 		"turbo": "2.10.7",
-		"typescript": "7.0.2",
+		"typescript": "npm:@typescript/typescript6@6.0.2",
 		"vitest": "4.1.10"
 	}
 }
