@@ -86,8 +86,21 @@ export const VARMINT_MODE: CacheMode = process.env[`CI`]
 - Avoid manually editing fixtures in normal use. Their job is to document and
   cache real calls, so regenerate them from the wrapped interaction when the
   underlying behavior changes.
-- Use `flush` after a suite to remove fixture cases that were not touched by the
-  current test run.
+
+## Fixture cleanup and concurrency
+
+- `flush` removes fixture cases that were not touched through the current
+  `Squirrel` or `Ferret` instance. Use it only when the run authoritatively
+  enumerates the entire collection.
+- Do not flush after a filtered or partial test run. Cases omitted by that run
+  would be treated as stale.
+- Instance `flush` only examines collection keys touched by that instance. It
+  does not discover or remove an entirely orphaned collection directory.
+- Do not let concurrent writers or flushers share a mutable fixture directory.
+  Give parallel agents and test processes isolated cache roots. Sharing is safe
+  only when every participant is read-only.
+- Run deliberate recording and cleanup jobs in isolation, and review deletions
+  before committing them.
 
 ## Failure model
 
