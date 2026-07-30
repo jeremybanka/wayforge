@@ -1,6 +1,6 @@
 {
 	"name": "hamr",
-	"version": "4.0.0",
+	"version": "4.0.1",
 	"description": "core react and atom.io utilities for wayforge",
 	"type": "module",
 	"license": "MIT",
