@@ -235,7 +235,9 @@ export class Ferret {
 			},
 			for: (unSafeSubKey: string) => {
 				if (this.mode !== `off`) {
-					this.filesTouched.set(key, new Set())
+					if (!this.filesTouched.has(key)) {
+						this.filesTouched.set(key, new Set())
+					}
 					if (
 						mgr.storage.initialized &&
 						!mgr.storage.getItem(`list${SBS}${listName}`)
