@@ -3,6 +3,8 @@ import * as fs from "node:fs"
 import { tmpdir } from "node:os"
 import path from "node:path"
 
+import { Ferret, Squirrel } from "../src"
+
 let tempDir: string
 const utils = { put: (..._: unknown[]) => undefined }
 
@@ -55,6 +57,61 @@ describe(`flushing with workspace manager`, () => {
 		expect(fs.readdirSync(path.join(tempDir, `myStreamer`))).toEqual([
 			`myAsyncIterable.input.json`,
 			`myAsyncIterable.stream.txt`,
+		])
+	})
+})
+
+describe(`instance flush`, () => {
+	test(`Squirrel preserves every touched case in a collection`, async () => {
+		const squirrel = new Squirrel(`write`, tempDir)
+		const values = squirrel.add(`values`, (value: string) =>
+			Promise.resolve(value),
+		)
+
+		for (const value of [`first`, `second`, `third`]) {
+			await values.for(value).get(value)
+		}
+
+		fs.writeFileSync(path.join(tempDir, `values/stale.input.json`), `[]`)
+		fs.writeFileSync(path.join(tempDir, `values/stale.output.json`), `null`)
+
+		values.flush()
+
+		expect(fs.readdirSync(path.join(tempDir, `values`))).toEqual([
+			`first.input.json`,
+			`first.output.json`,
+			`second.input.json`,
+			`second.output.json`,
+			`third.input.json`,
+			`third.output.json`,
+		])
+	})
+
+	test(`Ferret preserves every touched case in a collection`, async () => {
+		const ferret = new Ferret(`write`, tempDir)
+		const values = ferret.add(`values`, async function* (value: string) {
+			await Promise.resolve()
+			yield value
+		})
+
+		for (const value of [`first`, `second`, `third`]) {
+			for await (const _ of await values.for(value).get(value)) {
+				// Consume the stream so Ferret writes the complete fixture.
+			}
+		}
+
+		fs.writeFileSync(path.join(tempDir, `values/stale.input.json`), `[]`)
+		fs.writeFileSync(path.join(tempDir, `values/stale.stream.txt`), ``)
+
+		values.flush()
+
+		expect(fs.readdirSync(path.join(tempDir, `values`))).toEqual([
+			`first.input.json`,
+			`first.stream.txt`,
+			`second.input.json`,
+			`second.stream.txt`,
+			`third.input.json`,
+			`third.stream.txt`,
 		])
 	})
 })
