@@ -415,7 +415,7 @@ async function prepareTestbed(
 	await fs.rm(testbedPath, { force: true, recursive: true })
 	await fs.mkdir(testbedPath, { recursive: true })
 	const dependencies = Object.fromEntries(
-		publishedPackages.map((pkg) => [pkg.name, `latest`]),
+		publishedPackages.map((pkg) => [pkg.name, pkg.latestPublishedVersion]),
 	)
 	const packageJson = {
 		name: `wayforge-vigilance-testbed`,
