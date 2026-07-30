@@ -1,5 +1,11 @@
 # hamr
 
+## 4.0.1
+
+### Patch Changes
+
+- e217342: Use `react-router` directly for route parameters and exclude versions affected by GHSA-qwww-vcr4-c8h2 from the peer dependency range.
+
 ## 4.0.0
 
 ### Patch Changes
@@ -148,6 +154,7 @@
 ### Minor Changes
 
 - 9fc5472: - React Combo, a combo box that unpack recoil state or work with state/setter props.
+
   - React Elastic Input, an input that expands or contracts to the size of its content.
   - React Error Boundary, a convenient, resettable error boundary with built-in recoil state.
   - React Json Editor, a powerful tool for manipulating arbitrary JSON data.

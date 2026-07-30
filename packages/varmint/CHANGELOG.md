@@ -1,5 +1,12 @@
 # varmint
 
+## 0.5.20
+
+### Patch Changes
+
+- f0bdc18: Preserve every touched fixture case when flushing a collection.
+- f0bdc18: Expand the agent guide with safe recording and fixture-lifecycle practices.
+
 ## 0.5.19
 
 ### Patch Changes

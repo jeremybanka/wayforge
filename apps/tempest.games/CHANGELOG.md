@@ -1,5 +1,13 @@
 # tempest.games
 
+## 0.3.45
+
+### Patch Changes
+
+- Updated dependencies [f0bdc18]
+- Updated dependencies [f0bdc18]
+  - varmint@0.5.20
+
 ## 0.3.44
 
 ### Patch Changes
