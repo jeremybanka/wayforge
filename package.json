@@ -64,7 +64,7 @@
 		"oxlint": "1.76.0",
 		"oxlint-tsgolint": "7.0.2001",
 		"pin-dependencies-checker": "2.7.1",
-		"turbo": "2.10.7",
+		"turbo": "2.10.8",
 		"typescript": "npm:@typescript/typescript6@6.0.2",
 		"vitest": "4.1.10"
 	}
