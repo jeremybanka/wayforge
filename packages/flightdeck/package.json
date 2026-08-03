@@ -1,7 +1,7 @@
 {
 	"name": "flightdeck",
 	"version": "0.4.15",
-	"license": "MIT",
+	"license": "MPL-2.0",
 	"author": {
 		"name": "Jeremy Banka",
 		"email": "hello@jeremybanka.com"

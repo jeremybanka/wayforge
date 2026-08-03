@@ -37,7 +37,7 @@
 		"url": "git+https://github.com/jeremybanka/wayforge.git",
 		"directory": "packages/luum"
 	},
-	"license": "MIT",
+	"license": "MPL-2.0",
 	"author": "Jeremy Banka",
 	"publishConfig": {
 		"access": "public"
