@@ -97,7 +97,7 @@
 		"drizzle-kit": "0.31.10",
 		"eslint": "10.8.0",
 		"flightdeck": "workspace:*",
-		"globals": "17.8.0",
+		"globals": "17.9.0",
 		"typescript": "7.0.2",
 		"vite": "8.2.0",
 		"vitest": "4.1.10"
