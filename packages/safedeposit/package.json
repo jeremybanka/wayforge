@@ -1,7 +1,7 @@
 {
 	"name": "safedeposit",
 	"version": "0.1.2",
-	"license": "MIT",
+	"license": "MPL-2.0",
 	"author": {
 		"name": "Jeremy Banka",
 		"email": "hello@jeremybanka.com"
