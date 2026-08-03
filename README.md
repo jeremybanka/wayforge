@@ -19,3 +19,8 @@
   - convert your typescript project's tsdoc comments to json
 - [comline](https://github.com/jeremybanka/wayforge/tree/main/packages/comline) `npm install comline`
   - keep your CLI's config file consistent with its command line arguments
+
+## License
+
+Except for third-party dependencies, the contents of this repository are
+licensed under the [Mozilla Public License 2.0](LICENSE).

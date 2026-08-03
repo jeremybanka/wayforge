@@ -97,7 +97,7 @@ function ConfirmAccountAction({
 							@2025 Tempest Games, LLC
 							<br />
 							<br />
-							ISC License
+							Mozilla Public License 2.0
 						</Text>
 					</Section>
 				</Container>
