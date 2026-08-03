@@ -43,7 +43,7 @@
 		"url": "git+https://github.com/jeremybanka/wayforge.git",
 		"directory": "packages/ingt"
 	},
-	"license": "MIT",
+	"license": "MPL-2.0",
 	"sideEffects": false,
 	"author": "Jeremy Banka",
 	"publishConfig": {
