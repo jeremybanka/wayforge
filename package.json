@@ -40,7 +40,7 @@
 	},
 	"devDependencies": {
 		"@changesets/cli": "3.0.0",
-		"@changesets/config": "3.1.4",
+		"@changesets/config": "4.0.0",
 		"@dotenvx/dotenvx": "2.21.0",
 		"@dprint/json": "0.23.0",
 		"@dprint/markdown": "0.22.1",
