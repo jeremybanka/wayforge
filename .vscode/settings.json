@@ -29,7 +29,7 @@
 		},
 		{
 			"fileMatch": ["**/.changeset/config.json"],
-			"url": "https://unpkg.com/@changesets/config@3.0.3/schema.json"
+			"url": "https://unpkg.com/@changesets/config@4.0.0/schema.json"
 		}
 	],
 	// EDITOR DISPLAY AND BEHAVIOR ////////////////////////////////////////////////
