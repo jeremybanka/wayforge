@@ -101,8 +101,8 @@ importers:
   apps/tempest.games:
     dependencies:
       '@ai-sdk/openai':
-        specifier: 4.0.37
-        version: 4.0.37(zod@4.4.3)
+        specifier: 4.0.38
+        version: 4.0.38(zod@4.4.3)
       '@floating-ui/react':
         specifier: 0.27.20
         version: 0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -128,8 +128,8 @@ importers:
         specifier: 11.18.0
         version: 11.18.0(typescript@7.0.2)
       ai:
-        specifier: 7.0.59
-        version: 7.0.59(zod@4.4.3)
+        specifier: 7.0.60
+        version: 7.0.60(zod@4.4.3)
       arktype:
         specifier: 2.2.3
         version: 2.2.3
@@ -813,14 +813,14 @@ packages:
   '@adobe/css-tools@4.4.4':
     resolution: {integrity: sha512-Elp+iwUx5rN5+Y8xLt5/GRoG20WGoDCQ/1Fb+1LiGtvwbDavuSk0jhD/eZdckHAuzcDzccnkv+rEjyWfRx18gg==}
 
-  '@ai-sdk/gateway@4.0.47':
-    resolution: {integrity: sha512-BuWWlA8atWEnEJzN4eamCpGZWkoK9V3TCyNaMwgRIazhqkgWkA1Wp36si3j2JeVYzlvlEAOWrJ92dr92j/Vkqg==}
+  '@ai-sdk/gateway@4.0.48':
+    resolution: {integrity: sha512-62yBV2sD8I488UIRsS0mu2axhtd/bt1neyQUpe3N5UbJhAeVbZr0OhA7N/K7COQosLJjkhiO9EfSvddTbZCoLw==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/openai@4.0.37':
-    resolution: {integrity: sha512-rQIdkvqHaqyu94zMJKkhucRwsyTpYUmI+vrH/Dm1Erc6ypURikOV+9e51Pni6RL8IxFlu2bv6y8hA1ghzCy7Gw==}
+  '@ai-sdk/openai@4.0.38':
+    resolution: {integrity: sha512-G9T4lQHA2GCPpUhg2oYZMJMKurpz789KoTY+uW5x04cuTB11letlP9atOAo9zu/i7hBp7x/z11pyyWHa1D7r6Q==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -3272,8 +3272,8 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  ai@7.0.59:
-    resolution: {integrity: sha512-p10cqg8KvLIZi7Gk+XsQjoYoLENoDdEYvehP0rSo6Wg15nbCmP+nwIy1rOIX+WGIDWGdI+jmhjVx5fXShBVC3w==}
+  ai@7.0.60:
+    resolution: {integrity: sha512-b56otp/hSz61+wqDuiadtRRTV+8+bU/+3XDCvl3r66e6jPwuJKc4oe75ltjGfL4NF1dOkLoBaHyinT+jI569ew==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -5557,14 +5557,14 @@ snapshots:
 
   '@adobe/css-tools@4.4.4': {}
 
-  '@ai-sdk/gateway@4.0.47(zod@4.4.3)':
+  '@ai-sdk/gateway@4.0.48(zod@4.4.3)':
     dependencies:
       '@ai-sdk/provider': 4.0.7
       '@ai-sdk/provider-utils': 5.0.26(zod@4.4.3)
       '@vercel/oidc': 3.2.0
       zod: 4.4.3
 
-  '@ai-sdk/openai@4.0.37(zod@4.4.3)':
+  '@ai-sdk/openai@4.0.38(zod@4.4.3)':
     dependencies:
       '@ai-sdk/provider': 4.0.7
       '@ai-sdk/provider-utils': 5.0.26(zod@4.4.3)
@@ -7450,9 +7450,9 @@ snapshots:
 
   acorn@8.16.0: {}
 
-  ai@7.0.59(zod@4.4.3):
+  ai@7.0.60(zod@4.4.3):
     dependencies:
-      '@ai-sdk/gateway': 4.0.47(zod@4.4.3)
+      '@ai-sdk/gateway': 4.0.48(zod@4.4.3)
       '@ai-sdk/provider': 4.0.7
       '@ai-sdk/provider-utils': 5.0.26(zod@4.4.3)
       zod: 4.4.3
