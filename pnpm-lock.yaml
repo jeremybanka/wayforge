@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  rolldown-plugin-dts: 0.28.1
+  rolldown-plugin-dts: 0.28.2
 
 pnpmfileChecksum: sha256-tXaaElV3eUr+Rqj0SbvMXlne983GO3d7JeiltdOTH6Y=
 
@@ -4833,8 +4833,8 @@ packages:
     resolution: {integrity: sha512-g6QUff04oZpHs0eG5p83rFLhHeV00ug/Yf9nZM6fLeUrPguBTkTQOdpAWWspMh55TZfVQDPaN3NQJfbVRAxdIw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
 
-  rolldown-plugin-dts@0.28.1:
-    resolution: {integrity: sha512-/L3joWaepvZehTxe0w+9xoo7xVxgXFb8XBnn8fXsbsliHbYju0CDEhvq6TXFoLn51vNIJergXxMGE480UxUrww==}
+  rolldown-plugin-dts@0.28.2:
+    resolution: {integrity: sha512-U0Ng45ZaESZ7rJtQtgCWkJYCpMgH42yIj3xv9HGAsh/dJ8XBhjI4lcqh4NOWx8+CAxoY2HWg8VYINML2yE9A5A==}
     engines: {node: ^22.18.0 || ^24.11.0 || >=26.0.0}
     peerDependencies:
       '@typescript/native-preview': '*'
@@ -8897,7 +8897,7 @@ snapshots:
 
   reusify@1.1.0: {}
 
-  rolldown-plugin-dts@0.28.1(@volar/typescript@2.4.28(typescript@6.0.3))(rolldown@1.2.0)(typescript@6.0.3):
+  rolldown-plugin-dts@0.28.2(@volar/typescript@2.4.28(typescript@6.0.3))(rolldown@1.2.0)(typescript@6.0.3):
     dependencies:
       dts-resolver: 3.0.0
       get-tsconfig: 5.0.0-beta.5
@@ -8912,7 +8912,7 @@ snapshots:
     transitivePeerDependencies:
       - oxc-resolver
 
-  rolldown-plugin-dts@0.28.1(@volar/typescript@2.4.28(typescript@7.0.2))(rolldown@1.2.0)(typescript@7.0.2):
+  rolldown-plugin-dts@0.28.2(@volar/typescript@2.4.28(typescript@7.0.2))(rolldown@1.2.0)(typescript@7.0.2):
     dependencies:
       dts-resolver: 3.0.0
       get-tsconfig: 5.0.0-beta.5
@@ -9262,7 +9262,7 @@ snapshots:
       obug: 2.1.4
       picomatch: 4.0.5
       rolldown: 1.2.0
-      rolldown-plugin-dts: 0.28.1(@volar/typescript@2.4.28(typescript@6.0.3))(rolldown@1.2.0)(typescript@6.0.3)
+      rolldown-plugin-dts: 0.28.2(@volar/typescript@2.4.28(typescript@6.0.3))(rolldown@1.2.0)(typescript@6.0.3)
       tinyexec: 1.2.4
       tinyglobby: 0.2.17
       tree-kill: 1.2.2
@@ -9289,7 +9289,7 @@ snapshots:
       obug: 2.1.4
       picomatch: 4.0.5
       rolldown: 1.2.0
-      rolldown-plugin-dts: 0.28.1(@volar/typescript@2.4.28(typescript@7.0.2))(rolldown@1.2.0)(typescript@7.0.2)
+      rolldown-plugin-dts: 0.28.2(@volar/typescript@2.4.28(typescript@7.0.2))(rolldown@1.2.0)(typescript@7.0.2)
       tinyexec: 1.2.4
       tinyglobby: 0.2.17
       tree-kill: 1.2.2
