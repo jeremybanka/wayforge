@@ -101,8 +101,8 @@ importers:
   apps/tempest.games:
     dependencies:
       '@ai-sdk/openai':
-        specifier: 4.0.39
-        version: 4.0.39(zod@4.4.3)
+        specifier: 4.0.40
+        version: 4.0.40(zod@4.4.3)
       '@floating-ui/react':
         specifier: 0.27.20
         version: 0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -128,8 +128,8 @@ importers:
         specifier: 11.18.0
         version: 11.18.0(typescript@7.0.2)
       ai:
-        specifier: 7.0.61
-        version: 7.0.61(zod@4.4.3)
+        specifier: 7.0.62
+        version: 7.0.62(zod@4.4.3)
       arktype:
         specifier: 2.2.3
         version: 2.2.3
@@ -819,8 +819,8 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/openai@4.0.39':
-    resolution: {integrity: sha512-+zq3Wg0J11TTKJV0wsPEH9wTAd+gPNNR0bphHuLnp0bqcn9NOsD3gZpW6VEU0yx6qGSW20A23J6i3GLPUUqzCg==}
+  '@ai-sdk/openai@4.0.40':
+    resolution: {integrity: sha512-efidMH4glnomQM8XtAAmL7tn06D1YvBeqXRE0qCEcDamvpEGrROJePxCq+31L5BnuglngWW2ZapddCoshJ0kMA==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -3272,8 +3272,8 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  ai@7.0.61:
-    resolution: {integrity: sha512-WaLRW+JI990nHdenxAUQw4QIuS+q8s7TqRcEjjjhspTy6m1vuMcDGubgOCGYIDWmK3GUJdMlSpas4I84eWaKAg==}
+  ai@7.0.62:
+    resolution: {integrity: sha512-/YiuaaFIUPAiGqzHphnu9NuHQKbToZjlZkKoqGsQx6TFd7CZj6Z3eQUNeK6er1kXb9Ou5hRntRX4dvvE/kHYiQ==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -5564,7 +5564,7 @@ snapshots:
       '@vercel/oidc': 3.2.0
       zod: 4.4.3
 
-  '@ai-sdk/openai@4.0.39(zod@4.4.3)':
+  '@ai-sdk/openai@4.0.40(zod@4.4.3)':
     dependencies:
       '@ai-sdk/provider': 4.0.7
       '@ai-sdk/provider-utils': 5.0.27(zod@4.4.3)
@@ -7450,7 +7450,7 @@ snapshots:
 
   acorn@8.16.0: {}
 
-  ai@7.0.61(zod@4.4.3):
+  ai@7.0.62(zod@4.4.3):
     dependencies:
       '@ai-sdk/gateway': 4.0.49(zod@4.4.3)
       '@ai-sdk/provider': 4.0.7
