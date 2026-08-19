@@ -32,8 +32,8 @@ importers:
         specifier: 0.34.0
         version: 0.34.0
       '@dprint/toml':
-        specifier: 0.7.0
-        version: 0.7.0
+        specifier: 0.8.0
+        version: 0.8.0
       '@types/eslint':
         specifier: 9.6.1
         version: 9.6.1
@@ -1127,8 +1127,8 @@ packages:
   '@dprint/oxc@0.34.0':
     resolution: {integrity: sha512-8/0CreH6JDwQ9ofi69F35TAJ9xm6X7iyj95UuRuH+oSiyJonj4RDYWBb5CwX/MepJ/Rvu65qDxFi+xuG0ghVrw==}
 
-  '@dprint/toml@0.7.0':
-    resolution: {integrity: sha512-eFaQTcfxKHB+YyTh83x7GEv+gDPuj9q5NFOTaoj5rZmQTbj6OgjjMxUicmS1R8zYcx8YAq5oA9J3YFa5U6x2gA==}
+  '@dprint/toml@0.8.0':
+    resolution: {integrity: sha512-7rJeNgy4AnA5NraBd0QG5uRpoaMUyNjWoIYZXx/yolzgc8YQSusTF4t42IDUxsBLhshiMOGI4xnSkLl19Ep8EQ==}
 
   '@dprint/win32-arm64@0.55.2':
     resolution: {integrity: sha512-dxDdxU4a6wQ4K0omdAxW7o0mUdOI03z0/Ah3N6O9Ja7wAMQI5sbfzq7DOJ739UVXtHSB4zBTtYuk1MrBOIyVQQ==}
@@ -5864,7 +5864,7 @@ snapshots:
 
   '@dprint/oxc@0.34.0': {}
 
-  '@dprint/toml@0.7.0': {}
+  '@dprint/toml@0.8.0': {}
 
   '@dprint/win32-arm64@0.55.2':
     optional: true
