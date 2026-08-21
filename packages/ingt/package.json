@@ -31,7 +31,7 @@
 		"concurrently": "10.0.5",
 		"eslint": "10.8.1",
 		"tsdown": "0.22.14",
-		"vite": "8.2.1",
+		"vite": "8.2.2",
 		"vitest": "4.1.11"
 	},
 	"peerDependencies": {
