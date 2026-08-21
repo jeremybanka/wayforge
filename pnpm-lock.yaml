@@ -437,8 +437,8 @@ importers:
         specifier: 19.2.18
         version: 19.2.18
       '@vitejs/plugin-react':
-        specifier: 6.0.5
-        version: 6.0.5(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0))
+        specifier: 6.1.0
+        version: 6.1.0(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0))
       atom.io:
         specifier: 0.52.1
         version: 0.52.1(@floating-ui/react-dom@2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@floating-ui/react@0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.4(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@typescript-eslint/parser@8.67.0(eslint@10.8.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2))(eslint@10.8.1(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.11.6)(motion@13.1.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(socket.io-client@4.8.3(supports-color@10.2.2))(socket.io@4.8.3(supports-color@10.2.2))
@@ -3055,17 +3055,20 @@ packages:
     peerDependencies:
       vite: ^4 || ^5 || ^6 || ^7 || ^8
 
-  '@vitejs/plugin-react@6.0.5':
-    resolution: {integrity: sha512-BOVzne/NL162sMdResB25mUv+vWMF5NoAjNf09TeGlE7ZpszZWSD3winycicLJw72yeVsoCn/2kOhEuCvEShMA==}
+  '@vitejs/plugin-react@6.1.0':
+    resolution: {integrity: sha512-qd2BzUBehkov86WFhg0JkEFEYyCLG9uPCe6qWTY/kRlss9OvJrOF2UbIWT7p+8IzZHkEu0DNGHc4HSv+JdDLsw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       '@rolldown/plugin-babel': ^0.1.7 || ^0.2.0
       babel-plugin-react-compiler: ^1.0.0
+      oxc-transform-react: ^0.145.0
       vite: ^8.0.0
     peerDependenciesMeta:
       '@rolldown/plugin-babel':
         optional: true
       babel-plugin-react-compiler:
+        optional: true
+      oxc-transform-react:
         optional: true
 
   '@vitest/coverage-v8@4.1.11':
@@ -7272,7 +7275,7 @@ snapshots:
     transitivePeerDependencies:
       - '@swc/helpers'
 
-  '@vitejs/plugin-react@6.0.5(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0))':
+  '@vitejs/plugin-react@6.1.0(vite@8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0))':
     dependencies:
       '@rolldown/pluginutils': 1.0.1
       vite: 8.2.1(@types/node@25.9.5)(esbuild@0.28.1)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)
