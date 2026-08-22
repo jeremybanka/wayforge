@@ -1,5 +1,15 @@
 # tempest.games
 
+## 0.3.46
+
+### Patch Changes
+
+- 7b66e63: License all first-party code and assets under the Mozilla Public License 2.0 and include the license notice in published packages.
+- Updated dependencies [7b66e63]
+  - safedeposit@0.1.3
+  - treetrunks@0.1.9
+  - varmint@0.5.21
+
 ## 0.3.45
 
 ### Patch Changes
