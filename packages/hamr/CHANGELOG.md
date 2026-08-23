@@ -1,5 +1,14 @@
 # hamr
 
+## 4.0.2
+
+### Patch Changes
+
+- 7b66e63: License all first-party code and assets under the Mozilla Public License 2.0 and include the license notice in published packages.
+- Updated dependencies [7b66e63]
+  - anvl@0.3.4
+  - luum@0.0.18
+
 ## 4.0.1
 
 ### Patch Changes
