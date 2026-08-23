@@ -1,5 +1,11 @@
 # luum
 
+## 0.0.18
+
+### Patch Changes
+
+- 7b66e63: License all first-party code and assets under the Mozilla Public License 2.0 and include the license notice in published packages.
+
 ## 0.0.17
 
 ### Patch Changes

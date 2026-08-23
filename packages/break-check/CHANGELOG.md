@@ -1,5 +1,14 @@
 # break-check
 
+## 0.6.34
+
+### Patch Changes
+
+- 7b66e63: License all first-party code and assets under the Mozilla Public License 2.0 and include the license notice in published packages.
+- Updated dependencies [7b66e63]
+  - comline@0.5.2
+  - takua@0.2.3
+
 ## 0.6.33
 
 ### Patch Changes

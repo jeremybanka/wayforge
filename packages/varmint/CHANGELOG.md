@@ -1,5 +1,14 @@
 # varmint
 
+## 0.5.21
+
+### Patch Changes
+
+- 7b66e63: License all first-party code and assets under the Mozilla Public License 2.0 and include the license notice in published packages.
+- Updated dependencies [7b66e63]
+  - comline@0.5.2
+  - safedeposit@0.1.3
+
 ## 0.5.20
 
 ### Patch Changes

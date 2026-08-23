@@ -1,5 +1,11 @@
 # tsdoc.json
 
+## 0.6.9
+
+### Patch Changes
+
+- 7b66e63: License all first-party code and assets under the Mozilla Public License 2.0 and include the license notice in published packages.
+
 ## 0.6.8
 
 ### Patch Changes

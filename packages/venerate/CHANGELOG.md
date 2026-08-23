@@ -1,5 +1,11 @@
 # venerate
 
+## 0.0.4
+
+### Patch Changes
+
+- 7b66e63: License all first-party code and assets under the Mozilla Public License 2.0 and include the license notice in published packages.
+
 ## 0.0.3
 
 ### Patch Changes
