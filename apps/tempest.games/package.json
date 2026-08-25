@@ -96,7 +96,7 @@
 		"concurrently": "10.0.5",
 		"cors": "2.8.6",
 		"drizzle-kit": "0.31.10",
-		"eslint": "10.9.0",
+		"eslint": "10.9.1",
 		"flightdeck": "workspace:*",
 		"globals": "17.11.0",
 		"typescript": "7.0.2",
