@@ -58,7 +58,7 @@
 		"@vitejs/plugin-react": "6.1.0",
 		"atom.io": "0.52.1",
 		"concurrently": "10.0.5",
-		"eslint": "10.9.0",
+		"eslint": "10.9.1",
 		"happy-dom": "20.11.6",
 		"jsdom": "30.0.1",
 		"preact": "10.29.8",
