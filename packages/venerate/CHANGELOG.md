@@ -1,5 +1,11 @@
 # venerate
 
+## 0.0.5
+
+### Patch Changes
+
+- 5c9016d: Replace Bundlephobia badges with exact Tonnage bundle-size reports.
+
 ## 0.0.4
 
 ### Patch Changes
