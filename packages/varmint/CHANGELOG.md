@@ -1,5 +1,12 @@
 # varmint
 
+## 0.5.22
+
+### Patch Changes
+
+- 5c9016d: Replace Bundlephobia badges with exact Tonnage bundle-size reports.
+- comline@0.5.3
+
 ## 0.5.21
 
 ### Patch Changes

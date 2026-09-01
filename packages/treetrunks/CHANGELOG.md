@@ -1,5 +1,11 @@
 # treetrunks
 
+## 0.1.10
+
+### Patch Changes
+
+- 5c9016d: Replace Bundlephobia badges with exact Tonnage bundle-size reports.
+
 ## 0.1.9
 
 ### Patch Changes
