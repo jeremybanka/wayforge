@@ -51,7 +51,7 @@
 		"@types/bun": "npm:bun-types@1.4.0",
 		"@types/node": "25.9.5",
 		"typescript": "7.0.2",
-		"atom.io": "0.52.1",
+		"atom.io": "0.52.2",
 		"concurrently": "10.0.5",
 		"eslint": "10.9.1",
 		"openai": "7.8.0",
