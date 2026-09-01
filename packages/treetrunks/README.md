@@ -12,18 +12,26 @@
 		src="https://img.shields.io/badge/dependencies-0-0?style=for-the-badge"
 	>
 </a>
-<a href="https://bundlephobia.com/result?p=treetrunks">
-	<img
-		alt="Bundlephobia"
-		src="https://img.shields.io/bundlephobia/minzip/treetrunks?style=for-the-badge"
-	>
-</a>
 <a aria-label="Coverage" href="https://recoverage.cloud/">
 	<img
 		alt="Coverage"
 		src="https://img.shields.io/endpoint?url=https%3A%2F%2Frecoverage.cloud%2Fshields%2FS1ikz1yFmk93qbAI7lLnu%2Ftreetrunks"
 	>
 </a>
+
+<!-- tonnage:default:start -->
+
+## Bundle size
+
+Public-module rows retain complete runtime export surfaces. Recipe rows bundle their reviewable entry files and tree-shake unused exports. Both report exact minified and level-9 gzip JavaScript byte counts; declarations, source maps, CSS, and other assets are excluded. Peer dependencies stay external, and shared modules are counted once per bundle.
+
+### Public modules (whole export surface)
+
+| Import                  | Minified JS | Gzip JS |
+| ----------------------- | ----------: | ------: |
+| <code>treetrunks</code> |     1,403 B |   713 B |
+
+<!-- tonnage:default:end -->
 
 ```sh
 npm i treetrunks
