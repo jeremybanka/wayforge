@@ -12,20 +12,6 @@
 		src="https://img.shields.io/badge/dependencies-0-0?style=for-the-badge"
 	>
 </a>
-<!-- tonnage:default:start -->
-
-## Bundle size
-
-Public-module rows retain complete runtime export surfaces. Recipe rows bundle their reviewable entry files and tree-shake unused exports. Both report exact minified and level-9 gzip JavaScript byte counts; declarations, source maps, CSS, and other assets are excluded. Peer dependencies stay external, and shared modules are counted once per bundle.
-
-### Public modules (whole export surface)
-
-| Import                | Minified JS | Gzip JS |
-| --------------------- | ----------: | ------: |
-| <code>venerate</code> |     1,318 B |   572 B |
-
-<!-- tonnage:default:end -->
-
 ```sh
 npm i venerate
 ```
@@ -47,3 +33,16 @@ const c = (function* () {
 
 const union = [...V.union(a, b, c)] // [1, 2, 3, 4, 5]
 ```
+
+<!-- tonnage:default:start -->
+
+## Bundle size
+
+Package export sizes include complete runtime export surfaces.
+Sizes are exact minified and level-9 gzip JavaScript byte counts. Declarations, source maps, CSS, and other assets are excluded. Peer dependencies stay external, and shared modules are counted once per bundle.
+
+| Import                | Minified JS | Gzip JS |
+| --------------------- | ----------: | ------: |
+| <code>venerate</code> |     1,318 B |   572 B |
+
+<!-- tonnage:default:end -->
