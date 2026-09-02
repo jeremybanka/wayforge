@@ -21,7 +21,7 @@ Sizes are exact minified and level-9 gzip JavaScript byte counts. Declarations, 
 
 | Import                        | Minified JS |     Gzip JS |
 | ----------------------------- | ----------: | ----------: |
-| <code>tsdoc.json</code>       | 3,755,597 B | 1,066,512 B |
-| <code>tsdoc.json/react</code> |     3,171 B |     1,131 B |
+| <code>tsdoc.json</code>       | 3,755,563 B | 1,066,507 B |
+| <code>tsdoc.json/react</code> |     3,179 B |     1,129 B |
 
 <!-- tonnage:default:end -->
