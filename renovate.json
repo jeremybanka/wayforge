@@ -24,7 +24,7 @@
 	],
 	"packageRules": [
 		{
-			"matchPackageNames": ["@typescript/*"],
+			"matchPackageNames": ["@typescript/*", "atom.io", "recoverage", "tonnage"],
 			"minimumReleaseAge": null
 		},
 		{
