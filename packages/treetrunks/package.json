@@ -1,7 +1,7 @@
 {
 	"name": "treetrunks",
 	"description": "Lean utilities to build type-safe trees and validate routes through them.",
-	"version": "0.1.10",
+	"version": "0.1.11",
 	"license": "MPL-2.0",
 	"author": {
 		"name": "Jeremy Banka",

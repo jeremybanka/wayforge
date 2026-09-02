@@ -1,5 +1,11 @@
 # treetrunks
 
+## 0.1.11
+
+### Patch Changes
+
+- 413ab8f: Configure platform-specific Tonnage measurements, move the existing bundle-size reports to the end of each package README, and enforce report freshness in CI.
+
 ## 0.1.10
 
 ### Patch Changes

@@ -1,5 +1,12 @@
 # varmint
 
+## 0.5.23
+
+### Patch Changes
+
+- 413ab8f: Configure platform-specific Tonnage measurements, move the existing bundle-size reports to the end of each package README, and enforce report freshness in CI.
+- comline@0.5.4
+
 ## 0.5.22
 
 ### Patch Changes
