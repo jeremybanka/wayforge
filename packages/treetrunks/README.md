@@ -25,19 +25,6 @@ npm i treetrunks
 
 Lean utilities to build type-safe trees and validate routes through them.
 
-<!-- tonnage:default:start -->
-
-## Bundle size
-
-Package export sizes include complete runtime export surfaces.
-Sizes are exact minified and level-9 gzip JavaScript byte counts. Declarations, source maps, CSS, and other assets are excluded. Peer dependencies stay external, and shared modules are counted once per bundle.
-
-| Import                  | Minified JS | Gzip JS |
-| ----------------------- | ----------: | ------: |
-| <code>treetrunks</code> |     1,403 B |   713 B |
-
-<!-- tonnage:default:end -->
-
 ## overview
 
 a tree structure affords many possible routes through the tree
@@ -72,3 +59,16 @@ note that,
 - `"hello"` is required
 - `"world"`, or any `$name` is optional
 - `"good morning"` is optional
+
+<!-- tonnage:default:start -->
+
+## Bundle size
+
+Package export sizes include complete runtime export surfaces.
+Sizes are exact minified and level-9 gzip JavaScript byte counts. Declarations, source maps, CSS, and other assets are excluded. Peer dependencies stay external, and shared modules are counted once per bundle.
+
+| Import                  | Minified JS | Gzip JS |
+| ----------------------- | ----------: | ------: |
+| <code>treetrunks</code> |     1,403 B |   713 B |
+
+<!-- tonnage:default:end -->
