@@ -7,7 +7,7 @@ settings:
 overrides:
   rolldown-plugin-dts: 0.28.4
 
-pnpmfileChecksum: sha256-tXaaElV3eUr+Rqj0SbvMXlne983GO3d7JeiltdOTH6Y=
+pnpmfileChecksum: sha256-hZp2R9V3yr232JBB0fWKq93BkuLOyYMLQKhEubpTcrU=
 
 importers:
 
@@ -9430,6 +9430,7 @@ snapshots:
   unplugin-dts@1.1.0(esbuild@0.28.2)(rolldown@1.2.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)):
     dependencies:
       '@rollup/pluginutils': 5.3.0
+      '@typescript/typescript6': 6.0.2
       '@volar/typescript': 2.4.28(typescript@7.0.2)
       compare-versions: 6.1.1
       debug: 4.4.3(supports-color@10.2.2)
