@@ -18,19 +18,6 @@ npm i venerate
 
 venerate is a small, pure library implementing venn diagram logic for iterables.
 
-<!-- tonnage:default:start -->
-
-## Bundle size
-
-Package export sizes include complete runtime export surfaces.
-Sizes are exact minified and level-9 gzip JavaScript byte counts. Declarations, source maps, CSS, and other assets are excluded. Peer dependencies stay external, and shared modules are counted once per bundle.
-
-| Import                | Minified JS | Gzip JS |
-| --------------------- | ----------: | ------: |
-| <code>venerate</code> |     1,318 B |   572 B |
-
-<!-- tonnage:default:end -->
-
 ## usage
 
 ```ts
@@ -46,3 +33,16 @@ const c = (function* () {
 
 const union = [...V.union(a, b, c)] // [1, 2, 3, 4, 5]
 ```
+
+<!-- tonnage:default:start -->
+
+## Bundle size
+
+Package export sizes include complete runtime export surfaces.
+Sizes are exact minified and level-9 gzip JavaScript byte counts. Declarations, source maps, CSS, and other assets are excluded. Peer dependencies stay external, and shared modules are counted once per bundle.
+
+| Import                | Minified JS | Gzip JS |
+| --------------------- | ----------: | ------: |
+| <code>venerate</code> |     1,318 B |   572 B |
+
+<!-- tonnage:default:end -->
