@@ -5,4 +5,4 @@
 "venerate": patch
 ---
 
-Add platform-specific Tonnage configuration and CI freshness checks, and regenerate the bundle-size reports at the end of each package README.
+Configure platform-specific Tonnage measurements, move the existing bundle-size reports to the end of each package README, and enforce report freshness in CI.
