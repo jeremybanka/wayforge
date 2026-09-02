@@ -7,7 +7,7 @@ settings:
 overrides:
   rolldown-plugin-dts: 0.28.4
 
-pnpmfileChecksum: sha256-tXaaElV3eUr+Rqj0SbvMXlne983GO3d7JeiltdOTH6Y=
+pnpmfileChecksum: sha256-hZp2R9V3yr232JBB0fWKq93BkuLOyYMLQKhEubpTcrU=
 
 importers:
 
@@ -473,8 +473,8 @@ importers:
         specifier: 7.0.2
         version: 7.0.2
       vite-plugin-dts:
-        specifier: 5.0.3
-        version: 5.0.3(esbuild@0.28.2)(rolldown@1.2.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0))
+        specifier: 5.1.0
+        version: 5.1.0(esbuild@0.28.2)(rolldown@1.2.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0))
       vitest:
         specifier: 4.1.11
         version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.12.0)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
@@ -4094,6 +4094,9 @@ packages:
     resolution: {integrity: sha512-XxwI8EOhVQgWp6iDL+3b0r86f4d6AX6zSU55HfB4ydCEuXLXc5FcYeOu+nnGftS4TEju/11rt4KJPTMgbfmv4A==}
     engines: {node: '>=10.13.0'}
 
+  glob-to-regexp@0.4.1:
+    resolution: {integrity: sha512-lkX1HJXwyMcprw/5YUZc2s7DrpAiHB21/V+E1rHUrVNokkvB6bqMzT0VfV6/86ZNabt1k14YOIaT7nDvOX3Iiw==}
+
   glob@13.0.6:
     resolution: {integrity: sha512-Wjlyrolmm8uDpm/ogGyXZXb1Z+Ca2B8NbJwqBVg0axK9GbBeoS7yGV6vjXnYdGm6X53iehEuxxbyiKp8QmN4Vw==}
     engines: {node: 18 || 20 || >=22}
@@ -5244,8 +5247,8 @@ packages:
     resolution: {integrity: sha512-rBJeI5CXAlmy1pV+617WB9J63U6XcazHHF2f2dbJix4XzpUF0RS3Zbj0FGIOCAva5P/d/GBOYaACQ1w+0azUkg==}
     engines: {node: '>= 4.0.0'}
 
-  unplugin-dts@1.0.3:
-    resolution: {integrity: sha512-/GR887wfG4r1cWyt1UZsLRuMIjsmEbGkS9yJrz+0dsToHAYUD5CTyP3JMGVLv25j9K0mJcwAVvZno/aTuSUvNg==}
+  unplugin-dts@1.1.0:
+    resolution: {integrity: sha512-KZJ+qk+lmd9dJY/PJvDRFL9BUtVubKDiX7Ai/X6mlkCArcQNzwmupKjVqHbRA42uqO5ZfFRFc+o8/OCbQ1GonQ==}
     peerDependencies:
       '@microsoft/api-extractor': '>=7'
       '@rspack/core': ^1
@@ -5301,8 +5304,8 @@ packages:
     resolution: {integrity: sha512-Njrh4U8UODGajoZ44QS2C/BsoEM9DTI/aCqY5swsizb+/ap0FamvnCMcZAxrR5+aoC0ZqkawEfpC/N2SBc+xeA==}
     engines: {node: '>=18.12.0'}
 
-  vite-plugin-dts@5.0.3:
-    resolution: {integrity: sha512-gIth6NdCEHWPiiRMCK3N6C8WjvdsrtEQrmsiG8h6Ov+lFP+b07Y+wcs9H0H7n146l0PDTYK4cQN1vgeG1pMdRQ==}
+  vite-plugin-dts@5.1.0:
+    resolution: {integrity: sha512-MfLc2G+mXPUDGGxpHQeYbdunavFP9UpT9yxiAsTgUXRxfEd3HqysSAM4E72jhz5eIz3OOexCHkqiVlQq8ok9/A==}
     peerDependencies:
       '@microsoft/api-extractor': '>=7'
       rollup: '>=3'
@@ -8253,6 +8256,8 @@ snapshots:
     dependencies:
       is-glob: 4.0.3
 
+  glob-to-regexp@0.4.1: {}
+
   glob@13.0.6:
     dependencies:
       minimatch: 10.2.6
@@ -9422,13 +9427,14 @@ snapshots:
 
   universalify@0.1.2: {}
 
-  unplugin-dts@1.0.3(esbuild@0.28.2)(rolldown@1.2.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)):
+  unplugin-dts@1.1.0(esbuild@0.28.2)(rolldown@1.2.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)):
     dependencies:
       '@rollup/pluginutils': 5.3.0
       '@typescript/typescript6': 6.0.2
       '@volar/typescript': 2.4.28(typescript@7.0.2)
       compare-versions: 6.1.1
       debug: 4.4.3(supports-color@10.2.2)
+      glob-to-regexp: 0.4.1
       kolorist: 1.8.0
       local-pkg: 1.2.1
       magic-string: 0.30.21
@@ -9486,9 +9492,9 @@ snapshots:
 
   verkit@0.3.0: {}
 
-  vite-plugin-dts@5.0.3(esbuild@0.28.2)(rolldown@1.2.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)):
+  vite-plugin-dts@5.1.0(esbuild@0.28.2)(rolldown@1.2.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)):
     dependencies:
-      unplugin-dts: 1.0.3(esbuild@0.28.2)(rolldown@1.2.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0))
+      unplugin-dts: 1.1.0(esbuild@0.28.2)(rolldown@1.2.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0))
     optionalDependencies:
       vite: 8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)
     transitivePeerDependencies:
