@@ -6,6 +6,12 @@
 		src="https://img.shields.io/npm/v/varmint?style=for-the-badge"
 	>
 </a>
+```sh
+npm i varmint
+```
+
+varmint is way to create automatic mocks for your tests by wrapping asynchronous functions in a caching layer.
+
 <!-- tonnage:default:start -->
 
 ## Bundle size
@@ -19,9 +25,3 @@ Public-module rows retain complete runtime export surfaces. Recipe rows bundle t
 | <code>varmint</code> |    25,734 B | 8,737 B |
 
 <!-- tonnage:default:end -->
-
-```sh
-npm i varmint
-```
-
-varmint is way to create automatic mocks for your tests by wrapping asynchronous functions in a caching layer.

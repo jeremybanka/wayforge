@@ -6,6 +6,12 @@
 		src="https://img.shields.io/npm/v/tsdoc.json?style=for-the-badge"
 	>
 </a>
+```sh
+npm i tsdoc.json
+```
+
+tsdoc.json is a tool for generating a JSON schema from TypeScript types.
+
 <!-- tonnage:default:start -->
 
 ## Bundle size
@@ -20,9 +26,3 @@ Public-module rows retain complete runtime export surfaces. Recipe rows bundle t
 | <code>tsdoc.json/react</code> |     3,171 B |     1,131 B |
 
 <!-- tonnage:default:end -->
-
-```sh
-npm i tsdoc.json
-```
-
-tsdoc.json is a tool for generating a JSON schema from TypeScript types.
