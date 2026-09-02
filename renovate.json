@@ -9,6 +9,15 @@
 	"prHourlyLimit": 9,
 	"pruneBranchAfterAutomerge": true,
 	"pruneStaleBranches": true,
+	"postUpdateOptions": ["pnpmDedupe"],
+	"postUpgradeTasks": {
+		"commands": [
+			"pnpm install --frozen-lockfile",
+			"pnpm tonnage:write"
+		],
+		"executionMode": "branch",
+		"fileFilters": ["packages/*/README.md"]
+	},
 	"statusCheckWhen": { "minimumReleaseAge": "never" },
 	"customManagers": [
 		{
