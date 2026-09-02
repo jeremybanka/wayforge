@@ -19,6 +19,12 @@
 	>
 </a>
 
+```sh
+npm i treetrunks
+```
+
+Lean utilities to build type-safe trees and validate routes through them.
+
 <!-- tonnage:default:start -->
 
 ## Bundle size
@@ -32,12 +38,6 @@ Public-module rows retain complete runtime export surfaces. Recipe rows bundle t
 | <code>treetrunks</code> |     1,403 B |   713 B |
 
 <!-- tonnage:default:end -->
-
-```sh
-npm i treetrunks
-```
-
-Lean utilities to build type-safe trees and validate routes through them.
 
 ## overview
 

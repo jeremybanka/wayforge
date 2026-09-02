@@ -12,6 +12,12 @@
 		src="https://img.shields.io/badge/dependencies-0-0?style=for-the-badge"
 	>
 </a>
+```sh
+npm i venerate
+```
+
+venerate is a small, pure library implementing venn diagram logic for iterables.
+
 <!-- tonnage:default:start -->
 
 ## Bundle size
@@ -25,12 +31,6 @@ Public-module rows retain complete runtime export surfaces. Recipe rows bundle t
 | <code>venerate</code> |     1,318 B |   572 B |
 
 <!-- tonnage:default:end -->
-
-```sh
-npm i venerate
-```
-
-venerate is a small, pure library implementing venn diagram logic for iterables.
 
 ## usage
 
