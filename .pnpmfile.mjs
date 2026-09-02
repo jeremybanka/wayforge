@@ -17,7 +17,7 @@ const needsTypescript6 = (packageJson) =>
 
 const needsTypescript6Fallback = (packageJson) =>
 	packageJson.name === "unplugin-dts" &&
-	packageJson.version?.startsWith("1.0.") === true
+	packageJson.version?.startsWith("1.") === true
 
 export const hooks = {
 	readPackage(packageJson) {
