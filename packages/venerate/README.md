@@ -22,9 +22,8 @@ venerate is a small, pure library implementing venn diagram logic for iterables.
 
 ## Bundle size
 
-Public-module rows retain complete runtime export surfaces. Recipe rows bundle their reviewable entry files and tree-shake unused exports. Both report exact minified and level-9 gzip JavaScript byte counts; declarations, source maps, CSS, and other assets are excluded. Peer dependencies stay external, and shared modules are counted once per bundle.
-
-### Public modules (whole export surface)
+Package export sizes include complete runtime export surfaces.
+Sizes are exact minified and level-9 gzip JavaScript byte counts. Declarations, source maps, CSS, and other assets are excluded. Peer dependencies stay external, and shared modules are counted once per bundle.
 
 | Import                | Minified JS | Gzip JS |
 | --------------------- | ----------: | ------: |

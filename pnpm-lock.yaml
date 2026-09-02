@@ -88,24 +88,12 @@ importers:
       pin-dependencies-checker:
         specifier: 2.7.1
         version: 2.7.1
-      treetrunks:
-        specifier: workspace:*
-        version: link:packages/treetrunks
-      tsdoc.json:
-        specifier: workspace:*
-        version: link:packages/tsdoc.json
       turbo:
         specifier: 2.10.12
         version: 2.10.12
       typescript:
         specifier: npm:@typescript/typescript6@6.0.2
         version: '@typescript/typescript6@6.0.2'
-      varmint:
-        specifier: workspace:*
-        version: link:packages/varmint
-      venerate:
-        specifier: workspace:*
-        version: link:packages/venerate
       vitest:
         specifier: 4.1.11
         version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.1)(happy-dom@20.12.0)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
