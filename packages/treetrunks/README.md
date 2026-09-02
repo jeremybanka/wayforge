@@ -19,20 +19,6 @@
 	>
 </a>
 
-<!-- tonnage:default:start -->
-
-## Bundle size
-
-Public-module rows retain complete runtime export surfaces. Recipe rows bundle their reviewable entry files and tree-shake unused exports. Both report exact minified and level-9 gzip JavaScript byte counts; declarations, source maps, CSS, and other assets are excluded. Peer dependencies stay external, and shared modules are counted once per bundle.
-
-### Public modules (whole export surface)
-
-| Import                  | Minified JS | Gzip JS |
-| ----------------------- | ----------: | ------: |
-| <code>treetrunks</code> |     1,403 B |   713 B |
-
-<!-- tonnage:default:end -->
-
 ```sh
 npm i treetrunks
 ```
@@ -73,3 +59,16 @@ note that,
 - `"hello"` is required
 - `"world"`, or any `$name` is optional
 - `"good morning"` is optional
+
+<!-- tonnage:default:start -->
+
+## Bundle size
+
+Package export sizes include complete runtime export surfaces.
+Sizes are exact minified and level-9 gzip JavaScript byte counts. Declarations, source maps, CSS, and other assets are excluded. Peer dependencies stay external, and shared modules are counted once per bundle.
+
+| Import                  | Minified JS | Gzip JS |
+| ----------------------- | ----------: | ------: |
+| <code>treetrunks</code> |     1,403 B |   713 B |
+
+<!-- tonnage:default:end -->
