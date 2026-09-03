@@ -51,7 +51,7 @@ importers:
         version: typescript@7.0.2
       atom.io:
         specifier: 0.52.2
-        version: 0.52.2(@floating-ui/react-dom@2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@floating-ui/react@0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@typescript-eslint/parser@8.69.0(@typescript/typescript6@6.0.2)(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.12.2)(motion@13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(socket.io-client@4.8.3(supports-color@10.2.2))(socket.io@4.8.3(supports-color@10.2.2))
+        version: 0.52.2(@floating-ui/react-dom@2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@floating-ui/react@0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@typescript-eslint/parser@8.69.0(@typescript/typescript6@6.0.2)(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.13.1)(motion@13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(socket.io-client@4.8.3(supports-color@10.2.2))(socket.io@4.8.3(supports-color@10.2.2))
       cross-env:
         specifier: 10.1.0
         version: 10.1.0
@@ -96,7 +96,7 @@ importers:
         version: '@typescript/typescript6@6.0.2'
       vitest:
         specifier: 4.1.11
-        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.12.2)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
+        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.13.1)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
 
   apps/tempest.games:
     dependencies:
@@ -135,7 +135,7 @@ importers:
         version: 2.2.3
       atom.io:
         specifier: 0.52.2
-        version: 0.52.2(@floating-ui/react-dom@2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@floating-ui/react@0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@typescript-eslint/parser@8.69.0(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2))(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.12.2)(motion@13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(socket.io-client@4.8.3(supports-color@10.2.2))(socket.io@4.8.3(supports-color@10.2.2))
+        version: 0.52.2(@floating-ui/react-dom@2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@floating-ui/react@0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@typescript-eslint/parser@8.69.0(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2))(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.13.1)(motion@13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(socket.io-client@4.8.3(supports-color@10.2.2))(socket.io@4.8.3(supports-color@10.2.2))
       cron:
         specifier: 4.4.0
         version: 4.4.0
@@ -235,13 +235,13 @@ importers:
         version: 8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)
       vitest:
         specifier: 4.1.11
-        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.12.2)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
+        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.13.1)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
 
   packages/anvl:
     dependencies:
       atom.io:
         specifier: 0.52.2
-        version: 0.52.2(@floating-ui/react-dom@2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@floating-ui/react@0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@typescript-eslint/parser@8.69.0(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2))(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.12.2)(motion@13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(socket.io-client@4.8.3(supports-color@10.2.2))(socket.io@4.8.3(supports-color@10.2.2))
+        version: 0.52.2(@floating-ui/react-dom@2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@floating-ui/react@0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@typescript-eslint/parser@8.69.0(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2))(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.13.1)(motion@13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(socket.io-client@4.8.3(supports-color@10.2.2))(socket.io@4.8.3(supports-color@10.2.2))
     devDependencies:
       concurrently:
         specifier: 10.0.5
@@ -260,7 +260,7 @@ importers:
         version: 8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)
       vitest:
         specifier: 4.1.11
-        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.12.2)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
+        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.13.1)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
 
   packages/break-check:
     dependencies:
@@ -331,7 +331,7 @@ importers:
         version: 8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)
       vitest:
         specifier: 4.1.11
-        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.12.2)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
+        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.13.1)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
       zod:
         specifier: 4.5.4
         version: 4.5.4
@@ -346,7 +346,7 @@ importers:
         version: 2.2.3
       atom.io:
         specifier: 0.52.2
-        version: 0.52.2(@floating-ui/react-dom@2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@floating-ui/react@0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@typescript-eslint/parser@8.69.0(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2))(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.12.2)(motion@13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(socket.io-client@4.8.3(supports-color@10.2.2))(socket.io@4.8.3(supports-color@10.2.2))
+        version: 0.52.2(@floating-ui/react-dom@2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@floating-ui/react@0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@typescript-eslint/parser@8.69.0(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2))(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.13.1)(motion@13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(socket.io-client@4.8.3(supports-color@10.2.2))(socket.io@4.8.3(supports-color@10.2.2))
       comline:
         specifier: workspace:*
         version: link:../comline
@@ -389,7 +389,7 @@ importers:
         version: link:../varmint
       vitest:
         specifier: 4.1.11
-        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.12.2)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
+        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.13.1)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
       zod:
         specifier: 4.5.4
         version: 4.5.4
@@ -438,7 +438,7 @@ importers:
         version: 6.1.1(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0))
       atom.io:
         specifier: 0.52.2
-        version: 0.52.2(@floating-ui/react-dom@2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@floating-ui/react@0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@typescript-eslint/parser@8.69.0(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2))(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.12.2)(motion@13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(socket.io-client@4.8.3(supports-color@10.2.2))(socket.io@4.8.3(supports-color@10.2.2))
+        version: 0.52.2(@floating-ui/react-dom@2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@floating-ui/react@0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@typescript-eslint/parser@8.69.0(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2))(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.13.1)(motion@13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(socket.io-client@4.8.3(supports-color@10.2.2))(socket.io@4.8.3(supports-color@10.2.2))
       concurrently:
         specifier: 10.0.5
         version: 10.0.5
@@ -446,8 +446,8 @@ importers:
         specifier: 10.9.1
         version: 10.9.1(jiti@2.7.0)(supports-color@10.2.2)
       happy-dom:
-        specifier: 20.12.2
-        version: 20.12.2
+        specifier: 20.13.1
+        version: 20.13.1
       jsdom:
         specifier: 30.0.1
         version: 30.0.1
@@ -477,7 +477,7 @@ importers:
         version: 5.1.0(esbuild@0.28.2)(rolldown@1.2.5)(supports-color@10.2.2)(typescript@7.0.2)(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0))
       vitest:
         specifier: 4.1.11
-        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.12.2)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
+        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.13.1)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
 
   packages/ingt:
     dependencies:
@@ -486,7 +486,7 @@ importers:
         version: link:../anvl
       atom.io:
         specifier: 0.52.2
-        version: 0.52.2(@floating-ui/react-dom@2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@floating-ui/react@0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@typescript-eslint/parser@8.69.0(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2))(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.12.2)(motion@13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(socket.io-client@4.8.3(supports-color@10.2.2))(socket.io@4.8.3(supports-color@10.2.2))
+        version: 0.52.2(@floating-ui/react-dom@2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@floating-ui/react@0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@typescript-eslint/parser@8.69.0(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2))(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.13.1)(motion@13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(socket.io-client@4.8.3(supports-color@10.2.2))(socket.io@4.8.3(supports-color@10.2.2))
       fp-ts:
         specifier: 2.16.11
         version: 2.16.11
@@ -514,7 +514,7 @@ importers:
         version: 8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)
       vitest:
         specifier: 4.1.11
-        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.12.2)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
+        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.13.1)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
 
   packages/jurist:
     dependencies:
@@ -539,7 +539,7 @@ importers:
         version: 8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)
       vitest:
         specifier: 4.1.11
-        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.12.2)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
+        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.13.1)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
 
   packages/luum:
     devDependencies:
@@ -563,7 +563,7 @@ importers:
         version: 8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)
       vitest:
         specifier: 4.1.11
-        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.12.2)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
+        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.13.1)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
 
   packages/rationality:
     devDependencies:
@@ -584,13 +584,13 @@ importers:
         version: 8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)
       vitest:
         specifier: 4.1.11
-        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.12.2)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
+        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.13.1)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
 
   packages/rel8:
     dependencies:
       atom.io:
         specifier: 0.52.2
-        version: 0.52.2(@floating-ui/react-dom@2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@floating-ui/react@0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@typescript-eslint/parser@8.69.0(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2))(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.12.2)(motion@13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(socket.io-client@4.8.3(supports-color@10.2.2))(socket.io@4.8.3(supports-color@10.2.2))
+        version: 0.52.2(@floating-ui/react-dom@2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@floating-ui/react@0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@typescript-eslint/parser@8.69.0(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2))(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.13.1)(motion@13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(socket.io-client@4.8.3(supports-color@10.2.2))(socket.io@4.8.3(supports-color@10.2.2))
     devDependencies:
       concurrently:
         specifier: 10.0.5
@@ -612,7 +612,7 @@ importers:
         version: 8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)
       vitest:
         specifier: 4.1.11
-        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.12.2)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
+        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.13.1)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
 
   packages/safedeposit:
     devDependencies:
@@ -636,7 +636,7 @@ importers:
         version: 8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)
       vitest:
         specifier: 4.1.11
-        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.12.2)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
+        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.13.1)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
 
   packages/takua:
     devDependencies:
@@ -657,7 +657,7 @@ importers:
         version: 8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)
       vitest:
         specifier: 4.1.11
-        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.12.2)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
+        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.13.1)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
 
   packages/treetrunks:
     devDependencies:
@@ -687,7 +687,7 @@ importers:
         version: 8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)
       vitest:
         specifier: 4.1.11
-        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.12.2)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
+        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.13.1)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
 
   packages/tsdoc.json:
     dependencies:
@@ -746,7 +746,7 @@ importers:
         version: 25.9.5
       atom.io:
         specifier: 0.52.2
-        version: 0.52.2(@floating-ui/react-dom@2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@floating-ui/react@0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@typescript-eslint/parser@8.69.0(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2))(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.12.2)(motion@13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(socket.io-client@4.8.3(supports-color@10.2.2))(socket.io@4.8.3(supports-color@10.2.2))
+        version: 0.52.2(@floating-ui/react-dom@2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@floating-ui/react@0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@typescript-eslint/parser@8.69.0(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2))(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.13.1)(motion@13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(socket.io-client@4.8.3(supports-color@10.2.2))(socket.io@4.8.3(supports-color@10.2.2))
       concurrently:
         specifier: 10.0.5
         version: 10.0.5
@@ -767,7 +767,7 @@ importers:
         version: 8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)
       vitest:
         specifier: 4.1.11
-        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.12.2)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
+        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.13.1)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
       yalc:
         specifier: 1.0.0-pre.53
         version: 1.0.0-pre.53
@@ -803,7 +803,7 @@ importers:
         version: 8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0)
       vitest:
         specifier: 4.1.11
-        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.12.2)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
+        version: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.13.1)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
 
 packages:
 
@@ -4111,8 +4111,8 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
-  happy-dom@20.12.2:
-    resolution: {integrity: sha512-vCIoyoKQ7vxLb9zRiTc7uKryHDG3YY6tXK96D6MuugFnV9xTbmiPGM/GYFn1q+fWoIBv53q4rBEgydDkQwnDZw==}
+  happy-dom@20.13.1:
+    resolution: {integrity: sha512-hoh0Sq+2vSDi8CJaFnLBLAlEK7/vrRmUiim30PwFj9aiVwqF/Z+6cCpmt9gNuQgu+PHjNC4O2PhjxA9Nr+UlBQ==}
     engines: {node: '>=20.0.0'}
 
   has-flag@4.0.0:
@@ -6915,7 +6915,7 @@ snapshots:
       picocolors: 1.1.1
       redent: 3.0.0
     optionalDependencies:
-      vitest: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.12.2)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
+      vitest: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.13.1)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
 
   '@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
@@ -7340,7 +7340,7 @@ snapshots:
       obug: 2.1.4
       std-env: 4.1.0
       tinyrainbow: 3.1.0
-      vitest: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.12.2)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
+      vitest: 4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.13.1)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0)
 
   '@vitest/expect@4.1.11':
     dependencies:
@@ -7568,27 +7568,27 @@ snapshots:
       estree-walker: 3.0.3
       js-tokens: 10.0.0
 
-  atom.io@0.52.2(@floating-ui/react-dom@2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@floating-ui/react@0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@typescript-eslint/parser@8.69.0(@typescript/typescript6@6.0.2)(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.12.2)(motion@13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(socket.io-client@4.8.3(supports-color@10.2.2))(socket.io@4.8.3(supports-color@10.2.2)):
+  atom.io@0.52.2(@floating-ui/react-dom@2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@floating-ui/react@0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@typescript-eslint/parser@8.69.0(@typescript/typescript6@6.0.2)(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.13.1)(motion@13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(socket.io-client@4.8.3(supports-color@10.2.2))(socket.io@4.8.3(supports-color@10.2.2)):
     optionalDependencies:
       '@floating-ui/react': 0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@floating-ui/react-dom': 2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@testing-library/react': 16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@typescript-eslint/parser': 8.69.0(@typescript/typescript6@6.0.2)(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)
       eslint: 10.9.1(jiti@2.7.0)(supports-color@10.2.2)
-      happy-dom: 20.12.2
+      happy-dom: 20.13.1
       motion: 13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react: 19.2.8
       socket.io: 4.8.3(supports-color@10.2.2)
       socket.io-client: 4.8.3(supports-color@10.2.2)
 
-  atom.io@0.52.2(@floating-ui/react-dom@2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@floating-ui/react@0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@typescript-eslint/parser@8.69.0(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2))(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.12.2)(motion@13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(socket.io-client@4.8.3(supports-color@10.2.2))(socket.io@4.8.3(supports-color@10.2.2)):
+  atom.io@0.52.2(@floating-ui/react-dom@2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@floating-ui/react@0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@testing-library/react@16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(@typescript-eslint/parser@8.69.0(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2))(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.13.1)(motion@13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react@19.2.8)(socket.io-client@4.8.3(supports-color@10.2.2))(socket.io@4.8.3(supports-color@10.2.2)):
     optionalDependencies:
       '@floating-ui/react': 0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@floating-ui/react-dom': 2.1.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@testing-library/react': 16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@19.2.5(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@typescript-eslint/parser': 8.69.0(eslint@10.9.1(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)(typescript@7.0.2)
       eslint: 10.9.1(jiti@2.7.0)(supports-color@10.2.2)
-      happy-dom: 20.12.2
+      happy-dom: 20.13.1
       motion: 13.1.1(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react: 19.2.8
       socket.io: 4.8.3(supports-color@10.2.2)
@@ -8277,7 +8277,7 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
-  happy-dom@20.12.2:
+  happy-dom@20.13.1:
     dependencies:
       '@types/node': 25.9.5
       '@types/whatwg-mimetype': 3.0.2
@@ -9521,7 +9521,7 @@ snapshots:
       tsx: 4.22.1
       yaml: 2.9.0
 
-  vitest@4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.12.2)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0):
+  vitest@4.1.11(@types/node@25.9.5)(@vitest/coverage-v8@4.1.11)(esbuild@0.28.2)(happy-dom@20.13.1)(jiti@2.7.0)(jsdom@30.0.1)(tsx@4.22.1)(yaml@2.9.0):
     dependencies:
       '@vitest/expect': 4.1.11
       '@vitest/mocker': 4.1.11(vite@8.2.2(@types/node@25.9.5)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0))
@@ -9546,7 +9546,7 @@ snapshots:
     optionalDependencies:
       '@types/node': 25.9.5
       '@vitest/coverage-v8': 4.1.11(vitest@4.1.11)
-      happy-dom: 20.12.2
+      happy-dom: 20.13.1
       jsdom: 30.0.1
     transitivePeerDependencies:
       - '@vitejs/devtools'
