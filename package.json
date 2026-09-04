@@ -56,7 +56,7 @@
 		"@typescript-eslint/utils": "8.69.0",
 		"atom.io": "0.52.2",
 		"cross-env": "10.1.0",
-		"dprint": "0.57.0",
+		"dprint": "0.57.1",
 		"dprint-plugin-malva": "0.16.0",
 		"dprint-plugin-markup": "0.27.3",
 		"dprint-plugin-yaml": "0.6.0",
