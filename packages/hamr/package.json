@@ -59,7 +59,7 @@
 		"atom.io": "0.52.3",
 		"concurrently": "10.0.5",
 		"eslint": "10.9.1",
-		"happy-dom": "20.13.2",
+		"happy-dom": "20.14.0",
 		"jsdom": "30.0.1",
 		"preact": "10.29.8",
 		"react": "19.2.8",
