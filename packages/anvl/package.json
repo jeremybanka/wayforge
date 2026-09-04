@@ -127,7 +127,7 @@
 		"eslint": "10.9.1",
 		"tsdown": "0.22.14",
 		"vite": "8.2.2",
-		"vitest": "4.1.11"
+		"vitest": "5.0.0"
 	},
 	"repository": {
 		"type": "git",

@@ -35,12 +35,12 @@
 	"devDependencies": {
 		"@types/node": "25.9.5",
 		"typescript": "7.0.2",
-		"@vitest/coverage-v8": "4.1.11",
+		"@vitest/coverage-v8": "5.0.0",
 		"concurrently": "10.0.5",
 		"eslint": "10.9.1",
 		"recoverage": "0.1.16",
 		"tsdown": "0.22.14",
 		"vite": "8.2.2",
-		"vitest": "4.1.11"
+		"vitest": "5.0.0"
 	}
 }
