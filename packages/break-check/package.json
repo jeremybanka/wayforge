@@ -46,7 +46,7 @@
 		"postversion": "dprint fmt package.json"
 	},
 	"devDependencies": {
-		"@types/bun": "npm:bun-types@1.4.0",
+		"@types/bun": "npm:bun-types@1.4.1",
 		"typescript": "7.0.2",
 		"concurrently": "10.0.5",
 		"eslint": "10.9.1",
