@@ -36,7 +36,9 @@
 		"test:coverage:increased": "recoverage",
 		"test:coverage": "pnpm test:coverage:once && pnpm test:coverage:increased",
 		"test:once": "vitest run",
-		"postversion": "dprint fmt package.json"
+		"postversion": "dprint fmt package.json",
+		"tonnage:check": "tonnage check",
+		"tonnage:write": "tonnage write"
 	},
 	"devDependencies": {
 		"@types/node": "25.9.5",
