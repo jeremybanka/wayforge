@@ -2,6 +2,9 @@
 	"$schema": "https://turbo.build/schema.json",
 	"ui": "tui",
 	"globalDependencies": ["tsconfig.json", ".bun-version", ".node-version"],
+	"futureFlags": {
+		"strictTaskEntrypointSelection": true
+	},
 	"tasks": {
 		"build": {
 			"dependsOn": ["gen", "^build", "^gen"],
@@ -12,6 +15,14 @@
 			"dependsOn": ["gen", "^build", "^gen"],
 			"outputs": ["app/**", "bin/**"],
 			"inputs": ["**/package.json", "src/**"]
+		},
+		"tonnage:check": {
+			"dependsOn": ["build"],
+			"cache": false
+		},
+		"tonnage:write": {
+			"dependsOn": ["build"],
+			"cache": false
 		},
 		"test:build": {
 			"dependsOn": ["build"],

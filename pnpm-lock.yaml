@@ -88,6 +88,9 @@ importers:
       pin-dependencies-checker:
         specifier: 2.7.1
         version: 2.7.1
+      tonnage:
+        specifier: 0.1.1
+        version: 0.1.1(arktype@2.2.3)(zod@4.5.4)
       turbo:
         specifier: 2.10.12
         version: 2.10.12
@@ -3546,6 +3549,17 @@ packages:
       zod:
         optional: true
 
+  comline@0.5.2:
+    resolution: {integrity: sha512-eMGYMIw2Q34LtO4vaNvQCPWcVTasnMUCDj7YnOADvyfc4ddKqhKX1TwQgYiiKp8qSjgXdMYE+EHJl9cznQ7azA==}
+    peerDependencies:
+      arktype: ^2.1.28
+      zod: ^4.2.0
+    peerDependenciesMeta:
+      arktype:
+        optional: true
+      zod:
+        optional: true
+
   commander@13.1.0:
     resolution: {integrity: sha512-/rFeCpNJQbhSZjGVwO9RFV3xPqbnERS8MmIQzCtD/zl6gpJuV/bMLuN92oG3F7d8oDEHHRrujSXNUr8fpjntKw==}
     engines: {node: '>=18'}
@@ -5135,6 +5149,11 @@ packages:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
 
+  tonnage@0.1.1:
+    resolution: {integrity: sha512-2f4c3b5tZhxfQIGx0g006FW09DKUgVYlO7271xWaVEoACpGaq+J/ru/ZROD4o0YcAXGzghBhoD2qEUPlXKKMUA==}
+    engines: {node: '>=22.18.0'}
+    hasBin: true
+
   tough-cookie@6.0.2:
     resolution: {integrity: sha512-exgYmnmL/sJpR3upZfXG5PoatXQii55xAiXGXzY+sROLZ/Y+SLcp9PgJNI9Vz37HpQ74WvDcLT8eqm+kV3FzrA==}
     engines: {node: '>=16'}
@@ -5149,6 +5168,9 @@ packages:
 
   treetrunks@0.1.7:
     resolution: {integrity: sha512-QpS2El77DaQYyN9Hwyeaswaa8v1mfeMnRif1ayzV4lyMNnhnbwHbVKoZyheA35OZJJm88yhkyKExXG2tyWlqDQ==}
+
+  treetrunks@0.1.9:
+    resolution: {integrity: sha512-+K9abw3ZRJ3dKrSPNmUWMyGYkTjL++2WkehbxywrnsdgHHClPbBLY5L1ksKtKF/JfX4RzxaUj9tONAW5hgRABw==}
 
   troika-three-text@0.52.4:
     resolution: {integrity: sha512-V50EwcYGruV5rUZ9F4aNsrytGdKcXKALjEtQXIOBfhVoZU9VAqZNIoGQ3TMiooVqFAbR1w15T+f+8gkzoFzawg==}
@@ -7715,6 +7737,14 @@ snapshots:
       arktype: 2.2.0
       zod: 4.5.4
 
+  comline@0.5.2(arktype@2.2.3)(zod@4.5.4):
+    dependencies:
+      '@standard-schema/spec': 1.1.0
+      treetrunks: 0.1.9
+    optionalDependencies:
+      arktype: 2.2.3
+      zod: 4.5.4
+
   commander@13.1.0: {}
 
   comment-parser@1.4.6: {}
@@ -9292,6 +9322,14 @@ snapshots:
     dependencies:
       is-number: 7.0.0
 
+  tonnage@0.1.1(arktype@2.2.3)(zod@4.5.4):
+    dependencies:
+      comline: 0.5.2(arktype@2.2.3)(zod@4.5.4)
+      esbuild: 0.28.2
+    transitivePeerDependencies:
+      - arktype
+      - zod
+
   tough-cookie@6.0.2:
     dependencies:
       tldts: 7.0.30
@@ -9303,6 +9341,8 @@ snapshots:
   tree-kill@1.2.2: {}
 
   treetrunks@0.1.7: {}
+
+  treetrunks@0.1.9: {}
 
   troika-three-text@0.52.4(three@0.185.1):
     dependencies:
