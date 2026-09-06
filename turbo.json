@@ -38,6 +38,7 @@
 			"dependsOn": ["test:build", "^build"],
 			"inputs": [
 				"**/package.json",
+				"vitest.config.*",
 				"src/**",
 				"**/src/**",
 				"__tests__/**",
