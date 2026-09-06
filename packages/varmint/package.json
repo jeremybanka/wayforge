@@ -36,7 +36,7 @@
 		"watch:types": "tsc --watch --noEmit",
 		"lint": "concurrently \"bun:lint:*\"",
 		"test": "vitest",
-		"test:once": "./bin/varmint.bin.js track && vitest run; ./bin/varmint.bin.js clean --ci-flag=CI",
+		"test:once": "./bin/varmint.bin.js track && vitest run; test_status=$?; ./bin/varmint.bin.js clean --ci-flag=CI; cleanup_status=$?; if [ \"$test_status\" -ne 0 ]; then exit \"$test_status\"; fi; exit \"$cleanup_status\"",
 		"postversion": "dprint fmt package.json",
 		"tonnage:check": "tonnage check",
 		"tonnage:write": "tonnage write"
