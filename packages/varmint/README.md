@@ -23,4 +23,6 @@ Sizes are exact minified and level-9 gzip JavaScript byte counts. Declarations, 
 | -------------------- | ----------: | ------: |
 | <code>varmint</code> |    25,760 B | 8,746 B |
 
+Report maintained with [tonnage](https://github.com/jeremybanka/tonnage).
+
 <!-- tonnage:default:end -->
