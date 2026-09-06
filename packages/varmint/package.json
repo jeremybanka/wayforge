@@ -37,7 +37,9 @@
 		"lint": "concurrently \"bun:lint:*\"",
 		"test": "vitest",
 		"test:once": "./bin/varmint.bin.js track && vitest run; ./bin/varmint.bin.js clean --ci-flag=CI",
-		"postversion": "dprint fmt package.json"
+		"postversion": "dprint fmt package.json",
+		"tonnage:check": "tonnage check",
+		"tonnage:write": "tonnage write"
 	},
 	"dependencies": {
 		"arktype": "2.2.3",

@@ -1,0 +1,12 @@
+{
+	"$schema": "https://turbo.build/schema.json",
+	"extends": ["//"],
+	"tasks": {
+		"tonnage:check": {
+			"dependsOn": ["build"]
+		},
+		"tonnage:write": {
+			"dependsOn": ["build"]
+		}
+	}
+}
