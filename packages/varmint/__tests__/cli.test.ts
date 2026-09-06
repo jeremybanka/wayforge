@@ -34,6 +34,7 @@ describe(`cli`, () => {
 		await Yalc.publishPackage({ workingDir: `.` })
 		await Yalc.publishPackage({ workingDir: `../comline` })
 		await Yalc.publishPackage({ workingDir: `../treetrunks` })
+		await Yalc.publishPackage({ workingDir: `../safedeposit` })
 		process.chdir(tmpDir)
 		const projectInit = spawn(`bun`, [`init`, `-y`], { stdio: `inherit` })
 		await new Promise((resolve) => projectInit.on(`exit`, resolve))
@@ -43,7 +44,7 @@ describe(`cli`, () => {
 				workspaces: [`.yalc/*`],
 			})
 		})
-		await Yalc.addPackages([`varmint`, `comline`, `treetrunks`], {
+		await Yalc.addPackages([`varmint`, `comline`, `treetrunks`, `safedeposit`], {
 			workingDir: `.`,
 		})
 		console.log(execSync(`cat package.json`).toString())
