@@ -205,8 +205,8 @@ importers:
   apps/tempest.games:
     dependencies:
       '@ai-sdk/openai':
-        specifier: 4.0.59
-        version: 4.0.59(zod@4.5.4)
+        specifier: 4.0.60
+        version: 4.0.60(zod@4.5.4)
       '@floating-ui/react':
         specifier: 0.27.20
         version: 0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -920,8 +920,8 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/openai@4.0.59':
-    resolution: {integrity: sha512-k9qS5GbERLOsrMw+qOIKrGhgu0QWkc5f9GTGf7my+xlUsMdZY24hZWAT0JHgBAg9FdvE7lWD7wi85eDyioGuUQ==}
+  '@ai-sdk/openai@4.0.60':
+    resolution: {integrity: sha512-Wx8bRN/zD+jDujT7HDbU1tC66h0a5kNEMG1DDrILfUgil56IJ9JMeBrzGqDw56IspmcXFG6uRpRnuK8AEQeKgg==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -5742,7 +5742,7 @@ snapshots:
       '@vercel/oidc': 3.2.0
       zod: 4.5.4
 
-  '@ai-sdk/openai@4.0.59(zod@4.5.4)':
+  '@ai-sdk/openai@4.0.60(zod@4.5.4)':
     dependencies:
       '@ai-sdk/provider': 4.0.10
       '@ai-sdk/provider-utils': 5.0.36(zod@4.5.4)
