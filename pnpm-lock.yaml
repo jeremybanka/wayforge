@@ -190,8 +190,8 @@ importers:
         specifier: 2.7.1
         version: 2.7.1
       tonnage:
-        specifier: 0.1.1
-        version: 0.1.1(arktype@2.2.3)(zod@4.5.4)
+        specifier: 0.1.2
+        version: 0.1.2(arktype@2.2.3)(zod@4.5.4)
       turbo:
         specifier: 2.10.12
         version: 2.10.12
@@ -5250,8 +5250,8 @@ packages:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
 
-  tonnage@0.1.1:
-    resolution: {integrity: sha512-2f4c3b5tZhxfQIGx0g006FW09DKUgVYlO7271xWaVEoACpGaq+J/ru/ZROD4o0YcAXGzghBhoD2qEUPlXKKMUA==}
+  tonnage@0.1.2:
+    resolution: {integrity: sha512-6GRmj71knJgEMzrtSWiBR8iwFZrq9V2fYLjWX9jU4Ww1xAWSXi52i7fQ08dMRv75rDEoDJ4jdOl0Xh4JbxbRzA==}
     engines: {node: '>=22.18.0'}
     hasBin: true
 
@@ -9423,7 +9423,7 @@ snapshots:
     dependencies:
       is-number: 7.0.0
 
-  tonnage@0.1.1(arktype@2.2.3)(zod@4.5.4):
+  tonnage@0.1.2(arktype@2.2.3)(zod@4.5.4):
     dependencies:
       comline: 0.5.2(arktype@2.2.3)(zod@4.5.4)
       esbuild: 0.28.2

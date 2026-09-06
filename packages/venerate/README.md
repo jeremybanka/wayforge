@@ -45,4 +45,6 @@ Sizes are exact minified and level-9 gzip JavaScript byte counts. Declarations, 
 | --------------------- | ----------: | ------: |
 | <code>venerate</code> |     1,318 B |   572 B |
 
+Report maintained with [tonnage](https://github.com/jeremybanka/tonnage).
+
 <!-- tonnage:default:end -->
