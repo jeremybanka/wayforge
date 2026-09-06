@@ -24,4 +24,6 @@ Sizes are exact minified and level-9 gzip JavaScript byte counts. Declarations, 
 | <code>tsdoc.json</code>       | 3,755,563 B | 1,066,507 B |
 | <code>tsdoc.json/react</code> |     3,179 B |     1,129 B |
 
+Report maintained with [tonnage](https://github.com/jeremybanka/tonnage).
+
 <!-- tonnage:default:end -->
