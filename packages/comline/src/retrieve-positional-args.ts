@@ -1,5 +1,7 @@
 import type { Join, Tree, TreePath, TreePathName } from "treetrunks"
 
+import { findInvocationIndex } from "./invocation"
+
 export function retrievePositionalArgs<PositionalArgTree extends Tree>(
 	cliName: string,
 	positionalArgTree: PositionalArgTree,
@@ -10,12 +12,7 @@ export function retrievePositionalArgs<PositionalArgTree extends Tree>(
 	route: Join<TreePathName<PositionalArgTree>>
 } {
 	const endOfOptionsDelimiterIndex = passed.indexOf(`--`)
-	const cliInvocationIndex = passed.findIndex(
-		(arg, index) =>
-			(endOfOptionsDelimiterIndex === -1 ||
-				index < endOfOptionsDelimiterIndex) &&
-			arg.includes(cliName),
-	)
+	const cliInvocationIndex = findInvocationIndex(cliName, passed)
 	let positionalArgs: string[] | undefined
 	if (cliInvocationIndex !== -1) {
 		const allArgs = passed.slice(cliInvocationIndex + 1)
