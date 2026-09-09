@@ -190,6 +190,9 @@ function retrieveArgumentInstances(
 	const switchName = `--${key}`
 	const switchNameWithValue = `${switchName}=`
 	for (const [index, argument] of passed.entries()) {
+		if (argument === `--`) {
+			break
+		}
 		if (argument === switchName) {
 			const nextArg = passed[index + 1]
 			if (shouldConsumeNextArg(nextArg, valueKind, knownOptionTokens)) {
