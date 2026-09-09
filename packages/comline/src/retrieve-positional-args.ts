@@ -1,44 +1,29 @@
-import type { Join, Tree, TreePath, TreePathName } from "treetrunks"
+import type { Tree } from "treetrunks"
 
-export function retrievePositionalArgs<PositionalArgTree extends Tree>(
+export type RouteMatch = {
+	path: string[]
+	route: string
+	tree: Tree | null
+	complete: boolean
+	error?: string
+}
+
+/** Shared route traversal; a missing required child is an incomplete match. */
+export function matchRoute(
 	cliName: string,
-	positionalArgTree: PositionalArgTree,
-	passed: readonly string[],
-	ignoredArgIndexes: ReadonlySet<number> = new Set<number>(),
-): {
-	path: TreePath<PositionalArgTree>
-	route: Join<TreePathName<PositionalArgTree>>
-} {
-	let positionalOnly = false
-	const positionalArgs = passed.filter((arg, index) => {
-		if (positionalOnly) return true
-		if (arg === `--`) {
-			positionalOnly = true
-			return false
-		}
-		return !ignoredArgIndexes.has(index) && !arg.startsWith(`-`)
-	})
-
+	positionalArgTree: Tree,
+	positionalArgs: readonly string[],
+): RouteMatch {
 	const namedPositionalArgs: string[] = []
 	const validPositionalArgs: string[] = []
 	let treePointer: Tree | null = positionalArgTree
 	let argumentIndex = -1
 	if (positionalArgs.length === 0) {
-		if (treePointer[0] === `required`) {
-			const currentPath: string[] = []
-			const command =
-				cliName + (currentPath.length > 0 ? ` -- ${currentPath.join(` `)}` : ``)
-			const possiblePositionalArgs = Object.keys(treePointer[1])
-			const errorReport = [
-				`${command} requires one of the following positional arguments:`,
-				possiblePositionalArgs.map((arg) => `\t- ${arg}`).join(`\n`),
-				``,
-			]
-			throw new Error(errorReport.join(`\n`))
-		}
 		return {
-			path: [] as TreePath<PositionalArgTree>,
-			route: `` as Join<TreePathName<PositionalArgTree>>,
+			path: [],
+			route: ``,
+			tree: treePointer,
+			complete: treePointer[0] !== `required`,
 		}
 	}
 	for (const positionalArg of positionalArgs) {
@@ -55,9 +40,15 @@ export function retrievePositionalArgs<PositionalArgTree extends Tree>(
 				`There are no positional arguments for ${command}.`,
 				``,
 			]
-			throw new Error(errorReport.join(`\n`))
+			return {
+				path: validPositionalArgs,
+				route: namedPositionalArgs.join(`/`),
+				tree: treePointer,
+				complete: false,
+				error: errorReport.join(`\n`),
+			}
 		}
-		if (positionalArg in treePointer[1]) {
+		if (Object.hasOwn(treePointer[1], positionalArg)) {
 			treePointer = treePointer[1][positionalArg]
 			namedPositionalArgs.push(positionalArg)
 			validPositionalArgs.push(positionalArg)
@@ -84,7 +75,13 @@ export function retrievePositionalArgs<PositionalArgTree extends Tree>(
 				...Object.keys(treePointer[1]).map((key) => `\t• ${key}`),
 				``,
 			]
-			throw new Error(errorReport.join(`\n`))
+			return {
+				path: validPositionalArgs,
+				route: namedPositionalArgs.join(`/`),
+				tree: treePointer,
+				complete: false,
+				error: errorReport.join(`\n`),
+			}
 		} else {
 			const currentPath = [...positionalArgs.slice(0, argumentIndex)]
 			const command =
@@ -97,13 +94,19 @@ export function retrievePositionalArgs<PositionalArgTree extends Tree>(
 				`No positional arguments should be passed to ${command}.`,
 				``,
 			]
-			throw new Error(errorReport.join(`\n`))
+			return {
+				path: validPositionalArgs,
+				route: namedPositionalArgs.join(`/`),
+				tree: treePointer,
+				complete: false,
+				error: errorReport.join(`\n`),
+			}
 		}
 	}
 	return {
-		path: validPositionalArgs as TreePath<PositionalArgTree>,
-		route: namedPositionalArgs.join(`/`) as Join<
-			TreePathName<PositionalArgTree>
-		>,
+		path: validPositionalArgs,
+		route: namedPositionalArgs.join(`/`),
+		tree: treePointer,
+		complete: treePointer === null || treePointer[0] !== `required`,
 	}
 }
