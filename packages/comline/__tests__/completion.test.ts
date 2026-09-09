@@ -13,6 +13,7 @@ import {
 	parseBooleanOption,
 	parseNumberOption,
 } from "../src/cli"
+import { argv } from "./fixtures/argv"
 
 const shared = options(
 	`options`,
@@ -132,7 +133,7 @@ test.each([
 })
 
 test(`preserves long aliases in normal parsing`, () => {
-	expect(fj([`pr`, `list`, `--pr-state=closed`], { from: `user` }).inputs.opts).toEqual({
+	expect(fj(argv(`pr`, `list`, `--pr-state=closed`)).inputs.opts).toEqual({
 		state: `closed`,
 	})
 })
@@ -314,7 +315,9 @@ test(`never invokes completion providers during ordinary parsing`, () => {
 			}),
 		},
 	})
-	expect(command([`--ref=main`], { from: `user` }).inputs.opts).toEqual({ ref: `main` })
+	expect(command(argv(`--ref=main`)).inputs.opts).toEqual({
+		ref: `main`,
+	})
 	expect(provide).not.toHaveBeenCalled()
 })
 
@@ -418,7 +421,7 @@ test(`derives choices from Arktype and supports explicit boolean consumption ove
 	expect(
 		(await probe.complete({ words: [`run`, `--state=o`] })).candidates,
 	).toEqual([{ value: `off` }, { value: `on` }])
-	expect(probe([`--enabled`, `run`], { from: `user` }).inputs.opts).toEqual({
+	expect(probe(argv(`--enabled`, `run`)).inputs.opts).toEqual({
 		enabled: true,
 	})
 	expect(
@@ -439,7 +442,7 @@ test.each([
 	[`pr`, `create`, `--pr-state=closed`],
 	[`view`, `--`, `--repo=literal`],
 ])(`completion interpretation agrees with normal invocation: %j`, (...words) => {
-	const normal = fj([...words], { from: `user` }).inputs
+	const normal = fj([`runtime`, `script`, ...words]).inputs
 	const partial = fj.interpret({ words: [...words, ``] })
 	const interpreted = interpretArguments(definition, words)
 	expect(partial.route).toBe(normal.case)
@@ -541,8 +544,12 @@ test(`an option value containing the executable name remains a value`, () => {
 			}),
 		},
 	})
-	expect(command([`--name`, `probe`], { from: `user` }).inputs.opts).toEqual({ name: `probe` })
-	expect(command([`--name=probe`], { from: `user` }).inputs.opts).toEqual({ name: `probe` })
+	expect(command(argv(`--name`, `probe`)).inputs.opts).toEqual({
+		name: `probe`,
+	})
+	expect(command(argv(`--name=probe`)).inputs.opts).toEqual({
+		name: `probe`,
+	})
 })
 
 test(`option hiding follows the selected route when routes reuse a canonical key`, async () => {
@@ -570,7 +577,7 @@ test(`option hiding follows the selected route when routes reuse a canonical key
 		routes: required({ a: null, b: null }),
 		routeOptions: { a, b },
 	})
-	expect(command([`b`, `-a=other-route`], { from: `user` }).inputs.opts).toEqual({})
+	expect(command(argv(`b`, `-a=other-route`)).inputs.opts).toEqual({})
 	expect(
 		(
 			await command.complete({ words: [`b`, `-a=other-route`, `--`] })

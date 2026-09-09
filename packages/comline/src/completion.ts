@@ -62,7 +62,9 @@ export type CompletionProviderContext = CompletionContext & {
 export type CompletionResult = {
 	context: CompletionContext
 	candidates: CompletionCandidate[]
+	/** Union of target hints: files takes precedence over directories, then none. */
 	fileSystem: `none` | `files` | `directories`
+	/** False if any target requests no space; individual candidates may override it. */
 	appendSpace: boolean
 	/** Invalid preceding arguments or provider failures; adapters decide how to report them. */
 	diagnostics: string[]
@@ -78,16 +80,54 @@ function optionMatches(
 	const matches = local.length
 		? local
 		: context.allOptions.filter((option) => option.names.includes(name))
-	return matches.filter(
-		(option, index) =>
-			matches.findIndex(
-				(other) =>
-					other.key === option.key &&
-					other.valueKind === option.valueKind &&
-					other.completion === option.completion &&
-					JSON.stringify(other.choices) === JSON.stringify(option.choices),
-			) === index,
+	return deduplicateOptions(matches)
+}
+
+function optionChoices(
+	option: ArgumentOption,
+): readonly (string | CompletionCandidate)[] {
+	return (
+		option.completion?.choices ??
+		(option.choices.length
+			? option.choices
+			: option.valueKind === `boolean`
+				? [`true`, `false`, `0`, `1`]
+				: [])
 	)
+}
+
+function deduplicateOptions(
+	options: readonly ArgumentOption[],
+): ArgumentOption[] {
+	const seen = new Map<string, Set<CompletionHints[`provide`]>>()
+	return options.filter((option) => {
+		const hints = option.completion
+		const signature = JSON.stringify([
+			option.key,
+			option.names,
+			option.valueKind,
+			option.description,
+			hints?.fileSystem ?? `none`,
+			hints?.appendSpace ?? true,
+			hints?.repeatable ?? true,
+			optionChoices(option).map((value) => {
+				const item = candidate(value)
+				return [
+					item.value,
+					item.description ?? ``,
+					item.appendSpace ?? hints?.appendSpace ?? true,
+				]
+			}),
+		])
+		let providers = seen.get(signature)
+		if (!providers) {
+			providers = new Set<CompletionHints[`provide`]>()
+			seen.set(signature, providers)
+		}
+		if (providers.has(hints?.provide)) return false
+		providers.add(hints?.provide)
+		return true
+	})
 }
 
 /** Interpret an unfinished command line without executing providers or option parsers. */
@@ -152,9 +192,10 @@ export function interpretCompletion(
 				context.replacement.start = name.length + 1
 				let matches = optionMatches(context, name)
 				if (!name.startsWith(`--`) && name.length > 2) {
-					matches = context.availableOptions.filter((option) =>
-						option.names.some(
-							(token) => token.length === 2 && name.slice(1).includes(token[1]),
+					// Inline values apply to every flag, just as in normal invocation.
+					matches = deduplicateOptions(
+						[...new Set(name.slice(1))].flatMap((flag) =>
+							optionMatches(context, `-${flag}`),
 						),
 					)
 				}
@@ -202,6 +243,10 @@ export async function complete(
 		diagnostics: context.error ? [context.error] : [],
 	}
 	if (context.error || request.signal?.aborted) return result
+	const candidates = new Map<
+		string,
+		CompletionCandidate & { appendSpace: boolean }
+	>()
 	for (const target of context.targets) {
 		let hints: CompletionHints | undefined
 		let choices: readonly (string | CompletionCandidate)[] = []
@@ -230,20 +275,35 @@ export async function complete(
 				}))
 		} else if (target.kind === `option-value`) {
 			hints = target.option.completion
-			choices =
-				hints?.choices ??
-				(target.option.choices.length
-					? target.option.choices
-					: target.option.valueKind === `boolean`
-						? [`true`, `false`, `0`, `1`]
-						: [])
+			choices = optionChoices(target.option)
 		} else {
 			hints = definition.positionalCompletions?.[target.route]
 			choices = hints?.choices ?? []
 		}
-		if (hints?.fileSystem) result.fileSystem = hints.fileSystem
-		if (hints?.appendSpace !== undefined) result.appendSpace = hints.appendSpace
-		result.candidates.push(...choices.map(candidate))
+		// Preserve the union of filesystem possibilities across ambiguous targets.
+		if (
+			hints?.fileSystem === `files` ||
+			(hints?.fileSystem === `directories` && result.fileSystem === `none`)
+		) {
+			result.fileSystem = hints.fileSystem
+		}
+		const appendSpace = hints?.appendSpace ?? true
+		result.appendSpace &&= appendSpace
+		const addCandidates = (
+			values: readonly (string | CompletionCandidate)[],
+		): void => {
+			for (const value of values) {
+				const item = candidate(value)
+				if (!item.value.startsWith(context.prefix)) continue
+				const previous = candidates.get(item.value)
+				candidates.set(item.value, {
+					...(previous ?? item),
+					appendSpace:
+						(previous?.appendSpace ?? true) && (item.appendSpace ?? appendSpace),
+				})
+			}
+		}
+		addCandidates(choices)
 		if (hints?.provide) {
 			try {
 				const values = await hints.provide({
@@ -251,7 +311,7 @@ export async function complete(
 					target,
 					...(request.signal ? { signal: request.signal } : {}),
 				})
-				result.candidates.push(...values.map(candidate))
+				addCandidates(values)
 			} catch (error) {
 				result.diagnostics.push(
 					error instanceof Error ? error.message : `Completion provider failed.`,
@@ -261,11 +321,8 @@ export async function complete(
 		if (request.signal?.aborted)
 			return { ...result, candidates: [], fileSystem: `none` }
 	}
-	result.candidates = result.candidates
-		.filter((item) => item.value.startsWith(context.prefix))
-		.filter(
-			(item, index, items) =>
-				items.findIndex((other) => other.value === item.value) === index,
-		)
+	result.candidates = [...candidates.values()].map(({ appendSpace, ...item }) =>
+		appendSpace === result.appendSpace ? item : { ...item, appendSpace },
+	)
 	return result
 }
