@@ -6,6 +6,7 @@ import {
 	type OptionsSchema,
 	retrieveInputJsonSchema,
 } from "./schema"
+import type { CliWarning } from "./warnings"
 
 export type ArgumentInstance = {
 	index: number
@@ -195,6 +196,8 @@ export type ArgumentOption = {
 }
 
 type ArgumentInvocation = RouteMatch & {
+	/** Invalid option occurrences, checked against the selected route. */
+	warnings: CliWarning[]
 	/** Raw occurrences for the selected route (or following variable routes), in argument order. */
 	options: OptionOccurrence[]
 }
@@ -404,6 +407,14 @@ function interpretCore(
 	)!.scan
 	const invocation: ArgumentInvocation = {
 		...match,
+		warnings: collectWarnings(
+			definition.cliName,
+			words,
+			match,
+			() => retrieveKnownOptionTokens([...groups.values()].flat()),
+			selectedScan.knownOptionTokens,
+			selectedScan.consumed,
+		),
 		options: occurrences(
 			selectedOptions ?? availableOptions(groups, match),
 			selectedOptions ? [selectedScan] : activeScans,
@@ -456,6 +467,49 @@ export function interpretArguments(
 	words: readonly string[],
 ): ArgumentInterpretation {
 	return interpretCore(definition, words).completion()
+}
+
+function collectWarnings(
+	cliName: string,
+	words: readonly string[],
+	match: RouteMatch,
+	getKnownTokens: () => KnownOptionTokens,
+	selected: KnownOptionTokens,
+	consumed: ReadonlySet<number>,
+): CliWarning[] {
+	const warnings: CliWarning[] = []
+	let known: KnownOptionTokens | undefined
+	const command = [cliName, ...match.path].join(` `)
+	for (const [index, word] of words.entries()) {
+		if (word === `--`) break
+		if (consumed.has(index) || !word.startsWith(`-`) || word === `-`) continue
+		const [name] = splitOptionValue(word)
+		const isLong = name.startsWith(`--`)
+		const names = isLong ? [name] : name.slice(1).split(``)
+		for (const token of names) {
+			const selectedTokens = isLong ? selected.switches : selected.flags
+			if (selectedTokens.has(token)) continue
+			known ??= getKnownTokens()
+			const knownTokens = isLong ? known.switches : known.flags
+			const option = isLong ? token : `-${token}`
+			const code = knownTokens.has(token)
+				? `option-not-valid-for-route`
+				: `unknown-option`
+			warnings.push({
+				code,
+				message:
+					code === `unknown-option`
+						? `Unknown option "${option}" for command "${command}".`
+						: `Option "${option}" is not valid for command "${command}".`,
+				option,
+				index,
+				cliName,
+				route: match.route,
+				path: [...match.path],
+			})
+		}
+	}
+	return warnings
 }
 
 /** Cache only token consumption; never use this signature to discard completion metadata. */

@@ -112,6 +112,7 @@ Calling a configured CLI returns:
 - `inputs.case`: the matched route key, such as `""` or `"hello/$name"`
 - `inputs.path`: the positional argument path supplied by the user
 - `inputs.opts`: parsed and schema-validated options for that route
+- `warnings`: an always-present `CliWarning[]` of ignored option occurrences; empty when there are no warnings
 - `writeJsonSchema(outdir)`: writes JSON Schema files for each route with
   options
 
@@ -123,6 +124,51 @@ if (process.env.WRITE_CONFIG_SCHEMA) {
 }
 
 greet(inputs.opts.name, inputs.opts.age)
+```
+
+## warnings
+
+Parsing returns structured warnings without automatically logging them. Unknown options and options that only belong to another route remain ignored. Call the bundled logger when you want readable terminal output on stderr:
+
+```typescript
+import { logWarnings } from "comline"
+
+const { inputs, warnings } = greetCli(process.argv)
+logWarnings(warnings)
+greet(inputs.opts.name, inputs.opts.age)
+```
+
+Alternatively, handle warnings yourself:
+
+```typescript
+const { warnings } = greetCli(process.argv)
+for (const warning of warnings) {
+	customLogger.warn(warning.message)
+}
+```
+
+Each exported `CliWarning` contains:
+
+- `code`: `"unknown-option"` when the spelling is not recognized anywhere in the CLI, or `"option-not-valid-for-route"` when it belongs elsewhere
+- `message`: human-readable text identifying the option and selected command
+- `option`: the supplied spelling without any inline value, such as `"--label"` or `"-x"`; each invalid flag in a short group gets its own warning
+- `index`: the zero-based index in `argv.slice(2)` (or in the words supplied to `interpretArguments`); flags in the same group share an index
+- `cliName`: the configured command name
+- `route`: the canonical selected route, such as `"show/$name"` or `""` for root
+- `path`: actual positional words, such as `["show", "alice"]`
+
+Warnings follow argument order, including repeated invalid flags in a group. Applicability uses the final selected route even for options before the command. Canonical long names, long aliases, short flags, and `--name=value` all count. Consumed option values, the `--` delimiter, and everything after it are excluded. For example, `--name --typo` may consume `--typo` as the value of `name`, so that value produces no warning. Consumption follows the selected route: this also applies when the value is an option spelling known only on a sibling route. A sibling route’s consumption cannot hide warnings on the selected route.
+
+Warnings do not independently fail parsing. Existing route and validation errors still throw; warnings are returned only on successful invocations. An unknown option followed by a separate value may still cause a positional-argument error because its value consumption is unknown.
+
+`logWarnings(warnings, options?)` produces no output for an empty array. It accepts `logger: { warn(message) }` to redirect the formatted text. Like `help()`, both warning helpers accept `forceColor: false` to disable colors or `forceColor: true` to force them; omitting it detects color support on stderr. Use `formatWarnings` to reuse the presentation with any output mechanism. It returns newline-separated warnings without a trailing newline, or `""` for empty input:
+
+```typescript
+import { formatWarnings, logWarnings } from "comline"
+
+logWarnings(warnings, { logger: customLogger, forceColor: false })
+// Or format without logging:
+const text = formatWarnings(warnings, { forceColor: false })
 ```
 
 ## features

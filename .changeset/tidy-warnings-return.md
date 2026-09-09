@@ -1,0 +1,5 @@
+---
+"comline": patch
+---
+
+Return an always-present `warnings` array for unknown options and options invalid on the selected route. Warnings include option spelling, word index within `argv.slice(2)`, and selected command context; consumed values follow the selected route’s grammar and do not produce warnings. Export `CliWarning`, reusable `formatWarnings`, and opt-in `logWarnings` with stderr output, custom logging, and color controls. Parsing does not automatically log warnings.
