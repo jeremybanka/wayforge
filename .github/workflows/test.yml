@@ -34,9 +34,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y bash-completion zsh fish
-          mise install go@1.26.7 nushell@0.115.1 carapace@1.6.3
       - name: Exercise shell editors and completion protocols
-        run: mise exec go@1.26.7 nushell@0.115.1 carapace@1.6.3 -- pnpm --filter comline test:completions
+        run: pnpm --filter comline test:completions
 
   Vitest:
     runs-on: ubuntu-latest
