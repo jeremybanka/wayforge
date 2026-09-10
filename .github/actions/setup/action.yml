@@ -1,5 +1,10 @@
 name: Setup
 description: Download and install 3rd party software.
+inputs:
+  packages:
+    description: Space-separated mise packages to install for this job.
+    required: false
+    default: bun node pnpm
 runs:
   using: composite
   steps:
@@ -7,6 +12,8 @@ runs:
       uses: jdx/mise-action@dba19683ed58901619b14f395a24841710cb4925 # v4.1.0
       with:
         version: 2026.6.11
+        env: false
+        install_args: ${{ inputs.packages }}
 
     - name: Install Dependencies
       shell: bash
