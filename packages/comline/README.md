@@ -240,11 +240,7 @@ Run `pnpm --filter comline test:coverage` to generate coverage and compare it wi
 
 ## completion API
 
-`cli()` exposes `interpret(request)` and asynchronous `complete(request)` methods.
-Both use the same option consumption and route traversal as normal invocation.
-Interpretation tolerates missing required options and unfinished routes; it does
-not discover configuration, call option parsers, validate schemas, or execute
-commands. Only `complete()` invokes explicitly configured candidate providers.
+`cli()` exposes `interpret(request)` and asynchronous `complete(request)` methods. Both use the same option consumption and route traversal as normal invocation. Interpretation tolerates missing required options and unfinished routes; it does not discover configuration, call option parsers, validate schemas, or execute commands. Only `complete()` invokes explicitly configured candidate providers.
 
 ```typescript
 import { cli, options, required } from "comline"
@@ -298,83 +294,30 @@ const context = prCli.interpret({ words: ["pr", "create", "--base", ""] })
 // context.targets[0]: { kind: "option-value", option: { key: "base", ... } }
 ```
 
-Requests contain shell-tokenized, unescaped `words` **without the executable or
-runtime arguments**. The last word is being edited; include an empty final word
-for a trailing space. `words: []` is equivalent to `[""]`. An optional
-`cursor: { word, offset }` supports editing an earlier word or inside a word.
-Offsets count UTF-16 code units. Later words do not affect completion.
+Requests contain shell-tokenized, unescaped `words` **without the executable or runtime arguments**. The last word is being edited; include an empty final word for a trailing space. `words: []` is equivalent to `[""]`. An optional `cursor: { word, offset }` supports editing an earlier word or inside a word. Offsets count UTF-16 code units. Later words do not affect completion.
 
-Candidate values replace `context.replacement.start` through `.end` in the
-specified word. The range covers the entire current word (including any suffix
-after the cursor), or just its value for an inline assignment. Thus completing
-`--state=clutter` with the cursor after `cl` replaces `clutter` with `closed` and
-retains `--state=`. Adapters must map these unescaped ranges back to shell syntax,
-quote candidate values, and translate file/spacing hints into shell directives.
+Candidate values replace `context.replacement.start` through `.end` in the specified word. The range covers the entire current word (including any suffix after the cursor), or just its value for an inline assignment. Thus completing `--state=clutter` with the cursor after `cl` replaces `clutter` with `closed` and retains `--state=`. Adapters must map these unescaped ranges back to shell syntax, quote candidate values, and translate file/spacing hints into shell directives.
 
-Context includes the canonical `route`, actual positional `path`, remaining
-`tree`, and a `complete` flag indicating whether the required route is satisfied.
-`options` retains raw occurrences with canonical keys, token indexes, values,
-and indexes of separately consumed values. Repeated values remain separate;
-grouped counting flags retain Comline's comma representation. For incomplete
-routes, options through following variable positionals are available too.
-`allOptions` and `allOccurrences` expose the possible interpretations across
-routes, including options supplied before command selection; they may contain
-multiple interpretations when routes reuse an option with different semantics.
-`targets` can contain both a boolean value and a positional/command target.
+Context includes the canonical `route`, actual positional `path`, remaining `tree`, and a `complete` flag indicating whether the required route is satisfied. `options` retains raw occurrences with canonical keys, token indexes, values, and indexes of separately consumed values. Repeated values remain separate; grouped counting flags retain Comline's comma representation. For incomplete routes, options through following variable positionals are available too. `allOptions` and `allOccurrences` expose the possible interpretations across routes, including options supplied before command selection; they may contain multiple interpretations when routes reuse an option with different semantics. `targets` can contain both a boolean value and a positional/command target.
 
-For adapters that only need to interpret already completed words, use
-`interpretArguments(definition, words)`. Unlike `interpret()` and
-`interpretCompletion(definition, request)`, this treats every supplied word as
-completed. `complete(definition, request)` is also available as a standalone
-function. None of these APIs require calling normal invocation first.
+For adapters that only need to interpret already completed words, use `interpretArguments(definition, words)`. Unlike `interpret()` and `interpretCompletion(definition, request)`, this treats every supplied word as completed. `complete(definition, request)` is also available as a standalone function. None of these APIs require calling normal invocation first.
 
 Option configurations accept:
 
-- `aliases`: additional long names without `--`, shared by execution and
-  completion. The option's object key remains its canonical name.
-- `valueKind: "boolean" | "value"`: overrides schema-based consumption in both
-  paths, including schemas whose boolean type is hidden by composition.
-- `completion.choices`: strings or `{ value, description?, appendSpace? }`
-  candidates. Overrides inferred primitive `enum`/`const` choices; booleans
-  otherwise offer `true`, `false`, `0`, and `1`.
-- `completion.fileSystem`: `"none"`, `"files"`, or `"directories"` requests shell
-  filesystem completion. Comline itself does not read directories.
+- `aliases`: additional long names without `--`, shared by execution and completion. The option's object key remains its canonical name.
+- `valueKind: "boolean" | "value"`: overrides schema-based consumption in both paths, including schemas whose boolean type is hidden by composition.
+- `completion.choices`: strings or `{ value, description?, appendSpace? }` candidates. Overrides inferred primitive `enum`/`const` choices; booleans otherwise offer `true`, `false`, `0`, and `1`.
+- `completion.fileSystem`: `"none"`, `"files"`, or `"directories"` requests shell filesystem completion. Comline itself does not read directories.
 - `completion.appendSpace`: default spacing behavior; candidates may override it.
-- `completion.repeatable: false`: hides a supplied option from suggestions.
-  Defaults to allowing repetition, including scalar options and counting flags.
-- `completion.provide(context)`: supplies additional candidates synchronously or
-  asynchronously. Receives the context, the specific `target`, and the optional
-  request `signal`. Providers should respect cancellation; Comline discards
-  results after cancellation and returns provider failures in `diagnostics`.
+- `completion.repeatable: false`: hides a supplied option from suggestions. Defaults to allowing repetition, including scalar options and counting flags.
+- `completion.provide(context)`: supplies additional candidates synchronously or asynchronously. Receives the context, the specific `target`, and the optional request `signal`. Providers should respect cancellation; Comline discards results after cancellation and returns provider failures in `diagnostics`.
 
-Use `definition.positionalCompletions` for the same hints on variable positions,
-keyed by the full variable route name, such as `"commit/view/$ref"`. Literal
-command suggestions and variable candidates can coexist. Missing schema metadata
-falls back to explicit hints and value-consuming options; no option parser is
-called to infer completion behavior. JSON Schema metadata is read once per
-shared schema per interpretation.
+Use `definition.positionalCompletions` for the same hints on variable positions, keyed by the full variable route name, such as `"commit/view/$ref"`. Literal command suggestions and variable candidates can coexist. Missing schema metadata falls back to explicit hints and value-consuming options; no option parser is called to infer completion behavior. JSON Schema metadata is read once per shared schema per interpretation.
 
-When several targets are possible, filesystem hints combine as a union: `files`
-takes precedence over `directories`, which takes precedence over `none`. The
-result's `appendSpace` is false if any target requests no trailing space.
-Candidates retain their own target's spacing behavior through a candidate-level
-override when necessary, so a positional hint cannot suppress spacing on a
-literal command. For duplicate candidate values, a no-space request takes
-precedence. These rules do not depend on route declaration order.
+When several targets are possible, filesystem hints combine as a union: `files` takes precedence over `directories`, which takes precedence over `none`. The result's `appendSpace` is false if any target requests no trailing space. Candidates retain their own target's spacing behavior through a candidate-level override when necessary, so a positional hint cannot suppress spacing on a literal command. For duplicate candidate values, a no-space request takes precedence. These rules do not depend on route declaration order.
 
-Equivalent options with cloned hint objects share a completion target when
-their option metadata, effective choices and hints, and provider function match.
-Distinct provider functions remain separate, even when their other hints match.
+Equivalent options with cloned hint objects share a completion target when their option metadata, effective choices and hints, and provider function match. Distinct provider functions remain separate, even when their other hints match.
 
-The first committed `--` ends option interpretation. An unfinished `--` remains
-an option-name prefix until the shell starts the next word. Existing Comline
-rules also apply to short groups, repeated options, boolean literals, and
-negative or otherwise unrecognized dash-prefixed values.
-In particular, an inline value on a short group applies to every flag in the
-group: `-dc=0` supplies `"0"` to both `d` and `c`. Completion preserves this
-existing parsing rule, including before command selection.
+The first committed `--` ends option interpretation. An unfinished `--` remains an option-name prefix until the shell starts the next word. Existing Comline rules also apply to short groups, repeated options, boolean literals, and negative or otherwise unrecognized dash-prefixed values. In particular, an inline value on a short group applies to every flag in the group: `-dc=0` supplies `"0"` to both `d` and `c`. Completion preserves this existing parsing rule, including before command selection.
 
-Shell scripts and a Carapace exporter are not included in this first increment.
-Adapters can query these APIs without maintaining another command tree. A static
-exporter must map dynamic providers to supported macros or an application query
-protocol; JavaScript callbacks cannot be serialized into a static spec.
+Shell scripts and a Carapace exporter are not included in this first increment. Adapters can query these APIs without maintaining another command tree. A static exporter must map dynamic providers to supported macros or an application query protocol; JavaScript callbacks cannot be serialized into a static spec.
