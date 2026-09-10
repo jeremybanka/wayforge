@@ -66,7 +66,7 @@ const {
 	inputs: {
 		opts: { name, age },
 	},
-} = greetCli(process.argv)
+} = greetCli()
 
 const output = greet(name, age)
 process.stdout.write(output)
@@ -97,7 +97,7 @@ Calling a configured CLI returns:
   options
 
 ```typescript
-const { inputs, writeJsonSchema } = greetCli(process.argv)
+const { inputs, writeJsonSchema } = greetCli()
 
 if (process.env.WRITE_CONFIG_SCHEMA) {
 	writeJsonSchema(`./schemas`)
@@ -184,5 +184,25 @@ comline exports these parser helpers:
 
 ## limitations
 
-- comline supports positional arguments, but only following the `--` convention.
 - flags are supported, but they must be single characters, either uppercase or lowercase.
+
+## argument input
+
+Call a configured CLI with no arguments to parse `process.argv.slice(2)`, or pass
+an explicit array containing only command words:
+
+```typescript
+const invoked = greetCli()
+const explicit = greetCli(["--name=jeremybanka", "--age=1"])
+```
+
+Comline never identifies a runtime, package manager, executable, or script by its
+name. The default follows the `process.argv` layout: runtime/executable, entry
+point, then command words. A caller using another layout must pass its command
+words explicitly. `cliName` is only a display name; a positional argument equal
+to it remains a positional argument.
+
+Migration: replace `myCli(process.argv)` with `myCli()` or
+`myCli(process.argv.slice(2))`. For an array with one executable prefix, pass
+`myCli(argv.slice(1))`; already-normalized word arrays need no change. Routes may
+appear before `--`; every word after the first `--` is a literal positional.

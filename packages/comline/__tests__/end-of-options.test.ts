@@ -32,14 +32,15 @@ test.each([
 	[`-ncc`],
 	[`--`, `--name=after`],
 ])(`ignores options after the delimiter: %j`, (...tokens) => {
-	expect(rootCli([`probe`, `--`, ...tokens]).inputs.opts).toEqual({})
-	expect(
-		rootCli([`probe`, `--name=before`, `-c`, `--`, ...tokens]).inputs.opts,
-	).toEqual({ name: `before`, count: 1 })
+	expect(rootCli([`--`, ...tokens]).inputs.opts).toEqual({})
+	expect(rootCli([`--name=before`, `-c`, `--`, ...tokens]).inputs.opts).toEqual({
+		name: `before`,
+		count: 1,
+	})
 })
 
 test(`the delimiter is not consumed as a separated value`, () => {
-	expect(rootCli([`probe`, `--name`, `--`, `after`]).inputs.opts).toEqual({
+	expect(rootCli([`--name`, `--`, `after`]).inputs.opts).toEqual({
 		name: ``,
 	})
 })
@@ -47,7 +48,7 @@ test(`the delimiter is not consumed as a separated value`, () => {
 test.each([`--name=--`, `-n=--`])(
 	`keeps an inline delimiter value: %s`,
 	(token) => {
-		expect(rootCli([`probe`, token]).inputs.opts).toEqual({ name: `--` })
+		expect(rootCli([token]).inputs.opts).toEqual({ name: `--` })
 	},
 )
 
@@ -60,9 +61,7 @@ test.each([`--name=after`, `-n`, `-ncc`, `--`])(
 			routes: required({ run: required({ $value: null }) }),
 			routeOptions: { "run/$value": optionGroup },
 		})
-		expect(
-			routedCli([`probe`, `--name`, `before`, `run`, `--`, token]).inputs,
-		).toEqual({
+		expect(routedCli([`--name`, `before`, `run`, `--`, token]).inputs).toEqual({
 			case: `run/$value`,
 			path: [`run`, token],
 			opts: { name: `before` },
@@ -77,7 +76,7 @@ test(`a trailing delimiter does not discard a complete route`, () => {
 		routes: required({ run: null }),
 		routeOptions: { run: optionGroup },
 	})
-	expect(routedCli([`probe`, `run`, `--`]).inputs.case).toBe(`run`)
+	expect(routedCli([`run`, `--`]).inputs.case).toBe(`run`)
 })
 
 test(`a literal containing the CLI name is not mistaken for the invocation`, () => {

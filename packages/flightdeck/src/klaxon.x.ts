@@ -43,7 +43,7 @@ const klaxon = cli({
 	},
 })
 
-const { inputs } = klaxon(process.argv)
+const { inputs } = klaxon()
 await Klaxon.scramble(inputs.opts).then((scrambleResult) => {
 	console.log(scrambleResult)
 })
