@@ -3,32 +3,27 @@ import type { Join, Tree, TreePath, TreePathName } from "treetrunks"
 export function retrievePositionalArgs<PositionalArgTree extends Tree>(
 	cliName: string,
 	positionalArgTree: PositionalArgTree,
-	passed: string[],
+	passed: readonly string[],
 	ignoredArgIndexes: ReadonlySet<number> = new Set<number>(),
 ): {
 	path: TreePath<PositionalArgTree>
 	route: Join<TreePathName<PositionalArgTree>>
 } {
-	const cliInvocationIndex = passed.findIndex((arg) => arg.includes(cliName))
-	const endOfOptionsDelimiterIndex = passed.indexOf(`--`)
-	let positionalArgs: string[] | undefined
-	if (endOfOptionsDelimiterIndex === -1) {
-		if (cliInvocationIndex !== -1) {
-			const allArgs = passed.slice(cliInvocationIndex + 1)
-			positionalArgs = allArgs.filter((arg, index) => {
-				const passedIndex = cliInvocationIndex + 1 + index
-				return !ignoredArgIndexes.has(passedIndex) && !arg.startsWith(`-`)
-			})
+	let positionalOnly = false
+	const positionalArgs = passed.filter((arg, index) => {
+		if (positionalOnly) return true
+		if (arg === `--`) {
+			positionalOnly = true
+			return false
 		}
-	} else {
-		positionalArgs = passed.slice(endOfOptionsDelimiterIndex + 1)
-	}
+		return !ignoredArgIndexes.has(index) && !arg.startsWith(`-`)
+	})
 
 	const namedPositionalArgs: string[] = []
 	const validPositionalArgs: string[] = []
 	let treePointer: Tree | null = positionalArgTree
 	let argumentIndex = -1
-	if (positionalArgs === undefined || positionalArgs.length === 0) {
+	if (positionalArgs.length === 0) {
 		if (treePointer[0] === `required`) {
 			const currentPath: string[] = []
 			const command =

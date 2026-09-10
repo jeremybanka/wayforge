@@ -4,6 +4,7 @@ import z from "zod"
 
 import { cli, options } from "../src/cli"
 import { parseBooleanOption, parseStringOption } from "../src/option-parsers"
+import { argv } from "./fixtures/argv"
 
 describe(`positional args from cli`, () => {
 	const testCli = cli({
@@ -23,25 +24,25 @@ describe(`positional args from cli`, () => {
 		options: {},
 	})
 	test(`happy: all positional args`, () => {
-		const { inputs } = testCli([`--`, `hello`, `world`])
+		const { inputs } = testCli(argv(`--`, `hello`, `world`))
 		expect(inputs.case).toEqual(`hello/world`)
 		expect(inputs.path).toEqual([`hello`, `world`])
 		expect(inputs.opts).toEqual({})
 	})
 	test(`happy: missing optional positional args`, () => {
-		const { inputs } = testCli([`--`, `hello`])
+		const { inputs } = testCli(argv(`--`, `hello`))
 		expect(inputs.case).toEqual(`hello`)
 		expect(inputs.path).toEqual([`hello`])
 		expect(inputs.opts).toEqual({})
 	})
 	test(`error: missing required positional args`, () => {
-		expect(() => testCli([`--`])).toThrow()
+		expect(() => testCli(argv(`--`))).toThrow()
 	})
 	test(`error: extra positional args`, () => {
-		expect(() => testCli([`--`, `hello`, `world`, `extra`])).toThrow()
+		expect(() => testCli(argv(`--`, `hello`, `world`, `extra`))).toThrow()
 	})
 	test(`happy: variable positional args`, () => {
-		const { inputs } = testCli([`--`, `hello`, `jeff`, `good`, `morning`])
+		const { inputs } = testCli(argv(`--`, `hello`, `jeff`, `good`, `morning`))
 		expect(inputs.case).toEqual(`hello/$name/good/morning`)
 		expect(inputs.path).toEqual([`hello`, `jeff`, `good`, `morning`])
 		expect(inputs.opts).toEqual({})
@@ -68,29 +69,19 @@ describe(`options and positional args from cli`, () => {
 		},
 	})
 	test(`happy: all options and positional args`, () => {
-		const { inputs } = testCli([
-			`/some-random-path/my-cli`,
-			`--foo=hello`,
-			`--`,
-			`yo`,
-		])
+		const { inputs } = testCli(argv(`--foo=hello`, `--`, `yo`))
 		expect(inputs.case).toEqual(`yo`)
 		expect(inputs.opts).toEqual({ foo: `hello` })
 		expect(inputs.path).toEqual([`yo`])
 	})
 	test(`happy: including optional options and missing optional positional args`, () => {
-		const { inputs } = testCli([
-			`/usr/bin/env/node`,
-			`/some-random-path/my-cli`,
-			`--foo=hello`,
-			`--`,
-		])
+		const { inputs } = testCli(argv(`--foo=hello`, `--`))
 		expect(inputs.case).toEqual(``)
 		expect(inputs.opts).toEqual({ foo: `hello` })
 		expect(inputs.path).toEqual([])
 	})
 	test(`happy: missing optional options and including optional positional args`, () => {
-		const { inputs } = testCli([`--`, `yo`])
+		const { inputs } = testCli(argv(`--`, `yo`))
 		expect(inputs.case).toEqual(`yo`)
 		expect(inputs.opts).toEqual({})
 		expect(inputs.path).toEqual([`yo`])
@@ -119,35 +110,21 @@ describe(`options without equals signs and positional args from cli`, () => {
 		},
 	})
 	test(`happy: positional args with option values separated by spaces`, () => {
-		const { inputs } = testCli([
-			`/some-random-path/my-cli`,
-			`do-thing`,
-			`--with-option`,
-			`so-and-so`,
-		])
+		const { inputs } = testCli(argv(`do-thing`, `--with-option`, `so-and-so`))
 		expect(inputs.case).toEqual(`do-thing`)
 		expect(inputs.opts).toEqual({ "with-option": `so-and-so` })
 		expect(inputs.path).toEqual([`do-thing`])
 	})
 	test(`happy: more positional args with option values separated by spaces`, () => {
-		const { inputs } = testCli([
-			`/some-random-path/my-cli`,
-			`deploy`,
-			`my-app`,
-			`production`,
-			`--with-option`,
-			`so-and-so`,
-		])
+		const { inputs } = testCli(
+			argv(`deploy`, `my-app`, `production`, `--with-option`, `so-and-so`),
+		)
 		expect(inputs.case).toEqual(`deploy/$target/$environment`)
 		expect(inputs.opts).toEqual({ "with-option": `so-and-so` })
 		expect(inputs.path).toEqual([`deploy`, `my-app`, `production`])
 	})
 	test(`happy: positional args with option values separated by equals signs`, () => {
-		const { inputs } = testCli([
-			`/some-random-path/my-cli`,
-			`do-thing`,
-			`--with-option=so-and-so`,
-		])
+		const { inputs } = testCli(argv(`do-thing`, `--with-option=so-and-so`))
 		expect(inputs.case).toEqual(`do-thing`)
 		expect(inputs.opts).toEqual({ "with-option": `so-and-so` })
 		expect(inputs.path).toEqual([`do-thing`])
@@ -182,12 +159,7 @@ describe(`options before positional args from cli`, () => {
 				"set/$enabled": switchOptionGroup,
 			},
 		})
-		const { inputs } = testCli([
-			`/some-random-path/my-cli`,
-			`--dry-run`,
-			`set`,
-			`true`,
-		])
+		const { inputs } = testCli(argv(`--dry-run`, `set`, `true`))
 		expect(inputs.case).toEqual(`set/$enabled`)
 		expect(inputs.opts).toEqual({ "dry-run": true })
 		expect(inputs.path).toEqual([`set`, `true`])
@@ -201,12 +173,7 @@ describe(`options before positional args from cli`, () => {
 				"set/$enabled": switchOptionGroup,
 			},
 		})
-		const { inputs } = testCli([
-			`/some-random-path/my-cli`,
-			`--dry-run=false`,
-			`set`,
-			`true`,
-		])
+		const { inputs } = testCli(argv(`--dry-run=false`, `set`, `true`))
 		expect(inputs.case).toEqual(`set/$enabled`)
 		expect(inputs.opts).toEqual({ "dry-run": false })
 		expect(inputs.path).toEqual([`set`, `true`])
@@ -220,13 +187,7 @@ describe(`options before positional args from cli`, () => {
 				"set/$enabled": switchOptionGroup,
 			},
 		})
-		const { inputs } = testCli([
-			`/some-random-path/my-cli`,
-			`--dry-run`,
-			`false`,
-			`set`,
-			`true`,
-		])
+		const { inputs } = testCli(argv(`--dry-run`, `false`, `set`, `true`))
 		expect(inputs.case).toEqual(`set/$enabled`)
 		expect(inputs.opts).toEqual({ "dry-run": false })
 		expect(inputs.path).toEqual([`set`, `true`])
@@ -240,7 +201,7 @@ describe(`options before positional args from cli`, () => {
 				"set/$enabled": switchOptionGroup,
 			},
 		})
-		const { inputs } = testCli([`/some-random-path/my-cli`, `-d`, `set`, `true`])
+		const { inputs } = testCli(argv(`-d`, `set`, `true`))
 		expect(inputs.case).toEqual(`set/$enabled`)
 		expect(inputs.opts).toEqual({ "dry-run": true })
 		expect(inputs.path).toEqual([`set`, `true`])
@@ -254,13 +215,7 @@ describe(`options before positional args from cli`, () => {
 				"set/$enabled": switchOptionGroup,
 			},
 		})
-		const { inputs } = testCli([
-			`/some-random-path/my-cli`,
-			`-d`,
-			`false`,
-			`set`,
-			`true`,
-		])
+		const { inputs } = testCli(argv(`-d`, `false`, `set`, `true`))
 		expect(inputs.case).toEqual(`set/$enabled`)
 		expect(inputs.opts).toEqual({ "dry-run": false })
 		expect(inputs.path).toEqual([`set`, `true`])
@@ -274,13 +229,7 @@ describe(`options before positional args from cli`, () => {
 				"inspect/$target": flagOptionGroup,
 			},
 		})
-		const { inputs } = testCli([
-			`/some-random-path/my-cli`,
-			`-n`,
-			`example`,
-			`inspect`,
-			`service-a`,
-		])
+		const { inputs } = testCli(argv(`-n`, `example`, `inspect`, `service-a`))
 		expect(inputs.case).toEqual(`inspect/$target`)
 		expect(inputs.opts).toEqual({ name: `example` })
 		expect(inputs.path).toEqual([`inspect`, `service-a`])
@@ -313,12 +262,7 @@ describe(`zod boolean options before positional args from cli`, () => {
 				},
 			}),
 		)
-		const { inputs } = testCli([
-			`/some-random-path/my-cli`,
-			`--dry-run`,
-			`set`,
-			`true`,
-		])
+		const { inputs } = testCli(argv(`--dry-run`, `set`, `true`))
 		expect(inputs.case).toEqual(`set/$enabled`)
 		expect(inputs.opts).toEqual({ "dry-run": true })
 		expect(inputs.path).toEqual([`set`, `true`])
@@ -336,12 +280,7 @@ describe(`zod boolean options before positional args from cli`, () => {
 				},
 			}),
 		)
-		const { inputs } = testCli([
-			`/some-random-path/my-cli`,
-			`--dry-run`,
-			`set`,
-			`true`,
-		])
+		const { inputs } = testCli(argv(`--dry-run`, `set`, `true`))
 		expect(inputs.case).toEqual(`set/$enabled`)
 		expect(inputs.opts).toEqual({ "dry-run": true })
 		expect(inputs.path).toEqual([`set`, `true`])

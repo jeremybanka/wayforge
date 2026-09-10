@@ -184,5 +184,31 @@ comline exports these parser helpers:
 
 ## limitations
 
-- comline supports positional arguments, but only following the `--` convention.
 - flags are supported, but they must be single characters, either uppercase or lowercase.
+
+## argument input
+
+Pass the full runtime argv to a configured CLI:
+
+```typescript
+const { inputs } = greetCli(process.argv)
+```
+
+Comline follows the Node/Bun argv convention: the first two entries identify the
+runtime and entry point; parsing starts with the following command words. This
+also applies to global commands, shebang scripts, and commands launched through
+`pnpm exec` or `mise exec`. Launchers do not appear as extra prefixes in the
+child's `process.argv`. No runtime or executable names are inspected.
+
+This follows [Commander's argv contract](https://github.com/tj/commander.js/blob/master/Readme.md#parse-and-parseasync)
+and [Node's documented argv layout](https://nodejs.org/api/process.html#processargv).
+`cliName` is a display name, so matching words remain positional arguments.
+
+A `--` delivered to Comline ends option parsing. For example,
+`mise exec -- pnpm exec mycli -- foo` delivers `[runtime, entryPoint, "--", "foo"]`:
+mise consumes its delimiter, while the delimiter after `mycli` remains part of
+the CLI input. Routes may appear before `--`, and subsequent words are literal
+positionals.
+
+Migration: keep `myCli(process.argv)` as-is. The parser always accepts full runtime
+argv; command-only or executable-only arrays are no longer inferred.

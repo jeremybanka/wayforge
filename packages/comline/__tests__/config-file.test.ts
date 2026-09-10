@@ -8,6 +8,7 @@ import z from "zod"
 
 import { cli, options } from "../src/cli"
 import { parseStringOption } from "../src/option-parsers"
+import { argv } from "./fixtures/argv"
 
 let tempDir: string
 
@@ -43,17 +44,17 @@ describe(`options from file`, () => {
 	})
 	test(`happy: all options`, () => {
 		fs.writeFileSync(`${tempDir}/config.json`, `{"foo":"hello"}`)
-		const { inputs } = testCli([`--`, `config.json`])
+		const { inputs } = testCli(argv(`--`, `config.json`))
 		expect(inputs.opts).toEqual({ foo: `hello` })
 		expect(inputs.path).toEqual([`config.json`])
 	})
 	test(`error: missing required options in file`, () => {
 		fs.writeFileSync(`${tempDir}/config.json`, `{}`)
-		expect(() => testCli([`--`, `config.json`])).toThrow()
+		expect(() => testCli(argv(`--`, `config.json`))).toThrow()
 	})
 	test(`happy: override options from file with cli options`, () => {
 		fs.writeFileSync(`${tempDir}/config.json`, `{"foo":"hello"}`)
-		const { inputs } = testCli([`--foo=goodbye`, `--`, `config.json`])
+		const { inputs } = testCli(argv(`--foo=goodbye`, `--`, `config.json`))
 		expect(inputs.opts).toEqual({ foo: `goodbye` })
 		expect(inputs.path).toEqual([`config.json`])
 	})
@@ -82,7 +83,7 @@ describe(`creating a config schema`, () => {
 		},
 	})
 	function expectWritesExampleSchema(testCli: ReturnType<typeof cli>): void {
-		const { writeJsonSchema } = testCli([`--foo=hello`])
+		const { writeJsonSchema } = testCli(argv(`--foo=hello`))
 		writeJsonSchema(`${tempDir}`)
 		const jsonSchemaContents = JSON.parse(
 			fs.readFileSync(`${tempDir}/my-cli.main.schema.json`, `utf-8`),
