@@ -170,23 +170,27 @@ export function cli<
 						.join(`\n`)}`,
 				)
 			}
-			const positionalArgs = interpretation
 
+			// The shared result uses string keys for unfinished routes. After successful
+			// traversal, recover the definition's key type; missing options are checked below.
 			const route: OptionsGroup<any> =
-				routeOptions[positionalArgs.route as keyof typeof routeOptions]
+				routeOptions[interpretation.route as keyof typeof routeOptions]
 
 			const optionConfigs = route?.optionConfigs ?? {}
 			const optionsSchema = route?.optionsSchema ?? emptySchema
 
 			if (route === undefined) {
 				throw new Error(
-					`Could not find options for route "${positionalArgs.route}". Valid routes are: \n\t- ${Object.keys(routeOptions).join(`\n\t- `)}`,
+					`Could not find options for route "${interpretation.route}". Valid routes are: \n\t- ${Object.keys(routeOptions).join(`\n\t- `)}`,
 				)
 			}
 
 			if (discoverConfigPath) {
+				// Traversal validated every segment and completed the required route, or
+				// returned [] when routes are absent. The shared result stays string[]
+				// for completion prefixes; it does not preserve this TreePath<Routes> proof.
 				const configFilePath = discoverConfigPath(
-					positionalArgs.path as TreePath<Routes>,
+					interpretation.path as TreePath<Routes>,
 				)
 				if (configFilePath) {
 					cliLogger.info?.(`looking for config file at:`, configFilePath)
@@ -256,8 +260,8 @@ export function cli<
 			cliLogger.info?.(`final options parsed:`, suppliedOptions)
 			return {
 				inputs: {
-					case: positionalArgs.route,
-					path: positionalArgs.path,
+					case: interpretation.route,
+					path: interpretation.path,
 					opts: suppliedOptions,
 				} as unknown as CliParseOutput<CLI>,
 				writeJsonSchema: (outdir: string) => {
