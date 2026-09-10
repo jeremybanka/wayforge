@@ -45,6 +45,15 @@
 				"__scripts__/**"
 			]
 		},
+		"test:completions": {
+			"dependsOn": ["^build"],
+			"cache": false,
+			"passThroughEnv": ["BASH_COMPLETION_FILE"]
+		},
+		"test:cobra": {
+			"dependsOn": ["^build"],
+			"cache": false
+		},
 		"test:coverage:once": {
 			"dependsOn": ["^build"],
 			"outputs": ["coverage/**", "**/coverage/**"],

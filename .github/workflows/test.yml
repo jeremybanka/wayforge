@@ -31,13 +31,13 @@ jobs:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: ./.github/actions/setup
         with:
-          packages: bun node pnpm nushell carapace
+          packages: bun node pnpm aqua:nushell/nushell carapace
       - name: Install real completion consumers
         run: |
           sudo apt-get update
           sudo apt-get install -y bash-completion zsh fish
       - name: Exercise shell editors and completion protocols
-        run: pnpm --filter comline test:completions
+        run: pnpm exec turbo run test:completions --filter=comline
 
   Cobra:
     name: Upstream Cobra compatibility
@@ -48,7 +48,7 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           packages: bun node pnpm go carapace
-      - run: pnpm --filter comline test:cobra
+      - run: pnpm exec turbo run test:cobra --filter=comline
 
   Vitest:
     runs-on: ubuntu-latest
