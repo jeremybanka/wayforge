@@ -23,33 +23,6 @@ defaults:
     shell: bash
 
 jobs:
-  Completions:
-    name: Shell completion compatibility
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      - uses: ./.github/actions/setup
-        with:
-          packages: bun node pnpm aqua:nushell/nushell carapace
-      - name: Install real completion consumers
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y bash-completion zsh fish
-      - name: Exercise shell editors and completion protocols
-        run: pnpm exec turbo run test:completions --filter=comline
-
-  Cobra:
-    name: Upstream Cobra compatibility
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      - uses: ./.github/actions/setup
-        with:
-          packages: bun node pnpm go carapace
-      - run: pnpm exec turbo run test:cobra --filter=comline
-
   Vitest:
     runs-on: ubuntu-latest
     timeout-minutes: 9
@@ -67,7 +40,17 @@ jobs:
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - uses: ./.github/actions/setup
+        with:
+          packages: bun node pnpm aqua:nushell/nushell carapace go
+      - name: Install real completion consumers
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bash-completion zsh fish
       - run: pnpm run test
+      - name: Shell completion compatibility
+        run: pnpm exec turbo run test:completions --filter=comline
+      - name: Upstream Cobra compatibility
+        run: pnpm exec turbo run test:cobra --filter=comline
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: ${{ !cancelled() }}
         with:
