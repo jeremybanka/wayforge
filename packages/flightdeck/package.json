@@ -54,7 +54,7 @@
 		"@biomejs/js-api": "6.0.0",
 		"@biomejs/wasm-nodejs": "2.5.12",
 		"@types/bun": "npm:bun-types@1.4.2",
-		"@types/node": "25.9.5",
+		"@types/node": "25.9.6",
 		"typescript": "7.0.2",
 		"concurrently": "10.0.5",
 		"eslint": "10.10.0",
