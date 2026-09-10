@@ -174,7 +174,7 @@ function retrieveRepeatedFlagValue(argument: string, flag: string): string {
 }
 
 function retrieveArgumentInstances(
-	passed: string[],
+	passed: readonly string[],
 	key: string,
 	flag?: string,
 	retrieveOptions: RetrieveArgumentInstancesOptions = {},
@@ -190,6 +190,9 @@ function retrieveArgumentInstances(
 	const switchName = `--${key}`
 	const switchNameWithValue = `${switchName}=`
 	for (const [index, argument] of passed.entries()) {
+		if (argument === `--`) {
+			break
+		}
 		if (argument === switchName) {
 			const nextArg = passed[index + 1]
 			if (shouldConsumeNextArg(nextArg, valueKind, knownOptionTokens)) {
@@ -297,7 +300,7 @@ function retrieveKnownOptionTokens(
 }
 
 function retrieveConsumedValueIndexes(
-	passed: string[],
+	passed: readonly string[],
 	optionConfigEntries: CliOptionConfigEntry[],
 ): Set<number> {
 	const indexes = new Set<number>()
@@ -330,7 +333,7 @@ export function cli<
 >(
 	definition: CLI,
 	logger: CliLogger = console,
-): ((args: string[]) => {
+): ((argv: readonly string[]) => {
 	inputs: CliParseOutput<CLI>
 	writeJsonSchema: (outdir: string) => void
 }) & { definition: CLI } {
@@ -354,7 +357,8 @@ export function cli<
 	}
 
 	return Object.assign(
-		(passed = process.argv) => {
+		(argv: readonly string[]) => {
+			const passed = argv.slice(2)
 			cliLogger.info?.(`passed args:`, passed)
 
 			type Options = CLI[`routeOptions`][keyof CLI[`routeOptions`]]
