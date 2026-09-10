@@ -23,6 +23,21 @@ defaults:
     shell: bash
 
 jobs:
+  Completions:
+    name: Shell completion compatibility
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - uses: ./.github/actions/setup
+      - name: Install real completion consumers
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bash-completion zsh fish
+          mise install go@1.26.7 nushell@0.115.1 carapace@1.6.3
+      - name: Exercise shell editors and completion protocols
+        run: mise exec go@1.26.7 nushell@0.115.1 carapace@1.6.3 -- pnpm --filter comline test:completions
+
   Vitest:
     runs-on: ubuntu-latest
     timeout-minutes: 9

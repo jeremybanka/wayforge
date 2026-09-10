@@ -1,0 +1,83 @@
+#!/usr/bin/env node
+import { appendFileSync } from "node:fs"
+
+import { z } from "zod"
+
+import { cli, completionResponse, options, required } from "../../src/cli"
+
+const shared = options(
+	`Pull requests`,
+	z.object({
+		state: z.enum([`open`, `closed`, `all`]).optional(),
+		base: z.string().optional(),
+		input: z.string().optional(),
+		directory: z.string().optional(),
+		token: z.string().optional(),
+		fail: z.string().optional(),
+	}),
+	{
+		state: { description: `PR state`, example: ``, required: false },
+		base: {
+			description: `Base branch`,
+			example: ``,
+			required: false,
+			completion: {
+				provide: () => [
+					{ value: `main`, description: `Main branch` },
+					{ value: `maintenance`, description: `Maintenance branch` },
+					`feature branch`,
+					`quote'branch`,
+					`double"branch`,
+					`dollar$(touch injected)`,
+				],
+			},
+		},
+		input: {
+			description: `Input file`,
+			example: ``,
+			required: false,
+			completion: { fileSystem: `files` },
+		},
+		directory: {
+			description: `Directory`,
+			example: ``,
+			required: false,
+			completion: { fileSystem: `directories` },
+		},
+		token: {
+			description: `Token prefix`,
+			example: ``,
+			required: false,
+			completion: { choices: [`prefix/`], appendSpace: false },
+		},
+		fail: {
+			description: `Broken provider`,
+			example: ``,
+			required: false,
+			completion: {
+				provide: () => {
+					throw new Error(`provider unavailable`)
+				},
+			},
+		},
+	},
+)
+const definition = {
+	cliName: `comline-fixture`,
+	routes: required({ pr: required({ list: null, create: null }) }),
+	routeOptions: { "pr/list": shared, "pr/create": shared },
+	discoverConfigPath: () => {
+		throw new Error(`Completion must not discover config`)
+	},
+}
+const response = await completionResponse(definition, process.argv)
+if (response !== undefined) {
+	process.stdout.write(response)
+} else {
+	const parse = cli({ ...definition, discoverConfigPath: () => undefined })
+	const result = parse(process.argv)
+	const output = JSON.stringify(result.inputs)
+	if (process.env[`COMLINE_TEST_OUTPUT`])
+		appendFileSync(process.env[`COMLINE_TEST_OUTPUT`], output + `\n`)
+	console.log(output)
+}
