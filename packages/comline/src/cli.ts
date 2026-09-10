@@ -327,13 +327,21 @@ export type CliLogger = {
 	error: (message: string, ...data: unknown[]) => void
 }
 
+export type CliParseOptions = {
+	/** Node/Bun process.argv by default; "user" contains command words only. */
+	from?: `node` | `user`
+}
+
 export function cli<
 	CLI extends CommandLineInterface<Routes>,
 	Routes extends Tree = Exclude<CLI[`routes`], undefined>,
 >(
 	definition: CLI,
 	logger: CliLogger = console,
-): ((args?: readonly string[]) => {
+): ((
+	argv: readonly string[],
+	parseOptions?: CliParseOptions,
+) => {
 	inputs: CliParseOutput<CLI>
 	writeJsonSchema: (outdir: string) => void
 }) & { definition: CLI } {
@@ -357,7 +365,8 @@ export function cli<
 	}
 
 	return Object.assign(
-		(passed: readonly string[] = process.argv.slice(2)) => {
+		(argv: readonly string[], { from = `node` }: CliParseOptions = {}) => {
+			const passed = from === `user` ? argv : argv.slice(2)
 			cliLogger.info?.(`passed args:`, passed)
 
 			type Options = CLI[`routeOptions`][keyof CLI[`routeOptions`]]

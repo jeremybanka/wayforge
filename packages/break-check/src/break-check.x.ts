@@ -107,7 +107,7 @@ const parse = cli(
 	},
 	logger,
 )
-const { inputs, writeJsonSchema } = parse()
+const { inputs, writeJsonSchema } = parse(process.argv)
 
 switch (inputs.case) {
 	case `schema`:

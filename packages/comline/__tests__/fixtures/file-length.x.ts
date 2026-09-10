@@ -22,7 +22,7 @@ const parser = cli({
 	},
 })
 
-const parsed = parser()
+const parsed = parser(process.argv)
 
 const fileContent = fs.readFileSync(parsed.inputs.opts.file, `utf-8`)
 
