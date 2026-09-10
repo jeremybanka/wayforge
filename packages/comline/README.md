@@ -200,12 +200,6 @@ also applies to global commands, shebang scripts, and commands launched through
 `pnpm exec` or `mise exec`. Launchers do not appear as extra prefixes in the
 child's `process.argv`. No runtime or executable names are inspected.
 
-For an array containing only command words, select that input scope explicitly:
-
-```typescript
-const { inputs } = greetCli(["--name=jeremybanka", "--age=1"], { from: "user" })
-```
-
 This follows [Commander's argv contract](https://github.com/tj/commander.js/blob/master/Readme.md#parse-and-parseasync)
 and [Node's documented argv layout](https://nodejs.org/api/process.html#processargv).
 `cliName` is a display name, so matching words remain positional arguments.
@@ -216,6 +210,5 @@ mise consumes its delimiter, while the delimiter after `mycli` remains part of
 the CLI input. Routes may appear before `--`, and subsequent words are literal
 positionals.
 
-Migration: keep `myCli(process.argv)` as-is. Calls that previously passed command
-words alone now use `myCli(words, { from: "user" })`. For other runtime layouts,
-pass their command words with the same explicit option.
+Migration: keep `myCli(process.argv)` as-is. The parser always accepts full runtime
+argv; command-only or executable-only arrays are no longer inferred.

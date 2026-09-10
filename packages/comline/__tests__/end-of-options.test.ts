@@ -2,6 +2,7 @@ import { required } from "treetrunks"
 import z from "zod"
 
 import { cli, options, parseNumberOption } from "../src/cli"
+import { argv } from "./fixtures/argv"
 
 const optionGroup = options(
 	`delimiter test`,
@@ -32,10 +33,9 @@ test.each([
 	[`-ncc`],
 	[`--`, `--name=after`],
 ])(`ignores options after the delimiter: %j`, (...tokens) => {
-	expect(rootCli([`--`, ...tokens], { from: `user` }).inputs.opts).toEqual({})
+	expect(rootCli(argv(`--`, ...tokens)).inputs.opts).toEqual({})
 	expect(
-		rootCli([`--name=before`, `-c`, `--`, ...tokens], { from: `user` }).inputs
-			.opts,
+		rootCli(argv(`--name=before`, `-c`, `--`, ...tokens)).inputs.opts,
 	).toEqual({
 		name: `before`,
 		count: 1,
@@ -43,9 +43,7 @@ test.each([
 })
 
 test(`the delimiter is not consumed as a separated value`, () => {
-	expect(
-		rootCli([`--name`, `--`, `after`], { from: `user` }).inputs.opts,
-	).toEqual({
+	expect(rootCli(argv(`--name`, `--`, `after`)).inputs.opts).toEqual({
 		name: ``,
 	})
 })
@@ -53,7 +51,7 @@ test(`the delimiter is not consumed as a separated value`, () => {
 test.each([`--name=--`, `-n=--`])(
 	`keeps an inline delimiter value: %s`,
 	(token) => {
-		expect(rootCli([token], { from: `user` }).inputs.opts).toEqual({
+		expect(rootCli(argv(token)).inputs.opts).toEqual({
 			name: `--`,
 		})
 	},
@@ -69,8 +67,7 @@ test.each([`--name=after`, `-n`, `-ncc`, `--`])(
 			routeOptions: { "run/$value": optionGroup },
 		})
 		expect(
-			routedCli([`--name`, `before`, `run`, `--`, token], { from: `user` })
-				.inputs,
+			routedCli(argv(`--name`, `before`, `run`, `--`, token)).inputs,
 		).toEqual({
 			case: `run/$value`,
 			path: [`run`, token],
@@ -86,7 +83,7 @@ test(`a trailing delimiter does not discard a complete route`, () => {
 		routes: required({ run: null }),
 		routeOptions: { run: optionGroup },
 	})
-	expect(routedCli([`run`, `--`], { from: `user` }).inputs.case).toBe(`run`)
+	expect(routedCli(argv(`run`, `--`)).inputs.case).toBe(`run`)
 })
 
 test(`a literal containing the CLI name is not mistaken for the invocation`, () => {
@@ -96,7 +93,5 @@ test(`a literal containing the CLI name is not mistaken for the invocation`, () 
 		routes: required({ $value: null }),
 		routeOptions: { $value: optionGroup },
 	})
-	expect(routedCli([`--`, `probe`], { from: `user` }).inputs.path).toEqual([
-		`probe`,
-	])
+	expect(routedCli(argv(`--`, `probe`)).inputs.path).toEqual([`probe`])
 })
