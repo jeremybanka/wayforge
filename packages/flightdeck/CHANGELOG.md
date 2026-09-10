@@ -1,5 +1,12 @@
 # flightdeck
 
+## 0.4.19
+
+### Patch Changes
+
+- Updated dependencies [8918771]
+  - comline@0.6.0
+
 ## 0.4.18
 
 ### Patch Changes
