@@ -8,7 +8,11 @@ import {
 	type CompletionCandidate,
 	type CompletionResult,
 } from "./completion"
-import { cobraScripts } from "./completion-scripts.gen"
+/* eslint-disable quotes -- Import attributes require string literals. */
+import bash from "./shells/completion.bash" with { type: "text" }
+import fish from "./shells/completion.fish" with { type: "text" }
+import zsh from "./shells/completion.zsh" with { type: "text" }
+/* eslint-enable quotes */
 
 export type CompletionShell = `bash` | `zsh` | `fish` | `nushell`
 export type CompletionTargetFormat = CompletionShell | `carapace`
@@ -60,25 +64,9 @@ export function completionScript(
 		case `bash`:
 		case `zsh`:
 		case `fish`:
-			body = cobraScripts[target]
-				.replaceAll(
-					`comline_template`,
-					name.replaceAll(`-`, `_`).replaceAll(`.`, `_`),
-				)
-				.replaceAll(`comline-template`, name)
-			if (target === `fish`) {
-				// commandline exposes shell syntax; Cobra expects the unquoted argument.
-				// Decode before both invoking the protocol and filtering its response.
-				body = body
-					.replace(
-						`string escape -- (commandline -ct)`,
-						`string escape -- (string unescape -- (commandline -ct))`,
-					)
-					.replace(
-						`commandline -t | string escape --style=regex`,
-						`commandline -t | string unescape | string escape --style=regex`,
-					)
-			}
+			body = { bash, zsh, fish }[target]
+				.replaceAll(`NAME`, name.replaceAll(/[-.]/g, `_`))
+				.replaceAll(`COMMAND`, name)
 			break
 		case `nushell`:
 			// Capture the prior closure so this registration composes with Carapace and

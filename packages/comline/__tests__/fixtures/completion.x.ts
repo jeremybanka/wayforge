@@ -48,7 +48,7 @@ const shared = options(
 			description: `Token prefix`,
 			example: ``,
 			required: false,
-			completion: { choices: [`prefix/`], appendSpace: false },
+			completion: { choices: [`prefix/`, `plain`], appendSpace: false },
 		},
 		fail: {
 			description: `Broken provider`,
