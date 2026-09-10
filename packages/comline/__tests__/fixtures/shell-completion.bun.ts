@@ -31,9 +31,11 @@ switch (shell) {
 	case `zsh`: {
 		const startup = `${output}.zsh`
 		mkdirSync(startup)
+		// CI images can include unrelated insecure completion directories. Ignore
+		// those entries instead of prompting or trusting them in an automated test.
 		await write(
 			`${startup}/.zshrc`,
-			`autoload -Uz compinit; compinit -D; ${init}`,
+			`autoload -Uz compinit; compinit -i -D; ${init}`,
 		)
 		environment[`ZDOTDIR`] = startup
 		args = [shell, `-i`]

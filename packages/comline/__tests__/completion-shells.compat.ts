@@ -1,5 +1,6 @@
 import { execFileSync } from "node:child_process"
 import {
+	chmodSync,
 	existsSync,
 	mkdirSync,
 	mkdtempSync,
@@ -279,7 +280,7 @@ for (const kind of [`global`, `compiled`]) {
 			const setup = path.join(directory, `autoload-${kind}.zsh`)
 			writeFileSync(
 				setup,
-				`fpath=(${JSON.stringify(fpath)} $fpath)\ncompinit -D\n`,
+				`fpath=(${JSON.stringify(fpath)} $fpath)\ncompinit -i -D\n`,
 			)
 			const result = run(
 				`bun`,
@@ -291,6 +292,24 @@ for (const kind of [`global`, `compiled`]) {
 					`comline-fixture pr li\t`,
 				],
 				mode(kind),
+			)
+			expect(JSON.parse(result).case).toBe(`pr/list`)
+		})
+		test(`Zsh ignores unrelated insecure completion directories without prompting`, () => {
+			const insecure = path.join(directory, `insecure-zsh-${kind}`)
+			mkdirSync(insecure)
+			chmodSync(insecure, 0o777)
+			const fpath = run(`zsh`, [`-f`, `-c`, `print -r -- $FPATH`]).trim()
+			const result = run(
+				`bun`,
+				[
+					path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
+					`zsh`,
+					path.join(directory, `zsh`),
+					path.join(directory, `output-${counter++}.json`),
+					`comline-fixture pr li\t`,
+				],
+				{ ...mode(kind), FPATH: `${insecure}:${fpath}` },
 			)
 			expect(JSON.parse(result).case).toBe(`pr/list`)
 		})
