@@ -38,7 +38,9 @@ switch (shell) {
 			`autoload -Uz compinit; compinit -i -D; ${init}`,
 		)
 		environment[`ZDOTDIR`] = startup
-		args = [shell, `-i`]
+		// Ubuntu's global zshrc calls compinit before our fixture can configure it.
+		// Disable global startup files while retaining our isolated .zshrc.
+		args = [shell, `-d`, `-i`]
 		break
 	}
 	case `fish`:
