@@ -1,38 +1,29 @@
 import type { Join, Tree, TreePath, TreePathName } from "treetrunks"
 
-import { findInvocationIndex } from "./invocation"
-
 export function retrievePositionalArgs<PositionalArgTree extends Tree>(
 	cliName: string,
 	positionalArgTree: PositionalArgTree,
-	passed: string[],
+	passed: readonly string[],
 	ignoredArgIndexes: ReadonlySet<number> = new Set<number>(),
 ): {
 	path: TreePath<PositionalArgTree>
 	route: Join<TreePathName<PositionalArgTree>>
 } {
-	const endOfOptionsDelimiterIndex = passed.indexOf(`--`)
-	const cliInvocationIndex = findInvocationIndex(cliName, passed)
-	let positionalArgs: string[] | undefined
-	if (cliInvocationIndex !== -1) {
-		const allArgs = passed.slice(cliInvocationIndex + 1)
-		positionalArgs = allArgs.filter((arg, index) => {
-			const passedIndex = cliInvocationIndex + 1 + index
-			if (endOfOptionsDelimiterIndex !== -1) {
-				if (passedIndex === endOfOptionsDelimiterIndex) return false
-				if (passedIndex > endOfOptionsDelimiterIndex) return true
-			}
-			return !ignoredArgIndexes.has(passedIndex) && !arg.startsWith(`-`)
-		})
-	} else if (endOfOptionsDelimiterIndex !== -1) {
-		positionalArgs = passed.slice(endOfOptionsDelimiterIndex + 1)
-	}
+	let positionalOnly = false
+	const positionalArgs = passed.filter((arg, index) => {
+		if (positionalOnly) return true
+		if (arg === `--`) {
+			positionalOnly = true
+			return false
+		}
+		return !ignoredArgIndexes.has(index) && !arg.startsWith(`-`)
+	})
 
 	const namedPositionalArgs: string[] = []
 	const validPositionalArgs: string[] = []
 	let treePointer: Tree | null = positionalArgTree
 	let argumentIndex = -1
-	if (positionalArgs === undefined || positionalArgs.length === 0) {
+	if (positionalArgs.length === 0) {
 		if (treePointer[0] === `required`) {
 			const currentPath: string[] = []
 			const command =
