@@ -3,6 +3,7 @@ import z from "zod"
 
 import { cli, options } from "../src/cli"
 import { parseNumberOption, parseStringOption } from "../src/option-parsers"
+import { argv } from "./fixtures/argv"
 
 describe(`options from cli`, () => {
 	const testCli = cli({
@@ -31,80 +32,68 @@ describe(`options from cli`, () => {
 		},
 	})
 	test(`happy: all options`, () => {
-		const { inputs } = testCli([`--foo=hello`, `--bar=1`, `--baz`], {
-			from: `user`,
-		})
+		const { inputs } = testCli(argv(`--foo=hello`, `--bar=1`, `--baz`))
 		expect(inputs.opts).toEqual({
 			foo: `hello`,
 			bar: 1,
 		})
 	})
 	test(`happy: all options without equals signs`, () => {
-		const { inputs } = testCli([`--foo`, `hello`, `--bar`, `1`], {
-			from: `user`,
-		})
+		const { inputs } = testCli(argv(`--foo`, `hello`, `--bar`, `1`))
 		expect(inputs.opts).toEqual({
 			foo: `hello`,
 			bar: 1,
 		})
 	})
 	test(`happy: negative number values without equals signs`, () => {
-		const { inputs } = testCli([`--foo`, `hello`, `--bar`, `-1`], {
-			from: `user`,
-		})
+		const { inputs } = testCli(argv(`--foo`, `hello`, `--bar`, `-1`))
 		expect(inputs.opts).toEqual({
 			foo: `hello`,
 			bar: -1,
 		})
 	})
 	test(`happy: dash-prefixed string values without equals signs`, () => {
-		const { inputs } = testCli([`--foo`, `-literal`, `--bar`, `1`], {
-			from: `user`,
-		})
+		const { inputs } = testCli(argv(`--foo`, `-literal`, `--bar`, `1`))
 		expect(inputs.opts).toEqual({
 			foo: `-literal`,
 			bar: 1,
 		})
 	})
 	test(`happy: repeated options with mixed value separators`, () => {
-		const { inputs } = testCli([`--foo`, `one`, `--foo=two`], { from: `user` })
+		const { inputs } = testCli(argv(`--foo`, `one`, `--foo=two`))
 		expect(inputs.opts).toEqual({
 			foo: `one,two`,
 		})
 	})
 	test(`happy: flags with values without equals signs`, () => {
-		const { inputs } = testCli([`-f`, `hello`, `-b`, `1`], { from: `user` })
+		const { inputs } = testCli(argv(`-f`, `hello`, `-b`, `1`))
 		expect(inputs.opts).toEqual({
 			foo: `hello`,
 			bar: 1,
 		})
 	})
 	test(`happy: missing optional options`, () => {
-		const { inputs } = testCli([`--foo=hello`, `-bb`, `--help`], {
-			from: `user`,
-		})
+		const { inputs } = testCli(argv(`--foo=hello`, `-bb`, `--help`))
 		expect(inputs.opts).toEqual({
 			foo: `hello`,
 			bar: 2,
 		})
 	})
 	test(`happy: bare options remain bare before other options`, () => {
-		const { inputs } = testCli([`--foo`, `--bar`, `1`], { from: `user` })
+		const { inputs } = testCli(argv(`--foo`, `--bar`, `1`))
 		expect(inputs.opts).toEqual({
 			foo: ``,
 			bar: 1,
 		})
 	})
 	test(`error: missing required options`, () => {
-		expect(() => testCli([`--bar=1`], { from: `user` })).toThrow()
+		expect(() => testCli(argv(`--bar=1`))).toThrow()
 	})
 	test(`error: wrong types`, () => {
-		expect(() =>
-			testCli([`--foo=hello`, `--bar=hello`], { from: `user` }),
-		).toThrow()
+		expect(() => testCli(argv(`--foo=hello`, `--bar=hello`))).toThrow()
 	})
 	test(`error: switch names must match exactly`, () => {
-		expect(() => testCli([`--foobar=hello`], { from: `user` })).toThrow()
+		expect(() => testCli(argv(`--foobar=hello`))).toThrow()
 	})
 })
 
@@ -124,9 +113,7 @@ describe(`complex options`, () => {
 		},
 	})
 	test(`happy: all options`, () => {
-		const { inputs } = testCli([`--rules={"rule0": ["a", "b"]}`], {
-			from: `user`,
-		})
+		const { inputs } = testCli(argv(`--rules={"rule0": ["a", "b"]}`))
 		expect(inputs.opts).toEqual({
 			rules: {
 				rule0: [`a`, `b`],
@@ -134,9 +121,7 @@ describe(`complex options`, () => {
 		})
 	})
 	test(`happy: all options without equals signs`, () => {
-		const { inputs } = testCli([`--rules`, `{"rule0": ["a", "b"]}`], {
-			from: `user`,
-		})
+		const { inputs } = testCli(argv(`--rules`, `{"rule0": ["a", "b"]}`))
 		expect(inputs.opts).toEqual({
 			rules: {
 				rule0: [`a`, `b`],

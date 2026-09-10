@@ -48,13 +48,6 @@ test(`the supplied argv determines the parse scope`, () => {
 	}
 })
 
-test(`command-word input is explicitly selected`, () => {
-	const words = Object.freeze([`run`, `--name`, `probe`])
-	expect(command(words, { from: `user` }).inputs).toEqual(
-		command([`runtime`, `script`, ...words]).inputs,
-	)
-})
-
 test.each([`probe`, `node`, `bun`, `probe.x.ts`, `C:\\tools\\probe.exe`])(
 	`command words are never mistaken for invocation metadata: %s`,
 	(value) => {
@@ -65,6 +58,5 @@ test.each([`probe`, `node`, `bun`, `probe.x.ts`, `C:\\tools\\probe.exe`])(
 			routeOptions: { $value: null },
 		})
 		expect(literal([`runtime`, `script`, value]).inputs.path).toEqual([value])
-		expect(literal([value], { from: `user` }).inputs.path).toEqual([value])
 	},
 )
