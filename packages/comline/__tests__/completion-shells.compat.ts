@@ -3,7 +3,6 @@ import {
 	existsSync,
 	mkdirSync,
 	mkdtempSync,
-	readFileSync,
 	rmSync,
 	writeFileSync,
 } from "node:fs"
@@ -54,17 +53,8 @@ beforeAll(() => {
 		npm_config_cache: path.join(directory, `npm-cache`),
 	}
 	// Missing tools are failures: this suite must exercise every real consumer.
-	for (const tool of [
-		`bash`,
-		`zsh`,
-		`fish`,
-		`nu`,
-		`carapace`,
-		`bun`,
-		`node`,
-		`go`,
-	])
-		run(tool, tool === `go` ? [`version`] : [`--version`])
+	for (const tool of [`bash`, `zsh`, `fish`, `nu`, `carapace`, `bun`, `node`])
+		run(tool, [`--version`])
 	const fixture = path.join(directory, `package`)
 	mkdirSync(fixture)
 	mkdirSync(path.join(directory, `config/carapace/specs`), { recursive: true })
@@ -124,17 +114,6 @@ beforeAll(() => {
 			`$env.config.completions.external.enable = true\n$env.config.completions.external.completer = {|spans| carapace ${bridge === `cobra` ? `cobra-fixture` : `comline-fixture`} nushell ...$spans | from json }\n`,
 		)
 	}
-	writeFileSync(
-		path.join(directory, `config/carapace/specs/upstream-cobra.yaml`),
-		`name: upstream-cobra\nparsing: disabled\ncompletion:\n  positionalany: ['$carapace.bridge.Cobra(["${directory}/cobra-oracle"])']\n`,
-	)
-
-	run(
-		`go`,
-		[`build`, `-o`, path.join(directory, `cobra-oracle`), `.`],
-		environment,
-		path.join(import.meta.dirname, `../scripts/completions`),
-	)
 })
 
 afterAll(() => {
@@ -214,6 +193,26 @@ for (const kind of [`global`, `compiled`]) {
 					{ opts: { token: `prefix/suffix` } },
 				],
 				[
+					`no space without punctuation`,
+					`comline-fixture pr list --token pla\tsuffix`,
+					{ opts: { token: `plainsuffix` } },
+				],
+				[
+					`quoted earlier argument`,
+					`comline-fixture pr list --base "feature branch" --state cl\t`,
+					{ opts: { base: `feature branch`, state: `closed` } },
+				],
+				[
+					`empty earlier argument`,
+					`comline-fixture pr list --base "" --state cl\t`,
+					{ opts: { base: ``, state: `closed` } },
+				],
+				[
+					`literal shell syntax in an earlier completion`,
+					`comline-fixture pr list --base doll\t --state cl\t`,
+					{ opts: { base: `dollar$(touch injected)`, state: `closed` } },
+				],
+				[
 					`directories`,
 					`comline-fixture pr list --directory fold\tchild`,
 					{ opts: { directory: `folder with spaces/child` } },
@@ -230,7 +229,7 @@ for (const kind of [`global`, `compiled`]) {
 				],
 			]
 			// Carapace's Cobra bridge drops inline values even for upstream Cobra.
-			// Test that limitation against upstream separately below.
+			// The separate Cobra suite verifies that limitation against upstream.
 			test.each(
 				cases.filter(([name]) => shell !== `nu-cobra` || name !== `inline`),
 			)(
@@ -270,6 +269,31 @@ for (const kind of [`global`, `compiled`]) {
 				expect(result[0].description).toBe(`Main branch`)
 			},
 		)
+		test(`Zsh discovers the adapter through fpath`, () => {
+			const fpath = path.join(directory, `autoload-${kind}`)
+			mkdirSync(fpath)
+			writeFileSync(
+				path.join(fpath, `_comline-fixture`),
+				completionScript(`comline-fixture`, `zsh`),
+			)
+			const setup = path.join(directory, `autoload-${kind}.zsh`)
+			writeFileSync(
+				setup,
+				`fpath=(${JSON.stringify(fpath)} $fpath)\ncompinit -D\n`,
+			)
+			const result = run(
+				`bun`,
+				[
+					path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
+					`zsh`,
+					setup,
+					path.join(directory, `output-${counter++}.json`),
+					`comline-fixture pr li\t`,
+				],
+				mode(kind),
+			)
+			expect(JSON.parse(result).case).toBe(`pr/list`)
+		})
 		test.each([`bash`, `zsh`, `fish`, `nushell`] as const)(
 			`%s setup still executes after reindentation and update`,
 			(shell) => {
@@ -301,55 +325,6 @@ for (const kind of [`global`, `compiled`]) {
 			},
 		)
 
-		test(`Carapace's Cobra bridge has the same inline-value limitation with upstream Cobra`, () => {
-			const actualWire = run(
-				`comline-fixture`,
-				[`__complete`, `pr`, `list`, `--state=cl`],
-				mode(kind),
-			)
-			const upstreamWire = run(path.join(directory, `cobra-oracle`), [
-				`__complete`,
-				`--state=cl`,
-			])
-			expect(actualWire).toBe(upstreamWire)
-			const actualBridge = JSON.parse(
-				run(
-					`carapace`,
-					[
-						`cobra-fixture`,
-						`nushell`,
-						`comline-fixture`,
-						`pr`,
-						`list`,
-						`--state=cl`,
-					],
-					mode(kind),
-				),
-			)
-			const upstreamBridge = JSON.parse(
-				run(
-					`carapace`,
-					[`upstream-cobra`, `nushell`, `upstream-cobra`, `--state=cl`],
-					mode(kind),
-				),
-			)
-			expect(actualBridge).toEqual(upstreamBridge)
-			expect(actualBridge).toEqual([])
-		})
-
-		test(`Cobra emits the same wire format as upstream`, () => {
-			const actual = run(
-				`comline-fixture`,
-				[`__complete`, `pr`, `list`, `--state`, `cl`],
-				mode(kind),
-			)
-			const expected = run(path.join(directory, `cobra-oracle`), [
-				`oracle`,
-				`__completeNoDesc`,
-				`cl`,
-			])
-			expect(actual).toBe(expected)
-		})
 		test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
 			`the executable ships its %s integration`,
 			(target) => {
@@ -369,16 +344,6 @@ do $completer [another-command ""] | to json`
 		})
 	})
 }
-
-test(`vendored adapters match the pinned Cobra generator`, () => {
-	const generated = run(path.join(directory, `cobra-oracle`), [])
-	expect(generated).toBe(
-		readFileSync(
-			path.join(import.meta.dirname, `../src/completion-scripts.gen.ts`),
-			`utf8`,
-		),
-	)
-})
 
 test(`the compiled completion endpoint needs no runtime on PATH`, () => {
 	expect(

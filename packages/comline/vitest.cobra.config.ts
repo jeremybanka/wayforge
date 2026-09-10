@@ -1,13 +1,10 @@
 import type { UserConfig } from "vite"
 import { defineConfig } from "vitest/config"
 
-import { shellSource } from "./shell-source.config.ts"
-
 const config: UserConfig = defineConfig({
-	plugins: [shellSource],
 	test: {
 		globals: true,
-		include: [`__tests__/completion-shells.compat.ts`],
+		include: [`__tests__/completion-cobra.compat.ts`],
 		testTimeout: 30_000,
 		hookTimeout: 120_000,
 	},

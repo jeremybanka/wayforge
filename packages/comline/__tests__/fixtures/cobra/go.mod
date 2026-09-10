@@ -1,4 +1,4 @@
-module comline-completion-scripts
+module comline-cobra-tests
 
 go 1.23.0
 

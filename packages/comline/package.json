@@ -17,8 +17,7 @@
 	"type": "module",
 	"files": [
 		"dist",
-		"src",
-		"LICENSE.cobra"
+		"src"
 	],
 	"main": "dist/cli.js",
 	"types": "dist/cli.d.ts",
@@ -51,6 +50,7 @@
 		"test:coverage": "pnpm test:coverage:once && pnpm test:coverage:increased",
 		"test:once": "vitest run",
 		"test:completions": "vitest run --config vitest.completions.config.ts",
+		"test:cobra": "vitest run --config vitest.cobra.config.ts",
 		"postversion": "dprint fmt package.json"
 	},
 	"devDependencies": {
