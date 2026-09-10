@@ -63,7 +63,6 @@ beforeAll(() => {
 		`bun`,
 		`node`,
 		`go`,
-		`python3`,
 	])
 		run(tool, tool === `go` ? [`version`] : [`--version`])
 	const fixture = path.join(directory, `package`)
@@ -239,9 +238,9 @@ for (const kind of [`global`, `compiled`]) {
 				(_name, line, expected) => {
 					const output = path.join(directory, `output-${counter++}.json`)
 					const result = run(
-						`python3`,
+						`bun`,
 						[
-							path.join(import.meta.dirname, `fixtures/shell-completion.py`),
+							path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
 							shell.startsWith(`nu`) ? `nu` : shell,
 							path.join(directory, shell === `nu` ? `nushell` : shell),
 							output,
@@ -288,9 +287,9 @@ for (const kind of [`global`, `compiled`]) {
 				writeFileSync(setup, updated)
 				const output = path.join(directory, `output-${counter++}.json`)
 				const result = run(
-					`python3`,
+					`bun`,
 					[
-						path.join(import.meta.dirname, `fixtures/shell-completion.py`),
+						path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
 						shell === `nushell` ? `nu` : shell,
 						setup,
 						output,
