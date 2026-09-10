@@ -29,6 +29,7 @@ export type {
 } from "./arguments"
 export { interpretArguments } from "./arguments"
 export * from "./completion"
+export * from "./completion-transport"
 export * from "./encapsulate"
 export type * from "./flag"
 export * from "./help"
