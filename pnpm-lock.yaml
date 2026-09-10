@@ -205,8 +205,8 @@ importers:
   apps/tempest.games:
     dependencies:
       '@ai-sdk/openai':
-        specifier: 4.0.62
-        version: 4.0.62(zod@4.5.4)
+        specifier: 4.0.63
+        version: 4.0.63(zod@4.5.4)
       '@floating-ui/react':
         specifier: 0.27.20
         version: 0.27.20(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -232,8 +232,8 @@ importers:
         specifier: 11.18.0
         version: 11.18.0(typescript@7.0.2)
       ai:
-        specifier: 7.0.94
-        version: 7.0.94(zod@4.5.4)
+        specifier: 7.0.95
+        version: 7.0.95(zod@4.5.4)
       arktype:
         specifier: 2.2.3
         version: 2.2.3
@@ -920,8 +920,8 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/openai@4.0.62':
-    resolution: {integrity: sha512-KOemym7oinL4bSaPI/e1SYXp770jEkIAWz2VYgof4Xglua1q46ViLtrALTOndW9Vz8dYWar/CIYOMii5AnyMhw==}
+  '@ai-sdk/openai@4.0.63':
+    resolution: {integrity: sha512-SV7vmHwWSVWrGXVzK+S1yzlgfPx9Cbizo1FgViw5KFfreTBo9c+WRXl/SerW389rWJMb5+lym31MeKHvwCEQ2A==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -3432,8 +3432,8 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  ai@7.0.94:
-    resolution: {integrity: sha512-N70qu4y53SjhA+kHYQCGLNTXLsztV+Rh28l2JDuEzALY5EgNWloYvUDjssL2Pi1Ie2nILcgWShLRgTpU1HxGHg==}
+  ai@7.0.95:
+    resolution: {integrity: sha512-prgjHfcKBMINf5263rl8DIiGfck+DcTLXkfEn4D0zCLEpFxk9VywnoZ+k7O3TxygLHFcpPtFpkIm43O5Yr0n9w==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -5742,7 +5742,7 @@ snapshots:
       '@vercel/oidc': 3.2.0
       zod: 4.5.4
 
-  '@ai-sdk/openai@4.0.62(zod@4.5.4)':
+  '@ai-sdk/openai@4.0.63(zod@4.5.4)':
     dependencies:
       '@ai-sdk/provider': 4.0.11
       '@ai-sdk/provider-utils': 5.0.37(zod@4.5.4)
@@ -7633,7 +7633,7 @@ snapshots:
 
   acorn@8.16.0: {}
 
-  ai@7.0.94(zod@4.5.4):
+  ai@7.0.95(zod@4.5.4):
     dependencies:
       '@ai-sdk/gateway': 4.0.76(zod@4.5.4)
       '@ai-sdk/provider': 4.0.11
