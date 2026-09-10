@@ -43,17 +43,19 @@ describe(`options from file`, () => {
 	})
 	test(`happy: all options`, () => {
 		fs.writeFileSync(`${tempDir}/config.json`, `{"foo":"hello"}`)
-		const { inputs } = testCli([`--`, `config.json`])
+		const { inputs } = testCli([`--`, `config.json`], { from: `user` })
 		expect(inputs.opts).toEqual({ foo: `hello` })
 		expect(inputs.path).toEqual([`config.json`])
 	})
 	test(`error: missing required options in file`, () => {
 		fs.writeFileSync(`${tempDir}/config.json`, `{}`)
-		expect(() => testCli([`--`, `config.json`])).toThrow()
+		expect(() => testCli([`--`, `config.json`], { from: `user` })).toThrow()
 	})
 	test(`happy: override options from file with cli options`, () => {
 		fs.writeFileSync(`${tempDir}/config.json`, `{"foo":"hello"}`)
-		const { inputs } = testCli([`--foo=goodbye`, `--`, `config.json`])
+		const { inputs } = testCli([`--foo=goodbye`, `--`, `config.json`], {
+			from: `user`,
+		})
 		expect(inputs.opts).toEqual({ foo: `goodbye` })
 		expect(inputs.path).toEqual([`config.json`])
 	})
@@ -82,7 +84,7 @@ describe(`creating a config schema`, () => {
 		},
 	})
 	function expectWritesExampleSchema(testCli: ReturnType<typeof cli>): void {
-		const { writeJsonSchema } = testCli([`--foo=hello`])
+		const { writeJsonSchema } = testCli([`--foo=hello`], { from: `user` })
 		writeJsonSchema(`${tempDir}`)
 		const jsonSchemaContents = JSON.parse(
 			fs.readFileSync(`${tempDir}/my-cli.main.schema.json`, `utf-8`),

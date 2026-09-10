@@ -35,7 +35,7 @@ const parse = cli(
 	console,
 )
 
-const { inputs } = parse()
+const { inputs } = parse(process.argv)
 
 switch (inputs.case) {
 	case ``:
