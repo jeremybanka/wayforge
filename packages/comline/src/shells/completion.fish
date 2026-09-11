@@ -25,15 +25,8 @@ function __comline_NAME
     for candidate in $candidates
         printf '%s%s\n' "$prefix" "$candidate"
     end
-    # Fish suppresses a trailing space for an ambiguous common prefix.
-    # Use that behavior when a sole candidate requests no space and has no
-    # punctuation suffix for which Fish already suppresses the space.
-    if test (count $candidates) -eq 1; and test (math "floor($directive / 2) % 2") -eq 1
-        set -l value (string split -m 1 \t -- "$candidates[1]")[1]
-        if not string match -qr '[@=/:.,]$' -- "$value"
-            printf '%s%s.\n' "$prefix" "$value"
-        end
-    end
+    # Fish's completion API has no arbitrary no-space flag. Preserve the exact
+    # candidate set and let Fish apply its native punctuation/spacing rules.
 end
 complete -c COMMAND -e
 complete -c COMMAND -f -a '(__comline_NAME)'
