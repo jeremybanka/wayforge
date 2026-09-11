@@ -11,3 +11,7 @@ declare module "*.fish" {
 	const source: string
 	export default source
 }
+declare module "*.nu" {
+	const source: string
+	export default source
+}

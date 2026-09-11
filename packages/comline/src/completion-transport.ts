@@ -4,11 +4,11 @@ import * as path from "node:path"
 
 import type { CommandLineInterface } from "./cli"
 import {
-	type CompletionInstallShell,
+	type CompletionInstallTarget,
 	writeCompletionFile,
 } from "./completion-installation"
 
-export type { CompletionInstallShell } from "./completion-installation"
+export type { CompletionInstallTarget } from "./completion-installation"
 import {
 	complete,
 	type CompletionCandidate,
@@ -17,11 +17,12 @@ import {
 /* eslint-disable quotes -- Import attributes require string literals. */
 import bash from "./shells/completion.bash" with { type: "text" }
 import fish from "./shells/completion.fish" with { type: "text" }
+import nu from "./shells/completion.nu" with { type: "text" }
 import zsh from "./shells/completion.zsh" with { type: "text" }
 /* eslint-enable quotes */
 
 export type CompletionShell = `bash` | `zsh` | `fish` | `nushell`
-export type CompletionTargetFormat = CompletionShell | `carapace`
+export type CompletionTargetFormat = CompletionInstallTarget
 
 // Cobra's ShellCompDirective wire values; verify against the upstream oracle.
 const cobraDirectives = {
@@ -51,11 +52,7 @@ function checkName(name: string): void {
 	}
 }
 
-function marker(name: string, end = false): string {
-	return `# ${end ? `<<<` : `>>>`} ${name} completions ${end ? `<<<` : `>>>`}`
-}
-
-/** Generate a completion file or Nushell setup block. Does not modify shell configuration. */
+/** Generate a standalone completion file without modifying shell configuration. */
 export function completionScript(
 	name: string,
 	target: CompletionTargetFormat,
@@ -66,24 +63,10 @@ export function completionScript(
 		case `bash`:
 		case `zsh`:
 		case `fish`:
-			body = { bash, zsh, fish }[target]
+		case `nushell`:
+			body = { bash, zsh, fish, nushell: nu }[target]
 				.replaceAll(`NAME`, name.replaceAll(/[-.]/g, `_`))
 				.replaceAll(`COMMAND`, name)
-			break
-		case `nushell`:
-			// Capture the prior closure so this registration composes with Carapace and
-			// other Comline commands. The command name is restricted before interpolation.
-			body = `let comline_previous = $env.config.completions.external.completer
-$env.config.completions.external.enable = true
-$env.config.completions.external.completer = {|spans|
-    if ($spans | is-empty) { return [] }
-    if (($spans.0 | path basename) == "${name}") {
-        try { ^$spans.0 _comline nushell ...($spans | skip 1) | from json } catch { [] }
-    } else if $comline_previous != null {
-        do $comline_previous $spans
-    } else { null }
-}
-`
 			break
 		case `carapace`:
 			body = `name: ${JSON.stringify(name)}
@@ -96,8 +79,6 @@ completion:
 		default:
 			throw new Error(`Unsupported completion target: ${String(target)}`)
 	}
-	if (target === `nushell`)
-		return `${marker(name)}\n${body.trimEnd()}\n${marker(name, true)}\n`
 	// Zsh discovers standalone functions by their first-line metadata.
 	return (target === `zsh` ? `#compdef ${name}\n` : ``) + body.trimEnd() + `\n`
 }
@@ -105,79 +86,13 @@ completion:
 /** Install a completion file in an enabled shell's discovered search path. */
 export async function installCompletion(
 	name: string,
-	shell: CompletionInstallShell,
+	target: CompletionInstallTarget,
 ): Promise<string> {
-	if (shell !== `bash` && shell !== `zsh` && shell !== `fish`)
-		throw new Error(`Completion installation supports bash, zsh, and fish.`)
-	return writeCompletionFile(name, shell, completionScript(name, shell))
-}
-
-function editSetup(
-	contents: string,
-	name: string,
-	target: `nushell`,
-	script: string,
-): string {
-	checkName(name)
-	if (target !== `nushell`)
+	if (!isCompletionTarget(target))
 		throw new Error(
-			`Use completion file installation for ${String(target)}; profile injection is only available for nushell.`,
+			`Completion installation supports bash, zsh, fish, nushell, and carapace.`,
 		)
-	const normalize = (line: string): string => line.replace(/\s/g, ``)
-	const start = normalize(marker(name))
-	const end = normalize(marker(name, true))
-	const lines = contents.match(/[^\n]*\n|[^\n]+$/g) ?? []
-	const output: string[] = []
-	let inside = false
-	let inserted = false
-	for (const line of lines) {
-		const normalized = normalize(line)
-		if (normalized === start) {
-			if (inside)
-				throw new Error(`Nested completion setup delimiter for ${name}.`)
-			inside = true
-			if (!inserted) {
-				output.push(script)
-				inserted = true
-			}
-		} else if (normalized === end) {
-			if (!inside)
-				throw new Error(`Unmatched completion setup delimiter for ${name}.`)
-			inside = false
-		} else if (!inside) output.push(line)
-	}
-	if (inside)
-		throw new Error(`Unmatched completion setup delimiter for ${name}.`)
-	if (!inserted && script) {
-		if (contents && !contents.endsWith(`\n`))
-			output.push(contents.includes(`\r\n`) ? `\r\n` : `\n`)
-		output.push(script)
-	}
-	return output.join(``)
-}
-
-/** Update a Nushell setup block without writing the user's configuration. */
-export function updateCompletionSetup(
-	contents: string,
-	name: string,
-	target: `nushell`,
-): string {
-	const script = completionScript(name, target)
-	return editSetup(
-		contents,
-		name,
-		target,
-		contents.includes(`\r\n`) ? script.replaceAll(`\n`, `\r\n`) : script,
-	)
-}
-
-/** Remove a Nushell setup block without writing the user's configuration. */
-export function removeCompletionSetup(
-	contents: string,
-	name: string,
-	target: `nushell`,
-): string {
-	return editSetup(contents, name, target, ``)
+	return writeCompletionFile(name, target, completionScript(name, target))
 }
 
 function replacementValue(
@@ -272,12 +187,9 @@ export async function completionResponse(
 	if (command === `completion`) {
 		if (args[0] === `install`) {
 			const shell = args[1]
-			if (
-				args.length !== 2 ||
-				(shell !== `bash` && shell !== `zsh` && shell !== `fish`)
-			)
+			if (args.length !== 2 || !isCompletionTarget(shell))
 				throw new Error(
-					`Usage: ${definition.cliName} completion install <bash|zsh|fish>`,
+					`Usage: ${definition.cliName} completion install <bash|zsh|fish|nushell|carapace>`,
 				)
 			return `Installed completions at ${await installCompletion(definition.cliName, shell)}\n`
 		}
