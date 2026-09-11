@@ -66,6 +66,7 @@ beforeAll(() => {
 	mkdirSync(path.join(directory, `zsh-config`))
 	mkdirSync(path.join(directory, `folder with spaces`))
 	writeFileSync(path.join(directory, `file with spaces.txt`), ``)
+	writeFileSync(path.join(directory, `key=file.txt`), ``)
 	run(`bun`, [
 		`build`,
 		path.join(import.meta.dirname, `fixtures/completion.x.ts`),
@@ -294,6 +295,25 @@ for (const kind of [`global`, `compiled`]) {
 						`escaped equals signs`,
 						`comline-fixture pr list --base key\\=va\t`,
 						{ opts: { base: `key=value` } },
+					],
+				)
+			}
+			if (shell === `bash`) {
+				cases.push(
+					[
+						`inline file paths`,
+						`comline-fixture pr list --input=file\t`,
+						{ opts: { input: `file with spaces.txt` } },
+					],
+					[
+						`inline directory paths`,
+						`comline-fixture pr list --directory=fold\tchild`,
+						{ opts: { directory: `folder with spaces/child` } },
+					],
+					[
+						`inline file paths containing equals signs`,
+						`comline-fixture pr list --input=key=fi\t`,
+						{ opts: { input: `key=file.txt` } },
 					],
 				)
 			}
