@@ -197,6 +197,8 @@ export type ArgumentInterpretation = RouteMatch & {
 	reachableOptions: ArgumentOption[]
 	/** Raw occurrences across possible routes, for unfinished command selection. */
 	allOccurrences: OptionOccurrence[]
+	/** Options with occurrences under their own token-consumption rules, including unselected routes. */
+	suppliedOptions: ArgumentOption[]
 	positionalOnly: boolean
 }
 
@@ -340,6 +342,11 @@ export function interpretArguments(
 		allOptions,
 		reachableOptions: reachableOptions(groups, match),
 		allOccurrences,
+		// Preserve the same option objects used by availableOptions, including distinct
+		// aliases sharing a canonical key. Reuse cached scans instead of rescanning words.
+		suppliedOptions: allOptions.filter(
+			(option) => (scanned.get(optionSignature(option))?.length ?? 0) > 0,
+		),
 		positionalOnly,
 	}
 }
