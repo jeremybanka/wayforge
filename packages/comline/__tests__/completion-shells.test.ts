@@ -317,10 +317,12 @@ for (const kind of [`global`, `compiled`]) {
 					],
 				)
 			}
-			if (shell === `zsh`) {
+			if (shell === `zsh` || shell === `bash`) {
 				cases.push([
 					`quoted executable`,
-					`"comline-fixture" pr li\t`,
+					// bash-completion cannot autoload a quoted command name; first load
+					// it with an ordinary completion, then clear the line and quote it.
+					`${shell === `bash` ? `comline-fixture pr li\t\x15` : ``}"comline-fixture" pr li\t`,
 					{ case: `pr/list`, opts: {} },
 				])
 			}

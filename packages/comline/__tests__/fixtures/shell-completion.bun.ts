@@ -22,7 +22,7 @@ switch (shell) {
 		const completion =
 			process.env[`BASH_COMPLETION_FILE`] ??
 			`/usr/share/bash-completion/bash_completion`
-		init = `source '${completion}'; ${init}`
+		init = `source '${completion}'; bind 'set enable-bracketed-paste on'; ${init}`
 		const startup = `${output}.rc`
 		await write(startup, init)
 		args = [shell, `--noprofile`, `--rcfile`, startup, `-i`]
@@ -104,6 +104,10 @@ try {
 	if (!terminal) throw new Error(`Bun did not create a terminal for ${shell}`)
 	// Startup files keep terminal negotiation from consuming setup as query replies.
 	await waitFor(() => existsSync(readyFile), `shell startup`)
+	// The startup marker precedes Readline initialization. Wait until Bash enables
+	// its editor so the terminal driver cannot consume Ctrl-U or other keystrokes.
+	if (shell === `bash`)
+		await waitFor(() => transcript.includes(`\x1b[?2004h`), `Bash line editor`)
 	terminal.write(`${line}\n`)
 	await waitFor(
 		() => existsSync(output) && statSync(output).size > 0,

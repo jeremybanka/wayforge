@@ -379,6 +379,8 @@ Nushell loads the installed file at interactive startup. The file registers a ha
 
 ### compatibility tests
 
+Bash supports single- or double-quoted executable names after its completion file has loaded. Bash's completion lookup and bash-completion's lazy loader use the literal command spelling, so first trigger completion once with the unquoted command name in a new shell. The adapter decodes quoting without evaluating shell expressions.
+
 Shell and upstream Cobra compatibility tests run in comline's standard Vitest suite through `pnpm test`, or `pnpm exec turbo run test:once --filter=comline`. Have Bash, bash-completion, Zsh, Fish, Nushell, Carapace, Node, npm, Bun, and Go available; missing tools fail rather than silently skipping coverage. Turbo builds workspace dependencies first. Set `BASH_COMPLETION_FILE` if bash-completion is not at `/usr/share/bash-completion/bash_completion`. To run only the shell tests after building dependencies, use `pnpm --filter comline exec vitest run __tests__/completion-shells.test.ts`; that subset does not require Go.
 
 CI includes the installed consumer and Go versions, OS, architecture, and bash-completion file checksum in `COMLINE_TEST_ENV`, which participates in comline's normal test cache key alongside source, fixtures (including `go.mod` and `go.sum`), build configuration, and tool configuration. Local direct Vitest runs bypass Turbo's cache; use those or Turbo's `--force` option after changing locally installed consumers unless you also update `COMLINE_TEST_ENV`.
