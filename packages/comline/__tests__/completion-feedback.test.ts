@@ -466,3 +466,78 @@ test.each([
 		).toEqual(pending)
 	},
 )
+
+function conflictingRouteOptions() {
+	return {
+		cliName: `probe`,
+		routes: required({ a: required({ run: null }), b: null }),
+		routeOptions: {
+			"a/run": options(``, z.object({ flag: z.boolean().optional() }), {
+				flag: {
+					description: ``,
+					example: ``,
+					required: false,
+					parse: parseBooleanOption,
+				},
+			}),
+			b: options(``, z.object({ flag: z.string().optional() }), {
+				flag: { description: ``, example: ``, required: false },
+			}),
+		},
+		discoverConfigPath: () => undefined,
+	}
+}
+
+test.each([
+	{ words: [`a`, `--flag`, `run`], route: `a/run`, flag: true },
+	{ words: [`--flag`, `a`, `run`], route: `a/run`, flag: true },
+	{ words: [`--flag`, `false`, `a`, `run`], route: `a/run`, flag: false },
+	{ words: [`b`, `--flag`, `run`], route: `b`, flag: `run` },
+	{ words: [`--flag`, `run`, `b`], route: `b`, flag: `run` },
+])(
+	`route-specific consumption preserves command words: $words`,
+	async ({ words, route, flag }) => {
+		const definition = conflictingRouteOptions()
+		expect(cli(definition)(argv(...words)).inputs).toMatchObject({
+			case: route,
+			opts: { flag },
+		})
+		const result = await complete(definition, { words: [...words, ``] })
+		expect(result.context.route).toBe(route)
+		expect(result.candidates).toEqual([])
+	},
+)
+
+test(`unfinished selection keeps only viable consumption interpretations`, async () => {
+	const result = await complete(conflictingRouteOptions(), {
+		words: [`a`, `--flag`, ``],
+	})
+	expect(result.context.route).toBe(`a`)
+	expect(
+		result.context.targets
+			.filter((target) => target.kind === `option-value`)
+			.map((target) => target.option.valueKind),
+	).toEqual([`boolean`])
+	expect(result.candidates.map(({ value }) => value)).toContain(`run`)
+})
+
+test(`conflicting complete interpretations require an explicit boundary`, () => {
+	const groups = conflictingRouteOptions().routeOptions
+	const parse = cli({
+		cliName: `probe`,
+		routes: optional({ $name: null }),
+		routeOptions: { "": groups.b, $name: groups[`a/run`] },
+		discoverConfigPath: () => undefined,
+	})
+	expect(() => parse(argv(`--flag`, `bob`))).toThrow(
+		/Ambiguous option consumption/,
+	)
+	expect(parse(argv(`--flag=`, `bob`)).inputs).toMatchObject({
+		case: `$name`,
+		opts: { flag: true },
+	})
+	expect(parse(argv(`--flag`, `--`, `bob`)).inputs).toMatchObject({
+		case: `$name`,
+		opts: { flag: true },
+	})
+})
