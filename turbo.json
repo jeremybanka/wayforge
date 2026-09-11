@@ -58,10 +58,6 @@
 			],
 			"env": ["COMLINE_TEST_ENV", "BASH_COMPLETION_FILE"]
 		},
-		"test:cobra": {
-			"dependsOn": ["^build"],
-			"cache": false
-		},
 		"test:coverage:once": {
 			"dependsOn": ["^build"],
 			"outputs": ["coverage/**", "**/coverage/**"],

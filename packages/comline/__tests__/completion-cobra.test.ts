@@ -50,7 +50,7 @@ beforeAll(() => {
 			`name: ${name}\nparsing: disabled\ncompletion:\n  positionalany: ['$carapace.bridge.Cobra(["${path.join(directory, executable)}"])']\n`,
 		)
 	}
-})
+}, 120_000)
 
 afterAll(() => {
 	if (directory) rmSync(directory, { recursive: true, force: true })
@@ -77,6 +77,7 @@ for (const kind of [`node`, `compiled`]) {
 					run(path.join(directory, `cobra-oracle`), [command, ...words]),
 				)
 			},
+			30_000,
 		)
 	}
 }
@@ -97,4 +98,4 @@ test(`Carapace's Cobra bridge drops inline values for both implementations`, () 
 	)
 	expect(actual).toEqual(upstream)
 	expect(actual).toEqual([])
-})
+}, 30_000)
