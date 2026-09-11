@@ -812,3 +812,38 @@ test.each([`nushell`, `carapace`] as const)(
 		).toContain(`Installed completions at `)
 	},
 )
+
+test(`Bash installation rejects an extensionless completion in the destination directory`, () => {
+	const folder = path.join(directory, `compiled/bash-completion/completions`)
+	const override = path.join(folder, `comline-fixture`)
+	const installed = path.join(folder, `comline-fixture.bash`)
+	const previous = readFileSync(installed, `utf8`)
+	writeFileSync(override, `complete -W old-completion comline-fixture\n`)
+	try {
+		// Confirm actual bash-completion filename precedence in a fresh shell.
+		expect(
+			run(
+				`bash`,
+				[
+					`-i`,
+					`-c`,
+					`_completion_loader comline-fixture; complete -p comline-fixture`,
+				],
+				mode(`compiled`),
+			),
+		).toContain(`old-completion`)
+		expect(() =>
+			run(
+				`comline-fixture`,
+				[`completion`, `install`, `bash`],
+				mode(`compiled`),
+			),
+		).toThrow(/takes precedence/)
+		expect(readFileSync(override, `utf8`)).toBe(
+			`complete -W old-completion comline-fixture\n`,
+		)
+		expect(readFileSync(installed, `utf8`)).toBe(previous)
+	} finally {
+		rmSync(override)
+	}
+})
