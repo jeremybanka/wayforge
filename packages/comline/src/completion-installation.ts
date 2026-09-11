@@ -29,7 +29,10 @@ export type CompletionInstallTarget =
 
 const execute = promisify(execFile)
 
-async function inspectShell(shell: CompletionInstallTarget): Promise<{
+async function inspectShell(
+	shell: CompletionInstallTarget,
+	login: boolean,
+): Promise<{
 	preferred: string
 	directories: string[]
 }> {
@@ -45,8 +48,8 @@ async function inspectShell(shell: CompletionInstallTarget): Promise<{
 			shell === `carapace`
 				? [`--help`]
 				: shell === `nushell`
-					? [`-i`, `--execute`, `${nushell}\nexit`]
-					: [`-i`, `-c`, { bash, zsh, fish }[shell]],
+					? [...(login ? [`-l`] : []), `-i`, `--execute`, `${nushell}\nexit`]
+					: [...(login ? [`-l`] : []), `-i`, `-c`, { bash, zsh, fish }[shell]],
 			{
 				timeout: 10_000,
 				maxBuffer: 1024 * 1024,
@@ -115,39 +118,57 @@ async function entryExists(file: string): Promise<boolean> {
 	}
 }
 
+async function discoverDestination(
+	shell: CompletionInstallTarget,
+): Promise<{ destination: string; directories: string[] }> {
+	let failure: unknown
+	// Login profiles may define paths or prerequisites used by interactive startup.
+	// Fall back for users whose completion setup is valid only in non-login shells.
+	for (const login of shell === `carapace` ? [false] : [true, false]) {
+		try {
+			const { preferred, directories } = await inspectShell(shell, login)
+			const candidates = preferred
+				? directories.filter((dir) => dir === preferred)
+				: directories
+			let destination: string | undefined
+			for (const directory of candidates) {
+				if (await writableDirectory(directory)) {
+					destination = directory
+					break
+				}
+			}
+			if (!destination) {
+				const setting = {
+					bash: `$BASH_COMPLETION_USER_DIR or $XDG_DATA_HOME`,
+					zsh: `$fpath`,
+					fish: `$fish_complete_path (including the user vendor directory)`,
+					nushell: `$nu.vendor-autoload-dirs (including the user vendor directory)`,
+					carapace: `the specs path reported by carapace --help`,
+				}[shell]
+				throw new Error(
+					`No writable ${shell} completion directory was discovered. Check ${setting} in your shell configuration.`,
+				)
+			}
+
+			return { destination, directories }
+		} catch (error) {
+			failure = error
+		}
+	}
+	throw failure
+}
+
 /** Discover an enabled shell's search path and atomically replace one completion file. */
 export async function writeCompletionFile(
 	name: string,
 	shell: CompletionInstallTarget,
 	source: string,
 ): Promise<string> {
-	const { preferred, directories } = await inspectShell(shell)
+	const { destination, directories } = await discoverDestination(shell)
 	const filename =
 		shell === `zsh`
 			? `_${name}`
 			: `${name}.${shell === `nushell` ? `nu` : shell === `carapace` ? `yaml` : shell}`
-	const candidates = preferred
-		? directories.filter((dir) => dir === preferred)
-		: directories
-	let destination: string | undefined
-	for (const directory of candidates) {
-		if (await writableDirectory(directory)) {
-			destination = directory
-			break
-		}
-	}
-	if (!destination) {
-		const setting = {
-			bash: `$BASH_COMPLETION_USER_DIR or $XDG_DATA_HOME`,
-			zsh: `$fpath`,
-			fish: `$fish_complete_path (including the user vendor directory)`,
-			nushell: `$nu.vendor-autoload-dirs (including the user vendor directory)`,
-			carapace: `the specs path reported by carapace --help`,
-		}[shell]
-		throw new Error(
-			`No writable ${shell} completion directory was discovered. Check ${setting} in your shell configuration.`,
-		)
-	}
 	// Nu executes every autoload file, so duplicate registrations in either
 	// direction matter. Other shells select the first matching completion file.
 	const conflicts =
