@@ -401,3 +401,27 @@ test.each([
 		expect(result.candidates.map(({ value }) => value)).toEqual(names)
 	},
 )
+
+test.each([`configuration`, `choices`] as const)(
+	`ordinary parsing never reads completion presentation: %s`,
+	(level) => {
+		const hints: CompletionHints = {}
+		const group = refOptions(hints)
+		const read = vi.fn(() => {
+			throw new Error(`Completion presentation was read during parsing`)
+		})
+		Object.defineProperty(
+			level === `configuration` ? group.optionConfigs.ref : hints,
+			level === `configuration` ? `completion` : `choices`,
+			{ get: read },
+		)
+		const parse = cli({
+			cliName: `probe`,
+			routes: optional({ $name: null }),
+			routeOptions: { "": group, $name: group },
+			discoverConfigPath: () => undefined,
+		})
+		expect(parse(argv(`--ref`, `main`)).inputs.opts).toEqual({ ref: `main` })
+		expect(read).not.toHaveBeenCalled()
+	},
+)
