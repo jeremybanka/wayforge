@@ -340,6 +340,16 @@ for (const kind of [`global`, `compiled`]) {
 						{ opts: { input: `file with spaces.txt` } },
 					],
 					[
+						`quoted inline directory paths`,
+						`comline-fixture pr list "--directory=fold"\tchild`,
+						{ opts: { directory: `folder with spaces/child` } },
+					],
+					[
+						`quoted inline file directory continuation`,
+						`comline-fixture pr list "--input=fold"\tchild`,
+						{ opts: { input: `folder with spaces/child` } },
+					],
+					[
 						`inline directory paths`,
 						`comline-fixture pr list --directory=fold\tchild`,
 						{ opts: { directory: `folder with spaces/child` } },

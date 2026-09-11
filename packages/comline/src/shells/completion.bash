@@ -26,7 +26,7 @@ _comline_NAME_unquote() {
 }
 
 _comline_NAME() {
-    local cur cword REPLY REPLY_PREFIX word executable response directive value prefix assignment= quote_candidates= i
+    local cur cword REPLY REPLY_PREFIX word executable response directive value prefix assignment= quote_candidates= file_candidates= i
     local -a words args
     COMPREPLY=()
     # bash-completion rejoins word breaks such as --flag=value and host:path.
@@ -53,6 +53,7 @@ _comline_NAME() {
     [[ $assignment ]] && cur=${cur#*=}
     if ((directive & 16)); then
         _filedir -d
+        file_candidates=1
     elif [[ $response == *$'\n'* ]]; then
         # Quote candidate values ourselves so characters such as $ and ` remain
         # literal when Readline inserts them, including for non-file candidates.
@@ -63,9 +64,17 @@ _comline_NAME() {
         done <<< "${response%$'\n'*}"
     elif ((! (directive & 4))); then
         _filedir
+        file_candidates=1
     fi
     for ((i=0; i<${#COMPREPLY[@]}; i++)); do
-        value=$assignment${COMPREPLY[i]}
+        value=${COMPREPLY[i]}
+        # Readline cannot stat a path once an inline assignment is reattached.
+        # Preserve directory continuation while the candidate is still a filename.
+        if [[ $file_candidates && -d $value ]]; then
+            [[ $value == */ ]] || value+=/
+            compopt -o nospace
+        fi
+        value=$assignment$value
         value=${value#"$prefix"}
         if [[ $quote_candidates ]]; then printf -v value '%q' "$value"; fi
         COMPREPLY[i]=$value
