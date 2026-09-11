@@ -115,7 +115,7 @@ beforeAll(() => {
 			`$env.config.completions.external.enable = true\n$env.config.completions.external.completer = {|spans| carapace ${bridge === `cobra` ? `cobra-fixture` : `comline-fixture`} nushell ...$spans | from json }\n`,
 		)
 	}
-})
+}, 120_000)
 
 afterAll(() => {
 	if (directory && !process.env[`COMLINE_KEEP_FIXTURES`])
@@ -123,7 +123,7 @@ afterAll(() => {
 })
 
 for (const kind of [`global`, `compiled`]) {
-	describe(kind, () => {
+	describe(kind, { timeout: 30_000 }, () => {
 		for (const shell of [
 			`bash`,
 			`zsh`,

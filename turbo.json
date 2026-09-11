@@ -45,10 +45,18 @@
 				"__scripts__/**"
 			]
 		},
-		"test:completions": {
-			"dependsOn": ["^build"],
-			"cache": false,
-			"passThroughEnv": ["BASH_COMPLETION_FILE"]
+		"comline#test:once": {
+			"dependsOn": ["test:build", "^build"],
+			"inputs": [
+				"**/package.json",
+				"**/*.config.ts",
+				"src/**",
+				"__tests__/**",
+				"../../mise.toml",
+				"../../.github/workflows/test.yml",
+				"../../.github/actions/setup/action.yml"
+			],
+			"env": ["COMLINE_TEST_ENV", "BASH_COMPLETION_FILE"]
 		},
 		"test:cobra": {
 			"dependsOn": ["^build"],

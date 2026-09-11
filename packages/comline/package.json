@@ -49,7 +49,6 @@
 		"test:coverage:increased": "recoverage",
 		"test:coverage": "pnpm test:coverage:once && pnpm test:coverage:increased",
 		"test:once": "vitest run",
-		"test:completions": "vitest run --config vitest.completions.config.ts",
 		"test:cobra": "vitest run --config vitest.cobra.config.ts",
 		"postversion": "dprint fmt package.json"
 	},

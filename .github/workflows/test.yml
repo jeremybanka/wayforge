@@ -46,9 +46,16 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y bash-completion zsh fish
+          # Hash the actual consumers before Turbo decides whether to reuse tests.
+          {
+            uname -sm
+            for tool in bash zsh fish nu carapace node npm bun; do
+              "$tool" --version
+            done
+            sha256sum /usr/share/bash-completion/bash_completion
+          } > "$RUNNER_TEMP/comline-test-environment"
+          echo "COMLINE_TEST_ENV=$(sha256sum "$RUNNER_TEMP/comline-test-environment" | cut -d ' ' -f 1)" >> "$GITHUB_ENV"
       - run: pnpm run test
-      - name: Shell completion compatibility
-        run: pnpm exec turbo run test:completions --filter=comline
       - name: Upstream Cobra compatibility
         run: pnpm exec turbo run test:cobra --filter=comline
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
