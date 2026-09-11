@@ -129,6 +129,11 @@ beforeAll(() => {
 		`source '${bashCompletion}'\n`,
 	)
 	writeFileSync(
+		path.join(directory, `home/.bash_profile`),
+		`source '${directory}/home/.bashrc'\n`,
+	)
+	writeFileSync(path.join(directory, `zsh-config/.zprofile`), ``)
+	writeFileSync(
 		path.join(directory, `zsh-config/.zshenv`),
 		`setopt no_global_rcs\n`,
 	)
@@ -1028,4 +1033,68 @@ test(`Bash installation rejects an extensionless completion in the destination d
 	} finally {
 		rmSync(override)
 	}
+})
+
+test.each([`bash`, `zsh`] as const)(
+	`%s discovers completion settings from login startup`,
+	(shell) => {
+		const profile = path.join(
+			directory,
+			shell === `bash` ? `home/.bash_profile` : `zsh-config/.zprofile`,
+		)
+		const rc = path.join(
+			directory,
+			shell === `bash` ? `home/.bashrc` : `zsh-config/.zshrc`,
+		)
+		const custom = path.join(directory, `${shell}-login-completions`)
+		mkdirSync(custom)
+		const script =
+			shell === `bash`
+				? `source '${rc}'\nBASH_COMPLETION_USER_DIR='${custom}'\nexport -n BASH_COMPLETION_USER_DIR\n`
+				: `fpath=('${custom}' $fpath)\n`
+		const startup =
+			shell === `bash`
+				? readFileSync(rc, `utf8`)
+				: `autoload -Uz compinit; compinit -i -D\n`
+		withProfile(profile, script, () => {
+			withProfile(rc, startup, () => {
+				const file = path.join(
+					custom,
+					shell === `bash`
+						? `completions/comline-fixture.bash`
+						: `_comline-fixture`,
+				)
+				expect(
+					run(
+						`comline-fixture`,
+						[`completion`, `install`, shell],
+						mode(`compiled`),
+					),
+				).toBe(`Installed completions at ${file}\n`)
+				expect(readFileSync(file, `utf8`)).toBe(
+					completionScript(`comline-fixture`, shell),
+				)
+			})
+		})
+	},
+)
+
+test(`Bash discovery falls back to non-login initialization`, () => {
+	withProfile(
+		path.join(directory, `home/.bash_profile`),
+		`unset -f _get_comp_words_by_ref _filedir\n`,
+		() => {
+			const file = path.join(
+				directory,
+				`compiled/bash-completion/completions/comline-fixture.bash`,
+			)
+			expect(
+				run(
+					`comline-fixture`,
+					[`completion`, `install`, `bash`],
+					mode(`compiled`),
+				),
+			).toBe(`Installed completions at ${file}\n`)
+		},
+	)
 })
