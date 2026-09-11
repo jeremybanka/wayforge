@@ -44,6 +44,8 @@ _comline_NAME() {
     directive=${directive#:}
     ((directive & 1)) && return
     ((directive & 2)) && compopt -o nospace
+    # File generators expect only the value, not the option assignment.
+    [[ $assignment ]] && cur=${cur#*=}
     if ((directive & 16)); then
         _filedir -d
     elif [[ $response == *$'\n'* ]]; then
@@ -52,13 +54,14 @@ _comline_NAME() {
         compopt -o noquote
         quote_candidates=1
         while IFS= read -r value; do
-            COMPREPLY+=("$assignment${value%%$'\t'*}")
+            COMPREPLY+=("${value%%$'\t'*}")
         done <<< "${response%$'\n'*}"
     elif ((! (directive & 4))); then
         _filedir
     fi
     for ((i=0; i<${#COMPREPLY[@]}; i++)); do
-        value=${COMPREPLY[i]#"$prefix"}
+        value=$assignment${COMPREPLY[i]}
+        value=${value#"$prefix"}
         if [[ $quote_candidates ]]; then printf -v value '%q' "$value"; fi
         COMPREPLY[i]=$value
     done
