@@ -4,7 +4,7 @@ _comline_NAME() {
     # Q removes lexical quotes; arrays preserve boundaries without eval.
     if ((CURRENT > 2)); then request=("${(@Q)words[2,CURRENT-1]}"); fi
     request+=("${(Q)PREFIX}")
-    response=$("${words[1]}" __complete "${request[@]}" 2>/dev/null) || return
+    response=$("${(Q)words[1]}" __complete "${request[@]}" 2>/dev/null) || return
     lines=("${(@f)response}")
     directive=${lines[-1]#:}
     [[ ${lines[-1]} == :<-> ]] || return
