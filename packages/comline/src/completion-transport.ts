@@ -150,7 +150,14 @@ async function filesystemCandidates(
 }
 
 function quoteNu(value: string): string {
-	return /[\s*?{}()[\]<>$&"'|;#\\`]/.test(value) ? JSON.stringify(value) : value
+	// Bare paths and empty text have shell semantics. Only leave simple words bare;
+	// all other candidates are literal double-quoted strings, never interpolation.
+	if (/^[a-zA-Z0-9_][a-zA-Z0-9_-]*$/.test(value)) return value
+	// Nu shares JSON's simple escapes but spells Unicode escapes as \u{...}.
+	// Match whole escape tokens so a literal backslash-u sequence stays literal.
+	return JSON.stringify(value).replace(/\\(?:u[0-9a-f]{4}|.)/g, (escape) =>
+		escape.startsWith(`\\u`) ? `\\u{${escape.slice(2)}}` : escape,
+	)
 }
 
 function unquoteNuWord(word: string): string {
@@ -166,7 +173,16 @@ function unquoteNuWord(word: string): string {
 	}
 	if (quote === `"`) {
 		try {
-			const parsed: unknown = JSON.parse(value)
+			const json = value.replace(
+				/\\(?:u\{([0-9a-fA-F]{1,6})\}|.)/g,
+				(escape, hex: string | undefined) =>
+					hex === undefined
+						? escape
+						: JSON.stringify(
+								String.fromCodePoint(Number.parseInt(hex, 16)),
+							).slice(1, -1),
+			)
+			const parsed: unknown = JSON.parse(json)
 			if (typeof parsed === `string`) return word.slice(0, start) + parsed
 		} catch {
 			/* Incomplete or non-JSON Nu syntax remains an unmatched prefix. */

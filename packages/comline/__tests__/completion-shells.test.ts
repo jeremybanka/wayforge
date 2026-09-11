@@ -426,6 +426,68 @@ for (const kind of [`global`, `compiled`]) {
 			)
 		}
 
+		test.each([
+			``,
+			`~`,
+			`...`,
+			`nested/...`,
+			`vertical\vtab`,
+			`literal\\u000b`,
+			`literal\\u{b}`,
+		])(`Nushell replacements preserve literal argument %j`, (value) => {
+			const candidates: { value: string; display: string }[] = JSON.parse(
+				run(
+					`comline-fixture`,
+					[`_comline`, `nushell`, `pr`, `list`, `--base`, ``],
+					mode(kind),
+				),
+			)
+			const candidate = candidates.find((item) => item.display === value)!
+			const result = run(
+				`nu`,
+				[
+					`--no-config-file`,
+					`-c`,
+					`^node -e 'console.log(JSON.stringify(process.argv.slice(1)))' -- ${candidate.value}`,
+				],
+				mode(kind),
+			)
+			expect(JSON.parse(result)).toEqual([value])
+			const repeated: { display: string }[] = JSON.parse(
+				run(
+					`comline-fixture`,
+					[
+						`_comline`,
+						`nushell`,
+						`pr`,
+						`list`,
+						`--base`,
+						candidate.value.trimEnd(),
+					],
+					mode(kind),
+				),
+			)
+			expect(repeated.some((item) => item.display === value)).toBe(true)
+			// Previously inserted replacements must also survive the next request.
+			const next = JSON.parse(
+				run(
+					`comline-fixture`,
+					[
+						`_comline`,
+						`nushell`,
+						`pr`,
+						`list`,
+						`--base`,
+						candidate.value.trimEnd(),
+						`--state`,
+						`cl`,
+					],
+					mode(kind),
+				),
+			)
+			expect(next).toMatchObject([{ display: `closed` }])
+		})
+
 		test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
 			`%s installation replaces its file and preserves shell profiles`,
 			(shell) => {
