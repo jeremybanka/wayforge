@@ -3,7 +3,13 @@ import { appendFileSync } from "node:fs"
 
 import { z } from "zod"
 
-import { cli, completionResponse, options, required } from "../../src/cli"
+import {
+	cli,
+	completionResponse,
+	optional,
+	options,
+	required,
+} from "../../src/cli"
 
 const shared = options(
 	`Pull requests`,
@@ -27,6 +33,7 @@ const shared = options(
 					{ value: `maintenance`, description: `Maintenance branch` },
 					`feature branch`,
 					`key=value`,
+					`--key=value`,
 					`quote'branch`,
 					`double"branch`,
 					`dollar$(touch injected)`,
@@ -68,8 +75,15 @@ const shared = options(
 )
 const definition = {
 	cliName: `comline-fixture`,
-	routes: required({ pr: required({ list: null, create: null }) }),
-	routeOptions: { "pr/list": shared, "pr/create": shared },
+	routes: required({
+		pr: required({ list: optional({ $value: null }), create: null }),
+	}),
+	routeOptions: {
+		"pr/list": shared,
+		"pr/list/$value": shared,
+		"pr/create": shared,
+	},
+	positionalCompletions: { "pr/list/$value": { choices: [`--key=value`] } },
 	discoverConfigPath: () => {
 		throw new Error(`Completion must not discover config`)
 	},

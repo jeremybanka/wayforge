@@ -2,7 +2,7 @@
 "comline": patch
 ---
 
-Add opt-in tab completion for Bash, Zsh, Fish, Nushell, and Carapace, driven by the same CLI definitions and argument interpretation as normal parsing. Integrations work with globally installed commands and Bun-compiled executables.
+Add opt-in tab completion for Bash, Zsh, Fish, Nushell, and Carapace, driven by the same CLI definitions and argument interpretation as normal parsing. Integrations work with globally installed commands and Bun-compiled executables. Shell adapters use the engine's replacement boundaries to preserve literal positional arguments and option values.
 
 - Add `interpret()` and asynchronous `complete()` methods to configured CLIs, plus standalone interpretation and completion functions. Inspect unfinished commands, routes, raw option occurrences, and cursor replacement ranges without running option parsers, validating input, or discovering application configuration.
 - Suggest commands, option names, schema-derived values, and explicitly configured candidates. Support file and directory hints, descriptions, spacing control, variable positional arguments, and synchronous or asynchronous candidate providers.

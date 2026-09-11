@@ -1,16 +1,19 @@
 _comline_NAME() {
-    local response directive line
+    local response directive line prefix
     local -a request lines values descriptions spacing
     # Q removes lexical quotes; arrays preserve boundaries without eval.
     if ((CURRENT > 2)); then request=("${(@Q)words[2,CURRENT-1]}"); fi
     request+=("${(Q)PREFIX}")
-    response=$("${(Q)words[1]}" __complete "${request[@]}" 2>/dev/null) || return
+    response=$("${(Q)words[1]}" _comline complete "${request[@]}" 2>/dev/null) || return
     lines=("${(@f)response}")
+    [[ ${lines[1]} == prefix:* ]] || return
+    prefix=${lines[1]#prefix:}
+    lines[1]=()
     directive=${lines[-1]#:}
     [[ ${lines[-1]} == :<-> ]] || return
     ((directive & 1)) && return
     lines[-1]=()
-    [[ $PREFIX == -*=* ]] && compset -P 1 '*='
+    [[ -n $prefix ]] && compset -P "${(b)prefix}"
     ((directive & 2)) && spacing=(-S '')
     if ((directive & 16)); then
         _files -/
