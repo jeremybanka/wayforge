@@ -209,7 +209,7 @@ export async function complete(
 				.filter(
 					(option) =>
 						option.completion?.repeatable !== false ||
-						!context.options.some(({ key }) => key === option.key),
+						!context.suppliedOptions.includes(option),
 				)
 				.flatMap((option) =>
 					option.names.map((value) => ({

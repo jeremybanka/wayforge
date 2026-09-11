@@ -333,3 +333,38 @@ test(`metadata alternatives do not duplicate a raw option occurrence`, () => {
 		{ key: `ref`, index: 0, value: `value`, valueIndex: 1 },
 	])
 })
+
+test.each([
+	{ words: [`--ref`, `main`, `--`] },
+	{ words: [`-r`, `main`, `--`] },
+	{ words: [`--ref=main`, `--`] },
+	{ words: [`--ref`, `main`, `alice`, `--`] },
+])(
+	`non-repeatable descendant options are recognized before route selection: $words`,
+	async ({ words }) => {
+		const result = await complete(
+			{
+				cliName: `probe`,
+				routes: optional({ $name: null }),
+				routeOptions: { "": null, $name: refOptions({ repeatable: false }) },
+			},
+			{ words },
+		)
+		expect(result.candidates).toEqual([])
+	},
+)
+
+test(`using a parent's flag does not suppress a distinct descendant flag with the same key`, async () => {
+	const root = refOptions({ repeatable: false })
+	const child = refOptions({ repeatable: false })
+	child.optionConfigs.ref.flag = `s`
+	const result = await complete(
+		{
+			cliName: `probe`,
+			routes: optional({ $name: null }),
+			routeOptions: { "": root, $name: child },
+		},
+		{ words: [`-r`, `main`, `-`] },
+	)
+	expect(result.candidates.map(({ value }) => value)).toEqual([`--ref`, `-s`])
+})
