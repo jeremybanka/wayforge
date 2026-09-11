@@ -12,10 +12,7 @@ import {
 import { tmpdir } from "node:os"
 import path from "node:path"
 
-import {
-	completionScript,
-	updateCompletionSetup,
-} from "../src/completion-transport"
+import { completionScript } from "../src/completion-transport"
 
 let directory: string
 let environment: NodeJS.ProcessEnv
@@ -56,6 +53,7 @@ beforeAll(() => {
 		HOME: path.join(directory, `home`),
 		XDG_CONFIG_HOME: path.join(directory, `config`),
 		XDG_CACHE_HOME: path.join(directory, `cache`),
+		XDG_DATA_DIRS: path.join(directory, `system-data`),
 		ZDOTDIR: path.join(directory, `zsh-config`),
 		npm_config_cache: path.join(directory, `npm-cache`),
 	}
@@ -101,6 +99,15 @@ beforeAll(() => {
 		`--no-fund`,
 	])
 
+	mkdirSync(path.join(directory, `config/nushell`), { recursive: true })
+	writeFileSync(
+		path.join(directory, `config/nushell/config.nu`),
+		`# user configuration\n`,
+	)
+	writeFileSync(
+		path.join(directory, `config/nushell/env.nu`),
+		`# user environment\n`,
+	)
 	mkdirSync(path.join(directory, `home`), { recursive: true })
 	mkdirSync(path.join(directory, `config/fish`), { recursive: true })
 	const bashCompletion =
@@ -132,17 +139,13 @@ beforeAll(() => {
 	}
 	writeFileSync(
 		path.join(directory, `nushell`),
-		completionScript(`comline-fixture`, `nushell`),
+		`# rely on vendor autoload discovery\n`,
 	)
 	for (const kind of [`global`, `compiled`]) {
-		for (const shell of [`bash`, `zsh`, `fish`]) {
+		for (const shell of [`bash`, `zsh`, `fish`, `nushell`, `carapace`]) {
 			run(`comline-fixture`, [`completion`, `install`, shell], mode(kind))
 		}
 	}
-	writeFileSync(
-		path.join(directory, `config/carapace/specs/comline-fixture.yaml`),
-		completionScript(`comline-fixture`, `carapace`),
-	)
 	// A second registration exercises Carapace's independent Cobra protocol reader.
 	writeFileSync(
 		path.join(directory, `config/carapace/specs/cobra-fixture.yaml`),
@@ -280,7 +283,7 @@ for (const kind of [`global`, `compiled`]) {
 						`bun`,
 						[
 							path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
-							shell.startsWith(`nu`) ? `nu` : shell,
+							shell,
 							path.join(directory, shell === `nu` ? `nushell` : shell),
 							output,
 							line,
@@ -293,7 +296,7 @@ for (const kind of [`global`, `compiled`]) {
 			)
 		}
 
-		test.each([`bash`, `zsh`, `fish`] as const)(
+		test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
 			`%s installation replaces its file and preserves shell profiles`,
 			(shell) => {
 				const profiles = [
@@ -301,6 +304,8 @@ for (const kind of [`global`, `compiled`]) {
 					`zsh-config/.zshenv`,
 					`zsh-config/.zshrc`,
 					`config/fish/config.fish`,
+					`config/nushell/config.nu`,
+					`config/nushell/env.nu`,
 				].map((file) => path.join(directory, file))
 				const before = profiles.map((file) => readFileSync(file, `utf8`))
 				const installed = run(
@@ -389,36 +394,6 @@ for (const kind of [`global`, `compiled`]) {
 			)
 			expect(JSON.parse(result).case).toBe(`pr/list`)
 		})
-		test.each([`nushell`] as const)(
-			`%s setup still executes after reindentation and update`,
-			(shell) => {
-				const script = completionScript(`comline-fixture`, shell)
-				const formatted = script
-					.split(`\n`)
-					.map((line) => `    ${line}`)
-					.join(`\n`)
-				const updated = updateCompletionSetup(
-					formatted,
-					`comline-fixture`,
-					shell,
-				)
-				const setup = path.join(directory, `formatted-${shell}`)
-				writeFileSync(setup, updated)
-				const output = path.join(directory, `output-${counter++}.json`)
-				const result = run(
-					`bun`,
-					[
-						path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
-						shell === `nushell` ? `nu` : shell,
-						setup,
-						output,
-						`comline-fixture pr li\t`,
-					],
-					mode(kind),
-				)
-				expect(JSON.parse(result).case).toBe(`pr/list`)
-			},
-		)
 
 		test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
 			`the executable ships its %s integration`,
@@ -428,14 +403,46 @@ for (const kind of [`global`, `compiled`]) {
 				)
 			},
 		)
-		test(`Nushell registration preserves the existing external completer`, () => {
-			const script = `$env.config.completions.external.completer = {|spans| [{value: "fallback"}] }
-source ${JSON.stringify(path.join(directory, `nushell`))}
-let completer = $env.config.completions.external.completer
-do $completer [another-command ""] | to json`
-			expect(
-				JSON.parse(run(`nu`, [`--no-config-file`, `-c`, script], mode(kind))),
-			).toEqual([{ value: `fallback` }])
+		test(`Nushell autoload composes with Carapace and other command registrations`, () => {
+			const config = path.join(directory, `config/nushell/config.nu`)
+			const other = path.join(
+				directory,
+				kind,
+				`data/nushell/vendor/autoload/other-fixture.nu`,
+			)
+			const otherExecutable = path.join(
+				directory,
+				kind === `compiled` ? `compiled` : `global/bin`,
+				`other-fixture`,
+			)
+			symlinkSync(`comline-fixture`, otherExecutable)
+			writeFileSync(other, completionScript(`other-fixture`, `nushell`))
+			try {
+				withProfile(
+					config,
+					`$env.config.completions.external.completer = {|spans| carapace $spans.0 nushell ...$spans | from json }\n`,
+					() => {
+						// Both the installed native handler and the pre-existing Carapace
+						// provider remain reachable after a second command is autoloaded.
+						for (const name of [
+							`comline-fixture`,
+							`other-fixture`,
+							`cobra-fixture`,
+						]) {
+							const script = `print (do $env.config.completions.external.completer [${name} pr li] | to json); exit`
+							const result = JSON.parse(
+								run(`nu`, [`-i`, `--execute`, script], mode(kind)),
+							)
+							expect(
+								result.map((item: { value: string }) => item.value),
+							).toEqual([`list `])
+						}
+					},
+				)
+			} finally {
+				rmSync(other)
+				rmSync(otherExecutable)
+			}
 		})
 	})
 }
@@ -561,15 +568,18 @@ test(`Fish installation fails if its user vendor directory is not searched`, () 
 	)
 })
 
-test(`installation explains a missing target shell`, () => {
-	expect(() =>
-		run(
-			path.join(directory, `compiled/comline-fixture`),
-			[`completion`, `install`, `bash`],
-			{ ...mode(`compiled`), PATH: directory },
-		),
-	).toThrow(/Check that bash is installed/)
-})
+test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`])(
+	`installation explains a missing %s executable`,
+	(target) => {
+		expect(() =>
+			run(
+				path.join(directory, `compiled/comline-fixture`),
+				[`completion`, `install`, target],
+				{ ...mode(`compiled`), PATH: directory },
+			),
+		).toThrow(`Check that ${target === `nushell` ? `nu` : target} is installed`)
+	},
+)
 
 test(`Bash installation falls back to its XDG user directory`, () => {
 	const env = { ...mode(`global`), BASH_COMPLETION_USER_DIR: undefined }
@@ -618,3 +628,141 @@ test(`installation refuses a symlink without changing its target`, () => {
 		writeFileSync(file, original)
 	}
 })
+
+test.each([`nushell`, `carapace`] as const)(
+	`%s discovers custom XDG paths containing spaces`,
+	(target) => {
+		const config = path.join(directory, `custom config`)
+		const data = path.join(directory, `custom data`)
+		const env = {
+			...mode(`compiled`),
+			XDG_CONFIG_HOME: config,
+			XDG_DATA_HOME: data,
+		}
+		mkdirSync(path.join(config, `nushell`), { recursive: true })
+		writeFileSync(
+			path.join(config, `nushell/config.nu`),
+			`print "startup output"\n`,
+		)
+		const expected =
+			target === `nushell`
+				? path.join(data, `nushell/vendor/autoload/comline-fixture.nu`)
+				: path.join(config, `carapace/specs/comline-fixture.yaml`)
+		expect(run(`comline-fixture`, [`completion`, `install`, target], env)).toBe(
+			`Installed completions at ${expected}\n`,
+		)
+		expect(readFileSync(expected, `utf8`)).toBe(
+			completionScript(`comline-fixture`, target),
+		)
+		if (target === `carapace`) {
+			const result = JSON.parse(
+				run(
+					`carapace`,
+					[`comline-fixture`, `nushell`, `comline-fixture`, `pr`, `li`],
+					env,
+				),
+			)
+			expect(result.map((item: { value: string }) => item.value)).toEqual([
+				`list `,
+			])
+		}
+	},
+)
+
+test.each([`nushell`, `carapace`] as const)(
+	`%s refuses an unwritable destination`,
+	(target) => {
+		const readonly = path.join(directory, `readonly-${target}`)
+		mkdirSync(readonly)
+		chmodSync(readonly, 0o555)
+		const env = {
+			...mode(`compiled`),
+			...(target === `nushell`
+				? { XDG_DATA_HOME: readonly }
+				: { XDG_CONFIG_HOME: readonly }),
+		}
+		try {
+			expect(() =>
+				run(`comline-fixture`, [`completion`, `install`, target], env),
+			).toThrow(`No writable ${target} completion directory`)
+		} finally {
+			chmodSync(readonly, 0o755)
+		}
+	},
+)
+
+test.each([`system-data/nushell/vendor/autoload`, `config/nushell/autoload`])(
+	`Nushell refuses a duplicate registration in %s`,
+	(relative) => {
+		const folder = path.join(directory, relative)
+		mkdirSync(folder, { recursive: true })
+		const existing = path.join(folder, `comline-fixture.nu`)
+		writeFileSync(existing, `# existing registration\n`)
+		try {
+			expect(() =>
+				run(
+					`comline-fixture`,
+					[`completion`, `install`, `nushell`],
+					mode(`compiled`),
+				),
+			).toThrow(/is also autoloaded/)
+			expect(readFileSync(existing, `utf8`)).toBe(`# existing registration\n`)
+		} finally {
+			rmSync(existing)
+		}
+	},
+)
+
+test(`Nushell preserves an explicit setting disabling external completions`, () => {
+	const config = path.join(directory, `config/nushell/config.nu`)
+	withProfile(
+		config,
+		`$env.config.completions.external.enable = false\n`,
+		() => {
+			expect(() =>
+				run(
+					`comline-fixture`,
+					[`completion`, `install`, `nushell`],
+					mode(`compiled`),
+				),
+			).toThrow(/external completions are disabled/)
+			// The already installed autoload file must also respect this preference.
+			expect(
+				run(
+					`nu`,
+					[
+						`-i`,
+						`--execute`,
+						`print $env.config.completions.external.enable; exit`,
+					],
+					mode(`compiled`),
+				).trim(),
+			).toBe(`false`)
+		},
+	)
+})
+
+test.each([`nushell`, `carapace`] as const)(
+	`%s installation needs only its own consumer on PATH`,
+	(target) => {
+		const bin = path.join(directory, `only-${target}`)
+		mkdirSync(bin)
+		const consumer = target === `nushell` ? `nu` : `carapace`
+		// Resolve before restricting PATH; the compiled CLI itself needs no JS runtime.
+		const executable = run(`bash`, [
+			`-c`,
+			`command -v "$1"`,
+			`bash`,
+			consumer,
+		]).trim()
+		symlinkSync(executable, path.join(bin, consumer))
+		const env = { ...mode(`compiled`), PATH: bin }
+		expect(
+			run(
+				path.join(directory, `compiled/comline-fixture`),
+				[`completion`, `install`, target],
+				env,
+			),
+		).toContain(`Installed completions at `)
+	},
+)

@@ -49,7 +49,14 @@ switch (shell) {
 		args = [shell, `--interactive`, `--init-command`, init]
 		break
 	case `nu`:
-		args = [shell, `--no-config-file`, `--no-history`, `--execute`, init]
+		// Exercise native vendor autoload under the fixture's isolated HOME/XDG.
+		args = [shell, `--no-history`, `--execute`, init]
+		break
+	case `nu-carapace`:
+	case `nu-cobra`:
+		// These paths use only the shared Carapace integration, without a native
+		// Nu registration that could mask a broken Carapace spec.
+		args = [`nu`, `--no-config-file`, `--no-history`, `--execute`, init]
 		break
 	default:
 		throw new Error(`Unsupported shell: ${shell}`)
