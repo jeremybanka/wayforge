@@ -67,6 +67,16 @@ beforeAll(() => {
 	mkdirSync(path.join(directory, `folder with spaces`))
 	writeFileSync(path.join(directory, `file with spaces.txt`), ``)
 	writeFileSync(path.join(directory, `key=file.txt`), ``)
+	for (const name of [
+		`star-expanded-branch`,
+		`questionXbranch`,
+		`globstar*file`,
+		`globstar-expanded-file`,
+		`globquestion?file`,
+		`globquestionXfile`,
+	]) {
+		writeFileSync(path.join(directory, name), ``)
+	}
 	run(`bun`, [
 		`build`,
 		path.join(import.meta.dirname, `fixtures/completion.x.ts`),
@@ -272,6 +282,30 @@ for (const kind of [`global`, `compiled`]) {
 					{ opts: { state: `closed`, base: `main` } },
 				],
 			]
+			if (shell === `nu`) {
+				cases.push(
+					[
+						`literal star provider`,
+						`comline-fixture pr list --base sta\t`,
+						{ opts: { base: `star*branch` } },
+					],
+					[
+						`literal question provider`,
+						`comline-fixture pr list --base ques\t`,
+						{ opts: { base: `question?branch` } },
+					],
+					[
+						`literal star filesystem`,
+						`comline-fixture pr list --input globstar*\t`,
+						{ opts: { input: `globstar*file` } },
+					],
+					[
+						`literal question filesystem`,
+						`comline-fixture pr list --input globquestion?\t`,
+						{ opts: { input: `globquestion?file` } },
+					],
+				)
+			}
 			if (shell === `zsh` || shell === `bash`) {
 				cases.push([
 					`equals signs within inline values`,
