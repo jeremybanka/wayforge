@@ -222,3 +222,37 @@ test(`grouped inline completion recognizes flags before command selection`, asyn
 	expect(result.candidates).toEqual([{ value: `main` }])
 	expect(result.context.targets).toHaveLength(1)
 })
+
+test.each([
+	[`a`, `--ref`, ``],
+	[`a`, `--ref=`],
+])(`selected routes exclude sibling providers: %j`, async (...words) => {
+	const provide = vi.fn(() => [`sibling`])
+	const result = await complete(
+		{
+			cliName: `probe`,
+			routes: required({ a: null, b: null }),
+			routeOptions: { a: null, b: refOptions({ provide }) },
+		},
+		{ words },
+	)
+	expect(result.candidates).toEqual([])
+	expect(provide).not.toHaveBeenCalled()
+})
+
+test(`unfinished nested routes keep only reachable provider fallbacks`, async () => {
+	const reachable = vi.fn(() => [`reachable`])
+	const sibling = vi.fn(() => [`sibling`])
+	const definition = {
+		cliName: `probe`,
+		routes: required({ a: required({ run: null }), b: null }),
+		routeOptions: {
+			"a/run": refOptions({ provide: reachable }),
+			b: refOptions({ provide: sibling }),
+		},
+	}
+	const result = await complete(definition, { words: [`a`, `--ref`, ``] })
+	expect(result.candidates).toEqual([{ value: `reachable` }])
+	expect(reachable).toHaveBeenCalledOnce()
+	expect(sibling).not.toHaveBeenCalled()
+})

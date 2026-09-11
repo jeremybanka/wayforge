@@ -79,7 +79,7 @@ function optionMatches(
 	)
 	const matches = local.length
 		? local
-		: context.allOptions.filter((option) => option.names.includes(name))
+		: context.reachableOptions.filter((option) => option.names.includes(name))
 	return deduplicateOptions(matches)
 }
 
