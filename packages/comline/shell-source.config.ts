@@ -8,7 +8,7 @@ export const shellSource: {
 } = {
 	name: `comline-shell-source`,
 	load(id) {
-		if (/\/shells\/completion\.(bash|zsh|fish)$/.test(id)) {
+		if (/\/shells\/[^/]+\.(bash|zsh|fish)$/.test(id)) {
 			return `export default ${JSON.stringify(readFileSync(id, `utf8`))}`
 		}
 	},

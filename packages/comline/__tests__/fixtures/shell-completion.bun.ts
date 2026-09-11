@@ -44,7 +44,9 @@ switch (shell) {
 		break
 	}
 	case `fish`:
-		args = [shell, `--no-config`, `--interactive`, `--init-command`, init]
+		// HOME and XDG_CONFIG_HOME point at the fixture's isolated configuration.
+		// Fish initializes its completion search path while loading startup files.
+		args = [shell, `--interactive`, `--init-command`, init]
 		break
 	case `nu`:
 		args = [shell, `--no-config-file`, `--no-history`, `--execute`, init]

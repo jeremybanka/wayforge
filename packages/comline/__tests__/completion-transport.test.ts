@@ -43,7 +43,7 @@ test(`the Carapace placeholder is excluded from completion words`, async () => {
 	})
 })
 
-test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
+test.each([`nushell`] as const)(
 	`%s setup survives formatting, replaces duplicates, and preserves surrounding content`,
 	(shell) => {
 		const script = completionScript(`my-cli`, shell)
@@ -66,21 +66,9 @@ test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
 
 test(`setup matches delimiter whitespace without inspecting the block body`, () => {
 	const existing = `before\n \t#  >>>   my-cli   completions   >>>\nanything here\n\t# <<< my-cli completions <<<\nafter\n`
-	expect(removeCompletionSetup(existing, `my-cli`, `bash`)).toBe(
+	expect(removeCompletionSetup(existing, `my-cli`, `nushell`)).toBe(
 		`before\nafter\n`,
 	)
-})
-
-test(`Bash setup contains a readable loader instead of the adapter implementation`, () => {
-	const expected = `# >>> my-cli completions >>>
-if command -v my-cli >/dev/null 2>&1; then
-    source <(my-cli completion bash)
-fi
-# <<< my-cli completions <<<
-`
-	expect(updateCompletionSetup(``, `my-cli`, `bash`)).toBe(expected)
-	expect(updateCompletionSetup(expected, `my-cli`, `bash`)).toBe(expected)
-	expect(removeCompletionSetup(expected, `my-cli`, `bash`)).toBe(``)
 })
 
 test(`setup refuses unmatched delimiters instead of deleting user configuration`, () => {
@@ -88,22 +76,14 @@ test(`setup refuses unmatched delimiters instead of deleting user configuration`
 		updateCompletionSetup(
 			`# >>> my-cli completions >>>\nuser code`,
 			`my-cli`,
-			`bash`,
+			`nushell`,
 		),
 	).toThrow(/delimiter/i)
 })
 
 test(`setup leaves other command blocks alone`, () => {
-	const other = completionScript(`other`, `bash`)
-	expect(removeCompletionSetup(other, `my-cli`, `bash`)).toBe(other)
-})
-
-test(`Zsh's header stays with its block after a formatter inserts blank lines`, () => {
-	const formatted = completionScript(`my-cli`, `zsh`).replace(
-		`#compdef my-cli\n`,
-		`  #compdef my-cli\n\n  \n`,
-	)
-	expect(removeCompletionSetup(formatted, `my-cli`, `zsh`)).toBe(``)
+	const other = completionScript(`other`, `nushell`)
+	expect(removeCompletionSetup(other, `my-cli`, `nushell`)).toBe(other)
 })
 
 test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
@@ -123,17 +103,17 @@ test(`invalid setup targets fail explicitly`, async () => {
 
 test(`setup rejects a closing delimiter without an opening delimiter`, () => {
 	expect(() =>
-		removeCompletionSetup(`# <<< my-cli completions <<<\n`, `my-cli`, `bash`),
+		removeCompletionSetup(`# <<< my-cli completions <<<\n`, `my-cli`, `nushell`),
 	).toThrow(/delimiter/i)
 })
 
 test(`setup rejects nested matching blocks`, () => {
-	const block = completionScript(`my-cli`, `bash`)
+	const block = completionScript(`my-cli`, `nushell`)
 	expect(() =>
 		updateCompletionSetup(
 			`# >>> my-cli completions >>>\n${block}`,
 			`my-cli`,
-			`bash`,
+			`nushell`,
 		),
 	).toThrow(/delimiter/i)
 })
@@ -142,10 +122,10 @@ test(`setup appends to a file without a final newline only once`, () => {
 	const updated = updateCompletionSetup(
 		`export MY_SETTING=yes`,
 		`my-cli`,
-		`bash`,
+		`nushell`,
 	)
 	expect(updated.startsWith(`export MY_SETTING=yes\n# >>>`)).toBe(true)
-	expect(updateCompletionSetup(updated, `my-cli`, `bash`)).toBe(updated)
+	expect(updateCompletionSetup(updated, `my-cli`, `nushell`)).toBe(updated)
 })
 
 test(`Nushell normalizes quoted words before interpreting them`, async () => {
@@ -165,3 +145,24 @@ test(`invalid preceding routes use Cobra's error directive`, async () => {
 test(`command names cannot inject code into scripts or delimiters`, () => {
 	expect(() => completionScript(`cli; touch bad`, `bash`)).toThrow(/name/i)
 })
+
+test.each([`bash`, `zsh`, `fish`, `carapace`] as const)(
+	`%s output is a standalone file without setup delimiters`,
+	(shell) => {
+		const script = completionScript(`my-cli`, shell)
+		expect(script).not.toContain(`# >>>`)
+		if (shell === `zsh`)
+			expect(script.startsWith(`#compdef my-cli\n`)).toBe(true)
+	},
+)
+test.each([`bash`, `zsh`, `fish`] as const)(
+	`%s profile injection is rejected`,
+	(shell) => {
+		expect(() =>
+			Reflect.apply(updateCompletionSetup, undefined, [``, `my-cli`, shell]),
+		).toThrow(/file installation/)
+		expect(() =>
+			Reflect.apply(removeCompletionSetup, undefined, [``, `my-cli`, shell]),
+		).toThrow(/file installation/)
+	},
+)
