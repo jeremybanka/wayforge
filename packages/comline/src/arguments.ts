@@ -1,6 +1,5 @@
 import type { CommandLineInterface, OptionsGroup } from "./cli"
 import type { CompletionHints } from "./completion"
-import { deduplicateOptions } from "./option-metadata"
 import { matchRoute, type RouteMatch } from "./retrieve-positional-args"
 import {
 	type JsonSchema,
@@ -182,7 +181,7 @@ export type ArgumentOption = {
 	names: readonly string[]
 	valueKind: OptionValueKind
 	description: string
-	completion?: CompletionHints
+	completion?: CompletionHints | undefined
 	choices: readonly string[]
 }
 
@@ -233,9 +232,17 @@ function describeOptions(
 		valueKind:
 			config.valueKind ??
 			(jsonSchemaTypeIsBoolean(properties?.[key]) ? `boolean` : `value`),
-		description: config.description,
-		...(config.completion ? { completion: config.completion } : {}),
-		choices: schemaChoices(properties?.[key]),
+		// Parsing needs only names and consumption rules. Defer presentation reads
+		// and enum extraction until completion (or an interpretation consumer) asks.
+		get description() {
+			return config.description
+		},
+		get completion() {
+			return config.completion
+		},
+		get choices() {
+			return schemaChoices(properties?.[key])
+		},
 	}))
 }
 
@@ -256,9 +263,9 @@ function availableOptions(
 			break
 		}
 	}
-	// Before a variable positional is supplied, both this route and its variable
-	// descendants remain possible. A shared canonical key does not imply equal hints.
-	return deduplicateOptions(options)
+	// Keep route alternatives intact. Only completion compares presentation metadata;
+	// the scanner and selected occurrences use the consumption signature below.
+	return options
 }
 
 function reachableOptions(

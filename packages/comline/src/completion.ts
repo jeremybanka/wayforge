@@ -109,6 +109,7 @@ export function interpretCompletion(
 	const interpretation = interpretArguments(definition, completed)
 	const context: CompletionContext = {
 		...interpretation,
+		availableOptions: deduplicateOptions(interpretation.availableOptions),
 		words: [...completed, prefix],
 		prefix,
 		replacement: { word: cursor.word, start: 0, end: words[cursor.word].length },
