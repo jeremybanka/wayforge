@@ -26,7 +26,7 @@ _comline_NAME_unquote() {
 }
 
 _comline_NAME() {
-    local cur cword REPLY REPLY_PREFIX word response directive value prefix assignment= quote_candidates= i
+    local cur cword REPLY REPLY_PREFIX word executable response directive value prefix assignment= quote_candidates= i
     local -a words args
     COMPREPLY=()
     # bash-completion rejoins word breaks such as --flag=value and host:path.
@@ -37,7 +37,9 @@ _comline_NAME() {
         args+=("$REPLY")
     done
     prefix=$REPLY_PREFIX
-    response=$("${words[0]}" _comline complete "${args[@]}" 2>/dev/null) || return
+    _comline_NAME_unquote "${words[0]}"
+    executable=$REPLY
+    response=$("$executable" _comline complete "${args[@]}" 2>/dev/null) || return
     [[ $response == prefix:*$'\n'* ]] || return
     assignment=${response%%$'\n'*}
     assignment=${assignment#prefix:}
@@ -70,4 +72,5 @@ _comline_NAME() {
     done
     return 0
 }
-complete -F _comline_NAME COMMAND
+# Bash dispatches by the literal command spelling, including surrounding quotes.
+complete -F _comline_NAME COMMAND '"COMMAND"' "'COMMAND'"
