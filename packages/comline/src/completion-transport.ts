@@ -4,6 +4,12 @@ import * as path from "node:path"
 
 import type { CommandLineInterface } from "./cli"
 import {
+	type CompletionInstallShell,
+	writeCompletionFile,
+} from "./completion-installation"
+
+export type { CompletionInstallShell } from "./completion-installation"
+import {
 	complete,
 	type CompletionCandidate,
 	type CompletionResult,
@@ -49,7 +55,7 @@ function marker(name: string, end = false): string {
 	return `# ${end ? `<<<` : `>>>`} ${name} completions ${end ? `<<<` : `>>>`}`
 }
 
-/** Generate a delimited script or Carapace spec. Does not modify shell configuration. */
+/** Generate a completion file or Nushell setup block. Does not modify shell configuration. */
 export function completionScript(
 	name: string,
 	target: CompletionTargetFormat,
@@ -90,20 +96,33 @@ completion:
 		default:
 			throw new Error(`Unsupported completion target: ${String(target)}`)
 	}
-	// compinit requires this metadata on the first line. Setup editing treats the
-	// adjacent header as part of the delimited block when replacing or removing it.
-	const start =
-		target === `zsh` ? `#compdef ${name}\n${marker(name)}` : marker(name)
-	return `${start}\n${body.trimEnd()}\n${marker(name, true)}\n`
+	if (target === `nushell`)
+		return `${marker(name)}\n${body.trimEnd()}\n${marker(name, true)}\n`
+	// Zsh discovers standalone functions by their first-line metadata.
+	return (target === `zsh` ? `#compdef ${name}\n` : ``) + body.trimEnd() + `\n`
+}
+
+/** Install a completion file in an enabled shell's discovered search path. */
+export async function installCompletion(
+	name: string,
+	shell: CompletionInstallShell,
+): Promise<string> {
+	if (shell !== `bash` && shell !== `zsh` && shell !== `fish`)
+		throw new Error(`Completion installation supports bash, zsh, and fish.`)
+	return writeCompletionFile(name, shell, completionScript(name, shell))
 }
 
 function editSetup(
 	contents: string,
 	name: string,
-	target: CompletionTargetFormat,
+	target: `nushell`,
 	script: string,
 ): string {
 	checkName(name)
+	if (target !== `nushell`)
+		throw new Error(
+			`Use completion file installation for ${String(target)}; profile injection is only available for nushell.`,
+		)
 	const normalize = (line: string): string => line.replace(/\s/g, ``)
 	const start = normalize(marker(name))
 	const end = normalize(marker(name, true))
@@ -116,14 +135,6 @@ function editSetup(
 		if (normalized === start) {
 			if (inside)
 				throw new Error(`Nested completion setup delimiter for ${name}.`)
-			// The first-line Zsh registration belongs to this block as well.
-			if (target === `zsh`) {
-				let header = output.length - 1
-				while (header >= 0 && !output[header].trim()) header--
-				if (normalize(output[header] ?? ``) === `#compdef${name}`) {
-					output.splice(header)
-				}
-			}
 			inside = true
 			if (!inserted) {
 				output.push(script)
@@ -145,22 +156,13 @@ function editSetup(
 	return output.join(``)
 }
 
-/** Update a shell profile's setup block. Bash loads its adapter from the CLI. */
+/** Update a Nushell setup block without writing the user's configuration. */
 export function updateCompletionSetup(
 	contents: string,
 	name: string,
-	target: CompletionTargetFormat,
+	target: `nushell`,
 ): string {
-	checkName(name)
-	const script =
-		target === `bash`
-			? `${marker(name)}
-if command -v ${name} >/dev/null 2>&1; then
-    source <(${name} completion bash)
-fi
-${marker(name, true)}
-`
-			: completionScript(name, target)
+	const script = completionScript(name, target)
 	return editSetup(
 		contents,
 		name,
@@ -169,11 +171,11 @@ ${marker(name, true)}
 	)
 }
 
-/** Remove matching blocks while preserving all text outside their delimiters. */
+/** Remove a Nushell setup block without writing the user's configuration. */
 export function removeCompletionSetup(
 	contents: string,
 	name: string,
-	target: CompletionTargetFormat,
+	target: `nushell`,
 ): string {
 	return editSetup(contents, name, target, ``)
 }
@@ -260,7 +262,7 @@ function unquoteNuWord(word: string): string {
 
 /**
  * Handle an opt-in completion invocation using full process.argv. Returns stdout,
- * or undefined for normal invocation. Never parses options, loads config or exits.
+ * or undefined for normal invocation. Only explicit installation writes files or queries shell startup settings; never parses application options or exits.
  */
 export async function completionResponse(
 	definition: CommandLineInterface<any>,
@@ -268,6 +270,17 @@ export async function completionResponse(
 ): Promise<string | undefined> {
 	const [command, ...args] = argv.slice(2)
 	if (command === `completion`) {
+		if (args[0] === `install`) {
+			const shell = args[1]
+			if (
+				args.length !== 2 ||
+				(shell !== `bash` && shell !== `zsh` && shell !== `fish`)
+			)
+				throw new Error(
+					`Usage: ${definition.cliName} completion install <bash|zsh|fish>`,
+				)
+			return `Installed completions at ${await installCompletion(definition.cliName, shell)}\n`
+		}
 		const [target, ...extra] = args
 		if (extra.length || !isCompletionTarget(target)) {
 			throw new Error(

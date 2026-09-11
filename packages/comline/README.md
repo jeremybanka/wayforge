@@ -337,19 +337,33 @@ if (completion !== undefined) {
 }
 ```
 
-`completionResponse` accepts full runtime argv, like normal parsing. It returns the completion response as a string, or `undefined` for ordinary invocation. It does not write output, exit the process, parse option values, validate schemas, or discover configuration. Providers explicitly configured for completion may run. Dispatch before other application startup code to keep stdout clean and avoid running commands during completion.
+`completionResponse` accepts full runtime argv, like normal parsing. It returns the completion response as a string, or `undefined` for ordinary invocation. It does not write output, exit the process, parse option values, validate schemas, or discover application configuration. The explicit `completion install` invocation queries shell startup settings and writes a completion file; candidate requests and script generation do neither. Providers explicitly configured for completion may run. Dispatch before other application startup code to keep stdout clean and avoid running commands during completion.
 
-Opting in reserves `completion <target>`, `__complete`, `__completeNoDesc`, `_carapace export`, and `_comline nushell`. The `completion` command prints a setup artifact for `bash`, `zsh`, `fish`, `nushell`, or `carapace`. The hidden commands answer candidate requests. `completionScript(cliName, target)` also generates the artifact directly, without an invocation. Command names must contain only letters, digits, periods, underscores, or hyphens and begin with a letter or digit.
+Opting in reserves `completion <target>`, `completion install <bash|zsh|fish>`, `__complete`, `__completeNoDesc`, `_carapace export`, and `_comline nushell`. The `completion` command prints a setup artifact for `bash`, `zsh`, `fish`, `nushell`, or `carapace`. The hidden commands answer candidate requests. `completionScript(cliName, target)` also generates the artifact directly, without an invocation. Command names must contain only letters, digits, periods, underscores, or hyphens and begin with a letter or digit.
 
 The same generated integration works with an executable installed globally by a package manager or produced by `bun build --compile`: it calls the command on `PATH`. Generating an artifact does not install or discover it automatically.
 
-| Target   | Setup                                                                                                                                                                                         |
-| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Bash     | Use Bash 4 or newer, load `bash-completion`, then `source <(mycli completion bash)`. Persist by sourcing a generated file or including the generated block in `.bashrc`.                      |
-| Zsh      | Initialize completion with `autoload -Uz compinit; compinit`, then `source <(mycli completion zsh)`. Alternatively save the script as `_mycli` in a directory on `$fpath` before `compinit`.  |
-| Fish     | `mycli completion fish \| source`; persist the generated script at `$__fish_config_dir/completions/mycli.fish`.                                                                               |
-| Nushell  | Save `mycli completion nushell` to a `.nu` file and `source` it from `config.nu`. Its external completer delegates other commands to the previously configured completer, including Carapace. |
-| Carapace | Save `mycli completion carapace` as `mycli.yaml` in Carapace's specs directory (shown by `carapace --help`). Existing shell integration with Carapace then handles it.                        |
+Install completions explicitly:
+
+```sh
+mycli completion install bash
+mycli completion install zsh
+mycli completion install fish
+```
+
+`installCompletion(cliName, shell)` exposes the same operation as an async library helper and returns the installed file's absolute path. Installation starts the selected shell in interactive command mode to read its configured search paths, including unexported settings. This executes the shell's normal startup files with a ten-second timeout; it never edits them. An unavailable shell, missing completion initialization, insecure Zsh search directories, or an unavailable writable destination produces an actionable error. Install only for the shells you use.
+
+| Target   | Dependency and destination                                                                                                                                                                                                                 |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Bash     | Requires Bash 4+ with `bash-completion` enabled. Writes `mycli.bash` under a user directory from `BASH_COMPLETION_USER_DIR`, falling back to `$XDG_DATA_HOME/bash-completion/completions` or `~/.local/share/bash-completion/completions`. |
+| Zsh      | Requires Zsh's built-in completion system initialized with `compinit`. Writes `_mycli` into a writable, secure directory already on the configured `$fpath`. No arbitrary directory is added to the search path.                           |
+| Fish     | Requires Fish. Writes `mycli.fish` into the user vendor directory (`$XDG_DATA_HOME/fish/vendor_completions.d`, normally `~/.local/share/fish/vendor_completions.d`) only if it is present in `$fish_complete_path`.                        |
+| Nushell  | Save `mycli completion nushell` to a `.nu` file and source it from `config.nu`. Its external completer delegates other commands to the previously configured completer, including Carapace. Automatic installation is not provided.        |
+| Carapace | Save `mycli completion carapace` as `mycli.yaml` in Carapace's specs directory (shown by `carapace --help`). Existing shell integration with Carapace handles it. Automatic installation is not provided.                                  |
+
+Installation creates a recognized missing directory, atomically replaces this CLI's regular completion file, and reports its path. It refuses non-regular destinations and files that would be hidden by a higher-priority override. It does not request elevated privileges or change shell configuration. If Bash completion or Zsh's `compinit` is not enabled, the user must enable that shared shell facility themselves. Open a new shell after installation; Zsh configurations that deliberately reuse a stale completion dump may require the user to refresh that cache.
+
+`mycli completion <target>` continues to print the full standalone artifact for manual or distribution-package installation. Bash, Zsh, and Fish files contain no managed-block delimiters; Zsh retains its required first-line `#compdef mycli`. Updating the CLI's completion file uses the same install command; removing it means deleting the reported file. Candidates are obtained dynamically from the CLI on PATH, while adapter changes require reinstalling the file.
 
 Bash, Zsh, and Fish adapters are maintained as readable files in `src/shells` and embedded as text during the package build or Bun compilation. They require no script generator or runtime file loading. Comline implements Cobra's candidate lines, tab-separated descriptions, and final directive bitmask, including the no-description endpoint. Carapace uses its native JSON export protocol. Nushell's native integration does not require Carapace. Adapters for JSON consumers perform filesystem discovery when requested; the core `complete()` API continues to return filesystem hints without reading directories.
 
@@ -357,30 +371,11 @@ Cobra cannot represent tabs or line breaks in a candidate value, so those values
 
 Shell adapters remove lexical quoting without evaluating command substitutions. Balanced quoted words, quoted or empty earlier arguments, and editing an earlier word are covered by real-shell tests. Unfinished quotes, shell expansions, and replacement of an existing suffix after the cursor within a word are not part of the tested contract. Bash inserts candidate values; Zsh and Fish also display their descriptions. Carapace 1.6.3's Cobra bridge also drops inline option-value candidates such as `--state=cl`, including with upstream Cobra; use the generated native Carapace integration, which handles inline values correctly. The separate upstream Cobra suite verifies that limitation against a real Cobra executable instead of changing the Cobra wire format to accommodate it.
 
-### managed setup blocks
+### Nushell setup blocks
 
-Setup blocks and standalone artifacts use readable, command-specific comment delimiters. The surrounding configuration file supplies the shell context. For Bash, `updateCompletionSetup(existingText, "mycli", "bash")` inserts this loader into `.bashrc`:
+Nushell setup retains readable delimiters such as `# >>> mycli completions >>>` and `# <<< mycli completions <<<`. `updateCompletionSetup(existingText, cliName, "nushell")` replaces matching blocks or appends one when absent; `removeCompletionSetup(existingText, cliName, "nushell")` removes them. Both return text without writing configuration. These helpers are limited to Nushell; Bash, Zsh, and Fish use standalone completion-file installation.
 
-```bash
-# >>> mycli completions >>>
-if command -v mycli >/dev/null 2>&1; then
-    source <(mycli completion bash)
-fi
-# <<< mycli completions <<<
-```
-
-Place the Bash loader after PATH configuration and bash-completion initialization. It picks up the installed CLI's adapter whenever a new shell starts and does nothing if the CLI is no longer installed. `completion bash` and `completionScript(cliName, "bash")` still emit the full adapter for standalone completion files. Other targets insert their full integration into the setup block.
-
-`updateCompletionSetup(existingText, cliName, target)` replaces matching blocks or appends one when absent. It removes duplicate matching blocks, recognizes delimiters after indentation or whitespace changes, and preserves text outside the blocks. The helper preserves CRLF line endings when the existing file uses them. Zsh's required first-line `#compdef` header travels with its adjacent block. `removeCompletionSetup(existingText, cliName, target)` removes the same managed region. Both reject unmatched or nested matching delimiters instead of guessing where user configuration ends. These helpers return text; the caller chooses the file and writes it.
-
-```typescript
-import { readFile, writeFile } from "node:fs/promises"
-import { updateCompletionSetup } from "comline"
-
-const existing = await readFile(profilePath, "utf8")
-const updated = updateCompletionSetup(existing, "mycli", "bash")
-await writeFile(profilePath, updated)
-```
+Nushell block editing removes duplicates, ignores delimiter indentation and whitespace, preserves surrounding configuration and CRLF line endings, and rejects unmatched or nested delimiters.
 
 ### compatibility tests
 
@@ -388,6 +383,6 @@ Shell and upstream Cobra compatibility tests run in comline's standard Vitest su
 
 CI includes the installed consumer and Go versions, OS, architecture, and bash-completion file checksum in `COMLINE_TEST_ENV`, which participates in comline's normal test cache key alongside source, fixtures (including `go.mod` and `go.sum`), build configuration, and tool configuration. Local direct Vitest runs bypass Turbo's cache; use those or Turbo's `--force` option after changing locally installed consumers unless you also update `COMLINE_TEST_ENV`.
 
-The suite installs a fixture through npm's global installation mechanism and also builds it as a Bun executable. A TypeScript driver uses Bun's terminal API to drive the real shells through pseudo-terminals, press Tab, execute the resulting command, and verify parsed arguments. It also exercises Carapace's native and Cobra bridges. Edit the shell files directly; the build embeds their contents without generating another checked-in source file.
+The suite installs a fixture through npm's global installation mechanism and also builds it as a Bun executable. Bash, Zsh, and Fish are installed through their public install command and discovered through their native completion paths, without directly sourcing the adapters. The tests check replacement, unchanged shell profiles, missing dependencies, unwritable destinations, custom search paths, and user overrides. A TypeScript driver uses Bun's terminal API to drive the real shells through pseudo-terminals, press Tab, execute the resulting command, and verify parsed arguments. It also exercises Carapace's native and Cobra bridges. Edit the shell files directly; the build embeds their contents without generating another checked-in source file.
 
 The Cobra tests build the small reference executable in `__tests__/fixtures/cobra` into a temporary directory and compare protocol responses for descriptions, inline values, spacing, and filesystem directives. They also reproduce the Carapace Cobra-bridge limitation. Go produces only the temporary test executable; it contributes no shipped code. An empty Go module cache requires downloading the pinned dependencies. To run only these tests after building workspace dependencies, use `pnpm --filter comline exec vitest run __tests__/completion-cobra.test.ts`.
