@@ -320,7 +320,12 @@ for (const kind of [`global`, `compiled`]) {
 			// Carapace's Cobra bridge drops inline values even for upstream Cobra.
 			// The separate Cobra suite verifies that limitation against upstream.
 			test.each(
-				cases.filter(([name]) => shell !== `nu-cobra` || name !== `inline`),
+				cases.filter(
+					([name]) =>
+						(shell !== `nu-cobra` || name !== `inline`) &&
+						// Fish exposes no arbitrary no-space flag; assert its native behavior below.
+						(shell !== `fish` || name !== `no space without punctuation`),
+				),
 			)(
 				`${shell} inserts $0 through its real line editor`,
 				(_name, line, expected) => {
@@ -397,6 +402,42 @@ for (const kind of [`global`, `compiled`]) {
 				expect(result[0].description).toBe(`Main branch`)
 			},
 		)
+		test(`Fish exposes exactly the provider's candidates`, () => {
+			const result = run(
+				`fish`,
+				[`-i`, `-c`, `complete -C 'comline-fixture pr list --token pla'`],
+				mode(kind),
+			)
+			expect(result.trim().split(`\n`)).toEqual([`plain`])
+		})
+		test(`Fish uses native spacing for a plain candidate`, () => {
+			const result = run(
+				`bun`,
+				[
+					path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
+					`fish`,
+					path.join(directory, `fish`),
+					path.join(directory, `output-${counter++}.json`),
+					`comline-fixture pr list --token pla\t--base main`,
+				],
+				mode(kind),
+			)
+			expect(JSON.parse(result).opts).toEqual({ token: `plain`, base: `main` })
+		})
+		test(`Fish repeated Tab completion never selects a fabricated value`, () => {
+			const result = run(
+				`bun`,
+				[
+					path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
+					`fish`,
+					path.join(directory, `fish`),
+					path.join(directory, `output-${counter++}.json`),
+					`comline-fixture pr list --token pla\t\t\t`,
+				],
+				mode(kind),
+			)
+			expect(JSON.parse(result).opts).toEqual({ token: `plain` })
+		})
 		test(`Zsh discovers the adapter through fpath`, () => {
 			const fpath = path.join(directory, `autoload-${kind}`)
 			mkdirSync(fpath)
