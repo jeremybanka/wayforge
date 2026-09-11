@@ -206,7 +206,7 @@ importers:
     dependencies:
       '@ai-sdk/openai':
         specifier: 4.0.65
-        version: 4.0.65(zod@4.6.0)
+        version: 4.0.65(zod@4.6.1)
       '@floating-ui/react':
         specifier: 0.27.20
         version: 0.27.20(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -224,7 +224,7 @@ importers:
         version: 9.7.0(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(three@0.186.0)
       '@t3-oss/env-core':
         specifier: 0.13.11
-        version: 0.13.11(arktype@2.2.3)(typescript@7.0.2)(zod@4.6.0)
+        version: 0.13.11(arktype@2.2.3)(typescript@7.0.2)(zod@4.6.1)
       '@trpc/client':
         specifier: 11.18.0
         version: 11.18.0(@trpc/server@11.18.0(typescript@7.0.2))(typescript@7.0.2)
@@ -233,7 +233,7 @@ importers:
         version: 11.18.0(typescript@7.0.2)
       ai:
         specifier: 7.0.97
-        version: 7.0.97(zod@4.6.0)
+        version: 7.0.97(zod@4.6.1)
       arktype:
         specifier: 2.2.3
         version: 2.2.3
@@ -254,7 +254,7 @@ importers:
         version: 6.0.1
       openai:
         specifier: 7.13.0
-        version: 7.13.0(undici@8.9.0)(ws@8.21.0)(zod@4.6.0)
+        version: 7.13.0(undici@8.9.0)(ws@8.21.0)(zod@4.6.1)
       postgres:
         specifier: 3.4.9
         version: 3.4.9
@@ -437,14 +437,14 @@ importers:
         specifier: 5.0.0
         version: 5.0.0(@types/node@25.9.6)(@vitest/coverage-v8@5.0.0)(happy-dom@20.14.0)(jsdom@30.0.1)(vite@8.2.2(@types/node@25.9.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0))
       zod:
-        specifier: 4.6.0
-        version: 4.6.0
+        specifier: 4.6.1
+        version: 4.6.1
 
   packages/flightdeck:
     dependencies:
       '@t3-oss/env-core':
         specifier: 0.13.11
-        version: 0.13.11(arktype@2.2.3)(typescript@7.0.2)(zod@4.6.0)
+        version: 0.13.11(arktype@2.2.3)(typescript@7.0.2)(zod@4.6.1)
       arktype:
         specifier: 2.2.3
         version: 2.2.3
@@ -495,8 +495,8 @@ importers:
         specifier: 5.0.0
         version: 5.0.0(@types/node@25.9.6)(@vitest/coverage-v8@5.0.0)(happy-dom@20.14.0)(jsdom@30.0.1)(vite@8.2.2(@types/node@25.9.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0))
       zod:
-        specifier: 4.6.0
-        version: 4.6.0
+        specifier: 4.6.1
+        version: 4.6.1
 
   packages/hamr:
     dependencies:
@@ -859,7 +859,7 @@ importers:
         version: 10.10.0(jiti@2.7.0)(supports-color@10.2.2)
       openai:
         specifier: 7.13.0
-        version: 7.13.0(undici@8.9.0)(ws@8.21.0)(zod@4.6.0)
+        version: 7.13.0(undici@8.9.0)(ws@8.21.0)(zod@4.6.1)
       tsdown:
         specifier: 0.23.0
         version: 0.23.0(@tsdown/css@0.23.0)(@volar/typescript@2.4.28(typescript@7.0.2))(tsx@4.22.1)(typescript@7.0.2)
@@ -876,8 +876,8 @@ importers:
         specifier: 1.0.0-pre.53
         version: 1.0.0-pre.53
       zod:
-        specifier: 4.6.0
-        version: 4.6.0
+        specifier: 4.6.1
+        version: 4.6.1
 
   packages/venerate:
     devDependencies:
@@ -5720,8 +5720,8 @@ packages:
   zod@4.5.4:
     resolution: {integrity: sha512-sC95tT5iHHH9gtpj6A81kh+NEaRAUFN+qlUPDUbRfOMvNf5QCBqsb3WgvnpVtK5Y+4UfA6KqufotuTvMGiTlsA==}
 
-  zod@4.6.0:
-    resolution: {integrity: sha512-iIvwyDnebKYpww2ta0DjaNOL8RnVLmPMhgWyOzlW9y0EIIxv5gl+H6Y0ONpt83HqjGqkk78uWp6xWtpxzZdPbw==}
+  zod@4.6.1:
+    resolution: {integrity: sha512-341aRWQsve0rvronKNTqZpjmzdbUDlFuzHaI/XLg/Ej82qffDJRRfBTCuv7+9q/rMjB6LSLyEBnW4InJeMtt/Q==}
 
   zustand@4.5.7:
     resolution: {integrity: sha512-CHOUy7mu3lbD6o6LJLfllpjkzhHXSBlX8B9+qPddUsIfeF5S/UZ5q0kmCsnRqT1UHFQZchNFDDzMbQsuesHWlw==}
@@ -5760,27 +5760,27 @@ snapshots:
 
   '@adobe/css-tools@4.4.4': {}
 
-  '@ai-sdk/gateway@4.0.78(zod@4.6.0)':
+  '@ai-sdk/gateway@4.0.78(zod@4.6.1)':
     dependencies:
       '@ai-sdk/provider': 4.0.13
-      '@ai-sdk/provider-utils': 5.0.39(zod@4.6.0)
+      '@ai-sdk/provider-utils': 5.0.39(zod@4.6.1)
       '@vercel/oidc': 3.2.0
-      zod: 4.6.0
+      zod: 4.6.1
 
-  '@ai-sdk/openai@4.0.65(zod@4.6.0)':
+  '@ai-sdk/openai@4.0.65(zod@4.6.1)':
     dependencies:
       '@ai-sdk/provider': 4.0.13
-      '@ai-sdk/provider-utils': 5.0.39(zod@4.6.0)
-      zod: 4.6.0
+      '@ai-sdk/provider-utils': 5.0.39(zod@4.6.1)
+      zod: 4.6.1
 
-  '@ai-sdk/provider-utils@5.0.39(zod@4.6.0)':
+  '@ai-sdk/provider-utils@5.0.39(zod@4.6.1)':
     dependencies:
       '@ai-sdk/provider': 4.0.13
       '@standard-schema/spec': 1.1.0
       '@workflow/serde': 4.1.0
       eventsource-parser: 3.0.8
       undici: 7.29.0
-      zod: 4.6.0
+      zod: 4.6.1
 
   '@ai-sdk/provider@4.0.13':
     dependencies:
@@ -7095,11 +7095,11 @@ snapshots:
       typescript: 7.0.2
       zod: 4.5.4
 
-  '@t3-oss/env-core@0.13.11(arktype@2.2.3)(typescript@7.0.2)(zod@4.6.0)':
+  '@t3-oss/env-core@0.13.11(arktype@2.2.3)(typescript@7.0.2)(zod@4.6.1)':
     optionalDependencies:
       arktype: 2.2.3
       typescript: 7.0.2
-      zod: 4.6.0
+      zod: 4.6.1
 
   '@testing-library/dom@10.4.1':
     dependencies:
@@ -7725,12 +7725,12 @@ snapshots:
 
   acorn@8.16.0: {}
 
-  ai@7.0.97(zod@4.6.0):
+  ai@7.0.97(zod@4.6.1):
     dependencies:
-      '@ai-sdk/gateway': 4.0.78(zod@4.6.0)
+      '@ai-sdk/gateway': 4.0.78(zod@4.6.1)
       '@ai-sdk/provider': 4.0.13
-      '@ai-sdk/provider-utils': 5.0.39(zod@4.6.0)
-      zod: 4.6.0
+      '@ai-sdk/provider-utils': 5.0.39(zod@4.6.1)
+      zod: 4.6.1
 
   ajv-formats@3.0.1:
     dependencies:
@@ -9021,11 +9021,11 @@ snapshots:
     dependencies:
       wrappy: 1.0.2
 
-  openai@7.13.0(undici@8.9.0)(ws@8.21.0)(zod@4.6.0):
+  openai@7.13.0(undici@8.9.0)(ws@8.21.0)(zod@4.6.1):
     optionalDependencies:
       undici: 8.9.0
       ws: 8.21.0
-      zod: 4.6.0
+      zod: 4.6.1
 
   optionator@0.9.4:
     dependencies:
@@ -10106,7 +10106,7 @@ snapshots:
   zod@4.5.4:
     optional: true
 
-  zod@4.6.0: {}
+  zod@4.6.1: {}
 
   zustand@4.5.7(@types/react@19.3.0)(react@19.3.0):
     dependencies:
