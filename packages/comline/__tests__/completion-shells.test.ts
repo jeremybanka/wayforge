@@ -317,6 +317,13 @@ for (const kind of [`global`, `compiled`]) {
 					],
 				)
 			}
+			if (shell === `zsh`) {
+				cases.push([
+					`quoted executable`,
+					`"comline-fixture" pr li\t`,
+					{ case: `pr/list`, opts: {} },
+				])
+			}
 			// Carapace's Cobra bridge drops inline values even for upstream Cobra.
 			// The separate Cobra suite verifies that limitation against upstream.
 			test.each(
