@@ -10,7 +10,7 @@ _comline_NAME() {
     [[ ${lines[-1]} == :<-> ]] || return
     ((directive & 1)) && return
     lines[-1]=()
-    [[ $PREFIX == -*=* ]] && compset -P '*='
+    [[ $PREFIX == -*=* ]] && compset -P 1 '*='
     ((directive & 2)) && spacing=(-S '')
     if ((directive & 16)); then
         _files -/

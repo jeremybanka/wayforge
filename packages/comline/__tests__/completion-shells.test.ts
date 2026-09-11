@@ -271,6 +271,13 @@ for (const kind of [`global`, `compiled`]) {
 					{ opts: { state: `closed`, base: `main` } },
 				],
 			]
+			if (shell === `zsh`) {
+				cases.push([
+					`equals signs within inline values`,
+					`comline-fixture pr list --base=key=va\t`,
+					{ opts: { base: `key=value` } },
+				])
+			}
 			// Carapace's Cobra bridge drops inline values even for upstream Cobra.
 			// The separate Cobra suite verifies that limitation against upstream.
 			test.each(
