@@ -34,6 +34,8 @@ const shared = options(
 					`feature branch`,
 					`key=value`,
 					`--key=value`,
+					`star*branch`,
+					`question?branch`,
 					`quote'branch`,
 					`double"branch`,
 					`dollar$(touch injected)`,

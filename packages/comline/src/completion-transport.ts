@@ -150,7 +150,7 @@ async function filesystemCandidates(
 }
 
 function quoteNu(value: string): string {
-	return /[\s{}()[\]<>$&"'|;#\\`]/.test(value) ? JSON.stringify(value) : value
+	return /[\s*?{}()[\]<>$&"'|;#\\`]/.test(value) ? JSON.stringify(value) : value
 }
 
 function unquoteNuWord(word: string): string {
