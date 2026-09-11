@@ -204,14 +204,17 @@ export async function completionResponse(
 	const cobra = command === `__complete` || command === `__completeNoDesc`
 	const carapace = command === `_carapace` && args[0] === `export`
 	const nushell = command === `_comline` && args[0] === `nushell`
-	if (!cobra && !carapace && !nushell) return undefined
+	const shell = command === `_comline` && args[0] === `complete`
+	if (!cobra && !carapace && !nushell && !shell) return undefined
 	const words = cobra
 		? args
 		: carapace
 			? args.slice(2)
-			: args.slice(1).map(unquoteNuWord)
+			: nushell
+				? args.slice(1).map(unquoteNuWord)
+				: args.slice(1)
 	const result = await complete(definition, { words })
-	if (cobra) {
+	if (cobra || shell) {
 		// Cobra directives apply to the entire response, not to individual candidates.
 		let directive =
 			result.fileSystem === `none`
@@ -245,7 +248,16 @@ export async function completionResponse(
 					: (candidate.description ?? ``).replace(/[\r\n\t]+/g, ` `)
 			return candidate.value + (description ? `\t${description}` : ``)
 		})
-		return [...lines, `:${directive}`, ``].join(`\n`)
+		const response = [...lines, `:${directive}`, ``].join(`\n`)
+		if (!shell) return response
+		// Owned adapters need the engine's replacement boundary; Cobra's standard
+		// protocol does not carry it. Send the literal prefix rather than a JS UTF-16
+		// offset, since shells count characters differently. Keep Cobra endpoints intact.
+		const { word, start } = result.context.replacement
+		const prefix = (words[word] ?? ``).slice(0, start)
+		if (/[\r\n\t]/.test(prefix))
+			return `prefix:\n:${cobraDirectives.error | cobraDirectives.noFileCompletion}\n`
+		return `prefix:${prefix}\n${response}`
 	}
 	const candidates = [
 		...result.candidates,

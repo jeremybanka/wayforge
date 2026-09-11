@@ -178,7 +178,7 @@ for (const kind of [`global`, `compiled`]) {
 			const cases: [
 				string,
 				string,
-				{ case?: string; opts: Record<string, string> },
+				{ case?: string; path?: string[]; opts: Record<string, string> },
 			][] = [
 				[`route`, `comline-fixture pr li\t`, { case: `pr/list`, opts: {} }],
 				[
@@ -330,6 +330,25 @@ for (const kind of [`global`, `compiled`]) {
 					`comline-fixture pr list --token spa\t--base main`,
 					{ opts: { token: `spaced`, base: `main` } },
 				])
+			}
+			if ([`bash`, `zsh`, `fish`].includes(shell)) {
+				cases.push(
+					[
+						`positional assignment after delimiter`,
+						`comline-fixture pr list -- --key=val\t`,
+						{ path: [`pr`, `list`, `--key=value`], opts: {} },
+					],
+					[
+						`dash-prefixed separate value`,
+						`comline-fixture pr list --base --key=val\t`,
+						{ opts: { base: `--key=value` } },
+					],
+					[
+						`dash-prefixed inline value`,
+						`comline-fixture pr list --base=--key=val\t`,
+						{ opts: { base: `--key=value` } },
+					],
+				)
 			}
 			// Carapace's Cobra bridge drops inline values even for upstream Cobra.
 			// The separate Cobra suite verifies that limitation against upstream.

@@ -37,8 +37,11 @@ _comline_NAME() {
         args+=("$REPLY")
     done
     prefix=$REPLY_PREFIX
-    [[ $REPLY == -*=* ]] && assignment=${REPLY%%=*}=
-    response=$("${words[0]}" __complete "${args[@]}" 2>/dev/null) || return
+    response=$("${words[0]}" _comline complete "${args[@]}" 2>/dev/null) || return
+    [[ $response == prefix:*$'\n'* ]] || return
+    assignment=${response%%$'\n'*}
+    assignment=${assignment#prefix:}
+    response=${response#*$'\n'}
     directive=${response##*$'\n'}
     [[ $directive == :* && ${directive#:} != *[!0-9]* && ${directive#:} ]] || return
     directive=${directive#:}

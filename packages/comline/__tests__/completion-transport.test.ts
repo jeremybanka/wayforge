@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { cli, noOptions, options, required } from "../src/cli"
+import { cli, noOptions, optional, options, required } from "../src/cli"
 import {
 	completionResponse,
 	completionScript,
@@ -124,5 +124,33 @@ test.each([
 			argv(`__complete`, `--ref`, ``),
 		)
 		expect(response?.split(`\n`).at(-2)).toBe(`:${directive}`)
+	},
+)
+
+test.each([
+	{ words: [`--ref=--key=val`], prefix: `--ref=` },
+	{ words: [`--ref`, `--key=val`], prefix: `` },
+	{ words: [`--`, `--key=val`], prefix: `` },
+])(
+	`owned shell responses carry the engine replacement prefix: $words`,
+	async ({ words, prefix }) => {
+		const group = options(``, z.object({ ref: z.string().optional() }), {
+			ref: {
+				description: ``,
+				example: ``,
+				required: false,
+				completion: { choices: [`--key=value`] },
+			},
+		})
+		const response = await completionResponse(
+			{
+				cliName: `probe`,
+				routes: optional({ $value: null }),
+				routeOptions: { "": group, $value: group },
+				positionalCompletions: { $value: { choices: [`--key=value`] } },
+			},
+			argv(`_comline`, `complete`, ...words),
+		)
+		expect(response).toBe(`prefix:${prefix}\n--key=value\n:4\n`)
 	},
 )
