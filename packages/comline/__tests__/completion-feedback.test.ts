@@ -425,3 +425,44 @@ test.each([`configuration`, `choices`] as const)(
 		expect(read).not.toHaveBeenCalled()
 	},
 )
+
+test.each([
+	{ words: [`--ref`], pending: [`ref`] },
+	{ words: [`-r`], pending: [`ref`] },
+	{ words: [`--ref=`], pending: [] },
+	{ words: [`--ref`, `main`], pending: [] },
+	{ words: [`-rr`], pending: [] },
+	{ words: [`--`, `--ref`], pending: [] },
+	{ words: [`--draft`], pending: [`draft`] },
+	{ words: [`--draft`, `false`], pending: [] },
+	{ words: [`--ref`, `--draft`], pending: [`draft`] },
+])(
+	`argument scans expose pending standalone values: $words`,
+	({ words, pending }) => {
+		const group = refOptions({})
+		const definition = {
+			cliName: `probe`,
+			routeOptions: {
+				"": options(
+					``,
+					z.object({
+						ref: z.string().optional(),
+						draft: z.boolean().optional(),
+					}),
+					{
+						ref: group.optionConfigs.ref,
+						draft: {
+							description: ``,
+							example: ``,
+							required: false,
+							parse: parseBooleanOption,
+						},
+					},
+				),
+			},
+		}
+		expect(
+			interpretArguments(definition, words).pendingOptions.map(({ key }) => key),
+		).toEqual(pending)
+	},
+)
