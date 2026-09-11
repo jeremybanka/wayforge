@@ -1,5 +1,6 @@
 import type { CommandLineInterface, OptionsGroup } from "./cli"
 import type { CompletionHints } from "./completion"
+import { deduplicateOptions } from "./option-metadata"
 import { matchRoute, type RouteMatch } from "./retrieve-positional-args"
 import {
 	type JsonSchema,
@@ -253,10 +254,9 @@ function availableOptions(
 			break
 		}
 	}
-	return options.filter(
-		(option, index) =>
-			options.findIndex((candidate) => candidate.key === option.key) === index,
-	)
+	// Before a variable positional is supplied, both this route and its variable
+	// descendants remain possible. A shared canonical key does not imply equal hints.
+	return deduplicateOptions(options)
 }
 
 function reachableOptions(
@@ -328,8 +328,10 @@ export function interpretArguments(
 		: { path: [], route: ``, tree: null, complete: true }
 	const available = availableOptions(groups, match)
 	const selected = groups.get(match.route) ?? available
-	const options = selected
-		.flatMap((option) => scanned.get(optionSignature(option)) ?? [])
+	// Execution selects the final route's group. When interpretation is unfinished,
+	// metadata alternatives sharing a scan must not duplicate raw occurrences.
+	const options = [...new Set(selected.map(optionSignature))]
+		.flatMap((signature) => scanned.get(signature) ?? [])
 		.sort((a, b) => a.index - b.index)
 	return {
 		...match,
@@ -342,6 +344,7 @@ export function interpretArguments(
 	}
 }
 
+/** Cache only token consumption; never use this signature to discard completion metadata. */
 function optionSignature(option: ArgumentOption): string {
 	return JSON.stringify([option.key, option.names, option.valueKind])
 }

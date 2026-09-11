@@ -316,6 +316,8 @@ Use `definition.positionalCompletions` for the same hints on variable positions,
 
 When several targets are possible, filesystem hints combine as a union: `files` takes precedence over `directories`, which takes precedence over `none`. The result's `appendSpace` is false if any target requests no trailing space. Candidates retain their own target's spacing behavior through a candidate-level override when necessary, so a positional hint cannot suppress spacing on a literal command. For duplicate candidate values, a no-space request takes precedence. These rules do not depend on route declaration order.
 
+Before an optional variable positional is supplied, the current route and its variable descendants retain distinct option aliases, choices, and providers. Normal execution selects only the final route's option group. Raw occurrences are shared when token-consumption rules match, independently of completion metadata.
+
 Equivalent options with cloned hint objects share a completion target when their option metadata, effective choices and hints, and provider function match. Distinct provider functions remain separate, even when their other hints match.
 
 The first committed `--` ends option interpretation. An unfinished `--` remains an option-name prefix until the shell starts the next word. Existing Comline rules also apply to short groups, repeated options, boolean literals, and negative or otherwise unrecognized dash-prefixed values. In particular, an inline value on a short group applies to every flag in the group: `-dc=0` supplies `"0"` to both `d` and `c`. Completion preserves this existing parsing rule, including before command selection.

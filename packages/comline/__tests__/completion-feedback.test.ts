@@ -256,3 +256,80 @@ test(`unfinished nested routes keep only reachable provider fallbacks`, async ()
 	expect(reachable).toHaveBeenCalledOnce()
 	expect(sibling).not.toHaveBeenCalled()
 })
+
+test(`optional positional routes retain distinct flags, choices, and providers`, async () => {
+	const rootProvider = vi.fn(() => [`root-provider`])
+	const childProvider = vi.fn(() => [`child-provider`])
+	const root = refOptions({ choices: [`root`], provide: rootProvider })
+	const child = refOptions({ choices: [`child`], provide: childProvider })
+	child.optionConfigs.ref.flag = `s`
+	const definition = {
+		cliName: `probe`,
+		routes: optional({ $name: null }),
+		routeOptions: { "": root, $name: child },
+		discoverConfigPath: () => undefined,
+	}
+	const names = await complete(definition, { words: [`-`] })
+	expect(names.candidates.map(({ value }) => value)).toEqual([
+		`--ref`,
+		`-r`,
+		`-s`,
+	])
+	const values = await complete(definition, { words: [`--ref`, ``] })
+	expect(values.candidates.map(({ value }) => value)).toEqual([
+		`root`,
+		`root-provider`,
+		`child`,
+		`child-provider`,
+	])
+	expect(rootProvider).toHaveBeenCalledOnce()
+	expect(childProvider).toHaveBeenCalledOnce()
+	rootProvider.mockClear()
+	childProvider.mockClear()
+	const selected = await complete(definition, { words: [`alice`, `--ref`, ``] })
+	expect(selected.candidates.map(({ value }) => value)).toEqual([
+		`child`,
+		`child-provider`,
+	])
+	expect(rootProvider).not.toHaveBeenCalled()
+	// Execution uses only the final route's option definition.
+	expect(cli(definition)(argv(`-r`, `root`)).inputs.opts).toEqual({
+		ref: `root`,
+	})
+	expect(cli(definition)(argv(`alice`, `-s`, `child`)).inputs.opts).toEqual({
+		ref: `child`,
+	})
+})
+
+test(`same-name options retain distinct hints before optional positionals`, async () => {
+	const result = await complete(
+		{
+			cliName: `probe`,
+			routes: optional({ $name: null }),
+			routeOptions: {
+				"": refOptions({ choices: [`root`] }),
+				$name: refOptions({ choices: [`child`] }),
+			},
+		},
+		{ words: [`--ref`, ``] },
+	)
+	expect(result.candidates.map(({ value }) => value)).toEqual([`root`, `child`])
+})
+
+test(`metadata alternatives do not duplicate a raw option occurrence`, () => {
+	const result = interpretArguments(
+		{
+			cliName: `probe`,
+			routes: required({ $name: optional({ $other: null }) }),
+			routeOptions: {
+				$name: refOptions({ choices: [`first`] }),
+				"$name/$other": refOptions({ choices: [`second`] }),
+			},
+		},
+		[`--ref`, `value`],
+	)
+	expect(result.availableOptions).toHaveLength(2)
+	expect(result.options).toEqual([
+		{ key: `ref`, index: 0, value: `value`, valueIndex: 1 },
+	])
+})
