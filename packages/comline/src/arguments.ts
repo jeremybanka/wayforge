@@ -80,79 +80,100 @@ function retrieveRepeatedFlagValue(argument: string, flag: string): string {
 		.substring(1)
 }
 
+type ConsumptionOption = Pick<ArgumentOption, `key` | `names` | `valueKind`>
+type ArgumentScan = {
+	instances: Map<string, ArgumentInstance[]>
+	pending: Set<string>
+	consumed: Set<number>
+	recognized: Set<number>
+}
+
 export function retrieveArgumentInstances(
 	passed: readonly string[],
 	key: string,
 	flag?: string,
 	retrieveOptions: RetrieveArgumentInstancesOptions = {},
 ): ArgumentInstance[] {
-	return scanArgumentInstances(passed, key, flag, retrieveOptions).instances
+	const option: ConsumptionOption = {
+		key,
+		names: [
+			`--${key}`,
+			...(retrieveOptions.aliases ?? []).map((name) => `--${name}`),
+			...(flag ? [`-${flag}`] : []),
+		],
+		valueKind: retrieveOptions.valueKind ?? `value`,
+	}
+	return (
+		scanOptions(
+			passed,
+			[option],
+			retrieveOptions.knownOptionTokens,
+		).instances.get(optionSignature(option)) ?? []
+	)
 }
 
-function scanArgumentInstances(
-	passed: readonly string[],
-	key: string,
-	flag: string | undefined,
-	retrieveOptions: RetrieveArgumentInstancesOptions,
-): { instances: ArgumentInstance[]; pendingValue: boolean } {
-	const {
-		knownOptionTokens = {
-			flags: new Set<string>(),
-			switches: new Set<string>(),
-		},
-		valueKind = `value`,
-		aliases = [],
-	} = retrieveOptions
-	const instances: ArgumentInstance[] = []
-	let pendingValue = false
-	const switchNames = [key, ...aliases].map((name) => `--${name}`)
-	for (const [index, argument] of passed.entries()) {
-		if (argument === `--`) {
-			break
-		}
-		if (switchNames.includes(argument)) {
-			pendingValue = index === passed.length - 1
-			const nextArg = passed[index + 1]
-			if (shouldConsumeNextArg(nextArg, valueKind, knownOptionTokens)) {
-				instances.push({ index, value: nextArg, valueIndex: index + 1 })
-			} else {
-				instances.push({ index, value: `` })
-			}
-			continue
-		}
-		const inlineName = switchNames.find((name) =>
-			argument.startsWith(`${name}=`),
-		)
-		if (inlineName) {
-			instances.push({ index, value: argument.slice(inlineName.length + 1) })
-			continue
-		}
-		if (
-			flag === undefined ||
-			!argument.startsWith(`-`) ||
-			argument.startsWith(`--`)
-		) {
-			continue
-		}
-		const [flagGroup, value] = splitOptionValue(argument)
-		if (!flagGroup.includes(flag)) {
-			continue
-		}
-		if (value !== undefined) {
-			instances.push({ index, value })
-			continue
-		}
-		if (flagGroup === `-${flag}`) {
-			pendingValue = index === passed.length - 1
-			const nextArg = passed[index + 1]
-			if (shouldConsumeNextArg(nextArg, valueKind, knownOptionTokens)) {
-				instances.push({ index, value: nextArg, valueIndex: index + 1 })
-				continue
-			}
-		}
-		instances.push({ index, value: retrieveRepeatedFlagValue(flagGroup, flag) })
+// Index the options once, then visit each word once per distinct route grammar.
+// Equivalent route grammars share this scan; presentation metadata never participates.
+function scanOptions(
+	words: readonly string[],
+	options: readonly ConsumptionOption[],
+	knownOptionTokens = retrieveKnownOptionTokens(options),
+): ArgumentScan {
+	const scan: ArgumentScan = {
+		instances: new Map(),
+		pending: new Set(),
+		consumed: new Set(),
+		recognized: new Set(),
 	}
-	return { instances, pendingValue }
+	const byName = new Map<string, ConsumptionOption[]>()
+	for (const option of options) {
+		for (const name of option.names)
+			byName.set(name, [...(byName.get(name) ?? []), option])
+	}
+	for (const [index, word] of words.entries()) {
+		if (word === `--`) break
+		if (scan.consumed.has(index) || !word.startsWith(`-`)) continue
+		const [name, inline] = splitOptionValue(word)
+		const names = name.startsWith(`--`)
+			? [name]
+			: [...new Set(name.slice(1))].map((flag) => `-${flag}`)
+		for (const option of names.flatMap((token) => byName.get(token) ?? [])) {
+			const signature = optionSignature(option)
+			const standalone = option.names.includes(name)
+			let instance: ArgumentInstance
+			if (inline !== undefined) {
+				instance = { index, value: inline }
+			} else if (
+				standalone &&
+				shouldConsumeNextArg(
+					words[index + 1],
+					option.valueKind,
+					knownOptionTokens,
+				)
+			) {
+				instance = { index, value: words[index + 1], valueIndex: index + 1 }
+				scan.consumed.add(index + 1)
+			} else {
+				const flag = option.names
+					.find((token) => !token.startsWith(`--`))
+					?.slice(1)
+				instance = {
+					index,
+					value:
+						name.startsWith(`--`) || !flag
+							? ``
+							: retrieveRepeatedFlagValue(name, flag),
+				}
+				if (standalone && index === words.length - 1) scan.pending.add(signature)
+			}
+			scan.instances.set(signature, [
+				...(scan.instances.get(signature) ?? []),
+				instance,
+			])
+			scan.recognized.add(index)
+		}
+	}
+	return scan
 }
 
 function jsonSchemaTypeIsBoolean(jsonSchema: JsonSchema | undefined): boolean {
@@ -167,7 +188,7 @@ function jsonSchemaTypeIsBoolean(jsonSchema: JsonSchema | undefined): boolean {
 }
 
 export function retrieveKnownOptionTokens(
-	options: readonly ArgumentOption[],
+	options: readonly Pick<ArgumentOption, `names`>[],
 ): KnownOptionTokens {
 	return {
 		switches: new Set(
@@ -311,79 +332,101 @@ export function interpretArguments(
 		]),
 	)
 	const allOptions = [...groups.values()].flat()
-	const knownOptionTokens = retrieveKnownOptionTokens(allOptions)
-	const scanned = new Map<
-		string,
-		{ instances: OptionOccurrence[]; pendingValue: boolean }
-	>()
-	for (const option of allOptions) {
-		const signature = optionSignature(option)
-		if (scanned.has(signature)) continue
-		const flag = option.names.find((name) => !name.startsWith(`--`))?.slice(1)
-		const scan = scanArgumentInstances(words, option.key, flag, {
-			knownOptionTokens,
-			valueKind: option.valueKind,
-			aliases: option.names
-				.filter((name) => name.startsWith(`--`))
-				.slice(1)
-				.map((name) => name.slice(2)),
-		})
-		scanned.set(signature, {
-			...scan,
-			instances: scan.instances.map((instance) => ({
-				...instance,
-				key: option.key,
-			})),
-		})
+	const routes: string[] = []
+	function visit(route: string, tree: RouteMatch[`tree`]): void {
+		routes.push(route)
+		for (const [name, child] of Object.entries(tree?.[1] ?? {}))
+			visit([route, name].filter(Boolean).join(`/`), child)
 	}
-	const allOccurrences = [...scanned.values()]
-		.flatMap(({ instances }) => instances)
-		.sort((a, b) => a.index - b.index)
-	const consumed = new Set(
-		allOccurrences.flatMap(({ valueIndex }) =>
-			valueIndex === undefined ? [] : [valueIndex],
-		),
-	)
-	let positionalOnly = false
-	const positionals = words.filter((word, index) => {
-		if (positionalOnly) return true
-		if (word === `--`) {
-			positionalOnly = true
-			return false
+	visit(``, definition.routes ?? null)
+	const scans = new Map<string, ArgumentScan>()
+	const interpretations = routes.map((route) => {
+		const options = groups.get(route) ?? []
+		const grammar = JSON.stringify(options.map(optionSignature).sort())
+		let scan = scans.get(grammar)
+		if (!scan) {
+			scan = scanOptions(words, options)
+			scans.set(grammar, scan)
 		}
-		return !consumed.has(index) && !word.startsWith(`-`)
+		let positionalOnly = false
+		const positionals = words.filter((word, index) => {
+			if (positionalOnly) return true
+			if (word === `--`) {
+				positionalOnly = true
+				return false
+			}
+			return !scan.consumed.has(index) && !word.startsWith(`-`)
+		})
+		const match: RouteMatch = definition.routes
+			? matchRoute(definition.cliName, definition.routes, positionals)
+			: { path: [], route: ``, tree: null, complete: true }
+		return { route, scan, match, positionalOnly }
 	})
-	const match: RouteMatch = definition.routes
-		? matchRoute(definition.cliName, definition.routes, positionals)
-		: { path: [], route: ``, tree: null, complete: true }
+	// Retain a route only when its own consumption rules lead toward that route.
+	// Recognized options disambiguate alternatives with unrelated flags/aliases.
+	const viable = interpretations.filter(
+		({ route, match }) =>
+			!match.error &&
+			(route === match.route ||
+				!match.route ||
+				route.startsWith(`${match.route}/`)),
+	)
+	const pool = viable.length ? viable : interpretations
+	const recognized = Math.max(...pool.map(({ scan }) => scan.recognized.size))
+	const alternatives = pool.filter(
+		({ scan }) => scan.recognized.size === recognized,
+	)
+	const best = alternatives.toSorted(
+		(a, b) => b.match.path.length - a.match.path.length,
+	)[0]
+	const match = { ...best.match }
+	if (!viable.length && !match.error)
+		match.error = `Arguments do not match a viable route for ${definition.cliName}.`
+	if (
+		viable.length &&
+		new Set(
+			alternatives.map((alternative) => JSON.stringify(alternative.match.path)),
+		).size > 1
+	) {
+		match.error = `Ambiguous option consumption for ${definition.cliName}. Use --option=value or -- to make the command boundary explicit.`
+		match.complete = false
+	}
+	const activeScans = [...new Set(alternatives.map(({ scan }) => scan))]
+	const occurrences = (
+		options: readonly ArgumentOption[],
+	): OptionOccurrence[] => {
+		const unique = new Map<string, OptionOccurrence>()
+		for (const option of options) {
+			for (const scan of activeScans) {
+				for (const instance of scan.instances.get(optionSignature(option)) ??
+					[]) {
+					const occurrence = { ...instance, key: option.key }
+					unique.set(JSON.stringify(occurrence), occurrence)
+				}
+			}
+		}
+		return [...unique.values()].sort((a, b) => a.index - b.index)
+	}
 	const available = availableOptions(groups, match)
 	const selected = groups.get(match.route) ?? available
-	// Execution selects the final route's group. When interpretation is unfinished,
-	// metadata alternatives sharing a scan must not duplicate raw occurrences.
-	const options = [...new Set(selected.map(optionSignature))]
-		.flatMap((signature) => scanned.get(signature)?.instances ?? [])
-		.sort((a, b) => a.index - b.index)
 	return {
 		...match,
-		options,
+		options: occurrences(selected),
 		availableOptions: available,
 		allOptions,
 		reachableOptions: reachableOptions(groups, match),
-		allOccurrences,
-		// Preserve the same option objects used by availableOptions, including distinct
-		// aliases sharing a canonical key. Reuse cached scans instead of rescanning words.
-		suppliedOptions: allOptions.filter(
-			(option) =>
-				(scanned.get(optionSignature(option))?.instances.length ?? 0) > 0,
+		allOccurrences: occurrences(allOptions),
+		suppliedOptions: allOptions.filter((option) =>
+			activeScans.some((scan) => scan.instances.has(optionSignature(option))),
 		),
-		pendingOptions: allOptions.filter(
-			(option) => scanned.get(optionSignature(option))?.pendingValue,
+		pendingOptions: allOptions.filter((option) =>
+			activeScans.some((scan) => scan.pending.has(optionSignature(option))),
 		),
-		positionalOnly,
+		positionalOnly: best.positionalOnly,
 	}
 }
 
 /** Cache only token consumption; never use this signature to discard completion metadata. */
-function optionSignature(option: ArgumentOption): string {
+function optionSignature(option: ConsumptionOption): string {
 	return JSON.stringify([option.key, option.names, option.valueKind])
 }
