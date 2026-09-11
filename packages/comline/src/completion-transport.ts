@@ -224,23 +224,27 @@ export async function completionResponse(
 			candidates = [...candidates, ...(await filesystemCandidates(result))]
 			directive = cobraDirectives.noFileCompletion
 		}
+		// Unrepresentable values are not emitted and must not affect spacing.
+		candidates = candidates.filter(
+			(candidate) => !/[\r\n\t]/.test(candidate.value),
+		)
 		if (
-			!result.appendSpace ||
-			candidates.some((candidate) => candidate.appendSpace === false)
+			candidates.length
+				? candidates.some(
+						(candidate) => !(candidate.appendSpace ?? result.appendSpace),
+					)
+				: !result.appendSpace
 		)
 			directive |= cobraDirectives.noSpace
 		if (result.context.error) directive |= cobraDirectives.error
-		const lines = candidates
-			// Newlines/tabs cannot be represented as candidate values in Cobra's protocol.
-			.filter((candidate) => !/[\r\n\t]/.test(candidate.value))
-			.map((candidate) => {
-				// Cobra's scripts retain the --flag= prefix themselves.
-				const description =
-					command === `__completeNoDesc`
-						? ``
-						: (candidate.description ?? ``).replace(/[\r\n\t]+/g, ` `)
-				return candidate.value + (description ? `\t${description}` : ``)
-			})
+		const lines = candidates.map((candidate) => {
+			// Cobra's scripts retain the --flag= prefix themselves.
+			const description =
+				command === `__completeNoDesc`
+					? ``
+					: (candidate.description ?? ``).replace(/[\r\n\t]+/g, ` `)
+			return candidate.value + (description ? `\t${description}` : ``)
+		})
 		return [...lines, `:${directive}`, ``].join(`\n`)
 	}
 	const candidates = [

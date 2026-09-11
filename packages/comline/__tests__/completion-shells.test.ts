@@ -324,6 +324,13 @@ for (const kind of [`global`, `compiled`]) {
 					{ case: `pr/list`, opts: {} },
 				])
 			}
+			if (shell === `bash` || shell === `zsh`) {
+				cases.push([
+					`candidate spacing override`,
+					`comline-fixture pr list --token spa\t--base main`,
+					{ opts: { token: `spaced`, base: `main` } },
+				])
+			}
 			// Carapace's Cobra bridge drops inline values even for upstream Cobra.
 			// The separate Cobra suite verifies that limitation against upstream.
 			test.each(
