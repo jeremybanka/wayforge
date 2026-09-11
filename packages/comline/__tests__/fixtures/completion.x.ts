@@ -26,6 +26,7 @@ const shared = options(
 					{ value: `main`, description: `Main branch` },
 					{ value: `maintenance`, description: `Maintenance branch` },
 					`feature branch`,
+					`key=value`,
 					`quote'branch`,
 					`double"branch`,
 					`dollar$(touch injected)`,
