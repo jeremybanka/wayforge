@@ -359,13 +359,17 @@ Shell adapters remove lexical quoting without evaluating command substitutions. 
 
 ### managed setup blocks
 
-Generated artifacts include command- and target-specific comment delimiters:
+Setup blocks and standalone artifacts use readable, command-specific comment delimiters. The surrounding configuration file supplies the shell context. For Bash, `updateCompletionSetup(existingText, "mycli", "bash")` inserts this loader into `.bashrc`:
 
 ```bash
-# >>> comline completion:mycli:bash >>>
-# generated integration
-# <<< comline completion:mycli:bash <<<
+# >>> mycli completions >>>
+if command -v mycli >/dev/null 2>&1; then
+    source <(mycli completion bash)
+fi
+# <<< mycli completions <<<
 ```
+
+Place the Bash loader after PATH configuration and bash-completion initialization. It picks up the installed CLI's adapter whenever a new shell starts and does nothing if the CLI is no longer installed. `completion bash` and `completionScript(cliName, "bash")` still emit the full adapter for standalone completion files. Other targets insert their full integration into the setup block.
 
 `updateCompletionSetup(existingText, cliName, target)` replaces matching blocks or appends one when absent. It removes duplicate matching blocks, recognizes delimiters after indentation or whitespace changes, and preserves text outside the blocks. The helper preserves CRLF line endings when the existing file uses them. Zsh's required first-line `#compdef` header travels with its adjacent block. `removeCompletionSetup(existingText, cliName, target)` removes the same managed region. Both reject unmatched or nested matching delimiters instead of guessing where user configuration ends. These helpers return text; the caller chooses the file and writes it.
 

@@ -45,12 +45,8 @@ function checkName(name: string): void {
 	}
 }
 
-function marker(
-	name: string,
-	target: CompletionTargetFormat,
-	end = false,
-): string {
-	return `# ${end ? `<<<` : `>>>`} comline completion:${name}:${target} ${end ? `<<<` : `>>>`}`
+function marker(name: string, end = false): string {
+	return `# ${end ? `<<<` : `>>>`} ${name} completions ${end ? `<<<` : `>>>`}`
 }
 
 /** Generate a delimited script or Carapace spec. Does not modify shell configuration. */
@@ -97,10 +93,8 @@ completion:
 	// compinit requires this metadata on the first line. Setup editing treats the
 	// adjacent header as part of the delimited block when replacing or removing it.
 	const start =
-		target === `zsh`
-			? `#compdef ${name}\n${marker(name, target)}`
-			: marker(name, target)
-	return `${start}\n${body.trimEnd()}\n${marker(name, target, true)}\n`
+		target === `zsh` ? `#compdef ${name}\n${marker(name)}` : marker(name)
+	return `${start}\n${body.trimEnd()}\n${marker(name, true)}\n`
 }
 
 function editSetup(
@@ -111,8 +105,8 @@ function editSetup(
 ): string {
 	checkName(name)
 	const normalize = (line: string): string => line.replace(/\s/g, ``)
-	const start = normalize(marker(name, target))
-	const end = normalize(marker(name, target, true))
+	const start = normalize(marker(name))
+	const end = normalize(marker(name, true))
 	const lines = contents.match(/[^\n]*\n|[^\n]+$/g) ?? []
 	const output: string[] = []
 	let inside = false
@@ -151,13 +145,22 @@ function editSetup(
 	return output.join(``)
 }
 
-/** Replace all matching blocks, or append one. Ignores indentation and delimiter whitespace. */
+/** Update a shell profile's setup block. Bash loads its adapter from the CLI. */
 export function updateCompletionSetup(
 	contents: string,
 	name: string,
 	target: CompletionTargetFormat,
 ): string {
-	const script = completionScript(name, target)
+	checkName(name)
+	const script =
+		target === `bash`
+			? `${marker(name)}
+if command -v ${name} >/dev/null 2>&1; then
+    source <(${name} completion bash)
+fi
+${marker(name, true)}
+`
+			: completionScript(name, target)
 	return editSetup(
 		contents,
 		name,
