@@ -1,4 +1,6 @@
-import { cli, noOptions, required } from "../src/cli"
+import { z } from "zod"
+
+import { cli, noOptions, options, required } from "../src/cli"
 import {
 	completionResponse,
 	completionScript,
@@ -81,5 +83,46 @@ test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
 		expect(script).not.toContain(`# >>>`)
 		if (shell === `zsh`)
 			expect(script.startsWith(`#compdef my-cli\n`)).toBe(true)
+	},
+)
+
+test.each([
+	{ choices: [{ value: `main`, appendSpace: true }], directive: 4 },
+	{
+		choices: [{ value: `main`, appendSpace: true }, { value: `master` }],
+		directive: 6,
+	},
+	{
+		choices: [
+			{ value: `main`, appendSpace: true },
+			{ value: `bad\nvalue`, appendSpace: false },
+		],
+		directive: 4,
+	},
+	{ choices: [], directive: 2, fileSystem: `files` as const },
+])(
+	`Cobra spacing uses emitted candidates and filesystem defaults: $directive`,
+	async ({ choices, directive, fileSystem }) => {
+		const response = await completionResponse(
+			{
+				cliName: `probe`,
+				routeOptions: {
+					"": options(``, z.object({ ref: z.string().optional() }), {
+						ref: {
+							description: ``,
+							example: ``,
+							required: false,
+							completion: {
+								appendSpace: false,
+								choices,
+								...(fileSystem ? { fileSystem } : {}),
+							},
+						},
+					}),
+				},
+			},
+			argv(`__complete`, `--ref`, ``),
+		)
+		expect(response?.split(`\n`).at(-2)).toBe(`:${directive}`)
 	},
 )
