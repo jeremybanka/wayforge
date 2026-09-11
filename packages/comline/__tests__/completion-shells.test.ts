@@ -373,3 +373,19 @@ test(`the compiled completion endpoint needs no runtime on PATH`, () => {
 		),
 	).toBe(`closed\n:4\n`)
 })
+
+test(`Bash setup succeeds when its CLI is no longer installed`, () => {
+	const setup = updateCompletionSetup(
+		``,
+		`missing-${path.basename(directory)}`,
+		`bash`,
+	)
+	expect(
+		run(`bash`, [
+			`--noprofile`,
+			`--norc`,
+			`-c`,
+			`{\n${setup}} 2>&1\nprintf ready`,
+		]),
+	).toBe(`ready`)
+})

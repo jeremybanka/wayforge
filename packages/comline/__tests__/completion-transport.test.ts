@@ -53,28 +53,40 @@ test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
 			.join(`\r\n`)
 		const existing = `# user config\r\n${reindented}\r\n# between\r\n${reindented}\r\n# after\r\n`
 		const updated = updateCompletionSetup(existing, `my-cli`, shell)
-		expect(updated.match(/>>> comline/g)).toHaveLength(1)
+		expect(updated.match(/>>> my-cli completions/g)).toHaveLength(1)
 		expect(updated).toContain(`# user config\r\n`)
 		expect(updated).toContain(`# between\r\n`)
 		expect(updated).toContain(`# after\r\n`)
 		expect(updateCompletionSetup(updated, `my-cli`, shell)).toBe(updated)
 		const removed = removeCompletionSetup(updated, `my-cli`, shell)
-		expect(removed).not.toContain(`comline completion`)
+		expect(removed).not.toContain(`my-cli completions`)
 		expect(removed).toContain(`# between\r\n`)
 	},
 )
 
 test(`setup matches delimiter whitespace without inspecting the block body`, () => {
-	const existing = `before\n \t#  >>>   comline   completion:my-cli:bash   >>>\nanything here\n\t# <<< comline completion:my-cli:bash <<<\nafter\n`
+	const existing = `before\n \t#  >>>   my-cli   completions   >>>\nanything here\n\t# <<< my-cli completions <<<\nafter\n`
 	expect(removeCompletionSetup(existing, `my-cli`, `bash`)).toBe(
 		`before\nafter\n`,
 	)
 })
 
+test(`Bash setup contains a readable loader instead of the adapter implementation`, () => {
+	const expected = `# >>> my-cli completions >>>
+if command -v my-cli >/dev/null 2>&1; then
+    source <(my-cli completion bash)
+fi
+# <<< my-cli completions <<<
+`
+	expect(updateCompletionSetup(``, `my-cli`, `bash`)).toBe(expected)
+	expect(updateCompletionSetup(expected, `my-cli`, `bash`)).toBe(expected)
+	expect(removeCompletionSetup(expected, `my-cli`, `bash`)).toBe(``)
+})
+
 test(`setup refuses unmatched delimiters instead of deleting user configuration`, () => {
 	expect(() =>
 		updateCompletionSetup(
-			`# >>> comline completion:my-cli:bash >>>\nuser code`,
+			`# >>> my-cli completions >>>\nuser code`,
 			`my-cli`,
 			`bash`,
 		),
@@ -111,11 +123,7 @@ test(`invalid setup targets fail explicitly`, async () => {
 
 test(`setup rejects a closing delimiter without an opening delimiter`, () => {
 	expect(() =>
-		removeCompletionSetup(
-			`# <<< comline completion:my-cli:bash <<<\n`,
-			`my-cli`,
-			`bash`,
-		),
+		removeCompletionSetup(`# <<< my-cli completions <<<\n`, `my-cli`, `bash`),
 	).toThrow(/delimiter/i)
 })
 
@@ -123,7 +131,7 @@ test(`setup rejects nested matching blocks`, () => {
 	const block = completionScript(`my-cli`, `bash`)
 	expect(() =>
 		updateCompletionSetup(
-			`# >>> comline completion:my-cli:bash >>>\n${block}`,
+			`# >>> my-cli completions >>>\n${block}`,
 			`my-cli`,
 			`bash`,
 		),
