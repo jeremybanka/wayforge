@@ -1,7 +1,7 @@
 # Decode shell quoting without evaluating substitutions or executing user input.
 _comline_NAME_unquote() {
     local input=$1 char quote= escaped= i
-    REPLY=
+    REPLY= REPLY_PREFIX=
     for ((i=0; i<${#input}; i++)); do
         char=${input:i:1}
         if [[ $escaped ]]; then
@@ -15,6 +15,10 @@ _comline_NAME_unquote() {
             quote=$char
         else
             REPLY+=$char
+            # Readline replaces only the segment after an unquoted word break.
+            if [[ $char == [=:] && $COMP_WORDBREAKS == *"$char"* ]]; then
+                REPLY_PREFIX=$REPLY
+            fi
         fi
     done
     [[ $escaped ]] && REPLY+='\'
@@ -22,7 +26,7 @@ _comline_NAME_unquote() {
 }
 
 _comline_NAME() {
-    local cur cword REPLY word response directive value prefix i
+    local cur cword REPLY REPLY_PREFIX word response directive value prefix assignment= quote_candidates= i
     local -a words args
     COMPREPLY=()
     # bash-completion rejoins word breaks such as --flag=value and host:path.
@@ -32,6 +36,8 @@ _comline_NAME() {
         _comline_NAME_unquote "$word"
         args+=("$REPLY")
     done
+    prefix=$REPLY_PREFIX
+    [[ $REPLY == -*=* ]] && assignment=${REPLY%%=*}=
     response=$("${words[0]}" __complete "${args[@]}" 2>/dev/null) || return
     directive=${response##*$'\n'}
     [[ $directive == :* && ${directive#:} != *[!0-9]* && ${directive#:} ]] || return
@@ -44,19 +50,18 @@ _comline_NAME() {
         # Quote candidate values ourselves so characters such as $ and ` remain
         # literal when Readline inserts them, including for non-file candidates.
         compopt -o noquote
+        quote_candidates=1
         while IFS= read -r value; do
-            printf -v value '%q' "${value%%$'\t'*}"
-            COMPREPLY+=("$value")
+            COMPREPLY+=("$assignment${value%%$'\t'*}")
         done <<< "${response%$'\n'*}"
     elif ((! (directive & 4))); then
         _filedir
     fi
-    if [[ $cur == *:* && $COMP_WORDBREAKS == *:* ]]; then
-        prefix=${cur%:*}:
-        for ((i=0; i<${#COMPREPLY[@]}; i++)); do
-            COMPREPLY[i]=${COMPREPLY[i]#"$prefix"}
-        done
-    fi
+    for ((i=0; i<${#COMPREPLY[@]}; i++)); do
+        value=${COMPREPLY[i]#"$prefix"}
+        if [[ $quote_candidates ]]; then printf -v value '%q' "$value"; fi
+        COMPREPLY[i]=$value
+    done
     return 0
 }
 complete -F _comline_NAME COMMAND
