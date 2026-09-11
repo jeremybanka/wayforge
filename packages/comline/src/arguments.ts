@@ -192,6 +192,8 @@ export type ArgumentInterpretation = RouteMatch & {
 	availableOptions: ArgumentOption[]
 	/** All route options, used to recognize options before a command is selected. */
 	allOptions: ArgumentOption[]
+	/** Options on this route or descendants still reachable from it. */
+	reachableOptions: ArgumentOption[]
 	/** Raw occurrences across possible routes, for unfinished command selection. */
 	allOccurrences: OptionOccurrence[]
 	positionalOnly: boolean
@@ -257,6 +259,22 @@ function availableOptions(
 	)
 }
 
+function reachableOptions(
+	groups: ReadonlyMap<string, ArgumentOption[]>,
+	match: RouteMatch,
+): ArgumentOption[] {
+	return [
+		...(groups.get(match.route) ?? []),
+		...Object.entries(match.tree?.[1] ?? {}).flatMap(([key, tree]) =>
+			reachableOptions(groups, {
+				...match,
+				route: [match.route, key].filter(Boolean).join(`/`),
+				tree,
+			}),
+		),
+	]
+}
+
 /** Interpret argument words without discovering config, converting values, or validating schemas. */
 export function interpretArguments(
 	definition: CommandLineInterface<any>,
@@ -318,6 +336,7 @@ export function interpretArguments(
 		options,
 		availableOptions: available,
 		allOptions,
+		reachableOptions: reachableOptions(groups, match),
 		allOccurrences,
 		positionalOnly,
 	}
