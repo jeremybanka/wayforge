@@ -86,6 +86,15 @@ export function retrieveArgumentInstances(
 	flag?: string,
 	retrieveOptions: RetrieveArgumentInstancesOptions = {},
 ): ArgumentInstance[] {
+	return scanArgumentInstances(passed, key, flag, retrieveOptions).instances
+}
+
+function scanArgumentInstances(
+	passed: readonly string[],
+	key: string,
+	flag: string | undefined,
+	retrieveOptions: RetrieveArgumentInstancesOptions,
+): { instances: ArgumentInstance[]; pendingValue: boolean } {
 	const {
 		knownOptionTokens = {
 			flags: new Set<string>(),
@@ -95,12 +104,14 @@ export function retrieveArgumentInstances(
 		aliases = [],
 	} = retrieveOptions
 	const instances: ArgumentInstance[] = []
+	let pendingValue = false
 	const switchNames = [key, ...aliases].map((name) => `--${name}`)
 	for (const [index, argument] of passed.entries()) {
 		if (argument === `--`) {
 			break
 		}
 		if (switchNames.includes(argument)) {
+			pendingValue = index === passed.length - 1
 			const nextArg = passed[index + 1]
 			if (shouldConsumeNextArg(nextArg, valueKind, knownOptionTokens)) {
 				instances.push({ index, value: nextArg, valueIndex: index + 1 })
@@ -132,6 +143,7 @@ export function retrieveArgumentInstances(
 			continue
 		}
 		if (flagGroup === `-${flag}`) {
+			pendingValue = index === passed.length - 1
 			const nextArg = passed[index + 1]
 			if (shouldConsumeNextArg(nextArg, valueKind, knownOptionTokens)) {
 				instances.push({ index, value: nextArg, valueIndex: index + 1 })
@@ -140,7 +152,7 @@ export function retrieveArgumentInstances(
 		}
 		instances.push({ index, value: retrieveRepeatedFlagValue(flagGroup, flag) })
 	}
-	return instances
+	return { instances, pendingValue }
 }
 
 function jsonSchemaTypeIsBoolean(jsonSchema: JsonSchema | undefined): boolean {
@@ -198,6 +210,8 @@ export type ArgumentInterpretation = RouteMatch & {
 	allOccurrences: OptionOccurrence[]
 	/** Options with occurrences under their own token-consumption rules, including unselected routes. */
 	suppliedOptions: ArgumentOption[]
+	/** Standalone options at the end of input that can accept a following value, including optional booleans. */
+	pendingOptions: ArgumentOption[]
 	positionalOnly: boolean
 }
 
@@ -298,25 +312,32 @@ export function interpretArguments(
 	)
 	const allOptions = [...groups.values()].flat()
 	const knownOptionTokens = retrieveKnownOptionTokens(allOptions)
-	const scanned = new Map<string, OptionOccurrence[]>()
+	const scanned = new Map<
+		string,
+		{ instances: OptionOccurrence[]; pendingValue: boolean }
+	>()
 	for (const option of allOptions) {
 		const signature = optionSignature(option)
 		if (scanned.has(signature)) continue
 		const flag = option.names.find((name) => !name.startsWith(`--`))?.slice(1)
-		scanned.set(
-			signature,
-			retrieveArgumentInstances(words, option.key, flag, {
-				knownOptionTokens,
-				valueKind: option.valueKind,
-				aliases: option.names
-					.filter((name) => name.startsWith(`--`))
-					.slice(1)
-					.map((name) => name.slice(2)),
-			}).map((instance) => ({ ...instance, key: option.key })),
-		)
+		const scan = scanArgumentInstances(words, option.key, flag, {
+			knownOptionTokens,
+			valueKind: option.valueKind,
+			aliases: option.names
+				.filter((name) => name.startsWith(`--`))
+				.slice(1)
+				.map((name) => name.slice(2)),
+		})
+		scanned.set(signature, {
+			...scan,
+			instances: scan.instances.map((instance) => ({
+				...instance,
+				key: option.key,
+			})),
+		})
 	}
 	const allOccurrences = [...scanned.values()]
-		.flat()
+		.flatMap(({ instances }) => instances)
 		.sort((a, b) => a.index - b.index)
 	const consumed = new Set(
 		allOccurrences.flatMap(({ valueIndex }) =>
@@ -340,7 +361,7 @@ export function interpretArguments(
 	// Execution selects the final route's group. When interpretation is unfinished,
 	// metadata alternatives sharing a scan must not duplicate raw occurrences.
 	const options = [...new Set(selected.map(optionSignature))]
-		.flatMap((signature) => scanned.get(signature) ?? [])
+		.flatMap((signature) => scanned.get(signature)?.instances ?? [])
 		.sort((a, b) => a.index - b.index)
 	return {
 		...match,
@@ -352,7 +373,11 @@ export function interpretArguments(
 		// Preserve the same option objects used by availableOptions, including distinct
 		// aliases sharing a canonical key. Reuse cached scans instead of rescanning words.
 		suppliedOptions: allOptions.filter(
-			(option) => (scanned.get(optionSignature(option))?.length ?? 0) > 0,
+			(option) =>
+				(scanned.get(optionSignature(option))?.instances.length ?? 0) > 0,
+		),
+		pendingOptions: allOptions.filter(
+			(option) => scanned.get(optionSignature(option))?.pendingValue,
 		),
 		positionalOnly,
 	}

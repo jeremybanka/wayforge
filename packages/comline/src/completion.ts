@@ -71,17 +71,28 @@ export type CompletionResult = {
 	diagnostics: string[]
 }
 
+function preferLocalOptions(
+	context: ArgumentInterpretation,
+	options: readonly ArgumentOption[],
+): ArgumentOption[] {
+	const local = options.filter((option) =>
+		context.availableOptions.includes(option),
+	)
+	return deduplicateOptions(
+		local.length
+			? local
+			: options.filter((option) => context.reachableOptions.includes(option)),
+	)
+}
+
 function optionMatches(
 	context: ArgumentInterpretation,
 	name: string,
 ): ArgumentOption[] {
-	const local = context.availableOptions.filter((option) =>
-		option.names.includes(name),
+	return preferLocalOptions(
+		context,
+		context.allOptions.filter((option) => option.names.includes(name)),
 	)
-	const matches = local.length
-		? local
-		: context.reachableOptions.filter((option) => option.names.includes(name))
-	return deduplicateOptions(matches)
 }
 
 /** Interpret an unfinished command line without executing providers or option parsers. */
@@ -117,10 +128,10 @@ export function interpretCompletion(
 	}
 	if (context.error) return context
 	if (!context.positionalOnly) {
-		const last = completed.at(-1)
 		const knownOptionTokens = retrieveKnownOptionTokens(context.allOptions)
-		// Only a bare, standalone option can consume a separate value. Grouped flags cannot.
-		for (const option of last ? optionMatches(context, last) : []) {
+		// The scanner owns standalone/grouped/inline token classification. Completion
+		// only decides whether the unfinished next word can be offered as that value.
+		for (const option of preferLocalOptions(context, context.pendingOptions)) {
 			if (
 				option.valueKind === `value` &&
 				shouldConsumeNextArg(prefix, option.valueKind, knownOptionTokens)
