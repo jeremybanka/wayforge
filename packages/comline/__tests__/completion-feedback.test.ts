@@ -368,3 +368,36 @@ test(`using a parent's flag does not suppress a distinct descendant flag with th
 	)
 	expect(result.candidates.map(({ value }) => value)).toEqual([`--ref`, `-s`])
 })
+
+test.each([
+	{ words: [`--re`], names: [`--ref`, `--reference`] },
+	{ words: [`pr`, `--re`], names: [`--ref`, `--reference`] },
+	{ words: [`pr`, `-r`], names: [`-r`] },
+	{ words: [`--ref`, `main`, `--re`], names: [] },
+	{ words: [`pr`, `--ref=main`, `--re`], names: [] },
+	{ words: [`other`, `--re`], names: [] },
+])(
+	`early option names follow reachable routes and repetition: $words`,
+	async ({ words, names }) => {
+		const group = refOptions({ repeatable: false })
+		const withAlias = options(group.description, group.optionsSchema, {
+			ref: { ...group.optionConfigs.ref, aliases: [`reference`] },
+		})
+		const result = await complete(
+			{
+				cliName: `probe`,
+				routes: required({
+					pr: required({ list: null, create: null }),
+					other: null,
+				}),
+				routeOptions: {
+					"pr/list": withAlias,
+					"pr/create": withAlias,
+					other: null,
+				},
+			},
+			{ words },
+		)
+		expect(result.candidates.map(({ value }) => value)).toEqual(names)
+	},
+)

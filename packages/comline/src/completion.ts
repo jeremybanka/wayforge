@@ -205,7 +205,7 @@ export async function complete(
 		let hints: CompletionHints | undefined
 		let choices: readonly (string | CompletionCandidate)[] = []
 		if (target.kind === `option-name`) {
-			choices = context.availableOptions
+			choices = deduplicateOptions(context.reachableOptions)
 				.filter(
 					(option) =>
 						option.completion?.repeatable !== false ||
