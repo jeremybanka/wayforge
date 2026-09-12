@@ -24,7 +24,7 @@ runs:
       shell: bash
       run: |
         sudo apt-get update
-        sudo apt-get install -y bash-completion zsh fish
+        sudo apt-get install -y bash-completion zsh
         # Hash the actual consumers before Turbo decides whether to reuse tests.
         {
           uname -sm

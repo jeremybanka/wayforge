@@ -1,3 +1,4 @@
+# Requires Fish 4 or newer.
 function __comline_NAME
     set -l words (commandline -opc)
     set -l request
@@ -28,7 +29,6 @@ function __comline_NAME
         if test -z "$prefix$candidate"
             # A blank command-substitution line disappears. An empty description
             # field keeps the candidate present so Fish can quote the empty value.
-            # Fish 3 needs existing quotes (or --option=); Fish 4 adds them itself.
             printf '\t\n'
         else
             printf '%s%s\n' "$prefix" "$candidate"

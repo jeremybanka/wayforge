@@ -17,7 +17,6 @@ import { completionScript, installCompletion } from "../src/completion-transport
 let directory: string
 let environment: NodeJS.ProcessEnv
 let counter = 0
-let fishNeedsEmptyQuotes = false
 
 function run(
 	executable: string,
@@ -62,7 +61,10 @@ beforeAll(() => {
 	for (const tool of [`bash`, `zsh`, `fish`, `nu`, `carapace`, `bun`, `node`]) {
 		const version = run(tool, [`--version`])
 		if (tool === `fish`)
-			fishNeedsEmptyQuotes = Number(version.match(/\d+/)?.[0]) < 4
+			expect(
+				Number(version.match(/\d+/)?.[0]),
+				`Fish 4+ is required`,
+			).toBeGreaterThanOrEqual(4)
 	}
 	const fixture = path.join(directory, `package`)
 	mkdirSync(fixture)
@@ -411,13 +413,7 @@ describe(`global`, { timeout: 30_000 }, () => {
 			),
 		)(
 			`${shell} inserts $0 through its real line editor`,
-			(name, line, expected) => {
-				// Fish 3 disables quote insertion; complete inside existing quotes there.
-				// The same request from a blank token must work in Fish 4 and later.
-				const commandLine =
-					shell === `fish` && name === `empty candidate` && fishNeedsEmptyQuotes
-						? line.replace(`--empty `, `--empty ''`)
-						: line
+			(_name, line, expected) => {
 				const output = path.join(directory, `output-${counter++}.json`)
 				const result = run(
 					`bun`,
@@ -426,7 +422,7 @@ describe(`global`, { timeout: 30_000 }, () => {
 						shell,
 						path.join(directory, shell === `nu` ? `nushell` : shell),
 						output,
-						commandLine,
+						line,
 					],
 					mode(`global`),
 				)
