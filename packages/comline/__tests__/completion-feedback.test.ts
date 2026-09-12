@@ -649,7 +649,7 @@ test(`conflicting complete interpretations require an explicit boundary`, () => 
 	})
 })
 
-test(`option identities distinguish routes and survive metadata changes`, () => {
+test(`option identities distinguish routes and metadata stays fresh between requests`, async () => {
 	const group = refOptions({ choices: [`main`] })
 	const definition = {
 		cliName: `probe`,
@@ -659,8 +659,15 @@ test(`option identities distinguish routes and survive metadata changes`, () => 
 	const first = interpretArguments(definition, [`--ref`, `main`])
 	const ids = first.allOptions.map((option) => option.id)
 	expect(new Set(ids).size).toBe(2)
+	expect(
+		(await complete(definition, { words: [`--ref`, ``] })).candidates,
+	).toEqual([{ value: `main` }])
 	group.optionConfigs.ref.description = `Updated description`
+	group.optionConfigs.ref.completion = { choices: [`updated`] }
 	const second = interpretArguments(definition, [`--ref`, `main`])
 	expect(second.allOptions.map((option) => option.id)).toEqual(ids)
 	expect(second.suppliedOptions.map((option) => option.id)).toEqual(ids)
+	expect(
+		(await complete(definition, { words: [`--ref`, ``] })).candidates,
+	).toEqual([{ value: `updated` }])
 })

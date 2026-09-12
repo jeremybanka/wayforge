@@ -242,29 +242,32 @@ function describeOptions(
 		schemaCache.set(group.optionsSchema, schema)
 	}
 	const properties = schemaCache.get(group.optionsSchema)?.properties
-	return Object.entries(group.optionConfigs).map(([key, config]) => ({
-		id: JSON.stringify([route, key]),
-		key,
-		names: [
-			`--${key}`,
-			...(config.aliases ?? []).map((name) => `--${name}`),
-			...(config.flag ? [`-${config.flag}`] : []),
-		],
-		valueKind:
-			config.valueKind ??
-			(jsonSchemaTypeIsBoolean(properties?.[key]) ? `boolean` : `value`),
-		// Parsing needs only names and consumption rules. Defer presentation reads
-		// and enum extraction until completion (or an interpretation consumer) asks.
-		get description() {
-			return config.description
-		},
-		get completion() {
-			return config.completion
-		},
-		get choices() {
-			return schemaChoices(properties?.[key])
-		},
-	}))
+	return Object.entries(group.optionConfigs).map(([key, config]) => {
+		let choices: string[] | undefined
+		return {
+			id: JSON.stringify([route, key]),
+			key,
+			names: [
+				`--${key}`,
+				...(config.aliases ?? []).map((name) => `--${name}`),
+				...(config.flag ? [`-${config.flag}`] : []),
+			],
+			valueKind:
+				config.valueKind ??
+				(jsonSchemaTypeIsBoolean(properties?.[key]) ? `boolean` : `value`),
+			// Parsing needs only names and consumption rules. Defer presentation reads
+			// and enum extraction until completion (or an interpretation consumer) asks.
+			get description() {
+				return config.description
+			},
+			get completion() {
+				return config.completion
+			},
+			get choices() {
+				return (choices ??= schemaChoices(properties?.[key]))
+			},
+		}
+	})
 }
 
 function availableOptions(
