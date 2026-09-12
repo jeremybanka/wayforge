@@ -13,7 +13,7 @@ import { tmpdir } from "node:os"
 import path from "node:path"
 
 import { completionScript, installCompletion } from "../src/completion-transport"
-import { packComline } from "./fixtures/package-workspace"
+import { packComline } from "./fixtures/comline-workspace"
 
 let directory: string
 let environment: NodeJS.ProcessEnv
