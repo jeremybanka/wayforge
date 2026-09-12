@@ -2,7 +2,6 @@ import {
 	type ArgumentInterpretation,
 	type ArgumentOption,
 	interpretArguments,
-	retrieveKnownOptionTokens,
 	shouldConsumeNextArg,
 	splitOptionValue,
 } from "./arguments"
@@ -126,21 +125,18 @@ export function interpretCompletion(
 	}
 	if (context.error) return context
 	if (!context.positionalOnly) {
-		const knownOptionTokens = retrieveKnownOptionTokens(context.allOptions)
 		// The scanner owns standalone/grouped/inline token classification. Completion
 		// only decides whether the unfinished next word can be offered as that value.
-		for (const option of preferLocalOptions(context, context.pendingOptions)) {
-			if (
-				option.valueKind === `value` &&
-				shouldConsumeNextArg(prefix, option.valueKind, knownOptionTokens)
-			) {
-				context.targets.push({ kind: `option-value`, option })
-			} else if (
-				option.valueKind === `boolean` &&
-				[`true`, `false`, `0`, `1`].some((value) => value.startsWith(prefix))
-			) {
-				context.targets.push({ kind: `option-value`, option })
-			}
+		// Filter by each viable grammar before deduplicating equivalent presentations.
+		const pending = context.pendingOptionValues
+			.filter(({ option, knownOptionTokens }) =>
+				option.valueKind === `boolean`
+					? [`true`, `false`, `0`, `1`].some((value) => value.startsWith(prefix))
+					: shouldConsumeNextArg(prefix, option.valueKind, knownOptionTokens),
+			)
+			.map(({ option }) => option)
+		for (const option of preferLocalOptions(context, pending)) {
+			context.targets.push({ kind: `option-value`, option })
 		}
 		if (
 			context.targets.some(

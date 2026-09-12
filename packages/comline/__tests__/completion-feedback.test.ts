@@ -257,6 +257,55 @@ test(`unfinished nested routes keep only reachable provider fallbacks`, async ()
 	expect(sibling).not.toHaveBeenCalled()
 })
 
+test(`pending values use their viable route grammar before presentation deduplication`, async () => {
+	const input = {
+		description: ``,
+		example: ``,
+		required: false,
+		completion: { choices: [`--remote`, `--remote=value`] },
+	}
+	const definition = {
+		cliName: `probe`,
+		routes: required({ b: null, a: null }),
+		routeOptions: {
+			a: options(``, z.object({ input: z.string().optional() }), { input }),
+			b: options(
+				``,
+				z.object({
+					input: z.string().optional(),
+					remote: z.boolean().optional(),
+				}),
+				{
+					input,
+					remote: {
+						description: ``,
+						example: ``,
+						required: false,
+						parse: parseBooleanOption,
+					},
+				},
+			),
+		},
+	}
+	for (const route of [[`a`], []]) {
+		for (const prefix of [`--rem`, `--remote`, `--remote=`]) {
+			const result = await complete(definition, {
+				words: [...route, `--input`, prefix],
+			})
+			expect(result.candidates.map(({ value }) => value)).toEqual(
+				input.completion.choices.filter((value) => value.startsWith(prefix)),
+			)
+		}
+	}
+	expect(cli(definition)(argv(`a`, `--input`, `--remote`)).inputs.opts).toEqual({
+		input: `--remote`,
+	})
+	const sibling = await complete(definition, {
+		words: [`b`, `--input`, `--remote`],
+	})
+	expect(sibling.context.targets).toEqual([{ kind: `option-name` }])
+})
+
 test(`optional positional routes retain distinct flags, choices, and providers`, async () => {
 	const rootProvider = vi.fn(() => [`root-provider`])
 	const childProvider = vi.fn(() => [`child-provider`])
