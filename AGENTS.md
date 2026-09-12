@@ -2,7 +2,9 @@
 
 ## Changesets
 
-Add a changeset whenever a change affects the functionality of a published package.
+Add or update a changeset whenever a change affects the functionality of a published package. Changesets should consolidate the consumer-visible differences between the current ref and the last release tag for that package.
+
+Update existing changesets to describe the finished consumer-visible behavior as unshipped features evolve. A shipped feature is expected to work; defects fixed during its development are immaterial to consumers and should not be mentioned in changesets.
 
 For packages below version 1.0.0:
 
