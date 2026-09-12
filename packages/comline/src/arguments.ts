@@ -20,12 +20,6 @@ export type KnownOptionTokens = {
 	switches: ReadonlySet<string>
 }
 
-type RetrieveArgumentInstancesOptions = {
-	knownOptionTokens?: KnownOptionTokens
-	valueKind?: OptionValueKind
-	aliases?: readonly string[]
-}
-
 export function splitOptionValue(
 	argument: string,
 ): [optionName: string, value?: string] {
@@ -86,30 +80,6 @@ type ArgumentScan = {
 	pending: Set<string>
 	consumed: Set<number>
 	recognized: Set<number>
-}
-
-export function retrieveArgumentInstances(
-	passed: readonly string[],
-	key: string,
-	flag?: string,
-	retrieveOptions: RetrieveArgumentInstancesOptions = {},
-): ArgumentInstance[] {
-	const option: ConsumptionOption = {
-		key,
-		names: [
-			`--${key}`,
-			...(retrieveOptions.aliases ?? []).map((name) => `--${name}`),
-			...(flag ? [`-${flag}`] : []),
-		],
-		valueKind: retrieveOptions.valueKind ?? `value`,
-	}
-	return (
-		scanOptions(
-			passed,
-			[option],
-			retrieveOptions.knownOptionTokens,
-		).instances.get(optionSignature(option)) ?? []
-	)
 }
 
 // Index the options once, then visit each word once per distinct route grammar.
