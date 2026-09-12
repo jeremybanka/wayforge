@@ -191,6 +191,22 @@ test(`reports individual grouped and repeated occurrences in argument order`, ()
 	])
 })
 
+test(`shared classification preserves repeated Unicode flags and grouped inline values`, () => {
+	const words = [`run`, `-vv💥💥=0`]
+	const result = testCli(argv(...words))
+	expect(result.inputs.opts).toEqual({ verbose: false })
+	expect(interpretArguments(definition, words).options).toEqual([
+		{ key: `verbose`, index: 1, value: `0` },
+	])
+	expect(occurrences(result.warnings)).toEqual([
+		{ code: `unknown-option`, option: `-💥`, index: 1 },
+		{ code: `unknown-option`, option: `-💥`, index: 1 },
+	])
+	const consumed = testCli(argv(`run`, `--name`, `-💥💥`))
+	expect(consumed.inputs.opts).toEqual({ name: `-💥💥` })
+	expect(consumed.warnings).toEqual([])
+})
+
 test.each([[], [`empty`]])(`warns on routes without options: %j`, (...path) => {
 	const result = testCli(argv(...path, `--verbose`, `--unknown`))
 	expect(occurrences(result.warnings)).toEqual([

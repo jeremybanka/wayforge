@@ -31,6 +31,39 @@ export function splitOptionValue(
 	return [argument.slice(0, equalsIndex), argument.slice(equalsIndex + 1)]
 }
 
+type OptionWord = {
+	name: string
+	inline: string | undefined
+	/** Full spellings, retaining repeated short flags in Unicode code-point order. */
+	tokens: string[]
+}
+
+function classifyOptionWord(word: string): OptionWord | undefined {
+	if (!word.startsWith(`-`) || word === `-` || word === `--`) return
+	const [name, inline] = splitOptionValue(word)
+	return {
+		name,
+		inline,
+		// Preserve malformed assignments such as -=value as option occurrences.
+		tokens:
+			name.startsWith(`--`) || name === `-`
+				? [name]
+				: Array.from(name.slice(1), (flag) => `-${flag}`),
+	}
+}
+
+function* optionWords(
+	words: readonly string[],
+	consumed: ReadonlySet<number>,
+): Generator<OptionWord & { index: number }> {
+	for (const [index, word] of words.entries()) {
+		if (word === `--`) return
+		if (consumed.has(index)) continue
+		const option = classifyOptionWord(word)
+		if (option) yield { ...option, index }
+	}
+}
+
 export function isBooleanLiteral(arg: string): boolean {
 	return arg === `true` || arg === `false` || arg === `0` || arg === `1`
 }
@@ -39,17 +72,13 @@ export function isKnownOptionToken(
 	arg: string,
 	knownOptionTokens: KnownOptionTokens,
 ): boolean {
-	if (!arg.startsWith(`-`)) {
-		return false
-	}
-	const [optionName] = splitOptionValue(arg)
-	if (optionName.startsWith(`--`)) {
-		return knownOptionTokens.switches.has(optionName)
-	}
-	return optionName
-		.slice(1)
-		.split(``)
-		.some((flag) => knownOptionTokens.flags.has(flag))
+	return (
+		classifyOptionWord(arg)?.tokens.some((token) =>
+			token.startsWith(`--`)
+				? knownOptionTokens.switches.has(token)
+				: knownOptionTokens.flags.has(token.slice(1)),
+		) ?? false
+	)
 }
 
 export function shouldConsumeNextArg(
@@ -103,14 +132,14 @@ function scanOptions(
 		for (const name of option.names)
 			byName.set(name, [...(byName.get(name) ?? []), option])
 	}
-	for (const [index, word] of words.entries()) {
-		if (word === `--`) break
-		if (scan.consumed.has(index) || !word.startsWith(`-`)) continue
-		const [name, inline] = splitOptionValue(word)
-		const names = name.startsWith(`--`)
-			? [name]
-			: [...new Set(name.slice(1))].map((flag) => `-${flag}`)
-		for (const option of names.flatMap((token) => byName.get(token) ?? [])) {
+	for (const { index, name, inline, tokens } of optionWords(
+		words,
+		scan.consumed,
+	)) {
+		// Parsing aggregates repeated flags into one value; diagnostics retain each.
+		for (const option of [...new Set(tokens)].flatMap(
+			(token) => byName.get(token) ?? [],
+		)) {
 			const signature = optionSignature(option)
 			const standalone = option.names.includes(name)
 			let instance: ArgumentInstance
@@ -494,19 +523,14 @@ function collectWarnings(
 	const warnings: CliWarning[] = []
 	let known: KnownOptionTokens | undefined
 	const command = quoteDiagnosticText([cliName, ...match.path].join(` `))
-	for (const [index, word] of words.entries()) {
-		if (word === `--`) break
-		if (consumed.has(index) || !word.startsWith(`-`) || word === `-`) continue
-		const [name] = splitOptionValue(word)
-		const isLong = name.startsWith(`--`)
-		// An assignment such as -=value has no flag, but is still an ignored option.
-		const names = isLong ? [name] : name === `-` ? [``] : name.slice(1).split(``)
-		for (const token of names) {
+	for (const { index, tokens } of optionWords(words, consumed)) {
+		for (const option of tokens) {
+			const isLong = option.startsWith(`--`)
+			const token = isLong ? option : option.slice(1)
 			const selectedTokens = isLong ? selected.switches : selected.flags
 			if (selectedTokens.has(token)) continue
 			known ??= getKnownTokens()
 			const knownTokens = isLong ? known.switches : known.flags
-			const option = isLong ? token : `-${token}`
 			const code = knownTokens.has(token)
 				? `option-not-valid-for-route`
 				: `unknown-option`
