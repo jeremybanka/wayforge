@@ -467,6 +467,14 @@ function interpretCore(
 			)
 			return {
 				...invocation,
+				// An executable prefix is not a final command selection during completion.
+				warnings: viable.some(
+					({ route }) =>
+						route !== match.route &&
+						(!match.route || route.startsWith(`${match.route}/`)),
+				)
+					? []
+					: invocation.warnings,
 				availableOptions: availableOptions(groups, match),
 				allOptions,
 				reachableOptions: reachableOptions(groups, match),

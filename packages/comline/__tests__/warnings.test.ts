@@ -5,6 +5,7 @@ import z from "zod"
 import {
 	cli,
 	type CliWarning,
+	type CompletionProviderContext,
 	formatWarnings,
 	interpretArguments,
 	interpretCompletion,
@@ -140,6 +141,39 @@ test(`returns public warning context with normalized argument indexes`, () => {
 		)
 	}
 	expect(interpretArguments(definition, words).warnings).toEqual(expected)
+})
+
+test(`completion defers warnings while an executable root can still select a descendant`, async () => {
+	const provide = vi.fn((_context: CompletionProviderContext) => [])
+	const command = cli({
+		cliName: `probe`,
+		routes: optional({ run: null }),
+		routeOptions: {
+			"": noOptions(),
+			run: options(`run`, runOptions.optionsSchema, {
+				...runOptions.optionConfigs,
+				name: { ...runOptions.optionConfigs.name, completion: { provide } },
+			}),
+		},
+	})
+	const value = await command.complete({ words: [`--name`, `a`] })
+	expect(value.context.targets).toContainEqual(
+		expect.objectContaining({ kind: `option-value` }),
+	)
+	expect(value.context.warnings).toEqual([])
+	expect(provide).toHaveBeenCalledOnce()
+	expect(provide.mock.calls[0][0].warnings).toEqual([])
+	const route = command.interpret({ words: [`--name`, `--typo`, `r`] })
+	expect(route.targets).toContainEqual({ kind: `command` })
+	expect(route.warnings).toEqual([])
+	expect(command(argv(`--name`, `--typo`, `run`)).warnings).toEqual([])
+	// Invocation is final even when the root could have accepted a subcommand.
+	expect(occurrences(command(argv(`--name`)).warnings)).toEqual([
+		{ code: `option-not-valid-for-route`, option: `--name`, index: 0 },
+	])
+	expect(
+		occurrences(command.interpret({ words: [`run`, `--unknown`, ``] }).warnings),
+	).toEqual([{ code: `unknown-option`, option: `--unknown`, index: 1 }])
 })
 
 test.each([`--dry`, `--dry-run`, `-d`, `--dry=true`, `--dry-run=false`, `-d=0`])(
