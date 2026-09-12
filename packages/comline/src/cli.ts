@@ -3,7 +3,7 @@ import * as path from "node:path"
 
 import type { Flatten, Tree, TreeMap, TreePath } from "treetrunks"
 
-import { interpretArguments, type OptionValueKind } from "./arguments"
+import { interpretInvocation, type OptionValueKind } from "./arguments"
 import {
 	complete,
 	type CompletionContext,
@@ -160,7 +160,7 @@ export function cli<
 
 			let failedValidation = false
 			let optionsFromConfig: Options | undefined
-			const interpretation = interpretArguments(definition, passed)
+			const interpretation = interpretInvocation(definition, passed)
 			if (interpretation.error) throw new Error(interpretation.error)
 			if (!interpretation.complete) {
 				throw new Error(

@@ -192,9 +192,12 @@ export type ArgumentOption = {
 	choices: readonly string[]
 }
 
-export type ArgumentInterpretation = RouteMatch & {
+type ArgumentInvocation = RouteMatch & {
 	/** Raw occurrences for the selected route (or following variable routes), in argument order. */
 	options: OptionOccurrence[]
+}
+
+export type ArgumentInterpretation = ArgumentInvocation & {
 	/** Options at this route and through its following variable positionals. */
 	availableOptions: ArgumentOption[]
 	/** All route options, used to recognize options before a command is selected. */
@@ -300,11 +303,11 @@ function reachableOptions(
 	]
 }
 
-/** Interpret argument words without discovering config, converting values, or validating schemas. */
-export function interpretArguments(
+/** Match routes and scan raw occurrences shared by invocation and completion. */
+function interpretCore(
 	definition: CommandLineInterface<any>,
 	words: readonly string[],
-): ArgumentInterpretation {
+): { invocation: ArgumentInvocation; completion: () => ArgumentInterpretation } {
 	const schemaCache = new Map<OptionsSchema<any>, JsonSchema | undefined>()
 	const groups = new Map(
 		Object.entries(definition.routeOptions).map(([route, group]) => [
@@ -312,7 +315,6 @@ export function interpretArguments(
 			describeOptions(route, group, schemaCache),
 		]),
 	)
-	const allOptions = [...groups.values()].flat()
 	const routes: string[] = []
 	function visit(route: string, tree: RouteMatch[`tree`]): void {
 		routes.push(route)
@@ -388,27 +390,59 @@ export function interpretArguments(
 		}
 		return [...unique.values()].sort((a, b) => a.index - b.index)
 	}
-	const available = availableOptions(groups, match)
-	const selected = groups.get(match.route) ?? available
-	const pendingOptionValues = alternatives.flatMap(({ route, scan }) =>
-		(groups.get(route) ?? [])
-			.filter((option) => scan.pending.has(optionSignature(option)))
-			.map((option) => ({ option, knownOptionTokens: scan.knownOptionTokens })),
-	)
-	return {
+	const invocation: ArgumentInvocation = {
 		...match,
-		options: occurrences(selected),
-		availableOptions: available,
-		allOptions,
-		reachableOptions: reachableOptions(groups, match),
-		allOccurrences: occurrences(allOptions),
-		suppliedOptions: allOptions.filter((option) =>
-			activeScans.some((scan) => scan.instances.has(optionSignature(option))),
+		options: occurrences(
+			groups.get(match.route) ?? availableOptions(groups, match),
 		),
-		pendingOptions: pendingOptionValues.map(({ option }) => option),
-		pendingOptionValues,
-		positionalOnly: best.positionalOnly,
 	}
+	return {
+		invocation,
+		// Ordinary parsing never calls this view: it needs only the selected route
+		// and occurrences, not flattened metadata or state across possible routes.
+		completion: () => {
+			const allOptions = [...groups.values()].flat()
+			const pendingOptionValues = alternatives.flatMap(({ route, scan }) =>
+				(groups.get(route) ?? [])
+					.filter((option) => scan.pending.has(optionSignature(option)))
+					.map((option) => ({
+						option,
+						knownOptionTokens: scan.knownOptionTokens,
+					})),
+			)
+			return {
+				...invocation,
+				availableOptions: availableOptions(groups, match),
+				allOptions,
+				reachableOptions: reachableOptions(groups, match),
+				allOccurrences: occurrences(allOptions),
+				suppliedOptions: allOptions.filter((option) =>
+					activeScans.some((scan) =>
+						scan.instances.has(optionSignature(option)),
+					),
+				),
+				pendingOptions: pendingOptionValues.map(({ option }) => option),
+				pendingOptionValues,
+				positionalOnly: best.positionalOnly,
+			}
+		},
+	}
+}
+
+/** Interpret executable input without constructing the completion view. */
+export function interpretInvocation(
+	definition: CommandLineInterface<any>,
+	words: readonly string[],
+): ArgumentInvocation {
+	return interpretCore(definition, words).invocation
+}
+
+/** Interpret argument words without discovering config, converting values, or validating schemas. */
+export function interpretArguments(
+	definition: CommandLineInterface<any>,
+	words: readonly string[],
+): ArgumentInterpretation {
+	return interpretCore(definition, words).completion()
 }
 
 /** Cache only token consumption; never use this signature to discard completion metadata. */
