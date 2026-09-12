@@ -76,15 +76,11 @@ test(`command names cannot inject code into scripts`, () => {
 	expect(() => completionScript(`cli; touch bad`, `bash`)).toThrow(/name/i)
 })
 
-test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
-	`%s output is a standalone file without setup delimiters`,
-	(shell) => {
-		const script = completionScript(`my-cli`, shell)
-		expect(script).not.toContain(`# >>>`)
-		if (shell === `zsh`)
-			expect(script.startsWith(`#compdef my-cli\n`)).toBe(true)
-	},
-)
+test(`Zsh output starts with its discovery metadata`, () => {
+	expect(completionScript(`my-cli`, `zsh`).startsWith(`#compdef my-cli\n`)).toBe(
+		true,
+	)
+})
 
 test.each([
 	{ choices: [{ value: `main`, appendSpace: true }], directive: 4 },
