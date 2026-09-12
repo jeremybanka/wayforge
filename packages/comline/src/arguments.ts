@@ -431,16 +431,32 @@ function interpretCore(
 	const selectedOptions = groups.get(match.route)
 	// Alternative grammars help select an unfinished route, but cannot erase
 	// occurrences belonging to the route that ordinary invocation will execute.
-	const selectedScan = interpretations.find(
+	const { scan: selectedScan, match: selectedMatch } = interpretations.find(
 		({ route }) => route === match.route,
-	)!.scan
+	)!
+	const invocationMatch = { ...match }
+	if (
+		!match.error &&
+		match.complete &&
+		(selectedMatch.error ||
+			selectedMatch.route !== match.route ||
+			selectedMatch.path.length !== match.path.length ||
+			selectedMatch.path.some((word, index) => word !== match.path[index]))
+	) {
+		// Descendants may justify an unfinished prefix, but final execution cannot
+		// combine their positional consumption with the selected route's options.
+		invocationMatch.error =
+			selectedMatch.error ??
+			`Arguments do not match the selected route for ${definition.cliName}. Use --option=value or -- to make the command boundary explicit.`
+		invocationMatch.complete = false
+	}
 	const invocation: ArgumentInvocation = {
-		...match,
+		...invocationMatch,
 		warnings: selectedOptions
 			? collectWarnings(
 					definition.cliName,
 					words,
-					match,
+					invocationMatch,
 					() => retrieveKnownOptionTokens([...groups.values()].flat()),
 					selectedScan.knownOptionTokens,
 					selectedScan.consumed,
@@ -466,7 +482,8 @@ function interpretCore(
 					})),
 			)
 			return {
-				...invocation,
+				...match,
+				options: invocation.options,
 				// An executable prefix is not a final command selection during completion.
 				warnings: viable.some(
 					({ route }) =>

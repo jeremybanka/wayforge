@@ -7,6 +7,7 @@ import {
 	complete,
 	type CompletionHints,
 	interpretArguments,
+	noOptions,
 	options,
 	parseBooleanOption,
 	parseNumberOption,
@@ -24,6 +25,55 @@ function refOptions(completion: CompletionHints) {
 		},
 	})
 }
+
+test(`final invocation cannot discard positionals consumed only by a descendant grammar`, async () => {
+	const command = cli({
+		cliName: `probe`,
+		discoverConfigPath: () => undefined,
+		routes: optional({ run: null }),
+		routeOptions: { "": noOptions(), run: refOptions({}) },
+	})
+	for (const words of [[`alice`], [`--unknown`, `alice`], [`--ref`, `alice`]]) {
+		expect(() => command(argv(...words))).toThrow(/positional argument/)
+	}
+	// The same words remain valid unfinished input when a command follows.
+	const completion = await command.complete({ words: [`--ref`, `alice`, `r`] })
+	expect(completion.context.error).toBeUndefined()
+	expect(completion.candidates).toContainEqual({
+		value: `run`,
+		description: `refs`,
+	})
+	expect(command(argv(`--ref`, `alice`, `run`)).inputs).toEqual({
+		case: `run`,
+		path: [`run`],
+		opts: { ref: `alice` },
+	})
+	expect(command(argv(`--ref=alice`)).inputs).toEqual({
+		case: ``,
+		path: [],
+		opts: {},
+	})
+})
+
+test(`final invocation rejects a descendant match even when the selected grammar accepts another path`, () => {
+	const command = cli({
+		cliName: `probe`,
+		discoverConfigPath: () => undefined,
+		routes: optional({ $target: optional({ run: null }) }),
+		routeOptions: {
+			"": noOptions(),
+			$target: noOptions(),
+			"$target/run": refOptions({}),
+		},
+	})
+	expect(() => command(argv(`--ref`, `alice`))).toThrow(/selected route/)
+	expect(command(argv(`alice`)).inputs.path).toEqual([`alice`])
+	expect(command(argv(`--ref`, `alice`, `bob`, `run`)).inputs).toEqual({
+		case: `$target/run`,
+		path: [`bob`, `run`],
+		opts: { ref: `alice` },
+	})
+})
 
 test(`descendant option occurrences cannot erase the selected route's values`, () => {
 	const definition = {
