@@ -2,6 +2,7 @@ import { stripVTControlCharacters } from "node:util"
 
 import z from "zod"
 
+import * as publicApi from "../src/cli"
 import {
 	cli,
 	type CliWarning,
@@ -16,6 +17,7 @@ import {
 	parseBooleanOption,
 	required,
 } from "../src/cli"
+import * as presentation from "../src/warnings"
 import { argv } from "./fixtures/argv"
 
 const runOptions = options(
@@ -426,6 +428,29 @@ test.each([
 		).toBe(plain)
 	},
 )
+
+test(`the internal presentation factory owns escaped messages without expanding the public API`, () => {
+	expect(presentation.createWarningFactory).toBeTypeOf(`function`)
+	const context = {
+		cliName: `probe`,
+		route: `show/$name`,
+		path: [`show`, `alice\n`],
+	}
+	const warning = presentation.createWarningFactory(context)(
+		`unknown-option`,
+		`--bad\u001b[2J`,
+		2,
+	)
+	expect(warning).toEqual({
+		...context,
+		code: `unknown-option`,
+		option: `--bad\u001b[2J`,
+		index: 2,
+		message: `Unknown option "--bad\\u001b[2J" for command "probe show alice\\n".`,
+	})
+	expect(warning.path).not.toBe(context.path)
+	expect(publicApi).not.toHaveProperty(`createWarningFactory`)
+})
 
 describe(`warning presentation`, () => {
 	const warnings = testCli(argv(`run`, `--typo`, `--dry`)).warnings

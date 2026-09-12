@@ -35,7 +35,12 @@ export * from "./encapsulate"
 export type * from "./flag"
 export * from "./help"
 export * from "./option-parsers"
-export * from "./warnings"
+export type {
+	CliWarning,
+	LogWarningsOptions,
+	WarningFormatOptions,
+} from "./warnings"
+export { formatWarnings, logWarnings } from "./warnings"
 export * from "treetrunks"
 
 export type CliOptionValue =

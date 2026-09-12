@@ -6,7 +6,7 @@ import {
 	type OptionsSchema,
 	retrieveInputJsonSchema,
 } from "./schema"
-import type { CliWarning } from "./warnings"
+import { type CliWarning, createWarningFactory } from "./warnings"
 
 export type ArgumentInstance = {
 	index: number
@@ -525,15 +525,6 @@ export function interpretArguments(
 	return interpretCore(definition, words).completion()
 }
 
-function quoteDiagnosticText(text: string): string {
-	// JSON quoting handles quotes, backslashes, and C0 controls. Also escape C1,
-	// Unicode line separators, and formatting controls such as bidi overrides.
-	return JSON.stringify(text).replace(
-		/[\p{Cc}\p{Cf}\p{Zl}\p{Zp}]/gu,
-		(character) => `\\u{${character.codePointAt(0)!.toString(16)}}`,
-	)
-}
-
 function collectWarnings(
 	cliName: string,
 	words: readonly string[],
@@ -547,7 +538,11 @@ function collectWarnings(
 	if (!match.complete || match.error) return []
 	const warnings: CliWarning[] = []
 	let known: KnownOptionTokens | undefined
-	const command = quoteDiagnosticText([cliName, ...match.path].join(` `))
+	const createWarning = createWarningFactory({
+		cliName,
+		route: match.route,
+		path: match.path,
+	})
 	for (const { index, tokens } of optionWords(words, consumed)) {
 		for (const option of tokens) {
 			const isLong = option.startsWith(`--`)
@@ -559,18 +554,7 @@ function collectWarnings(
 			const code = knownTokens.has(token)
 				? `option-not-valid-for-route`
 				: `unknown-option`
-			warnings.push({
-				code,
-				message:
-					code === `unknown-option`
-						? `Unknown option ${quoteDiagnosticText(option)} for command ${command}.`
-						: `Option ${quoteDiagnosticText(option)} is not valid for command ${command}.`,
-				option,
-				index,
-				cliName,
-				route: match.route,
-				path: [...match.path],
-			})
+			warnings.push(createWarning(code, option, index))
 		}
 	}
 	return warnings

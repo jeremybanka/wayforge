@@ -16,6 +16,35 @@ export type CliWarning = {
 	path: string[]
 }
 
+function quoteDiagnosticText(text: string): string {
+	// JSON quoting handles quotes, backslashes, and C0 controls. Also escape C1,
+	// Unicode line separators, and formatting controls such as bidi overrides.
+	return JSON.stringify(text).replace(
+		/[\p{Cc}\p{Cf}\p{Zl}\p{Zp}]/gu,
+		(character) => `\\u{${character.codePointAt(0)!.toString(16)}}`,
+	)
+}
+
+/** @internal Assemble presentation once per command without changing raw diagnostic fields. */
+export function createWarningFactory(
+	context: Pick<CliWarning, `cliName` | `route` | `path`>,
+): (code: CliWarning[`code`], option: string, index: number) => CliWarning {
+	const command = quoteDiagnosticText(
+		[context.cliName, ...context.path].join(` `),
+	)
+	return (code, option, index) => ({
+		...context,
+		code,
+		option,
+		index,
+		path: [...context.path],
+		message:
+			code === `unknown-option`
+				? `Unknown option ${quoteDiagnosticText(option)} for command ${command}.`
+				: `Option ${quoteDiagnosticText(option)} is not valid for command ${command}.`,
+	})
+}
+
 export type WarningFormatOptions = {
 	/** Omit to detect stderr color support; false disables and true forces color. */
 	forceColor?: boolean
