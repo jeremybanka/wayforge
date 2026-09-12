@@ -251,6 +251,21 @@ test(`descendant scan scores cannot change the selected route's warnings`, () =>
 	])
 })
 
+test.each([`-=`, `-=oops`, `--=oops`])(
+	`reports malformed option names unless consumed or after the delimiter: %s`,
+	(word) => {
+		const rootCli = cli({ cliName: `probe`, routeOptions: { "": runOptions } })
+		expect(occurrences(rootCli(argv(word)).warnings)).toEqual([
+			{ code: `unknown-option`, option: word.split(`=`)[0], index: 0 },
+		])
+		const consumed = rootCli(argv(`--name`, word))
+		expect(consumed.inputs.opts).toEqual({ name: word })
+		expect(consumed.warnings).toEqual([])
+		expect(rootCli(argv(`--`, word)).warnings).toEqual([])
+		expect(rootCli(argv(`-`)).warnings).toEqual([])
+	},
+)
+
 test(`stops warnings at the delimiter and preserves literal route values`, () => {
 	const result = testCli(argv(`--typo`, `show`, `--`, `--dry`))
 	expect(result.inputs.path).toEqual([`show`, `--dry`])
