@@ -149,9 +149,12 @@ async function filesystemCandidates(
 	const slash = prefix.lastIndexOf(`/`)
 	const directory = prefix.slice(0, slash + 1)
 	const partial = prefix.slice(slash + 1)
-	const expanded = directory.startsWith(`~/`)
+	const expandsHome = directory.startsWith(`~/`)
+	const expanded = expandsHome
 		? path.join(homedir(), directory.slice(2))
 		: directory || `.`
+	// JSON consumers receive quoted literals, so a filesystem result must name
+	// the path we actually inspected. Provider candidates remain untouched.
 	try {
 		const entries = await readdir(expanded, { withFileTypes: true })
 		const candidates = await Promise.all(
@@ -173,7 +176,10 @@ async function filesystemCandidates(
 				}
 				if (result.fileSystem === `directories` && !isDirectory) return undefined
 				return {
-					value: directory + entry.name + (isDirectory ? `/` : ``),
+					value:
+						(expandsHome
+							? path.join(expanded, entry.name)
+							: directory + entry.name) + (isDirectory ? `/` : ``),
 					appendSpace: !isDirectory && result.appendSpace,
 				}
 			}),
