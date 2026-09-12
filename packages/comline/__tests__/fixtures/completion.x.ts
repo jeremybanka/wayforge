@@ -20,6 +20,7 @@ const shared = options(
 		directory: z.string().optional(),
 		token: z.string().optional(),
 		fail: z.string().optional(),
+		confirm: z.string().optional(),
 	}),
 	{
 		state: { description: `PR state`, example: ``, required: false },
@@ -41,6 +42,7 @@ const shared = options(
 					`...`,
 					`nested/...`,
 					`vertical\vtab`,
+					`café`,
 					`literal\\u000b`,
 					`literal\\u{b}`,
 					`quote'branch`,
@@ -68,6 +70,20 @@ const shared = options(
 			completion: {
 				choices: [`prefix/`, `plain`, { value: `spaced`, appendSpace: true }],
 				appendSpace: false,
+			},
+		},
+		confirm: {
+			description: `Check a previous completion`,
+			example: ``,
+			required: false,
+			completion: {
+				provide: ({ options: occurrences }) => [
+					[`café`, `vertical\vtab`].includes(
+						occurrences.find(({ key }) => key === `base`)?.value ?? ``,
+					)
+						? `preserved`
+						: `corrupt`,
+				],
 			},
 		},
 		fail: {

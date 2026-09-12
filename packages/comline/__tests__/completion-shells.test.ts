@@ -420,6 +420,30 @@ describe(`global`, { timeout: 30_000 }, () => {
 	}
 
 	test.each([
+		{ prefix: `caf`, value: `café`, locale: `C` },
+		{ prefix: `vert`, value: `vertical\vtab`, locale: `C.UTF-8` },
+	])(
+		`Bash preserves its emitted quoting for the next provider: $prefix`,
+		({ prefix, value, locale }) => {
+			const result = run(
+				`bun`,
+				[
+					path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
+					`bash`,
+					path.join(directory, `bash`),
+					path.join(directory, `output-${counter++}.json`),
+					`comline-fixture pr list --base ${prefix}\t --confirm \t`,
+				],
+				{ ...mode(`global`), LC_ALL: locale },
+			)
+			expect(JSON.parse(result).opts).toEqual({
+				base: value,
+				confirm: `preserved`,
+			})
+		},
+	)
+
+	test.each([
 		``,
 		`~`,
 		`...`,

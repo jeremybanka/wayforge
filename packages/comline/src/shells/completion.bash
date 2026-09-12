@@ -1,16 +1,39 @@
 # Decode shell quoting without evaluating substitutions or executing user input.
 _comline_NAME_unquote() {
-    local input=$1 char quote= escaped= i
+    local input=$1 char quote= escaped= i decoded rest escape
+    local ansi_escape='^([0-7]{1,3}|x[[:xdigit:]]{1,2}|u[[:xdigit:]]{1,4}|U[[:xdigit:]]{1,8}|[abefnrtvE\\])'
     REPLY= REPLY_PREFIX=
     for ((i=0; i<${#input}; i++)); do
         char=${input:i:1}
-        if [[ $escaped ]]; then
+        if [[ $quote == ansi ]]; then
+            if [[ $char == "'" ]]; then
+                quote=
+            elif [[ $char == '\' ]]; then
+                rest=${input:i+1}
+                if [[ $rest =~ $ansi_escape ]]; then
+                    escape=${BASH_REMATCH[0]}
+                    printf -v decoded '%b' "\\$escape"
+                    REPLY+=$decoded
+                    ((i+=${#escape}))
+                elif [[ ${rest:0:1} == [\"\'\?] ]]; then
+                    REPLY+=${rest:0:1}
+                    ((i++))
+                else
+                    REPLY+=$char
+                fi
+            else
+                REPLY+=$char
+            fi
+        elif [[ $escaped ]]; then
             if [[ $quote == '"' && $char != [\$\`\"\\] ]]; then REPLY+='\'; fi
             REPLY+=$char; escaped=
         elif [[ $char == '\' && $quote != "'" ]]; then
             escaped=1
         elif [[ $quote ]]; then
             if [[ $char == "$quote" ]]; then quote=; else REPLY+=$char; fi
+        elif [[ $char == '$' && ${input:i+1:1} == "'" ]]; then
+            quote=ansi
+            ((i++))
         elif [[ $char == "'" || $char == '"' ]]; then
             quote=$char
         else
