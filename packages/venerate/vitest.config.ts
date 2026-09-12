@@ -6,8 +6,8 @@ export const config: UserConfig = defineConfig({
 		globals: true,
 		coverage: {
 			reporter: [`text`, `lcov`, `json`],
-			include: [`**/src`],
-			exclude: [`__unstable__`],
+			include: [`src/**/*.ts`],
+			exclude: [`**/__unstable__/**`],
 		},
 	},
 })
