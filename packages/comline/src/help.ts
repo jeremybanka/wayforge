@@ -71,6 +71,7 @@ export function renderTable(
 	format: FormatCell,
 	colors?: TerminalColors | boolean,
 ): string {
+	if (table.length === 0) return ``
 	const longestRow = table.reduce(
 		(acc, row) => (acc.length > row.length ? acc : row),
 		table[0],
