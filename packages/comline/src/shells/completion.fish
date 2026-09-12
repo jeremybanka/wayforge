@@ -25,7 +25,14 @@ function __comline_NAME
         set candidates (__fish_complete_path "$current")
     end
     for candidate in $candidates
-        printf '%s%s\n' "$prefix" "$candidate"
+        if test -z "$prefix$candidate"
+            # A blank command-substitution line disappears. An empty description
+            # field keeps the candidate present so Fish can quote the empty value.
+            # Fish 3 needs existing quotes (or --option=); Fish 4 adds them itself.
+            printf '\t\n'
+        else
+            printf '%s%s\n' "$prefix" "$candidate"
+        end
     end
     # Fish's completion API has no arbitrary no-space flag. Preserve the exact
     # candidate set and let Fish apply its native punctuation/spacing rules.
