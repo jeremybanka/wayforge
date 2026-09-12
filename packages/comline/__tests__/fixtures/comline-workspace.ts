@@ -1,12 +1,12 @@
 import { cpSync, existsSync, mkdirSync, symlinkSync } from "node:fs"
 import path from "node:path"
 
-/** Copy build/pack inputs, while keeping all generated output out of the checkout. */
-export function copyPackageWorkspace(
-	packageDirectory: string,
+/** Copy Comline build/pack inputs within the Wayforge workspace layout. */
+export function copyComlineWorkspace(
+	comlineDirectory: string,
 	workspace: string,
 ): string {
-	const root = path.resolve(packageDirectory, `../..`)
+	const root = path.resolve(comlineDirectory, `../..`)
 	const staged = path.join(workspace, `packages/comline`)
 	mkdirSync(workspace, { recursive: true })
 	for (const file of [
@@ -19,13 +19,22 @@ export function copyPackageWorkspace(
 		if (existsSync(path.join(root, file)))
 			cpSync(path.join(root, file), path.join(workspace, file))
 	}
-	cpSync(packageDirectory, staged, {
-		recursive: true,
-		filter: (source) =>
-			![`node_modules`, `dist`, `coverage`, `.turbo`].includes(
-				path.relative(packageDirectory, source).split(path.sep)[0],
-			),
-	})
+	mkdirSync(staged, { recursive: true })
+	for (const file of [
+		`src`,
+		`package.json`,
+		`tsconfig.json`,
+		`tsdown.config.ts`,
+		`shell-source.config.ts`,
+	]) {
+		cpSync(path.join(comlineDirectory, file), path.join(staged, file), {
+			recursive: true,
+		})
+	}
+	for (const file of [`README.md`, `LICENSE`, `.npmignore`, `.npmrc`]) {
+		if (existsSync(path.join(comlineDirectory, file)))
+			cpSync(path.join(comlineDirectory, file), path.join(staged, file))
+	}
 	// pnpm pack resolves workspace:* from the sibling's real version.
 	const sibling = path.join(workspace, `packages/treetrunks`)
 	mkdirSync(sibling, { recursive: true })
@@ -40,7 +49,7 @@ export function copyPackageWorkspace(
 		`dir`,
 	)
 	symlinkSync(
-		path.join(packageDirectory, `node_modules`),
+		path.join(comlineDirectory, `node_modules`),
 		path.join(staged, `node_modules`),
 		`dir`,
 	)
@@ -49,11 +58,11 @@ export function copyPackageWorkspace(
 
 /** Exercise the release build and manifest in an isolated, disposable workspace. */
 export function packComline(
-	packageDirectory: string,
+	comlineDirectory: string,
 	workspace: string,
 	pnpm: (args: string[], cwd: string) => void,
 ): string {
-	const staged = copyPackageWorkspace(packageDirectory, workspace)
+	const staged = copyComlineWorkspace(comlineDirectory, workspace)
 	const archive = path.join(workspace, `comline.tgz`)
 	pnpm([`build`], staged)
 	pnpm([`pack`, `--out`, archive], staged)

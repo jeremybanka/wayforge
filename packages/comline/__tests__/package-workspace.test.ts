@@ -10,7 +10,7 @@ import {
 import { tmpdir } from "node:os"
 import path from "node:path"
 
-import { copyPackageWorkspace, packComline } from "./fixtures/package-workspace"
+import { copyComlineWorkspace, packComline } from "./fixtures/comline-workspace"
 
 test(`building the packed consumer leaves an existing workspace build untouched`, () => {
 	const directory = mkdtempSync(
@@ -19,10 +19,12 @@ test(`building the packed consumer leaves an existing workspace build untouched`
 	try {
 		// A disposable source workspace makes the regression deterministic: the old
 		// in-place clean build always deletes this live consumer's marker and entry.
-		const source = copyPackageWorkspace(
+		const source = copyComlineWorkspace(
 			path.join(import.meta.dirname, `..`),
 			path.join(directory, `source`),
 		)
+		expect(existsSync(path.join(source, `__tests__`))).toBe(false)
+		expect(existsSync(path.join(source, `vitest.config.ts`))).toBe(false)
 		const dist = path.join(source, `dist`)
 		mkdirSync(dist)
 		writeFileSync(path.join(dist, `live-consumer`), `keep this build`)
