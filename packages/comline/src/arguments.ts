@@ -76,6 +76,7 @@ function retrieveRepeatedFlagValue(argument: string, flag: string): string {
 
 type ConsumptionOption = Pick<ArgumentOption, `key` | `names` | `valueKind`>
 type ArgumentScan = {
+	knownOptionTokens: KnownOptionTokens
 	instances: Map<string, ArgumentInstance[]>
 	pending: Set<string>
 	consumed: Set<number>
@@ -90,6 +91,7 @@ function scanOptions(
 	knownOptionTokens = retrieveKnownOptionTokens(options),
 ): ArgumentScan {
 	const scan: ArgumentScan = {
+		knownOptionTokens,
 		instances: new Map(),
 		pending: new Set(),
 		consumed: new Set(),
@@ -205,6 +207,11 @@ export type ArgumentInterpretation = RouteMatch & {
 	suppliedOptions: ArgumentOption[]
 	/** Standalone options at the end of input that can accept a following value, including optional booleans. */
 	pendingOptions: ArgumentOption[]
+	/** Pending options paired with the viable grammar that determines whether the next word is a value. */
+	pendingOptionValues: {
+		option: ArgumentOption
+		knownOptionTokens: KnownOptionTokens
+	}[]
 	positionalOnly: boolean
 }
 
@@ -383,6 +390,11 @@ export function interpretArguments(
 	}
 	const available = availableOptions(groups, match)
 	const selected = groups.get(match.route) ?? available
+	const pendingOptionValues = alternatives.flatMap(({ route, scan }) =>
+		(groups.get(route) ?? [])
+			.filter((option) => scan.pending.has(optionSignature(option)))
+			.map((option) => ({ option, knownOptionTokens: scan.knownOptionTokens })),
+	)
 	return {
 		...match,
 		options: occurrences(selected),
@@ -393,9 +405,8 @@ export function interpretArguments(
 		suppliedOptions: allOptions.filter((option) =>
 			activeScans.some((scan) => scan.instances.has(optionSignature(option))),
 		),
-		pendingOptions: allOptions.filter((option) =>
-			activeScans.some((scan) => scan.pending.has(optionSignature(option))),
-		),
+		pendingOptions: pendingOptionValues.map(({ option }) => option),
+		pendingOptionValues,
 		positionalOnly: best.positionalOnly,
 	}
 }
