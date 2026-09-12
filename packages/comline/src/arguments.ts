@@ -210,6 +210,8 @@ export function retrieveKnownOptionTokens(
 export type OptionOccurrence = ArgumentInstance & { key: string }
 
 export type ArgumentOption = {
+	/** Stable identity for this route/key pair, independent of presentation metadata. */
+	id: string
 	key: string
 	names: readonly string[]
 	valueKind: OptionValueKind
@@ -245,6 +247,7 @@ function schemaChoices(schema: JsonSchema | undefined): string[] {
 }
 
 function describeOptions(
+	route: string,
 	group: OptionsGroup<any> | null | undefined,
 	schemaCache: Map<OptionsSchema<any>, JsonSchema | undefined>,
 ): ArgumentOption[] {
@@ -258,6 +261,7 @@ function describeOptions(
 	}
 	const properties = schemaCache.get(group.optionsSchema)?.properties
 	return Object.entries(group.optionConfigs).map(([key, config]) => ({
+		id: JSON.stringify([route, key]),
 		key,
 		names: [
 			`--${key}`,
@@ -328,7 +332,7 @@ export function interpretArguments(
 	const groups = new Map(
 		Object.entries(definition.routeOptions).map(([route, group]) => [
 			route,
-			describeOptions(group, schemaCache),
+			describeOptions(route, group, schemaCache),
 		]),
 	)
 	const allOptions = [...groups.values()].flat()
