@@ -7,6 +7,7 @@ import {
 	type CliWarning,
 	formatWarnings,
 	interpretArguments,
+	interpretCompletion,
 	logWarnings,
 	noOptions,
 	optional,
@@ -75,6 +76,37 @@ const testCli = cli(definition)
 function occurrences(warnings: readonly CliWarning[]) {
 	return warnings.map(({ code, option, index }) => ({ code, option, index }))
 }
+
+test.each([required, optional])(
+	`unfinished routes defer warnings while descendant options consume values: %s`,
+	(route) => {
+		const unfinished = {
+			cliName: `probe`,
+			routes: route({ $target: null }),
+			routeOptions: { $target: runOptions },
+		}
+		const words = [`--name`, `--typo`]
+		for (const context of [
+			interpretArguments(unfinished, words),
+			interpretCompletion(unfinished, { words: [...words, ``] }),
+		]) {
+			expect(context.complete).toBe(route === optional)
+			expect(context.options).toEqual([
+				{ key: `name`, index: 0, value: `--typo`, valueIndex: 1 },
+			])
+			expect(context.warnings).toEqual([])
+		}
+		expect(interpretArguments(unfinished, [...words, `alice`]).warnings).toEqual(
+			[],
+		)
+		expect(
+			occurrences(
+				interpretArguments(unfinished, [...words, `alice`, `--unknown`])
+					.warnings,
+			),
+		).toEqual([{ code: `unknown-option`, option: `--unknown`, index: 3 }])
+	},
+)
 
 test(`returns public warning context with normalized argument indexes`, () => {
 	const words = [`show`, `alice`, `--typo=value`, `--dry-run`]
