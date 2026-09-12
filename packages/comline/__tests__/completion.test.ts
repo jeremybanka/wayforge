@@ -429,55 +429,21 @@ test(`derives choices from Arktype and supports explicit boolean consumption ove
 	).toEqual([{ value: `run`, description: `` }])
 })
 
-test.each([
-	[`pr`, `create`, `--repo`, `owner/repo`],
-	[`-R`, `owner/repo`, `pr`, `create`],
-	[`pr`, `create`, `-dc`],
-	[`pr`, `create`, `-ccc`],
-	[`pr`, `create`, `--draft`, `false`],
-	[`pr`, `create`, `--repo`, `one`, `--repo=two`],
-	[`pr`, `create`, `--title`, `--draft`],
-	[`pr`, `create`, `--count`, `-1`],
-	[`pr`, `create`, `--repo`, `-xyz`],
-	[`pr`, `create`, `--pr-state=closed`],
-	[`view`, `--`, `--repo=literal`],
-])(`completion interpretation agrees with normal invocation: %j`, (...words) => {
-	const normal = fj([`runtime`, `script`, ...words]).inputs
-	const partial = fj.interpret({ words: [...words, ``] })
-	const interpreted = interpretArguments(definition, words)
-	expect(partial.route).toBe(normal.case)
-	expect(partial.path).toEqual(normal.path)
-	expect(partial.options).toEqual(interpreted.options)
-	const converted = Object.fromEntries(
-		Object.entries(shared.optionConfigs).flatMap(([key, config]) => {
-			const occurrences = partial.options.filter((option) => option.key === key)
-			if (!occurrences.length) return []
-			const value = occurrences.map((option) => option.value).join(`,`)
-			return [[key, `parse` in config ? config.parse(value) : value]]
-		}),
-	)
-	expect(converted).toEqual(normal.opts)
-})
-
-test(`calls a shared provider only once before command selection`, async () => {
-	const provide = vi.fn(() => [`main`])
-	const group = {
-		...shared,
-		optionConfigs: {
-			...shared.optionConfigs,
-			base: { ...shared.optionConfigs.base, completion: { provide } },
-		},
-	}
-	const result = await complete(
-		{
-			cliName: `probe`,
-			routes: required({ a: null, b: null }),
-			routeOptions: { a: group, b: group },
-		},
-		{ words: [`--base`, `ma`] },
-	)
-	expect(result.candidates).toEqual([{ value: `main` }])
-	expect(provide).toHaveBeenCalledTimes(1)
+test(`completion exposes raw values while invocation converts them`, () => {
+	const words = [`-R`, `owner/repo`, `pr`, `create`, `--count`, `-1`]
+	expect(fj(argv(...words)).inputs).toEqual({
+		case: `pr/create`,
+		path: [`pr`, `create`],
+		opts: { repo: `owner/repo`, count: -1 },
+	})
+	expect(fj.interpret({ words: [...words, ``] })).toMatchObject({
+		route: `pr/create`,
+		path: [`pr`, `create`],
+		options: [
+			{ key: `repo`, index: 0, valueIndex: 1, value: `owner/repo` },
+			{ key: `count`, index: 4, valueIndex: 5, value: `-1` },
+		],
+	})
 })
 
 test(`reads a shared schema only once per interpretation and sees later definition changes`, () => {

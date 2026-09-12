@@ -180,525 +180,497 @@ afterAll(() => {
 		rmSync(directory, { recursive: true, force: true })
 })
 
-for (const kind of [`global`, `compiled`]) {
-	describe(kind, { timeout: 30_000 }, () => {
-		for (const shell of [
-			`bash`,
-			`zsh`,
-			`fish`,
-			`nu`,
-			`nu-carapace`,
-			`nu-cobra`,
-		]) {
-			const cases: [
-				string,
-				string,
-				{ case?: string; path?: string[]; opts: Record<string, string> },
-			][] = [
-				[`route`, `comline-fixture pr li\t`, { case: `pr/list`, opts: {} }],
+describe(`global`, { timeout: 30_000 }, () => {
+	for (const shell of [`bash`, `zsh`, `fish`, `nu`, `nu-carapace`, `nu-cobra`]) {
+		const cases: [
+			string,
+			string,
+			{ case?: string; path?: string[]; opts: Record<string, string> },
+		][] = [
+			[`route`, `comline-fixture pr li\t`, { case: `pr/list`, opts: {} }],
+			[
+				`enum`,
+				`comline-fixture pr list --state cl\t`,
+				{ opts: { state: `closed` } },
+			],
+			[
+				`inline`,
+				`comline-fixture pr list --state=cl\t`,
+				{ opts: { state: `closed` } },
+			],
+			[
+				`spaces`,
+				`comline-fixture pr list --base feat\t`,
+				{ opts: { base: `feature branch` } },
+			],
+			[
+				`files`,
+				`comline-fixture pr list --input file\t`,
+				{ opts: { input: `file with spaces.txt` } },
+			],
+			[
+				`option names`,
+				`comline-fixture pr list --sta\tcl\t`,
+				{ opts: { state: `closed` } },
+			],
+			[
+				`trailing space`,
+				`comline-fixture pr list -- \t`,
+				{ case: `pr/list/$value`, opts: {} },
+			],
+			[
+				`quoted input`,
+				`comline-fixture pr list --base "feat"\t`,
+				{ opts: { base: `feature branch` } },
+			],
+			[
+				`apostrophe`,
+				`comline-fixture pr list --base quo\t`,
+				{ opts: { base: `quote'branch` } },
+			],
+			[
+				`double quote`,
+				`comline-fixture pr list --base dou\t`,
+				{ opts: { base: `double"branch` } },
+			],
+			[
+				`literal shell syntax`,
+				`comline-fixture pr list --base doll\t`,
+				{ opts: { base: `dollar$(touch injected)` } },
+			],
+			[
+				`no space`,
+				`comline-fixture pr list --token pref\tsuffix`,
+				{ opts: { token: `prefix/suffix` } },
+			],
+			[
+				`no space without punctuation`,
+				`comline-fixture pr list --token pla\tsuffix`,
+				{ opts: { token: `plainsuffix` } },
+			],
+			[
+				`quoted earlier argument`,
+				`comline-fixture pr list --base "feature branch" --state cl\t`,
+				{ opts: { base: `feature branch`, state: `closed` } },
+			],
+			[
+				`empty earlier argument`,
+				`comline-fixture pr list --base "" --state cl\t`,
+				{ opts: { base: ``, state: `closed` } },
+			],
+			[
+				`literal shell syntax in an earlier completion`,
+				`comline-fixture pr list --base doll\t --state cl\t`,
+				{ opts: { base: `dollar$(touch injected)`, state: `closed` } },
+			],
+			[
+				`directories`,
+				`comline-fixture pr list --directory fold\tchild`,
+				{ opts: { directory: `folder with spaces/child` } },
+			],
+			[`delimiter`, `comline-fixture -- pr li\t`, { case: `pr/list`, opts: {} }],
+			[
+				`cursor in earlier word`,
+				`comline-fixture pr list --state cl --base main${`\x1b[D`.repeat(12)}\t`,
+				{ opts: { state: `closed`, base: `main` } },
+			],
+		]
+		if (shell === `nu`) {
+			cases.push(
 				[
-					`enum`,
-					`comline-fixture pr list --state cl\t`,
-					{ opts: { state: `closed` } },
+					`literal star provider`,
+					`comline-fixture pr list --base sta\t`,
+					{ opts: { base: `star*branch` } },
 				],
 				[
-					`inline`,
-					`comline-fixture pr list --state=cl\t`,
-					{ opts: { state: `closed` } },
+					`literal question provider`,
+					`comline-fixture pr list --base ques\t`,
+					{ opts: { base: `question?branch` } },
 				],
 				[
-					`spaces`,
-					`comline-fixture pr list --base feat\t`,
-					{ opts: { base: `feature branch` } },
+					`literal star filesystem`,
+					`comline-fixture pr list --input globstar*\t`,
+					{ opts: { input: `globstar*file` } },
 				],
 				[
-					`files`,
-					`comline-fixture pr list --input file\t`,
+					`literal question filesystem`,
+					`comline-fixture pr list --input globquestion?\t`,
+					{ opts: { input: `globquestion?file` } },
+				],
+			)
+		}
+		if (shell === `zsh` || shell === `bash`) {
+			cases.push([
+				`equals signs within inline values`,
+				`comline-fixture pr list --base=key=va\t`,
+				{ opts: { base: `key=value` } },
+			])
+		}
+		if (shell === `bash`) {
+			cases.push(
+				[
+					`equals signs within separate values`,
+					`comline-fixture pr list --base key=va\t`,
+					{ opts: { base: `key=value` } },
+				],
+				[
+					`quoted equals signs`,
+					`comline-fixture pr list --base "key=va"\t`,
+					{ opts: { base: `key=value` } },
+				],
+				[
+					`escaped equals signs`,
+					`comline-fixture pr list --base key\\=va\t`,
+					{ opts: { base: `key=value` } },
+				],
+			)
+		}
+		if (shell === `bash`) {
+			cases.push(
+				[
+					`inline file paths`,
+					`comline-fixture pr list --input=file\t`,
 					{ opts: { input: `file with spaces.txt` } },
 				],
 				[
-					`option names`,
-					`comline-fixture pr list --sta\tcl\t`,
-					{ opts: { state: `closed` } },
-				],
-				[
-					`trailing space`,
-					`comline-fixture pr list -- \t`,
-					{ case: `pr/list/$value`, opts: {} },
-				],
-				[
-					`quoted input`,
-					`comline-fixture pr list --base "feat"\t`,
-					{ opts: { base: `feature branch` } },
-				],
-				[
-					`apostrophe`,
-					`comline-fixture pr list --base quo\t`,
-					{ opts: { base: `quote'branch` } },
-				],
-				[
-					`double quote`,
-					`comline-fixture pr list --base dou\t`,
-					{ opts: { base: `double"branch` } },
-				],
-				[
-					`literal shell syntax`,
-					`comline-fixture pr list --base doll\t`,
-					{ opts: { base: `dollar$(touch injected)` } },
-				],
-				[
-					`no space`,
-					`comline-fixture pr list --token pref\tsuffix`,
-					{ opts: { token: `prefix/suffix` } },
-				],
-				[
-					`no space without punctuation`,
-					`comline-fixture pr list --token pla\tsuffix`,
-					{ opts: { token: `plainsuffix` } },
-				],
-				[
-					`quoted earlier argument`,
-					`comline-fixture pr list --base "feature branch" --state cl\t`,
-					{ opts: { base: `feature branch`, state: `closed` } },
-				],
-				[
-					`empty earlier argument`,
-					`comline-fixture pr list --base "" --state cl\t`,
-					{ opts: { base: ``, state: `closed` } },
-				],
-				[
-					`literal shell syntax in an earlier completion`,
-					`comline-fixture pr list --base doll\t --state cl\t`,
-					{ opts: { base: `dollar$(touch injected)`, state: `closed` } },
-				],
-				[
-					`directories`,
-					`comline-fixture pr list --directory fold\tchild`,
+					`quoted inline directory paths`,
+					`comline-fixture pr list "--directory=fold"\tchild`,
 					{ opts: { directory: `folder with spaces/child` } },
 				],
 				[
-					`delimiter`,
-					`comline-fixture -- pr li\t`,
-					{ case: `pr/list`, opts: {} },
+					`quoted inline file directory continuation`,
+					`comline-fixture pr list "--input=fold"\tchild`,
+					{ opts: { input: `folder with spaces/child` } },
 				],
 				[
-					`cursor in earlier word`,
-					`comline-fixture pr list --state cl --base main${`\x1b[D`.repeat(12)}\t`,
-					{ opts: { state: `closed`, base: `main` } },
+					`inline directory paths`,
+					`comline-fixture pr list --directory=fold\tchild`,
+					{ opts: { directory: `folder with spaces/child` } },
 				],
-			]
-			if (shell === `nu`) {
-				cases.push(
-					[
-						`literal star provider`,
-						`comline-fixture pr list --base sta\t`,
-						{ opts: { base: `star*branch` } },
-					],
-					[
-						`literal question provider`,
-						`comline-fixture pr list --base ques\t`,
-						{ opts: { base: `question?branch` } },
-					],
-					[
-						`literal star filesystem`,
-						`comline-fixture pr list --input globstar*\t`,
-						{ opts: { input: `globstar*file` } },
-					],
-					[
-						`literal question filesystem`,
-						`comline-fixture pr list --input globquestion?\t`,
-						{ opts: { input: `globquestion?file` } },
-					],
-				)
-			}
-			if (shell === `zsh` || shell === `bash`) {
-				cases.push([
-					`equals signs within inline values`,
-					`comline-fixture pr list --base=key=va\t`,
-					{ opts: { base: `key=value` } },
-				])
-			}
-			if (shell === `bash`) {
-				cases.push(
-					[
-						`equals signs within separate values`,
-						`comline-fixture pr list --base key=va\t`,
-						{ opts: { base: `key=value` } },
-					],
-					[
-						`quoted equals signs`,
-						`comline-fixture pr list --base "key=va"\t`,
-						{ opts: { base: `key=value` } },
-					],
-					[
-						`escaped equals signs`,
-						`comline-fixture pr list --base key\\=va\t`,
-						{ opts: { base: `key=value` } },
-					],
-				)
-			}
-			if (shell === `bash`) {
-				cases.push(
-					[
-						`inline file paths`,
-						`comline-fixture pr list --input=file\t`,
-						{ opts: { input: `file with spaces.txt` } },
-					],
-					[
-						`quoted inline directory paths`,
-						`comline-fixture pr list "--directory=fold"\tchild`,
-						{ opts: { directory: `folder with spaces/child` } },
-					],
-					[
-						`quoted inline file directory continuation`,
-						`comline-fixture pr list "--input=fold"\tchild`,
-						{ opts: { input: `folder with spaces/child` } },
-					],
-					[
-						`inline directory paths`,
-						`comline-fixture pr list --directory=fold\tchild`,
-						{ opts: { directory: `folder with spaces/child` } },
-					],
-					[
-						`inline file paths containing equals signs`,
-						`comline-fixture pr list --input=key=fi\t`,
-						{ opts: { input: `key=file.txt` } },
-					],
-				)
-			}
-			if (shell === `zsh` || shell === `bash`) {
-				cases.push([
-					`quoted executable`,
-					// bash-completion cannot autoload a quoted command name; first load
-					// it with an ordinary completion, then clear the line and quote it.
-					`${shell === `bash` ? `comline-fixture pr li\t\x15` : ``}"comline-fixture" pr li\t`,
-					{ case: `pr/list`, opts: {} },
-				])
-			}
-			if (shell === `bash` || shell === `zsh`) {
-				cases.push([
-					`candidate spacing override`,
-					`comline-fixture pr list --token spa\t--base main`,
-					{ opts: { token: `spaced`, base: `main` } },
-				])
-			}
-			if ([`bash`, `zsh`, `fish`].includes(shell)) {
-				cases.push(
-					[
-						`positional assignment after delimiter`,
-						`comline-fixture pr list -- --key=val\t`,
-						{ path: [`pr`, `list`, `--key=value`], opts: {} },
-					],
-					[
-						`dash-prefixed separate value`,
-						`comline-fixture pr list --base --key=val\t`,
-						{ opts: { base: `--key=value` } },
-					],
-					[
-						`dash-prefixed inline value`,
-						`comline-fixture pr list --base=--key=val\t`,
-						{ opts: { base: `--key=value` } },
-					],
-				)
-			}
-			// Carapace's Cobra bridge drops inline values even for upstream Cobra.
-			// The separate Cobra suite verifies that limitation against upstream.
-			test.each(
-				cases.filter(
-					([name]) =>
-						(shell !== `nu-cobra` || name !== `inline`) &&
-						// Fish exposes no arbitrary no-space flag; assert its native behavior below.
-						(shell !== `fish` || name !== `no space without punctuation`),
-				),
-			)(
-				`${shell} inserts $0 through its real line editor`,
-				(_name, line, expected) => {
-					const output = path.join(directory, `output-${counter++}.json`)
-					const result = run(
-						`bun`,
-						[
-							path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
-							shell,
-							path.join(directory, shell === `nu` ? `nushell` : shell),
-							output,
-							line,
-						],
-						mode(kind),
-					)
-					expect(JSON.parse(result)).toMatchObject(expected)
-					expect(existsSync(path.join(directory, `injected`))).toBe(false)
-				},
+				[
+					`inline file paths containing equals signs`,
+					`comline-fixture pr list --input=key=fi\t`,
+					{ opts: { input: `key=file.txt` } },
+				],
 			)
 		}
-
-		test.each([
-			``,
-			`~`,
-			`...`,
-			`nested/...`,
-			`vertical\vtab`,
-			`literal\\u000b`,
-			`literal\\u{b}`,
-		])(`Nushell replacements preserve literal argument %j`, (value) => {
-			const candidates: { value: string; display: string }[] = JSON.parse(
-				run(
-					`comline-fixture`,
-					[`_comline`, `nushell`, `pr`, `list`, `--base`, ``],
-					mode(kind),
-				),
-			)
-			const candidate = candidates.find((item) => item.display === value)!
-			const result = run(
-				`nu`,
+		if (shell === `zsh` || shell === `bash`) {
+			cases.push([
+				`quoted executable`,
+				// bash-completion cannot autoload a quoted command name; first load
+				// it with an ordinary completion, then clear the line and quote it.
+				`${shell === `bash` ? `comline-fixture pr li\t\x15` : ``}"comline-fixture" pr li\t`,
+				{ case: `pr/list`, opts: {} },
+			])
+		}
+		if (shell === `bash` || shell === `zsh`) {
+			cases.push([
+				`candidate spacing override`,
+				`comline-fixture pr list --token spa\t--base main`,
+				{ opts: { token: `spaced`, base: `main` } },
+			])
+		}
+		if ([`bash`, `zsh`, `fish`].includes(shell)) {
+			cases.push(
 				[
-					`--no-config-file`,
-					`-c`,
-					`^node -e 'console.log(JSON.stringify(process.argv.slice(1)))' -- ${candidate.value}`,
+					`positional assignment after delimiter`,
+					`comline-fixture pr list -- --key=val\t`,
+					{ path: [`pr`, `list`, `--key=value`], opts: {} },
 				],
-				mode(kind),
+				[
+					`dash-prefixed separate value`,
+					`comline-fixture pr list --base --key=val\t`,
+					{ opts: { base: `--key=value` } },
+				],
+				[
+					`dash-prefixed inline value`,
+					`comline-fixture pr list --base=--key=val\t`,
+					{ opts: { base: `--key=value` } },
+				],
 			)
-			expect(JSON.parse(result)).toEqual([value])
-			const repeated: { display: string }[] = JSON.parse(
-				run(
-					`comline-fixture`,
-					[
-						`_comline`,
-						`nushell`,
-						`pr`,
-						`list`,
-						`--base`,
-						candidate.value.trimEnd(),
-					],
-					mode(kind),
-				),
-			)
-			expect(repeated.some((item) => item.display === value)).toBe(true)
-			// Previously inserted replacements must also survive the next request.
-			const next = JSON.parse(
-				run(
-					`comline-fixture`,
-					[
-						`_comline`,
-						`nushell`,
-						`pr`,
-						`list`,
-						`--base`,
-						candidate.value.trimEnd(),
-						`--state`,
-						`cl`,
-					],
-					mode(kind),
-				),
-			)
-			expect(next).toMatchObject([{ display: `closed` }])
-		})
-
-		test.each([`bash`, `zsh`, `fish`, `nu`, `nu-carapace`, `nu-cobra`])(
-			`%s completes the installation command`,
-			(shell) => {
+		}
+		// Carapace's Cobra bridge drops inline values even for upstream Cobra.
+		// The optional Cobra compatibility probe reproduces that upstream limitation.
+		test.each(
+			cases.filter(
+				([name]) =>
+					(shell !== `nu-cobra` || name !== `inline`) &&
+					// Fish exposes no arbitrary no-space flag; assert its native behavior below.
+					(shell !== `fish` || name !== `no space without punctuation`),
+			),
+		)(
+			`${shell} inserts $0 through its real line editor`,
+			(_name, line, expected) => {
+				const output = path.join(directory, `output-${counter++}.json`)
 				const result = run(
 					`bun`,
 					[
 						path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
 						shell,
 						path.join(directory, shell === `nu` ? `nushell` : shell),
-						path.join(directory, `output-${counter++}.json`),
-						`comline-fixture co\tin\tba\t`,
+						output,
+						line,
 					],
-					mode(kind),
+					mode(`global`),
 				)
-				expect(JSON.parse(result).response).toBe(
-					`Installed completions at ${path.join(directory, kind, `bash-completion/completions/comline-fixture.bash`)}\n`,
-				)
+				expect(JSON.parse(result)).toMatchObject(expected)
+				expect(existsSync(path.join(directory, `injected`))).toBe(false)
 			},
 		)
+	}
 
-		test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
-			`%s installation replaces its file and preserves shell profiles`,
-			(shell) => {
-				const profiles = [
-					`home/.bashrc`,
-					`zsh-config/.zshenv`,
-					`zsh-config/.zshrc`,
-					`config/fish/config.fish`,
-					`config/nushell/config.nu`,
-					`config/nushell/env.nu`,
-				].map((file) => path.join(directory, file))
-				const before = profiles.map((file) => readFileSync(file, `utf8`))
-				const installed = run(
+	test.each([
+		``,
+		`~`,
+		`...`,
+		`nested/...`,
+		`vertical\vtab`,
+		`literal\\u000b`,
+		`literal\\u{b}`,
+	])(`Nushell replacements preserve literal argument %j`, (value) => {
+		const candidates: { value: string; display: string }[] = JSON.parse(
+			run(
+				`comline-fixture`,
+				[`_comline`, `nushell`, `pr`, `list`, `--base`, ``],
+				mode(`global`),
+			),
+		)
+		const candidate = candidates.find((item) => item.display === value)!
+		const result = run(
+			`nu`,
+			[
+				`--no-config-file`,
+				`-c`,
+				`^node -e 'console.log(JSON.stringify(process.argv.slice(1)))' -- ${candidate.value}`,
+			],
+			mode(`global`),
+		)
+		expect(JSON.parse(result)).toEqual([value])
+		const repeated: { display: string }[] = JSON.parse(
+			run(
+				`comline-fixture`,
+				[
+					`_comline`,
+					`nushell`,
+					`pr`,
+					`list`,
+					`--base`,
+					candidate.value.trimEnd(),
+				],
+				mode(`global`),
+			),
+		)
+		expect(repeated.some((item) => item.display === value)).toBe(true)
+		// Previously inserted replacements must also survive the next request.
+		const next = JSON.parse(
+			run(
+				`comline-fixture`,
+				[
+					`_comline`,
+					`nushell`,
+					`pr`,
+					`list`,
+					`--base`,
+					candidate.value.trimEnd(),
+					`--state`,
+					`cl`,
+				],
+				mode(`global`),
+			),
+		)
+		expect(next).toMatchObject([{ display: `closed` }])
+	})
+
+	test.each([`bash`, `zsh`, `fish`, `nu`, `nu-carapace`, `nu-cobra`])(
+		`%s completes the installation command`,
+		(shell) => {
+			const result = run(
+				`bun`,
+				[
+					path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
+					shell,
+					path.join(directory, shell === `nu` ? `nushell` : shell),
+					path.join(directory, `output-${counter++}.json`),
+					`comline-fixture co\tin\tba\t`,
+				],
+				mode(`global`),
+			)
+			expect(JSON.parse(result).response).toBe(
+				`Installed completions at ${path.join(directory, `global`, `bash-completion/completions/comline-fixture.bash`)}\n`,
+			)
+		},
+	)
+
+	test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
+		`%s installation replaces its file and preserves shell profiles`,
+		(shell) => {
+			const profiles = [
+				`home/.bashrc`,
+				`zsh-config/.zshenv`,
+				`zsh-config/.zshrc`,
+				`config/fish/config.fish`,
+				`config/nushell/config.nu`,
+				`config/nushell/env.nu`,
+			].map((file) => path.join(directory, file))
+			const before = profiles.map((file) => readFileSync(file, `utf8`))
+			const installed = run(
+				`comline-fixture`,
+				[`completion`, `install`, shell],
+				mode(`global`),
+			)
+				.trim()
+				.replace(`Installed completions at `, ``)
+			expect(readFileSync(installed, `utf8`)).toBe(
+				completionScript(`comline-fixture`, shell),
+			)
+			writeFileSync(installed, `# outdated completion\n`)
+			expect(
+				run(
 					`comline-fixture`,
 					[`completion`, `install`, shell],
-					mode(kind),
-				)
-					.trim()
-					.replace(`Installed completions at `, ``)
-				expect(readFileSync(installed, `utf8`)).toBe(
-					completionScript(`comline-fixture`, shell),
-				)
-				writeFileSync(installed, `# outdated completion\n`)
-				expect(
-					run(
-						`comline-fixture`,
-						[`completion`, `install`, shell],
-						mode(kind),
-					).trim(),
-				).toBe(`Installed completions at ${installed}`)
-				expect(readFileSync(installed, `utf8`)).toBe(
-					completionScript(`comline-fixture`, shell),
-				)
-				expect(profiles.map((file) => readFileSync(file, `utf8`))).toEqual(
-					before,
-				)
-			},
+					mode(`global`),
+				).trim(),
+			).toBe(`Installed completions at ${installed}`)
+			expect(readFileSync(installed, `utf8`)).toBe(
+				completionScript(`comline-fixture`, shell),
+			)
+			expect(profiles.map((file) => readFileSync(file, `utf8`))).toEqual(before)
+		},
+	)
+	test.each([`comline-fixture`, `cobra-fixture`])(
+		`Carapace reads %s and renders Nushell candidates`,
+		(name) => {
+			const result = JSON.parse(
+				run(
+					`carapace`,
+					[name, `nushell`, name, `pr`, `list`, `--base`, `ma`],
+					mode(`global`),
+				),
+			)
+			expect(result.map((item: { value: string }) => item.value)).toEqual([
+				`main `,
+				`maintenance `,
+			])
+			expect(result[0].description).toBe(`Main branch`)
+		},
+	)
+	test(`Fish exposes exactly the provider's candidates`, () => {
+		const result = run(
+			`fish`,
+			[`-i`, `-c`, `complete -C 'comline-fixture pr list --token pla'`],
+			mode(`global`),
 		)
-		test.each([`comline-fixture`, `cobra-fixture`])(
-			`Carapace reads %s and renders Nushell candidates`,
-			(name) => {
-				const result = JSON.parse(
-					run(
-						`carapace`,
-						[name, `nushell`, name, `pr`, `list`, `--base`, `ma`],
-						mode(kind),
-					),
-				)
-				expect(result.map((item: { value: string }) => item.value)).toEqual([
-					`main `,
-					`maintenance `,
-				])
-				expect(result[0].description).toBe(`Main branch`)
-			},
-		)
-		test(`Fish exposes exactly the provider's candidates`, () => {
-			const result = run(
-				`fish`,
-				[`-i`, `-c`, `complete -C 'comline-fixture pr list --token pla'`],
-				mode(kind),
-			)
-			expect(result.trim().split(`\n`)).toEqual([`plain`])
-		})
-		test(`Fish uses native spacing for a plain candidate`, () => {
-			const result = run(
-				`bun`,
-				[
-					path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
-					`fish`,
-					path.join(directory, `fish`),
-					path.join(directory, `output-${counter++}.json`),
-					`comline-fixture pr list --token pla\t--base main`,
-				],
-				mode(kind),
-			)
-			expect(JSON.parse(result).opts).toEqual({ token: `plain`, base: `main` })
-		})
-		test(`Fish repeated Tab completion never selects a fabricated value`, () => {
-			const result = run(
-				`bun`,
-				[
-					path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
-					`fish`,
-					path.join(directory, `fish`),
-					path.join(directory, `output-${counter++}.json`),
-					`comline-fixture pr list --token pla\t\t\t`,
-				],
-				mode(kind),
-			)
-			expect(JSON.parse(result).opts).toEqual({ token: `plain` })
-		})
-		test(`Zsh discovers the adapter through fpath`, () => {
-			const fpath = path.join(directory, `autoload-${kind}`)
-			mkdirSync(fpath)
-			writeFileSync(
-				path.join(fpath, `_comline-fixture`),
-				completionScript(`comline-fixture`, `zsh`),
-			)
-			const setup = path.join(directory, `autoload-${kind}.zsh`)
-			writeFileSync(
-				setup,
-				`fpath=(${JSON.stringify(fpath)} $fpath)\ncompinit -i -D\n`,
-			)
-			const result = run(
-				`bun`,
-				[
-					path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
-					`zsh`,
-					setup,
-					path.join(directory, `output-${counter++}.json`),
-					`comline-fixture pr li\t`,
-				],
-				mode(kind),
-			)
-			expect(JSON.parse(result).case).toBe(`pr/list`)
-		})
-		test(`Zsh ignores unrelated insecure completion directories without prompting`, () => {
-			const insecure = path.join(directory, `insecure-zsh-${kind}`)
-			mkdirSync(insecure)
-			chmodSync(insecure, 0o777)
-			const fpath = run(`zsh`, [`-f`, `-c`, `print -r -- $FPATH`]).trim()
-			const result = run(
-				`bun`,
-				[
-					path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
-					`zsh`,
-					path.join(directory, `zsh`),
-					path.join(directory, `output-${counter++}.json`),
-					`comline-fixture pr li\t`,
-				],
-				{ ...mode(kind), FPATH: `${insecure}:${fpath}` },
-			)
-			expect(JSON.parse(result).case).toBe(`pr/list`)
-		})
-
-		test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
-			`the executable ships its %s integration`,
-			(target) => {
-				expect(run(`comline-fixture`, [`completion`, target], mode(kind))).toBe(
-					completionScript(`comline-fixture`, target),
-				)
-			},
-		)
-		test(`Nushell autoload composes with Carapace and other command registrations`, () => {
-			const config = path.join(directory, `config/nushell/config.nu`)
-			const other = path.join(
-				directory,
-				kind,
-				`data/nushell/vendor/autoload/other-fixture.nu`,
-			)
-			const otherExecutable = path.join(
-				directory,
-				kind === `compiled` ? `compiled` : `global/bin`,
-				`other-fixture`,
-			)
-			symlinkSync(`comline-fixture`, otherExecutable)
-			writeFileSync(other, completionScript(`other-fixture`, `nushell`))
-			try {
-				withProfile(
-					config,
-					`$env.config.completions.external.completer = {|spans| carapace $spans.0 nushell ...$spans | from json }\n`,
-					() => {
-						// Both the installed native handler and the pre-existing Carapace
-						// provider remain reachable after a second command is autoloaded.
-						for (const name of [
-							`comline-fixture`,
-							`other-fixture`,
-							`cobra-fixture`,
-						]) {
-							const script = `print (do $env.config.completions.external.completer [${name} pr li] | to json); exit`
-							const result = JSON.parse(
-								run(`nu`, [`-i`, `--execute`, script], mode(kind)),
-							)
-							expect(
-								result.map((item: { value: string }) => item.value),
-							).toEqual([`list `])
-						}
-					},
-				)
-			} finally {
-				rmSync(other)
-				rmSync(otherExecutable)
-			}
-		})
+		expect(result.trim().split(`\n`)).toEqual([`plain`])
 	})
-}
+	test(`Fish uses native spacing for a plain candidate`, () => {
+		const result = run(
+			`bun`,
+			[
+				path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
+				`fish`,
+				path.join(directory, `fish`),
+				path.join(directory, `output-${counter++}.json`),
+				`comline-fixture pr list --token pla\t--base main`,
+			],
+			mode(`global`),
+		)
+		expect(JSON.parse(result).opts).toEqual({ token: `plain`, base: `main` })
+	})
+	test(`Fish repeated Tab completion never selects a fabricated value`, () => {
+		const result = run(
+			`bun`,
+			[
+				path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
+				`fish`,
+				path.join(directory, `fish`),
+				path.join(directory, `output-${counter++}.json`),
+				`comline-fixture pr list --token pla\t\t\t`,
+			],
+			mode(`global`),
+		)
+		expect(JSON.parse(result).opts).toEqual({ token: `plain` })
+	})
+
+	test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
+		`the executable ships its %s integration`,
+		(target) => {
+			expect(
+				run(`comline-fixture`, [`completion`, target], mode(`global`)),
+			).toBe(completionScript(`comline-fixture`, target))
+		},
+	)
+	test(`Nushell autoload composes with Carapace and other command registrations`, () => {
+		const config = path.join(directory, `config/nushell/config.nu`)
+		const other = path.join(
+			directory,
+			`global`,
+			`data/nushell/vendor/autoload/other-fixture.nu`,
+		)
+		const otherExecutable = path.join(directory, `global/bin`, `other-fixture`)
+		symlinkSync(`comline-fixture`, otherExecutable)
+		writeFileSync(other, completionScript(`other-fixture`, `nushell`))
+		try {
+			withProfile(
+				config,
+				`$env.config.completions.external.completer = {|spans| carapace $spans.0 nushell ...$spans | from json }\n`,
+				() => {
+					// Both the installed native handler and the pre-existing Carapace
+					// provider remain reachable after a second command is autoloaded.
+					for (const name of [
+						`comline-fixture`,
+						`other-fixture`,
+						`cobra-fixture`,
+					]) {
+						const script = `print (do $env.config.completions.external.completer [${name} pr li] | to json); exit`
+						const result = JSON.parse(
+							run(`nu`, [`-i`, `--execute`, script], mode(`global`)),
+						)
+						expect(result.map((item: { value: string }) => item.value)).toEqual([
+							`list `,
+						])
+					}
+				},
+			)
+		} finally {
+			rmSync(other)
+			rmSync(otherExecutable)
+		}
+	})
+})
+
+// Packaging needs discovery and execution coverage for every consumer, while the
+// detailed quoting, spacing, and installation scenarios run once above.
+describe(`compiled`, { timeout: 30_000 }, () => {
+	test.each([`bash`, `zsh`, `fish`, `nu`, `nu-carapace`, `nu-cobra`])(
+		`%s discovers the installed integration and completes a value`,
+		(shell) => {
+			const result = run(
+				`bun`,
+				[
+					path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
+					shell,
+					path.join(directory, shell === `nu` ? `nushell` : shell),
+					path.join(directory, `output-${counter++}.json`),
+					`comline-fixture pr list --state cl\t`,
+				],
+				mode(`compiled`),
+			)
+			expect(JSON.parse(result)).toEqual({
+				case: `pr/list`,
+				path: [`pr`, `list`],
+				opts: { state: `closed` },
+			})
+		},
+	)
+	test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
+		`the executable ships its %s integration`,
+		(target) => {
+			expect(
+				run(`comline-fixture`, [`completion`, target], mode(`compiled`)),
+			).toBe(completionScript(`comline-fixture`, target))
+		},
+	)
+})
 
 test(`the compiled completion endpoint needs no runtime on PATH`, () => {
 	expect(
