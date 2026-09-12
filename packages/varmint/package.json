@@ -1,7 +1,7 @@
 {
 	"name": "varmint",
 	"type": "module",
-	"version": "0.5.25",
+	"version": "0.5.26",
 	"license": "MPL-2.0",
 	"author": {
 		"name": "Jeremy Banka",
