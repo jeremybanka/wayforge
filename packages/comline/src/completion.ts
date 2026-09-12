@@ -2,6 +2,7 @@ import {
 	type ArgumentInterpretation,
 	type ArgumentOption,
 	interpretArguments,
+	type KnownOptionTokens,
 	shouldConsumeNextArg,
 	splitOptionValue,
 } from "./arguments"
@@ -39,7 +40,12 @@ export type CompletionRequest = {
 }
 
 export type CompletionTarget =
-	| { kind: `option-value`; option: ArgumentOption }
+	| {
+			kind: `option-value`
+			option: ArgumentOption
+			/** Present for separated values; candidates must be consumable in this grammar. */
+			valueGrammar?: KnownOptionTokens
+	  }
 	| { kind: `positional`; name: string; route: string }
 	| { kind: `command` }
 	| { kind: `option-name` }
@@ -70,16 +76,23 @@ export type CompletionResult = {
 	diagnostics: string[]
 }
 
-function preferLocalOptions(
+function scopedOptions(
 	context: ArgumentInterpretation,
 	options: readonly ArgumentOption[],
 ): ArgumentOption[] {
 	const available = new Set(context.availableOptions.map((option) => option.id))
 	const reachable = new Set(context.reachableOptions.map((option) => option.id))
 	const local = options.filter((option) => available.has(option.id))
-	return deduplicateOptions(
-		local.length ? local : options.filter((option) => reachable.has(option.id)),
-	)
+	return local.length
+		? local
+		: options.filter((option) => reachable.has(option.id))
+}
+
+function preferLocalOptions(
+	context: ArgumentInterpretation,
+	options: readonly ArgumentOption[],
+): ArgumentOption[] {
+	return deduplicateOptions(scopedOptions(context, options))
 }
 
 function optionMatches(
@@ -128,15 +141,30 @@ export function interpretCompletion(
 		// The scanner owns standalone/grouped/inline token classification. Completion
 		// only decides whether the unfinished next word can be offered as that value.
 		// Filter by each viable grammar before deduplicating equivalent presentations.
-		const pending = context.pendingOptionValues
-			.filter(({ option, knownOptionTokens }) =>
+		const pending = context.pendingOptionValues.filter(
+			({ option, knownOptionTokens }) =>
 				option.valueKind === `boolean`
 					? [`true`, `false`, `0`, `1`].some((value) => value.startsWith(prefix))
 					: shouldConsumeNextArg(prefix, option.valueKind, knownOptionTokens),
-			)
-			.map(({ option }) => option)
-		for (const option of preferLocalOptions(context, pending)) {
-			context.targets.push({ kind: `option-value`, option })
+		)
+		const scoped = new Set(
+			scopedOptions(
+				context,
+				pending.map(({ option }) => option),
+			).map(({ id }) => id),
+		)
+		const grammars = new Map<KnownOptionTokens, ArgumentOption[]>()
+		for (const { option, knownOptionTokens } of pending) {
+			if (!scoped.has(option.id)) continue
+			const options = grammars.get(knownOptionTokens) ?? []
+			options.push(option)
+			grammars.set(knownOptionTokens, options)
+		}
+		// Equivalent presentations can still accept different complete values.
+		// Keep the grammar attached through candidate generation.
+		for (const [valueGrammar, options] of grammars) {
+			for (const option of deduplicateOptions(options))
+				context.targets.push({ kind: `option-value`, option, valueGrammar })
 		}
 		if (
 			context.targets.some(
@@ -257,6 +285,16 @@ export async function complete(
 			for (const value of values) {
 				const item = candidate(value)
 				if (!item.value.startsWith(context.prefix)) continue
+				if (
+					target.kind === `option-value` &&
+					target.valueGrammar &&
+					!shouldConsumeNextArg(
+						item.value,
+						target.option.valueKind,
+						target.valueGrammar,
+					)
+				)
+					continue
 				const previous = candidates.get(item.value)
 				candidates.set(item.value, {
 					...(previous ?? item),

@@ -43,6 +43,46 @@ test(`descendant option occurrences cannot erase the selected route's values`, (
 	])
 })
 
+test(`accepted value candidates preserve their target's consumption rules`, async () => {
+	const definition = {
+		cliName: `probe`,
+		routeOptions: {
+			"": options(
+				``,
+				z.object({ ref: z.string().optional(), confirm: z.string().optional() }),
+				{
+					ref: {
+						description: ``,
+						example: ``,
+						required: false,
+						completion: {
+							choices: [`--confirm`, `--confetti`],
+							provide: () => [`--confirm=value`],
+						},
+					},
+					confirm: { description: ``, example: ``, required: false },
+				},
+			),
+		},
+	}
+	const separated = await complete(definition, { words: [`--ref`, `--con`] })
+	expect(separated.candidates.map(({ value }) => value)).toEqual([`--confetti`])
+	for (const { value } of separated.candidates)
+		expect(cli(definition)(argv(`--ref`, value)).inputs.opts).toEqual({
+			ref: value,
+		})
+	const inline = await complete(definition, { words: [`--ref=--con`] })
+	expect(inline.candidates.map(({ value }) => value)).toEqual([
+		`--confirm`,
+		`--confetti`,
+		`--confirm=value`,
+	])
+	for (const { value } of inline.candidates)
+		expect(cli(definition)(argv(`--ref=${value}`)).inputs.opts).toEqual({
+			ref: value,
+		})
+})
+
 test(`cloned hints do not repeat the same provider before route selection`, async () => {
 	const provide = vi.fn(() => [`main`])
 	const hints: CompletionHints = {
