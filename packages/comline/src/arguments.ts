@@ -377,10 +377,11 @@ function interpretCore(
 	const activeScans = [...new Set(alternatives.map(({ scan }) => scan))]
 	const occurrences = (
 		options: readonly ArgumentOption[],
+		applicableScans: readonly ArgumentScan[],
 	): OptionOccurrence[] => {
 		const unique = new Map<string, OptionOccurrence>()
 		for (const option of options) {
-			for (const scan of activeScans) {
+			for (const scan of applicableScans) {
 				for (const instance of scan.instances.get(optionSignature(option)) ??
 					[]) {
 					const occurrence = { ...instance, key: option.key }
@@ -390,10 +391,17 @@ function interpretCore(
 		}
 		return [...unique.values()].sort((a, b) => a.index - b.index)
 	}
+	const selectedOptions = groups.get(match.route)
+	// Alternative grammars help select an unfinished route, but cannot erase
+	// occurrences belonging to the route that ordinary invocation will execute.
+	const selectedScan = interpretations.find(
+		({ route }) => route === match.route,
+	)!.scan
 	const invocation: ArgumentInvocation = {
 		...match,
 		options: occurrences(
-			groups.get(match.route) ?? availableOptions(groups, match),
+			selectedOptions ?? availableOptions(groups, match),
+			selectedOptions ? [selectedScan] : activeScans,
 		),
 	}
 	return {
@@ -415,7 +423,7 @@ function interpretCore(
 				availableOptions: availableOptions(groups, match),
 				allOptions,
 				reachableOptions: reachableOptions(groups, match),
-				allOccurrences: occurrences(allOptions),
+				allOccurrences: occurrences(allOptions, activeScans),
 				suppliedOptions: allOptions.filter((option) =>
 					activeScans.some((scan) =>
 						scan.instances.has(optionSignature(option)),

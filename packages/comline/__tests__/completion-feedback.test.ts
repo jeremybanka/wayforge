@@ -25,6 +25,24 @@ function refOptions(completion: CompletionHints) {
 	})
 }
 
+test(`descendant option occurrences cannot erase the selected route's values`, () => {
+	const definition = {
+		cliName: `probe`,
+		routes: optional({ $name: null }),
+		routeOptions: {
+			"": refOptions({}),
+			$name: options(``, z.object({ other: z.string().optional() }), {
+				other: { description: ``, example: ``, required: false },
+			}),
+		},
+	}
+	const words = [`--ref=main`, `--other=x`, `--other=y`]
+	expect(cli(definition)(argv(...words)).inputs.opts).toEqual({ ref: `main` })
+	expect(interpretArguments(definition, words).options).toEqual([
+		{ key: `ref`, index: 0, value: `main` },
+	])
+})
+
 test(`cloned hints do not repeat the same provider before route selection`, async () => {
 	const provide = vi.fn(() => [`main`])
 	const hints: CompletionHints = {
