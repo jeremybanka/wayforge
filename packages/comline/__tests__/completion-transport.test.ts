@@ -154,3 +154,24 @@ test.each([
 		expect(response).toBe(`prefix:${prefix}\n--key=value\n:4\n`)
 	},
 )
+
+test.each([
+	{ words: [`co`], values: [`completion`] },
+	{
+		words: [`completion`, ``],
+		values: [`install`, `bash`, `zsh`, `fish`, `nushell`, `carapace`],
+	},
+	{ words: [`completion`, `install`, `b`], values: [`bash`] },
+	{ words: [`completion`, `nu`], values: [`nushell`] },
+	{ words: [`completion`, `install`, `unknown`], values: [] },
+	{ words: [`completion`, `bash`, ``], values: [] },
+])(
+	`completion management has its own opt-in grammar: $words`,
+	async ({ words, values }) => {
+		const response = await completionResponse(
+			definition,
+			argv(`__completeNoDesc`, ...words),
+		)
+		expect(response!.trimEnd().split(`\n`).slice(0, -1)).toEqual(values)
+	},
+)

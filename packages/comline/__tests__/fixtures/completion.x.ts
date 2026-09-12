@@ -99,6 +99,11 @@ const definition = {
 }
 const response = await completionResponse(definition, process.argv)
 if (response !== undefined) {
+	if (process.argv[2] === `completion` && process.env[`COMLINE_TEST_OUTPUT`])
+		appendFileSync(
+			process.env[`COMLINE_TEST_OUTPUT`],
+			JSON.stringify({ response }) + `\n`,
+		)
 	process.stdout.write(response)
 } else {
 	const parse = cli({ ...definition, discoverConfigPath: () => undefined })

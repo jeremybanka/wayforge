@@ -223,8 +223,8 @@ for (const kind of [`global`, `compiled`]) {
 				],
 				[
 					`trailing space`,
-					`comline-fixture \tli\t`,
-					{ case: `pr/list`, opts: {} },
+					`comline-fixture pr list -- \t`,
+					{ case: `pr/list/$value`, opts: {} },
 				],
 				[
 					`quoted input`,
@@ -492,6 +492,26 @@ for (const kind of [`global`, `compiled`]) {
 			)
 			expect(next).toMatchObject([{ display: `closed` }])
 		})
+
+		test.each([`bash`, `zsh`, `fish`, `nu`, `nu-carapace`, `nu-cobra`])(
+			`%s completes the installation command`,
+			(shell) => {
+				const result = run(
+					`bun`,
+					[
+						path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
+						shell,
+						path.join(directory, shell === `nu` ? `nushell` : shell),
+						path.join(directory, `output-${counter++}.json`),
+						`comline-fixture co\tin\tba\t`,
+					],
+					mode(kind),
+				)
+				expect(JSON.parse(result).response).toBe(
+					`Installed completions at ${path.join(directory, kind, `bash-completion/completions/comline-fixture.bash`)}\n`,
+				)
+			},
+		)
 
 		test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
 			`%s installation replaces its file and preserves shell profiles`,
