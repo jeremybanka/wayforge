@@ -1,7 +1,7 @@
 [tools]
 bun = "1.4.2"
 carapace = "1.7.3"
-"github:fish-shell/fish-shell" = "4.7.1"
+"github:fish-shell/fish-shell" = "4.9.3"
 go = "1.26.7"
 ni = "30.5.0"
 node = "26.8.2"
