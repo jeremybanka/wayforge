@@ -138,10 +138,12 @@ function scanOptions(
 				}
 				if (standalone && index === words.length - 1) scan.pending.add(signature)
 			}
-			scan.instances.set(signature, [
-				...(scan.instances.get(signature) ?? []),
-				instance,
-			])
+			let instances = scan.instances.get(signature)
+			if (!instances) {
+				instances = []
+				scan.instances.set(signature, instances)
+			}
+			instances.push(instance)
 			scan.recognized.add(index)
 		}
 	}
