@@ -17,10 +17,11 @@ export function optionChoices(
 }
 
 // Required fields make additions to any of these public metadata types a compile
-// error until normalization handles them. Choices are resolved once; providers
+// error until normalization handles them. Route identity is not presentation
+// equivalence. Choices are resolved once; providers
 // are intentionally excluded from JSON and compared by function identity below.
 type NormalizedOptionMetadata = Required<
-	Omit<ArgumentOption, `choices` | `completion`>
+	Omit<ArgumentOption, `id` | `choices` | `completion`>
 > & {
 	choices: readonly Required<CompletionCandidate>[]
 	completion: Required<Omit<CompletionHints, `choices` | `provide`>>

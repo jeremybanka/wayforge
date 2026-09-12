@@ -541,3 +541,19 @@ test(`conflicting complete interpretations require an explicit boundary`, () => 
 		opts: { flag: true },
 	})
 })
+
+test(`option identities distinguish routes and survive metadata changes`, () => {
+	const group = refOptions({ choices: [`main`] })
+	const definition = {
+		cliName: `probe`,
+		routes: optional({ $name: null }),
+		routeOptions: { "": group, $name: group },
+	}
+	const first = interpretArguments(definition, [`--ref`, `main`])
+	const ids = first.allOptions.map((option) => option.id)
+	expect(new Set(ids).size).toBe(2)
+	group.optionConfigs.ref.description = `Updated description`
+	const second = interpretArguments(definition, [`--ref`, `main`])
+	expect(second.allOptions.map((option) => option.id)).toEqual(ids)
+	expect(second.suppliedOptions.map((option) => option.id)).toEqual(ids)
+})

@@ -75,13 +75,11 @@ function preferLocalOptions(
 	context: ArgumentInterpretation,
 	options: readonly ArgumentOption[],
 ): ArgumentOption[] {
-	const local = options.filter((option) =>
-		context.availableOptions.includes(option),
-	)
+	const available = new Set(context.availableOptions.map((option) => option.id))
+	const reachable = new Set(context.reachableOptions.map((option) => option.id))
+	const local = options.filter((option) => available.has(option.id))
 	return deduplicateOptions(
-		local.length
-			? local
-			: options.filter((option) => context.reachableOptions.includes(option)),
+		local.length ? local : options.filter((option) => reachable.has(option.id)),
 	)
 }
 
@@ -217,11 +215,13 @@ export async function complete(
 		let hints: CompletionHints | undefined
 		let choices: readonly (string | CompletionCandidate)[] = []
 		if (target.kind === `option-name`) {
+			const supplied = new Set(
+				context.suppliedOptions.map((option) => option.id),
+			)
 			choices = deduplicateOptions(context.reachableOptions)
 				.filter(
 					(option) =>
-						option.completion?.repeatable !== false ||
-						!context.suppliedOptions.includes(option),
+						option.completion?.repeatable !== false || !supplied.has(option.id),
 				)
 				.flatMap((option) =>
 					option.names.map((value) => ({
