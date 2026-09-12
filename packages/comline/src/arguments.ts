@@ -499,7 +499,8 @@ function collectWarnings(
 		if (consumed.has(index) || !word.startsWith(`-`) || word === `-`) continue
 		const [name] = splitOptionValue(word)
 		const isLong = name.startsWith(`--`)
-		const names = isLong ? [name] : name.slice(1).split(``)
+		// An assignment such as -=value has no flag, but is still an ignored option.
+		const names = isLong ? [name] : name === `-` ? [``] : name.slice(1).split(``)
 		for (const token of names) {
 			const selectedTokens = isLong ? selected.switches : selected.flags
 			if (selectedTokens.has(token)) continue
