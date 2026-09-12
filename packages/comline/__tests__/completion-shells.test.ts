@@ -126,6 +126,7 @@ beforeAll(() => {
 		`# user environment\n`,
 	)
 	mkdirSync(path.join(directory, `home`), { recursive: true })
+	writeFileSync(path.join(directory, `home/home-only.txt`), ``)
 	mkdirSync(path.join(directory, `config/fish`), { recursive: true })
 	const bashCompletion =
 		process.env[`BASH_COMPLETION_FILE`] ??
@@ -431,6 +432,32 @@ describe(`global`, { timeout: 30_000 }, () => {
 			},
 		)
 	}
+
+	test(`Nushell distinguishes discovered home paths from literal provider values`, () => {
+		for (const [line, expected] of [
+			[
+				`comline-fixture pr list --input ~/home-o\t`,
+				{ input: path.join(directory, `home/home-only.txt`) },
+			],
+			[
+				`comline-fixture pr list --base ~/literal\t`,
+				{ base: `~/literal-branch` },
+			],
+		] as const) {
+			const result = run(
+				`bun`,
+				[
+					path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
+					`nu`,
+					path.join(directory, `nushell`),
+					path.join(directory, `output-${counter++}.json`),
+					line,
+				],
+				mode(`global`),
+			)
+			expect(JSON.parse(result).opts).toEqual(expected)
+		}
+	})
 
 	test.each([
 		{ prefix: `caf`, value: `café`, locale: `C` },

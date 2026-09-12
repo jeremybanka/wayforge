@@ -40,6 +40,7 @@ const shared = options(
 					`question?branch`,
 					``,
 					`~`,
+					`~/literal-branch`,
 					`...`,
 					`nested/...`,
 					`vertical\vtab`,
