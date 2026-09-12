@@ -52,6 +52,7 @@
 				"../../.github/workflows/test.yml",
 				"../../git.sha",
 				"**/package.json",
+				"**/*.config.ts",
 				"src/**",
 				"**/src/**",
 				"__tests__/**",
