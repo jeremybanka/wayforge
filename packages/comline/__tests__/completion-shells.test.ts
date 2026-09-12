@@ -58,7 +58,16 @@ beforeAll(() => {
 		npm_config_cache: path.join(directory, `npm-cache`),
 	}
 	// Missing tools are failures: this suite must exercise every real consumer.
-	for (const tool of [`bash`, `zsh`, `fish`, `nu`, `carapace`, `bun`, `node`]) {
+	for (const tool of [
+		`bash`,
+		`zsh`,
+		`fish`,
+		`nu`,
+		`carapace`,
+		`bun`,
+		`node`,
+		`pnpm`,
+	]) {
 		const version = run(tool, [`--version`])
 		if (tool === `fish`)
 			expect(
@@ -83,10 +92,29 @@ beforeAll(() => {
 	]) {
 		writeFileSync(path.join(directory, name), ``)
 	}
+	const packageDirectory = path.join(import.meta.dirname, `..`)
+	// Exercise the actual release build and manifest, including workspace dependency
+	// rewriting. All archives come from the checkout; npm installation stays offline.
+	run(`pnpm`, [`build`], environment, packageDirectory)
+	const pack = (source: string, name: string): string => {
+		const archive = path.join(directory, `${name}.tgz`)
+		run(`pnpm`, [`pack`, `--out`, archive], environment, source)
+		return archive
+	}
+	const comline = pack(packageDirectory, `comline`)
+	const treetrunks = pack(
+		path.join(packageDirectory, `../treetrunks`),
+		`treetrunks`,
+	)
+	const standardSchema = pack(
+		path.join(packageDirectory, `node_modules/@standard-schema/spec`),
+		`standard-schema`,
+	)
 	run(`bun`, [
 		`build`,
 		path.join(import.meta.dirname, `fixtures/completion.x.ts`),
 		`--target=node`,
+		`--external=comline`,
 		`--outfile=${fixture}/cli.js`,
 	])
 	run(`bun`, [
@@ -102,6 +130,7 @@ beforeAll(() => {
 			version: `1.0.0`,
 			type: `module`,
 			bin: { "comline-fixture": `cli.js` },
+			dependencies: { comline: `file:${comline}` },
 		}),
 	)
 	run(`npm`, [
@@ -109,8 +138,11 @@ beforeAll(() => {
 		`--global`,
 		`--prefix`,
 		path.join(directory, `global`),
-		fixture,
+		pack(fixture, `fixture`),
+		treetrunks,
+		standardSchema,
 		`--offline`,
+		`--legacy-peer-deps`,
 		`--ignore-scripts`,
 		`--no-audit`,
 		`--no-fund`,

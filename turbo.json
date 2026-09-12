@@ -49,6 +49,8 @@
 			"dependsOn": ["test:build", "^build"],
 			"inputs": [
 				"**/package.json",
+				"tsconfig.json",
+				".npmignore",
 				"**/*.config.ts",
 				"src/**",
 				"__tests__/**",
@@ -77,6 +79,8 @@
 			"outputs": ["coverage/**"],
 			"inputs": [
 				"**/package.json",
+				"tsconfig.json",
+				".npmignore",
 				"**/*.config.ts",
 				"src/**",
 				"__tests__/**",
