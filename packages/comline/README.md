@@ -1,5 +1,12 @@
 # comline
 
+<a aria-label="Coverage" href="https://recoverage.cloud/">
+	<img
+		alt="Coverage"
+		src="https://img.shields.io/endpoint?url=https%3A%2F%2Frecoverage.cloud%2Fshields%2FS1ikz1yFmk93qbAI7lLnu%2Fcomline"
+	>
+</a>
+
 ```sh
 bun i comline
 ```
