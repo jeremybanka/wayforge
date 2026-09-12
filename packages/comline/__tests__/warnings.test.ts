@@ -324,6 +324,44 @@ test(`warnings do not suppress route and schema errors`, () => {
 	expect(() => validatedCli(argv(`--name=a`, `--typo`))).toThrow()
 })
 
+test.each([
+	`\n`,
+	`\r`,
+	`\t`,
+	`\u001b[2J`,
+	`\u007f`,
+	`\u009b2J`,
+	`\u2028`,
+	`\u202e`,
+])(
+	`escapes terminal controls in display messages while retaining raw fields: %j`,
+	(control) => {
+		const cliName = `probe${control}`
+		const name = `alice${control}Warning: forged`
+		const option = `--bad${control}Warning: forged`
+		const result = cli({ ...definition, cliName })(
+			argv(`show`, name, option, `--dry`),
+		)
+		expect(result.inputs.path).toEqual([`show`, name])
+		expect(result.warnings.map((warning) => warning.option)).toEqual([
+			option,
+			`--dry`,
+		])
+		for (const warning of result.warnings) {
+			expect(warning.cliName).toBe(cliName)
+			expect(warning.path).toEqual([`show`, name])
+			expect(warning.message).not.toMatch(/[\p{Cc}\p{Cf}\p{Zl}\p{Zp}]/u)
+		}
+		const plain = formatWarnings(result.warnings, { forceColor: false })
+		expect(plain.split(`\n`)).toHaveLength(2)
+		expect(
+			stripVTControlCharacters(
+				formatWarnings(result.warnings, { forceColor: true }),
+			),
+		).toBe(plain)
+	},
+)
+
 describe(`warning presentation`, () => {
 	const warnings = testCli(argv(`run`, `--typo`, `--dry`)).warnings
 	const plain = `Warning: Unknown option "--typo" for command "probe run".\nWarning: Option "--dry" is not valid for command "probe run".`
