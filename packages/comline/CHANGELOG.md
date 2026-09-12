@@ -1,5 +1,12 @@
 # comline
 
+## 0.6.1
+
+### Patch Changes
+
+- fcf1e8d: Render empty tables and help for CLIs with no configured routes without throwing.
+- 7b68b5a: Restore stdout, stderr, and console methods when an encapsulated callback throws or rejects, preserving the original methods after every capture.
+
 ## 0.6.0
 
 ### Minor Changes
