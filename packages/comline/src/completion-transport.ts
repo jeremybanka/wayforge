@@ -2,6 +2,8 @@ import { readdir, stat } from "node:fs/promises"
 import { homedir } from "node:os"
 import * as path from "node:path"
 
+import { required } from "treetrunks"
+
 import type { CommandLineInterface } from "./cli"
 import {
 	type CompletionInstallTarget,
@@ -32,16 +34,49 @@ const cobraDirectives = {
 	filterDirectories: 16,
 }
 
+const completionTargets: readonly CompletionInstallTarget[] = [
+	`bash`,
+	`zsh`,
+	`fish`,
+	`nushell`,
+	`carapace`,
+]
+
 function isCompletionTarget(
 	value: string | undefined,
 ): value is CompletionTargetFormat {
-	return (
-		value === `bash` ||
-		value === `zsh` ||
-		value === `fish` ||
-		value === `nushell` ||
-		value === `carapace`
+	return completionTargets.some((target) => target === value)
+}
+
+async function completeRequest(
+	definition: CommandLineInterface<any>,
+	words: readonly string[],
+): Promise<CompletionResult> {
+	const targets = Object.fromEntries(
+		completionTargets.map((target) => [target, null]),
 	)
+	const management: CommandLineInterface<any> = {
+		cliName: definition.cliName,
+		routes: required({
+			completion: required({ install: required(targets), ...targets }),
+		}),
+		routeOptions: {},
+	}
+	// These words are reserved only when the application opts into this transport.
+	if (words[0] === `completion` && words.length > 1)
+		return complete(management, { words })
+	const result = await complete(definition, { words })
+	if (words.length <= 1 && `completion`.startsWith(words[0] ?? ``)) {
+		result.candidates = result.candidates.filter(
+			({ value }) => value !== `completion`,
+		)
+		result.candidates.push({
+			value: `completion`,
+			description: `Generate or install shell completions`,
+			appendSpace: true,
+		})
+	}
+	return result
 }
 
 function checkName(name: string): void {
@@ -229,7 +264,7 @@ export async function completionResponse(
 			: nushell
 				? args.slice(1).map(unquoteNuWord)
 				: args.slice(1)
-	const result = await complete(definition, { words })
+	const result = await completeRequest(definition, words)
 	if (cobra || shell) {
 		// Cobra directives apply to the entire response, not to individual candidates.
 		let directive =
