@@ -12,7 +12,7 @@ import {
 import { tmpdir } from "node:os"
 import path from "node:path"
 
-import { completionScript } from "../src/completion-transport"
+import { completionScript, installCompletion } from "../src/completion-transport"
 
 let directory: string
 let environment: NodeJS.ProcessEnv
@@ -502,41 +502,40 @@ describe(`global`, { timeout: 30_000 }, () => {
 	)
 
 	test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
-		`%s installation replaces its file and preserves shell profiles`,
-		(shell) => {
-			const profiles = [
-				`home/.bashrc`,
-				`zsh-config/.zshenv`,
-				`zsh-config/.zshrc`,
-				`config/fish/config.fish`,
-				`config/nushell/config.nu`,
-				`config/nushell/env.nu`,
-			].map((file) => path.join(directory, file))
-			const before = profiles.map((file) => readFileSync(file, `utf8`))
-			const installed = run(
-				`comline-fixture`,
-				[`completion`, `install`, shell],
-				mode(`global`),
-			)
-				.trim()
-				.replace(`Installed completions at `, ``)
-			expect(readFileSync(installed, `utf8`)).toBe(
-				completionScript(`comline-fixture`, shell),
-			)
-			writeFileSync(installed, `# outdated completion\n`)
-			expect(
-				run(
-					`comline-fixture`,
-					[`completion`, `install`, shell],
-					mode(`global`),
-				).trim(),
-			).toBe(`Installed completions at ${installed}`)
-			expect(readFileSync(installed, `utf8`)).toBe(
-				completionScript(`comline-fixture`, shell),
-			)
-			expect(profiles.map((file) => readFileSync(file, `utf8`))).toEqual(before)
+		`%s library installation replaces its file and preserves shell profiles`,
+		async (shell) => {
+			// CLI installation is exercised by setup and the line-editor tests. Also
+			// exercise the public library entry point, which V8 can measure directly.
+			const previous = process.env
+			process.env = mode(`global`)
+			try {
+				const profiles = [
+					`home/.bashrc`,
+					`zsh-config/.zshenv`,
+					`zsh-config/.zshrc`,
+					`config/fish/config.fish`,
+					`config/nushell/config.nu`,
+					`config/nushell/env.nu`,
+				].map((file) => path.join(directory, file))
+				const before = profiles.map((file) => readFileSync(file, `utf8`))
+				const installed = await installCompletion(`comline-fixture`, shell)
+				expect(readFileSync(installed, `utf8`)).toBe(
+					completionScript(`comline-fixture`, shell),
+				)
+				writeFileSync(installed, `# outdated completion\n`)
+				expect(await installCompletion(`comline-fixture`, shell)).toBe(installed)
+				expect(readFileSync(installed, `utf8`)).toBe(
+					completionScript(`comline-fixture`, shell),
+				)
+				expect(profiles.map((file) => readFileSync(file, `utf8`))).toEqual(
+					before,
+				)
+			} finally {
+				process.env = previous
+			}
 		},
 	)
+
 	test.each([`comline-fixture`, `cobra-fixture`])(
 		`Carapace reads %s and renders Nushell candidates`,
 		(name) => {

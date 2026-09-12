@@ -5,6 +5,10 @@ inputs:
     description: Space-separated mise packages to install for this job.
     required: false
     default: bun node pnpm
+  completion-consumers:
+    description: Install and fingerprint the real shell completion consumers.
+    required: false
+    default: "false"
 runs:
   using: composite
   steps:
@@ -14,6 +18,23 @@ runs:
         version: 2026.6.11
         env: false
         install_args: ${{ inputs.packages }}
+
+    - name: Install real completion consumers
+      if: ${{ inputs.completion-consumers == 'true' }}
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y bash-completion zsh fish
+        # Hash the actual consumers before Turbo decides whether to reuse tests.
+        {
+          uname -sm
+          for tool in bash zsh fish nu carapace node npm bun; do
+            "$tool" --version
+          done
+          go version
+          sha256sum /usr/share/bash-completion/bash_completion
+        } > "$RUNNER_TEMP/comline-test-environment"
+        echo "COMLINE_TEST_ENV=$(sha256sum "$RUNNER_TEMP/comline-test-environment" | cut -d ' ' -f 1)" >> "$GITHUB_ENV"
 
     - name: Install Dependencies
       shell: bash
