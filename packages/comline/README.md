@@ -1,5 +1,24 @@
 # comline
 
+<a aria-label="NPM version" href="https://www.npmjs.com/package/comline">
+	<img
+		alt="NPM Version"
+		src="https://img.shields.io/npm/v/comline?style=for-the-badge"
+	>
+</a>
+<a aria-label="Dependencies 2" href="https://www.npmjs.com/package/comline">
+	<img
+		alt="Dependencies 2"
+		src="https://img.shields.io/badge/dependencies-2-0?style=for-the-badge"
+	>
+</a>
+<a aria-label="Coverage" href="https://recoverage.cloud/">
+	<img
+		alt="Coverage"
+		src="https://img.shields.io/endpoint?url=https%3A%2F%2Frecoverage.cloud%2Fshields%2FS1ikz1yFmk93qbAI7lLnu%2Fcomline"
+	>
+</a>
+
 ```sh
 bun i comline
 ```
