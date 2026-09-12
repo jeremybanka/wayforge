@@ -75,7 +75,7 @@
 		"react": "19.3.0",
 		"react-dom": "19.3.0",
 		"react-email": "6.9.5",
-		"resend": "6.27.0",
+		"resend": "6.28.0",
 		"safedeposit": "workspace:*",
 		"socket.io": "4.8.3",
 		"socket.io-client": "4.8.3",
