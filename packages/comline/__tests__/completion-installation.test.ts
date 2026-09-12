@@ -10,7 +10,7 @@ import { rename, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import path from "node:path"
 
-import { installCompletion } from "../src/completion-transport"
+import { completionScript, installCompletion } from "../src/completion-transport"
 
 const inspect = vi.hoisted(() => vi.fn())
 
@@ -63,3 +63,54 @@ test.each([`write`, `rename`] as const)(
 		expect(readdirSync(directory)).toEqual([`my-cli.yaml`])
 	},
 )
+
+test.each([
+	{
+		target: `bash`,
+		output: `missing marker`,
+		message: `Check your shell startup configuration`,
+	},
+	{
+		target: `carapace`,
+		output: `malformed help`,
+		message: `Could not discover Carapace's specs directory`,
+	},
+	{
+		target: `bash`,
+		output: `relative path`,
+		message: `No writable bash completion directory`,
+	},
+	{
+		target: `carapace`,
+		output: `relative path`,
+		message: `Could not discover Carapace's specs directory`,
+	},
+] as const)(
+	`$target rejects discovery with $output without writing files`,
+	async ({ target, output, message }) => {
+		// Resolve any mistakenly accepted relative path into our disposable directory.
+		const relative = path.relative(process.cwd(), path.join(directory, `new`))
+		const stdout =
+			output === `relative path`
+				? target === `carapace`
+					? `Specs are loaded from [${relative}].\n`
+					: `\0completion-install\0ready\0${relative}\0${relative}\0`
+				: `Welcome! Settings unavailable.\n`
+		inspect.mockResolvedValue({ stdout, stderr: `` })
+		await expect(installCompletion(`my-cli`, target)).rejects.toThrow(message)
+		expect(readdirSync(directory)).toEqual([])
+		expect(writeFile).not.toHaveBeenCalled()
+		expect(rename).not.toHaveBeenCalled()
+	},
+)
+
+test(`discovery ignores startup chatter and uses its framed absolute destination`, async () => {
+	inspect.mockResolvedValue({
+		stdout: `Welcome!\n\0completion-install\0ready\0${directory}\0${directory}\0`,
+		stderr: ``,
+	})
+	const file = await installCompletion(`my-cli`, `bash`)
+	expect(file).toBe(path.join(directory, `my-cli.bash`))
+	expect(readFileSync(file, `utf8`)).toBe(completionScript(`my-cli`, `bash`))
+	expect(readdirSync(directory)).toEqual([`my-cli.bash`])
+})
