@@ -45,6 +45,21 @@
 				"__scripts__/**"
 			]
 		},
+		"comline#test:once": {
+			"dependsOn": ["test:build", "^build"],
+			"inputs": [
+				"**/package.json",
+				"tsconfig.json",
+				".npmignore",
+				"**/*.config.ts",
+				"src/**",
+				"__tests__/**",
+				"../../mise.toml",
+				"../../.github/workflows/test.yml",
+				"../../.github/actions/setup/action.yml"
+			],
+			"env": ["COMLINE_TEST_ENV", "BASH_COMPLETION_FILE"]
+		},
 		"test:coverage:once": {
 			"dependsOn": ["^build"],
 			"outputs": ["coverage/**", "**/coverage/**"],
@@ -58,6 +73,23 @@
 				"__tests__/**",
 				"__scripts__/**"
 			]
+		},
+		"comline#test:coverage:once": {
+			"dependsOn": ["^build"],
+			"outputs": ["coverage/**"],
+			"inputs": [
+				"**/package.json",
+				"tsconfig.json",
+				".npmignore",
+				"**/*.config.ts",
+				"src/**",
+				"__tests__/**",
+				"../../git.sha",
+				"../../mise.toml",
+				"../../.github/workflows/test.yml",
+				"../../.github/actions/setup/action.yml"
+			],
+			"env": ["COMLINE_TEST_ENV", "BASH_COMPLETION_FILE"]
 		},
 		"test:coverage:increased": {
 			"dependsOn": ["test:coverage:once"],

@@ -1,26 +1,35 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
 
-import type {
-	Flatten,
-	Join,
-	Tree,
-	TreeMap,
-	TreePath,
-	TreePathName,
-} from "treetrunks"
+import type { Flatten, Tree, TreeMap, TreePath } from "treetrunks"
 
+import { interpretInvocation, type OptionValueKind } from "./arguments"
+import {
+	complete,
+	type CompletionContext,
+	type CompletionHints,
+	type CompletionRequest,
+	type CompletionResult,
+	interpretCompletion,
+} from "./completion"
 import type { Flag } from "./flag"
 import { parseStringOption } from "./option-parsers"
-import { retrievePositionalArgs } from "./retrieve-positional-args"
 import {
 	emptySchema,
-	type JsonSchema,
 	type OptionsSchema,
 	retrieveInputJsonSchema,
 	validateOptionsSchema,
 } from "./schema"
 
+export type {
+	ArgumentInterpretation,
+	ArgumentOption,
+	OptionOccurrence,
+	OptionValueKind,
+} from "./arguments"
+export { interpretArguments } from "./arguments"
+export * from "./completion"
+export * from "./completion-transport"
 export * from "./encapsulate"
 export type * from "./flag"
 export * from "./help"
@@ -47,6 +56,11 @@ export type CliOption<T extends CliOptionValue> = (T extends string
 				parse: (arg: string) => T
 			}) & {
 	flag?: Flag
+	/** Additional long option names, without leading dashes. */
+	aliases?: readonly string[]
+	/** Override schema-based value consumption for both parsing and completion. */
+	valueKind?: OptionValueKind
+	completion?: CompletionHints
 	required: boolean
 	description: string
 	example: string
@@ -93,231 +107,9 @@ export type CommandLineInterface<Routes extends Tree> = {
 	routeOptions: TreeMap<Routes, OptionsGroup<any>>
 	routes?: Routes
 	debugOutput?: boolean
+	/** Hints keyed by full variable route names, e.g. "commit/view/$ref". */
+	positionalCompletions?: Readonly<Record<string, CompletionHints>>
 	discoverConfigPath?: (positionalArgs: TreePath<Routes>) => string | undefined
-}
-
-type CliOptionConfigEntry = readonly [
-	key: string,
-	config: CliOption<any>,
-	valueKind: OptionValueKind,
-]
-
-type ArgumentInstance = {
-	value: string
-	valueIndex?: number
-}
-
-type OptionValueKind = `boolean` | `value`
-
-type KnownOptionTokens = {
-	flags: ReadonlySet<string>
-	switches: ReadonlySet<string>
-}
-
-type RetrieveArgumentInstancesOptions = {
-	knownOptionTokens?: KnownOptionTokens
-	valueKind?: OptionValueKind
-}
-
-function splitOptionValue(
-	argument: string,
-): [optionName: string, value?: string] {
-	const equalsIndex = argument.indexOf(`=`)
-	if (equalsIndex === -1) {
-		return [argument]
-	}
-	return [argument.slice(0, equalsIndex), argument.slice(equalsIndex + 1)]
-}
-
-function isBooleanLiteral(arg: string): boolean {
-	return arg === `true` || arg === `false` || arg === `0` || arg === `1`
-}
-
-function isKnownOptionToken(
-	arg: string,
-	knownOptionTokens: KnownOptionTokens,
-): boolean {
-	if (!arg.startsWith(`-`)) {
-		return false
-	}
-	const [optionName] = splitOptionValue(arg)
-	if (optionName.startsWith(`--`)) {
-		return knownOptionTokens.switches.has(optionName)
-	}
-	return optionName
-		.slice(1)
-		.split(``)
-		.some((flag) => knownOptionTokens.flags.has(flag))
-}
-
-function shouldConsumeNextArg(
-	arg: string | undefined,
-	valueKind: OptionValueKind,
-	knownOptionTokens: KnownOptionTokens,
-): arg is string {
-	if (arg === undefined || arg === `--`) {
-		return false
-	}
-	if (valueKind === `boolean`) {
-		return isBooleanLiteral(arg)
-	}
-	return !isKnownOptionToken(arg, knownOptionTokens)
-}
-
-function retrieveRepeatedFlagValue(argument: string, flag: string): string {
-	return argument
-		.split(``)
-		.filter((s) => s === flag)
-		.map(() => `,`)
-		.join(``)
-		.substring(1)
-}
-
-function retrieveArgumentInstances(
-	passed: readonly string[],
-	key: string,
-	flag?: string,
-	retrieveOptions: RetrieveArgumentInstancesOptions = {},
-): ArgumentInstance[] {
-	const {
-		knownOptionTokens = {
-			flags: new Set<string>(),
-			switches: new Set<string>(),
-		},
-		valueKind = `value`,
-	} = retrieveOptions
-	const instances: ArgumentInstance[] = []
-	const switchName = `--${key}`
-	const switchNameWithValue = `${switchName}=`
-	for (const [index, argument] of passed.entries()) {
-		if (argument === `--`) {
-			break
-		}
-		if (argument === switchName) {
-			const nextArg = passed[index + 1]
-			if (shouldConsumeNextArg(nextArg, valueKind, knownOptionTokens)) {
-				instances.push({ value: nextArg, valueIndex: index + 1 })
-			} else {
-				instances.push({ value: `` })
-			}
-			continue
-		}
-		if (argument.startsWith(switchNameWithValue)) {
-			instances.push({ value: argument.slice(switchNameWithValue.length) })
-			continue
-		}
-		if (
-			flag === undefined ||
-			!argument.startsWith(`-`) ||
-			argument.startsWith(`--`)
-		) {
-			continue
-		}
-		const [flagGroup, value] = splitOptionValue(argument)
-		if (!flagGroup.includes(flag)) {
-			continue
-		}
-		if (value !== undefined) {
-			instances.push({ value })
-			continue
-		}
-		if (flagGroup === `-${flag}`) {
-			const nextArg = passed[index + 1]
-			if (shouldConsumeNextArg(nextArg, valueKind, knownOptionTokens)) {
-				instances.push({ value: nextArg, valueIndex: index + 1 })
-				continue
-			}
-		}
-		instances.push({ value: retrieveRepeatedFlagValue(flagGroup, flag) })
-	}
-	return instances
-}
-
-function jsonSchemaTypeIsBoolean(jsonSchema: JsonSchema | undefined): boolean {
-	if (jsonSchema === undefined || !(`type` in jsonSchema)) {
-		return false
-	}
-	const { type } = jsonSchema
-	if (typeof type === `string`) {
-		return type === `boolean`
-	}
-	return type.length > 0 && type.every((t) => t === `boolean`)
-}
-
-function optionSchemaIsBoolean(
-	optionsGroup: Exclude<OptionsGroup<any>, null>,
-	key: string,
-): boolean {
-	try {
-		const jsonSchema = retrieveInputJsonSchema(optionsGroup.optionsSchema)
-		return jsonSchemaTypeIsBoolean(jsonSchema.properties?.[key])
-	} catch {
-		return false
-	}
-}
-
-function retrieveOptionValueKind(
-	optionsGroup: Exclude<OptionsGroup<any>, null>,
-	key: string,
-): OptionValueKind {
-	return optionSchemaIsBoolean(optionsGroup, key) ? `boolean` : `value`
-}
-
-function retrieveOptionConfigEntries(
-	routeOptions: Record<string, OptionsGroup<any> | null>,
-): CliOptionConfigEntry[] {
-	const seenOptions = new Set<string>()
-	const entries: CliOptionConfigEntry[] = []
-	for (const optionsGroup of Object.values(routeOptions)) {
-		if (optionsGroup === null) {
-			continue
-		}
-		for (const [key, config] of Object.entries(optionsGroup.optionConfigs)) {
-			const valueKind = retrieveOptionValueKind(optionsGroup, key)
-			const signature = `${key}\0${config.flag ?? ``}\0${valueKind}`
-			if (seenOptions.has(signature)) {
-				continue
-			}
-			seenOptions.add(signature)
-			entries.push([key, config, valueKind])
-		}
-	}
-	return entries
-}
-
-function retrieveKnownOptionTokens(
-	optionConfigEntries: CliOptionConfigEntry[],
-): KnownOptionTokens {
-	const flags = new Set<string>()
-	const switches = new Set<string>()
-	for (const [key, config] of optionConfigEntries) {
-		switches.add(`--${key}`)
-		if (config.flag) {
-			flags.add(config.flag)
-		}
-	}
-	return { flags, switches }
-}
-
-function retrieveConsumedValueIndexes(
-	passed: readonly string[],
-	optionConfigEntries: CliOptionConfigEntry[],
-): Set<number> {
-	const indexes = new Set<number>()
-	const knownOptionTokens = retrieveKnownOptionTokens(optionConfigEntries)
-	for (const [key, config, valueKind] of optionConfigEntries) {
-		for (const argumentInstance of retrieveArgumentInstances(
-			passed,
-			key,
-			config.flag,
-			{ knownOptionTokens, valueKind },
-		)) {
-			if (argumentInstance.valueIndex !== undefined) {
-				indexes.add(argumentInstance.valueIndex)
-			}
-		}
-	}
-	return indexes
 }
 
 export type CliRoutes<CLI extends CommandLineInterface<any>> = CLI[`routes`]
@@ -336,10 +128,13 @@ export function cli<
 ): ((argv: readonly string[]) => {
 	inputs: CliParseOutput<CLI>
 	writeJsonSchema: (outdir: string) => void
-}) & { definition: CLI } {
+}) & {
+	definition: CLI
+	interpret: (request: CompletionRequest) => CompletionContext
+	complete: (request: CompletionRequest) => Promise<CompletionResult>
+} {
 	const {
 		cliName,
-		routes,
 		routeOptions,
 		debugOutput = false,
 		discoverConfigPath = () =>
@@ -365,38 +160,39 @@ export function cli<
 
 			let failedValidation = false
 			let optionsFromConfig: Options | undefined
-			let positionalArgs = {
-				path: [] as TreePath<Routes>,
-				route: `` as Join<TreePathName<Routes>>,
-			}
-			const allOptionConfigEntries = retrieveOptionConfigEntries(routeOptions)
-			const consumedValueIndexes = retrieveConsumedValueIndexes(
-				passed,
-				allOptionConfigEntries,
-			)
-			const knownOptionTokens = retrieveKnownOptionTokens(allOptionConfigEntries)
-			if (routes) {
-				positionalArgs = retrievePositionalArgs(
-					cliName,
-					routes,
-					passed,
-					consumedValueIndexes,
+			const interpretation = interpretInvocation(definition, passed)
+			if (interpretation.error) throw new Error(interpretation.error)
+			if (!interpretation.complete) {
+				throw new Error(
+					`${cliName} ${interpretation.path.join(` `)} requires one of the following positional arguments:\n${Object.keys(
+						interpretation.tree?.[1] ?? {},
+					)
+						.map((name) => `\t- ${name}`)
+						.join(`\n`)}`,
 				)
 			}
 
-			const route: OptionsGroup<any> = routeOptions[positionalArgs.route]
+			// The shared result uses string keys for unfinished routes. After successful
+			// traversal, recover the definition's key type; missing options are checked below.
+			const route: OptionsGroup<any> =
+				routeOptions[interpretation.route as keyof typeof routeOptions]
 
 			const optionConfigs = route?.optionConfigs ?? {}
 			const optionsSchema = route?.optionsSchema ?? emptySchema
 
 			if (route === undefined) {
 				throw new Error(
-					`Could not find options for route "${positionalArgs.route}". Valid routes are: \n\t- ${Object.keys(routeOptions).join(`\n\t- `)}`,
+					`Could not find options for route "${interpretation.route}". Valid routes are: \n\t- ${Object.keys(routeOptions).join(`\n\t- `)}`,
 				)
 			}
 
 			if (discoverConfigPath) {
-				const configFilePath = discoverConfigPath(positionalArgs.path)
+				// Traversal validated every segment and completed the required route, or
+				// returned [] when routes are absent. The shared result stays string[]
+				// for completion prefixes; it does not preserve this TreePath<Routes> proof.
+				const configFilePath = discoverConfigPath(
+					interpretation.path as TreePath<Routes>,
+				)
 				if (configFilePath) {
 					cliLogger.info?.(`looking for config file at:`, configFilePath)
 					if (fs.existsSync(configFilePath)) {
@@ -415,18 +211,12 @@ export function cli<
 			const optionsFromCommandLineEntries = argumentEntries
 				.map((entry: [string & keyof Options, CliOption<any>]) => {
 					const [key, config] = entry
-					const { flag, required, description, example } = config
+					const { required, description, example } = config
 					const parse = `parse` in config ? config.parse : parseStringOption
-					const argumentInstances = retrieveArgumentInstances(
-						passed,
-						key,
-						flag,
-						{
-							knownOptionTokens,
-							valueKind:
-								route === null ? `value` : retrieveOptionValueKind(route, key),
-						},
+					const argumentInstances = interpretation.options.filter(
+						(option) => option.key === key,
 					)
+
 					switch (argumentInstances.length) {
 						case 0:
 							if (required && !optionsFromConfig) {
@@ -471,8 +261,8 @@ export function cli<
 			cliLogger.info?.(`final options parsed:`, suppliedOptions)
 			return {
 				inputs: {
-					case: positionalArgs.route,
-					path: positionalArgs.path,
+					case: interpretation.route,
+					path: interpretation.path,
 					opts: suppliedOptions,
 				} as unknown as CliParseOutput<CLI>,
 				writeJsonSchema: (outdir: string) => {
@@ -495,7 +285,13 @@ export function cli<
 				},
 			}
 		},
-		{ definition },
+		{
+			definition,
+			interpret: (request: CompletionRequest): CompletionContext =>
+				interpretCompletion(definition, request),
+			complete: (request: CompletionRequest): Promise<CompletionResult> =>
+				complete(definition, request),
+		},
 	)
 }
 
