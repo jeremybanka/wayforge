@@ -196,7 +196,7 @@ export type ArgumentOption = {
 }
 
 type ArgumentInvocation = RouteMatch & {
-	/** Invalid option occurrences, checked against the selected route. */
+	/** Invalid options for a complete, error-free route; unfinished input has none. */
 	warnings: CliWarning[]
 	/** Raw occurrences for the selected route (or following variable routes), in argument order. */
 	options: OptionOccurrence[]
@@ -407,14 +407,16 @@ function interpretCore(
 	)!.scan
 	const invocation: ArgumentInvocation = {
 		...match,
-		warnings: collectWarnings(
-			definition.cliName,
-			words,
-			match,
-			() => retrieveKnownOptionTokens([...groups.values()].flat()),
-			selectedScan.knownOptionTokens,
-			selectedScan.consumed,
-		),
+		warnings: selectedOptions
+			? collectWarnings(
+					definition.cliName,
+					words,
+					match,
+					() => retrieveKnownOptionTokens([...groups.values()].flat()),
+					selectedScan.knownOptionTokens,
+					selectedScan.consumed,
+				)
+			: [],
 		options: occurrences(
 			selectedOptions ?? availableOptions(groups, match),
 			selectedOptions ? [selectedScan] : activeScans,
@@ -477,6 +479,9 @@ function collectWarnings(
 	selected: KnownOptionTokens,
 	consumed: ReadonlySet<number>,
 ): CliWarning[] {
+	// Descendant grammars may still supply options and consume values until the
+	// route is complete. Do not diagnose those words against an unfinished route.
+	if (!match.complete || match.error) return []
 	const warnings: CliWarning[] = []
 	let known: KnownOptionTokens | undefined
 	const command = [cliName, ...match.path].join(` `)
