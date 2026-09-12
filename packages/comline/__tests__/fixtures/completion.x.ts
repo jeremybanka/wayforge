@@ -1,15 +1,8 @@
 #!/usr/bin/env node
 import { appendFileSync } from "node:fs"
 
+import { cli, completionResponse, optional, options, required } from "comline"
 import { z } from "zod"
-
-import {
-	cli,
-	completionResponse,
-	optional,
-	options,
-	required,
-} from "../../src/cli"
 
 const shared = options(
 	`Pull requests`,
