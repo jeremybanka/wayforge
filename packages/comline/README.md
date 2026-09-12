@@ -150,7 +150,7 @@ for (const warning of warnings) {
 Each exported `CliWarning` contains:
 
 - `code`: `"unknown-option"` when the spelling is not recognized anywhere in the CLI, or `"option-not-valid-for-route"` when it belongs elsewhere
-- `message`: human-readable text identifying the option and selected command
+- `message`: human-readable text identifying the option and selected command, with quotes and control characters escaped for terminal display; the other fields retain raw input
 - `option`: the supplied spelling without any inline value, such as `"--label"` or `"-x"`; each invalid flag in a short group gets its own warning
 - `index`: the zero-based index in `argv.slice(2)` (or in the words supplied to `interpretArguments`); flags in the same group share an index
 - `cliName`: the configured command name

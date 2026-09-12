@@ -3,6 +3,7 @@ import { styleText } from "node:util"
 /** An ignored option occurrence. Parsing never logs these warnings automatically. */
 export type CliWarning = {
 	code: `unknown-option` | `option-not-valid-for-route`
+	/** Display text with argument controls escaped; the other fields retain raw input. */
 	message: string
 	/** Spelling supplied, excluding inline values; grouped flags each use "-x". */
 	option: string

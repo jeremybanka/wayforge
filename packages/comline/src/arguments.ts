@@ -471,6 +471,15 @@ export function interpretArguments(
 	return interpretCore(definition, words).completion()
 }
 
+function quoteDiagnosticText(text: string): string {
+	// JSON quoting handles quotes, backslashes, and C0 controls. Also escape C1,
+	// Unicode line separators, and formatting controls such as bidi overrides.
+	return JSON.stringify(text).replace(
+		/[\p{Cc}\p{Cf}\p{Zl}\p{Zp}]/gu,
+		(character) => `\\u{${character.codePointAt(0)!.toString(16)}}`,
+	)
+}
+
 function collectWarnings(
 	cliName: string,
 	words: readonly string[],
@@ -484,7 +493,7 @@ function collectWarnings(
 	if (!match.complete || match.error) return []
 	const warnings: CliWarning[] = []
 	let known: KnownOptionTokens | undefined
-	const command = [cliName, ...match.path].join(` `)
+	const command = quoteDiagnosticText([cliName, ...match.path].join(` `))
 	for (const [index, word] of words.entries()) {
 		if (word === `--`) break
 		if (consumed.has(index) || !word.startsWith(`-`) || word === `-`) continue
@@ -504,8 +513,8 @@ function collectWarnings(
 				code,
 				message:
 					code === `unknown-option`
-						? `Unknown option "${option}" for command "${command}".`
-						: `Option "${option}" is not valid for command "${command}".`,
+						? `Unknown option ${quoteDiagnosticText(option)} for command ${command}.`
+						: `Option ${quoteDiagnosticText(option)} is not valid for command ${command}.`,
 				option,
 				index,
 				cliName,
