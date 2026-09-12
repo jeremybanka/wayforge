@@ -5,6 +5,7 @@
 		"allowJs": false,
 		"declaration": true,
 		"isolatedDeclarations": true,
+		"paths": { "comline": ["./src/cli.ts"] },
 		"types": ["vitest/globals"]
 	}
 }
