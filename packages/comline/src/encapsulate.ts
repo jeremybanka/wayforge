@@ -57,8 +57,8 @@ function encapsulateConsole(): {
 	const mockConsoleCalls: { -readonly [K in keyof Console]?: any[][] } = {}
 	for (const [key, value] of toEntries(console)) {
 		if (typeof value === `function`) {
-			// @ts-expect-error	this is a safe bind but hard to statically analyze
-			originalConsoleMethods[key] = value.bind(console)
+			// @ts-expect-error console methods have heterogeneous signatures
+			originalConsoleMethods[key] = value
 			const [mockFn, calls] = createMockFn()
 			mockConsoleCalls[key] = calls
 			;(console as any)[key] = mockFn as any
@@ -88,7 +88,7 @@ function withCapturedOutput<T>(
 	let originalStdoutWrite: typeof process.stdout.write | undefined
 	let fakeStdout: FakeOut | undefined
 	if (options.stdout) {
-		originalStdoutWrite = process.stdout.write.bind(process.stdout)
+		originalStdoutWrite = process.stdout.write
 		fakeStdout = new FakeOut()
 		process.stdout.write = fakeStdout.write.bind(fakeStdout)
 	}
@@ -96,7 +96,7 @@ function withCapturedOutput<T>(
 	let originalStderrWrite: typeof process.stderr.write | undefined
 	let fakeStderr: FakeOut | undefined
 	if (options.stderr) {
-		originalStderrWrite = process.stderr.write.bind(process.stderr)
+		originalStderrWrite = process.stderr.write
 		fakeStderr = new FakeOut()
 		process.stderr.write = fakeStderr.write.bind(fakeStderr)
 	}
@@ -109,12 +109,17 @@ function withCapturedOutput<T>(
 		mockConsoleCalls = consoleEncapsulation.mockConsoleCalls
 	}
 
-	const returnValue = fn()
-
 	const restoreOutputs = () => {
 		if (originalStdoutWrite) process.stdout.write = originalStdoutWrite
 		if (originalStderrWrite) process.stderr.write = originalStderrWrite
 		restoreConsole?.()
+	}
+	let returnValue: T
+	try {
+		returnValue = fn()
+	} catch (error) {
+		restoreOutputs()
+		throw error
 	}
 
 	return {
@@ -155,15 +160,16 @@ export function encapsulate<T>(
 		restoreOutputs,
 	} = withCapturedOutput(fn, options)
 	if (returnValue instanceof Promise) {
-		const promise = returnValue.then((awaited) => {
-			restoreOutputs()
-			return {
-				returnValue: awaited,
-				capturedStdout,
-				capturedStderr,
-				mockConsoleCalls,
-			}
-		})
+		const promise = returnValue
+			.then((awaited) => {
+				return {
+					returnValue: awaited,
+					capturedStdout,
+					capturedStderr,
+					mockConsoleCalls,
+				}
+			})
+			.finally(restoreOutputs)
 		return promise as any
 	}
 	restoreOutputs()
