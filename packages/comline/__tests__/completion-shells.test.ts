@@ -17,6 +17,7 @@ import { completionScript, installCompletion } from "../src/completion-transport
 let directory: string
 let environment: NodeJS.ProcessEnv
 let counter = 0
+let fishNeedsEmptyQuotes = false
 
 function run(
 	executable: string,
@@ -58,8 +59,11 @@ beforeAll(() => {
 		npm_config_cache: path.join(directory, `npm-cache`),
 	}
 	// Missing tools are failures: this suite must exercise every real consumer.
-	for (const tool of [`bash`, `zsh`, `fish`, `nu`, `carapace`, `bun`, `node`])
-		run(tool, [`--version`])
+	for (const tool of [`bash`, `zsh`, `fish`, `nu`, `carapace`, `bun`, `node`]) {
+		const version = run(tool, [`--version`])
+		if (tool === `fish`)
+			fishNeedsEmptyQuotes = Number(version.match(/\d+/)?.[0]) < 4
+	}
 	const fixture = path.join(directory, `package`)
 	mkdirSync(fixture)
 	mkdirSync(path.join(directory, `config/carapace/specs`), { recursive: true })
@@ -275,6 +279,13 @@ describe(`global`, { timeout: 30_000 }, () => {
 				{ opts: { state: `closed`, base: `main` } },
 			],
 		]
+		if ([`bash`, `zsh`, `fish`].includes(shell)) {
+			cases.push([
+				`empty candidate`,
+				`comline-fixture pr list --empty \tTAIL`,
+				{ path: [`pr`, `list`, `TAIL`], opts: { empty: `` } },
+			])
+		}
 		if (shell === `nu`) {
 			cases.push(
 				[
@@ -400,7 +411,13 @@ describe(`global`, { timeout: 30_000 }, () => {
 			),
 		)(
 			`${shell} inserts $0 through its real line editor`,
-			(_name, line, expected) => {
+			(name, line, expected) => {
+				// Fish 3 disables quote insertion; complete inside existing quotes there.
+				// The same request from a blank token must work in Fish 4 and later.
+				const commandLine =
+					shell === `fish` && name === `empty candidate` && fishNeedsEmptyQuotes
+						? line.replace(`--empty `, `--empty ''`)
+						: line
 				const output = path.join(directory, `output-${counter++}.json`)
 				const result = run(
 					`bun`,
@@ -409,7 +426,7 @@ describe(`global`, { timeout: 30_000 }, () => {
 						shell,
 						path.join(directory, shell === `nu` ? `nushell` : shell),
 						output,
-						line,
+						commandLine,
 					],
 					mode(`global`),
 				)

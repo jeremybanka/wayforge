@@ -21,6 +21,7 @@ const shared = options(
 		token: z.string().optional(),
 		fail: z.string().optional(),
 		confirm: z.string().optional(),
+		empty: z.string().optional(),
 	}),
 	{
 		state: { description: `PR state`, example: ``, required: false },
@@ -71,6 +72,12 @@ const shared = options(
 				choices: [`prefix/`, `plain`, { value: `spaced`, appendSpace: true }],
 				appendSpace: false,
 			},
+		},
+		empty: {
+			description: `Empty value`,
+			example: ``,
+			required: false,
+			completion: { choices: [``] },
 		},
 		confirm: {
 			description: `Check a previous completion`,

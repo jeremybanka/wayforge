@@ -1,6 +1,6 @@
 _comline_NAME() {
     local response directive line prefix
-    local -a request lines values descriptions spacing
+    local -a request lines values descriptions empty_description spacing
     # Q removes lexical quotes; arrays preserve boundaries without eval.
     if ((CURRENT > 2)); then request=("${(@Q)words[2,CURRENT-1]}"); fi
     request+=("${(Q)PREFIX}")
@@ -19,6 +19,12 @@ _comline_NAME() {
         _files -/
     elif ((${#lines})); then
         for line in "${lines[@]}"; do
+            if [[ -z ${line%%$'\t'*} ]]; then
+                # An empty insertion is not an argument. Insert literal shell quotes.
+                empty_description=("${line//$'\t'/ -- }")
+                compadd "${spacing[@]}" -Q -d empty_description -- "''"
+                continue
+            fi
             values+=("${line%%$'\t'*}")
             descriptions+=("${line//$'\t'/ -- }")
         done
