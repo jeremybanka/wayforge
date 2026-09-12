@@ -472,6 +472,9 @@ importers:
       '@types/node':
         specifier: 25.9.6
         version: 25.9.6
+      '@vitest/coverage-v8':
+        specifier: 5.0.0
+        version: 5.0.0(vitest@5.0.0)
       arktype:
         specifier: 2.2.3
         version: 2.2.3
@@ -481,6 +484,9 @@ importers:
       eslint:
         specifier: 10.10.0
         version: 10.10.0(jiti@2.7.0)(supports-color@10.2.2)
+      recoverage:
+        specifier: 0.1.16
+        version: 0.1.16(supports-color@10.2.2)(typescript@7.0.2)(zod@4.5.4)
       tsdown:
         specifier: 0.23.0
         version: 0.23.0(@tsdown/css@0.23.0)(@volar/typescript@2.4.28(typescript@7.0.2))(tsx@4.22.1)(typescript@7.0.2)
