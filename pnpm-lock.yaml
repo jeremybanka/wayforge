@@ -178,8 +178,8 @@ importers:
         specifier: 4.0.0
         version: 4.0.0
       '@dotenvx/dotenvx':
-        specifier: 2.23.0
-        version: 2.23.0
+        specifier: 2.24.0
+        version: 2.24.0
       '@dprint/json':
         specifier: 0.23.0
         version: 0.23.0
@@ -486,7 +486,7 @@ importers:
         version: 10.10.0(jiti@2.7.0)(supports-color@10.2.2)
       recoverage:
         specifier: 0.1.16
-        version: 0.1.16(supports-color@10.2.2)(typescript@7.0.2)(zod@4.5.4)
+        version: 0.1.16(supports-color@10.2.2)(typescript@7.0.2)(zod@4.6.2)
       tsdown:
         specifier: 0.23.0
         version: 0.23.0(@tsdown/css@0.23.0)(@volar/typescript@2.4.28(typescript@7.0.2))(tsx@4.22.1)(typescript@7.0.2)
@@ -1204,8 +1204,8 @@ packages:
   '@dimforge/rapier3d-compat@0.12.0':
     resolution: {integrity: sha512-uekIGetywIgopfD97oDL5PfeezkFpNhwlzlaEYNOA0N6ghdsOvh/HYjSMek5Q2O1PYvRSDFcqFVJl4r4ZBwOow==}
 
-  '@dotenvx/dotenvx@2.23.0':
-    resolution: {integrity: sha512-LkiCs5ZpGIy+jn85YJKEYKPZkq8QwZegYviwr8w4eFTq+Fb2+j+hFldWpdhppPmFP8ut0cplxL4EEoW06Rzfhw==}
+  '@dotenvx/dotenvx@2.24.0':
+    resolution: {integrity: sha512-JB9qLEADA/RDqzxG8IEAn4Y2hocoDS6BZMsZArDonRbUvUGcg8U5+j1pizjWR6joMhhSqGZrNCBNRg4wFLrGLQ==}
     hasBin: true
 
   '@dotenvx/primitives@2.2.0':
@@ -6099,7 +6099,7 @@ snapshots:
 
   '@dimforge/rapier3d-compat@0.12.0': {}
 
-  '@dotenvx/dotenvx@2.23.0':
+  '@dotenvx/dotenvx@2.24.0':
     dependencies:
       '@dotenvx/primitives': 2.2.0
       '@dotenvx/tooling': 1.0.3
@@ -7162,6 +7162,12 @@ snapshots:
       typescript: 7.0.2
       zod: 4.5.4
 
+  '@t3-oss/env-core@0.13.11(arktype@2.2.0)(typescript@7.0.2)(zod@4.6.2)':
+    optionalDependencies:
+      arktype: 2.2.0
+      typescript: 7.0.2
+      zod: 4.6.2
+
   '@t3-oss/env-core@0.13.11(arktype@2.2.3)(typescript@7.0.2)(zod@4.6.2)':
     optionalDependencies:
       arktype: 2.2.3
@@ -8037,6 +8043,13 @@ snapshots:
     optionalDependencies:
       arktype: 2.2.0
       zod: 4.5.4
+
+  comline@0.4.6(arktype@2.2.0)(zod@4.6.2):
+    dependencies:
+      treetrunks: 0.1.7
+    optionalDependencies:
+      arktype: 2.2.0
+      zod: 4.6.2
 
   comline@0.5.2(arktype@2.2.3)(zod@4.5.4):
     dependencies:
@@ -9359,6 +9372,23 @@ snapshots:
       '@t3-oss/env-core': 0.13.11(arktype@2.2.0)(typescript@7.0.2)(zod@4.5.4)
       arktype: 2.2.0
       comline: 0.4.6(arktype@2.2.0)(zod@4.5.4)
+      diff: 9.0.0
+      istanbul-lib-coverage: 3.2.2
+      istanbul-lib-report: 3.0.1
+      istanbul-reports: 3.2.0
+      simple-git: 3.36.0(supports-color@10.2.2)
+      takua: 0.2.1
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+      - valibot
+      - zod
+
+  recoverage@0.1.16(supports-color@10.2.2)(typescript@7.0.2)(zod@4.6.2):
+    dependencies:
+      '@t3-oss/env-core': 0.13.11(arktype@2.2.0)(typescript@7.0.2)(zod@4.6.2)
+      arktype: 2.2.0
+      comline: 0.4.6(arktype@2.2.0)(zod@4.6.2)
       diff: 9.0.0
       istanbul-lib-coverage: 3.2.2
       istanbul-lib-report: 3.0.1
