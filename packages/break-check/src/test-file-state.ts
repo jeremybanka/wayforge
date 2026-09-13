@@ -31,6 +31,39 @@ type TestFileState = {
 	) => Promise<() => Promise<void>>
 }
 
+function assertContained(root: string, filename: string): void {
+	const relative = path.relative(root, filename)
+	if (
+		relative === `..` ||
+		relative.startsWith(`..${path.sep}`) ||
+		path.isAbsolute(relative)
+	) {
+		throw new Error(`Cannot replace tests outside the worktree: ${filename}.`)
+	}
+}
+
+async function validateParents(
+	root: string,
+	filenames: string[],
+): Promise<void> {
+	const checked = new Set<string>()
+	for (const filename of filenames) {
+		assertContained(root, filename)
+		for (let parent = path.dirname(filename); ; parent = path.dirname(parent)) {
+			if (checked.has(parent)) break
+			const stats = await lstat(parent).catch(
+				(thrown: NodeJS.ErrnoException) => {
+					if (thrown.code !== `ENOENT`) throw thrown
+				},
+			)
+			if (stats && !stats.isDirectory())
+				throw new Error(`Cannot replace tests through ${parent}.`)
+			checked.add(parent)
+			if (parent === root) break
+		}
+	}
+}
+
 // This lock covers Git setup and restoration only. Commands run after it is released.
 export async function withTestFileState<T>(
 	git: SimpleGit,
@@ -40,6 +73,7 @@ export async function withTestFileState<T>(
 ): Promise<T> {
 	const root = await realpath(await git.revparse([`--show-toplevel`]))
 	baseDirname = await realpath(baseDirname)
+	assertContained(root, baseDirname)
 	const stateDirectory = path.join(
 		await git.revparse([`--absolute-git-dir`]),
 		`break-check`,
@@ -123,22 +157,11 @@ export async function withTestFileState<T>(
 				const existing = files.filter((file) => currentFiles.has(file))
 				const absent = files.filter((file) => !currentFiles.has(file))
 				const modes = new Map<string, number>()
+				const filenames = files.map((file) => path.resolve(baseDirname, file))
+				await validateParents(root, filenames)
 				for (const file of files) {
 					const filename = path.resolve(baseDirname, file)
-					// Avoid following a parent symlink when removing release-only tests later.
-					for (
-						let parent = path.dirname(filename);
-						parent !== root;
-						parent = path.dirname(parent)
-					) {
-						const stats = await lstat(parent).catch(
-							(thrown: NodeJS.ErrnoException) => {
-								if (thrown.code !== `ENOENT`) throw thrown
-							},
-						)
-						if (stats && !stats.isDirectory())
-							throw new Error(`Cannot replace tests through ${parent}.`)
-					}
+
 					const stats = await lstat(filename).catch(
 						(thrown: NodeJS.ErrnoException) => {
 							if (thrown.code !== `ENOENT`) throw thrown
@@ -158,6 +181,7 @@ export async function withTestFileState<T>(
 						recordPath,
 						JSON.stringify({ ...record, recoveryRequired: true }),
 					)
+					await validateParents(root, filenames)
 					if (existing.length)
 						await git.raw([
 							`--literal-pathspecs`,
