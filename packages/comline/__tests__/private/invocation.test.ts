@@ -1,27 +1,12 @@
-import { required } from "treetrunks"
-import z from "zod"
+import {
+	createInvocationCli,
+	invocationPrefixes,
+} from "../fixtures/invocation-cases"
 
-import { cli, options } from "../../src/cli"
+const command = createInvocationCli()
 
-const command = cli({
-	cliName: `probe`,
-	discoverConfigPath: () => undefined,
-	routes: required({ run: null }),
-	routeOptions: {
-		run: options(`run`, z.object({ name: z.string().optional() }), {
-			name: { description: `name`, example: ``, required: false },
-		}),
-	},
-})
-
-test.each([
-	[`/opt/probe-tools/bin/node`, `/work/probe.x.ts`],
-	[`/home/probe/.bun/bin/bun`, `/work/entry.ts`],
-	[`C:\\probe-tools\\custom-runtime.exe`, `C:\\work\\entry.js`],
-	[`/arbitrary/runtime`, `/global/bin/renamed-command`],
-	[`--name=runtime`, `--name=entrypoint`],
-])(
-	`parses a supplied argv without inspecting invocation names: %j`,
+test.each(invocationPrefixes)(
+	`uses the exact input record for an explicit invocation prefix: %j`,
 	(...prefix) => {
 		const argv = Object.freeze([...prefix, `run`, `--name=probe`, `--`])
 		expect(command(argv).inputs).toEqual({
@@ -32,7 +17,7 @@ test.each([
 	},
 )
 
-test(`the supplied argv determines the parse scope`, () => {
+test(`uses the exact input record when ambient argv differs`, () => {
 	const previous = process.argv
 	process.argv = [`ambient-runtime`, `ambient-script`, `unrelated`]
 	try {

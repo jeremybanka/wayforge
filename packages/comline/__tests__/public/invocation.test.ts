@@ -1,27 +1,15 @@
 import { required } from "treetrunks"
-import z from "zod"
 
-import { cli, options } from "../../src/cli"
+import { cli } from "../../src/cli"
 import { inputValues } from "../fixtures/contract-values"
+import {
+	createInvocationCli,
+	invocationPrefixes,
+} from "../fixtures/invocation-cases"
 
-const command = cli({
-	cliName: `probe`,
-	discoverConfigPath: () => undefined,
-	routes: required({ run: null }),
-	routeOptions: {
-		run: options(`run`, z.object({ name: z.string().optional() }), {
-			name: { description: `name`, example: ``, required: false },
-		}),
-	},
-})
+const command = createInvocationCli()
 
-test.each([
-	[`/opt/probe-tools/bin/node`, `/work/probe.x.ts`],
-	[`/home/probe/.bun/bin/bun`, `/work/entry.ts`],
-	[`C:\\probe-tools\\custom-runtime.exe`, `C:\\work\\entry.js`],
-	[`/arbitrary/runtime`, `/global/bin/renamed-command`],
-	[`--name=runtime`, `--name=entrypoint`],
-])(
+test.each(invocationPrefixes)(
 	`parses a supplied argv without inspecting invocation names: %j`,
 	(...prefix) => {
 		const argv = Object.freeze([...prefix, `run`, `--name=probe`, `--`])

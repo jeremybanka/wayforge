@@ -10,7 +10,6 @@ import {
 	noOptions,
 	options,
 	parseBooleanOption,
-	parseNumberOption,
 } from "../../src/cli"
 import { argv } from "../fixtures/argv"
 import {
@@ -19,18 +18,19 @@ import {
 	inputValues,
 	optionOccurrences,
 } from "../fixtures/contract-values"
-
-function refOptions(completion: CompletionHints) {
-	return options(`refs`, z.object({ ref: z.string().optional() }), {
-		ref: {
-			description: `ref`,
-			example: ``,
-			required: false,
-			flag: `r`,
-			completion,
-		},
-	})
-}
+import {
+	conflictingRouteOptions,
+	createClonedHintsFixture,
+	createDashPrefixedValueDefinition,
+	createDistinctProvidersFixture,
+	createEarlyOptionDefinition,
+	createGroupedValueDefinition,
+	createMixedSpacingDefinition,
+	createPendingValueFixture,
+	createProviderSpacingDefinition,
+	earlyOptionCompletions,
+	refOptions,
+} from "../fixtures/feedback-cases"
 
 test(`final invocation cannot discard positionals consumed only by a descendant grammar`, async () => {
 	const command = cli({
@@ -141,27 +141,7 @@ test(`descendant option occurrences cannot erase the selected route's values`, (
 })
 
 test(`accepted value candidates preserve their target's consumption rules`, async () => {
-	const definition = {
-		cliName: `probe`,
-		routeOptions: {
-			"": options(
-				``,
-				z.object({ ref: z.string().optional(), confirm: z.string().optional() }),
-				{
-					ref: {
-						description: ``,
-						example: ``,
-						required: false,
-						completion: {
-							choices: [`--confirm`, `--confetti`],
-							provide: () => [`--confirm=value`],
-						},
-					},
-					confirm: { description: ``, example: ``, required: false },
-				},
-			),
-		},
-	}
+	const definition = createDashPrefixedValueDefinition()
 	const separated = await complete(definition, { words: [`--ref`, `--con`] })
 	expect(separated.candidates.map(({ value }) => value)).toEqual([`--confetti`])
 	for (const { value } of separated.candidates)
@@ -179,25 +159,8 @@ test(`accepted value candidates preserve their target's consumption rules`, asyn
 })
 
 test(`cloned hints do not repeat the same provider before route selection`, async () => {
-	const provide = vi.fn(() => [`main`])
-	const hints: CompletionHints = {
-		provide,
-		choices: [{ value: `master`, description: `legacy` }],
-	}
-	const result = await complete(
-		{
-			cliName: `probe`,
-			routes: required({ a: null, b: null }),
-			routeOptions: {
-				a: refOptions(hints),
-				b: refOptions({
-					...hints,
-					choices: [{ description: `legacy`, value: `master` }],
-				}),
-			},
-		},
-		{ words: [`--ref`, `ma`] },
-	)
+	const { provide, definition } = createClonedHintsFixture()
+	const result = await complete(definition, { words: [`--ref`, `ma`] })
 	expect(result.candidates.map(({ value }) => value).toSorted()).toEqual(
 		[`master`, `main`].toSorted(),
 	)
@@ -206,19 +169,8 @@ test(`cloned hints do not repeat the same provider before route selection`, asyn
 })
 
 test(`distinct providers are not collapsed when their other hints match`, async () => {
-	const a = vi.fn(() => [`alpha`])
-	const b = vi.fn(() => [`beta`])
-	const result = await complete(
-		{
-			cliName: `probe`,
-			routes: required({ a: null, b: null }),
-			routeOptions: {
-				a: refOptions({ provide: a }),
-				b: refOptions({ provide: b }),
-			},
-		},
-		{ words: [`--ref`, ``] },
-	)
+	const { a, b, definition } = createDistinctProvidersFixture()
+	const result = await complete(definition, { words: [`--ref`, ``] })
 	expect(candidateValues(result.candidates)).toEqual(
 		candidateValues([{ value: `alpha` }, { value: `beta` }]),
 	)
@@ -227,34 +179,8 @@ test(`distinct providers are not collapsed when their other hints match`, async 
 })
 
 test(`mixed boolean and positional hints retain all file candidates and each candidate's spacing`, async () => {
-	const group = options(``, z.object({ draft: z.boolean().optional() }), {
-		draft: {
-			description: ``,
-			example: ``,
-			required: false,
-			parse: parseBooleanOption,
-			completion: {
-				choices: [`false`],
-				fileSystem: `files`,
-				appendSpace: false,
-			},
-		},
-	})
-	const result = await complete(
-		{
-			cliName: `probe`,
-			routes: optional({ run: null, $path: null }),
-			routeOptions: { "": group, run: group, $path: group },
-			positionalCompletions: {
-				$path: {
-					choices: [`folder`],
-					fileSystem: `directories`,
-					appendSpace: true,
-				},
-			},
-		},
-		{ words: [`--draft`, ``] },
-	)
+	const definition = createMixedSpacingDefinition()
+	const result = await complete(definition, { words: [`--draft`, ``] })
 	expect(result.fileSystem).toBe(`files`)
 	expect(result.appendSpace).toBe(false)
 	expect(candidateSpacing(result)).toEqual([
@@ -313,18 +239,8 @@ test(`ambiguous route hints merge independently of route declaration order`, asy
 })
 
 test(`provider candidates can override their target's spacing hint`, async () => {
-	const result = await complete(
-		{
-			cliName: `probe`,
-			routeOptions: {
-				"": refOptions({
-					appendSpace: false,
-					provide: () => [{ value: `main`, appendSpace: true }],
-				}),
-			},
-		},
-		{ words: [`--ref`, ``] },
-	)
+	const definition = createProviderSpacingDefinition()
+	const result = await complete(definition, { words: [`--ref`, ``] })
 	expect(result.appendSpace).toBe(false)
 	expect(candidateSpacing(result)).toEqual([
 		{ value: `main`, appendSpace: true },
@@ -332,28 +248,7 @@ test(`provider candidates can override their target's spacing hint`, async () =>
 })
 
 test(`grouped inline values retain existing invocation semantics`, () => {
-	const definition = {
-		cliName: `probe`,
-		discoverConfigPath: () => undefined,
-		routeOptions: {
-			"": options(``, z.object({ draft: z.boolean(), count: z.number() }), {
-				draft: {
-					description: ``,
-					example: ``,
-					required: true,
-					flag: `d`,
-					parse: parseBooleanOption,
-				},
-				count: {
-					description: ``,
-					example: ``,
-					required: true,
-					flag: `c`,
-					parse: parseNumberOption,
-				},
-			}),
-		},
-	}
+	const definition = createGroupedValueDefinition()
 	expect(cli(definition)(argv(`-dc=0`)).inputs.opts).toEqual({
 		draft: false,
 		count: 0,
@@ -421,35 +316,8 @@ test(`unfinished nested routes keep only reachable provider fallbacks`, async ()
 })
 
 test(`pending values use their viable route grammar before presentation deduplication`, async () => {
-	const input = {
-		description: ``,
-		example: ``,
-		required: false,
-		completion: { choices: [`--remote`, `--remote=value`] },
-	}
-	const definition = {
-		cliName: `probe`,
-		routes: required({ b: null, a: null }),
-		routeOptions: {
-			a: options(``, z.object({ input: z.string().optional() }), { input }),
-			b: options(
-				``,
-				z.object({
-					input: z.string().optional(),
-					remote: z.boolean().optional(),
-				}),
-				{
-					input,
-					remote: {
-						description: ``,
-						example: ``,
-						required: false,
-						parse: parseBooleanOption,
-					},
-				},
-			),
-		},
-	}
+	const { input, definition } = createPendingValueFixture()
+
 	for (const route of [[`a`], []]) {
 		for (const prefix of [`--rem`, `--remote`, `--remote=`]) {
 			const result = await complete(definition, {
@@ -581,35 +449,11 @@ test(`using a parent's flag does not suppress a distinct descendant flag with th
 	)
 })
 
-test.each([
-	{ words: [`--re`], names: [`--ref`, `--reference`] },
-	{ words: [`pr`, `--re`], names: [`--ref`, `--reference`] },
-	{ words: [`pr`, `-r`], names: [`-r`] },
-	{ words: [`--ref`, `main`, `--re`], names: [] },
-	{ words: [`pr`, `--ref=main`, `--re`], names: [] },
-	{ words: [`other`, `--re`], names: [] },
-])(
+test.each(earlyOptionCompletions)(
 	`early option names follow reachable routes and repetition: $words`,
 	async ({ words, names }) => {
-		const group = refOptions({ repeatable: false })
-		const withAlias = options(group.description, group.optionsSchema, {
-			ref: { ...group.optionConfigs.ref, aliases: [`reference`] },
-		})
-		const result = await complete(
-			{
-				cliName: `probe`,
-				routes: required({
-					pr: required({ list: null, create: null }),
-					other: null,
-				}),
-				routeOptions: {
-					"pr/list": withAlias,
-					"pr/create": withAlias,
-					other: null,
-				},
-			},
-			{ words },
-		)
+		const definition = createEarlyOptionDefinition()
+		const result = await complete(definition, { words })
 		expect(result.candidates.map(({ value }) => value).toSorted()).toEqual(
 			names.toSorted(),
 		)
@@ -680,27 +524,6 @@ test.each([
 		).toEqual(pending)
 	},
 )
-
-function conflictingRouteOptions() {
-	return {
-		cliName: `probe`,
-		routes: required({ a: required({ run: null }), b: null }),
-		routeOptions: {
-			"a/run": options(``, z.object({ flag: z.boolean().optional() }), {
-				flag: {
-					description: ``,
-					example: ``,
-					required: false,
-					parse: parseBooleanOption,
-				},
-			}),
-			b: options(``, z.object({ flag: z.string().optional() }), {
-				flag: { description: ``, example: ``, required: false },
-			}),
-		},
-		discoverConfigPath: () => undefined,
-	}
-}
 
 test.each([
 	{ words: [`a`, `--flag`, `run`], route: `a/run`, flag: true },

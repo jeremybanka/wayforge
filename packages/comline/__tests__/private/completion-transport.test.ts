@@ -1,18 +1,17 @@
-import { noOptions, required } from "../../src/cli"
 import {
 	completionResponse,
 	completionScript,
 } from "../../src/completion-transport"
 import { argv } from "../fixtures/argv"
+import {
+	createTransportDefinition,
+	managementCompletions,
+} from "../fixtures/transport-cases"
 
-const definition = {
-	cliName: `my-cli`,
-	routes: required({ closed: null }),
-	routeOptions: { closed: noOptions(`Closed pull requests`) },
-}
+const definition = createTransportDefinition()
 
 test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
-	`the public completion command generates %s setup`,
+	`the completion command returns exact %s generator bytes`,
 	async (target) => {
 		expect(
 			await completionResponse(definition, argv(`completion`, target)),
@@ -20,28 +19,18 @@ test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
 	},
 )
 
-test(`invalid setup targets fail explicitly`, async () => {
+test(`an invalid setup target uses the usage error wording`, async () => {
 	await expect(
 		completionResponse(definition, argv(`completion`, `unknown`)),
 	).rejects.toThrow(/Usage/)
 })
 
-test(`command names cannot inject code into scripts`, () => {
+test(`an unsafe executable uses the command-name error wording`, () => {
 	expect(() => completionScript(`cli; touch bad`, `bash`)).toThrow(/name/i)
 })
 
-test.each([
-	{ words: [`co`], values: [`completion`] },
-	{
-		words: [`completion`, ``],
-		values: [`install`, `bash`, `zsh`, `fish`, `nushell`, `carapace`],
-	},
-	{ words: [`completion`, `install`, `b`], values: [`bash`] },
-	{ words: [`completion`, `nu`], values: [`nushell`] },
-	{ words: [`completion`, `install`, `unknown`], values: [] },
-	{ words: [`completion`, `bash`, ``], values: [] },
-])(
-	`completion management has its own opt-in grammar: $words`,
+test.each(managementCompletions)(
+	`completion management orders its suggestions: $words`,
 	async ({ words, values }) => {
 		const response = await completionResponse(
 			definition,

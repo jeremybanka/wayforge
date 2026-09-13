@@ -21,6 +21,15 @@
 		"**/next-env.d.ts",
 		"**/create-atom.io/templates/**",
 	],
+	"overrides": [
+		{
+			"files": ["packages/comline/__tests__/fixtures/**/*.ts"],
+			"rules": {
+				// Test factories retain inferred schema and route types; they are not published APIs.
+				"typescript/explicit-module-boundary-types": "off",
+			},
+		},
+	],
 	"rules": {
 		"typescript/adjacent-overload-signatures": "error",
 		"typescript/ban-ts-comment": "error",

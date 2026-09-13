@@ -5,28 +5,26 @@ import z from "zod"
 import {
 	cli,
 	complete,
-	type CompletionHints,
 	interpretArguments,
 	noOptions,
 	options,
-	parseBooleanOption,
-	parseNumberOption,
 } from "../../src/cli"
 import { argv } from "../fixtures/argv"
+import {
+	conflictingRouteOptions,
+	createClonedHintsFixture,
+	createDashPrefixedValueDefinition,
+	createDistinctProvidersFixture,
+	createEarlyOptionDefinition,
+	createGroupedValueDefinition,
+	createMixedSpacingDefinition,
+	createPendingValueFixture,
+	createProviderSpacingDefinition,
+	earlyOptionCompletions,
+	refOptions,
+} from "../fixtures/feedback-cases"
 
-function refOptions(completion: CompletionHints) {
-	return options(`refs`, z.object({ ref: z.string().optional() }), {
-		ref: {
-			description: `ref`,
-			example: ``,
-			required: false,
-			flag: `r`,
-			completion,
-		},
-	})
-}
-
-test(`final invocation cannot discard positionals consumed only by a descendant grammar`, () => {
+test(`uses positional-error wording and exact input records for descendant-only options`, () => {
 	const command = cli({
 		cliName: `probe`,
 		discoverConfigPath: () => undefined,
@@ -50,7 +48,7 @@ test(`final invocation cannot discard positionals consumed only by a descendant 
 })
 
 test.each([optional, required])(
-	`descendant options cannot invalidate a self-consistent executable interpretation: %s`,
+	`keeps exact input records when descendant options are added: %s`,
 	(root) => {
 		const definition = {
 			cliName: `probe`,
@@ -83,7 +81,7 @@ test.each([optional, required])(
 	},
 )
 
-test(`descendant option occurrences cannot erase the selected route's values`, () => {
+test(`omits extra fields from selected-route option occurrence records`, () => {
 	const definition = {
 		cliName: `probe`,
 		routes: optional({ $name: null }),
@@ -101,28 +99,8 @@ test(`descendant option occurrences cannot erase the selected route's values`, (
 	])
 })
 
-test(`accepted value candidates preserve their target's consumption rules`, async () => {
-	const definition = {
-		cliName: `probe`,
-		routeOptions: {
-			"": options(
-				``,
-				z.object({ ref: z.string().optional(), confirm: z.string().optional() }),
-				{
-					ref: {
-						description: ``,
-						example: ``,
-						required: false,
-						completion: {
-							choices: [`--confirm`, `--confetti`],
-							provide: () => [`--confirm=value`],
-						},
-					},
-					confirm: { description: ``, example: ``, required: false },
-				},
-			),
-		},
-	}
+test(`orders inline dash-prefixed choices before provider values`, async () => {
+	const definition = createDashPrefixedValueDefinition()
 
 	const inline = await complete(definition, { words: [`--ref=--con`] })
 	expect(inline.candidates.map(({ value }) => value)).toEqual([
@@ -132,75 +110,21 @@ test(`accepted value candidates preserve their target's consumption rules`, asyn
 	])
 })
 
-test(`cloned hints do not repeat the same provider before route selection`, async () => {
-	const provide = vi.fn(() => [`main`])
-	const hints: CompletionHints = {
-		provide,
-		choices: [{ value: `master`, description: `legacy` }],
-	}
-	const result = await complete(
-		{
-			cliName: `probe`,
-			routes: required({ a: null, b: null }),
-			routeOptions: {
-				a: refOptions(hints),
-				b: refOptions({
-					...hints,
-					choices: [{ description: `legacy`, value: `master` }],
-				}),
-			},
-		},
-		{ words: [`--ref`, `ma`] },
-	)
+test(`orders static choices before provider values for cloned hints`, async () => {
+	const { definition } = createClonedHintsFixture()
+	const result = await complete(definition, { words: [`--ref`, `ma`] })
 	expect(result.candidates.map(({ value }) => value)).toEqual([`master`, `main`])
 })
 
-test(`distinct providers are not collapsed when their other hints match`, async () => {
-	const a = vi.fn(() => [`alpha`])
-	const b = vi.fn(() => [`beta`])
-	const result = await complete(
-		{
-			cliName: `probe`,
-			routes: required({ a: null, b: null }),
-			routeOptions: {
-				a: refOptions({ provide: a }),
-				b: refOptions({ provide: b }),
-			},
-		},
-		{ words: [`--ref`, ``] },
-	)
+test(`orders distinct providers by route and omits extra candidate fields`, async () => {
+	const { definition } = createDistinctProvidersFixture()
+	const result = await complete(definition, { words: [`--ref`, ``] })
 	expect(result.candidates).toEqual([{ value: `alpha` }, { value: `beta` }])
 })
 
-test(`mixed boolean and positional hints retain all file candidates and each candidate's spacing`, async () => {
-	const group = options(``, z.object({ draft: z.boolean().optional() }), {
-		draft: {
-			description: ``,
-			example: ``,
-			required: false,
-			parse: parseBooleanOption,
-			completion: {
-				choices: [`false`],
-				fileSystem: `files`,
-				appendSpace: false,
-			},
-		},
-	})
-	const result = await complete(
-		{
-			cliName: `probe`,
-			routes: optional({ run: null, $path: null }),
-			routeOptions: { "": group, run: group, $path: group },
-			positionalCompletions: {
-				$path: {
-					choices: [`folder`],
-					fileSystem: `directories`,
-					appendSpace: true,
-				},
-			},
-		},
-		{ words: [`--draft`, ``] },
-	)
+test(`uses exact candidate records for mixed boolean and positional hints`, async () => {
+	const definition = createMixedSpacingDefinition()
+	const result = await complete(definition, { words: [`--draft`, ``] })
 
 	expect(result.candidates).toEqual([
 		{ value: `false` },
@@ -209,7 +133,7 @@ test(`mixed boolean and positional hints retain all file candidates and each can
 	])
 })
 
-test(`a positional no-space hint does not suppress spacing on literal commands`, async () => {
+test(`uses exact candidate records for commands beside a no-space positional`, async () => {
 	const result = await complete(
 		{
 			cliName: `probe`,
@@ -228,7 +152,7 @@ test(`a positional no-space hint does not suppress spacing on literal commands`,
 	])
 })
 
-test(`ambiguous route hints merge independently of route declaration order`, async () => {
+test(`uses exact merged candidate records in either route declaration order`, async () => {
 	const a = refOptions({
 		choices: [`alpha`, `same`],
 		fileSystem: `files`,
@@ -260,46 +184,15 @@ test(`ambiguous route hints merge independently of route declaration order`, asy
 	}
 })
 
-test(`provider candidates can override their target's spacing hint`, async () => {
-	const result = await complete(
-		{
-			cliName: `probe`,
-			routeOptions: {
-				"": refOptions({
-					appendSpace: false,
-					provide: () => [{ value: `main`, appendSpace: true }],
-				}),
-			},
-		},
-		{ words: [`--ref`, ``] },
-	)
+test(`stores an explicit spacing override on the provider candidate`, async () => {
+	const definition = createProviderSpacingDefinition()
+	const result = await complete(definition, { words: [`--ref`, ``] })
 
 	expect(result.candidates).toEqual([{ value: `main`, appendSpace: true }])
 })
 
-test(`grouped inline values retain existing invocation semantics`, () => {
-	const definition = {
-		cliName: `probe`,
-		discoverConfigPath: () => undefined,
-		routeOptions: {
-			"": options(``, z.object({ draft: z.boolean(), count: z.number() }), {
-				draft: {
-					description: ``,
-					example: ``,
-					required: true,
-					flag: `d`,
-					parse: parseBooleanOption,
-				},
-				count: {
-					description: ``,
-					example: ``,
-					required: true,
-					flag: `c`,
-					parse: parseNumberOption,
-				},
-			}),
-		},
-	}
+test(`uses exact option occurrence records for grouped inline values`, () => {
+	const definition = createGroupedValueDefinition()
 
 	expect(interpretArguments(definition, [`-dc=0`]).options).toEqual([
 		{ key: `draft`, index: 0, value: `0` },
@@ -307,7 +200,7 @@ test(`grouped inline values retain existing invocation semantics`, () => {
 	])
 })
 
-test(`grouped inline completion recognizes flags before command selection`, async () => {
+test(`omits extra candidate fields for grouped inline completion`, async () => {
 	const group = refOptions({ choices: [`main`] })
 	const result = await complete(
 		{
@@ -320,7 +213,7 @@ test(`grouped inline completion recognizes flags before command selection`, asyn
 	expect(result.candidates).toEqual([{ value: `main` }])
 })
 
-test(`unfinished nested routes keep only reachable provider fallbacks`, async () => {
+test(`omits extra candidate fields for the reachable provider fallback`, async () => {
 	const reachable = vi.fn(() => [`reachable`])
 	const sibling = vi.fn(() => [`sibling`])
 	const definition = {
@@ -335,36 +228,9 @@ test(`unfinished nested routes keep only reachable provider fallbacks`, async ()
 	expect(result.candidates).toEqual([{ value: `reachable` }])
 })
 
-test(`pending values use their viable route grammar before presentation deduplication`, async () => {
-	const input = {
-		description: ``,
-		example: ``,
-		required: false,
-		completion: { choices: [`--remote`, `--remote=value`] },
-	}
-	const definition = {
-		cliName: `probe`,
-		routes: required({ b: null, a: null }),
-		routeOptions: {
-			a: options(``, z.object({ input: z.string().optional() }), { input }),
-			b: options(
-				``,
-				z.object({
-					input: z.string().optional(),
-					remote: z.boolean().optional(),
-				}),
-				{
-					input,
-					remote: {
-						description: ``,
-						example: ``,
-						required: false,
-						parse: parseBooleanOption,
-					},
-				},
-			),
-		},
-	}
+test(`orders pending value candidates and uses an exact sibling target record`, async () => {
+	const { input, definition } = createPendingValueFixture()
+
 	for (const route of [[`a`], []]) {
 		for (const prefix of [`--rem`, `--remote`, `--remote=`]) {
 			const result = await complete(definition, {
@@ -382,7 +248,7 @@ test(`pending values use their viable route grammar before presentation deduplic
 	expect(sibling.context.targets).toEqual([{ kind: `option-name` }])
 })
 
-test(`optional positional routes retain distinct flags, choices, and providers`, async () => {
+test(`orders root and child flags, choices, and provider values`, async () => {
 	const rootProvider = vi.fn(() => [`root-provider`])
 	const childProvider = vi.fn(() => [`child-provider`])
 	const root = refOptions({ choices: [`root`], provide: rootProvider })
@@ -415,11 +281,9 @@ test(`optional positional routes retain distinct flags, choices, and providers`,
 		`child`,
 		`child-provider`,
 	])
-
-	// Execution uses only the final route's option definition.
 })
 
-test(`same-name options retain distinct hints before optional positionals`, async () => {
+test(`orders root choices before optional positional choices`, async () => {
 	const result = await complete(
 		{
 			cliName: `probe`,
@@ -434,7 +298,7 @@ test(`same-name options retain distinct hints before optional positionals`, asyn
 	expect(result.candidates.map(({ value }) => value)).toEqual([`root`, `child`])
 })
 
-test(`metadata alternatives do not duplicate a raw option occurrence`, () => {
+test(`uses an exact occurrence record for metadata alternatives`, () => {
 	const result = interpretArguments(
 		{
 			cliName: `probe`,
@@ -452,7 +316,7 @@ test(`metadata alternatives do not duplicate a raw option occurrence`, () => {
 	])
 })
 
-test(`using a parent's flag does not suppress a distinct descendant flag with the same key`, async () => {
+test(`orders the long name before the remaining descendant flag`, async () => {
 	const root = refOptions({ repeatable: false })
 	const child = refOptions({ repeatable: false })
 	child.optionConfigs.ref.flag = `s`
@@ -467,61 +331,16 @@ test(`using a parent's flag does not suppress a distinct descendant flag with th
 	expect(result.candidates.map(({ value }) => value)).toEqual([`--ref`, `-s`])
 })
 
-test.each([
-	{ words: [`--re`], names: [`--ref`, `--reference`] },
-	{ words: [`pr`, `--re`], names: [`--ref`, `--reference`] },
-	{ words: [`pr`, `-r`], names: [`-r`] },
-	{ words: [`--ref`, `main`, `--re`], names: [] },
-	{ words: [`pr`, `--ref=main`, `--re`], names: [] },
-	{ words: [`other`, `--re`], names: [] },
-])(
-	`early option names follow reachable routes and repetition: $words`,
+test.each(earlyOptionCompletions)(
+	`orders reachable option names before route selection: $words`,
 	async ({ words, names }) => {
-		const group = refOptions({ repeatable: false })
-		const withAlias = options(group.description, group.optionsSchema, {
-			ref: { ...group.optionConfigs.ref, aliases: [`reference`] },
-		})
-		const result = await complete(
-			{
-				cliName: `probe`,
-				routes: required({
-					pr: required({ list: null, create: null }),
-					other: null,
-				}),
-				routeOptions: {
-					"pr/list": withAlias,
-					"pr/create": withAlias,
-					other: null,
-				},
-			},
-			{ words },
-		)
+		const definition = createEarlyOptionDefinition()
+		const result = await complete(definition, { words })
 		expect(result.candidates.map(({ value }) => value)).toEqual(names)
 	},
 )
 
-function conflictingRouteOptions() {
-	return {
-		cliName: `probe`,
-		routes: required({ a: required({ run: null }), b: null }),
-		routeOptions: {
-			"a/run": options(``, z.object({ flag: z.boolean().optional() }), {
-				flag: {
-					description: ``,
-					example: ``,
-					required: false,
-					parse: parseBooleanOption,
-				},
-			}),
-			b: options(``, z.object({ flag: z.string().optional() }), {
-				flag: { description: ``, example: ``, required: false },
-			}),
-		},
-		discoverConfigPath: () => undefined,
-	}
-}
-
-test(`conflicting complete interpretations require an explicit boundary`, () => {
+test(`uses ambiguity wording for conflicting option consumption`, () => {
 	const groups = conflictingRouteOptions().routeOptions
 	const parse = cli({
 		cliName: `probe`,
@@ -534,7 +353,7 @@ test(`conflicting complete interpretations require an explicit boundary`, () => 
 	)
 })
 
-test(`option identities distinguish routes and metadata stays fresh between requests`, async () => {
+test(`keeps option IDs stable and exact candidate records across metadata updates`, async () => {
 	const group = refOptions({ choices: [`main`] })
 	const definition = {
 		cliName: `probe`,

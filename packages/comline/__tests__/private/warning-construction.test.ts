@@ -1,13 +1,9 @@
 import * as publicApi from "../../src/cli"
-import { cli, noOptions, optional, required } from "../../src/cli"
 import * as presentation from "../../src/warnings"
 import { argv } from "../fixtures/argv"
+import { createWarningPresentationCli } from "../fixtures/warning-cases"
 
-const testCli = cli({
-	cliName: `probe`,
-	routes: optional({ run: null, show: required({ $name: null }) }),
-	routeOptions: { "": noOptions(), run: noOptions(), "show/$name": noOptions() },
-})
+const testCli = createWarningPresentationCli()
 
 test(`completion does not construct warnings while a descendant remains viable`, () => {
 	const createWarning = vi.spyOn(presentation, `createWarningFactory`)

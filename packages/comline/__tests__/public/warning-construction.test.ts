@@ -1,11 +1,7 @@
-import { cli, noOptions, optional, required } from "../../src/cli"
 import { argv } from "../fixtures/argv"
+import { createWarningPresentationCli } from "../fixtures/warning-cases"
 
-const testCli = cli({
-	cliName: `probe`,
-	routes: optional({ run: null, show: required({ $name: null }) }),
-	routeOptions: { "": noOptions(), run: noOptions(), "show/$name": noOptions() },
-})
+const testCli = createWarningPresentationCli()
 
 test(`completion defers warnings while a descendant remains viable`, () => {
 	const context = testCli.interpret({ words: [`--typo`, ``] })

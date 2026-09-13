@@ -1,16 +1,13 @@
-import {
-	mkdtempSync,
-	readdirSync,
-	readFileSync,
-	rmSync,
-	writeFileSync,
-} from "node:fs"
+import { mkdtempSync, readdirSync, readFileSync, rmSync } from "node:fs"
 import type * as FileSystem from "node:fs/promises"
-import { rename, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import path from "node:path"
 
 import { installCompletion } from "../../src/completion-transport"
+import {
+	injectInstallationFailure,
+	invalidDiscoveryCases,
+} from "../fixtures/installation-cases"
 
 const inspect = vi.hoisted(() => vi.fn())
 
@@ -45,43 +42,14 @@ afterEach(() => {
 test.each([`write`, `rename`] as const)(
 	`failed %s preserves the installed completion and removes staging files`,
 	async (operation) => {
-		const file = path.join(directory, `my-cli.yaml`)
-		writeFileSync(file, `previous completion\n`)
-		const failure = new Error(`injected ${operation} failure`)
-		if (operation === `write`) {
-			const actual = await vi.importActual<typeof FileSystem>(`node:fs/promises`)
-			vi.mocked(writeFile).mockImplementationOnce(async (staged) => {
-				// A failed write may already have left partial output on disk.
-				await actual.writeFile(staged, `partial completion`)
-				throw failure
-			})
-		} else {
-			vi.mocked(rename).mockRejectedValueOnce(failure)
-		}
+		const { file } = await injectInstallationFailure(directory, operation)
 		await expect(installCompletion(`my-cli`, `carapace`)).rejects.toThrow()
 		expect(readFileSync(file, `utf8`)).toBe(`previous completion\n`)
 		expect(readdirSync(directory)).toEqual([`my-cli.yaml`])
 	},
 )
 
-test.each([
-	{
-		target: `bash`,
-		output: `missing marker`,
-	},
-	{
-		target: `carapace`,
-		output: `malformed help`,
-	},
-	{
-		target: `bash`,
-		output: `relative path`,
-	},
-	{
-		target: `carapace`,
-		output: `relative path`,
-	},
-] as const)(
+test.each(invalidDiscoveryCases)(
 	`$target rejects discovery with $output without writing files`,
 	async ({ target, output }) => {
 		// Resolve any mistakenly accepted relative path into our disposable directory.

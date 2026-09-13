@@ -13,21 +13,23 @@ import {
 	completionScript,
 	installCompletion,
 } from "../../src/completion-transport"
-
-let counter = 0
-
 import {
 	completeInstalledValue,
+	completionTargets,
 	directory,
 	environment,
+	interactiveShells,
 	mode,
+	prepareCustomXdgPaths,
+	prepareLoginCompletionPaths,
 	run,
+	runLineEditor,
 	withProfile,
 } from "../fixtures/completion-shells"
 import { inputValues } from "../fixtures/contract-values"
 
 describe(`global`, { timeout: 30_000 }, () => {
-	for (const shell of [`bash`, `zsh`, `fish`, `nu`, `nu-carapace`, `nu-cobra`]) {
+	for (const shell of interactiveShells) {
 		const cases: [
 			string,
 			string,
@@ -254,21 +256,7 @@ describe(`global`, { timeout: 30_000 }, () => {
 		)(
 			`${shell} inserts $0 through its real line editor`,
 			(_name, line, expected) => {
-				const output = path.join(directory, `output-${counter++}.json`)
-				const result = run(
-					`bun`,
-					[
-						path.join(
-							import.meta.dirname,
-							`../fixtures/shell-completion.bun.ts`,
-						),
-						shell,
-						path.join(directory, shell === `nu` ? `nushell` : shell),
-						output,
-						line,
-					],
-					mode(`global`),
-				)
+				const result = runLineEditor(shell, line, `global`)
 				expect(JSON.parse(result)).toMatchObject(expected)
 				expect(existsSync(path.join(directory, `injected`))).toBe(false)
 			},
@@ -286,17 +274,7 @@ describe(`global`, { timeout: 30_000 }, () => {
 				{ base: `~/literal-branch` },
 			],
 		] as const) {
-			const result = run(
-				`bun`,
-				[
-					path.join(import.meta.dirname, `../fixtures/shell-completion.bun.ts`),
-					`nu`,
-					path.join(directory, `nushell`),
-					path.join(directory, `output-${counter++}.json`),
-					line,
-				],
-				mode(`global`),
-			)
+			const result = runLineEditor(`nu`, line, `global`)
 			expect(JSON.parse(result).opts).toEqual(expected)
 		}
 	})
@@ -307,15 +285,10 @@ describe(`global`, { timeout: 30_000 }, () => {
 	])(
 		`Bash preserves its emitted quoting for the next provider: $prefix`,
 		({ prefix, value, locale }) => {
-			const result = run(
-				`bun`,
-				[
-					path.join(import.meta.dirname, `../fixtures/shell-completion.bun.ts`),
-					`bash`,
-					path.join(directory, `bash`),
-					path.join(directory, `output-${counter++}.json`),
-					`comline-fixture pr list --base ${prefix}\t --confirm \t`,
-				],
+			const result = runLineEditor(
+				`bash`,
+				`comline-fixture pr list --base ${prefix}\t --confirm \t`,
+				`global`,
 				{ ...mode(`global`), LC_ALL: locale },
 			)
 			expect(JSON.parse(result).opts).toEqual({
@@ -387,19 +360,13 @@ describe(`global`, { timeout: 30_000 }, () => {
 		expect(next).toMatchObject([{ display: `closed` }])
 	})
 
-	test.each([`bash`, `zsh`, `fish`, `nu`, `nu-carapace`, `nu-cobra`])(
+	test.each(interactiveShells)(
 		`%s completes the installation command`,
 		(shell) => {
-			const result = run(
-				`bun`,
-				[
-					path.join(import.meta.dirname, `../fixtures/shell-completion.bun.ts`),
-					shell,
-					path.join(directory, shell === `nu` ? `nushell` : shell),
-					path.join(directory, `output-${counter++}.json`),
-					`comline-fixture co\tin\tba\t`,
-				],
-				mode(`global`),
+			const result = runLineEditor(
+				shell,
+				`comline-fixture co\tin\tba\t`,
+				`global`,
 			)
 			expect(JSON.parse(result).response).toContain(
 				path.join(
@@ -420,7 +387,7 @@ describe(`global`, { timeout: 30_000 }, () => {
 		},
 	)
 
-	test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
+	test.each(completionTargets)(
 		`%s library installation replaces its file and preserves shell profiles`,
 		async (shell) => {
 			// CLI installation is exercised by setup and the line-editor tests. Also
@@ -486,16 +453,10 @@ describe(`global`, { timeout: 30_000 }, () => {
 	})
 
 	test(`Fish repeated Tab completion never selects a fabricated value`, () => {
-		const result = run(
-			`bun`,
-			[
-				path.join(import.meta.dirname, `../fixtures/shell-completion.bun.ts`),
-				`fish`,
-				path.join(directory, `fish`),
-				path.join(directory, `output-${counter++}.json`),
-				`comline-fixture pr list --token pla\t\t\t`,
-			],
-			mode(`global`),
+		const result = runLineEditor(
+			`fish`,
+			`comline-fixture pr list --token pla\t\t\t`,
+			`global`,
 		)
 		expect(JSON.parse(result).opts).toEqual({ token: `plain` })
 	})
@@ -542,19 +503,13 @@ describe(`global`, { timeout: 30_000 }, () => {
 // Packaging needs discovery and execution coverage for every consumer, while the
 // detailed quoting, spacing, and installation scenarios run once above.
 describe(`compiled`, { timeout: 30_000 }, () => {
-	test.each([`bash`, `zsh`, `fish`, `nu`, `nu-carapace`, `nu-cobra`])(
+	test.each(interactiveShells)(
 		`%s discovers the installed integration and completes a value`,
 		(shell) => {
-			const result = run(
-				`bun`,
-				[
-					path.join(import.meta.dirname, `../fixtures/shell-completion.bun.ts`),
-					shell,
-					path.join(directory, shell === `nu` ? `nushell` : shell),
-					path.join(directory, `output-${counter++}.json`),
-					`comline-fixture pr list --state cl\t`,
-				],
-				mode(`compiled`),
+			const result = runLineEditor(
+				shell,
+				`comline-fixture pr list --state cl\t`,
+				`compiled`,
 			)
 			expect(inputValues(JSON.parse(result))).toEqual(
 				inputValues({
@@ -688,7 +643,7 @@ test(`Fish installation fails if its user vendor directory is not searched`, () 
 	)
 })
 
-test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`])(
+test.each(completionTargets)(
 	`installation explains a missing %s executable`,
 	(target) => {
 		expect(() =>
@@ -749,22 +704,7 @@ test(`installation refuses a symlink without changing its target`, () => {
 test.each([`nushell`, `carapace`] as const)(
 	`%s discovers custom XDG paths containing spaces`,
 	(target) => {
-		const config = path.join(directory, `custom config`)
-		const data = path.join(directory, `custom data`)
-		const env = {
-			...mode(`compiled`),
-			XDG_CONFIG_HOME: config,
-			XDG_DATA_HOME: data,
-		}
-		mkdirSync(path.join(config, `nushell`), { recursive: true })
-		writeFileSync(
-			path.join(config, `nushell/config.nu`),
-			`print "startup output"\n`,
-		)
-		const expected =
-			target === `nushell`
-				? path.join(data, `nushell/vendor/autoload/comline-fixture.nu`)
-				: path.join(config, `carapace/specs/comline-fixture.yaml`)
+		const { env, expected } = prepareCustomXdgPaths(target)
 		run(`comline-fixture`, [`completion`, `install`, target], env)
 		expect(existsSync(expected)).toBe(true)
 		expect(completeInstalledValue(target, `compiled`, env)).toBe(`closed`)
@@ -920,24 +860,8 @@ test(`Bash installation rejects an extensionless completion in the destination d
 test.each([`bash`, `zsh`] as const)(
 	`%s discovers completion settings from login startup`,
 	(shell) => {
-		const profile = path.join(
-			directory,
-			shell === `bash` ? `home/.bash_profile` : `zsh-config/.zprofile`,
-		)
-		const rc = path.join(
-			directory,
-			shell === `bash` ? `home/.bashrc` : `zsh-config/.zshrc`,
-		)
-		const custom = path.join(directory, `${shell}-login-completions`)
-		mkdirSync(custom)
-		const script =
-			shell === `bash`
-				? `source '${rc}'\nBASH_COMPLETION_USER_DIR='${custom}'\nexport -n BASH_COMPLETION_USER_DIR\n`
-				: `fpath=('${custom}' $fpath)\n`
-		const startup =
-			shell === `bash`
-				? readFileSync(rc, `utf8`)
-				: `autoload -Uz compinit; compinit -i -D\n`
+		const { profile, rc, custom, script, startup } =
+			prepareLoginCompletionPaths(shell)
 		withProfile(profile, script, () => {
 			withProfile(rc, startup, () => {
 				const file = path.join(
