@@ -429,6 +429,24 @@ test.each([
 	},
 )
 
+test(`command presentation is deferred until a warning and reused within an invocation`, () => {
+	const stringify = vi.spyOn(JSON, `stringify`)
+	const commandFormats = () =>
+		stringify.mock.calls.filter(([value]) => value === `probe show alice`)
+	try {
+		expect(testCli(argv(`show`, `alice`)).warnings).toEqual([])
+		expect(commandFormats()).toHaveLength(0)
+		const warnings = testCli(argv(`show`, `alice`, `--bad`, `--other`)).warnings
+		expect(warnings.map(({ message }) => message)).toEqual([
+			`Unknown option "--bad" for command "probe show alice".`,
+			`Unknown option "--other" for command "probe show alice".`,
+		])
+		expect(commandFormats()).toHaveLength(1)
+	} finally {
+		stringify.mockRestore()
+	}
+})
+
 test(`the internal presentation factory owns escaped messages without expanding the public API`, () => {
 	expect(presentation.createWarningFactory).toBeTypeOf(`function`)
 	const context = {

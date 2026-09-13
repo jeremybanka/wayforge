@@ -25,24 +25,25 @@ function quoteDiagnosticText(text: string): string {
 	)
 }
 
-/** @internal Assemble presentation once per command without changing raw diagnostic fields. */
+/** @internal Format the command on its first warning, preserving raw diagnostic fields. */
 export function createWarningFactory(
 	context: Pick<CliWarning, `cliName` | `route` | `path`>,
 ): (code: CliWarning[`code`], option: string, index: number) => CliWarning {
-	const command = quoteDiagnosticText(
-		[context.cliName, ...context.path].join(` `),
-	)
-	return (code, option, index) => ({
-		...context,
-		code,
-		option,
-		index,
-		path: [...context.path],
-		message:
-			code === `unknown-option`
-				? `Unknown option ${quoteDiagnosticText(option)} for command ${command}.`
-				: `Option ${quoteDiagnosticText(option)} is not valid for command ${command}.`,
-	})
+	let command: string | undefined
+	return (code, option, index) => {
+		command ??= quoteDiagnosticText([context.cliName, ...context.path].join(` `))
+		return {
+			...context,
+			code,
+			option,
+			index,
+			path: [...context.path],
+			message:
+				code === `unknown-option`
+					? `Unknown option ${quoteDiagnosticText(option)} for command ${command}.`
+					: `Option ${quoteDiagnosticText(option)} is not valid for command ${command}.`,
+		}
+	}
 }
 
 export type WarningFormatOptions = {
