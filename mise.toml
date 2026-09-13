@@ -1,6 +1,8 @@
 [tools]
 bun = "1.4.2"
 carapace = "1.7.3"
+# Source the library without adding the archive's build scripts to PATH.
+"github:scop/bash-completion" = { version = "2.17.0", asset_pattern = "bash-completion-*.tar.xz", filter_bins = "" }
 "github:fish-shell/fish-shell" = "4.9.3"
 go = "1.27.1"
 ni = "30.5.0"
@@ -8,3 +10,7 @@ node = "26.8.2"
 "aqua:nushell/nushell" = "0.115.1"
 pnpm = "12.4.1"
 ripgrep = "15.2.0"
+
+[env]
+# Jobs that install only a subset of tools may not have bash-completion.
+BASH_COMPLETION_FILE = { value = "{% if tools['github:scop/bash-completion'] is defined %}{{ tools['github:scop/bash-completion'].path }}/bash_completion{% else %}/usr/share/bash-completion/bash_completion{% endif %}", tools = true }
