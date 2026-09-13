@@ -216,3 +216,32 @@ it(`preserves the last valid recovery record when its replacement is only partia
 		await readFile(path.join(repository, `old/public.test.js`), `utf8`),
 	).toBe(`current`)
 })
+
+for (const contents of [
+	`{`,
+	`null`,
+	`{}`,
+	JSON.stringify({ pid: process.pid, paths: [`.`], head: `a`.repeat(40) }),
+]) {
+	it(`identifies a corrupt recovery record: ${contents}`, async () => {
+		const directory = path.join(repository, `.git/break-check`)
+		await mkdir(directory)
+		const recordPath = path.join(directory, `broken.json`)
+		await writeFile(recordPath, contents)
+		await writeFile(path.join(repository, `README.md`), `uncommitted`)
+		const failure = await withTestFileState(
+			simpleGit(repository),
+			repository,
+			(state) => state.isClean(),
+		).catch((thrown: unknown) => thrown)
+		expect(failure).toBeInstanceOf(Error)
+		expect(String(failure)).toContain(`unreadable or invalid`)
+		expect(String(failure)).toContain(recordPath)
+		expect(String(failure)).toContain(`recover its test files before removing`)
+		expect(await readFile(recordPath, `utf8`)).toBe(contents)
+		expect(await readFile(path.join(repository, `README.md`), `utf8`)).toBe(
+			`uncommitted`,
+		)
+		expect(await readdir(directory)).toEqual([`broken.json`])
+	})
+}
