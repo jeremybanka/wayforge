@@ -30,9 +30,17 @@ beforeAll(() => {
 	for (const tool of [`go`, `bun`, `node`]) {
 		run(tool, tool === `go` ? [`version`] : [`--version`])
 	}
+	// The temporary protocol oracle needs no repository metadata. Worktree Git
+	// directories may be outside the filesystem visible to a sandboxed runner.
 	run(
 		`go`,
-		[`build`, `-o`, path.join(directory, `cobra-oracle`), `.`],
+		[
+			`build`,
+			`-buildvcs=false`,
+			`-o`,
+			path.join(directory, `cobra-oracle`),
+			`.`,
+		],
 		path.join(import.meta.dirname, `../fixtures/cobra`),
 	)
 	const fixture = path.join(import.meta.dirname, `../fixtures/completion.x.ts`)
