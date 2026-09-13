@@ -1,0 +1,6 @@
+{
+	"tagPattern": "refs/tags/comline@",
+	"testPattern": "__tests__/{public,fixtures}/**/*",
+	"testCommand": "pnpm test:once:public",
+	"certifyCommand": "grep -q -E '^\"comline\": (minor|major)$' ../../.changeset/*.md"
+}
