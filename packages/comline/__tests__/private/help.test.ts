@@ -1,20 +1,14 @@
-import { type } from "arktype"
-
-import {
-	cli,
-	noOptions,
-	optional,
-	options,
-	parseNumberOption,
-	parseStringOption,
-	required,
-} from "../../src/cli"
 import type { TerminalColors } from "../../src/help"
-import { help, helpOption, renderTable } from "../../src/help"
-import type { JsonSchema, OptionsSchema } from "../../src/schema"
+import { help, renderTable } from "../../src/help"
+import {
+	createHelpCli,
+	propertySchemas,
+	renderPropertyHelp,
+	renderRefinedSchemaHelp,
+} from "../fixtures/help-cases"
 
 describe(`renderTable`, () => {
-	it(`applies custom foreground and background colors inside padding`, () => {
+	it(`nests foreground inside background color markers`, () => {
 		const colors = {
 			green: (text: string) => `<green>${text}</green>`,
 			bgBlue: (text: string) => `<blue>${text}</blue>`,
@@ -34,7 +28,7 @@ describe(`renderTable`, () => {
 		).toBe(`[<blue><green>hello</green></blue>]\n`)
 	})
 
-	it(`renders an empty table without formatting any cells`, () => {
+	it(`uses the exact empty-command help layout`, () => {
 		expect(
 			help({ cliName: `empty`, routeOptions: {} }, { forceColor: false }),
 		).toBe(`empty cli \n\nUSAGE\n`)
@@ -42,41 +36,8 @@ describe(`renderTable`, () => {
 })
 
 describe(`help`, () => {
-	const testCli = cli({
-		cliName: `greasy-hands`,
-		cliDescription: `...when your hands are greasy, they leave streaks everywhere`,
-		routes: optional({
-			"apply-more-grease": null,
-			touch: required({
-				$target: null,
-			}),
-		}),
-		routeOptions: {
-			"": helpOption(`rub your greasy hands together`),
-			"apply-more-grease": options(
-				`put grease on your hands`,
-				type({ type: `string`, "amount?": `number` }),
-				{
-					type: {
-						description: `the type of grease to apply`,
-						example: `--grease-type=motor-oil`,
-						flag: `t`,
-						parse: parseStringOption,
-						required: true,
-					},
-					amount: {
-						description: `the amount of grease to apply`,
-						example: `--amount=1`,
-						flag: `m`,
-						parse: parseNumberOption,
-						required: false,
-					},
-				},
-			),
-			"touch/$target": noOptions(`touch the target and get it all greased up`),
-		},
-	})
-	it(`represents the help text for a cli`, () => {
+	const testCli = createHelpCli()
+	it(`matches the complete colored help snapshot`, () => {
 		const manual = help(testCli.definition, { forceColor: true })
 		expect(manual).toMatchInlineSnapshot(
 			`"` +
@@ -93,67 +54,17 @@ describe(`help`, () => {
 		)
 	})
 
-	it.each<[string, JsonSchema | undefined, string]>([
-		[`nullable types`, { type: [`string`, `null`] }, `string | null`],
-		[`enumerated values`, { enum: [`fast`, `slow`] }, `"fast" | "slow"`],
-		[`constant values`, { const: 0 }, `0`],
-		[
-			`complex schemas`,
-			{ anyOf: [{ type: `string` }, { type: `number` }] },
-			`unknown`,
-		],
-		[`missing property schemas`, undefined, `unknown`],
-	])(`describes %s in plain help text`, (_label, propertySchema, expected) => {
-		const jsonSchema = {
-			type: `object`,
-			properties: propertySchema ? { value: propertySchema } : {},
-		}
-		const schema: OptionsSchema<{ value?: string }> = {
-			"~standard": {
-				version: 1,
-				vendor: `test`,
-				validate: () => ({ value: {} }),
-				jsonSchema: { input: () => jsonSchema, output: () => jsonSchema },
-			},
-		}
-		const manual = help(
-			{
-				cliName: `schema-cli`,
-				routeOptions: {
-					"": options(``, schema, {
-						value: {
-							required: false,
-							description: `value to use`,
-							example: `--value=example`,
-						},
-					}),
-				},
-			},
-			{ forceColor: false },
-		)
+	it.each(propertySchemas)(
+		`formats %s with the exact type-label punctuation`,
+		(_label, propertySchema, expected) => {
+			const manual = renderPropertyHelp(propertySchema)
 
-		expect(manual).toContain(`${expected}: value to use`)
-	})
+			expect(manual).toContain(`${expected}: value to use`)
+		},
+	)
 
-	it(`keeps help available when a schema cannot export JSON Schema`, () => {
-		const schema = type({
-			value: type(`string`).narrow((value) => value.startsWith(`x`)),
-		})
-		const manual = help(
-			{
-				cliName: `refined-cli`,
-				routeOptions: {
-					"": options(``, schema, {
-						value: {
-							required: true,
-							description: `value to use`,
-							example: `--value=example`,
-						},
-					}),
-				},
-			},
-			{ forceColor: false },
-		)
+	it(`labels an unexportable schema as unknown in help`, () => {
+		const manual = renderRefinedSchemaHelp()
 
 		expect(manual).toContain(`unknown (required): value to use`)
 	})

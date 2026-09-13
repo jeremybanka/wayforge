@@ -1,26 +1,16 @@
 import { required } from "treetrunks"
-import z from "zod"
 
-import { cli, options, parseNumberOption } from "../../src/cli"
+import { cli } from "../../src/cli"
 import { argv } from "../fixtures/argv"
+import {
+	createDelimiterOptions,
+	literalOptionTokens,
+} from "../fixtures/invocation-cases"
 
-const optionGroup = options(
-	`delimiter test`,
-	z.object({ name: z.string().optional(), count: z.number().optional() }),
-	{
-		name: { description: `name`, example: ``, required: false, flag: `n` },
-		count: {
-			description: `count`,
-			example: ``,
-			required: false,
-			flag: `c`,
-			parse: parseNumberOption,
-		},
-	},
-)
+const optionGroup = createDelimiterOptions()
 
-test.each([`--name=after`, `-n`, `-ncc`, `--`])(
-	`preserves routes before the delimiter and literal positionals after it: %s`,
+test.each(literalOptionTokens)(
+	`uses the exact routed input record after a delimiter: %s`,
 	(token) => {
 		const routedCli = cli({
 			cliName: `probe`,

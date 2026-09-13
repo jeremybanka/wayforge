@@ -9,11 +9,15 @@ import z from "zod"
 import { cli, options } from "../../src/cli"
 import { parseStringOption } from "../../src/option-parsers"
 import { argv } from "../fixtures/argv"
+import {
+	configSchemas,
+	createConfigSchemaCli,
+	writeExampleSchema,
+} from "../fixtures/schema-cases"
 
 let tempDir: string
 
-// oxlint-disable-next-line typescript/require-await
-beforeEach(async () => {
+beforeEach(() => {
 	tempDir = fs.mkdtempSync(path.join(tmpdir(), `comline-`))
 })
 afterEach(() => {
@@ -61,33 +65,9 @@ describe(`options from file`, () => {
 })
 
 describe(`creating a config schema`, () => {
-	const optionConfigs = {
-		foo: {
-			description: `foo`,
-			example: `--foo=hello`,
-			flag: `f` as const,
-			parse: parseStringOption,
-			required: true,
-		},
-	}
-	const arktypeTestCli = cli({
-		cliName: `my-cli`,
-		routeOptions: {
-			"": options(`blah`, type({ foo: `string` }), optionConfigs),
-		},
-	})
-	const zodTestCli = cli({
-		cliName: `my-cli`,
-		routeOptions: {
-			"": options(`blah`, z.object({ foo: z.string() }), optionConfigs),
-		},
-	})
-	function expectWritesUsableSchema(testCli: ReturnType<typeof cli>): void {
-		const { writeJsonSchema } = testCli(argv(`--foo=hello`))
-		writeJsonSchema(`${tempDir}`)
-		const jsonSchemaContents = JSON.parse(
-			fs.readFileSync(`${tempDir}/my-cli.main.schema.json`, `utf-8`),
-		)
+	test.each(configSchemas)(`exports a usable $name schema`, ({ schema }) => {
+		const testCli = createConfigSchemaCli(schema)
+		const jsonSchemaContents = writeExampleSchema(testCli, tempDir)
 		const validator = z.fromJSONSchema(jsonSchemaContents)
 		expect(validator.safeParse({ foo: `hello` }).success).toBe(true)
 		expect(validator.safeParse({ foo: `` }).success).toBe(true)
@@ -96,11 +76,5 @@ describe(`creating a config schema`, () => {
 		expect(validator.safeParse({ foo: `hello`, extra: true }).success).toBe(
 			false,
 		)
-	}
-	test(`happy: export an arktype schema`, () => {
-		expectWritesUsableSchema(arktypeTestCli)
-	})
-	test(`happy: export a zod schema`, () => {
-		expectWritesUsableSchema(zodTestCli)
 	})
 })

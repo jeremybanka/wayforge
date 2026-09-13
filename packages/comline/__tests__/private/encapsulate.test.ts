@@ -11,7 +11,7 @@ afterEach(() => {
 })
 
 describe(`encapsulate`, () => {
-	it(`decodes byte writes and calls both supported callback forms`, () => {
+	it(`write replacements return true and invoke callbacks with one undefined argument`, () => {
 		const callback = vi.fn()
 		const encodedCallback = vi.fn()
 		encapsulate(() => {

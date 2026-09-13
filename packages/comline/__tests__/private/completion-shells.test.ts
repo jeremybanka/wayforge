@@ -12,10 +12,17 @@ import {
 	completionScript,
 	installCompletion,
 } from "../../src/completion-transport"
-
-let counter = 0
-
-import { directory, mode, run, withProfile } from "../fixtures/completion-shells"
+import {
+	completionTargets,
+	directory,
+	interactiveShells,
+	mode,
+	prepareCustomXdgPaths,
+	prepareLoginCompletionPaths,
+	run,
+	runLineEditor,
+	withProfile,
+} from "../fixtures/completion-shells"
 
 beforeAll(() => {
 	const version = run(`fish`, [`--version`])
@@ -26,19 +33,13 @@ beforeAll(() => {
 })
 
 describe(`global`, { timeout: 30_000 }, () => {
-	test.each([`bash`, `zsh`, `fish`, `nu`, `nu-carapace`, `nu-cobra`])(
-		`%s completes the installation command`,
+	test.each(interactiveShells)(
+		`%s prints the exact installation confirmation after command completion`,
 		(shell) => {
-			const result = run(
-				`bun`,
-				[
-					path.join(import.meta.dirname, `../fixtures/shell-completion.bun.ts`),
-					shell,
-					path.join(directory, shell === `nu` ? `nushell` : shell),
-					path.join(directory, `output-${counter++}.json`),
-					`comline-fixture co\tin\tba\t`,
-				],
-				mode(`global`),
+			const result = runLineEditor(
+				shell,
+				`comline-fixture co\tin\tba\t`,
+				`global`,
 			)
 			expect(JSON.parse(result).response).toBe(
 				`Installed completions at ${path.join(directory, `global`, `bash-completion/completions/comline-fixture.bash`)}\n`,
@@ -46,8 +47,8 @@ describe(`global`, { timeout: 30_000 }, () => {
 		},
 	)
 
-	test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
-		`%s library installation replaces its file and preserves shell profiles`,
+	test.each(completionTargets)(
+		`%s library installation writes and replaces with exact generator bytes`,
 		async (shell) => {
 			// CLI installation is exercised by setup and the line-editor tests. Also
 			// exercise the public library entry point, which V8 can measure directly.
@@ -70,7 +71,7 @@ describe(`global`, { timeout: 30_000 }, () => {
 	)
 
 	test.each([`comline-fixture`, `cobra-fixture`])(
-		`Carapace reads %s and renders Nushell candidates`,
+		`Carapace orders %s candidates and places the description on the first result`,
 		(name) => {
 			const result = JSON.parse(
 				run(
@@ -88,22 +89,16 @@ describe(`global`, { timeout: 30_000 }, () => {
 	)
 
 	test(`Fish uses native spacing for a plain candidate`, () => {
-		const result = run(
-			`bun`,
-			[
-				path.join(import.meta.dirname, `../fixtures/shell-completion.bun.ts`),
-				`fish`,
-				path.join(directory, `fish`),
-				path.join(directory, `output-${counter++}.json`),
-				`comline-fixture pr list --token pla\t--base main`,
-			],
-			mode(`global`),
+		const result = runLineEditor(
+			`fish`,
+			`comline-fixture pr list --token pla\t--base main`,
+			`global`,
 		)
 		expect(JSON.parse(result).opts).toEqual({ token: `plain`, base: `main` })
 	})
 
-	test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
-		`the executable ships its %s integration`,
+	test.each(completionTargets)(
+		`the executable emits the exact %s generator bytes`,
 		(target) => {
 			expect(
 				run(`comline-fixture`, [`completion`, target], mode(`global`)),
@@ -115,19 +110,13 @@ describe(`global`, { timeout: 30_000 }, () => {
 // Packaging needs discovery and execution coverage for every consumer, while the
 // detailed quoting, spacing, and installation scenarios run once above.
 describe(`compiled`, { timeout: 30_000 }, () => {
-	test.each([`bash`, `zsh`, `fish`, `nu`, `nu-carapace`, `nu-cobra`])(
-		`%s discovers the installed integration and completes a value`,
+	test.each(interactiveShells)(
+		`%s completion produces the exact compiled CLI response shape`,
 		(shell) => {
-			const result = run(
-				`bun`,
-				[
-					path.join(import.meta.dirname, `../fixtures/shell-completion.bun.ts`),
-					shell,
-					path.join(directory, shell === `nu` ? `nushell` : shell),
-					path.join(directory, `output-${counter++}.json`),
-					`comline-fixture pr list --state cl\t`,
-				],
-				mode(`compiled`),
+			const result = runLineEditor(
+				shell,
+				`comline-fixture pr list --state cl\t`,
+				`compiled`,
 			)
 			expect(JSON.parse(result)).toEqual({
 				case: `pr/list`,
@@ -136,8 +125,8 @@ describe(`compiled`, { timeout: 30_000 }, () => {
 			})
 		},
 	)
-	test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`] as const)(
-		`the executable ships its %s integration`,
+	test.each(completionTargets)(
+		`the executable emits the exact %s generator bytes`,
 		(target) => {
 			expect(
 				run(`comline-fixture`, [`completion`, target], mode(`compiled`)),
@@ -146,7 +135,7 @@ describe(`compiled`, { timeout: 30_000 }, () => {
 	)
 })
 
-test(`Bash installation checks that bash-completion is enabled`, () => {
+test(`Bash names bash-completion in its missing-initialization error`, () => {
 	withProfile(
 		path.join(directory, `home/.bashrc`),
 		`unset -f _get_comp_words_by_ref _filedir\n`,
@@ -162,7 +151,7 @@ test(`Bash installation checks that bash-completion is enabled`, () => {
 	)
 })
 
-test(`Bash discovers unexported user directory settings and creates missing directories`, () => {
+test(`Bash uses exact confirmation wording and generator bytes for an unexported spaced path`, () => {
 	const rc = path.join(directory, `home/.bashrc`)
 	const custom = path.join(directory, `custom bash completions`)
 	withProfile(
@@ -185,7 +174,7 @@ test(`Bash discovers unexported user directory settings and creates missing dire
 	)
 })
 
-test(`Zsh installation requires completion initialization`, () => {
+test(`Zsh names completion initialization in its error`, () => {
 	const rc = path.join(directory, `zsh-config/.zshrc`)
 	withProfile(rc, readFileSync(rc, `utf8`) + `unfunction compdef\n`, () => {
 		expect(() =>
@@ -194,7 +183,7 @@ test(`Zsh installation requires completion initialization`, () => {
 	})
 })
 
-test(`Zsh installation fails when its search path has no writable directory`, () => {
+test(`Zsh uses the no-writable-directory error wording`, () => {
 	const rc = path.join(directory, `zsh-config/.zshrc`)
 	const readonly = path.join(directory, `readonly-functions`)
 	mkdirSync(readonly)
@@ -214,7 +203,7 @@ test(`Zsh installation fails when its search path has no writable directory`, ()
 	}
 })
 
-test(`Fish installation respects a higher-priority user completion`, () => {
+test(`Fish describes a higher-priority completion as taking precedence`, () => {
 	const completions = path.join(directory, `config/fish/completions`)
 	mkdirSync(completions, { recursive: true })
 	const override = path.join(completions, `comline-fixture.fish`)
@@ -228,7 +217,7 @@ test(`Fish installation respects a higher-priority user completion`, () => {
 	}
 })
 
-test(`Fish installation fails if its user vendor directory is not searched`, () => {
+test(`Fish uses the no-writable-directory error wording for an unsearched vendor path`, () => {
 	withProfile(
 		path.join(directory, `config/fish/config.fish`),
 		`set fish_complete_path '${directory}/custom-fish-path'\n`,
@@ -244,8 +233,8 @@ test(`Fish installation fails if its user vendor directory is not searched`, () 
 	)
 })
 
-test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`])(
-	`installation explains a missing %s executable`,
+test.each(completionTargets)(
+	`installation names the missing %s executable in its error`,
 	(target) => {
 		expect(() =>
 			run(
@@ -257,7 +246,7 @@ test.each([`bash`, `zsh`, `fish`, `nushell`, `carapace`])(
 	},
 )
 
-test(`Bash installation falls back to its XDG user directory`, () => {
+test(`Bash uses exact confirmation wording and generator bytes for the XDG destination`, () => {
 	const env = { ...mode(`global`), BASH_COMPLETION_USER_DIR: undefined }
 	const file = path.join(
 		directory,
@@ -271,7 +260,7 @@ test(`Bash installation falls back to its XDG user directory`, () => {
 	)
 })
 
-test(`Zsh installation rejects insecure completion directories`, () => {
+test(`Zsh describes insecure directories as having no writable destination`, () => {
 	const rc = path.join(directory, `zsh-config/.zshrc`)
 	const insecure = path.join(directory, `insecure-install-functions`)
 	mkdirSync(insecure)
@@ -283,7 +272,7 @@ test(`Zsh installation rejects insecure completion directories`, () => {
 	})
 })
 
-test(`installation refuses a symlink without changing its target`, () => {
+test(`installation describes a symlink destination as not a regular file`, () => {
 	const file = path.join(
 		directory,
 		`global/bash-completion/completions/comline-fixture.bash`,
@@ -304,24 +293,9 @@ test(`installation refuses a symlink without changing its target`, () => {
 })
 
 test.each([`nushell`, `carapace`] as const)(
-	`%s discovers custom XDG paths containing spaces`,
+	`%s uses exact confirmation wording and generator bytes for spaced XDG paths`,
 	(target) => {
-		const config = path.join(directory, `custom config`)
-		const data = path.join(directory, `custom data`)
-		const env = {
-			...mode(`compiled`),
-			XDG_CONFIG_HOME: config,
-			XDG_DATA_HOME: data,
-		}
-		mkdirSync(path.join(config, `nushell`), { recursive: true })
-		writeFileSync(
-			path.join(config, `nushell/config.nu`),
-			`print "startup output"\n`,
-		)
-		const expected =
-			target === `nushell`
-				? path.join(data, `nushell/vendor/autoload/comline-fixture.nu`)
-				: path.join(config, `carapace/specs/comline-fixture.yaml`)
+		const { env, expected } = prepareCustomXdgPaths(target)
 		expect(run(`comline-fixture`, [`completion`, `install`, target], env)).toBe(
 			`Installed completions at ${expected}\n`,
 		)
@@ -332,7 +306,7 @@ test.each([`nushell`, `carapace`] as const)(
 )
 
 test.each([`nushell`, `carapace`] as const)(
-	`%s refuses an unwritable destination`,
+	`%s uses the no-writable-directory error wording`,
 	(target) => {
 		const readonly = path.join(directory, `readonly-${target}`)
 		mkdirSync(readonly)
@@ -354,7 +328,7 @@ test.each([`nushell`, `carapace`] as const)(
 )
 
 test.each([`system-data/nushell/vendor/autoload`, `config/nushell/autoload`])(
-	`Nushell refuses a duplicate registration in %s`,
+	`Nushell describes a duplicate registration in %s as also autoloaded`,
 	(relative) => {
 		const folder = path.join(directory, relative)
 		mkdirSync(folder, { recursive: true })
@@ -374,7 +348,7 @@ test.each([`system-data/nushell/vendor/autoload`, `config/nushell/autoload`])(
 	},
 )
 
-test(`Nushell preserves an explicit setting disabling external completions`, () => {
+test(`Nushell names disabled external completions in its error`, () => {
 	const config = path.join(directory, `config/nushell/config.nu`)
 	withProfile(
 		config,
@@ -393,7 +367,7 @@ test(`Nushell preserves an explicit setting disabling external completions`, () 
 })
 
 test.each([`nushell`, `carapace`] as const)(
-	`%s installation needs only its own consumer on PATH`,
+	`%s uses the installation confirmation prefix with only its own consumer on PATH`,
 	(target) => {
 		const bin = path.join(directory, `only-${target}`)
 		mkdirSync(bin)
@@ -417,7 +391,7 @@ test.each([`nushell`, `carapace`] as const)(
 	},
 )
 
-test(`Bash installation rejects an extensionless completion in the destination directory`, () => {
+test(`Bash reports precedence for an extensionless completion already loaded`, () => {
 	const folder = path.join(directory, `compiled/bash-completion/completions`)
 	const override = path.join(folder, `comline-fixture`)
 	writeFileSync(override, `complete -W old-completion comline-fixture\n`)
@@ -447,26 +421,10 @@ test(`Bash installation rejects an extensionless completion in the destination d
 })
 
 test.each([`bash`, `zsh`] as const)(
-	`%s discovers completion settings from login startup`,
+	`%s uses exact confirmation wording and generator bytes for login settings`,
 	(shell) => {
-		const profile = path.join(
-			directory,
-			shell === `bash` ? `home/.bash_profile` : `zsh-config/.zprofile`,
-		)
-		const rc = path.join(
-			directory,
-			shell === `bash` ? `home/.bashrc` : `zsh-config/.zshrc`,
-		)
-		const custom = path.join(directory, `${shell}-login-completions`)
-		mkdirSync(custom)
-		const script =
-			shell === `bash`
-				? `source '${rc}'\nBASH_COMPLETION_USER_DIR='${custom}'\nexport -n BASH_COMPLETION_USER_DIR\n`
-				: `fpath=('${custom}' $fpath)\n`
-		const startup =
-			shell === `bash`
-				? readFileSync(rc, `utf8`)
-				: `autoload -Uz compinit; compinit -i -D\n`
+		const { profile, rc, custom, script, startup } =
+			prepareLoginCompletionPaths(shell)
 		withProfile(profile, script, () => {
 			withProfile(rc, startup, () => {
 				const file = path.join(
@@ -490,7 +448,7 @@ test.each([`bash`, `zsh`] as const)(
 	},
 )
 
-test(`Bash discovery falls back to non-login initialization`, () => {
+test(`Bash uses exact confirmation wording after non-login fallback`, () => {
 	withProfile(
 		path.join(directory, `home/.bash_profile`),
 		`unset -f _get_comp_words_by_ref _filedir\n`,

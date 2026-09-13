@@ -264,3 +264,82 @@ export function withProfile(
 		writeFileSync(file, previous)
 	}
 }
+
+export const completionTargets = [
+	`bash`,
+	`zsh`,
+	`fish`,
+	`nushell`,
+	`carapace`,
+] as const
+export const interactiveShells = [
+	`bash`,
+	`zsh`,
+	`fish`,
+	`nu`,
+	`nu-carapace`,
+	`nu-cobra`,
+] as const
+
+let lineEditorCounter = 0
+
+export function runLineEditor(
+	shell: string,
+	line: string,
+	kind: `global` | `compiled`,
+	env: NodeJS.ProcessEnv = mode(kind),
+): string {
+	return run(
+		`bun`,
+		[
+			path.join(import.meta.dirname, `shell-completion.bun.ts`),
+			shell,
+			path.join(directory, shell === `nu` ? `nushell` : shell),
+			path.join(directory, `output-${lineEditorCounter++}.json`),
+			line,
+		],
+		env,
+	)
+}
+
+export function prepareCustomXdgPaths(target: `nushell` | `carapace`) {
+	const config = path.join(directory, `custom config`)
+	const data = path.join(directory, `custom data`)
+	const env = {
+		...mode(`compiled`),
+		XDG_CONFIG_HOME: config,
+		XDG_DATA_HOME: data,
+	}
+	mkdirSync(path.join(config, `nushell`), { recursive: true })
+	writeFileSync(
+		path.join(config, `nushell/config.nu`),
+		`print "startup output"\n`,
+	)
+	const expected =
+		target === `nushell`
+			? path.join(data, `nushell/vendor/autoload/comline-fixture.nu`)
+			: path.join(config, `carapace/specs/comline-fixture.yaml`)
+	return { env, expected }
+}
+
+export function prepareLoginCompletionPaths(shell: `bash` | `zsh`) {
+	const profile = path.join(
+		directory,
+		shell === `bash` ? `home/.bash_profile` : `zsh-config/.zprofile`,
+	)
+	const rc = path.join(
+		directory,
+		shell === `bash` ? `home/.bashrc` : `zsh-config/.zshrc`,
+	)
+	const custom = path.join(directory, `${shell}-login-completions`)
+	mkdirSync(custom)
+	const script =
+		shell === `bash`
+			? `source '${rc}'\nBASH_COMPLETION_USER_DIR='${custom}'\nexport -n BASH_COMPLETION_USER_DIR\n`
+			: `fpath=('${custom}' $fpath)\n`
+	const startup =
+		shell === `bash`
+			? readFileSync(rc, `utf8`)
+			: `autoload -Uz compinit; compinit -i -D\n`
+	return { profile, rc, custom, script, startup }
+}

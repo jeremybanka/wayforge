@@ -1,5 +1,3 @@
-import { type } from "arktype"
-import { optional, required } from "treetrunks"
 import { vi } from "vitest"
 import z from "zod"
 
@@ -8,105 +6,16 @@ import {
 	complete,
 	type CompletionProviderContext,
 	options,
-	parseBooleanOption,
-	parseNumberOption,
 } from "../../src/cli"
 import { argv } from "../fixtures/argv"
+import {
+	createBooleanCompletionCli,
+	createCompletionFixture,
+} from "../fixtures/completion-cases"
 
-const shared = options(
-	`options`,
-	z.object({
-		repo: z.string().optional(),
-		state: z.enum([`open`, `closed`, `all`]).optional(),
-		draft: z.boolean().optional(),
-		count: z.number().optional(),
-		title: z.string().optional(),
-		base: z.string().optional(),
-		input: z.string().optional(),
-		source: z.string().optional(),
-	}),
-	{
-		repo: { description: `repository`, example: ``, required: false, flag: `R` },
-		state: {
-			description: `PR state`,
-			example: ``,
-			required: false,
-			flag: `s`,
-			aliases: [`pr-state`],
-		},
-		draft: {
-			description: `draft PR`,
-			example: ``,
-			required: false,
-			flag: `d`,
-			parse: parseBooleanOption,
-		},
-		count: {
-			description: `count`,
-			example: ``,
-			required: false,
-			flag: `c`,
-			parse: parseNumberOption,
-		},
-		title: {
-			description: `title`,
-			example: ``,
-			required: false,
-			flag: `t`,
-			completion: { repeatable: false },
-		},
-		base: {
-			description: `base branch`,
-			example: ``,
-			required: false,
-			completion: {
-				choices: [
-					{ value: `main`, description: `default branch` },
-					`feature/topic`,
-				],
-				appendSpace: false,
-			},
-		},
-		input: {
-			description: `input file`,
-			example: ``,
-			required: false,
-			completion: { fileSystem: `files` },
-		},
-		source: {
-			description: `source directory`,
-			example: ``,
-			required: false,
-			completion: { fileSystem: `directories` },
-		},
-	},
-)
-const definition = {
-	cliName: `fj`,
-	discoverConfigPath: () => undefined,
-	routes: required({
-		pr: required({ list: null, create: null }),
-		view: required({ $id: optional({ details: null }) }),
-		checkout: optional({ $ref: null }),
-	}),
-	routeOptions: {
-		"pr/list": { ...shared, description: `list pull requests` },
-		"pr/create": { ...shared, description: `create a pull request` },
-		"view/$id": shared,
-		"view/$id/details": shared,
-		checkout: shared,
-		"checkout/$ref": shared,
-	},
-	positionalCompletions: {
-		"view/$id": { choices: [`12`, `123`] },
-		"checkout/$ref": { choices: [`main`, `feature/topic`] },
-	},
-}
-const fj = cli(definition)
-const values = async (...words: string[]) =>
-	(await fj.complete({ words })).candidates.map(({ value }) => value)
+const { definition, fj, values } = createCompletionFixture()
 
-test(`completes commands while tolerating required route nodes`, async () => {
+test(`orders commands by declaration and uses an exact described candidate record`, async () => {
 	expect((await fj.complete({ words: [`pr`, `cr`] })).candidates).toEqual([
 		{ value: `create`, description: `create a pull request` },
 	])
@@ -115,7 +24,7 @@ test(`completes commands while tolerating required route nodes`, async () => {
 	expect(await values()).toEqual([`pr`, `view`, `checkout`])
 })
 
-test(`retains canonical option occurrences and actual positional values`, () => {
+test(`uses exact option occurrence records for aliases and grouped flags`, () => {
 	const result = fj.interpret({
 		words: [`-R`, `owner/repo`, `view`, `12`, `-ccc`, `--repo=second`, ``],
 	})
@@ -127,15 +36,15 @@ test(`retains canonical option occurrences and actual positional values`, () => 
 	])
 })
 
-test(`completes variable positionals and preserves their following command grammar`, async () => {
+test(`orders positional choices as declared`, async () => {
 	expect(await values(`view`, `1`)).toEqual([`12`, `123`])
 })
 
-test(`distinguishes an unfinished option prefix from a committed delimiter`, async () => {
+test(`keeps positional choice order after the delimiter`, async () => {
 	expect(await values(`view`, `--`, `1`)).toEqual([`12`, `123`])
 })
 
-test(`uses explicit replacement ranges and ignores words after the cursor`, async () => {
+test(`uses the exact replacement record shape for an earlier word`, async () => {
 	const result = await fj.complete({
 		words: [`pr`, `list`, `--state=clutter`, `--title`, `ignored`],
 		cursor: { word: 2, offset: 10 },
@@ -144,7 +53,7 @@ test(`uses explicit replacement ranges and ignores words after the cursor`, asyn
 	expect(result.context.replacement).toEqual({ word: 2, start: 8, end: 15 })
 })
 
-test(`does not discover config, convert options, validate schemas, or invoke providers during interpretation`, async () => {
+test(`omits extra fields from a scalar provider candidate`, async () => {
 	const parse = vi.fn((value: string) => value)
 	const provide = vi.fn(() => [`result`])
 	const discoverConfigPath = vi.fn(() => {
@@ -173,7 +82,7 @@ test(`does not discover config, convert options, validate schemas, or invoke pro
 	).toEqual([{ value: `result` }])
 })
 
-test(`dynamic providers receive raw options, positionals, target and cancellation signal`, async () => {
+test(`uses the exact candidate record returned by a contextual provider`, async () => {
 	const seen: CompletionProviderContext[] = []
 	const controller = new AbortController()
 	const result = await complete(
@@ -198,7 +107,7 @@ test(`dynamic providers receive raw options, positionals, target and cancellatio
 	])
 })
 
-test(`provider failures become diagnostics and cancellation discards results`, async () => {
+test(`uses the provider error message verbatim as a diagnostic`, async () => {
 	const failing = {
 		...definition,
 		positionalCompletions: {
@@ -226,29 +135,8 @@ test(`provider failures become diagnostics and cancellation discards results`, a
 	await complete(cancellable, { words: [`view`, ``], signal: controller.signal })
 })
 
-test(`derives choices from Arktype and supports explicit boolean consumption overrides`, async () => {
-	const probe = cli({
-		cliName: `probe`,
-		discoverConfigPath: () => undefined,
-		routes: required({ run: null }),
-		routeOptions: {
-			run: options(
-				``,
-				type({ "state?": `'on' | 'off'`, "enabled?": `boolean | string` }),
-				{
-					state: { description: ``, example: ``, required: false },
-					enabled: {
-						description: ``,
-						example: ``,
-						required: false,
-						parse: parseBooleanOption,
-						valueKind: `boolean`,
-						completion: { choices: [`true`, `false`] },
-					},
-				},
-			),
-		},
-	})
+test(`orders Arktype choices and includes an empty command description`, async () => {
+	const probe = createBooleanCompletionCli()
 	expect(
 		(await probe.complete({ words: [`run`, `--state=o`] })).candidates,
 	).toEqual([{ value: `off` }, { value: `on` }])
@@ -258,7 +146,7 @@ test(`derives choices from Arktype and supports explicit boolean consumption ove
 	).toEqual([{ value: `run`, description: `` }])
 })
 
-test(`completion exposes raw values while invocation converts them`, () => {
+test(`uses the exact converted invocation input record`, () => {
 	const words = [`-R`, `owner/repo`, `pr`, `create`, `--count`, `-1`]
 	expect(fj(argv(...words)).inputs).toEqual({
 		case: `pr/create`,
@@ -267,7 +155,7 @@ test(`completion exposes raw values while invocation converts them`, () => {
 	})
 })
 
-test(`uses explicit hints when JSON Schema export is unavailable`, async () => {
+test(`orders explicit hints as declared without extra candidate fields`, async () => {
 	const schema = z.object({ state: z.string().optional() })
 	const input = vi
 		.spyOn(schema[`~standard`].jsonSchema, `input`)

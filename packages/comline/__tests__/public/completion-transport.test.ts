@@ -1,17 +1,17 @@
 import { z } from "zod"
 
-import { cli, noOptions, optional, options, required } from "../../src/cli"
+import { cli, optional, options } from "../../src/cli"
 import {
 	completionResponse,
 	completionScript,
 } from "../../src/completion-transport"
 import { argv } from "../fixtures/argv"
+import {
+	createTransportDefinition,
+	managementCompletions,
+} from "../fixtures/transport-cases"
 
-const definition = {
-	cliName: `my-cli`,
-	routes: required({ closed: null }),
-	routeOptions: { closed: noOptions(`Closed pull requests`) },
-}
+const definition = createTransportDefinition()
 
 test(`Cobra requests return descriptions and a final directive`, async () => {
 	expect(await completionResponse(definition, argv(`__complete`, `cl`))).toBe(
@@ -142,17 +142,7 @@ test.each([
 	},
 )
 
-test.each([
-	{ words: [`co`], values: [`completion`] },
-	{
-		words: [`completion`, ``],
-		values: [`install`, `bash`, `zsh`, `fish`, `nushell`, `carapace`],
-	},
-	{ words: [`completion`, `install`, `b`], values: [`bash`] },
-	{ words: [`completion`, `nu`], values: [`nushell`] },
-	{ words: [`completion`, `install`, `unknown`], values: [] },
-	{ words: [`completion`, `bash`, ``], values: [] },
-])(
+test.each(managementCompletions)(
 	`completion management has its own opt-in grammar: $words`,
 	async ({ words, values }) => {
 		const response = await completionResponse(

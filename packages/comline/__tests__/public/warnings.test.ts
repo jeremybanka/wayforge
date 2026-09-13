@@ -13,7 +13,6 @@ import {
 	noOptions,
 	optional,
 	options,
-	parseBooleanOption,
 	required,
 } from "../../src/cli"
 import { argv } from "../fixtures/argv"
@@ -22,62 +21,9 @@ import {
 	optionOccurrences,
 	warningContext,
 } from "../fixtures/contract-values"
+import { createWarningFixture } from "../fixtures/warning-cases"
 
-const runOptions = options(
-	`run options`,
-	z.object({ name: z.string().optional(), verbose: z.boolean().optional() }),
-	{
-		name: {
-			description: `name`,
-			example: `--name=value`,
-			required: false,
-			flag: `n`,
-			aliases: [`label`],
-		},
-		verbose: {
-			description: `verbose`,
-			example: `--verbose`,
-			required: false,
-			flag: `v`,
-			aliases: [`chatty`],
-			parse: parseBooleanOption,
-		},
-	},
-)
-const otherOptions = options(
-	`other options`,
-	z.object({ dry: z.boolean().optional() }),
-	{
-		dry: {
-			description: `dry run`,
-			example: `--dry`,
-			required: false,
-			flag: `d`,
-			aliases: [`dry-run`],
-			parse: parseBooleanOption,
-		},
-	},
-)
-const definition = {
-	cliName: `probe`,
-	discoverConfigPath: () => undefined,
-	routes: optional({
-		run: null,
-		other: null,
-		duplicate: null,
-		empty: null,
-		show: required({ $name: null }),
-	}),
-	routeOptions: {
-		"": noOptions(),
-		run: runOptions,
-		other: otherOptions,
-		duplicate: otherOptions,
-		empty: null,
-		"show/$name": noOptions(),
-	},
-}
-const testCli = cli(definition)
+const { runOptions, otherOptions, definition, testCli } = createWarningFixture()
 
 function occurrences(warnings: readonly CliWarning[]) {
 	return warnings.map(({ code, option, index }) => ({ code, option, index }))

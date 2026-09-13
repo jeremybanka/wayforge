@@ -1,7 +1,7 @@
 import { launchers, run } from "../fixtures/launchers"
 
 test.each(launchers)(
-	`parses full process.argv through $command`,
+	`$command delivers the exact launcher argv and input record`,
 	({ command, positionalOnly }) => {
 		const [executable, ...args] = command
 		const result = JSON.parse(run(executable, [...args, `foo`]))
@@ -13,7 +13,7 @@ test.each(launchers)(
 )
 
 test.each(launchers)(
-	`preserves the delimiter delivered through $command`,
+	`$command produces the exact input record around its delimiter`,
 	({ command, positionalOnly }) => {
 		const [executable, ...args] = command
 		const result = JSON.parse(run(executable, [...args, `foo`, `--name=main`]))

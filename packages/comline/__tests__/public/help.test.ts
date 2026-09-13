@@ -1,18 +1,13 @@
-import { type } from "arktype"
-
-import {
-	cli,
-	noOptions,
-	optional,
-	options,
-	parseNumberOption,
-	parseStringOption,
-	required,
-} from "../../src/cli"
+import { cli } from "../../src/cli"
 import type { TerminalColors } from "../../src/help"
 import { help, helpOption, renderTable } from "../../src/help"
-import type { JsonSchema, OptionsSchema } from "../../src/schema"
 import { argv } from "../fixtures/argv"
+import {
+	createHelpCli,
+	propertySchemas,
+	renderPropertyHelp,
+	renderRefinedSchemaHelp,
+} from "../fixtures/help-cases"
 
 describe(`renderTable`, () => {
 	it(`aligns uneven rows with fill and outer padding`, () => {
@@ -63,40 +58,7 @@ describe(`renderTable`, () => {
 })
 
 describe(`help`, () => {
-	const testCli = cli({
-		cliName: `greasy-hands`,
-		cliDescription: `...when your hands are greasy, they leave streaks everywhere`,
-		routes: optional({
-			"apply-more-grease": null,
-			touch: required({
-				$target: null,
-			}),
-		}),
-		routeOptions: {
-			"": helpOption(`rub your greasy hands together`),
-			"apply-more-grease": options(
-				`put grease on your hands`,
-				type({ type: `string`, "amount?": `number` }),
-				{
-					type: {
-						description: `the type of grease to apply`,
-						example: `--grease-type=motor-oil`,
-						flag: `t`,
-						parse: parseStringOption,
-						required: true,
-					},
-					amount: {
-						description: `the amount of grease to apply`,
-						example: `--amount=1`,
-						flag: `m`,
-						parse: parseNumberOption,
-						required: false,
-					},
-				},
-			),
-			"touch/$target": noOptions(`touch the target and get it all greased up`),
-		},
-	})
+	const testCli = createHelpCli()
 	it(`represents the help text for a cli`, () => {
 		const manual = help(testCli.definition, { forceColor: true })
 		for (const content of [
@@ -115,72 +77,22 @@ describe(`help`, () => {
 		expect(manual).toMatch(/required/i)
 	})
 
-	it.each<[string, JsonSchema | undefined, string]>([
-		[`nullable types`, { type: [`string`, `null`] }, `string | null`],
-		[`enumerated values`, { enum: [`fast`, `slow`] }, `"fast" | "slow"`],
-		[`constant values`, { const: 0 }, `0`],
-		[
-			`complex schemas`,
-			{ anyOf: [{ type: `string` }, { type: `number` }] },
-			`unknown`,
-		],
-		[`missing property schemas`, undefined, `unknown`],
-	])(`describes %s in plain help text`, (_label, propertySchema, expected) => {
-		const jsonSchema = {
-			type: `object`,
-			properties: propertySchema ? { value: propertySchema } : {},
-		}
-		const schema: OptionsSchema<{ value?: string }> = {
-			"~standard": {
-				version: 1,
-				vendor: `test`,
-				validate: () => ({ value: {} }),
-				jsonSchema: { input: () => jsonSchema, output: () => jsonSchema },
-			},
-		}
-		const manual = help(
-			{
-				cliName: `schema-cli`,
-				routeOptions: {
-					"": options(``, schema, {
-						value: {
-							required: false,
-							description: `value to use`,
-							example: `--value=example`,
-						},
-					}),
-				},
-			},
-			{ forceColor: false },
-		)
-		expect(manual).toContain(`--value=example`)
-		expect(manual).toContain(`value to use`)
-		if (expected !== `unknown`) {
-			for (const value of expected.split(` | `))
-				expect(manual).toContain(value.replaceAll(`"`, ``))
-		}
-		expect(manual).not.toContain(`\x1B[`)
-	})
+	it.each(propertySchemas)(
+		`describes %s in plain help text`,
+		(_label, propertySchema, expected) => {
+			const manual = renderPropertyHelp(propertySchema)
+			expect(manual).toContain(`--value=example`)
+			expect(manual).toContain(`value to use`)
+			if (expected !== `unknown`) {
+				for (const value of expected.split(` | `))
+					expect(manual).toContain(value.replaceAll(`"`, ``))
+			}
+			expect(manual).not.toContain(`\x1B[`)
+		},
+	)
 
 	it(`keeps help available when a schema cannot export JSON Schema`, () => {
-		const schema = type({
-			value: type(`string`).narrow((value) => value.startsWith(`x`)),
-		})
-		const manual = help(
-			{
-				cliName: `refined-cli`,
-				routeOptions: {
-					"": options(``, schema, {
-						value: {
-							required: true,
-							description: `value to use`,
-							example: `--value=example`,
-						},
-					}),
-				},
-			},
-			{ forceColor: false },
-		)
+		const manual = renderRefinedSchemaHelp()
 		expect(manual).toContain(`--value=example`)
 		expect(manual).toContain(`value to use`)
 		expect(manual).toMatch(/required/i)
