@@ -13,6 +13,7 @@ import { tmpdir } from "node:os"
 import path from "node:path"
 
 import { completionScript, installCompletion } from "../src/completion-transport"
+import { packComline } from "./fixtures/comline-workspace"
 
 let directory: string
 let environment: NodeJS.ProcessEnv
@@ -93,15 +94,20 @@ beforeAll(() => {
 		writeFileSync(path.join(directory, name), ``)
 	}
 	const packageDirectory = path.join(import.meta.dirname, `..`)
-	// Exercise the actual release build and manifest, including workspace dependency
-	// rewriting. All archives come from the checkout; npm installation stays offline.
-	run(`pnpm`, [`build`], environment, packageDirectory)
+	// Build and pack a copy: cleaning the checkout's dist would race with other
+	// packages importing Comline. Keep the real release config and manifest.
+	const comline = packComline(
+		packageDirectory,
+		path.join(directory, `workspace`),
+		(args, cwd) => {
+			run(`pnpm`, args, environment, cwd)
+		},
+	)
 	const pack = (source: string, name: string): string => {
 		const archive = path.join(directory, `${name}.tgz`)
 		run(`pnpm`, [`pack`, `--out`, archive], environment, source)
 		return archive
 	}
-	const comline = pack(packageDirectory, `comline`)
 	const treetrunks = pack(
 		path.join(packageDirectory, `../treetrunks`),
 		`treetrunks`,

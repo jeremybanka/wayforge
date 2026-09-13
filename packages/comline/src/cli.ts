@@ -20,6 +20,7 @@ import {
 	retrieveInputJsonSchema,
 	validateOptionsSchema,
 } from "./schema"
+import type { CliWarning } from "./warnings"
 
 export type {
 	ArgumentInterpretation,
@@ -34,6 +35,12 @@ export * from "./encapsulate"
 export type * from "./flag"
 export * from "./help"
 export * from "./option-parsers"
+export type {
+	CliWarning,
+	LogWarningsOptions,
+	WarningFormatOptions,
+} from "./warnings"
+export { formatWarnings, logWarnings } from "./warnings"
 export * from "treetrunks"
 
 export type CliOptionValue =
@@ -127,6 +134,7 @@ export function cli<
 	logger: CliLogger = console,
 ): ((argv: readonly string[]) => {
 	inputs: CliParseOutput<CLI>
+	warnings: CliWarning[]
 	writeJsonSchema: (outdir: string) => void
 }) & {
 	definition: CLI
@@ -260,6 +268,7 @@ export function cli<
 			) as Options
 			cliLogger.info?.(`final options parsed:`, suppliedOptions)
 			return {
+				warnings: interpretation.warnings,
 				inputs: {
 					case: interpretation.route,
 					path: interpretation.path,
