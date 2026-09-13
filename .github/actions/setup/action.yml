@@ -24,7 +24,9 @@ runs:
       shell: bash
       run: |
         sudo apt-get update
-        sudo apt-get install -y bash-completion zsh
+        sudo apt-get install -y zsh
+        BASH_COMPLETION_FILE="$(mise where github:scop/bash-completion)/bash_completion"
+        echo "BASH_COMPLETION_FILE=$BASH_COMPLETION_FILE" >> "$GITHUB_ENV"
         # Hash the actual consumers before Turbo decides whether to reuse tests.
         {
           uname -sm
@@ -32,7 +34,7 @@ runs:
             "$tool" --version
           done
           go version
-          sha256sum /usr/share/bash-completion/bash_completion
+          sha256sum "$BASH_COMPLETION_FILE"
         } > "$RUNNER_TEMP/comline-test-environment"
         echo "COMLINE_TEST_ENV=$(sha256sum "$RUNNER_TEMP/comline-test-environment" | cut -d ' ' -f 1)" >> "$GITHUB_ENV"
 
