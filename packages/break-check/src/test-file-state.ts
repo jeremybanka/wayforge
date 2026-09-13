@@ -6,6 +6,7 @@ import {
 	readdir,
 	readFile,
 	realpath,
+	rename,
 	rm,
 	writeFile,
 } from "node:fs/promises"
@@ -21,6 +22,19 @@ type ActiveCheck = {
 	paths: string[]
 	head: string
 	recoveryRequired?: boolean
+}
+
+async function writeRecoveryRecord(
+	recordPath: string,
+	record: ActiveCheck,
+): Promise<void> {
+	const temporaryPath = `${recordPath}.${randomUUID()}.tmp`
+	try {
+		await writeFile(temporaryPath, JSON.stringify(record), { flag: `wx` })
+		await rename(temporaryPath, recordPath)
+	} finally {
+		await rm(temporaryPath, { force: true })
+	}
 }
 
 type TestFileState = {
@@ -160,12 +174,12 @@ export async function withTestFileState<T>(
 				}
 				const recordPath = path.join(stateDirectory, `${randomUUID()}.json`)
 				const record: ActiveCheck = { pid: process.pid, paths, head }
-				await writeFile(recordPath, JSON.stringify(record))
+				await writeRecoveryRecord(recordPath, record)
 				const restore = async () => {
-					await writeFile(
-						recordPath,
-						JSON.stringify({ ...record, recoveryRequired: true }),
-					)
+					await writeRecoveryRecord(recordPath, {
+						...record,
+						recoveryRequired: true,
+					})
 					await validateParents(root, filenames)
 					if (existing.length)
 						await git.raw([

@@ -1,4 +1,5 @@
 import { rejects } from "node:assert/strict"
+import * as filesystem from "node:fs/promises"
 import {
 	chmod,
 	mkdir,
@@ -173,6 +174,44 @@ it(`does not abandon restoration when a local critical section outlasts the setu
 		await restoration
 	}
 	expect(failure).toBeUndefined()
+	expect(
+		await readFile(path.join(repository, `old/public.test.js`), `utf8`),
+	).toBe(`current`)
+})
+
+it(`preserves the last valid recovery record when its replacement is only partially written`, async () => {
+	const git = simpleGit(repository)
+	await writeFile(path.join(repository, `old/public.test.js`), `current`)
+	await git.add(`.`).commit(`Current tests`)
+	const restore = await withTestFileState(git, repository, (state) =>
+		state.replaceTests(`example@1.0.0`, [`old/public.test.js`]),
+	)
+	const directory = path.join(repository, `.git/break-check`)
+	const [recordName] = await readdir(directory)
+	const recordPath = path.join(directory, recordName)
+	const originalRecord = await readFile(recordPath, `utf8`)
+	const originalWrite = filesystem.writeFile
+	const writeFault = spyOn(filesystem, `writeFile`).mockImplementation(
+		async (filename, data, options) => {
+			if (typeof filename === `string` && filename.startsWith(directory)) {
+				await originalWrite(filename, `{`)
+				throw Object.assign(new Error(`Injected ENOSPC`), { code: `ENOSPC` })
+			}
+			return originalWrite(filename, data, options)
+		},
+	)
+	try {
+		await rejects(restore(), /Injected ENOSPC/)
+	} finally {
+		writeFault.mockRestore()
+	}
+	expect(await readFile(recordPath, `utf8`)).toBe(originalRecord)
+	expect(JSON.parse(await readFile(recordPath, `utf8`))).toMatchObject({
+		paths: [`old/public.test.js`],
+		head: await git.revparse([`HEAD`]),
+	})
+	expect(await readdir(directory)).toEqual([recordName])
+	await restore()
 	expect(
 		await readFile(path.join(repository, `old/public.test.js`), `utf8`),
 	).toBe(`current`)
