@@ -1,5 +1,13 @@
 # flightdeck
 
+## 0.4.22
+
+### Patch Changes
+
+- Updated dependencies [77add5d]
+- Updated dependencies [77add5d]
+  - comline@0.6.3
+
 ## 0.4.21
 
 ### Patch Changes

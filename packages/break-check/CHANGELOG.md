@@ -1,5 +1,13 @@
 # break-check
 
+## 0.6.40
+
+### Patch Changes
+
+- Updated dependencies [77add5d]
+- Updated dependencies [77add5d]
+  - comline@0.6.3
+
 ## 0.6.39
 
 ### Patch Changes
