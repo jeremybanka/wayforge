@@ -1,6 +1,7 @@
 [tools]
 bun = "1.4.2"
 carapace = "1.7.3"
+"conda:zsh" = "5.9"
 # Source the library without adding the archive's build scripts to PATH.
 "github:scop/bash-completion" = { version = "2.17.0", asset_pattern = "bash-completion-*.tar.xz", filter_bins = "" }
 "github:fish-shell/fish-shell" = "4.9.3"
