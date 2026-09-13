@@ -7,6 +7,7 @@ import type { Chronicle } from "takua"
 import logger from "takua"
 
 import { withDirectoryLock } from "./directory-lock"
+import { latestReleaseTag as selectLatestReleaseTag } from "./release-tag"
 import { withTestFileState } from "./test-file-state"
 
 export type BreakCheckOptions = {
@@ -86,20 +87,7 @@ export async function breakCheck({
 	const tagsRemote = await git.listRemote([`--tags`, `origin`])
 
 	mark?.(`list remote tags`)
-	const allTagsRaw = tagsRemote.split(`\n`).filter(Boolean)
-	const tagsRawFiltered = tagPattern
-		? allTagsRaw.filter((tag) => tag?.match(new RegExp(tagPattern)))
-		: allTagsRaw
-	const tags = tagsRawFiltered
-		.map((tag) => tag.split(`\t`)[1].split(`^`)[0]) //.split(`/`)[2])
-		.toSorted((a, b) => {
-			const aVersion = a.split(`@`)[1]
-			const bVersion = b.split(`@`)[1]
-			const [aMajor, aMinor, aPatch] = aVersion.split(`.`).map((n) => Number(n))
-			const [bMajor, bMinor, bPatch] = bVersion.split(`.`).map((n) => Number(n))
-			return bMajor - aMajor || bMinor - aMinor || bPatch - aPatch
-		})
-	const latestReleaseTag = tags[0]
+	const latestReleaseTag = selectLatestReleaseTag(tagsRemote, tagPattern)
 	mark?.(`found latest release tag`)
 	if (!latestReleaseTag) {
 		return {

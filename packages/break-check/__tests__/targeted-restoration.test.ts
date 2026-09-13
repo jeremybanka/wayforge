@@ -295,3 +295,47 @@ it(`supports linked Git worktrees`, async () => {
 	expect(await readdir(path.join(linkedGitDirectory, `break-check`))).toEqual([])
 })
 import { rejects } from "node:assert/strict"
+
+it(`selects conventional version tags and ignores malformed versions`, async () => {
+	await write(`public.test.js`, `first`)
+	await release()
+	const git = simpleGit(repository)
+	await git.addTag(`v1.0.0`)
+	await write(`public.test.js`, `second`)
+	await git
+		.add(`.`)
+		.commit(`Second release`)
+		.addAnnotatedTag(`v2.0.0`, `Second release`)
+	await write(`public.test.js`, `current`)
+	await git.add(`.`).commit(`Current tests`)
+	for (const tag of [`checkpoint`, `v99.0`, `v02.0.0`, `v3.0.0-01`])
+		await git.addTag(tag)
+	await git.push([`--tags`, `origin`])
+	const outcome = await breakCheck({
+		baseDirname: repository,
+		testPattern: `*.test.js`,
+		testCommand: `${shellQuote(process.execPath)} -e ${shellQuote(`if (await Bun.file("public.test.js").text() !== "second") process.exit(1)`)}`,
+		certifyCommand: `exit 1`,
+	})
+	expect(outcome).toMatchObject({
+		lastReleaseTag: `refs/tags/v2.0.0`,
+		breakingChangesFound: false,
+	})
+})
+
+it(`reports no release when remote tags have no supported version`, async () => {
+	await write(`public.test.js`, `current`)
+	await simpleGit(repository)
+		.add(`.`)
+		.commit(`Checkpoint`)
+		.addTag(`checkpoint`)
+		.push([`--tags`, `origin`])
+	expect(
+		await breakCheck({
+			baseDirname: repository,
+			testPattern: `*.test.js`,
+			testCommand: `exit 0`,
+			certifyCommand: `exit 1`,
+		}),
+	).toMatchObject({ lastReleaseFound: false })
+})
