@@ -7,14 +7,14 @@ import {
 	readFile,
 	realpath,
 	rm,
-	rmdir,
 	writeFile,
 } from "node:fs/promises"
 import path from "node:path"
-import { setTimeout } from "node:timers/promises"
 
 import type { SimpleGit } from "simple-git"
 import simpleGit from "simple-git"
+
+import { withDirectoryLock } from "./directory-lock"
 
 type ActiveCheck = {
 	pid: number
@@ -69,7 +69,6 @@ export async function withTestFileState<T>(
 	git: SimpleGit,
 	baseDirname: string,
 	action: (state: TestFileState) => Promise<T>,
-	readActiveChecks = true,
 ): Promise<T> {
 	const root = await realpath(await git.revparse([`--show-toplevel`]))
 	baseDirname = await realpath(baseDirname)
@@ -80,23 +79,9 @@ export async function withTestFileState<T>(
 	)
 	await mkdir(stateDirectory, { recursive: true })
 	const lock = path.join(stateDirectory, `lock`)
-	const deadline = Date.now() + 60_000
-	for (;;) {
-		try {
-			await mkdir(lock)
-			break
-		} catch (thrown) {
-			if ((thrown as NodeJS.ErrnoException).code !== `EEXIST`) throw thrown
-			if (Date.now() >= deadline)
-				throw new Error(
-					`Timed out waiting for ${lock}. Check for an interrupted break-check setup or cleanup before removing this lock.`,
-				)
-			await setTimeout(20)
-		}
-	}
-	try {
+	return withDirectoryLock(lock, async () => {
 		const activeChecks: ActiveCheck[] = []
-		for (const entry of readActiveChecks ? await readdir(stateDirectory) : []) {
+		for (const entry of await readdir(stateDirectory)) {
 			if (!entry.endsWith(`.json`)) continue
 			const recordPath = path.join(stateDirectory, entry)
 			const record = JSON.parse(
@@ -116,7 +101,7 @@ export async function withTestFileState<T>(
 			activeChecks.push(record)
 		}
 		const activePaths = activeChecks.flatMap((record) => record.paths)
-		return await action({
+		return action({
 			isClean: async () =>
 				!(await simpleGit(root).raw([
 					`--no-optional-locks`,
@@ -209,10 +194,8 @@ export async function withTestFileState<T>(
 					await restore()
 					throw thrown
 				}
-				return () => withTestFileState(git, baseDirname, restore, false)
+				return () => withDirectoryLock(lock, restore, true)
 			},
 		})
-	} finally {
-		await rmdir(lock)
-	}
+	})
 }

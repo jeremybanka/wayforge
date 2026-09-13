@@ -1,5 +1,6 @@
 import { rejects } from "node:assert/strict"
 import {
+	chmod,
 	mkdir,
 	mkdtemp,
 	readdir,
@@ -10,10 +11,12 @@ import {
 } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import path from "node:path"
+import { setTimeout } from "node:timers/promises"
 
-import { afterEach, beforeEach, expect, it } from "bun:test"
+import { afterEach, beforeEach, expect, it, spyOn } from "bun:test"
 import simpleGit from "simple-git"
 
+import { breakCheck } from "../src/break-check"
 import { withTestFileState } from "../src/test-file-state"
 
 let temporaryDirectory: string
@@ -77,4 +80,100 @@ it(`rejects a base directory outside the selected worktree before entering the f
 		),
 		/outside the worktree/,
 	)
+})
+
+it.each([1, 2])(
+	`restores active tests while another check waits for remote operation %i`,
+	async (invocation) => {
+		const git = simpleGit(repository)
+		await writeFile(path.join(repository, `old/public.test.js`), `current`)
+		await git.add(`.`).commit(`Current tests`)
+		const remote = path.join(temporaryDirectory, `remote.git`)
+		await git.clone(repository, remote, [`--bare`])
+		await git.addRemote(`origin`, remote)
+		const restore = await withTestFileState(git, repository, (state) =>
+			state.replaceTests(`example@1.0.0`, [`old/public.test.js`]),
+		)
+		const started = path.join(temporaryDirectory, `remote-started`)
+		const gate = path.join(temporaryDirectory, `release-remote`)
+		const uploadPack = path.join(temporaryDirectory, `upload-pack`)
+		await writeFile(
+			uploadPack,
+			`#!/bin/sh\ncount=0\n[ ! -f '${started}.count' ] || count=$(cat '${started}.count')\ncount=$((count + 1))\necho "$count" > '${started}.count'\nif [ "$count" -eq ${invocation} ]; then\ntouch '${started}'\nwhile [ ! -f '${gate}' ]; do sleep 0.02; done\nfi\nexec git-upload-pack "$@"\n`,
+		)
+		await chmod(uploadPack, 0o755)
+		await simpleGit({
+			baseDir: repository,
+			unsafe: { allowUnsafePack: true },
+		}).addConfig(`remote.origin.uploadpack`, uploadPack)
+		const other = breakCheck({
+			baseDirname: repository,
+			tagPattern: `example@`,
+			testPattern: `missing/*`,
+			testCommand: `exit 0`,
+			certifyCommand: `exit 1`,
+		})
+		let restoration: Promise<void> | undefined
+		try {
+			const deadline = Date.now() + 3000
+			while (!(await Bun.file(started).exists())) {
+				if (Date.now() > deadline) throw new Error(`Remote did not start`)
+				await setTimeout(10)
+			}
+			restoration = restore()
+			const completedBeforeRemote = await Promise.race([
+				restoration.then(() => true),
+				setTimeout(500).then(() => false),
+			])
+			expect(completedBeforeRemote).toBe(true)
+			expect(
+				await readFile(path.join(repository, `old/public.test.js`), `utf8`),
+			).toBe(`current`)
+			// Dirtiness introduced during the remote operation must be checked again.
+			await writeFile(path.join(repository, `README.md`), `uncommitted`)
+		} finally {
+			await writeFile(gate, `go`)
+			await restoration
+			const result = await other
+			expect(result.gitWasClean).toBe(false)
+		}
+	},
+	10000,
+)
+
+it(`does not abandon restoration when a local critical section outlasts the setup timeout`, async () => {
+	const git = simpleGit(repository)
+	await writeFile(path.join(repository, `old/public.test.js`), `current`)
+	await git.add(`.`).commit(`Current tests`)
+	const restore = await withTestFileState(git, repository, (state) =>
+		state.replaceTests(`example@1.0.0`, [`old/public.test.js`]),
+	)
+	const entered = Promise.withResolvers<void>()
+	const gate = Promise.withResolvers<void>()
+	const holder = withTestFileState(git, repository, async () => {
+		entered.resolve()
+		await gate.promise
+	})
+	await entered.promise
+	let now = Date.now()
+	const clock = spyOn(Date, `now`).mockImplementation(() => {
+		now += 61_000
+		return now
+	})
+	let failure: unknown
+	const restoration = restore().catch((thrown: unknown) => {
+		failure = thrown
+	})
+	try {
+		await setTimeout(250)
+	} finally {
+		clock.mockRestore()
+		gate.resolve()
+		await holder
+		await restoration
+	}
+	expect(failure).toBeUndefined()
+	expect(
+		await readFile(path.join(repository, `old/public.test.js`), `utf8`),
+	).toBe(`current`)
 })
