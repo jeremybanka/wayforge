@@ -1,11 +1,61 @@
 import { spawnSync } from "node:child_process"
-import { mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs"
+import {
+	cpSync,
+	mkdtempSync,
+	readdirSync,
+	rmSync,
+	symlinkSync,
+	writeFileSync,
+} from "node:fs"
 import { tmpdir } from "node:os"
 import { resolve } from "node:path"
 
-import { afterEach, beforeEach, describe, expect, it } from "vitest"
+import {
+	afterAll,
+	afterEach,
+	beforeAll,
+	beforeEach,
+	describe,
+	expect,
+	it,
+} from "vitest"
 
+let buildDirectory: string
 let directory: string
+
+beforeAll(() => {
+	const packageDirectory = resolve(import.meta.dirname, `..`)
+	buildDirectory = mkdtempSync(resolve(tmpdir(), `varmint-cli-build-`))
+	cpSync(
+		resolve(packageDirectory, `package.json`),
+		resolve(buildDirectory, `package.json`),
+	)
+	cpSync(resolve(packageDirectory, `bin`), resolve(buildDirectory, `bin`), {
+		recursive: true,
+	})
+	symlinkSync(
+		resolve(packageDirectory, `node_modules`),
+		resolve(buildDirectory, `node_modules`),
+		`dir`,
+	)
+	// cli.test.ts rebuilds the workspace dist concurrently. Build our executable
+	// separately so that its clean step cannot remove files during completion.
+	const build = spawnSync(
+		resolve(packageDirectory, `node_modules/.bin/tsdown`),
+		[`--out-dir`, resolve(buildDirectory, `dist`)],
+		{
+			cwd: packageDirectory,
+			encoding: `utf8`,
+			timeout: 30000,
+		},
+	)
+	expect(build.error).toBeUndefined()
+	expect(build.status, build.stderr).toBe(0)
+}, 35000)
+
+afterAll(() => {
+	rmSync(buildDirectory, { recursive: true, force: true })
+})
 beforeEach(() => {
 	directory = mkdtempSync(resolve(tmpdir(), `varmint-cli-`))
 })
@@ -16,7 +66,7 @@ afterEach(() => {
 function runCli(command: string, args: string[]) {
 	const result = spawnSync(
 		`node`,
-		[resolve(import.meta.dirname, `../bin/${command}.bin.js`), ...args],
+		[resolve(buildDirectory, `bin/${command}.bin.js`), ...args],
 		{
 			cwd: directory,
 			encoding: `utf8`,
