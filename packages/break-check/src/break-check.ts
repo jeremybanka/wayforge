@@ -1,10 +1,12 @@
 import { exec } from "node:child_process"
+import path from "node:path"
 
 import { minimatch } from "minimatch"
 import simpleGit from "simple-git"
 import type { Chronicle } from "takua"
 import logger from "takua"
 
+import { withDirectoryLock } from "./directory-lock"
 import { withTestFileState } from "./test-file-state"
 
 export type BreakCheckOptions = {
@@ -75,6 +77,86 @@ export async function breakCheck({
 			gitWasClean: false,
 		}
 	}
+	if (!(await withTestFileState(git, baseDirname, (state) => state.isClean()))) {
+		return {
+			summary: `The git repository must be clean to run this command.`,
+			gitWasClean: false,
+		}
+	}
+	const tagsRemote = await git.listRemote([`--tags`, `origin`])
+
+	mark?.(`list remote tags`)
+	const allTagsRaw = tagsRemote.split(`\n`).filter(Boolean)
+	const tagsRawFiltered = tagPattern
+		? allTagsRaw.filter((tag) => tag?.match(new RegExp(tagPattern)))
+		: allTagsRaw
+	const tags = tagsRawFiltered
+		.map((tag) => tag.split(`\t`)[1].split(`^`)[0]) //.split(`/`)[2])
+		.toSorted((a, b) => {
+			const aVersion = a.split(`@`)[1]
+			const bVersion = b.split(`@`)[1]
+			const [aMajor, aMinor, aPatch] = aVersion.split(`.`).map((n) => Number(n))
+			const [bMajor, bMinor, bPatch] = bVersion.split(`.`).map((n) => Number(n))
+			return bMajor - aMajor || bMinor - aMinor || bPatch - aPatch
+		})
+	const latestReleaseTag = tags[0]
+	mark?.(`found latest release tag`)
+	if (!latestReleaseTag) {
+		return {
+			summary: `No tags found matching the pattern "${tagPattern}".`,
+			gitWasClean: true,
+			lastReleaseFound: false,
+		} as const
+	}
+	const commonGitDirectory = await git.revparse([
+		`--path-format=absolute`,
+		`--git-common-dir`,
+	])
+	await withDirectoryLock(
+		path.join(commonGitDirectory, `break-check-fetch.lock`),
+		() =>
+			git.fetch([
+				`origin`,
+				`${latestReleaseTag}:${latestReleaseTag}`,
+				`--no-tags`,
+				`--no-write-fetch-head`,
+			]),
+	)
+
+	mark?.(`fetched latest release tag`)
+
+	let productionFiles: string[]
+	try {
+		productionFiles = (
+			await git.raw([`ls-tree`, `-r`, `--name-only`, `-z`, latestReleaseTag])
+		)
+			.split(`\0`)
+			.filter(Boolean)
+	} catch (thrown) {
+		mark?.(`failed to list production files`)
+		const message =
+			thrown instanceof Error
+				? thrown.message
+				: typeof thrown === `string`
+					? thrown
+					: undefined
+		const summary = `Failed to list production files${
+			message ? `: ${message}` : `.`
+		}`
+		return {
+			summary,
+			gitWasClean: true,
+			lastReleaseFound: true,
+			lastReleaseTag: latestReleaseTag,
+			testsWereFound: false,
+		} as const
+	}
+	mark?.(`listed all files checked into git`)
+	const productionTestFiles = productionFiles.filter((file) =>
+		minimatch(file, testPattern),
+	)
+	mark?.(`filtered to public test files`)
+
 	const prepared = await withTestFileState(git, baseDirname, async (state) => {
 		if (!(await state.isClean())) {
 			return {
@@ -82,74 +164,6 @@ export async function breakCheck({
 				gitWasClean: false,
 			} as const
 		}
-		const tagsRemote = await git.listRemote([`--tags`, `origin`])
-
-		mark?.(`list remote tags`)
-		const allTagsRaw = tagsRemote.split(`\n`).filter(Boolean)
-		const tagsRawFiltered = tagPattern
-			? allTagsRaw.filter((tag) => tag?.match(new RegExp(tagPattern)))
-			: allTagsRaw
-		const tags = tagsRawFiltered
-			.map((tag) => tag.split(`\t`)[1].split(`^`)[0]) //.split(`/`)[2])
-			.toSorted((a, b) => {
-				const aVersion = a.split(`@`)[1]
-				const bVersion = b.split(`@`)[1]
-				const [aMajor, aMinor, aPatch] = aVersion
-					.split(`.`)
-					.map((n) => Number(n))
-				const [bMajor, bMinor, bPatch] = bVersion
-					.split(`.`)
-					.map((n) => Number(n))
-				return bMajor - aMajor || bMinor - aMinor || bPatch - aPatch
-			})
-		const latestReleaseTag = tags[0]
-		mark?.(`found latest release tag`)
-		if (!latestReleaseTag) {
-			return {
-				summary: `No tags found matching the pattern "${tagPattern}".`,
-				gitWasClean: true,
-				lastReleaseFound: false,
-			} as const
-		}
-		await git.fetch([
-			`origin`,
-			`${latestReleaseTag}:${latestReleaseTag}`,
-			`--no-tags`,
-			`--no-write-fetch-head`,
-		])
-		mark?.(`fetched latest release tag`)
-
-		let productionFiles: string[]
-		try {
-			productionFiles = (
-				await git.raw([`ls-tree`, `-r`, `--name-only`, `-z`, latestReleaseTag])
-			)
-				.split(`\0`)
-				.filter(Boolean)
-		} catch (thrown) {
-			mark?.(`failed to list production files`)
-			const message =
-				thrown instanceof Error
-					? thrown.message
-					: typeof thrown === `string`
-						? thrown
-						: undefined
-			const summary = `Failed to list production files${
-				message ? `: ${message}` : `.`
-			}`
-			return {
-				summary,
-				gitWasClean: true,
-				lastReleaseFound: true,
-				lastReleaseTag: latestReleaseTag,
-				testsWereFound: false,
-			} as const
-		}
-		mark?.(`listed all files checked into git`)
-		const productionTestFiles = productionFiles.filter((file) =>
-			minimatch(file, testPattern),
-		)
-		mark?.(`filtered to public test files`)
 
 		if (productionTestFiles.length === 0) {
 			return {
@@ -168,7 +182,7 @@ export async function breakCheck({
 		return { latestReleaseTag, productionTestFiles, restore }
 	})
 	if (prepared.summary !== undefined) return prepared
-	const { latestReleaseTag, productionTestFiles, restore } = prepared
+	const { restore } = prepared
 
 	try {
 		const noBreakingChangesDetected = await new Promise<
