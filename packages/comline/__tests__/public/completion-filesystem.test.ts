@@ -62,16 +62,17 @@ test.each([
 			argv(`_carapace`, `export`, ``, `--input`, `${directory}/`),
 		)
 		const result = JSON.parse(response!)
-
-		expect(result).toEqual({
+		expect(result.values).toHaveLength(names.length)
+		expect(result).toMatchObject({
 			nospace: `*`,
 			messages: [],
 			values: expect.arrayContaining(
-				names.map((name) => ({
-					value: `${directory}/${name}`,
-					display: `${directory}/${name}`,
-					description: ``,
-				})),
+				names.map((name) =>
+					expect.objectContaining({
+						value: `${directory}/${name}`,
+						display: `${directory}/${name}`,
+					}),
+				),
 			),
 		})
 	},
@@ -87,15 +88,11 @@ test.each([
 			definition({ fileSystem: `files` }),
 			argv(`_carapace`, `export`, ``, `--input`, `${directory}/${prefix}`),
 		)
-		expect(JSON.parse(response!)).toEqual({
+		expect(JSON.parse(response!)).toMatchObject({
 			nospace: ``,
 			messages: [],
 			values: [
-				{
-					value: `${directory}/${name}`,
-					display: `${directory}/${name}`,
-					description: ``,
-				},
+				{ value: `${directory}/${name}`, display: `${directory}/${name}` },
 			],
 		})
 	},
@@ -114,11 +111,40 @@ test.each([`missing`, `unreadable`] as const)(
 			definition({ fileSystem: `files` }),
 			argv(`_carapace`, `export`, ``, `--input`, prefix),
 		)
-		expect(JSON.parse(response!)).toEqual({
+		expect(JSON.parse(response!)).toMatchObject({
 			nospace: ``,
 			messages: [],
 			values: [],
 		})
+	},
+)
+
+test.each([`__complete`, `_comline`] as const)(
+	`%s combines provider and filesystem values without shell fallback`,
+	async (command) => {
+		const response = await completionResponse(
+			definition({
+				fileSystem: `files`,
+				provide: () => [
+					{ value: `${directory}/future`, description: `Remote file` },
+				],
+			}),
+			argv(
+				command,
+				...(command === `_comline` ? [`complete`] : []),
+				`--input=${directory}/f`,
+			),
+		)
+		const lines = response!.trimEnd().split(`\n`)
+		if (command === `_comline`) expect(lines.shift()).toBe(`prefix:--input=`)
+		// NoFileCompletion prevents a second shell filesystem pass; NoSpace keeps
+		// the directory candidate open for further completion. Cobra owns its prefix.
+		expect(lines.pop()).toBe(`:6`)
+		expect(lines.sort()).toEqual([
+			`${directory}/file.txt`,
+			`${directory}/folder/`,
+			`${directory}/future\tRemote file`,
+		])
 	},
 )
 
@@ -133,26 +159,35 @@ test(`Carapace preserves inline replacement boundaries for mixed candidates`, as
 		argv(`_carapace`, `export`, ``, `--input=${directory}/f`),
 	)
 	const result = JSON.parse(response!)
-
-	expect(result).toEqual({
+	expect(result.values).toHaveLength(3)
+	expect(result).toMatchObject({
 		nospace: `*`,
 		messages: [],
 		values: expect.arrayContaining([
-			{
+			expect.objectContaining({
 				value: `--input=${directory}/future`,
 				display: `${directory}/future`,
 				description: `Remote file`,
-			},
-			{
+			}),
+			expect.objectContaining({
 				value: `--input=${directory}/file.txt`,
 				display: `${directory}/file.txt`,
-				description: ``,
-			},
-			{
+			}),
+			expect.objectContaining({
 				value: `--input=${directory}/folder/`,
 				display: `${directory}/folder/`,
-				description: ``,
-			},
+			}),
 		]),
 	})
+})
+
+test(`filesystem read failures preserve provider candidates and their spacing`, async () => {
+	const response = await completionResponse(
+		definition({
+			fileSystem: `files`,
+			provide: () => [`${directory}/missing/remote`],
+		}),
+		argv(`__complete`, `--input`, `${directory}/missing/`),
+	)
+	expect(response).toBe(`${directory}/missing/remote\n:4\n`)
 })

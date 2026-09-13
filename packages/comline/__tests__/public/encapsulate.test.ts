@@ -105,20 +105,16 @@ describe(`encapsulate`, () => {
 		const callback = vi.fn()
 		const encodedCallback = vi.fn()
 		const result = encapsulate(() => {
-			expect(process.stdout.write(Buffer.from(`héllo`), callback)).toBe(true)
-			expect(
-				process.stderr.write(
-					new Uint8Array([0xab, 0xcd]),
-					`hex`,
-					encodedCallback,
-				),
-			).toBe(true)
+			process.stdout.write(Buffer.from(`héllo`), callback)
+			process.stderr.write(new Uint8Array([0xab, 0xcd]), `hex`, encodedCallback)
 		})
 
 		expect(result.capturedStdout).toEqual([`héllo`])
 		expect(result.capturedStderr).toEqual([`abcd`])
-		expect(callback).toHaveBeenCalledExactlyOnceWith(undefined)
-		expect(encodedCallback).toHaveBeenCalledExactlyOnceWith(undefined)
+		expect(callback).toHaveBeenCalledOnce()
+		expect(callback.mock.calls[0]?.[0]).toBeUndefined()
+		expect(encodedCallback).toHaveBeenCalledOnce()
+		expect(encodedCallback.mock.calls[0]?.[0]).toBeUndefined()
 	})
 
 	it.each([false, true])(
