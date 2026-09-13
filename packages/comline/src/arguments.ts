@@ -344,6 +344,7 @@ function reachableOptions(
 function interpretCore(
 	definition: CommandLineInterface<any>,
 	words: readonly string[],
+	mode: `invocation` | `completion`,
 ): { invocation: ArgumentInvocation; completion: () => ArgumentInterpretation } {
 	const schemaCache = new Map<OptionsSchema<any>, JsonSchema | undefined>()
 	const groups = new Map(
@@ -382,16 +383,23 @@ function interpretCore(
 			: { path: [], route: ``, tree: null, complete: true }
 		return { route, scan, match, positionalOnly }
 	})
-	// Retain a route only when its own consumption rules lead toward that route.
-	// Recognized options disambiguate alternatives with unrelated flags/aliases.
-	const viable = interpretations.filter(
-		({ route, match }) =>
-			!match.error &&
-			(route === match.route ||
+	// Execution ranks only complete matches supported by their own grammar.
+	// Completion also retains grammars that can lead to a descendant command.
+	const candidates = interpretations.filter(({ route, match }) =>
+		mode === `invocation`
+			? route === match.route
+			: route === match.route ||
 				!match.route ||
-				route.startsWith(`${match.route}/`)),
+				route.startsWith(`${match.route}/`),
 	)
-	const pool = viable.length ? viable : interpretations
+	const viable = candidates.filter(
+		({ match }) => !match.error && (mode === `completion` || match.complete),
+	)
+	const pool = viable.length
+		? viable
+		: candidates.length
+			? candidates
+			: interpretations
 	const recognized = Math.max(...pool.map(({ scan }) => scan.recognized.size))
 	const alternatives = pool.filter(
 		({ scan }) => scan.recognized.size === recognized,
@@ -400,7 +408,7 @@ function interpretCore(
 		(a, b) => b.match.path.length - a.match.path.length,
 	)[0]
 	const match = { ...best.match }
-	if (!viable.length && !match.error)
+	if (!viable.length && !match.error && match.complete)
 		match.error = `Arguments do not match a viable route for ${definition.cliName}.`
 	if (
 		viable.length &&
@@ -429,34 +437,18 @@ function interpretCore(
 		return [...unique.values()].sort((a, b) => a.index - b.index)
 	}
 	const selectedOptions = groups.get(match.route)
-	// Alternative grammars help select an unfinished route, but cannot erase
-	// occurrences belonging to the route that ordinary invocation will execute.
-	const { scan: selectedScan, match: selectedMatch } = interpretations.find(
+	// Completion may select a prefix through a descendant grammar, but its
+	// selected-route occurrences still follow the prefix's own consumption rules.
+	const selectedScan = interpretations.find(
 		({ route }) => route === match.route,
-	)!
-	const invocationMatch = { ...match }
-	if (
-		!match.error &&
-		match.complete &&
-		(selectedMatch.error ||
-			selectedMatch.route !== match.route ||
-			selectedMatch.path.length !== match.path.length ||
-			selectedMatch.path.some((word, index) => word !== match.path[index]))
-	) {
-		// Descendants may justify an unfinished prefix, but final execution cannot
-		// combine their positional consumption with the selected route's options.
-		invocationMatch.error =
-			selectedMatch.error ??
-			`Arguments do not match the selected route for ${definition.cliName}. Use --option=value or -- to make the command boundary explicit.`
-		invocationMatch.complete = false
-	}
+	)!.scan
 	const invocation: ArgumentInvocation = {
-		...invocationMatch,
+		...match,
 		warnings: selectedOptions
 			? collectWarnings(
 					definition.cliName,
 					words,
-					invocationMatch,
+					match,
 					() => retrieveKnownOptionTokens([...groups.values()].flat()),
 					selectedScan.knownOptionTokens,
 					selectedScan.consumed,
@@ -514,7 +506,7 @@ export function interpretInvocation(
 	definition: CommandLineInterface<any>,
 	words: readonly string[],
 ): ArgumentInvocation {
-	return interpretCore(definition, words).invocation
+	return interpretCore(definition, words, `invocation`).invocation
 }
 
 /** Interpret argument words without discovering config, converting values, or validating schemas. */
@@ -522,7 +514,7 @@ export function interpretArguments(
 	definition: CommandLineInterface<any>,
 	words: readonly string[],
 ): ArgumentInterpretation {
-	return interpretCore(definition, words).completion()
+	return interpretCore(definition, words, `completion`).completion()
 }
 
 function collectWarnings(
