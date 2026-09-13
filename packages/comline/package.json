@@ -44,11 +44,11 @@
 		"lint:types": "tsc --noEmit && tsc --noEmit -p __tests__",
 		"watch:types": "concurrently \"tsc --watch --noEmit\" \"tsc --watch --noEmit -p __tests__\"",
 		"lint": "concurrently \"bun:lint:*\"",
-		"test": "mise exec -- vitest",
-		"test:coverage:once": "mise exec -- vitest run --coverage",
+		"test": "MISE_EXEC_AUTO_INSTALL=false mise exec -- vitest",
+		"test:coverage:once": "MISE_EXEC_AUTO_INSTALL=false mise exec -- vitest run --coverage",
 		"test:coverage:increased": "recoverage",
 		"test:coverage": "pnpm test:coverage:once && pnpm test:coverage:increased",
-		"test:once": "mise exec -- vitest run",
+		"test:once": "MISE_EXEC_AUTO_INSTALL=false mise exec -- vitest run",
 		"postversion": "dprint fmt package.json"
 	},
 	"devDependencies": {
