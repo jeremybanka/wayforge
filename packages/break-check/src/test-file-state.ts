@@ -24,6 +24,45 @@ type ActiveCheck = {
 	recoveryRequired?: boolean
 }
 
+function isActiveCheck(value: unknown): value is ActiveCheck {
+	if (typeof value !== `object` || value === null) return false
+	const record = value as Partial<ActiveCheck>
+	return (
+		typeof record.pid === `number` &&
+		Number.isSafeInteger(record.pid) &&
+		record.pid > 0 &&
+		typeof record.head === `string` &&
+		/^[a-f0-9]{40}(?:[a-f0-9]{24})?$/.test(record.head) &&
+		(record.recoveryRequired === undefined ||
+			typeof record.recoveryRequired === `boolean`) &&
+		Array.isArray(record.paths) &&
+		record.paths.length > 0 &&
+		record.paths.every(
+			(file) =>
+				typeof file === `string` &&
+				!path.isAbsolute(file) &&
+				!path.win32.isAbsolute(file) &&
+				file
+					.split(`/`)
+					.every((part) => part !== `` && part !== `.` && part !== `..`),
+		)
+	)
+}
+
+async function readRecoveryRecord(recordPath: string): Promise<ActiveCheck> {
+	try {
+		const record: unknown = JSON.parse(await readFile(recordPath, `utf8`))
+		if (!isActiveCheck(record))
+			throw new TypeError(`Invalid recovery record fields`)
+		return record
+	} catch (cause) {
+		throw new Error(
+			`A break-check run needs recovery. The record ${recordPath} is unreadable or invalid. Verify no check is running and recover its test files before removing this record.`,
+			{ cause },
+		)
+	}
+}
+
 async function writeRecoveryRecord(
 	recordPath: string,
 	record: ActiveCheck,
@@ -98,9 +137,7 @@ export async function withTestFileState<T>(
 		for (const entry of await readdir(stateDirectory)) {
 			if (!entry.endsWith(`.json`)) continue
 			const recordPath = path.join(stateDirectory, entry)
-			const record = JSON.parse(
-				await readFile(recordPath, `utf8`),
-			) as ActiveCheck
+			const record = await readRecoveryRecord(recordPath)
 			let interrupted = record.recoveryRequired
 			try {
 				process.kill(record.pid, 0)
