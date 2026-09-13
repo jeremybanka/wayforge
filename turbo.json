@@ -107,6 +107,10 @@
 				"__scripts__/**/*.ts"
 			]
 		},
+		"comline#test:semver": {
+			"dependsOn": ["break-check#build"],
+			"cache": false
+		},
 		"lint:eslint": {
 			"dependsOn": ["gen"],
 			"inputs": [
