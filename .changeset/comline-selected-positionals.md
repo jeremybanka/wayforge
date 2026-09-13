@@ -2,4 +2,4 @@
 "comline": patch
 ---
 
-Require the selected route's own grammar to support the positional match during final invocation. Reject positional arguments that only a descendant command's option grammar would consume, instead of silently discarding them. Completion can still interpret those arguments as an unfinished descendant command.
+Rank complete interpretations supported by their own route grammar during final invocation. Descendant options cannot invalidate a valid command or silently consume its positional arguments. Reject input when no complete interpretation is valid, and retain explicit boundary requirements for equally ranked interpretations with different positional paths. Completion can still interpret unfinished descendant commands.

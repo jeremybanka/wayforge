@@ -55,25 +55,56 @@ test(`final invocation cannot discard positionals consumed only by a descendant 
 	})
 })
 
-test(`final invocation rejects a descendant match even when the selected grammar accepts another path`, () => {
-	const command = cli({
-		cliName: `probe`,
-		discoverConfigPath: () => undefined,
-		routes: optional({ $target: optional({ run: null }) }),
-		routeOptions: {
-			"": noOptions(),
-			$target: noOptions(),
-			"$target/run": refOptions({}),
-		},
-	})
-	expect(() => command(argv(`--ref`, `alice`))).toThrow(/selected route/)
-	expect(command(argv(`alice`)).inputs.path).toEqual([`alice`])
-	expect(command(argv(`--ref`, `alice`, `bob`, `run`)).inputs).toEqual({
-		case: `$target/run`,
-		path: [`bob`, `run`],
-		opts: { ref: `alice` },
-	})
-})
+test.each([optional, required])(
+	`descendant options cannot invalidate a self-consistent executable interpretation: %s`,
+	async (root) => {
+		const definition = {
+			cliName: `probe`,
+			discoverConfigPath: () => undefined,
+			routes: root({ $target: optional({ run: null }) }),
+			routeOptions: {
+				"": noOptions(),
+				$target: noOptions(),
+				"$target/run": noOptions(),
+			},
+		}
+		const before = cli(definition)(argv(`--ref`, `alice`))
+		expect(before.inputs).toEqual({ case: `$target`, path: [`alice`], opts: {} })
+		expect(before.warnings[0].code).toBe(`unknown-option`)
+		const command = cli({
+			...definition,
+			routeOptions: {
+				...definition.routeOptions,
+				"$target/run": refOptions({}),
+			},
+		})
+		const after = command(argv(`--ref`, `alice`))
+		expect(after.inputs).toEqual(before.inputs)
+		expect(after.warnings).toEqual([
+			expect.objectContaining({
+				code: `option-not-valid-for-route`,
+				option: `--ref`,
+				route: `$target`,
+				path: [`alice`],
+			}),
+		])
+		expect(command(argv(`alice`)).inputs.path).toEqual([`alice`])
+		expect(command(argv(`--ref`, `alice`, `bob`, `run`)).inputs).toEqual({
+			case: `$target/run`,
+			path: [`bob`, `run`],
+			opts: { ref: `alice` },
+		})
+		const completion = await command.complete({
+			words: [`--ref`, `alice`, `bob`, `r`],
+		})
+		expect(completion.context.error).toBeUndefined()
+		expect(completion.context.path).toEqual([`bob`])
+		expect(completion.candidates).toContainEqual({
+			value: `run`,
+			description: `refs`,
+		})
+	},
+)
 
 test(`descendant option occurrences cannot erase the selected route's values`, () => {
 	const definition = {
