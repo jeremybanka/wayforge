@@ -12,10 +12,10 @@ import path from "node:path"
 
 import { z } from "zod"
 
-import { options } from "../src/cli"
-import type { CompletionHints } from "../src/completion"
-import { completionResponse } from "../src/completion-transport"
-import { argv } from "./fixtures/argv"
+import { options } from "../../src/cli"
+import type { CompletionHints } from "../../src/completion"
+import { completionResponse } from "../../src/completion-transport"
+import { argv } from "../fixtures/argv"
 
 vi.mock(`node:fs/promises`, async (importOriginal) => {
 	const actual = await importOriginal<typeof FileSystem>()

@@ -1,4 +1,4 @@
-import { encapsulate } from "../src/cli"
+import { encapsulate } from "../../src/cli"
 
 const originalStdout = process.stdout.write
 const originalStderr = process.stderr.write

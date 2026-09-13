@@ -8,11 +8,11 @@ import {
 	parseNumberOption,
 	parseStringOption,
 	required,
-} from "../src/cli"
-import type { TerminalColors } from "../src/help"
-import { help, helpOption, renderTable } from "../src/help"
-import type { JsonSchema, OptionsSchema } from "../src/schema"
-import { argv } from "./fixtures/argv"
+} from "../../src/cli"
+import type { TerminalColors } from "../../src/help"
+import { help, helpOption, renderTable } from "../../src/help"
+import type { JsonSchema, OptionsSchema } from "../../src/schema"
+import { argv } from "../fixtures/argv"
 
 describe(`renderTable`, () => {
 	it(`aligns uneven rows with fill and outer padding`, () => {

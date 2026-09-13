@@ -12,8 +12,8 @@ import {
 	options,
 	parseBooleanOption,
 	parseNumberOption,
-} from "../src/cli"
-import { argv } from "./fixtures/argv"
+} from "../../src/cli"
+import { argv } from "../fixtures/argv"
 
 const shared = options(
 	`options`,

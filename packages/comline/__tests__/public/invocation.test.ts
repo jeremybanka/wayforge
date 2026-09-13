@@ -1,7 +1,7 @@
 import { required } from "treetrunks"
 import z from "zod"
 
-import { cli, options } from "../src/cli"
+import { cli, options } from "../../src/cli"
 
 const command = cli({
 	cliName: `probe`,

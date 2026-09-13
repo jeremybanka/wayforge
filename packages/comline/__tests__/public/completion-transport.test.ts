@@ -1,11 +1,11 @@
 import { z } from "zod"
 
-import { cli, noOptions, optional, options, required } from "../src/cli"
+import { cli, noOptions, optional, options, required } from "../../src/cli"
 import {
 	completionResponse,
 	completionScript,
-} from "../src/completion-transport"
-import { argv } from "./fixtures/argv"
+} from "../../src/completion-transport"
+import { argv } from "../fixtures/argv"
 
 const definition = {
 	cliName: `my-cli`,
