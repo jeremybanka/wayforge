@@ -10,6 +10,7 @@ import {
 	encapsulate,
 	help,
 	helpOption,
+	interpretArguments,
 	optional,
 	options,
 	parseBooleanOption,
@@ -76,8 +77,9 @@ const BREAK_CHECK_MANUAL = options(
 
 const SCHEMA_MANUAL = options(
 	`Create a copy of the schema for configuring break-check.`,
-	type({ "outdir?": `string` }),
+	type({ "outdir?": `string`, "help?": `boolean` }),
 	{
+		...helper.optionConfigs,
 		outdir: {
 			flag: `o`,
 			required: false,
@@ -107,6 +109,22 @@ const parse = cli(
 	},
 	logger,
 )
+const interpretation = interpretArguments(
+	parse.definition,
+	process.argv.slice(2),
+)
+const helpValues = interpretation.options
+	.filter((option) => option.key === `help`)
+	.map((option) => option.value)
+if (
+	!interpretation.error &&
+	interpretation.complete &&
+	helpValues.length > 0 &&
+	parseBooleanOption(helpValues.join(`,`))
+) {
+	console.log(help(parse.definition))
+	process.exit(0)
+}
 const { inputs, writeJsonSchema } = parse(process.argv)
 
 switch (inputs.case) {
@@ -121,6 +139,7 @@ switch (inputs.case) {
 	case `$configPath`: {
 		if (inputs.opts.help) {
 			console.log(help(parse.definition))
+			process.exit(0)
 		}
 
 		const { returnValue } = await encapsulate(() => breakCheck(inputs.opts), {
