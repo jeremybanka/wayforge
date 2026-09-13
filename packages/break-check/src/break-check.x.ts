@@ -35,7 +35,7 @@ const BREAK_CHECK_MANUAL = options(
 	{
 		...helper.optionConfigs,
 		tagPattern: {
-			flag: `v`,
+			flag: `g`,
 			required: false,
 			description: `RegExp which, if found matched to a git tag, will be considered a release tag for your library.`,
 			example: `--tagPattern="my-library"`,
