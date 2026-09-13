@@ -1,0 +1,83 @@
+import { styleText } from "node:util"
+
+/** An ignored option occurrence. Parsing never logs these warnings automatically. */
+export type CliWarning = {
+	code: `unknown-option` | `option-not-valid-for-route`
+	/** Display text with argument controls escaped; the other fields retain raw input. */
+	message: string
+	/** Spelling supplied, excluding inline values; grouped flags each use "-x". */
+	option: string
+	/** Zero-based index in argv.slice(2), or in words passed to interpretArguments. */
+	index: number
+	cliName: string
+	/** Canonical selected route, such as "show/$name"; the root is "". */
+	route: string
+	/** Actual positional words, including values for variable route segments. */
+	path: string[]
+}
+
+function quoteDiagnosticText(text: string): string {
+	// JSON quoting handles quotes, backslashes, and C0 controls. Also escape C1,
+	// Unicode line separators, and formatting controls such as bidi overrides.
+	return JSON.stringify(text).replace(
+		/[\p{Cc}\p{Cf}\p{Zl}\p{Zp}]/gu,
+		(character) => `\\u{${character.codePointAt(0)!.toString(16)}}`,
+	)
+}
+
+/** @internal Format the command on its first warning, preserving raw diagnostic fields. */
+export function createWarningFactory(
+	context: Pick<CliWarning, `cliName` | `route` | `path`>,
+): (code: CliWarning[`code`], option: string, index: number) => CliWarning {
+	let command: string | undefined
+	return (code, option, index) => {
+		command ??= quoteDiagnosticText([context.cliName, ...context.path].join(` `))
+		return {
+			...context,
+			code,
+			option,
+			index,
+			path: [...context.path],
+			message:
+				code === `unknown-option`
+					? `Unknown option ${quoteDiagnosticText(option)} for command ${command}.`
+					: `Option ${quoteDiagnosticText(option)} is not valid for command ${command}.`,
+		}
+	}
+}
+
+export type WarningFormatOptions = {
+	/** Omit to detect stderr color support; false disables and true forces color. */
+	forceColor?: boolean
+}
+
+export type LogWarningsOptions = WarningFormatOptions & {
+	/** Defaults to console, whose warn method writes to stderr. */
+	logger?: { warn: (message: string) => void }
+}
+
+/** Format terminal warnings as lines without a trailing newline, or "" when empty. */
+export function formatWarnings(
+	warnings: readonly CliWarning[],
+	options: WarningFormatOptions = {},
+): string {
+	if (warnings.length === 0) return ``
+	const label =
+		options.forceColor === false
+			? `Warning:`
+			: styleText(`yellow`, `Warning:`, {
+					stream: process.stderr,
+					validateStream: options.forceColor !== true,
+				})
+	return warnings.map((warning) => `${label} ${warning.message}`).join(`\n`)
+}
+
+/** Log formatted warnings on demand; empty input produces no output. */
+export function logWarnings(
+	warnings: readonly CliWarning[],
+	options: LogWarningsOptions = {},
+): void {
+	if (warnings.length === 0) return
+	const logger = options.logger ?? console
+	logger.warn(formatWarnings(warnings, options))
+}

@@ -6,6 +6,7 @@ import {
 	type OptionsSchema,
 	retrieveInputJsonSchema,
 } from "./schema"
+import { type CliWarning, createWarningFactory } from "./warnings"
 
 export type ArgumentInstance = {
 	index: number
@@ -30,6 +31,39 @@ export function splitOptionValue(
 	return [argument.slice(0, equalsIndex), argument.slice(equalsIndex + 1)]
 }
 
+type OptionWord = {
+	name: string
+	inline: string | undefined
+	/** Full spellings, retaining repeated short flags in Unicode code-point order. */
+	tokens: string[]
+}
+
+function classifyOptionWord(word: string): OptionWord | undefined {
+	if (!word.startsWith(`-`) || word === `-` || word === `--`) return
+	const [name, inline] = splitOptionValue(word)
+	return {
+		name,
+		inline,
+		// Preserve malformed assignments such as -=value as option occurrences.
+		tokens:
+			name.startsWith(`--`) || name === `-`
+				? [name]
+				: Array.from(name.slice(1), (flag) => `-${flag}`),
+	}
+}
+
+function* optionWords(
+	words: readonly string[],
+	consumed: ReadonlySet<number>,
+): Generator<OptionWord & { index: number }> {
+	for (const [index, word] of words.entries()) {
+		if (word === `--`) return
+		if (consumed.has(index)) continue
+		const option = classifyOptionWord(word)
+		if (option) yield { ...option, index }
+	}
+}
+
 export function isBooleanLiteral(arg: string): boolean {
 	return arg === `true` || arg === `false` || arg === `0` || arg === `1`
 }
@@ -38,17 +72,13 @@ export function isKnownOptionToken(
 	arg: string,
 	knownOptionTokens: KnownOptionTokens,
 ): boolean {
-	if (!arg.startsWith(`-`)) {
-		return false
-	}
-	const [optionName] = splitOptionValue(arg)
-	if (optionName.startsWith(`--`)) {
-		return knownOptionTokens.switches.has(optionName)
-	}
-	return optionName
-		.slice(1)
-		.split(``)
-		.some((flag) => knownOptionTokens.flags.has(flag))
+	return (
+		classifyOptionWord(arg)?.tokens.some((token) =>
+			token.startsWith(`--`)
+				? knownOptionTokens.switches.has(token)
+				: knownOptionTokens.flags.has(token.slice(1)),
+		) ?? false
+	)
 }
 
 export function shouldConsumeNextArg(
@@ -102,14 +132,14 @@ function scanOptions(
 		for (const name of option.names)
 			byName.set(name, [...(byName.get(name) ?? []), option])
 	}
-	for (const [index, word] of words.entries()) {
-		if (word === `--`) break
-		if (scan.consumed.has(index) || !word.startsWith(`-`)) continue
-		const [name, inline] = splitOptionValue(word)
-		const names = name.startsWith(`--`)
-			? [name]
-			: [...new Set(name.slice(1))].map((flag) => `-${flag}`)
-		for (const option of names.flatMap((token) => byName.get(token) ?? [])) {
+	for (const { index, name, inline, tokens } of optionWords(
+		words,
+		scan.consumed,
+	)) {
+		// Parsing aggregates repeated flags into one value; diagnostics retain each.
+		for (const option of [...new Set(tokens)].flatMap(
+			(token) => byName.get(token) ?? [],
+		)) {
 			const signature = optionSignature(option)
 			const standalone = option.names.includes(name)
 			let instance: ArgumentInstance
@@ -195,6 +225,8 @@ export type ArgumentOption = {
 }
 
 type ArgumentInvocation = RouteMatch & {
+	/** Invalid options for a complete, error-free route; unfinished input has none. */
+	warnings: CliWarning[]
 	/** Raw occurrences for the selected route (or following variable routes), in argument order. */
 	options: OptionOccurrence[]
 }
@@ -312,6 +344,7 @@ function reachableOptions(
 function interpretCore(
 	definition: CommandLineInterface<any>,
 	words: readonly string[],
+	mode: `invocation` | `completion`,
 ): { invocation: ArgumentInvocation; completion: () => ArgumentInterpretation } {
 	const schemaCache = new Map<OptionsSchema<any>, JsonSchema | undefined>()
 	const groups = new Map(
@@ -350,16 +383,23 @@ function interpretCore(
 			: { path: [], route: ``, tree: null, complete: true }
 		return { route, scan, match, positionalOnly }
 	})
-	// Retain a route only when its own consumption rules lead toward that route.
-	// Recognized options disambiguate alternatives with unrelated flags/aliases.
-	const viable = interpretations.filter(
-		({ route, match }) =>
-			!match.error &&
-			(route === match.route ||
+	// Execution ranks only complete matches supported by their own grammar.
+	// Completion also retains grammars that can lead to a descendant command.
+	const candidates = interpretations.filter(({ route, match }) =>
+		mode === `invocation`
+			? route === match.route
+			: route === match.route ||
 				!match.route ||
-				route.startsWith(`${match.route}/`)),
+				route.startsWith(`${match.route}/`),
 	)
-	const pool = viable.length ? viable : interpretations
+	const viable = candidates.filter(
+		({ match }) => !match.error && (mode === `completion` || match.complete),
+	)
+	const pool = viable.length
+		? viable
+		: candidates.length
+			? candidates
+			: interpretations
 	const recognized = Math.max(...pool.map(({ scan }) => scan.recognized.size))
 	const alternatives = pool.filter(
 		({ scan }) => scan.recognized.size === recognized,
@@ -368,7 +408,7 @@ function interpretCore(
 		(a, b) => b.match.path.length - a.match.path.length,
 	)[0]
 	const match = { ...best.match }
-	if (!viable.length && !match.error)
+	if (!viable.length && !match.error && match.complete)
 		match.error = `Arguments do not match a viable route for ${definition.cliName}.`
 	if (
 		viable.length &&
@@ -397,13 +437,32 @@ function interpretCore(
 		return [...unique.values()].sort((a, b) => a.index - b.index)
 	}
 	const selectedOptions = groups.get(match.route)
-	// Alternative grammars help select an unfinished route, but cannot erase
-	// occurrences belonging to the route that ordinary invocation will execute.
+	// Completion may select a prefix through a descendant grammar, but its
+	// selected-route occurrences still follow the prefix's own consumption rules.
 	const selectedScan = interpretations.find(
 		({ route }) => route === match.route,
 	)!.scan
+	// An executable prefix is not a final command selection during completion.
+	const deferWarnings =
+		mode === `completion` &&
+		viable.some(
+			({ route }) =>
+				route !== match.route &&
+				(!match.route || route.startsWith(`${match.route}/`)),
+		)
 	const invocation: ArgumentInvocation = {
 		...match,
+		warnings:
+			selectedOptions && !deferWarnings
+				? collectWarnings(
+						definition.cliName,
+						words,
+						match,
+						() => retrieveKnownOptionTokens([...groups.values()].flat()),
+						selectedScan.knownOptionTokens,
+						selectedScan.consumed,
+					)
+				: [],
 		options: occurrences(
 			selectedOptions ?? availableOptions(groups, match),
 			selectedOptions ? [selectedScan] : activeScans,
@@ -447,7 +506,7 @@ export function interpretInvocation(
 	definition: CommandLineInterface<any>,
 	words: readonly string[],
 ): ArgumentInvocation {
-	return interpretCore(definition, words).invocation
+	return interpretCore(definition, words, `invocation`).invocation
 }
 
 /** Interpret argument words without discovering config, converting values, or validating schemas. */
@@ -455,7 +514,42 @@ export function interpretArguments(
 	definition: CommandLineInterface<any>,
 	words: readonly string[],
 ): ArgumentInterpretation {
-	return interpretCore(definition, words).completion()
+	return interpretCore(definition, words, `completion`).completion()
+}
+
+function collectWarnings(
+	cliName: string,
+	words: readonly string[],
+	match: RouteMatch,
+	getKnownTokens: () => KnownOptionTokens,
+	selected: KnownOptionTokens,
+	consumed: ReadonlySet<number>,
+): CliWarning[] {
+	// Descendant grammars may still supply options and consume values until the
+	// route is complete. Do not diagnose those words against an unfinished route.
+	if (!match.complete || match.error) return []
+	const warnings: CliWarning[] = []
+	let known: KnownOptionTokens | undefined
+	const createWarning = createWarningFactory({
+		cliName,
+		route: match.route,
+		path: match.path,
+	})
+	for (const { index, tokens } of optionWords(words, consumed)) {
+		for (const option of tokens) {
+			const isLong = option.startsWith(`--`)
+			const token = isLong ? option : option.slice(1)
+			const selectedTokens = isLong ? selected.switches : selected.flags
+			if (selectedTokens.has(token)) continue
+			known ??= getKnownTokens()
+			const knownTokens = isLong ? known.switches : known.flags
+			const code = knownTokens.has(token)
+				? `option-not-valid-for-route`
+				: `unknown-option`
+			warnings.push(createWarning(code, option, index))
+		}
+	}
+	return warnings
 }
 
 /** Cache only token consumption; never use this signature to discard completion metadata. */
