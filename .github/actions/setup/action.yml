@@ -6,7 +6,7 @@ inputs:
     required: false
     default: bun node pnpm
   completion-consumers:
-    description: Install and fingerprint the real shell completion consumers.
+    description: Fingerprint the installed real shell completion consumers.
     required: false
     default: "false"
 runs:
@@ -19,12 +19,10 @@ runs:
         env: false
         install_args: ${{ inputs.packages }}
 
-    - name: Install real completion consumers
+    - name: Fingerprint real completion consumers
       if: ${{ inputs.completion-consumers == 'true' }}
       shell: bash
       run: |
-        sudo apt-get update
-        sudo apt-get install -y zsh
         BASH_COMPLETION_FILE="$(mise where github:scop/bash-completion)/bash_completion"
         echo "BASH_COMPLETION_FILE=$BASH_COMPLETION_FILE" >> "$GITHUB_ENV"
         # Hash the actual consumers before Turbo decides whether to reuse tests.
