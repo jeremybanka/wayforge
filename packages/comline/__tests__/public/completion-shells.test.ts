@@ -595,7 +595,7 @@ test(`Bash installation checks that bash-completion is enabled`, () => {
 
 test(`Bash discovers unexported user directory settings and creates missing directories`, () => {
 	const rc = path.join(directory, `home/.bashrc`)
-	const custom = path.join(directory, `custom bash completions`)
+	const custom = path.join(directory, `custom-bash-completions`)
 	withProfile(
 		rc,
 		readFileSync(rc, `utf8`) +
@@ -605,6 +605,23 @@ test(`Bash discovers unexported user directory settings and creates missing dire
 			run(`comline-fixture`, [`completion`, `install`, `bash`], mode(`global`))
 			expect(existsSync(file)).toBe(true)
 			expect(completeInstalledValue(`bash`, `global`)).toBe(`closed`)
+		},
+	)
+})
+
+test(`Bash installation preserves spaces in an unexported directory setting`, () => {
+	const rc = path.join(directory, `home/.bashrc`)
+	const custom = path.join(directory, `custom bash completions`)
+	withProfile(
+		rc,
+		readFileSync(rc, `utf8`) +
+			`BASH_COMPLETION_USER_DIR='${custom}'\nexport -n BASH_COMPLETION_USER_DIR\nprintf 'startup output\\n'\n`,
+		() => {
+			const file = path.join(custom, `completions/comline-fixture.bash`)
+			run(`comline-fixture`, [`completion`, `install`, `bash`], mode(`global`))
+			expect(existsSync(file)).toBe(true)
+			// bash-completion 2.11 splits spaced search paths when autoloading.
+			// Check Comline's installation path here; native completion runs above.
 		},
 	)
 })
