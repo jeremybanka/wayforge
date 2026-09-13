@@ -10,7 +10,10 @@ import { rename, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import path from "node:path"
 
-import { completionScript, installCompletion } from "../src/completion-transport"
+import {
+	completionScript,
+	installCompletion,
+} from "../../src/completion-transport"
 
 const inspect = vi.hoisted(() => vi.fn())
 

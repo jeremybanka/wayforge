@@ -52,7 +52,7 @@ beforeAll(() => {
 	)
 	run(`bun`, [
 		`build`,
-		path.join(import.meta.dirname, `fixtures/argv.x.ts`),
+		path.join(import.meta.dirname, `../fixtures/argv.x.ts`),
 		`--target=node`,
 		`--outfile=${path.join(fixture, `mycli.mjs`)}`,
 	])

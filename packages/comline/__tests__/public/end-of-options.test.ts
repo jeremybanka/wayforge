@@ -1,8 +1,8 @@
 import { required } from "treetrunks"
 import z from "zod"
 
-import { cli, options, parseNumberOption } from "../src/cli"
-import { argv } from "./fixtures/argv"
+import { cli, options, parseNumberOption } from "../../src/cli"
+import { argv } from "../fixtures/argv"
 
 const optionGroup = options(
 	`delimiter test`,

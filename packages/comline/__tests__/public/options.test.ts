@@ -1,9 +1,9 @@
 import { type } from "arktype"
 import z from "zod"
 
-import { cli, options } from "../src/cli"
-import { parseNumberOption, parseStringOption } from "../src/option-parsers"
-import { argv } from "./fixtures/argv"
+import { cli, options } from "../../src/cli"
+import { parseNumberOption, parseStringOption } from "../../src/option-parsers"
+import { argv } from "../fixtures/argv"
 
 describe(`options from cli`, () => {
 	const testCli = cli({

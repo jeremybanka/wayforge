@@ -11,8 +11,8 @@ import {
 	options,
 	parseBooleanOption,
 	parseNumberOption,
-} from "../src/cli"
-import { argv } from "./fixtures/argv"
+} from "../../src/cli"
+import { argv } from "../fixtures/argv"
 
 function refOptions(completion: CompletionHints) {
 	return options(`refs`, z.object({ ref: z.string().optional() }), {

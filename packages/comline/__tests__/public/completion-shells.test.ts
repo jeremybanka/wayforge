@@ -12,8 +12,11 @@ import {
 import { tmpdir } from "node:os"
 import path from "node:path"
 
-import { completionScript, installCompletion } from "../src/completion-transport"
-import { packComline } from "./fixtures/comline-workspace"
+import {
+	completionScript,
+	installCompletion,
+} from "../../src/completion-transport"
+import { packComline } from "../fixtures/comline-workspace"
 
 let directory: string
 let environment: NodeJS.ProcessEnv
@@ -93,7 +96,7 @@ beforeAll(() => {
 	]) {
 		writeFileSync(path.join(directory, name), ``)
 	}
-	const packageDirectory = path.join(import.meta.dirname, `..`)
+	const packageDirectory = path.join(import.meta.dirname, `../..`)
 	// Build and pack a copy: cleaning the checkout's dist would race with other
 	// packages importing Comline. Keep the real release config and manifest.
 	const comline = packComline(
@@ -118,14 +121,14 @@ beforeAll(() => {
 	)
 	run(`bun`, [
 		`build`,
-		path.join(import.meta.dirname, `fixtures/completion.x.ts`),
+		path.join(import.meta.dirname, `../fixtures/completion.x.ts`),
 		`--target=node`,
 		`--external=comline`,
 		`--outfile=${fixture}/cli.js`,
 	])
 	run(`bun`, [
 		`build`,
-		path.join(import.meta.dirname, `fixtures/completion.x.ts`),
+		path.join(import.meta.dirname, `../fixtures/completion.x.ts`),
 		`--compile`,
 		`--outfile=${directory}/compiled/comline-fixture`,
 	])
@@ -457,7 +460,10 @@ describe(`global`, { timeout: 30_000 }, () => {
 				const result = run(
 					`bun`,
 					[
-						path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
+						path.join(
+							import.meta.dirname,
+							`../fixtures/shell-completion.bun.ts`,
+						),
 						shell,
 						path.join(directory, shell === `nu` ? `nushell` : shell),
 						output,
@@ -485,7 +491,7 @@ describe(`global`, { timeout: 30_000 }, () => {
 			const result = run(
 				`bun`,
 				[
-					path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
+					path.join(import.meta.dirname, `../fixtures/shell-completion.bun.ts`),
 					`nu`,
 					path.join(directory, `nushell`),
 					path.join(directory, `output-${counter++}.json`),
@@ -506,7 +512,7 @@ describe(`global`, { timeout: 30_000 }, () => {
 			const result = run(
 				`bun`,
 				[
-					path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
+					path.join(import.meta.dirname, `../fixtures/shell-completion.bun.ts`),
 					`bash`,
 					path.join(directory, `bash`),
 					path.join(directory, `output-${counter++}.json`),
@@ -589,7 +595,7 @@ describe(`global`, { timeout: 30_000 }, () => {
 			const result = run(
 				`bun`,
 				[
-					path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
+					path.join(import.meta.dirname, `../fixtures/shell-completion.bun.ts`),
 					shell,
 					path.join(directory, shell === `nu` ? `nushell` : shell),
 					path.join(directory, `output-${counter++}.json`),
@@ -667,7 +673,7 @@ describe(`global`, { timeout: 30_000 }, () => {
 		const result = run(
 			`bun`,
 			[
-				path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
+				path.join(import.meta.dirname, `../fixtures/shell-completion.bun.ts`),
 				`fish`,
 				path.join(directory, `fish`),
 				path.join(directory, `output-${counter++}.json`),
@@ -681,7 +687,7 @@ describe(`global`, { timeout: 30_000 }, () => {
 		const result = run(
 			`bun`,
 			[
-				path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
+				path.join(import.meta.dirname, `../fixtures/shell-completion.bun.ts`),
 				`fish`,
 				path.join(directory, `fish`),
 				path.join(directory, `output-${counter++}.json`),
@@ -748,7 +754,7 @@ describe(`compiled`, { timeout: 30_000 }, () => {
 			const result = run(
 				`bun`,
 				[
-					path.join(import.meta.dirname, `fixtures/shell-completion.bun.ts`),
+					path.join(import.meta.dirname, `../fixtures/shell-completion.bun.ts`),
 					shell,
 					path.join(directory, shell === `nu` ? `nushell` : shell),
 					path.join(directory, `output-${counter++}.json`),

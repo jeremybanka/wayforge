@@ -29,9 +29,9 @@ beforeAll(() => {
 	run(
 		`go`,
 		[`build`, `-o`, path.join(directory, `cobra-oracle`), `.`],
-		path.join(import.meta.dirname, `fixtures/cobra`),
+		path.join(import.meta.dirname, `../fixtures/cobra`),
 	)
-	const fixture = path.join(import.meta.dirname, `fixtures/completion.x.ts`)
+	const fixture = path.join(import.meta.dirname, `../fixtures/completion.x.ts`)
 	run(`bun`, [
 		`build`,
 		fixture,
@@ -77,7 +77,7 @@ test.runIf(process.env[`COMLINE_PROBE_CARAPACE_COBRA`] === `1`)(
 	() => {
 		run(`bun`, [
 			`build`,
-			path.join(import.meta.dirname, `fixtures/completion.x.ts`),
+			path.join(import.meta.dirname, `../fixtures/completion.x.ts`),
 			`--compile`,
 			`--outfile=${directory}/cli`,
 		])

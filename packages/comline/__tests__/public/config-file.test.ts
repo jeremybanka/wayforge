@@ -6,9 +6,9 @@ import { type } from "arktype"
 import { required } from "treetrunks"
 import z from "zod"
 
-import { cli, options } from "../src/cli"
-import { parseStringOption } from "../src/option-parsers"
-import { argv } from "./fixtures/argv"
+import { cli, options } from "../../src/cli"
+import { parseStringOption } from "../../src/option-parsers"
+import { argv } from "../fixtures/argv"
 
 let tempDir: string
 
@@ -90,7 +90,7 @@ describe(`creating a config schema`, () => {
 		)
 		const jsonSchemaFixtureLocation = path.join(
 			import.meta.dirname,
-			`fixtures/example-schema.json`,
+			`../fixtures/example-schema.json`,
 		)
 		const jsonSchemaFixtureContentsString = fs.readFileSync(
 			jsonSchemaFixtureLocation,
