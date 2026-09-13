@@ -50,6 +50,14 @@ this command will check out all files matching the pattern `*__public.test.ts` f
 
 if the tests fail, break-check will exit with a non-zero status code, indicating that you have breaking changes in your project at the current commit
 
+## parallel checks and file restoration
+
+Checks with disjoint public test paths can run their test and certification commands in parallel, in their original working directories. break-check coordinates Git setup and cleanup with a short-lived lock and records each running check's test paths. The clean-repository check ignores only the paths owned by active checks; unrelated uncommitted changes still prevent a new check from starting. Checks with overlapping test paths are rejected before replacing files.
+
+Released tests are loaded with `git restore --worktree`. After testing and certification, including failures, break-check restores only those paths to their starting commit and removes tests that existed only in the release. The Git index and existing stashes are preserved. Unrelated files, command outputs, and changes made by other packages are left in place. There is no repository or dependency copy. Commands that themselves modify shared files or Git state still need their own coordination.
+
+If a process is forcibly interrupted or restoration fails, break-check retains recovery information under `break-check/` in the worktree's Git directory (`git rev-parse --absolute-git-dir`). After confirming the process has stopped, restore each recorded path from the recorded `head` commit, remove any recorded paths absent from that commit, and remove the record. An interrupted setup or cleanup can also leave the `break-check/lock` directory; remove it only after confirming no setup or cleanup is still running.
+
 ## options
 
 <!--gen-->
