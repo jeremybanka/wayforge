@@ -3,6 +3,7 @@ import z from "zod"
 
 import { cli, options, parseNumberOption } from "../../src/cli"
 import { argv } from "../fixtures/argv"
+import { inputValues } from "../fixtures/contract-values"
 
 const optionGroup = options(
 	`delimiter test`,
@@ -67,12 +68,16 @@ test.each([`--name=after`, `-n`, `-ncc`, `--`])(
 			routeOptions: { "run/$value": optionGroup },
 		})
 		expect(
-			routedCli(argv(`--name`, `before`, `run`, `--`, token)).inputs,
-		).toEqual({
-			case: `run/$value`,
-			path: [`run`, token],
-			opts: { name: `before` },
-		})
+			inputValues(
+				routedCli(argv(`--name`, `before`, `run`, `--`, token)).inputs,
+			),
+		).toEqual(
+			inputValues({
+				case: `run/$value`,
+				path: [`run`, token],
+				opts: { name: `before` },
+			}),
+		)
 	},
 )
 

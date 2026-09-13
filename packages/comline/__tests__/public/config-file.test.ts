@@ -82,27 +82,25 @@ describe(`creating a config schema`, () => {
 			"": options(`blah`, z.object({ foo: z.string() }), optionConfigs),
 		},
 	})
-	function expectWritesExampleSchema(testCli: ReturnType<typeof cli>): void {
+	function expectWritesUsableSchema(testCli: ReturnType<typeof cli>): void {
 		const { writeJsonSchema } = testCli(argv(`--foo=hello`))
 		writeJsonSchema(`${tempDir}`)
 		const jsonSchemaContents = JSON.parse(
 			fs.readFileSync(`${tempDir}/my-cli.main.schema.json`, `utf-8`),
 		)
-		const jsonSchemaFixtureLocation = path.join(
-			import.meta.dirname,
-			`../fixtures/example-schema.json`,
+		const validator = z.fromJSONSchema(jsonSchemaContents)
+		expect(validator.safeParse({ foo: `hello` }).success).toBe(true)
+		expect(validator.safeParse({ foo: `` }).success).toBe(true)
+		expect(validator.safeParse({}).success).toBe(false)
+		expect(validator.safeParse({ foo: 42 }).success).toBe(false)
+		expect(validator.safeParse({ foo: `hello`, extra: true }).success).toBe(
+			false,
 		)
-		const jsonSchemaFixtureContentsString = fs.readFileSync(
-			jsonSchemaFixtureLocation,
-			`utf-8`,
-		)
-		const jsonSchemaFixture = JSON.parse(jsonSchemaFixtureContentsString)
-		expect(jsonSchemaContents).toEqual(jsonSchemaFixture)
 	}
 	test(`happy: export an arktype schema`, () => {
-		expectWritesExampleSchema(arktypeTestCli)
+		expectWritesUsableSchema(arktypeTestCli)
 	})
 	test(`happy: export a zod schema`, () => {
-		expectWritesExampleSchema(zodTestCli)
+		expectWritesUsableSchema(zodTestCli)
 	})
 })

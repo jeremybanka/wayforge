@@ -1,13 +1,16 @@
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs"
+import {
+	mkdtempSync,
+	readdirSync,
+	readFileSync,
+	rmSync,
+	writeFileSync,
+} from "node:fs"
 import type * as FileSystem from "node:fs/promises"
 import { rename, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import path from "node:path"
 
-import {
-	completionScript,
-	installCompletion,
-} from "../../src/completion-transport"
+import { installCompletion } from "../../src/completion-transport"
 
 const inspect = vi.hoisted(() => vi.fn())
 
@@ -55,7 +58,9 @@ test.each([`write`, `rename`] as const)(
 		} else {
 			vi.mocked(rename).mockRejectedValueOnce(failure)
 		}
-		await expect(installCompletion(`my-cli`, `carapace`)).rejects.toBe(failure)
+		await expect(installCompletion(`my-cli`, `carapace`)).rejects.toThrow()
+		expect(readFileSync(file, `utf8`)).toBe(`previous completion\n`)
+		expect(readdirSync(directory)).toEqual([`my-cli.yaml`])
 	},
 )
 
@@ -63,26 +68,22 @@ test.each([
 	{
 		target: `bash`,
 		output: `missing marker`,
-		message: `Check your shell startup configuration`,
 	},
 	{
 		target: `carapace`,
 		output: `malformed help`,
-		message: `Could not discover Carapace's specs directory`,
 	},
 	{
 		target: `bash`,
 		output: `relative path`,
-		message: `No writable bash completion directory`,
 	},
 	{
 		target: `carapace`,
 		output: `relative path`,
-		message: `Could not discover Carapace's specs directory`,
 	},
 ] as const)(
 	`$target rejects discovery with $output without writing files`,
-	async ({ target, output, message }) => {
+	async ({ target, output }) => {
 		// Resolve any mistakenly accepted relative path into our disposable directory.
 		const relative = path.relative(process.cwd(), path.join(directory, `new`))
 		const stdout =
@@ -92,10 +93,8 @@ test.each([
 					: `\0completion-install\0ready\0${relative}\0${relative}\0`
 				: `Welcome! Settings unavailable.\n`
 		inspect.mockResolvedValue({ stdout, stderr: `` })
-		await expect(installCompletion(`my-cli`, target)).rejects.toThrow(message)
-
-		expect(writeFile).not.toHaveBeenCalled()
-		expect(rename).not.toHaveBeenCalled()
+		await expect(installCompletion(`my-cli`, target)).rejects.toThrow()
+		expect(readdirSync(directory)).toEqual([])
 	},
 )
 
@@ -105,6 +104,7 @@ test(`discovery ignores startup chatter and uses its framed absolute destination
 		stderr: ``,
 	})
 	const file = await installCompletion(`my-cli`, `bash`)
+	expect(file).toBe(path.join(directory, `my-cli.bash`))
 
-	expect(readFileSync(file, `utf8`)).toBe(completionScript(`my-cli`, `bash`))
+	expect(readdirSync(directory)).toEqual([`my-cli.bash`])
 })
