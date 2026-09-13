@@ -442,18 +442,27 @@ function interpretCore(
 	const selectedScan = interpretations.find(
 		({ route }) => route === match.route,
 	)!.scan
+	// An executable prefix is not a final command selection during completion.
+	const deferWarnings =
+		mode === `completion` &&
+		viable.some(
+			({ route }) =>
+				route !== match.route &&
+				(!match.route || route.startsWith(`${match.route}/`)),
+		)
 	const invocation: ArgumentInvocation = {
 		...match,
-		warnings: selectedOptions
-			? collectWarnings(
-					definition.cliName,
-					words,
-					match,
-					() => retrieveKnownOptionTokens([...groups.values()].flat()),
-					selectedScan.knownOptionTokens,
-					selectedScan.consumed,
-				)
-			: [],
+		warnings:
+			selectedOptions && !deferWarnings
+				? collectWarnings(
+						definition.cliName,
+						words,
+						match,
+						() => retrieveKnownOptionTokens([...groups.values()].flat()),
+						selectedScan.knownOptionTokens,
+						selectedScan.consumed,
+					)
+				: [],
 		options: occurrences(
 			selectedOptions ?? availableOptions(groups, match),
 			selectedOptions ? [selectedScan] : activeScans,
@@ -474,16 +483,7 @@ function interpretCore(
 					})),
 			)
 			return {
-				...match,
-				options: invocation.options,
-				// An executable prefix is not a final command selection during completion.
-				warnings: viable.some(
-					({ route }) =>
-						route !== match.route &&
-						(!match.route || route.startsWith(`${match.route}/`)),
-				)
-					? []
-					: invocation.warnings,
+				...invocation,
 				availableOptions: availableOptions(groups, match),
 				allOptions,
 				reachableOptions: reachableOptions(groups, match),

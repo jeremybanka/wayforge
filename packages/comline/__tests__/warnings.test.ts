@@ -429,6 +429,24 @@ test.each([
 	},
 )
 
+test(`completion does not construct warnings while a descendant remains viable`, () => {
+	const createWarning = vi.spyOn(presentation, `createWarningFactory`)
+	try {
+		const context = testCli.interpret({ words: [`--typo`, ``] })
+		expect(context.warnings).toEqual([])
+		expect(createWarning).not.toHaveBeenCalled()
+		expect(testCli(argv(`--typo`)).warnings).toHaveLength(1)
+		expect(createWarning).toHaveBeenCalledOnce()
+		createWarning.mockClear()
+		expect(
+			testCli.interpret({ words: [`run`, `--typo`, ``] }).warnings,
+		).toHaveLength(1)
+		expect(createWarning).toHaveBeenCalledOnce()
+	} finally {
+		createWarning.mockRestore()
+	}
+})
+
 test(`command presentation is deferred until a warning and reused within an invocation`, () => {
 	const stringify = vi.spyOn(JSON, `stringify`)
 	const commandFormats = () =>
