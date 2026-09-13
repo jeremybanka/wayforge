@@ -5,6 +5,8 @@ import simpleGit from "simple-git"
 import type { Chronicle } from "takua"
 import logger from "takua"
 
+import { withTestFileState } from "./test-file-state"
+
 export type BreakCheckOptions = {
 	tagPattern?: string | undefined
 	testPattern: string
@@ -65,98 +67,108 @@ export async function breakCheck({
 	mark?.(`breakCheck`)
 	const git = simpleGit(baseDirname)
 	mark?.(`spawn git`)
-	const isGitClean = (await git.checkIsRepo()) && (await git.status()).isClean()
-	mark?.(`is git clean`)
-	if (!isGitClean) {
+	const isGitRepo = await git.checkIsRepo()
+	mark?.(`is git repository`)
+	if (!isGitRepo) {
 		return {
 			summary: `The git repository must be clean to run this command.`,
 			gitWasClean: false,
 		}
 	}
-	const tagsRemote = await git.listRemote([`--tags`, `origin`])
-
-	mark?.(`list remote tags`)
-	const allTagsRaw = tagsRemote.split(`\n`)
-	const tagsRawFiltered = tagPattern
-		? allTagsRaw.filter((tag) => tag?.match(new RegExp(tagPattern)))
-		: allTagsRaw
-	const tags = tagsRawFiltered
-		.map((tag) => tag.split(`\t`)[1].split(`^`)[0]) //.split(`/`)[2])
-		.toSorted((a, b) => {
-			const aVersion = a.split(`@`)[1]
-			const bVersion = b.split(`@`)[1]
-			const [aMajor, aMinor, aPatch] = aVersion.split(`.`).map((n) => Number(n))
-			const [bMajor, bMinor, bPatch] = bVersion.split(`.`).map((n) => Number(n))
-			return bMajor - aMajor || bMinor - aMinor || bPatch - aPatch
-		})
-	const latestReleaseTag = tags[0]
-	mark?.(`found latest release tag`)
-	if (!latestReleaseTag) {
-		return {
-			summary: `No tags found matching the pattern "${tagPattern}".`,
-			gitWasClean: true,
-			lastReleaseFound: false,
+	const prepared = await withTestFileState(git, baseDirname, async (state) => {
+		if (!(await state.isClean())) {
+			return {
+				summary: `The git repository must be clean to run this command.`,
+				gitWasClean: false,
+			} as const
 		}
-	}
-	await git.fetch([
-		`origin`,
-		`${latestReleaseTag}:${latestReleaseTag}`,
-		`--no-tags`,
-	])
-	mark?.(`fetched latest release tag`)
+		const tagsRemote = await git.listRemote([`--tags`, `origin`])
 
-	let productionFiles: string[]
-	try {
-		productionFiles = await new Promise<string[]>((resolve, reject) => {
-			const treeResult = exec(
-				`git ls-tree -r --name-only ${latestReleaseTag}`,
-				{ cwd: baseDirname },
-				async (_, stdout, stderr) => {
-					await git.stash()
-					if (treeResult.exitCode === 0) {
-						resolve(stdout.split(`\n`))
-					} else {
-						reject(stderr)
-					}
-				},
+		mark?.(`list remote tags`)
+		const allTagsRaw = tagsRemote.split(`\n`).filter(Boolean)
+		const tagsRawFiltered = tagPattern
+			? allTagsRaw.filter((tag) => tag?.match(new RegExp(tagPattern)))
+			: allTagsRaw
+		const tags = tagsRawFiltered
+			.map((tag) => tag.split(`\t`)[1].split(`^`)[0]) //.split(`/`)[2])
+			.toSorted((a, b) => {
+				const aVersion = a.split(`@`)[1]
+				const bVersion = b.split(`@`)[1]
+				const [aMajor, aMinor, aPatch] = aVersion
+					.split(`.`)
+					.map((n) => Number(n))
+				const [bMajor, bMinor, bPatch] = bVersion
+					.split(`.`)
+					.map((n) => Number(n))
+				return bMajor - aMajor || bMinor - aMinor || bPatch - aPatch
+			})
+		const latestReleaseTag = tags[0]
+		mark?.(`found latest release tag`)
+		if (!latestReleaseTag) {
+			return {
+				summary: `No tags found matching the pattern "${tagPattern}".`,
+				gitWasClean: true,
+				lastReleaseFound: false,
+			} as const
+		}
+		await git.fetch([
+			`origin`,
+			`${latestReleaseTag}:${latestReleaseTag}`,
+			`--no-tags`,
+			`--no-write-fetch-head`,
+		])
+		mark?.(`fetched latest release tag`)
+
+		let productionFiles: string[]
+		try {
+			productionFiles = (
+				await git.raw([`ls-tree`, `-r`, `--name-only`, `-z`, latestReleaseTag])
 			)
-		})
-	} catch (thrown) {
-		mark?.(`failed to list production files`)
-		const message =
-			thrown instanceof Error
-				? thrown.message
-				: typeof thrown === `string`
-					? thrown
-					: undefined
-		const summary = `Failed to list production files${
-			message ? `: ${message}` : `.`
-		}`
-		return {
-			summary,
-			gitWasClean: true,
-			lastReleaseFound: true,
-			lastReleaseTag: latestReleaseTag,
-			testsWereFound: false,
+				.split(`\0`)
+				.filter(Boolean)
+		} catch (thrown) {
+			mark?.(`failed to list production files`)
+			const message =
+				thrown instanceof Error
+					? thrown.message
+					: typeof thrown === `string`
+						? thrown
+						: undefined
+			const summary = `Failed to list production files${
+				message ? `: ${message}` : `.`
+			}`
+			return {
+				summary,
+				gitWasClean: true,
+				lastReleaseFound: true,
+				lastReleaseTag: latestReleaseTag,
+				testsWereFound: false,
+			} as const
 		}
-	}
-	mark?.(`listed all files checked into git`)
-	const productionTestFiles = productionFiles.filter((file) =>
-		minimatch(file, testPattern),
-	)
-	mark?.(`filtered to public test files`)
+		mark?.(`listed all files checked into git`)
+		const productionTestFiles = productionFiles.filter((file) =>
+			minimatch(file, testPattern),
+		)
+		mark?.(`filtered to public test files`)
 
-	if (productionTestFiles.length === 0) {
-		return {
-			summary: `No tests were found matching the pattern "${testPattern}".`,
-			gitWasClean: true,
-			lastReleaseFound: true,
-			lastReleaseTag: latestReleaseTag,
-			testsWereFound: false,
+		if (productionTestFiles.length === 0) {
+			return {
+				summary: `No tests were found matching the pattern "${testPattern}".`,
+				gitWasClean: true,
+				lastReleaseFound: true,
+				lastReleaseTag: latestReleaseTag,
+				testsWereFound: false,
+			} as const
 		}
-	}
-	await git.checkout([latestReleaseTag, `--`, ...productionTestFiles])
-	mark?.(`checked out public tests from latest release tag`)
+		const restore = await state.replaceTests(
+			latestReleaseTag,
+			productionTestFiles,
+		)
+		mark?.(`restored public tests from latest release tag`)
+		return { latestReleaseTag, productionTestFiles, restore }
+	})
+	if (prepared.summary !== undefined) return prepared
+	const { latestReleaseTag, productionTestFiles, restore } = prepared
 
 	try {
 		const noBreakingChangesDetected = await new Promise<
@@ -211,8 +223,8 @@ export async function breakCheck({
 		})
 		return breakingChangesCertified
 	} finally {
-		await git.stash([`push`, `-u`, `-m="break-check ${tagPattern}"`, `--`, `./`])
-		mark?.(`stashed`)
+		await restore()
+		mark?.(`restored original public tests`)
 		logMarks?.()
 	}
 }

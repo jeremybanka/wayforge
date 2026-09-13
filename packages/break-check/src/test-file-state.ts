@@ -1,0 +1,194 @@
+import { randomUUID } from "node:crypto"
+import {
+	chmod,
+	lstat,
+	mkdir,
+	readdir,
+	readFile,
+	realpath,
+	rm,
+	rmdir,
+	writeFile,
+} from "node:fs/promises"
+import path from "node:path"
+import { setTimeout } from "node:timers/promises"
+
+import type { SimpleGit } from "simple-git"
+import simpleGit from "simple-git"
+
+type ActiveCheck = {
+	pid: number
+	paths: string[]
+	head: string
+	recoveryRequired?: boolean
+}
+
+type TestFileState = {
+	isClean: () => Promise<boolean>
+	replaceTests: (
+		release: string,
+		files: string[],
+	) => Promise<() => Promise<void>>
+}
+
+// This lock covers Git setup and restoration only. Commands run after it is released.
+export async function withTestFileState<T>(
+	git: SimpleGit,
+	baseDirname: string,
+	action: (state: TestFileState) => Promise<T>,
+	readActiveChecks = true,
+): Promise<T> {
+	const root = await realpath(await git.revparse([`--show-toplevel`]))
+	baseDirname = await realpath(baseDirname)
+	const stateDirectory = path.join(
+		await git.revparse([`--absolute-git-dir`]),
+		`break-check`,
+	)
+	await mkdir(stateDirectory, { recursive: true })
+	const lock = path.join(stateDirectory, `lock`)
+	const deadline = Date.now() + 60_000
+	for (;;) {
+		try {
+			await mkdir(lock)
+			break
+		} catch (thrown) {
+			if ((thrown as NodeJS.ErrnoException).code !== `EEXIST`) throw thrown
+			if (Date.now() >= deadline)
+				throw new Error(
+					`Timed out waiting for ${lock}. Check for an interrupted break-check setup or cleanup before removing this lock.`,
+				)
+			await setTimeout(20)
+		}
+	}
+	try {
+		const activeChecks: ActiveCheck[] = []
+		for (const entry of readActiveChecks ? await readdir(stateDirectory) : []) {
+			if (!entry.endsWith(`.json`)) continue
+			const recordPath = path.join(stateDirectory, entry)
+			const record = JSON.parse(
+				await readFile(recordPath, `utf8`),
+			) as ActiveCheck
+			let interrupted = record.recoveryRequired
+			try {
+				process.kill(record.pid, 0)
+			} catch (thrown) {
+				if ((thrown as NodeJS.ErrnoException).code !== `EPERM`)
+					interrupted = true
+			}
+			if (interrupted)
+				throw new Error(
+					`A break-check run needs recovery. Restore the test paths recorded in ${recordPath} before removing that record.`,
+				)
+			activeChecks.push(record)
+		}
+		const activePaths = activeChecks.flatMap((record) => record.paths)
+		return await action({
+			isClean: async () =>
+				!(await simpleGit(root).raw([
+					`--no-optional-locks`,
+					`status`,
+					`--porcelain`,
+					`--untracked-files=all`,
+					`--`,
+					`.`,
+					...activePaths.map((file) => `:(top,literal,exclude)${file}`),
+				])),
+			replaceTests: async (release, files) => {
+				const paths = files.map((file) =>
+					path
+						.relative(root, path.resolve(baseDirname, file))
+						.split(path.sep)
+						.join(`/`),
+				)
+				for (const file of paths) {
+					if (
+						activePaths.some(
+							(active) =>
+								file === active ||
+								file.startsWith(`${active}/`) ||
+								active.startsWith(`${file}/`),
+						)
+					) {
+						throw new Error(
+							`Another break-check run is using ${file}. Concurrent checks must use disjoint test paths.`,
+						)
+					}
+				}
+				const head = await git.revparse([`HEAD`])
+				const currentFiles = new Set(
+					(await git.raw([`ls-tree`, `-r`, `--name-only`, `-z`, head]))
+						.split(`\0`)
+						.filter(Boolean),
+				)
+				const existing = files.filter((file) => currentFiles.has(file))
+				const absent = files.filter((file) => !currentFiles.has(file))
+				const modes = new Map<string, number>()
+				for (const file of files) {
+					const filename = path.resolve(baseDirname, file)
+					// Avoid following a parent symlink when removing release-only tests later.
+					for (
+						let parent = path.dirname(filename);
+						parent !== root;
+						parent = path.dirname(parent)
+					) {
+						const stats = await lstat(parent).catch(
+							(thrown: NodeJS.ErrnoException) => {
+								if (thrown.code !== `ENOENT`) throw thrown
+							},
+						)
+						if (stats && !stats.isDirectory())
+							throw new Error(`Cannot replace tests through ${parent}.`)
+					}
+					const stats = await lstat(filename).catch(
+						(thrown: NodeJS.ErrnoException) => {
+							if (thrown.code !== `ENOENT`) throw thrown
+						},
+					)
+					if (!currentFiles.has(file) && stats)
+						throw new Error(
+							`Cannot overwrite the existing untracked path ${filename}.`,
+						)
+					if (stats?.isFile()) modes.set(filename, stats.mode)
+				}
+				const recordPath = path.join(stateDirectory, `${randomUUID()}.json`)
+				const record: ActiveCheck = { pid: process.pid, paths, head }
+				await writeFile(recordPath, JSON.stringify(record))
+				const restore = async () => {
+					await writeFile(
+						recordPath,
+						JSON.stringify({ ...record, recoveryRequired: true }),
+					)
+					if (existing.length)
+						await git.raw([
+							`--literal-pathspecs`,
+							`restore`,
+							`--source=${head}`,
+							`--worktree`,
+							`--`,
+							...existing,
+						])
+					for (const file of absent)
+						await rm(path.resolve(baseDirname, file), { force: true })
+					for (const [filename, mode] of modes) await chmod(filename, mode)
+					await rm(recordPath)
+				}
+				try {
+					await git.raw([
+						`--literal-pathspecs`,
+						`restore`,
+						`--source=${release}`,
+						`--worktree`,
+						`--`,
+						...files,
+					])
+				} catch (thrown) {
+					await restore()
+					throw thrown
+				}
+				return () => withTestFileState(git, baseDirname, restore, false)
+			},
+		})
+	} finally {
+		await rmdir(lock)
+	}
+}
