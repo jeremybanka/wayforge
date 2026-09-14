@@ -12,6 +12,7 @@ import {
 	type CompletionResult,
 	interpretCompletion,
 } from "./completion"
+import { readConfigFile } from "./config-file"
 import type { Flag } from "./flag"
 import { parseStringOption } from "./option-parsers"
 import {
@@ -116,6 +117,7 @@ export type CommandLineInterface<Routes extends Tree> = {
 	debugOutput?: boolean
 	/** Hints keyed by full variable route names, e.g. "commit/view/$ref". */
 	positionalCompletions?: Readonly<Record<string, CompletionHints>>
+	/** Opt in to config loading. Return a JSON or JS/TS module path, or undefined to skip. */
 	discoverConfigPath?: (positionalArgs: TreePath<Routes>) => string | undefined
 }
 
@@ -147,8 +149,7 @@ export function cli<
 		cliName,
 		routeOptions,
 		debugOutput = false,
-		discoverConfigPath = () =>
-			path.join(process.cwd(), `${cliName}.config.json`),
+		discoverConfigPath,
 	} = definition
 	const cliLogger: CliLogger = {
 		error: (message: string, ...args: unknown[]) => {
@@ -207,11 +208,9 @@ export function cli<
 					cliLogger.info?.(`looking for config file at:`, configFilePath)
 					if (fs.existsSync(configFilePath)) {
 						cliLogger.info?.(`config file was found`)
-						const configText = fs.readFileSync(configFilePath, `utf-8`)
-						const optionsFromConfigJson = JSON.parse(configText)
 						optionsFromConfig = validateOptionsSchema(
 							optionsSchema,
-							optionsFromConfigJson,
+							readConfigFile(configFilePath),
 						) as Options
 					}
 				}
@@ -260,6 +259,7 @@ export function cli<
 				optionsFromCommandLineEntries,
 			)
 			const suppliedOptionsUnparsed = Object.assign(
+				{},
 				optionsFromConfig ?? {},
 				optionsFromCommandLine,
 			)
