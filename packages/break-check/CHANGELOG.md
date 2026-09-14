@@ -1,5 +1,24 @@
 # break-check
 
+## 0.7.0
+
+### Minor Changes
+
+- 8780241: Use `break-check help` to print usage without loading configuration, requiring check options, running checks, or writing schema files. Help is a dedicated command alongside `schema`.
+
+  Replace `--help` and `-h` with `break-check help`; the help option and configuration field are no longer supported. A configuration file named `help` must be passed with an explicit path such as `./help`.
+
+### Patch Changes
+
+- 2b7f241: Reserve `-v` for verbose output and use `-g` for the release tag pattern, eliminating the collision between the two options. Replace uses of `-v` for a tag pattern with `-g` or the existing `--tagPattern` option.
+- 77719d3: Add shell completion and explicit completion installation for break-check, flightdeck, klaxon, and varmint, supporting Bash, Zsh, Fish, Nushell, and Carapace. Completion works without valid application configuration or running application commands. Suggest config files and directory options for break-check and flightdeck, CI as a suggested environment-variable name for varmint clean, and hide singleton options after they have been supplied.
+
+  Accept kebab-case aliases for break-check, flightdeck, and klaxon options while preserving existing option names and configuration keys. Break-check also accepts --pattern as an alias for --testPattern.
+
+  Display warnings on stderr for unknown options and options ignored on the selected command. FlightDeck keeps warnings separate from its JSON log output. Warnings remain advisory and do not change successful command exit codes.
+- Updated dependencies [5cb9a6b]
+  - comline@0.6.4
+
 ## 0.6.40
 
 ### Patch Changes

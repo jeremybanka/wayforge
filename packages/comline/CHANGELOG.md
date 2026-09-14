@@ -1,5 +1,11 @@
 # comline
 
+## 0.6.4
+
+### Patch Changes
+
+- 5cb9a6b: Infer `discoverConfigPath()` positional arguments from the routes passed to `cli()`, preserving literal commands, variable segments, and optional paths.
+
 ## 0.6.3
 
 ### Patch Changes
