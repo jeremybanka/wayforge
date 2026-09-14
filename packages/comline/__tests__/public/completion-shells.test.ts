@@ -839,8 +839,6 @@ test(`Bash installation rejects an extensionless completion in the destination d
 	const previous = readFileSync(installed, `utf8`)
 	writeFileSync(override, `complete -W old-completion comline-fixture\n`)
 	try {
-		// Confirm actual bash-completion filename precedence in a fresh shell.
-
 		expect(() =>
 			run(
 				`comline-fixture`,

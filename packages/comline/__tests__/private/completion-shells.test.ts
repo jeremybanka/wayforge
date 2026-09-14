@@ -391,12 +391,12 @@ test.each([`nushell`, `carapace`] as const)(
 	},
 )
 
-test(`Bash reports precedence for an extensionless completion already loaded`, () => {
+test(`Bash loads the .bash file first but reports an extensionless installation conflict`, () => {
 	const folder = path.join(directory, `compiled/bash-completion/completions`)
 	const override = path.join(folder, `comline-fixture`)
 	writeFileSync(override, `complete -W old-completion comline-fixture\n`)
 	try {
-		// Confirm actual bash-completion filename precedence in a fresh shell.
+		// bash-completion 2.18 tries name.bash before the extensionless name.
 		expect(
 			run(
 				`bash`,
@@ -407,7 +407,7 @@ test(`Bash reports precedence for an extensionless completion already loaded`, (
 				],
 				mode(`compiled`),
 			),
-		).toContain(`old-completion`)
+		).toContain(`complete -F _comline_comline_fixture `)
 		expect(() =>
 			run(
 				`comline-fixture`,

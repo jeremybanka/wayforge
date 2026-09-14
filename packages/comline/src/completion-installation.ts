@@ -189,7 +189,8 @@ export async function writeCompletionFile(
 		}
 	}
 	const file = path.join(destination, filename)
-	// bash-completion tries the extensionless name before name.bash in each directory.
+	// Older bash-completion releases prefer the extensionless name; reject the
+	// conflict consistently across releases rather than depend on loader order.
 	if (shell === `bash`) {
 		const existing = path.join(destination, name)
 		if (await entryExists(existing))
