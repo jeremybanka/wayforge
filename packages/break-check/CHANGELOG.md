@@ -1,5 +1,12 @@
 # break-check
 
+## 0.7.1
+
+### Patch Changes
+
+- Updated dependencies [a0a19eb]
+  - comline@0.7.0
+
 ## 0.7.0
 
 ### Minor Changes
