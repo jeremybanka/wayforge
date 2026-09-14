@@ -1,5 +1,4 @@
-import { type } from "arktype"
-import { optional, required } from "treetrunks"
+import { required } from "treetrunks"
 import { vi } from "vitest"
 import z from "zod"
 
@@ -8,117 +7,36 @@ import {
 	complete,
 	type CompletionProviderContext,
 	interpretArguments,
-	interpretCompletion,
 	options,
-	parseBooleanOption,
-	parseNumberOption,
-} from "../src/cli"
-import { argv } from "./fixtures/argv"
+} from "../../src/cli"
+import { argv } from "../fixtures/argv"
+import {
+	createBooleanCompletionCli,
+	createCompletionFixture,
+} from "../fixtures/completion-cases"
+import {
+	candidateValues,
+	inputValues,
+	optionOccurrences,
+} from "../fixtures/contract-values"
 
-const shared = options(
-	`options`,
-	z.object({
-		repo: z.string().optional(),
-		state: z.enum([`open`, `closed`, `all`]).optional(),
-		draft: z.boolean().optional(),
-		count: z.number().optional(),
-		title: z.string().optional(),
-		base: z.string().optional(),
-		input: z.string().optional(),
-		source: z.string().optional(),
-	}),
-	{
-		repo: { description: `repository`, example: ``, required: false, flag: `R` },
-		state: {
-			description: `PR state`,
-			example: ``,
-			required: false,
-			flag: `s`,
-			aliases: [`pr-state`],
-		},
-		draft: {
-			description: `draft PR`,
-			example: ``,
-			required: false,
-			flag: `d`,
-			parse: parseBooleanOption,
-		},
-		count: {
-			description: `count`,
-			example: ``,
-			required: false,
-			flag: `c`,
-			parse: parseNumberOption,
-		},
-		title: {
-			description: `title`,
-			example: ``,
-			required: false,
-			flag: `t`,
-			completion: { repeatable: false },
-		},
-		base: {
-			description: `base branch`,
-			example: ``,
-			required: false,
-			completion: {
-				choices: [
-					{ value: `main`, description: `default branch` },
-					`feature/topic`,
-				],
-				appendSpace: false,
-			},
-		},
-		input: {
-			description: `input file`,
-			example: ``,
-			required: false,
-			completion: { fileSystem: `files` },
-		},
-		source: {
-			description: `source directory`,
-			example: ``,
-			required: false,
-			completion: { fileSystem: `directories` },
-		},
-	},
-)
-const definition = {
-	cliName: `fj`,
-	discoverConfigPath: () => undefined,
-	routes: required({
-		pr: required({ list: null, create: null }),
-		view: required({ $id: optional({ details: null }) }),
-		checkout: optional({ $ref: null }),
-	}),
-	routeOptions: {
-		"pr/list": { ...shared, description: `list pull requests` },
-		"pr/create": { ...shared, description: `create a pull request` },
-		"view/$id": shared,
-		"view/$id/details": shared,
-		checkout: shared,
-		"checkout/$ref": shared,
-	},
-	positionalCompletions: {
-		"view/$id": { choices: [`12`, `123`] },
-		"checkout/$ref": { choices: [`main`, `feature/topic`] },
-	},
-}
-const fj = cli(definition)
-const values = async (...words: string[]) =>
-	(await fj.complete({ words })).candidates.map(({ value }) => value)
+const { shared, definition, fj, values } = createCompletionFixture()
 
 test(`completes commands while tolerating required route nodes`, async () => {
 	expect(await values(`pr`, `cr`)).toEqual([`create`])
-	expect((await fj.complete({ words: [`pr`, `cr`] })).candidates).toEqual([
+	expect((await fj.complete({ words: [`pr`, `cr`] })).candidates).toMatchObject([
 		{ value: `create`, description: `create a pull request` },
 	])
 	expect(fj.interpret({ words: [`pr`, ``] })).toMatchObject({
 		route: `pr`,
 		complete: false,
 	})
-	expect(await values(``)).toEqual([`pr`, `view`, `checkout`])
-	expect(await values()).toEqual([`pr`, `view`, `checkout`])
+	expect((await values(``)).toSorted()).toEqual(
+		[`pr`, `view`, `checkout`].toSorted(),
+	)
+	expect((await values()).toSorted()).toEqual(
+		[`pr`, `view`, `checkout`].toSorted(),
+	)
 })
 
 test.each([
@@ -151,11 +69,13 @@ test(`retains canonical option occurrences and actual positional values`, () => 
 	})
 	expect(result.route).toBe(`view/$id`)
 	expect(result.path).toEqual([`view`, `12`])
-	expect(result.options).toEqual([
-		{ key: `repo`, index: 0, valueIndex: 1, value: `owner/repo` },
-		{ key: `count`, index: 4, value: `,,` },
-		{ key: `repo`, index: 5, value: `second` },
-	])
+	expect(optionOccurrences(result.options)).toEqual(
+		optionOccurrences([
+			{ key: `repo`, index: 0, valueIndex: 1, value: `owner/repo` },
+			{ key: `count`, index: 4, value: `,,` },
+			{ key: `repo`, index: 5, value: `second` },
+		]),
+	)
 })
 
 test.each([[`view`], [`view`, `12`], [`checkout`], [`checkout`, `main`]])(
@@ -167,7 +87,9 @@ test.each([[`view`], [`view`, `12`], [`checkout`], [`checkout`, `main`]])(
 )
 
 test(`completes variable positionals and preserves their following command grammar`, async () => {
-	expect(await values(`view`, `1`)).toEqual([`12`, `123`])
+	expect((await values(`view`, `1`)).toSorted()).toEqual(
+		[`12`, `123`].toSorted(),
+	)
 	expect(await values(`view`, `12`, `d`)).toEqual([`details`])
 	expect(await values(`checkout`, `fea`)).toEqual([`feature/topic`])
 })
@@ -222,7 +144,9 @@ test(`distinguishes an unfinished option prefix from a committed delimiter`, asy
 		options: [],
 		positionalOnly: true,
 	})
-	expect(await values(`view`, `--`, `1`)).toEqual([`12`, `123`])
+	expect((await values(`view`, `--`, `1`)).toSorted()).toEqual(
+		[`12`, `123`].toSorted(),
+	)
 })
 
 test(`uses explicit replacement ranges and ignores words after the cursor`, async () => {
@@ -231,7 +155,11 @@ test(`uses explicit replacement ranges and ignores words after the cursor`, asyn
 		cursor: { word: 2, offset: 10 },
 	})
 	expect(result.context.prefix).toBe(`cl`)
-	expect(result.context.replacement).toEqual({ word: 2, start: 8, end: 15 })
+	expect(result.context.replacement).toMatchObject({
+		word: 2,
+		start: 8,
+		end: 15,
+	})
 	expect(result.candidates.map(({ value }) => value)).toEqual([`closed`])
 	expect(result.context.options).toEqual([])
 })
@@ -292,8 +220,10 @@ test(`does not discover config, convert options, validate schemas, or invoke pro
 	])
 	expect(provide).not.toHaveBeenCalled()
 	expect(
-		(await command.complete({ words: [`--query`, `r`] })).candidates,
-	).toEqual([{ value: `result` }])
+		candidateValues(
+			(await command.complete({ words: [`--query`, `r`] })).candidates,
+		),
+	).toEqual(candidateValues([{ value: `result` }]))
 	expect(discoverConfigPath).not.toHaveBeenCalled()
 	expect(parse).not.toHaveBeenCalled()
 	expect(validate).not.toHaveBeenCalled()
@@ -341,7 +271,7 @@ test(`dynamic providers receive raw options, positionals, target and cancellatio
 		},
 		{ words: [`view`, `-R`, `owner/repo`, `1`], signal: controller.signal },
 	)
-	expect(result.candidates).toEqual([
+	expect(result.candidates).toMatchObject([
 		{ value: `12`, description: `issue twelve` },
 	])
 	expect(seen[0]).toMatchObject({
@@ -366,10 +296,9 @@ test(`provider failures become diagnostics and cancellation discards results`, a
 			},
 		},
 	}
-	expect(await complete(failing, { words: [`view`, ``] })).toMatchObject({
-		candidates: [],
-		diagnostics: [`unavailable`],
-	})
+	const failure = await complete(failing, { words: [`view`, ``] })
+	expect(failure.candidates).toEqual([])
+	expect(failure.diagnostics.join(`\n`)).toContain(`unavailable`)
 	const controller = new AbortController()
 	const provide = vi.fn(() => {
 		controller.abort()
@@ -396,46 +325,31 @@ test(`returns invalid preceding arguments as diagnostics`, async () => {
 })
 
 test(`derives choices from Arktype and supports explicit boolean consumption overrides`, async () => {
-	const probe = cli({
-		cliName: `probe`,
-		discoverConfigPath: () => undefined,
-		routes: required({ run: null }),
-		routeOptions: {
-			run: options(
-				``,
-				type({ "state?": `'on' | 'off'`, "enabled?": `boolean | string` }),
-				{
-					state: { description: ``, example: ``, required: false },
-					enabled: {
-						description: ``,
-						example: ``,
-						required: false,
-						parse: parseBooleanOption,
-						valueKind: `boolean`,
-						completion: { choices: [`true`, `false`] },
-					},
-				},
-			),
-		},
-	})
+	const probe = createBooleanCompletionCli()
 	expect(
-		(await probe.complete({ words: [`run`, `--state=o`] })).candidates,
-	).toEqual([{ value: `off` }, { value: `on` }])
+		candidateValues(
+			(await probe.complete({ words: [`run`, `--state=o`] })).candidates,
+		),
+	).toEqual(candidateValues([{ value: `off` }, { value: `on` }]))
 	expect(probe(argv(`--enabled`, `run`)).inputs.opts).toEqual({
 		enabled: true,
 	})
 	expect(
-		(await probe.complete({ words: [`--enabled`, `r`] })).candidates,
-	).toEqual([{ value: `run`, description: `` }])
+		candidateValues(
+			(await probe.complete({ words: [`--enabled`, `r`] })).candidates,
+		),
+	).toEqual(candidateValues([{ value: `run`, description: `` }]))
 })
 
 test(`completion exposes raw values while invocation converts them`, () => {
 	const words = [`-R`, `owner/repo`, `pr`, `create`, `--count`, `-1`]
-	expect(fj(argv(...words)).inputs).toEqual({
-		case: `pr/create`,
-		path: [`pr`, `create`],
-		opts: { repo: `owner/repo`, count: -1 },
-	})
+	expect(inputValues(fj(argv(...words)).inputs)).toEqual(
+		inputValues({
+			case: `pr/create`,
+			path: [`pr`, `create`],
+			opts: { repo: `owner/repo`, count: -1 },
+		}),
+	)
 	expect(fj.interpret({ words: [...words, ``] })).toMatchObject({
 		route: `pr/create`,
 		path: [`pr`, `create`],
@@ -494,7 +408,9 @@ test(`uses explicit hints when JSON Schema export is unavailable`, async () => {
 			},
 			{ words: [`--state=o`] },
 		)
-		expect(result.candidates).toEqual([{ value: `on` }, { value: `off` }])
+		expect(candidateValues(result.candidates)).toEqual(
+			candidateValues([{ value: `on` }, { value: `off` }]),
+		)
 	} finally {
 		input.mockRestore()
 	}

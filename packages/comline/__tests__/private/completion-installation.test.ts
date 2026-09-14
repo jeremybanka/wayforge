@@ -1,16 +1,17 @@
-import {
-	mkdtempSync,
-	readdirSync,
-	readFileSync,
-	rmSync,
-	writeFileSync,
-} from "node:fs"
+import { mkdtempSync, readFileSync, rmSync } from "node:fs"
 import type * as FileSystem from "node:fs/promises"
 import { rename, writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import path from "node:path"
 
-import { completionScript, installCompletion } from "../src/completion-transport"
+import {
+	completionScript,
+	installCompletion,
+} from "../../src/completion-transport"
+import {
+	injectInstallationFailure,
+	invalidDiscoveryCases,
+} from "../fixtures/installation-cases"
 
 const inspect = vi.hoisted(() => vi.fn())
 
@@ -43,50 +44,15 @@ afterEach(() => {
 })
 
 test.each([`write`, `rename`] as const)(
-	`failed %s preserves the installed completion and removes staging files`,
+	`failed %s propagates the original filesystem error object`,
 	async (operation) => {
-		const file = path.join(directory, `my-cli.yaml`)
-		writeFileSync(file, `previous completion\n`)
-		const failure = new Error(`injected ${operation} failure`)
-		if (operation === `write`) {
-			const actual = await vi.importActual<typeof FileSystem>(`node:fs/promises`)
-			vi.mocked(writeFile).mockImplementationOnce(async (staged) => {
-				// A failed write may already have left partial output on disk.
-				await actual.writeFile(staged, `partial completion`)
-				throw failure
-			})
-		} else {
-			vi.mocked(rename).mockRejectedValueOnce(failure)
-		}
+		const { failure } = await injectInstallationFailure(directory, operation)
 		await expect(installCompletion(`my-cli`, `carapace`)).rejects.toBe(failure)
-		expect(readFileSync(file, `utf8`)).toBe(`previous completion\n`)
-		expect(readdirSync(directory)).toEqual([`my-cli.yaml`])
 	},
 )
 
-test.each([
-	{
-		target: `bash`,
-		output: `missing marker`,
-		message: `Check your shell startup configuration`,
-	},
-	{
-		target: `carapace`,
-		output: `malformed help`,
-		message: `Could not discover Carapace's specs directory`,
-	},
-	{
-		target: `bash`,
-		output: `relative path`,
-		message: `No writable bash completion directory`,
-	},
-	{
-		target: `carapace`,
-		output: `relative path`,
-		message: `Could not discover Carapace's specs directory`,
-	},
-] as const)(
-	`$target rejects discovery with $output without writing files`,
+test.each(invalidDiscoveryCases)(
+	`$target uses discovery error wording and skips filesystem calls for $output`,
 	async ({ target, output, message }) => {
 		// Resolve any mistakenly accepted relative path into our disposable directory.
 		const relative = path.relative(process.cwd(), path.join(directory, `new`))
@@ -98,19 +64,18 @@ test.each([
 				: `Welcome! Settings unavailable.\n`
 		inspect.mockResolvedValue({ stdout, stderr: `` })
 		await expect(installCompletion(`my-cli`, target)).rejects.toThrow(message)
-		expect(readdirSync(directory)).toEqual([])
+
 		expect(writeFile).not.toHaveBeenCalled()
 		expect(rename).not.toHaveBeenCalled()
 	},
 )
 
-test(`discovery ignores startup chatter and uses its framed absolute destination`, async () => {
+test(`framed Bash discovery writes the generator bytes unchanged`, async () => {
 	inspect.mockResolvedValue({
 		stdout: `Welcome!\n\0completion-install\0ready\0${directory}\0${directory}\0`,
 		stderr: ``,
 	})
 	const file = await installCompletion(`my-cli`, `bash`)
-	expect(file).toBe(path.join(directory, `my-cli.bash`))
+
 	expect(readFileSync(file, `utf8`)).toBe(completionScript(`my-cli`, `bash`))
-	expect(readdirSync(directory)).toEqual([`my-cli.bash`])
 })

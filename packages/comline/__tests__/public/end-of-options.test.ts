@@ -1,23 +1,14 @@
 import { required } from "treetrunks"
-import z from "zod"
 
-import { cli, options, parseNumberOption } from "../src/cli"
-import { argv } from "./fixtures/argv"
+import { cli } from "../../src/cli"
+import { argv } from "../fixtures/argv"
+import { inputValues } from "../fixtures/contract-values"
+import {
+	createDelimiterOptions,
+	literalOptionTokens,
+} from "../fixtures/invocation-cases"
 
-const optionGroup = options(
-	`delimiter test`,
-	z.object({ name: z.string().optional(), count: z.number().optional() }),
-	{
-		name: { description: `name`, example: ``, required: false, flag: `n` },
-		count: {
-			description: `count`,
-			example: ``,
-			required: false,
-			flag: `c`,
-			parse: parseNumberOption,
-		},
-	},
-)
+const optionGroup = createDelimiterOptions()
 
 const rootCli = cli({
 	cliName: `probe`,
@@ -57,7 +48,7 @@ test.each([`--name=--`, `-n=--`])(
 	},
 )
 
-test.each([`--name=after`, `-n`, `-ncc`, `--`])(
+test.each(literalOptionTokens)(
 	`preserves routes before the delimiter and literal positionals after it: %s`,
 	(token) => {
 		const routedCli = cli({
@@ -67,12 +58,16 @@ test.each([`--name=after`, `-n`, `-ncc`, `--`])(
 			routeOptions: { "run/$value": optionGroup },
 		})
 		expect(
-			routedCli(argv(`--name`, `before`, `run`, `--`, token)).inputs,
-		).toEqual({
-			case: `run/$value`,
-			path: [`run`, token],
-			opts: { name: `before` },
-		})
+			inputValues(
+				routedCli(argv(`--name`, `before`, `run`, `--`, token)).inputs,
+			),
+		).toEqual(
+			inputValues({
+				case: `run/$value`,
+				path: [`run`, token],
+				opts: { name: `before` },
+			}),
+		)
 	},
 )
 

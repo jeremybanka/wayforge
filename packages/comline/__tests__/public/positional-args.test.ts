@@ -2,9 +2,9 @@ import { type } from "arktype"
 import { optional, required } from "treetrunks"
 import z from "zod"
 
-import { cli, options } from "../src/cli"
-import { parseBooleanOption, parseStringOption } from "../src/option-parsers"
-import { argv } from "./fixtures/argv"
+import { cli, options } from "../../src/cli"
+import { parseBooleanOption, parseStringOption } from "../../src/option-parsers"
+import { argv } from "../fixtures/argv"
 
 describe(`positional args from cli`, () => {
 	const testCli = cli({
