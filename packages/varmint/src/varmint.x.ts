@@ -1,9 +1,15 @@
 #!/usr/bin/env node
 
 import { type } from "arktype"
-import { cli, help, helpOption, optional, options } from "comline"
-
-import { varmintWorkspaceManager } from "./varmint-workspace-manager"
+import {
+	cli,
+	completionResponse,
+	help,
+	helpOption,
+	logWarnings,
+	optional,
+	options,
+} from "comline"
 
 const parse = cli(
 	{
@@ -24,6 +30,7 @@ const parse = cli(
 				{
 					...helpOption().optionConfigs,
 					"ci-flag": {
+						completion: { repeatable: false, choices: [`CI`] },
 						flag: `c`,
 						required: false,
 						description: `Flag that, if present, indicates that the command is running in a CI environment`,
@@ -36,11 +43,23 @@ const parse = cli(
 	console,
 )
 
-const { inputs } = parse(process.argv)
+async function main(): Promise<void> {
+	const completion = await completionResponse(parse.definition, process.argv)
+	if (completion !== undefined) {
+		process.stdout.write(completion)
+		return
+	}
 
-if (inputs.opts.help) {
-	console.log(help(parse.definition))
-} else
+	const { varmintWorkspaceManager } = await import(`./varmint-workspace-manager`)
+
+	const { inputs, warnings } = parse(process.argv)
+	logWarnings(warnings)
+
+	if (inputs.opts.help) {
+		console.log(help(parse.definition))
+		return
+	}
+
 	switch (inputs.case) {
 		case ``:
 			console.log(help(parse.definition))
@@ -61,3 +80,6 @@ if (inputs.opts.help) {
 			break
 		}
 	}
+}
+
+await main()

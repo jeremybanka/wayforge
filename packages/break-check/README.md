@@ -114,3 +114,24 @@ If a process is forcibly interrupted or restoration fails, break-check retains r
     <td><code>--baseDirname="."</code></td>
 </table>
 <!--gen-->
+
+## CLI completion
+
+With `break-check` installed on PATH, run `break-check completion install bash` to install Bash completion. Replace `bash` with `zsh`, `fish`, `nushell`, or `carapace` for the other supported integrations. Installation uses the shell's existing completion setup and does not edit shell profiles; open a new shell afterward. `break-check completion bash` prints the integration for manual installation. See [Comline's shell setup requirements](../comline/README.md#shell-integrations).
+
+Completion suggests commands, option names, config file paths, and directories for `--base-dir` and `schema --out-dir`. It works without a valid config file or required option values and does not run checks. Singleton options disappear from suggestions after use; parsing behavior is unchanged. The completion transport reserves its management and protocol command names; use an explicit path such as `./completion` for a config file whose name collides with a reserved command.
+
+## CLI option aliases and warnings
+
+These aliases work alongside the original option names. Configuration file keys remain unchanged.
+
+| Original option             | Aliases                        |
+| --------------------------- | ------------------------------ |
+| `--tagPattern`              | `--tag-pattern`                |
+| `--testPattern`             | `--test-pattern`, `--pattern`  |
+| `--testCommand`             | `--test-command`               |
+| `--certifyCommand`          | `--certify-command`            |
+| `--baseDirname`             | `--base-dir`, `--base-dirname` |
+| `--outdir` (schema command) | `--out-dir`                    |
+
+After successful parsing, break-check warns on stderr about unknown options and options that do not apply to the selected command. Warnings appear before check output is captured and do not change the command's exit status.
