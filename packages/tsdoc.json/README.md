@@ -19,10 +19,10 @@ tsdoc.json is a tool for generating a JSON schema from TypeScript types.
 Package export sizes include complete runtime export surfaces.
 Sizes are exact minified and level-9 gzip JavaScript byte counts. Declarations, source maps, CSS, and other assets are excluded. Peer dependencies stay external, and shared modules are counted once per bundle.
 
-| Import                        | Minified JS |     Gzip JS |
-| ----------------------------- | ----------: | ----------: |
-| <code>tsdoc.json</code>       | 3,755,563 B | 1,066,507 B |
-| <code>tsdoc.json/react</code> |     3,179 B |     1,129 B |
+| Import                        | Minified JS |  Gzip JS |
+| ----------------------------- | ----------: | -------: |
+| <code>tsdoc.json</code>       |   141,479 B | 29,282 B |
+| <code>tsdoc.json/react</code> |     3,179 B |  1,129 B |
 
 Report maintained with [tonnage](https://github.com/jeremybanka/tonnage).
 
