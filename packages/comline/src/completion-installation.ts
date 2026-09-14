@@ -189,12 +189,12 @@ export async function writeCompletionFile(
 		}
 	}
 	const file = path.join(destination, filename)
-	// bash-completion tries the extensionless name before name.bash in each directory.
+	// Do not silently shadow an existing completion for the same command.
 	if (shell === `bash`) {
 		const existing = path.join(destination, name)
 		if (await entryExists(existing))
 			throw new Error(
-				`Completion ${existing} takes precedence over ${file}. Update or remove that override first.`,
+				`Completion ${existing} conflicts with ${file}. Update or remove it first.`,
 			)
 	}
 	if (await entryExists(file)) {

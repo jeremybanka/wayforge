@@ -135,7 +135,7 @@ describe(`compiled`, { timeout: 30_000 }, () => {
 	)
 })
 
-test(`Bash names bash-completion in its missing-initialization error`, () => {
+test(`Bash names the supported bash-completion version in its missing-initialization error`, () => {
 	withProfile(
 		path.join(directory, `home/.bashrc`),
 		`unset -f _get_comp_words_by_ref _filedir\n`,
@@ -146,7 +146,7 @@ test(`Bash names bash-completion in its missing-initialization error`, () => {
 					[`completion`, `install`, `bash`],
 					mode(`global`),
 				),
-			).toThrow(/Install bash-completion and enable it/)
+			).toThrow(/Install bash-completion 2\.18\+ and enable it/)
 		},
 	)
 })
@@ -391,12 +391,12 @@ test.each([`nushell`, `carapace`] as const)(
 	},
 )
 
-test(`Bash reports precedence for an extensionless completion already loaded`, () => {
+test(`Bash loads the .bash file first but reports an extensionless installation conflict`, () => {
 	const folder = path.join(directory, `compiled/bash-completion/completions`)
 	const override = path.join(folder, `comline-fixture`)
 	writeFileSync(override, `complete -W old-completion comline-fixture\n`)
 	try {
-		// Confirm actual bash-completion filename precedence in a fresh shell.
+		// bash-completion 2.18 tries name.bash before the extensionless name.
 		expect(
 			run(
 				`bash`,
@@ -407,14 +407,14 @@ test(`Bash reports precedence for an extensionless completion already loaded`, (
 				],
 				mode(`compiled`),
 			),
-		).toContain(`old-completion`)
+		).toContain(`complete -F _comline_comline_fixture `)
 		expect(() =>
 			run(
 				`comline-fixture`,
 				[`completion`, `install`, `bash`],
 				mode(`compiled`),
 			),
-		).toThrow(/takes precedence/)
+		).toThrow(/conflicts with/)
 	} finally {
 		rmSync(override)
 	}
