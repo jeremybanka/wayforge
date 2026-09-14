@@ -135,7 +135,7 @@ describe(`compiled`, { timeout: 30_000 }, () => {
 	)
 })
 
-test(`Bash names bash-completion in its missing-initialization error`, () => {
+test(`Bash names the supported bash-completion version in its missing-initialization error`, () => {
 	withProfile(
 		path.join(directory, `home/.bashrc`),
 		`unset -f _get_comp_words_by_ref _filedir\n`,
@@ -146,7 +146,7 @@ test(`Bash names bash-completion in its missing-initialization error`, () => {
 					[`completion`, `install`, `bash`],
 					mode(`global`),
 				),
-			).toThrow(/Install bash-completion and enable it/)
+			).toThrow(/Install bash-completion 2\.18\+ and enable it/)
 		},
 	)
 })
@@ -414,7 +414,7 @@ test(`Bash loads the .bash file first but reports an extensionless installation 
 				[`completion`, `install`, `bash`],
 				mode(`compiled`),
 			),
-		).toThrow(/takes precedence/)
+		).toThrow(/conflicts with/)
 	} finally {
 		rmSync(override)
 	}
