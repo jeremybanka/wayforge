@@ -478,6 +478,9 @@ importers:
       arktype:
         specifier: 2.2.3
         version: 2.2.3
+      break-check:
+        specifier: 0.6.40
+        version: 0.6.40(supports-color@10.2.2)(zod@4.6.4)
       concurrently:
         specifier: 10.0.5
         version: 10.0.5
@@ -3644,6 +3647,10 @@ packages:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
     engines: {node: '>=8'}
 
+  break-check@0.6.40:
+    resolution: {integrity: sha512-ltqhxjKg5KCqELegrjGdYC7kZ9H8wJ5pSTnVbix+97Cfc7jZnt5S2X/vD8uyhaGtCi8zKUElZcLXQ0iZInZaUA==}
+    hasBin: true
+
   buffer-from@1.1.2:
     resolution: {integrity: sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==}
 
@@ -3726,6 +3733,17 @@ packages:
 
   comline@0.5.2:
     resolution: {integrity: sha512-eMGYMIw2Q34LtO4vaNvQCPWcVTasnMUCDj7YnOADvyfc4ddKqhKX1TwQgYiiKp8qSjgXdMYE+EHJl9cznQ7azA==}
+    peerDependencies:
+      arktype: ^2.1.28
+      zod: ^4.2.0
+    peerDependenciesMeta:
+      arktype:
+        optional: true
+      zod:
+        optional: true
+
+  comline@0.6.3:
+    resolution: {integrity: sha512-GyXXxwJj00mQh1vE7uDpraKmiErd/sJ/16UZXQJmLl/DkI0Rch1K5oW47PJYAGbu2/45oqZBgCXrCmsgqnNAzw==}
     peerDependencies:
       arktype: ^2.1.28
       zod: ^4.2.0
@@ -5295,6 +5313,9 @@ packages:
   takua@0.2.1:
     resolution: {integrity: sha512-dQYQrvPHjLfxe0D/Uu+D7ToPLrndukby7JAp8KnJ+mLumskA1AQCP9hxquHWarCNcd7Io33tzzAy2X2VwQJMMw==}
 
+  takua@0.2.3:
+    resolution: {integrity: sha512-X/UsrLMSttBXrgAthtDZW9iuorphm7dgm5h6AskgpONCtpwd59zo8dN3sPHzi9LkEZ2mfxTVWMqAZpsoeEIt1Q==}
+
   three-mesh-bvh@0.8.3:
     resolution: {integrity: sha512-4G5lBaF+g2auKX3P0yqx+MJC6oVt6sB5k+CchS6Ob0qvH0YIhuUk1eYr7ktsIpY+albCqE80/FVQGV190PmiAg==}
     peerDependencies:
@@ -5355,6 +5376,9 @@ packages:
   tree-kill@1.2.2:
     resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
     hasBin: true
+
+  treetrunks@0.1.11:
+    resolution: {integrity: sha512-3L5O5w3AGZd47pGpTNEQAfp68pSIQCeundsUZnPLPtg4TYL87qmcSJsvoqLeRUXtmL8W7JycaD3gd+i2SCYQrQ==}
 
   treetrunks@0.1.7:
     resolution: {integrity: sha512-QpS2El77DaQYyN9Hwyeaswaa8v1mfeMnRif1ayzV4lyMNnhnbwHbVKoZyheA35OZJJm88yhkyKExXG2tyWlqDQ==}
@@ -7969,6 +7993,17 @@ snapshots:
     dependencies:
       fill-range: 7.1.1
 
+  break-check@0.6.40(supports-color@10.2.2)(zod@4.6.4):
+    dependencies:
+      arktype: 2.2.3
+      comline: 0.6.3(arktype@2.2.3)(zod@4.6.4)
+      minimatch: 10.2.6
+      simple-git: 3.36.0(supports-color@10.2.2)
+      takua: 0.2.3
+    transitivePeerDependencies:
+      - supports-color
+      - zod
+
   buffer-from@1.1.2: {}
 
   buffer-image-size@0.6.4:
@@ -8058,6 +8093,14 @@ snapshots:
     optionalDependencies:
       arktype: 2.2.3
       zod: 4.5.4
+
+  comline@0.6.3(arktype@2.2.3)(zod@4.6.4):
+    dependencies:
+      '@standard-schema/spec': 1.1.0
+      treetrunks: 0.1.11
+    optionalDependencies:
+      arktype: 2.2.3
+      zod: 4.6.4
 
   commander@13.1.0: {}
 
@@ -9675,6 +9718,8 @@ snapshots:
 
   takua@0.2.1: {}
 
+  takua@0.2.3: {}
+
   three-mesh-bvh@0.8.3(three@0.186.0):
     dependencies:
       three: 0.186.0
@@ -9731,6 +9776,8 @@ snapshots:
       punycode: 2.3.1
 
   tree-kill@1.2.2: {}
+
+  treetrunks@0.1.11: {}
 
   treetrunks@0.1.7: {}
 

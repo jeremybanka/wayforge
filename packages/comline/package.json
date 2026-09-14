@@ -50,7 +50,7 @@
 		"test:coverage": "pnpm test:coverage:once && pnpm test:coverage:increased",
 		"test:once": "MISE_EXEC_AUTO_INSTALL=false mise exec -- vitest run",
 		"test:once:public": "pnpm test:once __tests__/public",
-		"test:semver": "node ../break-check/bin/break-check.bin.js",
+		"test:semver": "break-check",
 		"postversion": "dprint fmt package.json"
 	},
 	"devDependencies": {
@@ -59,6 +59,7 @@
 		"@vitest/coverage-v8": "5.0.0",
 		"typescript": "7.0.2",
 		"arktype": "2.2.3",
+		"break-check": "0.6.40",
 		"concurrently": "10.0.5",
 		"eslint": "10.10.0",
 		"recoverage": "0.1.16",

@@ -108,7 +108,7 @@
 			]
 		},
 		"comline#test:semver": {
-			"dependsOn": ["break-check#build"],
+			"dependsOn": ["^build"],
 			"cache": false
 		},
 		"lint:eslint": {
