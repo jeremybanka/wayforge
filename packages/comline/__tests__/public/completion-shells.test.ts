@@ -575,8 +575,6 @@ test(`Bash installation preserves spaces in an unexported directory setting`, ()
 			const file = path.join(custom, `completions/comline-fixture.bash`)
 			run(`comline-fixture`, [`completion`, `install`, `bash`], mode(`global`))
 			expect(existsSync(file)).toBe(true)
-			// bash-completion 2.11 splits spaced search paths when autoloading.
-			// Check Comline's installation path here; native completion runs above.
 		},
 	)
 })
