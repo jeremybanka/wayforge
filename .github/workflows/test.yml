@@ -42,7 +42,6 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           packages: bun node pnpm aqua:nushell/nushell carapace conda:zsh go github:fish-shell/fish-shell github:scop/bash-completion
-          completion-consumers: "true"
       - run: pnpm run test
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         if: ${{ !cancelled() }}
@@ -86,7 +85,6 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           packages: bun node pnpm aqua:nushell/nushell carapace conda:zsh go github:fish-shell/fish-shell github:scop/bash-completion
-          completion-consumers: "true"
       - run: git rev-parse HEAD > git.sha
       - run: pnpm test:coverage:increased
         env:
