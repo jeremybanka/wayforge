@@ -7,7 +7,7 @@ let directory: string
 let project: string
 let env: NodeJS.ProcessEnv
 
-function run(executable: string, args: readonly string[]): string {
+export function run(executable: string, args: readonly string[]): string {
 	return execFileSync(executable, args, {
 		cwd: project,
 		env,
@@ -52,7 +52,7 @@ beforeAll(() => {
 	)
 	run(`bun`, [
 		`build`,
-		path.join(import.meta.dirname, `fixtures/argv.x.ts`),
+		path.join(import.meta.dirname, `../fixtures/argv.x.ts`),
 		`--target=node`,
 		`--outfile=${path.join(fixture, `mycli.mjs`)}`,
 	])
@@ -71,7 +71,7 @@ afterAll(() => {
 	if (directory) rmSync(directory, { recursive: true, force: true })
 })
 
-const launchers = [
+export const launchers: { command: string[]; positionalOnly: boolean }[] = [
 	{ command: [`mycli`], positionalOnly: false },
 	{ command: [`bun`, `mycli`], positionalOnly: false },
 	{ command: [`pnpm`, `exec`, `mycli`], positionalOnly: false },
@@ -87,28 +87,3 @@ const launchers = [
 	// Also exercise Bun itself rather than its shebang-aware command runner.
 	{ command: [`bun`, `--bun`, `mycli`], positionalOnly: false },
 ]
-
-test.each(launchers)(
-	`parses full process.argv through $command`,
-	({ command, positionalOnly }) => {
-		const [executable, ...args] = command
-		const result = JSON.parse(run(executable, [...args, `foo`]))
-		expect(result.argv.slice(2)).toEqual(
-			positionalOnly ? [`--`, `foo`] : [`foo`],
-		)
-		expect(result.inputs).toEqual({ case: `foo`, path: [`foo`], opts: {} })
-	},
-)
-
-test.each(launchers)(
-	`preserves the delimiter delivered through $command`,
-	({ command, positionalOnly }) => {
-		const [executable, ...args] = command
-		const result = JSON.parse(run(executable, [...args, `foo`, `--name=main`]))
-		expect(result.inputs).toEqual(
-			positionalOnly
-				? { case: `foo/$value`, path: [`foo`, `--name=main`], opts: {} }
-				: { case: `foo`, path: [`foo`], opts: { name: `main` } },
-		)
-	},
-)

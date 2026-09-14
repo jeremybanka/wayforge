@@ -57,8 +57,7 @@
 				"../../mise.toml",
 				"../../.github/workflows/test.yml",
 				"../../.github/actions/setup/action.yml"
-			],
-			"env": ["COMLINE_TEST_ENV", "BASH_COMPLETION_FILE"]
+			]
 		},
 		"test:coverage:once": {
 			"dependsOn": ["^build"],
@@ -88,8 +87,7 @@
 				"../../mise.toml",
 				"../../.github/workflows/test.yml",
 				"../../.github/actions/setup/action.yml"
-			],
-			"env": ["COMLINE_TEST_ENV", "BASH_COMPLETION_FILE"]
+			]
 		},
 		"test:coverage:increased": {
 			"dependsOn": ["test:coverage:once"],
