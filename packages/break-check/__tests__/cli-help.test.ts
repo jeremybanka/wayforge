@@ -15,7 +15,7 @@ afterEach(() => {
 	rmSync(tempDir, { recursive: true, force: true })
 })
 
-function runCli(args: string[]) {
+function runCli(args: readonly string[]) {
 	const result = Bun.spawnSync([process.execPath, entrypoint, `--`, ...args], {
 		cwd: tempDir,
 		env: { ...process.env, NO_COLOR: `1` },
@@ -27,73 +27,66 @@ function runCli(args: string[]) {
 	}
 }
 
-describe(`break-check help`, () => {
-	it.each(
-		[[`--help`], [`-h`], [`--help=true`], [`--help`, `true`]].map((args) => ({
-			args,
-		})),
-	)(`prints help without configuration: %j`, ({ args }) => {
-		const result = runCli(args)
+describe(`break-check help route`, () => {
+	it(`prints usage without check options or filesystem actions`, () => {
+		const result = runCli([`help`])
 		expect(result.exitCode).toBe(0)
 		expect(result.stdout).toContain(`USAGE`)
+		expect(result.stdout).toContain(`help`)
+		expect(result.stdout).toContain(`schema`)
+		expect(result.stdout).toContain(`--testCommand`)
+		expect(result.stdout).not.toContain(`--help`)
 		expect(result.stderr).toBe(``)
 		expect(readdirSync(tempDir)).toEqual([])
 	})
 
-	it.each([[], [`broken.json`]].map((args) => ({ args })))(
-		`skips malformed configuration when help is requested: %j`,
-		({ args }) => {
-			writeFileSync(
-				path.join(tempDir, args[0] ?? `break-check.config.json`),
-				`{ invalid json`,
-			)
-			const result = runCli([...args, `--help`])
-			expect(result.exitCode).toBe(0)
-			expect(result.stdout).toContain(`USAGE`)
-			expect(result.stderr).toBe(``)
-		},
-	)
-
-	it.each(
-		[
-			[`schema`, `--help`],
-			[`-h`, `schema`],
-		].map((args) => ({ args })),
-	)(`prints schema help without writing files: %j`, ({ args }) => {
-		const result = runCli(args)
+	it(`skips malformed default configuration and a file named help`, () => {
+		writeFileSync(path.join(tempDir, `break-check.config.json`), `{ invalid`)
+		writeFileSync(path.join(tempDir, `help`), `{ invalid`)
+		const result = runCli([`help`])
 		expect(result.exitCode).toBe(0)
 		expect(result.stdout).toContain(`USAGE`)
-		expect(result.stdout).not.toContain(`Wrote`)
 		expect(result.stderr).toBe(``)
-		expect(readdirSync(tempDir)).toEqual([])
+		expect(readdirSync(tempDir).sort()).toEqual([
+			`break-check.config.json`,
+			`help`,
+		])
 	})
 
-	it(`exits before checks when configuration enables help`, () => {
+	it(`preserves schema generation without reading default configuration`, () => {
+		writeFileSync(path.join(tempDir, `break-check.config.json`), `{ invalid`)
+		const result = runCli([`schema`])
+		expect(result.exitCode).toBe(0)
+		expect(result.stdout).toContain(`Wrote json.schema`)
+		expect(result.stdout).not.toContain(`USAGE`)
+		expect(result.stderr).toBe(``)
+		expect(readdirSync(tempDir)).toContain(`break-check.main.schema.json`)
+	})
+
+	it.each([
+		{ args: [], config: `break-check.config.json` },
+		{ args: [`check.json`], config: `check.json` },
+		{ args: [`./help`], config: `help` },
+	])(`keeps $args on the check path`, ({ args, config }) => {
 		writeFileSync(
-			path.join(tempDir, `break-check.config.json`),
+			path.join(tempDir, config),
 			JSON.stringify({
 				testPattern: `*__public.test.ts`,
 				testCommand: `exit 99`,
 				certifyCommand: `exit 99`,
-				help: true,
 			}),
 		)
-		const result = runCli([])
-		expect(result.exitCode).toBe(0)
-		expect(result.stdout).toContain(`USAGE`)
-		expect(result.stdout).not.toContain(`Break check failed`)
+		// A valid configuration reaches the check's non-repository outcome.
+		const result = runCli(args)
+		expect(result.exitCode).toBe(2)
+		expect(result.stdout).toContain(`Break check failed to determine`)
+		expect(result.stdout).not.toContain(`USAGE`)
 		expect(result.stderr).toBe(``)
 	})
 
 	it.each(
-		[
-			[],
-			[`--help=false`],
-			[`-h`, `0`],
-			[`--testCommand=--help`],
-			[`--`, `--help`],
-		].map((args) => ({ args })),
-	)(`still requires check configuration for non-help input: %j`, ({ args }) => {
+		[[], [`--help`], [`-h`], [`--testCommand=help`]].map((args) => ({ args })),
+	)(`requires check configuration outside the help route: %j`, ({ args }) => {
 		const result = runCli(args)
 		expect(result.exitCode).not.toBe(0)
 		expect(result.stdout).not.toContain(`USAGE`)

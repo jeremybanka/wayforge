@@ -23,6 +23,12 @@ break check introduces the following requirements/model for your project:
 2. files containing public tests can be identified by a glob pattern
 3. you must have a command-line command that runs only the public tests in your test suite
 
+## help
+
+Run `break-check help` to show usage for the CLI, including the check options and `schema` command. Like `schema`, the `help` command skips configuration discovery; it works without required check options and even when `break-check.config.json` is malformed. It does not run checks or write schema files.
+
+Use `break-check help` instead of the former `--help` or `-h` options. Configuration no longer controls help. The empty route and a configuration path still run checks; if your configuration file is named `help`, pass `./help` to select it explicitly.
+
 ## example
 
 ### single-project repository

@@ -9,8 +9,7 @@ import {
 	cli,
 	encapsulate,
 	help,
-	helpOption,
-	interpretArguments,
+	noOptions,
 	optional,
 	options,
 	parseBooleanOption,
@@ -19,8 +18,6 @@ import logger from "takua"
 
 import type { BreakCheckOptions } from "./break-check"
 import { breakCheck } from "./break-check"
-
-const helper = helpOption()
 
 const BREAK_CHECK_MANUAL = options(
 	`Check for breaking changes in a package.`,
@@ -31,10 +28,8 @@ const BREAK_CHECK_MANUAL = options(
 		certifyCommand: `string`,
 		"baseDirname?": `string`,
 		"verbose?": `boolean`,
-		"help?": `boolean`,
 	}),
 	{
-		...helper.optionConfigs,
 		tagPattern: {
 			flag: `v`,
 			required: false,
@@ -73,13 +68,12 @@ const BREAK_CHECK_MANUAL = options(
 			parse: parseBooleanOption,
 		},
 	},
-) satisfies OptionsGroup<BreakCheckOptions & { help?: boolean | undefined }>
+) satisfies OptionsGroup<BreakCheckOptions>
 
 const SCHEMA_MANUAL = options(
 	`Create a copy of the schema for configuring break-check.`,
-	type({ "outdir?": `string`, "help?": `boolean` }),
+	type({ "outdir?": `string` }),
 	{
-		...helper.optionConfigs,
 		outdir: {
 			flag: `o`,
 			required: false,
@@ -92,14 +86,15 @@ const SCHEMA_MANUAL = options(
 const parse = cli(
 	{
 		cliName: `break-check`,
-		routes: optional({ schema: null, $configPath: null }),
+		routes: optional({ help: null, schema: null, $configPath: null }),
 		routeOptions: {
 			"": BREAK_CHECK_MANUAL,
 			$configPath: BREAK_CHECK_MANUAL,
+			help: noOptions(`Show usage.`),
 			schema: SCHEMA_MANUAL,
 		},
 		discoverConfigPath: (args) => {
-			if (args[0] === `schema`) {
+			if (args[0] === `help` || args[0] === `schema`) {
 				return
 			}
 			const configPath =
@@ -109,25 +104,12 @@ const parse = cli(
 	},
 	logger,
 )
-const interpretation = interpretArguments(
-	parse.definition,
-	process.argv.slice(2),
-)
-const helpValues = interpretation.options
-	.filter((option) => option.key === `help`)
-	.map((option) => option.value)
-if (
-	!interpretation.error &&
-	interpretation.complete &&
-	helpValues.length > 0 &&
-	parseBooleanOption(helpValues.join(`,`))
-) {
-	console.log(help(parse.definition))
-	process.exit(0)
-}
 const { inputs, writeJsonSchema } = parse(process.argv)
 
 switch (inputs.case) {
+	case `help`:
+		console.log(help(parse.definition))
+		break
 	case `schema`:
 		{
 			const { outdir } = inputs.opts
@@ -137,11 +119,6 @@ switch (inputs.case) {
 		break
 	case ``:
 	case `$configPath`: {
-		if (inputs.opts.help) {
-			console.log(help(parse.definition))
-			process.exit(0)
-		}
-
 		const { returnValue } = await encapsulate(() => breakCheck(inputs.opts), {
 			console: true,
 			stdout: true,
