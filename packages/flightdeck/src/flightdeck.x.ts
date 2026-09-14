@@ -6,6 +6,8 @@ import { type } from "arktype"
 import type { OptionsGroup } from "comline"
 import {
 	cli,
+	completionResponse,
+	logWarnings,
 	optional,
 	options,
 	parseBooleanOption,
@@ -13,17 +15,6 @@ import {
 } from "comline"
 
 import type { FlightDeckOptions } from "./flightdeck.lib.ts"
-import { FlightDeck, FlightDeckLogger } from "./flightdeck.lib.ts"
-
-const CLI_LOGGER = new FlightDeckLogger(`comline`, process.pid, undefined, {
-	jsonLogging: true,
-})
-Object.assign(console, {
-	log: CLI_LOGGER.info.bind(CLI_LOGGER),
-	info: CLI_LOGGER.info.bind(CLI_LOGGER),
-	warn: CLI_LOGGER.warn.bind(CLI_LOGGER),
-	error: CLI_LOGGER.error.bind(CLI_LOGGER),
-})
 
 const FLIGHTDECK_MANUAL = options(
 	`Run the FlightDeck process manager.`,
@@ -41,6 +32,7 @@ const FLIGHTDECK_MANUAL = options(
 	}),
 	{
 		port: {
+			completion: { repeatable: false },
 			flag: `p`,
 			required: false,
 			description: `Port to run the flightdeck server on.`,
@@ -48,12 +40,15 @@ const FLIGHTDECK_MANUAL = options(
 			parse: parseNumberOption,
 		},
 		packageName: {
+			aliases: [`package-name`],
+			completion: { repeatable: false },
 			flag: `n`,
 			required: true,
 			description: `Name of the package.`,
 			example: `--packageName="my-app"`,
 		},
 		services: {
+			completion: { repeatable: false },
 			flag: `s`,
 			required: true,
 			description: `Map of service names to executables.`,
@@ -61,12 +56,15 @@ const FLIGHTDECK_MANUAL = options(
 			parse: JSON.parse,
 		},
 		flightdeckRootDir: {
+			aliases: [`flightdeck-root-dir`],
+			completion: { repeatable: false, fileSystem: `directories` },
 			flag: `d`,
 			required: true,
 			description: `Directory where the service is stored.`,
 			example: `--flightdeckRootDir="./services/sample/repo/my-app/current"`,
 		},
 		scripts: {
+			completion: { repeatable: false },
 			flag: `r`,
 			required: true,
 			description: `Map of scripts to run.`,
@@ -74,6 +72,8 @@ const FLIGHTDECK_MANUAL = options(
 			parse: JSON.parse,
 		},
 		jsonLogging: {
+			aliases: [`json-logging`],
+			completion: { repeatable: false },
 			flag: `j`,
 			required: false,
 			description: `Enable json logging.`,
@@ -88,12 +88,16 @@ const KILL_MANUAL = options(
 	type({ flightdeckRootDir: `string`, packageName: `string` }),
 	{
 		flightdeckRootDir: {
+			aliases: [`flightdeck-root-dir`],
+			completion: { repeatable: false, fileSystem: `directories` },
 			flag: `d`,
 			required: true,
 			description: `Directory where the service is stored.`,
 			example: `--flightdeckRootDir="./services/sample/repo/my-app/current"`,
 		},
 		packageName: {
+			aliases: [`package-name`],
+			completion: { repeatable: false },
 			flag: `n`,
 			required: true,
 			description: `Name of the package.`,
@@ -107,6 +111,8 @@ const SCHEMA_MANUAL = options(
 	type({ "outdir?": `string` }),
 	{
 		outdir: {
+			aliases: [`out-dir`],
+			completion: { repeatable: false, fileSystem: `directories` },
 			flag: `o`,
 			required: false,
 			description: `Directory to write the schema to.`,
@@ -131,6 +137,10 @@ const parse = cli(
 			schema: SCHEMA_MANUAL,
 		},
 		debugOutput: true,
+		positionalCompletions: {
+			$configPath: { fileSystem: `files` },
+			"kill/$configPath": { fileSystem: `files` },
+		},
 		discoverConfigPath: (args) => {
 			if (args[0] === `schema`) {
 				return
@@ -147,24 +157,47 @@ const parse = cli(
 	console,
 )
 
-const { inputs, writeJsonSchema } = parse(process.argv)
+async function main(): Promise<void> {
+	const completion = await completionResponse(parse.definition, process.argv)
+	if (completion !== undefined) {
+		process.stdout.write(completion)
+		return
+	}
 
-switch (inputs.case) {
-	case `schema`:
-		{
-			const { outdir } = inputs.opts
-			writeJsonSchema(outdir ?? `.`)
+	const { FlightDeck, FlightDeckLogger } = await import(`./flightdeck.lib.ts`)
+	const warningLogger = { warn: console.warn.bind(console) }
+	const CLI_LOGGER = new FlightDeckLogger(`comline`, process.pid, undefined, {
+		jsonLogging: true,
+	})
+	Object.assign(console, {
+		log: CLI_LOGGER.info.bind(CLI_LOGGER),
+		info: CLI_LOGGER.info.bind(CLI_LOGGER),
+		warn: CLI_LOGGER.warn.bind(CLI_LOGGER),
+		error: CLI_LOGGER.error.bind(CLI_LOGGER),
+	})
+
+	const { inputs, warnings, writeJsonSchema } = parse(process.argv)
+	logWarnings(warnings, { logger: warningLogger })
+
+	switch (inputs.case) {
+		case `schema`:
+			{
+				const { outdir } = inputs.opts
+				writeJsonSchema(outdir ?? `.`)
+			}
+			break
+		case `kill`:
+		case `kill/$configPath`:
+			{
+				const { flightdeckRootDir, packageName } = inputs.opts
+				await FlightDeck.kill(flightdeckRootDir, packageName)
+			}
+			break
+		case ``:
+		case `$configPath`: {
+			new FlightDeck(inputs.opts)
 		}
-		break
-	case `kill`:
-	case `kill/$configPath`:
-		{
-			const { flightdeckRootDir, packageName } = inputs.opts
-			await FlightDeck.kill(flightdeckRootDir, packageName)
-		}
-		break
-	case ``:
-	case `$configPath`: {
-		new FlightDeck(inputs.opts)
 	}
 }
+
+await main()
