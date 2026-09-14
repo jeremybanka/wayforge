@@ -5,6 +5,8 @@ minimumReleaseAgeExclude:
   - typescript@7.0.2
   - "@typescript/*"
   - atom.io
+  - break-check@0.6.40
+  - comline@0.6.3
   - recoverage
   - tonnage
 autoInstallPeers: false
