@@ -130,7 +130,7 @@ export function cli<
 	CLI extends CommandLineInterface<Routes>,
 	Routes extends Tree = Exclude<CLI[`routes`], undefined>,
 >(
-	definition: CLI,
+	definitionInput: CLI & { routes?: Routes },
 	logger: CliLogger = console,
 ): ((argv: readonly string[]) => {
 	inputs: CliParseOutput<CLI>
@@ -141,6 +141,8 @@ export function cli<
 	interpret: (request: CompletionRequest) => CompletionContext
 	complete: (request: CompletionRequest) => Promise<CompletionResult>
 } {
+	// Infer Routes directly at the call site, then retain CLI for internal consumers.
+	const definition: CLI = definitionInput
 	const {
 		cliName,
 		routeOptions,

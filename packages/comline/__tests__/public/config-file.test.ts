@@ -3,7 +3,8 @@ import { tmpdir } from "node:os"
 import path from "node:path"
 
 import { type } from "arktype"
-import { required } from "treetrunks"
+import { optional, required } from "treetrunks"
+import { expectTypeOf } from "vitest"
 import z from "zod"
 
 import { cli, options } from "../../src/cli"
@@ -40,6 +41,7 @@ describe(`options from file`, () => {
 			}),
 		},
 		discoverConfigPath: (positionalArgs) => {
+			expectTypeOf(positionalArgs).toEqualTypeOf<[string & {}]>()
 			if (positionalArgs[0]) {
 				const configPath = positionalArgs[0]
 				return `${tempDir}/${configPath}`
@@ -49,6 +51,8 @@ describe(`options from file`, () => {
 	test(`happy: all options`, () => {
 		fs.writeFileSync(`${tempDir}/config.json`, `{"foo":"hello"}`)
 		const { inputs } = testCli(argv(`--`, `config.json`))
+		expectTypeOf(inputs.opts).toEqualTypeOf<{ foo: string }>()
+		expectTypeOf(inputs.path).toEqualTypeOf<[string & {}]>()
 		expect(inputs.opts).toEqual({ foo: `hello` })
 		expect(inputs.path).toEqual([`config.json`])
 	})
@@ -62,6 +66,39 @@ describe(`options from file`, () => {
 		expect(inputs.opts).toEqual({ foo: `goodbye` })
 		expect(inputs.path).toEqual([`config.json`])
 	})
+})
+
+test(`config discovery infers nested literal, variable, and optional routes`, () => {
+	const testCli = cli({
+		cliName: `nested-config`,
+		routes: required({
+			serve: optional({ $config: null }),
+			build: required({ production: null }),
+		}),
+		routeOptions: {
+			serve: null,
+			"serve/$config": null,
+			"build/production": null,
+		},
+		discoverConfigPath(positionalArgs) {
+			expectTypeOf(positionalArgs).toEqualTypeOf<
+				[`serve`] | [`serve`, string & {}] | [`build`, `production`]
+			>()
+			if (positionalArgs[0] === `build`) {
+				expectTypeOf(positionalArgs[1]).toEqualTypeOf<`production`>()
+			}
+			return undefined
+		},
+	})
+	expect(testCli(argv(`serve`)).inputs.path).toEqual([`serve`])
+	expect(testCli(argv(`serve`, `config.json`)).inputs.path).toEqual([
+		`serve`,
+		`config.json`,
+	])
+	expect(testCli(argv(`build`, `production`)).inputs.path).toEqual([
+		`build`,
+		`production`,
+	])
 })
 
 describe(`creating a config schema`, () => {
