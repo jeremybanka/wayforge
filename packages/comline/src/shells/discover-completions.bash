@@ -1,7 +1,7 @@
 if ((BASH_VERSINFO[0] < 4)); then
     printf '\0completion-install\0Bash 4 or newer is required.\0'
 elif ! declare -F _get_comp_words_by_ref >/dev/null || ! declare -F _filedir >/dev/null; then
-    printf '\0completion-install\0Install bash-completion and enable it in your Bash configuration.\0'
+    printf '\0completion-install\0Install bash-completion 2.18+ and enable it in your Bash configuration.\0'
 elif ! shopt -q progcomp; then
     printf '\0completion-install\0Enable Bash programmable completion (shopt -s progcomp).\0'
 else
