@@ -19,6 +19,7 @@ import {
 import logger from "takua"
 
 import type { BreakCheckOptions } from "./break-check"
+import { breakCheck } from "./break-check"
 
 const BREAK_CHECK_MANUAL = options(
 	`Check for breaking changes in a package.`,
@@ -119,15 +120,11 @@ const parse = cli(
 	},
 	logger,
 )
-async function main(): Promise<void> {
-	const completion = await completionResponse(parse.definition, process.argv)
-	if (completion !== undefined) {
-		process.stdout.write(completion)
-		return
-	}
 
-	const { breakCheck } = await import(`./break-check`)
-
+const completion = await completionResponse(parse.definition, process.argv)
+if (completion !== undefined) {
+	process.stdout.write(completion)
+} else {
 	const { inputs, warnings, writeJsonSchema } = parse(process.argv)
 	logWarnings(warnings)
 
@@ -177,5 +174,3 @@ async function main(): Promise<void> {
 		}
 	}
 }
-
-await main()
