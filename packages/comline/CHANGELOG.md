@@ -1,5 +1,12 @@
 # comline
 
+## 0.6.3
+
+### Patch Changes
+
+- 77add5d: Rank complete interpretations supported by their own route grammar during final invocation. Descendant options cannot invalidate a valid command or silently consume its positional arguments. Reject input when no complete interpretation is valid, and retain explicit boundary requirements for equally ranked interpretations with different positional paths. Completion can still interpret unfinished descendant commands.
+- 77add5d: Return an always-present `warnings` array for unknown options and options invalid on the selected route. Malformed option assignments also produce warnings, and each invalid short flag occurrence is reported in argument order. Warnings include option spelling, word index within `argv.slice(2)`, and selected command context; consumed values follow the selected route’s grammar and do not produce warnings. Display messages escape argument control characters while structured fields retain raw input. Interpretation and completion defer warnings while viable descendant commands remain possible; finalized invocations diagnose the selected route. Export `CliWarning`, reusable `formatWarnings`, and opt-in `logWarnings` with stderr output, custom logging, and color controls. Parsing does not automatically log warnings.
+
 ## 0.6.2
 
 ### Patch Changes
