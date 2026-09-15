@@ -4,7 +4,7 @@ import path from "node:path"
 
 import { type } from "arktype"
 import { optional, required } from "treetrunks"
-import { expectTypeOf } from "vitest"
+import { expectTypeOf, vi } from "vitest"
 import z from "zod"
 
 import { cli, options } from "../../src/cli"
@@ -66,7 +66,92 @@ describe(`options from file`, () => {
 		expect(inputs.opts).toEqual({ foo: `goodbye` })
 		expect(inputs.path).toEqual([`config.json`])
 	})
+	test.each([`ts`, `mts`, `js`, `mjs`, `cts`, `cjs`])(
+		`loads computed options from a .%s module without changing cached exports`,
+		(extension) => {
+			const commonjs = extension === `cts` || extension === `cjs`
+			const typescript = [`ts`, `mts`, `cts`].includes(extension)
+			fs.writeFileSync(`${tempDir}/package.json`, `{"type":"module"}`)
+			fs.writeFileSync(
+				`${tempDir}/helper.ts`,
+				`export function greet(name: string): string { return "hello " + name }`,
+			)
+			fs.writeFileSync(
+				`${tempDir}/config.${extension}`,
+				[
+					commonjs
+						? `const { greet } = require("./helper.ts")`
+						: `import { greet } from "./helper.ts"`,
+					`const config${typescript ? `: { foo: string }` : ``} = Object.freeze({ foo: greet("world") })`,
+					commonjs ? `module.exports = config` : `export default config`,
+				].join(`\n`),
+			)
+			const configPath = `config.${extension}`
+			expect(testCli(argv(`--`, configPath)).inputs.opts).toEqual({
+				foo: `hello world`,
+			})
+			expect(
+				testCli(argv(`--foo=override`, `--`, configPath)).inputs.opts,
+			).toEqual({ foo: `override` })
+			expect(testCli(argv(`--`, configPath)).inputs.opts).toEqual({
+				foo: `hello world`,
+			})
+		},
+	)
+	test.each([
+		`export default { foo: 42 }`,
+		`export default {}`,
+		`export const foo = "hello"`,
+		`export default () => ({ foo: "hello" })`,
+		`export default Promise.resolve({ foo: "hello" })`,
+		`await Promise.resolve(); export default { foo: "hello" }`,
+		`throw new Error("config failed")`,
+		`import "./missing.ts"; export default { foo: "hello" }`,
+		`export default {`,
+	])(`rejects invalid or unloadable module configs: %s`, (source) => {
+		fs.writeFileSync(`${tempDir}/config.mts`, source)
+		expect(() => testCli(argv(`--`, `config.mts`))).toThrow()
+	})
+	test.each([`json`, `ts`])(`ignores missing .%s configs`, (extension) => {
+		expect(
+			testCli(argv(`--foo=cli`, `--`, `missing.${extension}`)).inputs.opts,
+		).toEqual({ foo: `cli` })
+	})
+	test(`resolves relative config paths against the working directory`, () => {
+		fs.writeFileSync(
+			`${tempDir}/relative.mts`,
+			`export default { foo: "relative" }`,
+		)
+		const parse = cli({
+			...testCli.definition,
+			discoverConfigPath: () =>
+				path.relative(process.cwd(), `${tempDir}/relative.mts`),
+		})
+		expect(parse(argv(`config`)).inputs.opts).toEqual({ foo: `relative` })
+	})
 })
+
+test.each([undefined, () => undefined])(
+	`does not discover configs when discovery is omitted or returns undefined: %s`,
+	(discoverConfigPath) => {
+		fs.writeFileSync(`${tempDir}/my-cli.config.json`, `invalid json`)
+		fs.writeFileSync(
+			`${tempDir}/my-cli.config.ts`,
+			`throw new Error("must not execute")`,
+		)
+		const cwd = vi.spyOn(process, `cwd`).mockReturnValue(tempDir)
+		try {
+			const parse = cli({
+				cliName: `my-cli`,
+				routeOptions: { "": null },
+				...(discoverConfigPath ? { discoverConfigPath } : {}),
+			})
+			expect(parse(argv()).inputs.opts).toEqual({})
+		} finally {
+			cwd.mockRestore()
+		}
+	},
+)
 
 test(`config discovery infers nested literal, variable, and optional routes`, () => {
 	const testCli = cli({
