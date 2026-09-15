@@ -44,8 +44,6 @@ function greet(name: string, age: number): string {
 create a `greet.x.ts` file with the following contents:
 
 ```typescript
-import * as path from "node:path"
-
 import { cli, options, parseNumberOption, parseStringOption } from "comline"
 import { z } from "zod/v4"
 
@@ -53,7 +51,6 @@ import { greet } from "./greet"
 
 const greetCli = cli({
 	cliName: "greet",
-	discoverConfigPath: () => path.join(process.cwd(), `.greet-config.json`),
 	routeOptions: {
 		"": options(
 			`greet someone`,
@@ -125,6 +122,40 @@ if (process.env.WRITE_CONFIG_SCHEMA) {
 
 greet(inputs.opts.name, inputs.opts.age)
 ```
+
+## configuration files
+
+Configuration discovery is disabled by default. Opt in with `discoverConfigPath`, which receives the selected route's positional arguments and returns a file path or `undefined` to skip loading. Relative paths resolve from the current working directory. Missing files are ignored; invalid files or module-loading errors are thrown.
+
+To keep the former default discovery behavior, import `path` from `node:path` and add this to your CLI definition:
+
+```typescript
+discoverConfigPath: () => path.join(process.cwd(), "greet.config.json"),
+```
+
+For a programmatic config, return a TypeScript or JavaScript module path instead:
+
+```typescript
+discoverConfigPath: () => path.join(process.cwd(), "greet.config.ts"),
+```
+
+```typescript
+// greet.config.ts
+import { userInfo } from "node:os"
+
+const config = {
+	name: userInfo().username,
+	age: 30,
+} satisfies { name: string; age: number }
+
+export default config
+```
+
+Modules with `.ts`, `.mts`, `.cts`, `.js`, `.mjs`, and `.cjs` extensions use the host runtime's module loader. ES modules must default-export an options object; CommonJS modules use `module.exports`. Other extensions retain JSON parsing. Config objects are validated against the selected route's schema before command-line options override them, and the merged options are validated again. Each config must satisfy the schema on its own.
+
+Parsing remains synchronous: exported functions, promises, and modules with top-level `await` are unsupported. Modules use the runtime's normal cache, so their code runs once per process; command-line overrides do not change the cached config object. JSON files are read afresh on each parse. Completion does not discover or load configs.
+
+TypeScript configs require a runtime with TypeScript support, such as Bun or Node.js 22.18+ (or 24+). Comline does not transpile or type-check configs. Native Node.js supports erasable types and requires explicit extensions in relative imports; it does not apply `tsconfig.json` path aliases or transform enums and parameter properties. See [Node.js TypeScript support](https://nodejs.org/api/typescript.html) for runtime limitations.
 
 ## warnings
 
