@@ -1,5 +1,12 @@
 # break-check
 
+## 0.7.2
+
+### Patch Changes
+
+- Updated dependencies [df27495]
+  - comline@0.8.0
+
 ## 0.7.1
 
 ### Patch Changes

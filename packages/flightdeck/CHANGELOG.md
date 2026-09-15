@@ -1,5 +1,12 @@
 # flightdeck
 
+## 0.4.25
+
+### Patch Changes
+
+- Updated dependencies [df27495]
+  - comline@0.8.0
+
 ## 0.4.24
 
 ### Patch Changes
