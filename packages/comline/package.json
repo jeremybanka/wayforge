@@ -55,7 +55,7 @@
 	},
 	"devDependencies": {
 		"@types/bun": "npm:bun-types@1.4.2",
-		"@types/node": "26.6.0",
+		"@types/node": "26.6.1",
 		"@vitest/coverage-v8": "5.0.1",
 		"typescript": "7.0.2",
 		"arktype": "2.2.3",
