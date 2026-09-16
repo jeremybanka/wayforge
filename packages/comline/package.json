@@ -1,42 +1,23 @@
 {
 	"name": "comline",
 	"version": "0.8.0",
-	"license": "MPL-2.0",
-	"author": {
-		"name": "Jeremy Banka",
-		"email": "hello@jeremybanka.com"
-	},
-	"publishConfig": {
-		"access": "public"
-	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/jeremybanka/wayforge.git",
 		"directory": "packages/comline"
 	},
+	"license": "MPL-2.0",
+	"author": {
+		"name": "Jeremy Banka",
+		"email": "hello@jeremybanka.com"
+	},
 	"type": "module",
+	"main": "dist/cli.js",
+	"types": "dist/cli.d.ts",
 	"files": [
 		"dist",
 		"src"
 	],
-	"main": "dist/cli.js",
-	"types": "dist/cli.d.ts",
-	"peerDependencies": {
-		"arktype": "^2.1.28",
-		"zod": "^4.2.0"
-	},
-	"peerDependenciesMeta": {
-		"arktype": {
-			"optional": true
-		},
-		"zod": {
-			"optional": true
-		}
-	},
-	"dependencies": {
-		"@standard-schema/spec": "1.1.0",
-		"treetrunks": "workspace:*"
-	},
 	"scripts": {
 		"build": "tsdown",
 		"lint:eslint": "eslint -- .",
@@ -53,19 +34,38 @@
 		"test:semver": "break-check",
 		"postversion": "dprint fmt package.json"
 	},
+	"dependencies": {
+		"@standard-schema/spec": "1.1.0",
+		"treetrunks": "workspace:*"
+	},
 	"devDependencies": {
 		"@types/bun": "npm:bun-types@1.4.2",
 		"@types/node": "26.6.1",
 		"@vitest/coverage-v8": "5.0.1",
-		"typescript": "7.0.2",
 		"arktype": "2.2.3",
 		"break-check": "0.6.40",
 		"concurrently": "10.0.5",
 		"eslint": "10.10.0",
 		"recoverage": "0.1.16",
 		"tsdown": "0.23.0",
+		"typescript": "7.0.2",
 		"vite": "8.3.0",
 		"vitest": "5.0.1",
 		"zod": "4.6.5"
+	},
+	"peerDependencies": {
+		"arktype": "^2.1.28",
+		"zod": "^4.2.0"
+	},
+	"peerDependenciesMeta": {
+		"arktype": {
+			"optional": true
+		},
+		"zod": {
+			"optional": true
+		}
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }

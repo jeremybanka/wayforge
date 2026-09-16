@@ -1,26 +1,23 @@
 {
 	"name": "safedeposit",
 	"version": "0.1.3",
-	"license": "MPL-2.0",
-	"author": {
-		"name": "Jeremy Banka",
-		"email": "hello@jeremybanka.com"
-	},
-	"publishConfig": {
-		"access": "public"
-	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/jeremybanka/wayforge.git",
 		"directory": "packages/safedeposit"
 	},
+	"license": "MPL-2.0",
+	"author": {
+		"name": "Jeremy Banka",
+		"email": "hello@jeremybanka.com"
+	},
 	"type": "module",
+	"main": "dist/safedeposit.js",
 	"files": [
 		"dist",
 		"src",
 		"CHANGELOG.md"
 	],
-	"main": "dist/safedeposit.js",
 	"scripts": {
 		"build": "tsdown",
 		"lint:eslint": "eslint -- .",
@@ -34,11 +31,14 @@
 	},
 	"devDependencies": {
 		"@types/node": "26.6.1",
-		"typescript": "7.0.2",
 		"concurrently": "10.0.5",
 		"eslint": "10.10.0",
 		"tsdown": "0.23.0",
+		"typescript": "7.0.2",
 		"vite": "8.3.0",
 		"vitest": "5.0.1"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }
