@@ -2,78 +2,15 @@
 	"name": "hamr",
 	"version": "4.0.2",
 	"description": "core react and atom.io utilities for wayforge",
-	"type": "module",
-	"license": "MPL-2.0",
-	"sideEffects": false,
-	"author": "Jeremy Banka",
-	"publishConfig": {
-		"access": "public"
-	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/jeremybanka/wayforge.git",
 		"directory": "packages/hamr"
 	},
-	"scripts": {
-		"manifest": "./__scripts__/manifest-build.node.ts",
-		"clean:build": "find . -type d -name 'dist' -not -path '*/node_modules/*' | xargs rm -rf",
-		"build": "tsdown",
-		"lint:eslint": "eslint -- .",
-		"lint:oxlint": "oxlint --type-aware -c ../../.oxlintrc.jsonc .",
-		"lint:types": "tsc --noEmit",
-		"watch:types": "tsc --watch --noEmit",
-		"lint": "concurrently \"bun:lint:*\"",
-		"test": "vitest",
-		"test:once": "vitest run",
-		"test:manifest": "./__scripts__/manifest-test.node.ts",
-		"postversion": "dprint fmt package.json"
-	},
-	"dependencies": {
-		"@floating-ui/react": "0.27.20",
-		"@floating-ui/react-dom": "2.1.9",
-		"anvl": "workspace:*",
-		"corners": "0.2.0",
-		"luum": "workspace:*",
-		"motion": "13.3.0"
-	},
-	"peerDependencies": {
-		"@floating-ui/react": "^0.25.0 || ^0.26.0 || ^0.27.0",
-		"@floating-ui/react-dom": "^2.0.2",
-		"@vitejs/plugin-react": "^4.0.4 || ^5.0.0 || ^6.0.0",
-		"ajv": "^8.12.0",
-		"atom.io": "^0.47.0 || ^0.49.0 || ^0.50.0 || ^0.51.0 || ^0.52.0 || ^0.53.0",
-		"corners": "^0.1.0 || ^0.2.0",
-		"motion": "^10.15.1 || ^11.0.0 || ^12.0.0 || ^13.0.0",
-		"react": "^18.2.0 || ^19.0.0",
-		"react-router": "^6.8.1 || >=7.0.0 <7.12.0 || ^8.3.0"
-	},
-	"devDependencies": {
-		"@testing-library/dom": "10.4.2",
-		"@testing-library/jest-dom": "7.0.1",
-		"@testing-library/react": "16.3.3",
-		"@tsdown/css": "0.23.0",
-		"@types/jsdom": "30.0.0",
-		"@types/react": "19.3.0",
-		"typescript": "7.0.2",
-		"@vitejs/plugin-react": "6.1.1",
-		"atom.io": "0.53.1",
-		"concurrently": "10.0.5",
-		"eslint": "10.10.0",
-		"happy-dom": "20.14.5",
-		"jsdom": "30.0.1",
-		"preact": "10.29.8",
-		"react": "19.3.0",
-		"react-dom": "19.3.0",
-		"react-router": "8.4.0",
-		"takua": "workspace:*",
-		"tsdown": "0.23.0",
-		"vite-plugin-dts": "5.1.0",
-		"vitest": "5.0.1"
-	},
-	"files": [
-		"dist",
-		"src"
-	],
+	"license": "MPL-2.0",
+	"author": "Jeremy Banka",
+	"sideEffects": false,
+	"type": "module",
 	"exports": {
 		"./package.json": null,
 		"./atom.io-combo/package.json": "./atom.io-combo/package.json",
@@ -146,5 +83,68 @@
 			"import": "./dist/react-radial/index.js",
 			"require": "./dist/react-radial/index.cjs"
 		}
+	},
+	"files": [
+		"dist",
+		"src"
+	],
+	"scripts": {
+		"manifest": "./__scripts__/manifest-build.node.ts",
+		"clean:build": "find . -type d -name 'dist' -not -path '*/node_modules/*' | xargs rm -rf",
+		"build": "tsdown",
+		"lint:eslint": "eslint -- .",
+		"lint:oxlint": "oxlint --type-aware -c ../../.oxlintrc.jsonc .",
+		"lint:types": "tsc --noEmit",
+		"watch:types": "tsc --watch --noEmit",
+		"lint": "concurrently \"bun:lint:*\"",
+		"test": "vitest",
+		"test:once": "vitest run",
+		"test:manifest": "./__scripts__/manifest-test.node.ts",
+		"postversion": "dprint fmt package.json"
+	},
+	"dependencies": {
+		"@floating-ui/react": "0.27.20",
+		"@floating-ui/react-dom": "2.1.9",
+		"anvl": "workspace:*",
+		"corners": "0.2.0",
+		"luum": "workspace:*",
+		"motion": "13.3.0"
+	},
+	"devDependencies": {
+		"@testing-library/dom": "10.4.2",
+		"@testing-library/jest-dom": "7.0.1",
+		"@testing-library/react": "16.3.3",
+		"@tsdown/css": "0.23.0",
+		"@types/jsdom": "30.0.0",
+		"@types/react": "19.3.0",
+		"@vitejs/plugin-react": "6.1.1",
+		"atom.io": "0.53.1",
+		"concurrently": "10.0.5",
+		"eslint": "10.10.0",
+		"happy-dom": "20.14.5",
+		"jsdom": "30.0.1",
+		"preact": "10.29.8",
+		"react": "19.3.0",
+		"react-dom": "19.3.0",
+		"react-router": "8.4.0",
+		"takua": "workspace:*",
+		"tsdown": "0.23.0",
+		"typescript": "7.0.2",
+		"vite-plugin-dts": "5.1.0",
+		"vitest": "5.0.1"
+	},
+	"peerDependencies": {
+		"@floating-ui/react": "^0.25.0 || ^0.26.0 || ^0.27.0",
+		"@floating-ui/react-dom": "^2.0.2",
+		"@vitejs/plugin-react": "^4.0.4 || ^5.0.0 || ^6.0.0",
+		"ajv": "^8.12.0",
+		"atom.io": "^0.47.0 || ^0.49.0 || ^0.50.0 || ^0.51.0 || ^0.52.0 || ^0.53.0",
+		"corners": "^0.1.0 || ^0.2.0",
+		"motion": "^10.15.1 || ^11.0.0 || ^12.0.0 || ^13.0.0",
+		"react": "^18.2.0 || ^19.0.0",
+		"react-router": "^6.8.1 || >=7.0.0 <7.12.0 || ^8.3.0"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }

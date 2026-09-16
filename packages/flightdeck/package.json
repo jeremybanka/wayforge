@@ -1,42 +1,28 @@
 {
 	"name": "flightdeck",
 	"version": "0.4.25",
-	"license": "MPL-2.0",
-	"author": {
-		"name": "Jeremy Banka",
-		"email": "hello@jeremybanka.com"
-	},
-	"publishConfig": {
-		"access": "public"
-	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/jeremybanka/wayforge.git",
 		"directory": "packages/flightdeck"
 	},
+	"license": "MPL-2.0",
+	"author": {
+		"name": "Jeremy Banka",
+		"email": "hello@jeremybanka.com"
+	},
 	"type": "module",
-	"files": [
-		"dist",
-		"gen",
-		"src"
-	],
 	"main": "dist/lib.js",
 	"types": "dist/lib.d.ts",
 	"bin": {
 		"flightdeck": "./bin/flightdeck.bin.js",
 		"klaxon": "./bin/klaxon.bin.js"
 	},
-	"peerDependencies": {
-		"zod": "^4"
-	},
-	"dependencies": {
-		"@t3-oss/env-core": "0.13.11",
-		"arktype": "2.2.3",
-		"atom.io": "0.53.1",
-		"comline": "workspace:*",
-		"cron": "4.4.0",
-		"safedeposit": "workspace:*"
-	},
+	"files": [
+		"dist",
+		"gen",
+		"src"
+	],
 	"scripts": {
 		"gen": "bun ./__scripts__/gen.bun.ts",
 		"build": "tsdown && rm -f dist/*.x.d.ts && bun ./__scripts__/build-lnav.bun.ts",
@@ -50,18 +36,32 @@
 		"test:once": "vitest run",
 		"postversion": "dprint fmt package.json"
 	},
+	"dependencies": {
+		"@t3-oss/env-core": "0.13.11",
+		"arktype": "2.2.3",
+		"atom.io": "0.53.1",
+		"comline": "workspace:*",
+		"cron": "4.4.0",
+		"safedeposit": "workspace:*"
+	},
 	"devDependencies": {
 		"@biomejs/js-api": "6.0.0",
 		"@biomejs/wasm-nodejs": "2.5.13",
 		"@types/bun": "npm:bun-types@1.4.2",
 		"@types/node": "26.6.1",
-		"typescript": "7.0.2",
 		"concurrently": "10.0.5",
 		"eslint": "10.10.0",
 		"json-schema-to-zod": "2.8.1",
 		"tsdown": "0.23.0",
+		"typescript": "7.0.2",
 		"varmint": "workspace:*",
 		"vitest": "5.0.1",
 		"zod": "4.6.5"
+	},
+	"peerDependencies": {
+		"zod": "^4"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }

@@ -1,8 +1,16 @@
 {
 	"name": "ingt",
 	"version": "0.0.3",
-	"type": "module",
 	"description": "json filestore",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeremybanka/wayforge.git",
+		"directory": "packages/ingt"
+	},
+	"license": "MPL-2.0",
+	"author": "Jeremy Banka",
+	"sideEffects": false,
+	"type": "module",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"files": [
@@ -27,10 +35,10 @@
 	},
 	"devDependencies": {
 		"@types/node": "26.6.1",
-		"typescript": "7.0.2",
 		"concurrently": "10.0.5",
 		"eslint": "10.10.0",
 		"tsdown": "0.23.0",
+		"typescript": "7.0.2",
 		"vite": "8.3.0",
 		"vitest": "5.0.1"
 	},
@@ -38,14 +46,6 @@
 		"fp-ts": "^2.13.1",
 		"io-ts": "^2.2.20"
 	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/jeremybanka/wayforge.git",
-		"directory": "packages/ingt"
-	},
-	"license": "MPL-2.0",
-	"sideEffects": false,
-	"author": "Jeremy Banka",
 	"publishConfig": {
 		"access": "public"
 	}

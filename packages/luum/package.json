@@ -1,8 +1,21 @@
 {
 	"name": "luum",
 	"version": "0.0.18",
-	"type": "module",
 	"description": "generate colors dynamically",
+	"keywords": [
+		"color",
+		"css",
+		"javascript",
+		"library"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeremybanka/wayforge.git",
+		"directory": "packages/luum"
+	},
+	"license": "MPL-2.0",
+	"author": "Jeremy Banka",
+	"type": "module",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
@@ -26,19 +39,6 @@
 		"vite": "8.3.0",
 		"vitest": "5.0.1"
 	},
-	"keywords": [
-		"color",
-		"css",
-		"javascript",
-		"library"
-	],
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/jeremybanka/wayforge.git",
-		"directory": "packages/luum"
-	},
-	"license": "MPL-2.0",
-	"author": "Jeremy Banka",
 	"publishConfig": {
 		"access": "public"
 	}

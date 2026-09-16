@@ -1,25 +1,22 @@
 {
 	"name": "venerate",
 	"version": "0.0.6",
-	"license": "MPL-2.0",
-	"author": {
-		"name": "Jeremy Banka",
-		"email": "hello@jeremybanka.com"
-	},
-	"publishConfig": {
-		"access": "public"
-	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/jeremybanka/wayforge.git",
 		"directory": "packages/venerate"
 	},
+	"license": "MPL-2.0",
+	"author": {
+		"name": "Jeremy Banka",
+		"email": "hello@jeremybanka.com"
+	},
 	"type": "module",
+	"main": "dist/venerate.js",
 	"files": [
 		"dist",
 		"src"
 	],
-	"main": "dist/venerate.js",
 	"scripts": {
 		"build": "tsdown",
 		"lint:eslint": "eslint -- .",
@@ -36,13 +33,16 @@
 	},
 	"devDependencies": {
 		"@types/node": "26.6.1",
-		"typescript": "7.0.2",
 		"@vitest/coverage-v8": "5.0.1",
 		"concurrently": "10.0.5",
 		"eslint": "10.10.0",
 		"recoverage": "0.1.16",
 		"tsdown": "0.23.0",
+		"typescript": "7.0.2",
 		"vite": "8.3.0",
 		"vitest": "5.0.1"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }

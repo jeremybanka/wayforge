@@ -1,39 +1,16 @@
 {
 	"name": "anvl",
 	"version": "0.3.4",
-	"type": "module",
 	"description": "core typescript utilities for wayforge",
-	"files": [
-		"dist",
-		"array",
-		"function",
-		"id",
-		"join",
-		"json",
-		"json-api",
-		"json-schema",
-		"nullish",
-		"number",
-		"object",
-		"primitive",
-		"refinement",
-		"string",
-		"tree"
-	],
-	"scripts": {
-		"build": "tsdown",
-		"lint:eslint": "eslint -- .",
-		"lint:oxlint": "oxlint --type-aware -c ../../.oxlintrc.jsonc .",
-		"lint:types": "tsc --noEmit",
-		"watch:types": "tsc --watch --noEmit",
-		"lint": "concurrently \"bun:lint:*\"",
-		"test": "vitest",
-		"test:once": "vitest run",
-		"postversion": "dprint fmt package.json"
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeremybanka/wayforge.git",
+		"directory": "packages/anvl"
 	},
-	"dependencies": {
-		"atom.io": "0.53.1"
-	},
+	"license": "MPL-2.0",
+	"author": "Jeremy Banka",
+	"sideEffects": false,
+	"type": "module",
 	"exports": {
 		"./package.json": "./package.json",
 		"./array": {
@@ -121,22 +98,45 @@
 			"require": "./dist/tree/index.cjs"
 		}
 	},
+	"files": [
+		"dist",
+		"array",
+		"function",
+		"id",
+		"join",
+		"json",
+		"json-api",
+		"json-schema",
+		"nullish",
+		"number",
+		"object",
+		"primitive",
+		"refinement",
+		"string",
+		"tree"
+	],
+	"scripts": {
+		"build": "tsdown",
+		"lint:eslint": "eslint -- .",
+		"lint:oxlint": "oxlint --type-aware -c ../../.oxlintrc.jsonc .",
+		"lint:types": "tsc --noEmit",
+		"watch:types": "tsc --watch --noEmit",
+		"lint": "concurrently \"bun:lint:*\"",
+		"test": "vitest",
+		"test:once": "vitest run",
+		"postversion": "dprint fmt package.json"
+	},
+	"dependencies": {
+		"atom.io": "0.53.1"
+	},
 	"devDependencies": {
-		"typescript": "7.0.2",
 		"concurrently": "10.0.5",
 		"eslint": "10.10.0",
 		"tsdown": "0.23.0",
+		"typescript": "7.0.2",
 		"vite": "8.3.0",
 		"vitest": "5.0.1"
 	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/jeremybanka/wayforge.git",
-		"directory": "packages/anvl"
-	},
-	"license": "MPL-2.0",
-	"sideEffects": false,
-	"author": "Jeremy Banka",
 	"publishConfig": {
 		"access": "public"
 	}

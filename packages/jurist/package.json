@@ -1,25 +1,22 @@
 {
 	"name": "jurist",
 	"version": "0.0.13",
-	"license": "MPL-2.0",
-	"author": {
-		"name": "Jeremy Banka",
-		"email": "hello@jeremybanka.com"
-	},
-	"publishConfig": {
-		"access": "public"
-	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/jeremybanka/wayforge.git",
 		"directory": "packages/jurist"
 	},
+	"license": "MPL-2.0",
+	"author": {
+		"name": "Jeremy Banka",
+		"email": "hello@jeremybanka.com"
+	},
 	"type": "module",
+	"main": "dist/jurist.js",
 	"files": [
 		"dist",
 		"src"
 	],
-	"main": "dist/jurist.js",
 	"scripts": {
 		"build": "tsdown",
 		"lint:eslint": "eslint -- .",
@@ -35,11 +32,14 @@
 		"treetrunks": "workspace:*"
 	},
 	"devDependencies": {
-		"typescript": "7.0.2",
 		"concurrently": "10.0.5",
 		"eslint": "10.10.0",
 		"tsdown": "0.23.0",
+		"typescript": "7.0.2",
 		"vite": "8.3.0",
 		"vitest": "5.0.1"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }
