@@ -56,7 +56,7 @@
 	"devDependencies": {
 		"@types/bun": "npm:bun-types@1.4.2",
 		"@types/node": "26.5.1",
-		"@vitest/coverage-v8": "5.0.0",
+		"@vitest/coverage-v8": "5.0.1",
 		"typescript": "7.0.2",
 		"arktype": "2.2.3",
 		"break-check": "0.6.40",
@@ -65,7 +65,7 @@
 		"recoverage": "0.1.16",
 		"tsdown": "0.23.0",
 		"vite": "8.3.0",
-		"vitest": "5.0.0",
+		"vitest": "5.0.1",
 		"zod": "4.6.5"
 	}
 }
