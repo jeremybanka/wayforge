@@ -1,5 +1,7 @@
 import type { Tree } from "./tree.ts"
 
+const REST: unique symbol = Symbol(`REST`)
+
 /**
  * For a `Tree`, the set of all paths through that tree.
  *
@@ -42,18 +44,18 @@ export function isTreePath<T extends Tree>(
 	tree: T,
 	maybePath: unknown[],
 ): maybePath is TreePath<T> {
-	let possibleTrees: (Tree | null | `rest`)[] = [tree]
+	let possibleTrees: (Tree | null | typeof REST)[] = [tree]
 
 	for (const segment of maybePath) {
 		if (typeof segment !== `string`) {
 			return false // segments should always be strings
 		}
-		possibleTrees = possibleTrees.flatMap((t) => {
-			if (t === `rest`) return [`rest`]
+		possibleTrees = possibleTrees.flatMap((t): (Tree | null | typeof REST)[] => {
+			if (t === REST) return [REST]
 			if (t === null) {
 				return []
 			}
-			const treesDiscovered: (Tree | null | `rest`)[] = []
+			const treesDiscovered: (Tree | null | typeof REST)[] = []
 			const branches = t[1]
 			const segmentSubTree = Object.hasOwn(branches, segment)
 				? branches[segment]
@@ -64,7 +66,7 @@ export function isTreePath<T extends Tree>(
 
 			for (const [name, child] of Object.entries(branches)) {
 				if (name.startsWith(`$`)) {
-					treesDiscovered.push(name.startsWith(`$...`) ? `rest` : child)
+					treesDiscovered.push(name.startsWith(`$...`) ? REST : child)
 				}
 			}
 			return treesDiscovered
@@ -72,7 +74,7 @@ export function isTreePath<T extends Tree>(
 	}
 
 	for (const possibleTree of possibleTrees) {
-		if (possibleTree === null || possibleTree === `rest`) {
+		if (possibleTree === null || possibleTree === REST) {
 			return true
 		}
 		if (possibleTree[0] === `optional`) {

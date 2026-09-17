@@ -69,7 +69,7 @@ Sizes are exact minified and level-9 gzip JavaScript byte counts. Declarations, 
 
 | Import                  | Minified JS | Gzip JS |
 | ----------------------- | ----------: | ------: |
-| <code>treetrunks</code> |     1,473 B |   730 B |
+| <code>treetrunks</code> |     1,474 B |   747 B |
 
 Report maintained with [tonnage](https://github.com/jeremybanka/tonnage).
 
