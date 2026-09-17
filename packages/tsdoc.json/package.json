@@ -44,7 +44,7 @@
 		"tonnage:write": "tonnage write"
 	},
 	"dependencies": {
-		"@microsoft/tsdoc": "0.16.0"
+		"@microsoft/tsdoc": "0.17.0"
 	},
 	"devDependencies": {
 		"@types/bun": "npm:bun-types@1.4.2",
