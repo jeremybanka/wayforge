@@ -9,7 +9,6 @@ import type {
 	TreePath,
 	TreePathParams,
 } from "treetrunks"
-import { validateTreeCaptures } from "treetrunks"
 
 import { interpretInvocation, type OptionValueKind } from "./arguments"
 import {
@@ -23,6 +22,7 @@ import {
 import { readConfigFile } from "./config-file"
 import type { Flag } from "./flag"
 import { parseStringOption } from "./option-parsers"
+import { validateRoutes } from "./route-validation"
 import {
 	emptySchema,
 	type OptionsSchema,
@@ -154,7 +154,7 @@ export function cli<
 } {
 	// Infer Routes directly at the call site, then retain CLI for internal consumers.
 	const definition: CLI = definitionInput
-	if (definition.routes) validateTreeCaptures(definition.routes)
+	if (definition.routes) validateRoutes(definition.routes)
 	const {
 		cliName,
 		routeOptions,

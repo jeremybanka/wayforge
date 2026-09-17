@@ -13,7 +13,6 @@ import {
 	type TreePath,
 	type TreePathName,
 	type TreePathParams,
-	validateTreeCaptures,
 } from "../src/treetrunks.ts"
 
 const tree = required({
@@ -126,13 +125,19 @@ test(`root rest captures follow the same required and optional cardinality`, () 
 	expect(isTreePath(optionalRoot, [`one`, `two`])).toBe(true)
 })
 
-test(`rejects malformed captures before validation`, () => {
-	const invalid = required({ "$...paths": null, other: null })
-	expect(() => {
-		validateTreeCaptures(invalid)
-	}).toThrow(/rest.*paths/i)
-	expect(() => isTreePath(invalid, [`one`, `two`])).toThrow(/rest.*paths/i)
-	expect(() => {
-		validateTreeCaptures(required({ $name: required({ $name: null }) }))
-	}).toThrow(/duplicate.*name/i)
+test(`checks paths without imposing named-capture declaration rules`, () => {
+	const repeated = required({ $name: required({ $name: null }) })
+	const path = [`one`, `two`] satisfies TreePath<typeof repeated>
+	expect(isTreePath(repeated, path)).toBe(true)
+	expect(isTreePath(repeated, [`one`])).toBe(false)
+	expect(isTreePath(repeated, [`one`, 2])).toBe(false)
+})
+
+test(`an unrelated branch does not prevent validating a path`, () => {
+	const branches = required({
+		selected: null,
+		other: required({ $name: required({ $name: null }) }),
+	})
+	expect(isTreePath(branches, [`selected`])).toBe(true)
+	expect(isTreePath(branches, [`missing`])).toBe(false)
 })

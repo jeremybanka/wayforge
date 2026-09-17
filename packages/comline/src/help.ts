@@ -1,9 +1,8 @@
 import { styleText } from "node:util"
 
-import { validateTreeCaptures } from "treetrunks"
-
 import { type CommandLineInterface, options, type OptionsGroup } from "./cli"
 import { parseBooleanOption } from "./option-parsers"
+import { validateRoutes } from "./route-validation"
 import {
 	type JsonSchema,
 	type OptionsSchema,
@@ -174,7 +173,7 @@ export function help(
 	cli: CommandLineInterface<any>,
 	helpOptions?: HelpOptions,
 ): string {
-	if (cli.routes) validateTreeCaptures(cli.routes)
+	if (cli.routes) validateRoutes(cli.routes)
 	return [
 		renderTable(
 			[[cli.cliName, cli.cliDescription ?? `cli`]],
