@@ -7,3 +7,5 @@ Support `$...name` positional captures at the end of a route for one or more arg
 Reject invalid rest declarations, duplicate capture names, and branch names containing the route separator `/` when creating a CLI, interpreting arguments, or rendering help. Positional values may contain `/` as usual.
 
 Preserve a standalone `-` as a positional argument unless the selected route consumes it as an option value.
+
+Prefer successful literal routes, with fallback to capture branches that accept the full positional path. When multiple captures accept the same path, declaration order determines the selected route.
