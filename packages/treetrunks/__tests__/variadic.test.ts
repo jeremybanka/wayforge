@@ -21,6 +21,20 @@ const tree = required({
 	project: required({ $name: required({ "$...paths": null }) }),
 })
 
+test(`path membership considers every capture branch`, () => {
+	const alternatives = required({
+		$first: required({ left: null }),
+		$second: required({ right: null }),
+	})
+	for (const path of [
+		[`value`, `left`],
+		[`value`, `right`],
+	]) {
+		expect(isTreePath(alternatives, path)).toBe(true)
+	}
+	expect(isTreePath(alternatives, [`value`, `missing`])).toBe(false)
+})
+
 test(`parameter inference preserves alternative paths`, () => {
 	const alternatives = required({
 		show: required({ $name: null }),

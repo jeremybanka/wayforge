@@ -165,6 +165,8 @@ A required rest branch rejects zero arguments. An optional rest branch permits i
 
 A rest capture must have a nonempty name, a `null` child, and no siblings. Capture names must be unique within each route. Branch names cannot contain `/`, which separates route segments; use nested branches instead. This restriction does not apply to positional values such as filesystem paths. Invalid declarations throw when creating the CLI, interpreting arguments, or rendering help. Help shows `agents add <paths...>` with the one-or-more requirement, and lists the optional parent invocation separately.
 
+When a literal branch and captures can match the same word, a literal branch takes precedence if it accepts the whole positional path. Otherwise Comline tries capture branches in declaration order and selects the first that accepts the whole path. A successful literal command keeps its identity; a longer path may instead select a capture branch. Incomplete input retains the preferred prefix for diagnostics and completion.
+
 Each rest argument uses the same `positionalCompletions` entry, including after a trailing space following existing paths. Providers receive already-entered values in `context.path` and `context.params`; option suggestions remain available before `--`.
 
 ## configuration files

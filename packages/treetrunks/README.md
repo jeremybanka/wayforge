@@ -69,7 +69,7 @@ Sizes are exact minified and level-9 gzip JavaScript byte counts. Declarations, 
 
 | Import                  | Minified JS | Gzip JS |
 | ----------------------- | ----------: | ------: |
-| <code>treetrunks</code> |     1,498 B |   751 B |
+| <code>treetrunks</code> |     1,473 B |   730 B |
 
 Report maintained with [tonnage](https://github.com/jeremybanka/tonnage).
 
@@ -81,4 +81,4 @@ A `$...name` leaf branch represents one or more string segments. For `required({
 
 Use `optional({ "$...paths": null })` to allow stopping at the parent; selecting the rest branch still requires at least one string. `isTreePath` checks both cardinality and the type of every captured segment.
 
-`TreePathParams<["project", "$name", "$...paths"]>` produces `{ name: string; paths: [string, ...string[]] }`. It distributes over alternative path names to produce a union of parameter objects. `isTreePath` checks paths against the supplied tree without imposing rules on capture names or inspecting unrelated branches.
+`TreePathParams<["project", "$name", "$...paths"]>` produces `{ name: string; paths: [string, ...string[]] }`. It distributes over alternative path names to produce a union of parameter objects. `isTreePath` checks paths against the supplied tree without imposing rules on capture names or inspecting unrelated branches. A path belongs to the tree if any matching literal or capture branch accepts it; all capture alternatives are considered.

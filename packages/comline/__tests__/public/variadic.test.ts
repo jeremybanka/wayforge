@@ -5,6 +5,7 @@ import {
 	complete,
 	help,
 	interpretArguments,
+	isTreePath,
 	noOptions,
 	optional,
 	required,
@@ -15,6 +16,98 @@ import { candidateValues, warningContext } from "../fixtures/contract-values"
 import { createVariadicCli } from "../fixtures/variadic-cases"
 
 const command = createVariadicCli()
+
+test.each([false, true])(
+	`literal matches take precedence over viable capture alternatives: %s`,
+	async (captureFirst) => {
+		const capture = required({ "$...paths": null })
+		const routes = required(
+			captureFirst
+				? { $name: capture, special: null }
+				: { special: null, $name: capture },
+		)
+		const app = cli({
+			cliName: `fallback`,
+			routes,
+			routeOptions: {
+				special: noOptions(),
+				"$name/$...paths": command.definition.routeOptions[`add/$...paths`],
+			},
+			positionalCompletions: { "$name/$...paths": { choices: [`next`] } },
+		})
+		expect(app(argv(`special`)).inputs).toMatchObject({
+			case: `special`,
+			params: {},
+		})
+		const path = [`special`, `a`, `b`]
+		expect(isTreePath(routes, path)).toBe(true)
+		const result = app(argv(`special`, `a`, `--label`, `docs`, `b`))
+		expect(result.inputs).toMatchObject({
+			case: `$name/$...paths`,
+			path,
+			params: { name: `special`, paths: [`a`, `b`] },
+			opts: { label: `docs` },
+		})
+		expect(result.warnings).toEqual([])
+		const completion = await app.complete({ words: [...path, ``] })
+		expect(completion.context.params).toEqual({
+			name: `special`,
+			paths: [`a`, `b`],
+		})
+		expect(candidateValues(completion.candidates)).toContain(`next`)
+	},
+)
+
+test(`fallback considers the full remaining path and keeps successful literal matches`, () => {
+	const routes = required({
+		fixed: required({ only: null }),
+		$name: required({ "$...paths": null }),
+	})
+	const app = cli({
+		cliName: `fallback`,
+		routes,
+		routeOptions: { "fixed/only": noOptions(), "$name/$...paths": noOptions() },
+	})
+	for (const path of [
+		[`fixed`, `only`],
+		[`fixed`, `other`],
+		[`fixed`, `only`, `more`],
+	]) {
+		expect(isTreePath(routes, path)).toBe(true)
+		expect(app(argv(...path)).inputs.path).toEqual(path)
+	}
+	expect(app(argv(`fixed`, `only`)).inputs.case).toBe(`fixed/only`)
+	expect(app(argv(`fixed`, `only`, `more`)).inputs.params).toEqual({
+		name: `fixed`,
+		paths: [`only`, `more`],
+	})
+	expect(() => app(argv(`fixed`))).toThrow()
+})
+
+test(`capture alternatives use the first branch that accepts the whole path`, () => {
+	const routes = required({
+		$first: required({ left: null }),
+		$second: required({ right: null }),
+	})
+	const app = cli({
+		cliName: `alternatives`,
+		routes,
+		routeOptions: { "$first/left": noOptions(), "$second/right": noOptions() },
+	})
+	const path = [`value`, `right`]
+	expect(isTreePath(routes, path)).toBe(true)
+	expect(app(argv(...path)).inputs).toMatchObject({
+		case: `$second/right`,
+		path,
+		params: { second: `value` },
+	})
+	const tied = cli({
+		cliName: `tied`,
+		routes: required({ $first: null, $second: null }),
+		routeOptions: { $first: noOptions(), $second: noOptions() },
+	})
+	expect(tied(argv(`value`)).inputs.params).toEqual({ first: `value` })
+})
 
 test.each([[`-`], [`a`, `-`, `b`], [`-`, `-`]])(
 	`preserves standalone dashes in rest captures: %j`,

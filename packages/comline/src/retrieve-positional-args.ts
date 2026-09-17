@@ -1,4 +1,5 @@
 import type { Tree } from "treetrunks"
+import { isTreePath } from "treetrunks"
 
 export type RouteMatch = {
 	path: string[]
@@ -55,9 +56,25 @@ export function matchRoute(
 			}
 		}
 		const branches: Tree[1] = treePointer[1]
-		const segment = Object.hasOwn(branches, positionalArg)
-			? positionalArg
-			: Object.keys(branches).find((key) => key.startsWith(`$`))
+		const candidates = [
+			...(Object.hasOwn(branches, positionalArg) ? [positionalArg] : []),
+			...Object.keys(branches).filter(
+				(key) => key.startsWith(`$`) && key !== positionalArg,
+			),
+		]
+		// Prefer a literal when it accepts the entire path, then captures in
+		// declaration order. Use the tree predicate to keep acceptance consistent.
+		const remaining = positionalArgs.slice(argumentIndex + 1)
+		const segment =
+			candidates.length > 1
+				? (candidates.find((name) => {
+						if (name.startsWith(`$...`)) return true
+						const child = branches[name]
+						return child === null
+							? remaining.length === 0
+							: isTreePath(child, remaining)
+					}) ?? candidates[0])
+				: candidates[0]
 		if (segment !== undefined) {
 			namedPositionalArgs.push(segment)
 			const rest = segment.startsWith(`$...`)
