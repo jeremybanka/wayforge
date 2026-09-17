@@ -1,7 +1,6 @@
 export * from "./merge-trees.ts"
 export * from "./reduce-trees.ts"
 export * from "./tree.ts"
-export type * from "./tree-captures.ts"
 export * from "./tree-map.ts"
 export * from "./tree-path.ts"
 export type * from "./tree-path-name.ts"

@@ -11,8 +11,8 @@ import {
 	type Tree,
 	type TreeMap,
 	type TreePath,
+	type TreePathCaptures,
 	type TreePathName,
-	type TreePathParams,
 } from "../src/treetrunks.ts"
 
 const tree = required({
@@ -35,18 +35,18 @@ test(`path membership considers every capture branch`, () => {
 	expect(isTreePath(alternatives, [`value`, `missing`])).toBe(false)
 })
 
-test(`parameter inference preserves alternative paths`, () => {
+test(`capture inference preserves alternative paths`, () => {
 	const alternatives = required({
 		show: required({ $name: null }),
 		add: required({ "$...paths": null }),
 	})
-	type Params = TreePathParams<TreePathName<typeof alternatives>>
-	expectTypeOf<Params>().toEqualTypeOf<
+	type Captures = TreePathCaptures<TreePathName<typeof alternatives>>
+	expectTypeOf<Captures>().toEqualTypeOf<
 		{ name: string } | { paths: [string, ...string[]] }
 	>()
-	;({ name: `alice` }) satisfies Params
-	;({ paths: [`a`] }) satisfies Params
-	expectTypeOf<TreePathParams<never>>().toEqualTypeOf<never>()
+	;({ name: `alice` }) satisfies Captures
+	;({ paths: [`a`] }) satisfies Captures
+	expectTypeOf<TreePathCaptures<never>>().toEqualTypeOf<never>()
 })
 
 test(`joining variadic paths permits the shortest valid path`, () => {
@@ -82,12 +82,12 @@ test(`variadic paths require at least one string when the rest branch is selecte
 		[`project`, string & {}, string & {}, ...string[]]
 	>()
 	expectTypeOf<
-		TreePathParams<[`project`, `$name`, `$...paths`]>
+		TreePathCaptures<[`project`, `$name`, `$...paths`]>
 	>().toEqualTypeOf<{
 		name: string
 		paths: [string, ...string[]]
 	}>()
-	expectTypeOf<TreePathParams<[`remove`]>>().toEqualTypeOf<{}>()
+	expectTypeOf<TreePathCaptures<[`remove`]>>().toEqualTypeOf<{}>()
 })
 
 test.each([

@@ -7,7 +7,7 @@ import type {
 	Tree,
 	TreeMap,
 	TreePath,
-	TreePathParams,
+	TreePathCaptures,
 } from "treetrunks"
 
 import { interpretInvocation, type OptionValueKind } from "./arguments"
@@ -88,7 +88,7 @@ export type CliParseOutput<CLI extends CommandLineInterface<any>> = Flatten<
 			? Readonly<{
 					case: K
 					path: TreePath<CLI[`routes`]>
-					params: TreePathParams<Split<K>>
+					params: TreePathCaptures<Split<K>>
 					opts: CLI[`routeOptions`][K] extends OptionsGroup<infer Options>
 						? Options
 						: never
