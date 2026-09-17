@@ -108,7 +108,7 @@
 		"anvl": "workspace:*",
 		"corners": "0.2.0",
 		"luum": "workspace:*",
-		"motion": "13.3.0"
+		"motion": "13.4.0"
 	},
 	"devDependencies": {
 		"@testing-library/dom": "10.4.2",
