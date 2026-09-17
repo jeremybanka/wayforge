@@ -378,7 +378,7 @@ function interpretCore(
 				positionalOnly = true
 				return false
 			}
-			return !scan.consumed.has(index) && !word.startsWith(`-`)
+			return !scan.consumed.has(index) && classifyOptionWord(word) === undefined
 		})
 		const match: RouteMatch = definition.routes
 			? matchRoute(definition.cliName, definition.routes, positionals)

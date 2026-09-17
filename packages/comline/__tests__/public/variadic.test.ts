@@ -16,6 +16,28 @@ import { createVariadicCli } from "../fixtures/variadic-cases"
 
 const command = createVariadicCli()
 
+test.each([[`-`], [`a`, `-`, `b`], [`-`, `-`]])(
+	`preserves standalone dashes in rest captures: %j`,
+	(...paths) => {
+		const result = command(argv(`add`, ...paths))
+		expect(result.inputs.path).toEqual([`add`, ...paths])
+		expect(result.inputs.params).toEqual({ paths })
+		expect(result.warnings).toEqual([])
+		const context = command.interpret({ words: [`add`, ...paths, ``] })
+		expect(context.path).toEqual([`add`, ...paths])
+		expect(context.params).toEqual({ paths })
+	},
+)
+
+test(`a dash is positional unless the selected option grammar consumes it`, () => {
+	expect(command(argv(`show`, `-`)).inputs.params).toEqual({ name: `-` })
+	const result = command(argv(`add`, `a`, `--label`, `-`, `b`, `--force`, `-`))
+	expect(result.inputs.params).toEqual({ paths: [`a`, `b`, `-`] })
+	expect(result.inputs.opts).toEqual({ label: `-`, force: true })
+	expect(result.warnings).toEqual([])
+	expect(command(argv(`add`, `--`, `-`)).inputs.params).toEqual({ paths: [`-`] })
+})
+
 test(`required rest captures reject zero paths`, () => {
 	for (const words of [[`add`], [`add`, `--`], [`add`, `--label`, `docs`]]) {
 		expect(() => command(argv(...words))).toThrow()
