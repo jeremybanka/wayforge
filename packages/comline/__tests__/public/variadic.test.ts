@@ -155,6 +155,21 @@ test(`passes the full variadic path to configuration discovery`, () => {
 
 test.each([
 	[
+		`delimiter in a rest capture name`,
+		required({ "$...paths/part": null }),
+		/segment.*slash/i,
+	],
+	[
+		`delimiter in a single capture name`,
+		required({ show: required({ "$name/part": null }) }),
+		/segment.*slash/i,
+	],
+	[
+		`delimiter introducing a phantom capture`,
+		required({ "literal/$name": null }),
+		/segment.*slash/i,
+	],
+	[
 		`nonterminal`,
 		required({ "$...paths": required({ next: null }) }),
 		/rest.*paths/i,

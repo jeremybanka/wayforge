@@ -163,7 +163,7 @@ if (inputs.case === "show/$name") {
 
 A required rest branch rejects zero arguments. An optional rest branch permits its parent route: `agents remove` selects `case: "remove"` with `params: {}`, while one or more arguments select `"remove/$...paths"` with a nonempty tuple. Provide `routeOptions` for both routes. Routes with no captures return `params: {}`. Fixed segments and ordinary captures may precede a rest capture, such as `project/$name/add/$...paths`, whose params contain both `name: string` and `paths: [string, ...string[]]`.
 
-A rest capture must have a nonempty name, a `null` child, and no siblings. Capture names must be unique within each route. Invalid declarations throw when creating the CLI, interpreting arguments, or rendering help. Help shows `agents add <paths...>` with the one-or-more requirement, and lists the optional parent invocation separately.
+A rest capture must have a nonempty name, a `null` child, and no siblings. Capture names must be unique within each route. Branch names cannot contain `/`, which separates route segments; use nested branches instead. This restriction does not apply to positional values such as filesystem paths. Invalid declarations throw when creating the CLI, interpreting arguments, or rendering help. Help shows `agents add <paths...>` with the one-or-more requirement, and lists the optional parent invocation separately.
 
 Each rest argument uses the same `positionalCompletions` entry, including after a trailing space following existing paths. Providers receive already-entered values in `context.path` and `context.params`; option suggestions remain available before `--`.
 
