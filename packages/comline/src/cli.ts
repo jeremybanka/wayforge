@@ -1,7 +1,15 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
 
-import type { Flatten, Tree, TreeMap, TreePath } from "treetrunks"
+import type {
+	Flatten,
+	Split,
+	Tree,
+	TreeMap,
+	TreePath,
+	TreePathParams,
+} from "treetrunks"
+import { validateTreeCaptures } from "treetrunks"
 
 import { interpretInvocation, type OptionValueKind } from "./arguments"
 import {
@@ -80,6 +88,7 @@ export type CliParseOutput<CLI extends CommandLineInterface<any>> = Flatten<
 			? Readonly<{
 					case: K
 					path: TreePath<CLI[`routes`]>
+					params: TreePathParams<Split<K>>
 					opts: CLI[`routeOptions`][K] extends OptionsGroup<infer Options>
 						? Options
 						: never
@@ -145,6 +154,7 @@ export function cli<
 } {
 	// Infer Routes directly at the call site, then retain CLI for internal consumers.
 	const definition: CLI = definitionInput
+	if (definition.routes) validateTreeCaptures(definition.routes)
 	const {
 		cliName,
 		routeOptions,
@@ -274,6 +284,7 @@ export function cli<
 				inputs: {
 					case: interpretation.route,
 					path: interpretation.path,
+					params: interpretation.params,
 					opts: suppliedOptions,
 				} as unknown as CliParseOutput<CLI>,
 				writeJsonSchema: (outdir: string) => {

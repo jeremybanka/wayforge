@@ -25,15 +25,17 @@ export type Split<
 		: [Str]
 
 /**
- * In array `Arr`, replace elements starting with `VarMarker` with `string & {}`.
+ * In array `Arr`, replace captures with strings and a terminal rest capture with one or more strings.
  */
 export type Deref<
 	Arr extends string[],
 	VarMarker extends string = `$`,
 > = Arr extends [`${infer Head extends string}`, ...infer Tail extends string[]]
-	? Head extends `${VarMarker}${string}`
-		? [string & {}, ...Deref<Tail, VarMarker>]
-		: [Head, ...Deref<Tail, VarMarker>]
+	? Head extends `${VarMarker}...${string}`
+		? [string & {}, ...string[]]
+		: Head extends `${VarMarker}${string}`
+			? [string & {}, ...Deref<Tail, VarMarker>]
+			: [Head, ...Deref<Tail, VarMarker>]
 	: []
 
 export type Flatten<Record extends { [K in PropertyKey]: any }> = {

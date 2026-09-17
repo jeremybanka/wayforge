@@ -12,6 +12,7 @@ test.each(invocationPrefixes)(
 		expect(command(argv).inputs).toEqual({
 			case: `run`,
 			path: [`run`],
+			params: {},
 			opts: { name: `probe` },
 		})
 	},
@@ -26,6 +27,7 @@ test(`uses the exact input record when ambient argv differs`, () => {
 		).toEqual({
 			case: `run`,
 			path: [`run`],
+			params: {},
 			opts: { name: `explicit` },
 		})
 	} finally {

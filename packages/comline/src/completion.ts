@@ -199,6 +199,9 @@ export function interpretCompletion(
 			return context
 		}
 	}
+	if (context.rest) {
+		context.targets.push({ kind: `positional`, ...context.rest })
+	}
 	if (context.tree) {
 		context.targets.push({ kind: `command` })
 		const name = Object.keys(context.tree[1]).find((key) => key.startsWith(`$`))
