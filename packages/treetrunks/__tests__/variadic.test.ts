@@ -21,6 +21,20 @@ const tree = required({
 	project: required({ $name: required({ "$...paths": null }) }),
 })
 
+test(`parameter inference preserves alternative paths`, () => {
+	const alternatives = required({
+		show: required({ $name: null }),
+		add: required({ "$...paths": null }),
+	})
+	type Params = TreePathParams<TreePathName<typeof alternatives>>
+	expectTypeOf<Params>().toEqualTypeOf<
+		{ name: string } | { paths: [string, ...string[]] }
+	>()
+	;({ name: `alice` }) satisfies Params
+	;({ paths: [`a`] }) satisfies Params
+	expectTypeOf<TreePathParams<never>>().toEqualTypeOf<never>()
+})
+
 test(`variadic paths require at least one string when the rest branch is selected`, () => {
 	expectTypeOf<[]>().toExtend<TreePath<Tree>>()
 	expectTypeOf<TreePath<typeof tree>>().toEqualTypeOf<
