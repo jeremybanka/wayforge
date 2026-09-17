@@ -6,6 +6,11 @@ export function validateRoutes(tree: Tree): void {
 		const branches = Object.entries(node[1])
 		for (const [segment, child] of branches) {
 			const route = [...path, segment]
+			if (segment.includes(`/`)) {
+				throw new Error(
+					`Invalid route segment "${segment}": slash (/) separates route segments. Declare each segment as a separate tree branch.`,
+				)
+			}
 			const rest = segment.startsWith(`$...`)
 			if (
 				rest &&
