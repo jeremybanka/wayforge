@@ -6,7 +6,7 @@ carapace = "1.7.3"
 "github:scop/bash-completion" = { version = "2.18.0", asset_pattern = "bash-completion-*.tar.xz", filter_bins = "" }
 "github:fish-shell/fish-shell" = "4.9.3"
 go = "1.27.1"
-ni = "30.5.0"
+ni = "30.6.0"
 node = "26.9.0"
 "aqua:nushell/nushell" = "0.115.1"
 pnpm = "12.4.2"
