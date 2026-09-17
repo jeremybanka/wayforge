@@ -1,5 +1,4 @@
 import type { Tree } from "./tree.ts"
-import { validateTreeCaptures } from "./tree-captures.ts"
 
 /**
  * For a `Tree`, the set of all paths through that tree.
@@ -38,13 +37,11 @@ export type TreePath<T extends Tree> = {
  * @param tree `T`, the source of truth for determining valid paths
  * @param maybePath the path to validate
  * @returns refinement for `maybePath` into a {@link TreePath} of `T`
- * @throws If the tree has invalid rest captures or duplicate capture names.
  */
 export function isTreePath<T extends Tree>(
 	tree: T,
 	maybePath: unknown[],
 ): maybePath is TreePath<T> {
-	validateTreeCaptures(tree)
 	let possibleTrees: (Tree | null | `rest`)[] = [tree]
 
 	for (const segment of maybePath) {

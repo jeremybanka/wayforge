@@ -69,7 +69,7 @@ Sizes are exact minified and level-9 gzip JavaScript byte counts. Declarations, 
 
 | Import                  | Minified JS | Gzip JS |
 | ----------------------- | ----------: | ------: |
-| <code>treetrunks</code> |     2,014 B |   993 B |
+| <code>treetrunks</code> |     1,498 B |   751 B |
 
 Report maintained with [tonnage](https://github.com/jeremybanka/tonnage).
 
@@ -77,8 +77,8 @@ Report maintained with [tonnage](https://github.com/jeremybanka/tonnage).
 
 ## Variadic captures
 
-A terminal `$...name` branch represents one or more string segments. For `required({ add: required({ "$...paths": null }) })`, `TreePath` accepts `["add", string, ...string[]]`, while `TreePathName`, `flattenTree`, and `mapTree` keep the single declared route `add/$...paths`. `Deref<["add", "$...paths"]>` also produces the nonempty variadic path type.
+A `$...name` leaf branch represents one or more string segments. For `required({ add: required({ "$...paths": null }) })`, `TreePath` accepts `["add", string, ...string[]]`, while `TreePathName`, `flattenTree`, and `mapTree` keep the single declared route `add/$...paths`. `Deref<["add", "$...paths"]>` also produces the nonempty variadic path type.
 
 Use `optional({ "$...paths": null })` to allow stopping at the parent; selecting the rest branch still requires at least one string. `isTreePath` checks both cardinality and the type of every captured segment.
 
-`TreePathParams<["project", "$name", "$...paths"]>` produces `{ name: string; paths: [string, ...string[]] }`. `validateTreeCaptures(tree)` rejects rest captures with an empty name, children, or siblings, as well as duplicate capture names within a route. `isTreePath` also performs this declaration validation before checking a path.
+`TreePathParams<["project", "$name", "$...paths"]>` produces `{ name: string; paths: [string, ...string[]] }`. It distributes over alternative path names to produce a union of parameter objects. `isTreePath` checks paths against the supplied tree without imposing rules on capture names or inspecting unrelated branches.

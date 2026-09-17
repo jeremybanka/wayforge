@@ -1,8 +1,7 @@
-import { validateTreeCaptures } from "treetrunks"
-
 import type { CommandLineInterface, OptionsGroup } from "./cli"
 import type { CompletionHints } from "./completion"
 import { matchRoute, type RouteMatch } from "./retrieve-positional-args"
+import { validateRoutes } from "./route-validation"
 import {
 	type JsonSchema,
 	type OptionsSchema,
@@ -348,7 +347,7 @@ function interpretCore(
 	words: readonly string[],
 	mode: `invocation` | `completion`,
 ): { invocation: ArgumentInvocation; completion: () => ArgumentInterpretation } {
-	if (definition.routes) validateTreeCaptures(definition.routes)
+	if (definition.routes) validateRoutes(definition.routes)
 	const schemaCache = new Map<OptionsSchema<any>, JsonSchema | undefined>()
 	const groups = new Map(
 		Object.entries(definition.routeOptions).map(([route, group]) => [
