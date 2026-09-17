@@ -4,6 +4,7 @@ import {
 	type Deref,
 	flattenTree,
 	isTreePath,
+	type Join,
 	mapTree,
 	optional,
 	required,
@@ -33,6 +34,27 @@ test(`parameter inference preserves alternative paths`, () => {
 	;({ name: `alice` }) satisfies Params
 	;({ paths: [`a`] }) satisfies Params
 	expectTypeOf<TreePathParams<never>>().toEqualTypeOf<never>()
+})
+
+test(`joining variadic paths permits the shortest valid path`, () => {
+	type Expanded = Join<Deref<[`add`, `$...paths`]>, `/`>
+	;`add/a` satisfies Expanded
+	;`add/a/b` satisfies Expanded
+	;`add/` satisfies Expanded
+	// @ts-expect-error A rest capture still requires a segment.
+	;`add` satisfies Expanded
+	type Paths = Join<TreePath<typeof tree>, `/`>
+	;`add/a` satisfies Paths
+	;`add/a/b` satisfies Paths
+	;`remove` satisfies Paths
+	;`remove/a` satisfies Paths
+	;`project/web/a` satisfies Paths
+	;`project/web/a/b` satisfies Paths
+	expectTypeOf<Join<[`a`, `b`], `/`>>().toEqualTypeOf<`a/b`>()
+	expectTypeOf<Join<[], `/`>>().toEqualTypeOf<``>()
+	type OptionalTail = Join<[`a`, ...string[]], `:`>
+	;`a` satisfies OptionalTail
+	;`a:b` satisfies OptionalTail
 })
 
 test(`variadic paths require at least one string when the rest branch is selected`, () => {
