@@ -53,6 +53,8 @@ export type TreePath<T extends Tree> = {
  * TreePathCaptures<[`version`]> = {}
  */
 export type TreePathCaptures<PathName extends string[]> =
+	// This always-true conditional distributes over each path in a union.
+	// Without it, PathName[number] would combine all paths' captures into one record.
 	PathName extends unknown
 		? {
 				[
