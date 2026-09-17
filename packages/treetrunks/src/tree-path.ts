@@ -1,4 +1,5 @@
 import type { Tree } from "./tree.ts"
+import type { TreePathName } from "./tree-path-name.ts"
 
 const REST: unique symbol = Symbol(`REST`)
 
@@ -32,6 +33,37 @@ export type TreePath<T extends Tree> = {
 					: [K extends `$${string}` ? string & {} : K])
 		| (T[0] extends `required` ? never : [])
 }[keyof T[1]]
+
+/**
+ * For a {@link TreePathName}, a record of the values captured by its wildcard segments.
+ *
+ * `$name` captures a string, and `$...name` captures one or more strings.
+ * Fixed segments are omitted. Alternative path names produce a union of capture records.
+ *
+ * @example
+ * TreePathCaptures<[`project`, `$name`, `$...paths`]> =
+ *   { name: string; paths: [string, ...string[]] }
+ *
+ * @example
+ * TreePathCaptures<[`show`, `$name`] | [`add`, `$...paths`]> =
+ *   | { name: string }
+ *   | { paths: [string, ...string[]] }
+ *
+ * @example
+ * TreePathCaptures<[`version`]> = {}
+ */
+export type TreePathCaptures<PathName extends string[]> =
+	PathName extends unknown
+		? {
+				[
+					Segment in PathName[number] as Segment extends `$...${infer Name}`
+						? Name
+						: Segment extends `$${infer Name}`
+							? Name
+							: never
+				]: Segment extends `$...${string}` ? [string, ...string[]] : string
+			}
+		: never
 
 /**
  * Against `Tree` `T`, validate whether a possible `maybePath` goes through it
