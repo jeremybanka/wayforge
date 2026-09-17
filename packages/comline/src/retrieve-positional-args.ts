@@ -2,6 +2,9 @@ import type { Tree } from "treetrunks"
 
 export type RouteMatch = {
 	path: string[]
+	params: Record<string, string | [string, ...string[]]>
+	/** The selected terminal capture remains available for subsequent completion. */
+	rest?: { name: string; route: string }
 	route: string
 	tree: Tree | null
 	complete: boolean
@@ -15,12 +18,14 @@ export function matchRoute(
 	positionalArgs: readonly string[],
 ): RouteMatch {
 	const namedPositionalArgs: string[] = []
+	const params: RouteMatch[`params`] = {}
 	const validPositionalArgs: string[] = []
 	let treePointer: Tree | null = positionalArgTree
 	let argumentIndex = -1
 	if (positionalArgs.length === 0) {
 		return {
 			path: [],
+			params,
 			route: ``,
 			tree: treePointer,
 			complete: treePointer[0] !== `required`,
@@ -42,26 +47,42 @@ export function matchRoute(
 			]
 			return {
 				path: validPositionalArgs,
+				params,
 				route: namedPositionalArgs.join(`/`),
 				tree: treePointer,
 				complete: false,
 				error: errorReport.join(`\n`),
 			}
 		}
-		if (Object.hasOwn(treePointer[1], positionalArg)) {
-			treePointer = treePointer[1][positionalArg]
-			namedPositionalArgs.push(positionalArg)
-			validPositionalArgs.push(positionalArg)
-		} else if (Object.keys(treePointer[1]).length > 0) {
-			const variablePath: `$${string}` | undefined = Object.keys(
-				treePointer[1],
-			).find((key): key is `$${string}` => key.startsWith(`$`))
-			if (variablePath) {
-				treePointer = treePointer[1][variablePath]
-				namedPositionalArgs.push(variablePath)
-				validPositionalArgs.push(positionalArg)
-				continue
+		const branches: Tree[1] = treePointer[1]
+		const segment = Object.hasOwn(branches, positionalArg)
+			? positionalArg
+			: Object.keys(branches).find((key) => key.startsWith(`$`))
+		if (segment !== undefined) {
+			namedPositionalArgs.push(segment)
+			const rest = segment.startsWith(`$...`)
+			if (segment.startsWith(`$`)) {
+				Object.defineProperty(params, segment.slice(rest ? 4 : 1), {
+					value: rest ? positionalArgs.slice(argumentIndex) : positionalArg,
+					enumerable: true,
+					writable: true,
+					configurable: true,
+				})
 			}
+			if (rest) {
+				const route = namedPositionalArgs.join(`/`)
+				return {
+					path: [...validPositionalArgs, ...positionalArgs.slice(argumentIndex)],
+					params,
+					route,
+					tree: null,
+					complete: true,
+					rest: { name: segment, route },
+				}
+			}
+			treePointer = branches[segment]
+			validPositionalArgs.push(positionalArg)
+		} else if (Object.keys(branches).length > 0) {
 			const currentPath = [...positionalArgs.slice(0, argumentIndex)]
 			const command =
 				cliName + (currentPath.length > 0 ? ` -- ${currentPath.join(` `)}` : ``)
@@ -77,6 +98,7 @@ export function matchRoute(
 			]
 			return {
 				path: validPositionalArgs,
+				params,
 				route: namedPositionalArgs.join(`/`),
 				tree: treePointer,
 				complete: false,
@@ -96,6 +118,7 @@ export function matchRoute(
 			]
 			return {
 				path: validPositionalArgs,
+				params,
 				route: namedPositionalArgs.join(`/`),
 				tree: treePointer,
 				complete: false,
@@ -105,6 +128,7 @@ export function matchRoute(
 	}
 	return {
 		path: validPositionalArgs,
+		params,
 		route: namedPositionalArgs.join(`/`),
 		tree: treePointer,
 		complete: treePointer === null || treePointer[0] !== `required`,

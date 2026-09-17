@@ -151,6 +151,7 @@ test(`uses the exact converted invocation input record`, () => {
 	expect(fj(argv(...words)).inputs).toEqual({
 		case: `pr/create`,
 		path: [`pr`, `create`],
+		params: {},
 		opts: { repo: `owner/repo`, count: -1 },
 	})
 })

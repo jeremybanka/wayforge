@@ -8,7 +8,12 @@ test.each(launchers)(
 		expect(result.argv.slice(2)).toEqual(
 			positionalOnly ? [`--`, `foo`] : [`foo`],
 		)
-		expect(result.inputs).toEqual({ case: `foo`, path: [`foo`], opts: {} })
+		expect(result.inputs).toEqual({
+			case: `foo`,
+			path: [`foo`],
+			params: {},
+			opts: {},
+		})
 	},
 )
 
@@ -19,8 +24,13 @@ test.each(launchers)(
 		const result = JSON.parse(run(executable, [...args, `foo`, `--name=main`]))
 		expect(result.inputs).toEqual(
 			positionalOnly
-				? { case: `foo/$value`, path: [`foo`, `--name=main`], opts: {} }
-				: { case: `foo`, path: [`foo`], opts: { name: `main` } },
+				? {
+						case: `foo/$value`,
+						path: [`foo`, `--name=main`],
+						params: { value: `--name=main` },
+						opts: {},
+					}
+				: { case: `foo`, path: [`foo`], params: {}, opts: { name: `main` } },
 		)
 	},
 )
