@@ -27,7 +27,7 @@ const REST: unique symbol = Symbol(`REST`)
 export type TreePath<T extends Tree> = {
 	[K in keyof T[1]]:
 		| (K extends `$...${string}`
-				? [string & {}, ...string[]]
+				? [string & {}, ...(string & {})[]]
 				: T[1][K] extends Tree
 					? [K extends `$${string}` ? string & {} : K, ...TreePath<T[1][K]>]
 					: [K extends `$${string}` ? string & {} : K])

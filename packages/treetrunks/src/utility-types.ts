@@ -34,7 +34,7 @@ export type Deref<
 	VarMarker extends string = `$`,
 > = Arr extends [`${infer Head extends string}`, ...infer Tail extends string[]]
 	? Head extends `${VarMarker}...${string}`
-		? [string & {}, ...string[]]
+		? [string & {}, ...(string & {})[]]
 		: Head extends `${VarMarker}${string}`
 			? [string & {}, ...Deref<Tail, VarMarker>]
 			: [Head, ...Deref<Tail, VarMarker>]
