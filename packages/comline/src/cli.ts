@@ -2,6 +2,7 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 
 import type {
+	Deref,
 	Flatten,
 	Split,
 	Tree,
@@ -87,7 +88,8 @@ export type CliParseOutput<CLI extends CommandLineInterface<any>> = Flatten<
 		[K in keyof CLI[`routeOptions`]]: K extends string
 			? Readonly<{
 					case: K
-					path: TreePath<CLI[`routes`]>
+					// Widened keys cannot identify a single route to dereference.
+					path: string extends K ? TreePath<CLI[`routes`]> : Deref<Split<K>>
 					params: TreePathCaptures<Split<K>>
 					opts: CLI[`routeOptions`][K] extends OptionsGroup<infer Options>
 						? Options
