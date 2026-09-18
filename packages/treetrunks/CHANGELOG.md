@@ -1,5 +1,15 @@
 # treetrunks
 
+## 0.1.12
+
+### Patch Changes
+
+- 4b479c6: Rename the `Deref` type utility to `ExpandCaptures` and its `VarMarker` parameter to `CapturePrefix`. Add a `RestMarker` parameter for customizing the marker immediately following the capture prefix; the defaults remain `$` and `...`. Update imports of `Deref` to use `ExpandCaptures`.
+- 4b479c6: Export `TreePathCaptures` to infer a record of named capture values from a path name. `$name` produces a string, `$...name` produces a nonempty string tuple, and fixed segments are omitted. A union of alternative path names produces a union of their capture records.
+- 4b479c6: Have `isTreePath` consider every matching capture branch when checking whether a path belongs to a tree. A path is accepted if any matching literal or capture branch accepts the complete path. Literal lookups only consider the tree's own branch properties.
+- 4b479c6: Allow `Join` to represent an empty variadic tail as well as longer tuples. For example, `Join<["a", ...string[]], "/">` accepts both `"a"` and `"a/b"`, and joining a nonempty variadic path includes its shortest valid form.
+- 4b479c6: Support `$...name` leaf branches that capture one or more string segments. `TreePath`, `ExpandCaptures`, and `isTreePath` represent and validate variadic paths, while `TreePathName`, `flattenTree`, and `mapTree` retain the declared branch names. Expanded path types preserve literal alternatives alongside every wildcard segment for editor suggestions. Optional trees also allow a path to stop before entering the rest branch.
+
 ## 0.1.11
 
 ### Patch Changes
