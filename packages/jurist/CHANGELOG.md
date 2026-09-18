@@ -1,5 +1,16 @@
 # jurist
 
+## 0.0.14
+
+### Patch Changes
+
+- Updated dependencies [4b479c6]
+- Updated dependencies [4b479c6]
+- Updated dependencies [4b479c6]
+- Updated dependencies [4b479c6]
+- Updated dependencies [4b479c6]
+  - treetrunks@0.1.12
+
 ## 0.0.13
 
 ### Patch Changes

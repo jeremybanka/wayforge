@@ -1,5 +1,22 @@
 # comline
 
+## 0.8.1
+
+### Patch Changes
+
+- 4b479c6: Narrow `inputs.path` to the selected route's positional tuple when switching on `inputs.case`. Destructuring retains literal segments, single captured strings, and nonempty rest tuples. A CLI without declared routes infers an empty path tuple.
+- 4b479c6: Preserve a standalone `-` as a positional argument unless the selected route consumes it as an option value.
+- 4b479c6: Expose `inputs.params` with named capture values for the selected route. Ordinary captures such as `$name` produce strings, rest captures such as `$...paths` produce nonempty string tuples, and routes without captures produce `{}`. Narrowing `inputs.case` narrows the available params. Argument interpretation and completion contexts also expose captured values through `params`.
+- 4b479c6: Prefer literal routes that accept the full positional path, with fallback to capture branches when a literal branch cannot accept the remaining arguments. Consider every matching capture branch; when multiple captures accept the same path, declaration order determines the selected route.
+- 4b479c6: Validate route declarations when creating a CLI, interpreting arguments, or rendering help. Rest captures must have a name, a `null` child, and no siblings. Capture names must be unique within each route, and branch names cannot contain the route separator `/`. Positional values may contain `/` as usual.
+- 4b479c6: Support `$...name` positional captures at the end of a route for one or more arguments, including optional parent routes for zero-argument invocations. Captured arguments retain their boundaries and values, including literal words after `--`, while options follow the selected route's parsing rules. Help describes the required number of arguments, and completion reuses positional hints and providers for every captured argument.
+- Updated dependencies [4b479c6]
+- Updated dependencies [4b479c6]
+- Updated dependencies [4b479c6]
+- Updated dependencies [4b479c6]
+- Updated dependencies [4b479c6]
+  - treetrunks@0.1.12
+
 ## 0.8.0
 
 ### Minor Changes
