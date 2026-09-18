@@ -4,6 +4,7 @@ import { existsSync, mkdirSync } from "node:fs"
 import { resolve } from "node:path"
 
 import type { Json } from "atom.io/foundations/json"
+import { parseJson } from "atom.io/foundations/json"
 import { write } from "bun"
 import { jsonSchemaToZod } from "json-schema-to-zod"
 import { Squirrel } from "varmint"
@@ -22,7 +23,8 @@ const squirrel = new Squirrel(`read-write`)
 async function jsonFetch(
 	...params: Parameters<typeof fetch>
 ): Promise<Json.Serializable> {
-	return fetch(...params).then((response) => response.json())
+	const response = await fetch(...params)
+	return parseJson(await response.text())
 }
 
 const squirrelFetch = squirrel.add(`fetch`, jsonFetch)
