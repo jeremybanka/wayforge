@@ -2,7 +2,7 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 
 import type {
-	Deref,
+	ExpandCaptures,
 	Flatten,
 	Split,
 	Tree,
@@ -107,8 +107,10 @@ export type CliParseOutput<CLI extends CommandLineInterface<any>> = Flatten<
 					 *
 					 * Includes literal route segments and captured values; excludes options and their consumed values. Narrow `.case` to infer the corresponding tuple.
 					 */
-					// (Widened keys cannot identify a single route to dereference.)
-					path: string extends K ? TreePath<CLI[`routes`]> : Deref<Split<K>>
+					// Widened keys cannot identify a single route whose captures can be expanded.
+					path: string extends K
+						? TreePath<CLI[`routes`]>
+						: ExpandCaptures<Split<K>>
 					/**
 					 * The named positional captures for the matched route.
 					 *
