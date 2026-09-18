@@ -3,5 +3,3 @@
 ---
 
 Support `$...name` leaf branches that capture one or more string segments. `TreePath`, `Deref`, and `isTreePath` represent and validate variadic paths, while `TreePathName`, `flattenTree`, and `mapTree` retain the declared branch names. Expanded path types preserve literal alternatives alongside every wildcard segment for editor suggestions. Optional trees also allow a path to stop before entering the rest branch.
-
-Export `TreePathCaptures` to infer named capture values from each alternative path name. `Join` supports variadic paths, including their shortest valid form. Path validation considers every matching branch and checks the supplied path without imposing capture-naming rules on the tree.
