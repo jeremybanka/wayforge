@@ -2,6 +2,8 @@ import { expectTypeOf } from "vitest"
 
 import {
 	cli,
+	type CliParseOutput,
+	type CommandLineInterface,
 	complete,
 	help,
 	interpretArguments,
@@ -16,6 +18,72 @@ import { candidateValues, warningContext } from "../fixtures/contract-values"
 import { createVariadicCli } from "../fixtures/variadic-cases"
 
 const command = createVariadicCli()
+
+test.each([
+	[],
+	[`version`],
+	[`show`, `readme`],
+	[`add`, `a`, `b`],
+	[`remove`],
+	[`remove`, `a`, `b`],
+	[`project`, `website`, `add`, `a`, `b`],
+])(`narrows the positional path by case: %j`, (...words) => {
+	const { inputs } = command(argv(...words))
+	expect(inputs.path).toEqual(words)
+	switch (inputs.case) {
+		case ``:
+			expectTypeOf(inputs.path).toEqualTypeOf<[]>()
+			break
+		case `version`:
+			expectTypeOf(inputs.path).toEqualTypeOf<[`version`]>()
+			break
+		case `show/$name`:
+			expectTypeOf(inputs.path).toEqualTypeOf<[`show`, string & {}]>()
+			break
+		case `add/$...paths`:
+			expectTypeOf(inputs.path).toEqualTypeOf<
+				[`add`, string & {}, ...(string & {})[]]
+			>()
+			break
+		case `remove`:
+			expectTypeOf(inputs.path).toEqualTypeOf<[`remove`]>()
+			break
+		case `remove/$...paths`:
+			expectTypeOf(inputs.path).toEqualTypeOf<
+				[`remove`, string & {}, ...(string & {})[]]
+			>()
+			break
+		case `project/$name/add/$...paths`:
+			expectTypeOf(inputs.path).toEqualTypeOf<
+				[`project`, string & {}, `add`, string & {}, ...(string & {})[]]
+			>()
+			break
+		default:
+			expectTypeOf(inputs).toEqualTypeOf<never>()
+	}
+})
+
+test(`infers an empty path when no routes are declared`, () => {
+	const { inputs } = cli({
+		cliName: `plain`,
+		routeOptions: { "": noOptions() },
+	})(argv())
+	expectTypeOf(inputs.path).toEqualTypeOf<[]>()
+	expect(inputs.path).toEqual([])
+})
+
+test(`accepts inferred results in consumers with widened route keys`, () => {
+	function readPath(
+		inputs: CliParseOutput<CommandLineInterface<any>>,
+	): string[] {
+		return inputs.path
+	}
+	expect(readPath(command(argv(`add`, `a`, `b`)).inputs)).toEqual([
+		`add`,
+		`a`,
+		`b`,
+	])
+})
 
 test.each([false, true])(
 	`literal matches take precedence over viable capture alternatives: %s`,
@@ -194,6 +262,13 @@ test(`infers named single captures and captures before a terminal rest`, () => {
 	const inputs = command(argv(`project`, `website`, `add`, `a`, `b`)).inputs
 	if (inputs.case !== `project/$name/add/$...paths`)
 		throw new Error(`Unexpected route`)
+	const [_p, name, _a, ...paths] = inputs.path
+	expectTypeOf(_p).toEqualTypeOf<`project`>()
+	expectTypeOf(name).toEqualTypeOf<string & {}>()
+	expectTypeOf(_a).toEqualTypeOf<`add`>()
+	expectTypeOf(paths).toEqualTypeOf<[string & {}, ...(string & {})[]]>()
+	expect(name).toBe(`website`)
+	expect(paths).toEqual([`a`, `b`])
 	expect(inputs.params).toEqual({ name: `website`, paths: [`a`, `b`] })
 	expectTypeOf(inputs.params).toEqualTypeOf<{
 		name: string

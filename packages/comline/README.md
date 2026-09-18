@@ -107,7 +107,7 @@ Routes without options may use `null` or `noOptions(description)`.
 Calling a configured CLI returns:
 
 - `inputs.case`: the matched route key, such as `""` or `"hello/$name"`
-- `inputs.path`: the positional argument path supplied by the user
+- `inputs.path`: the positional argument tuple for the selected route, narrowed by `inputs.case`
 - `inputs.params`: named captures for the selected route; `$name` is a string and `$...paths` is a nonempty string tuple
 - `inputs.opts`: parsed and schema-validated options for that route
 - `warnings`: an always-present `CliWarning[]` of ignored option occurrences; empty when there are no warnings
@@ -126,7 +126,7 @@ greet(inputs.opts.name, inputs.opts.age)
 
 ## Named and variadic positional captures
 
-Use a terminal `$...name` branch to accept one or more positional arguments. `inputs.case` retains the declared route name regardless of the number of captured words. Narrowing on it also narrows `inputs.params`:
+Use a terminal `$...name` branch to accept one or more positional arguments. `inputs.case` retains the declared route name regardless of the number of captured words. Narrowing on it also narrows `inputs.path` and `inputs.params`:
 
 ```ts
 import { cli, noOptions, optional, required } from "comline"
@@ -152,9 +152,11 @@ const agents = cli({
 
 const { inputs } = agents(process.argv)
 if (inputs.case === "add/$...paths") {
+	inputs.path // ["add", string & {}, ...(string & {})[]]
 	inputs.params.paths // [string, ...string[]]
 }
 if (inputs.case === "show/$name") {
+	inputs.path // ["show", string & {}]
 	inputs.params.name // string
 }
 ```
