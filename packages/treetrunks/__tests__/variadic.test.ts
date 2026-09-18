@@ -73,13 +73,13 @@ test(`joining variadic paths permits the shortest valid path`, () => {
 test(`variadic paths require at least one string when the rest branch is selected`, () => {
 	expectTypeOf<[]>().toExtend<TreePath<Tree>>()
 	expectTypeOf<TreePath<typeof tree>>().toEqualTypeOf<
-		| [`add`, string & {}, ...string[]]
+		| [`add`, string & {}, ...(string & {})[]]
 		| [`remove`]
-		| [`remove`, string & {}, ...string[]]
-		| [`project`, string & {}, string & {}, ...string[]]
+		| [`remove`, string & {}, ...(string & {})[]]
+		| [`project`, string & {}, string & {}, ...(string & {})[]]
 	>()
 	expectTypeOf<Deref<[`project`, `$name`, `$...paths`]>>().toEqualTypeOf<
-		[`project`, string & {}, string & {}, ...string[]]
+		[`project`, string & {}, string & {}, ...(string & {})[]]
 	>()
 	expectTypeOf<
 		TreePathCaptures<[`project`, `$name`, `$...paths`]>
