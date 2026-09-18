@@ -1,6 +1,7 @@
 import type { CommandLineInterface, OptionsGroup } from "./cli"
 import type { CompletionHints } from "./completion"
 import { matchRoute, type RouteMatch } from "./retrieve-positional-args"
+import { validateRoutes } from "./route-validation"
 import {
 	type JsonSchema,
 	type OptionsSchema,
@@ -346,6 +347,7 @@ function interpretCore(
 	words: readonly string[],
 	mode: `invocation` | `completion`,
 ): { invocation: ArgumentInvocation; completion: () => ArgumentInterpretation } {
+	if (definition.routes) validateRoutes(definition.routes)
 	const schemaCache = new Map<OptionsSchema<any>, JsonSchema | undefined>()
 	const groups = new Map(
 		Object.entries(definition.routeOptions).map(([route, group]) => [
@@ -376,11 +378,11 @@ function interpretCore(
 				positionalOnly = true
 				return false
 			}
-			return !scan.consumed.has(index) && !word.startsWith(`-`)
+			return !scan.consumed.has(index) && classifyOptionWord(word) === undefined
 		})
 		const match: RouteMatch = definition.routes
 			? matchRoute(definition.cliName, definition.routes, positionals)
-			: { path: [], route: ``, tree: null, complete: true }
+			: { path: [], params: {}, route: ``, tree: null, complete: true }
 		return { route, scan, match, positionalOnly }
 	})
 	// Execution ranks only complete matches supported by their own grammar.

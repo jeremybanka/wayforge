@@ -121,6 +121,7 @@ describe(`compiled`, { timeout: 30_000 }, () => {
 			expect(JSON.parse(result)).toEqual({
 				case: `pr/list`,
 				path: [`pr`, `list`],
+				params: {},
 				opts: { state: `closed` },
 			})
 		},

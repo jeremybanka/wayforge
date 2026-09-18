@@ -38,11 +38,13 @@ test(`uses positional-error wording and exact input records for descendant-only 
 	expect(command(argv(`--ref`, `alice`, `run`)).inputs).toEqual({
 		case: `run`,
 		path: [`run`],
+		params: {},
 		opts: { ref: `alice` },
 	})
 	expect(command(argv(`--ref=alice`)).inputs).toEqual({
 		case: ``,
 		path: [],
+		params: {},
 		opts: {},
 	})
 })
@@ -61,7 +63,12 @@ test.each([optional, required])(
 			},
 		}
 		const before = cli(definition)(argv(`--ref`, `alice`))
-		expect(before.inputs).toEqual({ case: `$target`, path: [`alice`], opts: {} })
+		expect(before.inputs).toEqual({
+			case: `$target`,
+			path: [`alice`],
+			params: { target: `alice` },
+			opts: {},
+		})
 
 		const command = cli({
 			...definition,
@@ -76,6 +83,7 @@ test.each([optional, required])(
 		expect(command(argv(`--ref`, `alice`, `bob`, `run`)).inputs).toEqual({
 			case: `$target/run`,
 			path: [`bob`, `run`],
+			params: { target: `bob` },
 			opts: { ref: `alice` },
 		})
 	},

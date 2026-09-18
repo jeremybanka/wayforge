@@ -107,7 +107,8 @@ Routes without options may use `null` or `noOptions(description)`.
 Calling a configured CLI returns:
 
 - `inputs.case`: the matched route key, such as `""` or `"hello/$name"`
-- `inputs.path`: the positional argument path supplied by the user
+- `inputs.path`: the positional argument tuple for the selected route, narrowed by `inputs.case`
+- `inputs.params`: named captures for the selected route; `$name` is a string and `$...paths` is a nonempty string tuple
 - `inputs.opts`: parsed and schema-validated options for that route
 - `warnings`: an always-present `CliWarning[]` of ignored option occurrences; empty when there are no warnings
 - `writeJsonSchema(outdir)`: writes JSON Schema files for each route with
@@ -122,6 +123,53 @@ if (process.env.WRITE_CONFIG_SCHEMA) {
 
 greet(inputs.opts.name, inputs.opts.age)
 ```
+
+## Named and variadic positional captures
+
+Use a terminal `$...name` branch to accept one or more positional arguments. `inputs.case` retains the declared route name regardless of the number of captured words. Narrowing on it also narrows `inputs.path` and `inputs.params`:
+
+```ts
+import { cli, noOptions, optional, required } from "comline"
+
+const agents = cli({
+	cliName: "agents",
+	routes: required({
+		add: required({ "$...paths": null }),
+		remove: optional({ "$...paths": null }),
+		show: required({ $name: null }),
+	}),
+	routeOptions: {
+		"add/$...paths": noOptions("Promote one or more files"),
+		remove: noOptions("Choose files interactively"),
+		"remove/$...paths": noOptions("Remove files"),
+		"show/$name": noOptions("Show a file"),
+	},
+	positionalCompletions: {
+		"add/$...paths": { fileSystem: "files" },
+		"remove/$...paths": { fileSystem: "files" },
+	},
+})
+
+const { inputs } = agents(process.argv)
+if (inputs.case === "add/$...paths") {
+	inputs.path // ["add", string & {}, ...(string & {})[]]
+	inputs.params.paths // [string, ...string[]]
+}
+if (inputs.case === "show/$name") {
+	inputs.path // ["show", string & {}]
+	inputs.params.name // string
+}
+```
+
+`agents add ./react/AGENTS.md "./my package/AGENTS.md"` produces `case: "add/$...paths"`, `path: ["add", "./react/AGENTS.md", "./my package/AGENTS.md"]`, and `params: { paths: ["./react/AGENTS.md", "./my package/AGENTS.md"] }`. Order, duplicates, empty strings, spaces, commas, and equals signs are preserved. Options can appear before, between, or after paths under the selected route's normal consumption rules; consumed option values are excluded from captures. After `--`, all words are literal, including dash-prefixed filenames.
+
+A required rest branch rejects zero arguments. An optional rest branch permits its parent route: `agents remove` selects `case: "remove"` with `params: {}`, while one or more arguments select `"remove/$...paths"` with a nonempty tuple. Provide `routeOptions` for both routes. Routes with no captures return `params: {}`. Fixed segments and ordinary captures may precede a rest capture, such as `project/$name/add/$...paths`, whose params contain both `name: string` and `paths: [string, ...string[]]`.
+
+A rest capture must have a nonempty name, a `null` child, and no siblings. Capture names must be unique within each route. Branch names cannot contain `/`, which separates route segments; use nested branches instead. This restriction does not apply to positional values such as filesystem paths. Invalid declarations throw when creating the CLI, interpreting arguments, or rendering help. Help shows `agents add <paths...>` with the one-or-more requirement, and lists the optional parent invocation separately.
+
+When a literal branch and captures can match the same word, a literal branch takes precedence if it accepts the whole positional path. Otherwise Comline tries capture branches in declaration order and selects the first that accepts the whole path. A successful literal command keeps its identity; a longer path may instead select a capture branch. Incomplete input retains the preferred prefix for diagnostics and completion.
+
+Each rest argument uses the same `positionalCompletions` entry, including after a trailing space following existing paths. Providers receive already-entered values in `context.path` and `context.params`; option suggestions remain available before `--`.
 
 ## configuration files
 
@@ -375,7 +423,7 @@ Requests contain shell-tokenized, unescaped `words` **without the executable or 
 
 Candidate values replace `context.replacement.start` through `.end` in the specified word. The range covers the entire current word (including any suffix after the cursor), or just its value for an inline assignment. Thus completing `--state=clutter` with the cursor after `cl` replaces `clutter` with `closed` and retains `--state=`. Adapters must map these unescaped ranges back to shell syntax, quote candidate values, and translate file/spacing hints into shell directives.
 
-Context includes the canonical `route`, actual positional `path`, remaining `tree`, and a `complete` flag indicating whether the required route is satisfied. `options` retains raw occurrences with canonical keys, token indexes, values, and indexes of separately consumed values. Repeated values remain separate; grouped counting flags retain Comline's comma representation. For incomplete routes, options through following variable positionals are available too. `allOptions` describes the CLI options, while `allOccurrences` retains raw occurrences from viable route interpretations, including options supplied before command selection. Each distinct route grammar gets an indexed argument scan, shared by equivalent routes. Ordinary parsing consumes only the matched route and its raw occurrences; the extra arrays describing possible routes and completion state are constructed only for interpretation and completion requests. An unreachable route cannot consume another route's command words. If equally supported interpretations assign words to different routes, parsing reports ambiguity; use an inline option value or `--` to make the boundary explicit. Each option has a stable `id` derived from its route and canonical key; scope and repetition use these identifiers, while equivalent completion presentations are deduplicated separately. `suppliedOptions` identifies options with occurrences under their own consumption rules across possible routes. `pendingOptions` records standalone options at the end of input that may accept a following value; `pendingOptionValues` pairs them with their viable grammars so completion can classify the unfinished next word before deduplicating equivalent presentations. An option on an unreachable sibling route cannot turn a pending value into an option name. Separated option-value targets retain their `valueGrammar`; both static and provider candidates must be consumable in that grammar, while inline assignments can represent values that match option names. Inline assignments, grouped flags, and words after the delimiter are never pending standalone values. `reachableOptions` supplies early option-name suggestions and restricts value-completion fallback to the selected route and its descendants, so providers on unreachable sibling routes are not invoked. `targets` can contain both a boolean value and a positional/command target.
+Context includes the canonical `route`, actual positional `path`, named `params`, remaining `tree`, and a `complete` flag indicating whether the required route is satisfied. `options` retains raw occurrences with canonical keys, token indexes, values, and indexes of separately consumed values. Repeated values remain separate; grouped counting flags retain Comline's comma representation. For incomplete routes, options through following variable positionals are available too. `allOptions` describes the CLI options, while `allOccurrences` retains raw occurrences from viable route interpretations, including options supplied before command selection. Each distinct route grammar gets an indexed argument scan, shared by equivalent routes. Ordinary parsing consumes only the matched route and its raw occurrences; the extra arrays describing possible routes and completion state are constructed only for interpretation and completion requests. An unreachable route cannot consume another route's command words. If equally supported interpretations assign words to different routes, parsing reports ambiguity; use an inline option value or `--` to make the boundary explicit. Each option has a stable `id` derived from its route and canonical key; scope and repetition use these identifiers, while equivalent completion presentations are deduplicated separately. `suppliedOptions` identifies options with occurrences under their own consumption rules across possible routes. `pendingOptions` records standalone options at the end of input that may accept a following value; `pendingOptionValues` pairs them with their viable grammars so completion can classify the unfinished next word before deduplicating equivalent presentations. An option on an unreachable sibling route cannot turn a pending value into an option name. Separated option-value targets retain their `valueGrammar`; both static and provider candidates must be consumable in that grammar, while inline assignments can represent values that match option names. Inline assignments, grouped flags, and words after the delimiter are never pending standalone values. `reachableOptions` supplies early option-name suggestions and restricts value-completion fallback to the selected route and its descendants, so providers on unreachable sibling routes are not invoked. `targets` can contain both a boolean value and a positional/command target.
 
 For adapters that only need to interpret already completed words, use `interpretArguments(definition, words)`. Unlike `interpret()` and `interpretCompletion(definition, request)`, this treats every supplied word as completed. `complete(definition, request)` is also available as a standalone function. None of these APIs require calling normal invocation first.
 

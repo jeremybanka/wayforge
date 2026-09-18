@@ -69,8 +69,27 @@ Sizes are exact minified and level-9 gzip JavaScript byte counts. Declarations, 
 
 | Import                  | Minified JS | Gzip JS |
 | ----------------------- | ----------: | ------: |
-| <code>treetrunks</code> |     1,403 B |   713 B |
+| <code>treetrunks</code> |     1,474 B |   747 B |
 
 Report maintained with [tonnage](https://github.com/jeremybanka/tonnage).
 
 <!-- tonnage:default:end -->
+
+## Variadic captures
+
+A `$...name` leaf branch represents one or more string segments. For `required({ add: required({ "$...paths": null }) })`, `TreePath` accepts `["add", string, ...string[]]`, while `TreePathName`, `flattenTree`, and `mapTree` keep the single declared route `add/$...paths`. `ExpandCaptures<["add", "$...paths"]>` also produces the nonempty variadic path type.
+
+Use `optional({ "$...paths": null })` to allow stopping at the parent; selecting the rest branch still requires at least one string. `isTreePath` checks both cardinality and the type of every captured segment.
+
+`TreePathCaptures<["project", "$name", "$...paths"]>` produces `{ name: string; paths: [string, ...string[]] }`. It distributes over alternative path names to produce a union of capture records. `isTreePath` checks paths against the supplied tree without imposing rules on capture names or inspecting unrelated branches. A path belongs to the tree if any matching literal or capture branch accepts it; all capture alternatives are considered.
+
+## Capture expansion
+
+`ExpandCaptures<Arr, CapturePrefix, RestMarker>` transforms a tuple of strings, preserving literal elements and expanding captures to `string & {}`. A terminal rest capture expands to a nonempty tuple of those strings. `CapturePrefix` defaults to `$`, and `RestMarker` defaults to `...` and immediately follows the prefix. These parameters customize the tuple transformation; tree branches use the `$name` and `$...name` syntax described above.
+
+```ts
+import type { ExpandCaptures } from "treetrunks"
+
+type Expanded = ExpandCaptures<["literal", ":name", ":*items"], ":", "*">
+// ["literal", string & {}, string & {}, ...(string & {})[]]
+```

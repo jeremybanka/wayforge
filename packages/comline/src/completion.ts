@@ -50,9 +50,28 @@ export type CompletionTarget =
 	| { kind: `command` }
 	| { kind: `option-name` }
 
+/**
+ * The interpretation of the completed argument words before the word being edited.
+ *
+ * `route`, `path`, and `params` describe that completed prefix. The edited word is excluded from them, and later words are ignored. Captures may be absent while their values are still being typed; these fields do not have the complete-route guarantees of normal parsing.
+ *
+ * `complete` only reports whether the positional route can end here. Option values have not been parsed or schema-validated, and configuration has not been loaded.
+ *
+ * @example
+ * const parse = cli({
+ *   cliName: "files",
+ *   routes: required({ show: required({ $name: null }) }),
+ *   routeOptions: { "show/$name": noOptions() },
+ * })
+ * const editing = parse.interpret({ words: ["show", "ali"] })
+ * // editing.path: ["show"], editing.params: {}, editing.prefix: "ali"
+ * const entered = parse.interpret({ words: ["show", "alice", ""] })
+ * // entered.path: ["show", "alice"], entered.params: { name: "alice" }
+ */
 export type CompletionContext = ArgumentInterpretation & {
-	/** Only words before the cursor participate in interpretation. */
+	/** Completed words followed by the edited word's prefix; later words are omitted. */
 	words: readonly string[]
+	/** Text being completed up to the cursor; for an inline option value, only the value portion. */
 	prefix: string
 	/** Replace this range in one unescaped word; retain text outside the range. */
 	replacement: { word: number; start: number; end: number }
@@ -60,6 +79,11 @@ export type CompletionContext = ArgumentInterpretation & {
 	targets: CompletionTarget[]
 }
 
+/**
+ * The completion context supplied to a dynamic provider for one target.
+ *
+ * Use `target` to identify what is being completed and `params` to read captures already entered. As with {@link CompletionContext}, the edited word is excluded from `path` and `params`; check that a needed capture is present before using it.
+ */
 export type CompletionProviderContext = CompletionContext & {
 	target: CompletionTarget
 	signal?: AbortSignal
@@ -198,6 +222,9 @@ export function interpretCompletion(
 			}
 			return context
 		}
+	}
+	if (context.rest) {
+		context.targets.push({ kind: `positional`, ...context.rest })
 	}
 	if (context.tree) {
 		context.targets.push({ kind: `command` })

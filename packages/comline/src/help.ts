@@ -2,6 +2,7 @@ import { styleText } from "node:util"
 
 import { type CommandLineInterface, options, type OptionsGroup } from "./cli"
 import { parseBooleanOption } from "./option-parsers"
+import { validateRoutes } from "./route-validation"
 import {
 	type JsonSchema,
 	type OptionsSchema,
@@ -172,6 +173,7 @@ export function help(
 	cli: CommandLineInterface<any>,
 	helpOptions?: HelpOptions,
 ): string {
+	if (cli.routes) validateRoutes(cli.routes)
 	return [
 		renderTable(
 			[[cli.cliName, cli.cliDescription ?? `cli`]],
@@ -191,9 +193,24 @@ export function help(
 				const rows: string[][] = []
 				const prettyRoute = route
 					.split(`/`)
-					.map((s) => (s.includes(`$`) ? `<${s.replaceAll(`$`, ``)}>` : s))
+					.map((s) =>
+						s.startsWith(`$...`)
+							? `<${s.slice(4)}...>`
+							: s.startsWith(`$`)
+								? `<${s.slice(1)}>`
+								: s,
+					)
 					.join(` `)
-				rows.push([`$`, cli.cliName, prettyRoute, value?.description ?? ``])
+				const rest = route
+					.split(`/`)
+					.find((segment) => segment.startsWith(`$...`))
+				const description = [
+					value?.description,
+					rest ? `(${rest.slice(4)}: one or more arguments)` : undefined,
+				]
+					.filter(Boolean)
+					.join(` `)
+				rows.push([`$`, cli.cliName, prettyRoute, description])
 				if (value?.optionConfigs) {
 					rows.push(
 						...Object.entries(value.optionConfigs).map(([key, option]) => {
