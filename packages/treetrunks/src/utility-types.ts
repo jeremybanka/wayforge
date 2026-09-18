@@ -27,17 +27,32 @@ export type Split<
 		: [Str]
 
 /**
- * In array `Arr`, replace captures with strings and a terminal rest capture with one or more strings.
+ * Expand capture elements in a string tuple into the string types they accept, preserving literal elements.
+ *
+ * Ordinary captures expand to `string & {}`. A terminal rest capture expands to `[string & {}, ...(string & {})[]]`.
+ *
+ * @typeParam Arr - The array of literal and capture elements to expand.
+ * @typeParam CapturePrefix - The prefix identifying a capture; defaults to `$`.
+ * @typeParam RestMarker - The marker immediately following `CapturePrefix` to identify a rest capture; defaults to `...`.
+ *
+ * @example
+ * type Expanded = ExpandCaptures<["literal", "$name", "$...items"]>
+ * // ["literal", string & {}, string & {}, ...(string & {})[]]
+ *
+ * @example
+ * type Custom = ExpandCaptures<["literal", ":name", ":*items"], ":", "*">
+ * // ["literal", string & {}, string & {}, ...(string & {})[]]
  */
-export type Deref<
+export type ExpandCaptures<
 	Arr extends string[],
-	VarMarker extends string = `$`,
+	CapturePrefix extends string = `$`,
+	RestMarker extends string = `...`,
 > = Arr extends [`${infer Head extends string}`, ...infer Tail extends string[]]
-	? Head extends `${VarMarker}...${string}`
+	? Head extends `${CapturePrefix}${RestMarker}${string}`
 		? [string & {}, ...(string & {})[]]
-		: Head extends `${VarMarker}${string}`
-			? [string & {}, ...Deref<Tail, VarMarker>]
-			: [Head, ...Deref<Tail, VarMarker>]
+		: Head extends `${CapturePrefix}${string}`
+			? [string & {}, ...ExpandCaptures<Tail, CapturePrefix, RestMarker>]
+			: [Head, ...ExpandCaptures<Tail, CapturePrefix, RestMarker>]
 	: []
 
 export type Flatten<Record extends { [K in PropertyKey]: any }> = {

@@ -1,7 +1,7 @@
 import { expectTypeOf } from "vitest"
 
 import {
-	type Deref,
+	type ExpandCaptures,
 	flattenTree,
 	isTreePath,
 	type Join,
@@ -50,7 +50,7 @@ test(`capture inference preserves alternative paths`, () => {
 })
 
 test(`joining variadic paths permits the shortest valid path`, () => {
-	type Expanded = Join<Deref<[`add`, `$...paths`]>, `/`>
+	type Expanded = Join<ExpandCaptures<[`add`, `$...paths`]>, `/`>
 	;`add/a` satisfies Expanded
 	;`add/a/b` satisfies Expanded
 	;`add/` satisfies Expanded
@@ -78,9 +78,9 @@ test(`variadic paths require at least one string when the rest branch is selecte
 		| [`remove`, string & {}, ...(string & {})[]]
 		| [`project`, string & {}, string & {}, ...(string & {})[]]
 	>()
-	expectTypeOf<Deref<[`project`, `$name`, `$...paths`]>>().toEqualTypeOf<
-		[`project`, string & {}, string & {}, ...(string & {})[]]
-	>()
+	expectTypeOf<
+		ExpandCaptures<[`project`, `$name`, `$...paths`]>
+	>().toEqualTypeOf<[`project`, string & {}, string & {}, ...(string & {})[]]>()
 	expectTypeOf<
 		TreePathCaptures<[`project`, `$name`, `$...paths`]>
 	>().toEqualTypeOf<{

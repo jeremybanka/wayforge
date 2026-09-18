@@ -2,8 +2,8 @@ import type { InspectOptions } from "node:util"
 import { inspect } from "node:util"
 
 import type {
-	Deref,
 	Distill,
+	ExpandCaptures,
 	Join,
 	MergeTrees,
 	ReduceTrees,
@@ -28,9 +28,9 @@ describe(`utility types`, () => {
 		type Greeting = `hello/$name/good/morning`
 		type GreetingSplit = Split<Greeting, `/`>
 		;[`hello`, `$name`, `good`, `morning`] satisfies GreetingSplit
-		type GreetingDereferenced = Deref<GreetingSplit, `$`>
-		;[`hello`, `jeremybanka`, `good`, `morning`] satisfies GreetingDereferenced
-		type GreetingRejoined = Join<GreetingDereferenced, `/`>
+		type GreetingExpanded = ExpandCaptures<GreetingSplit, `$`>
+		;[`hello`, `jeremybanka`, `good`, `morning`] satisfies GreetingExpanded
+		type GreetingRejoined = Join<GreetingExpanded, `/`>
 		;`hello/jeremybanka/good/morning` satisfies GreetingRejoined
 	})
 	test(`union distillation`, () => {
