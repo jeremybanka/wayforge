@@ -264,8 +264,8 @@ importers:
   apps/tempest.games:
     dependencies:
       '@ai-sdk/openai':
-        specifier: 4.0.67
-        version: 4.0.67(zod@4.6.5)
+        specifier: 4.0.69
+        version: 4.0.69(zod@4.6.5)
       '@floating-ui/react':
         specifier: 0.27.20
         version: 0.27.20(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -291,8 +291,8 @@ importers:
         specifier: 11.18.0
         version: 11.18.0(typescript@7.0.2)
       ai:
-        specifier: 7.0.102
-        version: 7.0.102(zod@4.6.5)
+        specifier: 7.0.105
+        version: 7.0.105(zod@4.6.5)
       arktype:
         specifier: 2.2.3
         version: 2.2.3
@@ -832,26 +832,26 @@ importers:
 
 packages:
 
-  '@ai-sdk/gateway@4.0.82':
-    resolution: {integrity: sha512-WbRChvbJY2zf0qBxFu6UENi0p69fPzP7lKViNTIp3gr76w9bLUFvV5fTXS5uGPqDOkzlTIuAkqWxYNayEBSn6Q==}
+  '@ai-sdk/gateway@4.0.85':
+    resolution: {integrity: sha512-c8ztST/CslupqO3p7izsAuG3TlKg9mhE6mGJ42iUADsSMJIV5IOKd9AsLG33QCAY7SWs6NDO2giM/rq7bUTNlQ==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/openai@4.0.67':
-    resolution: {integrity: sha512-F14lzHMAEtFyN6hlIP1jH7zqcm4Lutpv4QV9jqpT+/SDRvRssNJrOEZGWA9FSolrUDNfzESPcX/AhvEzlm3czw==}
+  '@ai-sdk/openai@4.0.69':
+    resolution: {integrity: sha512-HAKua/QVNjwsBpJE3SUGLEPCSRThOLiiOy92gsUOkX4ZnEJHubkR6REHvi4RGGIn97lYBma+mq3BjBqgyNuhwQ==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/provider-utils@5.0.41':
-    resolution: {integrity: sha512-hSosMII5k33z0buaZ6dugH/g8yIJjPQBILuQvr4ThdiMJxrkiZxFWTgIkvKsT6Dk493JbsnGz5W/q88Y5bR7WA==}
+  '@ai-sdk/provider-utils@5.0.43':
+    resolution: {integrity: sha512-gw/bcNseOGSs59TMtV4H1KwqXXe24NHgx+uBYr98pa4Fg6Uvp8hPPxjuckVnfFFyIxHCDew8so0ujpvcSuyMZA==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/provider@4.0.15':
-    resolution: {integrity: sha512-LIDCrT8xgWVMiVUV13+v9FXPJ8B5uX/5ByEMXxp9Sspr2SyB1PwMSCPshZoI/t+4AgxyZCFEVutdaigCnqje3w==}
+  '@ai-sdk/provider@4.0.17':
+    resolution: {integrity: sha512-VYMBxIQdcHqbIf1j+YZlI9Ati6LZ4wJe0GGd4z4a5H/KxTggjeOiyaVYTnfF7LHZK5jMQ+rofmzz4QPqf++NUw==}
     engines: {node: '>=22'}
 
   '@ark/schema@0.56.0':
@@ -3299,8 +3299,8 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  ai@7.0.102:
-    resolution: {integrity: sha512-zYpEoHm3+T+KGGlP7aLGhrEVCbJdTxb7eoxvGBB+BjSrHnt55+uQ/sHUO69xUly1LB2RoDpHD3o521HSzs+h8g==}
+  ai@7.0.105:
+    resolution: {integrity: sha512-gkV3W+tTtWwQ41KNV/KjV8wabBrk+bnbnZ3f0AWp/T9LLyljose8uhFViKleVy7tIdEiR2PiS4BpbNdcExf7rQ==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -5496,29 +5496,29 @@ packages:
 
 snapshots:
 
-  '@ai-sdk/gateway@4.0.82(zod@4.6.5)':
+  '@ai-sdk/gateway@4.0.85(zod@4.6.5)':
     dependencies:
-      '@ai-sdk/provider': 4.0.15
-      '@ai-sdk/provider-utils': 5.0.41(zod@4.6.5)
+      '@ai-sdk/provider': 4.0.17
+      '@ai-sdk/provider-utils': 5.0.43(zod@4.6.5)
       '@vercel/oidc': 3.2.0
       zod: 4.6.5
 
-  '@ai-sdk/openai@4.0.67(zod@4.6.5)':
+  '@ai-sdk/openai@4.0.69(zod@4.6.5)':
     dependencies:
-      '@ai-sdk/provider': 4.0.15
-      '@ai-sdk/provider-utils': 5.0.41(zod@4.6.5)
+      '@ai-sdk/provider': 4.0.17
+      '@ai-sdk/provider-utils': 5.0.43(zod@4.6.5)
       zod: 4.6.5
 
-  '@ai-sdk/provider-utils@5.0.41(zod@4.6.5)':
+  '@ai-sdk/provider-utils@5.0.43(zod@4.6.5)':
     dependencies:
-      '@ai-sdk/provider': 4.0.15
+      '@ai-sdk/provider': 4.0.17
       '@standard-schema/spec': 1.1.0
       '@workflow/serde': 4.1.0
       eventsource-parser: 3.0.8
       undici: 7.29.0
       zod: 4.6.5
 
-  '@ai-sdk/provider@4.0.15':
+  '@ai-sdk/provider@4.0.17':
     dependencies:
       json-schema: 0.4.0
 
@@ -7415,11 +7415,11 @@ snapshots:
 
   acorn@8.16.0: {}
 
-  ai@7.0.102(zod@4.6.5):
+  ai@7.0.105(zod@4.6.5):
     dependencies:
-      '@ai-sdk/gateway': 4.0.82(zod@4.6.5)
-      '@ai-sdk/provider': 4.0.15
-      '@ai-sdk/provider-utils': 5.0.41(zod@4.6.5)
+      '@ai-sdk/gateway': 4.0.85(zod@4.6.5)
+      '@ai-sdk/provider': 4.0.17
+      '@ai-sdk/provider-utils': 5.0.43(zod@4.6.5)
       zod: 4.6.5
 
   ajv-formats@3.0.1:
