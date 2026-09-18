@@ -87,10 +87,26 @@ export type CliParseOutput<CLI extends CommandLineInterface<any>> = Flatten<
 	Readonly<{
 		[K in keyof CLI[`routeOptions`]]: K extends string
 			? Readonly<{
+					/**
+					 * The structural interpretation of positional arguments the CLI was called with.
+					 *
+					 * Use it as the pivot for a `switch` or `if` statement, and your branches will have correctly inferred `.path` and `.opts` properties.
+					 *
+					 * @example
+					 * switch (inputs.case) {
+					 *   case "create/$itemName": {
+					 *     const [_, itemName] = inputs.path
+					 *     // itemName will always be defined
+					 *     break
+					 *   }
+					 * }
+					 */
 					case: K
-					// Widened keys cannot identify a single route to dereference.
+					/** The actual positional arguments the CLI was called with, from which the current `.case` was inferred. */
+					// (Widened keys cannot identify a single route to dereference.)
 					path: string extends K ? TreePath<CLI[`routes`]> : Deref<Split<K>>
 					params: TreePathCaptures<Split<K>>
+					/** The valid options for the current `.case` that the CLI was called with. */
 					opts: CLI[`routeOptions`][K] extends OptionsGroup<infer Options>
 						? Options
 						: never
