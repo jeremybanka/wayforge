@@ -1,7 +1,15 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
 
-import type { Flatten, Tree, TreeMap, TreePath } from "treetrunks"
+import type {
+	ExpandCaptures,
+	Flatten,
+	Split,
+	Tree,
+	TreeMap,
+	TreePath,
+	TreePathCaptures,
+} from "treetrunks"
 
 import { interpretInvocation, type OptionValueKind } from "./arguments"
 import {
@@ -15,6 +23,7 @@ import {
 import { readConfigFile } from "./config-file"
 import type { Flag } from "./flag"
 import { parseStringOption } from "./option-parsers"
+import { validateRoutes } from "./route-validation"
 import {
 	emptySchema,
 	type OptionsSchema,
@@ -78,8 +87,50 @@ export type CliParseOutput<CLI extends CommandLineInterface<any>> = Flatten<
 	Readonly<{
 		[K in keyof CLI[`routeOptions`]]: K extends string
 			? Readonly<{
+					/**
+					 * The matched route key, such as `"create/$itemName"` or `""` for the root route.
+					 *
+					 * Use it in a `switch` or `if` statement to narrow `.path`, `.params`, and `.opts` to the selected route.
+					 *
+					 * @example
+					 * switch (inputs.case) {
+					 *   case "create/$itemName": {
+					 *     const [_, itemName] = inputs.path
+					 *     // itemName will always be defined
+					 *     break
+					 *   }
+					 * }
+					 */
 					case: K
-					path: TreePath<CLI[`routes`]>
+					/**
+					 * The positional arguments matched by the route, in their original order.
+					 *
+					 * Includes literal route segments and captured values; excludes options and their consumed values. Narrow `.case` to infer the corresponding tuple.
+					 */
+					// Widened keys cannot identify a single route whose captures can be expanded.
+					path: string extends K
+						? TreePath<CLI[`routes`]>
+						: ExpandCaptures<Split<K>>
+					/**
+					 * The named positional captures for the matched route.
+					 *
+					 * `$name` contributes `name: string`, and `$...paths` contributes `paths: [string, ...string[]]`. Literal segments are omitted, and routes without captures produce `{}`.
+					 *
+					 * Narrow `.case` to access the captures for that route by name, independently of their positions in `.path`.
+					 *
+					 * @example
+					 * if (inputs.case === "project/$name/add/$...paths") {
+					 *   const { name, paths } = inputs.params
+					 *   // name: string
+					 *   // paths: [string, ...string[]]
+					 * }
+					 */
+					params: TreePathCaptures<Split<K>>
+					/**
+					 * The parsed, schema-validated option values for the matched route.
+					 *
+					 * When configuration loading is enabled, command-line values override configuration values. The result may include defaults supplied by the schema.
+					 */
 					opts: CLI[`routeOptions`][K] extends OptionsGroup<infer Options>
 						? Options
 						: never
@@ -112,7 +163,27 @@ export function options<Options extends Record<string, CliOptionValue>>(
 export type CommandLineInterface<Routes extends Tree> = {
 	cliName: string
 	cliDescription?: string
+	/**
+	 * Options for every complete route, keyed by its slash-separated declared segments.
+	 *
+	 * Keep capture names in the keys, such as `"show/$name"` or `"add/$...paths"`. The root route uses `""`. An optional subtree needs entries for both its parent route and its complete descendant routes. Use `noOptions()` or `null` for routes without options.
+	 *
+	 * @example
+	 * const parse = cli({
+	 *   cliName: "files",
+	 *   routes: required({ remove: optional({ "$...paths": null }) }),
+	 *   routeOptions: {
+	 *     remove: noOptions("Choose files interactively"),
+	 *     "remove/$...paths": noOptions("Remove the supplied files"),
+	 *   },
+	 * })
+	 */
 	routeOptions: TreeMap<Routes, OptionsGroup<any>>
+	/**
+	 * The tree of positional routes. Omit for a CLI with only the root route.
+	 *
+	 * Literal branch names match themselves, `$name` captures one string, and a terminal `$...name` captures one or more strings. `required()` requires continuing through a child branch; `optional()` also allows stopping at the parent. Each complete route needs an entry in `routeOptions`.
+	 */
 	routes?: Routes
 	debugOutput?: boolean
 	/** Hints keyed by full variable route names, e.g. "commit/view/$ref". */
@@ -128,6 +199,21 @@ export type CliLogger = {
 	error: (message: string, ...data: unknown[]) => void
 }
 
+/**
+ * Create a synchronous argument parser with the supplied routes and option schemas.
+ *
+ * Call the returned function with full runtime argv, such as `process.argv`. It always skips the first two entries before parsing. Its `.interpret()` and `.complete()` methods accept argument words without those runtime and executable entries; see {@link CompletionRequest} for cursor handling.
+ *
+ * Successful parsing returns typed `inputs`, `warnings` for ignored options, and `writeJsonSchema`. Unknown options and options unavailable on the selected route produce warnings; use {@link logWarnings} to print them.
+ *
+ * Invalid route declarations throw when creating the parser. Parsing throws for invalid or incomplete routes and for option parsing, configuration, or schema validation errors.
+ *
+ * @example
+ * const parse = cli({ cliName: "example", routeOptions: { "": noOptions() } })
+ * const { inputs, warnings } = parse(process.argv)
+ * const context = parse.interpret({ words: [""] })
+ * const suggestions = await parse.complete({ words: [""] })
+ */
 export function cli<
 	CLI extends CommandLineInterface<Routes>,
 	Routes extends Tree = Exclude<CLI[`routes`], undefined>,
@@ -145,6 +231,7 @@ export function cli<
 } {
 	// Infer Routes directly at the call site, then retain CLI for internal consumers.
 	const definition: CLI = definitionInput
+	if (definition.routes) validateRoutes(definition.routes)
 	const {
 		cliName,
 		routeOptions,
@@ -274,6 +361,7 @@ export function cli<
 				inputs: {
 					case: interpretation.route,
 					path: interpretation.path,
+					params: interpretation.params,
 					opts: suppliedOptions,
 				} as unknown as CliParseOutput<CLI>,
 				writeJsonSchema: (outdir: string) => {

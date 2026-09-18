@@ -102,14 +102,26 @@ const shared = options(
 const definition = {
 	cliName: `comline-fixture`,
 	routes: required({
-		pr: required({ list: optional({ $value: null }), create: null }),
+		pr: required({
+			list: optional({ $value: null }),
+			create: null,
+			add: required({ "$...paths": null }),
+		}),
 	}),
 	routeOptions: {
 		"pr/list": shared,
 		"pr/list/$value": shared,
 		"pr/create": shared,
+		"pr/add/$...paths": shared,
 	},
-	positionalCompletions: { "pr/list/$value": { choices: [`--key=value`] } },
+	positionalCompletions: {
+		"pr/list/$value": { choices: [`--key=value`] },
+		"pr/add/$...paths": {
+			provide: ({ path }: { path: string[] }) => [
+				path.length > 3 ? `third file` : `second file`,
+			],
+		},
+	},
 	discoverConfigPath: () => {
 		throw new Error(`Completion must not discover config`)
 	},

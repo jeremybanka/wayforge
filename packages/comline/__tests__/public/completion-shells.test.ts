@@ -35,6 +35,33 @@ describe(`global`, { timeout: 30_000 }, () => {
 			string,
 			{ case?: string; path?: string[]; opts: Record<string, string> },
 		][] = [
+			[
+				`second rest argument`,
+				`comline-fixture pr add first sec\t`,
+				{
+					case: `pr/add/$...paths`,
+					path: [`pr`, `add`, `first`, `second file`],
+					opts: {},
+				},
+			],
+			[
+				`third rest argument after a trailing space`,
+				`comline-fixture pr add first "second file" \t`,
+				{
+					case: `pr/add/$...paths`,
+					path: [`pr`, `add`, `first`, `second file`, `third file`],
+					opts: {},
+				},
+			],
+			[
+				`option between rest arguments`,
+				`comline-fixture pr add first --state cl\t sec\t`,
+				{
+					case: `pr/add/$...paths`,
+					path: [`pr`, `add`, `first`, `second file`],
+					opts: { state: `closed` },
+				},
+			],
 			[`route`, `comline-fixture pr li\t`, { case: `pr/list`, opts: {} }],
 			[
 				`enum`,

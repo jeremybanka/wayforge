@@ -85,7 +85,12 @@ test(`uses the exact selected-route input record after descendant scanning`, () 
 		routeOptions: { "": runOptions, $name: otherOptions },
 	})
 	const result = selectedCli(argv(`--name`, `--typo`, `--dry`, `--dry-run`))
-	expect(result.inputs).toEqual({ case: ``, path: [], opts: { name: `--typo` } })
+	expect(result.inputs).toEqual({
+		case: ``,
+		path: [],
+		params: {},
+		opts: { name: `--typo` },
+	})
 })
 
 test(`uses positional-error wording alongside warnings`, () => {

@@ -23,6 +23,7 @@ test.each(literalOptionTokens)(
 		).toEqual({
 			case: `run/$value`,
 			path: [`run`, token],
+			params: { value: token },
 			opts: { name: `before` },
 		})
 	},
