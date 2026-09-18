@@ -88,9 +88,9 @@ export type CliParseOutput<CLI extends CommandLineInterface<any>> = Flatten<
 		[K in keyof CLI[`routeOptions`]]: K extends string
 			? Readonly<{
 					/**
-					 * The structural interpretation of positional arguments the CLI was called with.
+					 * The matched route key, such as `"create/$itemName"` or `""` for the root route.
 					 *
-					 * Use it as the pivot for a `switch` or `if` statement, and your branches will have correctly inferred `.path` and `.opts` properties.
+					 * Use it in a `switch` or `if` statement to narrow `.path`, `.params`, and `.opts` to the selected route.
 					 *
 					 * @example
 					 * switch (inputs.case) {
@@ -102,11 +102,33 @@ export type CliParseOutput<CLI extends CommandLineInterface<any>> = Flatten<
 					 * }
 					 */
 					case: K
-					/** The actual positional arguments the CLI was called with, from which the current `.case` was inferred. */
+					/**
+					 * The positional arguments matched by the route, in their original order.
+					 *
+					 * Includes literal route segments and captured values; excludes options and their consumed values. Narrow `.case` to infer the corresponding tuple.
+					 */
 					// (Widened keys cannot identify a single route to dereference.)
 					path: string extends K ? TreePath<CLI[`routes`]> : Deref<Split<K>>
+					/**
+					 * The named positional captures for the matched route.
+					 *
+					 * `$name` contributes `name: string`, and `$...paths` contributes `paths: [string, ...string[]]`. Literal segments are omitted, and routes without captures produce `{}`.
+					 *
+					 * Narrow `.case` to access the captures for that route by name, independently of their positions in `.path`.
+					 *
+					 * @example
+					 * if (inputs.case === "project/$name/add/$...paths") {
+					 *   const { name, paths } = inputs.params
+					 *   // name: string
+					 *   // paths: [string, ...string[]]
+					 * }
+					 */
 					params: TreePathCaptures<Split<K>>
-					/** The valid options for the current `.case` that the CLI was called with. */
+					/**
+					 * The parsed, schema-validated option values for the matched route.
+					 *
+					 * When configuration loading is enabled, command-line values override configuration values. The result may include defaults supplied by the schema.
+					 */
 					opts: CLI[`routeOptions`][K] extends OptionsGroup<infer Options>
 						? Options
 						: never
