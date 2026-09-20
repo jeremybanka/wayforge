@@ -32,7 +32,7 @@
 		"tonnage:write": "tonnage write"
 	},
 	"devDependencies": {
-		"@types/node": "26.6.1",
+		"@types/node": "26.6.2",
 		"@vitest/coverage-v8": "5.0.1",
 		"concurrently": "10.0.5",
 		"eslint": "10.11.0",
