@@ -45,7 +45,7 @@
 		"arktype": "2.2.3",
 		"break-check": "0.6.40",
 		"concurrently": "10.0.5",
-		"eslint": "10.10.0",
+		"eslint": "10.11.0",
 		"recoverage": "0.1.17",
 		"tsdown": "0.23.0",
 		"typescript": "7.0.2",
