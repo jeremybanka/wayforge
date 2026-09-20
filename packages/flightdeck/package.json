@@ -48,7 +48,7 @@
 		"@biomejs/js-api": "6.0.0",
 		"@biomejs/wasm-nodejs": "2.5.14",
 		"@types/bun": "npm:bun-types@1.4.2",
-		"@types/node": "26.6.1",
+		"@types/node": "26.6.2",
 		"concurrently": "10.0.5",
 		"eslint": "10.11.0",
 		"json-schema-to-zod": "2.8.1",
