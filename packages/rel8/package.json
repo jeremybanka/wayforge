@@ -59,7 +59,7 @@
 	},
 	"devDependencies": {
 		"concurrently": "10.0.5",
-		"eslint": "10.10.0",
+		"eslint": "10.11.0",
 		"fp-ts": "2.16.11",
 		"tsdown": "0.23.0",
 		"typescript": "7.0.2",

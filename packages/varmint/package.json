@@ -51,7 +51,7 @@
 		"@types/node": "26.6.1",
 		"atom.io": "0.53.2",
 		"concurrently": "10.0.5",
-		"eslint": "10.10.0",
+		"eslint": "10.11.0",
 		"openai": "7.18.0",
 		"tsdown": "0.23.0",
 		"typescript": "7.0.2",

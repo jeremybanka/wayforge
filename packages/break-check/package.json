@@ -45,7 +45,7 @@
 	"devDependencies": {
 		"@types/bun": "npm:bun-types@1.4.2",
 		"concurrently": "10.0.5",
-		"eslint": "10.10.0",
+		"eslint": "10.11.0",
 		"tsdown": "0.23.0",
 		"typescript": "7.0.2"
 	},
