@@ -42,7 +42,7 @@
 		"@dotenvx/dotenvx": "2.28.2",
 		"@dprint/json": "0.24.0",
 		"@dprint/markdown": "0.24.0",
-		"@dprint/oxc": "0.40.0",
+		"@dprint/oxc": "0.41.0",
 		"@dprint/toml": "0.8.0",
 		"@types/eslint": "9.6.1",
 		"@typescript-eslint/eslint-plugin": "8.70.0",
