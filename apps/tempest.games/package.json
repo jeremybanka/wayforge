@@ -92,7 +92,7 @@
 		"@vitejs/plugin-react": "npm:@vitejs/plugin-react-swc@4.3.3",
 		"concurrently": "10.0.5",
 		"cors": "2.8.6",
-		"drizzle-kit": "0.31.10",
+		"drizzle-kit": "0.31.11",
 		"eslint": "10.11.0",
 		"flightdeck": "workspace:*",
 		"typescript": "7.0.2",
