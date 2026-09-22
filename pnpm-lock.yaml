@@ -382,8 +382,8 @@ importers:
         specifier: 2.8.6
         version: 2.8.6
       drizzle-kit:
-        specifier: 0.31.10
-        version: 0.31.10
+        specifier: 0.31.11
+        version: 0.31.11
       eslint:
         specifier: 10.11.0
         version: 10.11.0(jiti@2.7.0)(supports-color@10.2.2)
@@ -3691,8 +3691,8 @@ packages:
   draco3d@1.5.7:
     resolution: {integrity: sha512-m6WCKt/erDXcw+70IJXnG7M3awwQPAsZvJGX5zY7beBqpELw6RDGkYVU0W43AFxye4pDZ5i2Lbyc/NNGqwjUVQ==}
 
-  drizzle-kit@0.31.10:
-    resolution: {integrity: sha512-7OZcmQUrdGI+DUNNsKBn1aW8qSoKuTH7d0mYgSP8bAzdFzKoovxEFnoGQp2dVs82EOJeYycqRtciopszwUf8bw==}
+  drizzle-kit@0.31.11:
+    resolution: {integrity: sha512-YCYqxTLIB2OCqf6w9/Vef13baBVbwQIPcbT4Y56AfO6B9ajZhDhD8Jkveg/hJvT/iuMloKD/IYYkyMMNhr7Kqg==}
     hasBin: true
 
   drizzle-orm@0.45.3:
@@ -7891,7 +7891,7 @@ snapshots:
 
   draco3d@1.5.7: {}
 
-  drizzle-kit@0.31.10:
+  drizzle-kit@0.31.11:
     dependencies:
       '@drizzle-team/brocli': 0.10.2
       '@esbuild-kit/esm-loader': 2.6.5
