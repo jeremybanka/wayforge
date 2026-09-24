@@ -48,6 +48,11 @@
 			"dependencyDashboardApproval": true
 		},
 		{
+			"matchManagers": ["mise"],
+			"matchDepNames": ["conda:zsh"],
+			"registryUrls": ["https://api.anaconda.org/package/conda-forge"]
+		},
+		{
 			"matchPackageNames": ["@biomejs/js-api", "@biomejs/wasm-nodejs"],
 			"groupName": "biome"
 		},
