@@ -58,6 +58,10 @@ if the tests fail, break-check will exit with a non-zero status code, indicating
 
 Release tags may use `1.2.3`, `v1.2.3`, `package@1.2.3`, or `@scope/package@1.2.3`, including valid prerelease and build identifiers. The newest matching version is selected by semantic-version precedence; tags without a supported version are ignored.
 
+## Git environment
+
+break-check uses simple-git v4, which filters inherited `GIT_*` environment variables and certain other Git-related variables, including `SSH_ASKPASS`, from its Git subprocesses. Environment-based settings such as `GIT_SSH_COMMAND`, `GIT_ASKPASS`, and `GIT_CONFIG_*` no longer configure tag discovery, fetching, or file restoration. Configure authentication and Git behavior through Git configuration files, SSH configuration, or an SSH agent instead. This filtering applies to break-check's Git operations; test and certification commands still inherit the normal process environment.
+
 ## parallel checks and file restoration
 
 Checks with disjoint public test paths can run their test and certification commands in parallel, in their original working directories. break-check coordinates Git setup and cleanup with a short-lived lock and records each running check's test paths. The clean-repository check ignores only the paths owned by active checks; unrelated uncommitted changes still prevent a new check from starting. Checks with overlapping test paths are rejected before replacing files. Remote tag discovery runs outside this lock, and fetches use a separate lock in the common Git directory. Cleanup waits for file-restoration access instead of giving up when a setup timeout expires.

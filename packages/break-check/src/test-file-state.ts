@@ -13,7 +13,7 @@ import {
 import path from "node:path"
 
 import type { SimpleGit } from "simple-git"
-import simpleGit from "simple-git"
+import { simpleGit } from "simple-git"
 
 import { withDirectoryLock } from "./directory-lock"
 
