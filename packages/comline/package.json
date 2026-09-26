@@ -42,7 +42,7 @@
 		"@types/bun": "npm:bun-types@1.4.2",
 		"@types/node": "26.6.2",
 		"@vitest/coverage-v8": "5.0.1",
-		"arktype": "2.2.3",
+		"arktype": "2.2.5",
 		"break-check": "0.6.40",
 		"concurrently": "10.0.5",
 		"eslint": "10.11.0",

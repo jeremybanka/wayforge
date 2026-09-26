@@ -38,7 +38,7 @@
 	},
 	"dependencies": {
 		"@t3-oss/env-core": "0.13.11",
-		"arktype": "2.2.3",
+		"arktype": "2.2.5",
 		"atom.io": "0.53.2",
 		"comline": "workspace:*",
 		"cron": "4.4.0",

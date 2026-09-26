@@ -39,7 +39,7 @@
 		"tonnage:write": "tonnage write"
 	},
 	"dependencies": {
-		"arktype": "2.2.3",
+		"arktype": "2.2.5",
 		"cachedir": "2.4.0",
 		"comline": "workspace:*",
 		"diff": "9.0.0",
