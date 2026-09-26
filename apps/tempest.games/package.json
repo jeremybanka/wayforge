@@ -55,7 +55,7 @@
 		"@floating-ui/react": "0.27.20",
 		"@js-temporal/polyfill": "0.5.1",
 		"@react-spring/three": "10.1.2",
-		"@react-three/drei": "10.7.8",
+		"@react-three/drei": "10.7.9",
 		"@react-three/fiber": "9.8.1",
 		"@t3-oss/env-core": "0.13.11",
 		"@trpc/client": "11.19.0",
