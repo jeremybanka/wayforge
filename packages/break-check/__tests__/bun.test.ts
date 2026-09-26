@@ -4,7 +4,7 @@ import { tmpdir } from "node:os"
 import path from "node:path"
 
 import { afterEach, beforeEach, describe, expect, it } from "bun:test"
-import simpleGit from "simple-git"
+import { simpleGit } from "simple-git"
 
 import type { BreakCheckOutcome } from "../src/break-check"
 import { breakCheck } from "../src/break-check"
