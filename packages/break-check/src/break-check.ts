@@ -2,7 +2,7 @@ import { exec } from "node:child_process"
 import path from "node:path"
 
 import { minimatch } from "minimatch"
-import simpleGit from "simple-git"
+import { simpleGit } from "simple-git"
 import type { Chronicle } from "takua"
 import logger from "takua"
 

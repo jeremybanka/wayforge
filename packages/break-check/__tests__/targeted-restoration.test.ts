@@ -13,7 +13,7 @@ import path from "node:path"
 import { setTimeout } from "node:timers/promises"
 
 import { afterEach, beforeEach, expect, it } from "bun:test"
-import simpleGit from "simple-git"
+import { simpleGit } from "simple-git"
 
 import { breakCheck } from "../src/break-check"
 
