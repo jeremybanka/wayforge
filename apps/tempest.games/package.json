@@ -65,7 +65,7 @@
 		"atom.io": "0.53.2",
 		"cron": "4.4.0",
 		"drizzle-orm": "0.45.3",
-		"motion": "13.4.3",
+		"motion": "13.4.4",
 		"nanoid": "6.0.1",
 		"openai": "7.23.0",
 		"postgres": "3.4.9",
