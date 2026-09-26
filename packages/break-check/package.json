@@ -39,7 +39,7 @@
 		"arktype": "2.2.5",
 		"comline": "workspace:*",
 		"minimatch": "10.2.6",
-		"simple-git": "3.36.0",
+		"simple-git": "4.0.1",
 		"takua": "workspace:*"
 	},
 	"devDependencies": {
