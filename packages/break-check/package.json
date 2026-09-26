@@ -36,7 +36,7 @@
 		"postversion": "dprint fmt package.json"
 	},
 	"dependencies": {
-		"arktype": "2.2.3",
+		"arktype": "2.2.5",
 		"comline": "workspace:*",
 		"minimatch": "10.2.6",
 		"simple-git": "3.36.0",
