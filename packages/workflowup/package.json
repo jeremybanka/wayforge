@@ -1,11 +1,11 @@
 {
-	"name": "upgrade-workflows",
+	"name": "workflowup",
 	"version": "0.0.0",
 	"description": "Upgrade GitHub Actions to stable release SHAs and update pinned mise versions",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/jeremybanka/wayforge.git",
-		"directory": "packages/upgrade-workflows"
+		"directory": "packages/workflowup"
 	},
 	"license": "MPL-2.0",
 	"author": {
@@ -22,7 +22,7 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"bin": {
-		"upgrade-workflows": "./bin/upgrade-workflows.js"
+		"workflowup": "./bin/workflowup.js"
 	},
 	"files": ["bin", "dist", "src"],
 	"scripts": {
