@@ -56,13 +56,11 @@ describe(`global`, { timeout: 30_000 }, () => {
 				`${readFileSync(setup, `utf8`)}
 $env.config.completions.external.completer = do {
     let previous = $env.config.completions.external.completer
-    {|place, buffer?|
+    {|buffer: string|
         sleep 500ms
-        if ($place | describe | str starts-with "list") { do $previous $place } else {
-            do {
-                $env.config.completions.external.completer = $previous
-                $buffer | commandline complete --detailed
-            }
+        do {
+            $env.config.completions.external.completer = $previous
+            $buffer | commandline complete --detailed
         }
     }
 }
