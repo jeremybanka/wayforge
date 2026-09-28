@@ -4,5 +4,5 @@ set -euo pipefail
 
 bun changeset version
 pnpm install --no-frozen-lockfile
-bun version
-bun fmt:fix
+pnpm release:hooks
+pnpm fmt

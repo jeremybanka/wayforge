@@ -24,3 +24,7 @@
 
 Except for third-party dependencies, the contents of this repository are
 licensed under the [Mozilla Public License 2.0](LICENSE).
+
+## Repository commands
+
+See [the command guide](docs/commands.md) for formatting, static checks, tests, coverage where available, and release commands.

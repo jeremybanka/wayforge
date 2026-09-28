@@ -16,7 +16,7 @@
 			"outputs": ["app/**", "bin/**"],
 			"inputs": ["**/package.json", "src/**"]
 		},
-		"tonnage:check": {
+		"check:tonnage": {
 			"dependsOn": ["build"],
 			"cache": false
 		},
@@ -34,7 +34,7 @@
 				"__scripts__/**"
 			]
 		},
-		"test:once": {
+		"test": {
 			"dependsOn": ["test:build", "^build"],
 			"inputs": [
 				"**/package.json",
@@ -45,7 +45,7 @@
 				"__scripts__/**"
 			]
 		},
-		"comline#test:once": {
+		"comline#test": {
 			"dependsOn": ["test:build", "^build"],
 			"inputs": [
 				"**/package.json",
@@ -59,7 +59,7 @@
 				"../../.github/actions/setup/action.yml"
 			]
 		},
-		"test:coverage:once": {
+		"cov": {
 			"dependsOn": ["^build"],
 			"outputs": ["coverage/**", "**/coverage/**"],
 			"inputs": [
@@ -73,7 +73,7 @@
 				"__scripts__/**"
 			]
 		},
-		"comline#test:coverage:once": {
+		"comline#cov": {
 			"dependsOn": ["^build"],
 			"outputs": ["coverage/**"],
 			"inputs": [
@@ -89,8 +89,8 @@
 				"../../.github/actions/setup/action.yml"
 			]
 		},
-		"test:coverage:increased": {
-			"dependsOn": ["test:coverage:once"],
+		"cov:check": {
+			"dependsOn": ["^build"],
 			"cache": false,
 			"passThroughEnv": ["RECOVERAGE_CLOUD_TOKEN"]
 		},
@@ -111,7 +111,7 @@
 			"dependsOn": ["^build"],
 			"cache": false
 		},
-		"lint:eslint": {
+		"check:eslint": {
 			"dependsOn": ["gen"],
 			"inputs": [
 				"../../package.json",
@@ -124,7 +124,7 @@
 				"__scripts__/**"
 			]
 		},
-		"lint:oxlint": {
+		"check:oxlint": {
 			"dependsOn": ["gen"],
 			"inputs": [
 				"../../package.json",
@@ -137,8 +137,8 @@
 				"__scripts__/**"
 			]
 		},
-		"lint:types": {
-			"dependsOn": ["gen", "^lint:types", "^build", "^gen"],
+		"check:tsc": {
+			"dependsOn": ["gen", "^check:tsc", "^build", "^gen"],
 			"inputs": [
 				"../../package.json",
 				"../../tsconfig.json",
@@ -164,8 +164,8 @@
 				"__scripts__/**"
 			]
 		},
-		"lint": {
-			"dependsOn": ["lint:eslint", "lint:oxlint", "lint:types"]
+		"check": {
+			"dependsOn": ["check:eslint", "check:oxlint", "check:tsc"]
 		},
 		"gen": {
 			"dependsOn": ["^build"],
@@ -183,6 +183,11 @@
 			"dependsOn": ["^build"],
 			"inputs": [],
 			"outputs": []
+		},
+		"test:watch": {
+			"dependsOn": ["test:build", "^build"],
+			"cache": false,
+			"persistent": true
 		}
 	}
 }
