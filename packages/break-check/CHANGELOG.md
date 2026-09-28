@@ -1,5 +1,19 @@
 # break-check
 
+## 0.8.0
+
+### Minor Changes
+
+- f44fd6a: Native Nushell completion for `break-check`, `flightdeck`, `klaxon`, and `varmint` now requires Nushell 0.116.0 or newer, inheriting the updated Comline adapter's minimum version. The adapter uses named completion inputs, removes its positional-input deprecation warning, and preserves delegation to other completion providers.
+
+  Upgrade Nushell before loading the updated native integration. For each CLI you use, rerun `<command> completion install nushell` (or regenerate its `.nu` file with `<command> completion nushell`) and open a new shell. Installed completion files are static copies and are not replaced by a package upgrade alone.
+- 2ac9ecf: Upgrade Git operations to simple-git v4 with stricter argument validation and environment filtering. Git subprocesses no longer inherit `GIT_*` variables or other guarded variables such as `SSH_ASKPASS`. Projects using environment-based authentication or Git configuration must move those settings to Git configuration files, SSH configuration, or an SSH agent. Test and certification commands continue to inherit the normal process environment.
+
+### Patch Changes
+
+- Updated dependencies [f44fd6a]
+  - comline@0.9.0
+
 ## 0.7.3
 
 ### Patch Changes
