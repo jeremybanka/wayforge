@@ -10,6 +10,18 @@ Renovate already supports [updating and SHA-pinning GitHub Actions](https://docs
 
 A dependency updater processes third-party metadata and, depending on configuration, runs package-manager scripts, plugins, or migration commands. Keeping its identity unable to write workflow definitions removes a sensitive capability from that process. In [Wayforge's Renovate job](https://github.com/jeremybanka/wayforge/blob/main/.github/workflows/renovate.yml), the requested App-token permissions omit workflow writing. Dashboard approval for action upgrades is an additional scheduling control; it does not grant the missing permission or substitute for restricting credentials.
 
+### What a stolen dependency-bot credential can become
+
+Imagine a routine dependency update encounters a compromised package-manager script or plugin. During the automated run, an attacker obtains the updater's GitHub token. That token can already write dependency branches and open pull requests, and it was also granted workflow-writing permission to keep GitHub Actions up to date.
+
+Using the stolen credential, the attacker submits a familiar-looking maintenance PR under the bot's identity. Alongside the expected version bump, it changes the publishing workflow to send the job's package-registry credential to the attacker. The ordinary tests still run and pass. If the malicious change is missed in review or accepted by an automerge policy, the next authorized release runs the altered workflow with its configured publishing secret. The attacker can then publish a malicious package version to downstream users.
+
+The stolen updater token did not need an API that reveals secret values. Permission to rewrite the workflow created a route to credentials supplied to that workflow later. Full SHA pins alone cannot stop a writer from replacing an approved pin with a malicious revision or adding an inline step. This is an illustrative scenario; execution depends on the repository's triggers, merge rules, and secret-access controls. GitHub's [secure-use guidance](https://docs.github.com/en/actions/reference/security/secure-use) describes the underlying workflow and credential risks.
+
+With workflow-writing permission withheld, GitHub rejects that workflow-file update made with the stolen credential. `workflowup` makes this restriction practical: maintainers can keep action pins current through a separate, deliberate upgrade path while the routine dependency bot retains a smaller set of permissions.
+
+### Keep routine upgrades within a smaller permission boundary
+
 The intended division of responsibility is:
 
 1. Renovate maintains ordinary dependencies with credentials that lack workflow-writing permission.
