@@ -1,8 +1,11 @@
 import { existsSync, mkdirSync, statSync } from "node:fs"
+import { stripVTControlCharacters } from "node:util"
 
 import { file, sleep, spawn, write } from "bun"
 
 // Exercise the actual line editor through a PTY, without loading user startup files.
+// Break Check keeps this driver at HEAD while restoring release tests and CLI
+// fixtures: terminal synchronization must match the currently installed shells.
 const [shell, setup, output, line] = process.argv.slice(2)
 if (!shell || !setup || !output || line === undefined) {
 	throw new Error(
@@ -10,7 +13,9 @@ if (!shell || !setup || !output || line === undefined) {
 	)
 }
 const readyFile = `${output}.ready`
+const nushell = [`nu`, `nu-carapace`, `nu-cobra`].includes(shell)
 let init: string = `source '${setup}'; touch '${readyFile}'\n`
+if (nushell) init = `$env.config.shell_integration.osc133 = true; ${init}`
 const environment: NodeJS.ProcessEnv = {
 	...process.env,
 	TERM: `xterm-256color`,
@@ -100,6 +105,15 @@ async function waitFor(predicate: () => boolean, phase: string): Promise<void> {
 	}
 }
 
+function nuCursorPrefix(): string | undefined {
+	// Reedline marks the input with OSC 133;B and saves the cursor after painting
+	// the text before it. Ignore colors and incomplete redraws. This also observes
+	// completion in an earlier word without including the text after the cursor.
+	const redraws = transcript.matchAll(/\x1b\]133;B\x1b\\([\s\S]*?)\x1b7/g)
+	const prefix = [...redraws].at(-1)?.[1]
+	return prefix === undefined ? undefined : stripVTControlCharacters(prefix)
+}
+
 try {
 	if (!terminal) throw new Error(`Bun did not create a terminal for ${shell}`)
 	// Startup files keep terminal negotiation from consuming setup as query replies.
@@ -108,7 +122,33 @@ try {
 	// its editor so the terminal driver cannot consume Ctrl-U or other keystrokes.
 	if (shell === `bash`)
 		await waitFor(() => transcript.includes(`\x1b[?2004h`), `Bash line editor`)
-	terminal.write(`${line}\n`)
+	if (nushell) {
+		await waitFor(() => nuCursorPrefix() === ``, `Nushell line editor`)
+		// Nu completes in the background. Observe each insertion before sending
+		// subsequent input: a repaint of the unchanged line is not completion.
+		// These cases require every Tab to insert text. Keep cursor keys separate
+		// so their repaint cannot be mistaken for the following Tab's result.
+		const keys = line.match(/\x1b\[[0-?]*[ -/]*[@-~]|\t|[^\t\x1b]+/g) ?? []
+		for (const key of keys) {
+			const before = nuCursorPrefix()
+			terminal.write(key)
+			await waitFor(
+				() => {
+					const after = nuCursorPrefix()
+					return (
+						after !== undefined &&
+						(key === `\t` || key.startsWith(`\x1b`)
+							? after !== before
+							: after === `${before}${key}`)
+					)
+				},
+				key === `\t` ? `Nushell completion insertion` : `Nushell input`,
+			)
+		}
+		terminal.write(`\n`)
+	} else {
+		terminal.write(`${line}\n`)
+	}
 	await waitFor(
 		() => existsSync(output) && statSync(output).size > 0,
 		`completed command output`,
