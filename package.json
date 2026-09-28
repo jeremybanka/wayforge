@@ -26,8 +26,6 @@
 		"fmt": "cross-env DPRINT_CACHE_DIR=$PWD/.cache/dprint dprint fmt .",
 		"gen": "dotenvx run -- turbo run gen",
 		"lint:fix:eslint": "eslint --fix .",
-		"nuke": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && find . -name 'dist' -type d -prune -exec rm -rf '{}' + && rm pnpm-lock.yaml",
-		"nv": "fnm use $(pnpm list -w --json | jq -r '.[0].path')",
 		"release:hooks": "dotenvx run -- turbo run version",
 		"release:publish": "bun run build && changeset publish",
 		"release:version": "./scripts/version.sh",
