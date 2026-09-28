@@ -291,8 +291,8 @@ importers:
         specifier: 11.19.0
         version: 11.19.0(typescript@7.0.2)
       ai:
-        specifier: 7.0.117
-        version: 7.0.117(zod@4.6.5)
+        specifier: 7.0.118
+        version: 7.0.118(zod@4.6.5)
       arktype:
         specifier: 2.2.5
         version: 2.2.5
@@ -832,8 +832,8 @@ importers:
 
 packages:
 
-  '@ai-sdk/gateway@4.0.95':
-    resolution: {integrity: sha512-vRL/iPIoc9RuXJU3zptq/XRs3t3ihvvPhnk3xtDGTJgL1qhmTv1vBQRrL5QKtiKSynO98c4w1UcDW9kJ5bnyGw==}
+  '@ai-sdk/gateway@4.0.96':
+    resolution: {integrity: sha512-1aniRTzEf9T7uRHdKnBQ36WgEVQswK6wDgkPVsNMl+sPy7otcmrBa2HEurdFBS51s1q3/UXlh8nNcguwU79Hkg==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -3302,8 +3302,8 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  ai@7.0.117:
-    resolution: {integrity: sha512-UM1GEpH3irNcddGEQrSxvp4rhTyPlo5akkG1zhEMUmRTZZu4NuAj45G5xMqJ1MBSKg1OJU3+J3MI0CfxGXm1QQ==}
+  ai@7.0.118:
+    resolution: {integrity: sha512-ZjkbbOffH09yQAjeZ5yGXd8ePTQlFIyKH5aW0s0LOMmvaR1TSoeg5wVURwLvFry/IzzaLndmw9glTKwWRoog3Q==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -5572,7 +5572,7 @@ packages:
 
 snapshots:
 
-  '@ai-sdk/gateway@4.0.95(zod@4.6.5)':
+  '@ai-sdk/gateway@4.0.96(zod@4.6.5)':
     dependencies:
       '@ai-sdk/provider': 4.0.18
       '@ai-sdk/provider-utils': 5.0.49(zod@4.6.5)
@@ -7499,9 +7499,9 @@ snapshots:
 
   acorn@8.16.0: {}
 
-  ai@7.0.117(zod@4.6.5):
+  ai@7.0.118(zod@4.6.5):
     dependencies:
-      '@ai-sdk/gateway': 4.0.95(zod@4.6.5)
+      '@ai-sdk/gateway': 4.0.96(zod@4.6.5)
       '@ai-sdk/provider': 4.0.18
       '@ai-sdk/provider-utils': 5.0.49(zod@4.6.5)
       zod: 4.6.5
