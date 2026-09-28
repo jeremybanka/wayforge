@@ -35,7 +35,7 @@
 		"tonnage:write": "turbo run tonnage:write",
 		"vigilance": "bun scripts/vigilance-bot.bun.ts",
 		"watch:types": "dotenvx run -- turbo run watch:types --concurrency=30",
-		"workflows:update": "bun scripts/update-workflows.bun.ts"
+		"workflows:update": "pnpm --filter upgrade-workflows run build && upgrade-workflows"
 	},
 	"devDependencies": {
 		"@changesets/cli": "3.0.3",
@@ -66,6 +66,7 @@
 		"tonnage": "0.1.3",
 		"turbo": "2.11.4",
 		"typescript": "npm:@typescript/typescript6@6.0.2",
+		"upgrade-workflows": "workspace:*",
 		"vitest": "5.0.2"
 	},
 	"packageManager": "pnpm@12.6.0",
