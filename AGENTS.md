@@ -17,4 +17,4 @@ Do not manually wrap Markdown prose at a fixed line width. Keep each paragraph a
 
 ## Repository commands
 
-Use the canonical command names in `docs/commands.md`: `fmt` writes formatting, `check` aggregates `check:*` validators, `test` runs once, and `verify` runs the complete repository verification sequence. Coverage commands use the `cov` prefix where implemented. Keep CI and documentation references aligned when changing commands.
+Use the canonical command names in `docs/commands.md`: `fmt` writes formatting, `check` aggregates `check:*` validators, and `test` runs once. Coverage commands use the `cov` prefix where implemented. Keep CI and documentation references aligned when changing commands.

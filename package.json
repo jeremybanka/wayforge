@@ -35,7 +35,6 @@
 		"test:semver": "CI=true dotenvx run -- turbo run test:semver",
 		"test:watch": "dotenvx run -- turbo run test:watch --concurrency=30",
 		"tonnage:write": "turbo run tonnage:write",
-		"verify": "pnpm run check && pnpm run test && pnpm run build && pnpm run cov:check && pnpm run test:semver",
 		"vigilance": "bun scripts/vigilance-bot.bun.ts",
 		"watch:types": "dotenvx run -- turbo run watch:types --concurrency=30",
 		"workflows:update": "bun scripts/update-workflows.bun.ts"

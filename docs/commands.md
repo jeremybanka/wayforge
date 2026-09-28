@@ -10,7 +10,6 @@ Run these commands from the repository root with `pnpm run <command>`. `mise.tom
 | `test`             | Run the normal test suite once and return a failing status when tests fail.                                              |
 | `test:watch`       | Watch the available interactive test suites.                                                                             |
 | `build`            | Build distributable artifacts.                                                                                           |
-| `verify`           | Run the repository checks, tests, builds, and implemented coverage or compatibility gates.                               |
 | `change`           | Author pending release notes.                                                                                            |
 | `release:version`  | Prepare versions and release metadata without publishing.                                                                |
 | `release:publish`  | Build as required by the release pipeline and publish packages.                                                          |
@@ -27,9 +26,7 @@ Run these commands from the repository root with `pnpm run <command>`. `mise.tom
 - `check:tonnage`: `turbo run check:tonnage`.
 - `check:tsc`: `dotenvx run -- turbo run check:tsc`.
 
-## Verification
-
-`pnpm run verify` executes `pnpm run check && pnpm run test && pnpm run build && pnpm run cov:check && pnpm run test:semver`. CI can run these constituent commands in separate jobs. Check failures must propagate to the caller.
+## Command notes
 
 Release compatibility checks need access to the Git remote and release tags.
 
