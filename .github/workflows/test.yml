@@ -64,7 +64,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
-      - run: pnpm tonnage:check
+      - run: pnpm check:tonnage
 
   Coverage:
     runs-on: ubuntu-latest
@@ -86,7 +86,7 @@ jobs:
         with:
           packages: bun node pnpm aqua:nushell/nushell carapace conda:zsh go github:fish-shell/fish-shell github:scop/bash-completion
       - run: git rev-parse HEAD > git.sha
-      - run: pnpm test:coverage:increased
+      - run: pnpm cov:check
         env:
           RECOVERAGE_CLOUD_TOKEN: ${{ secrets.RECOVERAGE_CLOUD_TOKEN }}
 

@@ -14,3 +14,7 @@ For packages below version 1.0.0:
 ## Markdown
 
 Do not manually wrap Markdown prose at a fixed line width. Keep each paragraph and each list item's prose on a single source line. Preserve structural line breaks for headings, lists, tables, and code blocks.
+
+## Repository commands
+
+Use the canonical command names in `docs/commands.md`: `fmt` writes formatting, `check` aggregates `check:*` validators, `test` runs once, and `verify` runs the complete repository verification sequence. Coverage commands use the `cov` prefix where implemented. Keep CI and documentation references aligned when changing commands.
