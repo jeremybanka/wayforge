@@ -47,6 +47,28 @@ describe(`global`, { timeout: 30_000 }, () => {
 		},
 	)
 
+	test.each([`nu`, `nu-carapace`, `nu-cobra`])(
+		`%s waits for delayed completions before continuing input`,
+		(shell) => {
+			const setup = path.join(directory, shell === `nu` ? `nushell` : shell)
+			withProfile(
+				setup,
+				`${readFileSync(setup, `utf8`)}\n$env.config.completions.external.completer = do { let previous = $env.config.completions.external.completer; {|spans| sleep 500ms; do $previous $spans } }\n`,
+				() => {
+					const result = runLineEditor(
+						shell,
+						`comline-fixture pr list --sta\tcl\t --base feat\t`,
+						`global`,
+					)
+					expect(JSON.parse(result).opts).toEqual({
+						state: `closed`,
+						base: `feature branch`,
+					})
+				},
+			)
+		},
+	)
+
 	test.each(completionTargets)(
 		`%s library installation writes and replaces with exact generator bytes`,
 		async (shell) => {
