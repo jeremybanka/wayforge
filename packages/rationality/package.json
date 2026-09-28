@@ -42,13 +42,8 @@
 		"check:eslint": "eslint -- .",
 		"check:oxlint": "oxlint --type-aware -c ../../.oxlintrc.jsonc .",
 		"check:tsc": "tsc --noEmit",
-		"lint": "pnpm run check",
-		"lint:eslint": "pnpm run check:eslint",
-		"lint:oxlint": "pnpm run check:oxlint",
-		"lint:types": "pnpm run check:tsc",
 		"postversion": "dprint fmt package.json",
 		"test": "vitest run",
-		"test:once": "pnpm run test",
 		"test:watch": "vitest --watch",
 		"watch:types": "tsc --watch --noEmit"
 	},
