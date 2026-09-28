@@ -18,7 +18,6 @@ import {
 	completionTargets,
 	directory,
 	environment,
-	hasNamedNushellInputs,
 	interactiveShells,
 	mode,
 	prepareCustomXdgPaths,
@@ -503,17 +502,12 @@ describe(`global`, { timeout: 30_000 }, () => {
 		try {
 			withProfile(
 				config,
-				`$env.config.completions.external.completer = {|place| let spans = match $place { {command: $spans} => $spans, _ => $place }; carapace $spans.0 nushell ...$spans | from json }\n`,
+				`$env.config.completions.external.completer = {|place: record| carapace $place.command.0 nushell ...$place.command | from json }\n`,
 				() => {
 					// Both the installed native handler and the pre-existing Carapace
 					// provider remain reachable, including after delegation in this session.
-					// Nu 0.115's commandline complete does not observe config
-					// changes here; its real editor is covered by the cases above.
-					const complete = hasNamedNushellInputs()
-						? `($name + ' pr li') | commandline complete --detailed`
-						: `do $env.config.completions.external.completer [$name pr li]`
 					const process = runNushell(`
-let results = [comline-fixture cobra-fixture other-fixture comline-fixture] | each {|name| ${complete} }
+let results = [comline-fixture cobra-fixture other-fixture comline-fixture] | each {|name| ($name + ' pr li') | commandline complete --detailed }
 print ($results | to json)
 `)
 					expect(process.status, process.stderr).toBe(0)
@@ -539,7 +533,7 @@ print ($results | to json)
 		}
 	})
 
-	test.for(
+	test.each(
 		[
 			[],
 			[`place`],
@@ -567,11 +561,7 @@ print ($results | to json)
 			]),
 	)(
 		`Nushell delegates named inputs ($signature) through multiple registrations`,
-		({ inputs, signature }, context) => {
-			if (!hasNamedNushellInputs()) {
-				context.skip()
-				return
-			}
+		({ inputs, signature }) => {
 			const fields = inputs.map((name) => `${name}: $${name}`).join(`, `)
 			const process = runNushell(`
 $env.config.completions.external.completer = {|${signature}|
@@ -606,11 +596,7 @@ print ({expected: $expected, before: $before, after: $after, repeated: $repeated
 		},
 	)
 
-	test(`Nushell retains legacy providers and attributes their deprecation to them`, (context) => {
-		if (!hasNamedNushellInputs()) {
-			context.skip()
-			return
-		}
+	test(`Nushell retains legacy providers and attributes their deprecation to them`, () => {
 		const process = runNushell(`
 $env.config.completions.external.completer = {|spans| [{value: sentinel, description: ($spans | to json --raw)}] }
 ${completionScript(`first-fixture`, `nushell`)}
@@ -634,13 +620,9 @@ print ($results | to json)
 		}
 	})
 
-	test.for([`null`, `[]`])(
+	test.each([`null`, `[]`])(
 		`Nushell preserves a previous provider returning %s`,
-		(result, context) => {
-			if (!hasNamedNushellInputs()) {
-				context.skip()
-				return
-			}
+		(result) => {
 			const process = runNushell(`
 $env.config.completions.external.completer = {|| ${result} }
 let before = 'another-cli "file with' | commandline complete --detailed

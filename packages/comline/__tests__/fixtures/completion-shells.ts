@@ -50,11 +50,6 @@ export function runNushell(script: string) {
 	})
 }
 
-export function hasNamedNushellInputs(): boolean {
-	const [major, minor] = run(`nu`, [`--version`]).trim().split(`.`).map(Number)
-	return (major ?? 0) > 0 || (minor ?? 0) >= 116
-}
-
 let completionCounter = 0
 
 export function completeInstalledValue(
@@ -255,7 +250,7 @@ beforeAll(() => {
 	for (const bridge of [`carapace`, `cobra`]) {
 		writeFileSync(
 			path.join(directory, `nu-${bridge}`),
-			`$env.config.completions.external.enable = true\n$env.config.completions.external.completer = {|place| let spans = match $place { {command: $spans} => $spans, _ => $place }; carapace ${bridge === `cobra` ? `cobra-fixture` : `comline-fixture`} nushell ...$spans | from json }\n`,
+			`$env.config.completions.external.enable = true\n$env.config.completions.external.completer = {|place: record| carapace ${bridge === `cobra` ? `cobra-fixture` : `comline-fixture`} nushell ...$place.command | from json }\n`,
 		)
 	}
 }, 120_000)
