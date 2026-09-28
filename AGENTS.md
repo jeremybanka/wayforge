@@ -1,5 +1,9 @@
 # Repository guidance
 
+## Dependency release age
+
+Packages authored by jeremybanka are exempt from minimum release age requirements at every version, including transitive dependencies. Keep their package names aligned between `minimumReleaseAgeExclude` in `pnpm-workspace.yaml` and the corresponding npm package rule in `renovate.json`. When adding a new first-party package, update both lists; do not restrict these exemptions to specific versions.
+
 ## Changesets
 
 Add or update a changeset whenever a change affects the functionality of a published package. Changesets should consolidate the consumer-visible differences between the current ref and the last release tag for that package.
