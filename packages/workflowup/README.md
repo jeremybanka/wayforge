@@ -1,6 +1,26 @@
 # workflowup
 
-Upgrade GitHub Actions to commit SHAs for the latest stable tags and update pinned `jdx/mise-action` tool versions. Extracted from Lasertag's Node workflow updater, with a reusable CLI and TypeScript API.
+Maintain SHA-pinned GitHub Actions without giving the routine dependency bot permission to rewrite workflows. `workflowup` provides a Node CLI and TypeScript API for upgrading action pins to the latest stable releases and updating pinned `jdx/mise-action` tool versions.
+
+## Why workflowup alongside Renovate?
+
+`workflowup` makes workflow maintenance practical while keeping workflow-writing authority out of the routine dependency updater. It grew out of repository-local updaters in our sister projects; this package shares Lasertag's Node approach so that maintaining that security posture does not require each project to maintain its own script.
+
+Renovate already supports [updating and SHA-pinning GitHub Actions](https://docs.renovatebot.com/modules/manager/github-actions/#digest-pinning-and-updating). Updating files under `.github/workflows` also requires [workflow-writing permission](https://docs.renovatebot.com/modules/platform/github/): `Workflows: write` for a GitHub App or fine-grained token, or the `workflow` scope for a classic personal access token. That authority can change the jobs that test, publish, and deploy the project, including jobs with access to secrets and privileged tokens.
+
+A dependency updater processes third-party metadata and, depending on configuration, runs package-manager scripts, plugins, or migration commands. Keeping its identity unable to write workflow definitions removes a sensitive capability from that process. In [Wayforge's Renovate job](https://github.com/jeremybanka/wayforge/blob/main/.github/workflows/renovate.yml), the requested App-token permissions omit workflow writing. Dashboard approval for action upgrades is an additional scheduling control; it does not grant the missing permission or substitute for restricting credentials.
+
+The intended division of responsibility is:
+
+1. Renovate maintains ordinary dependencies with credentials that lack workflow-writing permission.
+2. A maintainer runs `workflowup --dry-run`, then `workflowup`, in a trusted checkout. The tool reads upstream Git refs and edits local files; it does not push, open PRs, merge changes, or require remote write access. Private upstream repositories require read access through Git's authentication configuration.
+3. The maintainer reviews the generated diff and submits it through an identity authorized to change workflows. Workflow-writing credentials stay outside the routine Renovate job.
+
+This separates the permission to prepare an upgrade from the permission to publish workflow changes. Giving the routine dependency bot a workflow-writing token to run `workflowup` would undo that separation. The package supports the operating model; GitHub permissions and credential handling enforce the remote boundary.
+
+Mandatory SHA pinning supplies the other half of the policy: an approved action reference must keep identifying the same upstream revision after review. Tags can move, so upgrades produce full commit SHAs with readable version comments, and Docker action references must use digests. A repeatable command keeps those immutable pins maintainable without broadening the dependency bot's authority. GitHub describes the rationale in its [secure-use guidance](https://docs.github.com/en/actions/reference/security/secure-use#using-third-party-actions).
+
+This is one layer of protection. Source code, build scripts, and local composite actions can also affect CI execution, and may remain writable by the dependency bot. Branch protection, review, job permissions, and secret isolation still matter. SHA pinning does not audit upstream code or pin everything an action downloads; the exact scanning and failure guarantees are described below.
 
 ## Usage
 
