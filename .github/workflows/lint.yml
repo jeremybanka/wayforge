@@ -29,7 +29,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
-      - run: pnpm fmt
+      - run: pnpm check:fmt
 
   Dependencies:
     runs-on: ubuntu-latest
@@ -37,7 +37,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
-      - run: pnpm lint:deps
+      - run: pnpm check:deps
 
   ESLint:
     runs-on: ubuntu-latest
@@ -45,7 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
-      - run: pnpm lint:eslint
+      - run: pnpm check:eslint
 
   Oxlint:
     runs-on: ubuntu-latest
@@ -53,7 +53,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
-      - run: pnpm lint:oxlint
+      - run: pnpm check:oxlint
 
   Types:
     runs-on: ubuntu-latest
@@ -61,4 +61,4 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup
-      - run: pnpm lint:types
+      - run: pnpm check:tsc

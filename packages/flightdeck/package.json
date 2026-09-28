@@ -24,17 +24,17 @@
 		"src"
 	],
 	"scripts": {
-		"gen": "bun ./__scripts__/gen.bun.ts",
 		"build": "tsdown && rm -f dist/*.x.d.ts && bun ./__scripts__/build-lnav.bun.ts",
+		"check": "pnpm run check:eslint && pnpm run check:tsc && pnpm run check:oxlint",
+		"check:eslint": "eslint -- .",
+		"check:oxlint": "oxlint --type-aware -c ../../.oxlintrc.jsonc .",
+		"check:tsc": "tsc --noEmit",
+		"gen": "bun ./__scripts__/gen.bun.ts",
+		"postversion": "dprint fmt package.json",
 		"schema:flightdeck": "bun ./src/flightdeck.bin.ts --outdir=dist -- schema",
-		"lint:eslint": "eslint -- .",
-		"lint:oxlint": "oxlint --type-aware -c ../../.oxlintrc.jsonc .",
-		"lint:types": "tsc --noEmit",
-		"watch:types": "tsc --watch --noEmit",
-		"lint": "concurrently \"bun:lint:*\"",
-		"test": "vitest",
-		"test:once": "vitest run",
-		"postversion": "dprint fmt package.json"
+		"test": "vitest run",
+		"test:watch": "vitest --watch",
+		"watch:types": "tsc --watch --noEmit"
 	},
 	"dependencies": {
 		"@t3-oss/env-core": "0.13.11",

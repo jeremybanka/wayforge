@@ -13,5 +13,6 @@ pnpm = "12.6.0"
 ripgrep = "15.2.0"
 
 [env]
+_.path = ["{{config_root}}/node_modules/.bin"]
 # Jobs that install only a subset of tools may not have bash-completion.
 BASH_COMPLETION_FILE = { value = "{% if tools['github:scop/bash-completion'] is defined %}{{ tools['github:scop/bash-completion'].path }}/bash_completion{% else %}/usr/share/bash-completion/bash_completion{% endif %}", tools = true }
