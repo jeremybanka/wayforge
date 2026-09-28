@@ -1,4 +1,4 @@
-import { execFileSync } from "node:child_process"
+import { execFileSync, spawnSync } from "node:child_process"
 import {
 	mkdirSync,
 	mkdtempSync,
@@ -39,6 +39,15 @@ export function mode(kind: string): NodeJS.ProcessEnv {
 			path.delimiter +
 			environment[`PATH`],
 	}
+}
+
+export function runNushell(script: string) {
+	return spawnSync(`nu`, [`-i`, `--execute`, `${script}; exit`], {
+		cwd: directory,
+		env: mode(`global`),
+		encoding: `utf8`,
+		timeout: 60_000,
+	})
 }
 
 let completionCounter = 0
@@ -241,7 +250,7 @@ beforeAll(() => {
 	for (const bridge of [`carapace`, `cobra`]) {
 		writeFileSync(
 			path.join(directory, `nu-${bridge}`),
-			`$env.config.completions.external.enable = true\n$env.config.completions.external.completer = {|spans| carapace ${bridge === `cobra` ? `cobra-fixture` : `comline-fixture`} nushell ...$spans | from json }\n`,
+			`$env.config.completions.external.enable = true\n$env.config.completions.external.completer = {|place: record| carapace ${bridge === `cobra` ? `cobra-fixture` : `comline-fixture`} nushell ...$place.command | from json }\n`,
 		)
 	}
 }, 120_000)

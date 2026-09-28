@@ -24,6 +24,7 @@ import {
 	prepareLoginCompletionPaths,
 	run,
 	runLineEditor,
+	runNushell,
 	withProfile,
 } from "../fixtures/completion-shells"
 import { inputValues } from "../fixtures/contract-values"
@@ -501,22 +502,28 @@ describe(`global`, { timeout: 30_000 }, () => {
 		try {
 			withProfile(
 				config,
-				`$env.config.completions.external.completer = {|spans| carapace $spans.0 nushell ...$spans | from json }\n`,
+				`$env.config.completions.external.completer = {|place: record| carapace $place.command.0 nushell ...$place.command | from json }\n`,
 				() => {
 					// Both the installed native handler and the pre-existing Carapace
-					// provider remain reachable after a second command is autoloaded.
-					for (const name of [
-						`comline-fixture`,
-						`other-fixture`,
-						`cobra-fixture`,
-					]) {
-						const script = `print (do $env.config.completions.external.completer [${name} pr li] | to json); exit`
-						const result = JSON.parse(
-							run(`nu`, [`-i`, `--execute`, script], mode(`global`)),
-						)
+					// provider remain reachable, including after delegation in this session.
+					const process = runNushell(`
+let results = [comline-fixture cobra-fixture other-fixture comline-fixture] | each {|name| ($name + ' pr li') | commandline complete --detailed }
+print ($results | to json)
+`)
+					expect(process.status, process.stderr).toBe(0)
+					expect(process.stderr).toBe(``)
+					for (const result of JSON.parse(process.stdout)) {
 						expect(result.map((item: { value: string }) => item.value)).toEqual([
 							`list `,
 						])
+					}
+					for (const name of [`comline-fixture`, `other-fixture`]) {
+						const result = runLineEditor(
+							`nu`,
+							`${name} pr list --state cl\t`,
+							`global`,
+						)
+						expect(JSON.parse(result).opts).toEqual({ state: `closed` })
 					}
 				},
 			)
@@ -525,6 +532,113 @@ describe(`global`, { timeout: 30_000 }, () => {
 			rmSync(otherExecutable)
 		}
 	})
+
+	test.each(
+		[
+			[],
+			[`place`],
+			[`token`],
+			[`buffer`],
+			[`place`, `token`],
+			[`token`, `place`],
+			[`place`, `buffer`],
+			[`buffer`, `place`],
+			[`token`, `buffer`],
+			[`buffer`, `token`],
+			[`place`, `token`, `buffer`],
+			[`place`, `buffer`, `token`],
+			[`token`, `place`, `buffer`],
+			[`token`, `buffer`, `place`],
+			[`buffer`, `place`, `token`],
+			[`buffer`, `token`, `place`],
+		]
+			.map((inputs) => ({ inputs, signature: inputs.join(`, `) }))
+			.concat([
+				{
+					inputs: [`buffer`, `token`, `place`],
+					signature: `buffer?: string, token?: record, place?: record`,
+				},
+			]),
+	)(
+		`Nushell delegates named inputs ($signature) through multiple registrations`,
+		({ inputs, signature }) => {
+			const fields = inputs.map((name) => `${name}: $${name}`).join(`, `)
+			const process = runNushell(`
+$env.config.completions.external.completer = {|${signature}|
+    [{value: '"sentinel value"', description: ({${fields}} | to json --raw), append_whitespace: true, display_override: 'sentinel', style: green, extra: [details]}]
+}
+alias alias-cli = ^another-cli "alias arg"
+let lines = ['another-cli se', 'echo "é"; another-cli "quoted earlier" "" se', 'echo "é" | another-cli "quoted earlier" "" ', 'do { another-cli se', 'alias-cli se']
+let expected = $lines | each {|line| ${inputs.length ? `$line | commandline complete --input | select ${inputs.join(` `)}` : `{}`} }
+let before = $lines | each {|line| $line | commandline complete --detailed }
+${completionScript(`first-fixture`, `nushell`)}
+${completionScript(`second-fixture`, `nushell`)}
+let after = $lines | each {|line| $line | commandline complete --detailed }
+let repeated = $lines | each {|line| $line | commandline complete --detailed }
+print ({expected: $expected, before: $before, after: $after, repeated: $repeated} | to json)
+`)
+			expect(process.status, process.stderr).toBe(0)
+			expect(process.stderr).toBe(``)
+			const { expected, before, after, repeated } = JSON.parse(process.stdout)
+			expect(after).toEqual(before)
+			expect(repeated).toEqual(before)
+			for (const [index, candidates] of after.entries()) {
+				expect(candidates.map((item: { value: string }) => item.value)).toEqual([
+					`"sentinel value"`,
+				])
+				expect(JSON.parse(candidates[0].description)).toEqual(expected[index])
+				expect(candidates[0]).toMatchObject({
+					append_whitespace: true,
+					display_override: `sentinel`,
+					extra: [`details`],
+				})
+			}
+		},
+	)
+
+	test(`Nushell retains legacy providers and attributes their deprecation to them`, () => {
+		const process = runNushell(`
+$env.config.completions.external.completer = {|spans| [{value: sentinel, description: ($spans | to json --raw)}] }
+${completionScript(`first-fixture`, `nushell`)}
+${completionScript(`second-fixture`, `nushell`)}
+let results = 1..3 | each { 'another-cli "quoted earlier" "" se' | commandline complete --detailed }
+print ($results | to json)
+`)
+		expect(process.status, process.stderr).toBe(0)
+		expect(process.stderr.match(/nu::shell::deprecated/g)).toHaveLength(1)
+		expect(process.stderr).toContain(`\`spans\``)
+		for (const candidates of JSON.parse(process.stdout)) {
+			expect(candidates.map((item: { value: string }) => item.value)).toEqual([
+				`sentinel`,
+			])
+			expect(JSON.parse(candidates[0].description)).toEqual([
+				`another-cli`,
+				`"quoted earlier"`,
+				`""`,
+				`se`,
+			])
+		}
+	})
+
+	test.each([`null`, `[]`])(
+		`Nushell preserves a previous provider returning %s`,
+		(result) => {
+			const process = runNushell(`
+$env.config.completions.external.completer = {|| ${result} }
+let before = 'another-cli "file with' | commandline complete --detailed
+${completionScript(`first-fixture`, `nushell`)}
+${completionScript(`second-fixture`, `nushell`)}
+let after = 'another-cli "file with' | commandline complete --detailed
+print ({before: $before, after: $after} | to json)
+`)
+			expect(process.status, process.stderr).toBe(0)
+			expect(process.stderr).toBe(``)
+			const { before, after } = JSON.parse(process.stdout)
+			expect(after).toEqual(before)
+			if (result === `null`) expect(after.length).toBeGreaterThan(0)
+			else expect(after).toEqual([])
+		},
+	)
 })
 
 // Packaging needs discovery and execution coverage for every consumer, while the
