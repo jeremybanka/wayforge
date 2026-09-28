@@ -36,7 +36,30 @@
 			}
 		},
 		{
-			"matchPackageNames": ["@typescript/*", "atom.io", "recoverage", "tonnage"],
+			"matchPackageNames": ["@typescript/*"],
+			"minimumReleaseAge": null
+		},
+		{
+			"description": "Exempt packages authored by jeremybanka at every version; keep aligned with pnpm-workspace.yaml",
+			"matchDatasources": ["npm"],
+			"matchPackageNames": [
+				"atom.io",
+				"break-check",
+				"comline",
+				"flightdeck",
+				"jurist",
+				"luum",
+				"rationality",
+				"recoverage",
+				"rel8",
+				"safedeposit",
+				"takua",
+				"tonnage",
+				"treetrunks",
+				"tsdoc.json",
+				"varmint",
+				"venerate"
+			],
 			"minimumReleaseAge": null
 		},
 		{
