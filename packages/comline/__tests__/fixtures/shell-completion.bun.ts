@@ -4,6 +4,8 @@ import { stripVTControlCharacters } from "node:util"
 import { file, sleep, spawn, write } from "bun"
 
 // Exercise the actual line editor through a PTY, without loading user startup files.
+// Break Check keeps this driver at HEAD while restoring release tests and CLI
+// fixtures: terminal synchronization must match the currently installed shells.
 const [shell, setup, output, line] = process.argv.slice(2)
 if (!shell || !setup || !output || line === undefined) {
 	throw new Error(
