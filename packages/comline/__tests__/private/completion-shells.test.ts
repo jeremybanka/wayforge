@@ -53,7 +53,18 @@ describe(`global`, { timeout: 30_000 }, () => {
 			const setup = path.join(directory, shell === `nu` ? `nushell` : shell)
 			withProfile(
 				setup,
-				`${readFileSync(setup, `utf8`)}\n$env.config.completions.external.completer = do { let previous = $env.config.completions.external.completer; {|spans| sleep 500ms; do $previous $spans } }\n`,
+				`${readFileSync(setup, `utf8`)}
+$env.config.completions.external.completer = do {
+    let previous = $env.config.completions.external.completer
+    {|buffer: string|
+        sleep 500ms
+        do {
+            $env.config.completions.external.completer = $previous
+            $buffer | commandline complete --detailed
+        }
+    }
+}
+`,
 				() => {
 					const result = runLineEditor(
 						shell,
