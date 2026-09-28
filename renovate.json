@@ -58,7 +58,8 @@
 				"treetrunks",
 				"tsdoc.json",
 				"varmint",
-				"venerate"
+				"venerate",
+				"workflowup"
 			],
 			"minimumReleaseAge": null
 		},

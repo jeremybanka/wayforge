@@ -22,6 +22,7 @@ minimumReleaseAgeExclude:
   - tsdoc.json
   - varmint
   - venerate
+  - workflowup
 autoInstallPeers: false
 hoist: false
 verifyDepsBeforeRun: error
