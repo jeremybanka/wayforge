@@ -6,7 +6,9 @@ import { fileURLToPath, pathToFileURL } from "node:url"
 
 import { afterEach, beforeEach, expect, it } from "vitest"
 
-const cli = fileURLToPath(new URL(`../src/cli.ts`, import.meta.url))
+const cli = fileURLToPath(
+	new URL(`../bin/upgrade-workflows.js`, import.meta.url),
+)
 let root: string
 
 beforeEach(async () => {
