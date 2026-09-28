@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Codium
         id: codium-pr-agent
-        uses: docker://codiumai/pr-agent:0.34-github_action
+        uses: docker://codiumai/pr-agent@sha256:c8112ac5d6ac958530d9f0002c3faa602020904c7ffbb0d1cc25dc91c898080f # 0.34-github_action
         env:
           OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

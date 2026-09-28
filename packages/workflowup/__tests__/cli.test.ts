@@ -6,13 +6,11 @@ import { fileURLToPath, pathToFileURL } from "node:url"
 
 import { afterEach, beforeEach, expect, it } from "vitest"
 
-const cli = fileURLToPath(
-	new URL(`../bin/upgrade-workflows.js`, import.meta.url),
-)
+const cli = fileURLToPath(new URL(`../bin/workflowup.js`, import.meta.url))
 let root: string
 
 beforeEach(async () => {
-	root = await mkdtemp(path.join(os.tmpdir(), `upgrade-workflows-cli-`))
+	root = await mkdtemp(path.join(os.tmpdir(), `workflowup-cli-`))
 })
 afterEach(async () => {
 	await rm(root, { recursive: true, force: true })
@@ -44,6 +42,9 @@ it(`resolves real annotated Git tags, previews, applies, and exits cleanly`, asy
 	git(`commit`, `--allow-empty`, `-m`, `second`)
 	git(`tag`, `-a`, `v2.3.4`, `-m`, `release`)
 	const commit = git(`rev-parse`, `HEAD`)
+	git(`commit`, `--allow-empty`, `-m`, `prerelease`)
+	git(`tag`, `-a`, `v3.0.0-beta.1`, `-m`, `prerelease`)
+	const prereleaseCommit = git(`rev-parse`, `HEAD`)
 	const env = {
 		...process.env,
 		GIT_CONFIG_COUNT: `1`,
@@ -53,7 +54,7 @@ it(`resolves real annotated Git tags, previews, applies, and exits cleanly`, asy
 	const repo = path.join(root, `consumer`)
 	await mkdir(path.join(repo, `.github/workflows`), { recursive: true })
 	const file = path.join(repo, `.github/workflows/check.yml`)
-	const source = `jobs:\n  test:\n    steps:\n      - uses: acme/action@v1\n`
+	const source = `jobs:\n  test:\n    steps:\n      - uses: acme/action@v1\n      - uses: acme/action@v3.0.0-beta.1\n`
 	await writeFile(file, source)
 	const preview = spawnSync(
 		process.execPath,
@@ -73,6 +74,18 @@ it(`resolves real annotated Git tags, previews, applies, and exits cleanly`, asy
 	expect(await readFile(file, `utf8`)).toContain(
 		`acme/action@${commit} # v2.3.4`,
 	)
+	expect(await readFile(file, `utf8`)).toContain(
+		`acme/action@${prereleaseCommit} # v3.0.0-beta.1`,
+	)
+	await writeFile(file, source + `      - uses: acme/action@main\n`)
+	const unsafe = spawnSync(process.execPath, [cli, `--cwd`, repo], {
+		env,
+		encoding: `utf8`,
+	})
+	expect(unsafe.status).toBe(1)
+	expect(await readFile(file, `utf8`)).toBe(
+		source + `      - uses: acme/action@main\n`,
+	)
 })
 
 it(`prints help and rejects unknown flags without touching the repository`, () => {
@@ -81,8 +94,8 @@ it(`prints help and rejects unknown flags without touching the repository`, () =
 		encoding: `utf8`,
 	})
 	expect(help.status).toBe(0)
-	expect(help.stdout).toContain(`upgrade-workflows [--dry-run]`)
-	const invalid = spawnSync(process.execPath, [cli, `--dryrun`], {
+	expect(help.stdout).toContain(`workflowup [--dry-run]`)
+	const invalid = spawnSync(process.execPath, [cli, `--no-pin`], {
 		cwd: root,
 		encoding: `utf8`,
 	})

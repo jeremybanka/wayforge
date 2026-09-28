@@ -9,18 +9,19 @@ import { upgradeWorkflows } from "../src/workflows.ts"
 
 vi.mock(`../src/releases.ts`, async (importOriginal) => ({
 	...(await importOriginal<typeof releases>()),
-	latestRelease: vi.fn(),
+	readReleases: vi.fn(),
 }))
 
 const old = `1`.repeat(40)
 const next = `2`.repeat(40)
+function snapshot(version = `2.3.4`): releases.Releases {
+	return { latest: { version, commit: next }, tags: new Map() }
+}
 let root: string
 
 beforeEach(async () => {
-	root = await mkdtemp(path.join(os.tmpdir(), `upgrade-workflows-`))
-	vi.mocked(releases.latestRelease)
-		.mockReset()
-		.mockResolvedValue({ version: `2.3.4`, commit: next })
+	root = await mkdtemp(path.join(os.tmpdir(), `workflowup-`))
+	vi.mocked(releases.readReleases).mockReset().mockResolvedValue(snapshot())
 })
 
 afterEach(async () => {
@@ -65,7 +66,7 @@ describe(`workflow upgrades`, () => {
 		const source = await readFile(file, `utf8`)
 		expect(source).toContain(`uses: owner/action@${next} # v2.3.4 reviewed`)
 		expect(source).toContain(`uses: 'owner/action@${next}' # v2.3.4`)
-		expect(releases.latestRelease).toHaveBeenCalledTimes(1)
+		expect(releases.readReleases).toHaveBeenCalledTimes(1)
 	})
 
 	it(`handles composite actions, subpaths, and reusable workflows with one lookup per repository`, async () => {
@@ -84,17 +85,16 @@ describe(`workflow upgrades`, () => {
 		expect(await readFile(reusable, `utf8`)).toContain(
 			`owner/actions/.github/workflows/check.yml@${next} # v2.3.4`,
 		)
-		expect(releases.latestRelease).toHaveBeenCalledExactlyOnceWith(
+		expect(releases.readReleases).toHaveBeenCalledExactlyOnceWith(
 			`owner/actions`,
 		)
 	})
 
 	it(`updates mise only within its own with block, even if the action has a custom SHA`, async () => {
-		vi.mocked(releases.latestRelease).mockImplementation((repository) =>
-			Promise.resolve({
-				version: repository === `jdx/mise` ? `2026.9.1` : `2.3.4`,
-				commit: next,
-			}),
+		vi.mocked(releases.readReleases).mockImplementation((repository) =>
+			Promise.resolve(
+				snapshot(repository === `jdx/mise` ? `2026.9.1` : `2.3.4`),
+			),
 		)
 		const source = workflow(
 			`      - uses: jdx/mise-action@${old}\n        with:\n          version: "2026.1.1" # pinned tool\n      - uses: jdx/mise-action@v1\n      - uses: owner/action@v1\n        with:\n          version: 2025.1.1`,
@@ -105,20 +105,70 @@ describe(`workflow upgrades`, () => {
 		expect(updated).toContain(`version: "2026.9.1" # pinned tool`)
 		expect(updated).toContain(`version: 2025.1.1`)
 		expect(updated).toContain(`jdx/mise-action@${old}`)
-		expect(releases.latestRelease).toHaveBeenCalledWith(`jdx/mise`)
+		expect(releases.readReleases).toHaveBeenCalledWith(`jdx/mise`)
 	})
 
-	it(`ignores shell text, custom pins, YAML aliases, and unrelated files`, async () => {
+	it(`preserves local actions, Docker digests, unannotated SHAs, shell text, and unrelated files`, async () => {
 		const source = workflow(
-			`      - run: |\n          uses: owner/fake@v1\n      - uses: ./local/action\n      - uses: ./local/action@v1\n      - uses: docker://alpine:3\n      - uses: owner/action@main # v1\n      - uses: owner/action@${old}\n      - uses: &action owner/action@v1\n      - uses: *action\n      - { uses: owner/action@v1 }`,
+			`      - run: |\n          uses: owner/fake@v1\n      - uses: ./local/action\n      - uses: ./local/action@v1\n      - uses: docker://alpine@sha256:${`a`.repeat(64)}\n      - uses: owner/action@${old}`,
 		)
 		const file = await fixture(source)
 		await fixture(`uses: owner/action@v1\n`, `.github/dependabot.yml`)
 		const result = await upgradeWorkflows({ cwd: root })
 		expect(result.updates).toEqual([])
 		expect(await readFile(file, `utf8`)).toBe(source)
-		expect(releases.latestRelease).not.toHaveBeenCalled()
+		expect(releases.readReleases).not.toHaveBeenCalled()
 	})
+
+	it.each([
+		`      - uses: owner/action@main # v1`,
+		`      - uses: owner/action@abcdef1`,
+		`      - uses: owner/action@release-1`,
+		`      - uses: docker://alpine:3`,
+		`      - uses: docker://alpine@sha256:abc`,
+		`      - uses: &action owner/action@v1\n      - uses: *action`,
+		`      - &step { uses: owner/action@v1 }\n      - *step`,
+		`      - { uses: owner/action@v1 }`,
+		`      - uses: |\n          owner/action@v1`,
+		`      - uses: \${{ github.action }}`,
+		`      - <<: { uses: owner/action@v1 }`,
+	])(`rejects unsafe or unsupported uses before writing: %s`, async (step) => {
+		const source = workflow(`      - uses: owner/action@v1`)
+		const file = await fixture(source)
+		await fixture(workflow(step), `.github/workflows/unsafe.yml`)
+		await expect(upgradeWorkflows({ cwd: root })).rejects.toThrow()
+		await expect(upgradeWorkflows({ cwd: root, dryRun: true })).rejects.toThrow()
+		expect(await readFile(file, `utf8`)).toBe(source)
+		expect(releases.readReleases).not.toHaveBeenCalled()
+	})
+
+	it(`does not silently skip aliased job or step collections`, async () => {
+		await fixture(
+			`template: &steps\n  - uses: owner/action@main\njobs:\n  test:\n    steps: *steps\n`,
+		)
+		await expect(upgradeWorkflows({ cwd: root })).rejects.toThrow()
+	})
+
+	it(`fails without writes if a newer mutable tag cannot be pinned`, async () => {
+		const source = workflow(
+			`      - uses: owner/action@v1\n      - uses: owner/action@v3.0.0`,
+		)
+		const file = await fixture(source)
+		await expect(upgradeWorkflows({ cwd: root })).rejects.toThrow(`Cannot pin`)
+		expect(await readFile(file, `utf8`)).toBe(source)
+	})
+
+	it.each([{ pin: false }, { dryRun: `false` }, { cwd: `` }, null])(
+		`rejects unsupported or invalid API options: %j`,
+		async (options) => {
+			await expect(
+				upgradeWorkflows(
+					options as unknown as Parameters<typeof upgradeWorkflows>[0],
+				),
+			).rejects.toThrow()
+			expect(releases.readReleases).not.toHaveBeenCalled()
+		},
+	)
 
 	it(`dry runs plan exactly the same edits without writing`, async () => {
 		const source = workflow(`      - uses: owner/action@v1`)
@@ -129,13 +179,22 @@ describe(`workflow upgrades`, () => {
 		expect(dry).toEqual(applied)
 	})
 
-	it(`does not downgrade newer stable or prerelease refs`, async () => {
+	it(`pins exact newer tags without downgrading them`, async () => {
+		vi.mocked(releases.readReleases).mockResolvedValue({
+			...snapshot(),
+			tags: new Map([
+				[`v3.0.0`, old],
+				[`v3.0.0-beta.1`, old],
+			]),
+		})
 		const source = workflow(
 			`      - uses: owner/action@v3.0.0\n      - uses: owner/action@v3.0.0-beta.1`,
 		)
 		const file = await fixture(source)
-		expect((await upgradeWorkflows({ cwd: root })).files).toEqual([])
-		expect(await readFile(file, `utf8`)).toBe(source)
+		await upgradeWorkflows({ cwd: root })
+		const updated = await readFile(file, `utf8`)
+		expect(updated).toContain(`owner/action@${old} # v3.0.0\n`)
+		expect(updated).toContain(`owner/action@${old} # v3.0.0-beta.1`)
 	})
 
 	it(`compares each SHA separately even when version annotations agree`, async () => {
@@ -154,7 +213,7 @@ describe(`workflow upgrades`, () => {
 			files: [],
 			updates: [],
 		})
-		expect(releases.latestRelease).not.toHaveBeenCalled()
+		expect(releases.readReleases).not.toHaveBeenCalled()
 		await fixture(workflow(`      - uses: owner/action@v1`))
 		await upgradeWorkflows({ cwd: root })
 		expect((await upgradeWorkflows({ cwd: root })).files).toEqual([])
@@ -167,10 +226,10 @@ describe(`workflow upgrades`, () => {
 			workflow(`      - uses: owner/missing@v1`),
 			`.github/workflows/other.yml`,
 		)
-		vi.mocked(releases.latestRelease).mockImplementation((repository) => {
+		vi.mocked(releases.readReleases).mockImplementation((repository) => {
 			if (repository === `owner/missing`)
 				return Promise.reject(new Error(`remote unavailable`))
-			return Promise.resolve({ version: `2.3.4`, commit: next })
+			return Promise.resolve(snapshot())
 		})
 		await expect(upgradeWorkflows({ cwd: root })).rejects.toThrow(
 			`remote unavailable`,
@@ -184,14 +243,14 @@ describe(`workflow upgrades`, () => {
 		await expect(upgradeWorkflows({ cwd: root })).rejects.toThrow(
 			`Invalid workflow YAML`,
 		)
-		expect(releases.latestRelease).not.toHaveBeenCalled()
+		expect(releases.readReleases).not.toHaveBeenCalled()
 	})
 
 	it(`refuses to overwrite a file edited during remote resolution`, async () => {
 		const file = await fixture(workflow(`      - uses: owner/action@v1`))
-		vi.mocked(releases.latestRelease).mockImplementationOnce(async () => {
+		vi.mocked(releases.readReleases).mockImplementationOnce(async () => {
 			await writeFile(file, `# user edit\n`)
-			return Promise.resolve({ version: `2.3.4`, commit: next })
+			return Promise.resolve(snapshot())
 		})
 		await expect(upgradeWorkflows({ cwd: root })).rejects.toThrow(
 			`Workflow changed while resolving upgrades`,

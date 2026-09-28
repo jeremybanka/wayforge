@@ -30,7 +30,7 @@ Following the [mise Node.js cookbook](https://mise.jdx.dev/mise-cookbook/nodejs.
 
 ## Command notes
 
-`workflows:update` builds and runs the workspace `upgrade-workflows` package, extracted from Lasertag's Node updater. Use `pnpm run workflows:update --dry-run` to preview action SHA and mise version upgrades. The package also provides a CLI and TypeScript API for other repositories; see [its documentation](../packages/upgrade-workflows/README.md).
+`workflows:update` builds and runs the workspace `workflowup` package, extracted from Lasertag's Node updater. Use `pnpm run workflows:update --dry-run` to preview action SHA and mise version upgrades. The package also provides a CLI and TypeScript API for other repositories; see [its documentation](../packages/workflowup/README.md).
 
 Release compatibility checks need access to the Git remote and release tags.
 

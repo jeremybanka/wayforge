@@ -12,7 +12,7 @@ try {
 	})
 	if (values.help) {
 		console.log(
-			`Usage: upgrade-workflows [--dry-run] [--cwd <repository>]\n\nUpgrade GitHub Actions to stable release SHAs and update pinned mise versions.\nRequires Node.js and Git. --dry-run resolves upgrades without writing files.`,
+			`Usage: workflowup [--dry-run] [--cwd <repository>]\n\nUpgrade GitHub Actions to stable release SHAs and update pinned mise versions.\nRequires Node.js and Git. --dry-run resolves upgrades without writing files.`,
 		)
 	} else {
 		const result = await upgradeWorkflows({

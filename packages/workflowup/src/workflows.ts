@@ -2,10 +2,10 @@ import { readdir, readFile, writeFile } from "node:fs/promises"
 import path from "node:path"
 
 import type { Scalar } from "yaml"
-import { isMap, isScalar, isSeq, parseDocument } from "yaml"
+import { isAlias, isMap, isScalar, isSeq, parseDocument } from "yaml"
 
-import type { Release } from "./releases.ts"
-import { compareVersions, latestRelease, parseVersion } from "./releases.ts"
+import type { Releases } from "./releases.ts"
+import { compareVersions, parseVersion, readReleases } from "./releases.ts"
 
 export type UpgradeOptions = {
 	/** Repository root. Defaults to the current working directory. */
@@ -53,6 +53,7 @@ const SHA = /^[0-9a-f]{40}$/i
 export async function upgradeWorkflows(
 	options: UpgradeOptions = {},
 ): Promise<UpgradeResult> {
+	validateOptions(options)
 	const root = path.resolve(options.cwd ?? process.cwd())
 	const files = await listWorkflowFiles(path.join(root, `.github`))
 	const sources = new Map<string, string>()
@@ -63,24 +64,33 @@ export async function upgradeWorkflows(
 		occurrences.push(...collectOccurrences(file, source))
 	}
 
-	const releases = new Map<string, Promise<Release>>()
+	const releases = new Map<string, Promise<Releases>>()
 	const updates = await Promise.all(
 		occurrences.map(async (occurrence): Promise<WorkflowUpdate> => {
 			let pending = releases.get(occurrence.repository)
 			if (!pending) {
-				pending = latestRelease(occurrence.repository)
+				pending = readReleases(occurrence.repository)
 				releases.set(occurrence.repository, pending)
 			}
-			const target = await pending
+			const { latest: target, tags } = await pending
 			const currentVersion = parseVersion(occurrence.currentVersion)!
 			const targetVersion = parseVersion(target.version)!
 			// A prerelease or a private mirror may already be ahead of stable tags.
 			const canUpgrade = compareVersions(targetVersion, currentVersion) >= 0
-			const targetRef = canUpgrade
+			let targetRef = canUpgrade
 				? occurrence.kind === `action`
 					? target.commit
 					: target.version
 				: occurrence.currentRef
+			if (occurrence.kind === `action` && !SHA.test(targetRef)) {
+				const pinned = tags.get(targetRef)
+				if (!pinned || !SHA.test(pinned)) {
+					throw new Error(
+						`Cannot pin ${occurrence.dependency}@${targetRef} in ${occurrence.filePath}: no matching remote tag`,
+					)
+				}
+				targetRef = pinned
+			}
 			const version = canUpgrade ? target.version : occurrence.currentVersion
 			return {
 				filePath: occurrence.filePath,
@@ -183,14 +193,30 @@ function collectOccurrences(filePath: string, source: string): Occurrence[] {
 		)
 	}
 	const root = document.contents
-	if (!isMap(root)) return []
+	if (!isMap(root)) throw new Error(`Expected a YAML mapping in ${filePath}`)
 	const occurrences: Occurrence[] = []
+	function unsupported(reason: string): never {
+		throw new Error(`${reason} in ${filePath}`)
+	}
+	if (root.has(`<<`)) unsupported(`YAML merge keys`)
 	function collectStep(value: unknown): void {
+		if (isAlias(value)) unsupported(`YAML aliases in jobs or steps`)
 		if (!isMap(value)) return
+		if (value.has(`<<`)) unsupported(`YAML merge keys in jobs or steps`)
+		if (!value.has(`uses`)) return
 		const node = value.get(`uses`, true)
-		if (!inlineString(node, source) || node.value.startsWith(`./`)) return
+		if (!inlineString(node, source))
+			unsupported(
+				`uses must be a plain or quoted inline string without anchors, aliases, or flow syntax`,
+			)
+		if (node.value.startsWith(`./`)) return
+		if (node.value.startsWith(`docker://`)) {
+			if (!/^docker:\/\/[^\s@]+@sha256:[0-9a-f]{64}$/i.test(node.value))
+				unsupported(`Docker action ${node.value} must use a sha256 digest`)
+			return
+		}
 		const match = ACTION.exec(node.value)
-		if (!match) return
+		if (!match) unsupported(`Unsupported action reference ${node.value}`)
 		const repository = match[1]!
 		const dependency = repository + match[2]!
 		const currentRef = match[3]!
@@ -198,12 +224,16 @@ function collectOccurrences(filePath: string, source: string): Occurrence[] {
 		const commentToken = /^\s*#\s*(\S+)/.exec(suffix)?.[1]
 		const commentVersion =
 			commentToken && parseVersion(commentToken) ? commentToken : undefined
-		// Branches, expressions, and unannotated SHAs are intentional custom pins.
+		// A SHA without a version comment is already immutable; do not guess its release.
 		const currentVersion = SHA.test(currentRef)
 			? commentVersion
 			: parseVersion(currentRef)
 				? currentRef
 				: undefined
+		if (!currentVersion && !SHA.test(currentRef))
+			unsupported(
+				`Cannot pin ${node.value}: use a numeric release tag or a full commit SHA`,
+			)
 		if (currentVersion) {
 			occurrences.push({
 				filePath,
@@ -236,18 +266,22 @@ function collectOccurrences(filePath: string, source: string): Occurrence[] {
 		})
 	}
 	function collectSteps(value: unknown): void {
+		if (isAlias(value)) unsupported(`YAML aliases for steps`)
 		if (isSeq(value)) for (const step of value.items) collectStep(step)
 	}
 	const jobs = root.get(`jobs`, true)
+	if (isAlias(jobs)) unsupported(`YAML aliases for jobs`)
 	if (isMap(jobs)) {
+		if (jobs.has(`<<`)) unsupported(`YAML merge keys for jobs`)
 		for (const job of jobs.items) {
 			collectStep(job.value)
 			if (isMap(job.value)) collectSteps(job.value.get(`steps`, true))
 		}
 	}
 	const runs = root.get(`runs`, true)
-	if (isMap(runs) && runs.get(`using`) === `composite`)
-		collectSteps(runs.get(`steps`, true))
+	if (isAlias(runs) || (isMap(runs) && runs.has(`<<`)))
+		unsupported(`YAML aliases or merge keys for runs`)
+	if (isMap(runs)) collectSteps(runs.get(`steps`, true))
 	return occurrences
 }
 
@@ -270,4 +304,20 @@ function inlineString(node: unknown, source: string): node is Scalar<string> {
 		!/[\r\n]/.test(source.slice(node.range![0], node.range![1])) &&
 		/^[\t ]*(?:#.*)?$/.test(inlineSuffix(node, source))
 	)
+}
+
+function validateOptions(options: UpgradeOptions): void {
+	if (!options || typeof options !== `object` || Array.isArray(options))
+		throw new TypeError(`workflowup options must be an object`)
+	for (const key of Object.keys(options)) {
+		if (key !== `cwd` && key !== `dryRun`)
+			throw new TypeError(`Unknown workflowup option: ${key}`)
+	}
+	if (
+		options.cwd !== undefined &&
+		(typeof options.cwd !== `string` || !options.cwd.trim())
+	)
+		throw new TypeError(`cwd must be a nonempty string`)
+	if (options.dryRun !== undefined && typeof options.dryRun !== `boolean`)
+		throw new TypeError(`dryRun must be a boolean`)
 }

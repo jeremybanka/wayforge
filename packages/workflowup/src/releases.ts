@@ -12,6 +12,7 @@ export type Version = {
 }
 
 export type Release = { version: string; commit: string }
+export type Releases = { latest: Release; tags: Map<string, string> }
 
 export function parseVersion(value: string): Version | null {
 	const match =
@@ -43,7 +44,7 @@ export function compareVersions(left: Version, right: Version): number {
 
 // Read direct and peeled refs together so annotated tags resolve to commits,
 // and the selected tag and SHA come from the same remote snapshot.
-export async function latestRelease(repository: string): Promise<Release> {
+export async function readReleases(repository: string): Promise<Releases> {
 	const remote = `https://github.com/${repository}.git`
 	const { stdout } = await execFileAsync(
 		`git`,
@@ -55,15 +56,24 @@ export async function latestRelease(repository: string): Promise<Release> {
 			env: { ...process.env, GIT_TERMINAL_PROMPT: `0` },
 		},
 	)
-	return selectRelease(stdout, repository)
+	const tags = parseTags(stdout)
+	return { latest: selectRelease(stdout, repository), tags }
 }
 
-export function selectRelease(output: string, repository: string): Release {
+function parseTags(output: string): Map<string, string> {
 	const refs = new Map<string, string>()
 	for (const line of output.split(/\r?\n/)) {
 		const match = /^([0-9a-f]{40})\s+refs\/tags\/(.+)$/i.exec(line)
 		if (match) refs.set(match[2]!, match[1]!)
 	}
+	for (const [tag, commit] of refs) {
+		if (tag.endsWith(`^{}`)) refs.set(tag.slice(0, -3), commit)
+	}
+	return refs
+}
+
+export function selectRelease(output: string, repository: string): Release {
+	const refs = parseTags(output)
 	const tags = [...refs.keys()].flatMap((tag) => {
 		const version = parseVersion(tag)
 		return version && !version.prerelease ? [{ tag, version }] : []
