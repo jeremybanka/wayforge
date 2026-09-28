@@ -2,6 +2,8 @@
 
 Run these commands from the repository root with `pnpm run <command>`. `mise.toml` selects the toolchain. Package-level commands keep the same meaning while narrowing their scope.
 
+Following the [mise Node.js cookbook](https://mise.jdx.dev/mise-cookbook/nodejs.html#add-node-modules-binaries-to-the-path), mise adds the repository root’s `node_modules/.bin` to `PATH`. With shell activation or `mise exec -- <tool>`, installed dependency CLIs are available from the root and package directories.
+
 | Command            | Contract                                                                                                                 |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------------ |
 | `fmt`              | Apply the repository formatting policy.                                                                                  |
