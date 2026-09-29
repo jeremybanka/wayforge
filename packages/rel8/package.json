@@ -54,7 +54,7 @@
 		"watch:types": "tsc --watch --noEmit"
 	},
 	"dependencies": {
-		"atom.io": "0.53.2"
+		"atom.io": "0.53.3"
 	},
 	"devDependencies": {
 		"concurrently": "10.0.5",
