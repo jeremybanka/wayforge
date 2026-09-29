@@ -24,7 +24,7 @@
 		"src"
 	],
 	"scripts": {
-		"build": "tsdown && rm -f dist/*.x.d.ts && bun ./__scripts__/build-lnav.bun.ts",
+		"build": "tsdown && bun ./__scripts__/build-lnav.bun.ts",
 		"check": "pnpm run check:eslint && pnpm run check:tsc && pnpm run check:oxlint",
 		"check:eslint": "eslint -- .",
 		"check:oxlint": "oxlint --type-aware -c ../../.oxlintrc.jsonc .",
