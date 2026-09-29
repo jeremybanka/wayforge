@@ -1,3 +1,6 @@
+// Separate overloads intentionally exercise documentation extraction.
+/* oxlint-disable typescript/unified-signatures */
+
 /**
  * @overload MyFunction Overload 0
  * @public
