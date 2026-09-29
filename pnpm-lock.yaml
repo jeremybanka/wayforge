@@ -465,8 +465,8 @@ importers:
         specifier: 10.11.0
         version: 10.11.0(jiti@2.7.0)(supports-color@10.2.2)
       recoverage:
-        specifier: 0.1.18
-        version: 0.1.18(supports-color@10.2.2)(typescript@7.0.2)(zod@4.6.5)
+        specifier: 0.1.19
+        version: 0.1.19(supports-color@10.2.2)(typescript@7.0.2)(zod@4.6.5)
       tsdown:
         specifier: 0.23.0
         version: 0.23.0(@tsdown/css@0.23.0)(@volar/typescript@2.4.28(typescript@7.0.2))(tsx@4.22.1)(typescript@7.0.2)
@@ -699,8 +699,8 @@ importers:
         specifier: 10.11.0
         version: 10.11.0(jiti@2.7.0)(supports-color@10.2.2)
       recoverage:
-        specifier: 0.1.18
-        version: 0.1.18(supports-color@10.2.2)(typescript@7.0.2)(zod@4.5.4)
+        specifier: 0.1.19
+        version: 0.1.19(supports-color@10.2.2)(typescript@7.0.2)(zod@4.5.4)
       tsdown:
         specifier: 0.23.0
         version: 0.23.0(@tsdown/css@0.23.0)(@volar/typescript@2.4.28(typescript@7.0.2))(tsx@4.22.1)(typescript@7.0.2)
@@ -815,8 +815,8 @@ importers:
         specifier: 10.11.0
         version: 10.11.0(jiti@2.7.0)(supports-color@10.2.2)
       recoverage:
-        specifier: 0.1.18
-        version: 0.1.18(supports-color@10.2.2)(typescript@7.0.2)(zod@4.5.4)
+        specifier: 0.1.19
+        version: 0.1.19(supports-color@10.2.2)(typescript@7.0.2)(zod@4.5.4)
       tsdown:
         specifier: 0.23.0
         version: 0.23.0(@tsdown/css@0.23.0)(@volar/typescript@2.4.28(typescript@7.0.2))(tsx@4.22.1)(typescript@7.0.2)
@@ -4855,8 +4855,8 @@ packages:
     resolution: {integrity: sha512-Kko+Y5XQ6fM+Ce3dq3m9YGxnacYZYl9cA1wZjaF3Vbry2L3i1qVg8+CAgNPsXRArPMUMCaOR7oa9Nqntc43JKA==}
     engines: {node: '>= 20.19.0'}
 
-  recoverage@0.1.18:
-    resolution: {integrity: sha512-xyNQk4T7IEyEuQva5g3dmIba3xUgAbFYdO5F7eKtxPj8UWE3fvCH074QYiA2nm3xM5bUgX5Eq8VKRGkbOoiQ0w==}
+  recoverage@0.1.19:
+    resolution: {integrity: sha512-HGNdxZKrCFt9cfT2kFDgSVNtR2kRn5lZ1JvgWwf6vfUAZusncn2oice0dBvWDesxgQglL2nYa09DS0evKrZsTA==}
     hasBin: true
 
   require-directory@2.1.1:
@@ -9030,7 +9030,7 @@ snapshots:
 
   readdirp@5.1.1: {}
 
-  recoverage@0.1.18(supports-color@10.2.2)(typescript@7.0.2)(zod@4.5.4):
+  recoverage@0.1.19(supports-color@10.2.2)(typescript@7.0.2)(zod@4.5.4):
     dependencies:
       '@t3-oss/env-core': 0.13.11(arktype@2.2.5)(typescript@7.0.2)(zod@4.5.4)
       arktype: 2.2.5
@@ -9047,7 +9047,7 @@ snapshots:
       - valibot
       - zod
 
-  recoverage@0.1.18(supports-color@10.2.2)(typescript@7.0.2)(zod@4.6.5):
+  recoverage@0.1.19(supports-color@10.2.2)(typescript@7.0.2)(zod@4.6.5):
     dependencies:
       '@t3-oss/env-core': 0.13.11(arktype@2.2.5)(typescript@7.0.2)(zod@4.6.5)
       arktype: 2.2.5
