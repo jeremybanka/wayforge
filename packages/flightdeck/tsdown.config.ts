@@ -16,7 +16,7 @@ export const OPTIONS = {
 	},
 
 	clean: true,
-	dts: { sourcemap: true },
+	dts: { entry: [`src/lib.ts`], sourcemap: true },
 	fixedExtension: false,
 	format: `esm`,
 	outDir: `dist`,
