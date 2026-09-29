@@ -5,7 +5,7 @@ const config: UserConfig = defineConfig({
 	entry: [`src/break-check.ts`, `src/break-check.x.ts`],
 
 	clean: true,
-	dts: { sourcemap: true },
+	dts: { entry: [`src/break-check.ts`], sourcemap: true },
 	fixedExtension: false,
 	format: `esm`,
 	outDir: `dist`,

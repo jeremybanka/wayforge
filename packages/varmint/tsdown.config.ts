@@ -5,7 +5,7 @@ const config: UserConfig = defineConfig({
 	entry: [`src/index.ts`, `src/varmint.x.ts`],
 
 	clean: true,
-	dts: { sourcemap: true },
+	dts: { entry: [`src/index.ts`], sourcemap: true },
 	fixedExtension: false,
 	format: `esm`,
 	outDir: `dist`,
