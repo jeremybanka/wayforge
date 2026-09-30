@@ -51,7 +51,7 @@
 		"watch:types": "tsc --watch --noEmit"
 	},
 	"dependencies": {
-		"@ai-sdk/openai": "4.0.80",
+		"@ai-sdk/openai": "4.0.81",
 		"@floating-ui/react": "0.27.20",
 		"@js-temporal/polyfill": "0.5.1",
 		"@react-spring/three": "10.1.2",
