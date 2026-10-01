@@ -30,6 +30,8 @@ Following the [mise Node.js cookbook](https://mise.jdx.dev/mise-cookbook/nodejs.
 
 ## Command notes
 
+`workflows:update` builds and runs the workspace `workflowup` package, extracted from Lasertag's Node updater. Use `pnpm run workflows:update --dry-run` to preview action SHA and mise version upgrades. The package also provides a CLI and TypeScript API for other repositories; see [its documentation](../packages/workflowup/README.md).
+
 Release compatibility checks need access to the Git remote and release tags.
 
 Coverage comparison requires a captured default-branch baseline or access to the hosted baseline through `RECOVERAGE_CLOUD_TOKEN`. Coverage comparison retains the existing Recoverage capture-and-diff behavior; this repository does not expose a separate upload-only command.

@@ -1,0 +1,55 @@
+{
+	"name": "workflowup",
+	"version": "0.0.0",
+	"description": "Upgrade GitHub Actions to stable release SHAs and update pinned mise versions",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/jeremybanka/wayforge.git",
+		"directory": "packages/workflowup"
+	},
+	"license": "MPL-2.0",
+	"author": {
+		"name": "Jeremy Banka",
+		"email": "hello@jeremybanka.com"
+	},
+	"type": "module",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		}
+	},
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"bin": {
+		"workflowup": "./bin/workflowup.js"
+	},
+	"files": ["bin", "dist", "src"],
+	"scripts": {
+		"build": "tsdown",
+		"check": "pnpm run check:eslint && pnpm run check:tsc && pnpm run check:oxlint",
+		"check:eslint": "eslint -- .",
+		"check:oxlint": "oxlint --type-aware -c ../../.oxlintrc.jsonc .",
+		"check:tsc": "tsc --noEmit",
+		"postversion": "dprint fmt package.json",
+		"test": "vitest run",
+		"test:watch": "vitest --watch"
+	},
+	"dependencies": {
+		"yaml": "2.9.0"
+	},
+	"devDependencies": {
+		"@types/node": "26.6.3",
+		"eslint": "10.11.0",
+		"tsdown": "0.23.0",
+		"typescript": "7.0.2",
+		"vite": "8.3.1",
+		"vitest": "5.0.2"
+	},
+	"engines": {
+		"node": ">=22"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}
