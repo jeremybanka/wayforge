@@ -61,7 +61,7 @@
 		"@trpc/client": "11.19.0",
 		"@trpc/server": "11.19.0",
 		"ai": "7.0.124",
-		"arktype": "2.2.5",
+		"arktype": "2.2.6",
 		"atom.io": "0.53.3",
 		"cron": "4.4.0",
 		"drizzle-orm": "0.45.3",
