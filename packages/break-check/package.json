@@ -36,7 +36,7 @@
 		"watch:types": "tsc --watch --noEmit"
 	},
 	"dependencies": {
-		"arktype": "2.2.5",
+		"arktype": "2.2.6",
 		"comline": "workspace:*",
 		"minimatch": "10.2.6",
 		"simple-git": "4.0.2",
