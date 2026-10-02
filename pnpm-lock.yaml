@@ -291,8 +291,8 @@ importers:
         specifier: 11.19.0
         version: 11.19.0(typescript@7.0.2)
       ai:
-        specifier: 7.0.124
-        version: 7.0.124(zod@4.6.5)
+        specifier: 7.0.126
+        version: 7.0.126(zod@4.6.5)
       arktype:
         specifier: 2.2.6
         version: 2.2.6
@@ -3308,8 +3308,8 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  ai@7.0.124:
-    resolution: {integrity: sha512-FdzSxCXE+tlkD9texj2EO8QvJvCHoqWjdOTM3EWL6CBDtJXMe0/aYul9e31Q+P7zABmRAXrc3+XFSrmawqQOcA==}
+  ai@7.0.126:
+    resolution: {integrity: sha512-7egcwpnVR2xn3YlJYEX2y15X7Bv7Rc8U2h4YjCOnj5KZL6Pr/BQFzJuF+9fkm3SefmpgkaYRXzrvhafVjxGZww==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -7476,7 +7476,7 @@ snapshots:
 
   acorn@8.16.0: {}
 
-  ai@7.0.124(zod@4.6.5):
+  ai@7.0.126(zod@4.6.5):
     dependencies:
       '@ai-sdk/gateway': 4.0.102(zod@4.6.5)
       '@ai-sdk/provider': 4.0.21
