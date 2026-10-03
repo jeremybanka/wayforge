@@ -39,7 +39,7 @@
 	},
 	"devDependencies": {
 		"@types/bun": "npm:bun-types@1.4.2",
-		"@types/node": "26.6.3",
+		"@types/node": "26.6.4",
 		"@vitest/coverage-v8": "5.0.3",
 		"arktype": "2.2.7",
 		"break-check": "0.6.40",
