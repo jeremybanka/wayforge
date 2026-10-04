@@ -42,7 +42,7 @@
 		"@changesets/config": "4.0.1",
 		"@dotenvx/dotenvx": "2.32.4",
 		"@dprint/json": "0.25.1",
-		"@dprint/markdown": "0.25.0",
+		"@dprint/markdown": "0.26.0",
 		"@dprint/oxc": "0.42.0",
 		"@dprint/toml": "0.8.0",
 		"@types/eslint": "9.6.1",
