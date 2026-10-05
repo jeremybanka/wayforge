@@ -17,6 +17,7 @@ import * as React from "react"
 
 import { RESPONSE_DICTIONARY } from "../library/response-dictionary"
 import * as svg from "./<svg>"
+import css from "./AppShell.module.css"
 import { VersionSpinner } from "./components/VersionSpinner"
 import { appVersionSelector } from "./services/patchnotes-service"
 import { navigate, routeSelector } from "./services/router-service"
@@ -26,7 +27,6 @@ import {
 	socket,
 } from "./services/socket-auth-service"
 import { trpcClient } from "./services/trpc-client-service"
-import css from "./TempestApp.module.css"
 import { AccountView } from "./views/AccountView"
 import { AdminView } from "./views/AdminView"
 import { GameView } from "./views/GameView"
@@ -35,7 +35,7 @@ import { VerifyView } from "./views/VerifyView"
 
 IMPLICIT.STORE.loggers[0].logLevel = `warn`
 
-export function TempestApp(): React.ReactNode {
+export function AppShell(): React.ReactNode {
 	const route = useO(routeSelector)
 	const auth = useO(authAtom)
 	const connectionError = useO(connectionErrorAtom)
@@ -60,7 +60,7 @@ export function TempestApp(): React.ReactNode {
 	const appVersion = useO(appVersionSelector)
 
 	return (
-		<tempest-app className={css.class}>
+		<app-shell className={css.class}>
 			<app-layout>
 				<header>
 					<brand-lockup>
@@ -152,6 +152,6 @@ export function TempestApp(): React.ReactNode {
 					</connection-dialog>
 				</aside>
 			) : null}
-		</tempest-app>
+		</app-shell>
 	)
 }

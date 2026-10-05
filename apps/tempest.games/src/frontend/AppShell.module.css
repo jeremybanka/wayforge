@@ -1,4 +1,4 @@
-tempest-app.class {
+app-shell.class {
 	display: flex;
 	flex-flow: column;
 	min-height: 100svh;
