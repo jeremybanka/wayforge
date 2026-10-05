@@ -274,6 +274,9 @@ bug-rangers-ui.class {
 						pointer-events: all;
 						position: absolute;
 						background: none;
+						&:disabled {
+							background: none;
+						}
 						top: 0;
 						right: 0;
 						left: 0;

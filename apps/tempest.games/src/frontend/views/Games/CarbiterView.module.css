@@ -35,7 +35,7 @@ carbiter-view.class {
 			}
 		}
 	}
-	:where(meal-heading, meal-content, meal-actions, section, article, aside, nav, form, data, label) {
+	:where(meal-heading, meal-content, meal-actions, section, article, aside, nav, form, data, label, button, input, span) {
 		display: flex;
 	}
 	> span {
