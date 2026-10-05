@@ -1,50 +1,23 @@
-# React + TypeScript + Vite
+# Tempest Games
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React and TypeScript frontend, Bun servers, and PostgreSQL storage for Tempest Games.
 
-Currently, two official plugins are available:
+Run commands from the repository root after `pnpm install`:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- `pnpm --filter tempest.games dev` starts the development servers.
+- `pnpm --filter tempest.games check` runs the package's static checks, including Lasertag.
+- `pnpm --filter tempest.games check:lasertag` checks component CSS selector reachability and ownership.
+- `pnpm --filter tempest.games test` runs tests once with the test database setup.
+- `pnpm --filter tempest.games build` builds the browser application and Bun entrypoints.
 
-## Expanding the ESLint configuration
+See [repository commands](../../docs/commands.md) for workspace-wide equivalents.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Component styling
 
-- Configure the top-level `parserOptions` property like this:
+The browser DOM uses [Lasertag](https://github.com/jeremybanka/lasertag): each exported component owns a same-named sibling CSS Module, imports it as `css`, and applies its only exported class to a matching custom root. For example, `AccountView.tsx` renders `<account-view className={css.class}>` and owns `AccountView.module.css`.
 
-```js
-export default tseslint.config({
-	languageOptions: {
-		// other options...
-		parserOptions: {
-			project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-			tsconfigRootDir: import.meta.dirname,
-		},
-	},
-})
-```
+Keep route layout and control styles with the component that renders them. Use native form controls and semantic elements inside named roots, and use nested direct-child selectors to describe the owned DOM. `globals.css` contains the reset, shared color tokens, and font import.
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+SVG assets and React Three Fiber scene components retain their intrinsic roots. Motion namespaces assert stable intrinsic HTML roots; narrowly explained CSS directives cover animation and Floating UI subtrees that static analysis cannot fully inspect. See [frontend authoring guidance](AGENTS.md) for the complete conventions and renderer exceptions.
 
-```js
-// eslint.config.js
-import react from "eslint-plugin-react"
-
-export default tseslint.config({
-	// Set the react version
-	settings: { react: { version: "18.3" } },
-	plugins: {
-		// Add the react plugin
-		react,
-	},
-	rules: {
-		// other rules...
-		// Enable its recommended rules
-		...react.configs.recommended.rules,
-		...react.configs["jsx-runtime"].rules,
-	},
-})
-```
+Lasertag's JSX and CSS Module entrypoints are imported before `vite/client` in `vite-env.d.ts` so CSS Modules retain the single `class` type rather than Vite's unrestricted class dictionary. These declaration imports add no browser runtime dependency.

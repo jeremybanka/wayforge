@@ -23,9 +23,10 @@ import {
 	passwordInputElementAtom,
 	usernameInputElementAtom,
 } from "./Account/account-state"
-import { Form } from "./Account/Form"
+import { AccountForm } from "./Account/AccountForm"
+import css from "./AccountView.module.css"
 
-export function Account(): React.ReactNode {
+export function AccountView(): React.ReactNode {
 	const auth = useO(authAtom)
 	const usernameIsTaken = useO(isUsernameTakenQuerySelector)
 
@@ -35,12 +36,16 @@ export function Account(): React.ReactNode {
 	}, [])
 
 	if (!auth) {
-		return <p>You must be logged in to verify your account.</p>
+		return (
+			<account-view className={css.class}>
+				<p>You must be logged in to verify your account.</p>
+			</account-view>
+		)
 	}
 
 	return (
-		<article data-css="editor">
-			<Form
+		<account-view className={css.class}>
+			<AccountForm
 				label="username"
 				inputToken={usernameInputAtom}
 				issuesToken={usernameIssuesSelector}
@@ -62,7 +67,7 @@ export function Account(): React.ReactNode {
 					) : null
 				}
 			/>
-			<Form
+			<AccountForm
 				label="email"
 				inputToken={emailInputAtom}
 				issuesToken={emailIssuesSelector}
@@ -146,7 +151,7 @@ export function Account(): React.ReactNode {
 				}}
 			/>
 
-			<Form
+			<AccountForm
 				label="new-password"
 				inputToken={passwordInputAtom}
 				issuesToken={passwordIssuesSelector}
@@ -196,6 +201,6 @@ export function Account(): React.ReactNode {
 					}
 				}}
 			/>
-		</article>
+		</account-view>
 	)
 }

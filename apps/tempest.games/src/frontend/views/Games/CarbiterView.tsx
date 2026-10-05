@@ -20,7 +20,7 @@ import { nanoid } from "nanoid"
 import { useCallback } from "react"
 
 import { trpcClient } from "../../services/trpc-client-service"
-import css from "./Carbiter.module.css"
+import css from "./CarbiterView.module.css"
 
 type FoodItem = Pick<
 	InferSelectModel<typeof foodItems>,
@@ -50,7 +50,7 @@ const EMPTY_MEALS: Record<MealName, string[]> = {
 	supper: [],
 }
 
-export function Carbiter(): React.ReactNode {
+export function CarbiterView(): React.ReactNode {
 	const focusedMeal = useO(focusedMealNameAtom)
 	const focusedDate = useO(focusedDateAtom)
 	const newFoodItemName = useO(newFoodItemNameAtom)
@@ -70,8 +70,8 @@ export function Carbiter(): React.ReactNode {
 	const totalDailyCarbs = useLoadable(totalDailyCarbsSelector, 0)
 	const totalDailyProtein = useLoadable(totalDailyProteinSelector, 0)
 	return (
-		<main data-css="Carbiter" className={css[`class`]}>
-			<header>
+		<carbiter-view className={css.class}>
+			<meal-heading>
 				<nav>
 					<button
 						type="button"
@@ -89,9 +89,9 @@ export function Carbiter(): React.ReactNode {
 						}}
 					>{`->`}</button>
 				</nav>
-			</header>
+			</meal-heading>
 			<span />
-			<main>
+			<meal-content>
 				{MEAL_NAMES.map((mealName) =>
 					focusedMeal === mealName ? (
 						<Meal key={mealName} mealName={mealName} />
@@ -99,8 +99,8 @@ export function Carbiter(): React.ReactNode {
 						<InactiveMeal key={mealName} mealName={mealName} />
 					),
 				)}
-			</main>
-			<footer>
+			</meal-content>
+			<meal-actions>
 				<form onSubmit={submit}>
 					{editedItemKeys.size > 0 ? (
 						<button
@@ -127,21 +127,21 @@ export function Carbiter(): React.ReactNode {
 						</>
 					)}
 				</form>
-			</footer>
+			</meal-actions>
 			<aside>
 				<span />
-				<main data-css="stats">
+				<meal-content data-css="stats">
 					<data data-css="stat">
-						<main data-css="stats-number">{totalDailyCarbs.value}</main>
+						<output data-css="stats-number">{totalDailyCarbs.value}</output>
 						<span data-css="stats-unit">carbs</span>
 					</data>
 					<data data-css="stat">
-						<main data-css="stats-number">{totalDailyProtein.value}</main>
+						<output data-css="stats-number">{totalDailyProtein.value}</output>
 						<span data-css="stats-unit">protein</span>
 					</data>
-				</main>
+				</meal-content>
 			</aside>
-		</main>
+		</carbiter-view>
 	)
 }
 
@@ -150,11 +150,11 @@ function Meal({ mealName }: { mealName: MealName }): React.ReactNode {
 	return (
 		<section>
 			<MealHeader mealName={mealName} />
-			<main>
+			<meal-content>
 				{mealsToday.value[mealName].map((id) => (
 					<FoodItem key={id} id={id} />
 				))}
-			</main>
+			</meal-content>
 		</section>
 	)
 }
@@ -170,7 +170,7 @@ function MealHeader({ mealName }: { mealName: MealName }): React.ReactNode {
 	const totalCarbs = useLoadable(totalMealCarbsSelectors, mealName, 0)
 	const totalProtein = useLoadable(totalMealProteinSelectors, mealName, 0)
 	return (
-		<header>
+		<meal-heading>
 			<button
 				type="button"
 				onClick={() => {
@@ -183,15 +183,15 @@ function MealHeader({ mealName }: { mealName: MealName }): React.ReactNode {
 			</button>
 			<aside data-css="stats">
 				<data data-css="stat">
-					<main data-css="stats-number">{totalCarbs.value}</main>
+					<output data-css="stats-number">{totalCarbs.value}</output>
 					<span data-css="stats-unit">carbs</span>
 				</data>
 				<data data-css="stat">
-					<main data-css="stats-number">{totalProtein.value}</main>
+					<output data-css="stats-number">{totalProtein.value}</output>
 					<span data-css="stats-unit">protein</span>
 				</data>
 			</aside>
-		</header>
+		</meal-heading>
 	)
 }
 
@@ -258,7 +258,7 @@ function FoodItem({ id }: { id: string }): React.ReactNode {
 	const foodItem = useLoadable(foodItemsOverlaySelectors, id, EMPTY_FOOD_ITEM)
 	return (
 		<article>
-			<header>
+			<meal-heading>
 				<button
 					type="button"
 					onClick={() => {
@@ -278,8 +278,8 @@ function FoodItem({ id }: { id: string }): React.ReactNode {
 						setState(foodItemsEditsKeysAtom, (current) => current.add(id))
 					}}
 				/>
-			</header>
-			<main data-css="stats">
+			</meal-heading>
+			<meal-content data-css="stats">
 				<label data-css="stat">
 					<input
 						data-css="stats-number"
@@ -314,7 +314,7 @@ function FoodItem({ id }: { id: string }): React.ReactNode {
 					/>
 					<span data-css="stats-unit">protein</span>
 				</label>
-			</main>
+			</meal-content>
 		</article>
 	)
 }

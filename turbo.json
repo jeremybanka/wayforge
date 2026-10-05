@@ -111,6 +111,16 @@
 			"dependsOn": ["^build"],
 			"cache": false
 		},
+		"check:lasertag": {
+			"inputs": [
+				"../../package.json",
+				"../../tsconfig.json",
+				"**/package.json",
+				"tsconfig.json",
+				"src/frontend/**",
+				"types/**"
+			]
+		},
 		"check:eslint": {
 			"dependsOn": ["gen"],
 			"inputs": [
@@ -165,7 +175,12 @@
 			]
 		},
 		"check": {
-			"dependsOn": ["check:eslint", "check:oxlint", "check:tsc"]
+			"dependsOn": [
+				"check:eslint",
+				"check:oxlint",
+				"check:tsc",
+				"check:lasertag"
+			]
 		},
 		"gen": {
 			"dependsOn": ["^build"],

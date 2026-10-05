@@ -1,0 +1,48 @@
+verify-view.class {
+	display: contents;
+	> form {
+		display: flex;
+		flex-flow: row wrap;
+		height: 100%;
+		gap: 30px;
+		align-items: end;
+		> form-fields {
+			width: 100%;
+			max-width: 200px;
+			display: flex;
+			flex-flow: column;
+			gap: 10px;
+			> label {
+				display: flex;
+				flex-flow: column;
+				position: relative;
+				> span {
+					flex-grow: 1;
+					font-size: 15px;
+					&:has(+ input:disabled) {
+						color: var(--fg-soft-2);
+					}
+				}
+				> input {
+					--energy-color: var(--fg-soft-2);
+					box-sizing: border-box;
+					border-radius: 0px;
+					height: 34px;
+					background: none;
+					outline: 1px solid var(--energy-color);
+					border: none;
+					font-family: Uruz, serif;
+					font-size: 21px;
+					padding: 18px 0px 16px 8px;
+					&:focus {
+						outline-width: 2px;
+					}
+					&:disabled {
+						color: var(--fg-soft-3);
+						--energy-color: var(--bg-soft-3);
+					}
+				}
+			}
+		}
+	}
+}

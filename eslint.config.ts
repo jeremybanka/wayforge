@@ -1,9 +1,10 @@
 import * as parser from "@typescript-eslint/parser"
+import AtomIOPlugin from "atom.io/eslint-plugin"
 import type { ESLint, Linter } from "eslint"
 import * as DrizzlePlugin from "eslint-plugin-drizzle"
 import * as ImportPlugin from "eslint-plugin-import-x"
 import { default as SimpleImportSortPlugin } from "eslint-plugin-simple-import-sort"
-import AtomIOPlugin from "atom.io/eslint-plugin"
+import LasertagPlugin from "lasertag/eslint-plugin"
 
 type Rules = Linter.Config[`rules`]
 
@@ -80,4 +81,36 @@ const DRIZZLE: Linter.Config = {
 	},
 }
 
-export default [IGNORES, COMMON, NO_CONSOLE, DRIZZLE] satisfies Linter.Config[]
+// Lasertag applies to the browser DOM. SVG assets and Three.js scene JSX
+// use their own intrinsic renderers and cannot acquire custom HTML roots.
+const LASERTAG: Linter.Config = {
+	files: [`apps/tempest.games/src/frontend/**/*.tsx`],
+	ignores: [
+		`apps/tempest.games/src/frontend/main.tsx`,
+		`apps/tempest.games/src/frontend/<svg>.tsx`,
+		`apps/tempest.games/src/frontend/views/Games/BugRangers/Icons.tsx`,
+		`apps/tempest.games/src/frontend/views/Games/BugRangers/CubeToken.tsx`,
+		`apps/tempest.games/src/frontend/views/Games/BugRangers/HexGridHelper.tsx`,
+		`apps/tempest.games/src/frontend/views/Games/BugRangers/HexTile.tsx`,
+		`apps/tempest.games/src/frontend/views/Games/BugRangers/PlayerTools.tsx`,
+		`apps/tempest.games/src/frontend/views/Games/BugRangers/TilesAndZones.tsx`,
+	],
+	plugins: { lasertag: LasertagPlugin as ESLint.Plugin },
+	rules: {
+		"lasertag/access-css-module-class-only": ERROR,
+		"lasertag/ban-div": ERROR,
+		"lasertag/export-own-component-only": ERROR,
+		"lasertag/header-main-footer-as-group": ERROR,
+		"lasertag/import-own-css-module-only": ERROR,
+		"lasertag/name-imported-css-module-as-css": ERROR,
+		"lasertag/render-tag-with-own-name": ERROR,
+	},
+}
+
+export default [
+	IGNORES,
+	COMMON,
+	NO_CONSOLE,
+	DRIZZLE,
+	LASERTAG,
+] satisfies Linter.Config[]

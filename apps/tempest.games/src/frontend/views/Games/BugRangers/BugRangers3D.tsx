@@ -18,6 +18,7 @@ import {
 import { HexGridHelper } from "../BugRangers/HexGridHelper"
 import { PlayerTools } from "../BugRangers/PlayerTools"
 import { GameTiles, PlayableZones } from "../BugRangers/TilesAndZones"
+import css from "./BugRangers3D.module.css"
 
 // eslint-disable-next-line quotes
 declare module "@react-three/fiber" {
@@ -34,30 +35,32 @@ export function BugRangers3D(): ReactNode {
 	})
 
 	return (
-		<Canvas
-			camera={{ position: [15, 15, 15], fov: 50 }}
-			style={{
-				position: `fixed`,
-				top: 0,
-				left: 0,
-				width: `100vw`,
-				height: `100vh`,
-			}}
-		>
-			<ambientLight intensity={0.5} />
-			<directionalLight position={[5, 10, 5]} />
-			<CameraController target={[...cameraTarget]} />
-			<HexGridHelper size={20} radius={1} color="#6f6f6f" opacity={0.5} />
-			<BugRangersExterior3D />
-		</Canvas>
+		<bug-rangers3-d className={css.class}>
+			<Canvas
+				camera={{ position: [15, 15, 15], fov: 50 }}
+				style={{
+					position: `fixed`,
+					top: 0,
+					left: 0,
+					width: `100vw`,
+					height: `100vh`,
+				}}
+			>
+				<ambientLight intensity={0.5} />
+				<directionalLight position={[5, 10, 5]} />
+				<CameraController target={[...cameraTarget]} />
+				<HexGridHelper size={20} radius={1} color="#6f6f6f" opacity={0.5} />
+				<BugRangersExterior3D />
+			</Canvas>
+		</bug-rangers3-d>
 	)
 }
 
-export function BugRangersExterior3D(): ReactNode {
+function BugRangersExterior3D(): ReactNode {
 	const myRoomKey = useO(myRoomKeySelector)
 	return myRoomKey ? <BugRangersInterior3D /> : null
 }
-export function BugRangersInterior3D(): ReactNode {
+function BugRangersInterior3D(): ReactNode {
 	const playableZonesVisible = usePullSelector(playableZonesVisibleSelector)
 	const playerToolsVisible = usePullSelector(playerToolsVisibleSelector)
 

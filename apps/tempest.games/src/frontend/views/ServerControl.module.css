@@ -1,0 +1,28 @@
+server-control.class {
+	width: 100%;
+	overflow: visible;
+	max-width: 512px;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	button {
+		background-color: var(--bg-dark-3);
+		color: var(--fg);
+		font-family: theia, sans-serif;
+		border: var(--fg-soft-3) solid 1px;
+		cursor: pointer;
+		&:disabled {
+			background-color: var(--bg-hard-1);
+			border: 1px solid var(--bg-soft-1);
+			color: var(--bg-soft-3);
+			&:hover {
+				cursor: not-allowed;
+			}
+		}
+	}
+	> server-core {
+		display: block;
+		border: 1px solid var(--fg-soft-3);
+		padding: 5px;
+	}
+}

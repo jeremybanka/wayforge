@@ -2,11 +2,10 @@ import type { ViewOf } from "atom.io"
 import { toEntries } from "atom.io/foundations/entries"
 import * as React from "react"
 
-import { Anchor } from "../Anchor"
 import { type Route, ROUTES } from "../services/router-service"
-import css from "./Game.module.css"
 import { BugRangers } from "./Games/BugRangers"
-import { Carbiter } from "./Games/Carbiter"
+import { CarbiterView } from "./Games/CarbiterView"
+import css from "./GameView.module.css"
 import { ServerControl } from "./ServerControl"
 
 export type Tail<T extends any[]> = T extends [any, ...infer Rest] ? Rest : never
@@ -20,16 +19,20 @@ export type GameIndexProps = {
 export function GameView({
 	route: [, gameId],
 }: GameIndexProps): React.ReactNode {
-	return gameId ? <Game gameId={gameId} /> : <GameIndex />
+	return (
+		<game-view className={css.class}>
+			{gameId ? <Game gameId={gameId} /> : <GameIndex />}
+		</game-view>
+	)
 }
 
-export function GameIndex(): React.ReactNode {
+function GameIndex(): React.ReactNode {
 	return (
-		<article className={css[`class`]}>
+		<article>
 			<nav>
-				<Anchor href={`/game/hexiom`}>
+				<a href={`/game/hexiom`}>
 					<h1>HEXIOM</h1>
-				</Anchor>
+				</a>
 			</nav>
 		</article>
 	)
@@ -38,7 +41,7 @@ export function GameIndex(): React.ReactNode {
 const GAMES = toEntries(ROUTES[1].game[1]).map(([gameId]) => gameId)
 type GameId = (typeof GAMES)[number]
 export type GameProps = { gameId: GameId }
-export function Game(props: GameProps): React.ReactNode {
+function Game(props: GameProps): React.ReactNode {
 	switch (props.gameId) {
 		case `hexiom`: {
 			return <BugRangers />
@@ -47,7 +50,7 @@ export function Game(props: GameProps): React.ReactNode {
 			return <ServerControl />
 		}
 		case `carbiter`: {
-			return <Carbiter />
+			return <CarbiterView />
 		}
 	}
 }

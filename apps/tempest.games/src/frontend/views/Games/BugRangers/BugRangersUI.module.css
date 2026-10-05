@@ -1,4 +1,4 @@
-main.class {
+bug-rangers-ui.class {
 	position: fixed;
 	z-index: 1;
 	top: 0;
@@ -13,14 +13,43 @@ main.class {
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
-	> article[data-css="room-exterior"] {
+	> room-exterior {
+		display: block;
 		align-self: center;
 		justify-self: center;
 		> button {
+			background-color: var(--bg-dark-3);
+			color: var(--fg);
+			font-family: theia, sans-serif;
+			border: var(--fg-soft-3) solid 1px;
+			cursor: pointer;
+			&:disabled {
+				background-color: var(--bg-hard-1);
+				border: 1px solid var(--bg-soft-1);
+				color: var(--bg-soft-3);
+				&:hover {
+					cursor: not-allowed;
+				}
+			}
+
 			pointer-events: all;
 		}
 	}
 	> button[data-css="devtools-toggle"] {
+		background-color: var(--bg-dark-3);
+		color: var(--fg);
+		font-family: theia, sans-serif;
+		border: var(--fg-soft-3) solid 1px;
+		cursor: pointer;
+		&:disabled {
+			background-color: var(--bg-hard-1);
+			border: 1px solid var(--bg-soft-1);
+			color: var(--bg-soft-3);
+			&:hover {
+				cursor: not-allowed;
+			}
+		}
+
 		position: absolute;
 		top: 30px;
 		left: 0;
@@ -28,7 +57,7 @@ main.class {
 		pointer-events: all;
 		height: 40px;
 	}
-	> article[data-css="devtools"] {
+	> game-devtools {
 		position: absolute;
 		top: 70px;
 		left: 0;
@@ -38,12 +67,26 @@ main.class {
 		gap: 5px;
 		border: 1px solid var(--fg-soft-1);
 		background: var(--bg);
-		button {
+		> section > button {
+			background-color: var(--bg-dark-3);
+			color: var(--fg);
+			font-family: theia, sans-serif;
+			border: var(--fg-soft-3) solid 1px;
+			cursor: pointer;
+			&:disabled {
+				background-color: var(--bg-hard-1);
+				border: 1px solid var(--bg-soft-1);
+				color: var(--bg-soft-3);
+				&:hover {
+					cursor: not-allowed;
+				}
+			}
+
 			pointer-events: all;
 			height: 40px;
 		}
 	}
-	> article[data-css-counter] {
+	> game-counter {
 		position: absolute;
 		bottom: 160px;
 		height: 60px;
@@ -51,10 +94,10 @@ main.class {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		&[data-css-counter="tiles"] {
+		&[data-kind="tiles"] {
 			left: 20px;
 		}
-		&[data-css-counter="cubes"] {
+		&[data-kind="cubes"] {
 			right: 20px;
 		}
 		> span {
@@ -69,7 +112,7 @@ main.class {
 		}
 	}
 
-	> article[data-css="turn-banner"] {
+	> turn-banner {
 		overflow: hidden;
 		position: fixed;
 		top: 0;
@@ -82,6 +125,7 @@ main.class {
 		align-items: flex-start;
 		justify-content: flex-start;
 		pointer-events: none;
+		/* @lasertag-disable [opaque-component-root-may-collide] AnimatePresence retains only the authored Motion elements during exit animations. */
 		> h1 {
 			position: absolute;
 			overflow: hidden;
@@ -96,7 +140,8 @@ main.class {
 			align-items: center;
 			justify-content: center;
 		}
-		> div {
+		> figure {
+			margin: 0;
 			position: absolute;
 			top: 135px;
 			height: 100px;
@@ -114,9 +159,10 @@ main.class {
 			background: var(--fg);
 			align-self: flex-end;
 		}
+		/* @lasertag-enable [opaque-component-root-may-collide] */
 	}
 
-	> article[data-css="turn-controls"] {
+	> turn-controls {
 		position: absolute;
 		bottom: 60px;
 		display: flex;
@@ -125,6 +171,20 @@ main.class {
 		justify-content: center;
 		gap: 5px;
 		> button {
+			background-color: var(--bg-dark-3);
+			color: var(--fg);
+			font-family: theia, sans-serif;
+			border: var(--fg-soft-3) solid 1px;
+			cursor: pointer;
+			&:disabled {
+				background-color: var(--bg-hard-1);
+				border: 1px solid var(--bg-soft-1);
+				color: var(--bg-soft-3);
+				&:hover {
+					cursor: not-allowed;
+				}
+			}
+
 			pointer-events: all;
 			padding: 10px;
 			height: 40px;
@@ -134,7 +194,7 @@ main.class {
 			}
 		}
 	}
-	> article[data-css="room-module"] {
+	> room-module {
 		position: absolute;
 		top: 60px;
 		width: 100%;
@@ -143,28 +203,8 @@ main.class {
 		flex-direction: column;
 		gap: 5px;
 
-		button {
-			pointer-events: all;
-		}
-
-		> header {
-			display: flex;
-			flex-direction: row;
-			align-items: center;
-			justify-content: space-between;
-			> h1 {
-				margin: 0;
-			}
-			> span {
-				margin: 0;
-			}
-		}
+		/* @lasertag-disable [selector-crosses-ownership-boundary] Motion section and figure wrappers preserve the locally authored game phase and player marker DOM. */
 		> section {
-			display: flex;
-			flex-direction: row;
-			gap: 5px;
-		}
-		> main {
 			display: flex;
 			> section {
 				display: flex;
@@ -186,15 +226,16 @@ main.class {
 					border: var(--fg-soft-2) solid 1px;
 					padding: 5px;
 					position: relative;
-					> header {
+					> group-heading {
 						position: absolute;
 						top: 5px;
 					}
-					> main {
+					> group-members {
 						display: flex;
 						flex-direction: row;
 						gap: 5px;
-						> [data-css-user] {
+						> figure[data-css-user] {
+							margin: 0;
 							height: 50px;
 							width: 50px;
 							display: flex;
@@ -216,6 +257,21 @@ main.class {
 						}
 					}
 					> button {
+						background-color: var(--bg-dark-3);
+						color: var(--fg);
+						font-family: theia, sans-serif;
+						border: var(--fg-soft-3) solid 1px;
+						cursor: pointer;
+						&:disabled {
+							background-color: var(--bg-hard-1);
+							border: 1px solid var(--bg-soft-1);
+							color: var(--bg-soft-3);
+							&:hover {
+								cursor: not-allowed;
+							}
+						}
+
+						pointer-events: all;
 						position: absolute;
 						background: none;
 						top: 0;
@@ -227,5 +283,6 @@ main.class {
 				}
 			}
 		}
+		/* @lasertag-enable [selector-crosses-ownership-boundary] */
 	}
 }
