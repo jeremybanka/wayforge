@@ -18,7 +18,7 @@ break-check distinguishes two kinds of tests:
 1. Public tests record behavior consumers can rely on across releases. break-check restores their released versions so a proposed change cannot weaken an assertion alongside the implementation it checks.
 2. Private tests cover implementation details, development diagnostics, and other behavior you want to verify without preserving it as a release commitment. They can detect real bugs too; they are not used as the historical compatibility contract.
 
-Identify the public tests with a glob pattern and provide a command that builds the current implementation as needed and runs those tests once. A passing comparison means the selected released tests passed; its strength depends on the promises those tests actually protect.
+Identify the public tests with a glob pattern and provide a command that runs those tests once against source. Build and current-test validation belong in independent jobs. A passing comparison means the selected released tests passed; its strength depends on the promises those tests actually protect.
 
 ## help
 
@@ -62,7 +62,7 @@ Before preserving an assertion in a release, answer two questions: which consume
 
 ### choose the behavior deliberately
 
-Test imports through the entrypoints consumers use. For a published library, build its distributable output and check declarations as well as runtime behavior where relevant. Importing an internal source file can miss broken package exports while accidentally requiring that source path to survive refactoring.
+Test imports through the entrypoints consumers use. Resolve consumer import names to source in the test runner so compatibility checks do not require a package build or freeze internal source paths. Check distributable output and declarations separately in the build and type-check jobs.
 
 Write focused scenarios for the capabilities you want to support. Include combinations that make resource independence observable: two fonts or images on one page, multiple registrations, or two distinct handles. Exercising a method once does not establish that its effect survives serialization or that it works alongside another instance.
 
@@ -103,9 +103,9 @@ Mondrian publishes its independent inspection tools through its testing entrypoi
 }
 ```
 
-This illustrates the restore boundary; `test:public` is a project-provided command that rebuilds the package, checks consumer types, and runs its public suite. `false` keeps detected breaks uncertified until the project supplies its release-plan check.
+This illustrates the restore boundary; `test:public` is a project-provided command that only runs its public suite against source. Consumer type checks and builds have separate commands. `false` keeps detected breaks uncertified until the project supplies its release-plan check.
 
-Match the assertions and observation code, and leave the implementation they are meant to evaluate outside that boundary. When an observer also ships as a library feature, its restored implementation is trusted test infrastructure for this comparison; verify its current implementation separately too. Build after restoration so compiled observation code reflects the restored source.
+Match the assertions and observation code, and leave the implementation they are meant to evaluate outside that boundary. When an observer also ships as a library feature, its restored implementation is trusted test infrastructure for this comparison; verify its current implementation separately too. Execute observation source directly after restoration so historical readers run without a build.
 
 break-check restores matched Git files, not installed dependencies. A shared package manifest and workspace lockfile keep setup simple, but dependency upgrades must keep restored readers runnable. If a reader needs its own dependency versions, include that dependency description in the restore boundary and make your test command install it. Merely matching a lockfile does not perform an installation. Protect runner configuration and other support files when they determine how historical assertions execute.
 
@@ -128,7 +128,7 @@ Also verify the restoration mechanism once: change a current observation helper 
 
 ### run current contracts and historical contracts
 
-Run the current public suite before invoking `break-check`, so newly added contracts are checked too. Let the CLI run the released suite through `testCommand`. Configure the command to fail when it selects no tests, build and type-check the package when needed, and avoid cached test results that can bypass execution of restored files. Tests should run once and terminate.
+Run the current suite in a parallel test job so newly added contracts are checked independently. Let the CLI run only the released suite against source through `testCommand`. Configure the command to fail when it selects no tests and avoid cached test results that can bypass execution of restored files. Builds and type checks have separate commands and jobs. Tests should run once and terminate.
 
 Run the check from a clean checkout with access to `origin` and release tags. An initial release without matched public tests provides no baseline: preserve the CLI's inconclusive result until a release includes them. A missing baseline is not evidence of compatibility.
 

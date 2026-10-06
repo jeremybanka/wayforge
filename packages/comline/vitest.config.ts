@@ -1,3 +1,5 @@
+import { fileURLToPath } from "node:url"
+
 import type { UserConfig } from "vite"
 import { defineConfig } from "vitest/config"
 
@@ -6,6 +8,11 @@ import { shellSource } from "./shell-source.config.ts"
 const config: UserConfig = defineConfig({
 	plugins: [shellSource],
 	test: {
+		alias: {
+			treetrunks: fileURLToPath(
+				new URL(`../treetrunks/src/treetrunks.ts`, import.meta.url),
+			),
+		},
 		globals: true,
 		coverage: {
 			provider: `v8`,

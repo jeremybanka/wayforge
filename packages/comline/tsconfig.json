@@ -1,11 +1,23 @@
 {
 	"extends": "../../tsconfig.json",
-	"include": ["src", "**/*.config.ts"],
+	"include": [
+		"src",
+		"**/*.config.ts"
+	],
 	"compilerOptions": {
 		"allowJs": false,
 		"declaration": true,
 		"isolatedDeclarations": true,
-		"paths": { "comline": ["./src/cli.ts"] },
-		"types": ["vitest/globals"]
+		"paths": {
+			"comline": [
+				"./src/cli.ts"
+			],
+			"treetrunks": [
+				"../treetrunks/src/treetrunks.ts"
+			]
+		},
+		"types": [
+			"vitest/globals"
+		]
 	}
 }

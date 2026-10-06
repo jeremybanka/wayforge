@@ -108,7 +108,7 @@
 			]
 		},
 		"comline#test:semver": {
-			"dependsOn": ["^build"],
+			"dependsOn": [],
 			"cache": false
 		},
 		"check:lasertag": {

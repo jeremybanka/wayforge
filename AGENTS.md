@@ -22,3 +22,9 @@ Do not manually wrap Markdown prose at a fixed line width. Keep each paragraph a
 ## Repository commands
 
 Use the canonical command names in `docs/commands.md`: `fmt` writes formatting, `check` aggregates `check:*` validators, and `test` runs once. Coverage commands use the `cov` prefix where implemented. Keep CI and documentation references aligned when changing commands.
+
+## Release compatibility
+
+- Run released public contracts against source with break-check; do not build the package or run the current suite as a compatibility preflight.
+- Run current tests, builds, and type checks independently in parallel CI jobs. Public-test commands run tests only.
+- Disable compatibility-task caching and preserve the repository's intentional-break certification policy.
