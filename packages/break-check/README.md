@@ -4,7 +4,7 @@ command line tooling to detect breaking changes before you ship them
 
 ## can i use break-check?
 
-break check is a tool for projects where
+break-check is a tool for projects where
 
 1. releases must follow semantic versioning
 2. source code and tests are kept in separate files
@@ -15,7 +15,7 @@ break check is a tool for projects where
 
 break-check distinguishes two kinds of tests:
 
-1. Public tests record behavior consumers can rely on across releases. Break-check restores their released versions so a proposed change cannot weaken an assertion alongside the implementation it checks.
+1. Public tests record behavior consumers can rely on across releases. break-check restores their released versions so a proposed change cannot weaken an assertion alongside the implementation it checks.
 2. Private tests cover implementation details, development diagnostics, and other behavior you want to verify without preserving it as a release commitment. They can detect real bugs too; they are not used as the historical compatibility contract.
 
 Identify the public tests with a glob pattern and provide a command that builds the current implementation as needed and runs those tests once. A passing comparison means the selected released tests passed; its strength depends on the promises those tests actually protect.
@@ -26,7 +26,7 @@ Run `break-check help` to show usage for the CLI, including the check options an
 
 Use `break-check help` instead of the former `--help` or `-h` options. Configuration no longer controls help. The empty route and a configuration path still run checks; if your configuration file is named `help`, pass `./help` to select it explicitly.
 
-## example
+## examples
 
 ### single-project repository
 
@@ -40,8 +40,6 @@ npx break-check \
 
 Run this from the project root. It restores files matching `tests/public/**/*` from the newest matching `my-library@<version>` release tag and runs your project's `npm run test:public` command. `certifyCommand="false"` leaves any detected break uncertified; replace it with a project command that validates your release plan when you add intentional-break certification.
 
-A failed test command remains uncertified in this example and makes the CLI exit nonzero. Inspect the failure to distinguish a consumer regression from a build, runner, or setup problem.
-
 ### multi-project monorepo
 
 ```bash
@@ -54,15 +52,15 @@ npx break-check \
 
 Run this from the repository root. It restores the package's released public tests and runs its current public-test command. Patterns and commands are relative to the check's working directory; use `--baseDirname` if you want to run the check from a package directory instead.
 
-A failed test command remains uncertified in this example and makes the CLI exit nonzero. Inspect the failure to distinguish a consumer regression from a build, runner, or setup problem.
+In both examples, a failed test command remains uncertified and makes the CLI exit nonzero. Inspect the failure to distinguish a consumer regression from a build, runner, or setup problem.
 
 Release tags may use `1.2.3`, `v1.2.3`, `package@1.2.3`, or `@scope/package@1.2.3`, including valid prerelease and build identifiers. The newest matching version is selected by semantic-version precedence; tags without a supported version are ignored.
 
-## Writing consumer contracts
+## writing consumer contracts
 
 Before preserving an assertion in a release, answer two questions: which consumer capability would its failure demonstrate is broken, and which harmless implementation changes should it continue to allow? A test named "public API" is not enough. Read every assertion as a promise you may need to keep after its original author and implementation have changed.
 
-### Choose the behavior deliberately
+### choose the behavior deliberately
 
 Test imports through the entrypoints consumers use. For a published library, build its distributable output and check declarations as well as runtime behavior where relevant. Importing an internal source file can miss broken package exports while accidentally requiring that source path to survive refactoring.
 
@@ -72,7 +70,7 @@ The exported object model can itself be public API. If consumers construct a doc
 
 Private tests remain useful for implementation-specific assertions and visual baselines. An exact screenshot or historical byte sequence belongs in the public contract only when preserving that exact output is an intentional consumer promise. Same-run comparisons of repeated and equivalent inputs can protect determinism without requiring identical bytes across releases.
 
-### Make the expected result independent
+### make the expected result independent
 
 Derive expected values from the scenario's requested behavior, documented semantics, or an independent observer. Comparing two paths through the current implementation allows both to become identically wrong.
 
@@ -82,7 +80,7 @@ Choose inputs that make omissions visible. Request a nondefault stroke color; bl
 
 Use malformed descriptions to exercise rejection by the exported validator and serializer, not just checks in a higher-level builder. A reader successfully opening a document may also conceal a serialization defect if it repairs malformed structures. Verify the relevant structural property independently when validity is part of the promise.
 
-### Avoid accidental commitments
+### avoid accidental commitments
 
 Keep setup inline and specific to each scenario, or use a narrowly named helper that explains exactly what it constructs. A generic shared "example document" can make unrelated tests depend on arbitrary page shapes and metadata. Include any fixture or helper that determines historical expectations in the restore pattern.
 
@@ -90,7 +88,7 @@ Preserve outcomes at the point consumers need them. If invalid input only needs 
 
 Inspect helpers for constraints too. A baseline-preservation helper should collect files recursively rather than assume the artifact directory is flat. A decoder should accept equivalent encodings rather than require the current serializer's spacing, dictionary order, or hexadecimal capitalization. Allow generated resource names and allocation order to vary unless consumers actually depend on them.
 
-### Preserve the observation code
+### preserve the observation code
 
 Released assertions need trustworthy readers. If today's writer and today's observation helper can change together, an unchanged historical assertion can still become weaker. Include the helper's source in `testPattern` when its behavior determines the meaning of those assertions.
 
@@ -109,9 +107,9 @@ This illustrates the restore boundary; `test:public` is a project-provided comma
 
 Match the assertions and observation code, and leave the implementation they are meant to evaluate outside that boundary. When an observer also ships as a library feature, its restored implementation is trusted test infrastructure for this comparison; verify its current implementation separately too. Build after restoration so compiled observation code reflects the restored source.
 
-Break-check restores matched Git files, not installed dependencies. A shared package manifest and workspace lockfile keep setup simple, but dependency upgrades must keep restored readers runnable. If a reader needs its own dependency versions, include that dependency description in the restore boundary and make your test command install it. Merely matching a lockfile does not perform an installation. Protect runner configuration and other support files when they determine how historical assertions execute.
+break-check restores matched Git files, not installed dependencies. A shared package manifest and workspace lockfile keep setup simple, but dependency upgrades must keep restored readers runnable. If a reader needs its own dependency versions, include that dependency description in the restore boundary and make your test command install it. Merely matching a lockfile does not perform an installation. Protect runner configuration and other support files when they determine how historical assertions execute.
 
-### Check that the tests can fail for the right reason
+### check that the tests can fail for the right reason
 
 Before releasing the suite, deliberately introduce representative regressions in a disposable checkout. Run the public command against each mutation and inspect the failure, then restore the checkout. Require the intended assertion or consumer-import/type check to fail; an unrelated build, setup, or test failure proves nothing about that contract.
 
@@ -128,7 +126,7 @@ Test the other direction too: harmless refactors should pass. Try moving an inte
 
 Also verify the restoration mechanism once: change a current observation helper so the public command fails, commit the probe in a disposable checkout, and compare against a known release containing the original helper. Check that the historical helper is restored and used, and that the original working copy returns afterward. Use a local-only release for experiments rather than publishing a probe tag.
 
-### Run current contracts and historical contracts
+### run current contracts and historical contracts
 
 Run the current public suite before invoking `break-check`, so newly added contracts are checked too. Let the CLI run the released suite through `testCommand`. Configure the command to fail when it selects no tests, build and type-check the package when needed, and avoid cached test results that can bypass execution of restored files. Tests should run once and terminate.
 
@@ -136,7 +134,7 @@ Run the check from a clean checkout with access to `origin` and release tags. An
 
 When the job fails, identify the phase before deciding on a breaking release. A failed current test, incompatible runner types, a build problem, a missing baseline, and a released assertion detecting a consumer regression require different responses. Certification should validate an intentional breaking-release plan after that review; using a successful certification command to bypass an unexplained infrastructure failure does not establish compatibility.
 
-### Case study: mondrian.pdf
+### case study: mondrian.pdf
 
 [Mondrian's adoption PR](https://github.com/jeremybanka/mondrian/pull/108) separated consumer contracts from implementation tests and exact visual proofs. Independent reviews introduced mutations that still passed the proposed public suite, including ignored positions and identifiers, collapsed resources, and disabled visual differences. Strengthening the corresponding scenarios made those regressions observable. Refactor probes also removed unintended commitments to rejection timing and flat artifact directories.
 
@@ -144,7 +142,7 @@ An October 5, 2026 audit examined 237 subsequent Break Check jobs: 186 passed, 4
 
 The contracts continued to pass through [PDFium changes](https://github.com/jeremybanka/mondrian/actions/runs/35280593318/job/105401343541) and an [aligned Vite Plus upgrade](https://github.com/jeremybanka/mondrian/actions/runs/36543626809/job/109324668309). That is evidence for the chosen boundaries over the audited changes, not a claim that the suite covers every possible consumer regression.
 
-## Git environment
+## git environment
 
 break-check uses simple-git v4, which filters inherited `GIT_*` environment variables and certain other Git-related variables, including `SSH_ASKPASS`, from its Git subprocesses. Environment-based settings such as `GIT_SSH_COMMAND`, `GIT_ASKPASS`, and `GIT_CONFIG_*` no longer configure tag discovery, fetching, or file restoration. Configure authentication and Git behavior through Git configuration files, SSH configuration, or an SSH agent instead. This filtering applies to break-check's Git operations; test and certification commands still inherit the normal process environment.
 
@@ -205,13 +203,13 @@ If a process is forcibly interrupted or restoration fails, break-check retains r
 </table>
 <!--gen-->
 
-## CLI completion
+## cli completion
 
 With `break-check` installed on PATH, run `break-check completion install bash` to install Bash completion. Replace `bash` with `zsh`, `fish`, `nushell`, or `carapace` for the other supported integrations. Installation uses the shell's existing completion setup and does not edit shell profiles; open a new shell afterward. `break-check completion bash` prints the integration for manual installation. See [Comline's shell setup requirements](../comline/README.md#shell-integrations).
 
 Completion suggests commands, option names, config file paths, and directories for `--base-dir` and `schema --out-dir`. It works without a valid config file or required option values and does not run checks. Singleton options disappear from suggestions after use; parsing behavior is unchanged. The completion transport reserves its management and protocol command names; use an explicit path such as `./completion` for a config file whose name collides with a reserved command.
 
-## CLI option aliases and warnings
+## cli option aliases and warnings
 
 These aliases work alongside the original option names. Configuration file keys remain unchanged.
 
