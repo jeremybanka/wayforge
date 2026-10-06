@@ -18,7 +18,7 @@ break-check distinguishes two kinds of tests:
 1. Public tests record behavior consumers can rely on across releases. break-check restores their released versions so a proposed change cannot weaken an assertion alongside the implementation it checks.
 2. Private tests cover implementation details, development diagnostics, and other behavior you want to verify without preserving it as a release commitment. They can detect real bugs too; they are not used as the historical compatibility contract.
 
-Identify the public tests with a glob pattern and provide a command that runs those tests once against source. Build and current-test validation belong in independent jobs. A passing comparison means the selected released tests passed; its strength depends on the promises those tests actually protect.
+Identify the public tests with a glob pattern and provide a command that runs those tests once against source. Build and current-test preflights belong in independent jobs. Individual public contracts may build a disposable package or fixture when published entries, declaration files, or compiled runtimes are themselves the behavior being verified. A passing comparison means the selected released tests passed; its strength depends on the promises those tests actually protect.
 
 ## help
 
