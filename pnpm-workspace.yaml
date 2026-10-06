@@ -53,6 +53,7 @@ packages:
 
 allowBuilds:
   "@swc/core": true
+  "@vscode/vsce-sign": true
   dprint: true
   "esbuild": true
   "rolldown": true
