@@ -38,23 +38,30 @@ import {
 } from "../../../../library/bug-rangers-game-state"
 import { isAdminAtom } from "../../../../library/store"
 import { usernameAtoms } from "../../../../library/username-state"
-import * as svg from "../../../<svg>"
+import * as userSvg from "../../../<svg>"
 import { isMyTurnSelector } from "./bug-rangers-client-state"
 import css from "./BugRangersUI.module.css"
-import * as icon from "./Icons"
+import { cube, tile } from "./Icons"
+
+const svg = { ...userSvg, cube, tile }
+// These intrinsic namespaces describe Motion's stable HTML roots to Lasertag.
+const section = { Animated: motion.section }
+const figure = { Animated: motion.figure }
+const span = { Animated: motion.span }
+const h1 = { Animated: motion.h1 }
 
 export function BugRangersUI(): ReactElement {
 	const { myRoomKey } = useRealtimeRooms()
 	const myUserKey = usePullAtom(myUserKeyAtom)
 	return (
-		<main className={css[`class`]}>
+		<bug-rangers-ui className={css.class}>
 			{myUserKey ? <UserInterior /> : null}
 			{myUserKey && myRoomKey ? (
 				<Interior myUserKey={myUserKey} />
 			) : (
 				<Exterior />
 			)}
-		</main>
+		</bug-rangers-ui>
 	)
 }
 
@@ -63,7 +70,7 @@ function Exterior(): ReactElement {
 	const allRoomKeys = useJSON(allRoomKeysAtom)
 	const gameRoomKey = allRoomKeys.find((key) => key.includes(`bug-rangers`))
 	return (
-		<article data-css="room-exterior">
+		<room-exterior>
 			<button
 				type="button"
 				disabled={gameRoomKey === undefined}
@@ -73,7 +80,7 @@ function Exterior(): ReactElement {
 			>
 				{gameRoomKey ? `Join Game` : `Waiting for Host`}
 			</button>
-		</article>
+		</room-exterior>
 	)
 }
 
@@ -95,14 +102,14 @@ function Interior({ myUserKey }: { myUserKey: UserKey }): ReactElement {
 			{gameState === `playing` ? (
 				<>
 					<PlayerTurnControls />
-					<article data-css-counter="tiles">
-						<icon.tile stroke="var(--fg)" strokeWidth={2} />
+					<game-counter data-kind="tiles">
+						<svg.tile stroke="var(--fg)" strokeWidth={2} />
 						<span>{myRemainingTiles}</span>
-					</article>
-					<article data-css-counter="cubes">
-						<icon.cube stroke="var(--fg)" strokeWidth={2} />
+					</game-counter>
+					<game-counter data-kind="cubes">
+						<svg.cube stroke="var(--fg)" strokeWidth={2} />
 						<span>{myRemainingCubes}</span>
-					</article>
+					</game-counter>
 				</>
 			) : null}
 		</>
@@ -120,16 +127,16 @@ function RoomModule(): ReactElement {
 	const gameState = usePullAtom(gameStateAtom)
 
 	return (
-		<article data-css="room-module">
-			<motion.main layout>
+		<room-module>
+			<section.Animated layout>
 				<GameSetupPhase isCurrentPhase={gameState === `setup`} />
 				<GamePlayingPhase
 					isCurrentPhase={gameState === `playing`}
 					gameState={gameState}
 					myMutualsAtom={myMutualsAtom}
 				/>
-			</motion.main>
-		</article>
+			</section.Animated>
+		</room-module>
 	)
 }
 
@@ -154,11 +161,11 @@ function Devtools(): ReactElement {
 				{showBugRangersDevtools ? `hide` : `show`} devtools
 			</button>
 			{showBugRangersDevtools ? (
-				<article data-css="devtools">
+				<game-devtools>
 					<h1>{myRoomKey ?? `null`}</h1>
 					<RoomControls />
 					{myRoomKey ? <DevtoolsInterior /> : null}
-				</article>
+				</game-devtools>
 			) : null}
 		</>
 	)
@@ -200,7 +207,7 @@ function PlayerTurnControls(): ReactElement {
 	const turnCanBeEnded = useO(turnCanBeEndedSelector)
 	const turnInProgress = usePullAtom(turnInProgressAtom)
 	return (
-		<article data-css="turn-controls">
+		<turn-controls>
 			{myColor === null ? (
 				PLAYER_COLORS.map((color, idx) => (
 					<button
@@ -240,7 +247,7 @@ function PlayerTurnControls(): ReactElement {
 					</button>
 				</>
 			)}
-		</article>
+		</turn-controls>
 	)
 }
 
@@ -321,7 +328,7 @@ function GameSetupPhase({
 	const gameSocket = socket as Socket<{}, PlayerActions>
 	const setupGroups = usePullSelector(setupGroupsSelector)
 	return (
-		<motion.section
+		<section.Animated
 			layout
 			data-css="setup"
 			data-css-current={isCurrentPhase || undefined}
@@ -347,7 +354,7 @@ function GameSetupPhase({
 					gameSocket?.emit(`wantFirst`)
 				}}
 			/>
-		</motion.section>
+		</section.Animated>
 	)
 }
 
@@ -360,7 +367,7 @@ function GamePlayingPhase({
 }): ReactElement {
 	const turnOrder = usePullMutable(playerTurnOrderAtom)
 	return (
-		<motion.section
+		<section.Animated
 			layout
 			data-css="playing"
 			data-css-current={isCurrentPhase || undefined}
@@ -370,7 +377,7 @@ function GamePlayingPhase({
 				dataCss="turn-order"
 				userKeys={turnOrder}
 			/>
-		</motion.section>
+		</section.Animated>
 	)
 }
 
@@ -388,12 +395,12 @@ function UserGroup({
 	return (
 		<section data-css={dataCss}>
 			<button type="button" onClick={onClick} disabled={!onClick} />
-			<header>{groupName}</header>
-			<main>
+			<group-heading>{groupName}</group-heading>
+			<group-members>
 				{userKeys.map((userKey) => {
 					return <User key={userKey} userKey={userKey} />
 				})}
-			</main>
+			</group-members>
 		</section>
 	)
 }
@@ -407,7 +414,7 @@ function User({ userKey }: { userKey: UserKey }): ReactElement {
 	const color = usePullAtomFamilyMember(playerColorAtoms, userKey) ?? `#555`
 	const currentTurn = useO(playerTurnSelector)
 	return (
-		<motion.div layoutId={userKey} data-css-user>
+		<figure.Animated layoutId={userKey} data-css-user>
 			{userKey === myUserKey ? (
 				userKey === ownerKey ? (
 					<svg.leaderMe color={color} />
@@ -421,7 +428,7 @@ function User({ userKey }: { userKey: UserKey }): ReactElement {
 			)}
 			{userKey === currentTurn ? <svg.current color={color} /> : null}
 			<span>{username.slice(0, 3)}</span>
-		</motion.div>
+		</figure.Animated>
 	)
 }
 
@@ -430,9 +437,9 @@ function TurnBanner({ playerTurn }: { playerTurn: UserKey }): ReactElement {
 	const playerColor = usePullAtomFamilyMember(playerColorAtoms, playerTurn)
 	const myUserKey = useO(myUserKeyAtom)
 	return (
-		<article data-css="turn-banner">
+		<turn-banner>
 			<AnimatePresence mode="wait">
-				<motion.div
+				<figure.Animated
 					key={playerTurn}
 					initial={{ x: `-1500%`, skewX: `-50deg`, width: `20vw` }}
 					animate={{
@@ -448,7 +455,7 @@ function TurnBanner({ playerTurn }: { playerTurn: UserKey }): ReactElement {
 				/>
 			</AnimatePresence>
 			<AnimatePresence mode="wait">
-				<motion.span
+				<span.Animated
 					data-css="top"
 					style={{ backgroundColor: playerColor ?? `#555` }}
 					key={playerTurn}
@@ -466,7 +473,7 @@ function TurnBanner({ playerTurn }: { playerTurn: UserKey }): ReactElement {
 				/>
 			</AnimatePresence>
 			<AnimatePresence mode="wait">
-				<motion.span
+				<span.Animated
 					data-css="bottom"
 					key={playerTurn}
 					initial={{ x: `-1500%`, skewX: `-50deg`, width: `20vw` }}
@@ -483,7 +490,7 @@ function TurnBanner({ playerTurn }: { playerTurn: UserKey }): ReactElement {
 				/>
 			</AnimatePresence>
 			<AnimatePresence mode="wait">
-				<motion.h1
+				<h1.Animated
 					style={{ backgroundColor: playerColor ?? `#555` }}
 					key={playerTurn}
 					initial={{ x: `-1500%`, skewX: `-50deg`, width: `20vw` }}
@@ -499,8 +506,8 @@ function TurnBanner({ playerTurn }: { playerTurn: UserKey }): ReactElement {
 					}}
 				>
 					{playerTurn === myUserKey ? `your turn` : `${username}'s turn`}
-				</motion.h1>
+				</h1.Animated>
 			</AnimatePresence>
-		</article>
+		</turn-banner>
 	)
 }

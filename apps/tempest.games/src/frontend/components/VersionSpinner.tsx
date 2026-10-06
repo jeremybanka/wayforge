@@ -1,12 +1,14 @@
 import React, { useEffect, useRef, useState } from "react"
 
+import css from "./VersionSpinner.module.css"
+
 type BrailleLoaderProps = {
 	input: Promise<string> | string
 }
 
 const spinnerFrames = [`⠋`, `⠙`, `⠸`, `⠴`, `⠦`, `⠇`]
 
-export function Spinner({ input }: BrailleLoaderProps): React.ReactNode {
+export function VersionSpinner({ input }: BrailleLoaderProps): React.ReactNode {
 	const spanRef = useRef<HTMLSpanElement>(null)
 	const [resolved, setResolved] = useState<string | null>(
 		typeof input === `string` ? input : null,
@@ -41,7 +43,9 @@ export function Spinner({ input }: BrailleLoaderProps): React.ReactNode {
 		}
 	}, [input])
 
-	return <span ref={spanRef}>{resolved ?? spinnerFrames[0]}</span>
+	return (
+		<version-spinner className={css.class}>
+			<span ref={spanRef}>{resolved ?? spinnerFrames[0]}</span>
+		</version-spinner>
+	)
 }
-
-export default Spinner

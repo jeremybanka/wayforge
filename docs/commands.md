@@ -24,6 +24,7 @@ Following the [mise Node.js cookbook](https://mise.jdx.dev/mise-cookbook/nodejs.
 - `check:deps`: `pin-checker --ignore-workspaces`.
 - `check:eslint`: `dotenvx run -- turbo run check:eslint`.
 - `check:fmt`: `cross-env DPRINT_CACHE_DIR=$PWD/.cache/dprint dprint check .`.
+- `check:lasertag`: `turbo run check:lasertag`, validating Tempest component-owned CSS Modules against their rendered DOM.
 - `check:oxlint`: `dotenvx run -- turbo run check:oxlint`.
 - `check:tonnage`: `turbo run check:tonnage`.
 - `check:tsc`: `dotenvx run -- turbo run check:tsc`.

@@ -1,5 +1,7 @@
+@import "./css/font-face.css";
+
 :root {
-	color-scheme: light dark;
+	color-scheme: dark;
 
 	--logo-color: #fff200;
 
@@ -59,6 +61,7 @@
 
 @media (prefers-color-scheme: light) {
 	:root {
+		color-scheme: light;
 		--logo-color: #000;
 
 		--fg-tint-3: #666;
@@ -94,44 +97,4 @@
 		--hyperlink-color: #08f;
 		--hyperlink-hover-color: #04f;
 	}
-	button {
-		background-color: #f9f9f9;
-	}
 }
-
-a {
-	--interactive-color: var(--hyperlink-color);
-	color: var(--interactive-color);
-	font-weight: 500;
-	text-decoration: inherit;
-	&:hover {
-		--interactive-color: var(--hyperlink-hover-color);
-		text-decoration-color: var(--interactive-color);
-		text-decoration-line: underline;
-	}
-}
-
-/* header {
-  border: 1px solid #f00;
-}
-main {
-  border: 1px solid #0f0;
-}
-footer {
-  border: 1px solid #00f;
-}
-form {
-  border: 1px solid #f0f;
-}
-label {
-  border: 1px dashed #f0f;
-}
-nav {
-  border: 1px dashed #f00;
-}
-article {
-  border: 1px dashed #0f0;
-}
-aside {
-  border: 1px dashed #00f;
-} */

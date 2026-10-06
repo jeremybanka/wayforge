@@ -1,11 +1,11 @@
-[data-css="Carbiter"].class {
+carbiter-view.class {
 	flex: 1;
 	display: flex;
 	flex-direction: column;
 	width: 100%;
 	max-width: 512px;
 	position: relative;
-	> header {
+	> meal-heading {
 		position: fixed;
 		z-index: 12;
 		top: 60px;
@@ -35,14 +35,13 @@
 			}
 		}
 	}
-	* {
-		/* border: 1px solid var(--fg-soft-3); */
+	:where(meal-heading, meal-content, meal-actions, section, article, aside, nav, form, data, label, button, input, span) {
 		display: flex;
 	}
 	> span {
 		flex-grow: 1;
 	}
-	> main {
+	> meal-content {
 		padding-top: 500px;
 		padding-bottom: 120px;
 		flex-flow: column;
@@ -58,7 +57,7 @@
 				border: 1px solid var(--bg-soft-2);
 			}
 
-			> header {
+			> meal-heading {
 				> button {
 					background: none;
 					border: none;
@@ -70,7 +69,7 @@
 					flex: 0;
 				}
 			}
-			> main {
+			> meal-content {
 				gap: 10px;
 				flex-flow: column;
 				> article {
@@ -79,7 +78,7 @@
 					flex-flow: column;
 					background: var(--bg-tint-1);
 					gap: 5px;
-					> header {
+					> meal-heading {
 						> button {
 							display: block;
 							width: 40px;
@@ -102,7 +101,7 @@
 		}
 	}
 
-	> footer {
+	> meal-actions {
 		position: fixed;
 		width: calc(100% - 20px);
 		max-width: 512px;
@@ -137,7 +136,7 @@
 		> span {
 			width: 100%;
 		}
-		> main {
+		> meal-content {
 			background: var(--bg-soft-2);
 			outline: 1px solid var(--bg-soft-3);
 			align-self: flex-end;
@@ -151,7 +150,7 @@
 			flex-flow: column;
 			> [data-css="stats-number"] {
 				font-family: Theia, sans-serif;
-				&:is(main) {
+				&:is(output) {
 					font-size: 24px;
 				}
 				&:is(input) {
@@ -170,6 +169,40 @@
 		}
 	}
 
+	button {
+		background-color: var(--bg-dark-3);
+		color: var(--fg);
+		font-family: theia, sans-serif;
+		border: var(--fg-soft-3) solid 1px;
+		cursor: pointer;
+		&:disabled {
+			background-color: var(--bg-hard-1);
+			border: 1px solid var(--bg-soft-1);
+			color: var(--bg-soft-3);
+			&:hover {
+				cursor: not-allowed;
+			}
+		}
+	}
+	input {
+		--energy-color: var(--fg-soft-2);
+		box-sizing: border-box;
+		border-radius: 0px;
+		height: 34px;
+		background: none;
+		outline: 1px solid var(--energy-color);
+		border: none;
+		font-family: Uruz, serif;
+		font-size: 21px;
+		padding: 18px 0px 16px 8px;
+		&:focus {
+			outline-width: 2px;
+		}
+		&:disabled {
+			color: var(--fg-soft-3);
+			--energy-color: var(--bg-soft-3);
+		}
+	}
 	button,
 	input {
 		&:focus-within {

@@ -1,0 +1,99 @@
+home-view.class {
+	display: contents;
+	button {
+		background-color: var(--bg-dark-3);
+		color: var(--fg);
+		font-family: theia, sans-serif;
+		border: var(--fg-soft-3) solid 1px;
+		cursor: pointer;
+		&:disabled {
+			background-color: var(--bg-hard-1);
+			border: 1px solid var(--bg-soft-1);
+			color: var(--bg-soft-3);
+			&:hover {
+				cursor: not-allowed;
+			}
+		}
+	}
+	> form {
+		display: flex;
+		flex-flow: row wrap;
+		height: 100%;
+		gap: 30px;
+		align-items: end;
+		> form-fields {
+			width: 100%;
+			max-width: 200px;
+			display: flex;
+			flex-flow: column;
+			gap: 10px;
+
+			> aside {
+				background-color: #f00;
+				color: var(--bg-hard-3);
+				font-size: 15px;
+				padding: 3px 6px;
+			}
+			> label {
+				display: flex;
+				flex-flow: column;
+				position: relative;
+				> span {
+					flex-grow: 1;
+					font-size: 15px;
+					&:has(+ input:disabled) {
+						color: var(--fg-soft-2);
+					}
+				}
+				> input {
+					--energy-color: var(--fg-soft-2);
+					box-sizing: border-box;
+					border-radius: 0px;
+					height: 34px;
+					background: none;
+					outline: 1px solid var(--energy-color);
+					border: none;
+					font-family: Uruz, serif;
+					font-size: 21px;
+					padding: 18px 0px 16px 8px;
+					&:focus {
+						outline-width: 2px;
+					}
+					&:disabled {
+						color: var(--fg-soft-3);
+						--energy-color: var(--bg-soft-3);
+					}
+				}
+			}
+			> form-actions {
+				display: flex;
+				flex-flow: row;
+				justify-content: space-between;
+				> button {
+					border: none;
+					padding: 0px;
+					font-size: 12px;
+					color: var(--hyperlink-color);
+				}
+				> span ~ button {
+					background-color: var(--bg-dark-3);
+					color: var(--fg);
+					width: 50px;
+					height: 40px;
+					font-family: theia, sans-serif;
+					align-self: flex-end;
+					border: var(--fg-soft-3) solid 1px;
+					cursor: pointer;
+					&:disabled {
+						background-color: var(--bg-hard-1);
+						border: 1px solid var(--bg-soft-1);
+						color: var(--bg-soft-3);
+						&:hover {
+							cursor: not-allowed;
+						}
+					}
+				}
+			}
+		}
+	}
+}

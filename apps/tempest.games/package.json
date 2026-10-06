@@ -26,8 +26,9 @@
 		"build": "rm -rf ./bin && ([ $PREVIEW ] && bun run env:pre || bun run env:prod) && concurrently \"bun:build:*\"",
 		"build:bun": "./build.bun.ts",
 		"build:vite": "[ $PREVIEW ] && vite build --mode preview || vite build --mode production",
-		"check": "pnpm run check:eslint && pnpm run check:tsc && pnpm run check:oxlint",
+		"check": "pnpm run check:eslint && pnpm run check:tsc && pnpm run check:oxlint && pnpm run check:lasertag",
 		"check:eslint": "eslint -- .",
+		"check:lasertag": "lasertag check \"src/frontend/**/*.module.css\"",
 		"check:oxlint": "oxlint --type-aware -c ../../.oxlintrc.jsonc .",
 		"check:tsc": "tsc --noEmit",
 		"db:dev": "dotenvx run -f .env.development -- ./__scripts__/interactive-db.bun.ts",
@@ -95,6 +96,7 @@
 		"drizzle-kit": "0.31.11",
 		"eslint": "10.12.0",
 		"flightdeck": "workspace:*",
+		"lasertag": "0.8.7",
 		"typescript": "7.0.2",
 		"vite": "8.3.2",
 		"vitest": "5.0.3"

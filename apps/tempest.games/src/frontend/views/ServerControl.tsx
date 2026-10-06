@@ -6,6 +6,7 @@ import * as React from "react"
 
 import type { ActualRoomName } from "../../library/room-names"
 import { cpuCountAtom } from "../../library/store"
+import css from "./ServerControl.module.css"
 
 export function ServerControl(): React.ReactNode {
 	const cpuCount = usePullAtom(cpuCountAtom)
@@ -16,7 +17,7 @@ export function ServerControl(): React.ReactNode {
 	const myOwnedRoomKeys = useO(myOwnedRoomsAtom)
 
 	return (
-		<article data-css="server-control">
+		<server-control className={css.class}>
 			{Array.from({ length: cpuCount }).map((_, i) => {
 				const roomKey: RoomKey | undefined = allRoomKeys[i]
 				const hasJoined = roomKey && roomKey === myRoomKey
@@ -40,7 +41,7 @@ export function ServerControl(): React.ReactNode {
 			>
 				create room
 			</button>
-		</article>
+		</server-control>
 	)
 }
 
@@ -59,7 +60,7 @@ function Core({
 	roomSocket,
 }: CoreProps) {
 	return (
-		<div data-css="">
+		<server-core>
 			<span>
 				Core {indexNumber}: {roomKey}
 				{` `}
@@ -95,6 +96,6 @@ function Core({
 					delete
 				</button>
 			) : null}
-		</div>
+		</server-core>
 	)
 }
