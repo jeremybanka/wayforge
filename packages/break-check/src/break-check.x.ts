@@ -19,12 +19,13 @@ import {
 import logger from "takua"
 
 import type { BreakCheckOptions } from "./break-check"
-import { breakCheck } from "./break-check"
+import { breakCheck, breakCheckPrelude } from "./break-check"
 
 const BREAK_CHECK_MANUAL = options(
 	`Check for breaking changes in a package.`,
 	type({
 		"tagPattern?": `string`,
+		"baselineFile?": `string`,
 		testPattern: `string`,
 		testCommand: `string`,
 		certifyCommand: `string`,
@@ -39,6 +40,13 @@ const BREAK_CHECK_MANUAL = options(
 			required: false,
 			description: `RegExp which, if found matched to a git tag, will be considered a release tag for your library.`,
 			example: `--tagPattern="my-library"`,
+		},
+		baselineFile: {
+			aliases: [`baseline-file`],
+			completion: { repeatable: false, fileSystem: `files` },
+			required: false,
+			description: `Use the exact locally fetched commit from a prelude snapshot instead of discovering remote tags.`,
+			example: `--baseline-file=.break-check/baseline.json`,
 		},
 		testPattern: {
 			aliases: [`test-pattern`, `pattern`],
@@ -83,6 +91,41 @@ const BREAK_CHECK_MANUAL = options(
 	},
 ) satisfies OptionsGroup<BreakCheckOptions>
 
+const PRELUDE_MANUAL = options(
+	`Resolve and fetch the release baseline for a cacheable compatibility check.`,
+	type({
+		"tagPattern?": `string`,
+		"baseDirname?": `string`,
+		"out?": `string`,
+		"testPattern?": `string`,
+		"testCommand?": `string`,
+		"certifyCommand?": `string`,
+		"baselineFile?": `string`,
+		"verbose?": `boolean`,
+	}),
+	{
+		...BREAK_CHECK_MANUAL.optionConfigs,
+		testPattern: {
+			...BREAK_CHECK_MANUAL.optionConfigs.testPattern,
+			required: false,
+		},
+		testCommand: {
+			...BREAK_CHECK_MANUAL.optionConfigs.testCommand,
+			required: false,
+		},
+		certifyCommand: {
+			...BREAK_CHECK_MANUAL.optionConfigs.certifyCommand,
+			required: false,
+		},
+		out: {
+			completion: { repeatable: false, fileSystem: `files` },
+			required: false,
+			description: `Gitignored snapshot path relative to the base directory (default: .break-check/baseline.json).`,
+			example: `--out=.break-check/baseline.json`,
+		},
+	},
+)
+
 const SCHEMA_MANUAL = options(
 	`Create a copy of the schema for configuring break-check.`,
 	type({ "outdir?": `string` }),
@@ -101,20 +144,31 @@ const SCHEMA_MANUAL = options(
 const parse = cli(
 	{
 		cliName: `break-check`,
-		routes: optional({ help: null, schema: null, $configPath: null }),
+		routes: optional({
+			help: null,
+			schema: null,
+			prelude: optional({ $configPath: null }),
+			$configPath: null,
+		}),
 		routeOptions: {
 			"": BREAK_CHECK_MANUAL,
 			$configPath: BREAK_CHECK_MANUAL,
 			help: noOptions(`Show usage.`),
 			schema: SCHEMA_MANUAL,
+			prelude: PRELUDE_MANUAL,
+			"prelude/$configPath": PRELUDE_MANUAL,
 		},
-		positionalCompletions: { $configPath: { fileSystem: `files` } },
+		positionalCompletions: {
+			$configPath: { fileSystem: `files` },
+			"prelude/$configPath": { fileSystem: `files` },
+		},
 		discoverConfigPath: (args) => {
 			if (args[0] === `help` || args[0] === `schema`) {
 				return
 			}
 			const configPath =
-				args[0] ?? path.join(process.cwd(), `break-check.config.json`)
+				(args[0] === `prelude` ? args[1] : args[0]) ??
+				path.join(process.cwd(), `break-check.config.json`)
 			return configPath
 		},
 	},
@@ -139,6 +193,15 @@ if (completion !== undefined) {
 				process.stdout.write(`📝 Wrote json.schema.`)
 			}
 			break
+		case `prelude`:
+		case `prelude/$configPath`: {
+			const baseline = await breakCheckPrelude({
+				...inputs.opts,
+				out: inputs.opts.out ?? `.break-check/baseline.json`,
+			})
+			process.stdout.write(`Pinned ${baseline.ref} at ${baseline.commit}.\n`)
+			break
+		}
 		case ``:
 		case `$configPath`: {
 			const { returnValue } = await encapsulate(() => breakCheck(inputs.opts), {

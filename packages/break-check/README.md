@@ -18,13 +18,13 @@ break-check distinguishes two kinds of tests:
 1. Public tests record behavior consumers can rely on across releases. break-check restores their released versions so a proposed change cannot weaken an assertion alongside the implementation it checks.
 2. Private tests cover implementation details, development diagnostics, and other behavior you want to verify without preserving it as a release commitment. They can detect real bugs too; they are not used as the historical compatibility contract.
 
-Identify the public tests with a glob pattern and provide a command that builds the current implementation as needed and runs those tests once. A passing comparison means the selected released tests passed; its strength depends on the promises those tests actually protect.
+Identify the public tests with a glob pattern and provide a command that runs those tests once against source. The tested package's build and current-test preflights belong in independent jobs. Upstream dependency builds, such as Turbo's `^build`, can run before compatibility checks. Individual public contracts may build a disposable package or fixture when published entries, declaration files, or compiled runtimes are themselves the behavior being verified. A passing comparison means the selected released tests passed; its strength depends on the promises those tests actually protect.
 
 ## help
 
-Run `break-check help` to show usage for the CLI, including the check options and `schema` command. Like `schema`, the `help` command skips configuration discovery; it works without required check options and even when `break-check.config.json` is malformed. It does not run checks or write schema files.
+Run `break-check help` to show usage for the CLI, including the check options, `prelude`, and `schema` commands. Like `schema`, the `help` command skips configuration discovery; it works without required check options and even when `break-check.config.json` is malformed. It does not run checks or write schema files.
 
-Use `break-check help` instead of the former `--help` or `-h` options. Configuration no longer controls help. The empty route and a configuration path still run checks; if your configuration file is named `help`, pass `./help` to select it explicitly.
+Use `break-check help` instead of the former `--help` or `-h` options. Configuration no longer controls help. The empty route and a configuration path still run checks; if your configuration file is named `help` or `prelude`, pass an explicit path such as `./help` to select it explicitly.
 
 ## examples
 
@@ -56,13 +56,67 @@ In both examples, a failed test command remains uncertified and makes the CLI ex
 
 Release tags may use `1.2.3`, `v1.2.3`, `package@1.2.3`, or `@scope/package@1.2.3`, including valid prerelease and build identifiers. The newest matching version is selected by semantic-version precedence; tags without a supported version are ignored.
 
+## caching compatibility checks
+
+The ordinary `break-check` command discovers the newest release on `origin` each time it runs. Do not cache that whole command: a new release or a moved tag can change its baseline without changing any tracked checkout files.
+
+For caching, run an uncached prelude that resolves and fetches the release, then cache the check with the generated snapshot as an input. Add `.break-check/` to your package's `.gitignore` first; the prelude requires a gitignored, untracked output path so the snapshot does not interfere with the clean-working-tree requirement.
+
+```sh
+break-check prelude --out .break-check/baseline.json
+break-check --baseline-file .break-check/baseline.json
+```
+
+Both commands discover `break-check.config.json` and accept the same `--tag-pattern` and `--base-dir` options. An explicit configuration path works as `break-check prelude ./custom.config.json --out .break-check/baseline.json` and `break-check ./custom.config.json --baseline-file .break-check/baseline.json`. The prelude does not require test or certification options, and never runs those commands or builds the package. Existing full check configurations can be reused. Output and baseline-file paths are relative to `baseDirname`, which defaults to the current working directory. The default prelude output is `.break-check/baseline.json`.
+
+The versioned JSON snapshot contains the selected tag ref, its resolved commit SHA, the tag pattern, and the package directory relative to the repository root. Annotated tags are peeled to commits. Contents are deterministic and written atomically, with no timestamp or nonce. Fetching uses the SHA from discovery rather than a mutable tag name. An unchanged baseline produces identical snapshot bytes; a newer release or a moved tag targeting another commit changes them. A failed discovery, fetch, or write fails the prelude and removes an older snapshot at the validated output path.
+
+The pinned check reads that locally available commit without contacting `origin` or discovering tags. A release published between prelude and check does not change this invocation's baseline. Missing, malformed, incompatible, or unavailable snapshots fail the check; rerun the prelude to refresh them. Each package or configuration needs its own snapshot path. Test execution, certification, Git locking, and restoration follow the same lifecycle as the ordinary command.
+
+### Turbo
+
+Add these scripts to the tested package, preserving your existing runner and certification configuration:
+
+```json
+{
+	"scripts": {
+		"test:breaks:prelude": "break-check prelude --out .break-check/baseline.json",
+		"test:breaks": "break-check --baseline-file .break-check/baseline.json"
+	}
+}
+```
+
+Use [Turbo's deferred hashing](https://turborepo.dev/docs/reference/configuration#deferred-hashing) so the snapshot is hashed after the uncached prelude completes. This configuration is exercised with Turbo 2.11.7:
+
+```json
+{
+	"tasks": {
+		"test:breaks:prelude": {
+			"cache": false
+		},
+		"test:breaks": {
+			"dependsOn": ["test:breaks:prelude", "^build"],
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				{ "mode": "jit", "globs": [".break-check/baseline.json"] }
+			],
+			"cache": true
+		}
+	}
+}
+```
+
+Run `turbo run test:breaks` as usual. The prelude runs even when the compatibility check hits its cache; a failed prelude prevents the downstream task from replaying a cached success. Keep all additional runner, helper, configuration, environment, and certification inputs in the compatibility task's hash, including release-plan files outside the package directory. Keep upstream `^build` prerequisites; the tested package does not need a self-build preflight. For runners without deferred hashing, finish the prelude before starting the task runner and include its snapshot in the check's cache key.
+
+The JavaScript API exports `breakCheckPrelude({ out, tagPattern, baseDirname })` and accepts `baselineFile` in `breakCheck` options. Without `baselineFile`, the existing single-command discovery behavior is preserved.
+
 ## writing consumer contracts
 
 Before preserving an assertion in a release, answer two questions: which consumer capability would its failure demonstrate is broken, and which harmless implementation changes should it continue to allow? A test named "public API" is not enough. Read every assertion as a promise you may need to keep after its original author and implementation have changed.
 
 ### choose the behavior deliberately
 
-Test imports through the entrypoints consumers use. For a published library, build its distributable output and check declarations as well as runtime behavior where relevant. Importing an internal source file can miss broken package exports while accidentally requiring that source path to survive refactoring.
+Test imports through the entrypoints consumers use. Resolve the tested package's consumer import names to source in the test runner so compatibility checks do not require its own build or freeze internal source paths. Upstream dependencies may use their built entrypoints. Check distributable output and declarations separately in the build and type-check jobs.
 
 Write focused scenarios for the capabilities you want to support. Include combinations that make resource independence observable: two fonts or images on one page, multiple registrations, or two distinct handles. Exercising a method once does not establish that its effect survives serialization or that it works alongside another instance.
 
@@ -103,9 +157,9 @@ Mondrian publishes its independent inspection tools through its testing entrypoi
 }
 ```
 
-This illustrates the restore boundary; `test:public` is a project-provided command that rebuilds the package, checks consumer types, and runs its public suite. `false` keeps detected breaks uncertified until the project supplies its release-plan check.
+This illustrates the restore boundary; `test:public` is a project-provided command that only runs its public suite against source. Consumer type checks and builds have separate commands. `false` keeps detected breaks uncertified until the project supplies its release-plan check.
 
-Match the assertions and observation code, and leave the implementation they are meant to evaluate outside that boundary. When an observer also ships as a library feature, its restored implementation is trusted test infrastructure for this comparison; verify its current implementation separately too. Build after restoration so compiled observation code reflects the restored source.
+Match the assertions and observation code, and leave the implementation they are meant to evaluate outside that boundary. When an observer also ships as a library feature, its restored implementation is trusted test infrastructure for this comparison; verify its current implementation separately too. Execute observation source directly after restoration so historical readers run without a build.
 
 break-check restores matched Git files, not installed dependencies. A shared package manifest and workspace lockfile keep setup simple, but dependency upgrades must keep restored readers runnable. If a reader needs its own dependency versions, include that dependency description in the restore boundary and make your test command install it. Merely matching a lockfile does not perform an installation. Protect runner configuration and other support files when they determine how historical assertions execute.
 
@@ -128,7 +182,7 @@ Also verify the restoration mechanism once: change a current observation helper 
 
 ### run current contracts and historical contracts
 
-Run the current public suite before invoking `break-check`, so newly added contracts are checked too. Let the CLI run the released suite through `testCommand`. Configure the command to fail when it selects no tests, build and type-check the package when needed, and avoid cached test results that can bypass execution of restored files. Tests should run once and terminate.
+Run the current suite in a parallel test job so newly added contracts are checked independently. Let the CLI run only the released suite against source through `testCommand`. Configure the command to fail when it selects no tests and avoid cached test results that can bypass execution of restored files. Builds and type checks have separate commands and jobs. Tests should run once and terminate.
 
 Run the check from a clean checkout with access to `origin` and release tags. An initial release without matched public tests provides no baseline: preserve the CLI's inconclusive result until a release includes them. A missing baseline is not evidence of compatibility.
 
@@ -156,58 +210,23 @@ If a process is forcibly interrupted or restoration fails, break-check retains r
 
 ## options
 
-<!--gen-->
-<!--cli-options HASH-->
-<table>
-  <tr>
-    <th>option</th>
-    <th>shorthand</th>
-    <th>required</th>
-    <th>description</th>
-    <th>example</th>
-  </tr>
-  <tr>
-    <td><code>--tagPattern</code></td>
-    <td><code>-p</code></td>
-    <td></td>
-    <td>String which, if found in a git tag, will be considered a release tag for your library.</td>
-    <td><code>--tagPattern="my-library"</code></td>
-  </tr>
-  <tr>
-    <td><code>--testPattern</code></td>
-    <td><code>-t</code></td>
-    <td>✔</td>
-    <td>Glob pattern to identify files containing public tests.</td>
-    <td><code>--testPattern="*__public.test.ts"</code></td>
-  </tr>
-  <tr>
-    <td><code>--testCommand</code></td>
-    <td><code>-c</code></td>
-    <td>✔</td>
-    <td>Command to run to run the public tests.</td>
-    <td><code>--testCommand="npm run test"</code></td>
-  </tr>
-  <tr>
-    <td><code>--certifyCommand</code></td>
-    <td><code>-C</code></td>
-    <td></td>
-    <td>Command to run to certify that breaking changes have been detected.</td>
-    <td><code>--certifyCommand="grep -q '"my-library": major' $(find ${DIR_PATH}/.changesets -type f) && exit 0 || exit 1"</code></td>
-  </tr>
-  <tr>
-    <td><code>--baseDirname</code></td>
-    <td><code>-b</code></td>
-    <td></td>
-    <td>Directory in which to run the tests and certify the breaking changes.</td>
-    <td><code>--baseDirname="."</code></td>
-</table>
-<!--gen-->
+| Check option       | Shorthand | Required | Purpose                                           |
+| ------------------ | --------- | -------- | ------------------------------------------------- |
+| `--tagPattern`     | `-g`      |          | RegExp selecting release tags.                    |
+| `--testPattern`    | `-p`      | Yes      | Glob selecting released public tests and helpers. |
+| `--testCommand`    | `-t`      | Yes      | Command running the restored public contracts.    |
+| `--certifyCommand` | `-c`      | Yes      | Command certifying intentional breaking changes.  |
+| `--baseDirname`    | `-d`      |          | Working directory for Git and commands.           |
+| `--baselineFile`   |           |          | Prelude snapshot pinning the release commit.      |
+| `--verbose`        | `-v`      |          | Print timing information for the check.           |
+
+`prelude --out` sets its gitignored snapshot path. `schema --outdir` sets the schema output directory. Run `break-check help` for the full option descriptions and examples.
 
 ## cli completion
 
 With `break-check` installed on PATH, run `break-check completion install bash` to install Bash completion. Replace `bash` with `zsh`, `fish`, `nushell`, or `carapace` for the other supported integrations. Installation uses the shell's existing completion setup and does not edit shell profiles; open a new shell afterward. `break-check completion bash` prints the integration for manual installation. See [Comline's shell setup requirements](../comline/README.md#shell-integrations).
 
-Completion suggests commands, option names, config file paths, and directories for `--base-dir` and `schema --out-dir`. It works without a valid config file or required option values and does not run checks. Singleton options disappear from suggestions after use; parsing behavior is unchanged. The completion transport reserves its management and protocol command names; use an explicit path such as `./completion` for a config file whose name collides with a reserved command.
+Completion suggests commands, option names, config file paths, snapshot paths for `--baseline-file` and `prelude --out`, and directories for `--base-dir` and `schema --out-dir`. It works without a valid config file or required option values and does not run checks. Singleton options disappear from suggestions after use; parsing behavior is unchanged. The completion transport reserves its management and protocol command names; use an explicit path such as `./completion` for a config file whose name collides with a reserved command.
 
 ## cli option aliases and warnings
 
@@ -220,6 +239,7 @@ These aliases work alongside the original option names. Configuration file keys 
 | `--testCommand`             | `--test-command`               |
 | `--certifyCommand`          | `--certify-command`            |
 | `--baseDirname`             | `--base-dir`, `--base-dirname` |
+| `--baselineFile`            | `--baseline-file`              |
 | `--outdir` (schema command) | `--out-dir`                    |
 
 After successful parsing, break-check warns on stderr about unknown options and options that do not apply to the selected command. Warnings appear before check output is captured and do not change the command's exit status.

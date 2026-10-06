@@ -6,12 +6,17 @@ import { simpleGit } from "simple-git"
 import type { Chronicle } from "takua"
 import logger from "takua"
 
+import { readBaseline } from "./baseline"
 import { withDirectoryLock } from "./directory-lock"
 import { latestReleaseTag as selectLatestReleaseTag } from "./release-tag"
 import { withTestFileState } from "./test-file-state"
 
+export type { BreakCheckBaseline, BreakCheckPreludeOptions } from "./baseline"
+export { breakCheckPrelude } from "./baseline"
+
 export type BreakCheckOptions = {
 	tagPattern?: string | undefined
+	baselineFile?: string | undefined
 	testPattern: string
 	testCommand: string
 	certifyCommand: string
@@ -54,6 +59,7 @@ export type BreakCheckOutcome =
 
 export async function breakCheck({
 	tagPattern,
+	baselineFile,
 	testPattern,
 	testCommand,
 	certifyCommand,
@@ -84,39 +90,53 @@ export async function breakCheck({
 			gitWasClean: false,
 		}
 	}
-	const tagsRemote = await git.listRemote([`--tags`, `origin`])
+	let latestReleaseTag: string | undefined
+	let releaseCommit: string
+	if (baselineFile !== undefined) {
+		const baseline = await readBaseline(
+			git,
+			path.resolve(baseDirname, baselineFile),
+			{ tagPattern },
+		)
+		latestReleaseTag = baseline.ref
+		releaseCommit = baseline.commit
+		mark?.(`read pinned release baseline`)
+	} else {
+		const tagsRemote = await git.listRemote([`--tags`, `origin`])
 
-	mark?.(`list remote tags`)
-	const latestReleaseTag = selectLatestReleaseTag(tagsRemote, tagPattern)
-	mark?.(`found latest release tag`)
-	if (!latestReleaseTag) {
-		return {
-			summary: `No tags found matching the pattern "${tagPattern}".`,
-			gitWasClean: true,
-			lastReleaseFound: false,
-		} as const
+		mark?.(`list remote tags`)
+		latestReleaseTag = selectLatestReleaseTag(tagsRemote, tagPattern)
+		mark?.(`found latest release tag`)
+		if (!latestReleaseTag) {
+			return {
+				summary: `No tags found matching the pattern "${tagPattern}".`,
+				gitWasClean: true,
+				lastReleaseFound: false,
+			} as const
+		}
+		const commonGitDirectory = await git.revparse([
+			`--path-format=absolute`,
+			`--git-common-dir`,
+		])
+		await withDirectoryLock(
+			path.join(commonGitDirectory, `break-check-fetch.lock`),
+			() =>
+				git.fetch([
+					`origin`,
+					`${latestReleaseTag}:${latestReleaseTag}`,
+					`--no-tags`,
+					`--no-write-fetch-head`,
+				]),
+		)
+
+		releaseCommit = await git.revparse([`${latestReleaseTag}^{commit}`])
+		mark?.(`fetched latest release tag`)
 	}
-	const commonGitDirectory = await git.revparse([
-		`--path-format=absolute`,
-		`--git-common-dir`,
-	])
-	await withDirectoryLock(
-		path.join(commonGitDirectory, `break-check-fetch.lock`),
-		() =>
-			git.fetch([
-				`origin`,
-				`${latestReleaseTag}:${latestReleaseTag}`,
-				`--no-tags`,
-				`--no-write-fetch-head`,
-			]),
-	)
-
-	mark?.(`fetched latest release tag`)
 
 	let productionFiles: string[]
 	try {
 		productionFiles = (
-			await git.raw([`ls-tree`, `-r`, `--name-only`, `-z`, latestReleaseTag])
+			await git.raw([`ls-tree`, `-r`, `--name-only`, `-z`, releaseCommit])
 		)
 			.split(`\0`)
 			.filter(Boolean)
@@ -162,10 +182,7 @@ export async function breakCheck({
 				testsWereFound: false,
 			} as const
 		}
-		const restore = await state.replaceTests(
-			latestReleaseTag,
-			productionTestFiles,
-		)
+		const restore = await state.replaceTests(releaseCommit, productionTestFiles)
 		mark?.(`restored public tests from latest release tag`)
 		return { latestReleaseTag, productionTestFiles, restore }
 	})
