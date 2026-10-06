@@ -25,6 +25,6 @@ Use the canonical command names in `docs/commands.md`: `fmt` writes formatting, 
 
 ## Release compatibility
 
-- Run released public contracts against source with break-check; do not build the package or run the current suite as a compatibility preflight.
-- Run current tests, builds, and type checks independently in parallel CI jobs. Public-test commands run tests only; individual public contracts may build disposable fixtures when the build or package output is the behavior being verified.
+- Run released public contracts against the tested package's source with break-check; do not build that package itself or run the current suite as a compatibility preflight. Upstream dependency builds, such as Turbo's `^build`, are allowed.
+- Run current tests, the tested package's build, and type checks independently in parallel CI jobs. Public-test commands run tests only; individual public contracts may build disposable fixtures when the build or package output is the behavior being verified.
 - Disable compatibility-task caching and preserve the repository's intentional-break certification policy.

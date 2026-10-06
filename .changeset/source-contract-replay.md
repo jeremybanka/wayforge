@@ -2,4 +2,4 @@
 "break-check": patch
 ---
 
-Document source-based compatibility replay without build or current-test preflights, while allowing builds within public contract tests.
+Document compatibility replay against the tested package's source, allowing upstream dependency builds and builds within public contract tests while avoiding self-build or current-test preflights.
