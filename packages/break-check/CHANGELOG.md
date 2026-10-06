@@ -1,5 +1,11 @@
 # break-check
 
+## 0.8.1
+
+### Patch Changes
+
+- 4735adf: Document how to author and review consumer compatibility contracts, preserve historical observation code, and diagnose check failures, with the mondrian.pdf adoption as a case study.
+
 ## 0.8.0
 
 ### Minor Changes
