@@ -22,9 +22,9 @@ Identify the public tests with a glob pattern and provide a command that runs th
 
 ## help
 
-Run `break-check help` to show usage for the CLI, including the check options and `schema` command. Like `schema`, the `help` command skips configuration discovery; it works without required check options and even when `break-check.config.json` is malformed. It does not run checks or write schema files.
+Run `break-check help` to show usage for the CLI, including the check options, `prelude`, and `schema` commands. Like `schema`, the `help` command skips configuration discovery; it works without required check options and even when `break-check.config.json` is malformed. It does not run checks or write schema files.
 
-Use `break-check help` instead of the former `--help` or `-h` options. Configuration no longer controls help. The empty route and a configuration path still run checks; if your configuration file is named `help`, pass `./help` to select it explicitly.
+Use `break-check help` instead of the former `--help` or `-h` options. Configuration no longer controls help. The empty route and a configuration path still run checks; if your configuration file is named `help` or `prelude`, pass an explicit path such as `./help` to select it explicitly.
 
 ## examples
 
@@ -55,6 +55,60 @@ Run this from the repository root. It restores the package's released public tes
 In both examples, a failed test command remains uncertified and makes the CLI exit nonzero. Inspect the failure to distinguish a consumer regression from a build, runner, or setup problem.
 
 Release tags may use `1.2.3`, `v1.2.3`, `package@1.2.3`, or `@scope/package@1.2.3`, including valid prerelease and build identifiers. The newest matching version is selected by semantic-version precedence; tags without a supported version are ignored.
+
+## caching compatibility checks
+
+The ordinary `break-check` command discovers the newest release on `origin` each time it runs. Do not cache that whole command: a new release or a moved tag can change its baseline without changing any tracked checkout files.
+
+For caching, run an uncached prelude that resolves and fetches the release, then cache the check with the generated snapshot as an input. Add `.break-check/` to your package's `.gitignore` first; the prelude requires a gitignored, untracked output path so the snapshot does not interfere with the clean-working-tree requirement.
+
+```sh
+break-check prelude --out .break-check/baseline.json
+break-check --baseline-file .break-check/baseline.json
+```
+
+Both commands discover `break-check.config.json` and accept the same `--tag-pattern` and `--base-dir` options. An explicit configuration path works as `break-check prelude ./custom.config.json --out .break-check/baseline.json` and `break-check ./custom.config.json --baseline-file .break-check/baseline.json`. The prelude does not require test or certification options, and never runs those commands or builds the package. Existing full check configurations can be reused. Output and baseline-file paths are relative to `baseDirname`, which defaults to the current working directory. The default prelude output is `.break-check/baseline.json`.
+
+The versioned JSON snapshot contains the selected tag ref, its resolved commit SHA, the tag pattern, and the package directory relative to the repository root. Annotated tags are peeled to commits. Contents are deterministic and written atomically, with no timestamp or nonce. Fetching uses the SHA from discovery rather than a mutable tag name. An unchanged baseline produces identical snapshot bytes; a newer release or a moved tag targeting another commit changes them. A failed discovery, fetch, or write fails the prelude and removes an older snapshot at the validated output path.
+
+The pinned check reads that locally available commit without contacting `origin` or discovering tags. A release published between prelude and check does not change this invocation's baseline. Missing, malformed, incompatible, or unavailable snapshots fail the check; rerun the prelude to refresh them. Each package or configuration needs its own snapshot path. Test execution, certification, Git locking, and restoration follow the same lifecycle as the ordinary command.
+
+### Turbo
+
+Add these scripts to the tested package, preserving your existing runner and certification configuration:
+
+```json
+{
+	"scripts": {
+		"test:breaks:prelude": "break-check prelude --out .break-check/baseline.json",
+		"test:breaks": "break-check --baseline-file .break-check/baseline.json"
+	}
+}
+```
+
+Use [Turbo's deferred hashing](https://turborepo.dev/docs/reference/configuration#deferred-hashing) so the snapshot is hashed after the uncached prelude completes. This configuration is exercised with Turbo 2.11.7:
+
+```json
+{
+	"tasks": {
+		"test:breaks:prelude": {
+			"cache": false
+		},
+		"test:breaks": {
+			"dependsOn": ["test:breaks:prelude", "^build"],
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				{ "mode": "jit", "globs": [".break-check/baseline.json"] }
+			],
+			"cache": true
+		}
+	}
+}
+```
+
+Run `turbo run test:breaks` as usual. The prelude runs even when the compatibility check hits its cache; a failed prelude prevents the downstream task from replaying a cached success. Keep all additional runner, helper, configuration, environment, and certification inputs in the compatibility task's hash, including release-plan files outside the package directory. Keep upstream `^build` prerequisites; the tested package does not need a self-build preflight. For runners without deferred hashing, finish the prelude before starting the task runner and include its snapshot in the check's cache key.
+
+The JavaScript API exports `breakCheckPrelude({ out, tagPattern, baseDirname })` and accepts `baselineFile` in `breakCheck` options. Without `baselineFile`, the existing single-command discovery behavior is preserved.
 
 ## writing consumer contracts
 
@@ -156,58 +210,23 @@ If a process is forcibly interrupted or restoration fails, break-check retains r
 
 ## options
 
-<!--gen-->
-<!--cli-options HASH-->
-<table>
-  <tr>
-    <th>option</th>
-    <th>shorthand</th>
-    <th>required</th>
-    <th>description</th>
-    <th>example</th>
-  </tr>
-  <tr>
-    <td><code>--tagPattern</code></td>
-    <td><code>-p</code></td>
-    <td></td>
-    <td>String which, if found in a git tag, will be considered a release tag for your library.</td>
-    <td><code>--tagPattern="my-library"</code></td>
-  </tr>
-  <tr>
-    <td><code>--testPattern</code></td>
-    <td><code>-t</code></td>
-    <td>✔</td>
-    <td>Glob pattern to identify files containing public tests.</td>
-    <td><code>--testPattern="*__public.test.ts"</code></td>
-  </tr>
-  <tr>
-    <td><code>--testCommand</code></td>
-    <td><code>-c</code></td>
-    <td>✔</td>
-    <td>Command to run to run the public tests.</td>
-    <td><code>--testCommand="npm run test"</code></td>
-  </tr>
-  <tr>
-    <td><code>--certifyCommand</code></td>
-    <td><code>-C</code></td>
-    <td></td>
-    <td>Command to run to certify that breaking changes have been detected.</td>
-    <td><code>--certifyCommand="grep -q '"my-library": major' $(find ${DIR_PATH}/.changesets -type f) && exit 0 || exit 1"</code></td>
-  </tr>
-  <tr>
-    <td><code>--baseDirname</code></td>
-    <td><code>-b</code></td>
-    <td></td>
-    <td>Directory in which to run the tests and certify the breaking changes.</td>
-    <td><code>--baseDirname="."</code></td>
-</table>
-<!--gen-->
+| Check option       | Shorthand | Required | Purpose                                           |
+| ------------------ | --------- | -------- | ------------------------------------------------- |
+| `--tagPattern`     | `-g`      |          | RegExp selecting release tags.                    |
+| `--testPattern`    | `-p`      | Yes      | Glob selecting released public tests and helpers. |
+| `--testCommand`    | `-t`      | Yes      | Command running the restored public contracts.    |
+| `--certifyCommand` | `-c`      | Yes      | Command certifying intentional breaking changes.  |
+| `--baseDirname`    | `-d`      |          | Working directory for Git and commands.           |
+| `--baselineFile`   |           |          | Prelude snapshot pinning the release commit.      |
+| `--verbose`        | `-v`      |          | Print timing information for the check.           |
+
+`prelude --out` sets its gitignored snapshot path. `schema --outdir` sets the schema output directory. Run `break-check help` for the full option descriptions and examples.
 
 ## cli completion
 
 With `break-check` installed on PATH, run `break-check completion install bash` to install Bash completion. Replace `bash` with `zsh`, `fish`, `nushell`, or `carapace` for the other supported integrations. Installation uses the shell's existing completion setup and does not edit shell profiles; open a new shell afterward. `break-check completion bash` prints the integration for manual installation. See [Comline's shell setup requirements](../comline/README.md#shell-integrations).
 
-Completion suggests commands, option names, config file paths, and directories for `--base-dir` and `schema --out-dir`. It works without a valid config file or required option values and does not run checks. Singleton options disappear from suggestions after use; parsing behavior is unchanged. The completion transport reserves its management and protocol command names; use an explicit path such as `./completion` for a config file whose name collides with a reserved command.
+Completion suggests commands, option names, config file paths, snapshot paths for `--baseline-file` and `prelude --out`, and directories for `--base-dir` and `schema --out-dir`. It works without a valid config file or required option values and does not run checks. Singleton options disappear from suggestions after use; parsing behavior is unchanged. The completion transport reserves its management and protocol command names; use an explicit path such as `./completion` for a config file whose name collides with a reserved command.
 
 ## cli option aliases and warnings
 
@@ -220,6 +239,7 @@ These aliases work alongside the original option names. Configuration file keys 
 | `--testCommand`             | `--test-command`               |
 | `--certifyCommand`          | `--certify-command`            |
 | `--baseDirname`             | `--base-dir`, `--base-dirname` |
+| `--baselineFile`            | `--baseline-file`              |
 | `--outdir` (schema command) | `--out-dir`                    |
 
 After successful parsing, break-check warns on stderr about unknown options and options that do not apply to the selected command. Warnings appear before check output is captured and do not change the command's exit status.
