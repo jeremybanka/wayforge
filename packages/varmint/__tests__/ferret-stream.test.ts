@@ -7,13 +7,25 @@ import { afterEach, beforeEach, describe, expect, test, vi } from "vitest"
 
 import { Ferret, varmintWorkspaceManager } from "../src"
 
-test(`Ferret replays records larger than a disk read without duplication`, async () => {
-	const root = await mkdtemp(join(tmpdir(), `ferret-`))
-	// Temporary fixtures must not be registered with global cleanup.
-	const tracking = vi
-		.spyOn(varmintWorkspaceManager.storage, `initialized`, `get`)
-		.mockReturnValue(false)
-	try {
+describe(`Ferret streams`, () => {
+	let root: string
+
+	beforeEach(async () => {
+		root = await mkdtemp(join(tmpdir(), `ferret-`))
+		// Temporary fixtures must not be registered with global cleanup.
+		vi.spyOn(
+			varmintWorkspaceManager.storage,
+			`initialized`,
+			`get`,
+		).mockReturnValue(false)
+	})
+
+	afterEach(async () => {
+		vi.restoreAllMocks()
+		await rm(root, { recursive: true })
+	})
+
+	test(`Ferret replays records larger than a disk read without duplication`, async () => {
 		const values = [
 			{ id: 1, bytes: `a`.repeat(100_000) },
 			{ id: 2, bytes: `b`.repeat(100_000) },
@@ -40,22 +52,13 @@ test(`Ferret replays records larger than a disk read without duplication`, async
 			received.push(value)
 		expect(received).toEqual(values)
 		expect(producer).not.toHaveBeenCalled()
-	} finally {
-		tracking.mockRestore()
-		await rm(root, { recursive: true })
-	}
-})
+	})
 
-test.each([`complete`, `cancel`, `failure`, `cleanup-failure`] as const)(
-	`Ferret recording closes its producer and file on %s`,
-	async (exit) => {
-		const root = await mkdtemp(join(tmpdir(), `ferret-`))
-		const tracking = vi
-			.spyOn(varmintWorkspaceManager.storage, `initialized`, `get`)
-			.mockReturnValue(false)
-		const writers = vi.spyOn(fs.WriteStream.prototype, `end`)
-		const disposed = vi.fn()
-		try {
+	test.each([`complete`, `cancel`, `failure`, `cleanup-failure`] as const)(
+		`Ferret recording closes its producer and file on %s`,
+		async (exit) => {
+			const writers = vi.spyOn(fs.WriteStream.prototype, `end`)
+			const disposed = vi.fn()
 			const producer = async function* () {
 				try {
 					yield await Promise.resolve({ id: 1 })
@@ -84,30 +87,8 @@ test.each([`complete`, `cancel`, `failure`, `cleanup-failure`] as const)(
 			expect(disposed).toHaveBeenCalledOnce()
 			expect(writers).toHaveBeenCalledOnce()
 			expect(writers.mock.contexts[0]).toMatchObject({ closed: true })
-		} finally {
-			writers.mockRestore()
-			tracking.mockRestore()
-			await rm(root, { recursive: true })
-		}
-	},
-)
-
-describe(`Ferret recording iterator lifecycle`, () => {
-	let root: string
-
-	beforeEach(async () => {
-		root = await mkdtemp(join(tmpdir(), `ferret-`))
-		vi.spyOn(
-			varmintWorkspaceManager.storage,
-			`initialized`,
-			`get`,
-		).mockReturnValue(false)
-	})
-
-	afterEach(async () => {
-		vi.restoreAllMocks()
-		await rm(root, { recursive: true })
-	})
+		},
+	)
 
 	test(`creates an empty fixture without consuming the producer`, async () => {
 		const iterator = vi.fn(async function* () {
