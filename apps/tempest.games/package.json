@@ -98,7 +98,7 @@
 		"flightdeck": "workspace:*",
 		"lasertag": "0.8.7",
 		"typescript": "7.0.2",
-		"vite": "8.3.2",
+		"vite": "8.3.3",
 		"vitest": "5.0.3"
 	},
 	"publishConfig": {
