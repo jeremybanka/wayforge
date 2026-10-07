@@ -1,5 +1,6 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
+import { finished } from "node:stream/promises"
 import { inspect } from "node:util"
 
 import { closest } from "fastest-levenshtein"
@@ -176,6 +177,7 @@ export class Ferret {
 							yield JSON.parse(piece)
 						}
 					}
+					buffer = lines[0] ?? ``
 				}
 			},
 		}
@@ -201,30 +203,38 @@ export class Ferret {
 		if (fs.existsSync(pathToStreamFile)) {
 			fs.rmSync(pathToStreamFile)
 		}
+		const originalAsyncIterable = await get(...args)
 		const writeStream = fs.createWriteStream(pathToStreamFile, {
 			flags: `a`,
 		})
-
-		const originalAsyncIterable = await get(...args)
-		return addMiddlewareToAsyncIterable(originalAsyncIterable, (chunk) => {
-			return new Promise((resolve, reject) => {
-				const line = `${performance.now()}\t${JSON.stringify(chunk)}\n`
-				if (
-					!writeStream.write(line, `utf8`, (err) => {
-						if (err) {
-							reject(err)
-						} else {
-							resolve(chunk) // Return the chunk unchanged
-						}
-					})
-				) {
-					// backpressure
-					writeStream.once(`drain`, () => {
-						resolve(chunk)
-					})
-				}
-			})
-		}) as Awaited<Promisified<ReturnType<F>>>
+		const closed = finished(writeStream)
+		void closed.catch(() => {})
+		return addMiddlewareToAsyncIterable(
+			originalAsyncIterable,
+			(chunk) => {
+				return new Promise((resolve, reject) => {
+					const line = `${performance.now()}\t${JSON.stringify(chunk)}\n`
+					if (
+						!writeStream.write(line, `utf8`, (err) => {
+							if (err) {
+								reject(err)
+							} else {
+								resolve(chunk) // Return the chunk unchanged
+							}
+						})
+					) {
+						// backpressure
+						writeStream.once(`drain`, () => {
+							resolve(chunk)
+						})
+					}
+				})
+			},
+			() => {
+				writeStream.end()
+				return closed
+			},
+		) as Awaited<Promisified<ReturnType<F>>>
 	}
 
 	public add<F extends StreamFunc>(key: string, getStream: F): Ferreted<F> {
@@ -332,6 +342,7 @@ export class Ferret {
 function addMiddlewareToAsyncIterable<T>(
 	iterable: AsyncIterable<T>,
 	middleware: (chunk: T) => Promise<T> | T,
+	onClose: () => Promise<void>,
 ): AsyncIterable<T> {
 	// Save the original [Symbol.asyncIterator] for restoration if needed
 	const originalAsyncIterator = iterable[Symbol.asyncIterator].bind(iterable)
@@ -339,11 +350,18 @@ function addMiddlewareToAsyncIterable<T>(
 	// Replace the [Symbol.asyncIterator] with the middleware-enhanced iterator
 	iterable[Symbol.asyncIterator] = async function* () {
 		const iterator = originalAsyncIterator()
-		let nextResult: IteratorResult<T>
-
-		while (!(nextResult = await iterator.next()).done) {
-			// Apply the middleware function to each chunk
-			yield await middleware(nextResult.value)
+		let nextResult: IteratorResult<T> | undefined
+		try {
+			while (!(nextResult = await iterator.next()).done) {
+				// Apply the middleware function to each chunk
+				yield await middleware(nextResult.value)
+			}
+		} finally {
+			try {
+				if (!nextResult?.done) await iterator.return?.()
+			} finally {
+				await onClose()
+			}
 		}
 	}
 
