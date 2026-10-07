@@ -1,5 +1,6 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
+import { finished } from "node:stream/promises"
 import { inspect } from "node:util"
 
 import { closest } from "fastest-levenshtein"
@@ -176,6 +177,7 @@ export class Ferret {
 							yield JSON.parse(piece)
 						}
 					}
+					buffer = lines[0] ?? ``
 				}
 			},
 		}
@@ -201,30 +203,12 @@ export class Ferret {
 		if (fs.existsSync(pathToStreamFile)) {
 			fs.rmSync(pathToStreamFile)
 		}
-		const writeStream = fs.createWriteStream(pathToStreamFile, {
-			flags: `a`,
-		})
-
 		const originalAsyncIterable = await get(...args)
-		return addMiddlewareToAsyncIterable(originalAsyncIterable, (chunk) => {
-			return new Promise((resolve, reject) => {
-				const line = `${performance.now()}\t${JSON.stringify(chunk)}\n`
-				if (
-					!writeStream.write(line, `utf8`, (err) => {
-						if (err) {
-							reject(err)
-						} else {
-							resolve(chunk) // Return the chunk unchanged
-						}
-					})
-				) {
-					// backpressure
-					writeStream.once(`drain`, () => {
-						resolve(chunk)
-					})
-				}
-			})
-		}) as Awaited<Promisified<ReturnType<F>>>
+		fs.writeFileSync(pathToStreamFile, ``)
+		return recordAsyncIterable(
+			originalAsyncIterable,
+			pathToStreamFile,
+		) as Awaited<Promisified<ReturnType<F>>>
 	}
 
 	public add<F extends StreamFunc>(key: string, getStream: F): Ferreted<F> {
@@ -321,31 +305,93 @@ export class Ferret {
 	}
 }
 
-/**
- * Adds middleware to an AsyncIterable.
- * The middleware is a function that processes each yielded value.
- *
- * @param iterable The original AsyncIterable to modify.
- * @param middleware A function that processes each chunk and optionally logs or modifies it.
- * @returns The same AsyncIterable, but with the middleware applied.
- */
-function addMiddlewareToAsyncIterable<T>(
+/** Records each traversal while preserving the original iterable's other properties. */
+function recordAsyncIterable<T>(
 	iterable: AsyncIterable<T>,
-	middleware: (chunk: T) => Promise<T> | T,
+	pathToStreamFile: string,
 ): AsyncIterable<T> {
-	// Save the original [Symbol.asyncIterator] for restoration if needed
 	const originalAsyncIterator = iterable[Symbol.asyncIterator].bind(iterable)
+	// An async generator's finally does not run when cancelled before its first next().
+	// Explicit iterator methods ensure that cancellation still cleans up both resources.
+	iterable[Symbol.asyncIterator] = function (): AsyncIterableIterator<T> {
+		const writeStream = fs.createWriteStream(pathToStreamFile, { flags: `a` })
+		const closed = finished(writeStream, { cleanup: true })
+		void closed.catch(() => {})
+		let iterator: AsyncIterator<T> | undefined
+		let initialized = false
+		let producerDone = false
+		let closing: Promise<void> | undefined
+		let pending = Promise.resolve()
 
-	// Replace the [Symbol.asyncIterator] with the middleware-enhanced iterator
-	iterable[Symbol.asyncIterator] = async function* () {
-		const iterator = originalAsyncIterator()
-		let nextResult: IteratorResult<T>
-
-		while (!(nextResult = await iterator.next()).done) {
-			// Apply the middleware function to each chunk
-			yield await middleware(nextResult.value)
+		const initialize = (): AsyncIterator<T> => {
+			initialized = true
+			return (iterator = originalAsyncIterator())
+		}
+		const close = (): Promise<void> => {
+			closing ??= (async () => {
+				let failed = false
+				try {
+					if (!producerDone) {
+						if (!initialized) initialize()
+						await iterator?.return?.()
+					}
+				} catch (error) {
+					failed = true
+					throw error
+				} finally {
+					writeStream.end()
+					if (failed) await closed.catch(() => {})
+					else await closed
+				}
+			})()
+			return closing
+		}
+		const fail = async (error: unknown): Promise<never> => {
+			await close().catch(() => {})
+			throw error
+		}
+		// Async generators serialize next/return/throw; preserve that ordering here.
+		const enqueue = <R>(operation: () => Promise<R>): Promise<R> => {
+			const result = pending.then(operation)
+			pending = result.then(
+				() => {},
+				() => {},
+			)
+			return result
+		}
+		return {
+			[Symbol.asyncIterator]() {
+				return this
+			},
+			next: () =>
+				enqueue(async (): Promise<IteratorResult<T>> => {
+					if (closing) return { done: true, value: undefined }
+					try {
+						const next = await (iterator ?? initialize()).next()
+						if (next.done) {
+							producerDone = true
+							await close()
+							return { done: true, value: undefined }
+						}
+						await new Promise<void>((resolve, reject) => {
+							const line = `${performance.now()}\t${JSON.stringify(next.value)}\n`
+							writeStream.write(line, `utf8`, (error) => {
+								if (error) reject(error)
+								else resolve()
+							})
+						})
+						return { done: false, value: await next.value }
+					} catch (error) {
+						return fail(error)
+					}
+				}),
+			return: (value?: unknown) =>
+				enqueue(async () => {
+					if (!closing) await close()
+					return { done: true, value: await value }
+				}),
+			throw: (error?: unknown) => enqueue(() => fail(error)),
 		}
 	}
-
 	return iterable
 }
