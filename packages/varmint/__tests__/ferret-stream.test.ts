@@ -158,6 +158,31 @@ describe(`Ferret streams`, () => {
 		expect(writers.mock.contexts[0]).toMatchObject({ closed: true })
 	})
 
+	test(`preserves a recording error and closes its producer and file`, async () => {
+		const primary = new Error(`Write failed`)
+		const cleanup = vi.fn()
+		const writers = vi.spyOn(fs.WriteStream.prototype, `end`)
+		vi.spyOn(fs.WriteStream.prototype, `_write`).mockImplementation(
+			(_chunk, _encoding, callback) => {
+				callback(primary)
+			},
+		)
+		const stream = await new Ferret(`write`, root)
+			.add(`write-failure`, async function* () {
+				try {
+					yield await Promise.resolve({ id: 1 })
+				} finally {
+					cleanup()
+				}
+			})
+			.for(`case`)
+			.get()
+		await expect(stream[Symbol.asyncIterator]().next()).rejects.toBe(primary)
+		expect(cleanup).toHaveBeenCalledOnce()
+		expect(writers).toHaveBeenCalledOnce()
+		expect(writers.mock.contexts[0]).toMatchObject({ closed: true, fd: null })
+	})
+
 	test.each([`return`, `throw`] as const)(
 		`%s cleans up before the first next call`,
 		async (exit) => {

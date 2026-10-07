@@ -311,6 +311,8 @@ function recordAsyncIterable<T>(
 	pathToStreamFile: string,
 ): AsyncIterable<T> {
 	const originalAsyncIterator = iterable[Symbol.asyncIterator].bind(iterable)
+	// An async generator's finally does not run when cancelled before its first next().
+	// Explicit iterator methods ensure that cancellation still cleans up both resources.
 	iterable[Symbol.asyncIterator] = function (): AsyncIterableIterator<T> {
 		const writeStream = fs.createWriteStream(pathToStreamFile, { flags: `a` })
 		const closed = finished(writeStream, { cleanup: true })
