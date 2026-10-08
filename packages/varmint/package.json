@@ -39,7 +39,7 @@
 		"watch:types": "tsc --watch --noEmit"
 	},
 	"dependencies": {
-		"arktype": "2.2.7",
+		"arktype": "2.2.8",
 		"cachedir": "2.4.0",
 		"comline": "workspace:*",
 		"diff": "9.0.0",
