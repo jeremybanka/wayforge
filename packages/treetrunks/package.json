@@ -39,7 +39,7 @@
 	"devDependencies": {
 		"@types/node": "26.6.4",
 		"@vitest/coverage-v8": "5.0.3",
-		"concurrently": "10.0.5",
+		"concurrently": "10.0.6",
 		"eslint": "10.12.0",
 		"recoverage": "0.1.19",
 		"tsdown": "0.23.0",
