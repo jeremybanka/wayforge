@@ -32,7 +32,7 @@
 		"treetrunks": "workspace:*"
 	},
 	"devDependencies": {
-		"concurrently": "10.0.5",
+		"concurrently": "10.0.6",
 		"eslint": "10.12.0",
 		"tsdown": "0.23.0",
 		"typescript": "7.0.2",
