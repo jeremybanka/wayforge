@@ -65,7 +65,7 @@
 		"arktype": "2.2.8",
 		"atom.io": "0.53.3",
 		"cron": "4.4.0",
-		"drizzle-orm": "0.45.3",
+		"drizzle-orm": "0.45.4",
 		"motion": "14.0.0",
 		"nanoid": "6.0.2",
 		"openai": "7.30.0",
