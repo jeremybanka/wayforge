@@ -267,8 +267,8 @@ importers:
   apps/tempest.games:
     dependencies:
       '@ai-sdk/openai':
-        specifier: 4.0.89
-        version: 4.0.89(zod@4.6.5)
+        specifier: 4.0.90
+        version: 4.0.90(zod@4.6.5)
       '@floating-ui/react':
         specifier: 0.27.20
         version: 0.27.20(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -294,8 +294,8 @@ importers:
         specifier: 11.19.0
         version: 11.19.0(typescript@7.0.2)
       ai:
-        specifier: 7.0.133
-        version: 7.0.133(zod@4.6.5)
+        specifier: 7.0.134
+        version: 7.0.134(zod@4.6.5)
       arktype:
         specifier: 2.2.8
         version: 2.2.8
@@ -844,8 +844,8 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/openai@4.0.89':
-    resolution: {integrity: sha512-Lmg/77zyVaSHTiqCis24JS79AC6zb5eqvZs1uAEAWckMlyz9E1GgMxr1J5l1OigDdAOg0brdV2S9UsDfZlaxvQ==}
+  '@ai-sdk/openai@4.0.90':
+    resolution: {integrity: sha512-NykRP2sSAR6mJYcn86A+XjWjQhCZLGHFWlvg16LH+kE+psbVMplGaXfG8LqBerda7OJ3Wqbgirpp3zksH7rngw==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -3490,8 +3490,8 @@ packages:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
     engines: {node: '>= 14'}
 
-  ai@7.0.133:
-    resolution: {integrity: sha512-OjyVMdsDp4ORPSrRB9hiYGic4bzeiOtaOzBPxOM7jiavz6tSXuMrqLwd1eILGhN669VD0G/+jxaiweRqfVulYg==}
+  ai@7.0.134:
+    resolution: {integrity: sha512-2m/hyNGsNB2Fe/BCZ/XwpjnfxEVCqS0TtAwjR/HpIIyMAtiLJJ8bQb6+uMih4MXwukDJr9AR4hxbFLUE9H3SjQ==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -6055,7 +6055,7 @@ snapshots:
       '@vercel/oidc': 3.2.0
       zod: 4.6.5
 
-  '@ai-sdk/openai@4.0.89(zod@4.6.5)':
+  '@ai-sdk/openai@4.0.90(zod@4.6.5)':
     dependencies:
       '@ai-sdk/provider': 4.0.25
       '@ai-sdk/provider-utils': 5.0.57(zod@4.6.5)
@@ -8092,7 +8092,7 @@ snapshots:
 
   agent-base@7.1.4: {}
 
-  ai@7.0.133(zod@4.6.5):
+  ai@7.0.134(zod@4.6.5):
     dependencies:
       '@ai-sdk/gateway': 4.0.108(zod@4.6.5)
       '@ai-sdk/provider': 4.0.25
