@@ -5,7 +5,7 @@ carapace = "1.8.0"
 # Source the library without adding the archive's build scripts to PATH.
 "github:scop/bash-completion" = { version = "2.18.0", asset_pattern = "bash-completion-*.tar.xz", filter_bins = "" }
 "github:fish-shell/fish-shell" = "4.9.3"
-go = "1.27.1"
+go = "1.27.2"
 ni = "30.6.0"
 node = "26.11.1"
 "aqua:nushell/nushell" = "0.116.1"
