@@ -9,7 +9,7 @@ go = "1.27.2"
 ni = "30.6.0"
 node = "26.11.1"
 "aqua:nushell/nushell" = "0.116.1"
-pnpm = "12.10.1"
+pnpm = "12.11.1"
 ripgrep = "15.2.0"
 
 [env]
