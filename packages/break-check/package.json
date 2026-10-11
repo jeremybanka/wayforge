@@ -43,7 +43,7 @@
 		"takua": "workspace:*"
 	},
 	"devDependencies": {
-		"@types/bun": "npm:bun-types@1.4.2",
+		"@types/bun": "npm:bun-types@1.4.3",
 		"concurrently": "10.0.6",
 		"eslint": "10.12.0",
 		"tsdown": "0.23.0",
