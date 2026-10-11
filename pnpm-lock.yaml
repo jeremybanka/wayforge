@@ -307,7 +307,7 @@ importers:
         version: 4.4.0
       drizzle-orm:
         specifier: 0.45.4
-        version: 0.45.4(bun-types@1.4.2)(postgres@3.4.9)
+        version: 0.45.4(bun-types@1.4.3)(postgres@3.4.9)
       motion:
         specifier: 14.1.0
         version: 14.1.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -358,8 +358,8 @@ importers:
         specifier: 6.11.1
         version: 6.11.1(@types/node@26.6.5)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@types/bun':
-        specifier: npm:bun-types@1.4.2
-        version: bun-types@1.4.2
+        specifier: npm:bun-types@1.4.3
+        version: bun-types@1.4.3
       '@types/cors':
         specifier: 2.8.19
         version: 2.8.19
@@ -425,8 +425,8 @@ importers:
         version: link:../takua
     devDependencies:
       '@types/bun':
-        specifier: npm:bun-types@1.4.2
-        version: bun-types@1.4.2
+        specifier: npm:bun-types@1.4.3
+        version: bun-types@1.4.3
       concurrently:
         specifier: 10.0.6
         version: 10.0.6
@@ -450,8 +450,8 @@ importers:
         version: link:../treetrunks
     devDependencies:
       '@types/bun':
-        specifier: npm:bun-types@1.4.2
-        version: bun-types@1.4.2
+        specifier: npm:bun-types@1.4.3
+        version: bun-types@1.4.3
       '@types/node':
         specifier: 26.6.5
         version: 26.6.5
@@ -517,8 +517,8 @@ importers:
         specifier: 2.5.15
         version: 2.5.15
       '@types/bun':
-        specifier: npm:bun-types@1.4.2
-        version: bun-types@1.4.2
+        specifier: npm:bun-types@1.4.3
+        version: bun-types@1.4.3
       '@types/node':
         specifier: 26.6.5
         version: 26.6.5
@@ -727,8 +727,8 @@ importers:
         version: 0.17.1
     devDependencies:
       '@types/bun':
-        specifier: npm:bun-types@1.4.2
-        version: bun-types@1.4.2
+        specifier: npm:bun-types@1.4.3
+        version: bun-types@1.4.3
       '@types/react':
         specifier: 19.3.0
         version: 19.3.0
@@ -770,8 +770,8 @@ importers:
         version: link:../safedeposit
     devDependencies:
       '@types/bun':
-        specifier: npm:bun-types@1.4.2
-        version: bun-types@1.4.2
+        specifier: npm:bun-types@1.4.3
+        version: bun-types@1.4.3
       '@types/node':
         specifier: 26.6.5
         version: 26.6.5
@@ -3666,8 +3666,8 @@ packages:
   buffer@6.0.3:
     resolution: {integrity: sha512-FTiCpNxtwiZZHEZbcbTIcZjERVICn9yq/pDFkTl95/AxzD1naBctN7YO68riM/gLSDY7sdrMby8hofADYuuqOA==}
 
-  bun-types@1.4.2:
-    resolution: {integrity: sha512-bxV1FgK7yBIzjRe5zBozIM4Bem11ZJcCXSrjWRG3YWLt8yFDePu4cLjpebO8OvPeIE9trbyPF4fuj3Cia4Fj3w==}
+  bun-types@1.4.3:
+    resolution: {integrity: sha512-tinRJNGOmUN+tEAsn2y2e942n9JHRHR42iUYzDH75NmhJqVBokGSQkkfSFdNWwsANIdrK6ACH9t01M452YyTwg==}
 
   bundle-name@4.1.1:
     resolution: {integrity: sha512-DdH81/zPLVS11EUgWq3tEu/xn+EzljlMYooDNdzWEnFha3R3NBMpMV1UqYIpjYHV/SgpFKMIX1Oh7o06SjM/oA==}
@@ -8218,7 +8218,7 @@ snapshots:
       base64-js: 1.5.1
       ieee754: 1.2.1
 
-  bun-types@1.4.2:
+  bun-types@1.4.3:
     dependencies:
       '@types/node': 26.6.5
       undici-types: 8.9.0
@@ -8506,9 +8506,9 @@ snapshots:
       esbuild: 0.25.12
       tsx: 4.22.1
 
-  drizzle-orm@0.45.4(bun-types@1.4.2)(postgres@3.4.9):
+  drizzle-orm@0.45.4(bun-types@1.4.3)(postgres@3.4.9):
     optionalDependencies:
-      bun-types: 1.4.2
+      bun-types: 1.4.3
       postgres: 3.4.9
 
   dts-resolver@3.0.0: {}
