@@ -98,8 +98,7 @@
 			"dependsOn": ["^build"],
 			"inputs": [
 				"../../.changeset/**",
-				"../../packages/break-check/src/**/*.ts",
-				"break-check.config.json",
+				"breakage.config.json",
 				"**/package.json",
 				"src/**/*.{ts,tsx,css,mdx}",
 				"**/src/**/*.{ts,tsx,css,mdx}",

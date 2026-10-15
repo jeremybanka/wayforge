@@ -90,8 +90,8 @@ jobs:
         env:
           RECOVERAGE_CLOUD_TOKEN: ${{ secrets.RECOVERAGE_CLOUD_TOKEN }}
 
-  BreakCheck:
-    name: Break Check
+  Breakage:
+    name: Breakage
     runs-on: ubuntu-latest
     timeout-minutes: 9
     services:
