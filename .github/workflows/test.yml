@@ -110,4 +110,4 @@ jobs:
       - uses: ./.github/actions/setup
         with:
           packages: bun node pnpm aqua:nushell/nushell carapace conda:zsh go github:fish-shell/fish-shell github:scop/bash-completion
-      - run: pnpm test:semver
+      - run: pnpm test:breakage

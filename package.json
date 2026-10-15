@@ -31,7 +31,7 @@
 		"release:publish": "bun run build && changeset publish",
 		"release:version": "./scripts/version.sh",
 		"test": "CI=true dotenvx run -- turbo run test --concurrency=2",
-		"test:semver": "CI=true dotenvx run -- turbo run test:semver",
+		"test:breakage": "CI=true dotenvx run -- turbo run test:breakage",
 		"test:watch": "dotenvx run -- turbo run test:watch --concurrency=30",
 		"tonnage:write": "turbo run tonnage:write",
 		"vigilance": "bun scripts/vigilance-bot.bun.ts",
