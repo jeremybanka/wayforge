@@ -94,7 +94,7 @@
 			"cache": false,
 			"passThroughEnv": ["RECOVERAGE_CLOUD_TOKEN"]
 		},
-		"test:semver": {
+		"test:breakage": {
 			"dependsOn": ["^build"],
 			"inputs": [
 				"../../.changeset/**",
@@ -106,12 +106,12 @@
 				"__scripts__/**/*.ts"
 			]
 		},
-		"test:semver:prelude": {
+		"test:breakage:prelude": {
 			"cache": false
 		},
-		"comline#test:semver": {
+		"comline#test:breakage": {
 			"dependsOn": [
-				"test:semver:prelude",
+				"test:breakage:prelude",
 				"^build"
 			],
 			"cache": true,
