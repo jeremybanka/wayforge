@@ -7,7 +7,7 @@ import {
 	usePullSelector,
 	usePullSelectorFamilyMember,
 } from "atom.io/realtime-react"
-import type { ReactNode, RefObject } from "react"
+import type { ReactNode } from "react"
 import { useMemo, useState } from "react"
 import * as THREE from "three"
 
@@ -90,7 +90,7 @@ export function HexTile({
 
 	return (
 		<mesh
-			ref={ref as RefObject<THREE.Mesh>}
+			ref={ref}
 			geometry={geom}
 			position={position3d}
 			rotation={[-Math.PI / 2, 0, 0]}
