@@ -31,7 +31,7 @@ Following the [mise Node.js cookbook](https://mise.jdx.dev/mise-cookbook/nodejs.
 
 ## Command notes
 
-Release compatibility checks need access to the Git remote and release tags.
+Release compatibility checks need access to the Git remote and release tags. `pnpm test:semver` runs Comline’s uncached `test:semver:prelude` before its cacheable compatibility check. The prelude refreshes the gitignored `.breakage/baseline.json` snapshot; Turbo hashes it after the prelude completes, so a new release or moved tag invalidates the check’s cache. When running the package scripts directly, run `pnpm --filter comline test:semver:prelude` before `pnpm --filter comline test:semver`.
 
 Coverage comparison requires a captured default-branch baseline or access to the hosted baseline through `RECOVERAGE_CLOUD_TOKEN`. Coverage comparison retains the existing Recoverage capture-and-diff behavior; this repository does not expose a separate upload-only command.
 

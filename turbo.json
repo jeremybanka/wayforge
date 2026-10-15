@@ -106,9 +106,30 @@
 				"__scripts__/**/*.ts"
 			]
 		},
-		"comline#test:semver": {
-			"dependsOn": ["^build"],
+		"test:semver:prelude": {
 			"cache": false
+		},
+		"comline#test:semver": {
+			"dependsOn": [
+				"test:semver:prelude",
+				"^build"
+			],
+			"cache": true,
+			"inputs": [
+				"$TURBO_DEFAULT$",
+				"../../.changeset/**",
+				"../../mise.toml",
+				"../../tsconfig.json",
+				"../../.github/workflows/test.yml",
+				"../../.github/actions/setup/action.yml",
+				{
+					"mode": "jit",
+					"globs": [
+						".breakage/baseline.json"
+					]
+				}
+			],
+			"outputs": []
 		},
 		"check:lasertag": {
 			"inputs": [
