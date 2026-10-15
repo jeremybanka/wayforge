@@ -8,6 +8,7 @@ minimumReleaseAgeExclude:
   # Keep this list aligned with the corresponding rule in renovate.json.
   - atom.io
   - break-check
+  - breakage
   - comline
   - flightdeck
   - jurist

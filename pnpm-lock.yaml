@@ -241,7 +241,7 @@ importers:
         version: 2.7.0
       lasertag:
         specifier: 0.8.7
-        version: 0.8.7(@floating-ui/react-dom@2.1.9(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@floating-ui/react@0.27.20(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(@typescript-eslint/parser@8.71.0(@typescript/typescript6@6.0.2)(eslint@10.12.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(arktype@2.2.3)(eslint@10.12.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(motion@14.0.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))(supports-color@10.2.2)
+        version: 0.8.7(@floating-ui/react-dom@2.1.9(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@floating-ui/react@0.27.20(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(@typescript-eslint/parser@8.71.0(@typescript/typescript6@6.0.2)(eslint@10.12.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(arktype@2.2.7)(eslint@10.12.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(motion@14.0.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))(supports-color@10.2.2)
       oxlint:
         specifier: 1.86.0
         version: 1.86.0(oxlint-tsgolint@7.0.2003)
@@ -253,7 +253,7 @@ importers:
         version: 2.7.1
       tonnage:
         specifier: 0.1.3
-        version: 0.1.3(arktype@2.2.3)(zod@4.6.5)
+        version: 0.1.3(arktype@2.2.7)(zod@4.6.5)
       turbo:
         specifier: 2.11.7
         version: 2.11.7
@@ -406,40 +406,6 @@ importers:
         specifier: 5.0.3
         version: 5.0.3(@types/node@26.6.4)(@vitest/coverage-v8@5.0.3)(happy-dom@20.14.0)(jsdom@30.0.1)(vite@8.3.2(@types/node@26.6.4)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.0))
 
-  packages/break-check:
-    dependencies:
-      arktype:
-        specifier: 2.2.7
-        version: 2.2.7
-      comline:
-        specifier: workspace:*
-        version: link:../comline
-      minimatch:
-        specifier: 10.2.6
-        version: 10.2.6
-      simple-git:
-        specifier: 4.0.2
-        version: 4.0.2(supports-color@10.2.2)
-      takua:
-        specifier: workspace:*
-        version: link:../takua
-    devDependencies:
-      '@types/bun':
-        specifier: npm:bun-types@1.4.2
-        version: bun-types@1.4.2
-      concurrently:
-        specifier: 10.0.5
-        version: 10.0.5
-      eslint:
-        specifier: 10.12.0
-        version: 10.12.0(jiti@2.7.0)(supports-color@10.2.2)
-      tsdown:
-        specifier: 0.23.0
-        version: 0.23.0(@tsdown/css@0.23.0)(@volar/typescript@2.4.28(typescript@7.0.2))(tsx@4.22.1)(typescript@7.0.2)
-      typescript:
-        specifier: 7.0.2
-        version: 7.0.2
-
   packages/comline:
     dependencies:
       '@standard-schema/spec':
@@ -461,9 +427,9 @@ importers:
       arktype:
         specifier: 2.2.7
         version: 2.2.7
-      break-check:
-        specifier: 0.6.40
-        version: 0.6.40(supports-color@10.2.2)(zod@4.6.5)
+      breakage:
+        specifier: 0.8.1
+        version: 0.8.1(supports-color@10.2.2)(zod@4.6.5)
       concurrently:
         specifier: 10.0.5
         version: 10.0.5
@@ -860,17 +826,11 @@ packages:
     resolution: {integrity: sha512-UpbC9C1oht8dhfKPbVXSLRZS3DI8uk8n5v2uMjBPNIYGsC2kL045ywq7D8Hh9KgnH9rP5W/GxQdYtWScRouqlA==}
     engines: {node: '>=22'}
 
-  '@ark/schema@0.56.2':
-    resolution: {integrity: sha512-Qx4D2JFbBWpntiHZaTv7bGG4H/M2rigiknezKg/WVyDSaLdE4YCcWAOoFB7pjjDqHbbV2OqRfntm1nnXvwMexg==}
-
   '@ark/schema@0.56.4':
     resolution: {integrity: sha512-nd4OqaWdKZJeGF5zNmZysDQO7NyyJ1ycl4S7i16Hj1VxqL+x72Z66lOn7ErpsoMUZtCtslAMHMjqJhuQSxciyw==}
 
   '@ark/schema@0.56.6':
     resolution: {integrity: sha512-OmLv80BCF2ib+zjecrXDosip/CSnZSYBGjblhqWYZWFOzdLQka6QymHToE9u7Z/HZW2KA8Hwc8MCNXoI3uGSIA==}
-
-  '@ark/util@0.56.2':
-    resolution: {integrity: sha512-9kU2sUE38FZEGG7l3hamYMBieLYEJh2L1mrYD2eXpT+78EnQSV1bhjxJhnxGBMSTbtwpBSDNSK+K60WvaI/DTQ==}
 
   '@ark/util@0.56.4':
     resolution: {integrity: sha512-KKqwGSia44cvuuDY70jGfbiUdG2E8F2cM4npdqvJ22S5a0LknlwG6nIrfQG1nF8fzxpzP30098wp0a8ASs0prQ==}
@@ -2778,9 +2738,6 @@ packages:
   '@simple-git/args-pathspec@1.0.4':
     resolution: {integrity: sha512-EtMX6XjRWSastG2SdkmSQByPtJ9dx/NIjnHbpQPCYt62j4RmSx5rgLTGpw0YCjF5h191gZOmBfheOT23cRSFdw==}
 
-  '@simple-git/argv-parser@1.1.1':
-    resolution: {integrity: sha512-Q9lBcfQ+VQCpQqGJFHe5yooOS5hGdLFFbJ5R+R5aDsnkPCahtn1hSkMcORX65J2Z5lxSkD0lQorMsncuBQxYUw==}
-
   '@simple-git/argv-parser@2.0.1':
     resolution: {integrity: sha512-M++IaVWrN+vYalilOHfwvT2IL3wYZtVEBQpmX6DLSOJLtxbZ+SUeIDE3IiPogzhPACLajwtxfa5rp+ZX1FczzQ==}
 
@@ -3693,12 +3650,6 @@ packages:
   arkregex@0.0.12:
     resolution: {integrity: sha512-sOxL0eX50pnRYO4OyajKZChGuuj/iHwC5tysiAaGOPBu+zJwJQckWn7/DRH2++ol5uaKpyRn7N0hKT7nDqGmgg==}
 
-  arkregex@0.0.8:
-    resolution: {integrity: sha512-PJcx6G1kQTgLKPUbeYlYecDRaKq15AMSGVajlKFYWlPeJRQL+j3dKE6tyMs40HZ99djS1l9Vhl3ezAHy9JBIqQ==}
-
-  arktype@2.2.3:
-    resolution: {integrity: sha512-7W+0RLTUNJiBFIIZXwOQxSR8Z273IAd6IvqBeG9+gHnQKFsIx2C0iOtGTmMrPnlX4qLXyc5+ll7A0BIj9WrbTg==}
-
   arktype@2.2.5:
     resolution: {integrity: sha512-c9oqY1eBab2LceqvpWX50xae2HB8P/nJPxRhuhPVf5lEDi3WQpf7WQflJFMsyCiA3NGh6zENOlse30gWBzlwDg==}
 
@@ -3803,8 +3754,8 @@ packages:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
     engines: {node: '>=8'}
 
-  break-check@0.6.40:
-    resolution: {integrity: sha512-ltqhxjKg5KCqELegrjGdYC7kZ9H8wJ5pSTnVbix+97Cfc7jZnt5S2X/vD8uyhaGtCi8zKUElZcLXQ0iZInZaUA==}
+  breakage@0.8.1:
+    resolution: {integrity: sha512-+NNLOg547CbFzzz/id0owulW5Wde+CiH4AfeULAMr7FF4X2IWb0wsWv4KQH3Ok/UZxTKMk+WhNCuw7SpN6PUfQ==}
     hasBin: true
 
   buffer-crc32@0.2.13:
@@ -3897,17 +3848,6 @@ packages:
 
   color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
-
-  comline@0.6.3:
-    resolution: {integrity: sha512-GyXXxwJj00mQh1vE7uDpraKmiErd/sJ/16UZXQJmLl/DkI0Rch1K5oW47PJYAGbu2/45oqZBgCXrCmsgqnNAzw==}
-    peerDependencies:
-      arktype: ^2.1.28
-      zod: ^4.2.0
-    peerDependenciesMeta:
-      arktype:
-        optional: true
-      zod:
-        optional: true
 
   comline@0.7.0:
     resolution: {integrity: sha512-xKBcV5Aus84akxLWXUQZtalExNTXg/njodI5qMAS2/SdAHO7AOIg0+tZQEJjDOZCN7Ph8pJLs8N1/DSC8e4LIQ==}
@@ -5545,9 +5485,6 @@ packages:
   signal-exit@3.0.7:
     resolution: {integrity: sha512-wnD2ZE+l+SPC/uoS0vXeE9L1+0wuaMqKlfz9AMUo38JsyLSBWSFcHR1Rri62LZc12vLr1gb3jl7iwQhgwpAbGQ==}
 
-  simple-git@3.36.0:
-    resolution: {integrity: sha512-cGQjLjK8bxJw4QuYT7gxHw3/IouVESbhahSsHrX97MzCL1gu2u7oy38W6L2ZIGECEfIBG4BabsWDPjBxJENv9Q==}
-
   simple-git@4.0.2:
     resolution: {integrity: sha512-l0sIsv9VrPwovKELFDBOj/lhmIcbMvxBk2B+hRhsMM4/VL3gKtuZvYnBNixVo+N/0HnqQx2cBdLvxnAbygHpqA==}
 
@@ -6239,10 +6176,6 @@ snapshots:
     dependencies:
       json-schema: 0.4.0
 
-  '@ark/schema@0.56.2':
-    dependencies:
-      '@ark/util': 0.56.2
-
   '@ark/schema@0.56.4':
     dependencies:
       '@ark/util': 0.56.4
@@ -6250,8 +6183,6 @@ snapshots:
   '@ark/schema@0.56.6':
     dependencies:
       '@ark/util': 0.56.6
-
-  '@ark/util@0.56.2': {}
 
   '@ark/util@0.56.4': {}
 
@@ -7654,10 +7585,6 @@ snapshots:
 
   '@simple-git/args-pathspec@1.0.4': {}
 
-  '@simple-git/argv-parser@1.1.1':
-    dependencies:
-      '@simple-git/args-pathspec': 1.0.4
-
   '@simple-git/argv-parser@2.0.1':
     dependencies:
       '@simple-git/args-pathspec': 1.0.4
@@ -8389,16 +8316,6 @@ snapshots:
     dependencies:
       '@ark/util': 0.56.6
 
-  arkregex@0.0.8:
-    dependencies:
-      '@ark/util': 0.56.2
-
-  arktype@2.2.3:
-    dependencies:
-      '@ark/schema': 0.56.2
-      '@ark/util': 0.56.2
-      arkregex: 0.0.8
-
   arktype@2.2.5:
     dependencies:
       '@ark/schema': 0.56.4
@@ -8478,12 +8395,12 @@ snapshots:
     dependencies:
       fill-range: 7.1.1
 
-  break-check@0.6.40(supports-color@10.2.2)(zod@4.6.5):
+  breakage@0.8.1(supports-color@10.2.2)(zod@4.6.5):
     dependencies:
-      arktype: 2.2.3
-      comline: 0.6.3(arktype@2.2.3)(zod@4.6.5)
+      arktype: 2.2.7
+      comline: 0.9.0(arktype@2.2.7)(zod@4.6.5)
       minimatch: 10.2.6
-      simple-git: 3.36.0(supports-color@10.2.2)
+      simple-git: 4.0.2(supports-color@10.2.2)
       takua: 0.2.3
     transitivePeerDependencies:
       - supports-color
@@ -8579,28 +8496,12 @@ snapshots:
 
   color-name@1.1.4: {}
 
-  comline@0.6.3(arktype@2.2.3)(zod@4.6.5):
+  comline@0.7.0(arktype@2.2.7)(zod@4.6.5):
     dependencies:
       '@standard-schema/spec': 1.1.0
       treetrunks: 0.1.11
     optionalDependencies:
-      arktype: 2.2.3
-      zod: 4.6.5
-
-  comline@0.7.0(arktype@2.2.3)(zod@4.6.5):
-    dependencies:
-      '@standard-schema/spec': 1.1.0
-      treetrunks: 0.1.11
-    optionalDependencies:
-      arktype: 2.2.3
-      zod: 4.6.5
-
-  comline@0.9.0(arktype@2.2.3)(zod@4.6.5):
-    dependencies:
-      '@standard-schema/spec': 1.1.0
-      treetrunks: 0.1.12
-    optionalDependencies:
-      arktype: 2.2.3
+      arktype: 2.2.7
       zod: 4.6.5
 
   comline@0.9.0(arktype@2.2.5)(zod@4.6.5):
@@ -9531,36 +9432,6 @@ snapshots:
 
   kleur@3.0.3: {}
 
-  lasertag@0.8.7(@floating-ui/react-dom@2.1.9(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@floating-ui/react@0.27.20(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(@typescript-eslint/parser@8.71.0(@typescript/typescript6@6.0.2)(eslint@10.12.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(arktype@2.2.3)(eslint@10.12.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(motion@14.0.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))(supports-color@10.2.2):
-    dependencies:
-      '@astrojs/compiler': 4.0.0
-      '@vscode/vsce': 4.0.0(supports-color@10.2.2)
-      atom.io: 0.53.3(@floating-ui/react-dom@2.1.9(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@floating-ui/react@0.27.20(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(@typescript-eslint/parser@8.71.0(@typescript/typescript6@6.0.2)(eslint@10.12.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(eslint@10.12.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(motion@14.0.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))
-      comline: 0.9.0(arktype@2.2.3)(zod@4.6.5)
-      rolldown: 1.2.11
-      takua: 0.2.3
-      tinyglobby: 0.2.17
-      typescript: 7.0.2
-      vscode-languageclient: 10.1.2
-      vscode-languageserver: 10.1.2
-      vscode-languageserver-textdocument: 1.0.15
-      zod: 4.6.5
-    optionalDependencies:
-      '@types/react': 19.3.0
-      eslint: 10.12.0(jiti@2.7.0)(supports-color@10.2.2)
-    transitivePeerDependencies:
-      - '@floating-ui/react'
-      - '@floating-ui/react-dom'
-      - '@testing-library/react'
-      - '@typescript-eslint/parser'
-      - arktype
-      - happy-dom
-      - motion
-      - react
-      - socket.io
-      - socket.io-client
-      - supports-color
-
   lasertag@0.8.7(@floating-ui/react-dom@2.1.9(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@floating-ui/react@0.27.20(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(@typescript-eslint/parser@8.71.0(@typescript/typescript6@6.0.2)(eslint@10.12.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(arktype@2.2.7)(eslint@10.12.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(motion@14.0.0(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))(supports-color@10.2.2):
     dependencies:
       '@astrojs/compiler': 4.0.0
@@ -10306,16 +10177,6 @@ snapshots:
 
   signal-exit@3.0.7: {}
 
-  simple-git@3.36.0(supports-color@10.2.2):
-    dependencies:
-      '@kwsites/file-exists': 1.1.1(supports-color@10.2.2)
-      '@kwsites/promise-deferred': 1.1.1
-      '@simple-git/args-pathspec': 1.0.4
-      '@simple-git/argv-parser': 1.1.1
-      debug: 4.4.3(supports-color@10.2.2)
-    transitivePeerDependencies:
-      - supports-color
-
   simple-git@4.0.2(supports-color@10.2.2):
     dependencies:
       '@kwsites/file-exists': 1.1.1(supports-color@10.2.2)
@@ -10496,9 +10357,9 @@ snapshots:
     dependencies:
       is-number: 7.0.0
 
-  tonnage@0.1.3(arktype@2.2.3)(zod@4.6.5):
+  tonnage@0.1.3(arktype@2.2.7)(zod@4.6.5):
     dependencies:
-      comline: 0.7.0(arktype@2.2.3)(zod@4.6.5)
+      comline: 0.7.0(arktype@2.2.7)(zod@4.6.5)
       esbuild: 0.28.2
     transitivePeerDependencies:
       - arktype

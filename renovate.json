@@ -45,6 +45,7 @@
 			"matchPackageNames": [
 				"atom.io",
 				"break-check",
+				"breakage",
 				"comline",
 				"flightdeck",
 				"jurist",

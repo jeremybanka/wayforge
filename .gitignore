@@ -17,7 +17,6 @@ pkg
 **/htmx-concept/**/*.gen.ts
 **/core.wayfarer.quest/logs/*.txt
 heap.json
-!**/break-check/__tests__/fixtures/**/*.js
 *.tsdoc.json
 coverage.sqlite
 git.sha
