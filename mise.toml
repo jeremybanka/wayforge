@@ -1,15 +1,15 @@
 [tools]
-bun = "1.4.2"
+bun = "1.4.3"
 carapace = "1.8.0"
 "conda:zsh" = "5.9"
 # Source the library without adding the archive's build scripts to PATH.
 "github:scop/bash-completion" = { version = "2.18.0", asset_pattern = "bash-completion-*.tar.xz", filter_bins = "" }
 "github:fish-shell/fish-shell" = "4.9.3"
-go = "1.27.1"
+go = "1.27.2"
 ni = "30.6.0"
-node = "26.10.0"
+node = "26.12.0"
 "aqua:nushell/nushell" = "0.116.1"
-pnpm = "12.9.1"
+pnpm = "12.11.2"
 ripgrep = "15.2.0"
 
 [env]

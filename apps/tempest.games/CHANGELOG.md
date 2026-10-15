@@ -1,5 +1,18 @@
 # tempest.games
 
+## 0.3.59
+
+### Patch Changes
+
+- Updated dependencies [d82e6d9]
+  - varmint@0.6.1
+
+## 0.3.58
+
+### Patch Changes
+
+- cc2c22c: Move the frontend to Lasertag's component-owned styles and named DOM roots, keeping route layout and form controls scoped to their views and preserving game canvas and animation behavior.
+
 ## 0.3.57
 
 ### Patch Changes

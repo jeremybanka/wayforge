@@ -1,5 +1,11 @@
 # varmint
 
+## 0.6.1
+
+### Patch Changes
+
+- d82e6d9: Replay streamed fixtures without repeating records across file-read boundaries. Close recording files on completion, cancellation, and failure, including cancellation before the first record, and forward cancellation to the stream producer.
+
 ## 0.6.0
 
 ### Minor Changes
