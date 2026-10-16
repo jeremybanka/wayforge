@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.3.60
+
+### Patch Changes
+
+- 754a3dd: Update React Three Fiber to 9.8.2 for rendering, pointer capture, pixel ratio, and portal cleanup fixes.
+
 ## 0.3.59
 
 ### Patch Changes
