@@ -15,8 +15,7 @@
 	},
 	"json.schemaDownload.trustedDomains": {
 		"https://dprint.dev": true,
-		"https://docs.renovatebot.com/": true,
-		"https://turbo.build/": true
+		"https://docs.renovatebot.com/": true
 	},
 	"json.schemas": [
 		{

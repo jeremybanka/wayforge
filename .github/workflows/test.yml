@@ -14,9 +14,15 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  TURBO_API: ${{ secrets.TURBO_API }}
-  TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-  TURBO_TEAMID: ${{ vars.TURBO_TEAMID }}
+  PNPM_REMOTE_CACHE_URL: ${{ secrets.PNPM_REMOTE_CACHE_URL || secrets.TURBO_API }}
+  PNPM_REMOTE_CACHE_TEAM: ${{ vars.PNPM_REMOTE_CACHE_TEAM || vars.TURBO_TEAMID }}
+  PNPM_REMOTE_CACHE_ORG: wayforge
+  PNPM_REMOTE_CACHE_TOKEN: ${{ secrets.PNPM_REMOTE_CACHE_TOKEN || secrets.TURBO_TOKEN }}
+  PNPM_REMOTE_CACHE_TRUSTED_KEYS: ${{ vars.PNPM_REMOTE_CACHE_TRUSTED_KEYS }}
+  PNPM_REMOTE_CACHE_PRIVATE_KEY: ${{ secrets.PNPM_REMOTE_CACHE_PRIVATE_KEY }}
+  PNPM_REMOTE_CACHE_KEY_ID: ci
+  PNPM_REMOTE_CACHE_BUILDER_ID: github-actions
+  PNPM_REMOTE_CACHE_PUBLISH: ${{ github.event_name == 'push' && secrets.PNPM_REMOTE_CACHE_PRIVATE_KEY != '' }}
 
 defaults:
   run:
