@@ -22,7 +22,7 @@ env:
   PNPM_REMOTE_CACHE_PRIVATE_KEY: ${{ secrets.PNPM_REMOTE_CACHE_PRIVATE_KEY }}
   PNPM_REMOTE_CACHE_KEY_ID: ci
   PNPM_REMOTE_CACHE_BUILDER_ID: github-actions
-  PNPM_REMOTE_CACHE_PUBLISH: ${{ github.event_name == 'push' && secrets.PNPM_REMOTE_CACHE_PRIVATE_KEY != '' }}
+  PNPM_REMOTE_CACHE_PUBLISH: ${{ secrets.PNPM_REMOTE_CACHE_PRIVATE_KEY != '' }}
 
 defaults:
   run:
