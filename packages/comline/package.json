@@ -43,7 +43,7 @@
 		"@types/node": "26.6.5",
 		"@vitest/coverage-v8": "5.0.5",
 		"arktype": "2.2.8",
-		"breakage": "0.8.3",
+		"breakage": "0.8.4",
 		"concurrently": "10.0.6",
 		"eslint": "10.12.0",
 		"recoverage": "0.1.19",
