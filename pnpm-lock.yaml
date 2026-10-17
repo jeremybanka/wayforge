@@ -180,8 +180,8 @@ importers:
         specifier: 4.0.1
         version: 4.0.1
       '@dotenvx/dotenvx':
-        specifier: 2.37.0
-        version: 2.37.0
+        specifier: 2.38.0
+        version: 2.38.0
       '@dprint/json':
         specifier: 0.25.2
         version: 0.25.2
@@ -1086,8 +1086,8 @@ packages:
   '@dimforge/rapier3d-compat@0.12.0':
     resolution: {integrity: sha512-uekIGetywIgopfD97oDL5PfeezkFpNhwlzlaEYNOA0N6ghdsOvh/HYjSMek5Q2O1PYvRSDFcqFVJl4r4ZBwOow==}
 
-  '@dotenvx/dotenvx@2.37.0':
-    resolution: {integrity: sha512-h3yaCxV2UwZj8yeJLyQJ/JqVT9GnxSMVES9sJ0U1bQFQDsqKPdtryrZtAOirS5yACl/xUtnvj6VhKBymvxvEaw==}
+  '@dotenvx/dotenvx@2.38.0':
+    resolution: {integrity: sha512-HVkCYAQ+v/h/buDNWfQnA6QkidC34QZFFGcf9A5BMidAgiNKcIGWAA0eyhXNF4Ak8971ytJLDQY/u6xSLmsR2w==}
     hasBin: true
 
   '@dotenvx/primitives@3.3.1':
@@ -6202,7 +6202,7 @@ snapshots:
 
   '@dimforge/rapier3d-compat@0.12.0': {}
 
-  '@dotenvx/dotenvx@2.37.0':
+  '@dotenvx/dotenvx@2.38.0':
     dependencies:
       '@dotenvx/primitives': 3.3.1
       '@dotenvx/providers': 0.3.8
