@@ -65,3 +65,95 @@ allowBuilds:
 peerDependencyRules:
   allowedVersions:
     typescript: ^5.0.0 || ^6.0.0 || ^7.0.0
+
+# Task ordering also applies to recursive runs; caching is provided by pipelines.
+# Keep package inputs at their default to include fixtures, configs, and new sources.
+tasks:
+  build:
+    dependsOn: ["gen", "^build", "^gen"]
+    # Tempest emits app/ and *.bun.js; package bin/*.bin.js launchers are inputs.
+    outputs: ["{dist/**,app/**,bin/*.bun.js}"]
+    env: ["WAYFORGE_PIPELINE_CONTEXT", "CI", "NODE_ENV", "PREVIEW"]
+  gen:
+    dependsOn: ["^build"]
+    outputs: ["**/*.gen.ts", "**/*.gen.tsx"]
+    env: ["WAYFORGE_PIPELINE_CONTEXT", "CI", "NODE_ENV", "PREVIEW"]
+  check:eslint:
+    dependsOn: ["gen"]
+    outputs: []
+    env: ["WAYFORGE_PIPELINE_CONTEXT", "CI", "NODE_ENV", "PREVIEW"]
+  check:oxlint:
+    dependsOn: ["gen"]
+    outputs: []
+    env: ["WAYFORGE_PIPELINE_CONTEXT", "CI", "NODE_ENV", "PREVIEW"]
+  check:tsc:
+    dependsOn: ["gen", "^check:tsc", "^build", "^gen"]
+    outputs: []
+    env: ["WAYFORGE_PIPELINE_CONTEXT", "CI", "NODE_ENV", "PREVIEW"]
+  check:lasertag:
+    dependsOn: []
+    outputs: []
+    env: ["WAYFORGE_PIPELINE_CONTEXT", "CI", "NODE_ENV", "PREVIEW"]
+  check:tonnage:
+    dependsOn: ["build"]
+    cache: false
+  tonnage:write:
+    dependsOn: ["build"]
+    cache: false
+  test:build:
+    dependsOn: ["build"]
+    env: ["WAYFORGE_PIPELINE_CONTEXT", "CI", "NODE_ENV", "PREVIEW"]
+  test:
+    dependsOn: ["test:build", "^build"]
+    outputs: []
+    env: ["WAYFORGE_PIPELINE_CONTEXT", "CI", "NODE_ENV", "PREVIEW"]
+  test:breakage:prelude:
+    dependsOn: []
+    cache: false
+  test:breakage:
+    dependsOn: ["^build"]
+    outputs: []
+    env: [
+      "WAYFORGE_PIPELINE_CONTEXT",
+      "CI",
+      "NODE_ENV",
+      "PREVIEW",
+      "WAYFORGE_BREAKAGE_BASELINE",
+    ]
+  cov:
+    dependsOn: ["^build"]
+    outputs: ["coverage/**", "**/coverage/**"]
+    env: [
+      "WAYFORGE_PIPELINE_CONTEXT",
+      "CI",
+      "NODE_ENV",
+      "PREVIEW",
+      "WAYFORGE_COVERAGE_REVISION",
+    ]
+  cov:check:
+    dependsOn: ["^build"]
+    cache: false
+  test:watch:
+    dependsOn: ["test:build", "^build"]
+    cache: false
+  watch:types:
+    dependsOn: ["gen", "^build", "^gen"]
+    cache: false
+  postversion:
+    dependsOn: ["^build"]
+    cache: false
+
+pipelines:
+  default: [build, check:eslint, check:oxlint, check:tsc, check:lasertag, test]
+  build: [build]
+  gen: [gen]
+  check:eslint: [check:eslint]
+  check:oxlint: [check:oxlint]
+  check:tsc: [check:tsc]
+  check:lasertag: [check:lasertag]
+  check:tonnage: [check:tonnage]
+  tonnage:write: [tonnage:write]
+  test: [test]
+  test:breakage: [test:breakage]
+  cov: [cov]
+  cov:check: [cov:check]
