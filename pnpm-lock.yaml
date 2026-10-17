@@ -428,8 +428,8 @@ importers:
         specifier: 2.2.8
         version: 2.2.8
       breakage:
-        specifier: 0.8.3
-        version: 0.8.3(supports-color@10.2.2)(zod@4.6.7)
+        specifier: 0.8.4
+        version: 0.8.4(supports-color@10.2.2)(zod@4.6.7)
       concurrently:
         specifier: 10.0.6
         version: 10.0.6
@@ -3507,8 +3507,8 @@ packages:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
     engines: {node: '>=8'}
 
-  breakage@0.8.3:
-    resolution: {integrity: sha512-HC/1CpUJe6R27M2X+bKGK8uHQCoTCdj19gymTP/UpyQKywPHeoo5bxXxgqoh85BqiwhkhbJjUzMHofvryGR4Zw==}
+  breakage@0.8.4:
+    resolution: {integrity: sha512-g2jKdLdHwXrgSS3av++hwbDFGTVn3FAcE5cc7YexEggsWtnfn3Uz79x+jfUxraUj94VQSf8QDw/sy8e1/TNtKw==}
     hasBin: true
 
   buffer-crc32@0.2.13:
@@ -7970,7 +7970,7 @@ snapshots:
     dependencies:
       fill-range: 7.1.1
 
-  breakage@0.8.3(supports-color@10.2.2)(zod@4.6.7):
+  breakage@0.8.4(supports-color@10.2.2)(zod@4.6.7):
     dependencies:
       arktype: 2.2.8
       comline: 0.9.0(arktype@2.2.8)(zod@4.6.7)
