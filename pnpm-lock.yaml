@@ -222,8 +222,8 @@ importers:
         specifier: 0.16.0
         version: 0.16.0
       dprint-plugin-markup:
-        specifier: 0.27.5
-        version: 0.27.5
+        specifier: 0.27.6
+        version: 0.27.6
       dprint-plugin-yaml:
         specifier: 0.6.0
         version: 0.6.0
@@ -3773,8 +3773,8 @@ packages:
   dprint-plugin-malva@0.16.0:
     resolution: {integrity: sha512-cHisdhrNcBHfvTG/jgHUkVyL6zeY+C5yLO+E/UyiTbp6wzauB3d25YyPZeMlsd7M/PDT8W4Yre8jKJ/xMwthiw==}
 
-  dprint-plugin-markup@0.27.5:
-    resolution: {integrity: sha512-kvydX+uwpqVddbC18VJDG8baC6BB4Kdi2GONX3xbMws8ebyy9FL4m7WecJ207eB7oqtFJNdEOw93EklkuJCqag==}
+  dprint-plugin-markup@0.27.6:
+    resolution: {integrity: sha512-UpPigVuQjvOO+JUwdPSygWC6ktE3Tm3BrZkahLCX3o20N9iFfHp0XwFVJne43jZmKm8im6uj1xjrCtKvc7varQ==}
 
   dprint-plugin-yaml@0.6.0:
     resolution: {integrity: sha512-jFCM6LxutTjfiSR7BtDhbZA2OvuqYY9xksULg0vdu0nZV1hiaupvRfJHGZSiQS9aLmqMNc+5WcHpOBSwxCK7qQ==}
@@ -8254,7 +8254,7 @@ snapshots:
 
   dprint-plugin-malva@0.16.0: {}
 
-  dprint-plugin-markup@0.27.5: {}
+  dprint-plugin-markup@0.27.6: {}
 
   dprint-plugin-yaml@0.6.0: {}
 
