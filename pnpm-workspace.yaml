@@ -1,6 +1,27 @@
 blockExoticSubdeps: true
 minimumReleaseAge: 1440
 minimumReleaseAgeExclude:
+  # Permit the verified eMudhra security patch before the usual release-age delay.
+  - dprint@0.64.1
+  - "@dprint/android-arm64@0.64.1"
+  - "@dprint/android-x64@0.64.1"
+  - "@dprint/darwin-arm64@0.64.1"
+  - "@dprint/darwin-x64@0.64.1"
+  - "@dprint/freebsd-arm64@0.64.1"
+  - "@dprint/freebsd-x64@0.64.1"
+  - "@dprint/linux-arm64-glibc@0.64.1"
+  - "@dprint/linux-arm64-musl@0.64.1"
+  - "@dprint/linux-loong64-glibc@0.64.1"
+  - "@dprint/linux-loong64-musl@0.64.1"
+  - "@dprint/linux-ppc64-glibc@0.64.1"
+  - "@dprint/linux-ppc64-musl@0.64.1"
+  - "@dprint/linux-riscv64-glibc@0.64.1"
+  - "@dprint/linux-riscv64-musl@0.64.1"
+  - "@dprint/linux-s390x-glibc@0.64.1"
+  - "@dprint/linux-x64-glibc@0.64.1"
+  - "@dprint/linux-x64-musl@0.64.1"
+  - "@dprint/win32-arm64@0.64.1"
+  - "@dprint/win32-x64@0.64.1"
   - rolldown-plugin-dts@0.27.4
   - typescript@7.0.2
   - "@typescript/*"
