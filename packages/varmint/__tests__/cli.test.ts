@@ -1,6 +1,6 @@
-import { execSync, spawn } from "node:child_process"
+import { spawn } from "node:child_process"
 import { mkdtempSync, rmSync } from "node:fs"
-import { readFile, writeFile } from "node:fs/promises"
+import { writeFile } from "node:fs/promises"
 import { tmpdir } from "node:os"
 import path from "node:path"
 
@@ -18,17 +18,9 @@ afterAll(() => {
 	console.log(`removed tmpDir`)
 })
 
-async function editJsonFile(filePath: string, edit: (json: any) => void) {
-	const fileText = await readFile(filePath, `utf-8`)
-	const json = JSON.parse(fileText)
-	edit(json)
-	const newFileText = JSON.stringify(json, null, `\t`)
-	await writeFile(filePath, newFileText)
-}
-
 describe(`cli`, () => {
 	it(`builds and runs`, async () => {
-		const build = spawn(`bun`, [`run`, `build`], { stdio: `inherit` })
+		const build = spawn(`pnpm`, [`run`, `build`], { stdio: `inherit` })
 		const buildCode = await new Promise((resolve) => build.on(`exit`, resolve))
 		expect(buildCode).toBe(0)
 		await Yalc.publishPackage({ workingDir: `.` })
@@ -36,20 +28,21 @@ describe(`cli`, () => {
 		await Yalc.publishPackage({ workingDir: `../treetrunks` })
 		await Yalc.publishPackage({ workingDir: `../safedeposit` })
 		process.chdir(tmpDir)
-		const projectInit = spawn(`bun`, [`init`, `-y`], { stdio: `inherit` })
-		await new Promise((resolve) => projectInit.on(`exit`, resolve))
-		expect(projectInit.exitCode).toBe(0)
-		await editJsonFile(`package.json`, (json) => {
-			Object.assign(json, {
-				workspaces: [`.yalc/*`],
-			})
-		})
+		await writeFile(
+			`package.json`,
+			JSON.stringify({
+				name: `varmint-consumer`,
+				private: true,
+				type: `module`,
+				packageManager: `pnpm@12.15.0`,
+			}),
+		)
+		await writeFile(`pnpm-workspace.yaml`, `packages:\n  - ".yalc/*"\n`)
+
 		await Yalc.addPackages([`varmint`, `comline`, `treetrunks`, `safedeposit`], {
 			workingDir: `.`,
 		})
-		console.log(execSync(`cat package.json`).toString())
-		console.log(execSync(`ls -la node_modules`).toString())
-		const install = spawn(`bun`, [`install`], { stdio: `inherit` })
+		const install = spawn(`pnpm`, [`install`], { stdio: `inherit` })
 		await new Promise((resolve) => install.on(`exit`, resolve))
 		expect(install.exitCode).toBe(0)
 

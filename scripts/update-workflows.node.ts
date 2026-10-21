@@ -1,7 +1,12 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
+import { execFile } from "node:child_process"
+import { readFile, writeFile } from "node:fs/promises"
 import path from "node:path"
+import { promisify } from "node:util"
 
-import { $ } from "bun"
+const execFileAsync = promisify(execFile)
+const exec = (command: string, args: string[]) =>
+	execFileAsync(command, args, { maxBuffer: 64 * 1024 * 1024 })
 
 type WorkflowUse = {
 	filePath: string
@@ -143,7 +148,7 @@ async function main(): Promise<void> {
 
 		const fileLines =
 			filesToWrite.get(workflowUse.filePath) ??
-			(await Bun.file(workflowUse.filePath).text()).split(/\r?\n/)
+			(await readFile(workflowUse.filePath, `utf8`)).split(/\r?\n/)
 		fileLines[workflowUse.lineIndex] =
 			`${workflowUse.prefix}${workflowUse.actionName}@${update.targetRef} # ${withVersionPrefix(update.targetVersion)}`
 		filesToWrite.set(workflowUse.filePath, fileLines)
@@ -158,14 +163,14 @@ async function main(): Promise<void> {
 
 		const fileLines =
 			filesToWrite.get(miseVersionUse.filePath) ??
-			(await Bun.file(miseVersionUse.filePath).text()).split(/\r?\n/)
+			(await readFile(miseVersionUse.filePath, `utf8`)).split(/\r?\n/)
 		fileLines[miseVersionUse.lineIndex] =
 			`${miseVersionUse.prefix}${update.targetVersion}`
 		filesToWrite.set(miseVersionUse.filePath, fileLines)
 	}
 
 	for (const [filePath, fileLines] of filesToWrite) {
-		await Bun.write(filePath, fileLines.join(`\n`))
+		await writeFile(filePath, fileLines.join(`\n`))
 	}
 
 	console.log(`Updated ${filesToWrite.size} file(s)`)
@@ -173,8 +178,7 @@ async function main(): Promise<void> {
 
 async function listWorkflowFiles(workspaceRoot: string): Promise<string[]> {
 	const githubDir = path.join(workspaceRoot, `.github`)
-	const command = $`rg --files ${githubDir}`.quiet()
-	const output = await command.text()
+	const { stdout: output } = await exec(`rg`, [`--files`, githubDir])
 
 	return output
 		.split(`\n`)
@@ -190,7 +194,7 @@ async function collectWorkflowInventory(
 	const miseVersionUses: MiseVersionUse[] = []
 
 	for (const filePath of filePaths) {
-		const fileLines = (await Bun.file(filePath).text()).split(/\r?\n/)
+		const fileLines = (await readFile(filePath, `utf8`)).split(/\r?\n/)
 
 		for (const [lineIndex, line] of fileLines.entries()) {
 			const match = USES_PATTERN.exec(line)
@@ -362,7 +366,8 @@ async function getRepositoryTags(
 	}
 
 	const remote = `https://github.com/${repository}.git`
-	const output = await $`git ls-remote --tags --refs ${remote}`.quiet().text()
+	const output = (await exec(`git`, [`ls-remote`, `--tags`, `--refs`, remote]))
+		.stdout
 	const tags = output
 		.split(`\n`)
 		.map((line) => line.trim())
@@ -396,17 +401,17 @@ async function resolveTagCommit(
 	tag: string,
 ): Promise<string> {
 	const remote = `https://github.com/${repository}.git`
-	const peeledOutput = await $`git ls-remote ${remote} refs/tags/${tag}^{}`
-		.quiet()
-		.text()
+	const peeledOutput = (
+		await exec(`git`, [`ls-remote`, remote, `refs/tags/${tag}^{}`])
+	).stdout
 	const peeledRef = peeledOutput.trim().split(/\s+/)[0]
 	if (peeledRef) {
 		return peeledRef
 	}
 
-	const directOutput = await $`git ls-remote ${remote} refs/tags/${tag}`
-		.quiet()
-		.text()
+	const directOutput = (
+		await exec(`git`, [`ls-remote`, remote, `refs/tags/${tag}`])
+	).stdout
 	const directRef = directOutput.trim().split(/\s+/)[0]
 	if (!directRef) {
 		throw new Error(`Unable to resolve ${repository}@${tag}`)

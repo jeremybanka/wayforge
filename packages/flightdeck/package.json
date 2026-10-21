@@ -29,7 +29,7 @@
 		"check:eslint": "eslint -- .",
 		"check:oxlint": "oxlint --type-aware -c ../../.oxlintrc.jsonc .",
 		"check:tsc": "tsc --noEmit",
-		"gen": "bun ./__scripts__/gen.bun.ts",
+		"gen": "node ./__scripts__/gen.node.ts",
 		"postversion": "dprint fmt package.json",
 		"schema:flightdeck": "bun ./src/flightdeck.bin.ts --outdir=dist -- schema",
 		"test": "vitest run",
