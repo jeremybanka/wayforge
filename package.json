@@ -28,7 +28,7 @@
 		"gen": "dotenvx run -- turbo run gen",
 		"lint:fix:eslint": "eslint --fix .",
 		"release:hooks": "dotenvx run -- turbo run version",
-		"release:publish": "bun run build && changeset publish",
+		"release:publish": "pnpm run build && changeset publish",
 		"release:version": "./scripts/version.sh",
 		"test": "CI=true dotenvx run -- turbo run test --concurrency=2",
 		"test:breakage": "CI=true dotenvx run -- turbo run test:breakage",
@@ -36,7 +36,7 @@
 		"tonnage:write": "turbo run tonnage:write",
 		"vigilance": "bun scripts/vigilance-bot.bun.ts",
 		"watch:types": "dotenvx run -- turbo run watch:types --concurrency=30",
-		"workflows:update": "bun scripts/update-workflows.bun.ts"
+		"workflows:update": "node scripts/update-workflows.node.ts"
 	},
 	"devDependencies": {
 		"@changesets/cli": "3.0.3",

@@ -1,5 +1,7 @@
 #!/usr/bin/env bun
 
+import { rename } from "node:fs/promises"
+
 import { build } from "bun"
 
 await build({
@@ -15,10 +17,16 @@ await build({
 })
 await build({
 	outdir: `./bin`,
+	naming: `[name].js`,
 	entrypoints: [
-		`./__scripts__/setup-db.bun.ts`,
-		`./__scripts__/interactive-db.bun.ts`,
+		`./__scripts__/setup-db.node.ts`,
+		`./__scripts__/interactive-db.node.ts`,
 	],
 	minify: false,
-	target: `bun`,
+	target: `node`,
 })
+
+// Preserve the installed command paths while running DB tooling with Node.
+for (const name of [`setup-db`, `interactive-db`]) {
+	await rename(`./bin/${name}.node.js`, `./bin/${name}.bun.js`)
+}

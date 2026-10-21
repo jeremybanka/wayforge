@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 
 import * as os from "node:os"
 import { resolve } from "node:path"
@@ -11,10 +11,6 @@ import postgres from "postgres"
 import type * as schema from "../src/database/tempest-db-schema.ts"
 import { env } from "../src/library/env.ts"
 
-console.log({
-	env,
-})
-
 const osUser = os.userInfo().username
 const user = osUser === `runner` ? `postgres` : osUser
 
@@ -25,8 +21,6 @@ const postgresSetupCredentials = {
 	host: env.POSTGRES_HOST,
 	port: env.POSTGRES_PORT,
 } satisfies PostgresOptions<{}>
-
-console.log({ postgresSetupCredentials })
 
 const sql = postgres(postgresSetupCredentials)
 
@@ -78,7 +72,7 @@ try {
 	console.log(`🚀 Migrating database ${env.POSTGRES_DATABASE}... `)
 	const db = drizzle<typeof schema>(tempest)
 	await migrate(db, {
-		migrationsFolder: resolve(import.meta.dir, `../drizzle`),
+		migrationsFolder: resolve(import.meta.dirname, `../drizzle`),
 	})
 	console.log(`Done!`)
 } catch (thrown) {
