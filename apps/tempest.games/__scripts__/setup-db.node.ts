@@ -1,15 +1,38 @@
 #!/usr/bin/env node
 
+import { existsSync } from "node:fs"
 import * as os from "node:os"
 import { resolve } from "node:path"
+import { loadEnvFile } from "node:process"
 
+import { type } from "arktype"
 import { drizzle } from "drizzle-orm/postgres-js"
 import { migrate } from "drizzle-orm/postgres-js/migrator"
 import type { Options as PostgresOptions } from "postgres"
 import postgres from "postgres"
 
 import type * as schema from "../src/database/tempest-db-schema.ts"
-import { env } from "../src/library/env.ts"
+// Node tools load the same local environment layers without importing Bun's app environment.
+const applicationRoot = resolve(import.meta.dirname, `..`)
+for (const name of [
+	`.env.local`,
+	`.env.${process.env[`NODE_ENV`] ?? `development`}`,
+	`.env`,
+]) {
+	const filename = resolve(applicationRoot, name)
+	if (existsSync(filename)) loadEnvFile(filename)
+}
+const databaseEnvType = type({
+	POSTGRES_HOST: `string`,
+	POSTGRES_PORT: type(`string`).pipe((value) => Number.parseInt(value, 10)),
+	POSTGRES_USER: `string`,
+	POSTGRES_PASSWORD: `string`,
+	POSTGRES_DATABASE: `string`,
+})
+const env = databaseEnvType(process.env)
+if (env instanceof type.errors) {
+	throw new Error(`Invalid database environment: ${env.toString()}`)
+}
 
 const osUser = os.userInfo().username
 const user = osUser === `runner` ? `postgres` : osUser
