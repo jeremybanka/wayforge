@@ -34,7 +34,7 @@ describe(`Vigilance remediation probes`, () => {
 		const probeCache = new Map()
 		const input = {
 			issue,
-			packageManager: `pnpm@11.18.0`,
+			packageManager: `pnpm@12.15.0`,
 			packageName: `fast-uri`,
 			probeCache,
 			probeRoot: `/tmp/probes`,

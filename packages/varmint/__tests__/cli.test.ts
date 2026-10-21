@@ -34,7 +34,7 @@ describe(`cli`, () => {
 				name: `varmint-consumer`,
 				private: true,
 				type: `module`,
-				packageManager: `pnpm@12.14.0`,
+				packageManager: `pnpm@12.15.0`,
 			}),
 		)
 		await writeFile(`pnpm-workspace.yaml`, `packages:\n  - ".yalc/*"\n`)
