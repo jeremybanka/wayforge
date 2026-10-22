@@ -7,6 +7,7 @@
 		"**/*.{ts,tsx,js,jsx,mjs,cjs,json,jsonc,md,mdx,css,astro,toml,yml,yaml}"
 	],
 	"excludes": [
+		"**/.correctly/**",
 		"packages/treetrunks/README.md",
 		"packages/varmint/README.md",
 		"packages/venerate/README.md",

@@ -179,6 +179,9 @@ importers:
       '@changesets/config':
         specifier: 4.0.1
         version: 4.0.1
+      '@correctlyjs/schemars':
+        specifier: 0.0.5
+        version: 0.0.5(correctly@0.3.1(arktype@2.2.8)(supports-color@10.2.2))
       '@dotenvx/dotenvx':
         specifier: 2.38.2
         version: 2.38.2
@@ -212,6 +215,9 @@ importers:
       atom.io:
         specifier: 0.53.3
         version: 0.53.3(@floating-ui/react-dom@2.1.9(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@floating-ui/react@0.27.20(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(@typescript-eslint/parser@8.72.0(@typescript/typescript6@6.0.2)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(motion@14.5.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))
+      correctly:
+        specifier: 0.3.1
+        version: 0.3.1(arktype@2.2.8)(supports-color@10.2.2)
       cross-env:
         specifier: 10.1.0
         version: 10.1.0
@@ -1055,6 +1061,12 @@ packages:
   '@clack/prompts@1.7.0':
     resolution: {integrity: sha512-y7/yvZ2TPAnR9+jnc00klvNNLkJiXFFrQA/hlLCcxA9a2A4zQIOimyFQ9XfwYKiGD1fb5GY8vbKIIgO8d5Tb2A==}
     engines: {node: '>= 20.12.0'}
+
+  '@correctlyjs/schemars@0.0.5':
+    resolution: {integrity: sha512-NwcuVHf6WopzynOkxRSaMzVK7ekvT2I6l1imMorzRmEfhlvqpXmRByAsag/+Car7E9wBsnhBE/Dh91D/I8fPOw==}
+    engines: {node: '>=22.18.0'}
+    peerDependencies:
+      correctly: ^0.3.0
 
   '@csstools/color-helpers@6.1.0':
     resolution: {integrity: sha512-064IFJdjTfUqnjpCVpMOdbr8FLQBhinbZj6yRv2An2E41O/pLEXqfFRWqGq/SxlE5PEUYTlvWsG2r8MswAVvkg==}
@@ -3199,6 +3211,9 @@ packages:
       typescript:
         optional: true
 
+  '@vscode/l10n@0.0.18':
+    resolution: {integrity: sha512-KYSIHVmslkaCDyw013pphY+d7x1qV8IZupYfeIfzNA+nsaWHbn5uPuQRvdRFsa9zFzGeudPuoGoZ1Op4jrJXIQ==}
+
   '@vscode/vsce-sign-alpine-arm64@2.0.6':
     resolution: {integrity: sha512-wKkJBsvKF+f0GfsUuGT0tSW0kZL87QggEiqNqK6/8hvqsXvpx8OsTEc3mnE1kejkh5r+qUyQ7PtF8jZYN0mo8Q==}
     cpu: [arm64]
@@ -3663,6 +3678,11 @@ packages:
   cookie@0.7.2:
     resolution: {integrity: sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w==}
     engines: {node: '>= 0.6'}
+
+  correctly@0.3.1:
+    resolution: {integrity: sha512-Iye7JVILABFFqPczrReCEuEqWb7qvNWn4ff+psq1UesEcuu3Ugd7qnjdZezuIfv3+r59/4hyfQQFsoFzo1bE5w==}
+    engines: {node: '>=22.18.0'}
+    hasBin: true
 
   cors@2.8.6:
     resolution: {integrity: sha512-tJtZBBHA6vjIAaF6EnIaq6laBBP9aq/Y3ouVJjEfoHbRBcHBAHYcMh/w8LDrk2PvIMMq8gmopa5D4V8RmbrxGw==}
@@ -4355,6 +4375,10 @@ packages:
 
   ignore@5.3.2:
     resolution: {integrity: sha512-hsBTNUqQTDwkWtcdYI2i06Y/nUBEsNEDJKjWdigLvegy8kDuJAS8uRlpkkcQpyEXL0Z/pjDy5HBmMjRCJ2gq+g==}
+    engines: {node: '>= 4'}
+
+  ignore@7.0.12:
+    resolution: {integrity: sha512-/8UvqAPU9DGTI9k4mxtf49U37Isfwr8Uts96+SBHIkFxPJnHS0Ew4f00sM4Scd8V8EjM0jUNtVDdv1kPdt35lg==}
     engines: {node: '>= 4'}
 
   ignore@7.0.5:
@@ -5647,6 +5671,10 @@ packages:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
 
+  toml-eslint-parser@1.0.3:
+    resolution: {integrity: sha512-A5F0cM6+mDleacLIEUkmfpkBbnHJFV1d2rprHU2MXNk7mlxHq2zGojA+SRvQD1RoMo9gqjZPWEaKG4v1BQ48lw==}
+    engines: {node: ^20.19.0 || ^22.13.0 || >=24}
+
   toml@5.0.1:
     resolution: {integrity: sha512-EqYNA/YvUNndrA2B3O2ojzLQoTQrBxeZ9UIjQwk8t10oe6n7dwclBwd9IdZQTOKwe6vWX+AXtl6IntXRbepdxQ==}
     engines: {node: '>=20'}
@@ -5952,6 +5980,9 @@ packages:
         optional: true
       jsdom:
         optional: true
+
+  vscode-json-languageservice@5.7.2:
+    resolution: {integrity: sha512-WtKRDtJfFEmLrgtu+ODexOHm/6/krRF0k6t+uvkKIKW1Jh9ZIyxZQwJJwB3qhrEgvAxa37zbUg+vn+UyUK/U2w==}
 
   vscode-jsonrpc@9.0.3:
     resolution: {integrity: sha512-qETYf9PCl1lVfwR+oBmMfc4vP2nqLNA35ABxorw3j06+xlKRgDVxbLgKm4Y/xPL0YWdeDjLoI4ImICIT3nB0zQ==}
@@ -6531,6 +6562,10 @@ snapshots:
       fast-string-width: 3.0.2
       fast-wrap-ansi: 0.2.2
       sisteransi: 1.0.5
+
+  '@correctlyjs/schemars@0.0.5(correctly@0.3.1(arktype@2.2.8)(supports-color@10.2.2))':
+    dependencies:
+      correctly: 0.3.1(arktype@2.2.8)(supports-color@10.2.2)
 
   '@csstools/color-helpers@6.1.0':
     optional: true
@@ -8103,6 +8138,8 @@ snapshots:
       typescript: 7.0.2
     optional: true
 
+  '@vscode/l10n@0.0.18': {}
+
   '@vscode/vsce-sign-alpine-arm64@2.0.6':
     optional: true
 
@@ -8528,6 +8565,28 @@ snapshots:
   consola@3.4.2: {}
 
   cookie@0.7.2: {}
+
+  correctly@0.3.1(arktype@2.2.8)(supports-color@10.2.2):
+    dependencies:
+      '@vscode/vsce': 4.0.0(supports-color@10.2.2)
+      ajv: 8.20.0
+      ajv-formats: 3.0.1
+      comline: 0.9.0(arktype@2.2.8)(zod@4.6.7)
+      ignore: 7.0.12
+      jsonc-parser: 3.3.1
+      picomatch: 4.0.7
+      rolldown: 1.2.14
+      tinyglobby: 0.2.17
+      toml-eslint-parser: 1.0.3
+      vscode-json-languageservice: 5.7.2
+      vscode-languageclient: 10.1.2
+      vscode-languageserver: 10.1.2
+      vscode-languageserver-textdocument: 1.0.15
+      yaml: 2.9.1
+      zod: 4.6.7
+    transitivePeerDependencies:
+      - arktype
+      - supports-color
 
   cors@2.8.6:
     dependencies:
@@ -9325,6 +9384,8 @@ snapshots:
       minimatch: 3.1.5
 
   ignore@5.3.2: {}
+
+  ignore@7.0.12: {}
 
   ignore@7.0.5: {}
 
@@ -11009,6 +11070,10 @@ snapshots:
     dependencies:
       is-number: 7.0.0
 
+  toml-eslint-parser@1.0.3:
+    dependencies:
+      eslint-visitor-keys: 5.0.1
+
   toml@5.0.1: {}
 
   tonnage@0.3.0(arktype@2.2.8)(galley.md@0.1.4(arktype@2.2.8)(supports-color@10.2.2)(zod@4.6.7))(zod@4.6.7):
@@ -11338,6 +11403,14 @@ snapshots:
     transitivePeerDependencies:
       - msw
 
+  vscode-json-languageservice@5.7.2:
+    dependencies:
+      '@vscode/l10n': 0.0.18
+      jsonc-parser: 3.3.1
+      vscode-languageserver-textdocument: 1.0.15
+      vscode-languageserver-types: 3.18.4
+      vscode-uri: 3.1.0
+
   vscode-jsonrpc@9.0.3: {}
 
   vscode-languageclient@10.1.2:
@@ -11360,8 +11433,7 @@ snapshots:
     dependencies:
       vscode-languageserver-protocol: 3.18.4
 
-  vscode-uri@3.1.0:
-    optional: true
+  vscode-uri@3.1.0: {}
 
   w3c-xmlserializer@5.0.0:
     dependencies:

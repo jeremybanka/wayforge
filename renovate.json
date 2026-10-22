@@ -83,7 +83,9 @@
 				"treetrunks",
 				"tsdoc.json",
 				"varmint",
-				"venerate"
+				"venerate",
+				"@correctlyjs/schemars",
+				"correctly"
 			],
 			"minimumReleaseAge": null
 		},
@@ -111,6 +113,94 @@
 		{
 			"matchPackageNames": ["ai", "@ai-sdk/openai"],
 			"groupName": "Vercel AI SDK"
+		},
+		{
+			"matchPackageNames": [
+				"dprint",
+				"@dprint/*",
+				"/^dprint-plugin-/"
+			],
+			"postUpgradeTasks": {
+				"commands": [
+					"pnpm install --frozen-lockfile",
+					"pnpm exec correctly schemas pull --association 'Dprint'",
+					"pnpm readme:write"
+				],
+				"executionMode": "branch",
+				"fileFilters": [
+					".correctly/**",
+					"packages/*/README.md"
+				],
+				"installTools": {
+					"node": {},
+					"pnpm": {}
+				}
+			}
+		},
+		{
+			"matchPackageNames": [
+				"renovatebot/github-action",
+				"ghcr.io/renovatebot/renovate"
+			],
+			"postUpgradeTasks": {
+				"commands": [
+					"pnpm install --frozen-lockfile",
+					"pnpm exec correctly schemas pull --association 'Renovate'",
+					"pnpm readme:write"
+				],
+				"executionMode": "branch",
+				"fileFilters": [
+					".correctly/**",
+					"packages/*/README.md"
+				],
+				"installTools": {
+					"node": {},
+					"pnpm": {}
+				}
+			}
+		},
+		{
+			"matchPackageNames": [
+				"jdx/mise",
+				"jdx/mise-action"
+			],
+			"postUpgradeTasks": {
+				"commands": [
+					"pnpm install --frozen-lockfile",
+					"pnpm exec correctly schemas pull --association 'Mise'",
+					"pnpm readme:write"
+				],
+				"executionMode": "branch",
+				"fileFilters": [
+					".correctly/**",
+					"packages/*/README.md"
+				],
+				"installTools": {
+					"node": {},
+					"pnpm": {}
+				}
+			}
+		},
+		{
+			"matchPackageNames": [
+				"pnpm"
+			],
+			"postUpgradeTasks": {
+				"commands": [
+					"pnpm install --frozen-lockfile",
+					"pnpm exec correctly schemas pull --association 'pnpm workspace'",
+					"pnpm readme:write"
+				],
+				"executionMode": "branch",
+				"fileFilters": [
+					".correctly/**",
+					"packages/*/README.md"
+				],
+				"installTools": {
+					"node": {},
+					"pnpm": {}
+				}
+			}
 		}
 	]
 }

@@ -1,0 +1,44 @@
+{
+  "lockVersion": 2,
+  "schemas": {
+    "https://docs.renovatebot.com/renovate-schema.json": {
+      "digest": "919114c7505308fb10c4a1e58ee44f09d69ff8274119aaa0ecf56903c0c4ca4d",
+      "discoveredAt": "2026-10-13T20:46:47.097Z",
+      "packages": {}
+    },
+    "https://dprint.dev/schemas/v0.json": {
+      "digest": "159e313348452ba435354be032433e6f4603b2397ae28a0909c0683c3990aa8f",
+      "discoveredAt": "2026-10-22T23:46:45.430Z",
+      "packages": {
+        "@dprint/json": "0.25.2",
+        "@dprint/markdown": "0.27.1",
+        "@dprint/oxc": "0.47.0",
+        "@dprint/toml": "0.9.0",
+        "dprint": "0.64.1",
+        "dprint-plugin-malva": "0.16.0",
+        "dprint-plugin-markup": "0.27.6",
+        "dprint-plugin-yaml": "0.6.0"
+      }
+    },
+    "https://mise.jdx.dev/schema/mise.json": {
+      "digest": "4dd5f76f1e776bb6f51651f1ea571b5d3f8bc056bca01e98b424a38e93522d12",
+      "discoveredAt": "2026-10-22T23:46:45.430Z",
+      "packages": {}
+    },
+    "https://www.schemastore.org/github-action.json": {
+      "digest": "224326cc5a334bdb97b56b6fc320cd4381ba7d61b477b425ed506e6a420b52ba",
+      "discoveredAt": "2026-10-22T23:46:45.430Z",
+      "packages": {}
+    },
+    "https://www.schemastore.org/github-workflow.json": {
+      "digest": "d10c9f4656e1bd5bc6727e9b35080e017dc167154726fca93da33c7a6bd1c4f3",
+      "discoveredAt": "2026-10-22T23:46:45.430Z",
+      "packages": {}
+    },
+    "https://www.schemastore.org/pnpm-workspace.json": {
+      "digest": "7eecf631fc469a03bbd7ad505587dad76247d2c155fe1012695d5a1332346e1a",
+      "discoveredAt": "2026-10-22T23:46:45.430Z",
+      "packages": {}
+    }
+  }
+}
