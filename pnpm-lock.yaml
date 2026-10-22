@@ -252,8 +252,8 @@ importers:
         specifier: 2.7.1
         version: 2.7.1
       tonnage:
-        specifier: 0.1.3
-        version: 0.1.3(arktype@2.2.8)(zod@4.6.7)
+        specifier: 0.3.0
+        version: 0.3.0(arktype@2.2.8)(zod@4.6.7)
       turbo:
         specifier: 2.11.10
         version: 2.11.10
@@ -3550,17 +3550,6 @@ packages:
   color-name@1.1.4:
     resolution: {integrity: sha512-dOy+3AuW3a2wNbZHIuMZpTcgjGuLU/uBL/ubcZF9OXbDo8ff4O8yVp5Bf0efS8uEoYo5q4Fx7dY9OgQGXgAsQA==}
 
-  comline@0.7.0:
-    resolution: {integrity: sha512-xKBcV5Aus84akxLWXUQZtalExNTXg/njodI5qMAS2/SdAHO7AOIg0+tZQEJjDOZCN7Ph8pJLs8N1/DSC8e4LIQ==}
-    peerDependencies:
-      arktype: ^2.1.28
-      zod: ^4.2.0
-    peerDependenciesMeta:
-      arktype:
-        optional: true
-      zod:
-        optional: true
-
   comline@0.9.0:
     resolution: {integrity: sha512-PB6CjpeJqSzKL4XZ6kjlGE3G5bcBDZjRQcDoPwKsQT1VloTOQ9Q4EhkJFi0Ng39bFDB7I928qfOZ9LrDYaDc5A==}
     peerDependencies:
@@ -5269,10 +5258,12 @@ packages:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
 
-  tonnage@0.1.3:
-    resolution: {integrity: sha512-/1B5r3FvYr1R7D2Oy77wZRPGBPwcBM3+jdV2O6fH19ayJ25K1OFu7/2OFkLh5WPzhNv97q+B4s8Cwr348XqmQA==}
+  tonnage@0.3.0:
+    resolution: {integrity: sha512-MFm5A5qjSwboMUTAZ6RUtSsZCpdXskOTGLODnR3ML3orpSuHvAuOWyh46EZ4l4aArSpu/hWmyJRhC7NPoeal0w==}
     engines: {node: '>=22.18.0'}
     hasBin: true
+    peerDependencies:
+      galley.md: ^0.1.1
 
   tough-cookie@6.0.2:
     resolution: {integrity: sha512-exgYmnmL/sJpR3upZfXG5PoatXQii55xAiXGXzY+sROLZ/Y+SLcp9PgJNI9Vz37HpQ74WvDcLT8eqm+kV3FzrA==}
@@ -5285,9 +5276,6 @@ packages:
   tree-kill@1.2.2:
     resolution: {integrity: sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==}
     hasBin: true
-
-  treetrunks@0.1.11:
-    resolution: {integrity: sha512-3L5O5w3AGZd47pGpTNEQAfp68pSIQCeundsUZnPLPtg4TYL87qmcSJsvoqLeRUXtmL8W7JycaD3gd+i2SCYQrQ==}
 
   treetrunks@0.1.12:
     resolution: {integrity: sha512-x9XbZAus9Y4y7WRke6DwOrxmAxrwXNVv/wSmO9aNEfO92gu4Jau/4lmfXE1untxNle1WygPX2wriCtf+oYKMmg==}
@@ -7985,14 +7973,6 @@ snapshots:
 
   color-name@1.1.4: {}
 
-  comline@0.7.0(arktype@2.2.8)(zod@4.6.7):
-    dependencies:
-      '@standard-schema/spec': 1.1.0
-      treetrunks: 0.1.11
-    optionalDependencies:
-      arktype: 2.2.8
-      zod: 4.6.7
-
   comline@0.9.0(arktype@2.2.8)(zod@4.6.7):
     dependencies:
       '@standard-schema/spec': 1.1.0
@@ -9756,9 +9736,9 @@ snapshots:
     dependencies:
       is-number: 7.0.0
 
-  tonnage@0.1.3(arktype@2.2.8)(zod@4.6.7):
+  tonnage@0.3.0(arktype@2.2.8)(zod@4.6.7):
     dependencies:
-      comline: 0.7.0(arktype@2.2.8)(zod@4.6.7)
+      comline: 0.9.0(arktype@2.2.8)(zod@4.6.7)
       esbuild: 0.28.2
     transitivePeerDependencies:
       - arktype
@@ -9775,8 +9755,6 @@ snapshots:
     optional: true
 
   tree-kill@1.2.2: {}
-
-  treetrunks@0.1.11: {}
 
   treetrunks@0.1.12: {}
 
