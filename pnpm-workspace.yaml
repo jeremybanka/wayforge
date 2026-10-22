@@ -4,7 +4,18 @@ minimumReleaseAgeExclude:
   # Temporary Bun exceptions; remove after 2026-10-23 10:20 UTC.
   # Keep aligned with the temporary rules in renovate.json.
   - bun@1.4.4
-  - "@oven/bun-*@1.4.4"
+  - "@oven/bun-darwin-aarch64@1.4.4"
+  - "@oven/bun-darwin-x64@1.4.4"
+  - "@oven/bun-freebsd-aarch64@1.4.4"
+  - "@oven/bun-freebsd-x64@1.4.4"
+  - "@oven/bun-linux-aarch64@1.4.4"
+  - "@oven/bun-linux-aarch64-android@1.4.4"
+  - "@oven/bun-linux-aarch64-musl@1.4.4"
+  - "@oven/bun-linux-x64@1.4.4"
+  - "@oven/bun-linux-x64-android@1.4.4"
+  - "@oven/bun-linux-x64-musl@1.4.4"
+  - "@oven/bun-windows-aarch64@1.4.4"
+  - "@oven/bun-windows-x64@1.4.4"
   - bun-types@1.4.4
   - "@types/bun@1.4.3"
   # Permit the verified eMudhra security patch before the usual release-age delay.
