@@ -1,4 +1,4 @@
-name: Lint
+name: Check
 
 on:
   push:
@@ -71,8 +71,8 @@ jobs:
       - uses: ./.github/actions/setup
       - run: pnpm check:lasertag
 
-  JSONSchemas:
-    name: JSON Schemas
+  Correctly:
+    name: Correctly
     runs-on: ubuntu-latest
     timeout-minutes: 9
     steps:
