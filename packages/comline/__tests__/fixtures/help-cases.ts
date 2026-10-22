@@ -95,10 +95,25 @@ export function renderPropertyHelp(
 	return manual
 }
 
-export function renderRefinedSchemaHelp(): string {
-	const schema = type({
-		value: type(`string`).narrow((value) => value.startsWith(`x`)),
-	})
+export const refinedSchema = type({
+	value: type(`string`).narrow((value) => value.startsWith(`x`)),
+})
+
+export const unexportableSchema: OptionsSchema<{ value: string }> = {
+	"~standard": {
+		...refinedSchema[`~standard`],
+		jsonSchema: {
+			...refinedSchema[`~standard`].jsonSchema,
+			input: () => {
+				throw new Error(`Schema cannot be exported`)
+			},
+		},
+	},
+}
+
+export function renderRequiredSchemaHelp(
+	schema: OptionsSchema<{ value: string }>,
+): string {
 	const manual = help(
 		{
 			cliName: `refined-cli`,
