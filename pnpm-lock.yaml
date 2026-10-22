@@ -318,8 +318,8 @@ importers:
         specifier: 6.0.2
         version: 6.0.2
       openai:
-        specifier: 7.40.0
-        version: 7.40.0(undici@8.9.0)(ws@8.21.0)(zod@4.6.7)
+        specifier: 7.41.0
+        version: 7.41.0(undici@8.9.0)(ws@8.21.0)(zod@4.6.7)
       postgres:
         specifier: 3.4.9
         version: 3.4.9
@@ -754,8 +754,8 @@ importers:
         specifier: 10.13.0
         version: 10.13.0(jiti@2.7.0)(supports-color@10.2.2)
       openai:
-        specifier: 7.40.0
-        version: 7.40.0(undici@8.9.0)(ws@8.21.0)(zod@4.6.7)
+        specifier: 7.41.0
+        version: 7.41.0(undici@8.9.0)(ws@8.21.0)(zod@4.6.7)
       tsdown:
         specifier: 0.23.1
         version: 0.23.1(@volar/typescript@2.4.28(typescript@7.0.2))(tsx@4.22.1)(typescript@7.0.2)
@@ -5070,13 +5070,14 @@ packages:
     resolution: {integrity: sha512-YgBpdJHPyQ2UE5x+hlSXcnejzAvD0b22U2OuAP+8OnlJT+PjWPxtgmGqKKc+RgTM63U9gN0YzrYc71R2WT/hTA==}
     engines: {node: '>=18'}
 
-  openai@7.40.0:
-    resolution: {integrity: sha512-r4NIZmegLoyWliCIGhltkEPwEjZz7XjxtyX8ut21PUC/aXhi1t0LGbt6EIUNE8krKm+wjXnnFhhMFK43//uxfg==}
+  openai@7.41.0:
+    resolution: {integrity: sha512-k8dr5CXaK8+3f6iOrjQQz7rw7zT3QQZZtI28KOnVmU5Q10vX+Iyik4cE20ohMmZ7EnumUVC7S6nmjEBd/wdlLg==}
     engines: {node: '>=22.0.0'}
     peerDependencies:
       '@aws-sdk/credential-provider-node': '>=3.972.0 <4'
       '@smithy/hash-node': '>=4.3.0 <5'
       '@smithy/signature-v4': '>=5.4.0 <6'
+      google-auth-library: '>=9.15.1 <11'
       undici: '>=5 <9'
       ws: ^8.21.0
       zod: ^3.25 || ^4.0
@@ -5086,6 +5087,8 @@ packages:
       '@smithy/hash-node':
         optional: true
       '@smithy/signature-v4':
+        optional: true
+      google-auth-library:
         optional: true
       undici:
         optional: true
@@ -10306,7 +10309,7 @@ snapshots:
       is-inside-container: 1.0.0
       wsl-utils: 0.1.0
 
-  openai@7.40.0(undici@8.9.0)(ws@8.21.0)(zod@4.6.7):
+  openai@7.41.0(undici@8.9.0)(ws@8.21.0)(zod@4.6.7):
     optionalDependencies:
       undici: 8.9.0
       ws: 8.21.0
