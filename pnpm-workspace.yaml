@@ -49,6 +49,7 @@ minimumReleaseAgeExclude:
   - breakage
   - comline
   - flightdeck
+  - galley.md
   - jurist
   - lasertag
   - luum

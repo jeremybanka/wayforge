@@ -16,11 +16,11 @@
 			"outputs": ["app/**", "bin/**"],
 			"inputs": ["**/package.json", "src/**"]
 		},
-		"check:tonnage": {
+		"check:readme": {
 			"dependsOn": ["build"],
 			"cache": false
 		},
-		"tonnage:write": {
+		"readme:write": {
 			"dependsOn": ["build"],
 			"cache": false
 		},
@@ -199,7 +199,8 @@
 				"check:eslint",
 				"check:oxlint",
 				"check:tsc",
-				"check:lasertag"
+				"check:lasertag",
+				"check:readme"
 			]
 		},
 		"gen": {

@@ -51,7 +51,7 @@
 			"postUpgradeTasks": {
 				"commands": [
 					"pnpm install --frozen-lockfile",
-					"pnpm tonnage:write"
+					"pnpm readme:write"
 				],
 				"executionMode": "branch",
 				"fileFilters": ["packages/*/README.md"]
@@ -70,6 +70,7 @@
 				"breakage",
 				"comline",
 				"flightdeck",
+				"galley.md",
 				"jurist",
 				"lasertag",
 				"luum",
