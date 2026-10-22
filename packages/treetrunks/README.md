@@ -1,23 +1,8 @@
+<!-- Generated from README.mdx. Run pnpm readme:write to update. -->
+
 # treetrunks
 
-<a aria-label="NPM version" href="https://www.npmjs.com/package/treetrunks">
-	<img
-		alt="NPM Version"
-		src="https://img.shields.io/npm/v/treetrunks?style=for-the-badge"
-	>
-</a>
-<a aria-label="Dependencies 0" href="https://www.npmjs.com/package/treetrunks">
-	<img
-		alt="Dependencies 0"
-		src="https://img.shields.io/badge/dependencies-0-0?style=for-the-badge"
-	>
-</a>
-<a aria-label="Coverage" href="https://recoverage.cloud/">
-	<img
-		alt="Coverage"
-		src="https://img.shields.io/endpoint?url=https%3A%2F%2Frecoverage.cloud%2Fshields%2FS1ikz1yFmk93qbAI7lLnu%2Ftreetrunks"
-	>
-</a>
+<a aria-label="NPM version" href="https://www.npmjs.com/package/treetrunks"><img alt="NPM Version" src="https://img.shields.io/npm/v/treetrunks?style=for-the-badge"></a><a aria-label="Dependencies 0" href="https://www.npmjs.com/package/treetrunks"><img alt="Dependencies 0" src="https://img.shields.io/badge/dependencies-0-0?style=for-the-badge"></a><a aria-label="Coverage" href="https://recoverage.cloud/"><img alt="Coverage" src="https://img.shields.io/endpoint?url=https%3A%2F%2Frecoverage.cloud%2Fshields%2FS1ikz1yFmk93qbAI7lLnu%2Ftreetrunks"></a>
 
 ```sh
 npm i treetrunks
@@ -60,20 +45,17 @@ note that,
 - `"world"`, or any `$name` is optional
 - `"good morning"` is optional
 
-<!-- tonnage:default:start -->
-
 ## Bundle size
 
 Package export sizes include complete runtime export surfaces.
+
 Sizes are exact minified and level-9 gzip JavaScript byte counts. Declarations, source maps, CSS, and other assets are excluded. Peer dependencies stay external, and shared modules are counted once per bundle.
 
-| Import                  | Minified JS | Gzip JS |
-| ----------------------- | ----------: | ------: |
-| <code>treetrunks</code> |     1,474 B |   747 B |
+| Import       | Minified JS | Gzip JS |
+| ------------ | ----------: | ------: |
+| `treetrunks` |     1,474 B |   747 B |
 
 Report maintained with [tonnage](https://github.com/jeremybanka/tonnage).
-
-<!-- tonnage:default:end -->
 
 ## Variadic captures
 

@@ -1,29 +1,24 @@
+<!-- Generated from README.mdx. Run pnpm readme:write to update. -->
+
 # tsdoc.json
 
-<a aria-label="NPM version" href="https://www.npmjs.com/package/tsdoc.json">
-	<img
-		alt="NPM Version"
-		src="https://img.shields.io/npm/v/tsdoc.json?style=for-the-badge"
-	>
-</a>
+<a aria-label="NPM version" href="https://www.npmjs.com/package/tsdoc.json"><img alt="NPM Version" src="https://img.shields.io/npm/v/tsdoc.json?style=for-the-badge"></a>
+
 ```sh
 npm i tsdoc.json
 ```
 
 tsdoc.json is a tool for generating a JSON schema from TypeScript types.
 
-<!-- tonnage:default:start -->
-
 ## Bundle size
 
 Package export sizes include complete runtime export surfaces.
+
 Sizes are exact minified and level-9 gzip JavaScript byte counts. Declarations, source maps, CSS, and other assets are excluded. Peer dependencies stay external, and shared modules are counted once per bundle.
 
-| Import                        | Minified JS |     Gzip JS |
-| ----------------------------- | ----------: | ----------: |
-| <code>tsdoc.json</code>       | 3,719,165 B | 1,054,980 B |
-| <code>tsdoc.json/react</code> |     3,179 B |     1,129 B |
+| Import             | Minified JS |     Gzip JS |
+| ------------------ | ----------: | ----------: |
+| `tsdoc.json`       | 3,719,165 B | 1,054,980 B |
+| `tsdoc.json/react` |     3,179 B |     1,129 B |
 
 Report maintained with [tonnage](https://github.com/jeremybanka/tonnage).
-
-<!-- tonnage:default:end -->

@@ -7,6 +7,10 @@
 		"**/*.{ts,tsx,js,jsx,mjs,cjs,json,jsonc,md,mdx,css,astro,toml,yml,yaml}"
 	],
 	"excludes": [
+		"packages/treetrunks/README.md",
+		"packages/varmint/README.md",
+		"packages/venerate/README.md",
+		"packages/tsdoc.json/README.md",
 		"**/metafile-*",
 		"**/*.cache.json",
 		"**/*.gen.ts",

@@ -22,3 +22,7 @@ Do not manually wrap Markdown prose at a fixed line width. Keep each paragraph a
 ## Repository commands
 
 Use the canonical command names in `docs/commands.md`: `fmt` writes formatting, `check` aggregates `check:*` validators, and `test` runs once. Coverage commands use the `cov` prefix where implemented. Keep CI and documentation references aligned when changing commands.
+
+## Generated READMEs
+
+Where a package has `README.mdx`, edit that source instead of the generated `README.md`. Run `pnpm readme:write` to regenerate the READMEs and bundle reports, and `pnpm check:readme` to check for drift.

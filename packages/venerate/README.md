@@ -1,17 +1,9 @@
+<!-- Generated from README.mdx. Run pnpm readme:write to update. -->
+
 # venerate
 
-<a aria-label="NPM version" href="https://www.npmjs.com/package/venerate">
-	<img
-		alt="NPM Version"
-		src="https://img.shields.io/npm/v/treetrunks?style=for-the-badge"
-	>
-</a>
-<a aria-label="Dependencies 0" href="https://www.npmjs.com/package/treetrunks">
-	<img
-		alt="Dependencies 0"
-		src="https://img.shields.io/badge/dependencies-0-0?style=for-the-badge"
-	>
-</a>
+<a aria-label="NPM version" href="https://www.npmjs.com/package/venerate"><img alt="NPM Version" src="https://img.shields.io/npm/v/venerate?style=for-the-badge"></a><a aria-label="Dependencies 0" href="https://www.npmjs.com/package/venerate"><img alt="Dependencies 0" src="https://img.shields.io/badge/dependencies-0-0?style=for-the-badge"></a>
+
 ```sh
 npm i venerate
 ```
@@ -34,17 +26,14 @@ const c = (function* () {
 const union = [...V.union(a, b, c)] // [1, 2, 3, 4, 5]
 ```
 
-<!-- tonnage:default:start -->
-
 ## Bundle size
 
 Package export sizes include complete runtime export surfaces.
+
 Sizes are exact minified and level-9 gzip JavaScript byte counts. Declarations, source maps, CSS, and other assets are excluded. Peer dependencies stay external, and shared modules are counted once per bundle.
 
-| Import                | Minified JS | Gzip JS |
-| --------------------- | ----------: | ------: |
-| <code>venerate</code> |     1,318 B |   572 B |
+| Import     | Minified JS | Gzip JS |
+| ---------- | ----------: | ------: |
+| `venerate` |     1,318 B |   572 B |
 
 Report maintained with [tonnage](https://github.com/jeremybanka/tonnage).
-
-<!-- tonnage:default:end -->
