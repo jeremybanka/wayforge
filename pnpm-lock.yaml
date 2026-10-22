@@ -180,8 +180,8 @@ importers:
         specifier: 4.0.1
         version: 4.0.1
       '@dotenvx/dotenvx':
-        specifier: 2.38.1
-        version: 2.38.1
+        specifier: 2.38.2
+        version: 2.38.2
       '@dprint/json':
         specifier: 0.25.2
         version: 0.25.2
@@ -1080,8 +1080,8 @@ packages:
   '@dimforge/rapier3d-compat@0.12.0':
     resolution: {integrity: sha512-uekIGetywIgopfD97oDL5PfeezkFpNhwlzlaEYNOA0N6ghdsOvh/HYjSMek5Q2O1PYvRSDFcqFVJl4r4ZBwOow==}
 
-  '@dotenvx/dotenvx@2.38.1':
-    resolution: {integrity: sha512-/E1w1e5+XjX13+BsGAupICHNwGVbgcsSQ/+2bAUXWlovNAt567SNqfON8ATkF1jUD+5OuxOhez2dt+IBifHG8A==}
+  '@dotenvx/dotenvx@2.38.2':
+    resolution: {integrity: sha512-+tjy8o//H+ZkRfRWLh08UkLHCw/e74uIV27QOZ3RxKwXvGrxjEcQMfUvQJzkvK/qNTk/OsE1MlGiDB6iL+1X0g==}
     hasBin: true
 
   '@dotenvx/primitives@3.3.1':
@@ -1090,8 +1090,8 @@ packages:
   '@dotenvx/providers@0.3.11':
     resolution: {integrity: sha512-5H5kAr5ps4shR7ZtA3mtDphh9Fbhp21yY77jCBCJLX2pbdEse0bcCBn7M1Ex1YrKF2O9SLKJB8ttJ2P5JsPidQ==}
 
-  '@dotenvx/tooling@1.0.5':
-    resolution: {integrity: sha512-XMAwZpxIajWaP31zLl2GQS3grIQsRY4B4VMss8fDv70XbGF/9aXSMHc3v9iJNZZVX/i0Loz1MAn6oM8dycbN4A==}
+  '@dotenvx/tooling@1.0.6':
+    resolution: {integrity: sha512-d1AhKqlprzjR7+/7YTYbf9lTjeIUxr2WN+gYL5jf9O25wymlVWzuwOujq9IWJOt33sGWcLjr1eswSOmqm4SRMg==}
 
   '@dprint/android-arm64@0.64.1':
     resolution: {integrity: sha512-B1eZzEFbhGg3lIPONQBvceZPJnwo02SUOx7/bt9xVmkCxC1Xei4SB5TTV6rAuOTaU67LHf8k6AXvO8liCXcNZA==}
@@ -6129,11 +6129,11 @@ snapshots:
 
   '@dimforge/rapier3d-compat@0.12.0': {}
 
-  '@dotenvx/dotenvx@2.38.1':
+  '@dotenvx/dotenvx@2.38.2':
     dependencies:
       '@dotenvx/primitives': 3.3.1
       '@dotenvx/providers': 0.3.11
-      '@dotenvx/tooling': 1.0.5
+      '@dotenvx/tooling': 1.0.6
       undici: 6.28.1
       write-file-atomic: 5.0.1
       yocto-spinner: 1.2.1
@@ -6143,9 +6143,9 @@ snapshots:
   '@dotenvx/providers@0.3.11':
     dependencies:
       '@dotenvx/primitives': 3.3.1
-      '@dotenvx/tooling': 1.0.5
+      '@dotenvx/tooling': 1.0.6
 
-  '@dotenvx/tooling@1.0.5': {}
+  '@dotenvx/tooling@1.0.6': {}
 
   '@dprint/android-arm64@0.64.1':
     optional: true
