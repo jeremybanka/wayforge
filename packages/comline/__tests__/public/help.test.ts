@@ -6,7 +6,8 @@ import {
 	createHelpCli,
 	propertySchemas,
 	renderPropertyHelp,
-	renderRefinedSchemaHelp,
+	renderRequiredSchemaHelp,
+	unexportableSchema,
 } from "../fixtures/help-cases"
 
 describe(`renderTable`, () => {
@@ -92,7 +93,7 @@ describe(`help`, () => {
 	)
 
 	it(`keeps help available when a schema cannot export JSON Schema`, () => {
-		const manual = renderRefinedSchemaHelp()
+		const manual = renderRequiredSchemaHelp(unexportableSchema)
 		expect(manual).toContain(`--value=example`)
 		expect(manual).toContain(`value to use`)
 		expect(manual).toMatch(/required/i)

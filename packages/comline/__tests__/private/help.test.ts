@@ -3,8 +3,10 @@ import { help, renderTable } from "../../src/help"
 import {
 	createHelpCli,
 	propertySchemas,
+	refinedSchema,
 	renderPropertyHelp,
-	renderRefinedSchemaHelp,
+	renderRequiredSchemaHelp,
+	unexportableSchema,
 } from "../fixtures/help-cases"
 
 describe(`renderTable`, () => {
@@ -63,8 +65,14 @@ describe(`help`, () => {
 		},
 	)
 
-	it(`labels an unexportable schema as unknown in help`, () => {
-		const manual = renderRefinedSchemaHelp()
+	it(`labels a refined string schema as string in help`, () => {
+		const manual = renderRequiredSchemaHelp(refinedSchema)
+
+		expect(manual).toContain(`string (required): value to use`)
+	})
+
+	it(`labels a schema whose JSON Schema exporter throws as unknown in help`, () => {
+		const manual = renderRequiredSchemaHelp(unexportableSchema)
 
 		expect(manual).toContain(`unknown (required): value to use`)
 	})
