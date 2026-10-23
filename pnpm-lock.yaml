@@ -213,8 +213,8 @@ importers:
         specifier: npm:typescript@7.0.2
         version: typescript@7.0.2
       atom.io:
-        specifier: 0.53.3
-        version: 0.53.3(@floating-ui/react-dom@2.1.9(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@floating-ui/react@0.27.20(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(@typescript-eslint/parser@8.72.0(@typescript/typescript6@6.0.2)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(motion@14.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))
+        specifier: 0.54.0
+        version: 0.54.0(happy-dom@20.14.0)
       correctly:
         specifier: 0.3.2
         version: 0.3.2(arktype@2.2.8)(supports-color@10.2.2)
@@ -315,8 +315,8 @@ importers:
         specifier: 2.2.9
         version: 2.2.9
       atom.io:
-        specifier: 0.53.3
-        version: 0.53.3(@floating-ui/react-dom@2.1.9(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@floating-ui/react@0.27.20(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(@typescript-eslint/parser@8.72.0(@typescript/typescript6@6.0.2)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(motion@14.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))
+        specifier: 0.54.0
+        version: 0.54.0(happy-dom@20.14.0)
       cron:
         specifier: 4.4.0
         version: 4.4.0
@@ -479,8 +479,8 @@ importers:
         specifier: 2.2.9
         version: 2.2.9
       atom.io:
-        specifier: 0.53.3
-        version: 0.53.3(@floating-ui/react-dom@2.1.9(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@floating-ui/react@0.27.20(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(@typescript-eslint/parser@8.72.0(@typescript/typescript6@6.0.2)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(motion@14.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))
+        specifier: 0.54.0
+        version: 0.54.0(happy-dom@20.14.0)
       comline:
         specifier: workspace:*
         version: link:../comline
@@ -601,8 +601,8 @@ importers:
   packages/rel8:
     dependencies:
       atom.io:
-        specifier: 0.53.3
-        version: 0.53.3(@floating-ui/react-dom@2.1.9(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@floating-ui/react@0.27.20(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(@typescript-eslint/parser@8.72.0(@typescript/typescript6@6.0.2)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(motion@14.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))
+        specifier: 0.54.0
+        version: 0.54.0(happy-dom@20.14.0)
     devDependencies:
       concurrently:
         specifier: 10.0.6
@@ -757,8 +757,8 @@ importers:
         specifier: 26.6.5
         version: 26.6.5
       atom.io:
-        specifier: 0.53.3
-        version: 0.53.3(@floating-ui/react-dom@2.1.9(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@floating-ui/react@0.27.20(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(@typescript-eslint/parser@8.72.0(@typescript/typescript6@6.0.2)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(motion@14.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))
+        specifier: 0.54.0
+        version: 0.54.0(happy-dom@20.14.0)
       concurrently:
         specifier: 10.0.6
         version: 10.0.6
@@ -3439,6 +3439,14 @@ packages:
       socket.io-client:
         optional: true
       solid-js:
+        optional: true
+
+  atom.io@0.54.0:
+    resolution: {integrity: sha512-MQ2I/cpb4KVijgzD+Kvt+eaMSPuZw5hyyCVvSXa0XeJNgiUBSgrx2iajnZ4phCqhAz/7GGjh+8pNnO++pzsOYA==}
+    peerDependencies:
+      happy-dom: '>=17.4.4'
+    peerDependenciesMeta:
+      happy-dom:
         optional: true
 
   atomically@2.1.1:
@@ -8338,6 +8346,10 @@ snapshots:
       react: 19.3.1
       socket.io: 4.8.4(supports-color@10.2.2)
       socket.io-client: 4.8.4(supports-color@10.2.2)
+
+  atom.io@0.54.0(happy-dom@20.14.0):
+    optionalDependencies:
+      happy-dom: 20.14.0
 
   atomically@2.1.1:
     dependencies:
