@@ -1,6 +1,6 @@
 {
 	"name": "tsdoc.json",
-	"version": "0.6.11",
+	"version": "0.6.12",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/jeremybanka/wayforge.git",

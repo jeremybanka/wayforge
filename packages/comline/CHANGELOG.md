@@ -1,5 +1,12 @@
 # comline
 
+## 0.9.1
+
+### Patch Changes
+
+- Updated dependencies [1de0695]
+  - treetrunks@0.1.13
+
 ## 0.9.0
 
 ### Minor Changes

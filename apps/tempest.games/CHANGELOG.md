@@ -1,5 +1,13 @@
 # tempest.games
 
+## 0.3.61
+
+### Patch Changes
+
+- Updated dependencies [1de0695]
+  - treetrunks@0.1.13
+  - varmint@0.6.2
+
 ## 0.3.60
 
 ### Patch Changes
