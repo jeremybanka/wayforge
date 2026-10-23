@@ -14,7 +14,8 @@
 	"scripts": {
 		"build": "dotenvx run -- turbo run build",
 		"change": "changeset",
-		"check": "pnpm run check:fmt && pnpm run check:deps && pnpm run check:eslint && pnpm run check:oxlint && pnpm run check:tsc && pnpm run check:readme && pnpm run check:lasertag",
+		"check": "pnpm run check:fmt && pnpm run check:deps && pnpm run check:eslint && pnpm run check:oxlint && pnpm run check:tsc && pnpm run check:readme && pnpm run check:lasertag && pnpm run check:correctly",
+		"check:correctly": "correctly check --offline",
 		"check:deps": "pin-checker --ignore-workspaces",
 		"check:eslint": "dotenvx run -- turbo run check:eslint",
 		"check:fmt": "cross-env DPRINT_CACHE_DIR=$PWD/.cache/dprint dprint check .",
@@ -43,6 +44,7 @@
 	"devDependencies": {
 		"@changesets/cli": "3.0.3",
 		"@changesets/config": "4.0.1",
+		"@correctlyjs/schemars": "0.0.5",
 		"@dotenvx/dotenvx": "2.38.2",
 		"@dprint/json": "0.25.2",
 		"@dprint/markdown": "0.27.1",
@@ -54,6 +56,7 @@
 		"@typescript-eslint/utils": "8.72.0",
 		"@typescript/native": "npm:typescript@7.0.2",
 		"atom.io": "0.53.3",
+		"correctly": "0.3.1",
 		"cross-env": "10.1.0",
 		"dprint": "0.64.1",
 		"dprint-plugin-malva": "0.16.0",

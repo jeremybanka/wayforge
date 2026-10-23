@@ -1,6 +1,8 @@
 blockExoticSubdeps: true
 minimumReleaseAge: 1440
 minimumReleaseAgeExclude:
+  - "@correctlyjs/schemars"
+  - "correctly"
   # Temporary Bun exceptions; remove after 2026-10-23 10:20 UTC.
   # Keep aligned with the temporary rules in renovate.json.
   - bun@1.4.4
