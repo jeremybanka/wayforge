@@ -1,5 +1,11 @@
 # flightdeck
 
+## 0.5.1
+
+### Patch Changes
+
+- comline@0.9.1
+
 ## 0.5.0
 
 ### Minor Changes

@@ -1,5 +1,12 @@
 # varmint
 
+## 0.6.2
+
+### Patch Changes
+
+- 1de0695: Generate package READMEs from MDX with Galley 0.1.4 and Tonnage 0.4.0, using its Comment component for the generated-file notice, keeping bundle reports alongside the documentation and rendering import names as Markdown inline code.
+- comline@0.9.1
+
 ## 0.6.1
 
 ### Patch Changes
