@@ -26,19 +26,18 @@ import { trpcClient } from "./trpc-client-service.ts"
 
 export type ClientError = TRPCClientError<typeof appRouter>
 
-export const socket: Socket<TempestSocketDown, TempestSocketUp> = io(
-	env.VITE_BACKEND_ORIGIN,
-	{
-		auth: (pass) => {
-			const auth = getState(authAtom)
-			if (auth) {
-				pass(auth)
-			}
-		},
-		withCredentials: true,
-		autoConnect: false,
+export const realtimeSocket: Socket = io(env.VITE_BACKEND_ORIGIN, {
+	auth: (pass) => {
+		const auth = getState(authAtom)
+		if (auth) {
+			pass(auth)
+		}
 	},
-)
+	withCredentials: true,
+	autoConnect: false,
+})
+// Share the connection while keeping application events typed separately from the realtime protocol.
+export const socket: Socket<TempestSocketDown, TempestSocketUp> = realtimeSocket
 socket
 	.on(`connect`, () => {
 		console.log(`connected`)

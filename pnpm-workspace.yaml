@@ -4,6 +4,10 @@ minimumReleaseAgeExclude:
   # Consumed jeremybanka packages are exempt at every version.
   # Keep aligned with the npm rule in renovate.json.
   - "@correctlyjs/schemars"
+  - "@atom.io/eslint-plugin"
+  - "@atom.io/react"
+  - "@atom.io/react-devtools"
+  - "@atom.io/realtime"
   - atom.io
   - breakage
   - comline

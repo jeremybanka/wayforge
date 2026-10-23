@@ -1,21 +1,21 @@
 #!/usr/bin/env bun
 
-import { type } from "arktype"
-import { AtomIOLogger, getState, resetState, setState } from "atom.io"
-import { IMPLICIT } from "atom.io/internal"
-import type { SocketGuard } from "atom.io/realtime"
-import { employSocket, guardSocket } from "atom.io/realtime"
+import type { SocketGuard } from "@atom.io/realtime"
+import { employSocket, guardSocket } from "@atom.io/realtime"
 import {
 	pullSelector,
 	roomOwnerSelector,
 	usersHereSelector,
-} from "atom.io/realtime-client"
+} from "@atom.io/realtime/client"
 import {
 	ParentSocket,
 	realtimeAtomFamilyProvider,
 	realtimeMutableProvider,
 	realtimeStateProvider,
-} from "atom.io/realtime-server"
+} from "@atom.io/realtime/server"
+import { type } from "arktype"
+import { AtomIOLogger, getState, resetState, setState } from "atom.io"
+import { IMPLICIT } from "atom.io/internal"
 import { Socket } from "socket.io-client"
 
 import { parentSocket } from "./backend/logger"

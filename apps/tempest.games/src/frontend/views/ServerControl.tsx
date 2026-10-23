@@ -1,7 +1,7 @@
-import { useJSON, useO } from "atom.io/react"
-import { type RoomKey, roomKeysAtom } from "atom.io/realtime"
-import type { RealtimeRoomsTools } from "atom.io/realtime-react"
-import { usePullAtom, useRealtimeRooms } from "atom.io/realtime-react"
+import { useJSON, useO } from "@atom.io/react"
+import { type RoomKey, roomKeysAtom } from "@atom.io/realtime"
+import type { RealtimeRoomsTools } from "@atom.io/realtime/react"
+import { usePullAtom, useRealtimeRooms } from "@atom.io/realtime/react"
 import * as React from "react"
 
 import type { ActualRoomName } from "../../library/room-names"

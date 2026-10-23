@@ -1,7 +1,7 @@
+import { useI, useO } from "@atom.io/react"
 import type { ArkErrors } from "arktype"
 import type { ReadableToken, WritableToken } from "atom.io"
 import { capitalize } from "atom.io/internal"
-import { useI, useO } from "atom.io/react"
 import * as React from "react"
 
 import {

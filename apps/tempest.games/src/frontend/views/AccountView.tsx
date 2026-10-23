@@ -1,5 +1,5 @@
+import { useO } from "@atom.io/react"
 import { getState, setState } from "atom.io"
-import { useO } from "atom.io/react"
 import React, { useEffect } from "react"
 
 import {

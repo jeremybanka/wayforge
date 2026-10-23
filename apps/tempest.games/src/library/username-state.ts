@@ -1,5 +1,5 @@
+import type { UserKey } from "@atom.io/realtime"
 import { atomFamily } from "atom.io"
-import type { UserKey } from "atom.io/realtime"
 import { eq } from "drizzle-orm"
 
 import { users } from "../database/tempest-db-schema"

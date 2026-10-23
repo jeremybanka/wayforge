@@ -2,10 +2,10 @@
 
 import path, { join, normalize, resolve } from "node:path"
 
+import { ParentSocket } from "@atom.io/realtime/server"
 import { type } from "arktype"
 import type { Json } from "atom.io/foundations/json"
 import { discoverType } from "atom.io/introspection"
-import { ParentSocket } from "atom.io/realtime-server"
 import { file, serve } from "bun"
 
 import { httpsDev } from "../dev/https-dev"

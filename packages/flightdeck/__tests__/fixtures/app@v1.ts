@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 
-import { ParentSocket } from "atom.io/realtime-server"
+import { ParentSocket } from "@atom.io/realtime/server"
 import { serve } from "bun"
 
 const PORT = process.argv[2] ?? 4444

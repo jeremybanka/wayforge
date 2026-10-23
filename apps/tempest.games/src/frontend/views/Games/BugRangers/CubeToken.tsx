@@ -1,5 +1,5 @@
-import { useO } from "atom.io/react"
-import type { UserKey } from "atom.io/realtime"
+import { useO } from "@atom.io/react"
+import type { UserKey } from "@atom.io/realtime"
 import type { ReactNode, Ref } from "react"
 import * as THREE from "three"
 

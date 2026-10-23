@@ -6,10 +6,10 @@ import { homedir } from "node:os"
 import { resolve } from "node:path"
 import { inspect } from "node:util"
 
+import { ChildSocket } from "@atom.io/realtime/server"
 import { fromEntries, toEntries } from "atom.io/foundations/entries"
 import { Future } from "atom.io/foundations/future"
 import { discoverType } from "atom.io/introspection"
-import { ChildSocket } from "atom.io/realtime-server"
 import { CronJob } from "cron"
 import { FilesystemStorage } from "safedeposit"
 

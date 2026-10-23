@@ -1,5 +1,5 @@
+import AtomIOPlugin from "@atom.io/eslint-plugin"
 import * as parser from "@typescript-eslint/parser"
-import AtomIOPlugin from "atom.io/eslint-plugin"
 import type { ESLint, Linter } from "eslint"
 import * as DrizzlePlugin from "eslint-plugin-drizzle"
 import * as ImportPlugin from "eslint-plugin-import-x"

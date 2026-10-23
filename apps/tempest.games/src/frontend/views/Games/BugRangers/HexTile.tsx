@@ -1,12 +1,12 @@
-import { Text } from "@react-three/drei"
-import { getState, setState } from "atom.io"
-import { useO } from "atom.io/react"
+import { useO } from "@atom.io/react"
 import {
 	usePullAtom,
 	usePullAtomFamilyMember,
 	usePullSelector,
 	usePullSelectorFamilyMember,
-} from "atom.io/realtime-react"
+} from "@atom.io/realtime/react"
+import { Text } from "@react-three/drei"
+import { getState, setState } from "atom.io"
 import type { ReactNode } from "react"
 import { useMemo, useState } from "react"
 import * as THREE from "three"

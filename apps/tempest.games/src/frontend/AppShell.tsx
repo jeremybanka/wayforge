@@ -1,3 +1,4 @@
+import { useO } from "@atom.io/react"
 import {
 	autoUpdate,
 	flip,
@@ -12,7 +13,6 @@ import {
 } from "@floating-ui/react"
 import { setState } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
-import { useO } from "atom.io/react"
 import * as React from "react"
 
 import { RESPONSE_DICTIONARY } from "../library/response-dictionary"
