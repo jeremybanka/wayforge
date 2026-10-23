@@ -25,28 +25,6 @@
 	],
 	"packageRules": [
 		{
-			"description": "Temporary Bun 1.4.4 release-age exception; remove after 2026-10-23 10:20 UTC. Keep aligned with pnpm-workspace.yaml.",
-			"matchPackageNames": [
-				"bun",
-				"oven-sh/bun",
-				"@oven/bun-*",
-				"bun-types"
-			],
-			"matchJsonata": ["version = '1.4.4' or newVersion = '1.4.4'"],
-			"minimumReleaseAge": null
-		},
-		{
-			"description": "Temporary exception for the current @types/bun release; remove with the Bun 1.4.4 exception.",
-			"matchDatasources": [
-				"npm"
-			],
-			"matchPackageNames": [
-				"@types/bun"
-			],
-			"matchJsonata": ["version = '1.4.3' or newVersion = '1.4.3'"],
-			"minimumReleaseAge": null
-		},
-		{
 			"matchManagers": ["npm"],
 			"postUpgradeTasks": {
 				"commands": [
@@ -58,33 +36,22 @@
 			}
 		},
 		{
-			"matchPackageNames": ["@typescript/*"],
-			"minimumReleaseAge": null
-		},
-		{
-			"description": "Exempt packages authored by jeremybanka at every version; keep aligned with pnpm-workspace.yaml",
-			"matchDatasources": ["npm"],
+			"description": "Exempt consumed jeremybanka packages at every version; keep aligned with pnpm-workspace.yaml",
+			"matchDatasources": [
+				"npm"
+			],
 			"matchPackageNames": [
+				"@correctlyjs/schemars",
 				"atom.io",
-				"break-check",
 				"breakage",
 				"comline",
-				"flightdeck",
+				"correctly",
 				"galley.md",
-				"jurist",
 				"lasertag",
-				"luum",
-				"rationality",
 				"recoverage",
-				"rel8",
-				"safedeposit",
 				"takua",
 				"tonnage",
-				"treetrunks",
-				"tsdoc.json",
-				"varmint",
-				"@correctlyjs/schemars",
-				"correctly"
+				"treetrunks"
 			],
 			"minimumReleaseAge": null
 		},
