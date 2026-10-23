@@ -10,7 +10,6 @@
 		"**/.correctly/**",
 		"packages/treetrunks/README.md",
 		"packages/varmint/README.md",
-		"packages/venerate/README.md",
 		"packages/tsdoc.json/README.md",
 		"**/metafile-*",
 		"**/*.cache.json",

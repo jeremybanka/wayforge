@@ -64,7 +64,6 @@ minimumReleaseAgeExclude:
   - treetrunks
   - tsdoc.json
   - varmint
-  - venerate
 autoInstallPeers: false
 hoist: false
 verifyDepsBeforeRun: error

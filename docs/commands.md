@@ -33,7 +33,7 @@ Following the [mise Node.js cookbook](https://mise.jdx.dev/mise-cookbook/nodejs.
 
 ## Command notes
 
-Treetrunks, Varmint, Venerate, and tsdoc.json generate their `README.md` files from `README.mdx` with Galley. Edit the MDX sources, then run `pnpm readme:write`; `pnpm check:readme` checks for drift. Both commands build the packages first and run uncached. The existing `tonnage:write` and `check:tonnage` commands delegate to these commands. Generated READMEs are excluded from formatting so Galley owns their output.
+Treetrunks, Varmint, and tsdoc.json generate their `README.md` files from `README.mdx` with Galley. Edit the MDX sources, then run `pnpm readme:write`; `pnpm check:readme` checks for drift. Both commands build the packages first and run uncached. The existing `tonnage:write` and `check:tonnage` commands delegate to these commands. Generated READMEs are excluded from formatting so Galley owns their output.
 
 Release compatibility checks need access to the Git remote and release tags. `pnpm test:breakage` runs Comline’s uncached `test:breakage:prelude` before its cacheable compatibility check. The prelude refreshes the gitignored `.breakage/baseline.json` snapshot; Turbo hashes it after the prelude completes, so a new release or moved tag invalidates the check’s cache. When running the package scripts directly, run `pnpm --filter comline test:breakage:prelude` before `pnpm --filter comline test:breakage`.
 
