@@ -1,6 +1,6 @@
 {
 	"name": "tempest.games",
-	"version": "0.3.62",
+	"version": "0.3.63",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/jeremybanka/wayforge.git",
