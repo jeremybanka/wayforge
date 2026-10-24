@@ -16,8 +16,14 @@ export type JsonSchema = Record<string, unknown> & {
 	type?: string | readonly string[]
 }
 
-export type OptionsSchema<Options> = StandardSchemaV1<unknown, Options> &
-	StandardJSONSchemaV1<unknown, Options>
+export type OptionsSchema<Options, Input = unknown> = StandardSchemaV1<
+	Input,
+	Options
+> & {
+	readonly [`~standard`]: {
+		readonly jsonSchema?: StandardJSONSchemaV1.Converter
+	}
+}
 
 const jsonSchemaOptions: StandardJSONSchemaV1.Options = {
 	target: `draft-2020-12`,
@@ -62,11 +68,34 @@ function disallowAdditionalProperties(jsonSchema: JsonSchema): JsonSchema {
 }
 
 export function retrieveInputJsonSchema(
-	optionsSchema: OptionsSchema<any>,
+	optionsSchema: {
+		readonly [`~standard`]: {
+			readonly vendor: string
+			readonly jsonSchema?: StandardJSONSchemaV1.Converter
+		}
+	},
+	strict = false,
 ): JsonSchema {
-	return disallowAdditionalProperties(
-		optionsSchema[`~standard`].jsonSchema.input(jsonSchemaOptions),
-	)
+	const converter = optionsSchema[`~standard`].jsonSchema
+	if (!converter) {
+		throw new Error(`This schema does not support JSON Schema export.`)
+	}
+	// Arktype's Standard JSON Schema adapter otherwise silently replaces
+	// unrepresentable values with {}. Explicit export must retain its failures.
+	const conversionOptions =
+		strict && optionsSchema[`~standard`].vendor === `arktype`
+			? {
+					...jsonSchemaOptions,
+					libraryOptions: {
+						fallback: () => {
+							throw new Error(
+								`The runtime schema contains values or constraints that JSON Schema cannot represent.`,
+							)
+						},
+					},
+				}
+			: jsonSchemaOptions
+	return disallowAdditionalProperties(converter.input(conversionOptions))
 }
 
 function isPromiseLike(value: unknown): value is Promise<unknown> {

@@ -201,9 +201,84 @@ export default config
 
 Modules with `.ts`, `.mts`, `.cts`, `.js`, `.mjs`, and `.cjs` extensions use the host runtime's module loader. ES modules must default-export an options object; CommonJS modules use `module.exports`. Other extensions retain JSON parsing. Config objects are validated against the selected route's schema before command-line options override them, and the merged options are validated again. Each config must satisfy the schema on its own.
 
-Parsing remains synchronous: exported functions, promises, and modules with top-level `await` are unsupported. Modules use the runtime's normal cache, so their code runs once per process; command-line overrides do not change the cached config object. JSON files are read afresh on each parse. Completion does not discover or load configs.
+Parsing remains synchronous: a function or promise as the module's default export, asynchronous schema validation, and modules with top-level `await` are unsupported. The exported object may contain synchronous or asynchronous callbacks in config-only fields. Modules use the runtime's normal cache, so their code runs once per process; command-line overrides do not change the cached config object. JSON files are read afresh on each parse. Completion does not discover or load configs.
 
 TypeScript configs require a runtime with TypeScript support, such as Bun or Node.js 22.18+ (or 24+). Comline does not transpile or type-check configs. Native Node.js supports erasable types and requires explicit extensions in relative imports; it does not apply `tsconfig.json` path aliases or transform enums and parameter properties. See [Node.js TypeScript support](https://nodejs.org/api/typescript.html) for runtime limitations.
+
+### Config-only options
+
+Declare `{ configOnly: true }` for values that belong exclusively to configuration. These fields accept any value supported by the runtime schema, including functions, dates, and ordinary scalars. Every schema output key still requires an explicit options declaration. CLI-exposed fields retain their `CliOptionValue` constraints and typed parsers; config-only fields cannot declare parsers, flags, aliases, or completion providers.
+
+```ts
+// configuration.ts
+import { type ConfigInput, cli, options, parseBooleanOption } from "comline"
+import z from "zod"
+
+type Transition = { previousVersion: string; version: string }
+type Resolver = (version: string) => Transition | Promise<Transition>
+type Policy = (transition: Transition) => boolean
+
+const fields = {
+	test: z.string().default("pnpm test"),
+	verbose: z.boolean().default(false),
+}
+const schema = z.strictObject({
+	...fields,
+	release: z.strictObject({
+		resolveDelta: z.custom<Resolver>((value) => typeof value === "function"),
+		policy: z.custom<Policy>((value) => typeof value === "function"),
+	}),
+})
+
+export const configuration = options("Run public tests", schema, {
+	test: {
+		required: false,
+		description: "Test command",
+		example: "--test='pnpm test:public'",
+		schema: fields.test,
+	},
+	verbose: {
+		required: false,
+		description: "Verbose output",
+		example: "--verbose",
+		parse: parseBooleanOption,
+		schema: fields.verbose,
+	},
+	release: { configOnly: true },
+})
+
+export type Config = ConfigInput<typeof configuration>
+export const command = cli({
+	cliName: "public-tests",
+	routeOptions: { "": configuration },
+	discoverConfigPath: () => "public-tests.config.ts",
+})
+```
+
+```ts
+// public-tests.config.ts
+import type { Config } from "./configuration.ts"
+
+export default {
+	release: {
+		resolveDelta: async (version) => ({
+			previousVersion: version,
+			version: "2.0.0",
+		}),
+		policy: ({ previousVersion, version }) => previousVersion !== version,
+	},
+} satisfies Config
+```
+
+`ConfigInput<typeof configuration>` preserves the schema's authored input type, so defaulted fields can be omitted and transformations need their input values. `satisfies Config` catches root and nested misspellings in object literals and checks callback signatures. Parsed `inputs.opts` retains the schema's output type, including defaulted values and precise callback signatures. Runtime unknown-key rejection follows the schema: use strict objects at each level, as above, or Arktype's `"+": "reject"` object policy. Comline validates the loaded configuration and merges its original input with CLI overrides before final validation, avoiding reapplying transformations to already-transformed output.
+
+The full runtime schema is the only validator. An ordinary option's optional `schema` supplies typed Standard JSON Schema metadata for that field's input; reuse the field schema from your runtime declaration. It is used only for boolean value consumption, help types, and completion choices. Supply it when the full configuration cannot convert to JSON Schema, since Standard Schema does not expose individual properties. Without it, Comline retains whole-schema metadata inference and the existing explicit `valueKind` and `completion` hints. Runtime-only Standard Schema implementations are also accepted.
+
+Config-only fields never appear in help or completion. An attempted assignment such as `--release=...`, `--release.policy=...`, or `--release ...` fails with a config-only diagnostic before config loading. A CLI alias cannot reuse a config-only name on the same route. Explicit values such as `--test=--release` and positional arguments after `--` remain literal.
+
+Comline does not invoke or wrap stored callbacks. Choose schema validators that preserve function identity, such as the callability checks above; runtime parsing cannot prove arbitrary callback parameter or return types. Validate hook results when the application invokes them. An asynchronous callback does not make configuration loading or parsing asynchronous.
+
+`writeJsonSchema()` exports the full configuration schema, including representable config-only fields. It throws a route-specific error when conversion is unavailable or unsupported; per-option metadata is never substituted for the full configuration. Arktype export rejects unrepresentable values and constraints instead of silently replacing them with `{}`. Other Standard JSON Schema converters must report unsupported conversion rather than supply a lossy approximation.
 
 ## warnings
 
