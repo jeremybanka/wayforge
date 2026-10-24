@@ -2,6 +2,10 @@ import * as fs from "node:fs"
 import * as path from "node:path"
 
 import type {
+	StandardJSONSchemaV1,
+	StandardSchemaV1,
+} from "@standard-schema/spec"
+import type {
 	ExpandCaptures,
 	Flatten,
 	Split,
@@ -45,6 +49,7 @@ export * from "./encapsulate"
 export type * from "./flag"
 export * from "./help"
 export * from "./option-parsers"
+export type { OptionsSchema } from "./schema"
 export type {
 	CliWarning,
 	LogWarningsOptions,
@@ -61,17 +66,25 @@ export type CliOptionValue =
 	| string
 	| undefined
 
-export type CliOption<T extends CliOptionValue> = (T extends string
+type CliOptionParser<
+	Variant extends CliOptionValue,
+	Value extends CliOptionValue,
+> = Variant extends string
 	? {
-			parse?: (arg: string) => T
+			parse?: (arg: string) => Value
 		}
-	: T extends boolean
+	: Variant extends boolean
 		? {
 				parse: (arg: string) => boolean
 			}
 		: {
-				parse: (arg: string) => T
-			}) & {
+				parse: (arg: string) => Value
+			}
+
+export type CliOption<T extends CliOptionValue> = CliOptionParser<T, T> & {
+	configOnly?: false
+	/** Input JSON Schema metadata for this CLI field; never used for validation. */
+	schema?: StandardJSONSchemaV1<unknown, T>
 	flag?: Flag
 	/** Additional long option names, without leading dashes. */
 	aliases?: readonly string[]
@@ -139,25 +152,98 @@ export type CliParseOutput<CLI extends CommandLineInterface<any>> = Flatten<
 	}>[keyof CLI[`routeOptions`]]
 >
 
-export type OptionsGroup<Options extends Record<string, CliOptionValue> | null> =
-	Options extends Record<string, CliOptionValue>
+/** A schema-validated value that can only be supplied by configuration. */
+export type ConfigOnlyOption = {
+	configOnly: true
+	parse?: never
+	flag?: never
+	aliases?: never
+	valueKind?: never
+	completion?: never
+	schema?: never
+	required?: never
+	description?: never
+	example?: never
+}
+
+export type OptionConfig<Value> =
+	| ConfigOnlyOption
+	| ([Value] extends [CliOptionValue] ? CliOption<Value> : never)
+
+export type OptionConfigs<Options> = {
+	[K in keyof Options]-?: OptionConfig<Options[K]>
+}
+
+type DeclaredOptionConfig<Value, Config> = Config extends ConfigOnlyOption
+	? ConfigOnlyOption
+	: CliOption<Extract<Value, CliOptionValue>>
+
+type DeclaredOptionConfigs<Options, Configs> = {
+	[K in keyof Configs]: DeclaredOptionConfig<
+		Options[K & keyof Options],
+		Configs[K]
+	>
+}
+
+type CheckedOptionConfigs<Options, Configs> = Configs &
+	Record<Exclude<keyof Configs, keyof Options>, never> & {
+		[K in keyof Configs]: Record<
+			Exclude<keyof Configs[K], keyof ConfigOnlyOption>,
+			never
+		>
+	}
+
+/** The authored configuration input, before schema defaults and transformations. */
+export type ConfigInput<
+	Group extends { optionsSchema: OptionsSchema<any, any> },
+> = StandardSchemaV1.InferInput<Group[`optionsSchema`]>
+
+export type OptionsGroup<
+	Options extends Record<string, unknown> | null,
+	Input = unknown,
+> =
+	Options extends Record<string, unknown>
 		? {
 				description: string
-				optionsSchema: OptionsSchema<Options>
-				optionConfigs: {
-					[K in keyof Options]-?: CliOption<Options[K]>
-				}
+				optionsSchema: OptionsSchema<Options, Input>
+				optionConfigs: OptionConfigs<Options>
 			}
 		: null
 
+export function options<
+	Schema extends OptionsSchema<Record<string, unknown>, any>,
+	Configs extends OptionConfigs<NoInfer<StandardSchemaV1.InferOutput<Schema>>>,
+>(
+	description: string,
+	optionsSchema: Schema,
+	optionConfigs: CheckedOptionConfigs<
+		StandardSchemaV1.InferOutput<Schema>,
+		Configs
+	>,
+): {
+	description: string
+	optionsSchema: Schema
+	optionConfigs: DeclaredOptionConfigs<
+		StandardSchemaV1.InferOutput<Schema>,
+		Configs
+	>
+}
+/** Retain explicit output type arguments for existing scalar-only declarations. */
 export function options<Options extends Record<string, CliOptionValue>>(
 	description: string,
 	optionsSchema: OptionsSchema<Options>,
-	optionConfigs: {
-		[K in keyof Options]-?: CliOption<Options[K]>
-	},
-): OptionsGroup<Options> {
-	return { description, optionsSchema, optionConfigs } as OptionsGroup<Options>
+	optionConfigs: { [K in keyof Options]-?: CliOption<Options[K]> },
+): {
+	description: string
+	optionsSchema: OptionsSchema<Options>
+	optionConfigs: { [K in keyof Options]-?: CliOption<Options[K]> }
+}
+export function options(
+	description: string,
+	optionsSchema: OptionsSchema<any>,
+	optionConfigs: OptionConfigs<any>,
+): OptionsGroup<any> {
+	return { description, optionsSchema, optionConfigs }
 }
 
 export type CommandLineInterface<Routes extends Tree> = {
@@ -254,10 +340,8 @@ export function cli<
 			const passed = argv.slice(2)
 			cliLogger.info?.(`passed args:`, passed)
 
-			type Options = CLI[`routeOptions`][keyof CLI[`routeOptions`]]
-
 			let failedValidation = false
-			let optionsFromConfig: Options | undefined
+			let optionsFromConfig: unknown
 			const interpretation = interpretInvocation(definition, passed)
 			if (interpretation.error) throw new Error(interpretation.error)
 			if (!interpretation.complete) {
@@ -295,17 +379,19 @@ export function cli<
 					cliLogger.info?.(`looking for config file at:`, configFilePath)
 					if (fs.existsSync(configFilePath)) {
 						cliLogger.info?.(`config file was found`)
-						optionsFromConfig = validateOptionsSchema(
-							optionsSchema,
-							readConfigFile(configFilePath),
-						) as Options
+						optionsFromConfig = readConfigFile(configFilePath)
+						// Validate the config independently, but merge its input so schema
+						// transformations are not fed their own output on the final pass.
+						validateOptionsSchema(optionsSchema, optionsFromConfig)
 					}
 				}
 			}
 			cliLogger.info?.(`options from config:`, optionsFromConfig)
-			const argumentEntries = Object.entries(optionConfigs)
+			const argumentEntries = Object.entries(optionConfigs).filter(
+				(entry): entry is [string, CliOption<any>] => !entry[1].configOnly,
+			)
 			const optionsFromCommandLineEntries = argumentEntries
-				.map((entry: [string & keyof Options, CliOption<any>]) => {
+				.map((entry: [string, CliOption<any>]) => {
 					const [key, config] = entry
 					const { required, description, example } = config
 					const parse = `parse` in config ? config.parse : parseStringOption
@@ -345,16 +431,15 @@ export function cli<
 			const optionsFromCommandLine = Object.fromEntries(
 				optionsFromCommandLineEntries,
 			)
-			const suppliedOptionsUnparsed = Object.assign(
-				{},
-				optionsFromConfig ?? {},
-				optionsFromCommandLine,
-			)
+			const suppliedOptionsUnparsed = {
+				...(optionsFromConfig ?? {}),
+				...optionsFromCommandLine,
+			}
 			cliLogger.info?.(`options from command line:`, optionsFromCommandLine)
 			const suppliedOptions = validateOptionsSchema(
 				optionsSchema,
 				suppliedOptionsUnparsed,
-			) as Options
+			)
 			cliLogger.info?.(`final options parsed:`, suppliedOptions)
 			return {
 				warnings: interpretation.warnings,
@@ -372,9 +457,18 @@ export function cli<
 							continue
 						}
 						const safeRoute = unsafeRoute.replaceAll(`/`, `.`)
-						const jsonSchema = retrieveInputJsonSchema(
-							optionsGroup.optionsSchema,
-						)
+						let jsonSchema
+						try {
+							jsonSchema = retrieveInputJsonSchema(
+								optionsGroup.optionsSchema,
+								true,
+							)
+						} catch (cause) {
+							throw new Error(
+								`Cannot export full configuration JSON Schema for route "${unsafeRoute || `(root)`}". The runtime schema may contain values that JSON Schema cannot represent.`,
+								{ cause },
+							)
+						}
 						const filepath = path.resolve(
 							outdir,
 							`${cliName}.${safeRoute || `main`}.schema.json`,

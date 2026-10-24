@@ -1,11 +1,11 @@
-import type { CommandLineInterface, OptionsGroup } from "./cli"
+import type { CliOption, CommandLineInterface, OptionsGroup } from "./cli"
 import type { CompletionHints } from "./completion"
 import { matchRoute, type RouteMatch } from "./retrieve-positional-args"
 import { validateRoutes } from "./route-validation"
 import {
 	type JsonSchema,
 	type OptionsSchema,
-	retrieveInputJsonSchema,
+	tryRetrieveInputJsonSchema,
 } from "./schema"
 import { type CliWarning, createWarningFactory } from "./warnings"
 
@@ -261,6 +261,15 @@ function schemaChoices(schema: JsonSchema | undefined): string[] {
 		.map(String)
 }
 
+function isConfigOnlyName(name: string, keys: ReadonlySet<string>): boolean {
+	if (!name.startsWith(`--`)) return false
+	const field = name.slice(2)
+	for (const key of keys) {
+		if (field === key || field.startsWith(`${key}.`)) return true
+	}
+	return false
+}
+
 function describeOptions(
 	route: string,
 	group: OptionsGroup<any> | null | undefined,
@@ -268,39 +277,42 @@ function describeOptions(
 ): ArgumentOption[] {
 	if (!group) return []
 	if (!schemaCache.has(group.optionsSchema)) {
-		let schema: JsonSchema | undefined
-		try {
-			schema = retrieveInputJsonSchema(group.optionsSchema)
-		} catch {}
-		schemaCache.set(group.optionsSchema, schema)
+		schemaCache.set(
+			group.optionsSchema,
+			tryRetrieveInputJsonSchema(group.optionsSchema),
+		)
 	}
 	const properties = schemaCache.get(group.optionsSchema)?.properties
-	return Object.entries(group.optionConfigs).map(([key, config]) => {
-		let choices: string[] | undefined
-		return {
-			id: JSON.stringify([route, key]),
-			key,
-			names: [
-				`--${key}`,
-				...(config.aliases ?? []).map((name) => `--${name}`),
-				...(config.flag ? [`-${config.flag}`] : []),
-			],
-			valueKind:
-				config.valueKind ??
-				(jsonSchemaTypeIsBoolean(properties?.[key]) ? `boolean` : `value`),
-			// Parsing needs only names and consumption rules. Defer presentation reads
-			// and enum extraction until completion (or an interpretation consumer) asks.
-			get description() {
-				return config.description
-			},
-			get completion() {
-				return config.completion
-			},
-			get choices() {
-				return (choices ??= schemaChoices(properties?.[key]))
-			},
-		}
-	})
+	return Object.entries(group.optionConfigs)
+		.filter((entry): entry is [string, CliOption<any>] => !entry[1].configOnly)
+		.map(([key, config]) => {
+			const property =
+				tryRetrieveInputJsonSchema(config.schema) ?? properties?.[key]
+			let choices: string[] | undefined
+			return {
+				id: JSON.stringify([route, key]),
+				key,
+				names: [
+					`--${key}`,
+					...(config.aliases ?? []).map((name) => `--${name}`),
+					...(config.flag ? [`-${config.flag}`] : []),
+				],
+				valueKind:
+					config.valueKind ??
+					(jsonSchemaTypeIsBoolean(property) ? `boolean` : `value`),
+				// Parsing needs only names and consumption rules. Defer presentation reads
+				// and enum extraction until completion (or an interpretation consumer) asks.
+				get description() {
+					return config.description
+				},
+				get completion() {
+					return config.completion
+				},
+				get choices() {
+					return (choices ??= schemaChoices(property))
+				},
+			}
+		})
 }
 
 function availableOptions(
@@ -365,10 +377,32 @@ function interpretCore(
 	const scans = new Map<string, ArgumentScan>()
 	const interpretations = routes.map((route) => {
 		const options = groups.get(route) ?? []
-		const grammar = JSON.stringify(options.map(optionSignature).sort())
+		const configOnlyKeys = new Set(
+			Object.entries(definition.routeOptions[route]?.optionConfigs ?? {})
+				.filter(([, config]) => config.configOnly)
+				.map(([key]) => key),
+		)
+		const reservedNames = [...optionWords(words, new Set())]
+			.filter(({ name }) => isConfigOnlyName(name, configOnlyKeys))
+			.map(({ name }) => name)
+		for (const option of options) {
+			if (option.names.some((name) => isConfigOnlyName(name, configOnlyKeys))) {
+				throw new Error(
+					`CLI option "${option.key}" conflicts with a config-only field.`,
+				)
+			}
+		}
+		const grammar = JSON.stringify([
+			options.map(optionSignature).sort(),
+			reservedNames,
+		])
 		let scan = scans.get(grammar)
 		if (!scan) {
-			scan = scanOptions(words, options)
+			scan = scanOptions(
+				words,
+				options,
+				retrieveKnownOptionTokens([...options, { names: reservedNames }]),
+			)
 			scans.set(grammar, scan)
 		}
 		let positionalOnly = false
@@ -383,7 +417,7 @@ function interpretCore(
 		const match: RouteMatch = definition.routes
 			? matchRoute(definition.cliName, definition.routes, positionals)
 			: { path: [], params: {}, route: ``, tree: null, complete: true }
-		return { route, scan, match, positionalOnly }
+		return { route, scan, match, positionalOnly, configOnlyKeys }
 	})
 	// Execution ranks only complete matches supported by their own grammar.
 	// Completion also retains grammars that can lead to a descendant command.
@@ -441,9 +475,15 @@ function interpretCore(
 	const selectedOptions = groups.get(match.route)
 	// Completion may select a prefix through a descendant grammar, but its
 	// selected-route occurrences still follow the prefix's own consumption rules.
-	const selectedScan = interpretations.find(
+	const { scan: selectedScan, configOnlyKeys } = interpretations.find(
 		({ route }) => route === match.route,
-	)!.scan
+	)!
+	for (const { name } of optionWords(words, selectedScan.consumed)) {
+		if (isConfigOnlyName(name, configOnlyKeys)) {
+			match.error = `Option ${JSON.stringify(name)} is config-only and cannot be supplied through argv.`
+			break
+		}
+	}
 	// An executable prefix is not a final command selection during completion.
 	const deferWarnings =
 		mode === `completion` &&

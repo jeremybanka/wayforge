@@ -1,12 +1,17 @@
 import { styleText } from "node:util"
 
-import { type CommandLineInterface, options, type OptionsGroup } from "./cli"
+import {
+	type CliOption,
+	type CommandLineInterface,
+	options,
+	type OptionsGroup,
+} from "./cli"
 import { parseBooleanOption } from "./option-parsers"
 import { validateRoutes } from "./route-validation"
 import {
 	type JsonSchema,
 	type OptionsSchema,
-	retrieveInputJsonSchema,
+	tryRetrieveInputJsonSchema,
 } from "./schema"
 
 const capitalize = <T extends string>(str: T): Capitalize<T> =>
@@ -213,27 +218,33 @@ export function help(
 				rows.push([`$`, cli.cliName, prettyRoute, description])
 				if (value?.optionConfigs) {
 					rows.push(
-						...Object.entries(value.optionConfigs).map(([key, option]) => {
-							const flag = option.flag ? `-${option.flag}` : `  `
-							const optionsSchema = value.optionsSchema
+						...Object.entries(value.optionConfigs)
+							.filter(
+								(entry): entry is [string, CliOption<any>] =>
+									!entry[1].configOnly,
+							)
+							.map(([key, option]) => {
+								const flag = option.flag ? `-${option.flag}` : `  `
+								const optionsSchema = value.optionsSchema
 
-							let typeString = `unknown`
-							try {
-								const jsonSchema = retrieveInputJsonSchema(optionsSchema)
-								const propertySchema = jsonSchema.properties?.[key]
-								typeString = shallowlyStringifyJsonSchema(propertySchema)
-							} catch {}
-							if (option.required) {
-								typeString = `${typeString} (required)`
-							}
+								let typeString = `unknown`
+								try {
+									const propertySchema =
+										tryRetrieveInputJsonSchema(option.schema) ??
+										tryRetrieveInputJsonSchema(optionsSchema)?.properties?.[key]
+									typeString = shallowlyStringifyJsonSchema(propertySchema)
+								} catch {}
+								if (option.required) {
+									typeString = `${typeString} (required)`
+								}
 
-							return [
-								``,
-								``,
-								`${flag}, ${option.example}`,
-								`${typeString}: ${option.description ?? ``}`,
-							]
-						}),
+								return [
+									``,
+									``,
+									`${flag}, ${option.example}`,
+									`${typeString}: ${option.description ?? ``}`,
+								]
+							}),
 					)
 				}
 				return rows
