@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.3.62
+
+### Patch Changes
+
+- 8f319df: Upgrade to atom.io 0.54.0. Use the standalone realtime package for Flightdeck process messaging and Tempest multiplayer, and the standalone React bindings and devtools in Tempest.
+
 ## 0.3.61
 
 ### Patch Changes
