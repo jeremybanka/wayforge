@@ -13,6 +13,7 @@ import {
 	type OptionConfig,
 	options,
 	type OptionsSchema,
+	parseBooleanOption,
 	required,
 } from "../../src/cli"
 import { argv } from "../fixtures/argv"
@@ -392,4 +393,103 @@ test(`accepts a runtime-only Standard Schema and exports config-only JSON scalar
 			readFileSync(path.join(directory, `scalar.main.schema.json`), `utf8`),
 		).properties.secret.type,
 	).toBe(`string`)
+})
+
+test(`merges raw configuration without interpreting prototype keys as inherited options`, () => {
+	const jsonPath = path.join(directory, `config.json`)
+	writeFileSync(jsonPath, `{"__proto__":{"admin":true}}`)
+	const command = cli({
+		cliName: `probe`,
+		routeOptions: {
+			"": options(``, z.object({ admin: z.boolean().default(false) }), {
+				admin: {
+					required: false,
+					description: ``,
+					example: ``,
+					parse: parseBooleanOption,
+				},
+			}),
+		},
+		discoverConfigPath: () => jsonPath,
+	})
+	expect(command(argv()).inputs.opts.admin).toBe(false)
+	expect(command(argv(`--admin`)).inputs.opts.admin).toBe(true)
+	expect(command(argv(`--admin=false`)).inputs.opts.admin).toBe(false)
+})
+
+test(`keeps explicit hints and unrelated routes usable when field metadata cannot be exported`, async () => {
+	const field = z.custom<string>((value) => typeof value === `string`)
+	const command = cli({
+		cliName: `probe`,
+		routes: required({ run: null, other: null }),
+		routeOptions: {
+			run: options(``, z.object({ mode: field.optional() }), {
+				mode: {
+					required: false,
+					description: `Run mode`,
+					example: `--mode=safe`,
+					schema: field,
+					valueKind: `value`,
+					completion: { choices: [`safe`, `fast`] },
+				},
+			}),
+			other: null,
+		},
+	})
+	expect(command(argv(`other`)).inputs.case).toBe(`other`)
+	expect(command(argv(`run`, `--mode=safe`)).inputs.opts).toEqual({
+		mode: `safe`,
+	})
+	expect(
+		command.interpret({ words: [`run`, `--mode=safe`, ``] }).options,
+	).toMatchObject([{ key: `mode`, value: `safe` }])
+	expect(help(command.definition, { forceColor: false })).toContain(`Run mode`)
+	const completion = await command.complete({ words: [`run`, `--mode=`] })
+	expect(completion.candidates.map((candidate) => candidate.value)).toEqual(
+		expect.arrayContaining([`safe`, `fast`]),
+	)
+	expect(() => {
+		command(argv(`run`)).writeJsonSchema(directory)
+	}).toThrow(/full configuration JSON Schema/)
+})
+
+test(`falls back to full-schema field metadata for boolean consumption, help, and enum completion`, async () => {
+	const command = cli({
+		cliName: `probe`,
+		routes: required({ $target: null }),
+		routeOptions: {
+			$target: options(
+				``,
+				z.object({
+					verbose: z.boolean().default(false),
+					mode: z.enum([`safe`, `fast`]).default(`safe`),
+				}),
+				{
+					verbose: {
+						required: false,
+						description: `Verbose output`,
+						example: `--verbose`,
+						parse: parseBooleanOption,
+						schema: z.custom<boolean>((value) => typeof value === `boolean`),
+					},
+					mode: {
+						required: false,
+						description: `Run mode`,
+						example: `--mode=safe`,
+						schema: z.custom<`safe` | `fast`>(
+							(value) => value === `safe` || value === `fast`,
+						),
+					},
+				},
+			),
+		},
+	})
+	const result = command(argv(`--verbose`, `target`))
+	expect(result.inputs.params.target).toBe(`target`)
+	expect(result.inputs.opts.verbose).toBe(true)
+	expect(help(command.definition, { forceColor: false })).toContain(`boolean`)
+	const completion = await command.complete({ words: [`target`, `--mode=`] })
+	expect(completion.candidates.map((candidate) => candidate.value)).toEqual(
+		expect.arrayContaining([`safe`, `fast`]),
+	)
 })

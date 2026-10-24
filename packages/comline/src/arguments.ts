@@ -5,7 +5,7 @@ import { validateRoutes } from "./route-validation"
 import {
 	type JsonSchema,
 	type OptionsSchema,
-	retrieveInputJsonSchema,
+	tryRetrieveInputJsonSchema,
 } from "./schema"
 import { type CliWarning, createWarningFactory } from "./warnings"
 
@@ -277,19 +277,17 @@ function describeOptions(
 ): ArgumentOption[] {
 	if (!group) return []
 	if (!schemaCache.has(group.optionsSchema)) {
-		let schema: JsonSchema | undefined
-		try {
-			schema = retrieveInputJsonSchema(group.optionsSchema)
-		} catch {}
-		schemaCache.set(group.optionsSchema, schema)
+		schemaCache.set(
+			group.optionsSchema,
+			tryRetrieveInputJsonSchema(group.optionsSchema),
+		)
 	}
 	const properties = schemaCache.get(group.optionsSchema)?.properties
 	return Object.entries(group.optionConfigs)
 		.filter((entry): entry is [string, CliOption<any>] => !entry[1].configOnly)
 		.map(([key, config]) => {
-			const property = config.schema
-				? retrieveInputJsonSchema(config.schema)
-				: properties?.[key]
+			const property =
+				tryRetrieveInputJsonSchema(config.schema) ?? properties?.[key]
 			let choices: string[] | undefined
 			return {
 				id: JSON.stringify([route, key]),

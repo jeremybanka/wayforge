@@ -98,6 +98,18 @@ export function retrieveInputJsonSchema(
 	return disallowAdditionalProperties(converter.input(conversionOptions))
 }
 
+/** Presentation metadata is optional; unsupported conversion must not block parsing. */
+export function tryRetrieveInputJsonSchema(
+	schema: Parameters<typeof retrieveInputJsonSchema>[0] | undefined,
+): JsonSchema | undefined {
+	if (!schema) return undefined
+	try {
+		return retrieveInputJsonSchema(schema)
+	} catch {
+		return undefined
+	}
+}
+
 function isPromiseLike(value: unknown): value is Promise<unknown> {
 	return (
 		typeof value === `object` &&

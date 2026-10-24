@@ -431,11 +431,10 @@ export function cli<
 			const optionsFromCommandLine = Object.fromEntries(
 				optionsFromCommandLineEntries,
 			)
-			const suppliedOptionsUnparsed = Object.assign(
-				{},
-				optionsFromConfig ?? {},
-				optionsFromCommandLine,
-			)
+			const suppliedOptionsUnparsed = {
+				...(optionsFromConfig ?? {}),
+				...optionsFromCommandLine,
+			}
 			cliLogger.info?.(`options from command line:`, optionsFromCommandLine)
 			const suppliedOptions = validateOptionsSchema(
 				optionsSchema,

@@ -11,7 +11,7 @@ import { validateRoutes } from "./route-validation"
 import {
 	type JsonSchema,
 	type OptionsSchema,
-	retrieveInputJsonSchema,
+	tryRetrieveInputJsonSchema,
 } from "./schema"
 
 const capitalize = <T extends string>(str: T): Capitalize<T> =>
@@ -229,9 +229,9 @@ export function help(
 
 								let typeString = `unknown`
 								try {
-									const propertySchema = option.schema
-										? retrieveInputJsonSchema(option.schema)
-										: retrieveInputJsonSchema(optionsSchema).properties?.[key]
+									const propertySchema =
+										tryRetrieveInputJsonSchema(option.schema) ??
+										tryRetrieveInputJsonSchema(optionsSchema)?.properties?.[key]
 									typeString = shallowlyStringifyJsonSchema(propertySchema)
 								} catch {}
 								if (option.required) {
