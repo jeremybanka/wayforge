@@ -1,9 +1,7 @@
-import type { MutableAtomToken } from "atom.io"
-import { atom, findRelations, setState } from "atom.io"
-import { useJSON, useO } from "atom.io/react"
-import type { UserKey } from "atom.io/realtime"
-import { ownersOfRooms } from "atom.io/realtime"
-import { myUserKeyAtom } from "atom.io/realtime-client"
+import { useJSON, useO } from "@atom.io/react"
+import type { UserKey } from "@atom.io/realtime"
+import { ownersOfRooms } from "@atom.io/realtime"
+import { myUserKeyAtom } from "@atom.io/realtime/client"
 import {
 	RealtimeContext,
 	usePullAtom,
@@ -11,7 +9,9 @@ import {
 	usePullMutable,
 	usePullSelector,
 	useRealtimeRooms,
-} from "atom.io/realtime-react"
+} from "@atom.io/realtime/react"
+import type { MutableAtomToken } from "atom.io"
+import { atom, findRelations, setState } from "atom.io"
 import type { UList } from "atom.io/transceivers/u-list"
 import { AnimatePresence, motion } from "motion/react"
 import { type ReactElement, useContext } from "react"

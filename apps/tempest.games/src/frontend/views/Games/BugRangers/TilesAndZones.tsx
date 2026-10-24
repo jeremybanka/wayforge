@@ -1,5 +1,5 @@
-import { useJSON } from "atom.io/react"
-import { usePullMutable, usePullSelector } from "atom.io/realtime-react"
+import { useJSON } from "@atom.io/react"
+import { usePullMutable, usePullSelector } from "@atom.io/realtime/react"
 import type { ReactNode } from "react"
 
 import type { TileCoordinatesSerialized } from "../../../../library/bug-rangers-game-state"

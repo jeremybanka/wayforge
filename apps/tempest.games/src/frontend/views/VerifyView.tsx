@@ -1,6 +1,6 @@
+import { useI, useO } from "@atom.io/react"
 import type { ViewOf } from "atom.io"
 import { setState } from "atom.io"
-import { useI, useO } from "atom.io/react"
 import { useEffect, useId } from "react"
 
 import { navigate, type Route } from "../services/router-service"

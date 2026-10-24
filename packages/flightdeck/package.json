@@ -37,9 +37,10 @@
 		"watch:types": "tsc --watch --noEmit"
 	},
 	"dependencies": {
+		"@atom.io/realtime": "0.1.0",
 		"@t3-oss/env-core": "0.13.11",
 		"arktype": "2.2.9",
-		"atom.io": "0.53.3",
+		"atom.io": "0.54.0",
 		"comline": "workspace:*",
 		"cron": "4.4.0",
 		"safedeposit": "workspace:*"

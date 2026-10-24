@@ -51,7 +51,7 @@
 	"devDependencies": {
 		"@types/bun": "npm:bun-types@1.4.4",
 		"@types/node": "26.6.5",
-		"atom.io": "0.53.3",
+		"atom.io": "0.54.0",
 		"concurrently": "10.0.6",
 		"eslint": "10.13.0",
 		"openai": "7.43.0",

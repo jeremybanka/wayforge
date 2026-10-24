@@ -2,11 +2,11 @@
 
 import path from "node:path"
 
+import { realtime } from "@atom.io/realtime/server"
 import { Temporal } from "@js-temporal/polyfill"
 import { createHTTPHandler } from "@trpc/server/adapters/standalone"
 import { AtomIOLogger } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
-import { realtime } from "atom.io/realtime-server"
 import cors from "cors"
 import { Server as WebSocketServer, Socket } from "socket.io"
 

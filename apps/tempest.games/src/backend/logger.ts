@@ -1,4 +1,4 @@
-import { ParentSocket } from "atom.io/realtime-server"
+import { ParentSocket } from "@atom.io/realtime/server"
 
 import { env } from "../library/env"
 
