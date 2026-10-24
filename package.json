@@ -69,7 +69,7 @@
 		"flightdeck": "workspace:*",
 		"galley.md": "0.1.5",
 		"jiti": "2.7.0",
-		"lasertag": "0.8.9",
+		"lasertag": "0.8.10",
 		"oxlint": "1.89.0",
 		"oxlint-tsgolint": "7.0.2005",
 		"pin-dependencies-checker": "2.7.1",

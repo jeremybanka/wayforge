@@ -255,8 +255,8 @@ importers:
         specifier: 2.7.0
         version: 2.7.0
       lasertag:
-        specifier: 0.8.9
-        version: 0.8.9(@floating-ui/react-dom@2.1.9(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@floating-ui/react@0.27.20(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(@typescript-eslint/parser@8.72.0(@typescript/typescript6@6.0.2)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(arktype@2.2.8)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(motion@14.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))(supports-color@10.2.2)
+        specifier: 0.8.10
+        version: 0.8.10(@types/react@19.3.0)(arktype@2.2.8)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(supports-color@10.2.2)
       oxlint:
         specifier: 1.89.0
         version: 1.89.0(oxlint-tsgolint@7.0.2005)
@@ -421,8 +421,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/flightdeck
       lasertag:
-        specifier: 0.8.9
-        version: 0.8.9(@floating-ui/react-dom@2.1.9(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@floating-ui/react@0.27.20(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(@typescript-eslint/parser@8.72.0(@typescript/typescript6@6.0.2)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(arktype@2.2.9)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(motion@14.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))(supports-color@10.2.2)
+        specifier: 0.8.10
+        version: 0.8.10(@types/react@19.3.0)(arktype@2.2.9)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(supports-color@10.2.2)
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -2943,6 +2943,12 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
+  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261023.1':
+    resolution: {integrity: sha512-4f4IL+850K6oi71myW4wagAOQ38dDUSxknepJJinIeEhzwd7Ly/e0HYZ5rbUiAl43v+r3AOFKJlAVcYTuJDzyQ==}
+    engines: {node: '>=16.20.0'}
+    cpu: [arm64]
+    os: [darwin]
+
   '@typescript/typescript-darwin-x64@7.0.2':
     resolution: {integrity: sha512-SZ9xZInqApNlNGc9s0W1VSsktYSOe9cFqNOIqmN1Gs8SmkjKZYFt017G4VwPxASInODuAdbTW7sXiFUf893RgA==}
     engines: {node: '>=16.20.0'}
@@ -2951,6 +2957,12 @@ packages:
 
   '@typescript/typescript-darwin-x64@7.1.0-dev.20261022.1':
     resolution: {integrity: sha512-zVnPrIEIM5H2SRQPQ1VcxX5H19qAdJTcxpIBZM8f2bI1D/m+r5zbhQ76/0bmXSYKCWTAJH3/4f8DVQuW/p8liw==}
+    engines: {node: '>=16.20.0'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@typescript/typescript-darwin-x64@7.1.0-dev.20261023.1':
+    resolution: {integrity: sha512-B6y/dmliXp0Ga/JCmaWQIccKwlkmUsEFxxbKX+QdY4cwKKij7nvYDiz5FAs/kENprf1qT7yMLssFx+GKybm4aQ==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [darwin]
@@ -2979,6 +2991,12 @@ packages:
     cpu: [arm64]
     os: [linux]
 
+  '@typescript/typescript-linux-arm64@7.1.0-dev.20261023.1':
+    resolution: {integrity: sha512-jA/Fgv/l7p1M8c9WPvohI4y0Ow40QPUBw4Bdoi0qSpjnZuVnb9ChZlNNn4iIUEY+RwMR4RJn/ET2TdjwJFnMwA==}
+    engines: {node: '>=16.20.0'}
+    cpu: [arm64]
+    os: [linux]
+
   '@typescript/typescript-linux-arm@7.0.2':
     resolution: {integrity: sha512-gffT3xPz9sR7j/YJExkyPntrI0P2EP9XbOyWzth2/Gs0RstK+90RBcO0ncXoXy/beYll1SXw846Nf2zdnEz0QQ==}
     engines: {node: '>=16.20.0'}
@@ -2987,6 +3005,12 @@ packages:
 
   '@typescript/typescript-linux-arm@7.1.0-dev.20261022.1':
     resolution: {integrity: sha512-SUOJR+S7z4QBs7Q8MgMtMbX1s4jCNMCNvgyzphYWi+oh3xfSOwrbU25HNNFvYCGXB0pKEBx7UK8lk6z688G/Fg==}
+    engines: {node: '>=16.20.0'}
+    cpu: [arm]
+    os: [linux]
+
+  '@typescript/typescript-linux-arm@7.1.0-dev.20261023.1':
+    resolution: {integrity: sha512-zyiFrUyXWSTv2wkdx7t+q0PW7ouRbGkjQd9d9LTTG0CdxgmqYHCwK7wPgceugzmKxu4QBmnwfC0Uy+TkTIct0Q==}
     engines: {node: '>=16.20.0'}
     cpu: [arm]
     os: [linux]
@@ -3033,6 +3057,12 @@ packages:
     cpu: [x64]
     os: [linux]
 
+  '@typescript/typescript-linux-x64@7.1.0-dev.20261023.1':
+    resolution: {integrity: sha512-lzEji+91SOiTrFrWUm0KjqRGWGijEyMwpf9CQM7WOtx3cV7w1DUM4U17JzEhVDxizzTzdrl+P9Ct9RQ2Dc7+dw==}
+    engines: {node: '>=16.20.0'}
+    cpu: [x64]
+    os: [linux]
+
   '@typescript/typescript-netbsd-arm64@7.0.2':
     resolution: {integrity: sha512-+polYF4MF04aPpO5FTkHran9yUQDSXqy5GiSDKpsll5jy3l3+g9QLhpf39T+ePtefhXLOGrLl0QIjkQP6VnelA==}
     engines: {node: '>=16.20.0'}
@@ -3075,6 +3105,12 @@ packages:
     cpu: [arm64]
     os: [win32]
 
+  '@typescript/typescript-win32-arm64@7.1.0-dev.20261023.1':
+    resolution: {integrity: sha512-81u6+PW6H0XYNsYK0pdyB1/4NR4PuDboNxFjFTXHZ8VIa9JIdaE0m2WodKs6fzgu8Zsz+6zq8sfqtMZ8Vh0D5Q==}
+    engines: {node: '>=16.20.0'}
+    cpu: [arm64]
+    os: [win32]
+
   '@typescript/typescript-win32-x64@7.0.2':
     resolution: {integrity: sha512-0BQ3HkAHHlKLSp1qRvf3SUhGpGsDuhB/jgFw75guyqbxJqEaS0Cw/VFO8i2nHglJUzQCRtMMR/IBAKE3ETMC4g==}
     engines: {node: '>=16.20.0'}
@@ -3083,6 +3119,12 @@ packages:
 
   '@typescript/typescript-win32-x64@7.1.0-dev.20261022.1':
     resolution: {integrity: sha512-95M59Ja4eVWF6DXEeOYL5Vt3wxLsv5QarXQB/HK78pRCGwbgfWMfcfs6kl+63aS8QIfyCXDUNyg6J8GGnOEshg==}
+    engines: {node: '>=16.20.0'}
+    cpu: [x64]
+    os: [win32]
+
+  '@typescript/typescript-win32-x64@7.1.0-dev.20261023.1':
+    resolution: {integrity: sha512-OPEeJdddVUjq8xNiy9XYd6TVKWBLwTZsX01T7yvXxBd95pD/xOkfGPukpOLor2n69hVIPAvfbbKdz2rMip0nwg==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [win32]
@@ -3482,47 +3524,6 @@ packages:
   astring@1.9.0:
     resolution: {integrity: sha512-LElXdjswlqjWrPpJFg1Fx4wpkOCxj1TDHlSV4PlaRxHGWko024xICaa97ZkMfs6DRKlCguiAI+rbXv5GWwXIkg==}
     hasBin: true
-
-  atom.io@0.53.3:
-    resolution: {integrity: sha512-WIKa/isE1HcNAB2fkY4gw+Y5PpPRb3OGxdJeeu9xAzgnKny0YKvwD+caKV/vZYhvvqwsELpRJkz7gp9PW3tewA==}
-    peerDependencies:
-      '@floating-ui/react': '>=0.25.0'
-      '@floating-ui/react-dom': '>=2.0.0'
-      '@testing-library/react': '>=14.0.0'
-      '@types/react': ^18.0.0 || ^19.0.0
-      '@typescript-eslint/parser': '>=8.0.0'
-      eslint: '>=9.0.0'
-      happy-dom: '>=17.4.4'
-      motion: '>=11.0.0'
-      react: ^18.0.0 || ^19.0.0
-      socket.io: '>=4.0.0'
-      socket.io-client: '>=4.0.0'
-      solid-js: ^1.9.0
-    peerDependenciesMeta:
-      '@floating-ui/react':
-        optional: true
-      '@floating-ui/react-dom':
-        optional: true
-      '@testing-library/react':
-        optional: true
-      '@types/react':
-        optional: true
-      '@typescript-eslint/parser':
-        optional: true
-      eslint:
-        optional: true
-      happy-dom:
-        optional: true
-      motion:
-        optional: true
-      react:
-        optional: true
-      socket.io:
-        optional: true
-      socket.io-client:
-        optional: true
-      solid-js:
-        optional: true
 
   atom.io@0.54.0:
     resolution: {integrity: sha512-MQ2I/cpb4KVijgzD+Kvt+eaMSPuZw5hyyCVvSXa0XeJNgiUBSgrx2iajnZ4phCqhAz/7GGjh+8pNnO++pzsOYA==}
@@ -4646,8 +4647,8 @@ packages:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
 
-  lasertag@0.8.9:
-    resolution: {integrity: sha512-cgInFI38oFRiRZjy7Vn6pO2UgeyCf+1tDC5krPgdVrrocFpyXhrnaEwrojjZCuX5hgjn2AsgivYxMpXOKx+FOg==}
+  lasertag@0.8.10:
+    resolution: {integrity: sha512-tl52Yrl9Oif+QZ7vsNQ6Zx0WHSAz/tRMVT8BtxrI1nFPZD1NMP3xQZ1Thsa15u0rdAUYua2Rr9lSobZwehCn6Q==}
     engines: {node: 26.12.1, pnpm: 12.15.0}
     hasBin: true
     peerDependencies:
@@ -5878,6 +5879,11 @@ packages:
 
   typescript@7.1.0-dev.20261022.1:
     resolution: {integrity: sha512-0fVIaaJTjhwgrjFjGHUducPEVaaDNB8DrnJP8nGm6oak/n/yZXAuXZ6+zG3sL8FytFXZFWlePYPLBbliPpER0Q==}
+    engines: {node: '>=16.20.0'}
+    hasBin: true
+
+  typescript@7.1.0-dev.20261023.1:
+    resolution: {integrity: sha512-rXl75ZFpa58TydmEIgAkc8vaLxs10DBO7CMYgsQzQeGbKULmvifWLzSwo/nB20qrsIQKVwDxR2Fkm1xm5joErw==}
     engines: {node: '>=16.20.0'}
     hasBin: true
 
@@ -8034,10 +8040,16 @@ snapshots:
   '@typescript/typescript-darwin-arm64@7.1.0-dev.20261022.1':
     optional: true
 
+  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261023.1':
+    optional: true
+
   '@typescript/typescript-darwin-x64@7.0.2':
     optional: true
 
   '@typescript/typescript-darwin-x64@7.1.0-dev.20261022.1':
+    optional: true
+
+  '@typescript/typescript-darwin-x64@7.1.0-dev.20261023.1':
     optional: true
 
   '@typescript/typescript-freebsd-arm64@7.0.2':
@@ -8052,10 +8064,16 @@ snapshots:
   '@typescript/typescript-linux-arm64@7.1.0-dev.20261022.1':
     optional: true
 
+  '@typescript/typescript-linux-arm64@7.1.0-dev.20261023.1':
+    optional: true
+
   '@typescript/typescript-linux-arm@7.0.2':
     optional: true
 
   '@typescript/typescript-linux-arm@7.1.0-dev.20261022.1':
+    optional: true
+
+  '@typescript/typescript-linux-arm@7.1.0-dev.20261023.1':
     optional: true
 
   '@typescript/typescript-linux-loong64@7.0.2':
@@ -8079,6 +8097,9 @@ snapshots:
   '@typescript/typescript-linux-x64@7.1.0-dev.20261022.1':
     optional: true
 
+  '@typescript/typescript-linux-x64@7.1.0-dev.20261023.1':
+    optional: true
+
   '@typescript/typescript-netbsd-arm64@7.0.2':
     optional: true
 
@@ -8100,10 +8121,16 @@ snapshots:
   '@typescript/typescript-win32-arm64@7.1.0-dev.20261022.1':
     optional: true
 
+  '@typescript/typescript-win32-arm64@7.1.0-dev.20261023.1':
+    optional: true
+
   '@typescript/typescript-win32-x64@7.0.2':
     optional: true
 
   '@typescript/typescript-win32-x64@7.1.0-dev.20261022.1':
+    optional: true
+
+  '@typescript/typescript-win32-x64@7.1.0-dev.20261023.1':
     optional: true
 
   '@typescript/typescript6@6.0.2':
@@ -8454,20 +8481,6 @@ snapshots:
       js-tokens: 10.0.0
 
   astring@1.9.0: {}
-
-  atom.io@0.53.3(@floating-ui/react-dom@2.1.9(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@floating-ui/react@0.27.20(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(@typescript-eslint/parser@8.72.0(@typescript/typescript6@6.0.2)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(motion@14.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2)):
-    optionalDependencies:
-      '@floating-ui/react': 0.27.20(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      '@floating-ui/react-dom': 2.1.9(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      '@testing-library/react': 16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      '@types/react': 19.3.0
-      '@typescript-eslint/parser': 8.72.0(@typescript/typescript6@6.0.2)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2)
-      eslint: 10.13.0(jiti@2.7.0)(supports-color@10.2.2)
-      happy-dom: 20.14.0
-      motion: 14.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
-      react: 19.3.1
-      socket.io: 4.8.4(supports-color@10.2.2)
-      socket.io-client: 4.8.4(supports-color@10.2.2)
 
   atom.io@0.54.0(happy-dom@20.14.0):
     optionalDependencies:
@@ -9694,16 +9707,16 @@ snapshots:
 
   kleur@3.0.3: {}
 
-  lasertag@0.8.9(@floating-ui/react-dom@2.1.9(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@floating-ui/react@0.27.20(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(@typescript-eslint/parser@8.72.0(@typescript/typescript6@6.0.2)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(arktype@2.2.8)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(motion@14.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))(supports-color@10.2.2):
+  lasertag@0.8.10(@types/react@19.3.0)(arktype@2.2.8)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(supports-color@10.2.2):
     dependencies:
       '@astrojs/compiler': 4.0.0
       '@vscode/vsce': 4.0.0(supports-color@10.2.2)
-      atom.io: 0.53.3(@floating-ui/react-dom@2.1.9(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@floating-ui/react@0.27.20(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(@typescript-eslint/parser@8.72.0(@typescript/typescript6@6.0.2)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(motion@14.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))
+      atom.io: 0.54.0(happy-dom@20.14.0)
       comline: 0.9.1(arktype@2.2.8)(zod@4.6.7)
       rolldown: 1.2.15
       takua: 0.2.3
       tinyglobby: 0.2.17
-      typescript: 7.1.0-dev.20261022.1
+      typescript: 7.1.0-dev.20261023.1
       vscode-languageclient: 11.0.0
       vscode-languageserver: 11.0.0
       vscode-languageserver-textdocument: 1.0.16
@@ -9712,28 +9725,20 @@ snapshots:
       '@types/react': 19.3.0
       eslint: 10.13.0(jiti@2.7.0)(supports-color@10.2.2)
     transitivePeerDependencies:
-      - '@floating-ui/react'
-      - '@floating-ui/react-dom'
-      - '@testing-library/react'
-      - '@typescript-eslint/parser'
       - arktype
       - happy-dom
-      - motion
-      - react
-      - socket.io
-      - socket.io-client
       - supports-color
 
-  lasertag@0.8.9(@floating-ui/react-dom@2.1.9(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@floating-ui/react@0.27.20(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(@typescript-eslint/parser@8.72.0(@typescript/typescript6@6.0.2)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(arktype@2.2.9)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(motion@14.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))(supports-color@10.2.2):
+  lasertag@0.8.10(@types/react@19.3.0)(arktype@2.2.9)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(supports-color@10.2.2):
     dependencies:
       '@astrojs/compiler': 4.0.0
       '@vscode/vsce': 4.0.0(supports-color@10.2.2)
-      atom.io: 0.53.3(@floating-ui/react-dom@2.1.9(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@floating-ui/react@0.27.20(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(@typescript-eslint/parser@8.72.0(@typescript/typescript6@6.0.2)(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(supports-color@10.2.2))(eslint@10.13.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(motion@14.6.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(react@19.3.1)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))
+      atom.io: 0.54.0(happy-dom@20.14.0)
       comline: 0.9.1(arktype@2.2.9)(zod@4.6.7)
       rolldown: 1.2.15
       takua: 0.2.3
       tinyglobby: 0.2.17
-      typescript: 7.1.0-dev.20261022.1
+      typescript: 7.1.0-dev.20261023.1
       vscode-languageclient: 11.0.0
       vscode-languageserver: 11.0.0
       vscode-languageserver-textdocument: 1.0.16
@@ -9742,16 +9747,8 @@ snapshots:
       '@types/react': 19.3.0
       eslint: 10.13.0(jiti@2.7.0)(supports-color@10.2.2)
     transitivePeerDependencies:
-      - '@floating-ui/react'
-      - '@floating-ui/react-dom'
-      - '@testing-library/react'
-      - '@typescript-eslint/parser'
       - arktype
       - happy-dom
-      - motion
-      - react
-      - socket.io
-      - socket.io-client
       - supports-color
 
   launch-editor@2.14.1:
@@ -11375,6 +11372,16 @@ snapshots:
       '@typescript/typescript-linux-x64': 7.1.0-dev.20261022.1
       '@typescript/typescript-win32-arm64': 7.1.0-dev.20261022.1
       '@typescript/typescript-win32-x64': 7.1.0-dev.20261022.1
+
+  typescript@7.1.0-dev.20261023.1:
+    optionalDependencies:
+      '@typescript/typescript-darwin-arm64': 7.1.0-dev.20261023.1
+      '@typescript/typescript-darwin-x64': 7.1.0-dev.20261023.1
+      '@typescript/typescript-linux-arm': 7.1.0-dev.20261023.1
+      '@typescript/typescript-linux-arm64': 7.1.0-dev.20261023.1
+      '@typescript/typescript-linux-x64': 7.1.0-dev.20261023.1
+      '@typescript/typescript-win32-arm64': 7.1.0-dev.20261023.1
+      '@typescript/typescript-win32-x64': 7.1.0-dev.20261023.1
 
   uint8array-extras@1.5.0: {}
 
