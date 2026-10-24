@@ -1,5 +1,12 @@
 # flightdeck
 
+## 0.5.3
+
+### Patch Changes
+
+- Updated dependencies [90fab63]
+  - comline@0.9.2
+
 ## 0.5.2
 
 ### Patch Changes

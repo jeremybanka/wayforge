@@ -1,5 +1,12 @@
 # varmint
 
+## 0.6.3
+
+### Patch Changes
+
+- Updated dependencies [90fab63]
+  - comline@0.9.2
+
 ## 0.6.2
 
 ### Patch Changes
