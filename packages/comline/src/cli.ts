@@ -24,7 +24,7 @@ import {
 	type CompletionResult,
 	interpretCompletion,
 } from "./completion"
-import { readConfigFile } from "./config-file"
+import { readConfigFile, readConfigFileAsync } from "./config-file"
 import type { Flag } from "./flag"
 import { parseStringOption } from "./option-parsers"
 import { validateRoutes } from "./route-validation"
@@ -285,10 +285,18 @@ export type CliLogger = {
 	error: (message: string, ...data: unknown[]) => void
 }
 
+type CliParseResult<Inputs> = {
+	inputs: Inputs
+	warnings: CliWarning[]
+	writeJsonSchema: (outdir: string) => void
+}
+
 /**
- * Create a synchronous argument parser with the supplied routes and option schemas.
+ * Create an argument parser with the supplied routes and option schemas.
  *
  * Call the returned function with full runtime argv, such as `process.argv`. It always skips the first two entries before parsing. Its `.interpret()` and `.complete()` methods accept argument words without those runtime and executable entries; see {@link CompletionRequest} for cursor handling.
+ *
+ * Use `await parse.async(argv)` to load config modules with top-level await. Both entrypoints use the same synchronous discovery and schema validation.
  *
  * Successful parsing returns typed `inputs`, `warnings` for ignored options, and `writeJsonSchema`. Unknown options and options unavailable on the selected route produce warnings; use {@link logWarnings} to print them.
  *
@@ -306,11 +314,10 @@ export function cli<
 >(
 	definitionInput: CLI & { routes?: Routes },
 	logger: CliLogger = console,
-): ((argv: readonly string[]) => {
-	inputs: CliParseOutput<CLI>
-	warnings: CliWarning[]
-	writeJsonSchema: (outdir: string) => void
-}) & {
+): ((argv: readonly string[]) => CliParseResult<CliParseOutput<CLI>>) & {
+	async: (
+		argv: readonly string[],
+	) => Promise<CliParseResult<CliParseOutput<CLI>>>
 	definition: CLI
 	interpret: (request: CompletionRequest) => CompletionContext
 	complete: (request: CompletionRequest) => Promise<CompletionResult>
@@ -335,151 +342,174 @@ export function cli<
 		}
 	}
 
-	return Object.assign(
-		(argv: readonly string[]) => {
-			const passed = argv.slice(2)
-			cliLogger.info?.(`passed args:`, passed)
+	const prepare = (
+		argv: readonly string[],
+	): {
+		configFilePath: string | undefined
+		finish: (loaded?: { value: unknown }) => CliParseResult<CliParseOutput<CLI>>
+	} => {
+		const passed = argv.slice(2)
+		cliLogger.info?.(`passed args:`, passed)
 
-			let failedValidation = false
-			let optionsFromConfig: unknown
-			const interpretation = interpretInvocation(definition, passed)
-			if (interpretation.error) throw new Error(interpretation.error)
-			if (!interpretation.complete) {
-				throw new Error(
-					`${cliName} ${interpretation.path.join(` `)} requires one of the following positional arguments:\n${Object.keys(
-						interpretation.tree?.[1] ?? {},
-					)
-						.map((name) => `\t- ${name}`)
-						.join(`\n`)}`,
+		const interpretation = interpretInvocation(definition, passed)
+		if (interpretation.error) throw new Error(interpretation.error)
+		if (!interpretation.complete) {
+			throw new Error(
+				`${cliName} ${interpretation.path.join(` `)} requires one of the following positional arguments:\n${Object.keys(
+					interpretation.tree?.[1] ?? {},
 				)
+					.map((name) => `\t- ${name}`)
+					.join(`\n`)}`,
+			)
+		}
+
+		// The shared result uses string keys for unfinished routes. After successful
+		// traversal, recover the definition's key type; missing options are checked below.
+		const route: OptionsGroup<any> =
+			routeOptions[interpretation.route as keyof typeof routeOptions]
+
+		const optionConfigs = route?.optionConfigs ?? {}
+		const optionsSchema = route?.optionsSchema ?? emptySchema
+
+		if (route === undefined) {
+			throw new Error(
+				`Could not find options for route "${interpretation.route}". Valid routes are: \n\t- ${Object.keys(routeOptions).join(`\n\t- `)}`,
+			)
+		}
+
+		// Traversal has completed a declared route before discovery can run.
+		let configFilePath = discoverConfigPath?.(
+			interpretation.path as TreePath<Routes>,
+		)
+		if (configFilePath) {
+			cliLogger.info?.(`looking for config file at:`, configFilePath)
+			if (fs.existsSync(configFilePath)) {
+				cliLogger.info?.(`config file was found`)
+			} else {
+				configFilePath = undefined
 			}
-
-			// The shared result uses string keys for unfinished routes. After successful
-			// traversal, recover the definition's key type; missing options are checked below.
-			const route: OptionsGroup<any> =
-				routeOptions[interpretation.route as keyof typeof routeOptions]
-
-			const optionConfigs = route?.optionConfigs ?? {}
-			const optionsSchema = route?.optionsSchema ?? emptySchema
-
-			if (route === undefined) {
-				throw new Error(
-					`Could not find options for route "${interpretation.route}". Valid routes are: \n\t- ${Object.keys(routeOptions).join(`\n\t- `)}`,
-				)
-			}
-
-			if (discoverConfigPath) {
-				// Traversal validated every segment and completed the required route, or
-				// returned [] when routes are absent. The shared result stays string[]
-				// for completion prefixes; it does not preserve this TreePath<Routes> proof.
-				const configFilePath = discoverConfigPath(
-					interpretation.path as TreePath<Routes>,
-				)
-				if (configFilePath) {
-					cliLogger.info?.(`looking for config file at:`, configFilePath)
-					if (fs.existsSync(configFilePath)) {
-						cliLogger.info?.(`config file was found`)
-						optionsFromConfig = readConfigFile(configFilePath)
-						// Validate the config independently, but merge its input so schema
-						// transformations are not fed their own output on the final pass.
-						validateOptionsSchema(optionsSchema, optionsFromConfig)
-					}
+		}
+		return {
+			configFilePath,
+			finish: (loaded) => {
+				let failedValidation = false
+				const optionsFromConfig = loaded?.value
+				if (loaded) {
+					// Validate independently, then merge the original input so transformations
+					// never receive their own output during final validation.
+					validateOptionsSchema(optionsSchema, optionsFromConfig)
 				}
-			}
-			cliLogger.info?.(`options from config:`, optionsFromConfig)
-			const argumentEntries = Object.entries(optionConfigs).filter(
-				(entry): entry is [string, CliOption<any>] => !entry[1].configOnly,
-			)
-			const optionsFromCommandLineEntries = argumentEntries
-				.map((entry: [string, CliOption<any>]) => {
-					const [key, config] = entry
-					const { required, description, example } = config
-					const parse = `parse` in config ? config.parse : parseStringOption
-					const argumentInstances = interpretation.options.filter(
-						(option) => option.key === key,
-					)
-
-					switch (argumentInstances.length) {
-						case 0:
-							if (required && !optionsFromConfig) {
-								cliLogger.error(
-									`Missed:`,
-									key,
-									`\n\t${description} (required)\n\tExample usage:\n\t\t${example}`,
-								)
-								failedValidation = true
-							}
-							return [key, undefined]
-						case 1: {
-							const retrievedValue = argumentInstances[0].value
-							return [key, parse(retrievedValue)]
-						}
-						default: {
-							const retrievedValues = argumentInstances
-								.map((arg) => arg.value)
-								.join(`,`)
-							return [key, parse(retrievedValues)]
-						}
-					}
-				})
-				.filter(([, value]) => value !== undefined)
-			if (failedValidation) {
-				throw new Error(
-					`Some required arguments were not provided. See above for details.`,
+				cliLogger.info?.(`options from config:`, optionsFromConfig)
+				const argumentEntries = Object.entries(optionConfigs).filter(
+					(entry): entry is [string, CliOption<any>] => !entry[1].configOnly,
 				)
-			}
-			const optionsFromCommandLine = Object.fromEntries(
-				optionsFromCommandLineEntries,
-			)
-			const suppliedOptionsUnparsed = {
-				...(optionsFromConfig ?? {}),
-				...optionsFromCommandLine,
-			}
-			cliLogger.info?.(`options from command line:`, optionsFromCommandLine)
-			const suppliedOptions = validateOptionsSchema(
-				optionsSchema,
-				suppliedOptionsUnparsed,
-			)
-			cliLogger.info?.(`final options parsed:`, suppliedOptions)
-			return {
-				warnings: interpretation.warnings,
-				inputs: {
-					case: interpretation.route,
-					path: interpretation.path,
-					params: interpretation.params,
-					opts: suppliedOptions,
-				} as unknown as CliParseOutput<CLI>,
-				writeJsonSchema: (outdir: string) => {
-					for (const [unsafeRoute, optionsGroup] of Object.entries(
-						routeOptions as Record<string, OptionsGroup<any> | null>,
-					)) {
-						if (optionsGroup === null) {
-							continue
-						}
-						const safeRoute = unsafeRoute.replaceAll(`/`, `.`)
-						let jsonSchema
-						try {
-							jsonSchema = retrieveInputJsonSchema(
-								optionsGroup.optionsSchema,
-								true,
-							)
-						} catch (cause) {
-							throw new Error(
-								`Cannot export full configuration JSON Schema for route "${unsafeRoute || `(root)`}". The runtime schema may contain values that JSON Schema cannot represent.`,
-								{ cause },
-							)
-						}
-						const filepath = path.resolve(
-							outdir,
-							`${cliName}.${safeRoute || `main`}.schema.json`,
+				const optionsFromCommandLineEntries = argumentEntries
+					.map((entry: [string, CliOption<any>]) => {
+						const [key, config] = entry
+						const { required, description, example } = config
+						const parse = `parse` in config ? config.parse : parseStringOption
+						const argumentInstances = interpretation.options.filter(
+							(option) => option.key === key,
 						)
-						fs.writeFileSync(filepath, JSON.stringify(jsonSchema, null, `\t`))
-					}
-				},
-			}
+
+						switch (argumentInstances.length) {
+							case 0:
+								if (required && !optionsFromConfig) {
+									cliLogger.error(
+										`Missed:`,
+										key,
+										`\n\t${description} (required)\n\tExample usage:\n\t\t${example}`,
+									)
+									failedValidation = true
+								}
+								return [key, undefined]
+							case 1: {
+								const retrievedValue = argumentInstances[0].value
+								return [key, parse(retrievedValue)]
+							}
+							default: {
+								const retrievedValues = argumentInstances
+									.map((arg) => arg.value)
+									.join(`,`)
+								return [key, parse(retrievedValues)]
+							}
+						}
+					})
+					.filter(([, value]) => value !== undefined)
+				if (failedValidation) {
+					throw new Error(
+						`Some required arguments were not provided. See above for details.`,
+					)
+				}
+				const optionsFromCommandLine = Object.fromEntries(
+					optionsFromCommandLineEntries,
+				)
+				const suppliedOptionsUnparsed = {
+					...(optionsFromConfig ?? {}),
+					...optionsFromCommandLine,
+				}
+				cliLogger.info?.(`options from command line:`, optionsFromCommandLine)
+				const suppliedOptions = validateOptionsSchema(
+					optionsSchema,
+					suppliedOptionsUnparsed,
+				)
+				cliLogger.info?.(`final options parsed:`, suppliedOptions)
+				return {
+					warnings: interpretation.warnings,
+					inputs: {
+						case: interpretation.route,
+						path: interpretation.path,
+						params: interpretation.params,
+						opts: suppliedOptions,
+					} as unknown as CliParseOutput<CLI>,
+					writeJsonSchema: (outdir: string) => {
+						for (const [unsafeRoute, optionsGroup] of Object.entries(
+							routeOptions as Record<string, OptionsGroup<any> | null>,
+						)) {
+							if (optionsGroup === null) {
+								continue
+							}
+							const safeRoute = unsafeRoute.replaceAll(`/`, `.`)
+							let jsonSchema
+							try {
+								jsonSchema = retrieveInputJsonSchema(
+									optionsGroup.optionsSchema,
+									true,
+								)
+							} catch (cause) {
+								throw new Error(
+									`Cannot export full configuration JSON Schema for route "${unsafeRoute || `(root)`}". The runtime schema may contain values that JSON Schema cannot represent.`,
+									{ cause },
+								)
+							}
+							const filepath = path.resolve(
+								outdir,
+								`${cliName}.${safeRoute || `main`}.schema.json`,
+							)
+							fs.writeFileSync(filepath, JSON.stringify(jsonSchema, null, `\t`))
+						}
+					},
+				}
+			},
+		}
+	}
+	return Object.assign(
+		(argv: readonly string[]): CliParseResult<CliParseOutput<CLI>> => {
+			const { configFilePath, finish } = prepare(argv)
+			return finish(
+				configFilePath ? { value: readConfigFile(configFilePath) } : undefined,
+			)
 		},
 		{
 			definition,
+			async: async (
+				argv: readonly string[],
+			): Promise<CliParseResult<CliParseOutput<CLI>>> => {
+				const { configFilePath, finish } = prepare(argv)
+				return finish(
+					configFilePath ? await readConfigFileAsync(configFilePath) : undefined,
+				)
+			},
 			interpret: (request: CompletionRequest): CompletionContext =>
 				interpretCompletion(definition, request),
 			complete: (request: CompletionRequest): Promise<CompletionResult> =>

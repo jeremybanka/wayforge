@@ -201,7 +201,21 @@ export default config
 
 Modules with `.ts`, `.mts`, `.cts`, `.js`, `.mjs`, and `.cjs` extensions use the host runtime's module loader. ES modules must default-export an options object; CommonJS modules use `module.exports`. Other extensions retain JSON parsing. Config objects are validated against the selected route's schema before command-line options override them, and the merged options are validated again. Each config must satisfy the schema on its own.
 
-Parsing remains synchronous: a function or promise as the module's default export, asynchronous schema validation, and modules with top-level `await` are unsupported. The exported object may contain synchronous or asynchronous callbacks in config-only fields. Modules use the runtime's normal cache, so their code runs once per process; command-line overrides do not change the cached config object. JSON files are read afresh on each parse. Completion does not discover or load configs.
+Call `await parse.async(process.argv)` to load modules with top-level `await`, including await in their imported dependencies:
+
+```ts
+// greet.config.ts
+const name = await Promise.resolve("world")
+export default { name, age: 30 }
+```
+
+```ts
+const { inputs, warnings } = await parse.async(process.argv)
+```
+
+`parse.async()` uses native dynamic import and returns the same typed result as synchronous `parse()`, including route-discriminated inputs, warnings, and `writeJsonSchema`. Both entrypoints validate configuration before CLI overrides and validate the merged original input afterward. Import and initialization failures reject the async parse. Synchronous `parse()` remains available; on Node, modules requiring asynchronous evaluation produce a diagnostic directing callers to `parse.async()`.
+
+Config discovery and schema validation remain synchronous in both entrypoints. A function or promise as the module's default export is unsupported. The exported object may contain synchronous or asynchronous callbacks in config-only fields. Modules use the runtime's normal cache, so their code runs once per process; command-line overrides do not change the cached config object. JSON files are read afresh on each parse. Completion does not discover or load configs.
 
 TypeScript configs require a runtime with TypeScript support, such as Bun or Node.js 22.18+ (or 24+). Comline does not transpile or type-check configs. Native Node.js supports erasable types and requires explicit extensions in relative imports; it does not apply `tsconfig.json` path aliases or transform enums and parameter properties. See [Node.js TypeScript support](https://nodejs.org/api/typescript.html) for runtime limitations.
 
