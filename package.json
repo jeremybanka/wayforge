@@ -67,7 +67,7 @@
 		"eslint-plugin-import-x": "4.17.1",
 		"eslint-plugin-simple-import-sort": "14.0.0",
 		"flightdeck": "workspace:*",
-		"galley.md": "0.1.5",
+		"galley.md": "0.1.6",
 		"jiti": "2.7.0",
 		"lasertag": "0.8.10",
 		"oxlint": "1.89.0",
