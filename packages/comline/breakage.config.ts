@@ -1,13 +1,13 @@
 import { changesetsReleaseDelta } from "@breakage/changesets"
-import { defineConfig, semverPolicy, type BreakageConfig } from "breakage"
+import { type BreakageConfig,defineConfig, semverPolicy } from "breakage"
 
 const config: BreakageConfig = defineConfig({
-	tagPattern: "refs/tags/comline@",
-	testPattern: "__tests__/{public,fixtures}/**/!(shell-completion.bun.ts)",
-	test: "pnpm test:public",
+	tagPattern: `refs/tags/comline@`,
+	testPattern: `__tests__/{public,fixtures}/**/!(shell-completion.bun.ts)`,
+	test: `pnpm test:public`,
 	release: {
 		resolveDelta: changesetsReleaseDelta(),
-		policy: semverPolicy({ beforeV1: "minor" }),
+		policy: semverPolicy({ beforeV1: `minor` }),
 	},
 })
 
