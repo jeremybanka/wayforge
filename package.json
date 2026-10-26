@@ -45,7 +45,7 @@
 		"@atom.io/eslint-plugin": "0.1.0",
 		"@changesets/cli": "3.0.3",
 		"@changesets/config": "4.0.1",
-		"@correctlyjs/schemars": "0.0.5",
+		"@correctlyjs/schemars": "0.0.6",
 		"@dotenvx/dotenvx": "2.38.2",
 		"@dprint/json": "0.25.2",
 		"@dprint/markdown": "0.28.0",
