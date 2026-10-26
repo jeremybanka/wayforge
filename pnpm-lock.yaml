@@ -442,6 +442,9 @@ importers:
         specifier: workspace:*
         version: link:../treetrunks
     devDependencies:
+      '@breakage/changesets':
+        specifier: 0.1.0
+        version: 0.1.0(breakage@0.10.0(supports-color@10.2.2)(zod@4.6.7))
       '@types/bun':
         specifier: npm:bun-types@1.4.4
         version: bun-types@1.4.4
@@ -1039,6 +1042,11 @@ packages:
   '@bramus/specificity@2.4.2':
     resolution: {integrity: sha512-ctxtJ/eA+t+6q2++vj5j7FYX3nRu311q1wfYH3xjlLOsczhlhxAg2FWNUXhpGvAw3BWo1xBcvOV6/YLc2r5FJw==}
     hasBin: true
+
+  '@breakage/changesets@0.1.0':
+    resolution: {integrity: sha512-6PS6IdZlP8l64Bor33G/xWkFshJdNDJu3AdjWVshwVPbLmIr1XsjuGmK6hEPxEjrnFxDH3E4XjWckjSOYKVR+g==}
+    peerDependencies:
+      breakage: ^0.10.0
 
   '@cacheable/memory@2.2.0':
     resolution: {integrity: sha512-CTLKqLItRCEixEAewD3/j9DB3/o96gpTPD4eJ1v+DGOlxZRZncRQkGYqqnAGCscYd6RNeXfGeiuCphsPtqyIfQ==}
@@ -6564,6 +6572,15 @@ snapshots:
     dependencies:
       css-tree: 3.2.1
     optional: true
+
+  '@breakage/changesets@0.1.0(breakage@0.10.0(supports-color@10.2.2)(zod@4.6.7))':
+    dependencies:
+      '@changesets/assemble-release-plan': 7.0.0
+      '@changesets/config': 4.0.1
+      '@changesets/pre': 3.0.0
+      '@changesets/read': 1.0.1
+      '@manypkg/get-packages': 3.1.0
+      breakage: 0.10.0(supports-color@10.2.2)(zod@4.6.7)
 
   '@cacheable/memory@2.2.0':
     dependencies:
