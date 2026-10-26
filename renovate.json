@@ -47,6 +47,7 @@
 				"@atom.io/react-devtools",
 				"@atom.io/realtime",
 				"atom.io",
+				"@breakage/changesets",
 				"breakage",
 				"comline",
 				"correctly",

@@ -66,15 +66,6 @@ export default defineConfig({
 			}),
 		},
 		{
-			name: "Breakage",
-			files: ["packages/*/breakage.config.json"],
-			parse: json(),
-			validate: ajv({
-				schema:
-					"packages/comline/node_modules/breakage/dist/breakage.main.schema.json",
-			}),
-		},
-		{
 			name: "TypeScript and editor settings",
 			files: ["**/tsconfig*.json", "**/.vscode/*.json", "**/.zed/*.json"],
 			parse: jsonc(),

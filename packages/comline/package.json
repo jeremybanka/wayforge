@@ -39,11 +39,12 @@
 		"treetrunks": "workspace:*"
 	},
 	"devDependencies": {
+		"@breakage/changesets": "0.1.0",
 		"@types/bun": "npm:bun-types@1.4.4",
 		"@types/node": "26.6.5",
 		"@vitest/coverage-v8": "5.0.5",
 		"arktype": "2.2.9",
-		"breakage": "0.8.5",
+		"breakage": "0.10.0",
 		"concurrently": "10.0.6",
 		"eslint": "10.13.0",
 		"recoverage": "0.1.20",
