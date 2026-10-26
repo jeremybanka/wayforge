@@ -1,5 +1,5 @@
 import { changesetsReleaseDelta } from "@breakage/changesets"
-import { type BreakageConfig,defineConfig, semverPolicy } from "breakage"
+import { type BreakageConfig, defineConfig, semverPolicy } from "breakage"
 
 const config: BreakageConfig = defineConfig({
 	tagPattern: `refs/tags/comline@`,
