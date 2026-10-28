@@ -336,8 +336,8 @@ importers:
         specifier: 6.0.2
         version: 6.0.2
       openai:
-        specifier: 7.45.0
-        version: 7.45.0(undici@8.9.0)(ws@8.21.0)(zod@4.6.7)
+        specifier: 7.45.1
+        version: 7.45.1(undici@8.9.0)(ws@8.21.0)(zod@4.6.7)
       postgres:
         specifier: 3.4.9
         version: 3.4.9
@@ -793,8 +793,8 @@ importers:
         specifier: 0.3.1
         version: 0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7)
       openai:
-        specifier: 7.45.0
-        version: 7.45.0(undici@8.9.0)(ws@8.21.0)(zod@4.6.7)
+        specifier: 7.45.1
+        version: 7.45.1(undici@8.9.0)(ws@8.21.0)(zod@4.6.7)
       tonnage:
         specifier: 0.5.0
         version: 0.5.0(galley.md@0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7))
@@ -5301,14 +5301,14 @@ packages:
     resolution: {integrity: sha512-YgBpdJHPyQ2UE5x+hlSXcnejzAvD0b22U2OuAP+8OnlJT+PjWPxtgmGqKKc+RgTM63U9gN0YzrYc71R2WT/hTA==}
     engines: {node: '>=18'}
 
-  openai@7.45.0:
-    resolution: {integrity: sha512-krAWw8RRzV5OGGjD9JR3QKDEB+DU5k4YIOyHfdJaNAU9qkV2W1OvGszk9+bxQo9kZ8+//1gEDflgXVFpMH7Lrg==}
+  openai@7.45.1:
+    resolution: {integrity: sha512-mutrJXwhJIMZ24Lab2COFtNp44OcpZSnV4O2O7q38wAHUa2m2fQqUO5pj1XS3PqLfOTeODBUS9YoadqDnnGk5A==}
     engines: {node: '>=22.0.0'}
     peerDependencies:
       '@aws-sdk/credential-provider-node': '>=3.972.0 <4'
       '@smithy/hash-node': '>=4.3.0 <5'
       '@smithy/signature-v4': '>=5.4.0 <6'
-      google-auth-library: '>=9.15.1 <11'
+      google-auth-library: '>=9.15.1 <12'
       undici: '>=5 <9'
       ws: ^8.21.0
       zod: ^3.25 || ^4.0
@@ -10736,7 +10736,7 @@ snapshots:
       is-inside-container: 1.0.0
       wsl-utils: 0.1.0
 
-  openai@7.45.0(undici@8.9.0)(ws@8.21.0)(zod@4.6.7):
+  openai@7.45.1(undici@8.9.0)(ws@8.21.0)(zod@4.6.7):
     optionalDependencies:
       undici: 8.9.0
       ws: 8.21.0
