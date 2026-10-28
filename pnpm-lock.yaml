@@ -698,14 +698,14 @@ importers:
         specifier: 10.13.0
         version: 10.13.0(jiti@2.7.0)(supports-color@10.2.2)
       galley.md:
-        specifier: 0.3.0
-        version: 0.3.0(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7)
+        specifier: 0.3.1
+        version: 0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7)
       recoverage:
         specifier: 0.1.20
         version: 0.1.20(supports-color@10.2.2)(typescript@7.0.2)(zod@4.6.7)
       tonnage:
         specifier: 0.5.0
-        version: 0.5.0(galley.md@0.3.0(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7))
+        version: 0.5.0(galley.md@0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7))
       tsdown:
         specifier: 0.23.2
         version: 0.23.2(@volar/typescript@2.4.28(typescript@7.0.2))(tsx@4.22.1)(typescript@7.0.2)
@@ -738,14 +738,14 @@ importers:
         specifier: 10.13.0
         version: 10.13.0(jiti@2.7.0)(supports-color@10.2.2)
       galley.md:
-        specifier: 0.3.0
-        version: 0.3.0(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7)
+        specifier: 0.3.1
+        version: 0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7)
       react:
         specifier: 19.3.1
         version: 19.3.1
       tonnage:
         specifier: 0.5.0
-        version: 0.5.0(galley.md@0.3.0(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7))
+        version: 0.5.0(galley.md@0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7))
       tsdown:
         specifier: 0.23.2
         version: 0.23.2(@volar/typescript@2.4.28(typescript@6.0.3))(tsx@4.22.1)(typescript@6.0.3)
@@ -790,14 +790,14 @@ importers:
         specifier: 10.13.0
         version: 10.13.0(jiti@2.7.0)(supports-color@10.2.2)
       galley.md:
-        specifier: 0.3.0
-        version: 0.3.0(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7)
+        specifier: 0.3.1
+        version: 0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7)
       openai:
         specifier: 7.45.0
         version: 7.45.0(undici@8.9.0)(ws@8.21.0)(zod@4.6.7)
       tonnage:
         specifier: 0.5.0
-        version: 0.5.0(galley.md@0.3.0(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7))
+        version: 0.5.0(galley.md@0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7))
       tsdown:
         specifier: 0.23.2
         version: 0.23.2(@volar/typescript@2.4.28(typescript@7.0.2))(tsx@4.22.1)(typescript@7.0.2)
@@ -3020,8 +3020,8 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
-  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261026.1':
-    resolution: {integrity: sha512-RWRwkR2fg0VHxQO7gUeyLhrgAkptVLqNoqNOrzNm3S1cGL3UBHhM04KYg/XvTbK4OADntUAC+DYPzEKZqlC31A==}
+  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261027.1':
+    resolution: {integrity: sha512-UJjLBpNLvWKszxNNoEsl+2Y5YOsgwIJHfwq8k/FPBzMcz5UDyH+mOMjTm6MsHhU4EVyfUJYCcESHdbvH0J6sRg==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [darwin]
@@ -3038,8 +3038,8 @@ packages:
     cpu: [x64]
     os: [darwin]
 
-  '@typescript/typescript-darwin-x64@7.1.0-dev.20261026.1':
-    resolution: {integrity: sha512-PtI216o0etjH8vlbNC3wjvOISz5iyY/bZ2ppXJlGOScti0iczFcbKsb+evgGXBT5iaVmyK0Yczue+GGE2iMzvA==}
+  '@typescript/typescript-darwin-x64@7.1.0-dev.20261027.1':
+    resolution: {integrity: sha512-kccP5mZQTs93noTIelNoT3bSjbeh2j4Ol5+2Vfd6y6GsI40NcwVg3VKyKBf9VDdFveXp5LgkLykHerZPiSuPsQ==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [darwin]
@@ -3068,8 +3068,8 @@ packages:
     cpu: [arm64]
     os: [linux]
 
-  '@typescript/typescript-linux-arm64@7.1.0-dev.20261026.1':
-    resolution: {integrity: sha512-HWPO3jI/mzKhi6LQzpNyRVq8V2DGf5eUXp+MYZktGEMicfKEWQRsy9FtbZWPDCvF5JoknQTqwjCWjqIV2edUDA==}
+  '@typescript/typescript-linux-arm64@7.1.0-dev.20261027.1':
+    resolution: {integrity: sha512-EZmsRYvs1MH2syqc+5t2k7XOYpB7xw7sqq0Xzs7EHmHxI5jMswfJbpNFRbmpg7g70y2b8v1dbBEsle9KwHKJsQ==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [linux]
@@ -3086,8 +3086,8 @@ packages:
     cpu: [arm]
     os: [linux]
 
-  '@typescript/typescript-linux-arm@7.1.0-dev.20261026.1':
-    resolution: {integrity: sha512-GAiru2K4i0n6ScgEt16/mJorbizPe7xBdIvrMOJICznjcU9fk9KZSdMAsyjiSbxlGTUIl7XfPxJAdceiezPz1g==}
+  '@typescript/typescript-linux-arm@7.1.0-dev.20261027.1':
+    resolution: {integrity: sha512-cIwCj9x+an2vLDkdNnxgFeLF/Q8+kjVcZisntc1gA8nISoRII/QePVNbG3jDBt2zqU7GxU71egvQbxuV5eQ59A==}
     engines: {node: '>=16.20.0'}
     cpu: [arm]
     os: [linux]
@@ -3134,8 +3134,8 @@ packages:
     cpu: [x64]
     os: [linux]
 
-  '@typescript/typescript-linux-x64@7.1.0-dev.20261026.1':
-    resolution: {integrity: sha512-adsyqmhIhDvhuneZpnOW+XaAq+szKqHk3rvx4Jfy2yzDkJELVL5URBXjqASpcqlvZk+uFwvikph7UnqTXZpajw==}
+  '@typescript/typescript-linux-x64@7.1.0-dev.20261027.1':
+    resolution: {integrity: sha512-LRXiR7cP44Sg0sz0SmfkMKAsImesb4yiGqIzDOsEZE3dbvQEU72VknlXlc4qcs2E8R+Qzuri2KkRRGiyy2oI1Q==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [linux]
@@ -3182,8 +3182,8 @@ packages:
     cpu: [arm64]
     os: [win32]
 
-  '@typescript/typescript-win32-arm64@7.1.0-dev.20261026.1':
-    resolution: {integrity: sha512-KPn36m05loleZvmixK5GdmocK6niV2ZsbHWz0F1sOvibNKFKbqptCvFEd2dI0f/McJQnKBv+72j3IR4aSLcRZA==}
+  '@typescript/typescript-win32-arm64@7.1.0-dev.20261027.1':
+    resolution: {integrity: sha512-p6JMGiKWY7fNCP1nptqnGeDp/OSZG4qyxXN0zkDR99pN4G2mBWN1tvOAw8qjs9MKX7Q5AU57cMDxTBc3L/kLDA==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [win32]
@@ -3200,8 +3200,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@typescript/typescript-win32-x64@7.1.0-dev.20261026.1':
-    resolution: {integrity: sha512-fSHdi/K9N6Ccxl/O8gjkvS8C38e2uATKaHRxGPlf+keqYFK7+f4DQliH7wL1Ih8U97Eq4g8L0LIDtHnZAY8AOQ==}
+  '@typescript/typescript-win32-x64@7.1.0-dev.20261027.1':
+    resolution: {integrity: sha512-rCsJOawGaofI6+aV5BCJm2YfoBUJGgIf6ej6r14atoeo9zHhJqy0VSyhgGUo1vvrP7ArtwiHWnGOqz6gGAxO7g==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [win32]
@@ -4409,9 +4409,9 @@ packages:
   function-bind@1.1.2:
     resolution: {integrity: sha512-7XHNxH7qX9xG5mIwxkhumTox/MIRNcOgDrxWsMt2pAr23WHp6MrRlN7FBSFpCpr+oVO0F744iUgR82nJMfG2SA==}
 
-  galley.md@0.3.0:
-    resolution: {integrity: sha512-kTGmc87rNaAudikK4tBqNiUA1yUDsPyocpizzvOw7ewoNa4wTgifx2Yhkx62p9Xa3nXTuO1P7gHkzQH6x6wDJQ==}
-    engines: {node: '>=22.18.0', pnpm: 12.15.0}
+  galley.md@0.3.1:
+    resolution: {integrity: sha512-bfy5OddrNMYQSMMYqOB6PxMvil98q5oo9f9W7tTotfxM4B8fdjKujcdHMz0eJVigJjXrMh8e3Z/9TtrIAn5VjA==}
+    engines: {node: '>=22.18.0', pnpm: 12.16.1}
     hasBin: true
 
   get-caller-file@2.0.5:
@@ -6010,8 +6010,8 @@ packages:
     engines: {node: '>=16.20.0'}
     hasBin: true
 
-  typescript@7.1.0-dev.20261026.1:
-    resolution: {integrity: sha512-UMkX/9dUMDnkxhiqg3i9PBeD56zX1QIJ4yo53NSM9WsnSD7B/kQYgeeeveo/jsqPkciAmaGD+UFU8uV52fI00g==}
+  typescript@7.1.0-dev.20261027.1:
+    resolution: {integrity: sha512-pPXjJFnHoJGGZxw9qy6lSrW29TihO6LZcn39TkNP787WNA0g4/W/MYkhXQo/WL+NyGIPMa+1bmedrr3ixhqD2w==}
     engines: {node: '>=16.20.0'}
     hasBin: true
 
@@ -8239,7 +8239,7 @@ snapshots:
   '@typescript/typescript-darwin-arm64@7.1.0-dev.20261023.1':
     optional: true
 
-  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261026.1':
+  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261027.1':
     optional: true
 
   '@typescript/typescript-darwin-x64@7.0.2':
@@ -8248,7 +8248,7 @@ snapshots:
   '@typescript/typescript-darwin-x64@7.1.0-dev.20261023.1':
     optional: true
 
-  '@typescript/typescript-darwin-x64@7.1.0-dev.20261026.1':
+  '@typescript/typescript-darwin-x64@7.1.0-dev.20261027.1':
     optional: true
 
   '@typescript/typescript-freebsd-arm64@7.0.2':
@@ -8263,7 +8263,7 @@ snapshots:
   '@typescript/typescript-linux-arm64@7.1.0-dev.20261023.1':
     optional: true
 
-  '@typescript/typescript-linux-arm64@7.1.0-dev.20261026.1':
+  '@typescript/typescript-linux-arm64@7.1.0-dev.20261027.1':
     optional: true
 
   '@typescript/typescript-linux-arm@7.0.2':
@@ -8272,7 +8272,7 @@ snapshots:
   '@typescript/typescript-linux-arm@7.1.0-dev.20261023.1':
     optional: true
 
-  '@typescript/typescript-linux-arm@7.1.0-dev.20261026.1':
+  '@typescript/typescript-linux-arm@7.1.0-dev.20261027.1':
     optional: true
 
   '@typescript/typescript-linux-loong64@7.0.2':
@@ -8296,7 +8296,7 @@ snapshots:
   '@typescript/typescript-linux-x64@7.1.0-dev.20261023.1':
     optional: true
 
-  '@typescript/typescript-linux-x64@7.1.0-dev.20261026.1':
+  '@typescript/typescript-linux-x64@7.1.0-dev.20261027.1':
     optional: true
 
   '@typescript/typescript-netbsd-arm64@7.0.2':
@@ -8320,7 +8320,7 @@ snapshots:
   '@typescript/typescript-win32-arm64@7.1.0-dev.20261023.1':
     optional: true
 
-  '@typescript/typescript-win32-arm64@7.1.0-dev.20261026.1':
+  '@typescript/typescript-win32-arm64@7.1.0-dev.20261027.1':
     optional: true
 
   '@typescript/typescript-win32-x64@7.0.2':
@@ -8329,7 +8329,7 @@ snapshots:
   '@typescript/typescript-win32-x64@7.1.0-dev.20261023.1':
     optional: true
 
-  '@typescript/typescript-win32-x64@7.1.0-dev.20261026.1':
+  '@typescript/typescript-win32-x64@7.1.0-dev.20261027.1':
     optional: true
 
   '@typescript/typescript6@6.0.2':
@@ -9512,7 +9512,7 @@ snapshots:
 
   function-bind@1.1.2: {}
 
-  galley.md@0.3.0(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7):
+  galley.md@0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7):
     dependencies:
       '@babel/parser': 8.0.8
       '@dprint/formatter': 0.6.0
@@ -9522,6 +9522,7 @@ snapshots:
       '@types/react': 19.3.0
       '@vscode/vsce': 4.0.0(supports-color@10.2.2)
       comline: 0.9.3(arktype@2.2.9)(zod@4.6.7)
+      diff: 9.0.0
       esbuild: 0.28.2
       hast-util-phrasing: 3.0.1
       hast-util-to-html: 9.0.5
@@ -9531,7 +9532,7 @@ snapshots:
       remark-mdx: 3.1.1(supports-color@10.2.2)
       remark-parse: 11.0.0(supports-color@10.2.2)
       remark-stringify: 11.0.0
-      typescript: 7.1.0-dev.20261026.1
+      typescript: 7.1.0-dev.20261027.1
       unified: 11.0.5
       vscode-jsonrpc: 10.0.0
       vscode-languageclient: 11.0.0
@@ -11433,10 +11434,10 @@ snapshots:
     dependencies:
       eslint-visitor-keys: 5.0.1
 
-  tonnage@0.5.0(galley.md@0.3.0(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7)):
+  tonnage@0.5.0(galley.md@0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7)):
     dependencies:
       esbuild: 0.28.2
-      galley.md: 0.3.0(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7)
+      galley.md: 0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7)
 
   tough-cookie@6.0.2:
     dependencies:
@@ -11610,15 +11611,15 @@ snapshots:
       '@typescript/typescript-win32-arm64': 7.1.0-dev.20261023.1
       '@typescript/typescript-win32-x64': 7.1.0-dev.20261023.1
 
-  typescript@7.1.0-dev.20261026.1:
+  typescript@7.1.0-dev.20261027.1:
     optionalDependencies:
-      '@typescript/typescript-darwin-arm64': 7.1.0-dev.20261026.1
-      '@typescript/typescript-darwin-x64': 7.1.0-dev.20261026.1
-      '@typescript/typescript-linux-arm': 7.1.0-dev.20261026.1
-      '@typescript/typescript-linux-arm64': 7.1.0-dev.20261026.1
-      '@typescript/typescript-linux-x64': 7.1.0-dev.20261026.1
-      '@typescript/typescript-win32-arm64': 7.1.0-dev.20261026.1
-      '@typescript/typescript-win32-x64': 7.1.0-dev.20261026.1
+      '@typescript/typescript-darwin-arm64': 7.1.0-dev.20261027.1
+      '@typescript/typescript-darwin-x64': 7.1.0-dev.20261027.1
+      '@typescript/typescript-linux-arm': 7.1.0-dev.20261027.1
+      '@typescript/typescript-linux-arm64': 7.1.0-dev.20261027.1
+      '@typescript/typescript-linux-x64': 7.1.0-dev.20261027.1
+      '@typescript/typescript-win32-arm64': 7.1.0-dev.20261027.1
+      '@typescript/typescript-win32-x64': 7.1.0-dev.20261027.1
 
   uint8array-extras@1.5.0: {}
 
