@@ -50,7 +50,7 @@
 	},
 	"devDependencies": {
 		"@types/bun": "npm:bun-types@1.4.4",
-		"@types/node": "26.6.5",
+		"@types/node": "26.6.6",
 		"atom.io": "0.54.2",
 		"concurrently": "10.0.6",
 		"eslint": "10.13.0",
