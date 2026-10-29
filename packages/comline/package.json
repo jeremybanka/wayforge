@@ -44,7 +44,7 @@
 		"@types/node": "26.6.5",
 		"@vitest/coverage-v8": "5.0.5",
 		"arktype": "2.2.9",
-		"breakage": "0.10.0",
+		"breakage": "0.10.1",
 		"concurrently": "10.0.6",
 		"eslint": "10.13.0",
 		"recoverage": "0.1.20",
