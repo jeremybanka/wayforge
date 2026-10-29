@@ -54,7 +54,7 @@
 	"dependencies": {
 		"@ai-sdk/openai": "4.0.104",
 		"@atom.io/react": "0.1.0",
-		"@atom.io/react-devtools": "0.1.0",
+		"@atom.io/react-devtools": "0.1.1",
 		"@atom.io/realtime": "0.1.1",
 		"@floating-ui/react": "0.27.20",
 		"@js-temporal/polyfill": "0.5.1",
