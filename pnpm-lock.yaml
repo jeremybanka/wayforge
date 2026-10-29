@@ -704,8 +704,8 @@ importers:
         specifier: 0.1.20
         version: 0.1.20(supports-color@10.2.2)(typescript@7.0.2)(zod@4.6.7)
       tonnage:
-        specifier: 0.5.0
-        version: 0.5.0(galley.md@0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7))
+        specifier: 0.5.2
+        version: 0.5.2(galley.md@0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7))
       tsdown:
         specifier: 0.23.3
         version: 0.23.3(@volar/typescript@2.4.28(typescript@7.0.2))(tsx@4.22.1)(typescript@7.0.2)
@@ -744,8 +744,8 @@ importers:
         specifier: 19.3.1
         version: 19.3.1
       tonnage:
-        specifier: 0.5.0
-        version: 0.5.0(galley.md@0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7))
+        specifier: 0.5.2
+        version: 0.5.2(galley.md@0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7))
       tsdown:
         specifier: 0.23.3
         version: 0.23.3(@volar/typescript@2.4.28(typescript@6.0.3))(tsx@4.22.1)(typescript@6.0.3)
@@ -796,8 +796,8 @@ importers:
         specifier: 7.45.1
         version: 7.45.1(undici@8.9.0)(ws@8.21.0)(zod@4.6.7)
       tonnage:
-        specifier: 0.5.0
-        version: 0.5.0(galley.md@0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7))
+        specifier: 0.5.2
+        version: 0.5.2(galley.md@0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7))
       tsdown:
         specifier: 0.23.3
         version: 0.23.3(@volar/typescript@2.4.28(typescript@7.0.2))(tsx@4.22.1)(typescript@7.0.2)
@@ -5814,8 +5814,8 @@ packages:
     resolution: {integrity: sha512-A5F0cM6+mDleacLIEUkmfpkBbnHJFV1d2rprHU2MXNk7mlxHq2zGojA+SRvQD1RoMo9gqjZPWEaKG4v1BQ48lw==}
     engines: {node: ^20.19.0 || ^22.13.0 || >=24}
 
-  tonnage@0.5.0:
-    resolution: {integrity: sha512-fMtS1ys7kq3yPA/3uaevO4ySE+OevZAPpb1pI/TJS057xJRQfydWtDyHbn4pqCI/OzAJ+AmrHBO7xLPRbVJStg==}
+  tonnage@0.5.2:
+    resolution: {integrity: sha512-pzwBGG978D5pLw/QZBoJoUSFJ5egCv/WG+yFxOxZGUqtotZiwlQDbK0ro+x92+SbRVKz+FjNeDmbLu0s5RtvKg==}
     engines: {node: '>=22.18.0'}
     peerDependencies:
       galley.md: ^0.3.0
@@ -11302,7 +11302,7 @@ snapshots:
     dependencies:
       eslint-visitor-keys: 5.0.1
 
-  tonnage@0.5.0(galley.md@0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7)):
+  tonnage@0.5.2(galley.md@0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7)):
     dependencies:
       esbuild: 0.28.2
       galley.md: 0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7)
