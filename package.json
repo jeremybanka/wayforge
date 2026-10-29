@@ -42,7 +42,7 @@
 		"workflows:update": "node scripts/update-workflows.node.ts"
 	},
 	"devDependencies": {
-		"@atom.io/eslint-plugin": "0.1.0",
+		"@atom.io/eslint-plugin": "0.1.1",
 		"@changesets/cli": "3.0.3",
 		"@changesets/config": "4.0.1",
 		"@correctlyjs/schemars": "0.0.6",
