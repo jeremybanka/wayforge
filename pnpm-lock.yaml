@@ -438,7 +438,7 @@ importers:
     devDependencies:
       '@breakage/changesets':
         specifier: 0.1.0
-        version: 0.1.0(breakage@0.10.0(supports-color@10.2.2)(zod@4.6.7))
+        version: 0.1.0(breakage@0.10.1(supports-color@10.2.2)(zod@4.6.7))
       '@types/bun':
         specifier: npm:bun-types@1.4.4
         version: bun-types@1.4.4
@@ -452,8 +452,8 @@ importers:
         specifier: 2.2.9
         version: 2.2.9
       breakage:
-        specifier: 0.10.0
-        version: 0.10.0(supports-color@10.2.2)(zod@4.6.7)
+        specifier: 0.10.1
+        version: 0.10.1(supports-color@10.2.2)(zod@4.6.7)
       concurrently:
         specifier: 10.0.6
         version: 10.0.6
@@ -2040,6 +2040,9 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@isaacs/nonrecursive-glob-match@1.0.2':
+    resolution: {integrity: sha512-GJPHIgPPtFl+nLhFHyF0zZoFcOFLsZWbHFFzo+Zr+PWDXJbl9hHxb2w+9SiF2fHmLgKaXIpUzQo3SbBBZ9WObw==}
+
   '@jridgewell/gen-mapping@0.3.13':
     resolution: {integrity: sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==}
 
@@ -3618,16 +3621,16 @@ packages:
   brace-expansion@1.1.14:
     resolution: {integrity: sha512-MWPGfDxnyzKU7rNOW9SP/c50vi3xrmrua/+6hfPbCS2ABNWfx24vPidzvC7krjU/RTo235sV776ymlsMtGKj8g==}
 
-  brace-expansion@5.0.8:
-    resolution: {integrity: sha512-JZyDyq3D4AUifKTPOB7DELf6XsB3WdPuNxCtob1vFXPsSXhdAiHBWJ/tJ8HAc9aH84BK+5JFZLNkJKx3G9kzQg==}
+  brace-expansion@5.0.12:
+    resolution: {integrity: sha512-YovQ3rzhaLMIrDjNDMkNS01tea93qhEhG5xy8f6+R0l+dw3Ki+5sCoIoI942iuLZTHWogWktgwVDhU09iNEimQ==}
     engines: {node: 20 || >=22}
 
   braces@3.0.3:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
     engines: {node: '>=8'}
 
-  breakage@0.10.0:
-    resolution: {integrity: sha512-NdrlShsiuiOadVTkD1EPscKxOgnX0/3vBMHww1Jm2YNATYXCpF+vySY/W3vZ/G020brOd3ZPbySt9tEcjJS9/A==}
+  breakage@0.10.1:
+    resolution: {integrity: sha512-cxs6/gBeMl0K/Tt5MVBKn27dajk79hKREGm7Kg4WsTn67phAZD+523n+qyVi5GfhFjLteil6GCGGpal/5Yo7GA==}
     hasBin: true
 
   buffer-crc32@0.2.13:
@@ -5130,6 +5133,10 @@ packages:
 
   minimatch@10.2.6:
     resolution: {integrity: sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==}
+    engines: {node: 18 || 20 || >=22}
+
+  minimatch@11.0.2:
+    resolution: {integrity: sha512-pWTgz5CN3tjqyZNSK2tePlSmu9IwM41q8yn8Usdqqwe9TIHh+9dEpLLjF4uApsfPEAZY71qtSiA2B2APEr+1Yw==}
     engines: {node: 18 || 20 || >=22}
 
   minimatch@3.1.5:
@@ -6650,14 +6657,14 @@ snapshots:
       css-tree: 3.2.1
     optional: true
 
-  '@breakage/changesets@0.1.0(breakage@0.10.0(supports-color@10.2.2)(zod@4.6.7))':
+  '@breakage/changesets@0.1.0(breakage@0.10.1(supports-color@10.2.2)(zod@4.6.7))':
     dependencies:
       '@changesets/assemble-release-plan': 7.0.0
       '@changesets/config': 4.0.1
       '@changesets/pre': 3.0.0
       '@changesets/read': 1.0.1
       '@manypkg/get-packages': 3.1.0
-      breakage: 0.10.0(supports-color@10.2.2)(zod@4.6.7)
+      breakage: 0.10.1(supports-color@10.2.2)(zod@4.6.7)
 
   '@cacheable/memory@2.2.0':
     dependencies:
@@ -7340,6 +7347,8 @@ snapshots:
 
   '@img/sharp-win32-x64@0.35.5':
     optional: true
+
+  '@isaacs/nonrecursive-glob-match@1.0.2': {}
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
@@ -8630,7 +8639,7 @@ snapshots:
       balanced-match: 1.0.2
       concat-map: 0.0.1
 
-  brace-expansion@5.0.8:
+  brace-expansion@5.0.12:
     dependencies:
       balanced-match: 4.0.4
 
@@ -8638,11 +8647,11 @@ snapshots:
     dependencies:
       fill-range: 7.1.1
 
-  breakage@0.10.0(supports-color@10.2.2)(zod@4.6.7):
+  breakage@0.10.1(supports-color@10.2.2)(zod@4.6.7):
     dependencies:
       arktype: 2.2.9
       comline: 0.9.3(arktype@2.2.9)(zod@4.6.7)
-      minimatch: 10.2.6
+      minimatch: 11.0.2
       semver: 7.8.5
       simple-git: 4.0.2(supports-color@10.2.2)
       takua: 0.2.3
@@ -10529,7 +10538,12 @@ snapshots:
 
   minimatch@10.2.6:
     dependencies:
-      brace-expansion: 5.0.8
+      brace-expansion: 5.0.12
+
+  minimatch@11.0.2:
+    dependencies:
+      '@isaacs/nonrecursive-glob-match': 1.0.2
+      brace-expansion: 5.0.12
 
   minimatch@3.1.5:
     dependencies:
