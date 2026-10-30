@@ -72,7 +72,7 @@
 		"motion": "14.8.0",
 		"nanoid": "6.0.2",
 		"openai": "7.45.1",
-		"postgres": "3.4.9",
+		"postgres": "4.0.0",
 		"react": "19.3.1",
 		"react-dom": "19.3.1",
 		"react-email": "6.11.6",
