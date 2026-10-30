@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.3.65
+
+### Patch Changes
+
+- bf0f2bd: Upgrade to Postgres.js v4 and migrate database notification setup to its direct array parameters.
+
 ## 0.3.64
 
 ### Patch Changes
