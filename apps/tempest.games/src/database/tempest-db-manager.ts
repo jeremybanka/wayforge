@@ -5,7 +5,7 @@ import type { Logger } from "drizzle-orm"
 import { getTableName } from "drizzle-orm"
 import type { PostgresJsDatabase } from "drizzle-orm/postgres-js"
 import { drizzle } from "drizzle-orm/postgres-js"
-import type { Options } from "postgres"
+import type { Options, Sql } from "postgres"
 import postgres from "postgres"
 
 import { env } from "../library/env"
@@ -14,7 +14,7 @@ import { games, players, users } from "./tempest-db-schema"
 
 export class DatabaseManager {
 	public options: Options<{}>
-	public sql: postgres.Sql
+	public sql: Sql
 	public drizzle: PostgresJsDatabase<typeof schema>
 	public observers: Map<string, Subject<string>> = new Map()
 
@@ -25,7 +25,7 @@ export class DatabaseManager {
 			getTableName(games),
 			getTableName(players),
 		]
-		await this.sql`SELECT create_notify_triggers(${this.sql.array(tableNames)})`
+		await this.sql`SELECT create_notify_triggers(${tableNames}::text[])`
 		await this.sql.listen(`table_update`, (message) => {
 			const messageParts = message.split(`,`)
 			const tableName = messageParts[0]
