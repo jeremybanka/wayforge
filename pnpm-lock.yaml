@@ -328,7 +328,7 @@ importers:
         version: 4.4.0
       drizzle-orm:
         specifier: 0.45.4
-        version: 0.45.4(bun-types@1.4.4)(postgres@3.4.9)
+        version: 0.45.4(bun-types@1.4.4)(postgres@4.0.0)
       motion:
         specifier: 14.8.0
         version: 14.8.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -339,8 +339,8 @@ importers:
         specifier: 7.45.1
         version: 7.45.1(undici@8.9.0)(ws@8.21.0)(zod@4.6.7)
       postgres:
-        specifier: 3.4.9
-        version: 3.4.9
+        specifier: 4.0.0
+        version: 4.0.0
       react:
         specifier: 19.3.1
         version: 19.3.1
@@ -5360,9 +5360,9 @@ packages:
     resolution: {integrity: sha512-YUbWYCgErwnMAVkjUnYa+KlMBzGpHwiIt/DE7f0G33AuX2LH9UcTk6KgWxd3zRU+pN3u/C+Xl3EnMLM4Hea7Sg==}
     engines: {node: ^10 || ^12 || >=14}
 
-  postgres@3.4.9:
-    resolution: {integrity: sha512-GD3qdB0x1z9xgFI6cdRD6xu2Sp2WCOEoe3mtnyB5Ee0XrrL5Pe+e4CCnJrRMnL1zYtRDZmQQVbvOttLnKDLnaw==}
-    engines: {node: '>=12'}
+  postgres@4.0.0:
+    resolution: {integrity: sha512-kBh8qXtcvvIAc00DftQyOxz7M/3Zxww1tRMXZPLzipNXXl5PIzHml+9zB3Mrge2U8ldc0WF1ZdLp1iYQi7Kh3A==}
+    engines: {node: '>=20'}
 
   potpack@1.0.2:
     resolution: {integrity: sha512-choctRBIV9EMT9WGAZHn3V7t0Z2pMQyl0EZE6pFc/6ml3ssw7Dlf/oAOvFwjm1HVsqfQN8GfeFyJ+d8tRzqueQ==}
@@ -8953,10 +8953,10 @@ snapshots:
       esbuild: 0.25.12
       tsx: 4.22.1
 
-  drizzle-orm@0.45.4(bun-types@1.4.4)(postgres@3.4.9):
+  drizzle-orm@0.45.4(bun-types@1.4.4)(postgres@4.0.0):
     optionalDependencies:
       bun-types: 1.4.4
-      postgres: 3.4.9
+      postgres: 4.0.0
 
   dts-resolver@3.0.0: {}
 
@@ -10719,7 +10719,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.2
 
-  postgres@3.4.9: {}
+  postgres@4.0.0: {}
 
   potpack@1.0.2: {}
 
