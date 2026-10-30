@@ -75,7 +75,7 @@
 		"postgres": "3.4.9",
 		"react": "19.3.1",
 		"react-dom": "19.3.1",
-		"react-email": "6.11.5",
+		"react-email": "6.11.6",
 		"resend": "6.35.0",
 		"safedeposit": "workspace:*",
 		"socket.io": "4.8.4",
@@ -86,7 +86,7 @@
 		"varmint": "workspace:*"
 	},
 	"devDependencies": {
-		"@react-email/ui": "6.11.5",
+		"@react-email/ui": "6.11.6",
 		"@types/bun": "npm:bun-types@1.4.4",
 		"@types/cors": "2.8.19",
 		"@types/node": "26.6.6",
