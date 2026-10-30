@@ -46,7 +46,7 @@
 		"galley.md": "0.3.1",
 		"recoverage": "0.1.20",
 		"tonnage": "0.5.2",
-		"tsdown": "0.23.3",
+		"tsdown": "0.23.4",
 		"typescript": "7.0.2",
 		"vite": "8.3.5",
 		"vitest": "5.0.5"
