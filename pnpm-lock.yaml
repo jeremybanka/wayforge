@@ -216,8 +216,8 @@ importers:
         specifier: npm:typescript@7.0.2
         version: typescript@7.0.2
       atom.io:
-        specifier: 0.54.2
-        version: 0.54.2(happy-dom@20.14.0)
+        specifier: 0.54.3
+        version: 0.54.3(happy-dom@20.14.0)
       correctly:
         specifier: 0.3.3
         version: 0.3.3(arktype@2.2.8)(supports-color@10.2.2)
@@ -283,13 +283,13 @@ importers:
         version: 4.0.105(zod@4.6.7)
       '@atom.io/react':
         specifier: 0.2.0
-        version: 0.2.0(@types/react@19.3.0)(atom.io@0.54.2(happy-dom@20.14.0))(react@19.3.1)
+        version: 0.2.0(@types/react@19.3.0)(atom.io@0.54.3(happy-dom@20.14.0))(react@19.3.1)
       '@atom.io/react-devtools':
         specifier: 0.1.1
-        version: 0.1.1(@atom.io/react@0.2.0(@types/react@19.3.0)(atom.io@0.54.2(happy-dom@20.14.0))(react@19.3.1))(@types/react@19.3.0)(atom.io@0.54.2(happy-dom@20.14.0))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
+        version: 0.1.1(@atom.io/react@0.2.0(@types/react@19.3.0)(atom.io@0.54.3(happy-dom@20.14.0))(react@19.3.1))(@types/react@19.3.0)(atom.io@0.54.3(happy-dom@20.14.0))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@atom.io/realtime':
         specifier: 0.1.1
-        version: 0.1.1(@atom.io/react@0.2.0(@types/react@19.3.0)(atom.io@0.54.2(happy-dom@20.14.0))(react@19.3.1))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(atom.io@0.54.2(happy-dom@20.14.0))(happy-dom@20.14.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))
+        version: 0.1.1(@atom.io/react@0.2.0(@types/react@19.3.0)(atom.io@0.54.3(happy-dom@20.14.0))(react@19.3.1))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(atom.io@0.54.3(happy-dom@20.14.0))(happy-dom@20.14.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))
       '@floating-ui/react':
         specifier: 0.27.20
         version: 0.27.20(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -321,8 +321,8 @@ importers:
         specifier: 2.2.9
         version: 2.2.9
       atom.io:
-        specifier: 0.54.2
-        version: 0.54.2(happy-dom@20.14.0)
+        specifier: 0.54.3
+        version: 0.54.3(happy-dom@20.14.0)
       cron:
         specifier: 4.4.0
         version: 4.4.0
@@ -483,7 +483,7 @@ importers:
     dependencies:
       '@atom.io/realtime':
         specifier: 0.1.1
-        version: 0.1.1(@atom.io/react@0.2.0(@types/react@19.3.0)(atom.io@0.54.2(happy-dom@20.14.0))(react@19.3.1))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(atom.io@0.54.2(happy-dom@20.14.0))(happy-dom@20.14.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))
+        version: 0.1.1(@atom.io/react@0.2.0(@types/react@19.3.0)(atom.io@0.54.3(happy-dom@20.14.0))(react@19.3.1))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(atom.io@0.54.3(happy-dom@20.14.0))(happy-dom@20.14.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))
       '@t3-oss/env-core':
         specifier: 0.13.11
         version: 0.13.11(arktype@2.2.9)(typescript@7.0.2)(zod@4.6.7)
@@ -491,8 +491,8 @@ importers:
         specifier: 2.2.9
         version: 2.2.9
       atom.io:
-        specifier: 0.54.2
-        version: 0.54.2(happy-dom@20.14.0)
+        specifier: 0.54.3
+        version: 0.54.3(happy-dom@20.14.0)
       comline:
         specifier: workspace:*
         version: link:../comline
@@ -613,8 +613,8 @@ importers:
   packages/rel8:
     dependencies:
       atom.io:
-        specifier: 0.54.2
-        version: 0.54.2(happy-dom@20.14.0)
+        specifier: 0.54.3
+        version: 0.54.3(happy-dom@20.14.0)
     devDependencies:
       concurrently:
         specifier: 10.0.6
@@ -781,8 +781,8 @@ importers:
         specifier: 26.6.6
         version: 26.6.6
       atom.io:
-        specifier: 0.54.2
-        version: 0.54.2(happy-dom@20.14.0)
+        specifier: 0.54.3
+        version: 0.54.3(happy-dom@20.14.0)
       concurrently:
         specifier: 10.0.6
         version: 10.0.6
@@ -3535,8 +3535,8 @@ packages:
       happy-dom:
         optional: true
 
-  atom.io@0.54.2:
-    resolution: {integrity: sha512-muuyMkuoj5m11joXe45kppF8/83l3awFABL10kjN4ve3/jD3YPs0VaH3MUt30x4ALuyimiNP9vrazYJg63KGzA==}
+  atom.io@0.54.3:
+    resolution: {integrity: sha512-Wb+IrAZAEAL8Upc2Z3/WX27f/XlPHfxWD6AuBY1KaSOY/CqzY50TKirE7v6zA2iySz9k96f0LE3oc8KQjsG8bw==}
     peerDependencies:
       happy-dom: '>=17.4.4'
     peerDependenciesMeta:
@@ -6423,28 +6423,28 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@atom.io/react-devtools@0.1.1(@atom.io/react@0.2.0(@types/react@19.3.0)(atom.io@0.54.2(happy-dom@20.14.0))(react@19.3.1))(@types/react@19.3.0)(atom.io@0.54.2(happy-dom@20.14.0))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
+  '@atom.io/react-devtools@0.1.1(@atom.io/react@0.2.0(@types/react@19.3.0)(atom.io@0.54.3(happy-dom@20.14.0))(react@19.3.1))(@types/react@19.3.0)(atom.io@0.54.3(happy-dom@20.14.0))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)':
     dependencies:
-      '@atom.io/react': 0.2.0(@types/react@19.3.0)(atom.io@0.54.2(happy-dom@20.14.0))(react@19.3.1)
-      atom.io: 0.54.2(happy-dom@20.14.0)
+      '@atom.io/react': 0.2.0(@types/react@19.3.0)(atom.io@0.54.3(happy-dom@20.14.0))(react@19.3.1)
+      atom.io: 0.54.3(happy-dom@20.14.0)
       motion: 14.7.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       react: 19.3.1
       react-dom: 19.3.1(react@19.3.1)
     optionalDependencies:
       '@types/react': 19.3.0
 
-  '@atom.io/react@0.2.0(@types/react@19.3.0)(atom.io@0.54.2(happy-dom@20.14.0))(react@19.3.1)':
+  '@atom.io/react@0.2.0(@types/react@19.3.0)(atom.io@0.54.3(happy-dom@20.14.0))(react@19.3.1)':
     dependencies:
-      atom.io: 0.54.2(happy-dom@20.14.0)
+      atom.io: 0.54.3(happy-dom@20.14.0)
       react: 19.3.1
     optionalDependencies:
       '@types/react': 19.3.0
 
-  '@atom.io/realtime@0.1.1(@atom.io/react@0.2.0(@types/react@19.3.0)(atom.io@0.54.2(happy-dom@20.14.0))(react@19.3.1))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(atom.io@0.54.2(happy-dom@20.14.0))(happy-dom@20.14.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))':
+  '@atom.io/realtime@0.1.1(@atom.io/react@0.2.0(@types/react@19.3.0)(atom.io@0.54.3(happy-dom@20.14.0))(react@19.3.1))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(atom.io@0.54.3(happy-dom@20.14.0))(happy-dom@20.14.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))':
     dependencies:
-      atom.io: 0.54.2(happy-dom@20.14.0)
+      atom.io: 0.54.3(happy-dom@20.14.0)
     optionalDependencies:
-      '@atom.io/react': 0.2.0(@types/react@19.3.0)(atom.io@0.54.2(happy-dom@20.14.0))(react@19.3.1)
+      '@atom.io/react': 0.2.0(@types/react@19.3.0)(atom.io@0.54.3(happy-dom@20.14.0))(react@19.3.1)
       '@testing-library/react': 16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       '@types/react': 19.3.0
       happy-dom: 20.14.0
@@ -8541,7 +8541,7 @@ snapshots:
     optionalDependencies:
       happy-dom: 20.14.0
 
-  atom.io@0.54.2(happy-dom@20.14.0):
+  atom.io@0.54.3(happy-dom@20.14.0):
     optionalDependencies:
       happy-dom: 20.14.0
 
