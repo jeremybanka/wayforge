@@ -32,7 +32,7 @@
 	"devDependencies": {
 		"@types/node": "26.6.6",
 		"concurrently": "10.0.6",
-		"eslint": "10.13.0",
+		"eslint": "10.14.0",
 		"tsdown": "0.23.4",
 		"typescript": "7.0.2",
 		"vite": "8.3.5",
