@@ -97,7 +97,7 @@
 		"concurrently": "10.0.6",
 		"cors": "2.8.6",
 		"drizzle-kit": "0.31.11",
-		"eslint": "10.13.0",
+		"eslint": "10.14.0",
 		"flightdeck": "workspace:*",
 		"lasertag": "0.8.10",
 		"typescript": "7.0.2",
