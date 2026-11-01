@@ -336,8 +336,8 @@ importers:
         specifier: 6.0.2
         version: 6.0.2
       openai:
-        specifier: 7.45.1
-        version: 7.45.1(undici@8.9.0)(ws@8.21.0)(zod@4.6.7)
+        specifier: 7.46.0
+        version: 7.46.0(undici@8.9.0)(ws@8.21.0)(zod@4.6.7)
       postgres:
         specifier: 4.0.0
         version: 4.0.0
@@ -793,8 +793,8 @@ importers:
         specifier: 0.3.1
         version: 0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7)
       openai:
-        specifier: 7.45.1
-        version: 7.45.1(undici@8.9.0)(ws@8.21.0)(zod@4.6.7)
+        specifier: 7.46.0
+        version: 7.46.0(undici@8.9.0)(ws@8.21.0)(zod@4.6.7)
       tonnage:
         specifier: 0.5.2
         version: 0.5.2(galley.md@0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7))
@@ -5233,8 +5233,8 @@ packages:
     resolution: {integrity: sha512-YgBpdJHPyQ2UE5x+hlSXcnejzAvD0b22U2OuAP+8OnlJT+PjWPxtgmGqKKc+RgTM63U9gN0YzrYc71R2WT/hTA==}
     engines: {node: '>=18'}
 
-  openai@7.45.1:
-    resolution: {integrity: sha512-mutrJXwhJIMZ24Lab2COFtNp44OcpZSnV4O2O7q38wAHUa2m2fQqUO5pj1XS3PqLfOTeODBUS9YoadqDnnGk5A==}
+  openai@7.46.0:
+    resolution: {integrity: sha512-FmbPcDtc0BTCN7ZQ5SBEnC4lPNMEUjA6w/lRkbh7l9IzWx1Mue6P7OEU2cayp5S5YjLuc7VEUfBCYqoQpb6+1w==}
     engines: {node: '>=22.0.0'}
     peerDependencies:
       '@aws-sdk/credential-provider-node': '>=3.972.0 <4'
@@ -10596,7 +10596,7 @@ snapshots:
       is-inside-container: 1.0.0
       wsl-utils: 0.1.0
 
-  openai@7.45.1(undici@8.9.0)(ws@8.21.0)(zod@4.6.7):
+  openai@7.46.0(undici@8.9.0)(ws@8.21.0)(zod@4.6.7):
     optionalDependencies:
       undici: 8.9.0
       ws: 8.21.0
