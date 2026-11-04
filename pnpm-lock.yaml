@@ -438,7 +438,7 @@ importers:
     devDependencies:
       '@breakage/changesets':
         specifier: 0.1.0
-        version: 0.1.0(breakage@0.10.1(supports-color@10.2.2)(zod@4.6.7))
+        version: 0.1.0(breakage@0.10.2(supports-color@10.2.2)(zod@4.6.7))
       '@types/bun':
         specifier: npm:bun-types@1.4.4
         version: bun-types@1.4.4
@@ -452,8 +452,8 @@ importers:
         specifier: 2.2.9
         version: 2.2.9
       breakage:
-        specifier: 0.10.1
-        version: 0.10.1(supports-color@10.2.2)(zod@4.6.7)
+        specifier: 0.10.2
+        version: 0.10.2(supports-color@10.2.2)(zod@4.6.7)
       concurrently:
         specifier: 10.0.6
         version: 10.0.6
@@ -2040,8 +2040,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@isaacs/nonrecursive-glob-match@1.0.2':
-    resolution: {integrity: sha512-GJPHIgPPtFl+nLhFHyF0zZoFcOFLsZWbHFFzo+Zr+PWDXJbl9hHxb2w+9SiF2fHmLgKaXIpUzQo3SbBBZ9WObw==}
+  '@isaacs/nonrecursive-glob-match@1.0.3':
+    resolution: {integrity: sha512-SI7kyKHq4XXDRozw+r9GlRZkia1ZkFrpLW98r2IC2Bpr8YkFGE3fvjzmxCG0x78A++69HmDNrDvSMYBZmHGpKA==}
 
   '@jridgewell/gen-mapping@0.3.13':
     resolution: {integrity: sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==}
@@ -3705,8 +3705,8 @@ packages:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
     engines: {node: '>=8'}
 
-  breakage@0.10.1:
-    resolution: {integrity: sha512-cxs6/gBeMl0K/Tt5MVBKn27dajk79hKREGm7Kg4WsTn67phAZD+523n+qyVi5GfhFjLteil6GCGGpal/5Yo7GA==}
+  breakage@0.10.2:
+    resolution: {integrity: sha512-woDmVb3OQpDO185nJVFWLIilqiGq+UZzonp11rl+ICM9ZmoBqQP/qbls0Bvm6g1R4qIzW1muOdkghAuBUJlT8A==}
     hasBin: true
 
   buffer-crc32@0.2.13:
@@ -5214,9 +5214,9 @@ packages:
     resolution: {integrity: sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==}
     engines: {node: 18 || 20 || >=22}
 
-  minimatch@11.0.2:
-    resolution: {integrity: sha512-pWTgz5CN3tjqyZNSK2tePlSmu9IwM41q8yn8Usdqqwe9TIHh+9dEpLLjF4uApsfPEAZY71qtSiA2B2APEr+1Yw==}
-    engines: {node: 18 || 20 || >=22}
+  minimatch@11.0.4:
+    resolution: {integrity: sha512-/UJ1dEoVQTjPNDh6SGlUo+ueLMmoHTas4q+8yaAR/5t6nLAIiBDJtoYUh20IYleix7ehiQkgczb84PE3uzHkxg==}
+    engines: {node: 20 || >=22}
 
   minimatch@3.1.5:
     resolution: {integrity: sha512-VgjWUsnnT6n+NUk6eZq77zeFdpW2LWDzP6zFGrCbHXiYNul5Dzqk2HHQ5uFH2DNW5Xbp8+jVzaeNt94ssEEl4w==}
@@ -5691,8 +5691,8 @@ packages:
   selderee@0.12.0:
     resolution: {integrity: sha512-b1YMh3+DHZp59DLna3qVwQ5iOla/nrI6mLBNW02XxU77M3046Df6VLkoaJyFz20VsGIG5kkp+FK0kg4K4HnUFw==}
 
-  semver@7.8.5:
-    resolution: {integrity: sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==}
+  semver@7.8.6:
+    resolution: {integrity: sha512-9lpSSU4Mly3mrtruwLs1eLK6+gzbzqeBFwRNjIjE+9LuDpWdYctrQlQ3ej1Ilgi7gknpsTRnPoLP8DpCHqHIJw==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -6737,14 +6737,14 @@ snapshots:
       css-tree: 3.2.1
     optional: true
 
-  '@breakage/changesets@0.1.0(breakage@0.10.1(supports-color@10.2.2)(zod@4.6.7))':
+  '@breakage/changesets@0.1.0(breakage@0.10.2(supports-color@10.2.2)(zod@4.6.7))':
     dependencies:
       '@changesets/assemble-release-plan': 7.0.0
       '@changesets/config': 4.0.1
       '@changesets/pre': 3.0.0
       '@changesets/read': 1.0.1
       '@manypkg/get-packages': 3.1.0
-      breakage: 0.10.1(supports-color@10.2.2)(zod@4.6.7)
+      breakage: 0.10.2(supports-color@10.2.2)(zod@4.6.7)
 
   '@cacheable/memory@2.2.0':
     dependencies:
@@ -6767,7 +6767,7 @@ snapshots:
       '@changesets/types': 7.0.0
       import-meta-resolve: 4.2.0
       jsonc-parser: 3.3.1
-      semver: 7.8.5
+      semver: 7.8.6
 
   '@changesets/assemble-release-plan@7.0.0':
     dependencies:
@@ -6775,7 +6775,7 @@ snapshots:
       '@changesets/get-dependents-graph': 3.0.0
       '@changesets/should-skip-package': 1.0.0
       '@changesets/types': 7.0.0
-      semver: 7.8.5
+      semver: 7.8.6
 
   '@changesets/changelog-git@1.0.0':
     dependencies:
@@ -6802,7 +6802,7 @@ snapshots:
       import-meta-resolve: 4.2.0
       launch-editor: 2.14.1
       package-manager-detector: 1.8.0
-      semver: 7.8.5
+      semver: 7.8.6
       tinyexec: 1.3.1
 
   '@changesets/config@4.0.1':
@@ -6823,7 +6823,7 @@ snapshots:
   '@changesets/get-dependents-graph@3.0.0':
     dependencies:
       '@changesets/types': 7.0.0
-      semver: 7.8.5
+      semver: 7.8.6
 
   '@changesets/git@4.0.1':
     dependencies:
@@ -7428,7 +7428,7 @@ snapshots:
   '@img/sharp-win32-x64@0.35.5':
     optional: true
 
-  '@isaacs/nonrecursive-glob-match@1.0.2': {}
+  '@isaacs/nonrecursive-glob-match@1.0.3': {}
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
@@ -8255,7 +8255,7 @@ snapshots:
       '@typescript-eslint/visitor-keys': 8.72.1
       debug: 4.4.3(supports-color@10.2.2)
       minimatch: 10.2.6
-      semver: 7.8.5
+      semver: 7.8.6
       tinyglobby: 0.2.17
       ts-api-utils: 2.5.0(@typescript/typescript6@6.0.2)
       typescript: '@typescript/typescript6@6.0.2'
@@ -8587,7 +8587,7 @@ snapshots:
       parse5: 8.0.1
       proper-lockfile: 4.1.2
       read: 1.0.7
-      semver: 7.8.5
+      semver: 7.8.6
       tinyglobby: 0.2.17
       typed-rest-client: 1.8.11
       url-join: 4.0.1
@@ -8758,12 +8758,12 @@ snapshots:
     dependencies:
       fill-range: 7.1.1
 
-  breakage@0.10.1(supports-color@10.2.2)(zod@4.6.7):
+  breakage@0.10.2(supports-color@10.2.2)(zod@4.6.7):
     dependencies:
       arktype: 2.2.9
       comline: 0.9.3(arktype@2.2.9)(zod@4.6.7)
-      minimatch: 11.0.2
-      semver: 7.8.5
+      minimatch: 11.0.4
+      semver: 7.8.6
       simple-git: 4.0.2(supports-color@10.2.2)
       takua: 0.2.3
     transitivePeerDependencies:
@@ -8940,7 +8940,7 @@ snapshots:
       dot-prop: 10.1.0
       env-paths: 3.0.0
       json-schema-typed: 8.0.2
-      semver: 7.8.5
+      semver: 7.8.6
       uint8array-extras: 1.5.0
 
   consola@3.4.2: {}
@@ -9320,7 +9320,7 @@ snapshots:
       eslint-import-context: 0.1.9(unrs-resolver@1.11.1)
       is-glob: 4.0.3
       minimatch: 10.2.6
-      semver: 7.8.5
+      semver: 7.8.6
       stable-hash-x: 0.2.0
       unrs-resolver: 1.11.1
     optionalDependencies:
@@ -9969,7 +9969,7 @@ snapshots:
       lodash.isstring: 4.0.1
       lodash.once: 4.1.1
       ms: 2.1.3
-      semver: 7.8.5
+      semver: 7.8.6
 
   jwa@2.0.1:
     dependencies:
@@ -10150,7 +10150,7 @@ snapshots:
 
   make-dir@4.0.0:
     dependencies:
-      semver: 7.8.5
+      semver: 7.8.6
 
   markdown-extensions@2.0.0: {}
 
@@ -10650,9 +10650,9 @@ snapshots:
     dependencies:
       brace-expansion: 5.0.12
 
-  minimatch@11.0.2:
+  minimatch@11.0.4:
     dependencies:
-      '@isaacs/nonrecursive-glob-match': 1.0.2
+      '@isaacs/nonrecursive-glob-match': 1.0.3
       brace-expansion: 5.0.12
 
   minimatch@3.1.5:
@@ -11205,13 +11205,13 @@ snapshots:
     dependencies:
       parseley: 0.13.1
 
-  semver@7.8.5: {}
+  semver@7.8.6: {}
 
   sharp@0.35.5(@types/node@26.6.6):
     dependencies:
       '@img/colour': 1.1.0
       detect-libc: 2.1.2
-      semver: 7.8.5
+      semver: 7.8.6
     optionalDependencies:
       '@img/sharp-darwin-arm64': 0.35.5
       '@img/sharp-darwin-x64': 0.35.5
@@ -11832,7 +11832,7 @@ snapshots:
   vscode-languageclient@11.0.0:
     dependencies:
       minimatch: 10.2.6
-      semver: 7.8.5
+      semver: 7.8.6
       vscode-languageserver-protocol: 3.18.5
       vscode-languageserver-textdocument: 1.0.16
 
