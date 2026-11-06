@@ -70,7 +70,7 @@
 		"jiti": "2.7.0",
 		"lasertag": "0.8.10",
 		"oxlint": "1.91.0",
-		"oxlint-tsgolint": "7.0.2005",
+		"oxlint-tsgolint": "7.0.2006",
 		"pin-dependencies-checker": "2.7.1",
 		"turbo": "2.11.10",
 		"typescript": "npm:@typescript/typescript6@6.0.2",
