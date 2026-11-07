@@ -192,8 +192,8 @@ importers:
         specifier: 0.25.2
         version: 0.25.2
       '@dprint/markdown':
-        specifier: 0.28.2
-        version: 0.28.2
+        specifier: 0.29.0
+        version: 0.29.0
       '@dprint/oxc':
         specifier: 0.49.1
         version: 0.49.1
@@ -1314,6 +1314,9 @@ packages:
 
   '@dprint/markdown@0.28.2':
     resolution: {integrity: sha512-F1kIIh1WtRTWMjKv9M9xOkpqiAjdQWP6ROkQfHIHVyyZF3NLKhb/9SRsd2GzISMMTfwRcq/0Arz0Q7+X26RC7w==}
+
+  '@dprint/markdown@0.29.0':
+    resolution: {integrity: sha512-4V6MhdqZrTXFeQAfZWHRf6dKPPlx5JA3iCaT8uu6IbZ9gZpZ1R+NzXysczV2aMT/Uub44tWgljbXgnODs5dqXQ==}
 
   '@dprint/oxc@0.49.1':
     resolution: {integrity: sha512-6l0y3mvs8gS86mmrprRplKv6XJAI04RKEs76glWUkPb9WAcw5LZXwKdgL6EjX+6DkYhnH9mTufXc0IE6YwBpQg==}
@@ -6984,6 +6987,8 @@ snapshots:
     optional: true
 
   '@dprint/markdown@0.28.2': {}
+
+  '@dprint/markdown@0.29.0': {}
 
   '@dprint/oxc@0.49.1': {}
 
