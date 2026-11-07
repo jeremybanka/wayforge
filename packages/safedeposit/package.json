@@ -33,7 +33,7 @@
 		"@types/node": "26.6.6",
 		"concurrently": "10.0.6",
 		"eslint": "10.14.0",
-		"tsdown": "0.23.5",
+		"tsdown": "0.23.7",
 		"typescript": "7.0.2",
 		"vite": "8.3.6",
 		"vitest": "5.1.0"
