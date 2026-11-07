@@ -86,6 +86,7 @@
 			"groupName": "Vercel AI SDK"
 		},
 		{
+			"groupName": "dprint",
 			"matchPackageNames": [
 				"dprint",
 				"@dprint/*",
