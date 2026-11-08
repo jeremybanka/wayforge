@@ -54,3 +54,9 @@ Commit the entire `.correctly/` directory, including its lock and schema snapsho
 Editors use the same configuration and snapshots. For VS Code, run `pnpm exec correctly vsix` to build and install the extension matching the installed package. Other LSP clients can run `node_modules/.bin/correctly-lsp --stdio`. Trust the workspace before enabling executable TypeScript configuration.
 
 The initial Renovate snapshot is inherited byte-for-byte from atom.io's reviewed `renovate@44.148.4` snapshot, preserving its digest and discovery metadata. The current upstream schema incorrectly rejects the `installTools` tool names; refreshing Renovate may expose that regression until upstream fixes it. Remote schema downloads permit up to 8 MiB because the current Renovate schema exceeds Correctly's default 2 MiB limit.
+
+## Unused code
+
+Run `pnpm run check:unused` to check workspace files, exports, types, and dependencies. Run `pnpm run check:unused:production` to check production entrypoints without tests, examples, or contributor scripts keeping source code reachable. Both commands participate in `check` and run sequentially in a dedicated Knip CI job alongside the other static checks. Findings fail the check; neither command deletes code.
+
+`knip.ts` preserves published entrypoint exports and accounts for executable configuration, workers, examples, and fixture projects. Review findings against public API and dynamically loaded inputs before removing code; source reachability does not measure final bundle size.

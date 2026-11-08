@@ -2,9 +2,9 @@ import { type } from "arktype"
 
 import { COMMON_PASSWORDS_NOT_ALLOWED } from "./common-passwords-not-allowed"
 
-export const USERNAME_MIN_LENGTH = 3
-export const USERNAME_MAX_LENGTH = 15
-export const USERNAME_ALLOWED_CHARS = /^[a-zA-Z0-9_-]+$/
+const USERNAME_MIN_LENGTH = 3
+const USERNAME_MAX_LENGTH = 15
+const USERNAME_ALLOWED_CHARS = /^[a-zA-Z0-9_-]+$/
 
 export const usernameType = type(USERNAME_ALLOWED_CHARS)
 	.pipe(
@@ -56,7 +56,7 @@ function estimateEntropy(password: string) {
 	const entropy = password.length * Math.log2(poolSize)
 	return entropy
 }
-export function calculatePasswordComplexity(password: string): number {
+function calculatePasswordComplexity(password: string): number {
 	let score = 0
 	const commonPasswordPenalty = 100
 	if (isCommonPassword(password)) {
@@ -86,7 +86,7 @@ export const credentialsType = type({
 
 export const emailType = type(`string`).brand(`email`)
 
-export const signUpType = type({
+const signUpType = type({
 	"+": `delete`,
 	username: `string`,
 	password: `string`,

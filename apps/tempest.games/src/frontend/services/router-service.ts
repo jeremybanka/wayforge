@@ -19,13 +19,12 @@ export const ROUTES = optional({
 export type Route = TreePath<typeof ROUTES>
 export type Pathname = `/${Join<Route, `/`>}`
 
-export function isRoute(route: unknown[]): route is Route {
+function isRoute(route: unknown[]): route is Route {
 	return isTreePath(ROUTES, route)
 }
 
-export const PUBLIC_ROUTES = [[]] as const satisfies TreePath<typeof ROUTES>[]
+const PUBLIC_ROUTES = [[]] as const satisfies TreePath<typeof ROUTES>[]
 export type PublicRoute = (typeof PUBLIC_ROUTES)[number]
-export type PublicPathname = `/${Join<PublicRoute, `/`>}`
 
 function isPublicRoute(route: unknown[]): route is PublicRoute {
 	return PUBLIC_ROUTES.some(
@@ -38,7 +37,7 @@ export function navigate(pathname: Pathname): void {
 	setState(pathnameAtom, pathname)
 }
 
-export const pathnameAtom = atom<Pathname | (string & {})>({
+const pathnameAtom = atom<Pathname | (string & {})>({
 	key: `pathname`,
 	default: window.location.pathname,
 	effects: [

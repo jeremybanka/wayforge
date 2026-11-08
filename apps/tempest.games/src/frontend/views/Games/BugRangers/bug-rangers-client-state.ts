@@ -47,7 +47,7 @@ export const isMyTurnSelector = selector<boolean>({
 	},
 })
 
-export const iAmReadyToPlaySelector = selector<boolean>({
+const iAmReadyToPlaySelector = selector<boolean>({
 	key: `iAmReadyToPlay`,
 	get: ({ get }) => {
 		const myUserKey = get(myUserKeyAtom)

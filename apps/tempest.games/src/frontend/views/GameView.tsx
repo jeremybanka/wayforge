@@ -8,9 +8,7 @@ import { CarbiterView } from "./Games/CarbiterView"
 import css from "./GameView.module.css"
 import { ServerControl } from "./ServerControl"
 
-export type Tail<T extends any[]> = T extends [any, ...infer Rest] ? Rest : never
-
-export type GameRoute = Extract<Route, [`game`, ...any]>
+type GameRoute = Extract<Route, [`game`, ...any]>
 
 export type GameIndexProps = {
 	route: ViewOf<GameRoute>
@@ -40,7 +38,7 @@ function GameIndex(): React.ReactNode {
 
 const GAMES = toEntries(ROUTES[1].game[1]).map(([gameId]) => gameId)
 type GameId = (typeof GAMES)[number]
-export type GameProps = { gameId: GameId }
+type GameProps = { gameId: GameId }
 function Game(props: GameProps): React.ReactNode {
 	switch (props.gameId) {
 		case `hexiom`: {

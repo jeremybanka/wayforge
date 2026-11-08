@@ -63,7 +63,7 @@ export const sessionMiddleware = async (
 	return `user::${user.id}` satisfies UserKey
 }
 
-export const roomAdminsSelectors = selectorFamily<boolean, UserKey>({
+const roomAdminsSelectors = selectorFamily<boolean, UserKey>({
 	key: `roomAdmins`,
 	get:
 		(userKey) =>

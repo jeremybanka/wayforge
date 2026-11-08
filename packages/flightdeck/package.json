@@ -46,11 +46,8 @@
 		"safedeposit": "workspace:*"
 	},
 	"devDependencies": {
-		"@biomejs/js-api": "6.1.0",
-		"@biomejs/wasm-nodejs": "2.6.6",
 		"@types/bun": "npm:bun-types@1.4.4",
 		"@types/node": "26.6.6",
-		"concurrently": "10.0.6",
 		"eslint": "10.14.0",
 		"json-schema-to-zod": "2.8.1",
 		"tsdown": "0.23.7",

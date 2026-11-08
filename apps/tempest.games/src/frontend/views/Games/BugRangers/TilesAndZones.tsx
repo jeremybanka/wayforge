@@ -9,10 +9,6 @@ import {
 } from "../../../../library/bug-rangers-game-state"
 import { GameTileActual, GameTilePreview } from "./HexTile"
 
-export type GameTilesProps = {
-	validWarDeclarators: readonly TileCoordinatesSerialized[]
-	validWarTargets: readonly TileCoordinatesSerialized[]
-}
 export function GameTiles(): ReactNode {
 	usePullMutable(gameTilesAtom)
 	const tiles = useJSON(gameTilesAtom)

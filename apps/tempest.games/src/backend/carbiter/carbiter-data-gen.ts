@@ -6,12 +6,12 @@ import { Squirrel } from "varmint"
 
 import { env } from "../../library/env"
 
-export const IN_VITEST = `vitest` in globalThis
+const IN_VITEST = `vitest` in globalThis
 
 const CACHE_MODE = IN_VITEST ? `read-write` : `off`
-export const squirrel = new Squirrel(CACHE_MODE, `__tests__/.varmint`)
+const squirrel = new Squirrel(CACHE_MODE, `__tests__/.varmint`)
 
-export type GenerateOptions = {
+type GenerateOptions = {
 	messages: ModelMessage[]
 	model: LanguageModel
 }
@@ -21,28 +21,14 @@ type Generated<T> = distill.Out<T> extends infer Output ? Output : never
 const openai = createOpenAI({
 	apiKey: env.API_KEY_OPENAI ?? ``,
 })
-export const gpt5point2 = openai(`gpt-5.2`)
+const gpt5point2 = openai(`gpt-5.2`)
 
 export type NutritionFacts = {
 	carbs: number
 	protein: number
 }
 
-export function createGenerator<T>(
-	schema: Type<T>,
-	model: LanguageModel,
-): ({ messages, model }: GenerateOptions) => Promise<Generated<T>> {
-	return async ({ messages }: GenerateOptions): Promise<Generated<T>> => {
-		const { output } = await generateText({
-			model,
-			output: Output.object({ schema }),
-			messages,
-		})
-		return output
-	}
-}
-
-export function createSquirreledGenerator<T>(
+function createSquirreledGenerator<T>(
 	schema: Type<T>,
 	model: LanguageModel,
 ): ({ messages, model }: GenerateOptions) => Promise<Generated<T>> {
@@ -66,7 +52,7 @@ export function createSquirreledGenerator<T>(
 	}
 }
 
-export const nutritionFactsSchema = type({
+const nutritionFactsSchema = type({
 	carbs: `number`,
 	protein: `number`,
 })

@@ -1,9 +1,12 @@
 import { createEnv } from "@t3-oss/env-core"
 import { type } from "arktype"
 
+/** @internal Used by implementation tests. */
 export const BUILDING_WITH_VITE = `__vite_start_time` in globalThis
+/** @internal Used by implementation tests. */
 export const HAS_WINDOW = typeof window !== `undefined`
 export const IS_SERVER = !BUILDING_WITH_VITE && !HAS_WINDOW
+/** @internal Used by implementation tests. */
 export const IS_TEST = `vitest` in globalThis
 
 const str = type(`string`)

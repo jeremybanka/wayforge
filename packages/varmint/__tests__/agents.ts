@@ -24,14 +24,14 @@ export type Agenda = {
 	[key: string]: boolean | string | null
 }
 
-export const agendaAtoms: RegularAtomFamilyToken<Agenda, string> = atomFamily<
+const agendaAtoms: RegularAtomFamilyToken<Agenda, string> = atomFamily<
 	Agenda,
 	string
 >({
 	key: `agenda`,
 	default: {},
 })
-export const agendaSystemMessageSelectors: ReadonlySelectorFamilyToken<
+const agendaSystemMessageSelectors: ReadonlySelectorFamilyToken<
 	SystemMessage | null,
 	string
 > = selectorFamily<SystemMessage | null, string>({
@@ -79,13 +79,15 @@ export const agendaSystemMessageSelectors: ReadonlySelectorFamilyToken<
 		},
 })
 
-export const orientationAtoms: RegularAtomFamilyToken<string, string> =
-	atomFamily<string, string>({
-		key: `orientation`,
-		default: `You are an AI assistant designed to assist with tasks.`,
-	})
+const orientationAtoms: RegularAtomFamilyToken<string, string> = atomFamily<
+	string,
+	string
+>({
+	key: `orientation`,
+	default: `You are an AI assistant designed to assist with tasks.`,
+})
 
-export const messageAtoms: RegularAtomFamilyToken<string[], string> = atomFamily<
+const messageAtoms: RegularAtomFamilyToken<string[], string> = atomFamily<
 	string[],
 	string
 >({
@@ -93,7 +95,7 @@ export const messageAtoms: RegularAtomFamilyToken<string[], string> = atomFamily
 	default: [],
 })
 
-export const chatMessageAtoms: RegularAtomFamilyToken<
+const chatMessageAtoms: RegularAtomFamilyToken<
 	Loadable<Omit<Message, `id`>>,
 	string
 > = atomFamily<Loadable<Omit<Message, `id`>>, string>({
@@ -104,7 +106,7 @@ export const chatMessageAtoms: RegularAtomFamilyToken<
 	},
 })
 
-export const conversationSelectors: ReadonlySelectorFamilyToken<
+const conversationSelectors: ReadonlySelectorFamilyToken<
 	Loadable<(AssistantMessage | SystemMessage | UserMessage)[]>,
 	string
 > = selectorFamily<
@@ -123,7 +125,7 @@ export const conversationSelectors: ReadonlySelectorFamilyToken<
 		},
 })
 
-export const openAIParamsSelectors: ReadonlySelectorFamilyToken<
+const openAIParamsSelectors: ReadonlySelectorFamilyToken<
 	Loadable<OpenAIResources.Chat.Completions.ChatCompletionCreateParamsNonStreaming>,
 	string
 > = selectorFamily<
@@ -322,12 +324,7 @@ export class Grunt<State extends Agenda> implements Agent<
 	}
 }
 
-export type TestTools = {
-	describe: (key: string, fn: () => void) => void
-	it: (key: string, fn: () => void) => void
-}
-
-export const evaluationSchema: ZodType<{
+const evaluationSchema: ZodType<{
 	passed: boolean
 	message: string
 }> = z.object({

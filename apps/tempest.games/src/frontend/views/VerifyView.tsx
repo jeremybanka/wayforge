@@ -8,7 +8,7 @@ import { authAtom, oneTimeCodeInputAtom } from "../services/socket-auth-service"
 import { trpcClient } from "../services/trpc-client-service"
 import css from "./VerifyView.module.css"
 
-export type VerifyRoute = Extract<Route, [`verify`, ...any]>
+type VerifyRoute = Extract<Route, [`verify`, ...any]>
 
 type VerifyProps = {
 	route: ViewOf<VerifyRoute>

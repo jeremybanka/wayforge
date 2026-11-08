@@ -1,4 +1,4 @@
-export type Role = `backend` | `frontend`
+type Role = `backend` | `frontend`
 export type Extension = `js` | `ts`
 export type Runner = `bun` | `node`
 export type RoomName = `${Role}.worker.${string}.${Runner}`
