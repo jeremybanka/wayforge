@@ -11,7 +11,7 @@ export const buttonBlockActiveAtom = atom<boolean>({
 	default: false,
 })
 
-export const ACCOUNT_EDITING_STATES = optional({
+const ACCOUNT_EDITING_STATES = optional({
 	username: null,
 	email: optional({
 		otcLogin: optional({
@@ -28,7 +28,6 @@ export const ACCOUNT_EDITING_STATES = optional({
 export type AccountEditingState = TreePath<typeof ACCOUNT_EDITING_STATES>
 
 export type AccountString = `email` | `new-password` | `username`
-export type AccountConfirmationField = `otcLogin` | `otcVerify` | `passwordLogin`
 export const accountEditingAtom = atom<AccountEditingState>({
 	key: `accountEditing`,
 	default: [],

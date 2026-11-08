@@ -9,7 +9,7 @@ import {
 } from "./schema"
 import { type CliWarning, createWarningFactory } from "./warnings"
 
-export type ArgumentInstance = {
+type ArgumentInstance = {
 	index: number
 	value: string
 	valueIndex?: number
@@ -65,11 +65,11 @@ function* optionWords(
 	}
 }
 
-export function isBooleanLiteral(arg: string): boolean {
+function isBooleanLiteral(arg: string): boolean {
 	return arg === `true` || arg === `false` || arg === `0` || arg === `1`
 }
 
-export function isKnownOptionToken(
+function isKnownOptionToken(
 	arg: string,
 	knownOptionTokens: KnownOptionTokens,
 ): boolean {
@@ -192,7 +192,7 @@ function jsonSchemaTypeIsBoolean(jsonSchema: JsonSchema | undefined): boolean {
 	return type.length > 0 && type.every((t) => t === `boolean`)
 }
 
-export function retrieveKnownOptionTokens(
+function retrieveKnownOptionTokens(
 	options: readonly Pick<ArgumentOption, `names`>[],
 ): KnownOptionTokens {
 	return {

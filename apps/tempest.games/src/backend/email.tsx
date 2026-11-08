@@ -6,7 +6,7 @@ import { env } from "../library/env"
 import { summarizeAccountAction } from "./account-actions"
 import { logger } from "./logger"
 
-export const resend = new Resend(env.API_KEY_RESEND)
+const resend = new Resend(env.API_KEY_RESEND)
 
 interface sendEmailToConfirmAccountActionData {
 	to: string

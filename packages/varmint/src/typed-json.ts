@@ -1,4 +1,4 @@
-export type primitive = boolean | number | string | null
+type primitive = boolean | number | string | null
 
 export declare namespace Json {
 	export type Serializable =
@@ -28,7 +28,3 @@ export type stringified<J extends Json.Serializable> = J extends string
 					: J extends null
 						? `null`
 						: string & { __json?: J }
-
-export const parseJson = <S extends stringified<Json.Serializable>>(
-	str: S | string,
-): S extends stringified<infer J> ? J : Json.Serializable => JSON.parse(str)

@@ -4,14 +4,14 @@ import { storageSync } from "atom.io/web"
 
 import { trpcClient } from "./trpc-client-service"
 
-export const appVersionQueryAtom = atom<
+const appVersionQueryAtom = atom<
 	Loadable<{ version: string; changelog: string }>
 >({
 	key: `appVersionQuery`,
 	default: trpcClient.version.query,
 })
 
-export const lastKnownVersionAtom = atom<string | null>({
+const lastKnownVersionAtom = atom<string | null>({
 	key: `lastKnownVersion`,
 	default: null,
 	effects: [storageSync(localStorage, JSON, `lastKnownVersion`)],

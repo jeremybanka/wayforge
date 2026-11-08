@@ -73,8 +73,8 @@ function parseInteger<T extends string>(str: T): ParseInt<typeof str> {
 	return Number.parseInt(str, 10) as ParseInt<typeof str>
 }
 
-export const responseDictionaryType = type(RESPONSE_DICTIONARY)
-export const responseCodeType = responseDictionaryType
+const responseDictionaryType = type(RESPONSE_DICTIONARY)
+const responseCodeType = responseDictionaryType
 	.keyof()
 	.pipe((str) => parseInteger(str))
 export const serverIssueType = type([responseCodeType, `string`])

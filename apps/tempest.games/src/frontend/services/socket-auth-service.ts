@@ -110,11 +110,11 @@ export const usernameInputAtom = atom<string>({
 	key: `usernameInput`,
 	default: getState(authAtom)?.username ?? ``,
 })
-export const usernameQueryReadyAtom = atom<boolean>({
+const usernameQueryReadyAtom = atom<boolean>({
 	key: `usernameQueryReady`,
 	default: true,
 })
-export const usernameDebounced100msAtom = atom<string | null>({
+const usernameDebounced100msAtom = atom<string | null>({
 	key: `usernameDebounced100ms`,
 	default: window.localStorage.getItem(`username`) ?? ``,
 	effects: [
@@ -194,7 +194,7 @@ export const emailIssuesSelector = selector<ArkErrors | null>({
 		return null
 	},
 })
-export const signUpReadySelector = selector<boolean>({
+const signUpReadySelector = selector<boolean>({
 	key: `signUpReady`,
 	get: ({ get }) => {
 		const usernameIssues = get(usernameIssuesSelector)

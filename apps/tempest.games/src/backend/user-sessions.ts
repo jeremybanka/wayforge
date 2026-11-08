@@ -8,7 +8,7 @@ import { logger } from "./logger"
 import { instant, iso8601 } from "./time"
 import type { Context } from "./trpc-server"
 
-export const sessionExpiry: CronJob = (() => {
+const sessionExpiry: CronJob = (() => {
 	const autoExpiry = new CronJob(`00 00 03 * * *`, async () => {
 		const aboutAWeekAgoInst = Temporal.Now.instant().subtract({ hours: 24 * 7 })
 		const aboutAWeekAgo = iso8601(aboutAWeekAgoInst)

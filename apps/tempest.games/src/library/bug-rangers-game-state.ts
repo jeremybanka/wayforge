@@ -48,7 +48,7 @@ export const dragPointAtom = atom<THREE.Vector3 | null>({
 
 export type TileCoordinates = [x: number, y: number, z: number]
 export type TileCoordinatesSerialized = `${number}_${number}_${number}`
-export function serializeTileCoordinates(
+function serializeTileCoordinates(
 	coordinates: TileCoordinates,
 ): TileCoordinatesSerialized {
 	return `${coordinates[0]}_${coordinates[1]}_${coordinates[2]}`
@@ -99,7 +99,7 @@ export const tile3dPositionSelectors = selectorFamily<
 	},
 })
 
-export const adjacentZonesSelectors = selectorFamily<
+const adjacentZonesSelectors = selectorFamily<
 	TileCoordinatesSerialized[],
 	TileCoordinatesSerialized
 >({
@@ -119,7 +119,7 @@ export const adjacentZonesSelectors = selectorFamily<
 	},
 })
 
-export const adjacentTilesSelectors = selectorFamily<
+const adjacentTilesSelectors = selectorFamily<
 	TileCoordinatesSerialized[],
 	TileCoordinatesSerialized
 >({
@@ -175,7 +175,7 @@ export const playableZonesSelector = selector<TileCoordinatesSerialized[]>({
 	},
 })
 
-export const tileIsStructuralSelectors = selectorFamily<
+const tileIsStructuralSelectors = selectorFamily<
 	boolean,
 	TileCoordinatesSerialized
 >({
@@ -237,20 +237,19 @@ export const closestPlayableZoneSelector =
 		},
 	})
 
-export const ownedTilesSelectors = selectorFamily<
-	TileCoordinatesSerialized[],
-	UserKey
->({
-	key: `ownedTiles`,
-	get:
-		(userKey) =>
-		({ get, json }) => {
-			const tiles = get(json(gameTilesAtom))
-			return tiles.filter(
-				(tileCoordinates) => get(tileOwnerAtoms, tileCoordinates) === userKey,
-			)
-		},
-})
+const ownedTilesSelectors = selectorFamily<TileCoordinatesSerialized[], UserKey>(
+	{
+		key: `ownedTiles`,
+		get:
+			(userKey) =>
+			({ get, json }) => {
+				const tiles = get(json(gameTilesAtom))
+				return tiles.filter(
+					(tileCoordinates) => get(tileOwnerAtoms, tileCoordinates) === userKey,
+				)
+			},
+	},
+)
 
 export type TileCubeCount =
 	| 0
@@ -317,16 +316,16 @@ export const closestOwnedTileSelectors = selectorFamily<
 })
 
 // export type TurnActionType = `arm` | `build` | `war`
-export type BuildAction = {
+type BuildAction = {
 	type: `build`
 	target: TileCoordinatesSerialized
 	count: TileStackHeight
 }
-export type ArmAction = {
+type ArmAction = {
 	type: `arm`
 	targets: [TileCoordinatesSerialized, TileCoordinatesSerialized]
 }
-export type ArmActionInProgress = {
+type ArmActionInProgress = {
 	type: `arm`
 	targets:
 		| [TileCoordinatesSerialized, TileCoordinatesSerialized]
@@ -338,17 +337,16 @@ export type WarAction = {
 	targets: TileCoordinatesSerialized[]
 	originalOwners: Record<TileCoordinatesSerialized, UserKey>
 }
-export type MoveActionInProgress = {
+type MoveActionInProgress = {
 	type: `move`
 	origin: TileCoordinatesSerialized
 	target: TileCoordinatesSerialized | null
 }
-export type MoveAction = {
+type MoveAction = {
 	type: `move`
 	origin: TileCoordinatesSerialized
 	target: TileCoordinatesSerialized
 }
-export type TurnAction = ArmAction | BuildAction | MoveAction | WarAction
 export type TurnActionInProgress =
 	| ArmActionInProgress
 	| BuildAction
@@ -385,7 +383,7 @@ export const validWarDeclaratorsSelector = selector<TileCoordinatesSerialized[]>
 		},
 	},
 )
-export const validWarTargetsSelector = selector<TileCoordinatesSerialized[]>({
+const validWarTargetsSelector = selector<TileCoordinatesSerialized[]>({
 	key: `validWarTargets`,
 	get: ({ get }) => {
 		const validWarTargets: TileCoordinatesSerialized[] = []
@@ -513,7 +511,7 @@ export const playerTurnOrderAtom = mutableAtom<OList<UserKey>>({
 	class: OList,
 })
 
-export const spectatorsSelector = selector<UserKey[]>({
+const spectatorsSelector = selector<UserKey[]>({
 	key: `spectators`,
 	get: ({ get }) => {
 		const order = get(playerTurnOrderAtom)
@@ -755,7 +753,7 @@ function getDirectionalAdjacent(
 	}
 }
 
-export const lineWinSelectors = selectorFamily<
+const lineWinSelectors = selectorFamily<
 	ReadonlySet<TileCoordinatesSerialized> | null,
 	[axis: HexAxis, tile: TileCoordinatesSerialized]
 >({
@@ -780,7 +778,7 @@ export const lineWinSelectors = selectorFamily<
 		},
 })
 
-export const ringWinSelectors = selectorFamily<
+const ringWinSelectors = selectorFamily<
 	ReadonlySet<TileCoordinatesSerialized> | null,
 	TileCoordinatesSerialized
 >({
@@ -817,7 +815,7 @@ export const ringWinSelectors = selectorFamily<
 			return winningTiles
 		},
 })
-export const triangleWinSelectors = selectorFamily<
+const triangleWinSelectors = selectorFamily<
 	ReadonlySet<TileCoordinatesSerialized> | null,
 	TileCoordinatesSerialized
 >({
@@ -855,7 +853,7 @@ export const triangleWinSelectors = selectorFamily<
 		},
 })
 
-export const tilesByOwnerSelector = selector<
+const tilesByOwnerSelector = selector<
 	Record<UserKey, TileCoordinatesSerialized[]>
 >({
 	key: `tilesByOwner`,

@@ -40,13 +40,13 @@ export function CubeTokenStack({
 		</>
 	)
 }
-export type CubeTokenLayerProps = {
+type CubeTokenLayerProps = {
 	position: THREE.Vector3
 	rotation: THREE.Euler
 	count: 1 | 2 | 3 | 4
 	ownerKey: UserKey
 }
-export function CubeTokenLayer({
+function CubeTokenLayer({
 	position,
 	rotation: rOffset,
 	count,

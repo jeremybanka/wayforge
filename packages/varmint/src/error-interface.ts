@@ -62,7 +62,7 @@ function toJSONSafe(value: unknown, seen = new WeakSet()): JSONValue {
 	return null
 }
 
-export function errorToJSON(error: Error): ErrorAsJSON {
+function errorToJSON(error: Error): ErrorAsJSON {
 	const payload: ErrorAsJSON = {
 		name: error.name || `Error`,
 		message: error.message || ``,
@@ -106,7 +106,7 @@ export function stringifyError(error: Error): StringifiedError {
 	return `ERROR!\n${stringifiedPayload}`
 }
 
-export function errorFromJSON(jsonError: ErrorAsJSON): Error {
+function errorFromJSON(jsonError: ErrorAsJSON): Error {
 	const Ctor = ctorByName[jsonError.name] ?? Error
 
 	// Rehydrate cause first so we can pass it into the constructor

@@ -61,6 +61,7 @@ export function decryptId(virtualId: string): string {
 	return decrypted.toString(`utf8`) // original ID as a string
 }
 
+/** @internal Used by implementation tests. */
 export function fakeId(): string {
 	return encryptId(randomUUID())
 }
