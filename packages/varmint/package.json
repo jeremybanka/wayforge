@@ -55,7 +55,7 @@
 		"concurrently": "10.0.6",
 		"eslint": "10.14.0",
 		"galley.md": "0.3.1",
-		"openai": "7.52.0",
+		"openai": "7.53.0",
 		"tonnage": "0.5.2",
 		"tsdown": "0.23.7",
 		"typescript": "7.0.2",
