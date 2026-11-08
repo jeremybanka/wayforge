@@ -25,6 +25,12 @@
 	],
 	"packageRules": [
 		{
+			"groupName": "atom.io",
+			"matchPackageNames": ["atom.io", "@atom.io/*"],
+			"separateMajorMinor": false,
+			"groupSingleUpdates": true
+		},
+		{
 			"matchManagers": ["npm"],
 			"postUpgradeTasks": {
 				"commands": [
