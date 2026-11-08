@@ -17,9 +17,16 @@ export default {
 				"dprint-plugin-malva",
 				"dprint-plugin-markup",
 				"dprint-plugin-yaml",
+				// Keep workspace CLIs available for manual contributor use.
+				"flightdeck",
+				"varmint",
 			],
 		},
 		"apps/tempest.games": {
+			ignoreDependencies: [
+				// Keep workspace CLIs available for manual contributor use.
+				"flightdeck",
+			],
 			entry: [
 				"src/frontend.bun.ts!",
 				"src/backend.bun.ts!",
