@@ -246,8 +246,8 @@ importers:
         specifier: 6.44.1
         version: 6.44.1
       lasertag:
-        specifier: 0.8.10
-        version: 0.8.10(@types/react@19.3.0)(arktype@2.2.8)(eslint@10.14.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(supports-color@10.2.2)
+        specifier: 0.8.11
+        version: 0.8.11(@types/react@19.3.0)(arktype@2.2.8)(eslint@10.14.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(supports-color@10.2.2)
       oxlint:
         specifier: 1.92.0
         version: 1.92.0(oxlint-tsgolint@7.0.2006)
@@ -403,8 +403,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/flightdeck
       lasertag:
-        specifier: 0.8.10
-        version: 0.8.10(@types/react@19.3.0)(arktype@2.2.9)(eslint@10.14.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(supports-color@10.2.2)
+        specifier: 0.8.11
+        version: 0.8.11(@types/react@19.3.0)(arktype@2.2.9)(eslint@10.14.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(supports-color@10.2.2)
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -3360,14 +3360,14 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
-  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261023.1':
-    resolution: {integrity: sha512-4f4IL+850K6oi71myW4wagAOQ38dDUSxknepJJinIeEhzwd7Ly/e0HYZ5rbUiAl43v+r3AOFKJlAVcYTuJDzyQ==}
+  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261027.1':
+    resolution: {integrity: sha512-UJjLBpNLvWKszxNNoEsl+2Y5YOsgwIJHfwq8k/FPBzMcz5UDyH+mOMjTm6MsHhU4EVyfUJYCcESHdbvH0J6sRg==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [darwin]
 
-  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261027.1':
-    resolution: {integrity: sha512-UJjLBpNLvWKszxNNoEsl+2Y5YOsgwIJHfwq8k/FPBzMcz5UDyH+mOMjTm6MsHhU4EVyfUJYCcESHdbvH0J6sRg==}
+  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261106.1':
+    resolution: {integrity: sha512-Rr7/4UP4xfSesZjcDI1oxuJTEbYRgVsli0afgBL5UlmBFHRjWr4UdfsXIGEann/VEXDXzba0kwFEIy657XIDXA==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [darwin]
@@ -3378,14 +3378,14 @@ packages:
     cpu: [x64]
     os: [darwin]
 
-  '@typescript/typescript-darwin-x64@7.1.0-dev.20261023.1':
-    resolution: {integrity: sha512-B6y/dmliXp0Ga/JCmaWQIccKwlkmUsEFxxbKX+QdY4cwKKij7nvYDiz5FAs/kENprf1qT7yMLssFx+GKybm4aQ==}
+  '@typescript/typescript-darwin-x64@7.1.0-dev.20261027.1':
+    resolution: {integrity: sha512-kccP5mZQTs93noTIelNoT3bSjbeh2j4Ol5+2Vfd6y6GsI40NcwVg3VKyKBf9VDdFveXp5LgkLykHerZPiSuPsQ==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [darwin]
 
-  '@typescript/typescript-darwin-x64@7.1.0-dev.20261027.1':
-    resolution: {integrity: sha512-kccP5mZQTs93noTIelNoT3bSjbeh2j4Ol5+2Vfd6y6GsI40NcwVg3VKyKBf9VDdFveXp5LgkLykHerZPiSuPsQ==}
+  '@typescript/typescript-darwin-x64@7.1.0-dev.20261106.1':
+    resolution: {integrity: sha512-Rx8lXsfx12O6LgDBiRSOS6+UQ2m76uKiGCDmb9yv5uEZD+/7Y3lZ7YU0l3yRhPb7RMIlr1hFuJ0RGcl2xlr6vw==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [darwin]
@@ -3408,14 +3408,14 @@ packages:
     cpu: [arm64]
     os: [linux]
 
-  '@typescript/typescript-linux-arm64@7.1.0-dev.20261023.1':
-    resolution: {integrity: sha512-jA/Fgv/l7p1M8c9WPvohI4y0Ow40QPUBw4Bdoi0qSpjnZuVnb9ChZlNNn4iIUEY+RwMR4RJn/ET2TdjwJFnMwA==}
+  '@typescript/typescript-linux-arm64@7.1.0-dev.20261027.1':
+    resolution: {integrity: sha512-EZmsRYvs1MH2syqc+5t2k7XOYpB7xw7sqq0Xzs7EHmHxI5jMswfJbpNFRbmpg7g70y2b8v1dbBEsle9KwHKJsQ==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [linux]
 
-  '@typescript/typescript-linux-arm64@7.1.0-dev.20261027.1':
-    resolution: {integrity: sha512-EZmsRYvs1MH2syqc+5t2k7XOYpB7xw7sqq0Xzs7EHmHxI5jMswfJbpNFRbmpg7g70y2b8v1dbBEsle9KwHKJsQ==}
+  '@typescript/typescript-linux-arm64@7.1.0-dev.20261106.1':
+    resolution: {integrity: sha512-IPR9OGUj16uMP8zQwrESq0eJq9xu6Lu/tSOBlr1961Mxo8wOMKSQfr2qCgSbRbxUOXaosEgEHFWY8d6p3bKyVQ==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [linux]
@@ -3426,14 +3426,14 @@ packages:
     cpu: [arm]
     os: [linux]
 
-  '@typescript/typescript-linux-arm@7.1.0-dev.20261023.1':
-    resolution: {integrity: sha512-zyiFrUyXWSTv2wkdx7t+q0PW7ouRbGkjQd9d9LTTG0CdxgmqYHCwK7wPgceugzmKxu4QBmnwfC0Uy+TkTIct0Q==}
+  '@typescript/typescript-linux-arm@7.1.0-dev.20261027.1':
+    resolution: {integrity: sha512-cIwCj9x+an2vLDkdNnxgFeLF/Q8+kjVcZisntc1gA8nISoRII/QePVNbG3jDBt2zqU7GxU71egvQbxuV5eQ59A==}
     engines: {node: '>=16.20.0'}
     cpu: [arm]
     os: [linux]
 
-  '@typescript/typescript-linux-arm@7.1.0-dev.20261027.1':
-    resolution: {integrity: sha512-cIwCj9x+an2vLDkdNnxgFeLF/Q8+kjVcZisntc1gA8nISoRII/QePVNbG3jDBt2zqU7GxU71egvQbxuV5eQ59A==}
+  '@typescript/typescript-linux-arm@7.1.0-dev.20261106.1':
+    resolution: {integrity: sha512-w1/kNArNfZcxYhJl9g/cYIcBpT+5JSZ86mBrMk1obGNbHsh6a3zs8i1OH35fsV3lydNgm6g7835C5bsq5Rx0Nw==}
     engines: {node: '>=16.20.0'}
     cpu: [arm]
     os: [linux]
@@ -3474,14 +3474,14 @@ packages:
     cpu: [x64]
     os: [linux]
 
-  '@typescript/typescript-linux-x64@7.1.0-dev.20261023.1':
-    resolution: {integrity: sha512-lzEji+91SOiTrFrWUm0KjqRGWGijEyMwpf9CQM7WOtx3cV7w1DUM4U17JzEhVDxizzTzdrl+P9Ct9RQ2Dc7+dw==}
+  '@typescript/typescript-linux-x64@7.1.0-dev.20261027.1':
+    resolution: {integrity: sha512-LRXiR7cP44Sg0sz0SmfkMKAsImesb4yiGqIzDOsEZE3dbvQEU72VknlXlc4qcs2E8R+Qzuri2KkRRGiyy2oI1Q==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [linux]
 
-  '@typescript/typescript-linux-x64@7.1.0-dev.20261027.1':
-    resolution: {integrity: sha512-LRXiR7cP44Sg0sz0SmfkMKAsImesb4yiGqIzDOsEZE3dbvQEU72VknlXlc4qcs2E8R+Qzuri2KkRRGiyy2oI1Q==}
+  '@typescript/typescript-linux-x64@7.1.0-dev.20261106.1':
+    resolution: {integrity: sha512-9UWNLhortFGAgkc63EqmLiFF4+Vp9adSZ/tdIxt95TsAcl8dvwm2CZXm7F+REbGI7CrsmTIKHsoK/bQ/MWAwag==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [linux]
@@ -3522,14 +3522,14 @@ packages:
     cpu: [arm64]
     os: [win32]
 
-  '@typescript/typescript-win32-arm64@7.1.0-dev.20261023.1':
-    resolution: {integrity: sha512-81u6+PW6H0XYNsYK0pdyB1/4NR4PuDboNxFjFTXHZ8VIa9JIdaE0m2WodKs6fzgu8Zsz+6zq8sfqtMZ8Vh0D5Q==}
+  '@typescript/typescript-win32-arm64@7.1.0-dev.20261027.1':
+    resolution: {integrity: sha512-p6JMGiKWY7fNCP1nptqnGeDp/OSZG4qyxXN0zkDR99pN4G2mBWN1tvOAw8qjs9MKX7Q5AU57cMDxTBc3L/kLDA==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [win32]
 
-  '@typescript/typescript-win32-arm64@7.1.0-dev.20261027.1':
-    resolution: {integrity: sha512-p6JMGiKWY7fNCP1nptqnGeDp/OSZG4qyxXN0zkDR99pN4G2mBWN1tvOAw8qjs9MKX7Q5AU57cMDxTBc3L/kLDA==}
+  '@typescript/typescript-win32-arm64@7.1.0-dev.20261106.1':
+    resolution: {integrity: sha512-nVJfs0NdIJX3csvEhiJL/fNqseSRpqJzo2psLVxVbDVF06r6KIObJQi9pmvtejZnjnz068iV83qqOrL9ySdH/g==}
     engines: {node: '>=16.20.0'}
     cpu: [arm64]
     os: [win32]
@@ -3540,14 +3540,14 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@typescript/typescript-win32-x64@7.1.0-dev.20261023.1':
-    resolution: {integrity: sha512-OPEeJdddVUjq8xNiy9XYd6TVKWBLwTZsX01T7yvXxBd95pD/xOkfGPukpOLor2n69hVIPAvfbbKdz2rMip0nwg==}
+  '@typescript/typescript-win32-x64@7.1.0-dev.20261027.1':
+    resolution: {integrity: sha512-rCsJOawGaofI6+aV5BCJm2YfoBUJGgIf6ej6r14atoeo9zHhJqy0VSyhgGUo1vvrP7ArtwiHWnGOqz6gGAxO7g==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [win32]
 
-  '@typescript/typescript-win32-x64@7.1.0-dev.20261027.1':
-    resolution: {integrity: sha512-rCsJOawGaofI6+aV5BCJm2YfoBUJGgIf6ej6r14atoeo9zHhJqy0VSyhgGUo1vvrP7ArtwiHWnGOqz6gGAxO7g==}
+  '@typescript/typescript-win32-x64@7.1.0-dev.20261106.1':
+    resolution: {integrity: sha512-yzzV1ABX0s87XSiS3mMjvwGPJClIxUOjO7XyYR0e5HCY16t9chPT0jH1jKPsWc9EyaFA+7HDCCLnm9ZkBoz64Q==}
     engines: {node: '>=16.20.0'}
     cpu: [x64]
     os: [win32]
@@ -3785,6 +3785,11 @@ packages:
     engines: {node: '>= 22'}
     hasBin: true
 
+  '@vscode/vsce@4.1.0':
+    resolution: {integrity: sha512-iWNykEfLWTAU7FC2iBiE0vJvnJDpGm3GlL89dsBtRs62F+8tkPtq80Imi0QSFHjNBWu4QIdYII+3F9v/ZQRExw==}
+    engines: {node: '>= 22'}
+    hasBin: true
+
   '@workflow/serde@4.1.0':
     resolution: {integrity: sha512-pav4F2BoirECWR7Nf1TKt+2eETcBj7jj4cBefQ8VXQCA6NPkaKeLfj/zMgi+3zYV5ZIBT4GuUiphsj0/b9hPQQ==}
 
@@ -3904,14 +3909,6 @@ packages:
   astring@1.9.0:
     resolution: {integrity: sha512-LElXdjswlqjWrPpJFg1Fx4wpkOCxj1TDHlSV4PlaRxHGWko024xICaa97ZkMfs6DRKlCguiAI+rbXv5GWwXIkg==}
     hasBin: true
-
-  atom.io@0.54.0:
-    resolution: {integrity: sha512-MQ2I/cpb4KVijgzD+Kvt+eaMSPuZw5hyyCVvSXa0XeJNgiUBSgrx2iajnZ4phCqhAz/7GGjh+8pNnO++pzsOYA==}
-    peerDependencies:
-      happy-dom: '>=17.4.4'
-    peerDependenciesMeta:
-      happy-dom:
-        optional: true
 
   atom.io@0.54.6:
     resolution: {integrity: sha512-LxpFB7eky43elMoPWIguoFbRtxTGFG+jp9Kn4G798AiEZfXJcxHOAF5vQOERCSGUnbSPO4C59t1BXHw/nqAUrQ==}
@@ -4088,17 +4085,6 @@ packages:
 
   comline@0.9.0:
     resolution: {integrity: sha512-PB6CjpeJqSzKL4XZ6kjlGE3G5bcBDZjRQcDoPwKsQT1VloTOQ9Q4EhkJFi0Ng39bFDB7I928qfOZ9LrDYaDc5A==}
-    peerDependencies:
-      arktype: ^2.1.28
-      zod: ^4.2.0
-    peerDependenciesMeta:
-      arktype:
-        optional: true
-      zod:
-        optional: true
-
-  comline@0.9.1:
-    resolution: {integrity: sha512-RbB0sJLMiTHe02VpHLK3RmXUk9Y/Jw5H35yx9X8rVWM7SQKDaSJ6AgIY1TbjhbduXhPrJEeiBbInvuYep5I9jw==}
     peerDependencies:
       arktype: ^2.1.28
       zod: ^4.2.0
@@ -4751,9 +4737,6 @@ packages:
     resolution: {integrity: sha512-sTSfBjoXBp89JvIKIefqw7U2CCebsc74kiY6awiGogKtoSGbgjYE/G/+l9sF3MWFPNc9IcoOC4ODfKHfxFmp0g==}
     engines: {node: '>= 0.4'}
 
-  get-tsconfig@4.14.0:
-    resolution: {integrity: sha512-yTb+8DXzDREzgvYmh6s9vHsSVCHeC0G3PI5bEXNBHtmshPnO+S5O7qgLEOn0I5QvMy6kpZN8K1NKGyilLb93wA==}
-
   get-tsconfig@4.14.3:
     resolution: {integrity: sha512-++QEw4DIY7WGoukz+/+A/8dGYPT9l9yIadnmSgZ8Rjr3YVSVDipQSO9CdnJo9ePqFqUUqh+wk9uIaoiAwsiPkA==}
 
@@ -5094,9 +5077,9 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
-  lasertag@0.8.10:
-    resolution: {integrity: sha512-tl52Yrl9Oif+QZ7vsNQ6Zx0WHSAz/tRMVT8BtxrI1nFPZD1NMP3xQZ1Thsa15u0rdAUYua2Rr9lSobZwehCn6Q==}
-    engines: {node: 26.12.1, pnpm: 12.15.0}
+  lasertag@0.8.11:
+    resolution: {integrity: sha512-O93NxFzlUgXkN2t/mZUV4jDnVjXJe+7PsXbhYF1Y6Ak/OYdJxl2A1Av+QXHMnUthHvDiHV8zgZb3bcMZouNViQ==}
+    engines: {node: 26.13.0, pnpm: 12.18.0}
     hasBin: true
     peerDependencies:
       '@types/react': ^19.2
@@ -6366,13 +6349,13 @@ packages:
     engines: {node: '>=16.20.0'}
     hasBin: true
 
-  typescript@7.1.0-dev.20261023.1:
-    resolution: {integrity: sha512-rXl75ZFpa58TydmEIgAkc8vaLxs10DBO7CMYgsQzQeGbKULmvifWLzSwo/nB20qrsIQKVwDxR2Fkm1xm5joErw==}
+  typescript@7.1.0-dev.20261027.1:
+    resolution: {integrity: sha512-pPXjJFnHoJGGZxw9qy6lSrW29TihO6LZcn39TkNP787WNA0g4/W/MYkhXQo/WL+NyGIPMa+1bmedrr3ixhqD2w==}
     engines: {node: '>=16.20.0'}
     hasBin: true
 
-  typescript@7.1.0-dev.20261027.1:
-    resolution: {integrity: sha512-pPXjJFnHoJGGZxw9qy6lSrW29TihO6LZcn39TkNP787WNA0g4/W/MYkhXQo/WL+NyGIPMa+1bmedrr3ixhqD2w==}
+  typescript@7.1.0-dev.20261106.1:
+    resolution: {integrity: sha512-iXttMYjtjZlI4xn4ajC1UHsBfGOm+lYlHN1g17wytkYjyxqV9ngrEXJid6IayJhrfw8qTbLwBkn9KoJENLpjaw==}
     engines: {node: '>=16.20.0'}
     hasBin: true
 
@@ -7356,7 +7339,7 @@ snapshots:
   '@esbuild-kit/esm-loader@2.6.5':
     dependencies:
       '@esbuild-kit/core-utils': 3.3.2
-      get-tsconfig: 4.14.0
+      get-tsconfig: 4.14.3
 
   '@esbuild/aix-ppc64@0.25.12':
     optional: true
@@ -8770,19 +8753,19 @@ snapshots:
   '@typescript/typescript-darwin-arm64@7.0.2':
     optional: true
 
-  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261023.1':
+  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261027.1':
     optional: true
 
-  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261027.1':
+  '@typescript/typescript-darwin-arm64@7.1.0-dev.20261106.1':
     optional: true
 
   '@typescript/typescript-darwin-x64@7.0.2':
     optional: true
 
-  '@typescript/typescript-darwin-x64@7.1.0-dev.20261023.1':
+  '@typescript/typescript-darwin-x64@7.1.0-dev.20261027.1':
     optional: true
 
-  '@typescript/typescript-darwin-x64@7.1.0-dev.20261027.1':
+  '@typescript/typescript-darwin-x64@7.1.0-dev.20261106.1':
     optional: true
 
   '@typescript/typescript-freebsd-arm64@7.0.2':
@@ -8794,19 +8777,19 @@ snapshots:
   '@typescript/typescript-linux-arm64@7.0.2':
     optional: true
 
-  '@typescript/typescript-linux-arm64@7.1.0-dev.20261023.1':
+  '@typescript/typescript-linux-arm64@7.1.0-dev.20261027.1':
     optional: true
 
-  '@typescript/typescript-linux-arm64@7.1.0-dev.20261027.1':
+  '@typescript/typescript-linux-arm64@7.1.0-dev.20261106.1':
     optional: true
 
   '@typescript/typescript-linux-arm@7.0.2':
     optional: true
 
-  '@typescript/typescript-linux-arm@7.1.0-dev.20261023.1':
+  '@typescript/typescript-linux-arm@7.1.0-dev.20261027.1':
     optional: true
 
-  '@typescript/typescript-linux-arm@7.1.0-dev.20261027.1':
+  '@typescript/typescript-linux-arm@7.1.0-dev.20261106.1':
     optional: true
 
   '@typescript/typescript-linux-loong64@7.0.2':
@@ -8827,10 +8810,10 @@ snapshots:
   '@typescript/typescript-linux-x64@7.0.2':
     optional: true
 
-  '@typescript/typescript-linux-x64@7.1.0-dev.20261023.1':
+  '@typescript/typescript-linux-x64@7.1.0-dev.20261027.1':
     optional: true
 
-  '@typescript/typescript-linux-x64@7.1.0-dev.20261027.1':
+  '@typescript/typescript-linux-x64@7.1.0-dev.20261106.1':
     optional: true
 
   '@typescript/typescript-netbsd-arm64@7.0.2':
@@ -8851,19 +8834,19 @@ snapshots:
   '@typescript/typescript-win32-arm64@7.0.2':
     optional: true
 
-  '@typescript/typescript-win32-arm64@7.1.0-dev.20261023.1':
+  '@typescript/typescript-win32-arm64@7.1.0-dev.20261027.1':
     optional: true
 
-  '@typescript/typescript-win32-arm64@7.1.0-dev.20261027.1':
+  '@typescript/typescript-win32-arm64@7.1.0-dev.20261106.1':
     optional: true
 
   '@typescript/typescript-win32-x64@7.0.2':
     optional: true
 
-  '@typescript/typescript-win32-x64@7.1.0-dev.20261023.1':
+  '@typescript/typescript-win32-x64@7.1.0-dev.20261027.1':
     optional: true
 
-  '@typescript/typescript-win32-x64@7.1.0-dev.20261027.1':
+  '@typescript/typescript-win32-x64@7.1.0-dev.20261106.1':
     optional: true
 
   '@typescript/typescript6@6.0.2':
@@ -9083,6 +9066,37 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@vscode/vsce@4.1.0(supports-color@10.2.2)':
+    dependencies:
+      '@azure/identity': 4.13.3(supports-color@10.2.2)
+      '@napi-rs/keyring': 1.3.0
+      '@secretlint/core': 10.2.2(supports-color@10.2.2)
+      '@secretlint/secretlint-rule-no-dotenv': 10.2.2
+      '@secretlint/secretlint-rule-preset-recommend': 10.2.2
+      '@secretlint/source-creator': 10.2.2
+      '@secretlint/types': 10.2.2
+      '@vscode/vsce-sign': 2.1.0
+      azure-devops-node-api: 12.5.0
+      cockatiel: 3.2.1
+      commander: 12.1.0
+      hosted-git-info: 4.1.0
+      jsonc-parser: 3.3.1
+      marked: 18.0.14
+      mime: 1.6.0
+      minimatch: 10.2.6
+      parse5: 8.0.1
+      proper-lockfile: 4.1.2
+      read: 1.0.7
+      semver: 7.8.6
+      tinyglobby: 0.2.17
+      typed-rest-client: 1.8.11
+      url-join: 4.0.1
+      xml2js: 0.5.0
+      yauzl: 3.4.0
+      yazl: 2.5.1
+    transitivePeerDependencies:
+      - supports-color
+
   '@workflow/serde@4.1.0': {}
 
   '@yuku-toolchain/darwin-arm64@0.27.0':
@@ -9190,10 +9204,6 @@ snapshots:
       js-tokens: 10.0.0
 
   astring@1.9.0: {}
-
-  atom.io@0.54.0(happy-dom@20.14.0):
-    optionalDependencies:
-      happy-dom: 20.14.0
 
   atom.io@0.54.6(happy-dom@20.14.0):
     optionalDependencies:
@@ -9366,22 +9376,6 @@ snapshots:
       treetrunks: 0.1.12
     optionalDependencies:
       arktype: 2.2.8
-      zod: 4.6.7
-
-  comline@0.9.1(arktype@2.2.8)(zod@4.6.7):
-    dependencies:
-      '@standard-schema/spec': 1.1.0
-      treetrunks: 0.1.13
-    optionalDependencies:
-      arktype: 2.2.8
-      zod: 4.6.7
-
-  comline@0.9.1(arktype@2.2.9)(zod@4.6.7):
-    dependencies:
-      '@standard-schema/spec': 1.1.0
-      treetrunks: 0.1.13
-    optionalDependencies:
-      arktype: 2.2.9
       zod: 4.6.7
 
   comline@0.9.3(arktype@2.2.8)(zod@4.6.7):
@@ -9794,7 +9788,7 @@ snapshots:
 
   eslint-import-context@0.1.9(unrs-resolver@1.11.1):
     dependencies:
-      get-tsconfig: 4.14.0
+      get-tsconfig: 4.14.3
       stable-hash-x: 0.2.0
     optionalDependencies:
       unrs-resolver: 1.11.1
@@ -10093,10 +10087,6 @@ snapshots:
     dependencies:
       dunder-proto: 1.0.1
       es-object-atoms: 1.1.2
-
-  get-tsconfig@4.14.0:
-    dependencies:
-      resolve-pkg-maps: 1.0.0
 
   get-tsconfig@4.14.3:
     dependencies:
@@ -10508,16 +10498,16 @@ snapshots:
       yaml: 2.9.1
       zod: 4.6.7
 
-  lasertag@0.8.10(@types/react@19.3.0)(arktype@2.2.8)(eslint@10.14.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(supports-color@10.2.2):
+  lasertag@0.8.11(@types/react@19.3.0)(arktype@2.2.8)(eslint@10.14.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(supports-color@10.2.2):
     dependencies:
       '@astrojs/compiler': 4.0.0
-      '@vscode/vsce': 4.0.0(supports-color@10.2.2)
-      atom.io: 0.54.0(happy-dom@20.14.0)
-      comline: 0.9.1(arktype@2.2.8)(zod@4.6.7)
-      rolldown: 1.2.15
+      '@vscode/vsce': 4.1.0(supports-color@10.2.2)
+      atom.io: 0.54.6(happy-dom@20.14.0)
+      comline: 0.9.3(arktype@2.2.8)(zod@4.6.7)
+      rolldown: 1.3.0
       takua: 0.2.3
       tinyglobby: 0.2.17
-      typescript: 7.1.0-dev.20261023.1
+      typescript: 7.1.0-dev.20261106.1
       vscode-languageclient: 11.0.0
       vscode-languageserver: 11.0.0
       vscode-languageserver-textdocument: 1.0.16
@@ -10530,16 +10520,16 @@ snapshots:
       - happy-dom
       - supports-color
 
-  lasertag@0.8.10(@types/react@19.3.0)(arktype@2.2.9)(eslint@10.14.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(supports-color@10.2.2):
+  lasertag@0.8.11(@types/react@19.3.0)(arktype@2.2.9)(eslint@10.14.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(supports-color@10.2.2):
     dependencies:
       '@astrojs/compiler': 4.0.0
-      '@vscode/vsce': 4.0.0(supports-color@10.2.2)
-      atom.io: 0.54.0(happy-dom@20.14.0)
-      comline: 0.9.1(arktype@2.2.9)(zod@4.6.7)
-      rolldown: 1.2.15
+      '@vscode/vsce': 4.1.0(supports-color@10.2.2)
+      atom.io: 0.54.6(happy-dom@20.14.0)
+      comline: 0.9.3(arktype@2.2.9)(zod@4.6.7)
+      rolldown: 1.3.0
       takua: 0.2.3
       tinyglobby: 0.2.17
-      typescript: 7.1.0-dev.20261023.1
+      typescript: 7.1.0-dev.20261106.1
       vscode-languageclient: 11.0.0
       vscode-languageserver: 11.0.0
       vscode-languageserver-textdocument: 1.0.16
@@ -12248,16 +12238,6 @@ snapshots:
       '@typescript/typescript-win32-arm64': 7.0.2
       '@typescript/typescript-win32-x64': 7.0.2
 
-  typescript@7.1.0-dev.20261023.1:
-    optionalDependencies:
-      '@typescript/typescript-darwin-arm64': 7.1.0-dev.20261023.1
-      '@typescript/typescript-darwin-x64': 7.1.0-dev.20261023.1
-      '@typescript/typescript-linux-arm': 7.1.0-dev.20261023.1
-      '@typescript/typescript-linux-arm64': 7.1.0-dev.20261023.1
-      '@typescript/typescript-linux-x64': 7.1.0-dev.20261023.1
-      '@typescript/typescript-win32-arm64': 7.1.0-dev.20261023.1
-      '@typescript/typescript-win32-x64': 7.1.0-dev.20261023.1
-
   typescript@7.1.0-dev.20261027.1:
     optionalDependencies:
       '@typescript/typescript-darwin-arm64': 7.1.0-dev.20261027.1
@@ -12267,6 +12247,16 @@ snapshots:
       '@typescript/typescript-linux-x64': 7.1.0-dev.20261027.1
       '@typescript/typescript-win32-arm64': 7.1.0-dev.20261027.1
       '@typescript/typescript-win32-x64': 7.1.0-dev.20261027.1
+
+  typescript@7.1.0-dev.20261106.1:
+    optionalDependencies:
+      '@typescript/typescript-darwin-arm64': 7.1.0-dev.20261106.1
+      '@typescript/typescript-darwin-x64': 7.1.0-dev.20261106.1
+      '@typescript/typescript-linux-arm': 7.1.0-dev.20261106.1
+      '@typescript/typescript-linux-arm64': 7.1.0-dev.20261106.1
+      '@typescript/typescript-linux-x64': 7.1.0-dev.20261106.1
+      '@typescript/typescript-win32-arm64': 7.1.0-dev.20261106.1
+      '@typescript/typescript-win32-x64': 7.1.0-dev.20261106.1
 
   uint8array-extras@1.5.0: {}
 
