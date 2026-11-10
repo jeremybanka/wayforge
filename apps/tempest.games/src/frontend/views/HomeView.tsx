@@ -1,8 +1,8 @@
 import type { Children } from "@atom.io/spa"
-import { useGetter, useId, useSetter } from "@atom.io/spa"
+import { onCleanup, useGetter, useId, useSetter } from "@atom.io/spa"
 import { bindScene } from "@atom.io/spa/renderer"
 import { TRPCClientError } from "@trpc/client"
-import { getState, setState } from "atom.io"
+import { atomFamily, disposeState, getState, setState } from "atom.io"
 
 import { navigate } from "../services/router-service"
 import {
@@ -14,9 +14,17 @@ import {
 	passwordInputAtom,
 	socket,
 } from "../services/socket-auth-service"
-import { useLocalState } from "../services/spa-state"
 import { trpcClient } from "../services/trpc-client-service"
 import css from "./HomeView.module.css"
+
+const loginErrorAtoms = atomFamily<string | null, string>({
+	key: `loginError`,
+	default: null,
+})
+const loginStepAtoms = atomFamily<`email` | `otc` | `password`, string>({
+	key: `loginStep`,
+	default: `email`,
+})
 
 export function HomeView(): Children {
 	const setEmail = useSetter(emailInputAtom)
@@ -29,10 +37,15 @@ export function HomeView(): Children {
 	const passwordInputId = `password-${useId()}`
 	const oneTimeCodeInputId = `one-time-code-${useId()}`
 
-	const [error, setError] = useLocalState<string | null>(null)
-	const [currentlyEntering, setCurrentlyEntering] = useLocalState<
-		`email` | `otc` | `password`
-	>(`email`)
+	const instanceKey = useId()
+	const error = useGetter(loginErrorAtoms, instanceKey)
+	const setError = useSetter(loginErrorAtoms, instanceKey)
+	const currentlyEntering = useGetter(loginStepAtoms, instanceKey)
+	const setCurrentlyEntering = useSetter(loginStepAtoms, instanceKey)
+	onCleanup(() => {
+		disposeState(loginErrorAtoms, instanceKey)
+		disposeState(loginStepAtoms, instanceKey)
+	})
 
 	const formId = `form-${useId()}`
 	bindScene(oneTimeCode, (code) => {

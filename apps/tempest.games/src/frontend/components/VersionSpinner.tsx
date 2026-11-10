@@ -1,15 +1,25 @@
 import type { Children } from "@atom.io/spa"
-import { onCleanup } from "@atom.io/spa"
+import { onCleanup, useGetter, useId, useSetter } from "@atom.io/spa"
 import { bindScene } from "@atom.io/spa/renderer"
+import { atomFamily, disposeState } from "atom.io"
 
-import { useLocalState } from "../services/spa-state"
 import css from "./VersionSpinner.module.css"
 
 const spinnerFrames = [`⠋`, `⠙`, `⠸`, `⠴`, `⠦`, `⠇`]
+const spinnerTextAtoms = atomFamily<string, string>({
+	key: `spinnerText`,
+	default: spinnerFrames[0],
+})
+
 export function VersionSpinner(props: {
 	input: Promise<string> | string
 }): Children {
-	const [text, setText] = useLocalState(spinnerFrames[0])
+	const instanceKey = useId()
+	const text = useGetter(spinnerTextAtoms, instanceKey)
+	const setText = useSetter(spinnerTextAtoms, instanceKey)
+	onCleanup(() => {
+		disposeState(spinnerTextAtoms, instanceKey)
+	})
 	let cancel = () => {}
 	onCleanup(() => {
 		cancel()

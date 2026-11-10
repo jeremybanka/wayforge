@@ -8,15 +8,13 @@ import {
 	usePullMutable,
 	usePullSelector,
 } from "../../../services/realtime-hooks"
-import { useMutable } from "../../../services/spa-state"
 import { GameTileActual, GameTilePreview } from "./HexTile"
 
 export function GameTiles(): Children {
-	usePullMutable(gameTilesAtom)
-	const tiles = useMutable(gameTilesAtom)
+	const tiles = usePullMutable(gameTilesAtom)
 	return (
 		<>
-			{tiles().map((coords) => (
+			{Array.from(tiles()).map((coords) => (
 				<GameTileActual key={coords} coordinatesSerialized={coords} />
 			))}
 		</>

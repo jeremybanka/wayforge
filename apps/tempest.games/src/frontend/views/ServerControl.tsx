@@ -1,17 +1,15 @@
-import { type RoomKey, roomKeysAtom } from "@atom.io/realtime"
+import type { RoomKey } from "@atom.io/realtime"
 import type { Children } from "@atom.io/spa"
 
 import type { ActualRoomName } from "../../library/room-names"
 import { cpuCountAtom } from "../../library/store"
 import type { RealtimeRoomsTools } from "../services/realtime-hooks"
 import { usePullAtom, useRealtimeRooms } from "../services/realtime-hooks"
-import { useMutable } from "../services/spa-state"
 import css from "./ServerControl.module.css"
 
 export function ServerControl(): Children {
 	const cpuCount = usePullAtom(cpuCountAtom)
-	const allRoomKeys = useMutable(roomKeysAtom)
-	const { myRoomKey, myOwnedRoomKeys, roomSocket } =
+	const { allRoomKeys, myRoomKey, myOwnedRoomKeys, roomSocket } =
 		useRealtimeRooms<ActualRoomName>()
 
 	return (

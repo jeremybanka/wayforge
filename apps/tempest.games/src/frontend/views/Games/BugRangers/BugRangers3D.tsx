@@ -1,11 +1,11 @@
 import { myRoomKeySelector } from "@atom.io/realtime/client"
 import type { Children } from "@atom.io/spa"
-import { onCleanup, onMount, useGetter } from "@atom.io/spa"
+import { onCleanup, onMount, useGetter, useId, useSetter } from "@atom.io/spa"
 import { AmbientLight, DirectionalLight } from "@atom.io/spa/three"
+import { atomFamily, disposeState } from "atom.io"
 import { OrbitControls } from "three-stdlib"
 
 import { usePullSelector } from "../../../services/realtime-hooks"
-import { useLocalState } from "../../../services/spa-state"
 import {
 	cameraTargetAtom,
 	controlsEnabledAtom,
@@ -20,14 +20,21 @@ import { PlayerTools } from "./PlayerTools"
 import { gameCamera, gamePointer } from "./scene-state"
 import { GameTiles, PlayableZones } from "./TilesAndZones"
 
+const viewportAtoms = atomFamily<readonly [number, number], string>({
+	key: `viewport`,
+	default: () => [window.innerWidth, window.innerHeight],
+})
+
 export function BugRangers3D(): Children {
 	const target = useGetter(cameraTargetAtom)
 	const enabled = useGetter(controlsEnabledAtom)
 	const spring = createCameraSpring(target())
-	const [viewport, setViewport] = useLocalState([
-		window.innerWidth,
-		window.innerHeight,
-	] as const)
+	const instanceKey = useId()
+	const viewport = useGetter(viewportAtoms, instanceKey)
+	const setViewport = useSetter(viewportAtoms, instanceKey)
+	onCleanup(() => {
+		disposeState(viewportAtoms, instanceKey)
+	})
 	let host: HTMLElement | null = null
 	let controls: OrbitControls | undefined
 	onMount(() => {

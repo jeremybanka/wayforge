@@ -1,8 +1,8 @@
 import type { Children } from "@atom.io/spa"
-import { useGetter } from "@atom.io/spa"
+import { onCleanup, useGetter, useId, useSetter } from "@atom.io/spa"
 import { bindScene, sceneComponent } from "@atom.io/spa/renderer"
 import type { ObjectProps } from "@atom.io/spa/three"
-import { getState, setState } from "atom.io"
+import { atomFamily, disposeState, getState, setState } from "atom.io"
 import * as THREE from "three"
 
 import type { TileCoordinatesSerialized } from "../../../../library/bug-rangers-game-state"
@@ -26,7 +26,6 @@ import {
 	usePullSelector,
 	usePullSelectorFamilyMember,
 } from "../../../services/realtime-hooks"
-import { useLocalState } from "../../../services/spa-state"
 import {
 	cameraTargetAtom,
 	isMyTurnSelector,
@@ -42,6 +41,11 @@ const HexMesh = sceneComponent<
 	}
 >(`Mesh`)
 
+const tileHoveredAtoms = atomFamily<boolean, string>({
+	key: `tileHovered`,
+	default: false,
+})
+
 export function HexTile(props: {
 	ref?: (mesh: THREE.Mesh | null) => void
 	radius?: number
@@ -54,7 +58,12 @@ export function HexTile(props: {
 	onPointerUp?: (position: THREE.Vector3) => void
 	onPointerCancel?: () => void
 }): Children {
-	const [hovered, setHovered] = useLocalState(false)
+	const instanceKey = useId()
+	const hovered = useGetter(tileHoveredAtoms, instanceKey)
+	const setHovered = useSetter(tileHoveredAtoms, instanceKey)
+	onCleanup(() => {
+		disposeState(tileHoveredAtoms, instanceKey)
+	})
 	const shape = new THREE.Shape()
 	for (let i = 0; i < 6; i++) {
 		const angle = (Math.PI / 3) * i

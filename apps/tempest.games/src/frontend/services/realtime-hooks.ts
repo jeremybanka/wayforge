@@ -8,7 +8,7 @@ import type {
 import { ownersOfRooms, roomKeysAtom, usersInRooms } from "@atom.io/realtime"
 import * as RTC from "@atom.io/realtime/client"
 import type { Accessor } from "@atom.io/spa"
-import { onCleanup, onMount, useGetter, useId, useStore } from "@atom.io/spa"
+import { onCleanup, onMount, useGetter, useStore } from "@atom.io/spa"
 import { bindScene } from "@atom.io/spa/renderer"
 import type {
 	MutableAtomToken,
@@ -18,12 +18,11 @@ import type {
 	SelectorToken,
 	ViewOf,
 } from "atom.io"
+import { getInternalRelations, selector } from "atom.io"
 import type { Canonical } from "atom.io/foundations/canonical"
 import type { Json } from "atom.io/foundations/json"
 import type { RootStore, Transceiver } from "atom.io/internal"
 import {
-	createReadonlyPureSelector,
-	disposeFromStore,
 	findInStore,
 	getInternalRelationsFromStore,
 	setIntoStore,
@@ -31,7 +30,15 @@ import {
 
 import { leaseRealtimeService as lease } from "./realtime-services"
 import { realtimeSocket } from "./socket-auth-service"
-import { useMutable } from "./spa-state"
+
+const [ownedRoomKeysAtoms] = getInternalRelations(ownersOfRooms, `split`)
+const myOwnedRoomKeysSelector = selector<readonly RoomKey[]>({
+	key: `myOwnedRoomKeys`,
+	get: ({ get }) =>
+		Array.from(
+			get(ownedRoomKeysAtoms, get(RTC.myUserKeyAtom) ?? `user::$_NONE_$`),
+		),
+})
 
 function usePull(
 	key: string,
@@ -109,7 +116,7 @@ export function useRealtimeRooms<
 	RoomNames extends string = string,
 >(): RealtimeRoomsTools<RoomNames> {
 	const store = useStore()
-	usePullMutable(roomKeysAtom)
+	const getRoomKeys = usePullMutable(roomKeysAtom)
 	const getUserKey = usePullAtom(RTC.myUserKeyAtom)
 	const getRoomKey = useGetter(RTC.myRoomKeySelector)
 	const [users, rooms] = getInternalRelationsFromStore(
@@ -161,28 +168,11 @@ export function useRealtimeRooms<
 		},
 	)
 
-	const ownedToken = createReadonlyPureSelector<
-		readonly RoomKey[],
-		never,
-		never
-	>(
-		store,
-		{
-			key: `tempest:ownedRooms:${useId()}`,
-			get: ({ get }) =>
-				Array.from(get(owned, get(RTC.myUserKeyAtom) ?? `user::$_NONE_$`)),
-		},
-		undefined,
-	)
-	onCleanup(() => {
-		disposeFromStore(store, ownedToken)
-	})
-
 	return {
 		roomSocket: realtimeSocket,
 		myRoomKey: getRoomKey,
-		myOwnedRoomKeys: useGetter(ownedToken),
-		allRoomKeys: useMutable(roomKeysAtom),
+		myOwnedRoomKeys: useGetter(myOwnedRoomKeysSelector),
+		allRoomKeys: () => Array.from(getRoomKeys()),
 	}
 }
 export type RealtimeRoomsTools<RoomNames extends string> = {

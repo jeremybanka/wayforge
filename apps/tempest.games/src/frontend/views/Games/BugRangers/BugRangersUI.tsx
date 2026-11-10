@@ -2,8 +2,8 @@ import type { UserKey } from "@atom.io/realtime"
 import { ownersOfRooms } from "@atom.io/realtime"
 import { myUserKeyAtom } from "@atom.io/realtime/client"
 import type { Children } from "@atom.io/spa"
-import { onCleanup, onMount, useGetter } from "@atom.io/spa"
-import { atom, findRelations, setState } from "atom.io"
+import { onCleanup, onMount, useGetter, useSetter } from "@atom.io/spa"
+import { atom, atomFamily, disposeState, findRelations, setState } from "atom.io"
 import { animate } from "motion"
 import type { Socket } from "socket.io-client"
 
@@ -38,7 +38,6 @@ import {
 	useRealtimeRooms,
 } from "../../../services/realtime-hooks"
 import { realtimeSocket as socket } from "../../../services/socket-auth-service"
-import { useLocalState } from "../../../services/spa-state"
 import { isMyTurnSelector } from "./bug-rangers-client-state"
 import css from "./BugRangersUI.module.css"
 import { cube, tile } from "./Icons"
@@ -426,11 +425,21 @@ function User(props: { userKey: UserKey }): Children {
 	)
 }
 
+const turnBannerVisibleAtoms = atomFamily<boolean, UserKey>({
+	key: `turnBannerVisible`,
+	default: true,
+})
+
 function TurnBanner(props: { playerTurn: UserKey }): Children {
 	const username = usePullAtomFamilyMember(usernameAtoms, props.playerTurn)
 	const playerColor = usePullAtomFamilyMember(playerColorAtoms, props.playerTurn)
 	const myUserKey = useGetter(myUserKeyAtom)
-	const [visible, setVisible] = useLocalState(true)
+	const playerKey = props.playerTurn
+	const visible = useGetter(turnBannerVisibleAtoms, playerKey)
+	const setVisible = useSetter(turnBannerVisibleAtoms, playerKey)
+	onCleanup(() => {
+		disposeState(turnBannerVisibleAtoms, playerKey)
+	})
 	let banner: HTMLElement | null = null
 	onMount(() => {
 		const timeout = setTimeout(() => {

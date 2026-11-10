@@ -1,8 +1,8 @@
 import type { Children } from "@atom.io/spa"
-import { onCleanup, onMount, useGetter } from "@atom.io/spa"
+import { onCleanup, onMount, useGetter, useId, useSetter } from "@atom.io/spa"
 import type { Middleware } from "@floating-ui/dom"
 import { flip, offset, shift } from "@floating-ui/dom"
-import { setState } from "atom.io"
+import { atomFamily, disposeState, setState } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 
 import { RESPONSE_DICTIONARY } from "../library/response-dictionary"
@@ -16,7 +16,6 @@ import {
 	connectionErrorAtom,
 	socket,
 } from "./services/socket-auth-service"
-import { useLocalState } from "./services/spa-state"
 import { trpcClient } from "./services/trpc-client-service"
 import { AccountView } from "./views/AccountView"
 import { AdminView } from "./views/AdminView"
@@ -26,12 +25,22 @@ import { VerifyView } from "./views/VerifyView"
 
 IMPLICIT.STORE.loggers[0].logLevel = `warn`
 
+const accountPopoverOpenAtoms = atomFamily<boolean, string>({
+	key: `accountPopoverOpen`,
+	default: false,
+})
+
 export function AppShell(): Children {
 	const route = useGetter(routeSelector)
 	const auth = useGetter(authAtom)
 	const connectionError = useGetter(connectionErrorAtom)
 
-	const [accountPopOverIsOpen, setAccountPopOverOpen] = useLocalState(false)
+	const instanceKey = useId()
+	const accountPopOverIsOpen = useGetter(accountPopoverOpenAtoms, instanceKey)
+	const setAccountPopOverOpen = useSetter(accountPopoverOpenAtoms, instanceKey)
+	onCleanup(() => {
+		disposeState(accountPopoverOpenAtoms, instanceKey)
+	})
 	let profileButton: HTMLButtonElement | null = null
 	let profileActions: HTMLElement | null = null
 	let focusObserver: MutationObserver | undefined
