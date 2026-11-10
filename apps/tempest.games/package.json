@@ -54,7 +54,7 @@
 	"dependencies": {
 		"@ai-sdk/openai": "4.0.113",
 		"@atom.io/realtime": "0.1.2",
-		"@atom.io/spa": "0.0.7",
+		"@atom.io/spa": "0.0.8",
 		"@atom.io/spa-devtools": "0.0.7",
 		"@floating-ui/dom": "1.8.0",
 		"@js-temporal/polyfill": "0.5.1",

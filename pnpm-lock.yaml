@@ -279,11 +279,11 @@ importers:
         specifier: 0.1.2
         version: 0.1.2(@atom.io/react@0.2.1(@types/react@19.3.0)(atom.io@0.54.9(happy-dom@20.14.0))(react@19.3.1))(@testing-library/react@16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(atom.io@0.54.9(happy-dom@20.14.0))(happy-dom@20.14.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))
       '@atom.io/spa':
-        specifier: 0.0.7
-        version: 0.0.7(@floating-ui/dom@1.8.0)(@types/three@0.187.0)(atom.io@0.54.9(happy-dom@20.14.0))(motion@14.12.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(three@0.187.0)(vite@8.3.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.1))
+        specifier: 0.0.8
+        version: 0.0.8(@floating-ui/dom@1.8.0)(@types/three@0.187.0)(atom.io@0.54.9(happy-dom@20.14.0))(motion@14.12.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(three@0.187.0)(vite@8.3.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.1))
       '@atom.io/spa-devtools':
         specifier: 0.0.7
-        version: 0.0.7(@atom.io/spa@0.0.7(@floating-ui/dom@1.8.0)(@types/three@0.187.0)(atom.io@0.54.9(happy-dom@20.14.0))(motion@14.12.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(three@0.187.0)(vite@8.3.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.1)))(atom.io@0.54.9(happy-dom@20.14.0))
+        version: 0.0.7(@atom.io/spa@0.0.8(@floating-ui/dom@1.8.0)(@types/three@0.187.0)(atom.io@0.54.9(happy-dom@20.14.0))(motion@14.12.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(three@0.187.0)(vite@8.3.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.1)))(atom.io@0.54.9(happy-dom@20.14.0))
       '@floating-ui/dom':
         specifier: 1.8.0
         version: 1.8.0
@@ -866,8 +866,8 @@ packages:
       '@atom.io/spa': '>=0.0.5 <0.1.0'
       atom.io: ^0.54.1
 
-  '@atom.io/spa@0.0.7':
-    resolution: {integrity: sha512-Fc50jRJc6N/d24tv+Vv9vEsYg4nJ4cDAPjXzEIXUgSEAyYfUCZk1+gjCzbuL2pBIujFZpEG82zSn1ngVPQKCmg==}
+  '@atom.io/spa@0.0.8':
+    resolution: {integrity: sha512-EMY2w9+f4UAO2U1A4y92p9Z/lCraZ60bQVVlWV2w2dwgi+XwraL9o/G6KdMuEVyzedL+3lx4hNKpJzq4GwBk8w==}
     peerDependencies:
       '@floating-ui/dom': ^1.8.0
       '@types/three': ^0.187.0
@@ -6690,12 +6690,12 @@ snapshots:
       socket.io: 4.8.4(supports-color@10.2.2)
       socket.io-client: 4.8.4(supports-color@10.2.2)
 
-  '@atom.io/spa-devtools@0.0.7(@atom.io/spa@0.0.7(@floating-ui/dom@1.8.0)(@types/three@0.187.0)(atom.io@0.54.9(happy-dom@20.14.0))(motion@14.12.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(three@0.187.0)(vite@8.3.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.1)))(atom.io@0.54.9(happy-dom@20.14.0))':
+  '@atom.io/spa-devtools@0.0.7(@atom.io/spa@0.0.8(@floating-ui/dom@1.8.0)(@types/three@0.187.0)(atom.io@0.54.9(happy-dom@20.14.0))(motion@14.12.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(three@0.187.0)(vite@8.3.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.1)))(atom.io@0.54.9(happy-dom@20.14.0))':
     dependencies:
-      '@atom.io/spa': 0.0.7(@floating-ui/dom@1.8.0)(@types/three@0.187.0)(atom.io@0.54.9(happy-dom@20.14.0))(motion@14.12.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(three@0.187.0)(vite@8.3.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.1))
+      '@atom.io/spa': 0.0.8(@floating-ui/dom@1.8.0)(@types/three@0.187.0)(atom.io@0.54.9(happy-dom@20.14.0))(motion@14.12.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(three@0.187.0)(vite@8.3.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.1))
       atom.io: 0.54.9(happy-dom@20.14.0)
 
-  '@atom.io/spa@0.0.7(@floating-ui/dom@1.8.0)(@types/three@0.187.0)(atom.io@0.54.9(happy-dom@20.14.0))(motion@14.12.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(three@0.187.0)(vite@8.3.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.1))':
+  '@atom.io/spa@0.0.8(@floating-ui/dom@1.8.0)(@types/three@0.187.0)(atom.io@0.54.9(happy-dom@20.14.0))(motion@14.12.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(three@0.187.0)(vite@8.3.7(@types/node@26.6.6)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.1))':
     dependencies:
       atom.io: 0.54.9(happy-dom@20.14.0)
       html-entities: 2.6.0
