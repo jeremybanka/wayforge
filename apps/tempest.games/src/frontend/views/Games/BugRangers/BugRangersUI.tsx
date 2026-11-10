@@ -1,20 +1,10 @@
-import { useJSON, useO } from "@atom.io/react"
 import type { UserKey } from "@atom.io/realtime"
 import { ownersOfRooms } from "@atom.io/realtime"
 import { myUserKeyAtom } from "@atom.io/realtime/client"
-import {
-	RealtimeContext,
-	usePullAtom,
-	usePullAtomFamilyMember,
-	usePullMutable,
-	usePullSelector,
-	useRealtimeRooms,
-} from "@atom.io/realtime/react"
-import type { MutableAtomToken } from "atom.io"
+import type { Children } from "@atom.io/spa"
+import { onCleanup, onMount, useGetter } from "@atom.io/spa"
 import { atom, findRelations, setState } from "atom.io"
-import type { UList } from "atom.io/transceivers/u-list"
-import { AnimatePresence, motion } from "motion/react"
-import { type ReactElement, useContext } from "react"
+import { animate } from "motion"
 import type { Socket } from "socket.io-client"
 
 import type {
@@ -39,25 +29,32 @@ import {
 import { isAdminAtom } from "../../../../library/store"
 import { usernameAtoms } from "../../../../library/username-state"
 import * as userSvg from "../../../<svg>"
+import { useLayoutMotion } from "../../../services/layout-motion"
+import {
+	usePullAtom,
+	usePullAtomFamilyMember,
+	usePullMutable,
+	usePullSelector,
+	useRealtimeRooms,
+} from "../../../services/realtime-hooks"
+import { realtimeSocket as socket } from "../../../services/socket-auth-service"
+import { useLocalState } from "../../../services/spa-state"
 import { isMyTurnSelector } from "./bug-rangers-client-state"
 import css from "./BugRangersUI.module.css"
 import { cube, tile } from "./Icons"
 
 const svg = { ...userSvg, cube, tile }
-// These intrinsic namespaces describe Motion's stable HTML roots to Lasertag.
-const section = { Animated: motion.section }
-const figure = { Animated: motion.figure }
-const span = { Animated: motion.span }
-const h1 = { Animated: motion.h1 }
-
-export function BugRangersUI(): ReactElement {
+export function BugRangersUI(): Children {
 	const { myRoomKey } = useRealtimeRooms()
 	const myUserKey = usePullAtom(myUserKeyAtom)
 	return (
 		<bug-rangers-ui className={css.class}>
-			{myUserKey ? <UserInterior /> : null}
-			{myUserKey && myRoomKey ? (
-				<Interior myUserKey={myUserKey} />
+			{myUserKey() ? <UserInterior /> : null}
+			{myUserKey() && myRoomKey() ? (
+				<Interior
+					key={`${myUserKey()}:${myRoomKey()}`}
+					myUserKey={myUserKey()!}
+				/>
 			) : (
 				<Exterior />
 			)}
@@ -65,50 +62,56 @@ export function BugRangersUI(): ReactElement {
 	)
 }
 
-function Exterior(): ReactElement {
-	const { roomSocket, allRoomKeysAtom } = useRealtimeRooms()
-	const allRoomKeys = useJSON(allRoomKeysAtom)
-	const gameRoomKey = allRoomKeys.find((key) => key.includes(`bug-rangers`))
+function Exterior(): Children {
+	const { roomSocket, allRoomKeys: allRooms } = useRealtimeRooms()
+	const allRoomKeys = () => allRooms()
+	const gameRoomKey = () =>
+		allRoomKeys().find((key) => key.includes(`bug-rangers`))
 	return (
 		<room-exterior>
 			<button
 				type="button"
-				disabled={gameRoomKey === undefined}
+				disabled={gameRoomKey() === undefined}
 				onClick={() => {
-					roomSocket.emit(`joinRoom`, allRoomKeys[0])
+					roomSocket.emit(`joinRoom`, allRoomKeys()[0])
 				}}
 			>
-				{gameRoomKey ? `Join Game` : `Waiting for Host`}
+				{gameRoomKey() ? `Join Game` : `Waiting for Host`}
 			</button>
 		</room-exterior>
 	)
 }
 
-function Interior({ myUserKey }: { myUserKey: UserKey }): ReactElement {
+function Interior(props: { myUserKey: UserKey }): Children {
 	const gameState = usePullAtom(gameStateAtom)
 	const myRemainingTiles = usePullAtomFamilyMember(
 		playerRemainingTilesAtoms,
-		myUserKey,
+		props.myUserKey,
 	)
 	const myRemainingCubes = usePullAtomFamilyMember(
 		playerRemainingCubesAtoms,
-		myUserKey,
+		props.myUserKey,
 	)
 	const playerTurn = usePullSelector(playerTurnSelector)
 	return (
 		<>
 			<RoomModule />
-			{playerTurn ? <TurnBanner playerTurn={playerTurn} /> : null}
-			{gameState === `playing` ? (
+			{playerTurn() ? (
+				<TurnBanner key={playerTurn()!} playerTurn={playerTurn()!} />
+			) : null}
+			{gameState() === `playing` ? (
 				<>
-					<PlayerTurnControls />
+					<PlayerTurnControls
+						key={props.myUserKey}
+						myUserKey={props.myUserKey}
+					/>
 					<game-counter data-kind="tiles">
 						<svg.tile stroke="var(--fg)" strokeWidth={2} />
-						<span>{myRemainingTiles}</span>
+						<span>{myRemainingTiles()}</span>
 					</game-counter>
 					<game-counter data-kind="cubes">
 						<svg.cube stroke="var(--fg)" strokeWidth={2} />
-						<span>{myRemainingCubes}</span>
+						<span>{myRemainingCubes()}</span>
 					</game-counter>
 				</>
 			) : null}
@@ -116,26 +119,26 @@ function Interior({ myUserKey }: { myUserKey: UserKey }): ReactElement {
 	)
 }
 
-function UserInterior(): ReactElement | null {
+function UserInterior(): Children | null {
 	const isAdmin = usePullAtom(isAdminAtom)
-	return isAdmin ? <Devtools /> : null
+	return <>{isAdmin() ? <Devtools /> : null}</>
 }
 
-function RoomModule(): ReactElement {
-	const { myMutualsAtom } = useRealtimeRooms()
+function RoomModule(): Children {
+	const layout = useLayoutMotion()
+	useRealtimeRooms()
 
 	const gameState = usePullAtom(gameStateAtom)
 
 	return (
 		<room-module>
-			<section.Animated layout>
-				<GameSetupPhase isCurrentPhase={gameState === `setup`} />
+			<section ref={layout}>
+				<GameSetupPhase isCurrentPhase={gameState() === `setup`} />
 				<GamePlayingPhase
-					isCurrentPhase={gameState === `playing`}
-					gameState={gameState}
-					myMutualsAtom={myMutualsAtom}
+					isCurrentPhase={gameState() === `playing`}
+					gameState={gameState()}
 				/>
-			</section.Animated>
+			</section>
 		</room-module>
 	)
 }
@@ -145,7 +148,7 @@ const showBugRangersDevtoolsAtom = atom<boolean>({
 	default: false,
 })
 
-function Devtools(): ReactElement {
+function Devtools(): Children {
 	const showBugRangersDevtools = usePullAtom(showBugRangersDevtoolsAtom)
 	const { myRoomKey } = useRealtimeRooms()
 
@@ -158,32 +161,35 @@ function Devtools(): ReactElement {
 					setState(showBugRangersDevtoolsAtom, (prev) => !prev)
 				}}
 			>
-				{showBugRangersDevtools ? `hide` : `show`} devtools
+				{showBugRangersDevtools() ? `hide` : `show`} devtools
 			</button>
-			{showBugRangersDevtools ? (
+			{showBugRangersDevtools() ? (
 				<game-devtools>
-					<h1>{myRoomKey ?? `null`}</h1>
+					<h1>{myRoomKey() ?? `null`}</h1>
 					<RoomControls />
-					{myRoomKey ? <DevtoolsInterior /> : null}
+					{myRoomKey() ? <DevtoolsInterior /> : null}
 				</game-devtools>
 			) : null}
 		</>
 	)
 }
 
-function DevtoolsInterior(): ReactElement {
+function DevtoolsInterior(): Children {
 	const gameState = usePullAtom(gameStateAtom)
 	const turnNumber = usePullAtom(turnNumberAtom)
 	const playerTurn = usePullSelector(playerTurnSelector)
 	return (
 		<>
 			<span>
-				{gameState === `setup` ? (
+				{gameState() === `setup` ? (
 					`Setup`
 				) : (
 					<>
-						<PlayerUsername userKey={playerTurn ?? `user::$_NONE_$`} />
-						{` `}playing turn {turnNumber}
+						<PlayerUsername
+							key={playerTurn() ?? `user::$_NONE_$`}
+							userKey={playerTurn() ?? `user::$_NONE_$`}
+						/>
+						{` `}playing turn {turnNumber()}
 					</>
 				)}
 			</span>
@@ -192,30 +198,28 @@ function DevtoolsInterior(): ReactElement {
 	)
 }
 
-function PlayerUsername({ userKey }: { userKey: UserKey }): ReactElement {
-	const username = usePullAtomFamilyMember(usernameAtoms, userKey)
-	return <>{username}</>
+function PlayerUsername(props: { userKey: UserKey }): Children {
+	const username = usePullAtomFamilyMember(usernameAtoms, props.userKey)
+	return <>{username()}</>
 }
 
-function PlayerTurnControls(): ReactElement {
-	const myUserKey = useO(myUserKeyAtom)
-	const myColor = useO(playerColorAtoms, myUserKey as UserKey)
-	const { socket } = useContext(RealtimeContext)
+function PlayerTurnControls(props: { myUserKey: UserKey }): Children {
+	const myColor = useGetter(playerColorAtoms, props.myUserKey)
 	const gameSocket = socket as Socket<{}, PlayerActions>
-	const colorsChosen = useO(colorsChosenSelector)
-	const isMyTurn = useO(isMyTurnSelector)
-	const turnCanBeEnded = useO(turnCanBeEndedSelector)
+	const colorsChosen = useGetter(colorsChosenSelector)
+	const isMyTurn = useGetter(isMyTurnSelector)
+	const turnCanBeEnded = useGetter(turnCanBeEndedSelector)
 	const turnInProgress = usePullAtom(turnInProgressAtom)
 	return (
 		<turn-controls>
-			{myColor === null ? (
+			{myColor() === null ? (
 				PLAYER_COLORS.map((color, idx) => (
 					<button
 						data-css-color-choice
-						disabled={colorsChosen.has(color) || !isMyTurn}
+						disabled={colorsChosen().has(color) || !isMyTurn()}
 						key={idx}
 						type="button"
-						style={{ pointerEvents: `all`, background: color }}
+						style={`pointer-events: all; background: ${color}`}
 						onClick={() => {
 							gameSocket.emit(`chooseColor`, color)
 						}}
@@ -227,7 +231,7 @@ function PlayerTurnControls(): ReactElement {
 				<>
 					<button
 						type="button"
-						disabled={!isMyTurn || turnInProgress === null}
+						disabled={!isMyTurn() || turnInProgress() === null}
 						onClick={() => {
 							setState(turnInProgressAtom, null)
 							gameSocket.emit(`turnRestart`)
@@ -237,7 +241,7 @@ function PlayerTurnControls(): ReactElement {
 					</button>
 					<button
 						type="button"
-						disabled={!turnCanBeEnded || !isMyTurn}
+						disabled={!turnCanBeEnded() || !isMyTurn()}
 						onClick={() => {
 							setState(turnInProgressAtom, null)
 							gameSocket.emit(`turnEnd`)
@@ -251,51 +255,49 @@ function PlayerTurnControls(): ReactElement {
 	)
 }
 
-function RoomControls(): ReactElement {
-	const { roomSocket, allRoomKeysAtom, myRoomKey } = useRealtimeRooms()
-	const bugRangersRoomKey = useJSON(allRoomKeysAtom).find((key) =>
-		key.includes(`bug-rangers`),
-	)
+function RoomControls(): Children {
+	const { roomSocket, allRoomKeys: allRooms, myRoomKey } = useRealtimeRooms()
+	const bugRangersRoomKey = () =>
+		allRooms().find((key) => key.includes(`bug-rangers`))
 	return (
 		<section data-css="room-controls">
-			{myRoomKey ? (
+			{myRoomKey() ? (
 				<button
 					type="button"
 					onClick={() => {
 						roomSocket?.emit(`leaveRoom`)
 					}}
 				>
-					Leave {myRoomKey}
+					Leave {myRoomKey()}
 				</button>
 			) : (
 				<button
 					type="button"
 					onClick={() => {
-						if (bugRangersRoomKey) {
-							roomSocket?.emit(`joinRoom`, bugRangersRoomKey)
+						if (bugRangersRoomKey()) {
+							roomSocket?.emit(`joinRoom`, bugRangersRoomKey()!)
 						} else {
 							roomSocket?.emit(`createRoom`, `backend.worker.bug-rangers.bun`)
 						}
 					}}
 				>
-					{bugRangersRoomKey ? `Join ${bugRangersRoomKey}` : `Create room`}
+					{bugRangersRoomKey() ? `Join ${bugRangersRoomKey()}` : `Create room`}
 				</button>
 			)}
-			{bugRangersRoomKey ? (
+			{bugRangersRoomKey() ? (
 				<button
 					type="button"
 					onClick={() => {
-						roomSocket?.emit(`deleteRoom`, bugRangersRoomKey)
+						roomSocket?.emit(`deleteRoom`, bugRangersRoomKey()!)
 					}}
 				>
-					Delete {bugRangersRoomKey}
+					Delete {bugRangersRoomKey()}
 				</button>
 			) : null}
 		</section>
 	)
 }
-function GameControls(): ReactElement {
-	const { socket } = useContext(RealtimeContext)
+function GameControls(): Children {
 	const gameSocket = socket as Socket<{}, PlayerActions>
 	return (
 		<section>
@@ -319,29 +321,25 @@ function GameControls(): ReactElement {
 	)
 }
 
-function GameSetupPhase({
-	isCurrentPhase,
-}: {
-	isCurrentPhase: boolean
-}): ReactElement {
-	const { socket } = useContext(RealtimeContext)
+function GameSetupPhase(props: { isCurrentPhase: boolean }): Children {
 	const gameSocket = socket as Socket<{}, PlayerActions>
 	const setupGroups = usePullSelector(setupGroupsSelector)
+	const layout = useLayoutMotion()
 	return (
-		<section.Animated
-			layout
+		<section
+			ref={layout}
 			data-css="setup"
-			data-css-current={isCurrentPhase || undefined}
+			data-css-current={props.isCurrentPhase || undefined}
 		>
 			<UserGroup
 				groupName="Not Ready"
 				dataCss="not-ready"
-				userKeys={setupGroups.notReady}
+				userKeys={setupGroups().notReady}
 			/>
 			<UserGroup
 				groupName="Does not Want First"
 				dataCss="ready-does-not-want-first"
-				userKeys={setupGroups.readyDoesNotWantFirst}
+				userKeys={setupGroups().readyDoesNotWantFirst}
 				onClick={() => {
 					gameSocket?.emit(`wantNotFirst`)
 				}}
@@ -349,55 +347,48 @@ function GameSetupPhase({
 			<UserGroup
 				groupName="Wants First"
 				dataCss="ready-wants-first"
-				userKeys={setupGroups.readyWantsFirst}
+				userKeys={setupGroups().readyWantsFirst}
 				onClick={() => {
 					gameSocket?.emit(`wantFirst`)
 				}}
 			/>
-		</section.Animated>
+		</section>
 	)
 }
 
-function GamePlayingPhase({
-	isCurrentPhase,
-}: {
+function GamePlayingPhase(props: {
 	isCurrentPhase: boolean
 	gameState: GameState
-	myMutualsAtom: MutableAtomToken<UList<UserKey>>
-}): ReactElement {
+}): Children {
 	const turnOrder = usePullMutable(playerTurnOrderAtom)
+	const layout = useLayoutMotion()
 	return (
-		<section.Animated
-			layout
+		<section
+			ref={layout}
 			data-css="playing"
-			data-css-current={isCurrentPhase || undefined}
+			data-css-current={props.isCurrentPhase || undefined}
 		>
 			<UserGroup
 				groupName="Turn Order"
 				dataCss="turn-order"
-				userKeys={turnOrder}
+				userKeys={Array.from(turnOrder())}
 			/>
-		</section.Animated>
+		</section>
 	)
 }
 
-function UserGroup({
-	groupName,
-	dataCss,
-	userKeys,
-	onClick,
-}: {
+function UserGroup(props: {
 	groupName: string
 	dataCss: string
 	userKeys: readonly UserKey[]
 	onClick?: () => void
-}): ReactElement {
+}): Children {
 	return (
-		<section data-css={dataCss}>
-			<button type="button" onClick={onClick} disabled={!onClick} />
-			<group-heading>{groupName}</group-heading>
+		<section data-css={props.dataCss}>
+			<button type="button" onClick={props.onClick} disabled={!props.onClick} />
+			<group-heading>{props.groupName}</group-heading>
 			<group-members>
-				{userKeys.map((userKey) => {
+				{props.userKeys.map((userKey) => {
 					return <User key={userKey} userKey={userKey} />
 				})}
 			</group-members>
@@ -405,109 +396,113 @@ function UserGroup({
 	)
 }
 
-function User({ userKey }: { userKey: UserKey }): ReactElement {
-	const myUserKey = useO(myUserKeyAtom)
+function User(props: { userKey: UserKey }): Children {
+	const layout = useLayoutMotion(props.userKey)
+	const myUserKey = useGetter(myUserKeyAtom)
 	const { myRoomKey } = useRealtimeRooms()
-	const relations = findRelations(ownersOfRooms, myRoomKey ?? `room::`)
-	const ownerKey = useO(relations.userKeyOfRoom)
-	const username = usePullAtomFamilyMember(usernameAtoms, userKey)
-	const color = usePullAtomFamilyMember(playerColorAtoms, userKey) ?? `#555`
-	const currentTurn = useO(playerTurnSelector)
+	const relations = findRelations(ownersOfRooms, myRoomKey() ?? `room::`)
+	const ownerKey = useGetter(relations.userKeyOfRoom)
+	const username = usePullAtomFamilyMember(usernameAtoms, props.userKey)
+	const color = usePullAtomFamilyMember(playerColorAtoms, props.userKey)
+	const currentTurn = useGetter(playerTurnSelector)
 	return (
-		<figure.Animated layoutId={userKey} data-css-user>
-			{userKey === myUserKey ? (
-				userKey === ownerKey ? (
-					<svg.leaderMe color={color} />
+		<figure ref={layout} data-css-user>
+			{props.userKey === myUserKey() ? (
+				props.userKey === ownerKey() ? (
+					<svg.leaderMe color={color() ?? `#555`} />
 				) : (
-					<svg.me color={color} />
+					<svg.me color={color() ?? `#555`} />
 				)
-			) : userKey === ownerKey ? (
-				<svg.leaderYou color={color} />
+			) : props.userKey === ownerKey() ? (
+				<svg.leaderYou color={color() ?? `#555`} />
 			) : (
-				<svg.you color={color} />
+				<svg.you color={color() ?? `#555`} />
 			)}
-			{userKey === currentTurn ? <svg.current color={color} /> : null}
-			<span>{username.slice(0, 3)}</span>
-		</figure.Animated>
+			{props.userKey === currentTurn() ? (
+				<svg.current color={color() ?? `#555`} />
+			) : null}
+			<span>{username().slice(0, 3)}</span>
+		</figure>
 	)
 }
 
-function TurnBanner({ playerTurn }: { playerTurn: UserKey }): ReactElement {
-	const username = usePullAtomFamilyMember(usernameAtoms, playerTurn)
-	const playerColor = usePullAtomFamilyMember(playerColorAtoms, playerTurn)
-	const myUserKey = useO(myUserKeyAtom)
+function TurnBanner(props: { playerTurn: UserKey }): Children {
+	const username = usePullAtomFamilyMember(usernameAtoms, props.playerTurn)
+	const playerColor = usePullAtomFamilyMember(playerColorAtoms, props.playerTurn)
+	const myUserKey = useGetter(myUserKeyAtom)
+	const [visible, setVisible] = useLocalState(true)
+	let banner: HTMLElement | null = null
+	onMount(() => {
+		const timeout = setTimeout(() => {
+			setVisible(false)
+		}, 3000)
+		onCleanup(() => {
+			clearTimeout(timeout)
+		})
+		if (window.matchMedia(`(prefers-reduced-motion: reduce)`).matches) return
+		const elements = Array.from(banner!.children)
+		const widths = [
+			[`20vw`, `90vw`, `90vw`, `10vw`],
+			[`20vw`, `20vw`, `100vw`, `10vw`],
+			[`20vw`, `20vw`, `100vw`, `10vw`],
+			[`20vw`, `80vw`, `80vw`, `10vw`],
+		]
+		const animations = elements.map((element, index) =>
+			animate(
+				element,
+				{
+					x:
+						index === 3
+							? [`-1500%`, `5%`, `10%`, `1500%`]
+							: index === 2
+								? [`1500%`, `4%`, `2%`, `-1500%`]
+								: [`-1500%`, `2%`, `4%`, `1500%`],
+					skewX: [`-50deg`, `-5deg`, `-5deg`, `-50deg`],
+					width: widths[index],
+				},
+				{
+					duration: 3,
+					times:
+						index === 0
+							? [0, 0.1, 0.77, 1]
+							: index === 3
+								? [0, 0.2, 0.75, 1]
+								: [0, 0.1, 0.7, 1],
+					ease: [`circOut`, `linear`, `easeIn`],
+				},
+			),
+		)
+		onCleanup(() => {
+			animations.forEach((animation) => {
+				animation.stop()
+			})
+		})
+	})
+
 	return (
-		<turn-banner>
-			<AnimatePresence mode="wait">
-				<figure.Animated
-					key={playerTurn}
-					initial={{ x: `-1500%`, skewX: `-50deg`, width: `20vw` }}
-					animate={{
-						x: [`-1500%`, `2%`, `4%`, `1500%`],
-						skewX: [`-50deg`, `-5deg`, `-5deg`, `-50deg`],
-						width: [`20vw`, `90vw`, `90vw`, `10vw`],
-					}}
-					transition={{
-						duration: 3,
-						times: [0, 0.1, 0.77, 1],
-						ease: [`circOut`, `linear`, `easeIn`],
-					}}
-				/>
-			</AnimatePresence>
-			<AnimatePresence mode="wait">
-				<span.Animated
-					data-css="top"
-					style={{ backgroundColor: playerColor ?? `#555` }}
-					key={playerTurn}
-					initial={{ x: `-1500%`, skewX: `-50deg`, width: `20vw` }}
-					animate={{
-						x: [`-1500%`, `2%`, `4%`, `1500%`],
-						skewX: [`-50deg`, `-5deg`, `-5deg`, `-50deg`],
-						width: [`20vw`, `20vw`, `100vw`, `10vw`],
-					}}
-					transition={{
-						duration: 3,
-						times: [0, 0.1, 0.7, 1],
-						ease: [`circOut`, `linear`, `easeIn`],
-					}}
-				/>
-			</AnimatePresence>
-			<AnimatePresence mode="wait">
-				<span.Animated
-					data-css="bottom"
-					key={playerTurn}
-					initial={{ x: `-1500%`, skewX: `-50deg`, width: `20vw` }}
-					animate={{
-						x: [`1500%`, `4%`, `2%`, `-1500%`],
-						skewX: [`-50deg`, `-5deg`, `-5deg`, `-50deg`],
-						width: [`20vw`, `20vw`, `100vw`, `10vw`],
-					}}
-					transition={{
-						duration: 3,
-						times: [0, 0.1, 0.7, 1],
-						ease: [`circOut`, `linear`, `easeIn`],
-					}}
-				/>
-			</AnimatePresence>
-			<AnimatePresence mode="wait">
-				<h1.Animated
-					style={{ backgroundColor: playerColor ?? `#555` }}
-					key={playerTurn}
-					initial={{ x: `-1500%`, skewX: `-50deg`, width: `20vw` }}
-					animate={{
-						x: [`-1500%`, `5%`, `10%`, `1500%`],
-						skewX: [`-50deg`, `-5deg`, `-5deg`, `-50deg`],
-						width: [`20vw`, `80vw`, `80vw`, `10vw`],
-					}}
-					transition={{
-						duration: 3,
-						times: [0, 0.2, 0.75, 1],
-						ease: [`circOut`, `linear`, `easeIn`],
+		<>
+			{visible() ? (
+				<turn-banner
+					ref={(element) => {
+						banner = element
 					}}
 				>
-					{playerTurn === myUserKey ? `your turn` : `${username}'s turn`}
-				</h1.Animated>
-			</AnimatePresence>
-		</turn-banner>
+					<figure />
+
+					<span
+						data-css="top"
+						style={`background-color: ${playerColor() ?? `#555`}`}
+					/>
+
+					<span data-css="bottom" />
+
+					<h1 style={`background-color: ${playerColor() ?? `#555`}`}>
+						{props.playerTurn === myUserKey()
+							? `your turn`
+							: `${username()}'s turn`}
+					</h1>
+				</turn-banner>
+			) : null}
+		</>
 	)
 }

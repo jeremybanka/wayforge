@@ -1,7 +1,7 @@
-import { useI, useO } from "@atom.io/react"
+import type { Children } from "@atom.io/spa"
+import { onMount, useGetter, useId, useSetter } from "@atom.io/spa"
 import type { ViewOf } from "atom.io"
 import { setState } from "atom.io"
-import { useEffect, useId } from "react"
 
 import { navigate, type Route } from "../services/router-service"
 import { authAtom, oneTimeCodeInputAtom } from "../services/socket-auth-service"
@@ -14,68 +14,62 @@ type VerifyProps = {
 	route: ViewOf<VerifyRoute>
 }
 
-export function VerifyView({
-	route: [, tokenFromUrl],
-}: VerifyProps): React.ReactNode {
-	const auth = useO(authAtom)
-	const oneTimeCode = useO(oneTimeCodeInputAtom)
-	const setOneTimeCode = useI(oneTimeCodeInputAtom)
+export function VerifyView(props: VerifyProps): Children {
+	const auth = useGetter(authAtom)
+	const oneTimeCode = useGetter(oneTimeCodeInputAtom)
+	const setOneTimeCode = useSetter(oneTimeCodeInputAtom)
 
 	const codeInputId = `code-${useId()}`
 
-	useEffect(() => {
-		if (tokenFromUrl) {
-			setOneTimeCode(tokenFromUrl)
+	onMount(() => {
+		if (props.route[1]) {
+			setOneTimeCode(props.route[1])
 		}
-	}, [])
-
-	if (!auth) {
-		return (
-			<verify-view className={css.class}>
-				<p>You must be logged in to verify your account.</p>
-			</verify-view>
-		)
-	}
+	})
 
 	return (
 		<verify-view className={css.class}>
-			<form
-				onSubmit={async (e) => {
-					e.preventDefault()
-					try {
-						const response = await trpcClient.verifyAccountAction.mutate({
-							oneTimeCode,
-							userKey: `CHANGEME`,
-						})
-						setState(authAtom, response)
-						if (response.action === `resetPassword`) {
-							navigate(`/account`)
-						} else {
-							navigate(`/game`)
+			{auth() ? (
+				<form
+					onSubmit={async (e) => {
+						e.preventDefault()
+						try {
+							const response = await trpcClient.verifyAccountAction.mutate({
+								oneTimeCode: oneTimeCode(),
+								userKey: `CHANGEME`,
+							})
+							setState(authAtom, response)
+							if (response.action === `resetPassword`) {
+								navigate(`/account`)
+							} else {
+								navigate(`/game`)
+							}
+						} catch (thrown) {
+							console.error(thrown)
 						}
-					} catch (thrown) {
-						console.error(thrown)
-					}
-				}}
-			>
-				<form-fields>
-					<p>Check your email for a verification code.</p>
-					<label htmlFor={codeInputId}>
-						<span>Verification code</span>
-						<input
-							id={codeInputId}
-							type="text"
-							value={oneTimeCode}
-							onChange={(e) => {
-								setOneTimeCode(e.target.value)
-							}}
-							placeholder="Verification code"
-							autoComplete="one-time-code"
-							autoCapitalize="none"
-						/>
-					</label>
-				</form-fields>
-			</form>
+					}}
+				>
+					<form-fields>
+						<p>Check your email for a verification code.</p>
+						<label htmlFor={codeInputId}>
+							<span>Verification code</span>
+							<input
+								id={codeInputId}
+								type="text"
+								value={oneTimeCode()}
+								onInput={(e) => {
+									setOneTimeCode(e.currentTarget.value)
+								}}
+								placeholder="Verification code"
+								autoComplete="one-time-code"
+								autoCapitalize="none"
+							/>
+						</label>
+					</form-fields>
+				</form>
+			) : (
+				<p>You must be logged in to verify your account.</p>
+			)}
 		</verify-view>
 	)
 }

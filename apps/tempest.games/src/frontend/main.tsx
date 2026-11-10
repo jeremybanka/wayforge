@@ -1,20 +1,24 @@
 import "./globals.css"
-import "@atom.io/react-devtools/css"
+import "@atom.io/spa-devtools/css"
 
-import { AtomIODevtools } from "@atom.io/react-devtools"
-import { RealtimeProvider } from "@atom.io/realtime/react"
-import { StrictMode } from "react"
-import { createRoot } from "react-dom/client"
+import { render } from "@atom.io/spa"
+import { motionCapability } from "@atom.io/spa/motion"
+import { AtomIODevtools } from "@atom.io/spa-devtools"
 
 import { env } from "../library/env.ts"
 import { AppShell } from "./AppShell.tsx"
-import { realtimeSocket } from "./services/socket-auth-service.ts"
+import { useRealtimeConnection } from "./services/realtime-hooks.ts"
 
-createRoot(document.getElementById(`root`)!).render(
-	<StrictMode>
-		<RealtimeProvider socket={realtimeSocket}>
-			<AppShell />
-			<AtomIODevtools hideByDefault={env.VITE_HIDE_DEVTOOLS} />
-		</RealtimeProvider>
-	</StrictMode>,
+render(
+	() => {
+		useRealtimeConnection()
+		return (
+			<>
+				<AppShell />
+				<AtomIODevtools hideByDefault={env.VITE_HIDE_DEVTOOLS} />
+			</>
+		)
+	},
+	document.getElementById(`root`)!,
+	{ capabilities: [motionCapability()] },
 )

@@ -1,27 +1,26 @@
-import { useJSON, useO } from "@atom.io/react"
 import { type RoomKey, roomKeysAtom } from "@atom.io/realtime"
-import type { RealtimeRoomsTools } from "@atom.io/realtime/react"
-import { usePullAtom, useRealtimeRooms } from "@atom.io/realtime/react"
-import * as React from "react"
+import type { Children } from "@atom.io/spa"
 
 import type { ActualRoomName } from "../../library/room-names"
 import { cpuCountAtom } from "../../library/store"
+import type { RealtimeRoomsTools } from "../services/realtime-hooks"
+import { usePullAtom, useRealtimeRooms } from "../services/realtime-hooks"
+import { useMutable } from "../services/spa-state"
 import css from "./ServerControl.module.css"
 
-export function ServerControl(): React.ReactNode {
+export function ServerControl(): Children {
 	const cpuCount = usePullAtom(cpuCountAtom)
-	const allRoomKeys = useJSON(roomKeysAtom)
-	const { myRoomKey, myOwnedRoomsAtom, roomSocket } =
+	const allRoomKeys = useMutable(roomKeysAtom)
+	const { myRoomKey, myOwnedRoomKeys, roomSocket } =
 		useRealtimeRooms<ActualRoomName>()
-
-	const myOwnedRoomKeys = useO(myOwnedRoomsAtom)
 
 	return (
 		<server-control className={css.class}>
-			{Array.from({ length: cpuCount }).map((_, i) => {
-				const roomKey: RoomKey | undefined = allRoomKeys[i]
-				const hasJoined = roomKey && roomKey === myRoomKey
-				const ownsRoom = myOwnedRoomKeys.has(roomKey)
+			{Array.from({ length: cpuCount() }).map((_, i) => {
+				const roomKey: RoomKey | undefined = allRoomKeys()[i]
+				const hasJoined = roomKey && roomKey === myRoomKey()
+				const ownsRoom =
+					roomKey !== undefined && myOwnedRoomKeys().includes(roomKey)
 				return (
 					<Core
 						key={i}
@@ -47,31 +46,25 @@ export function ServerControl(): React.ReactNode {
 
 type CoreProps = {
 	indexNumber: number
-	roomKey?: RoomKey
-	hasJoined?: boolean
-	ownsRoom?: boolean
+	roomKey?: RoomKey | undefined
+	hasJoined?: boolean | undefined
+	ownsRoom?: boolean | undefined
 	roomSocket: RealtimeRoomsTools<ActualRoomName>[`roomSocket`]
 }
-function Core({
-	indexNumber,
-	roomKey,
-	hasJoined,
-	ownsRoom,
-	roomSocket,
-}: CoreProps) {
+function Core(props: CoreProps) {
 	return (
 		<server-core>
 			<span>
-				Core {indexNumber}: {roomKey}
+				Core {props.indexNumber}: {props.roomKey}
 				{` `}
-				<input type="checkbox" checked={ownsRoom} disabled />
-				<input type="checkbox" checked={hasJoined} disabled />
+				<input type="checkbox" checked={props.ownsRoom} disabled />
+				<input type="checkbox" checked={props.hasJoined} disabled />
 			</span>
-			{roomKey === undefined ? null : hasJoined ? (
+			{props.roomKey === undefined ? null : props.hasJoined ? (
 				<button
 					type="button"
 					onClick={() => {
-						roomSocket.emit(`leaveRoom`)
+						props.roomSocket.emit(`leaveRoom`)
 					}}
 				>
 					leave
@@ -80,17 +73,17 @@ function Core({
 				<button
 					type="button"
 					onClick={() => {
-						roomSocket.emit(`joinRoom`, roomKey)
+						props.roomSocket.emit(`joinRoom`, props.roomKey!)
 					}}
 				>
 					join
 				</button>
 			)}
-			{roomKey && ownsRoom ? (
+			{props.roomKey && props.ownsRoom ? (
 				<button
 					type="button"
 					onClick={() => {
-						roomSocket.emit(`deleteRoom`, roomKey)
+						props.roomSocket.emit(`deleteRoom`, props.roomKey!)
 					}}
 				>
 					delete

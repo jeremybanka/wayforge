@@ -1,51 +1,55 @@
-import React, { useEffect, useRef, useState } from "react"
+import type { Children } from "@atom.io/spa"
+import { onCleanup } from "@atom.io/spa"
+import { bindScene } from "@atom.io/spa/renderer"
 
+import { useLocalState } from "../services/spa-state"
 import css from "./VersionSpinner.module.css"
 
-type BrailleLoaderProps = {
-	input: Promise<string> | string
-}
-
 const spinnerFrames = [`⠋`, `⠙`, `⠸`, `⠴`, `⠦`, `⠇`]
-
-export function VersionSpinner({ input }: BrailleLoaderProps): React.ReactNode {
-	const spanRef = useRef<HTMLSpanElement>(null)
-	const [resolved, setResolved] = useState<string | null>(
-		typeof input === `string` ? input : null,
-	)
-
-	useEffect(() => {
-		let isMounted = true
-		let interval: NodeJS.Timeout
-
-		if (typeof input === `string`) {
-			setResolved(input)
-		} else {
+export function VersionSpinner(props: {
+	input: Promise<string> | string
+}): Children {
+	const [text, setText] = useLocalState(spinnerFrames[0])
+	let cancel = () => {}
+	onCleanup(() => {
+		cancel()
+	})
+	bindScene(
+		() => props.input,
+		(input) => {
+			cancel()
+			if (typeof input === `string`) {
+				setText(input)
+				return
+			}
+			let active = true
 			let frame = 0
-			interval = setInterval(() => {
-				if (spanRef.current) {
-					spanRef.current.textContent = spinnerFrames[frame]
-					frame = (frame + 1) % spinnerFrames.length
-				}
+			const interval = setInterval(() => {
+				setText(spinnerFrames[frame++ % spinnerFrames.length])
 			}, 100)
-
-			void input.then((result) => {
-				if (isMounted) {
-					clearInterval(interval)
-					setResolved(result)
-				}
-			})
-		}
-
-		return () => {
-			isMounted = false
-			if (interval) clearInterval(interval)
-		}
-	}, [input])
-
+			cancel = () => {
+				active = false
+				clearInterval(interval)
+			}
+			void input.then(
+				(value) => {
+					if (active) {
+						clearInterval(interval)
+						setText(value)
+					}
+				},
+				() => {
+					if (active) {
+						clearInterval(interval)
+						setText(`unavailable`)
+					}
+				},
+			)
+		},
+	)
 	return (
 		<version-spinner className={css.class}>
-			<span ref={spanRef}>{resolved ?? spinnerFrames[0]}</span>
+			<span>{text()}</span>
 		</version-spinner>
 	)
 }

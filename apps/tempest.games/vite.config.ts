@@ -1,4 +1,4 @@
-import react from "@vitejs/plugin-react"
+import spa from "@atom.io/spa/vite"
 import { loadEnv } from "vite"
 import type { ViteUserConfig, ViteUserConfigFn } from "vitest/config"
 import { defineConfig } from "vitest/config"
@@ -10,7 +10,7 @@ export default defineConfig((async ({ mode }) => {
 	await import(`./src/library/env`)
 	const { httpsDev } = await import(`./dev/https-dev`)
 	const config: ViteUserConfig = {
-		plugins: [react()],
+		plugins: [spa({ include: /src\/frontend\/.*\.tsx$/ })],
 		build: { outDir: `app`, rollupOptions: { external: [`@backend/db`] } },
 		resolve: {
 			tsconfigPaths: true,

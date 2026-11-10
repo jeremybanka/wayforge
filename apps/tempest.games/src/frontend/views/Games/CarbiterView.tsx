@@ -1,4 +1,5 @@
-import { useI, useLoadable, useO } from "@atom.io/react"
+import type { Children } from "@atom.io/spa"
+import { useGetter, useLoadable, useSetter } from "@atom.io/spa"
 import type { appRouter } from "@backend/trpc-app-router"
 import type { foodItems } from "@database/tempest-db-schema"
 import { Temporal } from "@js-temporal/polyfill"
@@ -17,7 +18,6 @@ import {
 import { UList } from "atom.io/transceivers/u-list"
 import type { InferSelectModel } from "drizzle-orm"
 import { nanoid } from "nanoid"
-import { useCallback } from "react"
 
 import { trpcClient } from "../../services/trpc-client-service"
 import css from "./CarbiterView.module.css"
@@ -50,23 +50,21 @@ const EMPTY_MEALS: Record<MealName, string[]> = {
 	supper: [],
 }
 
-export function CarbiterView(): React.ReactNode {
-	const focusedMeal = useO(focusedMealNameAtom)
-	const focusedDate = useO(focusedDateAtom)
-	const newFoodItemName = useO(newFoodItemNameAtom)
-	const setNewFoodItemName = useI(newFoodItemNameAtom)
-	const change = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-		setNewFoodItemName(e.target.value)
-	}, [])
-	const submit = useCallback(
-		(e: React.SubmitEvent<HTMLFormElement>) => {
-			e.preventDefault()
-			if (!focusedMeal) return
-			void addFoodItem(focusedMeal)
-		},
-		[focusedMeal],
-	)
-	const editedItemKeys = useO(foodItemsEditsKeysAtom)
+export function CarbiterView(): Children {
+	const focusedMeal = useGetter(focusedMealNameAtom)
+	const focusedDate = useGetter(focusedDateAtom)
+	const newFoodItemName = useGetter(newFoodItemNameAtom)
+	const setNewFoodItemName = useSetter(newFoodItemNameAtom)
+	const change = (e: Event & { currentTarget: HTMLInputElement }) => {
+		setNewFoodItemName(e.currentTarget.value)
+	}
+	const submit = (e: SubmitEvent) => {
+		e.preventDefault()
+		const meal = focusedMeal()
+		if (meal) void addFoodItem(meal)
+	}
+
+	const editedItemKeys = useGetter(foodItemsEditsKeysAtom)
 	const totalDailyCarbs = useLoadable(totalDailyCarbsSelector, 0)
 	const totalDailyProtein = useLoadable(totalDailyProteinSelector, 0)
 	return (
@@ -80,7 +78,7 @@ export function CarbiterView(): React.ReactNode {
 						}}
 					>{`<-`}</button>
 					<span>
-						{focusedDate.toLocaleString(`en-US`, { dateStyle: `full` })}
+						{focusedDate().toLocaleString(`en-US`, { dateStyle: `full` })}
 					</span>
 					<button
 						type="button"
@@ -93,7 +91,7 @@ export function CarbiterView(): React.ReactNode {
 			<span />
 			<meal-content>
 				{MEAL_NAMES.map((mealName) =>
-					focusedMeal === mealName ? (
+					focusedMeal() === mealName ? (
 						<Meal key={mealName} mealName={mealName} />
 					) : (
 						<InactiveMeal key={mealName} mealName={mealName} />
@@ -102,12 +100,12 @@ export function CarbiterView(): React.ReactNode {
 			</meal-content>
 			<meal-actions>
 				<form onSubmit={submit}>
-					{editedItemKeys.size > 0 ? (
+					{editedItemKeys().size > 0 ? (
 						<button
 							type="button"
 							onClick={async () => {
 								const edits: [string, Partial<FoodItem>][] = []
-								for (const id of editedItemKeys) {
+								for (const id of editedItemKeys()) {
 									const edit = getState(foodItemsEditsAtoms, id)
 									edits.push([id, edit])
 								}
@@ -119,8 +117,8 @@ export function CarbiterView(): React.ReactNode {
 						<>
 							<input
 								type="text"
-								value={newFoodItemName}
-								onChange={change}
+								value={newFoodItemName()}
+								onInput={change}
 								placeholder="add to current meal..."
 							/>
 							<button type="submit">{`>>->`}</button>
@@ -132,11 +130,11 @@ export function CarbiterView(): React.ReactNode {
 				<span />
 				<meal-content data-css="stats">
 					<data data-css="stat">
-						<output data-css="stats-number">{totalDailyCarbs.value}</output>
+						<output data-css="stats-number">{totalDailyCarbs().value}</output>
 						<span data-css="stats-unit">carbs</span>
 					</data>
 					<data data-css="stat">
-						<output data-css="stats-number">{totalDailyProtein.value}</output>
+						<output data-css="stats-number">{totalDailyProtein().value}</output>
 						<span data-css="stats-unit">protein</span>
 					</data>
 				</meal-content>
@@ -145,13 +143,13 @@ export function CarbiterView(): React.ReactNode {
 	)
 }
 
-function Meal({ mealName }: { mealName: MealName }): React.ReactNode {
+function Meal(props: { mealName: MealName }): Children {
 	const mealsToday = useLoadable(mealsTodaySelector, EMPTY_MEALS)
 	return (
 		<section>
-			<MealHeader mealName={mealName} />
+			<MealHeader mealName={props.mealName} />
 			<meal-content>
-				{mealsToday.value[mealName].map((id) => (
+				{mealsToday().value[props.mealName].map((id) => (
 					<FoodItem key={id} id={id} />
 				))}
 			</meal-content>
@@ -159,35 +157,35 @@ function Meal({ mealName }: { mealName: MealName }): React.ReactNode {
 	)
 }
 
-function InactiveMeal({ mealName }: { mealName: MealName }): React.ReactNode {
+function InactiveMeal(props: { mealName: MealName }): Children {
 	return (
 		<section data-css="inactive-meal">
-			<MealHeader mealName={mealName} />
+			<MealHeader mealName={props.mealName} />
 		</section>
 	)
 }
-function MealHeader({ mealName }: { mealName: MealName }): React.ReactNode {
-	const totalCarbs = useLoadable(totalMealCarbsSelectors, mealName, 0)
-	const totalProtein = useLoadable(totalMealProteinSelectors, mealName, 0)
+function MealHeader(props: { mealName: MealName }): Children {
+	const totalCarbs = useLoadable(totalMealCarbsSelectors, props.mealName, 0)
+	const totalProtein = useLoadable(totalMealProteinSelectors, props.mealName, 0)
 	return (
 		<meal-heading>
 			<button
 				type="button"
 				onClick={() => {
 					setState(focusedMealNameAtom, (current) =>
-						current === mealName ? null : mealName,
+						current === props.mealName ? null : props.mealName,
 					)
 				}}
 			>
-				{mealName}
+				{props.mealName}
 			</button>
 			<aside data-css="stats">
 				<data data-css="stat">
-					<output data-css="stats-number">{totalCarbs.value}</output>
+					<output data-css="stats-number">{totalCarbs().value}</output>
 					<span data-css="stats-unit">carbs</span>
 				</data>
 				<data data-css="stat">
-					<output data-css="stats-number">{totalProtein.value}</output>
+					<output data-css="stats-number">{totalProtein().value}</output>
 					<span data-css="stats-unit">protein</span>
 				</data>
 			</aside>
@@ -254,28 +252,32 @@ const EMPTY_FOOD_ITEM: FoodItem = {
 	protein: 0,
 }
 
-function FoodItem({ id }: { id: string }): React.ReactNode {
-	const foodItem = useLoadable(foodItemsOverlaySelectors, id, EMPTY_FOOD_ITEM)
+function FoodItem(props: { id: string }): Children {
+	const foodItem = useLoadable(
+		foodItemsOverlaySelectors,
+		props.id,
+		EMPTY_FOOD_ITEM,
+	)
 	return (
 		<article>
 			<meal-heading>
 				<button
 					type="button"
 					onClick={() => {
-						void deleteFoodItem(id)
+						void deleteFoodItem(props.id)
 					}}
 				>
 					x
 				</button>
 				<input
 					type="text"
-					value={foodItem.value.name}
-					onChange={(e) => {
-						setState(foodItemsEditsAtoms, id, (prev) => ({
+					value={foodItem().value.name}
+					onInput={(e) => {
+						setState(foodItemsEditsAtoms, props.id, (prev) => ({
 							...prev,
-							name: e.target.value,
+							name: e.currentTarget.value,
 						}))
-						setState(foodItemsEditsKeysAtom, (current) => current.add(id))
+						setState(foodItemsEditsKeysAtom, (current) => current.add(props.id))
 					}}
 				/>
 			</meal-heading>
@@ -286,13 +288,15 @@ function FoodItem({ id }: { id: string }): React.ReactNode {
 						type="text"
 						inputMode="numeric"
 						pattern="[0-9]*"
-						value={foodItem.value.carbs}
-						onChange={(e) => {
-							setState(foodItemsEditsAtoms, id, (prev) => ({
+						value={foodItem().value.carbs}
+						onInput={(e) => {
+							setState(foodItemsEditsAtoms, props.id, (prev) => ({
 								...prev,
-								carbs: Number.parseInt(e.target.value, 10),
+								carbs: Number.parseInt(e.currentTarget.value, 10),
 							}))
-							setState(foodItemsEditsKeysAtom, (current) => current.add(id))
+							setState(foodItemsEditsKeysAtom, (current) =>
+								current.add(props.id),
+							)
 						}}
 					/>
 					<span data-css="stats-unit">carbs</span>
@@ -303,13 +307,15 @@ function FoodItem({ id }: { id: string }): React.ReactNode {
 						type="text"
 						inputMode="numeric"
 						pattern="[0-9]*"
-						value={foodItem.value.protein}
-						onChange={(e) => {
-							setState(foodItemsEditsAtoms, id, (prev) => ({
+						value={foodItem().value.protein}
+						onInput={(e) => {
+							setState(foodItemsEditsAtoms, props.id, (prev) => ({
 								...prev,
-								protein: Number.parseInt(e.target.value, 10),
+								protein: Number.parseInt(e.currentTarget.value, 10),
 							}))
-							setState(foodItemsEditsKeysAtom, (current) => current.add(id))
+							setState(foodItemsEditsKeysAtom, (current) =>
+								current.add(props.id),
+							)
 						}}
 					/>
 					<span data-css="stats-unit">protein</span>

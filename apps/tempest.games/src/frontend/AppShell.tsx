@@ -1,19 +1,14 @@
-import { useO } from "@atom.io/react"
+import type { Children } from "@atom.io/spa"
+import { onCleanup, onMount, useGetter } from "@atom.io/spa"
 import {
 	autoUpdate,
+	computePosition,
 	flip,
-	FloatingFocusManager,
 	offset,
 	shift,
-	useClick,
-	useDismiss,
-	useFloating,
-	useInteractions,
-	useRole,
-} from "@floating-ui/react"
+} from "@floating-ui/dom"
 import { setState } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
-import * as React from "react"
 
 import { RESPONSE_DICTIONARY } from "../library/response-dictionary"
 import * as svg from "./<svg>"
@@ -26,6 +21,7 @@ import {
 	connectionErrorAtom,
 	socket,
 } from "./services/socket-auth-service"
+import { useLocalState } from "./services/spa-state"
 import { trpcClient } from "./services/trpc-client-service"
 import { AccountView } from "./views/AccountView"
 import { AdminView } from "./views/AdminView"
@@ -35,114 +31,170 @@ import { VerifyView } from "./views/VerifyView"
 
 IMPLICIT.STORE.loggers[0].logLevel = `warn`
 
-export function AppShell(): React.ReactNode {
-	const route = useO(routeSelector)
-	const auth = useO(authAtom)
-	const connectionError = useO(connectionErrorAtom)
+export function AppShell(): Children {
+	const route = useGetter(routeSelector)
+	const auth = useGetter(authAtom)
+	const connectionError = useGetter(connectionErrorAtom)
 
-	const [accountPopOverIsOpen, setAccountPopOverOpen] = React.useState(false)
-	const { refs, floatingStyles, context } = useFloating({
-		open: accountPopOverIsOpen,
-		onOpenChange: setAccountPopOverOpen,
-		placement: `bottom-end`,
-		middleware: [offset(5), flip(), shift()],
-		whileElementsMounted: autoUpdate,
+	const [accountPopOverIsOpen, setAccountPopOverOpen] = useLocalState(false)
+	let profileButton: HTMLButtonElement | null = null
+	let profileActions: HTMLElement | null = null
+	let stopPositioning = () => {}
+	onCleanup(() => {
+		stopPositioning()
 	})
-	const click = useClick(context)
-	const dismiss = useDismiss(context)
-	const role = useRole(context)
-	const { getReferenceProps, getFloatingProps } = useInteractions([
-		click,
-		dismiss,
-		role,
-	])
+	onMount(() => {
+		const dismiss = (event: PointerEvent) => {
+			if (
+				event.target instanceof Node &&
+				!profileActions?.contains(event.target) &&
+				!profileButton?.contains(event.target)
+			)
+				setAccountPopOverOpen(false)
+		}
+		const escape = (event: KeyboardEvent) => {
+			if (event.key === `Escape` && accountPopOverIsOpen()) {
+				setAccountPopOverOpen(false)
+				profileButton?.focus()
+			}
+		}
+		document.addEventListener(`pointerdown`, dismiss)
+		document.addEventListener(`keydown`, escape)
+		onCleanup(() => {
+			document.removeEventListener(`pointerdown`, dismiss)
+			document.removeEventListener(`keydown`, escape)
+		})
+	})
 
-	const appVersion = useO(appVersionSelector)
+	const appVersion = useGetter(appVersionSelector)
+
+	const isGameRoute = () => {
+		const current = route()
+		return typeof current === `object` && current[0] === `game`
+	}
+	const renderRoute = () => {
+		const current = route()
+		if (typeof current === `number`)
+			return (
+				<article>
+					<h1>{current}</h1>
+					<h2>{JSON.parse(RESPONSE_DICTIONARY[current])}</h2>
+					<a href="/">Return to Home Page</a>
+				</article>
+			)
+		switch (current[0]) {
+			case undefined:
+				return <HomeView />
+			case `admin`:
+				return <AdminView />
+			case `game`:
+				return <GameView key={current.join(`/`)} route={current} />
+			case `verify`:
+				return <VerifyView key={current.join(`/`)} route={current} />
+			case `account`:
+				return <AccountView />
+		}
+	}
 
 	return (
 		<app-shell className={css.class}>
 			<app-layout>
 				<header>
 					<brand-lockup>
-						{typeof route === `object` && route[0] === `game` ? null : (
-							<svg.tempest />
-						)}
+						{isGameRoute() ? null : <svg.tempest />}
 						<span>
-							<VersionSpinner input={appVersion} />
+							<VersionSpinner input={appVersion()} />
 						</span>
 					</brand-lockup>
 
 					<button
 						data-css="profile"
-						ref={refs.setReference}
-						{...getReferenceProps()}
+						ref={(element) => {
+							profileButton = element
+						}}
+						aria-haspopup="dialog"
+						aria-expanded={accountPopOverIsOpen()}
+						onClick={() => {
+							setAccountPopOverOpen((open) => !open)
+						}}
 					>
-						{auth?.username ? auth.username.slice(0, 3) : ``}
+						{auth()?.username ? auth()?.username?.slice(0, 3) : ``}
 					</button>
-					{accountPopOverIsOpen && auth && (
+					{accountPopOverIsOpen() && auth() && (
 						<profile-popover>
-							<FloatingFocusManager context={context} modal={false}>
-								<profile-actions
-									ref={refs.setFloating}
-									style={floatingStyles}
-									{...getFloatingProps()}
+							<profile-actions
+								ref={(element) => {
+									stopPositioning()
+									profileActions = element
+									if (element && profileButton) {
+										const reference = profileButton
+										let active = true
+										const stop = autoUpdate(reference, element, () => {
+											void computePosition(reference, element, {
+												placement: `bottom-end`,
+												middleware: [offset(5), flip(), shift()],
+											}).then(({ x, y, strategy }) => {
+												if (active)
+													Object.assign(element.style, {
+														position: strategy,
+														left: `${Math.round(x * window.devicePixelRatio) / window.devicePixelRatio}px`,
+														top: `${Math.round(y * window.devicePixelRatio) / window.devicePixelRatio}px`,
+													})
+											})
+										})
+										stopPositioning = () => {
+											active = false
+											stop()
+										}
+										queueMicrotask(() =>
+											element.querySelector(`button`)?.focus(),
+										)
+									}
+								}}
+								role="dialog"
+								aria-label="Account"
+								onFocusOut={(event) => {
+									if (
+										event.relatedTarget instanceof Node &&
+										!event.currentTarget.contains(event.relatedTarget) &&
+										event.relatedTarget !== profileButton
+									)
+										setAccountPopOverOpen(false)
+								}}
+							>
+								<span>{auth()?.username}</span>
+								<button
+									type="button"
+									onClick={() => {
+										navigate(`/account`)
+										setAccountPopOverOpen(false)
+									}}
 								>
-									<span>{auth.username}</span>
-									<button
-										type="button"
-										onClick={() => {
-											navigate(`/account`)
-										}}
-									>
-										Account
-									</button>
-									<button
-										type="button"
-										onClick={async () => {
-											if (!auth) return
-											await trpcClient.closeSession.mutate({
-												username: auth.username,
-											})
-											socket.once(`disconnect`, () => {
-												setState(authAtom, null)
-												navigate(`/`)
-											})
-											socket.disconnect()
-										}}
-									>
-										Sign out
-									</button>
-								</profile-actions>
-							</FloatingFocusManager>
+									Account
+								</button>
+								<button
+									type="button"
+									onClick={async () => {
+										if (!auth()) return
+										await trpcClient.closeSession.mutate({
+											username: auth()!.username,
+										})
+										socket.once(`disconnect`, () => {
+											setState(authAtom, null)
+											navigate(`/`)
+										})
+										socket.disconnect()
+									}}
+								>
+									Sign out
+								</button>
+							</profile-actions>
 						</profile-popover>
 					)}
 				</header>
-				<main>
-					{typeof route === `number` ? (
-						<article>
-							<h1>{route}</h1>
-							<h2>{JSON.parse(RESPONSE_DICTIONARY[route])}</h2>
-							<a href="/">Return to Home Page</a>
-						</article>
-					) : (
-						(() => {
-							switch (route[0]) {
-								case undefined:
-									return <HomeView />
-								case `admin`:
-									return <AdminView />
-								case `game`:
-									return <GameView route={route} />
-								case `verify`:
-									return <VerifyView route={route} />
-								case `account`:
-									return <AccountView />
-							}
-						})()
-					)}
-				</main>
+				<main>{renderRoute()}</main>
 			</app-layout>
-			{connectionError ? (
+			{connectionError() ? (
 				<aside>
 					<connection-dialog>
 						<h1>Disconnected</h1>

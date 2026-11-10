@@ -1,6 +1,4 @@
-import type { WritableToken } from "atom.io"
-import { atom, getState, selector, setState } from "atom.io"
-import * as React from "react"
+import { atom, getState, selector } from "atom.io"
 import type { Tree, TreePath } from "treetrunks"
 import { optional } from "treetrunks"
 
@@ -28,6 +26,7 @@ const ACCOUNT_EDITING_STATES = optional({
 export type AccountEditingState = TreePath<typeof ACCOUNT_EDITING_STATES>
 
 export type AccountString = `email` | `new-password` | `username`
+export type AccountConfirmationField = `otcLogin` | `otcVerify` | `passwordLogin`
 export const accountEditingAtom = atom<AccountEditingState>({
 	key: `accountEditing`,
 	default: [],
@@ -68,15 +67,6 @@ export const usernameInputElementAtom = atom<HTMLInputElement | null>({
 	key: `usernameInputElement`,
 	default: null,
 })
-export function useElement<T extends HTMLElement>(
-	token: WritableToken<T | null>,
-): React.RefObject<T> {
-	const ref = React.useRef<T | null>(null)
-	React.useEffect(() => {
-		setState(token, ref.current)
-	}, [token])
-	return ref as React.RefObject<T>
-}
 
 export const otcLoginFieldLabelSelector = selector<string>({
 	key: `otcLoginFieldLabel`,

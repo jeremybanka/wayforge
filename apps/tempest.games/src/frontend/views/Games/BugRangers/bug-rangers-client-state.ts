@@ -1,7 +1,5 @@
 import { myUserKeyAtom } from "@atom.io/realtime/client"
-import { RealtimeContext } from "@atom.io/realtime/react"
 import { atom, selector } from "atom.io"
-import React from "react"
 import type { Socket } from "socket.io-client"
 import type * as THREE from "three"
 
@@ -17,10 +15,10 @@ import {
 	turnInProgressAtom,
 	validWarDeclaratorsSelector,
 } from "../../../../library/bug-rangers-game-state"
+import { realtimeSocket } from "../../../services/socket-auth-service"
 
 export function usePlayerActions(): Socket<{}, PlayerActions> {
-	const { socket } = React.useContext(RealtimeContext)
-	return socket as Socket<{}, PlayerActions>
+	return realtimeSocket
 }
 
 export const cameraTargetAtom = atom<[x: number, y: number, z: number]>({

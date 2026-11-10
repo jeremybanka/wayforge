@@ -2,19 +2,25 @@
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
 		"jsx": "react-jsx",
-		"jsxImportSource": "react",
+		"jsxImportSource": "@atom.io/spa",
 		"target": "ES2020",
-		"lib": ["ES2024", "DOM", "DOM.Iterable"],
+		"lib": [
+			"ES2024",
+			"DOM",
+			"DOM.Iterable"
+		],
 		"types": [
-			"@react-three/drei",
-			"@react-three/fiber",
 			"@types/three",
 			"vitest/globals",
 			"node"
 		],
 		"paths": {
-			"@backend/*": ["./src/backend/*"],
-			"@database/*": ["./src/database/*"]
+			"@backend/*": [
+				"./src/backend/*"
+			],
+			"@database/*": [
+				"./src/database/*"
+			]
 		}
 	},
 	"include": [

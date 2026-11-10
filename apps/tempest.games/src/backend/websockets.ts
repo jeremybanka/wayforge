@@ -60,7 +60,11 @@ export const sessionMiddleware = async (
 	if (user.emailVerified === null) {
 		return new Error(`User does not have a verified email`)
 	}
-	return `user::${user.id}` satisfies UserKey
+	const userKey = `user::${user.id}` satisfies UserKey
+	// Room permissions are read synchronously when the socket services mount.
+	// Seed the authenticated username before those services inspect host access.
+	setState(usernameAtoms, userKey, user.username)
+	return userKey
 }
 
 const roomAdminsSelectors = selectorFamily<boolean, UserKey>({

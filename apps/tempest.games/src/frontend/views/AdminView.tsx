@@ -1,8 +1,8 @@
-import * as React from "react"
+import type { Children } from "@atom.io/spa"
 
 import css from "./AdminView.module.css"
 
-export function AdminView(): React.ReactNode {
+export function AdminView(): Children {
 	return (
 		<admin-view className={css.class}>
 			<h1>admin</h1>

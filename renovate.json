@@ -52,6 +52,8 @@
 				"@atom.io/react",
 				"@atom.io/react-devtools",
 				"@atom.io/realtime",
+				"@atom.io/spa",
+				"@atom.io/spa-devtools",
 				"atom.io",
 				"@breakage/changesets",
 				"breakage",
