@@ -2,6 +2,7 @@ import "./globals.css"
 import "@atom.io/spa-devtools/css"
 
 import { render } from "@atom.io/spa"
+import { floatingCapability } from "@atom.io/spa/floating"
 import { motionCapability } from "@atom.io/spa/motion"
 import { AtomIODevtools } from "@atom.io/spa-devtools"
 
@@ -20,5 +21,5 @@ render(
 		)
 	},
 	document.getElementById(`root`)!,
-	{ capabilities: [motionCapability()] },
+	{ capabilities: [motionCapability(), floatingCapability()] },
 )

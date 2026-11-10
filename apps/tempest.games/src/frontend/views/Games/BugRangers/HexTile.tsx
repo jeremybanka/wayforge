@@ -139,10 +139,9 @@ export function GameTilePreview(props: {
 
 	return (
 		<>
-			<TileLabel
-				position={[x, height + 0.7, z]}
-				text={props.coordinatesSerialized}
-			/>
+			<TileLabel position={[x, height + 0.7, z]}>
+				{props.coordinatesSerialized}
+			</TileLabel>
 
 			<HexTile
 				virtual={true}
@@ -256,10 +255,9 @@ export function GameTileActual(props: {
 
 	return (
 		<>
-			<TileLabel
-				position={[x, height() + 0.7, z]}
-				text={props.coordinatesSerialized}
-			/>
+			<TileLabel position={[x, height() + 0.7, z]}>
+				{props.coordinatesSerialized}
+			</TileLabel>
 			{ownerKey() !== null && tileCubeCount() > 0 ? (
 				<CubeTokenStack
 					position={new THREE.Vector3(x, height() + 0.25, z)}

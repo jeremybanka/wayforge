@@ -54,9 +54,9 @@
 	"dependencies": {
 		"@ai-sdk/openai": "4.0.113",
 		"@atom.io/realtime": "0.1.2",
-		"@atom.io/spa": "0.0.5",
-		"@atom.io/spa-devtools": "0.0.5",
-		"@floating-ui/dom": "1.7.6",
+		"@atom.io/spa": "0.0.6",
+		"@atom.io/spa-devtools": "0.0.6",
+		"@floating-ui/dom": "1.8.0",
 		"@js-temporal/polyfill": "0.5.1",
 		"@t3-oss/env-core": "0.13.11",
 		"@trpc/client": "11.26.0",

@@ -3,7 +3,7 @@ import type { SVGAttributes } from "@atom.io/spa/jsx-runtime"
 
 export function tempest(props: SVGAttributes<SVGSVGElement>): Children {
 	return (
-		<svg {...props} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 101">
+		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 101" {...props}>
 			<title>Tempest Games Logo</title>
 			<path
 				d="M155.76.93v59.89h-17.11V7.78h-13.69V.93h30.8Z"

@@ -8,7 +8,7 @@ import { Text } from "troika-three-text"
 /** Use the same SDF geometry, font metrics, and orientation as Drei's Text. */
 export function TileLabel(props: {
 	position: readonly [number, number, number]
-	text: string
+	children: string
 }): Children {
 	let group: THREE.Object3D | null = null
 	onMount(() => {
@@ -20,7 +20,7 @@ export function TileLabel(props: {
 		text.color = `white`
 		group!.add(text)
 		bindScene(
-			() => props.text,
+			() => props.children,
 			(value) => {
 				text.text = value
 				text.sync()

@@ -1,12 +1,7 @@
 import type { Children } from "@atom.io/spa"
 import { onCleanup, onMount, useGetter } from "@atom.io/spa"
-import {
-	autoUpdate,
-	computePosition,
-	flip,
-	offset,
-	shift,
-} from "@floating-ui/dom"
+import type { Middleware } from "@floating-ui/dom"
+import { flip, offset, shift } from "@floating-ui/dom"
 import { setState } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 
@@ -39,10 +34,25 @@ export function AppShell(): Children {
 	const [accountPopOverIsOpen, setAccountPopOverOpen] = useLocalState(false)
 	let profileButton: HTMLButtonElement | null = null
 	let profileActions: HTMLElement | null = null
-	let stopPositioning = () => {}
+	let focusObserver: MutationObserver | undefined
 	onCleanup(() => {
-		stopPositioning()
+		focusObserver?.disconnect()
 	})
+	const profileMiddleware: Middleware[] = [
+		offset(5),
+		flip(),
+		shift(),
+		{
+			name: `devicePixels`,
+			fn: ({ x, y }) => {
+				const dpr = window.devicePixelRatio
+				return {
+					x: Math.round(x * dpr) / dpr,
+					y: Math.round(y * dpr) / dpr,
+				}
+			},
+		},
+	]
 	onMount(() => {
 		const dismiss = (event: PointerEvent) => {
 			if (
@@ -123,32 +133,31 @@ export function AppShell(): Children {
 					{accountPopOverIsOpen() && auth() && (
 						<profile-popover>
 							<profile-actions
+								floating:reference={profileButton}
+								floating:placement="bottom-end"
+								floating:middleware={profileMiddleware}
 								ref={(element) => {
-									stopPositioning()
+									focusObserver?.disconnect()
+									focusObserver = undefined
 									profileActions = element
-									if (element && profileButton) {
-										const reference = profileButton
-										let active = true
-										const stop = autoUpdate(reference, element, () => {
-											void computePosition(reference, element, {
-												placement: `bottom-end`,
-												middleware: [offset(5), flip(), shift()],
-											}).then(({ x, y, strategy }) => {
-												if (active)
-													Object.assign(element.style, {
-														position: strategy,
-														left: `${Math.round(x * window.devicePixelRatio) / window.devicePixelRatio}px`,
-														top: `${Math.round(y * window.devicePixelRatio) / window.devicePixelRatio}px`,
-													})
-											})
-										})
-										stopPositioning = () => {
-											active = false
-											stop()
+									if (element) {
+										// Floating UI reveals the overlay after its first calculation.
+										const focusFirstAction = () => {
+											if (
+												!element.isConnected ||
+												getComputedStyle(element).visibility === `hidden`
+											)
+												return
+											element.querySelector(`button`)?.focus()
+											focusObserver?.disconnect()
+											focusObserver = undefined
 										}
-										queueMicrotask(() =>
-											element.querySelector(`button`)?.focus(),
-										)
+										focusObserver = new MutationObserver(focusFirstAction)
+										focusObserver.observe(element, {
+											attributes: true,
+											attributeFilter: [`style`],
+										})
+										queueMicrotask(focusFirstAction)
 									}
 								}}
 								role="dialog"
