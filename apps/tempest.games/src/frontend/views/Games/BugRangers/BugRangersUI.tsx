@@ -2,9 +2,15 @@ import type { UserKey } from "@atom.io/realtime"
 import { ownersOfRooms } from "@atom.io/realtime"
 import { myUserKeyAtom } from "@atom.io/realtime/client"
 import type { Children } from "@atom.io/spa"
-import { onCleanup, onMount, useGetter, useSetter } from "@atom.io/spa"
-import { atom, atomFamily, disposeState, findRelations, setState } from "atom.io"
-import { animate } from "motion"
+import {
+	onCleanup,
+	onMount,
+	useDisposal,
+	useGetter,
+	useSetter,
+} from "@atom.io/spa"
+import type { MotionAttributes } from "@atom.io/spa/motion"
+import { atom, atomFamily, findRelations, setState } from "atom.io"
 import type { Socket } from "socket.io-client"
 
 import type {
@@ -29,7 +35,6 @@ import {
 import { isAdminAtom } from "../../../../library/store"
 import { usernameAtoms } from "../../../../library/username-state"
 import * as userSvg from "../../../<svg>"
-import { useLayoutMotion } from "../../../services/layout-motion"
 import {
 	usePullAtom,
 	usePullAtomFamilyMember,
@@ -124,14 +129,13 @@ function UserInterior(): Children | null {
 }
 
 function RoomModule(): Children {
-	const layout = useLayoutMotion()
 	useRealtimeRooms()
 
 	const gameState = usePullAtom(gameStateAtom)
 
 	return (
 		<room-module>
-			<section ref={layout}>
+			<section motion:layout>
 				<GameSetupPhase isCurrentPhase={gameState() === `setup`} />
 				<GamePlayingPhase
 					isCurrentPhase={gameState() === `playing`}
@@ -323,10 +327,9 @@ function GameControls(): Children {
 function GameSetupPhase(props: { isCurrentPhase: boolean }): Children {
 	const gameSocket = socket as Socket<{}, PlayerActions>
 	const setupGroups = usePullSelector(setupGroupsSelector)
-	const layout = useLayoutMotion()
 	return (
 		<section
-			ref={layout}
+			motion:layout
 			data-css="setup"
 			data-css-current={props.isCurrentPhase || undefined}
 		>
@@ -360,10 +363,9 @@ function GamePlayingPhase(props: {
 	gameState: GameState
 }): Children {
 	const turnOrder = usePullMutable(playerTurnOrderAtom)
-	const layout = useLayoutMotion()
 	return (
 		<section
-			ref={layout}
+			motion:layout
 			data-css="playing"
 			data-css-current={props.isCurrentPhase || undefined}
 		>
@@ -396,7 +398,6 @@ function UserGroup(props: {
 }
 
 function User(props: { userKey: UserKey }): Children {
-	const layout = useLayoutMotion(props.userKey)
 	const myUserKey = useGetter(myUserKeyAtom)
 	const { myRoomKey } = useRealtimeRooms()
 	const relations = findRelations(ownersOfRooms, myRoomKey() ?? `room::`)
@@ -405,7 +406,11 @@ function User(props: { userKey: UserKey }): Children {
 	const color = usePullAtomFamilyMember(playerColorAtoms, props.userKey)
 	const currentTurn = useGetter(playerTurnSelector)
 	return (
-		<figure ref={layout} data-css-user>
+		<figure
+			motion:layoutId={props.userKey}
+			motion:layoutGroup={myRoomKey() ?? `lobby`}
+			data-css-user
+		>
 			{props.userKey === myUserKey() ? (
 				props.userKey === ownerKey() ? (
 					<svg.leaderMe color={color() ?? `#555`} />
@@ -430,17 +435,52 @@ const turnBannerVisibleAtoms = atomFamily<boolean, UserKey>({
 	default: true,
 })
 
+const turnBannerMotion = (
+	[
+		[`20vw`, `90vw`, `90vw`, `10vw`],
+		[`20vw`, `20vw`, `100vw`, `10vw`],
+		[`20vw`, `20vw`, `100vw`, `10vw`],
+		[`20vw`, `80vw`, `80vw`, `10vw`],
+	] as const
+).map((width, index): MotionAttributes => ({
+	"motion:animate": {
+		x:
+			index === 3
+				? [`-1500%`, `5%`, `10%`, `1500%`]
+				: index === 2
+					? [`1500%`, `4%`, `2%`, `-1500%`]
+					: [`-1500%`, `2%`, `4%`, `1500%`],
+		skewX: [`-50deg`, `-5deg`, `-5deg`, `-50deg`],
+		width,
+	},
+	"motion:transition": {
+		duration: 3,
+		times:
+			index === 0
+				? [0, 0.1, 0.77, 1]
+				: index === 3
+					? [0, 0.2, 0.75, 1]
+					: [0, 0.1, 0.7, 1],
+		ease: [`circOut`, `linear`, `easeIn`],
+	},
+}))
+
 function TurnBanner(props: { playerTurn: UserKey }): Children {
 	const username = usePullAtomFamilyMember(usernameAtoms, props.playerTurn)
 	const playerColor = usePullAtomFamilyMember(playerColorAtoms, props.playerTurn)
 	const myUserKey = useGetter(myUserKeyAtom)
 	const playerKey = props.playerTurn
+	const disposeState = useDisposal()
 	const visible = useGetter(turnBannerVisibleAtoms, playerKey)
 	const setVisible = useSetter(turnBannerVisibleAtoms, playerKey)
 	onCleanup(() => {
 		disposeState(turnBannerVisibleAtoms, playerKey)
 	})
-	let banner: HTMLElement | null = null
+	// Keep the turn message static when reduced motion is requested.
+	const bannerMotion = window.matchMedia(`(prefers-reduced-motion: reduce)`)
+		.matches
+		? []
+		: turnBannerMotion
 	onMount(() => {
 		const timeout = setTimeout(() => {
 			setVisible(false)
@@ -448,64 +488,26 @@ function TurnBanner(props: { playerTurn: UserKey }): Children {
 		onCleanup(() => {
 			clearTimeout(timeout)
 		})
-		if (window.matchMedia(`(prefers-reduced-motion: reduce)`).matches) return
-		const elements = Array.from(banner!.children)
-		const widths = [
-			[`20vw`, `90vw`, `90vw`, `10vw`],
-			[`20vw`, `20vw`, `100vw`, `10vw`],
-			[`20vw`, `20vw`, `100vw`, `10vw`],
-			[`20vw`, `80vw`, `80vw`, `10vw`],
-		]
-		const animations = elements.map((element, index) =>
-			animate(
-				element,
-				{
-					x:
-						index === 3
-							? [`-1500%`, `5%`, `10%`, `1500%`]
-							: index === 2
-								? [`1500%`, `4%`, `2%`, `-1500%`]
-								: [`-1500%`, `2%`, `4%`, `1500%`],
-					skewX: [`-50deg`, `-5deg`, `-5deg`, `-50deg`],
-					width: widths[index],
-				},
-				{
-					duration: 3,
-					times:
-						index === 0
-							? [0, 0.1, 0.77, 1]
-							: index === 3
-								? [0, 0.2, 0.75, 1]
-								: [0, 0.1, 0.7, 1],
-					ease: [`circOut`, `linear`, `easeIn`],
-				},
-			),
-		)
-		onCleanup(() => {
-			animations.forEach((animation) => {
-				animation.stop()
-			})
-		})
 	})
 
 	return (
 		<>
 			{visible() ? (
-				<turn-banner
-					ref={(element) => {
-						banner = element
-					}}
-				>
-					<figure />
+				<turn-banner>
+					<figure {...bannerMotion[0]} />
 
 					<span
 						data-css="top"
+						{...bannerMotion[1]}
 						style={`background-color: ${playerColor() ?? `#555`}`}
 					/>
 
-					<span data-css="bottom" />
+					<span data-css="bottom" {...bannerMotion[2]} />
 
-					<h1 style={`background-color: ${playerColor() ?? `#555`}`}>
+					<h1
+						style={`background-color: ${playerColor() ?? `#555`}`}
+						{...bannerMotion[3]}
+					>
 						{props.playerTurn === myUserKey()
 							? `your turn`
 							: `${username()}'s turn`}

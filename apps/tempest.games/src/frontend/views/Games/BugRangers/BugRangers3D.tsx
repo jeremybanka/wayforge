@@ -1,8 +1,16 @@
 import { myRoomKeySelector } from "@atom.io/realtime/client"
 import type { Children } from "@atom.io/spa"
-import { onCleanup, onMount, useGetter, useId, useSetter } from "@atom.io/spa"
-import { AmbientLight, DirectionalLight } from "@atom.io/spa/three"
-import { atomFamily, disposeState } from "atom.io"
+import {
+	onCleanup,
+	onMount,
+	useDisposal,
+	useGetter,
+	useId,
+	useSetter,
+} from "@atom.io/spa"
+import { AmbientLight, Canvas, DirectionalLight } from "@atom.io/spa/three"
+import { atomFamily } from "atom.io"
+import { ACESFilmicToneMapping, SRGBColorSpace } from "three"
 import { OrbitControls } from "three-stdlib"
 
 import { usePullSelector } from "../../../services/realtime-hooks"
@@ -14,11 +22,13 @@ import {
 } from "./bug-rangers-client-state"
 import css from "./BugRangers3D.module.css"
 import { createCameraSpring } from "./camera-spring"
-import { GameCanvas } from "./GameCanvas"
 import { HexGridHelper } from "./HexGridHelper"
 import { PlayerTools } from "./PlayerTools"
 import { gameCamera, gamePointer } from "./scene-state"
 import { GameTiles, PlayableZones } from "./TilesAndZones"
+
+// Canvas publishes a stable native canvas root for component-owned styling.
+const canvas = { Scene: Canvas }
 
 const viewportAtoms = atomFamily<readonly [number, number], string>({
 	key: `viewport`,
@@ -30,6 +40,7 @@ export function BugRangers3D(): Children {
 	const enabled = useGetter(controlsEnabledAtom)
 	const spring = createCameraSpring(target())
 	const instanceKey = useId()
+	const disposeState = useDisposal()
 	const viewport = useGetter(viewportAtoms, instanceKey)
 	const setViewport = useSetter(viewportAtoms, instanceKey)
 	onCleanup(() => {
@@ -53,7 +64,6 @@ export function BugRangers3D(): Children {
 		onCleanup(() => {
 			window.removeEventListener(`resize`, resize)
 			host!.removeEventListener(`pointermove`, pointer)
-			controls?.dispose()
 		})
 	})
 	return (
@@ -63,18 +73,29 @@ export function BugRangers3D(): Children {
 				host = element
 			}}
 		>
-			<GameCanvas
+			<canvas.Scene
 				camera={gameCamera}
 				width={viewport()[0]}
 				height={viewport()[1]}
-				onFrame={({ renderer, delta }) => {
-					if (!controls) {
-						controls = new OrbitControls(gameCamera, renderer.domElement)
-						controls.enableDamping = true
-						controls.dampingFactor = 0.05
+				rendererOptions={{ alpha: true, powerPreference: `high-performance` }}
+				dpr={[1, 2]}
+				onCreated={({ renderer }) => {
+					renderer.outputColorSpace = SRGBColorSpace
+					renderer.toneMapping = ACESFilmicToneMapping
+					const orbit = new OrbitControls(gameCamera, renderer.domElement)
+					orbit.enableDamping = true
+					orbit.dampingFactor = 0.05
+					controls = orbit
+					return () => {
+						orbit.dispose()
 					}
-					gameCamera.aspect = viewport()[0] / viewport()[1]
+				}}
+				onResize={({ width, height }) => {
+					gameCamera.aspect = width / height
 					gameCamera.updateProjectionMatrix()
+				}}
+				onFrame={({ delta }) => {
+					if (!controls) return
 					controls.enabled = enabled()
 					const animatedTarget = spring.advance(target(), delta)
 					if (animatedTarget) controls.target.lerp(animatedTarget, 0.2)
@@ -85,7 +106,7 @@ export function BugRangers3D(): Children {
 				<DirectionalLight position={[5, 10, 5]} />
 				<HexGridHelper size={20} radius={1} color="#6f6f6f" opacity={0.5} />
 				<BugRangersExterior3D />
-			</GameCanvas>
+			</canvas.Scene>
 		</bug-rangers3-d>
 	)
 }

@@ -1,7 +1,13 @@
 import type { Children } from "@atom.io/spa"
-import { onCleanup, useGetter, useId, useSetter } from "@atom.io/spa"
+import {
+	onCleanup,
+	useDisposal,
+	useGetter,
+	useId,
+	useSetter,
+} from "@atom.io/spa"
 import { bindScene } from "@atom.io/spa/renderer"
-import { atomFamily, disposeState } from "atom.io"
+import { atomFamily } from "atom.io"
 
 import css from "./VersionSpinner.module.css"
 
@@ -15,6 +21,7 @@ export function VersionSpinner(props: {
 	input: Promise<string> | string
 }): Children {
 	const instanceKey = useId()
+	const disposeState = useDisposal()
 	const text = useGetter(spinnerTextAtoms, instanceKey)
 	const setText = useSetter(spinnerTextAtoms, instanceKey)
 	onCleanup(() => {

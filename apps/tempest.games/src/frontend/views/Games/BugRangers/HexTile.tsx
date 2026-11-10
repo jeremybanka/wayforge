@@ -1,8 +1,14 @@
 import type { Children } from "@atom.io/spa"
-import { onCleanup, useGetter, useId, useSetter } from "@atom.io/spa"
-import { bindScene, sceneComponent } from "@atom.io/spa/renderer"
-import type { ObjectProps } from "@atom.io/spa/three"
-import { atomFamily, disposeState, getState, setState } from "atom.io"
+import {
+	onCleanup,
+	useDisposal,
+	useGetter,
+	useId,
+	useSetter,
+} from "@atom.io/spa"
+import { bindScene } from "@atom.io/spa/renderer"
+import { Mesh } from "@atom.io/spa/three"
+import { atomFamily, getState, setState } from "atom.io"
 import * as THREE from "three"
 
 import type { TileCoordinatesSerialized } from "../../../../library/bug-rangers-game-state"
@@ -34,13 +40,6 @@ import {
 import { CubeTokenStack } from "./CubeToken"
 import { TileLabel } from "./TileLabel"
 
-// Constructor arguments let SPA own the custom geometry and material lifecycle.
-const HexMesh = sceneComponent<
-	ObjectProps<THREE.Mesh> & {
-		args: ConstructorParameters<typeof THREE.Mesh>
-	}
->(`Mesh`)
-
 const tileHoveredAtoms = atomFamily<boolean, string>({
 	key: `tileHovered`,
 	default: false,
@@ -59,6 +58,7 @@ export function HexTile(props: {
 	onPointerCancel?: () => void
 }): Children {
 	const instanceKey = useId()
+	const disposeState = useDisposal()
 	const hovered = useGetter(tileHoveredAtoms, instanceKey)
 	const setHovered = useSetter(tileHoveredAtoms, instanceKey)
 	onCleanup(() => {
@@ -78,6 +78,10 @@ export function HexTile(props: {
 		bevelEnabled: false,
 	})
 	const material = new THREE.MeshStandardMaterial()
+	onCleanup(() => {
+		geometry.dispose()
+		material.dispose()
+	})
 	bindScene(
 		() => [props.color ?? `#ee5`, props.virtual, hovered()] as const,
 		([color, virtual, isHovered]) => {
@@ -87,7 +91,7 @@ export function HexTile(props: {
 		},
 	)
 	return (
-		<HexMesh
+		<Mesh
 			args={[geometry, material]}
 			rotation={[-Math.PI / 2, 0, 0]}
 			position={

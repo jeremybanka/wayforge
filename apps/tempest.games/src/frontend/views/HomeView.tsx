@@ -1,8 +1,14 @@
 import type { Children } from "@atom.io/spa"
-import { onCleanup, useGetter, useId, useSetter } from "@atom.io/spa"
+import {
+	onCleanup,
+	useDisposal,
+	useGetter,
+	useId,
+	useSetter,
+} from "@atom.io/spa"
 import { bindScene } from "@atom.io/spa/renderer"
 import { TRPCClientError } from "@trpc/client"
-import { atomFamily, disposeState, getState, setState } from "atom.io"
+import { atomFamily, getState, setState } from "atom.io"
 
 import { navigate } from "../services/router-service"
 import {
@@ -38,6 +44,7 @@ export function HomeView(): Children {
 	const oneTimeCodeInputId = `one-time-code-${useId()}`
 
 	const instanceKey = useId()
+	const disposeState = useDisposal()
 	const error = useGetter(loginErrorAtoms, instanceKey)
 	const setError = useSetter(loginErrorAtoms, instanceKey)
 	const currentlyEntering = useGetter(loginStepAtoms, instanceKey)

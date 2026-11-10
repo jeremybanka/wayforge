@@ -1,8 +1,15 @@
 import type { Children } from "@atom.io/spa"
-import { onCleanup, onMount, useGetter, useId, useSetter } from "@atom.io/spa"
+import {
+	onCleanup,
+	onMount,
+	useDisposal,
+	useGetter,
+	useId,
+	useSetter,
+} from "@atom.io/spa"
 import type { Middleware } from "@floating-ui/dom"
 import { flip, offset, shift } from "@floating-ui/dom"
-import { atomFamily, disposeState, setState } from "atom.io"
+import { atomFamily, setState } from "atom.io"
 import { IMPLICIT } from "atom.io/internal"
 
 import { RESPONSE_DICTIONARY } from "../library/response-dictionary"
@@ -36,6 +43,7 @@ export function AppShell(): Children {
 	const connectionError = useGetter(connectionErrorAtom)
 
 	const instanceKey = useId()
+	const disposeState = useDisposal()
 	const accountPopOverIsOpen = useGetter(accountPopoverOpenAtoms, instanceKey)
 	const setAccountPopOverOpen = useSetter(accountPopoverOpenAtoms, instanceKey)
 	onCleanup(() => {
