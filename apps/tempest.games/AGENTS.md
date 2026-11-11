@@ -12,3 +12,11 @@ Follow Lasertag's authoring conventions for browser DOM components in `src/front
 - After changing component markup or styles, run `pnpm --filter tempest.games check:lasertag` and the relevant package checks. Use `lasertag fix` only for intentional selector cleanup, then review its diff.
 
 The installed package includes [the authoring guide](../../node_modules/lasertag/docs/lasertag-guide.md) and [the tooling guide](../../node_modules/lasertag/docs/tooling-guide.md).
+
+## SPA runtime and development
+
+- Keep atom, selector, family, and timeline definitions in state or service modules outside component-only TSX files. Component edits can then hot-remount against the existing store; state-definition and mixed-module edits intentionally reload the page. Explicitly disposed transient family members reset on hot remount, while persistent model state survives.
+- Use canonical application keys, including tuples for compound identities. A keyed component can read `props.key` and bind family hooks to it during setup; change the key to select another member. Use `useId()` when an instance has no application identity, and dispose its transient family members through `useDisposal()` on cleanup.
+- Use `onCommit` for work that needs published refs, restored form values, or updated DOM. Return cleanup from the callback for observers and timers it owns. Floating UI's first position resolves asynchronously, so initial popover focus still waits for visibility rather than assuming the commit has positioned it.
+
+The installed [SPA guide](node_modules/atom.io/docs/agent/packages/spa.md) and [Vite guide](node_modules/atom.io/docs/agent/packages/spa-vite.md) describe the current contracts, controlled form behavior, and hot-reload boundaries.

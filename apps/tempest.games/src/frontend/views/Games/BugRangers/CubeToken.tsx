@@ -14,14 +14,14 @@ import { playerColorAtoms } from "../../../../library/bug-rangers-game-state"
 export type CubeTokenStackProps = {
 	position: THREE.Vector3
 	count: number
-	ownerKey: UserKey
+	key: UserKey
 }
 export function CubeTokenStack(props: CubeTokenStackProps): Children {
 	return (
 		<>
 			{Array.from({ length: Math.ceil(props.count / 4) }, (_, i) => (
 				<CubeTokenLayer
-					key={`${props.ownerKey}:${i}`}
+					key={[props.key, i]}
 					position={
 						new THREE.Vector3(
 							props.position.x,
@@ -31,7 +31,6 @@ export function CubeTokenStack(props: CubeTokenStackProps): Children {
 					}
 					count={Math.min(4, props.count - i * 4)}
 					rotation={new THREE.Euler(0, (i * Math.PI) / 3, 0)}
-					ownerKey={props.ownerKey}
 				/>
 			))}
 		</>
@@ -41,10 +40,10 @@ type CubeTokenLayerProps = {
 	position: THREE.Vector3
 	rotation: THREE.Euler
 	count: number
-	ownerKey: UserKey
+	key: readonly [UserKey, number]
 }
 function CubeTokenLayer(props: CubeTokenLayerProps): Children {
-	const color = useGetter(playerColorAtoms, props.ownerKey)
+	const color = useGetter(playerColorAtoms, props.key[0])
 	return (
 		<Group
 			position={[props.position.x, props.position.y, props.position.z]}

@@ -1,16 +1,17 @@
 import type { Children } from "@atom.io/spa"
 import {
 	onCleanup,
+	onCommit,
 	onMount,
 	useDisposal,
 	useGetter,
 	useId,
 	useSetter,
+	useStore,
 } from "@atom.io/spa"
 import type { Middleware } from "@floating-ui/dom"
 import { flip, offset, shift } from "@floating-ui/dom"
-import { atomFamily, setState } from "atom.io"
-import { IMPLICIT } from "atom.io/internal"
+import { setState } from "atom.io"
 
 import { RESPONSE_DICTIONARY } from "../library/response-dictionary"
 import * as svg from "./<svg>"
@@ -24,20 +25,15 @@ import {
 	socket,
 } from "./services/socket-auth-service"
 import { trpcClient } from "./services/trpc-client-service"
+import { accountPopoverOpenAtoms } from "./services/ui-state"
 import { AccountView } from "./views/AccountView"
 import { AdminView } from "./views/AdminView"
 import { GameView } from "./views/GameView"
 import { HomeView } from "./views/HomeView"
 import { VerifyView } from "./views/VerifyView"
 
-IMPLICIT.STORE.loggers[0].logLevel = `warn`
-
-const accountPopoverOpenAtoms = atomFamily<boolean, string>({
-	key: `accountPopoverOpen`,
-	default: false,
-})
-
 export function AppShell(): Children {
+	useStore().loggers[0].logLevel = `warn`
 	const route = useGetter(routeSelector)
 	const auth = useGetter(authAtom)
 	const connectionError = useGetter(connectionErrorAtom)
@@ -51,10 +47,32 @@ export function AppShell(): Children {
 	})
 	let profileButton: HTMLButtonElement | null = null
 	let profileActions: HTMLElement | null = null
-	let focusObserver: MutationObserver | undefined
-	onCleanup(() => {
-		focusObserver?.disconnect()
-	})
+	onCommit(
+		() => accountPopOverIsOpen() && auth() !== null,
+		(open) => {
+			const element = profileActions
+			if (!open || !element) return
+			// Floating UI resolves its first position asynchronously after this commit.
+			const focusFirstAction = () => {
+				if (
+					!element.isConnected ||
+					getComputedStyle(element).visibility === `hidden`
+				)
+					return
+				element.querySelector(`button`)?.focus()
+				observer.disconnect()
+			}
+			const observer = new MutationObserver(focusFirstAction)
+			observer.observe(element, {
+				attributes: true,
+				attributeFilter: [`style`],
+			})
+			focusFirstAction()
+			return () => {
+				observer.disconnect()
+			}
+		},
+	)
 	const profileMiddleware: Middleware[] = [
 		offset(5),
 		flip(),
@@ -154,28 +172,7 @@ export function AppShell(): Children {
 								floating:placement="bottom-end"
 								floating:middleware={profileMiddleware}
 								ref={(element) => {
-									focusObserver?.disconnect()
-									focusObserver = undefined
 									profileActions = element
-									if (element) {
-										// Floating UI reveals the overlay after its first calculation.
-										const focusFirstAction = () => {
-											if (
-												!element.isConnected ||
-												getComputedStyle(element).visibility === `hidden`
-											)
-												return
-											element.querySelector(`button`)?.focus()
-											focusObserver?.disconnect()
-											focusObserver = undefined
-										}
-										focusObserver = new MutationObserver(focusFirstAction)
-										focusObserver.observe(element, {
-											attributes: true,
-											attributeFilter: [`style`],
-										})
-										queueMicrotask(focusFirstAction)
-									}
 								}}
 								role="dialog"
 								aria-label="Account"

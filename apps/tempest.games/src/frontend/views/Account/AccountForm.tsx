@@ -1,8 +1,7 @@
 import type { Children } from "@atom.io/spa"
-import { useGetter, useRef, useSetter } from "@atom.io/spa"
+import { onCommit, useGetter, useSetter } from "@atom.io/spa"
 import type { ArkErrors } from "arktype"
-import type { ReadableToken, RegularAtomToken, WritableToken } from "atom.io"
-import { capitalize } from "atom.io/internal"
+import type { ReadableToken, WritableToken } from "atom.io"
 
 import {
 	oneTimeCodeInputAtom,
@@ -16,7 +15,6 @@ import type {
 } from "./account-state"
 import {
 	accountEditingAtom,
-	buttonBlockActiveAtom,
 	otcLoginFieldLabelSelector,
 	otcVerifyFieldLabelSelector,
 } from "./account-state"
@@ -26,7 +24,6 @@ export type FormProps = {
 	label: AccountString
 	inputToken: WritableToken<string>
 	issuesToken: ReadableToken<ArkErrors | null>
-	inputElementToken: RegularAtomToken<HTMLInputElement | null>
 	initialState: AccountEditingState
 	onSubmit: (value: string) => Promise<Error | string>
 	onOpen?: (() => Promise<void>) | (() => void)
@@ -46,9 +43,6 @@ export function AccountForm(props: FormProps): Children {
 	const password = useGetter(passwordInputAtom)
 	const setPassword = useSetter(passwordInputAtom)
 
-	const buttonBlockActive = useGetter(buttonBlockActiveAtom)
-	const setButtonBlockActive = useSetter(buttonBlockActiveAtom)
-
 	const editingState = useGetter(accountEditingAtom)
 	const setEditing = useSetter(accountEditingAtom)
 
@@ -56,21 +50,25 @@ export function AccountForm(props: FormProps): Children {
 	const otcLoginFieldLabel = useGetter(otcLoginFieldLabelSelector)
 	const otcVerifyFieldLabel = useGetter(otcVerifyFieldLabelSelector)
 
-	const elementRef = useRef(props.inputElementToken)
-
 	const isUsingForm = () => editingState()[0] === props.label
 	const currentField = () => editingState().at(-1)
 	const nextSteps = () => editingState().slice(1) as AccountConfirmationField[]
+	let form: HTMLFormElement | null = null
+	onCommit(
+		() => (isUsingForm() ? currentField() : undefined),
+		(field) => {
+			if (field) form?.querySelector<HTMLInputElement>(`input:enabled`)?.focus()
+		},
+	)
 
 	return (
 		<account-form className={css.class}>
 			<form
+				ref={(element) => {
+					form = element
+				}}
 				onSubmit={async (e) => {
 					e.preventDefault()
-					if (buttonBlockActive()) {
-						setButtonBlockActive(false)
-						return
-					}
 					console.log(`submitted! changing ${props.label} to`, input())
 					const result = await props.onSubmit(input())
 					if (Error.isError(result)) {
@@ -102,12 +100,11 @@ export function AccountForm(props: FormProps): Children {
 						<span>
 							{props.label === `new-password`
 								? `Password`
-								: capitalize(props.label)}
+								: props.label[0].toUpperCase() + props.label.slice(1)}
 						</span>
 						<input
 							id={props.label}
 							type={props.label === `new-password` ? `password` : `text`}
-							ref={elementRef}
 							value={input()}
 							onInput={(e) => {
 								setInput(e.currentTarget.value)
@@ -120,7 +117,7 @@ export function AccountForm(props: FormProps): Children {
 					{isUsingForm()
 						? nextSteps().map((field) => (
 								<label
-									key={`${props.label}-${field}`}
+									key={[props.label, field]}
 									htmlFor={`${props.label}-${field}`}
 								>
 									<span>
@@ -140,7 +137,6 @@ export function AccountForm(props: FormProps): Children {
 									<input
 										id={`${props.label}-otc`}
 										type="text"
-										ref={elementRef}
 										value={(() => {
 											switch (field) {
 												case `otcLogin`:
@@ -185,17 +181,14 @@ export function AccountForm(props: FormProps): Children {
 						: null}
 				</form-fields>
 				{editingState()[0] === props.label ? (
-					<button type="submit">{`->`}</button>
+					<button key="submit" type="submit">{`->`}</button>
 				) : (
 					<button
+						key="edit"
 						type="button"
-						onMouseDown={async () => {
-							setButtonBlockActive(true)
+						onClick={async () => {
 							await props.onOpen?.()
 							setEditing(props.initialState)
-						}}
-						onMouseUp={() => {
-							setButtonBlockActive(false)
 						}}
 					>
 						/

@@ -9,7 +9,6 @@ import {
 	useSetter,
 } from "@atom.io/spa"
 import { AmbientLight, Canvas, DirectionalLight } from "@atom.io/spa/three"
-import { atomFamily } from "atom.io"
 import { ACESFilmicToneMapping, SRGBColorSpace } from "three"
 import { OrbitControls } from "three-stdlib"
 
@@ -19,6 +18,7 @@ import {
 	controlsEnabledAtom,
 	playableZonesVisibleSelector,
 	playerToolsVisibleSelector,
+	viewportAtoms,
 } from "./bug-rangers-client-state"
 import css from "./BugRangers3D.module.css"
 import { createCameraSpring } from "./camera-spring"
@@ -29,11 +29,6 @@ import { GameTiles, PlayableZones } from "./TilesAndZones"
 
 // Canvas publishes a stable native canvas root for component-owned styling.
 const canvas = { Scene: Canvas }
-
-const viewportAtoms = atomFamily<readonly [number, number], string>({
-	key: `viewport`,
-	default: () => [window.innerWidth, window.innerHeight],
-})
 
 export function BugRangers3D(): Children {
 	const target = useGetter(cameraTargetAtom)
@@ -85,6 +80,8 @@ export function BugRangers3D(): Children {
 					const orbit = new OrbitControls(gameCamera, renderer.domElement)
 					orbit.enableDamping = true
 					orbit.dampingFactor = 0.05
+					orbit.target.set(...target())
+					orbit.update()
 					controls = orbit
 					return () => {
 						orbit.dispose()
@@ -112,7 +109,7 @@ export function BugRangers3D(): Children {
 }
 function BugRangersExterior3D(): Children {
 	const room = useGetter(myRoomKeySelector)
-	return <>{room() ? <BugRangersInterior3D key={room()!} /> : null}</>
+	return <>{room() ? <BugRangersInterior3D key={room()} /> : null}</>
 }
 function BugRangersInterior3D(): Children {
 	const zones = usePullSelector(playableZonesVisibleSelector)

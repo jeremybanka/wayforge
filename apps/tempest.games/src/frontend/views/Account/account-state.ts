@@ -1,13 +1,9 @@
-import { atom, getState, selector } from "atom.io"
+import { atom, selector } from "atom.io"
 import type { Tree, TreePath } from "treetrunks"
 import { optional } from "treetrunks"
 
+import type { ClientAuthData } from "../../../library/data-constraints"
 import { authAtom, emailInputAtom } from "../../services/socket-auth-service"
-
-export const buttonBlockActiveAtom = atom<boolean>({
-	key: `buttonBlockActive`,
-	default: false,
-})
 
 const ACCOUNT_EDITING_STATES = optional({
 	username: null,
@@ -27,45 +23,13 @@ export type AccountEditingState = TreePath<typeof ACCOUNT_EDITING_STATES>
 
 export type AccountString = `email` | `new-password` | `username`
 export type AccountConfirmationField = `otcLogin` | `otcVerify` | `passwordLogin`
+export const accountDraftOwnerAtom = atom<ClientAuthData | null>({
+	key: `accountDraftOwner`,
+	default: null,
+})
 export const accountEditingAtom = atom<AccountEditingState>({
 	key: `accountEditing`,
 	default: [],
-	effects: [
-		({ onSet }) => {
-			onSet(({ newValue }) => {
-				switch (newValue[0]) {
-					case `email`: {
-						getState(emailInputElementAtom)?.focus()
-						break
-					}
-					case `new-password`: {
-						getState(passwordInputElementAtom)?.focus()
-						break
-					}
-					case `username`: {
-						getState(usernameInputElementAtom)?.focus()
-						break
-					}
-					case undefined: {
-						break
-					}
-				}
-			})
-		},
-	],
-})
-
-export const emailInputElementAtom = atom<HTMLInputElement | null>({
-	key: `emailInputElement`,
-	default: null,
-})
-export const passwordInputElementAtom = atom<HTMLInputElement | null>({
-	key: `passwordInputElement`,
-	default: null,
-})
-export const usernameInputElementAtom = atom<HTMLInputElement | null>({
-	key: `usernameInputElement`,
-	default: null,
 })
 
 export const otcLoginFieldLabelSelector = selector<string>({

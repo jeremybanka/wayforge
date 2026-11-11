@@ -1,5 +1,6 @@
+import type { UserKey } from "@atom.io/realtime"
 import { myUserKeyAtom } from "@atom.io/realtime/client"
-import { atom, selector } from "atom.io"
+import { atom, atomFamily, selector } from "atom.io"
 import type { Socket } from "socket.io-client"
 import type * as THREE from "three"
 
@@ -157,4 +158,24 @@ export const mayPlaceCubeSelector = selector<boolean>({
 			}
 		}
 	},
+})
+
+export const viewportAtoms = atomFamily<readonly [number, number], string>({
+	key: `viewport`,
+	default: () => [window.innerWidth, window.innerHeight],
+})
+
+export const tileHoveredAtoms = atomFamily<boolean, string>({
+	key: `tileHovered`,
+	default: false,
+})
+
+export const showBugRangersDevtoolsAtom = atom<boolean>({
+	key: `showBugRangersDevtools`,
+	default: false,
+})
+
+export const turnBannerVisibleAtoms = atomFamily<boolean, UserKey>({
+	key: `turnBannerVisible`,
+	default: true,
 })

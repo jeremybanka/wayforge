@@ -15,7 +15,7 @@ export function GameTiles(): Children {
 	return (
 		<>
 			{Array.from(tiles()).map((coords) => (
-				<GameTileActual key={coords} coordinatesSerialized={coords} />
+				<GameTileActual key={coords} />
 			))}
 		</>
 	)
@@ -26,7 +26,7 @@ export function PlayableZones(): Children {
 	return (
 		<>
 			{playableZones().map((coords) => (
-				<GameTilePreview key={coords} coordinatesSerialized={coords} />
+				<GameTilePreview key={coords} />
 			))}
 		</>
 	)

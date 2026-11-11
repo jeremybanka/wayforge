@@ -1,8 +1,7 @@
 import type { Children } from "@atom.io/spa"
 import type { ViewOf } from "atom.io"
-import { toEntries } from "atom.io/foundations/entries"
 
-import { type Route, ROUTES } from "../services/router-service"
+import type { Route } from "../services/router-service"
 import { BugRangers } from "./Games/BugRangers"
 import { CarbiterView } from "./Games/CarbiterView"
 import css from "./GameView.module.css"
@@ -17,11 +16,7 @@ export type GameIndexProps = {
 export function GameView(props: GameIndexProps): Children {
 	return (
 		<game-view className={css.class}>
-			{props.route[1] ? (
-				<Game key={props.route[1]} gameId={props.route[1]} />
-			) : (
-				<GameIndex />
-			)}
+			{props.route[1] ? <Game key={props.route[1]} /> : <GameIndex />}
 		</game-view>
 	)
 }
@@ -38,11 +33,10 @@ function GameIndex(): Children {
 	)
 }
 
-const GAMES = toEntries(ROUTES[1].game[1]).map(([gameId]) => gameId)
-type GameId = (typeof GAMES)[number]
-type GameProps = { gameId: GameId }
+type GameId = NonNullable<GameRoute[1]>
+type GameProps = { key: GameId }
 function Game(props: GameProps): Children {
-	switch (props.gameId) {
+	switch (props.key) {
 		case `hexiom`: {
 			return <BugRangers />
 		}

@@ -1,14 +1,14 @@
 import type { Children } from "@atom.io/spa"
 import {
 	onCleanup,
+	onCommit,
 	useDisposal,
 	useGetter,
 	useId,
 	useSetter,
 } from "@atom.io/spa"
-import { bindScene } from "@atom.io/spa/renderer"
 import { TRPCClientError } from "@trpc/client"
-import { atomFamily, getState, setState } from "atom.io"
+import { getState, setState } from "atom.io"
 
 import { navigate } from "../services/router-service"
 import {
@@ -21,16 +21,8 @@ import {
 	socket,
 } from "../services/socket-auth-service"
 import { trpcClient } from "../services/trpc-client-service"
+import { loginErrorAtoms, loginStepAtoms } from "../services/ui-state"
 import css from "./HomeView.module.css"
-
-const loginErrorAtoms = atomFamily<string | null, string>({
-	key: `loginError`,
-	default: null,
-})
-const loginStepAtoms = atomFamily<`email` | `otc` | `password`, string>({
-	key: `loginStep`,
-	default: `email`,
-})
 
 export function HomeView(): Children {
 	const setEmail = useSetter(emailInputAtom)
@@ -54,20 +46,17 @@ export function HomeView(): Children {
 		disposeState(loginStepAtoms, instanceKey)
 	})
 
-	const formId = `form-${useId()}`
-	bindScene(oneTimeCode, (code) => {
-		if (code.length === 6) {
-			const form = document.getElementById(formId)
-			if (form instanceof HTMLFormElement) {
-				form.requestSubmit()
-			}
-		}
+	let form: HTMLFormElement | null = null
+	onCommit(oneTimeCode, (code) => {
+		if (currentlyEntering() === `otc` && code.length === 6) form?.requestSubmit()
 	})
 
 	return (
 		<home-view className={css.class}>
 			<form
-				id={formId}
+				ref={(element) => {
+					form = element
+				}}
 				onSubmit={async (e) => {
 					e.preventDefault()
 					const currentAuthTarget = getState(authTargetAtom)

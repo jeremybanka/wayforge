@@ -1,4 +1,4 @@
-import type { UserKey } from "@atom.io/realtime"
+import type { RoomKey, UserKey } from "@atom.io/realtime"
 import { ownersOfRooms } from "@atom.io/realtime"
 import { myUserKeyAtom } from "@atom.io/realtime/client"
 import type { Children } from "@atom.io/spa"
@@ -9,8 +9,7 @@ import {
 	useGetter,
 	useSetter,
 } from "@atom.io/spa"
-import type { MotionAttributes } from "@atom.io/spa/motion"
-import { atom, atomFamily, findRelations, setState } from "atom.io"
+import { findRelations, setState } from "atom.io"
 import type { Socket } from "socket.io-client"
 
 import type {
@@ -43,7 +42,12 @@ import {
 	useRealtimeRooms,
 } from "../../../services/realtime-hooks"
 import { realtimeSocket as socket } from "../../../services/socket-auth-service"
-import { isMyTurnSelector } from "./bug-rangers-client-state"
+import {
+	isMyTurnSelector,
+	showBugRangersDevtoolsAtom,
+	turnBannerVisibleAtoms,
+} from "./bug-rangers-client-state"
+import { turnBannerMotion } from "./bug-rangers-motion"
 import css from "./BugRangersUI.module.css"
 import { cube, tile } from "./Icons"
 
@@ -55,10 +59,7 @@ export function BugRangersUI(): Children {
 		<bug-rangers-ui className={css.class}>
 			{myUserKey() ? <UserInterior /> : null}
 			{myUserKey() && myRoomKey() ? (
-				<Interior
-					key={`${myUserKey()}:${myRoomKey()}`}
-					myUserKey={myUserKey()!}
-				/>
+				<Interior key={[myUserKey()!, myRoomKey()!]} />
 			) : (
 				<Exterior />
 			)}
@@ -86,29 +87,25 @@ function Exterior(): Children {
 	)
 }
 
-function Interior(props: { myUserKey: UserKey }): Children {
+function Interior(props: { key: readonly [UserKey, RoomKey] }): Children {
+	const [myUserKey] = props.key
 	const gameState = usePullAtom(gameStateAtom)
 	const myRemainingTiles = usePullAtomFamilyMember(
 		playerRemainingTilesAtoms,
-		props.myUserKey,
+		myUserKey,
 	)
 	const myRemainingCubes = usePullAtomFamilyMember(
 		playerRemainingCubesAtoms,
-		props.myUserKey,
+		myUserKey,
 	)
 	const playerTurn = usePullSelector(playerTurnSelector)
 	return (
 		<>
 			<RoomModule />
-			{playerTurn() ? (
-				<TurnBanner key={playerTurn()!} playerTurn={playerTurn()!} />
-			) : null}
+			{playerTurn() ? <TurnBanner key={playerTurn()!} /> : null}
 			{gameState() === `playing` ? (
 				<>
-					<PlayerTurnControls
-						key={props.myUserKey}
-						myUserKey={props.myUserKey}
-					/>
+					<PlayerTurnControls key={myUserKey} />
 					<game-counter data-kind="tiles">
 						<svg.tile stroke="var(--fg)" strokeWidth={2} />
 						<span>{myRemainingTiles()}</span>
@@ -145,11 +142,6 @@ function RoomModule(): Children {
 		</room-module>
 	)
 }
-
-const showBugRangersDevtoolsAtom = atom<boolean>({
-	key: `showBugRangersDevtools`,
-	default: false,
-})
 
 function Devtools(): Children {
 	const showBugRangersDevtools = usePullAtom(showBugRangersDevtoolsAtom)
@@ -188,10 +180,7 @@ function DevtoolsInterior(): Children {
 					`Setup`
 				) : (
 					<>
-						<PlayerUsername
-							key={playerTurn() ?? `user::$_NONE_$`}
-							userKey={playerTurn() ?? `user::$_NONE_$`}
-						/>
+						<PlayerUsername key={playerTurn() ?? `user::$_NONE_$`} />
 						{` `}playing turn {turnNumber()}
 					</>
 				)}
@@ -201,13 +190,13 @@ function DevtoolsInterior(): Children {
 	)
 }
 
-function PlayerUsername(props: { userKey: UserKey }): Children {
-	const username = usePullAtomFamilyMember(usernameAtoms, props.userKey)
+function PlayerUsername(props: { key: UserKey }): Children {
+	const username = usePullAtomFamilyMember(usernameAtoms, props.key)
 	return <>{username()}</>
 }
 
-function PlayerTurnControls(props: { myUserKey: UserKey }): Children {
-	const myColor = useGetter(playerColorAtoms, props.myUserKey)
+function PlayerTurnControls(props: { key: UserKey }): Children {
+	const myColor = useGetter(playerColorAtoms, props.key)
 	const gameSocket = socket as Socket<{}, PlayerActions>
 	const colorsChosen = useGetter(colorsChosenSelector)
 	const isMyTurn = useGetter(isMyTurnSelector)
@@ -216,11 +205,11 @@ function PlayerTurnControls(props: { myUserKey: UserKey }): Children {
 	return (
 		<turn-controls>
 			{myColor() === null ? (
-				PLAYER_COLORS.map((color, idx) => (
+				PLAYER_COLORS.map((color) => (
 					<button
 						data-css-color-choice
 						disabled={colorsChosen().has(color) || !isMyTurn()}
-						key={idx}
+						key={color}
 						type="button"
 						style={`pointer-events: all; background: ${color}`}
 						onClick={() => {
@@ -390,39 +379,39 @@ function UserGroup(props: {
 			<group-heading>{props.groupName}</group-heading>
 			<group-members>
 				{props.userKeys.map((userKey) => {
-					return <User key={userKey} userKey={userKey} />
+					return <User key={userKey} />
 				})}
 			</group-members>
 		</section>
 	)
 }
 
-function User(props: { userKey: UserKey }): Children {
+function User(props: { key: UserKey }): Children {
 	const myUserKey = useGetter(myUserKeyAtom)
 	const { myRoomKey } = useRealtimeRooms()
 	const relations = findRelations(ownersOfRooms, myRoomKey() ?? `room::`)
 	const ownerKey = useGetter(relations.userKeyOfRoom)
-	const username = usePullAtomFamilyMember(usernameAtoms, props.userKey)
-	const color = usePullAtomFamilyMember(playerColorAtoms, props.userKey)
+	const username = usePullAtomFamilyMember(usernameAtoms, props.key)
+	const color = usePullAtomFamilyMember(playerColorAtoms, props.key)
 	const currentTurn = useGetter(playerTurnSelector)
 	return (
 		<figure
-			motion:layoutId={props.userKey}
+			motion:layoutId={props.key}
 			motion:layoutGroup={myRoomKey() ?? `lobby`}
 			data-css-user
 		>
-			{props.userKey === myUserKey() ? (
-				props.userKey === ownerKey() ? (
+			{props.key === myUserKey() ? (
+				props.key === ownerKey() ? (
 					<svg.leaderMe color={color() ?? `#555`} />
 				) : (
 					<svg.me color={color() ?? `#555`} />
 				)
-			) : props.userKey === ownerKey() ? (
+			) : props.key === ownerKey() ? (
 				<svg.leaderYou color={color() ?? `#555`} />
 			) : (
 				<svg.you color={color() ?? `#555`} />
 			)}
-			{props.userKey === currentTurn() ? (
+			{props.key === currentTurn() ? (
 				<svg.current color={color() ?? `#555`} />
 			) : null}
 			<span>{username().slice(0, 3)}</span>
@@ -430,46 +419,11 @@ function User(props: { userKey: UserKey }): Children {
 	)
 }
 
-const turnBannerVisibleAtoms = atomFamily<boolean, UserKey>({
-	key: `turnBannerVisible`,
-	default: true,
-})
-
-const turnBannerMotion = (
-	[
-		[`20vw`, `90vw`, `90vw`, `10vw`],
-		[`20vw`, `20vw`, `100vw`, `10vw`],
-		[`20vw`, `20vw`, `100vw`, `10vw`],
-		[`20vw`, `80vw`, `80vw`, `10vw`],
-	] as const
-).map((width, index): MotionAttributes => ({
-	"motion:animate": {
-		x:
-			index === 3
-				? [`-1500%`, `5%`, `10%`, `1500%`]
-				: index === 2
-					? [`1500%`, `4%`, `2%`, `-1500%`]
-					: [`-1500%`, `2%`, `4%`, `1500%`],
-		skewX: [`-50deg`, `-5deg`, `-5deg`, `-50deg`],
-		width,
-	},
-	"motion:transition": {
-		duration: 3,
-		times:
-			index === 0
-				? [0, 0.1, 0.77, 1]
-				: index === 3
-					? [0, 0.2, 0.75, 1]
-					: [0, 0.1, 0.7, 1],
-		ease: [`circOut`, `linear`, `easeIn`],
-	},
-}))
-
-function TurnBanner(props: { playerTurn: UserKey }): Children {
-	const username = usePullAtomFamilyMember(usernameAtoms, props.playerTurn)
-	const playerColor = usePullAtomFamilyMember(playerColorAtoms, props.playerTurn)
+function TurnBanner(props: { key: UserKey }): Children {
+	const username = usePullAtomFamilyMember(usernameAtoms, props.key)
+	const playerColor = usePullAtomFamilyMember(playerColorAtoms, props.key)
 	const myUserKey = useGetter(myUserKeyAtom)
-	const playerKey = props.playerTurn
+	const playerKey = props.key
 	const disposeState = useDisposal()
 	const visible = useGetter(turnBannerVisibleAtoms, playerKey)
 	const setVisible = useSetter(turnBannerVisibleAtoms, playerKey)
@@ -508,9 +462,7 @@ function TurnBanner(props: { playerTurn: UserKey }): Children {
 						style={`background-color: ${playerColor() ?? `#555`}`}
 						{...bannerMotion[3]}
 					>
-						{props.playerTurn === myUserKey()
-							? `your turn`
-							: `${username()}'s turn`}
+						{props.key === myUserKey() ? `your turn` : `${username()}'s turn`}
 					</h1>
 				</turn-banner>
 			) : null}

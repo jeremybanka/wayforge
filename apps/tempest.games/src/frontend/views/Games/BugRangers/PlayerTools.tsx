@@ -49,30 +49,33 @@ export function PlayerTools(): Children {
 		<>
 			{myUserKey() ? (
 				<>
-					{mayPlaceTile() ? (
-						<PlayableTile key={`tile:${myUserKey()}`} myUserKey={myUserKey()!} />
-					) : null}
-					{mayPlaceCube() ? (
-						<PlayableCube key={`cube:${myUserKey()}`} myUserKey={myUserKey()!} />
-					) : null}
+					{mayPlaceTile() ? <PlayableTile key={[`tile`, myUserKey()!]} /> : null}
+					{mayPlaceCube() ? <PlayableCube key={[`cube`, myUserKey()!]} /> : null}
 				</>
 			) : null}
 		</>
 	)
 }
 
-const forward = new THREE.Vector3()
-const right = new THREE.Vector3()
-const upWorld = new THREE.Vector3(0, 1, 0)
-const upCam = new THREE.Vector3()
-const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
-
 const distForward = 10
 const offsetRight = -2
 const offsetUp = 1
-const hitPoint = new THREE.Vector3()
 
-function PlayableTile(props: { myUserKey: UserKey }): Children {
+function createDragProjection() {
+	const forward = new THREE.Vector3()
+	const right = new THREE.Vector3()
+	const upWorld = new THREE.Vector3(0, 1, 0)
+	const upCam = new THREE.Vector3()
+	const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
+
+	const hitPoint = new THREE.Vector3()
+
+	return { forward, right, upWorld, upCam, plane, hitPoint }
+}
+
+function PlayableTile(props: { key: readonly [`tile`, UserKey] }): Children {
+	const { forward, right, upWorld, upCam, plane, hitPoint } =
+		createDragProjection()
 	const ref: { current: THREE.Mesh | null } = { current: null }
 	const attach = (mesh: THREE.Mesh | null) => {
 		if (mesh || getState(cameraAnchoredSphereAtom) === ref.current)
@@ -120,7 +123,7 @@ function PlayableTile(props: { myUserKey: UserKey }): Children {
 						})
 						setState(
 							playerRemainingTilesAtoms,
-							props.myUserKey,
+							props.key[1],
 							(current) => current - 1,
 						)
 						setState(turnInProgressAtom, {
@@ -136,7 +139,7 @@ function PlayableTile(props: { myUserKey: UserKey }): Children {
 				{
 					const maximumStackHeight = getState(maximumStackHeightSelectors, [
 						turnInProgress.target,
-						props.myUserKey,
+						props.key[1],
 					])
 					if (maximumStackHeight === 0) return
 					const stackHeight = getState(
@@ -151,7 +154,7 @@ function PlayableTile(props: { myUserKey: UserKey }): Children {
 					)
 					setState(
 						playerRemainingTilesAtoms,
-						props.myUserKey,
+						props.key[1],
 						(current) => current - 1,
 					)
 					setState(turnInProgressAtom, {
@@ -215,9 +218,11 @@ function PlayableTile(props: { myUserKey: UserKey }): Children {
 }
 
 type PlayableCubeProps = {
-	myUserKey: UserKey
+	key: readonly [`cube`, UserKey]
 }
 function PlayableCube(props: PlayableCubeProps): Children {
+	const { forward, right, upWorld, upCam, plane, hitPoint } =
+		createDragProjection()
 	const ref: { current: THREE.Mesh | null } = { current: null }
 	const attach = (mesh: THREE.Mesh | null) => {
 		if (mesh || getState(cameraAnchoredSphereAtom) === ref.current)
@@ -230,7 +235,7 @@ function PlayableCube(props: PlayableCubeProps): Children {
 	})
 	const setControlsEnabled = useSetter(controlsEnabledAtom)
 	const dragState = useGetter(dragStateAtom)
-	const myColor = useGetter(playerColorAtoms, props.myUserKey)
+	const myColor = useGetter(playerColorAtoms, props.key[1])
 	const socket = usePlayerActions()
 
 	const cancelDrag = () => {
@@ -260,7 +265,7 @@ function PlayableCube(props: PlayableCubeProps): Children {
 				{
 					const closestOwnedTile = getState(
 						closestOwnedTileSelectors,
-						props.myUserKey,
+						props.key[1],
 					)
 					if (closestOwnedTile) {
 						setState(turnInProgressAtom, {
@@ -281,7 +286,7 @@ function PlayableCube(props: PlayableCubeProps): Children {
 					if (turnInProgress.targets.length >= 2) return
 					const closestOwnedTile = getState(
 						closestOwnedTileSelectors,
-						props.myUserKey,
+						props.key[1],
 					)
 					if (closestOwnedTile) {
 						setState(
@@ -291,7 +296,7 @@ function PlayableCube(props: PlayableCubeProps): Children {
 						)
 						setState(
 							playerRemainingCubesAtoms,
-							props.myUserKey,
+							props.key[1],
 							(current) => current - 1,
 						)
 						setState(turnInProgressAtom, {
@@ -310,10 +315,10 @@ function PlayableCube(props: PlayableCubeProps): Children {
 				)
 				setState(
 					playerRemainingCubesAtoms,
-					props.myUserKey,
+					props.key[1],
 					(current) => current - 1,
 				)
-				setState(tileOwnerAtoms, turnInProgress.target, props.myUserKey)
+				setState(tileOwnerAtoms, turnInProgress.target, props.key[1])
 				setState(turnInProgressAtom, null)
 				socket.emit(`placeCube`, turnInProgress.target)
 				break

@@ -18,10 +18,8 @@ import {
 } from "../services/socket-auth-service"
 import { trpcClient } from "../services/trpc-client-service"
 import {
+	accountDraftOwnerAtom,
 	accountEditingAtom,
-	emailInputElementAtom,
-	passwordInputElementAtom,
-	usernameInputElementAtom,
 } from "./Account/account-state"
 import { AccountForm } from "./Account/AccountForm"
 import css from "./AccountView.module.css"
@@ -31,8 +29,14 @@ export function AccountView(): Children {
 	const usernameIsTaken = useGetter(isUsernameTakenQuerySelector)
 
 	onMount(() => {
-		if (auth()) setState(emailInputAtom, auth()!.email)
-		if (auth()?.password) setState(passwordInputAtom, `••••••••••••`)
+		const account = auth()
+		if (!account) return
+		if (getState(accountDraftOwnerAtom) !== account) {
+			setState(accountDraftOwnerAtom, account)
+			setState(accountEditingAtom, [])
+		} else if (getState(accountEditingAtom).length > 0) return
+		setState(emailInputAtom, account.email)
+		setState(passwordInputAtom, account.password ? `••••••••••••` : ``)
 	})
 
 	return (
@@ -43,7 +47,6 @@ export function AccountView(): Children {
 						label="username"
 						inputToken={usernameInputAtom}
 						issuesToken={usernameIssuesSelector}
-						inputElementToken={usernameInputElementAtom}
 						initialState={[`username`]}
 						onSubmit={async (input) => {
 							await new Promise((resolve) => {
@@ -65,7 +68,6 @@ export function AccountView(): Children {
 						label="email"
 						inputToken={emailInputAtom}
 						issuesToken={emailIssuesSelector}
-						inputElementToken={emailInputElementAtom}
 						initialState={[`email`]}
 						onSubmit={async (input) => {
 							const accountEditingState = getState(accountEditingAtom)
@@ -150,7 +152,6 @@ export function AccountView(): Children {
 						label="new-password"
 						inputToken={passwordInputAtom}
 						issuesToken={passwordIssuesSelector}
-						inputElementToken={passwordInputElementAtom}
 						initialState={
 							auth()?.password ? [`new-password`, `otcVerify`] : [`new-password`]
 						}

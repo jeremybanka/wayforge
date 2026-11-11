@@ -1,21 +1,15 @@
 import type { Children } from "@atom.io/spa"
 import {
 	onCleanup,
+	onCommit,
 	useDisposal,
 	useGetter,
 	useId,
 	useSetter,
 } from "@atom.io/spa"
-import { bindScene } from "@atom.io/spa/renderer"
-import { atomFamily } from "atom.io"
 
+import { spinnerFrames, spinnerTextAtoms } from "../services/ui-state"
 import css from "./VersionSpinner.module.css"
-
-const spinnerFrames = [`⠋`, `⠙`, `⠸`, `⠴`, `⠦`, `⠇`]
-const spinnerTextAtoms = atomFamily<string, string>({
-	key: `spinnerText`,
-	default: spinnerFrames[0],
-})
 
 export function VersionSpinner(props: {
 	input: Promise<string> | string
@@ -27,14 +21,9 @@ export function VersionSpinner(props: {
 	onCleanup(() => {
 		disposeState(spinnerTextAtoms, instanceKey)
 	})
-	let cancel = () => {}
-	onCleanup(() => {
-		cancel()
-	})
-	bindScene(
+	onCommit(
 		() => props.input,
 		(input) => {
-			cancel()
 			if (typeof input === `string`) {
 				setText(input)
 				return
@@ -44,10 +33,6 @@ export function VersionSpinner(props: {
 			const interval = setInterval(() => {
 				setText(spinnerFrames[frame++ % spinnerFrames.length])
 			}, 100)
-			cancel = () => {
-				active = false
-				clearInterval(interval)
-			}
 			void input.then(
 				(value) => {
 					if (active) {
@@ -62,6 +47,10 @@ export function VersionSpinner(props: {
 					}
 				},
 			)
+			return () => {
+				active = false
+				clearInterval(interval)
+			}
 		},
 	)
 	return (

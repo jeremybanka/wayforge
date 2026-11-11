@@ -8,7 +8,7 @@ import {
 } from "@atom.io/spa"
 import { bindScene } from "@atom.io/spa/renderer"
 import { Mesh } from "@atom.io/spa/three"
-import { atomFamily, getState, setState } from "atom.io"
+import { getState, setState } from "atom.io"
 import * as THREE from "three"
 
 import type { TileCoordinatesSerialized } from "../../../../library/bug-rangers-game-state"
@@ -35,15 +35,11 @@ import {
 import {
 	cameraTargetAtom,
 	isMyTurnSelector,
+	tileHoveredAtoms,
 	usePlayerActions,
 } from "./bug-rangers-client-state"
 import { CubeTokenStack } from "./CubeToken"
 import { TileLabel } from "./TileLabel"
-
-const tileHoveredAtoms = atomFamily<boolean, string>({
-	key: `tileHovered`,
-	default: false,
-})
 
 export function HexTile(props: {
 	ref?: (mesh: THREE.Mesh | null) => void
@@ -130,18 +126,15 @@ export function HexTile(props: {
 }
 
 export function GameTilePreview(props: {
-	coordinatesSerialized: TileCoordinatesSerialized
+	key: TileCoordinatesSerialized
 }): Children {
 	const socket = usePlayerActions()
-	const coordinates = deserializeTileCoordinates(props.coordinatesSerialized)
+	const coordinates = deserializeTileCoordinates(props.key)
 	const [boardA, boardB, boardC] = coordinates
-	const tile3dPosition = getState(
-		tile3dPositionSelectors,
-		props.coordinatesSerialized,
-	)
+	const tile3dPosition = getState(tile3dPositionSelectors, props.key)
 	const [x, _, z] = tile3dPosition
 	const closestPlayableZone = useGetter(closestPlayableZoneSelector)
-	const isClosest = () => closestPlayableZone() === props.coordinatesSerialized
+	const isClosest = () => closestPlayableZone() === props.key
 
 	if (boardA + boardB + boardC !== 0) {
 		console.error(`GameTile: bad coordinates did not add to zero`, coordinates)
@@ -152,9 +145,7 @@ export function GameTilePreview(props: {
 
 	return (
 		<>
-			<TileLabel position={[x, height + 0.7, z]}>
-				{props.coordinatesSerialized}
-			</TileLabel>
+			<TileLabel position={[x, height + 0.7, z]}>{props.key}</TileLabel>
 
 			<HexTile
 				virtual={true}
@@ -166,7 +157,7 @@ export function GameTilePreview(props: {
 					const turnInProgress = getState(turnInProgressAtom)
 					if (turnInProgress?.type === `move`) {
 						const { origin } = turnInProgress
-						const target = props.coordinatesSerialized
+						const target = props.key
 						setState(turnInProgressAtom, {
 							...turnInProgress,
 							target,
@@ -182,10 +173,10 @@ export function GameTilePreview(props: {
 						socket.emit(`finishMove`, target)
 					} else {
 						setState(gameTilesAtom, (permanent) => {
-							permanent.add(props.coordinatesSerialized)
+							permanent.add(props.key)
 							return permanent
 						})
-						socket.emit(`placeTile`, props.coordinatesSerialized)
+						socket.emit(`placeTile`, props.key)
 					}
 				}}
 			/>
@@ -193,38 +184,26 @@ export function GameTilePreview(props: {
 	)
 }
 export function GameTileActual(props: {
-	coordinatesSerialized: TileCoordinatesSerialized
+	key: TileCoordinatesSerialized
 }): Children {
 	const socket = usePlayerActions()
-	const coordinates = deserializeTileCoordinates(props.coordinatesSerialized)
+	const coordinates = deserializeTileCoordinates(props.key)
 	const [boardA, boardB, boardC] = coordinates
 	const stackHeight = usePullAtomFamilyMember(
 		gameTilesStackHeightAtoms,
-		props.coordinatesSerialized,
+		props.key,
 	)
-	const tileCubeCount = usePullAtomFamilyMember(
-		tileCubeCountAtoms,
-		props.coordinatesSerialized,
-	)
-	const ownerKey = usePullAtomFamilyMember(
-		tileOwnerAtoms,
-		props.coordinatesSerialized,
-	)
+	const tileCubeCount = usePullAtomFamilyMember(tileCubeCountAtoms, props.key)
+	const ownerKey = usePullAtomFamilyMember(tileOwnerAtoms, props.key)
 	const currentTurn = usePullSelector(playerTurnSelector)
 	const isMyTurn = usePullSelector(isMyTurnSelector)
 
-	const tile3dPosition = getState(
-		tile3dPositionSelectors,
-		props.coordinatesSerialized,
-	)
+	const tile3dPosition = getState(tile3dPositionSelectors, props.key)
 	const [x, _, z] = tile3dPosition
 
 	const turnInProgress = usePullAtom(turnInProgressAtom)
 
-	const status = usePullSelectorFamilyMember(
-		tileStatusSelectors,
-		props.coordinatesSerialized,
-	)
+	const status = usePullSelectorFamilyMember(tileStatusSelectors, props.key)
 
 	const winningTiles = usePullSelector(winningTilesSelector)
 
@@ -249,7 +228,7 @@ export function GameTileActual(props: {
 					break
 			}
 		} else {
-			if (winningTiles()!.has(props.coordinatesSerialized)) {
+			if (winningTiles()!.has(props.key)) {
 				result = `#ff0`
 			} else {
 				result = `#00f`
@@ -268,15 +247,12 @@ export function GameTileActual(props: {
 
 	return (
 		<>
-			<TileLabel position={[x, height() + 0.7, z]}>
-				{props.coordinatesSerialized}
-			</TileLabel>
+			<TileLabel position={[x, height() + 0.7, z]}>{props.key}</TileLabel>
 			{ownerKey() !== null && tileCubeCount() > 0 ? (
 				<CubeTokenStack
 					position={new THREE.Vector3(x, height() + 0.25, z)}
 					count={tileCubeCount()}
 					key={ownerKey()!}
-					ownerKey={ownerKey()!}
 				/>
 			) : null}
 			<HexTile
@@ -287,11 +263,11 @@ export function GameTileActual(props: {
 					if (isMyTurn() && status() === `mayInvade`) {
 						setState(turnInProgressAtom, {
 							type: `war`,
-							attacker: props.coordinatesSerialized,
+							attacker: props.key,
 							targets: [],
 							originalOwners: {},
 						})
-						socket.emit(`chooseAttacker`, props.coordinatesSerialized)
+						socket.emit(`chooseAttacker`, props.key)
 					}
 					if (isMyTurn() && status() === `mayBeInvaded`) {
 						const turn = turnInProgress()
@@ -301,18 +277,18 @@ export function GameTileActual(props: {
 								ownerKey(),
 								stackHeight(),
 								turn,
-								props.coordinatesSerialized,
+								props.key,
 							)
-							socket.emit(`chooseTarget`, props.coordinatesSerialized)
+							socket.emit(`chooseTarget`, props.key)
 						}
 					}
 					if (isMyTurn() && status() === `mayBeMoved`) {
 						setState(turnInProgressAtom, {
 							type: `move`,
-							origin: props.coordinatesSerialized,
+							origin: props.key,
 							target: null,
 						})
-						socket.emit(`startMove`, props.coordinatesSerialized)
+						socket.emit(`startMove`, props.key)
 					}
 				}}
 				virtual={false}
