@@ -1,6 +1,12 @@
-import { useO } from "@atom.io/react"
 import type { UserKey } from "@atom.io/realtime"
-import type { ReactNode, Ref } from "react"
+import type { Children } from "@atom.io/spa"
+import { useGetter } from "@atom.io/spa"
+import {
+	BoxGeometry,
+	Group,
+	Mesh,
+	MeshStandardMaterial,
+} from "@atom.io/spa/three"
 import * as THREE from "three"
 
 import { playerColorAtoms } from "../../../../library/bug-rangers-game-state"
@@ -8,33 +14,23 @@ import { playerColorAtoms } from "../../../../library/bug-rangers-game-state"
 export type CubeTokenStackProps = {
 	position: THREE.Vector3
 	count: number
-	ownerKey: UserKey
+	key: UserKey
 }
-export function CubeTokenStack({
-	position: [x, y, z],
-	count,
-	ownerKey,
-}: CubeTokenStackProps): ReactNode {
-	const layers: (1 | 2 | 3 | 4)[] = []
-	while (count > 0) {
-		if (count >= 4) {
-			layers.push(4)
-			count -= 4
-		} else {
-			layers.push(count as 1 | 2 | 3)
-			count = 0
-		}
-	}
-
+export function CubeTokenStack(props: CubeTokenStackProps): Children {
 	return (
 		<>
-			{layers.map((layerCount, i) => (
+			{Array.from({ length: Math.ceil(props.count / 4) }, (_, i) => (
 				<CubeTokenLayer
-					key={i}
-					position={new THREE.Vector3(x, y + i * 0.5, z)}
-					count={layerCount}
+					key={[props.key, i]}
+					position={
+						new THREE.Vector3(
+							props.position.x,
+							props.position.y + i * 0.5,
+							props.position.z,
+						)
+					}
+					count={Math.min(4, props.count - i * 4)}
 					rotation={new THREE.Euler(0, (i * Math.PI) / 3, 0)}
-					ownerKey={ownerKey}
 				/>
 			))}
 		</>
@@ -43,60 +39,83 @@ export function CubeTokenStack({
 type CubeTokenLayerProps = {
 	position: THREE.Vector3
 	rotation: THREE.Euler
-	count: 1 | 2 | 3 | 4
-	ownerKey: UserKey
+	count: number
+	key: readonly [UserKey, number]
 }
-function CubeTokenLayer({
-	position,
-	rotation: rOffset,
-	count,
-	ownerKey,
-}: CubeTokenLayerProps): ReactNode {
-	const radius = count * 0.1 + 0.1
-	const color = useO(playerColorAtoms, ownerKey) ?? `#555`
+function CubeTokenLayer(props: CubeTokenLayerProps): Children {
+	const color = useGetter(playerColorAtoms, props.key[0])
 	return (
-		<group position={position} rotation={rOffset}>
-			{count === 1 ? (
-				<CubeToken
-					color={color}
-					position={new THREE.Vector3(0, 0, 0)}
-					rotation={new THREE.Euler(0, 0, 0)}
-				/>
-			) : (
-				Array.from({ length: count }).map((_, i) => {
-					const angle = (i / count) * Math.PI * 2
-					const x = Math.cos(angle) * radius
-					const z = Math.sin(angle) * radius
-
-					const rotation = new THREE.Euler(0, (Math.PI * 3) / 2 - angle, 0)
-
-					return (
-						<CubeToken
-							key={i}
-							color={color}
-							position={new THREE.Vector3(x, 0, z)}
-							rotation={rotation}
-						/>
-					)
-				})
-			)}
-		</group>
+		<Group
+			position={[props.position.x, props.position.y, props.position.z]}
+			rotation={[props.rotation.x, props.rotation.y, props.rotation.z]}
+		>
+			{Array.from({ length: props.count }, (_, i) => {
+				const angle = (i / props.count) * Math.PI * 2
+				const radius = props.count === 1 ? 0 : props.count * 0.1 + 0.1
+				return (
+					<CubeToken
+						key={i}
+						color={color() ?? `#555`}
+						position={
+							new THREE.Vector3(
+								Math.cos(angle) * radius,
+								0,
+								Math.sin(angle) * radius,
+							)
+						}
+						rotation={
+							new THREE.Euler(
+								0,
+								props.count === 1 ? 0 : Math.PI * 1.5 - angle,
+								0,
+							)
+						}
+					/>
+				)
+			})}
+		</Group>
 	)
 }
-
 export type CubeTokenProps = {
-	ref?: Ref<THREE.Mesh>
+	ref?: (mesh: THREE.Mesh | null) => void
 	color?: THREE.ColorRepresentation
 	position?: THREE.Vector3
 	rotation?: THREE.Euler
 	onPointerDown?: (position: THREE.Vector3) => void
 	onPointerUp?: (position: THREE.Vector3) => void
+	onPointerCancel?: () => void
 }
-export function CubeToken(props: CubeTokenProps): ReactNode {
+export function CubeToken(props: CubeTokenProps): Children {
 	return (
-		<mesh {...props} receiveShadow>
-			<boxGeometry args={[0.5, 0.5, 0.5]} />
-			<meshStandardMaterial color={props.color ?? `hotpink`} />
-		</mesh>
+		<Mesh
+			ref={(node) => props.ref?.(node)}
+			position={
+				props.position
+					? [props.position.x, props.position.y, props.position.z]
+					: [0, 0, 0]
+			}
+			rotation={
+				props.rotation
+					? [props.rotation.x, props.rotation.y, props.rotation.z]
+					: [0, 0, 0]
+			}
+			onPointerDown={(event) => {
+				if (props.onPointerDown) {
+					event.setPointerCapture()
+					event.nativeEvent.stopImmediatePropagation()
+				}
+				props.onPointerDown?.(event.currentTarget.position)
+			}}
+			onPointerCancel={() => {
+				props.onPointerCancel?.()
+			}}
+			onPointerUp={(event) => {
+				if (event.hasPointerCapture()) event.releasePointerCapture()
+				props.onPointerUp?.(event.currentTarget.position)
+			}}
+		>
+			<BoxGeometry args={[0.5, 0.5, 0.5]} />
+			<MeshStandardMaterial color={props.color ?? `hotpink`} />
+		</Mesh>
 	)
 }

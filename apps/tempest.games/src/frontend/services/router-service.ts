@@ -4,7 +4,7 @@ import { isTreePath, optional } from "treetrunks"
 
 import { authAtom } from "./socket-auth-service"
 
-export const ROUTES = optional({
+const ROUTES = optional({
 	verify: optional({
 		$token: null,
 	}),

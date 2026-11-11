@@ -1,19 +1,16 @@
-import { useO } from "@atom.io/react"
+import type { Children } from "@atom.io/spa"
 import {
-	autoUpdate,
-	flip,
-	FloatingFocusManager,
-	offset,
-	shift,
-	useClick,
-	useDismiss,
-	useFloating,
-	useInteractions,
-	useRole,
-} from "@floating-ui/react"
+	onCleanup,
+	onCommit,
+	useDisposal,
+	useGetter,
+	useId,
+	useSetter,
+	useStore,
+} from "@atom.io/spa"
+import type { Middleware } from "@floating-ui/dom"
+import { flip, offset, shift } from "@floating-ui/dom"
 import { setState } from "atom.io"
-import { IMPLICIT } from "atom.io/internal"
-import * as React from "react"
 
 import { RESPONSE_DICTIONARY } from "../library/response-dictionary"
 import * as svg from "./<svg>"
@@ -27,122 +24,195 @@ import {
 	socket,
 } from "./services/socket-auth-service"
 import { trpcClient } from "./services/trpc-client-service"
+import { accountPopoverOpenAtoms } from "./services/ui-state"
 import { AccountView } from "./views/AccountView"
 import { AdminView } from "./views/AdminView"
 import { GameView } from "./views/GameView"
 import { HomeView } from "./views/HomeView"
 import { VerifyView } from "./views/VerifyView"
 
-IMPLICIT.STORE.loggers[0].logLevel = `warn`
+export function AppShell(): Children {
+	useStore().loggers[0].logLevel = `warn`
+	const route = useGetter(routeSelector)
+	const auth = useGetter(authAtom)
+	const connectionError = useGetter(connectionErrorAtom)
 
-export function AppShell(): React.ReactNode {
-	const route = useO(routeSelector)
-	const auth = useO(authAtom)
-	const connectionError = useO(connectionErrorAtom)
-
-	const [accountPopOverIsOpen, setAccountPopOverOpen] = React.useState(false)
-	const { refs, floatingStyles, context } = useFloating({
-		open: accountPopOverIsOpen,
-		onOpenChange: setAccountPopOverOpen,
-		placement: `bottom-end`,
-		middleware: [offset(5), flip(), shift()],
-		whileElementsMounted: autoUpdate,
+	const instanceKey = useId()
+	const disposeState = useDisposal()
+	const accountPopOverIsOpen = useGetter(accountPopoverOpenAtoms, instanceKey)
+	const setAccountPopOverOpen = useSetter(accountPopoverOpenAtoms, instanceKey)
+	onCleanup(() => {
+		disposeState(accountPopoverOpenAtoms, instanceKey)
 	})
-	const click = useClick(context)
-	const dismiss = useDismiss(context)
-	const role = useRole(context)
-	const { getReferenceProps, getFloatingProps } = useInteractions([
-		click,
-		dismiss,
-		role,
-	])
+	let profileButton: HTMLButtonElement | null = null
+	let profileActions: HTMLElement | null = null
+	onCommit(
+		() => accountPopOverIsOpen() && auth() !== null,
+		(open) => {
+			const element = profileActions
+			if (!open || !element) return
+			// Floating UI resolves its first position asynchronously after this commit.
+			const focusFirstAction = () => {
+				if (
+					!element.isConnected ||
+					getComputedStyle(element).visibility === `hidden`
+				)
+					return
+				element.querySelector(`button`)?.focus()
+				observer.disconnect()
+			}
+			const observer = new MutationObserver(focusFirstAction)
+			observer.observe(element, {
+				attributes: true,
+				attributeFilter: [`style`],
+			})
+			focusFirstAction()
+			const dismiss = (event: PointerEvent) => {
+				if (
+					event.target instanceof Node &&
+					!element.contains(event.target) &&
+					!profileButton?.contains(event.target)
+				)
+					setAccountPopOverOpen(false)
+			}
+			const escape = (event: KeyboardEvent) => {
+				if (event.key === `Escape`) {
+					setAccountPopOverOpen(false)
+					profileButton?.focus()
+				}
+			}
+			document.addEventListener(`pointerdown`, dismiss)
+			document.addEventListener(`keydown`, escape)
+			return () => {
+				observer.disconnect()
+				document.removeEventListener(`pointerdown`, dismiss)
+				document.removeEventListener(`keydown`, escape)
+			}
+		},
+	)
+	const profileMiddleware: Middleware[] = [
+		offset(5),
+		flip(),
+		shift(),
+		{
+			name: `devicePixels`,
+			fn: ({ x, y }) => {
+				const dpr = window.devicePixelRatio
+				return {
+					x: Math.round(x * dpr) / dpr,
+					y: Math.round(y * dpr) / dpr,
+				}
+			},
+		},
+	]
 
-	const appVersion = useO(appVersionSelector)
+	const appVersion = useGetter(appVersionSelector)
+
+	const isGameRoute = () => {
+		const current = route()
+		return typeof current === `object` && current[0] === `game`
+	}
+	const renderRoute = () => {
+		const current = route()
+		if (typeof current === `number`)
+			return (
+				<article>
+					<h1>{current}</h1>
+					<h2>{JSON.parse(RESPONSE_DICTIONARY[current])}</h2>
+					<a href="/">Return to Home Page</a>
+				</article>
+			)
+		switch (current[0]) {
+			case undefined:
+				return <HomeView />
+			case `admin`:
+				return <AdminView />
+			case `game`:
+				return <GameView key={current} />
+			case `verify`:
+				return <VerifyView key={current} />
+			case `account`:
+				return <AccountView />
+		}
+	}
 
 	return (
 		<app-shell className={css.class}>
 			<app-layout>
 				<header>
 					<brand-lockup>
-						{typeof route === `object` && route[0] === `game` ? null : (
-							<svg.tempest />
-						)}
+						{isGameRoute() ? null : <svg.tempest />}
 						<span>
-							<VersionSpinner input={appVersion} />
+							<VersionSpinner input={appVersion()} />
 						</span>
 					</brand-lockup>
 
 					<button
 						data-css="profile"
-						ref={refs.setReference}
-						{...getReferenceProps()}
+						ref={(element) => {
+							profileButton = element
+						}}
+						aria-haspopup="dialog"
+						aria-expanded={accountPopOverIsOpen()}
+						onClick={() => {
+							setAccountPopOverOpen((open) => !open)
+						}}
 					>
-						{auth?.username ? auth.username.slice(0, 3) : ``}
+						{auth()?.username ? auth()?.username?.slice(0, 3) : ``}
 					</button>
-					{accountPopOverIsOpen && auth && (
+					{accountPopOverIsOpen() && auth() && (
 						<profile-popover>
-							<FloatingFocusManager context={context} modal={false}>
-								<profile-actions
-									ref={refs.setFloating}
-									style={floatingStyles}
-									{...getFloatingProps()}
+							<profile-actions
+								floating:reference={profileButton}
+								floating:placement="bottom-end"
+								floating:middleware={profileMiddleware}
+								ref={(element) => {
+									profileActions = element
+								}}
+								role="dialog"
+								aria-label="Account"
+								onFocusOut={(event) => {
+									if (
+										event.relatedTarget instanceof Node &&
+										!event.currentTarget.contains(event.relatedTarget) &&
+										event.relatedTarget !== profileButton
+									)
+										setAccountPopOverOpen(false)
+								}}
+							>
+								<span>{auth()?.username}</span>
+								<button
+									type="button"
+									onClick={() => {
+										navigate(`/account`)
+										setAccountPopOverOpen(false)
+									}}
 								>
-									<span>{auth.username}</span>
-									<button
-										type="button"
-										onClick={() => {
-											navigate(`/account`)
-										}}
-									>
-										Account
-									</button>
-									<button
-										type="button"
-										onClick={async () => {
-											if (!auth) return
-											await trpcClient.closeSession.mutate({
-												username: auth.username,
-											})
-											socket.once(`disconnect`, () => {
-												setState(authAtom, null)
-												navigate(`/`)
-											})
-											socket.disconnect()
-										}}
-									>
-										Sign out
-									</button>
-								</profile-actions>
-							</FloatingFocusManager>
+									Account
+								</button>
+								<button
+									type="button"
+									onClick={async () => {
+										if (!auth()) return
+										await trpcClient.closeSession.mutate({
+											username: auth()!.username,
+										})
+										socket.once(`disconnect`, () => {
+											setState(authAtom, null)
+											navigate(`/`)
+										})
+										socket.disconnect()
+									}}
+								>
+									Sign out
+								</button>
+							</profile-actions>
 						</profile-popover>
 					)}
 				</header>
-				<main>
-					{typeof route === `number` ? (
-						<article>
-							<h1>{route}</h1>
-							<h2>{JSON.parse(RESPONSE_DICTIONARY[route])}</h2>
-							<a href="/">Return to Home Page</a>
-						</article>
-					) : (
-						(() => {
-							switch (route[0]) {
-								case undefined:
-									return <HomeView />
-								case `admin`:
-									return <AdminView />
-								case `game`:
-									return <GameView route={route} />
-								case `verify`:
-									return <VerifyView route={route} />
-								case `account`:
-									return <AccountView />
-							}
-						})()
-					)}
-				</main>
+				<main>{renderRoute()}</main>
 			</app-layout>
-			{connectionError ? (
+			{connectionError() ? (
 				<aside>
 					<connection-dialog>
 						<h1>Disconnected</h1>

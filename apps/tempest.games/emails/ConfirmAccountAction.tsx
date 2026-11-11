@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import * as React from "react"
 import {
 	Body,
@@ -15,7 +16,7 @@ import {
 	genAccountActionCode,
 	summarizeAccountAction,
 } from "../src/backend/account-actions"
-import * as svg from "../src/frontend/<svg>"
+import { TempestLogo } from "./TempestLogo"
 
 // oxlint-disable-next-line typescript/no-unnecessary-type-assertion -- mirrors current typescript-eslint behavior before JSON.parse.
 const FRONTEND_ORIGIN = JSON.parse(process.env[`FRONTEND_ORIGINS`]!)[0] ?? ``
@@ -65,7 +66,7 @@ function ConfirmAccountAction({
 				<Preview>{summary}</Preview>
 				<Container style={container}>
 					<Section style={logoContainer}>
-						<svg.tempest width="250" />
+						<TempestLogo width="250" />
 					</Section>
 					<Heading style={h1}>{subject}</Heading>
 					<Text style={heroText}>{summary}</Text>

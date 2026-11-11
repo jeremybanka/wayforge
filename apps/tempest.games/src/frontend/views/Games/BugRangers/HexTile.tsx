@@ -1,14 +1,13 @@
-import { useO } from "@atom.io/react"
+import type { Children } from "@atom.io/spa"
 import {
-	usePullAtom,
-	usePullAtomFamilyMember,
-	usePullSelector,
-	usePullSelectorFamilyMember,
-} from "@atom.io/realtime/react"
-import { Text } from "@react-three/drei"
+	onCleanup,
+	useDisposal,
+	useGetter,
+	useId,
+	useSetter,
+} from "@atom.io/spa"
+import { Mesh, MeshStandardMaterial } from "@atom.io/spa/three"
 import { getState, setState } from "atom.io"
-import type { ReactNode } from "react"
-import { useMemo, useState } from "react"
 import * as THREE from "three"
 
 import type { TileCoordinatesSerialized } from "../../../../library/bug-rangers-game-state"
@@ -27,77 +26,69 @@ import {
 	winningTilesSelector,
 } from "../../../../library/bug-rangers-game-state"
 import {
+	usePullAtom,
+	usePullAtomFamilyMember,
+	usePullSelector,
+	usePullSelectorFamilyMember,
+} from "../../../services/realtime-hooks"
+import {
 	cameraTargetAtom,
 	isMyTurnSelector,
+	tileHoveredAtoms,
 	usePlayerActions,
 } from "./bug-rangers-client-state"
 import { CubeTokenStack } from "./CubeToken"
+import { TileLabel } from "./TileLabel"
 
-/**
- * HexTile
- *
- * A short hexagonal prism shaped exactly like one of the hexes in the grid.
- * Props:
- * - radius: circumradius of the hexagon (same as HexGridHelper)
- * - height: thickness of the prism
- * - position: center position
- */
-export function HexTile({
-	ref,
-	radius = 1,
-	height = 0.3,
-	position3d = new THREE.Vector3(0, 0, 0),
-	color = `#ee5`,
-	virtual = false,
-	onClick,
-	onPointerDown,
-	onPointerUp,
-}: {
-	ref?: { current: THREE.Mesh | null }
+export function HexTile(props: {
+	ref?: (mesh: THREE.Mesh | null) => void
 	radius?: number
 	height?: number
 	position3d?: THREE.Vector3
 	color?: THREE.ColorRepresentation
 	virtual?: boolean
-	onClick?: ((position: THREE.Vector3) => void) | undefined
-	onPointerDown?: ((position: THREE.Vector3) => void) | undefined
-	onPointerUp?: ((position: THREE.Vector3) => void) | undefined
-}): ReactNode {
-	const [hovered, setHovered] = useState(false)
-
-	// Build a hexagonal shape
-	const shape = useMemo(() => {
-		const s = new THREE.Shape()
-		for (let i = 0; i < 6; i++) {
-			const angle = (Math.PI / 180) * (60 * i)
-			const x = radius * Math.cos(angle)
-			const y = radius * Math.sin(angle)
-			if (i === 0) s.moveTo(x, y)
-			else s.lineTo(x, y)
-		}
-		s.closePath()
-		return s
-	}, [radius])
-
-	const geom = useMemo(
-		() =>
-			new THREE.ExtrudeGeometry(shape, {
-				depth: virtual ? height - 0.1 : height,
-				bevelEnabled: false,
-			}),
-		[shape, height],
-	)
-
+	onClick?: (position: THREE.Vector3) => void
+	onPointerDown?: (position: THREE.Vector3) => void
+	onPointerUp?: (position: THREE.Vector3) => void
+	onPointerCancel?: () => void
+}): Children {
+	const instanceKey = useId()
+	const disposeState = useDisposal()
+	const hovered = useGetter(tileHoveredAtoms, instanceKey)
+	const setHovered = useSetter(tileHoveredAtoms, instanceKey)
+	onCleanup(() => {
+		disposeState(tileHoveredAtoms, instanceKey)
+	})
+	const shape = new THREE.Shape()
+	for (let i = 0; i < 6; i++) {
+		const angle = (Math.PI / 3) * i
+		const x = (props.radius ?? 1) * Math.cos(angle)
+		const y = (props.radius ?? 1) * Math.sin(angle)
+		if (i === 0) shape.moveTo(x, y)
+		else shape.lineTo(x, y)
+	}
+	shape.closePath()
+	const geometry = new THREE.ExtrudeGeometry(shape, {
+		depth: (props.height ?? 0.3) - (props.virtual ? 0.1 : 0),
+		bevelEnabled: false,
+	})
+	onCleanup(() => {
+		geometry.dispose()
+	})
 	return (
-		<mesh
-			ref={ref}
-			geometry={geom}
-			position={position3d}
+		<Mesh
+			args={[geometry]}
 			rotation={[-Math.PI / 2, 0, 0]}
-			castShadow
-			receiveShadow
-			onClick={() => {
-				onClick?.(position3d)
+			position={
+				props.position3d
+					? [props.position3d.x, props.position3d.y, props.position3d.z]
+					: [0, 0, 0]
+			}
+			ref={(mesh) => {
+				props.ref?.(mesh)
+			}}
+			onClick={(event) => {
+				props.onClick?.(props.position3d ?? event.currentTarget.position)
 			}}
 			onPointerOver={() => {
 				setHovered(true)
@@ -105,34 +96,40 @@ export function HexTile({
 			onPointerOut={() => {
 				setHovered(false)
 			}}
-			onPointerDown={() => {
-				onPointerDown?.(position3d)
+			onPointerDown={(event) => {
+				if (props.onPointerDown) {
+					event.setPointerCapture()
+					event.nativeEvent.stopImmediatePropagation()
+				}
+				props.onPointerDown?.(event.currentTarget.position)
 			}}
-			onPointerUp={() => {
-				onPointerUp?.(position3d)
+			onPointerCancel={() => {
+				props.onPointerCancel?.()
+			}}
+			onPointerUp={(event) => {
+				if (event.hasPointerCapture()) event.releasePointerCapture()
+				props.onPointerUp?.(event.currentTarget.position)
 			}}
 		>
-			<meshStandardMaterial
-				color={color}
-				transparent={virtual}
-				opacity={virtual ? (hovered ? 0.5 : 0.2) : 1}
+			<MeshStandardMaterial
+				color={props.color ?? `#ee5`}
+				transparent={!!props.virtual}
+				opacity={props.virtual ? (hovered() ? 0.5 : 0.2) : 1}
 			/>
-		</mesh>
+		</Mesh>
 	)
 }
 
-export function GameTilePreview({
-	coordinatesSerialized,
-}: {
-	coordinatesSerialized: TileCoordinatesSerialized
-}): ReactNode {
+export function GameTilePreview(props: {
+	key: TileCoordinatesSerialized
+}): Children {
 	const socket = usePlayerActions()
-	const coordinates = deserializeTileCoordinates(coordinatesSerialized)
+	const coordinates = deserializeTileCoordinates(props.key)
 	const [boardA, boardB, boardC] = coordinates
-	const tile3dPosition = getState(tile3dPositionSelectors, coordinatesSerialized)
+	const tile3dPosition = getState(tile3dPositionSelectors, props.key)
 	const [x, _, z] = tile3dPosition
-	const closestPlayableZone = useO(closestPlayableZoneSelector)
-	const isClosest = closestPlayableZone === coordinatesSerialized
+	const closestPlayableZone = useGetter(closestPlayableZoneSelector)
+	const isClosest = () => closestPlayableZone() === props.key
 
 	if (boardA + boardB + boardC !== 0) {
 		console.error(`GameTile: bad coordinates did not add to zero`, coordinates)
@@ -143,21 +140,19 @@ export function GameTilePreview({
 
 	return (
 		<>
-			<Text position={[x, height + 0.7, z]} fontSize={0.25} color="white">
-				{coordinatesSerialized}
-			</Text>
+			<TileLabel position={[x, height + 0.7, z]}>{props.key}</TileLabel>
 
 			<HexTile
 				virtual={true}
 				position3d={tile3dPosition}
-				color={isClosest ? `#f00` : `#0ff`}
+				color={isClosest() ? `#f00` : `#0ff`}
 				onClick={(position3d) => {
 					setState(cameraTargetAtom, position3d.toArray())
 
 					const turnInProgress = getState(turnInProgressAtom)
 					if (turnInProgress?.type === `move`) {
 						const { origin } = turnInProgress
-						const target = coordinatesSerialized
+						const target = props.key
 						setState(turnInProgressAtom, {
 							...turnInProgress,
 							target,
@@ -173,73 +168,69 @@ export function GameTilePreview({
 						socket.emit(`finishMove`, target)
 					} else {
 						setState(gameTilesAtom, (permanent) => {
-							permanent.add(coordinatesSerialized)
+							permanent.add(props.key)
 							return permanent
 						})
-						socket.emit(`placeTile`, coordinatesSerialized)
+						socket.emit(`placeTile`, props.key)
 					}
 				}}
 			/>
 		</>
 	)
 }
-export function GameTileActual({
-	coordinatesSerialized,
-}: {
-	coordinatesSerialized: TileCoordinatesSerialized
-}): ReactNode {
+export function GameTileActual(props: {
+	key: TileCoordinatesSerialized
+}): Children {
 	const socket = usePlayerActions()
-	const coordinates = deserializeTileCoordinates(coordinatesSerialized)
+	const coordinates = deserializeTileCoordinates(props.key)
 	const [boardA, boardB, boardC] = coordinates
 	const stackHeight = usePullAtomFamilyMember(
 		gameTilesStackHeightAtoms,
-		coordinatesSerialized,
+		props.key,
 	)
-	const tileCubeCount = usePullAtomFamilyMember(
-		tileCubeCountAtoms,
-		coordinatesSerialized,
-	)
-	const ownerKey = usePullAtomFamilyMember(tileOwnerAtoms, coordinatesSerialized)
+	const tileCubeCount = usePullAtomFamilyMember(tileCubeCountAtoms, props.key)
+	const ownerKey = usePullAtomFamilyMember(tileOwnerAtoms, props.key)
 	const currentTurn = usePullSelector(playerTurnSelector)
 	const isMyTurn = usePullSelector(isMyTurnSelector)
 
-	const tile3dPosition = getState(tile3dPositionSelectors, coordinatesSerialized)
+	const tile3dPosition = getState(tile3dPositionSelectors, props.key)
 	const [x, _, z] = tile3dPosition
 
 	const turnInProgress = usePullAtom(turnInProgressAtom)
 
-	const status = usePullSelectorFamilyMember(
-		tileStatusSelectors,
-		coordinatesSerialized,
-	)
+	const status = usePullSelectorFamilyMember(tileStatusSelectors, props.key)
 
 	const winningTiles = usePullSelector(winningTilesSelector)
 
-	let color: string
-	if (winningTiles === null) {
-		switch (status) {
-			case null:
-				color = `#aa5`
-				break
-			case `mayBeInvaded`:
-			case `isMovingToHere`:
-				color = `#664`
-				break
-			case `isInvader`:
-			case `isMovingFromHere`:
-				color = `#ee1`
-				break
-			case `mayInvade`:
-			case `mayBeMoved`:
-				color = `#cc3`
-				break
-		}
-	} else {
-		if (winningTiles.has(coordinatesSerialized)) {
-			color = `#ff0`
+	const color = () => {
+		let result: string
+		if (winningTiles() === null) {
+			switch (status()) {
+				case null:
+					result = `#aa5`
+					break
+				case `mayBeInvaded`:
+				case `isMovingToHere`:
+					result = `#664`
+					break
+				case `isInvader`:
+				case `isMovingFromHere`:
+					result = `#ee1`
+					break
+				case `mayInvade`:
+				case `mayBeMoved`:
+					result = `#cc3`
+					break
+			}
 		} else {
-			color = `#00f`
+			if (winningTiles()!.has(props.key)) {
+				result = `#ff0`
+			} else {
+				result = `#00f`
+			}
 		}
+
+		return result
 	}
 
 	if (boardA + boardB + boardC !== 0) {
@@ -247,65 +238,61 @@ export function GameTileActual({
 		return null
 	}
 
-	const height = stackHeight * 0.33
+	const height = () => stackHeight() * 0.33
 
 	return (
 		<>
-			<Text position={[x, height + 0.7, z]} fontSize={0.25} color="white">
-				{coordinatesSerialized}
-			</Text>
-			{ownerKey !== null && tileCubeCount > 0 ? (
+			<TileLabel position={[x, height() + 0.7, z]}>{props.key}</TileLabel>
+			{ownerKey() !== null && tileCubeCount() > 0 ? (
 				<CubeTokenStack
-					position={new THREE.Vector3(x, height + 0.25, z)}
-					count={tileCubeCount}
-					ownerKey={ownerKey}
+					position={new THREE.Vector3(x, height() + 0.25, z)}
+					count={tileCubeCount()}
+					key={ownerKey()!}
 				/>
 			) : null}
 			<HexTile
 				position3d={tile3dPosition}
-				color={color}
+				color={color()}
 				onClick={(position3d) => {
 					setState(cameraTargetAtom, position3d.toArray())
-					if (isMyTurn && status === `mayInvade`) {
+					if (isMyTurn() && status() === `mayInvade`) {
 						setState(turnInProgressAtom, {
 							type: `war`,
-							attacker: coordinatesSerialized,
+							attacker: props.key,
 							targets: [],
 							originalOwners: {},
 						})
-						socket.emit(`chooseAttacker`, coordinatesSerialized)
+						socket.emit(`chooseAttacker`, props.key)
 					}
-					if (isMyTurn && status === `mayBeInvaded`) {
-						if (
-							turnInProgress?.type === `war` &&
-							turnInProgress.attacker !== null
-						) {
+					if (isMyTurn() && status() === `mayBeInvaded`) {
+						const turn = turnInProgress()
+						if (turn?.type === `war` && turn.attacker !== null) {
 							setWarTarget(
-								currentTurn,
-								ownerKey,
-								stackHeight,
-								turnInProgress,
-								coordinatesSerialized,
+								currentTurn(),
+								ownerKey(),
+								stackHeight(),
+								turn,
+								props.key,
 							)
-							socket.emit(`chooseTarget`, coordinatesSerialized)
+							socket.emit(`chooseTarget`, props.key)
 						}
 					}
-					if (isMyTurn && status === `mayBeMoved`) {
+					if (isMyTurn() && status() === `mayBeMoved`) {
 						setState(turnInProgressAtom, {
 							type: `move`,
-							origin: coordinatesSerialized,
+							origin: props.key,
 							target: null,
 						})
-						socket.emit(`startMove`, coordinatesSerialized)
+						socket.emit(`startMove`, props.key)
 					}
 				}}
 				virtual={false}
 			/>
-			{stackHeight > 1 ? (
-				<HexTile position3d={new THREE.Vector3(x, 0.33, z)} color={color} />
+			{stackHeight() > 1 ? (
+				<HexTile position3d={new THREE.Vector3(x, 0.33, z)} color={color()} />
 			) : null}
-			{stackHeight > 2 ? (
-				<HexTile position3d={new THREE.Vector3(x, 0.66, z)} color={color} />
+			{stackHeight() > 2 ? (
+				<HexTile position3d={new THREE.Vector3(x, 0.66, z)} color={color()} />
 			) : null}
 		</>
 	)

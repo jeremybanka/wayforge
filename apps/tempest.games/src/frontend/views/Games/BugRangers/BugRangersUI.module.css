@@ -125,7 +125,6 @@ bug-rangers-ui.class {
 		align-items: flex-start;
 		justify-content: flex-start;
 		pointer-events: none;
-		/* @lasertag-disable [opaque-component-root-may-collide] AnimatePresence retains only the authored Motion elements during exit animations. */
 		> h1 {
 			position: absolute;
 			overflow: hidden;
@@ -159,7 +158,6 @@ bug-rangers-ui.class {
 			background: var(--fg);
 			align-self: flex-end;
 		}
-		/* @lasertag-enable [opaque-component-root-may-collide] */
 	}
 
 	> turn-controls {
@@ -203,7 +201,6 @@ bug-rangers-ui.class {
 		flex-direction: column;
 		gap: 5px;
 
-		/* @lasertag-disable [selector-crosses-ownership-boundary] Motion section and figure wrappers preserve the locally authored game phase and player marker DOM. */
 		> section {
 			display: flex;
 			> section {
@@ -286,6 +283,5 @@ bug-rangers-ui.class {
 				}
 			}
 		}
-		/* @lasertag-enable [selector-crosses-ownership-boundary] */
 	}
 }

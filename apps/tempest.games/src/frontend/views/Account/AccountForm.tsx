@@ -1,21 +1,22 @@
-import { useI, useO } from "@atom.io/react"
+import type { Children } from "@atom.io/spa"
+import { onCommit, useGetter, useSetter } from "@atom.io/spa"
 import type { ArkErrors } from "arktype"
 import type { ReadableToken, WritableToken } from "atom.io"
-import { capitalize } from "atom.io/internal"
-import * as React from "react"
 
 import {
 	oneTimeCodeInputAtom,
 	oneTimeCodeNewEmailInputAtom,
 	passwordInputAtom,
 } from "../../services/socket-auth-service"
-import type { AccountEditingState, AccountString } from "./account-state"
+import type {
+	AccountConfirmationField,
+	AccountEditingState,
+	AccountString,
+} from "./account-state"
 import {
 	accountEditingAtom,
-	buttonBlockActiveAtom,
 	otcLoginFieldLabelSelector,
 	otcVerifyFieldLabelSelector,
-	useElement,
 } from "./account-state"
 import css from "./AccountForm.module.css"
 
@@ -23,73 +24,63 @@ export type FormProps = {
 	label: AccountString
 	inputToken: WritableToken<string>
 	issuesToken: ReadableToken<ArkErrors | null>
-	inputElementToken: WritableToken<HTMLInputElement | null>
 	initialState: AccountEditingState
 	onSubmit: (value: string) => Promise<Error | string>
 	onOpen?: (() => Promise<void>) | (() => void)
 	onCancel?: (() => Promise<void>) | (() => void)
-	extraIssues?: React.ReactNode
+	extraIssues?: Children
 }
-export function AccountForm({
-	label,
-	inputToken,
-	issuesToken,
-	inputElementToken,
-	initialState,
-	onSubmit,
-	onOpen,
-	onCancel,
-	extraIssues,
-}: FormProps): React.ReactNode {
-	const input = useO(inputToken)
-	const setInput = useI(inputToken)
+export function AccountForm(props: FormProps): Children {
+	const input = useGetter(props.inputToken)
+	const setInput = useSetter(props.inputToken)
 
-	const otc = useO(oneTimeCodeInputAtom)
-	const setOtc = useI(oneTimeCodeInputAtom)
+	const otc = useGetter(oneTimeCodeInputAtom)
+	const setOtc = useSetter(oneTimeCodeInputAtom)
 
-	const otcEmailNew = useO(oneTimeCodeNewEmailInputAtom)
-	const setOtcEmailNew = useI(oneTimeCodeNewEmailInputAtom)
+	const otcEmailNew = useGetter(oneTimeCodeNewEmailInputAtom)
+	const setOtcEmailNew = useSetter(oneTimeCodeNewEmailInputAtom)
 
-	const password = useO(passwordInputAtom)
-	const setPassword = useI(passwordInputAtom)
+	const password = useGetter(passwordInputAtom)
+	const setPassword = useSetter(passwordInputAtom)
 
-	const buttonBlockActive = useO(buttonBlockActiveAtom)
-	const setButtonBlockActive = useI(buttonBlockActiveAtom)
+	const editingState = useGetter(accountEditingAtom)
+	const setEditing = useSetter(accountEditingAtom)
 
-	const editingState = useO(accountEditingAtom)
-	const setEditing = useI(accountEditingAtom)
+	const issues = useGetter(props.issuesToken)
+	const otcLoginFieldLabel = useGetter(otcLoginFieldLabelSelector)
+	const otcVerifyFieldLabel = useGetter(otcVerifyFieldLabelSelector)
 
-	const issues = useO(issuesToken)
-	const otcLoginFieldLabel = useO(otcLoginFieldLabelSelector)
-	const otcVerifyFieldLabel = useO(otcVerifyFieldLabelSelector)
-
-	const elementRef = useElement(inputElementToken)
-
-	const isUsingForm = editingState[0] === label
-	const currentField = editingState.at(-1)
-	const [_, ...nextSteps] = editingState
+	const isUsingForm = () => editingState()[0] === props.label
+	const currentField = () => editingState().at(-1)
+	const nextSteps = () => editingState().slice(1) as AccountConfirmationField[]
+	let form: HTMLFormElement | null = null
+	onCommit(
+		() => (isUsingForm() ? currentField() : undefined),
+		(field) => {
+			if (field) form?.querySelector<HTMLInputElement>(`input:enabled`)?.focus()
+		},
+	)
 
 	return (
 		<account-form className={css.class}>
 			<form
+				ref={(element) => {
+					form = element
+				}}
 				onSubmit={async (e) => {
 					e.preventDefault()
-					if (buttonBlockActive) {
-						setButtonBlockActive(false)
-						return
-					}
-					console.log(`submitted! changing ${label} to`, input)
-					const result = await onSubmit(input)
+					console.log(`submitted! changing ${props.label} to`, input())
+					const result = await props.onSubmit(input())
 					if (Error.isError(result)) {
 						console.error(result)
 					}
 				}}
 			>
-				{isUsingForm ? (
+				{isUsingForm() ? (
 					<button
 						type="button"
 						onClick={async () => {
-							await onCancel?.()
+							await props.onCancel?.()
 							setEditing([])
 						}}
 					>
@@ -97,42 +88,46 @@ export function AccountForm({
 					</button>
 				) : null}
 				<form-fields>
-					<label htmlFor={label}>
-						{issues || extraIssues ? (
+					<label htmlFor={props.label}>
+						{issues() || props.extraIssues ? (
 							<aside>
-								{extraIssues}
-								{issues?.map((issue) => (
+								{props.extraIssues}
+								{issues()?.map((issue) => (
 									<span key={issue.path.join(`.`)}>{issue.message}</span>
 								))}
 							</aside>
 						) : null}
 						<span>
-							{label === `new-password` ? `Password` : capitalize(label)}
+							{props.label === `new-password`
+								? `Password`
+								: props.label[0].toUpperCase() + props.label.slice(1)}
 						</span>
 						<input
-							id={label}
-							type={label === `new-password` ? `password` : `text`}
-							ref={elementRef}
-							value={input}
-							onChange={(e) => {
-								setInput(e.target.value)
+							id={props.label}
+							type={props.label === `new-password` ? `password` : `text`}
+							value={input()}
+							onInput={(e) => {
+								setInput(e.currentTarget.value)
 							}}
-							autoComplete={label}
+							autoComplete={props.label}
 							autoCapitalize="none"
-							disabled={currentField !== label}
+							disabled={currentField() !== props.label}
 						/>
 					</label>
-					{isUsingForm
-						? nextSteps.map((field) => (
-								<label key={`${label}-${field}`} htmlFor={`${label}-${field}`}>
+					{isUsingForm()
+						? nextSteps().map((field) => (
+								<label
+									key={[props.label, field]}
+									htmlFor={`${props.label}-${field}`}
+								>
 									<span>
 										{((): string => {
 											switch (field) {
 												case `otcLogin`:
-													return otcLoginFieldLabel
+													return otcLoginFieldLabel()
 
 												case `otcVerify`:
-													return otcVerifyFieldLabel
+													return otcVerifyFieldLabel()
 
 												case `passwordLogin`:
 													return `Password`
@@ -140,64 +135,60 @@ export function AccountForm({
 										})()}
 									</span>
 									<input
-										id={`${label}-otc`}
+										id={`${props.label}-otc`}
 										type="text"
-										ref={elementRef}
 										value={(() => {
 											switch (field) {
 												case `otcLogin`:
-													return otc
+													return otc()
 												case `otcVerify`:
-													if (label === `email`) {
-														return otcEmailNew
+													if (props.label === `email`) {
+														return otcEmailNew()
 													}
-													return otc
+													return otc()
 												case `passwordLogin`:
-													return password
+													return password()
 											}
 										})()}
-										onChange={(e) => {
+										onInput={(e) => {
 											switch (field) {
 												case `otcLogin`:
-													setOtc(e.target.value)
+													setOtc(e.currentTarget.value)
 													break
 												case `otcVerify`:
-													if (label === `email`) {
-														setOtcEmailNew(e.target.value)
+													if (props.label === `email`) {
+														setOtcEmailNew(e.currentTarget.value)
 														break
 													}
-													setOtc(e.target.value)
+													setOtc(e.currentTarget.value)
 													break
 												case `passwordLogin`:
-													setPassword(e.target.value)
+													setPassword(e.currentTarget.value)
 											}
 										}}
 										autoComplete={
-											label.includes(`otc`)
+											props.label.includes(`otc`)
 												? `one-time-code`
-												: label.includes(`password`)
+												: props.label.includes(`password`)
 													? `password`
 													: ``
 										}
 										autoCapitalize="none"
-										disabled={field !== currentField}
+										disabled={field !== currentField()}
 									/>
 								</label>
 							))
 						: null}
 				</form-fields>
-				{editingState[0] === label ? (
-					<button type="submit">{`->`}</button>
+				{editingState()[0] === props.label ? (
+					<button key="submit" type="submit">{`->`}</button>
 				) : (
 					<button
+						key="edit"
 						type="button"
-						onMouseDown={async () => {
-							setButtonBlockActive(true)
-							await onOpen?.()
-							setEditing(initialState)
-						}}
-						onMouseUp={() => {
-							setButtonBlockActive(false)
+						onClick={async () => {
+							await props.onOpen?.()
+							setEditing(props.initialState)
 						}}
 					>
 						/

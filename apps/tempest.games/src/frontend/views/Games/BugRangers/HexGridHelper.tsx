@@ -1,12 +1,5 @@
-// HexGridHelper.tsx — drop-in alternative to <gridHelper /> that draws a hexagonal grid on the XZ plane
-// Usage:
-// <Canvas camera={{ position: [8, 8, 8], fov: 45 }}>
-//   <ambientLight intensity={0.5} />
-//   <OrbitControls makeDefault />
-//   <HexGridHelper size={20} radius={1} color="#6f6f6f" opacity={0.5} />
-// </Canvas>
-
-import * as React from "react"
+import { type Children, onCleanup, onMount } from "@atom.io/spa"
+import { Group } from "@atom.io/spa/three"
 import * as THREE from "three"
 
 /**
@@ -40,10 +33,10 @@ export function HexGridHelper({
 	opacity?: number
 	y?: number
 	dashed?: boolean
-}): React.ReactNode {
-	const ref = React.useRef<THREE.LineSegments>(null)
+}): Children {
+	let group: THREE.Object3D | null = null
 
-	const { geometry, dashSize, gapSize } = React.useMemo(() => {
+	const { geometry, dashSize, gapSize } = (() => {
 		// --- math helpers for flat-top hexes ---
 		// const TAU = Math.PI * 2
 		const angles = [0, 60, 120, 180, 240, 300].map((a) => (a * Math.PI) / 180)
@@ -98,9 +91,9 @@ export function HexGridHelper({
 		const _gapSize = radius * 0.6
 
 		return { geometry: _geometry, dashSize: _dashSize, gapSize: _gapSize }
-	}, [size, radius])
+	})()
 
-	const material = React.useMemo(() => {
+	const material = (() => {
 		if (dashed) {
 			const m = new THREE.LineDashedMaterial({
 				color,
@@ -116,42 +109,24 @@ export function HexGridHelper({
 			transparent: opacity < 1,
 			opacity,
 		})
-	}, [color, opacity, dashed])
+	})()
 
-	// If dashed, compute line distances once
-	React.useLayoutEffect(() => {
-		if (!ref.current) return
-		if (ref.current.material instanceof THREE.LineDashedMaterial) {
-			const g = ref.current.geometry
-			// Add cumulative distance along each segment for dashed rendering
-			const pos = g.getAttribute(`position`) as THREE.BufferAttribute
-			const lineDistances = new Float32Array(pos.count)
-			for (let i = 0; i < pos.count; i += 2) {
-				const ax = pos.getX(i)
-				const ay = pos.getY(i)
-				const az = pos.getZ(i)
-				const bx = pos.getX(i + 1)
-				const by = pos.getY(i + 1)
-				const bz = pos.getZ(i + 1)
-				const d = Math.hypot(bx - ax, by - ay, bz - az)
-				lineDistances[i] = 0
-				lineDistances[i + 1] = d
-			}
-			g.setAttribute(`lineDistance`, new THREE.BufferAttribute(lineDistances, 1))
-			ref.current.material.needsUpdate = true
-		}
-	}, [])
-
+	onMount(() => {
+		const lines = new THREE.LineSegments(geometry, material)
+		lines.position.y = y + 0.0001
+		if (dashed) lines.computeLineDistances()
+		group!.add(lines)
+		onCleanup(() => {
+			lines.removeFromParent()
+			geometry.dispose()
+			material.dispose()
+		})
+	})
 	return (
-		<group position-y={y} rotation-x={-Math.PI * 0}>
-			{/* A tiny offset to avoid z-fighting if you also keep a plane at y=0 */}
-			<lineSegments
-				ref={ref}
-				geometry={geometry}
-				position={[0, y + 0.0001, 0]}
-				rotation={[/*-Math.PI / 2*/ 0, 0, 0]} // lay on XZ like GridHelper
-				material={material}
-			/>
-		</group>
+		<Group
+			ref={(object) => {
+				group = object
+			}}
+		/>
 	)
 }

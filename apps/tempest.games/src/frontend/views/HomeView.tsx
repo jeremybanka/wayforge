@@ -1,7 +1,14 @@
-import { useI, useO } from "@atom.io/react"
+import type { Children } from "@atom.io/spa"
+import {
+	onCleanup,
+	onCommit,
+	useDisposal,
+	useGetter,
+	useId,
+	useSetter,
+} from "@atom.io/spa"
 import { TRPCClientError } from "@trpc/client"
 import { getState, setState } from "atom.io"
-import * as React from "react"
 
 import { navigate } from "../services/router-service"
 import {
@@ -14,47 +21,51 @@ import {
 	socket,
 } from "../services/socket-auth-service"
 import { trpcClient } from "../services/trpc-client-service"
+import { loginErrorAtoms, loginStepAtoms } from "../services/ui-state"
 import css from "./HomeView.module.css"
 
-export function HomeView(): React.ReactNode {
-	const setEmail = useI(emailInputAtom)
-	const setPassword = useI(passwordInputAtom)
-	const setOneTimeCode = useI(oneTimeCodeInputAtom)
-	const email = useO(emailLowercaseSelector)
-	const password = useO(passwordInputAtom)
-	const oneTimeCode = useO(oneTimeCodeInputAtom)
-	const emailInputId = `email-${React.useId()}`
-	const passwordInputId = `password-${React.useId()}`
-	const oneTimeCodeInputId = `one-time-code-${React.useId()}`
+export function HomeView(): Children {
+	const setEmail = useSetter(emailInputAtom)
+	const setPassword = useSetter(passwordInputAtom)
+	const setOneTimeCode = useSetter(oneTimeCodeInputAtom)
+	const email = useGetter(emailLowercaseSelector)
+	const password = useGetter(passwordInputAtom)
+	const oneTimeCode = useGetter(oneTimeCodeInputAtom)
+	const emailInputId = `email-${useId()}`
+	const passwordInputId = `password-${useId()}`
+	const oneTimeCodeInputId = `one-time-code-${useId()}`
 
-	const [error, setError] = React.useState<string | null>(null)
-	const [currentlyEntering, setCurrentlyEntering] = React.useState<
-		`email` | `otc` | `password`
-	>(`email`)
+	const instanceKey = useId()
+	const disposeState = useDisposal()
+	const error = useGetter(loginErrorAtoms, instanceKey)
+	const setError = useSetter(loginErrorAtoms, instanceKey)
+	const currentlyEntering = useGetter(loginStepAtoms, instanceKey)
+	const setCurrentlyEntering = useSetter(loginStepAtoms, instanceKey)
+	onCleanup(() => {
+		disposeState(loginErrorAtoms, instanceKey)
+		disposeState(loginStepAtoms, instanceKey)
+	})
 
-	const formId = `form-${React.useId()}`
-	React.useEffect(() => {
-		if (oneTimeCode.length === 6) {
-			const form = document.getElementById(formId)
-			if (form instanceof HTMLFormElement) {
-				form.requestSubmit()
-			}
-		}
-	}, [oneTimeCode])
+	let form: HTMLFormElement | null = null
+	onCommit(oneTimeCode, (code) => {
+		if (currentlyEntering() === `otc` && code.length === 6) form?.requestSubmit()
+	})
 
 	return (
 		<home-view className={css.class}>
 			<form
-				id={formId}
+				ref={(element) => {
+					form = element
+				}}
 				onSubmit={async (e) => {
 					e.preventDefault()
 					const currentAuthTarget = getState(authTargetAtom)
 					try {
-						switch (currentlyEntering) {
+						switch (currentlyEntering()) {
 							case `email`: {
 								const { nextStep, userKey: newAuthTarget } =
 									await trpcClient.declareAuthTarget.query({
-										email,
+										email: email(),
 									})
 								setState(authTargetAtom, newAuthTarget)
 								switch (nextStep) {
@@ -77,7 +88,7 @@ export function HomeView(): React.ReactNode {
 								}
 								const actionResponse =
 									await trpcClient.verifyAccountAction.mutate({
-										oneTimeCode,
+										oneTimeCode: oneTimeCode(),
 										userKey: currentAuthTarget,
 									})
 								setState(authAtom, actionResponse)
@@ -90,8 +101,8 @@ export function HomeView(): React.ReactNode {
 							}
 							case `password`: {
 								const response = await trpcClient.openSession.mutate({
-									email,
-									password,
+									email: email(),
+									password: password(),
 								})
 								setState(authAtom, response)
 								socket.once(`connect`, () => {
@@ -110,38 +121,38 @@ export function HomeView(): React.ReactNode {
 				}}
 			>
 				<form-fields>
-					{error ? <aside>{error}</aside> : null}
+					{error() ? <aside>{error()}</aside> : null}
 					<label htmlFor={emailInputId}>
 						<span>Email</span>
 						<input
 							id={emailInputId}
 							type="text"
-							value={email}
-							onChange={(e) => {
-								setEmail(e.target.value)
+							value={email()}
+							onInput={(e) => {
+								setEmail(e.currentTarget.value)
 							}}
 							autoComplete="email"
 							autoCapitalize="none"
-							disabled={currentlyEntering !== `email`}
+							disabled={currentlyEntering() !== `email`}
 						/>
 					</label>
-					{currentlyEntering === `password` ? (
+					{currentlyEntering() === `password` ? (
 						<label htmlFor={passwordInputId}>
 							<span>Password</span>
 							<input
 								id={passwordInputId}
 								type="password"
-								value={password}
-								onChange={(e) => {
-									setPassword(e.target.value)
+								value={password()}
+								onInput={(e) => {
+									setPassword(e.currentTarget.value)
 								}}
 								autoComplete="current-password"
 								autoCapitalize="none"
-								autoFocus={currentlyEntering === `password`}
+								autoFocus={currentlyEntering() === `password`}
 							/>
 						</label>
 					) : null}
-					{currentlyEntering === `otc` ? (
+					{currentlyEntering() === `otc` ? (
 						<label htmlFor={oneTimeCodeInputId}>
 							<span>One-time Code</span>
 							<input
@@ -149,18 +160,18 @@ export function HomeView(): React.ReactNode {
 								type="number"
 								inputMode="numeric"
 								enterKeyHint="go"
-								value={oneTimeCode}
-								onChange={(e) => {
-									setOneTimeCode(e.target.value)
+								value={oneTimeCode()}
+								onInput={(e) => {
+									setOneTimeCode(e.currentTarget.value)
 								}}
 								autoComplete="one-time-code"
 								autoCapitalize="none"
-								autoFocus={currentlyEntering === `otc`}
+								autoFocus={currentlyEntering() === `otc`}
 							/>
 						</label>
 					) : null}
 					<form-actions>
-						{currentlyEntering === `password` ? (
+						{currentlyEntering() === `password` ? (
 							<button
 								type="button"
 								onClick={async () => {
@@ -175,9 +186,9 @@ export function HomeView(): React.ReactNode {
 						<button
 							type="submit"
 							disabled={
-								(!email && currentlyEntering === `email`) ||
-								(!password && currentlyEntering === `password`) ||
-								(!oneTimeCode && currentlyEntering === `otc`)
+								(!email() && currentlyEntering() === `email`) ||
+								(!password() && currentlyEntering() === `password`) ||
+								(!oneTimeCode() && currentlyEntering() === `otc`)
 							}
 						>{`>>->`}</button>
 					</form-actions>

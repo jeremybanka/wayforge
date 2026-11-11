@@ -1,62 +1,74 @@
-import * as React from "react"
+import type { Children } from "@atom.io/spa"
+import type { SVGAttributes } from "@atom.io/spa/jsx-runtime"
 
-export function tempest(
-	props: React.SVGAttributes<SVGElement>,
-): React.ReactNode {
+export function tempest(props: SVGAttributes<SVGSVGElement>): Children {
 	return (
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 101" {...props}>
 			<title>Tempest Games Logo</title>
 			<path
 				d="M155.76.93v59.89h-17.11V7.78h-13.69V.93h30.8Z"
-				style={{ fill: `var(--logo-color)`, strokeWidth: 0 }}
+				fill="var(--logo-color)"
+				stroke-width={0}
 			/>
 			<path
 				d="M202.91,7.86h-13.18v17.03h13.18v6.84h-13.18v22.24h13.18v6.84h-30.29V.93h30.29v6.93Z"
-				style={{ fill: `var(--logo-color)`, strokeWidth: 0 }}
+				fill="var(--logo-color)"
+				stroke-width={0}
 			/>
 			<path
 				d="M289.49.93v59.89h-17.11V7.78h-.43c-8.21,0-11.21,5.82-11.21,17.03v36.02h-16.25V24.8c0-11.21-2.99-17.03-11.21-17.03h-.43v53.04h-17.11V.93h18.74c9.92,0,15.31,4.96,18.14,11.21,2.82-6.25,8.21-11.21,18.14-11.21h18.73Z"
-				style={{ fill: `var(--logo-color)`, strokeWidth: 0 }}
+				fill="var(--logo-color)"
+				stroke-width={0}
 			/>
 			<path
 				d="M352.82,29.68c0,11.72-6.42,19.16-24.55,19.16h-4.53v11.98h-17.11V1.1l46.2-.17v28.75ZM323.73,7.78v34.22h2.48c7.36,0,9.5-4.11,9.5-12.15V7.78h-11.98Z"
-				style={{ fill: `var(--logo-color)`, strokeWidth: 0 }}
+				fill="var(--logo-color)"
+				stroke-width={0}
 			/>
 			<path
 				d="M396.8,7.86h-13.17v17.03h13.17v6.84h-13.17v22.24h13.17v6.84h-30.28V.93h30.28v6.93Z"
-				style={{ fill: `var(--logo-color)`, strokeWidth: 0 }}
+				fill="var(--logo-color)"
+				stroke-width={0}
 			/>
 			<path
 				d="M425.9,12.57v14.03h27.89v16.94c0,12.75-1.71,18.13-16.43,18.13h-14.54c-9.58,0-14.03-2.74-14.03-11.97v-5.99h15.4v5.13c0,4.53.77,5.99,4.62,5.99h1.71c5.05,0,6.16-1.46,6.16-6.84v-14.54h-27.89v-16.68c0-13.52,3.85-16.68,18.82-16.68h12.83c8.81,0,13.17,1.54,13.17,10.78v7.19h-15.4v-6.5c0-3.42-1.03-4.62-4.45-4.62h-1.45c-4.28,0-6.42,1.46-6.42,5.65Z"
-				style={{ fill: `var(--logo-color)`, strokeWidth: 0 }}
+				fill="var(--logo-color)"
+				stroke-width={0}
 			/>
 			<path
 				d="M500,7.78h-13.69v53.04h-17.11V.93h30.8v6.84Z"
-				style={{ fill: `var(--logo-color)`, strokeWidth: 0 }}
+				fill="var(--logo-color)"
+				stroke-width={0}
 			/>
 			<path
 				d="M155.96,93.78v-3.57h-5.58v-7.14h13.39v17.85h-24.76v-28.56h24.76v7.14h-16.96v14.28h9.15Z"
-				style={{ fill: `var(--logo-color)`, strokeWidth: 0 }}
+				fill="var(--logo-color)"
+				stroke-width={0}
 			/>
 			<path
 				d="M224.26,100.92h-8.25v-10.71h-8.25v3.57h4.68v7.14h-12.94v-17.85h16.51v-3.57h-16.51v-7.14h24.76v28.56Z"
-				style={{ fill: `var(--logo-color)`, strokeWidth: 0 }}
+				fill="var(--logo-color)"
+				stroke-width={0}
 			/>
 			<path
 				d="M259.99,72.36h30.57v28.56h-7.81v-21.42h-3.57v21.42h-7.81v-21.42h-3.57v21.42h-7.81v-28.56Z"
-				style={{ fill: `var(--logo-color)`, strokeWidth: 0 }}
+				fill="var(--logo-color)"
+				stroke-width={0}
 			/>
 			<path
 				d="M343.24,83.08v-3.57h-9.14v14.28h16.96v7.14h-24.76v-28.56h24.76v17.85h-13.38v-7.14h5.57Z"
-				style={{ fill: `var(--logo-color)`, strokeWidth: 0 }}
+				fill="var(--logo-color)"
+				stroke-width={0}
 			/>
 			<path
 				d="M394.59,79.5v3.57h16.96v17.85h-24.76v-7.14h16.96v-3.57h-16.96v-17.85h24.76v7.14h-16.96Z"
-				style={{ fill: `var(--logo-color)`, strokeWidth: 0 }}
+				fill="var(--logo-color)"
+				stroke-width={0}
 			/>
 			<path
 				d="M0,63.42v-20.84h20.83L0,63.42ZM100,.92v32.29h-35.42v8.33h-8.33V14.46h-22.92l1.04,7.29h9.38v19.79h-8.33v-8.33H0V.92h100ZM0,100.92v-26.04l6.25-1.04,25-26.04,1.04,1.05-10.42,18.75-4.16,7.29h13.54l3.13-3.12,8.33-22.92h1.04v41.66h3.12l9.38-8.33v-33.33h1.04l8.33,22.92,3.12,3.12h13.54l-4.17-7.29-10.42-19.8,1.04-1.04,25,27.09,6.25,1.04v26.04H0ZM100,42.59v20.84l-20.83-20.84h20.83Z"
-				style={{ fill: `var(--logo-color)`, strokeWidth: 0 }}
+				fill="var(--logo-color)"
+				stroke-width={0}
 			/>
 		</svg>
 	)
@@ -64,7 +76,7 @@ export function tempest(
 
 export type UserMarkerProps = { color: string }
 
-export function me(props: UserMarkerProps): React.ReactNode {
+export function me(props: UserMarkerProps): Children {
 	return (
 		<svg
 			id="uuid-4f76f6a9-ceb4-4471-8939-9eb09fc0c2a8"
@@ -74,12 +86,12 @@ export function me(props: UserMarkerProps): React.ReactNode {
 			<title>Icon representing you</title>
 			<path
 				d="M129.74,83.26l12.26-12.26-12.26-12.26c-4.84-23.3-23.19-41.65-46.49-46.49L71,0l-12.26,12.26c-23.3,4.84-41.65,23.19-46.49,46.49L0,71l12.26,12.26c4.84,23.3,23.19,41.65,46.49,46.49l12.26,12.26,12.26-12.26c23.3-4.84,41.65-23.19,46.49-46.49Z"
-				style={{ fill: props.color }}
+				fill={props.color}
 			/>
 		</svg>
 	)
 }
-export function you(props: UserMarkerProps): React.ReactNode {
+export function you(props: UserMarkerProps): Children {
 	return (
 		<svg
 			id="uuid-d9fc88fe-cc37-4ad2-bbf2-ebb45c04a971"
@@ -87,11 +99,11 @@ export function you(props: UserMarkerProps): React.ReactNode {
 			viewBox="0 0 142 142"
 		>
 			<title>Icon representing another player</title>
-			<circle cx="71" cy="71" r="60" style={{ fill: props.color }} />
+			<circle cx="71" cy="71" r="60" fill={props.color} />
 		</svg>
 	)
 }
-export function leaderMe(props: UserMarkerProps): React.ReactNode {
+export function leaderMe(props: UserMarkerProps): Children {
 	return (
 		<svg
 			id="uuid-b9c9c6cc-467c-4b5a-88f3-6a178603d697"
@@ -101,12 +113,12 @@ export function leaderMe(props: UserMarkerProps): React.ReactNode {
 			<title>Icon representing you, the room leader</title>
 			<path
 				d="M129.74,58.74c-4.52-21.77-20.84-39.2-41.96-45.35V0l-8.39,8.39L71,0l-8.39,8.39L54.22,0v13.4c-21.13,6.14-37.44,23.58-41.96,45.35L0,71l12.26,12.26c4.84,23.3,23.19,41.65,46.49,46.49l12.26,12.26,12.26-12.26c23.3-4.84,41.65-23.19,46.49-46.49l12.26-12.26-12.26-12.26ZM71,21.78c-2.76,0-5-2.24-5-5s2.24-5,5-5,5,2.24,5,5-2.24,5-5,5Z"
-				style={{ fill: props.color }}
+				fill={props.color}
 			/>
 		</svg>
 	)
 }
-export function leaderYou(props: UserMarkerProps): React.ReactNode {
+export function leaderYou(props: UserMarkerProps): Children {
 	return (
 		<svg
 			id="uuid-b835d103-11a7-42fa-931f-c26a84d99689"
@@ -116,12 +128,12 @@ export function leaderYou(props: UserMarkerProps): React.ReactNode {
 			<title>Icon representing the room leader</title>
 			<path
 				d="M87.78,13.4V0l-8.39,8.39L71,0l-8.39,8.39L54.22,0v13.4c-24.97,7.26-43.22,30.29-43.22,57.6,0,33.14,26.86,60,60,60s60-26.86,60-60c0-27.31-18.25-50.34-43.22-57.6ZM71,21.78c-2.76,0-5-2.24-5-5s2.24-5,5-5,5,2.24,5,5-2.24,5-5,5Z"
-				style={{ fill: props.color }}
+				fill={props.color}
 			/>
 		</svg>
 	)
 }
-export function current(props: UserMarkerProps): React.ReactNode {
+export function current(props: UserMarkerProps): Children {
 	return (
 		<svg
 			id="uuid-8b823876-d7ec-4e5b-9424-20645061b197"
@@ -131,19 +143,19 @@ export function current(props: UserMarkerProps): React.ReactNode {
 			<title>Icon representing the current turn</title>
 			<path
 				d="M35.19,17h-18.19v18.19c4.79-7.21,10.98-13.4,18.19-18.19Z"
-				style={{ fill: props.color }}
+				fill={props.color}
 			/>
 			<path
 				d="M125,35.19v-18.19h-18.19c7.21,4.79,13.4,10.98,18.19,18.19Z"
-				style={{ fill: props.color }}
+				fill={props.color}
 			/>
 			<path
 				d="M17,106.81v18.19h18.19c-7.21-4.79-13.4-10.98-18.19-18.19Z"
-				style={{ fill: props.color }}
+				fill={props.color}
 			/>
 			<path
 				d="M106.81,125h18.19v-18.19c-4.79,7.21-10.98,13.4-18.19,18.19Z"
-				style={{ fill: props.color }}
+				fill={props.color}
 			/>
 		</svg>
 	)

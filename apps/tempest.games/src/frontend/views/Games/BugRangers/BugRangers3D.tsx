@@ -1,102 +1,96 @@
-import { useO } from "@atom.io/react"
 import { myRoomKeySelector } from "@atom.io/realtime/client"
-import { usePullSelector } from "@atom.io/realtime/react"
-import { useSpring } from "@react-spring/three"
-import * as Drei from "@react-three/drei"
-import { Canvas } from "@react-three/fiber"
-import type { ReactNode } from "react"
-import { useRef } from "react"
-import * as THREE from "three"
-import type * as STD from "three-stdlib"
+import type { Children } from "@atom.io/spa"
+import { useGetter } from "@atom.io/spa"
+import { AmbientLight, Canvas, DirectionalLight } from "@atom.io/spa/three"
+import { ACESFilmicToneMapping, SRGBColorSpace } from "three"
+import { OrbitControls } from "three-stdlib"
 
+import { usePullSelector } from "../../../services/realtime-hooks"
 import {
 	cameraTargetAtom,
 	controlsEnabledAtom,
 	playableZonesVisibleSelector,
 	playerToolsVisibleSelector,
-} from "../BugRangers/bug-rangers-client-state"
-import { HexGridHelper } from "../BugRangers/HexGridHelper"
-import { PlayerTools } from "../BugRangers/PlayerTools"
-import { GameTiles, PlayableZones } from "../BugRangers/TilesAndZones"
+} from "./bug-rangers-client-state"
 import css from "./BugRangers3D.module.css"
+import { createCameraSpring } from "./camera-spring"
+import { HexGridHelper } from "./HexGridHelper"
+import { PlayerTools } from "./PlayerTools"
+import { gameCamera, gamePointer } from "./scene-state"
+import { GameTiles, PlayableZones } from "./TilesAndZones"
 
-// eslint-disable-next-line quotes
-declare module "@react-three/fiber" {
-	export interface CanvasProps {
-		style?: React.CSSProperties
-	}
-}
+// Canvas publishes a stable native canvas root for component-owned styling.
+const canvas = { Scene: Canvas }
 
-export function BugRangers3D(): ReactNode {
-	const cameraTarget = useO(cameraTargetAtom)
-	useSpring({
-		animatedCam: cameraTarget,
-		config: { mass: 1, tension: 170, friction: 26 },
-	})
-
+export function BugRangers3D(): Children {
+	const target = useGetter(cameraTargetAtom)
+	const enabled = useGetter(controlsEnabledAtom)
+	const spring = createCameraSpring(target())
+	let controls: OrbitControls | undefined
 	return (
-		<bug-rangers3-d className={css.class}>
-			<Canvas
-				camera={{ position: [15, 15, 15], fov: 50 }}
-				style={{
-					position: `fixed`,
-					top: 0,
-					left: 0,
-					width: `100vw`,
-					height: `100vh`,
+		<bug-rangers3-d
+			className={css.class}
+			onPointerMove={(event) => {
+				const bounds = event.currentTarget
+					.querySelector(`canvas`)!
+					.getBoundingClientRect()
+				gamePointer.set(
+					((event.clientX - bounds.left) / bounds.width) * 2 - 1,
+					(-(event.clientY - bounds.top) / bounds.height) * 2 + 1,
+				)
+			}}
+		>
+			<canvas.Scene
+				camera={gameCamera}
+				width={window.innerWidth}
+				height={window.innerHeight}
+				rendererOptions={{ alpha: true, powerPreference: `high-performance` }}
+				dpr={[1, 2]}
+				onCreated={({ renderer }) => {
+					renderer.outputColorSpace = SRGBColorSpace
+					renderer.toneMapping = ACESFilmicToneMapping
+					const orbit = new OrbitControls(gameCamera, renderer.domElement)
+					orbit.enableDamping = true
+					orbit.dampingFactor = 0.05
+					orbit.target.set(...target())
+					orbit.update()
+					controls = orbit
+					return () => {
+						orbit.dispose()
+					}
+				}}
+				onResize={({ width, height }) => {
+					gameCamera.aspect = width / height
+					gameCamera.updateProjectionMatrix()
+				}}
+				onFrame={({ delta }) => {
+					if (!controls) return
+					controls.enabled = enabled()
+					const animatedTarget = spring.advance(target(), delta)
+					if (animatedTarget) controls.target.lerp(animatedTarget, 0.2)
+					if (controls.enabled || animatedTarget) controls.update()
 				}}
 			>
-				<ambientLight intensity={0.5} />
-				<directionalLight position={[5, 10, 5]} />
-				<CameraController target={[...cameraTarget]} />
+				<AmbientLight intensity={0.5} />
+				<DirectionalLight position={[5, 10, 5]} />
 				<HexGridHelper size={20} radius={1} color="#6f6f6f" opacity={0.5} />
 				<BugRangersExterior3D />
-			</Canvas>
+			</canvas.Scene>
 		</bug-rangers3-d>
 	)
 }
-
-function BugRangersExterior3D(): ReactNode {
-	const myRoomKey = useO(myRoomKeySelector)
-	return myRoomKey ? <BugRangersInterior3D /> : null
+function BugRangersExterior3D(): Children {
+	const room = useGetter(myRoomKeySelector)
+	return <>{room() ? <BugRangersInterior3D key={room()} /> : null}</>
 }
-function BugRangersInterior3D(): ReactNode {
-	const playableZonesVisible = usePullSelector(playableZonesVisibleSelector)
-	const playerToolsVisible = usePullSelector(playerToolsVisibleSelector)
-
+function BugRangersInterior3D(): Children {
+	const zones = usePullSelector(playableZonesVisibleSelector)
+	const tools = usePullSelector(playerToolsVisibleSelector)
 	return (
 		<>
 			<GameTiles />
-
-			{playableZonesVisible ? <PlayableZones /> : null}
-
-			{playerToolsVisible ? <PlayerTools /> : null}
+			{zones() ? <PlayableZones /> : null}
+			{tools() ? <PlayerTools /> : null}
 		</>
-	)
-}
-
-function CameraController({ target }: { target: number[] }) {
-	const controls = useRef<STD.OrbitControls>(null)
-	const controlsEnabled = useO(controlsEnabledAtom)
-
-	useSpring({
-		animatedTarget: target,
-		config: { mass: 1, tension: 170, friction: 26 },
-		onChange: ({ value }) => {
-			controls.current?.target.lerp(
-				new THREE.Vector3(...value[`animatedTarget`]),
-				0.2,
-			)
-			controls.current?.update()
-		},
-	})
-
-	return (
-		<Drei.OrbitControls
-			ref={controls}
-			enableDamping
-			dampingFactor={0.05}
-			enabled={controlsEnabled}
-		/>
 	)
 }

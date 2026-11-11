@@ -94,6 +94,7 @@ const LASERTAG: Linter.Config = {
 		`apps/tempest.games/src/frontend/views/Games/BugRangers/HexTile.tsx`,
 		`apps/tempest.games/src/frontend/views/Games/BugRangers/PlayerTools.tsx`,
 		`apps/tempest.games/src/frontend/views/Games/BugRangers/TilesAndZones.tsx`,
+		`apps/tempest.games/src/frontend/views/Games/BugRangers/TileLabel.tsx`,
 	],
 	plugins: { lasertag: LasertagPlugin as ESLint.Plugin },
 	rules: {

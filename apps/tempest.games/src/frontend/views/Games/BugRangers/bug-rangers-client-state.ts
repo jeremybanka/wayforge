@@ -1,9 +1,7 @@
+import type { UserKey } from "@atom.io/realtime"
 import { myUserKeyAtom } from "@atom.io/realtime/client"
-import { RealtimeContext } from "@atom.io/realtime/react"
-import { atom, selector } from "atom.io"
-import React from "react"
+import { atom, atomFamily, selector } from "atom.io"
 import type { Socket } from "socket.io-client"
-import type * as THREE from "three"
 
 import type { PlayerActions } from "../../../../library/bug-rangers-game-state"
 import {
@@ -17,10 +15,10 @@ import {
 	turnInProgressAtom,
 	validWarDeclaratorsSelector,
 } from "../../../../library/bug-rangers-game-state"
+import { realtimeSocket } from "../../../services/socket-auth-service"
 
 export function usePlayerActions(): Socket<{}, PlayerActions> {
-	const { socket } = React.useContext(RealtimeContext)
-	return socket as Socket<{}, PlayerActions>
+	return realtimeSocket
 }
 
 export const cameraTargetAtom = atom<[x: number, y: number, z: number]>({
@@ -31,11 +29,6 @@ export const cameraTargetAtom = atom<[x: number, y: number, z: number]>({
 export const controlsEnabledAtom = atom<boolean>({
 	key: `controlsEnabled`,
 	default: true,
-})
-
-export const cameraAnchoredSphereAtom = atom<THREE.Mesh | null>({
-	key: `cameraAnchoredSphere`,
-	default: null,
 })
 
 export const isMyTurnSelector = selector<boolean>({
@@ -159,4 +152,19 @@ export const mayPlaceCubeSelector = selector<boolean>({
 			}
 		}
 	},
+})
+
+export const tileHoveredAtoms = atomFamily<boolean, string>({
+	key: `tileHovered`,
+	default: false,
+})
+
+export const showBugRangersDevtoolsAtom = atom<boolean>({
+	key: `showBugRangersDevtools`,
+	default: false,
+})
+
+export const turnBannerVisibleAtoms = atomFamily<boolean, UserKey>({
+	key: `turnBannerVisible`,
+	default: true,
 })

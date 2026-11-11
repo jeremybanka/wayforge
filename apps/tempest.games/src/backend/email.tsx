@@ -1,3 +1,4 @@
+/** @jsxImportSource react */
 import { Resend } from "resend"
 
 import ConfirmAccountAction from "../../emails/ConfirmAccountAction"

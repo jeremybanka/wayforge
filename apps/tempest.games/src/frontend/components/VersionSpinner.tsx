@@ -1,51 +1,61 @@
-import React, { useEffect, useRef, useState } from "react"
+import type { Children } from "@atom.io/spa"
+import {
+	onCleanup,
+	onCommit,
+	useDisposal,
+	useGetter,
+	useId,
+	useSetter,
+} from "@atom.io/spa"
 
+import { spinnerFrames, spinnerTextAtoms } from "../services/ui-state"
 import css from "./VersionSpinner.module.css"
 
-type BrailleLoaderProps = {
+export function VersionSpinner(props: {
 	input: Promise<string> | string
-}
-
-const spinnerFrames = [`⠋`, `⠙`, `⠸`, `⠴`, `⠦`, `⠇`]
-
-export function VersionSpinner({ input }: BrailleLoaderProps): React.ReactNode {
-	const spanRef = useRef<HTMLSpanElement>(null)
-	const [resolved, setResolved] = useState<string | null>(
-		typeof input === `string` ? input : null,
-	)
-
-	useEffect(() => {
-		let isMounted = true
-		let interval: NodeJS.Timeout
-
-		if (typeof input === `string`) {
-			setResolved(input)
-		} else {
+}): Children {
+	const instanceKey = useId()
+	const disposeState = useDisposal()
+	const text = useGetter(spinnerTextAtoms, instanceKey)
+	const setText = useSetter(spinnerTextAtoms, instanceKey)
+	onCleanup(() => {
+		disposeState(spinnerTextAtoms, instanceKey)
+	})
+	onCommit(
+		() => props.input,
+		(input) => {
+			if (typeof input === `string`) {
+				setText(input)
+				return
+			}
+			let active = true
 			let frame = 0
-			interval = setInterval(() => {
-				if (spanRef.current) {
-					spanRef.current.textContent = spinnerFrames[frame]
-					frame = (frame + 1) % spinnerFrames.length
-				}
+			const interval = setInterval(() => {
+				setText(spinnerFrames[frame++ % spinnerFrames.length])
 			}, 100)
-
-			void input.then((result) => {
-				if (isMounted) {
-					clearInterval(interval)
-					setResolved(result)
-				}
-			})
-		}
-
-		return () => {
-			isMounted = false
-			if (interval) clearInterval(interval)
-		}
-	}, [input])
-
+			void input.then(
+				(value) => {
+					if (active) {
+						clearInterval(interval)
+						setText(value)
+					}
+				},
+				() => {
+					if (active) {
+						clearInterval(interval)
+						setText(`unavailable`)
+					}
+				},
+			)
+			return () => {
+				active = false
+				clearInterval(interval)
+			}
+		},
+	)
 	return (
 		<version-spinner className={css.class}>
-			<span ref={spanRef}>{resolved ?? spinnerFrames[0]}</span>
+			<span>{text()}</span>
 		</version-spinner>
 	)
 }

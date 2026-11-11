@@ -1,11 +1,9 @@
-import { useAtomicRef, useI, useO } from "@atom.io/react"
 import type { UserKey } from "@atom.io/realtime"
 import { myUserKeyAtom } from "@atom.io/realtime/client"
-import { usePullAtom, usePullSelector } from "@atom.io/realtime/react"
-import { useFrame, useThree } from "@react-three/fiber"
+import type { Children } from "@atom.io/spa"
+import { onCleanup, useGetter, useSetter } from "@atom.io/spa"
+import { onSceneFrame } from "@atom.io/spa/renderer"
 import { getState, setState } from "atom.io"
-import type { ReactNode } from "react"
-import { useRef } from "react"
 import * as THREE from "three"
 
 import type {
@@ -27,8 +25,8 @@ import {
 	tileOwnerAtoms,
 	turnInProgressAtom,
 } from "../../../../library/bug-rangers-game-state"
+import { usePullAtom, usePullSelector } from "../../../services/realtime-hooks"
 import {
-	cameraAnchoredSphereAtom,
 	controlsEnabledAtom,
 	mayPlaceCubeSelector,
 	mayPlaceTileSelector,
@@ -36,36 +34,59 @@ import {
 } from "./bug-rangers-client-state"
 import { CubeToken } from "./CubeToken"
 import { HexTile } from "./HexTile"
+import {
+	gameCamera as camera,
+	gamePointer as pointer,
+	gameRaycaster as raycaster,
+} from "./scene-state"
 
-export function PlayerTools(): ReactNode {
+export function PlayerTools(): Children {
 	const myUserKey = usePullAtom(myUserKeyAtom)
 	const mayPlaceTile = usePullSelector(mayPlaceTileSelector)
 	const mayPlaceCube = usePullSelector(mayPlaceCubeSelector)
-	return myUserKey ? (
+	return (
 		<>
-			{mayPlaceTile ? <PlayableTile myUserKey={myUserKey} /> : null}
-			{mayPlaceCube ? <PlayableCube myUserKey={myUserKey} /> : null}
+			{myUserKey() ? (
+				<>
+					{mayPlaceTile() ? <PlayableTile key={[`tile`, myUserKey()!]} /> : null}
+					{mayPlaceCube() ? <PlayableCube key={[`cube`, myUserKey()!]} /> : null}
+				</>
+			) : null}
 		</>
-	) : null
+	)
 }
-
-const forward = new THREE.Vector3()
-const right = new THREE.Vector3()
-const upWorld = new THREE.Vector3(0, 1, 0)
-const upCam = new THREE.Vector3()
-const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
 
 const distForward = 10
 const offsetRight = -2
 const offsetUp = 1
-const hitPoint = new THREE.Vector3()
 
-function PlayableTile({ myUserKey }: { myUserKey: UserKey }): ReactNode {
-	const ref = useAtomicRef(cameraAnchoredSphereAtom, useRef)
-	const { camera, raycaster, pointer } = useThree()
-	const setControlsEnabled = useI(controlsEnabledAtom)
-	const dragState = useO(dragStateAtom)
+function createDragProjection() {
+	const forward = new THREE.Vector3()
+	const right = new THREE.Vector3()
+	const upWorld = new THREE.Vector3(0, 1, 0)
+	const upCam = new THREE.Vector3()
+	const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0)
+
+	const hitPoint = new THREE.Vector3()
+
+	return { forward, right, upWorld, upCam, plane, hitPoint }
+}
+
+function PlayableTile(props: { key: readonly [`tile`, UserKey] }): Children {
+	const { forward, right, upWorld, upCam, plane, hitPoint } =
+		createDragProjection()
+	let mesh: THREE.Mesh | null = null
+	const setControlsEnabled = useSetter(controlsEnabledAtom)
+	const dragState = useGetter(dragStateAtom)
 	const socket = usePlayerActions()
+
+	const cancelDrag = () => {
+		if (getState(dragStateAtom) !== `tile`) return
+		setControlsEnabled(true)
+		setState(dragStateAtom, null)
+		setState(dragPointAtom, null)
+	}
+	onCleanup(cancelDrag)
 
 	const startDrag = () => {
 		setControlsEnabled(false)
@@ -92,7 +113,7 @@ function PlayableTile({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 						})
 						setState(
 							playerRemainingTilesAtoms,
-							myUserKey,
+							props.key[1],
 							(current) => current - 1,
 						)
 						setState(turnInProgressAtom, {
@@ -108,7 +129,7 @@ function PlayableTile({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 				{
 					const maximumStackHeight = getState(maximumStackHeightSelectors, [
 						turnInProgress.target,
-						myUserKey,
+						props.key[1],
 					])
 					if (maximumStackHeight === 0) return
 					const stackHeight = getState(
@@ -123,7 +144,7 @@ function PlayableTile({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 					)
 					setState(
 						playerRemainingTilesAtoms,
-						myUserKey,
+						props.key[1],
 						(current) => current - 1,
 					)
 					setState(turnInProgressAtom, {
@@ -138,10 +159,10 @@ function PlayableTile({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 		setState(dragPointAtom, null)
 	}
 
-	useFrame(() => {
-		if (!ref.current) return
+	onSceneFrame(() => {
+		if (!mesh) return
 
-		switch (dragState) {
+		switch (dragState()) {
 			case `tile`:
 				raycaster.setFromCamera(pointer, camera)
 				if (raycaster.ray.intersectPlane(plane, hitPoint)) {
@@ -151,7 +172,7 @@ function PlayableTile({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 						hitPoint.z,
 					)
 					setState(dragPointAtom, slightlyAboveHitPoint)
-					ref.current.position.copy(slightlyAboveHitPoint)
+					mesh.position.copy(slightlyAboveHitPoint)
 				}
 				break
 			case null:
@@ -166,7 +187,7 @@ function PlayableTile({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 				upCam.copy(right).cross(forward).normalize()
 
 				// Move the sphere
-				ref.current.position.copy(
+				mesh.position.copy(
 					camera.position
 						.clone()
 						.add(forward.multiplyScalar(distForward))
@@ -176,19 +197,37 @@ function PlayableTile({ myUserKey }: { myUserKey: UserKey }): ReactNode {
 		}
 	})
 
-	return <HexTile ref={ref} onPointerDown={startDrag} onPointerUp={endDrag} />
+	return (
+		<HexTile
+			ref={(node) => {
+				mesh = node
+			}}
+			onPointerDown={startDrag}
+			onPointerUp={endDrag}
+			onPointerCancel={cancelDrag}
+		/>
+	)
 }
 
 type PlayableCubeProps = {
-	myUserKey: UserKey
+	key: readonly [`cube`, UserKey]
 }
-function PlayableCube({ myUserKey }: PlayableCubeProps): ReactNode {
-	const ref = useAtomicRef(cameraAnchoredSphereAtom, useRef)
-	const { camera, raycaster, pointer } = useThree()
-	const setControlsEnabled = useI(controlsEnabledAtom)
-	const dragState = useO(dragStateAtom)
-	const myColor = useO(playerColorAtoms, myUserKey)
+function PlayableCube(props: PlayableCubeProps): Children {
+	const { forward, right, upWorld, upCam, plane, hitPoint } =
+		createDragProjection()
+	let mesh: THREE.Mesh | null = null
+	const setControlsEnabled = useSetter(controlsEnabledAtom)
+	const dragState = useGetter(dragStateAtom)
+	const myColor = useGetter(playerColorAtoms, props.key[1])
 	const socket = usePlayerActions()
+
+	const cancelDrag = () => {
+		if (getState(dragStateAtom) !== `cube`) return
+		setControlsEnabled(true)
+		setState(dragStateAtom, null)
+		setState(dragPointAtom, null)
+	}
+	onCleanup(cancelDrag)
 
 	const startDrag = () => {
 		setControlsEnabled(false)
@@ -207,7 +246,10 @@ function PlayableCube({ myUserKey }: PlayableCubeProps): ReactNode {
 			case null:
 			case undefined:
 				{
-					const closestOwnedTile = getState(closestOwnedTileSelectors, myUserKey)
+					const closestOwnedTile = getState(
+						closestOwnedTileSelectors,
+						props.key[1],
+					)
 					if (closestOwnedTile) {
 						setState(turnInProgressAtom, {
 							type: `arm`,
@@ -225,7 +267,10 @@ function PlayableCube({ myUserKey }: PlayableCubeProps): ReactNode {
 			case `arm`:
 				{
 					if (turnInProgress.targets.length >= 2) return
-					const closestOwnedTile = getState(closestOwnedTileSelectors, myUserKey)
+					const closestOwnedTile = getState(
+						closestOwnedTileSelectors,
+						props.key[1],
+					)
 					if (closestOwnedTile) {
 						setState(
 							tileCubeCountAtoms,
@@ -234,7 +279,7 @@ function PlayableCube({ myUserKey }: PlayableCubeProps): ReactNode {
 						)
 						setState(
 							playerRemainingCubesAtoms,
-							myUserKey,
+							props.key[1],
 							(current) => current - 1,
 						)
 						setState(turnInProgressAtom, {
@@ -251,23 +296,27 @@ function PlayableCube({ myUserKey }: PlayableCubeProps): ReactNode {
 					turnInProgress.target,
 					(current) => (current + 1) as TileCubeCount,
 				)
-				setState(playerRemainingCubesAtoms, myUserKey, (current) => current - 1)
-				setState(tileOwnerAtoms, turnInProgress.target, myUserKey)
+				setState(
+					playerRemainingCubesAtoms,
+					props.key[1],
+					(current) => current - 1,
+				)
+				setState(tileOwnerAtoms, turnInProgress.target, props.key[1])
 				setState(turnInProgressAtom, null)
 				socket.emit(`placeCube`, turnInProgress.target)
 				break
 		}
 	}
 
-	useFrame(() => {
-		if (!ref.current) return
+	onSceneFrame(() => {
+		if (!mesh) return
 
-		switch (dragState) {
+		switch (dragState()) {
 			case `cube`:
 				raycaster.setFromCamera(pointer, camera)
 				if (raycaster.ray.intersectPlane(plane, hitPoint)) {
 					setState(dragPointAtom, hitPoint)
-					ref.current.position.copy(hitPoint)
+					mesh.position.copy(hitPoint)
 				}
 				break
 			case null:
@@ -282,7 +331,7 @@ function PlayableCube({ myUserKey }: PlayableCubeProps): ReactNode {
 				upCam.copy(right).cross(forward).normalize()
 
 				// Move the sphere
-				ref.current.position.copy(
+				mesh.position.copy(
 					camera.position
 						.clone()
 						.add(forward.multiplyScalar(distForward))
@@ -294,10 +343,13 @@ function PlayableCube({ myUserKey }: PlayableCubeProps): ReactNode {
 
 	return (
 		<CubeToken
-			ref={ref}
+			ref={(node) => {
+				mesh = node
+			}}
 			onPointerDown={startDrag}
 			onPointerUp={endDrag}
-			color={myColor ?? `#555`}
+			onPointerCancel={cancelDrag}
+			color={myColor() ?? `#555`}
 		/>
 	)
 }
