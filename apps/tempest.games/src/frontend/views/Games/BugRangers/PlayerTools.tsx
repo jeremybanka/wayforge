@@ -27,7 +27,6 @@ import {
 } from "../../../../library/bug-rangers-game-state"
 import { usePullAtom, usePullSelector } from "../../../services/realtime-hooks"
 import {
-	cameraAnchoredSphereAtom,
 	controlsEnabledAtom,
 	mayPlaceCubeSelector,
 	mayPlaceTileSelector,
@@ -76,16 +75,7 @@ function createDragProjection() {
 function PlayableTile(props: { key: readonly [`tile`, UserKey] }): Children {
 	const { forward, right, upWorld, upCam, plane, hitPoint } =
 		createDragProjection()
-	const ref: { current: THREE.Mesh | null } = { current: null }
-	const attach = (mesh: THREE.Mesh | null) => {
-		if (mesh || getState(cameraAnchoredSphereAtom) === ref.current)
-			setState(cameraAnchoredSphereAtom, mesh)
-		ref.current = mesh
-	}
-	onCleanup(() => {
-		if (getState(cameraAnchoredSphereAtom) === ref.current)
-			setState(cameraAnchoredSphereAtom, null)
-	})
+	let mesh: THREE.Mesh | null = null
 	const setControlsEnabled = useSetter(controlsEnabledAtom)
 	const dragState = useGetter(dragStateAtom)
 	const socket = usePlayerActions()
@@ -170,7 +160,7 @@ function PlayableTile(props: { key: readonly [`tile`, UserKey] }): Children {
 	}
 
 	onSceneFrame(() => {
-		if (!ref.current) return
+		if (!mesh) return
 
 		switch (dragState()) {
 			case `tile`:
@@ -182,7 +172,7 @@ function PlayableTile(props: { key: readonly [`tile`, UserKey] }): Children {
 						hitPoint.z,
 					)
 					setState(dragPointAtom, slightlyAboveHitPoint)
-					ref.current.position.copy(slightlyAboveHitPoint)
+					mesh.position.copy(slightlyAboveHitPoint)
 				}
 				break
 			case null:
@@ -197,7 +187,7 @@ function PlayableTile(props: { key: readonly [`tile`, UserKey] }): Children {
 				upCam.copy(right).cross(forward).normalize()
 
 				// Move the sphere
-				ref.current.position.copy(
+				mesh.position.copy(
 					camera.position
 						.clone()
 						.add(forward.multiplyScalar(distForward))
@@ -209,7 +199,9 @@ function PlayableTile(props: { key: readonly [`tile`, UserKey] }): Children {
 
 	return (
 		<HexTile
-			ref={attach}
+			ref={(node) => {
+				mesh = node
+			}}
 			onPointerDown={startDrag}
 			onPointerUp={endDrag}
 			onPointerCancel={cancelDrag}
@@ -223,16 +215,7 @@ type PlayableCubeProps = {
 function PlayableCube(props: PlayableCubeProps): Children {
 	const { forward, right, upWorld, upCam, plane, hitPoint } =
 		createDragProjection()
-	const ref: { current: THREE.Mesh | null } = { current: null }
-	const attach = (mesh: THREE.Mesh | null) => {
-		if (mesh || getState(cameraAnchoredSphereAtom) === ref.current)
-			setState(cameraAnchoredSphereAtom, mesh)
-		ref.current = mesh
-	}
-	onCleanup(() => {
-		if (getState(cameraAnchoredSphereAtom) === ref.current)
-			setState(cameraAnchoredSphereAtom, null)
-	})
+	let mesh: THREE.Mesh | null = null
 	const setControlsEnabled = useSetter(controlsEnabledAtom)
 	const dragState = useGetter(dragStateAtom)
 	const myColor = useGetter(playerColorAtoms, props.key[1])
@@ -326,14 +309,14 @@ function PlayableCube(props: PlayableCubeProps): Children {
 	}
 
 	onSceneFrame(() => {
-		if (!ref.current) return
+		if (!mesh) return
 
 		switch (dragState()) {
 			case `cube`:
 				raycaster.setFromCamera(pointer, camera)
 				if (raycaster.ray.intersectPlane(plane, hitPoint)) {
 					setState(dragPointAtom, hitPoint)
-					ref.current.position.copy(hitPoint)
+					mesh.position.copy(hitPoint)
 				}
 				break
 			case null:
@@ -348,7 +331,7 @@ function PlayableCube(props: PlayableCubeProps): Children {
 				upCam.copy(right).cross(forward).normalize()
 
 				// Move the sphere
-				ref.current.position.copy(
+				mesh.position.copy(
 					camera.position
 						.clone()
 						.add(forward.multiplyScalar(distForward))
@@ -360,7 +343,9 @@ function PlayableCube(props: PlayableCubeProps): Children {
 
 	return (
 		<CubeToken
-			ref={attach}
+			ref={(node) => {
+				mesh = node
+			}}
 			onPointerDown={startDrag}
 			onPointerUp={endDrag}
 			onPointerCancel={cancelDrag}

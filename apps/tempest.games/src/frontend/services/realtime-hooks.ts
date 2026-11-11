@@ -8,8 +8,7 @@ import type {
 import { ownersOfRooms, roomKeysAtom, usersInRooms } from "@atom.io/realtime"
 import * as RTC from "@atom.io/realtime/client"
 import type { Accessor } from "@atom.io/spa"
-import { onCleanup, onMount, useGetter, useStore } from "@atom.io/spa"
-import { bindScene } from "@atom.io/spa/renderer"
+import { onCleanup, onCommit, onMount, useGetter, useStore } from "@atom.io/spa"
 import type {
 	MutableAtomToken,
 	RegularAtomFamilyToken,
@@ -34,10 +33,10 @@ import { realtimeSocket } from "./socket-auth-service"
 const [ownedRoomKeysAtoms] = getInternalRelations(ownersOfRooms, `split`)
 const myOwnedRoomKeysSelector = selector<readonly RoomKey[]>({
 	key: `myOwnedRoomKeys`,
-	get: ({ get }) =>
-		Array.from(
-			get(ownedRoomKeysAtoms, get(RTC.myUserKeyAtom) ?? `user::$_NONE_$`),
-		),
+	get: ({ get }) => {
+		const user = get(RTC.myUserKeyAtom)
+		return user ? Array.from(get(ownedRoomKeysAtoms, user)) : []
+	},
 })
 
 function usePull(
@@ -129,44 +128,41 @@ export function useRealtimeRooms<
 		ownersOfRooms,
 		`split`,
 	)
-	// Keyed child views remount on identity changes; these leases also serve persistent views.
-	let release = () => {}
-	onCleanup(() => {
-		release()
+	// Each subscription follows its own identity; SPA owns replacement and cleanup.
+	onCommit(getUserKey, (user) => {
+		if (!user) return
+		const releaseRooms = lease(
+			store,
+			`pull:${findInStore(store, rooms, user).key}`,
+			() => RTC.pullMutableAtomFamilyMember(store, realtimeSocket, rooms, user),
+		)
+		const releaseOwned = lease(
+			store,
+			`pull:${findInStore(store, owned, user).key}`,
+			() => RTC.pullMutableAtomFamilyMember(store, realtimeSocket, owned, user),
+		)
+		return () => {
+			releaseRooms()
+			releaseOwned()
+		}
 	})
-	bindScene(
-		() => [getUserKey(), getRoomKey()] as const,
-		([user, room]) => {
-			const previous = release
-			const userKey = user ?? `user::$_NONE_$`
-			const roomKey = room ?? `room::$_NONE_$`
-			const releases = [
-				lease(store, `pull:${findInStore(store, rooms, userKey).key}`, () =>
-					RTC.pullMutableAtomFamilyMember(store, realtimeSocket, rooms, userKey),
-				),
-				lease(store, `pull:${findInStore(store, owned, userKey).key}`, () =>
-					RTC.pullMutableAtomFamilyMember(store, realtimeSocket, owned, userKey),
-				),
-				lease(store, `pull:${findInStore(store, users, roomKey).key}`, () =>
-					RTC.pullMutableAtomFamilyMember(store, realtimeSocket, users, roomKey),
-				),
-				lease(store, `pull:${findInStore(store, owners, roomKey).key}`, () =>
-					RTC.pullMutableAtomFamilyMember(
-						store,
-						realtimeSocket,
-						owners,
-						roomKey,
-					),
-				),
-			]
-			previous()
-			release = () => {
-				releases.forEach((dispose) => {
-					dispose()
-				})
-			}
-		},
-	)
+	onCommit(getRoomKey, (room) => {
+		if (!room) return
+		const releaseUsers = lease(
+			store,
+			`pull:${findInStore(store, users, room).key}`,
+			() => RTC.pullMutableAtomFamilyMember(store, realtimeSocket, users, room),
+		)
+		const releaseOwners = lease(
+			store,
+			`pull:${findInStore(store, owners, room).key}`,
+			() => RTC.pullMutableAtomFamilyMember(store, realtimeSocket, owners, room),
+		)
+		return () => {
+			releaseUsers()
+			releaseOwners()
+		}
+	})
 
 	return {
 		roomSocket: realtimeSocket,

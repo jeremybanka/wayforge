@@ -6,8 +6,7 @@ import {
 	useId,
 	useSetter,
 } from "@atom.io/spa"
-import { bindScene } from "@atom.io/spa/renderer"
-import { Mesh } from "@atom.io/spa/three"
+import { Mesh, MeshStandardMaterial } from "@atom.io/spa/three"
 import { getState, setState } from "atom.io"
 import * as THREE from "three"
 
@@ -73,22 +72,12 @@ export function HexTile(props: {
 		depth: (props.height ?? 0.3) - (props.virtual ? 0.1 : 0),
 		bevelEnabled: false,
 	})
-	const material = new THREE.MeshStandardMaterial()
 	onCleanup(() => {
 		geometry.dispose()
-		material.dispose()
 	})
-	bindScene(
-		() => [props.color ?? `#ee5`, props.virtual, hovered()] as const,
-		([color, virtual, isHovered]) => {
-			material.color.set(color)
-			material.transparent = !!virtual
-			material.opacity = virtual ? (isHovered ? 0.5 : 0.2) : 1
-		},
-	)
 	return (
 		<Mesh
-			args={[geometry, material]}
+			args={[geometry]}
 			rotation={[-Math.PI / 2, 0, 0]}
 			position={
 				props.position3d
@@ -121,7 +110,13 @@ export function HexTile(props: {
 				if (event.hasPointerCapture()) event.releasePointerCapture()
 				props.onPointerUp?.(event.currentTarget.position)
 			}}
-		/>
+		>
+			<MeshStandardMaterial
+				color={props.color ?? `#ee5`}
+				transparent={!!props.virtual}
+				opacity={props.virtual ? (hovered() ? 0.5 : 0.2) : 1}
+			/>
+		</Mesh>
 	)
 }
 

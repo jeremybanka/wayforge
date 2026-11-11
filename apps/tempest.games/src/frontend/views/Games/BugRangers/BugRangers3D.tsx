@@ -1,13 +1,6 @@
 import { myRoomKeySelector } from "@atom.io/realtime/client"
 import type { Children } from "@atom.io/spa"
-import {
-	onCleanup,
-	onMount,
-	useDisposal,
-	useGetter,
-	useId,
-	useSetter,
-} from "@atom.io/spa"
+import { useGetter } from "@atom.io/spa"
 import { AmbientLight, Canvas, DirectionalLight } from "@atom.io/spa/three"
 import { ACESFilmicToneMapping, SRGBColorSpace } from "three"
 import { OrbitControls } from "three-stdlib"
@@ -18,7 +11,6 @@ import {
 	controlsEnabledAtom,
 	playableZonesVisibleSelector,
 	playerToolsVisibleSelector,
-	viewportAtoms,
 } from "./bug-rangers-client-state"
 import css from "./BugRangers3D.module.css"
 import { createCameraSpring } from "./camera-spring"
@@ -34,44 +26,24 @@ export function BugRangers3D(): Children {
 	const target = useGetter(cameraTargetAtom)
 	const enabled = useGetter(controlsEnabledAtom)
 	const spring = createCameraSpring(target())
-	const instanceKey = useId()
-	const disposeState = useDisposal()
-	const viewport = useGetter(viewportAtoms, instanceKey)
-	const setViewport = useSetter(viewportAtoms, instanceKey)
-	onCleanup(() => {
-		disposeState(viewportAtoms, instanceKey)
-	})
-	let host: HTMLElement | null = null
 	let controls: OrbitControls | undefined
-	onMount(() => {
-		const resize = () => {
-			setViewport([window.innerWidth, window.innerHeight])
-		}
-		const pointer = (event: PointerEvent) => {
-			const bounds = host!.querySelector(`canvas`)!.getBoundingClientRect()
-			gamePointer.set(
-				((event.clientX - bounds.left) / bounds.width) * 2 - 1,
-				(-(event.clientY - bounds.top) / bounds.height) * 2 + 1,
-			)
-		}
-		window.addEventListener(`resize`, resize)
-		host!.addEventListener(`pointermove`, pointer)
-		onCleanup(() => {
-			window.removeEventListener(`resize`, resize)
-			host!.removeEventListener(`pointermove`, pointer)
-		})
-	})
 	return (
 		<bug-rangers3-d
 			className={css.class}
-			ref={(element) => {
-				host = element
+			onPointerMove={(event) => {
+				const bounds = event.currentTarget
+					.querySelector(`canvas`)!
+					.getBoundingClientRect()
+				gamePointer.set(
+					((event.clientX - bounds.left) / bounds.width) * 2 - 1,
+					(-(event.clientY - bounds.top) / bounds.height) * 2 + 1,
+				)
 			}}
 		>
 			<canvas.Scene
 				camera={gameCamera}
-				width={viewport()[0]}
-				height={viewport()[1]}
+				width={window.innerWidth}
+				height={window.innerHeight}
 				rendererOptions={{ alpha: true, powerPreference: `high-performance` }}
 				dpr={[1, 2]}
 				onCreated={({ renderer }) => {

@@ -2,7 +2,6 @@ import type { Children } from "@atom.io/spa"
 import {
 	onCleanup,
 	onCommit,
-	onMount,
 	useDisposal,
 	useGetter,
 	useId,
@@ -68,8 +67,26 @@ export function AppShell(): Children {
 				attributeFilter: [`style`],
 			})
 			focusFirstAction()
+			const dismiss = (event: PointerEvent) => {
+				if (
+					event.target instanceof Node &&
+					!element.contains(event.target) &&
+					!profileButton?.contains(event.target)
+				)
+					setAccountPopOverOpen(false)
+			}
+			const escape = (event: KeyboardEvent) => {
+				if (event.key === `Escape`) {
+					setAccountPopOverOpen(false)
+					profileButton?.focus()
+				}
+			}
+			document.addEventListener(`pointerdown`, dismiss)
+			document.addEventListener(`keydown`, escape)
 			return () => {
 				observer.disconnect()
+				document.removeEventListener(`pointerdown`, dismiss)
+				document.removeEventListener(`keydown`, escape)
 			}
 		},
 	)
@@ -88,28 +105,6 @@ export function AppShell(): Children {
 			},
 		},
 	]
-	onMount(() => {
-		const dismiss = (event: PointerEvent) => {
-			if (
-				event.target instanceof Node &&
-				!profileActions?.contains(event.target) &&
-				!profileButton?.contains(event.target)
-			)
-				setAccountPopOverOpen(false)
-		}
-		const escape = (event: KeyboardEvent) => {
-			if (event.key === `Escape` && accountPopOverIsOpen()) {
-				setAccountPopOverOpen(false)
-				profileButton?.focus()
-			}
-		}
-		document.addEventListener(`pointerdown`, dismiss)
-		document.addEventListener(`keydown`, escape)
-		onCleanup(() => {
-			document.removeEventListener(`pointerdown`, dismiss)
-			document.removeEventListener(`keydown`, escape)
-		})
-	})
 
 	const appVersion = useGetter(appVersionSelector)
 
@@ -133,9 +128,9 @@ export function AppShell(): Children {
 			case `admin`:
 				return <AdminView />
 			case `game`:
-				return <GameView key={current.join(`/`)} route={current} />
+				return <GameView key={current} />
 			case `verify`:
-				return <VerifyView key={current.join(`/`)} route={current} />
+				return <VerifyView key={current} />
 			case `account`:
 				return <AccountView />
 		}

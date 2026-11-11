@@ -11,7 +11,7 @@ import css from "./VerifyView.module.css"
 type VerifyRoute = Extract<Route, [`verify`, ...any]>
 
 type VerifyProps = {
-	route: ViewOf<VerifyRoute>
+	key: ViewOf<VerifyRoute>
 }
 
 export function VerifyView(props: VerifyProps): Children {
@@ -22,8 +22,8 @@ export function VerifyView(props: VerifyProps): Children {
 	const codeInputId = `code-${useId()}`
 
 	onMount(() => {
-		if (props.route[1]) {
-			setOneTimeCode(props.route[1])
+		if (props.key[1]) {
+			setOneTimeCode(props.key[1])
 		}
 	})
 

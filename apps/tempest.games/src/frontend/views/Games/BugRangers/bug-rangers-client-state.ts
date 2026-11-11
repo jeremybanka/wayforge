@@ -2,7 +2,6 @@ import type { UserKey } from "@atom.io/realtime"
 import { myUserKeyAtom } from "@atom.io/realtime/client"
 import { atom, atomFamily, selector } from "atom.io"
 import type { Socket } from "socket.io-client"
-import type * as THREE from "three"
 
 import type { PlayerActions } from "../../../../library/bug-rangers-game-state"
 import {
@@ -30,11 +29,6 @@ export const cameraTargetAtom = atom<[x: number, y: number, z: number]>({
 export const controlsEnabledAtom = atom<boolean>({
 	key: `controlsEnabled`,
 	default: true,
-})
-
-export const cameraAnchoredSphereAtom = atom<THREE.Mesh | null>({
-	key: `cameraAnchoredSphere`,
-	default: null,
 })
 
 export const isMyTurnSelector = selector<boolean>({
@@ -158,11 +152,6 @@ export const mayPlaceCubeSelector = selector<boolean>({
 			}
 		}
 	},
-})
-
-export const viewportAtoms = atomFamily<readonly [number, number], string>({
-	key: `viewport`,
-	default: () => [window.innerWidth, window.innerHeight],
 })
 
 export const tileHoveredAtoms = atomFamily<boolean, string>({
