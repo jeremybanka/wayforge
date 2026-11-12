@@ -58,7 +58,7 @@
 		"tonnage": "0.5.2",
 		"tsdown": "0.23.7",
 		"typescript": "7.0.2",
-		"vite": "8.3.7",
+		"vite": "8.3.8",
 		"vitest": "5.1.0",
 		"yalc": "1.0.0-pre.53",
 		"zod": "4.6.7"
