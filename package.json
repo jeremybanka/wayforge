@@ -70,7 +70,7 @@
 		"knip": "6.45.1",
 		"lasertag": "0.8.11",
 		"oxlint": "1.93.0",
-		"oxlint-tsgolint": "7.0.2006",
+		"oxlint-tsgolint": "7.0.2007",
 		"pin-dependencies-checker": "2.7.1",
 		"turbo": "2.11.11",
 		"typescript": "npm:@typescript/typescript6@6.0.2",
