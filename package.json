@@ -58,7 +58,7 @@
 		"correctly": "0.3.3",
 		"cross-env": "10.1.0",
 		"dprint": "0.64.3",
-		"dprint-plugin-malva": "0.16.0",
+		"dprint-plugin-malva": "0.16.1",
 		"dprint-plugin-markup": "0.27.6",
 		"dprint-plugin-yaml": "0.6.0",
 		"eslint": "10.14.0",
