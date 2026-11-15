@@ -242,7 +242,7 @@ export const appRouter = trpc.router({
 		.input(type({ oneTimeCode: `string`, userKey: `string`, "+": `delete` }))
 		.mutation(async ({ input, ctx }): Promise<VerifyAccountActionResponse> => {
 			const { oneTimeCode, userKey } = input
-			ctx.logger.info(`🔑 verifying account action token:`, oneTimeCode)
+			ctx.logger.info(`🔑 verifying account action token`)
 
 			const userId = decryptId(userKey)
 			const user = await ctx.db.drizzle.query.users.findFirst({
@@ -593,7 +593,7 @@ async function initiateAccountAction(arg: {
 			cost: 10,
 		})
 
-		ctx.logger.info(`🔑 account action code:`, accountActionCode)
+		ctx.logger.info(`🔑 account action code generated`)
 
 		const expiresAtIso = iso8601(ctx.now.add({ minutes: 15 }))
 		await ctx.db.drizzle
