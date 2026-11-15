@@ -67,10 +67,10 @@ describe(`query logging`, () => {
 			`utf8`,
 		)
 		expect(source).toContain(
-			"ctx.logger.info(`🔑 verifying account action token`)",
+			`ctx.logger.info(\`🔑 verifying account action token\`)`,
 		)
 		expect(source).toContain(
-			"ctx.logger.info(`🔑 account action code generated`)",
+			`ctx.logger.info(\`🔑 account action code generated\`)`,
 		)
 		expect(source).not.toMatch(
 			/logger\.\w+\([^\n]*(?:oneTimeCode|accountActionCode)/,
