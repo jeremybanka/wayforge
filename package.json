@@ -68,7 +68,7 @@
 		"flightdeck": "workspace:*",
 		"jiti": "2.7.0",
 		"knip": "6.45.1",
-		"lasertag": "0.8.11",
+		"lasertag": "0.9.0",
 		"oxlint": "1.93.0",
 		"oxlint-tsgolint": "7.0.2007",
 		"pin-dependencies-checker": "2.7.1",
