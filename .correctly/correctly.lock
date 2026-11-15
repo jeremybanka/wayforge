@@ -36,8 +36,8 @@
       "packages": {}
     },
     "https://www.schemastore.org/pnpm-workspace.json": {
-      "digest": "cfb59366af0b2359b6885f1e2fe71e678baaac97ac81f2a6ca2a7eb42a5be3de",
-      "discoveredAt": "2026-11-06T08:44:48.917Z",
+      "digest": "5a9bc9f585ea86d1afee87dc1f4fc08ae92b361d3de7af02dea5c260287fd79c",
+      "discoveredAt": "2026-11-15T03:03:05.009Z",
       "packages": {}
     }
   }
