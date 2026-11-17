@@ -8,7 +8,7 @@
     },
     "https://dprint.dev/schemas/v0.json": {
       "digest": "159e313348452ba435354be032433e6f4603b2397ae28a0909c0683c3990aa8f",
-      "discoveredAt": "2026-11-14T17:59:47.694Z",
+      "discoveredAt": "2026-11-17T12:37:52.794Z",
       "packages": {
         "@dprint/json": "0.26.0",
         "@dprint/markdown": "0.29.0",
@@ -16,7 +16,7 @@
         "@dprint/toml": "0.10.0",
         "dprint": "0.64.3",
         "dprint-plugin-malva": "0.16.1",
-        "dprint-plugin-markup": "0.27.6",
+        "dprint-plugin-markup": "0.28.0",
         "dprint-plugin-yaml": "0.6.0"
       }
     },
