@@ -9,9 +9,8 @@ export type Join<
 	: Arr extends [infer First extends string]
 		? First
 		: Arr extends [infer First extends string, ...infer Rest extends string[]]
-			?
-					| `${First}${Separator}${Join<Rest, Separator>}`
-					| ([] extends Rest ? First : never)
+			? | `${First}${Separator}${Join<Rest, Separator>}`
+				| ([] extends Rest ? First : never)
 			: string
 
 /**
