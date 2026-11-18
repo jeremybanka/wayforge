@@ -52,7 +52,7 @@
 		"watch:types": "tsc --watch --noEmit"
 	},
 	"dependencies": {
-		"@ai-sdk/openai": "4.0.119",
+		"@ai-sdk/openai": "4.0.120",
 		"@atom.io/react": "0.2.1",
 		"@atom.io/react-devtools": "0.1.1",
 		"@atom.io/realtime": "0.1.2",
