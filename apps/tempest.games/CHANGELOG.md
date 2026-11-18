@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.3.66
+
+### Patch Changes
+
+- 9edf137: Keep database query diagnostics while redacting parameter values and SQL text, and omit account-action codes from authentication logs. Query fingerprints correlate statements within a server run without exposing embedded literals.
+
 ## 0.3.65
 
 ### Patch Changes
