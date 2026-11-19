@@ -75,7 +75,7 @@
 		"turbo": "2.11.12",
 		"typescript": "npm:@typescript/typescript6@6.0.2",
 		"varmint": "workspace:*",
-		"vitest": "5.1.0"
+		"vitest": "5.1.1"
 	},
 	"packageManager": "pnpm@12.21.0",
 	"engines": {
