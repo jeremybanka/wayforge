@@ -310,7 +310,7 @@ importers:
         version: 9.8.2(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(three@0.187.0)
       '@t3-oss/env-core':
         specifier: 0.13.11
-        version: 0.13.11(arktype@2.2.9)(typescript@7.0.2)(zod@4.6.7)
+        version: 0.13.11(arktype@2.2.10)(typescript@7.0.2)(zod@4.6.7)
       '@trpc/client':
         specifier: 11.28.6
         version: 11.28.6(@trpc/server@11.28.6(@types/ws@8.18.1)(next@16.4.3(@types/node@26.6.6)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2))(typescript@7.0.2)
@@ -321,8 +321,8 @@ importers:
         specifier: 7.0.175
         version: 7.0.175(zod@4.6.7)
       arktype:
-        specifier: 2.2.9
-        version: 2.2.9
+        specifier: 2.2.10
+        version: 2.2.10
       atom.io:
         specifier: 0.54.10
         version: 0.54.10(happy-dom@20.14.0)
@@ -413,7 +413,7 @@ importers:
         version: link:../../packages/flightdeck
       lasertag:
         specifier: 0.9.1
-        version: 0.9.1(@types/react@19.3.0)(arktype@2.2.9)(eslint@10.15.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(supports-color@10.2.2)
+        version: 0.9.1(@types/react@19.3.0)(arktype@2.2.10)(eslint@10.15.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(supports-color@10.2.2)
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -446,8 +446,8 @@ importers:
         specifier: 5.1.1
         version: 5.1.1(vitest@5.1.1)
       arktype:
-        specifier: 2.2.9
-        version: 2.2.9
+        specifier: 2.2.10
+        version: 2.2.10
       breakage:
         specifier: 0.10.2
         version: 0.10.2(supports-color@10.2.2)(zod@4.6.7)
@@ -483,10 +483,10 @@ importers:
         version: 0.1.2(@atom.io/react@0.2.1(@types/react@19.3.0)(atom.io@0.54.10(happy-dom@20.14.0))(react@19.3.1))(@testing-library/react@16.3.3(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(@types/react@19.3.0)(atom.io@0.54.10(happy-dom@20.14.0))(happy-dom@20.14.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(socket.io-client@4.8.4(supports-color@10.2.2))(socket.io@4.8.4(supports-color@10.2.2))
       '@t3-oss/env-core':
         specifier: 0.13.11
-        version: 0.13.11(arktype@2.2.9)(typescript@7.0.2)(zod@4.6.7)
+        version: 0.13.11(arktype@2.2.10)(typescript@7.0.2)(zod@4.6.7)
       arktype:
-        specifier: 2.2.9
-        version: 2.2.9
+        specifier: 2.2.10
+        version: 2.2.10
       atom.io:
         specifier: 0.54.10
         version: 0.54.10(happy-dom@20.14.0)
@@ -717,8 +717,8 @@ importers:
   packages/varmint:
     dependencies:
       arktype:
-        specifier: 2.2.9
-        version: 2.2.9
+        specifier: 2.2.10
+        version: 2.2.10
       cachedir:
         specifier: 2.4.0
         version: 2.4.0
@@ -749,13 +749,13 @@ importers:
         version: 10.15.0(jiti@2.7.0)(supports-color@10.2.2)
       galley.md:
         specifier: 0.3.1
-        version: 0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7)
+        version: 0.3.1(arktype@2.2.10)(supports-color@10.2.2)(zod@4.6.7)
       openai:
         specifier: 7.58.0
         version: 7.58.0(undici@6.28.1)(ws@8.21.0)(zod@4.6.7)
       tonnage:
         specifier: 0.5.2
-        version: 0.5.2(galley.md@0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7))
+        version: 0.5.2(galley.md@0.3.1(arktype@2.2.10)(supports-color@10.2.2)(zod@4.6.7))
       tsdown:
         specifier: 0.23.7
         version: 0.23.7(@volar/typescript@2.4.28(typescript@7.0.2))(oxc-resolver@11.24.2)(tsx@4.22.1)(typescript@7.0.2)
@@ -805,11 +805,17 @@ packages:
   '@ark/schema@0.56.8':
     resolution: {integrity: sha512-R05TOe85oQBGFFw2zKMuZpqkXibLKuC/aJt6VwFn5Cjc4x3NkWfhvGRpRDycNkj3ddcHnOPtIsmjVowJO9Yxdw==}
 
+  '@ark/schema@0.56.9':
+    resolution: {integrity: sha512-3kFUweE9PagqzEC9FEOirBRrVxBj0D6o8UiZDDrCyrcaBepRFHjUezf6MuTk8mKfJ4NKzSsaUCOVK+jzcm+dPw==}
+
   '@ark/util@0.56.7':
     resolution: {integrity: sha512-z8pVnrPk/x9GC18yOp5wCe8rR2+Z6us4CTSg7dvxdsDLuA2xXYq+QETD1fO6f3fMuXe+PCjpvtCnhTW9RHLgEw==}
 
   '@ark/util@0.56.8':
     resolution: {integrity: sha512-XLiQyGfpJcws1zCtp2Cva8s1oheCdFn1Rt6JSyC4NnkDrpwCJnlaiawuuOc1Z97vMH+jEzW5vyyf0xOju5wUQA==}
+
+  '@ark/util@0.56.9':
+    resolution: {integrity: sha512-/yA1me+AMmI75VaQ5owz1A1owopAJ0ZZFXy9SI1Q69kErJfxuglQBYjGeOTFyygJjZ9Rf4UjCtD5XTuEiNiGHw==}
 
   '@asamuzakjp/css-color@6.0.5':
     resolution: {integrity: sha512-mbhpPMmnw/kwW19aRNmSUl1QzLbdGo1SCuE49BT98MNwqF6zaHb3o2owssFc/PEO/4t2UjqtCNwocuDtJornzA==}
@@ -3893,6 +3899,12 @@ packages:
   arkregex@0.0.14:
     resolution: {integrity: sha512-G3I/uCtWE0IKQiPh0qqmmAFDdtjZKZQ5mNPR6gJBeAMZ7VqYCpoaDeXnLju2Zo6ywExtmxZJELeVFb0MPDjPyA==}
 
+  arkregex@0.0.15:
+    resolution: {integrity: sha512-mu9vS4b8kTipqr2AfVIL1NYhGH47CZgPdYFzB762lu4/dsxm7hmNsN3ayDahcM9OhepOpTQc+W744yh4KE+mAw==}
+
+  arktype@2.2.10:
+    resolution: {integrity: sha512-xfum3++1RGjULFBeeXph3XrejEhAfswZlpH/V5m324j8aZ/53tHUd8OPCXE1v5iU/2UEkn/ZDFUT0Exkjv96xA==}
+
   arktype@2.2.8:
     resolution: {integrity: sha512-tZyLza7kO2vN8BXBKcj4t43IVMe8/ZyqlITH0chZv7FfEw+edLovpY922tqcK4mCjTpf4oNo2xV6np7tquP1ww==}
 
@@ -6751,9 +6763,15 @@ snapshots:
     dependencies:
       '@ark/util': 0.56.8
 
+  '@ark/schema@0.56.9':
+    dependencies:
+      '@ark/util': 0.56.9
+
   '@ark/util@0.56.7': {}
 
   '@ark/util@0.56.8': {}
+
+  '@ark/util@0.56.9': {}
 
   '@asamuzakjp/css-color@6.0.5':
     dependencies:
@@ -8472,15 +8490,15 @@ snapshots:
     dependencies:
       '@swc/counter': 0.1.3
 
-  '@t3-oss/env-core@0.13.11(arktype@2.2.8)(typescript@7.0.2)(zod@4.6.7)':
+  '@t3-oss/env-core@0.13.11(arktype@2.2.10)(typescript@7.0.2)(zod@4.6.7)':
     optionalDependencies:
-      arktype: 2.2.8
+      arktype: 2.2.10
       typescript: 7.0.2
       zod: 4.6.7
 
-  '@t3-oss/env-core@0.13.11(arktype@2.2.9)(typescript@7.0.2)(zod@4.6.7)':
+  '@t3-oss/env-core@0.13.11(arktype@2.2.8)(typescript@7.0.2)(zod@4.6.7)':
     optionalDependencies:
-      arktype: 2.2.9
+      arktype: 2.2.8
       typescript: 7.0.2
       zod: 4.6.7
 
@@ -9107,6 +9125,16 @@ snapshots:
     dependencies:
       '@ark/util': 0.56.8
 
+  arkregex@0.0.15:
+    dependencies:
+      '@ark/util': 0.56.9
+
+  arktype@2.2.10:
+    dependencies:
+      '@ark/schema': 0.56.9
+      '@ark/util': 0.56.9
+      arkregex: 0.0.15
+
   arktype@2.2.8:
     dependencies:
       '@ark/schema': 0.56.7
@@ -9300,6 +9328,14 @@ snapshots:
       treetrunks: 0.1.12
     optionalDependencies:
       arktype: 2.2.8
+      zod: 4.6.7
+
+  comline@0.9.3(arktype@2.2.10)(zod@4.6.7):
+    dependencies:
+      '@standard-schema/spec': 1.1.0
+      treetrunks: 0.1.13
+    optionalDependencies:
+      arktype: 2.2.10
       zod: 4.6.7
 
   comline@0.9.3(arktype@2.2.8)(zod@4.6.7):
@@ -9944,6 +9980,38 @@ snapshots:
 
   function-bind@1.1.2: {}
 
+  galley.md@0.3.1(arktype@2.2.10)(supports-color@10.2.2)(zod@4.6.7):
+    dependencies:
+      '@babel/parser': 8.0.8
+      '@dprint/formatter': 0.6.0
+      '@dprint/markdown': 0.28.2
+      '@mdx-js/mdx': 3.1.1(supports-color@10.2.2)
+      '@types/mdast': 4.0.4
+      '@types/react': 19.3.0
+      '@vscode/vsce': 4.0.0(supports-color@10.2.2)
+      comline: 0.9.3(arktype@2.2.10)(zod@4.6.7)
+      diff: 9.0.0
+      esbuild: 0.28.2
+      hast-util-phrasing: 3.0.1
+      hast-util-to-html: 9.0.5
+      mdast-util-to-hast: 13.2.1
+      remark-frontmatter: 5.0.0(supports-color@10.2.2)
+      remark-gfm: 4.0.1(supports-color@10.2.2)
+      remark-mdx: 3.1.1(supports-color@10.2.2)
+      remark-parse: 11.0.0(supports-color@10.2.2)
+      remark-stringify: 11.0.0
+      typescript: 7.1.0-dev.20261027.1
+      unified: 11.0.5
+      vscode-jsonrpc: 10.0.0
+      vscode-languageclient: 11.0.0
+      vscode-languageserver: 11.0.0
+      vscode-languageserver-textdocument: 1.0.16
+      yaml: 2.9.1
+    transitivePeerDependencies:
+      - arktype
+      - supports-color
+      - zod
+
   galley.md@0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7):
     dependencies:
       '@babel/parser': 8.0.8
@@ -10401,12 +10469,12 @@ snapshots:
       unbash: 6.0.4
       yaml: 2.9.1
 
-  lasertag@0.9.1(@types/react@19.3.0)(arktype@2.2.8)(eslint@10.15.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(supports-color@10.2.2):
+  lasertag@0.9.1(@types/react@19.3.0)(arktype@2.2.10)(eslint@10.15.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(supports-color@10.2.2):
     dependencies:
       '@astrojs/compiler': 4.0.0
       '@vscode/vsce': 4.1.1(supports-color@10.2.2)
       atom.io: 0.54.10(happy-dom@20.14.0)
-      comline: 0.9.3(arktype@2.2.8)(zod@4.6.7)
+      comline: 0.9.3(arktype@2.2.10)(zod@4.6.7)
       rolldown: 1.3.2
       takua: 0.2.3
       tinyglobby: 0.2.17
@@ -10423,12 +10491,12 @@ snapshots:
       - happy-dom
       - supports-color
 
-  lasertag@0.9.1(@types/react@19.3.0)(arktype@2.2.9)(eslint@10.15.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(supports-color@10.2.2):
+  lasertag@0.9.1(@types/react@19.3.0)(arktype@2.2.8)(eslint@10.15.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(supports-color@10.2.2):
     dependencies:
       '@astrojs/compiler': 4.0.0
       '@vscode/vsce': 4.1.1(supports-color@10.2.2)
       atom.io: 0.54.10(happy-dom@20.14.0)
-      comline: 0.9.3(arktype@2.2.9)(zod@4.6.7)
+      comline: 0.9.3(arktype@2.2.8)(zod@4.6.7)
       rolldown: 1.3.2
       takua: 0.2.3
       tinyglobby: 0.2.17
@@ -11938,6 +12006,11 @@ snapshots:
   toml-eslint-parser@1.0.3:
     dependencies:
       eslint-visitor-keys: 5.0.1
+
+  tonnage@0.5.2(galley.md@0.3.1(arktype@2.2.10)(supports-color@10.2.2)(zod@4.6.7)):
+    dependencies:
+      esbuild: 0.28.2
+      galley.md: 0.3.1(arktype@2.2.10)(supports-color@10.2.2)(zod@4.6.7)
 
   tonnage@0.5.2(galley.md@0.3.1(arktype@2.2.9)(supports-color@10.2.2)(zod@4.6.7)):
     dependencies:
