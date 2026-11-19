@@ -751,8 +751,8 @@ importers:
         specifier: 0.3.1
         version: 0.3.1(arktype@2.2.10)(supports-color@10.2.2)(zod@4.6.7)
       openai:
-        specifier: 7.59.0
-        version: 7.59.0(undici@6.28.1)(ws@8.21.0)(zod@4.6.7)
+        specifier: 7.60.0
+        version: 7.60.0(undici@6.28.1)(ws@8.21.0)(zod@4.6.7)
       tonnage:
         specifier: 0.5.2
         version: 0.5.2(galley.md@0.3.1(arktype@2.2.10)(supports-color@10.2.2)(zod@4.6.7))
@@ -5588,8 +5588,8 @@ packages:
     resolution: {integrity: sha512-YgBpdJHPyQ2UE5x+hlSXcnejzAvD0b22U2OuAP+8OnlJT+PjWPxtgmGqKKc+RgTM63U9gN0YzrYc71R2WT/hTA==}
     engines: {node: '>=18'}
 
-  openai@7.59.0:
-    resolution: {integrity: sha512-wPYKJkLPFEdNJ2tThSg4jE1Ptsv4X3u8g8LIvu0Qz/UIhsKeCzl73rl48PtQsDVrJL/ku0liXOsbyd2TsRsPJw==}
+  openai@7.60.0:
+    resolution: {integrity: sha512-vipS79MnBZX6zpWjMGdRQazRcbYc3CxGUNZYLpd8YANeq1ZlTAZeHctkeUJvqDVcET7+kHI2osGWyhk3Co9odg==}
     engines: {node: '>=22.0.0'}
     peerDependencies:
       '@aws-sdk/credential-provider-node': '>=3.972.0 <4'
@@ -11234,7 +11234,7 @@ snapshots:
       is-inside-container: 1.0.0
       wsl-utils: 0.1.0
 
-  openai@7.59.0(undici@6.28.1)(ws@8.21.0)(zod@4.6.7):
+  openai@7.60.0(undici@6.28.1)(ws@8.21.0)(zod@4.6.7):
     optionalDependencies:
       undici: 6.28.1
       ws: 8.21.0
