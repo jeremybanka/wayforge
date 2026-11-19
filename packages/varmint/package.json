@@ -51,7 +51,7 @@
 	"devDependencies": {
 		"@types/bun": "npm:bun-types@1.4.4",
 		"@types/node": "26.6.6",
-		"atom.io": "0.54.10",
+		"atom.io": "0.54.11",
 		"eslint": "10.15.0",
 		"galley.md": "0.3.1",
 		"openai": "7.60.0",
