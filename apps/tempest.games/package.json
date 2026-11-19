@@ -54,7 +54,7 @@
 	"dependencies": {
 		"@ai-sdk/openai": "4.0.120",
 		"@atom.io/react": "0.2.1",
-		"@atom.io/react-devtools": "0.1.1",
+		"@atom.io/react-devtools": "0.1.2",
 		"@atom.io/realtime": "0.1.2",
 		"@floating-ui/react": "0.27.20",
 		"@js-temporal/polyfill": "0.5.1",
@@ -66,7 +66,7 @@
 		"@trpc/server": "11.28.6",
 		"ai": "7.0.175",
 		"arktype": "2.2.9",
-		"atom.io": "0.54.9",
+		"atom.io": "0.54.10",
 		"cron": "4.4.0",
 		"drizzle-orm": "0.45.4",
 		"motion": "14.14.0",

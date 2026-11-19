@@ -54,7 +54,7 @@
 		"watch:types": "tsc --watch --noEmit"
 	},
 	"dependencies": {
-		"atom.io": "0.54.9"
+		"atom.io": "0.54.10"
 	},
 	"devDependencies": {
 		"eslint": "10.15.0",
