@@ -252,8 +252,8 @@ importers:
         specifier: 2.7.0
         version: 2.7.0
       knip:
-        specifier: 6.46.0
-        version: 6.46.0
+        specifier: 6.46.1
+        version: 6.46.1
       lasertag:
         specifier: 0.9.1
         version: 0.9.1(@types/react@19.3.0)(arktype@2.2.8)(eslint@10.15.0(jiti@2.7.0)(supports-color@10.2.2))(happy-dom@20.14.0)(supports-color@10.2.2)
@@ -5070,8 +5070,8 @@ packages:
     resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
     engines: {node: '>=6'}
 
-  knip@6.46.0:
-    resolution: {integrity: sha512-Ms9cSOHL27A3uSG5IG0BR/Xd6ArXWtqg7PmZib2upe52C3Ka08jMtGIWG9ROBiTMUUaeZJD6HrU8g/b7VA82cQ==}
+  knip@6.46.1:
+    resolution: {integrity: sha512-5/ajqjZfmuv8O74+McrKBOSArKG6tsUgy6yJird36VZh9HiUq75qY4U39uqf9wjchEUOLrStuOZpFP057CZFRw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
@@ -10467,7 +10467,7 @@ snapshots:
 
   kleur@3.0.3: {}
 
-  knip@6.46.0:
+  knip@6.46.1:
     dependencies:
       formatly: 0.11.4
       get-tsconfig: 4.14.3
