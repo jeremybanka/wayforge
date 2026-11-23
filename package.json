@@ -67,7 +67,7 @@
 		"eslint-plugin-simple-import-sort": "14.0.0",
 		"flightdeck": "workspace:*",
 		"jiti": "2.7.0",
-		"knip": "6.47.0",
+		"knip": "6.48.0",
 		"lasertag": "0.9.1",
 		"oxlint": "1.94.0",
 		"oxlint-tsgolint": "7.0.2008",
