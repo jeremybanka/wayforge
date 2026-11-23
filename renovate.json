@@ -48,10 +48,11 @@
 			],
 			"matchPackageNames": [
 				"@correctlyjs/schemars",
+				"@atom.io/devtools",
 				"@atom.io/eslint-plugin",
 				"@atom.io/react",
-				"@atom.io/react-devtools",
 				"@atom.io/realtime",
+				"@atom.io/spa",
 				"atom.io",
 				"@breakage/changesets",
 				"breakage",
