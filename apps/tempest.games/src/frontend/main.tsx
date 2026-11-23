@@ -1,7 +1,7 @@
 import "./globals.css"
-import "@atom.io/react-devtools/css"
+import "@atom.io/devtools/css"
 
-import { AtomIODevtools } from "@atom.io/react-devtools"
+import { AtomIODevtools } from "@atom.io/devtools/react"
 import { RealtimeProvider } from "@atom.io/realtime/react"
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
