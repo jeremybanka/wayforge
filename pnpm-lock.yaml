@@ -340,8 +340,8 @@ importers:
         specifier: 0.54.13
         version: 0.54.13(happy-dom@20.14.0)
       cron:
-        specifier: 4.4.1
-        version: 4.4.1
+        specifier: 4.4.2
+        version: 4.4.2
       drizzle-orm:
         specifier: 0.45.4
         version: 0.45.4(bun-types@1.4.5)(postgres@4.1.1)
@@ -507,8 +507,8 @@ importers:
         specifier: workspace:*
         version: link:../comline
       cron:
-        specifier: 4.4.1
-        version: 4.4.1
+        specifier: 4.4.2
+        version: 4.4.2
       safedeposit:
         specifier: workspace:*
         version: link:../safedeposit
@@ -4344,8 +4344,8 @@ packages:
     resolution: {integrity: sha512-tJtZBBHA6vjIAaF6EnIaq6laBBP9aq/Y3ouVJjEfoHbRBcHBAHYcMh/w8LDrk2PvIMMq8gmopa5D4V8RmbrxGw==}
     engines: {node: '>= 0.10'}
 
-  cron@4.4.1:
-    resolution: {integrity: sha512-ycMs0wTezbyWLuT6JKQWpLPr2q4H0x9yZfcitH+sThOg/VtijRHFHkikE683gjzgmziz0sdyQY5ZWdcNfBVXtA==}
+  cron@4.4.2:
+    resolution: {integrity: sha512-sXlg/D5CdX7M4q3isDCbBD3XCHXExr3yBFwfZ1xaSe/IUVd3DmsnVzeSRjLlJeohbK+j4UtdKmY9k735RMl5XQ==}
     engines: {node: '>=18.x'}
 
   cross-env@10.1.0:
@@ -9690,7 +9690,7 @@ snapshots:
       object-assign: 4.1.1
       vary: 1.1.2
 
-  cron@4.4.1:
+  cron@4.4.2:
     dependencies:
       '@types/luxon': 3.7.1
       luxon: 3.7.2
