@@ -8,11 +8,11 @@
     },
     "https://dprint.dev/schemas/v0.json": {
       "digest": "159e313348452ba435354be032433e6f4603b2397ae28a0909c0683c3990aa8f",
-      "discoveredAt": "2026-11-18T03:20:00.967Z",
+      "discoveredAt": "2026-11-24T19:57:06.166Z",
       "packages": {
         "@dprint/json": "0.26.0",
         "@dprint/markdown": "0.29.0",
-        "@dprint/oxc": "0.51.0",
+        "@dprint/oxc": "0.52.0",
         "@dprint/toml": "0.10.0",
         "dprint": "0.65.0",
         "dprint-plugin-malva": "0.16.1",

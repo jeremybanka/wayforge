@@ -51,7 +51,7 @@
 		"@dotenvx/dotenvx": "2.38.2",
 		"@dprint/json": "0.26.0",
 		"@dprint/markdown": "0.29.0",
-		"@dprint/oxc": "0.51.0",
+		"@dprint/oxc": "0.52.0",
 		"@dprint/toml": "0.10.0",
 		"@typescript-eslint/parser": "8.73.0",
 		"@typescript-eslint/utils": "8.73.0",
