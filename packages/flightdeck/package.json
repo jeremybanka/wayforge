@@ -42,7 +42,7 @@
 		"arktype": "2.2.10",
 		"atom.io": "0.54.13",
 		"comline": "workspace:*",
-		"cron": "4.4.1",
+		"cron": "4.4.2",
 		"safedeposit": "workspace:*"
 	},
 	"devDependencies": {
