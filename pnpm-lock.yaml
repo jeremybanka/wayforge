@@ -325,11 +325,11 @@ importers:
         specifier: 0.13.11
         version: 0.13.11(arktype@2.2.10)(typescript@7.0.2)(zod@4.6.7)
       '@trpc/client':
-        specifier: 11.31.2
-        version: 11.31.2(@trpc/server@11.31.2(@types/ws@8.18.1)(next@16.4.6(@types/node@26.6.7)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2))(typescript@7.0.2)
+        specifier: 11.31.3
+        version: 11.31.3(@trpc/server@11.31.3(@types/ws@8.18.1)(next@16.4.6(@types/node@26.6.7)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2))(typescript@7.0.2)
       '@trpc/server':
-        specifier: 11.31.2
-        version: 11.31.2(@types/ws@8.18.1)(next@16.4.6(@types/node@26.6.7)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2)
+        specifier: 11.31.3
+        version: 11.31.3(@types/ws@8.18.1)(next@16.4.6(@types/node@26.6.7)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2)
       ai:
         specifier: 7.0.181
         version: 7.0.181(zod@4.6.7)
@@ -3343,14 +3343,14 @@ packages:
       '@types/react-dom':
         optional: true
 
-  '@trpc/client@11.31.2':
-    resolution: {integrity: sha512-rwW0mXFLnNER+yM2+U6hz/RHtbrzA7CtLqpcWcGMobLbmXncz5aSed3cuzHPcadEnGFhRcXbmvIl9P8UdDFkkQ==}
+  '@trpc/client@11.31.3':
+    resolution: {integrity: sha512-b4J6ELICI+VOI1Om7VSzrysUONR+g0OWTpj4aHj07+tIBqPyWHFH5jYtexvi3CLpCNOeBS5yQ9T/f1SkZocVdQ==}
     peerDependencies:
-      '@trpc/server': 11.31.2
+      '@trpc/server': 11.31.3
       typescript: '>=5.7.2'
 
-  '@trpc/server@11.31.2':
-    resolution: {integrity: sha512-gKekuwJEEMGeF61zCjGR3aYhqg/Jo09sISwvTLgaUkNQECbVrAHP1Y9D+UNqtOD6sKAzvYX2dGoxst6qGU9fOg==}
+  '@trpc/server@11.31.3':
+    resolution: {integrity: sha512-TEfyePHC1/x1bFn47+XNUt3LCvRN+ZKuoabwQ2rG5XzLZPnYUElY4jeovaqC6UCavETu5ca1l/n9h5DKxk5xHg==}
     peerDependencies:
       '@types/aws-lambda': '*'
       '@types/express': '*'
@@ -8857,12 +8857,12 @@ snapshots:
       '@types/react-dom': 19.3.0(@types/react@19.3.1)
     optional: true
 
-  '@trpc/client@11.31.2(@trpc/server@11.31.2(@types/ws@8.18.1)(next@16.4.6(@types/node@26.6.7)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2))(typescript@7.0.2)':
+  '@trpc/client@11.31.3(@trpc/server@11.31.3(@types/ws@8.18.1)(next@16.4.6(@types/node@26.6.7)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2))(typescript@7.0.2)':
     dependencies:
-      '@trpc/server': 11.31.2(@types/ws@8.18.1)(next@16.4.6(@types/node@26.6.7)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2)
+      '@trpc/server': 11.31.3(@types/ws@8.18.1)(next@16.4.6(@types/node@26.6.7)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2)
       typescript: 7.0.2
 
-  '@trpc/server@11.31.2(@types/ws@8.18.1)(next@16.4.6(@types/node@26.6.7)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2)':
+  '@trpc/server@11.31.3(@types/ws@8.18.1)(next@16.4.6(@types/node@26.6.7)(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(typescript@7.0.2)':
     dependencies:
       typescript: 7.0.2
     optionalDependencies:
