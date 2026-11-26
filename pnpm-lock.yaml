@@ -292,8 +292,8 @@ importers:
   apps/tempest.games:
     dependencies:
       '@ai-sdk/openai':
-        specifier: 4.0.122
-        version: 4.0.122(zod@4.6.7)
+        specifier: 4.0.123
+        version: 4.0.123(zod@4.6.7)
       '@atom.io/devtools':
         specifier: 0.2.0
         version: 0.2.0(@atom.io/react@0.2.1(@types/react@19.3.1)(atom.io@0.54.14(happy-dom@20.14.0))(react@19.3.1))(@atom.io/spa@0.0.12(@floating-ui/dom@1.8.0)(@types/three@0.187.0)(atom.io@0.54.14(happy-dom@20.14.0))(motion@14.14.0(react-dom@19.3.1(react@19.3.1))(react@19.3.1))(three@0.187.0)(vite@8.3.8(@types/node@26.6.7)(esbuild@0.28.2)(jiti@2.7.0)(tsx@4.22.1)(yaml@2.9.1)))(@types/react@19.3.1)(atom.io@0.54.14(happy-dom@20.14.0))(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
@@ -796,8 +796,8 @@ packages:
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/openai@4.0.122':
-    resolution: {integrity: sha512-8Q2DX7Fte5Sgt5jl/3B9vJFWO3LQQjgr/ErfDpdNdR5e20UC6RCHLXJ/MRhjLV2mMZkKBahV8DoYxBXgMCKGPA==}
+  '@ai-sdk/openai@4.0.123':
+    resolution: {integrity: sha512-6BazIkzKXr48DtdYKIBfYnyg5ecW77fkIZGJNC/wvVBx7LsELMXgvvWW2C0/kAjh+441g6osdDANpKQ4LKZxaw==}
     engines: {node: '>=22'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -6971,7 +6971,7 @@ snapshots:
       '@vercel/oidc': 3.2.0
       zod: 4.6.7
 
-  '@ai-sdk/openai@4.0.122(zod@4.6.7)':
+  '@ai-sdk/openai@4.0.123(zod@4.6.7)':
     dependencies:
       '@ai-sdk/provider': 4.0.39
       '@ai-sdk/provider-utils': 5.0.83(zod@4.6.7)
