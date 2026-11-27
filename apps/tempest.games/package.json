@@ -52,7 +52,7 @@
 		"watch:types": "tsc --watch --noEmit"
 	},
 	"dependencies": {
-		"@ai-sdk/openai": "4.0.123",
+		"@ai-sdk/openai": "4.0.124",
 		"@atom.io/devtools": "0.2.0",
 		"@atom.io/react": "0.2.1",
 		"@atom.io/realtime": "0.1.2",
@@ -65,7 +65,7 @@
 		"@t3-oss/env-core": "0.13.11",
 		"@trpc/client": "11.31.3",
 		"@trpc/server": "11.31.3",
-		"ai": "7.0.181",
+		"ai": "7.0.182",
 		"arktype": "2.2.10",
 		"atom.io": "0.54.14",
 		"cron": "4.4.2",
