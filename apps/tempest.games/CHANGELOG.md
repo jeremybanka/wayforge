@@ -1,5 +1,11 @@
 # tempest.games
 
+## 0.3.67
+
+### Patch Changes
+
+- 6b8f449: Use the shared atom.io debugger in Tempest. Its default Ecology tab shows how atoms, selectors, and families connect in the live application store.
+
 ## 0.3.66
 
 ### Patch Changes
