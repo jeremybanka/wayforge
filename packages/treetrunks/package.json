@@ -39,7 +39,7 @@
 		"watch:types": "tsc --watch --noEmit"
 	},
 	"devDependencies": {
-		"@types/node": "26.6.10",
+		"@types/node": "26.6.11",
 		"@vitest/coverage-v8": "5.1.2",
 		"eslint": "10.15.0",
 		"galley.md": "0.3.1",
