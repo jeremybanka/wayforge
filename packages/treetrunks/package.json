@@ -41,7 +41,7 @@
 	"devDependencies": {
 		"@types/node": "26.6.11",
 		"@vitest/coverage-v8": "5.1.2",
-		"eslint": "10.15.0",
+		"eslint": "10.16.0",
 		"galley.md": "0.3.1",
 		"recoverage": "0.1.20",
 		"tonnage": "0.5.2",

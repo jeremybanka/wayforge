@@ -52,7 +52,7 @@
 		"@types/bun": "npm:bun-types@1.4.5",
 		"@types/node": "26.6.11",
 		"atom.io": "0.54.15",
-		"eslint": "10.15.0",
+		"eslint": "10.16.0",
 		"galley.md": "0.3.1",
 		"openai": "7.65.0",
 		"tonnage": "0.5.2",
