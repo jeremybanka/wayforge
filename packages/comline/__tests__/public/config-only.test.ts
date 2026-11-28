@@ -275,7 +275,6 @@ test(`derives config input separately from defaulted output and rejects unsafe d
 				parse: (value: string) => value,
 			},
 		})
-		void [rootTypo, nestedTypo, badPolicy]
 	}
 })
 
