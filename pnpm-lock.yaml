@@ -364,8 +364,8 @@ importers:
         specifier: 6.11.17
         version: 6.11.17(react-dom@19.3.1(react@19.3.1))(react@19.3.1)(supports-color@10.2.2)
       resend:
-        specifier: 6.40.1
-        version: 6.40.1(@react-email/render@2.3.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1))
+        specifier: 6.41.0
+        version: 6.41.0(@react-email/render@2.3.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1))
       socket.io:
         specifier: 4.8.4
         version: 4.8.4(supports-color@10.2.2)
@@ -5999,8 +5999,8 @@ packages:
     resolution: {integrity: sha512-Xf0nWe6RseziFMu+Ap9biiUbmplq6S9/p+7w7YXP/JBHhrUDDUhwa+vANyubuqfZWTveU//DYVGsDG7RKL/vEw==}
     engines: {node: '>=0.10.0'}
 
-  resend@6.40.1:
-    resolution: {integrity: sha512-WUeXIMz4FkIyDuUlV++qMDubYrSB0qTo3ZD+upIxvsqoJmVNx/Q7oWCMd/7JbsiTiWMRsPtgOXKwRFfxzIUYxA==}
+  resend@6.41.0:
+    resolution: {integrity: sha512-9IjKh49JeICVsb3gd2YstwtBsfLHmWgmNh0uIRPJdT+qyGwyfbF/TiR8ce1w4ucPwh3iEeAUD29zjGr5tdJ0TQ==}
     engines: {node: '>=20'}
     peerDependencies:
       '@react-email/render': '*'
@@ -11909,7 +11909,7 @@ snapshots:
 
   require-from-string@2.0.2: {}
 
-  resend@6.40.1(@react-email/render@2.3.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)):
+  resend@6.41.0(@react-email/render@2.3.1(react-dom@19.3.1(react@19.3.1))(react@19.3.1)):
     dependencies:
       postal-mime: 2.7.6
       standardwebhooks: 1.1.1
