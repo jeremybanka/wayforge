@@ -143,12 +143,12 @@ carbiter-view.class {
 		}
 	}
 
-	[data-css="stats"] {
+	:where(aside, meal-content)[data-css="stats"] {
 		justify-content: flex-end;
-		> [data-css="stat"] {
+		> :where(data, label)[data-css="stat"] {
 			min-width: 64px;
 			flex-flow: column;
-			> [data-css="stats-number"] {
+			> :where(output, input)[data-css="stats-number"] {
 				font-family: Theia, sans-serif;
 				&:is(output) {
 					font-size: 24px;
@@ -159,8 +159,8 @@ carbiter-view.class {
 					outline: 1px solid var(--bg-tint-3);
 				}
 			}
-			> [data-css="stats-number"],
-			> [data-css="stats-unit"] {
+			> :where(output, input)[data-css="stats-number"],
+			> :where(span)[data-css="stats-unit"] {
 				display: block;
 				min-width: 64px;
 				padding-right: 4px;
