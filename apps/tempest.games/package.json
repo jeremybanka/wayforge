@@ -98,7 +98,7 @@
 		"drizzle-kit": "0.31.11",
 		"eslint": "10.15.0",
 		"flightdeck": "workspace:*",
-		"lasertag": "0.9.1",
+		"lasertag": "0.10.0",
 		"typescript": "7.0.2",
 		"vite": "8.4.0",
 		"vitest": "5.1.2"
