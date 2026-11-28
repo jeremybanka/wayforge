@@ -199,8 +199,8 @@ importers:
         specifier: 3.0.3
         version: 3.0.3
       '@changesets/config':
-        specifier: 4.0.1
-        version: 4.0.1
+        specifier: 4.1.0
+        version: 4.1.0
       '@correctlyjs/schemars':
         specifier: 0.0.6
         version: 0.0.6(correctly@0.3.3(arktype@2.2.8)(supports-color@10.2.2))
@@ -1095,8 +1095,8 @@ packages:
     engines: {node: ^22.11 || ^24 || >=26, npm: '>=10.9.0', pnpm: '>=10.0.0', yarn: '>=4.5.2'}
     hasBin: true
 
-  '@changesets/config@4.0.1':
-    resolution: {integrity: sha512-PxpxSQLQSLDjceAgRq+4FWlU+HflDIw03mmPVipxoQx9xrXFUjmqTy3SE+n/2t+DqPdpPiLWVr5NRiLZvjyLwg==}
+  '@changesets/config@4.1.0':
+    resolution: {integrity: sha512-uS45o0lR2ZcfTIIzFkYJbcYnftXgBuGMcqAf7oQhw+6MUvKh2BkP/Ohqjm01ewmxuCPAtaPjO1w8blyGqVPeEw==}
     engines: {node: ^22.11 || ^24 || >=26}
 
   '@changesets/errors@1.0.0':
@@ -1107,8 +1107,8 @@ packages:
     resolution: {integrity: sha512-Caez5XtNXCFS/G5bwyav3wuXL0tMxVd2ZGbaumWbzN08tyzO21asCw7JZhNtVsAZDCvDRUzZN+Iit9SyRITSYA==}
     engines: {node: ^22.11 || ^24 || >=26}
 
-  '@changesets/get-dependents-graph@3.0.0':
-    resolution: {integrity: sha512-ji/t5wFA1zREKXRUePE6Qi+Qu2UgxCeSSGQrphezwvQZrp49B7sJ+8+wvM0tA7zPeSxYKCojDy3WWgrl+s+awg==}
+  '@changesets/get-dependents-graph@3.0.1':
+    resolution: {integrity: sha512-aQRU6496Fr+oqs1YuPUvCI8IxLksbsNuPCil6D3KyObYNiDh1TH9vGde3KZw+rfseLEJcmFlx6UsOcxi4ZUx2w==}
     engines: {node: ^22.11 || ^24 || >=26}
 
   '@changesets/git@4.0.1':
@@ -1127,12 +1127,12 @@ packages:
     resolution: {integrity: sha512-nzvSC6RcTiWf/dsuwZFXpLzGGsRHYCL68U3uHV7srsulU93aVWY7u2GEJiDZ+4GIIElfaW5EqtKC0UHroY+LTQ==}
     engines: {node: ^22.11 || ^24 || >=26}
 
-  '@changesets/should-skip-package@1.0.0':
-    resolution: {integrity: sha512-pwqoJmbONn1XgXmZXPEExgAaT+HdZLjALFTDgIm+PnS5KeO2nLtzA2/Q+4aMFY14kFMuXKG30MObhvDzWgzDgg==}
+  '@changesets/should-skip-package@1.0.1':
+    resolution: {integrity: sha512-dWyV0BrdwMYEhUYOa/qqjiXak/G/YKNJJj9bJQXFW9mwar0edWf/IZUmNpFqjKB/lEopbepvrQkXdR6Gx0jgWw==}
     engines: {node: ^22.11 || ^24 || >=26}
 
-  '@changesets/types@7.0.0':
-    resolution: {integrity: sha512-c5GoiQyt3pxiXjrWSNoP8/GRf4kG+VnKzovx1OQM8dYYALlSwgedmkPmJ+ZqGxqwg9D3Bkj85Uo4KLd5BN3A0w==}
+  '@changesets/types@7.1.0':
+    resolution: {integrity: sha512-UmpOTft7EIMCJRpLy5oy8rLNXdyhTBMMOaNi5t4B/2zEiluyys3pKc1jBXDE22SXmmwMgKtJ/m2qxgD/w1iJJA==}
     engines: {node: ^22.11 || ^24 || >=26}
 
   '@changesets/write@1.0.1':
@@ -7185,7 +7185,7 @@ snapshots:
   '@breakage/changesets@0.1.0(breakage@0.10.2(supports-color@10.2.2)(zod@4.6.7))':
     dependencies:
       '@changesets/assemble-release-plan': 7.0.0
-      '@changesets/config': 4.0.1
+      '@changesets/config': 4.1.0
       '@changesets/pre': 3.0.0
       '@changesets/read': 1.0.1
       '@manypkg/get-packages': 3.1.0
@@ -7205,11 +7205,11 @@ snapshots:
 
   '@changesets/apply-release-plan@8.1.1':
     dependencies:
-      '@changesets/config': 4.0.1
+      '@changesets/config': 4.1.0
       '@changesets/format': 0.1.2
       '@changesets/git': 4.0.1
-      '@changesets/should-skip-package': 1.0.0
-      '@changesets/types': 7.0.0
+      '@changesets/should-skip-package': 1.0.1
+      '@changesets/types': 7.1.0
       import-meta-resolve: 4.2.0
       jsonc-parser: 3.3.1
       semver: 7.8.6
@@ -7217,28 +7217,28 @@ snapshots:
   '@changesets/assemble-release-plan@7.0.0':
     dependencies:
       '@changesets/errors': 1.0.0
-      '@changesets/get-dependents-graph': 3.0.0
-      '@changesets/should-skip-package': 1.0.0
-      '@changesets/types': 7.0.0
+      '@changesets/get-dependents-graph': 3.0.1
+      '@changesets/should-skip-package': 1.0.1
+      '@changesets/types': 7.1.0
       semver: 7.8.6
 
   '@changesets/changelog-git@1.0.0':
     dependencies:
-      '@changesets/types': 7.0.0
+      '@changesets/types': 7.1.0
 
   '@changesets/cli@3.0.3':
     dependencies:
       '@changesets/apply-release-plan': 8.1.1
       '@changesets/assemble-release-plan': 7.0.0
       '@changesets/changelog-git': 1.0.0
-      '@changesets/config': 4.0.1
+      '@changesets/config': 4.1.0
       '@changesets/errors': 1.0.0
-      '@changesets/get-dependents-graph': 3.0.0
+      '@changesets/get-dependents-graph': 3.0.1
       '@changesets/git': 4.0.1
       '@changesets/pre': 3.0.0
       '@changesets/read': 1.0.1
-      '@changesets/should-skip-package': 1.0.0
-      '@changesets/types': 7.0.0
+      '@changesets/should-skip-package': 1.0.1
+      '@changesets/types': 7.1.0
       '@changesets/write': 1.0.1
       '@clack/prompts': 1.7.0
       '@manypkg/get-packages': 3.1.0
@@ -7250,11 +7250,11 @@ snapshots:
       semver: 7.8.6
       tinyexec: 1.3.1
 
-  '@changesets/config@4.0.1':
+  '@changesets/config@4.1.0':
     dependencies:
-      '@changesets/get-dependents-graph': 3.0.0
-      '@changesets/should-skip-package': 1.0.0
-      '@changesets/types': 7.0.0
+      '@changesets/get-dependents-graph': 3.0.1
+      '@changesets/should-skip-package': 1.0.1
+      '@changesets/types': 7.1.0
       '@manypkg/get-packages': 3.1.0
       picomatch: 4.0.7
 
@@ -7265,46 +7265,46 @@ snapshots:
       package-manager-detector: 1.8.0
       tinyexec: 1.3.1
 
-  '@changesets/get-dependents-graph@3.0.0':
+  '@changesets/get-dependents-graph@3.0.1':
     dependencies:
-      '@changesets/types': 7.0.0
+      '@changesets/types': 7.1.0
       semver: 7.8.6
 
   '@changesets/git@4.0.1':
     dependencies:
       '@changesets/errors': 1.0.0
-      '@changesets/types': 7.0.0
+      '@changesets/types': 7.1.0
       '@manypkg/get-packages': 3.1.0
       picomatch: 4.0.7
       tinyexec: 1.3.1
 
   '@changesets/parse@1.0.0':
     dependencies:
-      '@changesets/types': 7.0.0
+      '@changesets/types': 7.1.0
       yaml: 2.9.1
 
   '@changesets/pre@3.0.0':
     dependencies:
       '@changesets/errors': 1.0.0
-      '@changesets/types': 7.0.0
+      '@changesets/types': 7.1.0
       '@manypkg/get-packages': 3.1.0
 
   '@changesets/read@1.0.1':
     dependencies:
       '@changesets/git': 4.0.1
       '@changesets/parse': 1.0.0
-      '@changesets/types': 7.0.0
+      '@changesets/types': 7.1.0
 
-  '@changesets/should-skip-package@1.0.0':
+  '@changesets/should-skip-package@1.0.1':
     dependencies:
-      '@changesets/types': 7.0.0
+      '@changesets/types': 7.1.0
 
-  '@changesets/types@7.0.0': {}
+  '@changesets/types@7.1.0': {}
 
   '@changesets/write@1.0.1':
     dependencies:
       '@changesets/format': 0.1.2
-      '@changesets/types': 7.0.0
+      '@changesets/types': 7.1.0
       human-id: 4.2.0
 
   '@clack/core@1.4.3':
